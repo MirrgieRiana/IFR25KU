@@ -22,10 +22,11 @@ object ManaBoostPassiveSkillEffect : AbstractPassiveSkillEffect<ManaBoostPassive
     override val isPreprocessor = true
     private val translation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}" }, "Mana", "魔力")
     private val familyTranslation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}.family" }, "%s Family", "%s系統")
-    override fun getText(value: Value): Component {
+    override fun getText(value: Value) = getTexts(value).join(text { ","() })
+    override fun getTexts(value: Value): List<Component> {
         return value.map.map { (motif, value) ->
             text { translation() + ": "() + Emoji.MANA() + (value * 100 formatAs "%+.0f%%")() + if (motif != null) " ("() + familyTranslation(motif.displayName) + ")"() else empty() }
-        }.join(text { ","() })
+        }
     }
 
     override val unit = Value(mapOf())

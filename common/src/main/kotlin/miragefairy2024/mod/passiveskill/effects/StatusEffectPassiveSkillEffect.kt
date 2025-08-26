@@ -18,10 +18,11 @@ object StatusEffectPassiveSkillEffect : AbstractPassiveSkillEffect<StatusEffectP
     class Value(val map: Map<Holder<MobEffect>, Entry>)
     class Entry(val level: Int, val additionalSeconds: Int)
 
-    override fun getText(value: Value): Component {
+    override fun getText(value: Value) = getTexts(value).join(text { ","() })
+    override fun getTexts(value: Value): List<Component> {
         return value.map.map { (statusEffect, entry) ->
             text { Emoji.POTION() + " "() + statusEffect.value().displayName + if (entry.level >= 2) " "() + entry.level.toRomanText() else empty() }
-        }.join(text { ","() })
+        }
     }
 
     override val unit = Value(mapOf())

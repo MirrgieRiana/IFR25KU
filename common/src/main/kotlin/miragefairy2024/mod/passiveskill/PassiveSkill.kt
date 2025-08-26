@@ -27,6 +27,7 @@ interface PassiveSkillCondition {
 interface PassiveSkillEffect<T : Any> {
     val isPreprocessor: Boolean
     fun getText(value: T): Component
+    fun getTexts(value: T): List<Component> = listOf(getText(value))
     val unit: T
     fun castOrThrow(value: Any?): T
     fun combine(a: T, b: T): T

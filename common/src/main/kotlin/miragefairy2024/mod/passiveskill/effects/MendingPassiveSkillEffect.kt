@@ -24,7 +24,8 @@ object MendingPassiveSkillEffect : AbstractPassiveSkillEffect<MendingPassiveSkil
     class Value(val map: Map<TagKey<Item>, Double>)
 
     private val translation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}" }, "Durability Regeneration: %s/s", "耐久値自然回復: %s/秒")
-    override fun getText(value: Value): Component {
+    override fun getText(value: Value) = getTexts(value).join(text { ","() })
+    override fun getTexts(value: Value): List<Component> {
         val player = clientProxy?.getClientPlayer()
         return value.map.map { (tag, value) ->
             val ok = if (player != null) {
@@ -44,7 +45,7 @@ object MendingPassiveSkillEffect : AbstractPassiveSkillEffect<MendingPassiveSkil
                 true
             }
             text { (translation(value formatAs "%+.3f") + " ("() + translate(tag.translationKey) + ")"()).let { if (ok) it else it.darkGray } }
-        }.join(text { ","() })
+        }
     }
 
     override val unit = Value(mapOf())
