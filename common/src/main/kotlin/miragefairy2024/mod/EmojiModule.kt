@@ -16,6 +16,8 @@ enum class Emoji(val string: String, val charCode: String) {
     MANA("◇", "\uE608"),
     POTION("🧪", "\uE609"),
     HUMAN("🏃‍➡️", "\uE60A"),
+    SWORD("🗡️", "\uE60B"),
+    SHIELD("🛡️", "\uE60C"),
 
     FLOOR_MOISTURE("湿った地面", "\uE610"),
     FLOOR_HARDNESS("硬い地面", "\uE611"),
