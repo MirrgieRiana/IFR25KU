@@ -25,7 +25,7 @@ object EntityAttributePassiveSkillEffect : AbstractPassiveSkillEffect<EntityAttr
 
     override fun getText(value: Value) = getTexts(value).join(text { ","() })
     override fun getTexts(value: Value): List<Component> {
-        return value.map.map { (attribute, value) ->
+        return value.map.entries.sortedBy { (it.key as? Holder.Reference<*>)?.key()?.location() }.map { (attribute, value) ->
             text { Emoji.HUMAN() + " "() + translate(attribute.value().descriptionId) + " ${FORMATTERS.getOrElse(attribute) { defaultFormatter }(value)}"() }
         }
     }
