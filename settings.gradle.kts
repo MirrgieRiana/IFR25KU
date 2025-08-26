@@ -7,7 +7,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "MF24KU"
+rootProject.name = "IFR25KU"
 
 include("mirrg.kotlin")
 

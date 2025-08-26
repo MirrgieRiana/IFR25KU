@@ -43,14 +43,14 @@ import net.minecraft.world.item.alchemy.Potions
 import net.minecraft.world.level.block.Blocks
 
 val mirageFairy2024ItemGroupCard = ItemGroupCard(
-    MirageFairy2024.identifier("miragefairy2024"), "MF24KU", "MF24KU",
+    MirageFairy2024.identifier("miragefairy2024"), "IFR25KU", "IFR25KU",
 ) { MaterialCard.PHANTOM_DROP.item().createItemStack() }
 
 val rootAdvancement = AdvancementCard(
     identifier = MirageFairy2024.identifier("root"),
     context = AdvancementCard.Root(MirageFairy2024.identifier("textures/block/haimeviska_planks.png")),
     icon = { MotifCard.MAGENTA_GLAZED_TERRACOTTA.createFairyItemStack() },
-    name = EnJa("MF24KU", "MF24KU"),
+    name = EnJa("IFR25KU", "IFR25KU"),
     description = EnJa("The Noisy Land of Tertia", "かしましきテルティアの地"),
     criterion = AdvancementCard.hasAnyItem(),
     type = AdvancementCardType.SILENT,

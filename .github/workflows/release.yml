@@ -40,7 +40,7 @@ jobs:
           v${{ env.mod_version }}
           --verify-tag
           --title v${{ env.mod_version }}
-          build/libs/MF24KU-${{ env.mod_version }}.jar
+          build/libs/IFR25KU-${{ env.mod_version }}.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Modrinthのリリース

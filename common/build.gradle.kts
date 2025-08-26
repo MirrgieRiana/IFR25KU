@@ -70,5 +70,5 @@ configurations.named("architecturyTransformerClasspath") {
 }
 
 tasks.named<Jar>("jar") {
-    duplicatesStrategy = DuplicatesStrategy.WARN // clientとmainのclassの出力先を分けた関係で MF24KU-common.kotlin_module がclientとmainで重複するため
+    duplicatesStrategy = DuplicatesStrategy.WARN // clientとmainのclassの出力先を分けた関係で IFR25KU-common.kotlin_module がclientとmainで重複するため
 }

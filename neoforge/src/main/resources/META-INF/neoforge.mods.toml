@@ -6,7 +6,7 @@ license = "Apache License 2.0"
 [[mods]]
 modId = "miragefairy2024"
 version = "${version}"
-displayName = "MF24KU"
+displayName = "IFR25KU"
 authors = "The Developer of MirageFairy, Generation 7, Yoruno Kakera"
 description = '''
 An unofficial fork of "MirageFairy2024," a Minecraft mod for the MirageFairy project, created by Yoruno Kakera.

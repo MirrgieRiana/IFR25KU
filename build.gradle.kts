@@ -201,7 +201,7 @@ tasks.register("buildPages") {
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>MF24KU Lang Table</title>
+    <title>IFR25KU Lang Table</title>
     <style>
         #langTable {
             border-collapse: collapse;
@@ -231,7 +231,7 @@ tasks.register("buildPages") {
     </style>
 </head>
 <body>
-<h1>MF24KU Lang Table</h1>
+<h1>IFR25KU Lang Table</h1>
 <table id="langTable">
     <colgroup>
         <col style="width: 20%;">
@@ -263,7 +263,7 @@ tasks.register("buildPages") {
 </html>
         """.let { File("build/pages/lang_table.html").writeText(it) }
         """
-[MF24KU Lang Table](lang_table.html)
+[IFR25KU Lang Table](lang_table.html)
         """.let { File("build/pages/index.md").writeText(it) }
     }
 }

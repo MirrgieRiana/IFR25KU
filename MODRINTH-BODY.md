@@ -1,4 +1,4 @@
-# MF24KU
+# IFR25KU
 
 An unofficial fork of "[MirageFairy2024](https://modrinth.com/mod/miragefairy2024)," a Minecraft mod for the MirageFairy project, created by Yoruno Kakera.
 
