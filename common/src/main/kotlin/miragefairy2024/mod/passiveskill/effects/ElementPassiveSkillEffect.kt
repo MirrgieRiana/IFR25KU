@@ -51,7 +51,8 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
 
     private val attackTranslation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}.attack" }, "%s Attack", "%s攻撃力")
     private val defenceTranslation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}.defence" }, "%s Defence", "%s防御力")
-    override fun getText(value: Value): Component {
+    override fun getText(value: Value) = getTexts(value).join(text { ","() })
+    override fun getTexts(value: Value): List<Component> {
         return listOf(
             value.attackMap.map { (element, value) ->
                 text { attackTranslation(element.text) + ": ${value * 100 formatAs "%+.0f%%"}"() }
@@ -59,7 +60,7 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
             value.defenceMap.map { (element, value) ->
                 text { defenceTranslation(element.text) + ": ${value * 100 formatAs "%+.0f%%"}"() }
             },
-        ).flatten().join(text { ","() })
+        ).flatten()
     }
 
     override val unit = Value(mapOf(), mapOf())
