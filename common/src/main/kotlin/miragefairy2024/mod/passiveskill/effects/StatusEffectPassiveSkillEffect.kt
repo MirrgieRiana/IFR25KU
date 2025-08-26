@@ -20,7 +20,7 @@ object StatusEffectPassiveSkillEffect : AbstractPassiveSkillEffect<StatusEffectP
 
     override fun getText(value: Value) = getTexts(value).join(text { ","() })
     override fun getTexts(value: Value): List<Component> {
-        return value.map.map { (statusEffect, entry) ->
+        return value.map.entries.sortedBy { (it.key as? Holder.Reference<*>)?.key()?.location() }.map { (statusEffect, entry) ->
             text { Emoji.POTION() + " "() + statusEffect.value().displayName + if (entry.level >= 2) " "() + entry.level.toRomanText() else empty() }
         }
     }

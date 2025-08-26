@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.Emoji
 import miragefairy2024.mod.fairy.Motif
+import miragefairy2024.mod.fairy.getIdentifier
 import miragefairy2024.mod.invoke
 import miragefairy2024.mod.passiveskill.PassiveSkillContext
 import miragefairy2024.util.Translation
@@ -24,7 +25,7 @@ object ManaBoostPassiveSkillEffect : AbstractPassiveSkillEffect<ManaBoostPassive
     private val familyTranslation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}.family" }, "%s Family", "%s系統")
     override fun getText(value: Value) = getTexts(value).join(text { ","() })
     override fun getTexts(value: Value): List<Component> {
-        return value.map.map { (motif, value) ->
+        return value.map.entries.sortedBy { it.key?.getIdentifier() }.map { (motif, value) ->
             text { translation() + ": "() + Emoji.MANA() + (value * 100 formatAs "%+.0f%%")() + if (motif != null) " ("() + familyTranslation(motif.displayName) + ")"() else empty() }
         }
     }

@@ -27,7 +27,7 @@ object MendingPassiveSkillEffect : AbstractPassiveSkillEffect<MendingPassiveSkil
     override fun getText(value: Value) = getTexts(value).join(text { ","() })
     override fun getTexts(value: Value): List<Component> {
         val player = clientProxy?.getClientPlayer()
-        return value.map.map { (tag, value) ->
+        return value.map.entries.sortedBy { it.key.location() }.map { (tag, value) ->
             val ok = if (player != null) {
                 var ok = false
                 fun f(itemStack: ItemStack) {
