@@ -111,6 +111,20 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
     override fun renderLabels(context: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
 
+    private val onUpdateListeners = mutableListOf<() -> Unit>()
+    private var lastUpdateEventNanoTime = 0L
+    override fun containerTick() {
+        super.containerTick()
+
+        val now = System.nanoTime()
+        if (now - lastUpdateEventNanoTime >= 100_000_000) {
+            lastUpdateEventNanoTime = now
+            onUpdateListeners.forEach {
+                it()
+            }
+        }
+    }
+
     // キー入力で閉じる
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (soulStreamKeyMappingCard.keyMapping.matches(keyCode, scanCode)) {
