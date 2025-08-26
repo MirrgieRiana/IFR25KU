@@ -73,7 +73,7 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
             attackMap[element] = aValue + bValue
         }
         b.defenceMap.forEach { (element, bValue) ->
-            val aValue = defenceMap[element] ?: 1.0
+            val aValue = defenceMap[element] ?: 0.0
             defenceMap[element] = aValue + bValue
         }
         return Value(attackMap, defenceMap)
