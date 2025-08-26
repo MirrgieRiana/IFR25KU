@@ -3,6 +3,8 @@ package miragefairy2024.mod.passiveskill.effects
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mixins.api.DamageCallback
+import miragefairy2024.mod.Emoji
+import miragefairy2024.mod.invoke
 import miragefairy2024.mod.passiveskill.PassiveSkillContext
 import miragefairy2024.mod.passiveskill.passiveSkillResult
 import miragefairy2024.mod.tool.IS_MAGIC_DAMAGE_TYPE_TAG
@@ -55,10 +57,10 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
     override fun getTexts(value: Value): List<Component> {
         return listOf(
             value.attackMap.map { (element, value) ->
-                text { attackTranslation(element.text) + ": ${value * 100 formatAs "%+.0f%%"}"() }
+                text { Emoji.SWORD() + " "() + attackTranslation(element.text) + ": ${value * 100 formatAs "%+.0f%%"}"() }
             },
             value.defenceMap.map { (element, value) ->
-                text { defenceTranslation(element.text) + ": ${value * 100 formatAs "%+.0f%%"}"() }
+                text { Emoji.SHIELD() + " "() + defenceTranslation(element.text) + ": ${value * 100 formatAs "%+.0f%%"}"() }
             },
         ).flatten()
     }
