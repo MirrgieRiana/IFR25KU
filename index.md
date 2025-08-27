@@ -1,3 +1,3 @@
 
-[MF24KU Lang Table](lang_table.html)
+[IFR25KU Lang Table](lang_table.html)
         
