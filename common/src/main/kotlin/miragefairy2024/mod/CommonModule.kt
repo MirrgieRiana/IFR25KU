@@ -44,7 +44,7 @@ import net.minecraft.world.level.block.Blocks
 
 val mirageFairy2024ItemGroupCard = ItemGroupCard(
     MirageFairy2024.identifier("miragefairy2024"), "IFR25KU", "IFR25KU",
-) { MaterialCard.NOISE.item().createItemStack() }
+) { MaterialCard.FAIRY_CRYSTAL.item().createItemStack() }
 
 val rootAdvancement = AdvancementCard(
     identifier = MirageFairy2024.identifier("root"),
