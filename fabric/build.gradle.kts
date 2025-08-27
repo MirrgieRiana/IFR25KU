@@ -122,7 +122,7 @@ dependencies {
 // https://github.com/modrinth/minotaur
 modrinth {
     token = System.getenv("MODRINTH_TOKEN")
-    projectId = "miragefairy2024-kakera-unofficial"
+    projectId = "ifr25ku"
     //versionNumber = project.mod_version
     versionType = if ("alpha" in project.version.toString()) "alpha" else if ("beta" in project.version.toString()) "beta" else "release"
     uploadFile = tasks["remapJar"]

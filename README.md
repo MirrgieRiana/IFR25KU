@@ -24,7 +24,7 @@ Other official links:
 
 - [Japanese Official Website of MirageFairy-Kakera-Unofficial](https://miragefairy-kakera-unofficial.notion.site/)
 - [IFR25KU Lang Table](https://mirrgieriana.github.io/IFR25KU/lang_table.html)
-- [Modrinth (Mod Distribution Page)](https://modrinth.com/mod/miragefairy2024-kakera-unofficial)
+- [Modrinth (Mod Distribution Page)](https://modrinth.com/mod/ifr25ku)
 
 ## Unofficial Documents
 
