@@ -145,7 +145,7 @@ modrinth {
     projectId = "ifr25ku"
     syncBodyFrom = rootProject.file("MODRINTH-BODY.md").readText()
 }
-tasks["uploadModrinth"].dependsOn(tasks["modrinthSyncBody"])
+//tasks["uploadModrinth"].dependsOn(tasks["modrinthSyncBody"]) // TODO Modrinth Bodyの整備待ち
 
 
 tasks.register("fetchMirrgKotlin") {
