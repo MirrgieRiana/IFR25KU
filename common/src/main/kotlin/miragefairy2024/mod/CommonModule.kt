@@ -92,7 +92,7 @@ fun initCommonModule() {
 
     // Server
     ModEvents.onInitialize {
-        val command = Commands.literal("mf24ku")
+        val command = Commands.literal("mf24")
             .let { builder ->
                 var builder2 = builder
                 CommandEvents.onRegisterSubCommand.fire { // ワールドロード時に毎回初期化されるため外で呼び出して使いまわす
@@ -107,7 +107,7 @@ fun initCommonModule() {
 
     // Client
     ModEvents.onInitialize {
-        val command = ClientCommandRegistrationEvent.literal("mf24kuc")
+        val command = ClientCommandRegistrationEvent.literal("mf24c")
             .let { builder ->
                 var builder2 = builder
                 CommandEvents.onRegisterClientSubCommand.fire { // ワールドロード時に毎回初期化されるため外で呼び出して使いまわす
