@@ -13,18 +13,27 @@ import io.wispforest.owo.ui.core.OwoUIAdapter
 import io.wispforest.owo.ui.core.Sizing
 import io.wispforest.owo.ui.core.Surface
 import io.wispforest.owo.ui.core.VerticalAlignment
-import io.wispforest.owo.util.Observable
+import miragefairy2024.MirageFairy2024
+import miragefairy2024.ModContext
 import miragefairy2024.client.util.ColoredContainer
 import miragefairy2024.client.util.CompressionHorizontalFlow
+import miragefairy2024.client.util.KeyMappingCard
+import miragefairy2024.client.util.Observable
 import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.inventoryNameLabel
+import miragefairy2024.client.util.observe
+import miragefairy2024.client.util.registerHandledScreen
+import miragefairy2024.client.util.sendToServer
 import miragefairy2024.client.util.slotContainer
 import miragefairy2024.client.util.tooltipContainer
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.fairy.FairyItem
+import miragefairy2024.mod.fairy.OPEN_SOUL_STREAM_KEY_TRANSLATION
+import miragefairy2024.mod.fairy.OpenSoulStreamChannel
 import miragefairy2024.mod.fairy.SoulStreamScreenHandler
 import miragefairy2024.mod.fairy.getFairyMotif
+import miragefairy2024.mod.fairy.soulStreamScreenHandlerType
 import miragefairy2024.mod.passiveskill.PassiveSkillEffect
 import miragefairy2024.mod.passiveskill.PassiveSkillResult
 import miragefairy2024.mod.passiveskill.PassiveSkillSpecification
@@ -37,17 +46,101 @@ import miragefairy2024.util.blue
 import miragefairy2024.util.darkGray
 import miragefairy2024.util.gold
 import miragefairy2024.util.invoke
+import miragefairy2024.util.plus
 import miragefairy2024.util.red
 import miragefairy2024.util.size
 import miragefairy2024.util.text
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
+import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
+import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.ImageButton
+import net.minecraft.client.gui.components.WidgetSprites
+import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.ContainerListener
 import net.minecraft.world.item.ItemStack
+import org.lwjgl.glfw.GLFW
 import io.wispforest.owo.ui.core.Component as OwoComponent
+
+val soulStreamKeyMappingCard = KeyMappingCard(
+    OPEN_SOUL_STREAM_KEY_TRANSLATION.keyGetter(),
+    GLFW.GLFW_KEY_K,
+    KeyMapping.CATEGORY_INVENTORY,
+) {
+    lastMousePositionInInventory = null
+    OpenSoulStreamChannel.sendToServer(Unit)
+}
+
+var lastMousePositionInInventory: Pair<Double, Double>? = null
+
+val fairyHighlightFilter = Observable<List<(PassiveSkillSpecification<*>) -> Boolean>>(listOf())
+
+context(ModContext)
+fun initClientSoulStream() {
+
+    // GUI登録
+    soulStreamScreenHandlerType.registerHandledScreen { gui, inventory, title -> SoulStreamScreen(gui, inventory, title) }
+
+    // ソウルストリームのキーバインド
+    soulStreamKeyMappingCard.init()
+
+    // インベントリ画面にソウルストリームのボタンを設置
+    ScreenEvents.AFTER_INIT.register { _, screen, _, _ ->
+        if (screen is InventoryScreen) {
+
+            val onMouseClick = mutableListOf<() -> Unit>()
+
+            // 中央揃えコンテナ
+            val uiAdapter = OwoUIAdapter.create(screen, Containers::stack)
+            uiAdapter.rootComponent.apply {
+                alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
+
+                // 位置決定用パネル
+                child(Containers.stack(Sizing.content(), Sizing.content()).apply {
+                    alignment(HorizontalAlignment.RIGHT, VerticalAlignment.TOP)
+
+                    fun updatePosition() {
+                        if (!screen.recipeBookComponent.isVisible) {
+                            sizing(Sizing.fixed(146), Sizing.fixed(46))
+                        } else {
+                            sizing(Sizing.fixed(300), Sizing.fixed(46))
+                        }
+                    }
+                    updatePosition()
+                    onMouseClick += {
+                        updatePosition()
+                        uiAdapter.inflateAndMount()
+                    }
+
+                    // ボタン
+                    val buttonWidgetSprites = WidgetSprites(MirageFairy2024.identifier("soul_stream_button"), MirageFairy2024.identifier("soul_stream_button_highlighted"))
+                    child(Components.wrapVanillaWidget(ImageButton(0, 0, 20, 20, buttonWidgetSprites) {
+                        lastMousePositionInInventory = Pair(Minecraft.getInstance().mouseHandler.xpos(), Minecraft.getInstance().mouseHandler.ypos())
+                        screen.onClose()
+                        OpenSoulStreamChannel.sendToServer(Unit)
+                    }).apply {
+                        tooltip(text { OPEN_SOUL_STREAM_KEY_TRANSLATION() + "("() + Component.keybind(OPEN_SOUL_STREAM_KEY_TRANSLATION.keyGetter()) + ")"() })
+                    })
+
+                })
+
+            }
+            uiAdapter.inflateAndMount()
+
+            ScreenMouseEvents.afterMouseClick(screen).register { _, _, _, _ ->
+                onMouseClick.forEach {
+                    it()
+                }
+            }
+
+        }
+    }
+
+}
 
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : BaseOwoHandledScreen<FlowLayout, SoulStreamScreenHandler>(handler, playerInventory, title) {
 
@@ -62,8 +155,6 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         }
         super.render(vanillaContext, mouseX, mouseY, delta)
     }
-
-    private val filter: Observable<List<(PassiveSkillSpecification<*>) -> Boolean>> = Observable.of(listOf())
 
     override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
     override fun build(rootComponent: FlowLayout) {
@@ -95,12 +186,12 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                     child(Components.label(text { " 効果4"().blue }))
                     child(Components.label(text { " 効果5"().darkGray }).apply {
                         textClickHandler {
-                            if (filter.get().isEmpty()) {
-                                filter.set(listOf { specification ->
+                            if (fairyHighlightFilter.value.isEmpty()) {
+                                fairyHighlightFilter.value = listOf { specification ->
                                     specification.effect == CollectionPassiveSkillEffect
-                                })
+                                }
                             } else {
-                                filter.set(listOf())
+                                fairyHighlightFilter.value = listOf()
                             }
                             true
                         }
@@ -217,7 +308,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
             fun update() {
                 val matches = run {
-                    val filter = filter.get()!!
+                    val filter = fairyHighlightFilter.value
                     if (filter.isEmpty()) return@run false
                     val itemStack = menu.getSlot(index).item
                     if (itemStack.item !is FairyItem) return@run false
@@ -226,8 +317,12 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                 }
                 box.color(if (matches) Color.ofRgb(0xFFFF00) else Color.ofArgb(0x00000000))
             }
-            filter.observe {
+            fairyHighlightFilter.observe {
                 update()
+            }.let {
+                onCloseListeners += {
+                    it.remove()
+                }
             }
             run {
                 val listener = object : ContainerListener {

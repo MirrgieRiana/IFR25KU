@@ -40,23 +40,12 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.minecraft.network.chat.Component
 import org.lwjgl.glfw.GLFW
 
-val soulStreamKeyMappingCard = KeyMappingCard(
-    OPEN_SOUL_STREAM_KEY_TRANSLATION.keyGetter(),
-    GLFW.GLFW_KEY_K,
-    KeyMapping.CATEGORY_INVENTORY,
-) {
-    lastMousePositionInInventory = null
-    OpenSoulStreamChannel.sendToServer(Unit)
-}
-
-var lastMousePositionInInventory: Pair<Double, Double>? = null
-
 context(ModContext)
 fun initFairyClientModule() {
+    initClientSoulStream()
 
     // GUI登録
     motifTableScreenHandlerType.registerHandledScreen { gui, inventory, title -> MotifTableScreen(gui, inventory, title) }
-    soulStreamScreenHandlerType.registerHandledScreen { gui, inventory, title -> SoulStreamScreen(gui, inventory, title) }
 
     // パケットハンドラ登録
     GainFairyDreamChannel.registerClientPacketReceiver { motif ->
@@ -74,61 +63,6 @@ fun initFairyClientModule() {
             })
         }
         Minecraft.getInstance().toasts.addToast(createOwoToast(component))
-    }
-
-    // ソウルストリームのキーバインド
-    soulStreamKeyMappingCard.init()
-
-    // インベントリ画面にソウルストリームのボタンを設置
-    ScreenEvents.AFTER_INIT.register { _, screen, _, _ ->
-        if (screen is InventoryScreen) {
-
-            val onMouseClick = mutableListOf<() -> Unit>()
-
-            // 中央揃えコンテナ
-            val uiAdapter = OwoUIAdapter.create(screen, Containers::stack)
-            uiAdapter.rootComponent.apply {
-                alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-
-                // 位置決定用パネル
-                child(Containers.stack(Sizing.content(), Sizing.content()).apply {
-                    alignment(HorizontalAlignment.RIGHT, VerticalAlignment.TOP)
-
-                    fun updatePosition() {
-                        if (!screen.recipeBookComponent.isVisible) {
-                            sizing(Sizing.fixed(146), Sizing.fixed(46))
-                        } else {
-                            sizing(Sizing.fixed(300), Sizing.fixed(46))
-                        }
-                    }
-                    updatePosition()
-                    onMouseClick += {
-                        updatePosition()
-                        uiAdapter.inflateAndMount()
-                    }
-
-                    // ボタン
-                    val buttonWidgetSprites = WidgetSprites(MirageFairy2024.identifier("soul_stream_button"), MirageFairy2024.identifier("soul_stream_button_highlighted"))
-                    child(Components.wrapVanillaWidget(ImageButton(0, 0, 20, 20, buttonWidgetSprites) {
-                        lastMousePositionInInventory = Pair(Minecraft.getInstance().mouseHandler.xpos(), Minecraft.getInstance().mouseHandler.ypos())
-                        screen.onClose()
-                        OpenSoulStreamChannel.sendToServer(Unit)
-                    }).apply {
-                        tooltip(text { OPEN_SOUL_STREAM_KEY_TRANSLATION() + "("() + Component.keybind(OPEN_SOUL_STREAM_KEY_TRANSLATION.keyGetter()) + ")"() })
-                    })
-
-                })
-
-            }
-            uiAdapter.inflateAndMount()
-
-            ScreenMouseEvents.afterMouseClick(screen).register { _, _, _, _ ->
-                onMouseClick.forEach {
-                    it()
-                }
-            }
-
-        }
     }
 
 }
