@@ -44,6 +44,9 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.inventory.AbstractContainerMenu
+import net.minecraft.world.inventory.ContainerListener
+import net.minecraft.world.item.ItemStack
 import io.wispforest.owo.ui.core.Component as OwoComponent
 
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : BaseOwoHandledScreen<FlowLayout, SoulStreamScreenHandler>(handler, playerInventory, title) {
@@ -210,20 +213,36 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
     private fun createSlotComponent(index: Int): OwoComponent {
         return slotContainer(ColoredContainer(Sizing.fixed(16), Sizing.fixed(16), slotAsComponent(index)).apply {
-            box.color(Color.ofRgb(0xFFFF00))
+            box.fill(true)
 
             fun update() {
                 val matches = run {
                     val filter = filter.get()!!
+                    if (filter.isEmpty()) return@run false
                     val itemStack = menu.getSlot(index).item
                     if (itemStack.item !is FairyItem) return@run false
                     val motif = itemStack.getFairyMotif() ?: return@run false
                     motif.passiveSkillSpecifications.any { specification -> filter.all { predicate -> predicate(specification) } }
                 }
-                box.fill(matches)
+                box.color(if (matches) Color.ofRgb(0xFFFF00) else Color.ofArgb(0x00000000))
             }
             filter.observe {
                 update()
+            }
+            run {
+                val listener = object : ContainerListener {
+                    override fun slotChanged(containerToSend: AbstractContainerMenu, dataSlotIndex: Int, stack: ItemStack) {
+                        update()
+                    }
+
+                    override fun dataChanged(containerMenu: AbstractContainerMenu, dataSlotIndex: Int, value: Int) {
+                        update()
+                    }
+                }
+                menu.addSlotListener(listener)
+                onCloseListeners += {
+                    menu.removeSlotListener(listener)
+                }
             }
             update()
 
@@ -253,6 +272,14 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             return true
         }
         return super.keyPressed(keyCode, scanCode, modifiers)
+    }
+
+    private val onCloseListeners = mutableListOf<() -> Unit>()
+    override fun onClose() {
+        super.onClose()
+        onCloseListeners.forEach {
+            it()
+        }
     }
 
 }
