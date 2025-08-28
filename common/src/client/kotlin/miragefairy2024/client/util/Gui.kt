@@ -1,10 +1,12 @@
 package miragefairy2024.client.util
 
+import io.wispforest.owo.ui.component.BoxComponent
 import io.wispforest.owo.ui.component.Components
 import io.wispforest.owo.ui.component.LabelComponent
 import io.wispforest.owo.ui.container.Containers
 import io.wispforest.owo.ui.container.FlowLayout
 import io.wispforest.owo.ui.container.ScrollContainer
+import io.wispforest.owo.ui.container.StackLayout
 import io.wispforest.owo.ui.core.Color
 import io.wispforest.owo.ui.core.HorizontalAlignment
 import io.wispforest.owo.ui.core.Insets
@@ -94,5 +96,16 @@ class CompressionVerticalFlow(verticalSizing: Sizing) : FlowLayout(Sizing.conten
         horizontalSizing(Sizing.fixed(leaderComponent.fullSize().width + padding.get().left + padding.get().right))
         applySizing()
         super.layout(space)
+    }
+}
+
+class ColoredContainer<T : OwoComponent>(horizontalSizing: Sizing, verticalSizing: Sizing, val component: T) : StackLayout(horizontalSizing, verticalSizing) {
+    val box: BoxComponent
+
+    init {
+        child(Components.box(horizontalSizing, verticalSizing).apply {
+            box = this
+        })
+        child(component)
     }
 }

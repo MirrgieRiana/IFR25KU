@@ -6,12 +6,15 @@ import io.wispforest.owo.ui.component.Components
 import io.wispforest.owo.ui.container.Containers
 import io.wispforest.owo.ui.container.FlowLayout
 import io.wispforest.owo.ui.container.ScrollContainer
+import io.wispforest.owo.ui.core.Color
 import io.wispforest.owo.ui.core.HorizontalAlignment
 import io.wispforest.owo.ui.core.Insets
 import io.wispforest.owo.ui.core.OwoUIAdapter
 import io.wispforest.owo.ui.core.Sizing
 import io.wispforest.owo.ui.core.Surface
 import io.wispforest.owo.ui.core.VerticalAlignment
+import io.wispforest.owo.util.Observable
+import miragefairy2024.client.util.ColoredContainer
 import miragefairy2024.client.util.CompressionHorizontalFlow
 import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.inventoryNameLabel
@@ -19,10 +22,14 @@ import miragefairy2024.client.util.slotContainer
 import miragefairy2024.client.util.tooltipContainer
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
+import miragefairy2024.mod.fairy.FairyItem
 import miragefairy2024.mod.fairy.SoulStreamScreenHandler
+import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.passiveskill.PassiveSkillEffect
 import miragefairy2024.mod.passiveskill.PassiveSkillResult
+import miragefairy2024.mod.passiveskill.PassiveSkillSpecification
 import miragefairy2024.mod.passiveskill.collect
+import miragefairy2024.mod.passiveskill.effects.CollectionPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.effects.ManaBoostPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.findPassiveSkillProviders
 import miragefairy2024.mod.passiveskill.passiveSkillEffectRegistry
@@ -37,6 +44,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
+import io.wispforest.owo.ui.core.Component as OwoComponent
 
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : BaseOwoHandledScreen<FlowLayout, SoulStreamScreenHandler>(handler, playerInventory, title) {
 
@@ -51,6 +59,8 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         }
         super.render(vanillaContext, mouseX, mouseY, delta)
     }
+
+    private val filter: Observable<List<(PassiveSkillSpecification<*>) -> Boolean>> = Observable.of(listOf())
 
     override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
     override fun build(rootComponent: FlowLayout) {
@@ -80,7 +90,18 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                     child(Components.label(text { " 効果2"().blue }))
                     child(Components.label(text { " 効果3"().darkGray }))
                     child(Components.label(text { " 効果4"().blue }))
-                    child(Components.label(text { " 効果5"().darkGray }))
+                    child(Components.label(text { " 効果5"().darkGray }).apply {
+                        textClickHandler {
+                            if (filter.get().isEmpty()) {
+                                filter.set(listOf { specification ->
+                                    specification.effect == CollectionPassiveSkillEffect
+                                })
+                            } else {
+                                filter.set(listOf())
+                            }
+                            true
+                        }
+                    })
 
                 })
 
@@ -94,7 +115,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                     child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
                         surface(Surface.tiled(SlotType.FAIRY.texture, 18, 18))
                         repeat(9) { index ->
-                            child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
+                            child(createSlotComponent(9 * 3 + 9 + index))
                         }
                     })
 
@@ -107,7 +128,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                         (9 until menu.soulStream.size).chunked(9).forEach { indices ->
                             child().child(Containers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {
                                 indices.forEach { index ->
-                                    child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
+                                    child(createSlotComponent(9 * 3 + 9 + index))
                                 }
                             })
                         }
@@ -125,7 +146,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                         repeat(3) { r ->
                             child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
                                 repeat(9) { c ->
-                                    child(slotContainer(slotAsComponent(9 * r + c), type = null))
+                                    child(createSlotComponent(9 * r + c))
                                 }
                             })
                         }
@@ -134,7 +155,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                     child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
                         surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
                         repeat(9) { c ->
-                            child(slotContainer(slotAsComponent(9 * 3 + c), type = null))
+                            child(createSlotComponent(9 * 3 + c))
                         }
                     })
 
@@ -185,6 +206,28 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             })
 
         }
+    }
+
+    private fun createSlotComponent(index: Int): OwoComponent {
+        return slotContainer(ColoredContainer(Sizing.fixed(16), Sizing.fixed(16), slotAsComponent(index)).apply {
+            box.color(Color.ofRgb(0xFFFF00))
+
+            fun update() {
+                val matches = run {
+                    val filter = filter.get()!!
+                    val itemStack = menu.getSlot(index).item
+                    if (itemStack.item !is FairyItem) return@run false
+                    val motif = itemStack.getFairyMotif() ?: return@run false
+                    motif.passiveSkillSpecifications.any { specification -> filter.all { predicate -> predicate(specification) } }
+                }
+                box.fill(matches)
+            }
+            filter.observe {
+                update()
+            }
+            update()
+
+        }, type = null)
     }
 
     override fun renderLabels(context: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
