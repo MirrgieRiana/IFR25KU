@@ -6,7 +6,6 @@ import io.wispforest.owo.ui.component.Components
 import io.wispforest.owo.ui.container.Containers
 import io.wispforest.owo.ui.container.FlowLayout
 import io.wispforest.owo.ui.container.ScrollContainer
-import io.wispforest.owo.ui.core.Color
 import io.wispforest.owo.ui.core.HorizontalAlignment
 import io.wispforest.owo.ui.core.Insets
 import io.wispforest.owo.ui.core.OwoUIAdapter
@@ -15,13 +14,11 @@ import io.wispforest.owo.ui.core.Surface
 import io.wispforest.owo.ui.core.VerticalAlignment
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.client.util.ColoredContainer
+import miragefairy2024.client.mixins.api.RenderingEvent
 import miragefairy2024.client.util.CompressionHorizontalFlow
 import miragefairy2024.client.util.KeyMappingCard
-import miragefairy2024.client.util.Observable
 import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.inventoryNameLabel
-import miragefairy2024.client.util.observe
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.sendToServer
 import miragefairy2024.client.util.slotContainer
@@ -58,13 +55,10 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.ImageButton
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.client.gui.screens.inventory.InventoryScreen
+import net.minecraft.client.renderer.RenderType
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
-import net.minecraft.world.inventory.AbstractContainerMenu
-import net.minecraft.world.inventory.ContainerListener
-import net.minecraft.world.item.ItemStack
 import org.lwjgl.glfw.GLFW
-import io.wispforest.owo.ui.core.Component as OwoComponent
 
 val soulStreamKeyMappingCard = KeyMappingCard(
     OPEN_SOUL_STREAM_KEY_TRANSLATION.keyGetter(),
@@ -77,7 +71,8 @@ val soulStreamKeyMappingCard = KeyMappingCard(
 
 var lastMousePositionInInventory: Pair<Double, Double>? = null
 
-val fairyHighlightFilter = Observable<List<(PassiveSkillSpecification<*>) -> Boolean>>(listOf())
+var enableGlobalFairyHighlight = false
+var fairyHighlightFilter: List<(PassiveSkillSpecification<*>) -> Boolean> = listOf()
 
 context(ModContext)
 fun initClientSoulStream() {
@@ -140,6 +135,23 @@ fun initClientSoulStream() {
         }
     }
 
+    // 妖精検索
+    RenderingEvent.RENDER_ITEM_DECORATIONS.register { graphics, font, stack, x, y, text ->
+        val screen = Minecraft.getInstance().screen
+        if (!(enableGlobalFairyHighlight || screen is SoulStreamScreen)) return@register
+        val filter = fairyHighlightFilter
+        if (filter.isEmpty()) return@register
+        if (stack.item !is FairyItem) return@register
+        val motif = stack.getFairyMotif() ?: return@register
+        val matched = motif.passiveSkillSpecifications.any { specification -> filter.any { predicate -> predicate(specification) } }
+        if (!matched) return@register
+
+        graphics.fill(RenderType.guiOverlay(), x, y, x + 16, y + 2, 0xAAFFFF00.toInt())
+        graphics.fill(RenderType.guiOverlay(), x, y + 2, x + 2, y + 14, 0xAAFFFF00.toInt())
+        graphics.fill(RenderType.guiOverlay(), x, y + 14, x + 16, y + 16, 0xAAFFFF00.toInt())
+        graphics.fill(RenderType.guiOverlay(), x + 14, y + 2, x + 16, y + 14, 0xAAFFFF00.toInt())
+    }
+
 }
 
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : BaseOwoHandledScreen<FlowLayout, SoulStreamScreenHandler>(handler, playerInventory, title) {
@@ -183,15 +195,20 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                     child(Components.label(text { " 効果1"().darkGray }))
                     child(Components.label(text { " 効果2"().blue }))
                     child(Components.label(text { " 効果3"().darkGray }))
-                    child(Components.label(text { " 効果4"().blue }))
+                    child(Components.label(text { " 効果4"().blue }).apply {
+                        textClickHandler {
+                            enableGlobalFairyHighlight = !enableGlobalFairyHighlight
+                            true
+                        }
+                    })
                     child(Components.label(text { " 効果5"().darkGray }).apply {
                         textClickHandler {
-                            if (fairyHighlightFilter.value.isEmpty()) {
-                                fairyHighlightFilter.value = listOf { specification ->
+                            if (fairyHighlightFilter.isEmpty()) {
+                                fairyHighlightFilter = listOf { specification ->
                                     specification.effect == CollectionPassiveSkillEffect
                                 }
                             } else {
-                                fairyHighlightFilter.value = listOf()
+                                fairyHighlightFilter = listOf()
                             }
                             true
                         }
@@ -209,7 +226,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                     child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
                         surface(Surface.tiled(SlotType.FAIRY.texture, 18, 18))
                         repeat(9) { index ->
-                            child(createSlotComponent(9 * 3 + 9 + index))
+                            child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
                         }
                     })
 
@@ -222,7 +239,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                         (9 until menu.soulStream.size).chunked(9).forEach { indices ->
                             child().child(Containers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {
                                 indices.forEach { index ->
-                                    child(createSlotComponent(9 * 3 + 9 + index))
+                                    child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
                                 }
                             })
                         }
@@ -240,7 +257,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                         repeat(3) { r ->
                             child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
                                 repeat(9) { c ->
-                                    child(createSlotComponent(9 * r + c))
+                                    child(slotContainer(slotAsComponent(9 * r + c), type = null))
                                 }
                             })
                         }
@@ -249,7 +266,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                     child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
                         surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
                         repeat(9) { c ->
-                            child(createSlotComponent(9 * 3 + c))
+                            child(slotContainer(slotAsComponent(9 * 3 + c), type = null))
                         }
                     })
 
@@ -302,48 +319,6 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         }
     }
 
-    private fun createSlotComponent(index: Int): OwoComponent {
-        return slotContainer(ColoredContainer(Sizing.fixed(16), Sizing.fixed(16), slotAsComponent(index)).apply {
-            box.fill(true)
-
-            fun update() {
-                val matches = run {
-                    val filter = fairyHighlightFilter.value
-                    if (filter.isEmpty()) return@run false
-                    val itemStack = menu.getSlot(index).item
-                    if (itemStack.item !is FairyItem) return@run false
-                    val motif = itemStack.getFairyMotif() ?: return@run false
-                    motif.passiveSkillSpecifications.any { specification -> filter.all { predicate -> predicate(specification) } }
-                }
-                box.color(if (matches) Color.ofRgb(0xFFFF00) else Color.ofArgb(0x00000000))
-            }
-            fairyHighlightFilter.observe {
-                update()
-            }.let {
-                onCloseListeners += {
-                    it.remove()
-                }
-            }
-            run {
-                val listener = object : ContainerListener {
-                    override fun slotChanged(containerToSend: AbstractContainerMenu, dataSlotIndex: Int, stack: ItemStack) {
-                        update()
-                    }
-
-                    override fun dataChanged(containerMenu: AbstractContainerMenu, dataSlotIndex: Int, value: Int) {
-                        update()
-                    }
-                }
-                menu.addSlotListener(listener)
-                onCloseListeners += {
-                    menu.removeSlotListener(listener)
-                }
-            }
-            update()
-
-        }, type = null)
-    }
-
     override fun renderLabels(context: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
 
     private val onUpdateListeners = mutableListOf<() -> Unit>()
@@ -367,14 +342,6 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             return true
         }
         return super.keyPressed(keyCode, scanCode, modifiers)
-    }
-
-    private val onCloseListeners = mutableListOf<() -> Unit>()
-    override fun onClose() {
-        super.onClose()
-        onCloseListeners.forEach {
-            it()
-        }
     }
 
 }
