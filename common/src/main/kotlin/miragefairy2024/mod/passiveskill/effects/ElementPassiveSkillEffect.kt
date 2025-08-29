@@ -6,6 +6,7 @@ import miragefairy2024.mixins.api.DamageCallback
 import miragefairy2024.mod.Emoji
 import miragefairy2024.mod.invoke
 import miragefairy2024.mod.passiveskill.PassiveSkillContext
+import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
 import miragefairy2024.mod.passiveskill.passiveSkillResult
 import miragefairy2024.mod.tool.IS_MAGIC_DAMAGE_TYPE_TAG
 import miragefairy2024.util.EnJa
@@ -21,6 +22,7 @@ import miragefairy2024.util.text
 import miragefairy2024.util.toDamageTypeTag
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.DamageTypeTags
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.damagesource.DamageTypes
@@ -30,6 +32,7 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
     class Value(val attackMap: Map<Element, Double>, val defenceMap: Map<Element, Double>)
 
     interface Element {
+        val identifier: ResourceLocation
         val text: Component
         fun test(damageSource: DamageSource): Boolean
     }
@@ -44,6 +47,7 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
         SPINE("spine", "Spine", "棘", { it.`is`(SPINE_DAMAGE_TYPE_TAG) }),
         ;
 
+        override val identifier = MirageFairy2024.identifier(path)
         val translation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}.elements.$path" }, enName, jaName)
         override val text = text { translation() }
         override fun test(damageSource: DamageSource) = predicate(damageSource)
@@ -56,10 +60,10 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
     override fun getText(value: Value) = getTexts(value).join(text { ","() })
     override fun getTexts(value: Value): List<Component> {
         return listOf(
-            value.attackMap.map { (element, value) ->
+            value.attackMap.entries.sortedBy { it.key.identifier }.map { (element, value) ->
                 text { Emoji.SWORD() + " "() + attackTranslation(element.text) + ": ${value * 100 formatAs "%+.0f%%"}"() }
             },
-            value.defenceMap.map { (element, value) ->
+            value.defenceMap.entries.sortedBy { it.key.identifier }.map { (element, value) ->
                 text { Emoji.SHIELD() + " "() + defenceTranslation(element.text) + ": ${value * 100 formatAs "%+.0f%%"}"() }
             },
         ).flatten()
@@ -82,6 +86,31 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
     }
 
     override fun update(context: PassiveSkillContext, oldValue: Value, newValue: Value) = Unit
+
+    override fun getFilters(samples: List<Value>): List<PassiveSkillEffectFilter<Value>> {
+        return listOf(
+            *samples
+                .flatMap { it.attackMap.keys }
+                .distinct()
+                .sortedBy { it.identifier }
+                .map { element ->
+                    PassiveSkillEffectFilter(
+                        text { Emoji.SWORD() + " "() + attackTranslation(element.text) },
+                    ) { value: Value -> element in value.attackMap }
+                }
+                .toTypedArray(),
+            *samples
+                .flatMap { it.defenceMap.keys }
+                .distinct()
+                .sortedBy { it.identifier }
+                .map { element ->
+                    PassiveSkillEffectFilter(
+                        text { Emoji.SHIELD() + " "() + defenceTranslation(element.text) },
+                    ) { value: Value -> element in value.defenceMap }
+                }
+                .toTypedArray(),
+        )
+    }
 
     context(ModContext)
     override fun init() {
