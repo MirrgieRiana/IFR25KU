@@ -210,7 +210,10 @@ tasks.register("buildPages") {
         #langTable th {
             background-color: #ddd;
         }
-        #langTable tr:nth-child(even) {
+        #langTable tr.hidden {
+            display: none;
+        }
+        #langTable tbody tr:nth-child(even of :not(.hidden)) {
             background-color: #eee;
         }
 
@@ -232,6 +235,9 @@ tasks.register("buildPages") {
 </head>
 <body>
 <h1>IFR25KU Lang Table</h1>
+<p>
+    Search: <input type="text" id="filter" style="width: 30em;">
+</p>
 <table id="langTable">
     <colgroup>
         <col style="width: 20%;">
@@ -245,7 +251,7 @@ tasks.register("buildPages") {
         <th class="value">Japanese</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="lang_table">
         ${
             keys.joinToString("") { key ->
                 """
@@ -259,6 +265,28 @@ tasks.register("buildPages") {
         }
     </tbody>
 </table>
+<script>
+    (function() {
+        const input = document.getElementById('filter');
+        const tbody = document.getElementById('lang_table');
+
+        input.addEventListener('keydown', function(e) {
+            let regex;
+            try {
+                regex = new RegExp(input.value);
+            } catch (e) {
+                input.style.outlineColor = 'red';
+                console.error(e);
+                return;
+            }
+            input.style.outlineColor = '';
+
+            for (const tr of tbody.rows) {
+                tr.classList.toggle('hidden', !regex.test(tr.querySelector('td.key').textContent));
+            }
+        });
+    })();
+</script>
 </body>
 </html>
         """.let { File("build/pages/lang_table.html").writeText(it) }
