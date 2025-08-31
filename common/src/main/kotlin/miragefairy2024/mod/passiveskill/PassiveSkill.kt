@@ -29,6 +29,7 @@ interface PassiveSkillEffect<T : Any> {
     fun getText(value: T): Component
     fun getTexts(value: T): List<Component> = listOf(getText(value))
     val unit: T
+    fun castOrNull(value: Any?): T?
     fun castOrThrow(value: Any?): T
     fun combine(a: T, b: T): T
     fun codec(): Codec<T> = Codec.unit(Unit).xmap({ unit }, {})

@@ -31,6 +31,7 @@ object EntityAttributePassiveSkillEffect : AbstractPassiveSkillEffect<EntityAttr
     }
 
     override val unit = Value(mapOf())
+    override fun castOrNull(value: Any?) = value as? Value
     override fun castOrThrow(value: Any?) = value as Value
     override fun combine(a: Value, b: Value): Value {
         val map = a.map.toMutableMap()

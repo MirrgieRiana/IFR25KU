@@ -25,6 +25,7 @@ abstract class AbstractPassiveSkillEffect<T : Any>(path: String) : PassiveSkillE
 
 abstract class AbstractDoublePassiveSkillEffect(path: String) : AbstractPassiveSkillEffect<Double>(path) {
     override val unit = 0.0
+    override fun castOrNull(value: Any?) = value as? Double
     override fun castOrThrow(value: Any?) = value as Double
     override fun combine(a: Double, b: Double) = a + b
     override fun codec(): PrimitiveCodec<Double> = Codec.DOUBLE
@@ -33,6 +34,7 @@ abstract class AbstractDoublePassiveSkillEffect(path: String) : AbstractPassiveS
 
 abstract class AbstractBooleanPassiveSkillEffect(path: String) : AbstractPassiveSkillEffect<Boolean>(path) {
     override val unit = false
+    override fun castOrNull(value: Any?) = value as? Boolean
     override fun castOrThrow(value: Any?) = value as Boolean
     override fun combine(a: Boolean, b: Boolean) = a || b
     override fun codec(): PrimitiveCodec<Boolean> = Codec.BOOL

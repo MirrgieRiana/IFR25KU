@@ -66,6 +66,7 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
     }
 
     override val unit = Value(mapOf(), mapOf())
+    override fun castOrNull(value: Any?) = value as? Value
     override fun castOrThrow(value: Any?) = value as Value
     override fun combine(a: Value, b: Value): Value {
         val attackMap = a.attackMap.toMutableMap()
