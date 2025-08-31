@@ -13,7 +13,6 @@ import miragefairy2024.util.plus
 import miragefairy2024.util.randomInt
 import miragefairy2024.util.repair
 import miragefairy2024.util.text
-import miragefairy2024.util.translate
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.network.chat.Component
 import net.minecraft.tags.TagKey
@@ -44,7 +43,7 @@ object MendingPassiveSkillEffect : AbstractPassiveSkillEffect<MendingPassiveSkil
             } else {
                 true
             }
-            text { (translation(value formatAs "%+.3f") + " ("() + translate(tag.translationKey) + ")"()).let { if (ok) it else it.darkGray } }
+            text { (translation(value formatAs "%+.3f") + " ("() + tag.name + ")"()).let { if (ok) it else it.darkGray } }
         }
     }
 
