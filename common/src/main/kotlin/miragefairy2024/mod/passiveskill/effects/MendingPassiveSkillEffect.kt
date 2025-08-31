@@ -3,6 +3,7 @@ package miragefairy2024.mod.passiveskill.effects
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
+import miragefairy2024.mod.passiveskill.PER_SECOND_TRANSLATION
 import miragefairy2024.mod.passiveskill.PassiveSkillContext
 import miragefairy2024.util.Translation
 import miragefairy2024.util.darkGray
@@ -22,7 +23,7 @@ import net.minecraft.world.item.ItemStack
 object MendingPassiveSkillEffect : AbstractPassiveSkillEffect<MendingPassiveSkillEffect.Value>("mending") {
     class Value(val map: Map<TagKey<Item>, Double>)
 
-    private val translation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}" }, "Durability Regeneration: %s/s", "耐久値自然回復: %s/秒")
+    private val translation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}" }, "Durability Regeneration", "耐久値自然回復")
     override fun getText(value: Value) = getTexts(value).join(text { ","() })
     override fun getTexts(value: Value): List<Component> {
         val player = clientProxy?.getClientPlayer()
@@ -43,7 +44,7 @@ object MendingPassiveSkillEffect : AbstractPassiveSkillEffect<MendingPassiveSkil
             } else {
                 true
             }
-            text { (translation(value formatAs "%+.3f") + " ("() + tag.name + ")"()).let { if (ok) it else it.darkGray } }
+            text { (translation() + ": "() + PER_SECOND_TRANSLATION(value formatAs "%+.3f") + " ("() + tag.name + ")"()).let { if (ok) it else it.darkGray } }
         }
     }
 

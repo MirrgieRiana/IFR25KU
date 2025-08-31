@@ -9,13 +9,14 @@ import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.getOrCreate
 import miragefairy2024.util.invoke
+import miragefairy2024.util.plus
 import miragefairy2024.util.text
 import mirrg.kotlin.hydrogen.atMost
 import mirrg.kotlin.hydrogen.formatAs
 
 object MiningSpeedPassiveSkillEffect : AbstractDoublePassiveSkillEffect("mining_speed") {
-    private val translation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}" }, "Mining Speed: %s", "採掘速度: %s")
-    override fun getText(value: Double) = text { translation(value * 100 formatAs "%+.1f%%") }
+    private val translation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}" }, "Mining Speed", "採掘速度")
+    override fun getText(value: Double) = text { translation() + ": ${value * 100 formatAs "%+.1f%%"}"() }
     override fun update(context: PassiveSkillContext, oldValue: Double, newValue: Double) = Unit
 
     context(ModContext)

@@ -16,6 +16,7 @@ import miragefairy2024.mod.passiveskill.effects.MendingPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.effects.MiningSpeedPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.effects.RegenerationPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.effects.StatusEffectPassiveSkillEffect
+import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import mirrg.kotlin.hydrogen.formatAs
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
@@ -26,6 +27,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes
 
 val passiveSkillEffectRegistryKey: ResourceKey<Registry<PassiveSkillEffect<*>>> = ResourceKey.createRegistryKey(MirageFairy2024.identifier("passive_skill_effect"))
 val passiveSkillEffectRegistry: Registry<PassiveSkillEffect<*>> = FabricRegistryBuilder.createSimple(passiveSkillEffectRegistryKey).attribute(RegistryAttribute.SYNCED).buildAndRegister()
+
+val PER_SECOND_TRANSLATION = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill.per_second" }, "%s/s", "%s/秒")
 
 context(ModContext)
 fun initPassiveSkillModule() {
@@ -39,6 +42,8 @@ fun initPassiveSkillModule() {
 
 
     // Effect
+
+    PER_SECOND_TRANSLATION.enJa()
 
     listOf(
         ManaBoostPassiveSkillEffect,
