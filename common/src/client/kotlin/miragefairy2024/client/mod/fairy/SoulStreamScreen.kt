@@ -19,6 +19,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.RenderingEvent
 import miragefairy2024.client.util.ClickableContainer
 import miragefairy2024.client.util.KeyMappingCard
+import miragefairy2024.client.util.LayeredImageButton
 import miragefairy2024.client.util.LayeredImageToggleButton
 import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.WidgetSprites
@@ -227,14 +228,15 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                     gap(2)
 
                     // ハイライトリセットボタン
-                    child(ImageButton(0, 0, 14, 14, run {
-                        WidgetSprites(
-                            MirageFairy2024.identifier("clear_button"),
-                            MirageFairy2024.identifier("clear_button_focused"),
-                        )
-                    }) {
-                        enabledPassiveSkillEffectFilters.value = mapOf()
-                    }.tooltip(text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() }))
+                    child(LayeredImageButton(14, 14, BUTTON_14_BACKGROUND, run {
+                        WidgetSprites(MirageFairy2024.identifier("button_14/clear_foreground"))
+                    }).apply {
+                        tooltip(text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() })
+
+                        onClick.register {
+                            enabledPassiveSkillEffectFilters.value = mapOf()
+                        }
+                    })
 
                     // グローバル検索トグルボタン
                     child(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
