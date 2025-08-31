@@ -18,9 +18,10 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.RenderingEvent
 import miragefairy2024.client.util.ClickableContainer
-import miragefairy2024.client.util.ImageToggleButton
 import miragefairy2024.client.util.KeyMappingCard
+import miragefairy2024.client.util.LayeredImageToggleButton
 import miragefairy2024.client.util.SlotType
+import miragefairy2024.client.util.WidgetSprites
 import miragefairy2024.client.util.inventoryNameLabel
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.sendToServer
@@ -88,6 +89,13 @@ var enabledPassiveSkillEffectFilters = ObservableValue<Map<ResourceLocation, Pas
 var enableGlobalFairyHighlight = ObservableValue(false)
 
 private val FILTER_OVERLAY_TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/filter_overlay.png")
+
+val BUTTON_14_BACKGROUND = WidgetSprites(
+    MirageFairy2024.identifier("button_14/background_on"),
+    MirageFairy2024.identifier("button_14/background"),
+    MirageFairy2024.identifier("button_14/background_on_focused"),
+    MirageFairy2024.identifier("button_14/background_focused"),
+)
 
 context(ModContext)
 fun initSoulStreamClientModule() {
@@ -229,13 +237,8 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                     }.tooltip(text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() }))
 
                     // グローバル検索トグルボタン
-                    child(ImageToggleButton(14, 14, run {
-                        WidgetSprites(
-                            MirageFairy2024.identifier("search_button_on"),
-                            MirageFairy2024.identifier("search_button"),
-                            MirageFairy2024.identifier("search_button_on_focused"),
-                            MirageFairy2024.identifier("search_button_focused"),
-                        )
+                    child(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
+                        WidgetSprites(MirageFairy2024.identifier("button_14/global_search_foreground"))
                     }).apply {
                         tooltip(text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() })
 

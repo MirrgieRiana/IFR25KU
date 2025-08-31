@@ -9,8 +9,13 @@ import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.network.chat.Component
 
-class ImageToggleButton(width: Int, height: Int, private val sprites: WidgetSprites) : Button(0, 0, width, height, Component.empty(), {
-    (it as ImageToggleButton).onClick.fire()
+class LayeredImageToggleButton(
+    width: Int,
+    height: Int,
+    private val backgroundSprites: WidgetSprites,
+    private val foregroundSprites: WidgetSprites,
+) : Button(0, 0, width, height, Component.empty(), {
+    (it as LayeredImageToggleButton).onClick.fire()
 }, DEFAULT_NARRATION) {
     val onClick = EventRegistry<() -> Unit>()
     val value = ObservableValue(false)
@@ -27,6 +32,7 @@ class ImageToggleButton(width: Int, height: Int, private val sprites: WidgetSpri
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick)
-        guiGraphics.blitSprite(sprites.get(value.value, isHoveredOrFocused), x, y, width, height)
+        guiGraphics.blitSprite(backgroundSprites.get(value.value, isHoveredOrFocused), x, y, width, height)
+        guiGraphics.blitSprite(foregroundSprites.get(value.value, isHoveredOrFocused), x, y, width, height)
     }
 }
