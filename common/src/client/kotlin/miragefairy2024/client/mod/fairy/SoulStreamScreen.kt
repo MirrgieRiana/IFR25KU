@@ -32,6 +32,7 @@ import miragefairy2024.mod.fairy.OPEN_SOUL_STREAM_KEY_TRANSLATION
 import miragefairy2024.mod.fairy.OpenSoulStreamChannel
 import miragefairy2024.mod.fairy.SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION
 import miragefairy2024.mod.fairy.SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION
+import miragefairy2024.mod.fairy.SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION
 import miragefairy2024.mod.fairy.SoulStreamScreenHandler
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.fairy.motifRegistry
@@ -208,6 +209,22 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             // 左ペイン
             child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
                 padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
+                gap(2)
+
+                // 左ペインボタン
+                child(Containers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
+
+                    // ハイライトリセットボタン
+                    child(ImageButton(0, 0, 14, 14, run {
+                        WidgetSprites(
+                            MirageFairy2024.identifier("clear_button"),
+                            MirageFairy2024.identifier("clear_button_focused"),
+                        )
+                    }) {
+                        enabledPassiveSkillEffectFilters.value = mapOf()
+                    }.tooltip(text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() }))
+
+                })
 
                 // ハイライトフィルタ
                 child(tooltipContainer(Sizing.fill(), Sizing.expand(100)).apply {
