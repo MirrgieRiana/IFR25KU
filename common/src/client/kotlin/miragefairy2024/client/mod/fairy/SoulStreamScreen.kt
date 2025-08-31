@@ -120,7 +120,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
     // カーソルをインベントリ画面での位置に戻す
     private var isFirst = true
-    override fun render(vanillaContext: GuiGraphics?, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(vanillaContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         if (isFirst) {
             isFirst = false
             if (lastMousePositionInInventory != null) {
