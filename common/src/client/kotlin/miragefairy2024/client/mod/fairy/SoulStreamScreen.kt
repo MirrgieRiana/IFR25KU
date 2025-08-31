@@ -18,6 +18,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.RenderingEvent
 import miragefairy2024.client.util.ClickableContainer
+import miragefairy2024.client.util.ImageToggleButton
 import miragefairy2024.client.util.KeyMappingCard
 import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.inventoryNameLabel
@@ -30,6 +31,7 @@ import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.fairy.FairyItem
 import miragefairy2024.mod.fairy.OPEN_SOUL_STREAM_KEY_TRANSLATION
 import miragefairy2024.mod.fairy.OpenSoulStreamChannel
+import miragefairy2024.mod.fairy.SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION
 import miragefairy2024.mod.fairy.SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION
 import miragefairy2024.mod.fairy.SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION
 import miragefairy2024.mod.fairy.SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION
@@ -83,6 +85,7 @@ val soulStreamKeyMappingCard = KeyMappingCard(
 var lastMousePositionInInventory: Pair<Double, Double>? = null
 
 var enabledPassiveSkillEffectFilters = ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>(mapOf())
+var enableGlobalFairyHighlight = ObservableValue(false)
 
 private val FILTER_OVERLAY_TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/filter_overlay.png")
 
@@ -150,7 +153,7 @@ fun initSoulStreamClientModule() {
     // 妖精検索
     RenderingEvent.RENDER_ITEM_DECORATIONS.register { graphics, font, stack, x, y, text ->
         val screen = Minecraft.getInstance().screen
-        if (screen !is SoulStreamScreen) return@register
+        if (!(enableGlobalFairyHighlight.value || screen is SoulStreamScreen)) return@register
         val effectFilters = enabledPassiveSkillEffectFilters.value.values
         if (effectFilters.isEmpty()) return@register
         if (stack.item !is FairyItem) return@register
@@ -213,6 +216,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
                 // 左ペインボタン
                 child(Containers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
+                    gap(2)
 
                     // ハイライトリセットボタン
                     child(ImageButton(0, 0, 14, 14, run {
@@ -223,6 +227,25 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                     }) {
                         enabledPassiveSkillEffectFilters.value = mapOf()
                     }.tooltip(text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() }))
+
+                    // グローバル検索トグルボタン
+                    child(ImageToggleButton(14, 14, run {
+                        WidgetSprites(
+                            MirageFairy2024.identifier("search_button_on"),
+                            MirageFairy2024.identifier("search_button"),
+                            MirageFairy2024.identifier("search_button_on_focused"),
+                            MirageFairy2024.identifier("search_button_focused"),
+                        )
+                    }).apply {
+                        tooltip(text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() })
+
+                        enableGlobalFairyHighlight.observeAndInitialize(onClose) { _, _ ->
+                            value.value = enableGlobalFairyHighlight.value
+                        }
+                        value.register { _, _ ->
+                            enableGlobalFairyHighlight.value = value.value
+                        }
+                    })
 
                 })
 

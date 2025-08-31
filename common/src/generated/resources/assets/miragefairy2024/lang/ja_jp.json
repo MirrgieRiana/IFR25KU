@@ -266,6 +266,7 @@
   "gui.miragefairy2024.passive_skill.effective": "発動中",
   "gui.miragefairy2024.passive_skill.overflowed": "パッシブスキルが多すぎます！",
   "gui.miragefairy2024.passive_skill.supporting": "他のアイテムを支援中",
+  "gui.miragefairy2024.soul_stream.global_search": "ソウルストリームの外でもハイライト",
   "gui.miragefairy2024.soul_stream.no_passive_skill_effects": "パッシブスキル効果なし",
   "gui.miragefairy2024.soul_stream.passive_skill_effect": "パッシブスキル効果",
   "gui.miragefairy2024.soul_stream.reset_highlights": "ハイライトをリセット",
