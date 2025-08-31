@@ -3,6 +3,7 @@ package miragefairy2024.mod.passiveskill.effects
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.passiveskill.PassiveSkillContext
+import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
 import miragefairy2024.util.Translation
 import miragefairy2024.util.empty
 import miragefairy2024.util.enJa
@@ -18,6 +19,8 @@ object IgnitionPassiveSkillEffect : AbstractBooleanPassiveSkillEffect("ignition"
         if (context.player.isInWaterRainOrBubble || context.player.isInPowderSnow || context.player.wasInPowderSnow) return
         context.player.remainingFireTicks = 30 atLeast context.player.remainingFireTicks
     }
+
+    override fun getFilters(samples: List<Boolean>): List<PassiveSkillEffectFilter<Boolean>> = listOf(PassiveSkillEffectFilter(this, identifier, text { translation() }) { true })
 
     context(ModContext)
     override fun init() {

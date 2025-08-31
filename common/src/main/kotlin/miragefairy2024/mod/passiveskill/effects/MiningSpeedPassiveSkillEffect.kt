@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mixins.api.BlockBreakingCallback
 import miragefairy2024.mod.passiveskill.PassiveSkillContext
+import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
 import miragefairy2024.mod.passiveskill.passiveSkillResult
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
@@ -18,6 +19,8 @@ object MiningSpeedPassiveSkillEffect : AbstractDoublePassiveSkillEffect("mining_
     private val translation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}" }, "Mining Speed", "採掘速度")
     override fun getText(value: Double) = text { translation() + ": ${value * 100 formatAs "%+.1f%%"}"() }
     override fun update(context: PassiveSkillContext, oldValue: Double, newValue: Double) = Unit
+
+    override fun getFilters(samples: List<Double>): List<PassiveSkillEffectFilter<Double>> = listOf(PassiveSkillEffectFilter(this, identifier, text { translation() }) { true })
 
     context(ModContext)
     override fun init() {

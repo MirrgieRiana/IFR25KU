@@ -6,6 +6,7 @@ import miragefairy2024.mixins.api.DamageCallback
 import miragefairy2024.mod.Emoji
 import miragefairy2024.mod.invoke
 import miragefairy2024.mod.passiveskill.PassiveSkillContext
+import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
 import miragefairy2024.mod.passiveskill.passiveSkillResult
 import miragefairy2024.mod.tool.IS_MAGIC_DAMAGE_TYPE_TAG
 import miragefairy2024.util.EnJa
@@ -15,9 +16,11 @@ import miragefairy2024.util.generator
 import miragefairy2024.util.getOrCreate
 import miragefairy2024.util.invoke
 import miragefairy2024.util.join
+import miragefairy2024.util.pathString
 import miragefairy2024.util.plus
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.text
+import miragefairy2024.util.times
 import miragefairy2024.util.toDamageTypeTag
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.network.chat.Component
@@ -86,6 +89,33 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
     }
 
     override fun update(context: PassiveSkillContext, oldValue: Value, newValue: Value) = Unit
+
+    override fun getFilters(samples: List<Value>): List<PassiveSkillEffectFilter<Value>> {
+        return listOf(
+            *samples
+                .flatMap { it.attackMap.keys }
+                .distinct()
+                .map { element ->
+                    PassiveSkillEffectFilter(
+                        this,
+                        identifier * "/attack/" * element.identifier.pathString,
+                        text { Emoji.SWORD() + " "() + attackTranslation(element.text) },
+                    ) { value: Value -> element in value.attackMap }
+                }
+                .toTypedArray(),
+            *samples
+                .flatMap { it.defenceMap.keys }
+                .distinct()
+                .map { element ->
+                    PassiveSkillEffectFilter(
+                        this,
+                        identifier * "/defence/" * element.identifier.pathString,
+                        text { Emoji.SHIELD() + " "() + defenceTranslation(element.text) },
+                    ) { value: Value -> element in value.defenceMap }
+                }
+                .toTypedArray(),
+        )
+    }
 
     context(ModContext)
     override fun init() {

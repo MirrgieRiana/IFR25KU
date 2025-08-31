@@ -4,10 +4,13 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.mod.Emoji
 import miragefairy2024.mod.invoke
 import miragefairy2024.mod.passiveskill.PassiveSkillContext
+import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
 import miragefairy2024.util.invoke
 import miragefairy2024.util.join
+import miragefairy2024.util.pathString
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
+import miragefairy2024.util.times
 import miragefairy2024.util.translate
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.core.Holder
@@ -65,5 +68,19 @@ object EntityAttributePassiveSkillEffect : AbstractPassiveSkillEffect<EntityAttr
             }
         }
 
+    }
+
+    override fun getFilters(samples: List<Value>): List<PassiveSkillEffectFilter<Value>> {
+        return samples
+            .flatMap { it.map.keys }
+            .mapNotNull { it as? Holder.Reference }
+            .distinct()
+            .map { attribute ->
+                PassiveSkillEffectFilter(
+                    this,
+                    identifier * "/" * attribute.key().location().pathString,
+                    text { Emoji.HUMAN() + " "() + translate(attribute.value().descriptionId) },
+                ) { value -> attribute in value.map.keys.map { it as? Holder.Reference } }
+            }
     }
 }

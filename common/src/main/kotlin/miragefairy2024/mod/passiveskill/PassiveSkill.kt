@@ -35,6 +35,9 @@ interface PassiveSkillEffect<T : Any> {
     fun codec(): Codec<T> = Codec.unit(Unit).xmap({ unit }, {})
     fun streamCodec(): StreamCodec<in RegistryFriendlyByteBuf, T> = StreamCodec.unit<RegistryFriendlyByteBuf, _>(Unit).map({ unit }, {})
     fun update(context: PassiveSkillContext, oldValue: T, newValue: T)
+    fun getFilters(samples: List<T>): List<PassiveSkillEffectFilter<T>>
 }
 
 class PassiveSkillContext(val world: Level, val blockPos: BlockPos, val player: Player)
+
+class PassiveSkillEffectFilter<T : Any>(val effect: PassiveSkillEffect<T>, val identifier: ResourceLocation, val text: Component, val predicate: (T) -> Boolean)

@@ -5,6 +5,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.passiveskill.PER_SECOND_TRANSLATION
 import miragefairy2024.mod.passiveskill.PassiveSkillContext
+import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
 import miragefairy2024.util.Translation
 import miragefairy2024.util.darkGray
 import miragefairy2024.util.enJa
@@ -74,6 +75,8 @@ object MendingPassiveSkillEffect : AbstractPassiveSkillEffect<MendingPassiveSkil
             }
         }
     }
+
+    override fun getFilters(samples: List<Value>): List<PassiveSkillEffectFilter<Value>> = listOf(PassiveSkillEffectFilter(this, identifier, text { translation() }) { true })
 
     context(ModContext)
     override fun init() {

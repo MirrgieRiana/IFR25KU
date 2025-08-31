@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.passiveskill.PER_SECOND_TRANSLATION
 import miragefairy2024.mod.passiveskill.PassiveSkillContext
+import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
 import miragefairy2024.util.Translation
 import miragefairy2024.util.collectItem
 import miragefairy2024.util.enJa
@@ -29,6 +30,8 @@ object CollectionPassiveSkillEffect : AbstractDoublePassiveSkillEffect("collecti
             true
         }
     }
+
+    override fun getFilters(samples: List<Double>): List<PassiveSkillEffectFilter<Double>> = listOf(PassiveSkillEffectFilter(this, identifier, text { translation() }) { true })
 
     context(ModContext)
     override fun init() {

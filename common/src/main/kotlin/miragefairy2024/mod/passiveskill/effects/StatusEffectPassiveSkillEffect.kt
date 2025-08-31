@@ -3,11 +3,14 @@ package miragefairy2024.mod.passiveskill.effects
 import miragefairy2024.mod.Emoji
 import miragefairy2024.mod.invoke
 import miragefairy2024.mod.passiveskill.PassiveSkillContext
+import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
 import miragefairy2024.util.empty
 import miragefairy2024.util.invoke
 import miragefairy2024.util.join
+import miragefairy2024.util.pathString
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
+import miragefairy2024.util.times
 import miragefairy2024.util.toRomanText
 import net.minecraft.core.Holder
 import net.minecraft.network.chat.Component
@@ -43,5 +46,19 @@ object StatusEffectPassiveSkillEffect : AbstractPassiveSkillEffect<StatusEffectP
         newValue.map.forEach { (statusEffect, entry) ->
             context.player.addEffect(MobEffectInstance(statusEffect, 20 * (1 + 1 + entry.additionalSeconds), entry.level - 1, true, false, true))
         }
+    }
+
+    override fun getFilters(samples: List<Value>): List<PassiveSkillEffectFilter<Value>> {
+        return samples
+            .flatMap { it.map.keys }
+            .mapNotNull { it as? Holder.Reference }
+            .distinct()
+            .map { statusEffect ->
+                PassiveSkillEffectFilter(
+                    this,
+                    identifier * "/" * statusEffect.key().location().pathString,
+                    text { Emoji.POTION() + " "() + statusEffect.value().displayName }
+                ) { statusEffect in it.map.keys }
+            }
     }
 }
