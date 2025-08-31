@@ -1,6 +1,7 @@
 package miragefairy2024.client.mod.fairy
 
 import com.mojang.blaze3d.platform.InputConstants
+import com.mojang.blaze3d.systems.RenderSystem
 import io.wispforest.owo.ui.base.BaseOwoHandledScreen
 import io.wispforest.owo.ui.component.Components
 import io.wispforest.owo.ui.container.Containers
@@ -15,6 +16,8 @@ import io.wispforest.owo.ui.core.Surface
 import io.wispforest.owo.ui.core.VerticalAlignment
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.client.mixins.api.RenderingEvent
+import miragefairy2024.client.util.ClickableContainer
 import miragefairy2024.client.util.KeyMappingCard
 import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.inventoryNameLabel
@@ -24,23 +27,33 @@ import miragefairy2024.client.util.slotContainer
 import miragefairy2024.client.util.tooltipContainer
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
+import miragefairy2024.mod.fairy.FairyItem
 import miragefairy2024.mod.fairy.OPEN_SOUL_STREAM_KEY_TRANSLATION
 import miragefairy2024.mod.fairy.OpenSoulStreamChannel
 import miragefairy2024.mod.fairy.SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION
+import miragefairy2024.mod.fairy.SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION
 import miragefairy2024.mod.fairy.SoulStreamScreenHandler
+import miragefairy2024.mod.fairy.getFairyMotif
+import miragefairy2024.mod.fairy.motifRegistry
 import miragefairy2024.mod.fairy.soulStreamScreenHandlerType
 import miragefairy2024.mod.passiveskill.PassiveSkillEffect
+import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
 import miragefairy2024.mod.passiveskill.PassiveSkillResult
 import miragefairy2024.mod.passiveskill.collect
 import miragefairy2024.mod.passiveskill.effects.ManaBoostPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.findPassiveSkillProviders
 import miragefairy2024.mod.passiveskill.passiveSkillEffectRegistry
 import miragefairy2024.util.EventRegistry
+import miragefairy2024.util.ObservableValue
+import miragefairy2024.util.blue
+import miragefairy2024.util.bold
 import miragefairy2024.util.fire
 import miragefairy2024.util.gold
 import miragefairy2024.util.invoke
+import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.plus
 import miragefairy2024.util.red
+import miragefairy2024.util.register
 import miragefairy2024.util.size
 import miragefairy2024.util.text
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
@@ -52,8 +65,10 @@ import net.minecraft.client.gui.components.ImageButton
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.player.Inventory
 import org.lwjgl.glfw.GLFW
+import kotlin.math.sin
 
 val soulStreamKeyMappingCard = KeyMappingCard(
     OPEN_SOUL_STREAM_KEY_TRANSLATION.keyGetter(),
@@ -65,6 +80,10 @@ val soulStreamKeyMappingCard = KeyMappingCard(
 }
 
 var lastMousePositionInInventory: Pair<Double, Double>? = null
+
+var enabledPassiveSkillEffectFilters = ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>(mapOf())
+
+private val FILTER_OVERLAY_TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/filter_overlay.png")
 
 context(ModContext)
 fun initSoulStreamClientModule() {
@@ -127,6 +146,41 @@ fun initSoulStreamClientModule() {
         }
     }
 
+    // 妖精検索
+    RenderingEvent.RENDER_ITEM_DECORATIONS.register { graphics, font, stack, x, y, text ->
+        val screen = Minecraft.getInstance().screen
+        if (screen !is SoulStreamScreen) return@register
+        val effectFilters = enabledPassiveSkillEffectFilters.value.values
+        if (effectFilters.isEmpty()) return@register
+        if (stack.item !is FairyItem) return@register
+        val motif = stack.getFairyMotif() ?: return@register
+        val matched = motif.passiveSkillSpecifications.any { specification ->
+            effectFilters.any { filter ->
+                fun <T : Any> f(filter: PassiveSkillEffectFilter<T>): Boolean {
+                    val value = (if (specification.effect == filter.effect) filter.effect.castOrNull(specification.valueProvider(10.0)) else null) ?: return false
+                    return filter.predicate(value)
+                }
+                f(filter)
+            }
+        }
+        if (!matched) return@register
+
+        val nanos = System.nanoTime()
+        val phase = ((nanos % 2_000_000_000L).toDouble() / 2_000_000_000.0) * (2.0 * Math.PI)
+        val alpha = (0.75 + 0.25 * sin(phase)).toFloat()
+
+        graphics.fill(x, y, x + 16, y + 16, 0x88FFFF00.toInt())
+
+        graphics.push()
+        graphics.translate(0.0, 0.0, 200.0)
+        RenderSystem.enableBlend()
+        graphics.setColor(1f, 1f, 1f, alpha)
+        graphics.blit(FILTER_OVERLAY_TEXTURE, x, y, 0F, 0F, 16, 16, 16, 16)
+        graphics.setColor(1f, 1f, 1f, 1f)
+        RenderSystem.disableBlend()
+        graphics.pop()
+    }
+
 }
 
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : BaseOwoHandledScreen<FlowLayout, SoulStreamScreenHandler>(handler, playerInventory, title) {
@@ -155,7 +209,61 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
                 padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
 
-                // TODO
+                // ハイライトフィルタ
+                child(tooltipContainer(Sizing.fill(), Sizing.expand(100)).apply {
+                    child(verticalScroll(Sizing.fill(), Sizing.fill(), 5).apply {
+                        scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
+                        child().apply {
+
+                            // TODO 条件フィルタ
+                            // 条件は実装しても不毛なことになりそう
+                            // 例えば満腹度は上下と数値で個別にエントリを作る必要がある
+                            // doubleで管理されるものもあり、identifierを作りにくい
+                            // ツール系は該当する妖精が1体しかない条件がずらっと並ぶことになる
+                            // 実装しても微妙なのが多すぎて折り畳み可能にしないといけないかも
+
+                            child().child(Components.label(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).horizontalTextAlignment(HorizontalAlignment.CENTER).horizontalSizing(Sizing.fill()))
+                            child().child(Containers.verticalFlow(Sizing.fill(), Sizing.content()).apply {
+                                passiveSkillEffectRegistry.entrySet().sortedBy { it.key.location() }.forEach { (_, effect) ->
+                                    fun <T : Any> f(effect: PassiveSkillEffect<T>) {
+                                        val samples = motifRegistry.entrySet()
+                                            .flatMap { it.value.passiveSkillSpecifications }
+                                            .mapNotNull { if (it.effect == effect) effect.castOrNull(it.valueProvider(10.0)) else null }
+                                        effect.getFilters(samples).sortedBy { it.identifier }.forEach { filter ->
+                                            lateinit var updateLabel: () -> Unit
+                                            child(ClickableContainer(Sizing.fill(), Sizing.content()).apply {
+                                                onClick.register {
+                                                    if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
+                                                        enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value - filter.identifier
+                                                    } else {
+                                                        enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value + (filter.identifier to filter)
+                                                    }
+                                                    true
+                                                }
+                                                child(Components.label(Component.empty()).apply {
+                                                    updateLabel = {
+                                                        if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
+                                                            text(filter.text.gold)
+                                                            tooltip(filter.text.gold)
+                                                        } else {
+                                                            text(filter.text)
+                                                            tooltip(filter.text)
+                                                        }
+                                                    }
+                                                    enabledPassiveSkillEffectFilters.observeAndInitialize(onClose) { _, _ ->
+                                                        updateLabel()
+                                                    }
+                                                })
+                                            })
+                                        }
+                                    }
+                                    f(effect)
+                                }
+                            })
+
+                        }
+                    })
+                })
 
             })
 

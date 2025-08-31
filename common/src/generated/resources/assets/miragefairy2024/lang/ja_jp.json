@@ -267,6 +267,7 @@
   "gui.miragefairy2024.passive_skill.overflowed": "パッシブスキルが多すぎます！",
   "gui.miragefairy2024.passive_skill.supporting": "他のアイテムを支援中",
   "gui.miragefairy2024.soul_stream.no_passive_skill_effects": "パッシブスキル効果なし",
+  "gui.miragefairy2024.soul_stream.passive_skill_effect": "パッシブスキル効果",
   "gui.miragefairy2024.tooltip_viewer.example": "例: %s",
   "gui.miragefairy2024.trait_list": "特性",
   "item.miragefairy2024.amethyst_axe": "アメジストの斧",
