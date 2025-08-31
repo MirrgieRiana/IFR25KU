@@ -26,6 +26,7 @@ import miragefairy2024.mod.fairyquest.guiFairyQuestCardFullScreenTranslation
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.orEmpty
+import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -60,13 +61,15 @@ class FairyQuestCardScreen(handler: FairyQuestCardScreenHandler, private val pla
                     run {
 
                         // クリックしたらメッセージを全画面で表示する
-                        child(ClickableContainer(Sizing.fill(100), Sizing.fixed(11 * 7 + 5), {
-                            minecraft!!.setScreen(FairyQuestMessageScreen(this@FairyQuestCardScreen, menu.recipe.title, menu.recipe.message, menu.recipe.client, menu.recipe.title))
-                            true
-                        }) {
+                        child(ClickableContainer(Sizing.fill(100), Sizing.fixed(11 * 7 + 5)).apply {
+
+                            onClick.register {
+                                minecraft!!.setScreen(FairyQuestMessageScreen(this@FairyQuestCardScreen, menu.recipe.title, menu.recipe.message, menu.recipe.client, menu.recipe.title))
+                                true
+                            }
 
                             // 外枠装飾用パネル
-                            Containers.verticalFlow(Sizing.fill(100), Sizing.fill(100)).apply {
+                            child(Containers.verticalFlow(Sizing.fill(100), Sizing.fill(100)).apply {
                                 surface(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.surface)
                                 padding(Insets.of(11, 11, 11, 6))
 
@@ -88,7 +91,7 @@ class FairyQuestCardScreen(handler: FairyQuestCardScreenHandler, private val pla
 
                                 })
 
-                            }
+                            })
 
                         }.apply {
                             tooltip(text { guiFairyQuestCardFullScreenTranslation() })

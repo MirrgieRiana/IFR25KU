@@ -39,6 +39,7 @@ import miragefairy2024.mod.rei.TraitEncyclopediaReiCategoryCard
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
+import miragefairy2024.util.register
 import miragefairy2024.util.sortedEntrySet
 import miragefairy2024.util.style
 import miragefairy2024.util.text
@@ -98,12 +99,13 @@ object TraitEncyclopediaClientReiCategoryCard : ClientReiCategoryCard<TraitEncyc
                         separatedView = topBorderLayout(Sizing.fill(100), Sizing.fill(100)).apply { // カード・レシピセパレーション
                             gap = 2
 
-                            child1(ClickableContainer(Sizing.fill(100), Sizing.content(), {
-                                currentViewMode = ViewMode.CARD
-                                updateViewMode()
-                                true
-                            }) {
-                                Containers.verticalFlow(Sizing.fill(100), Sizing.content()).apply { // カード
+                            child1(ClickableContainer(Sizing.fill(100), Sizing.content()).apply {
+                                onClick.register {
+                                    currentViewMode = ViewMode.CARD
+                                    updateViewMode()
+                                    true
+                                }
+                                child(Containers.verticalFlow(Sizing.fill(100), Sizing.content()).apply { // カード
                                     surface(NinePatchTextureCard.TRAIT_BACKGROUND.surface)
                                     padding(Insets.of(5))
 
@@ -150,7 +152,7 @@ object TraitEncyclopediaClientReiCategoryCard : ClientReiCategoryCard<TraitEncyc
                                             })
                                         })
                                     })
-                                }
+                                })
                             })
                             child2(verticalScroll(Sizing.fill(100), Sizing.fill(100), 5).apply { // レシピ
                                 child().child(Containers.verticalFlow(Sizing.fill(100), Sizing.content()).apply { // 種子欄
@@ -197,12 +199,13 @@ object TraitEncyclopediaClientReiCategoryCard : ClientReiCategoryCard<TraitEncyc
                                 */
                             })
                         }
-                        cardView = ClickableContainer(Sizing.fill(100), Sizing.fill(100), {
-                            currentViewMode = ViewMode.SEPARATED
-                            updateViewMode()
-                            true
-                        }) {
-                            topBorderLayout(Sizing.fill(100), Sizing.fill(100)).apply { // カード
+                        cardView = ClickableContainer(Sizing.fill(100), Sizing.fill(100)).apply {
+                            onClick.register {
+                                currentViewMode = ViewMode.SEPARATED
+                                updateViewMode()
+                                true
+                            }
+                            child(topBorderLayout(Sizing.fill(100), Sizing.fill(100)).apply { // カード
                                 surface(NinePatchTextureCard.TRAIT_BACKGROUND.surface)
                                 padding(Insets.of(5))
                                 gap = 5
@@ -248,7 +251,7 @@ object TraitEncyclopediaClientReiCategoryCard : ClientReiCategoryCard<TraitEncyc
                                         horizontalTextAlignment(HorizontalAlignment.LEFT)
                                     })
                                 })
-                            }
+                            })
                         }
                         container = Containers.stack(Sizing.fill(100), Sizing.fill(100))
                         child(container)

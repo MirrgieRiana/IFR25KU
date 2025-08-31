@@ -1,11 +1,13 @@
 package miragefairy2024.client.util
 
+import io.wispforest.owo.ui.component.Components
 import io.wispforest.owo.ui.container.WrappingParentComponent
 import io.wispforest.owo.ui.core.OwoUIDrawContext
 import io.wispforest.owo.ui.core.Sizing
+import miragefairy2024.util.EventRegistry
 import io.wispforest.owo.ui.core.Component as OwoComponent
 
-class ClickableContainer<C : OwoComponent>(horizontalSizing: Sizing, verticalSizing: Sizing, private val action: () -> Boolean, child: () -> C) : WrappingParentComponent<C>(horizontalSizing, verticalSizing, child()) {
+class ClickableContainer(horizontalSizing: Sizing, verticalSizing: Sizing) : WrappingParentComponent<OwoComponent>(horizontalSizing, verticalSizing, Components.spacer(0)) {
     // これを設定してもchildが受け取ってしまうのでカーソルを設定することができない
     // see: io.wispforest.owo.ui.core.OwoUIAdapter.render
     //init {
@@ -22,8 +24,9 @@ class ClickableContainer<C : OwoComponent>(horizontalSizing: Sizing, verticalSiz
         }
     }
 
+    val onClick = EventRegistry<() -> Boolean>()
     override fun onMouseDown(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (super.onMouseDown(mouseX, mouseY, button)) return true
-        return action()
+        return onClick.listeners.any { it() }
     }
 }

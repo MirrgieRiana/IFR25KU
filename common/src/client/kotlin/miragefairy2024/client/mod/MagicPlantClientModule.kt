@@ -41,6 +41,7 @@ import miragefairy2024.util.darkGray
 import miragefairy2024.util.invoke
 import miragefairy2024.util.join
 import miragefairy2024.util.plus
+import miragefairy2024.util.register
 import miragefairy2024.util.style
 import miragefairy2024.util.text
 import mirrg.kotlin.hydrogen.formatAs
@@ -122,11 +123,12 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                                         .map { it.getFactor(level, menu.blockPos, blockEntity) }
                                         .fold(1.0) { a, b -> a * b }
 
-                                    child(ClickableContainer(Sizing.fill(100), Sizing.content(), { // 特性
-                                        setTraitCardContent(createTraitCardContent(traitStack))
-                                        true
-                                    }) {
-                                        Components.label(text {
+                                    child(ClickableContainer(Sizing.fill(100), Sizing.content()).apply { // 特性
+                                        onClick.register {
+                                            setTraitCardContent(createTraitCardContent(traitStack))
+                                            true
+                                        }
+                                        child(Components.label(text {
                                             val texts = mutableListOf<Component>()
                                             val styleFunction: (Component) -> Component = { if (totalConditionFactor == 0.0) it.darkGray else it.style(traitStack.trait.style) }
                                             texts += styleFunction(traitStack.trait.getName())
@@ -134,7 +136,7 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                                             if (traitStack.trait.conditions.isNotEmpty()) texts += traitStack.trait.conditions.map { it.emoji }.join() + " →"()
                                             if (traitStack.trait.traitEffectKeyEntries.isNotEmpty()) texts += traitStack.trait.traitEffectKeyEntries.map { it.traitEffectKey.emoji.style(it.traitEffectKey.style) }.join()
                                             texts.join(" "())
-                                        })
+                                        }))
                                     })
                                 }
                             })
