@@ -2,9 +2,11 @@ package miragefairy2024.client.mod.fairy
 
 import com.mojang.blaze3d.platform.InputConstants
 import io.wispforest.owo.ui.base.BaseOwoHandledScreen
+import io.wispforest.owo.ui.component.Components
 import io.wispforest.owo.ui.container.Containers
 import io.wispforest.owo.ui.container.FlowLayout
 import io.wispforest.owo.ui.container.ScrollContainer
+import io.wispforest.owo.ui.core.Color
 import io.wispforest.owo.ui.core.HorizontalAlignment
 import io.wispforest.owo.ui.core.Insets
 import io.wispforest.owo.ui.core.OwoUIAdapter
@@ -19,16 +21,26 @@ import miragefairy2024.client.util.inventoryNameLabel
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.sendToServer
 import miragefairy2024.client.util.slotContainer
+import miragefairy2024.client.util.tooltipContainer
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.fairy.OPEN_SOUL_STREAM_KEY_TRANSLATION
 import miragefairy2024.mod.fairy.OpenSoulStreamChannel
+import miragefairy2024.mod.fairy.SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION
 import miragefairy2024.mod.fairy.SoulStreamScreenHandler
 import miragefairy2024.mod.fairy.soulStreamScreenHandlerType
+import miragefairy2024.mod.passiveskill.PassiveSkillEffect
+import miragefairy2024.mod.passiveskill.PassiveSkillResult
+import miragefairy2024.mod.passiveskill.collect
+import miragefairy2024.mod.passiveskill.effects.ManaBoostPassiveSkillEffect
+import miragefairy2024.mod.passiveskill.findPassiveSkillProviders
+import miragefairy2024.mod.passiveskill.passiveSkillEffectRegistry
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
+import miragefairy2024.util.gold
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
+import miragefairy2024.util.red
 import miragefairy2024.util.size
 import miragefairy2024.util.text
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
@@ -212,7 +224,45 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
                 padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
 
-                // TODO
+                // 効果欄
+                child(tooltipContainer(Sizing.fill(), Sizing.fill()).apply {
+                    child(verticalScroll(Sizing.fill(), Sizing.fill(), 5, overlapped = true).apply {
+                        scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
+                        child().apply {
+                            val container = this
+
+                            fun refresh() {
+                                container.clearChildren()
+
+                                val player = Minecraft.getInstance().player ?: return
+                                val passiveSkillProviders = player.findPassiveSkillProviders()
+                                val result = PassiveSkillResult()
+                                result.collect(passiveSkillProviders.passiveSkills, player, ManaBoostPassiveSkillEffect.Value(mapOf()), true)
+                                val manaBoostValue = result[ManaBoostPassiveSkillEffect]
+                                result.collect(passiveSkillProviders.passiveSkills, player, manaBoostValue, false)
+
+                                if (result.map.isEmpty()) {
+                                    container.child(Components.label(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }))
+                                } else {
+                                    result.map.keys.sortedBy { passiveSkillEffectRegistry.getKey(it) }.forEach { effect ->
+                                        fun <T : Any> f(effect: PassiveSkillEffect<T>) {
+                                            val value = result[effect]
+                                            effect.getTexts(value).forEach {
+                                                container.child(Components.label(it.gold).tooltip(it.gold))
+                                            }
+                                        }
+                                        f(effect)
+                                    }
+                                }
+                            }
+
+                            onUpdateListeners += {
+                                refresh()
+                            }
+                            refresh()
+                        }
+                    })
+                })
 
             })
 

@@ -42,6 +42,7 @@ import net.minecraft.world.item.ItemStack
 
 private val SOUL_STREAM_TRANSLATION = Translation({ "container.${MirageFairy2024.MOD_ID}.soul_stream" }, "Soul Stream", "ソウルストリーム")
 val OPEN_SOUL_STREAM_KEY_TRANSLATION = Translation({ "key.${MirageFairy2024.MOD_ID}.open_soul_stream" }, "Open Soul Stream", "ソウルストリームを開く")
+val SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION = Translation({ "gui.${MirageFairy2024.identifier("soul_stream").toLanguageKey()}.no_passive_skill_effects" }, "No passive skill effects", "パッシブスキル効果なし")
 
 val SOUL_STREAM_CONTAINABLE_TAG = MirageFairy2024.identifier("soul_stream_containable").toItemTag()
 
@@ -72,6 +73,7 @@ fun initSoulStream() {
     // 翻訳
     SOUL_STREAM_TRANSLATION.enJa()
     OPEN_SOUL_STREAM_KEY_TRANSLATION.enJa()
+    SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION.enJa()
     SOUL_STREAM_CONTAINABLE_TAG.enJa(EnJa("Soul Stream Containable", "ソウルストリームに格納可能"))
 
 }
