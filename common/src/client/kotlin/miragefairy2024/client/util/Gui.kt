@@ -12,6 +12,7 @@ import io.wispforest.owo.ui.core.Size
 import io.wispforest.owo.ui.core.Sizing
 import io.wispforest.owo.ui.core.Surface
 import miragefairy2024.MirageFairy2024
+import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import io.wispforest.owo.ui.core.Component as OwoComponent
@@ -96,3 +97,5 @@ class CompressionVerticalFlow(verticalSizing: Sizing) : FlowLayout(Sizing.conten
         super.layout(space)
     }
 }
+
+fun WidgetSprites(identifier: ResourceLocation): WidgetSprites = WidgetSprites(identifier, identifier)
