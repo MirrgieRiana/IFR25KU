@@ -2,7 +2,6 @@ package miragefairy2024.client.mod.fairy
 
 import com.mojang.blaze3d.platform.InputConstants
 import io.wispforest.owo.ui.base.BaseOwoHandledScreen
-import io.wispforest.owo.ui.component.Components
 import io.wispforest.owo.ui.container.Containers
 import io.wispforest.owo.ui.container.FlowLayout
 import io.wispforest.owo.ui.container.ScrollContainer
@@ -92,11 +91,11 @@ fun initSoulStreamClientModule() {
 
                     // ボタン
                     val buttonWidgetSprites = WidgetSprites(MirageFairy2024.identifier("soul_stream_button"), MirageFairy2024.identifier("soul_stream_button_highlighted"))
-                    child(Components.wrapVanillaWidget(ImageButton(0, 0, 20, 20, buttonWidgetSprites) {
+                    child(ImageButton(0, 0, 20, 20, buttonWidgetSprites) {
                         lastMousePositionInInventory = Pair(Minecraft.getInstance().mouseHandler.xpos(), Minecraft.getInstance().mouseHandler.ypos())
                         screen.onClose()
                         OpenSoulStreamChannel.sendToServer(Unit)
-                    }).apply {
+                    }.apply {
                         tooltip(text { OPEN_SOUL_STREAM_KEY_TRANSLATION() + "("() + Component.keybind(OPEN_SOUL_STREAM_KEY_TRANSLATION.keyGetter()) + ")"() })
                     })
 
