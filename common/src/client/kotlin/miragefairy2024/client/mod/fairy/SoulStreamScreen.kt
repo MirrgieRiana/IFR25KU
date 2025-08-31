@@ -25,6 +25,8 @@ import miragefairy2024.mod.fairy.OPEN_SOUL_STREAM_KEY_TRANSLATION
 import miragefairy2024.mod.fairy.OpenSoulStreamChannel
 import miragefairy2024.mod.fairy.SoulStreamScreenHandler
 import miragefairy2024.mod.fairy.soulStreamScreenHandlerType
+import miragefairy2024.util.EventRegistry
+import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.size
@@ -225,6 +227,12 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             return true
         }
         return super.keyPressed(keyCode, scanCode, modifiers)
+    }
+
+    val onClose = EventRegistry<() -> Unit>()
+    override fun onClose() {
+        super.onClose()
+        onClose.fire()
     }
 
 }
