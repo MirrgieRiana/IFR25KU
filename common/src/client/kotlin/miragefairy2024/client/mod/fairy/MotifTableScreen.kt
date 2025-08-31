@@ -13,9 +13,12 @@ import io.wispforest.owo.ui.core.OwoUIAdapter
 import io.wispforest.owo.ui.core.Sizing
 import io.wispforest.owo.ui.core.Surface
 import io.wispforest.owo.ui.core.VerticalAlignment
+import miragefairy2024.ModContext
 import miragefairy2024.client.util.horizontalSpace
+import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.mod.fairy.MotifTableScreenHandler
+import miragefairy2024.mod.fairy.motifTableScreenHandlerType
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
@@ -25,6 +28,14 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.item.Item
+
+context(ModContext)
+fun initMotifTableClientModule() {
+
+    // GUI登録
+    motifTableScreenHandlerType.registerHandledScreen { gui, inventory, title -> MotifTableScreen(gui, inventory, title) }
+
+}
 
 class MotifTableScreen(handler: MotifTableScreenHandler, playerInventory: Inventory, title: Component) : BaseOwoHandledScreen<FlowLayout, MotifTableScreenHandler>(handler, playerInventory, title) {
     override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
