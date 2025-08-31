@@ -17,6 +17,9 @@ class ClickableContainer<C : OwoComponent>(horizontalSizing: Sizing, verticalSiz
     override fun draw(context: OwoUIDrawContext, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
         super.draw(context, mouseX, mouseY, partialTicks, delta)
         drawChildren(context, mouseX, mouseY, partialTicks, delta, childView)
+        if (isInBoundingBox(mouseX.toDouble(), mouseY.toDouble())) {
+            context.fill(x, y, x + width, y + height, 0x80FFFFFF.toInt())
+        }
     }
 
     override fun onMouseDown(mouseX: Double, mouseY: Double, button: Int): Boolean {
