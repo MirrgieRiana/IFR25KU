@@ -131,73 +131,81 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         super.render(vanillaContext, mouseX, mouseY, delta)
     }
 
-    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
+    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::horizontalFlow)
     override fun build(rootComponent: FlowLayout) {
         rootComponent.apply {
-            surface(Surface.VANILLA_TRANSLUCENT)
-            verticalAlignment(VerticalAlignment.CENTER)
-            horizontalAlignment(HorizontalAlignment.CENTER)
+            surface(Surface.flat(0xFFC6C6C6.toInt()))
+            allowOverflow(true) // expandの端数処理の不具合で1pxだけはみ出すことがある
+            padding(Insets.of(4))
+            gap(4)
 
-            // GUIパネル外枠
-            child(Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
-                surface(Surface.PANEL)
-                padding(Insets.of(7))
+            // 左ペイン
+            child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
 
-                // メインコンテナ
-                child(Containers.verticalFlow(Sizing.fixed(18 * 9 + 18), Sizing.content()).apply {
+                // TODO
 
-                    child(inventoryNameLabel(title))
+            })
 
-                    child(verticalSpace(3))
+            // メインコンテナ
+            child(Containers.verticalFlow(Sizing.fixed(18 * 9 + 18), Sizing.fill()).apply {
 
-                    child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                        surface(Surface.tiled(SlotType.FAIRY.texture, 18, 18))
-                        repeat(9) { index ->
-                            child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
-                        }
-                    })
+                child(inventoryNameLabel(title))
 
-                    child(verticalSpace(4))
+                child(verticalSpace(3))
 
-                    child(verticalScroll(Sizing.fill(100), Sizing.fixed(18 * 5), 18).apply {
-                        surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
-                        scrollbar(ScrollContainer.Scrollbar.vanilla())
-                        scrollStep(18)
-                        (9 until menu.soulStream.size).chunked(9).forEach { indices ->
-                            child().child(Containers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {
-                                indices.forEach { index ->
-                                    child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
-                                }
-                            })
-                        }
-                    })
-
-                    child(verticalSpace(3))
-
-                    child(inventoryNameLabel(menu.playerInventory.name))
-
-                    child(verticalSpace(1))
-
-                    // プレイヤーインベントリ
-                    child(Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
-                        surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
-                        repeat(3) { r ->
-                            child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                                repeat(9) { c ->
-                                    child(slotContainer(slotAsComponent(9 * r + c), type = null))
-                                }
-                            })
-                        }
-                    })
-                    child(verticalSpace(4))
-                    child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                        surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
-                        repeat(9) { c ->
-                            child(slotContainer(slotAsComponent(9 * 3 + c), type = null))
-                        }
-                    })
-
+                child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
+                    surface(Surface.tiled(SlotType.FAIRY.texture, 18, 18))
+                    repeat(9) { index ->
+                        child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
+                    }
                 })
+
+                child(verticalSpace(4))
+
+                child(verticalScroll(Sizing.fill(100), Sizing.expand(), 18).apply {
+                    surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
+                    scrollbar(ScrollContainer.Scrollbar.vanilla())
+                    scrollStep(18)
+                    (9 until menu.soulStream.size).chunked(9).forEach { indices ->
+                        child().child(Containers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {
+                            indices.forEach { index ->
+                                child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
+                            }
+                        })
+                    }
+                })
+
+                child(verticalSpace(3))
+
+                child(inventoryNameLabel(menu.playerInventory.name))
+
+                child(verticalSpace(1))
+
+                // プレイヤーインベントリ
+                child(Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
+                    surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
+                    repeat(3) { r ->
+                        child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
+                            repeat(9) { c ->
+                                child(slotContainer(slotAsComponent(9 * r + c), type = null))
+                            }
+                        })
+                    }
+                })
+                child(verticalSpace(4))
+                child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
+                    surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
+                    repeat(9) { c ->
+                        child(slotContainer(slotAsComponent(9 * 3 + c), type = null))
+                    }
+                })
+
+            })
+
+            // 右ペイン
+            child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
+
+                // TODO
 
             })
 
