@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 
 val ResourceLocation.string get() = this.toString()
+val ResourceLocation.pathString get() = "${this.namespace}.${this.path}"
 
 fun String.toIdentifier() = ResourceLocation.parse(this)
 
