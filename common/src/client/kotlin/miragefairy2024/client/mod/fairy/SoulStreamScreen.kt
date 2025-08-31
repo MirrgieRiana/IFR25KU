@@ -141,6 +141,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
             // 左ペイン
             child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
+                padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
 
                 // TODO
 
@@ -149,9 +150,9 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             // メインコンテナ
             child(Containers.verticalFlow(Sizing.fixed(18 * 9 + 18), Sizing.fill()).apply {
 
-                child(inventoryNameLabel(title))
+                //child(inventoryNameLabel(title))
 
-                child(verticalSpace(3))
+                //child(verticalSpace(3))
 
                 child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
                     surface(Surface.tiled(SlotType.FAIRY.texture, 18, 18))
@@ -175,11 +176,11 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                     }
                 })
 
-                child(verticalSpace(3))
+                child(verticalSpace(4))
 
-                child(inventoryNameLabel(menu.playerInventory.name))
+                //child(inventoryNameLabel(menu.playerInventory.name))
 
-                child(verticalSpace(1))
+                //child(verticalSpace(1))
 
                 // プレイヤーインベントリ
                 child(Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
@@ -200,10 +201,16 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                     }
                 })
 
+                // GUIタイトルはレシピMOD用の保護領域に持ってくる
+                child(verticalSpace(5))
+                child(inventoryNameLabel(title).horizontalTextAlignment(HorizontalAlignment.CENTER))
+                child(verticalSpace(5))
+
             })
 
             // 右ペイン
             child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
+                padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
 
                 // TODO
 
