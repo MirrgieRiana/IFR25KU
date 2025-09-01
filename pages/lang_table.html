@@ -57,11 +57,26 @@
     </tbody>
 </table>
 <script>
+    function getPageParameter(key) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(key);
+    }
+
+    function setPageParameter(key, value) {
+        const url = new URL(window.location.href);
+        if (value == null || value === "") {
+            url.searchParams.delete(key);
+        } else {
+            url.searchParams.set(key, value);
+        }
+        history.replaceState(null, "", url);
+    }
+
     (function() {
         const input = document.getElementById('filter');
         const tbody = document.getElementById('lang_table');
 
-        input.addEventListener('input', function(e) {
+        function search() {
             let regex;
             try {
                 regex = new RegExp(input.value);
@@ -75,7 +90,18 @@
             for (const tr of tbody.rows) {
                 tr.classList.toggle('hidden', !regex.test(tr.querySelector('td.key').textContent));
             }
+        }
+
+        input.addEventListener('input', function(e) {
+            setPageParameter('q', input.value);
+            search();
         });
+
+        const initial = getPageParameter('q');
+        if (initial != null) {
+            input.value = initial;
+        }
+        search();
     })();
 </script>
 </body>
