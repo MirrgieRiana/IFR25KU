@@ -187,14 +187,14 @@ tasks.register("showSourceSets") {
     }
 }
 
-tasks.register("buildPages") {
+tasks.register<Copy>("buildPages") {
     dependsOn(project("fabric").tasks["runDatagen"])
-    doLast {
-        println("Building pages...")
+
+    fun computeTrs(): String {
         val en = GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json").readText(), JsonElement::class.java).asJsonObject
         val ja = GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json").readText(), JsonElement::class.java).asJsonObject
         val keys = (en.keySet() + ja.keySet()).sorted()
-        val trs = keys.joinToString("") { key ->
+        return keys.joinToString("") { key ->
             listOf(
                 """<tr>""",
                 """<td class="key">$key</td>""",
@@ -203,14 +203,17 @@ tasks.register("buildPages") {
                 """</tr>""",
             ).joinToString("\n") { it }
         }
-
-        mkdir("build/pages")
-        File("pages/lang_table.html").readText()
-            .replace("\${trs}", trs)
-            .let { File("build/pages/lang_table.html").writeText(it) }
-        File("pages/index.md").readText()
-            .let { File("build/pages/index.md").writeText(it) }
     }
+
+    from("pages") {
+        include("**/*")
+
+        filesMatching("/lang_table.html") {
+            expand("trs" to computeTrs())
+        }
+    }
+
+    into(layout.buildDirectory.dir("pages"))
 }
 
 tasks.register("configurations") {
