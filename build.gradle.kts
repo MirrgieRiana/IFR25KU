@@ -193,7 +193,7 @@ tasks.register("buildPages") {
         println("Building pages...")
         val en = GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json").readText(), JsonElement::class.java).asJsonObject
         val ja = GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json").readText(), JsonElement::class.java).asJsonObject
-        val keys = (en.keySet() + en.keySet()).sorted()
+        val keys = (en.keySet() + ja.keySet()).sorted()
         val trs = keys.joinToString("") { key ->
             listOf(
                 """<tr>""",
