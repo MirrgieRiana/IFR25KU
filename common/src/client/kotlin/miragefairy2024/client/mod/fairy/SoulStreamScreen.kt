@@ -24,6 +24,7 @@ import miragefairy2024.client.util.LayeredImageToggleButton
 import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.WidgetSprites
 import miragefairy2024.client.util.inventoryNameLabel
+import miragefairy2024.client.util.invoke
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.sendToServer
 import miragefairy2024.client.util.slotContainer
@@ -150,7 +151,7 @@ fun initSoulStreamClientModule() {
                         screen.onClose()
                         OpenSoulStreamChannel.sendToServer(Unit)
                     }.apply {
-                        tooltip(text { OPEN_SOUL_STREAM_KEY_TRANSLATION() + "("() + Component.keybind(OPEN_SOUL_STREAM_KEY_TRANSLATION.keyGetter()) + ")"() })
+                        tooltip(text { OPEN_SOUL_STREAM_KEY_TRANSLATION() + "("() + soulStreamKeyMappingCard() + ")"() })
                     })
 
                 })
