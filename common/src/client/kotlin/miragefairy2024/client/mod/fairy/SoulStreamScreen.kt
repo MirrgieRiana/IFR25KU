@@ -399,8 +399,9 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                             MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
                         )
                     }).apply {
+                        val player = Minecraft.getInstance().player ?: return@apply
                         fun update() {
-                            value.value = Minecraft.getInstance().player?.collectionEnabled?.getOrDefault() ?: true
+                            value.value = player.collectionEnabled.getOrDefault()
                             tooltip(text { if (value.value) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION() })
                         }
                         AttachmentChangedEvent.eventRegistry.observe(onClose) { identifier ->
@@ -410,7 +411,9 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                         }
                         update()
                         value.register { _, _ ->
-                            SetCollectionEnabledChannel.sendToServer(value.value)
+                            if (player.collectionEnabled.getOrDefault() != value.value) {
+                                SetCollectionEnabledChannel.sendToServer(value.value)
+                            }
                         }
                     })
 
