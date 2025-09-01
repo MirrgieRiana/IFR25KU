@@ -194,105 +194,22 @@ tasks.register("buildPages") {
         val en = GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json").readText(), JsonElement::class.java).asJsonObject
         val ja = GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json").readText(), JsonElement::class.java).asJsonObject
         val keys = (en.keySet() + en.keySet()).sorted()
+        val trs = keys.joinToString("") { key ->
+            listOf(
+                """<tr>""",
+                """<td class="key">$key</td>""",
+                """<td class="value">${(en.get(key) as JsonPrimitive?)?.asString ?: "-"}</td>""",
+                """<td class="value">${(ja.get(key) as JsonPrimitive?)?.asString ?: "-"}</td>""",
+                """</tr>""",
+            ).joinToString("\n") { it }
+        }
 
         mkdir("build/pages")
-        """
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>IFR25KU Lang Table</title>
-    <style>
-        #langTable {
-            border-collapse: collapse;
-        }
-
-        #langTable th {
-            background-color: #ddd;
-        }
-        #langTable tr.hidden {
-            display: none;
-        }
-        #langTable tbody tr:nth-child(even of :not(.hidden)) {
-            background-color: #eee;
-        }
-
-        #langTable th, #langTable td {
-            padding: 0 0.5em;
-        }
-        #langTable th.value, #langTable td.value {
-            border-left: 1px solid #888;
-        }
-
-        #langTable td.key {
-            word-break: break-all;
-        }
-        #langTable td.value {
-            white-space: pre-line;
-            vertical-align: top;
-        }
-    </style>
-</head>
-<body>
-<h1>IFR25KU Lang Table</h1>
-<p>
-    Search: <input type="text" id="filter" style="width: 30em;">
-</p>
-<table id="langTable">
-    <colgroup>
-        <col style="width: 20%;">
-        <col style="width: 40%;">
-        <col style="width: 40%;">
-    </colgroup>
-    <thead>
-    <tr>
-        <th class="key">Key</th>
-        <th class="value">English</th>
-        <th class="value">Japanese</th>
-    </tr>
-    </thead>
-    <tbody id="lang_table">
-        ${
-            keys.joinToString("") { key ->
-                """
-<tr>
-    <td class="key">$key</td>
-    <td class="value">${(en.get(key) as JsonPrimitive?)?.asString ?: "-"}</td>
-    <td class="value">${(ja.get(key) as JsonPrimitive?)?.asString ?: "-"}</td>
-</tr>
-                """.trimIndent()
-            }
-        }
-    </tbody>
-</table>
-<script>
-    (function() {
-        const input = document.getElementById('filter');
-        const tbody = document.getElementById('lang_table');
-
-        input.addEventListener('keydown', function(e) {
-            let regex;
-            try {
-                regex = new RegExp(input.value);
-            } catch (e) {
-                input.style.outlineColor = 'red';
-                console.error(e);
-                return;
-            }
-            input.style.outlineColor = '';
-
-            for (const tr of tbody.rows) {
-                tr.classList.toggle('hidden', !regex.test(tr.querySelector('td.key').textContent));
-            }
-        });
-    })();
-</script>
-</body>
-</html>
-        """.let { File("build/pages/lang_table.html").writeText(it) }
-        """
-[IFR25KU Lang Table](lang_table.html)
-        """.let { File("build/pages/index.md").writeText(it) }
+        File("pages/lang_table.html").readText()
+            .replace("\${trs}", trs)
+            .let { File("build/pages/lang_table.html").writeText(it) }
+        File("pages/index.md").readText()
+            .let { File("build/pages/index.md").writeText(it) }
     }
 }
 
