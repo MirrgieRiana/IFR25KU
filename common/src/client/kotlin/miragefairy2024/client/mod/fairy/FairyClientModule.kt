@@ -45,5 +45,6 @@ fun initFairyClientModule() {
 
     initMotifTableClientModule()
     initSoulStreamClientModule()
+    initCollectionEnabledClientModule()
 
 }

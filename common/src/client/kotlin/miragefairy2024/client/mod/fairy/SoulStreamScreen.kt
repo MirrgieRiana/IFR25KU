@@ -403,7 +403,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                         val player = Minecraft.getInstance().player ?: return@apply
                         fun update() {
                             value.value = player.collectionEnabled.getOrDefault()
-                            tooltip(text { if (value.value) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION() })
+                            tooltip(text { (if (value.value) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()) + " ("() + toggleCollectionEnabledKeyMappingCard() + ")"() })
                         }
                         AttachmentChangedEvent.eventRegistry.observe(onClose) { identifier ->
                             if (identifier == COLLECTION_ENABLED_ATTACHMENT_TYPE.identifier()) {
