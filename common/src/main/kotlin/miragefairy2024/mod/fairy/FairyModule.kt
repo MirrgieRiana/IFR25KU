@@ -12,4 +12,5 @@ fun initFairyModule() {
     initFairyDream()
     initSoulStream()
     initFairyStatue()
+    initCollectionEnabled()
 }

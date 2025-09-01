@@ -30,6 +30,10 @@ import miragefairy2024.client.util.slotContainer
 import miragefairy2024.client.util.tooltipContainer
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
+import miragefairy2024.mod.AttachmentChangedEvent
+import miragefairy2024.mod.fairy.COLLECTION_DISABLED_TRANSLATION
+import miragefairy2024.mod.fairy.COLLECTION_ENABLED_ATTACHMENT_TYPE
+import miragefairy2024.mod.fairy.COLLECTION_ENABLED_TRANSLATION
 import miragefairy2024.mod.fairy.FairyItem
 import miragefairy2024.mod.fairy.OPEN_SOUL_STREAM_KEY_TRANSLATION
 import miragefairy2024.mod.fairy.OpenSoulStreamChannel
@@ -37,7 +41,9 @@ import miragefairy2024.mod.fairy.SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION
 import miragefairy2024.mod.fairy.SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION
 import miragefairy2024.mod.fairy.SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION
 import miragefairy2024.mod.fairy.SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION
+import miragefairy2024.mod.fairy.SetCollectionEnabledChannel
 import miragefairy2024.mod.fairy.SoulStreamScreenHandler
+import miragefairy2024.mod.fairy.collectionEnabled
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.fairy.motifRegistry
 import miragefairy2024.mod.fairy.soulStreamScreenHandlerType
@@ -53,8 +59,10 @@ import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.blue
 import miragefairy2024.util.bold
 import miragefairy2024.util.fire
+import miragefairy2024.util.getOrDefault
 import miragefairy2024.util.gold
 import miragefairy2024.util.invoke
+import miragefairy2024.util.observe
 import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.plus
 import miragefairy2024.util.red
@@ -376,6 +384,37 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             // 右ペイン
             child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
                 padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
+                gap(2)
+
+                // 右ペインボタン
+                child(Containers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
+                    gap(2)
+
+                    // 収集効果の有効化切り替えボタン
+                    child(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
+                        WidgetSprites(
+                            MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
+                            MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
+                            MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
+                            MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
+                        )
+                    }).apply {
+                        fun update() {
+                            value.value = Minecraft.getInstance().player?.collectionEnabled?.getOrDefault() ?: true
+                            tooltip(text { if (value.value) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION() })
+                        }
+                        AttachmentChangedEvent.eventRegistry.observe(onClose) { identifier ->
+                            if (identifier == COLLECTION_ENABLED_ATTACHMENT_TYPE.identifier()) {
+                                update()
+                            }
+                        }
+                        update()
+                        value.register { _, _ ->
+                            SetCollectionEnabledChannel.sendToServer(value.value)
+                        }
+                    })
+
+                })
 
                 // 効果欄
                 child(tooltipContainer(Sizing.fill(), Sizing.fill()).apply {
