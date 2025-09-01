@@ -1,6 +1,8 @@
+*               -text
 *.accesswidener  text eol=lf
 *.bash           text eol=lf
 *.bat            text eol=crlf
+*.html           text eol=lf
 *.jar           -text
 *.java           text eol=lf
 *.json           text eol=lf
