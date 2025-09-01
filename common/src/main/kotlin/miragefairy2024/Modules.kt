@@ -6,6 +6,7 @@ import miragefairy2024.mod.fairybuilding.initFairyBuildingModule
 import miragefairy2024.mod.fairylogistics.initFairyLogisticsModule
 import miragefairy2024.mod.fairyquest.initFairyQuestModule
 import miragefairy2024.mod.haimeviska.initHaimeviskaModule
+import miragefairy2024.mod.initAttachmentChangedEventModule
 import miragefairy2024.mod.initBagModule
 import miragefairy2024.mod.initBiomeModule
 import miragefairy2024.mod.initCommonModule
@@ -69,4 +70,5 @@ fun initModules() {
     initMachineModule()
     initStructureModule()
     initTooltipViewerModule()
+    initAttachmentChangedEventModule()
 }
