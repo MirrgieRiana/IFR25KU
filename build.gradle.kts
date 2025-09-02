@@ -143,7 +143,7 @@ tasks.register("uploadModrinth")
 modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = "ifr25ku"
-    syncBodyFrom = rootProject.file("MODRINTH-BODY.md").readText()
+    syncBodyFrom = getModrinthBody()
 }
 //tasks["uploadModrinth"].dependsOn(tasks["modrinthSyncBody"]) // TODO Modrinth Bodyの整備待ち
 
