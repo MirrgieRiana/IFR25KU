@@ -9,9 +9,11 @@ import miragefairy2024.util.Channel
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.get
+import miragefairy2024.util.invoke
 import miragefairy2024.util.register
 import miragefairy2024.util.registerServerPacketReceiver
 import miragefairy2024.util.set
+import miragefairy2024.util.text
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType
@@ -50,6 +52,7 @@ fun initCollectionEnabled() {
         SetCollectionEnabledChannel.registerServerPacketReceiver { player, value ->
             player.collectionEnabled.set(value)
             player.sendAttachmentChangedEvent(COLLECTION_ENABLED_ATTACHMENT_TYPE)
+            player.displayClientMessage(text { if (value) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION() }, true)
         }
     }
 
