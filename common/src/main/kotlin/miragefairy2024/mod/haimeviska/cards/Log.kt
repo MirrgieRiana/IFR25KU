@@ -77,8 +77,6 @@ abstract class AbstractHaimeviskaLogBlockCard(configuration: HaimeviskaBlockConf
 
     context(ModContext)
     protected fun initStripped(input: () -> Block) {
-        ResourceLocation.fromNamespaceAndPath("c", "stripped_logs").toBlockTag().generator.registerChild(block)
-        ResourceLocation.fromNamespaceAndPath("c", "stripped_logs").toItemTag().generator.registerChild(item)
         ModEvents.onInitialize {
             StrippableBlockRegistry.register(input(), block())
         }
@@ -105,6 +103,8 @@ class HaimeviskaStrippedLogBlockCard(configuration: HaimeviskaBlockConfiguration
     override fun init() {
         super.init()
         registerModelGeneration(block) { it.logWithHorizontal(block()) }
+        ResourceLocation.fromNamespaceAndPath("c", "stripped_logs").toBlockTag().generator.registerChild(block)
+        ResourceLocation.fromNamespaceAndPath("c", "stripped_logs").toItemTag().generator.registerChild(item)
         initStripped(LOG.block)
     }
 }
@@ -129,6 +129,8 @@ class HaimeviskaStrippedWoodBlockCard(configuration: HaimeviskaBlockConfiguratio
     override fun init() {
         super.init()
         registerModelGeneration(STRIPPED_LOG.block) { it.wood(block()) }
+        ResourceLocation.fromNamespaceAndPath("c", "stripped_woods").toBlockTag().generator.registerChild(block)
+        ResourceLocation.fromNamespaceAndPath("c", "stripped_woods").toItemTag().generator.registerChild(item)
         initStripped(WOOD.block)
         initWood(STRIPPED_LOG.item)
     }
