@@ -1,3 +1,5 @@
+import kotlin.math.abs
+
 private class MarkdownScope {
     val strings = mutableListOf<String>()
 }
@@ -18,68 +20,433 @@ private fun markdown(block: MarkdownScope.() -> Unit) = block.strings.joinToStri
 context(MarkdownScope) private fun h1(string: String) = "# $string"
 context(MarkdownScope) private fun h2(string: String) = "## $string"
 context(MarkdownScope) private fun h3(string: String) = "### $string"
+context(MarkdownScope) private fun br(count: Int) = (1..count).map { "<br>" }.joinToString("\n") { it }
 context(MarkdownScope) private val hr get() = "---"
 context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.joinToString("\n") { "- $it" }
 
+context(MarkdownScope)
+fun f(indent: Int, width: Int, src: String, poem1: String, poem2: String): String {
+    return """
+<center>
+  <img style="float: ${if (indent < 0) "right" else "left"};" width="${abs(indent)}" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
+  <table><tr><td width="$width">
+    <img style="float: left; image-rendering: pixelated;" width="48" src="$src"><font face="serif"><b>${"&nbsp;".repeat(4)}$poem1</b><br>
+    <i><font size="-1">${"&nbsp;".repeat(16)}“$poem2”</font></i></font>
+  </td></tr></table>
+</center>
+    """.trim()
+}
+
 fun getModrinthBody(): String {
     return markdown {
-        !h1("IFR25KU")
-        !"""An unofficial fork of "[MirageFairy2024](https://modrinth.com/mod/miragefairy2024)," a Minecraft mod for the MirageFairy project, created by Yoruno Kakera."""
-        !"This MOD is compatible with save data from the original MirageFairy2024."
-        !"Therefore, it cannot be installed simultaneously due to conflicts."
-        !h2("Current Status(November 2024)")
-        !li {
-            !"The original MirageFairy2024 began development in Japan in November 2023."
-            !"MF24KU is a MOD derived from MirageFairy2024 in November 2024."
-            !"With 14 releases, the MOD's content is moderately rich."
-            !"But, there are still many planned contents yet to be developed."
-            !"This MOD is still in beta, with a full release planned for 2025 or later."
-        }
-        !h2("Experience provided by this MOD")
-        !"This MOD adds various content, including items, blocks, and world generations, that express the MirageFairy world."
-        !h2("MirageFairy's Story")
-        !"MirageFairy unfolds in a science fiction world governed by fantastical physical laws. As humanity ventured into space, they discovered beings known as fairies on a distant planet. Through the study of their supernatural abilities, science and technology have grown dramatically. In this universe, humans and fairies interact in many places, and humans acquire advanced technology. Human civilization would eventually face an end due to a planetary-scale environmental collapse called 'local vacuum collapse.'"
-        !"The storyline of MirageFairy2024 is set on a planet where plants have become wild after being modified by the ancient civilization known as the Fairy Research Institute."
-        !h2("MOD Features")
-        !h3("Crops and Breedings")
-        !li {
-            !"Adds original crops and their cultivation."
-            !"Introduces a crop-crossing mechanism that allows improved crop varieties."
-        }
-        !h3("Fairies and Passive Skills")
-        !li {
-            !"""Adds "fairies," which are symbolic items of this MOD."""
-            !"Fairies have motifs such as fire, stone, chicken, and red-purple glazed terracotta."
-            !"Possessing fairies grants passive skills that provide buffs to players."
-            !"Fairies can be obtained from original crops, specifically Mirage flowers."
-        }
-        !h3("Erg and Erg Craft(Unavailable)")
-        !li {
-            !"""Adds "Erg," a substance embodying concepts or meanings."""
-            !"Allows manipulation of concepts through processing Erg."
-            !"Allows transformation between fairies and Erg."
-        }
-        !h3("Fairy Quests")
-        !li {
-            !"Adds Fairy Quests that tell the story of MirageFairy."
-            !"They are just card items that simply convert specific fairies into some resources as rewards."
-        }
-        !h3("Fairy Weapons and Sigils(Unavailable)")
-        !li {
-            !"Adds fairy weapons that can be enhanced by fairy abilities."
-            !"Inscribing sigils on fairy weapons allows customizable enhancements."
-            !"Career of summoning fairies is necessary to activate sigils."
-        }
-        !h2("Documentation")
-        !"The specifications of this MOD are officially documented in Japanese only in [CHANGELOG.md](https://github.com/MirrgieRiana/MirageFairy2024-Kakera-Unofficial/blob/main/CHANGELOG.md)."
-        !"There is currently no comprehensive official documentation explaining the specifications of this MOD at a specific point in time, and the only available resources are unofficial wikis."
-        !h2("Support and Important Information")
-        !li {
-            !"Official support for this MOD is exclusively available in Japanese."
-            !"Any discovered bugs can be reported through the official issue tracker."
-            !"Proposals impacting the game balance should be discussed in Japanese through the official issue tracker."
-        }
+
+        !h2("Prologue")
+
+        !br(3)
+
+        !"""<!-- <center><font face="serif" size="+3">There were “fairies” on that planet.</font></center> -->"""
+
+        !"""<center><img alt="Toast Top Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png"></center>"""
+
+        !"""<center><font size="+2"><img style="image-rendering: pixelated;" width="32" src="https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png">&nbsp;&nbsp;Dreamed of a new fairy!</font></center>"""
+
+        !"""<center><img alt="Toast Bottom Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png"></center>"""
+
+        !br(4)
+
+        !"""
+<center><table><tr><td width="700">
+  <img style="float: left;" alt="Portrait of Mirage fairy" src="https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp">
+  <p>
+    <font face="serif" size="-1"><b>Monocots ― Order Miragales ― Family Miragaceae</b></font><br>
+    <font face="serif" size="+3"><b>Mirage</b></font>
+  </p>
+  <p><font face="serif">A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”</font></p>
+  <p><font face="serif">Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.</font></p>
+</td></tr></table></center>
+        """.trim()
+
+        !br(2)
+
+        !"""<center><font face="serif" size="+3">What, exactly, is the true nature of fairies?</font></center>"""
+
+        !br(8)
+
+        !"""![Fairy Quest Card Top Frame](https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png)"""
+
+        !br(1)
+
+        !"""<center><font face="serif" size="+3">Fatal Accident</font></center>"""
+
+        !br(3)
+
+        !"""<center><img alt="A city eroded by Local Vacuum Decay" src="https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp"></center>"""
+
+        !br(1)
+
+        !"""
+<center>………</center>
+<br>
+<center>“Damn it, the vacuum decay reactor was never something humans should have messed with!”</center>
+<br>
+<center>“If someone is reading this, please understand.”</center>
+<br>
+<center>“The vacuum decay reactor wasn't a safe, environmentally friendly source of energy.”</center>
+<br>
+<center>“One wrong move, and it's a terrifying thing that could wipe out an entire planet.”</center>
+<br>
+<center>“If anyone is in control of the vacuum decay reactor, please stop it now!”</center>
+<br>
+<center>“Before your world ceases to exist!!!”</center>
+        """.trim()
+
+        !br(1)
+
+        !"""![Fairy Quest Card Bottom Frame](https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png)"""
+
+        !br(2)
+
+        !"""<center><font face="serif" size="+3">Why is humanity here now?</font></center>"""
+
+        !br(8)
+
+
+        // フェアリークリスタル
+        !f(
+            -300, 430,
+            "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/fairy_crystal.png?raw=true",
+            "Crystallized soul",
+            "That which makes a creature a creature.",
+        )
+
+        // ファントムの葉
+        !f(
+            300, 340,
+            "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/phantom_leaves.png?raw=true",
+            "The eroding reality",
+            "The precipitating fantasy.",
+        )
+
+        !br(1)
+
+        // ハイメヴィスカ
+        !f(
+            0, 400,
+            "https://cdn.modrinth.com/data/cached_images/4789326b379836f317635052dcac361ff3a07b9e_0.webp",
+            "Do fairy trees have qualia of pain?",
+            "On protecting animals.",
+        )
+
+        !br(1)
+
+        // サラセニア
+        !f(
+            200, 380,
+            "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/block/magic_plant/sarracenia_age3.png?raw=true",
+            "Waiting for a flying creature...",
+            "A place of repose for fairies.",
+        )
+
+        !br(2)
+
+        // ミラジディアン
+        !f(
+            -100, 510,
+            "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/miragidian.png?raw=true",
+            "The great collapse 30,000 years ago",
+            "The dream Miragium saw thirty thousand years ago.",
+        )
+
+        !br(2)
+
+        // 紅天石
+        !f(
+            0, 610,
+            "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/xarpite.png?raw=true",
+            "Binds astral flux with magnetic force",
+            "The black iron chain is fastened into a blood reeking cage for souls.",
+        )
+
+        !br(3)
+
+        // 理天石
+        !f(
+            200, 430,
+            "https://cdn.modrinth.com/data/cached_images/9f481e640f797ca8665bd21e7d39cfcd34ac9ee8.gif",
+            "Class 4 time evolution rule.",
+            "A stone that etches the patterns of time.",
+        )
+
+        !br(3)
+
+        // オーラ反射炉
+        !f(
+            50, 460,
+            "https://cdn.modrinth.com/data/cached_images/ce5ecf74a49ca60c318da7dbccef60bddde3e7a8.png",
+            "Life is essentially inorganic.",
+            "The boundary between life and the inorganic.",
+        )
+
+        !br(4)
+
+        // 蒼天石
+        !f(
+            -50, 590,
+            "https://cdn.modrinth.com/data/cached_images/2edab3f8a66c4c27505aa35c0aeb1c79393098ea.png",
+            "A Turing-complete crystal lattice",
+            "A world where all has been prophesied since the dawn of creation.",
+        )
+
+        !br(5)
+
+        // 局所真空崩壊
+        !f(
+            0, 440,
+            "https://cdn.modrinth.com/data/cached_images/acb14f57121d7f180077eba96b87edcd957e82f4_0.webp",
+            "Stable instability due to anti-entropy.",
+            "Is this the ultimate form of order?",
+        )
+
+        !br(6)
+
+        // ノイズブロック
+        !f(
+            0, 360,
+            "https://cdn.modrinth.com/data/cached_images/dbe6a42399b5a56332e2f96ebd89891b2a95f425.gif",
+            "No one can block that noise.",
+            "No one can block that noise.",
+        )
+
+        !br(8)
+
+        !"""<center><font face="serif" size="+3">A World Ruled by Plants.</font></center>"""
+
+        !br(8)
+
+        !"""<center><font face="serif">The Institute of Fairy Research 2025 Kakera Unofficial</font></center>"""
+
+        !br(1)
+
+        !"""<center><img width="400px" alt="IFR25KU Logo" src="https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp"></center>"""
+
+        !br(8)
+
+        !h2("概要")
+
+        !"""IFR25KUはMirageFairyの世界観に基づいた可能な世界の一つを表現するMODです。"""
+
+        !"""IFR25KUはYoruno Kakeraによる“[MF24KU](https://modrinth.com/mod/miragefairy2024-kakera-unofficial)”の非公式フォークプロジェクトです。"""
+
+        !"""MF24KUは“[MirageFairy2024](https://modrinth.com/mod/miragefairy2024)”の非公式フォークでした。"""
+
+        !"""MirageFairy2024は“MirageFairy”という創作プロジェクトの世界観を表現するMODです。"""
+
         !hr
-        !"Note: This description is automatically updated from [GitHub Actions](https://github.com/MirrgieRiana/MirageFairy2024-Kakera-Unofficial/blob/main/MODRINTH-BODY.md) and cannot be changed manually."
+
+        !"""このMODは、アイテム、ブロック、地形生成物、バイオーム、エンチャント、ゲームメカニズム、その他様々な種類のコンテンツをゲーム内に追加します。"""
+
+        !"""プレイヤーは、このMODを通してMirageFairyの世界観に基づく世界の一つを体験することができます。"""
+
+        !h2("ドキュメント")
+
+        !"""[CHANGELOG.md](https://github.com/MirrgieRiana/IFR25KU/blob/main/CHANGELOG.md)はIFR25KU公式による唯一のすべての仕様が網羅的に記述されたドキュメントです。"""
+
+        !"""最新版における仕様が記述されたドキュメントは公式には存在しませんが、非公式には存在します。"""
+
+        !"""そのようなWebサイトには、以下のものが知られています。"""
+
+        !li {
+            !"""[MFKU非公式Wiki](https://wikiwiki.jp/mifai2024/)"""
+        }
+
+        !h2("冒険の手引き")
+
+        !"""あなたはこのMODで次に何をしますか？"""
+
+        !"""Lキーで進捗のGUIを開いてください！"""
+
+        !"""![進捗](https://cdn.modrinth.com/data/cached_images/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png)"""
+
+        !"""それはあなたにあなたが次にできることを案内する！"""
+
+        !"""![進捗説明文](https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png)"""
+
+        !h2("バイオーム")
+
+        !"""あなたは世界各地を冒険すると妖精のバイオームに遭遇できます。"""
+
+        !h3("妖精の森")
+
+        !"""世界のそこかしこにある妖精の森。"""
+
+        !"""そこには多くのMirage flowerが咲き誇る。"""
+
+        !"""![妖精の森](https://cdn.modrinth.com/data/cached_images/1952646971c206beff58fa3791a177a2bbc533bd_0.webp)"""
+
+        !"""ここで見つかるファントムフラワーは、栽培は困難であるが、より高度な妖精の召喚の媒体となる。"""
+
+        !"""![ファントムフラワー](https://cdn.modrinth.com/data/cached_images/351c3d683c0ff26eba7d7034011c81f7ba25aaeb_0.webp)"""
+
+        !h3("妖精の樹海")
+
+        !"""ハイメヴィスカが立ち並ぶ鬱蒼とした森。"""
+
+        !"""![妖精の樹海](https://cdn.modrinth.com/data/cached_images/a3dc02ec6167526592cc7cc124cb5b94fa65acda_0.webp)"""
+
+        !"""装備の整わないうちにここを歩くのは非常に危険である。"""
+
+        !h2("妖精")
+
+        !"""あなたは世界の各地で妖精を見つけることができる。"""
+
+        !"""![妖精](https://cdn.modrinth.com/data/cached_images/307ff49a23763570f0c5070e5de25f574e68aaad.png)"""
+
+        !"""妖精は様々な能力を持っている。"""
+
+        !"""![光の妖精](https://cdn.modrinth.com/data/cached_images/25c57e881ae19dd5a84754a38fcce627e95244bc.png)"""
+
+        !"""![矢の妖精](https://cdn.modrinth.com/data/cached_images/e4dc387c8958f81cbe3c0495d11d64d508be1d60.png)"""
+
+        !"""光の妖精は明るい場所であなたの歩行の速度を上げ、矢の妖精は無条件であなたに弓矢のダメージを増加する効果を与える。"""
+
+        !hr
+
+        !"""この世界は妖精で満ち溢れています。"""
+
+        !"""様々な自然物や人工物に触れ合いましょう！"""
+
+        !"""![妖精の夢のトースト](https://cdn.modrinth.com/data/cached_images/40f8d08f89553eebaa3e70022824a233f0b4b128.png)"""
+
+        !"""あなたはレアリティーの低い妖精を見つけてすぐに受け取ることができる！"""
+
+        !hr
+
+        !"""Kキーでソウルストリームを開き、トップのスロットに妖精を配置してください！"""
+
+        !"""![ソウルストリーム](https://cdn.modrinth.com/data/cached_images/ebe833acd596054213b7f89081701788fd61f780.png)"""
+
+        !"""それらはあなたに猛烈な恩恵を与える！"""
+
+        !hr
+
+        !"""妖精の能力が足りないですか？"""
+
+        !"""同じ妖精を複数所持すると、妖精の能力が強化されます！"""
+
+        !"""![強化された砂糖の妖精](https://cdn.modrinth.com/data/cached_images/41c353e38c47a2cde38e6adcd3689499dd385c6a.png)"""
+
+        !"""ミラージュフラワーを栽培し、花粉を手に入れてください！"""
+
+        !"""![ミラージュの花粉](https://cdn.modrinth.com/data/cached_images/e75c326da1b6479677f559f6ed4dbe824d4409e0.png)"""
+
+        !"""ミラージュの花粉はあなたが手に入れた「妖精の夢」に従ってランダムに妖精をポップします。"""
+
+        !"""妖精はいくらでも圧縮することができます。"""
+
+        !"""![妖精の凝縮](https://cdn.modrinth.com/data/cached_images/e9a521f0229af711da664abfef1606029d03cc8a.png)"""
+
+        !h2("魔法植物")
+
+        !"""この惑星にはミステリアスな植物が生えています。"""
+
+        !"""![Fairy Ring](https://cdn.modrinth.com/data/cached_images/94f160e46960c4414e032ba26f7e6202f7a9b370_0.webp)"""
+
+        !"""それらは右クリックでいくつかの種類の農作物が収穫可能です。"""
+
+        !hr
+
+        !"""天然の魔法植物はランダムな特性ビットを持っています。"""
+
+        !"""![魔法植物の特性](https://cdn.modrinth.com/data/cached_images/afcf48c58e957e5c4220f24cbb04fa9f51fa5666.png)"""
+
+        !"""それらを隣接して植えると、交配が発生します。"""
+
+        !"""![隣接して生えている魔法植物](https://cdn.modrinth.com/data/cached_images/80dacc16b262d5f8330c9f98c2ed25c4627005f8.png)"""
+
+        !"""あなたは25%の確率で両親から両方の特性ビットを貰った種子を得るだろう！"""
+
+        !"""![品種改良済みの種子](https://cdn.modrinth.com/data/cached_images/370006cc1896973853bf59445d1033236299d273.png)"""
+
+        !hr
+
+        !"""あなたが冒険の過程であなたの持ち物があふれたとき、植物カバンはあなたを助けるだろう。"""
+
+        !"""![Replace this with a description](https://cdn.modrinth.com/data/cached_images/09f4d27b1266da03d002b7de7f3c6fbf19f821e8.png)"""
+
+        !hr
+
+        !"""魔法植物にはたくさんの種類がある。"""
+
+        !"""![多くの種類の魔法植物](https://cdn.modrinth.com/data/cached_images/c9532c1ed9c69499d650754522ebe8b65ac94a7f.png)"""
+
+        !"""あなたは「交雑」の特性を使って同じ科に属する異なる2種のそれらで品種改良ができる！"""
+
+        !h2("地形生成物")
+
+        !"""あなたはオーバーワールドを旅しているとき、旧世代の遺構を見つけるだろう。"""
+
+        !"""![風化した旧世代の遺構](https://cdn.modrinth.com/data/cached_images/ba4ea56b35cac23f703ae12639ae4c5e755f2bf2_0.webp)"""
+
+        !"""怪しい砂利をブラシで掘ってみましょう！"""
+
+        !"""あなたは有用な素材とともに、鍾乳洞の遺跡の地図を見つけることができるかもしれません！"""
+
+        !"""![鍾乳洞の遺跡](https://cdn.modrinth.com/data/cached_images/a0b179287f9ac8beded0e4037cc4788dc3d836ba_0.webp)"""
+
+        !hr
+
+        !"""世界にがれきが追加されています！"""
+
+        !"""![がれき](https://cdn.modrinth.com/data/cached_images/504ce1940464d214a2f3e725bb02ce88758d8974.png)"""
+
+        !"""それらにはバニラの序盤の素材や、MODの固有素材が含まれています。"""
+
+        !"""あなたはZキーによってアイテムを地面に設置することができます。"""
+
+        // TODO
+
+        !h2("互換性")
+
+        !"""IFR25KUはMF24KUと同一のmodidを共有しており、ワールドデータに互換性があります。"""
+
+        !"""IFR25KU v23.23.0はMF24KU v22.22.0とほとんど同等のコンテンツを持っており、MF24KUのワールドをIFR25KUで読み込むことができます。"""
+
+        !"""技術的には同一のMODとして扱われており、競合を引き起こすため、IFR25KUとMF24KUを同時にインストールしてはいけません。"""
+
+        !h2("MF24KUとの関係は？")
+
+        !"""
+```
+■
+┣ MirageFairy Official
+┃　┣ Project: MirageFairy
+┃　┣ MOD: MirageFairy2019
+┃　┣ MOD: MirageFairy2023
+┃　┗ MOD: MirageFairy2024
+┗ ★MirageFairy Unofficial Fork★
+　　┣ MFKU Official
+　　┃　┣ Project: MFKU
+　　┃　┗ MOD: MF24KU
+　　┗ ★MFKU Unofficial Fork★
+　　　　┗ ★IFRKU Official★
+　　　　　　┣ Project: IFRKU
+　　　　　　┗ ★MOD: IFR25KU★
+```
+        """.trim()
+
+        !"""IFR25KUはMFKU公式でもMirageFairy公式でもありません。"""
+
+        !h2("サポート")
+
+        !"""MODのサポートはDiscord上で受け付けています。"""
+
+        !"""IFR25KUはそのすべてが日本人によって開発されており、サポートは主に日本語で受け付けています。"""
+
+        !"""日本語以外の言語によるサポートは、間にAIによる翻訳が存在するため、我々の対応は流暢でないかもしれません。"""
+
+        !hr
+
+        !"""Note: This description is automatically updated from [GitHub Actions](https://github.com/MirrgieRiana/IFR25KU/blob/main/MODRINTH-BODY.md) and cannot be changed manually."""
+
     }
 }
