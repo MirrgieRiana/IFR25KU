@@ -37,7 +37,7 @@
 <body>
 <h1>IFR25KU Lang Table</h1>
 <p>
-    Search: <input type="text" id="filter" style="width: 30em;">
+    <label for="filter">Search:</label> <input type="text" id="filter" style="width: 30em;">
 </p>
 <table id="langTable">
     <colgroup>
@@ -4481,11 +4481,26 @@ Rumeri</td>
     </tbody>
 </table>
 <script>
+    function getPageParameter(key) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(key);
+    }
+
+    function setPageParameter(key, value) {
+        const url = new URL(window.location.href);
+        if (value == null || value === "") {
+            url.searchParams.delete(key);
+        } else {
+            url.searchParams.set(key, value);
+        }
+        history.replaceState(null, "", url);
+    }
+
     (function() {
         const input = document.getElementById('filter');
         const tbody = document.getElementById('lang_table');
 
-        input.addEventListener('keydown', function(e) {
+        function search() {
             let regex;
             try {
                 regex = new RegExp(input.value);
@@ -4499,7 +4514,18 @@ Rumeri</td>
             for (const tr of tbody.rows) {
                 tr.classList.toggle('hidden', !regex.test(tr.querySelector('td.key').textContent));
             }
+        }
+
+        input.addEventListener('input', function(e) {
+            setPageParameter('q', input.value);
+            search();
         });
+
+        const initial = getPageParameter('q');
+        if (initial != null) {
+            input.value = initial;
+        }
+        search();
     })();
 </script>
 </body>
