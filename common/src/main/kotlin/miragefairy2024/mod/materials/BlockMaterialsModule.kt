@@ -71,6 +71,7 @@ open class BlockMaterialCard(
     private val mapColor: MapColor,
     private val hardness: Float,
     private val resistance: Float,
+    val ore: Ore? = null,
 ) {
     companion object {
         val entries = mutableListOf<BlockMaterialCard>()
@@ -84,14 +85,14 @@ open class BlockMaterialCard(
         val XARPITE_BLOCK = !BlockMaterialCard(
             "xarpite_block", EnJa("Xarpite Block", "紅天石ブロック"),
             PoemList(2).poem(EnJa("Loss and reconstruction of perception", "夢の世界の如き紅。")),
-            MapColor.NETHER, 3.0F, 3.0F,
+            MapColor.NETHER, 3.0F, 3.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.XARPITE),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.XARPITE.item, item)
         }
         val MIRANAGITE_BLOCK = !BlockMaterialCard(
             "miranagite_block", EnJa("Miranagite Block", "蒼天石ブロック"),
             PoemList(2).poem(EnJa("Passivation confines discontinuous space", "虚空に導かれし、神域との接合点。")),
-            MapColor.LAPIS, 3.0F, 3.0F,
+            MapColor.LAPIS, 3.0F, 3.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.MIRANAGITE),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.MIRANAGITE.item, item)
         }
@@ -147,28 +148,28 @@ open class BlockMaterialCard(
         val CHAOS_STONE_BLOCK = !BlockMaterialCard(
             "chaos_stone_block", EnJa("Chaos Stone Block", "混沌の石ブロック"),
             PoemList(4).poem(EnJa("The eye of entropy.", "無秩序の目。")),
-            MapColor.TERRACOTTA_ORANGE, 5.0F, 5.0F,
+            MapColor.TERRACOTTA_ORANGE, 5.0F, 5.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.CHAOS_STONE),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.CHAOS_STONE.item, item)
         }
         val NOISE_BLOCK = !BlockMaterialCard(
             "noise_block", EnJa("Noise Block", "ノイズブロック"),
             PoemList(5).poem(EnJa("No one can block that noise.", "誰もその雑音を止めることはできない。")),
-            MapColor.COLOR_GRAY, 8.0F, 8.0F,
+            MapColor.COLOR_GRAY, 8.0F, 8.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.NOISE),
         ).needTool(ToolType.NOISE).soulStream().init {
             registerCompressionRecipeGeneration(MaterialCard.NOISE.item, item)
         }
         val MIRAGIDIAN_BLOCK = !BlockMaterialCard(
             "miragidian_block", EnJa("Miragidian Block", "ミラジディアンブロック"),
             PoemList(4).poem(EnJa("The wall feels like it's protecting us", "その身に宿る、黒曜石の魂。")),
-            MapColor.TERRACOTTA_BLUE, 120.0F, 1200.0F,
+            MapColor.TERRACOTTA_BLUE, 120.0F, 1200.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.MIRAGIDIAN),
         ).needTool(ToolType.PICKAXE, ToolLevel.DIAMOND).noBurn().soulStream().beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.MIRAGIDIAN.item, item)
         }
         val LUMINITE_BLOCK = !object : BlockMaterialCard(
             "luminite_block", EnJa("Luminite Block", "ルミナイトブロック"),
             PoemList(4).poem(EnJa("Catalytic digestion of astral vortices", "光り輝く魂のエネルギー。")),
-            MapColor.DIAMOND, 6.0F, 6.0F,
+            MapColor.DIAMOND, 6.0F, 6.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.LUMINITE),
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().lightLevel { 15 }.isRedstoneConductor { _, _, _ -> false }
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
@@ -207,7 +208,7 @@ open class BlockMaterialCard(
         val FAIRY_CRYSTAL_GLASS = !object : BlockMaterialCard(
             "fairy_crystal_glass", EnJa("Fairy Crystal Glass", "フェアリークリスタルガラス"),
             PoemList(2).poem(EnJa("It is displaying the scene behind it.", "家の外を映し出す鏡。")),
-            MapColor.DIAMOND, 1.5F, 1.5F,
+            MapColor.DIAMOND, 1.5F, 1.5F, ore = Ore(Shape.STORAGE_BLOCKS, Material.FAIRY_CRYSTAL),
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().instrument(NoteBlockInstrument.HAT).noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never)
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = FairyCrystalGlassBlock(properties)
@@ -293,6 +294,11 @@ open class BlockMaterialCard(
         item.registerPoemGeneration(poemList)
 
         initLootTableGeneration()
+
+        if (ore != null) {
+            ore.tag.generator.registerChild(item)
+            ore.shape.tag.generator.registerChild(ore.tag)
+        }
 
         initializers.forEach {
             it(this@ModContext)
