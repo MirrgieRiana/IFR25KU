@@ -4,7 +4,7 @@
   "group": "miragefairy2024:miragium_nugget",
   "ingredients": [
     {
-      "item": "miragefairy2024:miragium_ingot"
+      "tag": "c:ingots/miragium"
     }
   ],
   "result": {

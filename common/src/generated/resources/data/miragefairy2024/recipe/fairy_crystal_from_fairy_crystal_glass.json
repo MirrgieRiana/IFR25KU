@@ -4,7 +4,7 @@
   "group": "miragefairy2024:fairy_crystal",
   "ingredients": [
     {
-      "item": "miragefairy2024:fairy_crystal_glass"
+      "tag": "c:storage_blocks/fairy_crystal"
     }
   ],
   "result": {

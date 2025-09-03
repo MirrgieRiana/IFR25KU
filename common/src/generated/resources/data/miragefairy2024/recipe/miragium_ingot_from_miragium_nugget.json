@@ -4,31 +4,31 @@
   "group": "miragefairy2024:miragium_ingot",
   "ingredients": [
     {
-      "item": "miragefairy2024:miragium_nugget"
+      "tag": "c:nuggets/miragium"
     },
     {
-      "item": "miragefairy2024:miragium_nugget"
+      "tag": "c:nuggets/miragium"
     },
     {
-      "item": "miragefairy2024:miragium_nugget"
+      "tag": "c:nuggets/miragium"
     },
     {
-      "item": "miragefairy2024:miragium_nugget"
+      "tag": "c:nuggets/miragium"
     },
     {
-      "item": "miragefairy2024:miragium_nugget"
+      "tag": "c:nuggets/miragium"
     },
     {
-      "item": "miragefairy2024:miragium_nugget"
+      "tag": "c:nuggets/miragium"
     },
     {
-      "item": "miragefairy2024:miragium_nugget"
+      "tag": "c:nuggets/miragium"
     },
     {
-      "item": "miragefairy2024:miragium_nugget"
+      "tag": "c:nuggets/miragium"
     },
     {
-      "item": "miragefairy2024:miragium_nugget"
+      "tag": "c:nuggets/miragium"
     }
   ],
   "result": {

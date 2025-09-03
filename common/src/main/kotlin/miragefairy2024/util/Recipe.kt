@@ -38,6 +38,7 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.item.crafting.CraftingBookCategory
 import net.minecraft.world.item.crafting.CraftingInput
 import net.minecraft.world.item.crafting.CustomRecipe
+import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.item.crafting.RecipeInput
 import net.minecraft.world.item.crafting.RecipeSerializer
@@ -226,14 +227,21 @@ fun MutableList<ItemStack>.pull(predicate: (ItemStack) -> Boolean): ItemStack? {
 // Others
 
 context(ModContext)
-fun registerCompressionRecipeGeneration(lowerItem: () -> Item, higherItem: () -> Item, count: Int = 9, noGroup: Boolean = false) {
+fun registerCompressionRecipeGeneration(
+    lowerItem: () -> Item,
+    lowerIngredient: () -> Ingredient,
+    higherItem: () -> Item,
+    higherIngredient: () -> Ingredient,
+    count: Int = 9,
+    noGroup: Boolean = false,
+) {
     registerShapelessRecipeGeneration(higherItem, count = 1) {
         repeat(count) {
-            requires(lowerItem)
+            requires(lowerIngredient())
         }
     }.noGroup(noGroup) on lowerItem from lowerItem
     registerShapelessRecipeGeneration(lowerItem, count = count) {
-        requires(higherItem)
+        requires(higherIngredient())
     }.noGroup(noGroup) on higherItem from higherItem
 }
 

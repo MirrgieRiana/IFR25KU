@@ -4,7 +4,7 @@
   "group": "miragefairy2024:tiny_bismuth_dust",
   "ingredients": [
     {
-      "item": "miragefairy2024:bismuth_dust"
+      "tag": "c:dusts/bismuth"
     }
   ],
   "result": {

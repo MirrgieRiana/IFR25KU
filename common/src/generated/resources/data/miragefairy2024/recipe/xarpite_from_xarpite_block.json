@@ -4,7 +4,7 @@
   "group": "miragefairy2024:xarpite",
   "ingredients": [
     {
-      "item": "miragefairy2024:xarpite_block"
+      "tag": "c:storage_blocks/xarpite"
     }
   ],
   "result": {

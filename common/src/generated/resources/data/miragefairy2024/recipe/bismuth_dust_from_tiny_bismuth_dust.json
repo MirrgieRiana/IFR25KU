@@ -4,31 +4,31 @@
   "group": "miragefairy2024:bismuth_dust",
   "ingredients": [
     {
-      "item": "miragefairy2024:tiny_bismuth_dust"
+      "tag": "c:tiny_dusts/bismuth"
     },
     {
-      "item": "miragefairy2024:tiny_bismuth_dust"
+      "tag": "c:tiny_dusts/bismuth"
     },
     {
-      "item": "miragefairy2024:tiny_bismuth_dust"
+      "tag": "c:tiny_dusts/bismuth"
     },
     {
-      "item": "miragefairy2024:tiny_bismuth_dust"
+      "tag": "c:tiny_dusts/bismuth"
     },
     {
-      "item": "miragefairy2024:tiny_bismuth_dust"
+      "tag": "c:tiny_dusts/bismuth"
     },
     {
-      "item": "miragefairy2024:tiny_bismuth_dust"
+      "tag": "c:tiny_dusts/bismuth"
     },
     {
-      "item": "miragefairy2024:tiny_bismuth_dust"
+      "tag": "c:tiny_dusts/bismuth"
     },
     {
-      "item": "miragefairy2024:tiny_bismuth_dust"
+      "tag": "c:tiny_dusts/bismuth"
     },
     {
-      "item": "miragefairy2024:tiny_bismuth_dust"
+      "tag": "c:tiny_dusts/bismuth"
     }
   ],
   "result": {

@@ -4,7 +4,7 @@
   "group": "miragefairy2024:noise",
   "ingredients": [
     {
-      "item": "miragefairy2024:noise_block"
+      "tag": "c:storage_blocks/noise"
     }
   ],
   "result": {

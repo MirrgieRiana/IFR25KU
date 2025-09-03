@@ -1172,29 +1172,29 @@ fun initMaterialsModule() {
     }
 
     // ミラジウム圧縮
-    registerCompressionRecipeGeneration(MaterialCard.MIRAGIUM_NUGGET.item, MaterialCard.MIRAGIUM_INGOT.item)
+    registerCompressionRecipeGeneration(MaterialCard.MIRAGIUM_NUGGET.item, { MaterialCard.MIRAGIUM_NUGGET.ore!!.ingredient }, MaterialCard.MIRAGIUM_INGOT.item, { MaterialCard.MIRAGIUM_INGOT.ore!!.ingredient })
 
     // ミラージュの花粉圧縮
-    registerCompressionRecipeGeneration(MaterialCard.TINY_MIRAGE_FLOUR.item, MaterialCard.MIRAGE_FLOUR.item, noGroup = true)
-    registerCompressionRecipeGeneration(MaterialCard.MIRAGE_FLOUR.item, MaterialCard.MIRAGE_FLOUR_OF_NATURE.item, noGroup = true)
-    registerCompressionRecipeGeneration(MaterialCard.MIRAGE_FLOUR_OF_NATURE.item, MaterialCard.MIRAGE_FLOUR_OF_EARTH.item, noGroup = true)
-    registerCompressionRecipeGeneration(MaterialCard.MIRAGE_FLOUR_OF_EARTH.item, MaterialCard.MIRAGE_FLOUR_OF_UNDERWORLD.item, noGroup = true)
-    registerCompressionRecipeGeneration(MaterialCard.MIRAGE_FLOUR_OF_UNDERWORLD.item, MaterialCard.MIRAGE_FLOUR_OF_SKY.item, noGroup = true)
-    registerCompressionRecipeGeneration(MaterialCard.MIRAGE_FLOUR_OF_SKY.item, MaterialCard.MIRAGE_FLOUR_OF_UNIVERSE.item, noGroup = true)
-    registerCompressionRecipeGeneration(MaterialCard.MIRAGE_FLOUR_OF_UNIVERSE.item, MaterialCard.MIRAGE_FLOUR_OF_TIME.item, noGroup = true)
+    registerCompressionRecipeGeneration(MaterialCard.TINY_MIRAGE_FLOUR.item, { MaterialCard.TINY_MIRAGE_FLOUR.item().toIngredient() }, MaterialCard.MIRAGE_FLOUR.item, { MaterialCard.MIRAGE_FLOUR.item().toIngredient() }, noGroup = true)
+    registerCompressionRecipeGeneration(MaterialCard.MIRAGE_FLOUR.item, { MaterialCard.MIRAGE_FLOUR.item().toIngredient() }, MaterialCard.MIRAGE_FLOUR_OF_NATURE.item, { MaterialCard.MIRAGE_FLOUR_OF_NATURE.item().toIngredient() }, noGroup = true)
+    registerCompressionRecipeGeneration(MaterialCard.MIRAGE_FLOUR_OF_NATURE.item, { MaterialCard.MIRAGE_FLOUR_OF_NATURE.item().toIngredient() }, MaterialCard.MIRAGE_FLOUR_OF_EARTH.item, { MaterialCard.MIRAGE_FLOUR_OF_EARTH.item().toIngredient() }, noGroup = true)
+    registerCompressionRecipeGeneration(MaterialCard.MIRAGE_FLOUR_OF_EARTH.item, { MaterialCard.MIRAGE_FLOUR_OF_EARTH.item().toIngredient() }, MaterialCard.MIRAGE_FLOUR_OF_UNDERWORLD.item, { MaterialCard.MIRAGE_FLOUR_OF_UNDERWORLD.item().toIngredient() }, noGroup = true)
+    registerCompressionRecipeGeneration(MaterialCard.MIRAGE_FLOUR_OF_UNDERWORLD.item, { MaterialCard.MIRAGE_FLOUR_OF_UNDERWORLD.item().toIngredient() }, MaterialCard.MIRAGE_FLOUR_OF_SKY.item, { MaterialCard.MIRAGE_FLOUR_OF_SKY.item().toIngredient() }, noGroup = true)
+    registerCompressionRecipeGeneration(MaterialCard.MIRAGE_FLOUR_OF_SKY.item, { MaterialCard.MIRAGE_FLOUR_OF_SKY.item().toIngredient() }, MaterialCard.MIRAGE_FLOUR_OF_UNIVERSE.item, { MaterialCard.MIRAGE_FLOUR_OF_UNIVERSE.item().toIngredient() }, noGroup = true)
+    registerCompressionRecipeGeneration(MaterialCard.MIRAGE_FLOUR_OF_UNIVERSE.item, { MaterialCard.MIRAGE_FLOUR_OF_UNIVERSE.item().toIngredient() }, MaterialCard.MIRAGE_FLOUR_OF_TIME.item, { MaterialCard.MIRAGE_FLOUR_OF_TIME.item().toIngredient() }, noGroup = true)
 
     // ビスマスの粉圧縮
-    registerCompressionRecipeGeneration(MaterialCard.TINY_BISMUTH_DUST.item, MaterialCard.BISMUTH_DUST.item)
+    registerCompressionRecipeGeneration(MaterialCard.TINY_BISMUTH_DUST.item, { MaterialCard.TINY_BISMUTH_DUST.ore!!.ingredient }, MaterialCard.BISMUTH_DUST.item, { MaterialCard.BISMUTH_DUST.ore!!.ingredient })
 
     // ミナ両替
-    registerCompressionRecipeGeneration(MaterialCard.MINA_1.item, MaterialCard.MINA_5.item, 5)
-    registerCompressionRecipeGeneration(MaterialCard.MINA_5.item, MaterialCard.MINA_10.item, 2)
-    registerCompressionRecipeGeneration(MaterialCard.MINA_10.item, MaterialCard.MINA_50.item, 5)
-    registerCompressionRecipeGeneration(MaterialCard.MINA_50.item, MaterialCard.MINA_100.item, 2)
-    registerCompressionRecipeGeneration(MaterialCard.MINA_100.item, MaterialCard.MINA_500.item, 5)
-    registerCompressionRecipeGeneration(MaterialCard.MINA_500.item, MaterialCard.MINA_1000.item, 2)
-    registerCompressionRecipeGeneration(MaterialCard.MINA_1000.item, MaterialCard.MINA_5000.item, 5)
-    registerCompressionRecipeGeneration(MaterialCard.MINA_5000.item, MaterialCard.MINA_10000.item, 2)
+    registerCompressionRecipeGeneration(MaterialCard.MINA_1.item, { MaterialCard.MINA_1.item().toIngredient() }, MaterialCard.MINA_5.item, { MaterialCard.MINA_5.item().toIngredient() }, 5)
+    registerCompressionRecipeGeneration(MaterialCard.MINA_5.item, { MaterialCard.MINA_5.item().toIngredient() }, MaterialCard.MINA_10.item, { MaterialCard.MINA_10.item().toIngredient() }, 2)
+    registerCompressionRecipeGeneration(MaterialCard.MINA_10.item, { MaterialCard.MINA_10.item().toIngredient() }, MaterialCard.MINA_50.item, { MaterialCard.MINA_50.item().toIngredient() }, 5)
+    registerCompressionRecipeGeneration(MaterialCard.MINA_50.item, { MaterialCard.MINA_50.item().toIngredient() }, MaterialCard.MINA_100.item, { MaterialCard.MINA_100.item().toIngredient() }, 2)
+    registerCompressionRecipeGeneration(MaterialCard.MINA_100.item, { MaterialCard.MINA_100.item().toIngredient() }, MaterialCard.MINA_500.item, { MaterialCard.MINA_500.item().toIngredient() }, 5)
+    registerCompressionRecipeGeneration(MaterialCard.MINA_500.item, { MaterialCard.MINA_500.item().toIngredient() }, MaterialCard.MINA_1000.item, { MaterialCard.MINA_1000.item().toIngredient() }, 2)
+    registerCompressionRecipeGeneration(MaterialCard.MINA_1000.item, { MaterialCard.MINA_1000.item().toIngredient() }, MaterialCard.MINA_5000.item, { MaterialCard.MINA_5000.item().toIngredient() }, 5)
+    registerCompressionRecipeGeneration(MaterialCard.MINA_5000.item, { MaterialCard.MINA_5000.item().toIngredient() }, MaterialCard.MINA_10000.item, { MaterialCard.MINA_10000.item().toIngredient() }, 2)
 
     // ミーニャ⇔ミナ両替
     registerSpecialRecipe("minia_from_mina", 1) { inventory ->
@@ -1230,14 +1230,14 @@ fun initMaterialsModule() {
     }
 
     // フェアリージュエル両替
-    registerCompressionRecipeGeneration(MaterialCard.JEWEL_1.item, MaterialCard.JEWEL_5.item, 5)
-    registerCompressionRecipeGeneration(MaterialCard.JEWEL_5.item, MaterialCard.JEWEL_10.item, 2)
-    registerCompressionRecipeGeneration(MaterialCard.JEWEL_10.item, MaterialCard.JEWEL_50.item, 5)
-    registerCompressionRecipeGeneration(MaterialCard.JEWEL_50.item, MaterialCard.JEWEL_100.item, 2)
-    registerCompressionRecipeGeneration(MaterialCard.JEWEL_100.item, MaterialCard.JEWEL_500.item, 5)
-    registerCompressionRecipeGeneration(MaterialCard.JEWEL_500.item, MaterialCard.JEWEL_1000.item, 2)
-    registerCompressionRecipeGeneration(MaterialCard.JEWEL_1000.item, MaterialCard.JEWEL_5000.item, 5)
-    registerCompressionRecipeGeneration(MaterialCard.JEWEL_5000.item, MaterialCard.JEWEL_10000.item, 2)
+    registerCompressionRecipeGeneration(MaterialCard.JEWEL_1.item, { MaterialCard.JEWEL_1.item().toIngredient() }, MaterialCard.JEWEL_5.item, { MaterialCard.JEWEL_5.item().toIngredient() }, 5)
+    registerCompressionRecipeGeneration(MaterialCard.JEWEL_5.item, { MaterialCard.JEWEL_5.item().toIngredient() }, MaterialCard.JEWEL_10.item, { MaterialCard.JEWEL_10.item().toIngredient() }, 2)
+    registerCompressionRecipeGeneration(MaterialCard.JEWEL_10.item, { MaterialCard.JEWEL_10.item().toIngredient() }, MaterialCard.JEWEL_50.item, { MaterialCard.JEWEL_50.item().toIngredient() }, 5)
+    registerCompressionRecipeGeneration(MaterialCard.JEWEL_50.item, { MaterialCard.JEWEL_50.item().toIngredient() }, MaterialCard.JEWEL_100.item, { MaterialCard.JEWEL_100.item().toIngredient() }, 2)
+    registerCompressionRecipeGeneration(MaterialCard.JEWEL_100.item, { MaterialCard.JEWEL_100.item().toIngredient() }, MaterialCard.JEWEL_500.item, { MaterialCard.JEWEL_500.item().toIngredient() }, 5)
+    registerCompressionRecipeGeneration(MaterialCard.JEWEL_500.item, { MaterialCard.JEWEL_500.item().toIngredient() }, MaterialCard.JEWEL_1000.item, { MaterialCard.JEWEL_1000.item().toIngredient() }, 2)
+    registerCompressionRecipeGeneration(MaterialCard.JEWEL_1000.item, { MaterialCard.JEWEL_1000.item().toIngredient() }, MaterialCard.JEWEL_5000.item, { MaterialCard.JEWEL_5000.item().toIngredient() }, 5)
+    registerCompressionRecipeGeneration(MaterialCard.JEWEL_5000.item, { MaterialCard.JEWEL_5000.item().toIngredient() }, MaterialCard.JEWEL_10000.item, { MaterialCard.JEWEL_10000.item().toIngredient() }, 2)
 
 }
 

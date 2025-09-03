@@ -4,7 +4,7 @@
   "group": "miragefairy2024:luminite",
   "ingredients": [
     {
-      "item": "miragefairy2024:luminite_block"
+      "tag": "c:storage_blocks/luminite"
     }
   ],
   "result": {

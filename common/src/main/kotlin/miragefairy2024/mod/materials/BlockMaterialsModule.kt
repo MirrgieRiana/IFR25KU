@@ -87,14 +87,14 @@ open class BlockMaterialCard(
             PoemList(2).poem(EnJa("Loss and reconstruction of perception", "夢の世界の如き紅。")),
             MapColor.NETHER, 3.0F, 3.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.XARPITE),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
-            registerCompressionRecipeGeneration(MaterialCard.XARPITE.item, item)
+            registerCompressionRecipeGeneration(MaterialCard.XARPITE.item, { MaterialCard.XARPITE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
         val MIRANAGITE_BLOCK = !BlockMaterialCard(
             "miranagite_block", EnJa("Miranagite Block", "蒼天石ブロック"),
             PoemList(2).poem(EnJa("Passivation confines discontinuous space", "虚空に導かれし、神域との接合点。")),
             MapColor.LAPIS, 3.0F, 3.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.MIRANAGITE),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
-            registerCompressionRecipeGeneration(MaterialCard.MIRANAGITE.item, item)
+            registerCompressionRecipeGeneration(MaterialCard.MIRANAGITE.item, { MaterialCard.MIRANAGITE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
         val MIRANAGITE_TILES = !BlockMaterialCard(
             "miranagite_tiles", EnJa("Miranagite Tiles", "蒼天石タイル"),
@@ -150,21 +150,21 @@ open class BlockMaterialCard(
             PoemList(4).poem(EnJa("The eye of entropy.", "無秩序の目。")),
             MapColor.TERRACOTTA_ORANGE, 5.0F, 5.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.CHAOS_STONE),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
-            registerCompressionRecipeGeneration(MaterialCard.CHAOS_STONE.item, item)
+            registerCompressionRecipeGeneration(MaterialCard.CHAOS_STONE.item, { MaterialCard.CHAOS_STONE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
         val NOISE_BLOCK = !BlockMaterialCard(
             "noise_block", EnJa("Noise Block", "ノイズブロック"),
             PoemList(5).poem(EnJa("No one can block that noise.", "誰もその雑音を止めることはできない。")),
             MapColor.COLOR_GRAY, 8.0F, 8.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.NOISE),
         ).needTool(ToolType.NOISE).soulStream().init {
-            registerCompressionRecipeGeneration(MaterialCard.NOISE.item, item)
+            registerCompressionRecipeGeneration(MaterialCard.NOISE.item, { MaterialCard.NOISE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
         val MIRAGIDIAN_BLOCK = !BlockMaterialCard(
             "miragidian_block", EnJa("Miragidian Block", "ミラジディアンブロック"),
             PoemList(4).poem(EnJa("The wall feels like it's protecting us", "その身に宿る、黒曜石の魂。")),
             MapColor.TERRACOTTA_BLUE, 120.0F, 1200.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.MIRAGIDIAN),
         ).needTool(ToolType.PICKAXE, ToolLevel.DIAMOND).noBurn().soulStream().beaconBase().init {
-            registerCompressionRecipeGeneration(MaterialCard.MIRAGIDIAN.item, item)
+            registerCompressionRecipeGeneration(MaterialCard.MIRAGIDIAN.item, { MaterialCard.MIRAGIDIAN.ore!!.ingredient }, item, { ore!!.ingredient })
         }
         val LUMINITE_BLOCK = !object : BlockMaterialCard(
             "luminite_block", EnJa("Luminite Block", "ルミナイトブロック"),
@@ -174,7 +174,7 @@ open class BlockMaterialCard(
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().lightLevel { 15 }.isRedstoneConductor { _, _, _ -> false }
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
         }.translucent().sound(SoundType.GLASS).needTool(ToolType.PICKAXE, ToolLevel.IRON).beaconBase().init {
-            registerCompressionRecipeGeneration(MaterialCard.LUMINITE.item, item)
+            registerCompressionRecipeGeneration(MaterialCard.LUMINITE.item, { MaterialCard.LUMINITE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
         val DRYWALL = !BlockMaterialCard(
             "drywall", EnJa("Drywall", "石膏ボード"),
@@ -250,7 +250,7 @@ open class BlockMaterialCard(
                 fairyCrystalGlassFrameBlockModel.with(TextureSlot.TEXTURE to "block/" * identifier * "_frame")
             }
 
-            registerCompressionRecipeGeneration(MaterialCard.FAIRY_CRYSTAL.item, item)
+            registerCompressionRecipeGeneration(MaterialCard.FAIRY_CRYSTAL.item, { MaterialCard.FAIRY_CRYSTAL.ore!!.ingredient }, item, { ore!!.ingredient })
         }
     }
 

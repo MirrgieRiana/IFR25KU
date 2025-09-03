@@ -4,7 +4,7 @@
   "group": "miragefairy2024:chaos_stone",
   "ingredients": [
     {
-      "item": "miragefairy2024:chaos_stone_block"
+      "tag": "c:storage_blocks/chaos_stone"
     }
   ],
   "result": {
