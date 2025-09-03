@@ -94,7 +94,9 @@ class TooltipViewerScreen() : BaseOwoScreen<FlowLayout>(text { TOOLTIP_VIEWER_KE
                                             surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
                                             padding(Insets.of(1))
 
-                                            child(Components.item(itemStack))
+                                            child(Components.item(itemStack).apply {
+                                                showOverlay(true)
+                                            })
                                         })
 
                                         child(horizontalSpace(2))
