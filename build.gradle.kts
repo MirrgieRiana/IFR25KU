@@ -138,6 +138,9 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
 }
 
 
+tasks.register("datagen")
+
+
 tasks.register("uploadModrinth")
 
 modrinth {

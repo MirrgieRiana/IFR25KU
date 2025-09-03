@@ -82,6 +82,8 @@ loom {
         }
     }
 }
+rootProject.tasks["datagen"].dependsOn(tasks["runDatagen"])
+rootProject.tasks["datagen"].dependsOn(tasks["runDatagenNeoForge"])
 
 dependencies {
 
