@@ -1258,6 +1258,7 @@ enum class Shape(val path: String, val title: EnJa) {
     GEM("gems", EnJa("Gems", "ジェム")),
     ORE("ores", EnJa("Ores", "鉱石")),
     SHARD("shards", EnJa("Shards", "欠片")),
+    STORAGE_BLOCKS("storage_blocks", EnJa("Storage Blocks", "貯蔵ブロック")),
 
     /** 原石 */
     RAW_MATERIAL("raw_materials", EnJa("Raw Materials", "原石")),
