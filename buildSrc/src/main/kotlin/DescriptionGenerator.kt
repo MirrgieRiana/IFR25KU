@@ -25,7 +25,7 @@ context(MarkdownScope) private val hr get() = "---"
 context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.joinToString("\n") { "- $it" }
 context(MarkdownScope) private fun img(alt: String, src: String) = "![$alt]($src)"
 context(MarkdownScope) private fun center(string: String) = if ("\n" in string) "<center>\n  ${string.replace("\n", "\n  ")}\n</center>" else "<center>$string</center>"
-context(MarkdownScope) private fun serif(string: String) = if (string.startsWith("<font ")) """<font face="serif" ${string.drop(6)}""" else """<font face="serif">$string</font>"""
+context(MarkdownScope) private fun serif(string: String) = """<font face="serif">$string</font>"""
 context(MarkdownScope) private fun size(size: Int, string: String) = """<font size="${String.format("%+d", size)}">$string</font>"""
 
 context(MarkdownScope)
@@ -34,7 +34,7 @@ private fun poem(indent: Int, width: Int, src: String, poem1: String, poem2: Str
         """
 <img style="float: ${if (indent < 0) "right" else "left"};" width="${abs(indent)}" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
 <table><tr><td width="$width">
-  <img style="float: left; image-rendering: pixelated;" width="48" src="$src">${serif("<b>${"&nbsp;".repeat(4)}$poem1</b><br>\n  <i>${size(-1, "${"&nbsp;".repeat(16)}“$poem2”")}</i>")}
+  <img style="float: left; image-rendering: pixelated;" width="48" src="$src">${serif("<b>${"&nbsp;".repeat(4)}$poem1</b><br><i>${size(-1, "${"&nbsp;".repeat(16)}“$poem2”")}</i>")}
 </td></tr></table>
     """.trim()
     )
