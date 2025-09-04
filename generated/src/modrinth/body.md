@@ -6,7 +6,7 @@
 
 <center><img alt="Toast Top Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png"></center>
 
-<center><font size="+2"><img alt="TODO" style="image-rendering: pixelated;" width="32" src="https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png">&nbsp;&nbsp;Dreamed of a new fairy!</font></center>
+<center><font size="+2"><img alt="Fairy icon" style="image-rendering: pixelated;" width="32" src="https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png">&nbsp;&nbsp;Dreamed of a new fairy!</font></center>
 
 <center><img alt="Toast Bottom Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png"></center>
 

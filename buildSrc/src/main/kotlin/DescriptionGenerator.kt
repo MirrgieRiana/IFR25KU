@@ -75,7 +75,7 @@ fun getModrinthBody(): String {
             !3
             //!catchPhrase("There were “fairies” on that planet.")
             !center(img("Toast Top Frame", "https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png", width = 400))
-            !center(size(2, "${img("TODO", "https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png", width = 32, pixelated = true)}&nbsp;&nbsp;Dreamed of a new fairy!")) // TODO
+            !center(size(2, "${img("Fairy icon", "https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png", width = 32, pixelated = true)}&nbsp;&nbsp;Dreamed of a new fairy!"))
             !center(img("Toast Bottom Frame", "https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png", width = 400))
             !4
             !center(
