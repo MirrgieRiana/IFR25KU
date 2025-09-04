@@ -34,21 +34,36 @@ context(MarkdownScope) private fun br(count: Int) = (1..count).map { "<br>" }.mu
 context(MarkdownScope) private operator fun Int.not() = !br(this)
 context(MarkdownScope) private val hr get() = "---"
 context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.map { "- $it" }.multiLine()
-context(MarkdownScope) private fun img(alt: String, src: String) = """<img alt="${alt.escapeHtml()}" src="${src.escapeHtml()}">"""
 context(MarkdownScope) private fun center(string: String) = if ("\n" in string) "<center>\n  ${string.replace("\n", "\n  ")}\n</center>" else "<center>$string</center>"
 context(MarkdownScope) private fun serif(string: String) = """<font face="serif">$string</font>"""
 context(MarkdownScope) private fun size(size: Int, string: String) = """<font size="${String.format("%+d", size)}">$string</font>"""
 
 context(MarkdownScope)
+private fun img(alt: String, src: String, width: Int? = null, float: String? = null, pixelated: Boolean = false): String {
+    return listOf(
+        "img",
+        *listOfNotNull(
+            "alt" to alt,
+            listOfNotNull(
+                if (float != null) "float" to float else null,
+                if (pixelated) "image-rendering" to "pixelated" else null,
+            ).let { entries -> if (entries.isNotEmpty()) "style" to entries.joinToString(" ") { "${it.first}: ${it.second};" } else null },
+            if (width != null) "width" to "$width" else null,
+            "src" to src,
+        ).map { """${it.first}="${it.second.escapeHtml()}"""" }.toTypedArray(),
+    ).joinToString(" ").let { "<$it>" }
+}
+
+context(MarkdownScope)
 private fun catchPhrase(string: String) = center(serif(size(3, string)))
 
 context(MarkdownScope)
-private fun poem(indent: Int, width: Int, src: String, poem1: String, poem2: String): String {
+private fun poem(indent: Int, width: Int, src: String, poem1: String, poem2: String): String { // TODO
     return center(
         """
-<img style="float: ${if (indent < 0) "right" else "left"};" width="${abs(indent)}" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
+${img("Vertical Filler", "https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp", width = abs(indent), float = if (indent < 0) "right" else "left")}
 <table><tr><td width="$width">
-  <img style="float: left; image-rendering: pixelated;" width="48" src="$src">${serif("<b>${"&nbsp;".repeat(4)}$poem1</b><br><i>${size(-1, "${"&nbsp;".repeat(16)}“$poem2”")}</i>")}
+  ${img("TODO", src, width = 48, float = "left", pixelated = true)}${serif("<b>${"&nbsp;".repeat(4)}$poem1</b><br><i>${size(-1, "${"&nbsp;".repeat(16)}“$poem2”")}</i>")}
 </td></tr></table>
     """.trim()
     )
@@ -59,14 +74,14 @@ fun getModrinthBody(): String {
         !h2("Prologue") {
             !3
             //!catchPhrase("There were “fairies” on that planet.")
-            !center("""<img alt="Toast Top Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png">""")
-            !center(size(2, """<img style="image-rendering: pixelated;" width="32" src="https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png">&nbsp;&nbsp;Dreamed of a new fairy!"""))
-            !center("""<img alt="Toast Bottom Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png">""")
+            !center(img("Toast Top Frame", "https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png", width = 400))
+            !center(size(2, "${img("TODO", "https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png", width = 32, pixelated = true)}&nbsp;&nbsp;Dreamed of a new fairy!")) // TODO
+            !center(img("Toast Bottom Frame", "https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png", width = 400))
             !4
             !center(
                 """
 <table><tr><td width="700">
-  <img style="float: left;" alt="Portrait of Mirage fairy" src="https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp">
+  ${img("Portrait of Mirage fairy", "https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp", float = "left")}
   <p>
     ${serif(size(-1, "<b>Monocots ― Order Miragales ― Family Miragaceae</b>"))}<br>
     ${serif(size(3, "<b>Mirage</b>"))}
@@ -83,7 +98,7 @@ fun getModrinthBody(): String {
             !1
             !catchPhrase("Fatal Accident")
             !3
-            !center("""<img alt="A city eroded by Local Vacuum Decay" src="https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp">""")
+            !center(img("A city eroded by Local Vacuum Decay", "https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp"))
             !1
             !listOf(
                 center("………"),
@@ -190,7 +205,7 @@ fun getModrinthBody(): String {
             !8
             !center(serif("The Institute of Fairy Research 2025 Kakera Unofficial"))
             !1
-            !center("""<img width="400px" alt="IFR25KU Logo" src="https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp">""")
+            !center(img("IFR25KU Logo", "https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp", width = 400))
             !8
         }
         !h2("概要") {
