@@ -26,7 +26,7 @@ context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.s
 context(MarkdownScope) private fun img(alt: String, src: String) = """![$alt]($src)"""
 
 context(MarkdownScope)
-fun f(indent: Int, width: Int, src: String, poem1: String, poem2: String): String {
+private fun poem(indent: Int, width: Int, src: String, poem1: String, poem2: String): String {
     return """
 <center>
   <img style="float: ${if (indent < 0) "right" else "left"};" width="${abs(indent)}" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
@@ -88,14 +88,14 @@ fun getModrinthBody(): String {
             !"""<center><font face="serif" size="+3">Why is humanity here now?</font></center>"""
             !br(8)
             // フェアリークリスタル
-            !f(
+            !poem(
                 -300, 430,
                 "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/fairy_crystal.png?raw=true",
                 "Crystallized soul",
                 "That which makes a creature a creature.",
             )
             // ファントムの葉
-            !f(
+            !poem(
                 300, 340,
                 "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/phantom_leaves.png?raw=true",
                 "The eroding reality",
@@ -103,7 +103,7 @@ fun getModrinthBody(): String {
             )
             !br(1)
             // ハイメヴィスカ
-            !f(
+            !poem(
                 0, 400,
                 "https://cdn.modrinth.com/data/cached_images/4789326b379836f317635052dcac361ff3a07b9e_0.webp",
                 "Do fairy trees have qualia of pain?",
@@ -111,7 +111,7 @@ fun getModrinthBody(): String {
             )
             !br(1)
             // サラセニア
-            !f(
+            !poem(
                 200, 380,
                 "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/block/magic_plant/sarracenia_age3.png?raw=true",
                 "Waiting for a flying creature...",
@@ -119,7 +119,7 @@ fun getModrinthBody(): String {
             )
             !br(2)
             // ミラジディアン
-            !f(
+            !poem(
                 -100, 510,
                 "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/miragidian.png?raw=true",
                 "The great collapse 30,000 years ago",
@@ -127,7 +127,7 @@ fun getModrinthBody(): String {
             )
             !br(2)
             // 紅天石
-            !f(
+            !poem(
                 0, 610,
                 "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/xarpite.png?raw=true",
                 "Binds astral flux with magnetic force",
@@ -135,7 +135,7 @@ fun getModrinthBody(): String {
             )
             !br(3)
             // 理天石
-            !f(
+            !poem(
                 200, 430,
                 "https://cdn.modrinth.com/data/cached_images/9f481e640f797ca8665bd21e7d39cfcd34ac9ee8.gif",
                 "Class 4 time evolution rule.",
@@ -143,7 +143,7 @@ fun getModrinthBody(): String {
             )
             !br(3)
             // オーラ反射炉
-            !f(
+            !poem(
                 50, 460,
                 "https://cdn.modrinth.com/data/cached_images/ce5ecf74a49ca60c318da7dbccef60bddde3e7a8.png",
                 "Life is essentially inorganic.",
@@ -151,7 +151,7 @@ fun getModrinthBody(): String {
             )
             !br(4)
             // 蒼天石
-            !f(
+            !poem(
                 -50, 590,
                 "https://cdn.modrinth.com/data/cached_images/2edab3f8a66c4c27505aa35c0aeb1c79393098ea.png",
                 "A Turing-complete crystal lattice",
@@ -159,7 +159,7 @@ fun getModrinthBody(): String {
             )
             !br(5)
             // 局所真空崩壊
-            !f(
+            !poem(
                 0, 440,
                 "https://cdn.modrinth.com/data/cached_images/acb14f57121d7f180077eba96b87edcd957e82f4_0.webp",
                 "Stable instability due to anti-entropy.",
@@ -167,7 +167,7 @@ fun getModrinthBody(): String {
             )
             !br(6)
             // ノイズブロック
-            !f(
+            !poem(
                 0, 360,
                 "https://cdn.modrinth.com/data/cached_images/dbe6a42399b5a56332e2f96ebd89891b2a95f425.gif",
                 "No one can block that noise.",
