@@ -163,7 +163,7 @@ modrinth {
     syncBodyFrom = provider { generatedModrinthBodyFile.asFile.readText() }
 }
 tasks["modrinthSyncBody"].dependsOn(tasks["generateModrinthBody"])
-//tasks["uploadModrinth"].dependsOn(tasks["modrinthSyncBody"]) // TODO Modrinth Bodyの整備待ち
+tasks["uploadModrinth"].dependsOn(tasks["modrinthSyncBody"])
 
 
 tasks.register("fetchMirrgKotlin") {
