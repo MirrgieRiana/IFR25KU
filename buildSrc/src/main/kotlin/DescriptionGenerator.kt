@@ -24,6 +24,7 @@ context(MarkdownScope) private fun h1(string: String, block: MarkdownScope.() ->
 context(MarkdownScope) private fun h2(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("## $string", *block.strings.toTypedArray()).sandwich("").multiLine()
 context(MarkdownScope) private fun h3(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("### $string", *block.strings.toTypedArray()).sandwich("").multiLine()
 context(MarkdownScope) private fun br(count: Int) = (1..count).map { "<br>" }.multiLine()
+context(MarkdownScope) private operator fun Int.not() = !br(this)
 context(MarkdownScope) private val hr get() = "---"
 context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.map { "- $it" }.multiLine()
 context(MarkdownScope) private fun img(alt: String, src: String) = "![$alt]($src)"
@@ -49,12 +50,12 @@ private fun poem(indent: Int, width: Int, src: String, poem1: String, poem2: Str
 fun getModrinthBody(): String {
     return markdown {
         !h2("Prologue") {
-            !br(3)
+            !3
             //!catchPhrase("There were “fairies” on that planet.")
             !center("""<img alt="Toast Top Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png">""")
             !center(size(2, """<img style="image-rendering: pixelated;" width="32" src="https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png">&nbsp;&nbsp;Dreamed of a new fairy!"""))
             !center("""<img alt="Toast Bottom Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png">""")
-            !br(4)
+            !4
             !center(
                 """
 <table><tr><td width="700">
@@ -68,15 +69,15 @@ fun getModrinthBody(): String {
 </td></tr></table>
         """.trim()
             )
-            !br(2)
+            !2
             !catchPhrase("What, exactly, is the true nature of fairies?")
-            !br(8)
+            !8
             !img("Fairy Quest Card Top Frame", "https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png")
-            !br(1)
+            !1
             !catchPhrase("Fatal Accident")
-            !br(3)
+            !3
             !center("""<img alt="A city eroded by Local Vacuum Decay" src="https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp">""")
-            !br(1)
+            !1
             !listOf(
                 center("………"),
                 center("“Damn it, the vacuum decay reactor was never something humans should have messed with!”"),
@@ -86,11 +87,11 @@ fun getModrinthBody(): String {
                 center("“If anyone is in control of the vacuum decay reactor, please stop it now!”"),
                 center("“Before your world ceases to exist!!!”"),
             ).sandwich("<br>").multiLine()
-            !br(1)
+            !1
             !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png")
-            !br(2)
+            !2
             !catchPhrase("Why is humanity here now?")
-            !br(8)
+            !8
             // フェアリークリスタル
             !poem(
                 -300, 430,
@@ -105,7 +106,7 @@ fun getModrinthBody(): String {
                 "The eroding reality",
                 "The precipitating fantasy.",
             )
-            !br(1)
+            !1
             // ハイメヴィスカ
             !poem(
                 0, 400,
@@ -113,7 +114,7 @@ fun getModrinthBody(): String {
                 "Do fairy trees have qualia of pain?",
                 "On protecting animals.",
             )
-            !br(1)
+            !1
             // サラセニア
             !poem(
                 200, 380,
@@ -121,7 +122,7 @@ fun getModrinthBody(): String {
                 "Waiting for a flying creature...",
                 "A place of repose for fairies.",
             )
-            !br(2)
+            !2
             // ミラジディアン
             !poem(
                 -100, 510,
@@ -129,7 +130,7 @@ fun getModrinthBody(): String {
                 "The great collapse 30,000 years ago",
                 "The dream Miragium saw thirty thousand years ago.",
             )
-            !br(2)
+            !2
             // 紅天石
             !poem(
                 0, 610,
@@ -137,7 +138,7 @@ fun getModrinthBody(): String {
                 "Binds astral flux with magnetic force",
                 "The black iron chain is fastened into a blood reeking cage for souls.",
             )
-            !br(3)
+            !3
             // 理天石
             !poem(
                 200, 430,
@@ -145,7 +146,7 @@ fun getModrinthBody(): String {
                 "Class 4 time evolution rule.",
                 "A stone that etches the patterns of time.",
             )
-            !br(3)
+            !3
             // オーラ反射炉
             !poem(
                 50, 460,
@@ -153,7 +154,7 @@ fun getModrinthBody(): String {
                 "Life is essentially inorganic.",
                 "The boundary between life and the inorganic.",
             )
-            !br(4)
+            !4
             // 蒼天石
             !poem(
                 -50, 590,
@@ -161,7 +162,7 @@ fun getModrinthBody(): String {
                 "A Turing-complete crystal lattice",
                 "A world where all has been prophesied since the dawn of creation.",
             )
-            !br(5)
+            !5
             // 局所真空崩壊
             !poem(
                 0, 440,
@@ -169,7 +170,7 @@ fun getModrinthBody(): String {
                 "Stable instability due to anti-entropy.",
                 "Is this the ultimate form of order?",
             )
-            !br(6)
+            !6
             // ノイズブロック
             !poem(
                 0, 360,
@@ -177,13 +178,13 @@ fun getModrinthBody(): String {
                 "No one can block that noise.",
                 "No one can block that noise.",
             )
-            !br(8)
+            !8
             !catchPhrase("A World Ruled by Plants.")
-            !br(8)
+            !8
             !center(serif("The Institute of Fairy Research 2025 Kakera Unofficial"))
-            !br(1)
+            !1
             !center("""<img width="400px" alt="IFR25KU Logo" src="https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp">""")
-            !br(8)
+            !8
         }
         !h2("概要") {
             !"IFR25KUはMirageFairyの世界観に基づいた可能な世界の一つを表現するMODです。"
