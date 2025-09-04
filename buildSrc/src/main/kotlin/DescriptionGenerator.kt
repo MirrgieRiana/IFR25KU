@@ -16,13 +16,16 @@ private operator fun String.not() {
     this@MarkdownScope.strings += this
 }
 
-private fun markdown(block: MarkdownScope.() -> Unit) = block.strings.joinToString("\n\n") + "\n"
-context(MarkdownScope) private fun h1(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("# $string", *block.strings.toTypedArray()).joinToString("\n\n")
-context(MarkdownScope) private fun h2(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("## $string", *block.strings.toTypedArray()).joinToString("\n\n")
-context(MarkdownScope) private fun h3(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("### $string", *block.strings.toTypedArray()).joinToString("\n\n")
-context(MarkdownScope) private fun br(count: Int) = (1..count).map { "<br>" }.joinToString("\n") { it }
+fun <T> Iterable<T>.sandwich(vararg separator: T) = this.flatMapIndexed { i, it -> if (i != 0) listOf(*separator, it) else listOf(it) }
+fun Iterable<String>.multiLine() = this.joinToString("\n")
+
+private fun markdown(block: MarkdownScope.() -> Unit) = block.strings.sandwich("").multiLine() + "\n"
+context(MarkdownScope) private fun h1(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("# $string", *block.strings.toTypedArray()).sandwich("").multiLine()
+context(MarkdownScope) private fun h2(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("## $string", *block.strings.toTypedArray()).sandwich("").multiLine()
+context(MarkdownScope) private fun h3(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("### $string", *block.strings.toTypedArray()).sandwich("").multiLine()
+context(MarkdownScope) private fun br(count: Int) = (1..count).map { "<br>" }.multiLine()
 context(MarkdownScope) private val hr get() = "---"
-context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.joinToString("\n") { "- $it" }
+context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.map { "- $it" }.multiLine()
 context(MarkdownScope) private fun img(alt: String, src: String) = "![$alt]($src)"
 context(MarkdownScope) private fun center(string: String) = if ("\n" in string) "<center>\n  ${string.replace("\n", "\n  ")}\n</center>" else "<center>$string</center>"
 context(MarkdownScope) private fun serif(string: String) = """<font face="serif">$string</font>"""
@@ -74,21 +77,15 @@ fun getModrinthBody(): String {
             !br(3)
             !center("""<img alt="A city eroded by Local Vacuum Decay" src="https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp">""")
             !br(1)
-            !"""
-${center("………")}
-<br>
-${center("“Damn it, the vacuum decay reactor was never something humans should have messed with!”")}
-<br>
-${center("“If someone is reading this, please understand.”")}
-<br>
-${center("“The vacuum decay reactor wasn't a safe, environmentally friendly source of energy.”")}
-<br>
-${center("“One wrong move, and it's a terrifying thing that could wipe out an entire planet.”")}
-<br>
-${center("“If anyone is in control of the vacuum decay reactor, please stop it now!”")}
-<br>
-${center("“Before your world ceases to exist!!!”")}
-        """.trim()
+            !listOf(
+                center("………"),
+                center("“Damn it, the vacuum decay reactor was never something humans should have messed with!”"),
+                center("“If someone is reading this, please understand.”"),
+                center("“The vacuum decay reactor wasn't a safe, environmentally friendly source of energy.”"),
+                center("“One wrong move, and it's a terrifying thing that could wipe out an entire planet.”"),
+                center("“If anyone is in control of the vacuum decay reactor, please stop it now!”"),
+                center("“Before your world ceases to exist!!!”"),
+            ).sandwich("<br>").multiLine()
             !br(1)
             !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png")
             !br(2)
