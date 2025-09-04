@@ -23,32 +23,34 @@ context(MarkdownScope) private fun h3(string: String, block: MarkdownScope.() ->
 context(MarkdownScope) private fun br(count: Int) = (1..count).map { "<br>" }.joinToString("\n") { it }
 context(MarkdownScope) private val hr get() = "---"
 context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.joinToString("\n") { "- $it" }
-context(MarkdownScope) private fun img(alt: String, src: String) = """![$alt]($src)"""
+context(MarkdownScope) private fun img(alt: String, src: String) = "![$alt]($src)"
+context(MarkdownScope) private fun center(string: String) = if ("\n" in string) "<center>\n  ${string.replace("\n", "\n  ")}\n</center>" else "<center>$string</center>"
 
 context(MarkdownScope)
 private fun poem(indent: Int, width: Int, src: String, poem1: String, poem2: String): String {
-    return """
-<center>
-  <img style="float: ${if (indent < 0) "right" else "left"};" width="${abs(indent)}" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
-  <table><tr><td width="$width">
-    <img style="float: left; image-rendering: pixelated;" width="48" src="$src"><font face="serif"><b>${"&nbsp;".repeat(4)}$poem1</b><br>
-    <i><font size="-1">${"&nbsp;".repeat(16)}“$poem2”</font></i></font>
-  </td></tr></table>
-</center>
+    return center(
+        """
+<img style="float: ${if (indent < 0) "right" else "left"};" width="${abs(indent)}" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
+<table><tr><td width="$width">
+  <img style="float: left; image-rendering: pixelated;" width="48" src="$src"><font face="serif"><b>${"&nbsp;".repeat(4)}$poem1</b><br>
+  <i><font size="-1">${"&nbsp;".repeat(16)}“$poem2”</font></i></font>
+</td></tr></table>
     """.trim()
+    )
 }
 
 fun getModrinthBody(): String {
     return markdown {
         !h2("Prologue") {
             !br(3)
-            !"""<!-- <center><font face="serif" size="+3">There were “fairies” on that planet.</font></center> -->"""
-            !"""<center><img alt="Toast Top Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png"></center>"""
-            !"""<center><font size="+2"><img style="image-rendering: pixelated;" width="32" src="https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png">&nbsp;&nbsp;Dreamed of a new fairy!</font></center>"""
-            !"""<center><img alt="Toast Bottom Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png"></center>"""
+            !"<!-- ${center("""<font face="serif" size="+3">There were “fairies” on that planet.</font>""")} -->"
+            !center("""<img alt="Toast Top Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png">""")
+            !center("""<font size="+2"><img style="image-rendering: pixelated;" width="32" src="https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png">&nbsp;&nbsp;Dreamed of a new fairy!</font>""")
+            !center("""<img alt="Toast Bottom Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png">""")
             !br(4)
-            !"""
-<center><table><tr><td width="700">
+            !center(
+                """
+<table><tr><td width="700">
   <img style="float: left;" alt="Portrait of Mirage fairy" src="https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp">
   <p>
     <font face="serif" size="-1"><b>Monocots ― Order Miragales ― Family Miragaceae</b></font><br>
@@ -56,36 +58,37 @@ fun getModrinthBody(): String {
   </p>
   <p><font face="serif">A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”</font></p>
   <p><font face="serif">Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.</font></p>
-</td></tr></table></center>
+</td></tr></table>
         """.trim()
+            )
             !br(2)
-            !"""<center><font face="serif" size="+3">What, exactly, is the true nature of fairies?</font></center>"""
+            !center("""<font face="serif" size="+3">What, exactly, is the true nature of fairies?</font>""")
             !br(8)
             !img("Fairy Quest Card Top Frame", "https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png")
             !br(1)
-            !"""<center><font face="serif" size="+3">Fatal Accident</font></center>"""
+            !center("""<font face="serif" size="+3">Fatal Accident</font>""")
             !br(3)
-            !"""<center><img alt="A city eroded by Local Vacuum Decay" src="https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp"></center>"""
+            !center("""<img alt="A city eroded by Local Vacuum Decay" src="https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp">""")
             !br(1)
             !"""
-<center>………</center>
+${center("………")}
 <br>
-<center>“Damn it, the vacuum decay reactor was never something humans should have messed with!”</center>
+${center("“Damn it, the vacuum decay reactor was never something humans should have messed with!”")}
 <br>
-<center>“If someone is reading this, please understand.”</center>
+${center("“If someone is reading this, please understand.”")}
 <br>
-<center>“The vacuum decay reactor wasn't a safe, environmentally friendly source of energy.”</center>
+${center("“The vacuum decay reactor wasn't a safe, environmentally friendly source of energy.”")}
 <br>
-<center>“One wrong move, and it's a terrifying thing that could wipe out an entire planet.”</center>
+${center("“One wrong move, and it's a terrifying thing that could wipe out an entire planet.”")}
 <br>
-<center>“If anyone is in control of the vacuum decay reactor, please stop it now!”</center>
+${center("“If anyone is in control of the vacuum decay reactor, please stop it now!”")}
 <br>
-<center>“Before your world ceases to exist!!!”</center>
+${center("“Before your world ceases to exist!!!”")}
         """.trim()
             !br(1)
             !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png")
             !br(2)
-            !"""<center><font face="serif" size="+3">Why is humanity here now?</font></center>"""
+            !center("""<font face="serif" size="+3">Why is humanity here now?</font>""")
             !br(8)
             // フェアリークリスタル
             !poem(
@@ -174,11 +177,11 @@ fun getModrinthBody(): String {
                 "No one can block that noise.",
             )
             !br(8)
-            !"""<center><font face="serif" size="+3">A World Ruled by Plants.</font></center>"""
+            !center("""<font face="serif" size="+3">A World Ruled by Plants.</font>""")
             !br(8)
-            !"""<center><font face="serif">The Institute of Fairy Research 2025 Kakera Unofficial</font></center>"""
+            !center("""<font face="serif">The Institute of Fairy Research 2025 Kakera Unofficial</font>""")
             !br(1)
-            !"""<center><img width="400px" alt="IFR25KU Logo" src="https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp"></center>"""
+            !center("""<img width="400px" alt="IFR25KU Logo" src="https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp">""")
             !br(8)
         }
         !h2("概要") {

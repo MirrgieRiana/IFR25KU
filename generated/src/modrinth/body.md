@@ -17,15 +17,17 @@
 <br>
 <br>
 
-<center><table><tr><td width="700">
-  <img style="float: left;" alt="Portrait of Mirage fairy" src="https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp">
-  <p>
-    <font face="serif" size="-1"><b>Monocots ― Order Miragales ― Family Miragaceae</b></font><br>
-    <font face="serif" size="+3"><b>Mirage</b></font>
-  </p>
-  <p><font face="serif">A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”</font></p>
-  <p><font face="serif">Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.</font></p>
-</td></tr></table></center>
+<center>
+  <table><tr><td width="700">
+    <img style="float: left;" alt="Portrait of Mirage fairy" src="https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp">
+    <p>
+      <font face="serif" size="-1"><b>Monocots ― Order Miragales ― Family Miragaceae</b></font><br>
+      <font face="serif" size="+3"><b>Mirage</b></font>
+    </p>
+    <p><font face="serif">A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”</font></p>
+    <p><font face="serif">Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.</font></p>
+  </td></tr></table>
+</center>
 
 <br>
 <br>
