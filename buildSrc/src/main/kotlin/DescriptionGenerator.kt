@@ -182,106 +182,106 @@ fun getModrinthBody(): String {
             !br(8)
         }
         !h2("概要") {
-            !"""IFR25KUはMirageFairyの世界観に基づいた可能な世界の一つを表現するMODです。"""
-            !"""IFR25KUはYoruno Kakeraによる“[MF24KU](https://modrinth.com/mod/miragefairy2024-kakera-unofficial)”の非公式フォークプロジェクトです。"""
-            !"""MF24KUは“[MirageFairy2024](https://modrinth.com/mod/miragefairy2024)”の非公式フォークでした。"""
-            !"""MirageFairy2024は“MirageFairy”という創作プロジェクトの世界観を表現するMODです。"""
+            !"IFR25KUはMirageFairyの世界観に基づいた可能な世界の一つを表現するMODです。"
+            !"IFR25KUはYoruno Kakeraによる“[MF24KU](https://modrinth.com/mod/miragefairy2024-kakera-unofficial)”の非公式フォークプロジェクトです。"
+            !"MF24KUは“[MirageFairy2024](https://modrinth.com/mod/miragefairy2024)”の非公式フォークでした。"
+            !"MirageFairy2024は“MirageFairy”という創作プロジェクトの世界観を表現するMODです。"
             !hr
-            !"""このMODは、アイテム、ブロック、地形生成物、バイオーム、エンチャント、ゲームメカニズム、その他様々な種類のコンテンツをゲーム内に追加します。"""
-            !"""プレイヤーは、このMODを通してMirageFairyの世界観に基づく世界の一つを体験することができます。"""
+            !"このMODは、アイテム、ブロック、地形生成物、バイオーム、エンチャント、ゲームメカニズム、その他様々な種類のコンテンツをゲーム内に追加します。"
+            !"プレイヤーは、このMODを通してMirageFairyの世界観に基づく世界の一つを体験することができます。"
         }
         !h2("ドキュメント") {
-            !"""[CHANGELOG.md](https://github.com/MirrgieRiana/IFR25KU/blob/main/CHANGELOG.md)はIFR25KU公式による唯一のすべての仕様が網羅的に記述されたドキュメントです。"""
-            !"""最新版における仕様が記述されたドキュメントは公式には存在しませんが、非公式には存在します。"""
-            !"""そのようなWebサイトには、以下のものが知られています。"""
+            !"[CHANGELOG.md](https://github.com/MirrgieRiana/IFR25KU/blob/main/CHANGELOG.md)はIFR25KU公式による唯一のすべての仕様が網羅的に記述されたドキュメントです。"
+            !"最新版における仕様が記述されたドキュメントは公式には存在しませんが、非公式には存在します。"
+            !"そのようなWebサイトには、以下のものが知られています。"
             !li {
-                !"""[MFKU非公式Wiki](https://wikiwiki.jp/mifai2024/)"""
+                !"[MFKU非公式Wiki](https://wikiwiki.jp/mifai2024/)"
             }
         }
         !h2("冒険の手引き") {
-            !"""あなたはこのMODで次に何をしますか？"""
-            !"""Lキーで進捗のGUIを開いてください！"""
+            !"あなたはこのMODで次に何をしますか？"
+            !"Lキーで進捗のGUIを開いてください！"
             !img("進捗", "https://cdn.modrinth.com/data/cached_images/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png")
-            !"""それはあなたにあなたが次にできることを案内する！"""
+            !"それはあなたにあなたが次にできることを案内する！"
             !img("進捗説明文", "https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png")
         }
         !h2("バイオーム") {
-            !"""あなたは世界各地を冒険すると妖精のバイオームに遭遇できます。"""
+            !"あなたは世界各地を冒険すると妖精のバイオームに遭遇できます。"
             !h3("妖精の森") {
-                !"""世界のそこかしこにある妖精の森。"""
-                !"""そこには多くのMirage flowerが咲き誇る。"""
+                !"世界のそこかしこにある妖精の森。"
+                !"そこには多くのMirage flowerが咲き誇る。"
                 !img("妖精の森", "https://cdn.modrinth.com/data/cached_images/1952646971c206beff58fa3791a177a2bbc533bd_0.webp")
-                !"""ここで見つかるファントムフラワーは、栽培は困難であるが、より高度な妖精の召喚の媒体となる。"""
+                !"ここで見つかるファントムフラワーは、栽培は困難であるが、より高度な妖精の召喚の媒体となる。"
                 !img("ファントムフラワー", "https://cdn.modrinth.com/data/cached_images/351c3d683c0ff26eba7d7034011c81f7ba25aaeb_0.webp")
             }
             !h3("妖精の樹海") {
-                !"""ハイメヴィスカが立ち並ぶ鬱蒼とした森。"""
+                !"ハイメヴィスカが立ち並ぶ鬱蒼とした森。"
                 !img("妖精の樹海", "https://cdn.modrinth.com/data/cached_images/a3dc02ec6167526592cc7cc124cb5b94fa65acda_0.webp")
-                !"""装備の整わないうちにここを歩くのは非常に危険である。"""
+                !"装備の整わないうちにここを歩くのは非常に危険である。"
             }
         }
         !h2("妖精") {
-            !"""あなたは世界の各地で妖精を見つけることができる。"""
+            !"あなたは世界の各地で妖精を見つけることができる。"
             !img("妖精", "https://cdn.modrinth.com/data/cached_images/307ff49a23763570f0c5070e5de25f574e68aaad.png")
-            !"""妖精は様々な能力を持っている。"""
+            !"妖精は様々な能力を持っている。"
             !img("光の妖精", "https://cdn.modrinth.com/data/cached_images/25c57e881ae19dd5a84754a38fcce627e95244bc.png")
             !img("矢の妖精", "https://cdn.modrinth.com/data/cached_images/e4dc387c8958f81cbe3c0495d11d64d508be1d60.png")
-            !"""光の妖精は明るい場所であなたの歩行の速度を上げ、矢の妖精は無条件であなたに弓矢のダメージを増加する効果を与える。"""
+            !"光の妖精は明るい場所であなたの歩行の速度を上げ、矢の妖精は無条件であなたに弓矢のダメージを増加する効果を与える。"
             !hr
-            !"""この世界は妖精で満ち溢れています。"""
-            !"""様々な自然物や人工物に触れ合いましょう！"""
+            !"この世界は妖精で満ち溢れています。"
+            !"様々な自然物や人工物に触れ合いましょう！"
             !img("妖精の夢のトースト", "https://cdn.modrinth.com/data/cached_images/40f8d08f89553eebaa3e70022824a233f0b4b128.png")
-            !"""あなたはレアリティーの低い妖精を見つけてすぐに受け取ることができる！"""
+            !"あなたはレアリティーの低い妖精を見つけてすぐに受け取ることができる！"
             !hr
-            !"""Kキーでソウルストリームを開き、トップのスロットに妖精を配置してください！"""
+            !"Kキーでソウルストリームを開き、トップのスロットに妖精を配置してください！"
             !img("ソウルストリーム", "https://cdn.modrinth.com/data/cached_images/ebe833acd596054213b7f89081701788fd61f780.png")
-            !"""それらはあなたに猛烈な恩恵を与える！"""
+            !"それらはあなたに猛烈な恩恵を与える！"
             !hr
-            !"""妖精の能力が足りないですか？"""
-            !"""同じ妖精を複数所持すると、妖精の能力が強化されます！"""
+            !"妖精の能力が足りないですか？"
+            !"同じ妖精を複数所持すると、妖精の能力が強化されます！"
             !img("強化された砂糖の妖精", "https://cdn.modrinth.com/data/cached_images/41c353e38c47a2cde38e6adcd3689499dd385c6a.png")
-            !"""ミラージュフラワーを栽培し、花粉を手に入れてください！"""
+            !"ミラージュフラワーを栽培し、花粉を手に入れてください！"
             !img("ミラージュの花粉", "https://cdn.modrinth.com/data/cached_images/e75c326da1b6479677f559f6ed4dbe824d4409e0.png")
-            !"""ミラージュの花粉はあなたが手に入れた「妖精の夢」に従ってランダムに妖精をポップします。"""
-            !"""妖精はいくらでも圧縮することができます。"""
+            !"ミラージュの花粉はあなたが手に入れた「妖精の夢」に従ってランダムに妖精をポップします。"
+            !"妖精はいくらでも圧縮することができます。"
             !img("妖精の凝縮", "https://cdn.modrinth.com/data/cached_images/e9a521f0229af711da664abfef1606029d03cc8a.png")
         }
         !h2("魔法植物") {
-            !"""この惑星にはミステリアスな植物が生えています。"""
+            !"この惑星にはミステリアスな植物が生えています。"
             !img("Fairy Ring", "https://cdn.modrinth.com/data/cached_images/94f160e46960c4414e032ba26f7e6202f7a9b370_0.webp")
-            !"""それらは右クリックでいくつかの種類の農作物が収穫可能です。"""
+            !"それらは右クリックでいくつかの種類の農作物が収穫可能です。"
             !hr
-            !"""天然の魔法植物はランダムな特性ビットを持っています。"""
+            !"天然の魔法植物はランダムな特性ビットを持っています。"
             !img("魔法植物の特性", "https://cdn.modrinth.com/data/cached_images/afcf48c58e957e5c4220f24cbb04fa9f51fa5666.png")
-            !"""それらを隣接して植えると、交配が発生します。"""
+            !"それらを隣接して植えると、交配が発生します。"
             !img("隣接して生えている魔法植物", "https://cdn.modrinth.com/data/cached_images/80dacc16b262d5f8330c9f98c2ed25c4627005f8.png")
-            !"""あなたは25%の確率で両親から両方の特性ビットを貰った種子を得るだろう！"""
+            !"あなたは25%の確率で両親から両方の特性ビットを貰った種子を得るだろう！"
             !img("品種改良済みの種子", "https://cdn.modrinth.com/data/cached_images/370006cc1896973853bf59445d1033236299d273.png")
             !hr
-            !"""あなたが冒険の過程であなたの持ち物があふれたとき、植物カバンはあなたを助けるだろう。"""
+            !"あなたが冒険の過程であなたの持ち物があふれたとき、植物カバンはあなたを助けるだろう。"
             !img("Replace this with a description", "https://cdn.modrinth.com/data/cached_images/09f4d27b1266da03d002b7de7f3c6fbf19f821e8.png")
             !hr
-            !"""魔法植物にはたくさんの種類がある。"""
+            !"魔法植物にはたくさんの種類がある。"
             !img("多くの種類の魔法植物", "https://cdn.modrinth.com/data/cached_images/c9532c1ed9c69499d650754522ebe8b65ac94a7f.png")
-            !"""あなたは「交雑」の特性を使って同じ科に属する異なる2種のそれらで品種改良ができる！"""
+            !"あなたは「交雑」の特性を使って同じ科に属する異なる2種のそれらで品種改良ができる！"
         }
         !h2("地形生成物") {
-            !"""あなたはオーバーワールドを旅しているとき、旧世代の遺構を見つけるだろう。"""
+            !"あなたはオーバーワールドを旅しているとき、旧世代の遺構を見つけるだろう。"
             !img("風化した旧世代の遺構", "https://cdn.modrinth.com/data/cached_images/ba4ea56b35cac23f703ae12639ae4c5e755f2bf2_0.webp")
-            !"""怪しい砂利をブラシで掘ってみましょう！"""
-            !"""あなたは有用な素材とともに、鍾乳洞の遺跡の地図を見つけることができるかもしれません！"""
+            !"怪しい砂利をブラシで掘ってみましょう！"
+            !"あなたは有用な素材とともに、鍾乳洞の遺跡の地図を見つけることができるかもしれません！"
             !img("鍾乳洞の遺跡", "https://cdn.modrinth.com/data/cached_images/a0b179287f9ac8beded0e4037cc4788dc3d836ba_0.webp")
             !hr
-            !"""世界にがれきが追加されています！"""
+            !"世界にがれきが追加されています！"
             !img("がれき", "https://cdn.modrinth.com/data/cached_images/504ce1940464d214a2f3e725bb02ce88758d8974.png")
-            !"""それらにはバニラの序盤の素材や、MODの固有素材が含まれています。"""
-            !"""あなたはZキーによってアイテムを地面に設置することができます。"""
+            !"それらにはバニラの序盤の素材や、MODの固有素材が含まれています。"
+            !"あなたはZキーによってアイテムを地面に設置することができます。"
         }
         // TODO
         !h2("互換性") {
-            !"""IFR25KUはMF24KUと同一のmodidを共有しており、ワールドデータに互換性があります。"""
-            !"""IFR25KU v23.23.0はMF24KU v22.22.0とほとんど同等のコンテンツを持っており、MF24KUのワールドをIFR25KUで読み込むことができます。"""
-            !"""技術的には同一のMODとして扱われており、競合を引き起こすため、IFR25KUとMF24KUを同時にインストールしてはいけません。"""
+            !"IFR25KUはMF24KUと同一のmodidを共有しており、ワールドデータに互換性があります。"
+            !"IFR25KU v23.23.0はMF24KU v22.22.0とほとんど同等のコンテンツを持っており、MF24KUのワールドをIFR25KUで読み込むことができます。"
+            !"技術的には同一のMODとして扱われており、競合を引き起こすため、IFR25KUとMF24KUを同時にインストールしてはいけません。"
         }
         !h2("MF24KUとの関係は？") {
             !"""
@@ -302,14 +302,14 @@ fun getModrinthBody(): String {
 　　　　　　┗ ★MOD: IFR25KU★
 ```
         """.trim()
-            !"""IFR25KUはMFKU公式でもMirageFairy公式でもありません。"""
+            !"IFR25KUはMFKU公式でもMirageFairy公式でもありません。"
         }
         !h2("サポート") {
-            !"""MODのサポートはDiscord上で受け付けています。"""
-            !"""IFR25KUはそのすべてが日本人によって開発されており、サポートは主に日本語で受け付けています。"""
-            !"""日本語以外の言語によるサポートは、間にAIによる翻訳が存在するため、我々の対応は流暢でないかもしれません。"""
+            !"MODのサポートはDiscord上で受け付けています。"
+            !"IFR25KUはそのすべてが日本人によって開発されており、サポートは主に日本語で受け付けています。"
+            !"日本語以外の言語によるサポートは、間にAIによる翻訳が存在するため、我々の対応は流暢でないかもしれません。"
         }
         !hr
-        !"""Note: This description is automatically updated from [GitHub Actions](https://github.com/MirrgieRiana/IFR25KU/blob/main/MODRINTH-BODY.md) and cannot be changed manually."""
+        !"Note: This description is automatically updated from [GitHub Actions](https://github.com/MirrgieRiana/IFR25KU/blob/main/MODRINTH-BODY.md) and cannot be changed manually."
     }
 }
