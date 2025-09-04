@@ -144,12 +144,25 @@ tasks.register("datagen")
 tasks.register("uploadModrinth")
 
 val generatedModrinthBodyFile = layout.projectDirectory.file("generated/src/modrinth/body.md")
+tasks.register("generateModrinthBody") {
+    group = "modrinth"
+
+    outputs.file(generatedModrinthBodyFile)
+    inputs.property("body", getModrinthBody())
+
+    doLast {
+        generatedModrinthBodyFile.asFile.parentFile.mkdirs()
+        generatedModrinthBodyFile.asFile.writeText(getModrinthBody())
+    }
+}
+tasks["datagen"].dependsOn(tasks["generateModrinthBody"])
 
 modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = "ifr25ku"
     syncBodyFrom = provider { generatedModrinthBodyFile.asFile.readText() }
 }
+tasks["modrinthSyncBody"].dependsOn(tasks["generateModrinthBody"])
 //tasks["uploadModrinth"].dependsOn(tasks["modrinthSyncBody"]) // TODO Modrinth Bodyの整備待ち
 
 

@@ -1,4 +1,3 @@
-
 ## Prologue
 
 <br>
@@ -87,9 +86,6 @@
 <br>
 <br>
 <br>
-
-
-
 
 <center>
   <img style="float: right;" width="300" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
@@ -214,9 +210,6 @@
     <i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“No one can block that noise.”</font></i></font>
   </td></tr></table>
 </center>
-
-
-
 
 <br>
 <br>
@@ -422,17 +415,6 @@ Kキーでソウルストリームを開き、トップのスロットに妖精�
 それらにはバニラの序盤の素材や、MODの固有素材が含まれています。
 
 あなたはZキーによってアイテムを地面に設置することができます。
-
-
-
-
-
-
-
-
-
-
-
 
 ## 互換性
 
