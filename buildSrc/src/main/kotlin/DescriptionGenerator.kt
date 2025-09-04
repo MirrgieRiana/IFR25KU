@@ -29,6 +29,9 @@ context(MarkdownScope) private fun serif(string: String) = """<font face="serif"
 context(MarkdownScope) private fun size(size: Int, string: String) = """<font size="${String.format("%+d", size)}">$string</font>"""
 
 context(MarkdownScope)
+private fun catchPhrase(string: String) = center(serif(size(3, string)))
+
+context(MarkdownScope)
 private fun poem(indent: Int, width: Int, src: String, poem1: String, poem2: String): String {
     return center(
         """
@@ -44,7 +47,7 @@ fun getModrinthBody(): String {
     return markdown {
         !h2("Prologue") {
             !br(3)
-            !"<!-- ${center(serif(size(3, "There were “fairies” on that planet.")))} -->"
+            !"<!-- ${catchPhrase("There were “fairies” on that planet.")} -->"
             !center("""<img alt="Toast Top Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png">""")
             !center(size(2, """<img style="image-rendering: pixelated;" width="32" src="https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png">&nbsp;&nbsp;Dreamed of a new fairy!"""))
             !center("""<img alt="Toast Bottom Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png">""")
@@ -63,11 +66,11 @@ fun getModrinthBody(): String {
         """.trim()
             )
             !br(2)
-            !center(serif(size(3, "What, exactly, is the true nature of fairies?")))
+            !catchPhrase("What, exactly, is the true nature of fairies?")
             !br(8)
             !img("Fairy Quest Card Top Frame", "https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png")
             !br(1)
-            !center(serif(size(3, "Fatal Accident")))
+            !catchPhrase("Fatal Accident")
             !br(3)
             !center("""<img alt="A city eroded by Local Vacuum Decay" src="https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp">""")
             !br(1)
@@ -89,7 +92,7 @@ ${center("“Before your world ceases to exist!!!”")}
             !br(1)
             !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png")
             !br(2)
-            !center(serif(size(3, "Why is humanity here now?")))
+            !catchPhrase("Why is humanity here now?")
             !br(8)
             // フェアリークリスタル
             !poem(
@@ -178,7 +181,7 @@ ${center("“Before your world ceases to exist!!!”")}
                 "No one can block that noise.",
             )
             !br(8)
-            !center(serif(size(3, "A World Ruled by Plants.")))
+            !catchPhrase("A World Ruled by Plants.")
             !br(8)
             !center(serif("The Institute of Fairy Research 2025 Kakera Unofficial"))
             !br(1)
