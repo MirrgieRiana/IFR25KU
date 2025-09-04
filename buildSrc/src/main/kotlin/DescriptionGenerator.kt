@@ -19,6 +19,13 @@ private operator fun String.not() {
 fun <T> Iterable<T>.sandwich(vararg separator: T) = this.flatMapIndexed { i, it -> if (i != 0) listOf(*separator, it) else listOf(it) }
 fun Iterable<String>.multiLine() = this.joinToString("\n")
 
+fun String.escapeHtml() = this
+    .replace("&", "&amp;")
+    .replace("'", "&apos;")
+    .replace("\"", "&quot;")
+    .replace("<", "&lt;")
+    .replace(">", "&gt;")
+
 private fun markdown(block: MarkdownScope.() -> Unit) = block.strings.sandwich("").multiLine() + "\n"
 context(MarkdownScope) private fun h1(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("# $string", *block.strings.toTypedArray()).sandwich("").multiLine()
 context(MarkdownScope) private fun h2(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("## $string", *block.strings.toTypedArray()).sandwich("").multiLine()
@@ -27,7 +34,7 @@ context(MarkdownScope) private fun br(count: Int) = (1..count).map { "<br>" }.mu
 context(MarkdownScope) private operator fun Int.not() = !br(this)
 context(MarkdownScope) private val hr get() = "---"
 context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.map { "- $it" }.multiLine()
-context(MarkdownScope) private fun img(alt: String, src: String) = "![$alt]($src)"
+context(MarkdownScope) private fun img(alt: String, src: String) = """<img alt="${alt.escapeHtml()}" src="${src.escapeHtml()}">"""
 context(MarkdownScope) private fun center(string: String) = if ("\n" in string) "<center>\n  ${string.replace("\n", "\n  ")}\n</center>" else "<center>$string</center>"
 context(MarkdownScope) private fun serif(string: String) = """<font face="serif">$string</font>"""
 context(MarkdownScope) private fun size(size: Int, string: String) = """<font size="${String.format("%+d", size)}">$string</font>"""

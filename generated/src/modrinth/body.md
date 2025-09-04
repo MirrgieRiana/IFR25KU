@@ -41,7 +41,7 @@
 <br>
 <br>
 
-![Fairy Quest Card Top Frame](https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png)
+<img alt="Fairy Quest Card Top Frame" src="https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png">
 
 <br>
 
@@ -71,7 +71,7 @@
 
 <br>
 
-![Fairy Quest Card Bottom Frame](https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png)
+<img alt="Fairy Quest Card Bottom Frame" src="https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png">
 
 <br>
 <br>
@@ -267,11 +267,11 @@ MirageFairy2024は“MirageFairy”という創作プロジェクトの世界観
 
 Lキーで進捗のGUIを開いてください！
 
-![進捗](https://cdn.modrinth.com/data/cached_images/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png)
+<img alt="進捗" src="https://cdn.modrinth.com/data/cached_images/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png">
 
 それはあなたにあなたが次にできることを案内する！
 
-![進捗説明文](https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png)
+<img alt="進捗説明文" src="https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png">
 
 ## バイオーム
 
@@ -283,17 +283,17 @@ Lキーで進捗のGUIを開いてください！
 
 そこには多くのMirage flowerが咲き誇る。
 
-![妖精の森](https://cdn.modrinth.com/data/cached_images/1952646971c206beff58fa3791a177a2bbc533bd_0.webp)
+<img alt="妖精の森" src="https://cdn.modrinth.com/data/cached_images/1952646971c206beff58fa3791a177a2bbc533bd_0.webp">
 
 ここで見つかるファントムフラワーは、栽培は困難であるが、より高度な妖精の召喚の媒体となる。
 
-![ファントムフラワー](https://cdn.modrinth.com/data/cached_images/351c3d683c0ff26eba7d7034011c81f7ba25aaeb_0.webp)
+<img alt="ファントムフラワー" src="https://cdn.modrinth.com/data/cached_images/351c3d683c0ff26eba7d7034011c81f7ba25aaeb_0.webp">
 
 ### 妖精の樹海
 
 ハイメヴィスカが立ち並ぶ鬱蒼とした森。
 
-![妖精の樹海](https://cdn.modrinth.com/data/cached_images/a3dc02ec6167526592cc7cc124cb5b94fa65acda_0.webp)
+<img alt="妖精の樹海" src="https://cdn.modrinth.com/data/cached_images/a3dc02ec6167526592cc7cc124cb5b94fa65acda_0.webp">
 
 装備の整わないうちにここを歩くのは非常に危険である。
 
@@ -301,13 +301,13 @@ Lキーで進捗のGUIを開いてください！
 
 あなたは世界の各地で妖精を見つけることができる。
 
-![妖精](https://cdn.modrinth.com/data/cached_images/307ff49a23763570f0c5070e5de25f574e68aaad.png)
+<img alt="妖精" src="https://cdn.modrinth.com/data/cached_images/307ff49a23763570f0c5070e5de25f574e68aaad.png">
 
 妖精は様々な能力を持っている。
 
-![光の妖精](https://cdn.modrinth.com/data/cached_images/25c57e881ae19dd5a84754a38fcce627e95244bc.png)
+<img alt="光の妖精" src="https://cdn.modrinth.com/data/cached_images/25c57e881ae19dd5a84754a38fcce627e95244bc.png">
 
-![矢の妖精](https://cdn.modrinth.com/data/cached_images/e4dc387c8958f81cbe3c0495d11d64d508be1d60.png)
+<img alt="矢の妖精" src="https://cdn.modrinth.com/data/cached_images/e4dc387c8958f81cbe3c0495d11d64d508be1d60.png">
 
 光の妖精は明るい場所であなたの歩行の速度を上げ、矢の妖精は無条件であなたに弓矢のダメージを増加する効果を与える。
 
@@ -317,7 +317,7 @@ Lキーで進捗のGUIを開いてください！
 
 様々な自然物や人工物に触れ合いましょう！
 
-![妖精の夢のトースト](https://cdn.modrinth.com/data/cached_images/40f8d08f89553eebaa3e70022824a233f0b4b128.png)
+<img alt="妖精の夢のトースト" src="https://cdn.modrinth.com/data/cached_images/40f8d08f89553eebaa3e70022824a233f0b4b128.png">
 
 あなたはレアリティーの低い妖精を見つけてすぐに受け取ることができる！
 
@@ -325,7 +325,7 @@ Lキーで進捗のGUIを開いてください！
 
 Kキーでソウルストリームを開き、トップのスロットに妖精を配置してください！
 
-![ソウルストリーム](https://cdn.modrinth.com/data/cached_images/ebe833acd596054213b7f89081701788fd61f780.png)
+<img alt="ソウルストリーム" src="https://cdn.modrinth.com/data/cached_images/ebe833acd596054213b7f89081701788fd61f780.png">
 
 それらはあなたに猛烈な恩恵を与える！
 
@@ -335,23 +335,23 @@ Kキーでソウルストリームを開き、トップのスロットに妖精�
 
 同じ妖精を複数所持すると、妖精の能力が強化されます！
 
-![強化された砂糖の妖精](https://cdn.modrinth.com/data/cached_images/41c353e38c47a2cde38e6adcd3689499dd385c6a.png)
+<img alt="強化された砂糖の妖精" src="https://cdn.modrinth.com/data/cached_images/41c353e38c47a2cde38e6adcd3689499dd385c6a.png">
 
 ミラージュフラワーを栽培し、花粉を手に入れてください！
 
-![ミラージュの花粉](https://cdn.modrinth.com/data/cached_images/e75c326da1b6479677f559f6ed4dbe824d4409e0.png)
+<img alt="ミラージュの花粉" src="https://cdn.modrinth.com/data/cached_images/e75c326da1b6479677f559f6ed4dbe824d4409e0.png">
 
 ミラージュの花粉はあなたが手に入れた「妖精の夢」に従ってランダムに妖精をポップします。
 
 妖精はいくらでも圧縮することができます。
 
-![妖精の凝縮](https://cdn.modrinth.com/data/cached_images/e9a521f0229af711da664abfef1606029d03cc8a.png)
+<img alt="妖精の凝縮" src="https://cdn.modrinth.com/data/cached_images/e9a521f0229af711da664abfef1606029d03cc8a.png">
 
 ## 魔法植物
 
 この惑星にはミステリアスな植物が生えています。
 
-![Fairy Ring](https://cdn.modrinth.com/data/cached_images/94f160e46960c4414e032ba26f7e6202f7a9b370_0.webp)
+<img alt="Fairy Ring" src="https://cdn.modrinth.com/data/cached_images/94f160e46960c4414e032ba26f7e6202f7a9b370_0.webp">
 
 それらは右クリックでいくつかの種類の農作物が収穫可能です。
 
@@ -359,27 +359,27 @@ Kキーでソウルストリームを開き、トップのスロットに妖精�
 
 天然の魔法植物はランダムな特性ビットを持っています。
 
-![魔法植物の特性](https://cdn.modrinth.com/data/cached_images/afcf48c58e957e5c4220f24cbb04fa9f51fa5666.png)
+<img alt="魔法植物の特性" src="https://cdn.modrinth.com/data/cached_images/afcf48c58e957e5c4220f24cbb04fa9f51fa5666.png">
 
 それらを隣接して植えると、交配が発生します。
 
-![隣接して生えている魔法植物](https://cdn.modrinth.com/data/cached_images/80dacc16b262d5f8330c9f98c2ed25c4627005f8.png)
+<img alt="隣接して生えている魔法植物" src="https://cdn.modrinth.com/data/cached_images/80dacc16b262d5f8330c9f98c2ed25c4627005f8.png">
 
 あなたは25%の確率で両親から両方の特性ビットを貰った種子を得るだろう！
 
-![品種改良済みの種子](https://cdn.modrinth.com/data/cached_images/370006cc1896973853bf59445d1033236299d273.png)
+<img alt="品種改良済みの種子" src="https://cdn.modrinth.com/data/cached_images/370006cc1896973853bf59445d1033236299d273.png">
 
 ---
 
 あなたが冒険の過程であなたの持ち物があふれたとき、植物カバンはあなたを助けるだろう。
 
-![Replace this with a description](https://cdn.modrinth.com/data/cached_images/09f4d27b1266da03d002b7de7f3c6fbf19f821e8.png)
+<img alt="Replace this with a description" src="https://cdn.modrinth.com/data/cached_images/09f4d27b1266da03d002b7de7f3c6fbf19f821e8.png">
 
 ---
 
 魔法植物にはたくさんの種類がある。
 
-![多くの種類の魔法植物](https://cdn.modrinth.com/data/cached_images/c9532c1ed9c69499d650754522ebe8b65ac94a7f.png)
+<img alt="多くの種類の魔法植物" src="https://cdn.modrinth.com/data/cached_images/c9532c1ed9c69499d650754522ebe8b65ac94a7f.png">
 
 あなたは「交雑」の特性を使って同じ科に属する異なる2種のそれらで品種改良ができる！
 
@@ -387,19 +387,19 @@ Kキーでソウルストリームを開き、トップのスロットに妖精�
 
 あなたはオーバーワールドを旅しているとき、旧世代の遺構を見つけるだろう。
 
-![風化した旧世代の遺構](https://cdn.modrinth.com/data/cached_images/ba4ea56b35cac23f703ae12639ae4c5e755f2bf2_0.webp)
+<img alt="風化した旧世代の遺構" src="https://cdn.modrinth.com/data/cached_images/ba4ea56b35cac23f703ae12639ae4c5e755f2bf2_0.webp">
 
 怪しい砂利をブラシで掘ってみましょう！
 
 あなたは有用な素材とともに、鍾乳洞の遺跡の地図を見つけることができるかもしれません！
 
-![鍾乳洞の遺跡](https://cdn.modrinth.com/data/cached_images/a0b179287f9ac8beded0e4037cc4788dc3d836ba_0.webp)
+<img alt="鍾乳洞の遺跡" src="https://cdn.modrinth.com/data/cached_images/a0b179287f9ac8beded0e4037cc4788dc3d836ba_0.webp">
 
 ---
 
 世界にがれきが追加されています！
 
-![がれき](https://cdn.modrinth.com/data/cached_images/504ce1940464d214a2f3e725bb02ce88758d8974.png)
+<img alt="がれき" src="https://cdn.modrinth.com/data/cached_images/504ce1940464d214a2f3e725bb02ce88758d8974.png">
 
 それらにはバニラの序盤の素材や、MODの固有素材が含まれています。
 
