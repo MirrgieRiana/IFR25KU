@@ -158,7 +158,7 @@ tasks.register("generateModrinthBody") {
 tasks["datagen"].dependsOn(tasks["generateModrinthBody"])
 
 modrinth {
-    token = System.getenv("MODRINTH_TOKEN")
+    token = rootProject.layout.projectDirectory.file("modrinth_token.txt").asFile.takeIf { it.exists() }?.readText()?.trim() ?: System.getenv("MODRINTH_TOKEN")
     projectId = "ifr25ku"
     syncBodyFrom = provider { generatedModrinthBodyFile.asFile.readText() }
 }

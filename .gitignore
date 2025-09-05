@@ -48,3 +48,4 @@ replay_*.log
 /logs/
 desktop.ini
 /.architectury-transformer
+/modrinth_token.txt
