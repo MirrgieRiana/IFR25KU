@@ -19,19 +19,19 @@ import miragefairy2024.util.on
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerShapedRecipeGeneration
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.level.block.SoundType
+import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.minecraft.world.level.material.MapColor
 
 object FermentationBarrelCard : SimpleMachineCard<FermentationBarrelBlock, FermentationBarrelBlockEntity, FermentationBarrelScreenHandler, FermentationBarrelRecipe>() {
     override fun createIdentifier() = MirageFairy2024.identifier("fermentation_barrel")
-    override fun createBlockSettings(): FabricBlockSettings = FabricBlockSettings.create().instrument(NoteBlockInstrument.BASS).sounds(SoundType.WOOD).strength(3.0F).mapColor(MapColor.TERRACOTTA_ORANGE)
+    override fun createBlockSettings(): BlockBehaviour.Properties = BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.BASS).sound(SoundType.WOOD).strength(3.0F).mapColor(MapColor.TERRACOTTA_ORANGE)
     override fun createBlock() = FermentationBarrelBlock(this)
     override fun createBlockEntityAccessor() = BlockEntityAccessor(::FermentationBarrelBlockEntity)
     override fun createScreenHandler(arguments: MachineScreenHandler.Arguments) = FermentationBarrelScreenHandler(this, arguments)

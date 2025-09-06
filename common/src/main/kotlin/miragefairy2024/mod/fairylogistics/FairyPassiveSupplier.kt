@@ -16,7 +16,6 @@ import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerShapedRecipeGeneration
 import mirrg.kotlin.hydrogen.floorToInt
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
@@ -27,6 +26,7 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.SoundType
+import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.phys.shapes.CollisionContext
@@ -40,7 +40,7 @@ object FairyPassiveSupplierCard : FairyLogisticsCard<FairyPassiveSupplierBlock, 
     override val poem = EnJa("Fairies' Delivery Service", "落ち込んだりもしたけれど、私は元気です。")
     override val description = EnJa("Accepts and delivers orders", "注文を受け付けて配達する")
 
-    override fun createBlockSettings(): FabricBlockSettings = super.createBlockSettings().mapColor(MapColor.COLOR_PINK).sounds(SoundType.WOOD)
+    override fun createBlockSettings(): BlockBehaviour.Properties = super.createBlockSettings().mapColor(MapColor.COLOR_PINK).sound(SoundType.WOOD)
     override fun createBlock() = FairyPassiveSupplierBlock(this)
 
     override fun createBlockEntityAccessor() = BlockEntityAccessor(::FairyPassiveSupplierBlockEntity)

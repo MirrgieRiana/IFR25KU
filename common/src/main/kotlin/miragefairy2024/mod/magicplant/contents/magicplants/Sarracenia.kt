@@ -38,7 +38,7 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
     override val poem = EnJa("Waiting for a flying creature...", "妖精たちの憩いの場。")
 
     override val blockCodec = SarraceniaBlock.CODEC
-    override fun createBlock() = SarraceniaBlock(createCommonSettings().breakInstantly().mapColor(MapColor.NETHER).sound(SoundType.CROP))
+    override fun createBlock() = SarraceniaBlock(createCommonSettings().instabreak().mapColor(MapColor.NETHER).sound(SoundType.CROP))
 
     override val drops = listOf(MaterialCard.SARRACENIA_LEAF.item, MaterialCard.FAIRY_SCALES.item)
     override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.SARRACENIA_LEAF.item().createItemStack(count))

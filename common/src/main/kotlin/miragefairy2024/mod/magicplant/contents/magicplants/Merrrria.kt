@@ -50,7 +50,7 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
 
     override val ageProperty: IntegerProperty = BlockStateProperties.AGE_4
     override val blockCodec = MerrrriaBlock.CODEC
-    override fun createBlock() = MerrrriaBlock(createCommonSettings().breakInstantly().mapColor(MapColor.ICE).lightLevel { if (it.getValue(ageProperty) == 4) 6 else 0 }.emissiveRendering { it, _, _ -> it.getValue(ageProperty) == 4 }.sound(SoundType.AMETHYST))
+    override fun createBlock() = MerrrriaBlock(createCommonSettings().instabreak().mapColor(MapColor.ICE).lightLevel { if (it.getValue(ageProperty) == 4) 6 else 0 }.emissiveRendering { it, _, _ -> it.getValue(ageProperty) == 4 }.sound(SoundType.AMETHYST))
 
     override val outlineShapes = listOf(
         createCuboidShape(3.0, 7.0),

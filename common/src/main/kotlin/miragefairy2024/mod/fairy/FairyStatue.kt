@@ -49,7 +49,6 @@ import miragefairy2024.util.with
 import miragefairy2024.util.withHorizontalRotation
 import miragefairy2024.util.wrapper
 import mirrg.kotlin.hydrogen.castOrNull
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
@@ -75,6 +74,7 @@ import net.minecraft.world.level.block.EntityBlock
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
+import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.pathfinder.PathComputationType
@@ -101,7 +101,7 @@ class FairyStatueCard(
     mapColor: MapColor,
 ) {
     val identifier = MirageFairy2024.identifier(path)
-    val block = Registration(BuiltInRegistries.BLOCK, identifier) { FairyStatueBlock(this, FabricBlockSettings.create().mapColor(mapColor).strength(0.5F).nonOpaque()) }
+    val block = Registration(BuiltInRegistries.BLOCK, identifier) { FairyStatueBlock(this, BlockBehaviour.Properties.of().mapColor(mapColor).strength(0.5F).noOcclusion()) }
     val blockEntityType = Registration(BuiltInRegistries.BLOCK_ENTITY_TYPE, identifier) { BlockEntityType({ pos, state -> FairyStatueBlockEntity(this, pos, state) }, setOf(block.await()), null) }
     val item = Registration(BuiltInRegistries.ITEM, identifier) { FairyStatueBlockItem(this, block.await(), Item.Properties()) }
 

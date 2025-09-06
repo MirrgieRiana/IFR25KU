@@ -40,7 +40,7 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
     override val poem = EnJa("Contains strong acids made from insects", "毒を喰らい、毒と化す。")
 
     override val blockCodec = VeropedaBlock.CODEC
-    override fun createBlock() = VeropedaBlock(createCommonSettings().breakInstantly().mapColor(MapColor.NETHER).sound(SoundType.CROP))
+    override fun createBlock() = VeropedaBlock(createCommonSettings().instabreak().mapColor(MapColor.NETHER).sound(SoundType.CROP))
 
     override val drops = listOf(MaterialCard.VEROPEDA_BERRIES.item, MaterialCard.VEROPEDA_LEAF.item)
     override fun getFruitDrops(count: Int, random: RandomSource) = listOf(MaterialCard.VEROPEDA_BERRIES.item().createItemStack(count))

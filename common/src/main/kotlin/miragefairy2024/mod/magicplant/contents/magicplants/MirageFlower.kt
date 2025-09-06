@@ -49,7 +49,7 @@ object MirageFlowerCard : AbstractMirageFlowerCard<MirageFlowerBlock>() {
     override val poem = EnJa("Evolution to escape extermination", "可憐にして人畜無害たる魔物。")
 
     override val blockCodec = MirageFlowerBlock.CODEC
-    override fun createBlock() = MirageFlowerBlock(createCommonSettings().breakInstantly().mapColor(MapColor.DIAMOND).sound(SoundType.GLASS))
+    override fun createBlock() = MirageFlowerBlock(createCommonSettings().instabreak().mapColor(MapColor.DIAMOND).sound(SoundType.GLASS))
 
     override val drops = listOf(MaterialCard.MIRAGE_FLOUR.item, MaterialCard.MIRAGE_LEAVES.item, MaterialCard.FAIRY_CRYSTAL.item)
     override fun getFruitDrops(count: Int, random: RandomSource) = getMirageFlour(count, random)

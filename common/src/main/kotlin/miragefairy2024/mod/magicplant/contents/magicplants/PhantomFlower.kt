@@ -40,7 +40,7 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
     override val poem = EnJa("Illusory telepathy", "――おいでよ、僕たちのところへ")
 
     override val blockCodec = PhantomFlowerBlock.CODEC
-    override fun createBlock() = PhantomFlowerBlock(createCommonSettings().breakInstantly().mapColor(MapColor.COLOR_PINK).sound(SoundType.GLASS))
+    override fun createBlock() = PhantomFlowerBlock(createCommonSettings().instabreak().mapColor(MapColor.COLOR_PINK).sound(SoundType.GLASS))
 
     override val baseGrowth = super.baseGrowth / 8.0
     override val baseFruitGeneration = super.baseFruitGeneration * 9.0

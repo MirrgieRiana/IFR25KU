@@ -31,7 +31,6 @@ import miragefairy2024.util.string
 import miragefairy2024.util.times
 import miragefairy2024.util.uniformOre
 import miragefairy2024.util.with
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -44,6 +43,7 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.DropExperienceBlock
 import net.minecraft.world.level.block.SoundType
+import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.feature.Feature
@@ -101,16 +101,16 @@ enum class OreCard(
     val identifier = MirageFairy2024.identifier(path)
     val block = Registration(BuiltInRegistries.BLOCK, identifier) {
         val settings = when (baseStoneType) {
-            BaseStoneType.STONE -> FabricBlockSettings.create()
+            BaseStoneType.STONE -> BlockBehaviour.Properties.of()
                 .mapColor(MapColor.STONE)
                 .instrument(NoteBlockInstrument.BASEDRUM)
-                .requiresTool()
+                .requiresCorrectToolForDrops()
                 .strength(3.0F, 3.0F)
 
-            BaseStoneType.DEEPSLATE -> FabricBlockSettings.create()
+            BaseStoneType.DEEPSLATE -> BlockBehaviour.Properties.of()
                 .mapColor(MapColor.DEEPSLATE)
                 .instrument(NoteBlockInstrument.BASEDRUM)
-                .requiresTool()
+                .requiresCorrectToolForDrops()
                 .strength(4.5F, 3.0F)
                 .sound(SoundType.DEEPSLATE)
         }

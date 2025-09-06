@@ -13,7 +13,6 @@ import miragefairy2024.util.blockVisitor
 import miragefairy2024.util.get
 import miragefairy2024.util.int
 import miragefairy2024.util.wrapper
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.nbt.CompoundTag
@@ -21,6 +20,7 @@ import net.minecraft.util.StringRepresentable
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.EnumProperty
@@ -37,7 +37,7 @@ abstract class FairyFactoryCard<B : FairyFactoryBlock, E : FairyFactoryBlockEnti
         }
     }
 
-    override fun createBlockSettings(): FabricBlockSettings = super.createBlockSettings().lightLevel { blockState -> if (blockState.getValue(FairyFactoryBlock.STATUS).isLit) 8 else 0 }
+    override fun createBlockSettings(): BlockBehaviour.Properties = super.createBlockSettings().lightLevel { blockState -> if (blockState.getValue(FairyFactoryBlock.STATUS).isLit) 8 else 0 }
 
     override fun createPropertyConfigurations() = super.createPropertyConfigurations() + FOLIA_PROPERTY
 

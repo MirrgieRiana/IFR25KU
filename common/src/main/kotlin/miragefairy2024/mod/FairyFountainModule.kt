@@ -42,7 +42,6 @@ import miragefairy2024.util.times
 import miragefairy2024.util.weightedRandom
 import miragefairy2024.util.withHorizontalRotation
 import mirrg.kotlin.hydrogen.Single
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.BuiltInRegistries
@@ -62,6 +61,7 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
+import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.pathfinder.PathComputationType
@@ -71,7 +71,7 @@ import net.minecraft.world.phys.shapes.VoxelShape
 
 object FairyStatueFountainCard {
     val identifier = MirageFairy2024.identifier("fairy_statue_fountain")
-    val block = Registration(BuiltInRegistries.BLOCK, identifier) { FairyStatueFountainBlock(FabricBlockSettings.create().mapColor(MapColor.STONE).strength(1.0F).nonOpaque()) }
+    val block = Registration(BuiltInRegistries.BLOCK, identifier) { FairyStatueFountainBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(1.0F).noOcclusion()) }
     val item = Registration(BuiltInRegistries.ITEM, identifier) { BlockItem(block.await(), Item.Properties()) }
     val advancement = AdvancementCard(
         identifier = identifier,

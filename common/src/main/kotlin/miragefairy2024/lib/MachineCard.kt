@@ -6,7 +6,6 @@ import miragefairy2024.util.Registration
 import miragefairy2024.util.dummyUnitStreamCodec
 import miragefairy2024.util.register
 import miragefairy2024.util.times
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -20,6 +19,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
+import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 
 @Suppress("LeakingThis") // ブートストラップ問題のため解決不可能なので妥協する
@@ -42,7 +42,7 @@ abstract class MachineCard<B : Block, E : MachineBlockEntity<E>, H : MachineScre
 
     // Block
 
-    abstract fun createBlockSettings(): FabricBlockSettings
+    abstract fun createBlockSettings(): BlockBehaviour.Properties
     abstract fun createBlock(): B
     val block = Registration(BuiltInRegistries.BLOCK, identifier) { createBlock() }
 
