@@ -124,6 +124,7 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
     }
 
     open fun dropItems() {
+        val level = level ?: return
         inventory.forEachIndexed { index, itemStack ->
             if (card.inventorySlotConfigurations[index].dropItem) Containers.dropItemStack(level, worldPosition.x.toDouble(), worldPosition.y.toDouble(), worldPosition.z.toDouble(), itemStack)
         }

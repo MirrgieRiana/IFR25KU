@@ -143,6 +143,7 @@ abstract class SimpleMachineBlockEntity<E : SimpleMachineBlockEntity<E>>(private
 
     override fun dropItems() {
         super.dropItems()
+        val level = level ?: return
         craftingInventory.forEach {
             Containers.dropItemStack(level, worldPosition.x.toDouble(), worldPosition.y.toDouble(), worldPosition.z.toDouble(), it)
         }
