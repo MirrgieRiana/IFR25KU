@@ -12,7 +12,6 @@ import miragefairy2024.util.isServer
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.setValue
-import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricEntityTypeBuilder
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.syncher.EntityDataAccessor
@@ -21,7 +20,6 @@ import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.sounds.SoundSource
 import net.minecraft.tags.EntityTypeTags
 import net.minecraft.util.Mth
-import net.minecraft.world.entity.EntityDimensions
 import net.minecraft.world.entity.EntityEvent
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
@@ -40,8 +38,8 @@ object EtheroballisticBoltCard {
     fun createEntity(entityType: EntityType<EtheroballisticBoltEntity>, world: Level) = EtheroballisticBoltEntity(entityType, world)
     val identifier = MirageFairy2024.identifier("etheroballistic_bolt")
     val entityType = Registration(BuiltInRegistries.ENTITY_TYPE, identifier) {
-        FabricEntityTypeBuilder.create(spawnGroup) { entityType, world -> createEntity(entityType, world) }
-            .dimensions(EntityDimensions.fixed(width, height))
+        EntityType.Builder.of({ entityType, world -> createEntity(entityType, world) }, spawnGroup)
+            .sized(width, height)
             .build()
     }
 

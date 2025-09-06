@@ -34,7 +34,6 @@ import miragefairy2024.util.sendToAround
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricDefaultAttributeRegistry
-import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricEntityTypeBuilder
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
@@ -44,7 +43,6 @@ import net.minecraft.sounds.SoundSource
 import net.minecraft.tags.EntityTypeTags
 import net.minecraft.util.Mth
 import net.minecraft.world.damagesource.DamageSource
-import net.minecraft.world.entity.EntityDimensions
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.Mob
@@ -82,8 +80,8 @@ object ChaosCubeCard {
     val identifier = MirageFairy2024.identifier("chaos_cube")
     val name = EnJa("Chaos Cube", "混沌のキューブ")
     val entityType = Registration(BuiltInRegistries.ENTITY_TYPE, identifier) {
-        FabricEntityTypeBuilder.create(spawnGroup) { entityType, world -> createEntity(entityType, world) }
-            .dimensions(EntityDimensions.fixed(width, height))
+        EntityType.Builder.of({ entityType, world -> createEntity(entityType, world) }, spawnGroup)
+            .sized(width, height)
             .build()
     }
     val spawnEggItem = Registration(BuiltInRegistries.ITEM, identifier * "_egg") { SpawnEggItem(entityType.await(), 0xB36235, 0xFFC21D, Item.Properties()) }
