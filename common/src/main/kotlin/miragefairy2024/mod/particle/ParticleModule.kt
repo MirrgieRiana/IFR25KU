@@ -7,6 +7,7 @@ import miragefairy2024.util.Registration
 import miragefairy2024.util.register
 import miragefairy2024.util.registerServerToClientPayloadType
 import miragefairy2024.util.string
+import miragefairy2024.util.toIdentifier
 import mirrg.kotlin.gson.hydrogen.jsonArray
 import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
@@ -14,7 +15,6 @@ import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes
 import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.core.particles.ParticleType
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.ResourceLocation
 
 class ParticleTypeCard<P : ParticleType<T>, T : ParticleOptions>(
     path: String,
@@ -40,7 +40,7 @@ class ParticleTypeCard<P : ParticleType<T>, T : ParticleOptions>(
     }
 
     val identifier = MirageFairy2024.identifier(path)
-    val textures = textureNames.map { if (":" in it) ResourceLocation.parse(it) else MirageFairy2024.identifier(it) }
+    val textures = textureNames.map { if (":" in it) it.toIdentifier() else MirageFairy2024.identifier(it) }
     val particleType = creator()
 }
 
