@@ -68,7 +68,7 @@ class FairyKnifeItem(override val configuration: FairyKnifeConfiguration, settin
 }
 
 open class KnifeItem(material: Tier, attackDamage: Float, attackSpeed: Float, settings: Properties) : AxeItem(material, settings.attributes(createAttributes(material, attackDamage, attackSpeed))) {
-    override fun useOn(context: UseOnContext?) = InteractionResult.PASS
+    override fun useOn(context: UseOnContext) = InteractionResult.PASS
     override fun postHurtEnemy(stack: ItemStack, target: LivingEntity, attacker: LivingEntity) {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND)
     }
