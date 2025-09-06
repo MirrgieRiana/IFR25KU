@@ -38,7 +38,7 @@ enum class SoundEventCard(val path: String, en: String, ja: String, soundPaths: 
 
 object SoundEventChannel : Channel<SoundEventPacket>(MirageFairy2024.identifier("sound")) {
     override fun writeToBuf(buf: RegistryFriendlyByteBuf, packet: SoundEventPacket) {
-        buf.writeResourceLocation(BuiltInRegistries.SOUND_EVENT.getKey(packet.soundEvent))
+        buf.writeResourceLocation(BuiltInRegistries.SOUND_EVENT.getKey(packet.soundEvent)!!)
         buf.writeBlockPos(packet.pos)
         buf.writeUtf(packet.category.name)
         buf.writeFloat(packet.volume)
