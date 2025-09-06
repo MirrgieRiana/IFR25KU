@@ -236,7 +236,7 @@ class PassiveSkillResult() {
                 value.map.forEach { (passiveSkillEffect, it) ->
                     fun <T : Any> f(passiveSkillEffect: PassiveSkillEffect<T>) {
                         ResourceLocation.STREAM_CODEC.encode(buffer, passiveSkillEffectRegistry.getKey(passiveSkillEffect)!!)
-                        passiveSkillEffect.streamCodec().encode(buffer, it as T)
+                        passiveSkillEffect.streamCodec().encode(buffer, passiveSkillEffect.castOrThrow(it))
                     }
                     f(passiveSkillEffect)
                 }
