@@ -442,7 +442,7 @@ class ChaosCubeEntity(entityType: EntityType<out ChaosCubeEntity>, world: Level)
             val world = mob.level()
             if (world.gameTime % 20L != 0L) return false
             if (world !is ServerLevel) return false
-            val structure = world.structureManager().registryAccess().registryOrThrow(Registries.STRUCTURE).get(ResourceKey.create(Registries.STRUCTURE, MirageFairy2024.identifier("dripstone_caves_ruin"))) // TODO
+            val structure = world.structureManager().registryAccess().registryOrThrow(Registries.STRUCTURE).get(ResourceKey.create(Registries.STRUCTURE, MirageFairy2024.identifier("dripstone_caves_ruin")))!! // TODO
             if (!world.structureManager().getStructureAt(mob.blockPosition(), structure).isValid) return false
             return super.canUse()
         }
