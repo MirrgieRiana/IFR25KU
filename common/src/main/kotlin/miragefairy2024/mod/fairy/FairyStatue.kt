@@ -13,6 +13,7 @@ import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.mod.text
+import miragefairy2024.util.BlockEntityType
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.ItemGroupCard
@@ -73,7 +74,6 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.EntityBlock
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.entity.BlockEntity
-import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
@@ -102,7 +102,7 @@ class FairyStatueCard(
 ) {
     val identifier = MirageFairy2024.identifier(path)
     val block = Registration(BuiltInRegistries.BLOCK, identifier) { FairyStatueBlock(this, BlockBehaviour.Properties.of().mapColor(mapColor).strength(0.5F).noOcclusion()) }
-    val blockEntityType = Registration(BuiltInRegistries.BLOCK_ENTITY_TYPE, identifier) { BlockEntityType({ pos, state -> FairyStatueBlockEntity(this, pos, state) }, setOf(block.await()), null) }
+    val blockEntityType = Registration(BuiltInRegistries.BLOCK_ENTITY_TYPE, identifier) { BlockEntityType({ pos, state -> FairyStatueBlockEntity(this, pos, state) }, setOf(block.await())) }
     val item = Registration(BuiltInRegistries.ITEM, identifier) { FairyStatueBlockItem(this, block.await(), Item.Properties()) }
 
     val formatTranslation = Translation({ identifier.toLanguageKey("block", "format") }, format)

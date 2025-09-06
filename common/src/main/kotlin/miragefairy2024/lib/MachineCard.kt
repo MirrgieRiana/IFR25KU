@@ -2,6 +2,7 @@ package miragefairy2024.lib
 
 import miragefairy2024.ModContext
 import miragefairy2024.util.AdvancementCard
+import miragefairy2024.util.BlockEntityType
 import miragefairy2024.util.Registration
 import miragefairy2024.util.dummyUnitStreamCodec
 import miragefairy2024.util.register
@@ -18,7 +19,6 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
-import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 
@@ -74,7 +74,7 @@ abstract class MachineCard<B : Block, E : MachineBlockEntity<E>, H : MachineScre
 
     abstract fun createBlockEntityAccessor(): BlockEntityAccessor<E>
     val blockEntityAccessor = createBlockEntityAccessor()
-    val blockEntityType = Registration(BuiltInRegistries.BLOCK_ENTITY_TYPE, identifier) { BlockEntityType(blockEntityAccessor::create, setOf(block.await()), null) }
+    val blockEntityType = Registration(BuiltInRegistries.BLOCK_ENTITY_TYPE, identifier) { BlockEntityType(blockEntityAccessor::create, setOf(block.await())) }
 
 
     // Item
