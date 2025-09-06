@@ -3,11 +3,13 @@ package miragefairy2024.util
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import miragefairy2024.ModContext
+import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.core.Holder
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.tags.TagKey
 
 object RegistryEvents {
     val registrations = mutableListOf<Registration<*, *>>()
@@ -42,7 +44,17 @@ fun Registration<*, *>.register() {
     RegistryEvents.registrations += this
 }
 
+
 val <T> Registry<T>.sortedEntrySet: List<Map.Entry<ResourceKey<T>, T>> get() = this.entrySet().sortedBy { it.key.location() }
+
+fun <T : Any> Registry<T>.getResourceKeyOrNull(value: T): ResourceKey<T>? = this.getResourceKey(value).orNull
+
+fun <T : Any> Registry<T>.getHolderOrNull(key: ResourceKey<T>): Holder.Reference<T>? = this.getHolder(key).orNull
+
+fun <T : Any> Registry<T>.getHolderOfOrNull(value: T) = this.getResourceKeyOrNull(value)?.let { this.getHolderOrNull(it) }
+
+fun <T : Any> Registry<T>.isIn(value: T, tag: TagKey<T>) = this.getHolderOfOrNull(value)?.`is`(tag) ?: false
+
 
 operator fun <T> HolderLookup.Provider.get(registry: ResourceKey<Registry<T>>): HolderLookup.RegistryLookup<T> = this.lookupOrThrow(registry)
 
