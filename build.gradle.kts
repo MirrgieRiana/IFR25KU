@@ -2,7 +2,9 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     id("dev.architectury.loom") version "1.7-SNAPSHOT" apply false
@@ -95,10 +97,10 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
             options.release.set(21)
         }
 
-        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
-            kotlinOptions {
-                jvmTarget = "21"
-                freeCompilerArgs = listOf("-Xcontext-receivers")
+        tasks.withType<KotlinJvmCompile>().configureEach {
+            compilerOptions {
+                jvmTarget.set(JvmTarget.JVM_21)
+                freeCompilerArgs.add("-Xcontext-receivers")
             }
         }
 
