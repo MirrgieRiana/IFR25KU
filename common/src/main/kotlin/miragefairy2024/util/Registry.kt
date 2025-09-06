@@ -60,3 +60,6 @@ fun <T : Any> Registry<T>.isIn(value: T, tag: TagKey<T>) = this.getHolderOfOrNul
 operator fun <T> HolderLookup.Provider.get(registry: ResourceKey<Registry<T>>): HolderLookup.RegistryLookup<T> = this.lookupOrThrow(registry)
 
 operator fun <T> HolderLookup.Provider.get(registry: ResourceKey<Registry<T>>, key: ResourceKey<T>): Holder.Reference<T> = this.lookupOrThrow(registry).getOrThrow(key)
+
+
+infix fun <T, H : Holder<T>> H.isIn(tag: TagKey<T>) = this.`is`(tag)
