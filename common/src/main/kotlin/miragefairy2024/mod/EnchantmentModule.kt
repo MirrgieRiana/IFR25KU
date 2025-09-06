@@ -15,9 +15,9 @@ import miragefairy2024.util.ja
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerDynamicGeneration
 import miragefairy2024.util.toItemTag
+import miragefairy2024.util.with
 import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.EnchantmentTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
@@ -100,7 +100,7 @@ enum class EnchantmentCard(
     ;
 
     val identifier = MirageFairy2024.identifier(path)
-    val key: ResourceKey<Enchantment> = ResourceKey.create(Registries.ENCHANTMENT, identifier)
+    val key = Registries.ENCHANTMENT with identifier
 
     context(ModContext)
     fun init() {

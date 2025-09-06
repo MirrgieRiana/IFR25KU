@@ -33,10 +33,10 @@ import miragefairy2024.util.registerSpawn
 import miragefairy2024.util.sendToAround
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
+import miragefairy2024.util.with
 import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricDefaultAttributeRegistry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundSource
@@ -442,7 +442,7 @@ class ChaosCubeEntity(entityType: EntityType<out ChaosCubeEntity>, world: Level)
             val world = mob.level()
             if (world.gameTime % 20L != 0L) return false
             if (world !is ServerLevel) return false
-            val structure = world.structureManager().registryAccess().registryOrThrow(Registries.STRUCTURE).get(ResourceKey.create(Registries.STRUCTURE, MirageFairy2024.identifier("dripstone_caves_ruin")))!! // TODO
+            val structure = world.structureManager().registryAccess().registryOrThrow(Registries.STRUCTURE).get(Registries.STRUCTURE with MirageFairy2024.identifier("dripstone_caves_ruin"))!! // TODO
             if (!world.structureManager().getStructureAt(mob.blockPosition(), structure).isValid) return false
             return super.canUse()
         }
