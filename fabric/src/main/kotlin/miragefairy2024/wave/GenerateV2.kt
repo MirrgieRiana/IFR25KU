@@ -43,7 +43,7 @@ object GenerateV2 {
             .let { it.resize((it.bufferedImage.width.toDouble() / pixelsPerSecond.toDouble() * samplesPerSecond.toDouble() + bias).roundToInt(), imageHeight) }
             .also { logger.info("Internal Image Size: ${it.bufferedImage.width} x ${it.bufferedImage.height}") } // 48255 x 129
 
-            .generatePhase()
+            .generatePhaseLegacy()
             .generatePhaseGriffinLim(5, { it.toWaveform(bits, 1.0) }, { it.toSpectrogram(bits, 1.0) })
 
             .toWaveform(bits, 1 / amplifier)

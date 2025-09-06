@@ -41,8 +41,7 @@ fun Spectrogram.generatePhaseSimple(): Spectrogram {
     return Spectrogram(image)
 }
 
-@Deprecated("generatePhaseGriffinLim is better")
-fun Spectrogram.generatePhase(): Spectrogram {
+fun Spectrogram.generatePhaseLegacy(): Spectrogram {
     val windowSize = (this.bufferedImage.height - 1) * 2 // 256
 
     val random = Random(0)
