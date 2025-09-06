@@ -7,6 +7,7 @@ import miragefairy2024.mod.materials.Shape
 import miragefairy2024.mod.materials.tag
 import miragefairy2024.mod.materials.tagOf
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.registerChild
@@ -22,8 +23,8 @@ import net.minecraft.world.level.block.Blocks
 import kotlin.jvm.optionals.getOrElse
 
 enum class ItemTagCard(identifier: ResourceLocation, val title: EnJa) {
-    ECHO_SHARDS(ResourceLocation.fromNamespaceAndPath("c", "echo_shards"), EnJa("Echo Shards", "残響の欠片")),
-    PRISMARINE_SHARDS(ResourceLocation.fromNamespaceAndPath("c", "prismarine_shards"), EnJa("Prismarine Shards", "プリズマリンの欠片")),
+    ECHO_SHARDS(ResourceLocation("c", "echo_shards"), EnJa("Echo Shards", "残響の欠片")),
+    PRISMARINE_SHARDS(ResourceLocation("c", "prismarine_shards"), EnJa("Prismarine Shards", "プリズマリンの欠片")),
     PLANT_TOOLS(MirageFairy2024.identifier("plant_tools"), EnJa("Plant Tools", "植物ツール")),
     ;
 

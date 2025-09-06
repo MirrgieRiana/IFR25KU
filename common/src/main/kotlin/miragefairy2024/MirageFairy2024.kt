@@ -2,6 +2,7 @@ package miragefairy2024
 
 import com.google.gson.JsonElement
 import miragefairy2024.mod.NinePatchTextureCard
+import miragefairy2024.util.ResourceLocation
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.minecraft.advancements.AdvancementHolder
@@ -53,5 +54,5 @@ interface DataMapConsumer {
 
 object MirageFairy2024 {
     const val MOD_ID = "miragefairy2024"
-    fun identifier(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
+    fun identifier(path: String) = ResourceLocation(MOD_ID, path)
 }

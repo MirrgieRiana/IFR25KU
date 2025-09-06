@@ -8,11 +8,11 @@ import miragefairy2024.mixin.client.api.RenderItemHandler
 import miragefairy2024.mod.fairyquest.FairyQuestCardCard
 import miragefairy2024.mod.fairyquest.fairyQuestCardScreenHandlerType
 import miragefairy2024.mod.fairyquest.getFairyQuestRecipe
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.isNotIn
 import net.minecraft.client.Minecraft
 import net.minecraft.client.resources.model.ModelResourceLocation
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.Mth
 import net.minecraft.world.item.ItemDisplayContext
 import net.minecraft.world.item.Items
@@ -28,7 +28,7 @@ fun initFairyQuestClientModule() {
             matrices.stack {
                 matrices.translate(0F, 1F / 16F, 0F)
                 matrices.scale(0.5F, 0.5F, 0.01F)
-                val resultModel = Minecraft.getInstance().modelManager.getModel(ModelResourceLocation(ResourceLocation.fromNamespaceAndPath("minecraft", "nether_portal"), "axis=x"))
+                val resultModel = Minecraft.getInstance().modelManager.getModel(ModelResourceLocation(ResourceLocation("minecraft", "nether_portal"), "axis=x"))
                 Minecraft.getInstance().itemRenderer.render(Items.DIRT.createItemStack(), ItemDisplayContext.GUI, false, matrices, vertexConsumers, light, overlay, resultModel)
             }
 

@@ -87,7 +87,7 @@ infix fun <T : RecipeBuilder> RecipeGenerationSettings<T>.on(tag: TagKey<Item>) 
 }
 
 infix fun <T> RecipeGenerationSettings<T>.modId(modId: String) = this.apply {
-    this.idModifiers += { ResourceLocation.fromNamespaceAndPath(modId, it.path) }
+    this.idModifiers += { ResourceLocation(modId, it.path) }
 }
 
 infix fun <T> RecipeGenerationSettings<T>.from(item: () -> Item) = this.apply {
@@ -361,7 +361,7 @@ fun (() -> Item).registerComposterInput(chance: Float) {
     DataGenerationEvents.onGenerateDataMap { it, _ ->
         it.accept(
             Registries.ITEM,
-            ResourceLocation.fromNamespaceAndPath("neoforge", "compostables"),
+            ResourceLocation("neoforge", "compostables"),
             BuiltInRegistries.ITEM.getResourceKey(this()).get(),
             jsonObject(
                 "chance" to chance.jsonElement,

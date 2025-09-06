@@ -3,6 +3,7 @@ package miragefairy2024.mod.tool
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.en
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
@@ -12,7 +13,6 @@ import miragefairy2024.util.registerDynamicGeneration
 import miragefairy2024.util.toDamageTypeTag
 import miragefairy2024.util.with
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.DamageTypeTags
 import net.minecraft.tags.TagKey
 import net.minecraft.world.damagesource.DamageType
@@ -67,8 +67,8 @@ object ToolBreakDamageTypeCard : DamageTypeCard() {
     override fun getTags() = listOf(DamageTypeTags.NO_KNOCKBACK)
 }
 
-val C_IS_MAGIC_DAMAGE_TYPE_TAG = ResourceLocation.fromNamespaceAndPath("c", "is_magic").toDamageTypeTag()
-val NEOFORGE_IS_MAGIC_DAMAGE_TYPE_TAG = ResourceLocation.fromNamespaceAndPath("neoforge", "is_magic").toDamageTypeTag()
+val C_IS_MAGIC_DAMAGE_TYPE_TAG = ResourceLocation("c", "is_magic").toDamageTypeTag()
+val NEOFORGE_IS_MAGIC_DAMAGE_TYPE_TAG = ResourceLocation("neoforge", "is_magic").toDamageTypeTag()
 val IS_MAGIC_DAMAGE_TYPE_TAG = MirageFairy2024.identifier("is_magic").toDamageTypeTag()
 
 context(ModContext)

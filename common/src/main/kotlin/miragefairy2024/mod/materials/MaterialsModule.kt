@@ -47,6 +47,7 @@ import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.SpecialRecipeResult
 import miragefairy2024.util.Translation
 import miragefairy2024.util.createItemStack
@@ -1245,7 +1246,7 @@ fun initMaterialsModule() {
 data class Ore(val shape: Shape, val material: Material)
 
 val Ore.title get() = EnJa("${this.material.prefix.en} ${this.shape.title.en}", "${this.material.prefix.ja}の${this.shape.title.ja}")
-val Ore.tag get() = ResourceLocation.fromNamespaceAndPath("c", "${this.shape.path}/${this.material.path}").toItemTag()
+val Ore.tag get() = ResourceLocation("c", "${this.shape.path}/${this.material.path}").toItemTag()
 val Ore.ingredient get() = this.tag.toIngredient()
 fun tagOf(shape: Shape, material: Material) = Ore(shape, material).tag
 fun ingredientOf(shape: Shape, material: Material) = Ore(shape, material).ingredient
@@ -1268,7 +1269,7 @@ enum class Shape(val path: String, val title: EnJa) {
     STORAGE_BLOCK("storage_blocks", EnJa("Blocks", "ブロック")),
 }
 
-val Shape.tag get() = ResourceLocation.fromNamespaceAndPath("c", this.path).toItemTag()
+val Shape.tag get() = ResourceLocation("c", this.path).toItemTag()
 
 enum class Material(val path: String, val prefix: EnJa) {
     WOOD("wooden", EnJa("Wooden", "木")),

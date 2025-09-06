@@ -9,6 +9,7 @@ import miragefairy2024.util.ModelElementsData
 import miragefairy2024.util.ModelFaceData
 import miragefairy2024.util.ModelFacesData
 import miragefairy2024.util.ModelTexturesData
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.isIn
 import miragefairy2024.util.string
@@ -19,7 +20,6 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.util.RandomSource
 import net.minecraft.world.entity.Entity
@@ -64,7 +64,7 @@ class LocalVacuumDecayBlock(settings: Properties) : Block(settings) {
 val localVacuumDecayTexturedModelFactory = TexturedModel.Provider { block ->
     Model { textureMap ->
         ModelData(
-            parent = ResourceLocation.fromNamespaceAndPath("minecraft", "block/block"),
+            parent = ResourceLocation("minecraft", "block/block"),
             textures = ModelTexturesData(
                 TextureSlot.PARTICLE.id to textureMap.get(TextureSlot.BACK).string,
                 TextureSlot.BACK.id to textureMap.get(TextureSlot.BACK).string,

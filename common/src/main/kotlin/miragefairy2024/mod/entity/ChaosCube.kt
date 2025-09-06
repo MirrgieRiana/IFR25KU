@@ -20,6 +20,7 @@ import miragefairy2024.util.LootPool
 import miragefairy2024.util.LootTable
 import miragefairy2024.util.Model
 import miragefairy2024.util.Registration
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.configure
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
@@ -37,7 +38,6 @@ import miragefairy2024.util.with
 import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricDefaultAttributeRegistry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundSource
 import net.minecraft.tags.EntityTypeTags
@@ -135,7 +135,7 @@ object ChaosCubeCard {
 
         spawnEggItem.register()
         spawnEggItem.registerItemGroup(mirageFairy2024ItemGroupCard.itemGroupKey)
-        spawnEggItem.registerModelGeneration(Model(ResourceLocation.fromNamespaceAndPath("minecraft", "item/template_spawn_egg")))
+        spawnEggItem.registerModelGeneration(Model(ResourceLocation("minecraft", "item/template_spawn_egg")))
         spawnEggItem.enJa(EnJa("${name.en} Spawn Egg", "${name.ja}のスポーンエッグ"))
 
         advancement.init()

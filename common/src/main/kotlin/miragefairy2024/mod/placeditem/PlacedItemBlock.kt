@@ -12,6 +12,7 @@ import miragefairy2024.util.ModelData
 import miragefairy2024.util.ModelElementsData
 import miragefairy2024.util.ModelTexturesData
 import miragefairy2024.util.Registration
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.compound
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.double
@@ -41,7 +42,6 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BlockTags
 import net.minecraft.util.Mth
 import net.minecraft.world.item.Items
@@ -77,9 +77,9 @@ fun initPlacedItemBlock() {
         card.block.registerModelGeneration {
             Model {
                 ModelData(
-                    parent = ResourceLocation.fromNamespaceAndPath("minecraft", "block/block"),
+                    parent = ResourceLocation("minecraft", "block/block"),
                     textures = ModelTexturesData(
-                        TextureSlot.PARTICLE.id to ResourceLocation.fromNamespaceAndPath("minecraft", "block/glass").string,
+                        TextureSlot.PARTICLE.id to ResourceLocation("minecraft", "block/glass").string,
                     ),
                     elements = ModelElementsData(),
                 )

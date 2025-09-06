@@ -12,6 +12,7 @@ import miragefairy2024.util.ModelFaceData
 import miragefairy2024.util.ModelFacesData
 import miragefairy2024.util.ModelTexturesData
 import miragefairy2024.util.Registration
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.get
@@ -36,7 +37,6 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BlockTags
 import net.minecraft.util.valueproviders.UniformInt
 import net.minecraft.world.item.BlockItem
@@ -119,8 +119,8 @@ enum class OreCard(
     val item = Registration(BuiltInRegistries.ITEM, identifier) { BlockItem(block.await(), Item.Properties()) }
     val texturedModelFactory = TexturedModel.Provider {
         val baseStoneTexture = when (baseStoneType) {
-            BaseStoneType.STONE -> ResourceLocation.fromNamespaceAndPath("minecraft", "block/stone")
-            BaseStoneType.DEEPSLATE -> ResourceLocation.fromNamespaceAndPath("minecraft", "block/deepslate")
+            BaseStoneType.STONE -> ResourceLocation("minecraft", "block/stone")
+            BaseStoneType.DEEPSLATE -> ResourceLocation("minecraft", "block/deepslate")
         }
         OreModelCard.model.with(
             TextureSlot.BACK to baseStoneTexture,
@@ -194,7 +194,7 @@ fun initOresModule() {
 
 fun createOreModel() = Model {
     ModelData(
-        parent = ResourceLocation.fromNamespaceAndPath("minecraft", "block/block"),
+        parent = ResourceLocation("minecraft", "block/block"),
         textures = ModelTexturesData(
             TextureSlot.PARTICLE.id to TextureSlot.BACK.string,
         ),

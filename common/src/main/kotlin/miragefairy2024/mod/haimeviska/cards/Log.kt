@@ -9,6 +9,7 @@ import miragefairy2024.mod.haimeviska.HAIMEVISKA_LOGS_ITEM_TAG
 import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.haimeviska.HaimeviskaBlockConfiguration
 import miragefairy2024.mod.haimeviska.createBaseWoodSetting
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.generator
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.on
@@ -22,7 +23,6 @@ import net.fabricmc.fabric.api.registry.StrippableBlockRegistry
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.data.models.BlockModelGenerators.WoodProvider
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.stats.Stats
@@ -104,8 +104,8 @@ class HaimeviskaStrippedLogBlockCard(configuration: HaimeviskaBlockConfiguration
     override fun init() {
         super.init()
         registerModelGeneration(block) { it.logWithHorizontal(block()) }
-        ResourceLocation.fromNamespaceAndPath("c", "stripped_logs").toBlockTag().generator.registerChild(block)
-        ResourceLocation.fromNamespaceAndPath("c", "stripped_logs").toItemTag().generator.registerChild(item)
+        ResourceLocation("c", "stripped_logs").toBlockTag().generator.registerChild(block)
+        ResourceLocation("c", "stripped_logs").toItemTag().generator.registerChild(item)
         initStripped(LOG.block)
     }
 }
@@ -130,8 +130,8 @@ class HaimeviskaStrippedWoodBlockCard(configuration: HaimeviskaBlockConfiguratio
     override fun init() {
         super.init()
         registerModelGeneration(STRIPPED_LOG.block) { it.wood(block()) }
-        ResourceLocation.fromNamespaceAndPath("c", "stripped_woods").toBlockTag().generator.registerChild(block)
-        ResourceLocation.fromNamespaceAndPath("c", "stripped_woods").toItemTag().generator.registerChild(item)
+        ResourceLocation("c", "stripped_woods").toBlockTag().generator.registerChild(block)
+        ResourceLocation("c", "stripped_woods").toItemTag().generator.registerChild(item)
         initStripped(WOOD.block)
         initWood(STRIPPED_LOG.item)
     }
