@@ -186,7 +186,7 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
             playerInventory,
             this,
             propertyDelegate,
-            ContainerLevelAccess.create(level, worldPosition),
+            ContainerLevelAccess.create(level!!, worldPosition),
         )
         return card.createScreenHandler(arguments)
     }
