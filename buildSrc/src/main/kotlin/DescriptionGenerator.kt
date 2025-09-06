@@ -306,20 +306,30 @@ fun getModrinthBody(): String {
         }
         !h2("素材・加工") {
             !"これは妖精語で妖精の大樹を意味する、「ハイメヴィスカ」の木。"
+            !img("ハイメヴィスカ", "https://cdn.modrinth.com/data/cached_images/2b8db6bc14815d912c96c6e7a441db77f1d0a6cc_0.webp")
             !"燃料に使ったり飲むことができる樹液を採取するにはハイメヴィスカの原木を並べて剣で傷をつけてみよう！"
+            !img("樹液ファーム", "https://cdn.modrinth.com/data/cached_images/ea98315555098fb52d52cff608aeffa95c9eae80_0.webp")
             !hr
             !"ハイメヴィスカを伐採するのは非常に大変だが、繋がった原木を一度に破壊できる紅天石の斧であれば簡単に伐採できる！"
             !"そのほか、蒼天石は地表近くに出没する鉱石で、デフォルトでシルクタッチの能力を持っている！"
+            !img("シャルパイトとミラナガイトのツール", "https://cdn.modrinth.com/data/cached_images/30d662dd3fa505cc7ceac312ce74fcc4a64f735b.png")
             !hr
             !"ハイメヴィスカからは酒を作ることができる醸造樽が作れる。"
+            !img("醸造樽のレシピ", "https://cdn.modrinth.com/data/cached_images/9ccab95ed4b3ffc9e5134b1b0a95e17cdecc8b06.png")
+            !img("醸造樽の設置", "https://cdn.modrinth.com/data/cached_images/8c56debebae75dcb5398235bc6ebefa5b2841053.png")
             !"酒はあなたにメリットとデメリットを提供する！"
+            !img("Fairy Liqueur", "https://cdn.modrinth.com/data/cached_images/b6fcb829216f0fa98a2402e9e93f60d984634316.png")
             !hr
             !"ある程度シャルパイトがたまったら、オーラ反射炉を作ってみよう！"
+            !img("オーラ反射炉のレシピ", "https://cdn.modrinth.com/data/cached_images/d418b63551cf892ef5c6c118504392aae0881ecd.png")
             !"これを使って作れるミラジウムは、強力なツールとなり、さらに派生素材のための中間素材でもある。"
             !"それを動かすには燃料としてソウルサンドやソウルソイルが必要だ。"
+            !img("レゾナイトのレシピ", "https://cdn.modrinth.com/data/cached_images/baa1a654af9891783d670bd9dd678f8da4462c31.png")
             !hr
             !"あなたはハイメヴィスカの原木から妖精の家を作ることができる。"
-            !"そこには妖精が住むことができる！"
+            !img("妖精の家のレシピ", "https://cdn.modrinth.com/data/cached_images/81dd2f3401638fa4ffb473ea7679b37d2db93b4b.png")
+            !"それはそこで働くための妖精が住むことができる！"
+            !img("妖精の家のインテリア", "https://cdn.modrinth.com/data/cached_images/b37e0797d786d123f74d53cc2bc454c4ca6ae43a.png")
         }
         !h2("ツール") {
             !"IFR25KUには多様なツールが実装されています。"
