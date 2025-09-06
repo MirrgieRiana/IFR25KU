@@ -14,6 +14,8 @@ import miragefairy2024.util.getCrystalErg
 import miragefairy2024.util.getMoisture
 import miragefairy2024.util.humidityCategory
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isIn
+import miragefairy2024.util.isNotIn
 import miragefairy2024.util.lightProxy
 import miragefairy2024.util.string
 import miragefairy2024.util.temperatureCategory
@@ -63,7 +65,7 @@ enum class TraitConditionCard(
 
 private fun getFloorHardness(world: Level, blockPos: BlockPos): Double {
     val blockState = world.getBlockState(blockPos.below())
-    if (!blockState.`is`(BlockTags.MINEABLE_WITH_PICKAXE)) return 0.0
+    if (blockState isNotIn BlockTags.MINEABLE_WITH_PICKAXE) return 0.0
     val hardness = blockState.getDestroySpeed(world, blockPos.below())
     if (hardness < 0) return 0.0
     return hardness / 2.0 atMost 2.0
@@ -72,8 +74,8 @@ private fun getFloorHardness(world: Level, blockPos: BlockPos): Double {
 private fun Level.getHighAltitudeFactor(blockPos: BlockPos): Double {
     return when {
         this.dimensionType().natural -> (blockPos.y.toDouble() - 64.0) / 128.0 atLeast 0.0 atMost 1.0
-        this.getBiome(blockPos).`is`(ConventionalBiomeTags.IS_NETHER) -> 0.0
-        this.getBiome(blockPos).`is`(ConventionalBiomeTags.IS_END) -> 1.0
+        this.getBiome(blockPos) isIn ConventionalBiomeTags.IS_NETHER -> 0.0
+        this.getBiome(blockPos) isIn ConventionalBiomeTags.IS_END -> 1.0
         else -> 0.0
     }
 }
@@ -81,8 +83,8 @@ private fun Level.getHighAltitudeFactor(blockPos: BlockPos): Double {
 private fun Level.getLowAltitudeFactor(blockPos: BlockPos): Double {
     return when {
         this.dimensionType().natural -> -(blockPos.y.toDouble() - 64.0) / 128.0 atLeast 0.0 atMost 1.0
-        this.getBiome(blockPos).`is`(ConventionalBiomeTags.IS_NETHER) -> 1.0
-        this.getBiome(blockPos).`is`(ConventionalBiomeTags.IS_END) -> 0.0
+        this.getBiome(blockPos) isIn ConventionalBiomeTags.IS_NETHER -> 1.0
+        this.getBiome(blockPos) isIn ConventionalBiomeTags.IS_END -> 0.0
         else -> 0.0
     }
 }

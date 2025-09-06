@@ -9,6 +9,7 @@ import miragefairy2024.mod.fairyquest.FairyQuestCardCard
 import miragefairy2024.mod.fairyquest.fairyQuestCardScreenHandlerType
 import miragefairy2024.mod.fairyquest.getFairyQuestRecipe
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.isNotIn
 import net.minecraft.client.Minecraft
 import net.minecraft.client.resources.model.ModelResourceLocation
 import net.minecraft.resources.ResourceLocation
@@ -19,7 +20,7 @@ import net.minecraft.world.item.Items
 context(ModContext)
 fun initFairyQuestClientModule() {
     RenderItemHandler.listeners += RenderItemHandler { stack, renderMode, leftHanded, matrices, vertexConsumers, light, overlay, model ->
-        if (!stack.`is`(FairyQuestCardCard.item())) return@RenderItemHandler
+        if (stack isNotIn FairyQuestCardCard.item()) return@RenderItemHandler
         matrices.stack {
             model.transforms.getTransform(renderMode).apply(leftHanded, matrices)
 

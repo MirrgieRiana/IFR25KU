@@ -17,6 +17,7 @@ import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.getOrNull
+import miragefairy2024.util.isNotIn
 import miragefairy2024.util.normal
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerCutoutRenderLayer
@@ -206,7 +207,7 @@ abstract class FairyBuildingBlockEntity<E : FairyBuildingBlockEntity<E>>(private
     override fun render(renderingProxy: RenderingProxy, tickDelta: Float, light: Int, overlay: Int) {
         val world = level ?: return
         val blockState = world.getBlockState(worldPosition)
-        if (!blockState.`is`(card.block())) return
+        if (blockState isNotIn card.block()) return
         val direction = blockState.getOrNull(HorizontalDirectionalBlock.FACING) ?: return
 
         renderingProxy.stack {

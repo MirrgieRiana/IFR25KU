@@ -15,6 +15,8 @@ import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.getOrCreate
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isIn
+import miragefairy2024.util.isNotIn
 import miragefairy2024.util.join
 import miragefairy2024.util.pathString
 import miragefairy2024.util.plus
@@ -41,12 +43,12 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
 
     enum class Elements(path: String, enName: String, jaName: String, private val predicate: (DamageSource) -> Boolean) : Element {
         OVERALL("overall", "Overall", "全体", { true }),
-        MELEE("melee", "Melee", "近接", { it.`is`(DamageTypes.PLAYER_ATTACK) || it.`is`(DamageTypes.MOB_ATTACK) || it.`is`(DamageTypes.MOB_ATTACK_NO_AGGRO) }),
-        SHOOTING("shooting", "Shooting", "射撃", { it.`is`(DamageTypeTags.IS_PROJECTILE) && !it.`is`(IS_MAGIC_DAMAGE_TYPE_TAG) }),
-        MAGIC("magic", "Magic", "魔法", { it.`is`(IS_MAGIC_DAMAGE_TYPE_TAG) }),
-        FIRE("fire", "Fire", "火属性", { it.`is`(DamageTypeTags.IS_FIRE) }),
-        FALL("fall", "Fall", "落下", { it.`is`(DamageTypeTags.IS_FALL) }),
-        SPINE("spine", "Spine", "棘", { it.`is`(SPINE_DAMAGE_TYPE_TAG) }),
+        MELEE("melee", "Melee", "近接", { it isIn DamageTypes.PLAYER_ATTACK || it isIn DamageTypes.MOB_ATTACK || it isIn DamageTypes.MOB_ATTACK_NO_AGGRO }),
+        SHOOTING("shooting", "Shooting", "射撃", { it isIn DamageTypeTags.IS_PROJECTILE && it isNotIn IS_MAGIC_DAMAGE_TYPE_TAG }),
+        MAGIC("magic", "Magic", "魔法", { it isIn IS_MAGIC_DAMAGE_TYPE_TAG }),
+        FIRE("fire", "Fire", "火属性", { it isIn DamageTypeTags.IS_FIRE }),
+        FALL("fall", "Fall", "落下", { it isIn DamageTypeTags.IS_FALL }),
+        SPINE("spine", "Spine", "棘", { it isIn SPINE_DAMAGE_TYPE_TAG }),
         ;
 
         override val identifier = MirageFairy2024.identifier(path)

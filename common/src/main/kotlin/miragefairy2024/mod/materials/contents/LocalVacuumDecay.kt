@@ -10,6 +10,7 @@ import miragefairy2024.util.ModelFaceData
 import miragefairy2024.util.ModelFacesData
 import miragefairy2024.util.ModelTexturesData
 import miragefairy2024.util.getIdentifier
+import miragefairy2024.util.isIn
 import miragefairy2024.util.string
 import miragefairy2024.util.times
 import miragefairy2024.util.toBlockTag
@@ -47,8 +48,8 @@ class LocalVacuumDecayBlock(settings: Properties) : Block(settings) {
         val targetBlockState = world.getBlockState(targetBlockPos)
         if (targetBlockState.isAir) return
         if (targetBlockState.getDestroySpeed(world, targetBlockPos) < 0) return
-        if (targetBlockState.`is`(state.block)) return
-        if (targetBlockState.`is`(LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG)) return
+        if (targetBlockState isIn state.block) return
+        if (targetBlockState isIn LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG) return
         world.setBlockAndUpdate(targetBlockPos, state)
     }
 

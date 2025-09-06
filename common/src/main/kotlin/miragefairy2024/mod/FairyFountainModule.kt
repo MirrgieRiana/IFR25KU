@@ -26,6 +26,7 @@ import miragefairy2024.util.filled
 import miragefairy2024.util.generator
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isNotIn
 import miragefairy2024.util.isServer
 import miragefairy2024.util.normal
 import miragefairy2024.util.obtain
@@ -156,7 +157,7 @@ class FairyStatueFountainBlock(settings: Properties) : SimpleHorizontalFacingBlo
     override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
 
         // 入力判定
-        if (!stack.`is`(MaterialCard.JEWEL_100.item())) { // 持っているアイテムが違う
+        if (stack isNotIn MaterialCard.JEWEL_100.item()) { // 持っているアイテムが違う
             if (level.isServer) player.displayClientMessage(text { USAGE_TRANSLATION(MaterialCard.JEWEL_100.item().description) }, true)
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION // なぜかFAILにすると後続のイベントがキャンセルされない
         }

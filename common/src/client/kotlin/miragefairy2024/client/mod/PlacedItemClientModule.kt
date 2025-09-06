@@ -7,6 +7,7 @@ import miragefairy2024.mod.placeditem.PLACE_ITEM_KEY_TRANSLATION
 import miragefairy2024.mod.placeditem.PlaceItemChannel
 import miragefairy2024.mod.placeditem.PlacedItemCard
 import miragefairy2024.mod.placeditem.RemovePlacedItemChannel
+import miragefairy2024.util.isNotIn
 import mirrg.kotlin.hydrogen.atLeast
 import mirrg.kotlin.hydrogen.atMost
 import net.minecraft.client.KeyMapping
@@ -31,7 +32,7 @@ val placeItemKeyMappingCard = KeyMappingCard(
     if (hitResult.type != HitResult.Type.BLOCK) return@run // ブロックをターゲットにしていない
     if (hitResult !is BlockHitResult) return@run // ブロックをターゲットにしていない
 
-    if (!player.level().getBlockState(hitResult.blockPos).`is`(PlacedItemCard.block())) {
+    if (player.level().getBlockState(hitResult.blockPos) isNotIn PlacedItemCard.block()) {
         val blockPos = if (player.level().getBlockState(hitResult.blockPos).canBeReplaced()) hitResult.blockPos else hitResult.blockPos.relative(hitResult.direction)
         val rotation = when (hitResult.direction) {
             Direction.DOWN -> Pair(Mth.HALF_PI.toDouble(), -(player.yRot.toDouble() + 180.0) / 180.0 * Mth.PI)

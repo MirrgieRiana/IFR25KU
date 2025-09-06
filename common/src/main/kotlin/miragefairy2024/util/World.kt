@@ -23,9 +23,9 @@ val Level.isServer get() = !this.isClientSide
 
 fun BlockGetter.getMoisture(blockPos: BlockPos): Double {
     val blockState = this.getBlockState(blockPos)
-    if (blockState.`is`(Blocks.FARMLAND)) return 0.5 + 0.5 * (blockState.getValue(FarmBlock.MOISTURE) / 7.0)
-    if (blockState.`is`(BlockTags.DIRT)) return 0.5
-    if (blockState.`is`(BlockTags.SAND)) return 0.25
+    if (blockState isIn Blocks.FARMLAND) return 0.5 + 0.5 * (blockState.getValue(FarmBlock.MOISTURE) / 7.0)
+    if (blockState isIn BlockTags.DIRT) return 0.5
+    if (blockState isIn BlockTags.SAND) return 0.25
     return 0.0
 }
 

@@ -2,6 +2,7 @@ package miragefairy2024.lib
 
 import miragefairy2024.util.checkType
 import miragefairy2024.util.getOrNull
+import miragefairy2024.util.isNotIn
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -46,7 +47,7 @@ abstract class HorizontalFacingMachineBlock(private val card: MachineCard<*, *, 
 
     @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onRemove(state: BlockState, world: Level, pos: BlockPos, newState: BlockState, moved: Boolean) {
-        if (!state.`is`(newState.block)) {
+        if (state isNotIn newState.block) {
             card.blockEntityAccessor.castOrNull(world.getBlockEntity(pos))?.dropItems()
             super.onRemove(state, world, pos, newState, moved)
         }

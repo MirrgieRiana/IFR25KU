@@ -53,6 +53,7 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.from
 import miragefairy2024.util.generator
+import miragefairy2024.util.isIn
 import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.modId
 import miragefairy2024.util.on
@@ -1199,7 +1200,7 @@ fun initMaterialsModule() {
     // ミーニャ⇔ミナ両替
     registerSpecialRecipe("minia_from_mina", 1) { inventory ->
         val itemStacks = inventory.items().filter { it.isNotEmpty }.toMutableList()
-        if (itemStacks.pull { it.`is`(MaterialCard.APOSTLE_WAND.item()) } == null) return@registerSpecialRecipe null // 使徒のステッキ取得
+        if (itemStacks.pull { it isIn MaterialCard.APOSTLE_WAND.item() } == null) return@registerSpecialRecipe null // 使徒のステッキ取得
         val itemStack = itemStacks.pull { true } ?: return@registerSpecialRecipe null // アイテム取得
         if (itemStacks.isNotEmpty()) return@registerSpecialRecipe null // 余計なアイテムが入っている
         val item = itemStack.item as? MinaItem ?: return@registerSpecialRecipe null // そのアイテムはミナでなければならない
@@ -1209,8 +1210,8 @@ fun initMaterialsModule() {
     }
     registerSpecialRecipe("mina_from_minia", 1) { inventory ->
         val itemStacks = inventory.items().filter { it.isNotEmpty }.toMutableList()
-        if (itemStacks.pull { it.`is`(MaterialCard.APOSTLE_WAND.item()) } == null) return@registerSpecialRecipe null // 使徒のステッキ取得
-        val fairyItemStack = itemStacks.pull { it.`is`(FairyCard.item()) && it.getFairyMotif() == MotifCard.MINA } ?: return@registerSpecialRecipe null // ミーニャ取得
+        if (itemStacks.pull { it isIn MaterialCard.APOSTLE_WAND.item() } == null) return@registerSpecialRecipe null // 使徒のステッキ取得
+        val fairyItemStack = itemStacks.pull { it isIn FairyCard.item() && it.getFairyMotif() == MotifCard.MINA } ?: return@registerSpecialRecipe null // ミーニャ取得
         if (itemStacks.isNotEmpty()) return@registerSpecialRecipe null // 余計なアイテムが入っている
         val item = when (fairyItemStack.getFairyCondensation()) {
             BigInteger.ONE -> MaterialCard.MINA_1.item()

@@ -8,6 +8,7 @@ import miragefairy2024.util.ModelElementsData
 import miragefairy2024.util.ModelFaceData
 import miragefairy2024.util.ModelFacesData
 import miragefairy2024.util.ModelTexturesData
+import miragefairy2024.util.isIn
 import miragefairy2024.util.string
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -54,16 +55,16 @@ class FairyCrystalGlassBlock(properties: Properties) : TransparentBlock(properti
 
     override fun getStateForPlacement(ctx: BlockPlaceContext): BlockState? {
         return defaultBlockState()
-            .setValue(BlockStateProperties.NORTH, ctx.level.getBlockState(ctx.clickedPos.north()).`is`(this))
-            .setValue(BlockStateProperties.EAST, ctx.level.getBlockState(ctx.clickedPos.east()).`is`(this))
-            .setValue(BlockStateProperties.SOUTH, ctx.level.getBlockState(ctx.clickedPos.south()).`is`(this))
-            .setValue(BlockStateProperties.WEST, ctx.level.getBlockState(ctx.clickedPos.west()).`is`(this))
-            .setValue(BlockStateProperties.UP, ctx.level.getBlockState(ctx.clickedPos.above()).`is`(this))
-            .setValue(BlockStateProperties.DOWN, ctx.level.getBlockState(ctx.clickedPos.below()).`is`(this))
+            .setValue(BlockStateProperties.NORTH, ctx.level.getBlockState(ctx.clickedPos.north()) isIn this)
+            .setValue(BlockStateProperties.EAST, ctx.level.getBlockState(ctx.clickedPos.east()) isIn this)
+            .setValue(BlockStateProperties.SOUTH, ctx.level.getBlockState(ctx.clickedPos.south()) isIn this)
+            .setValue(BlockStateProperties.WEST, ctx.level.getBlockState(ctx.clickedPos.west()) isIn this)
+            .setValue(BlockStateProperties.UP, ctx.level.getBlockState(ctx.clickedPos.above()) isIn this)
+            .setValue(BlockStateProperties.DOWN, ctx.level.getBlockState(ctx.clickedPos.below()) isIn this)
     }
 
     override fun updateShape(state: BlockState, direction: Direction, neighborState: BlockState, level: LevelAccessor, pos: BlockPos, neighborPos: BlockPos): BlockState {
-        return state.setValue(PipeBlock.PROPERTY_BY_DIRECTION[direction]!!, neighborState.`is`(this))
+        return state.setValue(PipeBlock.PROPERTY_BY_DIRECTION[direction]!!, neighborState isIn this)
     }
 }
 

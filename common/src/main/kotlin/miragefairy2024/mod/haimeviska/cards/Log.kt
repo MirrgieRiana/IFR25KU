@@ -10,6 +10,7 @@ import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.haimeviska.HaimeviskaBlockConfiguration
 import miragefairy2024.mod.haimeviska.createBaseWoodSetting
 import miragefairy2024.util.generator
+import miragefairy2024.util.isNotIn
 import miragefairy2024.util.on
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerDefaultLootTableGeneration
@@ -146,7 +147,7 @@ class HaimeviskaLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
 
     override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
         if (state.getValue(AXIS) != Direction.Axis.Y) @Suppress("DEPRECATION") return super.useItemOn(stack, state, level, pos, player, hand, hitResult) // 縦方向でなければスルー
-        if (!stack.`is`(ItemTags.SWORDS)) @Suppress("DEPRECATION") return super.useItemOn(stack, state, level, pos, player, hand, hitResult) // 剣でなければスルー
+        if (stack isNotIn ItemTags.SWORDS) @Suppress("DEPRECATION") return super.useItemOn(stack, state, level, pos, player, hand, hitResult) // 剣でなければスルー
         if (level.isClientSide) return ItemInteractionResult.SUCCESS
         val direction = if (hitResult.direction.axis === Direction.Axis.Y) player.direction.opposite else hitResult.direction
 

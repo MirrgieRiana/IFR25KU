@@ -12,6 +12,8 @@ import miragefairy2024.util.NeighborType
 import miragefairy2024.util.blockVisitor
 import miragefairy2024.util.get
 import miragefairy2024.util.int
+import miragefairy2024.util.isIn
+import miragefairy2024.util.isNotIn
 import miragefairy2024.util.wrapper
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
@@ -31,7 +33,7 @@ abstract class FairyFactoryCard<B : FairyFactoryBlock, E : FairyFactoryBlockEnti
         val FOLIA_PROPERTY = PropertyConfiguration<FairyFactoryBlockEntity<*>>({ folia }, { folia = it }, { (it / 10).toShort() }, { it.toInt() * 10 })
 
         fun isFairy(itemStack: ItemStack, motif: Motif): Boolean {
-            if (!itemStack.`is`(FairyCard.item())) return false
+            if (itemStack isNotIn FairyCard.item()) return false
             val childMotif = itemStack.getFairyMotif() ?: return false
             return childMotif in motif
         }
@@ -72,7 +74,7 @@ abstract class FairyFactoryBlock(card: FairyFactoryCard<*, *, *>) : FairyBuildin
 abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private val card: FairyFactoryCard<*, E, *>, pos: BlockPos, state: BlockState) : FairyBuildingBlockEntity<E>(card, pos, state) {
     companion object {
         fun getFairyLevel(itemStack: ItemStack): Double {
-            if (!itemStack.`is`(FairyCard.item())) return 0.0
+            if (itemStack isNotIn FairyCard.item()) return 0.0
             val motif = itemStack.getFairyMotif() ?: return 0.0
             val count = itemStack.getFairyCondensation().toDouble() * itemStack.count
             val level = motif.rare.toDouble() + log(count, 3.0)
@@ -121,14 +123,14 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
 
         // 最大200ブロックのハイメヴィスカの原木を探す
         val logs = blockVisitor(listOf(worldPosition), maxCount = 200, neighborType = NeighborType.VERTICES) { _, _, toBlockPos ->
-            world.getBlockState(toBlockPos).`is`(FAIRY_BUILDING_BLOCK_TAG)
+            world.getBlockState(toBlockPos) isIn FAIRY_BUILDING_BLOCK_TAG
         }.map { it.second }.toList()
 
         // 最大距離6までの葉をすべて探す
         var changed = false
         run finished@{
             blockVisitor(logs, visitOrigins = false, maxDistance = 6) { _, _, toBlockPos ->
-                world.getBlockState(toBlockPos).`is`(HaimeviskaBlockCard.LEAVES.block())
+                world.getBlockState(toBlockPos) isIn HaimeviskaBlockCard.LEAVES.block()
             }.forEach { (_, blockPos) ->
                 val blockState = world.getBlockState(blockPos)
                 if (blockState.getValue(HaimeviskaLeavesBlock.CHARGED)) {

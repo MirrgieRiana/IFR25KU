@@ -10,6 +10,7 @@ import miragefairy2024.util.eyeBlockPos
 import miragefairy2024.util.failure
 import miragefairy2024.util.getOrCreate
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isNotIn
 import miragefairy2024.util.itemStacks
 import miragefairy2024.util.mutate
 import miragefairy2024.util.opposite
@@ -69,7 +70,7 @@ fun initFairyDream() {
     }
     registerServerDebugItem("debug_gain_fairy_dream", Items.STRING.toTextureSource(), 0xFF0000BB.toInt()) { world, player, hand, _ ->
         val fairyItemStack = player.getItemInHand(hand.opposite)
-        if (!fairyItemStack.`is`(FairyCard.item())) return@registerServerDebugItem
+        if (fairyItemStack isNotIn FairyCard.item()) return@registerServerDebugItem
         val motif = fairyItemStack.getFairyMotif() ?: return@registerServerDebugItem
 
         if (!player.isShiftKeyDown) {

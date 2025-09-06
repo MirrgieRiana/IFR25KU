@@ -20,6 +20,7 @@ import miragefairy2024.util.ItemGroupCard
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.get
 import miragefairy2024.util.humidityCategory
+import miragefairy2024.util.isIn
 import miragefairy2024.util.register
 import miragefairy2024.util.registerClientDebugItem
 import miragefairy2024.util.temperatureCategory
@@ -133,9 +134,9 @@ object WaterBottleIngredient : CustomIngredient {
     override fun requiresTesting() = true
 
     override fun test(stack: ItemStack): Boolean {
-        if (stack.`is`(Items.POTION)) {
+        if (stack isIn Items.POTION) {
             val potionContents = stack.get(DataComponents.POTION_CONTENTS) ?: return false
-            if (potionContents.`is`(Potions.WATER)) {
+            if (potionContents isIn Potions.WATER) {
                 return true
             }
         }

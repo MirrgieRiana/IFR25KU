@@ -12,9 +12,9 @@ enum class TemperatureCategory {
 
 val Holder<Biome>.temperatureCategory
     get() = when {
-        this.`is`(ConventionalBiomeTags.IS_HOT) -> TemperatureCategory.HIGH
-        this.`is`(ConventionalBiomeTags.IS_COLD) -> TemperatureCategory.LOW
-        this.`is`(ConventionalBiomeTags.IS_AQUATIC_ICY) -> TemperatureCategory.LOW
+        this isIn ConventionalBiomeTags.IS_HOT -> TemperatureCategory.HIGH
+        this isIn ConventionalBiomeTags.IS_COLD -> TemperatureCategory.LOW
+        this isIn ConventionalBiomeTags.IS_AQUATIC_ICY -> TemperatureCategory.LOW
         else -> TemperatureCategory.MEDIUM
     }
 
@@ -26,7 +26,7 @@ enum class HumidityCategory {
 
 val Holder<Biome>.humidityCategory
     get() = when {
-        this.`is`(ConventionalBiomeTags.IS_WET) -> HumidityCategory.HIGH
-        this.`is`(ConventionalBiomeTags.IS_DRY) -> HumidityCategory.LOW
+        this isIn ConventionalBiomeTags.IS_WET -> HumidityCategory.HIGH
+        this isIn ConventionalBiomeTags.IS_DRY -> HumidityCategory.LOW
         else -> HumidityCategory.MEDIUM
     }

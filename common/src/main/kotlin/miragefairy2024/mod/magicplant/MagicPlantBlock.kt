@@ -4,6 +4,8 @@ import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isIn
+import miragefairy2024.util.isNotIn
 import miragefairy2024.util.isServer
 import miragefairy2024.util.randomInt
 import miragefairy2024.util.text
@@ -55,7 +57,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
 
     // Behaviour
 
-    override fun mayPlaceOn(floor: BlockState, world: BlockGetter, pos: BlockPos) = world.getBlockState(pos).isFaceSturdy(world, pos, Direction.UP, SupportType.CENTER) || floor.`is`(Blocks.FARMLAND)
+    override fun mayPlaceOn(floor: BlockState, world: BlockGetter, pos: BlockPos) = world.getBlockState(pos).isFaceSturdy(world, pos, Direction.UP, SupportType.CENTER) || floor isIn Blocks.FARMLAND
 
 
     // Trait
@@ -316,7 +318,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
     // 経験値のドロップを onStacksDropped で行うと BlockEntity が得られないためこちらで実装する
     @Suppress("OVERRIDE_DEPRECATION")
     final override fun onRemove(state: BlockState, world: Level, pos: BlockPos, newState: BlockState, moved: Boolean) {
-        if (!state.`is`(newState.block)) run {
+        if (state isNotIn newState.block) run {
             if (world !is ServerLevel) return@run
             if (!canPick(state)) return@run
             val blockEntity = world.getMagicPlantBlockEntity(pos)

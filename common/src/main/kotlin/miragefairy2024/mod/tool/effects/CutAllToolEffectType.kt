@@ -11,6 +11,7 @@ import miragefairy2024.util.NeighborType
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isIn
 import miragefairy2024.util.text
 import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerPlayer
@@ -33,7 +34,7 @@ object CutAllToolEffectType : BooleanToolEffectType<ToolConfiguration>() {
             if (world.isClientSide) return@fail
             if (miner !is ServerPlayer) return@fail
             object : MultiMine(world, pos, state, miner, item, stack) {
-                override fun isValidBaseBlockState() = blockState.`is`(BlockTags.LOGS)
+                override fun isValidBaseBlockState() = blockState isIn BlockTags.LOGS
                 override fun executeImpl() {
                     val logBlockPosList = mutableListOf<BlockPos>()
                     visit(
@@ -42,7 +43,7 @@ object CutAllToolEffectType : BooleanToolEffectType<ToolConfiguration>() {
                         maxDistance = 19,
                         maxCount = 19,
                         neighborType = NeighborType.VERTICES,
-                        canContinue = { _, blockState -> blockState.`is`(BlockTags.LOGS) },
+                        canContinue = { _, blockState -> blockState isIn BlockTags.LOGS },
                         onMine = { blockPos ->
                             logBlockPosList += blockPos
                         },
@@ -51,7 +52,7 @@ object CutAllToolEffectType : BooleanToolEffectType<ToolConfiguration>() {
                         logBlockPosList,
                         configuration.magicMiningDamage * 0.1F,
                         maxDistance = 8,
-                        canContinue = { _, blockState -> blockState.`is`(BlockTags.LEAVES) },
+                        canContinue = { _, blockState -> blockState isIn BlockTags.LEAVES },
                     )
                 }
             }.execute()

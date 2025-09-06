@@ -7,6 +7,7 @@ import miragefairy2024.util.Channel
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
+import miragefairy2024.util.isNotIn
 import miragefairy2024.util.obtain
 import miragefairy2024.util.registerServerPacketReceiver
 import net.minecraft.core.BlockPos
@@ -92,7 +93,7 @@ fun initPlacedItemModule() {
 
             val world = player.level()
 
-            if (!world.getBlockState(blockPos).`is`(PlacedItemCard.block())) return@registerServerPacketReceiver // ブロックが置かれていない
+            if (world.getBlockState(blockPos) isNotIn PlacedItemCard.block()) return@registerServerPacketReceiver // ブロックが置かれていない
             val blockEntity = world.getBlockEntity(blockPos) as? PlacedItemBlockEntity ?: return@registerServerPacketReceiver // ブロックの取得に失敗した
             val itemStack = blockEntity.itemStack
 

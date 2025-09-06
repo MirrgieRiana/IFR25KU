@@ -4,6 +4,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.SpecialRecipeResult
 import miragefairy2024.util.isNotEmpty
+import miragefairy2024.util.isNotIn
 import miragefairy2024.util.registerSpecialRecipe
 import net.minecraft.core.NonNullList
 import net.minecraft.world.item.ItemStack
@@ -18,7 +19,7 @@ fun initFairyCondensationRecipe() {
         val notEmptyItemStacks = itemStacks.filter { it.isNotEmpty }
 
         // 余計なアイテムが入っていたら失敗
-        if (notEmptyItemStacks.any { !it.`is`(FairyCard.item()) }) return@registerSpecialRecipe null
+        if (notEmptyItemStacks.any { it isNotIn FairyCard.item() }) return@registerSpecialRecipe null
 
         // 2個以上無ければ失敗
         if (notEmptyItemStacks.size < 2) return@registerSpecialRecipe null
@@ -50,7 +51,7 @@ fun initFairyCondensationRecipe() {
         val (index, itemStack) = entries.singleOrNull() ?: return@registerSpecialRecipe null
 
         // そのアイテムは妖精でなければならない
-        if (!itemStack.`is`(FairyCard.item())) return@registerSpecialRecipe null
+        if (itemStack isNotIn FairyCard.item()) return@registerSpecialRecipe null
 
         // 左上の場合1/10、それ以外の場合、その位置で割る
         val division = if (index == 0) 10 else index + 1

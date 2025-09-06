@@ -17,6 +17,7 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.double
 import miragefairy2024.util.generator
 import miragefairy2024.util.get
+import miragefairy2024.util.isNotIn
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerModelGeneration
@@ -117,7 +118,7 @@ class PlacedItemBlock(settings: Properties) : Block(settings), EntityBlock {
     // 格納されているアイテムをドロップする
     override fun getCloneItemStack(world: LevelReader, pos: BlockPos, state: BlockState) = world.getBlockEntity(pos).castOrNull<PlacedItemBlockEntity>()?.itemStack ?: EMPTY_ITEM_STACK
     override fun onRemove(state: BlockState, world: Level, pos: BlockPos, newState: BlockState, moved: Boolean) {
-        if (!state.`is`(newState.block)) run {
+        if (state isNotIn newState.block) run {
             val blockEntity = world.getBlockEntity(pos) as? PlacedItemBlockEntity ?: return@run
             popResource(world, pos, blockEntity.itemStack)
         }

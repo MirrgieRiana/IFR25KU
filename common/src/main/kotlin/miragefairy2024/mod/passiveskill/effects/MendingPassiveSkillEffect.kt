@@ -10,6 +10,7 @@ import miragefairy2024.util.Translation
 import miragefairy2024.util.darkGray
 import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isIn
 import miragefairy2024.util.join
 import miragefairy2024.util.plus
 import miragefairy2024.util.randomInt
@@ -32,7 +33,7 @@ object MendingPassiveSkillEffect : AbstractPassiveSkillEffect<MendingPassiveSkil
             val ok = if (player != null) {
                 var ok = false
                 fun f(itemStack: ItemStack) {
-                    if (itemStack.`is`(tag)) {
+                    if (itemStack isIn tag) {
                         ok = true
                     }
                 }
@@ -64,7 +65,7 @@ object MendingPassiveSkillEffect : AbstractPassiveSkillEffect<MendingPassiveSkil
         newValue.map.forEach { (tag, value) ->
             if (value <= 0.0) return@forEach
             fun f(itemStack: ItemStack) {
-                if (itemStack.`is`(tag)) {
+                if (itemStack isIn tag) {
                     itemStack.repair(context.world.random.randomInt(value))
                 }
             }

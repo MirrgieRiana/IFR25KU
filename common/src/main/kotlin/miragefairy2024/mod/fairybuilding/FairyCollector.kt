@@ -15,6 +15,7 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.get
 import miragefairy2024.util.int
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isIn
 import miragefairy2024.util.mergeInventory
 import miragefairy2024.util.on
 import miragefairy2024.util.register
@@ -58,7 +59,7 @@ object FairyCollectorCard : FairyFactoryCard<FairyCollectorBlock, FairyCollector
                 this += p(7.0, 0.1, 8.0, 0.0F, 275.0F, 40.0)
                 this += p(12.0, 0.1, 8.0, 0.0F, 265.0F, 40.0)
                 this += p(8.0, 0.1, 6.0, 0.0F, 20.0F, 40.0)
-            })) { it.`is`(FairyCard.item()) }, // 仕分け妖精
+            })) { it isIn FairyCard.item() }, // 仕分け妖精
             FairyBuildingSlotConfiguration(106 + 18 * 0, 26 + 18 * 0, extractDirections = extractDirections, animation = ac(NONE, p(4.0, 2.0, 4.5, 0.0F, 270.0F, 200.0))), // 箱
             FairyBuildingSlotConfiguration(106 + 18 * 1, 26 + 18 * 0, extractDirections = extractDirections), // 箱
             FairyBuildingSlotConfiguration(106 + 18 * 2, 26 + 18 * 0, extractDirections = extractDirections), // 箱

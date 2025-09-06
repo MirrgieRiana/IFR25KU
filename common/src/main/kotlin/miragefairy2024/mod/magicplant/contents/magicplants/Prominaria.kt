@@ -15,6 +15,7 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.defaultTraits
 import miragefairy2024.util.flower
 import miragefairy2024.util.getOr
+import miragefairy2024.util.isNotIn
 import miragefairy2024.util.per
 import miragefairy2024.util.plus
 import miragefairy2024.util.rangedNether
@@ -114,7 +115,7 @@ class ProminariaBlock(settings: Properties) : SimpleMagicPlantBlock(ProminariaCa
     override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
         val blockEntity = level.getBlockEntity(pos)
         if (blockEntity !is MagicPlantBlockEntity) return super.useItemOn(stack, state, level, pos, player, hand, hitResult)
-        if (!stack.`is`(tagOf(Shape.INGOT, Material.GOLD))) return super.useItemOn(stack, state, level, pos, player, hand, hitResult)
+        if (stack isNotIn tagOf(Shape.INGOT, Material.GOLD)) return super.useItemOn(stack, state, level, pos, player, hand, hitResult)
         if (level.isClientSide) return ItemInteractionResult.SUCCESS
 
         val age = state.getOr(BlockStateProperties.AGE_3) { 0 }

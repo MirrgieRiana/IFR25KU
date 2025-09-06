@@ -18,6 +18,7 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.from
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isIn
 import miragefairy2024.util.on
 import miragefairy2024.util.red
 import miragefairy2024.util.register
@@ -168,7 +169,7 @@ object FairyQuestCardIngredient : CustomIngredient {
     }
 
     override fun requiresTesting() = true
-    override fun test(stack: ItemStack) = stack.`is`(FairyQuestCardCard.item())
+    override fun test(stack: ItemStack) = stack isIn FairyQuestCardCard.item()
 
     override fun getMatchingStacks(): List<ItemStack> {
         return fairyQuestRecipeRegistry.sortedEntrySet.map {

@@ -15,6 +15,7 @@ import miragefairy2024.util.enJa
 import miragefairy2024.util.get
 import miragefairy2024.util.getOrCreate
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isIn
 import miragefairy2024.util.quickMove
 import miragefairy2024.util.register
 import miragefairy2024.util.registerServerPacketReceiver
@@ -144,7 +145,7 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
         }
         repeat(soulStream.size) { i ->
             addSlot(object : Slot(soulStream, i, 0, 0) {
-                override fun mayPlace(stack: ItemStack) = stack.`is`(SOUL_STREAM_CONTAINABLE_TAG)
+                override fun mayPlace(stack: ItemStack) = stack isIn SOUL_STREAM_CONTAINABLE_TAG
             })
         }
     }

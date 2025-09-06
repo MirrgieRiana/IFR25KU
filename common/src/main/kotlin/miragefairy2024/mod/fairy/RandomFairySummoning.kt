@@ -15,6 +15,7 @@ import miragefairy2024.util.get
 import miragefairy2024.util.getOrCreate
 import miragefairy2024.util.hasSameItemAndComponents
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isIn
 import miragefairy2024.util.mutate
 import miragefairy2024.util.obtain
 import miragefairy2024.util.plus
@@ -221,8 +222,8 @@ fun getCommonMotifSet(player: Player): Set<Motif> {
     return COMMON_MOTIF_RECIPES.filter {
         when (it) {
             is AlwaysCommonMotifRecipe -> true
-            is BiomeCommonMotifRecipe -> biome.`is`(it.biome)
-            is BiomeTagCommonMotifRecipe -> biome.`is`(it.biomeTag)
+            is BiomeCommonMotifRecipe -> biome isIn it.biome
+            is BiomeTagCommonMotifRecipe -> biome isIn it.biomeTag
         }
     }.map { it.motif }.toSet()
 }
