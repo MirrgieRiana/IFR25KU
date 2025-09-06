@@ -3,6 +3,7 @@ package miragefairy2024.util
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import miragefairy2024.ModContext
+import mirrg.kotlin.hydrogen.or
 import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.core.Holder
 import net.minecraft.core.HolderLookup
@@ -51,9 +52,9 @@ fun <T : Any> Registry<T>.getResourceKeyOrNull(value: T): ResourceKey<T>? = this
 
 fun <T : Any> Registry<T>.getHolderOrNull(key: ResourceKey<T>): Holder.Reference<T>? = this.getHolder(key).orNull
 
-fun <T : Any> Registry<T>.getHolderOfOrNull(value: T) = this.getResourceKeyOrNull(value)?.let { this.getHolderOrNull(it) }
+fun <T : Any> Registry<T>.getHolderOfOrNull(value: T) = this.getResourceKeyOrNull(value).or { return null }.let { this.getHolderOrNull(it) }
 
-fun <T : Any> Registry<T>.isIn(value: T, tag: TagKey<T>) = this.getHolderOfOrNull(value)?.`is`(tag) ?: false
+fun <T : Any> Registry<T>.isIn(value: T, tag: TagKey<T>) = this.getHolderOfOrNull(value).or { return false } isIn tag
 
 
 operator fun <T> HolderLookup.Provider.get(registry: ResourceKey<Registry<T>>): HolderLookup.RegistryLookup<T> = this.lookupOrThrow(registry)
