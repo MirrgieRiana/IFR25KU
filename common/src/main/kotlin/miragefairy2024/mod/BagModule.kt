@@ -18,6 +18,7 @@ import miragefairy2024.util.generator
 import miragefairy2024.util.get
 import miragefairy2024.util.hasSameItemAndComponentsAndCount
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isIn
 import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.itemStacks
 import miragefairy2024.util.mergeTo
@@ -74,7 +75,7 @@ enum class BagCard(
         "plant_bag", EnJa("Plant Bag", "植物カバン"),
         1, EnJa("Basket wall composed of uneven stems", "人間が手掛ける、初級レベルの藁細工。"),
         5, 3,
-        { it.item.castOrNull<BlockItem>()?.block?.builtInRegistryHolder()?.`is`(BlockTags.SWORD_EFFICIENT) == true },
+        { it.item.castOrNull<BlockItem>()?.let { blockItem -> BuiltInRegistries.BLOCK.isIn(blockItem.block, BlockTags.SWORD_EFFICIENT) } ?: false },
     ),
     SEED_BAG(
         "seed_bag", EnJa("Seed Bag", "種子カバン"),
