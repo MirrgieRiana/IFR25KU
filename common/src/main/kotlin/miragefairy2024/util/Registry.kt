@@ -62,4 +62,8 @@ operator fun <T> HolderLookup.Provider.get(registry: ResourceKey<Registry<T>>): 
 operator fun <T> HolderLookup.Provider.get(registry: ResourceKey<Registry<T>>, key: ResourceKey<T>): Holder.Reference<T> = this.lookupOrThrow(registry).getOrThrow(key)
 
 
+infix fun <T, H : Holder<T>> H.isIn(key: ResourceKey<T>) = this.`is`(key)
+infix fun <T, H : Holder<T>> H.isNotIn(key: ResourceKey<T>) = !(this isIn key)
+
 infix fun <T, H : Holder<T>> H.isIn(tag: TagKey<T>) = this.`is`(tag)
+infix fun <T, H : Holder<T>> H.isNotIn(tag: TagKey<T>) = !(this isIn tag)

@@ -10,6 +10,7 @@ import net.minecraft.data.BlockFamily
 import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.data.recipes.RecipeProvider
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.tags.TagKey
 import net.minecraft.world.flag.FeatureFlagSet
 import net.minecraft.world.flag.FeatureFlags
 import net.minecraft.world.level.block.Block
@@ -32,6 +33,11 @@ fun <T : Comparable<T>> BlockState.getOrNull(property: Property<T>): T? {
 }
 
 fun <T : Comparable<T>> BlockState.getOr(property: Property<T>, default: () -> T) = this.getOrNull(property) ?: default()
+
+infix fun BlockState.isIn(block: Block) = this.`is`(block)
+infix fun BlockState.isNotIn(block: Block) = !(this isIn block)
+infix fun BlockState.isIn(tag: TagKey<Block>) = this.`is`(tag)
+infix fun BlockState.isNotIn(tag: TagKey<Block>) = !(this isIn tag)
 
 context(ModContext)
 fun registerBlockFamily(baseBlock: () -> Block, initializer: (BlockFamily.Builder) -> BlockFamily.Builder) {
