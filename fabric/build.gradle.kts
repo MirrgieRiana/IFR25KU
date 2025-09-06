@@ -82,8 +82,8 @@ loom {
         }
     }
 }
-rootProject.tasks["datagen"].dependsOn(tasks["runDatagen"])
-rootProject.tasks["datagen"].dependsOn(tasks["runDatagenNeoForge"])
+rootProject.tasks.named("datagen").configure { dependsOn(tasks.named("runDatagen")) }
+rootProject.tasks.named("datagen").configure { dependsOn(tasks.named("runDatagenNeoForge")) }
 
 dependencies {
 
@@ -140,7 +140,7 @@ modrinth {
         required.project("architectury-api")
     }
 }
-rootProject.tasks["uploadModrinth"].dependsOn(tasks["modrinth"])
+rootProject.tasks.named("uploadModrinth").configure { dependsOn(tasks.named("modrinth")) }
 
 tasks.named<ProcessResources>("processResources") {
     inputs.property("version", project.version)

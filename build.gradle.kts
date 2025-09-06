@@ -157,15 +157,15 @@ tasks.register("generateModrinthBody") {
         generatedModrinthBodyFile.asFile.writeText(getModrinthBody())
     }
 }
-tasks["datagen"].dependsOn(tasks["generateModrinthBody"])
+tasks.named("datagen").configure { dependsOn(tasks.named("generateModrinthBody")) }
 
 modrinth {
     token = rootProject.layout.projectDirectory.file("modrinth_token.txt").asFile.takeIf { it.exists() }?.readText()?.trim() ?: System.getenv("MODRINTH_TOKEN")
     projectId = "ifr25ku"
     syncBodyFrom = provider { generatedModrinthBodyFile.asFile.readText() }
 }
-tasks["modrinthSyncBody"].dependsOn(tasks["generateModrinthBody"])
-tasks["uploadModrinth"].dependsOn(tasks["modrinthSyncBody"])
+tasks.named("modrinthSyncBody").configure { dependsOn(tasks.named("generateModrinthBody")) }
+tasks.named("uploadModrinth").configure { dependsOn(tasks.named("modrinthSyncBody")) }
 
 
 tasks.register("fetchMirrgKotlin") {
@@ -208,7 +208,7 @@ tasks.register("showSourceSets") {
 }
 
 tasks.register<Copy>("buildPages") {
-    dependsOn(project("fabric").tasks["runDatagen"])
+    dependsOn(project("fabric").tasks.named("runDatagen"))
 
     fun computeTrs(): String {
         val en = GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json").readText(), JsonElement::class.java).asJsonObject
