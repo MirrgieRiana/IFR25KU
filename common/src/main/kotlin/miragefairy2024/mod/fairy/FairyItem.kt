@@ -29,6 +29,7 @@ import miragefairy2024.util.Model
 import miragefairy2024.util.ModelData
 import miragefairy2024.util.ModelTexturesData
 import miragefairy2024.util.Registration
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.Translation
 import miragefairy2024.util.aqua
 import miragefairy2024.util.createItemStack
@@ -67,7 +68,6 @@ import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.codec.ByteBufCodecs
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
@@ -166,7 +166,7 @@ fun initFairyItem() {
 
 private fun createFairyModel() = Model {
     ModelData(
-        parent = ResourceLocation.withDefaultNamespace("item/generated"),
+        parent = ResourceLocation("item/generated"),
         textures = ModelTexturesData(
             "layer0" to MirageFairy2024.identifier("item/fairy_skin").string,
             "layer1" to MirageFairy2024.identifier("item/fairy_front").string,

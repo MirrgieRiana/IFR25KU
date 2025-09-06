@@ -13,6 +13,7 @@ import miragefairy2024.util.Model
 import miragefairy2024.util.ModelData
 import miragefairy2024.util.ModelTexturesData
 import miragefairy2024.util.Registration
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.Translation
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
@@ -152,7 +153,7 @@ fun ItemStack.setFairyQuestRecipe(recipe: FairyQuestRecipe) = unit { this.set(FA
 
 private fun createFairyQuestCardModel() = Model {
     ModelData(
-        parent = ResourceLocation.withDefaultNamespace("item/generated"),
+        parent = ResourceLocation("item/generated"),
         textures = ModelTexturesData(
             "layer0" to MirageFairy2024.identifier("item/fairy_quest_card_background").string,
             "layer1" to MirageFairy2024.identifier("item/fairy_quest_card_frame").string,

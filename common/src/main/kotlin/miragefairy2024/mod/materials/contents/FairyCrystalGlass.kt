@@ -8,12 +8,12 @@ import miragefairy2024.util.ModelElementsData
 import miragefairy2024.util.ModelFaceData
 import miragefairy2024.util.ModelFacesData
 import miragefairy2024.util.ModelTexturesData
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.isIn
 import miragefairy2024.util.string
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.data.models.model.TextureSlot
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.level.block.Block
@@ -70,7 +70,7 @@ class FairyCrystalGlassBlock(properties: Properties) : TransparentBlock(properti
 
 val fairyCrystalGlassFrameBlockModel = Model { textureMap ->
     ModelData(
-        parent = ResourceLocation.withDefaultNamespace("block/block"),
+        parent = ResourceLocation("block/block"),
         textures = ModelTexturesData(
             TextureSlot.PARTICLE.id to textureMap.get(TextureSlot.TEXTURE).string,
             TextureSlot.TEXTURE.id to textureMap.get(TextureSlot.TEXTURE).string,
@@ -104,7 +104,7 @@ val fairyCrystalGlassBlockModel = Model { textureMap ->
         ),
     )
     ModelData(
-        parent = ResourceLocation.withDefaultNamespace("block/block"),
+        parent = ResourceLocation("block/block"),
         textures = ModelTexturesData(
             TextureSlot.PARTICLE.id to textureMap.get(TextureSlot.TEXTURE).string,
             TextureSlot.TEXTURE.id to textureMap.get(TextureSlot.TEXTURE).string,

@@ -14,6 +14,7 @@ import miragefairy2024.util.Model
 import miragefairy2024.util.ModelData
 import miragefairy2024.util.ModelTexturesData
 import miragefairy2024.util.Registration
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
@@ -29,7 +30,6 @@ import miragefairy2024.util.text
 import mirrg.kotlin.hydrogen.or
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.InteractionResultHolder
@@ -121,7 +121,7 @@ class CreativeGeneAmpouleItem(settings: Properties) : Item(settings) {
 
 private fun createCreativeGeneAmpouleModel() = Model {
     ModelData(
-        parent = ResourceLocation.withDefaultNamespace("item/generated"),
+        parent = ResourceLocation("item/generated"),
         textures = ModelTexturesData(
             "layer0" to MirageFairy2024.identifier("item/creative_gene_ampoule_casing").string,
             "layer1" to MirageFairy2024.identifier("item/creative_gene_ampoule_liquid").string,
