@@ -15,3 +15,4 @@ operator fun ResourceLocation.times(string: String) = ResourceLocation(this.name
 infix fun <T> ResourceKey<out Registry<T>>.with(value: ResourceLocation): ResourceKey<T> = ResourceKey.create(this, value)
 
 fun ResourceLocation(namespace: String, path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(namespace, path)
+fun ResourceLocation(path: String): ResourceLocation = ResourceLocation.withDefaultNamespace(path)
