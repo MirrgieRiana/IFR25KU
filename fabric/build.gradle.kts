@@ -170,7 +170,7 @@ tasks.named<RemapJarTask>("remapJar") {
  * @see dev.architectury.plugin.transformers.AddRefmapName
  */
 rootProject.project("common").tasks.named<TransformingTask>("transformProductionFabric") {
-    this(AssetEditTransformer { context, output ->
+    this(AssetEditTransformer { _, output ->
         val gson = GsonBuilder().setPrettyPrinting().create()
         val listeners = mutableListOf<() -> Unit>()
         output.handle { path, bytes ->
