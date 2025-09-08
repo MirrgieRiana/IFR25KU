@@ -32,10 +32,12 @@ private fun markdown(block: MarkdownScope.() -> Unit) = block.strings.sandwich("
 context(MarkdownScope) private fun h1(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("# $string", *block.strings.toTypedArray()).sandwich("").multiLine()
 context(MarkdownScope) private fun h2(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("## $string", *block.strings.toTypedArray()).sandwich("").multiLine()
 context(MarkdownScope) private fun h3(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("### $string", *block.strings.toTypedArray()).sandwich("").multiLine()
-context(MarkdownScope) private fun br(count: Int) = (1..count).map { "br"() }.multiLine()
+context(MarkdownScope) private val br get() = "br"()
+context(MarkdownScope) private fun br(count: Int) = (1..count).map { br }.multiLine()
 context(MarkdownScope) private operator fun Int.not() = !br(this)
 context(MarkdownScope) private val hr get() = "---"
 context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.map { "- $it" }.multiLine()
+context(MarkdownScope) private fun singleLine(block: MarkdownScope.() -> Unit = {}) = block.strings.join("")
 context(MarkdownScope) private fun multiLine(block: MarkdownScope.() -> Unit = {}) = block.strings.multiLine()
 context(MarkdownScope) private fun String.center() = "center" { !this@center }
 context(MarkdownScope) private fun String.serif() = "font"("face" to "serif") { !this@serif }
@@ -87,7 +89,17 @@ private fun poem(indent: Int, width: Int, src: String, poem1: String, poem2: Str
             !"tr" {
                 !"td"("width" to "$width") {
                     !img("TODO", src, width = 48, float = "left", pixelated = true)
-                    !"${"${"&nbsp;".repeat(4)}$poem1".b()}${"br"()}${"${"&nbsp;".repeat(16)}“$poem2”".size(-1).i()}".serif()
+                    !singleLine {
+                        !singleLine {
+                            !"&nbsp;".repeat(4)
+                            !poem1
+                        }.b()
+                        !br
+                        !singleLine {
+                            !"&nbsp;".repeat(16)
+                            !"“$poem2”"
+                        }.size(-1).i()
+                    }.serif()
                 }
             }
         }
@@ -109,7 +121,10 @@ fun getModrinthBody(): String {
                         !"td"("width" to "700") {
                             !img("Portrait of Mirage fairy", "https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp", float = "left")
                             !"p" {
-                                !"${"Monocots ― Order Miragales ― Family Miragaceae".b().size(-1).serif()}${"br"()}"
+                                !singleLine {
+                                    !"Monocots ― Order Miragales ― Family Miragaceae".b().size(-1).serif()
+                                    !br
+                                }
                                 !"Mirage".b().size(3).serif()
                             }
                             !"p" {
@@ -139,7 +154,7 @@ fun getModrinthBody(): String {
                 "“One wrong move, and it's a terrifying thing that could wipe out an entire planet.”".center(),
                 "“If anyone is in control of the vacuum decay reactor, please stop it now!”".center(),
                 "“Before your world ceases to exist!!!”".center(),
-            ).sandwich("br"()).multiLine()
+            ).sandwich(br).multiLine()
             !1
             !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png")
             !2
