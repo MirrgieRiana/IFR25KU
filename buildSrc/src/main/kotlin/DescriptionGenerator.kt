@@ -36,11 +36,11 @@ context(MarkdownScope) private fun br(count: Int) = (1..count).map { "br"() }.mu
 context(MarkdownScope) private operator fun Int.not() = !br(this)
 context(MarkdownScope) private val hr get() = "---"
 context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.map { "- $it" }.multiLine()
-context(MarkdownScope) private fun center(string: String) = "center" { string }
-context(MarkdownScope) private fun serif(string: String) = "font"("face" to "serif") { string }
-context(MarkdownScope) private fun size(size: Int, string: String) = "font"("size" to String.format("%+d", size)) { string }
-context(MarkdownScope) private fun b(string: String) = "b" { string }
-context(MarkdownScope) private fun i(string: String) = "i" { string }
+context(MarkdownScope) private fun String.center() = "center" { this }
+context(MarkdownScope) private fun String.serif() = "font"("face" to "serif") { this }
+context(MarkdownScope) private fun String.size(size: Int) = "font"("size" to String.format("%+d", size)) { this }
+context(MarkdownScope) private fun String.b() = "b" { this }
+context(MarkdownScope) private fun String.i() = "i" { this }
 
 context(MarkdownScope)
 private operator fun String.invoke(vararg attributes: Pair<String, String>?, block: (() -> String)? = null): String {
@@ -76,27 +76,25 @@ private fun img(alt: String, src: String, width: Int? = null, float: String? = n
 }
 
 context(MarkdownScope)
-private fun catchPhrase(string: String) = center(serif(size(3, string)))
+private fun catchPhrase(string: String) = string.size(3).serif().center()
 
 context(MarkdownScope)
 private fun poem(indent: Int, width: Int, src: String, poem1: String, poem2: String): String { // TODO
-    return center(
-        """
+    return """
 ${img("Vertical Filler", "https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp", width = abs(indent), float = if (indent < 0) "right" else "left")}
 ${
-            "table" {
-                "tr" {
-                    "td"("width" to "$width") {
-                        """
+        "table" {
+            "tr" {
+                "td"("width" to "$width") {
+                    """
 ${img("TODO", src, width = 48, float = "left", pixelated = true)}
-${serif("${b("${"&nbsp;".repeat(4)}$poem1")}${"br"()}${i(size(-1, "${"&nbsp;".repeat(16)}“$poem2”"))}")}
+${"${"${"&nbsp;".repeat(4)}$poem1".b()}${"br"()}${"${"&nbsp;".repeat(16)}“$poem2”".size(-1).i()}".serif()}
                         """.trim()
-                    }
                 }
             }
         }
-    """.trim()
-    )
+    }
+    """.trim().center()
 }
 
 fun getModrinthBody(): String {
@@ -104,35 +102,33 @@ fun getModrinthBody(): String {
         !h2("Prologue") {
             !3
             //!catchPhrase("There were “fairies” on that planet.")
-            !center(img("Toast Top Frame", "https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png", width = 400))
-            !center(size(2, "${img("Fairy icon", "https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png", width = 32, pixelated = true)}&nbsp;&nbsp;Dreamed of a new fairy!"))
-            !center(img("Toast Bottom Frame", "https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png", width = 400))
+            !img("Toast Top Frame", "https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png", width = 400).center()
+            !"${img("Fairy icon", "https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png", width = 32, pixelated = true)}&nbsp;&nbsp;Dreamed of a new fairy!".size(2).center()
+            !img("Toast Bottom Frame", "https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png", width = 400).center()
             !4
-            !center(
-                """
-                ${
-                    "table" {
-                        "tr" {
-                            "td"("width" to "700") {
-                                """
+            !"""
+                        ${
+                "table" {
+                    "tr" {
+                        "td"("width" to "700") {
+                            """
 ${img("Portrait of Mirage fairy", "https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp", float = "left")}
 ${
-                                    "p" {
-                                        """
-${serif(size(-1, b("Monocots ― Order Miragales ― Family Miragaceae")))}${"br"()}
-${serif(size(3, b("Mirage")))}
-                        """.trim()
-                                    }
-                                }
-${"p" { serif("A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”") }}
-${"p" { serif("Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.") }}
+                                "p" {
+                                    """
+${"Monocots ― Order Miragales ― Family Miragaceae".b().size(-1).serif()}${"br"()}
+${"Mirage".b().size(3).serif()}
                                 """.trim()
+                                }
                             }
+${"p" { "A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”".serif() }}
+${"p" { "Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.".serif() }}
+                                        """.trim()
                         }
                     }
                 }
-        """.trim()
-            )
+            }
+                """.trim().center()
             !2
             !catchPhrase("What, exactly, is the true nature of fairies?")
             !8
@@ -140,16 +136,16 @@ ${"p" { serif("Once regarded as a kind of divine spirit, later research clarifie
             !1
             !catchPhrase("Fatal Accident")
             !3
-            !center(img("A city eroded by Local Vacuum Decay", "https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp"))
+            !img("A city eroded by Local Vacuum Decay", "https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp").center()
             !1
             !listOf(
-                center("………"),
-                center("“Damn it, the vacuum decay reactor was never something humans should have messed with!”"),
-                center("“If someone is reading this, please understand.”"),
-                center("“The vacuum decay reactor wasn't a safe, environmentally friendly source of energy.”"),
-                center("“One wrong move, and it's a terrifying thing that could wipe out an entire planet.”"),
-                center("“If anyone is in control of the vacuum decay reactor, please stop it now!”"),
-                center("“Before your world ceases to exist!!!”"),
+                "………".center(),
+                "“Damn it, the vacuum decay reactor was never something humans should have messed with!”".center(),
+                "“If someone is reading this, please understand.”".center(),
+                "“The vacuum decay reactor wasn't a safe, environmentally friendly source of energy.”".center(),
+                "“One wrong move, and it's a terrifying thing that could wipe out an entire planet.”".center(),
+                "“If anyone is in control of the vacuum decay reactor, please stop it now!”".center(),
+                "“Before your world ceases to exist!!!”".center(),
             ).sandwich("br"()).multiLine()
             !1
             !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png")
@@ -245,9 +241,9 @@ ${"p" { serif("Once regarded as a kind of divine spirit, later research clarifie
             !8
             !catchPhrase("A World Ruled by Plants.")
             !8
-            !center(serif("The Institute of Fairy Research 2025 Kakera Unofficial"))
+            !"The Institute of Fairy Research 2025 Kakera Unofficial".serif().center()
             !1
-            !center(img("IFR25KU Logo", "https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp", width = 400))
+            !img("IFR25KU Logo", "https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp", width = 400).center()
             !8
         }
         !h2("概要") {
