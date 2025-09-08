@@ -32,17 +32,26 @@ private fun markdown(block: MarkdownScope.() -> Unit) = block.strings.sandwich("
 context(MarkdownScope) private fun h1(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("# $string", *block.strings.toTypedArray()).sandwich("").multiLine()
 context(MarkdownScope) private fun h2(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("## $string", *block.strings.toTypedArray()).sandwich("").multiLine()
 context(MarkdownScope) private fun h3(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("### $string", *block.strings.toTypedArray()).sandwich("").multiLine()
-context(MarkdownScope) private fun br(count: Int) = (1..count).map { "<br>" }.multiLine()
+context(MarkdownScope) private fun br(count: Int) = (1..count).map { "br"() }.multiLine()
 context(MarkdownScope) private operator fun Int.not() = !br(this)
 context(MarkdownScope) private val hr get() = "---"
 context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.map { "- $it" }.multiLine()
-context(MarkdownScope) private fun center(string: String) = if ("\n" in string) "<center>\n  ${string.replace("\n", "\n  ")}\n</center>" else "<center>$string</center>"
-context(MarkdownScope) private fun serif(string: String) = """<font face="serif">$string</font>"""
-context(MarkdownScope) private fun size(size: Int, string: String) = """<font size="${String.format("%+d", size)}">$string</font>"""
+context(MarkdownScope) private fun center(string: String) = "center" { string }
+context(MarkdownScope) private fun serif(string: String) = "font"("face" to "serif") { string }
+context(MarkdownScope) private fun size(size: Int, string: String) = "font"("size" to String.format("%+d", size)) { string }
 
 context(MarkdownScope)
-private operator fun String.invoke(vararg attributes: Pair<String, String>?): String {
-    return "<${(listOf(this) + attributes.filterNotNull().map { """${it.first}="${it.second.escapeHtml()}"""" }).join(" ")}>"
+private operator fun String.invoke(vararg attributes: Pair<String, String>?, block: (() -> String)? = null): String {
+    return if (block != null) {
+        val content = block()
+        if ("\n" in content) {
+            "<${(listOf(this) + attributes.filterNotNull().map { """${it.first}="${it.second.escapeHtml()}"""" }).join(" ")}>\n  ${content.replace("\n", "\n  ")}\n</$this>"
+        } else {
+            "<${(listOf(this) + attributes.filterNotNull().map { """${it.first}="${it.second.escapeHtml()}"""" }).join(" ")}>$content</$this>"
+        }
+    } else {
+        "<${(listOf(this) + attributes.filterNotNull().map { """${it.first}="${it.second.escapeHtml()}"""" }).join(" ")}>"
+    }
 }
 
 context(MarkdownScope)
@@ -73,7 +82,7 @@ private fun poem(indent: Int, width: Int, src: String, poem1: String, poem2: Str
         """
 ${img("Vertical Filler", "https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp", width = abs(indent), float = if (indent < 0) "right" else "left")}
 <table><tr><td width="$width">
-  ${img("TODO", src, width = 48, float = "left", pixelated = true)}${serif("<b>${"&nbsp;".repeat(4)}$poem1</b><br><i>${size(-1, "${"&nbsp;".repeat(16)}“$poem2”")}</i>")}
+  ${img("TODO", src, width = 48, float = "left", pixelated = true)}${serif("<b>${"&nbsp;".repeat(4)}$poem1</b>${"br"()}<i>${size(-1, "${"&nbsp;".repeat(16)}“$poem2”")}</i>")}
 </td></tr></table>
     """.trim()
     )
@@ -93,7 +102,7 @@ fun getModrinthBody(): String {
 <table><tr><td width="700">
   ${img("Portrait of Mirage fairy", "https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp", float = "left")}
   <p>
-    ${serif(size(-1, "<b>Monocots ― Order Miragales ― Family Miragaceae</b>"))}<br>
+    ${serif(size(-1, "<b>Monocots ― Order Miragales ― Family Miragaceae</b>"))}${"br"()}
     ${serif(size(3, "<b>Mirage</b>"))}
   </p>
   <p>${serif("A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”")}</p>
@@ -118,7 +127,7 @@ fun getModrinthBody(): String {
                 center("“One wrong move, and it's a terrifying thing that could wipe out an entire planet.”"),
                 center("“If anyone is in control of the vacuum decay reactor, please stop it now!”"),
                 center("“Before your world ceases to exist!!!”"),
-            ).sandwich("<br>").multiLine()
+            ).sandwich("br"()).multiLine()
             !1
             !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png")
             !2
