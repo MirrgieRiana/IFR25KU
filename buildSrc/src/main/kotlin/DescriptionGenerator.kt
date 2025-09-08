@@ -108,7 +108,7 @@ private fun poem(indent: Int, width: Int, src: String, poem1: String, poem2: Str
 
 fun getModrinthBody(): String {
     return markdown {
-        !h2("Prologue") {
+        run {
             !3
             //!catchPhrase("There were “fairies” on that planet.")
             !img("Toast Top Frame", "https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png", width = 400).center()
@@ -157,7 +157,7 @@ fun getModrinthBody(): String {
             ).sandwich(br).multiLine()
             !1
             !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png")
-            !2
+            !3
             !catchPhrase("Why is humanity here now?")
             !8
             // フェアリークリスタル
@@ -180,7 +180,7 @@ fun getModrinthBody(): String {
                 0, 400,
                 "https://cdn.modrinth.com/data/cached_images/4789326b379836f317635052dcac361ff3a07b9e_0.webp",
                 "Do fairy trees have qualia of pain?",
-                "On protecting animals.",
+                "What it means to protect animals.",
             )
             !1
             // サラセニア
@@ -188,7 +188,7 @@ fun getModrinthBody(): String {
                 200, 380,
                 "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/block/magic_plant/sarracenia_age3.png?raw=true",
                 "Waiting for a flying creature...",
-                "A place of repose for fairies.",
+                "Fairies’ resting place.",
             )
             !2
             // ミラジディアン
@@ -196,7 +196,7 @@ fun getModrinthBody(): String {
                 -100, 510,
                 "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/miragidian.png?raw=true",
                 "The great collapse 30,000 years ago",
-                "The dream Miragium saw thirty thousand years ago.",
+                "The dream Miragium saw 30,000 years ago.",
             )
             !2
             // 紅天石
@@ -204,7 +204,7 @@ fun getModrinthBody(): String {
                 0, 610,
                 "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/xarpite.png?raw=true",
                 "Binds astral flux with magnetic force",
-                "The black iron chain is fastened into a blood reeking cage for souls.",
+                "A blood-reeking cage of souls bound by chains of black iron.",
             )
             !3
             // 理天石
@@ -220,7 +220,7 @@ fun getModrinthBody(): String {
                 50, 460,
                 "https://cdn.modrinth.com/data/cached_images/ce5ecf74a49ca60c318da7dbccef60bddde3e7a8.png",
                 "Life is essentially inorganic.",
-                "The boundary between life and the inorganic.",
+                "The boundary between life and inorganic matter.",
             )
             !4
             // 蒼天石
@@ -228,7 +228,7 @@ fun getModrinthBody(): String {
                 -50, 590,
                 "https://cdn.modrinth.com/data/cached_images/2edab3f8a66c4c27505aa35c0aeb1c79393098ea.png",
                 "A Turing-complete crystal lattice",
-                "A world where all has been prophesied since the dawn of creation.",
+                "A world where everything has been prophesied since the dawn of creation.",
             )
             !5
             // 局所真空崩壊
@@ -236,7 +236,7 @@ fun getModrinthBody(): String {
                 0, 440,
                 "https://cdn.modrinth.com/data/cached_images/acb14f57121d7f180077eba96b87edcd957e82f4_0.webp",
                 "Stable instability due to anti-entropy.",
-                "Is this the ultimate form of order?",
+                "Could this be the ultimate form of anti-entropy?",
             )
             !6
             // ノイズブロック
@@ -379,26 +379,35 @@ fun getModrinthBody(): String {
         }
         !h2("ツール") {
             !"IFR25KUには多様なツールが実装されています。"
+            !img("多様な素材のツール", "https://cdn.modrinth.com/data/cached_images/f008e4f81cf2ee45181cc113b2496fefdec51c65.png")
             !"バニラの素材や汎用素材には基本的な5種のツールがあります。"
             !"MOD固有の素材には、特殊なタイプのツールがあることがあります。"
             !hr
             !"様々な素材のツールが特殊な効果を持ちます。"
-            !"例えば、プロミナイトが持つ精錬特殊効果は、採掘した対応ブロックをかまどで料理します。"
+            !img("シャルパイトの斧のツールチップ", "https://cdn.modrinth.com/data/cached_images/70a39cbd649328297ee833f14d0b1ff092910b40.png")
+            !"例えば、シャルパイトが持つ一括伐採効果は、採掘した原木に接続する樹木を一撃で伐採します。"
             !hr
             !"これはみらなぎの杖という魔法の武器です。"
-            !"序盤から制作でき、魔法弾を撃ちます。"
+            !img("みらなぎの杖", "https://cdn.modrinth.com/data/cached_images/d12d5212d8bc71f23b6e94d47a2ab478f5d7e5e4.png")
+            !"序盤から制作をスタートでき、魔法弾を撃ちます。"
         }
         !h2("フェアリージュエル") {
             !"ある程度進めたら、ミーニャの望遠鏡を作りましょう！"
+            !img("ミーニャの望遠鏡のレシピ", "https://cdn.modrinth.com/data/cached_images/14a1bd9b37a5416dc0caba9fd033668679fd86e7.png")
             !"それを毎日叩けば、フェアリージュエルが手に入ります。"
             !"フェアリージュエルは妖精の像の泉に捧げましょう。"
+            !img("妖精の像の泉のレシピ", "https://cdn.modrinth.com/data/cached_images/0d69db0ca5cd5f25d8d3cc415802c827c214ed4b.png")
             !"妖精の夢のキャリアである妖精の像がランダムにもらえます。"
         }
         !h2("世界観") {
             !"ほとんどの固有のアイテムはポエムと呼ばれるフレーバーテキストを持ちます。"
+            !img("ミラナガイトのタイルのブロックのポエム", "https://cdn.modrinth.com/data/cached_images/1788893ec4b494a8184e56b9131eb26c55fb97eb.png")
             !"魔法植物の特性は、長文の説明文を持ちます。"
+            !img("Xp Productionの特性図鑑ポエム", "https://cdn.modrinth.com/data/cached_images/4d39b35c4c7269f97fe44c90ede21b54415bea3a.png")
             !"フェアリークエストカードには、いくつかのストーリーが表現されています。"
-            !"MODの外には、MFKU公式WebサイトにMFAと呼ばれる読み物が存在します。"
+            !img("即席ファンタスティックカーニバルのフェアリークエストカードメッセージ", "https://cdn.modrinth.com/data/cached_images/41d3dbe429c052fdf00a22ccba3d81335ee5f4ce.png")
+            !"MODの外には、MFKU公式WebサイトにMFAと呼ばれる日本語の読み物が存在します。"
+            !"[G1-MFA　ミラージュ妖精の生態](https://miragefairy-kakera-unofficial.notion.site/G1-MFA-2f122378b3de4ba39cc5492e3af27b50)"
             !hr
             !"これらは様々に相互に情報を提供しあって、IFRの世界観を形作ります。"
         }

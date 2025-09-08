@@ -1,5 +1,3 @@
-## Prologue
-
 <br>
 <br>
 <br>
@@ -79,6 +77,7 @@
 
 <br>
 <br>
+<br>
 
 <center><font face="serif"><font size="+3">Why is humanity here now?</font></font></center>
 
@@ -123,7 +122,7 @@
     <tr>
       <td width="400">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/4789326b379836f317635052dcac361ff3a07b9e_0.webp">
-        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Do fairy trees have qualia of pain?</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“On protecting animals.”</font></i></font>
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Do fairy trees have qualia of pain?</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“What it means to protect animals.”</font></i></font>
       </td>
     </tr>
   </table>
@@ -137,7 +136,7 @@
     <tr>
       <td width="380">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/block/magic_plant/sarracenia_age3.png?raw=true">
-        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Waiting for a flying creature...</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A place of repose for fairies.”</font></i></font>
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Waiting for a flying creature...</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“Fairies’ resting place.”</font></i></font>
       </td>
     </tr>
   </table>
@@ -152,7 +151,7 @@
     <tr>
       <td width="510">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/miragidian.png?raw=true">
-        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;The great collapse 30,000 years ago</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The dream Miragium saw thirty thousand years ago.”</font></i></font>
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;The great collapse 30,000 years ago</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The dream Miragium saw 30,000 years ago.”</font></i></font>
       </td>
     </tr>
   </table>
@@ -167,7 +166,7 @@
     <tr>
       <td width="610">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/xarpite.png?raw=true">
-        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Binds astral flux with magnetic force</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The black iron chain is fastened into a blood reeking cage for souls.”</font></i></font>
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Binds astral flux with magnetic force</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A blood-reeking cage of souls bound by chains of black iron.”</font></i></font>
       </td>
     </tr>
   </table>
@@ -199,7 +198,7 @@
     <tr>
       <td width="460">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/ce5ecf74a49ca60c318da7dbccef60bddde3e7a8.png">
-        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Life is essentially inorganic.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The boundary between life and the inorganic.”</font></i></font>
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Life is essentially inorganic.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The boundary between life and inorganic matter.”</font></i></font>
       </td>
     </tr>
   </table>
@@ -216,7 +215,7 @@
     <tr>
       <td width="590">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/2edab3f8a66c4c27505aa35c0aeb1c79393098ea.png">
-        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;A Turing-complete crystal lattice</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A world where all has been prophesied since the dawn of creation.”</font></i></font>
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;A Turing-complete crystal lattice</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A world where everything has been prophesied since the dawn of creation.”</font></i></font>
       </td>
     </tr>
   </table>
@@ -234,7 +233,7 @@
     <tr>
       <td width="440">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/acb14f57121d7f180077eba96b87edcd957e82f4_0.webp">
-        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Stable instability due to anti-entropy.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“Is this the ultimate form of order?”</font></i></font>
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Stable instability due to anti-entropy.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“Could this be the ultimate form of anti-entropy?”</font></i></font>
       </td>
     </tr>
   </table>
@@ -520,6 +519,8 @@ Kキーでソウルストリームを開き、トップのスロットに妖精�
 
 IFR25KUには多様なツールが実装されています。
 
+<img alt="多様な素材のツール" src="https://cdn.modrinth.com/data/cached_images/f008e4f81cf2ee45181cc113b2496fefdec51c65.png">
+
 バニラの素材や汎用素材には基本的な5種のツールがあります。
 
 MOD固有の素材には、特殊なタイプのツールがあることがあります。
@@ -528,21 +529,29 @@ MOD固有の素材には、特殊なタイプのツールがあることがあ�
 
 様々な素材のツールが特殊な効果を持ちます。
 
-例えば、プロミナイトが持つ精錬特殊効果は、採掘した対応ブロックをかまどで料理します。
+<img alt="シャルパイトの斧のツールチップ" src="https://cdn.modrinth.com/data/cached_images/70a39cbd649328297ee833f14d0b1ff092910b40.png">
+
+例えば、シャルパイトが持つ一括伐採効果は、採掘した原木に接続する樹木を一撃で伐採します。
 
 ---
 
 これはみらなぎの杖という魔法の武器です。
 
-序盤から制作でき、魔法弾を撃ちます。
+<img alt="みらなぎの杖" src="https://cdn.modrinth.com/data/cached_images/d12d5212d8bc71f23b6e94d47a2ab478f5d7e5e4.png">
+
+序盤から制作をスタートでき、魔法弾を撃ちます。
 
 ## フェアリージュエル
 
 ある程度進めたら、ミーニャの望遠鏡を作りましょう！
 
+<img alt="ミーニャの望遠鏡のレシピ" src="https://cdn.modrinth.com/data/cached_images/14a1bd9b37a5416dc0caba9fd033668679fd86e7.png">
+
 それを毎日叩けば、フェアリージュエルが手に入ります。
 
 フェアリージュエルは妖精の像の泉に捧げましょう。
+
+<img alt="妖精の像の泉のレシピ" src="https://cdn.modrinth.com/data/cached_images/0d69db0ca5cd5f25d8d3cc415802c827c214ed4b.png">
 
 妖精の夢のキャリアである妖精の像がランダムにもらえます。
 
@@ -550,11 +559,19 @@ MOD固有の素材には、特殊なタイプのツールがあることがあ�
 
 ほとんどの固有のアイテムはポエムと呼ばれるフレーバーテキストを持ちます。
 
+<img alt="ミラナガイトのタイルのブロックのポエム" src="https://cdn.modrinth.com/data/cached_images/1788893ec4b494a8184e56b9131eb26c55fb97eb.png">
+
 魔法植物の特性は、長文の説明文を持ちます。
+
+<img alt="Xp Productionの特性図鑑ポエム" src="https://cdn.modrinth.com/data/cached_images/4d39b35c4c7269f97fe44c90ede21b54415bea3a.png">
 
 フェアリークエストカードには、いくつかのストーリーが表現されています。
 
-MODの外には、MFKU公式WebサイトにMFAと呼ばれる読み物が存在します。
+<img alt="即席ファンタスティックカーニバルのフェアリークエストカードメッセージ" src="https://cdn.modrinth.com/data/cached_images/41d3dbe429c052fdf00a22ccba3d81335ee5f4ce.png">
+
+MODの外には、MFKU公式WebサイトにMFAと呼ばれる日本語の読み物が存在します。
+
+[G1-MFA　ミラージュ妖精の生態](https://miragefairy-kakera-unofficial.notion.site/G1-MFA-2f122378b3de4ba39cc5492e3af27b50)
 
 ---
 
