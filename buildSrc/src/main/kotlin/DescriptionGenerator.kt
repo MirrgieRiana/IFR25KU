@@ -83,9 +83,14 @@ private fun poem(indent: Int, width: Int, src: String, poem1: String, poem2: Str
     return center(
         """
 ${img("Vertical Filler", "https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp", width = abs(indent), float = if (indent < 0) "right" else "left")}
-<table><tr><td width="$width">
-  ${img("TODO", src, width = 48, float = "left", pixelated = true)}${serif("${b("${"&nbsp;".repeat(4)}$poem1")}${"br"()}${i(size(-1, "${"&nbsp;".repeat(16)}“$poem2”"))}")}
-</td></tr></table>
+<table>
+  <tr>
+    <td width="$width">
+      ${img("TODO", src, width = 48, float = "left", pixelated = true)}
+      ${serif("${b("${"&nbsp;".repeat(4)}$poem1")}${"br"()}${i(size(-1, "${"&nbsp;".repeat(16)}“$poem2”"))}")}
+    </td>
+  </tr>
+</table>
     """.trim()
     )
 }
@@ -101,15 +106,19 @@ fun getModrinthBody(): String {
             !4
             !center(
                 """
-<table><tr><td width="700">
-  ${img("Portrait of Mirage fairy", "https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp", float = "left")}
-  <p>
-    ${serif(size(-1, b("Monocots ― Order Miragales ― Family Miragaceae")))}${"br"()}
-    ${serif(size(3, b("Mirage")))}
-  </p>
-  ${"p" { serif("A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”") }}
-  ${"p" { serif("Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.") }}
-</td></tr></table>
+<table>
+  <tr>
+    <td width="700">
+      ${img("Portrait of Mirage fairy", "https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp", float = "left")}
+      <p>
+        ${serif(size(-1, b("Monocots ― Order Miragales ― Family Miragaceae")))}${"br"()}
+        ${serif(size(3, b("Mirage")))}
+      </p>
+      ${"p" { serif("A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”") }}
+      ${"p" { serif("Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.") }}
+    </td>
+  </tr>
+</table>
         """.trim()
             )
             !2

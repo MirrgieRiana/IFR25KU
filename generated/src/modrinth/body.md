@@ -16,15 +16,19 @@
 <br>
 
 <center>
-  <table><tr><td width="700">
-    <img alt="Portrait of Mirage fairy" style="float: left;" src="https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp">
-    <p>
-      <font face="serif"><font size="-1"><b>Monocots ― Order Miragales ― Family Miragaceae</b></font></font><br>
-      <font face="serif"><font size="+3"><b>Mirage</b></font></font>
-    </p>
-    <p><font face="serif">A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”</font></p>
-    <p><font face="serif">Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.</font></p>
-  </td></tr></table>
+  <table>
+    <tr>
+      <td width="700">
+        <img alt="Portrait of Mirage fairy" style="float: left;" src="https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp">
+        <p>
+          <font face="serif"><font size="-1"><b>Monocots ― Order Miragales ― Family Miragaceae</b></font></font><br>
+          <font face="serif"><font size="+3"><b>Mirage</b></font></font>
+        </p>
+        <p><font face="serif">A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”</font></p>
+        <p><font face="serif">Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.</font></p>
+      </td>
+    </tr>
+  </table>
 </center>
 
 <br>
@@ -89,34 +93,54 @@
 
 <center>
   <img alt="Vertical Filler" style="float: right;" width="300" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
-  <table><tr><td width="430">
-    <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/fairy_crystal.png?raw=true"><font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Crystallized soul</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“That which makes a creature a creature.”</font></i></font>
-  </td></tr></table>
+  <table>
+    <tr>
+      <td width="430">
+        <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/fairy_crystal.png?raw=true">
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Crystallized soul</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“That which makes a creature a creature.”</font></i></font>
+      </td>
+    </tr>
+  </table>
 </center>
 
 <center>
   <img alt="Vertical Filler" style="float: left;" width="300" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
-  <table><tr><td width="340">
-    <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/phantom_leaves.png?raw=true"><font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;The eroding reality</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The precipitating fantasy.”</font></i></font>
-  </td></tr></table>
+  <table>
+    <tr>
+      <td width="340">
+        <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/phantom_leaves.png?raw=true">
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;The eroding reality</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The precipitating fantasy.”</font></i></font>
+      </td>
+    </tr>
+  </table>
 </center>
 
 <br>
 
 <center>
   <img alt="Vertical Filler" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
-  <table><tr><td width="400">
-    <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/4789326b379836f317635052dcac361ff3a07b9e_0.webp"><font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Do fairy trees have qualia of pain?</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“On protecting animals.”</font></i></font>
-  </td></tr></table>
+  <table>
+    <tr>
+      <td width="400">
+        <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/4789326b379836f317635052dcac361ff3a07b9e_0.webp">
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Do fairy trees have qualia of pain?</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“On protecting animals.”</font></i></font>
+      </td>
+    </tr>
+  </table>
 </center>
 
 <br>
 
 <center>
   <img alt="Vertical Filler" style="float: left;" width="200" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
-  <table><tr><td width="380">
-    <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/block/magic_plant/sarracenia_age3.png?raw=true"><font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Waiting for a flying creature...</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A place of repose for fairies.”</font></i></font>
-  </td></tr></table>
+  <table>
+    <tr>
+      <td width="380">
+        <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/block/magic_plant/sarracenia_age3.png?raw=true">
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Waiting for a flying creature...</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A place of repose for fairies.”</font></i></font>
+      </td>
+    </tr>
+  </table>
 </center>
 
 <br>
@@ -124,9 +148,14 @@
 
 <center>
   <img alt="Vertical Filler" style="float: right;" width="100" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
-  <table><tr><td width="510">
-    <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/miragidian.png?raw=true"><font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;The great collapse 30,000 years ago</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The dream Miragium saw thirty thousand years ago.”</font></i></font>
-  </td></tr></table>
+  <table>
+    <tr>
+      <td width="510">
+        <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/miragidian.png?raw=true">
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;The great collapse 30,000 years ago</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The dream Miragium saw thirty thousand years ago.”</font></i></font>
+      </td>
+    </tr>
+  </table>
 </center>
 
 <br>
@@ -134,9 +163,14 @@
 
 <center>
   <img alt="Vertical Filler" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
-  <table><tr><td width="610">
-    <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/xarpite.png?raw=true"><font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Binds astral flux with magnetic force</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The black iron chain is fastened into a blood reeking cage for souls.”</font></i></font>
-  </td></tr></table>
+  <table>
+    <tr>
+      <td width="610">
+        <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/xarpite.png?raw=true">
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Binds astral flux with magnetic force</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The black iron chain is fastened into a blood reeking cage for souls.”</font></i></font>
+      </td>
+    </tr>
+  </table>
 </center>
 
 <br>
@@ -145,9 +179,14 @@
 
 <center>
   <img alt="Vertical Filler" style="float: left;" width="200" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
-  <table><tr><td width="430">
-    <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/9f481e640f797ca8665bd21e7d39cfcd34ac9ee8.gif"><font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Class 4 time evolution rule.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A stone that etches the patterns of time.”</font></i></font>
-  </td></tr></table>
+  <table>
+    <tr>
+      <td width="430">
+        <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/9f481e640f797ca8665bd21e7d39cfcd34ac9ee8.gif">
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Class 4 time evolution rule.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A stone that etches the patterns of time.”</font></i></font>
+      </td>
+    </tr>
+  </table>
 </center>
 
 <br>
@@ -156,9 +195,14 @@
 
 <center>
   <img alt="Vertical Filler" style="float: left;" width="50" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
-  <table><tr><td width="460">
-    <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/ce5ecf74a49ca60c318da7dbccef60bddde3e7a8.png"><font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Life is essentially inorganic.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The boundary between life and the inorganic.”</font></i></font>
-  </td></tr></table>
+  <table>
+    <tr>
+      <td width="460">
+        <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/ce5ecf74a49ca60c318da7dbccef60bddde3e7a8.png">
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Life is essentially inorganic.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The boundary between life and the inorganic.”</font></i></font>
+      </td>
+    </tr>
+  </table>
 </center>
 
 <br>
@@ -168,9 +212,14 @@
 
 <center>
   <img alt="Vertical Filler" style="float: right;" width="50" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
-  <table><tr><td width="590">
-    <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/2edab3f8a66c4c27505aa35c0aeb1c79393098ea.png"><font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;A Turing-complete crystal lattice</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A world where all has been prophesied since the dawn of creation.”</font></i></font>
-  </td></tr></table>
+  <table>
+    <tr>
+      <td width="590">
+        <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/2edab3f8a66c4c27505aa35c0aeb1c79393098ea.png">
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;A Turing-complete crystal lattice</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A world where all has been prophesied since the dawn of creation.”</font></i></font>
+      </td>
+    </tr>
+  </table>
 </center>
 
 <br>
@@ -181,9 +230,14 @@
 
 <center>
   <img alt="Vertical Filler" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
-  <table><tr><td width="440">
-    <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/acb14f57121d7f180077eba96b87edcd957e82f4_0.webp"><font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Stable instability due to anti-entropy.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“Is this the ultimate form of order?”</font></i></font>
-  </td></tr></table>
+  <table>
+    <tr>
+      <td width="440">
+        <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/acb14f57121d7f180077eba96b87edcd957e82f4_0.webp">
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Stable instability due to anti-entropy.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“Is this the ultimate form of order?”</font></i></font>
+      </td>
+    </tr>
+  </table>
 </center>
 
 <br>
@@ -195,9 +249,14 @@
 
 <center>
   <img alt="Vertical Filler" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
-  <table><tr><td width="360">
-    <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/dbe6a42399b5a56332e2f96ebd89891b2a95f425.gif"><font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;No one can block that noise.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“No one can block that noise.”</font></i></font>
-  </td></tr></table>
+  <table>
+    <tr>
+      <td width="360">
+        <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/dbe6a42399b5a56332e2f96ebd89891b2a95f425.gif">
+        <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;No one can block that noise.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“No one can block that noise.”</font></i></font>
+      </td>
+    </tr>
+  </table>
 </center>
 
 <br>
