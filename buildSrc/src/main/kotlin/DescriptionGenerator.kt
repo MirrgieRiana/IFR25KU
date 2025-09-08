@@ -37,16 +37,16 @@ context(MarkdownScope) private operator fun Int.not() = !br(this)
 context(MarkdownScope) private val hr get() = "---"
 context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.map { "- $it" }.multiLine()
 context(MarkdownScope) private fun multiLine(block: MarkdownScope.() -> Unit = {}) = block.strings.multiLine()
-context(MarkdownScope) private fun String.center() = "center" { this }
-context(MarkdownScope) private fun String.serif() = "font"("face" to "serif") { this }
-context(MarkdownScope) private fun String.size(size: Int) = "font"("size" to String.format("%+d", size)) { this }
-context(MarkdownScope) private fun String.b() = "b" { this }
-context(MarkdownScope) private fun String.i() = "i" { this }
+context(MarkdownScope) private fun String.center() = "center" { !this@center }
+context(MarkdownScope) private fun String.serif() = "font"("face" to "serif") { !this@serif }
+context(MarkdownScope) private fun String.size(size: Int) = "font"("size" to String.format("%+d", size)) { !this@size }
+context(MarkdownScope) private fun String.b() = "b" { !this@b }
+context(MarkdownScope) private fun String.i() = "i" { !this@i }
 
 context(MarkdownScope)
-private operator fun String.invoke(vararg attributes: Pair<String, String>?, block: (() -> String)? = null): String {
+private operator fun String.invoke(vararg attributes: Pair<String, String>?, block: (MarkdownScope.() -> Unit)? = null): String {
     return if (block != null) {
-        val content = block()
+        val content = block.strings.multiLine()
         if ("\n" in content) {
             "<${(listOf(this) + attributes.filterNotNull().map { """${it.first}="${it.second.escapeHtml()}"""" }).join(" ")}>\n  ${content.replace("\n", "\n  ")}\n</$this>"
         } else {
@@ -84,12 +84,10 @@ private fun poem(indent: Int, width: Int, src: String, poem1: String, poem2: Str
     return multiLine {
         !img("Vertical Filler", "https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp", width = abs(indent), float = if (indent < 0) "right" else "left")
         !"table" {
-            "tr" {
-                "td"("width" to "$width") {
-                    multiLine {
-                        !img("TODO", src, width = 48, float = "left", pixelated = true)
-                        !"${"${"&nbsp;".repeat(4)}$poem1".b()}${"br"()}${"${"&nbsp;".repeat(16)}“$poem2”".size(-1).i()}".serif()
-                    }
+            !"tr" {
+                !"td"("width" to "$width") {
+                    !img("TODO", src, width = 48, float = "left", pixelated = true)
+                    !"${"${"&nbsp;".repeat(4)}$poem1".b()}${"br"()}${"${"&nbsp;".repeat(16)}“$poem2”".size(-1).i()}".serif()
                 }
             }
         }
@@ -107,22 +105,18 @@ fun getModrinthBody(): String {
             !4
             !multiLine {
                 !"table" {
-                    "tr" {
-                        "td"("width" to "700") {
-                            multiLine {
-                                !img("Portrait of Mirage fairy", "https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp", float = "left")
-                                !"p" {
-                                    multiLine {
-                                        !"${"Monocots ― Order Miragales ― Family Miragaceae".b().size(-1).serif()}${"br"()}"
-                                        !"Mirage".b().size(3).serif()
-                                    }
-                                }
-                                !"p" {
-                                    "A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”".serif()
-                                }
-                                !"p" {
-                                    "Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.".serif()
-                                }
+                    !"tr" {
+                        !"td"("width" to "700") {
+                            !img("Portrait of Mirage fairy", "https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp", float = "left")
+                            !"p" {
+                                !"${"Monocots ― Order Miragales ― Family Miragaceae".b().size(-1).serif()}${"br"()}"
+                                !"Mirage".b().size(3).serif()
+                            }
+                            !"p" {
+                                !"A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”".serif()
+                            }
+                            !"p" {
+                                !"Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.".serif()
                             }
                         }
                     }
