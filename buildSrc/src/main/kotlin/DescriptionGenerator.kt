@@ -17,7 +17,9 @@ private operator fun String.not() {
 }
 
 fun <T> Iterable<T>.sandwich(vararg separator: T) = this.flatMapIndexed { i, it -> if (i != 0) listOf(*separator, it) else listOf(it) }
-fun Iterable<String>.multiLine() = this.joinToString("\n")
+fun Iterable<String>.join(separator: String) = this.joinToString(separator)
+fun <T> Iterable<T>.join(separator: String, transform: (T) -> String) = this.joinToString(separator, transform = transform)
+fun Iterable<String>.multiLine() = this.join("\n")
 
 fun String.escapeHtml() = this
     .replace("&", "&amp;")
@@ -39,19 +41,27 @@ context(MarkdownScope) private fun serif(string: String) = """<font face="serif"
 context(MarkdownScope) private fun size(size: Int, string: String) = """<font size="${String.format("%+d", size)}">$string</font>"""
 
 context(MarkdownScope)
+private operator fun String.invoke(vararg attributes: Pair<String, String>?): String {
+    return "<${(listOf(this) + attributes.filterNotNull().map { """${it.first}="${it.second.escapeHtml()}"""" }).join(" ")}>"
+}
+
+context(MarkdownScope)
+private fun style(vararg entries: Pair<String, String>?): Pair<String, String>? {
+    val nonnullEntries = entries.filterNotNull()
+    return if (nonnullEntries.isNotEmpty()) "style" to nonnullEntries.join(" ") { "${it.first}: ${it.second};" } else null
+}
+
+context(MarkdownScope)
 private fun img(alt: String, src: String, width: Int? = null, float: String? = null, pixelated: Boolean = false): String {
-    return listOf(
-        "img",
-        *listOfNotNull(
-            "alt" to alt,
-            listOfNotNull(
-                if (float != null) "float" to float else null,
-                if (pixelated) "image-rendering" to "pixelated" else null,
-            ).let { entries -> if (entries.isNotEmpty()) "style" to entries.joinToString(" ") { "${it.first}: ${it.second};" } else null },
-            if (width != null) "width" to "$width" else null,
-            "src" to src,
-        ).map { """${it.first}="${it.second.escapeHtml()}"""" }.toTypedArray(),
-    ).joinToString(" ").let { "<$it>" }
+    return "img"(
+        "alt" to alt,
+        style(
+            if (float != null) "float" to float else null,
+            if (pixelated) "image-rendering" to "pixelated" else null,
+        ),
+        if (width != null) "width" to "$width" else null,
+        "src" to src,
+    )
 }
 
 context(MarkdownScope)
