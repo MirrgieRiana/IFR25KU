@@ -130,7 +130,9 @@ fun getModrinthBody(): String {
             !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png").center()
             !3
             !catchPhrase("Why is humanity here now?")
-            !8
+            !4
+            !"︙".center()
+            !4
             //!catchPhrase("There were “fairies” on that planet.")
             !img("Toast Top Frame", "https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png", width = 400).center()
             !"${img("Fairy icon", "https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png", width = 32, pixelated = true)}&nbsp;&nbsp;Dreamed of a new fairy!".size(2).center()
