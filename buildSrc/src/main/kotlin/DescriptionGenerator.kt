@@ -1,3 +1,4 @@
+import center
 import kotlin.math.abs
 
 private class MarkdownScope {
@@ -110,6 +111,26 @@ fun getModrinthBody(): String {
     return markdown {
         run {
             !3
+            !img("Fairy Quest Card Top Frame", "https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png").center()
+            !1
+            !catchPhrase("Fatal Accident")
+            !3
+            !img("A city eroded by Local Vacuum Decay", "https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp").center()
+            !1
+            !listOf(
+                "………".center(),
+                "“Damn it, the vacuum decay reactor was never something humans should have messed with!”".center(),
+                "“If someone is reading this, please understand.”".center(),
+                "“The vacuum decay reactor wasn't a safe, environmentally friendly source of energy.”".center(),
+                "“One wrong move, and it's a terrifying thing that could wipe out an entire planet.”".center(),
+                "“If anyone is in control of the vacuum decay reactor, please stop it now!”".center(),
+                "“Before your world ceases to exist!!!”".center(),
+            ).sandwich(br).multiLine()
+            !1
+            !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png").center()
+            !3
+            !catchPhrase("Why is humanity here now?")
+            !8
             //!catchPhrase("There were “fairies” on that planet.")
             !img("Toast Top Frame", "https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png", width = 400).center()
             !"${img("Fairy icon", "https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png", width = 32, pixelated = true)}&nbsp;&nbsp;Dreamed of a new fairy!".size(2).center()
@@ -139,27 +160,9 @@ fun getModrinthBody(): String {
             }.center()
             !2
             !catchPhrase("What, exactly, is the true nature of fairies?")
-            !8
-            !img("Fairy Quest Card Top Frame", "https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png").center()
-            !1
-            !catchPhrase("Fatal Accident")
-            !3
-            !img("A city eroded by Local Vacuum Decay", "https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp").center()
-            !1
-            !listOf(
-                "………".center(),
-                "“Damn it, the vacuum decay reactor was never something humans should have messed with!”".center(),
-                "“If someone is reading this, please understand.”".center(),
-                "“The vacuum decay reactor wasn't a safe, environmentally friendly source of energy.”".center(),
-                "“One wrong move, and it's a terrifying thing that could wipe out an entire planet.”".center(),
-                "“If anyone is in control of the vacuum decay reactor, please stop it now!”".center(),
-                "“Before your world ceases to exist!!!”".center(),
-            ).sandwich(br).multiLine()
-            !1
-            !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png").center()
-            !3
-            !catchPhrase("Why is humanity here now?")
-            !8
+            !4
+            !"︙".center()
+            !4
             // フェアリークリスタル
             !poem(
                 -300, 430,

@@ -2,47 +2,6 @@
 <br>
 <br>
 
-<center><img alt="Toast Top Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png"></center>
-
-<center><font size="+2"><img alt="Fairy icon" style="image-rendering: pixelated;" width="32" src="https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png">&nbsp;&nbsp;Dreamed of a new fairy!</font></center>
-
-<center><img alt="Toast Bottom Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png"></center>
-
-<br>
-<br>
-<br>
-<br>
-
-<center>
-  <table>
-    <tr>
-      <td width="700">
-        <img alt="Portrait of Mirage fairy" style="float: left;" src="https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp">
-        <p>
-          <font face="serif"><font size="-1"><b>Monocots ― Order Miragales ― Family Miragaceae</b></font></font><br>
-          <font face="serif"><font size="+3"><b>Mirage</b></font></font>
-        </p>
-        <p><font face="serif">A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”</font></p>
-        <p><font face="serif">Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.</font></p>
-      </td>
-    </tr>
-  </table>
-</center>
-
-<br>
-<br>
-
-<center><font face="serif"><font size="+3">What, exactly, is the true nature of fairies?</font></font></center>
-
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-
 <center><img alt="Fairy Quest Card Top Frame" src="https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png"></center>
 
 <br>
@@ -85,6 +44,50 @@
 <br>
 <br>
 <br>
+<br>
+<br>
+<br>
+<br>
+
+<center><img alt="Toast Top Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png"></center>
+
+<center><font size="+2"><img alt="Fairy icon" style="image-rendering: pixelated;" width="32" src="https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png">&nbsp;&nbsp;Dreamed of a new fairy!</font></center>
+
+<center><img alt="Toast Bottom Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png"></center>
+
+<br>
+<br>
+<br>
+<br>
+
+<center>
+  <table>
+    <tr>
+      <td width="700">
+        <img alt="Portrait of Mirage fairy" style="float: left;" src="https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp">
+        <p>
+          <font face="serif"><font size="-1"><b>Monocots ― Order Miragales ― Family Miragaceae</b></font></font><br>
+          <font face="serif"><font size="+3"><b>Mirage</b></font></font>
+        </p>
+        <p><font face="serif">A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”</font></p>
+        <p><font face="serif">Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.</font></p>
+      </td>
+    </tr>
+  </table>
+</center>
+
+<br>
+<br>
+
+<center><font face="serif"><font size="+3">What, exactly, is the true nature of fairies?</font></font></center>
+
+<br>
+<br>
+<br>
+<br>
+
+<center>︙</center>
+
 <br>
 <br>
 <br>
