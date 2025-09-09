@@ -140,7 +140,7 @@ fun getModrinthBody(): String {
             !2
             !catchPhrase("What, exactly, is the true nature of fairies?")
             !8
-            !img("Fairy Quest Card Top Frame", "https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png")
+            !img("Fairy Quest Card Top Frame", "https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png").center()
             !1
             !catchPhrase("Fatal Accident")
             !3
@@ -156,7 +156,7 @@ fun getModrinthBody(): String {
                 "“Before your world ceases to exist!!!”".center(),
             ).sandwich(br).multiLine()
             !1
-            !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png")
+            !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png").center()
             !3
             !catchPhrase("Why is humanity here now?")
             !8
@@ -177,7 +177,7 @@ fun getModrinthBody(): String {
             !1
             // ハイメヴィスカ
             !poem(
-                0, 400,
+                0, 410,
                 "https://cdn.modrinth.com/data/cached_images/4789326b379836f317635052dcac361ff3a07b9e_0.webp",
                 "Do fairy trees have qualia of pain?",
                 "What it means to protect animals.",
@@ -193,7 +193,7 @@ fun getModrinthBody(): String {
             !2
             // ミラジディアン
             !poem(
-                -100, 510,
+                -100, 460,
                 "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/miragidian.png?raw=true",
                 "The great collapse 30,000 years ago",
                 "The dream Miragium saw 30,000 years ago.",
@@ -201,7 +201,7 @@ fun getModrinthBody(): String {
             !2
             // 紅天石
             !poem(
-                0, 610,
+                0, 580,
                 "https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/xarpite.png?raw=true",
                 "Binds astral flux with magnetic force",
                 "A blood-reeking cage of souls bound by chains of black iron.",
@@ -209,7 +209,7 @@ fun getModrinthBody(): String {
             !3
             // 理天石
             !poem(
-                200, 430,
+                200, 440,
                 "https://cdn.modrinth.com/data/cached_images/9f481e640f797ca8665bd21e7d39cfcd34ac9ee8.gif",
                 "Class 4 time evolution rule.",
                 "A stone that etches the patterns of time.",
@@ -217,7 +217,7 @@ fun getModrinthBody(): String {
             !3
             // オーラ反射炉
             !poem(
-                50, 460,
+                50, 490,
                 "https://cdn.modrinth.com/data/cached_images/ce5ecf74a49ca60c318da7dbccef60bddde3e7a8.png",
                 "Life is essentially inorganic.",
                 "The boundary between life and inorganic matter.",
@@ -225,7 +225,7 @@ fun getModrinthBody(): String {
             !4
             // 蒼天石
             !poem(
-                -50, 590,
+                -50, 650,
                 "https://cdn.modrinth.com/data/cached_images/2edab3f8a66c4c27505aa35c0aeb1c79393098ea.png",
                 "A Turing-complete crystal lattice",
                 "A world where everything has been prophesied since the dawn of creation.",
@@ -233,7 +233,7 @@ fun getModrinthBody(): String {
             !5
             // 局所真空崩壊
             !poem(
-                0, 440,
+                0, 490,
                 "https://cdn.modrinth.com/data/cached_images/acb14f57121d7f180077eba96b87edcd957e82f4_0.webp",
                 "Stable instability due to anti-entropy.",
                 "Could this be the ultimate form of anti-entropy?",
@@ -241,7 +241,7 @@ fun getModrinthBody(): String {
             !6
             // ノイズブロック
             !poem(
-                0, 360,
+                0, 370,
                 "https://cdn.modrinth.com/data/cached_images/dbe6a42399b5a56332e2f96ebd89891b2a95f425.gif",
                 "No one can block that noise.",
                 "No one can block that noise.",
@@ -254,29 +254,28 @@ fun getModrinthBody(): String {
             !img("IFR25KU Logo", "https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp", width = 400).center()
             !8
         }
-        !h2("概要") {
-            !"IFR25KUはMirageFairyの世界観に基づいた可能な世界の一つを表現するMODです。"
-            !"IFR25KUはYoruno Kakeraによる“[MF24KU](https://modrinth.com/mod/miragefairy2024-kakera-unofficial)”の非公式フォークプロジェクトです。"
-            !"MF24KUは“[MirageFairy2024](https://modrinth.com/mod/miragefairy2024)”の非公式フォークでした。"
-            !"MirageFairy2024は“MirageFairy”という創作プロジェクトの世界観を表現するMODです。"
+        !h2("Overview") {
+            !"IFR25KU is a Minecraft mod that depicts a possible world based on the MirageFairy universe."
+            !"IFR25KU is an unofficial fork of [MF24KU](https://modrinth.com/mod/miragefairy2024-kakera-unofficial) by Yoruno Kakera."
+            !"MF24KU was an unofficial fork of [MirageFairy2024](https://modrinth.com/mod/miragefairy2024)."
+            !"MirageFairy2024 is a mod that represents the worldview of the project ${"MirageFairy".i()}."
             !hr
-            !"このMODは、アイテム、ブロック、地形生成物、バイオーム、エンチャント、ゲームメカニズム、その他様々な種類のコンテンツをゲーム内に追加します。"
-            !"プレイヤーは、このMODを通してMirageFairyの世界観に基づく世界の一つを体験することができます。"
+            !"This mod adds items, blocks, worldgens, biomes, enchantments, game mechanics, and many other kinds of content to Minecraft."
+            !"Through this mod, you can experience one possible world grounded in the MirageFairy universe."
         }
-        !h2("ドキュメント") {
-            !"[CHANGELOG.md](https://github.com/MirrgieRiana/IFR25KU/blob/main/CHANGELOG.md)はIFR25KU公式による唯一のすべての仕様が網羅的に記述されたドキュメントです。"
-            !"最新版における仕様が記述されたドキュメントは公式には存在しませんが、非公式には存在します。"
-            !"そのようなWebサイトには、以下のものが知られています。"
+        !h2("Documents") {
+            !"[CHANGELOG.md](https://github.com/MirrgieRiana/IFR25KU/blob/main/CHANGELOG.md) is the only official document in Japanese that comprehensively describes IFR25KU's specifications."
+            !"There are no other official documents, but some unofficial resources exist."
+            !"Known examples include:"
             !li {
-                !"[MFKU非公式Wiki](https://wikiwiki.jp/mifai2024/)"
+                !"[MFKU非公式Wiki (Japanese)](https://wikiwiki.jp/mifai2024/)"
             }
         }
-        !h2("冒険の手引き") {
-            !"あなたはこのMODで次に何をしますか？"
-            !"Lキーで進捗のGUIを開いてください！"
-            !img("進捗", "https://cdn.modrinth.com/data/cached_images/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png")
-            !"それはあなたにあなたが次にできることを案内する！"
-            !img("進捗説明文", "https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png")
+        !h2("Adventure Guide") {
+            !"What should you do next? Press L to open the Advancements screen."
+            !img("Advancements screen", "https://cdn.modrinth.com/data/cached_images/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png").center()
+            !"It will guide you toward your next objectives."
+            !img("Advancement description", "https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png").center()
         }
         !h2("バイオーム") {
             !"あなたは世界各地を冒険すると妖精のバイオームに遭遇できます。"

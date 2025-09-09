@@ -43,7 +43,7 @@
 <br>
 <br>
 
-<img alt="Fairy Quest Card Top Frame" src="https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png">
+<center><img alt="Fairy Quest Card Top Frame" src="https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png"></center>
 
 <br>
 
@@ -73,7 +73,7 @@
 
 <br>
 
-<img alt="Fairy Quest Card Bottom Frame" src="https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png">
+<center><img alt="Fairy Quest Card Bottom Frame" src="https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png"></center>
 
 <br>
 <br>
@@ -120,7 +120,7 @@
   <img alt="Vertical Filler" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
-      <td width="400">
+      <td width="410">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/4789326b379836f317635052dcac361ff3a07b9e_0.webp">
         <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Do fairy trees have qualia of pain?</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“What it means to protect animals.”</font></i></font>
       </td>
@@ -149,7 +149,7 @@
   <img alt="Vertical Filler" style="float: right;" width="100" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
-      <td width="510">
+      <td width="460">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/miragidian.png?raw=true">
         <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;The great collapse 30,000 years ago</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The dream Miragium saw 30,000 years ago.”</font></i></font>
       </td>
@@ -164,7 +164,7 @@
   <img alt="Vertical Filler" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
-      <td width="610">
+      <td width="580">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://github.com/MirrgieRiana/IFR25KU/blob/main/common/src/main/resources/assets/miragefairy2024/textures/item/xarpite.png?raw=true">
         <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Binds astral flux with magnetic force</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A blood-reeking cage of souls bound by chains of black iron.”</font></i></font>
       </td>
@@ -180,7 +180,7 @@
   <img alt="Vertical Filler" style="float: left;" width="200" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
-      <td width="430">
+      <td width="440">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/9f481e640f797ca8665bd21e7d39cfcd34ac9ee8.gif">
         <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Class 4 time evolution rule.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A stone that etches the patterns of time.”</font></i></font>
       </td>
@@ -196,7 +196,7 @@
   <img alt="Vertical Filler" style="float: left;" width="50" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
-      <td width="460">
+      <td width="490">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/ce5ecf74a49ca60c318da7dbccef60bddde3e7a8.png">
         <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Life is essentially inorganic.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The boundary between life and inorganic matter.”</font></i></font>
       </td>
@@ -213,7 +213,7 @@
   <img alt="Vertical Filler" style="float: right;" width="50" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
-      <td width="590">
+      <td width="650">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/2edab3f8a66c4c27505aa35c0aeb1c79393098ea.png">
         <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;A Turing-complete crystal lattice</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A world where everything has been prophesied since the dawn of creation.”</font></i></font>
       </td>
@@ -231,7 +231,7 @@
   <img alt="Vertical Filler" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
-      <td width="440">
+      <td width="490">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/acb14f57121d7f180077eba96b87edcd957e82f4_0.webp">
         <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;Stable instability due to anti-entropy.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“Could this be the ultimate form of anti-entropy?”</font></i></font>
       </td>
@@ -250,7 +250,7 @@
   <img alt="Vertical Filler" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
-      <td width="360">
+      <td width="370">
         <img alt="TODO" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/dbe6a42399b5a56332e2f96ebd89891b2a95f425.gif">
         <font face="serif"><b>&nbsp;&nbsp;&nbsp;&nbsp;No one can block that noise.</b><br><i><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“No one can block that noise.”</font></i></font>
       </td>
@@ -293,43 +293,41 @@
 <br>
 <br>
 
-## 概要
+## Overview
 
-IFR25KUはMirageFairyの世界観に基づいた可能な世界の一つを表現するMODです。
+IFR25KU is a Minecraft mod that depicts a possible world based on the MirageFairy universe.
 
-IFR25KUはYoruno Kakeraによる“[MF24KU](https://modrinth.com/mod/miragefairy2024-kakera-unofficial)”の非公式フォークプロジェクトです。
+IFR25KU is an unofficial fork of [MF24KU](https://modrinth.com/mod/miragefairy2024-kakera-unofficial) by Yoruno Kakera.
 
-MF24KUは“[MirageFairy2024](https://modrinth.com/mod/miragefairy2024)”の非公式フォークでした。
+MF24KU was an unofficial fork of [MirageFairy2024](https://modrinth.com/mod/miragefairy2024).
 
-MirageFairy2024は“MirageFairy”という創作プロジェクトの世界観を表現するMODです。
+MirageFairy2024 is a mod that represents the worldview of the project <i>MirageFairy</i>.
 
 ---
 
-このMODは、アイテム、ブロック、地形生成物、バイオーム、エンチャント、ゲームメカニズム、その他様々な種類のコンテンツをゲーム内に追加します。
+This mod adds items, blocks, worldgens, biomes, enchantments, game mechanics, and many other kinds of content to Minecraft.
 
-プレイヤーは、このMODを通してMirageFairyの世界観に基づく世界の一つを体験することができます。
+Through this mod, you can experience one possible world grounded in the MirageFairy universe.
 
-## ドキュメント
+## Documents
 
-[CHANGELOG.md](https://github.com/MirrgieRiana/IFR25KU/blob/main/CHANGELOG.md)はIFR25KU公式による唯一のすべての仕様が網羅的に記述されたドキュメントです。
+[CHANGELOG.md](https://github.com/MirrgieRiana/IFR25KU/blob/main/CHANGELOG.md) is the only official document in Japanese that comprehensively describes IFR25KU's specifications.
 
-最新版における仕様が記述されたドキュメントは公式には存在しませんが、非公式には存在します。
+There are no other official documents, but some unofficial resources exist.
 
-そのようなWebサイトには、以下のものが知られています。
+Known examples include:
 
-- [MFKU非公式Wiki](https://wikiwiki.jp/mifai2024/)
+- [MFKU非公式Wiki (Japanese)](https://wikiwiki.jp/mifai2024/)
 
-## 冒険の手引き
+## Adventure Guide
 
-あなたはこのMODで次に何をしますか？
+What should you do next? Press L to open the Advancements screen.
 
-Lキーで進捗のGUIを開いてください！
+<center><img alt="Advancements screen" src="https://cdn.modrinth.com/data/cached_images/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png"></center>
 
-<img alt="進捗" src="https://cdn.modrinth.com/data/cached_images/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png">
+It will guide you toward your next objectives.
 
-それはあなたにあなたが次にできることを案内する！
-
-<img alt="進捗説明文" src="https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png">
+<center><img alt="Advancement description" src="https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png"></center>
 
 ## バイオーム
 
