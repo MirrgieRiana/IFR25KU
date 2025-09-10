@@ -330,24 +330,27 @@ fun getModrinthBody(): String {
                 !img("Fairy condensation", "https://cdn.modrinth.com/data/cached_images/e9a521f0229af711da664abfef1606029d03cc8a.png").center().p()
             }
         }
-        !h2("魔法植物") {
-            !"この惑星にはミステリアスな植物が生えています。"
-            !img("Fairy Ring", "https://cdn.modrinth.com/data/cached_images/94f160e46960c4414e032ba26f7e6202f7a9b370_0.webp")
-            !"それらは右クリックでいくつかの種類の農作物が収穫可能です。"
-            !hr
-            !"天然の魔法植物はランダムな特性ビットを持っています。"
-            !img("魔法植物の特性", "https://cdn.modrinth.com/data/cached_images/afcf48c58e957e5c4220f24cbb04fa9f51fa5666.png")
-            !"それらを隣接して植えると、交配が発生します。"
-            !img("隣接して生えている魔法植物", "https://cdn.modrinth.com/data/cached_images/80dacc16b262d5f8330c9f98c2ed25c4627005f8.png")
-            !"あなたは25%の確率で両親から両方の特性ビットを貰った種子を得るだろう！"
-            !img("品種改良済みの種子", "https://cdn.modrinth.com/data/cached_images/370006cc1896973853bf59445d1033236299d273.png")
-            !hr
-            !"あなたが冒険の過程であなたの持ち物があふれたとき、植物カバンはあなたを助けるだろう。"
-            !img("Replace this with a description", "https://cdn.modrinth.com/data/cached_images/09f4d27b1266da03d002b7de7f3c6fbf19f821e8.png")
-            !hr
-            !"魔法植物にはたくさんの種類がある。"
-            !img("多くの種類の魔法植物", "https://cdn.modrinth.com/data/cached_images/c9532c1ed9c69499d650754522ebe8b65ac94a7f.png")
-            !"あなたは「交雑」の特性を使って同じ科に属する異なる2種のそれらで品種改良ができる！"
+        !h2("Magic Plants") {
+            !"Mysterious plants grow all over this world."
+            !img("Fairy Ring", "https://cdn.modrinth.com/data/cached_images/94f160e46960c4414e032ba26f7e6202f7a9b370_0.webp").center().p()
+            !"Many can be harvested as crops with a right-click."
+            !h3("Crossing") {
+                !"Naturally occurring magic plants are born with random trait bits."
+                !img("Magic plant traits", "https://cdn.modrinth.com/data/cached_images/afcf48c58e957e5c4220f24cbb04fa9f51fa5666.png").center().p()
+                !"Planting them adjacent to one another triggers crossing."
+                !img("Adjacent magic plants", "https://cdn.modrinth.com/data/cached_images/80dacc16b262d5f8330c9f98c2ed25c4627005f8.png").center().p()
+                !"You have a 25% chance to obtain seeds that inherit both parents’ trait bits."
+                !img("Improved seeds", "https://cdn.modrinth.com/data/cached_images/370006cc1896973853bf59445d1033236299d273.png").center().p()
+            }
+            !h3("Crossbreeding") {
+                !"There are many kinds of magic plants."
+                !img("Many kinds of magic plants", "https://cdn.modrinth.com/data/cached_images/c9532c1ed9c69499d650754522ebe8b65ac94a7f.png").center().p()
+                !"Using the “Crossbreeding” trait, you can cross two different species within the same family."
+            }
+            !h3("Plant Bag") {
+                !"When your inventory overflows with seeds on your journey, the Plant Bag will help you."
+                !img("Plant Bag", "https://cdn.modrinth.com/data/cached_images/09f4d27b1266da03d002b7de7f3c6fbf19f821e8.png").center().p()
+            }
         }
         !h2("地形生成物") {
             !"あなたはオーバーワールドを旅しているとき、旧世代の遺構を見つけるだろう。"

@@ -413,41 +413,41 @@ Fairies can be condensed indefinitely.
 
 <p><center><img alt="Fairy condensation" src="https://cdn.modrinth.com/data/cached_images/e9a521f0229af711da664abfef1606029d03cc8a.png"></center></p>
 
-## 魔法植物
+## Magic Plants
 
-この惑星にはミステリアスな植物が生えています。
+Mysterious plants grow all over this world.
 
-<img alt="Fairy Ring" src="https://cdn.modrinth.com/data/cached_images/94f160e46960c4414e032ba26f7e6202f7a9b370_0.webp">
+<p><center><img alt="Fairy Ring" src="https://cdn.modrinth.com/data/cached_images/94f160e46960c4414e032ba26f7e6202f7a9b370_0.webp"></center></p>
 
-それらは右クリックでいくつかの種類の農作物が収穫可能です。
+Many can be harvested as crops with a right-click.
 
----
+### Crossing
 
-天然の魔法植物はランダムな特性ビットを持っています。
+Naturally occurring magic plants are born with random trait bits.
 
-<img alt="魔法植物の特性" src="https://cdn.modrinth.com/data/cached_images/afcf48c58e957e5c4220f24cbb04fa9f51fa5666.png">
+<p><center><img alt="Magic plant traits" src="https://cdn.modrinth.com/data/cached_images/afcf48c58e957e5c4220f24cbb04fa9f51fa5666.png"></center></p>
 
-それらを隣接して植えると、交配が発生します。
+Planting them adjacent to one another triggers crossing.
 
-<img alt="隣接して生えている魔法植物" src="https://cdn.modrinth.com/data/cached_images/80dacc16b262d5f8330c9f98c2ed25c4627005f8.png">
+<p><center><img alt="Adjacent magic plants" src="https://cdn.modrinth.com/data/cached_images/80dacc16b262d5f8330c9f98c2ed25c4627005f8.png"></center></p>
 
-あなたは25%の確率で両親から両方の特性ビットを貰った種子を得るだろう！
+You have a 25% chance to obtain seeds that inherit both parents’ trait bits.
 
-<img alt="品種改良済みの種子" src="https://cdn.modrinth.com/data/cached_images/370006cc1896973853bf59445d1033236299d273.png">
+<p><center><img alt="Improved seeds" src="https://cdn.modrinth.com/data/cached_images/370006cc1896973853bf59445d1033236299d273.png"></center></p>
 
----
+### Crossbreeding
 
-あなたが冒険の過程であなたの持ち物があふれたとき、植物カバンはあなたを助けるだろう。
+There are many kinds of magic plants.
 
-<img alt="Replace this with a description" src="https://cdn.modrinth.com/data/cached_images/09f4d27b1266da03d002b7de7f3c6fbf19f821e8.png">
+<p><center><img alt="Many kinds of magic plants" src="https://cdn.modrinth.com/data/cached_images/c9532c1ed9c69499d650754522ebe8b65ac94a7f.png"></center></p>
 
----
+Using the “Crossbreeding” trait, you can cross two different species within the same family.
 
-魔法植物にはたくさんの種類がある。
+### Plant Bag
 
-<img alt="多くの種類の魔法植物" src="https://cdn.modrinth.com/data/cached_images/c9532c1ed9c69499d650754522ebe8b65ac94a7f.png">
+When your inventory overflows with seeds on your journey, the Plant Bag will help you.
 
-あなたは「交雑」の特性を使って同じ科に属する異なる2種のそれらで品種改良ができる！
+<p><center><img alt="Plant Bag" src="https://cdn.modrinth.com/data/cached_images/09f4d27b1266da03d002b7de7f3c6fbf19f821e8.png"></center></p>
 
 ## 地形生成物
 
