@@ -39,6 +39,7 @@ context(MarkdownScope) private val hr get() = "---"
 context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.map { "- $it" }.multiLine()
 context(MarkdownScope) private fun singleLine(block: MarkdownScope.() -> Unit = {}) = block.strings.join("")
 context(MarkdownScope) private fun multiLine(block: MarkdownScope.() -> Unit = {}) = block.strings.multiLine()
+context(MarkdownScope) private fun String.p() = "p" { !this@p }
 context(MarkdownScope) private fun String.center() = "center" { !this@center }
 context(MarkdownScope) private fun String.serif() = "font"("face" to "serif") { !this@serif }
 context(MarkdownScope) private fun String.size(size: Int) = "font"("size" to String.format("%+d", size)) { !this@size }
@@ -110,11 +111,10 @@ fun getModrinthBody(): String {
     return markdown {
         run {
             !3
-            !img("Fairy Quest Card Top Frame", "https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png").center()
-            !1
+            !img("Fairy Quest Card Top Frame", "https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png").center().p()
             !catchPhrase("Fatal Accident")
             !3
-            !img("A city eroded by Local Vacuum Decay", "https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp").center()
+            !img("A city eroded by Local Vacuum Decay", "https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp").center().p()
             !1
             !listOf(
                 "………".center(),
@@ -126,16 +126,18 @@ fun getModrinthBody(): String {
                 "“Before your world ceases to exist!!!”".center(),
             ).sandwich(br).multiLine()
             !1
-            !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png").center()
+            !img("Fairy Quest Card Bottom Frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png").center().p()
             !3
             !catchPhrase("Why is humanity here now?")
             !4
             !"︙".center()
             !4
             //!catchPhrase("There were “fairies” on that planet.")
-            !img("Toast Top Frame", "https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png", width = 400).center()
-            !"${img("Fairy icon", "https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png", width = 32, pixelated = true)}&nbsp;&nbsp;Dreamed of a new fairy!".size(2).center()
-            !img("Toast Bottom Frame", "https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png", width = 400).center()
+            !"p" {
+                !img("Toast Top Frame", "https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png", width = 400).center()
+                !"${img("Fairy icon", "https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png", width = 32, pixelated = true)}&nbsp;&nbsp;Dreamed of a new fairy!".size(2).center()
+                !img("Toast Bottom Frame", "https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png", width = 400).center()
+            }
             !4
             !multiLine {
                 !"table" {
@@ -255,7 +257,7 @@ fun getModrinthBody(): String {
             !8
             !"The Institute of Fairy Research 2025 Kakera Unofficial".serif().center()
             !1
-            !img("IFR25KU Logo", "https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp", width = 400).center()
+            !img("IFR25KU Logo", "https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp", width = 400).center().p()
             !8
         }
         !h2("Overview") {
@@ -277,51 +279,56 @@ fun getModrinthBody(): String {
         }
         !h2("Adventure Guide") {
             !"What should you do next? Press L to open the Advancements screen."
-            !img("Advancements screen", "https://cdn.modrinth.com/data/cached_images/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png").center()
+            !img("Advancements screen", "https://cdn.modrinth.com/data/cached_images/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png").center().p()
+            !1
             !"It will guide you toward your next objectives."
-            !img("Advancement description", "https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png").center()
+            !img("Advancement description", "https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png").center().p()
         }
         !h2("Biomes") {
             !"As you roam the world, you'll come upon biomes remade by fairies."
             !h3("Fairy Forest") {
                 !"Fairy forests dot the land far and wide."
-                !"Here, countless Mirage flowers bloom in profusion."
-                !img("Fairy Forest", "https://cdn.modrinth.com/data/cached_images/1952646971c206beff58fa3791a177a2bbc533bd_0.webp").center()
+                !img("Fairy Forest", "https://cdn.modrinth.com/data/cached_images/1952646971c206beff58fa3791a177a2bbc533bd_0.webp").center().p()
+                !"Here, many Mirage flowers bloom in profusion."
                 !1
                 !"The Phantom flower found here is difficult to cultivate, yet it serves as a medium for higher-tier fairy summoning."
-                !img("Phantom flower", "https://cdn.modrinth.com/data/cached_images/351c3d683c0ff26eba7d7034011c81f7ba25aaeb_0.webp").center()
+                !img("Phantom flower", "https://cdn.modrinth.com/data/cached_images/351c3d683c0ff26eba7d7034011c81f7ba25aaeb_0.webp").center().p()
             }
             !h3("Deep Fairy Forest") {
                 !"A deep, overgrown forest where Haimeviska rise like pillars."
-                !img("Deep Fairy Forest", "https://cdn.modrinth.com/data/cached_images/a3dc02ec6167526592cc7cc124cb5b94fa65acda_0.webp").center()
+                !img("Deep Fairy Forest", "https://cdn.modrinth.com/data/cached_images/a3dc02ec6167526592cc7cc124cb5b94fa65acda_0.webp").center().p()
                 !"Venturing in unprepared is extremely dangerous."
             }
         }
-        !h2("妖精") {
-            !"あなたは世界の各地で妖精を見つけることができる。"
-            !img("妖精", "https://cdn.modrinth.com/data/cached_images/307ff49a23763570f0c5070e5de25f574e68aaad.png")
-            !"妖精は様々な能力を持っている。"
-            !img("光の妖精", "https://cdn.modrinth.com/data/cached_images/25c57e881ae19dd5a84754a38fcce627e95244bc.png")
-            !img("矢の妖精", "https://cdn.modrinth.com/data/cached_images/e4dc387c8958f81cbe3c0495d11d64d508be1d60.png")
-            !"光の妖精は明るい場所であなたの歩行の速度を上げ、矢の妖精は無条件であなたに弓矢のダメージを増加する効果を与える。"
-            !hr
-            !"この世界は妖精で満ち溢れています。"
-            !"様々な自然物や人工物に触れ合いましょう！"
-            !img("妖精の夢のトースト", "https://cdn.modrinth.com/data/cached_images/40f8d08f89553eebaa3e70022824a233f0b4b128.png")
-            !"あなたはレアリティーの低い妖精を見つけてすぐに受け取ることができる！"
-            !hr
-            !"Kキーでソウルストリームを開き、トップのスロットに妖精を配置してください！"
-            !img("ソウルストリーム", "https://cdn.modrinth.com/data/cached_images/ebe833acd596054213b7f89081701788fd61f780.png")
-            !"それらはあなたに猛烈な恩恵を与える！"
-            !hr
-            !"妖精の能力が足りないですか？"
-            !"同じ妖精を複数所持すると、妖精の能力が強化されます！"
-            !img("強化された砂糖の妖精", "https://cdn.modrinth.com/data/cached_images/41c353e38c47a2cde38e6adcd3689499dd385c6a.png")
-            !"ミラージュフラワーを栽培し、花粉を手に入れてください！"
-            !img("ミラージュの花粉", "https://cdn.modrinth.com/data/cached_images/e75c326da1b6479677f559f6ed4dbe824d4409e0.png")
-            !"ミラージュの花粉はあなたが手に入れた「妖精の夢」に従ってランダムに妖精をポップします。"
-            !"妖精はいくらでも圧縮することができます。"
-            !img("妖精の凝縮", "https://cdn.modrinth.com/data/cached_images/e9a521f0229af711da664abfef1606029d03cc8a.png")
+        !h2("Fairies") {
+            !"As you journey across the world, you'll encounter many kinds of fairies along the way."
+            !img("Fairies", "https://cdn.modrinth.com/data/cached_images/307ff49a23763570f0c5070e5de25f574e68aaad.png").center().p()
+            !1
+            !"Fairies possess a wide range of abilities."
+            !img("Light fairy", "https://cdn.modrinth.com/data/cached_images/25c57e881ae19dd5a84754a38fcce627e95244bc.png").center().p()
+            !img("Arrow fairy", "https://cdn.modrinth.com/data/cached_images/e4dc387c8958f81cbe3c0495d11d64d508be1d60.png").center().p()
+            !"A light fairy increases your walking speed in bright areas, and an arrow fairy passively increases your bow damage."
+            !h3("Fairy Dreams") {
+                !"This world is brimming with fairies."
+                !img("Fairy dream toast", "https://cdn.modrinth.com/data/cached_images/40f8d08f89553eebaa3e70022824a233f0b4b128.png").center().p()
+                !"Search among natural and artificial objects alike. When you obtain a low-rarity Fairy Dream, you can immediately receive one fairy matching its motif."
+            }
+            !h3("The Soul Stream") {
+                !"Press K to open the Soul Stream and place fairies in the top slots."
+                !img("Soul Stream", "https://cdn.modrinth.com/data/cached_images/ebe833acd596054213b7f89081701788fd61f780.png").center().p()
+                !"They confer powerful enhancements."
+            }
+            !h3("Fairy Condensation") {
+                !"Need more fairy power? Having multiples of the same fairy strengthens its effects."
+                !img("Empowered sugar fairy", "https://cdn.modrinth.com/data/cached_images/41c353e38c47a2cde38e6adcd3689499dd385c6a.png").center().p()
+                !1
+                !"Cultivate Mirage flowers to obtain Mirage flour."
+                !img("Mirage flour", "https://cdn.modrinth.com/data/cached_images/e75c326da1b6479677f559f6ed4dbe824d4409e0.png").center().p()
+                !"Mirage flour spawns fairies at random according to the Fairy Dreams you have obtained so far."
+                !1
+                !"Fairies can be condensed indefinitely."
+                !img("Fairy condensation", "https://cdn.modrinth.com/data/cached_images/e9a521f0229af711da664abfef1606029d03cc8a.png").center().p()
+            }
         }
         !h2("魔法植物") {
             !"この惑星にはミステリアスな植物が生えています。"

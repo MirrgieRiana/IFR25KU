@@ -2,9 +2,7 @@
 <br>
 <br>
 
-<center><img alt="Fairy Quest Card Top Frame" src="https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png"></center>
-
-<br>
+<p><center><img alt="Fairy Quest Card Top Frame" src="https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png"></center></p>
 
 <center><font face="serif"><font size="+3">Fatal Accident</font></font></center>
 
@@ -12,7 +10,7 @@
 <br>
 <br>
 
-<center><img alt="A city eroded by Local Vacuum Decay" src="https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp"></center>
+<p><center><img alt="A city eroded by Local Vacuum Decay" src="https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp"></center></p>
 
 <br>
 
@@ -32,7 +30,7 @@
 
 <br>
 
-<center><img alt="Fairy Quest Card Bottom Frame" src="https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png"></center>
+<p><center><img alt="Fairy Quest Card Bottom Frame" src="https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png"></center></p>
 
 <br>
 <br>
@@ -52,11 +50,11 @@
 <br>
 <br>
 
-<center><img alt="Toast Top Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png"></center>
-
-<center><font size="+2"><img alt="Fairy icon" style="image-rendering: pixelated;" width="32" src="https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png">&nbsp;&nbsp;Dreamed of a new fairy!</font></center>
-
-<center><img alt="Toast Bottom Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png"></center>
+<p>
+  <center><img alt="Toast Top Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png"></center>
+  <center><font size="+2"><img alt="Fairy icon" style="image-rendering: pixelated;" width="32" src="https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png">&nbsp;&nbsp;Dreamed of a new fairy!</font></center>
+  <center><img alt="Toast Bottom Frame" width="400" src="https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png"></center>
+</p>
 
 <br>
 <br>
@@ -288,7 +286,7 @@
 
 <br>
 
-<center><img alt="IFR25KU Logo" width="400" src="https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp"></center>
+<p><center><img alt="IFR25KU Logo" width="400" src="https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp"></center></p>
 
 <br>
 <br>
@@ -329,11 +327,13 @@ Known examples include:
 
 What should you do next? Press L to open the Advancements screen.
 
-<center><img alt="Advancements screen" src="https://cdn.modrinth.com/data/cached_images/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png"></center>
+<p><center><img alt="Advancements screen" src="https://cdn.modrinth.com/data/cached_images/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png"></center></p>
+
+<br>
 
 It will guide you toward your next objectives.
 
-<center><img alt="Advancement description" src="https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png"></center>
+<p><center><img alt="Advancement description" src="https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png"></center></p>
 
 ## Biomes
 
@@ -343,73 +343,75 @@ As you roam the world, you'll come upon biomes remade by fairies.
 
 Fairy forests dot the land far and wide.
 
-Here, countless Mirage flowers bloom in profusion.
+<p><center><img alt="Fairy Forest" src="https://cdn.modrinth.com/data/cached_images/1952646971c206beff58fa3791a177a2bbc533bd_0.webp"></center></p>
 
-<center><img alt="Fairy Forest" src="https://cdn.modrinth.com/data/cached_images/1952646971c206beff58fa3791a177a2bbc533bd_0.webp"></center>
+Here, many Mirage flowers bloom in profusion.
 
 <br>
 
 The Phantom flower found here is difficult to cultivate, yet it serves as a medium for higher-tier fairy summoning.
 
-<center><img alt="Phantom flower" src="https://cdn.modrinth.com/data/cached_images/351c3d683c0ff26eba7d7034011c81f7ba25aaeb_0.webp"></center>
+<p><center><img alt="Phantom flower" src="https://cdn.modrinth.com/data/cached_images/351c3d683c0ff26eba7d7034011c81f7ba25aaeb_0.webp"></center></p>
 
 ### Deep Fairy Forest
 
 A deep, overgrown forest where Haimeviska rise like pillars.
 
-<center><img alt="Deep Fairy Forest" src="https://cdn.modrinth.com/data/cached_images/a3dc02ec6167526592cc7cc124cb5b94fa65acda_0.webp"></center>
+<p><center><img alt="Deep Fairy Forest" src="https://cdn.modrinth.com/data/cached_images/a3dc02ec6167526592cc7cc124cb5b94fa65acda_0.webp"></center></p>
 
 Venturing in unprepared is extremely dangerous.
 
-## 妖精
+## Fairies
 
-あなたは世界の各地で妖精を見つけることができる。
+As you journey across the world, you'll encounter many kinds of fairies along the way.
 
-<img alt="妖精" src="https://cdn.modrinth.com/data/cached_images/307ff49a23763570f0c5070e5de25f574e68aaad.png">
+<p><center><img alt="Fairies" src="https://cdn.modrinth.com/data/cached_images/307ff49a23763570f0c5070e5de25f574e68aaad.png"></center></p>
 
-妖精は様々な能力を持っている。
+<br>
 
-<img alt="光の妖精" src="https://cdn.modrinth.com/data/cached_images/25c57e881ae19dd5a84754a38fcce627e95244bc.png">
+Fairies possess a wide range of abilities.
 
-<img alt="矢の妖精" src="https://cdn.modrinth.com/data/cached_images/e4dc387c8958f81cbe3c0495d11d64d508be1d60.png">
+<p><center><img alt="Light fairy" src="https://cdn.modrinth.com/data/cached_images/25c57e881ae19dd5a84754a38fcce627e95244bc.png"></center></p>
 
-光の妖精は明るい場所であなたの歩行の速度を上げ、矢の妖精は無条件であなたに弓矢のダメージを増加する効果を与える。
+<p><center><img alt="Arrow fairy" src="https://cdn.modrinth.com/data/cached_images/e4dc387c8958f81cbe3c0495d11d64d508be1d60.png"></center></p>
 
----
+A light fairy increases your walking speed in bright areas, and an arrow fairy passively increases your bow damage.
 
-この世界は妖精で満ち溢れています。
+### Fairy Dreams
 
-様々な自然物や人工物に触れ合いましょう！
+This world is brimming with fairies.
 
-<img alt="妖精の夢のトースト" src="https://cdn.modrinth.com/data/cached_images/40f8d08f89553eebaa3e70022824a233f0b4b128.png">
+<p><center><img alt="Fairy dream toast" src="https://cdn.modrinth.com/data/cached_images/40f8d08f89553eebaa3e70022824a233f0b4b128.png"></center></p>
 
-あなたはレアリティーの低い妖精を見つけてすぐに受け取ることができる！
+Search among natural and artificial objects alike. When you obtain a low-rarity Fairy Dream, you can immediately receive one fairy matching its motif.
 
----
+### The Soul Stream
 
-Kキーでソウルストリームを開き、トップのスロットに妖精を配置してください！
+Press K to open the Soul Stream and place fairies in the top slots.
 
-<img alt="ソウルストリーム" src="https://cdn.modrinth.com/data/cached_images/ebe833acd596054213b7f89081701788fd61f780.png">
+<p><center><img alt="Soul Stream" src="https://cdn.modrinth.com/data/cached_images/ebe833acd596054213b7f89081701788fd61f780.png"></center></p>
 
-それらはあなたに猛烈な恩恵を与える！
+They confer powerful enhancements.
 
----
+### Fairy Condensation
 
-妖精の能力が足りないですか？
+Need more fairy power? Having multiples of the same fairy strengthens its effects.
 
-同じ妖精を複数所持すると、妖精の能力が強化されます！
+<p><center><img alt="Empowered sugar fairy" src="https://cdn.modrinth.com/data/cached_images/41c353e38c47a2cde38e6adcd3689499dd385c6a.png"></center></p>
 
-<img alt="強化された砂糖の妖精" src="https://cdn.modrinth.com/data/cached_images/41c353e38c47a2cde38e6adcd3689499dd385c6a.png">
+<br>
 
-ミラージュフラワーを栽培し、花粉を手に入れてください！
+Cultivate Mirage flowers to obtain Mirage flour.
 
-<img alt="ミラージュの花粉" src="https://cdn.modrinth.com/data/cached_images/e75c326da1b6479677f559f6ed4dbe824d4409e0.png">
+<p><center><img alt="Mirage flour" src="https://cdn.modrinth.com/data/cached_images/e75c326da1b6479677f559f6ed4dbe824d4409e0.png"></center></p>
 
-ミラージュの花粉はあなたが手に入れた「妖精の夢」に従ってランダムに妖精をポップします。
+Mirage flour spawns fairies at random according to the Fairy Dreams you have obtained so far.
 
-妖精はいくらでも圧縮することができます。
+<br>
 
-<img alt="妖精の凝縮" src="https://cdn.modrinth.com/data/cached_images/e9a521f0229af711da664abfef1606029d03cc8a.png">
+Fairies can be condensed indefinitely.
+
+<p><center><img alt="Fairy condensation" src="https://cdn.modrinth.com/data/cached_images/e9a521f0229af711da664abfef1606029d03cc8a.png"></center></p>
 
 ## 魔法植物
 
