@@ -1,4 +1,3 @@
-import center
 import kotlin.math.abs
 
 private class MarkdownScope {
@@ -282,19 +281,20 @@ fun getModrinthBody(): String {
             !"It will guide you toward your next objectives."
             !img("Advancement description", "https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png").center()
         }
-        !h2("バイオーム") {
-            !"あなたは世界各地を冒険すると妖精のバイオームに遭遇できます。"
-            !h3("妖精の森") {
-                !"世界のそこかしこにある妖精の森。"
-                !"そこには多くのMirage flowerが咲き誇る。"
-                !img("妖精の森", "https://cdn.modrinth.com/data/cached_images/1952646971c206beff58fa3791a177a2bbc533bd_0.webp")
-                !"ここで見つかるファントムフラワーは、栽培は困難であるが、より高度な妖精の召喚の媒体となる。"
-                !img("ファントムフラワー", "https://cdn.modrinth.com/data/cached_images/351c3d683c0ff26eba7d7034011c81f7ba25aaeb_0.webp")
+        !h2("Biomes") {
+            !"As you roam the world, you'll come upon biomes remade by fairies."
+            !h3("Fairy Forest") {
+                !"Fairy forests dot the land far and wide."
+                !"Here, countless Mirage flowers bloom in profusion."
+                !img("Fairy Forest", "https://cdn.modrinth.com/data/cached_images/1952646971c206beff58fa3791a177a2bbc533bd_0.webp").center()
+                !1
+                !"The Phantom flower found here is difficult to cultivate, yet it serves as a medium for higher-tier fairy summoning."
+                !img("Phantom flower", "https://cdn.modrinth.com/data/cached_images/351c3d683c0ff26eba7d7034011c81f7ba25aaeb_0.webp").center()
             }
-            !h3("妖精の樹海") {
-                !"ハイメヴィスカが立ち並ぶ鬱蒼とした森。"
-                !img("妖精の樹海", "https://cdn.modrinth.com/data/cached_images/a3dc02ec6167526592cc7cc124cb5b94fa65acda_0.webp")
-                !"装備の整わないうちにここを歩くのは非常に危険である。"
+            !h3("Deep Fairy Forest") {
+                !"A deep, overgrown forest where Haimeviska rise like pillars."
+                !img("Deep Fairy Forest", "https://cdn.modrinth.com/data/cached_images/a3dc02ec6167526592cc7cc124cb5b94fa65acda_0.webp").center()
+                !"Venturing in unprepared is extremely dangerous."
             }
         }
         !h2("妖精") {

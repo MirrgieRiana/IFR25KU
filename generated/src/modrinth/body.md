@@ -335,29 +335,31 @@ It will guide you toward your next objectives.
 
 <center><img alt="Advancement description" src="https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png"></center>
 
-## バイオーム
+## Biomes
 
-あなたは世界各地を冒険すると妖精のバイオームに遭遇できます。
+As you roam the world, you'll come upon biomes remade by fairies.
 
-### 妖精の森
+### Fairy Forest
 
-世界のそこかしこにある妖精の森。
+Fairy forests dot the land far and wide.
 
-そこには多くのMirage flowerが咲き誇る。
+Here, countless Mirage flowers bloom in profusion.
 
-<img alt="妖精の森" src="https://cdn.modrinth.com/data/cached_images/1952646971c206beff58fa3791a177a2bbc533bd_0.webp">
+<center><img alt="Fairy Forest" src="https://cdn.modrinth.com/data/cached_images/1952646971c206beff58fa3791a177a2bbc533bd_0.webp"></center>
 
-ここで見つかるファントムフラワーは、栽培は困難であるが、より高度な妖精の召喚の媒体となる。
+<br>
 
-<img alt="ファントムフラワー" src="https://cdn.modrinth.com/data/cached_images/351c3d683c0ff26eba7d7034011c81f7ba25aaeb_0.webp">
+The Phantom flower found here is difficult to cultivate, yet it serves as a medium for higher-tier fairy summoning.
 
-### 妖精の樹海
+<center><img alt="Phantom flower" src="https://cdn.modrinth.com/data/cached_images/351c3d683c0ff26eba7d7034011c81f7ba25aaeb_0.webp"></center>
 
-ハイメヴィスカが立ち並ぶ鬱蒼とした森。
+### Deep Fairy Forest
 
-<img alt="妖精の樹海" src="https://cdn.modrinth.com/data/cached_images/a3dc02ec6167526592cc7cc124cb5b94fa65acda_0.webp">
+A deep, overgrown forest where Haimeviska rise like pillars.
 
-装備の整わないうちにここを歩くのは非常に危険である。
+<center><img alt="Deep Fairy Forest" src="https://cdn.modrinth.com/data/cached_images/a3dc02ec6167526592cc7cc124cb5b94fa65acda_0.webp"></center>
+
+Venturing in unprepared is extremely dangerous.
 
 ## 妖精
 
