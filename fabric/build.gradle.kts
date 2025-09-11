@@ -105,6 +105,10 @@ dependencies {
     implementation(project(path = ":mirrg.kotlin")) // mirrg.kotlin
     "shadowBundle"(project(path = ":mirrg.kotlin")) { isTransitive = false } // mirrg.kotlin shadow
 
+    // Library
+    implementation("mirrg.kotlin:mirrg.kotlin.helium:${rootProject.properties["mirrg_kotlin_helium_version"] as String}")
+    "shadowBundle"("mirrg.kotlin:mirrg.kotlin.helium:${rootProject.properties["mirrg_kotlin_helium_version"] as String}") { isTransitive = false }
+
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:16.0.799")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:16.0.799")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:16.0.799")
@@ -159,6 +163,7 @@ tasks.named<ShadowJar>("shadowJar") {
     configurations = listOf(project.configurations.getByName("shadowBundle"))
     archiveClassifier.set("dev-shadow")
     relocate("mirrg.kotlin", "miragefairy2024.shadow.mirrg.kotlin")
+    relocate("mirrg.kotlin.helium", "miragefairy2024.shadow.mirrg.kotlin.helium")
 }
 
 tasks.named<RemapJarTask>("remapJar") {

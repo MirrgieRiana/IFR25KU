@@ -53,6 +53,9 @@ dependencies {
 
     implementation(project(path = ":mirrg.kotlin"))
 
+    // Library
+    implementation("mirrg.kotlin:mirrg.kotlin.helium:${rootProject.properties["mirrg_kotlin_helium_version"] as String}")
+
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:16.0.799")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:16.0.799")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:16.0.799")
