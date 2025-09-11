@@ -30,7 +30,7 @@ import miragefairy2024.util.registerShapelessRecipeGeneration
 import miragefairy2024.util.sortedEntrySet
 import miragefairy2024.util.string
 import miragefairy2024.util.text
-import mirrg.kotlin.hydrogen.unit
+import mirrg.kotlin.helium.unit
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory

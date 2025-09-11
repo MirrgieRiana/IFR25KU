@@ -1,6 +1,6 @@
 package miragefairy2024.util
 
-import mirrg.kotlin.hydrogen.atMost
+import mirrg.kotlin.helium.atMost
 import net.minecraft.core.HolderLookup
 import net.minecraft.nbt.Tag
 import net.minecraft.tags.TagKey

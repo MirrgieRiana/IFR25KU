@@ -42,7 +42,7 @@ import miragefairy2024.util.text
 import miragefairy2024.util.times
 import miragefairy2024.util.weightedRandom
 import miragefairy2024.util.withHorizontalRotation
-import mirrg.kotlin.hydrogen.Single
+import mirrg.kotlin.helium.Single
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.BuiltInRegistries

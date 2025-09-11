@@ -4,7 +4,7 @@ import miragefairy2024.util.Chance
 import miragefairy2024.util.compressWeight
 import miragefairy2024.util.filled
 import miragefairy2024.util.weightedRandom
-import mirrg.kotlin.hydrogen.Single
+import mirrg.kotlin.helium.Single
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.nbt.CompoundTag

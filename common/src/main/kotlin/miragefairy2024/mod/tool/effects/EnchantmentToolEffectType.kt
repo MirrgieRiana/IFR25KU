@@ -11,9 +11,9 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
 import miragefairy2024.util.toRomanText
-import mirrg.kotlin.hydrogen.atLeast
-import mirrg.kotlin.hydrogen.max
-import mirrg.kotlin.hydrogen.or
+import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.max
+import mirrg.kotlin.helium.or
 import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component

@@ -19,7 +19,7 @@ import miragefairy2024.util.toItem
 import miragefairy2024.util.toNbtList
 import miragefairy2024.util.toNbtString
 import miragefairy2024.util.wrapper
-import mirrg.kotlin.hydrogen.Single
+import mirrg.kotlin.helium.Single
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block

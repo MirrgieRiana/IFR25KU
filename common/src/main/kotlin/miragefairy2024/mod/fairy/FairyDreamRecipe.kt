@@ -1,6 +1,6 @@
 package miragefairy2024.mod.fairy
 
-import mirrg.kotlin.hydrogen.unit
+import mirrg.kotlin.helium.unit
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.tags.TagKey

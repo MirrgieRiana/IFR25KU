@@ -1,8 +1,8 @@
 package miragefairy2024.util
 
-import mirrg.kotlin.hydrogen.atLeast
-import mirrg.kotlin.hydrogen.atMost
-import mirrg.kotlin.hydrogen.unit
+import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.atMost
+import mirrg.kotlin.helium.unit
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
 import net.minecraft.nbt.CompoundTag

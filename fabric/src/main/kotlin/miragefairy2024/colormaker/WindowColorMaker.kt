@@ -1,7 +1,7 @@
 package miragefairy2024.colormaker
 
+import mirrg.kotlin.helium.join
 import mirrg.kotlin.hydrogen.formatAs
-import mirrg.kotlin.hydrogen.join
 import java.awt.CardLayout
 import java.awt.Color
 import java.awt.Component

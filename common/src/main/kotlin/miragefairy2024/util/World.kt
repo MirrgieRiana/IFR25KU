@@ -1,7 +1,7 @@
 package miragefairy2024.util
 
 import miragefairy2024.mod.SoundEventCard
-import mirrg.kotlin.hydrogen.max
+import mirrg.kotlin.helium.max
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerPlayer

@@ -17,7 +17,7 @@ import miragefairy2024.util.on
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerShapedRecipeGeneration
-import mirrg.kotlin.hydrogen.floorToInt
+import mirrg.kotlin.helium.floorToInt
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries

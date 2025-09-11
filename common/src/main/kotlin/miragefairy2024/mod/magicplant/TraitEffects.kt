@@ -1,6 +1,6 @@
 package miragefairy2024.mod.magicplant
 
-import mirrg.kotlin.hydrogen.or
+import mirrg.kotlin.helium.or
 
 // api
 

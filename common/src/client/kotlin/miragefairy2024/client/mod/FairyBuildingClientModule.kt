@@ -16,7 +16,7 @@ import miragefairy2024.mod.fairybuilding.FairyHouseCard
 import miragefairy2024.mod.fairybuilding.FairyHouseScreenHandler
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
-import mirrg.kotlin.hydrogen.atMost
+import mirrg.kotlin.helium.atMost
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
 import net.minecraft.client.gui.GuiGraphics
 import java.util.Optional

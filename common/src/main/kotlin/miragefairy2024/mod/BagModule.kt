@@ -33,7 +33,7 @@ import miragefairy2024.util.registerShapedRecipeGeneration
 import miragefairy2024.util.set
 import miragefairy2024.util.text
 import miragefairy2024.util.toItemTag
-import mirrg.kotlin.hydrogen.castOrNull
+import mirrg.kotlin.helium.castOrNull
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.core.component.DataComponents

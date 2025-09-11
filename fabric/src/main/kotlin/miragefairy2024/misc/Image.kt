@@ -1,7 +1,7 @@
 package miragefairy2024.misc
 
-import mirrg.kotlin.hydrogen.join
-import mirrg.kotlin.hydrogen.max
+import mirrg.kotlin.helium.join
+import mirrg.kotlin.helium.max
 import java.awt.Color
 import java.io.File
 import javax.imageio.ImageIO

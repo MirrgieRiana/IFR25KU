@@ -6,7 +6,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
-import mirrg.kotlin.hydrogen.Single
+import mirrg.kotlin.helium.Single
 
 abstract class ReiCategoryCard<D : BasicDisplay>(
     val path: String,

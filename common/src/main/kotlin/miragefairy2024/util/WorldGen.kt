@@ -5,7 +5,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.mod.magicplant.MagicPlantCard
 import miragefairy2024.mod.magicplant.hasEnvironmentAdaptation
-import mirrg.kotlin.hydrogen.floorToInt
+import mirrg.kotlin.helium.floorToInt
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors

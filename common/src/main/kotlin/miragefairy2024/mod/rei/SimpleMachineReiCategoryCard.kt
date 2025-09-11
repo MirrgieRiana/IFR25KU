@@ -19,7 +19,7 @@ import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
 import miragefairy2024.util.wrapper
 import mirrg.kotlin.gson.hydrogen.toJsonElement
-import mirrg.kotlin.hydrogen.Single
+import mirrg.kotlin.helium.Single
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.ItemStack
 

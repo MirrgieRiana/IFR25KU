@@ -9,7 +9,7 @@ import miragefairy2024.util.empty
 import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
-import mirrg.kotlin.hydrogen.atLeast
+import mirrg.kotlin.helium.atLeast
 
 object IgnitionPassiveSkillEffect : AbstractBooleanPassiveSkillEffect("ignition") {
     private val translation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}" }, "Ignition", "発火")

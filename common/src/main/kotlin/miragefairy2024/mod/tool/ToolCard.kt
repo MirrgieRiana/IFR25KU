@@ -50,7 +50,7 @@ import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerShapedRecipeGeneration
 import miragefairy2024.util.toBlockTag
-import mirrg.kotlin.hydrogen.toUpperCamelCase
+import mirrg.kotlin.helium.toUpperCamelCase
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.ModelTemplates

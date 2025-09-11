@@ -6,8 +6,8 @@ import miragefairy2024.ModContext
 import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
 import mirrg.kotlin.gson.hydrogen.jsonObjectNotNull
-import mirrg.kotlin.hydrogen.join
-import mirrg.kotlin.hydrogen.or
+import mirrg.kotlin.helium.join
+import mirrg.kotlin.helium.or
 import net.minecraft.core.Direction
 import net.minecraft.data.models.BlockModelGenerators
 import net.minecraft.data.models.blockstates.BlockStateGenerator

@@ -10,8 +10,8 @@ import miragefairy2024.util.toEntryStack
 import miragefairy2024.util.toItemStack
 import miragefairy2024.util.toNbt
 import miragefairy2024.util.wrapper
-import mirrg.kotlin.hydrogen.Single
-import mirrg.kotlin.hydrogen.castOrThrow
+import mirrg.kotlin.helium.Single
+import mirrg.kotlin.helium.castOrThrow
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 

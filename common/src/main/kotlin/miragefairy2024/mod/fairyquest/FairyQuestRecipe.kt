@@ -30,7 +30,7 @@ import miragefairy2024.util.text
 import miragefairy2024.util.toIngredient
 import miragefairy2024.util.weightedRandom
 import miragefairy2024.util.with
-import mirrg.kotlin.hydrogen.join
+import mirrg.kotlin.helium.join
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.core.Registry

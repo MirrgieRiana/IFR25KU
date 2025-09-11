@@ -26,8 +26,8 @@ import miragefairy2024.util.size
 import miragefairy2024.util.text
 import miragefairy2024.util.weightedRandom
 import miragefairy2024.util.yellow
-import mirrg.kotlin.hydrogen.Single
-import mirrg.kotlin.hydrogen.cmp
+import mirrg.kotlin.helium.Single
+import mirrg.kotlin.helium.cmp
 import mirrg.kotlin.hydrogen.formatAs
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.minecraft.network.chat.Component

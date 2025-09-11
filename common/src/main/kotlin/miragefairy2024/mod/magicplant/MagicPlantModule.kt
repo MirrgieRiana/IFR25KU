@@ -26,7 +26,7 @@ import miragefairy2024.util.register
 import miragefairy2024.util.registerClientDebugItem
 import miragefairy2024.util.toTextureSource
 import miragefairy2024.util.writeAction
-import mirrg.kotlin.hydrogen.join
+import mirrg.kotlin.helium.join
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.codec.ByteBufCodecs

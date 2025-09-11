@@ -5,7 +5,7 @@ import dev.architectury.event.events.common.BlockEvent
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.ToolEffectType
-import mirrg.kotlin.hydrogen.max
+import mirrg.kotlin.helium.max
 import net.minecraft.core.Direction
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult

@@ -4,8 +4,8 @@ import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.tool.FairyMiningToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.mod.tool.axeAttackDamageBonus
-import mirrg.kotlin.hydrogen.atLeast
-import mirrg.kotlin.hydrogen.atMost
+import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.atMost
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.tags.BlockTags

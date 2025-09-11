@@ -13,8 +13,8 @@ import miragefairy2024.util.style
 import miragefairy2024.util.text
 import miragefairy2024.util.toBlockPos
 import miragefairy2024.util.yellow
-import mirrg.kotlin.hydrogen.max
-import mirrg.kotlin.hydrogen.unit
+import mirrg.kotlin.helium.max
+import mirrg.kotlin.helium.unit
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component

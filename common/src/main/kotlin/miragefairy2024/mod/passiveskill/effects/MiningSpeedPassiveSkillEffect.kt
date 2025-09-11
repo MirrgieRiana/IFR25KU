@@ -12,7 +12,7 @@ import miragefairy2024.util.getOrCreate
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
-import mirrg.kotlin.hydrogen.atMost
+import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.hydrogen.formatAs
 
 object MiningSpeedPassiveSkillEffect : AbstractDoublePassiveSkillEffect("mining_speed") {

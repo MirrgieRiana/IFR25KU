@@ -18,8 +18,8 @@ import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerVariantsBlockStateGeneration
 import miragefairy2024.util.times
 import miragefairy2024.util.with
-import mirrg.kotlin.hydrogen.atLeast
-import mirrg.kotlin.hydrogen.atMost
+import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.atMost
 import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries

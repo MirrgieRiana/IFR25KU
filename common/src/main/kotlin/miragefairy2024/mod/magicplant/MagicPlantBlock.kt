@@ -11,7 +11,7 @@ import miragefairy2024.util.randomInt
 import miragefairy2024.util.text
 import miragefairy2024.util.toBlockPos
 import miragefairy2024.util.toBox
-import mirrg.kotlin.hydrogen.or
+import mirrg.kotlin.helium.or
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction

@@ -14,7 +14,7 @@ import miragefairy2024.util.toIdentifier
 import miragefairy2024.util.toNbtList
 import miragefairy2024.util.toNbtString
 import miragefairy2024.util.wrapper
-import mirrg.kotlin.hydrogen.Single
+import mirrg.kotlin.helium.Single
 
 object FairyFamilyReiCategoryCard : ReiCategoryCard<FairyFamilyReiCategoryCard.Display>("fairy_family", "Fairy Family", "妖精系統") {
     override val serializer: Single<BasicDisplay.Serializer<Display>> by lazy {

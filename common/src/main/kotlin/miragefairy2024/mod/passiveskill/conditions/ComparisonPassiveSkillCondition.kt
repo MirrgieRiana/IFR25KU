@@ -9,8 +9,8 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.lightProxy
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
+import mirrg.kotlin.helium.stripTrailingZeros
 import mirrg.kotlin.hydrogen.formatAs
-import mirrg.kotlin.hydrogen.stripTrailingZeros
 import net.minecraft.network.chat.Component
 
 class IntComparisonPassiveSkillCondition(private val term: Term, private val isGreaterOrEquals: Boolean, private val threshold: Int) : PassiveSkillCondition {

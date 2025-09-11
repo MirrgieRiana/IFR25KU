@@ -1,6 +1,6 @@
 package miragefairy2024.mod.magicplant
 
-import mirrg.kotlin.hydrogen.max
+import mirrg.kotlin.helium.max
 import net.minecraft.util.RandomSource
 
 const val MAX_TRAIT_COUNT = 15

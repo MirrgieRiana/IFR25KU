@@ -6,7 +6,7 @@ import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.readFromNbt
 import miragefairy2024.util.reset
 import miragefairy2024.util.writeToNbt
-import mirrg.kotlin.hydrogen.unit
+import mirrg.kotlin.helium.unit
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup

@@ -28,7 +28,7 @@ import miragefairy2024.util.text
 import miragefairy2024.util.toTextureSource
 import miragefairy2024.util.translate
 import miragefairy2024.util.writeAction
-import mirrg.kotlin.hydrogen.join
+import mirrg.kotlin.helium.join
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer
 import net.minecraft.commands.CommandSourceStack

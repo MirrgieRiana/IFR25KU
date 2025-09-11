@@ -12,7 +12,7 @@ import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
-import mirrg.kotlin.hydrogen.max
+import mirrg.kotlin.helium.max
 import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction

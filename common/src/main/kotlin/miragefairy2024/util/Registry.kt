@@ -3,7 +3,7 @@ package miragefairy2024.util
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import miragefairy2024.ModContext
-import mirrg.kotlin.hydrogen.or
+import mirrg.kotlin.helium.or
 import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.core.Holder
 import net.minecraft.core.HolderLookup

@@ -27,7 +27,7 @@ import miragefairy2024.util.sortedEntrySet
 import miragefairy2024.util.string
 import miragefairy2024.util.style
 import miragefairy2024.util.text
-import mirrg.kotlin.hydrogen.or
+import mirrg.kotlin.helium.or
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.world.InteractionHand

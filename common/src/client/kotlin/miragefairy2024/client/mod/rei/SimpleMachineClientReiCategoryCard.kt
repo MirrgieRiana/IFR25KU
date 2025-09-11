@@ -25,8 +25,8 @@ import miragefairy2024.util.times
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
 import miragefairy2024.util.translate
+import mirrg.kotlin.helium.stripTrailingZeros
 import mirrg.kotlin.hydrogen.formatAs
-import mirrg.kotlin.hydrogen.stripTrailingZeros
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen

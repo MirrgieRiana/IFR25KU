@@ -12,7 +12,7 @@ import miragefairy2024.mod.machine.SimpleMachineCard
 import miragefairy2024.mod.machine.SimpleMachineScreenHandler
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
-import mirrg.kotlin.hydrogen.atMost
+import mirrg.kotlin.helium.atMost
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.Rect2i
 import java.util.Optional

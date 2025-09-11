@@ -46,7 +46,7 @@ import miragefairy2024.util.registerClientDebugItem
 import miragefairy2024.util.text
 import miragefairy2024.util.toTextureSource
 import miragefairy2024.util.writeAction
-import mirrg.kotlin.hydrogen.join
+import mirrg.kotlin.helium.join
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags

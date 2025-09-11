@@ -8,7 +8,7 @@ import miragefairy2024.util.ja
 import miragefairy2024.util.text
 import miragefairy2024.util.times
 import miragefairy2024.util.translate
-import mirrg.kotlin.hydrogen.cmp
+import mirrg.kotlin.helium.cmp
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.core.BlockPos

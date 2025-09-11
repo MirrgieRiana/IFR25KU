@@ -49,7 +49,7 @@ import miragefairy2024.util.toIdentifier
 import miragefairy2024.util.with
 import miragefairy2024.util.withHorizontalRotation
 import miragefairy2024.util.wrapper
-import mirrg.kotlin.hydrogen.castOrNull
+import mirrg.kotlin.helium.castOrNull
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries

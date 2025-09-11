@@ -29,11 +29,11 @@ import miragefairy2024.util.toItemStack
 import miragefairy2024.util.toNbt
 import miragefairy2024.util.with
 import miragefairy2024.util.wrapper
-import mirrg.kotlin.hydrogen.atLeast
-import mirrg.kotlin.hydrogen.atMost
-import mirrg.kotlin.hydrogen.castOrNull
-import mirrg.kotlin.hydrogen.max
-import mirrg.kotlin.hydrogen.min
+import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.atMost
+import mirrg.kotlin.helium.castOrNull
+import mirrg.kotlin.helium.max
+import mirrg.kotlin.helium.min
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries

@@ -3,7 +3,7 @@ package miragefairy2024.util
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.mirageFairy2024ItemGroupCard
-import mirrg.kotlin.hydrogen.toUpperCamelCase
+import mirrg.kotlin.helium.toUpperCamelCase
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureMapping

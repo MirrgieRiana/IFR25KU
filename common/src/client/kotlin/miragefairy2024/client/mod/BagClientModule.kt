@@ -16,7 +16,7 @@ import miragefairy2024.client.util.slotContainer
 import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.BagCard
 import miragefairy2024.mod.BagScreenHandler
-import mirrg.kotlin.hydrogen.atLeast
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 

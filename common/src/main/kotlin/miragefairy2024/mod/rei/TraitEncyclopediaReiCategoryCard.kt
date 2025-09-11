@@ -7,7 +7,7 @@ import miragefairy2024.mod.magicplant.getIdentifier
 import miragefairy2024.mod.magicplant.toTrait
 import miragefairy2024.util.string
 import miragefairy2024.util.toIdentifier
-import mirrg.kotlin.hydrogen.Single
+import mirrg.kotlin.helium.Single
 
 object TraitEncyclopediaReiCategoryCard : ReiCategoryCard<TraitEncyclopediaReiCategoryCard.Display>("trait_encyclopedia", "Trait Encyclopedia", "特性図鑑") {
     override val serializer: Single<BasicDisplay.Serializer<Display>> by lazy {

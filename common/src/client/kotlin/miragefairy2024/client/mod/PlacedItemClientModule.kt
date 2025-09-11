@@ -8,8 +8,8 @@ import miragefairy2024.mod.placeditem.PlaceItemChannel
 import miragefairy2024.mod.placeditem.PlacedItemCard
 import miragefairy2024.mod.placeditem.RemovePlacedItemChannel
 import miragefairy2024.util.isNotIn
-import mirrg.kotlin.hydrogen.atLeast
-import mirrg.kotlin.hydrogen.atMost
+import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.atMost
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
 import net.minecraft.core.Direction

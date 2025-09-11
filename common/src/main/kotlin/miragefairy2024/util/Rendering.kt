@@ -7,7 +7,7 @@ import miragefairy2024.ModEvents
 import miragefairy2024.RenderingProxy
 import miragefairy2024.RenderingProxyBlockEntity
 import miragefairy2024.clientProxy
-import mirrg.kotlin.hydrogen.castOrThrow
+import mirrg.kotlin.helium.castOrThrow
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack

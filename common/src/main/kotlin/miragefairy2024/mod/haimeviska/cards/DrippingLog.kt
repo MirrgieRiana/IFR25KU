@@ -15,7 +15,7 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.get
 import miragefairy2024.util.randomInt
 import miragefairy2024.util.registerLootTableGeneration
-import mirrg.kotlin.hydrogen.atMost
+import mirrg.kotlin.helium.atMost
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.Registries

@@ -13,7 +13,7 @@ import miragefairy2024.util.list
 import miragefairy2024.util.register
 import miragefairy2024.util.string
 import miragefairy2024.util.times
-import mirrg.kotlin.hydrogen.atMost
+import mirrg.kotlin.helium.atMost
 import net.minecraft.advancements.AdvancementRequirements
 import net.minecraft.advancements.AdvancementRewards
 import net.minecraft.advancements.Criterion

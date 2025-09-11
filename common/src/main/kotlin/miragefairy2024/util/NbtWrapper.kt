@@ -1,6 +1,6 @@
 package miragefairy2024.util
 
-import mirrg.kotlin.hydrogen.castOrNull
+import mirrg.kotlin.helium.castOrNull
 import net.minecraft.nbt.ByteTag
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.DoubleTag

@@ -1,6 +1,6 @@
 package miragefairy2024
 
-import mirrg.kotlin.hydrogen.join
+import mirrg.kotlin.helium.join
 import java.io.File
 
 object MapColorViewerGeneratorMain {

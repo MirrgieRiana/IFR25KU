@@ -3,7 +3,7 @@ package miragefairy2024.mod.tool.items
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.tool.FairyMiningToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
-import mirrg.kotlin.hydrogen.atMost
+import mirrg.kotlin.helium.atMost
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.sounds.SoundEvents

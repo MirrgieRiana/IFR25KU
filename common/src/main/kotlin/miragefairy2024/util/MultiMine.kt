@@ -1,6 +1,6 @@
 package miragefairy2024.util
 
-import mirrg.kotlin.hydrogen.ceilToInt
+import mirrg.kotlin.helium.ceilToInt
 import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerPlayer

@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.util.Channel
-import mirrg.kotlin.hydrogen.unit
+import mirrg.kotlin.helium.unit
 import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.core.particles.ParticleType
 import net.minecraft.network.RegistryFriendlyByteBuf

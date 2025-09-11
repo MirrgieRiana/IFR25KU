@@ -16,7 +16,7 @@ import miragefairy2024.util.toEntryStack
 import miragefairy2024.util.toIdentifier
 import miragefairy2024.util.with
 import miragefairy2024.util.wrapper
-import mirrg.kotlin.hydrogen.Single
+import mirrg.kotlin.helium.Single
 import net.minecraft.core.registries.Registries
 
 object CommonMotifRecipeReiCategoryCard : ReiCategoryCard<CommonMotifRecipeReiCategoryCard.Display>("common_motif_recipe", "Common Fairy", "コモン妖精") {

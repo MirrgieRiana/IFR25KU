@@ -1,7 +1,7 @@
 package miragefairy2024.client.mod.particle
 
-import mirrg.kotlin.hydrogen.atLeast
-import mirrg.kotlin.hydrogen.atMost
+import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.atMost
 import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.ParticleRenderType
 import net.minecraft.client.particle.SpriteSet

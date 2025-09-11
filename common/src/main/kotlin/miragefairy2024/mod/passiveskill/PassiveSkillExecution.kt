@@ -16,7 +16,7 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.register
 import miragefairy2024.util.set
 import miragefairy2024.util.text
-import mirrg.kotlin.hydrogen.Slot
+import mirrg.kotlin.helium.Slot
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType

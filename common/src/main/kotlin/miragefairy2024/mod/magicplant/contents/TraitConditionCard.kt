@@ -20,8 +20,8 @@ import miragefairy2024.util.lightProxy
 import miragefairy2024.util.string
 import miragefairy2024.util.temperatureCategory
 import miragefairy2024.util.text
-import mirrg.kotlin.hydrogen.atLeast
-import mirrg.kotlin.hydrogen.atMost
+import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.atMost
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.core.BlockPos
 import net.minecraft.tags.BlockTags
