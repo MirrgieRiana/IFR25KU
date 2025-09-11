@@ -74,7 +74,7 @@ dependencies {
     "shadowBundle"(project(path = ":mirrg.kotlin")) { isTransitive = false } // mirrg.kotlin shadow
 
     // Library
-    implementation("mirrg.kotlin:mirrg.kotlin.helium:${rootProject.properties["mirrg_kotlin_helium_version"] as String}")
+    "common"("mirrg.kotlin:mirrg.kotlin.helium:${rootProject.properties["mirrg_kotlin_helium_version"] as String}")
     "shadowBundle"("mirrg.kotlin:mirrg.kotlin.helium:${rootProject.properties["mirrg_kotlin_helium_version"] as String}") { isTransitive = false }
 
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-neoforge:16.0.799")
