@@ -369,39 +369,45 @@ fun getModrinthBody(): String {
             }
         }
         !h2("Materials & Processing") {
-            !"This is a Haimeviska tree. In the fairy language, its name means “great tree of fairies.”"
-            !img("Haimeviska", "https://cdn.modrinth.com/data/cached_images/2b8db6bc14815d912c96c6e7a441db77f1d0a6cc_0.webp").center().p()
-            !"To collect sap for fuel or as a drink, stack Haimeviska Logs into a wall and score them with a sword."
-            !img("Sap farm", "https://cdn.modrinth.com/data/cached_images/ea98315555098fb52d52cff608aeffa95c9eae80_0.webp").center().p()
-            !hr
-            !"Felling a Haimeviska is extremely hard, but a Xarpite Axe—which can break connected logs in one swing—makes the job easy."
-            !"As its counterpart, Miranagite is a gem found near the surface. Tools made from it have Silk Touch by default."
-            !img("Xarpite and Miranagite tools", "https://cdn.modrinth.com/data/cached_images/30d662dd3fa505cc7ceac312ce74fcc4a64f735b.png").center().p()
-            !hr
-            !"From Haimeviska you can craft a Brewing Barrel and make liquor that grants both benefits and drawbacks."
-            !multiLine {
-                !img("Brewing Barrel recipe", "https://cdn.modrinth.com/data/cached_images/9ccab95ed4b3ffc9e5134b1b0a95e17cdecc8b06.png")
-                !img("Fairy Liqueur", "https://cdn.modrinth.com/data/cached_images/b6fcb829216f0fa98a2402e9e93f60d984634316.png")
-            }.center().p()
-            !img("Brewing Barrel placed", "https://cdn.modrinth.com/data/cached_images/8c56debebae75dcb5398235bc6ebefa5b2841053.png").center().p()
-            !hr
-            !"Once you've gathered enough Xarpite, craft an Aura Reflector Furnace."
-            !img("Aura Reflector Furnace recipe", "https://cdn.modrinth.com/data/cached_images/d418b63551cf892ef5c6c118504392aae0881ecd.png").center().p()
-            !"Miragium produced in it is used to craft powerful tools and also serves as an intermediate for further materials."
-            !multiLine {
-                !img("Miragium Nugget recipe", "https://cdn.modrinth.com/data/cached_images/c2f1d3b9f4c820f97dacfa258c2a17d75c8b0065.png")
-                !img("Miragium recipe", "https://cdn.modrinth.com/data/cached_images/92ed27deeeec8facbdffb7b73380669f88761212.png")
-            }.center().p()
-            !multiLine {
-                !img("Lilagium recipe", "https://cdn.modrinth.com/data/cached_images/86a38d1218cafe5ca55baebd20db0d9447f6d729.png")
-                !img("Resonite recipe", "https://cdn.modrinth.com/data/cached_images/baa1a654af9891783d670bd9dd678f8da4462c31.png")
-            }.center().p()
-            !"To run it, you'll need Soul Sand or Soul Soil as fuel."
-            !hr
-            !"You can build a Fairy House from Haimeviska Logs and several other materials."
-            !img("Fairy House recipe", "https://cdn.modrinth.com/data/cached_images/81dd2f3401638fa4ffb473ea7679b37d2db93b4b.png").center().p()
-            !"Fairies can live and work there."
-            !img("Inside the Fairy House", "https://cdn.modrinth.com/data/cached_images/b37e0797d786d123f74d53cc2bc454c4ca6ae43a.png").center().p()
+            !h3("Haimeviska") {
+                !"This is a Haimeviska tree. In the fairy language, its name means “great tree of fairies.”"
+                !img("Haimeviska", "https://cdn.modrinth.com/data/cached_images/2b8db6bc14815d912c96c6e7a441db77f1d0a6cc_0.webp").center().p()
+                !"To collect sap for fuel or as a drink, stack Haimeviska Logs to form a wall and score them with a sword."
+                !img("Sap farm", "https://cdn.modrinth.com/data/cached_images/ea98315555098fb52d52cff608aeffa95c9eae80_0.webp").center().p()
+            }
+            !h3("Basic Materials") {
+                !"Felling a Haimeviska is extremely hard, but a Xarpite Axe—which can break connected logs in one swing—makes the job easy."
+                !"As Xarpite’s counterpart, Miranagite is a gem found near the surface. Tools made from it have Silk Touch by default."
+                !img("Xarpite and Miranagite tools", "https://cdn.modrinth.com/data/cached_images/30d662dd3fa505cc7ceac312ce74fcc4a64f735b.png").center().p()
+            }
+            !h3("Brewing Barrel") {
+                !"Using Haimeviska Logs, you can craft a Brewing Barrel and make liquor that grants both benefits and drawbacks."
+                !multiLine {
+                    !img("Brewing Barrel recipe", "https://cdn.modrinth.com/data/cached_images/9ccab95ed4b3ffc9e5134b1b0a95e17cdecc8b06.png")
+                    !img("Fairy Liqueur", "https://cdn.modrinth.com/data/cached_images/b6fcb829216f0fa98a2402e9e93f60d984634316.png")
+                }.center().p()
+                !img("Brewing Barrel placed", "https://cdn.modrinth.com/data/cached_images/8c56debebae75dcb5398235bc6ebefa5b2841053.png").center().p()
+            }
+            !h3("Aura Reflector Furnace") {
+                !"Once you've gathered enough Xarpite, craft an Aura Reflector Furnace."
+                !img("Aura Reflector Furnace recipe", "https://cdn.modrinth.com/data/cached_images/d418b63551cf892ef5c6c118504392aae0881ecd.png").center().p()
+                !"Miragium produced in the furnace is used to craft powerful tools and also serves as an intermediate for further materials."
+                !multiLine {
+                    !img("Miragium Nugget recipe", "https://cdn.modrinth.com/data/cached_images/c2f1d3b9f4c820f97dacfa258c2a17d75c8b0065.png")
+                    !img("Miragium recipe", "https://cdn.modrinth.com/data/cached_images/92ed27deeeec8facbdffb7b73380669f88761212.png")
+                }.center().p()
+                !multiLine {
+                    !img("Lilagium recipe", "https://cdn.modrinth.com/data/cached_images/86a38d1218cafe5ca55baebd20db0d9447f6d729.png")
+                    !img("Resonite recipe", "https://cdn.modrinth.com/data/cached_images/baa1a654af9891783d670bd9dd678f8da4462c31.png")
+                }.center().p()
+                !"To run it, you'll need Soul Sand or Soul Soil as fuel."
+            }
+            !h3("Fairy House") {
+                !"You can build a Fairy House from Haimeviska Logs and several other materials."
+                !img("Fairy House recipe", "https://cdn.modrinth.com/data/cached_images/81dd2f3401638fa4ffb473ea7679b37d2db93b4b.png").center().p()
+                !"Fairies can live and work there."
+                !img("Inside the Fairy House", "https://cdn.modrinth.com/data/cached_images/b37e0797d786d123f74d53cc2bc454c4ca6ae43a.png").center().p()
+            }
         }
         !h2("ツール") {
             !"IFR25KUには多様なツールが実装されています。"

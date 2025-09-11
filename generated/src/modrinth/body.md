@@ -477,25 +477,27 @@ You can place items on the ground by pressing the Z key.
 
 ## Materials & Processing
 
+### Haimeviska
+
 This is a Haimeviska tree. In the fairy language, its name means “great tree of fairies.”
 
 <p><center><img alt="Haimeviska" src="https://cdn.modrinth.com/data/cached_images/2b8db6bc14815d912c96c6e7a441db77f1d0a6cc_0.webp"></center></p>
 
-To collect sap for fuel or as a drink, stack Haimeviska Logs into a wall and score them with a sword.
+To collect sap for fuel or as a drink, stack Haimeviska Logs to form a wall and score them with a sword.
 
 <p><center><img alt="Sap farm" src="https://cdn.modrinth.com/data/cached_images/ea98315555098fb52d52cff608aeffa95c9eae80_0.webp"></center></p>
 
----
+### Basic Materials
 
 Felling a Haimeviska is extremely hard, but a Xarpite Axe—which can break connected logs in one swing—makes the job easy.
 
-As its counterpart, Miranagite is a gem found near the surface. Tools made from it have Silk Touch by default.
+As Xarpite’s counterpart, Miranagite is a gem found near the surface. Tools made from it have Silk Touch by default.
 
 <p><center><img alt="Xarpite and Miranagite tools" src="https://cdn.modrinth.com/data/cached_images/30d662dd3fa505cc7ceac312ce74fcc4a64f735b.png"></center></p>
 
----
+### Brewing Barrel
 
-From Haimeviska you can craft a Brewing Barrel and make liquor that grants both benefits and drawbacks.
+Using Haimeviska Logs, you can craft a Brewing Barrel and make liquor that grants both benefits and drawbacks.
 
 <p>
   <center>
@@ -506,13 +508,13 @@ From Haimeviska you can craft a Brewing Barrel and make liquor that grants both 
 
 <p><center><img alt="Brewing Barrel placed" src="https://cdn.modrinth.com/data/cached_images/8c56debebae75dcb5398235bc6ebefa5b2841053.png"></center></p>
 
----
+### Aura Reflector Furnace
 
 Once you've gathered enough Xarpite, craft an Aura Reflector Furnace.
 
 <p><center><img alt="Aura Reflector Furnace recipe" src="https://cdn.modrinth.com/data/cached_images/d418b63551cf892ef5c6c118504392aae0881ecd.png"></center></p>
 
-Miragium produced in it is used to craft powerful tools and also serves as an intermediate for further materials.
+Miragium produced in the furnace is used to craft powerful tools and also serves as an intermediate for further materials.
 
 <p>
   <center>
@@ -530,7 +532,7 @@ Miragium produced in it is used to craft powerful tools and also serves as an in
 
 To run it, you'll need Soul Sand or Soul Soil as fuel.
 
----
+### Fairy House
 
 You can build a Fairy House from Haimeviska Logs and several other materials.
 
