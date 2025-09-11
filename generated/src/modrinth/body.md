@@ -449,79 +449,96 @@ When your inventory overflows with seeds on your journey, the Plant Bag will hel
 
 <p><center><img alt="Plant Bag" src="https://cdn.modrinth.com/data/cached_images/09f4d27b1266da03d002b7de7f3c6fbf19f821e8.png"></center></p>
 
-## 地形生成物
+## World Generation
 
-あなたはオーバーワールドを旅しているとき、旧世代の遺構を見つけるだろう。
+### Weathered Ancient Remnants
 
-<img alt="風化した旧世代の遺構" src="https://cdn.modrinth.com/data/cached_images/ba4ea56b35cac23f703ae12639ae4c5e755f2bf2_0.webp">
+As you travel the Overworld, you'll discover Weathered Ancient Remnants.
 
-怪しい砂利をブラシで掘ってみましょう！
+<p><center><img alt="Weathered Ancient Remnants" src="https://cdn.modrinth.com/data/cached_images/ba4ea56b35cac23f703ae12639ae4c5e755f2bf2_0.webp"></center></p>
 
-あなたは有用な素材とともに、鍾乳洞の遺跡の地図を見つけることができるかもしれません！
+Try brushing Suspicious Gravel.
 
-<img alt="鍾乳洞の遺跡" src="https://cdn.modrinth.com/data/cached_images/a0b179287f9ac8beded0e4037cc4788dc3d836ba_0.webp">
+You may unearth a map that leads to the Dripstone Cave Ruin, along with useful materials.
 
----
+<p><center><img alt="Dripstone Cave Ruin" src="https://cdn.modrinth.com/data/cached_images/a0b179287f9ac8beded0e4037cc4788dc3d836ba_0.webp"></center></p>
 
-世界にがれきが追加されています！
+### Debris
 
-<img alt="がれき" src="https://cdn.modrinth.com/data/cached_images/504ce1940464d214a2f3e725bb02ce88758d8974.png">
+Debris can now be found throughout the world.
 
-それらにはバニラの序盤の素材や、MODの固有素材が含まれています。
+<p><center><img alt="Debris" src="https://cdn.modrinth.com/data/cached_images/504ce1940464d214a2f3e725bb02ce88758d8974.png"></center></p>
 
-あなたはZキーによってアイテムを地面に設置することができます。
+These piles can contain early-game vanilla materials as well as materials added by this mod.
 
-## 素材・加工
+<br>
 
-これは妖精語で妖精の大樹を意味する、「ハイメヴィスカ」の木。
+You can place items on the ground by pressing the Z key.
 
-<img alt="ハイメヴィスカ" src="https://cdn.modrinth.com/data/cached_images/2b8db6bc14815d912c96c6e7a441db77f1d0a6cc_0.webp">
+## Materials & Processing
 
-燃料に使ったり飲むことができる樹液を採取するにはハイメヴィスカの原木を並べて剣で傷をつけてみよう！
+This is a Haimeviska tree. In the fairy language, its name means “great tree of fairies.”
 
-<img alt="樹液ファーム" src="https://cdn.modrinth.com/data/cached_images/ea98315555098fb52d52cff608aeffa95c9eae80_0.webp">
+<p><center><img alt="Haimeviska" src="https://cdn.modrinth.com/data/cached_images/2b8db6bc14815d912c96c6e7a441db77f1d0a6cc_0.webp"></center></p>
 
----
+To collect sap for fuel or as a drink, stack Haimeviska Logs into a wall and score them with a sword.
 
-ハイメヴィスカを伐採するのは非常に大変だが、繋がった原木を一度に破壊できる紅天石の斧であれば簡単に伐採できる！
-
-そのほか、蒼天石は地表近くに出没する鉱石で、デフォルトでシルクタッチの能力を持っている！
-
-<img alt="シャルパイトとミラナガイトのツール" src="https://cdn.modrinth.com/data/cached_images/30d662dd3fa505cc7ceac312ce74fcc4a64f735b.png">
+<p><center><img alt="Sap farm" src="https://cdn.modrinth.com/data/cached_images/ea98315555098fb52d52cff608aeffa95c9eae80_0.webp"></center></p>
 
 ---
 
-ハイメヴィスカからは酒を作ることができる醸造樽が作れる。
+Felling a Haimeviska is extremely hard, but a Xarpite Axe—which can break connected logs in one swing—makes the job easy.
 
-<img alt="醸造樽のレシピ" src="https://cdn.modrinth.com/data/cached_images/9ccab95ed4b3ffc9e5134b1b0a95e17cdecc8b06.png">
+As its counterpart, Miranagite is a gem found near the surface. Tools made from it have Silk Touch by default.
 
-<img alt="醸造樽の設置" src="https://cdn.modrinth.com/data/cached_images/8c56debebae75dcb5398235bc6ebefa5b2841053.png">
-
-酒はあなたにメリットとデメリットを提供する！
-
-<img alt="Fairy Liqueur" src="https://cdn.modrinth.com/data/cached_images/b6fcb829216f0fa98a2402e9e93f60d984634316.png">
+<p><center><img alt="Xarpite and Miranagite tools" src="https://cdn.modrinth.com/data/cached_images/30d662dd3fa505cc7ceac312ce74fcc4a64f735b.png"></center></p>
 
 ---
 
-ある程度シャルパイトがたまったら、オーラ反射炉を作ってみよう！
+From Haimeviska you can craft a Brewing Barrel and make liquor that grants both benefits and drawbacks.
 
-<img alt="オーラ反射炉のレシピ" src="https://cdn.modrinth.com/data/cached_images/d418b63551cf892ef5c6c118504392aae0881ecd.png">
+<p>
+  <center>
+    <img alt="Brewing Barrel recipe" src="https://cdn.modrinth.com/data/cached_images/9ccab95ed4b3ffc9e5134b1b0a95e17cdecc8b06.png">
+    <img alt="Fairy Liqueur" src="https://cdn.modrinth.com/data/cached_images/b6fcb829216f0fa98a2402e9e93f60d984634316.png">
+  </center>
+</p>
 
-これを使って作れるミラジウムは、強力なツールとなり、さらに派生素材のための中間素材でもある。
-
-それを動かすには燃料としてソウルサンドやソウルソイルが必要だ。
-
-<img alt="レゾナイトのレシピ" src="https://cdn.modrinth.com/data/cached_images/baa1a654af9891783d670bd9dd678f8da4462c31.png">
+<p><center><img alt="Brewing Barrel placed" src="https://cdn.modrinth.com/data/cached_images/8c56debebae75dcb5398235bc6ebefa5b2841053.png"></center></p>
 
 ---
 
-あなたはハイメヴィスカの原木から妖精の家を作ることができる。
+Once you've gathered enough Xarpite, craft an Aura Reflector Furnace.
 
-<img alt="妖精の家のレシピ" src="https://cdn.modrinth.com/data/cached_images/81dd2f3401638fa4ffb473ea7679b37d2db93b4b.png">
+<p><center><img alt="Aura Reflector Furnace recipe" src="https://cdn.modrinth.com/data/cached_images/d418b63551cf892ef5c6c118504392aae0881ecd.png"></center></p>
 
-それはそこで働くための妖精が住むことができる！
+Miragium produced in it is used to craft powerful tools and also serves as an intermediate for further materials.
 
-<img alt="妖精の家のインテリア" src="https://cdn.modrinth.com/data/cached_images/b37e0797d786d123f74d53cc2bc454c4ca6ae43a.png">
+<p>
+  <center>
+    <img alt="Miragium Nugget recipe" src="https://cdn.modrinth.com/data/cached_images/c2f1d3b9f4c820f97dacfa258c2a17d75c8b0065.png">
+    <img alt="Miragium recipe" src="https://cdn.modrinth.com/data/cached_images/92ed27deeeec8facbdffb7b73380669f88761212.png">
+  </center>
+</p>
+
+<p>
+  <center>
+    <img alt="Lilagium recipe" src="https://cdn.modrinth.com/data/cached_images/86a38d1218cafe5ca55baebd20db0d9447f6d729.png">
+    <img alt="Resonite recipe" src="https://cdn.modrinth.com/data/cached_images/baa1a654af9891783d670bd9dd678f8da4462c31.png">
+  </center>
+</p>
+
+To run it, you'll need Soul Sand or Soul Soil as fuel.
+
+---
+
+You can build a Fairy House from Haimeviska Logs and several other materials.
+
+<p><center><img alt="Fairy House recipe" src="https://cdn.modrinth.com/data/cached_images/81dd2f3401638fa4ffb473ea7679b37d2db93b4b.png"></center></p>
+
+Fairies can live and work there.
+
+<p><center><img alt="Inside the Fairy House" src="https://cdn.modrinth.com/data/cached_images/b37e0797d786d123f74d53cc2bc454c4ca6ae43a.png"></center></p>
 
 ## ツール
 
