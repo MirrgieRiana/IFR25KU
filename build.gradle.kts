@@ -17,7 +17,7 @@ plugins {
 }
 
 architectury {
-    minecraft = rootProject.properties["minecraft"] as String
+    minecraft = libs.versions.minecraft.get()
 }
 
 allprojects {
@@ -33,6 +33,7 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
     //apply(plugin = "maven-publish")
 
     pluginManager.withPlugin("dev.architectury.loom") {
+        val libs = rootProject.extensions.getByType<VersionCatalogsExtension>().named("libs")
         val loom = extensions.getByType<LoomGradleExtensionAPI>()
 
         base {
@@ -78,10 +79,10 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
 
         dependencies {
             // バージョンを変更するには、gradle.properties ファイルを参照してください。
-            "minecraft"("net.minecraft:minecraft:${rootProject.properties["minecraft"] as String}")
+            "minecraft"("net.minecraft:minecraft:${libs.findVersion("minecraft").get().requiredVersion}")
             "mappings"(loom.layered {
                 officialMojangMappings()
-                parchment("org.parchmentmc.data:parchment-${rootProject.properties["minecraft"] as String}:${rootProject.properties["parchmentMappings"] as String}@zip")
+                parchment("org.parchmentmc.data:parchment-${libs.findVersion("minecraft").get().requiredVersion}:${libs.findVersion("parchmentMappings").get().requiredVersion}@zip")
             })
         }
 

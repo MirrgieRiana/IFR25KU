@@ -88,14 +88,14 @@ rootProject.tasks.named("datagen").configure { dependsOn(tasks.named("runDatagen
 dependencies {
 
     // Loader
-    modImplementation("net.fabricmc:fabric-loader:${rootProject.properties["fabricLoader"] as String}") // Fabric Loader
+    modImplementation("net.fabricmc:fabric-loader:${libs.versions.fabricLoader.get()}") // Fabric Loader
 
     // Platform
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${rootProject.properties["fabricApi"] as String}") // Fabric API
-    // modImplementation("net.fabricmc.fabric-api:fabric-api-deprecated:${rootProject.properties["fabricApi"] as String}") // Deprecated Fabric API
-    modImplementation("net.fabricmc:fabric-language-kotlin:${rootProject.properties["fabricKotlin"] as String}") // Kotlin
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.properties["kotlinCoroutines"] as String}") // Kotlin Coroutines
-    modImplementation("dev.architectury:architectury-fabric:${rootProject.properties["architecturyApi"] as String}") // Architectury API
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${libs.versions.fabricApi.get()}") // Fabric API
+    // modImplementation("net.fabricmc.fabric-api:fabric-api-deprecated:${libs.versions.fabricApi.get()}") // Deprecated Fabric API
+    modImplementation("net.fabricmc:fabric-language-kotlin:${libs.versions.fabricKotlin.get()}") // Kotlin
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}") // Kotlin Coroutines
+    modImplementation("dev.architectury:architectury-fabric:${libs.versions.architecturyApi.get()}") // Architectury API
 
     // Module
     "commonMain"(project(path = ":common", configuration = "mainNamedElements")) { isTransitive = false } // common
@@ -106,8 +106,8 @@ dependencies {
     "shadowBundle"(project(path = ":mirrg.kotlin")) { isTransitive = false } // mirrg.kotlin shadow
 
     // Library
-    implementation("mirrg.kotlin:mirrg.kotlin.helium:${rootProject.properties["mirrgKotlinHelium"] as String}")
-    "shadowBundle"("mirrg.kotlin:mirrg.kotlin.helium:${rootProject.properties["mirrgKotlinHelium"] as String}") { isTransitive = false }
+    implementation("mirrg.kotlin:mirrg.kotlin.helium:${libs.versions.mirrgKotlinHelium.get()}")
+    "shadowBundle"("mirrg.kotlin:mirrg.kotlin.helium:${libs.versions.mirrgKotlinHelium.get()}") { isTransitive = false }
 
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:16.0.799")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:16.0.799")

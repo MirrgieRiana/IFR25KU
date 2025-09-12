@@ -15,9 +15,9 @@ repositories {
 }
 
 dependencies {
-    "minecraft"("net.minecraft:minecraft:${rootProject.properties["minecraft"] as String}")
+    "minecraft"("net.minecraft:minecraft:${libs.versions.minecraft.get()}")
     "mappings"(loom.layered {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${rootProject.properties["minecraft"] as String}:${rootProject.properties["parchmentMappings"] as String}@zip")
+        parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchmentMappings.get()}@zip")
     })
 }
