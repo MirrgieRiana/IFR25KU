@@ -56,16 +56,16 @@ dependencies {
     // Library
     implementation("mirrg.kotlin:mirrg.kotlin.helium:${libs.versions.mirrgKotlinHelium.get()}")
 
-    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:16.0.799")
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:16.0.799")
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:16.0.799")
-    modCompileOnly("me.shedaniel.cloth:basic-math:0.6.1")
+    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${libs.versions.rei.get()}")
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${libs.versions.rei.get()}")
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${libs.versions.rei.get()}")
+    modCompileOnly("me.shedaniel.cloth:basic-math:${libs.versions.clothBasicMath.get()}")
 
-    modImplementation("io.wispforest:owo-lib:0.12.15.4+1.21")
+    modImplementation("io.wispforest:owo-lib:${libs.versions.owoLibFabric.get()}")
 
-    modApi("me.shedaniel.cloth:cloth-config:15.0.140")
+    modApi("me.shedaniel.cloth:cloth-config:${libs.versions.clothConfig.get()}")
 
-    modImplementation("com.github.glitchfiend:TerraBlender-fabric:1.21.1-4.1.0.8")
+    modImplementation("com.github.glitchfiend:TerraBlender-fabric:${libs.versions.terraBlenderFabric.get()}")
 
 }
 configurations.named("architecturyTransformerClasspath") {

@@ -77,29 +77,29 @@ dependencies {
     "common"("mirrg.kotlin:mirrg.kotlin.helium:${libs.versions.mirrgKotlinHelium.get()}")
     "shadowBundle"("mirrg.kotlin:mirrg.kotlin.helium:${libs.versions.mirrgKotlinHelium.get()}") { isTransitive = false }
 
-    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-neoforge:16.0.799")
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-neoforge:16.0.799")
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:16.0.799")
-    modCompileOnly("me.shedaniel.cloth:basic-math:0.6.1")
+    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-neoforge:${libs.versions.rei.get()}")
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-neoforge:${libs.versions.rei.get()}")
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${libs.versions.rei.get()}")
+    modCompileOnly("me.shedaniel.cloth:basic-math:${libs.versions.clothBasicMath.get()}")
 
-    modCompileOnly("mezz.jei:jei-1.21.1-common-api:19.21.2.313")
-    modCompileOnly("mezz.jei:jei-1.21.1-neoforge-api:19.21.2.313")
-    modRuntimeOnly("mezz.jei:jei-1.21.1-neoforge:19.21.2.313")
+    modCompileOnly("mezz.jei:jei-1.21.1-common-api:${libs.versions.jei.get()}")
+    modCompileOnly("mezz.jei:jei-1.21.1-neoforge-api:${libs.versions.jei.get()}")
+    modRuntimeOnly("mezz.jei:jei-1.21.1-neoforge:${libs.versions.jei.get()}")
 
-    modCompileOnly("dev.emi:emi-neoforge:1.1.22+1.21.1:api")
-    modRuntimeOnly("dev.emi:emi-neoforge:1.1.22+1.21.1")
+    modCompileOnly("dev.emi:emi-neoforge:${libs.versions.emi.get()}:api")
+    modRuntimeOnly("dev.emi:emi-neoforge:${libs.versions.emi.get()}")
 
-    modCompileOnly("curse.maven:jade-324717:6853386")
-    modRuntimeOnly("curse.maven:jade-324717:6853386")
+    modCompileOnly("curse.maven:jade-324717:${libs.versions.jadeCurseNeoForge.get()}")
+    modRuntimeOnly("curse.maven:jade-324717:${libs.versions.jadeCurseNeoForge.get()}")
 
-    modImplementation("io.wispforest:owo-lib-neoforge:0.12.15.1-beta.3+1.21")// { isTransitive = true }
-    forgeRuntimeLibrary(include(api("io.wispforest:endec:0.1.5.1")!!)!!)
-    forgeRuntimeLibrary(include(api("io.wispforest.endec:netty:0.1.2")!!)!!)
-    forgeRuntimeLibrary(include(api("io.wispforest.endec:gson:0.1.3.1")!!)!!)
-    forgeRuntimeLibrary(include(api("io.wispforest.endec:jankson:0.1.3.1")!!)!!)
-    forgeRuntimeLibrary(include(api("blue.endless:jankson:1.2.2")!!)!!)
+    modImplementation("io.wispforest:owo-lib-neoforge:${libs.versions.owoLibNeoForge.get()}")// { isTransitive = true }
+    forgeRuntimeLibrary(include(api("io.wispforest:endec:${libs.versions.endec.get()}")!!)!!)
+    forgeRuntimeLibrary(include(api("io.wispforest.endec:netty:${libs.versions.endecNetty.get()}")!!)!!)
+    forgeRuntimeLibrary(include(api("io.wispforest.endec:gson:${libs.versions.endecGson.get()}")!!)!!)
+    forgeRuntimeLibrary(include(api("io.wispforest.endec:jankson:${libs.versions.endecJankson.get()}")!!)!!)
+    forgeRuntimeLibrary(include(api("blue.endless:jankson:${libs.versions.jankson.get()}")!!)!!)
 
-    modImplementation("com.github.glitchfiend:TerraBlender-neoforge:1.21.1-4.1.0.3")
+    modImplementation("com.github.glitchfiend:TerraBlender-neoforge:${libs.versions.terraBlenderNeoForge.get()}")
 }
 
 // https://github.com/modrinth/minotaur
