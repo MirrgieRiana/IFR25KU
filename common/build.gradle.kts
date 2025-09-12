@@ -42,19 +42,19 @@ dependencies {
     // We depend on Fabric Loader here to use the Fabric @Environment annotations,
     // which get remapped to the correct annotations on each platform.
     // Do NOT use other classes from Fabric Loader.
-    modImplementation("net.fabricmc:fabric-loader:${rootProject.properties["fabric_loader_version"] as String}")
+    modImplementation("net.fabricmc:fabric-loader:${rootProject.properties["fabricLoader"] as String}")
 
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${rootProject.properties["fabric_api_version"] as String}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${rootProject.properties["fabricApi"] as String}")
 
     // Architectury API. This is optional, and you can comment it out if you don't need it.
-    modImplementation("dev.architectury:architectury:${rootProject.properties["architectury_api_version"] as String}")
+    modImplementation("dev.architectury:architectury:${rootProject.properties["architecturyApi"] as String}")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.properties["kotlin_coroutines_version"] as String}") // Kotlin Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.properties["kotlinCoroutines"] as String}") // Kotlin Coroutines
 
     implementation(project(path = ":mirrg.kotlin"))
 
     // Library
-    implementation("mirrg.kotlin:mirrg.kotlin.helium:${rootProject.properties["mirrg_kotlin_helium_version"] as String}")
+    implementation("mirrg.kotlin:mirrg.kotlin.helium:${rootProject.properties["mirrgKotlinHelium"] as String}")
 
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:16.0.799")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:16.0.799")

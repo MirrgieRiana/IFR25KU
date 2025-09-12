@@ -17,7 +17,7 @@ plugins {
 }
 
 architectury {
-    minecraft = rootProject.properties["minecraft_version"] as String
+    minecraft = rootProject.properties["minecraft"] as String
 }
 
 allprojects {
@@ -78,10 +78,10 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
 
         dependencies {
             // バージョンを変更するには、gradle.properties ファイルを参照してください。
-            "minecraft"("net.minecraft:minecraft:${rootProject.properties["minecraft_version"] as String}")
+            "minecraft"("net.minecraft:minecraft:${rootProject.properties["minecraft"] as String}")
             "mappings"(loom.layered {
                 officialMojangMappings()
-                parchment("org.parchmentmc.data:parchment-${rootProject.properties["minecraft_version"] as String}:${rootProject.properties["parchment_mappings"] as String}@zip")
+                parchment("org.parchmentmc.data:parchment-${rootProject.properties["minecraft"] as String}:${rootProject.properties["parchmentMappings"] as String}@zip")
             })
         }
 

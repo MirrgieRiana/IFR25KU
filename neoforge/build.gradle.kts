@@ -57,15 +57,15 @@ repositories {
 dependencies {
 
     // Loader
-    neoForge("net.neoforged:neoforge:${rootProject.properties["neoforge_version"] as String}") // NeoForge
+    neoForge("net.neoforged:neoforge:${rootProject.properties["neoforge"] as String}") // NeoForge
 
     // Platform
-    modImplementation("org.sinytra.forgified-fabric-api:forgified-fabric-api:${rootProject.properties["forgified_fabric_api_version"] as String}") // Forgified Fabric API
-    //modImplementation("thedarkcolour:kotlinforforge:${rootProject.properties["kotlin_for_forge_version"] as String}") // Kotlin
-    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.properties["kotlin_coroutines_version"] as String}") // Kotlin Coroutines
-    //forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.properties["kotlin_coroutines_version"] as String}") // Kotlin Coroutines
-    "developmentForgeLike"("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.properties["kotlin_coroutines_version"] as String}") { isTransitive = false } // Kotlin Coroutines
-    modImplementation("dev.architectury:architectury-neoforge:${rootProject.properties["architectury_api_version"] as String}") // Architectury API
+    modImplementation("org.sinytra.forgified-fabric-api:forgified-fabric-api:${rootProject.properties["forgifiedFabricApi"] as String}") // Forgified Fabric API
+    //modImplementation("thedarkcolour:kotlinforforge:${rootProject.properties["kotlinForForge"] as String}") // Kotlin
+    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.properties["kotlinCoroutines"] as String}") // Kotlin Coroutines
+    //forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.properties["kotlinCoroutines"] as String}") // Kotlin Coroutines
+    "developmentForgeLike"("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.properties["kotlinCoroutines"] as String}") { isTransitive = false } // Kotlin Coroutines
+    modImplementation("dev.architectury:architectury-neoforge:${rootProject.properties["architecturyApi"] as String}") // Architectury API
 
     // Module
     "common"(project(path = ":common", configuration = "namedElements")) { isTransitive = false } // common
@@ -74,8 +74,8 @@ dependencies {
     "shadowBundle"(project(path = ":mirrg.kotlin")) { isTransitive = false } // mirrg.kotlin shadow
 
     // Library
-    "common"("mirrg.kotlin:mirrg.kotlin.helium:${rootProject.properties["mirrg_kotlin_helium_version"] as String}")
-    "shadowBundle"("mirrg.kotlin:mirrg.kotlin.helium:${rootProject.properties["mirrg_kotlin_helium_version"] as String}") { isTransitive = false }
+    "common"("mirrg.kotlin:mirrg.kotlin.helium:${rootProject.properties["mirrgKotlinHelium"] as String}")
+    "shadowBundle"("mirrg.kotlin:mirrg.kotlin.helium:${rootProject.properties["mirrgKotlinHelium"] as String}") { isTransitive = false }
 
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-neoforge:16.0.799")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-neoforge:16.0.799")
@@ -129,8 +129,8 @@ tasks.named<ProcessResources>("processResources") {
     filesMatching("META-INF/neoforge.mods.toml") {
         expand(
             "version" to project.version,
-            "forgified_fabric_api_version" to rootProject.properties["forgified_fabric_api_version"] as String,
-            "kotlin_for_forge_version" to rootProject.properties["kotlin_for_forge_version"] as String,
+            "forgified_fabric_api_version" to rootProject.properties["forgifiedFabricApi"] as String,
+            "kotlin_for_forge_version" to rootProject.properties["kotlinForForge"] as String,
         )
     }
 }
