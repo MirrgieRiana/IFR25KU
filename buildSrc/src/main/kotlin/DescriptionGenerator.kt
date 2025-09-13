@@ -85,7 +85,7 @@ private fun catchPhrase(string: String) = string.size(3).serif().center()
 context(MarkdownScope)
 private fun poem(name: String, indent: Int, width: Int, src: String, poem1: String, poem2: String): String {
     return multiLine {
-        !img("", "https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp", width = abs(indent), float = if (indent < 0) "right" else "left")
+        !img("Horizontal Spacer", "https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp", width = abs(indent), float = if (indent < 0) "right" else "left")
         !"table" {
             !"tr" {
                 !"td"("width" to "$width") {
@@ -111,7 +111,7 @@ fun getModrinthBody(): String {
     return markdown {
         run {
             !3
-            !img("", "https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png").center().p()
+            !img("Fairy Quest Card top frame", "https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png").center().p()
             !catchPhrase("Fatal Accident")
             !3
             !img("A city ravaged by Local Vacuum Decay", "https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp").center().p()
@@ -126,7 +126,7 @@ fun getModrinthBody(): String {
                 "“Before your world ceases to exist!!!”".center(),
             ).sandwich(br).multiLine()
             !1
-            !img("", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png").center().p()
+            !img("Fairy Quest Card bottom frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png").center().p()
             !3
             !catchPhrase("Why is humanity here now?")
             !4
@@ -134,9 +134,9 @@ fun getModrinthBody(): String {
             !4
             //!catchPhrase("There were “fairies” on that planet.")
             !"p" {
-                !img("", "https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png", width = 400).center()
+                !img("Toast top frame", "https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png", width = 400).center()
                 !"${img("Fairy icon", "https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png", width = 32, pixelated = true)}&nbsp;&nbsp;Dreamed of a new fairy!".size(2).center()
-                !img("", "https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png", width = 400).center()
+                !img("Toast bottom frame", "https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png", width = 400).center()
             }
             !4
             !multiLine {

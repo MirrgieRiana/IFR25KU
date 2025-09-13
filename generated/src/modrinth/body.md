@@ -2,7 +2,7 @@
 <br>
 <br>
 
-<p><center><img alt="" src="https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png"></center></p>
+<p><center><img alt="Fairy Quest Card top frame" src="https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png"></center></p>
 
 <center><font face="serif"><font size="+3">Fatal Accident</font></font></center>
 
@@ -30,7 +30,7 @@
 
 <br>
 
-<p><center><img alt="" src="https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png"></center></p>
+<p><center><img alt="Fairy Quest Card bottom frame" src="https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png"></center></p>
 
 <br>
 <br>
@@ -51,9 +51,9 @@
 <br>
 
 <p>
-  <center><img alt="" width="400" src="https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png"></center>
+  <center><img alt="Toast top frame" width="400" src="https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png"></center>
   <center><font size="+2"><img alt="Fairy icon" style="image-rendering: pixelated;" width="32" src="https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png">&nbsp;&nbsp;Dreamed of a new fairy!</font></center>
-  <center><img alt="" width="400" src="https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png"></center>
+  <center><img alt="Toast bottom frame" width="400" src="https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png"></center>
 </p>
 
 <br>
@@ -95,7 +95,7 @@
 <br>
 
 <center>
-  <img alt="" style="float: right;" width="300" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
+  <img alt="Horizontal Spacer" style="float: right;" width="300" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
       <td width="430">
@@ -107,7 +107,7 @@
 </center>
 
 <center>
-  <img alt="" style="float: left;" width="300" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
+  <img alt="Horizontal Spacer" style="float: left;" width="300" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
       <td width="340">
@@ -121,7 +121,7 @@
 <br>
 
 <center>
-  <img alt="" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
+  <img alt="Horizontal Spacer" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
       <td width="410">
@@ -135,7 +135,7 @@
 <br>
 
 <center>
-  <img alt="" style="float: left;" width="200" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
+  <img alt="Horizontal Spacer" style="float: left;" width="200" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
       <td width="380">
@@ -150,7 +150,7 @@
 <br>
 
 <center>
-  <img alt="" style="float: right;" width="100" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
+  <img alt="Horizontal Spacer" style="float: right;" width="100" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
       <td width="460">
@@ -165,7 +165,7 @@
 <br>
 
 <center>
-  <img alt="" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
+  <img alt="Horizontal Spacer" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
       <td width="580">
@@ -181,7 +181,7 @@
 <br>
 
 <center>
-  <img alt="" style="float: left;" width="200" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
+  <img alt="Horizontal Spacer" style="float: left;" width="200" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
       <td width="440">
@@ -197,7 +197,7 @@
 <br>
 
 <center>
-  <img alt="" style="float: left;" width="50" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
+  <img alt="Horizontal Spacer" style="float: left;" width="50" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
       <td width="490">
@@ -214,7 +214,7 @@
 <br>
 
 <center>
-  <img alt="" style="float: right;" width="50" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
+  <img alt="Horizontal Spacer" style="float: right;" width="50" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
       <td width="650">
@@ -232,7 +232,7 @@
 <br>
 
 <center>
-  <img alt="" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
+  <img alt="Horizontal Spacer" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
       <td width="490">
@@ -251,7 +251,7 @@
 <br>
 
 <center>
-  <img alt="" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
+  <img alt="Horizontal Spacer" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
   <table>
     <tr>
       <td width="370">
