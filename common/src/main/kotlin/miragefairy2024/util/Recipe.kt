@@ -181,7 +181,14 @@ fun registerBlastingRecipeGeneration(
 // Special Recipe
 
 context(ModContext)
-fun registerSpecialRecipe(path: String, minSlots: Int, matcher: (CraftingInput) -> SpecialRecipeResult?) {
+fun registerSpecialRecipe(
+    path: String,
+    @Suppress("unused") vararg dummy: Void,
+    minSlots: Int? = null,
+    minHeight: Int? = null,
+    minWidth: Int? = null,
+    matcher: (CraftingInput) -> SpecialRecipeResult?,
+) {
     val identifier = MirageFairy2024.identifier(path)
     lateinit var serializer: SimpleCraftingRecipeSerializer<*>
 
@@ -189,7 +196,14 @@ fun registerSpecialRecipe(path: String, minSlots: Int, matcher: (CraftingInput) 
         override fun matches(input: CraftingInput, world: Level) = matcher(input) != null
         override fun assemble(input: CraftingInput, registries: HolderLookup.Provider) = matcher(input)?.craft() ?: EMPTY_ITEM_STACK
         override fun getRemainingItems(input: CraftingInput) = matcher(input)?.getRemainder() ?: getDefaultRemainingItems(input) // interfaceのsuperを呼び出そうとするとNoSuchMethodErrorになる
-        override fun canCraftInDimensions(width: Int, height: Int) = width * height >= minSlots
+
+        override fun canCraftInDimensions(width: Int, height: Int): Boolean {
+            if (minSlots != null && width * height < minSlots) return false
+            if (minWidth != null && width < minWidth) return false
+            if (minHeight != null && height < minHeight) return false
+            return true
+        }
+
         override fun getSerializer() = serializer
     }
 

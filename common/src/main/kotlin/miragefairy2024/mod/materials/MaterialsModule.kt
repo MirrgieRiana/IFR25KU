@@ -1199,7 +1199,7 @@ fun initMaterialsModule() {
     registerCompressionRecipeGeneration(MaterialCard.MINA_5000.item, { MaterialCard.MINA_5000.item().toIngredient() }, MaterialCard.MINA_10000.item, { MaterialCard.MINA_10000.item().toIngredient() }, 2)
 
     // ミーニャ⇔ミナ両替
-    registerSpecialRecipe("minia_from_mina", 1) { inventory ->
+    registerSpecialRecipe("minia_from_mina", minSlots = 1) { inventory ->
         val itemStacks = inventory.items().filter { it.isNotEmpty }.toMutableList()
         if (itemStacks.pull { it isIn MaterialCard.APOSTLE_WAND.item() } == null) return@registerSpecialRecipe null // 使徒のステッキ取得
         val itemStack = itemStacks.pull { true } ?: return@registerSpecialRecipe null // アイテム取得
@@ -1209,7 +1209,7 @@ fun initMaterialsModule() {
             override fun craft() = MotifCard.MINA.createFairyItemStack(condensation = item.mina)
         }
     }
-    registerSpecialRecipe("mina_from_minia", 1) { inventory ->
+    registerSpecialRecipe("mina_from_minia", minSlots = 1) { inventory ->
         val itemStacks = inventory.items().filter { it.isNotEmpty }.toMutableList()
         if (itemStacks.pull { it isIn MaterialCard.APOSTLE_WAND.item() } == null) return@registerSpecialRecipe null // 使徒のステッキ取得
         val fairyItemStack = itemStacks.pull { it isIn FairyCard.item() && it.getFairyMotif() == MotifCard.MINA } ?: return@registerSpecialRecipe null // ミーニャ取得

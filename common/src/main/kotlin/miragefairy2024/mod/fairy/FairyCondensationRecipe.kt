@@ -12,7 +12,7 @@ import java.math.BigInteger
 
 context(ModContext)
 fun initFairyCondensationRecipe() {
-    registerSpecialRecipe("fairy_condensation", 2) { inventory ->
+    registerSpecialRecipe("fairy_condensation", minSlots = 2) { inventory ->
         val itemStacks = inventory.items()
 
         // 空欄が入っていても無視
@@ -38,7 +38,7 @@ fun initFairyCondensationRecipe() {
             override fun craft() = motif.createFairyItemStack(condensation = condensation)
         }
     }
-    registerSpecialRecipe("fairy_decondensation", 1) { inventory ->
+    registerSpecialRecipe("fairy_decondensation", minSlots = 1) { inventory ->
         val itemStacks = inventory.items()
 
         // 空欄無視、インデックス付与
