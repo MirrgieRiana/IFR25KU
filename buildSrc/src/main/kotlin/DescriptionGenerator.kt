@@ -486,6 +486,6 @@ fun getModrinthBody(): String {
             !"Support in languages other than Japanese may be imperfect due to machine translation."
         }
         !hr
-        !"Note: This description is automatically updated from [GitHub Actions](https://github.com/MirrgieRiana/IFR25KU/blob/main/MODRINTH-BODY.md) and cannot be changed manually."
+        !"Note: This description is automatically updated from [GitHub Actions](https://github.com/MirrgieRiana/IFR25KU/blob/main/build.gradle.kts) and cannot be changed manually."
     }
 }
