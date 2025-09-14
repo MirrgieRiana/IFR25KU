@@ -146,9 +146,12 @@ tasks.register("datagen")
 
 tasks.register("uploadModrinth")
 
+tasks.register("generateModBody")
+tasks.named("datagen").configure { dependsOn(tasks.named("generateModBody")) }
+
 val generatedModrinthBodyFile = layout.projectDirectory.file("generated/src/modrinth/body.md")
-tasks.register("generateModrinthBody") {
-    group = "modrinth"
+tasks.register("generateModrinthModBody") {
+    group = "documentation"
 
     outputs.file(generatedModrinthBodyFile)
     inputs.property("body", getModrinthBody())
@@ -158,14 +161,14 @@ tasks.register("generateModrinthBody") {
         generatedModrinthBodyFile.asFile.writeText(getModrinthBody())
     }
 }
-tasks.named("datagen").configure { dependsOn(tasks.named("generateModrinthBody")) }
+tasks.named("generateModBody").configure { dependsOn(tasks.named("generateModrinthModBody")) }
 
 modrinth {
     token = rootProject.layout.projectDirectory.file("modrinth_token.txt").asFile.takeIf { it.exists() }?.readText()?.trim() ?: System.getenv("MODRINTH_TOKEN")
     projectId = "ifr25ku"
     syncBodyFrom = provider { generatedModrinthBodyFile.asFile.readText() }
 }
-tasks.named("modrinthSyncBody").configure { dependsOn(tasks.named("generateModrinthBody")) }
+tasks.named("modrinthSyncBody").configure { dependsOn(tasks.named("generateModrinthModBody")) }
 tasks.named("uploadModrinth").configure { dependsOn(tasks.named("modrinthSyncBody")) }
 
 
