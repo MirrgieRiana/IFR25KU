@@ -3,11 +3,14 @@ package miragefairy2024.mod.fairy
 import miragefairy2024.ModContext
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.SpecialRecipeResult
+import miragefairy2024.util.createItemStack
+import miragefairy2024.util.isIn
 import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.registerSpecialRecipe
 import net.minecraft.core.NonNullList
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import java.math.BigInteger
 
 context(ModContext)
@@ -41,41 +44,57 @@ fun initFairyCondensationRecipe() {
     registerSpecialRecipe("fairy_decondensation", minSlots = 1) { inventory ->
         val itemStacks = inventory.items()
 
-        // 空欄無視、インデックス付与
-        val entries = itemStacks.mapIndexedNotNull { i, it ->
-            if (it.isEmpty) return@mapIndexedNotNull null
-            Pair(i, it)
+        // すべてのスロットは、空欄か木の棒か妖精でなければならない
+        val sticksIndices = mutableListOf<Int>()
+        val fairyIndices = mutableListOf<Int>()
+        itemStacks.forEachIndexed { index, it ->
+            if (it.isEmpty) {
+                return@forEachIndexed
+            } else if (it isIn Items.STICK) {
+                sticksIndices += index
+                return@forEachIndexed
+            } else if (it isIn FairyCard.item()) {
+                fairyIndices += index
+                return@forEachIndexed
+            } else {
+                return@registerSpecialRecipe null
+            }
         }
 
-        // アイテムが丁度1個のみのときに反応
-        val (index, itemStack) = entries.singleOrNull() ?: return@registerSpecialRecipe null
+        // 妖精は丁度1個でなければならない
+        val fairyIndex = fairyIndices.singleOrNull() ?: return@registerSpecialRecipe null
 
-        // そのアイテムは妖精でなければならない
-        if (itemStack isNotIn FairyCard.item()) return@registerSpecialRecipe null
+        // 妖精の分割数は、左上の場合1/10、それ以外の場合、その位置で割る
+        val division = if (fairyIndex == 0) 10 else fairyIndex + 1
 
-        // 左上の場合1/10、それ以外の場合、その位置で割る
-        val division = if (index == 0) 10 else index + 1
+        // モチーフ取得
+        val motif = itemStacks[fairyIndex].getFairyMotif() ?: return@registerSpecialRecipe null // 壊れた妖精アイテムは受け付けない
 
-        // 壊れた妖精アイテムは受け付けない
-        val motif = itemStack.getFairyMotif() ?: return@registerSpecialRecipe null
+        // 凝縮数取得
+        val condensation = itemStacks[fairyIndex].getFairyCondensation()
+        if (condensation < division.toBigInteger()) return@registerSpecialRecipe null // 入力アイテムの凝縮数は、割る数以上でなければならない
 
-        // 入力アイテムの凝縮数は、割る数以上でなければならない
-        val condensation = itemStack.getFairyCondensation()
-        if (condensation < division.toBigInteger()) return@registerSpecialRecipe null
-
-        val remainingCondensation = condensation % division.toBigInteger()
+        // 分割後の凝縮数
         val dividedCondensation = condensation / division.toBigInteger()
 
+        // 余りの凝縮数
+        val remainingCondensation = condensation % division.toBigInteger()
+
+        // 成立
         object : SpecialRecipeResult {
             override fun craft() = motif.createFairyItemStack(condensation = dividedCondensation, count = division)
             override fun getRemainder(): NonNullList<ItemStack>? {
-                return if (remainingCondensation > BigInteger.ZERO) {
-                    val list = NonNullList.withSize(inventory.size(), EMPTY_ITEM_STACK)
-                    list[index] = motif.createFairyItemStack(condensation = remainingCondensation)
-                    list
-                } else {
-                    null
+                val list = NonNullList.withSize(inventory.size(), EMPTY_ITEM_STACK)
+
+                // 棒を返す
+                sticksIndices.forEach { index ->
+                    list[index] = Items.STICK.createItemStack()
                 }
+
+                // 余りの凝縮数があれば妖精を返す
+                if (remainingCondensation > BigInteger.ZERO) list[fairyIndex] = motif.createFairyItemStack(condensation = remainingCondensation)
+
+                return list
             }
         }
     }
