@@ -1,17 +1,41 @@
 package miragefairy2024.mod.fairy
 
+import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.RecipeEvents
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.SpecialRecipeResult
+import miragefairy2024.util.Translation
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.enJa
+import miragefairy2024.util.invoke
 import miragefairy2024.util.isIn
 import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.registerSpecialRecipe
+import miragefairy2024.util.text
+import miragefairy2024.util.toIngredient
+import mirrg.kotlin.helium.join
 import net.minecraft.core.NonNullList
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import java.math.BigInteger
+
+val FAIRY_DECONDENSATION_RECIPE_DESCRIPTION_TRANSLATION = Translation(
+    { MirageFairy2024.identifier("fairy_decondensation").toLanguageKey("gui", "description") },
+    listOf(
+        "== Decondensing Fairies ==",
+        "To decondense a condensed fairy, craft 1 fairy with 8 sticks. Sticks are not consumed.",
+        "The split ratio depends on the fairy's slot: top-left splits into 1/10; other slots split into 1/2 to 1/9.",
+        "Sticks are only a frame to define the recipe size, and may be omitted in some cases.",
+    ).join("\n"),
+    listOf(
+        "【妖精の展開】",
+        "凝縮された妖精を展開するには、1体の妖精と8個の木の棒を使ってクラフトします。妖精の展開によって木の棒は消費されません。",
+        "妖精を置く場所によって、10分の1、および2～9分の1に展開できます。",
+        "木の棒は、実際には配置したレシピを規定のサイズとして認識させるための枠です。場合によっては木の棒は省略できます。",
+    ).join("\n"),
+)
 
 context(ModContext)
 fun initFairyCondensationRecipe() {
@@ -40,6 +64,17 @@ fun initFairyCondensationRecipe() {
         object : SpecialRecipeResult {
             override fun craft() = motif.createFairyItemStack(condensation = condensation)
         }
+    }
+
+    FAIRY_DECONDENSATION_RECIPE_DESCRIPTION_TRANSLATION.enJa()
+    RecipeEvents.onRegisterInformationEntry {
+        it(
+            Triple(
+                listOf(FairyCard.item().toIngredient()),
+                listOf(text { FAIRY_DECONDENSATION_RECIPE_DESCRIPTION_TRANSLATION() }),
+                MirageFairy2024.identifier("/fairy_decondensation"),
+            )
+        )
     }
     registerSpecialRecipe("fairy_decondensation", minSlots = 1) { inventory ->
         val itemStacks = inventory.items()
