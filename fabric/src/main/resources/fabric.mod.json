@@ -46,6 +46,9 @@
         "adapter": "kotlin"
       }
     ],
+    "emi": [
+      "miragefairy2024.client.fabric.MirageFairy2024FabricEmiPlugin"
+    ],
     "terrablender": [
       "miragefairy2024.fabric.MirageFairy2024FabricTerraBlenderEntryPoint"
     ]
