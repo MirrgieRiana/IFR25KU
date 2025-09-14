@@ -2,6 +2,7 @@ import kotlin.math.abs
 
 enum class MarkdownType {
     MODRINTH,
+    CURSEFORGE,
 }
 
 private class MarkdownScope(val type: MarkdownType) {

@@ -163,6 +163,20 @@ tasks.register("generateModrinthModBody") {
 }
 tasks.named("generateModBody").configure { dependsOn(tasks.named("generateModrinthModBody")) }
 
+val generatedCurseforgeBodyFile = layout.projectDirectory.file("generated/src/curseforge/body.md")
+tasks.register("generateCurseforgeModBody") {
+    group = "documentation"
+
+    outputs.file(generatedCurseforgeBodyFile)
+    inputs.property("body", getModBody(MarkdownType.CURSEFORGE))
+
+    doLast {
+        generatedCurseforgeBodyFile.asFile.parentFile.mkdirs()
+        generatedCurseforgeBodyFile.asFile.writeText(getModBody(MarkdownType.CURSEFORGE))
+    }
+}
+tasks.named("generateModBody").configure { dependsOn(tasks.named("generateCurseforgeModBody")) }
+
 modrinth {
     token = rootProject.layout.projectDirectory.file("modrinth_token.txt").asFile.takeIf { it.exists() }?.readText()?.trim() ?: System.getenv("MODRINTH_TOKEN")
     projectId = "ifr25ku"
