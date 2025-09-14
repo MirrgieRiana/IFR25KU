@@ -1,12 +1,19 @@
 import kotlin.math.abs
 
-private class MarkdownScope {
+enum class MarkdownType {
+    MODRINTH,
+}
+
+private class MarkdownScope(val type: MarkdownType) {
     val strings = mutableListOf<String>()
 }
 
+private fun MarkdownScope.fork() = MarkdownScope(this.type)
+
+context(MarkdownScope)
 private val (MarkdownScope.() -> Unit).strings
     get(): List<String> {
-        val scope = MarkdownScope()
+        val scope = this@MarkdownScope.fork()
         this(scope)
         return scope.strings
     }
@@ -28,7 +35,7 @@ fun String.escapeHtml() = this
     .replace("<", "&lt;")
     .replace(">", "&gt;")
 
-private fun markdown(block: MarkdownScope.() -> Unit) = block.strings.sandwich("").multiLine() + "\n"
+private fun markdown(type: MarkdownType, block: MarkdownScope.() -> Unit) = MarkdownScope(type).run { block.strings.sandwich("").multiLine() + "\n" }
 context(MarkdownScope) private fun h1(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("# $string", *block.strings.toTypedArray()).sandwich("").multiLine()
 context(MarkdownScope) private fun h2(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("## $string", *block.strings.toTypedArray()).sandwich("").multiLine()
 context(MarkdownScope) private fun h3(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("### $string", *block.strings.toTypedArray()).sandwich("").multiLine()
@@ -107,8 +114,8 @@ private fun poem(name: String, indent: Int, width: Int, src: String, poem1: Stri
     }.center()
 }
 
-fun getModrinthBody(): String {
-    return markdown {
+fun getModBody(type: MarkdownType): String {
+    return markdown(type) {
         run {
             !3
             !img("Fairy Quest Card top frame", "https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png").center().p()

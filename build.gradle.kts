@@ -154,11 +154,11 @@ tasks.register("generateModrinthModBody") {
     group = "documentation"
 
     outputs.file(generatedModrinthBodyFile)
-    inputs.property("body", getModrinthBody())
+    inputs.property("body", getModBody(MarkdownType.MODRINTH))
 
     doLast {
         generatedModrinthBodyFile.asFile.parentFile.mkdirs()
-        generatedModrinthBodyFile.asFile.writeText(getModrinthBody())
+        generatedModrinthBodyFile.asFile.writeText(getModBody(MarkdownType.MODRINTH))
     }
 }
 tasks.named("generateModBody").configure { dependsOn(tasks.named("generateModrinthModBody")) }
