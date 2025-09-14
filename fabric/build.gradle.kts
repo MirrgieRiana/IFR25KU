@@ -50,6 +50,7 @@ configurations {
 
 repositories {
     maven("https://maven.shedaniel.me") // RoughlyEnoughItems
+    maven("https://maven.terraformersmc.com/releases") // EMI
     maven("https://maven.wispforest.io/releases/") // owo-lib
     maven("https://maven.minecraftforge.net/") // com.github.glitchfiend:TerraBlender-fabric
     maven("https://www.cursemaven.com") // Jade
@@ -121,6 +122,9 @@ dependencies {
     modApi("me.shedaniel.cloth:cloth-config:${libs.versions.clothConfig.get()}")
 
     modImplementation("com.github.glitchfiend:TerraBlender-fabric:${libs.versions.terraBlenderFabric.get()}")
+
+    modCompileOnly("dev.emi:emi-fabric:${libs.versions.emi.get()}:api")
+    modRuntimeOnly("dev.emi:emi-fabric:${libs.versions.emi.get()}")
 
 }
 
