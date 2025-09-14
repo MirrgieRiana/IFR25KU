@@ -1,54 +1,64 @@
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+</div>
 
 <p><center><img alt="Fairy Quest Card top frame" src="https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png"></center></p>
 
 <center><font face="serif"><font size="+3">Fatal Accident</font></font></center>
 
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+</div>
 
 <p><center><img alt="A city ravaged by Local Vacuum Decay" src="https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp"></center></p>
 
-<br>
+<div><br></div>
 
 <center>………</center>
-<br>
+<div><br></div>
 <center>“Damn it, the vacuum decay reactor was never something humans should have messed with!”</center>
-<br>
+<div><br></div>
 <center>“If someone is reading this, please understand.”</center>
-<br>
+<div><br></div>
 <center>“The vacuum decay reactor wasn't a safe, environmentally friendly source of energy.”</center>
-<br>
+<div><br></div>
 <center>“One wrong move, and it's a terrifying thing that could wipe out an entire planet.”</center>
-<br>
+<div><br></div>
 <center>“If anyone is in control of the vacuum decay reactor, please stop it now!”</center>
-<br>
+<div><br></div>
 <center>“Before your world ceases to exist!!!”</center>
 
-<br>
+<div><br></div>
 
 <p><center><img alt="Fairy Quest Card bottom frame" src="https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png"></center></p>
 
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+</div>
 
 <center><font face="serif"><font size="+3">Why is humanity here now?</font></font></center>
 
-<br>
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>
 
 <center>︙</center>
 
-<br>
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>
 
 <p>
   <center><img alt="Toast top frame" width="400" src="https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png"></center>
@@ -56,10 +66,12 @@
   <center><img alt="Toast bottom frame" width="400" src="https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png"></center>
 </p>
 
-<br>
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>
 
 <center>
   <table>
@@ -77,22 +89,28 @@
   </table>
 </center>
 
-<br>
-<br>
+<div>
+  <br>
+  <br>
+</div>
 
 <center><font face="serif"><font size="+3">What, exactly, is the true nature of fairies?</font></font></center>
 
-<br>
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>
 
 <center>︙</center>
 
-<br>
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>
 
 <center>
   <img alt="Horizontal Spacer" style="float: right;" width="300" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
@@ -118,7 +136,7 @@
   </table>
 </center>
 
-<br>
+<div><br></div>
 
 <center>
   <img alt="Horizontal Spacer" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
@@ -132,7 +150,7 @@
   </table>
 </center>
 
-<br>
+<div><br></div>
 
 <center>
   <img alt="Horizontal Spacer" style="float: left;" width="200" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
@@ -146,8 +164,10 @@
   </table>
 </center>
 
-<br>
-<br>
+<div>
+  <br>
+  <br>
+</div>
 
 <center>
   <img alt="Horizontal Spacer" style="float: right;" width="100" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
@@ -161,8 +181,10 @@
   </table>
 </center>
 
-<br>
-<br>
+<div>
+  <br>
+  <br>
+</div>
 
 <center>
   <img alt="Horizontal Spacer" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
@@ -176,9 +198,11 @@
   </table>
 </center>
 
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+</div>
 
 <center>
   <img alt="Horizontal Spacer" style="float: left;" width="200" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
@@ -192,9 +216,11 @@
   </table>
 </center>
 
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+</div>
 
 <center>
   <img alt="Horizontal Spacer" style="float: left;" width="50" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
@@ -208,10 +234,12 @@
   </table>
 </center>
 
-<br>
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>
 
 <center>
   <img alt="Horizontal Spacer" style="float: right;" width="50" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
@@ -225,11 +253,13 @@
   </table>
 </center>
 
-<br>
-<br>
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>
 
 <center>
   <img alt="Horizontal Spacer" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
@@ -243,12 +273,14 @@
   </table>
 </center>
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>
 
 <center>
   <img alt="Horizontal Spacer" style="float: left;" width="0" src="https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp">
@@ -262,40 +294,46 @@
   </table>
 </center>
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>
 
 <center><font face="serif"><font size="+3">A World Ruled by Plants.</font></font></center>
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>
 
 <center><font face="serif">The Institute of Fairy Research 2025 Kakera Unofficial</font></center>
 
-<br>
+<div><br></div>
 
 <p><center><img alt="IFR25KU Logo" width="400" src="https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp"></center></p>
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+<div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+</div>
 
 ## Overview
 
@@ -327,7 +365,7 @@ What should you do next? Press L to open the Advancements screen.
 
 <p><center><img alt="Advancements screen" src="https://cdn.modrinth.com/data/cached_images/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png"></center></p>
 
-<br>
+<div><br></div>
 
 It will guide you toward your next goals.
 
@@ -345,7 +383,7 @@ Fairy forests dot the land far and wide.
 
 Here, many Mirage Flowers bloom in profusion.
 
-<br>
+<div><br></div>
 
 The Phantom Flower found here is difficult to cultivate, yet it serves as a catalyst for higher-tier fairy summoning.
 
@@ -365,7 +403,7 @@ As you journey across the world, you'll encounter many kinds of fairies.
 
 <p><center><img alt="Fairies" src="https://cdn.modrinth.com/data/cached_images/307ff49a23763570f0c5070e5de25f574e68aaad.png"></center></p>
 
-<br>
+<div><br></div>
 
 Fairies possess a wide range of abilities.
 
@@ -397,7 +435,7 @@ Need more fairy power? Having duplicates of the same fairy strengthens its effec
 
 <p><center><img alt="Empowered sugar fairy" src="https://cdn.modrinth.com/data/cached_images/41c353e38c47a2cde38e6adcd3689499dd385c6a.png"></center></p>
 
-<br>
+<div><br></div>
 
 Cultivate Mirage Flowers to obtain Mirage Flour.
 
@@ -405,7 +443,7 @@ Cultivate Mirage Flowers to obtain Mirage Flour.
 
 Mirage Flour spawns fairies at random based on the Fairy Dreams you've obtained so far.
 
-<br>
+<div><br></div>
 
 Fairies can be condensed without limit.
 
@@ -469,7 +507,7 @@ Debris can be found throughout the world.
 
 These piles can contain early-game vanilla materials as well as materials added by this mod.
 
-<br>
+<div><br></div>
 
 You can place items on the ground by pressing Z.
 
@@ -590,25 +628,25 @@ Most mod-added items in IFR25KU include flavor text, called a “Poem,” that e
 
 <p><center><img alt="Poem on the Miranagite Tiles block" src="https://cdn.modrinth.com/data/cached_images/1788893ec4b494a8184e56b9131eb26c55fb97eb.png"></center></p>
 
-<br>
+<div><br></div>
 
 Magic plant traits include detailed descriptions.
 
 <p><center><img alt="Trait Encyclopedia entry: Xp Production" src="https://cdn.modrinth.com/data/cached_images/4d39b35c4c7269f97fe44c90ede21b54415bea3a.png"></center></p>
 
-<br>
+<div><br></div>
 
 Fairy Quest Cards feature several short stories.
 
 <p><center><img alt="Fairy Quest Card message: Impromptu Fantastic Carnival" src="https://cdn.modrinth.com/data/cached_images/41d3dbe429c052fdf00a22ccba3d81335ee5f4ce.png"></center></p>
 
-<br>
+<div><br></div>
 
 Outside the mod, the MFKU official website hosts a series of Japanese articles called “MFA (MirageFairy Article)”.
 
 - [G1-MFA　ミラージュ妖精の生態 (Japanese)](https://miragefairy-kakera-unofficial.notion.site/G1-MFA-2f122378b3de4ba39cc5492e3af27b50)
 
-<br>
+<div><br></div>
 
 These resources complement each other and collectively form the IFRKU worldview.
 

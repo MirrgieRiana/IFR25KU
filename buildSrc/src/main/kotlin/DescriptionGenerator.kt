@@ -42,7 +42,7 @@ context(MarkdownScope) private fun h2(string: String, block: MarkdownScope.() ->
 context(MarkdownScope) private fun h3(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("### $string", *block.strings.toTypedArray()).sandwich("").multiLine()
 context(MarkdownScope) private val br get() = "br"()
 context(MarkdownScope) private fun br(count: Int) = (1..count).map { br }.multiLine()
-context(MarkdownScope) private operator fun Int.not() = !br(this)
+context(MarkdownScope) private operator fun Int.not() = !"div" { !br(this@not) }
 context(MarkdownScope) private val hr get() = "---"
 context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.map { "- $it" }.multiLine()
 context(MarkdownScope) private fun singleLine(block: MarkdownScope.() -> Unit = {}) = block.strings.join("")
@@ -132,7 +132,7 @@ fun getModBody(type: MarkdownType): String {
                 "“One wrong move, and it's a terrifying thing that could wipe out an entire planet.”".center(),
                 "“If anyone is in control of the vacuum decay reactor, please stop it now!”".center(),
                 "“Before your world ceases to exist!!!”".center(),
-            ).sandwich(br).multiLine()
+            ).sandwich("div" { !br }).multiLine()
             !1
             !img("Fairy Quest Card bottom frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png").center().p()
             !3
