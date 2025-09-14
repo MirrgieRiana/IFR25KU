@@ -36,11 +36,14 @@ import net.minecraft.commands.Commands
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.RegistryFriendlyByteBuf
+import net.minecraft.network.chat.Component
 import net.minecraft.network.codec.StreamCodec
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.item.alchemy.Potions
+import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.level.block.Blocks
 
 val mirageFairy2024ItemGroupCard = ItemGroupCard(
@@ -60,6 +63,10 @@ val rootAdvancement = AdvancementCard(
 object CommandEvents {
     val onRegisterSubCommand = InitializationEventRegistry<(LiteralArgumentBuilder<CommandSourceStack>) -> LiteralArgumentBuilder<CommandSourceStack>>()
     val onRegisterClientSubCommand = InitializationEventRegistry<(LiteralArgumentBuilder<ClientCommandRegistrationEvent.ClientCommandSourceStack>) -> LiteralArgumentBuilder<ClientCommandRegistrationEvent.ClientCommandSourceStack>>()
+}
+
+object RecipeEvents {
+    val onRegisterInformationEntry = InitializationEventRegistry<((Triple<List<Ingredient>, List<Component>, ResourceLocation>) -> Unit) -> Unit>() // TODO rei implementation
 }
 
 context(ModContext)
