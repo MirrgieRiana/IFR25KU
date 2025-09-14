@@ -76,8 +76,8 @@ import kotlin.math.log
 import kotlin.math.roundToInt
 
 object FairyCard {
-    val enName = "Invalid Fairy"
-    val jaName = "無効な妖精"
+    val enName = "Mirage Fairy"
+    val jaName = "妖精"
     val identifier = MirageFairy2024.identifier("fairy")
     val item = Registration(BuiltInRegistries.ITEM, identifier) { FairyItem(Item.Properties().fireResistant()) }
 }
