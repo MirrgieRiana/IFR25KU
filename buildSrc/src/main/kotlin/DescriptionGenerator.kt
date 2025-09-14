@@ -48,9 +48,10 @@ context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.s
 context(MarkdownScope) private fun singleLine(block: MarkdownScope.() -> Unit = {}) = block.strings.join("")
 context(MarkdownScope) private fun multiLine(block: MarkdownScope.() -> Unit = {}) = block.strings.multiLine()
 context(MarkdownScope) private fun String.p() = "p" { !this@p }
-context(MarkdownScope) private fun String.center() = "center" { !this@center }
-context(MarkdownScope) private fun String.serif() = "font"("face" to "serif") { !this@serif }
-context(MarkdownScope) private fun String.size(size: Int) = "font"("size" to String.format("%+d", size)) { !this@size }
+context(MarkdownScope) private fun String.center() = if (this@MarkdownScope.type == MarkdownType.MODRINTH) "center" { !this@center } else "div"(style("text-align" to "center")) { !this@center }
+context(MarkdownScope) private fun String.serif() = if (this@MarkdownScope.type == MarkdownType.MODRINTH) "font"("face" to "serif") { !this@serif } else "span"(style("font-family" to "serif")) { !this@serif }
+private val sizeTable = listOf("xx-small", "small", "medium", "large", "x-large", "xx-large", "xxx-large")
+context(MarkdownScope) private fun String.size(size: Int) = if (this@MarkdownScope.type == MarkdownType.MODRINTH) "font"("size" to String.format("%+d", size)) { !this@size } else "span"(style("font-size" to sizeTable[(size + 2)])) { !this@size }
 context(MarkdownScope) private fun String.b() = "b" { !this@b }
 context(MarkdownScope) private fun String.i() = "i" { !this@i }
 
@@ -67,6 +68,9 @@ private operator fun String.invoke(vararg attributes: Pair<String, String>?, blo
         "<${(listOf(this) + attributes.filterNotNull().map { """${it.first}="${it.second.escapeHtml()}"""" }).join(" ")}>"
     }
 }
+
+context(MarkdownScope)
+private fun String.codeBlock() = if (this@MarkdownScope.type == MarkdownType.MODRINTH) "```text\n$this\n```" else "<div>\n${this.replace(" ", "&nbsp;").split("\n").join("<br>\n")}\n</div>"
 
 context(MarkdownScope)
 private fun style(vararg entries: Pair<String, String>?): Pair<String, String>? {
@@ -88,15 +92,27 @@ private fun img(alt: String, src: String, width: Int? = null, float: String? = n
 }
 
 context(MarkdownScope)
+private fun table(block: (MarkdownScope.() -> Unit)? = null) = "table"(if (this@MarkdownScope.type == MarkdownType.CURSEFORGE) style("display" to "inline-table") else null, block = block)
+
+context(MarkdownScope)
+private fun td(width: Int? = null, block: (MarkdownScope.() -> Unit)? = null): String {
+    return if (this@MarkdownScope.type == MarkdownType.MODRINTH) {
+        "td"(if (width != null) "width" to "$width" else null, block = block)
+    } else {
+        "td"(style(if (width != null) "width" to "${width}px" else null, "text-align" to "left"), block = block)
+    }
+}
+
+context(MarkdownScope)
 private fun catchPhrase(string: String) = string.size(3).serif().center()
 
 context(MarkdownScope)
 private fun poem(name: String, indent: Int, width: Int, src: String, poem1: String, poem2: String): String {
     return multiLine {
         !img("Horizontal Spacer", "https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp", width = abs(indent), float = if (indent < 0) "right" else "left")
-        !"table" {
+        !table {
             !"tr" {
-                !"td"("width" to "$width") {
+                !td(width = width) {
                     !img(name, src, width = 48, float = "left", pixelated = true)
                     !singleLine {
                         !singleLine {
@@ -148,9 +164,9 @@ fun getModBody(type: MarkdownType): String {
             }
             !4
             !multiLine {
-                !"table" {
+                !table {
                     !"tr" {
-                        !"td"("width" to "700") {
+                        !td(width = 700) {
                             !img("Portrait of a Mirage fairy", "https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp", float = "left")
                             !"p" {
                                 !singleLine {
@@ -469,7 +485,6 @@ fun getModBody(type: MarkdownType): String {
         !h2("What is the relationship to MF24KU?") {
             !"This is a diagram of the relationships among the various MirageFairy-related projects and mods."
             !"""
-```text
 ■
 ┣ MirageFairy Official
 ┃　┣ Project: MirageFairy
@@ -484,8 +499,7 @@ fun getModBody(type: MarkdownType): String {
 　　　　┗ IFRKU Official
 　　　　　　┣ Project: IFRKU
 　　　　　　┗ MOD: IFR25KU       ← You are here
-```
-        """.trim()
+        """.trim().codeBlock()
             !"As the diagram shows, IFR25KU is neither an official MFKU project nor an official MirageFairy project."
         }
         !h2("Support") {
