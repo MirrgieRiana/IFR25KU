@@ -52,9 +52,7 @@ repositories {
     maven("https://maven.shedaniel.me") // RoughlyEnoughItems
     maven("https://maven.wispforest.io/releases/") // owo-lib
     maven("https://maven.minecraftforge.net/") // com.github.glitchfiend:TerraBlender-fabric
-    maven("https://www.cursemaven.com") { // Jade
-        content { includeGroup("curse.maven") }
-    }
+    maven("https://www.cursemaven.com") // Jade
     maven("https://raw.githubusercontent.com/MirrgieRiana/mirrg.kotlin/refs/heads/maven/maven/") // mirrg.kotlin.helium
 }
 
