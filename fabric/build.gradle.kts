@@ -55,6 +55,7 @@ repositories {
     maven("https://www.cursemaven.com") { // Jade
         content { includeGroup("curse.maven") }
     }
+    maven("https://raw.githubusercontent.com/MirrgieRiana/mirrg.kotlin/refs/heads/maven/maven/") // mirrg.kotlin.helium
 }
 
 loom {
