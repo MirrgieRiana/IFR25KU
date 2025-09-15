@@ -1,5 +1,6 @@
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
+import io.github.themrmilchmann.gradle.publish.curseforge.GameVersion
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -21,10 +22,10 @@ class CurseforgeClient(private val token: String) {
 
     data class VersionType(val id: Int, val name: String, val slug: String)
 
-    fun getVersionTypes(): List<VersionType> {
+    val versionTypes by lazy {
         val json = callApi("https://minecraft.curseforge.com/api/game/version-types")
         val root = GsonBuilder().create().fromJson(json, JsonElement::class.java)
-        return root.asJsonArray.map {
+        root.asJsonArray.map {
             val item = it.asJsonObject
             VersionType(
                 id = item["id"].asInt,
@@ -36,10 +37,10 @@ class CurseforgeClient(private val token: String) {
 
     data class Version(val id: Int, val gameVersionTypeID: Int, val name: String, val slug: String, val apiVersion: String?)
 
-    fun getVersions(): List<Version> {
+    val versions by lazy {
         val json = callApi("https://minecraft.curseforge.com/api/game/versions")
         val root = GsonBuilder().create().fromJson(json, JsonElement::class.java)
-        return root.asJsonArray.map {
+        root.asJsonArray.map {
             val item = it.asJsonObject
             Version(
                 id = item["id"].asInt,
@@ -49,6 +50,22 @@ class CurseforgeClient(private val token: String) {
                 apiVersion = item["apiVersion"].takeIf { !it.isJsonNull }?.asString
             )
         }
+    }
+
+    fun createGameVersion(typeSlug: String, versionSlug: String): GameVersion {
+        val versionType = versionTypes.find { it.slug == typeSlug }
+        if (versionType == null) error("Unknown version type: $typeSlug")
+        val version = versions.find { it.slug == versionSlug }
+        if (version == null) error("Unknown version: $versionSlug")
+        if (version.gameVersionTypeID != versionType.id) error("Version $versionSlug is not of type $typeSlug")
+        return GameVersion(typeSlug, versionSlug)
+    }
+
+    fun createMinecraftGameVersion(minecraftVersion: String): GameVersion {
+        val result = """(\d+)\.(\d+)\.(\d+)""".toRegex().matchEntire(minecraftVersion)!!
+        val typeSlug = "minecraft-${result.groups[1]!!.value}-${result.groups[2]!!.value}"
+        val versionSlug = minecraftVersion.replace(".", "-")
+        return createGameVersion(typeSlug, versionSlug)
     }
 
 }

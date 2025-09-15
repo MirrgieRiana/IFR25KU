@@ -1,6 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.github.themrmilchmann.gradle.publish.curseforge.ChangelogFormat
-import io.github.themrmilchmann.gradle.publish.curseforge.GameVersion
 import io.github.themrmilchmann.gradle.publish.curseforge.ReleaseType
 import net.fabricmc.loom.task.RemapJarTask
 
@@ -130,14 +129,11 @@ curseforge {
     apiToken = rootProject.layout.projectDirectory.file("curseforge_token.txt").asFile.takeIf { it.exists() }?.readText()?.trim() ?: System.getenv("CURSEFORGE_TOKEN")
     publications.create("neoforge") {
         projectId = "1346991"
-        gameVersions.add(provider {
-            val minecraftVersion = loom.minecraftVersion.get()
-            val result = """(\d+)\.(\d+)\.(\d+)""".toRegex().matchEntire(minecraftVersion)!!
-            GameVersion("minecraft-${result.groups[1]!!.value}-${result.groups[2]!!.value}", minecraftVersion.replace(".", "-"))
-        })
-        gameVersions.add(GameVersion("environment", "server"))
-        gameVersions.add(GameVersion("environment", "client"))
-        gameVersions.add(GameVersion("modloader", "neoforge"))
+        val client = CurseforgeClient(curseforge.apiToken.get())
+        gameVersions.add(provider { client.createMinecraftGameVersion(loom.minecraftVersion.get()) })
+        gameVersions.add(provider { client.createGameVersion("environment", "server") })
+        gameVersions.add(provider { client.createGameVersion("environment", "client") })
+        gameVersions.add(provider { client.createGameVersion("modloader", "neoforge") })
         artifacts.create("main") {
             from(tasks.named("remapJar"))
             displayName.set(null as String?)

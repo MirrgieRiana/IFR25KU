@@ -293,7 +293,7 @@ run {
     tasks.register("generateCurseforgeVersionTypeTable") {
         group = "help"
         doLast {
-            val versionTypes = CurseforgeClient(curseforge.apiToken.get()).getVersionTypes()
+            val versionTypes = CurseforgeClient(curseforge.apiToken.get()).versionTypes
             val markdown = toMarkdownTable(
                 listOf("id", "name", "slug"),
                 versionTypes
@@ -308,7 +308,7 @@ run {
     tasks.register("generateCurseforgeVersionTable") {
         group = "help"
         doLast {
-            val versions = CurseforgeClient(curseforge.apiToken.get()).getVersions()
+            val versions = CurseforgeClient(curseforge.apiToken.get()).versions
             val markdown = toMarkdownTable(
                 listOf("id", "name", "slug", "gameVersionTypeID", "apiVersion"),
                 versions
