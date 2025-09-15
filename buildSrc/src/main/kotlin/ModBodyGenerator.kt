@@ -48,7 +48,9 @@ context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.s
 context(MarkdownScope) private fun singleLine(block: MarkdownScope.() -> Unit = {}) = block.strings.join("")
 context(MarkdownScope) private fun multiLine(block: MarkdownScope.() -> Unit = {}) = block.strings.multiLine()
 context(MarkdownScope) private fun String.p() = "p" { !this@p }
-context(MarkdownScope) private fun String.center() = if (this@MarkdownScope.type == MarkdownType.MODRINTH) "center" { !this@center } else "div"(style("text-align" to "center")) { !this@center }
+context(MarkdownScope) private fun String.align(align: String) = "div"(if (this@MarkdownScope.type == MarkdownType.MODRINTH) "align" to align else style("text-align" to align)) { !this@align }
+context(MarkdownScope) private fun String.left() = this.align("left")
+context(MarkdownScope) private fun String.center() = this.align("center")
 context(MarkdownScope) private fun String.serif() = if (this@MarkdownScope.type == MarkdownType.MODRINTH) "font"("face" to "serif") { !this@serif } else "span"(style("font-family" to "serif")) { !this@serif }
 private val sizeTable = listOf("xx-small", "small", "medium", "large", "x-large", "xx-large", "xxx-large")
 context(MarkdownScope) private fun String.size(size: Int) = if (this@MarkdownScope.type == MarkdownType.MODRINTH) "font"("size" to String.format("%+d", size)) { !this@size } else "span"(style("font-size" to sizeTable[(size + 2)])) { !this@size }
@@ -113,18 +115,20 @@ private fun poem(name: String, indent: Int, width: Int, src: String, poem1: Stri
         !table {
             !"tr" {
                 !td(width = width) {
-                    !img(name, src, width = 48, float = "left", pixelated = true)
-                    !singleLine {
+                    !multiLine {
+                        !img(name, src, width = 48, float = "left", pixelated = true)
                         !singleLine {
-                            !"&nbsp;".repeat(4)
-                            !poem1
-                        }.b()
-                        !br
-                        !singleLine {
-                            !"&nbsp;".repeat(16)
-                            !"“$poem2”"
-                        }.size(-1).i()
-                    }.serif()
+                            !singleLine {
+                                !"&nbsp;".repeat(4)
+                                !poem1
+                            }.b()
+                            !br
+                            !singleLine {
+                                !"&nbsp;".repeat(16)
+                                !"“$poem2”"
+                            }.size(-1).i()
+                        }.serif()
+                    }.left()
                 }
             }
         }
@@ -167,20 +171,22 @@ fun getModBody(type: MarkdownType): String {
                 !table {
                     !"tr" {
                         !td(width = 700) {
-                            !img("Portrait of a Mirage fairy", "https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp", float = "left")
-                            !"p" {
-                                !singleLine {
-                                    !"Monocots ― Order Miragales ― Family Miragaceae".b().size(-1).serif()
-                                    !br
+                            !multiLine {
+                                !img("Portrait of a Mirage fairy", "https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp", float = "left")
+                                !"p" {
+                                    !singleLine {
+                                        !"Monocots ― Order Miragales ― Family Miragaceae".b().size(-1).serif()
+                                        !br
+                                    }
+                                    !"Mirage".b().size(3).serif()
                                 }
-                                !"Mirage".b().size(3).serif()
-                            }
-                            !"p" {
-                                !"A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”".serif()
-                            }
-                            !"p" {
-                                !"Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.".serif()
-                            }
+                                !"p" {
+                                    !"A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”".serif()
+                                }
+                                !"p" {
+                                    !"Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.".serif()
+                                }
+                            }.left()
                         }
                     }
                 }

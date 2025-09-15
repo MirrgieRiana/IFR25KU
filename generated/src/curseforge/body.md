@@ -77,13 +77,15 @@
   <table style="display: inline-table;">
     <tr>
       <td style="width: 700px; text-align: left;">
-        <img alt="Portrait of a Mirage fairy" style="float: left;" src="https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp">
-        <p>
-          <span style="font-family: serif;"><span style="font-size: small;"><b>Monocots ― Order Miragales ― Family Miragaceae</b></span></span><br>
-          <span style="font-family: serif;"><span style="font-size: xx-large;"><b>Mirage</b></span></span>
-        </p>
-        <p><span style="font-family: serif;">A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”</span></p>
-        <p><span style="font-family: serif;">Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.</span></p>
+        <div style="text-align: left;">
+          <img alt="Portrait of a Mirage fairy" style="float: left;" src="https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp">
+          <p>
+            <span style="font-family: serif;"><span style="font-size: small;"><b>Monocots ― Order Miragales ― Family Miragaceae</b></span></span><br>
+            <span style="font-family: serif;"><span style="font-size: xx-large;"><b>Mirage</b></span></span>
+          </p>
+          <p><span style="font-family: serif;">A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”</span></p>
+          <p><span style="font-family: serif;">Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.</span></p>
+        </div>
       </td>
     </tr>
   </table>
@@ -117,8 +119,10 @@
   <table style="display: inline-table;">
     <tr>
       <td style="width: 430px; text-align: left;">
-        <img alt="Fairy Crystal" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/9e74348fe664fc926c5f534f24dfcbd4ec3513b2.png">
-        <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Crystallized soul</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“That which makes a creature a creature.”</span></i></span>
+        <div style="text-align: left;">
+          <img alt="Fairy Crystal" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/9e74348fe664fc926c5f534f24dfcbd4ec3513b2.png">
+          <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Crystallized soul</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“That which makes a creature a creature.”</span></i></span>
+        </div>
       </td>
     </tr>
   </table>
@@ -129,8 +133,10 @@
   <table style="display: inline-table;">
     <tr>
       <td style="width: 340px; text-align: left;">
-        <img alt="Phantom Leaves" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/2440d1bf3e0e387c9f3994cbd5a05c583b4f3e5e.png">
-        <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;The eroding reality</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The precipitating fantasy.”</span></i></span>
+        <div style="text-align: left;">
+          <img alt="Phantom Leaves" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/2440d1bf3e0e387c9f3994cbd5a05c583b4f3e5e.png">
+          <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;The eroding reality</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The precipitating fantasy.”</span></i></span>
+        </div>
       </td>
     </tr>
   </table>
@@ -143,8 +149,10 @@
   <table style="display: inline-table;">
     <tr>
       <td style="width: 410px; text-align: left;">
-        <img alt="Haimeviska" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/4789326b379836f317635052dcac361ff3a07b9e_0.webp">
-        <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Do fairy trees have qualia of pain?</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“What it means to protect animals.”</span></i></span>
+        <div style="text-align: left;">
+          <img alt="Haimeviska" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/4789326b379836f317635052dcac361ff3a07b9e_0.webp">
+          <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Do fairy trees have qualia of pain?</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“What it means to protect animals.”</span></i></span>
+        </div>
       </td>
     </tr>
   </table>
@@ -157,8 +165,10 @@
   <table style="display: inline-table;">
     <tr>
       <td style="width: 380px; text-align: left;">
-        <img alt="Sarracenia" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/99e1a6638c83bc038989d626e5ee45be9df295f9.png">
-        <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Waiting for a flying creature...</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“Fairies’ resting place.”</span></i></span>
+        <div style="text-align: left;">
+          <img alt="Sarracenia" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/99e1a6638c83bc038989d626e5ee45be9df295f9.png">
+          <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Waiting for a flying creature...</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“Fairies’ resting place.”</span></i></span>
+        </div>
       </td>
     </tr>
   </table>
@@ -174,8 +184,10 @@
   <table style="display: inline-table;">
     <tr>
       <td style="width: 460px; text-align: left;">
-        <img alt="Miragidian" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/0b3016946160a1ff428d1b736871fb3606334173_0.webp">
-        <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;The great collapse 30,000 years ago</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The dream Miragium saw 30,000 years ago.”</span></i></span>
+        <div style="text-align: left;">
+          <img alt="Miragidian" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/0b3016946160a1ff428d1b736871fb3606334173_0.webp">
+          <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;The great collapse 30,000 years ago</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The dream Miragium saw 30,000 years ago.”</span></i></span>
+        </div>
       </td>
     </tr>
   </table>
@@ -191,8 +203,10 @@
   <table style="display: inline-table;">
     <tr>
       <td style="width: 580px; text-align: left;">
-        <img alt="Xarpite" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/836c43258180de4fee05020c7f8df3ce1f13579e.png">
-        <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Binds astral flux with magnetic force</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A blood-reeking cage of souls bound by chains of black iron.”</span></i></span>
+        <div style="text-align: left;">
+          <img alt="Xarpite" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/836c43258180de4fee05020c7f8df3ce1f13579e.png">
+          <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Binds astral flux with magnetic force</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A blood-reeking cage of souls bound by chains of black iron.”</span></i></span>
+        </div>
       </td>
     </tr>
   </table>
@@ -209,8 +223,10 @@
   <table style="display: inline-table;">
     <tr>
       <td style="width: 440px; text-align: left;">
-        <img alt="Calculite" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/9f481e640f797ca8665bd21e7d39cfcd34ac9ee8.gif">
-        <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Class 4 time evolution rule.</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A stone that etches the patterns of time.”</span></i></span>
+        <div style="text-align: left;">
+          <img alt="Calculite" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/9f481e640f797ca8665bd21e7d39cfcd34ac9ee8.gif">
+          <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Class 4 time evolution rule.</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A stone that etches the patterns of time.”</span></i></span>
+        </div>
       </td>
     </tr>
   </table>
@@ -227,8 +243,10 @@
   <table style="display: inline-table;">
     <tr>
       <td style="width: 490px; text-align: left;">
-        <img alt="Aura Reflector Furnace" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/ce5ecf74a49ca60c318da7dbccef60bddde3e7a8.png">
-        <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Life is essentially inorganic.</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The boundary between life and inorganic matter.”</span></i></span>
+        <div style="text-align: left;">
+          <img alt="Aura Reflector Furnace" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/ce5ecf74a49ca60c318da7dbccef60bddde3e7a8.png">
+          <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Life is essentially inorganic.</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“The boundary between life and inorganic matter.”</span></i></span>
+        </div>
       </td>
     </tr>
   </table>
@@ -246,8 +264,10 @@
   <table style="display: inline-table;">
     <tr>
       <td style="width: 650px; text-align: left;">
-        <img alt="Miranagite" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/2edab3f8a66c4c27505aa35c0aeb1c79393098ea.png">
-        <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;A Turing-complete crystal lattice</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A world where everything has been prophesied since the dawn of creation.”</span></i></span>
+        <div style="text-align: left;">
+          <img alt="Miranagite" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/2edab3f8a66c4c27505aa35c0aeb1c79393098ea.png">
+          <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;A Turing-complete crystal lattice</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“A world where everything has been prophesied since the dawn of creation.”</span></i></span>
+        </div>
       </td>
     </tr>
   </table>
@@ -266,8 +286,10 @@
   <table style="display: inline-table;">
     <tr>
       <td style="width: 490px; text-align: left;">
-        <img alt="Local Vacuum Decay" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/acb14f57121d7f180077eba96b87edcd957e82f4_0.webp">
-        <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Stable instability due to anti-entropy.</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“Could this be the ultimate form of anti-entropy?”</span></i></span>
+        <div style="text-align: left;">
+          <img alt="Local Vacuum Decay" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/acb14f57121d7f180077eba96b87edcd957e82f4_0.webp">
+          <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;Stable instability due to anti-entropy.</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“Could this be the ultimate form of anti-entropy?”</span></i></span>
+        </div>
       </td>
     </tr>
   </table>
@@ -287,8 +309,10 @@
   <table style="display: inline-table;">
     <tr>
       <td style="width: 370px; text-align: left;">
-        <img alt="Noise Block" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/dbe6a42399b5a56332e2f96ebd89891b2a95f425.gif">
-        <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;No one can block that noise.</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“No one can block that noise.”</span></i></span>
+        <div style="text-align: left;">
+          <img alt="Noise Block" style="float: left; image-rendering: pixelated;" width="48" src="https://cdn.modrinth.com/data/cached_images/dbe6a42399b5a56332e2f96ebd89891b2a95f425.gif">
+          <span style="font-family: serif;"><b>&nbsp;&nbsp;&nbsp;&nbsp;No one can block that noise.</b><br><i><span style="font-size: small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“No one can block that noise.”</span></i></span>
+        </div>
       </td>
     </tr>
   </table>
