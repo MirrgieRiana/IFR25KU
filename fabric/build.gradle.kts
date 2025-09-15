@@ -137,7 +137,7 @@ modrinth {
     uploadFile = tasks["remapJar"]
     //gameVersions = ["1.20.2"]
     //loaders = ["fabric"]
-    changelog.set(getChangeLog(rootProject.file("CHANGELOG.md"), rootProject.properties["mod_version"] as String))
+    changelog.set("This project maintains a comprehensive [CHANGELOG.md](https://github.com/MirrgieRiana/IFR25KU/blob/main/CHANGELOG.md) in Japanese.")
     dependencies {
         required.project("fabric-api")
         required.project("fabric-language-kotlin")
