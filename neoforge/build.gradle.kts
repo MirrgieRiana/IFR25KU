@@ -130,7 +130,11 @@ curseforge {
     apiToken = rootProject.layout.projectDirectory.file("curseforge_token.txt").asFile.takeIf { it.exists() }?.readText()?.trim() ?: System.getenv("CURSEFORGE_TOKEN")
     publications.create("neoforge") {
         projectId = "1346991"
-        gameVersions.add(provider { GameVersion("minecraft", loom.minecraftVersion.get()) })
+        gameVersions.add(provider {
+            val minecraftVersion = loom.minecraftVersion.get()
+            val result = """(\d+)\.(\d+)\.(\d+)""".toRegex().matchEntire(minecraftVersion)!!
+            GameVersion("minecraft-${result.groups[1]!!.value}-${result.groups[2]!!.value}", minecraftVersion)
+        })
         gameVersions.add(GameVersion("environment", "server"))
         gameVersions.add(GameVersion("environment", "client"))
         gameVersions.add(GameVersion("modloader", "neoforge"))
