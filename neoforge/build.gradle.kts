@@ -120,7 +120,7 @@ modrinth {
         required.project("architectury-api")
     }
 }
-rootProject.tasks.named("uploadModrinth").configure { dependsOn(tasks.named("modrinth")) }
+rootProject.tasks.named("upload").configure { dependsOn(tasks.named("modrinth")) }
 
 tasks.named<ProcessResources>("processResources") {
     inputs.property("version", project.version)

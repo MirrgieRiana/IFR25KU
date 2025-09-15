@@ -43,7 +43,7 @@ jobs:
           build/libs/IFR25KU-${{ env.mod_version }}.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Modrinthのリリース
-        run: ./gradlew uploadModrinth
+      - name: リリース
+        run: ./gradlew upload
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}

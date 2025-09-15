@@ -144,7 +144,7 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
 tasks.register("datagen")
 
 
-tasks.register("uploadModrinth")
+tasks.register("upload")
 
 tasks.register("generateModBody")
 tasks.named("datagen").configure { dependsOn(tasks.named("generateModBody")) }
@@ -183,7 +183,7 @@ modrinth {
     syncBodyFrom = provider { generatedModrinthBodyFile.asFile.readText() }
 }
 tasks.named("modrinthSyncBody").configure { dependsOn(tasks.named("generateModrinthModBody")) }
-tasks.named("uploadModrinth").configure { dependsOn(tasks.named("modrinthSyncBody")) }
+tasks.named("upload").configure { dependsOn(tasks.named("modrinthSyncBody")) }
 
 
 tasks.register("fetchMirrgKotlin") {
