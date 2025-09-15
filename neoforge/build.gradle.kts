@@ -5,6 +5,7 @@ import io.github.themrmilchmann.gradle.publish.curseforge.ReleaseType
 import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
+    id("ifr25ku.buildlogic")
     id("com.github.johnrengelman.shadow")
     id("com.modrinth.minotaur")
     id("io.github.themrmilchmann.curseforge-publish")

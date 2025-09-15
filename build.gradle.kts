@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
+    id("ifr25ku.buildlogic")
     id("dev.architectury.loom") version "1.7-SNAPSHOT" apply false
     //id("maven-publish")
     kotlin("jvm") version "2.0.0" apply false
