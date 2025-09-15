@@ -157,7 +157,7 @@ curseforge {
     apiToken = rootProject.layout.projectDirectory.file("curseforge_token.txt").asFile.takeIf { it.exists() }?.readText()?.trim() ?: System.getenv("CURSEFORGE_TOKEN")
     publications.create("fabric") {
         projectId = "1346991"
-        gameVersions.add(GameVersion("minecraft", "1.21.1"))
+        gameVersions.add(provider { GameVersion("minecraft", loom.minecraftVersion.get()) })
         gameVersions.add(GameVersion("environment", "server"))
         gameVersions.add(GameVersion("environment", "client"))
         gameVersions.add(GameVersion("modloader", "fabric"))
