@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Translation
+
+Things that appear in this project are often called very different names in English and Japanese.
+
+See the [Lang Table](https://mirrgieriana.github.io/IFR25KU/lang_table.html) for the official mappings.
+
 ## ドキュメンテーションされない変更
 
 各種レシピなどは、REIタブをご参照ください。
