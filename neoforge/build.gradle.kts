@@ -137,7 +137,7 @@ curseforge {
         gameVersions.add(provider { client.createGameVersion("modloader", "neoforge").let { GameVersion(it.first, it.second) } })
         artifacts.create("main") {
             from(tasks.named("remapJar"))
-            displayName.set(null as String?)
+            displayName.set("")
             releaseType = if ("alpha" in project.version.toString()) ReleaseType.ALPHA else if ("beta" in project.version.toString()) ReleaseType.BETA else ReleaseType.RELEASE
             changelog {
                 format = ChangelogFormat.MARKDOWN
