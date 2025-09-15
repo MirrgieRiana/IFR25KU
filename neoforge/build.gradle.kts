@@ -1,5 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.github.themrmilchmann.gradle.publish.curseforge.ChangelogFormat
+import io.github.themrmilchmann.gradle.publish.curseforge.GameVersion
 import io.github.themrmilchmann.gradle.publish.curseforge.ReleaseType
 import net.fabricmc.loom.task.RemapJarTask
 
@@ -129,6 +130,10 @@ curseforge {
     apiToken = rootProject.layout.projectDirectory.file("curseforge_token.txt").asFile.takeIf { it.exists() }?.readText()?.trim() ?: System.getenv("CURSEFORGE_TOKEN")
     publications.create("neoforge") {
         projectId = "1346991"
+        gameVersions.add(GameVersion("minecraft", "1.21.1"))
+        gameVersions.add(GameVersion("environment", "server"))
+        gameVersions.add(GameVersion("environment", "client"))
+        gameVersions.add(GameVersion("modloader", "neoforge"))
         artifacts.create("main") {
             from(tasks.named("remapJar"))
             releaseType = if ("alpha" in project.version.toString()) ReleaseType.ALPHA else if ("beta" in project.version.toString()) ReleaseType.BETA else ReleaseType.RELEASE
