@@ -5,6 +5,10 @@ import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 
 plugins {
     id("dev.architectury.loom") version "1.7-SNAPSHOT" apply false
@@ -13,7 +17,7 @@ plugins {
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     id("com.modrinth.minotaur") version "2.+"
-    id("io.github.themrmilchmann.curseforge-publish") version "0.8.0" apply false
+    id("io.github.themrmilchmann.curseforge-publish") version "0.8.0"
     application
 }
 
@@ -186,6 +190,10 @@ modrinth {
 tasks.named("modrinthSyncBody").configure { dependsOn(tasks.named("generateModrinthModBody")) }
 tasks.named("upload").configure { dependsOn(tasks.named("modrinthSyncBody")) }
 
+curseforge {
+    apiToken = rootProject.layout.projectDirectory.file("curseforge_token.txt").asFile.takeIf { it.exists() }?.readText()?.trim() ?: System.getenv("CURSEFORGE_TOKEN")
+}
+
 tasks.register("fetchMirrgKotlin") {
     doFirst {
         fun fetch(fileName: String) {
@@ -263,6 +271,47 @@ tasks.register("configurations") {
                 println("- ${if (configuration.isCanBeConsumed) "C" else "-"}${if (configuration.isCanBeResolved) "R" else "-"} ${configuration.name}")
             }
             println()
+        }
+    }
+}
+
+run {
+    fun callCurseforgeApi(url: String): String {
+        val client = HttpClient.newHttpClient()
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .header("X-Api-Token", curseforge.apiToken.get())
+            .header("Accept", "application/json")
+            .GET()
+            .build()
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+        return response.body()
+    }
+
+    fun jsonRecordsToMarkdownTable(records: JsonElement): String {
+        val keys = records.asJsonArray.flatMap { record -> record.asJsonObject.keySet() }.toSet().sorted()
+        return listOf(
+            keys,
+            keys.map { key -> "-".repeat(key.length) },
+            *records.asJsonArray.map { record -> keys.map { key -> record.asJsonObject.get(key)?.let { "$it" } ?: "" } }.toTypedArray(),
+        ).joinToString("\n") { "| ${it.joinToString(" | ")} |" }
+    }
+
+    fun output(outputFileName: String, content: String) {
+        val outFile = layout.buildDirectory.file(outputFileName).get().asFile
+        outFile.parentFile.mkdirs()
+        outFile.writeText(content)
+
+        println("Wrote to ${outFile.absolutePath}")
+    }
+
+    tasks.register("generateCurseforgeVersionTable") {
+        group = "help"
+        doLast {
+            val json = callCurseforgeApi("https://api.curseforge.com/v1/minecraft/version")
+            val root = GsonBuilder().create().fromJson(json, JsonElement::class.java)
+            val markdown = jsonRecordsToMarkdownTable(root.asJsonObject.get("data"))
+            output("generateCurseforgeVersionTable/curseforge_versions.md", markdown)
         }
     }
 }
