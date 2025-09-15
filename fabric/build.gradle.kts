@@ -155,7 +155,7 @@ rootProject.tasks.named("upload").configure { dependsOn(tasks.named("modrinth"))
 curseforge {
     apiToken = rootProject.layout.projectDirectory.file("curseforge_token.txt").asFile.takeIf { it.exists() }?.readText()?.trim() ?: System.getenv("CURSEFORGE_TOKEN")
     publications.create("fabric") {
-        projectId = "ifr25ku"
+        projectId = "1346991"
         artifacts.create("main") {
             from(tasks.named("remapJar"))
             releaseType = if ("alpha" in project.version.toString()) ReleaseType.ALPHA else if ("beta" in project.version.toString()) ReleaseType.BETA else ReleaseType.RELEASE
