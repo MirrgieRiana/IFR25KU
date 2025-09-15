@@ -49,3 +49,4 @@ replay_*.log
 desktop.ini
 /.architectury-transformer
 /modrinth_token.txt
+/curseforge_token.txt
