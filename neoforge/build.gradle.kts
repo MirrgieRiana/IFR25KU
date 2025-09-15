@@ -133,7 +133,7 @@ curseforge {
         gameVersions.add(provider {
             val minecraftVersion = loom.minecraftVersion.get()
             val result = """(\d+)\.(\d+)\.(\d+)""".toRegex().matchEntire(minecraftVersion)!!
-            GameVersion("minecraft-${result.groups[1]!!.value}-${result.groups[2]!!.value}", minecraftVersion)
+            GameVersion("minecraft-${result.groups[1]!!.value}-${result.groups[2]!!.value}", minecraftVersion.replace(".", "-"))
         })
         gameVersions.add(GameVersion("environment", "server"))
         gameVersions.add(GameVersion("environment", "client"))
