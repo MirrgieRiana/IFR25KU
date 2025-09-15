@@ -1,9 +1,12 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import io.github.themrmilchmann.gradle.publish.curseforge.ChangelogFormat
+import io.github.themrmilchmann.gradle.publish.curseforge.ReleaseType
 import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     id("com.github.johnrengelman.shadow")
     id("com.modrinth.minotaur")
+    id("io.github.themrmilchmann.curseforge-publish")
 }
 
 architectury {
@@ -121,6 +124,30 @@ modrinth {
     }
 }
 rootProject.tasks.named("upload").configure { dependsOn(tasks.named("modrinth")) }
+
+curseforge {
+    publications.create("neoforge") {
+        projectId = "ifr25ku"
+        artifacts.create("main") {
+            from(tasks.named("remapJar"))
+            releaseType = if ("alpha" in project.version.toString()) ReleaseType.ALPHA else if ("beta" in project.version.toString()) ReleaseType.BETA else ReleaseType.RELEASE
+            changelog {
+                format = ChangelogFormat.MARKDOWN
+                content = "This project maintains a comprehensive [CHANGELOG.md](https://github.com/MirrgieRiana/IFR25KU/blob/main/CHANGELOG.md) in Japanese."
+            }
+            relations {
+                requiredDependency("forgified-fabric-api")
+                requiredDependency("kotlin-for-forge")
+                requiredDependency("owo-lib")
+                requiredDependency("cloth-config")
+                requiredDependency("terrablender-neoforge")
+                requiredDependency("architectury-api")
+            }
+        }
+    }
+}
+tasks.named("publishNeoforgePublicationToCurseForge").configure { dependsOn(tasks.named("remapJar")) }
+rootProject.tasks.named("upload").configure { dependsOn(tasks.named("publishNeoforgePublicationToCurseForge")) }
 
 tasks.named<ProcessResources>("processResources") {
     inputs.property("version", project.version)

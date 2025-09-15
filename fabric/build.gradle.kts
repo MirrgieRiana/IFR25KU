@@ -3,11 +3,14 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import dev.architectury.plugin.TransformingTask
 import dev.architectury.transformer.transformers.base.AssetEditTransformer
+import io.github.themrmilchmann.gradle.publish.curseforge.ChangelogFormat
+import io.github.themrmilchmann.gradle.publish.curseforge.ReleaseType
 import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     id("com.github.johnrengelman.shadow")
     id("com.modrinth.minotaur")
+    id("io.github.themrmilchmann.curseforge-publish")
 }
 
 architectury {
@@ -148,6 +151,30 @@ modrinth {
     }
 }
 rootProject.tasks.named("upload").configure { dependsOn(tasks.named("modrinth")) }
+
+curseforge {
+    publications.create("fabric") {
+        projectId = "ifr25ku"
+        artifacts.create("main") {
+            from(tasks.named("remapJar"))
+            releaseType = if ("alpha" in project.version.toString()) ReleaseType.ALPHA else if ("beta" in project.version.toString()) ReleaseType.BETA else ReleaseType.RELEASE
+            changelog {
+                format = ChangelogFormat.MARKDOWN
+                content = "This project maintains a comprehensive [CHANGELOG.md](https://github.com/MirrgieRiana/IFR25KU/blob/main/CHANGELOG.md) in Japanese."
+            }
+            relations {
+                requiredDependency("fabric-api")
+                requiredDependency("fabric-language-kotlin")
+                requiredDependency("owo-lib")
+                requiredDependency("cloth-config")
+                requiredDependency("terrablender-fabric")
+                requiredDependency("architectury-api")
+            }
+        }
+    }
+}
+tasks.named("publishFabricPublicationToCurseForge").configure { dependsOn(tasks.named("remapJar")) }
+rootProject.tasks.named("upload").configure { dependsOn(tasks.named("publishFabricPublicationToCurseForge")) }
 
 tasks.named<ProcessResources>("processResources") {
     inputs.property("version", project.version)

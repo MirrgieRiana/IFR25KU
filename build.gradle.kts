@@ -13,6 +13,7 @@ plugins {
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     id("com.modrinth.minotaur") version "2.+"
+    id("io.github.themrmilchmann.curseforge-publish") version "0.8.0"
     application
 }
 
@@ -184,6 +185,10 @@ modrinth {
 }
 tasks.named("modrinthSyncBody").configure { dependsOn(tasks.named("generateModrinthModBody")) }
 tasks.named("upload").configure { dependsOn(tasks.named("modrinthSyncBody")) }
+
+curseforge {
+    apiToken = rootProject.layout.projectDirectory.file("curseforge_token.txt").asFile.takeIf { it.exists() }?.readText()?.trim() ?: System.getenv("CURSEFORGE_TOKEN")
+}
 
 
 tasks.register("fetchMirrgKotlin") {
