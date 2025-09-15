@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import dev.architectury.plugin.TransformingTask
 import dev.architectury.transformer.transformers.base.AssetEditTransformer
 import io.github.themrmilchmann.gradle.publish.curseforge.ChangelogFormat
+import io.github.themrmilchmann.gradle.publish.curseforge.GameVersion
 import io.github.themrmilchmann.gradle.publish.curseforge.ReleaseType
 import net.fabricmc.loom.task.RemapJarTask
 
@@ -157,10 +158,10 @@ curseforge {
     publications.create("fabric") {
         projectId = "1346991"
         val client by lazy { CurseforgeClient(curseforge.apiToken.get()) }
-        gameVersions.add(provider { client.createMinecraftGameVersion(loom.minecraftVersion.get()) })
-        gameVersions.add(provider { client.createGameVersion("environment", "server") })
-        gameVersions.add(provider { client.createGameVersion("environment", "client") })
-        gameVersions.add(provider { client.createGameVersion("modloader", "fabric") })
+        gameVersions.add(provider { client.createMinecraftGameVersion(loom.minecraftVersion.get()).let { GameVersion(it.first, it.second) } })
+        gameVersions.add(provider { client.createGameVersion("environment", "server").let { GameVersion(it.first, it.second) } })
+        gameVersions.add(provider { client.createGameVersion("environment", "client").let { GameVersion(it.first, it.second) } })
+        gameVersions.add(provider { client.createGameVersion("modloader", "fabric").let { GameVersion(it.first, it.second) } })
         artifacts.create("main") {
             from(tasks.named("remapJar"))
             displayName.set(null as String?)

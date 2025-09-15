@@ -1,6 +1,5 @@
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
-import io.github.themrmilchmann.gradle.publish.curseforge.GameVersion
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -52,16 +51,16 @@ class CurseforgeClient(private val token: String) {
         }
     }
 
-    fun createGameVersion(typeSlug: String, versionSlug: String): GameVersion {
+    fun createGameVersion(typeSlug: String, versionSlug: String): Pair<String, String> {
         val versionType = versionTypes.find { it.slug == typeSlug }
         if (versionType == null) error("Unknown version type: $typeSlug")
         val version = versions.find { it.slug == versionSlug }
         if (version == null) error("Unknown version: $versionSlug")
         if (version.gameVersionTypeID != versionType.id) error("Version $versionSlug is not of type $typeSlug")
-        return GameVersion(typeSlug, versionSlug)
+        return Pair(typeSlug, versionSlug)
     }
 
-    fun createMinecraftGameVersion(minecraftVersion: String): GameVersion {
+    fun createMinecraftGameVersion(minecraftVersion: String): Pair<String, String> {
         val result = """(\d+)\.(\d+)\.(\d+)""".toRegex().matchEntire(minecraftVersion)!!
         val typeSlug = "minecraft-${result.groups[1]!!.value}-${result.groups[2]!!.value}"
         val versionSlug = minecraftVersion.replace(".", "-")
