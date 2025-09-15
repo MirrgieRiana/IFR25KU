@@ -156,7 +156,7 @@ curseforge {
     apiToken = rootProject.layout.projectDirectory.file("curseforge_token.txt").asFile.takeIf { it.exists() }?.readText()?.trim() ?: System.getenv("CURSEFORGE_TOKEN")
     publications.create("fabric") {
         projectId = "1346991"
-        val client = CurseforgeClient(curseforge.apiToken.get())
+        val client by lazy { CurseforgeClient(curseforge.apiToken.get()) }
         gameVersions.add(provider { client.createMinecraftGameVersion(loom.minecraftVersion.get()) })
         gameVersions.add(provider { client.createGameVersion("environment", "server") })
         gameVersions.add(provider { client.createGameVersion("environment", "client") })
