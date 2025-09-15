@@ -126,7 +126,6 @@ modrinth {
 rootProject.tasks.named("upload").configure { dependsOn(tasks.named("modrinth")) }
 
 curseforge {
-    apiToken = rootProject.layout.projectDirectory.file("curseforge_token.txt").asFile.takeIf { it.exists() }?.readText()?.trim() ?: System.getenv("CURSEFORGE_TOKEN")
     publications.create("neoforge") {
         projectId = "ifr25ku"
         artifacts.create("main") {
