@@ -305,13 +305,27 @@ run {
         println("Wrote to ${outFile.absolutePath}")
     }
 
+    tasks.register("generateCurseforgeTable")
+
+    tasks.register("generateCurseforgeVersionTypeTable") {
+        group = "help"
+        doLast {
+            val json = callCurseforgeApi("https://minecraft.curseforge.com/api/game/version-types")
+            val root = GsonBuilder().create().fromJson(json, JsonElement::class.java)
+            val markdown = jsonRecordsToMarkdownTable(root)
+            output("curseforgeTable/curseforge_version_types.md", markdown)
+        }
+    }
+    tasks.named("generateCurseforgeTable").configure { dependsOn(tasks.named("generateCurseforgeVersionTypeTable")) }
+
     tasks.register("generateCurseforgeVersionTable") {
         group = "help"
         doLast {
-            val json = callCurseforgeApi("https://api.curseforge.com/v1/minecraft/version")
+            val json = callCurseforgeApi("https://minecraft.curseforge.com/api/game/versions")
             val root = GsonBuilder().create().fromJson(json, JsonElement::class.java)
-            val markdown = jsonRecordsToMarkdownTable(root.asJsonObject.get("data"))
-            output("generateCurseforgeVersionTable/curseforge_versions.md", markdown)
+            val markdown = jsonRecordsToMarkdownTable(root)
+            output("curseforgeTable/curseforge_versions.md", markdown)
         }
     }
+    tasks.named("generateCurseforgeTable").configure { dependsOn(tasks.named("generateCurseforgeVersionTable")) }
 }
