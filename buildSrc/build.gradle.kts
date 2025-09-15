@@ -8,6 +8,10 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    implementation("com.google.code.gson:gson:2.10.1")
+}
+
 tasks.withType<KotlinCompile>().all {
     compilerOptions {
         freeCompilerArgs.set(listOf("-Xcontext-receivers"))

@@ -5,10 +5,6 @@ import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
 
 plugins {
     id("dev.architectury.loom") version "1.7-SNAPSHOT" apply false
@@ -276,25 +272,12 @@ tasks.register("configurations") {
 }
 
 run {
-    fun callCurseforgeApi(url: String): String {
-        val client = HttpClient.newHttpClient()
-        val request = HttpRequest.newBuilder()
-            .uri(URI.create(url))
-            .header("X-Api-Token", curseforge.apiToken.get())
-            .header("Accept", "application/json")
-            .GET()
-            .build()
-        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-        return response.body()
-    }
-
-    fun jsonRecordsToMarkdownTable(records: JsonElement): String {
-        val keys = records.asJsonArray.flatMap { record -> record.asJsonObject.keySet() }.toSet().sorted()
+    fun toMarkdownTable(columns: List<String>, records: List<List<String>>): String {
         return listOf(
-            keys,
-            keys.map { key -> "-".repeat(key.length) },
-            *records.asJsonArray.map { record -> keys.map { key -> record.asJsonObject.get(key)?.let { "$it" } ?: "" } }.toTypedArray(),
-        ).joinToString("\n") { "| ${it.joinToString(" | ")} |" }
+            columns,
+            columns.map { column -> "-".repeat(column.length) },
+            *records.toTypedArray(),
+        ).joinToString("\n") { row -> "| ${row.joinToString(" | ")} |" }
     }
 
     fun output(outputFileName: String, content: String) {
@@ -310,9 +293,13 @@ run {
     tasks.register("generateCurseforgeVersionTypeTable") {
         group = "help"
         doLast {
-            val json = callCurseforgeApi("https://minecraft.curseforge.com/api/game/version-types")
-            val root = GsonBuilder().create().fromJson(json, JsonElement::class.java)
-            val markdown = jsonRecordsToMarkdownTable(root)
+            val versionTypes = CurseforgeClient(curseforge.apiToken.get()).getVersionTypes()
+            val markdown = toMarkdownTable(
+                listOf("id", "name", "slug"),
+                versionTypes
+                    .sortedBy { """\d+""".toRegex().replace(it.slug) { m -> m.value.padStart(20, '0') } }
+                    .map { versionType -> listOf(versionType.id, versionType.name, versionType.slug).map { "$it" } },
+            )
             output("curseforgeTable/curseforge_version_types.md", markdown)
         }
     }
@@ -321,9 +308,13 @@ run {
     tasks.register("generateCurseforgeVersionTable") {
         group = "help"
         doLast {
-            val json = callCurseforgeApi("https://minecraft.curseforge.com/api/game/versions")
-            val root = GsonBuilder().create().fromJson(json, JsonElement::class.java)
-            val markdown = jsonRecordsToMarkdownTable(root)
+            val versions = CurseforgeClient(curseforge.apiToken.get()).getVersions()
+            val markdown = toMarkdownTable(
+                listOf("id", "name", "slug", "gameVersionTypeID", "apiVersion"),
+                versions
+                    .sortedBy { """\d+""".toRegex().replace(it.slug) { m -> m.value.padStart(20, '0') } }
+                    .map { version -> listOf(version.id, version.name, version.slug, version.gameVersionTypeID, version.apiVersion).map { "$it" } },
+            )
             output("curseforgeTable/curseforge_versions.md", markdown)
         }
     }
