@@ -66,7 +66,9 @@ object CommandEvents {
 }
 
 object RecipeEvents {
-    val onRegisterInformationEntry = InitializationEventRegistry<((Triple<List<Ingredient>, List<Component>, ResourceLocation>) -> Unit) -> Unit>() // TODO rei implementation
+    class InformationEntry(val input: () -> Ingredient, val title: Component, val contents: List<Component>, val id: ResourceLocation)
+
+    val informationEntries = mutableListOf<InformationEntry>()
 }
 
 context(ModContext)
