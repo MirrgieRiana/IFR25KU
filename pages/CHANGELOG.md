@@ -4,6 +4,8 @@
 
 Things that appear in this project are often called very different names in English and Japanese.
 
+The naming of both proper and common nouns is often completely different between the two languages.
+
 See the [Lang Table](lang_table.html) for the official mappings.
 
 ## ドキュメンテーションされない変更
