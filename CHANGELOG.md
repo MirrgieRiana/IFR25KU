@@ -2,11 +2,9 @@
 
 ## Translation
 
-Things that appear in this project are often called very different names in English and Japanese.
+In this project, not only proper nouns but also ordinary terms often have names that do not correspond at all between English and Japanese.
 
-The naming of both proper and common nouns is often completely different between the two languages.
-
-See the [Lang Table](lang_table.html) for the official mappings.
+For the official mappings, see the [Lang Table](lang_table.html).
 
 ## ドキュメンテーションされない変更
 
