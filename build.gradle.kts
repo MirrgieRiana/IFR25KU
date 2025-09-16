@@ -15,6 +15,7 @@ plugins {
     id("com.modrinth.minotaur") version "2.+"
     id("io.github.themrmilchmann.curseforge-publish") version "0.8.0"
     application
+    id("ifr25ku.buildlogic")
 }
 
 architectury {

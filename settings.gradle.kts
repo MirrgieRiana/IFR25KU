@@ -5,6 +5,7 @@ pluginManagement {
         maven(url = "https://files.minecraftforge.net/maven/")
         gradlePluginPortal()
     }
+    includeBuild("build-logic")
 }
 
 rootProject.name = "IFR25KU"

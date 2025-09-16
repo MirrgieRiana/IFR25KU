@@ -1,7 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "2.0.0"
+    `kotlin-dsl`
+    `java-gradle-plugin`
 }
 
 repositories {
@@ -15,5 +16,14 @@ dependencies {
 tasks.withType<KotlinCompile>().all {
     compilerOptions {
         freeCompilerArgs.set(listOf("-Xcontext-receivers"))
+    }
+}
+
+gradlePlugin {
+    plugins {
+        register("buildLogic") {
+            id = "ifr25ku.buildlogic"
+            implementationClass = "BuildLogicPlugin"
+        }
     }
 }
