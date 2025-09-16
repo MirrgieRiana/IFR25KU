@@ -114,7 +114,7 @@ modrinth {
     uploadFile = tasks["remapJar"]
     //gameVersions = ["1.20.2"]
     //loaders = ["neoforge"]
-    changelog.set("This project maintains a comprehensive [CHANGELOG.md](https://github.com/MirrgieRiana/IFR25KU/blob/main/CHANGELOG.md) in Japanese.")
+    changelog.set("This project maintains a comprehensive [CHANGELOG](https://mirrgieriana.github.io/IFR25KU/CHANGELOG.html) in Japanese.")
     dependencies {
         required.project("forgified-fabric-api")
         required.project("kotlin-for-forge")
@@ -141,7 +141,7 @@ curseforge {
             releaseType = if ("alpha" in project.version.toString()) ReleaseType.ALPHA else if ("beta" in project.version.toString()) ReleaseType.BETA else ReleaseType.RELEASE
             changelog {
                 format = ChangelogFormat.MARKDOWN
-                content = "This project maintains a comprehensive [CHANGELOG.md](https://github.com/MirrgieRiana/IFR25KU/blob/main/CHANGELOG.md) in Japanese."
+                content = "This project maintains a comprehensive [CHANGELOG](https://mirrgieriana.github.io/IFR25KU/CHANGELOG.html) in Japanese."
             }
             relations {
                 requiredDependency("forgified-fabric-api")

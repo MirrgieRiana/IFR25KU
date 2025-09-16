@@ -14,7 +14,7 @@ Links related to the original MirageFairy:
 
 ## Official Documents
 
-The specifications of this mod are officially documented only in Japanese in [CHANGELOG.md](https://mirrgieriana.github.io/IFR25KU/CHANGELOG.md).
+The specifications of this mod are officially documented only in Japanese in [CHANGELOG](https://mirrgieriana.github.io/IFR25KU/CHANGELOG.html).
 
 There is currently no comprehensive official documentation explaining the specifications of this mod, and the only available resources are unofficial wikis.
 
