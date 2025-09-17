@@ -14,11 +14,11 @@ import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.registerSpecialRecipe
 import miragefairy2024.util.text
-import miragefairy2024.util.toIngredient
 import mirrg.kotlin.helium.join
 import net.minecraft.core.NonNullList
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.item.crafting.Ingredient
 import java.math.BigInteger
 
 val FAIRY_DECONDENSATION_RECIPE_TITLE_TRANSLATION = Translation({ MirageFairy2024.identifier("fairy_decondensation.title").toLanguageKey("gui", "description") }, "Decondensing Fairies", "妖精の展開")
@@ -68,7 +68,7 @@ fun initFairyCondensationRecipe() {
     FAIRY_DECONDENSATION_RECIPE_TITLE_TRANSLATION.enJa()
     FAIRY_DECONDENSATION_RECIPE_DESCRIPTION_TRANSLATION.enJa()
     RecipeEvents.informationEntries += RecipeEvents.InformationEntry(
-        { FairyCard.item().toIngredient() },
+        { Ingredient.of(motifRegistry.map { it.createFairyItemStack() }.stream()) },
         text { FAIRY_DECONDENSATION_RECIPE_TITLE_TRANSLATION() },
         listOf(text { FAIRY_DECONDENSATION_RECIPE_DESCRIPTION_TRANSLATION() }),
         MirageFairy2024.identifier("/fairy_decondensation"),
