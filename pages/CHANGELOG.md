@@ -1,7 +1,7 @@
 # CHANGELOG
 
 - toc
-  {:toc}
+{:toc}
 
 ## Translation
 
