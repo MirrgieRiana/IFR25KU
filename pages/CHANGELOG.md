@@ -1,8 +1,5 @@
 # CHANGELOG
 
-- toc
-{:toc}
-
 ## Translation
 
 In this project, not only proper nouns but also ordinary terms often have names that do not correspond at all between English and Japanese.
@@ -12,6 +9,11 @@ For the official mappings, see the [Lang Table](lang_table.html).
 ## ドキュメンテーションされない変更
 
 各種レシピなどは、REIタブをご参照ください。
+
+## 目次
+
+- toc
+{:toc}
 
 ## 23.24.16
 
