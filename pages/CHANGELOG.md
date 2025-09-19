@@ -4,7 +4,7 @@
 
 In this project, not only proper nouns but also ordinary terms often have names that do not correspond at all between English and Japanese.
 
-For the official mappings, see the [Lang Table](lang_table.html).
+For the official translation mappings, see the [Lang Table](lang_table.html).
 
 ## ドキュメンテーションされない変更
 
