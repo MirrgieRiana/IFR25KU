@@ -11,7 +11,7 @@ kotlinCoroutines = "1.8.1"
 # Dependencies
 fabricApi = "0.115.6+1.21.1"
 forgifiedFabricApi = "0.115.6+2.1.0+1.21.1"
-mirrgKotlinHelium = "2.0.0"
+mirrgKotlinHelium = "mirrg.kotlin.helium-kotlin-2-0:4.0.1"
 rei = "16.0.799"
 clothBasicMath = "0.6.1"
 clothConfig = "15.0.140"

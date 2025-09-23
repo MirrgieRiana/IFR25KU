@@ -110,8 +110,8 @@ dependencies {
     "shadowBundle"(project(path = ":mirrg.kotlin")) { isTransitive = false } // mirrg.kotlin shadow
 
     // Library
-    implementation("mirrg.kotlin:mirrg.kotlin.helium:${libs.versions.mirrgKotlinHelium.get()}")
-    "shadowBundle"("mirrg.kotlin:mirrg.kotlin.helium:${libs.versions.mirrgKotlinHelium.get()}") { isTransitive = false }
+    implementation("mirrg.kotlin:${libs.versions.mirrgKotlinHelium.get()}")
+    "shadowBundle"("mirrg.kotlin:${libs.versions.mirrgKotlinHelium.get()}") { isTransitive = false }
 
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${libs.versions.rei.get()}")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${libs.versions.rei.get()}")

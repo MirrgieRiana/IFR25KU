@@ -56,7 +56,7 @@ dependencies {
     implementation(project(path = ":mirrg.kotlin"))
 
     // Library
-    implementation("mirrg.kotlin:mirrg.kotlin.helium:${libs.versions.mirrgKotlinHelium.get()}")
+    implementation("mirrg.kotlin:${libs.versions.mirrgKotlinHelium.get()}")
 
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${libs.versions.rei.get()}")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${libs.versions.rei.get()}")

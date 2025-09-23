@@ -77,8 +77,8 @@ dependencies {
     "shadowBundle"(project(path = ":mirrg.kotlin")) { isTransitive = false } // mirrg.kotlin shadow
 
     // Library
-    "common"("mirrg.kotlin:mirrg.kotlin.helium:${libs.versions.mirrgKotlinHelium.get()}")
-    "shadowBundle"("mirrg.kotlin:mirrg.kotlin.helium:${libs.versions.mirrgKotlinHelium.get()}") { isTransitive = false }
+    "common"("mirrg.kotlin:${libs.versions.mirrgKotlinHelium.get()}")
+    "shadowBundle"("mirrg.kotlin:${libs.versions.mirrgKotlinHelium.get()}") { isTransitive = false }
 
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-neoforge:${libs.versions.rei.get()}")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-neoforge:${libs.versions.rei.get()}")
