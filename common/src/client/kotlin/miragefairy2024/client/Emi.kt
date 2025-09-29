@@ -32,6 +32,7 @@ fun registerEmi(registry: EmiRegistry) {
     HarvestEmiCard.init(registry)
 }
 
+// TODO translate
 object HarvestEmiCard {
 
     val CATEGORY = EmiRecipeCategory(MirageFairy2024.identifier("harvest"), EmiStack.of(MaterialCard.VEROPEDA_BERRIES.item().createItemStack()))
