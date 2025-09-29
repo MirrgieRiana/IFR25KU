@@ -17,6 +17,7 @@ import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.ItemGroupCard
+import miragefairy2024.util.RecipeViewerCategoryCard
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.get
 import miragefairy2024.util.humidityCategory
@@ -69,6 +70,8 @@ object RecipeEvents {
     class InformationEntry(val input: () -> Ingredient, val title: Component, val contents: List<Component>, val id: ResourceLocation)
 
     val informationEntries = mutableListOf<InformationEntry>()
+
+    val recipeViewerCategoryCards = mutableListOf<RecipeViewerCategoryCard>()
 }
 
 context(ModContext)
@@ -128,6 +131,10 @@ fun initCommonModule() {
         ClientCommandRegistrationEvent.EVENT.register { dispatcher, _ ->
             dispatcher.register(command)
         }
+    }
+
+    RecipeEvents.recipeViewerCategoryCards.forEach {
+        it.init()
     }
 
 }
