@@ -16,6 +16,7 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
+import miragefairy2024.util.toIngredient
 import net.minecraft.resources.ResourceLocation
 
 fun registerEmi(registry: EmiRegistry) {
@@ -40,12 +41,13 @@ object HarvestEmiCard {
     class Recipe(private val id: ResourceLocation, private val harvestNotation: HarvestNotation) : EmiRecipe {
         override fun getId() = id
         override fun getCategory() = CATEGORY
-        override fun getInputs(): List<EmiIngredient> = listOf(EmiStack.of(harvestNotation.seed))
+        override fun getInputs(): List<EmiIngredient> = listOf()
+        override fun getCatalysts(): List<EmiIngredient> = listOf(EmiIngredient.of(harvestNotation.seed.toIngredient()))
         override fun getOutputs(): List<EmiStack> = harvestNotation.crops.map { EmiStack.of(it) }
         override fun getDisplayWidth() = 1 + 18 + 4 + 18 * harvestNotation.crops.size + 1
         override fun getDisplayHeight() = 1 + 18 + 1
         override fun addWidgets(widgets: WidgetHolder) {
-            widgets.addSlot(EmiStack.of(harvestNotation.seed), 1, 1)
+            widgets.addSlot(EmiStack.of(harvestNotation.seed), 1, 1).catalyst(true)
             harvestNotation.crops.forEachIndexed { index, itemStack ->
                 widgets.addSlot(EmiStack.of(itemStack), 1 + 18 + 4 + 18 * index, 1).recipeContext(this)
             }
