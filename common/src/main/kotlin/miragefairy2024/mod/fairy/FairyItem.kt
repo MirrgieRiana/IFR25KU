@@ -1,6 +1,7 @@
 package miragefairy2024.mod.fairy
 
 import com.mojang.serialization.Codec
+import me.shedaniel.rei.api.common.entry.comparison.EntryComparator
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
@@ -19,6 +20,7 @@ import miragefairy2024.mod.passiveskill.collect
 import miragefairy2024.mod.passiveskill.description
 import miragefairy2024.mod.passiveskill.effects.ManaBoostPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.findPassiveSkillProviders
+import miragefairy2024.mod.rei.ReiEvents
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.BIG_INTEGER_CODEC
@@ -162,6 +164,16 @@ fun initFairyItem() {
 
     rare10Advancement.init()
     timiaAdvancement.init()
+
+    ReiEvents.onRegisterItemComparators {
+        it.register({ context, stack ->
+            if (context.isExact) {
+                EntryComparator.itemComponents().hash(context, stack)
+            } else {
+                stack.getFairyMotif()?.getIdentifier()?.string?.hashCode()?.toLong() ?: 1L
+            }
+        }, FairyCard.item())
+    }
 }
 
 private fun createFairyModel() = Model {
