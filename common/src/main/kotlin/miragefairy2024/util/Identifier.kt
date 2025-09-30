@@ -12,7 +12,7 @@ operator fun String.times(identifier: ResourceLocation) = ResourceLocation(ident
 operator fun ResourceLocation.times(string: String) = ResourceLocation(this.namespace, this.path + string)
 
 val ResourceLocation.string get() = this.toString()
-val ResourceLocation.pathString get() = "${this.namespace}.${this.path}"
+val ResourceLocation.pathString get() = "${this.namespace}/${this.path}"
 
 
 infix fun <T> ResourceKey<out Registry<T>>.with(value: ResourceLocation): ResourceKey<T> = ResourceKey.create(this, value)

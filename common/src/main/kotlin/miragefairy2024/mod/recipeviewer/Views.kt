@@ -1,7 +1,10 @@
+@file:Suppress("FunctionName")
+
 package miragefairy2024.mod.recipeviewer
 
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Ingredient
+
 
 abstract class ContainerView<P, V : View> : View {
 
@@ -44,21 +47,8 @@ abstract class ContainerView<P, V : View> : View {
 operator fun <P, V : View> ContainerView<P, V>.set(position: P, view: V) = this.add(position, view)
 operator fun <V : View> ContainerView<Unit, V>.plusAssign(view: V) = this.add(Unit, view)
 
-class VerticalListView<V : View> : ContainerView<Unit, V>() {
-    override fun calculateWidth() = children.maxOf { it.view.getWidth() }
-    override fun calculateHeight() = children.sumOf { it.view.getHeight() }
-    override fun layout() {
-        super.layout()
-        var y = 0
-        children.forEach {
-            it.xCache = 0
-            it.yCache = y
-            y += it.view.getHeight()
-        }
-    }
-}
 
-class HorizontalListView<V : View> : ContainerView<Unit, V>() {
+class XListView<V : View> : ContainerView<Unit, V>() {
     override fun calculateWidth() = children.sumOf { it.view.getWidth() }
     override fun calculateHeight() = children.maxOf { it.view.getHeight() }
     override fun layout() {
@@ -72,21 +62,49 @@ class HorizontalListView<V : View> : ContainerView<Unit, V>() {
     }
 }
 
+context(ViewScope) fun XList(block: () -> Unit) = XListView<View>()
+
+
+class YListView<V : View> : ContainerView<Unit, V>() {
+    override fun calculateWidth() = children.maxOf { it.view.getWidth() }
+    override fun calculateHeight() = children.sumOf { it.view.getHeight() }
+    override fun layout() {
+        super.layout()
+        var y = 0
+        children.forEach {
+            it.xCache = 0
+            it.yCache = y
+            y += it.view.getHeight()
+        }
+    }
+}
+
+context(ViewScope) fun YList(block: () -> Unit) = YListView<View>()
+
+
 abstract class SolidView(private val width: Int, private val height: Int) : View {
     override fun layout() = Unit
     override fun getWidth() = width
     override fun getHeight() = height
 }
 
-class VerticalSpaceView(height: Int) : SolidView(0, height) {
+
+class XSpaceView(width: Int) : SolidView(width, 0) {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) = Unit
 }
 
-class HorizontalSpaceView(width: Int) : SolidView(width, 0) {
+context(ViewScope) fun XSpace(width: Int) = XSpaceView(width)
+
+
+class YSpaceView(height: Int) : SolidView(0, height) {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) = Unit
 }
+
+context(ViewScope) fun YSpace(width: Int) = YSpaceView(width)
+
 
 abstract class SlotView : SolidView(18, 18)
+
 
 class InputSlotView(private val ingredient: Ingredient) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
@@ -94,14 +112,22 @@ class InputSlotView(private val ingredient: Ingredient) : SlotView() {
     }
 }
 
+context(ViewScope) fun InputSlot(ingredient: Ingredient) = InputSlotView(ingredient)
+
+
 class CatalystSlotView(private val ingredient: Ingredient) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
         widgetProxy.addCatalystSlotWidget(ingredient, x, y)
     }
 }
 
+context(ViewScope) fun CatalystSlot(ingredient: Ingredient) = CatalystSlotView(ingredient)
+
+
 class OutputSlotView(private val itemStack: ItemStack) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
         widgetProxy.addOutputSlotWidget(itemStack, x, y)
     }
 }
+
+context(ViewScope) fun OutputSlot(itemStack: ItemStack) = OutputSlotView(itemStack)

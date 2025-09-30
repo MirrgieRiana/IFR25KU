@@ -6,21 +6,21 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.mod.materials.MaterialCard
-import miragefairy2024.mod.recipeviewer.CatalystSlotView
-import miragefairy2024.mod.recipeviewer.HorizontalListView
-import miragefairy2024.mod.recipeviewer.HorizontalSpaceView
-import miragefairy2024.mod.recipeviewer.OutputSlotView
+import miragefairy2024.mod.recipeviewer.CatalystSlot
+import miragefairy2024.mod.recipeviewer.OutputSlot
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
-import miragefairy2024.mod.recipeviewer.VerticalListView
 import miragefairy2024.mod.recipeviewer.View
-import miragefairy2024.mod.recipeviewer.plusAssign
+import miragefairy2024.mod.recipeviewer.XList
+import miragefairy2024.mod.recipeviewer.XSpace
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.getIdentifier
+import miragefairy2024.util.pathString
+import miragefairy2024.util.times
 import miragefairy2024.util.toIngredient
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-
-val harvestNotations = mutableListOf<HarvestNotation>()
 
 class HarvestNotation(val seed: ItemStack, val crops: List<ItemStack>) {
     companion object {
@@ -30,6 +30,15 @@ class HarvestNotation(val seed: ItemStack, val crops: List<ItemStack>) {
                 ItemStack.CODEC.listOf().fieldOf("Crops").forGetter { it.crops },
             ).apply(instance, ::HarvestNotation)
         }
+
+        private val map = mutableMapOf<ResourceLocation, HarvestNotation>()
+
+        fun register(id: ResourceLocation, harvestNotation: HarvestNotation) {
+            check(id !in map) { "Duplicate registration: $id" }
+            map[id] = harvestNotation
+        }
+
+        fun getAll(): Map<ResourceLocation, HarvestNotation> = map
     }
 }
 
@@ -38,7 +47,7 @@ fun (() -> Item).registerHarvestNotation(vararg drops: () -> Item) = this.regist
 
 context(ModContext)
 fun (() -> Item).registerHarvestNotation(drops: Iterable<() -> Item>) = ModEvents.onInitialize {
-    harvestNotations += HarvestNotation(this().createItemStack(), drops.map { it().createItemStack() })
+    HarvestNotation.register(this().getIdentifier(), HarvestNotation(this().createItemStack(), drops.map { it().createItemStack() }))
 }
 
 context(ModContext)
@@ -55,18 +64,18 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
     override fun getOutputs(recipeEntry: RecipeEntry<HarvestNotation>) = recipeEntry.recipe.crops
 
     override fun createRecipeEntries(): Iterable<RecipeEntry<HarvestNotation>> {
-        return harvestNotations.withIndex().map { (index, harvestNotation) ->
-            RecipeEntry(MirageFairy2024.identifier("/harvest/$index"), harvestNotation) // TODO
+        return HarvestNotation.getAll().map { (id, harvestNotation) ->
+            RecipeEntry("/${getId().pathString}/" * id, harvestNotation)
         }
     }
 
     override fun createView(recipeEntry: RecipeEntry<HarvestNotation>): View {
-        return VerticalListView<View>().apply {
-            this += HorizontalListView<View>().apply {
-                this += CatalystSlotView(recipeEntry.recipe.seed.toIngredient())
-                this += HorizontalSpaceView(4)
+        return View {
+            XList {
+                CatalystSlot(recipeEntry.recipe.seed.toIngredient())
+                XSpace(4)
                 recipeEntry.recipe.crops.forEach { crop ->
-                    this += OutputSlotView(crop)
+                    OutputSlot(crop)
                 }
             }
         }

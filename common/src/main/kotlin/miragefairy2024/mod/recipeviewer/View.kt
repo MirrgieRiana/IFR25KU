@@ -15,3 +15,7 @@ interface WidgetProxy {
     fun addCatalystSlotWidget(ingredient: Ingredient, x: Int, y: Int)
     fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int)
 }
+
+object ViewScope
+
+fun <V : View> View(block: context(ViewScope) () -> V) = block(ViewScope)
