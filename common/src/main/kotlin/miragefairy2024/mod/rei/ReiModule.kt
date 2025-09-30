@@ -1,20 +1,13 @@
 package miragefairy2024.mod.rei
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier
-import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay
-import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
-import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.recipeviewer.ReiEvents
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import mirrg.kotlin.helium.Single
-
-object ReiEvents {
-    val onRegisterDisplaySerializer = InitializationEventRegistry<(DisplaySerializerRegistry) -> Unit>()
-    val onRegisterItemComparators = InitializationEventRegistry<(ItemComparatorRegistry) -> Unit>()
-}
 
 abstract class ReiCategoryCard<D : BasicDisplay>(
     val path: String,
@@ -42,7 +35,6 @@ context(ModContext)
 fun initReiModule() {
 
     TraitEncyclopediaReiCategoryCard.init()
-    HarvestReiCategoryCard.init()
     FairyQuestRecipeReiCategoryCard.init()
     CommonMotifRecipeReiCategoryCard.init()
     ItemFairyDreamRecipeReiCategoryCard.init()

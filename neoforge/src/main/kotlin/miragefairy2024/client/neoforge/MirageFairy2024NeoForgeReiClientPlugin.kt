@@ -5,37 +5,19 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
-import me.shedaniel.rei.api.common.util.EntryIngredients
 import me.shedaniel.rei.forge.REIPluginClient
-import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
-import miragefairy2024.client.mod.rei.ClientReiCategoryCard
-import miragefairy2024.mod.RecipeEvents
+import miragefairy2024.client.mod.recipeviewer.ReiClientEvents
 import miragefairy2024.neoforge.MirageFairy2024NeoForgeReiServerPlugin
-import miragefairy2024.util.invoke
-import miragefairy2024.util.plus
-import miragefairy2024.util.text
 
 @REIPluginClient
 @Suppress("unused")
 class MirageFairy2024NeoForgeReiClientPlugin : REIClientPlugin {
     override fun registerCategories(registry: CategoryRegistry) {
-        ClientReiCategoryCard.entries.forEach { card ->
-            val category = card.createCategory()
-            registry.add(category)
-            registry.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
-        }
+        ReiClientEvents.onRegisterCategories.fire { it(registry) }
     }
 
     override fun registerDisplays(registry: DisplayRegistry) {
-        ClientReiCategoryCard.entries.forEach { card ->
-            card.registerDisplays(registry)
-        }
-        RecipeEvents.informationEntries.forEach {
-            BuiltinClientPlugin.getInstance().registerInformation(
-                EntryIngredients.ofIngredient(it.input()),
-                it.title,
-            ) { list -> list.also { list2 -> list2 += listOf(text { "== "() + it.title + " =="() }) + it.contents } }
-        }
+        ReiClientEvents.onRegisterDisplays.fire { it(registry) }
     }
 
     override fun registerItemComparators(registry: ItemComparatorRegistry) {
@@ -43,8 +25,6 @@ class MirageFairy2024NeoForgeReiClientPlugin : REIClientPlugin {
     }
 
     override fun registerScreens(registry: ScreenRegistry) {
-        ClientReiCategoryCard.entries.forEach { card ->
-            card.registerScreens(registry)
-        }
+        ReiClientEvents.onRegisterScreens.fire { it(registry) }
     }
 }
