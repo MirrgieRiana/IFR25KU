@@ -46,6 +46,22 @@ abstract class ContainerView<P, V : View> : View {
 
 operator fun <P, V : View> ContainerView<P, V>.set(position: P, view: V) = this.add(position, view)
 operator fun <V : View> ContainerView<Unit, V>.plusAssign(view: V) = this.add(Unit, view)
+context(ContainerView<P, V>) infix fun <P, V : View> P.has(view: V) = this@ContainerView.add(this, view)
+
+
+class SingleView<V : View> : ContainerView<Unit, V>() {
+    override fun calculateWidth() = children.single().view.getWidth()
+    override fun calculateHeight() = children.single().view.getHeight()
+    override fun layout() {
+        super.layout()
+        children.single().xCache = 0
+        children.single().yCache = 0
+    }
+
+    val childView get() = children.single().view
+}
+
+context(ViewScope) fun Single(block: SingleView<View>.() -> Unit) = SingleView<View>().apply { block() }
 
 
 class XListView<V : View> : ContainerView<Unit, V>() {
@@ -62,7 +78,7 @@ class XListView<V : View> : ContainerView<Unit, V>() {
     }
 }
 
-context(ViewScope) fun XList(block: () -> Unit) = XListView<View>()
+context(ViewScope) fun XList(block: XListView<View>.() -> Unit) = XListView<View>().apply { block() }
 
 
 class YListView<V : View> : ContainerView<Unit, V>() {
@@ -79,7 +95,7 @@ class YListView<V : View> : ContainerView<Unit, V>() {
     }
 }
 
-context(ViewScope) fun YList(block: () -> Unit) = YListView<View>()
+context(ViewScope) fun YList(block: YListView<View>.() -> Unit) = YListView<View>().apply { block() }
 
 
 abstract class SolidView(private val width: Int, private val height: Int) : View {

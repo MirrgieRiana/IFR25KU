@@ -18,4 +18,4 @@ interface WidgetProxy {
 
 object ViewScope
 
-fun <V : View> View(block: context(ViewScope) () -> V) = block(ViewScope)
+fun View(block: context(ViewScope) SingleView<View>.() -> Unit): View = ViewScope.run { Single { block(this) }.childView }
