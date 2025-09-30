@@ -41,9 +41,8 @@ abstract class ContainerView<P, V : View> : View {
 
 }
 
-operator fun <V : View> ContainerView<Unit, V>.plusAssign(view: V) {
-    this.add(Unit, view)
-}
+operator fun <P, V : View> ContainerView<P, V>.set(position: P, view: V) = this.add(position, view)
+operator fun <V : View> ContainerView<Unit, V>.plusAssign(view: V) = this.add(Unit, view)
 
 class VerticalListView<V : View> : ContainerView<Unit, V>() {
     override fun calculateWidth() = children.maxOf { it.view.getWidth() }

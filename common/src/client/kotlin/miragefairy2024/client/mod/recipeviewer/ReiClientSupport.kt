@@ -1,6 +1,5 @@
 package miragefairy2024.client.mod.recipeviewer
 
-import me.shedaniel.math.Dimension
 import me.shedaniel.math.Point
 import me.shedaniel.math.Rectangle
 import me.shedaniel.rei.api.client.gui.Renderer
@@ -85,18 +84,13 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun getCategoryIdentifier() = ReiSupport.get(card).categoryIdentifier.first
         override fun getTitle(): Component = card.displayName
         override fun getIcon(): Renderer = card.getIcon().toEntryStack()
-
-        val dimension = run {
-            val views = card.recipeEntries.map { card.getView(it) }
-            Dimension(views.maxOf { it.getWidth() }, views.maxOf { it.getHeight() })
-        }
-
-        override fun getDisplayWidth(display: SupportedDisplay<R>) = 3 + dimension.width + 3
-        override fun getDisplayHeight() = 3 + dimension.height + 3
+        private val heightCache = card.recipeEntries.map { card.getView(it) }.maxOfOrNull { it.getHeight() } ?: 0
+        override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + card.getView(display.recipeEntry).getWidth() + 5
+        override fun getDisplayHeight() = 5 + heightCache + 5
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
             val widgets = mutableListOf<Widget>()
             widgets += Widgets.createRecipeBase(bounds)
-            card.getView(display.recipeEntry).addWidgets(getReiWidgetProxy(widgets), 3 + bounds.x, 3 + bounds.y)
+            card.getView(display.recipeEntry).addWidgets(getReiWidgetProxy(widgets), 5 + bounds.x, 5 + bounds.y)
             return widgets
         }
     }
@@ -122,7 +116,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
     return object : WidgetProxy {
         override fun addInputSlotWidget(ingredient: Ingredient, x: Int, y: Int) {
-            widgets += Widgets.createSlot(Point(x, y)).entries(ingredient.toEntryIngredient()).markInput()
+            widgets += Widgets.createSlot(Point(x + 1, y + 1)).entries(ingredient.toEntryIngredient()).markInput()
         }
 
         override fun addCatalystSlotWidget(ingredient: Ingredient, x: Int, y: Int) {
@@ -130,7 +124,7 @@ private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
         }
 
         override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int) {
-            widgets += Widgets.createSlot(Point(x, y)).entries(itemStack.toEntryStack().toEntryIngredient()).markOutput()
+            widgets += Widgets.createSlot(Point(x + 1, y + 1)).entries(itemStack.toEntryStack().toEntryIngredient()).markOutput()
         }
     }
 }

@@ -12,7 +12,6 @@ import miragefairy2024.mod.recipeviewer.HorizontalSpaceView
 import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.VerticalListView
-import miragefairy2024.mod.recipeviewer.VerticalSpaceView
 import miragefairy2024.mod.recipeviewer.View
 import miragefairy2024.mod.recipeviewer.plusAssign
 import miragefairy2024.util.EnJa
@@ -62,18 +61,14 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
     }
 
     override fun createView(recipeEntry: RecipeEntry<HarvestNotation>): View {
-        return VerticalListView<View>().also { vertical ->
-            vertical += VerticalSpaceView(1)
-            vertical += HorizontalListView<View>().also { horizontal ->
-                horizontal += HorizontalSpaceView(1)
-                horizontal += CatalystSlotView(recipeEntry.recipe.seed.toIngredient())
-                horizontal += HorizontalSpaceView(4)
+        return VerticalListView<View>().apply {
+            this += HorizontalListView<View>().apply {
+                this += CatalystSlotView(recipeEntry.recipe.seed.toIngredient())
+                this += HorizontalSpaceView(4)
                 recipeEntry.recipe.crops.forEach { crop ->
-                    horizontal += OutputSlotView(crop)
+                    this += OutputSlotView(crop)
                 }
-                horizontal += HorizontalSpaceView(1)
             }
-            vertical += VerticalSpaceView(1)
         }
     }
 }

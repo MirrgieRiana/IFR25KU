@@ -76,9 +76,9 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getCatalysts(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
     override fun getOutputs(): List<EmiStack> = support.card.getOutputs(recipeEntry).map { EmiStack.of(it) }
     val view = support.card.getView(recipeEntry)
-    override fun getDisplayWidth() = view.getWidth()
-    override fun getDisplayHeight() = view.getHeight()
-    override fun addWidgets(widgets: WidgetHolder) = view.addWidgets(getEmiWidgetProxy(widgets, this), 0, 0)
+    override fun getDisplayWidth() = 1 + view.getWidth() + 1
+    override fun getDisplayHeight() = 1 + view.getHeight() + 1
+    override fun addWidgets(widgets: WidgetHolder) = view.addWidgets(getEmiWidgetProxy(widgets, this), 1, 1)
 }
 
 private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): WidgetProxy {
