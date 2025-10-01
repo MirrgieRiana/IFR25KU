@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.getIdentifier
 import net.minecraft.resources.ResourceLocation
@@ -40,5 +41,9 @@ fun (() -> Item).registerHarvestNotation(drops: Iterable<() -> Item>) = ModEvent
 
 context(ModContext)
 fun initHarvestNotationModule() {
+    HarvestNotationRecipeViewerCategoryCard.init()
+}
+
+object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<HarvestNotation>() {
 
 }
