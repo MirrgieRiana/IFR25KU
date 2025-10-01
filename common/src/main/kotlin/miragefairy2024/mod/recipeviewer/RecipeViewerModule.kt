@@ -10,7 +10,7 @@ object RecipeViewerEvents {
 
     val informationEntries = mutableListOf<InformationEntry>()
 
-    val recipeViewerCategoryCards = mutableListOf<RecipeViewerCategoryCard>()
+    val recipeViewerCategoryCards = mutableListOf<RecipeViewerCategoryCard<*>>()
 }
 
 context(ModContext)

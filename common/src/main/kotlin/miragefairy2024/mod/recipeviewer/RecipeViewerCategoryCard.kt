@@ -2,7 +2,9 @@ package miragefairy2024.mod.recipeviewer
 
 import miragefairy2024.ModContext
 
-interface RecipeViewerCategoryCard {
+abstract class RecipeViewerCategoryCard<T> {
     context(ModContext)
-    fun init()
+    open fun init() {
+
+    }
 }
