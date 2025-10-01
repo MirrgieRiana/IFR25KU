@@ -29,7 +29,9 @@ object ReiEvents {
 
 context(ModContext)
 fun initReiSupport() {
-    ReiSupport.get(HarvestNotationRecipeViewerCategoryCard).init()
+    ReiEvents.onRegisterDisplaySerializer {
+        ReiSupport.get(HarvestNotationRecipeViewerCategoryCard).registerDisplaySerializer(it)
+    }
 }
 
 class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
@@ -59,11 +61,8 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
         }))
     }
 
-    context(ModContext)
-    fun init() {
-        ReiEvents.onRegisterDisplaySerializer {
-            it.register(identifier.first, serializer.first)
-        }
+    fun registerDisplaySerializer(registry: DisplaySerializerRegistry) {
+        registry.register(identifier.first, serializer.first)
     }
 }
 
