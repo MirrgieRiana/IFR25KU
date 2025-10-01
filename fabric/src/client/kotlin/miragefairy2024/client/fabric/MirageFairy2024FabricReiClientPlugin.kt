@@ -10,6 +10,9 @@ import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
 import miragefairy2024.client.mod.rei.ClientReiCategoryCard
 import miragefairy2024.fabric.MirageFairy2024FabricReiServerPlugin
 import miragefairy2024.mod.RecipeEvents
+import miragefairy2024.util.invoke
+import miragefairy2024.util.plus
+import miragefairy2024.util.text
 
 @Suppress("unused")
 class MirageFairy2024FabricReiClientPlugin : REIClientPlugin {
@@ -29,7 +32,7 @@ class MirageFairy2024FabricReiClientPlugin : REIClientPlugin {
             BuiltinClientPlugin.getInstance().registerInformation(
                 EntryIngredients.ofIngredient(it.input()),
                 it.title,
-            ) { list -> list.also { list2 -> list2 += it.contents } }
+            ) { list -> list.also { list2 -> list2 += listOf(text { "== "() + it.title + " =="() }) + it.contents } }
         }
     }
 
