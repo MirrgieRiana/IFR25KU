@@ -86,7 +86,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
     fun createCategory() = object : DisplayCategory<SupportedDisplay<R>> {
         override fun getCategoryIdentifier() = ReiSupport.get(card).identifier.first
-        override fun getTitle(): Component = ReiSupport.get(card).displayName
+        override fun getTitle(): Component = card.displayName
         override fun getIcon(): Renderer = MaterialCard.VEROPEDA_BERRIES.item().createItemStack().toEntryStack()
         override fun getDisplayWidth(display: SupportedDisplay<R>) = 136
         override fun getDisplayHeight() = 36
