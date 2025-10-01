@@ -22,8 +22,6 @@ import net.minecraft.world.item.crafting.Ingredient
 
 context(ModContext)
 fun initEmiClientSupport() {
-
-    // TODO move
     EmiEvents.onRegister {
         RecipeViewerEvents.informationEntries.forEach { informationEntry ->
             it.addRecipe(
@@ -41,7 +39,6 @@ fun initEmiClientSupport() {
             EmiClientSupport.get(card).register(it)
         }
     }
-
 }
 
 class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
@@ -53,14 +50,14 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         }
     }
 
-    val category: Single<EmiRecipeCategory> by lazy { // 非ロード環境用のSingle
+    val emiRecipeCategory: Single<EmiRecipeCategory> by lazy { // 非ロード環境用のSingle
         Single(object : EmiRecipeCategory(card.getId(), EmiStack.of(card.getIcon())) {
             override fun getName() = card.displayName
         })
     }
 
     fun register(registry: EmiRegistry) {
-        registry.addCategory(category.first)
+        registry.addCategory(emiRecipeCategory.first)
         card.recipeEntries.forEach { recipeEntry ->
             registry.addRecipe(SupportedEmiRecipe(this, recipeEntry))
         }
@@ -69,7 +66,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 }
 
 class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: RecipeEntry<R>) : EmiRecipe {
-    override fun getCategory() = support.category.first
+    override fun getCategory() = support.emiRecipeCategory.first
     override fun getId() = recipeEntry.id
     override fun getInputs(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { !it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
     override fun getCatalysts(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }

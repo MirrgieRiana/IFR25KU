@@ -36,34 +36,44 @@ object ReiClientEvents {
 
 context(ModContext)
 fun initReiClientSupport() {
-    ReiClientEvents.onRegisterCategories {
-        ClientReiCategoryCard.entries.forEach { card ->
-            val category = card.createCategory()
-            it.add(category)
-            it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
-        }
-        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
-            ReiClientSupport.get(card).registerCategories(it)
-        }
-    }
     ReiClientEvents.onRegisterDisplays {
-        ClientReiCategoryCard.entries.forEach { card ->
-            card.registerDisplays(it)
-        }
         RecipeViewerEvents.informationEntries.forEach { informationEntry ->
             BuiltinClientPlugin.getInstance().registerInformation(
                 EntryIngredients.ofIngredient(informationEntry.input()),
                 informationEntry.title,
             ) { list -> list.also { list2 -> list2 += listOf(text { "== "() + informationEntry.title + " =="() }) + informationEntry.contents } }
         }
-        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
-            ReiClientSupport.get(card).registerDisplays(it)
+    }
+
+    ReiClientEvents.onRegisterCategories {
+        ClientReiCategoryCard.entries.forEach { card ->
+            val category = card.createCategory()
+            it.add(category)
+            it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
+        }
+    }
+    ReiClientEvents.onRegisterDisplays {
+        ClientReiCategoryCard.entries.forEach { card ->
+            card.registerDisplays(it)
         }
     }
     ReiClientEvents.onRegisterScreens {
         ClientReiCategoryCard.entries.forEach { card ->
             card.registerScreens(it)
         }
+    }
+
+    ReiClientEvents.onRegisterCategories {
+        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+            ReiClientSupport.get(card).registerCategories(it)
+        }
+    }
+    ReiClientEvents.onRegisterDisplays {
+        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+            ReiClientSupport.get(card).registerDisplays(it)
+        }
+    }
+    ReiClientEvents.onRegisterScreens {
         RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
             ReiClientSupport.get(card).registerScreens(it)
         }
