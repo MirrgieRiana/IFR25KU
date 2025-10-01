@@ -17,6 +17,7 @@ import miragefairy2024.mod.recipeviewer.WidgetProxy
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
+import mirrg.kotlin.helium.Single
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Ingredient
@@ -51,12 +52,14 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         }
     }
 
-    val emiRecipeCategory = object : EmiRecipeCategory(card.getId(), EmiStack.of(card.getIcon())) {
-        override fun getName() = card.displayName
+    val emiRecipeCategory: Single<EmiRecipeCategory> by lazy { // 非ロード環境用のSingle
+        Single(object : EmiRecipeCategory(card.getId(), EmiStack.of(card.getIcon())) {
+            override fun getName() = card.displayName
+        })
     }
 
     fun register(registry: EmiRegistry) {
-        registry.addCategory(emiRecipeCategory)
+        registry.addCategory(emiRecipeCategory.first)
         HarvestNotation.getAll().forEach { (id, harvestNotation) ->
             registry.addRecipe(SupportedEmiRecipe(this, MirageFairy2024.identifier("/harvest/$id"), harvestNotation))
         }
@@ -66,7 +69,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
 class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, private val id: ResourceLocation, private val harvestNotation: HarvestNotation) : EmiRecipe {
     override fun getId() = id
-    override fun getCategory() = support.emiRecipeCategory
+    override fun getCategory() = support.emiRecipeCategory.first
     override fun getInputs(): List<EmiIngredient> = listOf(EmiStack.of(harvestNotation.seed))
     override fun getOutputs(): List<EmiStack> = harvestNotation.crops.map { EmiStack.of(it) }
     override fun getDisplayWidth() = 1 + 18 + 4 + 18 * harvestNotation.crops.size + 1
