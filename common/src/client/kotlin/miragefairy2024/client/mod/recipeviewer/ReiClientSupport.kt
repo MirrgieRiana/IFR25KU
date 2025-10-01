@@ -116,7 +116,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
     fun registerCategories(registry: CategoryRegistry) {
         registry.add(displayCategory)
-        registry.addWorkstations(displayCategory.categoryIdentifier, *getWorkstations().toTypedArray())
+        registry.addWorkstations(displayCategory.categoryIdentifier, *card.getWorkstations().map { it.toEntryStack() }.toTypedArray())
     }
 
     fun registerDisplays(registry: DisplayRegistry) {
@@ -124,8 +124,6 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             registry.add(SupportedDisplay(ReiSupport.get(card), it))
         }
     }
-
-    fun getWorkstations(): List<EntryIngredient> = listOf()
 
     fun registerScreens(registry: ScreenRegistry) = Unit
 

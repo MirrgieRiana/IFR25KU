@@ -21,6 +21,7 @@ abstract class RecipeViewerCategoryCard<R> {
     val displayName = text { translation() }
 
     abstract fun getIcon(): ItemStack
+    abstract fun getWorkstations(): List<ItemStack>
 
     class RecipeEntry<R>(val id: ResourceLocation, val recipe: R) {
         companion object {

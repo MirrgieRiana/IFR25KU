@@ -57,6 +57,9 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
     fun register(registry: EmiRegistry) {
         registry.addCategory(emiRecipeCategory.first)
+        card.getWorkstations().forEach {
+            registry.addWorkstation(emiRecipeCategory.first, EmiStack.of(it))
+        }
         card.recipeEntries.forEach {
             registry.addRecipe(SupportedEmiRecipe(this, it))
         }
