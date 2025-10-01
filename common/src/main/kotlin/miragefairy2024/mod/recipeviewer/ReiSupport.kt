@@ -1,6 +1,7 @@
 package miragefairy2024.mod.recipeviewer
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier
+import me.shedaniel.rei.api.common.display.Display
 import me.shedaniel.rei.api.common.display.DisplaySerializer
 import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay
@@ -67,9 +68,8 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
 
 }
 
-class SupportedDisplay<R>(val support: ReiSupport<R>, val recipe: R) : BasicDisplay(
-    support.card.getInputs(recipe).map { it.ingredient.toEntryIngredient() },
-    support.card.getOutputs(recipe).map { it.toEntryStack().toEntryIngredient() },
-) {
+class SupportedDisplay<R>(val support: ReiSupport<R>, val recipe: R) : Display {
+    override fun getInputEntries() = support.card.getInputs(recipe).map { it.ingredient.toEntryIngredient() }
+    override fun getOutputEntries() = support.card.getOutputs(recipe).map { it.toEntryStack().toEntryIngredient() }
     override fun getCategoryIdentifier() = support.categoryIdentifier.first
 }
