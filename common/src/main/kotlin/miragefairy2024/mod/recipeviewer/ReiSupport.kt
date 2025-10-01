@@ -5,7 +5,6 @@ import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
 import miragefairy2024.InitializationEventRegistry
-import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.HarvestNotationRecipeViewerCategoryCard
@@ -43,13 +42,12 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
         }
     }
 
-    val id = MirageFairy2024.identifier("harvest")
     val enName = "Harvest"
     val jaName = "収穫"
-    val translation = Translation({ "category.rei.${id.toLanguageKey()}" }, enName, jaName)
+    val translation = Translation({ "category.rei.${card.getId().toLanguageKey()}" }, enName, jaName)
 
     // Singleを取り除くとREI無しで起動するとクラッシュする
-    val identifier: Single<CategoryIdentifier<SupportedDisplay<R>>> by lazy { Single(CategoryIdentifier.of(id.namespace, "plugins/${id.path}")) }
+    val identifier: Single<CategoryIdentifier<SupportedDisplay<R>>> by lazy { Single(CategoryIdentifier.of(card.getId().namespace, "plugins/${card.getId().path}")) }
 
     val serializer: Single<BasicDisplay.Serializer<SupportedDisplay<R>>> by lazy {
         Single(BasicDisplay.Serializer.ofRecipeLess({ _, _, tag ->

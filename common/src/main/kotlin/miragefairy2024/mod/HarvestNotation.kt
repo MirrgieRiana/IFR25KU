@@ -2,6 +2,7 @@ package miragefairy2024.mod
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
@@ -45,5 +46,5 @@ fun initHarvestNotationModule() {
 }
 
 object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<HarvestNotation>() {
-
+    override fun getId() = MirageFairy2024.identifier("harvest")
 }

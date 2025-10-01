@@ -50,7 +50,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         }
     }
 
-    val CATEGORY = EmiRecipeCategory(MirageFairy2024.identifier("harvest"), EmiStack.of(MaterialCard.VEROPEDA_BERRIES.item().createItemStack()))
+    val CATEGORY = EmiRecipeCategory(card.getId(), EmiStack.of(MaterialCard.VEROPEDA_BERRIES.item().createItemStack()))
 
     fun init(registry: EmiRegistry) {
         registry.addCategory(CATEGORY)
