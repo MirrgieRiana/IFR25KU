@@ -1,5 +1,7 @@
 package miragefairy2024.mod.recipeviewer
 
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.ModContext
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Translation
@@ -18,6 +20,20 @@ abstract class RecipeViewerCategoryCard<R> {
     val displayName = text { translation() }
 
     abstract fun getIcon(): ItemStack
+
+    class RecipeEntry<R>(val id: ResourceLocation, val recipe: R) {
+        companion object {
+            fun <R> getCodec(recipeCodec: Codec<R>): Codec<RecipeEntry<R>> = RecordCodecBuilder.create { instance ->
+                instance.group(
+                    ResourceLocation.CODEC.fieldOf("Id").forGetter { it.id },
+                    recipeCodec.fieldOf("Recipe").forGetter { it.recipe },
+                ).apply(instance, ::RecipeEntry)
+            }
+        }
+    }
+
+    abstract fun getRecipeCodec(): Codec<R>
+    val recipeEntryCodec: Codec<RecipeEntry<R>> = RecipeEntry.getCodec(getRecipeCodec())
 
     context(ModContext)
     open fun init() {
