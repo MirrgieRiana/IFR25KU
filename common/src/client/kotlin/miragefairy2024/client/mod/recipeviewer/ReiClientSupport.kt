@@ -9,16 +9,17 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry
+import me.shedaniel.rei.api.common.display.basic.BasicDisplay
 import me.shedaniel.rei.api.common.entry.EntryIngredient
 import me.shedaniel.rei.api.common.util.EntryIngredients
 import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
 import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
-import miragefairy2024.client.mod.rei.ClientReiCategoryCard
 import miragefairy2024.mod.RecipeEvents
 import miragefairy2024.mod.harvestNotations
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.HarvestReiCategoryCard
+import miragefairy2024.mod.recipeviewer.ReiCategoryCard
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
@@ -35,7 +36,7 @@ object ReiClientEvents {
 context(ModContext)
 fun initReiClientSupport() {
     ReiClientEvents.onRegisterCategories {
-        ClientReiCategoryCard.entries.forEach { card ->
+        miragefairy2024.client.mod.rei.ClientReiCategoryCard.entries.forEach { card ->
             val category = card.createCategory()
             it.add(category)
             it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
@@ -47,7 +48,7 @@ fun initReiClientSupport() {
         }
     }
     ReiClientEvents.onRegisterDisplays {
-        ClientReiCategoryCard.entries.forEach { card ->
+        miragefairy2024.client.mod.rei.ClientReiCategoryCard.entries.forEach { card ->
             card.registerDisplays(it)
         }
         HarvestClientReiCategoryCard.let { card ->
@@ -61,13 +62,20 @@ fun initReiClientSupport() {
         }
     }
     ReiClientEvents.onRegisterScreens {
-        ClientReiCategoryCard.entries.forEach { card ->
+        miragefairy2024.client.mod.rei.ClientReiCategoryCard.entries.forEach { card ->
             card.registerScreens(it)
         }
         HarvestClientReiCategoryCard.let { card ->
             card.registerScreens(it)
         }
     }
+}
+
+abstract class ClientReiCategoryCard<D : BasicDisplay>(val parent: ReiCategoryCard<D>) {
+    abstract fun registerDisplays(registry: DisplayRegistry)
+    abstract fun createCategory(): DisplayCategory<D>
+    open fun getWorkstations(): List<EntryIngredient> = listOf()
+    open fun registerScreens(registry: ScreenRegistry) = Unit
 }
 
 object HarvestClientReiCategoryCard : ClientReiCategoryCard<HarvestReiCategoryCard.Display>(HarvestReiCategoryCard) {

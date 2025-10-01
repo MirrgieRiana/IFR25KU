@@ -1,13 +1,16 @@
 package miragefairy2024.mod.recipeviewer
 
+import me.shedaniel.rei.api.common.category.CategoryIdentifier
 import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
 import miragefairy2024.InitializationEventRegistry
+import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.HarvestNotation
-import miragefairy2024.mod.rei.ReiCategoryCard
+import miragefairy2024.util.Translation
 import miragefairy2024.util.compound
+import miragefairy2024.util.enJa
 import miragefairy2024.util.get
 import miragefairy2024.util.list
 import miragefairy2024.util.toEntryIngredient
@@ -28,6 +31,26 @@ object ReiEvents {
 context(ModContext)
 fun initReiSupport() {
     HarvestReiCategoryCard.init()
+}
+
+abstract class ReiCategoryCard<D : BasicDisplay>(
+    val path: String,
+    enName: String,
+    jaName: String,
+) {
+    val translation = Translation({ "category.rei.${MirageFairy2024.identifier(path).toLanguageKey()}" }, enName, jaName)
+
+    // Singleを取り除くとREI無しで起動するとクラッシュする
+    val identifier: Single<CategoryIdentifier<D>> by lazy { Single(CategoryIdentifier.of(MirageFairy2024.MOD_ID, "plugins/$path")) }
+    abstract val serializer: Single<BasicDisplay.Serializer<D>>
+
+    context(ModContext)
+    fun init() {
+        translation.enJa()
+        ReiEvents.onRegisterDisplaySerializer {
+            it.register(identifier.first, serializer.first)
+        }
+    }
 }
 
 object HarvestReiCategoryCard : ReiCategoryCard<HarvestReiCategoryCard.Display>("harvest", "Harvest", "収穫") {
