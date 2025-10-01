@@ -13,6 +13,7 @@ import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.RecipeEvents
 import miragefairy2024.mod.harvestNotations
 import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.mod.recipeviewer.EmiEvents
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
@@ -21,21 +22,19 @@ import net.minecraft.resources.ResourceLocation
 
 context(ModContext)
 fun initEmiClientSupport() {
-
-}
-
-fun registerEmi(registry: EmiRegistry) {
-    RecipeEvents.informationEntries.forEach {
-        registry.addRecipe(
-            EmiInfoRecipe(
-                listOf(EmiIngredient.of(it.input())),
-                listOf(text { "== "() + it.title + " =="() }) + it.contents,
-                it.id,
+    EmiEvents.onRegister { registry ->
+        RecipeEvents.informationEntries.forEach {
+            registry.addRecipe(
+                EmiInfoRecipe(
+                    listOf(EmiIngredient.of(it.input())),
+                    listOf(text { "== "() + it.title + " =="() }) + it.contents,
+                    it.id,
+                )
             )
-        )
-    }
+        }
 
-    HarvestEmiCard.init(registry)
+        HarvestEmiCard.init(registry)
+    }
 }
 
 object HarvestEmiCard {
