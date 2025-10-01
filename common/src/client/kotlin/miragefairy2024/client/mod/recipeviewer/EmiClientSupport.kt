@@ -8,7 +8,6 @@ import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
 import dev.emi.emi.api.widget.WidgetHolder
 import miragefairy2024.ModContext
-import miragefairy2024.mod.RecipeEvents
 import miragefairy2024.mod.recipeviewer.EmiEvents
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard.RecipeEntry
@@ -26,7 +25,7 @@ fun initEmiClientSupport() {
 
     // TODO move
     EmiEvents.onRegister {
-        RecipeEvents.informationEntries.forEach { informationEntry ->
+        RecipeViewerEvents.informationEntries.forEach { informationEntry ->
             it.addRecipe(
                 EmiInfoRecipe(
                     listOf(EmiIngredient.of(informationEntry.input())),

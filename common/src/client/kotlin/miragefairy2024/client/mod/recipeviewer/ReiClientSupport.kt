@@ -14,7 +14,6 @@ import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
 import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.rei.ClientReiCategoryCard
-import miragefairy2024.mod.RecipeEvents
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
@@ -51,7 +50,7 @@ fun initReiClientSupport() {
         ClientReiCategoryCard.entries.forEach { card ->
             card.registerDisplays(it)
         }
-        RecipeEvents.informationEntries.forEach { informationEntry ->
+        RecipeViewerEvents.informationEntries.forEach { informationEntry ->
             BuiltinClientPlugin.getInstance().registerInformation(
                 EntryIngredients.ofIngredient(informationEntry.input()),
                 informationEntry.title,
