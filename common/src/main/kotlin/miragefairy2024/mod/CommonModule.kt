@@ -12,7 +12,6 @@ import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.fairy.MotifCard
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.materials.MaterialCard
-import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.platformProxy
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -120,10 +119,6 @@ fun initCommonModule() {
         ClientCommandRegistrationEvent.EVENT.register { dispatcher, _ ->
             dispatcher.register(command)
         }
-    }
-
-    RecipeViewerEvents.recipeViewerCategoryCards.forEach {
-        it.init()
     }
 
 }
