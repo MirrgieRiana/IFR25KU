@@ -3,13 +3,24 @@ package miragefairy2024.mod.fairyquest
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import me.shedaniel.rei.api.common.entry.EntryIngredient
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.PlacedItemFeature
 import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.mod.recipeviewer.CatalystSlot
+import miragefairy2024.mod.recipeviewer.InputSlot
+import miragefairy2024.mod.recipeviewer.OutputSlot
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.View
+import miragefairy2024.mod.recipeviewer.XList
+import miragefairy2024.mod.recipeviewer.XSpace
+import miragefairy2024.mod.recipeviewer.plusAssign
 import miragefairy2024.util.Chance
+import miragefairy2024.util.EnJa
+import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.Registration
 import miragefairy2024.util.Translation
 import miragefairy2024.util.createItemStack
@@ -20,6 +31,7 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.overworld
 import miragefairy2024.util.per
 import miragefairy2024.util.placementModifiers
+import miragefairy2024.util.plus
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChestLoot
 import miragefairy2024.util.registerDynamicGeneration
@@ -28,6 +40,7 @@ import miragefairy2024.util.square
 import miragefairy2024.util.surface
 import miragefairy2024.util.text
 import miragefairy2024.util.toIngredient
+import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.weightedRandom
 import miragefairy2024.util.with
 import mirrg.kotlin.helium.join
@@ -42,7 +55,6 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
@@ -63,7 +75,7 @@ interface FairyQuestRecipe {
     val message: Component
     val client: Component
     val duration: Int
-    val inputs: List<Pair<() -> Ingredient, Int>>
+    val inputs: List<() -> IngredientStack>
     val outputs: List<() -> ItemStack>
 }
 
@@ -78,7 +90,7 @@ enum class FairyQuestRecipeCard(
     jaMessage: String,
     enClient: String,
     jaClient: String,
-    override val inputs: List<Pair<() -> Ingredient, Int>>,
+    override val inputs: List<() -> IngredientStack>,
     override val outputs: List<() -> ItemStack>,
     override val duration: Int = 20 * 10,
     override val icon: () -> ItemStack = outputs.first(),
@@ -89,7 +101,7 @@ enum class FairyQuestRecipeCard(
         "Help!!!\n\n!!!!\n\n!!!!!\n\nI'm out of toilet paper!!!!!!",
         "助けて！！！\n\n！！！！\n\n！！！！！\n\nトイレットペーパーが無いの！！！！！！",
         "The Institute of Fairy Research\nEthics Department\nTirirknofe Herirmina", "妖精研究所\n倫理部\nティリルクノフェ・ヘリルミーナ",
-        listOf({ Items.PAPER.toIngredient() } to 24),
+        listOf({ Items.PAPER.toIngredientStack(24) }),
         listOf { Items.EMERALD.createItemStack(1) },
     ),
     NOTICE_FOR_CERAMIC_BRICK_DONATIONS(
@@ -98,7 +110,7 @@ enum class FairyQuestRecipeCard(
         "We are actively seeking donations of ceramic bricks for the reconstruction project of the vacuum decay reactor. If you are in need, we will selectively provide reusable building materials.",
         "真空崩壊炉改修工事に向けてセラミックレンガの寄付を広く募集しております。必要な場合は、リユース可能な建築資材を選別してご提供いたします。",
         "The Institute of Fairy Research\nCordelia Branch", "妖精研究所\nコーディリア支部",
-        listOf({ Items.BRICKS.toIngredient() } to 1),
+        listOf({ Items.BRICKS.toIngredientStack(1) }),
         listOf({ BlockMaterialCard.DRYWALL.item().createItemStack(1) }, { Items.STONE_BRICKS.createItemStack(1) }, { Items.WHITE_CONCRETE.createItemStack(1) }),
     ),
     IMPROMPTU_FANTASTIC_CARNIVAL(
@@ -107,7 +119,7 @@ enum class FairyQuestRecipeCard(
         "Help! We're running out of cakes, and the chickens are taking their sweet time laying eggs! Can someone please help out? We don't have time to bake, so substitute it right away!",
         "たいへん！ケーキが足りないのにニワトリがなかなか卵を産まないの！お願い！作ってる時間はないから、今すぐ誰か代わりになって！",
         "Breadia the fairy of bread", "麺麭精ブレアージャ",
-        listOf({ MaterialCard.FRACTAL_WISP.item().toIngredient() } to 1), // TODO -> ケーキ精
+        listOf({ MaterialCard.FRACTAL_WISP.item().toIngredientStack(1) }), // TODO -> ケーキ精
         listOf { Items.CAKE.createItemStack(1) },
     ),
     NEW_PRODUCT_FROM_FRI(
@@ -136,8 +148,8 @@ enum class FairyQuestRecipeCard(
             "※お子様の手の届かない場所に保管してください。",
         ).join("\n"),
         "The Institute of Fairy Research\nCreation Department", "妖精研究所\n創製部",
-        listOf({ ItemTags.COALS.toIngredient() } to 1),
-        listOf { Items.WHITE_BED.createItemStack(1) },
+        listOf({ ItemTags.COALS.toIngredientStack(1) }),
+        listOf { Items.WHITE_BED.createItemStack() },
     ),
     VEGETATION_SURVEY(
         "vegetation_survey", 0x6BAF7C, LootCategory.RARE,
@@ -145,7 +157,7 @@ enum class FairyQuestRecipeCard(
         "The fairy trees...? We should be over a million light-years away from the Habitabilis Zona. I'm curious to divine the past of this star, so would you consider sending me samples of the vegetation?",
         "妖精の樹…？ここはハビタビリスゾーナから100万光年以上も離れた場所のはず…。この星の過去を占ってみたいから、植生サンプルを送ってくれないかしら？",
         "The Pearl Knights of Miranagi\nShinonome Astrology Academy\nRumeri", "みらなぎ聖騎士団\n東雲占卜院\nるめり",
-        listOf({ HaimeviskaBlockCard.LOG.item().toIngredient() } to 4, { HaimeviskaBlockCard.LEAVES.item().toIngredient() } to 16),
+        listOf({ HaimeviskaBlockCard.LOG.item().toIngredientStack(4) }, { HaimeviskaBlockCard.LEAVES.item().toIngredientStack(16) }),
         listOf { MaterialCard.MIRANAGITE.item().createItemStack(1) },
     ),
     FATAL_ACCIDENT(
@@ -187,10 +199,10 @@ enum class FairyQuestRecipeCard(
         """.trimIndent().trim().replace("\n", "\n\n"),
         "The Institute of Fairy Research\nOphelia Branch\nLibrariania the fairy of librarian", "妖精研究所\nオフィーリア支部\n司書精リブラリアーニャ",
         listOf(
-            { Items.BEDROCK.toIngredient() } to 64,
-            { Items.BEDROCK.toIngredient() } to 64,
-            { Items.BEDROCK.toIngredient() } to 64,
-            { Items.BEDROCK.toIngredient() } to 64,
+            { Items.BEDROCK.toIngredientStack(64) },
+            { Items.BEDROCK.toIngredientStack(64) },
+            { Items.BEDROCK.toIngredientStack(64) },
+            { Items.BEDROCK.toIngredientStack(64) },
         ),
         listOf(
             { BlockMaterialCard.LOCAL_VACUUM_DECAY.item().createItemStack(64) },
@@ -327,5 +339,64 @@ class SetFairyQuestRecipeLootFunction(conditions: List<LootItemCondition>, priva
     override fun run(stack: ItemStack, context: LootContext): ItemStack {
         stack.setFairyQuestRecipe(fairyQuestRecipeRegistry.get(recipeId)!!)
         return stack
+    }
+}
+
+object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyQuestRecipe>() {
+    override fun getId() = MirageFairy2024.identifier("fairy_quest")
+    override fun getName() = EnJa("Fairy Quest", "フェアリークエスト")
+    override fun getIcon() = FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(FairyQuestRecipeCard.NEW_PRODUCT_FROM_FRI) }
+    override fun getWorkstations() = listOf<ItemStack>()
+    override fun getRecipeCodec() = fairyQuestRecipeRegistry.byNameCodec()
+    override fun getInputs(recipeEntry: RecipeEntry<FairyQuestRecipe>): List<Input> {
+        return listOf(
+            Input(FairyQuestCardCard.item().createItemStack().also<ItemStack> { it.setFairyQuestRecipe(recipeEntry.recipe) }.toIngredientStack(), true),
+            *recipeEntry.recipe.inputs.map<() -> IngredientStack, Input> { input -> Input(input(), false) }.toTypedArray<Input>(),
+        )
+    }
+
+    override fun getOutputs(recipeEntry: RecipeEntry<FairyQuestRecipe>) = recipeEntry.recipe.outputs.map { it() }
+
+    override fun createRecipeEntries(): Iterable<RecipeEntry<FairyQuestRecipe>> {
+        return fairyQuestRecipeRegistry.entrySet().map { (id, recipe) ->
+            RecipeEntry(id.location(), recipe, true)
+        }
+    }
+
+    override fun createView(recipeEntry: RecipeEntry<FairyQuestRecipe>) = View {
+
+        this += CatalystSlot(FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(recipeEntry.recipe) }.toIngredientStack())
+
+
+            .
+            Slot.entries(display.inputEntries.getOrNull(0) ?: EntryIngredient.empty()).disableBackground().markInput(), // フェアリークエストカード
+        Label.display.recipe.title).color(0xFF404040.toInt(), 0xFFBBBBBB.toInt()).noShadow().leftAligned(),
+
+        Slot.entries(display.inputEntries.getOrNull(1) ?: EntryIngredient.empty()).markInput(), // 入力アイテム
+        Slot.entries(display.inputEntries.getOrNull(2) ?: EntryIngredient.empty()).markInput(), // 入力アイテム
+        Slot.entries(display.inputEntries.getOrNull(3) ?: EntryIngredient.empty()).markInput(), // 入力アイテム
+        Slot.entries(display.inputEntries.getOrNull(4) ?: EntryIngredient.empty()).markInput(), // 入力アイテム
+
+        Slot.entries(display.outputEntries.getOrNull(0) ?: EntryIngredient.empty()).markOutput(), // 出力アイテム
+        Slot.entries(display.outputEntries.getOrNull(1) ?: EntryIngredient.empty()).markOutput(), // 出力アイテム
+        Slot.entries(display.outputEntries.getOrNull(2) ?: EntryIngredient.empty()).markOutput(), // 出力アイテム
+        Slot.entries(display.outputEntries.getOrNull(3) ?: EntryIngredient.empty()).markOutput(), // 出力アイテム
+
+
+        this += XList {
+            this += CatalystSlot(FairyQuestCardCard.item().toIngredient())
+            this += XSpace(4)
+            recipeEntry.recipe.inputs.forEach { (ingredientSupplier, count) ->
+                this += InputSlot(ingredientSupplier(), count > 1, count)
+            }
+            this += XSpace(8)
+            recipeEntry.recipe.outputs.forEach { output ->
+                this += OutputSlot(output)
+            }
+        }
+        this += XSpace(4)
+        this += Text(recipeEntry.recipe.title).setColor(0xFF404040.toInt(), 0xFFBBBBBB.toInt()).setShadow(false).setAlignment(XText.Alignment.LEFT)
+        this += Text(recipeEntry.recipe.message).setColor(0xFF404040.toInt(), 0xFFBBBBBB.toInt()).setShadow(false).setAlignment(XText.Alignment.LEFT).setMaxWidth(150)
+        this += Text(text { "Client: "() + recipeEntry.recipe.client }).setColor(0xFF404040.toInt(), 0xFFBBBBBB.toInt()).setShadow(false).setAlignment(XText.Alignment.LEFT).setMaxWidth(150
     }
 }

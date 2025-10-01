@@ -12,13 +12,14 @@ import miragefairy2024.mod.recipeviewer.EmiEvents
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.WidgetProxy
+import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
 import miragefairy2024.util.times
+import miragefairy2024.util.toEmiIngredient
 import mirrg.kotlin.helium.Single
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.crafting.Ingredient
 
 context(ModContext)
 fun initEmiClientSupport() {
@@ -71,8 +72,8 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>) : EmiRecipe {
     override fun getCategory() = support.emiRecipeCategory.first
     override fun getId() = if (recipeEntry.isSynthetic) "/" * recipeEntry.id else recipeEntry.id
-    override fun getInputs(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { !it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
-    override fun getCatalysts(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
+    override fun getInputs(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { !it.isCatalyst }.map { EmiIngredient.of(it.ingredientStack.ingredient, it.ingredientStack.count.toLong()) }
+    override fun getCatalysts(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { it.isCatalyst }.map { EmiIngredient.of(it.ingredientStack.ingredient, it.ingredientStack.count.toLong()) }
     override fun getOutputs(): List<EmiStack> = support.card.getOutputs(recipeEntry).map { EmiStack.of(it) }
     val view = support.card.getView(recipeEntry)
     override fun getDisplayWidth() = 1 + view.getWidth() + 1
@@ -84,16 +85,16 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
 
 private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): WidgetProxy {
     return object : WidgetProxy {
-        override fun addInputSlotWidget(ingredient: Ingredient, x: Int, y: Int) {
-            widgets.addSlot(EmiIngredient.of(ingredient), x, y)
+        override fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int) {
+            widgets.addSlot(ingredientStack.toEmiIngredient(), x, y)
         }
 
-        override fun addCatalystSlotWidget(ingredient: Ingredient, x: Int, y: Int) {
-            widgets.addSlot(EmiIngredient.of(ingredient), x, y).catalyst(true)
+        override fun addCatalystSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int) {
+            widgets.addSlot(ingredientStack.toEmiIngredient(), x, y).catalyst(true)
         }
 
         override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int) {
-            widgets.addSlot(EmiStack.of(itemStack), x, y).recipeContext(emiRecipe)
+            widgets.addSlot(itemStack.toEmiIngredient(), x, y).recipeContext(emiRecipe)
         }
     }
 }

@@ -2,8 +2,8 @@
 
 package miragefairy2024.mod.recipeviewer
 
+import miragefairy2024.util.IngredientStack
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.crafting.Ingredient
 
 
 abstract class ContainerView<P, V : View> : View {
@@ -122,22 +122,22 @@ context(ViewScope) fun YSpace(width: Int) = YSpaceView(width)
 abstract class SlotView : SolidView(18, 18)
 
 
-class InputSlotView(private val ingredient: Ingredient) : SlotView() {
+class InputSlotView(private val ingredientStack: IngredientStack) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
-        widgetProxy.addInputSlotWidget(ingredient, x, y)
+        widgetProxy.addInputSlotWidget(ingredientStack, x, y)
     }
 }
 
-context(ViewScope) fun InputSlot(ingredient: Ingredient) = InputSlotView(ingredient)
+context(ViewScope) fun InputSlot(ingredientStack: IngredientStack) = InputSlotView(ingredientStack)
 
 
-class CatalystSlotView(private val ingredient: Ingredient) : SlotView() {
+class CatalystSlotView(private val ingredientStack: IngredientStack) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
-        widgetProxy.addCatalystSlotWidget(ingredient, x, y)
+        widgetProxy.addCatalystSlotWidget(ingredientStack, x, y)
     }
 }
 
-context(ViewScope) fun CatalystSlot(ingredient: Ingredient) = CatalystSlotView(ingredient)
+context(ViewScope) fun CatalystSlot(ingredientStack: IngredientStack) = CatalystSlotView(ingredientStack)
 
 
 class OutputSlotView(private val itemStack: ItemStack) : SlotView() {

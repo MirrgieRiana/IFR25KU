@@ -28,6 +28,7 @@ import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.orEmpty
 import miragefairy2024.util.register
 import miragefairy2024.util.text
+import miragefairy2024.util.toItemStacks
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
@@ -110,15 +111,15 @@ class FairyQuestCardScreen(handler: FairyQuestCardScreenHandler, private val pla
                                 val index = 9 + 9 * 3 + i
                                 child(slotAsComponent(index))
                                 val input = menu.recipe.inputs.getOrNull(i)
-                                val inputItemStacks = input?.first?.invoke()?.items?.map { it.copyWithCount(input.second) } ?: listOf()
+                                val inputItemStacks = input?.invoke()?.toItemStacks() ?: listOf()
                                 child(GhostItemComponent(inputItemStacks).apply {
                                     onScreenUpdate += { showItemStack = menu.getSlot(index).item.isEmpty }
                                     overlayColor = 0x20FF0000
                                     onScreenUpdate += {
                                         showOverlay = when {
                                             input == null -> false
-                                            !input.first().test(menu.getSlot(index).item) -> true
-                                            menu.getSlot(index).item.count < input.second -> true
+                                            !input().ingredient.test(menu.getSlot(index).item) -> true
+                                            menu.getSlot(index).item.count < input().count -> true
                                             else -> false
                                         }
                                     }
