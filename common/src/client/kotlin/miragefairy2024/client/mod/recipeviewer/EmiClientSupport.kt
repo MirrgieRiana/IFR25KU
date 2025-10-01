@@ -52,7 +52,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
     val CATEGORY = EmiRecipeCategory(MirageFairy2024.identifier("harvest"), EmiStack.of(MaterialCard.VEROPEDA_BERRIES.item().createItemStack()))
 
-    inner class Recipe(private val id: ResourceLocation, private val harvestNotation: HarvestNotation) : EmiRecipe {
+    inner class SupportedEmiRecipe(private val id: ResourceLocation, private val harvestNotation: HarvestNotation) : EmiRecipe {
         override fun getId() = id
         override fun getCategory() = CATEGORY
         override fun getInputs(): List<EmiIngredient> = listOf(EmiStack.of(harvestNotation.seed))
@@ -70,7 +70,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     fun init(registry: EmiRegistry) {
         registry.addCategory(CATEGORY)
         HarvestNotation.getAll().forEach { (id, harvestNotation) ->
-            registry.addRecipe(Recipe(MirageFairy2024.identifier("/harvest/$id"), harvestNotation))
+            registry.addRecipe(SupportedEmiRecipe(MirageFairy2024.identifier("/harvest/$id"), harvestNotation))
         }
     }
 

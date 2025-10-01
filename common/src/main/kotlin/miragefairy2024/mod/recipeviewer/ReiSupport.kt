@@ -49,11 +49,11 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     val translation = Translation({ "category.rei.${MirageFairy2024.identifier(path).toLanguageKey()}" }, enName, jaName)
 
     // Singleを取り除くとREI無しで起動するとクラッシュする
-    val identifier: Single<CategoryIdentifier<Display>> by lazy { Single(CategoryIdentifier.of(MirageFairy2024.MOD_ID, "plugins/$path")) }
+    val identifier: Single<CategoryIdentifier<SupportedDisplay>> by lazy { Single(CategoryIdentifier.of(MirageFairy2024.MOD_ID, "plugins/$path")) }
 
-    val serializer: Single<BasicDisplay.Serializer<Display>> by lazy {
+    val serializer: Single<BasicDisplay.Serializer<SupportedDisplay>> by lazy {
         Single(BasicDisplay.Serializer.ofRecipeLess({ _, _, tag ->
-            Display(
+            SupportedDisplay(
                 HarvestNotation(
                     tag.wrapper["Seed"].compound.get()!!.toItemStack(BasicDisplay.registryAccess())!!,
                     tag.wrapper["Crops"].list.get()!!.map { it.castOrThrow<CompoundTag>().toItemStack(BasicDisplay.registryAccess())!! },
@@ -65,7 +65,7 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
         }))
     }
 
-    inner class Display(val recipe: HarvestNotation) : BasicDisplay(
+    inner class SupportedDisplay(val recipe: HarvestNotation) : BasicDisplay(
         listOf(recipe.seed.toEntryStack().toEntryIngredient()),
         recipe.crops.map { it.toEntryStack().toEntryIngredient() },
     ) {
