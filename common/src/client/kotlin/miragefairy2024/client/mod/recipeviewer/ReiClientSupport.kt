@@ -17,13 +17,11 @@ import miragefairy2024.ModContext
 import miragefairy2024.client.mod.rei.ClientReiCategoryCard
 import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.HarvestNotationRecipeViewerCategoryCard
-import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
 import miragefairy2024.mod.recipeviewer.SupportedDisplay
 import miragefairy2024.mod.recipeviewer.WidgetProxy
-import miragefairy2024.util.createItemStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
@@ -87,7 +85,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     fun createCategory() = object : DisplayCategory<SupportedDisplay<R>> {
         override fun getCategoryIdentifier() = ReiSupport.get(card).identifier.first
         override fun getTitle(): Component = card.displayName
-        override fun getIcon(): Renderer = MaterialCard.VEROPEDA_BERRIES.item().createItemStack().toEntryStack()
+        override fun getIcon(): Renderer = card.getIcon().toEntryStack()
         override fun getDisplayWidth(display: SupportedDisplay<R>) = 136
         override fun getDisplayHeight() = 36
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {

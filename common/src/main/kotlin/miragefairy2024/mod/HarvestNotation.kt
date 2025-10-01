@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
+import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
@@ -49,4 +50,5 @@ fun initHarvestNotationModule() {
 object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<HarvestNotation>() {
     override fun getId() = MirageFairy2024.identifier("harvest")
     override fun getName() = EnJa("Harvest", "収穫")
+    override fun getIcon() = MaterialCard.VEROPEDA_BERRIES.item().createItemStack()
 }

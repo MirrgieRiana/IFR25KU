@@ -11,12 +11,10 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.HarvestNotationRecipeViewerCategoryCard
-import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.EmiEvents
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.WidgetProxy
-import miragefairy2024.util.createItemStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
@@ -50,7 +48,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         }
     }
 
-    val CATEGORY = EmiRecipeCategory(card.getId(), EmiStack.of(MaterialCard.VEROPEDA_BERRIES.item().createItemStack()))
+    val CATEGORY = EmiRecipeCategory(card.getId(), EmiStack.of(card.getIcon()))
 
     fun init(registry: EmiRegistry) {
         registry.addCategory(CATEGORY)

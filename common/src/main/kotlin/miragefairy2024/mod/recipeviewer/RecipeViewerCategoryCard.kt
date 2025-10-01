@@ -7,6 +7,7 @@ import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.ItemStack
 
 abstract class RecipeViewerCategoryCard<R> {
 
@@ -15,6 +16,8 @@ abstract class RecipeViewerCategoryCard<R> {
     abstract fun getName(): EnJa
     val translation = Translation({ "category.rei.${getId().toLanguageKey()}" }, getName().en, getName().ja)
     val displayName = text { translation() }
+
+    abstract fun getIcon(): ItemStack
 
     context(ModContext)
     open fun init() {
