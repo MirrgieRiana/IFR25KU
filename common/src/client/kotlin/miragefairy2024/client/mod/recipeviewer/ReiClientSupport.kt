@@ -40,9 +40,17 @@ fun initReiClientSupport() {
             it.add(category)
             it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
         }
+        HarvestClientReiCategoryCard.let { card ->
+            val category = card.createCategory()
+            it.add(category)
+            it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
+        }
     }
     ReiClientEvents.onRegisterDisplays {
         ClientReiCategoryCard.entries.forEach { card ->
+            card.registerDisplays(it)
+        }
+        HarvestClientReiCategoryCard.let { card ->
             card.registerDisplays(it)
         }
         RecipeEvents.informationEntries.forEach { informationEntry ->
@@ -54,6 +62,9 @@ fun initReiClientSupport() {
     }
     ReiClientEvents.onRegisterScreens {
         ClientReiCategoryCard.entries.forEach { card ->
+            card.registerScreens(it)
+        }
+        HarvestClientReiCategoryCard.let { card ->
             card.registerScreens(it)
         }
     }

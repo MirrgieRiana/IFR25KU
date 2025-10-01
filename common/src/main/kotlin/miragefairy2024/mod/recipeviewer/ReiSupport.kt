@@ -27,7 +27,7 @@ object ReiEvents {
 
 context(ModContext)
 fun initReiSupport() {
-
+    HarvestReiCategoryCard.init()
 }
 
 object HarvestReiCategoryCard : ReiCategoryCard<HarvestReiCategoryCard.Display>("harvest", "Harvest", "収穫") {

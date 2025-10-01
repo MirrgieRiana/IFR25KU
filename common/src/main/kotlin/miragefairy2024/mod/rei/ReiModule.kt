@@ -4,7 +4,6 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.mod.recipeviewer.HarvestReiCategoryCard
 import miragefairy2024.mod.recipeviewer.ReiEvents
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
@@ -36,7 +35,6 @@ context(ModContext)
 fun initReiModule() {
 
     TraitEncyclopediaReiCategoryCard.init()
-    HarvestReiCategoryCard.init()
     FairyQuestRecipeReiCategoryCard.init()
     CommonMotifRecipeReiCategoryCard.init()
     ItemFairyDreamRecipeReiCategoryCard.init()
