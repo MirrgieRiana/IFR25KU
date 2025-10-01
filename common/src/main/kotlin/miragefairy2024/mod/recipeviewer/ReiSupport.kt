@@ -33,28 +33,16 @@ fun initReiSupport() {
     HarvestReiCategoryCard.init()
 }
 
-abstract class ReiCategoryCard<D : BasicDisplay>(
-    val path: String,
-    enName: String,
-    jaName: String,
-) {
+object HarvestReiCategoryCard {
+    val path = "harvest"
+    val enName = "Harvest"
+    val jaName = "収穫"
     val translation = Translation({ "category.rei.${MirageFairy2024.identifier(path).toLanguageKey()}" }, enName, jaName)
 
     // Singleを取り除くとREI無しで起動するとクラッシュする
-    val identifier: Single<CategoryIdentifier<D>> by lazy { Single(CategoryIdentifier.of(MirageFairy2024.MOD_ID, "plugins/$path")) }
-    abstract val serializer: Single<BasicDisplay.Serializer<D>>
+    val identifier: Single<CategoryIdentifier<Display>> by lazy { Single(CategoryIdentifier.of(MirageFairy2024.MOD_ID, "plugins/$path")) }
 
-    context(ModContext)
-    fun init() {
-        translation.enJa()
-        ReiEvents.onRegisterDisplaySerializer {
-            it.register(identifier.first, serializer.first)
-        }
-    }
-}
-
-object HarvestReiCategoryCard : ReiCategoryCard<HarvestReiCategoryCard.Display>("harvest", "Harvest", "収穫") {
-    override val serializer: Single<BasicDisplay.Serializer<Display>> by lazy {
+    val serializer: Single<BasicDisplay.Serializer<Display>> by lazy {
         Single(BasicDisplay.Serializer.ofRecipeLess({ _, _, tag ->
             Display(
                 HarvestNotation(
@@ -73,5 +61,13 @@ object HarvestReiCategoryCard : ReiCategoryCard<HarvestReiCategoryCard.Display>(
         recipe.crops.map { it.toEntryStack().toEntryIngredient() },
     ) {
         override fun getCategoryIdentifier() = identifier.first
+    }
+
+    context(ModContext)
+    fun init() {
+        translation.enJa()
+        ReiEvents.onRegisterDisplaySerializer {
+            it.register(identifier.first, serializer.first)
+        }
     }
 }
