@@ -10,7 +10,6 @@ import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.util.CompoundTag
 import miragefairy2024.util.get
-import miragefairy2024.util.times
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
 import miragefairy2024.util.wrapper
@@ -43,7 +42,7 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     }
 
     val categoryIdentifier: Single<CategoryIdentifier<SupportedDisplay<R>>> by lazy { // 非ロード環境用のSingle
-        Single(CategoryIdentifier.of("plugins/" * card.getId()))
+        Single(CategoryIdentifier.of(card.getId()))
     }
 
     val displaySerializer: Single<DisplaySerializer<SupportedDisplay<R>>> by lazy { // 非ロード環境用のSingle
