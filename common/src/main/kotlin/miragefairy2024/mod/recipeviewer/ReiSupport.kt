@@ -63,8 +63,6 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
         })
     }
 
-    fun createDisplay(recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>) = SupportedDisplay(this, recipeEntry) // TODO
-
     fun registerDisplaySerializer(registry: DisplaySerializerRegistry) {
         registry.register(categoryIdentifier.first, displaySerializer.first)
     }
