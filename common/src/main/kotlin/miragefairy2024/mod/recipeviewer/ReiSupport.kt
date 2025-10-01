@@ -8,7 +8,6 @@ import me.shedaniel.rei.api.common.display.basic.BasicDisplay
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
 import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
-import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard.RecipeEntry
 import miragefairy2024.util.get
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
@@ -63,7 +62,7 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
         })
     }
 
-    fun createDisplay(recipeEntry: RecipeEntry<R>) = SupportedDisplay(this, recipeEntry) // TODO
+    fun createDisplay(recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>) = SupportedDisplay(this, recipeEntry) // TODO
 
     fun registerDisplaySerializer(registry: DisplaySerializerRegistry) {
         registry.register(categoryIdentifier.first, displaySerializer.first)
@@ -71,7 +70,7 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
 
 }
 
-class SupportedDisplay<R>(val support: ReiSupport<R>, val recipeEntry: RecipeEntry<R>) : Display {
+class SupportedDisplay<R>(val support: ReiSupport<R>, val recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>) : Display {
     override fun getInputEntries() = support.card.getInputs(recipeEntry).map { it.ingredient.toEntryIngredient() }
     override fun getOutputEntries() = support.card.getOutputs(recipeEntry).map { it.toEntryStack().toEntryIngredient() }
     override fun getCategoryIdentifier() = support.categoryIdentifier.first

@@ -10,7 +10,6 @@ import dev.emi.emi.api.widget.WidgetHolder
 import miragefairy2024.ModContext
 import miragefairy2024.mod.recipeviewer.EmiEvents
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
-import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard.RecipeEntry
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.WidgetProxy
 import miragefairy2024.util.invoke
@@ -65,7 +64,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
 }
 
-class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: RecipeEntry<R>) : EmiRecipe {
+class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>) : EmiRecipe {
     override fun getCategory() = support.emiRecipeCategory.first
     override fun getId() = recipeEntry.id
     override fun getInputs(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { !it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
