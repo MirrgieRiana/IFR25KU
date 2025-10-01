@@ -20,7 +20,7 @@ import miragefairy2024.mod.passiveskill.collect
 import miragefairy2024.mod.passiveskill.description
 import miragefairy2024.mod.passiveskill.effects.ManaBoostPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.findPassiveSkillProviders
-import miragefairy2024.mod.rei.ReiEvents
+import miragefairy2024.mod.recipeviewer.ReiEvents
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.BIG_INTEGER_CODEC

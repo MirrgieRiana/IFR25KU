@@ -1,6 +1,9 @@
 package miragefairy2024.mod.recipeviewer
 
+import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay
+import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
+import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.rei.ReiCategoryCard
@@ -16,6 +19,11 @@ import mirrg.kotlin.helium.Single
 import mirrg.kotlin.helium.castOrThrow
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
+
+object ReiEvents {
+    val onRegisterDisplaySerializer = InitializationEventRegistry<(DisplaySerializerRegistry) -> Unit>()
+    val onRegisterItemComparators = InitializationEventRegistry<(ItemComparatorRegistry) -> Unit>()
+}
 
 context(ModContext)
 fun initReiSupport() {

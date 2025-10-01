@@ -4,7 +4,7 @@ import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
 import me.shedaniel.rei.api.common.plugins.REIServerPlugin
 import me.shedaniel.rei.forge.REIPluginCommon
-import miragefairy2024.mod.rei.ReiEvents
+import miragefairy2024.mod.recipeviewer.ReiEvents
 
 @REIPluginCommon
 @Suppress("unused")
