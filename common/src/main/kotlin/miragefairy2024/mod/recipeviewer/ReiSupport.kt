@@ -43,7 +43,7 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     }
 
     val categoryIdentifier: Single<CategoryIdentifier<SupportedDisplay<R>>> by lazy { // 非ロード環境用のSingle
-        Single(CategoryIdentifier.of<SupportedDisplay<R>>(card.getId()))
+        Single(CategoryIdentifier.of(card.getId()))
     }
 
     val displaySerializer: Single<DisplaySerializer<SupportedDisplay<R>>> by lazy { // 非ロード環境用のSingle
