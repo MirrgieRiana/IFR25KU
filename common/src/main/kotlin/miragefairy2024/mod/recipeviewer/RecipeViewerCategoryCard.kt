@@ -41,7 +41,8 @@ abstract class RecipeViewerCategoryCard<R> {
     abstract fun getInputs(recipeEntry: RecipeEntry<R>): List<Input>
     abstract fun getOutputs(recipeEntry: RecipeEntry<R>): List<ItemStack>
 
-    abstract fun getRecipeEntries(): Iterable<RecipeEntry<R>>
+    protected abstract fun createRecipeEntries(): Iterable<RecipeEntry<R>>
+    val recipeEntries by lazy { createRecipeEntries() }
 
     context(ModContext)
     open fun init() {

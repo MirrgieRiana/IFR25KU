@@ -120,7 +120,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     }
 
     fun registerDisplays(registry: DisplayRegistry) {
-        card.getRecipeEntries().forEach {
+        card.recipeEntries.forEach {
             registry.add(SupportedDisplay(ReiSupport.get(card), it))
         }
     }

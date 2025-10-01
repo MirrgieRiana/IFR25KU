@@ -58,7 +58,7 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
     override fun getInputs(recipeEntry: RecipeEntry<HarvestNotation>) = listOf(Input(recipeEntry.recipe.seed.toIngredient(), true))
     override fun getOutputs(recipeEntry: RecipeEntry<HarvestNotation>) = recipeEntry.recipe.crops
 
-    override fun getRecipeEntries(): Iterable<RecipeEntry<HarvestNotation>> {
+    override fun createRecipeEntries(): Iterable<RecipeEntry<HarvestNotation>> {
         return HarvestNotation.getAll().map { (id, harvestNotation) ->
             RecipeEntry("/${getId().pathString}/" * id, harvestNotation)
         }
