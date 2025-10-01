@@ -45,9 +45,7 @@ fun initReiClientSupport() {
             it.add(category)
             it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
         }
-        ReiClientSupport.get(HarvestNotationRecipeViewerCategoryCard).let { card ->
-            card.registerCategories(it)
-        }
+        ReiClientSupport.get(HarvestNotationRecipeViewerCategoryCard).registerCategories(it)
     }
     ReiClientEvents.onRegisterDisplays {
         ClientReiCategoryCard.entries.forEach { card ->
@@ -59,17 +57,13 @@ fun initReiClientSupport() {
                 informationEntry.title,
             ) { list -> list.also { list2 -> list2 += listOf(text { "== "() + informationEntry.title + " =="() }) + informationEntry.contents } }
         }
-        ReiClientSupport.get(HarvestNotationRecipeViewerCategoryCard).let { card ->
-            card.registerDisplays(it)
-        }
+        ReiClientSupport.get(HarvestNotationRecipeViewerCategoryCard).registerDisplays(it)
     }
     ReiClientEvents.onRegisterScreens {
         ClientReiCategoryCard.entries.forEach { card ->
             card.registerScreens(it)
         }
-        ReiClientSupport.get(HarvestNotationRecipeViewerCategoryCard).let { card ->
-            card.registerScreens(it)
-        }
+        ReiClientSupport.get(HarvestNotationRecipeViewerCategoryCard).registerScreens(it)
     }
 }
 
