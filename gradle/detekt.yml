@@ -1,0 +1,10 @@
+style:
+  ForbiddenMethodCall:
+    active: true
+    methods:
+      - kotlin.collections.minOf
+      - kotlin.collections.maxOf
+      - kotlin.sequences.minOf
+      - kotlin.sequences.maxOf
+      - kotlin.comparisons.minOf
+      - kotlin.comparisons.maxOf
