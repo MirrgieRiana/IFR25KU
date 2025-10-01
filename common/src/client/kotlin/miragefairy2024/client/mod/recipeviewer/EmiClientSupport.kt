@@ -34,13 +34,17 @@ fun initEmiClientSupport() {
             )
         }
 
-        EmiClientSupport.instance.init(it)
+        EmiClientSupport.get(HarvestNotationRecipeViewerCategoryCard).init(it)
     }
 }
 
 class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     companion object {
-        val instance by lazy { EmiClientSupport(HarvestNotationRecipeViewerCategoryCard) }
+        private val table = mutableMapOf<RecipeViewerCategoryCard<*>, EmiClientSupport<*>>()
+        fun <R> get(card: RecipeViewerCategoryCard<R>): EmiClientSupport<R> {
+            @Suppress("UNCHECKED_CAST")
+            return table.getOrPut(card) { EmiClientSupport(card) } as EmiClientSupport<R>
+        }
     }
 
     val CATEGORY = EmiRecipeCategory(MirageFairy2024.identifier("harvest"), EmiStack.of(MaterialCard.VEROPEDA_BERRIES.item().createItemStack()))

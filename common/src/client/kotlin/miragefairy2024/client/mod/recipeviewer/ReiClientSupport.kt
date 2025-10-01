@@ -42,7 +42,7 @@ fun initReiClientSupport() {
             it.add(category)
             it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
         }
-        ReiClientSupport.instance.let { card ->
+        ReiClientSupport.get(HarvestNotationRecipeViewerCategoryCard).let { card ->
             card.registerCategories(it)
         }
     }
@@ -56,7 +56,7 @@ fun initReiClientSupport() {
                 informationEntry.title,
             ) { list -> list.also { list2 -> list2 += listOf(text { "== "() + informationEntry.title + " =="() }) + informationEntry.contents } }
         }
-        ReiClientSupport.instance.let { card ->
+        ReiClientSupport.get(HarvestNotationRecipeViewerCategoryCard).let { card ->
             card.registerDisplays(it)
         }
     }
@@ -64,7 +64,7 @@ fun initReiClientSupport() {
         ClientReiCategoryCard.entries.forEach { card ->
             card.registerScreens(it)
         }
-        ReiClientSupport.instance.let { card ->
+        ReiClientSupport.get(HarvestNotationRecipeViewerCategoryCard).let { card ->
             card.registerScreens(it)
         }
     }
@@ -72,7 +72,11 @@ fun initReiClientSupport() {
 
 class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     companion object {
-        val instance by lazy { ReiClientSupport(HarvestNotationRecipeViewerCategoryCard) }
+        private val table = mutableMapOf<RecipeViewerCategoryCard<*>, ReiClientSupport<*>>()
+        fun <R> get(card: RecipeViewerCategoryCard<R>): ReiClientSupport<R> {
+            @Suppress("UNCHECKED_CAST")
+            return table.getOrPut(card) { ReiClientSupport(card) } as ReiClientSupport<R>
+        }
     }
 
     fun registerCategories(registry: CategoryRegistry) {
@@ -83,17 +87,17 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
     fun registerDisplays(registry: DisplayRegistry) {
         HarvestNotation.getAll().forEach { (_, recipe) ->
-            registry.add(ReiSupport.instance.Display(recipe))
+            registry.add(ReiSupport.get(card).Display(recipe))
         }
     }
 
-    fun createCategory() = object : DisplayCategory<ReiSupport.Display> {
-        override fun getCategoryIdentifier() = ReiSupport.instance.identifier.first
-        override fun getTitle(): Component = text { ReiSupport.instance.translation() }
+    fun createCategory() = object : DisplayCategory<ReiSupport<R>.Display> {
+        override fun getCategoryIdentifier() = ReiSupport.get(card).identifier.first
+        override fun getTitle(): Component = text { ReiSupport.get(card).translation() }
         override fun getIcon(): Renderer = MaterialCard.VEROPEDA_BERRIES.item().createItemStack().toEntryStack()
-        override fun getDisplayWidth(display: ReiSupport.Display) = 136
+        override fun getDisplayWidth(display: ReiSupport<R>.Display) = 136
         override fun getDisplayHeight() = 36
-        override fun setupDisplay(display: ReiSupport.Display, bounds: Rectangle): List<Widget> {
+        override fun setupDisplay(display: ReiSupport<R>.Display, bounds: Rectangle): List<Widget> {
             val p = bounds.location + Point(3, 3)
             return listOf(
                 Widgets.createRecipeBase(bounds),

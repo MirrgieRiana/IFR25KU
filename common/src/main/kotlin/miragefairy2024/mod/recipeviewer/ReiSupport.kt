@@ -31,12 +31,16 @@ object ReiEvents {
 
 context(ModContext)
 fun initReiSupport() {
-    ReiSupport.instance.init()
+    ReiSupport.get(HarvestNotationRecipeViewerCategoryCard).init()
 }
 
 class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     companion object {
-        val instance by lazy { ReiSupport(HarvestNotationRecipeViewerCategoryCard) }
+        private val table = mutableMapOf<RecipeViewerCategoryCard<*>, ReiSupport<*>>()
+        fun <R> get(card: RecipeViewerCategoryCard<R>): ReiSupport<R> {
+            @Suppress("UNCHECKED_CAST")
+            return table.getOrPut(card) { ReiSupport(card) } as ReiSupport<R>
+        }
     }
 
     val path = "harvest"
