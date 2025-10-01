@@ -8,6 +8,7 @@ import me.shedaniel.rei.api.common.display.basic.BasicDisplay
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
 import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
+import miragefairy2024.util.CompoundTag
 import miragefairy2024.util.get
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
@@ -50,7 +51,7 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
             override fun save(tag: CompoundTag, display: SupportedDisplay<R>): CompoundTag {
                 val ops = RegistryOps.create(NbtOps.INSTANCE, BasicDisplay.registryAccess())
                 val recipeEntryTag = card.recipeEntryCodec.encodeStart(ops, display.recipeEntry).orThrow
-                return miragefairy2024.util.CompoundTag("RecipeEntry" to recipeEntryTag)
+                return CompoundTag("RecipeEntry" to recipeEntryTag)
             }
 
             override fun read(tag: CompoundTag): SupportedDisplay<R> {
