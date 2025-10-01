@@ -16,7 +16,6 @@ import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.rei.ClientReiCategoryCard
 import miragefairy2024.mod.HarvestNotation
-import miragefairy2024.mod.HarvestNotationRecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
@@ -45,7 +44,9 @@ fun initReiClientSupport() {
             it.add(category)
             it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
         }
-        ReiClientSupport.get(HarvestNotationRecipeViewerCategoryCard).registerCategories(it)
+        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+            ReiClientSupport.get(card).registerCategories(it)
+        }
     }
     ReiClientEvents.onRegisterDisplays {
         ClientReiCategoryCard.entries.forEach { card ->
@@ -57,13 +58,17 @@ fun initReiClientSupport() {
                 informationEntry.title,
             ) { list -> list.also { list2 -> list2 += listOf(text { "== "() + informationEntry.title + " =="() }) + informationEntry.contents } }
         }
-        ReiClientSupport.get(HarvestNotationRecipeViewerCategoryCard).registerDisplays(it)
+        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+            ReiClientSupport.get(card).registerDisplays(it)
+        }
     }
     ReiClientEvents.onRegisterScreens {
         ClientReiCategoryCard.entries.forEach { card ->
             card.registerScreens(it)
         }
-        ReiClientSupport.get(HarvestNotationRecipeViewerCategoryCard).registerScreens(it)
+        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+            ReiClientSupport.get(card).registerScreens(it)
+        }
     }
 }
 

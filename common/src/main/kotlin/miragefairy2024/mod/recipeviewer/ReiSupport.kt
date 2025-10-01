@@ -7,7 +7,6 @@ import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
 import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.mod.HarvestNotation
-import miragefairy2024.mod.HarvestNotationRecipeViewerCategoryCard
 import miragefairy2024.util.compound
 import miragefairy2024.util.get
 import miragefairy2024.util.list
@@ -30,7 +29,9 @@ object ReiEvents {
 context(ModContext)
 fun initReiSupport() {
     ReiEvents.onRegisterDisplaySerializer {
-        ReiSupport.get(HarvestNotationRecipeViewerCategoryCard).registerDisplaySerializer(it)
+        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+            ReiSupport.get(card).registerDisplaySerializer(it)
+        }
     }
 }
 

@@ -10,7 +10,6 @@ import dev.emi.emi.api.widget.WidgetHolder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.HarvestNotation
-import miragefairy2024.mod.HarvestNotationRecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.EmiEvents
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
@@ -35,7 +34,9 @@ fun initEmiClientSupport() {
             )
         }
 
-        EmiClientSupport.get(HarvestNotationRecipeViewerCategoryCard).init(it)
+        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+            EmiClientSupport.get(card).init(it)
+        }
     }
 }
 
