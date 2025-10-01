@@ -83,25 +83,13 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         }
     }
 
-    fun registerCategories(registry: CategoryRegistry) {
-        val category = createCategory()
-        registry.add(category)
-        registry.addWorkstations(category.categoryIdentifier, *getWorkstations().toTypedArray())
-    }
-
-    fun registerDisplays(registry: DisplayRegistry) {
-        HarvestNotation.getAll().forEach { (_, recipe) ->
-            registry.add(ReiSupport.get(card).Display(recipe))
-        }
-    }
-
-    fun createCategory() = object : DisplayCategory<ReiSupport<R>.Display> {
+    fun createCategory() = object : DisplayCategory<ReiSupport<R>.SupportedDisplay> {
         override fun getCategoryIdentifier() = ReiSupport.get(card).identifier.first
         override fun getTitle(): Component = text { ReiSupport.get(card).translation() }
         override fun getIcon(): Renderer = MaterialCard.VEROPEDA_BERRIES.item().createItemStack().toEntryStack()
-        override fun getDisplayWidth(display: ReiSupport<R>.Display) = 136
+        override fun getDisplayWidth(display: ReiSupport<R>.SupportedDisplay) = 136
         override fun getDisplayHeight() = 36
-        override fun setupDisplay(display: ReiSupport<R>.Display, bounds: Rectangle): List<Widget> {
+        override fun setupDisplay(display: ReiSupport<R>.SupportedDisplay, bounds: Rectangle): List<Widget> {
             val p = bounds.location + Point(3, 3)
             return listOf(
                 Widgets.createRecipeBase(bounds),
@@ -116,6 +104,18 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
                 Widgets.createSlot(p + Point(28 + 15 - 8 + (16 + 2) * 3, 15 - 8)).entries(display.outputEntries.getOrNull(3) ?: EntryIngredient.empty()).disableBackground().markOutput(), // 出力アイテム
                 Widgets.createSlot(p + Point(28 + 15 - 8 + (16 + 2) * 4, 15 - 8)).entries(display.outputEntries.getOrNull(4) ?: EntryIngredient.empty()).disableBackground().markOutput(), // 出力アイテム
             )
+        }
+    }
+
+    fun registerCategories(registry: CategoryRegistry) {
+        val category = createCategory()
+        registry.add(category)
+        registry.addWorkstations(category.categoryIdentifier, *getWorkstations().toTypedArray())
+    }
+
+    fun registerDisplays(registry: DisplayRegistry) {
+        HarvestNotation.getAll().forEach { (_, recipe) ->
+            registry.add(ReiSupport.get(card).SupportedDisplay(recipe))
         }
     }
 
