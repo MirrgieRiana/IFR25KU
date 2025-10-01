@@ -15,6 +15,7 @@ import miragefairy2024.client.mod.initPlacedItemClientModule
 import miragefairy2024.client.mod.initSoundEventClientModule
 import miragefairy2024.client.mod.initTooltipViewerClientModule
 import miragefairy2024.client.mod.particle.initParticleClientModule
+import miragefairy2024.client.mod.recipeviewer.initRecipeViewerClientModule
 
 context(ModContext)
 fun initClientModules() {
@@ -32,4 +33,5 @@ fun initClientModules() {
     initSoundEventClientModule()
     initTooltipViewerClientModule()
     initAttachmentChangedEventClientModule()
+    initRecipeViewerClientModule()
 }

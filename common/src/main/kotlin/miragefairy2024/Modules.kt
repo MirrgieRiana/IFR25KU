@@ -31,6 +31,7 @@ import miragefairy2024.mod.materials.initMaterialsModule
 import miragefairy2024.mod.particle.initParticleModule
 import miragefairy2024.mod.passiveskill.initPassiveSkillModule
 import miragefairy2024.mod.placeditem.initPlacedItemModule
+import miragefairy2024.mod.recipeviewer.initRecipeViewerModule
 import miragefairy2024.mod.rei.initReiModule
 import miragefairy2024.mod.structure.initStructureModule
 import miragefairy2024.mod.tool.initToolModule
@@ -71,4 +72,5 @@ fun initModules() {
     initStructureModule()
     initTooltipViewerModule()
     initAttachmentChangedEventModule()
+    initRecipeViewerModule()
 }
