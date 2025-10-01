@@ -1,5 +1,7 @@
 package miragefairy2024.mod
 
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.util.createItemStack
@@ -10,6 +12,13 @@ import net.minecraft.world.item.ItemStack
 
 class HarvestNotation(val seed: ItemStack, val crops: List<ItemStack>) {
     companion object {
+        val CODEC: Codec<HarvestNotation> = RecordCodecBuilder.create { instance ->
+            instance.group(
+                ItemStack.CODEC.fieldOf("Seed").forGetter { it.seed },
+                ItemStack.CODEC.listOf().fieldOf("Crops").forGetter { it.crops },
+            ).apply(instance, ::HarvestNotation)
+        }
+
         private val map = mutableMapOf<ResourceLocation, HarvestNotation>()
 
         fun register(id: ResourceLocation, harvestNotation: HarvestNotation) {
