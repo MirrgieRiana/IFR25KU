@@ -17,3 +17,8 @@ context(ModContext)
 fun (() -> Item).registerHarvestNotation(drops: Iterable<() -> Item>) = ModEvents.onInitialize {
     harvestNotations += HarvestNotation(this().createItemStack(), drops.map { it().createItemStack() })
 }
+
+context(ModContext)
+fun initHarvestNotationModule() {
+
+}

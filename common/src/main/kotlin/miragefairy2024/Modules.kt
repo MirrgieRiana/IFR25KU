@@ -14,6 +14,7 @@ import miragefairy2024.mod.initDebrisModule
 import miragefairy2024.mod.initEnchantmentModule
 import miragefairy2024.mod.initFairyFountainModule
 import miragefairy2024.mod.initFoodIngredientsModule
+import miragefairy2024.mod.initHarvestNotationModule
 import miragefairy2024.mod.initLastFoodModule
 import miragefairy2024.mod.initNinePatchTextureModule
 import miragefairy2024.mod.initOresModule
@@ -72,5 +73,6 @@ fun initModules() {
     initStructureModule()
     initTooltipViewerModule()
     initAttachmentChangedEventModule()
+    initHarvestNotationModule()
     initRecipeViewerModule()
 }
