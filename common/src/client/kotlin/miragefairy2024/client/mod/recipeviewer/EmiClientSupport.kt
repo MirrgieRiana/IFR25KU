@@ -10,10 +10,10 @@ import dev.emi.emi.api.widget.WidgetHolder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.HarvestNotation
-import miragefairy2024.mod.RecipeEvents
 import miragefairy2024.mod.harvestNotations
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.EmiEvents
+import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
@@ -23,7 +23,7 @@ import net.minecraft.resources.ResourceLocation
 context(ModContext)
 fun initEmiClientSupport() {
     EmiEvents.onRegister {
-        RecipeEvents.informationEntries.forEach { informationEntry ->
+        RecipeViewerEvents.informationEntries.forEach { informationEntry ->
             it.addRecipe(
                 EmiInfoRecipe(
                     listOf(EmiIngredient.of(informationEntry.input())),

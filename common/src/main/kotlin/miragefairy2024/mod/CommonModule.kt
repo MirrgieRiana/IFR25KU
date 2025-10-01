@@ -12,7 +12,7 @@ import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.fairy.MotifCard
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.materials.MaterialCard
-import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.platformProxy
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -37,14 +37,11 @@ import net.minecraft.commands.Commands
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.RegistryFriendlyByteBuf
-import net.minecraft.network.chat.Component
 import net.minecraft.network.codec.StreamCodec
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.item.alchemy.Potions
-import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.level.block.Blocks
 
 val mirageFairy2024ItemGroupCard = ItemGroupCard(
@@ -64,14 +61,6 @@ val rootAdvancement = AdvancementCard(
 object CommandEvents {
     val onRegisterSubCommand = InitializationEventRegistry<(LiteralArgumentBuilder<CommandSourceStack>) -> LiteralArgumentBuilder<CommandSourceStack>>()
     val onRegisterClientSubCommand = InitializationEventRegistry<(LiteralArgumentBuilder<ClientCommandRegistrationEvent.ClientCommandSourceStack>) -> LiteralArgumentBuilder<ClientCommandRegistrationEvent.ClientCommandSourceStack>>()
-}
-
-object RecipeEvents {
-    class InformationEntry(val input: () -> Ingredient, val title: Component, val contents: List<Component>, val id: ResourceLocation)
-
-    val informationEntries = mutableListOf<InformationEntry>()
-
-    val recipeViewerCategoryCards = mutableListOf<RecipeViewerCategoryCard>()
 }
 
 context(ModContext)
@@ -133,7 +122,7 @@ fun initCommonModule() {
         }
     }
 
-    RecipeEvents.recipeViewerCategoryCards.forEach {
+    RecipeViewerEvents.recipeViewerCategoryCards.forEach {
         it.init()
     }
 

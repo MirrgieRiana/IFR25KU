@@ -15,10 +15,10 @@ import me.shedaniel.rei.api.common.util.EntryIngredients
 import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
 import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
-import miragefairy2024.mod.RecipeEvents
 import miragefairy2024.mod.harvestNotations
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.HarvestReiCategoryCard
+import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiCategoryCard
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.invoke
@@ -54,7 +54,7 @@ fun initReiClientSupport() {
         HarvestClientReiCategoryCard.let { card ->
             card.registerDisplays(it)
         }
-        RecipeEvents.informationEntries.forEach { informationEntry ->
+        RecipeViewerEvents.informationEntries.forEach { informationEntry ->
             BuiltinClientPlugin.getInstance().registerInformation(
                 EntryIngredients.ofIngredient(informationEntry.input()),
                 informationEntry.title,
