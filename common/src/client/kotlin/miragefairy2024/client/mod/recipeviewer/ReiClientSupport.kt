@@ -5,11 +5,17 @@ import me.shedaniel.math.Rectangle
 import me.shedaniel.rei.api.client.gui.Renderer
 import me.shedaniel.rei.api.client.gui.widgets.Widget
 import me.shedaniel.rei.api.client.gui.widgets.Widgets
+import me.shedaniel.rei.api.client.registry.category.CategoryRegistry
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry
+import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry
 import me.shedaniel.rei.api.common.entry.EntryIngredient
+import me.shedaniel.rei.api.common.util.EntryIngredients
+import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
+import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.rei.ClientReiCategoryCard
+import miragefairy2024.mod.RecipeEvents
 import miragefairy2024.mod.harvestNotations
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.HarvestReiCategoryCard
@@ -20,9 +26,37 @@ import miragefairy2024.util.text
 import miragefairy2024.util.toEntryStack
 import net.minecraft.network.chat.Component
 
+object ReiClientEvents {
+    val onRegisterCategories = InitializationEventRegistry<(CategoryRegistry) -> Unit>()
+    val onRegisterDisplays = InitializationEventRegistry<(DisplayRegistry) -> Unit>()
+    val onRegisterScreens = InitializationEventRegistry<(ScreenRegistry) -> Unit>()
+}
+
 context(ModContext)
 fun initReiClientSupport() {
-
+    ReiClientEvents.onRegisterCategories { registry ->
+        ClientReiCategoryCard.entries.forEach { card ->
+            val category = card.createCategory()
+            registry.add(category)
+            registry.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
+        }
+    }
+    ReiClientEvents.onRegisterDisplays { registry ->
+        ClientReiCategoryCard.entries.forEach { card ->
+            card.registerDisplays(registry)
+        }
+        RecipeEvents.informationEntries.forEach {
+            BuiltinClientPlugin.getInstance().registerInformation(
+                EntryIngredients.ofIngredient(it.input()),
+                it.title,
+            ) { list -> list.also { list2 -> list2 += listOf(text { "== "() + it.title + " =="() }) + it.contents } }
+        }
+    }
+    ReiClientEvents.onRegisterScreens { registry ->
+        ClientReiCategoryCard.entries.forEach { card ->
+            card.registerScreens(registry)
+        }
+    }
 }
 
 object HarvestClientReiCategoryCard : ClientReiCategoryCard<HarvestReiCategoryCard.Display>(HarvestReiCategoryCard) {
