@@ -106,7 +106,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
     fun registerCategories(registry: CategoryRegistry) {
         registry.add(displayCategory)
-        // TODO workstations
+        registry.addWorkstations(displayCategory.categoryIdentifier, *card.getWorkstations().map { it.toEntryStack() }.toTypedArray())
     }
 
     fun registerDisplays(registry: DisplayRegistry) {
