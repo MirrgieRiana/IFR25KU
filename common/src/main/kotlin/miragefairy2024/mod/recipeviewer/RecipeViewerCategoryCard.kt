@@ -14,7 +14,7 @@ abstract class RecipeViewerCategoryCard<R> {
     abstract fun getId(): ResourceLocation
 
     abstract fun getName(): EnJa
-    val translation = Translation({ "category.rei.${getId().toLanguageKey()}" }, getName().en, getName().ja)
+    val translation = Translation({ getId().toLanguageKey("category.rei") }, getName().en, getName().ja)
     val displayName = text { translation() }
 
     abstract fun getIcon(): ItemStack
