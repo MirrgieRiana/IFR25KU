@@ -13,6 +13,7 @@ import miragefairy2024.util.compound
 import miragefairy2024.util.enJa
 import miragefairy2024.util.get
 import miragefairy2024.util.list
+import miragefairy2024.util.times
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
 import miragefairy2024.util.toItemStack
@@ -47,7 +48,7 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     val translation = Translation({ "category.rei.${card.getId().toLanguageKey()}" }, enName, jaName)
 
     // Singleを取り除くとREI無しで起動するとクラッシュする
-    val identifier: Single<CategoryIdentifier<SupportedDisplay<R>>> by lazy { Single(CategoryIdentifier.of(card.getId().namespace, "plugins/${card.getId().path}")) }
+    val identifier: Single<CategoryIdentifier<SupportedDisplay<R>>> by lazy { Single(CategoryIdentifier.of("plugins/" * card.getId())) }
 
     val serializer: Single<BasicDisplay.Serializer<SupportedDisplay<R>>> by lazy {
         Single(BasicDisplay.Serializer.ofRecipeLess({ _, _, tag ->
