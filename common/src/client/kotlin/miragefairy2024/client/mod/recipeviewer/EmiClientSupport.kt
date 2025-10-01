@@ -49,10 +49,10 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         }
     }
 
-    val CATEGORY = EmiRecipeCategory(card.getId(), EmiStack.of(card.getIcon()))
+    val emiRecipeCategory = EmiRecipeCategory(card.getId(), EmiStack.of(card.getIcon()))
 
     fun register(registry: EmiRegistry) {
-        registry.addCategory(CATEGORY)
+        registry.addCategory(emiRecipeCategory)
         HarvestNotation.getAll().forEach { (id, harvestNotation) ->
             registry.addRecipe(SupportedEmiRecipe(this, MirageFairy2024.identifier("/harvest/$id"), harvestNotation))
         }
@@ -62,7 +62,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
 class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, private val id: ResourceLocation, private val harvestNotation: HarvestNotation) : EmiRecipe {
     override fun getId() = id
-    override fun getCategory() = support.CATEGORY
+    override fun getCategory() = support.emiRecipeCategory
     override fun getInputs(): List<EmiIngredient> = listOf(EmiStack.of(harvestNotation.seed))
     override fun getOutputs(): List<EmiStack> = harvestNotation.crops.map { EmiStack.of(it) }
     override fun getDisplayWidth() = 1 + 18 + 4 + 18 * harvestNotation.crops.size + 1
