@@ -55,8 +55,8 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
     override fun getName() = EnJa("Harvest", "収穫")
     override fun getIcon() = MaterialCard.VEROPEDA_BERRIES.item().createItemStack()
     override fun getRecipeCodec() = HarvestNotation.CODEC
-    override fun getInputs(recipe: HarvestNotation) = listOf(Input(recipe.seed.toIngredient(), true))
-    override fun getOutputs(recipe: HarvestNotation) = recipe.crops
+    override fun getInputs(recipeEntry: RecipeEntry<HarvestNotation>) = listOf(Input(recipeEntry.recipe.seed.toIngredient(), true))
+    override fun getOutputs(recipeEntry: RecipeEntry<HarvestNotation>) = recipeEntry.recipe.crops
 
     override fun getRecipeEntries(): Iterable<RecipeEntry<HarvestNotation>> {
         return HarvestNotation.getAll().map { (id, harvestNotation) ->

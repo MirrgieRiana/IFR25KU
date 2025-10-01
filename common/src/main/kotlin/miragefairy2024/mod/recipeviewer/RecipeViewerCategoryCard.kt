@@ -38,8 +38,8 @@ abstract class RecipeViewerCategoryCard<R> {
 
     class Input(val ingredient: Ingredient, val isCatalyst: Boolean)
 
-    abstract fun getInputs(recipe: R): List<Input>
-    abstract fun getOutputs(recipe: R): List<ItemStack>
+    abstract fun getInputs(recipeEntry: RecipeEntry<R>): List<Input>
+    abstract fun getOutputs(recipeEntry: RecipeEntry<R>): List<ItemStack>
 
     abstract fun getRecipeEntries(): Iterable<RecipeEntry<R>>
 
