@@ -7,6 +7,7 @@ import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
 import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.recipeviewer.HarvestReiCategoryCard
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import mirrg.kotlin.helium.Single

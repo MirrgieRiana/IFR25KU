@@ -12,12 +12,12 @@ import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.fairy.MotifCard
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.platformProxy
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.ItemGroupCard
-import miragefairy2024.util.RecipeViewerCategoryCard
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.get
 import miragefairy2024.util.humidityCategory

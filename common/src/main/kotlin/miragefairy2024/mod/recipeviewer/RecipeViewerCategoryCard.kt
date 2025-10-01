@@ -1,4 +1,4 @@
-package miragefairy2024.util
+package miragefairy2024.mod.recipeviewer
 
 import miragefairy2024.ModContext
 
