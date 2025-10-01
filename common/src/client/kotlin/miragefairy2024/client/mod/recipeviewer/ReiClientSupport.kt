@@ -9,7 +9,6 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry
-import me.shedaniel.rei.api.common.entry.EntryIngredient
 import me.shedaniel.rei.api.common.util.EntryIngredients
 import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
 import miragefairy2024.InitializationEventRegistry
@@ -94,23 +93,14 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun getCategoryIdentifier() = ReiSupport.get(card).categoryIdentifier.first
         override fun getTitle(): Component = card.displayName
         override fun getIcon(): Renderer = card.getIcon().toEntryStack()
-        override fun getDisplayWidth(display: SupportedDisplay<R>) = 136
-        override fun getDisplayHeight() = 36
+        private val heightCache = card.recipeEntries.map { card.getView(it) }.maxOfOrNull { it.getHeight() } ?: 0
+        override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + card.getView(display.recipeEntry).getWidth() + 5
+        override fun getDisplayHeight() = 5 + heightCache + 5
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
-            val p = bounds.location + Point(3, 3)
-            return listOf(
-                Widgets.createRecipeBase(bounds),
-
-                Widgets.createSlotBackground(p + Point(15 - 8, 15 - 8)), // 入力スロット背景
-                Widgets.createSlot(p + Point(15 - 8, 15 - 8)).entries(display.inputEntries[0]).disableBackground().markInput(), // 入力アイテム
-
-                Widgets.createSlotBase(Rectangle(p.x + 28 + 15 - 8 - 5, p.y + 15 - 8 - 5, 16 * 5 + 2 * 4 + 10, 16 + 10)), // 出力スロット背景
-                Widgets.createSlot(p + Point(28 + 15 - 8 + (16 + 2) * 0, 15 - 8)).entries(display.outputEntries.getOrNull(0) ?: EntryIngredient.empty()).disableBackground().markOutput(), // 出力アイテム
-                Widgets.createSlot(p + Point(28 + 15 - 8 + (16 + 2) * 1, 15 - 8)).entries(display.outputEntries.getOrNull(1) ?: EntryIngredient.empty()).disableBackground().markOutput(), // 出力アイテム
-                Widgets.createSlot(p + Point(28 + 15 - 8 + (16 + 2) * 2, 15 - 8)).entries(display.outputEntries.getOrNull(2) ?: EntryIngredient.empty()).disableBackground().markOutput(), // 出力アイテム
-                Widgets.createSlot(p + Point(28 + 15 - 8 + (16 + 2) * 3, 15 - 8)).entries(display.outputEntries.getOrNull(3) ?: EntryIngredient.empty()).disableBackground().markOutput(), // 出力アイテム
-                Widgets.createSlot(p + Point(28 + 15 - 8 + (16 + 2) * 4, 15 - 8)).entries(display.outputEntries.getOrNull(4) ?: EntryIngredient.empty()).disableBackground().markOutput(), // 出力アイテム
-            )
+            val widgets = mutableListOf<Widget>()
+            widgets += Widgets.createRecipeBase(bounds)
+            card.getView(display.recipeEntry).addWidgets(getReiWidgetProxy(widgets), 5 + bounds.x, 5 + bounds.y)
+            return widgets
         }
     }
 

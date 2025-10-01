@@ -32,6 +32,8 @@ abstract class RecipeViewerCategoryCard<R> {
                 ).apply(instance, ::RecipeEntry)
             }
         }
+
+        var viewCache: View? = null
     }
 
     abstract fun getRecipeCodec(): Codec<R>
@@ -44,6 +46,19 @@ abstract class RecipeViewerCategoryCard<R> {
 
     protected abstract fun createRecipeEntries(): Iterable<RecipeEntry<R>>
     val recipeEntries by lazy { createRecipeEntries() }
+
+    protected abstract fun createView(recipeEntry: RecipeEntry<R>): View
+    fun getView(recipeEntry: RecipeEntry<R>): View {
+        val oldView = recipeEntry.viewCache
+        if (oldView == null) {
+            val newView = createView(recipeEntry)
+            newView.layout()
+            recipeEntry.viewCache = newView
+            return newView
+        } else {
+            return oldView
+        }
+    }
 
     context(ModContext)
     open fun init() {
