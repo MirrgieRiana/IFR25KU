@@ -10,7 +10,6 @@ import dev.emi.emi.api.widget.WidgetHolder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.HarvestNotation
-import miragefairy2024.mod.harvestNotations
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.EmiEvents
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
@@ -58,7 +57,7 @@ object HarvestEmiCard {
 
     fun init(registry: EmiRegistry) {
         registry.addCategory(CATEGORY)
-        harvestNotations.withIndex().forEach { (index, harvestNotation) ->
+        HarvestNotation.harvestNotations.withIndex().forEach { (index, harvestNotation) ->
             registry.addRecipe(Recipe(MirageFairy2024.identifier("/harvest/$index"), harvestNotation))
         }
     }

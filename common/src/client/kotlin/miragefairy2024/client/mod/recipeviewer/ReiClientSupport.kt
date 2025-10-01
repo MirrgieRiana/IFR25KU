@@ -15,7 +15,7 @@ import me.shedaniel.rei.api.common.util.EntryIngredients
 import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
 import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
-import miragefairy2024.mod.harvestNotations
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.HarvestReiCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
@@ -80,7 +80,7 @@ abstract class ClientReiCategoryCard<D : BasicDisplay>(val parent: ReiCategoryCa
 
 object HarvestClientReiCategoryCard : ClientReiCategoryCard<HarvestReiCategoryCard.Display>(HarvestReiCategoryCard) {
     override fun registerDisplays(registry: DisplayRegistry) {
-        harvestNotations.forEach { recipe ->
+        HarvestNotation.harvestNotations.forEach { recipe ->
             registry.add(HarvestReiCategoryCard.Display(recipe))
         }
     }
