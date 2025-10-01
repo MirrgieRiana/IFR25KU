@@ -49,7 +49,9 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         }
     }
 
-    val emiRecipeCategory = EmiRecipeCategory(card.getId(), EmiStack.of(card.getIcon()))
+    val emiRecipeCategory = object : EmiRecipeCategory(card.getId(), EmiStack.of(card.getIcon())) {
+        override fun getName() = card.displayName
+    }
 
     fun register(registry: EmiRegistry) {
         registry.addCategory(emiRecipeCategory)
