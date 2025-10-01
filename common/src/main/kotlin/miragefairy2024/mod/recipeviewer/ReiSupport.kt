@@ -42,10 +42,11 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
         }
     }
 
-    // Singleを取り除くとREI無しで起動するとクラッシュする
-    val categoryIdentifier: Single<CategoryIdentifier<SupportedDisplay<R>>> by lazy { Single(CategoryIdentifier.of("plugins/" * card.getId())) }
+    val categoryIdentifier: Single<CategoryIdentifier<SupportedDisplay<R>>> by lazy { // 非ロード環境用のSingle
+        Single(CategoryIdentifier.of("plugins/" * card.getId()))
+    }
 
-    val displaySerializer: Single<DisplaySerializer<SupportedDisplay<R>>> by lazy {
+    val displaySerializer: Single<DisplaySerializer<SupportedDisplay<R>>> by lazy { // 非ロード環境用のSingle
         Single(object : DisplaySerializer<SupportedDisplay<R>> {
             override fun save(tag: CompoundTag, display: SupportedDisplay<R>): CompoundTag {
                 val ops = RegistryOps.create(NbtOps.INSTANCE, BasicDisplay.registryAccess())
