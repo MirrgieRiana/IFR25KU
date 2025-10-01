@@ -32,13 +32,13 @@ fun initEmiClientSupport() {
             )
         }
 
-        HarvestEmiCard.instance.init(it)
+        EmiClientSupport.instance.init(it)
     }
 }
 
-class HarvestEmiCard {
+class EmiClientSupport {
     companion object {
-        val instance by lazy { HarvestEmiCard() }
+        val instance by lazy { EmiClientSupport() }
     }
 
     val CATEGORY = EmiRecipeCategory(MirageFairy2024.identifier("harvest"), EmiStack.of(MaterialCard.VEROPEDA_BERRIES.item().createItemStack()))

@@ -30,12 +30,12 @@ object ReiEvents {
 
 context(ModContext)
 fun initReiSupport() {
-    HarvestReiCategoryCard.instance.init()
+    ReiSupport.instance.init()
 }
 
-class HarvestReiCategoryCard {
+class ReiSupport {
     companion object {
-        val instance by lazy { HarvestReiCategoryCard() }
+        val instance by lazy { ReiSupport() }
     }
 
     val path = "harvest"
