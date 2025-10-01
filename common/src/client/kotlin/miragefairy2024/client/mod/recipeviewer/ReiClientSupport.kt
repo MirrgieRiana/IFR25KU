@@ -41,9 +41,7 @@ fun initReiClientSupport() {
             it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
         }
         HarvestClientReiCategoryCard.let { card ->
-            val category = card.createCategory()
-            it.add(category)
-            it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
+            card.registerCategories(it)
         }
     }
     ReiClientEvents.onRegisterDisplays {
@@ -71,6 +69,12 @@ fun initReiClientSupport() {
 }
 
 object HarvestClientReiCategoryCard {
+    fun registerCategories(registry: CategoryRegistry) {
+        val category = createCategory()
+        registry.add(category)
+        registry.addWorkstations(category.categoryIdentifier, *getWorkstations().toTypedArray())
+    }
+
     fun registerDisplays(registry: DisplayRegistry) {
         HarvestNotation.getAll().forEach { (_, recipe) ->
             registry.add(HarvestReiCategoryCard.Display(recipe))
