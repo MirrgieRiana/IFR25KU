@@ -73,5 +73,5 @@ class SupportedDisplay<R>(val support: ReiSupport<R>, val recipeEntry: RecipeVie
     override fun getInputEntries() = support.card.getInputs(recipeEntry).map { it.ingredient.toEntryIngredient() }
     override fun getOutputEntries() = support.card.getOutputs(recipeEntry).map { it.toEntryStack().toEntryIngredient() }
     override fun getCategoryIdentifier() = support.categoryIdentifier.first
-    override fun getDisplayLocation() = recipeEntry.id.takeUnless { it.path.startsWith("/") }.toOptional()
+    override fun getDisplayLocation() = recipeEntry.takeIf { !it.isSynthetic }?.id.toOptional()
 }

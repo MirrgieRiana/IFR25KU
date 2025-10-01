@@ -23,12 +23,13 @@ abstract class RecipeViewerCategoryCard<R> {
     abstract fun getIcon(): ItemStack
     abstract fun getWorkstations(): List<ItemStack>
 
-    class RecipeEntry<R>(val id: ResourceLocation, val recipe: R) {
+    class RecipeEntry<R>(val id: ResourceLocation, val recipe: R, val isSynthetic: Boolean) {
         companion object {
             fun <R> getCodec(recipeCodec: Codec<R>): Codec<RecipeEntry<R>> = RecordCodecBuilder.create { instance ->
                 instance.group(
                     ResourceLocation.CODEC.fieldOf("Id").forGetter { it.id },
                     recipeCodec.fieldOf("Recipe").forGetter { it.recipe },
+                    Codec.BOOL.fieldOf("IsSynthetic").forGetter { it.isSynthetic },
                 ).apply(instance, ::RecipeEntry)
             }
         }

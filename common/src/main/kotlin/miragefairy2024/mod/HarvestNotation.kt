@@ -67,7 +67,7 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
 
     override fun createRecipeEntries(): Iterable<RecipeEntry<HarvestNotation>> {
         return HarvestNotation.getAll().map { (id, harvestNotation) ->
-            RecipeEntry("/${getId().pathString}/" * id, harvestNotation)
+            RecipeEntry("${getId().pathString}/" * id, harvestNotation, true)
         }
     }
 

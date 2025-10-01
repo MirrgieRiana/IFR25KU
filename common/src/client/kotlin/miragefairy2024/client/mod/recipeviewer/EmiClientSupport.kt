@@ -15,6 +15,7 @@ import miragefairy2024.mod.recipeviewer.WidgetProxy
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
+import miragefairy2024.util.times
 import mirrg.kotlin.helium.Single
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Ingredient
@@ -69,7 +70,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
 class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>) : EmiRecipe {
     override fun getCategory() = support.emiRecipeCategory.first
-    override fun getId() = recipeEntry.id
+    override fun getId() = if (recipeEntry.isSynthetic) "/" * recipeEntry.id else recipeEntry.id
     override fun getInputs(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { !it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
     override fun getCatalysts(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
     override fun getOutputs(): List<EmiStack> = support.card.getOutputs(recipeEntry).map { EmiStack.of(it) }
