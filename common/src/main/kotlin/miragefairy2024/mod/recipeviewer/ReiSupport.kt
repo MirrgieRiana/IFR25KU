@@ -65,6 +65,7 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     fun registerDisplaySerializer(registry: DisplaySerializerRegistry) {
         registry.register(categoryIdentifier.first, displaySerializer.first)
     }
+
 }
 
 class SupportedDisplay<R>(val support: ReiSupport<R>, val recipe: HarvestNotation) : BasicDisplay(

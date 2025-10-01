@@ -129,6 +129,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     fun getWorkstations(): List<EntryIngredient> = listOf()
 
     fun registerScreens(registry: ScreenRegistry) = Unit
+
 }
 
 private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
