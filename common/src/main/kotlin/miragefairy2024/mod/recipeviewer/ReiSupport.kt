@@ -14,6 +14,7 @@ import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
 import miragefairy2024.util.wrapper
 import mirrg.kotlin.helium.Single
+import mirrg.kotlin.java.hydrogen.toOptional
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
 import net.minecraft.resources.RegistryOps
@@ -72,4 +73,5 @@ class SupportedDisplay<R>(val support: ReiSupport<R>, val recipeEntry: RecipeVie
     override fun getInputEntries() = support.card.getInputs(recipeEntry).map { it.ingredient.toEntryIngredient() }
     override fun getOutputEntries() = support.card.getOutputs(recipeEntry).map { it.toEntryStack().toEntryIngredient() }
     override fun getCategoryIdentifier() = support.categoryIdentifier.first
+    override fun getDisplayLocation() = recipeEntry.id.takeUnless { it.path.startsWith("/") }.toOptional()
 }
