@@ -48,17 +48,17 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
 
     val displaySerializer: Single<DisplaySerializer<SupportedDisplay<R>>> by lazy { // 非ロード環境用のSingle
         Single(object : DisplaySerializer<SupportedDisplay<R>> {
+            override fun save(tag: CompoundTag, display: SupportedDisplay<R>): CompoundTag {
+                val ops = RegistryOps.create(NbtOps.INSTANCE, BasicDisplay.registryAccess())
+                val recipeEntryTag = card.recipeEntryCodec.encodeStart(ops, display.recipeEntry).orThrow
+                return miragefairy2024.util.CompoundTag("RecipeEntry" to recipeEntryTag)
+            }
+
             override fun read(tag: CompoundTag): SupportedDisplay<R> {
                 val ops = RegistryOps.create(NbtOps.INSTANCE, BasicDisplay.registryAccess())
                 val recipeEntryTag = tag.wrapper["RecipeEntry"].get()
                 val recipeEntry = card.recipeEntryCodec.decode(ops, recipeEntryTag).orThrow.first
                 return SupportedDisplay(this@ReiSupport, recipeEntry)
-            }
-
-            override fun save(tag: CompoundTag, display: SupportedDisplay<R>): CompoundTag {
-                val ops = RegistryOps.create(NbtOps.INSTANCE, BasicDisplay.registryAccess())
-                val recipeEntryTag = card.recipeEntryCodec.encodeStart(ops, display.recipeEntry).orThrow
-                return miragefairy2024.util.CompoundTag("RecipeEntry" to recipeEntryTag)
             }
         })
     }
