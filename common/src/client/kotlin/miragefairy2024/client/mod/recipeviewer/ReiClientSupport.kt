@@ -48,14 +48,14 @@ fun initReiClientSupport() {
         ClientReiCategoryCard.entries.forEach { card ->
             card.registerDisplays(it)
         }
-        HarvestClientReiCategoryCard.let { card ->
-            card.registerDisplays(it)
-        }
         RecipeViewerEvents.informationEntries.forEach { informationEntry ->
             BuiltinClientPlugin.getInstance().registerInformation(
                 EntryIngredients.ofIngredient(informationEntry.input()),
                 informationEntry.title,
             ) { list -> list.also { list2 -> list2 += listOf(text { "== "() + informationEntry.title + " =="() }) + informationEntry.contents } }
+        }
+        HarvestClientReiCategoryCard.let { card ->
+            card.registerDisplays(it)
         }
     }
     ReiClientEvents.onRegisterScreens {
