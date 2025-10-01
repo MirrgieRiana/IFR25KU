@@ -125,7 +125,9 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         }
     }
 
-    fun registerScreens(registry: ScreenRegistry) = Unit
+    fun registerScreens(registry: ScreenRegistry) {
+        // TODO
+    }
 
 }
 
