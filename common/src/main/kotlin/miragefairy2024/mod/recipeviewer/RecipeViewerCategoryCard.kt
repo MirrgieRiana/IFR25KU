@@ -3,6 +3,7 @@ package miragefairy2024.mod.recipeviewer
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
@@ -34,6 +35,8 @@ abstract class RecipeViewerCategoryCard<R> {
 
     abstract fun getRecipeCodec(): Codec<R>
     val recipeEntryCodec: Codec<RecipeEntry<R>> = RecipeEntry.getCodec(getRecipeCodec())
+
+    abstract fun getRecipes(): Iterable<RecipeEntry<HarvestNotation>>
 
     context(ModContext)
     open fun init() {

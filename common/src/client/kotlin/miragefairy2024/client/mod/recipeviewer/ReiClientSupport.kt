@@ -15,7 +15,6 @@ import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
 import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.rei.ClientReiCategoryCard
-import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
@@ -121,8 +120,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     }
 
     fun registerDisplays(registry: DisplayRegistry) {
-        HarvestNotation.getAll().forEach { (_, recipe) ->
-            registry.add(SupportedDisplay(ReiSupport.get(card), recipe))
+        card.getRecipes().forEach {
+            registry.add(SupportedDisplay(ReiSupport.get(card), it.recipe))
         }
     }
 
