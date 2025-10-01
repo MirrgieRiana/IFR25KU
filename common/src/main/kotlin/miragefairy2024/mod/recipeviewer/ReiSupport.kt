@@ -45,7 +45,7 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     }
 
     // Singleを取り除くとREI無しで起動するとクラッシュする
-    val identifier: Single<CategoryIdentifier<SupportedDisplay<R>>> by lazy { Single(CategoryIdentifier.of("plugins/" * card.getId())) }
+    val categoryIdentifier: Single<CategoryIdentifier<SupportedDisplay<R>>> by lazy { Single(CategoryIdentifier.of("plugins/" * card.getId())) }
 
     val serializer: Single<BasicDisplay.Serializer<SupportedDisplay<R>>> by lazy {
         Single(BasicDisplay.Serializer.ofRecipeLess({ _, _, tag ->
@@ -63,7 +63,7 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     }
 
     fun registerDisplaySerializer(registry: DisplaySerializerRegistry) {
-        registry.register(identifier.first, serializer.first)
+        registry.register(categoryIdentifier.first, serializer.first)
     }
 }
 
@@ -71,5 +71,5 @@ class SupportedDisplay<R>(val support: ReiSupport<R>, val recipe: HarvestNotatio
     listOf(recipe.seed.toEntryStack().toEntryIngredient()),
     recipe.crops.map { it.toEntryStack().toEntryIngredient() },
 ) {
-    override fun getCategoryIdentifier() = support.identifier.first
+    override fun getCategoryIdentifier() = support.categoryIdentifier.first
 }
