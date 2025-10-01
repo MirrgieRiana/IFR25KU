@@ -52,28 +52,28 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
     val CATEGORY = EmiRecipeCategory(MirageFairy2024.identifier("harvest"), EmiStack.of(MaterialCard.VEROPEDA_BERRIES.item().createItemStack()))
 
-    inner class SupportedEmiRecipe(private val id: ResourceLocation, private val harvestNotation: HarvestNotation) : EmiRecipe {
-        override fun getId() = id
-        override fun getCategory() = CATEGORY
-        override fun getInputs(): List<EmiIngredient> = listOf(EmiStack.of(harvestNotation.seed))
-        override fun getOutputs(): List<EmiStack> = harvestNotation.crops.map { EmiStack.of(it) }
-        override fun getDisplayWidth() = 1 + 18 + 4 + 18 * harvestNotation.crops.size + 1
-        override fun getDisplayHeight() = 1 + 18 + 1
-        override fun addWidgets(widgets: WidgetHolder) {
-            widgets.addSlot(EmiStack.of(harvestNotation.seed), 1, 1)
-            harvestNotation.crops.forEachIndexed { index, itemStack ->
-                widgets.addSlot(EmiStack.of(itemStack), 1 + 18 + 4 + 18 * index, 1).recipeContext(this)
-            }
-        }
-    }
-
     fun init(registry: EmiRegistry) {
         registry.addCategory(CATEGORY)
         HarvestNotation.getAll().forEach { (id, harvestNotation) ->
-            registry.addRecipe(SupportedEmiRecipe(MirageFairy2024.identifier("/harvest/$id"), harvestNotation))
+            registry.addRecipe(SupportedEmiRecipe(this, MirageFairy2024.identifier("/harvest/$id"), harvestNotation))
         }
     }
 
+}
+
+class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, private val id: ResourceLocation, private val harvestNotation: HarvestNotation) : EmiRecipe {
+    override fun getId() = id
+    override fun getCategory() = support.CATEGORY
+    override fun getInputs(): List<EmiIngredient> = listOf(EmiStack.of(harvestNotation.seed))
+    override fun getOutputs(): List<EmiStack> = harvestNotation.crops.map { EmiStack.of(it) }
+    override fun getDisplayWidth() = 1 + 18 + 4 + 18 * harvestNotation.crops.size + 1
+    override fun getDisplayHeight() = 1 + 18 + 1
+    override fun addWidgets(widgets: WidgetHolder) {
+        widgets.addSlot(EmiStack.of(harvestNotation.seed), 1, 1)
+        harvestNotation.crops.forEachIndexed { index, itemStack ->
+            widgets.addSlot(EmiStack.of(itemStack), 1 + 18 + 4 + 18 * index, 1).recipeContext(this)
+        }
+    }
 }
 
 private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): WidgetProxy {

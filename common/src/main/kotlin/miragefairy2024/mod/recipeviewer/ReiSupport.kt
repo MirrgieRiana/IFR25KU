@@ -49,11 +49,12 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     val translation = Translation({ "category.rei.${MirageFairy2024.identifier(path).toLanguageKey()}" }, enName, jaName)
 
     // Singleを取り除くとREI無しで起動するとクラッシュする
-    val identifier: Single<CategoryIdentifier<SupportedDisplay>> by lazy { Single(CategoryIdentifier.of(MirageFairy2024.MOD_ID, "plugins/$path")) }
+    val identifier: Single<CategoryIdentifier<SupportedDisplay<R>>> by lazy { Single(CategoryIdentifier.of(MirageFairy2024.MOD_ID, "plugins/$path")) }
 
-    val serializer: Single<BasicDisplay.Serializer<SupportedDisplay>> by lazy {
+    val serializer: Single<BasicDisplay.Serializer<SupportedDisplay<R>>> by lazy {
         Single(BasicDisplay.Serializer.ofRecipeLess({ _, _, tag ->
             SupportedDisplay(
+                this,
                 HarvestNotation(
                     tag.wrapper["Seed"].compound.get()!!.toItemStack(BasicDisplay.registryAccess())!!,
                     tag.wrapper["Crops"].list.get()!!.map { it.castOrThrow<CompoundTag>().toItemStack(BasicDisplay.registryAccess())!! },
@@ -65,13 +66,6 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
         }))
     }
 
-    inner class SupportedDisplay(val recipe: HarvestNotation) : BasicDisplay(
-        listOf(recipe.seed.toEntryStack().toEntryIngredient()),
-        recipe.crops.map { it.toEntryStack().toEntryIngredient() },
-    ) {
-        override fun getCategoryIdentifier() = identifier.first
-    }
-
     context(ModContext)
     fun init() {
         translation.enJa()
@@ -79,4 +73,11 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
             it.register(identifier.first, serializer.first)
         }
     }
+}
+
+class SupportedDisplay<R>(val support: ReiSupport<R>, val recipe: HarvestNotation) : BasicDisplay(
+    listOf(recipe.seed.toEntryStack().toEntryIngredient()),
+    recipe.crops.map { it.toEntryStack().toEntryIngredient() },
+) {
+    override fun getCategoryIdentifier() = support.identifier.first
 }
