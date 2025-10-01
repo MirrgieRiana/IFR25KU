@@ -80,7 +80,7 @@ abstract class ClientReiCategoryCard<D : BasicDisplay>(val parent: ReiCategoryCa
 
 object HarvestClientReiCategoryCard : ClientReiCategoryCard<HarvestReiCategoryCard.Display>(HarvestReiCategoryCard) {
     override fun registerDisplays(registry: DisplayRegistry) {
-        HarvestNotation.harvestNotations.forEach { recipe ->
+        HarvestNotation.getAll().forEach { (_, recipe) ->
             registry.add(HarvestReiCategoryCard.Display(recipe))
         }
     }

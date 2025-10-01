@@ -57,8 +57,8 @@ object HarvestEmiCard {
 
     fun init(registry: EmiRegistry) {
         registry.addCategory(CATEGORY)
-        HarvestNotation.harvestNotations.withIndex().forEach { (index, harvestNotation) ->
-            registry.addRecipe(Recipe(MirageFairy2024.identifier("/harvest/$index"), harvestNotation))
+        HarvestNotation.getAll().forEach { (id, harvestNotation) ->
+            registry.addRecipe(Recipe(MirageFairy2024.identifier("/harvest/$id"), harvestNotation))
         }
     }
 
