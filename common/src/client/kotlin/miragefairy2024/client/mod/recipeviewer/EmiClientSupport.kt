@@ -13,12 +13,9 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.WidgetProxy
 import miragefairy2024.util.invoke
-import miragefairy2024.util.pathString
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
-import miragefairy2024.util.times
 import mirrg.kotlin.helium.Single
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Ingredient
 
@@ -61,23 +58,23 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     fun register(registry: EmiRegistry) {
         registry.addCategory(emiRecipeCategory.first)
         card.getRecipes().forEach {
-            registry.addRecipe(SupportedEmiRecipe(this, it.id, it.recipe))
+            registry.addRecipe(SupportedEmiRecipe(this, it))
         }
     }
 
 }
 
-class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, private val id: ResourceLocation, private val recipe: R) : EmiRecipe {
-    override fun getId() = id
+class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, private val recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>) : EmiRecipe {
+    override fun getId() = recipeEntry.id
     override fun getCategory() = support.emiRecipeCategory.first
-    override fun getInputs(): List<EmiIngredient> = support.card.getInputs(recipe).filter { !it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
-    override fun getCatalysts(): List<EmiIngredient> = support.card.getInputs(recipe).filter { it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
-    override fun getOutputs(): List<EmiStack> = support.card.getOutputs(recipe).map { EmiStack.of(it) }
-    override fun getDisplayWidth() = 1 + 18 + 4 + 18 * support.card.getOutputs(recipe).size + 1
+    override fun getInputs(): List<EmiIngredient> = support.card.getInputs(recipeEntry.recipe).filter { !it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
+    override fun getCatalysts(): List<EmiIngredient> = support.card.getInputs(recipeEntry.recipe).filter { it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
+    override fun getOutputs(): List<EmiStack> = support.card.getOutputs(recipeEntry.recipe).map { EmiStack.of(it) }
+    override fun getDisplayWidth() = 1 + 18 + 4 + 18 * support.card.getOutputs(recipeEntry.recipe).size + 1
     override fun getDisplayHeight() = 1 + 18 + 1
     override fun addWidgets(widgets: WidgetHolder) {
-        widgets.addSlot(EmiIngredient.of(support.card.getInputs(recipe).single().ingredient), 1, 1)
-        support.card.getOutputs(recipe).forEachIndexed { index, itemStack ->
+        widgets.addSlot(EmiIngredient.of(support.card.getInputs(recipeEntry.recipe).single().ingredient), 1, 1)
+        support.card.getOutputs(recipeEntry.recipe).forEachIndexed { index, itemStack ->
             widgets.addSlot(EmiStack.of(itemStack), 1 + 18 + 4 + 18 * index, 1).recipeContext(this)
         }
     }

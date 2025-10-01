@@ -49,15 +49,15 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
         Single(object : DisplaySerializer<SupportedDisplay<R>> {
             override fun save(tag: CompoundTag, display: SupportedDisplay<R>): CompoundTag {
                 val ops = RegistryOps.create(NbtOps.INSTANCE, BasicDisplay.registryAccess())
-                val recipeTag = card.getRecipeCodec().encodeStart(ops, display.recipe).orThrow
-                return CompoundTag("Recipe" to recipeTag)
+                val recipeEntryTag = card.recipeEntryCodec.encodeStart(ops, display.recipeEntry).orThrow
+                return CompoundTag("RecipeEntry" to recipeEntryTag)
             }
 
             override fun read(tag: CompoundTag): SupportedDisplay<R> {
                 val ops = RegistryOps.create(NbtOps.INSTANCE, BasicDisplay.registryAccess())
-                val recipeTag = tag.wrapper["Recipe"].get()
-                val recipe = card.getRecipeCodec().decode(ops, recipeTag).orThrow.first
-                return SupportedDisplay(this@ReiSupport, recipe)
+                val recipeEntryTag = tag.wrapper["RecipeEntry"].get()
+                val recipeEntry = card.recipeEntryCodec.decode(ops, recipeEntryTag).orThrow.first
+                return SupportedDisplay(this@ReiSupport, recipeEntry)
             }
         })
     }
@@ -68,8 +68,8 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
 
 }
 
-class SupportedDisplay<R>(val support: ReiSupport<R>, val recipe: R) : Display {
-    override fun getInputEntries() = support.card.getInputs(recipe).map { it.ingredient.toEntryIngredient() }
-    override fun getOutputEntries() = support.card.getOutputs(recipe).map { it.toEntryStack().toEntryIngredient() }
+class SupportedDisplay<R>(val support: ReiSupport<R>, val recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>) : Display {
+    override fun getInputEntries() = support.card.getInputs(recipeEntry.recipe).map { it.ingredient.toEntryIngredient() }
+    override fun getOutputEntries() = support.card.getOutputs(recipeEntry.recipe).map { it.toEntryStack().toEntryIngredient() }
     override fun getCategoryIdentifier() = support.categoryIdentifier.first
 }
