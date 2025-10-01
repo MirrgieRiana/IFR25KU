@@ -10,8 +10,10 @@ import dev.emi.emi.api.widget.WidgetHolder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.HarvestNotation
+import miragefairy2024.mod.HarvestNotationRecipeViewerCategoryCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.EmiEvents
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.invoke
@@ -36,9 +38,9 @@ fun initEmiClientSupport() {
     }
 }
 
-class EmiClientSupport {
+class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     companion object {
-        val instance by lazy { EmiClientSupport() }
+        val instance by lazy { EmiClientSupport(HarvestNotationRecipeViewerCategoryCard) }
     }
 
     val CATEGORY = EmiRecipeCategory(MirageFairy2024.identifier("harvest"), EmiStack.of(MaterialCard.VEROPEDA_BERRIES.item().createItemStack()))

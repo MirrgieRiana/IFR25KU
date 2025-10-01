@@ -16,7 +16,9 @@ import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.rei.ClientReiCategoryCard
 import miragefairy2024.mod.HarvestNotation
+import miragefairy2024.mod.HarvestNotationRecipeViewerCategoryCard
 import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
 import miragefairy2024.util.createItemStack
@@ -68,9 +70,9 @@ fun initReiClientSupport() {
     }
 }
 
-class ReiClientSupport {
+class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     companion object {
-        val instance by lazy { ReiClientSupport() }
+        val instance by lazy { ReiClientSupport(HarvestNotationRecipeViewerCategoryCard) }
     }
 
     fun registerCategories(registry: CategoryRegistry) {

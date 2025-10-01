@@ -8,6 +8,7 @@ import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.HarvestNotation
+import miragefairy2024.mod.HarvestNotationRecipeViewerCategoryCard
 import miragefairy2024.util.Translation
 import miragefairy2024.util.compound
 import miragefairy2024.util.enJa
@@ -33,9 +34,9 @@ fun initReiSupport() {
     ReiSupport.instance.init()
 }
 
-class ReiSupport {
+class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     companion object {
-        val instance by lazy { ReiSupport() }
+        val instance by lazy { ReiSupport(HarvestNotationRecipeViewerCategoryCard) }
     }
 
     val path = "harvest"
