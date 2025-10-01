@@ -8,6 +8,7 @@ import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.HarvestNotationRecipeViewerCategoryCard
+import miragefairy2024.util.EnJa
 import miragefairy2024.util.Translation
 import miragefairy2024.util.compound
 import miragefairy2024.util.enJa
@@ -43,9 +44,8 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
         }
     }
 
-    val enName = "Harvest"
-    val jaName = "収穫"
-    val translation = Translation({ "category.rei.${card.getId().toLanguageKey()}" }, enName, jaName)
+    val name = EnJa("Harvest", "収穫")
+    val translation = Translation({ "category.rei.${card.getId().toLanguageKey()}" }, name.en, name.ja)
 
     // Singleを取り除くとREI無しで起動するとクラッシュする
     val identifier: Single<CategoryIdentifier<SupportedDisplay<R>>> by lazy { Single(CategoryIdentifier.of("plugins/" * card.getId())) }
