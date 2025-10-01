@@ -30,10 +30,14 @@ object ReiEvents {
 
 context(ModContext)
 fun initReiSupport() {
-    HarvestReiCategoryCard.init()
+    HarvestReiCategoryCard.instance.init()
 }
 
-object HarvestReiCategoryCard {
+class HarvestReiCategoryCard {
+    companion object {
+        val instance by lazy { HarvestReiCategoryCard() }
+    }
+
     val path = "harvest"
     val enName = "Harvest"
     val jaName = "収穫"
@@ -56,7 +60,7 @@ object HarvestReiCategoryCard {
         }))
     }
 
-    class Display(val recipe: HarvestNotation) : BasicDisplay(
+    inner class Display(val recipe: HarvestNotation) : BasicDisplay(
         listOf(recipe.seed.toEntryStack().toEntryIngredient()),
         recipe.crops.map { it.toEntryStack().toEntryIngredient() },
     ) {

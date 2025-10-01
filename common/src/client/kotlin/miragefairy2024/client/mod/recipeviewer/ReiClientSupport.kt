@@ -40,7 +40,7 @@ fun initReiClientSupport() {
             it.add(category)
             it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
         }
-        HarvestClientReiCategoryCard.let { card ->
+        HarvestClientReiCategoryCard.instance.let { card ->
             card.registerCategories(it)
         }
     }
@@ -54,7 +54,7 @@ fun initReiClientSupport() {
                 informationEntry.title,
             ) { list -> list.also { list2 -> list2 += listOf(text { "== "() + informationEntry.title + " =="() }) + informationEntry.contents } }
         }
-        HarvestClientReiCategoryCard.let { card ->
+        HarvestClientReiCategoryCard.instance.let { card ->
             card.registerDisplays(it)
         }
     }
@@ -62,13 +62,17 @@ fun initReiClientSupport() {
         ClientReiCategoryCard.entries.forEach { card ->
             card.registerScreens(it)
         }
-        HarvestClientReiCategoryCard.let { card ->
+        HarvestClientReiCategoryCard.instance.let { card ->
             card.registerScreens(it)
         }
     }
 }
 
-object HarvestClientReiCategoryCard {
+class HarvestClientReiCategoryCard {
+    companion object {
+        val instance by lazy { HarvestClientReiCategoryCard() }
+    }
+
     fun registerCategories(registry: CategoryRegistry) {
         val category = createCategory()
         registry.add(category)
@@ -77,13 +81,13 @@ object HarvestClientReiCategoryCard {
 
     fun registerDisplays(registry: DisplayRegistry) {
         HarvestNotation.getAll().forEach { (_, recipe) ->
-            registry.add(HarvestReiCategoryCard.Display(recipe))
+            registry.add(HarvestReiCategoryCard.instance.Display(recipe))
         }
     }
 
     fun createCategory() = object : DisplayCategory<HarvestReiCategoryCard.Display> {
-        override fun getCategoryIdentifier() = HarvestReiCategoryCard.identifier.first
-        override fun getTitle(): Component = text { HarvestReiCategoryCard.translation() }
+        override fun getCategoryIdentifier() = HarvestReiCategoryCard.instance.identifier.first
+        override fun getTitle(): Component = text { HarvestReiCategoryCard.instance.translation() }
         override fun getIcon(): Renderer = MaterialCard.VEROPEDA_BERRIES.item().createItemStack().toEntryStack()
         override fun getDisplayWidth(display: HarvestReiCategoryCard.Display) = 136
         override fun getDisplayHeight() = 36

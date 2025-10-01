@@ -32,15 +32,18 @@ fun initEmiClientSupport() {
             )
         }
 
-        HarvestEmiCard.init(it)
+        HarvestEmiCard.instance.init(it)
     }
 }
 
-object HarvestEmiCard {
+class HarvestEmiCard {
+    companion object {
+        val instance by lazy { HarvestEmiCard() }
+    }
 
     val CATEGORY = EmiRecipeCategory(MirageFairy2024.identifier("harvest"), EmiStack.of(MaterialCard.VEROPEDA_BERRIES.item().createItemStack()))
 
-    class Recipe(private val id: ResourceLocation, private val harvestNotation: HarvestNotation) : EmiRecipe {
+    inner class Recipe(private val id: ResourceLocation, private val harvestNotation: HarvestNotation) : EmiRecipe {
         override fun getId() = id
         override fun getCategory() = CATEGORY
         override fun getInputs(): List<EmiIngredient> = listOf(EmiStack.of(harvestNotation.seed))
