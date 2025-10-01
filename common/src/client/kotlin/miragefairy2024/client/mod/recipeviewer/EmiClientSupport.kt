@@ -35,7 +35,7 @@ fun initEmiClientSupport() {
         }
 
         RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
-            EmiClientSupport.get(card).init(it)
+            EmiClientSupport.get(card).register(it)
         }
     }
 }
@@ -51,7 +51,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
     val CATEGORY = EmiRecipeCategory(card.getId(), EmiStack.of(card.getIcon()))
 
-    fun init(registry: EmiRegistry) {
+    fun register(registry: EmiRegistry) {
         registry.addCategory(CATEGORY)
         HarvestNotation.getAll().forEach { (id, harvestNotation) ->
             registry.addRecipe(SupportedEmiRecipe(this, MirageFairy2024.identifier("/harvest/$id"), harvestNotation))
