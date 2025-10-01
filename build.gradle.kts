@@ -45,9 +45,7 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
             buildUponDefaultConfig = false
             config.setFrom(rootProject.layout.projectDirectory.file("gradle/detekt.yml"))
         }
-        tasks.withType(Detekt::class).forEach { task ->
-            tasks.named("check").configure { dependsOn(task) }
-        }
+        tasks.named("check").configure { dependsOn(tasks.withType<Detekt>()) }
     }
 
     pluginManager.withPlugin("dev.architectury.loom") {
