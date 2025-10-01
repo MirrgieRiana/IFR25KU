@@ -81,7 +81,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         }
     }
 
-    fun createCategory() = object : DisplayCategory<SupportedDisplay<R>> {
+    val displayCategory = object : DisplayCategory<SupportedDisplay<R>> {
         override fun getCategoryIdentifier() = ReiSupport.get(card).categoryIdentifier.first
         override fun getTitle(): Component = card.displayName
         override fun getIcon(): Renderer = card.getIcon().toEntryStack()
@@ -106,9 +106,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     }
 
     fun registerCategories(registry: CategoryRegistry) {
-        val category = createCategory()
-        registry.add(category)
-        registry.addWorkstations(category.categoryIdentifier, *getWorkstations().toTypedArray())
+        registry.add(displayCategory)
+        registry.addWorkstations(displayCategory.categoryIdentifier, *getWorkstations().toTypedArray())
     }
 
     fun registerDisplays(registry: DisplayRegistry) {
