@@ -3,7 +3,6 @@ package miragefairy2024.mod.recipeviewer
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.ModContext
-import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
@@ -11,6 +10,7 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.crafting.Ingredient
 
 abstract class RecipeViewerCategoryCard<R> {
 
@@ -36,7 +36,12 @@ abstract class RecipeViewerCategoryCard<R> {
     abstract fun getRecipeCodec(): Codec<R>
     val recipeEntryCodec: Codec<RecipeEntry<R>> = RecipeEntry.getCodec(getRecipeCodec())
 
-    abstract fun getRecipes(): Iterable<RecipeEntry<HarvestNotation>>
+    class Input(val ingredient: Ingredient, val isCatalyst: Boolean)
+
+    abstract fun getInputs(recipe: R): List<Input>
+    abstract fun getOutputs(recipe: R): List<ItemStack>
+
+    abstract fun getRecipes(): Iterable<RecipeEntry<R>>
 
     context(ModContext)
     open fun init() {

@@ -1,25 +1,22 @@
 package miragefairy2024.mod.recipeviewer
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier
+import me.shedaniel.rei.api.common.display.DisplaySerializer
 import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
 import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
-import miragefairy2024.mod.HarvestNotation
-import miragefairy2024.util.compound
+import miragefairy2024.util.CompoundTag
 import miragefairy2024.util.get
-import miragefairy2024.util.list
 import miragefairy2024.util.times
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
-import miragefairy2024.util.toItemStack
-import miragefairy2024.util.toNbt
 import miragefairy2024.util.wrapper
 import mirrg.kotlin.helium.Single
-import mirrg.kotlin.helium.castOrThrow
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.NbtOps
+import net.minecraft.resources.RegistryOps
 
 object ReiEvents {
     val onRegisterDisplaySerializer = InitializationEventRegistry<(DisplaySerializerRegistry) -> Unit>()
@@ -47,19 +44,21 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
     // Singleを取り除くとREI無しで起動するとクラッシュする
     val categoryIdentifier: Single<CategoryIdentifier<SupportedDisplay<R>>> by lazy { Single(CategoryIdentifier.of("plugins/" * card.getId())) }
 
-    val displaySerializer: Single<BasicDisplay.Serializer<SupportedDisplay<R>>> by lazy {
-        Single(BasicDisplay.Serializer.ofRecipeLess({ _, _, tag ->
-            SupportedDisplay(
-                this,
-                HarvestNotation(
-                    tag.wrapper["Seed"].compound.get()!!.toItemStack(BasicDisplay.registryAccess())!!,
-                    tag.wrapper["Crops"].list.get()!!.map { it.castOrThrow<CompoundTag>().toItemStack(BasicDisplay.registryAccess())!! },
-                )
-            )
-        }, { display, tag ->
-            tag.wrapper["Seed"].set(display.recipe.seed.toNbt(BasicDisplay.registryAccess()))
-            tag.wrapper["Crops"].set(display.recipe.crops.mapTo(ListTag()) { it.toNbt(BasicDisplay.registryAccess()) })
-        }))
+    val displaySerializer: Single<DisplaySerializer<SupportedDisplay<R>>> by lazy {
+        Single(object : DisplaySerializer<SupportedDisplay<R>> {
+            override fun save(tag: CompoundTag, display: SupportedDisplay<R>): CompoundTag {
+                val ops = RegistryOps.create(NbtOps.INSTANCE, BasicDisplay.registryAccess())
+                val recipeTag = card.getRecipeCodec().encodeStart(ops, display.recipe).orThrow
+                return CompoundTag("Recipe" to recipeTag)
+            }
+
+            override fun read(tag: CompoundTag): SupportedDisplay<R> {
+                val ops = RegistryOps.create(NbtOps.INSTANCE, BasicDisplay.registryAccess())
+                val recipeTag = tag.wrapper["Recipe"].get()
+                val recipe = card.getRecipeCodec().decode(ops, recipeTag).orThrow.first
+                return SupportedDisplay(this@ReiSupport, recipe)
+            }
+        })
     }
 
     fun registerDisplaySerializer(registry: DisplaySerializerRegistry) {
@@ -68,9 +67,9 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
 
 }
 
-class SupportedDisplay<R>(val support: ReiSupport<R>, val recipe: HarvestNotation) : BasicDisplay(
-    listOf(recipe.seed.toEntryStack().toEntryIngredient()),
-    recipe.crops.map { it.toEntryStack().toEntryIngredient() },
+class SupportedDisplay<R>(val support: ReiSupport<R>, val recipe: R) : BasicDisplay(
+    support.card.getInputs(recipe).map { it.ingredient.toEntryIngredient() },
+    support.card.getOutputs(recipe).map { it.toEntryStack().toEntryIngredient() },
 ) {
     override fun getCategoryIdentifier() = support.categoryIdentifier.first
 }

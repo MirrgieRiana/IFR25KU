@@ -8,7 +8,6 @@ import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
 import dev.emi.emi.api.widget.WidgetHolder
 import miragefairy2024.ModContext
-import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.recipeviewer.EmiEvents
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
@@ -68,16 +67,17 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
 }
 
-class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, private val id: ResourceLocation, private val harvestNotation: HarvestNotation) : EmiRecipe {
+class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, private val id: ResourceLocation, private val recipe: R) : EmiRecipe {
     override fun getId() = id
     override fun getCategory() = support.emiRecipeCategory.first
-    override fun getInputs(): List<EmiIngredient> = listOf(EmiStack.of(harvestNotation.seed))
-    override fun getOutputs(): List<EmiStack> = harvestNotation.crops.map { EmiStack.of(it) }
-    override fun getDisplayWidth() = 1 + 18 + 4 + 18 * harvestNotation.crops.size + 1
+    override fun getInputs(): List<EmiIngredient> = support.card.getInputs(recipe).filter { !it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
+    override fun getCatalysts(): List<EmiIngredient> = support.card.getInputs(recipe).filter { it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
+    override fun getOutputs(): List<EmiStack> = support.card.getOutputs(recipe).map { EmiStack.of(it) }
+    override fun getDisplayWidth() = 1 + 18 + 4 + 18 * support.card.getOutputs(recipe).size + 1
     override fun getDisplayHeight() = 1 + 18 + 1
     override fun addWidgets(widgets: WidgetHolder) {
-        widgets.addSlot(EmiStack.of(harvestNotation.seed), 1, 1)
-        harvestNotation.crops.forEachIndexed { index, itemStack ->
+        widgets.addSlot(EmiIngredient.of(support.card.getInputs(recipe).single().ingredient), 1, 1)
+        support.card.getOutputs(recipe).forEachIndexed { index, itemStack ->
             widgets.addSlot(EmiStack.of(itemStack), 1 + 18 + 4 + 18 * index, 1).recipeContext(this)
         }
     }
