@@ -33,7 +33,8 @@ fun initEmiClientSupport() {
                 )
             )
         }
-
+    }
+    EmiEvents.onRegister {
         RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
             EmiClientSupport.get(card).register(it)
         }

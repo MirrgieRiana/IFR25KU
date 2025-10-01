@@ -44,6 +44,8 @@ fun initReiClientSupport() {
             it.add(category)
             it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
         }
+    }
+    ReiClientEvents.onRegisterCategories {
         RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
             ReiClientSupport.get(card).registerCategories(it)
         }
@@ -52,12 +54,16 @@ fun initReiClientSupport() {
         ClientReiCategoryCard.entries.forEach { card ->
             card.registerDisplays(it)
         }
+    }
+    ReiClientEvents.onRegisterDisplays {
         RecipeViewerEvents.informationEntries.forEach { informationEntry ->
             BuiltinClientPlugin.getInstance().registerInformation(
                 EntryIngredients.ofIngredient(informationEntry.input()),
                 informationEntry.title,
             ) { list -> list.also { list2 -> list2 += listOf(text { "== "() + informationEntry.title + " =="() }) + informationEntry.contents } }
         }
+    }
+    ReiClientEvents.onRegisterDisplays {
         RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
             ReiClientSupport.get(card).registerDisplays(it)
         }
@@ -66,6 +72,8 @@ fun initReiClientSupport() {
         ClientReiCategoryCard.entries.forEach { card ->
             card.registerScreens(it)
         }
+    }
+    ReiClientEvents.onRegisterScreens {
         RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
             ReiClientSupport.get(card).registerScreens(it)
         }
