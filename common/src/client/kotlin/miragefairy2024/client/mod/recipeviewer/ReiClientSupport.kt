@@ -34,27 +34,27 @@ object ReiClientEvents {
 
 context(ModContext)
 fun initReiClientSupport() {
-    ReiClientEvents.onRegisterCategories { registry ->
+    ReiClientEvents.onRegisterCategories {
         ClientReiCategoryCard.entries.forEach { card ->
             val category = card.createCategory()
-            registry.add(category)
-            registry.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
+            it.add(category)
+            it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
         }
     }
-    ReiClientEvents.onRegisterDisplays { registry ->
+    ReiClientEvents.onRegisterDisplays {
         ClientReiCategoryCard.entries.forEach { card ->
-            card.registerDisplays(registry)
+            card.registerDisplays(it)
         }
-        RecipeEvents.informationEntries.forEach {
+        RecipeEvents.informationEntries.forEach { informationEntry ->
             BuiltinClientPlugin.getInstance().registerInformation(
-                EntryIngredients.ofIngredient(it.input()),
-                it.title,
-            ) { list -> list.also { list2 -> list2 += listOf(text { "== "() + it.title + " =="() }) + it.contents } }
+                EntryIngredients.ofIngredient(informationEntry.input()),
+                informationEntry.title,
+            ) { list -> list.also { list2 -> list2 += listOf(text { "== "() + informationEntry.title + " =="() }) + informationEntry.contents } }
         }
     }
-    ReiClientEvents.onRegisterScreens { registry ->
+    ReiClientEvents.onRegisterScreens {
         ClientReiCategoryCard.entries.forEach { card ->
-            card.registerScreens(registry)
+            card.registerScreens(it)
         }
     }
 }

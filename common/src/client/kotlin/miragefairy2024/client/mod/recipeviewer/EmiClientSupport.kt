@@ -22,18 +22,18 @@ import net.minecraft.resources.ResourceLocation
 
 context(ModContext)
 fun initEmiClientSupport() {
-    EmiEvents.onRegister { registry ->
-        RecipeEvents.informationEntries.forEach {
-            registry.addRecipe(
+    EmiEvents.onRegister {
+        RecipeEvents.informationEntries.forEach { informationEntry ->
+            it.addRecipe(
                 EmiInfoRecipe(
-                    listOf(EmiIngredient.of(it.input())),
-                    listOf(text { "== "() + it.title + " =="() }) + it.contents,
-                    it.id,
+                    listOf(EmiIngredient.of(informationEntry.input())),
+                    listOf(text { "== "() + informationEntry.title + " =="() }) + informationEntry.contents,
+                    informationEntry.id,
                 )
             )
         }
 
-        HarvestEmiCard.init(registry)
+        HarvestEmiCard.init(it)
     }
 }
 
