@@ -7,7 +7,6 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory
 import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
 import dev.emi.emi.api.widget.WidgetHolder
-import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.recipeviewer.EmiEvents
@@ -15,8 +14,10 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.WidgetProxy
 import miragefairy2024.util.invoke
+import miragefairy2024.util.pathString
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
+import miragefairy2024.util.times
 import mirrg.kotlin.helium.Single
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
@@ -61,7 +62,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     fun register(registry: EmiRegistry) {
         registry.addCategory(emiRecipeCategory.first)
         HarvestNotation.getAll().forEach { (id, harvestNotation) ->
-            registry.addRecipe(SupportedEmiRecipe(this, MirageFairy2024.identifier("/harvest/$id"), harvestNotation))
+            registry.addRecipe(SupportedEmiRecipe(this, "/${card.getId().pathString}/" * id, harvestNotation))
         }
     }
 
