@@ -22,9 +22,9 @@ abstract class ContainerView<P, V : View> : View {
     private var widthCache = 0
     private var heightCache = 0
 
-    override fun layout() {
+    override fun layout(rendererProxy: RendererProxy) {
         children.forEach {
-            it.view.layout()
+            it.view.layout(rendererProxy)
         }
         widthCache = calculateWidth()
         heightCache = calculateHeight()
@@ -52,8 +52,8 @@ context(ContainerView<P, V>) infix fun <P, V : View> P.has(view: V) = this@Conta
 class SingleView<V : View> : ContainerView<Unit, V>() {
     override fun calculateWidth() = children.single().view.getWidth()
     override fun calculateHeight() = children.single().view.getHeight()
-    override fun layout() {
-        super.layout()
+    override fun layout(rendererProxy: RendererProxy) {
+        super.layout(rendererProxy)
         children.single().xCache = 0
         children.single().yCache = 0
     }
@@ -67,8 +67,8 @@ context(ViewScope) fun SingleView(block: SingleView<View>.() -> Unit) = SingleVi
 class XListView<V : View> : ContainerView<Unit, V>() {
     override fun calculateWidth() = children.sumOf { it.view.getWidth() }
     override fun calculateHeight() = children.maxOfOrNull { it.view.getHeight() } ?: 0
-    override fun layout() {
-        super.layout()
+    override fun layout(rendererProxy: RendererProxy) {
+        super.layout(rendererProxy)
         var x = 0
         children.forEach {
             it.xCache = x
@@ -84,8 +84,8 @@ context(ViewScope) fun XListView(block: XListView<View>.() -> Unit) = XListView<
 class YListView<V : View> : ContainerView<Unit, V>() {
     override fun calculateWidth() = children.maxOfOrNull { it.view.getWidth() } ?: 0
     override fun calculateHeight() = children.sumOf { it.view.getHeight() }
-    override fun layout() {
-        super.layout()
+    override fun layout(rendererProxy: RendererProxy) {
+        super.layout(rendererProxy)
         var y = 0
         children.forEach {
             it.xCache = 0
@@ -99,7 +99,7 @@ context(ViewScope) fun YListView(block: YListView<View>.() -> Unit) = YListView<
 
 
 abstract class SolidView(private val width: Int, private val height: Int) : View {
-    override fun layout() = Unit
+    override fun layout(rendererProxy: RendererProxy) = Unit
     override fun getWidth() = width
     override fun getHeight() = height
 }

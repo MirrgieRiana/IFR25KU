@@ -49,11 +49,11 @@ abstract class RecipeViewerCategoryCard<R> {
     val recipeEntries by lazy { createRecipeEntries() }
 
     protected abstract fun createView(recipeEntry: RecipeEntry<R>): View
-    fun getView(recipeEntry: RecipeEntry<R>): View {
+    fun getView(rendererProxy: RendererProxy, recipeEntry: RecipeEntry<R>): View {
         val oldView = recipeEntry.viewCache
         if (oldView == null) {
             val newView = createView(recipeEntry)
-            newView.layout()
+            newView.layout(rendererProxy)
             recipeEntry.viewCache = newView
             return newView
         } else {

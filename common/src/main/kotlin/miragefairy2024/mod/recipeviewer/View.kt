@@ -4,11 +4,13 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Ingredient
 
 interface View {
-    fun layout()
+    fun layout(rendererProxy: RendererProxy)
     fun getWidth(): Int
     fun getHeight(): Int
     fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int)
 }
+
+interface RendererProxy
 
 interface WidgetProxy {
     fun addInputSlotWidget(ingredient: Ingredient, x: Int, y: Int)
