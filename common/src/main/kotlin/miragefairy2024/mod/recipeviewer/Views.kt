@@ -61,7 +61,7 @@ class SingleView<V : View> : ContainerView<Unit, V>() {
     val childView get() = children.single().view
 }
 
-context(ViewScope) fun Single(block: SingleView<View>.() -> Unit) = SingleView<View>().apply { block() }
+context(ViewScope) fun SingleView(block: SingleView<View>.() -> Unit) = SingleView<View>().apply { block() }
 
 
 class XListView<V : View> : ContainerView<Unit, V>() {
@@ -78,7 +78,7 @@ class XListView<V : View> : ContainerView<Unit, V>() {
     }
 }
 
-context(ViewScope) fun XList(block: XListView<View>.() -> Unit) = XListView<View>().apply { block() }
+context(ViewScope) fun XListView(block: XListView<View>.() -> Unit) = XListView<View>().apply { block() }
 
 
 class YListView<V : View> : ContainerView<Unit, V>() {
@@ -95,7 +95,7 @@ class YListView<V : View> : ContainerView<Unit, V>() {
     }
 }
 
-context(ViewScope) fun YList(block: YListView<View>.() -> Unit) = YListView<View>().apply { block() }
+context(ViewScope) fun YListView(block: YListView<View>.() -> Unit) = YListView<View>().apply { block() }
 
 
 abstract class SolidView(private val width: Int, private val height: Int) : View {
@@ -109,14 +109,10 @@ class XSpaceView(width: Int) : SolidView(width, 0) {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) = Unit
 }
 
-context(ViewScope) fun XSpace(width: Int) = XSpaceView(width)
-
 
 class YSpaceView(height: Int) : SolidView(0, height) {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) = Unit
 }
-
-context(ViewScope) fun YSpace(width: Int) = YSpaceView(width)
 
 
 abstract class SlotView : SolidView(18, 18)
@@ -128,8 +124,6 @@ class InputSlotView(private val ingredient: Ingredient) : SlotView() {
     }
 }
 
-context(ViewScope) fun InputSlot(ingredient: Ingredient) = InputSlotView(ingredient)
-
 
 class CatalystSlotView(private val ingredient: Ingredient) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
@@ -137,13 +131,9 @@ class CatalystSlotView(private val ingredient: Ingredient) : SlotView() {
     }
 }
 
-context(ViewScope) fun CatalystSlot(ingredient: Ingredient) = CatalystSlotView(ingredient)
-
 
 class OutputSlotView(private val itemStack: ItemStack) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
         widgetProxy.addOutputSlotWidget(itemStack, x, y)
     }
 }
-
-context(ViewScope) fun OutputSlot(itemStack: ItemStack) = OutputSlotView(itemStack)
