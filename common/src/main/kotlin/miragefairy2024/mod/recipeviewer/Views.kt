@@ -66,7 +66,7 @@ class SingleView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V>
     val childView get() = children.single().view
 }
 
-context(ViewScope) fun SingleView(block: SingleView<View>.() -> Unit) = SingleView<View>().apply { block() }
+fun SingleView(block: SingleView<View>.() -> Unit) = SingleView<View>().apply { block() }
 
 
 class XListView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> {
@@ -84,7 +84,7 @@ class XListView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> 
     }
 }
 
-context(ViewScope) fun XListView(block: XListView<View>.() -> Unit) = XListView<View>().apply { block() }
+fun XListView(block: XListView<View>.() -> Unit) = XListView<View>().apply { block() }
 
 
 class YListView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> {
@@ -102,7 +102,7 @@ class YListView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> 
     }
 }
 
-context(ViewScope) fun YListView(block: YListView<View>.() -> Unit) = YListView<View>().apply { block() }
+fun YListView(block: YListView<View>.() -> Unit) = YListView<View>().apply { block() }
 
 
 abstract class SolidView(private val width: Int, private val height: Int) : View {
