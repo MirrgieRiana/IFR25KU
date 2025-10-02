@@ -18,6 +18,4 @@ interface WidgetProxy {
     fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int)
 }
 
-object ViewScope
-
-fun View(block: context(ViewScope) SingleView<View>.() -> Unit): View = ViewScope.run { SingleView { block(this) }.childView }
+fun View(block: SingleView<View>.() -> Unit): View = SingleView { block(this) }.childView
