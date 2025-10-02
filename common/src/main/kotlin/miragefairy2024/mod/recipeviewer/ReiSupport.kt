@@ -5,9 +5,10 @@ import me.shedaniel.rei.api.common.display.Display
 import me.shedaniel.rei.api.common.display.DisplaySerializer
 import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay
+import me.shedaniel.rei.api.common.entry.comparison.EntryComparator
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
-import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
+import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.util.CompoundTag
 import miragefairy2024.util.get
 import miragefairy2024.util.toEntryIngredient
@@ -18,17 +19,30 @@ import mirrg.kotlin.java.hydrogen.toOptional
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
 import net.minecraft.resources.RegistryOps
+import java.util.Objects
 
 object ReiEvents {
-    val onRegisterDisplaySerializer = InitializationEventRegistry<(DisplaySerializerRegistry) -> Unit>()
-    val onRegisterItemComparators = InitializationEventRegistry<(ItemComparatorRegistry) -> Unit>()
+    val onRegisterDisplaySerializer = ReusableInitializationEventRegistry<(DisplaySerializerRegistry) -> Unit>()
+    val onRegisterItemComparators = ReusableInitializationEventRegistry<(ItemComparatorRegistry) -> Unit>()
 }
 
 context(ModContext)
 fun initReiSupport() {
     ReiEvents.onRegisterDisplaySerializer {
-        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
             ReiSupport.get(card).registerDisplaySerializer(it)
+        }
+    }
+
+    ReiEvents.onRegisterItemComparators { registry ->
+        RecipeViewerEvents.itemIdentificationDataComponentTypesList.freezeAndGet().forEach { (item, dataComponentTypes) ->
+            registry.register({ context, itemStack ->
+                if (context.isExact) {
+                    EntryComparator.itemComponents().hash(context, itemStack)
+                } else {
+                    Objects.hash(*dataComponentTypes().map { itemStack[it] }.toTypedArray()).toLong()
+                }
+            }, item())
         }
     }
 }

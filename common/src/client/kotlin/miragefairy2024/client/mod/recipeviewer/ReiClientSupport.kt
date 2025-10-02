@@ -11,9 +11,11 @@ import me.shedaniel.rei.api.client.registry.display.DisplayRegistry
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry
 import me.shedaniel.rei.api.common.util.EntryIngredients
 import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
-import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
+import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.client.mod.rei.ClientReiCategoryCard
+import miragefairy2024.mod.recipeviewer.Alignment
+import miragefairy2024.mod.recipeviewer.ColorPair
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
@@ -29,15 +31,15 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
 object ReiClientEvents {
-    val onRegisterCategories = InitializationEventRegistry<(CategoryRegistry) -> Unit>()
-    val onRegisterDisplays = InitializationEventRegistry<(DisplayRegistry) -> Unit>()
-    val onRegisterScreens = InitializationEventRegistry<(ScreenRegistry) -> Unit>()
+    val onRegisterCategories = ReusableInitializationEventRegistry<(CategoryRegistry) -> Unit>()
+    val onRegisterDisplays = ReusableInitializationEventRegistry<(DisplayRegistry) -> Unit>()
+    val onRegisterScreens = ReusableInitializationEventRegistry<(ScreenRegistry) -> Unit>()
 }
 
 context(ModContext)
 fun initReiClientSupport() {
     ReiClientEvents.onRegisterDisplays {
-        RecipeViewerEvents.informationEntries.forEach { informationEntry ->
+        RecipeViewerEvents.informationEntries.freezeAndGet().forEach { informationEntry ->
             BuiltinClientPlugin.getInstance().registerInformation(
                 EntryIngredients.ofIngredient(informationEntry.input()),
                 informationEntry.title,
@@ -64,17 +66,17 @@ fun initReiClientSupport() {
     }
 
     ReiClientEvents.onRegisterCategories {
-        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
             ReiClientSupport.get(card).registerCategories(it)
         }
     }
     ReiClientEvents.onRegisterDisplays {
-        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
             ReiClientSupport.get(card).registerDisplays(it)
         }
     }
     ReiClientEvents.onRegisterScreens {
-        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
             ReiClientSupport.get(card).registerScreens(it)
         }
     }
@@ -93,13 +95,13 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun getCategoryIdentifier() = ReiSupport.get(card).categoryIdentifier.first
         override fun getTitle(): Component = card.displayName
         override fun getIcon(): Renderer = card.getIcon().toEntryStack()
-        private val heightCache = card.recipeEntries.map { card.getView(it) }.maxOfOrNull { it.getHeight() } ?: 0
-        override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + card.getView(display.recipeEntry).getWidth() + 5
+        private val heightCache = card.recipeEntries.map { card.getView(rendererProxy, it) }.maxOfOrNull { it.getHeight() } ?: 0
+        override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + card.getView(rendererProxy, display.recipeEntry).getWidth() + 5
         override fun getDisplayHeight() = 5 + heightCache + 5
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
             val widgets = mutableListOf<Widget>()
             widgets += Widgets.createRecipeBase(bounds)
-            card.getView(display.recipeEntry).addWidgets(getReiWidgetProxy(widgets), 5 + bounds.x, 5 + bounds.y)
+            card.getView(rendererProxy, display.recipeEntry).addWidgets(getReiWidgetProxy(widgets), 5 + bounds.x, 5 + bounds.y)
             return widgets
         }
     }
@@ -123,16 +125,41 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
 private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
     return object : WidgetProxy {
-        override fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int) {
-            widgets += Widgets.createSlot(Point(x + 1, y + 1)).entries(ingredientStack.toEntryIngredient()).markInput()
+        override fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
+            widgets += Widgets.createSlot(Point(x + 1, y + 1))
+                .entries(ingredientStack.toEntryIngredient())
+                .markInput()
+                .backgroundEnabled(drawBackground)
         }
 
-        override fun addCatalystSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int) {
-            addInputSlotWidget(ingredientStack, x, y)
+        override fun addCatalystSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
+            addInputSlotWidget(ingredientStack, x, y, drawBackground)
         }
 
-        override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int) {
-            widgets += Widgets.createSlot(Point(x + 1, y + 1)).entries(itemStack.toEntryStack().toEntryIngredient()).markOutput()
+        override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int, drawBackground: Boolean) {
+            widgets += Widgets.createSlot(Point(x + 1, y + 1))
+                .entries(itemStack.toEntryStack().toEntryIngredient())
+                .markOutput()
+                .backgroundEnabled(drawBackground)
+        }
+
+        override fun addTextWidget(component: Component, x: Int, y: Int, color: ColorPair?, shadow: Boolean, horizontalAlignment: Alignment?) {
+            widgets += Widgets.createLabel(Point(x, y), component)
+                .let { if (color != null) it.color(color.lightModeArgb, color.darkModeArgb) else it }
+                .shadow(shadow)
+                .let {
+                    when (horizontalAlignment) {
+                        Alignment.START -> it.leftAligned()
+                        Alignment.CENTER -> it.centered()
+                        Alignment.END -> it.rightAligned()
+                        null -> it.leftAligned()
+                    }
+                }
+        }
+
+        override fun addArrow(x: Int, y: Int, durationMilliSeconds: Int?) {
+            widgets += Widgets.createArrow(Point(x, y))
+                .animationDurationMS(durationMilliSeconds?.toDouble() ?: -1.0)
         }
     }
 }

@@ -8,6 +8,7 @@ import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
+import miragefairy2024.util.plusAssign
 import miragefairy2024.util.text
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
@@ -49,11 +50,11 @@ abstract class RecipeViewerCategoryCard<R> {
     val recipeEntries by lazy { createRecipeEntries() }
 
     protected abstract fun createView(recipeEntry: RecipeEntry<R>): View
-    fun getView(recipeEntry: RecipeEntry<R>): View {
+    fun getView(rendererProxy: RendererProxy, recipeEntry: RecipeEntry<R>): View {
         val oldView = recipeEntry.viewCache
         if (oldView == null) {
             val newView = createView(recipeEntry)
-            newView.layout()
+            newView.layout(rendererProxy)
             recipeEntry.viewCache = newView
             return newView
         } else {
