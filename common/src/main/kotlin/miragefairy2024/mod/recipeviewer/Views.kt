@@ -44,12 +44,17 @@ abstract class ContainerView<P, V : View> : View {
 
 }
 
+interface DefaultedContainerView<V : View> {
+    fun add(view: V)
+}
+
 operator fun <P, V : View> ContainerView<P, V>.set(position: P, view: V) = this.add(position, view)
-operator fun <V : View> ContainerView<Unit, V>.plusAssign(view: V) = this.add(Unit, view)
-context(ContainerView<P, V>) infix fun <P, V : View> P.has(view: V) = this@ContainerView.add(this, view)
+operator fun <V : View> DefaultedContainerView<V>.plusAssign(view: V) = this.add(view)
+operator fun <P, V : View> ContainerView<P, V>.plusAssign(pair: Pair<P, V>) = this.add(pair.first, pair.second)
 
 
-class SingleView<V : View> : ContainerView<Unit, V>() {
+class SingleView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> {
+    override fun add(view: V) = add(Unit, view)
     override fun calculateWidth() = children.single().view.getWidth()
     override fun calculateHeight() = children.single().view.getHeight()
     override fun layout(rendererProxy: RendererProxy) {
@@ -64,7 +69,8 @@ class SingleView<V : View> : ContainerView<Unit, V>() {
 context(ViewScope) fun SingleView(block: SingleView<View>.() -> Unit) = SingleView<View>().apply { block() }
 
 
-class XListView<V : View> : ContainerView<Unit, V>() {
+class XListView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> {
+    override fun add(view: V) = add(Unit, view)
     override fun calculateWidth() = children.sumOf { it.view.getWidth() }
     override fun calculateHeight() = children.maxOfOrNull { it.view.getHeight() } ?: 0
     override fun layout(rendererProxy: RendererProxy) {
@@ -81,7 +87,8 @@ class XListView<V : View> : ContainerView<Unit, V>() {
 context(ViewScope) fun XListView(block: XListView<View>.() -> Unit) = XListView<View>().apply { block() }
 
 
-class YListView<V : View> : ContainerView<Unit, V>() {
+class YListView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> {
+    override fun add(view: V) = add(Unit, view)
     override fun calculateWidth() = children.maxOfOrNull { it.view.getWidth() } ?: 0
     override fun calculateHeight() = children.sumOf { it.view.getHeight() }
     override fun layout(rendererProxy: RendererProxy) {
