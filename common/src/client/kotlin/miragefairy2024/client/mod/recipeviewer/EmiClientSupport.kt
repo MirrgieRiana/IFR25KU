@@ -95,7 +95,7 @@ fun initEmiClientSupport() {
                 }
             }
         val bound = widget.bounds
-        if (view.tooltip != null) widgets.addTooltipText(view.tooltip, bound.x, bound.y, bound.width, bound.height)
+        if (view.tooltip != null) widgets.addTooltipText(view.tooltip!!, bound.x, bound.y, bound.width, bound.height)
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ArrowView, x, y ->
         if (view.durationMilliSeconds != null) {
@@ -144,7 +144,7 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getDisplayHeight() = 1 + view.getHeight() + 1
     override fun addWidgets(widgets: WidgetHolder) {
         view.assemble(1, 1) { view2, x, y ->
-            EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, this), view, x, y)
+            EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, this), view2, x, y)
         }
     }
 }
