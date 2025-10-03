@@ -11,11 +11,7 @@ class FreezableRegistry<T> {
         list += item
     }
 
-    fun freeze() {
-        take()
-    }
-
-    fun take(): List<T> {
+    fun freezeAndGet(): List<T> {
         val oldCache = cache
         return if (oldCache == null) {
             val newCache = list.toList()
