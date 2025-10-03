@@ -4,6 +4,7 @@ import dev.emi.emi.api.EmiRegistry
 import dev.emi.emi.api.recipe.EmiInfoRecipe
 import dev.emi.emi.api.recipe.EmiRecipe
 import dev.emi.emi.api.recipe.EmiRecipeCategory
+import dev.emi.emi.api.stack.Comparison
 import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
 import dev.emi.emi.api.widget.WidgetHolder
@@ -20,6 +21,7 @@ import miragefairy2024.util.times
 import miragefairy2024.util.toEmiIngredient
 import mirrg.kotlin.helium.Single
 import net.minecraft.world.item.ItemStack
+import java.util.Objects
 
 object EmiClientEvents {
     val onRegister = InitializationEventRegistry<(EmiRegistry) -> Unit>()
@@ -42,6 +44,18 @@ fun initEmiClientSupport() {
     EmiClientEvents.onRegister {
         RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
             EmiClientSupport.get(card).register(it)
+        }
+    }
+
+    EmiClientEvents.onRegister { registry ->
+        RecipeViewerEvents.itemIdentificationDataComponentTypesList.freezeAndGet().forEach { (item, dataComponentTypes) ->
+            registry.setDefaultComparison(
+                item(),
+                Comparison.of(
+                    { a, b -> dataComponentTypes().all { a[it] == b[it] } },
+                    { itemStack -> Objects.hash(*dataComponentTypes().map { itemStack[it] }.toTypedArray()) }
+                ),
+            )
         }
     }
 }
