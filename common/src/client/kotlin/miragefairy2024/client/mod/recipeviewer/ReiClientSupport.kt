@@ -20,7 +20,7 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
 import miragefairy2024.mod.recipeviewer.SupportedDisplay
-import miragefairy2024.mod.recipeviewer.WidgetProxy
+import miragefairy2024.mod.recipeviewer.ViewPlacer
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
@@ -82,8 +82,8 @@ fun initReiClientSupport() {
     }
 }
 
-private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
-    return object : WidgetProxy {
+private fun getReiViewPlacer(widgets: MutableList<Widget>): ViewPlacer {
+    return object : ViewPlacer {
         override fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
             widgets += Widgets.createSlot(Point(x + 1, y + 1))
                 .entries(ingredientStack.toEntryIngredient())
@@ -143,7 +143,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
             val widgets = mutableListOf<Widget>()
             widgets += Widgets.createRecipeBase(bounds)
-            card.getView(rendererProxy, display.recipeEntry).addWidgets(getReiWidgetProxy(widgets), 5 + bounds.x, 5 + bounds.y)
+            card.getView(rendererProxy, display.recipeEntry).addWidgets(getReiViewPlacer(widgets), 5 + bounds.x, 5 + bounds.y)
             return widgets
         }
     }

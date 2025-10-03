@@ -8,7 +8,7 @@ interface View {
     fun layout(rendererProxy: RendererProxy)
     fun getWidth(): Int
     fun getHeight(): Int
-    fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int)
+    fun addWidgets(viewPlacer: ViewPlacer, x: Int, y: Int)
 }
 
 interface RendererProxy {
@@ -16,7 +16,7 @@ interface RendererProxy {
     fun getTextHeight(): Int
 }
 
-interface WidgetProxy {
+interface ViewPlacer {
     fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean)
     fun addCatalystSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean)
     fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int, drawBackground: Boolean)

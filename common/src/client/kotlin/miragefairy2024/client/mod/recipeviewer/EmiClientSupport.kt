@@ -16,7 +16,7 @@ import miragefairy2024.mod.recipeviewer.Alignment
 import miragefairy2024.mod.recipeviewer.ColorPair
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
-import miragefairy2024.mod.recipeviewer.WidgetProxy
+import miragefairy2024.mod.recipeviewer.ViewPlacer
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
@@ -66,8 +66,8 @@ fun initEmiClientSupport() {
     }
 }
 
-private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): WidgetProxy {
-    return object : WidgetProxy {
+private fun getEmiViewPlacer(widgets: WidgetHolder, emiRecipe: EmiRecipe): ViewPlacer {
+    return object : ViewPlacer {
         override fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
             widgets.addSlot(ingredientStack.toEmiIngredient(), x, y)
                 .drawBack(drawBackground)
@@ -146,6 +146,6 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getDisplayWidth() = 1 + view.getWidth() + 1
     override fun getDisplayHeight() = 1 + view.getHeight() + 1
     override fun addWidgets(widgets: WidgetHolder) {
-        view.addWidgets(getEmiWidgetProxy(widgets, this), 1, 1)
+        view.addWidgets(getEmiViewPlacer(widgets, this), 1, 1)
     }
 }
