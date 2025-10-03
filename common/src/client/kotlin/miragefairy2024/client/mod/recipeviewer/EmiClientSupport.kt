@@ -7,8 +7,8 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory
 import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
 import dev.emi.emi.api.widget.WidgetHolder
+import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
-import miragefairy2024.mod.recipeviewer.EmiEvents
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.WidgetProxy
@@ -21,9 +21,13 @@ import miragefairy2024.util.toEmiIngredient
 import mirrg.kotlin.helium.Single
 import net.minecraft.world.item.ItemStack
 
+object EmiClientEvents {
+    val onRegister = InitializationEventRegistry<(EmiRegistry) -> Unit>()
+}
+
 context(ModContext)
 fun initEmiClientSupport() {
-    EmiEvents.onRegister {
+    EmiClientEvents.onRegister {
         RecipeViewerEvents.informationEntries.freezeAndGet().forEach { informationEntry ->
             it.addRecipe(
                 EmiInfoRecipe(
@@ -35,7 +39,7 @@ fun initEmiClientSupport() {
         }
     }
 
-    EmiEvents.onRegister {
+    EmiClientEvents.onRegister {
         RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
             EmiClientSupport.get(card).register(it)
         }
