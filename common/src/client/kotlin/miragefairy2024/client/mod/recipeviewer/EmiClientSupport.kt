@@ -4,6 +4,7 @@ import dev.emi.emi.api.EmiRegistry
 import dev.emi.emi.api.recipe.EmiInfoRecipe
 import dev.emi.emi.api.recipe.EmiRecipe
 import dev.emi.emi.api.recipe.EmiRecipeCategory
+import dev.emi.emi.api.render.EmiTexture
 import dev.emi.emi.api.stack.Comparison
 import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
@@ -119,6 +120,14 @@ private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): Widg
             widgets.addSlot(itemStack.toEmiStack(), x, y)
                 .recipeContext(emiRecipe)
                 .drawBack(drawBackground)
+        }
+
+        override fun addArrow(x: Int, y: Int, durationMilliSeconds: Int?) {
+            if (durationMilliSeconds != null) {
+                widgets.addFillingArrow(x, y, durationMilliSeconds)
+            } else {
+                widgets.addTexture(EmiTexture.EMPTY_ARROW, x, y)
+            }
         }
     }
 }

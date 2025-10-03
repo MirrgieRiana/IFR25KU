@@ -140,5 +140,10 @@ private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
                 .markOutput()
                 .backgroundEnabled(drawBackground)
         }
+
+        override fun addArrow(x: Int, y: Int, durationMilliSeconds: Int?) {
+            widgets += Widgets.createArrow(Point(x, y))
+                .animationDurationMS(durationMilliSeconds?.toDouble() ?: -1.0)
+        }
     }
 }

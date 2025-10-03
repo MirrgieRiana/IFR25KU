@@ -16,6 +16,7 @@ interface WidgetProxy {
     fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean)
     fun addCatalystSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean)
     fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int, drawBackground: Boolean)
+    fun addArrow(x: Int, y: Int, durationMilliSeconds: Int?)
 }
 
 enum class Alignment {

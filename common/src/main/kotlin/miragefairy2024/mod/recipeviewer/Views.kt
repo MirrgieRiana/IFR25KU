@@ -155,3 +155,11 @@ class OutputSlotView(private val itemStack: ItemStack) : SlotView() {
         widgetProxy.addOutputSlotWidget(itemStack, x, y, drawBackground)
     }
 }
+
+
+class ArrowView() : SolidView(24, 17) {
+    var durationMilliSeconds: Int? = null
+    override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
+        widgetProxy.addArrow(x, y, durationMilliSeconds)
+    }
+}
