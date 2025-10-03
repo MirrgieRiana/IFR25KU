@@ -68,8 +68,8 @@ fun initEmiClientSupport() {
     }
 }
 
-private fun getEmiViewPlacer(widgets: WidgetHolder, emiRecipe: EmiRecipe): ViewPlacer {
-    return object : ViewPlacer {
+private fun getEmiViewPlacer(widgets: WidgetHolder, emiRecipe: EmiRecipe): ViewPlacer<View> {
+    return object : ViewPlacer<View> {
         override fun place(view: View, x: Int, y: Int) {
             when (view) {
                 is InputSlotView -> {

@@ -85,8 +85,8 @@ fun initReiClientSupport() {
     }
 }
 
-private fun getReiViewPlacer(widgets: MutableList<Widget>): ViewPlacer {
-    return object : ViewPlacer {
+private fun getReiViewPlacer(widgets: MutableList<Widget>): ViewPlacer<View> {
+    return object : ViewPlacer<View> {
         override fun place(view: View, x: Int, y: Int) {
             when (view) {
                 is InputSlotView -> {

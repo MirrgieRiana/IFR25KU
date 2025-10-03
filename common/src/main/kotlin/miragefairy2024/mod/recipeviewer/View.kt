@@ -6,7 +6,7 @@ interface View {
     fun layout(rendererProxy: RendererProxy)
     fun getWidth(): Int
     fun getHeight(): Int
-    fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer)
+    fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>)
 }
 
 interface RendererProxy {
@@ -14,8 +14,8 @@ interface RendererProxy {
     fun getTextHeight(): Int
 }
 
-interface ViewPlacer {
-    fun place(view: View, x: Int, y: Int)
+fun interface ViewPlacer<V : View> {
+    fun place(view: V, x: Int, y: Int)
 }
 
 class ColorPair(val lightModeArgb: Int, val darkModeArgb: Int) {
