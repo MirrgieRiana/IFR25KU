@@ -159,11 +159,12 @@ class OutputSlotView(private val itemStack: ItemStack) : SlotView() {
 
 
 class TextView(private val text: Component) : View {
+    var minWidth = 0
     private var widthCache = 0
     private var heightCache = 0
 
     override fun layout(rendererProxy: RendererProxy) {
-        widthCache = rendererProxy.calculateTextWidth(text)
+        widthCache = rendererProxy.calculateTextWidth(text) atLeast minWidth
         heightCache = rendererProxy.getTextHeight()
     }
 
