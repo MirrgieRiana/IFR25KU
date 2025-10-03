@@ -13,11 +13,15 @@ import dev.emi.emi.api.widget.WidgetHolder
 import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.mod.recipeviewer.Alignment
-import miragefairy2024.mod.recipeviewer.ColorPair
+import miragefairy2024.mod.recipeviewer.ArrowView
+import miragefairy2024.mod.recipeviewer.CatalystSlotView
+import miragefairy2024.mod.recipeviewer.InputSlotView
+import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
-import miragefairy2024.mod.recipeviewer.WidgetProxy
-import miragefairy2024.util.IngredientStack
+import miragefairy2024.mod.recipeviewer.TextView
+import miragefairy2024.mod.recipeviewer.View
+import miragefairy2024.mod.recipeviewer.ViewPlacer
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
@@ -25,8 +29,6 @@ import miragefairy2024.util.times
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
 import mirrg.kotlin.helium.Single
-import net.minecraft.network.chat.Component
-import net.minecraft.world.item.ItemStack
 import java.util.Objects
 
 object EmiClientEvents {
@@ -103,48 +105,54 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getDisplayWidth() = 1 + view.getWidth() + 1
     override fun getDisplayHeight() = 1 + view.getHeight() + 1
     override fun addWidgets(widgets: WidgetHolder) {
-        view.addWidgets(getEmiWidgetProxy(widgets, this), 1, 1)
+        view.assemble(getEmiViewPlacer(widgets, this), 1, 1)
     }
 }
 
-private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): WidgetProxy {
-    return object : WidgetProxy {
-        override fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
-            widgets.addSlot(ingredientStack.toEmiIngredient(), x, y)
-                .drawBack(drawBackground)
-        }
+private fun getEmiViewPlacer(widgets: WidgetHolder, emiRecipe: EmiRecipe): ViewPlacer {
+    return object : ViewPlacer {
+        override fun place(view: View, x: Int, y: Int) {
+            when (view) {
+                is InputSlotView -> {
+                    widgets.addSlot(view.ingredientStack.toEmiIngredient(), x, y)
+                        .drawBack(view.drawBackground)
+                }
 
-        override fun addCatalystSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
-            widgets.addSlot(ingredientStack.toEmiIngredient(), x, y)
-                .catalyst(true)
-                .drawBack(drawBackground)
-        }
+                is CatalystSlotView -> {
+                    widgets.addSlot(view.ingredientStack.toEmiIngredient(), x, y)
+                        .catalyst(true)
+                        .drawBack(view.drawBackground)
+                }
 
-        override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int, drawBackground: Boolean) {
-            widgets.addSlot(itemStack.toEmiStack(), x, y)
-                .recipeContext(emiRecipe)
-                .drawBack(drawBackground)
-        }
+                is OutputSlotView -> {
+                    widgets.addSlot(view.itemStack.toEmiStack(), x, y)
+                        .recipeContext(emiRecipe)
+                        .drawBack(view.drawBackground)
+                }
 
-        override fun addTextWidget(component: Component, x: Int, y: Int, color: ColorPair?, shadow: Boolean, horizontalAlignment: Alignment?, tooltip: List<Component>?) {
-            val widget = widgets.addText(component, x, y, color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), shadow)
-                .let {
-                    when (horizontalAlignment) {
-                        Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
-                        Alignment.CENTER -> it.horizontalAlign(TextWidget.Alignment.CENTER)
-                        Alignment.END -> it.horizontalAlign(TextWidget.Alignment.END)
-                        null -> it
+                is TextView -> {
+                    val widget = widgets.addText(view.text, x, y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
+                        .let {
+                            when (view.horizontalAlignment) {
+                                Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
+                                Alignment.CENTER -> it.horizontalAlign(TextWidget.Alignment.CENTER)
+                                Alignment.END -> it.horizontalAlign(TextWidget.Alignment.END)
+                                null -> it
+                            }
+                        }
+                    val bound = widget.bounds
+                    if (view.tooltip != null) widgets.addTooltipText(view.tooltip!!, bound.x, bound.y, bound.width, bound.height)
+                }
+
+                is ArrowView -> {
+                    if (view.durationMilliSeconds != null) {
+                        widgets.addFillingArrow(x, y, view.durationMilliSeconds!!)
+                    } else {
+                        widgets.addTexture(EmiTexture.EMPTY_ARROW, x, y)
                     }
                 }
-            val bound = widget.bounds
-            if (tooltip != null) widgets.addTooltipText(tooltip, bound.x, bound.y, bound.width, bound.height)
-        }
 
-        override fun addArrow(x: Int, y: Int, durationMilliSeconds: Int?) {
-            if (durationMilliSeconds != null) {
-                widgets.addFillingArrow(x, y, durationMilliSeconds)
-            } else {
-                widgets.addTexture(EmiTexture.EMPTY_ARROW, x, y)
+                else -> throw IllegalArgumentException("Unsupported view: $view")
             }
         }
     }

@@ -38,9 +38,9 @@ abstract class ContainerView<P, V : View> : View {
     abstract fun calculateWidth(): Int
     abstract fun calculateHeight(): Int
 
-    override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
+    override fun assemble(viewPlacer: ViewPlacer, x: Int, y: Int) {
         children.forEach {
-            it.view.addWidgets(widgetProxy, x + it.xCache, y + it.yCache)
+            it.view.assemble(viewPlacer, x + it.xCache, y + it.yCache)
         }
     }
 
@@ -121,16 +121,16 @@ abstract class SolidView(private val width: Int, private val height: Int) : View
     override fun layout(rendererProxy: RendererProxy) = Unit
     override fun getWidth() = width
     override fun getHeight() = height
+    override fun assemble(viewPlacer: ViewPlacer, x: Int, y: Int) = viewPlacer.place(this, x, y)
 }
 
 
-class XSpaceView(width: Int) : SolidView(width, 0) {
-    override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) = Unit
+abstract class SpaceView(width: Int, height: Int) : SolidView(width, height) {
+    override fun assemble(viewPlacer: ViewPlacer, x: Int, y: Int) = Unit
 }
 
-class YSpaceView(height: Int) : SolidView(0, height) {
-    override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) = Unit
-}
+class XSpaceView(width: Int) : SolidView(width, 0)
+class YSpaceView(height: Int) : SolidView(0, height)
 
 
 abstract class SlotView : SolidView(18, 18) {
@@ -139,26 +139,12 @@ abstract class SlotView : SolidView(18, 18) {
 
 fun <V : SlotView> V.noBackground() = this.apply { this.drawBackground = false }
 
-class InputSlotView(private val ingredientStack: IngredientStack) : SlotView() {
-    override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
-        widgetProxy.addInputSlotWidget(ingredientStack, x, y, drawBackground)
-    }
-}
-
-class CatalystSlotView(private val ingredientStack: IngredientStack) : SlotView() {
-    override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
-        widgetProxy.addCatalystSlotWidget(ingredientStack, x, y, drawBackground)
-    }
-}
-
-class OutputSlotView(private val itemStack: ItemStack) : SlotView() {
-    override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
-        widgetProxy.addOutputSlotWidget(itemStack, x, y, drawBackground)
-    }
-}
+class InputSlotView(val ingredientStack: IngredientStack) : SlotView()
+class CatalystSlotView(val ingredientStack: IngredientStack) : SlotView()
+class OutputSlotView(val itemStack: ItemStack) : SlotView()
 
 
-class TextView(private val text: Component) : View {
+class TextView(val text: Component) : View {
     var minWidth = 0
     private var widthCache = 0
     private var heightCache = 0
@@ -176,15 +162,10 @@ class TextView(private val text: Component) : View {
     var horizontalAlignment: Alignment? = null
     var tooltip: List<Component>? = null
 
-    override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
-        widgetProxy.addTextWidget(text, x, y, color, shadow, horizontalAlignment, tooltip)
-    }
+    override fun assemble(viewPlacer: ViewPlacer, x: Int, y: Int) = viewPlacer.place(this, x, y)
 }
 
 
 class ArrowView() : SolidView(24, 17) {
     var durationMilliSeconds: Int? = null
-    override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
-        widgetProxy.addArrow(x, y, durationMilliSeconds)
-    }
 }
