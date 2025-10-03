@@ -7,6 +7,7 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
+import miragefairy2024.util.plusAssign
 import miragefairy2024.util.text
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack

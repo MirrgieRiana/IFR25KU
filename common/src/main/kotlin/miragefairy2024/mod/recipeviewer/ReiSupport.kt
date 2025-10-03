@@ -27,7 +27,7 @@ object ReiEvents {
 context(ModContext)
 fun initReiSupport() {
     ReiEvents.onRegisterDisplaySerializer {
-        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
             ReiSupport.get(card).registerDisplaySerializer(it)
         }
     }

@@ -37,7 +37,7 @@ object ReiClientEvents {
 context(ModContext)
 fun initReiClientSupport() {
     ReiClientEvents.onRegisterDisplays {
-        RecipeViewerEvents.informationEntries.forEach { informationEntry ->
+        RecipeViewerEvents.informationEntries.freezeAndGet().forEach { informationEntry ->
             BuiltinClientPlugin.getInstance().registerInformation(
                 EntryIngredients.ofIngredient(informationEntry.input()),
                 informationEntry.title,
@@ -64,17 +64,17 @@ fun initReiClientSupport() {
     }
 
     ReiClientEvents.onRegisterCategories {
-        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
             ReiClientSupport.get(card).registerCategories(it)
         }
     }
     ReiClientEvents.onRegisterDisplays {
-        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
             ReiClientSupport.get(card).registerDisplays(it)
         }
     }
     ReiClientEvents.onRegisterScreens {
-        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
             ReiClientSupport.get(card).registerScreens(it)
         }
     }

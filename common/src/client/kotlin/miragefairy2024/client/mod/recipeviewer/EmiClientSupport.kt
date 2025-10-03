@@ -24,7 +24,7 @@ import net.minecraft.world.item.ItemStack
 context(ModContext)
 fun initEmiClientSupport() {
     EmiEvents.onRegister {
-        RecipeViewerEvents.informationEntries.forEach { informationEntry ->
+        RecipeViewerEvents.informationEntries.freezeAndGet().forEach { informationEntry ->
             it.addRecipe(
                 EmiInfoRecipe(
                     listOf(EmiIngredient.of(informationEntry.input())),
@@ -36,7 +36,7 @@ fun initEmiClientSupport() {
     }
 
     EmiEvents.onRegister {
-        RecipeViewerEvents.recipeViewerCategoryCards.forEach { card ->
+        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
             EmiClientSupport.get(card).register(it)
         }
     }

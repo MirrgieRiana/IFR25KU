@@ -13,6 +13,7 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.isIn
 import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.isNotIn
+import miragefairy2024.util.plusAssign
 import miragefairy2024.util.registerSpecialRecipe
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.join
