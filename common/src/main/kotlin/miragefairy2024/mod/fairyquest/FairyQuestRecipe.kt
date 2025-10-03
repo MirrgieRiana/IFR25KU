@@ -356,8 +356,8 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
     override fun getRecipeCodec(): Codec<FairyQuestRecipe> = fairyQuestRecipeRegistry.byNameCodec()
     override fun getInputs(recipeEntry: RecipeEntry<FairyQuestRecipe>): List<Input> {
         return listOf(
-            Input(FairyQuestCardCard.item().createItemStack().also<ItemStack> { it.setFairyQuestRecipe(recipeEntry.recipe) }.toIngredientStack(), true),
-            *recipeEntry.recipe.inputs.map<() -> IngredientStack, Input> { input -> Input(input(), false) }.toTypedArray<Input>(),
+            Input(FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(recipeEntry.recipe) }.toIngredientStack(), true),
+            *recipeEntry.recipe.inputs.map { input -> Input(input(), false) }.toTypedArray<Input>(),
         )
     }
 
