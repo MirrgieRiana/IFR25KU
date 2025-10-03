@@ -4,16 +4,16 @@ class ModContext
 
 class InitializationEventRegistry<T> {
     private val list = mutableListOf<T>()
-    private var closed = false
+    private var frozen = false
 
     context(ModContext)
     operator fun invoke(listener: T) {
-        require(!closed)
+        check(!frozen) { "Cannot register listener to already fired initialization event." }
         list += listener
     }
 
     fun fire(processor: (T) -> Unit) {
-        closed = true
+        frozen = true
         list.forEach {
             processor(it)
         }
