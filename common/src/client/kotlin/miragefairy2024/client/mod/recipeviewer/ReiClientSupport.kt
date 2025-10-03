@@ -82,47 +82,6 @@ fun initReiClientSupport() {
     }
 }
 
-class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
-    companion object {
-        private val table = mutableMapOf<RecipeViewerCategoryCard<*>, ReiClientSupport<*>>()
-        fun <R> get(card: RecipeViewerCategoryCard<R>): ReiClientSupport<R> {
-            @Suppress("UNCHECKED_CAST")
-            return table.getOrPut(card) { ReiClientSupport(card) } as ReiClientSupport<R>
-        }
-    }
-
-    val displayCategory = object : DisplayCategory<SupportedDisplay<R>> {
-        override fun getCategoryIdentifier() = ReiSupport.get(card).categoryIdentifier.first
-        override fun getTitle(): Component = card.displayName
-        override fun getIcon(): Renderer = card.getIcon().toEntryStack()
-        private val heightCache = card.recipeEntries.map { card.getView(rendererProxy, it) }.maxOfOrNull { it.getHeight() } ?: 0
-        override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + card.getView(rendererProxy, display.recipeEntry).getWidth() + 5
-        override fun getDisplayHeight() = 5 + heightCache + 5
-        override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
-            val widgets = mutableListOf<Widget>()
-            widgets += Widgets.createRecipeBase(bounds)
-            card.getView(rendererProxy, display.recipeEntry).addWidgets(getReiWidgetProxy(widgets), 5 + bounds.x, 5 + bounds.y)
-            return widgets
-        }
-    }
-
-    fun registerCategories(registry: CategoryRegistry) {
-        registry.add(displayCategory)
-        registry.addWorkstations(displayCategory.categoryIdentifier, *card.getWorkstations().map { it.toEntryStack() }.toTypedArray())
-    }
-
-    fun registerDisplays(registry: DisplayRegistry) {
-        card.recipeEntries.forEach {
-            registry.add(SupportedDisplay(ReiSupport.get(card), it))
-        }
-    }
-
-    fun registerScreens(registry: ScreenRegistry) {
-        // TODO
-    }
-
-}
-
 private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
     return object : WidgetProxy {
         override fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
@@ -163,4 +122,45 @@ private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
                 .animationDurationMS(durationMilliSeconds?.toDouble() ?: -1.0)
         }
     }
+}
+
+class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
+    companion object {
+        private val table = mutableMapOf<RecipeViewerCategoryCard<*>, ReiClientSupport<*>>()
+        fun <R> get(card: RecipeViewerCategoryCard<R>): ReiClientSupport<R> {
+            @Suppress("UNCHECKED_CAST")
+            return table.getOrPut(card) { ReiClientSupport(card) } as ReiClientSupport<R>
+        }
+    }
+
+    val displayCategory = object : DisplayCategory<SupportedDisplay<R>> {
+        override fun getCategoryIdentifier() = ReiSupport.get(card).categoryIdentifier.first
+        override fun getTitle(): Component = card.displayName
+        override fun getIcon(): Renderer = card.getIcon().toEntryStack()
+        private val heightCache = card.recipeEntries.map { card.getView(rendererProxy, it) }.maxOfOrNull { it.getHeight() } ?: 0
+        override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + card.getView(rendererProxy, display.recipeEntry).getWidth() + 5
+        override fun getDisplayHeight() = 5 + heightCache + 5
+        override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
+            val widgets = mutableListOf<Widget>()
+            widgets += Widgets.createRecipeBase(bounds)
+            card.getView(rendererProxy, display.recipeEntry).addWidgets(getReiWidgetProxy(widgets), 5 + bounds.x, 5 + bounds.y)
+            return widgets
+        }
+    }
+
+    fun registerCategories(registry: CategoryRegistry) {
+        registry.add(displayCategory)
+        registry.addWorkstations(displayCategory.categoryIdentifier, *card.getWorkstations().map { it.toEntryStack() }.toTypedArray())
+    }
+
+    fun registerDisplays(registry: DisplayRegistry) {
+        card.recipeEntries.forEach {
+            registry.add(SupportedDisplay(ReiSupport.get(card), it))
+        }
+    }
+
+    fun registerScreens(registry: ScreenRegistry) {
+        // TODO
+    }
+
 }

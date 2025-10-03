@@ -66,47 +66,6 @@ fun initEmiClientSupport() {
     }
 }
 
-class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
-    companion object {
-        private val table = mutableMapOf<RecipeViewerCategoryCard<*>, EmiClientSupport<*>>()
-        fun <R> get(card: RecipeViewerCategoryCard<R>): EmiClientSupport<R> {
-            @Suppress("UNCHECKED_CAST")
-            return table.getOrPut(card) { EmiClientSupport(card) } as EmiClientSupport<R>
-        }
-    }
-
-    val emiRecipeCategory: Single<EmiRecipeCategory> by lazy { // 非ロード環境用のSingle
-        Single(object : EmiRecipeCategory(card.getId(), card.getIcon().toEmiStack()) {
-            override fun getName() = card.displayName
-        })
-    }
-
-    fun register(registry: EmiRegistry) {
-        registry.addCategory(emiRecipeCategory.first)
-        card.getWorkstations().forEach {
-            registry.addWorkstation(emiRecipeCategory.first, it.toEmiStack())
-        }
-        card.recipeEntries.forEach {
-            registry.addRecipe(SupportedEmiRecipe(this, it))
-        }
-    }
-
-}
-
-class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>) : EmiRecipe {
-    override fun getCategory() = support.emiRecipeCategory.first
-    override fun getId() = if (recipeEntry.isSynthetic) "/" * recipeEntry.id else recipeEntry.id
-    override fun getInputs(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { !it.isCatalyst }.map { it.ingredientStack.toEmiIngredient() }
-    override fun getCatalysts(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { it.isCatalyst }.map { it.ingredientStack.toEmiIngredient() }
-    override fun getOutputs(): List<EmiStack> = support.card.getOutputs(recipeEntry).map { EmiStack.of(it) }
-    val view = support.card.getView(rendererProxy, recipeEntry)
-    override fun getDisplayWidth() = 1 + view.getWidth() + 1
-    override fun getDisplayHeight() = 1 + view.getHeight() + 1
-    override fun addWidgets(widgets: WidgetHolder) {
-        view.addWidgets(getEmiWidgetProxy(widgets, this), 1, 1)
-    }
-}
-
 private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): WidgetProxy {
     return object : WidgetProxy {
         override fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
@@ -147,5 +106,46 @@ private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): Widg
                 widgets.addTexture(EmiTexture.EMPTY_ARROW, x, y)
             }
         }
+    }
+}
+
+class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
+    companion object {
+        private val table = mutableMapOf<RecipeViewerCategoryCard<*>, EmiClientSupport<*>>()
+        fun <R> get(card: RecipeViewerCategoryCard<R>): EmiClientSupport<R> {
+            @Suppress("UNCHECKED_CAST")
+            return table.getOrPut(card) { EmiClientSupport(card) } as EmiClientSupport<R>
+        }
+    }
+
+    val emiRecipeCategory: Single<EmiRecipeCategory> by lazy { // 非ロード環境用のSingle
+        Single(object : EmiRecipeCategory(card.getId(), card.getIcon().toEmiStack()) {
+            override fun getName() = card.displayName
+        })
+    }
+
+    fun register(registry: EmiRegistry) {
+        registry.addCategory(emiRecipeCategory.first)
+        card.getWorkstations().forEach {
+            registry.addWorkstation(emiRecipeCategory.first, it.toEmiStack())
+        }
+        card.recipeEntries.forEach {
+            registry.addRecipe(SupportedEmiRecipe(this, it))
+        }
+    }
+
+}
+
+class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>) : EmiRecipe {
+    override fun getCategory() = support.emiRecipeCategory.first
+    override fun getId() = if (recipeEntry.isSynthetic) "/" * recipeEntry.id else recipeEntry.id
+    override fun getInputs(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { !it.isCatalyst }.map { it.ingredientStack.toEmiIngredient() }
+    override fun getCatalysts(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { it.isCatalyst }.map { it.ingredientStack.toEmiIngredient() }
+    override fun getOutputs(): List<EmiStack> = support.card.getOutputs(recipeEntry).map { EmiStack.of(it) }
+    val view = support.card.getView(rendererProxy, recipeEntry)
+    override fun getDisplayWidth() = 1 + view.getWidth() + 1
+    override fun getDisplayHeight() = 1 + view.getHeight() + 1
+    override fun addWidgets(widgets: WidgetHolder) {
+        view.addWidgets(getEmiWidgetProxy(widgets, this), 1, 1)
     }
 }
