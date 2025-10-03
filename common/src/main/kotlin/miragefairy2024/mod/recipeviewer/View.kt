@@ -8,7 +8,7 @@ interface View {
     fun layout(rendererProxy: RendererProxy)
     fun getWidth(): Int
     fun getHeight(): Int
-    fun addWidgets(viewPlacer: ViewPlacer, x: Int, y: Int)
+    fun assemble(viewPlacer: ViewPlacer, x: Int, y: Int)
 }
 
 interface RendererProxy {

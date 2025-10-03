@@ -146,6 +146,6 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getDisplayWidth() = 1 + view.getWidth() + 1
     override fun getDisplayHeight() = 1 + view.getHeight() + 1
     override fun addWidgets(widgets: WidgetHolder) {
-        view.addWidgets(getEmiViewPlacer(widgets, this), 1, 1)
+        view.assemble(getEmiViewPlacer(widgets, this), 1, 1)
     }
 }

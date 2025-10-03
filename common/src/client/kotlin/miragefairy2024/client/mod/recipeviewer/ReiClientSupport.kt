@@ -143,7 +143,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
             val widgets = mutableListOf<Widget>()
             widgets += Widgets.createRecipeBase(bounds)
-            card.getView(rendererProxy, display.recipeEntry).addWidgets(getReiViewPlacer(widgets), 5 + bounds.x, 5 + bounds.y)
+            card.getView(rendererProxy, display.recipeEntry).assemble(getReiViewPlacer(widgets), 5 + bounds.x, 5 + bounds.y)
             return widgets
         }
     }
