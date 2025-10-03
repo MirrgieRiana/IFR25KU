@@ -20,8 +20,9 @@ import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.TextView
-import miragefairy2024.mod.recipeviewer.View
-import miragefairy2024.mod.recipeviewer.ViewPlacer
+import miragefairy2024.mod.recipeviewer.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.place
+import miragefairy2024.mod.recipeviewer.register
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
@@ -34,6 +35,8 @@ import java.util.Objects
 object EmiClientEvents {
     val onRegister = InitializationEventRegistry<(EmiRegistry) -> Unit>()
 }
+
+val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<Pair<WidgetHolder, EmiRecipe>>()
 
 context(ModContext)
 fun initEmiClientSupport() {
@@ -66,53 +69,39 @@ fun initEmiClientSupport() {
             )
         }
     }
-}
 
-private fun getEmiViewPlacer(widgets: WidgetHolder, emiRecipe: EmiRecipe): ViewPlacer<View> {
-    return object : ViewPlacer<View> {
-        override fun place(view: View, x: Int, y: Int) {
-            when (view) {
-                is InputSlotView -> {
-                    widgets.addSlot(view.ingredientStack.toEmiIngredient(), x, y)
-                        .drawBack(view.drawBackground)
+    EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: InputSlotView, x, y ->
+        widgets.addSlot(view.ingredientStack.toEmiIngredient(), x, y)
+            .drawBack(view.drawBackground)
+    }
+    EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: CatalystSlotView, x, y ->
+        widgets.addSlot(view.ingredientStack.toEmiIngredient(), x, y)
+            .catalyst(true)
+            .drawBack(view.drawBackground)
+    }
+    EMI_VIEW_PLACER_REGISTRY.register { (widgets, emiRecipe), view: OutputSlotView, x, y ->
+        widgets.addSlot(view.itemStack.toEmiStack(), x, y)
+            .recipeContext(emiRecipe)
+            .drawBack(view.drawBackground)
+    }
+    EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: TextView, x, y ->
+        val widget = widgets.addText(view.text, x, y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
+            .let {
+                when (view.horizontalAlignment) {
+                    Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
+                    Alignment.CENTER -> it.horizontalAlign(TextWidget.Alignment.CENTER)
+                    Alignment.END -> it.horizontalAlign(TextWidget.Alignment.END)
+                    null -> it
                 }
-
-                is CatalystSlotView -> {
-                    widgets.addSlot(view.ingredientStack.toEmiIngredient(), x, y)
-                        .catalyst(true)
-                        .drawBack(view.drawBackground)
-                }
-
-                is OutputSlotView -> {
-                    widgets.addSlot(view.itemStack.toEmiStack(), x, y)
-                        .recipeContext(emiRecipe)
-                        .drawBack(view.drawBackground)
-                }
-
-                is TextView -> {
-                    val widget = widgets.addText(view.text, x, y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
-                        .let {
-                            when (view.horizontalAlignment) {
-                                Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
-                                Alignment.CENTER -> it.horizontalAlign(TextWidget.Alignment.CENTER)
-                                Alignment.END -> it.horizontalAlign(TextWidget.Alignment.END)
-                                null -> it
-                            }
-                        }
-                    val bound = widget.bounds
-                    if (view.tooltip != null) widgets.addTooltipText(view.tooltip, bound.x, bound.y, bound.width, bound.height)
-                }
-
-                is ArrowView -> {
-                    if (view.durationMilliSeconds != null) {
-                        widgets.addFillingArrow(x, y, view.durationMilliSeconds!!)
-                    } else {
-                        widgets.addTexture(EmiTexture.EMPTY_ARROW, x, y)
-                    }
-                }
-
-                else -> throw IllegalArgumentException("Unsupported view: $view")
             }
+        val bound = widget.bounds
+        if (view.tooltip != null) widgets.addTooltipText(view.tooltip, bound.x, bound.y, bound.width, bound.height)
+    }
+    EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ArrowView, x, y ->
+        if (view.durationMilliSeconds != null) {
+            widgets.addFillingArrow(x, y, view.durationMilliSeconds!!)
+        } else {
+            widgets.addTexture(EmiTexture.EMPTY_ARROW, x, y)
         }
     }
 }
@@ -154,6 +143,8 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getDisplayWidth() = 1 + view.getWidth() + 1
     override fun getDisplayHeight() = 1 + view.getHeight() + 1
     override fun addWidgets(widgets: WidgetHolder) {
-        view.assemble(1, 1, getEmiViewPlacer(widgets, this))
+        view.assemble(1, 1) { view2, x, y ->
+            EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, this), view, x, y)
+        }
     }
 }
