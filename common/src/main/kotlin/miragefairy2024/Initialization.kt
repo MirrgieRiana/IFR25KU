@@ -13,11 +13,11 @@ class InitializationEventRegistry<T> {
     }
 
     fun fire(processor: (T) -> Unit) {
+        check(!frozen) { "Cannot fire already fired initialization event." }
         frozen = true
         list.forEach {
             processor(it)
         }
-        list.clear()
     }
 }
 
