@@ -123,20 +123,22 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
 private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
     return object : WidgetProxy {
-        override fun addInputSlotWidget(ingredient: Ingredient, x: Int, y: Int) {
+        override fun addInputSlotWidget(ingredient: Ingredient, x: Int, y: Int, drawBackground: Boolean) {
             widgets += Widgets.createSlot(Point(x + 1, y + 1))
                 .entries(ingredient.toEntryIngredient())
                 .markInput()
+                .backgroundEnabled(drawBackground)
         }
 
-        override fun addCatalystSlotWidget(ingredient: Ingredient, x: Int, y: Int) {
-            addInputSlotWidget(ingredient, x, y)
+        override fun addCatalystSlotWidget(ingredient: Ingredient, x: Int, y: Int, drawBackground: Boolean) {
+            addInputSlotWidget(ingredient, x, y, drawBackground)
         }
 
-        override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int) {
+        override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int, drawBackground: Boolean) {
             widgets += Widgets.createSlot(Point(x + 1, y + 1))
                 .entries(itemStack.toEntryStack().toEntryIngredient())
                 .markOutput()
+                .backgroundEnabled(drawBackground)
         }
     }
 }

@@ -84,18 +84,21 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
 
 private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): WidgetProxy {
     return object : WidgetProxy {
-        override fun addInputSlotWidget(ingredient: Ingredient, x: Int, y: Int) {
+        override fun addInputSlotWidget(ingredient: Ingredient, x: Int, y: Int, drawBackground: Boolean) {
             widgets.addSlot(EmiIngredient.of(ingredient), x, y)
+                .drawBack(drawBackground)
         }
 
-        override fun addCatalystSlotWidget(ingredient: Ingredient, x: Int, y: Int) {
+        override fun addCatalystSlotWidget(ingredient: Ingredient, x: Int, y: Int, drawBackground: Boolean) {
             widgets.addSlot(EmiIngredient.of(ingredient), x, y)
                 .catalyst(true)
+                .drawBack(drawBackground)
         }
 
-        override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int) {
+        override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int, drawBackground: Boolean) {
             widgets.addSlot(EmiStack.of(itemStack), x, y)
                 .recipeContext(emiRecipe)
+                .drawBack(drawBackground)
         }
     }
 }

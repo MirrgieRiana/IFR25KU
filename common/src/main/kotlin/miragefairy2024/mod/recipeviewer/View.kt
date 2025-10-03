@@ -13,9 +13,9 @@ interface View {
 interface RendererProxy
 
 interface WidgetProxy {
-    fun addInputSlotWidget(ingredient: Ingredient, x: Int, y: Int)
-    fun addCatalystSlotWidget(ingredient: Ingredient, x: Int, y: Int)
-    fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int)
+    fun addInputSlotWidget(ingredient: Ingredient, x: Int, y: Int, drawBackground: Boolean)
+    fun addCatalystSlotWidget(ingredient: Ingredient, x: Int, y: Int, drawBackground: Boolean)
+    fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int, drawBackground: Boolean)
 }
 
 enum class Alignment {

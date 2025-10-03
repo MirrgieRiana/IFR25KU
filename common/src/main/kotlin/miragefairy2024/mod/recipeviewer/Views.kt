@@ -129,22 +129,26 @@ class YSpaceView(height: Int) : SolidView(0, height) {
 }
 
 
-abstract class SlotView : SolidView(18, 18)
+abstract class SlotView : SolidView(18, 18) {
+    var drawBackground = true
+}
+
+fun <V : SlotView> V.noBackground() = this.apply { this.drawBackground = false }
 
 class InputSlotView(private val ingredient: Ingredient) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
-        widgetProxy.addInputSlotWidget(ingredient, x, y)
+        widgetProxy.addInputSlotWidget(ingredient, x, y, drawBackground)
     }
 }
 
 class CatalystSlotView(private val ingredient: Ingredient) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
-        widgetProxy.addCatalystSlotWidget(ingredient, x, y)
+        widgetProxy.addCatalystSlotWidget(ingredient, x, y, drawBackground)
     }
 }
 
 class OutputSlotView(private val itemStack: ItemStack) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
-        widgetProxy.addOutputSlotWidget(itemStack, x, y)
+        widgetProxy.addOutputSlotWidget(itemStack, x, y, drawBackground)
     }
 }
