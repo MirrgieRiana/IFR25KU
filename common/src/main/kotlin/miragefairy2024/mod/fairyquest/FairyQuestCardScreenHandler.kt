@@ -74,7 +74,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
             addSlot(object : Slot(inputInventory, i, 0, 0) {
                 override fun mayPlace(stack: ItemStack): Boolean {
                     val input = recipe.inputs.getOrNull(i) ?: return false
-                    return input.first().test(stack)
+                    return input().ingredient.test(stack)
                 }
             })
         }
@@ -110,11 +110,12 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
             val processingItemStacks = mutableListOf<ItemStack>()
 
             // レシピ判定
-            recipe.inputs.forEachIndexed { index, (ingredient, count) ->
-                if (!ingredient().test(inputInventory[index])) return
-                if (inputInventory[index].count < count) return
+            recipe.inputs.forEachIndexed { index, input ->
+                val ingredientStack = input()
+                if (!ingredientStack.ingredient.test(inputInventory[index])) return
+                if (inputInventory[index].count < ingredientStack.count) return
                 onCraftStart += {
-                    processingItemStacks += inputInventory[index].split(count)
+                    processingItemStacks += inputInventory[index].split(ingredientStack.count)
                 }
             }
 

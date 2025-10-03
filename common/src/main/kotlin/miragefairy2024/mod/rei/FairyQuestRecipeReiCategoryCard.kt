@@ -8,7 +8,6 @@ import miragefairy2024.mod.fairyquest.setFairyQuestRecipe
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.string
 import miragefairy2024.util.toEntryIngredient
-import miragefairy2024.util.toEntryStack
 import miragefairy2024.util.toIdentifier
 import mirrg.kotlin.helium.Single
 
@@ -24,7 +23,7 @@ object FairyQuestRecipeReiCategoryCard : ReiCategoryCard<FairyQuestRecipeReiCate
     class Display(val recipe: FairyQuestRecipe) : BasicDisplay(
         listOf(
             FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(recipe) }.toEntryIngredient(),
-            *recipe.inputs.map { input -> input.first().items.map { it.copyWithCount(input.second).toEntryStack() }.toEntryIngredient() }.toTypedArray(),
+            *recipe.inputs.map { input -> input().toEntryIngredient() }.toTypedArray(),
         ),
         recipe.outputs.map { it().toEntryIngredient() },
     ) {
