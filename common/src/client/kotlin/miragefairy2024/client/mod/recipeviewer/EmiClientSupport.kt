@@ -28,13 +28,13 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import java.util.Objects
 
-object EmiEvents {
+object EmiClientEvents {
     val onRegister = InitializationEventRegistry<(EmiRegistry) -> Unit>()
 }
 
 context(ModContext)
 fun initEmiClientSupport() {
-    EmiEvents.onRegister {
+    EmiClientEvents.onRegister {
         RecipeViewerEvents.informationEntries.freezeAndGet().forEach { informationEntry ->
             it.addRecipe(
                 EmiInfoRecipe(
@@ -46,13 +46,13 @@ fun initEmiClientSupport() {
         }
     }
 
-    EmiEvents.onRegister {
+    EmiClientEvents.onRegister {
         RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
             EmiClientSupport.get(card).register(it)
         }
     }
 
-    EmiEvents.onRegister { registry ->
+    EmiClientEvents.onRegister { registry ->
         RecipeViewerEvents.itemIdentificationDataComponentTypesList.freezeAndGet().forEach { (item, dataComponentTypes) ->
             registry.setDefaultComparison(
                 item(),
