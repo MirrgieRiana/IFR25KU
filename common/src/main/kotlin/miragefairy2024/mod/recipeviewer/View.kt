@@ -1,6 +1,7 @@
 package miragefairy2024.mod.recipeviewer
 
 import miragefairy2024.util.IngredientStack
+import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
 interface View {
@@ -10,7 +11,10 @@ interface View {
     fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int)
 }
 
-interface RendererProxy
+interface RendererProxy {
+    fun calculateTextWidth(component: Component): Int
+    fun getTextHeight(): Int
+}
 
 interface WidgetProxy {
     fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean)
