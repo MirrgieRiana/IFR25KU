@@ -20,6 +20,7 @@ import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.TextView
+import miragefairy2024.mod.recipeviewer.View
 import miragefairy2024.mod.recipeviewer.ViewPlacer
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
@@ -69,42 +70,48 @@ fun initEmiClientSupport() {
 
 private fun getEmiViewPlacer(widgets: WidgetHolder, emiRecipe: EmiRecipe): ViewPlacer {
     return object : ViewPlacer {
-        override fun addInputSlotView(view: InputSlotView, x: Int, y: Int) {
-            widgets.addSlot(view.ingredientStack.toEmiIngredient(), x, y)
-                .drawBack(view.drawBackground)
-        }
+        override fun place(view: View, x: Int, y: Int) {
+            when (view) {
+                is InputSlotView -> {
+                    widgets.addSlot(view.ingredientStack.toEmiIngredient(), x, y)
+                        .drawBack(view.drawBackground)
+                }
 
-        override fun addCatalystSlotView(view: CatalystSlotView, x: Int, y: Int) {
-            widgets.addSlot(view.ingredientStack.toEmiIngredient(), x, y)
-                .catalyst(true)
-                .drawBack(view.drawBackground)
-        }
+                is CatalystSlotView -> {
+                    widgets.addSlot(view.ingredientStack.toEmiIngredient(), x, y)
+                        .catalyst(true)
+                        .drawBack(view.drawBackground)
+                }
 
-        override fun addOutputSlotView(view: OutputSlotView, x: Int, y: Int) {
-            widgets.addSlot(view.itemStack.toEmiStack(), x, y)
-                .recipeContext(emiRecipe)
-                .drawBack(view.drawBackground)
-        }
+                is OutputSlotView -> {
+                    widgets.addSlot(view.itemStack.toEmiStack(), x, y)
+                        .recipeContext(emiRecipe)
+                        .drawBack(view.drawBackground)
+                }
 
-        override fun addTextView(view: TextView, x: Int, y: Int) {
-            val widget = widgets.addText(view.text, x, y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
-                .let {
-                    when (view.horizontalAlignment) {
-                        Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
-                        Alignment.CENTER -> it.horizontalAlign(TextWidget.Alignment.CENTER)
-                        Alignment.END -> it.horizontalAlign(TextWidget.Alignment.END)
-                        null -> it
+                is TextView -> {
+                    val widget = widgets.addText(view.text, x, y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
+                        .let {
+                            when (view.horizontalAlignment) {
+                                Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
+                                Alignment.CENTER -> it.horizontalAlign(TextWidget.Alignment.CENTER)
+                                Alignment.END -> it.horizontalAlign(TextWidget.Alignment.END)
+                                null -> it
+                            }
+                        }
+                    val bound = widget.bounds
+                    if (view.tooltip != null) widgets.addTooltipText(view.tooltip, bound.x, bound.y, bound.width, bound.height)
+                }
+
+                is ArrowView -> {
+                    if (view.durationMilliSeconds != null) {
+                        widgets.addFillingArrow(x, y, view.durationMilliSeconds!!)
+                    } else {
+                        widgets.addTexture(EmiTexture.EMPTY_ARROW, x, y)
                     }
                 }
-            val bound = widget.bounds
-            if (view.tooltip != null) widgets.addTooltipText(view.tooltip, bound.x, bound.y, bound.width, bound.height)
-        }
 
-        override fun addArrowView(view: ArrowView, x: Int, y: Int) {
-            if (view.durationMilliSeconds != null) {
-                widgets.addFillingArrow(x, y, view.durationMilliSeconds!!)
-            } else {
-                widgets.addTexture(EmiTexture.EMPTY_ARROW, x, y)
+                else -> throw IllegalArgumentException("Unsupported view: $view")
             }
         }
     }

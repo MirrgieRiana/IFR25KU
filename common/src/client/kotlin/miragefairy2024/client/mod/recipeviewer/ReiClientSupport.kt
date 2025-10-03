@@ -24,6 +24,7 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
 import miragefairy2024.mod.recipeviewer.SupportedDisplay
 import miragefairy2024.mod.recipeviewer.TextView
+import miragefairy2024.mod.recipeviewer.View
 import miragefairy2024.mod.recipeviewer.ViewPlacer
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
@@ -86,45 +87,51 @@ fun initReiClientSupport() {
 
 private fun getReiViewPlacer(widgets: MutableList<Widget>): ViewPlacer {
     return object : ViewPlacer {
-        override fun addInputSlotView(view: InputSlotView, x: Int, y: Int) {
-            widgets += Widgets.createSlot(Point(x + 1, y + 1))
-                .entries(view.ingredientStack.toEntryIngredient())
-                .markInput()
-                .backgroundEnabled(view.drawBackground)
-        }
-
-        override fun addCatalystSlotView(view: CatalystSlotView, x: Int, y: Int) {
-            widgets += Widgets.createSlot(Point(x + 1, y + 1))
-                .entries(view.ingredientStack.toEntryIngredient())
-                .markInput()
-                .backgroundEnabled(view.drawBackground)
-        }
-
-        override fun addOutputSlotView(view: OutputSlotView, x: Int, y: Int) {
-            widgets += Widgets.createSlot(Point(x + 1, y + 1))
-                .entries(view.itemStack.toEntryIngredient())
-                .markOutput()
-                .backgroundEnabled(view.drawBackground)
-        }
-
-        override fun addTextView(view: TextView, x: Int, y: Int) {
-            widgets += Widgets.createLabel(Point(x, y), view.text)
-                .let { if (view.color != null) it.color(view.color!!.lightModeArgb, view.color!!.darkModeArgb) else it }
-                .shadow(view.shadow)
-                .let {
-                    when (view.horizontalAlignment) {
-                        Alignment.START -> it.leftAligned()
-                        Alignment.CENTER -> it.centered()
-                        Alignment.END -> it.rightAligned()
-                        null -> it.leftAligned()
-                    }
+        override fun place(view: View, x: Int, y: Int) {
+            when (view) {
+                is InputSlotView -> {
+                    widgets += Widgets.createSlot(Point(x + 1, y + 1))
+                        .entries(view.ingredientStack.toEntryIngredient())
+                        .markInput()
+                        .backgroundEnabled(view.drawBackground)
                 }
-                .let { if (view.tooltip != null) it.tooltip(*view.tooltip!!.toTypedArray()) else it }
-        }
 
-        override fun addArrowView(view: ArrowView, x: Int, y: Int) {
-            widgets += Widgets.createArrow(Point(x, y))
-                .animationDurationMS(view.durationMilliSeconds?.toDouble() ?: -1.0)
+                is CatalystSlotView -> {
+                    widgets += Widgets.createSlot(Point(x + 1, y + 1))
+                        .entries(view.ingredientStack.toEntryIngredient())
+                        .markInput()
+                        .backgroundEnabled(view.drawBackground)
+                }
+
+                is OutputSlotView -> {
+                    widgets += Widgets.createSlot(Point(x + 1, y + 1))
+                        .entries(view.itemStack.toEntryIngredient())
+                        .markOutput()
+                        .backgroundEnabled(view.drawBackground)
+                }
+
+                is TextView -> {
+                    widgets += Widgets.createLabel(Point(x, y), view.text)
+                        .let { if (view.color != null) it.color(view.color!!.lightModeArgb, view.color!!.darkModeArgb) else it }
+                        .shadow(view.shadow)
+                        .let {
+                            when (view.horizontalAlignment) {
+                                Alignment.START -> it.leftAligned()
+                                Alignment.CENTER -> it.centered()
+                                Alignment.END -> it.rightAligned()
+                                null -> it.leftAligned()
+                            }
+                        }
+                        .let { if (view.tooltip != null) it.tooltip(*view.tooltip!!.toTypedArray()) else it }
+                }
+
+                is ArrowView -> {
+                    widgets += Widgets.createArrow(Point(x, y))
+                        .animationDurationMS(view.durationMilliSeconds?.toDouble() ?: -1.0)
+                }
+
+                else -> throw IllegalArgumentException("Unsupported view: $view")
+            }
         }
     }
 }
