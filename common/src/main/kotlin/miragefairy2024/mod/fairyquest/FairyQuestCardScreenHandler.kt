@@ -111,7 +111,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
 
             // レシピ判定
             recipe.inputs.forEachIndexed { index, input ->
-                val ingredientStack = input.invoke()
+                val ingredientStack = input()
                 if (!ingredientStack.ingredient.test(inputInventory[index])) return
                 if (inputInventory[index].count < ingredientStack.count) return
                 onCraftStart += {
