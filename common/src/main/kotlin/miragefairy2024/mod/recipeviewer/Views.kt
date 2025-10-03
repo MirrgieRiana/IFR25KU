@@ -69,8 +69,12 @@ class SingleView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V>
 fun SingleView(block: SingleView<View>.() -> Unit) = SingleView<View>().apply { block() }
 
 
-class XListView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> {
+abstract class ListView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> {
     override fun add(view: V) = add(Unit, view)
+}
+
+
+class XListView<V : View> : ListView<V>() {
     override fun calculateWidth() = children.sumOf { it.view.getWidth() }
     override fun calculateHeight() = children.maxOfOrNull { it.view.getHeight() } ?: 0
     override fun layout(rendererProxy: RendererProxy) {
@@ -87,8 +91,7 @@ class XListView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> 
 fun XListView(block: XListView<View>.() -> Unit) = XListView<View>().apply { block() }
 
 
-class YListView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> {
-    override fun add(view: V) = add(Unit, view)
+class YListView<V : View> : ListView<V>() {
     override fun calculateWidth() = children.maxOfOrNull { it.view.getWidth() } ?: 0
     override fun calculateHeight() = children.sumOf { it.view.getHeight() }
     override fun layout(rendererProxy: RendererProxy) {
