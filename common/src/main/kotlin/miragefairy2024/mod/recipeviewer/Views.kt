@@ -2,6 +2,7 @@
 
 package miragefairy2024.mod.recipeviewer
 
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Ingredient
 
@@ -73,8 +74,9 @@ abstract class ListView<V : View> : ContainerView<Alignment, V>(), DefaultedCont
 }
 
 class XListView<V : View> : ListView<V>() {
+    var minHeight = 0
     override fun calculateWidth() = children.sumOf { it.view.getWidth() }
-    override fun calculateHeight() = children.maxOfOrNull { it.view.getHeight() } ?: 0
+    override fun calculateHeight() = (children.maxOfOrNull { it.view.getHeight() } ?: 0) atLeast minHeight
     override fun layout(rendererProxy: RendererProxy) {
         super.layout(rendererProxy)
         var x = 0
@@ -93,7 +95,8 @@ class XListView<V : View> : ListView<V>() {
 fun XListView(block: XListView<View>.() -> Unit) = XListView<View>().apply { block() }
 
 class YListView<V : View> : ListView<V>() {
-    override fun calculateWidth() = children.maxOfOrNull { it.view.getWidth() } ?: 0
+    var minWidth = 0
+    override fun calculateWidth() = (children.maxOfOrNull { it.view.getWidth() } ?: 0) atLeast minWidth
     override fun calculateHeight() = children.sumOf { it.view.getHeight() }
     override fun layout(rendererProxy: RendererProxy) {
         super.layout(rendererProxy)
