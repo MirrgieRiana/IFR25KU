@@ -9,12 +9,8 @@ import me.shedaniel.rei.api.common.entry.comparison.EntryComparator
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
-import miragefairy2024.mod.fairy.FairyCard
-import miragefairy2024.mod.fairy.getFairyMotif
-import miragefairy2024.mod.fairy.getIdentifier
 import miragefairy2024.util.CompoundTag
 import miragefairy2024.util.get
-import miragefairy2024.util.string
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
 import miragefairy2024.util.wrapper
@@ -23,6 +19,7 @@ import mirrg.kotlin.java.hydrogen.toOptional
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
 import net.minecraft.resources.RegistryOps
+import java.util.Objects
 
 object ReiEvents {
     val onRegisterDisplaySerializer = ReusableInitializationEventRegistry<(DisplaySerializerRegistry) -> Unit>()
@@ -38,13 +35,15 @@ fun initReiSupport() {
     }
 
     ReiEvents.onRegisterItemComparators { registry ->
-        registry.register({ context, itemStack ->
-            if (context.isExact) {
-                EntryComparator.itemComponents().hash(context, itemStack)
-            } else {
-                itemStack.getFairyMotif()?.getIdentifier()?.string?.hashCode()?.toLong() ?: 1L
-            }
-        }, FairyCard.item())
+        RecipeViewerEvents.itemIdentificationDataComponentTypesList.freezeAndGet().forEach { (item, dataComponentTypes) ->
+            registry.register({ context, itemStack ->
+                if (context.isExact) {
+                    EntryComparator.itemComponents().hash(context, itemStack)
+                } else {
+                    Objects.hash(*dataComponentTypes().map { itemStack[it] }.toTypedArray()).toLong()
+                }
+            }, item())
+        }
     }
 }
 

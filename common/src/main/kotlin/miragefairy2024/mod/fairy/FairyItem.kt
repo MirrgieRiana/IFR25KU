@@ -19,6 +19,7 @@ import miragefairy2024.mod.passiveskill.collect
 import miragefairy2024.mod.passiveskill.description
 import miragefairy2024.mod.passiveskill.effects.ManaBoostPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.findPassiveSkillProviders
+import miragefairy2024.mod.recipeviewer.registerIdentificationDataComponentTypes
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.BIG_INTEGER_CODEC
@@ -144,6 +145,8 @@ fun initFairyItem() {
         card.item.enJa(EnJa(card.enName, card.jaName))
 
         SOUL_STREAM_CONTAINABLE_TAG.generator.registerChild(card.item)
+
+        card.item.registerIdentificationDataComponentTypes { listOf(FAIRY_MOTIF_DATA_COMPONENT_TYPE) }
     }
 
     RARE_TRANSLATION.enJa()
