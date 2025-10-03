@@ -37,12 +37,12 @@ fun initReiSupport() {
         }
     }
 
-    ReiEvents.onRegisterItemComparators {
-        it.register({ context, stack ->
+    ReiEvents.onRegisterItemComparators { registry ->
+        registry.register({ context, itemStack ->
             if (context.isExact) {
-                EntryComparator.itemComponents().hash(context, stack)
+                EntryComparator.itemComponents().hash(context, itemStack)
             } else {
-                stack.getFairyMotif()?.getIdentifier()?.string?.hashCode()?.toLong() ?: 1L
+                itemStack.getFairyMotif()?.getIdentifier()?.string?.hashCode()?.toLong() ?: 1L
             }
         }, FairyCard.item())
     }
