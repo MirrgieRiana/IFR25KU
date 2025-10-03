@@ -25,5 +25,6 @@ fun Ingredient.toIngredientStack(amount: Int = 1) = IngredientStack(this, amount
 fun ItemStack.toIngredientStack(amount: Int = 1) = IngredientStack(this, amount)
 fun Item.toIngredientStack(amount: Int = 1) = this.defaultInstance.toIngredientStack(amount)
 fun TagKey<Item>.toIngredientStack(amount: Int = 1) = IngredientStack(this.toIngredient(), amount)
+fun Iterable<Item>.toIngredientStack(amount: Int = 1) = this.toIngredient().toIngredientStack(amount)
 
 fun IngredientStack.toItemStacks(): List<ItemStack> = ingredient.items.map { it.copyWithCount(count) }
