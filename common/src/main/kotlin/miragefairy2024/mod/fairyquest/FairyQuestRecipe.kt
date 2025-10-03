@@ -153,7 +153,7 @@ enum class FairyQuestRecipeCard(
         ).join("\n"),
         "The Institute of Fairy Research\nCreation Department", "妖精研究所\n創製部",
         listOf({ ItemTags.COALS.toIngredientStack(1) }),
-        listOf { Items.WHITE_BED.createItemStack() },
+        listOf { Items.WHITE_BED.createItemStack(1) },
     ),
     VEGETATION_SURVEY(
         "vegetation_survey", 0x6BAF7C, LootCategory.RARE,
