@@ -5,11 +5,16 @@ import me.shedaniel.rei.api.common.display.Display
 import me.shedaniel.rei.api.common.display.DisplaySerializer
 import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay
+import me.shedaniel.rei.api.common.entry.comparison.EntryComparator
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
+import miragefairy2024.mod.fairy.FairyCard
+import miragefairy2024.mod.fairy.getFairyMotif
+import miragefairy2024.mod.fairy.getIdentifier
 import miragefairy2024.util.CompoundTag
 import miragefairy2024.util.get
+import miragefairy2024.util.string
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
 import miragefairy2024.util.wrapper
@@ -30,6 +35,16 @@ fun initReiSupport() {
         RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
             ReiSupport.get(card).registerDisplaySerializer(it)
         }
+    }
+
+    ReiEvents.onRegisterItemComparators {
+        it.register({ context, stack ->
+            if (context.isExact) {
+                EntryComparator.itemComponents().hash(context, stack)
+            } else {
+                stack.getFairyMotif()?.getIdentifier()?.string?.hashCode()?.toLong() ?: 1L
+            }
+        }, FairyCard.item())
     }
 }
 
