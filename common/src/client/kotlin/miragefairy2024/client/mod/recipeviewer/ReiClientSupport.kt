@@ -124,7 +124,9 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
     return object : WidgetProxy {
         override fun addInputSlotWidget(ingredient: Ingredient, x: Int, y: Int) {
-            widgets += Widgets.createSlot(Point(x + 1, y + 1)).entries(ingredient.toEntryIngredient()).markInput()
+            widgets += Widgets.createSlot(Point(x + 1, y + 1))
+                .entries(ingredient.toEntryIngredient())
+                .markInput()
         }
 
         override fun addCatalystSlotWidget(ingredient: Ingredient, x: Int, y: Int) {
@@ -132,7 +134,9 @@ private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
         }
 
         override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int) {
-            widgets += Widgets.createSlot(Point(x + 1, y + 1)).entries(itemStack.toEntryStack().toEntryIngredient()).markOutput()
+            widgets += Widgets.createSlot(Point(x + 1, y + 1))
+                .entries(itemStack.toEntryStack().toEntryIngredient())
+                .markOutput()
         }
     }
 }

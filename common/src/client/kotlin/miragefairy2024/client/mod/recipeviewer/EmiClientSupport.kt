@@ -89,11 +89,13 @@ private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): Widg
         }
 
         override fun addCatalystSlotWidget(ingredient: Ingredient, x: Int, y: Int) {
-            widgets.addSlot(EmiIngredient.of(ingredient), x, y).catalyst(true)
+            widgets.addSlot(EmiIngredient.of(ingredient), x, y)
+                .catalyst(true)
         }
 
         override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int) {
-            widgets.addSlot(EmiStack.of(itemStack), x, y).recipeContext(emiRecipe)
+            widgets.addSlot(EmiStack.of(itemStack), x, y)
+                .recipeContext(emiRecipe)
         }
     }
 }
