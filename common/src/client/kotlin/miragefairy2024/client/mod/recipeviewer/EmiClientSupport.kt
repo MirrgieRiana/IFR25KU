@@ -23,6 +23,7 @@ import miragefairy2024.util.plus
 import miragefairy2024.util.text
 import miragefairy2024.util.times
 import miragefairy2024.util.toEmiIngredient
+import miragefairy2024.util.toEmiStack
 import mirrg.kotlin.helium.Single
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
@@ -38,7 +39,7 @@ fun initEmiClientSupport() {
         RecipeViewerEvents.informationEntries.freezeAndGet().forEach { informationEntry ->
             it.addRecipe(
                 EmiInfoRecipe(
-                    listOf(EmiIngredient.of(informationEntry.input())),
+                    listOf(informationEntry.input().toEmiIngredient()),
                     listOf(text { "== "() + informationEntry.title + " =="() }) + informationEntry.contents,
                     informationEntry.id,
                 )
@@ -75,7 +76,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     }
 
     val emiRecipeCategory: Single<EmiRecipeCategory> by lazy { // 非ロード環境用のSingle
-        Single(object : EmiRecipeCategory(card.getId(), EmiStack.of(card.getIcon())) {
+        Single(object : EmiRecipeCategory(card.getId(), card.getIcon().toEmiStack()) {
             override fun getName() = card.displayName
         })
     }
@@ -83,7 +84,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     fun register(registry: EmiRegistry) {
         registry.addCategory(emiRecipeCategory.first)
         card.getWorkstations().forEach {
-            registry.addWorkstation(emiRecipeCategory.first, EmiStack.of(it))
+            registry.addWorkstation(emiRecipeCategory.first, it.toEmiStack())
         }
         card.recipeEntries.forEach {
             registry.addRecipe(SupportedEmiRecipe(this, it))
@@ -120,7 +121,7 @@ private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): Widg
         }
 
         override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int, drawBackground: Boolean) {
-            widgets.addSlot(itemStack.toEmiIngredient(), x, y)
+            widgets.addSlot(itemStack.toEmiStack(), x, y)
                 .recipeContext(emiRecipe)
                 .drawBack(drawBackground)
         }
