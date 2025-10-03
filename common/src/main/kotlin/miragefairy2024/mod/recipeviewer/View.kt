@@ -23,6 +23,12 @@ interface WidgetProxy {
     fun addArrow(x: Int, y: Int, durationMilliSeconds: Int?)
 }
 
+class ColorPair(val lightModeArgb: Int, val darkModeArgb: Int) {
+    companion object {
+        val DARK_GRAY = ColorPair(0xFF404040.toInt(), 0xFFBBBBBB.toInt())
+    }
+}
+
 enum class Alignment {
     START, CENTER, END,
 }
