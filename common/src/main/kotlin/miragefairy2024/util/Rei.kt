@@ -15,6 +15,17 @@ fun Ingredient.toEntryIngredient(): EntryIngredient = EntryIngredients.ofIngredi
 fun EntryStack<*>.toEntryIngredient(): EntryIngredient = EntryIngredient.of(this)
 fun Iterable<EntryStack<*>>.toEntryIngredient(): EntryIngredient = EntryIngredient.of(this)
 
+fun IngredientStack.toEntryIngredient(): EntryIngredient {
+    if (ingredient.isEmpty) return EntryIngredient.empty()
+    val itemStacks = ingredient.items
+    if (itemStacks.size == 0) return EntryIngredient.empty()
+    if (itemStacks.size == 1) return itemStacks.single().copyWithCount(count).toEntryStack().toEntryIngredient()
+    return itemStacks
+        .filter { it.isNotEmpty }
+        .mapNotNull { it.copyWithCount(count).toEntryStack() }
+        .toEntryIngredient()
+}
+
 
 operator fun Point.plus(other: Point) = Point(this.x + other.x, this.y + other.y)
 operator fun Point.minus(other: Point) = Point(this.x - other.x, this.y - other.y)
