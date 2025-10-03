@@ -1,6 +1,7 @@
 package miragefairy2024.mod.fairy
 
 import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
@@ -19,6 +20,16 @@ import miragefairy2024.mod.passiveskill.collect
 import miragefairy2024.mod.passiveskill.description
 import miragefairy2024.mod.passiveskill.effects.ManaBoostPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.findPassiveSkillProviders
+import miragefairy2024.mod.recipeviewer.Alignment
+import miragefairy2024.mod.recipeviewer.CatalystSlotView
+import miragefairy2024.mod.recipeviewer.OutputSlotView
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.View
+import miragefairy2024.mod.recipeviewer.XListView
+import miragefairy2024.mod.recipeviewer.YListView
+import miragefairy2024.mod.recipeviewer.YSpaceView
+import miragefairy2024.mod.recipeviewer.noBackground
+import miragefairy2024.mod.recipeviewer.plusAssign
 import miragefairy2024.mod.recipeviewer.registerIdentificationDataComponentTypes
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -57,6 +68,7 @@ import miragefairy2024.util.string
 import miragefairy2024.util.text
 import miragefairy2024.util.times
 import miragefairy2024.util.toHolderSetCodec
+import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.yellow
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.advancements.critereon.InventoryChangeTrigger
@@ -65,6 +77,7 @@ import net.minecraft.advancements.critereon.ItemSubPredicate
 import net.minecraft.advancements.critereon.MinMaxBounds
 import net.minecraft.advancements.critereon.SingleComponentItemPredicate
 import net.minecraft.core.HolderSet
+import net.minecraft.core.RegistryAccess
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
@@ -165,6 +178,8 @@ fun initFairyItem() {
 
     rare10Advancement.init()
     timiaAdvancement.init()
+
+    FairyFamilyRecipeViewerCategoryCard.init()
 }
 
 private fun createFairyModel() = Model {
@@ -406,4 +421,83 @@ fun Motif?.createFairyItemStack(@Suppress("UNUSED_PARAMETER") vararg dummy: Void
     itemStack.setFairyMotif(this)
     itemStack.setFairyCondensation(condensation)
     return itemStack
+}
+
+object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamilyRecipeViewerCategoryCard.FairyFamilyNotation>() {
+    override fun getId() = MirageFairy2024.identifier("fairy_family")
+    override fun getName() = EnJa("Fairy Family", "妖精系統")
+    override fun getIcon() = MotifCard.IRON.createFairyItemStack()
+    override fun getWorkstations() = listOf<ItemStack>()
+    override fun getRecipeCodec(registryAccess: RegistryAccess) = FairyFamilyNotation.CODEC
+    override fun getInputs(recipeEntry: RecipeEntry<FairyFamilyNotation>) = listOf(Input(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack(), true))
+    override fun getOutputs(recipeEntry: RecipeEntry<FairyFamilyNotation>) = (recipeEntry.recipe.parents + recipeEntry.recipe.children).map { it.createFairyItemStack() }
+
+    override fun createRecipeEntries(): Iterable<RecipeEntry<FairyFamilyNotation>> {
+        val childrenTable = motifRegistry.entrySet()
+            .flatMap { it.value.parents.map { parent -> parent to it.value } }
+            .groupBy { it.first }
+            .mapValues { it.value.map { pair -> pair.second } }
+
+        // TODO 先祖・子孫
+        //fun Motif.getAncestors(): List<Motif> = this.parents.flatMap { it.getAncestors() } + this.parents
+        //fun Motif.getDescendants(): List<Motif> = childrenTable.getOrElse(this) { listOf() }.flatMap { it.getDescendants() } + childrenTable.getOrElse(this) { listOf() }
+
+        return motifRegistry.sortedEntrySet.mapNotNull {
+            val parents = it.value.parents
+            val children = childrenTable[it.value] ?: listOf()
+            if (parents.isEmpty() && children.isEmpty()) return@mapNotNull null
+            RecipeEntry(it.value.getIdentifier()!!, FairyFamilyNotation(it.value, parents, children), true)
+        }
+    }
+
+    override fun createView(recipeEntry: RecipeEntry<FairyFamilyNotation>) = View {
+        this += XListView {
+            minHeight = 18 * 7
+            this += YListView {
+                minWidth = 18 * 9
+
+                // 上に親妖精
+                this += Alignment.CENTER to YListView {
+                    recipeEntry.recipe.parents.chunked(9).forEach { chunk ->
+                        this += XListView {
+                            chunk.forEach {
+                                this += OutputSlotView(it.createFairyItemStack())
+                            }
+                        }
+                    }
+                }
+
+                this += YSpaceView(9)
+
+                // 中段に対象の妖精
+                this += Alignment.CENTER to CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground()
+
+                this += YSpaceView(9)
+
+                // 下に子妖精
+                this += Alignment.CENTER to YListView {
+                    recipeEntry.recipe.children.chunked(9).forEach { chunk ->
+                        this += XListView {
+                            chunk.forEach {
+                                this += OutputSlotView(it.createFairyItemStack())
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    class FairyFamilyNotation(val motif: Motif, val parents: List<Motif>, val children: List<Motif>) {
+        companion object {
+            val CODEC: Codec<FairyFamilyNotation> = RecordCodecBuilder.create { instance ->
+                instance.group(
+                    motifRegistry.byNameCodec().fieldOf("Motif").forGetter { it.motif },
+                    motifRegistry.byNameCodec().listOf().fieldOf("Parents").forGetter { it.parents },
+                    motifRegistry.byNameCodec().listOf().fieldOf("Children").forGetter { it.children },
+                ).apply(instance, ::FairyFamilyNotation)
+            }
+        }
+    }
 }
