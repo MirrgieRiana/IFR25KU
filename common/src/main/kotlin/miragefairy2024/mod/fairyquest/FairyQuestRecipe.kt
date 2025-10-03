@@ -9,7 +9,23 @@ import miragefairy2024.lib.PlacedItemFeature
 import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.mod.recipeviewer.Alignment
+import miragefairy2024.mod.recipeviewer.ArrowView
+import miragefairy2024.mod.recipeviewer.CatalystSlotView
+import miragefairy2024.mod.recipeviewer.ColorPair
+import miragefairy2024.mod.recipeviewer.InputSlotView
+import miragefairy2024.mod.recipeviewer.OutputSlotView
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.TextView
+import miragefairy2024.mod.recipeviewer.View
+import miragefairy2024.mod.recipeviewer.XListView
+import miragefairy2024.mod.recipeviewer.XSpaceView
+import miragefairy2024.mod.recipeviewer.YListView
+import miragefairy2024.mod.recipeviewer.YSpaceView
+import miragefairy2024.mod.recipeviewer.noBackground
+import miragefairy2024.mod.recipeviewer.plusAssign
 import miragefairy2024.util.Chance
+import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.Registration
 import miragefairy2024.util.Translation
@@ -278,6 +294,8 @@ fun initFairyQuestRecipe() {
 
     }
 
+    FairyQuestRecipeRecipeViewerCategoryCard.init()
+
     // 地形生成
     val configuredFeatureKey = registerDynamicGeneration(Registries.CONFIGURED_FEATURE, MirageFairy2024.identifier("fairy_quest_card")) {
         FAIRY_QUEST_CARD_FEATURE with NoneFeatureConfiguration.INSTANCE
@@ -327,5 +345,55 @@ class SetFairyQuestRecipeLootFunction(conditions: List<LootItemCondition>, priva
     override fun run(stack: ItemStack, context: LootContext): ItemStack {
         stack.setFairyQuestRecipe(fairyQuestRecipeRegistry.get(recipeId)!!)
         return stack
+    }
+}
+
+object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyQuestRecipe>() {
+    override fun getId() = MirageFairy2024.identifier("fairy_quest")
+    override fun getName() = EnJa("Fairy Quest", "フェアリークエスト")
+    override fun getIcon() = FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(FairyQuestRecipeCard.NEW_PRODUCT_FROM_FRI) }
+    override fun getWorkstations() = listOf(MaterialCard.FAIRY_QUEST_CARD_BASE.item().createItemStack())
+    override fun getRecipeCodec(): Codec<FairyQuestRecipe> = fairyQuestRecipeRegistry.byNameCodec()
+    override fun getInputs(recipeEntry: RecipeEntry<FairyQuestRecipe>): List<Input> {
+        return listOf(
+            Input(FairyQuestCardCard.item().createItemStack().also<ItemStack> { it.setFairyQuestRecipe(recipeEntry.recipe) }.toIngredientStack(), true),
+            *recipeEntry.recipe.inputs.map<() -> IngredientStack, Input> { input -> Input(input(), false) }.toTypedArray<Input>(),
+        )
+    }
+
+    override fun getOutputs(recipeEntry: RecipeEntry<FairyQuestRecipe>) = recipeEntry.recipe.outputs.map { it() }
+
+    override fun createRecipeEntries(): Iterable<RecipeEntry<FairyQuestRecipe>> {
+        return fairyQuestRecipeRegistry.entrySet().map { (id, recipe) ->
+            RecipeEntry(id.location(), recipe, true)
+        }
+    }
+
+    override fun createView(recipeEntry: RecipeEntry<FairyQuestRecipe>) = View {
+        this += YListView {
+            minWidth = 120
+            this += XListView {
+                this += CatalystSlotView(FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(recipeEntry.recipe) }.toIngredientStack()).noBackground()
+                this += XSpaceView(4)
+                this += Alignment.CENTER to TextView(recipeEntry.recipe.title).apply {
+                    color = ColorPair.DARK_GRAY
+                    shadow = false
+                }
+            }
+            this += YSpaceView(2)
+            this += Alignment.CENTER to XListView {
+                recipeEntry.recipe.inputs.forEach {
+                    this += InputSlotView(it())
+                }
+                this += XSpaceView(2)
+                this += ArrowView().apply {
+                    durationMilliSeconds = recipeEntry.recipe.duration * 50
+                }
+                this += XSpaceView(2)
+                recipeEntry.recipe.outputs.forEach {
+                    this += OutputSlotView(it())
+                }
+            }
+        }
     }
 }
