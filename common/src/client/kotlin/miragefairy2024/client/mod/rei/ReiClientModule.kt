@@ -12,9 +12,6 @@ abstract class ClientReiCategoryCard<D : BasicDisplay>(val parent: ReiCategoryCa
         val entries = listOf(
             TraitEncyclopediaClientReiCategoryCard,
             CommonMotifRecipeClientReiCategoryCard,
-            ItemFairyDreamRecipeClientReiCategoryCard,
-            BlockFairyDreamRecipeClientReiCategoryCard,
-            EntityTypeFairyDreamRecipeClientReiCategoryCard,
             FairyFamilyClientReiCategoryCard,
             FermentationBarrelClientReiCategoryCard,
             AuraReflectorFurnaceClientReiCategoryCard,
