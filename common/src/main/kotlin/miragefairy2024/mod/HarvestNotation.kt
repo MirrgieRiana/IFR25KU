@@ -59,7 +59,7 @@ fun initHarvestNotationModule() {
 }
 
 object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<HarvestNotation>() {
-    override fun getId() = MirageFairy2024.identifier("harvest")
+    override fun getId() = MirageFairy2024.identifier("harvest_notation")
     override fun getName() = EnJa("Harvest", "収穫")
     override fun getIcon() = MaterialCard.VEROPEDA_BERRIES.item().createItemStack()
     override fun getWorkstations() = listOf<ItemStack>()

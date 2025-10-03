@@ -350,7 +350,7 @@ class SetFairyQuestRecipeLootFunction(conditions: List<LootItemCondition>, priva
 }
 
 object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyQuestRecipe>() {
-    override fun getId() = MirageFairy2024.identifier("fairy_quest")
+    override fun getId() = MirageFairy2024.identifier("fairy_quest_recipe")
     override fun getName() = EnJa("Fairy Quest", "フェアリークエスト")
     override fun getIcon() = FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(FairyQuestRecipeCard.NEW_PRODUCT_FROM_FRI) }
     override fun getWorkstations() = listOf(MaterialCard.FAIRY_QUEST_CARD_BASE.item().createItemStack())
