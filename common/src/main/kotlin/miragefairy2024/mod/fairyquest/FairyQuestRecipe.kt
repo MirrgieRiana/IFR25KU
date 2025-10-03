@@ -51,6 +51,7 @@ import mirrg.kotlin.helium.join
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.core.Registry
+import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
@@ -353,7 +354,7 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
     override fun getName() = EnJa("Fairy Quest", "フェアリークエスト")
     override fun getIcon() = FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(FairyQuestRecipeCard.NEW_PRODUCT_FROM_FRI) }
     override fun getWorkstations() = listOf(MaterialCard.FAIRY_QUEST_CARD_BASE.item().createItemStack())
-    override fun getRecipeCodec(): Codec<FairyQuestRecipe> = fairyQuestRecipeRegistry.byNameCodec()
+    override fun getRecipeCodec(registryAccess: RegistryAccess): Codec<FairyQuestRecipe> = fairyQuestRecipeRegistry.byNameCodec()
     override fun getInputs(recipeEntry: RecipeEntry<FairyQuestRecipe>): List<Input> {
         return listOf(
             Input(FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(recipeEntry.recipe) }.toIngredientStack(), true),

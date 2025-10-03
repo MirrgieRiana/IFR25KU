@@ -63,14 +63,14 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
         Single(object : DisplaySerializer<SupportedDisplay<R>> {
             override fun save(tag: CompoundTag, display: SupportedDisplay<R>): CompoundTag {
                 val ops = RegistryOps.create(NbtOps.INSTANCE, BasicDisplay.registryAccess())
-                val recipeEntryTag = card.recipeEntryCodec.encodeStart(ops, display.recipeEntry).orThrow
+                val recipeEntryTag = card.getRecipeEntryCodec(BasicDisplay.registryAccess()).encodeStart(ops, display.recipeEntry).orThrow
                 return CompoundTag("RecipeEntry" to recipeEntryTag)
             }
 
             override fun read(tag: CompoundTag): SupportedDisplay<R> {
                 val ops = RegistryOps.create(NbtOps.INSTANCE, BasicDisplay.registryAccess())
                 val recipeEntryTag = tag.wrapper["RecipeEntry"].get()
-                val recipeEntry = card.recipeEntryCodec.decode(ops, recipeEntryTag).orThrow.first
+                val recipeEntry = card.getRecipeEntryCodec(BasicDisplay.registryAccess()).decode(ops, recipeEntryTag).orThrow.first
                 return SupportedDisplay(this@ReiSupport, recipeEntry)
             }
         })

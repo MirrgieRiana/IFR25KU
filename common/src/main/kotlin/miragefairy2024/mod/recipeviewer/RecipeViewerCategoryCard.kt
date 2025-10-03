@@ -10,6 +10,7 @@ import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plusAssign
 import miragefairy2024.util.text
+import net.minecraft.core.RegistryAccess
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 
@@ -38,8 +39,8 @@ abstract class RecipeViewerCategoryCard<R> {
         var viewCache: View? = null
     }
 
-    abstract fun getRecipeCodec(): Codec<R>
-    val recipeEntryCodec: Codec<RecipeEntry<R>> = RecipeEntry.getCodec(getRecipeCodec())
+    abstract fun getRecipeCodec(registryAccess: RegistryAccess): Codec<R>
+    fun getRecipeEntryCodec(registryAccess: RegistryAccess): Codec<RecipeEntry<R>> = RecipeEntry.getCodec(getRecipeCodec(registryAccess))
 
     class Input(val ingredientStack: IngredientStack, val isCatalyst: Boolean)
 
