@@ -84,7 +84,7 @@ class ReiSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
 }
 
 class SupportedDisplay<R>(val support: ReiSupport<R>, val recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>) : Display {
-    override fun getInputEntries() = support.card.getInputs(recipeEntry).map { it.ingredient.toEntryIngredient() }
+    override fun getInputEntries() = support.card.getInputs(recipeEntry).map { it.ingredientStack.toEntryIngredient() }
     override fun getOutputEntries() = support.card.getOutputs(recipeEntry).map { it.toEntryStack().toEntryIngredient() }
     override fun getCategoryIdentifier() = support.categoryIdentifier.first
     override fun getDisplayLocation() = recipeEntry.takeIf { !it.isSynthetic }?.id.toOptional()

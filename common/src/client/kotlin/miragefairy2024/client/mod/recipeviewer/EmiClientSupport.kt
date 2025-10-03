@@ -90,8 +90,8 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>) : EmiRecipe {
     override fun getCategory() = support.emiRecipeCategory.first
     override fun getId() = if (recipeEntry.isSynthetic) "/" * recipeEntry.id else recipeEntry.id
-    override fun getInputs(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { !it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
-    override fun getCatalysts(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { it.isCatalyst }.map { EmiIngredient.of(it.ingredient) }
+    override fun getInputs(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { !it.isCatalyst }.map { it.ingredientStack.toEmiIngredient() }
+    override fun getCatalysts(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { it.isCatalyst }.map { it.ingredientStack.toEmiIngredient() }
     override fun getOutputs(): List<EmiStack> = support.card.getOutputs(recipeEntry).map { EmiStack.of(it) }
     val view = support.card.getView(rendererProxy, recipeEntry)
     override fun getDisplayWidth() = 1 + view.getWidth() + 1

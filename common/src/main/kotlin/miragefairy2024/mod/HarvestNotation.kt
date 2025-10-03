@@ -18,7 +18,6 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.pathString
 import miragefairy2024.util.times
-import miragefairy2024.util.toIngredient
 import miragefairy2024.util.toIngredientStack
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
@@ -63,7 +62,7 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
     override fun getIcon() = MaterialCard.VEROPEDA_BERRIES.item().createItemStack()
     override fun getWorkstations() = listOf<ItemStack>()
     override fun getRecipeCodec() = HarvestNotation.CODEC
-    override fun getInputs(recipeEntry: RecipeEntry<HarvestNotation>) = listOf(Input(recipeEntry.recipe.seed.toIngredient(), true))
+    override fun getInputs(recipeEntry: RecipeEntry<HarvestNotation>) = listOf(Input(recipeEntry.recipe.seed.toIngredientStack(), true))
     override fun getOutputs(recipeEntry: RecipeEntry<HarvestNotation>) = recipeEntry.recipe.crops
 
     override fun createRecipeEntries(): Iterable<RecipeEntry<HarvestNotation>> {

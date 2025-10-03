@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.ModContext
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
@@ -11,7 +12,6 @@ import miragefairy2024.util.plusAssign
 import miragefairy2024.util.text
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.crafting.Ingredient
 
 abstract class RecipeViewerCategoryCard<R> {
 
@@ -41,7 +41,7 @@ abstract class RecipeViewerCategoryCard<R> {
     abstract fun getRecipeCodec(): Codec<R>
     val recipeEntryCodec: Codec<RecipeEntry<R>> = RecipeEntry.getCodec(getRecipeCodec())
 
-    class Input(val ingredient: Ingredient, val isCatalyst: Boolean)
+    class Input(val ingredientStack: IngredientStack, val isCatalyst: Boolean)
 
     abstract fun getInputs(recipeEntry: RecipeEntry<R>): List<Input>
     abstract fun getOutputs(recipeEntry: RecipeEntry<R>): List<ItemStack>
