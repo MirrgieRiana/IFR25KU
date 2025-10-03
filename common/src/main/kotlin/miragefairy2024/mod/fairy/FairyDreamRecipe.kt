@@ -89,24 +89,24 @@ class FairyDreamTable<T>(val registry: Registry<T>) {
     fun getDisplayMap() = mapPair.second
 }
 
-abstract class FairyDreamRecipeRecipeViewerCategoryCard<T>(
-    private val typePath: String,
-    private val typeName: EnJa,
-    private val iconMotif: Motif,
-    private val typeCodec: Codec<T>,
-    private val fairyDreamTable: FairyDreamTable<T>,
-) : RecipeViewerCategoryCard<Pair<Motif, List<T>>>() {
-    override fun getId() = MirageFairy2024.identifier("${typePath}_fairy_dream_recipe")
-    override fun getName() = EnJa("Fairy Dream: ${typeName.en}", "妖精の夢：${typeName.ja}")
-    override fun getIcon() = iconMotif.createFairyItemStack()
+abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategoryCard<Pair<Motif, List<T>>>() {
+    abstract fun getTypePath(): String
+    override fun getId() = MirageFairy2024.identifier("${getTypePath()}_fairy_dream_recipe")
+    abstract fun getTypeName(): EnJa
+    override fun getName() = EnJa("Fairy Dream: ${getTypeName().en}", "妖精の夢：${getTypeName().ja}")
+    abstract fun getIconMotif(): Motif
+    override fun getIcon() = getIconMotif().createFairyItemStack()
     override fun getWorkstations() = MIRAGE_FLOUR_TAG.toIngredient().items.toList()
-    override fun getRecipeCodec(registryAccess: RegistryAccess) = pairCodecOf(motifRegistry.byNameCodec(), typeCodec.listOf())
+    abstract fun getTypeCodec(): Codec<T>
+    override fun getRecipeCodec(registryAccess: RegistryAccess) = pairCodecOf(motifRegistry.byNameCodec(), getTypeCodec().listOf())
     abstract fun getIngredientStack(keys: List<T>): IngredientStack?
     override fun getInputs(recipeEntry: RecipeEntry<Pair<Motif, List<T>>>) = getIngredientStack(recipeEntry.recipe.second)?.let { listOf(Input(it, true)) } ?: listOf()
     override fun getOutputs(recipeEntry: RecipeEntry<Pair<Motif, List<T>>>) = listOf(recipeEntry.recipe.first.createFairyItemStack())
 
+    abstract fun getFairyDreamTable(): FairyDreamTable<T>
+
     override fun createRecipeEntries(): Iterable<RecipeEntry<Pair<Motif, List<T>>>> {
-        return fairyDreamTable.getDisplayMap().map { (motif, keys) ->
+        return getFairyDreamTable().getDisplayMap().map { (motif, keys) ->
             RecipeEntry(motif.getIdentifier()!!, Pair(motif, keys.toList()), true)
         }
     }
@@ -135,26 +135,32 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T>(
     }
 }
 
-object ItemFairyDreamRecipeRecipeViewerCategoryCard : FairyDreamRecipeRecipeViewerCategoryCard<Item>(
-    "item", EnJa("Item", "アイテム"), MotifCard.CARROT,
-    BuiltInRegistries.ITEM.byNameCodec(), FairyDreamRecipes.ITEM,
-) {
+object ItemFairyDreamRecipeRecipeViewerCategoryCard : FairyDreamRecipeRecipeViewerCategoryCard<Item>() {
+    override fun getTypePath() = "item"
+    override fun getTypeName() = EnJa("Item", "アイテム")
+    override fun getIconMotif() = MotifCard.CARROT
+    override fun getTypeCodec(): Codec<Item> = BuiltInRegistries.ITEM.byNameCodec()
     override fun getIngredientStack(keys: List<Item>) = keys.toIngredientStack()
+    override fun getFairyDreamTable() = FairyDreamRecipes.ITEM
     override fun getName(key: Item): Component = key.description
 }
 
-object BlockFairyDreamRecipeRecipeViewerCategoryCard : FairyDreamRecipeRecipeViewerCategoryCard<Block>(
-    "block", EnJa("Block", "ブロック"), MotifCard.MAGENTA_GLAZED_TERRACOTTA,
-    BuiltInRegistries.BLOCK.byNameCodec(), FairyDreamRecipes.BLOCK,
-) {
+object BlockFairyDreamRecipeRecipeViewerCategoryCard : FairyDreamRecipeRecipeViewerCategoryCard<Block>() {
+    override fun getTypePath() = "block"
+    override fun getTypeName() = EnJa("Block", "ブロック")
+    override fun getIconMotif() = MotifCard.MAGENTA_GLAZED_TERRACOTTA
+    override fun getTypeCodec(): Codec<Block> = BuiltInRegistries.BLOCK.byNameCodec()
     override fun getIngredientStack(keys: List<Block>) = keys.map { it.asItem() }.toIngredientStack()
+    override fun getFairyDreamTable() = FairyDreamRecipes.BLOCK
     override fun getName(key: Block): Component = key.name
 }
 
-object EntityTypeFairyDreamRecipeRecipeViewerCategoryCard : FairyDreamRecipeRecipeViewerCategoryCard<EntityType<*>>(
-    "entity", EnJa("Entity", "エンティティ"), MotifCard.ENDERMAN,
-    BuiltInRegistries.ENTITY_TYPE.byNameCodec(), FairyDreamRecipes.ENTITY_TYPE,
-) {
+object EntityTypeFairyDreamRecipeRecipeViewerCategoryCard : FairyDreamRecipeRecipeViewerCategoryCard<EntityType<*>>() {
+    override fun getTypePath() = "entity"
+    override fun getTypeName() = EnJa("Entity", "エンティティ")
+    override fun getIconMotif() = MotifCard.ENDERMAN
+    override fun getTypeCodec(): Codec<EntityType<*>> = BuiltInRegistries.ENTITY_TYPE.byNameCodec()
     override fun getIngredientStack(keys: List<EntityType<*>>) = null
+    override fun getFairyDreamTable() = FairyDreamRecipes.ENTITY_TYPE
     override fun getName(key: EntityType<*>): Component = key.description
 }
