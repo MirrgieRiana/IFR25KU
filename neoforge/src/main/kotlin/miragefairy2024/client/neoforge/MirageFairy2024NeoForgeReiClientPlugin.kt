@@ -7,7 +7,7 @@ import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
 import me.shedaniel.rei.forge.REIPluginClient
 import miragefairy2024.client.mod.recipeviewer.ReiClientEvents
-import miragefairy2024.neoforge.MirageFairy2024NeoForgeReiServerPlugin
+import miragefairy2024.mod.recipeviewer.ReiEvents
 
 @REIPluginClient
 @Suppress("unused")
@@ -21,7 +21,7 @@ class MirageFairy2024NeoForgeReiClientPlugin : REIClientPlugin {
     }
 
     override fun registerItemComparators(registry: ItemComparatorRegistry) {
-        MirageFairy2024NeoForgeReiServerPlugin().registerItemComparators(registry)
+        ReiEvents.onRegisterItemComparators.fire { it(registry) }
     }
 
     override fun registerScreens(registry: ScreenRegistry) {
