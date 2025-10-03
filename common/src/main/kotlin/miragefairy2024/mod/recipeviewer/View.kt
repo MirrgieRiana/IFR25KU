@@ -6,7 +6,7 @@ interface View {
     fun layout(rendererProxy: RendererProxy)
     fun getWidth(): Int
     fun getHeight(): Int
-    fun assemble(viewPlacer: ViewPlacer, x: Int, y: Int)
+    fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>)
 }
 
 interface RendererProxy {
@@ -14,8 +14,28 @@ interface RendererProxy {
     fun getTextHeight(): Int
 }
 
-interface ViewPlacer {
-    fun place(view: View, x: Int, y: Int)
+fun interface ViewPlacer<V : View> {
+    fun place(view: V, x: Int, y: Int)
+}
+
+fun interface ContextViewPlacer<C, V : View> {
+    fun place(context: C, view: V, x: Int, y: Int)
+}
+
+class ViewPlacerRegistry<C> {
+    val map = mutableMapOf<Class<out View>, ContextViewPlacer<C, *>>()
+}
+
+inline fun <C, reified V : View> ViewPlacerRegistry<C>.register(factory: ContextViewPlacer<C, V>) {
+    this.map[V::class.java] = factory
+}
+
+fun <C, V : View> ViewPlacerRegistry<C>.place(context: C, view: V, x: Int, y: Int) {
+    val contextViewPlacer = this.map[view.javaClass]
+    if (contextViewPlacer == null) throw IllegalArgumentException("Unsupported view: $view")
+    @Suppress("UNCHECKED_CAST")
+    contextViewPlacer as ContextViewPlacer<C, V>
+    contextViewPlacer.place(context, view, x, y)
 }
 
 class ColorPair(val lightModeArgb: Int, val darkModeArgb: Int) {

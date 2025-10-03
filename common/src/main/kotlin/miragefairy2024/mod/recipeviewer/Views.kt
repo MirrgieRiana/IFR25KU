@@ -38,9 +38,9 @@ abstract class ContainerView<P, V : View> : View {
     abstract fun calculateWidth(): Int
     abstract fun calculateHeight(): Int
 
-    override fun assemble(viewPlacer: ViewPlacer, x: Int, y: Int) {
+    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>) {
         children.forEach {
-            it.view.assemble(viewPlacer, x + it.xCache, y + it.yCache)
+            it.view.assemble(x + it.xCache, y + it.yCache, viewPlacer)
         }
     }
 
@@ -121,12 +121,12 @@ abstract class SolidView(private val width: Int, private val height: Int) : View
     override fun layout(rendererProxy: RendererProxy) = Unit
     override fun getWidth() = width
     override fun getHeight() = height
-    override fun assemble(viewPlacer: ViewPlacer, x: Int, y: Int) = viewPlacer.place(this, x, y)
+    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>) = viewPlacer.place(this, x, y)
 }
 
 
 abstract class SpaceView(width: Int, height: Int) : SolidView(width, height) {
-    override fun assemble(viewPlacer: ViewPlacer, x: Int, y: Int) = Unit
+    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>) = Unit
 }
 
 class XSpaceView(width: Int) : SpaceView(width, 0)
@@ -162,7 +162,7 @@ class TextView(val text: Component) : View {
     var horizontalAlignment: Alignment? = null
     var tooltip: List<Component>? = null
 
-    override fun assemble(viewPlacer: ViewPlacer, x: Int, y: Int) = viewPlacer.place(this, x, y)
+    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>) = viewPlacer.place(this, x, y)
 }
 
 

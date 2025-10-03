@@ -24,8 +24,9 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
 import miragefairy2024.mod.recipeviewer.SupportedDisplay
 import miragefairy2024.mod.recipeviewer.TextView
-import miragefairy2024.mod.recipeviewer.View
-import miragefairy2024.mod.recipeviewer.ViewPlacer
+import miragefairy2024.mod.recipeviewer.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.place
+import miragefairy2024.mod.recipeviewer.register
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
@@ -38,6 +39,8 @@ object ReiClientEvents {
     val onRegisterDisplays = ReusableInitializationEventRegistry<(DisplayRegistry) -> Unit>()
     val onRegisterScreens = ReusableInitializationEventRegistry<(ScreenRegistry) -> Unit>()
 }
+
+val REI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<MutableList<Widget>>()
 
 context(ModContext)
 fun initReiClientSupport() {
@@ -83,6 +86,43 @@ fun initReiClientSupport() {
             ReiClientSupport.get(card).registerScreens(it)
         }
     }
+
+    REI_VIEW_PLACER_REGISTRY.register { widgets, view: InputSlotView, x, y ->
+        widgets += Widgets.createSlot(Point(x + 1, y + 1))
+            .entries(view.ingredientStack.toEntryIngredient())
+            .markInput()
+            .backgroundEnabled(view.drawBackground)
+    }
+    REI_VIEW_PLACER_REGISTRY.register { widgets, view: CatalystSlotView, x, y ->
+        widgets += Widgets.createSlot(Point(x + 1, y + 1))
+            .entries(view.ingredientStack.toEntryIngredient())
+            .markInput()
+            .backgroundEnabled(view.drawBackground)
+    }
+    REI_VIEW_PLACER_REGISTRY.register { widgets, view: OutputSlotView, x, y ->
+        widgets += Widgets.createSlot(Point(x + 1, y + 1))
+            .entries(view.itemStack.toEntryIngredient())
+            .markOutput()
+            .backgroundEnabled(view.drawBackground)
+    }
+    REI_VIEW_PLACER_REGISTRY.register { widgets, view: TextView, x, y ->
+        widgets += Widgets.createLabel(Point(x, y), view.text)
+            .let { if (view.color != null) it.color(view.color!!.lightModeArgb, view.color!!.darkModeArgb) else it }
+            .shadow(view.shadow)
+            .let {
+                when (view.horizontalAlignment) {
+                    Alignment.START -> it.leftAligned()
+                    Alignment.CENTER -> it.centered()
+                    Alignment.END -> it.rightAligned()
+                    null -> it.leftAligned()
+                }
+            }
+            .let { if (view.tooltip != null) it.tooltip(*view.tooltip!!.toTypedArray()) else it }
+    }
+    REI_VIEW_PLACER_REGISTRY.register { widgets, view: ArrowView, x, y ->
+        widgets += Widgets.createArrow(Point(x, y))
+            .animationDurationMS(view.durationMilliSeconds?.toDouble() ?: -1.0)
+    }
 }
 
 class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
@@ -104,7 +144,10 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
             val widgets = mutableListOf<Widget>()
             widgets += Widgets.createRecipeBase(bounds)
-            card.getView(rendererProxy, display.recipeEntry).assemble(getReiViewPlacer(widgets), 5 + bounds.x, 5 + bounds.y)
+            val view = card.getView(rendererProxy, display.recipeEntry)
+            view.assemble(5 + bounds.x, 5 + bounds.y) { view2, x, y ->
+                REI_VIEW_PLACER_REGISTRY.place(widgets, view2, x, y)
+            }
             return widgets
         }
     }
@@ -124,55 +167,4 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         // TODO
     }
 
-}
-
-private fun getReiViewPlacer(widgets: MutableList<Widget>): ViewPlacer {
-    return object : ViewPlacer {
-        override fun place(view: View, x: Int, y: Int) {
-            when (view) {
-                is InputSlotView -> {
-                    widgets += Widgets.createSlot(Point(x + 1, y + 1))
-                        .entries(view.ingredientStack.toEntryIngredient())
-                        .markInput()
-                        .backgroundEnabled(view.drawBackground)
-                }
-
-                is CatalystSlotView -> {
-                    widgets += Widgets.createSlot(Point(x + 1, y + 1))
-                        .entries(view.ingredientStack.toEntryIngredient())
-                        .markInput()
-                        .backgroundEnabled(view.drawBackground)
-                }
-
-                is OutputSlotView -> {
-                    widgets += Widgets.createSlot(Point(x + 1, y + 1))
-                        .entries(view.itemStack.toEntryIngredient())
-                        .markOutput()
-                        .backgroundEnabled(view.drawBackground)
-                }
-
-                is TextView -> {
-                    widgets += Widgets.createLabel(Point(x, y), view.text)
-                        .let { if (view.color != null) it.color(view.color!!.lightModeArgb, view.color!!.darkModeArgb) else it }
-                        .shadow(view.shadow)
-                        .let {
-                            when (view.horizontalAlignment) {
-                                Alignment.START -> it.leftAligned()
-                                Alignment.CENTER -> it.centered()
-                                Alignment.END -> it.rightAligned()
-                                null -> it.leftAligned()
-                            }
-                        }
-                        .let { if (view.tooltip != null) it.tooltip(*view.tooltip!!.toTypedArray()) else it }
-                }
-
-                is ArrowView -> {
-                    widgets += Widgets.createArrow(Point(x, y))
-                        .animationDurationMS(view.durationMilliSeconds?.toDouble() ?: -1.0)
-                }
-
-                else -> throw IllegalArgumentException("Unsupported view: $view")
-            }
-        }
-    }
 }
