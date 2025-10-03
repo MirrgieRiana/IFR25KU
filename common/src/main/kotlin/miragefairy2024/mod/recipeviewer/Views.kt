@@ -173,9 +173,10 @@ class TextView(private val text: Component) : View {
     var color: ColorPair? = null
     var shadow = true
     var horizontalAlignment: Alignment? = null
+    var tooltip: List<Component>? = null
 
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
-        widgetProxy.addTextWidget(text, x, y, color, shadow, horizontalAlignment)
+        widgetProxy.addTextWidget(text, x, y, color, shadow, horizontalAlignment, tooltip)
     }
 }
 

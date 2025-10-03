@@ -143,7 +143,7 @@ private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
                 .backgroundEnabled(drawBackground)
         }
 
-        override fun addTextWidget(component: Component, x: Int, y: Int, color: ColorPair?, shadow: Boolean, horizontalAlignment: Alignment?) {
+        override fun addTextWidget(component: Component, x: Int, y: Int, color: ColorPair?, shadow: Boolean, horizontalAlignment: Alignment?, tooltip: List<Component>?) {
             widgets += Widgets.createLabel(Point(x, y), component)
                 .let { if (color != null) it.color(color.lightModeArgb, color.darkModeArgb) else it }
                 .shadow(shadow)
@@ -155,6 +155,7 @@ private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
                         null -> it.leftAligned()
                     }
                 }
+                .let { if (tooltip != null) it.tooltip(*tooltip.toTypedArray()) else it }
         }
 
         override fun addArrow(x: Int, y: Int, durationMilliSeconds: Int?) {

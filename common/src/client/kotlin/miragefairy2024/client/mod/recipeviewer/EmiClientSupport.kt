@@ -126,8 +126,8 @@ private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): Widg
                 .drawBack(drawBackground)
         }
 
-        override fun addTextWidget(component: Component, x: Int, y: Int, color: ColorPair?, shadow: Boolean, horizontalAlignment: Alignment?) {
-            widgets.addText(component, x, y, color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), shadow)
+        override fun addTextWidget(component: Component, x: Int, y: Int, color: ColorPair?, shadow: Boolean, horizontalAlignment: Alignment?, tooltip: List<Component>?) {
+            val widget = widgets.addText(component, x, y, color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), shadow)
                 .let {
                     when (horizontalAlignment) {
                         Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
@@ -136,6 +136,8 @@ private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): Widg
                         null -> it
                     }
                 }
+            val bound = widget.bounds
+            if (tooltip != null) widgets.addTooltipText(tooltip, bound.x, bound.y, bound.width, bound.height)
         }
 
         override fun addArrow(x: Int, y: Int, durationMilliSeconds: Int?) {
