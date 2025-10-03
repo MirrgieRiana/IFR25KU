@@ -4,6 +4,7 @@ package miragefairy2024.mod.recipeviewer
 
 import miragefairy2024.util.IngredientStack
 import mirrg.kotlin.helium.atLeast
+import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
 
@@ -153,6 +154,28 @@ class CatalystSlotView(private val ingredientStack: IngredientStack) : SlotView(
 class OutputSlotView(private val itemStack: ItemStack) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
         widgetProxy.addOutputSlotWidget(itemStack, x, y, drawBackground)
+    }
+}
+
+
+class TextView(private val text: Component) : View {
+    private var widthCache = 0
+    private var heightCache = 0
+
+    override fun layout(rendererProxy: RendererProxy) {
+        widthCache = rendererProxy.calculateTextWidth(text)
+        heightCache = rendererProxy.getTextHeight()
+    }
+
+    override fun getWidth() = widthCache
+    override fun getHeight() = heightCache
+
+    var color: ColorPair? = null
+    var shadow = true
+    var horizontalAlignment: Alignment? = null
+
+    override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
+        widgetProxy.addTextWidget(text, x, y, color, shadow, horizontalAlignment)
     }
 }
 

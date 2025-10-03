@@ -8,9 +8,12 @@ import dev.emi.emi.api.render.EmiTexture
 import dev.emi.emi.api.stack.Comparison
 import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
+import dev.emi.emi.api.widget.TextWidget
 import dev.emi.emi.api.widget.WidgetHolder
 import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
+import miragefairy2024.mod.recipeviewer.Alignment
+import miragefairy2024.mod.recipeviewer.ColorPair
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.WidgetProxy
@@ -22,6 +25,7 @@ import miragefairy2024.util.times
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
 import mirrg.kotlin.helium.Single
+import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import java.util.Objects
 
@@ -120,6 +124,18 @@ private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): Widg
             widgets.addSlot(itemStack.toEmiStack(), x, y)
                 .recipeContext(emiRecipe)
                 .drawBack(drawBackground)
+        }
+
+        override fun addTextWidget(component: Component, x: Int, y: Int, color: ColorPair?, shadow: Boolean, horizontalAlignment: Alignment?) {
+            widgets.addText(component, x, y, color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), shadow)
+                .let {
+                    when (horizontalAlignment) {
+                        Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
+                        Alignment.CENTER -> it.horizontalAlign(TextWidget.Alignment.CENTER)
+                        Alignment.END -> it.horizontalAlign(TextWidget.Alignment.END)
+                        null -> it
+                    }
+                }
         }
 
         override fun addArrow(x: Int, y: Int, durationMilliSeconds: Int?) {

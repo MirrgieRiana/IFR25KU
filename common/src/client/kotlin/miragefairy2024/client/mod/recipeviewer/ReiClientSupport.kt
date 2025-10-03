@@ -14,6 +14,8 @@ import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.client.mod.rei.ClientReiCategoryCard
+import miragefairy2024.mod.recipeviewer.Alignment
+import miragefairy2024.mod.recipeviewer.ColorPair
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
@@ -139,6 +141,20 @@ private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
                 .entries(itemStack.toEntryIngredient())
                 .markOutput()
                 .backgroundEnabled(drawBackground)
+        }
+
+        override fun addTextWidget(component: Component, x: Int, y: Int, color: ColorPair?, shadow: Boolean, horizontalAlignment: Alignment?) {
+            widgets += Widgets.createLabel(Point(x, y), component)
+                .let { if (color != null) it.color(color.lightModeArgb, color.darkModeArgb) else it }
+                .shadow(shadow)
+                .let {
+                    when (horizontalAlignment) {
+                        Alignment.START -> it.leftAligned()
+                        Alignment.CENTER -> it.centered()
+                        Alignment.END -> it.rightAligned()
+                        null -> it.leftAligned()
+                    }
+                }
         }
 
         override fun addArrow(x: Int, y: Int, durationMilliSeconds: Int?) {
