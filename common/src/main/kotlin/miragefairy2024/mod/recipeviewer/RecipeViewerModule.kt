@@ -16,5 +16,4 @@ class InformationEntry(val input: () -> Ingredient, val title: Component, val co
 context(ModContext)
 fun initRecipeViewerModule() {
     initReiSupport()
-    initEmiSupport()
 }
