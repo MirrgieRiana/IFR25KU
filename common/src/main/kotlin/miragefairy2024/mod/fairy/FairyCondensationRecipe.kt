@@ -2,6 +2,7 @@ package miragefairy2024.mod.fairy
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.recipeviewer.InformationEntry
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.SpecialRecipeResult
@@ -67,7 +68,7 @@ fun initFairyCondensationRecipe() {
 
     FAIRY_DECONDENSATION_RECIPE_TITLE_TRANSLATION.enJa()
     FAIRY_DECONDENSATION_RECIPE_DESCRIPTION_TRANSLATION.enJa()
-    RecipeViewerEvents.informationEntries += RecipeViewerEvents.InformationEntry(
+    RecipeViewerEvents.informationEntries += InformationEntry(
         { Ingredient.of(motifRegistry.map { it.createFairyItemStack() }.stream()) },
         text { FAIRY_DECONDENSATION_RECIPE_TITLE_TRANSLATION() },
         listOf(text { FAIRY_DECONDENSATION_RECIPE_DESCRIPTION_TRANSLATION() }),
