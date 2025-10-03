@@ -39,6 +39,15 @@ val BIG_INTEGER_CODEC: Codec<BigInteger> = Codec.withAlternative(
 )
 val BIG_INTEGER_STREAM_CODEC: StreamCodec<ByteBuf, BigInteger> = ByteBufCodecs.STRING_UTF8.map(String::toBigInteger, BigInteger::toString)
 
+fun <A, B> pairCodecOf(codecA: Codec<A>, codecB: Codec<B>): Codec<Pair<A, B>> {
+    return RecordCodecBuilder.create { instance ->
+        instance.group(
+            codecA.fieldOf("A").forGetter { it.first },
+            codecB.fieldOf("B").forGetter { it.second }
+        ).apply(instance, ::Pair)
+    }
+}
+
 
 data class ItemStacks(val itemStacks: List<ItemStack>) {
     companion object {
