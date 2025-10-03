@@ -13,13 +13,14 @@ fun ItemStack.toEntryStack(): EntryStack<ItemStack> = EntryStacks.of(this)
 
 fun Ingredient.toEntryIngredient(): EntryIngredient = EntryIngredients.ofIngredient(this)
 fun EntryStack<*>.toEntryIngredient(): EntryIngredient = EntryIngredient.of(this)
+fun ItemStack.toEntryIngredient(): EntryIngredient = this.toEntryStack().toEntryIngredient()
 fun Iterable<EntryStack<*>>.toEntryIngredient(): EntryIngredient = EntryIngredient.of(this)
 
 fun IngredientStack.toEntryIngredient(): EntryIngredient {
     if (ingredient.isEmpty) return EntryIngredient.empty()
     val itemStacks = ingredient.items
     if (itemStacks.size == 0) return EntryIngredient.empty()
-    if (itemStacks.size == 1) return itemStacks.single().copyWithCount(count).toEntryStack().toEntryIngredient()
+    if (itemStacks.size == 1) return itemStacks.single().copyWithCount(count).toEntryIngredient()
     return itemStacks
         .filter { it.isNotEmpty }
         .mapNotNull { it.copyWithCount(count).toEntryStack() }
