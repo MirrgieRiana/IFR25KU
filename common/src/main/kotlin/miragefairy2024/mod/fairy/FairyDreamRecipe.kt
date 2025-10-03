@@ -53,6 +53,7 @@ object FairyDreamRecipes {
 context(ModContext)
 fun initFairyDreamRecipe() {
     ItemFairyDreamRecipeRecipeViewerCategoryCard.init()
+    BlockFairyDreamRecipeRecipeViewerCategoryCard.init()
 }
 
 class FairyDreamTable<T>(val registry: Registry<T>) {
@@ -110,6 +111,40 @@ object ItemFairyDreamRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<P
                 color = ColorPair.DARK_GRAY
                 shadow = false
                 tooltip = recipeEntry.recipe.second.map { it.description }
+            }
+            this += OutputSlotView(recipeEntry.recipe.first.createFairyItemStack())
+        }
+    }
+}
+
+object BlockFairyDreamRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Pair<Motif, List<Block>>>() {
+    override fun getId() = MirageFairy2024.identifier("block_fairy_dream_recipe")
+    override fun getName() = EnJa("Fairy Dream: Block", "妖精の夢：ブロック")
+    override fun getIcon() = MotifCard.MAGENTA_GLAZED_TERRACOTTA.createFairyItemStack()
+    override fun getWorkstations() = listOf<ItemStack>()
+    override fun getRecipeCodec(registryAccess: RegistryAccess) = pairCodecOf(motifRegistry.byNameCodec(), BuiltInRegistries.BLOCK.byNameCodec().listOf())
+    override fun getInputs(recipeEntry: RecipeEntry<Pair<Motif, List<Block>>>) = listOf(Input(recipeEntry.recipe.second.map { it.asItem() }.toIngredientStack(), true))
+    override fun getOutputs(recipeEntry: RecipeEntry<Pair<Motif, List<Block>>>) = listOf(recipeEntry.recipe.first.createFairyItemStack())
+
+    override fun createRecipeEntries(): Iterable<RecipeEntry<Pair<Motif, List<Block>>>> {
+        return FairyDreamRecipes.BLOCK.getDisplayMap().map { (motif, blocks) ->
+            RecipeEntry(motif.getIdentifier()!!, Pair(motif, blocks.toList()), true)
+        }
+    }
+
+    override fun createView(recipeEntry: RecipeEntry<Pair<Motif, List<Block>>>) = View {
+        this += XListView {
+            val gained = clientProxy.or { return@XListView }.getClientPlayer().or { return@XListView }.fairyDreamContainer.getOrDefault()[recipeEntry.recipe.first]
+            val text = text { recipeEntry.recipe.second.first().name }
+                .let { if (recipeEntry.recipe.second.size > 1) text { it + "..."() } else it }
+                .let { if (!gained) it.darkRed else it }
+            this += CatalystSlotView(recipeEntry.recipe.second.map { it.asItem() }.toIngredientStack()).noBackground()
+            this += XSpaceView(2)
+            this += Alignment.CENTER to TextView(text).apply {
+                minWidth = 112
+                color = ColorPair.DARK_GRAY
+                shadow = false
+                tooltip = recipeEntry.recipe.second.map { it.name }
             }
             this += OutputSlotView(recipeEntry.recipe.first.createFairyItemStack())
         }
