@@ -11,8 +11,8 @@ import me.shedaniel.rei.api.client.registry.display.DisplayRegistry
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry
 import me.shedaniel.rei.api.common.util.EntryIngredients
 import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
-import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
+import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.client.mod.rei.ClientReiCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
@@ -29,9 +29,9 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
 object ReiClientEvents {
-    val onRegisterCategories = InitializationEventRegistry<(CategoryRegistry) -> Unit>()
-    val onRegisterDisplays = InitializationEventRegistry<(DisplayRegistry) -> Unit>()
-    val onRegisterScreens = InitializationEventRegistry<(ScreenRegistry) -> Unit>()
+    val onRegisterCategories = ReusableInitializationEventRegistry<(CategoryRegistry) -> Unit>()
+    val onRegisterDisplays = ReusableInitializationEventRegistry<(DisplayRegistry) -> Unit>()
+    val onRegisterScreens = ReusableInitializationEventRegistry<(ScreenRegistry) -> Unit>()
 }
 
 context(ModContext)

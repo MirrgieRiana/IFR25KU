@@ -6,8 +6,8 @@ import me.shedaniel.rei.api.common.display.DisplaySerializer
 import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
-import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
+import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.util.CompoundTag
 import miragefairy2024.util.get
 import miragefairy2024.util.toEntryIngredient
@@ -20,8 +20,8 @@ import net.minecraft.nbt.NbtOps
 import net.minecraft.resources.RegistryOps
 
 object ReiEvents {
-    val onRegisterDisplaySerializer = InitializationEventRegistry<(DisplaySerializerRegistry) -> Unit>()
-    val onRegisterItemComparators = InitializationEventRegistry<(ItemComparatorRegistry) -> Unit>()
+    val onRegisterDisplaySerializer = ReusableInitializationEventRegistry<(DisplaySerializerRegistry) -> Unit>()
+    val onRegisterItemComparators = ReusableInitializationEventRegistry<(ItemComparatorRegistry) -> Unit>()
 }
 
 context(ModContext)
