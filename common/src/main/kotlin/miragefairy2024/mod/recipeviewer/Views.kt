@@ -129,8 +129,8 @@ abstract class SpaceView(width: Int, height: Int) : SolidView(width, height) {
     override fun assemble(viewPlacer: ViewPlacer, x: Int, y: Int) = Unit
 }
 
-class XSpaceView(width: Int) : SolidView(width, 0)
-class YSpaceView(height: Int) : SolidView(0, height)
+class XSpaceView(width: Int) : SpaceView(width, 0)
+class YSpaceView(height: Int) : SpaceView(0, height)
 
 
 abstract class SlotView : SolidView(18, 18) {
