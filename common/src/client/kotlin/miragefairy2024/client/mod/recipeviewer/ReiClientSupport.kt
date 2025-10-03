@@ -19,6 +19,7 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
 import miragefairy2024.mod.recipeviewer.SupportedDisplay
 import miragefairy2024.mod.recipeviewer.WidgetProxy
+import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
@@ -26,7 +27,6 @@ import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.crafting.Ingredient
 
 object ReiClientEvents {
     val onRegisterCategories = InitializationEventRegistry<(CategoryRegistry) -> Unit>()
@@ -123,15 +123,15 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
 private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
     return object : WidgetProxy {
-        override fun addInputSlotWidget(ingredient: Ingredient, x: Int, y: Int, drawBackground: Boolean) {
+        override fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
             widgets += Widgets.createSlot(Point(x + 1, y + 1))
-                .entries(ingredient.toEntryIngredient())
+                .entries(ingredientStack.toEntryIngredient())
                 .markInput()
                 .backgroundEnabled(drawBackground)
         }
 
-        override fun addCatalystSlotWidget(ingredient: Ingredient, x: Int, y: Int, drawBackground: Boolean) {
-            addInputSlotWidget(ingredient, x, y, drawBackground)
+        override fun addCatalystSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
+            addInputSlotWidget(ingredientStack, x, y, drawBackground)
         }
 
         override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int, drawBackground: Boolean) {

@@ -2,9 +2,9 @@
 
 package miragefairy2024.mod.recipeviewer
 
+import miragefairy2024.util.IngredientStack
 import mirrg.kotlin.helium.atLeast
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.crafting.Ingredient
 
 
 abstract class ContainerView<P, V : View> : View {
@@ -138,15 +138,15 @@ abstract class SlotView : SolidView(18, 18) {
 
 fun <V : SlotView> V.noBackground() = this.apply { this.drawBackground = false }
 
-class InputSlotView(private val ingredient: Ingredient) : SlotView() {
+class InputSlotView(private val ingredientStack: IngredientStack) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
-        widgetProxy.addInputSlotWidget(ingredient, x, y, drawBackground)
+        widgetProxy.addInputSlotWidget(ingredientStack, x, y, drawBackground)
     }
 }
 
-class CatalystSlotView(private val ingredient: Ingredient) : SlotView() {
+class CatalystSlotView(private val ingredientStack: IngredientStack) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
-        widgetProxy.addCatalystSlotWidget(ingredient, x, y, drawBackground)
+        widgetProxy.addCatalystSlotWidget(ingredientStack, x, y, drawBackground)
     }
 }
 

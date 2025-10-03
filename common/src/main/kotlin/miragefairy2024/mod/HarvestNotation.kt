@@ -19,6 +19,7 @@ import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.pathString
 import miragefairy2024.util.times
 import miragefairy2024.util.toIngredient
+import miragefairy2024.util.toIngredientStack
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -73,7 +74,7 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
 
     override fun createView(recipeEntry: RecipeEntry<HarvestNotation>) = View {
         this += XListView {
-            this += CatalystSlotView(recipeEntry.recipe.seed.toIngredient())
+            this += CatalystSlotView(recipeEntry.recipe.seed.toIngredientStack())
             this += XSpaceView(4)
             recipeEntry.recipe.crops.forEach { crop ->
                 this += OutputSlotView(crop)

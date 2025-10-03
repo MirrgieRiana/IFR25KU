@@ -1,7 +1,7 @@
 package miragefairy2024.mod.recipeviewer
 
+import miragefairy2024.util.IngredientStack
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.crafting.Ingredient
 
 interface View {
     fun layout(rendererProxy: RendererProxy)
@@ -13,8 +13,8 @@ interface View {
 interface RendererProxy
 
 interface WidgetProxy {
-    fun addInputSlotWidget(ingredient: Ingredient, x: Int, y: Int, drawBackground: Boolean)
-    fun addCatalystSlotWidget(ingredient: Ingredient, x: Int, y: Int, drawBackground: Boolean)
+    fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean)
+    fun addCatalystSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean)
     fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int, drawBackground: Boolean)
 }
 

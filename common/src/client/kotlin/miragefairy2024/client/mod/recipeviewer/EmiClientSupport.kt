@@ -12,13 +12,14 @@ import miragefairy2024.mod.recipeviewer.EmiEvents
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.WidgetProxy
+import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
 import miragefairy2024.util.times
+import miragefairy2024.util.toEmiIngredient
 import mirrg.kotlin.helium.Single
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.crafting.Ingredient
 
 context(ModContext)
 fun initEmiClientSupport() {
@@ -84,13 +85,13 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
 
 private fun getEmiWidgetProxy(widgets: WidgetHolder, emiRecipe: EmiRecipe): WidgetProxy {
     return object : WidgetProxy {
-        override fun addInputSlotWidget(ingredient: Ingredient, x: Int, y: Int, drawBackground: Boolean) {
-            widgets.addSlot(EmiIngredient.of(ingredient), x, y)
+        override fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
+            widgets.addSlot(ingredientStack.toEmiIngredient(), x, y)
                 .drawBack(drawBackground)
         }
 
-        override fun addCatalystSlotWidget(ingredient: Ingredient, x: Int, y: Int, drawBackground: Boolean) {
-            widgets.addSlot(EmiIngredient.of(ingredient), x, y)
+        override fun addCatalystSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
+            widgets.addSlot(ingredientStack.toEmiIngredient(), x, y)
                 .catalyst(true)
                 .drawBack(drawBackground)
         }
