@@ -1,13 +1,24 @@
 package miragefairy2024.mod.fairy
 
 import mirrg.kotlin.helium.unit
+import net.minecraft.core.BlockPos
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.tags.TagKey
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import kotlin.jvm.optionals.getOrElse
+
+interface FairyDreamProviderItem {
+    fun getFairyDreamMotifs(itemStack: ItemStack): List<Motif>
+}
+
+interface FairyDreamProviderBlock {
+    fun getFairyDreamMotifs(world: Level, blockPos: BlockPos): List<Motif>
+}
 
 object FairyDreamRecipes {
     val ITEM = FairyDreamTable<Item>(BuiltInRegistries.ITEM)
