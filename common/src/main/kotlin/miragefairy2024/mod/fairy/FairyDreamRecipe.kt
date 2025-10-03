@@ -136,33 +136,24 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T>(
 }
 
 object ItemFairyDreamRecipeRecipeViewerCategoryCard : FairyDreamRecipeRecipeViewerCategoryCard<Item>(
-    "item",
-    EnJa("Item", "アイテム"),
-    MotifCard.CARROT,
-    BuiltInRegistries.ITEM.byNameCodec(),
-    FairyDreamRecipes.ITEM,
+    "item", EnJa("Item", "アイテム"), MotifCard.CARROT,
+    BuiltInRegistries.ITEM.byNameCodec(), FairyDreamRecipes.ITEM,
 ) {
     override fun getIngredientStack(keys: List<Item>) = keys.toIngredientStack()
     override fun getName(key: Item): Component = key.description
 }
 
 object BlockFairyDreamRecipeRecipeViewerCategoryCard : FairyDreamRecipeRecipeViewerCategoryCard<Block>(
-    "block",
-    EnJa("Block", "ブロック"),
-    MotifCard.MAGENTA_GLAZED_TERRACOTTA,
-    BuiltInRegistries.BLOCK.byNameCodec(),
-    FairyDreamRecipes.BLOCK,
+    "block", EnJa("Block", "ブロック"), MotifCard.MAGENTA_GLAZED_TERRACOTTA,
+    BuiltInRegistries.BLOCK.byNameCodec(), FairyDreamRecipes.BLOCK,
 ) {
     override fun getIngredientStack(keys: List<Block>) = keys.map { it.asItem() }.toIngredientStack()
     override fun getName(key: Block): Component = key.name
 }
 
 object EntityTypeFairyDreamRecipeRecipeViewerCategoryCard : FairyDreamRecipeRecipeViewerCategoryCard<EntityType<*>>(
-    "entity",
-    EnJa("Entity", "エンティティ"),
-    MotifCard.ENDERMAN,
-    BuiltInRegistries.ENTITY_TYPE.byNameCodec(),
-    FairyDreamRecipes.ENTITY_TYPE,
+    "entity", EnJa("Entity", "エンティティ"), MotifCard.ENDERMAN,
+    BuiltInRegistries.ENTITY_TYPE.byNameCodec(), FairyDreamRecipes.ENTITY_TYPE,
 ) {
     override fun getIngredientStack(keys: List<EntityType<*>>) = null
     override fun getName(key: EntityType<*>): Component = key.description
