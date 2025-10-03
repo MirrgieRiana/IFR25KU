@@ -15,20 +15,22 @@ import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.client.mod.rei.ClientReiCategoryCard
 import miragefairy2024.mod.recipeviewer.Alignment
-import miragefairy2024.mod.recipeviewer.ColorPair
+import miragefairy2024.mod.recipeviewer.ArrowView
+import miragefairy2024.mod.recipeviewer.CatalystSlotView
+import miragefairy2024.mod.recipeviewer.InputSlotView
+import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
 import miragefairy2024.mod.recipeviewer.SupportedDisplay
+import miragefairy2024.mod.recipeviewer.TextView
 import miragefairy2024.mod.recipeviewer.ViewPlacer
-import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
 import net.minecraft.network.chat.Component
-import net.minecraft.world.item.ItemStack
 
 object ReiClientEvents {
     val onRegisterCategories = ReusableInitializationEventRegistry<(CategoryRegistry) -> Unit>()
@@ -84,42 +86,45 @@ fun initReiClientSupport() {
 
 private fun getReiViewPlacer(widgets: MutableList<Widget>): ViewPlacer {
     return object : ViewPlacer {
-        override fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
+        override fun addInputSlotView(view: InputSlotView, x: Int, y: Int) {
             widgets += Widgets.createSlot(Point(x + 1, y + 1))
-                .entries(ingredientStack.toEntryIngredient())
+                .entries(view.ingredientStack.toEntryIngredient())
                 .markInput()
-                .backgroundEnabled(drawBackground)
+                .backgroundEnabled(view.drawBackground)
         }
 
-        override fun addCatalystSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
-            addInputSlotWidget(ingredientStack, x, y, drawBackground)
-        }
-
-        override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int, drawBackground: Boolean) {
+        override fun addCatalystSlotView(view: CatalystSlotView, x: Int, y: Int) {
             widgets += Widgets.createSlot(Point(x + 1, y + 1))
-                .entries(itemStack.toEntryIngredient())
-                .markOutput()
-                .backgroundEnabled(drawBackground)
+                .entries(view.ingredientStack.toEntryIngredient())
+                .markInput()
+                .backgroundEnabled(view.drawBackground)
         }
 
-        override fun addTextWidget(component: Component, x: Int, y: Int, color: ColorPair?, shadow: Boolean, horizontalAlignment: Alignment?, tooltip: List<Component>?) {
-            widgets += Widgets.createLabel(Point(x, y), component)
-                .let { if (color != null) it.color(color.lightModeArgb, color.darkModeArgb) else it }
-                .shadow(shadow)
+        override fun addOutputSlotView(view: OutputSlotView, x: Int, y: Int) {
+            widgets += Widgets.createSlot(Point(x + 1, y + 1))
+                .entries(view.itemStack.toEntryIngredient())
+                .markOutput()
+                .backgroundEnabled(view.drawBackground)
+        }
+
+        override fun addTextView(view: TextView, x: Int, y: Int) {
+            widgets += Widgets.createLabel(Point(x, y), view.text)
+                .let { if (view.color != null) it.color(view.color!!.lightModeArgb, view.color!!.darkModeArgb) else it }
+                .shadow(view.shadow)
                 .let {
-                    when (horizontalAlignment) {
+                    when (view.horizontalAlignment) {
                         Alignment.START -> it.leftAligned()
                         Alignment.CENTER -> it.centered()
                         Alignment.END -> it.rightAligned()
                         null -> it.leftAligned()
                     }
                 }
-                .let { if (tooltip != null) it.tooltip(*tooltip.toTypedArray()) else it }
+                .let { if (view.tooltip != null) it.tooltip(*view.tooltip!!.toTypedArray()) else it }
         }
 
-        override fun addArrow(x: Int, y: Int, durationMilliSeconds: Int?) {
+        override fun addArrowView(view: ArrowView, x: Int, y: Int) {
             widgets += Widgets.createArrow(Point(x, y))
-                .animationDurationMS(durationMilliSeconds?.toDouble() ?: -1.0)
+                .animationDurationMS(view.durationMilliSeconds?.toDouble() ?: -1.0)
         }
     }
 }

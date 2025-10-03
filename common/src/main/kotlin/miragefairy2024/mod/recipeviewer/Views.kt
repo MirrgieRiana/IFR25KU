@@ -139,26 +139,26 @@ abstract class SlotView : SolidView(18, 18) {
 
 fun <V : SlotView> V.noBackground() = this.apply { this.drawBackground = false }
 
-class InputSlotView(private val ingredientStack: IngredientStack) : SlotView() {
+class InputSlotView(val ingredientStack: IngredientStack) : SlotView() {
     override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) {
-        viewPlacer.addInputSlotWidget(ingredientStack, x, y, drawBackground)
+        viewPlacer.addInputSlotView(this, x, y)
     }
 }
 
-class CatalystSlotView(private val ingredientStack: IngredientStack) : SlotView() {
+class CatalystSlotView(val ingredientStack: IngredientStack) : SlotView() {
     override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) {
-        viewPlacer.addCatalystSlotWidget(ingredientStack, x, y, drawBackground)
+        viewPlacer.addCatalystSlotView(this, x, y)
     }
 }
 
-class OutputSlotView(private val itemStack: ItemStack) : SlotView() {
+class OutputSlotView(val itemStack: ItemStack) : SlotView() {
     override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) {
-        viewPlacer.addOutputSlotWidget(itemStack, x, y, drawBackground)
+        viewPlacer.addOutputSlotView(this, x, y)
     }
 }
 
 
-class TextView(private val text: Component) : View {
+class TextView(val text: Component) : View {
     var minWidth = 0
     private var widthCache = 0
     private var heightCache = 0
@@ -177,7 +177,7 @@ class TextView(private val text: Component) : View {
     var tooltip: List<Component>? = null
 
     override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) {
-        viewPlacer.addTextWidget(text, x, y, color, shadow, horizontalAlignment, tooltip)
+        viewPlacer.addTextView(this, x, y)
     }
 }
 
@@ -185,6 +185,6 @@ class TextView(private val text: Component) : View {
 class ArrowView() : SolidView(24, 17) {
     var durationMilliSeconds: Int? = null
     override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) {
-        viewPlacer.addArrow(x, y, durationMilliSeconds)
+        viewPlacer.addArrowView(this, x, y)
     }
 }

@@ -1,8 +1,6 @@
 package miragefairy2024.mod.recipeviewer
 
-import miragefairy2024.util.IngredientStack
 import net.minecraft.network.chat.Component
-import net.minecraft.world.item.ItemStack
 
 interface View {
     fun layout(rendererProxy: RendererProxy)
@@ -17,11 +15,11 @@ interface RendererProxy {
 }
 
 interface ViewPlacer {
-    fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean)
-    fun addCatalystSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean)
-    fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int, drawBackground: Boolean)
-    fun addTextWidget(component: Component, x: Int, y: Int, color: ColorPair?, shadow: Boolean, horizontalAlignment: Alignment?, tooltip: List<Component>?)
-    fun addArrow(x: Int, y: Int, durationMilliSeconds: Int?)
+    fun addInputSlotView(view: InputSlotView, x: Int, y: Int)
+    fun addCatalystSlotView(view: CatalystSlotView, x: Int, y: Int)
+    fun addOutputSlotView(view: OutputSlotView, x: Int, y: Int)
+    fun addTextView(view: TextView, x: Int, y: Int)
+    fun addArrowView(view: ArrowView, x: Int, y: Int)
 }
 
 class ColorPair(val lightModeArgb: Int, val darkModeArgb: Int) {

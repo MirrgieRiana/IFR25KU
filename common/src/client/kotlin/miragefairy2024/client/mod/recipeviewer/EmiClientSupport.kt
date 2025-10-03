@@ -13,11 +13,14 @@ import dev.emi.emi.api.widget.WidgetHolder
 import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.mod.recipeviewer.Alignment
-import miragefairy2024.mod.recipeviewer.ColorPair
+import miragefairy2024.mod.recipeviewer.ArrowView
+import miragefairy2024.mod.recipeviewer.CatalystSlotView
+import miragefairy2024.mod.recipeviewer.InputSlotView
+import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
+import miragefairy2024.mod.recipeviewer.TextView
 import miragefairy2024.mod.recipeviewer.ViewPlacer
-import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
@@ -25,8 +28,6 @@ import miragefairy2024.util.times
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
 import mirrg.kotlin.helium.Single
-import net.minecraft.network.chat.Component
-import net.minecraft.world.item.ItemStack
 import java.util.Objects
 
 object EmiClientEvents {
@@ -68,27 +69,27 @@ fun initEmiClientSupport() {
 
 private fun getEmiViewPlacer(widgets: WidgetHolder, emiRecipe: EmiRecipe): ViewPlacer {
     return object : ViewPlacer {
-        override fun addInputSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
-            widgets.addSlot(ingredientStack.toEmiIngredient(), x, y)
-                .drawBack(drawBackground)
+        override fun addInputSlotView(view: InputSlotView, x: Int, y: Int) {
+            widgets.addSlot(view.ingredientStack.toEmiIngredient(), x, y)
+                .drawBack(view.drawBackground)
         }
 
-        override fun addCatalystSlotWidget(ingredientStack: IngredientStack, x: Int, y: Int, drawBackground: Boolean) {
-            widgets.addSlot(ingredientStack.toEmiIngredient(), x, y)
+        override fun addCatalystSlotView(view: CatalystSlotView, x: Int, y: Int) {
+            widgets.addSlot(view.ingredientStack.toEmiIngredient(), x, y)
                 .catalyst(true)
-                .drawBack(drawBackground)
+                .drawBack(view.drawBackground)
         }
 
-        override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int, drawBackground: Boolean) {
-            widgets.addSlot(itemStack.toEmiStack(), x, y)
+        override fun addOutputSlotView(view: OutputSlotView, x: Int, y: Int) {
+            widgets.addSlot(view.itemStack.toEmiStack(), x, y)
                 .recipeContext(emiRecipe)
-                .drawBack(drawBackground)
+                .drawBack(view.drawBackground)
         }
 
-        override fun addTextWidget(component: Component, x: Int, y: Int, color: ColorPair?, shadow: Boolean, horizontalAlignment: Alignment?, tooltip: List<Component>?) {
-            val widget = widgets.addText(component, x, y, color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), shadow)
+        override fun addTextView(view: TextView, x: Int, y: Int) {
+            val widget = widgets.addText(view.text, x, y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
                 .let {
-                    when (horizontalAlignment) {
+                    when (view.horizontalAlignment) {
                         Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
                         Alignment.CENTER -> it.horizontalAlign(TextWidget.Alignment.CENTER)
                         Alignment.END -> it.horizontalAlign(TextWidget.Alignment.END)
@@ -96,12 +97,12 @@ private fun getEmiViewPlacer(widgets: WidgetHolder, emiRecipe: EmiRecipe): ViewP
                     }
                 }
             val bound = widget.bounds
-            if (tooltip != null) widgets.addTooltipText(tooltip, bound.x, bound.y, bound.width, bound.height)
+            if (view.tooltip != null) widgets.addTooltipText(view.tooltip, bound.x, bound.y, bound.width, bound.height)
         }
 
-        override fun addArrow(x: Int, y: Int, durationMilliSeconds: Int?) {
-            if (durationMilliSeconds != null) {
-                widgets.addFillingArrow(x, y, durationMilliSeconds)
+        override fun addArrowView(view: ArrowView, x: Int, y: Int) {
+            if (view.durationMilliSeconds != null) {
+                widgets.addFillingArrow(x, y, view.durationMilliSeconds!!)
             } else {
                 widgets.addTexture(EmiTexture.EMPTY_ARROW, x, y)
             }
