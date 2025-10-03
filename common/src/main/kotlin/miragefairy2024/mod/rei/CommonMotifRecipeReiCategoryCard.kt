@@ -12,7 +12,6 @@ import miragefairy2024.util.get
 import miragefairy2024.util.string
 import miragefairy2024.util.toBiomeTag
 import miragefairy2024.util.toEntryIngredient
-import miragefairy2024.util.toEntryStack
 import miragefairy2024.util.toIdentifier
 import miragefairy2024.util.with
 import miragefairy2024.util.wrapper
@@ -53,7 +52,7 @@ object CommonMotifRecipeReiCategoryCard : ReiCategoryCard<CommonMotifRecipeReiCa
 
     class Display(val recipe: CommonMotifRecipe) : BasicDisplay(
         listOf(),
-        listOf(recipe.motif.createFairyItemStack()).map { it.toEntryStack().toEntryIngredient() },
+        listOf(recipe.motif.createFairyItemStack()).map { it.toEntryIngredient() },
     ) {
         override fun getCategoryIdentifier() = identifier.first
     }

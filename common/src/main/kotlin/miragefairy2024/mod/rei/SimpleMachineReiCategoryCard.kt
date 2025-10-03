@@ -48,7 +48,7 @@ abstract class SimpleMachineReiCategoryCard<R : SimpleMachineRecipe>(path: Strin
     class Display<R : SimpleMachineRecipe>(private val card: SimpleMachineReiCategoryCard<R>, val recipe: R) : BasicDisplay(
         card.getInputs(recipe),
         listOf(
-            recipe.output.toEntryStack().toEntryIngredient(),
+            recipe.output.toEntryIngredient(),
         ),
     ) {
         override fun getCategoryIdentifier() = card.identifier.first

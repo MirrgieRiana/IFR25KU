@@ -9,7 +9,6 @@ import miragefairy2024.util.get
 import miragefairy2024.util.list
 import miragefairy2024.util.string
 import miragefairy2024.util.toEntryIngredient
-import miragefairy2024.util.toEntryStack
 import miragefairy2024.util.toIdentifier
 import miragefairy2024.util.toNbtList
 import miragefairy2024.util.toNbtString
@@ -32,8 +31,8 @@ object FairyFamilyReiCategoryCard : ReiCategoryCard<FairyFamilyReiCategoryCard.D
     }
 
     class Display(val motif: Motif, val parents: List<Motif>, val children: List<Motif>) : BasicDisplay(
-        listOf(motif).map { it.createFairyItemStack().toEntryStack().toEntryIngredient() },
-        (parents + children).map { it.createFairyItemStack().toEntryStack().toEntryIngredient() },
+        listOf(motif).map { it.createFairyItemStack().toEntryIngredient() },
+        (parents + children).map { it.createFairyItemStack().toEntryIngredient() },
     ) {
         override fun getCategoryIdentifier() = identifier.first
     }

@@ -57,7 +57,7 @@ object TraitEncyclopediaClientReiCategoryCard : ClientReiCategoryCard<TraitEncyc
                     it.setTraitStacks(TraitStacks.of(TraitStack(trait, 1)))
                 }
             }
-            registry.add(TraitEncyclopediaReiCategoryCard.Display(seedItemStacks.map { it.toEntryStack().toEntryIngredient() }, trait))
+            registry.add(TraitEncyclopediaReiCategoryCard.Display(seedItemStacks.map { it.toEntryIngredient() }, trait))
         }
     }
 

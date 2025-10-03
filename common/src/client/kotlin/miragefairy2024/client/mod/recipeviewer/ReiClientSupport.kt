@@ -136,7 +136,7 @@ private fun getReiWidgetProxy(widgets: MutableList<Widget>): WidgetProxy {
 
         override fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int, drawBackground: Boolean) {
             widgets += Widgets.createSlot(Point(x + 1, y + 1))
-                .entries(itemStack.toEntryStack().toEntryIngredient())
+                .entries(itemStack.toEntryIngredient())
                 .markOutput()
                 .backgroundEnabled(drawBackground)
         }
