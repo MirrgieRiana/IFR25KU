@@ -18,4 +18,8 @@ interface WidgetProxy {
     fun addOutputSlotWidget(itemStack: ItemStack, x: Int, y: Int)
 }
 
+enum class Alignment {
+    START, CENTER, END,
+}
+
 fun View(block: SingleView<View>.() -> Unit): View = SingleView { block(this) }.childView

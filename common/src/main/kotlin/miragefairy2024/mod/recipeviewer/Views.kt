@@ -69,8 +69,8 @@ class SingleView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V>
 fun SingleView(block: SingleView<View>.() -> Unit) = SingleView<View>().apply { block() }
 
 
-abstract class ListView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> {
-    override fun add(view: V) = add(Unit, view)
+abstract class ListView<V : View> : ContainerView<Alignment, V>(), DefaultedContainerView<V> {
+    override fun add(view: V) = add(Alignment.START, view)
 }
 
 class XListView<V : View> : ListView<V>() {
@@ -81,7 +81,11 @@ class XListView<V : View> : ListView<V>() {
         var x = 0
         children.forEach {
             it.xCache = x
-            it.yCache = 0
+            it.yCache = when (it.position) {
+                Alignment.START -> 0
+                Alignment.CENTER -> (getHeight() - it.view.getHeight()) / 2
+                Alignment.END -> getHeight() - it.view.getHeight()
+            }
             x += it.view.getWidth()
         }
     }
@@ -96,7 +100,11 @@ class YListView<V : View> : ListView<V>() {
         super.layout(rendererProxy)
         var y = 0
         children.forEach {
-            it.xCache = 0
+            it.xCache = when (it.position) {
+                Alignment.START -> 0
+                Alignment.CENTER -> (getWidth() - it.view.getWidth()) / 2
+                Alignment.END -> getWidth() - it.view.getWidth()
+            }
             it.yCache = y
             y += it.view.getHeight()
         }
