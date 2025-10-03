@@ -1,8 +1,10 @@
 package miragefairy2024.mod.fairy
 
+import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
+import miragefairy2024.mod.materials.MIRAGE_FLOUR_TAG
 import miragefairy2024.mod.recipeviewer.Alignment
 import miragefairy2024.mod.recipeviewer.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.ColorPair
@@ -15,12 +17,14 @@ import miragefairy2024.mod.recipeviewer.XSpaceView
 import miragefairy2024.mod.recipeviewer.noBackground
 import miragefairy2024.mod.recipeviewer.plusAssign
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.darkRed
 import miragefairy2024.util.getOrDefault
 import miragefairy2024.util.invoke
 import miragefairy2024.util.pairCodecOf
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
+import miragefairy2024.util.toIngredient
 import miragefairy2024.util.toIngredientStack
 import mirrg.kotlin.helium.or
 import mirrg.kotlin.helium.unit
@@ -28,6 +32,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.network.chat.Component
 import net.minecraft.tags.TagKey
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.item.Item
@@ -84,102 +89,81 @@ class FairyDreamTable<T>(val registry: Registry<T>) {
     fun getDisplayMap() = mapPair.second
 }
 
-object ItemFairyDreamRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Pair<Motif, List<Item>>>() {
-    override fun getId() = MirageFairy2024.identifier("item_fairy_dream_recipe")
-    override fun getName() = EnJa("Fairy Dream: Item", "妖精の夢：アイテム")
-    override fun getIcon() = MotifCard.CARROT.createFairyItemStack()
-    override fun getWorkstations() = listOf<ItemStack>()
-    override fun getRecipeCodec(registryAccess: RegistryAccess) = pairCodecOf(motifRegistry.byNameCodec(), BuiltInRegistries.ITEM.byNameCodec().listOf())
-    override fun getInputs(recipeEntry: RecipeEntry<Pair<Motif, List<Item>>>) = listOf(Input(recipeEntry.recipe.second.toIngredientStack(), true))
-    override fun getOutputs(recipeEntry: RecipeEntry<Pair<Motif, List<Item>>>) = listOf(recipeEntry.recipe.first.createFairyItemStack())
+abstract class FairyDreamRecipeRecipeViewerCategoryCard<T>(
+    private val typePath: String,
+    private val typeName: EnJa,
+    private val iconMotif: Motif,
+    private val typeCodec: Codec<T>,
+    private val fairyDreamTable: FairyDreamTable<T>,
+) : RecipeViewerCategoryCard<Pair<Motif, List<T>>>() {
+    override fun getId() = MirageFairy2024.identifier("${typePath}_fairy_dream_recipe")
+    override fun getName() = EnJa("Fairy Dream: ${typeName.en}", "妖精の夢：${typeName.ja}")
+    override fun getIcon() = iconMotif.createFairyItemStack()
+    override fun getWorkstations() = MIRAGE_FLOUR_TAG.toIngredient().items.toList()
+    override fun getRecipeCodec(registryAccess: RegistryAccess) = pairCodecOf(motifRegistry.byNameCodec(), typeCodec.listOf())
+    abstract fun getIngredientStack(keys: List<T>): IngredientStack?
+    override fun getInputs(recipeEntry: RecipeEntry<Pair<Motif, List<T>>>) = getIngredientStack(recipeEntry.recipe.second)?.let { listOf(Input(it, true)) } ?: listOf()
+    override fun getOutputs(recipeEntry: RecipeEntry<Pair<Motif, List<T>>>) = listOf(recipeEntry.recipe.first.createFairyItemStack())
 
-    override fun createRecipeEntries(): Iterable<RecipeEntry<Pair<Motif, List<Item>>>> {
-        return FairyDreamRecipes.ITEM.getDisplayMap().map { (motif, items) ->
-            RecipeEntry(motif.getIdentifier()!!, Pair(motif, items.toList()), true)
+    override fun createRecipeEntries(): Iterable<RecipeEntry<Pair<Motif, List<T>>>> {
+        return fairyDreamTable.getDisplayMap().map { (motif, keys) ->
+            RecipeEntry(motif.getIdentifier()!!, Pair(motif, keys.toList()), true)
         }
     }
 
-    override fun createView(recipeEntry: RecipeEntry<Pair<Motif, List<Item>>>) = View {
+    abstract fun getName(key: T): Component
+
+    override fun createView(recipeEntry: RecipeEntry<Pair<Motif, List<T>>>) = View {
         this += XListView {
             val gained = clientProxy.or { return@XListView }.getClientPlayer().or { return@XListView }.fairyDreamContainer.getOrDefault()[recipeEntry.recipe.first]
-            val text = text { recipeEntry.recipe.second.first().description }
+            val text = text { getName(recipeEntry.recipe.second.first()) }
                 .let { if (recipeEntry.recipe.second.size > 1) text { it + "..."() } else it }
                 .let { if (!gained) it.darkRed else it }
-            this += CatalystSlotView(recipeEntry.recipe.second.toIngredientStack()).noBackground()
-            this += XSpaceView(2)
+            val ingredientStack = getIngredientStack(recipeEntry.recipe.second)
+            if (ingredientStack != null) {
+                this += CatalystSlotView(ingredientStack).noBackground()
+                this += XSpaceView(2)
+            }
             this += Alignment.CENTER to TextView(text).apply {
                 minWidth = 112
                 color = ColorPair.DARK_GRAY
                 shadow = false
-                tooltip = recipeEntry.recipe.second.map { it.description }
+                tooltip = recipeEntry.recipe.second.map { getName(it) }
             }
             this += OutputSlotView(recipeEntry.recipe.first.createFairyItemStack())
         }
     }
 }
 
-object BlockFairyDreamRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Pair<Motif, List<Block>>>() {
-    override fun getId() = MirageFairy2024.identifier("block_fairy_dream_recipe")
-    override fun getName() = EnJa("Fairy Dream: Block", "妖精の夢：ブロック")
-    override fun getIcon() = MotifCard.MAGENTA_GLAZED_TERRACOTTA.createFairyItemStack()
-    override fun getWorkstations() = listOf<ItemStack>()
-    override fun getRecipeCodec(registryAccess: RegistryAccess) = pairCodecOf(motifRegistry.byNameCodec(), BuiltInRegistries.BLOCK.byNameCodec().listOf())
-    override fun getInputs(recipeEntry: RecipeEntry<Pair<Motif, List<Block>>>) = listOf(Input(recipeEntry.recipe.second.map { it.asItem() }.toIngredientStack(), true))
-    override fun getOutputs(recipeEntry: RecipeEntry<Pair<Motif, List<Block>>>) = listOf(recipeEntry.recipe.first.createFairyItemStack())
-
-    override fun createRecipeEntries(): Iterable<RecipeEntry<Pair<Motif, List<Block>>>> {
-        return FairyDreamRecipes.BLOCK.getDisplayMap().map { (motif, blocks) ->
-            RecipeEntry(motif.getIdentifier()!!, Pair(motif, blocks.toList()), true)
-        }
-    }
-
-    override fun createView(recipeEntry: RecipeEntry<Pair<Motif, List<Block>>>) = View {
-        this += XListView {
-            val gained = clientProxy.or { return@XListView }.getClientPlayer().or { return@XListView }.fairyDreamContainer.getOrDefault()[recipeEntry.recipe.first]
-            val text = text { recipeEntry.recipe.second.first().name }
-                .let { if (recipeEntry.recipe.second.size > 1) text { it + "..."() } else it }
-                .let { if (!gained) it.darkRed else it }
-            this += CatalystSlotView(recipeEntry.recipe.second.map { it.asItem() }.toIngredientStack()).noBackground()
-            this += XSpaceView(2)
-            this += Alignment.CENTER to TextView(text).apply {
-                minWidth = 112
-                color = ColorPair.DARK_GRAY
-                shadow = false
-                tooltip = recipeEntry.recipe.second.map { it.name }
-            }
-            this += OutputSlotView(recipeEntry.recipe.first.createFairyItemStack())
-        }
-    }
+object ItemFairyDreamRecipeRecipeViewerCategoryCard : FairyDreamRecipeRecipeViewerCategoryCard<Item>(
+    "item",
+    EnJa("Item", "アイテム"),
+    MotifCard.CARROT,
+    BuiltInRegistries.ITEM.byNameCodec(),
+    FairyDreamRecipes.ITEM,
+) {
+    override fun getIngredientStack(keys: List<Item>) = keys.toIngredientStack()
+    override fun getName(key: Item): Component = key.description
 }
 
-object EntityTypeFairyDreamRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Pair<Motif, List<EntityType<*>>>>() {
-    override fun getId() = MirageFairy2024.identifier("entity_fairy_dream_recipe")
-    override fun getName() = EnJa("Fairy Dream: Entity", "妖精の夢：エンティティ")
-    override fun getIcon() = MotifCard.ENDERMAN.createFairyItemStack()
-    override fun getWorkstations() = listOf<ItemStack>()
-    override fun getRecipeCodec(registryAccess: RegistryAccess) = pairCodecOf(motifRegistry.byNameCodec(), BuiltInRegistries.ENTITY_TYPE.byNameCodec().listOf())
-    override fun getInputs(recipeEntry: RecipeEntry<Pair<Motif, List<EntityType<*>>>>) = listOf<Input>()
-    override fun getOutputs(recipeEntry: RecipeEntry<Pair<Motif, List<EntityType<*>>>>) = listOf(recipeEntry.recipe.first.createFairyItemStack())
+object BlockFairyDreamRecipeRecipeViewerCategoryCard : FairyDreamRecipeRecipeViewerCategoryCard<Block>(
+    "block",
+    EnJa("Block", "ブロック"),
+    MotifCard.MAGENTA_GLAZED_TERRACOTTA,
+    BuiltInRegistries.BLOCK.byNameCodec(),
+    FairyDreamRecipes.BLOCK,
+) {
+    override fun getIngredientStack(keys: List<Block>) = keys.map { it.asItem() }.toIngredientStack()
+    override fun getName(key: Block): Component = key.name
+}
 
-    override fun createRecipeEntries(): Iterable<RecipeEntry<Pair<Motif, List<EntityType<*>>>>> {
-        return FairyDreamRecipes.ENTITY_TYPE.getDisplayMap().map { (motif, entityTypes) ->
-            RecipeEntry(motif.getIdentifier()!!, Pair(motif, entityTypes.toList()), true)
-        }
-    }
-
-    override fun createView(recipeEntry: RecipeEntry<Pair<Motif, List<EntityType<*>>>>) = View {
-        this += XListView {
-            val gained = clientProxy.or { return@XListView }.getClientPlayer().or { return@XListView }.fairyDreamContainer.getOrDefault()[recipeEntry.recipe.first]
-            val text = text { recipeEntry.recipe.second.first().description }
-                .let { if (recipeEntry.recipe.second.size > 1) text { it + "..."() } else it }
-                .let { if (!gained) it.darkRed else it }
-            this += Alignment.CENTER to TextView(text).apply {
-                minWidth = 112
-                color = ColorPair.DARK_GRAY
-                shadow = false
-                tooltip = recipeEntry.recipe.second.map { it.description }
-            }
-            this += OutputSlotView(recipeEntry.recipe.first.createFairyItemStack())
-        }
-    }
+object EntityTypeFairyDreamRecipeRecipeViewerCategoryCard : FairyDreamRecipeRecipeViewerCategoryCard<EntityType<*>>(
+    "entity",
+    EnJa("Entity", "エンティティ"),
+    MotifCard.ENDERMAN,
+    BuiltInRegistries.ENTITY_TYPE.byNameCodec(),
+    FairyDreamRecipes.ENTITY_TYPE,
+) {
+    override fun getIngredientStack(keys: List<EntityType<*>>) = null
+    override fun getName(key: EntityType<*>): Component = key.description
 }
