@@ -48,7 +48,6 @@ interface DefaultedContainerView<V : View> {
     fun add(view: V)
 }
 
-operator fun <P, V : View> ContainerView<P, V>.set(position: P, view: V) = this.add(position, view)
 operator fun <V : View> DefaultedContainerView<V>.plusAssign(view: V) = this.add(view)
 operator fun <P, V : View> ContainerView<P, V>.plusAssign(pair: Pair<P, V>) = this.add(pair.first, pair.second)
 
