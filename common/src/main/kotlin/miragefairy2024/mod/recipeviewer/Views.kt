@@ -73,7 +73,6 @@ abstract class ListView<V : View> : ContainerView<Unit, V>(), DefaultedContainer
     override fun add(view: V) = add(Unit, view)
 }
 
-
 class XListView<V : View> : ListView<V>() {
     override fun calculateWidth() = children.sumOf { it.view.getWidth() }
     override fun calculateHeight() = children.maxOfOrNull { it.view.getHeight() } ?: 0
@@ -89,7 +88,6 @@ class XListView<V : View> : ListView<V>() {
 }
 
 fun XListView(block: XListView<View>.() -> Unit) = XListView<View>().apply { block() }
-
 
 class YListView<V : View> : ListView<V>() {
     override fun calculateWidth() = children.maxOfOrNull { it.view.getWidth() } ?: 0
@@ -119,7 +117,6 @@ class XSpaceView(width: Int) : SolidView(width, 0) {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) = Unit
 }
 
-
 class YSpaceView(height: Int) : SolidView(0, height) {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) = Unit
 }
@@ -127,20 +124,17 @@ class YSpaceView(height: Int) : SolidView(0, height) {
 
 abstract class SlotView : SolidView(18, 18)
 
-
 class InputSlotView(private val ingredient: Ingredient) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
         widgetProxy.addInputSlotWidget(ingredient, x, y)
     }
 }
 
-
 class CatalystSlotView(private val ingredient: Ingredient) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
         widgetProxy.addCatalystSlotWidget(ingredient, x, y)
     }
 }
-
 
 class OutputSlotView(private val itemStack: ItemStack) : SlotView() {
     override fun addWidgets(widgetProxy: WidgetProxy, x: Int, y: Int) {
