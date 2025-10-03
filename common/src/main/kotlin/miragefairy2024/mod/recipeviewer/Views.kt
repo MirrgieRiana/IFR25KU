@@ -140,21 +140,15 @@ abstract class SlotView : SolidView(18, 18) {
 fun <V : SlotView> V.noBackground() = this.apply { this.drawBackground = false }
 
 class InputSlotView(val ingredientStack: IngredientStack) : SlotView() {
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) {
-        viewPlacer.addInputSlotView(this, x, y)
-    }
+    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) = viewPlacer.addInputSlotView(this, x, y)
 }
 
 class CatalystSlotView(val ingredientStack: IngredientStack) : SlotView() {
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) {
-        viewPlacer.addCatalystSlotView(this, x, y)
-    }
+    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) = viewPlacer.addCatalystSlotView(this, x, y)
 }
 
 class OutputSlotView(val itemStack: ItemStack) : SlotView() {
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) {
-        viewPlacer.addOutputSlotView(this, x, y)
-    }
+    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) = viewPlacer.addOutputSlotView(this, x, y)
 }
 
 
@@ -176,15 +170,11 @@ class TextView(val text: Component) : View {
     var horizontalAlignment: Alignment? = null
     var tooltip: List<Component>? = null
 
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) {
-        viewPlacer.addTextView(this, x, y)
-    }
+    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) = viewPlacer.addTextView(this, x, y)
 }
 
 
 class ArrowView() : SolidView(24, 17) {
     var durationMilliSeconds: Int? = null
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) {
-        viewPlacer.addArrowView(this, x, y)
-    }
+    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) = viewPlacer.addArrowView(this, x, y)
 }
