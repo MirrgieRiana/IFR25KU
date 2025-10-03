@@ -35,7 +35,6 @@ context(ModContext)
 fun initReiModule() {
 
     TraitEncyclopediaReiCategoryCard.init()
-    CommonMotifRecipeReiCategoryCard.init()
     FairyFamilyReiCategoryCard.init()
     FermentationBarrelReiCategoryCard.init()
     AuraReflectorFurnaceReiCategoryCard.init()
