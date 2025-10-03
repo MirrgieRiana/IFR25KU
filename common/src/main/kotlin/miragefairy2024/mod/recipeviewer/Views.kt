@@ -121,16 +121,16 @@ abstract class SolidView(private val width: Int, private val height: Int) : View
     override fun layout(rendererProxy: RendererProxy) = Unit
     override fun getWidth() = width
     override fun getHeight() = height
+    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) = viewPlacer.place(this, x, y)
 }
 
 
-class XSpaceView(width: Int) : SolidView(width, 0) {
+abstract class SpaceView(width: Int, height: Int) : SolidView(width, height) {
     override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) = Unit
 }
 
-class YSpaceView(height: Int) : SolidView(0, height) {
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) = Unit
-}
+class XSpaceView(width: Int) : SpaceView(width, 0)
+class YSpaceView(height: Int) : SpaceView(0, height)
 
 
 abstract class SlotView : SolidView(18, 18) {
@@ -139,17 +139,9 @@ abstract class SlotView : SolidView(18, 18) {
 
 fun <V : SlotView> V.noBackground() = this.apply { this.drawBackground = false }
 
-class InputSlotView(val ingredientStack: IngredientStack) : SlotView() {
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) = viewPlacer.place(this, x, y)
-}
-
-class CatalystSlotView(val ingredientStack: IngredientStack) : SlotView() {
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) = viewPlacer.place(this, x, y)
-}
-
-class OutputSlotView(val itemStack: ItemStack) : SlotView() {
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) = viewPlacer.place(this, x, y)
-}
+class InputSlotView(val ingredientStack: IngredientStack) : SlotView()
+class CatalystSlotView(val ingredientStack: IngredientStack) : SlotView()
+class OutputSlotView(val itemStack: ItemStack) : SlotView()
 
 
 class TextView(val text: Component) : View {
@@ -176,5 +168,4 @@ class TextView(val text: Component) : View {
 
 class ArrowView() : SolidView(24, 17) {
     var durationMilliSeconds: Int? = null
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer) = viewPlacer.place(this, x, y)
 }
