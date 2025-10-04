@@ -268,6 +268,7 @@
   "gui.miragefairy2024.passive_skill.effective": "Effective",
   "gui.miragefairy2024.passive_skill.overflowed": "Too many passive skills!",
   "gui.miragefairy2024.passive_skill.supporting": "Supporting other item",
+  "gui.miragefairy2024.recipe_viewer.seconds": "%s sec",
   "gui.miragefairy2024.soul_stream.global_search": "Highlight even outside of Soul Stream",
   "gui.miragefairy2024.soul_stream.no_passive_skill_effects": "No passive skill effects",
   "gui.miragefairy2024.soul_stream.passive_skill_effect": "Passive Skill Effect",

@@ -11,7 +11,9 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.plusAssign
 import miragefairy2024.util.text
 import net.minecraft.core.RegistryAccess
+import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.inventory.MenuType
 import net.minecraft.world.item.ItemStack
 
 abstract class RecipeViewerCategoryCard<R> {
@@ -23,7 +25,7 @@ abstract class RecipeViewerCategoryCard<R> {
     val displayName = text { translation() }
 
     abstract fun getIcon(): ItemStack
-    abstract fun getWorkstations(): List<ItemStack>
+    open fun getWorkstations(): List<ItemStack> = listOf()
 
     class RecipeEntry<R>(val id: ResourceLocation, val recipe: R, val isSynthetic: Boolean) {
         companion object {
@@ -44,11 +46,13 @@ abstract class RecipeViewerCategoryCard<R> {
 
     class Input(val ingredientStack: IngredientStack, val isCatalyst: Boolean)
 
-    abstract fun getInputs(recipeEntry: RecipeEntry<R>): List<Input>
-    abstract fun getOutputs(recipeEntry: RecipeEntry<R>): List<ItemStack>
+    open fun getInputs(recipeEntry: RecipeEntry<R>): List<Input> = listOf()
+    open fun getOutputs(recipeEntry: RecipeEntry<R>): List<ItemStack> = listOf()
 
-    protected abstract fun createRecipeEntries(): Iterable<RecipeEntry<R>>
+    protected open fun createRecipeEntries(): Iterable<RecipeEntry<R>> = listOf()
     val recipeEntries by lazy { createRecipeEntries() }
+
+    open fun getScreenClickAreas(): List<Pair<ResourceKey<MenuType<*>>, IntRectangle>> = listOf()
 
     protected abstract fun createView(recipeEntry: RecipeEntry<R>): View
     fun getView(rendererProxy: RendererProxy, recipeEntry: RecipeEntry<R>): View {

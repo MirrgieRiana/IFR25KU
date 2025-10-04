@@ -98,7 +98,6 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
     override fun getIcon() = MotifCard.WATER.createFairyItemStack()
     override fun getWorkstations() = MIRAGE_FLOUR_TAG.toIngredient().items.toList()
     override fun getRecipeCodec(registryAccess: RegistryAccess) = CommonMotifRecipe.CODEC
-    override fun getInputs(recipeEntry: RecipeEntry<CommonMotifRecipe>) = listOf<Input>()
     override fun getOutputs(recipeEntry: RecipeEntry<CommonMotifRecipe>) = listOf(recipeEntry.recipe.motif.createFairyItemStack())
 
     override fun createRecipeEntries(): Iterable<RecipeEntry<CommonMotifRecipe>> {

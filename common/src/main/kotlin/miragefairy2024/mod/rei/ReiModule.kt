@@ -35,8 +35,6 @@ context(ModContext)
 fun initReiModule() {
 
     TraitEncyclopediaReiCategoryCard.init()
-    FermentationBarrelReiCategoryCard.init()
-    AuraReflectorFurnaceReiCategoryCard.init()
 
     COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION.enJa()
 }

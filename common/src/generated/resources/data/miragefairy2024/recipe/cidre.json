@@ -4,20 +4,20 @@
   "group": "miragefairy2024:cidre",
   "inputs": [
     {
-      "count": 1,
-      "ingredient": {
+      "Amount": 1,
+      "Ingredient": {
         "item": "minecraft:glass_bottle"
       }
     },
     {
-      "count": 4,
-      "ingredient": {
+      "Amount": 4,
+      "Ingredient": {
         "item": "minecraft:apple"
       }
     },
     {
-      "count": 1,
-      "ingredient": {
+      "Amount": 1,
+      "Ingredient": {
         "fabric:type": "miragefairy2024:water_bottle"
       }
     }

@@ -427,7 +427,6 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
     override fun getId() = MirageFairy2024.identifier("fairy_family")
     override fun getName() = EnJa("Fairy Family", "妖精系統")
     override fun getIcon() = MotifCard.IRON.createFairyItemStack()
-    override fun getWorkstations() = listOf<ItemStack>()
     override fun getRecipeCodec(registryAccess: RegistryAccess) = FairyFamilyNotation.CODEC
     override fun getInputs(recipeEntry: RecipeEntry<FairyFamilyNotation>) = listOf(Input(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack(), true))
     override fun getOutputs(recipeEntry: RecipeEntry<FairyFamilyNotation>) = (recipeEntry.recipe.parents + recipeEntry.recipe.children).map { it.createFairyItemStack() }

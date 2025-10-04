@@ -17,9 +17,11 @@ import miragefairy2024.client.mod.rei.ClientReiCategoryCard
 import miragefairy2024.mod.recipeviewer.Alignment
 import miragefairy2024.mod.recipeviewer.ArrowView
 import miragefairy2024.mod.recipeviewer.CatalystSlotView
+import miragefairy2024.mod.recipeviewer.ImageView
 import miragefairy2024.mod.recipeviewer.InputSlotView
 import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
 import miragefairy2024.mod.recipeviewer.SupportedDisplay
@@ -32,7 +34,11 @@ import miragefairy2024.util.plus
 import miragefairy2024.util.text
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
+import net.minecraft.world.inventory.AbstractContainerMenu
+import net.minecraft.world.item.crafting.Recipe
+import net.minecraft.world.item.crafting.RecipeInput
 
 object ReiClientEvents {
     val onRegisterCategories = ReusableInitializationEventRegistry<(CategoryRegistry) -> Unit>()
@@ -87,6 +93,19 @@ fun initReiClientSupport() {
         }
     }
 
+    ReiClientEvents.onRegisterDisplays {
+        RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.freezeAndGet().forEach { bridge ->
+            fun <I : RecipeInput, R : Recipe<I>> f(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
+                val support = ReiSupport.get(bridge.card)
+                it.registerRecipeFiller(bridge.recipeClass, bridge.recipeType) { holder ->
+                    val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(holder.id(), holder.value(), false)
+                    SupportedDisplay(support, recipeEntry)
+                }
+            }
+            f(bridge)
+        }
+    }
+
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: InputSlotView, x, y ->
         widgets += Widgets.createSlot(Point(x + 1, y + 1))
             .entries(view.ingredientStack.toEntryIngredient())
@@ -118,6 +137,14 @@ fun initReiClientSupport() {
                 }
             }
             .let { if (view.tooltip != null) it.tooltip(*view.tooltip!!.toTypedArray()) else it }
+    }
+    REI_VIEW_PLACER_REGISTRY.register { widgets, view: ImageView, x, y ->
+        widgets += Widgets.createTexturedWidget(
+            view.textureId,
+            Rectangle(x, y, view.bound.width, view.bound.height),
+            view.bound.x.toFloat(),
+            view.bound.y.toFloat(),
+        )
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ArrowView, x, y ->
         widgets += Widgets.createArrow(Point(x, y))
@@ -164,7 +191,13 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     }
 
     fun registerScreens(registry: ScreenRegistry) {
-        // TODO
+        card.getScreenClickAreas().forEach {
+            fun <C : AbstractContainerMenu, T : AbstractContainerScreen<C>> f(get: ScreenClassRegistry.ScreenClass<C, T>) {
+                val rectangle = Rectangle(it.second.x - 1, it.second.y - 1, it.second.width + 2, it.second.height + 1 + 2)
+                registry.registerContainerClickArea(rectangle, get.clazz, ReiSupport.get(card).categoryIdentifier.first)
+            }
+            f(ScreenClassRegistry.get(it.first))
+        }
     }
 
 }

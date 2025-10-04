@@ -4,20 +4,20 @@
   "group": "miragefairy2024:noise",
   "inputs": [
     {
-      "count": 1,
-      "ingredient": {
+      "Amount": 1,
+      "Ingredient": {
         "item": "miragefairy2024:calculite"
       }
     },
     {
-      "count": 8,
-      "ingredient": {
+      "Amount": 8,
+      "Ingredient": {
         "item": "miragefairy2024:fairy_scales"
       }
     },
     {
-      "count": 1,
-      "ingredient": {
+      "Amount": 1,
+      "Ingredient": {
         "item": "miragefairy2024:poison"
       }
     }

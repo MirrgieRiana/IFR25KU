@@ -5,6 +5,7 @@ package miragefairy2024.mod.recipeviewer
 import miragefairy2024.util.IngredientStack
 import mirrg.kotlin.helium.atLeast
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 
 
@@ -68,6 +69,22 @@ class SingleView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V>
 }
 
 fun SingleView(block: SingleView<View>.() -> Unit) = SingleView<View>().apply { block() }
+
+
+class AbsoluteView<V : View>(private val width: Int, private val height: Int) : ContainerView<IntPoint, V>(), DefaultedContainerView<V> {
+    override fun add(view: V) = add(IntPoint(0, 0), view)
+    override fun calculateWidth() = width
+    override fun calculateHeight() = height
+    override fun layout(rendererProxy: RendererProxy) {
+        super.layout(rendererProxy)
+        children.forEach {
+            it.xCache = it.position.x
+            it.yCache = it.position.y
+        }
+    }
+}
+
+fun AbsoluteView(width: Int, height: Int, block: AbsoluteView<View>.() -> Unit) = AbsoluteView<View>(width, height).apply { block() }
 
 
 abstract class ListView<V : View> : ContainerView<Alignment, V>(), DefaultedContainerView<V> {
@@ -164,6 +181,9 @@ class TextView(val text: Component) : View {
 
     override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>) = viewPlacer.place(this, x, y)
 }
+
+
+class ImageView(val textureId: ResourceLocation, val bound: IntRectangle) : SolidView(bound.width, bound.height)
 
 
 class ArrowView() : SolidView(24, 17) {

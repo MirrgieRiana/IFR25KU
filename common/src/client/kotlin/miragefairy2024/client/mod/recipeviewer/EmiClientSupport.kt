@@ -15,9 +15,11 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.recipeviewer.Alignment
 import miragefairy2024.mod.recipeviewer.ArrowView
 import miragefairy2024.mod.recipeviewer.CatalystSlotView
+import miragefairy2024.mod.recipeviewer.ImageView
 import miragefairy2024.mod.recipeviewer.InputSlotView
 import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.TextView
 import miragefairy2024.mod.recipeviewer.ViewPlacerRegistry
@@ -31,6 +33,8 @@ import miragefairy2024.util.times
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
 import mirrg.kotlin.helium.Single
+import net.minecraft.world.item.crafting.Recipe
+import net.minecraft.world.item.crafting.RecipeInput
 import java.util.Objects
 
 object EmiClientEvents {
@@ -56,6 +60,21 @@ fun initEmiClientSupport() {
     EmiClientEvents.onRegister {
         RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
             EmiClientSupport.get(card).register(it)
+        }
+    }
+
+    EmiClientEvents.onRegister { registry ->
+        RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.freezeAndGet().forEach { bridge ->
+            fun <I : RecipeInput, R : Recipe<I>> f(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
+                val support = EmiClientSupport.get(bridge.card)
+                registry.recipeManager.getAllRecipesFor(bridge.recipeType).forEach { holder ->
+                    if (bridge.recipeClass.isInstance(holder.value())) {
+                        val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(holder.id(), holder.value(), false)
+                        registry.addRecipe(SupportedEmiRecipe(support, recipeEntry))
+                    }
+                }
+            }
+            f(bridge)
         }
     }
 
@@ -97,6 +116,9 @@ fun initEmiClientSupport() {
             }
         val bound = widget.bounds
         if (view.tooltip != null) widgets.addTooltipText(view.tooltip!!, bound.x, bound.y, bound.width, bound.height)
+    }
+    EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ImageView, x, y ->
+        widgets.addTexture(view.textureId, x, y, view.bound.width, view.bound.height, view.bound.x, view.bound.y)
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ArrowView, x, y ->
         if (view.durationMilliSeconds != null) {

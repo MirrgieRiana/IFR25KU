@@ -4,8 +4,8 @@
   "group": "miragefairy2024:miragidian",
   "inputs": [
     {
-      "count": 9,
-      "ingredient": {
+      "Amount": 9,
+      "Ingredient": {
         "item": "miragefairy2024:miragidian_shard"
       }
     }
