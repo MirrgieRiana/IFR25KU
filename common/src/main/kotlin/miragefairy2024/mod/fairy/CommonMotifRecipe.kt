@@ -3,6 +3,28 @@ package miragefairy2024.mod.fairy
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import miragefairy2024.MirageFairy2024
+import miragefairy2024.ModContext
+import miragefairy2024.mod.materials.MIRAGE_FLOUR_TAG
+import miragefairy2024.mod.recipeviewer.Alignment
+import miragefairy2024.mod.recipeviewer.ColorPair
+import miragefairy2024.mod.recipeviewer.OutputSlotView
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.TextView
+import miragefairy2024.mod.recipeviewer.View
+import miragefairy2024.mod.recipeviewer.XListView
+import miragefairy2024.mod.recipeviewer.XSpaceView
+import miragefairy2024.mod.recipeviewer.plusAssign
+import miragefairy2024.mod.rei.COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION
+import miragefairy2024.util.EnJa
+import miragefairy2024.util.invoke
+import miragefairy2024.util.pathString
+import miragefairy2024.util.string
+import miragefairy2024.util.text
+import miragefairy2024.util.times
+import miragefairy2024.util.toIngredient
+import miragefairy2024.util.translate
+import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.TagKey
@@ -61,6 +83,58 @@ class BiomeTagCommonMotifRecipe(motif: Motif, val biomeTag: TagKey<Biome>) : Com
                 motifRegistry.byNameCodec().fieldOf("Motif").forGetter { it.motif },
                 TagKey.codec(Registries.BIOME).fieldOf("BiomeTag").forGetter { it.biomeTag }
             ).apply(instance, ::BiomeTagCommonMotifRecipe)
+        }
+    }
+}
+
+context(ModContext)
+fun initCommonMotifRecipe() {
+    CommonMotifRecipeRecipeViewerCategoryCard.init()
+}
+
+object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<CommonMotifRecipe>() {
+    override fun getId() = MirageFairy2024.identifier("common_motif_recipe")
+    override fun getName() = EnJa("Common Fairy", "コモン妖精")
+    override fun getIcon() = MotifCard.WATER.createFairyItemStack()
+    override fun getWorkstations() = MIRAGE_FLOUR_TAG.toIngredient().items.toList()
+    override fun getRecipeCodec(registryAccess: RegistryAccess) = CommonMotifRecipe.CODEC
+    override fun getInputs(recipeEntry: RecipeEntry<CommonMotifRecipe>) = listOf<Input>()
+    override fun getOutputs(recipeEntry: RecipeEntry<CommonMotifRecipe>) = listOf(recipeEntry.recipe.motif.createFairyItemStack())
+
+    override fun createRecipeEntries(): Iterable<RecipeEntry<CommonMotifRecipe>> {
+        return COMMON_MOTIF_RECIPES
+            .map {
+                val prefix = when (it) {
+                    is AlwaysCommonMotifRecipe -> "1_always"
+                    is BiomeCommonMotifRecipe -> "2_biome/" + it.biome.location().pathString
+                    is BiomeTagCommonMotifRecipe -> "3_biome_tag/" + it.biomeTag.location().pathString
+                }
+                val syntheticIdentifier = "$prefix/" * it.motif.getIdentifier()!!
+                Pair(it, syntheticIdentifier)
+            }
+            .sortedBy { it.second }
+            .map { (recipe, id) -> RecipeEntry(id, recipe, true) }
+    }
+
+    override fun createView(recipeEntry: RecipeEntry<CommonMotifRecipe>) = View {
+        this += XListView {
+            val recipeText = when (val recipe = recipeEntry.recipe) {
+                is AlwaysCommonMotifRecipe -> text { COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION() }
+                is BiomeCommonMotifRecipe -> text { translate(recipe.biome.location().toLanguageKey("biome")) }
+                is BiomeTagCommonMotifRecipe -> text { recipe.biomeTag.location().path() }
+            }
+            this += Alignment.CENTER to TextView(recipeText).apply {
+                minWidth = 130
+                color = ColorPair.DARK_GRAY
+                shadow = false
+                when (val recipe = recipeEntry.recipe) {
+                    is AlwaysCommonMotifRecipe -> Unit
+                    is BiomeCommonMotifRecipe -> Unit
+                    is BiomeTagCommonMotifRecipe -> tooltip = listOf(text { recipe.biomeTag.location().string() })
+                }
+            }
+            this += XSpaceView(2)
+            this += OutputSlotView(recipeEntry.recipe.motif.createFairyItemStack())
         }
     }
 }

@@ -13,4 +13,5 @@ fun initFairyModule() {
     initSoulStream()
     initFairyStatue()
     initCollectionEnabled()
+    initCommonMotifRecipe()
 }

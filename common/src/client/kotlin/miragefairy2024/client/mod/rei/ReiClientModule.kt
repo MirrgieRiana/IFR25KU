@@ -11,11 +11,6 @@ abstract class ClientReiCategoryCard<D : BasicDisplay>(val parent: ReiCategoryCa
     companion object {
         val entries = listOf(
             TraitEncyclopediaClientReiCategoryCard,
-            CommonMotifRecipeClientReiCategoryCard,
-            ItemFairyDreamRecipeClientReiCategoryCard,
-            BlockFairyDreamRecipeClientReiCategoryCard,
-            EntityTypeFairyDreamRecipeClientReiCategoryCard,
-            FairyFamilyClientReiCategoryCard,
             FermentationBarrelClientReiCategoryCard,
             AuraReflectorFurnaceClientReiCategoryCard,
         )

@@ -21,6 +21,7 @@ fun initFairyDream() {
     initGainFairyDreamChannel()
     initFairyDreamContainer()
     initFairyDreamGain()
+    initFairyDreamRecipe()
 
     GAIN_FAIRY_DREAM_TRANSLATION.enJa()
     GAIN_FAIRY_TRANSLATION.enJa()
