@@ -17,8 +17,6 @@ import miragefairy2024.mod.recipeviewer.plusAssign
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.getIdentifier
-import miragefairy2024.util.pathString
-import miragefairy2024.util.times
 import miragefairy2024.util.toIngredientStack
 import net.minecraft.core.RegistryAccess
 import net.minecraft.resources.ResourceLocation
@@ -69,7 +67,7 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
 
     override fun createRecipeEntries(): Iterable<RecipeEntry<HarvestNotation>> {
         return HarvestNotation.getAll().map { (id, harvestNotation) ->
-            RecipeEntry("${getId().pathString}/" * id, harvestNotation, true)
+            RecipeEntry(id, harvestNotation, true)
         }
     }
 
