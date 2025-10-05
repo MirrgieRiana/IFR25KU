@@ -145,7 +145,7 @@ fun initEmiClientSupport() {
     ViewOwoAdapterRegistry.registry.subscribe { entry ->
         fun <V : View> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, _), view, x, y ->
-
+                // TODO
 
                 widgets.add(EmiUIAdapter(bounds, Containers::stack).also { adapter ->
                     //adapter.rootComponent().allowOverflow(true)
@@ -161,6 +161,7 @@ fun initEmiClientSupport() {
                     adapter.prepare()
                 })
 
+                // TODO
             }
         }
         f(entry)
