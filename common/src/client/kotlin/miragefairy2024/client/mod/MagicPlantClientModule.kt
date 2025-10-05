@@ -231,7 +231,6 @@ object TraitEncyclopediaViewOwoAdapter : ViewOwoAdapter<TraitEncyclopediaView> {
     private var viewMode = ViewMode.SEPARATED
 
     override fun createOwoComponent(view: TraitEncyclopediaView, cotext: ViewOwoAdapterContext): OwoComponent {
-        val dummyTerminator = EventRegistry<() -> Unit>()
         val onViewModeChanged = EventRegistry<() -> Unit>()
 
         val separatedView = topBorderLayout(Sizing.fill(100), Sizing.fill(100)).apply { // カード・レシピセパレーション
