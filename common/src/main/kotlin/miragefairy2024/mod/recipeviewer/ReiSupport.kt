@@ -27,14 +27,14 @@ object ReiEvents {
 
 context(ModContext)
 fun initReiSupport() {
-    ReiEvents.onRegisterDisplaySerializer {
-        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
+    RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
+        ReiEvents.onRegisterDisplaySerializer {
             ReiSupport.get(card).registerDisplaySerializer(it)
         }
     }
 
-    ReiEvents.onRegisterItemComparators { registry ->
-        RecipeViewerEvents.itemIdentificationDataComponentTypesList.freezeAndGet().forEach { (item, dataComponentTypes) ->
+    RecipeViewerEvents.itemIdentificationDataComponentTypesList.subscribe { (item, dataComponentTypes) ->
+        ReiEvents.onRegisterItemComparators { registry ->
             registry.register({ context, itemStack ->
                 if (context.isExact) {
                     EntryComparator.itemComponents().hash(context, itemStack)

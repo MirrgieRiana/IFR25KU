@@ -3,7 +3,7 @@ package miragefairy2024.mod.recipeviewer
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.util.EnJa
-import miragefairy2024.util.FreezableList
+import miragefairy2024.util.SubscribableBuffer
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.plusAssign
@@ -17,10 +17,10 @@ import net.minecraft.world.item.crafting.RecipeInput
 import net.minecraft.world.item.crafting.RecipeType
 
 object RecipeViewerEvents {
-    val informationEntries = FreezableList<InformationEntry>()
-    val recipeViewerCategoryCards = FreezableList<RecipeViewerCategoryCard<*>>()
-    val recipeViewerCategoryCardRecipeManagerBridges = FreezableList<RecipeViewerCategoryCardRecipeManagerBridge<*, *>>()
-    val itemIdentificationDataComponentTypesList = FreezableList<Pair<() -> Item, () -> List<DataComponentType<*>>>>()
+    val informationEntries = SubscribableBuffer<InformationEntry>()
+    val recipeViewerCategoryCards = SubscribableBuffer<RecipeViewerCategoryCard<*>>()
+    val recipeViewerCategoryCardRecipeManagerBridges = SubscribableBuffer<RecipeViewerCategoryCardRecipeManagerBridge<*, *>>()
+    val itemIdentificationDataComponentTypesList = SubscribableBuffer<Pair<() -> Item, () -> List<DataComponentType<*>>>>()
 }
 
 class InformationEntry(val input: () -> Ingredient, val title: Component, val contents: List<Component>, val id: ResourceLocation)

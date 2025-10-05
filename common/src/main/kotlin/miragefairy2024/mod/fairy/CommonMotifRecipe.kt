@@ -15,8 +15,9 @@ import miragefairy2024.mod.recipeviewer.View
 import miragefairy2024.mod.recipeviewer.XListView
 import miragefairy2024.mod.recipeviewer.XSpaceView
 import miragefairy2024.mod.recipeviewer.plusAssign
-import miragefairy2024.mod.rei.COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.Translation
+import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
 import miragefairy2024.util.pathString
 import miragefairy2024.util.string
@@ -87,9 +88,13 @@ class BiomeTagCommonMotifRecipe(motif: Motif, val biomeTag: TagKey<Biome>) : Com
     }
 }
 
+val COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION = Translation({ "gui.${MirageFairy2024.identifier("common_motif_recipe").toLanguageKey()}.always" }, "Always", "常時")
+
 context(ModContext)
 fun initCommonMotifRecipe() {
     CommonMotifRecipeRecipeViewerCategoryCard.init()
+
+    COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION.enJa()
 }
 
 object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<CommonMotifRecipe>() {

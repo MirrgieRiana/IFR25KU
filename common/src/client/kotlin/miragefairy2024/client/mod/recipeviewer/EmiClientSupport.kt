@@ -12,8 +12,12 @@ import dev.emi.emi.api.widget.Bounds
 import dev.emi.emi.api.widget.TextWidget
 import dev.emi.emi.api.widget.Widget
 import dev.emi.emi.api.widget.WidgetHolder
+import io.wispforest.owo.compat.rei.ReiUIAdapter
+import io.wispforest.owo.ui.container.Containers
+import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
+import miragefairy2024.client.mod.TraitEncyclopediaViewOwoAdapter.createOwoComponent
 import miragefairy2024.mod.recipeviewer.Alignment
 import miragefairy2024.mod.recipeviewer.ArrowView
 import miragefairy2024.mod.recipeviewer.CatalystSlotView
@@ -48,8 +52,8 @@ val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<Pair<WidgetHolder, EmiRecipe>>
 
 context(ModContext)
 fun initEmiClientSupport() {
-    EmiClientEvents.onRegister {
-        RecipeViewerEvents.informationEntries.freezeAndGet().forEach { informationEntry ->
+    RecipeViewerEvents.informationEntries.subscribe { informationEntry ->
+        EmiClientEvents.onRegister {
             it.addRecipe(
                 EmiInfoRecipe(
                     listOf(informationEntry.input().toEmiIngredient()),
@@ -60,14 +64,14 @@ fun initEmiClientSupport() {
         }
     }
 
-    EmiClientEvents.onRegister {
-        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
+    RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
+        EmiClientEvents.onRegister {
             EmiClientSupport.get(card).register(it)
         }
     }
 
-    EmiClientEvents.onRegister { registry ->
-        RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.freezeAndGet().forEach { bridge ->
+    RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.subscribe { bridge ->
+        EmiClientEvents.onRegister { registry ->
             fun <I : RecipeInput, R : Recipe<I>> f(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
                 val support = EmiClientSupport.get(bridge.card)
                 registry.recipeManager.getAllRecipesFor(bridge.recipeType).forEach { holder ->
@@ -81,8 +85,8 @@ fun initEmiClientSupport() {
         }
     }
 
-    EmiClientEvents.onRegister { registry ->
-        RecipeViewerEvents.itemIdentificationDataComponentTypesList.freezeAndGet().forEach { (item, dataComponentTypes) ->
+    RecipeViewerEvents.itemIdentificationDataComponentTypesList.subscribe { (item, dataComponentTypes) ->
+        EmiClientEvents.onRegister { registry ->
             registry.setDefaultComparison(
                 item(),
                 Comparison.of(
@@ -130,12 +134,36 @@ fun initEmiClientSupport() {
             widgets.addTexture(EmiTexture.EMPTY_ARROW, x, y)
         }
     }
-    ViewRendererRegistry.entries().forEach { entry ->
+    ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, _), view, x, y ->
-                widgets.add(ViewRendererEmiWidget(entry.renderer, view, x, y))
+                widgets.add(ViewRendererEmiWidget(entry.viewRenderer, view, x, y))
             }
         }
+        f(entry)
+    }
+    ViewOwoAdapterRegistry.registry.subscribe { entry ->
+        fun <V : View> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
+            EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, _), view, x, y ->
+
+
+                widgets.add(EmiUIAdapter(bounds, Containers::stack).also { adapter ->
+                    //adapter.rootComponent().allowOverflow(true)
+                    val cotext = object : ViewOwoAdapterContext {
+                        override fun prepare() = adapter.prepare()
+                        override fun wrap(view: View): OwoComponent = adapter.wrap(run {
+                            val widgets = mutableListOf<me.shedaniel.rei.api.client.gui.widgets.Widget>()
+                            REI_VIEW_PLACER_REGISTRY.place(widgets, view, 0, 0)
+                            widgets.single() as WidgetWithBounds
+                        })
+                    }
+                    adapter.rootComponent().child(createOwoComponent(view, cotext))
+                    adapter.prepare()
+                })
+
+            }
+        }
+        f(entry)
     }
 }
 

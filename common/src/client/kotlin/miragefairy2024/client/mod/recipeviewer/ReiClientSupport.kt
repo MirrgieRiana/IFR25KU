@@ -1,5 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer
 
+import io.wispforest.owo.compat.rei.ReiUIAdapter
+import io.wispforest.owo.ui.container.Containers
 import me.shedaniel.math.Point
 import me.shedaniel.math.Rectangle
 import me.shedaniel.rei.api.client.gui.Renderer
@@ -14,7 +16,6 @@ import me.shedaniel.rei.api.common.util.EntryIngredients
 import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
-import miragefairy2024.client.mod.rei.ClientReiCategoryCard
 import miragefairy2024.mod.recipeviewer.Alignment
 import miragefairy2024.mod.recipeviewer.ArrowView
 import miragefairy2024.mod.recipeviewer.CatalystSlotView
@@ -43,6 +44,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.item.crafting.RecipeInput
+import io.wispforest.owo.ui.core.Component as OwoComponent
 
 object ReiClientEvents {
     val onRegisterCategories = ReusableInitializationEventRegistry<(CategoryRegistry) -> Unit>()
@@ -54,8 +56,8 @@ val REI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<MutableList<Widget>>()
 
 context(ModContext)
 fun initReiClientSupport() {
-    ReiClientEvents.onRegisterDisplays {
-        RecipeViewerEvents.informationEntries.freezeAndGet().forEach { informationEntry ->
+    RecipeViewerEvents.informationEntries.subscribe { informationEntry ->
+        ReiClientEvents.onRegisterDisplays {
             BuiltinClientPlugin.getInstance().registerInformation(
                 EntryIngredients.ofIngredient(informationEntry.input()),
                 informationEntry.title,
@@ -63,42 +65,20 @@ fun initReiClientSupport() {
         }
     }
 
-    ReiClientEvents.onRegisterCategories {
-        ClientReiCategoryCard.entries.forEach { card ->
-            val category = card.createCategory()
-            it.add(category)
-            it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
-        }
-    }
-    ReiClientEvents.onRegisterDisplays {
-        ClientReiCategoryCard.entries.forEach { card ->
-            card.registerDisplays(it)
-        }
-    }
-    ReiClientEvents.onRegisterScreens {
-        ClientReiCategoryCard.entries.forEach { card ->
-            card.registerScreens(it)
-        }
-    }
-
-    ReiClientEvents.onRegisterCategories {
-        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
+    RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
+        ReiClientEvents.onRegisterCategories {
             ReiClientSupport.get(card).registerCategories(it)
         }
-    }
-    ReiClientEvents.onRegisterDisplays {
-        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
+        ReiClientEvents.onRegisterDisplays {
             ReiClientSupport.get(card).registerDisplays(it)
         }
-    }
-    ReiClientEvents.onRegisterScreens {
-        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
+        ReiClientEvents.onRegisterScreens {
             ReiClientSupport.get(card).registerScreens(it)
         }
     }
 
-    ReiClientEvents.onRegisterDisplays {
-        RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.freezeAndGet().forEach { bridge ->
+    RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.subscribe { bridge ->
+        ReiClientEvents.onRegisterDisplays {
             fun <I : RecipeInput, R : Recipe<I>> f(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
                 val support = ReiSupport.get(bridge.card)
                 it.registerRecipeFiller(bridge.recipeClass, bridge.recipeType) { holder ->
@@ -154,12 +134,33 @@ fun initReiClientSupport() {
         widgets += Widgets.createArrow(Point(x, y))
             .animationDurationMS(view.durationMilliSeconds?.toDouble() ?: -1.0)
     }
-    ViewRendererRegistry.entries().forEach { entry ->
+    ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
             REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, x, y ->
-                widgets += ViewRendererReiWidget(entry.renderer, view, x, y)
+                widgets += ViewRendererReiWidget(entry.viewRenderer, view, x, y)
             }
         }
+        f(entry)
+    }
+    ViewOwoAdapterRegistry.registry.subscribe { entry ->
+        fun <V : View> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
+            REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, x, y ->
+                widgets += ReiUIAdapter(Rectangle(x, y, view.getWidth(), view.getHeight()), Containers::stack).also { adapter ->
+                    //adapter.rootComponent().allowOverflow(true)
+                    val cotext = object : ViewOwoAdapterContext {
+                        override fun prepare() = adapter.prepare()
+                        override fun wrap(view: View): OwoComponent = adapter.wrap(run {
+                            val widgets = mutableListOf<Widget>()
+                            REI_VIEW_PLACER_REGISTRY.place(widgets, view, 0, 0)
+                            widgets.single() as WidgetWithBounds
+                        })
+                    }
+                    adapter.rootComponent().child(entry.viewOwoAdapter.createOwoComponent(view, cotext))
+                    adapter.prepare()
+                }
+            }
+        }
+        f(entry)
     }
 }
 
@@ -202,7 +203,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
         // 高さの事前計算
         heightCache = 0
-        RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.freezeAndGet().forEach { bridge ->
+        RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.getAllImmediately().forEach { bridge ->
             if (bridge.card === card) {
                 fun <I : RecipeInput, R : Recipe<I>> calculateMaxHeight(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
                     recipeManager.getAllRecipesFor(bridge.recipeType).forEach {
