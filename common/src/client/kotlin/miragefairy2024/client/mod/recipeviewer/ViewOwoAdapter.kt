@@ -6,6 +6,9 @@ import miragefairy2024.util.SubscribableBuffer
 import miragefairy2024.util.plusAssign
 
 fun interface ViewOwoAdapter<V : View> {
+    /**
+     * EMIの内部仕様のため、 mouseClicked および keyPressed を除くUIイベントは通知されません。
+     */
     fun createOwoComponent(view: V, cotext: ViewOwoAdapterContext): Component
 }
 
@@ -23,6 +26,3 @@ object ViewOwoAdapterRegistry {
 
     class Entry<V : View>(val viewClass: Class<V>, val viewOwoAdapter: ViewOwoAdapter<V>)
 }
-
-
-
