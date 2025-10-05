@@ -49,8 +49,7 @@ abstract class RecipeViewerCategoryCard<R> {
     open fun getInputs(recipeEntry: RecipeEntry<R>): List<Input> = listOf()
     open fun getOutputs(recipeEntry: RecipeEntry<R>): List<ItemStack> = listOf()
 
-    protected open fun createRecipeEntries(): Iterable<RecipeEntry<R>> = listOf()
-    val recipeEntries by lazy { createRecipeEntries() }
+    open fun createRecipeEntries(): Iterable<RecipeEntry<R>> = listOf()
 
     open fun getScreenClickAreas(): List<Pair<ResourceKey<MenuType<*>>, IntRectangle>> = listOf()
 

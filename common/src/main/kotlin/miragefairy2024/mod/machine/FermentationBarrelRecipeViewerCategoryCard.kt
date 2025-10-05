@@ -16,6 +16,7 @@ import miragefairy2024.mod.recipeviewer.View
 import miragefairy2024.mod.recipeviewer.grow
 import miragefairy2024.mod.recipeviewer.minus
 import miragefairy2024.mod.recipeviewer.noBackground
+import miragefairy2024.mod.recipeviewer.noMargin
 import miragefairy2024.mod.recipeviewer.plusAssign
 import miragefairy2024.mod.recipeviewer.topLeft
 import miragefairy2024.util.EnJa
@@ -31,7 +32,7 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
     override fun getName() = EnJa("Fermentation Barrel", "醸造樽")
     override fun getRecipeCard() = FermentationBarrelRecipeCard
     override fun getMachineCard() = FermentationBarrelCard
-    override fun getScreenClickAreas() = listOf(Pair(getMachineCard().screenHandlerType.key, IntRectangle(77, 28, 22, 15)))
+    override fun getScreenClickAreas() = listOf(Pair(getMachineCard().screenHandlerType.key, IntRectangle(76, 27, 24, 17)))
 
     override fun createView(recipeEntry: RecipeEntry<FermentationBarrelRecipe>) = View {
         val imageBound = IntRectangle(30, 16, 120, 40)
@@ -42,11 +43,11 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
             this += ImageView("textures/gui/container/" * FermentationBarrelRecipeCard.identifier * ".png", bound)
 
             fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
-            this += (IntPoint(42 - 1, 17 - 1) - p) to InputSlotView(getInput(0)).noBackground()
-            this += (IntPoint(31 - 1, 39 - 1) - p) to InputSlotView(getInput(1)).noBackground()
-            this += (IntPoint(53 - 1, 39 - 1) - p) to InputSlotView(getInput(2)).noBackground()
+            this += (IntPoint(42, 17) - p) to InputSlotView(getInput(0)).noBackground().noMargin()
+            this += (IntPoint(31, 39) - p) to InputSlotView(getInput(1)).noBackground().noMargin()
+            this += (IntPoint(53, 39) - p) to InputSlotView(getInput(2)).noBackground().noMargin()
 
-            this += (IntPoint(77, 28) - p) to ArrowView().apply {
+            this += (IntPoint(76, 27) - p) to ArrowView().apply {
                 durationMilliSeconds = recipeEntry.recipe.duration * 50
             }
             val seconds = recipeEntry.recipe.duration.toDouble() / 20.0
@@ -56,7 +57,7 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
                 shadow = false
             }
 
-            this += (IntPoint(111 - 1, 28 - 1) - p) to OutputSlotView(recipeEntry.recipe.output).noBackground()
+            this += (IntPoint(111, 28) - p) to OutputSlotView(recipeEntry.recipe.output).noBackground().noMargin()
 
         }
     }

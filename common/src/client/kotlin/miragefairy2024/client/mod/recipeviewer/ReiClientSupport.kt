@@ -34,6 +34,7 @@ import miragefairy2024.util.plus
 import miragefairy2024.util.text
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
+import mirrg.kotlin.helium.max
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.inventory.AbstractContainerMenu
@@ -107,19 +108,19 @@ fun initReiClientSupport() {
     }
 
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: InputSlotView, x, y ->
-        widgets += Widgets.createSlot(Point(x + 1, y + 1))
+        widgets += Widgets.createSlot(Point(x + view.margin, y + view.margin))
             .entries(view.ingredientStack.toEntryIngredient())
             .markInput()
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: CatalystSlotView, x, y ->
-        widgets += Widgets.createSlot(Point(x + 1, y + 1))
+        widgets += Widgets.createSlot(Point(x + view.margin, y + view.margin))
             .entries(view.ingredientStack.toEntryIngredient())
             .markInput()
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: OutputSlotView, x, y ->
-        widgets += Widgets.createSlot(Point(x + 1, y + 1))
+        widgets += Widgets.createSlot(Point(x + view.margin, y + view.margin))
             .entries(view.itemStack.toEntryIngredient())
             .markOutput()
             .backgroundEnabled(view.drawBackground)
@@ -161,15 +162,14 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         }
     }
 
-    private fun createHeightCache() = lazy { card.recipeEntries.map { card.getView(rendererProxy, it) }.maxOfOrNull { it.getHeight() } ?: 0 }
-    private var heightCache = createHeightCache()
+    private var heightCache = 0
 
     val displayCategory = object : DisplayCategory<SupportedDisplay<R>> {
         override fun getCategoryIdentifier() = ReiSupport.get(card).categoryIdentifier.first
         override fun getTitle(): Component = card.displayName
         override fun getIcon(): Renderer = card.getIcon().toEntryStack()
         override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + card.getView(rendererProxy, display.recipeEntry).getWidth() + 5
-        override fun getDisplayHeight() = 5 + heightCache.value + 5
+        override fun getDisplayHeight() = 5 + heightCache + 5
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
             val widgets = mutableListOf<Widget>()
             widgets += Widgets.createRecipeBase(bounds)
@@ -187,8 +187,28 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     }
 
     fun registerDisplays(registry: DisplayRegistry) {
-        heightCache = createHeightCache()
-        card.recipeEntries.forEach {
+        val recipeManager = registry.recipeManager
+        val recipeEntries = card.createRecipeEntries()
+
+        // 高さの事前計算
+        heightCache = 0
+        RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.freezeAndGet().forEach { bridge ->
+            if (bridge.card === card) {
+                fun <I : RecipeInput, R : Recipe<I>> calculateMaxHeight(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
+                    recipeManager.getAllRecipesFor(bridge.recipeType).forEach {
+                        val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(it.id(), it.value(), false)
+                        heightCache = heightCache max bridge.card.getView(rendererProxy, recipeEntry).getHeight()
+                    }
+                }
+                calculateMaxHeight(bridge)
+            }
+        }
+        recipeEntries.forEach {
+            heightCache = heightCache max card.getView(rendererProxy, it).getHeight()
+        }
+
+        // レシピ登録
+        recipeEntries.forEach {
             registry.add(SupportedDisplay(ReiSupport.get(card), it))
         }
     }
@@ -196,7 +216,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     fun registerScreens(registry: ScreenRegistry) {
         card.getScreenClickAreas().forEach {
             fun <C : AbstractContainerMenu, T : AbstractContainerScreen<C>> f(get: ScreenClassRegistry.ScreenClass<C, T>) {
-                val rectangle = Rectangle(it.second.x - 1, it.second.y - 1, it.second.width + 2, it.second.height + 1 + 2)
+                val rectangle = Rectangle(it.second.x, it.second.y, it.second.width - 1, it.second.height - 1)
                 registry.registerContainerClickArea(rectangle, get.clazz, ReiSupport.get(card).categoryIdentifier.first)
             }
             f(ScreenClassRegistry.get(it.first))

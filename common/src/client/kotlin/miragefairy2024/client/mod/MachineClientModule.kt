@@ -104,11 +104,11 @@ abstract class SimpleMachineScreen<H : SimpleMachineScreenHandler>(card: SimpleM
             context.blit(
                 PROGRESS_ARROW_TEXTURE,
                 leftPos + arrowBound.x,
-                topPos + arrowBound.y - 1,
+                topPos + arrowBound.y,
                 0F,
                 0F,
                 w,
-                arrowBound.height + 1,
+                arrowBound.height,
                 32,
                 32,
             )
@@ -120,9 +120,9 @@ abstract class SimpleMachineScreen<H : SimpleMachineScreenHandler>(card: SimpleM
         run {
             val bound = Rect2i(
                 this.leftPos + arrowBound.x,
-                this.topPos + arrowBound.y - 1,
+                this.topPos + arrowBound.y,
                 arrowBound.width - 1,
-                arrowBound.height + 1 - 1,
+                arrowBound.height - 1,
             )
             if (bound.contains(x, y)) {
                 context.renderTooltip(font, listOf(text { "${menu.progress} / ${menu.progressMax}"() }), Optional.empty(), x, y + 17)
@@ -132,7 +132,7 @@ abstract class SimpleMachineScreen<H : SimpleMachineScreenHandler>(card: SimpleM
 }
 
 class FermentationBarrelScreen(card: FermentationBarrelCard, arguments: Arguments<FermentationBarrelScreenHandler>) : SimpleMachineScreen<FermentationBarrelScreenHandler>(card, arguments) {
-    override val arrowBound = Rect2i(77, 28, 22, 15)
+    override val arrowBound = Rect2i(76, 27, 24, 17)
 }
 
 class AuraReflectorFurnaceScreen(card: AuraReflectorFurnaceCard, arguments: Arguments<AuraReflectorFurnaceScreenHandler>) : SimpleMachineScreen<AuraReflectorFurnaceScreenHandler>(card, arguments) {
@@ -140,7 +140,7 @@ class AuraReflectorFurnaceScreen(card: AuraReflectorFurnaceCard, arguments: Argu
         val BLUE_FUEL_TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/blue_fuel.png")
     }
 
-    override val arrowBound = Rect2i(89, 35, 22, 15)
+    override val arrowBound = Rect2i(88, 34, 24, 17)
     val fuelBound = Rect2i(48, 37, 13, 13)
 
     override fun renderBg(context: GuiGraphics, delta: Float, mouseX: Int, mouseY: Int) {

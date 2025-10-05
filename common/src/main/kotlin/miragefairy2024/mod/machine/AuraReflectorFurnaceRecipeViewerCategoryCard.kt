@@ -18,6 +18,7 @@ import miragefairy2024.mod.recipeviewer.View
 import miragefairy2024.mod.recipeviewer.grow
 import miragefairy2024.mod.recipeviewer.minus
 import miragefairy2024.mod.recipeviewer.noBackground
+import miragefairy2024.mod.recipeviewer.noMargin
 import miragefairy2024.mod.recipeviewer.plusAssign
 import miragefairy2024.mod.recipeviewer.topLeft
 import miragefairy2024.util.EnJa
@@ -38,7 +39,7 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
     override fun getInputs(recipeEntry: RecipeEntry<AuraReflectorFurnaceRecipe>) = super.getInputs(recipeEntry) + listOf(Input(getFuelIngredientStack(), true))
     override fun getRecipeCard() = AuraReflectorFurnaceRecipeCard
     override fun getMachineCard() = AuraReflectorFurnaceCard
-    override fun getScreenClickAreas() = listOf(Pair(getMachineCard().screenHandlerType.key, IntRectangle(89, 35, 22, 15)))
+    override fun getScreenClickAreas() = listOf(Pair(getMachineCard().screenHandlerType.key, IntRectangle(88, 34, 24, 17)))
 
     override fun createView(recipeEntry: RecipeEntry<AuraReflectorFurnaceRecipe>) = View {
         val imageBound = IntRectangle(28, 16, 116, 54)
@@ -49,13 +50,13 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
             this += ImageView("textures/gui/container/" * AuraReflectorFurnaceRecipeCard.identifier * ".png", bound)
 
             fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
-            this += (IntPoint(29 - 1, 17 - 1) - p) to InputSlotView(getInput(0)).noBackground()
-            this += (IntPoint(47 - 1, 17 - 1) - p) to InputSlotView(getInput(1)).noBackground()
-            this += (IntPoint(65 - 1, 17 - 1) - p) to InputSlotView(getInput(2)).noBackground()
-            this += (IntPoint(47 - 1, 53 - 1) - p) to CatalystSlotView(getFuelIngredientStack()).noBackground()
+            this += (IntPoint(29, 17) - p) to InputSlotView(getInput(0)).noBackground().noMargin()
+            this += (IntPoint(47, 17) - p) to InputSlotView(getInput(1)).noBackground().noMargin()
+            this += (IntPoint(65, 17) - p) to InputSlotView(getInput(2)).noBackground().noMargin()
+            this += (IntPoint(47, 53) - p) to CatalystSlotView(getFuelIngredientStack()).noBackground().noMargin()
             this += (IntPoint(48, 37) - p) to BlueFuelView()
 
-            this += (IntPoint(89, 35) - p) to ArrowView().apply {
+            this += (IntPoint(88, 34) - p) to ArrowView().apply {
                 durationMilliSeconds = recipeEntry.recipe.duration * 50
             }
             val seconds = recipeEntry.recipe.duration.toDouble() / 20.0
@@ -65,7 +66,7 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
                 shadow = false
             }
 
-            this += (IntPoint(123 - 1, 35 - 1) - p) to OutputSlotView(recipeEntry.recipe.output).noBackground()
+            this += (IntPoint(123, 35) - p) to OutputSlotView(recipeEntry.recipe.output).noBackground().noMargin()
 
         }
     }
