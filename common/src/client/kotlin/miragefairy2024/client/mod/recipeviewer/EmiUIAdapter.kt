@@ -60,6 +60,6 @@ class EmiWidgetComponent(private val widget: Widget) : BaseComponent() {
     override fun drawFocusHighlight(context: OwoUIDrawContext?, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) = Unit
     override fun determineHorizontalContentSize(sizing: Sizing): Int = bounds.width()
     override fun determineVerticalContentSize(sizing: Sizing): Int = bounds.height()
-    override fun onMouseDown(mouseX: Double, mouseY: Double, button: Int) = widget.mouseClicked(mouseX.toInt(), mouseY.toInt(), button) || super.onMouseDown(mouseX, mouseY, button)
+    override fun onMouseDown(mouseX: Double, mouseY: Double, button: Int) = widget.mouseClicked(mouseX.toInt() + widget.bounds.x, mouseY.toInt() + widget.bounds.y, button) || super.onMouseDown(mouseX, mouseY, button)
     override fun canFocus(source: Component.FocusSource) = true
 }
