@@ -6,7 +6,7 @@ import miragefairy2024.util.FreezableRegistry
 import miragefairy2024.util.set
 import net.minecraft.client.gui.GuiGraphics
 
-interface ViewRenderer<in V : View> {
+fun interface ViewRenderer<in V : View> {
     fun render(view: V, x: Int, y: Int, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float)
 }
 
