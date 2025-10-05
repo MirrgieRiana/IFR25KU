@@ -47,11 +47,10 @@ import miragefairy2024.mod.magicplant.traitListScreenTranslation
 import miragefairy2024.mod.recipeviewer.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.noBackground
 import miragefairy2024.util.EventRegistry
-import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.darkGray
+import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.join
-import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.plus
 import miragefairy2024.util.register
 import miragefairy2024.util.style
@@ -229,16 +228,19 @@ object TraitEncyclopediaViewOwoAdapter : ViewOwoAdapter<TraitEncyclopediaView> {
         CARD,
     }
 
+    private var viewMode = ViewMode.SEPARATED
+
     override fun createOwoComponent(view: TraitEncyclopediaView, cotext: ViewOwoAdapterContext): OwoComponent {
         val dummyTerminator = EventRegistry<() -> Unit>()
-        val viewMode = ObservableValue(ViewMode.SEPARATED)
+        val onViewModeChanged = EventRegistry<() -> Unit>()
 
         val separatedView = topBorderLayout(Sizing.fill(100), Sizing.fill(100)).apply { // カード・レシピセパレーション
             gap = 2
 
             child1(ClickableContainer(Sizing.fill(100), Sizing.content()).apply {
                 onClick.register {
-                    viewMode.value = ViewMode.CARD
+                    viewMode = ViewMode.CARD
+                    onViewModeChanged.fire()
                     true
                 }
                 child(Containers.verticalFlow(Sizing.fill(100), Sizing.content()).apply { // カード
@@ -310,7 +312,8 @@ object TraitEncyclopediaViewOwoAdapter : ViewOwoAdapter<TraitEncyclopediaView> {
         }
         val cardView = ClickableContainer(Sizing.fill(100), Sizing.fill(100)).apply {
             onClick.register {
-                viewMode.value = ViewMode.SEPARATED
+                viewMode = ViewMode.SEPARATED
+                onViewModeChanged.fire()
                 true
             }
             child(topBorderLayout(Sizing.fill(100), Sizing.fill(100)).apply { // カード
@@ -361,9 +364,8 @@ object TraitEncyclopediaViewOwoAdapter : ViewOwoAdapter<TraitEncyclopediaView> {
                 })
             })
         }
-
-        return Containers.stack(Sizing.fill(100), Sizing.fill(100)).apply {
-            viewMode.observeAndInitialize(dummyTerminator) { _, viewMode ->
+        val container = Containers.stack(Sizing.fill(100), Sizing.fill(100)).apply {
+            onViewModeChanged.register {
                 clearChildren()
                 val child = when (viewMode) {
                     ViewMode.SEPARATED -> separatedView
@@ -373,5 +375,9 @@ object TraitEncyclopediaViewOwoAdapter : ViewOwoAdapter<TraitEncyclopediaView> {
                 cotext.prepare()
             }
         }
+
+        onViewModeChanged.fire()
+
+        return container
     }
 }
