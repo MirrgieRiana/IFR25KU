@@ -1,15 +1,11 @@
 package miragefairy2024.client.mod
 
-import dev.emi.emi.api.widget.Bounds
-import dev.emi.emi.api.widget.Widget
-import me.shedaniel.math.Rectangle
-import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.client.lib.MachineScreen
-import miragefairy2024.client.mod.recipeviewer.EMI_VIEW_PLACER_REGISTRY
-import miragefairy2024.client.mod.recipeviewer.REI_VIEW_PLACER_REGISTRY
 import miragefairy2024.client.mod.recipeviewer.ScreenClassRegistry
+import miragefairy2024.client.mod.recipeviewer.ViewRenderer
+import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.mod.machine.AuraReflectorFurnaceCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceScreenHandler
@@ -18,12 +14,10 @@ import miragefairy2024.mod.machine.FermentationBarrelCard
 import miragefairy2024.mod.machine.FermentationBarrelScreenHandler
 import miragefairy2024.mod.machine.SimpleMachineCard
 import miragefairy2024.mod.machine.SimpleMachineScreenHandler
-import miragefairy2024.mod.recipeviewer.register
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.atMost
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.renderer.Rect2i
 import java.util.Optional
 import kotlin.math.roundToInt
@@ -36,52 +30,22 @@ fun initMachineClientModule() {
     ScreenClassRegistry.register(FermentationBarrelCard.screenHandlerType.key, FermentationBarrelScreen::class.java)
     ScreenClassRegistry.register(AuraReflectorFurnaceCard.screenHandlerType.key, AuraReflectorFurnaceScreen::class.java)
 
-    REI_VIEW_PLACER_REGISTRY.register { widgets, view: BlueFuelView, x, y ->
-        widgets += BlueFuelReiWidget(x, y)
-    }
-    EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: BlueFuelView, x, y ->
-        widgets.add(BlueFuelEmiWidget(x, y))
-    }
+    ViewRendererRegistry.register(BlueFuelView::class.java, BlueFuelViewRenderer)
 }
 
-class BlueFuelReiWidget(x: Int, y: Int) : WidgetWithBounds() {
-    private val rectangle = Rectangle(x, y, 13, 13)
-    override fun children() = listOf<GuiEventListener>()
-    override fun getBounds() = rectangle
-    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
+    override fun render(view: BlueFuelView, x: Int, y: Int, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         val fuelMax = 20 * 10
         val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
         val fuelRate = fuel.toDouble() / fuelMax.toDouble()
-        val h = (rectangle.height.toDouble() * fuelRate).roundToInt()
-        context.blit(
+        val h = (view.getHeight().toDouble() * fuelRate).roundToInt()
+        graphics.blit(
             AuraReflectorFurnaceScreen.BLUE_FUEL_TEXTURE,
-            rectangle.x - 1,
-            rectangle.y - 1 + (rectangle.height - h),
+            x - 1,
+            y - 1 + (view.getHeight() - h),
             0F,
-            rectangle.height.toFloat() - h.toFloat(),
-            rectangle.width,
-            h,
-            32,
-            32,
-        )
-    }
-}
-
-class BlueFuelEmiWidget(x: Int, y: Int) : Widget() {
-    private val rectangle = Bounds(x, y, 13, 13)
-    override fun getBounds() = rectangle
-    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-        val fuelMax = 20 * 10
-        val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
-        val fuelRate = fuel.toDouble() / fuelMax.toDouble()
-        val h = (rectangle.height.toDouble() * fuelRate).roundToInt()
-        draw.blit(
-            AuraReflectorFurnaceScreen.BLUE_FUEL_TEXTURE,
-            rectangle.x - 1,
-            rectangle.y - 1 + (rectangle.height - h),
-            0F,
-            rectangle.height.toFloat() - h.toFloat(),
-            rectangle.width,
+            view.getHeight().toFloat() - h.toFloat(),
+            view.getWidth(),
             h,
             32,
             32,
