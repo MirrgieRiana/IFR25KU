@@ -147,7 +147,7 @@ fun initReiClientSupport() {
             REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, x, y ->
                 widgets += ReiUIAdapter(Rectangle(x, y, view.getWidth(), view.getHeight()), Containers::stack).also { adapter ->
                     //adapter.rootComponent().allowOverflow(true)
-                    val cotext = object : ViewOwoAdapterContext {
+                    val context = object : ViewOwoAdapterContext {
                         override fun prepare() = adapter.prepare()
                         override fun wrap(view: View): OwoComponent = adapter.wrap(run {
                             val widgets = mutableListOf<Widget>()
@@ -155,7 +155,7 @@ fun initReiClientSupport() {
                             widgets.single() as WidgetWithBounds
                         })
                     }
-                    adapter.rootComponent().child(entry.viewOwoAdapter.createOwoComponent(view, cotext))
+                    adapter.rootComponent().child(entry.viewOwoAdapter.createOwoComponent(view, context))
                     adapter.prepare()
                 }
             }

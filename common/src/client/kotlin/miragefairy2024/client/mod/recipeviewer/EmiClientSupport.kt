@@ -12,12 +12,9 @@ import dev.emi.emi.api.widget.Bounds
 import dev.emi.emi.api.widget.TextWidget
 import dev.emi.emi.api.widget.Widget
 import dev.emi.emi.api.widget.WidgetHolder
-import io.wispforest.owo.compat.rei.ReiUIAdapter
 import io.wispforest.owo.ui.container.Containers
-import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
-import miragefairy2024.client.mod.TraitEncyclopediaViewOwoAdapter.createOwoComponent
 import miragefairy2024.mod.recipeviewer.Alignment
 import miragefairy2024.mod.recipeviewer.ArrowView
 import miragefairy2024.mod.recipeviewer.CatalystSlotView
@@ -43,6 +40,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.item.crafting.RecipeInput
 import java.util.Objects
+import io.wispforest.owo.ui.core.Component as OwoComponent
 
 object EmiClientEvents {
     val onRegister = ReusableInitializationEventRegistry<(EmiRegistry) -> Unit>()
@@ -144,24 +142,28 @@ fun initEmiClientSupport() {
     }
     ViewOwoAdapterRegistry.registry.subscribe { entry ->
         fun <V : View> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
-            EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, _), view, x, y ->
-                // TODO
-
-                widgets.add(EmiUIAdapter(bounds, Containers::stack).also { adapter ->
+            EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, emiRecipe), view, x, y ->
+                widgets.add(EmiUIAdapter(Bounds(x, y, view.getWidth(), view.getHeight()), Containers::stack).also { adapter ->
                     //adapter.rootComponent().allowOverflow(true)
-                    val cotext = object : ViewOwoAdapterContext {
+                    val context = object : ViewOwoAdapterContext {
                         override fun prepare() = adapter.prepare()
                         override fun wrap(view: View): OwoComponent = adapter.wrap(run {
-                            val widgets = mutableListOf<me.shedaniel.rei.api.client.gui.widgets.Widget>()
-                            REI_VIEW_PLACER_REGISTRY.place(widgets, view, 0, 0)
-                            widgets.single() as WidgetWithBounds
+                            val widgets = object : WidgetHolder {
+                                val list = mutableListOf<Widget>()
+                                override fun getWidth() = view.getWidth()
+                                override fun getHeight() = view.getHeight()
+                                override fun <T : Widget> add(widget: T): T {
+                                    list += widget
+                                    return widget
+                                }
+                            }
+                            EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, emiRecipe), view, 0, 0)
+                            widgets.list.single()
                         })
                     }
-                    adapter.rootComponent().child(createOwoComponent(view, cotext))
+                    adapter.rootComponent().child(entry.viewOwoAdapter.createOwoComponent(view, context))
                     adapter.prepare()
                 })
-
-                // TODO
             }
         }
         f(entry)
