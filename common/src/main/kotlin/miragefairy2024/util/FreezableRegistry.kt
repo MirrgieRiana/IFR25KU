@@ -2,7 +2,7 @@ package miragefairy2024.util
 
 // TODO mirrg
 
-class FreezableRegistry<T> {
+class FreezableList<T> {
     private val list = mutableListOf<T>()
     private var cache: List<T>? = null
 
@@ -23,4 +23,4 @@ class FreezableRegistry<T> {
     }
 }
 
-operator fun <T> FreezableRegistry<T>.plusAssign(item: T) = this.add(item)
+operator fun <T> FreezableList<T>.plusAssign(item: T) = this.add(item)
