@@ -82,13 +82,9 @@ fun initReiClientSupport() {
         ReiClientEvents.onRegisterCategories {
             ReiClientSupport.get(card).registerCategories(it)
         }
-    }
-    RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
         ReiClientEvents.onRegisterDisplays {
             ReiClientSupport.get(card).registerDisplays(it)
         }
-    }
-    RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
         ReiClientEvents.onRegisterScreens {
             ReiClientSupport.get(card).registerScreens(it)
         }
