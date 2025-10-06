@@ -31,6 +31,7 @@ fun <L> EventRegistry<L>.fire(invoker: (L) -> Unit) {
     }
 }
 
+fun <E> EventRegistry<(E) -> Unit>.emit(event: E) = this.fire { it(event) }
 fun EventRegistry<() -> Unit>.fire() = this.fire { it() }
 
 
