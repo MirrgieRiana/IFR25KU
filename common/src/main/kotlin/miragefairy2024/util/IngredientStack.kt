@@ -25,6 +25,8 @@ data class IngredientStack(val ingredient: Ingredient, val count: Int) {
             { it.count },
             ::IngredientStack,
         )
+
+        val EMPTY = Ingredient.EMPTY.toIngredientStack(0)
     }
 }
 
