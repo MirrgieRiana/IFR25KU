@@ -147,7 +147,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun getCategoryIdentifier() = ReiSupport.get(card).categoryIdentifier.first
         override fun getTitle(): Component = card.displayName
         override fun getIcon(): Renderer = card.getIcon().toEntryStack()
-        private val heightCache = card.recipeEntries.map { card.getView(rendererProxy, it) }.maxOfOrNull { it.getHeight() } ?: 0
+        private val heightCache = card.createRecipeEntries().map { card.getView(rendererProxy, it) }.maxOfOrNull { it.getHeight() } ?: 0
         override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + card.getView(rendererProxy, display.recipeEntry).getWidth() + 5
         override fun getDisplayHeight() = 5 + heightCache + 5
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
@@ -167,7 +167,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     }
 
     fun registerDisplays(registry: DisplayRegistry) {
-        card.recipeEntries.forEach {
+        card.createRecipeEntries().forEach {
             registry.add(SupportedDisplay(ReiSupport.get(card), it))
         }
     }

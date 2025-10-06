@@ -131,7 +131,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         card.getWorkstations().forEach {
             registry.addWorkstation(emiRecipeCategory.first, it.toEmiStack())
         }
-        card.recipeEntries.forEach {
+        card.createRecipeEntries().forEach {
             registry.addRecipe(SupportedEmiRecipe(this, it))
         }
     }
