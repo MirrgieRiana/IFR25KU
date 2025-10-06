@@ -12,8 +12,8 @@ import dev.emi.emi.api.widget.Bounds
 import dev.emi.emi.api.widget.TextWidget
 import dev.emi.emi.api.widget.Widget
 import dev.emi.emi.api.widget.WidgetHolder
-import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
+import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.mod.recipeviewer.Alignment
 import miragefairy2024.mod.recipeviewer.ArrowView
 import miragefairy2024.mod.recipeviewer.CatalystSlotView
@@ -38,7 +38,7 @@ import net.minecraft.client.gui.GuiGraphics
 import java.util.Objects
 
 object EmiClientEvents {
-    val onRegister = InitializationEventRegistry<(EmiRegistry) -> Unit>()
+    val onRegister = ReusableInitializationEventRegistry<(EmiRegistry) -> Unit>()
 }
 
 val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<Pair<WidgetHolder, EmiRecipe>>()
