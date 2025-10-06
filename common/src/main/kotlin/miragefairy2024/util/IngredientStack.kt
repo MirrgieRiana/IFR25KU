@@ -2,6 +2,9 @@ package miragefairy2024.util
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.network.RegistryFriendlyByteBuf
+import net.minecraft.network.codec.ByteBufCodecs
+import net.minecraft.network.codec.StreamCodec
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -15,6 +18,13 @@ data class IngredientStack(val ingredient: Ingredient, val count: Int) {
                 Codec.INT.fieldOf("Amount").forGetter { it.count },
             ).apply(instance, ::IngredientStack)
         }
+        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, IngredientStack> = StreamCodec.composite(
+            Ingredient.CONTENTS_STREAM_CODEC,
+            { it.ingredient },
+            ByteBufCodecs.VAR_INT,
+            { it.count },
+            ::IngredientStack,
+        )
     }
 }
 
