@@ -3,9 +3,13 @@ package miragefairy2024.client.mod
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.client.lib.MachineScreen
+import miragefairy2024.client.mod.recipeviewer.ScreenClassRegistry
+import miragefairy2024.client.mod.recipeviewer.ViewRenderer
+import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.mod.machine.AuraReflectorFurnaceCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceScreenHandler
+import miragefairy2024.mod.machine.BlueFuelView
 import miragefairy2024.mod.machine.FermentationBarrelCard
 import miragefairy2024.mod.machine.FermentationBarrelScreenHandler
 import miragefairy2024.mod.machine.SimpleMachineCard
@@ -22,6 +26,31 @@ context(ModContext)
 fun initMachineClientModule() {
     FermentationBarrelCard.screenHandlerType.registerHandledScreen { gui, inventory, title -> FermentationBarrelScreen(FermentationBarrelCard, MachineScreen.Arguments(gui, inventory, title)) }
     AuraReflectorFurnaceCard.screenHandlerType.registerHandledScreen { gui, inventory, title -> AuraReflectorFurnaceScreen(AuraReflectorFurnaceCard, MachineScreen.Arguments(gui, inventory, title)) }
+
+    ScreenClassRegistry.register(FermentationBarrelCard.screenHandlerType.key, FermentationBarrelScreen::class.java)
+    ScreenClassRegistry.register(AuraReflectorFurnaceCard.screenHandlerType.key, AuraReflectorFurnaceScreen::class.java)
+
+    ViewRendererRegistry.register(BlueFuelView::class.java, BlueFuelViewRenderer)
+}
+
+object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
+    override fun render(view: BlueFuelView, x: Int, y: Int, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+        val fuelMax = 20 * 10
+        val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
+        val fuelRate = fuel.toDouble() / fuelMax.toDouble()
+        val h = (view.getHeight().toDouble() * fuelRate).roundToInt()
+        graphics.blit(
+            AuraReflectorFurnaceScreen.BLUE_FUEL_TEXTURE,
+            x - 1,
+            y - 1 + (view.getHeight() - h),
+            0F,
+            view.getHeight().toFloat() - h.toFloat(),
+            view.getWidth(),
+            h,
+            32,
+            32,
+        )
+    }
 }
 
 abstract class SimpleMachineScreen<H : SimpleMachineScreenHandler>(card: SimpleMachineCard<*, *, *, *>, arguments: Arguments<H>) : MachineScreen<H>(card, arguments) {
@@ -39,11 +68,11 @@ abstract class SimpleMachineScreen<H : SimpleMachineScreenHandler>(card: SimpleM
             context.blit(
                 PROGRESS_ARROW_TEXTURE,
                 leftPos + arrowBound.x,
-                topPos + arrowBound.y - 1,
+                topPos + arrowBound.y,
                 0F,
                 0F,
                 w,
-                arrowBound.height + 1,
+                arrowBound.height,
                 32,
                 32,
             )
@@ -55,9 +84,9 @@ abstract class SimpleMachineScreen<H : SimpleMachineScreenHandler>(card: SimpleM
         run {
             val bound = Rect2i(
                 this.leftPos + arrowBound.x,
-                this.topPos + arrowBound.y - 1,
+                this.topPos + arrowBound.y,
                 arrowBound.width - 1,
-                arrowBound.height + 1 - 1,
+                arrowBound.height - 1,
             )
             if (bound.contains(x, y)) {
                 context.renderTooltip(font, listOf(text { "${menu.progress} / ${menu.progressMax}"() }), Optional.empty(), x, y + 17)
@@ -67,7 +96,7 @@ abstract class SimpleMachineScreen<H : SimpleMachineScreenHandler>(card: SimpleM
 }
 
 class FermentationBarrelScreen(card: FermentationBarrelCard, arguments: Arguments<FermentationBarrelScreenHandler>) : SimpleMachineScreen<FermentationBarrelScreenHandler>(card, arguments) {
-    override val arrowBound = Rect2i(77, 28, 22, 15)
+    override val arrowBound = Rect2i(76, 27, 24, 17)
 }
 
 class AuraReflectorFurnaceScreen(card: AuraReflectorFurnaceCard, arguments: Arguments<AuraReflectorFurnaceScreenHandler>) : SimpleMachineScreen<AuraReflectorFurnaceScreenHandler>(card, arguments) {
@@ -75,7 +104,7 @@ class AuraReflectorFurnaceScreen(card: AuraReflectorFurnaceCard, arguments: Argu
         val BLUE_FUEL_TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/blue_fuel.png")
     }
 
-    override val arrowBound = Rect2i(89, 35, 22, 15)
+    override val arrowBound = Rect2i(88, 34, 24, 17)
     val fuelBound = Rect2i(48, 37, 13, 13)
 
     override fun renderBg(context: GuiGraphics, delta: Float, mouseX: Int, mouseY: Int) {

@@ -32,6 +32,4 @@ abstract class ReiCategoryCard<D : BasicDisplay>(
 context(ModContext)
 fun initReiModule() {
     TraitEncyclopediaReiCategoryCard.init()
-    FermentationBarrelReiCategoryCard.init()
-    AuraReflectorFurnaceReiCategoryCard.init()
 }
