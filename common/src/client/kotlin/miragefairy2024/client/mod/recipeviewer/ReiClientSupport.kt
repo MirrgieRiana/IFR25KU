@@ -21,6 +21,7 @@ import miragefairy2024.mod.recipeviewer.ArrowView
 import miragefairy2024.mod.recipeviewer.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.ImageView
 import miragefairy2024.mod.recipeviewer.InputSlotView
+import miragefairy2024.mod.recipeviewer.IntRectangle
 import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
@@ -36,6 +37,7 @@ import miragefairy2024.util.plus
 import miragefairy2024.util.text
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
+import miragefairy2024.util.toReiRectangle
 import mirrg.kotlin.helium.max
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.events.GuiEventListener
@@ -136,8 +138,8 @@ fun initReiClientSupport() {
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
-            REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, x, y ->
-                widgets += ViewRendererReiWidget(entry.viewRenderer, view, x, y)
+            REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, bounds ->
+                widgets += ViewRendererReiWidget(entry.viewRenderer, view, bounds)
             }
         }
         f(entry)
@@ -236,11 +238,11 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
 }
 
-class ViewRendererReiWidget<V : View>(private val renderer: ViewRenderer<V>, private val view: V, x: Int, y: Int) : WidgetWithBounds() {
-    private val boundsCache by lazy { Rectangle(x, y, view.getWidth(), view.getHeight()) }
+class ViewRendererReiWidget<V : View>(private val renderer: ViewRenderer<V>, private val view: V, private val bounds: IntRectangle) : WidgetWithBounds() {
+    private val boundsCache = bounds.toReiRectangle()
     override fun children() = listOf<GuiEventListener>()
     override fun getBounds() = boundsCache
     override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-        renderer.render(view, boundsCache.x, boundsCache.y, context, mouseX, mouseY, delta)
+        renderer.render(view, bounds, context, mouseX, mouseY, delta)
     }
 }

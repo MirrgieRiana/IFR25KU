@@ -4,55 +4,39 @@ package miragefairy2024.mod.recipeviewer
 
 import miragefairy2024.util.IngredientStack
 import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.atMost
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 
 
 abstract class ContainerView<P, V : View> : View {
+    protected val children = mutableListOf<Child>()
 
-    val children = mutableListOf<PositionedView>()
+    protected inner class Child(val position: P, val view: V)
+    protected inner class ChildWithMinSize(val position: P, val viewWithMinSize: ViewWithMinSize)
+    protected inner class ChildWithSize(val position: P, val viewWithSize: ViewWithSize)
 
-    inner class PositionedView(val position: P, val view: V) {
-        var xCache = 0
-        var yCache = 0
+    protected fun getChildrenWithMinSize(
+        rendererProxy: RendererProxy,
+    ): List<ContainerView<P, V>.ChildWithMinSize> {
+        return children.map {
+            ChildWithMinSize(it.position, it.view.calculateMinSize(rendererProxy))
+        }
+    }
+
+    protected fun getChildrenWithSize(
+        childrenWithMinSize: List<ContainerView<P, V>.ChildWithMinSize>,
+        maxSizeProvider: (ContainerView<P, V>.ChildWithMinSize) -> IntPoint,
+    ): List<ContainerView<P, V>.ChildWithSize> {
+        return childrenWithMinSize.map {
+            ChildWithSize(it.position, it.viewWithMinSize.calculateSize(maxSizeProvider(it)))
+        }
     }
 
     fun add(position: P, view: V) {
-        children += PositionedView(position, view)
+        children += Child(position, view)
     }
-
-    private var minWidthCache = 0
-    private var minHeightCache = 0
-    private var widthCache = 0
-    private var heightCache = 0
-
-    override fun layout(rendererProxy: RendererProxy) {
-        children.forEach {
-            it.view.layout(rendererProxy)
-        }
-        minWidthCache = calculateMinWidth()
-        minHeightCache = calculateMinHeight()
-        widthCache = calculateWidth()
-        heightCache = calculateHeight()
-    }
-
-    override fun getMinWidth() = minWidthCache
-    override fun getMinHeight() = minHeightCache
-    override fun getWidth() = widthCache
-    override fun getHeight() = heightCache
-
-    abstract fun calculateMinWidth(): Int
-    abstract fun calculateMinHeight(): Int
-    abstract fun calculateWidth(): Int
-    abstract fun calculateHeight(): Int
-
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>) {
-        children.forEach {
-            it.view.assemble(x + it.xCache, y + it.yCache, viewPlacer)
-        }
-    }
-
 }
 
 interface DefaultedContainerView<V : View> {
@@ -65,14 +49,20 @@ operator fun <P, V : View> ContainerView<P, V>.plusAssign(pair: Pair<P, V>) = th
 
 class SingleView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> {
     override fun add(view: V) = add(Unit, view)
-    override fun calculateMinWidth() = children.single().view.getMinWidth()
-    override fun calculateMinHeight() = children.single().view.getMinHeight()
-    override fun calculateWidth() = children.single().view.getWidth()
-    override fun calculateHeight() = children.single().view.getHeight()
-    override fun layout(rendererProxy: RendererProxy) {
-        super.layout(rendererProxy)
-        children.single().xCache = 0
-        children.single().yCache = 0
+    override fun calculateMinSize(rendererProxy: RendererProxy): ViewWithMinSize {
+        val childWithMinSize = children.single().view.calculateMinSize(rendererProxy)
+        return object : ViewWithMinSize {
+            override val minSize = childWithMinSize.minSize
+            override fun calculateSize(maxSize: IntPoint): ViewWithSize {
+                val childWithSize = childWithMinSize.calculateSize(maxSize)
+                return object : ViewWithSize {
+                    override val size = childWithSize.size
+                    override fun assemble(bounds: IntRectangle, viewPlacer: ViewPlacer<View>) {
+                        childWithSize.assemble(bounds, viewPlacer)
+                    }
+                }
+            }
+        }
     }
 
     val childView get() = children.single().view
@@ -81,22 +71,42 @@ class SingleView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V>
 fun SingleView(block: SingleView<View>.() -> Unit) = SingleView<View>().apply { block() }
 
 
-class AbsoluteView<V : View>(private val width: Int, private val height: Int) : ContainerView<IntPoint, V>(), DefaultedContainerView<V> {
-    override fun add(view: V) = add(IntPoint(0, 0), view)
-    override fun calculateMinWidth() = width
-    override fun calculateMinHeight() = height
-    override fun calculateWidth() = width
-    override fun calculateHeight() = height
-    override fun layout(rendererProxy: RendererProxy) {
-        super.layout(rendererProxy)
-        children.forEach {
-            it.xCache = it.position.x
-            it.yCache = it.position.y
+class AbsoluteView<V : View>(private val size: IntPoint) : ContainerView<Pair<IntPoint, IntPoint?>?, V>(), DefaultedContainerView<V> {
+    override fun add(view: V) = add(null, view)
+    override fun calculateMinSize(rendererProxy: RendererProxy): ViewWithMinSize {
+        val childrenWithMinSize = getChildrenWithMinSize(rendererProxy)
+        return object : ViewWithMinSize {
+            override val minSize = size
+            override fun calculateSize(maxSize: IntPoint): ViewWithSize {
+                val childrenWithSize = getChildrenWithSize(childrenWithMinSize) {
+                    if (it.position == null) maxSize else it.position.second ?: it.viewWithMinSize.minSize
+                }
+                return object : ViewWithSize {
+                    override val size = this@AbsoluteView.size
+                    override fun assemble(bounds: IntRectangle, viewPlacer: ViewPlacer<View>) {
+                        childrenWithSize.forEach {
+                            it.viewWithSize.assemble(
+                                if (it.position == null) {
+                                    bounds
+                                } else {
+                                    IntRectangle(
+                                        bounds.x + it.position.first.x,
+                                        bounds.y + it.position.first.y,
+                                        it.viewWithSize.size.x,
+                                        it.viewWithSize.size.y,
+                                    )
+                                },
+                                viewPlacer,
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
-fun AbsoluteView(width: Int, height: Int, block: AbsoluteView<View>.() -> Unit) = AbsoluteView<View>(width, height).apply { block() }
+fun AbsoluteView(size: IntPoint, block: AbsoluteView<View>.() -> Unit) = AbsoluteView<View>(size).apply { block() }
 
 
 abstract class ListView<V : View> : ContainerView<Alignment, V>(), DefaultedContainerView<V> {
@@ -105,21 +115,46 @@ abstract class ListView<V : View> : ContainerView<Alignment, V>(), DefaultedCont
 
 class XListView<V : View> : ListView<V>() {
     var minHeight = 0
-    override fun calculateMinWidth() = children.sumOf { it.view.getMinWidth() }
-    override fun calculateMinHeight() = (children.maxOfOrNull { it.view.getMinHeight() } ?: 0) atLeast minHeight
-    override fun calculateWidth() = children.sumOf { it.view.getWidth() }
-    override fun calculateHeight() = (children.maxOfOrNull { it.view.getHeight() } ?: 0) atLeast minHeight
-    override fun layout(rendererProxy: RendererProxy) {
-        super.layout(rendererProxy)
-        var x = 0
-        children.forEach {
-            it.xCache = x
-            it.yCache = when (it.position) {
-                Alignment.START -> 0
-                Alignment.CENTER -> (getHeight() - it.view.getHeight()) / 2
-                Alignment.END -> getHeight() - it.view.getHeight()
+    override fun calculateMinSize(rendererProxy: RendererProxy): ViewWithMinSize {
+        val childrenWithMinSize = getChildrenWithMinSize(rendererProxy)
+        return object : ViewWithMinSize {
+            override val minSize = IntPoint(
+                childrenWithMinSize.sumOf { it.viewWithMinSize.minSize.x },
+                (childrenWithMinSize.maxOfOrNull { it.viewWithMinSize.minSize.y } ?: 0) atLeast minHeight,
+            )
+
+            override fun calculateSize(maxSize: IntPoint): ViewWithSize {
+                val childrenWithSize = getChildrenWithSize(childrenWithMinSize) {
+                    IntPoint(it.viewWithMinSize.minSize.x, maxSize.y)
+                }
+                return object : ViewWithSize {
+                    override val size = IntPoint(
+                        childrenWithSize.sumOf { it.viewWithSize.size.x },
+                        (childrenWithSize.maxOfOrNull { it.viewWithSize.size.y } ?: 0) atLeast minHeight,
+                    )
+
+                    override fun assemble(bounds: IntRectangle, viewPlacer: ViewPlacer<View>) {
+                        var childX = 0
+                        childrenWithSize.forEach {
+                            val childY = when (it.position) {
+                                Alignment.START -> 0
+                                Alignment.CENTER -> (size.y - it.viewWithSize.size.y) / 2
+                                Alignment.END -> size.y - it.viewWithSize.size.y
+                            }
+                            it.viewWithSize.assemble(
+                                IntRectangle(
+                                    bounds.x + childX,
+                                    bounds.y + childY,
+                                    it.viewWithSize.size.x,
+                                    it.viewWithSize.size.y,
+                                ),
+                                viewPlacer,
+                            )
+                            childX += it.viewWithSize.size.x
+                        }
+                    }
+                }
             }
-            x += it.view.getWidth()
         }
     }
 }
@@ -128,21 +163,46 @@ fun XListView(block: XListView<View>.() -> Unit) = XListView<View>().apply { blo
 
 class YListView<V : View> : ListView<V>() {
     var minWidth = 0
-    override fun calculateMinWidth() = (children.maxOfOrNull { it.view.getMinWidth() } ?: 0) atLeast minWidth
-    override fun calculateMinHeight() = children.sumOf { it.view.getMinHeight() }
-    override fun calculateWidth() = (children.maxOfOrNull { it.view.getWidth() } ?: 0) atLeast minWidth
-    override fun calculateHeight() = children.sumOf { it.view.getHeight() }
-    override fun layout(rendererProxy: RendererProxy) {
-        super.layout(rendererProxy)
-        var y = 0
-        children.forEach {
-            it.xCache = when (it.position) {
-                Alignment.START -> 0
-                Alignment.CENTER -> (getWidth() - it.view.getWidth()) / 2
-                Alignment.END -> getWidth() - it.view.getWidth()
+    override fun calculateMinSize(rendererProxy: RendererProxy): ViewWithMinSize {
+        val childrenWithMinSize = getChildrenWithMinSize(rendererProxy)
+        return object : ViewWithMinSize {
+            override val minSize = IntPoint(
+                (childrenWithMinSize.maxOfOrNull { it.viewWithMinSize.minSize.x } ?: 0) atLeast minWidth,
+                childrenWithMinSize.sumOf { it.viewWithMinSize.minSize.y },
+            )
+
+            override fun calculateSize(maxSize: IntPoint): ViewWithSize {
+                val childrenWithSize = getChildrenWithSize(childrenWithMinSize) {
+                    IntPoint(maxSize.x, it.viewWithMinSize.minSize.y)
+                }
+                return object : ViewWithSize {
+                    override val size = IntPoint(
+                        (childrenWithSize.maxOfOrNull { it.viewWithSize.size.x } ?: 0) atLeast minWidth,
+                        childrenWithSize.sumOf { it.viewWithSize.size.y },
+                    )
+
+                    override fun assemble(bounds: IntRectangle, viewPlacer: ViewPlacer<View>) {
+                        var childY = 0
+                        childrenWithSize.forEach {
+                            val childX = when (it.position) {
+                                Alignment.START -> 0
+                                Alignment.CENTER -> (size.x - it.viewWithSize.size.x) / 2
+                                Alignment.END -> size.x - it.viewWithSize.size.x
+                            }
+                            it.viewWithSize.assemble(
+                                IntRectangle(
+                                    bounds.x + childY,
+                                    bounds.y + childX,
+                                    it.viewWithSize.size.x,
+                                    it.viewWithSize.size.y,
+                                ),
+                                viewPlacer,
+                            )
+                            childY += it.viewWithSize.size.y
+                        }
+                    }
+                }
             }
-            it.yCache = y
-            y += it.view.getHeight()
         }
     }
 }
@@ -150,33 +210,59 @@ class YListView<V : View> : ListView<V>() {
 fun YListView(block: YListView<View>.() -> Unit) = YListView<View>().apply { block() }
 
 
-abstract class SolidView(private val width: Int, private val height: Int) : View {
-    override fun layout(rendererProxy: RendererProxy) = Unit
-    override fun getMinWidth() = width
-    override fun getMinHeight() = height
-    override fun getWidth() = width
-    override fun getHeight() = height
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>) = viewPlacer.place(this, x, y)
+abstract class SolidView(private val size: IntPoint) : View {
+    override fun calculateMinSize(rendererProxy: RendererProxy): ViewWithMinSize {
+        return object : ViewWithMinSize {
+            override val minSize = size
+            override fun calculateSize(maxSize: IntPoint): ViewWithSize {
+                return object : ViewWithSize {
+                    override val size = this@SolidView.size
+                    override fun assemble(bounds: IntRectangle, viewPlacer: ViewPlacer<View>) {
+                        viewPlacer.place(this@SolidView, bounds)
+                    }
+                }
+            }
+        }
+    }
 }
 
 
-abstract class SpaceView(width: Int, height: Int) : SolidView(width, height) {
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>) = Unit
+abstract class SpaceView(private val size: IntPoint) : View {
+    override fun calculateMinSize(rendererProxy: RendererProxy): ViewWithMinSize {
+        return object : ViewWithMinSize {
+            override val minSize = size
+            override fun calculateSize(maxSize: IntPoint): ViewWithSize {
+                return object : ViewWithSize {
+                    override val size = this@SpaceView.size
+                    override fun assemble(bounds: IntRectangle, viewPlacer: ViewPlacer<View>) {
+
+                    }
+                }
+            }
+        }
+    }
 }
 
-class XSpaceView(width: Int) : SpaceView(width, 0)
-class YSpaceView(height: Int) : SpaceView(0, height)
+class XSpaceView(width: Int) : SpaceView(IntPoint(width, 0))
+class YSpaceView(height: Int) : SpaceView(IntPoint(0, height))
 
 
 abstract class SlotView : View {
     var drawBackground = true
     var margin = 1
-    override fun layout(rendererProxy: RendererProxy) = Unit
-    override fun getMinWidth() = getWidth()
-    override fun getMinHeight() = getHeight()
-    override fun getWidth() = 16 + margin * 2
-    override fun getHeight() = 16 + margin * 2
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>) = viewPlacer.place(this, x, y)
+    override fun calculateMinSize(rendererProxy: RendererProxy): ViewWithMinSize {
+        return object : ViewWithMinSize {
+            override val minSize = IntPoint(16 + margin * 2, 16 + margin * 2)
+            override fun calculateSize(maxSize: IntPoint): ViewWithSize {
+                return object : ViewWithSize {
+                    override val size = minSize
+                    override fun assemble(bounds: IntRectangle, viewPlacer: ViewPlacer<View>) {
+                        viewPlacer.place(this@SlotView, bounds)
+                    }
+                }
+            }
+        }
+    }
 }
 
 fun <V : SlotView> V.noBackground() = this.apply { this.drawBackground = false }
@@ -190,31 +276,29 @@ class OutputSlotView(val itemStack: ItemStack) : SlotView()
 
 class TextView(val text: Component) : View {
     var minWidth = 0
-    private var widthCache = 0
-    private var heightCache = 0
-
-    override fun layout(rendererProxy: RendererProxy) {
-        widthCache = rendererProxy.calculateTextWidth(text) atLeast minWidth
-        heightCache = rendererProxy.getTextHeight()
-    }
-
-    override fun getMinWidth() = minWidth
-    override fun getMinHeight() = heightCache
-    override fun getWidth() = widthCache
-    override fun getHeight() = heightCache
-
     var color: ColorPair? = null
     var shadow = true
     var horizontalAlignment: Alignment? = null
     var tooltip: List<Component>? = null
-
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>) = viewPlacer.place(this, x, y)
+    override fun calculateMinSize(rendererProxy: RendererProxy): ViewWithMinSize {
+        return object : ViewWithMinSize {
+            override val minSize = IntPoint(minWidth, rendererProxy.getTextHeight())
+            override fun calculateSize(maxSize: IntPoint): ViewWithSize {
+                return object : ViewWithSize {
+                    override val size = IntPoint(rendererProxy.calculateTextWidth(text) atMost maxSize.x atLeast minSize.x, minSize.y)
+                    override fun assemble(bounds: IntRectangle, viewPlacer: ViewPlacer<View>) {
+                        viewPlacer.place(this@TextView, bounds)
+                    }
+                }
+            }
+        }
+    }
 }
 
 
-class ImageView(val textureId: ResourceLocation, val bound: IntRectangle) : SolidView(bound.width, bound.height)
+class ImageView(val textureId: ResourceLocation, val bound: IntRectangle) : SolidView(bound.size)
 
 
-class ArrowView() : SolidView(24, 17) {
+class ArrowView() : SolidView(IntPoint(24, 17)) {
     var durationMilliSeconds: Int? = null
 }

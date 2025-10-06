@@ -5,12 +5,17 @@ import miragefairy2024.util.set
 import net.minecraft.network.chat.Component
 
 interface View {
-    fun layout(rendererProxy: RendererProxy)
-    fun getMinWidth(): Int
-    fun getMinHeight(): Int
-    fun getWidth(): Int
-    fun getHeight(): Int
-    fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>)
+    fun calculateMinSize(rendererProxy: RendererProxy): ViewWithMinSize
+}
+
+interface ViewWithMinSize {
+    val minSize: IntPoint
+    fun calculateSize(maxSize: IntPoint): ViewWithSize
+}
+
+interface ViewWithSize {
+    val size: IntPoint
+    fun assemble(bounds: IntRectangle, viewPlacer: ViewPlacer<View>)
 }
 
 interface RendererProxy {
@@ -19,11 +24,11 @@ interface RendererProxy {
 }
 
 fun interface ViewPlacer<in V : View> {
-    fun place(view: V, x: Int, y: Int)
+    fun place(view: V, bounds: IntRectangle)
 }
 
 fun interface ContextViewPlacer<in C, in V : View> {
-    fun place(context: C, view: V, x: Int, y: Int)
+    fun place(context: C, view: V, bounds: IntRectangle)
 }
 
 class ViewPlacerRegistry<C> {
@@ -33,12 +38,12 @@ class ViewPlacerRegistry<C> {
         map[viewClass] = factory
     }
 
-    fun <V : View> place(context: C, view: V, x: Int, y: Int) {
+    fun <V : View> place(context: C, view: V, bounds: IntRectangle) {
         val contextViewPlacer = map.freezeAndGet()[view.javaClass]
         if (contextViewPlacer == null) throw IllegalArgumentException("Unsupported view: $view")
         @Suppress("UNCHECKED_CAST")
         contextViewPlacer as ContextViewPlacer<C, V>
-        contextViewPlacer.place(context, view, x, y)
+        contextViewPlacer.place(context, view, bounds)
     }
 }
 
@@ -67,6 +72,7 @@ val IntRectangle.topLeft get() = IntPoint(x, y)
 val IntRectangle.topRight get() = IntPoint(x + width, y)
 val IntRectangle.bottomLeft get() = IntPoint(x, y + height)
 val IntRectangle.bottomRight get() = IntPoint(x + width, y + height)
+val IntRectangle.size get() = IntPoint(width, height)
 fun IntRectangle.offset(dx: Int, dy: Int) = IntRectangle(x + dx, y + dy, width, height)
 fun IntRectangle.grow(d: Int) = this.grow(d, d)
 fun IntRectangle.grow(dw: Int, dh: Int) = IntRectangle(x - dw, y - dh, width + dw * 2, height + dh * 2)
