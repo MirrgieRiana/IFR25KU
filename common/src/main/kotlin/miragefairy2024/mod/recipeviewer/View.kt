@@ -14,11 +14,11 @@ interface RendererProxy {
     fun getTextHeight(): Int
 }
 
-fun interface ViewPlacer<V : View> {
+fun interface ViewPlacer<in V : View> {
     fun place(view: V, x: Int, y: Int)
 }
 
-fun interface ContextViewPlacer<C, V : View> {
+fun interface ContextViewPlacer<in C, in V : View> {
     fun place(context: C, view: V, x: Int, y: Int)
 }
 
