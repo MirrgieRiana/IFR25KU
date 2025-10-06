@@ -1,5 +1,7 @@
 package miragefairy2024.mod.recipeviewer
 
+import miragefairy2024.util.FreezableRegistry
+import miragefairy2024.util.set
 import net.minecraft.network.chat.Component
 
 interface View {
@@ -23,14 +25,14 @@ fun interface ContextViewPlacer<in C, in V : View> {
 }
 
 class ViewPlacerRegistry<C> {
-    private val map = mutableMapOf<Class<out View>, ContextViewPlacer<C, *>>()
+    private val map = FreezableRegistry<Class<out View>, ContextViewPlacer<C, *>>()
 
     fun <V : View> register(viewClass: Class<V>, factory: ContextViewPlacer<C, V>) {
         map[viewClass] = factory
     }
 
     fun <V : View> place(context: C, view: V, x: Int, y: Int) {
-        val contextViewPlacer = map[view.javaClass]
+        val contextViewPlacer = map.freezeAndGet()[view.javaClass]
         if (contextViewPlacer == null) throw IllegalArgumentException("Unsupported view: $view")
         @Suppress("UNCHECKED_CAST")
         contextViewPlacer as ContextViewPlacer<C, V>
