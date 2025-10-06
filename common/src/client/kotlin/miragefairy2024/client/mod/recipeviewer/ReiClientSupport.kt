@@ -17,6 +17,7 @@ import miragefairy2024.client.mod.rei.ClientReiCategoryCard
 import miragefairy2024.mod.recipeviewer.Alignment
 import miragefairy2024.mod.recipeviewer.ArrowView
 import miragefairy2024.mod.recipeviewer.CatalystSlotView
+import miragefairy2024.mod.recipeviewer.ImageView
 import miragefairy2024.mod.recipeviewer.InputSlotView
 import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
@@ -118,6 +119,14 @@ fun initReiClientSupport() {
                 }
             }
             .let { if (view.tooltip != null) it.tooltip(*view.tooltip!!.toTypedArray()) else it }
+    }
+    REI_VIEW_PLACER_REGISTRY.register { widgets, view: ImageView, x, y ->
+        widgets += Widgets.createTexturedWidget(
+            view.textureId,
+            Rectangle(x, y, view.bound.width, view.bound.height),
+            view.bound.x.toFloat(),
+            view.bound.y.toFloat(),
+        )
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ArrowView, x, y ->
         widgets += Widgets.createArrow(Point(x, y))

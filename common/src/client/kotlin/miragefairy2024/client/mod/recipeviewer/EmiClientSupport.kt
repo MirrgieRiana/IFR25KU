@@ -15,6 +15,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.recipeviewer.Alignment
 import miragefairy2024.mod.recipeviewer.ArrowView
 import miragefairy2024.mod.recipeviewer.CatalystSlotView
+import miragefairy2024.mod.recipeviewer.ImageView
 import miragefairy2024.mod.recipeviewer.InputSlotView
 import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
@@ -97,6 +98,9 @@ fun initEmiClientSupport() {
             }
         val bound = widget.bounds
         if (view.tooltip != null) widgets.addTooltipText(view.tooltip!!, bound.x, bound.y, bound.width, bound.height)
+    }
+    EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ImageView, x, y ->
+        widgets.addTexture(view.textureId, x, y, view.bound.width, view.bound.height, view.bound.x, view.bound.y)
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ArrowView, x, y ->
         if (view.durationMilliSeconds != null) {

@@ -5,6 +5,7 @@ package miragefairy2024.mod.recipeviewer
 import miragefairy2024.util.IngredientStack
 import mirrg.kotlin.helium.atLeast
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 
 
@@ -187,6 +188,9 @@ class TextView(val text: Component) : View {
 
     override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>) = viewPlacer.place(this, x, y)
 }
+
+
+class ImageView(val textureId: ResourceLocation, val bound: IntRectangle) : SolidView(bound.width, bound.height)
 
 
 class ArrowView() : SolidView(24, 17) {
