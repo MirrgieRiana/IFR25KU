@@ -45,8 +45,8 @@ val REI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<MutableList<Widget>>()
 
 context(ModContext)
 fun initReiClientSupport() {
-    ReiClientEvents.onRegisterDisplays {
-        RecipeViewerEvents.informationEntries.freezeAndGet().forEach { informationEntry ->
+    RecipeViewerEvents.informationEntries.subscribe { informationEntry ->
+        ReiClientEvents.onRegisterDisplays {
             BuiltinClientPlugin.getInstance().registerInformation(
                 EntryIngredients.ofIngredient(informationEntry.input()),
                 informationEntry.title,
@@ -72,18 +72,18 @@ fun initReiClientSupport() {
         }
     }
 
-    ReiClientEvents.onRegisterCategories {
-        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
+    RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
+        ReiClientEvents.onRegisterCategories {
             ReiClientSupport.get(card).registerCategories(it)
         }
     }
-    ReiClientEvents.onRegisterDisplays {
-        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
+    RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
+        ReiClientEvents.onRegisterDisplays {
             ReiClientSupport.get(card).registerDisplays(it)
         }
     }
-    ReiClientEvents.onRegisterScreens {
-        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
+    RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
+        ReiClientEvents.onRegisterScreens {
             ReiClientSupport.get(card).registerScreens(it)
         }
     }

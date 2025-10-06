@@ -42,8 +42,8 @@ val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<Pair<WidgetHolder, EmiRecipe>>
 
 context(ModContext)
 fun initEmiClientSupport() {
-    EmiClientEvents.onRegister {
-        RecipeViewerEvents.informationEntries.freezeAndGet().forEach { informationEntry ->
+    RecipeViewerEvents.informationEntries.subscribe { informationEntry ->
+        EmiClientEvents.onRegister {
             it.addRecipe(
                 EmiInfoRecipe(
                     listOf(informationEntry.input().toEmiIngredient()),
@@ -54,14 +54,14 @@ fun initEmiClientSupport() {
         }
     }
 
-    EmiClientEvents.onRegister {
-        RecipeViewerEvents.recipeViewerCategoryCards.freezeAndGet().forEach { card ->
+    RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
+        EmiClientEvents.onRegister {
             EmiClientSupport.get(card).register(it)
         }
     }
 
-    EmiClientEvents.onRegister { registry ->
-        RecipeViewerEvents.itemIdentificationDataComponentTypesList.freezeAndGet().forEach { (item, dataComponentTypes) ->
+    RecipeViewerEvents.itemIdentificationDataComponentTypesList.subscribe { (item, dataComponentTypes) ->
+        EmiClientEvents.onRegister { registry ->
             registry.setDefaultComparison(
                 item(),
                 Comparison.of(
