@@ -29,14 +29,9 @@ abstract class ReiCategoryCard<D : BasicDisplay>(
     }
 }
 
-val COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION = Translation({ "gui.${MirageFairy2024.identifier("common_motif_recipe").toLanguageKey()}.always" }, "Always", "常時")
-
 context(ModContext)
 fun initReiModule() {
-
     TraitEncyclopediaReiCategoryCard.init()
     FermentationBarrelReiCategoryCard.init()
     AuraReflectorFurnaceReiCategoryCard.init()
-
-    COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION.enJa()
 }
