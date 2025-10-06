@@ -23,7 +23,7 @@ abstract class RecipeViewerCategoryCard<R> {
     val displayName = text { translation() }
 
     abstract fun getIcon(): ItemStack
-    abstract fun getWorkstations(): List<ItemStack>
+    open fun getWorkstations(): List<ItemStack> = listOf()
 
     class RecipeEntry<R>(val id: ResourceLocation, val recipe: R, val isSynthetic: Boolean) {
         companion object {
@@ -44,10 +44,10 @@ abstract class RecipeViewerCategoryCard<R> {
 
     class Input(val ingredientStack: IngredientStack, val isCatalyst: Boolean)
 
-    abstract fun getInputs(recipeEntry: RecipeEntry<R>): List<Input>
-    abstract fun getOutputs(recipeEntry: RecipeEntry<R>): List<ItemStack>
+    open fun getInputs(recipeEntry: RecipeEntry<R>): List<Input> = listOf()
+    open fun getOutputs(recipeEntry: RecipeEntry<R>): List<ItemStack> = listOf()
 
-    protected abstract fun createRecipeEntries(): Iterable<RecipeEntry<R>>
+    protected open fun createRecipeEntries(): Iterable<RecipeEntry<R>> = listOf()
     val recipeEntries by lazy { createRecipeEntries() }
 
     protected abstract fun createView(recipeEntry: RecipeEntry<R>): View
