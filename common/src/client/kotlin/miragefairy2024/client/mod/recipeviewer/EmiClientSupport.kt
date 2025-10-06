@@ -12,6 +12,7 @@ import dev.emi.emi.api.widget.Bounds
 import dev.emi.emi.api.widget.TextWidget
 import dev.emi.emi.api.widget.Widget
 import dev.emi.emi.api.widget.WidgetHolder
+import io.wispforest.owo.ui.container.Containers
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.mod.recipeviewer.Alignment
@@ -36,6 +37,7 @@ import miragefairy2024.util.toEmiStack
 import mirrg.kotlin.helium.Single
 import net.minecraft.client.gui.GuiGraphics
 import java.util.Objects
+import io.wispforest.owo.ui.core.Component as OwoComponent
 
 object EmiClientEvents {
     val onRegister = ReusableInitializationEventRegistry<(EmiRegistry) -> Unit>()
@@ -116,6 +118,34 @@ fun initEmiClientSupport() {
         fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, _), view, x, y ->
                 widgets.add(ViewRendererEmiWidget(entry.viewRenderer, view, x, y))
+            }
+        }
+        f(entry)
+    }
+    ViewOwoAdapterRegistry.registry.subscribe { entry ->
+        fun <V : View> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
+            EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, emiRecipe), view, x, y ->
+                widgets.add(EmiUIAdapter(Bounds(x, y, view.getWidth(), view.getHeight()), Containers::stack).also { adapter ->
+                    //adapter.rootComponent().allowOverflow(true)
+                    val context = object : ViewOwoAdapterContext {
+                        override fun prepare() = adapter.prepare()
+                        override fun wrap(view: View): OwoComponent = adapter.wrap(run {
+                            val widgets = object : WidgetHolder {
+                                val list = mutableListOf<Widget>()
+                                override fun getWidth() = view.getWidth()
+                                override fun getHeight() = view.getHeight()
+                                override fun <T : Widget> add(widget: T): T {
+                                    list += widget
+                                    return widget
+                                }
+                            }
+                            EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, emiRecipe), view, 0, 0)
+                            widgets.list.single()
+                        })
+                    }
+                    adapter.rootComponent().child(entry.viewOwoAdapter.createOwoComponent(view, context))
+                    adapter.prepare()
+                })
             }
         }
         f(entry)

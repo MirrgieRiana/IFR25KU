@@ -1,5 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer
 
+import io.wispforest.owo.compat.rei.ReiUIAdapter
+import io.wispforest.owo.ui.container.Containers
 import me.shedaniel.math.Point
 import me.shedaniel.math.Rectangle
 import me.shedaniel.rei.api.client.gui.Renderer
@@ -40,6 +42,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.inventory.AbstractContainerMenu
+import io.wispforest.owo.ui.core.Component as OwoComponent
 
 object ReiClientEvents {
     val onRegisterCategories = ReusableInitializationEventRegistry<(CategoryRegistry) -> Unit>()
@@ -138,6 +141,26 @@ fun initReiClientSupport() {
         fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
             REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, x, y ->
                 widgets += ViewRendererReiWidget(entry.viewRenderer, view, x, y)
+            }
+        }
+        f(entry)
+    }
+    ViewOwoAdapterRegistry.registry.subscribe { entry ->
+        fun <V : View> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
+            REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, x, y ->
+                widgets += ReiUIAdapter(Rectangle(x, y, view.getWidth(), view.getHeight()), Containers::stack).also { adapter ->
+                    //adapter.rootComponent().allowOverflow(true)
+                    val context = object : ViewOwoAdapterContext {
+                        override fun prepare() = adapter.prepare()
+                        override fun wrap(view: View): OwoComponent = adapter.wrap(run {
+                            val widgets = mutableListOf<Widget>()
+                            REI_VIEW_PLACER_REGISTRY.place(widgets, view, 0, 0)
+                            widgets.single() as WidgetWithBounds
+                        })
+                    }
+                    adapter.rootComponent().child(entry.viewOwoAdapter.createOwoComponent(view, context))
+                    adapter.prepare()
+                }
             }
         }
         f(entry)
