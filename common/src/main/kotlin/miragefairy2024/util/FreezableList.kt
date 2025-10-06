@@ -49,3 +49,27 @@ class FreezableRegistry<K, V> {
 }
 
 operator fun <K, V> FreezableRegistry<K, V>.set(key: K, value: V) = this.register(key, value)
+
+
+class SubscribableBuffer<T> {
+    private val list = mutableListOf<T>()
+    private val listeners = mutableListOf<(T) -> Unit>()
+
+    fun add(item: T) {
+        list += item
+        listeners.forEach {
+            it(item)
+        }
+    }
+
+    fun subscribe(listener: (T) -> Unit) {
+        listeners += listener
+        list.forEach {
+            listener(it)
+        }
+    }
+
+    fun getAllImmediately(): List<T> = list
+}
+
+operator fun <T> SubscribableBuffer<T>.plusAssign(item: T) = this.add(item)
