@@ -4,20 +4,20 @@
   "group": "miragefairy2024:resonite_ingot",
   "inputs": [
     {
-      "count": 1,
-      "ingredient": {
+      "Amount": 1,
+      "Ingredient": {
         "item": "miragefairy2024:fairy_crystal"
       }
     },
     {
-      "count": 1,
-      "ingredient": {
+      "Amount": 1,
+      "Ingredient": {
         "item": "miragefairy2024:luminite"
       }
     },
     {
-      "count": 1,
-      "ingredient": {
+      "Amount": 1,
+      "Ingredient": {
         "item": "minecraft:echo_shard"
       }
     }

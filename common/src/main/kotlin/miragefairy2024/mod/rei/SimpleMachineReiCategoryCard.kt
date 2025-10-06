@@ -41,7 +41,7 @@ abstract class SimpleMachineReiCategoryCard<R : SimpleMachineRecipe>(path: Strin
 
     open fun getInputs(recipe: R): List<EntryIngredient> {
         return recipe.inputs.map { input ->
-            input.first.items.map { it.copyWithCount(input.second).toEntryStack() }.toEntryIngredient()
+            input.ingredient.items.map { it.copyWithCount(input.count).toEntryStack() }.toEntryIngredient()
         }
     }
 

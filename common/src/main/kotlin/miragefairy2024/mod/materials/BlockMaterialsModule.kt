@@ -40,7 +40,7 @@ import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.registerStonecutterRecipeGeneration
 import miragefairy2024.util.registerTranslucentRenderLayer
 import miragefairy2024.util.times
-import miragefairy2024.util.toIngredient
+import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.with
 import mirrg.kotlin.gson.hydrogen.jsonArray
 import mirrg.kotlin.gson.hydrogen.jsonElement
@@ -197,9 +197,9 @@ open class BlockMaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AuraReflectorFurnaceRecipeCard,
                 inputs = listOf(
-                    Pair({ MaterialCard.FAIRY_CRYSTAL.item().toIngredient() }, 1),
-                    Pair({ MaterialCard.XARPITE.item().toIngredient() }, 4),
-                    Pair({ MaterialCard.MIRANAGITE.item().toIngredient() }, 4),
+                    { MaterialCard.FAIRY_CRYSTAL.item().toIngredientStack(1) },
+                    { MaterialCard.XARPITE.item().toIngredientStack(4) },
+                    { MaterialCard.MIRANAGITE.item().toIngredientStack(4) },
                 ),
                 output = { item().createItemStack() },
                 duration = 20 * 60,

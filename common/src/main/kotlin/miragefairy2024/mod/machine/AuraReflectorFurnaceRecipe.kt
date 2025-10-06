@@ -1,19 +1,19 @@
 package miragefairy2024.mod.machine
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.createItemStack
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import net.minecraft.world.item.crafting.Ingredient
 
 object AuraReflectorFurnaceRecipeCard : SimpleMachineRecipeCard<AuraReflectorFurnaceRecipe>() {
     override val identifier = MirageFairy2024.identifier("aura_reflector_furnace")
     override fun getIcon() = AuraReflectorFurnaceCard.item().createItemStack()
     override val recipeClass = AuraReflectorFurnaceRecipe::class.java
-    override fun createRecipe(group: String, inputs: List<Pair<Ingredient, Int>>, output: ItemStack, duration: Int): AuraReflectorFurnaceRecipe {
+    override fun createRecipe(group: String, inputs: List<IngredientStack>, output: ItemStack, duration: Int): AuraReflectorFurnaceRecipe {
         return AuraReflectorFurnaceRecipe(this, group, inputs, output, duration)
     }
 }
@@ -21,7 +21,7 @@ object AuraReflectorFurnaceRecipeCard : SimpleMachineRecipeCard<AuraReflectorFur
 class AuraReflectorFurnaceRecipe(
     card: AuraReflectorFurnaceRecipeCard,
     group: String,
-    inputs: List<Pair<Ingredient, Int>>,
+    inputs: List<IngredientStack>,
     output: ItemStack,
     duration: Int,
 ) : SimpleMachineRecipe(

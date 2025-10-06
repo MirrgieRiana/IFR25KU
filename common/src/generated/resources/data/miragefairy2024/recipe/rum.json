@@ -4,20 +4,20 @@
   "group": "miragefairy2024:rum",
   "inputs": [
     {
-      "count": 1,
-      "ingredient": {
+      "Amount": 1,
+      "Ingredient": {
         "item": "minecraft:glass_bottle"
       }
     },
     {
-      "count": 16,
-      "ingredient": {
+      "Amount": 16,
+      "Ingredient": {
         "item": "minecraft:sugar_cane"
       }
     },
     {
-      "count": 1,
-      "ingredient": {
+      "Amount": 1,
+      "Ingredient": {
         "fabric:type": "miragefairy2024:water_bottle"
       }
     }
