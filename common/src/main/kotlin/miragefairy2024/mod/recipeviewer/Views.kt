@@ -22,6 +22,8 @@ abstract class ContainerView<P, V : View> : View {
         children += PositionedView(position, view)
     }
 
+    private var minWidthCache = 0
+    private var minHeightCache = 0
     private var widthCache = 0
     private var heightCache = 0
 
@@ -29,13 +31,19 @@ abstract class ContainerView<P, V : View> : View {
         children.forEach {
             it.view.layout(rendererProxy)
         }
+        minWidthCache = calculateMinWidth()
+        minHeightCache = calculateMinHeight()
         widthCache = calculateWidth()
         heightCache = calculateHeight()
     }
 
+    override fun getMinWidth() = minWidthCache
+    override fun getMinHeight() = minHeightCache
     override fun getWidth() = widthCache
     override fun getHeight() = heightCache
 
+    abstract fun calculateMinWidth(): Int
+    abstract fun calculateMinHeight(): Int
     abstract fun calculateWidth(): Int
     abstract fun calculateHeight(): Int
 
@@ -57,6 +65,8 @@ operator fun <P, V : View> ContainerView<P, V>.plusAssign(pair: Pair<P, V>) = th
 
 class SingleView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> {
     override fun add(view: V) = add(Unit, view)
+    override fun calculateMinWidth() = children.single().view.getMinWidth()
+    override fun calculateMinHeight() = children.single().view.getMinHeight()
     override fun calculateWidth() = children.single().view.getWidth()
     override fun calculateHeight() = children.single().view.getHeight()
     override fun layout(rendererProxy: RendererProxy) {
@@ -73,6 +83,8 @@ fun SingleView(block: SingleView<View>.() -> Unit) = SingleView<View>().apply { 
 
 class AbsoluteView<V : View>(private val width: Int, private val height: Int) : ContainerView<IntPoint, V>(), DefaultedContainerView<V> {
     override fun add(view: V) = add(IntPoint(0, 0), view)
+    override fun calculateMinWidth() = width
+    override fun calculateMinHeight() = height
     override fun calculateWidth() = width
     override fun calculateHeight() = height
     override fun layout(rendererProxy: RendererProxy) {
@@ -93,6 +105,8 @@ abstract class ListView<V : View> : ContainerView<Alignment, V>(), DefaultedCont
 
 class XListView<V : View> : ListView<V>() {
     var minHeight = 0
+    override fun calculateMinWidth() = children.sumOf { it.view.getMinWidth() }
+    override fun calculateMinHeight() = (children.maxOfOrNull { it.view.getMinHeight() } ?: 0) atLeast minHeight
     override fun calculateWidth() = children.sumOf { it.view.getWidth() }
     override fun calculateHeight() = (children.maxOfOrNull { it.view.getHeight() } ?: 0) atLeast minHeight
     override fun layout(rendererProxy: RendererProxy) {
@@ -114,6 +128,8 @@ fun XListView(block: XListView<View>.() -> Unit) = XListView<View>().apply { blo
 
 class YListView<V : View> : ListView<V>() {
     var minWidth = 0
+    override fun calculateMinWidth() = (children.maxOfOrNull { it.view.getMinWidth() } ?: 0) atLeast minWidth
+    override fun calculateMinHeight() = children.sumOf { it.view.getMinHeight() }
     override fun calculateWidth() = (children.maxOfOrNull { it.view.getWidth() } ?: 0) atLeast minWidth
     override fun calculateHeight() = children.sumOf { it.view.getHeight() }
     override fun layout(rendererProxy: RendererProxy) {
@@ -136,6 +152,8 @@ fun YListView(block: YListView<View>.() -> Unit) = YListView<View>().apply { blo
 
 abstract class SolidView(private val width: Int, private val height: Int) : View {
     override fun layout(rendererProxy: RendererProxy) = Unit
+    override fun getMinWidth() = width
+    override fun getMinHeight() = height
     override fun getWidth() = width
     override fun getHeight() = height
     override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>) = viewPlacer.place(this, x, y)
@@ -154,6 +172,8 @@ abstract class SlotView : View {
     var drawBackground = true
     var margin = 1
     override fun layout(rendererProxy: RendererProxy) = Unit
+    override fun getMinWidth() = getWidth()
+    override fun getMinHeight() = getHeight()
     override fun getWidth() = 16 + margin * 2
     override fun getHeight() = 16 + margin * 2
     override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>) = viewPlacer.place(this, x, y)
@@ -178,6 +198,8 @@ class TextView(val text: Component) : View {
         heightCache = rendererProxy.getTextHeight()
     }
 
+    override fun getMinWidth() = minWidth
+    override fun getMinHeight() = heightCache
     override fun getWidth() = widthCache
     override fun getHeight() = heightCache
 

@@ -6,6 +6,8 @@ import net.minecraft.network.chat.Component
 
 interface View {
     fun layout(rendererProxy: RendererProxy)
+    fun getMinWidth(): Int
+    fun getMinHeight(): Int
     fun getWidth(): Int
     fun getHeight(): Int
     fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>)
