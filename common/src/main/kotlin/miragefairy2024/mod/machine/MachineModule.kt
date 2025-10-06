@@ -4,9 +4,9 @@ import miragefairy2024.ModContext
 
 context(ModContext)
 fun initMachineModule() {
-    FermentationBarrelRecipeCard.init()
-    AuraReflectorFurnaceRecipeCard.init()
-
     FermentationBarrelCard.init()
+    FermentationBarrelRecipeCard.init()
+
     AuraReflectorFurnaceCard.init()
+    AuraReflectorFurnaceRecipeCard.init()
 }
