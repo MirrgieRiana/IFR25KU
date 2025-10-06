@@ -88,19 +88,19 @@ fun initReiClientSupport() {
     }
 
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: InputSlotView, x, y ->
-        widgets += Widgets.createSlot(Point(x + 1, y + 1))
+        widgets += Widgets.createSlot(Point(x + view.margin, y + view.margin))
             .entries(view.ingredientStack.toEntryIngredient())
             .markInput()
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: CatalystSlotView, x, y ->
-        widgets += Widgets.createSlot(Point(x + 1, y + 1))
+        widgets += Widgets.createSlot(Point(x + view.margin, y + view.margin))
             .entries(view.ingredientStack.toEntryIngredient())
             .markInput()
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: OutputSlotView, x, y ->
-        widgets += Widgets.createSlot(Point(x + 1, y + 1))
+        widgets += Widgets.createSlot(Point(x + view.margin, y + view.margin))
             .entries(view.itemStack.toEntryIngredient())
             .markOutput()
             .backgroundEnabled(view.drawBackground)

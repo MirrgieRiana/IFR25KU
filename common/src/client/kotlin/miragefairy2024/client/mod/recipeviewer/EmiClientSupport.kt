@@ -72,16 +72,16 @@ fun initEmiClientSupport() {
     }
 
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: InputSlotView, x, y ->
-        widgets.addSlot(view.ingredientStack.toEmiIngredient(), x, y)
+        widgets.addSlot(view.ingredientStack.toEmiIngredient(), x - 1 + view.margin, y - 1 + view.margin)
             .drawBack(view.drawBackground)
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: CatalystSlotView, x, y ->
-        widgets.addSlot(view.ingredientStack.toEmiIngredient(), x, y)
+        widgets.addSlot(view.ingredientStack.toEmiIngredient(), x - 1 + view.margin, y - 1 + view.margin)
             .catalyst(true)
             .drawBack(view.drawBackground)
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, emiRecipe), view: OutputSlotView, x, y ->
-        widgets.addSlot(view.itemStack.toEmiStack(), x, y)
+        widgets.addSlot(view.itemStack.toEmiStack(), x - 1 + view.margin, y - 1 + view.margin)
             .recipeContext(emiRecipe)
             .drawBack(view.drawBackground)
     }
