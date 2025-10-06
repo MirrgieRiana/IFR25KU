@@ -34,6 +34,7 @@ import miragefairy2024.util.plus
 import miragefairy2024.util.text
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
+import mirrg.kotlin.helium.max
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
@@ -156,11 +157,12 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         }
     }
 
+    private var heightCache = 0
+
     val displayCategory = object : DisplayCategory<SupportedDisplay<R>> {
         override fun getCategoryIdentifier() = ReiSupport.get(card).categoryIdentifier.first
         override fun getTitle(): Component = card.displayName
         override fun getIcon(): Renderer = card.getIcon().toEntryStack()
-        private val heightCache = card.createRecipeEntries().map { card.getView(rendererProxy, it) }.maxOfOrNull { it.getHeight() } ?: 0
         override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + card.getView(rendererProxy, display.recipeEntry).getWidth() + 5
         override fun getDisplayHeight() = 5 + heightCache + 5
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
@@ -180,7 +182,16 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     }
 
     fun registerDisplays(registry: DisplayRegistry) {
-        card.createRecipeEntries().forEach {
+        val recipeEntries = card.createRecipeEntries()
+
+        // 高さの事前計算
+        heightCache = 0
+        recipeEntries.forEach {
+            heightCache = heightCache max card.getView(rendererProxy, it).getHeight()
+        }
+
+        // レシピ登録
+        recipeEntries.forEach {
             registry.add(SupportedDisplay(ReiSupport.get(card), it))
         }
     }
