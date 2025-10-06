@@ -91,6 +91,15 @@ abstract class ListView<V : View> : ContainerView<ListView.Position, V>(), Defau
     override fun add(view: V) = add(Position(Alignment.START, 0.0), view)
 }
 
+@JvmName("plusAssignWithPair")
+operator fun <V : View, T : ListView<V>> T.plusAssign(pair: Pair<Pair<Alignment, Double>, V>) = this.add(ListView.Position(pair.first.first, pair.first.second), pair.second)
+
+@JvmName("plusAssignWithAlignment")
+operator fun <V : View, T : ListView<V>> T.plusAssign(pair: Pair<Alignment, V>) = this.add(ListView.Position(pair.first, 0.0), pair.second)
+
+@JvmName("plusAssignWithWeight")
+operator fun <V : View, T : ListView<V>> T.plusAssign(pair: Pair<Double, V>) = this.add(ListView.Position(Alignment.START, pair.first), pair.second)
+
 class XListView<V : View> : ListView<V>() {
     var minHeight = 0
     override fun calculateMinSize(rendererProxy: RendererProxy): ViewWithMinSize {
