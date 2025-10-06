@@ -22,7 +22,6 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.TextView
 import miragefairy2024.mod.recipeviewer.ViewPlacerRegistry
-import miragefairy2024.mod.recipeviewer.place
 import miragefairy2024.mod.recipeviewer.register
 import miragefairy2024.util.invoke
 import miragefairy2024.util.pathString

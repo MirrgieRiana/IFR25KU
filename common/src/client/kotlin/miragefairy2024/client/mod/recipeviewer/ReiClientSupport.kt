@@ -26,7 +26,6 @@ import miragefairy2024.mod.recipeviewer.ReiSupport
 import miragefairy2024.mod.recipeviewer.SupportedDisplay
 import miragefairy2024.mod.recipeviewer.TextView
 import miragefairy2024.mod.recipeviewer.ViewPlacerRegistry
-import miragefairy2024.mod.recipeviewer.place
 import miragefairy2024.mod.recipeviewer.register
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
