@@ -18,6 +18,7 @@ import miragefairy2024.mod.recipeviewer.minus
 import miragefairy2024.mod.recipeviewer.noBackground
 import miragefairy2024.mod.recipeviewer.noMargin
 import miragefairy2024.mod.recipeviewer.plusAssign
+import miragefairy2024.mod.recipeviewer.size
 import miragefairy2024.mod.recipeviewer.topLeft
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
@@ -38,26 +39,26 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
         val imageBound = IntRectangle(30, 16, 120, 40)
         val bound = imageBound.grow(6, 2)
         val p = bound.topLeft
-        this += AbsoluteView(bound.width, bound.height) {
+        this += AbsoluteView(bound.size) {
 
             this += ImageView("textures/gui/container/" * FermentationBarrelRecipeCard.identifier * ".png", bound)
 
             fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
-            this += (IntPoint(42, 17) - p) to InputSlotView(getInput(0)).noBackground().noMargin()
-            this += (IntPoint(31, 39) - p) to InputSlotView(getInput(1)).noBackground().noMargin()
-            this += (IntPoint(53, 39) - p) to InputSlotView(getInput(2)).noBackground().noMargin()
+            this += Pair(IntPoint(42, 17) - p, null) to InputSlotView(getInput(0)).noBackground().noMargin()
+            this += Pair(IntPoint(31, 39) - p, null) to InputSlotView(getInput(1)).noBackground().noMargin()
+            this += Pair(IntPoint(53, 39) - p, null) to InputSlotView(getInput(2)).noBackground().noMargin()
 
-            this += (IntPoint(76, 27) - p) to ArrowView().apply {
+            this += Pair(IntPoint(76, 27) - p, null) to ArrowView().apply {
                 durationMilliSeconds = recipeEntry.recipe.duration * 50
             }
             val seconds = recipeEntry.recipe.duration.toDouble() / 20.0
-            this += (IntPoint(88, 15) - p) to TextView(text { SECONDS_TRANSLATION((seconds formatAs "%.2f").stripTrailingZeros()) }).apply {
+            this += Pair(IntPoint(88, 15) - p, null) to TextView(text { SECONDS_TRANSLATION((seconds formatAs "%.2f").stripTrailingZeros()) }).apply {
                 horizontalAlignment = Alignment.CENTER
                 color = ColorPair.DARK_GRAY
                 shadow = false
             }
 
-            this += (IntPoint(111, 28) - p) to OutputSlotView(recipeEntry.recipe.output).noBackground().noMargin()
+            this += Pair(IntPoint(111, 28) - p, null) to OutputSlotView(recipeEntry.recipe.output).noBackground().noMargin()
 
         }
     }

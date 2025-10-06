@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.magicplant.contents.magicplants.MirageFlowerCard
+import miragefairy2024.mod.recipeviewer.IntPoint
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.SolidView
 import miragefairy2024.mod.recipeviewer.View
@@ -36,7 +37,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
     }
 
     override fun createView(recipeEntry: RecipeEntry<Trait>) = View {
-        this += TraitEncyclopediaView(18 * 9 + 5, 140, recipeEntry.recipe)
+        this += TraitEncyclopediaView(IntPoint(18 * 9 + 5, 140), recipeEntry.recipe)
     }
 
     fun getProducerMagicPlantSeedItemStacks(trait: Trait): List<ItemStack> {
@@ -47,4 +48,4 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
     }
 }
 
-class TraitEncyclopediaView(width: Int, height: Int, val trait: Trait) : SolidView(width, height)
+class TraitEncyclopediaView(size: IntPoint, val trait: Trait) : SolidView(size)

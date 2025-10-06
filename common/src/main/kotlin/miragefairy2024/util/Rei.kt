@@ -34,7 +34,10 @@ fun IngredientStack.toEntryIngredient(): EntryIngredient {
 
 fun IntPoint.toReiPoint() = Point(x, y)
 fun IntPoint.toReiDimension() = Dimension(x, y)
+fun Point.toIntPoint() = IntPoint(x, y)
+fun Dimension.toIntPoint() = IntPoint(width, height)
 fun IntRectangle.toReiRectangle() = Rectangle(x, y, width, height)
+fun Rectangle.toIntRectangle() = IntRectangle(x, y, width, height)
 
 
 operator fun Point.plus(other: Point) = Point(this.x + other.x, this.y + other.y)

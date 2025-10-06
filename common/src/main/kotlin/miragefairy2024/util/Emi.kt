@@ -15,3 +15,4 @@ fun IngredientStack.toEmiIngredient(): EmiIngredient = EmiIngredient.of(this.ing
 
 
 fun IntRectangle.toEmiBounds() = Bounds(x, y, width, height)
+fun Bounds.toIntRectangle() = IntRectangle(x, y, width, height)

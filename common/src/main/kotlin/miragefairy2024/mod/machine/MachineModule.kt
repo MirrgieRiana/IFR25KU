@@ -1,6 +1,7 @@
 package miragefairy2024.mod.machine
 
 import miragefairy2024.ModContext
+import miragefairy2024.mod.recipeviewer.IntPoint
 import miragefairy2024.mod.recipeviewer.SolidView
 
 context(ModContext)
@@ -14,4 +15,4 @@ fun initMachineModule() {
     AuraReflectorFurnaceRecipeViewerCategoryCard.init()
 }
 
-class BlueFuelView : SolidView(13, 13)
+class BlueFuelView : SolidView(IntPoint(13, 13))

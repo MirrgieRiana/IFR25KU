@@ -15,7 +15,7 @@ interface ViewWithMinSize {
 
 interface ViewWithSize {
     val size: IntPoint
-    fun assemble(bounds: IntRectangle, viewPlacer: ViewPlacer<View>)
+    fun assemble(position: IntPoint, viewPlacer: ViewPlacer<View>)
 }
 
 interface RendererProxy {
@@ -59,14 +59,23 @@ enum class Alignment {
     START, CENTER, END,
 }
 
-data class IntPoint(val x: Int, val y: Int)
+data class IntPoint(val x: Int, val y: Int) {
+    companion object {
+        val ZERO = IntPoint(0, 0)
+    }
+}
 
 fun IntPoint.offset(dx: Int, dy: Int) = IntPoint(x + dx, y + dy)
 operator fun IntPoint.unaryMinus() = IntPoint(-x, -y)
 operator fun IntPoint.plus(other: IntPoint) = IntPoint(x + other.x, y + other.y)
 operator fun IntPoint.minus(other: IntPoint) = IntPoint(x - other.x, y - other.y)
+fun IntPoint.sized(size: IntPoint) = IntRectangle(x, y, size.x, size.y)
 
-data class IntRectangle(val x: Int, val y: Int, val width: Int, val height: Int)
+data class IntRectangle(val x: Int, val y: Int, val width: Int, val height: Int) {
+    companion object {
+        val ZERO = IntRectangle(0, 0, 0, 0)
+    }
+}
 
 val IntRectangle.topLeft get() = IntPoint(x, y)
 val IntRectangle.topRight get() = IntPoint(x + width, y)
@@ -75,7 +84,8 @@ val IntRectangle.bottomRight get() = IntPoint(x + width, y + height)
 val IntRectangle.size get() = IntPoint(width, height)
 fun IntRectangle.offset(dx: Int, dy: Int) = IntRectangle(x + dx, y + dy, width, height)
 fun IntRectangle.grow(d: Int) = this.grow(d, d)
-fun IntRectangle.grow(dw: Int, dh: Int) = IntRectangle(x - dw, y - dh, width + dw * 2, height + dh * 2)
+fun IntRectangle.grow(dx: Int, dy: Int) = this.grow(dx, dx, dy, dy)
+fun IntRectangle.grow(dxMin: Int, dxMax: Int, dyMin: Int, dyMax: Int) = IntRectangle(x - dxMin, y - dyMin, width + dxMin + dxMax, height + dyMin + dyMax)
 operator fun IntRectangle.plus(point: IntPoint) = IntRectangle(x + point.x, y + point.y, width, height)
 operator fun IntRectangle.minus(point: IntPoint) = IntRectangle(x - point.x, y - point.y, width, height)
 

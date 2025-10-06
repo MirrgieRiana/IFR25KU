@@ -37,8 +37,6 @@ abstract class RecipeViewerCategoryCard<R> {
                 ).apply(instance, ::RecipeEntry)
             }
         }
-
-        var viewCache: View? = null
     }
 
     abstract fun getRecipeCodec(registryAccess: RegistryAccess): Codec<R>
@@ -53,18 +51,7 @@ abstract class RecipeViewerCategoryCard<R> {
 
     open fun getScreenClickAreas(): List<Pair<ResourceKey<MenuType<*>>, IntRectangle>> = listOf()
 
-    protected abstract fun createView(recipeEntry: RecipeEntry<R>): View
-    fun getView(rendererProxy: RendererProxy, recipeEntry: RecipeEntry<R>): View {
-        val oldView = recipeEntry.viewCache
-        if (oldView == null) {
-            val newView = createView(recipeEntry)
-            newView.layout(rendererProxy)
-            recipeEntry.viewCache = newView
-            return newView
-        } else {
-            return oldView
-        }
-    }
+    abstract fun createView(recipeEntry: RecipeEntry<R>): View
 
     context(ModContext)
     open fun init() {
