@@ -24,6 +24,7 @@ import miragefairy2024.mod.recipeviewer.ImageView
 import miragefairy2024.mod.recipeviewer.InputSlotView
 import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
 import miragefairy2024.mod.recipeviewer.SupportedDisplay
@@ -42,6 +43,8 @@ import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.inventory.AbstractContainerMenu
+import net.minecraft.world.item.crafting.Recipe
+import net.minecraft.world.item.crafting.RecipeInput
 import io.wispforest.owo.ui.core.Component as OwoComponent
 
 object ReiClientEvents {
@@ -90,6 +93,19 @@ fun initReiClientSupport() {
         }
         ReiClientEvents.onRegisterScreens {
             ReiClientSupport.get(card).registerScreens(it)
+        }
+    }
+
+    RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.subscribe { bridge ->
+        ReiClientEvents.onRegisterDisplays {
+            fun <I : RecipeInput, R : Recipe<I>> f(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
+                val support = ReiSupport.get(bridge.card)
+                it.registerRecipeFiller(bridge.recipeClass, bridge.recipeType) { holder ->
+                    val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(holder.id(), holder.value(), false)
+                    SupportedDisplay(support, recipeEntry)
+                }
+            }
+            f(bridge)
         }
     }
 
@@ -201,10 +217,22 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     }
 
     fun registerDisplays(registry: DisplayRegistry) {
+        val recipeManager = registry.recipeManager
         val recipeEntries = card.createRecipeEntries()
 
         // 高さの事前計算
         heightCache = 0
+        RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.getAllImmediately().forEach { bridge ->
+            if (bridge.card === card) {
+                fun <I : RecipeInput, R : Recipe<I>> calculateMaxHeight(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
+                    recipeManager.getAllRecipesFor(bridge.recipeType).forEach {
+                        val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(it.id(), it.value(), false)
+                        heightCache = heightCache max bridge.card.getView(rendererProxy, recipeEntry).getHeight()
+                    }
+                }
+                calculateMaxHeight(bridge)
+            }
+        }
         recipeEntries.forEach {
             heightCache = heightCache max card.getView(rendererProxy, it).getHeight()
         }

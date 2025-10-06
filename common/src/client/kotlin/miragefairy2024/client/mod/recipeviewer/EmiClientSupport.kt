@@ -22,6 +22,7 @@ import miragefairy2024.mod.recipeviewer.ImageView
 import miragefairy2024.mod.recipeviewer.InputSlotView
 import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.TextView
 import miragefairy2024.mod.recipeviewer.View
@@ -36,6 +37,8 @@ import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
 import mirrg.kotlin.helium.Single
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.world.item.crafting.Recipe
+import net.minecraft.world.item.crafting.RecipeInput
 import java.util.Objects
 import io.wispforest.owo.ui.core.Component as OwoComponent
 
@@ -62,6 +65,21 @@ fun initEmiClientSupport() {
     RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
         EmiClientEvents.onRegister {
             EmiClientSupport.get(card).register(it)
+        }
+    }
+
+    RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.subscribe { bridge ->
+        EmiClientEvents.onRegister { registry ->
+            fun <I : RecipeInput, R : Recipe<I>> f(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
+                val support = EmiClientSupport.get(bridge.card)
+                registry.recipeManager.getAllRecipesFor(bridge.recipeType).forEach { holder ->
+                    if (bridge.recipeClass.isInstance(holder.value())) {
+                        val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(holder.id(), holder.value(), false)
+                        registry.addRecipe(SupportedEmiRecipe(support, recipeEntry))
+                    }
+                }
+            }
+            f(bridge)
         }
     }
 
