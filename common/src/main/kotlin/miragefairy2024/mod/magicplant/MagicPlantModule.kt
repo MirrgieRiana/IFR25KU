@@ -80,6 +80,7 @@ fun initMagicPlantModule() {
     initTraitConditionCard()
     initTraitEffectKeyCard()
     initTraitCard()
+    initTraitEncyclopedia()
     initCreativeGeneAmpoule()
     initNegativeTraitBits()
 

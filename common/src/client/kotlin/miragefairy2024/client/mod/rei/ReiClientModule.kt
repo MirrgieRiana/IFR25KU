@@ -9,9 +9,7 @@ import miragefairy2024.mod.rei.ReiCategoryCard
 
 abstract class ClientReiCategoryCard<D : BasicDisplay>(val parent: ReiCategoryCard<D>) {
     companion object {
-        val entries = listOf(
-            TraitEncyclopediaClientReiCategoryCard,
-        )
+        val entries = listOf<ClientReiCategoryCard<*>>()
     }
 
     abstract fun registerDisplays(registry: DisplayRegistry)
