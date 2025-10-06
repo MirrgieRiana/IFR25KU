@@ -22,6 +22,7 @@ import miragefairy2024.mod.recipeviewer.ImageView
 import miragefairy2024.mod.recipeviewer.InputSlotView
 import miragefairy2024.mod.recipeviewer.IntPoint
 import miragefairy2024.mod.recipeviewer.IntRectangle
+import miragefairy2024.mod.recipeviewer.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
@@ -121,7 +122,7 @@ fun initReiClientSupport() {
             .let { if (view.color != null) it.color(view.color!!.lightModeArgb, view.color!!.darkModeArgb) else it }
             .shadow(view.shadow)
             .let {
-                when (view.horizontalAlignment) {
+                when (view.xAlignment) {
                     Alignment.START -> it.leftAligned()
                     Alignment.CENTER -> it.centered()
                     Alignment.END -> it.rightAligned()
@@ -136,7 +137,14 @@ fun initReiClientSupport() {
             bounds.topLeft.sized(view.bound.size).toReiRectangle(),
             view.bound.x.toFloat(),
             view.bound.y.toFloat(),
+            view.bound.width,
+            view.bound.height,
+            view.textureSize.x,
+            view.textureSize.y,
         )
+    }
+    REI_VIEW_PLACER_REGISTRY.register { widgets, view: NinePatchImageView, bounds ->
+        widgets += ViewRendererReiWidget(NinePatchImageViewRenderer, view, bounds)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ArrowView, bounds ->
         widgets += Widgets.createArrow(bounds.topLeft.toReiPoint())
@@ -209,7 +217,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
             val widgets = mutableListOf<Widget>()
             widgets += Widgets.createRecipeBase(bounds)
-            getViewWithSize(display.recipeEntry).assemble(IntPoint(5, 5)) { view2, bounds ->
+            getViewWithSize(display.recipeEntry).assemble(IntPoint(bounds.x + 5, bounds.y + 5)) { view2, bounds ->
                 REI_VIEW_PLACER_REGISTRY.place(widgets, view2, bounds)
             }
             return widgets

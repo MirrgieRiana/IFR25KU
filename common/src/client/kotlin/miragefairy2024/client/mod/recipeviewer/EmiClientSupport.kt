@@ -21,6 +21,7 @@ import miragefairy2024.mod.recipeviewer.ImageView
 import miragefairy2024.mod.recipeviewer.InputSlotView
 import miragefairy2024.mod.recipeviewer.IntPoint
 import miragefairy2024.mod.recipeviewer.IntRectangle
+import miragefairy2024.mod.recipeviewer.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
@@ -115,7 +116,7 @@ fun initEmiClientSupport() {
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: TextView, bounds ->
         val widget = widgets.addText(view.text, bounds.x, bounds.y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
             .let {
-                when (view.horizontalAlignment) {
+                when (view.xAlignment) {
                     Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
                     Alignment.CENTER -> it.horizontalAlign(TextWidget.Alignment.CENTER)
                     Alignment.END -> it.horizontalAlign(TextWidget.Alignment.END)
@@ -126,7 +127,22 @@ fun initEmiClientSupport() {
         if (view.tooltip != null) widgets.addTooltipText(view.tooltip!!, bound.x, bound.y, bound.width, bound.height)
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ImageView, bounds ->
-        widgets.addTexture(view.textureId, bounds.x, bounds.y, view.bound.width, view.bound.height, view.bound.x, view.bound.y)
+        widgets.addTexture(
+            view.textureId,
+            bounds.x,
+            bounds.y,
+            view.bound.width,
+            view.bound.height,
+            view.bound.x,
+            view.bound.y,
+            view.bound.width,
+            view.bound.height,
+            view.textureSize.x,
+            view.textureSize.y,
+        )
+    }
+    EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: NinePatchImageView, bounds ->
+        widgets.add(ViewRendererEmiWidget(NinePatchImageViewRenderer, view, bounds))
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ArrowView, bounds ->
         if (view.durationMilliSeconds != null) {

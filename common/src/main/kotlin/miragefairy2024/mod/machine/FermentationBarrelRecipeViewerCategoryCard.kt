@@ -41,7 +41,7 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
         val p = bound.topLeft
         this += AbsoluteView(bound.size) {
 
-            this += ImageView("textures/gui/container/" * FermentationBarrelRecipeCard.identifier * ".png", bound)
+            this += ImageView("textures/gui/container/" * FermentationBarrelRecipeCard.identifier * ".png", bound, IntPoint(256, 256))
 
             fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
             this += Pair(IntPoint(42, 17) - p, null) to InputSlotView(getInput(0)).noBackground().noMargin()
@@ -53,7 +53,7 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
             }
             val seconds = recipeEntry.recipe.duration.toDouble() / 20.0
             this += Pair(IntPoint(88, 15) - p, null) to TextView(text { SECONDS_TRANSLATION((seconds formatAs "%.2f").stripTrailingZeros()) }).apply {
-                horizontalAlignment = Alignment.CENTER
+                xAlignment = Alignment.CENTER
                 color = ColorPair.DARK_GRAY
                 shadow = false
             }

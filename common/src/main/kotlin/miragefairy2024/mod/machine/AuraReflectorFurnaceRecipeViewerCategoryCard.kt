@@ -48,7 +48,7 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
         val p = bound.topLeft
         this += AbsoluteView(bound.size) {
 
-            this += ImageView("textures/gui/container/" * AuraReflectorFurnaceRecipeCard.identifier * ".png", bound)
+            this += ImageView("textures/gui/container/" * AuraReflectorFurnaceRecipeCard.identifier * ".png", bound, IntPoint(256, 256))
 
             fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
             this += Pair(IntPoint(29, 17) - p, null) to InputSlotView(getInput(0)).noBackground().noMargin()
@@ -62,7 +62,7 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
             }
             val seconds = recipeEntry.recipe.duration.toDouble() / 20.0
             this += Pair(IntPoint(108, 18) - p, null) to TextView(text { SECONDS_TRANSLATION((seconds formatAs "%.2f").stripTrailingZeros()) }).apply {
-                horizontalAlignment = Alignment.CENTER
+                xAlignment = Alignment.CENTER
                 color = ColorPair.DARK_GRAY
                 shadow = false
             }
