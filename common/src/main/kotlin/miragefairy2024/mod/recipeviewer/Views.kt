@@ -70,6 +70,22 @@ class SingleView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V>
 fun SingleView(block: SingleView<View>.() -> Unit) = SingleView<View>().apply { block() }
 
 
+class AbsoluteView<V : View>(private val width: Int, private val height: Int) : ContainerView<IntPoint, V>(), DefaultedContainerView<V> {
+    override fun add(view: V) = add(IntPoint(0, 0), view)
+    override fun calculateWidth() = width
+    override fun calculateHeight() = height
+    override fun layout(rendererProxy: RendererProxy) {
+        super.layout(rendererProxy)
+        children.forEach {
+            it.xCache = it.position.x
+            it.yCache = it.position.y
+        }
+    }
+}
+
+fun AbsoluteView(width: Int, height: Int, block: AbsoluteView<View>.() -> Unit) = AbsoluteView<View>(width, height).apply { block() }
+
+
 abstract class ListView<V : View> : ContainerView<Alignment, V>(), DefaultedContainerView<V> {
     override fun add(view: V) = add(Alignment.START, view)
 }
