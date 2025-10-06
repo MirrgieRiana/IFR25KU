@@ -11,7 +11,9 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.plusAssign
 import miragefairy2024.util.text
 import net.minecraft.core.RegistryAccess
+import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.inventory.MenuType
 import net.minecraft.world.item.ItemStack
 
 abstract class RecipeViewerCategoryCard<R> {
@@ -48,6 +50,8 @@ abstract class RecipeViewerCategoryCard<R> {
     open fun getOutputs(recipeEntry: RecipeEntry<R>): List<ItemStack> = listOf()
 
     open fun createRecipeEntries(): Iterable<RecipeEntry<R>> = listOf()
+
+    open fun getScreenClickAreas(): List<Pair<ResourceKey<MenuType<*>>, IntRectangle>> = listOf()
 
     protected abstract fun createView(recipeEntry: RecipeEntry<R>): View
     fun getView(rendererProxy: RendererProxy, recipeEntry: RecipeEntry<R>): View {

@@ -36,7 +36,9 @@ import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.events.GuiEventListener
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
+import net.minecraft.world.inventory.AbstractContainerMenu
 
 object ReiClientEvents {
     val onRegisterCategories = ReusableInitializationEventRegistry<(CategoryRegistry) -> Unit>()
@@ -184,7 +186,13 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     }
 
     fun registerScreens(registry: ScreenRegistry) {
-        // TODO
+        card.getScreenClickAreas().forEach {
+            fun <C : AbstractContainerMenu, T : AbstractContainerScreen<C>> f(get: ScreenClassRegistry.ScreenClass<C, T>) {
+                val rectangle = Rectangle(it.second.x, it.second.y, it.second.width - 1, it.second.height - 1)
+                registry.registerContainerClickArea(rectangle, get.clazz, ReiSupport.get(card).categoryIdentifier.first)
+            }
+            f(ScreenClassRegistry.get(it.first))
+        }
     }
 
 }
