@@ -4,6 +4,7 @@ import me.shedaniel.math.Point
 import me.shedaniel.math.Rectangle
 import me.shedaniel.rei.api.client.gui.Renderer
 import me.shedaniel.rei.api.client.gui.widgets.Widget
+import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
 import me.shedaniel.rei.api.client.gui.widgets.Widgets
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory
@@ -25,6 +26,7 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
 import miragefairy2024.mod.recipeviewer.SupportedDisplay
 import miragefairy2024.mod.recipeviewer.TextView
+import miragefairy2024.mod.recipeviewer.View
 import miragefairy2024.mod.recipeviewer.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.register
 import miragefairy2024.util.invoke
@@ -32,6 +34,8 @@ import miragefairy2024.util.plus
 import miragefairy2024.util.text
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.network.chat.Component
 
 object ReiClientEvents {
@@ -131,6 +135,14 @@ fun initReiClientSupport() {
         widgets += Widgets.createArrow(Point(x, y))
             .animationDurationMS(view.durationMilliSeconds?.toDouble() ?: -1.0)
     }
+    ViewRendererRegistry.registry.subscribe { entry ->
+        fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
+            REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, x, y ->
+                widgets += ViewRendererReiWidget(entry.viewRenderer, view, x, y)
+            }
+        }
+        f(entry)
+    }
 }
 
 class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
@@ -175,4 +187,13 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         // TODO
     }
 
+}
+
+class ViewRendererReiWidget<V : View>(private val renderer: ViewRenderer<V>, private val view: V, x: Int, y: Int) : WidgetWithBounds() {
+    private val boundsCache by lazy { Rectangle(x, y, view.getWidth(), view.getHeight()) }
+    override fun children() = listOf<GuiEventListener>()
+    override fun getBounds() = boundsCache
+    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+        renderer.render(view, boundsCache.x, boundsCache.y, context, mouseX, mouseY, delta)
+    }
 }

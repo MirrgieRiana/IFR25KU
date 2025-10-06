@@ -8,7 +8,9 @@ import dev.emi.emi.api.render.EmiTexture
 import dev.emi.emi.api.stack.Comparison
 import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
+import dev.emi.emi.api.widget.Bounds
 import dev.emi.emi.api.widget.TextWidget
+import dev.emi.emi.api.widget.Widget
 import dev.emi.emi.api.widget.WidgetHolder
 import miragefairy2024.InitializationEventRegistry
 import miragefairy2024.ModContext
@@ -21,6 +23,7 @@ import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.TextView
+import miragefairy2024.mod.recipeviewer.View
 import miragefairy2024.mod.recipeviewer.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.register
 import miragefairy2024.util.invoke
@@ -31,6 +34,7 @@ import miragefairy2024.util.times
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
 import mirrg.kotlin.helium.Single
+import net.minecraft.client.gui.GuiGraphics
 import java.util.Objects
 
 object EmiClientEvents {
@@ -108,6 +112,14 @@ fun initEmiClientSupport() {
             widgets.addTexture(EmiTexture.EMPTY_ARROW, x, y)
         }
     }
+    ViewRendererRegistry.registry.subscribe { entry ->
+        fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
+            EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, _), view, x, y ->
+                widgets.add(ViewRendererEmiWidget(entry.viewRenderer, view, x, y))
+            }
+        }
+        f(entry)
+    }
 }
 
 class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard<R>) {
@@ -150,5 +162,13 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
         view.assemble(1, 1) { view2, x, y ->
             EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, this), view2, x, y)
         }
+    }
+}
+
+class ViewRendererEmiWidget<V : View>(private val renderer: ViewRenderer<V>, private val view: V, x: Int, y: Int) : Widget() {
+    private val boundsCache by lazy { Bounds(x, y, view.getWidth(), view.getHeight()) }
+    override fun getBounds() = boundsCache
+    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+        renderer.render(view, boundsCache.x, boundsCache.y, draw, mouseX, mouseY, delta)
     }
 }
