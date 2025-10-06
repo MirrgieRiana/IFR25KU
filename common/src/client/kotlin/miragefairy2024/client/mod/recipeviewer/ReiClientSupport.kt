@@ -16,7 +16,6 @@ import me.shedaniel.rei.api.common.util.EntryIngredients
 import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
-import miragefairy2024.client.mod.rei.ClientReiCategoryCard
 import miragefairy2024.mod.recipeviewer.Alignment
 import miragefairy2024.mod.recipeviewer.ArrowView
 import miragefairy2024.mod.recipeviewer.CatalystSlotView
@@ -63,24 +62,6 @@ fun initReiClientSupport() {
                 EntryIngredients.ofIngredient(informationEntry.input()),
                 informationEntry.title,
             ) { list -> list.also { list2 -> list2 += listOf(text { "== "() + informationEntry.title + " =="() }) + informationEntry.contents } }
-        }
-    }
-
-    ReiClientEvents.onRegisterCategories {
-        ClientReiCategoryCard.entries.forEach { card ->
-            val category = card.createCategory()
-            it.add(category)
-            it.addWorkstations(category.categoryIdentifier, *card.getWorkstations().toTypedArray())
-        }
-    }
-    ReiClientEvents.onRegisterDisplays {
-        ClientReiCategoryCard.entries.forEach { card ->
-            card.registerDisplays(it)
-        }
-    }
-    ReiClientEvents.onRegisterScreens {
-        ClientReiCategoryCard.entries.forEach { card ->
-            card.registerScreens(it)
         }
     }
 
