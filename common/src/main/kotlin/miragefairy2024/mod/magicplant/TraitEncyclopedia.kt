@@ -15,6 +15,7 @@ import miragefairy2024.mod.recipeviewer.SolidView
 import miragefairy2024.mod.recipeviewer.StackView
 import miragefairy2024.mod.recipeviewer.TextView
 import miragefairy2024.mod.recipeviewer.View
+import miragefairy2024.mod.recipeviewer.ViewTexture
 import miragefairy2024.mod.recipeviewer.XListView
 import miragefairy2024.mod.recipeviewer.XSpaceView
 import miragefairy2024.mod.recipeviewer.YListView
@@ -92,7 +93,8 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         }
 
                         // 特性アイコン
-                        view += ImageView(recipeEntry.recipe.texture, IntRectangle(0, 0, 32, 32), IntPoint(32, 32)).configure {
+                        val texture = ViewTexture(recipeEntry.recipe.texture, IntPoint(32, 32), IntRectangle(0, 0, 32, 32))
+                        view += ImageView(texture).configure {
                             position.alignment = Alignment.END
                         }
 

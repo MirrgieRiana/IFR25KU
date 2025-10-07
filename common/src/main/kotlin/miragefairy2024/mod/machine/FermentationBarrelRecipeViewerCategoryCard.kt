@@ -25,7 +25,6 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
-import miragefairy2024.util.times
 import mirrg.kotlin.helium.stripTrailingZeros
 import mirrg.kotlin.hydrogen.formatAs
 
@@ -38,11 +37,11 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
 
     override fun createView(recipeEntry: RecipeEntry<FermentationBarrelRecipe>) = View {
         val imageBound = IntRectangle(30, 16, 120, 40)
-        val bound = imageBound.grow(6, 2)
-        val p = bound.offset
-        view += AbsoluteView(bound.size).configure {
+        val bounds = imageBound.grow(6, 2)
+        val p = bounds.offset
+        view += AbsoluteView(bounds.size).configure {
 
-            view += ImageView("textures/gui/container/" * FermentationBarrelRecipeCard.identifier * ".png", bound, IntPoint(256, 256))
+            view += ImageView(getTexture(bounds))
 
             fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
             view += InputSlotView(getInput(0)).noBackground().noMargin().configure {

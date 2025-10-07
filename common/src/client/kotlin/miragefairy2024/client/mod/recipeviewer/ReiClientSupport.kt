@@ -18,12 +18,14 @@ import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.mod.recipeviewer.Alignment
 import miragefairy2024.mod.recipeviewer.ArrowView
 import miragefairy2024.mod.recipeviewer.CatalystSlotView
+import miragefairy2024.mod.recipeviewer.ImageButtonView
 import miragefairy2024.mod.recipeviewer.ImageView
 import miragefairy2024.mod.recipeviewer.InputSlotView
 import miragefairy2024.mod.recipeviewer.IntPoint
 import miragefairy2024.mod.recipeviewer.IntRectangle
 import miragefairy2024.mod.recipeviewer.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.OutputSlotView
+import miragefairy2024.mod.recipeviewer.PlaceableView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
@@ -31,9 +33,7 @@ import miragefairy2024.mod.recipeviewer.ReiSupport
 import miragefairy2024.mod.recipeviewer.Remover
 import miragefairy2024.mod.recipeviewer.SupportedDisplay
 import miragefairy2024.mod.recipeviewer.TextView
-import miragefairy2024.mod.recipeviewer.View
 import miragefairy2024.mod.recipeviewer.ViewPlacerRegistry
-import miragefairy2024.mod.recipeviewer.ViewWithSize
 import miragefairy2024.mod.recipeviewer.offset
 import miragefairy2024.mod.recipeviewer.register
 import miragefairy2024.mod.recipeviewer.size
@@ -133,25 +133,28 @@ fun initReiClientSupport() {
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ImageView, bounds ->
         widgets place Widgets.createTexturedWidget(
-            view.textureId,
-            bounds.offset.sized(view.bound.size).toReiRectangle(),
-            view.bound.x.toFloat(),
-            view.bound.y.toFloat(),
-            view.bound.xSize,
-            view.bound.ySize,
-            view.textureSize.x,
-            view.textureSize.y,
+            view.texture.id,
+            bounds.offset.sized(view.texture.bounds.size).toReiRectangle(),
+            view.texture.bounds.x.toFloat(),
+            view.texture.bounds.y.toFloat(),
+            view.texture.bounds.xSize,
+            view.texture.bounds.ySize,
+            view.texture.size.x,
+            view.texture.size.y,
         )
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: NinePatchImageView, bounds ->
         widgets place ViewRendererReiWidget(NinePatchImageViewRenderer, view, bounds)
+    }
+    REI_VIEW_PLACER_REGISTRY.register { widgets, view: ImageButtonView, bounds ->
+        TODO
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ArrowView, bounds ->
         widgets place Widgets.createArrow(bounds.offset.toReiPoint())
             .animationDurationMS(view.durationMilliSeconds?.toDouble() ?: -1.0)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
-        fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
+        fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
             REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, bounds ->
                 widgets place ViewRendererReiWidget(entry.viewRenderer, view, bounds)
             }
@@ -159,13 +162,13 @@ fun initReiClientSupport() {
         f(entry)
     }
     ViewOwoAdapterRegistry.registry.subscribe { entry ->
-        fun <V : View> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
+        fun <V : PlaceableView> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
             REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, bounds ->
                 widgets place ReiUIAdapter(bounds.toReiRectangle(), Containers::stack).also { adapter ->
                     //adapter.rootComponent().allowOverflow(true)
                     val context = object : ViewOwoAdapterContext {
                         override fun prepare() = adapter.prepare()
-                        override fun wrap(view: View, size: IntPoint): OwoComponent = adapter.wrap(run {
+                        override fun wrap(view: PlaceableView, size: IntPoint): OwoComponent = adapter.wrap(run {
                             val containerWidget = ReiContainerWidget()
                             REI_VIEW_PLACER_REGISTRY.place(containerWidget, view, IntPoint.ZERO.sized(size))
                             containerWidget.widgets.single() as WidgetWithBounds
@@ -193,18 +196,19 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     }
 
     private var heightCache = 0
-    private var viewWithSizeCache = mutableMapOf<RecipeViewerCategoryCard.RecipeEntry<R>, ViewWithSize>()
+    private var sizeCache = mutableMapOf<RecipeViewerCategoryCard.RecipeEntry<R>, IntPoint>()
 
     private fun resetCache() {
         heightCache = 0
-        viewWithSizeCache.clear()
+        sizeCache.clear()
     }
 
-    private fun getViewWithSize(recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>): ViewWithSize {
-        return viewWithSizeCache.getOrPut(recipeEntry) {
+    private fun getSize(recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>): IntPoint {
+        return sizeCache.getOrPut(recipeEntry) {
             val view = card.createView(recipeEntry)
             val viewWithMinSize = view.calculateMinSize(rendererProxy)
-            viewWithMinSize.calculateSize(MAX_SIZE)
+            val viewWithSize = viewWithMinSize.calculateSize(MAX_SIZE)
+            viewWithSize.size
         }
     }
 
@@ -212,11 +216,14 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun getCategoryIdentifier() = ReiSupport.get(card).categoryIdentifier.first
         override fun getTitle(): Component = card.displayName
         override fun getIcon(): Renderer = card.getIcon().toEntryStack()
-        override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + getViewWithSize(display.recipeEntry).size.x + 5
+        override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + getSize(display.recipeEntry).x + 5
         override fun getDisplayHeight() = 5 + heightCache + 5
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
             val containerWidget = ReiContainerWidget()
-            getViewWithSize(display.recipeEntry).assemble(IntPoint(bounds.x + 5, bounds.y + 5)) { view2, bounds ->
+            val view = card.createView(display.recipeEntry)
+            val viewWithMinSize = view.calculateMinSize(rendererProxy)
+            val viewWithSize = viewWithMinSize.calculateSize(MAX_SIZE)
+            viewWithSize.assemble(IntPoint(bounds.x + 5, bounds.y + 5)) { view2, bounds ->
                 REI_VIEW_PLACER_REGISTRY.place(containerWidget, view2, bounds)
             }
             return listOf(
@@ -253,7 +260,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             }
         }
         recipeEntries.forEach {
-            heightCache = heightCache max getViewWithSize(it).size.y
+            heightCache = heightCache max getSize(it).y
         }
 
         // レシピ登録
@@ -307,7 +314,7 @@ class ReiContainerWidget : Widget() {
 
 infix fun ReiContainerWidget.place(widget: Widget) = this.add(widget)
 
-class ViewRendererReiWidget<V : View>(private val renderer: ViewRenderer<V>, private val view: V, bounds: IntRectangle) : WidgetWithBounds() {
+class ViewRendererReiWidget<V : PlaceableView>(private val renderer: ViewRenderer<V>, private val view: V, bounds: IntRectangle) : WidgetWithBounds() {
     private val bounds2 = bounds
     private val reiBounds = bounds.toReiRectangle()
     override fun children() = listOf<GuiEventListener>()

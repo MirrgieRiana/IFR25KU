@@ -5,6 +5,7 @@ import miragefairy2024.util.set
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
 import net.minecraft.network.chat.FormattedText
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.FormattedCharSequence
 
 interface View {
@@ -18,7 +19,11 @@ interface ViewWithMinSize {
 
 interface ViewWithSize {
     val size: IntPoint
-    fun assemble(offset: IntPoint, viewPlacer: ViewPlacer<View>)
+
+    /**
+     * このメソッドは1個の[View]に対して[Remover]による除去を挟まずに連続で複数回呼び出されることはありません。
+     */
+    fun assemble(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover
 }
 
 interface RendererProxy {
@@ -27,26 +32,37 @@ interface RendererProxy {
     fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence>
 }
 
-fun interface ViewPlacer<in V : View> {
+interface PlaceableView : View
+
+fun interface ViewPlacer<in V : PlaceableView> {
     fun place(view: V, bounds: IntRectangle): Remover
 }
 
-fun interface ContextViewPlacer<in C, in V : View> {
+fun interface ContextViewPlacer<in C, in V : PlaceableView> {
     fun place(context: C, view: V, bounds: IntRectangle): Remover
 }
 
 fun interface Remover {
+    companion object {
+        val NONE = Remover { }
+    }
+
+    /**
+     * [View]に対してイベント登録を行う場合、その解除も行う必要があります。
+     */
     fun remove()
 }
 
-class ViewPlacerRegistry<C> {
-    private val map = FreezableRegistry<Class<out View>, ContextViewPlacer<C, *>>()
+fun Iterable<Remover>.flatten() = Remover { this.forEach { it.remove() } }
 
-    fun <V : View> register(viewClass: Class<V>, factory: ContextViewPlacer<C, V>) {
+class ViewPlacerRegistry<C> {
+    private val map = FreezableRegistry<Class<out PlaceableView>, ContextViewPlacer<C, *>>()
+
+    fun <V : PlaceableView> register(viewClass: Class<V>, factory: ContextViewPlacer<C, V>) {
         map[viewClass] = factory
     }
 
-    fun <V : View> place(context: C, view: V, bounds: IntRectangle): Remover {
+    fun <V : PlaceableView> place(context: C, view: V, bounds: IntRectangle): Remover {
         val contextViewPlacer = map.freezeAndGet()[view.javaClass]
         if (contextViewPlacer == null) throw IllegalArgumentException("Unsupported view: $view")
         @Suppress("UNCHECKED_CAST")
@@ -55,7 +71,7 @@ class ViewPlacerRegistry<C> {
     }
 }
 
-inline fun <C, reified V : View> ViewPlacerRegistry<C>.register(factory: ContextViewPlacer<C, V>) = this.register(V::class.java, factory)
+inline fun <C, reified V : PlaceableView> ViewPlacerRegistry<C>.register(factory: ContextViewPlacer<C, V>) = this.register(V::class.java, factory)
 
 class ColorPair(val lightModeArgb: Int, val darkModeArgb: Int) {
     companion object {
@@ -66,6 +82,8 @@ class ColorPair(val lightModeArgb: Int, val darkModeArgb: Int) {
 enum class Alignment {
     START, CENTER, END,
 }
+
+data class ViewTexture(val id: ResourceLocation, val size: IntPoint, val bounds: IntRectangle)
 
 data class IntPoint(val x: Int, val y: Int) {
     companion object {
