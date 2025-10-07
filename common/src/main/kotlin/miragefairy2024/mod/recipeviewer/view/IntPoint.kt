@@ -17,4 +17,6 @@ operator fun IntPoint.plus(other: IntPoint) = this.plus(other.x, other.y)
 operator fun IntPoint.minus(other: IntPoint) = this.minus(other.x, other.y)
 infix fun IntPoint.max(other: IntPoint) = IntPoint(x max other.x, y max other.y)
 infix fun IntPoint.min(other: IntPoint) = IntPoint(x min other.x, y min other.y)
+infix fun IntPoint.atLeast(other: IntPoint) = this max other
+infix fun IntPoint.atMost(other: IntPoint) = this min other
 fun IntPoint.sized(size: IntPoint) = IntRectangle(x, y, size.x, size.y)

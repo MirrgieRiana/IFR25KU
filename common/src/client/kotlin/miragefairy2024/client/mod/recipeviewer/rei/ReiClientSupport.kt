@@ -14,12 +14,12 @@ import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.client.mod.recipeviewer.ScreenClassRegistry
 import miragefairy2024.client.mod.recipeviewer.rendererProxy
-import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.rei.ReiSupport
 import miragefairy2024.mod.recipeviewer.rei.SupportedDisplay
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
@@ -100,9 +100,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     private fun getSize(recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>): IntPoint {
         return sizeCache.getOrPut(recipeEntry) {
             val view = card.createView(recipeEntry)
-            val viewWithMinSize = view.calculateMinSize(rendererProxy)
-            val viewWithSize = viewWithMinSize.calculateSize(MAX_SIZE)
-            viewWithSize.size
+            view.calculateMinSize(rendererProxy)
+            view.calculateSize(MAX_SIZE)
         }
     }
 
@@ -115,9 +114,9 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
             val containerWidget = ReiContainerWidget()
             val view = card.createView(display.recipeEntry)
-            val viewWithMinSize = view.calculateMinSize(rendererProxy)
-            val viewWithSize = viewWithMinSize.calculateSize(MAX_SIZE)
-            viewWithSize.assemble(IntPoint(bounds.x + 5, bounds.y + 5)) { view2, bounds ->
+            view.calculateMinSize(rendererProxy)
+            view.calculateSize(MAX_SIZE)
+            view.attachTo(IntPoint(bounds.x + 5, bounds.y + 5)) { view2, bounds ->
                 REI_VIEW_PLACER_REGISTRY.place(containerWidget, view2, bounds)
             }
             return listOf(
@@ -145,9 +144,9 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
                     recipeManager.getAllRecipesFor(bridge.recipeType).forEach {
                         val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(it.id(), it.value(), false)
                         val view = bridge.card.createView(recipeEntry)
-                        val viewWithMinSize = view.calculateMinSize(rendererProxy)
-                        val viewWithSize = viewWithMinSize.calculateSize(MAX_SIZE)
-                        heightCache = heightCache max viewWithSize.size.y
+                        view.calculateMinSize(rendererProxy)
+                        val size = view.calculateSize(MAX_SIZE)
+                        heightCache = heightCache max size.y
                     }
                 }
                 calculateMaxHeight(bridge)
