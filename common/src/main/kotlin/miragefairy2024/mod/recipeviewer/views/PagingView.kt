@@ -15,6 +15,8 @@ import miragefairy2024.util.register
 
 class PagingView : ParentView<Alignment>() {
     val childrenGenerators = mutableListOf<ChildrenGenerator<Alignment>>()
+    var pageCount: Int = 0
+        private set
     val pageIndex = ObservableValue(0)
 
     override fun createDefaultPosition() = Alignment.START
@@ -42,6 +44,7 @@ class PagingView : ParentView<Alignment>() {
                     if (page.isNotEmpty()) pages += page
                     if (pages.isEmpty()) pages += listOf<ParentView<Alignment>.ChildWithSize>()
                 }
+                pageCount = pages.size
 
                 return object : ViewWithSize {
                     override val size = maxSize
