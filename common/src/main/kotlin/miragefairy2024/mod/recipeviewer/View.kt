@@ -77,22 +77,19 @@ infix fun IntPoint.max(other: IntPoint) = IntPoint(x max other.x, y max other.y)
 infix fun IntPoint.min(other: IntPoint) = IntPoint(x min other.x, y min other.y)
 fun IntPoint.sized(size: IntPoint) = IntRectangle(x, y, size.x, size.y)
 
-data class IntRectangle(val x: Int, val y: Int, val width: Int, val height: Int) {
+data class IntRectangle(val x: Int, val y: Int, val xSize: Int, val ySize: Int) {
     companion object {
         val ZERO = IntRectangle(0, 0, 0, 0)
     }
 }
 
-val IntRectangle.topLeft get() = IntPoint(x, y)
-val IntRectangle.topRight get() = IntPoint(x + width, y)
-val IntRectangle.bottomLeft get() = IntPoint(x, y + height)
-val IntRectangle.bottomRight get() = IntPoint(x + width, y + height)
-val IntRectangle.size get() = IntPoint(width, height)
-fun IntRectangle.offset(dx: Int, dy: Int) = IntRectangle(x + dx, y + dy, width, height)
+val IntRectangle.offset get() = IntPoint(x, y)
+val IntRectangle.size get() = IntPoint(xSize, ySize)
+fun IntRectangle.offset(dx: Int, dy: Int) = IntRectangle(x + dx, y + dy, xSize, ySize)
 fun IntRectangle.grow(d: Int) = this.grow(d, d)
 fun IntRectangle.grow(dx: Int, dy: Int) = this.grow(dx, dx, dy, dy)
-fun IntRectangle.grow(dxMin: Int, dxMax: Int, dyMin: Int, dyMax: Int) = IntRectangle(x - dxMin, y - dyMin, width + dxMin + dxMax, height + dyMin + dyMax)
-operator fun IntRectangle.plus(point: IntPoint) = IntRectangle(x + point.x, y + point.y, width, height)
-operator fun IntRectangle.minus(point: IntPoint) = IntRectangle(x - point.x, y - point.y, width, height)
+fun IntRectangle.grow(dxMin: Int, dxMax: Int, dyMin: Int, dyMax: Int) = IntRectangle(x - dxMin, y - dyMin, xSize + dxMin + dxMax, ySize + dyMin + dyMax)
+operator fun IntRectangle.plus(point: IntPoint) = IntRectangle(x + point.x, y + point.y, xSize, ySize)
+operator fun IntRectangle.minus(point: IntPoint) = IntRectangle(x - point.x, y - point.y, xSize, ySize)
 
-fun View(block: SingleView<View>.() -> Unit): View = SingleView { block(this) }.childView
+fun View(block: Child<Unit, SingleView>.() -> Unit): View = SingleView().apply { block(Child(Unit, this)) }.childView

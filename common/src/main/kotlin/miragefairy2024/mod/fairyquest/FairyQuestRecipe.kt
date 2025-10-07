@@ -22,6 +22,7 @@ import miragefairy2024.mod.recipeviewer.XListView
 import miragefairy2024.mod.recipeviewer.XSpaceView
 import miragefairy2024.mod.recipeviewer.YListView
 import miragefairy2024.mod.recipeviewer.YSpaceView
+import miragefairy2024.mod.recipeviewer.configure
 import miragefairy2024.mod.recipeviewer.noBackground
 import miragefairy2024.mod.recipeviewer.plusAssign
 import miragefairy2024.util.Chance
@@ -371,28 +372,30 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
     }
 
     override fun createView(recipeEntry: RecipeEntry<FairyQuestRecipe>) = View {
-        this += YListView {
-            minWidth = 120
-            this += XListView {
-                this += CatalystSlotView(FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(recipeEntry.recipe) }.toIngredientStack()).noBackground()
-                this += XSpaceView(4)
-                this += Alignment.CENTER to TextView(recipeEntry.recipe.title).apply {
-                    color = ColorPair.DARK_GRAY
-                    shadow = false
+        view += YListView().configure {
+            view.minWidth = 120
+            view += XListView().configure {
+                view += CatalystSlotView(FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(recipeEntry.recipe) }.toIngredientStack()).noBackground()
+                view += XSpaceView(4)
+                view += TextView(recipeEntry.recipe.title).configure {
+                    position.alignment = Alignment.CENTER
+                    view.color = ColorPair.DARK_GRAY
+                    view.shadow = false
                 }
             }
-            this += YSpaceView(2)
-            this += Alignment.CENTER to XListView {
+            view += YSpaceView(2)
+            view += XListView().configure {
+                position.alignment = Alignment.CENTER
                 recipeEntry.recipe.inputs.forEach {
-                    this += InputSlotView(it())
+                    view += InputSlotView(it())
                 }
-                this += XSpaceView(2)
-                this += ArrowView().apply {
+                view += XSpaceView(2)
+                view += ArrowView().apply {
                     durationMilliSeconds = recipeEntry.recipe.duration * 50
                 }
-                this += XSpaceView(2)
+                view += XSpaceView(2)
                 recipeEntry.recipe.outputs.forEach {
-                    this += OutputSlotView(it())
+                    view += OutputSlotView(it())
                 }
             }
         }

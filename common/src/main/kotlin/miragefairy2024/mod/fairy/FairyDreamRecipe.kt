@@ -14,6 +14,7 @@ import miragefairy2024.mod.recipeviewer.TextView
 import miragefairy2024.mod.recipeviewer.View
 import miragefairy2024.mod.recipeviewer.XListView
 import miragefairy2024.mod.recipeviewer.XSpaceView
+import miragefairy2024.mod.recipeviewer.configure
 import miragefairy2024.mod.recipeviewer.noBackground
 import miragefairy2024.mod.recipeviewer.plusAssign
 import miragefairy2024.util.EnJa
@@ -114,23 +115,24 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
     abstract fun getName(key: T): Component
 
     override fun createView(recipeEntry: RecipeEntry<Pair<Motif, List<T>>>) = View {
-        this += XListView {
-            val gained = clientProxy.or { return@XListView }.getClientPlayer().or { return@XListView }.fairyDreamContainer.getOrDefault()[recipeEntry.recipe.first]
+        view += XListView().configure {
+            val gained = clientProxy.or { return@configure }.getClientPlayer().or { return@configure }.fairyDreamContainer.getOrDefault()[recipeEntry.recipe.first]
             val text = text { getName(recipeEntry.recipe.second.first()) }
                 .let { if (recipeEntry.recipe.second.size > 1) text { it + "..."() } else it }
                 .let { if (!gained) it.darkRed else it }
             val ingredientStack = getIngredientStack(recipeEntry.recipe.second)
             if (ingredientStack != null) {
-                this += CatalystSlotView(ingredientStack).noBackground()
-                this += XSpaceView(2)
+                view += CatalystSlotView(ingredientStack).noBackground()
+                view += XSpaceView(2)
             }
-            this += Alignment.CENTER to TextView(text).apply {
-                minWidth = 112
-                color = ColorPair.DARK_GRAY
-                shadow = false
-                tooltip = recipeEntry.recipe.second.map { getName(it) }
+            view += TextView(text).configure {
+                position.alignment = Alignment.CENTER
+                view.minWidth = 112
+                view.color = ColorPair.DARK_GRAY
+                view.shadow = false
+                view.tooltip = recipeEntry.recipe.second.map { getName(it) }
             }
-            this += OutputSlotView(recipeEntry.recipe.first.createFairyItemStack())
+            view += OutputSlotView(recipeEntry.recipe.first.createFairyItemStack())
         }
     }
 }

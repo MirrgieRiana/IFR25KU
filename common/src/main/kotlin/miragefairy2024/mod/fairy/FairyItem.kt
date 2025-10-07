@@ -28,6 +28,7 @@ import miragefairy2024.mod.recipeviewer.View
 import miragefairy2024.mod.recipeviewer.XListView
 import miragefairy2024.mod.recipeviewer.YListView
 import miragefairy2024.mod.recipeviewer.YSpaceView
+import miragefairy2024.mod.recipeviewer.configure
 import miragefairy2024.mod.recipeviewer.noBackground
 import miragefairy2024.mod.recipeviewer.plusAssign
 import miragefairy2024.mod.recipeviewer.registerIdentificationDataComponentTypes
@@ -450,35 +451,39 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
     }
 
     override fun createView(recipeEntry: RecipeEntry<FairyFamilyNotation>) = View {
-        this += XListView {
-            minHeight = 18 * 7
-            this += YListView {
-                minWidth = 18 * 9
+        view += XListView().configure {
+            view.minHeight = 18 * 7
+            view += YListView().configure {
+                view.minWidth = 18 * 9
 
                 // 上に親妖精
-                this += Alignment.CENTER to YListView {
+                view += YListView().configure {
+                    position.alignment = Alignment.CENTER
                     recipeEntry.recipe.parents.chunked(9).forEach { chunk ->
-                        this += XListView {
+                        view += XListView().configure {
                             chunk.forEach {
-                                this += OutputSlotView(it.createFairyItemStack())
+                                view += OutputSlotView(it.createFairyItemStack())
                             }
                         }
                     }
                 }
 
-                this += YSpaceView(9)
+                view += YSpaceView(9)
 
                 // 中段に対象の妖精
-                this += Alignment.CENTER to CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground()
+                view += CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground().configure {
+                    position.alignment = Alignment.CENTER
+                }
 
-                this += YSpaceView(9)
+                view += YSpaceView(9)
 
                 // 下に子妖精
-                this += Alignment.CENTER to YListView {
+                view += YListView().configure {
+                    position.alignment = Alignment.CENTER
                     recipeEntry.recipe.children.chunked(9).forEach { chunk ->
-                        this += XListView {
+                        view += XListView().configure {
                             chunk.forEach {
-                                this += OutputSlotView(it.createFairyItemStack())
+                                view += OutputSlotView(it.createFairyItemStack())
                             }
                         }
                     }

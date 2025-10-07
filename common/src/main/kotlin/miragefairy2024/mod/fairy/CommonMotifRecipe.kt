@@ -14,6 +14,7 @@ import miragefairy2024.mod.recipeviewer.TextView
 import miragefairy2024.mod.recipeviewer.View
 import miragefairy2024.mod.recipeviewer.XListView
 import miragefairy2024.mod.recipeviewer.XSpaceView
+import miragefairy2024.mod.recipeviewer.configure
 import miragefairy2024.mod.recipeviewer.plusAssign
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Translation
@@ -121,24 +122,25 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
     }
 
     override fun createView(recipeEntry: RecipeEntry<CommonMotifRecipe>) = View {
-        this += XListView {
+        view += XListView().configure {
             val recipeText = when (val recipe = recipeEntry.recipe) {
                 is AlwaysCommonMotifRecipe -> text { COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION() }
                 is BiomeCommonMotifRecipe -> text { translate(recipe.biome.location().toLanguageKey("biome")) }
                 is BiomeTagCommonMotifRecipe -> text { recipe.biomeTag.location().path() }
             }
-            this += Alignment.CENTER to TextView(recipeText).apply {
-                minWidth = 130
-                color = ColorPair.DARK_GRAY
-                shadow = false
+            view += TextView(recipeText).configure {
+                position.alignment = Alignment.CENTER
+                view.minWidth = 130
+                view.color = ColorPair.DARK_GRAY
+                view.shadow = false
                 when (val recipe = recipeEntry.recipe) {
                     is AlwaysCommonMotifRecipe -> Unit
                     is BiomeCommonMotifRecipe -> Unit
-                    is BiomeTagCommonMotifRecipe -> tooltip = listOf(text { recipe.biomeTag.location().string() })
+                    is BiomeTagCommonMotifRecipe -> view.tooltip = listOf(text { recipe.biomeTag.location().string() })
                 }
             }
-            this += XSpaceView(2)
-            this += OutputSlotView(recipeEntry.recipe.motif.createFairyItemStack())
+            view += XSpaceView(2)
+            view += OutputSlotView(recipeEntry.recipe.motif.createFairyItemStack())
         }
     }
 }

@@ -19,6 +19,7 @@ import miragefairy2024.mod.recipeviewer.XListView
 import miragefairy2024.mod.recipeviewer.XSpaceView
 import miragefairy2024.mod.recipeviewer.YListView
 import miragefairy2024.mod.recipeviewer.YSpaceView
+import miragefairy2024.mod.recipeviewer.configure
 import miragefairy2024.mod.recipeviewer.plusAssign
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
@@ -53,47 +54,61 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
     }
 
     override fun createView(recipeEntry: RecipeEntry<Trait>) = View {
-        this += StackView {
+        view += StackView().configure {
 
             // 背景
-            this += NinePatchImageView(MirageFairy2024.identifier("textures/gui/trait_background.png"), 22, 22, 22, 22, 22, 22)
+            view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/trait_background.png"), 22, 22, 22, 22, 22, 22)
 
-            this += MarginView(5) {
-                this += YListView {
+            view += MarginView(5).configure {
+                view += YListView().configure {
 
                     // TODO 対応種子
 
                     // 特性名
-                    this += Alignment.CENTER to TextView(recipeEntry.recipe.getName().style(recipeEntry.recipe.style))
+                    view += TextView(recipeEntry.recipe.getName().style(recipeEntry.recipe.style)).configure {
+                        position.alignment = Alignment.CENTER
+                    }
 
-                    this += YSpaceView(5)
+                    view += YSpaceView(5)
 
                     // 特性アイコン行
-                    this += XListView {
+                    view += XListView().configure {
 
                         // 条件リスト
-                        this += Pair(Alignment.END, 1.0) to XListView {
-                            this += YListView {
+                        view += XListView().configure {
+                            position.alignment = Alignment.END
+                            position.weight = 1.0
+                            view += YListView().configure {
                                 recipeEntry.recipe.conditions.forEach {
-                                    this += Alignment.START to TextView(it.emoji).apply {
-                                        tooltip = listOf(it.name)
+                                    view += TextView(it.emoji).configure {
+                                        position.alignment = Alignment.START
+                                        view.tooltip = listOf(it.name)
                                     }
                                 }
                             }
-                            this += 1.0 to XSpaceView(0)
+                            view += XSpaceView(0).configure {
+                                position.weight = 1.0
+                            }
                         }
 
                         // 特性アイコン
-                        this += Alignment.END to ImageView(recipeEntry.recipe.texture, IntRectangle(0, 0, 32, 32), IntPoint(32, 32))
+                        view += ImageView(recipeEntry.recipe.texture, IntRectangle(0, 0, 32, 32), IntPoint(32, 32)).configure {
+                            position.alignment = Alignment.END
+                        }
 
                         // 効果リスト
-                        this += Pair(Alignment.END, 1.0) to XListView {
-                            this += 1.0 to XSpaceView(0)
-                            this += YListView {
+                        view += XListView().configure {
+                            position.alignment = Alignment.END
+                            position.weight = 1.0
+                            view += XSpaceView(0).configure {
+                                position.weight = 1.0
+                            }
+                            view += YListView().configure {
                                 recipeEntry.recipe.traitEffectKeyEntries.forEach {
-                                    this += Alignment.END to TextView(it.traitEffectKey.emoji.style(it.traitEffectKey.style)).apply {
-                                        xAlignment = Alignment.END
-                                        tooltip = listOf(text { it.traitEffectKey.name + " "() + (it.factor * 100.0 formatAs "%.1f%%")() })
+                                    view += TextView(it.traitEffectKey.emoji.style(it.traitEffectKey.style)).configure {
+                                        position.alignment = Alignment.END
+                                        view.xAlignment = Alignment.END
+                                        view.tooltip = listOf(text { it.traitEffectKey.name + " "() + (it.factor * 100.0 formatAs "%.1f%%")() })
                                     }
                                 }
                             }
@@ -101,10 +116,11 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
 
                     }
 
-                    this += YSpaceView(5)
+                    view += YSpaceView(5)
 
                     // 特性ポエム
-                    this += 1.0 to TextView(recipeEntry.recipe.poem).apply {
+                    view += TextView(recipeEntry.recipe.poem).configure {
+                        position.weight = 1.0
                         // TODO multiline
                     }
 
@@ -112,7 +128,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
             }
 
         }
-        // this += TraitEncyclopediaView(IntPoint(18 * 9 + 5, 140), recipeEntry.recipe)
+        // view += TraitEncyclopediaView(IntPoint(18 * 9 + 5, 140), recipeEntry.recipe)
     }
 
     fun getProducerMagicPlantSeedItemStacks(trait: Trait): List<ItemStack> {

@@ -15,13 +15,14 @@ import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.SECONDS_TRANSLATION
 import miragefairy2024.mod.recipeviewer.TextView
 import miragefairy2024.mod.recipeviewer.View
+import miragefairy2024.mod.recipeviewer.configure
 import miragefairy2024.mod.recipeviewer.grow
 import miragefairy2024.mod.recipeviewer.minus
 import miragefairy2024.mod.recipeviewer.noBackground
 import miragefairy2024.mod.recipeviewer.noMargin
+import miragefairy2024.mod.recipeviewer.offset
 import miragefairy2024.mod.recipeviewer.plusAssign
 import miragefairy2024.mod.recipeviewer.size
-import miragefairy2024.mod.recipeviewer.topLeft
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.get
@@ -45,29 +46,42 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
     override fun createView(recipeEntry: RecipeEntry<AuraReflectorFurnaceRecipe>) = View {
         val imageBound = IntRectangle(28, 16, 116, 54)
         val bound = imageBound.grow(6, 2)
-        val p = bound.topLeft
-        this += AbsoluteView(bound.size) {
+        val p = bound.offset
+        view += AbsoluteView(bound.size).configure {
 
-            this += ImageView("textures/gui/container/" * AuraReflectorFurnaceRecipeCard.identifier * ".png", bound, IntPoint(256, 256))
+            view += ImageView("textures/gui/container/" * AuraReflectorFurnaceRecipeCard.identifier * ".png", bound, IntPoint(256, 256))
 
             fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
-            this += Pair(IntPoint(29, 17) - p, null) to InputSlotView(getInput(0)).noBackground().noMargin()
-            this += Pair(IntPoint(47, 17) - p, null) to InputSlotView(getInput(1)).noBackground().noMargin()
-            this += Pair(IntPoint(65, 17) - p, null) to InputSlotView(getInput(2)).noBackground().noMargin()
-            this += Pair(IntPoint(47, 53) - p, null) to CatalystSlotView(getFuelIngredientStack()).noBackground().noMargin()
-            this += Pair(IntPoint(48, 37) - p, null) to BlueFuelView()
-
-            this += Pair(IntPoint(88, 34) - p, null) to ArrowView().apply {
-                durationMilliSeconds = recipeEntry.recipe.duration * 50
+            view += InputSlotView(getInput(0)).noBackground().noMargin().configure {
+                position = AbsoluteView.Offset(IntPoint(29, 17) - p)
             }
-            val seconds = recipeEntry.recipe.duration.toDouble() / 20.0
-            this += Pair(IntPoint(108, 18) - p, null) to TextView(text { SECONDS_TRANSLATION((seconds formatAs "%.2f").stripTrailingZeros()) }).apply {
-                xAlignment = Alignment.CENTER
-                color = ColorPair.DARK_GRAY
-                shadow = false
+            view += InputSlotView(getInput(1)).noBackground().noMargin().configure {
+                position = AbsoluteView.Offset(IntPoint(47, 17) - p)
+            }
+            view += InputSlotView(getInput(2)).noBackground().noMargin().configure {
+                position = AbsoluteView.Offset(IntPoint(65, 17) - p)
+            }
+            view += CatalystSlotView(getFuelIngredientStack()).noBackground().noMargin().configure {
+                position = AbsoluteView.Offset(IntPoint(47, 53) - p)
+            }
+            view += BlueFuelView().configure {
+                position = AbsoluteView.Offset(IntPoint(48, 37) - p)
             }
 
-            this += Pair(IntPoint(123, 35) - p, null) to OutputSlotView(recipeEntry.recipe.output).noBackground().noMargin()
+            view += ArrowView().configure {
+                position = AbsoluteView.Offset(IntPoint(88, 34) - p)
+                view.durationMilliSeconds = recipeEntry.recipe.duration * 50
+            }
+            view += TextView(text { SECONDS_TRANSLATION((recipeEntry.recipe.duration.toDouble() / 20.0 formatAs "%.2f").stripTrailingZeros()) }).configure {
+                position = AbsoluteView.Offset(IntPoint(108, 18) - p)
+                view.xAlignment = Alignment.CENTER
+                view.color = ColorPair.DARK_GRAY
+                view.shadow = false
+            }
+
+            view += OutputSlotView(recipeEntry.recipe.output).noBackground().noMargin().configure {
+                position = AbsoluteView.Offset(IntPoint(123, 35) - p)
+            }
 
         }
     }

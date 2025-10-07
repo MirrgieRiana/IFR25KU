@@ -37,7 +37,6 @@ import miragefairy2024.mod.recipeviewer.offset
 import miragefairy2024.mod.recipeviewer.register
 import miragefairy2024.mod.recipeviewer.size
 import miragefairy2024.mod.recipeviewer.sized
-import miragefairy2024.mod.recipeviewer.topLeft
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
@@ -100,25 +99,25 @@ fun initReiClientSupport() {
     }
 
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: InputSlotView, bounds ->
-        widgets += Widgets.createSlot(bounds.topLeft.offset(view.margin, view.margin).toReiPoint())
+        widgets += Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
             .entries(view.ingredientStack.toEntryIngredient())
             .markInput()
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: CatalystSlotView, bounds ->
-        widgets += Widgets.createSlot(bounds.topLeft.offset(view.margin, view.margin).toReiPoint())
+        widgets += Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
             .entries(view.ingredientStack.toEntryIngredient())
             .markInput()
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: OutputSlotView, bounds ->
-        widgets += Widgets.createSlot(bounds.topLeft.offset(view.margin, view.margin).toReiPoint())
+        widgets += Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
             .entries(view.itemStack.toEntryIngredient())
             .markOutput()
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: TextView, bounds ->
-        widgets += Widgets.createLabel(bounds.topLeft.toReiPoint(), view.text)
+        widgets += Widgets.createLabel(bounds.offset.toReiPoint(), view.text)
             .let { if (view.color != null) it.color(view.color!!.lightModeArgb, view.color!!.darkModeArgb) else it }
             .shadow(view.shadow)
             .let {
@@ -134,11 +133,11 @@ fun initReiClientSupport() {
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ImageView, bounds ->
         widgets += Widgets.createTexturedWidget(
             view.textureId,
-            bounds.topLeft.sized(view.bound.size).toReiRectangle(),
+            bounds.offset.sized(view.bound.size).toReiRectangle(),
             view.bound.x.toFloat(),
             view.bound.y.toFloat(),
-            view.bound.width,
-            view.bound.height,
+            view.bound.xSize,
+            view.bound.ySize,
             view.textureSize.x,
             view.textureSize.y,
         )
@@ -147,7 +146,7 @@ fun initReiClientSupport() {
         widgets += ViewRendererReiWidget(NinePatchImageViewRenderer, view, bounds)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ArrowView, bounds ->
-        widgets += Widgets.createArrow(bounds.topLeft.toReiPoint())
+        widgets += Widgets.createArrow(bounds.offset.toReiPoint())
             .animationDurationMS(view.durationMilliSeconds?.toDouble() ?: -1.0)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
@@ -263,7 +262,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     fun registerScreens(registry: ScreenRegistry) {
         card.getScreenClickAreas().forEach {
             fun <C : AbstractContainerMenu, T : AbstractContainerScreen<C>> f(get: ScreenClassRegistry.ScreenClass<C, T>) {
-                val rectangle = Rectangle(it.second.x, it.second.y, it.second.width - 1, it.second.height - 1)
+                val rectangle = Rectangle(it.second.x, it.second.y, it.second.xSize - 1, it.second.ySize - 1)
                 registry.registerContainerClickArea(rectangle, get.clazz, ReiSupport.get(card).categoryIdentifier.first)
             }
             f(ScreenClassRegistry.get(it.first))

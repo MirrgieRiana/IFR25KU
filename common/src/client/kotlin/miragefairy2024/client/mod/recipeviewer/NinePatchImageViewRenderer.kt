@@ -24,12 +24,12 @@ object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView> {
         val v3 = h1 + h2 + h3
         val x0 = bounds.x
         val x1 = bounds.x + w1
-        val x2 = bounds.x + bounds.width - w3
-        val x3 = bounds.x + bounds.width
+        val x2 = bounds.x + bounds.xSize - w3
+        val x3 = bounds.x + bounds.xSize
         val y0 = bounds.y
         val y1 = bounds.y + h1
-        val y2 = bounds.y + bounds.height - h3
-        val y3 = bounds.y + bounds.height
+        val y2 = bounds.y + bounds.ySize - h3
+        val y3 = bounds.y + bounds.ySize
 
         // 角
         graphics.blit(view.textureId, x0, y0, u0.toFloat(), v0.toFloat(), w1, h1, u3, v3)
