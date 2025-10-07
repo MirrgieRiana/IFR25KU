@@ -18,6 +18,7 @@ import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapter
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterContext
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterRegistry
 import miragefairy2024.client.util.ClickableContainer
+import miragefairy2024.client.util.OwoComponent
 import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.inventoryNameLabel
 import miragefairy2024.client.util.leftBorderLayout
@@ -44,9 +45,9 @@ import miragefairy2024.mod.magicplant.style
 import miragefairy2024.mod.magicplant.texture
 import miragefairy2024.mod.magicplant.traitListScreenHandlerType
 import miragefairy2024.mod.magicplant.traitListScreenTranslation
-import miragefairy2024.mod.recipeviewer.CatalystSlotView
-import miragefairy2024.mod.recipeviewer.IntPoint
-import miragefairy2024.mod.recipeviewer.noBackground
+import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.darkGray
 import miragefairy2024.util.fire
@@ -63,7 +64,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
-import io.wispforest.owo.ui.core.Component as OwoComponent
 
 context(ModContext)
 fun initMagicPlantClientModule() {

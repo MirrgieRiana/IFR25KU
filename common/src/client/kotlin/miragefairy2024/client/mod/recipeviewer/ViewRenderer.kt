@@ -1,8 +1,8 @@
 package miragefairy2024.client.mod.recipeviewer
 
-import miragefairy2024.mod.recipeviewer.IntPoint
-import miragefairy2024.mod.recipeviewer.IntRectangle
-import miragefairy2024.mod.recipeviewer.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.util.SubscribableBuffer
 import miragefairy2024.util.plusAssign
 import net.minecraft.client.gui.GuiGraphics

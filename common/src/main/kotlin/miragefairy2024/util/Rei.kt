@@ -7,8 +7,8 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient
 import me.shedaniel.rei.api.common.entry.EntryStack
 import me.shedaniel.rei.api.common.util.EntryIngredients
 import me.shedaniel.rei.api.common.util.EntryStacks
-import miragefairy2024.mod.recipeviewer.IntPoint
-import miragefairy2024.mod.recipeviewer.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Ingredient
 

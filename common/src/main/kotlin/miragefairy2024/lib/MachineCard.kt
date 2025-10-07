@@ -1,7 +1,7 @@
 package miragefairy2024.lib
 
 import miragefairy2024.ModContext
-import miragefairy2024.mod.recipeviewer.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.BlockEntityType
 import miragefairy2024.util.Registration

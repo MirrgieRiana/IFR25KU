@@ -14,8 +14,8 @@ import miragefairy2024.mod.machine.FermentationBarrelCard
 import miragefairy2024.mod.machine.FermentationBarrelScreenHandler
 import miragefairy2024.mod.machine.SimpleMachineCard
 import miragefairy2024.mod.machine.SimpleMachineScreenHandler
-import miragefairy2024.mod.recipeviewer.IntPoint
-import miragefairy2024.mod.recipeviewer.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.atMost

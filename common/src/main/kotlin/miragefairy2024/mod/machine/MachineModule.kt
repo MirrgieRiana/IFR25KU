@@ -1,8 +1,8 @@
 package miragefairy2024.mod.machine
 
 import miragefairy2024.ModContext
-import miragefairy2024.mod.recipeviewer.IntPoint
-import miragefairy2024.mod.recipeviewer.SolidView
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.views.SolidView
 
 context(ModContext)
 fun initMachineModule() {

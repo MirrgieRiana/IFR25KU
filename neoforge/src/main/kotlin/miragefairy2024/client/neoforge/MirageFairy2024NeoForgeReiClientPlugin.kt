@@ -6,8 +6,8 @@ import me.shedaniel.rei.api.client.registry.display.DisplayRegistry
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
 import me.shedaniel.rei.forge.REIPluginClient
-import miragefairy2024.client.mod.recipeviewer.ReiClientEvents
-import miragefairy2024.mod.recipeviewer.ReiEvents
+import miragefairy2024.client.mod.recipeviewer.rei.ReiClientEvents
+import miragefairy2024.mod.recipeviewer.rei.ReiEvents
 
 @REIPluginClient
 @Suppress("unused")

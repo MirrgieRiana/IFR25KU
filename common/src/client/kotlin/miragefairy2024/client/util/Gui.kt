@@ -15,7 +15,10 @@ import miragefairy2024.MirageFairy2024
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
-import io.wispforest.owo.ui.core.Component as OwoComponent
+
+typealias OwoComponent = io.wispforest.owo.ui.core.Component
+typealias FocusSource = io.wispforest.owo.ui.core.Component.FocusSource
+typealias DismountReason = io.wispforest.owo.ui.core.Component.DismountReason
 
 enum class SlotType(val texture: ResourceLocation) {
     NORMAL(MirageFairy2024.identifier("textures/gui/slot.png")),

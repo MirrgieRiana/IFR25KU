@@ -1,4 +1,4 @@
-package miragefairy2024.mod.recipeviewer
+package miragefairy2024.mod.recipeviewer.rei
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier
 import me.shedaniel.rei.api.common.display.Display
@@ -9,6 +9,8 @@ import me.shedaniel.rei.api.common.entry.comparison.EntryComparator
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.util.CompoundTag
 import miragefairy2024.util.get
 import miragefairy2024.util.toEntryIngredient

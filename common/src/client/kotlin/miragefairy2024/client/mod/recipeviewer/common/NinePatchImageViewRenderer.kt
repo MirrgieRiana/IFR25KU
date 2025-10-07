@@ -1,8 +1,9 @@
-package miragefairy2024.client.mod.recipeviewer
+package miragefairy2024.client.mod.recipeviewer.common
 
-import miragefairy2024.mod.recipeviewer.IntPoint
-import miragefairy2024.mod.recipeviewer.IntRectangle
-import miragefairy2024.mod.recipeviewer.NinePatchImageView
+import miragefairy2024.client.mod.recipeviewer.ViewRenderer
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import mirrg.kotlin.helium.atMost
 import net.minecraft.client.gui.GuiGraphics
 

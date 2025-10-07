@@ -7,8 +7,11 @@ open class EventRegistry<L> {
     val listeners = mutableSetOf<L>()
 }
 
-fun <L> EventRegistry<L>.register(listener: L) {
+fun <L> EventRegistry<L>.register(listener: L): () -> Unit {
     this.listeners += listener
+    return {
+        this.listeners -= listener
+    }
 }
 
 fun <L> EventRegistry<L>.remove(listener: L) {

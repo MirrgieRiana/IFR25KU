@@ -3,7 +3,7 @@ package miragefairy2024.util
 import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
 import dev.emi.emi.api.widget.Bounds
-import miragefairy2024.mod.recipeviewer.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Ingredient
 

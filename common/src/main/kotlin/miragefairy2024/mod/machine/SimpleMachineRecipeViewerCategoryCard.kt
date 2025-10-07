@@ -2,11 +2,11 @@ package miragefairy2024.mod.machine
 
 import com.mojang.serialization.Codec
 import miragefairy2024.ModContext
-import miragefairy2024.mod.recipeviewer.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
-import miragefairy2024.mod.recipeviewer.ViewTexture
+import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.plusAssign
 import miragefairy2024.util.toIngredientStack

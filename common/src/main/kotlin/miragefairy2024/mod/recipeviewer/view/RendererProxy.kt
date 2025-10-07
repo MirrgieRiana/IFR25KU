@@ -1,0 +1,10 @@
+package miragefairy2024.mod.recipeviewer.view
+
+import net.minecraft.network.chat.FormattedText
+import net.minecraft.util.FormattedCharSequence
+
+interface RendererProxy {
+    fun calculateTextWidth(text: FormattedText): Int
+    fun getTextHeight(): Int
+    fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence>
+}
