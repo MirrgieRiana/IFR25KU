@@ -128,6 +128,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
             }
 
         }
+        // TODO remove
         // view += TraitEncyclopediaView(IntPoint(18 * 9 + 5, 140), recipeEntry.recipe)
     }
 

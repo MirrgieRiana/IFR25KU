@@ -17,7 +17,7 @@ interface ViewWithMinSize {
 
 interface ViewWithSize {
     val size: IntPoint
-    fun assemble(position: IntPoint, viewPlacer: ViewPlacer<View>)
+    fun assemble(offset: IntPoint, viewPlacer: ViewPlacer<View>)
 }
 
 interface RendererProxy {
