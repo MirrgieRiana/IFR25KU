@@ -9,8 +9,9 @@ import miragefairy2024.mod.recipeviewer.view.sized
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.atMost
 import net.minecraft.network.chat.Component
+import net.minecraft.util.FormattedCharSequence
 
-class TextView(val text: Component) : AbstractView(), PlaceableView {
+class TextView(var text: FormattedCharSequence) : AbstractView(), PlaceableView {
     var minWidth = 0
     var color: ColorPair? = null
     var shadow = true
@@ -20,3 +21,5 @@ class TextView(val text: Component) : AbstractView(), PlaceableView {
     override fun calculateSizeImpl(regionSize: IntPoint) = IntPoint(rendererProxy.calculateTextWidth(text) atMost regionSize.x atLeast minWidth, calculatedMinSize.y)
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(calculatedSize))
 }
+
+fun TextView(text: Component) = TextView(text.visualOrderText)

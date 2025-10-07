@@ -9,7 +9,7 @@ import miragefairy2024.util.toReiRectangle
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.events.GuiEventListener
 
-class ViewRendererReiWidget<V : PlaceableView>(private val renderer: ViewRenderer<V>, private val view: V, bounds: IntRectangle) : WidgetWithBounds() {
+class ReiViewRendererWidget<V : PlaceableView>(private val renderer: ViewRenderer<V>, private val view: V, bounds: IntRectangle) : WidgetWithBounds() {
     private val bounds2 = bounds
     private val reiBounds = bounds.toReiRectangle()
     override fun children() = listOf<GuiEventListener>()

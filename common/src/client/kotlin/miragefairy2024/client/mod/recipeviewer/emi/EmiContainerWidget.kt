@@ -31,8 +31,8 @@ class EmiContainerWidget : Widget() {
     }
 
     override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = widgets.forEach { it.render(draw, mouseX, mouseY, delta) }
-    override fun getTooltip(mouseX: Int, mouseY: Int) = widgets.flatMap { it.getTooltip(mouseX, mouseY) }
-    override fun mouseClicked(mouseX: Int, mouseY: Int, button: Int) = widgets.toList().any { it.mouseClicked(mouseX, mouseY, button) }
+    override fun getTooltip(mouseX: Int, mouseY: Int) = widgets.flatMap { if (it.bounds.contains(mouseX, mouseY)) it.getTooltip(mouseX, mouseY) else listOf() }
+    override fun mouseClicked(mouseX: Int, mouseY: Int, button: Int) = widgets.toList().any { if (it.bounds.contains(mouseX, mouseY)) it.mouseClicked(mouseX, mouseY, button) else false }
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = widgets.toList().any { it.keyPressed(keyCode, scanCode, modifiers) }
 }
 

@@ -14,20 +14,23 @@ import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.mod.recipeviewer.common.NinePatchImageViewRenderer
 import miragefairy2024.client.util.OwoComponent
 import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.Remover
+import miragefairy2024.mod.recipeviewer.view.flatten
+import miragefairy2024.mod.recipeviewer.view.offset
+import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.InputSlotView
-import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
-import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.Remover
 import miragefairy2024.mod.recipeviewer.views.TextView
-import miragefairy2024.mod.recipeviewer.view.flatten
-import miragefairy2024.mod.recipeviewer.view.register
-import miragefairy2024.mod.recipeviewer.view.sized
+import miragefairy2024.util.fire
+import miragefairy2024.util.register
 import miragefairy2024.util.toEmiBounds
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
@@ -52,7 +55,7 @@ fun initEmiViewPlacers() {
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: TextView, bounds ->
         val removers = mutableListOf<Remover>()
 
-        val textWidget = TextWidget(view.text.visualOrderText, bounds.x, bounds.y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
+        val textWidget = TextWidget(view.text, bounds.x, bounds.y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
             .let {
                 when (view.xAlignment) {
                     Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
@@ -88,10 +91,11 @@ fun initEmiViewPlacers() {
         )
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: NinePatchImageView, bounds ->
-        widgets place ViewRendererEmiWidget(NinePatchImageViewRenderer, view, bounds)
+        widgets place EmiViewRendererWidget(NinePatchImageViewRenderer, view, bounds)
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ImageButtonView, bounds ->
-        TODO
+        widgets place EmiImageButtonWidget(bounds.offset, view)
+            .also { it.onClick.register { view.onClick.fire() } }
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ArrowView, bounds ->
         if (view.durationMilliSeconds != null) {
@@ -116,7 +120,7 @@ fun initEmiViewPlacers() {
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, _), view, bounds ->
-                widgets place ViewRendererEmiWidget(entry.viewRenderer, view, bounds)
+                widgets place EmiViewRendererWidget(entry.viewRenderer, view, bounds)
             }
         }
         f(entry)

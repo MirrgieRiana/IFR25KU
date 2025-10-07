@@ -1,44 +1,44 @@
 package miragefairy2024.mod.recipeviewer.views
 
-import miragefairy2024.mod.recipeviewer.view.Alignment
-import miragefairy2024.mod.recipeviewer.view.ChildrenGenerator
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Remover
 import miragefairy2024.mod.recipeviewer.view.RemoverList
+import miragefairy2024.mod.recipeviewer.view.ViewGenerator
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.plusAssign
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.register
 
-class PagingView : ParentView<Alignment>() {
+class PagingView : ParentView<Unit>() {
 
-    val childrenGenerators = mutableListOf<ChildrenGenerator<Alignment>>()
+    val viewGenerators = mutableListOf<ViewGenerator>()
 
-    fun add(childrenGenerator: ChildrenGenerator<Alignment>) {
-        childrenGenerators += childrenGenerator
+    fun add(viewGenerator: ViewGenerator) {
+        viewGenerators += viewGenerator
     }
 
 
-    override fun createDefaultPosition() = Alignment.START
+    override fun createDefaultPosition() = Unit
 
 
     override fun calculateMinSizeImpl() = IntPoint.Companion.ZERO
 
 
-    private lateinit var pages: List<List<ParentView<Alignment>.ChildWithSize>>
-    val pageCount get() = pages.size
+    private lateinit var pages: List<List<ParentView<Unit>.ChildWithSize>>
+    val pageCount = ObservableValue(0)
 
     val pageIndex = ObservableValue(0)
 
     override fun calculateSizeImpl(regionSize: IntPoint): IntPoint {
-        val children = childrenGenerators.flatMap { it.generateChildren(rendererProxy, regionSize) }
+        val views = viewGenerators.flatMap { it.generateViews(rendererProxy, regionSize) }
+        val children = views.map { Child(Unit, it) }
         val childrenWithMinSize = children.map { it.withMinSize(rendererProxy) }
         val childrenWithSize = childrenWithMinSize.map { it.withSize(regionSize) }
 
-        val pages = mutableListOf<List<ParentView<Alignment>.ChildWithSize>>()
-        var page = mutableListOf<ParentView<Alignment>.ChildWithSize>()
+        val pages = mutableListOf<List<ParentView<Unit>.ChildWithSize>>()
+        var page = mutableListOf<ParentView<Unit>.ChildWithSize>()
         var y = 0
         childrenWithSize.forEach {
             if (page.isNotEmpty() && y + it.size.y > regionSize.y) {
@@ -51,8 +51,9 @@ class PagingView : ParentView<Alignment>() {
             y += it.size.y
         }
         if (page.isNotEmpty()) pages += page
-        if (pages.isEmpty()) pages += listOf<ParentView<Alignment>.ChildWithSize>()
+        if (pages.isEmpty()) pages += listOf<ParentView<Unit>.ChildWithSize>()
         this.pages = pages
+        pageCount.value = pages.size
 
         return regionSize
     }
@@ -72,9 +73,7 @@ class PagingView : ParentView<Alignment>() {
             }
         }
 
-        val pageIndexEventRemover = pageIndex.register { _, _ ->
-            load()
-        }
+        val pageIndexEventRemover = pageIndex.register { _, _ -> load() }
         load()
 
         return Remover {
@@ -85,4 +84,4 @@ class PagingView : ParentView<Alignment>() {
 
 }
 
-operator fun PagingView.plusAssign(childrenGenerator: ChildrenGenerator<Alignment>) = this.add(childrenGenerator)
+operator fun PagingView.plusAssign(viewGenerator: ViewGenerator) = this.add(viewGenerator)

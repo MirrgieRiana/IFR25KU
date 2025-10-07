@@ -6,9 +6,9 @@ import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 
 class ImageButtonView(size: IntPoint) : SolidView(size) {
-    val texture: ViewTexture? = null
-    val hoverTexture: ViewTexture? = null
-    val disabledTexture: ViewTexture? = null
+    var texture: ViewTexture? = null
+    var hoveredTexture: ViewTexture? = null
+    var disabledTexture: ViewTexture? = null
     val enabled = ObservableValue(true)
     val onClick = EventRegistry<() -> Unit>()
 }

@@ -11,23 +11,27 @@ import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.mod.recipeviewer.common.NinePatchImageViewRenderer
 import miragefairy2024.client.util.OwoComponent
 import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.offset
+import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.view.size
+import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.InputSlotView
-import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
-import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.views.TextView
-import miragefairy2024.mod.recipeviewer.view.offset
-import miragefairy2024.mod.recipeviewer.view.register
-import miragefairy2024.mod.recipeviewer.view.size
-import miragefairy2024.mod.recipeviewer.view.sized
+import miragefairy2024.util.fire
+import miragefairy2024.util.register
 import miragefairy2024.util.toEntryIngredient
+import miragefairy2024.util.toFormattedText
 import miragefairy2024.util.toReiPoint
 import miragefairy2024.util.toReiRectangle
+import net.minecraft.network.chat.Component
 
 context(ModContext)
 fun initReiViewPlacers() {
@@ -50,7 +54,8 @@ fun initReiViewPlacers() {
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: TextView, bounds ->
-        widgets place Widgets.createLabel(bounds.offset.toReiPoint(), view.text)
+        widgets place Widgets.createLabel(bounds.offset.toReiPoint(), Component.empty())
+            .also { it.message = view.text.toFormattedText() } // TODO FormattedCharSequenceを受け付けるカスタムTextWidget
             .let { if (view.color != null) it.color(view.color!!.lightModeArgb, view.color!!.darkModeArgb) else it }
             .shadow(view.shadow)
             .let {
@@ -76,10 +81,11 @@ fun initReiViewPlacers() {
         )
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: NinePatchImageView, bounds ->
-        widgets place ViewRendererReiWidget(NinePatchImageViewRenderer, view, bounds)
+        widgets place ReiViewRendererWidget(NinePatchImageViewRenderer, view, bounds)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ImageButtonView, bounds ->
-        TODO
+        widgets place ReiImageButtonWidget(bounds.offset, view)
+            .also { it.onClick.register { view.onClick.fire() } }
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ArrowView, bounds ->
         widgets place Widgets.createArrow(bounds.offset.toReiPoint())
@@ -88,7 +94,7 @@ fun initReiViewPlacers() {
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
             REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, bounds ->
-                widgets place ViewRendererReiWidget(entry.viewRenderer, view, bounds)
+                widgets place ReiViewRendererWidget(entry.viewRenderer, view, bounds)
             }
         }
         f(entry)

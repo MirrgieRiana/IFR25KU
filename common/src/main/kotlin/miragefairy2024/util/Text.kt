@@ -2,7 +2,9 @@ package miragefairy2024.util
 
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.FormattedText
 import net.minecraft.network.chat.Style
+import net.minecraft.util.FormattedCharSequence
 
 fun Component.style(style: Style): Component = Component.empty().append(this).setStyle(style)
 fun Component.formatted(formatting: ChatFormatting): Component = Component.empty().append(this).withStyle(formatting)
@@ -50,3 +52,25 @@ fun Iterable<Component>.join(vararg separators: Component): Component {
 }
 
 fun Int.toRomanText() = if (this in 1..10) text { translate("enchantment.level.${this@toRomanText}") } else text { "$this"() }
+
+fun FormattedCharSequence.toFormattedText(): FormattedText {
+    val formattedTexts = mutableListOf<FormattedText>()
+
+    var currentStyle: Style? = null
+    val sb = StringBuilder()
+    this.accept { i, style, j ->
+        if (currentStyle == null) {
+            currentStyle = style
+        } else if (style != currentStyle) {
+            formattedTexts += FormattedText.of(sb.toString(), currentStyle!!)
+            sb.clear()
+            currentStyle = style
+        }
+        sb.append(Character.toChars(j))
+        true
+    }
+    if (currentStyle != null) formattedTexts += FormattedText.of(sb.toString(), currentStyle)
+
+    if (formattedTexts.isEmpty()) FormattedText.EMPTY
+    return FormattedText.composite(formattedTexts)
+}

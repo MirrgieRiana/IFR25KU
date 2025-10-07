@@ -4,18 +4,21 @@ import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.magicplant.contents.magicplants.MirageFlowerCard
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
-import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.ViewTexture
+import miragefairy2024.mod.recipeviewer.views.ImageButtonView
+import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MarginView
+import miragefairy2024.mod.recipeviewer.views.MultiLineTextViewGenerator
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
-import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.views.PagingView
 import miragefairy2024.mod.recipeviewer.views.SolidView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
-import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
@@ -23,9 +26,11 @@ import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
+import miragefairy2024.util.register
 import miragefairy2024.util.sortedEntrySet
 import miragefairy2024.util.style
 import miragefairy2024.util.text
@@ -55,6 +60,9 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
     }
 
     override fun createView(recipeEntry: RecipeEntry<Trait>) = View {
+        val pageIndex = ObservableValue(0)
+        val pageCount = ObservableValue(0)
+
         view += StackView().configure {
 
             // 背景
@@ -75,13 +83,14 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                     // 特性アイコン行
                     view += XListView().configure {
 
+                        // TODO 加工機械で出力スロットが反応しない
                         // 条件リスト
                         view += XListView().configure {
                             position.alignment = Alignment.END
                             position.weight = 1.0
                             view += YListView().configure {
                                 recipeEntry.recipe.conditions.forEach {
-                                    view += TextView(it.emoji).configure {
+                                    view += TextView(it.emoji).configure { // TODO 名前も
                                         position.alignment = Alignment.START
                                         view.tooltip = listOf(it.name)
                                     }
@@ -107,7 +116,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                             }
                             view += YListView().configure {
                                 recipeEntry.recipe.traitEffectKeyEntries.forEach {
-                                    view += TextView(it.traitEffectKey.emoji.style(it.traitEffectKey.style)).configure {
+                                    view += TextView(it.traitEffectKey.emoji.style(it.traitEffectKey.style)).configure { // TODO 名前も
                                         position.alignment = Alignment.END
                                         view.xAlignment = Alignment.END
                                         view.tooltip = listOf(text { it.traitEffectKey.name + " "() + (it.factor * 100.0 formatAs "%.1f%%")() })
@@ -120,10 +129,86 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
 
                     view += YSpaceView(5)
 
+                    // TODO クリックしたら表示欄がでかくなってほしい
                     // 特性ポエム
-                    view += TextView(recipeEntry.recipe.poem).configure {
+                    view += PagingView().configure {
                         position.weight = 1.0
-                        // TODO multiline
+                        view += MultiLineTextViewGenerator(recipeEntry.recipe.poem)
+
+                        view.pageCount.register { _, it ->
+                            pageCount.value = it
+                        }
+                        view.pageIndex.register { _, it ->
+                            pageIndex.value = it
+                        }
+                        pageIndex.register { _, it ->
+                            view.pageIndex.value = it
+                        }
+                    }
+
+                    view += YSpaceView(5)
+
+                    // ページ操作ボタン
+                    view += XListView().configure {
+                        view += XListView().configure {
+                            position.alignment = Alignment.CENTER
+                            position.weight = 1.0
+                            view += XSpaceView(0).configure {
+                                position.weight = 1.0
+                            }
+                            view += ImageButtonView(IntPoint(12, 12)).configure {
+                                view.texture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 0, 12, 12))
+                                view.hoveredTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 12, 12, 12))
+                                view.disabledTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 24, 12, 12))
+
+                                fun update() {
+                                    view.enabled.value = pageIndex.value > 0
+                                }
+                                pageIndex.register { _, _ -> update() }
+                                update()
+
+                                view.onClick.register {
+                                    pageIndex.value -= 1
+                                }
+                            }
+                        }
+                        view += YListView().configure {
+                            position.alignment = Alignment.CENTER
+                            view.minWidth = 32
+                            view += TextView(text { "5"() }).configure {
+                                position.alignment = Alignment.CENTER
+
+                                // TODO 更新されない
+                                fun update() {
+                                    view.text = text { "${pageIndex.value + 1}"() }.visualOrderText
+                                }
+                                pageIndex.register { _, _ -> update() }
+                                update()
+                            }
+                        }
+                        view += XListView().configure {
+                            position.alignment = Alignment.CENTER
+                            position.weight = 1.0
+                            view += ImageButtonView(IntPoint(12, 12)).configure {
+                                view.texture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_right.png"), IntPoint(12, 36), IntRectangle(0, 0, 12, 12))
+                                view.hoveredTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_right.png"), IntPoint(12, 36), IntRectangle(0, 12, 12, 12))
+                                view.disabledTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_right.png"), IntPoint(12, 36), IntRectangle(0, 24, 12, 12))
+
+                                fun update() {
+                                    view.enabled.value = pageIndex.value < pageCount.value - 1
+                                }
+                                pageIndex.register { _, _ -> update() }
+                                pageCount.register { _, _ -> update() }
+                                update()
+
+                                view.onClick.register {
+                                    pageIndex.value += 1
+                                }
+                            }
+                            view += XSpaceView(0).configure {
+                                position.weight = 1.0
+                            }
+                        }
                     }
 
                 }

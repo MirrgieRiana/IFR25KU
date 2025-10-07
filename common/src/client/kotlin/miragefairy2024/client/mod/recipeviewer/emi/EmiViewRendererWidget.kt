@@ -8,7 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.util.toEmiBounds
 import net.minecraft.client.gui.GuiGraphics
 
-class ViewRendererEmiWidget<V : PlaceableView>(private val renderer: ViewRenderer<V>, private val view: V, bounds: IntRectangle) : Widget() {
+class EmiViewRendererWidget<V : PlaceableView>(private val renderer: ViewRenderer<V>, private val view: V, bounds: IntRectangle) : Widget() {
     private val bounds2 = bounds
     private val emiBounds = bounds.toEmiBounds()
     override fun getBounds() = emiBounds

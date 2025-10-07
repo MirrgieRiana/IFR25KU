@@ -21,6 +21,7 @@ import miragefairy2024.mod.recipeviewer.rei.ReiSupport
 import miragefairy2024.mod.recipeviewer.rei.SupportedDisplay
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.view.minus
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
@@ -86,7 +87,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         }
 
         // TODO
-        val MAX_SIZE = IntPoint(150, 126)
+        val MAX_SIZE = IntPoint(150, 130)
     }
 
     private var heightCache = 0
@@ -101,7 +102,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         return sizeCache.getOrPut(recipeEntry) {
             val view = card.createView(recipeEntry)
             view.calculateMinSize(rendererProxy)
-            view.calculateSize(MAX_SIZE)
+            view.calculateSize(MAX_SIZE.minus(5 + 5, 5 + 5))
         }
     }
 
@@ -115,7 +116,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             val containerWidget = ReiContainerWidget()
             val view = card.createView(display.recipeEntry)
             view.calculateMinSize(rendererProxy)
-            view.calculateSize(MAX_SIZE)
+            view.calculateSize(MAX_SIZE.minus(5 + 5, 5 + 5))
             view.attachTo(IntPoint(bounds.x + 5, bounds.y + 5)) { view2, bounds ->
                 REI_VIEW_PLACER_REGISTRY.place(containerWidget, view2, bounds)
             }
@@ -145,7 +146,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
                         val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(it.id(), it.value(), false)
                         val view = bridge.card.createView(recipeEntry)
                         view.calculateMinSize(rendererProxy)
-                        val size = view.calculateSize(MAX_SIZE)
+                        val size = view.calculateSize(MAX_SIZE.minus(5 + 5, 5 + 5))
                         heightCache = heightCache max size.y
                     }
                 }

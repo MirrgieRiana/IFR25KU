@@ -5,6 +5,7 @@ import net.minecraft.util.FormattedCharSequence
 
 interface RendererProxy {
     fun calculateTextWidth(text: FormattedText): Int
+    fun calculateTextWidth(text: FormattedCharSequence): Int
     fun getTextHeight(): Int
     fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence>
 }

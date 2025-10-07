@@ -21,6 +21,7 @@ fun initRecipeViewerClientModule() {
 val rendererProxy = object : RendererProxy {
     val font by lazy { Minecraft.getInstance().font }
     override fun calculateTextWidth(text: FormattedText) = font.width(text)
+    override fun calculateTextWidth(text: FormattedCharSequence) = font.width(text)
     override fun getTextHeight() = font.lineHeight
     override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = font.split(text, maxWidth)
 }
