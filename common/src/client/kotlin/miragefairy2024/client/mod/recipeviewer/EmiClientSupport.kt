@@ -8,7 +8,12 @@ import dev.emi.emi.api.render.EmiTexture
 import dev.emi.emi.api.stack.Comparison
 import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
+import dev.emi.emi.api.widget.Bounds
+import dev.emi.emi.api.widget.FillingArrowWidget
+import dev.emi.emi.api.widget.SlotWidget
 import dev.emi.emi.api.widget.TextWidget
+import dev.emi.emi.api.widget.TextureWidget
+import dev.emi.emi.api.widget.TooltipWidget
 import dev.emi.emi.api.widget.Widget
 import dev.emi.emi.api.widget.WidgetHolder
 import io.wispforest.owo.ui.container.Containers
@@ -26,6 +31,7 @@ import miragefairy2024.mod.recipeviewer.OutputSlotView
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
+import miragefairy2024.mod.recipeviewer.Remover
 import miragefairy2024.mod.recipeviewer.TextView
 import miragefairy2024.mod.recipeviewer.View
 import miragefairy2024.mod.recipeviewer.ViewPlacerRegistry
@@ -41,6 +47,7 @@ import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
 import mirrg.kotlin.helium.Single
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.item.crafting.RecipeInput
 import java.util.Objects
@@ -50,7 +57,7 @@ object EmiClientEvents {
     val onRegister = ReusableInitializationEventRegistry<(EmiRegistry) -> Unit>()
 }
 
-val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<Pair<WidgetHolder, EmiRecipe>>()
+val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<Pair<EmiContainerWidget, EmiRecipe>>()
 
 context(ModContext)
 fun initEmiClientSupport() {
@@ -100,21 +107,23 @@ fun initEmiClientSupport() {
     }
 
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: InputSlotView, bounds ->
-        widgets.addSlot(view.ingredientStack.toEmiIngredient(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
+        widgets place SlotWidget(view.ingredientStack.toEmiIngredient(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
             .drawBack(view.drawBackground)
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: CatalystSlotView, bounds ->
-        widgets.addSlot(view.ingredientStack.toEmiIngredient(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
+        widgets place SlotWidget(view.ingredientStack.toEmiIngredient(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
             .catalyst(true)
             .drawBack(view.drawBackground)
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, emiRecipe), view: OutputSlotView, bounds ->
-        widgets.addSlot(view.itemStack.toEmiStack(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
+        widgets place SlotWidget(view.itemStack.toEmiStack(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
             .recipeContext(emiRecipe)
             .drawBack(view.drawBackground)
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: TextView, bounds ->
-        val widget = widgets.addText(view.text, bounds.x, bounds.y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
+        val removers = mutableListOf<Remover>()
+
+        val textWidget = TextWidget(view.text.visualOrderText, bounds.x, bounds.y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
             .let {
                 when (view.xAlignment) {
                     Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
@@ -123,11 +132,23 @@ fun initEmiClientSupport() {
                     null -> it
                 }
             }
-        val bound = widget.bounds
-        if (view.tooltip != null) widgets.addTooltipText(view.tooltip!!, bound.x, bound.y, bound.width, bound.height)
+            .also { removers += widgets place it }
+        if (view.tooltip != null) {
+            val bound = textWidget.bounds
+            TooltipWidget({ _, _ ->
+                view.tooltip!!.map { ClientTooltipComponent.create(it.visualOrderText) }
+            }, bound.x, bound.y, bound.width, bound.height)
+                .also { removers += widgets place it }
+        }
+
+        Remover {
+            removers.forEach {
+                it.remove()
+            }
+        }
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ImageView, bounds ->
-        widgets.addTexture(
+        widgets place TextureWidget(
             view.textureId,
             bounds.x,
             bounds.y,
@@ -142,19 +163,32 @@ fun initEmiClientSupport() {
         )
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: NinePatchImageView, bounds ->
-        widgets.add(ViewRendererEmiWidget(NinePatchImageViewRenderer, view, bounds))
+        widgets place ViewRendererEmiWidget(NinePatchImageViewRenderer, view, bounds)
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ArrowView, bounds ->
         if (view.durationMilliSeconds != null) {
-            widgets.addFillingArrow(bounds.x, bounds.y, view.durationMilliSeconds!!)
+            widgets place FillingArrowWidget(bounds.x, bounds.y, view.durationMilliSeconds!!)
         } else {
-            widgets.addTexture(EmiTexture.EMPTY_ARROW, bounds.x, bounds.y)
+            val emiTexture = EmiTexture.EMPTY_ARROW
+            widgets place TextureWidget(
+                emiTexture.texture,
+                bounds.x,
+                bounds.y,
+                emiTexture.width,
+                emiTexture.height,
+                emiTexture.u,
+                emiTexture.v,
+                emiTexture.regionWidth,
+                emiTexture.regionHeight,
+                emiTexture.textureWidth,
+                emiTexture.textureHeight,
+            )
         }
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, _), view, bounds ->
-                widgets.add(ViewRendererEmiWidget(entry.viewRenderer, view, bounds))
+                widgets place ViewRendererEmiWidget(entry.viewRenderer, view, bounds)
             }
         }
         f(entry)
@@ -162,27 +196,19 @@ fun initEmiClientSupport() {
     ViewOwoAdapterRegistry.registry.subscribe { entry ->
         fun <V : View> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, emiRecipe), view, bounds ->
-                widgets.add(EmiUIAdapter(bounds.toEmiBounds(), Containers::stack).also { adapter ->
+                widgets place EmiUIAdapter(bounds.toEmiBounds(), Containers::stack).also { adapter ->
                     //adapter.rootComponent().allowOverflow(true)
                     val context = object : ViewOwoAdapterContext {
                         override fun prepare() = adapter.prepare()
                         override fun wrap(view: View, size: IntPoint): OwoComponent = adapter.wrap(run {
-                            val widgets = object : WidgetHolder {
-                                val list = mutableListOf<Widget>()
-                                override fun getWidth() = size.x
-                                override fun getHeight() = size.y
-                                override fun <T : Widget> add(widget: T): T {
-                                    list += widget
-                                    return widget
-                                }
-                            }
-                            EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, emiRecipe), view, IntPoint.ZERO.sized(size))
-                            widgets.list.single()
+                            val containerWidget = EmiContainerWidget()
+                            EMI_VIEW_PLACER_REGISTRY.place(Pair(containerWidget, emiRecipe), view, IntPoint.ZERO.sized(size))
+                            containerWidget.widgets.single()
                         })
                     }
                     adapter.rootComponent().child(entry.viewOwoAdapter.createOwoComponent(view, context))
                     adapter.prepare()
-                })
+                }
             }
         }
         f(entry)
@@ -235,15 +261,50 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getDisplayWidth() = 1 + viewWithSize.size.x + 1
     override fun getDisplayHeight() = 1 + viewWithSize.size.y + 1
     override fun addWidgets(widgets: WidgetHolder) {
+        val containerWidget = EmiContainerWidget()
         viewWithSize.assemble(IntPoint(1, 1)) { view2, bounds ->
-            EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, this), view2, bounds)
+            EMI_VIEW_PLACER_REGISTRY.place(Pair(containerWidget, this), view2, bounds)
         }
+        widgets.add(containerWidget)
     }
 }
+
+class EmiContainerWidget : Widget() {
+    private class WidgetSlot(val widget: Widget)
+
+    private val widgetSlots = mutableListOf<WidgetSlot>()
+    var widgets = listOf<Widget>()
+
+    fun add(widget: Widget): Remover {
+        val widgetSlot = WidgetSlot(widget)
+        widgetSlots += widgetSlot
+        widgets = widgetSlots.map { it.widget }
+        return Remover {
+            widgetSlots -= widgetSlot
+            widgets = widgetSlots.map { it.widget }
+        }
+    }
+
+    override fun getBounds(): Bounds {
+        if (widgets.isEmpty()) return Bounds.EMPTY
+        val xMin = widgets.minOfOrNull { it.bounds.x }!!
+        val yMin = widgets.minOfOrNull { it.bounds.y }!!
+        val xMax = widgets.maxOfOrNull { it.bounds.x + it.bounds.width }!!
+        val yMax = widgets.maxOfOrNull { it.bounds.y + it.bounds.height }!!
+        return Bounds(xMin, yMin, xMax - xMin, yMax - yMin)
+    }
+
+    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = widgets.forEach { it.render(draw, mouseX, mouseY, delta) }
+    override fun getTooltip(mouseX: Int, mouseY: Int) = widgets.flatMap { it.getTooltip(mouseX, mouseY) }
+    override fun mouseClicked(mouseX: Int, mouseY: Int, button: Int) = widgets.toList().any { it.mouseClicked(mouseX, mouseY, button) }
+    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = widgets.toList().any { it.keyPressed(keyCode, scanCode, modifiers) }
+}
+
+infix fun EmiContainerWidget.place(widget: Widget) = this.add(widget)
 
 class ViewRendererEmiWidget<V : View>(private val renderer: ViewRenderer<V>, private val view: V, bounds: IntRectangle) : Widget() {
     private val bounds2 = bounds
     private val emiBounds = bounds.toEmiBounds()
     override fun getBounds() = emiBounds
-    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, bounds2, draw, mouseX, mouseY, delta)
+    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, bounds2, draw, IntPoint(mouseX, mouseY), delta)
 }

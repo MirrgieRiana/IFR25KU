@@ -28,6 +28,7 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.ReiSupport
+import miragefairy2024.mod.recipeviewer.Remover
 import miragefairy2024.mod.recipeviewer.SupportedDisplay
 import miragefairy2024.mod.recipeviewer.TextView
 import miragefairy2024.mod.recipeviewer.View
@@ -60,7 +61,7 @@ object ReiClientEvents {
     val onRegisterScreens = ReusableInitializationEventRegistry<(ScreenRegistry) -> Unit>()
 }
 
-val REI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<MutableList<Widget>>()
+val REI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<ReiContainerWidget>()
 
 context(ModContext)
 fun initReiClientSupport() {
@@ -99,25 +100,25 @@ fun initReiClientSupport() {
     }
 
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: InputSlotView, bounds ->
-        widgets += Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
+        widgets place Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
             .entries(view.ingredientStack.toEntryIngredient())
             .markInput()
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: CatalystSlotView, bounds ->
-        widgets += Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
+        widgets place Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
             .entries(view.ingredientStack.toEntryIngredient())
             .markInput()
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: OutputSlotView, bounds ->
-        widgets += Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
+        widgets place Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
             .entries(view.itemStack.toEntryIngredient())
             .markOutput()
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: TextView, bounds ->
-        widgets += Widgets.createLabel(bounds.offset.toReiPoint(), view.text)
+        widgets place Widgets.createLabel(bounds.offset.toReiPoint(), view.text)
             .let { if (view.color != null) it.color(view.color!!.lightModeArgb, view.color!!.darkModeArgb) else it }
             .shadow(view.shadow)
             .let {
@@ -131,7 +132,7 @@ fun initReiClientSupport() {
             .let { if (view.tooltip != null) it.tooltip(*view.tooltip!!.toTypedArray()) else it }
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ImageView, bounds ->
-        widgets += Widgets.createTexturedWidget(
+        widgets place Widgets.createTexturedWidget(
             view.textureId,
             bounds.offset.sized(view.bound.size).toReiRectangle(),
             view.bound.x.toFloat(),
@@ -143,16 +144,16 @@ fun initReiClientSupport() {
         )
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: NinePatchImageView, bounds ->
-        widgets += ViewRendererReiWidget(NinePatchImageViewRenderer, view, bounds)
+        widgets place ViewRendererReiWidget(NinePatchImageViewRenderer, view, bounds)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ArrowView, bounds ->
-        widgets += Widgets.createArrow(bounds.offset.toReiPoint())
+        widgets place Widgets.createArrow(bounds.offset.toReiPoint())
             .animationDurationMS(view.durationMilliSeconds?.toDouble() ?: -1.0)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
             REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, bounds ->
-                widgets += ViewRendererReiWidget(entry.viewRenderer, view, bounds)
+                widgets place ViewRendererReiWidget(entry.viewRenderer, view, bounds)
             }
         }
         f(entry)
@@ -160,14 +161,14 @@ fun initReiClientSupport() {
     ViewOwoAdapterRegistry.registry.subscribe { entry ->
         fun <V : View> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
             REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, bounds ->
-                widgets += ReiUIAdapter(bounds.toReiRectangle(), Containers::stack).also { adapter ->
+                widgets place ReiUIAdapter(bounds.toReiRectangle(), Containers::stack).also { adapter ->
                     //adapter.rootComponent().allowOverflow(true)
                     val context = object : ViewOwoAdapterContext {
                         override fun prepare() = adapter.prepare()
                         override fun wrap(view: View, size: IntPoint): OwoComponent = adapter.wrap(run {
-                            val widgets = mutableListOf<Widget>()
-                            REI_VIEW_PLACER_REGISTRY.place(widgets, view, IntPoint.ZERO.sized(size))
-                            widgets.single() as WidgetWithBounds
+                            val containerWidget = ReiContainerWidget()
+                            REI_VIEW_PLACER_REGISTRY.place(containerWidget, view, IntPoint.ZERO.sized(size))
+                            containerWidget.widgets.single() as WidgetWithBounds
                         })
                     }
                     adapter.rootComponent().child(entry.viewOwoAdapter.createOwoComponent(view, context))
@@ -214,12 +215,14 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + getViewWithSize(display.recipeEntry).size.x + 5
         override fun getDisplayHeight() = 5 + heightCache + 5
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
-            val widgets = mutableListOf<Widget>()
-            widgets += Widgets.createRecipeBase(bounds)
+            val containerWidget = ReiContainerWidget()
             getViewWithSize(display.recipeEntry).assemble(IntPoint(bounds.x + 5, bounds.y + 5)) { view2, bounds ->
-                REI_VIEW_PLACER_REGISTRY.place(widgets, view2, bounds)
+                REI_VIEW_PLACER_REGISTRY.place(containerWidget, view2, bounds)
             }
-            return widgets
+            return listOf(
+                Widgets.createRecipeBase(bounds),
+                containerWidget,
+            )
         }
     }
 
@@ -271,10 +274,43 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
 }
 
+// me.shedaniel.rei.impl.client.gui.widget.MergedWidget
+class ReiContainerWidget : Widget() {
+    private class WidgetSlot(val widget: Widget)
+
+    private val widgetSlots = mutableListOf<WidgetSlot>()
+    var widgets = listOf<Widget>()
+
+    fun add(widget: Widget): Remover {
+        val widgetSlot = WidgetSlot(widget)
+        widgetSlots += widgetSlot
+        widgets = widgetSlots.map { it.widget }
+        return Remover {
+            widgetSlots -= widgetSlot
+            widgets = widgetSlots.map { it.widget }
+        }
+    }
+
+    override fun children() = widgets
+
+    override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean = widgets.toList().any { it.mouseScrolled(mouseX, mouseY, scrollX, scrollY) }
+    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean = widgets.toList().any { it.keyPressed(keyCode, scanCode, modifiers) }
+    override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean = widgets.toList().any { it.keyReleased(keyCode, scanCode, modifiers) }
+    override fun charTyped(codePoint: Char, modifiers: Int): Boolean = widgets.toList().any { it.charTyped(codePoint, modifiers) }
+    override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double) = widgets.toList().any { it.mouseDragged(mouseX, mouseY, button, dragX, dragY) }
+    override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int) = widgets.toList().any { it.mouseReleased(mouseX, mouseY, button) }
+
+    override fun containsMouse(mouseX: Double, mouseY: Double) = widgets.any { it.containsMouse(mouseX, mouseY) }
+    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = widgets.forEach { it.render(guiGraphics, mouseX, mouseY, partialTick) }
+    override fun getZRenderingPriority() = widgets.maxOfOrNull { it.zRenderingPriority } ?: 0.0
+}
+
+infix fun ReiContainerWidget.place(widget: Widget) = this.add(widget)
+
 class ViewRendererReiWidget<V : View>(private val renderer: ViewRenderer<V>, private val view: V, bounds: IntRectangle) : WidgetWithBounds() {
     private val bounds2 = bounds
     private val reiBounds = bounds.toReiRectangle()
     override fun children() = listOf<GuiEventListener>()
     override fun getBounds() = reiBounds
-    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, bounds2, context, mouseX, mouseY, delta)
+    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, bounds2, context, IntPoint(mouseX, mouseY), delta)
 }

@@ -11,8 +11,7 @@ import net.minecraft.world.item.ItemStack
 import kotlin.math.roundToInt
 
 
-abstract class ContainerView<P> : View {
-    protected val children = mutableListOf<Child<P, *>>()
+abstract class ParentView<P> : View {
 
     protected inner class ChildWithMinSize(val position: P, val viewWithMinSize: ViewWithMinSize)
     protected inner class ChildWithSize(val position: P, val viewWithSize: ViewWithSize)
@@ -21,18 +20,29 @@ abstract class ContainerView<P> : View {
     protected fun Child<P, *>.withMinSize(rendererProxy: RendererProxy) = ChildWithMinSize(this.position, this.view.calculateMinSize(rendererProxy))
 
     @get:JvmName("getMinSizeOfChildWithMinSize")
-    protected val ContainerView<P>.ChildWithMinSize.minSize get() = this.viewWithMinSize.minSize
+    protected val ParentView<P>.ChildWithMinSize.minSize get() = this.viewWithMinSize.minSize
 
     @JvmName("withSizeOfChildWithMinSize")
-    protected fun ContainerView<P>.ChildWithMinSize.withSize(maxSize: IntPoint) = ChildWithSize(this.position, this.viewWithMinSize.calculateSize(maxSize))
+    protected fun ParentView<P>.ChildWithMinSize.withSize(maxSize: IntPoint) = ChildWithSize(this.position, this.viewWithMinSize.calculateSize(maxSize))
 
     @get:JvmName("getSizeOfChildWithSize")
-    protected val ContainerView<P>.ChildWithSize.size get() = this.viewWithSize.size
+    protected val ParentView<P>.ChildWithSize.size get() = this.viewWithSize.size
 
     @JvmName("assembleOfChildWithSize")
-    protected fun ContainerView<P>.ChildWithSize.assemble(offset: IntPoint, viewPlacer: ViewPlacer<View>) = this.viewWithSize.assemble(offset, viewPlacer)
+    protected fun ParentView<P>.ChildWithSize.assemble(offset: IntPoint, viewPlacer: ViewPlacer<View>) = this.viewWithSize.assemble(offset, viewPlacer)
 
     abstract fun createDefaultPosition(): P
+
+}
+
+class Child<P, V : View>(var position: P, val view: V)
+
+context(Child<*, out ParentView<P>>)
+fun <P, V : View> V.configure(block: Child<P, V>.() -> Unit) = Child(this@Child.view.createDefaultPosition(), this).apply { block() }
+
+
+abstract class ContainerView<P> : ParentView<P>() {
+    protected val children = mutableListOf<Child<P, *>>()
 
     fun add(child: Child<P, *>) {
         children += child
@@ -41,11 +51,6 @@ abstract class ContainerView<P> : View {
 
 operator fun <P> ContainerView<P>.plusAssign(view: View) = this.add(Child(this.createDefaultPosition(), view))
 operator fun <P> ContainerView<P>.plusAssign(child: Child<P, *>) = this.add(child)
-
-class Child<P, V : View>(var position: P, val view: V)
-
-context(Child<*, out ContainerView<P>>)
-fun <P, V : View> V.configure(block: Child<P, V>.() -> Unit) = Child(this@Child.view.createDefaultPosition(), this).apply { block() }
 
 
 open class SingleView : ContainerView<Unit>() {
@@ -77,7 +82,7 @@ class MarginView(private val xMin: Int, private val xMax: Int, private val yMin:
     override fun getMinSize(childWithMinSize: ChildWithMinSize) = childWithMinSize.minSize.plus(xMin + xMax, yMin + yMax)
     override fun getChildWithSize(childWithMinSize: ChildWithMinSize, maxSize: IntPoint) = childWithMinSize.withSize(maxSize.minus(xMin + xMax, yMin + yMax))
     override fun getSize(childWithSize: ChildWithSize) = childWithSize.size.plus(xMin + xMax, yMin + yMax)
-    override fun assemble(childWithSize: ContainerView<Unit>.ChildWithSize, offset: IntPoint, viewPlacer: ViewPlacer<View>) = childWithSize.assemble(offset.offset(xMin, yMin), viewPlacer)
+    override fun assemble(childWithSize: ParentView<Unit>.ChildWithSize, offset: IntPoint, viewPlacer: ViewPlacer<View>) = childWithSize.assemble(offset.offset(xMin, yMin), viewPlacer)
 }
 
 fun MarginView(x: Int, y: Int) = MarginView(x, x, y, y)
@@ -252,6 +257,65 @@ class YListView : ListView() {
             }
         }
     }
+}
+
+
+class PagingView : ParentView<Alignment>() {
+    val childrenGenerators = mutableListOf<ChildrenGenerator<Alignment>>()
+
+    override fun createDefaultPosition() = Alignment.START
+    override fun calculateMinSize(rendererProxy: RendererProxy): ViewWithMinSize {
+        return object : ViewWithMinSize {
+            override val minSize = IntPoint.ZERO
+            override fun calculateSize(maxSize: IntPoint): ViewWithSize {
+                val children = childrenGenerators.flatMap { it.generateChildren(rendererProxy, maxSize) }
+                val childrenWithMinSize = children.map { it.withMinSize(rendererProxy) }
+                val childrenWithSize = childrenWithMinSize.map { it.withSize(it.minSize) }
+
+                val pages = mutableListOf<List<ParentView<Alignment>.ChildWithSize>>()
+                var page = mutableListOf<ParentView<Alignment>.ChildWithSize>()
+                var y = 0
+                childrenWithSize.forEach {
+                    if (page.isNotEmpty() && y + it.size.y > maxSize.y) {
+                        // ページが空でなく、これを追加するとはみ出す場合、新しいページを作る
+                        pages += page
+                        page = mutableListOf()
+                        y = 0
+                    }
+                    page += it
+                    y += it.size.y
+                }
+                if (page.isNotEmpty()) pages += page
+
+
+
+
+
+                return object : ViewWithSize {
+                    override val size = maxSize
+                    override fun assemble(offset: IntPoint, viewPlacer: ViewPlacer<View>) {
+
+
+
+
+
+
+                        // TODO
+                    }
+                }
+            }
+        }
+    }
+
+    fun add(childrenGenerator: ChildrenGenerator<Alignment>) {
+        childrenGenerators += childrenGenerator
+    }
+}
+
+operator fun PagingView.plusAssign(childrenGenerator: ChildrenGenerator<Alignment>) = this.add(childrenGenerator)
+
+fun interface ChildrenGenerator<P> {
+    fun generateChildren(rendererProxy: RendererProxy, maxSize: IntPoint): List<Child<P, *>>
 }
 
 

@@ -4,7 +4,8 @@ import miragefairy2024.util.FreezableRegistry
 import miragefairy2024.util.set
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
-import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.FormattedText
+import net.minecraft.util.FormattedCharSequence
 
 interface View {
     fun calculateMinSize(rendererProxy: RendererProxy): ViewWithMinSize
@@ -21,16 +22,21 @@ interface ViewWithSize {
 }
 
 interface RendererProxy {
-    fun calculateTextWidth(component: Component): Int
+    fun calculateTextWidth(text: FormattedText): Int
     fun getTextHeight(): Int
+    fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence>
 }
 
 fun interface ViewPlacer<in V : View> {
-    fun place(view: V, bounds: IntRectangle)
+    fun place(view: V, bounds: IntRectangle): Remover
 }
 
 fun interface ContextViewPlacer<in C, in V : View> {
-    fun place(context: C, view: V, bounds: IntRectangle)
+    fun place(context: C, view: V, bounds: IntRectangle): Remover
+}
+
+fun interface Remover {
+    fun remove()
 }
 
 class ViewPlacerRegistry<C> {
@@ -40,12 +46,12 @@ class ViewPlacerRegistry<C> {
         map[viewClass] = factory
     }
 
-    fun <V : View> place(context: C, view: V, bounds: IntRectangle) {
+    fun <V : View> place(context: C, view: V, bounds: IntRectangle): Remover {
         val contextViewPlacer = map.freezeAndGet()[view.javaClass]
         if (contextViewPlacer == null) throw IllegalArgumentException("Unsupported view: $view")
         @Suppress("UNCHECKED_CAST")
         contextViewPlacer as ContextViewPlacer<C, V>
-        contextViewPlacer.place(context, view, bounds)
+        return contextViewPlacer.place(context, view, bounds)
     }
 }
 

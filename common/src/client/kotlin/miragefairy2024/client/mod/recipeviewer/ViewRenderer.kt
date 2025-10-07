@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer
 
+import miragefairy2024.mod.recipeviewer.IntPoint
 import miragefairy2024.mod.recipeviewer.IntRectangle
 import miragefairy2024.mod.recipeviewer.View
 import miragefairy2024.util.SubscribableBuffer
@@ -7,7 +8,7 @@ import miragefairy2024.util.plusAssign
 import net.minecraft.client.gui.GuiGraphics
 
 fun interface ViewRenderer<in V : View> {
-    fun render(view: V, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float)
+    fun render(view: V, bounds: IntRectangle, graphics: GuiGraphics, mousePosition: IntPoint, delta: Float)
 }
 
 object ViewRendererRegistry {

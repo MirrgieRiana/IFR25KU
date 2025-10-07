@@ -14,6 +14,7 @@ import miragefairy2024.mod.machine.FermentationBarrelCard
 import miragefairy2024.mod.machine.FermentationBarrelScreenHandler
 import miragefairy2024.mod.machine.SimpleMachineCard
 import miragefairy2024.mod.machine.SimpleMachineScreenHandler
+import miragefairy2024.mod.recipeviewer.IntPoint
 import miragefairy2024.mod.recipeviewer.IntRectangle
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
@@ -35,7 +36,7 @@ fun initMachineClientModule() {
 }
 
 object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
-    override fun render(view: BlueFuelView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(view: BlueFuelView, bounds: IntRectangle, graphics: GuiGraphics, mousePosition: IntPoint, delta: Float) {
         val fuelMax = 20 * 10
         val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
         val fuelRate = fuel.toDouble() / fuelMax.toDouble()
