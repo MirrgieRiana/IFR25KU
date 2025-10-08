@@ -255,8 +255,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
 
     fun getProducerMagicPlantSeedItemStacks(trait: Trait): List<ItemStack> {
         return magicPlantCards
-            // TODO デフォルト特性
-            .filter { trait in it.randomTraitChances }
+            .filter { trait in it.defaultTraitBits || trait in it.randomTraitChances }
             .map { card -> card.item().createItemStack().also { it.setTraitStacks(TraitStacks.of(TraitStack(trait, 1))) } }
     }
 }

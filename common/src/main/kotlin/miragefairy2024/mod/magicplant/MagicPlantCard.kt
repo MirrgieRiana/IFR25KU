@@ -8,6 +8,7 @@ import miragefairy2024.mod.magicplant.contents.TraitConditionCard
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.poem
+import miragefairy2024.mod.recipeviewer.registerIdentificationDataComponentTypes
 import miragefairy2024.mod.registerHarvestNotation
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
@@ -98,6 +99,7 @@ abstract class MagicPlantCard<B : MagicPlantBlock> {
         item.registerPoemGeneration(seedPoemList)
 
         // 性質
+        item.registerIdentificationDataComponentTypes { listOf() }
         //block.registerTagGenerate(BlockTags.SMALL_FLOWERS) // これをやるとエンダーマンが勝手に引っこ抜いていく
         BlockTags.MAINTAINS_FARMLAND.generator.registerChild(block)
         BlockTags.CROPS.generator.registerChild(block)
