@@ -3,12 +3,16 @@ package miragefairy2024.mod.magicplant
 import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.Emoji
+import miragefairy2024.mod.invoke
+import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.magicplant.contents.magicplants.MirageFlowerCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
+import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MarginView
@@ -27,7 +31,9 @@ import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.ObservableValue
+import miragefairy2024.util.Translation
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.register
@@ -39,9 +45,15 @@ import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.core.RegistryAccess
 import net.minecraft.world.item.ItemStack
 
+private val identifier = MirageFairy2024.identifier("trait_encyclopedia")
+private val DEFAULT_TRAIT_TRANSLATION = Translation({ identifier.toLanguageKey("gui", "default_trait") }, EnJa("Default Trait", "初期状態で発現"))
+private val RANDOM_TRAIT_TRANSLATION = Translation({ identifier.toLanguageKey("gui", "random_trait") }, EnJa("Random Trait", "ランダムで発現"))
+
 context(ModContext)
 fun initTraitEncyclopedia() {
     TraitEncyclopediaRecipeViewerCategoryCard.init()
+
+    RANDOM_TRAIT_TRANSLATION.enJa()
 }
 
 object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trait>() {
@@ -95,7 +107,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                                     }
                                 }
                             }
-                            view += XSpaceView(0).configure {
+                            view += XSpaceView().configure {
                                 position.weight = 1.0
                             }
                         }
@@ -110,7 +122,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         view += XListView().configure {
                             position.alignmentY = Alignment.END
                             position.weight = 1.0
-                            view += XSpaceView(0).configure {
+                            view += XSpaceView().configure {
                                 position.weight = 1.0
                             }
                             view += YListView().configure {
@@ -147,30 +159,39 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
 
                     view += YSpaceView(5)
 
-                    // TODO 対応種子
-
                     // ページ操作ボタン
                     view += XListView().configure {
-                        view += XListView().configure {
+                        val defaultTraitProducers = magicPlantCards
+                            .filter { recipeEntry.recipe in it.defaultTraitBits }
+                            .map { card -> card.item().createItemStack().also { it.setTraitStacks(TraitStacks.of(TraitStack(recipeEntry.recipe, 1))) } }
+                            .toIngredientStack()
+                        view += CatalystSlotView(defaultTraitProducers).configure {
                             position.alignmentY = Alignment.CENTER
+                            view.drawBackground = false
+                            view.margin = 0
+                        }
+                        view += TextView(Emoji.NATURAL().style(TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.style)).configure {
                             position.weight = 1.0
-                            view += XSpaceView(0).configure {
-                                position.weight = 1.0
+                            position.alignmentY = Alignment.START
+                            view.tooltip = listOf(text { DEFAULT_TRAIT_TRANSLATION() })
+                        }
+                        view += XSpaceView().configure {
+                            position.weight = 1.0
+                        }
+                        view += ImageButtonView(IntPoint(12, 12)).configure {
+                            position.alignmentY = Alignment.CENTER
+                            view.texture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 0, 12, 12))
+                            view.hoveredTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 12, 12, 12))
+                            view.disabledTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 24, 12, 12))
+
+                            fun update() {
+                                view.enabled.value = pageIndex.value > 0
                             }
-                            view += ImageButtonView(IntPoint(12, 12)).configure {
-                                view.texture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 0, 12, 12))
-                                view.hoveredTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 12, 12, 12))
-                                view.disabledTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 24, 12, 12))
+                            pageIndex.register { _, _ -> update() }
+                            update()
 
-                                fun update() {
-                                    view.enabled.value = pageIndex.value > 0
-                                }
-                                pageIndex.register { _, _ -> update() }
-                                update()
-
-                                view.onClick.register {
-                                    pageIndex.value -= 1
-                                }
+                            view.onClick.register {
+                                pageIndex.value -= 1
                             }
                         }
                         view += TextView().configure {
@@ -184,28 +205,39 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                             pageIndex.register { _, _ -> update() }
                             update()
                         }
-                        view += XListView().configure {
+                        view += ImageButtonView(IntPoint(12, 12)).configure {
                             position.alignmentY = Alignment.CENTER
+                            view.texture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_right.png"), IntPoint(12, 36), IntRectangle(0, 0, 12, 12))
+                            view.hoveredTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_right.png"), IntPoint(12, 36), IntRectangle(0, 12, 12, 12))
+                            view.disabledTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_right.png"), IntPoint(12, 36), IntRectangle(0, 24, 12, 12))
+
+                            fun update() {
+                                view.enabled.value = pageIndex.value < pageCount.value - 1
+                            }
+                            pageIndex.register { _, _ -> update() }
+                            pageCount.register { _, _ -> update() }
+                            update()
+
+                            view.onClick.register {
+                                pageIndex.value += 1
+                            }
+                        }
+                        view += XSpaceView().configure {
                             position.weight = 1.0
-                            view += ImageButtonView(IntPoint(12, 12)).configure {
-                                view.texture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_right.png"), IntPoint(12, 36), IntRectangle(0, 0, 12, 12))
-                                view.hoveredTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_right.png"), IntPoint(12, 36), IntRectangle(0, 12, 12, 12))
-                                view.disabledTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_right.png"), IntPoint(12, 36), IntRectangle(0, 24, 12, 12))
-
-                                fun update() {
-                                    view.enabled.value = pageIndex.value < pageCount.value - 1
-                                }
-                                pageIndex.register { _, _ -> update() }
-                                pageCount.register { _, _ -> update() }
-                                update()
-
-                                view.onClick.register {
-                                    pageIndex.value += 1
-                                }
-                            }
-                            view += XSpaceView(0).configure {
-                                position.weight = 1.0
-                            }
+                        }
+                        view += TextView(Emoji.MUTATION().style(TraitEffectKeyCard.MUTATION.traitEffectKey.style)).configure {
+                            position.weight = 1.0
+                            position.alignmentY = Alignment.START
+                            view.tooltip = listOf(text { RANDOM_TRAIT_TRANSLATION() })
+                        }
+                        val randomTraitProducers = magicPlantCards
+                            .filter { recipeEntry.recipe in it.randomTraitChances }
+                            .map { card -> card.item().createItemStack().also { it.setTraitStacks(TraitStacks.of(TraitStack(recipeEntry.recipe, 1))) } }
+                            .toIngredientStack()
+                        view += CatalystSlotView(randomTraitProducers).configure {
+                            position.alignmentY = Alignment.CENTER
+                            view.drawBackground = false
+                            view.margin = 0
                         }
                     }
 

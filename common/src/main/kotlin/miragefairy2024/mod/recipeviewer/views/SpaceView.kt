@@ -16,3 +16,6 @@ abstract class SpaceView(private val minSize: IntPoint, private val maxSize: Int
 
 class XSpaceView(minSizeX: Int) : SpaceView(IntPoint(minSizeX, 0), IntPoint(Int.MAX_VALUE, 0))
 class YSpaceView(minSizeY: Int) : SpaceView(IntPoint(0, minSizeY), IntPoint(0, Int.MAX_VALUE))
+
+fun XSpaceView() = XSpaceView(0)
+fun YSpaceView() = YSpaceView(0)

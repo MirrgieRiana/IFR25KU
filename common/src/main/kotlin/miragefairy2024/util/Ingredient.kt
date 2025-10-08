@@ -11,7 +11,12 @@ import net.minecraft.world.item.crafting.Ingredient
 fun Item.toIngredient(): Ingredient = Ingredient.of(this)
 fun ItemStack.toIngredient(): Ingredient = Ingredient.of(this)
 fun TagKey<Item>.toIngredient(): Ingredient = Ingredient.of(this)
+
+@JvmName("toIngredientFromItems")
 fun Iterable<Item>.toIngredient(): Ingredient = Ingredient.of(*this.toList().toTypedArray())
+
+@JvmName("toIngredientFromItemStacks")
+fun Iterable<ItemStack>.toIngredient(): Ingredient = Ingredient.of(*this.toList().toTypedArray())
 
 context(ModContext)
 fun CustomIngredientSerializer<*>.register() {
