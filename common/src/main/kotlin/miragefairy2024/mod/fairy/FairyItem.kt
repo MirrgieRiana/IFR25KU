@@ -452,13 +452,13 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
 
     override fun createView(recipeEntry: RecipeEntry<FairyFamilyNotation>) = View {
         view += XListView().configure {
-            view.minHeight = 18 * 7
+            view.minSizeY = 18 * 7
             view += YListView().configure {
-                view.minWidth = 18 * 9
+                view.minSizeX = 18 * 9
 
                 // 上に親妖精
                 view += YListView().configure {
-                    position.alignment = Alignment.CENTER
+                    position.alignmentX = Alignment.CENTER
                     recipeEntry.recipe.parents.chunked(9).forEach { chunk ->
                         view += XListView().configure {
                             chunk.forEach {
@@ -472,14 +472,14 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
 
                 // 中段に対象の妖精
                 view += CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground().configure {
-                    position.alignment = Alignment.CENTER
+                    position.alignmentX = Alignment.CENTER
                 }
 
                 view += YSpaceView(9)
 
                 // 下に子妖精
                 view += YListView().configure {
-                    position.alignment = Alignment.CENTER
+                    position.alignmentX = Alignment.CENTER
                     recipeEntry.recipe.children.chunked(9).forEach { chunk ->
                         view += XListView().configure {
                             chunk.forEach {

@@ -2,10 +2,12 @@ package miragefairy2024.client.mod.recipeviewer.emi
 
 import dev.emi.emi.api.widget.Bounds
 import dev.emi.emi.api.widget.Widget
-import miragefairy2024.mod.recipeviewer.view.Remover
+import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 
 class EmiContainerWidget : Widget() {
+
     private class WidgetSlot(val widget: Widget)
 
     private val widgetSlots = mutableListOf<WidgetSlot>()
@@ -30,10 +32,38 @@ class EmiContainerWidget : Widget() {
         return Bounds(xMin, yMin, xMax - xMin, yMax - yMin)
     }
 
-    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = widgets.forEach { it.render(draw, mouseX, mouseY, delta) }
-    override fun getTooltip(mouseX: Int, mouseY: Int) = widgets.flatMap { if (it.bounds.contains(mouseX, mouseY)) it.getTooltip(mouseX, mouseY) else listOf() }
-    override fun mouseClicked(mouseX: Int, mouseY: Int, button: Int) = widgets.toList().any { if (it.bounds.contains(mouseX, mouseY)) it.mouseClicked(mouseX, mouseY, button) else false }
-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = widgets.toList().any { it.keyPressed(keyCode, scanCode, modifiers) }
+    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+        widgets.forEach {
+            it.render(draw, mouseX, mouseY, delta)
+        }
+    }
+
+    override fun getTooltip(mouseX: Int, mouseY: Int): List<ClientTooltipComponent?> {
+        return widgets.flatMap {
+            if (it.bounds.contains(mouseX, mouseY)) {
+                it.getTooltip(mouseX, mouseY)
+            } else {
+                listOf()
+            }
+        }
+    }
+
+    override fun mouseClicked(mouseX: Int, mouseY: Int, button: Int): Boolean {
+        return widgets.toList().any {
+            if (it.bounds.contains(mouseX, mouseY)) {
+                it.mouseClicked(mouseX, mouseY, button)
+            } else {
+                false
+            }
+        }
+    }
+
+    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        return widgets.toList().any {
+            it.keyPressed(keyCode, scanCode, modifiers)
+        }
+    }
+
 }
 
 infix fun EmiContainerWidget.place(widget: Widget) = this.add(widget)

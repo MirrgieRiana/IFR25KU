@@ -71,11 +71,9 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
             view += MarginView(5).configure {
                 view += YListView().configure {
 
-                    // TODO 対応種子
-
                     // 特性名
                     view += TextView(recipeEntry.recipe.getName().style(recipeEntry.recipe.style)).configure {
-                        position.alignment = Alignment.CENTER
+                        position.alignmentX = Alignment.CENTER
                     }
 
                     view += YSpaceView(5)
@@ -83,15 +81,16 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                     // 特性アイコン行
                     view += XListView().configure {
 
+                        // TODO フェアリークエストカードにスクロールテキストを
                         // TODO 加工機械で出力スロットが反応しない
                         // 条件リスト
                         view += XListView().configure {
-                            position.alignment = Alignment.END
+                            position.alignmentY = Alignment.END
                             position.weight = 1.0
                             view += YListView().configure {
                                 recipeEntry.recipe.conditions.forEach {
-                                    view += TextView(it.emoji).configure { // TODO 名前も
-                                        position.alignment = Alignment.START
+                                    view += TextView(it.emoji).configure {
+                                        position.alignmentX = Alignment.START
                                         view.tooltip = listOf(it.name)
                                     }
                                 }
@@ -104,22 +103,22 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         // 特性アイコン
                         val texture = ViewTexture(recipeEntry.recipe.texture, IntPoint(32, 32), IntRectangle(0, 0, 32, 32))
                         view += ImageView(texture).configure {
-                            position.alignment = Alignment.END
+                            position.alignmentY = Alignment.END
                         }
 
                         // 効果リスト
                         view += XListView().configure {
-                            position.alignment = Alignment.END
+                            position.alignmentY = Alignment.END
                             position.weight = 1.0
                             view += XSpaceView(0).configure {
                                 position.weight = 1.0
                             }
                             view += YListView().configure {
                                 recipeEntry.recipe.traitEffectKeyEntries.forEach {
-                                    view += TextView(it.traitEffectKey.emoji.style(it.traitEffectKey.style)).configure { // TODO 名前も
-                                        position.alignment = Alignment.END
-                                        view.xAlignment = Alignment.END
-                                        view.tooltip = listOf(text { it.traitEffectKey.name + " "() + (it.factor * 100.0 formatAs "%.1f%%")() })
+                                    view += TextView(text { (it.factor * 100.0 formatAs "%.1f%%")() + " "() + it.traitEffectKey.emoji.style(it.traitEffectKey.style) }).configure {
+                                        position.alignmentX = Alignment.END
+                                        view.alignmentX = Alignment.END
+                                        view.tooltip = listOf(it.traitEffectKey.name)
                                     }
                                 }
                             }
@@ -148,10 +147,12 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
 
                     view += YSpaceView(5)
 
+                    // TODO 対応種子
+
                     // ページ操作ボタン
                     view += XListView().configure {
                         view += XListView().configure {
-                            position.alignment = Alignment.CENTER
+                            position.alignmentY = Alignment.CENTER
                             position.weight = 1.0
                             view += XSpaceView(0).configure {
                                 position.weight = 1.0
@@ -172,22 +173,19 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                                 }
                             }
                         }
-                        view += YListView().configure {
-                            position.alignment = Alignment.CENTER
+                        view += TextView().configure {
+                            position.alignmentY = Alignment.CENTER
                             view.minWidth = 32
-                            view += TextView(text { "5"() }).configure {
-                                position.alignment = Alignment.CENTER
+                            view.alignmentX = Alignment.CENTER
 
-                                // TODO 更新されない
-                                fun update() {
-                                    view.text = text { "${pageIndex.value + 1}"() }.visualOrderText
-                                }
-                                pageIndex.register { _, _ -> update() }
-                                update()
+                            fun update() {
+                                view.text.value = text { "${pageIndex.value + 1}"() }.visualOrderText
                             }
+                            pageIndex.register { _, _ -> update() }
+                            update()
                         }
                         view += XListView().configure {
-                            position.alignment = Alignment.CENTER
+                            position.alignmentY = Alignment.CENTER
                             position.weight = 1.0
                             view += ImageButtonView(IntPoint(12, 12)).configure {
                                 view.texture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_right.png"), IntPoint(12, 36), IntRectangle(0, 0, 12, 12))

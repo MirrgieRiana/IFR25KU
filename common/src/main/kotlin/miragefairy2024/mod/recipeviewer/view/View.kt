@@ -1,5 +1,7 @@
 package miragefairy2024.mod.recipeviewer.view
 
+import miragefairy2024.util.Remover
+
 /**
  * ステートフルなUI要素です。
  */

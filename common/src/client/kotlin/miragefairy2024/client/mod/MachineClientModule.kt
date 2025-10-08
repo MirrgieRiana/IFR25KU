@@ -40,14 +40,14 @@ object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
         val fuelMax = 20 * 10
         val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
         val fuelRate = fuel.toDouble() / fuelMax.toDouble()
-        val h = (bounds.ySize.toDouble() * fuelRate).roundToInt()
+        val h = (bounds.sizeY.toDouble() * fuelRate).roundToInt()
         graphics.blit(
             AuraReflectorFurnaceScreen.BLUE_FUEL_TEXTURE,
             bounds.x - 1,
-            bounds.y - 1 + (bounds.ySize - h),
+            bounds.y - 1 + (bounds.sizeY - h),
             0F,
-            bounds.ySize.toFloat() - h.toFloat(),
-            bounds.xSize,
+            bounds.sizeY.toFloat() - h.toFloat(),
+            bounds.sizeX,
             h,
             32,
             32,

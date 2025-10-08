@@ -3,22 +3,19 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.Remover
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
-import miragefairy2024.mod.recipeviewer.view.flatten
 import miragefairy2024.mod.recipeviewer.view.offset
+import miragefairy2024.util.Remover
+import miragefairy2024.util.flatten
 import mirrg.kotlin.helium.atLeast
 import kotlin.math.roundToInt
 
-abstract class ListView : ContainerView<ListView.Position>() {
-    class Position(var alignment: Alignment, var weight: Double)
+class XListView : ContainerView<XListView.Position>() {
+    class Position(var alignmentY: Alignment, var weight: Double)
 
     override fun createDefaultPosition() = Position(Alignment.START, 0.0)
-}
 
-class XListView : ListView() {
-
-    var minHeight = 0
+    var minSizeY = 0
 
     private lateinit var childrenWithMinSize: List<ParentView<Position>.ChildWithMinSize>
 
@@ -26,7 +23,7 @@ class XListView : ListView() {
         childrenWithMinSize = children.map { it.withMinSize(rendererProxy) }
         return IntPoint(
             childrenWithMinSize.sumOf { it.minSize.x },
-            (childrenWithMinSize.maxOfOrNull { it.minSize.y } ?: 0) atLeast minHeight,
+            (childrenWithMinSize.maxOfOrNull { it.minSize.y } ?: 0) atLeast minSizeY,
         )
     }
 
@@ -47,7 +44,7 @@ class XListView : ListView() {
         }
         return IntPoint(
             childrenWithSize.sumOf { it.size.x },
-            (childrenWithSize.maxOfOrNull { it.size.y } ?: 0) atLeast minHeight,
+            (childrenWithSize.maxOfOrNull { it.size.y } ?: 0) atLeast minSizeY,
         )
     }
 
@@ -55,7 +52,7 @@ class XListView : ListView() {
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         var childX = 0
         return childrenWithSize.map {
-            val childY = when (it.child.position.alignment) {
+            val childY = when (it.child.position.alignmentY) {
                 Alignment.START -> 0
                 Alignment.CENTER -> (calculatedSize.y - it.size.y) / 2
                 Alignment.END -> calculatedSize.y - it.size.y
@@ -68,16 +65,19 @@ class XListView : ListView() {
 
 }
 
-class YListView : ListView() {
+class YListView : ContainerView<YListView.Position>() {
+    class Position(var alignmentX: Alignment, var weight: Double)
 
-    var minWidth = 0
+    override fun createDefaultPosition() = Position(Alignment.START, 0.0)
+
+    var minSizeX = 0
 
     private lateinit var childrenWithMinSize: List<ParentView<Position>.ChildWithMinSize>
 
     override fun calculateMinSizeImpl(): IntPoint {
         childrenWithMinSize = children.map { it.withMinSize(rendererProxy) }
         return IntPoint(
-            (childrenWithMinSize.maxOfOrNull { it.minSize.x } ?: 0) atLeast minWidth,
+            (childrenWithMinSize.maxOfOrNull { it.minSize.x } ?: 0) atLeast minSizeX,
             childrenWithMinSize.sumOf { it.minSize.y },
         )
     }
@@ -98,7 +98,7 @@ class YListView : ListView() {
             }
         }
         return IntPoint(
-            (childrenWithSize.maxOfOrNull { it.size.x } ?: 0) atLeast minWidth,
+            (childrenWithSize.maxOfOrNull { it.size.x } ?: 0) atLeast minSizeX,
             childrenWithSize.sumOf { it.size.y },
         )
     }
@@ -107,7 +107,7 @@ class YListView : ListView() {
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         var childY = 0
         return childrenWithSize.map {
-            val childX = when (it.child.position.alignment) {
+            val childX = when (it.child.position.alignmentX) {
                 Alignment.START -> 0
                 Alignment.CENTER -> (calculatedSize.x - it.size.x) / 2
                 Alignment.END -> calculatedSize.x - it.size.x

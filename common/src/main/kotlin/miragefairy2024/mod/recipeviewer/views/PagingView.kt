@@ -2,13 +2,13 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.Remover
 import miragefairy2024.mod.recipeviewer.view.RemoverList
 import miragefairy2024.mod.recipeviewer.view.ViewGenerator
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.plusAssign
 import miragefairy2024.util.ObservableValue
+import miragefairy2024.util.Remover
 import miragefairy2024.util.register
 
 class PagingView : ParentView<Unit>() {
@@ -60,8 +60,9 @@ class PagingView : ParentView<Unit>() {
 
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val childrenRemover = RemoverList()
+        val removers = RemoverList()
 
+        val childrenRemover = RemoverList()
         fun load() {
             childrenRemover.remove()
 
@@ -72,14 +73,12 @@ class PagingView : ParentView<Unit>() {
                 childY += it.size.y
             }
         }
+        removers += childrenRemover
 
-        val pageIndexEventRemover = pageIndex.register { _, _ -> load() }
+        removers += pageIndex.register { _, _ -> load() }
         load()
 
-        return Remover {
-            childrenRemover.remove()
-            pageIndexEventRemover()
-        }
+        return removers
     }
 
 }

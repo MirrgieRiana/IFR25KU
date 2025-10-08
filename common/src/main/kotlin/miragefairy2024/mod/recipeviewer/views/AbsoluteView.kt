@@ -3,12 +3,12 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.Remover
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
-import miragefairy2024.mod.recipeviewer.view.flatten
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.plus
 import miragefairy2024.mod.recipeviewer.view.size
+import miragefairy2024.util.Remover
+import miragefairy2024.util.flatten
 
 class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Position>() {
     sealed class Position {

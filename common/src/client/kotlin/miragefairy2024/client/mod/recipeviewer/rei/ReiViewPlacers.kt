@@ -2,6 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.rei
 
 import io.wispforest.owo.compat.rei.ReiUIAdapter
 import io.wispforest.owo.ui.container.Containers
+import me.shedaniel.math.Point
 import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
 import me.shedaniel.rei.api.client.gui.widgets.Widgets
 import miragefairy2024.ModContext
@@ -13,7 +14,9 @@ import miragefairy2024.client.util.OwoComponent
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.RemoverList
 import miragefairy2024.mod.recipeviewer.view.offset
+import miragefairy2024.mod.recipeviewer.view.plusAssign
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.view.size
 import miragefairy2024.mod.recipeviewer.view.sized
@@ -54,19 +57,31 @@ fun initReiViewPlacers() {
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: TextView, bounds ->
-        widgets place Widgets.createLabel(bounds.offset.toReiPoint(), Component.empty())
-            .also { it.message = view.text.toFormattedText() } // TODO FormattedCharSequenceを受け付けるカスタムTextWidget
+        val removers = RemoverList()
+        val x = when (view.alignmentX) {
+            Alignment.START -> bounds.x
+            Alignment.CENTER -> bounds.x + bounds.size.x / 2
+            Alignment.END -> bounds.x + bounds.size.x
+        }
+        removers += widgets place Widgets.createLabel(Point(x, bounds.y), Component.empty())
+            .also {
+                fun update() {
+                    it.message = view.text.value.toFormattedText() // TODO FormattedCharSequenceを受け付けるカスタムTextWidget
+                }
+                removers += view.text.register { _, _ -> update() }
+                update()
+            }
             .let { if (view.color != null) it.color(view.color!!.lightModeArgb, view.color!!.darkModeArgb) else it }
             .shadow(view.shadow)
             .let {
-                when (view.xAlignment) {
+                when (view.alignmentX) {
                     Alignment.START -> it.leftAligned()
                     Alignment.CENTER -> it.centered()
                     Alignment.END -> it.rightAligned()
-                    null -> it.leftAligned()
                 }
             }
             .let { if (view.tooltip != null) it.tooltip(*view.tooltip!!.toTypedArray()) else it }
+        removers
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ImageView, bounds ->
         widgets place Widgets.createTexturedWidget(
@@ -74,8 +89,8 @@ fun initReiViewPlacers() {
             bounds.offset.sized(view.texture.bounds.size).toReiRectangle(),
             view.texture.bounds.x.toFloat(),
             view.texture.bounds.y.toFloat(),
-            view.texture.bounds.xSize,
-            view.texture.bounds.ySize,
+            view.texture.bounds.sizeX,
+            view.texture.bounds.sizeY,
             view.texture.size.x,
             view.texture.size.y,
         )

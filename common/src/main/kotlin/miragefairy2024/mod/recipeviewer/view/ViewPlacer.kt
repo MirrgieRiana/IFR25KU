@@ -1,6 +1,7 @@
 package miragefairy2024.mod.recipeviewer.view
 
 import miragefairy2024.util.FreezableRegistry
+import miragefairy2024.util.Remover
 import miragefairy2024.util.set
 
 interface PlaceableView : View

@@ -1,14 +1,6 @@
 package miragefairy2024.mod.recipeviewer.view
 
-fun interface Remover {
-    companion object {
-        val NONE = Remover { }
-    }
-
-    fun remove()
-}
-
-fun Iterable<Remover>.flatten() = Remover { this.forEach { it.remove() } }
+import miragefairy2024.util.Remover
 
 class RemoverList : Remover {
     private val list = mutableListOf<Remover>()
