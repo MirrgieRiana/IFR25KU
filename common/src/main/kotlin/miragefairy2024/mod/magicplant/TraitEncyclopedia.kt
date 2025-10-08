@@ -164,9 +164,9 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                     // ページ操作ボタン
                     view += XListView().configure {
                         val defaultTraitProducerMagicPlants = magicPlantCards
-                            .filter { recipeEntry.recipe in it.defaultTraitBits }
+                            .mapNotNull { card -> card.defaultTraitBits[recipeEntry.recipe]?.let { Pair(card, it) } }
                         val defaultTraitProducers = defaultTraitProducerMagicPlants
-                            .map { card -> card.item().createItemStack().also { it.setTraitStacks(TraitStacks.of(TraitStack(recipeEntry.recipe, 1))) } }
+                            .map { pair -> pair.first.item().createItemStack().also { it.setTraitStacks(TraitStacks.of(TraitStack(recipeEntry.recipe, 1))) } }
                             .toIngredientStack()
                         view += CatalystSlotView(defaultTraitProducers).configure {
                             position.alignmentY = Alignment.CENTER
@@ -176,7 +176,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         view += TextView(Emoji.NATURAL().style(TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.style)).configure {
                             position.weight = 1.0
                             position.alignmentY = Alignment.END
-                            view.tooltip = listOf(text { DEFAULT_TRAIT_TRANSLATION().gold }) + defaultTraitProducerMagicPlants.map { it.block().name }
+                            view.tooltip = listOf(text { DEFAULT_TRAIT_TRANSLATION().gold }) + defaultTraitProducerMagicPlants.map { text { (it.second * 100.0 formatAs "%.0f%%")() + it.first.block().name } }
                         }
                         view += XSpaceView().configure {
                             position.weight = 1.0
@@ -229,14 +229,14 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                             position.weight = 1.0
                         }
                         val randomTraitProducerMagicPlants = magicPlantCards
-                            .filter { recipeEntry.recipe in it.randomTraitChances }
+                            .mapNotNull { card -> card.randomTraitChances[recipeEntry.recipe]?.let { Pair(card, it) } }
                         val randomTraitProducers = randomTraitProducerMagicPlants
-                            .map { card -> card.item().createItemStack().also { it.setTraitStacks(TraitStacks.of(TraitStack(recipeEntry.recipe, 1))) } }
+                            .map { pair -> pair.first.item().createItemStack().also { it.setTraitStacks(TraitStacks.of(TraitStack(recipeEntry.recipe, 1))) } }
                             .toIngredientStack()
                         view += TextView(Emoji.MUTATION().style(TraitEffectKeyCard.MUTATION.traitEffectKey.style)).configure {
                             position.weight = 1.0
                             position.alignmentY = Alignment.END
-                            view.tooltip = listOf(text { RANDOM_TRAIT_TRANSLATION().gold }) + randomTraitProducerMagicPlants.map { it.block().name }
+                            view.tooltip = listOf(text { RANDOM_TRAIT_TRANSLATION().gold }) + randomTraitProducerMagicPlants.map { text { (it.second * 100.0 formatAs "%.0f%%")() + it.first.block().name } }
                         }
                         view += CatalystSlotView(randomTraitProducers).configure {
                             position.alignmentY = Alignment.CENTER
