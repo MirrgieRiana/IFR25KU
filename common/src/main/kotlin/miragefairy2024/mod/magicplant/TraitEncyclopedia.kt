@@ -34,6 +34,7 @@ import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Translation
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
+import miragefairy2024.util.gold
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.register
@@ -53,6 +54,7 @@ context(ModContext)
 fun initTraitEncyclopedia() {
     TraitEncyclopediaRecipeViewerCategoryCard.init()
 
+    DEFAULT_TRAIT_TRANSLATION.enJa()
     RANDOM_TRAIT_TRANSLATION.enJa()
 }
 
@@ -161,8 +163,9 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
 
                     // ページ操作ボタン
                     view += XListView().configure {
-                        val defaultTraitProducers = magicPlantCards
+                        val defaultTraitProducerMagicPlants = magicPlantCards
                             .filter { recipeEntry.recipe in it.defaultTraitBits }
+                        val defaultTraitProducers = defaultTraitProducerMagicPlants
                             .map { card -> card.item().createItemStack().also { it.setTraitStacks(TraitStacks.of(TraitStack(recipeEntry.recipe, 1))) } }
                             .toIngredientStack()
                         view += CatalystSlotView(defaultTraitProducers).configure {
@@ -173,7 +176,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         view += TextView(Emoji.NATURAL().style(TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.style)).configure {
                             position.weight = 1.0
                             position.alignmentY = Alignment.START
-                            view.tooltip = listOf(text { DEFAULT_TRAIT_TRANSLATION() })
+                            view.tooltip = listOf(text { DEFAULT_TRAIT_TRANSLATION().gold }) + defaultTraitProducerMagicPlants.map { it.block().name }
                         }
                         view += XSpaceView().configure {
                             position.weight = 1.0
@@ -225,15 +228,16 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         view += XSpaceView().configure {
                             position.weight = 1.0
                         }
+                        val randomTraitProducerMagicPlants = magicPlantCards
+                            .filter { recipeEntry.recipe in it.randomTraitChances }
+                        val randomTraitProducers = randomTraitProducerMagicPlants
+                            .map { card -> card.item().createItemStack().also { it.setTraitStacks(TraitStacks.of(TraitStack(recipeEntry.recipe, 1))) } }
+                            .toIngredientStack()
                         view += TextView(Emoji.MUTATION().style(TraitEffectKeyCard.MUTATION.traitEffectKey.style)).configure {
                             position.weight = 1.0
                             position.alignmentY = Alignment.START
-                            view.tooltip = listOf(text { RANDOM_TRAIT_TRANSLATION() })
+                            view.tooltip = listOf(text { RANDOM_TRAIT_TRANSLATION().gold }) + randomTraitProducerMagicPlants.map { it.block().name }
                         }
-                        val randomTraitProducers = magicPlantCards
-                            .filter { recipeEntry.recipe in it.randomTraitChances }
-                            .map { card -> card.item().createItemStack().also { it.setTraitStacks(TraitStacks.of(TraitStack(recipeEntry.recipe, 1))) } }
-                            .toIngredientStack()
                         view += CatalystSlotView(randomTraitProducers).configure {
                             position.alignmentY = Alignment.CENTER
                             view.drawBackground = false
