@@ -175,7 +175,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         }
                         view += TextView(Emoji.NATURAL().style(TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.style)).configure {
                             position.weight = 1.0
-                            position.alignmentY = Alignment.START
+                            position.alignmentY = Alignment.END
                             view.tooltip = listOf(text { DEFAULT_TRAIT_TRANSLATION().gold }) + defaultTraitProducerMagicPlants.map { it.block().name }
                         }
                         view += XSpaceView().configure {
@@ -235,7 +235,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                             .toIngredientStack()
                         view += TextView(Emoji.MUTATION().style(TraitEffectKeyCard.MUTATION.traitEffectKey.style)).configure {
                             position.weight = 1.0
-                            position.alignmentY = Alignment.START
+                            position.alignmentY = Alignment.END
                             view.tooltip = listOf(text { RANDOM_TRAIT_TRANSLATION().gold }) + randomTraitProducerMagicPlants.map { it.block().name }
                         }
                         view += CatalystSlotView(randomTraitProducers).configure {
