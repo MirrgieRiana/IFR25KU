@@ -3,6 +3,9 @@ package miragefairy2024.mod.recipeviewer
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.ModContext
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.RendererProxy
+import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.Translation

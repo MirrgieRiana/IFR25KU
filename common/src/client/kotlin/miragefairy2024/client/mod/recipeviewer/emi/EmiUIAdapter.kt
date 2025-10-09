@@ -1,4 +1,4 @@
-package miragefairy2024.client.mod.recipeviewer
+package miragefairy2024.client.mod.recipeviewer.emi
 
 import dev.emi.emi.api.widget.Bounds
 import dev.emi.emi.api.widget.Widget

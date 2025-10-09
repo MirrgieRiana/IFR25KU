@@ -3,7 +3,7 @@ package miragefairy2024.client.neoforge
 import dev.emi.emi.api.EmiEntrypoint
 import dev.emi.emi.api.EmiPlugin
 import dev.emi.emi.api.EmiRegistry
-import miragefairy2024.client.mod.recipeviewer.EmiClientEvents
+import miragefairy2024.client.mod.recipeviewer.emi.EmiClientEvents
 
 @EmiEntrypoint
 @Suppress("unused")

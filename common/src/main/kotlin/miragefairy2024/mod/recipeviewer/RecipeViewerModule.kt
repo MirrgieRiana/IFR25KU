@@ -2,6 +2,7 @@ package miragefairy2024.mod.recipeviewer
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.recipeviewer.rei.initReiSupport
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.SubscribableBuffer
 import miragefairy2024.util.Translation

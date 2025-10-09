@@ -1,6 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer
 
-import miragefairy2024.mod.recipeviewer.View
+import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.SubscribableBuffer
 import miragefairy2024.util.plusAssign
 import net.minecraft.client.gui.GuiGraphics

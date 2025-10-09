@@ -1,5 +1,6 @@
-package miragefairy2024.mod.recipeviewer
+package miragefairy2024.mod.recipeviewer.view
 
+import miragefairy2024.mod.recipeviewer.views.SingleView
 import miragefairy2024.util.FreezableRegistry
 import miragefairy2024.util.set
 import net.minecraft.network.chat.Component

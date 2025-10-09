@@ -1,7 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer
 
 import io.wispforest.owo.ui.core.Component
-import miragefairy2024.mod.recipeviewer.View
+import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.SubscribableBuffer
 import miragefairy2024.util.plusAssign
 
