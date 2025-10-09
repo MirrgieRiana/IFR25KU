@@ -381,6 +381,7 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
                     position.alignmentY = Alignment.CENTER
                     view.color = ColorPair.DARK_GRAY
                     view.shadow = false
+                    view.scroll = true
                 }
             }
             view += YSpaceView(2)

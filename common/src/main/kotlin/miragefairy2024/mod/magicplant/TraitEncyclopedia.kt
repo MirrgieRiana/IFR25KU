@@ -88,6 +88,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                     // 特性名
                     view += TextView(recipeEntry.recipe.getName().style(recipeEntry.recipe.style)).configure {
                         position.alignmentX = Alignment.CENTER
+                        view.scroll = true
                     }
 
                     view += YSpaceView(5)

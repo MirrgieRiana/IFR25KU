@@ -2,7 +2,6 @@ package miragefairy2024.client.mod.recipeviewer.rei
 
 import io.wispforest.owo.compat.rei.ReiUIAdapter
 import io.wispforest.owo.ui.container.Containers
-import me.shedaniel.math.Point
 import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
 import me.shedaniel.rei.api.client.gui.widgets.Widgets
 import miragefairy2024.ModContext
@@ -11,12 +10,9 @@ import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterRegistry
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.mod.recipeviewer.common.NinePatchImageViewRenderer
 import miragefairy2024.client.util.OwoComponent
-import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.RemoverList
 import miragefairy2024.mod.recipeviewer.view.offset
-import miragefairy2024.mod.recipeviewer.view.plusAssign
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.view.size
 import miragefairy2024.mod.recipeviewer.view.sized
@@ -31,10 +27,8 @@ import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.util.fire
 import miragefairy2024.util.register
 import miragefairy2024.util.toEntryIngredient
-import miragefairy2024.util.toFormattedText
 import miragefairy2024.util.toReiPoint
 import miragefairy2024.util.toReiRectangle
-import net.minecraft.network.chat.Component
 
 context(ModContext)
 fun initReiViewPlacers() {
@@ -57,31 +51,7 @@ fun initReiViewPlacers() {
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: TextView, bounds ->
-        val removers = RemoverList()
-        val x = when (view.alignmentX) {
-            Alignment.START -> bounds.x
-            Alignment.CENTER -> bounds.x + bounds.size.x / 2
-            Alignment.END -> bounds.x + bounds.size.x
-        }
-        removers += widgets place Widgets.createLabel(Point(x, bounds.y), Component.empty())
-            .also {
-                fun update() {
-                    it.message = view.text.value.toFormattedText() // TODO FormattedCharSequenceを受け付けるカスタムTextWidget
-                }
-                removers += view.text.register { _, _ -> update() }
-                update()
-            }
-            .let { if (view.color != null) it.color(view.color!!.lightModeArgb, view.color!!.darkModeArgb) else it }
-            .shadow(view.shadow)
-            .let {
-                when (view.alignmentX) {
-                    Alignment.START -> it.leftAligned()
-                    Alignment.CENTER -> it.centered()
-                    Alignment.END -> it.rightAligned()
-                }
-            }
-            .let { if (view.tooltip != null) it.tooltip(*view.tooltip!!.toTypedArray()) else it }
-        removers
+        widgets place ReiTextWidget(bounds.offset, view)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ImageView, bounds ->
         widgets place Widgets.createTexturedWidget(

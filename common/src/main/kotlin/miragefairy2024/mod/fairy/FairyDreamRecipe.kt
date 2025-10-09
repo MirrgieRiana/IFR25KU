@@ -130,6 +130,7 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
                 view.minWidth = 112
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
+                view.scroll = true
                 view.tooltip = recipeEntry.recipe.second.map { getName(it) }
             }
             view += OutputSlotView(recipeEntry.recipe.first.createFairyItemStack())

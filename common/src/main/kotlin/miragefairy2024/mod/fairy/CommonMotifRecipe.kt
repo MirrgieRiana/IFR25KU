@@ -133,6 +133,7 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
                 view.minWidth = 130
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
+                view.scroll = true
                 when (val recipe = recipeEntry.recipe) {
                     is AlwaysCommonMotifRecipe -> Unit
                     is BiomeCommonMotifRecipe -> Unit
