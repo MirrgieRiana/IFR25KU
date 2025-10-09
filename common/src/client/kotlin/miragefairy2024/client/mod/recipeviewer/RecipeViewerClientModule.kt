@@ -2,7 +2,9 @@ package miragefairy2024.client.mod.recipeviewer
 
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.emi.initEmiClientSupport
+import miragefairy2024.client.mod.recipeviewer.emi.initEmiViewPlacers
 import miragefairy2024.client.mod.recipeviewer.rei.initReiClientSupport
+import miragefairy2024.client.mod.recipeviewer.rei.initReiViewPlacers
 import miragefairy2024.mod.recipeviewer.view.RendererProxy
 import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
@@ -10,7 +12,9 @@ import net.minecraft.network.chat.Component
 context(ModContext)
 fun initRecipeViewerClientModule() {
     initReiClientSupport()
+    initReiViewPlacers()
     initEmiClientSupport()
+    initEmiViewPlacers()
 }
 
 val rendererProxy = object : RendererProxy {
