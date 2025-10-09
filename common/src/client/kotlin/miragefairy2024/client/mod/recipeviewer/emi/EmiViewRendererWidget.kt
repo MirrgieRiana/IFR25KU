@@ -6,7 +6,7 @@ import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.View
 import net.minecraft.client.gui.GuiGraphics
 
-class ViewRendererEmiWidget<V : View>(private val renderer: ViewRenderer<V>, private val view: V, x: Int, y: Int) : Widget() {
+class EmiViewRendererWidget<V : View>(private val renderer: ViewRenderer<V>, private val view: V, x: Int, y: Int) : Widget() {
     private val boundsCache by lazy { Bounds(x, y, view.getWidth(), view.getHeight()) }
     override fun getBounds() = boundsCache
     override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {

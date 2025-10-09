@@ -140,7 +140,7 @@ fun initReiClientSupport() {
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
             REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, x, y ->
-                widgets += ViewRendererReiWidget(entry.viewRenderer, view, x, y)
+                widgets += ReiViewRendererWidget(entry.viewRenderer, view, x, y)
             }
         }
         f(entry)

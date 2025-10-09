@@ -138,7 +138,7 @@ fun initEmiClientSupport() {
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, _), view, x, y ->
-                widgets.add(ViewRendererEmiWidget(entry.viewRenderer, view, x, y))
+                widgets.add(EmiViewRendererWidget(entry.viewRenderer, view, x, y))
             }
         }
         f(entry)

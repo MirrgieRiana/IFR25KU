@@ -7,7 +7,7 @@ import miragefairy2024.mod.recipeviewer.view.View
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.events.GuiEventListener
 
-class ViewRendererReiWidget<V : View>(private val renderer: ViewRenderer<V>, private val view: V, x: Int, y: Int) : WidgetWithBounds() {
+class ReiViewRendererWidget<V : View>(private val renderer: ViewRenderer<V>, private val view: V, x: Int, y: Int) : WidgetWithBounds() {
     private val boundsCache by lazy { Rectangle(x, y, view.getWidth(), view.getHeight()) }
     override fun children() = listOf<GuiEventListener>()
     override fun getBounds() = boundsCache
