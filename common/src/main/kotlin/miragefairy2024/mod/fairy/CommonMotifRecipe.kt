@@ -14,6 +14,7 @@ import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
+import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Translation
@@ -121,13 +122,13 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
     }
 
     override fun createView(recipeEntry: RecipeEntry<CommonMotifRecipe>) = View {
-        this += XListView().apply {
+        this += XListView().configure {
             val recipeText = when (val recipe = recipeEntry.recipe) {
                 is AlwaysCommonMotifRecipe -> text { COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION() }
                 is BiomeCommonMotifRecipe -> text { translate(recipe.biome.location().toLanguageKey("biome")) }
                 is BiomeTagCommonMotifRecipe -> text { recipe.biomeTag.location().path() }
             }
-            this += Alignment.CENTER to TextView(recipeText).apply {
+            this += Alignment.CENTER to TextView(recipeText).configure {
                 minWidth = 130
                 color = ColorPair.DARK_GRAY
                 shadow = false

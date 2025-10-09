@@ -29,6 +29,7 @@ import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
+import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.AdvancementCard
@@ -450,15 +451,15 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
     }
 
     override fun createView(recipeEntry: RecipeEntry<FairyFamilyNotation>) = View {
-        this += XListView().apply {
+        this += XListView().configure {
             minHeight = 18 * 7
-            this += YListView().apply {
+            this += YListView().configure {
                 minWidth = 18 * 9
 
                 // 上に親妖精
-                this += Alignment.CENTER to YListView().apply {
+                this += Alignment.CENTER to YListView().configure {
                     recipeEntry.recipe.parents.chunked(9).forEach { chunk ->
-                        this += XListView().apply {
+                        this += XListView().configure {
                             chunk.forEach {
                                 this += OutputSlotView(it.createFairyItemStack())
                             }
@@ -474,9 +475,9 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
                 this += YSpaceView(9)
 
                 // 下に子妖精
-                this += Alignment.CENTER to YListView().apply {
+                this += Alignment.CENTER to YListView().configure {
                     recipeEntry.recipe.children.chunked(9).forEach { chunk ->
-                        this += XListView().apply {
+                        this += XListView().configure {
                             chunk.forEach {
                                 this += OutputSlotView(it.createFairyItemStack())
                             }

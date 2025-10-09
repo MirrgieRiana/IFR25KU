@@ -14,6 +14,7 @@ import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
+import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
@@ -114,8 +115,8 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
     abstract fun getName(key: T): Component
 
     override fun createView(recipeEntry: RecipeEntry<Pair<Motif, List<T>>>) = View {
-        this += XListView().apply {
-            val gained = clientProxy.or { return@apply }.getClientPlayer().or { return@apply }.fairyDreamContainer.getOrDefault()[recipeEntry.recipe.first]
+        this += XListView().configure {
+            val gained = clientProxy.or { return@configure }.getClientPlayer().or { return@configure }.fairyDreamContainer.getOrDefault()[recipeEntry.recipe.first]
             val text = text { getName(recipeEntry.recipe.second.first()) }
                 .let { if (recipeEntry.recipe.second.size > 1) text { it + "..."() } else it }
                 .let { if (!gained) it.darkRed else it }
@@ -124,7 +125,7 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
                 this += CatalystSlotView(ingredientStack).noBackground()
                 this += XSpaceView(2)
             }
-            this += Alignment.CENTER to TextView(text).apply {
+            this += Alignment.CENTER to TextView(text).configure {
                 minWidth = 112
                 color = ColorPair.DARK_GRAY
                 shadow = false

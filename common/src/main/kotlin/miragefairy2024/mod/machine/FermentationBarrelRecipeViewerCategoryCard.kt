@@ -16,6 +16,7 @@ import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.noMargin
 import miragefairy2024.mod.recipeviewer.views.plusAssign
@@ -38,7 +39,7 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
         val imageBound = IntRectangle(30, 16, 120, 40)
         val bound = imageBound.grow(6, 2)
         val p = bound.topLeft
-        this += AbsoluteView(bound.width, bound.height).apply {
+        this += AbsoluteView(bound.width, bound.height).configure {
 
             this += ImageView("textures/gui/container/" * FermentationBarrelRecipeCard.identifier * ".png", bound)
 
@@ -47,11 +48,11 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
             this += (IntPoint(31, 39) - p) to InputSlotView(getInput(1)).noBackground().noMargin()
             this += (IntPoint(53, 39) - p) to InputSlotView(getInput(2)).noBackground().noMargin()
 
-            this += (IntPoint(76, 27) - p) to ArrowView().apply {
+            this += (IntPoint(76, 27) - p) to ArrowView().configure {
                 durationMilliSeconds = recipeEntry.recipe.duration * 50
             }
             val seconds = recipeEntry.recipe.duration.toDouble() / 20.0
-            this += (IntPoint(88, 15) - p) to TextView(text { SECONDS_TRANSLATION((seconds formatAs "%.2f").stripTrailingZeros()) }).apply {
+            this += (IntPoint(88, 15) - p) to TextView(text { SECONDS_TRANSLATION((seconds formatAs "%.2f").stripTrailingZeros()) }).configure {
                 horizontalAlignment = Alignment.CENTER
                 color = ColorPair.DARK_GRAY
                 shadow = false

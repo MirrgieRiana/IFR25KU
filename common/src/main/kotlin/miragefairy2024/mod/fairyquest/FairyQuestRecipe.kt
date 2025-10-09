@@ -22,6 +22,7 @@ import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
+import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Chance
@@ -371,23 +372,23 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
     }
 
     override fun createView(recipeEntry: RecipeEntry<FairyQuestRecipe>) = View {
-        this += YListView().apply {
+        this += YListView().configure {
             minWidth = 120
-            this += XListView().apply {
+            this += XListView().configure {
                 this += CatalystSlotView(FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(recipeEntry.recipe) }.toIngredientStack()).noBackground()
                 this += XSpaceView(4)
-                this += Alignment.CENTER to TextView(recipeEntry.recipe.title).apply {
+                this += Alignment.CENTER to TextView(recipeEntry.recipe.title).configure {
                     color = ColorPair.DARK_GRAY
                     shadow = false
                 }
             }
             this += YSpaceView(2)
-            this += Alignment.CENTER to XListView().apply {
+            this += Alignment.CENTER to XListView().configure {
                 recipeEntry.recipe.inputs.forEach {
                     this += InputSlotView(it())
                 }
                 this += XSpaceView(2)
-                this += ArrowView().apply {
+                this += ArrowView().configure {
                     durationMilliSeconds = recipeEntry.recipe.duration * 50
                 }
                 this += XSpaceView(2)

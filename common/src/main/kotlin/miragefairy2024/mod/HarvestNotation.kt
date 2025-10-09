@@ -13,6 +13,7 @@ import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
+import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
@@ -71,7 +72,7 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
     }
 
     override fun createView(recipeEntry: RecipeEntry<HarvestNotation>) = View {
-        this += XListView().apply {
+        this += XListView().configure {
             this += CatalystSlotView(recipeEntry.recipe.seed.toIngredientStack())
             this += XSpaceView(2)
             this += ArrowView()
