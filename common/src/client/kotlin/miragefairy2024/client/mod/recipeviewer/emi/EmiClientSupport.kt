@@ -17,7 +17,6 @@ import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterContext
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterRegistry
-import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.mod.recipeviewer.rendererProxy
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
@@ -41,7 +40,6 @@ import miragefairy2024.util.times
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
 import mirrg.kotlin.helium.Single
-import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.item.crafting.RecipeInput
 import java.util.Objects
@@ -215,13 +213,5 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
         view.assemble(1, 1) { view2, x, y ->
             EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, this), view2, x, y)
         }
-    }
-}
-
-class ViewRendererEmiWidget<V : View>(private val renderer: ViewRenderer<V>, private val view: V, x: Int, y: Int) : Widget() {
-    private val boundsCache by lazy { Bounds(x, y, view.getWidth(), view.getHeight()) }
-    override fun getBounds() = boundsCache
-    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-        renderer.render(view, boundsCache.x, boundsCache.y, draw, mouseX, mouseY, delta)
     }
 }

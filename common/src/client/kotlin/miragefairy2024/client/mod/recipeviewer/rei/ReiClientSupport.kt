@@ -19,7 +19,6 @@ import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.client.mod.recipeviewer.ScreenClassRegistry
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterContext
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterRegistry
-import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.mod.recipeviewer.rendererProxy
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
@@ -43,8 +42,6 @@ import miragefairy2024.util.text
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toEntryStack
 import mirrg.kotlin.helium.max
-import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.inventory.AbstractContainerMenu
@@ -240,13 +237,4 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         }
     }
 
-}
-
-class ViewRendererReiWidget<V : View>(private val renderer: ViewRenderer<V>, private val view: V, x: Int, y: Int) : WidgetWithBounds() {
-    private val boundsCache by lazy { Rectangle(x, y, view.getWidth(), view.getHeight()) }
-    override fun children() = listOf<GuiEventListener>()
-    override fun getBounds() = boundsCache
-    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-        renderer.render(view, boundsCache.x, boundsCache.y, context, mouseX, mouseY, delta)
-    }
 }
