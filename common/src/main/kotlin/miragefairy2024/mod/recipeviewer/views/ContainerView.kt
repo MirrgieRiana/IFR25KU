@@ -6,10 +6,10 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 
 abstract class ContainerView<P> : View {
 
-    val children = mutableListOf<PositionedView<P, *>>()
+    val children = mutableListOf<Child<P, *>>()
 
-    fun add(positionedView: PositionedView<P, *>) {
-        children += positionedView
+    fun add(child: Child<P, *>) {
+        children += child
     }
 
     private var minWidthCache = 0
@@ -47,13 +47,13 @@ abstract class ContainerView<P> : View {
 
 }
 
-class PositionedView<P, V : View>(var position: P, val view: V) {
+class Child<P, V : View>(var position: P, val view: V) {
     var xCache = 0
     var yCache = 0
 }
 
-context(PositionedView<*, out ContainerView<P>>)
-fun <P, V : View> V.configure(block: PositionedView<P, V>.() -> Unit) = PositionedView(this@PositionedView.view.createDefaultPosition(), this).apply { block() }
+context(Child<*, out ContainerView<P>>)
+fun <P, V : View> V.configure(block: Child<P, V>.() -> Unit) = Child(this@Child.view.createDefaultPosition(), this).apply { block() }
 
-operator fun <P, V : View> ContainerView<P>.plusAssign(view: V) = this.add(PositionedView(this.createDefaultPosition(), view))
-operator fun <P, V : View> ContainerView<P>.plusAssign(positionedView: PositionedView<P, V>) = this.add(positionedView)
+operator fun <P, V : View> ContainerView<P>.plusAssign(view: V) = this.add(Child(this.createDefaultPosition(), view))
+operator fun <P, V : View> ContainerView<P>.plusAssign(child: Child<P, V>) = this.add(child)
