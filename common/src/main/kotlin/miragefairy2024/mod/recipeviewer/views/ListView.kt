@@ -3,11 +3,11 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.util.Remover
 import miragefairy2024.util.flatten
-import mirrg.kotlin.helium.atLeast
 import kotlin.math.roundToInt
 
 class XListView : ContainerView<XListView.Position>() {
@@ -15,7 +15,7 @@ class XListView : ContainerView<XListView.Position>() {
 
     override fun createDefaultPosition() = Position(Alignment.START, 0.0)
 
-    var minSizeY = 0
+    var sizingY: Sizing = Sizing.Wrap
 
     private lateinit var childrenWithMinSize: List<ParentView<Position>.ChildWithMinSize>
 
@@ -23,7 +23,7 @@ class XListView : ContainerView<XListView.Position>() {
         childrenWithMinSize = children.map { it.withMinSize(rendererProxy) }
         return IntPoint(
             childrenWithMinSize.sumOf { it.minSize.x },
-            (childrenWithMinSize.maxOfOrNull { it.minSize.y } ?: 0) atLeast minSizeY,
+            sizingY.getMinSize(childrenWithMinSize.maxOfOrNull { it.minSize.y } ?: 0),
         )
     }
 
@@ -44,7 +44,7 @@ class XListView : ContainerView<XListView.Position>() {
         }
         return IntPoint(
             childrenWithSize.sumOf { it.size.x },
-            (childrenWithSize.maxOfOrNull { it.size.y } ?: 0) atLeast minSizeY,
+            sizingY.getSize(childrenWithSize.maxOfOrNull { it.size.y } ?: 0, regionSize.y),
         )
     }
 
@@ -70,14 +70,14 @@ class YListView : ContainerView<YListView.Position>() {
 
     override fun createDefaultPosition() = Position(Alignment.START, 0.0)
 
-    var minSizeX = 0
+    var sizingX: Sizing = Sizing.Wrap
 
     private lateinit var childrenWithMinSize: List<ParentView<Position>.ChildWithMinSize>
 
     override fun calculateMinSizeImpl(): IntPoint {
         childrenWithMinSize = children.map { it.withMinSize(rendererProxy) }
         return IntPoint(
-            (childrenWithMinSize.maxOfOrNull { it.minSize.x } ?: 0) atLeast minSizeX,
+            sizingX.getMinSize(childrenWithMinSize.maxOfOrNull { it.minSize.x } ?: 0),
             childrenWithMinSize.sumOf { it.minSize.y },
         )
     }
@@ -98,7 +98,7 @@ class YListView : ContainerView<YListView.Position>() {
             }
         }
         return IntPoint(
-            (childrenWithSize.maxOfOrNull { it.size.x } ?: 0) atLeast minSizeX,
+            sizingX.getSize(childrenWithSize.maxOfOrNull { it.size.x } ?: 0, regionSize.x),
             childrenWithSize.sumOf { it.size.y },
         )
     }

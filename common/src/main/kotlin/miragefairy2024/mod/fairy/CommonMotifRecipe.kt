@@ -6,10 +6,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.MIRAGE_FLOUR_TAG
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
-import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
@@ -130,7 +131,8 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
             }
             view += TextView(recipeText).configure {
                 position.alignmentY = Alignment.CENTER
-                view.minWidth = 130
+                position.weight = 1.0
+                view.sizingX = Sizing.Fill
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
                 view.scroll = true

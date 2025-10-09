@@ -20,10 +20,12 @@ import miragefairy2024.mod.passiveskill.collect
 import miragefairy2024.mod.passiveskill.description
 import miragefairy2024.mod.passiveskill.effects.ManaBoostPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.findPassiveSkillProviders
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.registerIdentificationDataComponentTypes
 import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
-import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
@@ -31,7 +33,6 @@ import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.plusAssign
-import miragefairy2024.mod.recipeviewer.registerIdentificationDataComponentTypes
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.BIG_INTEGER_CODEC
@@ -451,45 +452,50 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
     }
 
     override fun createView(recipeEntry: RecipeEntry<FairyFamilyNotation>) = View {
-        view += XListView().configure {
-            view.minSizeY = 18 * 7
+        view += YListView().configure {
+            view.sizingX = Sizing.Fixed(18 * 8)
+
+            // 上に親妖精
             view += YListView().configure {
-                view.minSizeX = 18 * 9
-
-                // 上に親妖精
-                view += YListView().configure {
-                    position.alignmentX = Alignment.CENTER
-                    recipeEntry.recipe.parents.chunked(9).forEach { chunk ->
-                        view += XListView().configure {
-                            chunk.forEach {
-                                view += OutputSlotView(it.createFairyItemStack())
-                            }
+                position.alignmentX = Alignment.CENTER
+                position.weight = 1.0
+                view += YSpaceView().configure {
+                    position.weight = 1.0
+                }
+                recipeEntry.recipe.parents.chunked(8).forEach { chunk ->
+                    view += XListView().configure {
+                        chunk.forEach {
+                            view += OutputSlotView(it.createFairyItemStack())
                         }
                     }
                 }
-
-                view += YSpaceView(9)
-
-                // 中段に対象の妖精
-                view += CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground().configure {
-                    position.alignmentX = Alignment.CENTER
-                }
-
-                view += YSpaceView(9)
-
-                // 下に子妖精
-                view += YListView().configure {
-                    position.alignmentX = Alignment.CENTER
-                    recipeEntry.recipe.children.chunked(9).forEach { chunk ->
-                        view += XListView().configure {
-                            chunk.forEach {
-                                view += OutputSlotView(it.createFairyItemStack())
-                            }
-                        }
-                    }
-                }
-
             }
+
+            view += YSpaceView(9)
+
+            // 中段に対象の妖精
+            view += CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground().configure {
+                position.alignmentX = Alignment.CENTER
+            }
+
+            view += YSpaceView(9)
+
+            // 下に子妖精
+            view += YListView().configure {
+                position.alignmentX = Alignment.CENTER
+                position.weight = 1.0
+                recipeEntry.recipe.children.chunked(8).forEach { chunk ->
+                    view += XListView().configure {
+                        chunk.forEach {
+                            view += OutputSlotView(it.createFairyItemStack())
+                        }
+                    }
+                }
+                view += YSpaceView().configure {
+                    position.weight = 1.0
+                }
+            }
+
         }
     }
 

@@ -9,13 +9,14 @@ import miragefairy2024.lib.PlacedItemFeature
 import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.ColorPair
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
-import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
-import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
@@ -373,12 +374,14 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
 
     override fun createView(recipeEntry: RecipeEntry<FairyQuestRecipe>) = View {
         view += YListView().configure {
-            view.minSizeX = 120
+            view.sizingX = Sizing.Fill
             view += XListView().configure {
                 view += CatalystSlotView(FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(recipeEntry.recipe) }.toIngredientStack()).noBackground()
                 view += XSpaceView(4)
                 view += TextView(recipeEntry.recipe.title).configure {
                     position.alignmentY = Alignment.CENTER
+                    position.weight = 1.0
+                    view.sizingX = Sizing.Fill
                     view.color = ColorPair.DARK_GRAY
                     view.shadow = false
                     view.scroll = true

@@ -45,8 +45,8 @@ import miragefairy2024.mod.magicplant.style
 import miragefairy2024.mod.magicplant.texture
 import miragefairy2024.mod.magicplant.traitListScreenHandlerType
 import miragefairy2024.mod.magicplant.traitListScreenTranslation
-import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.darkGray

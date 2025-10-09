@@ -11,6 +11,7 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.ImageButtonView
@@ -61,9 +62,7 @@ fun initTraitEncyclopedia() {
 object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trait>() {
     override fun getId() = MirageFairy2024.identifier("trait_encyclopedia")
     override fun getName() = EnJa("Trait Encyclopedia", "特性図鑑")
-
-    // TODO IconItem
-    override fun getIcon() = MirageFlowerCard.item().createItemStack()
+    override fun getIcon() = MirageFlowerCard.iconItem().createItemStack()
     override fun getRecipeCodec(registryAccess: RegistryAccess): Codec<Trait> = traitRegistry.byNameCodec()
     override fun getInputs(recipeEntry: RecipeEntry<Trait>) = getProducerMagicPlantSeedItemStacks(recipeEntry.recipe).map { Input(it.toIngredientStack(), true) }
 
@@ -84,10 +83,12 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
 
             view += MarginView(5).configure {
                 view += YListView().configure {
+                    view.sizingX = Sizing.Fill
 
                     // 特性名
                     view += TextView(recipeEntry.recipe.getName().style(recipeEntry.recipe.style)).configure {
-                        position.alignmentX = Alignment.CENTER
+                        view.sizingX = Sizing.Fill
+                        view.alignmentX = Alignment.CENTER
                         view.scroll = true
                     }
 
@@ -99,19 +100,14 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         // TODO フェアリークエストカードにスクロールテキストを
                         // TODO 加工機械で出力スロットが反応しない
                         // 条件リスト
-                        view += XListView().configure {
+                        view += YListView().configure {
                             position.alignmentY = Alignment.END
                             position.weight = 1.0
-                            view += YListView().configure {
-                                recipeEntry.recipe.conditions.forEach {
-                                    view += TextView(it.emoji).configure {
-                                        position.alignmentX = Alignment.START
-                                        view.tooltip = listOf(it.name)
-                                    }
+                            view.sizingX = Sizing.Fill
+                            recipeEntry.recipe.conditions.forEach {
+                                view += TextView(it.emoji).configure {
+                                    view.tooltip = listOf(it.name)
                                 }
-                            }
-                            view += XSpaceView().configure {
-                                position.weight = 1.0
                             }
                         }
 
@@ -122,19 +118,14 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         }
 
                         // 効果リスト
-                        view += XListView().configure {
+                        view += YListView().configure {
                             position.alignmentY = Alignment.END
                             position.weight = 1.0
-                            view += XSpaceView().configure {
-                                position.weight = 1.0
-                            }
-                            view += YListView().configure {
-                                recipeEntry.recipe.traitEffectKeyEntries.forEach {
-                                    view += TextView(text { (it.factor * 100.0 formatAs "%.1f%%")() + " "() + it.traitEffectKey.emoji.style(it.traitEffectKey.style) }).configure {
-                                        position.alignmentX = Alignment.END
-                                        view.alignmentX = Alignment.END
-                                        view.tooltip = listOf(it.traitEffectKey.name)
-                                    }
+                            view.sizingX = Sizing.Fill
+                            recipeEntry.recipe.traitEffectKeyEntries.forEach {
+                                view += TextView(text { (it.factor * 100.0 formatAs "%.1f%%")() + " "() + it.traitEffectKey.emoji.style(it.traitEffectKey.style) }).configure {
+                                    position.alignmentX = Alignment.END
+                                    view.tooltip = listOf(it.traitEffectKey.name)
                                 }
                             }
                         }
@@ -175,9 +166,10 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                             view.margin = 0
                         }
                         view += TextView(Emoji.NATURAL().style(TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.style)).configure {
-                            position.weight = 1.0
                             position.alignmentY = Alignment.END
                             view.tooltip = listOf(text { DEFAULT_TRAIT_TRANSLATION().gold }) + defaultTraitProducerMagicPlants.map { text { it.second.toString(2)() + " "() + it.first.block().name } }
+                            // TODO 項目数が増えたら省略
+                            // TODO クリックで大きな表を表示
                         }
                         view += XSpaceView().configure {
                             position.weight = 1.0
@@ -200,7 +192,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         }
                         view += TextView().configure {
                             position.alignmentY = Alignment.CENTER
-                            view.minWidth = 32
+                            view.sizingX = Sizing.Fixed(32)
                             view.alignmentX = Alignment.CENTER
 
                             fun update() {
@@ -235,9 +227,10 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                             .map { pair -> pair.first.item().createItemStack().also { it.setTraitStacks(TraitStacks.of(TraitStack(recipeEntry.recipe, 1))) } }
                             .toIngredientStack()
                         view += TextView(Emoji.MUTATION().style(TraitEffectKeyCard.MUTATION.traitEffectKey.style)).configure {
-                            position.weight = 1.0
                             position.alignmentY = Alignment.END
                             view.tooltip = listOf(text { RANDOM_TRAIT_TRANSLATION().gold }) + randomTraitProducerMagicPlants.map { text { (it.second * 100.0 formatAs "%.0f%%")() + " "() + it.first.block().name } }
+                            // TODO 項目数が増えたら省略
+                            // TODO クリックで大きな表を表示
                         }
                         view += CatalystSlotView(randomTraitProducers).configure {
                             position.alignmentY = Alignment.CENTER
