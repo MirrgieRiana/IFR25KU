@@ -125,7 +125,8 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
                 view += CatalystSlotView(ingredientStack).noBackground()
                 view += XSpaceView(2)
             }
-            view += Alignment.CENTER to TextView(text).configure {
+            view += TextView(text).configure {
+                position = Alignment.CENTER
                 view.minWidth = 112
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false

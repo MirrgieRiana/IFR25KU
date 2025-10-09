@@ -457,7 +457,8 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
                 view.minWidth = 18 * 9
 
                 // 上に親妖精
-                view += Alignment.CENTER to YListView().configure {
+                view += YListView().configure {
+                    position = Alignment.CENTER
                     recipeEntry.recipe.parents.chunked(9).forEach { chunk ->
                         view += XListView().configure {
                             chunk.forEach {
@@ -470,12 +471,15 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
                 view += YSpaceView(9)
 
                 // 中段に対象の妖精
-                view += Alignment.CENTER to CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground()
+                view += CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground().configure {
+                    position = Alignment.CENTER
+                }
 
                 view += YSpaceView(9)
 
                 // 下に子妖精
-                view += Alignment.CENTER to YListView().configure {
+                view += YListView().configure {
+                    position = Alignment.CENTER
                     recipeEntry.recipe.children.chunked(9).forEach { chunk ->
                         view += XListView().configure {
                             chunk.forEach {

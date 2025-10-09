@@ -44,21 +44,31 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
             view += ImageView("textures/gui/container/" * FermentationBarrelRecipeCard.identifier * ".png", bound)
 
             fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
-            view += (IntPoint(42, 17) - p) to InputSlotView(getInput(0)).noBackground().noMargin()
-            view += (IntPoint(31, 39) - p) to InputSlotView(getInput(1)).noBackground().noMargin()
-            view += (IntPoint(53, 39) - p) to InputSlotView(getInput(2)).noBackground().noMargin()
+            view += InputSlotView(getInput(0)).noBackground().noMargin().configure {
+                position = IntPoint(42, 17) - p
+            }
+            view += InputSlotView(getInput(1)).noBackground().noMargin().configure {
+                position = IntPoint(31, 39) - p
+            }
+            view += InputSlotView(getInput(2)).noBackground().noMargin().configure {
+                position = IntPoint(53, 39) - p
+            }
 
-            view += (IntPoint(76, 27) - p) to ArrowView().configure {
+            view += ArrowView().configure {
+                position = IntPoint(76, 27) - p
                 view.durationMilliSeconds = recipeEntry.recipe.duration * 50
             }
             val seconds = recipeEntry.recipe.duration.toDouble() / 20.0
-            view += (IntPoint(88, 15) - p) to TextView(text { SECONDS_TRANSLATION((seconds formatAs "%.2f").stripTrailingZeros()) }).configure {
+            view += TextView(text { SECONDS_TRANSLATION((seconds formatAs "%.2f").stripTrailingZeros()) }).configure {
+                position = IntPoint(88, 15) - p
                 view.horizontalAlignment = Alignment.CENTER
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
             }
 
-            view += (IntPoint(111, 28) - p) to OutputSlotView(recipeEntry.recipe.output).noBackground().noMargin()
+            view += OutputSlotView(recipeEntry.recipe.output).noBackground().noMargin().configure {
+                position = IntPoint(111, 28) - p
+            }
 
         }
     }

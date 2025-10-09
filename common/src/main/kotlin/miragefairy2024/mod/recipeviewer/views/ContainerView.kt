@@ -8,8 +8,8 @@ abstract class ContainerView<P> : View {
 
     val children = mutableListOf<PositionedView<P, *>>()
 
-    fun add(position: P, view: View) {
-        children += PositionedView(position, view)
+    fun add(positionedView: PositionedView<P, *>) {
+        children += positionedView
     }
 
     private var minWidthCache = 0
@@ -47,14 +47,13 @@ abstract class ContainerView<P> : View {
 
 }
 
-class PositionedView<P, V : View>(val position: P, val view: V) {
+class PositionedView<P, V : View>(var position: P, val view: V) {
     var xCache = 0
     var yCache = 0
 }
 
-class Child<V>(val view: V)
+context(PositionedView<*, out ContainerView<P>>)
+fun <P, V : View> V.configure(block: PositionedView<P, V>.() -> Unit) = PositionedView(this@PositionedView.view.createDefaultPosition(), this).apply { block() }
 
-fun <V : View> V.configure(block: Child<V>.() -> Unit) = Child(this).apply { block() }.view
-
-operator fun <P, V : View> ContainerView<P>.plusAssign(view: V) = this.add(this.createDefaultPosition(), view)
-operator fun <P> ContainerView<P>.plusAssign(pair: Pair<P, View>) = this.add(pair.first, pair.second)
+operator fun <P, V : View> ContainerView<P>.plusAssign(view: V) = this.add(PositionedView(this.createDefaultPosition(), view))
+operator fun <P, V : View> ContainerView<P>.plusAssign(positionedView: PositionedView<P, V>) = this.add(positionedView)
