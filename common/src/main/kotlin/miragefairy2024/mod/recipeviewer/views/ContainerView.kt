@@ -8,11 +8,6 @@ abstract class ContainerView<P> : View {
 
     val children = mutableListOf<PositionedView<P, *>>()
 
-    class PositionedView<P, V : View>(val position: P, val view: V) {
-        var xCache = 0
-        var yCache = 0
-    }
-
     fun add(position: P, view: View) {
         children += PositionedView(position, view)
     }
@@ -50,6 +45,11 @@ abstract class ContainerView<P> : View {
 
     abstract fun createDefaultPosition(): P
 
+}
+
+class PositionedView<P, V : View>(val position: P, val view: V) {
+    var xCache = 0
+    var yCache = 0
 }
 
 class Child<V>(val view: V)
