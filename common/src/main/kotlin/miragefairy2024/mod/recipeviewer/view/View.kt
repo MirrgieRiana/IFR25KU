@@ -1,5 +1,6 @@
 package miragefairy2024.mod.recipeviewer.view
 
+import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.SingleView
 
 interface View {
@@ -11,4 +12,4 @@ interface View {
     fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>)
 }
 
-fun View(block: SingleView.() -> Unit): View = SingleView().apply { block(this) }.childView
+fun View(block: Child<SingleView>.() -> Unit): View = Child(SingleView()).apply { block(this) }.view.childView

@@ -72,13 +72,13 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
     }
 
     override fun createView(recipeEntry: RecipeEntry<HarvestNotation>) = View {
-        this += XListView().configure {
-            this += CatalystSlotView(recipeEntry.recipe.seed.toIngredientStack())
-            this += XSpaceView(2)
-            this += ArrowView()
-            this += XSpaceView(2)
+        view += XListView().configure {
+            view += CatalystSlotView(recipeEntry.recipe.seed.toIngredientStack())
+            view += XSpaceView(2)
+            view += ArrowView()
+            view += XSpaceView(2)
             recipeEntry.recipe.crops.forEach { crop ->
-                this += OutputSlotView(crop)
+                view += OutputSlotView(crop)
             }
         }
     }

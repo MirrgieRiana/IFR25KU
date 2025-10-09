@@ -451,35 +451,35 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
     }
 
     override fun createView(recipeEntry: RecipeEntry<FairyFamilyNotation>) = View {
-        this += XListView().configure {
-            minHeight = 18 * 7
-            this += YListView().configure {
-                minWidth = 18 * 9
+        view += XListView().configure {
+            view.minHeight = 18 * 7
+            view += YListView().configure {
+                view.minWidth = 18 * 9
 
                 // 上に親妖精
-                this += Alignment.CENTER to YListView().configure {
+                view += Alignment.CENTER to YListView().configure {
                     recipeEntry.recipe.parents.chunked(9).forEach { chunk ->
-                        this += XListView().configure {
+                        view += XListView().configure {
                             chunk.forEach {
-                                this += OutputSlotView(it.createFairyItemStack())
+                                view += OutputSlotView(it.createFairyItemStack())
                             }
                         }
                     }
                 }
 
-                this += YSpaceView(9)
+                view += YSpaceView(9)
 
                 // 中段に対象の妖精
-                this += Alignment.CENTER to CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground()
+                view += Alignment.CENTER to CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground()
 
-                this += YSpaceView(9)
+                view += YSpaceView(9)
 
                 // 下に子妖精
-                this += Alignment.CENTER to YListView().configure {
+                view += Alignment.CENTER to YListView().configure {
                     recipeEntry.recipe.children.chunked(9).forEach { chunk ->
-                        this += XListView().configure {
+                        view += XListView().configure {
                             chunk.forEach {
-                                this += OutputSlotView(it.createFairyItemStack())
+                                view += OutputSlotView(it.createFairyItemStack())
                             }
                         }
                     }

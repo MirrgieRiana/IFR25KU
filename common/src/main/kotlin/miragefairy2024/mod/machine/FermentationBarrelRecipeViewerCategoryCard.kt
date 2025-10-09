@@ -39,26 +39,26 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
         val imageBound = IntRectangle(30, 16, 120, 40)
         val bound = imageBound.grow(6, 2)
         val p = bound.topLeft
-        this += AbsoluteView(bound.width, bound.height).configure {
+        view += AbsoluteView(bound.width, bound.height).configure {
 
-            this += ImageView("textures/gui/container/" * FermentationBarrelRecipeCard.identifier * ".png", bound)
+            view += ImageView("textures/gui/container/" * FermentationBarrelRecipeCard.identifier * ".png", bound)
 
             fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
-            this += (IntPoint(42, 17) - p) to InputSlotView(getInput(0)).noBackground().noMargin()
-            this += (IntPoint(31, 39) - p) to InputSlotView(getInput(1)).noBackground().noMargin()
-            this += (IntPoint(53, 39) - p) to InputSlotView(getInput(2)).noBackground().noMargin()
+            view += (IntPoint(42, 17) - p) to InputSlotView(getInput(0)).noBackground().noMargin()
+            view += (IntPoint(31, 39) - p) to InputSlotView(getInput(1)).noBackground().noMargin()
+            view += (IntPoint(53, 39) - p) to InputSlotView(getInput(2)).noBackground().noMargin()
 
-            this += (IntPoint(76, 27) - p) to ArrowView().configure {
-                durationMilliSeconds = recipeEntry.recipe.duration * 50
+            view += (IntPoint(76, 27) - p) to ArrowView().configure {
+                view.durationMilliSeconds = recipeEntry.recipe.duration * 50
             }
             val seconds = recipeEntry.recipe.duration.toDouble() / 20.0
-            this += (IntPoint(88, 15) - p) to TextView(text { SECONDS_TRANSLATION((seconds formatAs "%.2f").stripTrailingZeros()) }).configure {
-                horizontalAlignment = Alignment.CENTER
-                color = ColorPair.DARK_GRAY
-                shadow = false
+            view += (IntPoint(88, 15) - p) to TextView(text { SECONDS_TRANSLATION((seconds formatAs "%.2f").stripTrailingZeros()) }).configure {
+                view.horizontalAlignment = Alignment.CENTER
+                view.color = ColorPair.DARK_GRAY
+                view.shadow = false
             }
 
-            this += (IntPoint(111, 28) - p) to OutputSlotView(recipeEntry.recipe.output).noBackground().noMargin()
+            view += (IntPoint(111, 28) - p) to OutputSlotView(recipeEntry.recipe.output).noBackground().noMargin()
 
         }
     }

@@ -36,7 +36,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
     }
 
     override fun createView(recipeEntry: RecipeEntry<Trait>) = View {
-        this += TraitEncyclopediaView(18 * 9 + 5, 140, recipeEntry.recipe)
+        view += TraitEncyclopediaView(18 * 9 + 5, 140, recipeEntry.recipe)
     }
 
     fun getProducerMagicPlantSeedItemStacks(trait: Trait): List<ItemStack> {

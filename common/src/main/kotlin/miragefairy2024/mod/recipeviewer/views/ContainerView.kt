@@ -50,7 +50,9 @@ abstract class ContainerView<P> : View {
 
 }
 
-fun <V : View> V.configure(block: V.() -> Unit) = this.apply { block() }
+class Child<V>(val view: V)
+
+fun <V : View> V.configure(block: Child<V>.() -> Unit) = Child(this).apply { block() }.view
 
 interface DefaultedContainerView {
     fun add(view: View)
