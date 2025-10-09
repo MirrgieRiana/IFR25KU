@@ -3,8 +3,8 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.RendererProxy
 import miragefairy2024.mod.recipeviewer.view.View
 
-class SingleView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V> {
-    override fun add(view: V) = add(Unit, view)
+class SingleView : ContainerView<Unit>(), DefaultedContainerView {
+    override fun add(view: View) = add(Unit, view)
     override fun calculateMinWidth() = children.single().view.getMinWidth()
     override fun calculateMinHeight() = children.single().view.getMinHeight()
     override fun calculateWidth() = children.single().view.getWidth()
@@ -18,4 +18,4 @@ class SingleView<V : View> : ContainerView<Unit, V>(), DefaultedContainerView<V>
     val childView get() = children.single().view
 }
 
-fun SingleView(block: SingleView<View>.() -> Unit) = SingleView<View>().apply { block() }
+fun SingleView(block: SingleView.() -> Unit) = SingleView().apply { block() }

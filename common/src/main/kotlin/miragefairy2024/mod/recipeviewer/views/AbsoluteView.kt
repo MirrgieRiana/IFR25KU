@@ -4,8 +4,8 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RendererProxy
 import miragefairy2024.mod.recipeviewer.view.View
 
-class AbsoluteView<V : View>(private val width: Int, private val height: Int) : ContainerView<IntPoint, V>(), DefaultedContainerView<V> {
-    override fun add(view: V) = add(IntPoint(0, 0), view)
+class AbsoluteView(private val width: Int, private val height: Int) : ContainerView<IntPoint>(), DefaultedContainerView {
+    override fun add(view: View) = add(IntPoint(0, 0), view)
     override fun calculateMinWidth() = width
     override fun calculateMinHeight() = height
     override fun calculateWidth() = width
@@ -19,4 +19,4 @@ class AbsoluteView<V : View>(private val width: Int, private val height: Int) : 
     }
 }
 
-fun AbsoluteView(width: Int, height: Int, block: AbsoluteView<View>.() -> Unit) = AbsoluteView<View>(width, height).apply { block() }
+fun AbsoluteView(width: Int, height: Int, block: AbsoluteView.() -> Unit) = AbsoluteView(width, height).apply { block() }

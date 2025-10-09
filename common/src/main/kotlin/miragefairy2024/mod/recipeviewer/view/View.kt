@@ -11,4 +11,4 @@ interface View {
     fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>)
 }
 
-fun View(block: SingleView<View>.() -> Unit): View = SingleView { block(this) }.childView
+fun View(block: SingleView.() -> Unit): View = SingleView { block(this) }.childView

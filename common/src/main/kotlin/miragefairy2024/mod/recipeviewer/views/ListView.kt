@@ -5,11 +5,11 @@ import miragefairy2024.mod.recipeviewer.view.RendererProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import mirrg.kotlin.helium.atLeast
 
-abstract class ListView<V : View> : ContainerView<Alignment, V>(), DefaultedContainerView<V> {
-    override fun add(view: V) = add(Alignment.START, view)
+abstract class ListView : ContainerView<Alignment>(), DefaultedContainerView {
+    override fun add(view: View) = add(Alignment.START, view)
 }
 
-class XListView<V : View> : ListView<V>() {
+class XListView : ListView() {
     @JvmField
     var minHeight = 0
     override fun calculateMinWidth() = children.sumOf { it.view.getMinWidth() }
@@ -31,9 +31,9 @@ class XListView<V : View> : ListView<V>() {
     }
 }
 
-fun XListView(block: XListView<View>.() -> Unit) = XListView<View>().apply { block() }
+fun XListView(block: XListView.() -> Unit) = XListView().apply { block() }
 
-class YListView<V : View> : ListView<V>() {
+class YListView : ListView() {
     @JvmField
     var minWidth = 0
     override fun calculateMinWidth() = (children.maxOfOrNull { it.view.getMinWidth() } ?: 0) atLeast minWidth
@@ -55,4 +55,4 @@ class YListView<V : View> : ListView<V>() {
     }
 }
 
-fun YListView(block: YListView<View>.() -> Unit) = YListView<View>().apply { block() }
+fun YListView(block: YListView.() -> Unit) = YListView().apply { block() }

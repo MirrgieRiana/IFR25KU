@@ -4,16 +4,16 @@ import miragefairy2024.mod.recipeviewer.view.RendererProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 
-abstract class ContainerView<P, V : View> : View {
+abstract class ContainerView<P> : View {
 
-    val children = mutableListOf<PositionedView>()
+    val children = mutableListOf<PositionedView<*>>()
 
-    inner class PositionedView(val position: P, val view: V) {
+    inner class PositionedView<V : View>(val position: P, val view: V) {
         var xCache = 0
         var yCache = 0
     }
 
-    fun add(position: P, view: V) {
+    fun add(position: P, view: View) {
         children += PositionedView(position, view)
     }
 
@@ -50,9 +50,9 @@ abstract class ContainerView<P, V : View> : View {
 
 }
 
-interface DefaultedContainerView<V : View> {
-    fun add(view: V)
+interface DefaultedContainerView {
+    fun add(view: View)
 }
 
-operator fun <V : View> DefaultedContainerView<V>.plusAssign(view: V) = this.add(view)
-operator fun <P, V : View> ContainerView<P, V>.plusAssign(pair: Pair<P, V>) = this.add(pair.first, pair.second)
+operator fun <V : View> DefaultedContainerView.plusAssign(view: V) = this.add(view)
+operator fun <P> ContainerView<P>.plusAssign(pair: Pair<P, View>) = this.add(pair.first, pair.second)
