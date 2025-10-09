@@ -48,15 +48,13 @@ abstract class ContainerView<P> : View {
         }
     }
 
+    abstract fun createDefaultPosition(): P
+
 }
 
 class Child<V>(val view: V)
 
 fun <V : View> V.configure(block: Child<V>.() -> Unit) = Child(this).apply { block() }.view
 
-interface DefaultedContainerView {
-    fun add(view: View)
-}
-
-operator fun <V : View> DefaultedContainerView.plusAssign(view: V) = this.add(view)
+operator fun <P, V : View> ContainerView<P>.plusAssign(view: V) = this.add(this.createDefaultPosition(), view)
 operator fun <P> ContainerView<P>.plusAssign(pair: Pair<P, View>) = this.add(pair.first, pair.second)

@@ -1,10 +1,9 @@
 package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.RendererProxy
-import miragefairy2024.mod.recipeviewer.view.View
 
-class SingleView : ContainerView<Unit>(), DefaultedContainerView {
-    override fun add(view: View) = add(Unit, view)
+class SingleView : ContainerView<Unit>() {
+    override fun createDefaultPosition() = Unit
     override fun calculateMinWidth() = children.single().view.getMinWidth()
     override fun calculateMinHeight() = children.single().view.getMinHeight()
     override fun calculateWidth() = children.single().view.getWidth()

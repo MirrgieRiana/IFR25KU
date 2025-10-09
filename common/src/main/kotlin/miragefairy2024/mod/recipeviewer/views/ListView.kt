@@ -2,11 +2,10 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.RendererProxy
-import miragefairy2024.mod.recipeviewer.view.View
 import mirrg.kotlin.helium.atLeast
 
-abstract class ListView : ContainerView<Alignment>(), DefaultedContainerView {
-    override fun add(view: View) = add(Alignment.START, view)
+abstract class ListView : ContainerView<Alignment>() {
+    override fun createDefaultPosition() = Alignment.START
 }
 
 class XListView : ListView() {
