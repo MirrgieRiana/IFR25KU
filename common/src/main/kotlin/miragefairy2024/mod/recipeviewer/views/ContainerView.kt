@@ -55,5 +55,5 @@ class Child<P, V : View>(var position: P, val view: V) {
 context(Child<*, out ContainerView<P>>)
 fun <P, V : View> V.configure(block: Child<P, V>.() -> Unit) = Child(this@Child.view.createDefaultPosition(), this).apply { block() }
 
-operator fun <P, V : View> ContainerView<P>.plusAssign(view: V) = this.add(Child(this.createDefaultPosition(), view))
-operator fun <P, V : View> ContainerView<P>.plusAssign(child: Child<P, V>) = this.add(child)
+operator fun <P> ContainerView<P>.plusAssign(view: View) = this.add(Child(this.createDefaultPosition(), view))
+operator fun <P> ContainerView<P>.plusAssign(child: Child<P, *>) = this.add(child)
