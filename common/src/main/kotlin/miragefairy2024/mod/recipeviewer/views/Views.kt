@@ -111,6 +111,7 @@ abstract class ListView<V : View> : ContainerView<Alignment, V>(), DefaultedCont
 }
 
 class XListView<V : View> : ListView<V>() {
+    @JvmField
     var minHeight = 0
     override fun calculateMinWidth() = children.sumOf { it.view.getMinWidth() }
     override fun calculateMinHeight() = (children.maxOfOrNull { it.view.getMinHeight() } ?: 0) atLeast minHeight
@@ -134,6 +135,7 @@ class XListView<V : View> : ListView<V>() {
 fun XListView(block: XListView<View>.() -> Unit) = XListView<View>().apply { block() }
 
 class YListView<V : View> : ListView<V>() {
+    @JvmField
     var minWidth = 0
     override fun calculateMinWidth() = (children.maxOfOrNull { it.view.getMinWidth() } ?: 0) atLeast minWidth
     override fun calculateMinHeight() = children.sumOf { it.view.getMinHeight() }
@@ -196,6 +198,7 @@ class OutputSlotView(val itemStack: ItemStack) : SlotView()
 
 
 class TextView(val text: Component) : View {
+    @JvmField
     var minWidth = 0
     private var widthCache = 0
     private var heightCache = 0
