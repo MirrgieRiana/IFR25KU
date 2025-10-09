@@ -6,9 +6,9 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 
 abstract class ContainerView<P> : View {
 
-    val children = mutableListOf<PositionedView<*>>()
+    val children = mutableListOf<PositionedView<P, *>>()
 
-    inner class PositionedView<V : View>(val position: P, val view: V) {
+    class PositionedView<P, V : View>(val position: P, val view: V) {
         var xCache = 0
         var yCache = 0
     }
