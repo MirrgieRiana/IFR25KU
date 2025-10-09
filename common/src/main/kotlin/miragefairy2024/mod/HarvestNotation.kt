@@ -71,7 +71,7 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
     }
 
     override fun createView(recipeEntry: RecipeEntry<HarvestNotation>) = View {
-        this += XListView {
+        this += XListView().apply {
             this += CatalystSlotView(recipeEntry.recipe.seed.toIngredientStack())
             this += XSpaceView(2)
             this += ArrowView()

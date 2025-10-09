@@ -18,5 +18,3 @@ class AbsoluteView(private val width: Int, private val height: Int) : ContainerV
         }
     }
 }
-
-fun AbsoluteView(width: Int, height: Int, block: AbsoluteView.() -> Unit) = AbsoluteView(width, height).apply { block() }

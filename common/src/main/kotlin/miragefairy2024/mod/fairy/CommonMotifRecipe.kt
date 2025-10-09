@@ -121,7 +121,7 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
     }
 
     override fun createView(recipeEntry: RecipeEntry<CommonMotifRecipe>) = View {
-        this += XListView {
+        this += XListView().apply {
             val recipeText = when (val recipe = recipeEntry.recipe) {
                 is AlwaysCommonMotifRecipe -> text { COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION() }
                 is BiomeCommonMotifRecipe -> text { translate(recipe.biome.location().toLanguageKey("biome")) }

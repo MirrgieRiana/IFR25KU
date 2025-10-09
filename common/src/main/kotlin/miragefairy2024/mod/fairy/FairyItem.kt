@@ -450,15 +450,15 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
     }
 
     override fun createView(recipeEntry: RecipeEntry<FairyFamilyNotation>) = View {
-        this += XListView {
+        this += XListView().apply {
             minHeight = 18 * 7
-            this += YListView {
+            this += YListView().apply {
                 minWidth = 18 * 9
 
                 // 上に親妖精
-                this += Alignment.CENTER to YListView {
+                this += Alignment.CENTER to YListView().apply {
                     recipeEntry.recipe.parents.chunked(9).forEach { chunk ->
-                        this += XListView {
+                        this += XListView().apply {
                             chunk.forEach {
                                 this += OutputSlotView(it.createFairyItemStack())
                             }
@@ -474,9 +474,9 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
                 this += YSpaceView(9)
 
                 // 下に子妖精
-                this += Alignment.CENTER to YListView {
+                this += Alignment.CENTER to YListView().apply {
                     recipeEntry.recipe.children.chunked(9).forEach { chunk ->
-                        this += XListView {
+                        this += XListView().apply {
                             chunk.forEach {
                                 this += OutputSlotView(it.createFairyItemStack())
                             }

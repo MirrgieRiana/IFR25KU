@@ -17,5 +17,3 @@ class SingleView : ContainerView<Unit>(), DefaultedContainerView {
 
     val childView get() = children.single().view
 }
-
-fun SingleView(block: SingleView.() -> Unit) = SingleView().apply { block() }

@@ -114,8 +114,8 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
     abstract fun getName(key: T): Component
 
     override fun createView(recipeEntry: RecipeEntry<Pair<Motif, List<T>>>) = View {
-        this += XListView {
-            val gained = clientProxy.or { return@XListView }.getClientPlayer().or { return@XListView }.fairyDreamContainer.getOrDefault()[recipeEntry.recipe.first]
+        this += XListView().apply {
+            val gained = clientProxy.or { return@apply }.getClientPlayer().or { return@apply }.fairyDreamContainer.getOrDefault()[recipeEntry.recipe.first]
             val text = text { getName(recipeEntry.recipe.second.first()) }
                 .let { if (recipeEntry.recipe.second.size > 1) text { it + "..."() } else it }
                 .let { if (!gained) it.darkRed else it }

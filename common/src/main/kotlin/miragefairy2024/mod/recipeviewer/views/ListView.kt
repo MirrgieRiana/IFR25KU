@@ -31,8 +31,6 @@ class XListView : ListView() {
     }
 }
 
-fun XListView(block: XListView.() -> Unit) = XListView().apply { block() }
-
 class YListView : ListView() {
     @JvmField
     var minWidth = 0
@@ -54,5 +52,3 @@ class YListView : ListView() {
         }
     }
 }
-
-fun YListView(block: YListView.() -> Unit) = YListView().apply { block() }
