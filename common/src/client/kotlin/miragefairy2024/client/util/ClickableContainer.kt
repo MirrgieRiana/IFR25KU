@@ -5,7 +5,6 @@ import io.wispforest.owo.ui.container.WrappingParentComponent
 import io.wispforest.owo.ui.core.OwoUIDrawContext
 import io.wispforest.owo.ui.core.Sizing
 import miragefairy2024.util.EventRegistry
-import io.wispforest.owo.ui.core.Component as OwoComponent
 
 class ClickableContainer(horizontalSizing: Sizing, verticalSizing: Sizing) : WrappingParentComponent<OwoComponent>(horizontalSizing, verticalSizing, Components.spacer(0)) {
     // これを設定してもchildが受け取ってしまうのでカーソルを設定することができない
@@ -14,7 +13,7 @@ class ClickableContainer(horizontalSizing: Sizing, verticalSizing: Sizing) : Wra
     //    cursorStyle(CursorStyle.HAND)
     //}
 
-    override fun canFocus(source: OwoComponent.FocusSource) = source == OwoComponent.FocusSource.KEYBOARD_CYCLE
+    override fun canFocus(source: FocusSource) = source == FocusSource.KEYBOARD_CYCLE
 
     override fun draw(context: OwoUIDrawContext, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
         super.draw(context, mouseX, mouseY, partialTicks, delta)

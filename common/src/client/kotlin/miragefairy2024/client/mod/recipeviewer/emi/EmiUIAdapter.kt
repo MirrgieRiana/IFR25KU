@@ -9,11 +9,11 @@ import io.wispforest.owo.ui.core.OwoUIDrawContext
 import io.wispforest.owo.ui.core.ParentComponent
 import io.wispforest.owo.ui.core.Sizing
 import io.wispforest.owo.ui.util.ScissorStack
+import miragefairy2024.client.util.OwoComponent
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import java.util.function.BiFunction
-import io.wispforest.owo.ui.core.Component as OwoComponent
 
 /**
  * EMIの内部仕様のため、 mouseClicked および keyPressed を除くUIイベントは通知されません。

@@ -11,6 +11,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterContext
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterRegistry
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
+import miragefairy2024.client.util.OwoComponent
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.register
@@ -21,7 +22,6 @@ import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.util.toEntryIngredient
-import io.wispforest.owo.ui.core.Component as OwoComponent
 
 context(ModContext)
 fun initReiViewPlacers() {

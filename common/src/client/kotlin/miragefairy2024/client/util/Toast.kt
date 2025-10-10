@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.toasts.Toast
 import net.minecraft.client.gui.components.toasts.ToastComponent
-import io.wispforest.owo.ui.core.Component as OwoComponent
 
 fun createOwoToast(component: OwoComponent) = object : Toast {
 
