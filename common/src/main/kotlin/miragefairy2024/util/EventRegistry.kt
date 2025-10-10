@@ -1,6 +1,8 @@
 package miragefairy2024.util
 
 
+// TODO mirrg
+
 // EventRegistry
 
 open class EventRegistry<L> {
@@ -51,4 +53,30 @@ class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
 fun <T> ObservableValue<T>.observeAndInitialize(onClosed: EventRegistry<() -> Unit>, listener: (T, T) -> Unit) {
     this.observe(onClosed, listener)
     listener(this.value, this.value)
+}
+
+
+// Remover
+
+fun interface Remover {
+    companion object {
+        val NONE = Remover { }
+    }
+
+    fun remove()
+}
+
+fun (() -> Unit).asRemover() = Remover {
+    this()
+}
+
+operator fun Remover.plus(other: Remover) = Remover {
+    this.remove()
+    other.remove()
+}
+
+fun Iterable<Remover>.flatten() = Remover {
+    this.forEach {
+        it.remove()
+    }
 }
