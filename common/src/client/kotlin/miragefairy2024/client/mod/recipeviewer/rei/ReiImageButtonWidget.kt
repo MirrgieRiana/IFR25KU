@@ -17,7 +17,7 @@ class ReiImageButtonWidget(private val offset: IntPoint, private val view: Image
 
     val onClick = EventRegistry<() -> Unit>()
 
-    private val reiBounds = offset.sized(view.calculatedSize).toReiRectangle()
+    private val reiBounds = offset.sized(view.actualSize).toReiRectangle()
     override fun getBounds() = reiBounds
 
     override fun children() = listOf<GuiEventListener>()

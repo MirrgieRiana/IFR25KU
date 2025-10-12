@@ -13,7 +13,7 @@ import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.client.mod.recipeviewer.ScreenClassRegistry
-import miragefairy2024.client.mod.recipeviewer.rendererProxy
+import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
@@ -101,8 +101,9 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     private fun getSize(recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>): IntPoint {
         return sizeCache.getOrPut(recipeEntry) {
             val view = card.createView(recipeEntry)
-            view.calculateMinSize(rendererProxy)
-            view.calculateSize(MAX_SIZE.minus(5 + 5, 5 + 5))
+            view.calculateContentSize(renderingProxy)
+            view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
+            view.actualSize
         }
     }
 
@@ -115,8 +116,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
             val containerWidget = ReiContainerWidget()
             val view = card.createView(display.recipeEntry)
-            view.calculateMinSize(rendererProxy)
-            view.calculateSize(MAX_SIZE.minus(5 + 5, 5 + 5))
+            view.calculateContentSize(renderingProxy)
+            view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
             view.attachTo(IntPoint(bounds.x + 5, bounds.y + 5)) { view2, bounds ->
                 REI_VIEW_PLACER_REGISTRY.place(containerWidget, view2, bounds)
             }
@@ -145,9 +146,9 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
                     recipeManager.getAllRecipesFor(bridge.recipeType).forEach {
                         val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(it.id(), it.value(), false)
                         val view = bridge.card.createView(recipeEntry)
-                        view.calculateMinSize(rendererProxy)
-                        val size = view.calculateSize(MAX_SIZE.minus(5 + 5, 5 + 5))
-                        heightCache = heightCache max size.y
+                        view.calculateContentSize(renderingProxy)
+                        view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
+                        heightCache = heightCache max view.actualSize.y
                     }
                 }
                 calculateMaxHeight(bridge)

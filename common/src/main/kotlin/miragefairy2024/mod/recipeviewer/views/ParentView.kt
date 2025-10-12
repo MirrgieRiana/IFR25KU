@@ -2,18 +2,30 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.RendererProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.util.Remover
+import miragefairy2024.util.flatten
 
 abstract class ParentView<P> : AbstractView() {
 
-    protected inner class ChildWithMinSize(val child: Child<P, *>, val minSize: IntPoint)
-    protected inner class ChildWithSize(val child: Child<P, *>, val size: IntPoint)
+    protected fun Iterable<Child<P, *>>.calculateContentSize() {
+        this.forEach {
+            it.view.calculateContentSize(renderingProxy)
+        }
+    }
 
-    protected fun Child<P, *>.withMinSize(rendererProxy: RendererProxy) = ChildWithMinSize(this, this.view.calculateMinSize(rendererProxy))
-    protected fun ParentView<P>.ChildWithMinSize.withSize(regionSize: IntPoint) = ChildWithSize(this.child, this.child.view.calculateSize(regionSize))
-    protected fun ParentView<P>.ChildWithSize.attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = this.child.view.attachTo(offset, viewPlacer)
+    protected fun Iterable<Child<P, *>>.calculateActualSize(regionSizeFunction: (Child<P, *>) -> IntPoint) {
+        this.forEach {
+            it.view.calculateActualSize(regionSizeFunction(it))
+        }
+    }
+
+    protected fun Iterable<Child<P, *>>.attachTo(viewPlacer: ViewPlacer<PlaceableView>, offsetFunction: (Child<P, *>) -> IntPoint): Remover {
+        return this.map {
+            it.view.attachTo(offsetFunction(it), viewPlacer)
+        }.flatten()
+    }
 
     abstract fun createDefaultPosition(): P
 

@@ -17,7 +17,7 @@ class EmiImageButtonWidget(private val offset: IntPoint, private val view: Image
 
     val onClick = EventRegistry<() -> Unit>()
 
-    private val emiBounds = offset.sized(view.calculatedSize).toEmiBounds()
+    private val emiBounds = offset.sized(view.actualSize).toEmiBounds()
     override fun getBounds() = emiBounds
 
     override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {

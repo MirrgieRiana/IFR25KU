@@ -124,6 +124,7 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
 
     override fun createView(recipeEntry: RecipeEntry<CommonMotifRecipe>) = View {
         view += XListView().configure {
+            view.sizingX = Sizing.FILL
             val recipeText = when (val recipe = recipeEntry.recipe) {
                 is AlwaysCommonMotifRecipe -> text { COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION() }
                 is BiomeCommonMotifRecipe -> text { translate(recipe.biome.location().toLanguageKey("biome")) }
@@ -132,7 +133,7 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
             view += TextView(recipeText).configure {
                 position.alignmentY = Alignment.CENTER
                 position.weight = 1.0
-                view.sizingX = Sizing.Fill
+                view.sizingX = Sizing.FILL
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
                 view.scroll = true

@@ -3,58 +3,49 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.plus
 import miragefairy2024.mod.recipeviewer.view.size
 import miragefairy2024.util.Remover
-import miragefairy2024.util.flatten
 
 class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Position>() {
+
     sealed class Position {
-        abstract fun getMaxSize(childMinSize: IntPoint, regionSize: IntPoint): IntPoint
+        abstract fun getSize(contentSize: IntPoint, regionSize: IntPoint): IntPoint
         abstract fun getOffset(): IntPoint
     }
 
     data object Fill : Position() {
-        override fun getMaxSize(childMinSize: IntPoint, regionSize: IntPoint) = regionSize
+        override fun getSize(contentSize: IntPoint, regionSize: IntPoint) = regionSize
         override fun getOffset() = IntPoint.Companion.ZERO
     }
 
     data class Offset(@JvmField val offset: IntPoint) : Position() {
-        override fun getMaxSize(childMinSize: IntPoint, regionSize: IntPoint) = childMinSize
+        override fun getSize(contentSize: IntPoint, regionSize: IntPoint) = contentSize
         override fun getOffset() = offset
     }
 
     data class Bounds(val bounds: IntRectangle) : Position() {
-        override fun getMaxSize(childMinSize: IntPoint, regionSize: IntPoint) = bounds.size
+        override fun getSize(contentSize: IntPoint, regionSize: IntPoint) = bounds.size
         override fun getOffset() = bounds.offset
     }
 
 
     override fun createDefaultPosition() = Fill
 
+    override var sizingX = Sizing.WRAP
+    override var sizingY = Sizing.WRAP
 
-    private lateinit var childrenWithMinSize: List<ParentView<Position>.ChildWithMinSize>
+    override fun calculateContentSize() = size
 
-    override fun calculateMinSizeImpl(): IntPoint {
-        childrenWithMinSize = children.map { it.withMinSize(rendererProxy) }
-        return size
+    override fun calculateChildrenActualSize() {
+        children.calculateActualSize { it.position.getSize(it.view.contentSize, actualSize) }
     }
-
-
-    private lateinit var childrenWithSize: List<ParentView<Position>.ChildWithSize>
-
-    override fun calculateSizeImpl(regionSize: IntPoint): IntPoint {
-        childrenWithSize = childrenWithMinSize.map { it.withSize(it.child.position.getMaxSize(it.minSize, regionSize)) }
-        return size
-    }
-
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        return childrenWithSize.map {
-            it.attachTo(offset + it.child.position.getOffset(), viewPlacer)
-        }.flatten()
+        return children.attachTo(viewPlacer) { offset + it.position.getOffset() }
     }
 
 }

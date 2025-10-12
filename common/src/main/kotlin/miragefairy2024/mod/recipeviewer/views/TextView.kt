@@ -13,15 +13,15 @@ import net.minecraft.util.FormattedCharSequence
 
 class TextView : AbstractView(), PlaceableView {
     val text = ObservableValue(FormattedCharSequence.EMPTY) // TODO サイズ再計算
-    var sizingX: Sizing = Sizing.Wrap
+    override var sizingX = Sizing.WRAP
+    override val sizingY = Sizing.WRAP
     var color = ColorPair.DEFAULT
     var shadow = true
     var alignmentX = Alignment.START
     var scroll = false
     var tooltip: List<Component>? = null
-    override fun calculateMinSizeImpl() = IntPoint(sizingX.getMinSize(rendererProxy.calculateTextWidth(text.value)), rendererProxy.getTextHeight())
-    override fun calculateSizeImpl(regionSize: IntPoint) = IntPoint(sizingX.getSize(rendererProxy.calculateTextWidth(text.value), regionSize.x), calculatedMinSize.y)
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(calculatedSize))
+    override fun calculateContentSize() = IntPoint(renderingProxy.calculateTextWidth(text.value), renderingProxy.getTextHeight())
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(actualSize))
 }
 
 fun TextView(text: FormattedCharSequence) = TextView().also { it.text.value = text }

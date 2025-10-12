@@ -1,32 +1,46 @@
 package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
-import miragefairy2024.mod.recipeviewer.view.RendererProxy
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 
 abstract class AbstractView : View {
 
-    protected lateinit var rendererProxy: RendererProxy
-    lateinit var calculatedMinSize: IntPoint
+    protected lateinit var renderingProxy: RenderingProxy
         private set
 
-    final override fun calculateMinSize(rendererProxy: RendererProxy): IntPoint {
-        this.rendererProxy = rendererProxy
-        calculatedMinSize = calculateMinSizeImpl()
-        return calculatedMinSize
+    private lateinit var calculatedContentSize: IntPoint
+    final override val contentSize get() = calculatedContentSize
+
+    final override fun calculateContentSize(renderingProxy: RenderingProxy) {
+        this.renderingProxy = renderingProxy
+        calculateChildrenContentSize()
+        calculatedContentSize = calculateContentSize()
     }
 
-    protected abstract fun calculateMinSizeImpl(): IntPoint
+    protected open fun calculateChildrenContentSize() = Unit
+
+    protected abstract fun calculateContentSize(): IntPoint
 
 
-    lateinit var calculatedSize: IntPoint
-        private set
+    private lateinit var calculatedActualSize: IntPoint
+    final override val actualSize get() = calculatedActualSize
 
-    final override fun calculateSize(regionSize: IntPoint): IntPoint {
-        calculatedSize = calculateSizeImpl(regionSize)
-        return calculatedSize
+    final override fun calculateActualSize(regionSize: IntPoint) {
+        calculatedActualSize = IntPoint(
+            when (sizingX) {
+                Sizing.FILL -> regionSize.x
+                Sizing.WRAP -> contentSize.x
+            },
+            when (sizingY) {
+                Sizing.FILL -> regionSize.y
+                Sizing.WRAP -> contentSize.y
+            },
+        )
+        calculateChildrenActualSize()
     }
 
-    protected abstract fun calculateSizeImpl(regionSize: IntPoint): IntPoint
+    protected open fun calculateChildrenActualSize() = Unit
 
 }

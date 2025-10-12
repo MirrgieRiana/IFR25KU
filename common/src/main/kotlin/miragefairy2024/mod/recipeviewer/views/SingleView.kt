@@ -4,39 +4,31 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.util.Remover
 
 open class SingleView : ContainerView<Unit>() {
 
     override fun createDefaultPosition() = Unit
 
+    override val sizingX get() = childView.sizingX
+    override val sizingY get() = childView.sizingY
 
-    protected lateinit var childWithMinSize: ParentView<Unit>.ChildWithMinSize
+    override fun calculateContentSize() = childView.contentSize
 
-    override fun calculateMinSizeImpl(): IntPoint {
-        childWithMinSize = children.single().withMinSize(rendererProxy)
-        return getMinSize()
+    override fun calculateChildrenActualSize() {
+        childView.calculateActualSize(actualSize)
     }
 
-    protected open fun getMinSize() = childWithMinSize.minSize
-
-
-    protected lateinit var childWithSize: ParentView<Unit>.ChildWithSize
-
-    override fun calculateSizeImpl(regionSize: IntPoint): IntPoint {
-        childWithSize = getChildWithSize(regionSize)
-        return getSize()
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
+        return childView.attachTo(offset, viewPlacer)
     }
-
-    protected open fun getChildWithSize(regionSize: IntPoint) = childWithMinSize.withSize(regionSize)
-
-    protected open fun getSize() = childWithSize.size
-
-
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = childWithSize.attachTo(offset, viewPlacer)
-
 
     val childView get() = children.single().view
 
 }
+
+fun <P, V : SingleView> Child<P, *>.wrap(wrapper: V) = Child(this.position, wrapper.also {
+    it += this@wrap.view
+})
 
 fun View(block: Child<Unit, SingleView>.() -> Unit): View = SingleView().apply { block(Child(Unit, this)) }.childView

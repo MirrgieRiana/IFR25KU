@@ -14,7 +14,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener
 
 class ReiTextWidget(private val offset: IntPoint, private val view: TextView) : WidgetWithBounds() {
 
-    private val reiBounds = offset.sized(view.calculatedSize).toReiRectangle()
+    private val reiBounds = offset.sized(view.actualSize).toReiRectangle()
     override fun getBounds() = reiBounds
 
     override fun children() = listOf<GuiEventListener>()
@@ -23,15 +23,15 @@ class ReiTextWidget(private val offset: IntPoint, private val view: TextView) : 
 
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         val color = if (REIRuntime.getInstance().isDarkThemeEnabled) view.color.darkModeArgb else view.color.lightModeArgb
-        if (view.scroll && font.width(view.text.value) > view.calculatedSize.x) {
+        if (view.scroll && font.width(view.text.value) > view.actualSize.x) {
             guiGraphics.drawScrollingString(
                 font,
                 view.text.value,
                 offset.x,
-                offset.x + view.calculatedSize.x,
+                offset.x + view.actualSize.x,
                 offset.y,
                 startNanoTime,
-                10.0,
+                30.0,
                 7.0,
                 color,
                 view.shadow,
@@ -39,8 +39,8 @@ class ReiTextWidget(private val offset: IntPoint, private val view: TextView) : 
         } else {
             val x = when (view.alignmentX) {
                 Alignment.START -> offset.x
-                Alignment.CENTER -> offset.x + view.calculatedSize.x / 2 - font.width(view.text.value) / 2
-                Alignment.END -> offset.x + view.calculatedSize.x - font.width(view.text.value)
+                Alignment.CENTER -> offset.x + view.actualSize.x / 2 - font.width(view.text.value) / 2
+                Alignment.END -> offset.x + view.actualSize.x - font.width(view.text.value)
             }
             guiGraphics.drawString(
                 font,

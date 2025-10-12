@@ -23,14 +23,20 @@ import miragefairy2024.mod.passiveskill.findPassiveSkillProviders
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.registerIdentificationDataComponentTypes
 import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
+import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
+import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.AdvancementCard
@@ -453,16 +459,16 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
 
     override fun createView(recipeEntry: RecipeEntry<FairyFamilyNotation>) = View {
         view += YListView().configure {
-            view.sizingX = Sizing.Fixed(18 * 8)
+            view.sizingX = Sizing.FILL
+            view.sizingY = Sizing.FILL
 
             // 上に親妖精
             view += YListView().configure {
                 position.alignmentX = Alignment.CENTER
+                position.alignmentY = Alignment.END
                 position.weight = 1.0
-                view += YSpaceView().configure {
-                    position.weight = 1.0
-                }
-                recipeEntry.recipe.parents.chunked(8).forEach { chunk ->
+                position.ignoreLayoutY = true
+                recipeEntry.recipe.parents.chunked(7).forEach { chunk ->
                     view += XListView().configure {
                         chunk.forEach {
                             view += OutputSlotView(it.createFairyItemStack())
@@ -474,8 +480,14 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
             view += YSpaceView(9)
 
             // 中段に対象の妖精
-            view += CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground().configure {
+            view += StackView().configure {
                 position.alignmentX = Alignment.CENTER
+
+                val texture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/fairy_family_arrow.png"), IntPoint(16, 34), IntRectangle(0, 0, 16, 34))
+                view += ImageView(texture).configure { }.margin(1, -8)
+
+                view += CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground()
+
             }
 
             view += YSpaceView(9)
@@ -483,16 +495,15 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
             // 下に子妖精
             view += YListView().configure {
                 position.alignmentX = Alignment.CENTER
-                position.weight = 1.0
-                recipeEntry.recipe.children.chunked(8).forEach { chunk ->
+                position.alignmentY = Alignment.START
+                position.weight = 2.0
+                position.ignoreLayoutY = true
+                recipeEntry.recipe.children.chunked(7).forEach { chunk ->
                     view += XListView().configure {
                         chunk.forEach {
                             view += OutputSlotView(it.createFairyItemStack())
                         }
                     }
-                }
-                view += YSpaceView().configure {
-                    position.weight = 1.0
                 }
             }
 

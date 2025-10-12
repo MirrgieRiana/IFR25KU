@@ -117,6 +117,7 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
 
     override fun createView(recipeEntry: RecipeEntry<Pair<Motif, List<T>>>) = View {
         view += XListView().configure {
+            view.sizingX = Sizing.FILL
             val gained = clientProxy.or { return@configure }.getClientPlayer().or { return@configure }.fairyDreamContainer.getOrDefault()[recipeEntry.recipe.first]
             val text = text { getName(recipeEntry.recipe.second.first()) }
                 .let { if (recipeEntry.recipe.second.size > 1) text { it + "..."() } else it }
@@ -129,7 +130,7 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
             view += TextView(text).configure {
                 position.alignmentY = Alignment.CENTER
                 position.weight = 1.0
-                view.sizingX = Sizing.Fill
+                view.sizingX = Sizing.FILL
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
                 view.scroll = true

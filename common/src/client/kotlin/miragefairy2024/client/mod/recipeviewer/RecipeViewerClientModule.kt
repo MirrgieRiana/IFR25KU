@@ -5,7 +5,7 @@ import miragefairy2024.client.mod.recipeviewer.emi.initEmiClientSupport
 import miragefairy2024.client.mod.recipeviewer.emi.initEmiViewPlacers
 import miragefairy2024.client.mod.recipeviewer.rei.initReiClientSupport
 import miragefairy2024.client.mod.recipeviewer.rei.initReiViewPlacers
-import miragefairy2024.mod.recipeviewer.view.RendererProxy
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
@@ -18,7 +18,7 @@ fun initRecipeViewerClientModule() {
     initEmiViewPlacers()
 }
 
-val rendererProxy = object : RendererProxy {
+val renderingProxy = object : RenderingProxy {
     val font by lazy { Minecraft.getInstance().font }
     override fun calculateTextWidth(text: FormattedText) = font.width(text)
     override fun calculateTextWidth(text: FormattedCharSequence) = font.width(text)

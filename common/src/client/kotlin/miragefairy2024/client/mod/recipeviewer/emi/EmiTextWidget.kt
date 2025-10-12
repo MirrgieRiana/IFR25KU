@@ -13,7 +13,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 
 class EmiTextWidget(private val offset: IntPoint, private val view: TextView) : Widget() {
 
-    private val emiBounds = offset.sized(view.calculatedSize).toEmiBounds()
+    private val emiBounds = offset.sized(view.actualSize).toEmiBounds()
     override fun getBounds() = emiBounds
 
     private val startNanoTime by lazy { System.nanoTime() }
@@ -21,15 +21,15 @@ class EmiTextWidget(private val offset: IntPoint, private val view: TextView) : 
     override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         val font = Minecraft.getInstance().font
         val color = view.color.lightModeArgb
-        if (view.scroll && font.width(view.text.value) > view.calculatedSize.x) {
+        if (view.scroll && font.width(view.text.value) > view.actualSize.x) {
             draw.drawScrollingString(
                 font,
                 view.text.value,
                 offset.x,
-                offset.x + view.calculatedSize.x,
+                offset.x + view.actualSize.x,
                 offset.y,
                 startNanoTime,
-                10.0,
+                30.0,
                 7.0,
                 color,
                 view.shadow,
@@ -37,8 +37,8 @@ class EmiTextWidget(private val offset: IntPoint, private val view: TextView) : 
         } else {
             val x = when (view.alignmentX) {
                 Alignment.START -> offset.x
-                Alignment.CENTER -> offset.x + view.calculatedSize.x / 2 - font.width(view.text.value) / 2
-                Alignment.END -> offset.x + view.calculatedSize.x - font.width(view.text.value)
+                Alignment.CENTER -> offset.x + view.actualSize.x / 2 - font.width(view.text.value) / 2
+                Alignment.END -> offset.x + view.actualSize.x - font.width(view.text.value)
             }
             draw.drawString(
                 font,

@@ -7,115 +7,115 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.util.Remover
-import miragefairy2024.util.flatten
 import kotlin.math.roundToInt
 
-class XListView : ContainerView<XListView.Position>() {
-    class Position(var alignmentY: Alignment, var weight: Double)
+abstract class ListView : ContainerView<ListView.Position>() {
 
-    override fun createDefaultPosition() = Position(Alignment.START, 0.0)
+    class Position {
+        var alignmentX = Alignment.START
+        var alignmentY = Alignment.START
+        var weight = 0.0
+        var ignoreLayoutX = false
+        var ignoreLayoutY = false
+    }
 
-    var sizingY: Sizing = Sizing.Wrap
+    override fun createDefaultPosition() = Position()
 
-    private lateinit var childrenWithMinSize: List<ParentView<Position>.ChildWithMinSize>
 
-    override fun calculateMinSizeImpl(): IntPoint {
-        childrenWithMinSize = children.map { it.withMinSize(rendererProxy) }
+    override var sizingX = Sizing.WRAP
+    override var sizingY = Sizing.WRAP
+
+    protected val Child<Position, *>.reservedSizeX get() = if (position.ignoreLayoutX) 0 else view.contentSize.x
+    protected val Child<Position, *>.reservedSizeY get() = if (position.ignoreLayoutY) 0 else view.contentSize.y
+
+}
+
+class XListView : ListView() {
+
+    override fun calculateContentSize(): IntPoint {
         return IntPoint(
-            childrenWithMinSize.sumOf { it.minSize.x },
-            sizingY.getMinSize(childrenWithMinSize.maxOfOrNull { it.minSize.y } ?: 0),
+            children.sumOf { it.reservedSizeX },
+            children.maxOfOrNull { it.reservedSizeY } ?: 0,
         )
     }
 
-
-    private lateinit var childrenWithSize: List<ParentView<Position>.ChildWithSize>
-
-    override fun calculateSizeImpl(regionSize: IntPoint): IntPoint {
-        val remainingX = regionSize.x - calculatedMinSize.x
-        val totalWeight = childrenWithMinSize.sumOf { it.child.position.weight }
-        childrenWithSize = run {
-            var childX = 0.0
-            childrenWithMinSize.map {
-                val nextChildX = childX + it.minSize.x + if (totalWeight > 0.0) remainingX * (it.child.position.weight / totalWeight) else 0.0
-                val childWithSize = it.withSize(IntPoint(nextChildX.roundToInt() - childX.roundToInt(), regionSize.y))
-                childX = nextChildX
-                childWithSize
-            }
+    override fun calculateChildrenActualSize() {
+        val remaining = actualSize.x - contentSize.x
+        val totalWeight = children.sumOf { it.position.weight }
+        var x = 0.0
+        children.calculateActualSize {
+            val old = x
+            val new = old + it.reservedSizeX + if (totalWeight > 0.0) remaining * (it.position.weight / totalWeight) else 0.0
+            x = new
+            IntPoint(new.roundToInt() - old.roundToInt(), actualSize.y)
         }
-        return IntPoint(
-            childrenWithSize.sumOf { it.size.x },
-            sizingY.getSize(childrenWithSize.maxOfOrNull { it.size.y } ?: 0, regionSize.y),
-        )
     }
-
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        var childX = 0
-        return childrenWithSize.map {
-            val childY = when (it.child.position.alignmentY) {
+        val remaining = actualSize.x - contentSize.x
+        val totalWeight = children.sumOf { it.position.weight }
+        var x = 0.0
+        return children.attachTo(viewPlacer) {
+            val old = x
+            val new = old + it.reservedSizeX + if (totalWeight > 0.0) remaining * (it.position.weight / totalWeight) else 0.0
+            x = new
+            val childX = old.roundToInt() + when (it.position.alignmentX) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (calculatedSize.y - it.size.y) / 2
-                Alignment.END -> calculatedSize.y - it.size.y
+                Alignment.CENTER -> ((new.roundToInt() - old.roundToInt()) - it.view.actualSize.x) / 2
+                Alignment.END -> (new.roundToInt() - old.roundToInt()) - it.view.actualSize.x
             }
-            val remover = it.attachTo(offset.offset(childX, childY), viewPlacer)
-            childX += it.size.x
-            remover
-        }.flatten()
+            val childY = when (it.position.alignmentY) {
+                Alignment.START -> 0
+                Alignment.CENTER -> (actualSize.y - it.view.actualSize.y) / 2
+                Alignment.END -> actualSize.y - it.view.actualSize.y
+            }
+            offset.offset(childX, childY)
+        }
     }
 
 }
 
-class YListView : ContainerView<YListView.Position>() {
-    class Position(var alignmentX: Alignment, var weight: Double)
+class YListView : ListView() {
 
-    override fun createDefaultPosition() = Position(Alignment.START, 0.0)
-
-    var sizingX: Sizing = Sizing.Wrap
-
-    private lateinit var childrenWithMinSize: List<ParentView<Position>.ChildWithMinSize>
-
-    override fun calculateMinSizeImpl(): IntPoint {
-        childrenWithMinSize = children.map { it.withMinSize(rendererProxy) }
+    override fun calculateContentSize(): IntPoint {
         return IntPoint(
-            sizingX.getMinSize(childrenWithMinSize.maxOfOrNull { it.minSize.x } ?: 0),
-            childrenWithMinSize.sumOf { it.minSize.y },
+            children.maxOfOrNull { it.reservedSizeX } ?: 0,
+            children.sumOf { it.reservedSizeY },
         )
     }
 
-
-    private lateinit var childrenWithSize: List<ParentView<Position>.ChildWithSize>
-
-    override fun calculateSizeImpl(regionSize: IntPoint): IntPoint {
-        val remainingY = regionSize.y - calculatedMinSize.y
-        val totalWeight = childrenWithMinSize.sumOf { it.child.position.weight }
-        childrenWithSize = run {
-            var childY = 0.0
-            childrenWithMinSize.map {
-                val nextChildY = childY + it.minSize.y + if (totalWeight > 0.0) remainingY * (it.child.position.weight / totalWeight) else 0.0
-                val childWithSize = it.withSize(IntPoint(regionSize.x, nextChildY.roundToInt() - childY.roundToInt()))
-                childY = nextChildY
-                childWithSize
-            }
+    override fun calculateChildrenActualSize() {
+        val remaining = actualSize.y - contentSize.y
+        val totalWeight = children.sumOf { it.position.weight }
+        var y = 0.0
+        children.calculateActualSize {
+            val old = y
+            val new = old + it.reservedSizeY + if (totalWeight > 0.0) remaining * (it.position.weight / totalWeight) else 0.0
+            y = new
+            IntPoint(actualSize.x, new.roundToInt() - old.roundToInt())
         }
-        return IntPoint(
-            sizingX.getSize(childrenWithSize.maxOfOrNull { it.size.x } ?: 0, regionSize.x),
-            childrenWithSize.sumOf { it.size.y },
-        )
     }
-
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        var childY = 0
-        return childrenWithSize.map {
-            val childX = when (it.child.position.alignmentX) {
+        val remaining = actualSize.y - contentSize.y
+        val totalWeight = children.sumOf { it.position.weight }
+        var y = 0.0
+        return children.attachTo(viewPlacer) {
+            val old = y
+            val new = old + it.reservedSizeY + if (totalWeight > 0.0) remaining * (it.position.weight / totalWeight) else 0.0
+            y = new
+            val childY = old.roundToInt() + when (it.position.alignmentY) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (calculatedSize.x - it.size.x) / 2
-                Alignment.END -> calculatedSize.x - it.size.x
+                Alignment.CENTER -> ((new.roundToInt() - old.roundToInt()) - it.view.actualSize.y) / 2
+                Alignment.END -> (new.roundToInt() - old.roundToInt()) - it.view.actualSize.y
             }
-            val remover = it.attachTo(offset.offset(childX, childY), viewPlacer)
-            childY += it.size.y
-            remover
-        }.flatten()
+            val childX = when (it.position.alignmentX) {
+                Alignment.START -> 0
+                Alignment.CENTER -> (actualSize.x - it.view.actualSize.x) / 2
+                Alignment.END -> actualSize.x - it.view.actualSize.x
+            }
+            offset.offset(childX, childY)
+        }
     }
 
 }
