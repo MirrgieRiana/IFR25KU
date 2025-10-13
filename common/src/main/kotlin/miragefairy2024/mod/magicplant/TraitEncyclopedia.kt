@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.Emoji
+import miragefairy2024.mod.guiFullScreenTranslation
 import miragefairy2024.mod.invoke
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.magicplant.contents.magicplants.MirageFlowerCard
@@ -14,7 +15,6 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
-import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextChildrenGenerator
@@ -30,12 +30,16 @@ import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.minContentSizeX
+import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Translation
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
+import miragefairy2024.util.fire
 import miragefairy2024.util.gold
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
@@ -59,6 +63,8 @@ fun initTraitEncyclopedia() {
     DEFAULT_TRAIT_TRANSLATION.enJa()
     RANDOM_TRAIT_TRANSLATION.enJa()
 }
+
+val onOpenTraitEncyclopediaPageScreen = EventRegistry<(Trait) -> Boolean>()
 
 object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trait>() {
     override fun getId() = MirageFairy2024.identifier("trait_encyclopedia")
@@ -102,7 +108,6 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                 view += XListView().configure {
                     view.sizingX = Sizing.FILL
 
-                    // TODO 加工機械で出力スロットが反応しない
                     // 条件リスト
                     view += YListView().configure {
                         position.alignmentY = Alignment.END
@@ -140,7 +145,6 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
 
                 view += YSpaceView(5)
 
-                // TODO クリックしたら表示欄がでかくなってほしい
                 // 特性ポエム
                 view += PagingView().configure {
                     position.weight = 1.0
@@ -155,7 +159,12 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                     pageIndex.register { _, it ->
                         view.pageIndex.value = it
                     }
-                }
+                }.onClick {
+                    onOpenTraitEncyclopediaPageScreen.fire {
+                        if (it(recipeEntry.recipe)) return@onClick true
+                    }
+                    true
+                }.tooltip(text { guiFullScreenTranslation() })
 
                 view += YSpaceView(5)
 
@@ -207,6 +216,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
 
                         view.onClick.register {
                             pageIndex.value -= 1
+                            true
                         }
                     }
 
@@ -239,6 +249,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
 
                         view.onClick.register {
                             pageIndex.value += 1
+                            true
                         }
                     }
 
@@ -276,8 +287,6 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
             }.margin(5)
 
         }
-        // TODO remove
-        // view += TraitEncyclopediaView(IntPoint(18 * 9 + 5, 140), recipeEntry.recipe)
     }
 
     fun getProducerMagicPlantSeedItemStacks(trait: Trait): List<ItemStack> {
@@ -286,5 +295,3 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
             .map { card -> card.item().createItemStack().also { it.setTraitStacks(TraitStacks.of(TraitStack(trait, 1))) } }
     }
 }
-
-class TraitEncyclopediaView(size: IntPoint, val trait: Trait) : FixedWidgetView(size)

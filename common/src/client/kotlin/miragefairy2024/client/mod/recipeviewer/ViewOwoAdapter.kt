@@ -10,7 +10,7 @@ fun interface ViewOwoAdapter<V : PlaceableView> {
     /**
      * EMIの内部仕様のため、 mouseClicked および keyPressed を除くUIイベントは通知されません。
      */
-    fun createOwoComponent(view: V, cotext: ViewOwoAdapterContext): Component
+    fun createOwoComponent(view: V, context: ViewOwoAdapterContext): Component
 }
 
 interface ViewOwoAdapterContext {

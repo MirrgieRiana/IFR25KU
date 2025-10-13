@@ -10,5 +10,5 @@ class ImageButtonView(size: IntPoint) : FixedWidgetView(size) {
     var hoveredTexture: ViewTexture? = null
     var disabledTexture: ViewTexture? = null
     val enabled = ObservableValue(true)
-    val onClick = EventRegistry<() -> Unit>()
+    val onClick = EventRegistry<() -> Boolean>()
 }

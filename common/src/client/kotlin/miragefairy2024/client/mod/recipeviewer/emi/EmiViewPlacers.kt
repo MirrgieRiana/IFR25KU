@@ -4,12 +4,12 @@ import dev.emi.emi.api.render.EmiTexture
 import dev.emi.emi.api.widget.FillingArrowWidget
 import dev.emi.emi.api.widget.SlotWidget
 import dev.emi.emi.api.widget.TextureWidget
+import dev.emi.emi.api.widget.TooltipWidget
 import io.wispforest.owo.ui.container.Containers
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterContext
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterRegistry
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
-import miragefairy2024.client.mod.recipeviewer.common.NinePatchImageViewRenderer
 import miragefairy2024.client.util.OwoComponent
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
@@ -18,18 +18,16 @@ import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
-import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.InputSlotView
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.util.Remover
-import miragefairy2024.util.fire
-import miragefairy2024.util.register
 import miragefairy2024.util.toEmiBounds
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 
 context(ModContext)
 fun initEmiViewPlacers() {
@@ -46,7 +44,7 @@ fun initEmiViewPlacers() {
         val widget = SlotWidget(view.itemStack.toEmiStack(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
             .recipeContext(context.emiRecipe)
             .drawBack(view.drawBackground)
-        context.widgets.add(widget)
+        context.widgets += widget
         Remover { throw UnsupportedOperationException("Cannot remove OutputSlotWidget from EMI") }
     }
     EMI_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
@@ -67,13 +65,6 @@ fun initEmiViewPlacers() {
             view.texture.size.y,
         )
     }
-    EMI_VIEW_PLACER_REGISTRY.register { context, view: NinePatchImageView, bounds ->
-        context.containerWidget place EmiViewRendererWidget(NinePatchImageViewRenderer, view, bounds)
-    }
-    EMI_VIEW_PLACER_REGISTRY.register { context, view: ImageButtonView, bounds ->
-        context.containerWidget place EmiImageButtonWidget(bounds.offset, view)
-            .also { it.onClick.register { view.onClick.fire() } }
-    }
     EMI_VIEW_PLACER_REGISTRY.register { context, view: ArrowView, bounds ->
         if (view.durationMilliSeconds != null) {
             context.containerWidget place FillingArrowWidget(bounds.x, bounds.y, view.durationMilliSeconds!!)
@@ -93,6 +84,11 @@ fun initEmiViewPlacers() {
                 emiTexture.textureHeight,
             )
         }
+    }
+    EMI_VIEW_PLACER_REGISTRY.register { context, view: TooltipView, bounds ->
+        context.containerWidget place TooltipWidget({ mouseX, mouseY ->
+            view.tooltipProvider(mouseX, mouseY).map { ClientTooltipComponent.create(it.visualOrderText) }
+        }, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {

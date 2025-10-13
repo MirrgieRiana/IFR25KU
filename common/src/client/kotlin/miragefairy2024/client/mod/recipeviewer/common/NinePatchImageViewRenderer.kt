@@ -1,14 +1,13 @@
 package miragefairy2024.client.mod.recipeviewer.common
 
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
-import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import mirrg.kotlin.helium.atMost
 import net.minecraft.client.gui.GuiGraphics
 
 object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView> {
-    override fun render(view: NinePatchImageView, bounds: IntRectangle, graphics: GuiGraphics, mousePosition: IntPoint, delta: Float) {
+    override fun render(view: NinePatchImageView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
 
         val w1 = view.xStartSize
         val w2 = view.xMiddleSize
