@@ -122,7 +122,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
                 REI_VIEW_PLACER_REGISTRY.place(containerWidget, view2, bounds)
             }
             return listOf(
-                Widgets.createRecipeBase(bounds),
+                Widgets.createRecipeBase(Rectangle(bounds.x, bounds.y, 5 + view.actualSize.x + 5, 5 + view.actualSize.y + 5)),
                 containerWidget,
             )
         }

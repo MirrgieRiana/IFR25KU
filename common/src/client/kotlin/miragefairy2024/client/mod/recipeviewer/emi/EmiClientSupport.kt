@@ -36,7 +36,9 @@ object EmiClientEvents {
     val onRegisterGeneral = ReusableInitializationEventRegistry<(EmiRegistry) -> Unit>()
 }
 
-val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<Pair<EmiContainerWidget, EmiRecipe>>()
+class EmiViewPlacerContext(val widgets: WidgetHolder, val containerWidget: EmiContainerWidget, val emiRecipe: EmiRecipe)
+
+val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<EmiViewPlacerContext>()
 
 context(ModContext)
 fun initEmiClientSupport() {
@@ -143,7 +145,7 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
         view.calculateContentSize(renderingProxy)
         view.calculateActualSize(EmiClientSupport.MAX_SIZE.minus(5 + 5, 5 + 5))
         view.attachTo(IntPoint(1, 1)) { view2, bounds ->
-            EMI_VIEW_PLACER_REGISTRY.place(Pair(containerWidget, this), view2, bounds)
+            EMI_VIEW_PLACER_REGISTRY.place(EmiViewPlacerContext(widgets, containerWidget, this), view2, bounds)
         }
         widgets.add(containerWidget)
     }

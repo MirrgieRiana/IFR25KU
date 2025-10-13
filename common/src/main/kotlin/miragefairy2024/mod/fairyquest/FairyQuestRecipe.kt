@@ -376,19 +376,6 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
         view += YListView().configure {
             view.sizingX = Sizing.FILL
 
-            val (inputColumnCount, outputColumnCount) = run {
-                fun getColumnCount(itemCount: Int, rowCount: Int) = Math.ceilDiv(itemCount, rowCount)
-                var rowCount = 1
-                while (true) {
-                    val i = getColumnCount(recipeEntry.recipe.inputs.size, rowCount)
-                    val o = getColumnCount(recipeEntry.recipe.outputs.size, rowCount)
-                    if (i + o <= 6) return@run Pair(i, o)
-                    rowCount++
-                }
-                @Suppress("KotlinUnreachableCode")
-                throw AssertionError()
-            }
-
             // クエスト名行
             view += XListView().configure {
                 view.sizingX = Sizing.FILL
@@ -409,6 +396,19 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
             // レシピ行
             view += XListView().configure {
                 position.alignmentX = Alignment.CENTER
+
+                val (inputColumnCount, outputColumnCount) = run {
+                    fun getColumnCount(itemCount: Int, rowCount: Int) = Math.ceilDiv(itemCount, rowCount)
+                    var rowCount = 1
+                    while (true) {
+                        val i = getColumnCount(recipeEntry.recipe.inputs.size, rowCount)
+                        val o = getColumnCount(recipeEntry.recipe.outputs.size, rowCount)
+                        if (i + o <= 6) return@run Pair(i, o)
+                        rowCount++
+                    }
+                    @Suppress("KotlinUnreachableCode")
+                    throw AssertionError()
+                }
 
                 // 入力スロット
                 view += YListView().configure {
