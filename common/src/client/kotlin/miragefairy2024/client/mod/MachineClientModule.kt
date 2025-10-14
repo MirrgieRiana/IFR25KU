@@ -14,6 +14,7 @@ import miragefairy2024.mod.machine.FermentationBarrelCard
 import miragefairy2024.mod.machine.FermentationBarrelScreenHandler
 import miragefairy2024.mod.machine.SimpleMachineCard
 import miragefairy2024.mod.machine.SimpleMachineScreenHandler
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.atMost
@@ -34,15 +35,15 @@ fun initMachineClientModule() {
 }
 
 object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
-    override fun render(view: BlueFuelView, x: Int, y: Int, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(view: BlueFuelView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         val fuelMax = 20 * 10
         val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
         val fuelRate = fuel.toDouble() / fuelMax.toDouble()
         val h = (view.getHeight().toDouble() * fuelRate).roundToInt()
         graphics.blit(
             AuraReflectorFurnaceScreen.BLUE_FUEL_TEXTURE,
-            x - 1,
-            y - 1 + (view.getHeight() - h),
+            bounds.x - 1,
+            bounds.y - 1 + (view.getHeight() - h),
             0F,
             view.getHeight().toFloat() - h.toFloat(),
             view.getWidth(),

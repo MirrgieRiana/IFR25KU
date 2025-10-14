@@ -66,7 +66,7 @@ fun initEmiViewPlacers() {
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, _), view, bounds ->
-                widgets.add(EmiViewRendererWidget(entry.viewRenderer, view, bounds.x, bounds.y))
+                widgets.add(EmiViewRendererWidget(entry.viewRenderer, view, bounds))
             }
         }
         f(entry)

@@ -73,7 +73,7 @@ fun initReiViewPlacers() {
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
             REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, bounds ->
-                widgets += ReiViewRendererWidget(entry.viewRenderer, view, bounds.x, bounds.y)
+                widgets += ReiViewRendererWidget(entry.viewRenderer, view, bounds)
             }
         }
         f(entry)
