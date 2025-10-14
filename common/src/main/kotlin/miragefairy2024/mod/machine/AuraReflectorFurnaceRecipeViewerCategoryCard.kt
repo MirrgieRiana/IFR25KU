@@ -51,35 +51,35 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
 
             fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
             view += InputSlotView(getInput(0)).noBackground().noMargin().configure {
-                position = IntPoint(29, 17) - p
+                position = AbsoluteView.Offset(IntPoint(29, 17) - p)
             }
             view += InputSlotView(getInput(1)).noBackground().noMargin().configure {
-                position = IntPoint(47, 17) - p
+                position = AbsoluteView.Offset(IntPoint(47, 17) - p)
             }
             view += InputSlotView(getInput(2)).noBackground().noMargin().configure {
-                position = IntPoint(65, 17) - p
+                position = AbsoluteView.Offset(IntPoint(65, 17) - p)
             }
             view += CatalystSlotView(getFuelIngredientStack()).noBackground().noMargin().configure {
-                position = IntPoint(47, 53) - p
+                position = AbsoluteView.Offset(IntPoint(47, 53) - p)
             }
             view += BlueFuelView().configure {
-                position = IntPoint(48, 37) - p
+                position = AbsoluteView.Offset(IntPoint(48, 37) - p)
             }
 
             view += ArrowView().configure {
-                position = IntPoint(88, 34) - p
+                position = AbsoluteView.Offset(IntPoint(88, 34) - p)
                 view.durationMilliSeconds = recipeEntry.recipe.duration * 50
             }
             val seconds = recipeEntry.recipe.duration.toDouble() / 20.0
             view += TextView(text { SECONDS_TRANSLATION((seconds formatAs "%.2f").stripTrailingZeros()) }).configure {
-                position = IntPoint(108, 18) - p
+                position = AbsoluteView.Offset(IntPoint(108, 18) - p)
                 view.horizontalAlignment = Alignment.CENTER
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
             }
 
             view += OutputSlotView(recipeEntry.recipe.output).noBackground().noMargin().configure {
-                position = IntPoint(123, 35) - p
+                position = AbsoluteView.Offset(IntPoint(123, 35) - p)
             }
 
         }

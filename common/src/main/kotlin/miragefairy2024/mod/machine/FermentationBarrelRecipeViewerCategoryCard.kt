@@ -44,29 +44,29 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
 
             fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
             view += InputSlotView(getInput(0)).noBackground().noMargin().configure {
-                position = IntPoint(42, 17) - p
+                position = AbsoluteView.Offset(IntPoint(42, 17) - p)
             }
             view += InputSlotView(getInput(1)).noBackground().noMargin().configure {
-                position = IntPoint(31, 39) - p
+                position = AbsoluteView.Offset(IntPoint(31, 39) - p)
             }
             view += InputSlotView(getInput(2)).noBackground().noMargin().configure {
-                position = IntPoint(53, 39) - p
+                position = AbsoluteView.Offset(IntPoint(53, 39) - p)
             }
 
             view += ArrowView().configure {
-                position = IntPoint(76, 27) - p
+                position = AbsoluteView.Offset(IntPoint(76, 27) - p)
                 view.durationMilliSeconds = recipeEntry.recipe.duration * 50
             }
             val seconds = recipeEntry.recipe.duration.toDouble() / 20.0
             view += TextView(text { SECONDS_TRANSLATION((seconds formatAs "%.2f").stripTrailingZeros()) }).configure {
-                position = IntPoint(88, 15) - p
+                position = AbsoluteView.Offset(IntPoint(88, 15) - p)
                 view.horizontalAlignment = Alignment.CENTER
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
             }
 
             view += OutputSlotView(recipeEntry.recipe.output).noBackground().noMargin().configure {
-                position = IntPoint(111, 28) - p
+                position = AbsoluteView.Offset(IntPoint(111, 28) - p)
             }
 
         }
