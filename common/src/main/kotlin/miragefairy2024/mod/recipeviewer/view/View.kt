@@ -9,7 +9,7 @@ interface View {
     fun getMinHeight(): Int
     fun getWidth(): Int
     fun getHeight(): Int
-    fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>)
+    fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>)
 }
 
 fun View(block: Child<Unit, SingleView>.() -> Unit): View = Child(Unit, SingleView()).apply { block() }.view.childView

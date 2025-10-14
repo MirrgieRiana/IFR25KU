@@ -13,7 +13,7 @@ import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.util.OwoComponent
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
@@ -64,7 +64,7 @@ fun initEmiViewPlacers() {
         }
     }
     ViewRendererRegistry.registry.subscribe { entry ->
-        fun <V : View> f(entry: ViewRendererRegistry.Entry<V>) {
+        fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, _), view, bounds ->
                 widgets.add(EmiViewRendererWidget(entry.viewRenderer, view, bounds))
             }
@@ -72,13 +72,13 @@ fun initEmiViewPlacers() {
         f(entry)
     }
     ViewOwoAdapterRegistry.registry.subscribe { entry ->
-        fun <V : View> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
+        fun <V : PlaceableView> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, emiRecipe), view, bounds ->
                 widgets.add(EmiUIAdapter(Bounds(bounds.x, bounds.y, view.getWidth(), view.getHeight()), Containers::stack).also { adapter ->
                     //adapter.rootComponent().allowOverflow(true)
                     val context = object : ViewOwoAdapterContext {
                         override fun prepare() = adapter.prepare()
-                        override fun wrap(view: View): OwoComponent = adapter.wrap(run {
+                        override fun wrap(view: PlaceableView): OwoComponent = adapter.wrap(run {
                             val widgets = object : WidgetHolder {
                                 val list = mutableListOf<Widget>()
                                 override fun getWidth() = view.getWidth()

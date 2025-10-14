@@ -1,5 +1,6 @@
 package miragefairy2024.mod.recipeviewer.views
 
+import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RendererProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
@@ -37,7 +38,7 @@ abstract class ContainerView<P> : View {
     abstract fun calculateWidth(): Int
     abstract fun calculateHeight(): Int
 
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<View>) {
+    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) {
         children.forEach {
             it.view.assemble(x + it.xCache, y + it.yCache, viewPlacer)
         }
