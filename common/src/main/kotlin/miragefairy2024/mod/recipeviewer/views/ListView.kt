@@ -1,6 +1,7 @@
 package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import mirrg.kotlin.helium.atLeast
 
@@ -11,10 +12,21 @@ abstract class ListView : ContainerView<Alignment>() {
 class XListView : ListView() {
     @JvmField
     var minHeight = 0
-    override fun calculateMinWidth() = children.sumOf { it.view.contentSize.x }
-    override fun calculateMinHeight() = (children.maxOfOrNull { it.view.contentSize.y } ?: 0) atLeast minHeight
-    override fun calculateWidth() = children.sumOf { it.view.actualSize.x }
-    override fun calculateHeight() = (children.maxOfOrNull { it.view.actualSize.y } ?: 0) atLeast minHeight
+
+    override fun calculateContentSize(): IntPoint {
+        return IntPoint(
+            children.sumOf { it.view.contentSize.x },
+            (children.maxOfOrNull { it.view.contentSize.y } ?: 0) atLeast minHeight,
+        )
+    }
+
+    override fun calculateActualSize(): IntPoint {
+        return IntPoint(
+            children.sumOf { it.view.actualSize.x },
+            (children.maxOfOrNull { it.view.actualSize.y } ?: 0) atLeast minHeight,
+        )
+    }
+
     override fun calculateActualSize(renderingProxy: RenderingProxy) {
         super.calculateActualSize(renderingProxy)
         var x = 0
@@ -33,10 +45,21 @@ class XListView : ListView() {
 class YListView : ListView() {
     @JvmField
     var minWidth = 0
-    override fun calculateMinWidth() = (children.maxOfOrNull { it.view.contentSize.x } ?: 0) atLeast minWidth
-    override fun calculateMinHeight() = children.sumOf { it.view.contentSize.y }
-    override fun calculateWidth() = (children.maxOfOrNull { it.view.actualSize.x } ?: 0) atLeast minWidth
-    override fun calculateHeight() = children.sumOf { it.view.actualSize.y }
+
+    override fun calculateContentSize(): IntPoint {
+        return IntPoint(
+            (children.maxOfOrNull { it.view.contentSize.x } ?: 0) atLeast minWidth,
+            children.sumOf { it.view.contentSize.y },
+        )
+    }
+
+    override fun calculateActualSize(): IntPoint {
+        return IntPoint(
+            (children.maxOfOrNull { it.view.actualSize.x } ?: 0) atLeast minWidth,
+            children.sumOf { it.view.actualSize.y },
+        )
+    }
+
     override fun calculateActualSize(renderingProxy: RenderingProxy) {
         super.calculateActualSize(renderingProxy)
         var y = 0

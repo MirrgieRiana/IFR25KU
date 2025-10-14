@@ -14,28 +14,22 @@ abstract class ContainerView<P> : View {
         children += child
     }
 
-    private var minWidthCache = 0
-    private var minHeightCache = 0
-    private var widthCache = 0
-    private var heightCache = 0
+    private var contentSizeCache = IntPoint.ZERO
+    private var actualSizeCache = IntPoint.ZERO
 
     override fun calculateActualSize(renderingProxy: RenderingProxy) {
         children.forEach {
             it.view.calculateActualSize(renderingProxy)
         }
-        minWidthCache = calculateMinWidth()
-        minHeightCache = calculateMinHeight()
-        widthCache = calculateWidth()
-        heightCache = calculateHeight()
+        contentSizeCache = calculateContentSize()
+        actualSizeCache = calculateActualSize()
     }
 
-    override val contentSize get() = IntPoint(minWidthCache, minHeightCache)
-    override val actualSize get() = IntPoint(widthCache, heightCache)
+    override val contentSize get() = contentSizeCache
+    override val actualSize get() = actualSizeCache
 
-    abstract fun calculateMinWidth(): Int
-    abstract fun calculateMinHeight(): Int
-    abstract fun calculateWidth(): Int
-    abstract fun calculateHeight(): Int
+    abstract fun calculateContentSize(): IntPoint
+    abstract fun calculateActualSize(): IntPoint
 
     override fun attachTo(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) {
         children.forEach {

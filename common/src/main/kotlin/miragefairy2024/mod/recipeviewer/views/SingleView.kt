@@ -5,10 +5,8 @@ import miragefairy2024.mod.recipeviewer.view.View
 
 class SingleView : ContainerView<Unit>() {
     override fun createDefaultPosition() = Unit
-    override fun calculateMinWidth() = children.single().view.contentSize.x
-    override fun calculateMinHeight() = children.single().view.contentSize.y
-    override fun calculateWidth() = children.single().view.actualSize.x
-    override fun calculateHeight() = children.single().view.actualSize.y
+    override fun calculateContentSize() = children.single().view.contentSize
+    override fun calculateActualSize() = children.single().view.actualSize
     override fun calculateActualSize(renderingProxy: RenderingProxy) {
         super.calculateActualSize(renderingProxy)
         children.single().xCache = 0
