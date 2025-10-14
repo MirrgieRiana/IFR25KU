@@ -45,6 +45,7 @@ import miragefairy2024.mod.magicplant.style
 import miragefairy2024.mod.magicplant.texture
 import miragefairy2024.mod.magicplant.traitListScreenHandlerType
 import miragefairy2024.mod.magicplant.traitListScreenTranslation
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.util.EventRegistry
@@ -301,7 +302,7 @@ object TraitEncyclopediaViewOwoAdapter : ViewOwoAdapter<TraitEncyclopediaView> {
                             horizontalAlignment(HorizontalAlignment.LEFT)
 
                             chunk.forEach { inputItemStack ->
-                                child(context.wrap(CatalystSlotView(inputItemStack.toIngredientStack()).noBackground())) // 種子
+                                child(context.wrap(CatalystSlotView(inputItemStack.toIngredientStack()).noBackground(), IntPoint(18, 18))) // 種子
                             }
                         })
                     }

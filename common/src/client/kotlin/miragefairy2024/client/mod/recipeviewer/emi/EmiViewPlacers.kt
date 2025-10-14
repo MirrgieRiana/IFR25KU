@@ -12,6 +12,7 @@ import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterRegistry
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.util.OwoComponent
 import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.register
@@ -78,7 +79,7 @@ fun initEmiViewPlacers() {
                     //adapter.rootComponent().allowOverflow(true)
                     val context = object : ViewOwoAdapterContext {
                         override fun prepare() = adapter.prepare()
-                        override fun wrap(view: PlaceableView): OwoComponent = adapter.wrap(run {
+                        override fun wrap(view: PlaceableView, size: IntPoint): OwoComponent = adapter.wrap(run {
                             val widgets = object : WidgetHolder {
                                 val list = mutableListOf<Widget>()
                                 override fun getWidth() = view.getWidth()
@@ -88,7 +89,7 @@ fun initEmiViewPlacers() {
                                     return widget
                                 }
                             }
-                            EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, emiRecipe), view, IntRectangle(0, 0, bounds.sizeX, bounds.sizeY))
+                            EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, emiRecipe), view, IntRectangle(0, 0, size.x, size.y))
                             widgets.list.single()
                         })
                     }
