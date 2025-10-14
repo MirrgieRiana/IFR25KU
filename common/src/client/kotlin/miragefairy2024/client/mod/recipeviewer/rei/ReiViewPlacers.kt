@@ -60,7 +60,7 @@ fun initReiViewPlacers() {
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ImageView, x, y ->
         widgets += Widgets.createTexturedWidget(
             view.textureId,
-            Rectangle(x, y, view.bound.width, view.bound.height),
+            Rectangle(x, y, view.bound.sizeX, view.bound.sizeY),
             view.bound.x.toFloat(),
             view.bound.y.toFloat(),
         )

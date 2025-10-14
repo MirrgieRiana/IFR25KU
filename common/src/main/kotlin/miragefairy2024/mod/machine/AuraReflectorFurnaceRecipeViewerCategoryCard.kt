@@ -46,7 +46,7 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
         val imageBound = IntRectangle(28, 16, 116, 54)
         val bound = imageBound.grow(6, 2)
         val p = bound.topLeft
-        view += AbsoluteView(bound.width, bound.height).configure {
+        view += AbsoluteView(bound.sizeX, bound.sizeY).configure {
 
             view += ImageView("textures/gui/container/" * AuraReflectorFurnaceRecipeCard.identifier * ".png", bound)
 

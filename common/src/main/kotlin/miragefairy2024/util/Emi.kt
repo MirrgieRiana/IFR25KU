@@ -14,5 +14,5 @@ fun ItemStack.toEmiIngredient(): EmiIngredient = this.toIngredient().toEmiIngred
 fun IngredientStack.toEmiIngredient(): EmiIngredient = EmiIngredient.of(this.ingredient, this.count.toLong())
 
 
-fun IntRectangle.toEmiBounds() = Bounds(x, y, width, height)
+fun IntRectangle.toEmiBounds() = Bounds(x, y, sizeX, sizeY)
 fun Bounds.toIntRectangle() = IntRectangle(x, y, width, height)

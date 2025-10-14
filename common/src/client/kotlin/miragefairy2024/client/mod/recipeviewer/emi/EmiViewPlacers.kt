@@ -53,7 +53,7 @@ fun initEmiViewPlacers() {
         if (view.tooltip != null) widgets.addTooltipText(view.tooltip!!, bound.x, bound.y, bound.width, bound.height)
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ImageView, x, y ->
-        widgets.addTexture(view.textureId, x, y, view.bound.width, view.bound.height, view.bound.x, view.bound.y)
+        widgets.addTexture(view.textureId, x, y, view.bound.sizeX, view.bound.sizeY, view.bound.x, view.bound.y)
     }
     EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ArrowView, x, y ->
         if (view.durationMilliSeconds != null) {

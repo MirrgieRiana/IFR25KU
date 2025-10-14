@@ -139,7 +139,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     fun registerScreens(registry: ScreenRegistry) {
         card.getScreenClickAreas().forEach {
             fun <C : AbstractContainerMenu, T : AbstractContainerScreen<C>> f(get: ScreenClassRegistry.ScreenClass<C, T>) {
-                val rectangle = Rectangle(it.second.x, it.second.y, it.second.width - 1, it.second.height - 1)
+                val rectangle = Rectangle(it.second.x, it.second.y, it.second.sizeX - 1, it.second.sizeY - 1)
                 registry.registerContainerClickArea(rectangle, get.clazz, ReiSupport.get(card).categoryIdentifier.first)
             }
             f(ScreenClassRegistry.get(it.first))

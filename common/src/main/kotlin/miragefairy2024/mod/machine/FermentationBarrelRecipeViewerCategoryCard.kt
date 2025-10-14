@@ -39,7 +39,7 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
         val imageBound = IntRectangle(30, 16, 120, 40)
         val bound = imageBound.grow(6, 2)
         val p = bound.topLeft
-        view += AbsoluteView(bound.width, bound.height).configure {
+        view += AbsoluteView(bound.sizeX, bound.sizeY).configure {
 
             view += ImageView("textures/gui/container/" * FermentationBarrelRecipeCard.identifier * ".png", bound)
 

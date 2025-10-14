@@ -36,7 +36,7 @@ fun IntPoint.toReiPoint() = Point(x, y)
 fun IntPoint.toReiDimension() = Dimension(x, y)
 fun Point.toIntPoint() = IntPoint(x, y)
 fun Dimension.toIntPoint() = IntPoint(width, height)
-fun IntRectangle.toReiRectangle() = Rectangle(x, y, width, height)
+fun IntRectangle.toReiRectangle() = Rectangle(x, y, sizeX, sizeY)
 fun Rectangle.toIntRectangle() = IntRectangle(x, y, width, height)
 
 
