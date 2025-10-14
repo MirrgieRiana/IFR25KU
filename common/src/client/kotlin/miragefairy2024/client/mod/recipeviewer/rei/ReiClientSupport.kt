@@ -13,7 +13,7 @@ import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.client.mod.recipeviewer.ScreenClassRegistry
-import miragefairy2024.client.mod.recipeviewer.rendererProxy
+import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
@@ -91,12 +91,12 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun getCategoryIdentifier() = ReiSupport.get(card).categoryIdentifier.first
         override fun getTitle(): Component = card.displayName
         override fun getIcon(): Renderer = card.getIcon().toEntryStack()
-        override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + card.getView(rendererProxy, display.recipeEntry).getWidth() + 5
+        override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + card.getView(renderingProxy, display.recipeEntry).getWidth() + 5
         override fun getDisplayHeight() = 5 + heightCache + 5
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
             val widgets = mutableListOf<Widget>()
             widgets += Widgets.createRecipeBase(bounds)
-            val view = card.getView(rendererProxy, display.recipeEntry)
+            val view = card.getView(renderingProxy, display.recipeEntry)
             view.assemble(5 + bounds.x, 5 + bounds.y) { view2, bounds ->
                 REI_VIEW_PLACER_REGISTRY.place(widgets, view2, bounds)
             }
@@ -120,14 +120,14 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
                 fun <I : RecipeInput, R : Recipe<I>> calculateMaxHeight(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
                     recipeManager.getAllRecipesFor(bridge.recipeType).forEach {
                         val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(it.id(), it.value(), false)
-                        heightCache = heightCache max bridge.card.getView(rendererProxy, recipeEntry).getHeight()
+                        heightCache = heightCache max bridge.card.getView(renderingProxy, recipeEntry).getHeight()
                     }
                 }
                 calculateMaxHeight(bridge)
             }
         }
         recipeEntries.forEach {
-            heightCache = heightCache max card.getView(rendererProxy, it).getHeight()
+            heightCache = heightCache max card.getView(renderingProxy, it).getHeight()
         }
 
         // レシピ登録

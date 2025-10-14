@@ -5,7 +5,7 @@ import miragefairy2024.client.mod.recipeviewer.emi.initEmiClientSupport
 import miragefairy2024.client.mod.recipeviewer.emi.initEmiViewPlacers
 import miragefairy2024.client.mod.recipeviewer.rei.initReiClientSupport
 import miragefairy2024.client.mod.recipeviewer.rei.initReiViewPlacers
-import miragefairy2024.mod.recipeviewer.view.RendererProxy
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
 
@@ -17,7 +17,7 @@ fun initRecipeViewerClientModule() {
     initEmiViewPlacers()
 }
 
-val rendererProxy = object : RendererProxy {
+val renderingProxy = object : RenderingProxy {
     val font by lazy { Minecraft.getInstance().font }
     override fun calculateTextWidth(component: Component) = font.width(component)
     override fun getTextHeight() = font.lineHeight

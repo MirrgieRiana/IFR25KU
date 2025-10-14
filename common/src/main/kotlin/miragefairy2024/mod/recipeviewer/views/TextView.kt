@@ -4,7 +4,7 @@ import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.RendererProxy
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import mirrg.kotlin.helium.atLeast
@@ -16,9 +16,9 @@ class TextView(val text: Component) : View, PlaceableView {
     private var widthCache = 0
     private var heightCache = 0
 
-    override fun layout(rendererProxy: RendererProxy) {
-        widthCache = rendererProxy.calculateTextWidth(text) atLeast minWidth
-        heightCache = rendererProxy.getTextHeight()
+    override fun layout(renderingProxy: RenderingProxy) {
+        widthCache = renderingProxy.calculateTextWidth(text) atLeast minWidth
+        heightCache = renderingProxy.getTextHeight()
     }
 
     override fun getMinWidth() = minWidth

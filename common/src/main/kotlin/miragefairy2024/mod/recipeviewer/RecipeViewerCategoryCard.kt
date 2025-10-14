@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.ModContext
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.view.RendererProxy
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
@@ -57,11 +57,11 @@ abstract class RecipeViewerCategoryCard<R> {
     open fun getScreenClickAreas(): List<Pair<ResourceKey<MenuType<*>>, IntRectangle>> = listOf()
 
     protected abstract fun createView(recipeEntry: RecipeEntry<R>): View
-    fun getView(rendererProxy: RendererProxy, recipeEntry: RecipeEntry<R>): View {
+    fun getView(renderingProxy: RenderingProxy, recipeEntry: RecipeEntry<R>): View {
         val oldView = recipeEntry.viewCache
         if (oldView == null) {
             val newView = createView(recipeEntry)
-            newView.layout(rendererProxy)
+            newView.layout(renderingProxy)
             recipeEntry.viewCache = newView
             return newView
         } else {

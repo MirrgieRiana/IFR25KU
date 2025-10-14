@@ -4,7 +4,7 @@ import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.SingleView
 
 interface View {
-    fun layout(rendererProxy: RendererProxy)
+    fun layout(renderingProxy: RenderingProxy)
     fun getMinWidth(): Int
     fun getMinHeight(): Int
     fun getWidth(): Int

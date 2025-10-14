@@ -1,7 +1,7 @@
 package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.RendererProxy
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 
@@ -18,9 +18,9 @@ abstract class ContainerView<P> : View {
     private var widthCache = 0
     private var heightCache = 0
 
-    override fun layout(rendererProxy: RendererProxy) {
+    override fun layout(renderingProxy: RenderingProxy) {
         children.forEach {
-            it.view.layout(rendererProxy)
+            it.view.layout(renderingProxy)
         }
         minWidthCache = calculateMinWidth()
         minHeightCache = calculateMinHeight()
