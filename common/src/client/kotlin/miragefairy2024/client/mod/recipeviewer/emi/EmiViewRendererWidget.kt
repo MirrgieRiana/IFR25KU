@@ -10,7 +10,5 @@ import net.minecraft.client.gui.GuiGraphics
 class EmiViewRendererWidget<V : PlaceableView>(private val renderer: ViewRenderer<V>, private val view: V, private val bounds2: IntRectangle) : Widget() {
     private val boundsCache = bounds2.toEmiBounds()
     override fun getBounds() = boundsCache
-    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-        renderer.render(view, bounds2, draw, mouseX, mouseY, delta)
-    }
+    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, bounds2, draw, mouseX, mouseY, delta)
 }

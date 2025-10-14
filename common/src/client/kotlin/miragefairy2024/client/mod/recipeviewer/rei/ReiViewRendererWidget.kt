@@ -12,7 +12,5 @@ class ReiViewRendererWidget<V : PlaceableView>(private val renderer: ViewRendere
     private val boundsCache = bounds2.toReiRectangle()
     override fun children() = listOf<GuiEventListener>()
     override fun getBounds() = boundsCache
-    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-        renderer.render(view, bounds2, context, mouseX, mouseY, delta)
-    }
+    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, bounds2, context, mouseX, mouseY, delta)
 }
