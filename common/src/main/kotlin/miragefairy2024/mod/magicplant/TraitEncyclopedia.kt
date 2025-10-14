@@ -5,6 +5,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.magicplant.contents.magicplants.MirageFlowerCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.plusAssign
@@ -47,4 +48,4 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
     }
 }
 
-class TraitEncyclopediaView(width: Int, height: Int, val trait: Trait) : FixedWidgetView(width, height)
+class TraitEncyclopediaView(width: Int, height: Int, val trait: Trait) : FixedWidgetView(IntPoint(width, height))

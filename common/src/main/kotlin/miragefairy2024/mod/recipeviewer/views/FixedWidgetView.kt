@@ -7,9 +7,9 @@ import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 
-abstract class FixedWidgetView(private val width: Int, private val height: Int) : View, PlaceableView {
+abstract class FixedWidgetView(size: IntPoint) : View, PlaceableView {
     override fun calculateActualSize(renderingProxy: RenderingProxy) = Unit
-    override val contentSize get() = IntPoint(width, height)
-    override val actualSize get() = IntPoint(width, height)
+    override val contentSize = size
+    override val actualSize = size
     override fun attachTo(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, IntRectangle(x, y, actualSize.x, actualSize.y))
 }

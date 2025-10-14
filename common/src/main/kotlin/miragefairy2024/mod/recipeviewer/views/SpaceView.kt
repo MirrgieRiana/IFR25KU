@@ -1,11 +1,12 @@
 package miragefairy2024.mod.recipeviewer.views
 
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 
-abstract class SpaceView(width: Int, height: Int) : FixedWidgetView(width, height) {
+abstract class SpaceView(size: IntPoint) : FixedWidgetView(size) {
     override fun attachTo(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) = Unit
 }
 
-class XSpaceView(width: Int) : SpaceView(width, 0)
-class YSpaceView(height: Int) : SpaceView(0, height)
+class XSpaceView(width: Int) : SpaceView(IntPoint(width, 0))
+class YSpaceView(height: Int) : SpaceView(IntPoint(0, height))
