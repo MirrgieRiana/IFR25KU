@@ -15,8 +15,8 @@ class XListView : ListView() {
     override fun calculateMinHeight() = (children.maxOfOrNull { it.view.contentSize.y } ?: 0) atLeast minHeight
     override fun calculateWidth() = children.sumOf { it.view.actualSize.x }
     override fun calculateHeight() = (children.maxOfOrNull { it.view.actualSize.y } ?: 0) atLeast minHeight
-    override fun layout(renderingProxy: RenderingProxy) {
-        super.layout(renderingProxy)
+    override fun calculateActualSize(renderingProxy: RenderingProxy) {
+        super.calculateActualSize(renderingProxy)
         var x = 0
         children.forEach {
             it.xCache = x
@@ -37,8 +37,8 @@ class YListView : ListView() {
     override fun calculateMinHeight() = children.sumOf { it.view.contentSize.y }
     override fun calculateWidth() = (children.maxOfOrNull { it.view.actualSize.x } ?: 0) atLeast minWidth
     override fun calculateHeight() = children.sumOf { it.view.actualSize.y }
-    override fun layout(renderingProxy: RenderingProxy) {
-        super.layout(renderingProxy)
+    override fun calculateActualSize(renderingProxy: RenderingProxy) {
+        super.calculateActualSize(renderingProxy)
         var y = 0
         children.forEach {
             it.xCache = when (it.position) {

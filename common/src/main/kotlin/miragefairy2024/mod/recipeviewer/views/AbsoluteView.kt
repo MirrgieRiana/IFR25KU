@@ -9,8 +9,8 @@ class AbsoluteView(private val width: Int, private val height: Int) : ContainerV
     override fun calculateMinHeight() = height
     override fun calculateWidth() = width
     override fun calculateHeight() = height
-    override fun layout(renderingProxy: RenderingProxy) {
-        super.layout(renderingProxy)
+    override fun calculateActualSize(renderingProxy: RenderingProxy) {
+        super.calculateActualSize(renderingProxy)
         children.forEach {
             it.xCache = it.position.x
             it.yCache = it.position.y

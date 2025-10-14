@@ -12,10 +12,10 @@ import net.minecraft.world.item.ItemStack
 abstract class SlotView : View, PlaceableView {
     var drawBackground = true
     var margin = 1
-    override fun layout(renderingProxy: RenderingProxy) = Unit
+    override fun calculateActualSize(renderingProxy: RenderingProxy) = Unit
     override val contentSize get() = actualSize
     override val actualSize get() = IntPoint(16 + margin * 2, 16 + margin * 2)
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, IntRectangle(x, y, actualSize.x, actualSize.y))
+    override fun attachTo(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, IntRectangle(x, y, actualSize.x, actualSize.y))
 }
 
 fun <V : SlotView> V.noBackground() = this.apply { this.drawBackground = false }

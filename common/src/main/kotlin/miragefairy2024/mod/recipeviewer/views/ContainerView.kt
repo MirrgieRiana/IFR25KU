@@ -19,9 +19,9 @@ abstract class ContainerView<P> : View {
     private var widthCache = 0
     private var heightCache = 0
 
-    override fun layout(renderingProxy: RenderingProxy) {
+    override fun calculateActualSize(renderingProxy: RenderingProxy) {
         children.forEach {
-            it.view.layout(renderingProxy)
+            it.view.calculateActualSize(renderingProxy)
         }
         minWidthCache = calculateMinWidth()
         minHeightCache = calculateMinHeight()
@@ -37,9 +37,9 @@ abstract class ContainerView<P> : View {
     abstract fun calculateWidth(): Int
     abstract fun calculateHeight(): Int
 
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) {
+    override fun attachTo(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) {
         children.forEach {
-            it.view.assemble(x + it.xCache, y + it.yCache, viewPlacer)
+            it.view.attachTo(x + it.xCache, y + it.yCache, viewPlacer)
         }
     }
 

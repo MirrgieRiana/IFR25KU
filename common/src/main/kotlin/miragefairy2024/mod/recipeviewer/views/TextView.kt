@@ -17,7 +17,7 @@ class TextView(val text: Component) : View, PlaceableView {
     private var widthCache = 0
     private var heightCache = 0
 
-    override fun layout(renderingProxy: RenderingProxy) {
+    override fun calculateActualSize(renderingProxy: RenderingProxy) {
         widthCache = renderingProxy.calculateTextWidth(text) atLeast minWidth
         heightCache = renderingProxy.getTextHeight()
     }
@@ -30,5 +30,5 @@ class TextView(val text: Component) : View, PlaceableView {
     var horizontalAlignment: Alignment? = null
     var tooltip: List<Component>? = null
 
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, IntRectangle(x, y, actualSize.x, actualSize.y))
+    override fun attachTo(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, IntRectangle(x, y, actualSize.x, actualSize.y))
 }

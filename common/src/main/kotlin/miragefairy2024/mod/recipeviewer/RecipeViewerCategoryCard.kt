@@ -61,7 +61,7 @@ abstract class RecipeViewerCategoryCard<R> {
         val oldView = recipeEntry.viewCache
         if (oldView == null) {
             val newView = createView(recipeEntry)
-            newView.layout(renderingProxy)
+            newView.calculateActualSize(renderingProxy)
             recipeEntry.viewCache = newView
             return newView
         } else {

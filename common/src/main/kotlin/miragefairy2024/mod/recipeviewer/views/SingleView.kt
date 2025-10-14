@@ -9,8 +9,8 @@ class SingleView : ContainerView<Unit>() {
     override fun calculateMinHeight() = children.single().view.contentSize.y
     override fun calculateWidth() = children.single().view.actualSize.x
     override fun calculateHeight() = children.single().view.actualSize.y
-    override fun layout(renderingProxy: RenderingProxy) {
-        super.layout(renderingProxy)
+    override fun calculateActualSize(renderingProxy: RenderingProxy) {
+        super.calculateActualSize(renderingProxy)
         children.single().xCache = 0
         children.single().yCache = 0
     }

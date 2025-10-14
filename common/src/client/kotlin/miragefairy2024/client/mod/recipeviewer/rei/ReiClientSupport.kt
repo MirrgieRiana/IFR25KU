@@ -97,7 +97,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             val widgets = mutableListOf<Widget>()
             widgets += Widgets.createRecipeBase(bounds)
             val view = card.getView(renderingProxy, display.recipeEntry)
-            view.assemble(5 + bounds.x, 5 + bounds.y) { view2, bounds ->
+            view.attachTo(5 + bounds.x, 5 + bounds.y) { view2, bounds ->
                 REI_VIEW_PLACER_REGISTRY.place(widgets, view2, bounds)
             }
             return widgets
