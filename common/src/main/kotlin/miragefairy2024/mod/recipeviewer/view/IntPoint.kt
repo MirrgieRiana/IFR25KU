@@ -8,5 +8,7 @@ data class IntPoint(val x: Int, val y: Int) {
 
 fun IntPoint.offset(dx: Int, dy: Int) = IntPoint(x + dx, y + dy)
 operator fun IntPoint.unaryMinus() = IntPoint(-x, -y)
-operator fun IntPoint.plus(other: IntPoint) = IntPoint(x + other.x, y + other.y)
-operator fun IntPoint.minus(other: IntPoint) = IntPoint(x - other.x, y - other.y)
+fun IntPoint.plus(dx: Int, dy: Int) = IntPoint(x + dx, y + dy)
+fun IntPoint.minus(dx: Int, dy: Int) = this.plus(-dx, -dy)
+operator fun IntPoint.plus(other: IntPoint) = this.plus(other.x, other.y)
+operator fun IntPoint.minus(other: IntPoint) = this.minus(other.x, other.y)
