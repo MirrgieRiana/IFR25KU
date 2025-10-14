@@ -118,8 +118,8 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getDisplayWidth() = 1 + view.getWidth() + 1
     override fun getDisplayHeight() = 1 + view.getHeight() + 1
     override fun addWidgets(widgets: WidgetHolder) {
-        view.assemble(1, 1) { view2, x, y ->
-            EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, this), view2, x, y)
+        view.assemble(1, 1) { view2, bounds ->
+            EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, this), view2, bounds)
         }
     }
 }

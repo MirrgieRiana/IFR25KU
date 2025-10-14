@@ -4,11 +4,11 @@ import miragefairy2024.util.FreezableRegistry
 import miragefairy2024.util.set
 
 fun interface ViewPlacer<in V : View> {
-    fun place(view: V, x: Int, y: Int)
+    fun place(view: V, bounds: IntRectangle)
 }
 
 fun interface ContextViewPlacer<in C, in V : View> {
-    fun place(context: C, view: V, x: Int, y: Int)
+    fun place(context: C, view: V, bounds: IntRectangle)
 }
 
 class ViewPlacerRegistry<C> {
@@ -18,12 +18,12 @@ class ViewPlacerRegistry<C> {
         map[viewClass] = factory
     }
 
-    fun <V : View> place(context: C, view: V, x: Int, y: Int) {
+    fun <V : View> place(context: C, view: V, bounds: IntRectangle) {
         val contextViewPlacer = map.freezeAndGet()[view.javaClass]
         if (contextViewPlacer == null) throw IllegalArgumentException("Unsupported view: $view")
         @Suppress("UNCHECKED_CAST")
         contextViewPlacer as ContextViewPlacer<C, V>
-        contextViewPlacer.place(context, view, x, y)
+        contextViewPlacer.place(context, view, bounds)
     }
 }
 
