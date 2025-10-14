@@ -30,8 +30,8 @@ object ReiEvents {
 context(ModContext)
 fun initReiSupport() {
     RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
-        ReiEvents.onRegisterDisplaySerializer {
-            ReiSupport.get(card).registerDisplaySerializer(it)
+        ReiEvents.onRegisterDisplaySerializer { registry ->
+            ReiSupport.get(card).registerDisplaySerializer(registry)
         }
     }
 

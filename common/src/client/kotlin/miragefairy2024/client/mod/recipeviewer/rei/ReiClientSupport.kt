@@ -42,7 +42,7 @@ val REI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<MutableList<Widget>>()
 context(ModContext)
 fun initReiClientSupport() {
     RecipeViewerEvents.informationEntries.subscribe { informationEntry ->
-        ReiClientEvents.onRegisterDisplays {
+        ReiClientEvents.onRegisterDisplays { _ ->
             BuiltinClientPlugin.getInstance().registerInformation(
                 EntryIngredients.ofIngredient(informationEntry.input()),
                 informationEntry.title,
@@ -51,22 +51,22 @@ fun initReiClientSupport() {
     }
 
     RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
-        ReiClientEvents.onRegisterCategories {
-            ReiClientSupport.get(card).registerCategories(it)
+        ReiClientEvents.onRegisterCategories { registry ->
+            ReiClientSupport.get(card).registerCategories(registry)
         }
-        ReiClientEvents.onRegisterDisplays {
-            ReiClientSupport.get(card).registerDisplays(it)
+        ReiClientEvents.onRegisterDisplays { registry ->
+            ReiClientSupport.get(card).registerDisplays(registry)
         }
-        ReiClientEvents.onRegisterScreens {
-            ReiClientSupport.get(card).registerScreens(it)
+        ReiClientEvents.onRegisterScreens { registry ->
+            ReiClientSupport.get(card).registerScreens(registry)
         }
     }
 
     RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.subscribe { bridge ->
-        ReiClientEvents.onRegisterDisplays {
+        ReiClientEvents.onRegisterDisplays { registry ->
             fun <I : RecipeInput, R : Recipe<I>> f(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
                 val support = ReiSupport.get(bridge.card)
-                it.registerRecipeFiller(bridge.recipeClass, bridge.recipeType) { holder ->
+                registry.registerRecipeFiller(bridge.recipeClass, bridge.recipeType) { holder ->
                     val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(holder.id(), holder.value(), false)
                     SupportedDisplay(support, recipeEntry)
                 }

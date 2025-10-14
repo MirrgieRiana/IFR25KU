@@ -36,8 +36,8 @@ val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<Pair<WidgetHolder, EmiRecipe>>
 context(ModContext)
 fun initEmiClientSupport() {
     RecipeViewerEvents.informationEntries.subscribe { informationEntry ->
-        EmiClientEvents.onRegister {
-            it.addRecipe(
+        EmiClientEvents.onRegister { registry ->
+            registry.addRecipe(
                 EmiInfoRecipe(
                     listOf(informationEntry.input().toEmiIngredient()),
                     listOf(text { "== "() + informationEntry.title + " =="() }) + informationEntry.contents,
@@ -48,8 +48,8 @@ fun initEmiClientSupport() {
     }
 
     RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
-        EmiClientEvents.onRegister {
-            EmiClientSupport.get(card).register(it)
+        EmiClientEvents.onRegister { registry ->
+            EmiClientSupport.get(card).register(registry)
         }
     }
 
