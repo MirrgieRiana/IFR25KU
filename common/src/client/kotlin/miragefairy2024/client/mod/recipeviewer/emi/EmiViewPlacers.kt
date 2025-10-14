@@ -27,22 +27,22 @@ import miragefairy2024.util.toEmiStack
 
 context(ModContext)
 fun initEmiViewPlacers() {
-    EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: InputSlotView, bounds ->
-        widgets.addSlot(view.ingredientStack.toEmiIngredient(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
+    EMI_VIEW_PLACER_REGISTRY.register { context, view: InputSlotView, bounds ->
+        context.widgets.addSlot(view.ingredientStack.toEmiIngredient(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
             .drawBack(view.drawBackground)
     }
-    EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: CatalystSlotView, bounds ->
-        widgets.addSlot(view.ingredientStack.toEmiIngredient(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
+    EMI_VIEW_PLACER_REGISTRY.register { context, view: CatalystSlotView, bounds ->
+        context.widgets.addSlot(view.ingredientStack.toEmiIngredient(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
             .catalyst(true)
             .drawBack(view.drawBackground)
     }
-    EMI_VIEW_PLACER_REGISTRY.register { (widgets, emiRecipe), view: OutputSlotView, bounds ->
-        widgets.addSlot(view.itemStack.toEmiStack(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
-            .recipeContext(emiRecipe)
+    EMI_VIEW_PLACER_REGISTRY.register { context, view: OutputSlotView, bounds ->
+        context.widgets.addSlot(view.itemStack.toEmiStack(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
+            .recipeContext(context.emiRecipe)
             .drawBack(view.drawBackground)
     }
-    EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: TextView, bounds ->
-        val widget = widgets.addText(view.text, bounds.x, bounds.y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
+    EMI_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
+        val widget = context.widgets.addText(view.text, bounds.x, bounds.y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
             .let {
                 when (view.horizontalAlignment) {
                     Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
@@ -52,30 +52,30 @@ fun initEmiViewPlacers() {
                 }
             }
         val bound = widget.bounds
-        if (view.tooltip != null) widgets.addTooltipText(view.tooltip!!, bound.x, bound.y, bound.width, bound.height)
+        if (view.tooltip != null) context.widgets.addTooltipText(view.tooltip!!, bound.x, bound.y, bound.width, bound.height)
     }
-    EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ImageView, bounds ->
-        widgets.addTexture(view.textureId, bounds.x, bounds.y, view.bound.sizeX, view.bound.sizeY, view.bound.x, view.bound.y)
+    EMI_VIEW_PLACER_REGISTRY.register { context, view: ImageView, bounds ->
+        context.widgets.addTexture(view.textureId, bounds.x, bounds.y, view.bound.sizeX, view.bound.sizeY, view.bound.x, view.bound.y)
     }
-    EMI_VIEW_PLACER_REGISTRY.register { (widgets, _), view: ArrowView, bounds ->
+    EMI_VIEW_PLACER_REGISTRY.register { context, view: ArrowView, bounds ->
         if (view.durationMilliSeconds != null) {
-            widgets.addFillingArrow(bounds.x, bounds.y, view.durationMilliSeconds!!)
+            context.widgets.addFillingArrow(bounds.x, bounds.y, view.durationMilliSeconds!!)
         } else {
-            widgets.addTexture(EmiTexture.EMPTY_ARROW, bounds.x, bounds.y)
+            context.widgets.addTexture(EmiTexture.EMPTY_ARROW, bounds.x, bounds.y)
         }
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
-            EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, _), view, bounds ->
-                widgets.add(EmiViewRendererWidget(entry.viewRenderer, view, bounds))
+            EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
+                context.widgets.add(EmiViewRendererWidget(entry.viewRenderer, view, bounds))
             }
         }
         f(entry)
     }
     ViewOwoAdapterRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
-            EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { (widgets, emiRecipe), view, bounds ->
-                widgets.add(EmiUIAdapter(Bounds(bounds.x, bounds.y, view.getWidth(), view.getHeight()), Containers::stack).also { adapter ->
+            EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
+                context.widgets.add(EmiUIAdapter(Bounds(bounds.x, bounds.y, view.getWidth(), view.getHeight()), Containers::stack).also { adapter ->
                     //adapter.rootComponent().allowOverflow(true)
                     val context = object : ViewOwoAdapterContext {
                         override fun prepare() = adapter.prepare()
@@ -89,7 +89,7 @@ fun initEmiViewPlacers() {
                                     return widget
                                 }
                             }
-                            EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, emiRecipe), view, IntRectangle(0, 0, size.x, size.y))
+                            EMI_VIEW_PLACER_REGISTRY.place(EmiViewPlacerContext(widgets, context.emiRecipe), view, IntRectangle(0, 0, size.x, size.y))
                             widgets.list.single()
                         })
                     }

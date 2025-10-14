@@ -31,7 +31,9 @@ object EmiClientEvents {
     val onRegister = ReusableInitializationEventRegistry<(EmiRegistry) -> Unit>()
 }
 
-val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<Pair<WidgetHolder, EmiRecipe>>()
+class EmiViewPlacerContext(val widgets: WidgetHolder, val emiRecipe: EmiRecipe)
+
+val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<EmiViewPlacerContext>()
 
 context(ModContext)
 fun initEmiClientSupport() {
@@ -119,7 +121,7 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getDisplayHeight() = 1 + view.getHeight() + 1
     override fun addWidgets(widgets: WidgetHolder) {
         view.assemble(1, 1) { view2, bounds ->
-            EMI_VIEW_PLACER_REGISTRY.place(Pair(widgets, this), view2, bounds)
+            EMI_VIEW_PLACER_REGISTRY.place(EmiViewPlacerContext(widgets, this), view2, bounds)
         }
     }
 }
