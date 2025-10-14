@@ -1,5 +1,6 @@
 package miragefairy2024.mod.recipeviewer.views
 
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
@@ -28,10 +29,8 @@ abstract class ContainerView<P> : View {
         heightCache = calculateHeight()
     }
 
-    override fun getMinWidth() = minWidthCache
-    override fun getMinHeight() = minHeightCache
-    override fun getWidth() = widthCache
-    override fun getHeight() = heightCache
+    override val minSize get() = IntPoint(minWidthCache, minHeightCache)
+    override val size get() = IntPoint(widthCache, heightCache)
 
     abstract fun calculateMinWidth(): Int
     abstract fun calculateMinHeight(): Int

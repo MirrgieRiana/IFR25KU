@@ -75,15 +75,15 @@ fun initEmiViewPlacers() {
     ViewOwoAdapterRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
-                context.widgets.add(EmiUIAdapter(Bounds(bounds.x, bounds.y, view.getWidth(), view.getHeight()), Containers::stack).also { adapter ->
+                context.widgets.add(EmiUIAdapter(Bounds(bounds.x, bounds.y, view.size.x, view.size.y), Containers::stack).also { adapter ->
                     //adapter.rootComponent().allowOverflow(true)
                     val context = object : ViewOwoAdapterContext {
                         override fun prepare() = adapter.prepare()
                         override fun wrap(view: PlaceableView, size: IntPoint): OwoComponent = adapter.wrap(run {
                             val widgets = object : WidgetHolder {
                                 val list = mutableListOf<Widget>()
-                                override fun getWidth() = view.getWidth()
-                                override fun getHeight() = view.getHeight()
+                                override fun getWidth() = view.size.x
+                                override fun getHeight() = view.size.y
                                 override fun <T : Widget> add(widget: T): T {
                                     list += widget
                                     return widget

@@ -2,6 +2,7 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
@@ -21,15 +22,13 @@ class TextView(val text: Component) : View, PlaceableView {
         heightCache = renderingProxy.getTextHeight()
     }
 
-    override fun getMinWidth() = minWidth
-    override fun getMinHeight() = heightCache
-    override fun getWidth() = widthCache
-    override fun getHeight() = heightCache
+    override val minSize get() = IntPoint(minWidth, heightCache)
+    override val size get() = IntPoint(widthCache, heightCache)
 
     var color: ColorPair? = null
     var shadow = true
     var horizontalAlignment: Alignment? = null
     var tooltip: List<Component>? = null
 
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, IntRectangle(x, y, getWidth(), getHeight()))
+    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, IntRectangle(x, y, size.x, size.y))
 }

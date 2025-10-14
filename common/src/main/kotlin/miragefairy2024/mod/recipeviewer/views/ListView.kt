@@ -11,10 +11,10 @@ abstract class ListView : ContainerView<Alignment>() {
 class XListView : ListView() {
     @JvmField
     var minHeight = 0
-    override fun calculateMinWidth() = children.sumOf { it.view.getMinWidth() }
-    override fun calculateMinHeight() = (children.maxOfOrNull { it.view.getMinHeight() } ?: 0) atLeast minHeight
-    override fun calculateWidth() = children.sumOf { it.view.getWidth() }
-    override fun calculateHeight() = (children.maxOfOrNull { it.view.getHeight() } ?: 0) atLeast minHeight
+    override fun calculateMinWidth() = children.sumOf { it.view.minSize.x }
+    override fun calculateMinHeight() = (children.maxOfOrNull { it.view.minSize.y } ?: 0) atLeast minHeight
+    override fun calculateWidth() = children.sumOf { it.view.size.x }
+    override fun calculateHeight() = (children.maxOfOrNull { it.view.size.y } ?: 0) atLeast minHeight
     override fun layout(renderingProxy: RenderingProxy) {
         super.layout(renderingProxy)
         var x = 0
@@ -22,10 +22,10 @@ class XListView : ListView() {
             it.xCache = x
             it.yCache = when (it.position) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (getHeight() - it.view.getHeight()) / 2
-                Alignment.END -> getHeight() - it.view.getHeight()
+                Alignment.CENTER -> (size.y - it.view.size.y) / 2
+                Alignment.END -> size.y - it.view.size.y
             }
-            x += it.view.getWidth()
+            x += it.view.size.x
         }
     }
 }
@@ -33,21 +33,21 @@ class XListView : ListView() {
 class YListView : ListView() {
     @JvmField
     var minWidth = 0
-    override fun calculateMinWidth() = (children.maxOfOrNull { it.view.getMinWidth() } ?: 0) atLeast minWidth
-    override fun calculateMinHeight() = children.sumOf { it.view.getMinHeight() }
-    override fun calculateWidth() = (children.maxOfOrNull { it.view.getWidth() } ?: 0) atLeast minWidth
-    override fun calculateHeight() = children.sumOf { it.view.getHeight() }
+    override fun calculateMinWidth() = (children.maxOfOrNull { it.view.minSize.x } ?: 0) atLeast minWidth
+    override fun calculateMinHeight() = children.sumOf { it.view.minSize.y }
+    override fun calculateWidth() = (children.maxOfOrNull { it.view.size.x } ?: 0) atLeast minWidth
+    override fun calculateHeight() = children.sumOf { it.view.size.y }
     override fun layout(renderingProxy: RenderingProxy) {
         super.layout(renderingProxy)
         var y = 0
         children.forEach {
             it.xCache = when (it.position) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (getWidth() - it.view.getWidth()) / 2
-                Alignment.END -> getWidth() - it.view.getWidth()
+                Alignment.CENTER -> (size.x - it.view.size.x) / 2
+                Alignment.END -> size.x - it.view.size.x
             }
             it.yCache = y
-            y += it.view.getHeight()
+            y += it.view.size.y
         }
     }
 }

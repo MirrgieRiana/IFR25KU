@@ -1,5 +1,6 @@
 package miragefairy2024.mod.recipeviewer.views
 
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
@@ -12,11 +13,9 @@ abstract class SlotView : View, PlaceableView {
     var drawBackground = true
     var margin = 1
     override fun layout(renderingProxy: RenderingProxy) = Unit
-    override fun getMinWidth() = getWidth()
-    override fun getMinHeight() = getHeight()
-    override fun getWidth() = 16 + margin * 2
-    override fun getHeight() = 16 + margin * 2
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, IntRectangle(x, y, getWidth(), getHeight()))
+    override val minSize get() = size
+    override val size get() = IntPoint(16 + margin * 2, 16 + margin * 2)
+    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, IntRectangle(x, y, size.x, size.y))
 }
 
 fun <V : SlotView> V.noBackground() = this.apply { this.drawBackground = false }

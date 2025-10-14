@@ -82,7 +82,7 @@ fun initReiViewPlacers() {
     ViewOwoAdapterRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
             REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, bounds ->
-                widgets += ReiUIAdapter(Rectangle(bounds.x, bounds.y, view.getWidth(), view.getHeight()), Containers::stack).also { adapter ->
+                widgets += ReiUIAdapter(Rectangle(bounds.x, bounds.y, view.size.x, view.size.y), Containers::stack).also { adapter ->
                     //adapter.rootComponent().allowOverflow(true)
                     val context = object : ViewOwoAdapterContext {
                         override fun prepare() = adapter.prepare()

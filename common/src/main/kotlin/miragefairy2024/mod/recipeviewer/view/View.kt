@@ -2,9 +2,7 @@ package miragefairy2024.mod.recipeviewer.view
 
 interface View {
     fun layout(renderingProxy: RenderingProxy)
-    fun getMinWidth(): Int
-    fun getMinHeight(): Int
-    fun getWidth(): Int
-    fun getHeight(): Int
+    val minSize: IntPoint
+    val size: IntPoint
     fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>)
 }
