@@ -16,7 +16,10 @@ import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.view.size
+import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.ImageView
@@ -24,6 +27,7 @@ import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.util.toEntryIngredient
+import miragefairy2024.util.toReiRectangle
 
 context(ModContext)
 fun initReiViewPlacers() {
@@ -61,10 +65,14 @@ fun initReiViewPlacers() {
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ImageView, bounds ->
         widgets += Widgets.createTexturedWidget(
-            view.textureId,
-            Rectangle(bounds.x, bounds.y, view.bound.sizeX, view.bound.sizeY),
-            view.bound.x.toFloat(),
-            view.bound.y.toFloat(),
+            view.texture.id,
+            bounds.offset.sized(view.texture.bounds.size).toReiRectangle(),
+            view.texture.bounds.x.toFloat(),
+            view.texture.bounds.y.toFloat(),
+            view.texture.bounds.sizeX,
+            view.texture.bounds.sizeY,
+            view.texture.size.x,
+            view.texture.size.y,
         )
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ArrowView, bounds ->

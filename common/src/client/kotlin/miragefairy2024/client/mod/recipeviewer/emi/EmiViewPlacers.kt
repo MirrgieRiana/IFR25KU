@@ -58,7 +58,19 @@ fun initEmiViewPlacers() {
         if (view.tooltip != null) context.widgets.addTooltipText(view.tooltip!!, bound.x, bound.y, bound.width, bound.height)
     }
     EMI_VIEW_PLACER_REGISTRY.register { context, view: ImageView, bounds ->
-        context.widgets place TextureWidget(view.textureId, bounds.x, bounds.y, view.bound.sizeX, view.bound.sizeY, view.bound.x, view.bound.y)
+        context.widgets place TextureWidget(
+            view.texture.id,
+            bounds.x,
+            bounds.y,
+            view.texture.bounds.sizeX,
+            view.texture.bounds.sizeY,
+            view.texture.bounds.x,
+            view.texture.bounds.y,
+            view.texture.bounds.sizeX,
+            view.texture.bounds.sizeY,
+            view.texture.size.x,
+            view.texture.size.y,
+        )
     }
     EMI_VIEW_PLACER_REGISTRY.register { context, view: ArrowView, bounds ->
         if (view.durationMilliSeconds != null) {

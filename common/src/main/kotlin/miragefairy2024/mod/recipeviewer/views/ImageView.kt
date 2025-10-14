@@ -1,7 +1,6 @@
 package miragefairy2024.mod.recipeviewer.views
 
-import miragefairy2024.mod.recipeviewer.view.IntPoint
-import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import net.minecraft.resources.ResourceLocation
+import miragefairy2024.mod.recipeviewer.view.ViewTexture
+import miragefairy2024.mod.recipeviewer.view.size
 
-class ImageView(val textureId: ResourceLocation, val bound: IntRectangle) : FixedWidgetView(IntPoint(bound.sizeX, bound.sizeY))
+class ImageView(val texture: ViewTexture) : FixedWidgetView(texture.bounds.size)

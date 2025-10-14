@@ -1,6 +1,7 @@
 package miragefairy2024.lib
 
 import miragefairy2024.ModContext
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.BlockEntityType
 import miragefairy2024.util.Registration
@@ -105,6 +106,7 @@ abstract class MachineCard<B : Block, E : MachineBlockEntity<E>, H : MachineScre
     abstract val guiHeight: Int
 
     val backgroundTexture = "textures/gui/container/" * identifier * ".png"
+    val backgroundTextureSize = IntPoint(256, 256)
 
     val guiSlotConfigurations = mutableListOf<MachineScreenHandler.GuiSlotConfiguration>()
 
