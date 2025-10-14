@@ -1,6 +1,10 @@
 package miragefairy2024.mod.recipeviewer.view
 
-data class IntRectangle(val x: Int, val y: Int, val sizeX: Int, val sizeY: Int)
+data class IntRectangle(val x: Int, val y: Int, val sizeX: Int, val sizeY: Int) {
+    companion object {
+        val ZERO = IntRectangle(0, 0, 0, 0)
+    }
+}
 
 val IntRectangle.topLeft get() = IntPoint(x, y)
 val IntRectangle.topRight get() = IntPoint(x + sizeX, y)
