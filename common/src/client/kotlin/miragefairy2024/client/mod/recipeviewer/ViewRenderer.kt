@@ -6,8 +6,10 @@ import miragefairy2024.util.SubscribableBuffer
 import miragefairy2024.util.plusAssign
 import net.minecraft.client.gui.GuiGraphics
 
-fun interface ViewRenderer<in V : PlaceableView> {
-    fun render(view: V, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float)
+interface ViewRenderer<in V : PlaceableView> {
+    fun mouseClicked(view: V, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = false
+    fun keyPressed(view: V, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int) = false
+    fun render(view: V, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = Unit
 }
 
 object ViewRendererRegistry {
