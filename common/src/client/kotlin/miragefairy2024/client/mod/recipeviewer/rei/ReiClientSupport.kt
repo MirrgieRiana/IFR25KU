@@ -44,7 +44,7 @@ val REI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<ReiContainerWidget>()
 context(ModContext)
 fun initReiClientSupport() {
     RecipeViewerEvents.informationEntries.subscribe { informationEntry ->
-        ReiClientEvents.onRegisterDisplays { registry ->
+        ReiClientEvents.onRegisterDisplays { _ ->
             BuiltinClientPlugin.getInstance().registerInformation(
                 EntryIngredients.ofIngredient(informationEntry.input()),
                 informationEntry.title,
