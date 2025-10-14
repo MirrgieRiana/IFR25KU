@@ -1,7 +1,7 @@
 package miragefairy2024.mod.machine
 
 import miragefairy2024.ModContext
-import miragefairy2024.mod.recipeviewer.views.SolidView
+import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 
 context(ModContext)
 fun initMachineModule() {
@@ -14,4 +14,4 @@ fun initMachineModule() {
     AuraReflectorFurnaceRecipeViewerCategoryCard.init()
 }
 
-class BlueFuelView : SolidView(13, 13)
+class BlueFuelView : FixedWidgetView(13, 13)

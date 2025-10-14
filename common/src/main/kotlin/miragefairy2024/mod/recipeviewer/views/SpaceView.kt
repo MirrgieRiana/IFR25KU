@@ -3,7 +3,7 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 
-abstract class SpaceView(width: Int, height: Int) : SolidView(width, height) {
+abstract class SpaceView(width: Int, height: Int) : FixedWidgetView(width, height) {
     override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) = Unit
 }
 

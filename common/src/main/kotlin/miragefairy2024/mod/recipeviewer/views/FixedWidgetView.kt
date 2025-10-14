@@ -6,7 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 
-abstract class SolidView(private val width: Int, private val height: Int) : View, PlaceableView {
+abstract class FixedWidgetView(private val width: Int, private val height: Int) : View, PlaceableView {
     override fun layout(renderingProxy: RenderingProxy) = Unit
     override fun getMinWidth() = width
     override fun getMinHeight() = height
