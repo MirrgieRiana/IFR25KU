@@ -29,6 +29,9 @@ import java.util.Objects
 
 object EmiClientEvents {
     val onRegister = ReusableInitializationEventRegistry<(EmiRegistry) -> Unit>()
+
+    val onRegisterDefaultComparison = ReusableInitializationEventRegistry<(EmiRegistry) -> Unit>()
+    val onRegisterGeneral = ReusableInitializationEventRegistry<(EmiRegistry) -> Unit>()
 }
 
 class EmiViewPlacerContext(val widgets: WidgetHolder, val emiRecipe: EmiRecipe)
@@ -37,8 +40,13 @@ val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<EmiViewPlacerContext>()
 
 context(ModContext)
 fun initEmiClientSupport() {
+    EmiClientEvents.onRegister { register ->
+        EmiClientEvents.onRegisterDefaultComparison.fire { it(register) } // 先に登録しないとEmiIngredientで妖精の種類がマージされてしまう
+        EmiClientEvents.onRegisterGeneral.fire { it(register) }
+    }
+
     RecipeViewerEvents.informationEntries.subscribe { informationEntry ->
-        EmiClientEvents.onRegister { registry ->
+        EmiClientEvents.onRegisterGeneral { registry ->
             registry.addRecipe(
                 EmiInfoRecipe(
                     listOf(informationEntry.input().toEmiIngredient()),
@@ -50,13 +58,13 @@ fun initEmiClientSupport() {
     }
 
     RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
-        EmiClientEvents.onRegister { registry ->
+        EmiClientEvents.onRegisterGeneral { registry ->
             EmiClientSupport.get(card).register(registry)
         }
     }
 
     RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.subscribe { bridge ->
-        EmiClientEvents.onRegister { registry ->
+        EmiClientEvents.onRegisterGeneral { registry ->
             fun <I : RecipeInput, R : Recipe<I>> f(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
                 val support = EmiClientSupport.get(bridge.card)
                 registry.recipeManager.getAllRecipesFor(bridge.recipeType).forEach { holder ->
@@ -71,7 +79,7 @@ fun initEmiClientSupport() {
     }
 
     RecipeViewerEvents.itemIdentificationDataComponentTypesList.subscribe { (item, dataComponentTypes) ->
-        EmiClientEvents.onRegister { registry ->
+        EmiClientEvents.onRegisterDefaultComparison { registry ->
             registry.setDefaultComparison(
                 item(),
                 Comparison.of(
