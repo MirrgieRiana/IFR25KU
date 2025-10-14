@@ -36,11 +36,11 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
 
     override fun createView(recipeEntry: RecipeEntry<FermentationBarrelRecipe>) = View {
         val imageBound = IntRectangle(30, 16, 120, 40)
-        val bound = imageBound.grow(6, 2)
-        val p = bound.offset
-        view += AbsoluteView(IntPoint(bound.sizeX, bound.sizeY)).configure {
+        val bounds = imageBound.grow(6, 2)
+        val p = bounds.offset
+        view += AbsoluteView(IntPoint(bounds.sizeX, bounds.sizeY)).configure {
 
-            view += ImageView(getTexture(bound))
+            view += ImageView(getTexture(bounds))
 
             fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
             view += InputSlotView(getInput(0)).noBackground().noMargin().configure {
