@@ -125,8 +125,8 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getCatalysts(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { it.isCatalyst }.map { it.ingredientStack.toEmiIngredient() }
     override fun getOutputs(): List<EmiStack> = support.card.getOutputs(recipeEntry).map { EmiStack.of(it) }
     val view = support.card.getView(renderingProxy, recipeEntry)
-    override fun getDisplayWidth() = 1 + view.size.x + 1
-    override fun getDisplayHeight() = 1 + view.size.y + 1
+    override fun getDisplayWidth() = 1 + view.actualSize.x + 1
+    override fun getDisplayHeight() = 1 + view.actualSize.y + 1
     override fun addWidgets(widgets: WidgetHolder) {
         view.assemble(1, 1) { view2, bounds ->
             EMI_VIEW_PLACER_REGISTRY.place(EmiViewPlacerContext(widgets, this), view2, bounds)

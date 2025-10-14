@@ -22,13 +22,13 @@ class TextView(val text: Component) : View, PlaceableView {
         heightCache = renderingProxy.getTextHeight()
     }
 
-    override val minSize get() = IntPoint(minWidth, heightCache)
-    override val size get() = IntPoint(widthCache, heightCache)
+    override val contentSize get() = IntPoint(minWidth, heightCache)
+    override val actualSize get() = IntPoint(widthCache, heightCache)
 
     var color: ColorPair? = null
     var shadow = true
     var horizontalAlignment: Alignment? = null
     var tooltip: List<Component>? = null
 
-    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, IntRectangle(x, y, size.x, size.y))
+    override fun assemble(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, IntRectangle(x, y, actualSize.x, actualSize.y))
 }

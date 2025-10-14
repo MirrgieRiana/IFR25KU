@@ -29,8 +29,8 @@ abstract class ContainerView<P> : View {
         heightCache = calculateHeight()
     }
 
-    override val minSize get() = IntPoint(minWidthCache, minHeightCache)
-    override val size get() = IntPoint(widthCache, heightCache)
+    override val contentSize get() = IntPoint(minWidthCache, minHeightCache)
+    override val actualSize get() = IntPoint(widthCache, heightCache)
 
     abstract fun calculateMinWidth(): Int
     abstract fun calculateMinHeight(): Int
