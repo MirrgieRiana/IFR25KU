@@ -9,7 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.grow
 import miragefairy2024.mod.recipeviewer.view.minus
-import miragefairy2024.mod.recipeviewer.view.topLeft
+import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.views.AbsoluteView
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
@@ -45,7 +45,7 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
     override fun createView(recipeEntry: RecipeEntry<AuraReflectorFurnaceRecipe>) = View {
         val imageBound = IntRectangle(28, 16, 116, 54)
         val bound = imageBound.grow(6, 2)
-        val p = bound.topLeft
+        val p = bound.offset
         view += AbsoluteView(IntPoint(bound.sizeX, bound.sizeY)).configure {
 
             view += ImageView("textures/gui/container/" * AuraReflectorFurnaceRecipeCard.identifier * ".png", bound)

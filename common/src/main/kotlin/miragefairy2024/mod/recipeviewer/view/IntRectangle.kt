@@ -6,10 +6,6 @@ data class IntRectangle(val x: Int, val y: Int, val sizeX: Int, val sizeY: Int) 
     }
 }
 
-val IntRectangle.topLeft get() = IntPoint(x, y)
-val IntRectangle.topRight get() = IntPoint(x + sizeX, y)
-val IntRectangle.bottomLeft get() = IntPoint(x, y + sizeY)
-val IntRectangle.bottomRight get() = IntPoint(x + sizeX, y + sizeY)
 val IntRectangle.x1 get() = x
 val IntRectangle.y1 get() = y
 val IntRectangle.x2 get() = x + sizeX
