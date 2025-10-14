@@ -1,4 +1,4 @@
-package miragefairy2024.client.mod
+package miragefairy2024.client.mod.magicplant
 
 import io.wispforest.owo.ui.base.BaseOwoHandledScreen
 import io.wispforest.owo.ui.component.Components
@@ -17,6 +17,7 @@ import miragefairy2024.client.mixins.api.RenderingEvent
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapter
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterContext
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterRegistry
+import miragefairy2024.client.mod.surface
 import miragefairy2024.client.util.ClickableContainer
 import miragefairy2024.client.util.OwoComponent
 import miragefairy2024.client.util.SlotType
