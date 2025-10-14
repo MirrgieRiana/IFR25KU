@@ -230,7 +230,7 @@ object TraitEncyclopediaViewOwoAdapter : ViewOwoAdapter<TraitEncyclopediaView> {
 
     private var viewMode = ViewMode.SEPARATED
 
-    override fun createOwoComponent(view: TraitEncyclopediaView, cotext: ViewOwoAdapterContext): OwoComponent {
+    override fun createOwoComponent(view: TraitEncyclopediaView, context: ViewOwoAdapterContext): OwoComponent {
         val onViewModeChanged = EventRegistry<() -> Unit>()
 
         val separatedView = topBorderLayout(Sizing.fill(100), Sizing.fill(100)).apply { // カード・レシピセパレーション
@@ -301,7 +301,7 @@ object TraitEncyclopediaViewOwoAdapter : ViewOwoAdapter<TraitEncyclopediaView> {
                             horizontalAlignment(HorizontalAlignment.LEFT)
 
                             chunk.forEach { inputItemStack ->
-                                child(cotext.wrap(CatalystSlotView(inputItemStack.toIngredientStack()).noBackground())) // 種子
+                                child(context.wrap(CatalystSlotView(inputItemStack.toIngredientStack()).noBackground())) // 種子
                             }
                         })
                     }
@@ -371,7 +371,7 @@ object TraitEncyclopediaViewOwoAdapter : ViewOwoAdapter<TraitEncyclopediaView> {
                     ViewMode.CARD -> cardView
                 }
                 child(child)
-                cotext.prepare()
+                context.prepare()
             }
         }
 
