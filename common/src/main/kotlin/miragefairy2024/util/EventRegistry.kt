@@ -30,7 +30,7 @@ fun <L> EventRegistry<L>.observe(onClosed: EventRegistry<() -> Unit>, listener: 
     onClosed.register(onClosedListener)
 }
 
-fun <L> EventRegistry<L>.fire(invoker: (L) -> Unit) {
+inline fun <L> EventRegistry<L>.fire(invoker: (L) -> Unit) {
     listeners.toList().forEach {
         invoker(it)
     }
