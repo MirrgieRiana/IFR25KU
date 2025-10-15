@@ -9,6 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.grow
 import miragefairy2024.mod.recipeviewer.view.minus
 import miragefairy2024.mod.recipeviewer.view.offset
+import miragefairy2024.mod.recipeviewer.view.size
 import miragefairy2024.mod.recipeviewer.views.AbsoluteView
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.ImageView
@@ -38,7 +39,7 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
         val imageBound = IntRectangle(30, 16, 120, 40)
         val bounds = imageBound.grow(6, 2)
         val p = bounds.offset
-        view += AbsoluteView(IntPoint(bounds.sizeX, bounds.sizeY)).configure {
+        view += AbsoluteView(bounds.size).configure {
 
             view += ImageView(getTexture(bounds))
 
@@ -57,8 +58,7 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
                 position = AbsoluteView.Offset(IntPoint(76, 27) - p)
                 view.durationMilliSeconds = recipeEntry.recipe.duration * 50
             }
-            val seconds = recipeEntry.recipe.duration.toDouble() / 20.0
-            view += TextView(text { SECONDS_TRANSLATION((seconds formatAs "%.2f").stripTrailingZeros()) }).configure {
+            view += TextView(text { SECONDS_TRANSLATION((recipeEntry.recipe.duration.toDouble() / 20.0 formatAs "%.2f").stripTrailingZeros()) }).configure {
                 position = AbsoluteView.Offset(IntPoint(88, 15) - p)
                 view.horizontalAlignment = Alignment.CENTER
                 view.color = ColorPair.DARK_GRAY
