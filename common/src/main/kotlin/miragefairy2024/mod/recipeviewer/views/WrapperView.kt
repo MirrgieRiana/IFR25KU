@@ -12,12 +12,6 @@ class WrapperView : ContainerView<Unit>() {
     override fun calculateContentSize() = children.single().view.contentSize
     override fun calculateActualSize() = children.single().view.actualSize
 
-    override fun calculateChildrenActualSize() {
-        children.forEach {
-            it.view.calculateActualSize(renderingProxy)
-        }
-    }
-
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
         children.forEach {
             it.view.attachTo(offset, viewPlacer)

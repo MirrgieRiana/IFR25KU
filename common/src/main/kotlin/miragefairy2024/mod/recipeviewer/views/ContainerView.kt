@@ -10,6 +10,12 @@ abstract class ContainerView<P> : ParentView<P>() {
         children += child
     }
 
+    override fun calculateChildrenActualSize() {
+        children.forEach {
+            it.view.calculateActualSize(renderingProxy)
+        }
+    }
+
 }
 
 operator fun <P> ContainerView<P>.plusAssign(view: View) = this.add(Child(this.createDefaultPosition(), view))

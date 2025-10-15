@@ -20,12 +20,6 @@ class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Posi
     override fun calculateContentSize() = size
     override fun calculateActualSize() = size
 
-    override fun calculateChildrenActualSize() {
-        children.forEach {
-            it.view.calculateActualSize(renderingProxy)
-        }
-    }
-
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
         children.forEach {
             it.view.attachTo(offset + it.position.getOffset(), viewPlacer)

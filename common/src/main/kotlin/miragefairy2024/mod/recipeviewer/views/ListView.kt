@@ -32,12 +32,6 @@ class XListView : ListView() {
         )
     }
 
-    override fun calculateChildrenActualSize() {
-        children.forEach {
-            it.view.calculateActualSize(renderingProxy)
-        }
-    }
-
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
         var x = 0
         children.forEach {
@@ -71,12 +65,6 @@ class YListView : ListView() {
             (children.maxOfOrNull { it.view.actualSize.x } ?: 0) atLeast minWidth,
             children.sumOf { it.view.actualSize.y },
         )
-    }
-
-    override fun calculateChildrenActualSize() {
-        children.forEach {
-            it.view.calculateActualSize(renderingProxy)
-        }
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
