@@ -10,13 +10,13 @@ abstract class AbstractView : View {
     protected lateinit var renderingProxy: RenderingProxy
         private set
 
-    private lateinit var calculatedContentSize: IntPoint
-    final override val contentSize get() = calculatedContentSize
+    private lateinit var contentSizeCache: IntPoint
+    final override val contentSize get() = contentSizeCache
 
     final override fun calculateContentSize(renderingProxy: RenderingProxy) {
         this.renderingProxy = renderingProxy
         calculateChildrenContentSize()
-        calculatedContentSize = calculateContentSize()
+        contentSizeCache = calculateContentSize()
     }
 
     protected open fun calculateChildrenContentSize() = Unit
@@ -24,11 +24,11 @@ abstract class AbstractView : View {
     protected abstract fun calculateContentSize(): IntPoint
 
 
-    private lateinit var calculatedActualSize: IntPoint
-    final override val actualSize get() = calculatedActualSize
+    private lateinit var actualSizeCache: IntPoint
+    final override val actualSize get() = actualSizeCache
 
     final override fun calculateActualSize(regionSize: IntPoint) {
-        calculatedActualSize = IntPoint(
+        actualSizeCache = IntPoint(
             when (sizingX) {
                 Sizing.FILL -> regionSize.x
                 Sizing.WRAP -> contentSize.x
