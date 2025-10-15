@@ -1,6 +1,5 @@
 package miragefairy2024.mod.recipeviewer.views
 
-import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.View
 
 abstract class ContainerView<P> : ParentView<P>() {
@@ -13,10 +12,6 @@ abstract class ContainerView<P> : ParentView<P>() {
 
     final override fun calculateChildrenContentSize() {
         children.calculateContentSize()
-    }
-
-    final override fun calculateChildrenActualSize(regionSize: IntPoint) {
-        children.calculateActualSize { regionSize }
     }
 
 }

@@ -27,11 +27,11 @@ abstract class AbstractView : View {
     final override val actualSize get() = actualSizeCache
 
     final override fun calculateActualSize(regionSize: IntPoint) {
-        calculateChildrenActualSize(regionSize)
         actualSizeCache = calculateActualSizeImpl(regionSize)
+        calculateChildrenActualSize()
     }
 
-    protected open fun calculateChildrenActualSize(regionSize: IntPoint) = Unit
+    protected open fun calculateChildrenActualSize() = Unit
 
     protected abstract fun calculateActualSizeImpl(regionSize: IntPoint): IntPoint
 
