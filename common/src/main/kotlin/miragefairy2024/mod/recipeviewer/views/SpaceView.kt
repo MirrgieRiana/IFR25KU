@@ -4,7 +4,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 
-abstract class SpaceView(size: IntPoint) : FixedWidgetView(size) {
+abstract class SpaceView(size: IntPoint) : FixedView(size) {
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = Unit
 }
 
