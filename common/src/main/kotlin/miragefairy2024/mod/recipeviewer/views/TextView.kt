@@ -9,7 +9,9 @@ import miragefairy2024.mod.recipeviewer.view.sized
 import mirrg.kotlin.helium.atLeast
 import net.minecraft.network.chat.Component
 
-class TextView(val text: Component) : AbstractView(), PlaceableView {
+class TextView : AbstractView(), PlaceableView {
+    var text: Component = Component.empty()
+
     @JvmField
     var minWidth = 0
 
@@ -34,3 +36,5 @@ class TextView(val text: Component) : AbstractView(), PlaceableView {
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(actualSize))
 }
+
+fun TextView(text: Component) = TextView().also { it.text = text }
