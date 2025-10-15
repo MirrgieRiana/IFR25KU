@@ -109,7 +109,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             val view = card.createView(display.recipeEntry)
             view.calculateContentSize(renderingProxy)
             view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
-            view.attachTo(IntPoint(5 + bounds.x, 5 + bounds.y)) { view2, bounds ->
+            view.attachTo(IntPoint(bounds.x + 5, bounds.y + 5)) { view2, bounds ->
                 REI_VIEW_PLACER_REGISTRY.place(widgets, view2, bounds)
             }
             return widgets
