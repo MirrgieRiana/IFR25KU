@@ -6,7 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 
-abstract class ContainerView<P> : View {
+abstract class ContainerView<P> : AbstractView() {
 
     val children = mutableListOf<Child<P, *>>()
 

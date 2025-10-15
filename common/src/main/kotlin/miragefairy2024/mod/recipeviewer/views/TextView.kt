@@ -6,12 +6,11 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
-import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import mirrg.kotlin.helium.atLeast
 import net.minecraft.network.chat.Component
 
-class TextView(val text: Component) : View, PlaceableView {
+class TextView(val text: Component) : AbstractView(), PlaceableView {
     @JvmField
     var minWidth = 0
     private var widthCache = 0

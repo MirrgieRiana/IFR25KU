@@ -4,12 +4,11 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
-import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.util.IngredientStack
 import net.minecraft.world.item.ItemStack
 
-abstract class SlotView : View, PlaceableView {
+abstract class SlotView : AbstractView(), PlaceableView {
     var drawBackground = true
     var margin = 1
     override fun calculateActualSize(renderingProxy: RenderingProxy) = Unit
