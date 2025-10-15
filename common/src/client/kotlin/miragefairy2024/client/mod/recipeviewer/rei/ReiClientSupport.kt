@@ -92,12 +92,18 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun getCategoryIdentifier() = ReiSupport.get(card).categoryIdentifier.first
         override fun getTitle(): Component = card.displayName
         override fun getIcon(): Renderer = card.getIcon().toEntryStack()
-        override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + card.getView(renderingProxy, display.recipeEntry).actualSize.x + 5
+        override fun getDisplayWidth(display: SupportedDisplay<R>): Int {
+            val view = card.createView(display.recipeEntry)
+            view.calculateActualSize(renderingProxy)
+            return 5 + view.actualSize.x + 5
+        }
+
         override fun getDisplayHeight() = 5 + heightCache + 5
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
             val widgets = mutableListOf<Widget>()
             widgets += Widgets.createRecipeBase(bounds)
-            val view = card.getView(renderingProxy, display.recipeEntry)
+            val view = card.createView(display.recipeEntry)
+            view.calculateActualSize(renderingProxy)
             view.attachTo(IntPoint(5 + bounds.x, 5 + bounds.y)) { view2, bounds ->
                 REI_VIEW_PLACER_REGISTRY.place(widgets, view2, bounds)
             }
@@ -121,14 +127,18 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
                 fun <I : RecipeInput, R : Recipe<I>> calculateMaxHeight(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
                     recipeManager.getAllRecipesFor(bridge.recipeType).forEach {
                         val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(it.id(), it.value(), false)
-                        heightCache = heightCache max bridge.card.getView(renderingProxy, recipeEntry).actualSize.y
+                        val view = bridge.card.createView(recipeEntry)
+                        view.calculateActualSize(renderingProxy)
+                        heightCache = heightCache max view.actualSize.y
                     }
                 }
                 calculateMaxHeight(bridge)
             }
         }
         recipeEntries.forEach {
-            heightCache = heightCache max card.getView(renderingProxy, it).actualSize.y
+            val view = card.createView(it)
+            view.calculateActualSize(renderingProxy)
+            heightCache = heightCache max view.actualSize.y
         }
 
         // レシピ登録
