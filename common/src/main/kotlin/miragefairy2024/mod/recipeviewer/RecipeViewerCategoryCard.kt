@@ -40,8 +40,6 @@ abstract class RecipeViewerCategoryCard<R> {
                 ).apply(instance, ::RecipeEntry)
             }
         }
-
-        var viewCache: View? = null
     }
 
     abstract fun getRecipeCodec(registryAccess: RegistryAccess): Codec<R>
@@ -58,15 +56,9 @@ abstract class RecipeViewerCategoryCard<R> {
 
     protected abstract fun createView(recipeEntry: RecipeEntry<R>): View
     fun getView(renderingProxy: RenderingProxy, recipeEntry: RecipeEntry<R>): View {
-        val oldView = recipeEntry.viewCache
-        if (oldView == null) {
-            val newView = createView(recipeEntry)
-            newView.calculateActualSize(renderingProxy)
-            recipeEntry.viewCache = newView
-            return newView
-        } else {
-            return oldView
-        }
+        val view = createView(recipeEntry)
+        view.calculateActualSize(renderingProxy)
+        return view
     }
 
     context(ModContext)
