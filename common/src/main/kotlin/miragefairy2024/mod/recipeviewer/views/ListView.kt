@@ -25,7 +25,7 @@ class XListView : ListView() {
         )
     }
 
-    override fun calculateActualSizeImpl(): IntPoint {
+    override fun calculateActualSizeImpl(regionSize: IntPoint): IntPoint {
         return IntPoint(
             children.sumOf { it.view.actualSize.x },
             (children.maxOfOrNull { it.view.actualSize.y } ?: 0) atLeast minHeight,
@@ -60,7 +60,7 @@ class YListView : ListView() {
         )
     }
 
-    override fun calculateActualSizeImpl(): IntPoint {
+    override fun calculateActualSizeImpl(regionSize: IntPoint): IntPoint {
         return IntPoint(
             (children.maxOfOrNull { it.view.actualSize.x } ?: 0) atLeast minWidth,
             children.sumOf { it.view.actualSize.y },

@@ -11,7 +11,7 @@ abstract class SlotView : AbstractView(), PlaceableView {
     var drawBackground = true
     var margin = 1
     override fun calculateContentSizeImpl() = IntPoint(margin + 16 + margin, margin + 16 + margin)
-    override fun calculateActualSizeImpl() = IntPoint(margin + 16 + margin, margin + 16 + margin)
+    override fun calculateActualSizeImpl(regionSize: IntPoint) = IntPoint(margin + 16 + margin, margin + 16 + margin)
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(actualSize))
 }
 

@@ -21,6 +21,7 @@ import miragefairy2024.mod.recipeviewer.rei.ReiSupport
 import miragefairy2024.mod.recipeviewer.rei.SupportedDisplay
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.view.minus
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
@@ -84,6 +85,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             @Suppress("UNCHECKED_CAST")
             return table.getOrPut(card) { ReiClientSupport(card) } as ReiClientSupport<R>
         }
+
+        val MAX_SIZE = IntPoint(150, 130)
     }
 
     private var heightCache = 0
@@ -95,7 +98,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun getDisplayWidth(display: SupportedDisplay<R>): Int {
             val view = card.createView(display.recipeEntry)
             view.calculateContentSize(renderingProxy)
-            view.calculateActualSize()
+            view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
             return 5 + view.actualSize.x + 5
         }
 
@@ -105,7 +108,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             widgets += Widgets.createRecipeBase(bounds)
             val view = card.createView(display.recipeEntry)
             view.calculateContentSize(renderingProxy)
-            view.calculateActualSize()
+            view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
             view.attachTo(IntPoint(5 + bounds.x, 5 + bounds.y)) { view2, bounds ->
                 REI_VIEW_PLACER_REGISTRY.place(widgets, view2, bounds)
             }
@@ -131,7 +134,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
                         val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(it.id(), it.value(), false)
                         val view = bridge.card.createView(recipeEntry)
                         view.calculateContentSize(renderingProxy)
-                        view.calculateActualSize()
+                        view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
                         heightCache = heightCache max view.actualSize.y
                     }
                 }
@@ -141,7 +144,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         recipeEntries.forEach {
             val view = card.createView(it)
             view.calculateContentSize(renderingProxy)
-            view.calculateActualSize()
+            view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
             heightCache = heightCache max view.actualSize.y
         }
 

@@ -18,7 +18,7 @@ class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Posi
     override fun createDefaultPosition() = Offset(IntPoint.ZERO)
 
     override fun calculateContentSizeImpl() = size
-    override fun calculateActualSizeImpl() = size
+    override fun calculateActualSizeImpl(regionSize: IntPoint) = size
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
         children.forEach {

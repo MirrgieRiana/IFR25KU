@@ -10,7 +10,7 @@ class WrapperView : ContainerView<Unit>() {
     override fun createDefaultPosition() = Unit
 
     override fun calculateContentSizeImpl() = children.single().view.contentSize
-    override fun calculateActualSizeImpl() = children.single().view.actualSize
+    override fun calculateActualSizeImpl(regionSize: IntPoint) = children.single().view.actualSize
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
         children.forEach {

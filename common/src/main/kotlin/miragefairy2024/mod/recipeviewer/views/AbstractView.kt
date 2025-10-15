@@ -17,17 +17,17 @@ abstract class AbstractView : View {
         contentSizeCache = calculateContentSizeImpl()
     }
 
-    override fun calculateActualSize() {
-        calculateChildrenActualSize()
-        actualSizeCache = calculateActualSizeImpl()
+    override fun calculateActualSize(regionSize: IntPoint) {
+        calculateChildrenActualSize(regionSize)
+        actualSizeCache = calculateActualSizeImpl(regionSize)
     }
 
     override val contentSize get() = contentSizeCache
     override val actualSize get() = actualSizeCache
 
     protected open fun calculateChildrenContentSize() = Unit
-    protected open fun calculateChildrenActualSize() = Unit
+    protected open fun calculateChildrenActualSize(regionSize: IntPoint) = Unit
     protected abstract fun calculateContentSizeImpl(): IntPoint
-    protected abstract fun calculateActualSizeImpl(): IntPoint
+    protected abstract fun calculateActualSizeImpl(regionSize: IntPoint): IntPoint
 
 }
