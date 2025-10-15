@@ -2,14 +2,20 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
+import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.mod.recipeviewer.view.plus
 import mirrg.kotlin.helium.atLeast
 
 abstract class ListView : ContainerView<Alignment>() {
+
     override fun createDefaultPosition() = Alignment.START
+
 }
 
 class XListView : ListView() {
+
     @JvmField
     var minHeight = 0
 
@@ -42,9 +48,23 @@ class XListView : ListView() {
             x += it.view.actualSize.x
         }
     }
+
+    override fun calculateChildrenActualSize() {
+        children.forEach {
+            it.view.calculateActualSize(renderingProxy)
+        }
+    }
+
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
+        children.forEach {
+            it.view.attachTo(offset + it.offsetCache, viewPlacer)
+        }
+    }
+
 }
 
 class YListView : ListView() {
+
     @JvmField
     var minWidth = 0
 
@@ -77,4 +97,17 @@ class YListView : ListView() {
             y += it.view.actualSize.y
         }
     }
+
+    override fun calculateChildrenActualSize() {
+        children.forEach {
+            it.view.calculateActualSize(renderingProxy)
+        }
+    }
+
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
+        children.forEach {
+            it.view.attachTo(offset + it.offsetCache, viewPlacer)
+        }
+    }
+
 }
