@@ -18,14 +18,14 @@ class XListView : ListView() {
     @JvmField
     var minHeight = 0
 
-    override fun calculateContentSize(): IntPoint {
+    override fun calculateContentSizeImpl(): IntPoint {
         return IntPoint(
             children.sumOf { it.view.contentSize.x },
             (children.maxOfOrNull { it.view.contentSize.y } ?: 0) atLeast minHeight,
         )
     }
 
-    override fun calculateActualSize(): IntPoint {
+    override fun calculateActualSizeImpl(): IntPoint {
         return IntPoint(
             children.sumOf { it.view.actualSize.x },
             (children.maxOfOrNull { it.view.actualSize.y } ?: 0) atLeast minHeight,
@@ -53,14 +53,14 @@ class YListView : ListView() {
     @JvmField
     var minWidth = 0
 
-    override fun calculateContentSize(): IntPoint {
+    override fun calculateContentSizeImpl(): IntPoint {
         return IntPoint(
             (children.maxOfOrNull { it.view.contentSize.x } ?: 0) atLeast minWidth,
             children.sumOf { it.view.contentSize.y },
         )
     }
 
-    override fun calculateActualSize(): IntPoint {
+    override fun calculateActualSizeImpl(): IntPoint {
         return IntPoint(
             (children.maxOfOrNull { it.view.actualSize.x } ?: 0) atLeast minWidth,
             children.sumOf { it.view.actualSize.y },

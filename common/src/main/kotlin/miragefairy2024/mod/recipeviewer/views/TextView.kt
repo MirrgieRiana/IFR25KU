@@ -13,14 +13,14 @@ class TextView(val text: Component) : AbstractView(), PlaceableView {
     @JvmField
     var minWidth = 0
 
-    override fun calculateContentSize(): IntPoint {
+    override fun calculateContentSizeImpl(): IntPoint {
         return IntPoint(
             minWidth,
             renderingProxy.getTextHeight(),
         )
     }
 
-    override fun calculateActualSize(): IntPoint {
+    override fun calculateActualSizeImpl(): IntPoint {
         return IntPoint(
             renderingProxy.calculateTextWidth(text) atLeast minWidth,
             renderingProxy.getTextHeight(),
