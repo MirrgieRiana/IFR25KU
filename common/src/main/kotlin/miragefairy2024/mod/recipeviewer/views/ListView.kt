@@ -34,15 +34,15 @@ class XListView : ListView() {
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
         var x = 0
-        children.forEach {
+        children.attachTo(viewPlacer) {
             val childX = x
             val childY = when (it.position) {
                 Alignment.START -> 0
                 Alignment.CENTER -> (actualSize.y - it.view.actualSize.y) / 2
                 Alignment.END -> actualSize.y - it.view.actualSize.y
             }
-            it.view.attachTo(offset.offset(childX, childY), viewPlacer)
             x += it.view.actualSize.x
+            offset.offset(childX, childY)
         }
     }
 
@@ -69,15 +69,15 @@ class YListView : ListView() {
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
         var y = 0
-        children.forEach {
+        children.attachTo(viewPlacer) {
             val childY = y
             val childX = when (it.position) {
                 Alignment.START -> 0
                 Alignment.CENTER -> (actualSize.x - it.view.actualSize.x) / 2
                 Alignment.END -> actualSize.x - it.view.actualSize.x
             }
-            it.view.attachTo(offset.offset(childX, childY), viewPlacer)
             y += it.view.actualSize.y
+            offset.offset(childX, childY)
         }
     }
 

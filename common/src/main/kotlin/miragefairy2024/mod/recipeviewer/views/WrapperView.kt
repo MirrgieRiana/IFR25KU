@@ -13,9 +13,7 @@ class WrapperView : ContainerView<Unit>() {
     override fun calculateActualSizeImpl(regionSize: IntPoint) = children.single().view.actualSize
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
-        children.forEach {
-            it.view.attachTo(offset, viewPlacer)
-        }
+        children.attachTo(viewPlacer) { offset }
     }
 
     val childView get() = children.single().view

@@ -12,15 +12,11 @@ abstract class ContainerView<P> : ParentView<P>() {
     }
 
     final override fun calculateChildrenContentSize() {
-        children.forEach {
-            it.view.calculateContentSize(renderingProxy)
-        }
+        children.calculateContentSize()
     }
 
     final override fun calculateChildrenActualSize(regionSize: IntPoint) {
-        children.forEach {
-            it.view.calculateActualSize(regionSize)
-        }
+        children.calculateActualSize { regionSize }
     }
 
 }

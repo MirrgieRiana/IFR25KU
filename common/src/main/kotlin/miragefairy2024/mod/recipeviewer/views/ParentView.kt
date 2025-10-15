@@ -1,8 +1,29 @@
 package miragefairy2024.mod.recipeviewer.views
 
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 
 abstract class ParentView<P> : AbstractView() {
+
+    protected fun Iterable<Child<P, *>>.calculateContentSize() {
+        this.forEach {
+            it.view.calculateContentSize(renderingProxy)
+        }
+    }
+
+    protected fun Iterable<Child<P, *>>.calculateActualSize(regionSizeFunction: (Child<P, *>) -> IntPoint) {
+        this.forEach {
+            it.view.calculateActualSize(regionSizeFunction(it))
+        }
+    }
+
+    protected fun Iterable<Child<P, *>>.attachTo(viewPlacer: ViewPlacer<PlaceableView>, offsetFunction: (Child<P, *>) -> IntPoint) {
+        this.forEach {
+            it.view.attachTo(offsetFunction(it), viewPlacer)
+        }
+    }
 
     abstract fun createDefaultPosition(): P
 
