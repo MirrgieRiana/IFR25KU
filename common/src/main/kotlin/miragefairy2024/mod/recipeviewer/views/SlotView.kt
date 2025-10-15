@@ -10,8 +10,8 @@ import net.minecraft.world.item.ItemStack
 abstract class SlotView : AbstractView(), PlaceableView {
     var drawBackground = true
     var margin = 1
-    override fun calculateContentSize() = IntPoint(16 + margin * 2, 16 + margin * 2)
-    override fun calculateActualSize() = IntPoint(16 + margin * 2, 16 + margin * 2)
+    override fun calculateContentSize() = IntPoint(margin + 16 + margin, margin + 16 + margin)
+    override fun calculateActualSize() = IntPoint(margin + 16 + margin, margin + 16 + margin)
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(actualSize))
 }
 
