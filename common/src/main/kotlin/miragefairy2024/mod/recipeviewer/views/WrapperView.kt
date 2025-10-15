@@ -24,4 +24,8 @@ class WrapperView : ContainerView<Unit>() {
 
 }
 
+fun <P, V : WrapperView> Child<P, *>.wrap(wrapper: V) = Child(this.position, wrapper.also {
+    it += this@wrap.view
+})
+
 fun View(block: Child<Unit, WrapperView>.() -> Unit): View = Child(Unit, WrapperView()).apply { block() }.view.childView
