@@ -10,9 +10,15 @@ abstract class ContainerView<P> : ParentView<P>() {
         children += child
     }
 
+    override fun calculateChildrenContentSize() {
+        children.forEach {
+            it.view.calculateContentSize(renderingProxy)
+        }
+    }
+
     override fun calculateChildrenActualSize() {
         children.forEach {
-            it.view.calculateActualSize(renderingProxy)
+            it.view.calculateActualSize()
         }
     }
 

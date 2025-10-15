@@ -94,7 +94,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun getIcon(): Renderer = card.getIcon().toEntryStack()
         override fun getDisplayWidth(display: SupportedDisplay<R>): Int {
             val view = card.createView(display.recipeEntry)
-            view.calculateActualSize(renderingProxy)
+            view.calculateContentSize(renderingProxy)
+            view.calculateActualSize()
             return 5 + view.actualSize.x + 5
         }
 
@@ -103,7 +104,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             val widgets = mutableListOf<Widget>()
             widgets += Widgets.createRecipeBase(bounds)
             val view = card.createView(display.recipeEntry)
-            view.calculateActualSize(renderingProxy)
+            view.calculateContentSize(renderingProxy)
+            view.calculateActualSize()
             view.attachTo(IntPoint(5 + bounds.x, 5 + bounds.y)) { view2, bounds ->
                 REI_VIEW_PLACER_REGISTRY.place(widgets, view2, bounds)
             }
@@ -128,7 +130,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
                     recipeManager.getAllRecipesFor(bridge.recipeType).forEach {
                         val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(it.id(), it.value(), false)
                         val view = bridge.card.createView(recipeEntry)
-                        view.calculateActualSize(renderingProxy)
+                        view.calculateContentSize(renderingProxy)
+                        view.calculateActualSize()
                         heightCache = heightCache max view.actualSize.y
                     }
                 }
@@ -137,7 +140,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         }
         recipeEntries.forEach {
             val view = card.createView(it)
-            view.calculateActualSize(renderingProxy)
+            view.calculateContentSize(renderingProxy)
+            view.calculateActualSize()
             heightCache = heightCache max view.actualSize.y
         }
 

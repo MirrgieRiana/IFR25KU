@@ -128,7 +128,8 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
 
     val sizeCache = run {
         val view = support.card.createView(recipeEntry)
-        view.calculateActualSize(renderingProxy)
+        view.calculateContentSize(renderingProxy)
+        view.calculateActualSize()
         view.actualSize
     }
 
@@ -136,7 +137,8 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getDisplayHeight() = 1 + sizeCache.y + 1
     override fun addWidgets(widgets: WidgetHolder) {
         val view = support.card.createView(recipeEntry)
-        view.calculateActualSize(renderingProxy)
+        view.calculateContentSize(renderingProxy)
+        view.calculateActualSize()
         view.attachTo(IntPoint(1, 1)) { view2, bounds ->
             EMI_VIEW_PLACER_REGISTRY.place(EmiViewPlacerContext(widgets, this), view2, bounds)
         }
