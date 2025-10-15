@@ -5,7 +5,7 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 
-class WrapperView : ContainerView<Unit>() {
+open class WrapperView : ContainerView<Unit>() {
 
     override fun createDefaultPosition() = Unit
 
