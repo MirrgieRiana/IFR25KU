@@ -8,7 +8,7 @@ import miragefairy2024.util.Remover
 import miragefairy2024.util.plus
 import net.minecraft.network.chat.Component
 
-class TooltipView : SingleView(), PlaceableView {
+class TooltipView : WrapperView(), PlaceableView {
     var tooltipProvider: (Int, Int) -> List<Component> = { _, _ -> listOf() }
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         return super.attachTo(offset, viewPlacer) + viewPlacer.place(this, offset.sized(actualSize))

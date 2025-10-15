@@ -6,7 +6,8 @@ import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.util.Remover
 
-open class SingleView : ContainerView<Unit>() {
+// TODO ContainerView -> ParentView
+open class WrapperView : ContainerView<Unit>() {
 
     override fun createDefaultPosition() = Unit
 
@@ -27,8 +28,8 @@ open class SingleView : ContainerView<Unit>() {
 
 }
 
-fun <P, V : SingleView> Child<P, *>.wrap(wrapper: V) = Child(this.position, wrapper.also {
+fun <P, V : WrapperView> Child<P, *>.wrap(wrapper: V) = Child(this.position, wrapper.also {
     it += this@wrap.view
 })
 
-fun View(block: Child<Unit, SingleView>.() -> Unit): View = SingleView().apply { block(Child(Unit, this)) }.childView
+fun View(block: Child<Unit, WrapperView>.() -> Unit): View = WrapperView().apply { block(Child(Unit, this)) }.childView
