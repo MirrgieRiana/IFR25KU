@@ -1,5 +1,28 @@
 package miragefairy2024.mod.recipeviewer.views
 
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
 
-abstract class AbstractView : View
+abstract class AbstractView : View {
+
+    protected lateinit var renderingProxy: RenderingProxy
+
+    private var contentSizeCache = IntPoint.ZERO
+    private var actualSizeCache = IntPoint.ZERO
+
+    override fun calculateActualSize(renderingProxy: RenderingProxy) {
+        this.renderingProxy = renderingProxy
+        calculateChildrenActualSize()
+        contentSizeCache = calculateContentSize()
+        actualSizeCache = calculateActualSize()
+    }
+
+    override val contentSize get() = contentSizeCache
+    override val actualSize get() = actualSizeCache
+
+    protected open fun calculateChildrenActualSize() = Unit
+    abstract fun calculateContentSize(): IntPoint
+    abstract fun calculateActualSize(): IntPoint
+
+}

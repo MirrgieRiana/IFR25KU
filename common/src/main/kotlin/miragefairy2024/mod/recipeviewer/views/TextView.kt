@@ -5,7 +5,6 @@ import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import mirrg.kotlin.helium.atLeast
 import net.minecraft.network.chat.Component
@@ -13,16 +12,20 @@ import net.minecraft.network.chat.Component
 class TextView(val text: Component) : AbstractView(), PlaceableView {
     @JvmField
     var minWidth = 0
-    private var widthCache = 0
-    private var heightCache = 0
 
-    override fun calculateActualSize(renderingProxy: RenderingProxy) {
-        widthCache = renderingProxy.calculateTextWidth(text) atLeast minWidth
-        heightCache = renderingProxy.getTextHeight()
+    override fun calculateContentSize(): IntPoint {
+        return IntPoint(
+            minWidth,
+            renderingProxy.getTextHeight(),
+        )
     }
 
-    override val contentSize get() = IntPoint(minWidth, heightCache)
-    override val actualSize get() = IntPoint(widthCache, heightCache)
+    override fun calculateActualSize(): IntPoint {
+        return IntPoint(
+            renderingProxy.calculateTextWidth(text) atLeast minWidth,
+            renderingProxy.getTextHeight(),
+        )
+    }
 
     var color: ColorPair? = null
     var shadow = true

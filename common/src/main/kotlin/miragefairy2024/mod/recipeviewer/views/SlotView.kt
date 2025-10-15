@@ -3,7 +3,6 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.util.IngredientStack
 import net.minecraft.world.item.ItemStack
@@ -11,9 +10,8 @@ import net.minecraft.world.item.ItemStack
 abstract class SlotView : AbstractView(), PlaceableView {
     var drawBackground = true
     var margin = 1
-    override fun calculateActualSize(renderingProxy: RenderingProxy) = Unit
-    override val contentSize get() = actualSize
-    override val actualSize get() = IntPoint(16 + margin * 2, 16 + margin * 2)
+    override fun calculateContentSize() = IntPoint(16 + margin * 2, 16 + margin * 2)
+    override fun calculateActualSize() = IntPoint(16 + margin * 2, 16 + margin * 2)
     override fun attachTo(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, IntRectangle(x, y, actualSize.x, actualSize.y))
 }
 
