@@ -19,6 +19,7 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBri
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.rei.ReiSupport
 import miragefairy2024.mod.recipeviewer.rei.SupportedDisplay
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
@@ -97,7 +98,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             val widgets = mutableListOf<Widget>()
             widgets += Widgets.createRecipeBase(bounds)
             val view = card.getView(renderingProxy, display.recipeEntry)
-            view.attachTo(5 + bounds.x, 5 + bounds.y) { view2, bounds ->
+            view.attachTo(IntPoint(5 + bounds.x, 5 + bounds.y)) { view2, bounds ->
                 REI_VIEW_PLACER_REGISTRY.place(widgets, view2, bounds)
             }
             return widgets

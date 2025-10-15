@@ -31,12 +31,14 @@ class XListView : ListView() {
         super.calculateActualSize(renderingProxy)
         var x = 0
         children.forEach {
-            it.xCache = x
-            it.yCache = when (it.position) {
-                Alignment.START -> 0
-                Alignment.CENTER -> (actualSize.y - it.view.actualSize.y) / 2
-                Alignment.END -> actualSize.y - it.view.actualSize.y
-            }
+            it.offsetCache = IntPoint(
+                x,
+                when (it.position) {
+                    Alignment.START -> 0
+                    Alignment.CENTER -> (actualSize.y - it.view.actualSize.y) / 2
+                    Alignment.END -> actualSize.y - it.view.actualSize.y
+                },
+            )
             x += it.view.actualSize.x
         }
     }
@@ -64,12 +66,14 @@ class YListView : ListView() {
         super.calculateActualSize(renderingProxy)
         var y = 0
         children.forEach {
-            it.xCache = when (it.position) {
-                Alignment.START -> 0
-                Alignment.CENTER -> (actualSize.x - it.view.actualSize.x) / 2
-                Alignment.END -> actualSize.x - it.view.actualSize.x
-            }
-            it.yCache = y
+            it.offsetCache = IntPoint(
+                when (it.position) {
+                    Alignment.START -> 0
+                    Alignment.CENTER -> (actualSize.x - it.view.actualSize.x) / 2
+                    Alignment.END -> actualSize.x - it.view.actualSize.x
+                },
+                y,
+            )
             y += it.view.actualSize.y
         }
     }

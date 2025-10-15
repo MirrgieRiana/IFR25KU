@@ -14,6 +14,7 @@ import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.util.invoke
 import miragefairy2024.util.pathString
@@ -128,7 +129,7 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getDisplayWidth() = 1 + view.actualSize.x + 1
     override fun getDisplayHeight() = 1 + view.actualSize.y + 1
     override fun addWidgets(widgets: WidgetHolder) {
-        view.attachTo(1, 1) { view2, bounds ->
+        view.attachTo(IntPoint(1, 1)) { view2, bounds ->
             EMI_VIEW_PLACER_REGISTRY.place(EmiViewPlacerContext(widgets, this), view2, bounds)
         }
     }

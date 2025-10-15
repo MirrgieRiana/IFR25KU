@@ -4,5 +4,5 @@ interface View {
     fun calculateActualSize(renderingProxy: RenderingProxy)
     val contentSize: IntPoint
     val actualSize: IntPoint
-    fun attachTo(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>)
+    fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>)
 }

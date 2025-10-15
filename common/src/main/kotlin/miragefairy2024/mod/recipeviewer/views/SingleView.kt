@@ -1,5 +1,6 @@
 package miragefairy2024.mod.recipeviewer.views
 
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
 
@@ -9,8 +10,7 @@ class SingleView : ContainerView<Unit>() {
     override fun calculateActualSize() = children.single().view.actualSize
     override fun calculateActualSize(renderingProxy: RenderingProxy) {
         super.calculateActualSize(renderingProxy)
-        children.single().xCache = 0
-        children.single().yCache = 0
+        children.single().offsetCache = IntPoint.ZERO
     }
 
     val childView get() = children.single().view

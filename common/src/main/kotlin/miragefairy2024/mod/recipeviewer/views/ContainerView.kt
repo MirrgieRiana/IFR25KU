@@ -1,8 +1,10 @@
 package miragefairy2024.mod.recipeviewer.views
 
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.mod.recipeviewer.view.plus
 
 abstract class ContainerView<P> : AbstractView() {
 
@@ -18,9 +20,9 @@ abstract class ContainerView<P> : AbstractView() {
         }
     }
 
-    override fun attachTo(x: Int, y: Int, viewPlacer: ViewPlacer<PlaceableView>) {
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
         children.forEach {
-            it.view.attachTo(x + it.xCache, y + it.yCache, viewPlacer)
+            it.view.attachTo(offset + it.offsetCache, viewPlacer)
         }
     }
 
@@ -29,8 +31,7 @@ abstract class ContainerView<P> : AbstractView() {
 }
 
 class Child<P, V : View>(var position: P, val view: V) {
-    var xCache = 0
-    var yCache = 0
+    var offsetCache = IntPoint.ZERO
 }
 
 context(Child<*, out ContainerView<P>>)

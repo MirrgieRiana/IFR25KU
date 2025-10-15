@@ -18,8 +18,7 @@ class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Posi
     override fun calculateActualSize(renderingProxy: RenderingProxy) {
         super.calculateActualSize(renderingProxy)
         children.forEach {
-            it.xCache = it.position.getOffset().x
-            it.yCache = it.position.getOffset().y
+            it.offsetCache = it.position.getOffset()
         }
     }
 }
