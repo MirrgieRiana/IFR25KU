@@ -3,9 +3,8 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
-import miragefairy2024.mod.recipeviewer.view.plus
+import miragefairy2024.mod.recipeviewer.view.offset
 import mirrg.kotlin.helium.atLeast
 
 abstract class ListView : ContainerView<Alignment>() {
@@ -33,22 +32,6 @@ class XListView : ListView() {
         )
     }
 
-    override fun calculateActualSize(renderingProxy: RenderingProxy) {
-        super.calculateActualSize(renderingProxy)
-        var x = 0
-        children.forEach {
-            it.offsetCache = IntPoint(
-                x,
-                when (it.position) {
-                    Alignment.START -> 0
-                    Alignment.CENTER -> (actualSize.y - it.view.actualSize.y) / 2
-                    Alignment.END -> actualSize.y - it.view.actualSize.y
-                },
-            )
-            x += it.view.actualSize.x
-        }
-    }
-
     override fun calculateChildrenActualSize() {
         children.forEach {
             it.view.calculateActualSize(renderingProxy)
@@ -56,8 +39,16 @@ class XListView : ListView() {
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
+        var x = 0
         children.forEach {
-            it.view.attachTo(offset + it.offsetCache, viewPlacer)
+            val childX = x
+            val childY = when (it.position) {
+                Alignment.START -> 0
+                Alignment.CENTER -> (actualSize.y - it.view.actualSize.y) / 2
+                Alignment.END -> actualSize.y - it.view.actualSize.y
+            }
+            it.view.attachTo(offset.offset(childX, childY), viewPlacer)
+            x += it.view.actualSize.x
         }
     }
 
@@ -82,22 +73,6 @@ class YListView : ListView() {
         )
     }
 
-    override fun calculateActualSize(renderingProxy: RenderingProxy) {
-        super.calculateActualSize(renderingProxy)
-        var y = 0
-        children.forEach {
-            it.offsetCache = IntPoint(
-                when (it.position) {
-                    Alignment.START -> 0
-                    Alignment.CENTER -> (actualSize.x - it.view.actualSize.x) / 2
-                    Alignment.END -> actualSize.x - it.view.actualSize.x
-                },
-                y,
-            )
-            y += it.view.actualSize.y
-        }
-    }
-
     override fun calculateChildrenActualSize() {
         children.forEach {
             it.view.calculateActualSize(renderingProxy)
@@ -105,8 +80,16 @@ class YListView : ListView() {
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
+        var y = 0
         children.forEach {
-            it.view.attachTo(offset + it.offsetCache, viewPlacer)
+            val childY = y
+            val childX = when (it.position) {
+                Alignment.START -> 0
+                Alignment.CENTER -> (actualSize.x - it.view.actualSize.x) / 2
+                Alignment.END -> actualSize.x - it.view.actualSize.x
+            }
+            it.view.attachTo(offset.offset(childX, childY), viewPlacer)
+            y += it.view.actualSize.y
         }
     }
 
