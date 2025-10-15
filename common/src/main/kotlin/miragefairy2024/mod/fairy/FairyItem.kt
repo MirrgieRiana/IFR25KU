@@ -30,6 +30,8 @@ import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.minContentSizeX
+import miragefairy2024.mod.recipeviewer.views.minContentSizeY
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.AdvancementCard
@@ -452,9 +454,7 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
 
     override fun createView(recipeEntry: RecipeEntry<FairyFamilyNotation>) = View {
         view += XListView().configure {
-            view.minHeight = 18 * 7
             view += YListView().configure {
-                view.minWidth = 18 * 9
 
                 // 上に親妖精
                 view += YListView().configure {
@@ -489,8 +489,8 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
                     }
                 }
 
-            }
-        }
+            }.minContentSizeX(18 * 9)
+        }.minContentSizeY(18 * 7)
     }
 
     class FairyFamilyNotation(val motif: Motif, val parents: List<Motif>, val children: List<Motif>) {

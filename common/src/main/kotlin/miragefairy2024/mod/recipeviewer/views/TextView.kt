@@ -6,25 +6,21 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.sized
-import mirrg.kotlin.helium.atLeast
 import net.minecraft.network.chat.Component
 
 class TextView : AbstractView(), PlaceableView {
     var text: Component = Component.empty()
 
-    @JvmField
-    var minWidth = 0
-
     override fun calculateContentSizeImpl(): IntPoint {
         return IntPoint(
-            minWidth,
+            0,
             renderingProxy.getTextHeight(),
         )
     }
 
     override fun calculateActualSizeImpl(regionSize: IntPoint): IntPoint {
         return IntPoint(
-            renderingProxy.calculateTextWidth(text) atLeast minWidth,
+            renderingProxy.calculateTextWidth(text),
             renderingProxy.getTextHeight(),
         )
     }

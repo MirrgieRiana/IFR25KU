@@ -15,6 +15,7 @@ import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Translation
@@ -130,7 +131,6 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
             }
             view += TextView(recipeText).configure {
                 position.alignment = Alignment.CENTER
-                view.minWidth = 130
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
                 when (val recipe = recipeEntry.recipe) {
@@ -138,7 +138,7 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
                     is BiomeCommonMotifRecipe -> Unit
                     is BiomeTagCommonMotifRecipe -> view.tooltip = listOf(text { recipe.biomeTag.location().string() })
                 }
-            }
+            }.minContentSizeX(130)
             view += XSpaceView(2)
             view += OutputSlotView(recipeEntry.recipe.motif.createFairyItemStack())
         }

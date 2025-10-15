@@ -15,6 +15,7 @@ import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
@@ -127,11 +128,10 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
             }
             view += TextView(text).configure {
                 position.alignment = Alignment.CENTER
-                view.minWidth = 112
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
                 view.tooltip = recipeEntry.recipe.second.map { getName(it) }
-            }
+            }.minContentSizeX(112)
             view += OutputSlotView(recipeEntry.recipe.first.createFairyItemStack())
         }
     }
