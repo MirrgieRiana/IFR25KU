@@ -60,7 +60,7 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
             }
             view += TextView(text { SECONDS_TRANSLATION((recipeEntry.recipe.duration.toDouble() / 20.0 formatAs "%.2f").stripTrailingZeros()) }).configure {
                 position = AbsoluteView.Offset(IntPoint(88, 15) - p)
-                view.horizontalAlignment = Alignment.CENTER
+                view.alignmentX = Alignment.CENTER
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
             }

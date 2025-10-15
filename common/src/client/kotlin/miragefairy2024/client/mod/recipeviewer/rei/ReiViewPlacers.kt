@@ -54,7 +54,7 @@ fun initReiViewPlacers() {
             .let { if (view.color != null) it.color(view.color!!.lightModeArgb, view.color!!.darkModeArgb) else it }
             .shadow(view.shadow)
             .let {
-                when (view.horizontalAlignment) {
+                when (view.alignmentX) {
                     Alignment.START -> it.leftAligned()
                     Alignment.CENTER -> it.centered()
                     Alignment.END -> it.rightAligned()

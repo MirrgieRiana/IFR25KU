@@ -31,7 +31,7 @@ class TextView : AbstractView(), PlaceableView {
 
     var color: ColorPair? = null
     var shadow = true
-    var horizontalAlignment: Alignment? = null
+    var alignmentX: Alignment? = null
     var tooltip: List<Component>? = null
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(actualSize))

@@ -47,7 +47,7 @@ fun initEmiViewPlacers() {
     EMI_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
         val widget = context.widgets place TextWidget(view.text.visualOrderText, bounds.x, bounds.y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
             .let {
-                when (view.horizontalAlignment) {
+                when (view.alignmentX) {
                     Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
                     Alignment.CENTER -> it.horizontalAlign(TextWidget.Alignment.CENTER)
                     Alignment.END -> it.horizontalAlign(TextWidget.Alignment.END)
