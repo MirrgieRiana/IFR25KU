@@ -378,14 +378,14 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
                 view += CatalystSlotView(FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(recipeEntry.recipe) }.toIngredientStack()).noBackground()
                 view += XSpaceView(4)
                 view += TextView(recipeEntry.recipe.title).configure {
-                    position = Alignment.CENTER
+                    position.alignment = Alignment.CENTER
                     view.color = ColorPair.DARK_GRAY
                     view.shadow = false
                 }
             }
             view += YSpaceView(2)
             view += XListView().configure {
-                position = Alignment.CENTER
+                position.alignment = Alignment.CENTER
                 recipeEntry.recipe.inputs.forEach {
                     view += InputSlotView(it())
                 }

@@ -7,9 +7,13 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.offset
 import mirrg.kotlin.helium.atLeast
 
-abstract class ListView : ContainerView<Alignment>() {
+abstract class ListView : ContainerView<ListView.Position>() {
 
-    override fun createDefaultPosition() = Alignment.START
+    class Position {
+        var alignment = Alignment.START
+    }
+
+    override fun createDefaultPosition() = Position()
 
 }
 
@@ -40,7 +44,7 @@ class XListView : ListView() {
         var x = 0
         children.attachTo(viewPlacer) {
             val childX = x
-            val childY = when (it.position) {
+            val childY = when (it.position.alignment) {
                 Alignment.START -> 0
                 Alignment.CENTER -> (actualSize.y - it.view.actualSize.y) / 2
                 Alignment.END -> actualSize.y - it.view.actualSize.y
@@ -79,7 +83,7 @@ class YListView : ListView() {
         var y = 0
         children.attachTo(viewPlacer) {
             val childY = y
-            val childX = when (it.position) {
+            val childX = when (it.position.alignment) {
                 Alignment.START -> 0
                 Alignment.CENTER -> (actualSize.x - it.view.actualSize.x) / 2
                 Alignment.END -> actualSize.x - it.view.actualSize.x
