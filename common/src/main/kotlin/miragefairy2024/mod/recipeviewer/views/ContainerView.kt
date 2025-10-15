@@ -5,19 +5,19 @@ import miragefairy2024.mod.recipeviewer.view.View
 
 abstract class ContainerView<P> : ParentView<P>() {
 
-    val children = mutableListOf<Child<P, *>>()
+    protected val children = mutableListOf<Child<P, *>>()
 
     fun add(child: Child<P, *>) {
         children += child
     }
 
-    override fun calculateChildrenContentSize() {
+    final override fun calculateChildrenContentSize() {
         children.forEach {
             it.view.calculateContentSize(renderingProxy)
         }
     }
 
-    override fun calculateChildrenActualSize(regionSize: IntPoint) {
+    final override fun calculateChildrenActualSize(regionSize: IntPoint) {
         children.forEach {
             it.view.calculateActualSize(regionSize)
         }

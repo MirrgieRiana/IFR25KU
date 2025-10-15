@@ -7,12 +7,12 @@ import miragefairy2024.mod.recipeviewer.view.View
 abstract class AbstractView : View {
 
     protected lateinit var renderingProxy: RenderingProxy
+        private set
 
+    private lateinit var contentSizeCache: IntPoint
+    final override val contentSize get() = contentSizeCache
 
-    private var contentSizeCache = IntPoint.ZERO
-    override val contentSize get() = contentSizeCache
-
-    override fun calculateContentSize(renderingProxy: RenderingProxy) {
+    final override fun calculateContentSize(renderingProxy: RenderingProxy) {
         this.renderingProxy = renderingProxy
         calculateChildrenContentSize()
         contentSizeCache = calculateContentSizeImpl()
@@ -23,10 +23,10 @@ abstract class AbstractView : View {
     protected abstract fun calculateContentSizeImpl(): IntPoint
 
 
-    private var actualSizeCache = IntPoint.ZERO
-    override val actualSize get() = actualSizeCache
+    private lateinit var actualSizeCache: IntPoint
+    final override val actualSize get() = actualSizeCache
 
-    override fun calculateActualSize(regionSize: IntPoint) {
+    final override fun calculateActualSize(regionSize: IntPoint) {
         calculateChildrenActualSize(regionSize)
         actualSizeCache = calculateActualSizeImpl(regionSize)
     }
