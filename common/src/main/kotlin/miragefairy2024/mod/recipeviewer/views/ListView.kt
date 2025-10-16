@@ -47,7 +47,9 @@ class XListView : ListView() {
             val old = x
             val new = old + it.reservedSizeX + if (totalWeight > 0.0) remaining * (it.position.weight / totalWeight) else 0.0
             x = new
-            IntPoint(new.roundToInt() - old.roundToInt(), actualSize.y)
+            val size = new.roundToInt() - old.roundToInt()
+
+            IntPoint(size, actualSize.y)
         }
     }
 
@@ -59,10 +61,12 @@ class XListView : ListView() {
             val old = x
             val new = old + it.reservedSizeX + if (totalWeight > 0.0) remaining * (it.position.weight / totalWeight) else 0.0
             x = new
+            val size = new.roundToInt() - old.roundToInt()
+
             val childX = old.roundToInt() + when (it.position.alignmentX) {
                 Alignment.START -> 0
-                Alignment.CENTER -> ((new.roundToInt() - old.roundToInt()) - it.view.actualSize.x) / 2
-                Alignment.END -> (new.roundToInt() - old.roundToInt()) - it.view.actualSize.x
+                Alignment.CENTER -> (size - it.view.actualSize.x) / 2
+                Alignment.END -> size - it.view.actualSize.x
             }
             val childY = when (it.position.alignmentY) {
                 Alignment.START -> 0
@@ -92,7 +96,9 @@ class YListView : ListView() {
             val old = y
             val new = old + it.reservedSizeY + if (totalWeight > 0.0) remaining * (it.position.weight / totalWeight) else 0.0
             y = new
-            IntPoint(actualSize.x, new.roundToInt() - old.roundToInt())
+            val size = new.roundToInt() - old.roundToInt()
+
+            IntPoint(actualSize.x, size)
         }
     }
 
@@ -104,10 +110,12 @@ class YListView : ListView() {
             val old = y
             val new = old + it.reservedSizeY + if (totalWeight > 0.0) remaining * (it.position.weight / totalWeight) else 0.0
             y = new
+            val size = new.roundToInt() - old.roundToInt()
+
             val childY = old.roundToInt() + when (it.position.alignmentY) {
                 Alignment.START -> 0
-                Alignment.CENTER -> ((new.roundToInt() - old.roundToInt()) - it.view.actualSize.y) / 2
-                Alignment.END -> (new.roundToInt() - old.roundToInt()) - it.view.actualSize.y
+                Alignment.CENTER -> (size - it.view.actualSize.y) / 2
+                Alignment.END -> size - it.view.actualSize.y
             }
             val childX = when (it.position.alignmentX) {
                 Alignment.START -> 0
