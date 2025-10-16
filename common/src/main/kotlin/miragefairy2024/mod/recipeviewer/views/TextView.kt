@@ -11,22 +11,13 @@ import net.minecraft.network.chat.Component
 
 class TextView : AbstractView(), PlaceableView {
     var text: Component = Component.empty()
-
     override var sizingX = Sizing.WRAP
     override val sizingY = Sizing.WRAP
-
-    override fun calculateContentSize(): IntPoint {
-        return IntPoint(
-            renderingProxy.calculateTextWidth(text),
-            renderingProxy.getTextHeight(),
-        )
-    }
-
     var color: ColorPair? = null
     var shadow = true
     var alignmentX: Alignment? = null
     var tooltip: List<Component>? = null
-
+    override fun calculateContentSize() = IntPoint(renderingProxy.calculateTextWidth(text), renderingProxy.getTextHeight())
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(actualSize))
 }
 
