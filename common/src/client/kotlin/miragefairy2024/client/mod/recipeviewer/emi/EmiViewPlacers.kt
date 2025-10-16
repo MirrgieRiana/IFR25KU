@@ -76,18 +76,19 @@ fun initEmiViewPlacers() {
         if (view.durationMilliSeconds != null) {
             context.widgets place FillingArrowWidget(bounds.x, bounds.y, view.durationMilliSeconds!!)
         } else {
+            val emiTexture = EmiTexture.EMPTY_ARROW
             context.widgets place TextureWidget(
-                EmiTexture.EMPTY_ARROW.texture,
+                emiTexture.texture,
                 bounds.x,
                 bounds.y,
-                EmiTexture.EMPTY_ARROW.width,
-                EmiTexture.EMPTY_ARROW.height,
-                EmiTexture.EMPTY_ARROW.u,
-                EmiTexture.EMPTY_ARROW.v,
-                EmiTexture.EMPTY_ARROW.regionWidth,
-                EmiTexture.EMPTY_ARROW.regionHeight,
-                EmiTexture.EMPTY_ARROW.textureWidth,
-                EmiTexture.EMPTY_ARROW.textureHeight,
+                emiTexture.width,
+                emiTexture.height,
+                emiTexture.u,
+                emiTexture.v,
+                emiTexture.regionWidth,
+                emiTexture.regionHeight,
+                emiTexture.textureWidth,
+                emiTexture.textureHeight,
             )
         }
     }
