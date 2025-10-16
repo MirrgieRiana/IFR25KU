@@ -7,6 +7,7 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory
 import dev.emi.emi.api.stack.Comparison
 import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
+import dev.emi.emi.api.widget.Widget
 import dev.emi.emi.api.widget.WidgetHolder
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
@@ -36,7 +37,7 @@ object EmiClientEvents {
     val onRegisterGeneral = ReusableInitializationEventRegistry<(EmiRegistry) -> Unit>()
 }
 
-class EmiViewPlacerContext(val widgets: WidgetHolder, val emiRecipe: EmiRecipe)
+class EmiViewPlacerContext(val widgets: MutableList<Widget>, val containerWidget: EmiContainerWidget, val emiRecipe: EmiRecipe)
 
 val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<EmiViewPlacerContext>()
 
@@ -139,11 +140,18 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getDisplayWidth() = 1 + sizeCache.x + 1
     override fun getDisplayHeight() = 1 + sizeCache.y + 1
     override fun addWidgets(widgets: WidgetHolder) {
+        val widgets2 = mutableListOf<Widget>()
+        val containerWidget = EmiContainerWidget()
         val view = support.card.createView(recipeEntry)
         view.calculateContentSize(renderingProxy)
         view.calculateActualSize(EmiClientSupport.MAX_SIZE.minus(5 + 5, 5 + 5))
         view.attachTo(IntPoint(1, 1)) { view2, bounds ->
-            EMI_VIEW_PLACER_REGISTRY.place(EmiViewPlacerContext(widgets, this), view2, bounds)
+            EMI_VIEW_PLACER_REGISTRY.place(EmiViewPlacerContext(widgets2, containerWidget, this), view2, bounds)
+        }
+
+        widgets.add(containerWidget)
+        widgets2.forEach {
+            widgets.add(it)
         }
     }
 }

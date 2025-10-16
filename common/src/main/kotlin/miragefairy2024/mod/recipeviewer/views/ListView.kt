@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.offset
+import miragefairy2024.util.Remover
 import kotlin.math.roundToInt
 
 abstract class ListView : ContainerView<ListView.Position>() {
@@ -46,11 +47,11 @@ class XListView : ListView() {
         }
     }
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         val remaining = (actualSize.x - contentSize.x).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var x = 0.0
-        children.attachTo(viewPlacer) {
+        return children.attachTo(viewPlacer) {
             val old = x
             val new = old + it.view.contentSize.x.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             x = new
@@ -95,11 +96,11 @@ class YListView : ListView() {
         }
     }
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         val remaining = (actualSize.y - contentSize.y).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var y = 0.0
-        children.attachTo(viewPlacer) {
+        return children.attachTo(viewPlacer) {
             val old = y
             val new = old + it.view.contentSize.y.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             y = new

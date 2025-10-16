@@ -4,6 +4,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.util.Remover
 
 open class WrapperView : ContainerView<Unit>() {
 
@@ -18,8 +19,8 @@ open class WrapperView : ContainerView<Unit>() {
         childView.calculateActualSize(actualSize)
     }
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
-        childView.attachTo(offset, viewPlacer)
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
+        return childView.attachTo(offset, viewPlacer)
     }
 
     val childView get() = children.single().view

@@ -5,6 +5,7 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.plus
+import miragefairy2024.util.Remover
 
 class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Position>() {
 
@@ -27,8 +28,8 @@ class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Posi
         children.calculateActualSize { actualSize }
     }
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
-        children.attachTo(viewPlacer) { offset + it.position.getOffset() }
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
+        return children.attachTo(viewPlacer) { offset + it.position.getOffset() }
     }
 
 }

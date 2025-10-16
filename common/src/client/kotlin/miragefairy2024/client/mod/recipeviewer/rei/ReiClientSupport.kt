@@ -39,7 +39,7 @@ object ReiClientEvents {
     val onRegisterScreens = ReusableInitializationEventRegistry<(ScreenRegistry) -> Unit>()
 }
 
-val REI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<MutableList<Widget>>()
+val REI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<ReiContainerWidget>()
 
 context(ModContext)
 fun initReiClientSupport() {
@@ -104,15 +104,17 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
         override fun getDisplayHeight() = 5 + heightCache + 5
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
-            val widgets = mutableListOf<Widget>()
-            widgets += Widgets.createRecipeBase(bounds)
+            val containerWidget = ReiContainerWidget()
             val view = card.createView(display.recipeEntry)
             view.calculateContentSize(renderingProxy)
             view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
             view.attachTo(IntPoint(bounds.x + 5, bounds.y + 5)) { view2, bounds ->
-                REI_VIEW_PLACER_REGISTRY.place(widgets, view2, bounds)
+                REI_VIEW_PLACER_REGISTRY.place(containerWidget, view2, bounds)
             }
-            return widgets
+            return listOf(
+                Widgets.createRecipeBase(Rectangle(bounds.x, bounds.y, 5 + view.actualSize.x + 5, 5 + view.actualSize.y + 5)),
+                containerWidget,
+            )
         }
     }
 
