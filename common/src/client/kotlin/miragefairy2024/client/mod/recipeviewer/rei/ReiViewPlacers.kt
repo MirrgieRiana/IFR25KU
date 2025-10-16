@@ -11,7 +11,6 @@ import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterContext
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterRegistry
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.util.OwoComponent
-import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
@@ -49,18 +48,7 @@ fun initReiViewPlacers() {
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: TextView, bounds ->
-        widgets place Widgets.createLabel(Point(bounds.x, bounds.y), view.text)
-            .let { if (view.color != null) it.color(view.color!!.lightModeArgb, view.color!!.darkModeArgb) else it }
-            .shadow(view.shadow)
-            .let {
-                when (view.alignmentX) {
-                    Alignment.START -> it.leftAligned()
-                    Alignment.CENTER -> it.centered()
-                    Alignment.END -> it.rightAligned()
-                    null -> it.leftAligned()
-                }
-            }
-            .let { if (view.tooltip != null) it.tooltip(*view.tooltip!!.toTypedArray()) else it }
+        widgets place ReiTextWidget(bounds.offset, view)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ImageView, bounds ->
         widgets place Widgets.createTexturedWidget(

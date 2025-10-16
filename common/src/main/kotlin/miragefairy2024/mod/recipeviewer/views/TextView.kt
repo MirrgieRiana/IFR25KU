@@ -7,18 +7,22 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.sized
+import miragefairy2024.util.ObservableValue
 import net.minecraft.network.chat.Component
+import net.minecraft.util.FormattedCharSequence
 
 class TextView : AbstractView(), PlaceableView {
-    var text: Component = Component.empty()
+    val text = ObservableValue(FormattedCharSequence.EMPTY) // TODO サイズ再計算
     override var sizingX = Sizing.WRAP
     override val sizingY = Sizing.WRAP
-    var color: ColorPair? = null
+    var color = ColorPair.DEFAULT
     var shadow = true
-    var alignmentX: Alignment? = null
+    var alignmentX = Alignment.START
+    var scroll = false
     var tooltip: List<Component>? = null
-    override fun calculateContentSize() = IntPoint(renderingProxy.calculateTextWidth(text), renderingProxy.getTextHeight())
+    override fun calculateContentSize() = IntPoint(renderingProxy.calculateTextWidth(text.value), renderingProxy.getTextHeight())
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(actualSize))
 }
 
-fun TextView(text: Component) = TextView().also { it.text = text }
+fun TextView(text: FormattedCharSequence) = TextView().also { it.text.value = text }
+fun TextView(text: Component) = TextView(text.visualOrderText)

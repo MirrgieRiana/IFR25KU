@@ -4,9 +4,7 @@ import dev.emi.emi.api.render.EmiTexture
 import dev.emi.emi.api.widget.Bounds
 import dev.emi.emi.api.widget.FillingArrowWidget
 import dev.emi.emi.api.widget.SlotWidget
-import dev.emi.emi.api.widget.TextWidget
 import dev.emi.emi.api.widget.TextureWidget
-import dev.emi.emi.api.widget.TooltipWidget
 import dev.emi.emi.api.widget.Widget
 import dev.emi.emi.api.widget.WidgetHolder
 import io.wispforest.owo.ui.container.Containers
@@ -15,11 +13,9 @@ import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterContext
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterRegistry
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.util.OwoComponent
-import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.RemoverList
-import miragefairy2024.mod.recipeviewer.view.plusAssign
+import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.mod.recipeviewer.views.ArrowView
@@ -31,7 +27,6 @@ import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.util.Remover
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 
 context(ModContext)
 fun initEmiViewPlacers() {
@@ -51,20 +46,7 @@ fun initEmiViewPlacers() {
         Remover { throw UnsupportedOperationException("Cannot remove OutputSlotWidget from EMI") }
     }
     EMI_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
-        val removers = RemoverList()
-        val widget = TextWidget(view.text.visualOrderText, bounds.x, bounds.y, view.color?.lightModeArgb ?: 0xFFFFFFFF.toInt(), view.shadow)
-            .let {
-                when (view.alignmentX) {
-                    Alignment.START -> it.horizontalAlign(TextWidget.Alignment.START)
-                    Alignment.CENTER -> it.horizontalAlign(TextWidget.Alignment.CENTER)
-                    Alignment.END -> it.horizontalAlign(TextWidget.Alignment.END)
-                    null -> it
-                }
-            }
-        removers += context.containerWidget place widget
-        val bound = widget.bounds
-        if (view.tooltip != null) removers += context.containerWidget place TooltipWidget({ _, _ -> view.tooltip!!.map { ClientTooltipComponent.create(it.visualOrderText) } }, bound.x, bound.y, bound.width, bound.height)
-        removers
+        context.containerWidget place EmiTextWidget(bounds.offset, view)
     }
     EMI_VIEW_PLACER_REGISTRY.register { context, view: ImageView, bounds ->
         context.containerWidget place TextureWidget(
