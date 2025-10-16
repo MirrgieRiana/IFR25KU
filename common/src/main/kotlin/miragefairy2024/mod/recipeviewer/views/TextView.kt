@@ -15,7 +15,7 @@ class TextView : AbstractView(), PlaceableView {
     override var sizingX = Sizing.WRAP
     override val sizingY = Sizing.WRAP
 
-    override fun calculateContentSizeImpl(): IntPoint {
+    override fun calculateContentSize(): IntPoint {
         return IntPoint(
             renderingProxy.calculateTextWidth(text),
             renderingProxy.getTextHeight(),

@@ -4,7 +4,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.max
 
 class MinContentSizeView(private val size: IntPoint) : WrapperView() {
-    override fun calculateContentSizeImpl() = super.calculateContentSizeImpl() max size
+    override fun calculateContentSize() = super.calculateContentSize() max size
 }
 
 fun <P> Child<P, *>.minContentSizeX(x: Int) = this.wrap(MinContentSizeView(IntPoint(x, 0)))

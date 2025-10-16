@@ -21,7 +21,7 @@ class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Posi
     override val sizingX = Sizing.WRAP
     override val sizingY = Sizing.WRAP
 
-    override fun calculateContentSizeImpl() = size
+    override fun calculateContentSize() = size
 
     override fun calculateChildrenActualSize() {
         children.calculateActualSize { actualSize }

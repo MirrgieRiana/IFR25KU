@@ -12,7 +12,7 @@ open class WrapperView : ContainerView<Unit>() {
     override val sizingX get() = childView.sizingX
     override val sizingY get() = childView.sizingY
 
-    override fun calculateContentSizeImpl() = childView.contentSize
+    override fun calculateContentSize() = childView.contentSize
 
     override fun calculateChildrenActualSize() {
         childView.calculateActualSize(actualSize)

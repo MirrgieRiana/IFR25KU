@@ -13,7 +13,7 @@ abstract class SlotView : AbstractView(), PlaceableView {
     var margin = 1
     override val sizingX = Sizing.WRAP
     override val sizingY = Sizing.WRAP
-    override fun calculateContentSizeImpl() = IntPoint(margin + 16 + margin, margin + 16 + margin)
+    override fun calculateContentSize() = IntPoint(margin + 16 + margin, margin + 16 + margin)
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(actualSize))
 }
 
