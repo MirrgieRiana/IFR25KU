@@ -130,7 +130,7 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
                 is BiomeTagCommonMotifRecipe -> text { recipe.biomeTag.location().path() }
             }
             view += TextView(recipeText).configure {
-                position.alignment = Alignment.CENTER
+                position.alignmentY = Alignment.CENTER
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
                 when (val recipe = recipeEntry.recipe) {

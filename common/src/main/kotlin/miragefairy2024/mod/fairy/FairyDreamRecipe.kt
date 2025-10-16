@@ -127,7 +127,7 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
                 view += XSpaceView(2)
             }
             view += TextView(text).configure {
-                position.alignment = Alignment.CENTER
+                position.alignmentY = Alignment.CENTER
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
                 view.tooltip = recipeEntry.recipe.second.map { getName(it) }
