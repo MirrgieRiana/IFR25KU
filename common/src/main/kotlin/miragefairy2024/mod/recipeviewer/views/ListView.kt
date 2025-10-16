@@ -63,7 +63,7 @@ class XListView : ListView() {
             x = new
             val size = new.roundToInt() - old.roundToInt()
 
-            val childX = when (it.position.alignmentX) {
+            val childX = old.roundToInt() + when (it.position.alignmentX) {
                 Alignment.START -> 0
                 Alignment.CENTER -> (size - it.view.actualSize.x) / 2
                 Alignment.END -> size - it.view.actualSize.x
@@ -112,7 +112,7 @@ class YListView : ListView() {
             y = new
             val size = new.roundToInt() - old.roundToInt()
 
-            val childY = when (it.position.alignmentY) {
+            val childY = old.roundToInt() + when (it.position.alignmentY) {
                 Alignment.START -> 0
                 Alignment.CENTER -> (size - it.view.actualSize.y) / 2
                 Alignment.END -> size - it.view.actualSize.y
