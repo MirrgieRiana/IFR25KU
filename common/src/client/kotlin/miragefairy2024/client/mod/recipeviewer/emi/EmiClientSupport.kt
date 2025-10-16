@@ -129,7 +129,7 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getCatalysts(): List<EmiIngredient> = support.card.getInputs(recipeEntry).filter { it.isCatalyst }.map { it.ingredientStack.toEmiIngredient() }
     override fun getOutputs(): List<EmiStack> = support.card.getOutputs(recipeEntry).map { EmiStack.of(it) }
 
-    val sizeCache = run {
+    private val sizeCache = run {
         val view = support.card.createView(recipeEntry)
         view.calculateContentSize(renderingProxy)
         view.calculateActualSize(EmiClientSupport.MAX_SIZE.minus(5 + 5, 5 + 5))
