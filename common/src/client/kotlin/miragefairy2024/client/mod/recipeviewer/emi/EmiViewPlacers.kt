@@ -1,12 +1,9 @@
 package miragefairy2024.client.mod.recipeviewer.emi
 
 import dev.emi.emi.api.render.EmiTexture
-import dev.emi.emi.api.widget.Bounds
 import dev.emi.emi.api.widget.FillingArrowWidget
 import dev.emi.emi.api.widget.SlotWidget
 import dev.emi.emi.api.widget.TextureWidget
-import dev.emi.emi.api.widget.Widget
-import dev.emi.emi.api.widget.WidgetHolder
 import io.wispforest.owo.ui.container.Containers
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterContext
@@ -25,6 +22,7 @@ import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.util.Remover
+import miragefairy2024.util.toEmiBounds
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
 
@@ -94,7 +92,7 @@ fun initEmiViewPlacers() {
     ViewOwoAdapterRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
-                context.containerWidget place EmiUIAdapter(Bounds(bounds.x, bounds.y, view.actualSize.x, view.actualSize.y), Containers::stack).also { adapter ->
+                context.containerWidget place EmiUIAdapter(bounds.toEmiBounds(), Containers::stack).also { adapter ->
                     //adapter.rootComponent().allowOverflow(true)
                     val context = object : ViewOwoAdapterContext {
                         override fun prepare() = adapter.prepare()
@@ -113,5 +111,3 @@ fun initEmiViewPlacers() {
         f(entry)
     }
 }
-
-private infix fun WidgetHolder.place(widget: Widget) = this.add(widget)
