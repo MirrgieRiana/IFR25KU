@@ -45,7 +45,7 @@ class XListView : ListView() {
         var x = 0.0
         children.calculateActualSize {
             val old = x
-            val new = old + it.reservedSizeX + if (totalWeight > 0.0) remaining * (it.position.weight / totalWeight) else 0.0
+            val new = old + it.reservedSizeX.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             x = new
             val size = new.roundToInt() - old.roundToInt()
 
@@ -59,7 +59,7 @@ class XListView : ListView() {
         var x = 0.0
         return children.attachTo(viewPlacer) {
             val old = x
-            val new = old + it.reservedSizeX + if (totalWeight > 0.0) remaining * (it.position.weight / totalWeight) else 0.0
+            val new = old + it.reservedSizeX.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             x = new
             val size = new.roundToInt() - old.roundToInt()
 
@@ -94,7 +94,7 @@ class YListView : ListView() {
         var y = 0.0
         children.calculateActualSize {
             val old = y
-            val new = old + it.reservedSizeY + if (totalWeight > 0.0) remaining * (it.position.weight / totalWeight) else 0.0
+            val new = old + it.reservedSizeY.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             y = new
             val size = new.roundToInt() - old.roundToInt()
 
@@ -108,7 +108,7 @@ class YListView : ListView() {
         var y = 0.0
         return children.attachTo(viewPlacer) {
             val old = y
-            val new = old + it.reservedSizeY + if (totalWeight > 0.0) remaining * (it.position.weight / totalWeight) else 0.0
+            val new = old + it.reservedSizeY.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             y = new
             val size = new.roundToInt() - old.roundToInt()
 
