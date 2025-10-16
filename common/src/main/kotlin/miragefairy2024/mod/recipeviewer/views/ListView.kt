@@ -40,7 +40,7 @@ class XListView : ListView() {
     }
 
     override fun calculateChildrenActualSize() {
-        val remaining = actualSize.x - contentSize.x
+        val remaining = (actualSize.x - contentSize.x).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var x = 0.0
         children.calculateActualSize {
@@ -52,7 +52,7 @@ class XListView : ListView() {
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val remaining = actualSize.x - contentSize.x
+        val remaining = (actualSize.x - contentSize.x).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var x = 0.0
         return children.attachTo(viewPlacer) {
@@ -85,7 +85,7 @@ class YListView : ListView() {
     }
 
     override fun calculateChildrenActualSize() {
-        val remaining = actualSize.y - contentSize.y
+        val remaining = (actualSize.y - contentSize.y).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var y = 0.0
         children.calculateActualSize {
@@ -97,7 +97,7 @@ class YListView : ListView() {
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val remaining = actualSize.y - contentSize.y
+        val remaining = (actualSize.y - contentSize.y).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var y = 0.0
         return children.attachTo(viewPlacer) {
