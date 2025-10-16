@@ -9,17 +9,17 @@ open class WrapperView : ContainerView<Unit>() {
 
     override fun createDefaultPosition() = Unit
 
-    override val sizingX get() = children.single().view.sizingX
-    override val sizingY get() = children.single().view.sizingY
+    override val sizingX get() = childView.sizingX
+    override val sizingY get() = childView.sizingY
 
-    override fun calculateContentSizeImpl() = children.single().view.contentSize
+    override fun calculateContentSizeImpl() = childView.contentSize
 
     override fun calculateChildrenActualSize() {
-        children.calculateActualSize { actualSize }
+        childView.calculateActualSize(actualSize)
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) {
-        children.attachTo(viewPlacer) { offset }
+        childView.attachTo(offset, viewPlacer)
     }
 
     val childView get() = children.single().view
