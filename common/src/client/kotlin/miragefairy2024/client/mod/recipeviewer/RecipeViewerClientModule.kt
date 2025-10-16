@@ -1,11 +1,13 @@
 package miragefairy2024.client.mod.recipeviewer
 
 import miragefairy2024.ModContext
+import miragefairy2024.client.mod.recipeviewer.common.ImageButtonViewRenderer
 import miragefairy2024.client.mod.recipeviewer.emi.initEmiClientSupport
 import miragefairy2024.client.mod.recipeviewer.emi.initEmiViewPlacers
 import miragefairy2024.client.mod.recipeviewer.rei.initReiClientSupport
 import miragefairy2024.client.mod.recipeviewer.rei.initReiViewPlacers
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
+import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
@@ -16,6 +18,8 @@ fun initRecipeViewerClientModule() {
     initReiViewPlacers()
     initEmiClientSupport()
     initEmiViewPlacers()
+
+    ViewRendererRegistry.register(ImageButtonView::class.java, ImageButtonViewRenderer)
 }
 
 val renderingProxy = object : RenderingProxy {
