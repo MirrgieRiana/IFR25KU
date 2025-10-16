@@ -1,6 +1,8 @@
 package miragefairy2024.mod.recipeviewer.view
 
 interface View {
+    val sizingX: Sizing
+    val sizingY: Sizing
     val contentSize: IntPoint
     fun calculateContentSize(renderingProxy: RenderingProxy)
     val actualSize: IntPoint

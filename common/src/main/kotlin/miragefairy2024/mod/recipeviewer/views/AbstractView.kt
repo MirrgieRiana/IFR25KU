@@ -2,6 +2,7 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 
 abstract class AbstractView : View {
@@ -27,12 +28,19 @@ abstract class AbstractView : View {
     final override val actualSize get() = actualSizeCache
 
     final override fun calculateActualSize(regionSize: IntPoint) {
-        actualSizeCache = calculateActualSizeImpl(regionSize)
+        actualSizeCache = IntPoint(
+            when (sizingX) {
+                Sizing.FILL -> regionSize.x
+                Sizing.WRAP -> contentSize.x
+            },
+            when (sizingY) {
+                Sizing.FILL -> regionSize.y
+                Sizing.WRAP -> contentSize.y
+            },
+        )
         calculateChildrenActualSize()
     }
 
     protected open fun calculateChildrenActualSize() = Unit
-
-    protected abstract fun calculateActualSizeImpl(regionSize: IntPoint): IntPoint
 
 }

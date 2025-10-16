@@ -3,6 +3,7 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.offset
 import kotlin.math.roundToInt
@@ -17,8 +18,8 @@ abstract class ListView : ContainerView<ListView.Position>() {
 
     override fun createDefaultPosition() = Position()
 
-    var fillX = false
-    var fillY = false
+    override var sizingX = Sizing.WRAP
+    override var sizingY = Sizing.WRAP
 
 }
 
@@ -28,13 +29,6 @@ class XListView : ListView() {
         return IntPoint(
             children.sumOf { it.view.contentSize.x },
             (children.maxOfOrNull { it.view.contentSize.y } ?: 0),
-        )
-    }
-
-    override fun calculateActualSizeImpl(regionSize: IntPoint): IntPoint {
-        return IntPoint(
-            if (fillX) regionSize.x else contentSize.x,
-            if (fillY) regionSize.y else contentSize.y,
         )
     }
 
@@ -84,13 +78,6 @@ class YListView : ListView() {
         return IntPoint(
             (children.maxOfOrNull { it.view.contentSize.x } ?: 0),
             children.sumOf { it.view.contentSize.y },
-        )
-    }
-
-    override fun calculateActualSizeImpl(regionSize: IntPoint): IntPoint {
-        return IntPoint(
-            if (fillX) regionSize.x else contentSize.x,
-            if (fillY) regionSize.y else contentSize.y,
         )
     }
 
