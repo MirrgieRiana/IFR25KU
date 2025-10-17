@@ -2,6 +2,7 @@ package miragefairy2024.mod.recipeviewer
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.recipeviewer.rei.hasRei
 import miragefairy2024.mod.recipeviewer.rei.initReiSupport
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.SubscribableBuffer
@@ -32,7 +33,7 @@ val SECONDS_TRANSLATION = Translation({ MirageFairy2024.identifier("recipe_viewe
 
 context(ModContext)
 fun initRecipeViewerModule() {
-    initReiSupport()
+    if (hasRei()) initReiSupport()
 
     SECONDS_TRANSLATION.enJa()
 }

@@ -4,6 +4,7 @@ import me.shedaniel.math.Rectangle
 import me.shedaniel.rei.api.client.gui.Renderer
 import me.shedaniel.rei.api.client.gui.widgets.Widget
 import me.shedaniel.rei.api.client.gui.widgets.Widgets
+import me.shedaniel.rei.api.client.plugins.REIClientPlugin
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry
@@ -42,6 +43,15 @@ object ReiClientEvents {
 }
 
 val REI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<ReiContainerWidget>()
+
+fun hasClientRei(): Boolean {
+    try {
+        REIClientPlugin::class.java
+    } catch (_: NoClassDefFoundError) {
+        return false
+    }
+    return true
+}
 
 context(ModContext)
 fun initReiClientSupport() {

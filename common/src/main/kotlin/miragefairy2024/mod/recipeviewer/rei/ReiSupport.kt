@@ -7,6 +7,7 @@ import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay
 import me.shedaniel.rei.api.common.entry.comparison.EntryComparator
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
+import me.shedaniel.rei.api.common.plugins.REIPlugin
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
@@ -26,6 +27,15 @@ object ReiEvents {
     // Singleを付けないと非導入環境で起動時にエラーになる
     val onRegisterDisplaySerializer = ReusableInitializationEventRegistry<(Single<DisplaySerializerRegistry>) -> Unit>()
     val onRegisterItemComparators = ReusableInitializationEventRegistry<(Single<ItemComparatorRegistry>) -> Unit>()
+}
+
+fun hasRei(): Boolean {
+    try {
+        REIPlugin::class.java
+    } catch (_: NoClassDefFoundError) {
+        return false
+    }
+    return true
 }
 
 context(ModContext)

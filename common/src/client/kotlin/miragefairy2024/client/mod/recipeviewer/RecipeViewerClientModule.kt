@@ -4,8 +4,10 @@ import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.common.ClickableViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.ImageButtonViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.NinePatchImageViewRenderer
+import miragefairy2024.client.mod.recipeviewer.emi.hasClientEmi
 import miragefairy2024.client.mod.recipeviewer.emi.initEmiClientSupport
 import miragefairy2024.client.mod.recipeviewer.emi.initEmiViewPlacers
+import miragefairy2024.client.mod.recipeviewer.rei.hasClientRei
 import miragefairy2024.client.mod.recipeviewer.rei.initReiClientSupport
 import miragefairy2024.client.mod.recipeviewer.rei.initReiViewPlacers
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
@@ -18,10 +20,10 @@ import net.minecraft.util.FormattedCharSequence
 
 context(ModContext)
 fun initRecipeViewerClientModule() {
-    initReiClientSupport()
-    initReiViewPlacers()
-    initEmiClientSupport()
-    initEmiViewPlacers()
+    if (hasClientRei()) initReiClientSupport()
+    if (hasClientRei()) initReiViewPlacers()
+    if (hasClientEmi()) initEmiClientSupport()
+    if (hasClientEmi()) initEmiViewPlacers()
 
     ViewRendererRegistry.register(NinePatchImageView::class.java, NinePatchImageViewRenderer)
     ViewRendererRegistry.register(ImageButtonView::class.java, ImageButtonViewRenderer)

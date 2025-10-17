@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.emi
 
+import dev.emi.emi.api.EmiPlugin
 import dev.emi.emi.api.EmiRegistry
 import dev.emi.emi.api.recipe.EmiInfoRecipe
 import dev.emi.emi.api.recipe.EmiRecipe
@@ -42,6 +43,15 @@ object EmiClientEvents {
 class EmiViewPlacerContext(val widgets: MutableList<Widget>, val containerWidget: EmiContainerWidget, val emiRecipe: EmiRecipe)
 
 val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<EmiViewPlacerContext>()
+
+fun hasClientEmi(): Boolean {
+    try {
+        EmiPlugin::class.java
+    } catch (_: NoClassDefFoundError) {
+        return false
+    }
+    return true
+}
 
 context(ModContext)
 fun initEmiClientSupport() {
