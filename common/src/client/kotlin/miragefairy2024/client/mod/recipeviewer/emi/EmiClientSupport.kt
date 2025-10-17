@@ -32,12 +32,10 @@ import net.minecraft.world.item.crafting.RecipeInput
 import java.util.Objects
 
 object EmiClientEvents {
-    // Singleを付けないと非導入環境で起動時にエラーになる
-    val onRegister = ReusableInitializationEventRegistry<(Single<EmiRegistry>) -> Unit>()
+    val onRegister = ReusableInitializationEventRegistry<(EmiRegistry) -> Unit>()
 
-    // Singleを付けないと非導入環境で起動時にエラーになる
-    val onRegisterDefaultComparison = ReusableInitializationEventRegistry<(Single<EmiRegistry>) -> Unit>()
-    val onRegisterGeneral = ReusableInitializationEventRegistry<(Single<EmiRegistry>) -> Unit>()
+    val onRegisterDefaultComparison = ReusableInitializationEventRegistry<(EmiRegistry) -> Unit>()
+    val onRegisterGeneral = ReusableInitializationEventRegistry<(EmiRegistry) -> Unit>()
 }
 
 class EmiViewPlacerContext(val widgets: MutableList<Widget>, val containerWidget: EmiContainerWidget, val emiRecipe: EmiRecipe)
@@ -62,7 +60,7 @@ fun initEmiClientSupport() {
 
     RecipeViewerEvents.informationEntries.subscribe { informationEntry ->
         EmiClientEvents.onRegisterGeneral { registry ->
-            registry.first.addRecipe(
+            registry.addRecipe(
                 EmiInfoRecipe(
                     listOf(informationEntry.input().toEmiIngredient()),
                     listOf(text { "== "() + informationEntry.title + " =="() }) + informationEntry.contents,
@@ -74,7 +72,7 @@ fun initEmiClientSupport() {
 
     RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
         EmiClientEvents.onRegisterGeneral { registry ->
-            EmiClientSupport.get(card).register(registry.first)
+            EmiClientSupport.get(card).register(registry)
         }
     }
 
@@ -82,10 +80,10 @@ fun initEmiClientSupport() {
         EmiClientEvents.onRegisterGeneral { registry ->
             fun <I : RecipeInput, R : Recipe<I>> f(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
                 val support = EmiClientSupport.get(bridge.card)
-                registry.first.recipeManager.getAllRecipesFor(bridge.recipeType).forEach { holder ->
+                registry.recipeManager.getAllRecipesFor(bridge.recipeType).forEach { holder ->
                     if (bridge.recipeClass.isInstance(holder.value())) {
                         val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(holder.id(), holder.value(), false)
-                        registry.first.addRecipe(SupportedEmiRecipe(support, recipeEntry))
+                        registry.addRecipe(SupportedEmiRecipe(support, recipeEntry))
                     }
                 }
             }
@@ -95,7 +93,7 @@ fun initEmiClientSupport() {
 
     RecipeViewerEvents.itemIdentificationDataComponentTypesList.subscribe { (item, dataComponentTypes) ->
         EmiClientEvents.onRegisterDefaultComparison { registry ->
-            registry.first.setDefaultComparison(
+            registry.setDefaultComparison(
                 item(),
                 Comparison.of(
                     { a, b -> dataComponentTypes().all { a[it] == b[it] } },
