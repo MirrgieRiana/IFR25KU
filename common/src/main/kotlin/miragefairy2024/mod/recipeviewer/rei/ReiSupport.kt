@@ -23,21 +23,22 @@ import net.minecraft.resources.RegistryOps
 import java.util.Objects
 
 object ReiEvents {
-    val onRegisterDisplaySerializer = ReusableInitializationEventRegistry<(DisplaySerializerRegistry) -> Unit>()
-    val onRegisterItemComparators = ReusableInitializationEventRegistry<(ItemComparatorRegistry) -> Unit>()
+    // Singleを付けないと非導入環境で起動時にエラーになる
+    val onRegisterDisplaySerializer = ReusableInitializationEventRegistry<(Single<DisplaySerializerRegistry>) -> Unit>()
+    val onRegisterItemComparators = ReusableInitializationEventRegistry<(Single<ItemComparatorRegistry>) -> Unit>()
 }
 
 context(ModContext)
 fun initReiSupport() {
     RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
         ReiEvents.onRegisterDisplaySerializer { registry ->
-            ReiSupport.get(card).registerDisplaySerializer(registry)
+            ReiSupport.get(card).registerDisplaySerializer(registry.first)
         }
     }
 
     RecipeViewerEvents.itemIdentificationDataComponentTypesList.subscribe { (item, dataComponentTypes) ->
         ReiEvents.onRegisterItemComparators { registry ->
-            registry.register({ context, itemStack ->
+            registry.first.register({ context, itemStack ->
                 if (context.isExact) {
                     EntryComparator.itemComponents().hash(context, itemStack)
                 } else {

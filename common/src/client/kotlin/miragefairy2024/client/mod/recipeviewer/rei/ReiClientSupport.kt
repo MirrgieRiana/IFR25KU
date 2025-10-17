@@ -26,6 +26,7 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
 import miragefairy2024.util.toEntryStack
+import mirrg.kotlin.helium.Single
 import mirrg.kotlin.helium.max
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
@@ -34,9 +35,10 @@ import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.item.crafting.RecipeInput
 
 object ReiClientEvents {
-    val onRegisterCategories = ReusableInitializationEventRegistry<(CategoryRegistry) -> Unit>()
-    val onRegisterDisplays = ReusableInitializationEventRegistry<(DisplayRegistry) -> Unit>()
-    val onRegisterScreens = ReusableInitializationEventRegistry<(ScreenRegistry) -> Unit>()
+    // Singleを付けないと非導入環境で起動時にエラーになる
+    val onRegisterCategories = ReusableInitializationEventRegistry<(Single<CategoryRegistry>) -> Unit>()
+    val onRegisterDisplays = ReusableInitializationEventRegistry<(Single<DisplayRegistry>) -> Unit>()
+    val onRegisterScreens = ReusableInitializationEventRegistry<(Single<ScreenRegistry>) -> Unit>()
 }
 
 val REI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<ReiContainerWidget>()
@@ -54,13 +56,13 @@ fun initReiClientSupport() {
 
     RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
         ReiClientEvents.onRegisterCategories { registry ->
-            ReiClientSupport.get(card).registerCategories(registry)
+            ReiClientSupport.get(card).registerCategories(registry.first)
         }
         ReiClientEvents.onRegisterDisplays { registry ->
-            ReiClientSupport.get(card).registerDisplays(registry)
+            ReiClientSupport.get(card).registerDisplays(registry.first)
         }
         ReiClientEvents.onRegisterScreens { registry ->
-            ReiClientSupport.get(card).registerScreens(registry)
+            ReiClientSupport.get(card).registerScreens(registry.first)
         }
     }
 
@@ -68,7 +70,7 @@ fun initReiClientSupport() {
         ReiClientEvents.onRegisterDisplays { registry ->
             fun <I : RecipeInput, R : Recipe<I>> f(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
                 val support = ReiSupport.get(bridge.card)
-                registry.registerRecipeFiller(bridge.recipeClass, bridge.recipeType) { holder ->
+                registry.first.registerRecipeFiller(bridge.recipeClass, bridge.recipeType) { holder ->
                     val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(holder.id(), holder.value(), false)
                     SupportedDisplay(support, recipeEntry)
                 }

@@ -4,14 +4,15 @@ import me.shedaniel.rei.api.common.display.DisplaySerializerRegistry
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
 import me.shedaniel.rei.api.common.plugins.REIServerPlugin
 import miragefairy2024.mod.recipeviewer.rei.ReiEvents
+import mirrg.kotlin.helium.Single
 
 @Suppress("unused")
 class MirageFairy2024FabricReiServerPlugin : REIServerPlugin {
     override fun registerDisplaySerializer(registry: DisplaySerializerRegistry) {
-        ReiEvents.onRegisterDisplaySerializer.fire { it(registry) }
+        ReiEvents.onRegisterDisplaySerializer.fire { it(Single(registry)) }
     }
 
     override fun registerItemComparators(registry: ItemComparatorRegistry) {
-        ReiEvents.onRegisterItemComparators.fire { it(registry) }
+        ReiEvents.onRegisterItemComparators.fire { it(Single(registry)) }
     }
 }
