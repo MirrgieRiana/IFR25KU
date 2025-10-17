@@ -90,16 +90,20 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     }
 
     private var heightCache = 0
+    private var sizeCache = mutableMapOf<RecipeViewerCategoryCard.RecipeEntry<R>, IntPoint>()
 
     private fun resetCache() {
         heightCache = 0
+        sizeCache.clear()
     }
 
     private fun getSize(recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>): IntPoint {
-        val view = card.createView(recipeEntry)
-        view.calculateContentSize(renderingProxy)
-        view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
-        return view.actualSize
+        return sizeCache.getOrPut(recipeEntry) {
+            val view = card.createView(recipeEntry)
+            view.calculateContentSize(renderingProxy)
+            view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
+            view.actualSize
+        }
     }
 
     val displayCategory = object : DisplayCategory<SupportedDisplay<R>> {
