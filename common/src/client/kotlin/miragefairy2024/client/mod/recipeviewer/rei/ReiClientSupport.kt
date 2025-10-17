@@ -91,17 +91,18 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
     private var heightCache = 0
 
+    private fun getSize(recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>): IntPoint {
+        val view = card.createView(recipeEntry)
+        view.calculateContentSize(renderingProxy)
+        view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
+        return view.actualSize
+    }
+
     val displayCategory = object : DisplayCategory<SupportedDisplay<R>> {
         override fun getCategoryIdentifier() = ReiSupport.get(card).categoryIdentifier.first
         override fun getTitle(): Component = card.displayName
         override fun getIcon(): Renderer = card.getIcon().toEntryStack()
-        override fun getDisplayWidth(display: SupportedDisplay<R>): Int {
-            val view = card.createView(display.recipeEntry)
-            view.calculateContentSize(renderingProxy)
-            view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
-            return 5 + view.actualSize.x + 5
-        }
-
+        override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + getSize(display.recipeEntry).x + 5
         override fun getDisplayHeight() = 5 + heightCache + 5
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
             val containerWidget = ReiContainerWidget()
@@ -144,10 +145,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             }
         }
         recipeEntries.forEach {
-            val view = card.createView(it)
-            view.calculateContentSize(renderingProxy)
-            view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
-            heightCache = heightCache max view.actualSize.y
+            heightCache = heightCache max getSize(it).y
         }
 
         // レシピ登録
