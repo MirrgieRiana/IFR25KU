@@ -91,6 +91,10 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
     private var heightCache = 0
 
+    private fun resetCache() {
+        heightCache = 0
+    }
+
     private fun getSize(recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>): IntPoint {
         val view = card.createView(recipeEntry)
         view.calculateContentSize(renderingProxy)
@@ -128,8 +132,9 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         val recipeManager = registry.recipeManager
         val recipeEntries = card.createRecipeEntries()
 
+        resetCache()
+
         // 高さの事前計算
-        heightCache = 0
         RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges.getAllImmediately().forEach { bridge ->
             if (bridge.card === card) {
                 fun <I : RecipeInput, R : Recipe<I>> calculateMaxHeight(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
