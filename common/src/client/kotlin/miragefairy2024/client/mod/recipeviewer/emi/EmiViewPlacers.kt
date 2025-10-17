@@ -4,6 +4,7 @@ import dev.emi.emi.api.render.EmiTexture
 import dev.emi.emi.api.widget.FillingArrowWidget
 import dev.emi.emi.api.widget.SlotWidget
 import dev.emi.emi.api.widget.TextureWidget
+import dev.emi.emi.api.widget.TooltipWidget
 import io.wispforest.owo.ui.container.Containers
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterContext
@@ -21,10 +22,12 @@ import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.util.Remover
 import miragefairy2024.util.toEmiBounds
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 
 context(ModContext)
 fun initEmiViewPlacers() {
@@ -80,6 +83,11 @@ fun initEmiViewPlacers() {
                 emiTexture.textureHeight,
             )
         }
+    }
+    EMI_VIEW_PLACER_REGISTRY.register { context, view: TooltipView, bounds ->
+        context.containerWidget place TooltipWidget({ mouseX, mouseY ->
+            view.tooltipProvider(mouseX, mouseY).map { ClientTooltipComponent.create(it.visualOrderText) }
+        }, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {

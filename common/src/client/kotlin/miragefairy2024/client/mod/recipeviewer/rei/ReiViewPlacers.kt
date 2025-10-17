@@ -2,6 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.rei
 
 import io.wispforest.owo.compat.rei.ReiUIAdapter
 import io.wispforest.owo.ui.container.Containers
+import me.shedaniel.rei.api.client.gui.widgets.Tooltip
 import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
 import me.shedaniel.rei.api.client.gui.widgets.Widgets
 import miragefairy2024.ModContext
@@ -11,6 +12,7 @@ import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.util.OwoComponent
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.view.size
@@ -21,6 +23,7 @@ import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toReiPoint
 import miragefairy2024.util.toReiRectangle
@@ -63,6 +66,11 @@ fun initReiViewPlacers() {
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: ArrowView, bounds ->
         widgets place Widgets.createArrow(bounds.offset.toReiPoint())
             .animationDurationMS(view.durationMilliSeconds?.toDouble() ?: -1.0)
+    }
+    REI_VIEW_PLACER_REGISTRY.register { widgets, view: TooltipView, bounds ->
+        widgets place Widgets.createTooltip { mouse ->
+            if (bounds.contains(mouse.x, mouse.y)) Tooltip.create(mouse, view.tooltipProvider(mouse.x, mouse.y)) else null
+        }
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
