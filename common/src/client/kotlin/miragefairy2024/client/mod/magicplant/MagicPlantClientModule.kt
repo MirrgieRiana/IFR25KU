@@ -2,15 +2,15 @@ package miragefairy2024.client.mod.magicplant
 
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.RenderingEvent
-import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterRegistry
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.mod.magicplant.MagicPlantSeedItem
-import miragefairy2024.mod.magicplant.TraitEncyclopediaView
 import miragefairy2024.mod.magicplant.getTraitStacks
 import miragefairy2024.mod.magicplant.minus
 import miragefairy2024.mod.magicplant.negativeBitCount
+import miragefairy2024.mod.magicplant.onOpenTraitEncyclopediaPageScreen
 import miragefairy2024.mod.magicplant.positiveBitCount
 import miragefairy2024.mod.magicplant.traitListScreenHandlerType
+import miragefairy2024.util.register
 import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.RenderType
@@ -42,5 +42,8 @@ fun initMagicPlantClientModule() {
         }
     }
 
-    ViewOwoAdapterRegistry.register(TraitEncyclopediaView::class.java, TraitEncyclopediaViewOwoAdapter)
+    onOpenTraitEncyclopediaPageScreen.register {
+        Minecraft.getInstance().setScreen(TraitEncyclopediaPageScreen(Minecraft.getInstance().screen, it))
+        true
+    }
 }

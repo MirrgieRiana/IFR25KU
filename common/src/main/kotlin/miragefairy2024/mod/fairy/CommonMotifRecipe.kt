@@ -9,13 +9,13 @@ import miragefairy2024.mod.materials.MIRAGE_FLOUR_TAG
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
-import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Translation
@@ -124,6 +124,7 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
 
     override fun createView(recipeEntry: RecipeEntry<CommonMotifRecipe>) = View {
         view += XListView().configure {
+            view.sizingX = Sizing.FILL
             val recipeText = when (val recipe = recipeEntry.recipe) {
                 is AlwaysCommonMotifRecipe -> text { COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION() }
                 is BiomeCommonMotifRecipe -> text { translate(recipe.biome.location().toLanguageKey("biome")) }
@@ -131,14 +132,17 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
             }
             view += TextView(recipeText).configure {
                 position.alignmentY = Alignment.CENTER
+                position.weight = 1.0
+                view.sizingX = Sizing.FILL
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
+                view.scroll = true
                 when (val recipe = recipeEntry.recipe) {
                     is AlwaysCommonMotifRecipe -> Unit
                     is BiomeCommonMotifRecipe -> Unit
                     is BiomeTagCommonMotifRecipe -> view.tooltip = listOf(text { recipe.biomeTag.location().string() })
                 }
-            }.minContentSizeX(130)
+            }
             view += XSpaceView(2)
             view += OutputSlotView(recipeEntry.recipe.motif.createFairyItemStack())
         }

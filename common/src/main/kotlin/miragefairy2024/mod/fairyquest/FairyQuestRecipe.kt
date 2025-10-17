@@ -12,6 +12,7 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.InputSlotView
@@ -23,7 +24,6 @@ import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
-import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Chance
@@ -374,30 +374,78 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
 
     override fun createView(recipeEntry: RecipeEntry<FairyQuestRecipe>) = View {
         view += YListView().configure {
+            view.sizingX = Sizing.FILL
+
+            // クエスト名行
             view += XListView().configure {
+                view.sizingX = Sizing.FILL
                 view += CatalystSlotView(FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(recipeEntry.recipe) }.toIngredientStack()).noBackground()
                 view += XSpaceView(4)
                 view += TextView(recipeEntry.recipe.title).configure {
                     position.alignmentY = Alignment.CENTER
+                    position.weight = 1.0
+                    view.sizingX = Sizing.FILL
                     view.color = ColorPair.DARK_GRAY
                     view.shadow = false
+                    view.scroll = true
                 }
             }
+
             view += YSpaceView(2)
+
+            // レシピ行
             view += XListView().configure {
                 position.alignmentX = Alignment.CENTER
-                recipeEntry.recipe.inputs.forEach {
-                    view += InputSlotView(it())
+
+                val (inputColumnCount, outputColumnCount) = run {
+                    fun getColumnCount(itemCount: Int, rowCount: Int) = Math.ceilDiv(itemCount, rowCount)
+                    var rowCount = 1
+                    while (true) {
+                        val i = getColumnCount(recipeEntry.recipe.inputs.size, rowCount)
+                        val o = getColumnCount(recipeEntry.recipe.outputs.size, rowCount)
+                        if (i + o <= 6) return@run Pair(i, o)
+                        rowCount++
+                    }
+                    @Suppress("KotlinUnreachableCode")
+                    throw AssertionError()
                 }
+
+                // 入力スロット
+                view += YListView().configure {
+                    position.alignmentY = Alignment.CENTER
+                    recipeEntry.recipe.inputs.chunked(inputColumnCount).forEach { chunk ->
+                        view += XListView().configure {
+                            chunk.forEach {
+                                view += InputSlotView(it())
+                            }
+                        }
+                    }
+                }
+
                 view += XSpaceView(2)
+
+                // 矢印
                 view += ArrowView().configure {
+                    position.alignmentY = Alignment.CENTER
                     view.durationMilliSeconds = recipeEntry.recipe.duration * 50
                 }
+
                 view += XSpaceView(2)
-                recipeEntry.recipe.outputs.forEach {
-                    view += OutputSlotView(it())
+
+                // 出力スロット
+                view += YListView().configure {
+                    position.alignmentY = Alignment.CENTER
+                    recipeEntry.recipe.outputs.chunked(outputColumnCount).forEach { chunk ->
+                        view += XListView().configure {
+                            chunk.forEach {
+                                view += OutputSlotView(it())
+                            }
+                        }
+                    }
                 }
+
             }
-        }.minContentSizeX(120)
+
+        }
     }
 }

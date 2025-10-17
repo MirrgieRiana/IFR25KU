@@ -8,6 +8,7 @@ import miragefairy2024.mod.materials.MIRAGE_FLOUR_TAG
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
@@ -15,7 +16,6 @@ import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
-import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
@@ -117,6 +117,7 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
 
     override fun createView(recipeEntry: RecipeEntry<Pair<Motif, List<T>>>) = View {
         view += XListView().configure {
+            view.sizingX = Sizing.FILL
             val gained = clientProxy.or { return@configure }.getClientPlayer().or { return@configure }.fairyDreamContainer.getOrDefault()[recipeEntry.recipe.first]
             val text = text { getName(recipeEntry.recipe.second.first()) }
                 .let { if (recipeEntry.recipe.second.size > 1) text { it + "..."() } else it }
@@ -128,10 +129,14 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
             }
             view += TextView(text).configure {
                 position.alignmentY = Alignment.CENTER
+                position.weight = 1.0
+                view.sizingX = Sizing.FILL
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
+                view.scroll = true
                 view.tooltip = recipeEntry.recipe.second.map { getName(it) }
-            }.minContentSizeX(112)
+            }
+            view += XSpaceView(2)
             view += OutputSlotView(recipeEntry.recipe.first.createFairyItemStack())
         }
     }

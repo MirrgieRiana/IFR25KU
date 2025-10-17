@@ -23,15 +23,20 @@ import miragefairy2024.mod.passiveskill.findPassiveSkillProviders
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.registerIdentificationDataComponentTypes
 import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
+import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
+import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
-import miragefairy2024.mod.recipeviewer.views.minContentSizeX
-import miragefairy2024.mod.recipeviewer.views.minContentSizeY
+import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.AdvancementCard
@@ -453,44 +458,56 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
     }
 
     override fun createView(recipeEntry: RecipeEntry<FairyFamilyNotation>) = View {
-        view += XListView().configure {
+        view += YListView().configure {
+            view.sizingX = Sizing.FILL
+            view.sizingY = Sizing.FILL
+
+            // 上に親妖精
             view += YListView().configure {
-
-                // 上に親妖精
-                view += YListView().configure {
-                    position.alignmentX = Alignment.CENTER
-                    recipeEntry.recipe.parents.chunked(9).forEach { chunk ->
-                        view += XListView().configure {
-                            chunk.forEach {
-                                view += OutputSlotView(it.createFairyItemStack())
-                            }
+                position.alignmentX = Alignment.CENTER
+                position.alignmentY = Alignment.END
+                position.weight = 1.0
+                position.ignoreLayoutY = true
+                recipeEntry.recipe.parents.chunked(7).forEach { chunk ->
+                    view += XListView().configure {
+                        chunk.forEach {
+                            view += OutputSlotView(it.createFairyItemStack())
                         }
                     }
                 }
+            }
 
-                view += YSpaceView(9)
+            view += YSpaceView(9)
 
-                // 中段に対象の妖精
-                view += CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground().configure {
-                    position.alignmentX = Alignment.CENTER
-                }
+            // 中段に対象の妖精
+            view += StackView().configure {
+                position.alignmentX = Alignment.CENTER
 
-                view += YSpaceView(9)
+                val texture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/fairy_family_arrow.png"), IntPoint(16, 34), IntRectangle(0, 0, 16, 34))
+                view += ImageView(texture).configure { }.margin(1, -8)
 
-                // 下に子妖精
-                view += YListView().configure {
-                    position.alignmentX = Alignment.CENTER
-                    recipeEntry.recipe.children.chunked(9).forEach { chunk ->
-                        view += XListView().configure {
-                            chunk.forEach {
-                                view += OutputSlotView(it.createFairyItemStack())
-                            }
+                view += CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground()
+
+            }
+
+            view += YSpaceView(9)
+
+            // 下に子妖精
+            view += YListView().configure {
+                position.alignmentX = Alignment.CENTER
+                position.alignmentY = Alignment.START
+                position.weight = 2.0
+                position.ignoreLayoutY = true
+                recipeEntry.recipe.children.chunked(7).forEach { chunk ->
+                    view += XListView().configure {
+                        chunk.forEach {
+                            view += OutputSlotView(it.createFairyItemStack())
                         }
                     }
                 }
+            }
 
-            }.minContentSizeX(18 * 9)
-        }.minContentSizeY(18 * 7)
+        }
     }
 
     class FairyFamilyNotation(val motif: Motif, val parents: List<Motif>, val children: List<Motif>) {

@@ -275,6 +275,8 @@
   "gui.miragefairy2024.soul_stream.passive_skill_effect": "Passive Skill Effect",
   "gui.miragefairy2024.soul_stream.reset_highlights": "Reset Highlights",
   "gui.miragefairy2024.tooltip_viewer.example": "Example: %s",
+  "gui.miragefairy2024.trait_encyclopedia.default_trait": "Default Trait",
+  "gui.miragefairy2024.trait_encyclopedia.random_trait": "Random Trait",
   "gui.miragefairy2024.trait_list": "Traits",
   "item.miragefairy2024.amethyst_axe": "Amethyst Axe",
   "item.miragefairy2024.amethyst_hoe": "Amethyst Hoe",

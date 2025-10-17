@@ -275,6 +275,8 @@
   "gui.miragefairy2024.soul_stream.passive_skill_effect": "パッシブスキル効果",
   "gui.miragefairy2024.soul_stream.reset_highlights": "ハイライトをリセット",
   "gui.miragefairy2024.tooltip_viewer.example": "例: %s",
+  "gui.miragefairy2024.trait_encyclopedia.default_trait": "初期状態で発現",
+  "gui.miragefairy2024.trait_encyclopedia.random_trait": "ランダムで発現",
   "gui.miragefairy2024.trait_list": "特性",
   "item.miragefairy2024.amethyst_axe": "アメジストの斧",
   "item.miragefairy2024.amethyst_hoe": "アメジストのクワ",
