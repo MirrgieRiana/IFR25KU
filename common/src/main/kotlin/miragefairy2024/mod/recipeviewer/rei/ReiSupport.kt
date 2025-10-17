@@ -30,7 +30,7 @@ object ReiEvents {
 
 fun hasRei(): Boolean {
     try {
-        REIPlugin::class.java
+        check(REIPlugin::class.java.toString().isNotEmpty())
     } catch (_: NoClassDefFoundError) {
         return false
     }

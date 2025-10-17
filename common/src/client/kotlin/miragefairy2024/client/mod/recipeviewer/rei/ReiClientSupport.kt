@@ -44,7 +44,7 @@ val REI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<ReiContainerWidget>()
 
 fun hasClientRei(): Boolean {
     try {
-        REIClientPlugin::class.java
+        check(REIClientPlugin::class.java.toString().isNotEmpty())
     } catch (_: NoClassDefFoundError) {
         return false
     }

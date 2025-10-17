@@ -44,7 +44,7 @@ val EMI_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<EmiViewPlacerContext>()
 
 fun hasClientEmi(): Boolean {
     try {
-        EmiPlugin::class.java
+        check(EmiPlugin::class.java.toString().isNotEmpty())
     } catch (_: NoClassDefFoundError) {
         return false
     }
