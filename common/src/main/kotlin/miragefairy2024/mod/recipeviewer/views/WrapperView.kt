@@ -31,4 +31,4 @@ fun <P, V : WrapperView> Child<P, *>.wrap(wrapper: V) = Child(this.position, wra
     it += this@wrap.view
 })
 
-fun View(block: Child<Unit, WrapperView>.() -> Unit): View = WrapperView().apply { block(Child(Unit, this)) }.childView
+inline fun View(block: Child<Unit, WrapperView>.() -> Unit): View = WrapperView().apply { block(Child(Unit, this)) }.childView
