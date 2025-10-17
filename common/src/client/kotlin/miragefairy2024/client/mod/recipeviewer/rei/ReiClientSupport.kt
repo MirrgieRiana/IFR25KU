@@ -86,7 +86,6 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             return table.getOrPut(card) { ReiClientSupport(card) } as ReiClientSupport<R>
         }
 
-        // TODO
         val MAX_SIZE = IntPoint(150, 130)
     }
 

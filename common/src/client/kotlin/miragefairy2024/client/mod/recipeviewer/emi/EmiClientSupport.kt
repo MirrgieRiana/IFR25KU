@@ -102,7 +102,6 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             return table.getOrPut(card) { EmiClientSupport(card) } as EmiClientSupport<R>
         }
 
-        // TODO
         val MAX_SIZE = IntPoint(150, 130)
     }
 
