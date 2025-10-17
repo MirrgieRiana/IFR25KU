@@ -41,10 +41,9 @@ fun initEmiViewPlacers() {
             .drawBack(view.drawBackground)
     }
     EMI_VIEW_PLACER_REGISTRY.register { context, view: OutputSlotView, bounds ->
-        val widget = SlotWidget(view.itemStack.toEmiStack(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
+        context.widgets += SlotWidget(view.itemStack.toEmiStack(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
             .recipeContext(context.emiRecipe)
             .drawBack(view.drawBackground)
-        context.widgets += widget
         Remover { throw UnsupportedOperationException("Cannot remove OutputSlotWidget from EMI") }
     }
     EMI_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
