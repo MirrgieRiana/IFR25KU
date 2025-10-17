@@ -1,8 +1,6 @@
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
-import io.gitlab.arturbosch.detekt.Detekt
-import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
@@ -18,7 +16,6 @@ plugins {
     id("io.github.themrmilchmann.curseforge-publish") version "0.8.0"
     application
     id("ifr25ku.buildlogic")
-    id("io.gitlab.arturbosch.detekt") version "1.23.8" apply false
 }
 
 architectury {
@@ -35,18 +32,7 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
     apply(plugin = "kotlin")
     apply(plugin = "dev.architectury.loom")
     apply(plugin = "architectury-plugin")
-    apply(plugin = "io.gitlab.arturbosch.detekt")
     //apply(plugin = "maven-publish")
-
-    pluginManager.withPlugin("io.gitlab.arturbosch.detekt") {
-        extensions.getByType<DetektExtension>().apply {
-            parallel = true
-            ignoreFailures = true
-            buildUponDefaultConfig = false
-            config.setFrom(rootProject.layout.projectDirectory.file("gradle/detekt.yml"))
-        }
-        tasks.named("check").configure { dependsOn(tasks.withType<Detekt>()) }
-    }
 
     pluginManager.withPlugin("dev.architectury.loom") {
         val libs = rootProject.extensions.getByType<VersionCatalogsExtension>().named("libs")
