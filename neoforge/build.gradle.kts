@@ -112,6 +112,7 @@ modrinth {
     //versionNumber = project.mod_version
     versionType = if ("alpha" in project.version.toString()) "alpha" else if ("beta" in project.version.toString()) "beta" else "release"
     uploadFile = tasks["remapJar"]
+    additionalFiles.add(tasks["sourcesJar"])
     //gameVersions = ["1.20.2"]
     //loaders = ["neoforge"]
     changelog.set("This project maintains a comprehensive [CHANGELOG](https://mirrgieriana.github.io/IFR25KU/CHANGELOG.html) in Japanese.")
@@ -155,6 +156,9 @@ curseforge {
                 optionalDependency("roughly-enough-items")
                 optionalDependency("emi")
             }
+        }
+        artifacts.create("sources") {
+            from(tasks.named("sourcesJar"))
         }
     }
 }
