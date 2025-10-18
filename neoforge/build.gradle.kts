@@ -187,4 +187,12 @@ tasks.named<ShadowJar>("shadowJar") {
 
 tasks.named<RemapJarTask>("remapJar") {
     inputFile.set(tasks.named<ShadowJar>("shadowJar").flatMap { it.archiveFile })
+    archiveBaseName = "ifr25ku" // Modrinth・CurseForgeのプロジェクト名に準拠
+    version = rootProject.version.toString() + "+neoforge"
+}
+
+tasks.named<Jar>("sourcesJar") {
+    with(project(":common").tasks.named<Jar>("sourcesJar").get())
+    archiveBaseName = "ifr25ku" // Modrinth・CurseForgeのプロジェクト名に準拠
+    version = rootProject.version.toString() + "+neoforge"
 }
