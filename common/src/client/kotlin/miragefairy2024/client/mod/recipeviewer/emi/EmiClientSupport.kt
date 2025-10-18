@@ -27,6 +27,7 @@ import miragefairy2024.util.times
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
 import mirrg.kotlin.helium.Single
+import net.minecraft.client.Minecraft
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.item.crafting.RecipeInput
 import java.util.Objects
@@ -82,7 +83,7 @@ fun initEmiClientSupport() {
                 val support = EmiClientSupport.get(bridge.card)
                 registry.recipeManager.getAllRecipesFor(bridge.recipeType).forEach { holder ->
                     if (bridge.recipeClass.isInstance(holder.value())) {
-                        val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(holder.id(), holder.value(), false)
+                        val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(Minecraft.getInstance().level!!.registryAccess(), holder.id(), holder.value(), false)
                         registry.addRecipe(SupportedEmiRecipe(support, recipeEntry))
                     }
                 }
@@ -126,7 +127,7 @@ class EmiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         card.getWorkstations().forEach {
             registry.addWorkstation(emiRecipeCategory.first, it.toEmiStack())
         }
-        card.createRecipeEntries().forEach {
+        card.createRecipeEntries(Minecraft.getInstance().level!!.registryAccess()).forEach {
             registry.addRecipe(SupportedEmiRecipe(this, it))
         }
     }

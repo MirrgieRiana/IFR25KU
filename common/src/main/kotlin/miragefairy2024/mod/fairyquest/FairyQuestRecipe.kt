@@ -366,9 +366,9 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
 
     override fun getOutputs(recipeEntry: RecipeEntry<FairyQuestRecipe>) = recipeEntry.recipe.outputs.map { it() }
 
-    override fun createRecipeEntries(): Iterable<RecipeEntry<FairyQuestRecipe>> {
+    override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<FairyQuestRecipe>> {
         return fairyQuestRecipeRegistry.entrySet().map { (id, recipe) ->
-            RecipeEntry(id.location(), recipe, true)
+            RecipeEntry(registryAccess, id.location(), recipe, true)
         }
     }
 

@@ -107,7 +107,7 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
     override fun getRecipeCodec(registryAccess: RegistryAccess) = CommonMotifRecipe.CODEC
     override fun getOutputs(recipeEntry: RecipeEntry<CommonMotifRecipe>) = listOf(recipeEntry.recipe.motif.createFairyItemStack())
 
-    override fun createRecipeEntries(): Iterable<RecipeEntry<CommonMotifRecipe>> {
+    override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<CommonMotifRecipe>> {
         return COMMON_MOTIF_RECIPES
             .map {
                 val prefix = when (it) {
@@ -119,7 +119,7 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
                 Pair(it, syntheticIdentifier)
             }
             .sortedBy { it.second }
-            .map { (recipe, id) -> RecipeEntry(id, recipe, true) }
+            .map { (recipe, id) -> RecipeEntry(registryAccess, id, recipe, true) }
     }
 
     override fun createView(recipeEntry: RecipeEntry<CommonMotifRecipe>) = View {

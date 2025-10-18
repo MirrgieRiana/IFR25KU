@@ -29,27 +29,27 @@ abstract class RecipeViewerCategoryCard<R> {
     abstract fun getIcon(): ItemStack
     open fun getWorkstations(): List<ItemStack> = listOf()
 
-    class RecipeEntry<R>(val id: ResourceLocation, val recipe: R, val isSynthetic: Boolean) {
+    class RecipeEntry<R>(val registryAccess: RegistryAccess, val id: ResourceLocation, val recipe: R, val isSynthetic: Boolean) {
         companion object {
-            fun <R> getCodec(recipeCodec: Codec<R>): Codec<RecipeEntry<R>> = RecordCodecBuilder.create { instance ->
+            fun <R> getCodec(registryAccess: RegistryAccess, recipeCodec: Codec<R>): Codec<RecipeEntry<R>> = RecordCodecBuilder.create { instance ->
                 instance.group(
                     ResourceLocation.CODEC.fieldOf("Id").forGetter { it.id },
                     recipeCodec.fieldOf("Recipe").forGetter { it.recipe },
                     Codec.BOOL.fieldOf("IsSynthetic").forGetter { it.isSynthetic },
-                ).apply(instance, ::RecipeEntry)
+                ).apply(instance) { id, recipe, isSynthetic -> RecipeEntry(registryAccess, id, recipe, isSynthetic) }
             }
         }
     }
 
     abstract fun getRecipeCodec(registryAccess: RegistryAccess): Codec<R>
-    fun getRecipeEntryCodec(registryAccess: RegistryAccess): Codec<RecipeEntry<R>> = RecipeEntry.getCodec(getRecipeCodec(registryAccess))
+    fun getRecipeEntryCodec(registryAccess: RegistryAccess): Codec<RecipeEntry<R>> = RecipeEntry.getCodec(registryAccess, getRecipeCodec(registryAccess))
 
     class Input(val ingredientStack: IngredientStack, val isCatalyst: Boolean)
 
     open fun getInputs(recipeEntry: RecipeEntry<R>): List<Input> = listOf()
     open fun getOutputs(recipeEntry: RecipeEntry<R>): List<ItemStack> = listOf()
 
-    open fun createRecipeEntries(): Iterable<RecipeEntry<R>> = listOf()
+    open fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<R>> = listOf()
 
     open fun getScreenClickAreas(): List<Pair<ResourceKey<MenuType<*>>, IntRectangle>> = listOf()
 

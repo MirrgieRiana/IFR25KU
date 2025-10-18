@@ -73,9 +73,9 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
     override fun getRecipeCodec(registryAccess: RegistryAccess): Codec<Trait> = traitRegistry.byNameCodec()
     override fun getInputs(recipeEntry: RecipeEntry<Trait>) = getProducerMagicPlantSeedItemStacks(recipeEntry.recipe).map { Input(it.toIngredientStack(), true) }
 
-    override fun createRecipeEntries(): Iterable<RecipeEntry<Trait>> {
+    override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<Trait>> {
         return traitRegistry.sortedEntrySet.map { (id, trait) ->
-            RecipeEntry(id.location(), trait, true)
+            RecipeEntry(registryAccess, id.location(), trait, true)
         }
     }
 

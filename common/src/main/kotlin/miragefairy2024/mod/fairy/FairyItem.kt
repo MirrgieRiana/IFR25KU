@@ -439,7 +439,7 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
     override fun getInputs(recipeEntry: RecipeEntry<FairyFamilyNotation>) = listOf(Input(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack(), true))
     override fun getOutputs(recipeEntry: RecipeEntry<FairyFamilyNotation>) = (recipeEntry.recipe.parents + recipeEntry.recipe.children).map { it.createFairyItemStack() }
 
-    override fun createRecipeEntries(): Iterable<RecipeEntry<FairyFamilyNotation>> {
+    override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<FairyFamilyNotation>> {
         val childrenTable = motifRegistry.entrySet()
             .flatMap { it.value.parents.map { parent -> parent to it.value } }
             .groupBy { it.first }
@@ -453,7 +453,7 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
             val parents = it.value.parents
             val children = childrenTable[it.value] ?: listOf()
             if (parents.isEmpty() && children.isEmpty()) return@mapNotNull null
-            RecipeEntry(it.value.getIdentifier()!!, FairyFamilyNotation(it.value, parents, children), true)
+            RecipeEntry(registryAccess, it.value.getIdentifier()!!, FairyFamilyNotation(it.value, parents, children), true)
         }
     }
 

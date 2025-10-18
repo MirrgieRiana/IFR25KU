@@ -65,9 +65,9 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
     override fun getInputs(recipeEntry: RecipeEntry<HarvestNotation>) = listOf(Input(recipeEntry.recipe.seed.toIngredientStack(), true))
     override fun getOutputs(recipeEntry: RecipeEntry<HarvestNotation>) = recipeEntry.recipe.crops
 
-    override fun createRecipeEntries(): Iterable<RecipeEntry<HarvestNotation>> {
+    override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<HarvestNotation>> {
         return HarvestNotation.getAll().map { (id, harvestNotation) ->
-            RecipeEntry(id, harvestNotation, true)
+            RecipeEntry(registryAccess, id, harvestNotation, true)
         }
     }
 

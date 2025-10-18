@@ -9,6 +9,7 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry
+import me.shedaniel.rei.api.common.display.basic.BasicDisplay
 import me.shedaniel.rei.api.common.util.EntryIngredients
 import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
 import miragefairy2024.ModContext
@@ -79,7 +80,7 @@ fun initReiClientSupport() {
             fun <I : RecipeInput, R : Recipe<I>> f(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
                 val support = ReiSupport.get(bridge.card)
                 registry.registerRecipeFiller(bridge.recipeClass, bridge.recipeType) { holder ->
-                    val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(holder.id(), holder.value(), false)
+                    val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(BasicDisplay.registryAccess(), holder.id(), holder.value(), false)
                     SupportedDisplay(support, recipeEntry)
                 }
             }
@@ -144,7 +145,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
 
     fun registerDisplays(registry: DisplayRegistry) {
         val recipeManager = registry.recipeManager
-        val recipeEntries = card.createRecipeEntries()
+        val recipeEntries = card.createRecipeEntries(BasicDisplay.registryAccess())
 
         resetCache()
 
@@ -153,7 +154,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             if (bridge.card === card) {
                 fun <I : RecipeInput, R : Recipe<I>> calculateMaxHeight(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
                     recipeManager.getAllRecipesFor(bridge.recipeType).forEach {
-                        val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(it.id(), it.value(), false)
+                        val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(BasicDisplay.registryAccess(), it.id(), it.value(), false)
                         val view = bridge.card.createView(recipeEntry)
                         view.calculateContentSize(renderingProxy)
                         view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))

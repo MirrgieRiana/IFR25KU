@@ -107,9 +107,9 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
 
     abstract fun getFairyDreamTable(): FairyDreamTable<T>
 
-    override fun createRecipeEntries(): Iterable<RecipeEntry<Pair<Motif, List<T>>>> {
+    override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<Pair<Motif, List<T>>>> {
         return getFairyDreamTable().getDisplayMap().map { (motif, keys) ->
-            RecipeEntry(motif.getIdentifier()!!, Pair(motif, keys.toList()), true)
+            RecipeEntry(registryAccess, motif.getIdentifier()!!, Pair(motif, keys.toList()), true)
         }
     }
 
