@@ -83,3 +83,38 @@ These files are provided under any of the following licenses:
 - **[Apache License 2.0](LICENSE)**
 - **[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)**
 - **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**
+
+# Developer Guide
+
+## Using IFR25KU as a Dependency
+
+Developers can depend on IFR25KU via the Modrinth Maven repository. Add the repository and the dependency to your Gradle build.
+
+**Gradle Kotlin DSL (`build.gradle.kts`)**
+
+```kotlin
+repositories {
+    maven { url = uri("https://api.modrinth.com/maven") }
+}
+
+dependencies {
+    modImplementation("maven.modrinth:ifr25ku:<version>+<platform>")
+}
+```
+
+**Gradle Groovy DSL (`build.gradle`)**
+
+```groovy
+repositories {
+    maven { url = "https://api.modrinth.com/maven" }
+}
+
+dependencies {
+    modImplementation "maven.modrinth:ifr25ku:<version>+<platform>"
+}
+```
+
+**Notes**
+
+- Check the [Modrinth page](https://modrinth.com/mod/ifr25ku/versions) for available versions.
+- Pick the platform variant that matches your mod loader: `neoforge` or `fabric`.
