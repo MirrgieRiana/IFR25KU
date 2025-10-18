@@ -40,8 +40,8 @@ jobs:
           v${{ env.mod_version }}
           --verify-tag
           --title v${{ env.mod_version }}
-          build/libs/ifr25ku-${{ env.mod_version }}-fabric.jar
-          build/libs/ifr25ku-${{ env.mod_version }}-neoforge.jar
+          fabric/build/libs/ifr25ku-${{ env.mod_version }}-fabric.jar
+          neoforge/build/libs/ifr25ku-${{ env.mod_version }}-neoforge.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: リリース
