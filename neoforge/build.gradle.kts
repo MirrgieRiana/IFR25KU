@@ -122,6 +122,8 @@ modrinth {
         required.project("cloth-config")
         required.project("terrablender")
         required.project("architectury-api")
+        optional.project("rei")
+        optional.project("emi")
     }
 }
 rootProject.tasks.named("upload").configure { dependsOn(tasks.named("modrinth")) }
@@ -150,6 +152,8 @@ curseforge {
                 requiredDependency("cloth-config")
                 requiredDependency("terrablender-neoforge")
                 requiredDependency("architectury-api")
+                optionalDependency("roughly-enough-items")
+                optionalDependency("emi")
             }
         }
     }
