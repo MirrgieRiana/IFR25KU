@@ -136,7 +136,7 @@ dependencies {
 modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = "ifr25ku"
-    versionNumber = project.version.toString() + "+" + libs.versions.minecraft + "+fabric"
+    versionNumber = project.version.toString() + "+fabric" // Minecraftバージョンを入れるとalphaバージョンで長すぎて蹴られる
     versionType = if ("alpha" in project.version.toString()) "alpha" else if ("beta" in project.version.toString()) "beta" else "release"
     uploadFile = tasks["remapJar"]
     additionalFiles.add(tasks["sourcesJar"])
