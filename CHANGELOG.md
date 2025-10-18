@@ -15,6 +15,14 @@ For the official translation mappings, see the [Lang Table](lang_table.html).
 - toc
 {:toc}
 
+## 23.25.4
+
+レシピ表示MOD連携
+
+- 変更: すべてのレシピタブを再設計。
+- 追加: すべての既存のREIサポートがEMIにも完全に対応。
+- 修正: レシピ表示MODの挙動に関する全体的な修正。
+
 ## 23.24.16
 
 パッシブスキル
