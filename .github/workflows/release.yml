@@ -26,7 +26,10 @@ jobs:
         with:
           arguments: build
       - name: ビルドされたファイルの一覧
-        run: ls -1 build/libs
+        run: |
+          ls -l build/libs
+          ls -l fabric/build/libs
+          ls -l neoforge/build/libs
       - name: リリースに必要な情報の抽出
         run: |
           mod_version=$(echo ${{ github.ref }} | perl -lpE 's|^refs/tags/v||')
@@ -40,8 +43,8 @@ jobs:
           v${{ env.mod_version }}
           --verify-tag
           --title v${{ env.mod_version }}
-          fabric/build/libs/ifr25ku-${{ env.mod_version }}-fabric.jar
-          neoforge/build/libs/ifr25ku-${{ env.mod_version }}-neoforge.jar
+          fabric/build/libs/ifr25ku-${{ env.mod_version }}+fabric.jar
+          neoforge/build/libs/ifr25ku-${{ env.mod_version }}+neoforge.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: リリース
