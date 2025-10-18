@@ -1,6 +1,5 @@
 package miragefairy2024.mod.machine
 
-import me.shedaniel.rei.api.common.display.basic.BasicDisplay
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.mod.recipeviewer.SECONDS_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.Alignment
@@ -36,8 +35,8 @@ import net.minecraft.core.registries.Registries
 object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<AuraReflectorFurnaceRecipe>() {
     override fun getId() = MirageFairy2024.identifier("aura_reflector_furnace")
     override fun getName() = EnJa("Aura Reflector Furnace", "オーラ反射炉")
-    private fun getFuelIngredientStack() = AuraReflectorFurnaceRecipe.FUELS.map { BasicDisplay.registryAccess()[Registries.ITEM, it.key].value() }.toIngredientStack()
-    override fun getInputs(recipeEntry: RecipeEntry<AuraReflectorFurnaceRecipe>) = super.getInputs(recipeEntry) + listOf(Input(getFuelIngredientStack(), true))
+    private fun getFuelIngredientStack(recipeEntry: RecipeEntry<AuraReflectorFurnaceRecipe>) = AuraReflectorFurnaceRecipe.FUELS.map { recipeEntry.registryAccess[Registries.ITEM, it.key].value() }.toIngredientStack()
+    override fun getInputs(recipeEntry: RecipeEntry<AuraReflectorFurnaceRecipe>) = super.getInputs(recipeEntry) + listOf(Input(getFuelIngredientStack(recipeEntry), true))
     override fun getRecipeCard() = AuraReflectorFurnaceRecipeCard
     override fun getMachineCard() = AuraReflectorFurnaceCard
     override fun getScreenClickAreas() = listOf(Pair(getMachineCard().screenHandlerType.key, IntRectangle(88, 34, 24, 17)))
@@ -60,7 +59,7 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
             view += InputSlotView(getInput(2)).noBackground().noMargin().configure {
                 position = AbsoluteView.Offset(IntPoint(65, 17) - p)
             }
-            view += CatalystSlotView(getFuelIngredientStack()).noBackground().noMargin().configure {
+            view += CatalystSlotView(getFuelIngredientStack(recipeEntry)).noBackground().noMargin().configure {
                 position = AbsoluteView.Offset(IntPoint(47, 53) - p)
             }
             view += BlueFuelView().configure {
