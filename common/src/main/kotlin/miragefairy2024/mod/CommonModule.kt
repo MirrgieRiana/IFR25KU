@@ -66,6 +66,7 @@ object CommandEvents {
 
 val guiFullScreenTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.full_screen" }, "Click to full screen", "クリックで全画面表示")
 val guiBackToGameTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.back_to_game" }, "Back to game", "ゲームに戻る")
+val guiDeadPlayer = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.dead_player" }, "Player %s is dead", "プレイヤー%sは死亡しています")
 
 context(ModContext)
 fun initCommonModule() {
@@ -128,6 +129,7 @@ fun initCommonModule() {
 
     guiFullScreenTranslation.enJa()
     guiBackToGameTranslation.enJa()
+    guiDeadPlayer.enJa()
 
 }
 

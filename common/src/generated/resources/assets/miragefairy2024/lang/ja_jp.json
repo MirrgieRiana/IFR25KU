@@ -257,6 +257,7 @@
   "entity.miragefairy2024.chaos_cube": "混沌のキューブ",
   "gui.miragefairy2024.common.back_to_game": "ゲームに戻る",
   "gui.miragefairy2024.common.dead_player": "プレイヤー%sは死亡しています",
+  "gui.miragefairy2024.common.full_screen": "クリックで全画面表示",
   "gui.miragefairy2024.common_motif_recipe.always": "常時",
   "gui.miragefairy2024.fairy_building.folia": "フォリア",
   "gui.miragefairy2024.fairy_building.specified_fairy_slot": "%s系統のみ",

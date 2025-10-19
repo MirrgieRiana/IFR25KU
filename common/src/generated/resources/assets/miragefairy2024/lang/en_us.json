@@ -257,6 +257,7 @@
   "entity.miragefairy2024.chaos_cube": "Chaos Cube",
   "gui.miragefairy2024.common.back_to_game": "Back to game",
   "gui.miragefairy2024.common.dead_player": "Player %s is dead",
+  "gui.miragefairy2024.common.full_screen": "Click to full screen",
   "gui.miragefairy2024.common_motif_recipe.always": "Always",
   "gui.miragefairy2024.fairy_building.folia": "Folia",
   "gui.miragefairy2024.fairy_building.specified_fairy_slot": "Only %s Family",
