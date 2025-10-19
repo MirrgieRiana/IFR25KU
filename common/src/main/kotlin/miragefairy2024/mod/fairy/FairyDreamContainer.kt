@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.CommandEvents
+import miragefairy2024.mod.deadPlayerCommandExceptionType
 import miragefairy2024.util.executesThrowable
 import miragefairy2024.util.failure
 import miragefairy2024.util.get
@@ -78,6 +79,7 @@ fun initFairyDreamContainer() {
                                 Commands.literal("all")
                                     .executesThrowable { context ->
                                         val player = context.source.playerOrException
+                                        if (!player.isAlive) throw deadPlayerCommandExceptionType.create(player.displayName)
                                         val count = player.fairyDreamContainer.getOrCreate().gain(player, motifRegistry.toSet())
                                         context.source.sendSuccess({ text { GIVE_ALL_SUCCESS_TRANSLATION("$count") } }, true)
                                         success()
@@ -93,6 +95,7 @@ fun initFairyDreamContainer() {
                                     }
                                     .executesThrowable { context ->
                                         val player = context.source.playerOrException
+                                        if (!player.isAlive) throw deadPlayerCommandExceptionType.create(player.displayName)
                                         val id = context.getArgument("motif", ResourceLocation::class.java)
                                         val motif = motifRegistry.get(id) ?: failure(text { UNKNOWN_MOTIF_TRANSLATION(id.string) })
                                         val count = player.fairyDreamContainer.getOrCreate().gain(player, setOf(motif))
@@ -111,6 +114,7 @@ fun initFairyDreamContainer() {
                                 Commands.literal("all")
                                     .executesThrowable { context ->
                                         val player = context.source.playerOrException
+                                        if (!player.isAlive) throw deadPlayerCommandExceptionType.create(player.displayName)
                                         val count = player.fairyDreamContainer.getOrCreate().entries.size
                                         player.fairyDreamContainer.mutate { it.clear() }
                                         context.source.sendSuccess({ text { REMOVE_ALL_SUCCESS_TRANSLATION("$count") } }, true)
@@ -127,6 +131,7 @@ fun initFairyDreamContainer() {
                                     }
                                     .executesThrowable { context ->
                                         val player = context.source.playerOrException
+                                        if (!player.isAlive) throw deadPlayerCommandExceptionType.create(player.displayName)
                                         val id = context.getArgument("motif", ResourceLocation::class.java)
                                         val motif = motifRegistry.get(id) ?: failure(text { UNKNOWN_MOTIF_TRANSLATION(id.string) })
                                         val have = player.fairyDreamContainer.getOrCreate()[motif]

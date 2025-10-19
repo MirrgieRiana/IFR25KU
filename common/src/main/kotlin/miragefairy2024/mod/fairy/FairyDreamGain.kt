@@ -3,6 +3,7 @@ package miragefairy2024.mod.fairy
 import miragefairy2024.ModContext
 import miragefairy2024.util.eyeBlockPos
 import miragefairy2024.util.getOrCreate
+import miragefairy2024.util.isValid
 import miragefairy2024.util.itemStacks
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.minecraft.core.BlockPos
@@ -27,7 +28,7 @@ fun initFairyDreamGain() {
     ServerTickEvents.END_SERVER_TICK.register { server ->
         if (server.tickCount % (20 * 5) == 0) {
             server.playerList.players.forEach { player ->
-                if (player.isSpectator) return@forEach
+                if (!player.isValid) return@forEach
                 if (player.tickCount < 20 * 60) return@forEach
                 val world = player.level()
                 val random = world.random
