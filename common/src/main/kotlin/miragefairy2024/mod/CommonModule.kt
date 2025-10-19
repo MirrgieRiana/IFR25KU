@@ -1,6 +1,7 @@
 package miragefairy2024.mod
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.serialization.MapCodec
 import dev.architectury.event.events.client.ClientCommandRegistrationEvent
 import dev.architectury.event.events.common.CommandRegistrationEvent
@@ -22,6 +23,7 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.get
 import miragefairy2024.util.humidityCategory
+import miragefairy2024.util.invoke
 import miragefairy2024.util.isIn
 import miragefairy2024.util.register
 import miragefairy2024.util.registerClientDebugItem
@@ -67,6 +69,8 @@ object CommandEvents {
 val guiFullScreenTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.full_screen" }, "Click to full screen", "クリックで全画面表示")
 val guiBackToGameTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.back_to_game" }, "Back to game", "ゲームに戻る")
 val guiDeadPlayer = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.dead_player" }, "Player %s is dead", "プレイヤー%sは死亡しています")
+
+val deadPlayerCommandExceptionType = DynamicCommandExceptionType { text { guiDeadPlayer(it) } }
 
 context(ModContext)
 fun initCommonModule() {
