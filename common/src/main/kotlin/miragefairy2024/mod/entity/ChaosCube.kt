@@ -25,6 +25,7 @@ import miragefairy2024.util.configure
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
+import miragefairy2024.util.isValid
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerItemGroup
@@ -285,7 +286,7 @@ class ChaosCubeEntity(entityType: EntityType<out ChaosCubeEntity>, world: Level)
 
         override fun canUse(): Boolean {
             val livingEntity = entity.target
-            return livingEntity != null && livingEntity.isAlive && entity.canAttack(livingEntity)
+            return livingEntity != null && livingEntity.isValid && entity.canAttack(livingEntity)
         }
 
         override fun canContinueToUse() = ticker != null && super.canContinueToUse()
