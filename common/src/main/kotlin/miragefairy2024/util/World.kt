@@ -206,7 +206,7 @@ fun collectItem(
         else -> AABB.of(BoundingBox.infinite())
     }
     val targetTable = world.getEntitiesOfClass(ItemEntity::class.java, box) {
-        !it.isSpectator && predicate(it) // スペクテイターモードであるアイテムには無反応
+        it.isValid && predicate(it)
     }.groupBy { it.blockPosition() }
 
     var remainingAmount = maxCount

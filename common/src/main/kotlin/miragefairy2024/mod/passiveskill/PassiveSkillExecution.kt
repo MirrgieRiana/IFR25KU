@@ -13,6 +13,7 @@ import miragefairy2024.util.eyeBlockPos
 import miragefairy2024.util.get
 import miragefairy2024.util.getOrCreate
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isValid
 import miragefairy2024.util.register
 import miragefairy2024.util.set
 import miragefairy2024.util.text
@@ -46,8 +47,7 @@ fun initPassiveSkillExecution() {
     ServerTickEvents.END_SERVER_TICK.register { server ->
         if (server.tickCount % 20 == 0) {
             server.playerList.players.forEach { player ->
-                if (player.isSpectator) return@forEach
-                if (!player.isAlive) return@forEach
+                if (!player.isValid) return@forEach
 
                 // 現在装備しているパッシブスキルの列挙
                 val passiveSkillProviders = player.findPassiveSkillProviders()

@@ -9,6 +9,7 @@ import miragefairy2024.mod.tool.merge
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isValid
 import miragefairy2024.util.text
 import net.minecraft.world.entity.ExperienceOrb
 import net.minecraft.world.entity.item.ItemEntity
@@ -28,11 +29,11 @@ object CollectionToolEffectType : BooleanToolEffectType<ToolConfiguration>() {
         configuration.descriptions += TextPoem(PoemType.DESCRIPTION, text { TRANSLATION() })
         configuration.onKilledListeners += fail@{ _, entity, attacker, _ -> // TODO エンチャントにする
             if (attacker.level() != entity.level()) return@fail
-            entity.level().getEntitiesOfClass(ItemEntity::class.java, entity.boundingBox) { !it.isSpectator }.forEach {
+            entity.level().getEntitiesOfClass(ItemEntity::class.java, entity.boundingBox) { it.isValid }.forEach {
                 it.teleportTo(attacker.x, attacker.y, attacker.z)
                 it.setNoPickUpDelay()
             }
-            entity.level().getEntitiesOfClass(ExperienceOrb::class.java, entity.boundingBox) { !it.isSpectator }.forEach {
+            entity.level().getEntitiesOfClass(ExperienceOrb::class.java, entity.boundingBox) { it.isValid }.forEach {
                 it.teleportTo(attacker.x, attacker.y, attacker.z)
             }
         }

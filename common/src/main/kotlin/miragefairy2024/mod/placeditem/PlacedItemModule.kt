@@ -8,6 +8,7 @@ import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.isNotIn
+import miragefairy2024.util.isValid
 import miragefairy2024.util.obtain
 import miragefairy2024.util.registerServerPacketReceiver
 import net.minecraft.core.BlockPos
@@ -30,7 +31,7 @@ fun initPlacedItemModule() {
 
             // パケットの正常性判定
 
-            if (player.isSpectator) return@registerServerPacketReceiver // スペクテイターモード
+            if (!player.isValid) return@registerServerPacketReceiver
 
             val hitResult = player.pick(player.blockInteractionRange(), 0F, false)
             if (hitResult.type != HitResult.Type.BLOCK) return@registerServerPacketReceiver // ブロックをターゲットにしていない
@@ -79,7 +80,7 @@ fun initPlacedItemModule() {
 
             // パケットの正常性判定
 
-            if (player.isSpectator) return@registerServerPacketReceiver // スペクテイターモード
+            if (!player.isValid) return@registerServerPacketReceiver
 
             val hitResult = player.pick(player.blockInteractionRange(), 0F, false)
             if (hitResult.type != HitResult.Type.BLOCK) return@registerServerPacketReceiver // ブロックをターゲットにしていない

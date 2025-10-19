@@ -11,6 +11,7 @@ import miragefairy2024.util.en
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.get
+import miragefairy2024.util.isValid
 import miragefairy2024.util.ja
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerDynamicGeneration
@@ -165,12 +166,12 @@ fun initEnchantmentModule() {
             val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
             if (stickyMiningLevel == 0) return@register
 
-            val oldItemEntities = level.getEntitiesOfClass(ItemEntity::class.java, AABB(pos)) { !it.isSpectator }.toSet()
-            val oldExperienceOrbs = level.getEntitiesOfClass(ExperienceOrb::class.java, AABB(pos)) { !it.isSpectator }.toSet()
+            val oldItemEntities = level.getEntitiesOfClass(ItemEntity::class.java, AABB(pos)) { it.isValid }.toSet()
+            val oldExperienceOrbs = level.getEntitiesOfClass(ExperienceOrb::class.java, AABB(pos)) { it.isValid }.toSet()
 
             listener.set {
-                val newItemEntities = level.getEntitiesOfClass(ItemEntity::class.java, AABB(pos)) { !it.isSpectator }.toSet()
-                val newExperienceOrbs = level.getEntitiesOfClass(ExperienceOrb::class.java, AABB(pos)) { !it.isSpectator }.toSet()
+                val newItemEntities = level.getEntitiesOfClass(ItemEntity::class.java, AABB(pos)) { it.isValid }.toSet()
+                val newExperienceOrbs = level.getEntitiesOfClass(ExperienceOrb::class.java, AABB(pos)) { it.isValid }.toSet()
 
                 (newItemEntities - oldItemEntities).forEach {
                     it.teleportTo(entity.x, entity.y, entity.z)
