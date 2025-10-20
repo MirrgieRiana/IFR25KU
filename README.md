@@ -86,15 +86,25 @@ These files are provided under any of the following licenses:
 
 # Developer Guide
 
-## Using IFR25KU as a Dependency
+This project provides Maven repositories to use the mod JAR and sources.
 
-Developers can depend on IFR25KU via the Modrinth Maven repository. Add the repository and the dependency to your Gradle build.
+Developers may use either Modrinth Maven or Curse Maven.
 
-**Gradle Kotlin DSL (`build.gradle.kts`)**
+Due to technical limitations, dependencies of required mods are not resolved transitively by either repository.
+
+## Using IFR25KU via Modrinth Maven
+
+Adding IFR25KU as a Maven dependency is simpler with Modrinth Maven.
+
+See the official article:
+
+https://support.modrinth.com/en/articles/8801191-modrinth-maven
+
+**Gradle Kotlin DSL example:**
 
 ```kotlin
 repositories {
-    maven { url = uri("https://api.modrinth.com/maven") }
+    maven("https://api.modrinth.com/maven")
 }
 
 dependencies {
@@ -102,19 +112,37 @@ dependencies {
 }
 ```
 
-**Gradle Groovy DSL (`build.gradle`)**
+**Notes:**
 
-```groovy
+- Adjust the sample to fit your build setup.
+- Choose `<version>` from the [Modrinth versions](https://modrinth.com/mod/ifr25ku/versions).
+- Choose `<platform>` to match your mod loader: `neoforge` or `fabric`.
+
+## Using IFR25KU via Curse Maven
+
+Defining the dependency with Curse Maven is very unpredictable; always consult the official documentation.
+
+https://www.cursemaven.com/
+
+**Gradle Kotlin DSL example:**
+
+```kotlin
 repositories {
-    maven { url = "https://api.modrinth.com/maven" }
+    maven("https://cursemaven.com")
 }
 
 dependencies {
-    modImplementation "maven.modrinth:ifr25ku:<version>+<platform>"
+    // With attached sources
+    modImplementation("curse.maven:ifr25ku-1346991:<fileId>-sources-<sourceFileId>")
+
+    // Main artifact only
+    modImplementation("curse.maven:ifr25ku-1346991:<fileId>")
 }
 ```
 
-**Notes**
+**Notes:**
 
-- Check the [Modrinth page](https://modrinth.com/mod/ifr25ku/versions) for available versions.
-- Pick the platform variant that matches your mod loader: `neoforge` or `fabric`.
+- Adjust the sample to fit your build setup.
+- Get `<fileId>` from the [CurseForge files list](https://www.curseforge.com/minecraft/mc-mods/ifr25ku/files).
+- Get `<sourceFileId>` from the “Additional Files” section on the main file’s page.
+- If you do not need attached sources, omit the `-sources-<sourceFileId>` suffix.
