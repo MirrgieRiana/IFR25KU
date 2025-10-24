@@ -1,0 +1,73 @@
+name: Bug report
+description: Bug report form
+title: "Example: Client disconnects when pointing at the void in The End while holding a fairy statue in the main hand"
+labels:
+  - bug
+body:
+
+  - type: input
+    id: mod_version
+    attributes:
+      label: IFR25KU version
+      description: Please enter the exact IFR25KU version in which the issue occurred.
+      placeholder: "Example: 99.99.9-beta.9+neoforge"
+
+  - type: textarea
+    id: main
+    attributes:
+      label: Report details
+      render: markdown
+      value: |
+        ========== Bug Report Guidelines - Start ==========
+
+        [Before you begin]
+        - IFR25KU is maintained by many volunteers, including you. Your contribution is appreciated.
+        - It is not always technically possible to resolve every issue. Providing detailed information increases the chance of resolution.
+
+        [Before writing]
+        - If you find multiple bugs, report them separately (one bug per issue).
+        - Duplicate reports are acceptable. However, please search first. If you find a matching issue, add your details to it.
+        - When possible, attach a log file (redacted if necessary) and any screenshots captured when the issue occurred.
+
+        [Notes]
+        - Please remove these guidelines before submitting.
+        - Additional information may be requested during investigation.
+
+        The following is a template. You may deviate from it when appropriate.
+
+        ========== Bug Report Guidelines - End ==========
+
+        # Under what circumstances?
+
+        (Describe the situation in as much detail as possible.)
+        (Example: While playing on <server name> in multiplayer, I obtained a fairy statue from a fairy statue fountain in The End's TT and was doing maintenance near the bottom layer of the TT.)
+
+        # What did you do?
+
+        (Describe the actions you performed when the bug occurred.)
+        (Example: While holding a fairy statue in the main hand near the bottom layer of The End, I pointed the cursor at the void.)
+
+        # What did you expect to happen?
+
+        (What outcome did you expect?)
+        (Even if it seems obvious, please write it anyway.)
+        (Example: Remain connected to the server.)
+
+        # What actually happened?
+
+        (Describe what happened contrary to your expectation.)
+        (Example: The client disconnected from the server.)
+
+        # Additional information
+
+        [Occurrence rate] Always / Sometimes / Once
+        [Reproducible on the latest version?] Yes / No / Cannot verify
+
+        # Steps to reproduce
+
+        1. (Write the exact steps to reproduce the issue.)
+        2. (Example: In multiplayer, hold a fairy statue and go to The End.)
+        3. (Example: Descend to the bottom layer of The End.)
+        4. (Example: Point the cursor toward the void below.)
+        5. (Example: The client disconnects from the server.)
+        6. (If the steps are unknown, state that they are unknown.)
