@@ -111,7 +111,7 @@ private fun catchPhrase(string: String) = string.size(3).serif().center()
 context(MarkdownScope)
 private fun poem(name: String, indent: Int, width: Int, src: String, poem1: String, poem2: String): String {
     return multiLine {
-        !img("Horizontal Spacer", "https://cdn.modrinth.com/data/cached_images/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp", width = abs(indent), float = if (indent < 0) "right" else "left")
+        !img("Horizontal Spacer", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp", width = abs(indent), float = if (indent < 0) "right" else "left")
         !table {
             !"tr" {
                 !td(width = width) {
@@ -139,10 +139,10 @@ fun getModBody(type: MarkdownType): String {
     return markdown(type) {
         run {
             !3
-            !img("Fairy Quest Card top frame", "https://cdn.modrinth.com/data/cached_images/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png").center().p()
+            !img("Fairy Quest Card top frame", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/89547d4a2a78505dc864d9b5e3cb212861aa81a5.png").center().p()
             !catchPhrase("Fatal Accident")
             !3
-            !img("A city ravaged by Local Vacuum Decay", "https://cdn.modrinth.com/data/cached_images/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp").center().p()
+            !img("A city ravaged by Local Vacuum Decay", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/46e762d464fd36db2f58d8f2f7aaee6aa25b1202_0.webp").center().p()
             !1
             !listOf(
                 "………".center(),
@@ -154,7 +154,7 @@ fun getModBody(type: MarkdownType): String {
                 "“Before your world ceases to exist!!!”".center(),
             ).sandwich("div" { !br }).multiLine()
             !1
-            !img("Fairy Quest Card bottom frame", "https://cdn.modrinth.com/data/cached_images/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png").center().p()
+            !img("Fairy Quest Card bottom frame", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/a9bba084db1b7e2cd2513e509fbf26bd2250c36d.png").center().p()
             !3
             !catchPhrase("Why is humanity here now?")
             !4
@@ -162,9 +162,9 @@ fun getModBody(type: MarkdownType): String {
             !4
             //!catchPhrase("There were “fairies” on that planet.")
             !"p" {
-                !img("Toast top frame", "https://cdn.modrinth.com/data/cached_images/52f554abf896a453d52f012313801247b7cd77e7.png", width = 400).center()
-                !"${img("Fairy icon", "https://cdn.modrinth.com/data/cached_images/1f24ada58c4d32f2b88443878d9650ae81a46579.png", width = 32, pixelated = true)}&nbsp;&nbsp;Dreamed of a new fairy!".size(2).center()
-                !img("Toast bottom frame", "https://cdn.modrinth.com/data/cached_images/cd79cf31789501fa8c616784e9eb756813f39f1e.png", width = 400).center()
+                !img("Toast top frame", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/52f554abf896a453d52f012313801247b7cd77e7.png", width = 400).center()
+                !"${img("Fairy icon", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/1f24ada58c4d32f2b88443878d9650ae81a46579.png", width = 32, pixelated = true)}&nbsp;&nbsp;Dreamed of a new fairy!".size(2).center()
+                !img("Toast bottom frame", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/cd79cf31789501fa8c616784e9eb756813f39f1e.png", width = 400).center()
             }
             !4
             !multiLine {
@@ -172,7 +172,7 @@ fun getModBody(type: MarkdownType): String {
                     !"tr" {
                         !td(width = 700) {
                             !multiLine {
-                                !img("Portrait of a Mirage fairy", "https://cdn.modrinth.com/data/cached_images/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp", float = "left")
+                                !img("Portrait of a Mirage fairy", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp", float = "left")
                                 !"p" {
                                     !singleLine {
                                         !"Monocots ― Order Miragales ― Family Miragaceae".b().size(-1).serif()
@@ -199,14 +199,14 @@ fun getModBody(type: MarkdownType): String {
             // フェアリークリスタル
             !poem(
                 "Fairy Crystal", -300, 430,
-                "https://cdn.modrinth.com/data/cached_images/9e74348fe664fc926c5f534f24dfcbd4ec3513b2.png",
+                "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/9e74348fe664fc926c5f534f24dfcbd4ec3513b2.png",
                 "Crystallized soul",
                 "That which makes a creature a creature.",
             )
             // ファントムの葉
             !poem(
                 "Phantom Leaves", 300, 340,
-                "https://cdn.modrinth.com/data/cached_images/2440d1bf3e0e387c9f3994cbd5a05c583b4f3e5e.png",
+                "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/2440d1bf3e0e387c9f3994cbd5a05c583b4f3e5e.png",
                 "The eroding reality",
                 "The precipitating fantasy.",
             )
@@ -214,7 +214,7 @@ fun getModBody(type: MarkdownType): String {
             // ハイメヴィスカ
             !poem(
                 "Haimeviska", 0, 410,
-                "https://cdn.modrinth.com/data/cached_images/4789326b379836f317635052dcac361ff3a07b9e_0.webp",
+                "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/4789326b379836f317635052dcac361ff3a07b9e_0.webp",
                 "Do fairy trees have qualia of pain?",
                 "What it means to protect animals.",
             )
@@ -222,7 +222,7 @@ fun getModBody(type: MarkdownType): String {
             // サラセニア
             !poem(
                 "Sarracenia", 200, 380,
-                "https://cdn.modrinth.com/data/cached_images/99e1a6638c83bc038989d626e5ee45be9df295f9.png",
+                "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/99e1a6638c83bc038989d626e5ee45be9df295f9.png",
                 "Waiting for a flying creature...",
                 "Fairies’ resting place.",
             )
@@ -230,7 +230,7 @@ fun getModBody(type: MarkdownType): String {
             // ミラジディアン
             !poem(
                 "Miragidian", -100, 460,
-                "https://cdn.modrinth.com/data/cached_images/0b3016946160a1ff428d1b736871fb3606334173_0.webp",
+                "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/0b3016946160a1ff428d1b736871fb3606334173_0.webp",
                 "The great collapse 30,000 years ago",
                 "The dream Miragium saw 30,000 years ago.",
             )
@@ -238,7 +238,7 @@ fun getModBody(type: MarkdownType): String {
             // 紅天石
             !poem(
                 "Xarpite", 0, 580,
-                "https://cdn.modrinth.com/data/cached_images/836c43258180de4fee05020c7f8df3ce1f13579e.png",
+                "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/836c43258180de4fee05020c7f8df3ce1f13579e.png",
                 "Binds astral flux with magnetic force",
                 "A blood-reeking cage of souls bound by chains of black iron.",
             )
@@ -246,7 +246,7 @@ fun getModBody(type: MarkdownType): String {
             // 理天石
             !poem(
                 "Calculite", 200, 440,
-                "https://cdn.modrinth.com/data/cached_images/9f481e640f797ca8665bd21e7d39cfcd34ac9ee8.gif",
+                "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/9f481e640f797ca8665bd21e7d39cfcd34ac9ee8.gif",
                 "Class 4 time evolution rule.",
                 "A stone that etches the patterns of time.",
             )
@@ -254,7 +254,7 @@ fun getModBody(type: MarkdownType): String {
             // オーラ反射炉
             !poem(
                 "Aura Reflector Furnace", 50, 490,
-                "https://cdn.modrinth.com/data/cached_images/ce5ecf74a49ca60c318da7dbccef60bddde3e7a8.png",
+                "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/ce5ecf74a49ca60c318da7dbccef60bddde3e7a8.png",
                 "Life is essentially inorganic.",
                 "The boundary between life and inorganic matter.",
             )
@@ -262,7 +262,7 @@ fun getModBody(type: MarkdownType): String {
             // 蒼天石
             !poem(
                 "Miranagite", -50, 650,
-                "https://cdn.modrinth.com/data/cached_images/2edab3f8a66c4c27505aa35c0aeb1c79393098ea.png",
+                "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/2edab3f8a66c4c27505aa35c0aeb1c79393098ea.png",
                 "A Turing-complete crystal lattice",
                 "A world where everything has been prophesied since the dawn of creation.",
             )
@@ -270,7 +270,7 @@ fun getModBody(type: MarkdownType): String {
             // 局所真空崩壊
             !poem(
                 "Local Vacuum Decay", 0, 490,
-                "https://cdn.modrinth.com/data/cached_images/acb14f57121d7f180077eba96b87edcd957e82f4_0.webp",
+                "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/acb14f57121d7f180077eba96b87edcd957e82f4_0.webp",
                 "Stable instability due to anti-entropy.",
                 "Could this be the ultimate form of anti-entropy?",
             )
@@ -278,7 +278,7 @@ fun getModBody(type: MarkdownType): String {
             // ノイズブロック
             !poem(
                 "Noise Block", 0, 370,
-                "https://cdn.modrinth.com/data/cached_images/dbe6a42399b5a56332e2f96ebd89891b2a95f425.gif",
+                "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/dbe6a42399b5a56332e2f96ebd89891b2a95f425.gif",
                 "No one can block that noise.",
                 "No one can block that noise.",
             )
@@ -287,7 +287,7 @@ fun getModBody(type: MarkdownType): String {
             !8
             !"The Institute of Fairy Research 2025 Kakera Unofficial".serif().center()
             !1
-            !img("IFR25KU Logo", "https://cdn.modrinth.com/data/cached_images/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp", width = 400).center().p()
+            !img("IFR25KU Logo", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/146f7b7ba56f7314f818ef00a991d22f12dfc97b_0.webp", width = 400).center().p()
             !8
         }
         !h2("Overview") {
@@ -308,90 +308,90 @@ fun getModBody(type: MarkdownType): String {
         }
         !h2("Adventure Guide") {
             !"What should you do next? Press L to open the Advancements screen."
-            !img("Advancements screen", "https://cdn.modrinth.com/data/cached_images/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png").center().p()
+            !img("Advancements screen", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/9d4b145be73d124a862dc5fadb65ccb6e187cbd5.png").center().p()
             !1
             !"It will guide you toward your next goals."
-            !img("Advancement description", "https://cdn.modrinth.com/data/cached_images/30f0425c308ccc1ae482775fddd8ee7959046d1d.png").center().p()
+            !img("Advancement description", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/30f0425c308ccc1ae482775fddd8ee7959046d1d.png").center().p()
         }
         !h2("Biomes") {
             !"As you roam the world, you'll encounter biomes reshaped by fairies."
             !h3("Fairy Forest") {
                 !"Fairy forests dot the land far and wide."
-                !img("Fairy Forest", "https://cdn.modrinth.com/data/cached_images/1952646971c206beff58fa3791a177a2bbc533bd_0.webp").center().p()
+                !img("Fairy Forest", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/1952646971c206beff58fa3791a177a2bbc533bd_0.webp").center().p()
                 !"Here, many Mirage Flowers bloom in profusion."
                 !1
                 !"The Phantom Flower found here is difficult to cultivate, yet it serves as a catalyst for higher-tier fairy summoning."
-                !img("Phantom Flower", "https://cdn.modrinth.com/data/cached_images/351c3d683c0ff26eba7d7034011c81f7ba25aaeb_0.webp").center().p()
+                !img("Phantom Flower", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/351c3d683c0ff26eba7d7034011c81f7ba25aaeb_0.webp").center().p()
             }
             !h3("Deep Fairy Forest") {
                 !"A deep, overgrown forest where Haimeviska trees rise like pillars."
-                !img("Deep Fairy Forest", "https://cdn.modrinth.com/data/cached_images/a3dc02ec6167526592cc7cc124cb5b94fa65acda_0.webp").center().p()
+                !img("Deep Fairy Forest", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/a3dc02ec6167526592cc7cc124cb5b94fa65acda_0.webp").center().p()
                 !"Venturing in unprepared is very dangerous."
             }
         }
         !h2("Fairies") {
             !"As you journey across the world, you'll encounter many kinds of fairies."
-            !img("Fairies", "https://cdn.modrinth.com/data/cached_images/307ff49a23763570f0c5070e5de25f574e68aaad.png").center().p()
+            !img("Fairies", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/307ff49a23763570f0c5070e5de25f574e68aaad.png").center().p()
             !1
             !"Fairies possess a wide range of abilities."
-            !img("Light fairy", "https://cdn.modrinth.com/data/cached_images/25c57e881ae19dd5a84754a38fcce627e95244bc.png").center().p()
-            !img("Arrow fairy", "https://cdn.modrinth.com/data/cached_images/e4dc387c8958f81cbe3c0495d11d64d508be1d60.png").center().p()
+            !img("Light fairy", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/25c57e881ae19dd5a84754a38fcce627e95244bc.png").center().p()
+            !img("Arrow fairy", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/e4dc387c8958f81cbe3c0495d11d64d508be1d60.png").center().p()
             !"A light fairy increases your movement speed in bright areas, and an arrow fairy passively boosts your bow damage."
             !h3("Fairy Dreams") {
                 !"This world is brimming with fairies."
-                !img("Fairy Dream toast", "https://cdn.modrinth.com/data/cached_images/40f8d08f89553eebaa3e70022824a233f0b4b128.png").center().p()
+                !img("Fairy Dream toast", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/40f8d08f89553eebaa3e70022824a233f0b4b128.png").center().p()
                 !"Search among natural and artificial objects alike. When you obtain a low-rarity Fairy Dream, you immediately receive a fairy matching its motif."
             }
             !h3("The Soul Stream") {
                 !"Press K to open the Soul Stream and place fairies into the top slots of the UI."
-                !img("Soul Stream", "https://cdn.modrinth.com/data/cached_images/ebe833acd596054213b7f89081701788fd61f780.png").center().p()
+                !img("Soul Stream", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/ebe833acd596054213b7f89081701788fd61f780.png").center().p()
                 !"They confer powerful enhancements."
             }
             !h3("Fairy Condensation") {
                 !"Need more fairy power? Having duplicates of the same fairy strengthens its effects."
-                !img("Empowered sugar fairy", "https://cdn.modrinth.com/data/cached_images/41c353e38c47a2cde38e6adcd3689499dd385c6a.png").center().p()
+                !img("Empowered sugar fairy", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/41c353e38c47a2cde38e6adcd3689499dd385c6a.png").center().p()
                 !1
                 !"Cultivate Mirage Flowers to obtain Mirage Flour."
-                !img("Mirage Flour", "https://cdn.modrinth.com/data/cached_images/e75c326da1b6479677f559f6ed4dbe824d4409e0.png").center().p()
+                !img("Mirage Flour", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/e75c326da1b6479677f559f6ed4dbe824d4409e0.png").center().p()
                 !"Mirage Flour spawns fairies at random based on the Fairy Dreams you've obtained so far."
                 !1
                 !"Fairies can be condensed without limit."
-                !img("Fairy Condensation", "https://cdn.modrinth.com/data/cached_images/e9a521f0229af711da664abfef1606029d03cc8a.png").center().p()
+                !img("Fairy Condensation", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/e9a521f0229af711da664abfef1606029d03cc8a.png").center().p()
             }
         }
         !h2("Magic Plants") {
             !"Mysterious plants grow throughout the world."
-            !img("Fairy Ring", "https://cdn.modrinth.com/data/cached_images/94f160e46960c4414e032ba26f7e6202f7a9b370_0.webp").center().p()
+            !img("Fairy Ring", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/94f160e46960c4414e032ba26f7e6202f7a9b370_0.webp").center().p()
             !"Many can be harvested as crops by right-clicking."
             !h3("Crossing") {
                 !"Naturally occurring magic plants are born with random trait bits."
-                !img("Magic plant traits", "https://cdn.modrinth.com/data/cached_images/afcf48c58e957e5c4220f24cbb04fa9f51fa5666.png").center().p()
+                !img("Magic plant traits", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/afcf48c58e957e5c4220f24cbb04fa9f51fa5666.png").center().p()
                 !"Planting them adjacent to one another triggers crossing within the same species."
-                !img("Adjacent magic plants", "https://cdn.modrinth.com/data/cached_images/80dacc16b262d5f8330c9f98c2ed25c4627005f8.png").center().p()
+                !img("Adjacent magic plants", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/80dacc16b262d5f8330c9f98c2ed25c4627005f8.png").center().p()
                 !"You have a 25% chance to obtain seeds that inherit both parents’ trait bits."
-                !img("Improved seeds", "https://cdn.modrinth.com/data/cached_images/370006cc1896973853bf59445d1033236299d273.png").center().p()
+                !img("Improved seeds", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/370006cc1896973853bf59445d1033236299d273.png").center().p()
             }
             !h3("Crossbreeding") {
                 !"There are many kinds of magic plants."
-                !img("Many kinds of magic plants", "https://cdn.modrinth.com/data/cached_images/c9532c1ed9c69499d650754522ebe8b65ac94a7f.png").center().p()
+                !img("Many kinds of magic plants", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/c9532c1ed9c69499d650754522ebe8b65ac94a7f.png").center().p()
                 !"Using the “Crossbreeding” trait, you can cross two different species within the same family."
             }
             !h3("Plant Bag") {
                 !"When your inventory overflows with seeds on your journey, the Plant Bag is handy."
-                !img("Plant Bag", "https://cdn.modrinth.com/data/cached_images/09f4d27b1266da03d002b7de7f3c6fbf19f821e8.png").center().p()
+                !img("Plant Bag", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/09f4d27b1266da03d002b7de7f3c6fbf19f821e8.png").center().p()
             }
         }
         !h2("World Generation") {
             !h3("Weathered Ancient Remnants") {
                 !"As you travel the Overworld, you'll discover Weathered Ancient Remnants."
-                !img("Weathered Ancient Remnants", "https://cdn.modrinth.com/data/cached_images/ba4ea56b35cac23f703ae12639ae4c5e755f2bf2_0.webp").center().p()
+                !img("Weathered Ancient Remnants", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/ba4ea56b35cac23f703ae12639ae4c5e755f2bf2_0.webp").center().p()
                 !"Try brushing the Suspicious Gravel you find there."
                 !"You may unearth a map that leads to the Dripstone Cave Ruin, along with useful materials."
-                !img("Dripstone Cave Ruin", "https://cdn.modrinth.com/data/cached_images/a0b179287f9ac8beded0e4037cc4788dc3d836ba_0.webp").center().p()
+                !img("Dripstone Cave Ruin", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/a0b179287f9ac8beded0e4037cc4788dc3d836ba_0.webp").center().p()
             }
             !h3("Debris") {
                 !"Debris can be found throughout the world."
-                !img("Debris", "https://cdn.modrinth.com/data/cached_images/504ce1940464d214a2f3e725bb02ce88758d8974.png").center().p()
+                !img("Debris", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/504ce1940464d214a2f3e725bb02ce88758d8974.png").center().p()
                 !"These piles can contain early-game vanilla materials as well as materials added by this mod."
                 !1
                 !"You can place items on the ground by pressing Z."
@@ -400,81 +400,81 @@ fun getModBody(type: MarkdownType): String {
         !h2("Materials & Processing") {
             !h3("Haimeviska") {
                 !"This is a Haimeviska tree. In the fairy language, its name means “great tree of fairies.”"
-                !img("Haimeviska", "https://cdn.modrinth.com/data/cached_images/2b8db6bc14815d912c96c6e7a441db77f1d0a6cc_0.webp").center().p()
+                !img("Haimeviska", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/2b8db6bc14815d912c96c6e7a441db77f1d0a6cc_0.webp").center().p()
                 !"To collect sap for fuel or as a drink, stack Haimeviska Logs to form a wall and score the logs with a sword."
-                !img("Sap farm", "https://cdn.modrinth.com/data/cached_images/ea98315555098fb52d52cff608aeffa95c9eae80_0.webp").center().p()
+                !img("Sap farm", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/ea98315555098fb52d52cff608aeffa95c9eae80_0.webp").center().p()
             }
             !h3("Basic Materials") {
                 !"Felling a Haimeviska is very hard, but a Xarpite Axe—which can break connected logs in one swing—makes the job easy."
                 !"As Xarpite’s counterpart, Miranagite is a gem found near the surface. Tools made from it have Silk Touch by default."
-                !img("Xarpite and Miranagite tools", "https://cdn.modrinth.com/data/cached_images/30d662dd3fa505cc7ceac312ce74fcc4a64f735b.png").center().p()
+                !img("Xarpite and Miranagite tools", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/30d662dd3fa505cc7ceac312ce74fcc4a64f735b.png").center().p()
             }
             !h3("Brewing Barrel") {
                 !"Using Haimeviska Logs, you can craft a Brewing Barrel and brew beverages that grant both benefits and drawbacks."
                 !multiLine {
-                    !img("Brewing Barrel recipe", "https://cdn.modrinth.com/data/cached_images/9ccab95ed4b3ffc9e5134b1b0a95e17cdecc8b06.png")
-                    !img("Fairy Liqueur", "https://cdn.modrinth.com/data/cached_images/b6fcb829216f0fa98a2402e9e93f60d984634316.png")
+                    !img("Brewing Barrel recipe", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/9ccab95ed4b3ffc9e5134b1b0a95e17cdecc8b06.png")
+                    !img("Fairy Liqueur", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/b6fcb829216f0fa98a2402e9e93f60d984634316.png")
                 }.center().p()
-                !img("Brewing Barrel placed", "https://cdn.modrinth.com/data/cached_images/8c56debebae75dcb5398235bc6ebefa5b2841053.png").center().p()
+                !img("Brewing Barrel placed", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/8c56debebae75dcb5398235bc6ebefa5b2841053.png").center().p()
             }
             !h3("Aura Reflector Furnace") {
                 !"Once you've gathered enough Xarpite, craft an Aura Reflector Furnace."
-                !img("Aura Reflector Furnace recipe", "https://cdn.modrinth.com/data/cached_images/d418b63551cf892ef5c6c118504392aae0881ecd.png").center().p()
+                !img("Aura Reflector Furnace recipe", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/d418b63551cf892ef5c6c118504392aae0881ecd.png").center().p()
                 !"Miragium produced in the furnace is used to craft powerful tools and also serves as an intermediate material for further recipes."
                 !multiLine {
-                    !img("Miragium Nugget recipe", "https://cdn.modrinth.com/data/cached_images/c2f1d3b9f4c820f97dacfa258c2a17d75c8b0065.png")
-                    !img("Miragium recipe", "https://cdn.modrinth.com/data/cached_images/92ed27deeeec8facbdffb7b73380669f88761212.png")
+                    !img("Miragium Nugget recipe", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/c2f1d3b9f4c820f97dacfa258c2a17d75c8b0065.png")
+                    !img("Miragium recipe", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/92ed27deeeec8facbdffb7b73380669f88761212.png")
                 }.center().p()
                 !multiLine {
-                    !img("Lilagium recipe", "https://cdn.modrinth.com/data/cached_images/86a38d1218cafe5ca55baebd20db0d9447f6d729.png")
-                    !img("Resonite recipe", "https://cdn.modrinth.com/data/cached_images/baa1a654af9891783d670bd9dd678f8da4462c31.png")
+                    !img("Lilagium recipe", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/86a38d1218cafe5ca55baebd20db0d9447f6d729.png")
+                    !img("Resonite recipe", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/baa1a654af9891783d670bd9dd678f8da4462c31.png")
                 }.center().p()
                 !"To run it, you'll need Soul Sand or Soul Soil as fuel."
             }
             !h3("Fairy House") {
                 !"You can build a Fairy House from Haimeviska Logs and several other materials."
-                !img("Fairy House recipe", "https://cdn.modrinth.com/data/cached_images/81dd2f3401638fa4ffb473ea7679b37d2db93b4b.png").center().p()
+                !img("Fairy House recipe", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/81dd2f3401638fa4ffb473ea7679b37d2db93b4b.png").center().p()
                 !"Fairies can live and work there."
-                !img("Inside the Fairy House", "https://cdn.modrinth.com/data/cached_images/b37e0797d786d123f74d53cc2bc454c4ca6ae43a.png").center().p()
+                !img("Inside the Fairy House", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/b37e0797d786d123f74d53cc2bc454c4ca6ae43a.png").center().p()
             }
         }
         !h2("Tools") {
             !"IFR25KU adds a wide variety of tools."
-            !img("Tools made from various materials", "https://cdn.modrinth.com/data/cached_images/f008e4f81cf2ee45181cc113b2496fefdec51c65.png").center().p()
+            !img("Tools made from various materials", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/f008e4f81cf2ee45181cc113b2496fefdec51c65.png").center().p()
             !"For many vanilla and common materials, all five basic tool types are available."
             !"For mod-added materials, some special tool types may be available."
             !h3("Special Effects") {
                 !"Many tools have special effects."
-                !img("Xarpite Axe tooltip", "https://cdn.modrinth.com/data/cached_images/70a39cbd649328297ee833f14d0b1ff092910b40.png").center().p()
+                !img("Xarpite Axe tooltip", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/70a39cbd649328297ee833f14d0b1ff092910b40.png").center().p()
                 !"For example, the Xarpite Axe provides a tree-felling effect. When you harvest a log, the connected tree is felled in a single swing."
             }
             !h3("Magical Weapon") {
                 !"The Staff of Miranagi is a magical weapon."
-                !img("Staff of Miranagi", "https://cdn.modrinth.com/data/cached_images/d12d5212d8bc71f23b6e94d47a2ab478f5d7e5e4.png").center().p()
+                !img("Staff of Miranagi", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/d12d5212d8bc71f23b6e94d47a2ab478f5d7e5e4.png").center().p()
                 !"It can be crafted early in the game and fires magical projectiles."
             }
         }
         !h2("Fairy Jewels") {
             !h3("Minia's Telescope") {
                 !"After making some progress in the game, craft Minia's Telescope."
-                !img("Minia's Telescope recipe", "https://cdn.modrinth.com/data/cached_images/14a1bd9b37a5416dc0caba9fd033668679fd86e7.png").center().p()
+                !img("Minia's Telescope recipe", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/14a1bd9b37a5416dc0caba9fd033668679fd86e7.png").center().p()
                 !"Right-click it once per real-world day to obtain a Fairy Jewel."
             }
             !h3("Fairy Statue Fountain") {
                 !"Right-click the Fairy Statue Fountain to insert a Fairy Jewel."
-                !img("Fairy Statue Fountain recipe", "https://cdn.modrinth.com/data/cached_images/0d69db0ca5cd5f25d8d3cc415802c827c214ed4b.png").center().p()
+                !img("Fairy Statue Fountain recipe", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/0d69db0ca5cd5f25d8d3cc415802c827c214ed4b.png").center().p()
                 !"It yields a random Fairy Statue, which carries a Fairy Dream."
             }
         }
         !h2("Lore") {
             !"Most mod-added items in IFR25KU include flavor text, called a “Poem,” that expresses the IFRKU worldview."
-            !img("Poem on the Miranagite Tiles block", "https://cdn.modrinth.com/data/cached_images/1788893ec4b494a8184e56b9131eb26c55fb97eb.png").center().p()
+            !img("Poem on the Miranagite Tiles block", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/1788893ec4b494a8184e56b9131eb26c55fb97eb.png").center().p()
             !1
             !"Magic plant traits include detailed descriptions."
-            !img("Trait Encyclopedia entry: Xp Production", "https://cdn.modrinth.com/data/cached_images/4d39b35c4c7269f97fe44c90ede21b54415bea3a.png").center().p()
+            !img("Trait Encyclopedia entry: Xp Production", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/4d39b35c4c7269f97fe44c90ede21b54415bea3a.png").center().p()
             !1
             !"Fairy Quest Cards feature several short stories."
-            !img("Fairy Quest Card message: Impromptu Fantastic Carnival", "https://cdn.modrinth.com/data/cached_images/41d3dbe429c052fdf00a22ccba3d81335ee5f4ce.png").center().p()
+            !img("Fairy Quest Card message: Impromptu Fantastic Carnival", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/41d3dbe429c052fdf00a22ccba3d81335ee5f4ce.png").center().p()
             !1
             !"Outside the mod, the MFKU official website hosts a series of Japanese articles called “MFA (MirageFairy Article)”."
             !li {
