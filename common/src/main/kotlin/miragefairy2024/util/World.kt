@@ -4,6 +4,7 @@ import miragefairy2024.mod.SoundEventCard
 import mirrg.kotlin.helium.max
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.network.protocol.game.ClientboundLevelEventPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundSource
 import net.minecraft.tags.BlockTags
@@ -150,6 +151,7 @@ fun breakBlock(itemStack: ItemStack, world: Level, blockPos: BlockPos, player: S
     }
     if (player.blockActionRestricted(world, blockPos, player.gameMode.gameModeForPlayer)) return false // 破壊する権限がない
 
+    player.connection.send(ClientboundLevelEventPacket(2001, blockPos, Block.getId(blockState), false)) // playerWillDestroyは採掘者本人にはエフェクトを送らない
     block.playerWillDestroy(world, blockPos, blockState, player)
     val success = world.removeBlock(blockPos, false)
     if (success) block.destroy(world, blockPos, blockState)
@@ -187,6 +189,7 @@ fun breakBlockByMagic(itemStack: ItemStack, world: Level, blockPos: BlockPos, pl
         }
         if (player.blockActionRestricted(world, blockPos, player.gameMode.gameModeForPlayer)) return false // 破壊する権限がない
 
+        player.connection.send(ClientboundLevelEventPacket(2001, blockPos, Block.getId(blockState), false)) // playerWillDestroyは採掘者本人にはエフェクトを送らない
         block.playerWillDestroy(world, blockPos, blockState, player)
         val success = world.removeBlock(blockPos, false)
         if (success) block.destroy(world, blockPos, blockState)
