@@ -2,6 +2,7 @@ package miragefairy2024.mod.tool.effects
 
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.DynamicPoem
+import miragefairy2024.mod.EnchantmentCard
 import miragefairy2024.mod.PoemType
 import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.ToolEffectType
@@ -21,6 +22,11 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.enchantment.Enchantment
 
 fun <T : ToolConfiguration> T.enchantment(enchantment: ResourceKey<Enchantment>, level: Int = 1) = this.merge(EnchantmentToolEffectType, EnchantmentToolEffectType.Value(mapOf(enchantment to level)))
+
+fun <T : ToolConfiguration> T.areaMining(lateral: Int, forward: Int, backward: Int) = this
+    .let { if (lateral >= 1) it.enchantment(EnchantmentCard.LATERAL_AREA_MINING.key, lateral) else it }
+    .let { if (forward >= 1) it.enchantment(EnchantmentCard.FORWARD_AREA_MINING.key, forward) else it }
+    .let { if (backward >= 1) it.enchantment(EnchantmentCard.BACKWARD_AREA_MINING.key, backward) else it }
 
 object EnchantmentToolEffectType : ToolEffectType<ToolConfiguration, EnchantmentToolEffectType.Value> {
     class Value(val map: Map<ResourceKey<Enchantment>, Int>)

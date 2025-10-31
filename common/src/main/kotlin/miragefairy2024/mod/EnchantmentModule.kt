@@ -5,12 +5,15 @@ import miragefairy2024.ModContext
 import miragefairy2024.mixins.api.BlockCallback
 import miragefairy2024.mixins.api.EquippedItemBrokenCallback
 import miragefairy2024.mod.tool.ToolBreakDamageTypeCard
+import miragefairy2024.mod.tool.effects.breakDirectionCache
 import miragefairy2024.platformProxy
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.MultiMine
 import miragefairy2024.util.en
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.get
+import miragefairy2024.util.isInMagicMining
 import miragefairy2024.util.isValid
 import miragefairy2024.util.ja
 import miragefairy2024.util.registerChild
@@ -18,7 +21,11 @@ import miragefairy2024.util.registerDynamicGeneration
 import miragefairy2024.util.toItemTag
 import miragefairy2024.util.with
 import mirrg.kotlin.java.hydrogen.orNull
+import net.minecraft.core.BlockBox
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.core.registries.Registries
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.tags.EnchantmentTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
@@ -90,6 +97,24 @@ enum class EnchantmentCard(
         "sticky_mining", EnJa("Sticky Mining", "粘着採掘"),
         ItemTags.MINING_LOOT_ENCHANTABLE, NONE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
         1, 25, 25, 50,
+        tags = listOf(EnchantmentTags.TREASURE),
+    ),
+    FORWARD_AREA_MINING(
+        "forward_area_mining", EnJa("Forward Area Mining", "前方範囲採掘"),
+        ItemTags.MINING_LOOT_ENCHANTABLE, NONE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
+        5, 25, 25, 50,
+        tags = listOf(EnchantmentTags.TREASURE),
+    ),
+    LATERAL_AREA_MINING(
+        "lateral_area_mining", EnJa("Lateral Area Mining", "側方範囲採掘"),
+        ItemTags.MINING_LOOT_ENCHANTABLE, NONE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
+        5, 25, 25, 50,
+        tags = listOf(EnchantmentTags.TREASURE),
+    ),
+    BACKWARD_AREA_MINING(
+        "backward_area_mining", EnJa("Backward Area Mining", "後方範囲採掘"),
+        ItemTags.MINING_LOOT_ENCHANTABLE, NONE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
+        5, 25, 25, 50,
         tags = listOf(EnchantmentTags.TREASURE),
     ),
     CURSE_OF_SHATTERING(
@@ -189,6 +214,45 @@ fun initEnchantmentModule() {
                 listener.remove()
             }
         }
+    }
+
+    BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
+        if (world.isClientSide) return@register
+        if (player !is ServerPlayer) return@register
+        if (isInMagicMining.get()) return@register
+
+        val forwardLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.FORWARD_AREA_MINING.key], tool)
+        val lateralLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.LATERAL_AREA_MINING.key], tool)
+        val backwardLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.BACKWARD_AREA_MINING.key], tool)
+        if (forwardLevel <= 0 && lateralLevel <= 0 && backwardLevel <= 0) return@register
+
+        object : MultiMine(world, pos, state, player, tool.item, tool) {
+            override fun executeImpl() {
+                visit(
+                    listOf(pos),
+                    miningDamage = 1.0,
+                    region = run {
+                        val breakDirection = breakDirectionCache[player.uuid] ?: return // 向きの判定が不正
+                        val l = lateralLevel
+                        val f = forwardLevel
+                        val b = backwardLevel
+                        val (xRange, yRange, zRange) = when (breakDirection) {
+                            Direction.DOWN -> Triple(-l..l, -b..f, -l..l)
+                            Direction.UP -> Triple(-l..l, -f..b, -l..l)
+                            Direction.NORTH -> Triple(-l..l, -l..l, -b..f)
+                            Direction.SOUTH -> Triple(-l..l, -l..l, -f..b)
+                            Direction.WEST -> Triple(-b..f, -l..l, -l..l)
+                            Direction.EAST -> Triple(-f..b, -l..l, -l..l)
+                        }
+                        BlockBox.of(
+                            BlockPos(pos.x + xRange.first, pos.y + yRange.first, pos.z + zRange.first),
+                            BlockPos(pos.x + xRange.last, pos.y + yRange.last, pos.z + zRange.last),
+                        )
+                    },
+                    canContinue = { _, blockState -> tool.item.isCorrectToolForDrops(tool, blockState) },
+                )
+            }
+        }.execute()
     }
 
     EquippedItemBrokenCallback.EVENT.register { entity, _, slot ->

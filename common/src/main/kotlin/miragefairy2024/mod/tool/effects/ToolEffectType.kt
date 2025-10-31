@@ -15,7 +15,6 @@ val breakDirectionCache = mutableMapOf<UUID, Direction>()
 
 context(ModContext)
 fun initToolEffectType() {
-    AreaMiningToolEffectType.init()
     MineAllToolEffectType.init()
     CutAllToolEffectType.init()
     SelfMendingToolEffectType.init()
