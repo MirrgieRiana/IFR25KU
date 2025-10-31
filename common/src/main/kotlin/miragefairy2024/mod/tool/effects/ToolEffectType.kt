@@ -1,17 +1,9 @@
 package miragefairy2024.mod.tool.effects
 
-import dev.architectury.event.EventResult
-import dev.architectury.event.events.common.BlockEvent
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.ToolEffectType
 import mirrg.kotlin.helium.max
-import net.minecraft.core.Direction
-import net.minecraft.world.phys.BlockHitResult
-import net.minecraft.world.phys.HitResult
-import java.util.UUID
-
-val breakDirectionCache = mutableMapOf<UUID, Direction>()
 
 context(ModContext)
 fun initToolEffectType() {
@@ -21,25 +13,6 @@ fun initToolEffectType() {
     SoulStreamContainableToolEffectType.init()
     TillingRecipeHoeToolEffectType.init()
     EffectiveToolEffectType.init()
-
-    BlockEvent.BREAK.register { level, pos, state, player, xp ->
-        if (level.isClientSide) return@register EventResult.pass()
-        val direction = run {
-            val d = player.blockInteractionRange() max player.entityInteractionRange()
-            val hitResult = player.pick(d, 0F, false)
-            if (hitResult.type != HitResult.Type.BLOCK) {
-                null
-            } else {
-                (hitResult as BlockHitResult).direction
-            }
-        }
-        if (direction == null) {
-            breakDirectionCache.remove(player.uuid)
-        } else {
-            breakDirectionCache[player.uuid] = direction
-        }
-        EventResult.pass()
-    }
 }
 
 abstract class BooleanToolEffectType<in C : ToolConfiguration> : ToolEffectType<C, Boolean> {

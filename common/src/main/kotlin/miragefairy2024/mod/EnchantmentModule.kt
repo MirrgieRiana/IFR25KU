@@ -1,11 +1,12 @@
 package miragefairy2024.mod
 
+import dev.architectury.event.EventResult
+import dev.architectury.event.events.common.BlockEvent
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mixins.api.BlockCallback
 import miragefairy2024.mixins.api.EquippedItemBrokenCallback
 import miragefairy2024.mod.tool.ToolBreakDamageTypeCard
-import miragefairy2024.mod.tool.effects.breakDirectionCache
 import miragefairy2024.platformProxy
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.MultiMine
@@ -22,6 +23,7 @@ import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerDynamicGeneration
 import miragefairy2024.util.toItemTag
 import miragefairy2024.util.with
+import mirrg.kotlin.helium.max
 import mirrg.kotlin.java.hydrogen.orNull
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags
 import net.minecraft.core.BlockBox
@@ -43,6 +45,9 @@ import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.phys.AABB
+import net.minecraft.world.phys.BlockHitResult
+import net.minecraft.world.phys.HitResult
+import java.util.UUID
 
 val MAGIC_WEAPON_ITEM_TAG = MirageFairy2024.identifier("magic_weapon").toItemTag()
 val SCYTHE_ITEM_TAG = MirageFairy2024.identifier("scythe").toItemTag()
@@ -169,6 +174,8 @@ enum class EnchantmentCard(
     }
 }
 
+val breakDirectionCache = mutableMapOf<UUID, Direction>()
+
 context(ModContext)
 fun initEnchantmentModule() {
     MAGIC_WEAPON_ITEM_TAG.enJa(EnJa("Magic Weapon", "魔法武器"))
@@ -177,6 +184,25 @@ fun initEnchantmentModule() {
 
     EnchantmentCard.entries.forEach { card ->
         card.init()
+    }
+
+    BlockEvent.BREAK.register { level, pos, state, player, xp ->
+        if (level.isClientSide) return@register EventResult.pass()
+        val direction = run {
+            val d = player.blockInteractionRange() max player.entityInteractionRange()
+            val hitResult = player.pick(d, 0F, false)
+            if (hitResult.type != HitResult.Type.BLOCK) {
+                null
+            } else {
+                (hitResult as BlockHitResult).direction
+            }
+        }
+        if (direction == null) {
+            breakDirectionCache.remove(player.uuid)
+        } else {
+            breakDirectionCache[player.uuid] = direction
+        }
+        EventResult.pass()
     }
 
     // Fortune Up
