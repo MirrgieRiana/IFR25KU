@@ -23,6 +23,7 @@ import miragefairy2024.util.registerDynamicGeneration
 import miragefairy2024.util.toItemTag
 import miragefairy2024.util.with
 import mirrg.kotlin.java.hydrogen.orNull
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags
 import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -122,6 +123,12 @@ enum class EnchantmentCard(
     ),
     CUT_ALL(
         "cut_all", EnJa("Cut All", "一括伐採"),
+        ItemTags.MINING_LOOT_ENCHANTABLE, NONE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
+        1, 25, 25, 50,
+        tags = listOf(EnchantmentTags.TREASURE),
+    ),
+    MINE_ALL(
+        "mine_all", EnJa("Mine All", "一括採掘"),
         ItemTags.MINING_LOOT_ENCHANTABLE, NONE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
         1, 25, 25, 50,
         tags = listOf(EnchantmentTags.TREASURE),
@@ -297,6 +304,29 @@ fun initEnchantmentModule() {
                     miningDamage = 0.1,
                     maxDistance = 8,
                     canContinue = { _, blockState -> blockState isIn BlockTags.LEAVES },
+                )
+            }
+        }.execute()
+    }
+
+    // Mine All
+    BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
+        if (world.isClientSide) return@register
+        if (player !is ServerPlayer) return@register
+        if (isInMagicMining.get()) return@register
+
+        val mineAllLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MINE_ALL.key], tool)
+        if (mineAllLevel <= 0) return@register
+
+        object : MultiMine(world, pos, state, player, tool.item, tool) {
+            override fun isValidBaseBlockState() = blockState isIn ConventionalBlockTags.ORES
+            override fun executeImpl() {
+                visit(
+                    listOf(pos),
+                    miningDamage = 1.0,
+                    maxDistance = 19,
+                    maxCount = 31,
+                    canContinue = { _, blockState -> blockState.block === state.block },
                 )
             }
         }.execute()

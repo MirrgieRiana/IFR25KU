@@ -20,7 +20,6 @@ import miragefairy2024.mod.tool.effects.effective
 import miragefairy2024.mod.tool.effects.enchantment
 import miragefairy2024.mod.tool.effects.fireResistant
 import miragefairy2024.mod.tool.effects.glint
-import miragefairy2024.mod.tool.effects.mineAll
 import miragefairy2024.mod.tool.effects.obtainFairy
 import miragefairy2024.mod.tool.effects.selfMending
 import miragefairy2024.mod.tool.effects.soulStreamContainable
@@ -187,7 +186,7 @@ class ToolCard(
         val MIRAGIUM_PICKAXE = !ToolCard(
             "miragium_pickaxe", EnJa("Miragium Pickaxe", "ミラジウムのつるはし"),
             PoemList(3).poem(EnJa("More durable than gold", "妖精の肉体労働")),
-            FairyPickaxeConfiguration(ToolMaterialCard.MIRAGIUM).selfMending(20).mineAll().soulStreamContainable(),
+            FairyPickaxeConfiguration(ToolMaterialCard.MIRAGIUM).selfMending(20).enchantment(EnchantmentCard.MINE_ALL.key).soulStreamContainable(),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.MIRAGIUM_INGOT.ore!!.tag) }
         val MIRAGIUM_AXE = !ToolCard(
             "miragium_axe", EnJa("Miragium Axe", "ミラジウムの斧"),
@@ -217,7 +216,7 @@ class ToolCard(
         val RESONITE_PICKAXE = !ToolCard(
             "resonite_pickaxe", EnJa("Resonance Pickaxe", "共鳴のつるはし"),
             PoemList(5).poem(EnJa("The compound of light and sound", "光と闇の純結晶。")),
-            FairyPickaxeConfiguration(ToolMaterialCard.RESONITE).mineAll().enchantment(Enchantments.EFFICIENCY, 6).soulStreamContainable(),
+            FairyPickaxeConfiguration(ToolMaterialCard.RESONITE).enchantment(EnchantmentCard.MINE_ALL.key).enchantment(Enchantments.EFFICIENCY, 6).soulStreamContainable(),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.RESONITE_INGOT.ore!!.tag) }
         val RESONITE_AXE = !ToolCard(
             "resonite_axe", EnJa("Resonance Axe", "共鳴の斧"),
@@ -357,7 +356,7 @@ class ToolCard(
         val XARPITE_PICKAXE = !ToolCard(
             "xarpite_pickaxe", EnJa("Xarpite Pickaxe", "紅天石のつるはし"),
             PoemList(2).poem(EnJa("Shears space using astral induction", "鉱石の魂を貪る血塗られた有機質。")),
-            FairyPickaxeConfiguration(ToolMaterialCard.XARPITE).mineAll().collection().enchantment(EnchantmentCard.STICKY_MINING.key),
+            FairyPickaxeConfiguration(ToolMaterialCard.XARPITE).enchantment(EnchantmentCard.MINE_ALL.key).collection().enchantment(EnchantmentCard.STICKY_MINING.key),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.XARPITE.ore!!.tag) }
         val XARPITE_AXE = !ToolCard(
             "xarpite_axe", EnJa("Xarpite Axe", "紅天石の斧"),
