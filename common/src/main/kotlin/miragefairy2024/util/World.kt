@@ -170,6 +170,7 @@ val isInMagicMining: ThreadLocal<Boolean> = ThreadLocal.withInitial { false }
  * - 近接武器の採掘不能特性を無視します。
  * - 専用のツールが必要なブロックを、ツールの種類にかかわらず回収可能です。
  * - [Item.mineBlock]を起動せず、アイテムの耐久値の減少などが発生しません。
+ * - 魔法効果による採掘中に再帰的に呼び出された場合、例外が発生します。
  */
 fun breakBlockByMagic(itemStack: ItemStack, world: Level, blockPos: BlockPos, player: ServerPlayer): Boolean {
     if (isInMagicMining.get()) throw IllegalStateException("Tried to magically mine while already in magic mining.")
