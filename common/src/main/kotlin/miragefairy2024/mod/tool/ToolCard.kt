@@ -16,7 +16,6 @@ import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.mod.tool.effects.areaMining
 import miragefairy2024.mod.tool.effects.collection
-import miragefairy2024.mod.tool.effects.cutAll
 import miragefairy2024.mod.tool.effects.effective
 import miragefairy2024.mod.tool.effects.enchantment
 import miragefairy2024.mod.tool.effects.fireResistant
@@ -193,7 +192,7 @@ class ToolCard(
         val MIRAGIUM_AXE = !ToolCard(
             "miragium_axe", EnJa("Miragium Axe", "ミラジウムの斧"),
             PoemList(3).poem(EnJa("Crack! Squish!", "バキッ！ぐにっ")),
-            FairyAxeConfiguration(ToolMaterialCard.MIRAGIUM).selfMending(20).cutAll().soulStreamContainable(),
+            FairyAxeConfiguration(ToolMaterialCard.MIRAGIUM).selfMending(20).enchantment(EnchantmentCard.CUT_ALL.key).soulStreamContainable(),
         ) { registerAxeRecipeGeneration(item, MaterialCard.MIRAGIUM_INGOT.ore!!.tag) }
         val LILAGIUM_SCYTHE = !ToolCard(
             "lilagium_scythe", EnJa("Lilagium Scythe", "リラジウムの大鎌"),
@@ -223,7 +222,7 @@ class ToolCard(
         val RESONITE_AXE = !ToolCard(
             "resonite_axe", EnJa("Resonance Axe", "共鳴の斧"),
             PoemList(5).poem(EnJa("Wavelength matched to tree height", "共振する樹の繊維。")),
-            FairyAxeConfiguration(ToolMaterialCard.RESONITE).cutAll().enchantment(Enchantments.EFFICIENCY, 6).soulStreamContainable(),
+            FairyAxeConfiguration(ToolMaterialCard.RESONITE).enchantment(EnchantmentCard.CUT_ALL.key).enchantment(Enchantments.EFFICIENCY, 6).soulStreamContainable(),
         ) { registerAxeRecipeGeneration(item, MaterialCard.RESONITE_INGOT.ore!!.tag) }
         val RESONITE_KNIFE = !ToolCard(
             "resonite_knife", EnJa("Resonite Knife", "共鳴のナイフ"),
@@ -243,7 +242,7 @@ class ToolCard(
         val RESONITE_BATTLE_AXE = !ToolCard(
             "resonite_battle_axe", EnJa("Resonite Battle Axe", "共鳴の戦斧"),
             PoemList(5).poem(EnJa("The mind synchronize with the body", "精神と肉体の調和。")),
-            FairyBattleAxeConfiguration(ToolMaterialCard.RESONITE).cutAll().enchantment(Enchantments.SHARPNESS, 6).soulStreamContainable(),
+            FairyBattleAxeConfiguration(ToolMaterialCard.RESONITE).enchantment(EnchantmentCard.CUT_ALL.key).enchantment(Enchantments.SHARPNESS, 6).soulStreamContainable(),
         ) { registerBattleAxeRecipeGeneration(item, MaterialCard.RESONITE_INGOT.ore!!.tag) }
         val PROMINITE_PICKAXE = !ToolCard(
             "prominite_pickaxe", EnJa("Prominite Pickaxe", "プロミナイトのつるはし"),
@@ -363,7 +362,7 @@ class ToolCard(
         val XARPITE_AXE = !ToolCard(
             "xarpite_axe", EnJa("Xarpite Axe", "紅天石の斧"),
             PoemList(2).poem(EnJa("Strip the log from the space", "空間にこびりついた丸太の除去に。")),
-            FairyAxeConfiguration(ToolMaterialCard.XARPITE).cutAll().collection().enchantment(EnchantmentCard.STICKY_MINING.key),
+            FairyAxeConfiguration(ToolMaterialCard.XARPITE).enchantment(EnchantmentCard.CUT_ALL.key).collection().enchantment(EnchantmentCard.STICKY_MINING.key),
         ) { registerAxeRecipeGeneration(item, MaterialCard.XARPITE.ore!!.tag) }
         val CHAOS_STONE_PICKAXE = !ToolCard(
             "chaos_stone_pickaxe", EnJa("Chaos Stone Pickaxe", "混沌のつるはし"),

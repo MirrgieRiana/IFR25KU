@@ -9,10 +9,12 @@ import miragefairy2024.mod.tool.effects.breakDirectionCache
 import miragefairy2024.platformProxy
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.MultiMine
+import miragefairy2024.util.NeighborType
 import miragefairy2024.util.en
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.get
+import miragefairy2024.util.isIn
 import miragefairy2024.util.isInMagicMining
 import miragefairy2024.util.isValid
 import miragefairy2024.util.ja
@@ -26,6 +28,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.tags.BlockTags
 import net.minecraft.tags.EnchantmentTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
@@ -115,6 +118,12 @@ enum class EnchantmentCard(
         "backward_area_mining", EnJa("Backward Area Mining", "後方範囲採掘"),
         ItemTags.MINING_LOOT_ENCHANTABLE, NONE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
         5, 25, 25, 50,
+        tags = listOf(EnchantmentTags.TREASURE),
+    ),
+    CUT_ALL(
+        "cut_all", EnJa("Cut All", "一括伐採"),
+        ItemTags.MINING_LOOT_ENCHANTABLE, NONE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
+        1, 25, 25, 50,
         tags = listOf(EnchantmentTags.TREASURE),
     ),
     CURSE_OF_SHATTERING(
@@ -254,6 +263,40 @@ fun initEnchantmentModule() {
                         )
                     },
                     canContinue = { _, blockState -> tool.item.isCorrectToolForDrops(tool, blockState) },
+                )
+            }
+        }.execute()
+    }
+
+    // Cut All
+    BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
+        if (world.isClientSide) return@register
+        if (player !is ServerPlayer) return@register
+        if (isInMagicMining.get()) return@register
+
+        val cutAllLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.CUT_ALL.key], tool)
+        if (cutAllLevel <= 0) return@register
+
+        object : MultiMine(world, pos, state, player, tool.item, tool) {
+            override fun isValidBaseBlockState() = blockState isIn BlockTags.LOGS
+            override fun executeImpl() {
+                val logBlockPosList = mutableListOf<BlockPos>()
+                visit(
+                    listOf(pos),
+                    miningDamage = 1.0,
+                    maxDistance = 19,
+                    maxCount = 19,
+                    neighborType = NeighborType.VERTICES,
+                    canContinue = { _, blockState -> blockState isIn BlockTags.LOGS },
+                    onMine = { blockPos ->
+                        logBlockPosList += blockPos
+                    },
+                ).let { if (!it) return }
+                visit(
+                    logBlockPosList,
+                    miningDamage = 0.1,
+                    maxDistance = 8,
+                    canContinue = { _, blockState -> blockState isIn BlockTags.LEAVES },
                 )
             }
         }.execute()
