@@ -161,6 +161,8 @@ fun breakBlock(itemStack: ItemStack, world: Level, blockPos: BlockPos, player: S
     return true
 }
 
+val isInMagicMining: ThreadLocal<Boolean> = ThreadLocal.withInitial { false }
+
 /**
  * 魔法効果としてブロックを壊します。
  *
@@ -170,24 +172,30 @@ fun breakBlock(itemStack: ItemStack, world: Level, blockPos: BlockPos, player: S
  * - [Item.mineBlock]を起動せず、アイテムの耐久値の減少などが発生しません。
  */
 fun breakBlockByMagic(itemStack: ItemStack, world: Level, blockPos: BlockPos, player: ServerPlayer): Boolean {
-    val blockState = world.getBlockState(blockPos)
-    val blockEntity = world.getBlockEntity(blockPos)
-    val block = blockState.block
+    if (isInMagicMining.get()) throw IllegalStateException("Tried to magically mine while already in magic mining.")
+    isInMagicMining.set(true)
+    try {
+        val blockState = world.getBlockState(blockPos)
+        val blockEntity = world.getBlockEntity(blockPos)
+        val block = blockState.block
 
-    if (blockState.getDestroySpeed(world, blockPos) < 0F) return false // このブロックは破壊不能
-    if (block is GameMasterBlock && !player.canUseGameMasterBlocks()) {
-        world.sendBlockUpdated(blockPos, blockState, blockState, Block.UPDATE_ALL)
-        return false // コマンドブロックを破壊しようとした
+        if (blockState.getDestroySpeed(world, blockPos) < 0F) return false // このブロックは破壊不能
+        if (block is GameMasterBlock && !player.canUseGameMasterBlocks()) {
+            world.sendBlockUpdated(blockPos, blockState, blockState, Block.UPDATE_ALL)
+            return false // コマンドブロックを破壊しようとした
+        }
+        if (player.blockActionRestricted(world, blockPos, player.gameMode.gameModeForPlayer)) return false // 破壊する権限がない
+
+        block.playerWillDestroy(world, blockPos, blockState, player)
+        val success = world.removeBlock(blockPos, false)
+        if (success) block.destroy(world, blockPos, blockState)
+        if (player.isCreative) return true // クリエイティブの場合、ドロップを省略
+        val newItemStack = itemStack.copy()
+        if (success) block.playerDestroy(world, player, blockPos, blockState, blockEntity, newItemStack)
+        return true
+    } finally {
+        isInMagicMining.set(false)
     }
-    if (player.blockActionRestricted(world, blockPos, player.gameMode.gameModeForPlayer)) return false // 破壊する権限がない
-
-    block.playerWillDestroy(world, blockPos, blockState, player)
-    val success = world.removeBlock(blockPos, false)
-    if (success) block.destroy(world, blockPos, blockState)
-    if (player.isCreative) return true // クリエイティブの場合、ドロップを省略
-    val newItemStack = itemStack.copy()
-    if (success) block.playerDestroy(world, player, blockPos, blockState, blockEntity, newItemStack)
-    return true
 }
 
 fun collectItem(

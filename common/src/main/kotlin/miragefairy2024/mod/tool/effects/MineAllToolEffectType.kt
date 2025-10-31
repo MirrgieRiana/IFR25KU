@@ -11,6 +11,7 @@ import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isIn
+import miragefairy2024.util.isInMagicMining
 import miragefairy2024.util.text
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags
 import net.minecraft.server.level.ServerPlayer
@@ -31,6 +32,7 @@ object MineAllToolEffectType : BooleanToolEffectType<ToolConfiguration>() {
         configuration.onPostMineListeners += fail@{ item, stack, world, state, pos, miner ->
             if (world.isClientSide) return@fail
             if (miner !is ServerPlayer) return@fail
+            if (isInMagicMining.get()) return@fail
             object : MultiMine(world, pos, state, miner, item, stack) {
                 override fun isValidBaseBlockState() = blockState isIn ConventionalBlockTags.ORES
                 override fun executeImpl() {
