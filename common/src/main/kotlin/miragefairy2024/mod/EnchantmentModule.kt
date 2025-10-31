@@ -163,6 +163,7 @@ fun initEnchantmentModule() {
         card.init()
     }
 
+    // Fortune Up
     platformProxy!!.registerModifyItemEnchantmentsHandler { _, mutableItemEnchantments, enchantmentLookup ->
         val fortuneEnchantment = enchantmentLookup[Enchantments.FORTUNE].orNull ?: return@registerModifyItemEnchantmentsHandler
         val fortuneLevel = mutableItemEnchantments.getLevel(fortuneEnchantment)
@@ -172,6 +173,7 @@ fun initEnchantmentModule() {
         mutableItemEnchantments.set(fortuneEnchantment, fortuneLevel + fortuneUpLevel)
     }
 
+    // Smelting
     BlockCallback.GET_DROPS_BY_ENTITY.register { state, level, _, _, _, tool, drops ->
         val smeltingLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.SMELTING.key], tool)
         if (smeltingLevel == 0) return@register drops
@@ -184,6 +186,7 @@ fun initEnchantmentModule() {
         }
     }
 
+    // Sticky Mining
     run {
         val listener = ThreadLocal<() -> Unit>()
         BlockCallback.BEFORE_DROP_BY_ENTITY.register { _, level, pos, _, entity, tool ->
@@ -216,6 +219,7 @@ fun initEnchantmentModule() {
         }
     }
 
+    // Area Mining
     BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
         if (world.isClientSide) return@register
         if (player !is ServerPlayer) return@register
@@ -255,6 +259,7 @@ fun initEnchantmentModule() {
         }.execute()
     }
 
+    // Curse of Shattering
     EquippedItemBrokenCallback.EVENT.register { entity, _, slot ->
         if (entity.level().isClientSide) return@register
         val itemStack = entity.getItemBySlot(slot)
