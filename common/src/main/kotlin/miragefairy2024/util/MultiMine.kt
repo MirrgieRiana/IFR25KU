@@ -32,7 +32,7 @@ abstract class MultiMine(
         ): Boolean
     }
 
-    abstract fun collect(visitor: Visitor)
+    abstract fun visit(visitor: Visitor)
 
     open fun isValidBaseBlockState(): Boolean = true
 
@@ -43,7 +43,7 @@ abstract class MultiMine(
 
         // 発動
 
-        collect(object : Visitor {
+        visit(object : Visitor {
             override fun visit(
                 originalBlockPosList: Iterable<BlockPos>,
                 miningDamage: Double,

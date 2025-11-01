@@ -274,7 +274,7 @@ fun initEnchantmentModule() {
             level, blockPos, blockState,
             miner, toolItem, toolItemStack,
         ) {
-        override fun collect(visitor: Visitor) {
+        override fun visit(visitor: Visitor) {
             visitor.visit(
                 listOf(blockPos),
                 miningDamage = 1.0,
@@ -328,7 +328,7 @@ fun initEnchantmentModule() {
 
         object : MultiMine(world, pos, state, player, tool.item, tool) {
             override fun isValidBaseBlockState() = blockState isIn BlockTags.LOGS
-            override fun collect(visitor: Visitor) {
+            override fun visit(visitor: Visitor) {
                 val logBlockPosList = mutableListOf<BlockPos>()
                 visitor.visit(
                     listOf(pos),
@@ -362,7 +362,7 @@ fun initEnchantmentModule() {
 
         object : MultiMine(world, pos, state, player, tool.item, tool) {
             override fun isValidBaseBlockState() = blockState isIn ConventionalBlockTags.ORES
-            override fun collect(visitor: Visitor) {
+            override fun visit(visitor: Visitor) {
                 visitor.visit(
                     listOf(pos),
                     miningDamage = 1.0,
