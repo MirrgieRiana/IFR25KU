@@ -21,6 +21,7 @@ import miragefairy2024.util.isValid
 import miragefairy2024.util.ja
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerDynamicGeneration
+import miragefairy2024.util.serverSide
 import miragefairy2024.util.toItemTag
 import miragefairy2024.util.with
 import mirrg.kotlin.helium.max
@@ -38,6 +39,7 @@ import net.minecraft.tags.TagKey
 import net.minecraft.world.entity.EquipmentSlotGroup
 import net.minecraft.world.entity.ExperienceOrb
 import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeType
@@ -268,7 +270,7 @@ fun initEnchantmentModule() {
     class AreaMiningMultiMine(
         private val lateralLevel: Int, private val forwardLevel: Int, private val backwardLevel: Int,
         level: Level, blockPos: BlockPos, blockState: BlockState,
-        miner: ServerPlayer, toolItem: Item, toolItemStack: ItemStack,
+        miner: Player, toolItem: Item, toolItemStack: ItemStack,
     ) :
         MultiMine(
             level, blockPos, blockState,
@@ -314,7 +316,7 @@ fun initEnchantmentModule() {
             forwardLevel, lateralLevel, backwardLevel,
             world, pos, state,
             player, tool.item, tool,
-        ).execute()
+        ).execute(player.serverSide, state.getDestroySpeed(world, pos))
     }
 
     // Cut All
@@ -348,7 +350,7 @@ fun initEnchantmentModule() {
                     canContinue = { _, blockState -> blockState isIn BlockTags.LEAVES },
                 )
             }
-        }.execute()
+        }.execute(player.serverSide, state.getDestroySpeed(world, pos))
     }
 
     // Mine All
@@ -371,7 +373,7 @@ fun initEnchantmentModule() {
                     canContinue = { _, blockState -> blockState.block === state.block },
                 )
             }
-        }.execute()
+        }.execute(player.serverSide, state.getDestroySpeed(world, pos))
     }
 
     // Curse of Shattering
