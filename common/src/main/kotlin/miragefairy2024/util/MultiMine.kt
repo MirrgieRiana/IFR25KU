@@ -32,9 +32,9 @@ abstract class MultiMine(
         ): Boolean
     }
 
-    open fun isValidBaseBlockState(): Boolean = true
-
     abstract fun collect(visitor: Visitor)
+
+    open fun isValidBaseBlockState(): Boolean = true
 
     fun execute() {
         if (miner.isShiftKeyDown) return // 使用者がスニーク中
