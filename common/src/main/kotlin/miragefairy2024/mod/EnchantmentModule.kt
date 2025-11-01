@@ -273,8 +273,8 @@ fun initEnchantmentModule() {
         if (forwardLevel <= 0 && lateralLevel <= 0 && backwardLevel <= 0) return@register
 
         object : MultiMine(world, pos, state, player, tool.item, tool) {
-            override fun executeImpl() {
-                visit(
+            override fun executeImpl(visitor: Visitor) {
+                visitor.visit(
                     listOf(pos),
                     miningDamage = 1.0,
                     region = run {
@@ -312,9 +312,9 @@ fun initEnchantmentModule() {
 
         object : MultiMine(world, pos, state, player, tool.item, tool) {
             override fun isValidBaseBlockState() = blockState isIn BlockTags.LOGS
-            override fun executeImpl() {
+            override fun executeImpl(visitor: Visitor) {
                 val logBlockPosList = mutableListOf<BlockPos>()
-                visit(
+                visitor.visit(
                     listOf(pos),
                     miningDamage = 1.0,
                     maxDistance = 19,
@@ -325,7 +325,7 @@ fun initEnchantmentModule() {
                         logBlockPosList += blockPos
                     },
                 ).let { if (!it) return }
-                visit(
+                visitor.visit(
                     logBlockPosList,
                     miningDamage = 0.1,
                     maxDistance = 8,
@@ -346,8 +346,8 @@ fun initEnchantmentModule() {
 
         object : MultiMine(world, pos, state, player, tool.item, tool) {
             override fun isValidBaseBlockState() = blockState isIn ConventionalBlockTags.ORES
-            override fun executeImpl() {
-                visit(
+            override fun executeImpl(visitor: Visitor) {
+                visitor.visit(
                     listOf(pos),
                     miningDamage = 1.0,
                     maxDistance = 19,
