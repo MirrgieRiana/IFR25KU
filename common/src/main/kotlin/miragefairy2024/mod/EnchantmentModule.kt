@@ -39,11 +39,14 @@ import net.minecraft.world.entity.EquipmentSlotGroup
 import net.minecraft.world.entity.ExperienceOrb
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.item.crafting.SingleRecipeInput
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.item.enchantment.Enchantments
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
@@ -262,6 +265,41 @@ fun initEnchantmentModule() {
     }
 
     // Area Mining
+    class AreaMiningMultiMine(
+        private val lateralLevel: Int, private val forwardLevel: Int, private val backwardLevel: Int,
+        level: Level, blockPos: BlockPos, blockState: BlockState,
+        miner: ServerPlayer, toolItem: Item, toolItemStack: ItemStack,
+    ) :
+        MultiMine(
+            level, blockPos, blockState,
+            miner, toolItem, toolItemStack,
+        ) {
+        override fun collect(visitor: Visitor) {
+            visitor.visit(
+                listOf(blockPos),
+                miningDamage = 1.0,
+                region = run {
+                    val breakDirection = breakDirectionCache[this.miner.uuid] ?: return // 向きの判定が不正
+                    val l = lateralLevel
+                    val f = forwardLevel
+                    val b = backwardLevel
+                    val (xRange, yRange, zRange) = when (breakDirection) {
+                        Direction.DOWN -> Triple(-l..l, -b..f, -l..l)
+                        Direction.UP -> Triple(-l..l, -f..b, -l..l)
+                        Direction.NORTH -> Triple(-l..l, -l..l, -b..f)
+                        Direction.SOUTH -> Triple(-l..l, -l..l, -f..b)
+                        Direction.WEST -> Triple(-b..f, -l..l, -l..l)
+                        Direction.EAST -> Triple(-f..b, -l..l, -l..l)
+                    }
+                    BlockBox.of(
+                        BlockPos(blockPos.x + xRange.first, blockPos.y + yRange.first, blockPos.z + zRange.first),
+                        BlockPos(blockPos.x + xRange.last, blockPos.y + yRange.last, blockPos.z + zRange.last),
+                    )
+                },
+                canContinue = { _, blockState -> toolItem.isCorrectToolForDrops(toolItemStack, blockState) },
+            )
+        }
+    }
     BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
         if (world.isClientSide) return@register
         if (player !is ServerPlayer) return@register
@@ -272,33 +310,11 @@ fun initEnchantmentModule() {
         val backwardLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.BACKWARD_AREA_MINING.key], tool)
         if (forwardLevel <= 0 && lateralLevel <= 0 && backwardLevel <= 0) return@register
 
-        object : MultiMine(world, pos, state, player, tool.item, tool) {
-            override fun collect(visitor: Visitor) {
-                visitor.visit(
-                    listOf(pos),
-                    miningDamage = 1.0,
-                    region = run {
-                        val breakDirection = breakDirectionCache[player.uuid] ?: return // 向きの判定が不正
-                        val l = lateralLevel
-                        val f = forwardLevel
-                        val b = backwardLevel
-                        val (xRange, yRange, zRange) = when (breakDirection) {
-                            Direction.DOWN -> Triple(-l..l, -b..f, -l..l)
-                            Direction.UP -> Triple(-l..l, -f..b, -l..l)
-                            Direction.NORTH -> Triple(-l..l, -l..l, -b..f)
-                            Direction.SOUTH -> Triple(-l..l, -l..l, -f..b)
-                            Direction.WEST -> Triple(-b..f, -l..l, -l..l)
-                            Direction.EAST -> Triple(-f..b, -l..l, -l..l)
-                        }
-                        BlockBox.of(
-                            BlockPos(pos.x + xRange.first, pos.y + yRange.first, pos.z + zRange.first),
-                            BlockPos(pos.x + xRange.last, pos.y + yRange.last, pos.z + zRange.last),
-                        )
-                    },
-                    canContinue = { _, blockState -> tool.item.isCorrectToolForDrops(tool, blockState) },
-                )
-            }
-        }.execute()
+        AreaMiningMultiMine(
+            forwardLevel, lateralLevel, backwardLevel,
+            world, pos, state,
+            player, tool.item, tool,
+        ).execute()
     }
 
     // Cut All
