@@ -34,7 +34,7 @@ abstract class MultiMine(
 
     open fun isValidBaseBlockState(): Boolean = true
 
-    abstract fun executeImpl(visitor: Visitor)
+    abstract fun collect(visitor: Visitor)
 
     fun execute() {
         if (miner.isShiftKeyDown) return // 使用者がスニーク中
@@ -43,7 +43,7 @@ abstract class MultiMine(
 
         // 発動
 
-        executeImpl(MineVisitor())
+        collect(MineVisitor())
     }
 
     private inner class MineVisitor : Visitor {
