@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -41,6 +42,14 @@ public class BlockCallback {
         }
     });
 
+    public final static Event<OverrideDestroySpeed> OVERRIDE_DESTROY_SPEED = EventFactory.createArrayBacked(OverrideDestroySpeed.class, callbacks -> (state, player, level, pos, f) -> {
+        float newF = f;
+        for (OverrideDestroySpeed callback : callbacks) {
+            newF = callback.overrideDestroySpeed(state, player, level, pos, newF);
+        }
+        return newF;
+    });
+
     public interface AfterBreak {
         void afterBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool);
     }
@@ -51,5 +60,9 @@ public class BlockCallback {
 
     public interface DropByEntity {
         void onDropByEntity(BlockState state, Level level, BlockPos pos, @Nullable BlockEntity blockEntity, @Nullable Entity entity, ItemStack tool);
+    }
+
+    public interface OverrideDestroySpeed {
+        float overrideDestroySpeed(BlockState state, Player player, BlockGetter level, BlockPos pos, float f);
     }
 }
