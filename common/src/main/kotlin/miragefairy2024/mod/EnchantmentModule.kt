@@ -1,11 +1,10 @@
 package miragefairy2024.mod
 
-import dev.architectury.event.EventResult
-import dev.architectury.event.events.common.BlockEvent
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mixins.api.BlockCallback
 import miragefairy2024.mixins.api.EquippedItemBrokenCallback
+import miragefairy2024.mixins.api.LevelEvent
 import miragefairy2024.mod.tool.ToolBreakDamageTypeCard
 import miragefairy2024.platformProxy
 import miragefairy2024.util.EnJa
@@ -21,6 +20,7 @@ import miragefairy2024.util.isValid
 import miragefairy2024.util.ja
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerDynamicGeneration
+import miragefairy2024.util.serverSide
 import miragefairy2024.util.serverSideOrNull
 import miragefairy2024.util.toItemTag
 import miragefairy2024.util.with
@@ -31,6 +31,7 @@ import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.Registries
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.EnchantmentTags
 import net.minecraft.tags.ItemTags
@@ -51,7 +52,6 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
-import java.util.UUID
 
 val MAGIC_WEAPON_ITEM_TAG = MirageFairy2024.identifier("magic_weapon").toItemTag()
 val SCYTHE_ITEM_TAG = MirageFairy2024.identifier("scythe").toItemTag()
@@ -178,7 +178,7 @@ enum class EnchantmentCard(
     }
 }
 
-val breakDirectionCache = mutableMapOf<UUID, Direction>()
+private val latestPlayerMiningDirectionCache = mutableMapOf<Int, Pair<Long, Direction>>()
 
 private fun calculateMiningDirection(player: Player): Direction? {
     val d = player.blockInteractionRange() max player.entityInteractionRange()
@@ -196,25 +196,6 @@ fun initEnchantmentModule() {
 
     EnchantmentCard.entries.forEach { card ->
         card.init()
-    }
-
-    BlockEvent.BREAK.register { level, pos, state, player, xp ->
-        if (level.isClientSide) return@register EventResult.pass()
-        val direction = run {
-            val d = player.blockInteractionRange() max player.entityInteractionRange()
-            val hitResult = player.pick(d, 0F, false)
-            if (hitResult.type != HitResult.Type.BLOCK) {
-                null
-            } else {
-                (hitResult as BlockHitResult).direction
-            }
-        }
-        if (direction == null) {
-            breakDirectionCache.remove(player.uuid)
-        } else {
-            breakDirectionCache[player.uuid] = direction
-        }
-        EventResult.pass()
     }
 
     // Fortune Up
@@ -274,18 +255,42 @@ fun initEnchantmentModule() {
     }
 
     // Area Mining
+    // 両サイドにおいて、採掘の際に採掘速度を上書き
+    BlockCallback.OVERRIDE_DESTROY_SPEED.register { state, player, _, pos, f ->
+        val miningArea = run {
+            val miningDirection = calculateMiningDirection(player) ?: return@run null // なぜかブロックをタゲっていない
+            val multiMine = createAreaMiningMultiMine(
+                miningDirection,
+                player.level(), pos, state,
+                player, player.mainHandItem.item, player.mainHandItem,
+            ) ?: return@run null // 範囲採掘の能力がない
+            val miningArea = multiMine.collect() ?: return@run null // 範囲採掘が発動しなかった
+            miningArea
+        } ?: return@register f // 範囲採掘が発動しなかった
+        miningArea.requiredMiningPower
+    }
+    // サーバーサイドにおいて、最後にプレイヤーがブロックを採掘した際の向きを記憶
+    LevelEvent.HANDLE_PLAYER_ACTION.register { listener, packet ->
+        latestPlayerMiningDirectionCache[listener.player.id] = Pair(listener.player.level().gameTime, packet.direction)
+    }
+    // サーバーサイドにおいて、ブロック破壊後に範囲採掘の効果
     BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
         val serverSide = world.serverSideOrNull ?: return@register
         if (isInMagicMining.get()) return@register
 
-        val miningDirection = calculateMiningDirection(player) ?: return@register // なぜかブロックをタゲっていない
-        val multiMine = createAreaMiningMultiMine(
-            miningDirection,
-            world, pos, state,
-            player, tool.item, tool,
-        ) ?: return@register // 範囲採掘の能力がない
+        val miningDirectionCache = latestPlayerMiningDirectionCache[player.id] ?: return@register // なぜか向きが記録されていない
+        if (miningDirectionCache.first != world.gameTime) return@register // なぜか向きが記録されていない
+        val miningArea = run {
+            val multiMine = createAreaMiningMultiMine(
+                miningDirectionCache.second,
+                world, pos, state,
+                player, tool.item, tool,
+            ) ?: return@run null // 範囲採掘の能力がない
+            val miningArea = multiMine.collect() ?: return@run null // 範囲採掘が発動しなかった
+            miningArea
+        } ?: return@register // 範囲採掘が発動しなかった
 
-        multiMine.execute(serverSide, state.getDestroySpeed(world, pos))
+        miningArea.multiMine.execute(serverSide, miningArea.requiredMiningPower)
     }
 
     // Cut All
@@ -371,9 +376,13 @@ fun createAreaMiningMultiMine(
     if (forwardLevel <= 0 && lateralLevel <= 0 && backwardLevel <= 0) return null
     return object : MultiMine(level, blockPos, blockState, miner, toolItem, toolItemStack) {
         override fun visit(visitor: Visitor): Float {
+            var requiredMiningPower = blockState.getDestroySpeed(level, blockPos)
             visitor.visit(
                 listOf(blockPos),
                 miningDamage = 1.0,
+                onMine = { blockPos ->
+                    requiredMiningPower = requiredMiningPower max level.getBlockState(blockPos).getDestroySpeed(level, blockPos)
+                },
                 region = run {
                     val l = lateralLevel
                     val f = forwardLevel
@@ -393,7 +402,7 @@ fun createAreaMiningMultiMine(
                 },
                 canContinue = { _, blockState -> toolItem.isCorrectToolForDrops(toolItemStack, blockState) },
             )
-            return blockState.getDestroySpeed(level, blockPos)
+            return requiredMiningPower
         }
     }
 }
