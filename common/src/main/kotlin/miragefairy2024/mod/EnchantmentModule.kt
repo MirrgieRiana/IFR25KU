@@ -267,42 +267,6 @@ fun initEnchantmentModule() {
     }
 
     // Area Mining
-    class AreaMiningMultiMine(
-        private val lateralLevel: Int, private val forwardLevel: Int, private val backwardLevel: Int,
-        level: Level, blockPos: BlockPos, blockState: BlockState,
-        miner: Player, toolItem: Item, toolItemStack: ItemStack,
-    ) :
-        MultiMine(
-            level, blockPos, blockState,
-            miner, toolItem, toolItemStack,
-        ) {
-        override fun visit(visitor: Visitor): Float {
-            visitor.visit(
-                listOf(blockPos),
-                miningDamage = 1.0,
-                region = run {
-                    val breakDirection = breakDirectionCache[this.miner.uuid] ?: return blockState.getDestroySpeed(level, blockPos) // 向きの判定が不正
-                    val l = lateralLevel
-                    val f = forwardLevel
-                    val b = backwardLevel
-                    val (xRange, yRange, zRange) = when (breakDirection) {
-                        Direction.DOWN -> Triple(-l..l, -b..f, -l..l)
-                        Direction.UP -> Triple(-l..l, -f..b, -l..l)
-                        Direction.NORTH -> Triple(-l..l, -l..l, -b..f)
-                        Direction.SOUTH -> Triple(-l..l, -l..l, -f..b)
-                        Direction.WEST -> Triple(-b..f, -l..l, -l..l)
-                        Direction.EAST -> Triple(-f..b, -l..l, -l..l)
-                    }
-                    BlockBox.of(
-                        BlockPos(blockPos.x + xRange.first, blockPos.y + yRange.first, blockPos.z + zRange.first),
-                        BlockPos(blockPos.x + xRange.last, blockPos.y + yRange.last, blockPos.z + zRange.last),
-                    )
-                },
-                canContinue = { _, blockState -> toolItem.isCorrectToolForDrops(toolItemStack, blockState) },
-            )
-            return blockState.getDestroySpeed(level, blockPos)
-        }
-    }
     BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
         if (world.isClientSide) return@register
         if (player !is ServerPlayer) return@register
@@ -392,4 +356,41 @@ fun initEnchantmentModule() {
     }
 
     ItemTags.MINING_LOOT_ENCHANTABLE.generator.registerChild(SCYTHE_ITEM_TAG)
+}
+
+class AreaMiningMultiMine(
+    private val lateralLevel: Int, private val forwardLevel: Int, private val backwardLevel: Int,
+    level: Level, blockPos: BlockPos, blockState: BlockState,
+    miner: Player, toolItem: Item, toolItemStack: ItemStack,
+) :
+    MultiMine(
+        level, blockPos, blockState,
+        miner, toolItem, toolItemStack,
+    ) {
+    override fun visit(visitor: Visitor): Float {
+        visitor.visit(
+            listOf(blockPos),
+            miningDamage = 1.0,
+            region = run {
+                val breakDirection = breakDirectionCache[this.miner.uuid] ?: return blockState.getDestroySpeed(level, blockPos) // 向きの判定が不正
+                val l = lateralLevel
+                val f = forwardLevel
+                val b = backwardLevel
+                val (xRange, yRange, zRange) = when (breakDirection) {
+                    Direction.DOWN -> Triple(-l..l, -b..f, -l..l)
+                    Direction.UP -> Triple(-l..l, -f..b, -l..l)
+                    Direction.NORTH -> Triple(-l..l, -l..l, -b..f)
+                    Direction.SOUTH -> Triple(-l..l, -l..l, -f..b)
+                    Direction.WEST -> Triple(-b..f, -l..l, -l..l)
+                    Direction.EAST -> Triple(-f..b, -l..l, -l..l)
+                }
+                BlockBox.of(
+                    BlockPos(blockPos.x + xRange.first, blockPos.y + yRange.first, blockPos.z + zRange.first),
+                    BlockPos(blockPos.x + xRange.last, blockPos.y + yRange.last, blockPos.z + zRange.last),
+                )
+            },
+            canContinue = { _, blockState -> toolItem.isCorrectToolForDrops(toolItemStack, blockState) },
+        )
+        return blockState.getDestroySpeed(level, blockPos)
+    }
 }
