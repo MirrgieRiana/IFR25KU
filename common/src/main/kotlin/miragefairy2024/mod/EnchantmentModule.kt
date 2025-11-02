@@ -299,37 +299,7 @@ fun initEnchantmentModule() {
         val cutAllLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.CUT_ALL.key], tool)
         if (cutAllLevel <= 0) return@register
 
-        fun createMineAllMultiMine(
-            level: Level, blockPos: BlockPos, blockState: BlockState,
-            miner: Player, toolItem: Item, toolItemStack: ItemStack,
-        ): MultiMine {
-            return object : MultiMine(level, blockPos, blockState, miner, toolItem, toolItemStack) {
-                override fun isValidBaseBlockState() = blockState isIn BlockTags.LOGS
-                override fun visit(visitor: Visitor): Float {
-                    val logBlockPosList = mutableListOf<BlockPos>()
-                    visitor.visit(
-                        listOf(blockPos),
-                        miningDamage = 1.0,
-                        maxDistance = 19,
-                        maxCount = 19,
-                        neighborType = NeighborType.VERTICES,
-                        canContinue = { _, blockState2 -> blockState2 isIn BlockTags.LOGS },
-                        onMine = { blockPos ->
-                            logBlockPosList += blockPos
-                        },
-                    ).let { if (!it) return blockState.getDestroySpeed(level, blockPos) }
-                    visitor.visit(
-                        logBlockPosList,
-                        miningDamage = 0.1,
-                        maxDistance = 8,
-                        canContinue = { _, blockState -> blockState isIn BlockTags.LEAVES },
-                    )
-                    return blockState.getDestroySpeed(level, blockPos)
-                }
-            }
-        }
-
-        val multiMine = createMineAllMultiMine(
+        val multiMine = createCutAllMultiMine(
             world, pos, state,
             player, tool.item, tool,
         )
@@ -344,25 +314,6 @@ fun initEnchantmentModule() {
 
         val mineAllLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MINE_ALL.key], tool)
         if (mineAllLevel <= 0) return@register
-
-        fun createMineAllMultiMine(
-            level: Level, blockPos: BlockPos, blockState: BlockState,
-            miner: Player, toolItem: Item, toolItemStack: ItemStack,
-        ): MultiMine {
-            return object : MultiMine(level, blockPos, blockState, miner, toolItem, toolItemStack) {
-                override fun isValidBaseBlockState() = blockState isIn ConventionalBlockTags.ORES
-                override fun visit(visitor: Visitor): Float {
-                    visitor.visit(
-                        listOf(pos),
-                        miningDamage = 1.0,
-                        maxDistance = 19,
-                        maxCount = 31,
-                        canContinue = { _, blockState2 -> blockState2.block === blockState.block },
-                    )
-                    return blockState.getDestroySpeed(level, blockPos)
-                }
-            }
-        }
 
         val multiMine = createMineAllMultiMine(
             world, pos, state,
@@ -385,6 +336,55 @@ fun initEnchantmentModule() {
     }
 
     ItemTags.MINING_LOOT_ENCHANTABLE.generator.registerChild(SCYTHE_ITEM_TAG)
+}
+
+fun createCutAllMultiMine(
+    level: Level, blockPos: BlockPos, blockState: BlockState,
+    miner: Player, toolItem: Item, toolItemStack: ItemStack,
+): MultiMine {
+    return object : MultiMine(level, blockPos, blockState, miner, toolItem, toolItemStack) {
+        override fun isValidBaseBlockState() = blockState isIn BlockTags.LOGS
+        override fun visit(visitor: Visitor): Float {
+            val logBlockPosList = mutableListOf<BlockPos>()
+            visitor.visit(
+                listOf(blockPos),
+                miningDamage = 1.0,
+                maxDistance = 19,
+                maxCount = 19,
+                neighborType = NeighborType.VERTICES,
+                canContinue = { _, blockState2 -> blockState2 isIn BlockTags.LOGS },
+                onMine = { blockPos ->
+                    logBlockPosList += blockPos
+                },
+            ).let { if (!it) return blockState.getDestroySpeed(level, blockPos) }
+            visitor.visit(
+                logBlockPosList,
+                miningDamage = 0.1,
+                maxDistance = 8,
+                canContinue = { _, blockState -> blockState isIn BlockTags.LEAVES },
+            )
+            return blockState.getDestroySpeed(level, blockPos)
+        }
+    }
+}
+
+fun createMineAllMultiMine(
+    level: Level, blockPos: BlockPos, blockState: BlockState,
+    miner: Player, toolItem: Item, toolItemStack: ItemStack,
+): MultiMine {
+    return object : MultiMine(level, blockPos, blockState, miner, toolItem, toolItemStack) {
+        override fun isValidBaseBlockState() = blockState isIn ConventionalBlockTags.ORES
+        override fun visit(visitor: Visitor): Float {
+            visitor.visit(
+                listOf(blockPos),
+                miningDamage = 1.0,
+                maxDistance = 19,
+                maxCount = 31,
+                canContinue = { _, blockState2 -> blockState2.block === blockState.block },
+            )
+            return blockState.getDestroySpeed(level, blockPos)
+        }
+    }
 }
 
 fun createAreaMiningMultiMine(
