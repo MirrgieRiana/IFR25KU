@@ -37,6 +37,7 @@ abstract class MultiMine(
     open fun isValidBaseBlockState(): Boolean = true
 
     fun execute(serverSide: ServerSide, limitHardness: Float) {
+        if (miner.isCreative) return // クリエイティブモードでは無効
         if (miner.isShiftKeyDown) return // 使用者がスニーク中
         if (!toolItem.isCorrectToolForDrops(toolItemStack, blockState)) return // 非対応ツール
         if (!isValidBaseBlockState()) return // 掘ったブロックが適切でない
