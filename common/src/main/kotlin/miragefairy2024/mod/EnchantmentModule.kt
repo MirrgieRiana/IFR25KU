@@ -276,12 +276,12 @@ fun initEnchantmentModule() {
             level, blockPos, blockState,
             miner, toolItem, toolItemStack,
         ) {
-        override fun visit(visitor: Visitor) {
+        override fun visit(visitor: Visitor): Float {
             visitor.visit(
                 listOf(blockPos),
                 miningDamage = 1.0,
                 region = run {
-                    val breakDirection = breakDirectionCache[this.miner.uuid] ?: return // 向きの判定が不正
+                    val breakDirection = breakDirectionCache[this.miner.uuid] ?: return blockState.getDestroySpeed(level, blockPos) // 向きの判定が不正
                     val l = lateralLevel
                     val f = forwardLevel
                     val b = backwardLevel
@@ -300,6 +300,7 @@ fun initEnchantmentModule() {
                 },
                 canContinue = { _, blockState -> toolItem.isCorrectToolForDrops(toolItemStack, blockState) },
             )
+            return blockState.getDestroySpeed(level, blockPos)
         }
     }
     BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
@@ -330,7 +331,7 @@ fun initEnchantmentModule() {
 
         object : MultiMine(world, pos, state, player, tool.item, tool) {
             override fun isValidBaseBlockState() = blockState isIn BlockTags.LOGS
-            override fun visit(visitor: Visitor) {
+            override fun visit(visitor: Visitor): Float {
                 val logBlockPosList = mutableListOf<BlockPos>()
                 visitor.visit(
                     listOf(pos),
@@ -342,13 +343,14 @@ fun initEnchantmentModule() {
                     onMine = { blockPos ->
                         logBlockPosList += blockPos
                     },
-                ).let { if (!it) return }
+                ).let { if (!it) return blockState.getDestroySpeed(level, blockPos) }
                 visitor.visit(
                     logBlockPosList,
                     miningDamage = 0.1,
                     maxDistance = 8,
                     canContinue = { _, blockState -> blockState isIn BlockTags.LEAVES },
                 )
+                return blockState.getDestroySpeed(level, blockPos)
             }
         }.execute(player.serverSide, state.getDestroySpeed(world, pos))
     }
@@ -364,7 +366,7 @@ fun initEnchantmentModule() {
 
         object : MultiMine(world, pos, state, player, tool.item, tool) {
             override fun isValidBaseBlockState() = blockState isIn ConventionalBlockTags.ORES
-            override fun visit(visitor: Visitor) {
+            override fun visit(visitor: Visitor): Float {
                 visitor.visit(
                     listOf(pos),
                     miningDamage = 1.0,
@@ -372,6 +374,7 @@ fun initEnchantmentModule() {
                     maxCount = 31,
                     canContinue = { _, blockState -> blockState.block === state.block },
                 )
+                return blockState.getDestroySpeed(level, blockPos)
             }
         }.execute(player.serverSide, state.getDestroySpeed(world, pos))
     }

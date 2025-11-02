@@ -32,7 +32,7 @@ abstract class MultiMine(
         ): Boolean
     }
 
-    abstract fun visit(visitor: Visitor)
+    abstract fun visit(visitor: Visitor): Float
 
     open fun isValidBaseBlockState(): Boolean = true
 
