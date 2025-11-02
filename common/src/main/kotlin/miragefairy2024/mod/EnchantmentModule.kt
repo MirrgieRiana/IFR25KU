@@ -373,11 +373,11 @@ fun createAreaMiningMultiMine(
                 listOf(blockPos),
                 miningDamage = 1.0,
                 region = run {
-                    val breakDirection = breakDirectionCache[this.miner.uuid] ?: return blockState.getDestroySpeed(level, blockPos) // 向きの判定が不正
+                    val miningDirection = breakDirectionCache[this.miner.uuid] ?: return blockState.getDestroySpeed(level, blockPos) // 向きの判定が不正
                     val l = lateralLevel
                     val f = forwardLevel
                     val b = backwardLevel
-                    val (xRange, yRange, zRange) = when (breakDirection) {
+                    val (xRange, yRange, zRange) = when (miningDirection) {
                         Direction.DOWN -> Triple(-l..l, -b..f, -l..l)
                         Direction.UP -> Triple(-l..l, -f..b, -l..l)
                         Direction.NORTH -> Triple(-l..l, -l..l, -b..f)
