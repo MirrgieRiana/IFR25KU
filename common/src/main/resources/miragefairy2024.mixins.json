@@ -9,6 +9,7 @@
     "DataGeneratorMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin",
+    "ServerGamePacketListenerImplMixin",
     "ServerLevelMixin"
   ],
   "injectors": {
