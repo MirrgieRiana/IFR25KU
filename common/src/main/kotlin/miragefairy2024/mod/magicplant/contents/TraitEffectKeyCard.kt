@@ -60,6 +60,9 @@ private abstract class BaseTraitEffectKey(val card: TraitEffectKeyCard) : TraitE
     override fun toString() = card.identifier.string
 }
 
+/**
+ * パワーが1増えるごとに値が1増えます。
+ */
 private class NormalTraitEffectKey(card: TraitEffectKeyCard) : BaseTraitEffectKey(card) {
     override fun getValue(power: Double) = power
     override fun renderValue(value: Double): Component {
@@ -73,6 +76,9 @@ private class NormalTraitEffectKey(card: TraitEffectKeyCard) : BaseTraitEffectKe
     override fun getDefaultValue() = 0.0
 }
 
+/**
+ * パワーが1増えるごとに値が50%ずつ最大値の1に近づきます。
+ */
 private class LogTraitEffectKey(card: TraitEffectKeyCard) : BaseTraitEffectKey(card) {
     override fun getValue(power: Double) = 1 - 0.5.pow(power)
     override fun renderValue(value: Double): Component {
@@ -86,6 +92,9 @@ private class LogTraitEffectKey(card: TraitEffectKeyCard) : BaseTraitEffectKey(c
     override fun getDefaultValue() = 0.0
 }
 
+/**
+ * 値はパワーの2乗です。
+ */
 private class SquaredTraitEffectKey(card: TraitEffectKeyCard) : BaseTraitEffectKey(card) {
     override fun getValue(power: Double) = power * power
     override fun renderValue(value: Double): Component {
