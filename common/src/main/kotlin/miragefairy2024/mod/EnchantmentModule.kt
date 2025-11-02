@@ -21,7 +21,7 @@ import miragefairy2024.util.isValid
 import miragefairy2024.util.ja
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerDynamicGeneration
-import miragefairy2024.util.serverSide
+import miragefairy2024.util.serverSideOrNull
 import miragefairy2024.util.toItemTag
 import miragefairy2024.util.with
 import mirrg.kotlin.helium.max
@@ -31,7 +31,6 @@ import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.Registries
-import net.minecraft.server.level.ServerPlayer
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.EnchantmentTags
 import net.minecraft.tags.ItemTags
@@ -276,8 +275,7 @@ fun initEnchantmentModule() {
 
     // Area Mining
     BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
-        if (world.isClientSide) return@register
-        if (player !is ServerPlayer) return@register
+        val serverSide = world.serverSideOrNull ?: return@register
         if (isInMagicMining.get()) return@register
 
         val miningDirection = calculateMiningDirection(player) ?: return@register // なぜかブロックをタゲっていない
@@ -287,13 +285,12 @@ fun initEnchantmentModule() {
             player, tool.item, tool,
         ) ?: return@register // 範囲採掘の能力がない
 
-        multiMine.execute(player.serverSide, state.getDestroySpeed(world, pos))
+        multiMine.execute(serverSide, state.getDestroySpeed(world, pos))
     }
 
     // Cut All
     BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
-        if (world.isClientSide) return@register
-        if (player !is ServerPlayer) return@register
+        val serverSide = world.serverSideOrNull ?: return@register
         if (isInMagicMining.get()) return@register
 
         val cutAllLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.CUT_ALL.key], tool)
@@ -322,13 +319,12 @@ fun initEnchantmentModule() {
                 )
                 return blockState.getDestroySpeed(level, blockPos)
             }
-        }.execute(player.serverSide, state.getDestroySpeed(world, pos))
+        }.execute(serverSide, state.getDestroySpeed(world, pos))
     }
 
     // Mine All
     BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
-        if (world.isClientSide) return@register
-        if (player !is ServerPlayer) return@register
+        val serverSide = world.serverSideOrNull ?: return@register
         if (isInMagicMining.get()) return@register
 
         val mineAllLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MINE_ALL.key], tool)
@@ -346,7 +342,7 @@ fun initEnchantmentModule() {
                 )
                 return blockState.getDestroySpeed(level, blockPos)
             }
-        }.execute(player.serverSide, state.getDestroySpeed(world, pos))
+        }.execute(serverSide, state.getDestroySpeed(world, pos))
     }
 
     // Curse of Shattering
