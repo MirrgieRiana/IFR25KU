@@ -272,16 +272,12 @@ fun initEnchantmentModule() {
         if (player !is ServerPlayer) return@register
         if (isInMagicMining.get()) return@register
 
-        val forwardLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.FORWARD_AREA_MINING.key], tool)
-        val lateralLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.LATERAL_AREA_MINING.key], tool)
-        val backwardLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.BACKWARD_AREA_MINING.key], tool)
-        if (forwardLevel <= 0 && lateralLevel <= 0 && backwardLevel <= 0) return@register
-
-        createAreaMiningMultiMine(
-            forwardLevel, lateralLevel, backwardLevel,
+        val multiMine = createAreaMiningMultiMine(
             world, pos, state,
             player, tool.item, tool,
-        ).execute(player.serverSide, state.getDestroySpeed(world, pos))
+        ) ?: return@register // 範囲採掘の能力がない
+
+        multiMine.execute(player.serverSide, state.getDestroySpeed(world, pos))
     }
 
     // Cut All
@@ -359,10 +355,15 @@ fun initEnchantmentModule() {
 }
 
 fun createAreaMiningMultiMine(
-    lateralLevel: Int, forwardLevel: Int, backwardLevel: Int,
     level: Level, blockPos: BlockPos, blockState: BlockState,
     miner: Player, toolItem: Item, toolItemStack: ItemStack,
-): MultiMine {
+): MultiMine? {
+
+    val forwardLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.FORWARD_AREA_MINING.key], toolItemStack)
+    val lateralLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.LATERAL_AREA_MINING.key], toolItemStack)
+    val backwardLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.BACKWARD_AREA_MINING.key], toolItemStack)
+    if (forwardLevel <= 0 && lateralLevel <= 0 && backwardLevel <= 0) return null
+
     return object : MultiMine(
         level, blockPos, blockState,
         miner, toolItem, toolItemStack,
