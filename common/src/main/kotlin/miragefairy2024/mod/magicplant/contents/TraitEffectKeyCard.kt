@@ -19,11 +19,11 @@ import kotlin.math.pow
 
 enum class TraitEffectKeyCard(
     path: String,
-    emoji: Emoji,
+    private val emoji: Emoji,
     enName: String,
     jaName: String,
-    sortValue: Double,
-    color: Int,
+    private val sortValue: Double,
+    private val color: Int,
     scale: Scale,
 ) {
     NUTRITION("nutrition", Emoji.NUTRITION, "Nutrition", "栄養値", 1100.0, 0x99DD99, Scale.NORMAL),
@@ -55,60 +55,58 @@ enum class TraitEffectKeyCard(
 
     val identifier = MirageFairy2024.identifier(path)
     val translation = Translation({ identifier.toLanguageKey("${MirageFairy2024.MOD_ID}.trait_effect") }, enName, jaName)
-    val traitEffectKey = when (scale) {
-        Scale.NORMAL -> object : TraitEffectKey<Double>() {
-            override val emoji = emoji()
-            override val name = text { translation() }
-            override val sortValue = sortValue
-            override val color = color
-            override fun getValue(power: Double) = power
-            override fun renderValue(value: Double): Component {
-                return when {
-                    value < 0.1 -> text { (value * 100.0 formatAs "%.1f%%")() }
-                    else -> text { (value * 100.0 formatAs "%.0f%%")() }
-                }
-            }
 
-            override fun plus(a: Double, b: Double) = a + b
-            override fun getDefaultValue() = 0.0
-            override fun toString() = identifier.string
+    private abstract inner class BaseTraitEffectKey : TraitEffectKey<Double>() {
+        override val emoji = this@TraitEffectKeyCard.emoji()
+        override val name = text { translation() }
+        override val sortValue = this@TraitEffectKeyCard.sortValue
+        override val color = this@TraitEffectKeyCard.color
+        override fun toString() = identifier.string
+    }
+
+    private inner class NormalTraitEffectKey : BaseTraitEffectKey() {
+        override fun getValue(power: Double) = power
+        override fun renderValue(value: Double): Component {
+            return when {
+                value < 0.1 -> text { (value * 100.0 formatAs "%.1f%%")() }
+                else -> text { (value * 100.0 formatAs "%.0f%%")() }
+            }
         }
 
-        Scale.LOG -> object : TraitEffectKey<Double>() {
-            override val emoji = emoji()
-            override val name = text { translation() }
-            override val sortValue = sortValue
-            override val color = color
-            override fun getValue(power: Double) = 1 - 0.5.pow(power)
-            override fun renderValue(value: Double): Component {
-                return when {
-                    value < 0.1 -> text { (value * 100.0 formatAs "%.1f%%")() }
-                    else -> text { (value * 100.0 formatAs "%.0f%%")() }
-                }
-            }
+        override fun plus(a: Double, b: Double) = a + b
+        override fun getDefaultValue() = 0.0
+    }
 
-            override fun plus(a: Double, b: Double) = 1.0 - (1.0 - a) * (1.0 - b)
-            override fun getDefaultValue() = 0.0
-            override fun toString() = identifier.string
+    private inner class LogTraitEffectKey : BaseTraitEffectKey() {
+        override fun getValue(power: Double) = 1 - 0.5.pow(power)
+        override fun renderValue(value: Double): Component {
+            return when {
+                value < 0.1 -> text { (value * 100.0 formatAs "%.1f%%")() }
+                else -> text { (value * 100.0 formatAs "%.0f%%")() }
+            }
         }
 
-        Scale.SQUARED -> object : TraitEffectKey<Double>() {
-            override val emoji = emoji()
-            override val name = text { translation() }
-            override val sortValue = sortValue
-            override val color = color
-            override fun getValue(power: Double) = power * power
-            override fun renderValue(value: Double): Component {
-                return when {
-                    value < 0.1 -> text { (value * 100.0 formatAs "%.1f%%")() }
-                    else -> text { (value * 100.0 formatAs "%.0f%%")() }
-                }
-            }
+        override fun plus(a: Double, b: Double) = 1.0 - (1.0 - a) * (1.0 - b)
+        override fun getDefaultValue() = 0.0
+    }
 
-            override fun plus(a: Double, b: Double) = a + b
-            override fun getDefaultValue() = 0.0
-            override fun toString() = identifier.string
+    private inner class SquaredTraitEffectKey : BaseTraitEffectKey() {
+        override fun getValue(power: Double) = power * power
+        override fun renderValue(value: Double): Component {
+            return when {
+                value < 0.1 -> text { (value * 100.0 formatAs "%.1f%%")() }
+                else -> text { (value * 100.0 formatAs "%.0f%%")() }
+            }
         }
+
+        override fun plus(a: Double, b: Double) = a + b
+        override fun getDefaultValue() = 0.0
+    }
+
+    val traitEffectKey: TraitEffectKey<Double> = when (scale) {
+        Scale.NORMAL -> NormalTraitEffectKey()
+        Scale.LOG -> LogTraitEffectKey()
+        Scale.SQUARED -> SquaredTraitEffectKey()
     }
 }
 
