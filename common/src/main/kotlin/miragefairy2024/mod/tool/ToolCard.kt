@@ -2,9 +2,9 @@ package miragefairy2024.mod.tool
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.mod.EnchantmentCard
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.PoemList
+import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.Shape

@@ -2,7 +2,7 @@ package miragefairy2024.mod.tool.items
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
-import miragefairy2024.mod.SCYTHE_ITEM_TAG
+import miragefairy2024.mod.enchantment.SCYTHE_ITEM_TAG
 import miragefairy2024.mod.magicplant.MagicPlantBlock
 import miragefairy2024.mod.magicplant.PostTryPickHandlerItem
 import miragefairy2024.mod.tool.FairyMiningToolConfiguration

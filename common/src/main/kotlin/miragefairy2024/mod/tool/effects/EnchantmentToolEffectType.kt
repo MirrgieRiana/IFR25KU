@@ -2,8 +2,8 @@ package miragefairy2024.mod.tool.effects
 
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.DynamicPoem
-import miragefairy2024.mod.EnchantmentCard
 import miragefairy2024.mod.PoemType
+import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.ToolEffectType
 import miragefairy2024.mod.tool.merge

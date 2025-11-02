@@ -1,7 +1,7 @@
 package miragefairy2024.mod.tool.items
 
 import miragefairy2024.ModifyItemEnchantmentsHandler
-import miragefairy2024.mod.EnchantmentCard
+import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.tool.FairyMiningToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.mod.tool.effects.enchantment

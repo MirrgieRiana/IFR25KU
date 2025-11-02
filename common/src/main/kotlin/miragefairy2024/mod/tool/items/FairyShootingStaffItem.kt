@@ -2,9 +2,9 @@ package miragefairy2024.mod.tool.items
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
-import miragefairy2024.mod.EnchantmentCard
-import miragefairy2024.mod.MAGIC_WEAPON_ITEM_TAG
 import miragefairy2024.mod.SoundEventCard
+import miragefairy2024.mod.enchantment.EnchantmentCard
+import miragefairy2024.mod.enchantment.MAGIC_WEAPON_ITEM_TAG
 import miragefairy2024.mod.entity.AntimatterBoltCard
 import miragefairy2024.mod.entity.AntimatterBoltEntity
 import miragefairy2024.mod.tool.ToolConfiguration

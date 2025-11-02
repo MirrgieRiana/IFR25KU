@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.ClientPlayerEvent
 import miragefairy2024.mixins.api.LevelEvent
-import miragefairy2024.mod.MultiMineHandler
+import miragefairy2024.mod.enchantment.MultiMineHandler
 import miragefairy2024.util.MultiMine
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.Minecraft

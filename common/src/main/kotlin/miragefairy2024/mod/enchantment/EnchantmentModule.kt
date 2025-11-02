@@ -1,4 +1,4 @@
-package miragefairy2024.mod
+package miragefairy2024.mod.enchantment
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
