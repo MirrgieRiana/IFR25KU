@@ -6,7 +6,8 @@
     "ClientLevelMixin",
     "GuiGraphicsMixin",
     "ItemRendererMixin",
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
+    "MultiPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
