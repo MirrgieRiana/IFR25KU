@@ -364,10 +364,7 @@ fun createAreaMiningMultiMine(
     val backwardLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.BACKWARD_AREA_MINING.key], toolItemStack)
     if (forwardLevel <= 0 && lateralLevel <= 0 && backwardLevel <= 0) return null
 
-    return object : MultiMine(
-        level, blockPos, blockState,
-        miner, toolItem, toolItemStack,
-    ) {
+    return object : MultiMine(level, blockPos, blockState, miner, toolItem, toolItemStack) {
         override fun visit(visitor: Visitor): Float {
             visitor.visit(
                 listOf(blockPos),
