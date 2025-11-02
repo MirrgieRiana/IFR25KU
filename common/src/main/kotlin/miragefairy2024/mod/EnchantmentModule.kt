@@ -255,25 +255,30 @@ fun initEnchantmentModule() {
     // 範囲採掘系
     run {
 
-        // Area Mining
         // 両サイドにおいて、採掘の際に採掘速度を上書き
         BlockCallback.OVERRIDE_DESTROY_SPEED.register { state, player, _, pos, f ->
             val miningArea = run {
                 val miningDirection = calculateMiningDirection(player) ?: return@run null // なぜかブロックをタゲっていない
-                val multiMine = createAreaMiningMultiMine(
-                    miningDirection,
-                    player.level(), pos, state,
-                    player, player.mainHandItem.item, player.mainHandItem,
-                ) ?: return@run null // 範囲採掘の能力がない
+                val multiMine = run {
+                    MultiMineHandler.REGISTRY.firstNotNullOfOrNull {
+                        it.create(
+                            miningDirection,
+                            player.level(), pos, state,
+                            player, player.mainHandItem.item, player.mainHandItem,
+                        )
+                    }
+                } ?: return@run null // 範囲採掘の能力がない
                 val miningArea = multiMine.collect() ?: return@run null // 範囲採掘が発動しなかった
                 miningArea
             } ?: return@register f // 範囲採掘が発動しなかった
             miningArea.requiredMiningPower
         }
+
         // サーバーサイドにおいて、最後にプレイヤーがブロックを採掘した際の向きを記憶
         LevelEvent.HANDLE_PLAYER_ACTION.register { listener, packet ->
             latestPlayerMiningDirectionCache[listener.player.id] = Pair(listener.player.level().gameTime, packet.direction)
         }
+
         // サーバーサイドにおいて、ブロック破壊後に範囲採掘の効果
         BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
             val serverSide = world.serverSideOrNull ?: return@register
@@ -282,11 +287,15 @@ fun initEnchantmentModule() {
             val miningDirectionCache = latestPlayerMiningDirectionCache[player.id] ?: return@register // なぜか向きが記録されていない
             if (miningDirectionCache.first != world.gameTime) return@register // なぜか向きが記録されていない
             val miningArea = run {
-                val multiMine = createAreaMiningMultiMine(
-                    miningDirectionCache.second,
-                    world, pos, state,
-                    player, tool.item, tool,
-                ) ?: return@run null // 範囲採掘の能力がない
+                val multiMine = run {
+                    MultiMineHandler.REGISTRY.firstNotNullOfOrNull {
+                        it.create(
+                            miningDirectionCache.second,
+                            world, pos, state,
+                            player, tool.item, tool,
+                        )
+                    }
+                } ?: return@run null // 範囲採掘の能力がない
                 val miningArea = multiMine.collect() ?: return@run null // 範囲採掘が発動しなかった
                 miningArea
             } ?: return@register // 範囲採掘が発動しなかった
@@ -294,37 +303,9 @@ fun initEnchantmentModule() {
             miningArea.multiMine.execute(serverSide, miningArea.requiredMiningPower)
         }
 
-        // Cut All
-        BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
-            val serverSide = world.serverSideOrNull ?: return@register
-            if (isInMagicMining.get()) return@register
-
-            val cutAllLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.CUT_ALL.key], tool)
-            if (cutAllLevel <= 0) return@register
-
-            val multiMine = createCutAllMultiMine(
-                world, pos, state,
-                player, tool.item, tool,
-            )
-
-            multiMine.execute(serverSide, state.getDestroySpeed(world, pos))
-        }
-
-        // Mine All
-        BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
-            val serverSide = world.serverSideOrNull ?: return@register
-            if (isInMagicMining.get()) return@register
-
-            val mineAllLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MINE_ALL.key], tool)
-            if (mineAllLevel <= 0) return@register
-
-            val multiMine = createMineAllMultiMine(
-                world, pos, state,
-                player, tool.item, tool,
-            )
-
-            multiMine.execute(serverSide, state.getDestroySpeed(world, pos))
-        }
+        MultiMineHandler.REGISTRY += AreaMiningMultiMineHandler
+        MultiMineHandler.REGISTRY += CutAllMultiMineHandler
+        MultiMineHandler.REGISTRY += MineAllMultiMineHandler
 
     }
 
@@ -343,93 +324,117 @@ fun initEnchantmentModule() {
     ItemTags.MINING_LOOT_ENCHANTABLE.generator.registerChild(SCYTHE_ITEM_TAG)
 }
 
-fun createCutAllMultiMine(
-    level: Level, blockPos: BlockPos, blockState: BlockState,
-    miner: Player, toolItem: Item, toolItemStack: ItemStack,
-): MultiMine {
-    return object : MultiMine(level, blockPos, blockState, miner, toolItem, toolItemStack) {
-        override fun isValidBaseBlockState() = blockState isIn BlockTags.LOGS
-        override fun visit(visitor: Visitor): Float {
-            val logBlockPosList = mutableListOf<BlockPos>()
-            visitor.visit(
-                listOf(blockPos),
-                miningDamage = 1.0,
-                maxDistance = 19,
-                maxCount = 19,
-                neighborType = NeighborType.VERTICES,
-                canContinue = { _, blockState2 -> blockState2 isIn BlockTags.LOGS },
-                onMine = { blockPos ->
-                    logBlockPosList += blockPos
-                },
-            ).let { if (!it) return blockState.getDestroySpeed(level, blockPos) }
-            visitor.visit(
-                logBlockPosList,
-                miningDamage = 0.1,
-                maxDistance = 8,
-                canContinue = { _, blockState -> blockState isIn BlockTags.LEAVES },
-            )
-            return blockState.getDestroySpeed(level, blockPos)
+interface MultiMineHandler {
+    companion object {
+        val REGISTRY = mutableListOf<MultiMineHandler>()
+    }
+
+    fun create(
+        miningDirection: Direction,
+        level: Level, blockPos: BlockPos, blockState: BlockState,
+        miner: Player, toolItem: Item, toolItemStack: ItemStack,
+    ): MultiMine?
+}
+
+object CutAllMultiMineHandler : MultiMineHandler {
+    override fun create(
+        miningDirection: Direction,
+        level: Level, blockPos: BlockPos, blockState: BlockState,
+        miner: Player, toolItem: Item, toolItemStack: ItemStack,
+    ): MultiMine? {
+        val cutAllLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.CUT_ALL.key], toolItemStack)
+        if (cutAllLevel <= 0) return null
+        return object : MultiMine(level, blockPos, blockState, miner, toolItem, toolItemStack) {
+            override fun isValidBaseBlockState() = blockState isIn BlockTags.LOGS
+            override fun visit(visitor: Visitor): Float {
+                val logBlockPosList = mutableListOf<BlockPos>()
+                visitor.visit(
+                    listOf(blockPos),
+                    miningDamage = 1.0,
+                    maxDistance = 19,
+                    maxCount = 19,
+                    neighborType = NeighborType.VERTICES,
+                    canContinue = { _, blockState2 -> blockState2 isIn BlockTags.LOGS },
+                    onMine = { blockPos ->
+                        logBlockPosList += blockPos
+                    },
+                ).let { if (!it) return blockState.getDestroySpeed(level, blockPos) }
+                visitor.visit(
+                    logBlockPosList,
+                    miningDamage = 0.1,
+                    maxDistance = 8,
+                    canContinue = { _, blockState -> blockState isIn BlockTags.LEAVES },
+                )
+                return blockState.getDestroySpeed(level, blockPos)
+            }
         }
     }
 }
 
-fun createMineAllMultiMine(
-    level: Level, blockPos: BlockPos, blockState: BlockState,
-    miner: Player, toolItem: Item, toolItemStack: ItemStack,
-): MultiMine {
-    return object : MultiMine(level, blockPos, blockState, miner, toolItem, toolItemStack) {
-        override fun isValidBaseBlockState() = blockState isIn ConventionalBlockTags.ORES
-        override fun visit(visitor: Visitor): Float {
-            visitor.visit(
-                listOf(blockPos),
-                miningDamage = 1.0,
-                maxDistance = 19,
-                maxCount = 31,
-                canContinue = { _, blockState2 -> blockState2.block === blockState.block },
-            )
-            return blockState.getDestroySpeed(level, blockPos)
+object MineAllMultiMineHandler : MultiMineHandler {
+    override fun create(
+        miningDirection: Direction,
+        level: Level, blockPos: BlockPos, blockState: BlockState,
+        miner: Player, toolItem: Item, toolItemStack: ItemStack,
+    ): MultiMine? {
+        val mineAllLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MINE_ALL.key], toolItemStack)
+        if (mineAllLevel <= 0) return null
+        return object : MultiMine(level, blockPos, blockState, miner, toolItem, toolItemStack) {
+            override fun isValidBaseBlockState() = blockState isIn ConventionalBlockTags.ORES
+            override fun visit(visitor: Visitor): Float {
+                visitor.visit(
+                    listOf(blockPos),
+                    miningDamage = 1.0,
+                    maxDistance = 19,
+                    maxCount = 31,
+                    canContinue = { _, blockState2 -> blockState2.block === blockState.block },
+                )
+                return blockState.getDestroySpeed(level, blockPos)
+            }
         }
     }
 }
 
-fun createAreaMiningMultiMine(
-    miningDirection: Direction,
-    level: Level, blockPos: BlockPos, blockState: BlockState,
-    miner: Player, toolItem: Item, toolItemStack: ItemStack,
-): MultiMine? {
-    val forwardLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.FORWARD_AREA_MINING.key], toolItemStack)
-    val lateralLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.LATERAL_AREA_MINING.key], toolItemStack)
-    val backwardLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.BACKWARD_AREA_MINING.key], toolItemStack)
-    if (forwardLevel <= 0 && lateralLevel <= 0 && backwardLevel <= 0) return null
-    return object : MultiMine(level, blockPos, blockState, miner, toolItem, toolItemStack) {
-        override fun visit(visitor: Visitor): Float {
-            var requiredMiningPower = blockState.getDestroySpeed(level, blockPos)
-            visitor.visit(
-                listOf(blockPos),
-                miningDamage = 1.0,
-                onMine = { blockPos ->
-                    requiredMiningPower = requiredMiningPower max level.getBlockState(blockPos).getDestroySpeed(level, blockPos)
-                },
-                region = run {
-                    val l = lateralLevel
-                    val f = forwardLevel
-                    val b = backwardLevel
-                    val (xRange, yRange, zRange) = when (miningDirection) {
-                        Direction.DOWN -> Triple(-l..l, -b..f, -l..l)
-                        Direction.UP -> Triple(-l..l, -f..b, -l..l)
-                        Direction.NORTH -> Triple(-l..l, -l..l, -b..f)
-                        Direction.SOUTH -> Triple(-l..l, -l..l, -f..b)
-                        Direction.WEST -> Triple(-b..f, -l..l, -l..l)
-                        Direction.EAST -> Triple(-f..b, -l..l, -l..l)
-                    }
-                    BlockBox.of(
-                        BlockPos(blockPos.x + xRange.first, blockPos.y + yRange.first, blockPos.z + zRange.first),
-                        BlockPos(blockPos.x + xRange.last, blockPos.y + yRange.last, blockPos.z + zRange.last),
-                    )
-                },
-                canContinue = { _, blockState2 -> toolItem.isCorrectToolForDrops(toolItemStack, blockState2) },
-            )
-            return requiredMiningPower
+object AreaMiningMultiMineHandler : MultiMineHandler {
+    override fun create(
+        miningDirection: Direction,
+        level: Level, blockPos: BlockPos, blockState: BlockState,
+        miner: Player, toolItem: Item, toolItemStack: ItemStack,
+    ): MultiMine? {
+        val forwardLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.FORWARD_AREA_MINING.key], toolItemStack)
+        val lateralLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.LATERAL_AREA_MINING.key], toolItemStack)
+        val backwardLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.BACKWARD_AREA_MINING.key], toolItemStack)
+        if (forwardLevel <= 0 && lateralLevel <= 0 && backwardLevel <= 0) return null
+        return object : MultiMine(level, blockPos, blockState, miner, toolItem, toolItemStack) {
+            override fun visit(visitor: Visitor): Float {
+                var requiredMiningPower = blockState.getDestroySpeed(level, blockPos)
+                visitor.visit(
+                    listOf(blockPos),
+                    miningDamage = 1.0,
+                    onMine = { blockPos ->
+                        requiredMiningPower = requiredMiningPower max level.getBlockState(blockPos).getDestroySpeed(level, blockPos)
+                    },
+                    region = run {
+                        val l = lateralLevel
+                        val f = forwardLevel
+                        val b = backwardLevel
+                        val (xRange, yRange, zRange) = when (miningDirection) {
+                            Direction.DOWN -> Triple(-l..l, -b..f, -l..l)
+                            Direction.UP -> Triple(-l..l, -f..b, -l..l)
+                            Direction.NORTH -> Triple(-l..l, -l..l, -b..f)
+                            Direction.SOUTH -> Triple(-l..l, -l..l, -f..b)
+                            Direction.WEST -> Triple(-b..f, -l..l, -l..l)
+                            Direction.EAST -> Triple(-f..b, -l..l, -l..l)
+                        }
+                        BlockBox.of(
+                            BlockPos(blockPos.x + xRange.first, blockPos.y + yRange.first, blockPos.z + zRange.first),
+                            BlockPos(blockPos.x + xRange.last, blockPos.y + yRange.last, blockPos.z + zRange.last),
+                        )
+                    },
+                    canContinue = { _, blockState2 -> toolItem.isCorrectToolForDrops(toolItemStack, blockState2) },
+                )
+                return requiredMiningPower
+            }
         }
     }
 }

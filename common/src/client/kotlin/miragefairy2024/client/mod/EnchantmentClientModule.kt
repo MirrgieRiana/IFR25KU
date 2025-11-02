@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.ClientPlayerEvent
 import miragefairy2024.mixins.api.LevelEvent
-import miragefairy2024.mod.createAreaMiningMultiMine
+import miragefairy2024.mod.MultiMineHandler
 import miragefairy2024.util.MultiMine
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.Minecraft
@@ -56,11 +56,15 @@ fun initEnchantmentClientModule() {
             val hitResult = minecraft.hitResult ?: return@run null
             if (hitResult.type != HitResult.Type.BLOCK) return@run null // なぜかブロックをタゲっていない
             hitResult as BlockHitResult
-            val multiMine = createAreaMiningMultiMine(
-                hitResult.direction,
-                level, pos, level.getBlockState(pos),
-                player, player.mainHandItem.item, player.mainHandItem,
-            ) ?: return@run null // 範囲採掘の能力がない
+            val multiMine = run {
+                MultiMineHandler.REGISTRY.firstNotNullOfOrNull {
+                    it.create(
+                        hitResult.direction,
+                        level, pos, level.getBlockState(pos),
+                        player, player.mainHandItem.item, player.mainHandItem,
+                    )
+                }
+            } ?: return@run null // 範囲採掘の能力がない
             val miningArea = multiMine.collect() ?: return@run null // 範囲採掘が発動しなかった
             miningArea
         }
@@ -80,11 +84,15 @@ fun initEnchantmentClientModule() {
             val hitResult = minecraft.hitResult ?: return@run null
             if (hitResult.type != HitResult.Type.BLOCK) return@run null // なぜかブロックをタゲっていない
             hitResult as BlockHitResult
-            val multiMine = createAreaMiningMultiMine(
-                hitResult.direction,
-                level, pos, level.getBlockState(pos),
-                player, player.mainHandItem.item, player.mainHandItem,
-            ) ?: return@run null // 範囲採掘の能力がない
+            val multiMine = run {
+                MultiMineHandler.REGISTRY.firstNotNullOfOrNull {
+                    it.create(
+                        hitResult.direction,
+                        level, pos, level.getBlockState(pos),
+                        player, player.mainHandItem.item, player.mainHandItem,
+                    )
+                }
+            } ?: return@run null // 範囲採掘の能力がない
             val miningArea = multiMine.collect() ?: return@run null // 範囲採掘が発動しなかった
             miningArea
         }
@@ -101,11 +109,16 @@ fun initEnchantmentClientModule() {
             val hitResult = minecraft.hitResult ?: return@run null
             if (hitResult.type != HitResult.Type.BLOCK) return@run null // なぜかブロックをタゲっていない
             hitResult as BlockHitResult
-            val multiMine = createAreaMiningMultiMine(
-                hitResult.direction,
-                level, hitResult.blockPos, level.getBlockState(hitResult.blockPos),
-                player, player.mainHandItem.item, player.mainHandItem,
-            ) ?: return@run null // 範囲採掘の能力がない
+            val multiMine = run {
+                MultiMineHandler.REGISTRY.firstNotNullOfOrNull {
+                    it.create(
+                        hitResult.direction,
+                        level, hitResult.blockPos, level.getBlockState(hitResult.blockPos),
+                        player, player.mainHandItem.item, player.mainHandItem,
+                    )
+                }
+
+            } ?: return@run null // 範囲採掘の能力がない
             val miningArea = multiMine.collect() ?: return@run null // 範囲採掘が発動しなかった
             miningArea
         } ?: return@register // 範囲採掘が発動しなかった
