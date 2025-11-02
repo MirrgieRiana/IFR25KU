@@ -252,75 +252,80 @@ fun initEnchantmentModule() {
         }
     }
 
-    // Area Mining
-    // 両サイドにおいて、採掘の際に採掘速度を上書き
-    BlockCallback.OVERRIDE_DESTROY_SPEED.register { state, player, _, pos, f ->
-        val miningArea = run {
-            val miningDirection = calculateMiningDirection(player) ?: return@run null // なぜかブロックをタゲっていない
-            val multiMine = createAreaMiningMultiMine(
-                miningDirection,
-                player.level(), pos, state,
-                player, player.mainHandItem.item, player.mainHandItem,
-            ) ?: return@run null // 範囲採掘の能力がない
-            val miningArea = multiMine.collect() ?: return@run null // 範囲採掘が発動しなかった
-            miningArea
-        } ?: return@register f // 範囲採掘が発動しなかった
-        miningArea.requiredMiningPower
-    }
-    // サーバーサイドにおいて、最後にプレイヤーがブロックを採掘した際の向きを記憶
-    LevelEvent.HANDLE_PLAYER_ACTION.register { listener, packet ->
-        latestPlayerMiningDirectionCache[listener.player.id] = Pair(listener.player.level().gameTime, packet.direction)
-    }
-    // サーバーサイドにおいて、ブロック破壊後に範囲採掘の効果
-    BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
-        val serverSide = world.serverSideOrNull ?: return@register
-        if (isInMagicMining.get()) return@register
+    // 範囲採掘系
+    run {
 
-        val miningDirectionCache = latestPlayerMiningDirectionCache[player.id] ?: return@register // なぜか向きが記録されていない
-        if (miningDirectionCache.first != world.gameTime) return@register // なぜか向きが記録されていない
-        val miningArea = run {
-            val multiMine = createAreaMiningMultiMine(
-                miningDirectionCache.second,
+        // Area Mining
+        // 両サイドにおいて、採掘の際に採掘速度を上書き
+        BlockCallback.OVERRIDE_DESTROY_SPEED.register { state, player, _, pos, f ->
+            val miningArea = run {
+                val miningDirection = calculateMiningDirection(player) ?: return@run null // なぜかブロックをタゲっていない
+                val multiMine = createAreaMiningMultiMine(
+                    miningDirection,
+                    player.level(), pos, state,
+                    player, player.mainHandItem.item, player.mainHandItem,
+                ) ?: return@run null // 範囲採掘の能力がない
+                val miningArea = multiMine.collect() ?: return@run null // 範囲採掘が発動しなかった
+                miningArea
+            } ?: return@register f // 範囲採掘が発動しなかった
+            miningArea.requiredMiningPower
+        }
+        // サーバーサイドにおいて、最後にプレイヤーがブロックを採掘した際の向きを記憶
+        LevelEvent.HANDLE_PLAYER_ACTION.register { listener, packet ->
+            latestPlayerMiningDirectionCache[listener.player.id] = Pair(listener.player.level().gameTime, packet.direction)
+        }
+        // サーバーサイドにおいて、ブロック破壊後に範囲採掘の効果
+        BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
+            val serverSide = world.serverSideOrNull ?: return@register
+            if (isInMagicMining.get()) return@register
+
+            val miningDirectionCache = latestPlayerMiningDirectionCache[player.id] ?: return@register // なぜか向きが記録されていない
+            if (miningDirectionCache.first != world.gameTime) return@register // なぜか向きが記録されていない
+            val miningArea = run {
+                val multiMine = createAreaMiningMultiMine(
+                    miningDirectionCache.second,
+                    world, pos, state,
+                    player, tool.item, tool,
+                ) ?: return@run null // 範囲採掘の能力がない
+                val miningArea = multiMine.collect() ?: return@run null // 範囲採掘が発動しなかった
+                miningArea
+            } ?: return@register // 範囲採掘が発動しなかった
+
+            miningArea.multiMine.execute(serverSide, miningArea.requiredMiningPower)
+        }
+
+        // Cut All
+        BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
+            val serverSide = world.serverSideOrNull ?: return@register
+            if (isInMagicMining.get()) return@register
+
+            val cutAllLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.CUT_ALL.key], tool)
+            if (cutAllLevel <= 0) return@register
+
+            val multiMine = createCutAllMultiMine(
                 world, pos, state,
                 player, tool.item, tool,
-            ) ?: return@run null // 範囲採掘の能力がない
-            val miningArea = multiMine.collect() ?: return@run null // 範囲採掘が発動しなかった
-            miningArea
-        } ?: return@register // 範囲採掘が発動しなかった
+            )
 
-        miningArea.multiMine.execute(serverSide, miningArea.requiredMiningPower)
-    }
+            multiMine.execute(serverSide, state.getDestroySpeed(world, pos))
+        }
 
-    // Cut All
-    BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
-        val serverSide = world.serverSideOrNull ?: return@register
-        if (isInMagicMining.get()) return@register
+        // Mine All
+        BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
+            val serverSide = world.serverSideOrNull ?: return@register
+            if (isInMagicMining.get()) return@register
 
-        val cutAllLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.CUT_ALL.key], tool)
-        if (cutAllLevel <= 0) return@register
+            val mineAllLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MINE_ALL.key], tool)
+            if (mineAllLevel <= 0) return@register
 
-        val multiMine = createCutAllMultiMine(
-            world, pos, state,
-            player, tool.item, tool,
-        )
+            val multiMine = createMineAllMultiMine(
+                world, pos, state,
+                player, tool.item, tool,
+            )
 
-        multiMine.execute(serverSide, state.getDestroySpeed(world, pos))
-    }
+            multiMine.execute(serverSide, state.getDestroySpeed(world, pos))
+        }
 
-    // Mine All
-    BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
-        val serverSide = world.serverSideOrNull ?: return@register
-        if (isInMagicMining.get()) return@register
-
-        val mineAllLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MINE_ALL.key], tool)
-        if (mineAllLevel <= 0) return@register
-
-        val multiMine = createMineAllMultiMine(
-            world, pos, state,
-            player, tool.item, tool,
-        )
-
-        multiMine.execute(serverSide, state.getDestroySpeed(world, pos))
     }
 
     // Curse of Shattering
