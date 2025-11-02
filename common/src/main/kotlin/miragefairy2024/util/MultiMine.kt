@@ -87,4 +87,47 @@ abstract class MultiMine(
         })
     }
 
+    class MiningArea(val multiMine: MultiMine, val visitedBlockEntry: List<VisitedBlockEntry>, val requiredMiningPower: Float)
+
+    class VisitedBlockEntry(val blockPos: BlockPos, val blockState: BlockState)
+
+    fun collect(): MiningArea? {
+        if (miner.isCreative) return null // クリエイティブモードでは無効
+        if (miner.isShiftKeyDown) return null // 使用者がスニーク中
+        if (!toolItem.isCorrectToolForDrops(toolItemStack, blockState)) return null // 非対応ツール
+        if (!isValidBaseBlockState()) return null // 掘ったブロックが適切でない
+
+        // 発動
+
+        val entries = mutableListOf<VisitedBlockEntry>()
+        val requiredMiningPower = visit(object : Visitor {
+            override fun visit(
+                originalBlockPosList: Iterable<BlockPos>,
+                miningDamage: Double,
+                maxDistance: Int,
+                maxCount: Int?,
+                neighborType: NeighborType,
+                onMine: (BlockPos) -> Unit,
+                region: BlockBox?,
+                canContinue: (BlockPos, BlockState) -> Boolean,
+            ): Boolean {
+                blockVisitor(originalBlockPosList, visitOrigins = false, maxDistance = maxDistance, maxCount = maxCount, neighborType = neighborType) { _, _, toBlockPos ->
+                    if (region != null && toBlockPos !in region) return@blockVisitor false // 範囲外
+                    val blockState = level.getBlockState(toBlockPos)
+                    if (blockState.getDestroySpeed(level, toBlockPos) < 0) return@blockVisitor false // 破壊不能な硬度
+                    canContinue(toBlockPos, blockState)
+                }.forEach fail@{ (_, blockPos) ->
+
+                    // 採掘を続行
+
+                    val targetBlockState = level.getBlockState(blockPos)
+                    entries += VisitedBlockEntry(blockPos, targetBlockState)
+                    onMine(blockPos)
+                }
+                return true
+            }
+        })
+        return MiningArea(this, entries, requiredMiningPower)
+    }
+
 }
