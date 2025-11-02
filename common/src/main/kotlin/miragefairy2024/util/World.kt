@@ -67,7 +67,7 @@ fun blockVisitor(
     neighborType: NeighborType = NeighborType.FACES,
     predicate: (distance: Int, fromBlockPos: BlockPos, toBlockPos: BlockPos) -> Boolean,
 ) = sequence {
-    val checkedBlockPosList = mutableSetOf<BlockPos>()
+    val checkedBlockPosList = originalBlockPosList.toMutableSet()
     var nextBlockPosList = originalBlockPosList.toMutableSet()
     var count = 0
 
