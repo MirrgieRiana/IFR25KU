@@ -20,6 +20,9 @@ abstract class MultiMine(
 ) {
 
     interface Visitor {
+        /**
+         * @return ツールの耐久値が尽きた場合にfalse
+         */
         fun visit(
             originalBlockPosList: Iterable<BlockPos>,
             miningDamage: Double,
