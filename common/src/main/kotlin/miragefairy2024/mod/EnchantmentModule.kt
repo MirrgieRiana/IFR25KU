@@ -181,6 +181,14 @@ enum class EnchantmentCard(
 
 val breakDirectionCache = mutableMapOf<UUID, Direction>()
 
+private fun calculateMiningDirection(player: Player): Direction? {
+    val d = player.blockInteractionRange() max player.entityInteractionRange()
+    val hitResult = player.pick(d, 0F, false)
+    if (hitResult.type != HitResult.Type.BLOCK) return null
+    hitResult as BlockHitResult
+    return hitResult.direction
+}
+
 context(ModContext)
 fun initEnchantmentModule() {
     MAGIC_WEAPON_ITEM_TAG.enJa(EnJa("Magic Weapon", "魔法武器"))
@@ -272,7 +280,9 @@ fun initEnchantmentModule() {
         if (player !is ServerPlayer) return@register
         if (isInMagicMining.get()) return@register
 
+        val miningDirection = calculateMiningDirection(player) ?: return@register // なぜかブロックをタゲっていない
         val multiMine = createAreaMiningMultiMine(
+            miningDirection,
             world, pos, state,
             player, tool.item, tool,
         ) ?: return@register // 範囲採掘の能力がない
@@ -355,6 +365,7 @@ fun initEnchantmentModule() {
 }
 
 fun createAreaMiningMultiMine(
+    miningDirection: Direction,
     level: Level, blockPos: BlockPos, blockState: BlockState,
     miner: Player, toolItem: Item, toolItemStack: ItemStack,
 ): MultiMine? {
@@ -368,7 +379,6 @@ fun createAreaMiningMultiMine(
                 listOf(blockPos),
                 miningDamage = 1.0,
                 region = run {
-                    val miningDirection = breakDirectionCache[this.miner.uuid] ?: return blockState.getDestroySpeed(level, blockPos) // 向きの判定が不正
                     val l = lateralLevel
                     val f = forwardLevel
                     val b = backwardLevel
