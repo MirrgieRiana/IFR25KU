@@ -8,7 +8,8 @@
     "BlockMixin",
     "DataGeneratorMixin",
     "LivingEntityMixin",
-    "PlayerEntityMixin"
+    "PlayerEntityMixin",
+    "ServerLevelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

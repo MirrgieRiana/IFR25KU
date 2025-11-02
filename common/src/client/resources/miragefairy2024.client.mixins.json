@@ -3,6 +3,7 @@
   "package": "miragefairy2024.client.mixins.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "ClientLevelMixin",
     "GuiGraphicsMixin",
     "ItemRendererMixin",
     "MinecraftClientMixin"
