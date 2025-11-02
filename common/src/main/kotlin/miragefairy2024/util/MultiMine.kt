@@ -70,15 +70,14 @@ abstract class MultiMine(
                     if (!canContinue(blockPos, targetBlockState)) return@fail // 採掘時のイベントで条件が外れた
                     val targetHardness = targetBlockState.getDestroySpeed(level, blockPos)
                     if (targetHardness > limitHardness) return@fail // 上限硬度よりも硬いものは掘れない
-                    if (breakBlockByMagic(toolItemStack, level, blockPos, miner.asServerPlayer(serverSide))) {
-                        if (targetHardness > 0) {
-                            val damage = level.random.randomInt(miningDamage)
-                            if (damage > 0) {
-                                toolItemStack.hurtAndBreak(damage, miner, EquipmentSlot.MAINHAND)
-                            }
+                    if (!breakBlockByMagic(toolItemStack, level, blockPos, miner.asServerPlayer(serverSide))) return@fail // 禁止ブロックを掘ろうとした
+                    if (targetHardness > 0) {
+                        val damage = level.random.randomInt(miningDamage)
+                        if (damage > 0) {
+                            toolItemStack.hurtAndBreak(damage, miner, EquipmentSlot.MAINHAND)
                         }
-                        onMine(blockPos)
                     }
+                    onMine(blockPos)
                 }
                 return true
             }
