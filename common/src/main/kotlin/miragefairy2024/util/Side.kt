@@ -13,6 +13,8 @@ val ServerPlayer.serverSide get() = ServerSide
 @Suppress("UnusedReceiverParameter")
 val ServerLevel.serverSide get() = ServerSide
 
+val Level.serverSideOrNull get() = (this as? ServerLevel)?.serverSide
+
 @Suppress("unused")
 fun Player.asServerPlayer(serverSide: ServerSide) = this as ServerPlayer
 
