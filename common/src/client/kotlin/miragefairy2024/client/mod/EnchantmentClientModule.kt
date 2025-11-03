@@ -7,8 +7,10 @@ import miragefairy2024.client.mixins.api.ClientPlayerEvent
 import miragefairy2024.mixins.api.LevelEvent
 import miragefairy2024.mod.enchantment.MultiMineHandler
 import miragefairy2024.util.MultiMine
+import mirrg.kotlin.helium.max
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.LevelRenderer
 import net.minecraft.client.renderer.RenderStateShard
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.core.BlockPos
@@ -105,10 +107,11 @@ fun initEnchantmentClientModule() {
         val level = minecraft.level ?: return@register
         val player = minecraft.player ?: return@register
 
+        val hitResult = minecraft.hitResult ?: return@register
+        if (hitResult.type != HitResult.Type.BLOCK) return@register // ブロックをタゲっていない
+        hitResult as BlockHitResult
+
         val miningArea = run {
-            val hitResult = minecraft.hitResult ?: return@run null
-            if (hitResult.type != HitResult.Type.BLOCK) return@run null // なぜかブロックをタゲっていない
-            hitResult as BlockHitResult
             val multiMine = run {
                 MultiMineHandler.REGISTRY.firstNotNullOfOrNull {
                     it.create(
@@ -131,16 +134,23 @@ fun initEnchantmentClientModule() {
 
             val vertexConsumer = context.consumers()!!.getBuffer(LINES_NO_DEPTH)
             val pose = poseStack.last().pose()
+            val packedLight = LevelRenderer.getLightColor(level, hitResult.blockPos.relative(hitResult.direction))
+            val skyLightLevel = (packedLight ushr 20) and 0xF
+            val blockLightLevel = (packedLight ushr 4) and 0xF
+            val skyFactor = 0.15 + 0.85 * (skyLightLevel.toDouble() / 15.0)
+            val blockFactor = 0.15 + 0.85 * (blockLightLevel.toDouble() / 15.0)
+            val lightFactor = skyFactor max blockFactor
+            val brightness = (255.0 * lightFactor).roundToInt().coerceIn(0, 255)
             val theta = (System.nanoTime() % 2_000_000_000L).toDouble() / 1_000_000_000.0 * 2.0 * Math.PI
             val alpha = (255.0 * (0.5 + 0.25 * sin(theta))).roundToInt()
             collectEdges(miningArea.visitedBlockEntry.map { it.blockPos }.toSet() + setOf(miningArea.multiMine.blockPos)) { x0, y0, z0, x1, y1, z1 ->
                 vertexConsumer
                     .addVertex(pose, x0.toFloat(), y0.toFloat(), z0.toFloat())
-                    .setColor(255, 255, 255, alpha)
+                    .setColor(brightness, brightness, brightness, alpha)
                     .setNormal(x1.toFloat() - x0.toFloat(), y1.toFloat() - y0.toFloat(), z1.toFloat() - z0.toFloat())
                 vertexConsumer
                     .addVertex(pose, x1.toFloat(), y1.toFloat(), z1.toFloat())
-                    .setColor(255, 255, 255, alpha)
+                    .setColor(brightness, brightness, brightness, alpha)
                     .setNormal(x1.toFloat() - x0.toFloat(), y1.toFloat() - y0.toFloat(), z1.toFloat() - z0.toFloat())
             }
         } finally {
