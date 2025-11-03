@@ -62,14 +62,14 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
 
     override val drops = listOf(MaterialCard.MERRRRIA_DROP.item)
 
-    override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.MERRRRIA_DROP.item().createItemStack(count))
+    override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.MERRRRIA_DROP.item().createItemStack(count))
 
     override val family = MirageFairy2024.identifier("merrrria")
     override val defaultTraitBits = mapOf(
         TraitCard.COLD_ADAPTATION.trait to 0b00101000, // 低温適応
         TraitCard.MESIC_ADAPTATION.trait to 0b00101000, // 中湿適応
         TraitCard.SEEDS_PRODUCTION.trait to 0b00101000, // 種子生成
-        TraitCard.LEAVES_PRODUCTION.trait to 0b00101000, // 葉面生成
+        TraitCard.RARE_PRODUCTION.trait to 0b00101000, // 希少品生成
         TraitCard.PHOTOSYNTHESIS.trait to 0b00101000, // 光合成
         TraitCard.OSMOTIC_ABSORPTION.trait to 0b00101000, // 養分吸収
         TraitCard.ADVERSITY_FLOWER.trait to 0b00101000, // 高嶺の花
@@ -79,7 +79,7 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
         TraitCard.WARM_ADAPTATION.trait to 0.05, // 中温適応
         TraitCard.MESIC_ADAPTATION.trait to 0.05, // 中湿適応
         TraitCard.SEEDS_PRODUCTION.trait to 0.05, // 種子生成
-        TraitCard.LEAVES_PRODUCTION.trait to 0.05, // 葉面生成
+        TraitCard.RARE_PRODUCTION.trait to 0.05, // 希少品生成
         TraitCard.CROSSBREEDING.trait to 0.05, // 交雑
         TraitCard.MUTATION.trait to 0.05, // 突然変異
         TraitCard.SEEDS_DILUTION.trait to 0.05, // 種子希釈

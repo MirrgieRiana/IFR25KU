@@ -234,7 +234,7 @@ class TraitCard(
             "adversity_flower", "Adversity Flower", "高嶺の花",
             "A flower that blooms in adversity is rarer and more beautiful than any other. Even if it shines only for a fleeting moment, it becomes an unattainable object of desire, forever etched in people's hearts.",
             "逆境に咲く花は、どんな花よりも希少で美しい。たとえそれが一瞬の輝きであったとしても、手に入れることのできない、あこがれの存在として人々の胸に刻まれる。",
-            listOf(TraitConditionCard.HIGH_ALTITUDE), traitEffectKeyEntriesOf(TraitEffectKeyCard.PRODUCTION_BOOST to 0.2),
+            listOf(TraitConditionCard.HIGH_ALTITUDE), traitEffectKeyEntriesOf(TraitEffectKeyCard.RARE_PRODUCTION to 0.2),
         )
 
         // 専用
