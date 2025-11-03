@@ -247,6 +247,7 @@
   "death.attack.miragefairy2024.tool_break": "%1$sは手を怪我した",
   "death.attack.miragefairy2024.tool_break.player": "%1$sは%2$sとの戦闘中に手を怪我した",
   "effect.miragefairy2024.experience": "経験値獲得",
+  "enchantment.miragefairy2024.area_mining_acceleration": "範囲採掘加速",
   "enchantment.miragefairy2024.backward_area_mining": "後方範囲採掘",
   "enchantment.miragefairy2024.curse_of_shattering": "破断の呪い",
   "enchantment.miragefairy2024.cut_all": "一括伐採",

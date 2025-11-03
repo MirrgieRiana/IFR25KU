@@ -90,6 +90,12 @@ enum class EnchantmentCard(
         5, 25, 25, 50,
         tags = listOf(EnchantmentTags.TREASURE, EnchantmentTags.IN_ENCHANTING_TABLE),
     ),
+    AREA_MINING_ACCELERATION(
+        "area_mining_acceleration", EnJa("Area Mining Acceleration", "範囲採掘加速"),
+        ItemTags.MINING_LOOT_ENCHANTABLE, AREA_MINING_ENCHANTABLE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
+        3, 25, 25, 50,
+        tags = listOf(EnchantmentTags.TREASURE, EnchantmentTags.IN_ENCHANTING_TABLE),
+    ),
     CUT_ALL(
         "cut_all", EnJa("Cut All", "一括伐採"),
         ItemTags.MINING_LOOT_ENCHANTABLE, NONE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
