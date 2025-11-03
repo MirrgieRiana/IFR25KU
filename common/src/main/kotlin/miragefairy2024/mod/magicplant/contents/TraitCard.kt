@@ -228,19 +228,13 @@ class TraitCard(
             "fleshy_leaves", "Fleshy Leaves", "肉厚の葉",
             "As a result of evolving to minimize surface area exposed to the air in order to prevent water loss, the leaves have become thick and are now capable of storing water internally.",
             "水分の蒸発を防ぐために空気との接触面積を最小化するように進化した結果、葉は肉厚になり、内部に水分を蓄えるようになった。",
-            listOf(TraitConditionCard.LOW_HUMIDITY), traitEffectKeyEntriesOf(TraitEffectKeyCard.PRODUCTION_BOOST to 0.2),
+            listOf(TraitConditionCard.LOW_HUMIDITY), traitEffectKeyEntriesOf(TraitEffectKeyCard.LEAVES_PRODUCTION to 0.2),
         )
         val ADVERSITY_FLOWER = !TraitCard(
             "adversity_flower", "Adversity Flower", "高嶺の花",
             "A flower that blooms in adversity is rarer and more beautiful than any other. Even if it shines only for a fleeting moment, it becomes an unattainable object of desire, forever etched in people's hearts.",
             "逆境に咲く花は、どんな花よりも希少で美しい。たとえそれが一瞬の輝きであったとしても、手に入れることのできない、あこがれの存在として人々の胸に刻まれる。",
             listOf(TraitConditionCard.HIGH_ALTITUDE), traitEffectKeyEntriesOf(TraitEffectKeyCard.PRODUCTION_BOOST to 0.2),
-        )
-        val DESERT_GEM = !TraitCard(
-            "desert_gem", "Desert Gem", "砂漠の宝石",
-            "Legends of plants that bear beautiful gemstones can be found in various desert regions and are often revered. Physiologically, these gemstones are formed as a means for the plants to expel excess metal ions, absorbed due to the low moisture content in the soil.",
-            "美しい宝石を実らせる植物の伝承は各地の砂漠地帯において見られ、信仰の対象とされる。生理学的には、土中の水分含有量が少ないために過剰に吸収した金属イオンを排出するために形成される。",
-            listOf(TraitConditionCard.HIGH_TEMPERATURE, TraitConditionCard.LOW_HUMIDITY), traitEffectKeyEntriesOf(TraitEffectKeyCard.PRODUCTION_BOOST to 0.4),
         )
 
         // 専用
@@ -279,6 +273,12 @@ class TraitCard(
             "A mysterious fruit shown by nature. Many greedy humans attempted to cultivate it, but not a single one succeeded, or so the story goes.",
             "自然が見せる神秘の果実。多くの欲深き人間がその栽培化を試みたものの、成功した者は誰一人として居なかったという。",
             listOf(TraitConditionCard.NATURAL), traitEffectKeyEntriesOf(TraitEffectKeyCard.SPECIAL_PRODUCTION to 0.1),
+        )
+        val DESERT_GEM = !TraitCard(
+            "desert_gem", "Desert Gem", "砂漠の宝石",
+            "Legends of plants that bear beautiful gemstones can be found in various desert regions and are often revered. Physiologically, these gemstones are formed as a means for the plants to expel excess metal ions, absorbed due to the low moisture content in the soil.",
+            "美しい宝石を実らせる植物の伝承は各地の砂漠地帯において見られ、信仰の対象とされる。生理学的には、土中の水分含有量が少ないために過剰に吸収した金属イオンを排出するために形成される。",
+            listOf(TraitConditionCard.HIGH_TEMPERATURE, TraitConditionCard.LOW_HUMIDITY), traitEffectKeyEntriesOf(TraitEffectKeyCard.SPECIAL_PRODUCTION to 0.0004),
         )
         val TREASURE_OF_XARPA = !TraitCard(
             "treasure_of_xarpa", "Treasure of Xarpa", "シャルパの秘宝",
