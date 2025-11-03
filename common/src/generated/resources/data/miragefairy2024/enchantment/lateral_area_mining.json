@@ -12,7 +12,7 @@
     "base": 25,
     "per_level_above_first": 25
   },
-  "primary_items": "#miragefairy2024:none",
+  "primary_items": "#miragefairy2024:enchantable/area_mining",
   "slots": [
     "mainhand"
   ],

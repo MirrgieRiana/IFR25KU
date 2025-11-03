@@ -35,6 +35,7 @@ import net.minecraft.world.phys.HitResult
 val MAGIC_WEAPON_ITEM_TAG = MirageFairy2024.identifier("magic_weapon").toItemTag()
 val SCYTHE_ITEM_TAG = MirageFairy2024.identifier("scythe").toItemTag()
 val NONE_ITEM_TAG = MirageFairy2024.identifier("none").toItemTag()
+val AREA_MINING_ENCHANTABLE_ITEM_TAG = MirageFairy2024.identifier("enchantable/area_mining").toItemTag()
 
 private val latestPlayerMiningDirectionCache = mutableMapOf<Int, Pair<Long, Direction>>()
 
@@ -51,6 +52,7 @@ fun initEnchantmentModule() {
     MAGIC_WEAPON_ITEM_TAG.enJa(EnJa("Magic Weapon", "魔法武器"))
     SCYTHE_ITEM_TAG.enJa(EnJa("Scythe", "大鎌"))
     NONE_ITEM_TAG.enJa(EnJa("None", "なし"))
+    AREA_MINING_ENCHANTABLE_ITEM_TAG.enJa(EnJa("Area Mining Enchantable", "範囲採掘エンチャント可能"))
 
     EnchantmentCard.entries.forEach { card ->
         card.init()

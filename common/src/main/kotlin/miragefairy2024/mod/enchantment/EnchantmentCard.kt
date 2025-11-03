@@ -74,21 +74,21 @@ enum class EnchantmentCard(
     ),
     FORWARD_AREA_MINING(
         "forward_area_mining", EnJa("Forward Area Mining", "前方範囲採掘"),
-        ItemTags.MINING_LOOT_ENCHANTABLE, NONE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
+        ItemTags.MINING_LOOT_ENCHANTABLE, AREA_MINING_ENCHANTABLE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
         5, 25, 25, 50,
-        tags = listOf(EnchantmentTags.TREASURE),
+        tags = listOf(EnchantmentTags.TREASURE, EnchantmentTags.IN_ENCHANTING_TABLE),
     ),
     LATERAL_AREA_MINING(
         "lateral_area_mining", EnJa("Lateral Area Mining", "側方範囲採掘"),
-        ItemTags.MINING_LOOT_ENCHANTABLE, NONE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
+        ItemTags.MINING_LOOT_ENCHANTABLE, AREA_MINING_ENCHANTABLE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
         5, 25, 25, 50,
-        tags = listOf(EnchantmentTags.TREASURE),
+        tags = listOf(EnchantmentTags.TREASURE, EnchantmentTags.IN_ENCHANTING_TABLE),
     ),
     BACKWARD_AREA_MINING(
         "backward_area_mining", EnJa("Backward Area Mining", "後方範囲採掘"),
-        ItemTags.MINING_LOOT_ENCHANTABLE, NONE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
+        ItemTags.MINING_LOOT_ENCHANTABLE, AREA_MINING_ENCHANTABLE_ITEM_TAG, EnchantmentRarity.VERY_RARE,
         5, 25, 25, 50,
-        tags = listOf(EnchantmentTags.TREASURE),
+        tags = listOf(EnchantmentTags.TREASURE, EnchantmentTags.IN_ENCHANTING_TABLE),
     ),
     CUT_ALL(
         "cut_all", EnJa("Cut All", "一括伐採"),
