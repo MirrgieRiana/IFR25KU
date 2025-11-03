@@ -2,7 +2,7 @@ package miragefairy2024.mod.enchantment
 
 import miragefairy2024.util.MultiMine
 import miragefairy2024.util.get
-import mirrg.kotlin.helium.max
+import mirrg.kotlin.helium.min
 import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -23,15 +23,19 @@ object AreaMiningMultiMineHandler : MultiMineHandler {
         val forwardLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.FORWARD_AREA_MINING.key], toolItemStack)
         val lateralLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.LATERAL_AREA_MINING.key], toolItemStack)
         val backwardLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.BACKWARD_AREA_MINING.key], toolItemStack)
+        val accelerationLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.AREA_MINING_ACCELERATION.key], toolItemStack)
         if (forwardLevel <= 0 && lateralLevel <= 0 && backwardLevel <= 0) return null
         return object : MultiMine(level, blockPos, blockState, miner, toolItem, toolItemStack) {
             override fun visit(visitor: Visitor): Float {
-                var requiredMiningPower = blockState.getDestroySpeed(level, blockPos)
+                val maxCount = if (accelerationLevel <= 30) 1 shl accelerationLevel else Int.MAX_VALUE
+                var count = 1
+                var sumHardness = blockState.getDestroySpeed(level, blockPos)
                 visitor.visit(
                     listOf(blockPos),
                     miningDamage = 1.0,
                     onMine = { blockPos ->
-                        requiredMiningPower = requiredMiningPower max level.getBlockState(blockPos).getDestroySpeed(level, blockPos)
+                        count++
+                        sumHardness += level.getBlockState(blockPos).getDestroySpeed(level, blockPos)
                     },
                     region = run {
                         val l = lateralLevel
@@ -52,7 +56,7 @@ object AreaMiningMultiMineHandler : MultiMineHandler {
                     },
                     canContinue = { _, blockState2 -> toolItem.isCorrectToolForDrops(toolItemStack, blockState2) },
                 )
-                return requiredMiningPower
+                return sumHardness / (maxCount min count)
             }
         }
     }
