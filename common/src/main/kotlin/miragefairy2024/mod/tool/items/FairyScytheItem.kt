@@ -2,12 +2,14 @@ package miragefairy2024.mod.tool.items
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
+import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.SCYTHE_ITEM_TAG
 import miragefairy2024.mod.magicplant.MagicPlantBlock
 import miragefairy2024.mod.magicplant.PostTryPickHandlerItem
 import miragefairy2024.mod.tool.FairyMiningToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.mod.tool.effects.areaMining
+import miragefairy2024.mod.tool.effects.enchantment
 import miragefairy2024.util.Translation
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
@@ -51,6 +53,7 @@ open class FairyScytheConfiguration(
         this.attackSpeed = -3.2F
         this.magicMiningDamage = 0.2
         this.areaMining(range, range, range)
+        this.enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3)
         this.tags += ItemTags.SWORDS
         this.tags += SCYTHE_ITEM_TAG
         this.superEffectiveBlocks += Blocks.COBWEB
