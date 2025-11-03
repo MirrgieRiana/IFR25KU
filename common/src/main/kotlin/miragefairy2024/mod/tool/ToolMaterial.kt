@@ -47,18 +47,18 @@ enum class FairyToolMaterials(
 
     MIRAGE(Tiers.WOOD, 48, 1.6F, 0.0F, 0.0F, 17, { MaterialCard.MIRAGE_STEM.item().toIngredient() }),
     MIRAGIUM(Tiers.IRON, 478, 1.0F, 2.0F, 0.0F, 26, { ingredientOf(Shape.INGOT, Material.MIRAGIUM) }),
-    LILAGIUM(Tiers.IRON, 505, 1.0F, 2.0F, 0.0F, 19, { ingredientOf(Shape.INGOT, Material.LILAGIUM) }),
+    LILAGIUM(Tiers.IRON, 505, 1.0F, 2.0F, 0.0F, 9, { ingredientOf(Shape.INGOT, Material.LILAGIUM) }),
     MIRAGIDIAN(Tiers.NETHERITE, 7826, 7.0F, 2.5F, 1.5F, 2, { ingredientOf(Shape.GEM, Material.MIRAGIDIAN) }),
-    FAIRY_CRYSTAL(Tiers.IRON, 235, 5.0F, 1.5F, 1.5F, 7, { ingredientOf(Shape.GEM, Material.FAIRY_CRYSTAL) }),
+    FAIRY_CRYSTAL(Tiers.IRON, 235, 5.0F, 1.5F, 1.5F, 23, { ingredientOf(Shape.GEM, Material.FAIRY_CRYSTAL) }),
     PHANTOM_DROP(Tiers.NETHERITE, 777, 9.0F, 2.0F, 1.0F, 12, { ingredientOf(Shape.GEM, Material.PHANTOM_DROP) }),
     LUMINITE(Tiers.DIAMOND, 1361, 9.0F, 4.0F, 3.0F, 21, { ingredientOf(Shape.GEM, Material.LUMINITE) }),
-    RESONITE(Tiers.NETHERITE, 2705, 4.0F, 9.0F, 7.0F, 19, { ingredientOf(Shape.INGOT, Material.RESONITE) }),
+    RESONITE(Tiers.NETHERITE, 2705, 4.0F, 9.0F, 7.0F, 7, { ingredientOf(Shape.INGOT, Material.RESONITE) }),
     PROMINITE(Tiers.DIAMOND, 925, 7.0F, 2.0F, 0.0F, 13, { ingredientOf(Shape.GEM, Material.PROMINITE) }),
     XARPITE(Tiers.IRON, 283, 1.0F, 2.0F, 2.0F, 20, { ingredientOf(Shape.GEM, Material.XARPITE) }),
     MIRANAGITE(Tiers.IRON, 256, 6.5F, 2.0F, 2.5F, 24, { ingredientOf(Shape.GEM, Material.MIRANAGITE) }),
-    CHAOS_STONE(Tiers.NETHERITE, 666, 2.0F, 2.0F, 2.0F, 15, { ingredientOf(Shape.GEM, Material.CHAOS_STONE) }),
+    CHAOS_STONE(Tiers.NETHERITE, 666, 2.0F, 2.0F, 2.0F, 6, { ingredientOf(Shape.GEM, Material.CHAOS_STONE) }),
     NOISE(Tiers.NETHERITE, 101, 8.9F, 1.1F, 1.3F, 3, { ingredientOf(Shape.GEM, Material.NOISE) }),
-    HAIMEVISKA_ROSIN(Tiers.WOOD, 73, 0.5F, 0.0F, 0.0F, 11, { ingredientOf(Shape.GEM, Material.HAIMEVISKA_ROSIN) }),
+    HAIMEVISKA_ROSIN(Tiers.WOOD, 73, 0.5F, 0.0F, 0.0F, 16, { ingredientOf(Shape.GEM, Material.HAIMEVISKA_ROSIN) }),
 
     NEUTRONIUM(Tiers.NETHERITE, Int.MAX_VALUE - 100, 8.0F, 3.0F, 3.0F, 10, { Items.BEDROCK.toIngredient() }),
     ;
