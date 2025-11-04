@@ -17,9 +17,13 @@ For the official translation mappings, see the [Lang Table](lang_table.html).
 
 ## 27.27.0
 
+**NeoForgeの最低バージョンが上昇**
+
 - 変更: NeoForgeのバージョンを21.1.213に更新。
 
 ## 26.26.0
+
+**旧バージョンのワールドを読み込むとゲームバランスに影響あり**
 
 範囲採掘系効果
 
