@@ -22,7 +22,7 @@ There is currently no comprehensive official documentation explaining the specif
 
 Other official links:
 
-- [Japanese Official Website of MirageFairy-Kakera-Unofficial](https://miragefairy-kakera-unofficial.notion.site/)
+- [Japanese Official Website of Kakera-Unofficial](https://kakera-unofficial.notion.site/)
 - [IFR25KU Lang Table](https://mirrgieriana.github.io/IFR25KU/lang_table.html)
 - [Modrinth (Mod Distribution Page)](https://modrinth.com/mod/ifr25ku)
 

@@ -668,7 +668,7 @@ Fairy Quest Cards feature several short stories.
 
 Outside the mod, the MFKU official website hosts a series of Japanese articles called “MFA (MirageFairy Article)”.
 
-- [G1-MFA　ミラージュ妖精の生態 (Japanese)](https://miragefairy-kakera-unofficial.notion.site/G1-MFA-2f122378b3de4ba39cc5492e3af27b50)
+- [G1-MFA　ミラージュ妖精の生態 (Japanese)](https://kakera-unofficial.notion.site/G1-MFA-2f122378b3de4ba39cc5492e3af27b50)
 
 <div><br></div>
 

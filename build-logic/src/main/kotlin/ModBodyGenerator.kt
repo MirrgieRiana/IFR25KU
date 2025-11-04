@@ -478,7 +478,7 @@ fun getModBody(type: MarkdownType): String {
             !1
             !"Outside the mod, the MFKU official website hosts a series of Japanese articles called “MFA (MirageFairy Article)”."
             !li {
-                !"[G1-MFA　ミラージュ妖精の生態 (Japanese)](https://miragefairy-kakera-unofficial.notion.site/G1-MFA-2f122378b3de4ba39cc5492e3af27b50)"
+                !"[G1-MFA　ミラージュ妖精の生態 (Japanese)](https://kakera-unofficial.notion.site/G1-MFA-2f122378b3de4ba39cc5492e3af27b50)"
             }
             !1
             !"These resources complement each other and collectively form the IFRKU worldview."
