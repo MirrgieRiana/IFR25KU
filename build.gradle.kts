@@ -51,6 +51,9 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
             // for more information about repositories.
 
             maven("https://maven.parchmentmc.org") // mapping
+            maven(uri(rootProject.file("maven"))) {
+                content { includeGroup("dev.emi") }
+            }
         }
 
         // runServer runDatagenでArchitectury Transformerがクライアント用のクラスを変換しようとして落ちる対策のためにclassの出力先を分ける
