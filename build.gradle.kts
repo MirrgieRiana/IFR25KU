@@ -332,3 +332,19 @@ run {
     }
     tasks.named("generateCurseforgeTable").configure { dependsOn(tasks.named("generateCurseforgeVersionTable")) }
 }
+
+tasks.register<MirrorMavenTask>("mirrorMaven") {
+    repositoryUrl = "https://maven.terraformersmc.com/releases"
+    licenseUrl = "https://raw.githubusercontent.com/emilyploszaj/emi/refs/heads/1.21/LICENSE"
+    outputDirectory = rootProject.layout.projectDirectory.dir("maven")
+    coordinates = listOf(
+        "dev.emi:emi-fabric:${libs.versions.emi.get()}",
+        "dev.emi:emi-fabric:${libs.versions.emi.get()}@pom",
+        "dev.emi:emi-fabric:${libs.versions.emi.get()}:api",
+        "dev.emi:emi-fabric:${libs.versions.emi.get()}:sources",
+        "dev.emi:emi-neoforge:${libs.versions.emi.get()}",
+        "dev.emi:emi-neoforge:${libs.versions.emi.get()}@pom",
+        "dev.emi:emi-neoforge:${libs.versions.emi.get()}:api",
+        "dev.emi:emi-neoforge:${libs.versions.emi.get()}:sources",
+    )
+}
