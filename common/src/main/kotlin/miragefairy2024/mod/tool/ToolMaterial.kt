@@ -57,6 +57,7 @@ enum class FairyToolMaterials(
     XARPITE(Tiers.IRON, 283, 1.2F, 2.0F, 2.0F, 20, { ingredientOf(Shape.GEM, Material.XARPITE) }),
     MIRANAGITE(Tiers.IRON, 256, 6.5F, 2.0F, 2.5F, 24, { ingredientOf(Shape.GEM, Material.MIRANAGITE) }),
     CHAOS_STONE(Tiers.NETHERITE, 666, 9.0F, 2.0F, 2.0F, 6, { ingredientOf(Shape.GEM, Material.CHAOS_STONE) }),
+    CALCULITE(Tiers.NETHERITE, 4096, 8.0F, 2.0F, 2.0F, 16, { ingredientOf(Shape.GEM, Material.CALCULITE) }),
     NOISE(Tiers.NETHERITE, 101, 8.9F, 1.1F, 1.3F, 3, { ingredientOf(Shape.GEM, Material.NOISE) }),
     HAIMEVISKA_ROSIN(Tiers.WOOD, 73, 1.2F, 0.0F, 0.0F, 16, { ingredientOf(Shape.GEM, Material.HAIMEVISKA_ROSIN) }),
 
@@ -117,6 +118,7 @@ enum class ToolMaterialCard(val toolMaterial: Tier, path: String, val title: EnJ
     XARPITE(FairyToolMaterials.XARPITE, "xarpite_tool", EnJa("Xarpite Tool", "紅天石ツール")),
     MIRANAGITE(FairyToolMaterials.MIRANAGITE, "miranagite_tool", EnJa("Miranagite Tool", "蒼天石ツール")),
     CHAOS_STONE(FairyToolMaterials.CHAOS_STONE, "chaos_tool", EnJa("Chaos Tool", "混沌ツール")),
+    CALCULITE(FairyToolMaterials.CALCULITE, "calculite_tool", EnJa("Calculite Tool", "理天石ツール")),
     NOISE(FairyToolMaterials.NOISE, "noise_tool", EnJa("Noise Tool", "ノイズツール")),
     HAIMEVISKA_ROSIN(FairyToolMaterials.HAIMEVISKA_ROSIN, "haimeviska_rosin_tool", EnJa("Rosin Tool", "涙ツール")),
 

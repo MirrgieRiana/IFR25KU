@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.PoemList
+import miragefairy2024.mod.enchantment.AREA_MINING_ENCHANTABLE_ITEM_TAG
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.MaterialCard
@@ -17,6 +18,7 @@ import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.mod.tool.effects.areaMining
 import miragefairy2024.mod.tool.effects.collection
 import miragefairy2024.mod.tool.effects.effective
+import miragefairy2024.mod.tool.effects.enchantable
 import miragefairy2024.mod.tool.effects.enchantment
 import miragefairy2024.mod.tool.effects.fireResistant
 import miragefairy2024.mod.tool.effects.glint
@@ -368,6 +370,31 @@ class ToolCard(
             PoemList(4).poem(EnJa("Is this made of metal? Or clay?", "時空結晶の交点に、古代の産業が芽吹く。")),
             FairyPickaxeConfiguration(ToolMaterialCard.CHAOS_STONE).effective(BlockTags.MINEABLE_WITH_SHOVEL).areaMining(1, 2, 0),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.CHAOS_STONE.ore!!.tag) }
+        val CALCULITE_PICKAXE = !ToolCard(
+            "calculite_pickaxe", EnJa("Calculite Pickaxe", "理天石のつるはし"),
+            PoemList(5).poem(EnJa("Integrated neural circuits.", "理性の結晶。")),
+            FairyPickaxeConfiguration(ToolMaterialCard.CALCULITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2).enchantable(AREA_MINING_ENCHANTABLE_ITEM_TAG),
+        ) { registerPickaxeRecipeGeneration(item, MaterialCard.CALCULITE.ore!!.tag) }
+        val CALCULITE_AXE = !ToolCard(
+            "calculite_axe", EnJa("Calculite Axe", "理天石の斧"),
+            PoemList(5).poem(EnJa("A world where chaos resolves everything.", "秩序がすべてを結束する世界。")),
+            FairyAxeConfiguration(ToolMaterialCard.CALCULITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2).enchantable(AREA_MINING_ENCHANTABLE_ITEM_TAG),
+        ) { registerAxeRecipeGeneration(item, MaterialCard.CALCULITE.ore!!.tag) }
+        val CALCULITE_SHOVEL = !ToolCard(
+            "calculite_shovel", EnJa("Calculite Shovel", "理天石のシャベル"),
+            PoemList(5).poem(EnJa("Biological parallel processor.", "汎用デジタル集合知。")),
+            FairyShovelConfiguration(ToolMaterialCard.CALCULITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2).enchantable(AREA_MINING_ENCHANTABLE_ITEM_TAG),
+        ) { registerShovelRecipeGeneration(item, MaterialCard.CALCULITE.ore!!.tag) }
+        val CALCULITE_HOE = !ToolCard(
+            "calculite_hoe", EnJa("Calculite Hoe", "理天石のクワ"),
+            PoemList(5).poem(EnJa("A stellar automaton.", "幽星質の脳細胞。")),
+            FairyHoeConfiguration(ToolMaterialCard.CALCULITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2).enchantable(AREA_MINING_ENCHANTABLE_ITEM_TAG),
+        ) { registerHoeRecipeGeneration(item, MaterialCard.CALCULITE.ore!!.tag) }
+        val CALCULITE_SCYTHE = !ToolCard(
+            "calculite_scythe", EnJa("Calculite Scythe", "理天石の大鎌"),
+            PoemList(5).poem(EnJa("Perpetual-motion biocomputer.", "人工生命は何を思い、そして感じるのか。")),
+            FairyScytheConfiguration(ToolMaterialCard.CALCULITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2).enchantable(AREA_MINING_ENCHANTABLE_ITEM_TAG),
+        ) { registerScytheRecipeGeneration(item, MaterialCard.CALCULITE.ore!!.tag) }
         val NOISE_PICKAXE = !ToolCard(
             "noise_pickaxe", EnJa("Noise Pickaxe", "ノイズのつるはし"),
             PoemList(5).poem(EnJa("Demolish the Value.", "無価値の創出。")),
