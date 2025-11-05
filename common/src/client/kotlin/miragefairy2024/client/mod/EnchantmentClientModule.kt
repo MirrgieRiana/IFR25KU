@@ -71,7 +71,7 @@ fun initEnchantmentClientModule() {
             miningArea
         }
         val actualMiningAreaResult = MiningAreaResult(miningArea)
-        actualMiningAreaResult.miningArea?.requiredMiningPower == expectedMiningAreaResult!!.miningArea?.requiredMiningPower
+        actualMiningAreaResult.miningArea?.hardness == expectedMiningAreaResult!!.miningArea?.hardness
     }
 
     // 操作プレイヤーの採掘の開始時と終了時に採掘範囲を再計算

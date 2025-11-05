@@ -39,7 +39,7 @@ abstract class MultiMine(
 
     open fun isValidBaseBlockState(): Boolean = true
 
-    fun execute(serverSide: ServerSide, limitHardness: Float) {
+    fun execute(serverSide: ServerSide) {
         if (miner.isCreative) return // クリエイティブモードでは無効
         if (miner.isShiftKeyDown) return // 使用者がスニーク中
         if (!toolItem.isCorrectToolForDrops(toolItemStack, blockState)) return // 非対応ツール
@@ -72,7 +72,6 @@ abstract class MultiMine(
                     val targetBlockState = level.getBlockState(blockPos)
                     if (!canContinue(blockPos, targetBlockState)) return@fail // 採掘時のイベントで条件が外れた
                     val targetHardness = targetBlockState.getDestroySpeed(level, blockPos)
-                    if (targetHardness > limitHardness) return@fail // 上限硬度よりも硬いものは掘れない
                     if (!breakBlockByMagic(toolItemStack, level, blockPos, miner.asServerPlayer(serverSide))) return@fail // 禁止ブロックを掘ろうとした
                     if (targetHardness > 0) {
                         val damage = level.random.randomInt(miningDamage)
@@ -87,7 +86,7 @@ abstract class MultiMine(
         })
     }
 
-    class MiningArea(val multiMine: MultiMine, val visitedBlockEntry: List<VisitedBlockEntry>, val requiredMiningPower: Float)
+    class MiningArea(val multiMine: MultiMine, val visitedBlockEntry: List<VisitedBlockEntry>, val hardness: Float)
 
     class VisitedBlockEntry(val blockPos: BlockPos, val blockState: BlockState)
 
@@ -100,7 +99,7 @@ abstract class MultiMine(
         // 発動
 
         val entries = mutableListOf<VisitedBlockEntry>()
-        val requiredMiningPower = visit(object : Visitor {
+        val hardness = visit(object : Visitor {
             override fun visit(
                 originalBlockPosList: Iterable<BlockPos>,
                 miningDamage: Double,
@@ -127,7 +126,7 @@ abstract class MultiMine(
                 return true
             }
         })
-        return MiningArea(this, entries, requiredMiningPower)
+        return MiningArea(this, entries, hardness)
     }
 
 }

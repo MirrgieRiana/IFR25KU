@@ -133,7 +133,7 @@ fun initEnchantmentModule() {
                 val miningArea = multiMine.collect() ?: return@run null // 範囲採掘が発動しなかった
                 miningArea
             } ?: return@register f // 範囲採掘が発動しなかった
-            miningArea.requiredMiningPower
+            miningArea.hardness
         }
 
         // サーバーサイドにおいて、最後にプレイヤーがブロックを採掘した際の向きを記憶
@@ -162,7 +162,7 @@ fun initEnchantmentModule() {
                 miningArea
             } ?: return@register // 範囲採掘が発動しなかった
 
-            miningArea.multiMine.execute(serverSide, miningArea.requiredMiningPower)
+            miningArea.multiMine.execute(serverSide)
         }
 
         MultiMineHandler.REGISTRY += AreaMiningMultiMineHandler
