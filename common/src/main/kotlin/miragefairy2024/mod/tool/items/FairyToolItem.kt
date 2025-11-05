@@ -25,6 +25,7 @@ fun initFairyToolItem() {
     ScytheItem.DESCRIPTION_TRANSLATION.enJa()
     ShootingStaffItem.NOT_ENOUGH_EXPERIENCE_TRANSLATION.enJa()
     ShootingStaffItem.DESCRIPTION_TRANSLATION.enJa()
+    BuildersRodItem.DESCRIPTION_TRANSLATION.enJa()
 }
 
 
