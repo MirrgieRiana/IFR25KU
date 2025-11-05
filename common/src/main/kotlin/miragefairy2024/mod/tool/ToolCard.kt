@@ -30,6 +30,7 @@ import miragefairy2024.mod.tool.effects.tillingRecipe
 import miragefairy2024.mod.tool.items.AdvancedHoeItem
 import miragefairy2024.mod.tool.items.FairyAxeConfiguration
 import miragefairy2024.mod.tool.items.FairyBattleAxeConfiguration
+import miragefairy2024.mod.tool.items.FairyBuildersRodConfiguration
 import miragefairy2024.mod.tool.items.FairyHoeConfiguration
 import miragefairy2024.mod.tool.items.FairyKnifeConfiguration
 import miragefairy2024.mod.tool.items.FairyPickaxeConfiguration
@@ -395,6 +396,19 @@ class ToolCard(
             PoemList(5).poem(EnJa("Perpetual-motion biocomputer.", "人工生命は何を思い、そして感じるのか。")),
             FairyScytheConfiguration(ToolMaterialCard.CALCULITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2).enchantable(AREA_MINING_ENCHANTABLE_ITEM_TAG),
         ) { registerScytheRecipeGeneration(item, MaterialCard.CALCULITE.ore!!.tag) }
+        val CALCULITE_BUILDERS_ROD = !ToolCard(
+            "calculite_builders_rod", EnJa("Builder's Rod", "ビルダーズロッド"),
+            PoemList(5).poem(EnJa("End-members of Miranagite.", "宇宙一明晰なビスマス化合物。")),
+            FairyBuildersRodConfiguration(ToolMaterialCard.CALCULITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2).enchantable(AREA_MINING_ENCHANTABLE_ITEM_TAG),
+        ) {
+            registerShapedRecipeGeneration(item) {
+                pattern(" GG")
+                pattern(" GG")
+                pattern("R  ")
+                define('G', tagOf(Shape.GEM, Material.CALCULITE))
+                define('R', tagOf(Shape.ROD, Material.WOOD))
+            } on MaterialCard.CALCULITE.ore!!.tag
+        }
         val NOISE_PICKAXE = !ToolCard(
             "noise_pickaxe", EnJa("Noise Pickaxe", "ノイズのつるはし"),
             PoemList(5).poem(EnJa("Demolish the Value.", "無価値の創出。")),
