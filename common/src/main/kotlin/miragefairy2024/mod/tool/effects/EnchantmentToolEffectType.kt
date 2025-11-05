@@ -17,7 +17,6 @@ import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.or
 import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.core.registries.Registries
-import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.enchantment.Enchantment
 
@@ -37,9 +36,9 @@ object EnchantmentToolEffectType : ToolEffectType<ToolConfiguration, Enchantment
     override fun apply(configuration: ToolConfiguration, value: Value) {
         if (value.map.isEmpty()) return
         value.map.forEach { (enchantment, level) ->
-            configuration.descriptions += DynamicPoem(PoemType.DESCRIPTION) { context ->
-                val trueEnchantment = context.registries().or { return@DynamicPoem Component.empty() }[Registries.ENCHANTMENT, enchantment].value()
-                text { trueEnchantment.description + if (level >= 2 || trueEnchantment.maxLevel >= 2) " "() + level.toRomanText() else ""() }
+            configuration.descriptions += DynamicPoem(PoemType.DESCRIPTION) { _, context ->
+                val trueEnchantment = context.registries().or { return@DynamicPoem emptyList() }[Registries.ENCHANTMENT, enchantment].value()
+                listOf(text { trueEnchantment.description + if (level >= 2 || trueEnchantment.maxLevel >= 2) " "() + level.toRomanText() else ""() })
             }
         }
         configuration.modifyItemEnchantmentsHandlers += ModifyItemEnchantmentsHandler { _, mutableItemEnchantments, enchantmentLookup ->
