@@ -5,28 +5,38 @@ import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.util.Translation
+import miragefairy2024.util.blockVisitor
+import miragefairy2024.util.durability
 import miragefairy2024.util.invoke
+import miragefairy2024.util.notEmptyOrNull
 import miragefairy2024.util.text
 import miragefairy2024.util.yellow
+import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.network.chat.Component
+import net.minecraft.stats.Stats
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.InteractionHand
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Tier
 import net.minecraft.world.item.TieredItem
 import net.minecraft.world.item.TooltipFlag
+import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.ItemEnchantments
+import net.minecraft.world.level.ClipContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.phys.HitResult
 
 open class FairyBuildersRodConfiguration(
     override val toolMaterialCard: ToolMaterialCard,
@@ -77,9 +87,64 @@ open class BuildersRodItem(toolMaterial: Tier, settings: Properties) : TieredIte
         tooltipComponents += text { DESCRIPTION_TRANSLATION().yellow }
     }
 
-    override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
-        // TODO ブロックを設置
-        return super.use(world, user, hand)
+    override fun use(level: Level, player: Player, usedHand: InteractionHand): InteractionResultHolder<ItemStack> {
+        val toolItemStack = player.getItemInHand(usedHand)
+
+        val blockItemStack = when (usedHand) {
+            InteractionHand.MAIN_HAND -> player.offhandItem
+            InteractionHand.OFF_HAND -> player.mainHandItem
+        }.notEmptyOrNull ?: return InteractionResultHolder.fail(toolItemStack) // 逆の手が空
+        val blockItem = blockItemStack.item as? BlockItem ?: return InteractionResultHolder.fail(toolItemStack) // 逆の手がブロックアイテムでない
+        if (!blockItem.block.isEnabled(level.enabledFeatures())) return InteractionResultHolder.fail(toolItemStack) // ブロックが無効化されている
+
+        val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
+        if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない
+
+        val targetBlockState = level.getBlockState(blockHitResult.blockPos)
+        val frontBlockPos = blockHitResult.blockPos.relative(blockHitResult.direction)
+        val wallDirection = blockHitResult.direction.opposite
+
+        val range = 10
+        val region = BlockBox.of(
+            frontBlockPos.offset(-range, -range, -range),
+            frontBlockPos.offset(range, range, range),
+        )
+
+        val sequence = blockVisitor(listOf(frontBlockPos)) { _, _, airBlockPos ->
+            if (airBlockPos !in region) return@blockVisitor false // 範囲外
+
+            val wallBlockPos = airBlockPos.relative(wallDirection)
+            val wallBlockState = level.getBlockState(wallBlockPos)
+            if (wallBlockState != targetBlockState) return@blockVisitor false // 壁が対象ブロックでない
+
+            val context = BlockPlaceContext(player, usedHand, blockItemStack, blockHitResult.withPosition(airBlockPos))
+            if (!context.canPlace()) return@blockVisitor false // 設置先が埋まっている
+
+            true
+        }
+
+        var count = 0
+        run finish@{
+            sequence.forEach next@{ (_, airBlockPos) ->
+                val context = BlockPlaceContext(player, usedHand, blockItemStack, blockHitResult.withPosition(airBlockPos))
+
+                val result = blockItem.place(context)
+                if (result == InteractionResult.FAIL || result == InteractionResult.PASS) return@next // 設置失敗
+
+                // 成功
+
+                count++
+
+                // ツールの使用
+                toolItemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(usedHand))
+                player.awardStat(Stats.ITEM_USED.get(this))
+
+                if (blockItemStack.isEmpty) return@finish false // ブロックが枯渇
+                if (toolItemStack.isEmpty || toolItemStack.durability <= 1) return@finish false // ツールの耐久が枯渇
+            }
+        }
+
+        return if (count > 0) InteractionResultHolder.success(toolItemStack) else InteractionResultHolder.fail(toolItemStack)
     }
 
     override fun hurtEnemy(stack: ItemStack, target: LivingEntity, attacker: LivingEntity): Boolean {
