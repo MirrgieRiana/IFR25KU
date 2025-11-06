@@ -2,6 +2,8 @@ package miragefairy2024.mod.tool.items
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
+import miragefairy2024.mod.RenderBlockPosesOutlineContext
+import miragefairy2024.mod.RenderBlockPosesOutlineListenerItem
 import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.util.Translation
@@ -9,10 +11,12 @@ import miragefairy2024.util.blockVisitor
 import miragefairy2024.util.durability
 import miragefairy2024.util.invoke
 import miragefairy2024.util.notEmptyOrNull
+import miragefairy2024.util.opposite
 import miragefairy2024.util.text
 import miragefairy2024.util.yellow
 import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
 import net.minecraft.network.chat.Component
 import net.minecraft.stats.Stats
@@ -36,6 +40,7 @@ import net.minecraft.world.item.enchantment.ItemEnchantments
 import net.minecraft.world.level.ClipContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
 
 open class FairyBuildersRodConfiguration(
@@ -77,7 +82,7 @@ class FairyBuildersRodItem(override val configuration: FairyBuildersRodConfigura
 
 }
 
-open class BuildersRodItem(toolMaterial: Tier, settings: Properties) : TieredItem(toolMaterial, settings) {
+open class BuildersRodItem(toolMaterial: Tier, settings: Properties) : TieredItem(toolMaterial, settings), RenderBlockPosesOutlineListenerItem {
     companion object {
         val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("builders_rod").toLanguageKey()}.description" }, "Place blocks when used", "使用時、ブロックを設置")
     }
@@ -87,30 +92,31 @@ open class BuildersRodItem(toolMaterial: Tier, settings: Properties) : TieredIte
         tooltipComponents += text { DESCRIPTION_TRANSLATION().yellow }
     }
 
-    override fun use(level: Level, player: Player, usedHand: InteractionHand): InteractionResultHolder<ItemStack> {
-        val toolItemStack = player.getItemInHand(usedHand)
-
-        val blockItemStack = when (usedHand) {
-            InteractionHand.MAIN_HAND -> player.offhandItem
-            InteractionHand.OFF_HAND -> player.mainHandItem
-        }.notEmptyOrNull ?: return InteractionResultHolder.fail(toolItemStack) // 逆の手が空
-        val blockItem = blockItemStack.item as? BlockItem ?: return InteractionResultHolder.fail(toolItemStack) // 逆の手がブロックアイテムでない
-        if (!blockItem.block.isEnabled(level.enabledFeatures())) return InteractionResultHolder.fail(toolItemStack) // ブロックが無効化されている
-
-        val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
-        if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない
+    fun getDestinationBlockPoses(level: Level, player: Player, usedHand: InteractionHand, blockItemStack: ItemStack, blockHitResult: BlockHitResult): Sequence<BlockPos> {
 
         val targetBlockState = level.getBlockState(blockHitResult.blockPos)
         val frontBlockPos = blockHitResult.blockPos.relative(blockHitResult.direction)
         val wallDirection = blockHitResult.direction.opposite
 
         val range = 10
-        val region = BlockBox.of(
-            frontBlockPos.offset(-range, -range, -range),
-            frontBlockPos.offset(range, range, range),
-        )
+        val region = when (blockHitResult.direction) {
+            Direction.WEST, Direction.EAST -> BlockBox.of(
+                frontBlockPos.offset(0, -range, -range),
+                frontBlockPos.offset(0, range, range),
+            )
 
-        val sequence = blockVisitor(listOf(frontBlockPos)) { _, _, airBlockPos ->
+            Direction.DOWN, Direction.UP -> BlockBox.of(
+                frontBlockPos.offset(-range, 0, -range),
+                frontBlockPos.offset(range, 0, range),
+            )
+
+            Direction.NORTH, Direction.SOUTH -> BlockBox.of(
+                frontBlockPos.offset(-range, -range, 0),
+                frontBlockPos.offset(range, range, 0),
+            )
+        }
+
+        return blockVisitor(listOf(frontBlockPos)) { _, _, airBlockPos ->
             if (airBlockPos !in region) return@blockVisitor false // 範囲外
 
             val wallBlockPos = airBlockPos.relative(wallDirection)
@@ -118,14 +124,46 @@ open class BuildersRodItem(toolMaterial: Tier, settings: Properties) : TieredIte
             if (wallBlockState != targetBlockState) return@blockVisitor false // 壁が対象ブロックでない
 
             val context = BlockPlaceContext(player, usedHand, blockItemStack, blockHitResult.withPosition(airBlockPos))
-            if (!context.canPlace()) return@blockVisitor false // 設置先が埋まっている
+            if (!level.getBlockState(airBlockPos).canBeReplaced(context)) return@blockVisitor false // 設置先が埋まっている
 
             true
-        }
+        }.map { it.second }
+    }
+
+    override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): Pair<BlockPos, Set<BlockPos>>? {
+        val level = context.level ?: return null
+        val player = context.player ?: return null
+
+        val blockItemStack = player.getItemInHand(hand.opposite).notEmptyOrNull ?: return null // 逆の手が空
+        val blockItem = blockItemStack.item as? BlockItem ?: return null // 逆の手がブロックアイテムでない
+        if (!blockItem.block.isEnabled(level.enabledFeatures())) return null // ブロックが無効化されている
+
+        val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
+        if (blockHitResult.type != HitResult.Type.BLOCK) return null // ブロックをタゲっていない
+
+        val sequence = getDestinationBlockPoses(level, player, hand, blockItemStack, blockHitResult)
+
+        return Pair(
+            blockHitResult.blockPos.relative(blockHitResult.direction),
+            sequence.toSet(),
+        )
+    }
+
+    override fun use(level: Level, player: Player, usedHand: InteractionHand): InteractionResultHolder<ItemStack> {
+        val toolItemStack = player.getItemInHand(usedHand)
+
+        val blockItemStack = player.getItemInHand(usedHand.opposite).notEmptyOrNull ?: return InteractionResultHolder.fail(toolItemStack) // 逆の手が空
+        val blockItem = blockItemStack.item as? BlockItem ?: return InteractionResultHolder.fail(toolItemStack) // 逆の手がブロックアイテムでない
+        if (!blockItem.block.isEnabled(level.enabledFeatures())) return InteractionResultHolder.fail(toolItemStack) // ブロックが無効化されている
+
+        val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
+        if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない
+
+        val sequence = getDestinationBlockPoses(level, player, usedHand, blockItemStack, blockHitResult)
 
         var count = 0
         run finish@{
-            sequence.forEach next@{ (_, airBlockPos) ->
+            sequence.forEach next@{ airBlockPos ->
                 val context = BlockPlaceContext(player, usedHand, blockItemStack, blockHitResult.withPosition(airBlockPos))
 
                 val result = blockItem.place(context)
