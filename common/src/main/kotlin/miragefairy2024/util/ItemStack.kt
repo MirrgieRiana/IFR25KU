@@ -13,6 +13,7 @@ fun Item.createItemStack(count: Int = 1) = ItemStack(this, count atMost this.def
 val EMPTY_ITEM_STACK: ItemStack get() = ItemStack.EMPTY
 val ItemStack?.orEmpty get() = this ?: EMPTY_ITEM_STACK
 val ItemStack.isNotEmpty get() = !this.isEmpty
+val ItemStack.notEmptyOrNull get() = if (this.isNotEmpty) this else null
 
 fun ItemStack.toNbt(registries: HolderLookup.Provider): Tag = this.save(registries)
 fun Tag.toItemStack(registries: HolderLookup.Provider) = ItemStack.parse(registries, this).getOrNull()
