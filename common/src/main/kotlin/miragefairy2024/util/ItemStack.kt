@@ -34,3 +34,5 @@ infix fun ItemStack.isIn(item: Item) = this.`is`(item)
 infix fun ItemStack.isNotIn(item: Item) = !(this isIn item)
 infix fun ItemStack.isIn(tag: TagKey<Item>) = this.`is`(tag)
 infix fun ItemStack.isNotIn(tag: TagKey<Item>) = !(this isIn tag)
+
+val ItemStack.durability get() = this.maxDamage - this.damageValue

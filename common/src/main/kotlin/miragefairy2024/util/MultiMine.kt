@@ -65,7 +65,7 @@ abstract class MultiMine(
                     canContinue(toBlockPos, blockState)
                 }.forEach fail@{ (_, blockPos) ->
                     if (toolItemStack.isEmpty) return false // ツールの耐久値が枯渇した
-                    if (toolItemStack.maxDamage - toolItemStack.damageValue <= miningDamage.ceilToInt()) return false // ツールの耐久値が残り僅か
+                    if (toolItemStack.durability <= miningDamage.ceilToInt()) return false // ツールの耐久値が残り僅か
 
                     // 採掘を続行
 
