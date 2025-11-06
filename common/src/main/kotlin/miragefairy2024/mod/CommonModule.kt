@@ -18,6 +18,7 @@ import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.ItemGroupCard
+import miragefairy2024.util.SubscribableBuffer
 import miragefairy2024.util.Translation
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
@@ -37,15 +38,20 @@ import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
+import net.minecraft.core.BlockPos
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.item.alchemy.Potions
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.phys.HitResult
 
 val mirageFairy2024ItemGroupCard = ItemGroupCard(
     MirageFairy2024.identifier("miragefairy2024"), "IFR25KU", "IFR25KU",
@@ -71,6 +77,24 @@ val guiBackToGameTranslation = Translation({ "gui.${MirageFairy2024.identifier("
 val guiDeadPlayer = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.dead_player" }, "Player %s is dead", "プレイヤー%sは死亡しています")
 
 val deadPlayerCommandExceptionType = DynamicCommandExceptionType { text { guiDeadPlayer(it) } }
+
+object CommonRenderingEvents {
+    val onRenderBlockPosesOutline = SubscribableBuffer<RenderBlockPosesOutlineListener>()
+}
+
+fun interface RenderBlockPosesOutlineListener {
+    fun getBlockPoses(context: RenderBlockPosesOutlineContext): Pair<BlockPos, Set<BlockPos>>?
+}
+
+fun interface RenderBlockPosesOutlineListenerItem {
+    fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): Pair<BlockPos, Set<BlockPos>>?
+}
+
+interface RenderBlockPosesOutlineContext {
+    val level: Level?
+    val player: Player?
+    val hitResult: HitResult?
+}
 
 context(ModContext)
 fun initCommonModule() {
@@ -128,6 +152,25 @@ fun initCommonModule() {
             }
         ClientCommandRegistrationEvent.EVENT.register { dispatcher, _ ->
             dispatcher.register(command)
+        }
+    }
+
+    CommonRenderingEvents.onRenderBlockPosesOutline.add { context ->
+        val player = context.player ?: return@add null
+        val item = player.mainHandItem.item
+        if (item is RenderBlockPosesOutlineListenerItem) {
+            item.getBlockPoses(InteractionHand.MAIN_HAND, context)
+        } else {
+            null
+        }
+    }
+    CommonRenderingEvents.onRenderBlockPosesOutline.add { context ->
+        val player = context.player ?: return@add null
+        val item = player.offhandItem.item
+        if (item is RenderBlockPosesOutlineListenerItem) {
+            item.getBlockPoses(InteractionHand.OFF_HAND, context)
+        } else {
+            null
         }
     }
 

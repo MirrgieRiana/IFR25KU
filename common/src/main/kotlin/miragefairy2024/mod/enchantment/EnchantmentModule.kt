@@ -5,6 +5,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mixins.api.BlockCallback
 import miragefairy2024.mixins.api.EquippedItemBrokenCallback
 import miragefairy2024.mixins.api.LevelEvent
+import miragefairy2024.mod.CommonRenderingEvents
 import miragefairy2024.mod.tool.ToolBreakDamageTypeCard
 import miragefairy2024.platformProxy
 import miragefairy2024.util.EnJa
@@ -116,6 +117,35 @@ fun initEnchantmentModule() {
 
     // 範囲採掘系
     run {
+
+        // 採掘範囲オーバーレイ
+        CommonRenderingEvents.onRenderBlockPosesOutline.add { context ->
+            val level = context.level ?: return@add null
+            val player = context.player ?: return@add null
+            val hitResult = context.hitResult ?: return@add null
+
+            if (hitResult.type != HitResult.Type.BLOCK) return@add null // ブロックをタゲっていない
+            hitResult as BlockHitResult
+
+            val miningArea = run {
+                val multiMine = run {
+                    MultiMineHandler.REGISTRY.firstNotNullOfOrNull {
+                        it.create(
+                            hitResult.direction,
+                            level, hitResult.blockPos, level.getBlockState(hitResult.blockPos),
+                            player, player.mainHandItem.item, player.mainHandItem,
+                        )
+                    }
+                } ?: return@run null // 範囲採掘の能力がない
+                val miningArea = multiMine.collect() ?: return@run null // 範囲採掘が発動しなかった
+                miningArea
+            } ?: return@add null // 範囲採掘が発動しなかった
+
+            Pair(
+                hitResult.blockPos.relative(hitResult.direction),
+                miningArea.visitedBlockEntry.map { it.blockPos }.toSet() + setOf(miningArea.multiMine.blockPos),
+            )
+        }
 
         // 両サイドにおいて、採掘の際に採掘速度を上書き
         BlockCallback.OVERRIDE_DESTROY_SPEED.register { state, player, _, pos, f ->
