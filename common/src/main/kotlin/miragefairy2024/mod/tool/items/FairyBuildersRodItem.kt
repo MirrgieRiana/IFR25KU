@@ -144,7 +144,7 @@ open class BuildersRodItem(toolMaterial: Tier, settings: Properties) : TieredIte
         val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return null // ブロックをタゲっていない
 
-        val count = player.getSameItemStackCountInMainInventoryAndOffhand(blockItemStack)
+        val count = if (player.isCreative) null else player.getSameItemStackCountInMainInventoryAndOffhand(blockItemStack)
 
         val sequence = getDestinationBlockPoses(level, player, hand, blockItemStack, blockHitResult, count)
 
