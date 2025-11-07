@@ -5,15 +5,12 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.APPEARANCE_RATE_BONUS_TRANSLATION
 import miragefairy2024.util.Chance
 import miragefairy2024.util.CondensedItem
-import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.Translation
 import miragefairy2024.util.blue
 import miragefairy2024.util.compressWeight
 import miragefairy2024.util.enJa
 import miragefairy2024.util.filled
-import miragefairy2024.util.get
 import miragefairy2024.util.getOrCreate
-import miragefairy2024.util.hasSameItemAndComponents
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isIn
 import miragefairy2024.util.mutate
@@ -21,8 +18,7 @@ import miragefairy2024.util.obtain
 import miragefairy2024.util.plus
 import miragefairy2024.util.randomInt
 import miragefairy2024.util.register
-import miragefairy2024.util.set
-import miragefairy2024.util.size
+import miragefairy2024.util.removeItemStackFromMainInventoryAndOffhand
 import miragefairy2024.util.text
 import miragefairy2024.util.weightedRandom
 import miragefairy2024.util.yellow
@@ -139,35 +135,11 @@ class RandomFairySummoningItem(val appearanceRateBonus: Double, settings: Proper
 
         // 消費
         if (!player.isCreative) {
-            if (itemStack.count != 1) {
-                // 最後の1個でない場合
-
-                // 普通に消費
-                itemStack.shrink(1)
-
-            } else {
-                // 最後の1個の場合
-
-                // リロードが可能ならリロードする
-                val isReloaded = run {
-                    (0 until player.inventory.size).forEach { index ->
-                        val searchingItemStack = player.inventory[index]
-                        if (searchingItemStack !== itemStack) { // 同一のアイテムスタックでなく、
-                            if (searchingItemStack hasSameItemAndComponents itemStack) { // 両者が同一種類のアイテムスタックならば、
-                                val count = searchingItemStack.count
-                                player.inventory[index] = EMPTY_ITEM_STACK // そのアイテムスタックを消して
-                                itemStack.count = count // 手に持っているアイテムスタックに移動する
-                                // stack.count == 1なので、このときアイテムが1個消費される
-                                return@run true
-                            }
-                        }
-                    }
-                    false
-                }
-
-                // リロードできなかった場合、最後の1個を減らす
-                if (!isReloaded) itemStack.shrink(1)
-
+            val sampleItemStack = itemStack.copy()
+            itemStack.shrink(1)
+            if (itemStack.isEmpty) {
+                val foundItemStack = player.removeItemStackFromMainInventoryAndOffhand(sampleItemStack)
+                if (foundItemStack != null) itemStack.count = foundItemStack.count
             }
         }
 
