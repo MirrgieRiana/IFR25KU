@@ -9,9 +9,11 @@ import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.util.Translation
 import miragefairy2024.util.blockVisitor
 import miragefairy2024.util.durability
+import miragefairy2024.util.getSameItemStackCountInMainInventoryAndOffhand
 import miragefairy2024.util.invoke
 import miragefairy2024.util.notEmptyOrNull
 import miragefairy2024.util.opposite
+import miragefairy2024.util.removeItemStackFromMainInventoryAndOffhand
 import miragefairy2024.util.text
 import miragefairy2024.util.yellow
 import net.minecraft.core.BlockBox
@@ -92,7 +94,7 @@ open class BuildersRodItem(toolMaterial: Tier, settings: Properties) : TieredIte
         tooltipComponents += text { DESCRIPTION_TRANSLATION().yellow }
     }
 
-    fun getDestinationBlockPoses(level: Level, player: Player, usedHand: InteractionHand, blockItemStack: ItemStack, blockHitResult: BlockHitResult): Sequence<BlockPos> {
+    fun getDestinationBlockPoses(level: Level, player: Player, usedHand: InteractionHand, blockItemStack: ItemStack, blockHitResult: BlockHitResult, maxCount: Int?): Sequence<BlockPos> {
 
         val targetBlockState = level.getBlockState(blockHitResult.blockPos)
         val frontBlockPos = blockHitResult.blockPos.relative(blockHitResult.direction)
@@ -116,7 +118,7 @@ open class BuildersRodItem(toolMaterial: Tier, settings: Properties) : TieredIte
             )
         }
 
-        return blockVisitor(listOf(frontBlockPos)) { _, _, airBlockPos ->
+        return blockVisitor(listOf(frontBlockPos), maxCount = maxCount) { _, _, airBlockPos ->
             if (airBlockPos !in region) return@blockVisitor false // 範囲外
 
             val wallBlockPos = airBlockPos.relative(wallDirection)
@@ -141,7 +143,9 @@ open class BuildersRodItem(toolMaterial: Tier, settings: Properties) : TieredIte
         val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return null // ブロックをタゲっていない
 
-        val sequence = getDestinationBlockPoses(level, player, hand, blockItemStack, blockHitResult)
+        val count = player.getSameItemStackCountInMainInventoryAndOffhand(blockItemStack)
+
+        val sequence = getDestinationBlockPoses(level, player, hand, blockItemStack, blockHitResult, count)
 
         return Pair(
             blockHitResult.blockPos.relative(blockHitResult.direction),
@@ -159,14 +163,19 @@ open class BuildersRodItem(toolMaterial: Tier, settings: Properties) : TieredIte
         val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない
 
-        val sequence = getDestinationBlockPoses(level, player, usedHand, blockItemStack, blockHitResult)
+        val sequence = getDestinationBlockPoses(level, player, usedHand, blockItemStack, blockHitResult, null)
 
+        val sampleBlockItemStack = blockItemStack.copy()
         var count = 0
         run finish@{
             sequence.forEach next@{ airBlockPos ->
                 val context = BlockPlaceContext(player, usedHand, blockItemStack, blockHitResult.withPosition(airBlockPos))
 
                 val result = blockItem.place(context)
+                if (blockItemStack.isEmpty) {
+                    val foundItemStack = player.removeItemStackFromMainInventoryAndOffhand(sampleBlockItemStack)
+                    if (foundItemStack != null) blockItemStack.count = foundItemStack.count
+                }
                 if (result == InteractionResult.FAIL || result == InteractionResult.PASS) return@next // 設置失敗
 
                 // 成功
