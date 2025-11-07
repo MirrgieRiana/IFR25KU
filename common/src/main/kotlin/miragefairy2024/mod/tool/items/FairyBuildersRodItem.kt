@@ -15,6 +15,7 @@ import miragefairy2024.util.notEmptyOrNull
 import miragefairy2024.util.opposite
 import miragefairy2024.util.removeItemStackFromMainInventoryAndOffhand
 import miragefairy2024.util.text
+import miragefairy2024.util.withBlockPosAndLocation
 import miragefairy2024.util.yellow
 import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
@@ -125,7 +126,7 @@ open class BuildersRodItem(toolMaterial: Tier, settings: Properties) : TieredIte
             val wallBlockState = level.getBlockState(wallBlockPos)
             if (wallBlockState != targetBlockState) return@blockVisitor false // 壁が対象ブロックでない
 
-            val context = BlockPlaceContext(player, usedHand, blockItemStack, blockHitResult.withPosition(airBlockPos))
+            val context = BlockPlaceContext(player, usedHand, blockItemStack, blockHitResult.withBlockPosAndLocation(airBlockPos))
             if (!level.getBlockState(airBlockPos).canBeReplaced(context)) return@blockVisitor false // 設置先が埋まっている
 
             true
@@ -169,7 +170,7 @@ open class BuildersRodItem(toolMaterial: Tier, settings: Properties) : TieredIte
         var count = 0
         run finish@{
             sequence.forEach next@{ airBlockPos ->
-                val context = BlockPlaceContext(player, usedHand, blockItemStack, blockHitResult.withPosition(airBlockPos))
+                val context = BlockPlaceContext(player, usedHand, blockItemStack, blockHitResult.withBlockPosAndLocation(airBlockPos))
 
                 val result = blockItem.place(context)
                 if (blockItemStack.isEmpty) {

@@ -19,6 +19,9 @@ import net.minecraft.world.level.block.FarmBlock
 import net.minecraft.world.level.block.GameMasterBlock
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 import net.minecraft.world.phys.AABB
+import net.minecraft.world.phys.BlockHitResult
+import net.minecraft.world.phys.HitResult
+import net.minecraft.world.phys.Vec3
 
 val Level.isServer get() = !this.isClientSide
 
@@ -50,6 +53,19 @@ fun BlockGetter.getCrystalErg(blockPos: BlockPos): Double {
         Blocks.COPPER_BLOCK -> 0.2
 
         else -> 0.0
+    }
+}
+
+fun BlockHitResult.withBlockPosAndLocation(blockPos: BlockPos): BlockHitResult {
+    val location = Vec3(
+        this.location.x + blockPos.x - this.blockPos.x,
+        this.location.y + blockPos.y - this.blockPos.y,
+        this.location.z + blockPos.z - this.blockPos.z,
+    )
+    return if (this.type == HitResult.Type.MISS) {
+        BlockHitResult.miss(location, this.direction, blockPos)
+    } else {
+        BlockHitResult(location, this.direction, blockPos, this.isInside)
     }
 }
 
