@@ -146,6 +146,7 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
 
     tasks.register<UnpackSourcesTask>("unpackSources") {
         dependsOn(tasks.firstOrNull { it.name == "genSources" })
+        outputDirectory = project.layout.projectDirectory.dir("unpackedSources")
     }
 
 }
