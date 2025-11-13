@@ -78,7 +78,9 @@ Contributions for version > v0.14.1: Copyright 2025 The Developer of MirageFairy
 
 ### License
 
-These files are provided under any of the following licenses:
+These files are provided under a multi-license scheme.
+
+You may choose any one of the following licenses, at your option, and then only the terms of the license you selected apply to your use.
 
 - **[Apache License 2.0](LICENSE)**
 - **[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)**
