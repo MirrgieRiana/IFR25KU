@@ -332,7 +332,7 @@ enum class MotifCard(
 
     // 鉱物
     OBSIDIAN(
-        "obsidian", 5, "Obsidiania", "黒耀石精オブシディアーニャ", 0x775599, 0x6029B3, 0x2E095E, 0x0F0033,
+        "obsidian", 5, "Obsidiania", "黒曜石精オブシディアーニャ", 0x775599, 0x6029B3, 0x2E095E, 0x0F0033,
         ParentMotifs(),
         PassiveSkillBuilder()
             + overall.defence(0.8)
