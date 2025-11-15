@@ -85,7 +85,7 @@ enum class TraitConditionCard(
     ),
     SUNSHINE_ENVIRONMENT(
         "sunshine_environment", Emoji.OUTDOOR, "Sunshine Environment", "日照環境",
-        { world, blockPos, _ -> world.getPermanentSkyLightLevelFactor(blockPos) },
+        { world, blockPos, _ -> world.getNaturalDimensionFactor() * world.getPermanentSkyLightLevelFactor(blockPos) },
     ),
     NATURAL(
         "natural", Emoji.NATURAL, "Natural", "天然",
@@ -136,6 +136,8 @@ private fun Level.getLowAltitudeFactor(blockPos: BlockPos): Double {
         else -> 0.0
     }
 }
+
+private fun Level.getNaturalDimensionFactor() = if (this.dimensionType().natural) 1.0 else 0.0
 
 private fun Level.getPermanentSkyLightLevelFactor(blockPos: BlockPos) = this.lightProxy.getPermanentSkyLightLevel(blockPos) / 15.0
 
