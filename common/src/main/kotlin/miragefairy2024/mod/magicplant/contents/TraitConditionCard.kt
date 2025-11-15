@@ -116,7 +116,7 @@ enum class TraitConditionCard(
     ),
     SUNSHINE_ENVIRONMENT(
         "sunshine_environment", Emoji.OUTDOOR, "Sunshine Environment", "日照環境",
-        { (if (it.level.dimensionType().natural) 1.0 else 0.0) * (it.level.lightProxy.getPermanentSkyLightLevel(it.blockPos) / 15.0) },
+        { (if (it.level.dimensionType().natural) 1.0 else 0.0) * (it.level.lightProxy.getPermanentSkyLightLevel(it.blockPos) / 15.0) }, // 自然環境があるディメンションで、かつ空の光が届く位置にある
     ),
     NATURAL(
         "natural", Emoji.NATURAL, "Natural", "天然",
