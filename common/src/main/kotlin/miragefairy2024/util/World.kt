@@ -11,8 +11,10 @@ import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.LightLayer
+import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.GameMasterBlock
+import net.minecraft.world.level.levelgen.Heightmap
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.BlockHitResult
@@ -20,6 +22,24 @@ import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
 
 val Level.isServer get() = !this.isClientSide
+
+fun Level.isOutdoor(blockPos: BlockPos) = blockPos.y >= this.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, blockPos).y
+
+val Level.isDaytime get() = this.lightProxy.getSkyDarken() < 4
+
+fun Level.getEnvironmentalWeatherAt(blockPos: BlockPos): Biome.Precipitation {
+    if (!this.isRaining) return Biome.Precipitation.NONE
+    val biome = this.getBiome(blockPos).value()
+    return biome.getPrecipitationAt(blockPos)
+}
+
+fun Level.getWeatherAt(blockPos: BlockPos): Biome.Precipitation {
+    if (!this.isRaining) return Biome.Precipitation.NONE
+    if (!this.canSeeSky(blockPos)) return Biome.Precipitation.NONE
+    if (this.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, blockPos).y > blockPos.y) return Biome.Precipitation.NONE
+    val biome = this.getBiome(blockPos).value()
+    return biome.getPrecipitationAt(blockPos)
+}
 
 fun BlockHitResult.withBlockPosAndLocation(blockPos: BlockPos): BlockHitResult {
     val location = Vec3(
