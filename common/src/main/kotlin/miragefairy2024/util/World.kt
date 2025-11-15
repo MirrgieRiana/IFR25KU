@@ -7,15 +7,11 @@ import net.minecraft.core.Direction
 import net.minecraft.network.protocol.game.ClientboundLevelEventPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundSource
-import net.minecraft.tags.BlockTags
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.LightLayer
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.level.block.FarmBlock
 import net.minecraft.world.level.block.GameMasterBlock
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 import net.minecraft.world.phys.AABB
@@ -24,37 +20,6 @@ import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
 
 val Level.isServer get() = !this.isClientSide
-
-fun BlockGetter.getMoisture(blockPos: BlockPos): Double {
-    val blockState = this.getBlockState(blockPos)
-    if (blockState isIn Blocks.FARMLAND) return 0.5 + 0.5 * (blockState.getValue(FarmBlock.MOISTURE) / 7.0)
-    if (blockState isIn BlockTags.DIRT) return 0.5
-    if (blockState isIn BlockTags.SAND) return 0.25
-    return 0.0
-}
-
-fun BlockGetter.getCrystalErg(blockPos: BlockPos): Double {
-    // TODO 妖精の継承を使って判定
-    return when (getBlockState(blockPos).block) {
-
-        Blocks.DIAMOND_BLOCK -> 1.0
-
-        Blocks.EMERALD_BLOCK -> 0.8
-        Blocks.AMETHYST_BLOCK -> 0.8
-
-        Blocks.GOLD_BLOCK -> 0.6
-        Blocks.QUARTZ_BLOCK -> 0.6
-
-        Blocks.LAPIS_BLOCK -> 0.4
-        Blocks.REDSTONE_BLOCK -> 0.4
-        Blocks.IRON_BLOCK -> 0.4
-
-        Blocks.COAL_BLOCK -> 0.2
-        Blocks.COPPER_BLOCK -> 0.2
-
-        else -> 0.0
-    }
-}
 
 fun BlockHitResult.withBlockPosAndLocation(blockPos: BlockPos): BlockHitResult {
     val location = Vec3(

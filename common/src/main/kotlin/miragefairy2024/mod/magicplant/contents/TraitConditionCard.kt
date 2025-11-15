@@ -10,8 +10,6 @@ import miragefairy2024.util.HumidityCategory
 import miragefairy2024.util.TemperatureCategory
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
-import miragefairy2024.util.getCrystalErg
-import miragefairy2024.util.getMoisture
 import miragefairy2024.util.humidityCategory
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isIn
@@ -23,9 +21,9 @@ import miragefairy2024.util.text
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.atMost
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
-import net.minecraft.core.BlockPos
 import net.minecraft.tags.BlockTags
-import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.FarmBlock
 import net.minecraft.world.level.levelgen.Heightmap
 
 enum class TraitConditionCard(
@@ -37,15 +35,48 @@ enum class TraitConditionCard(
 ) {
     FLOOR_MOISTURE(
         "floor_moisture", Emoji.FLOOR_MOISTURE, "Floor Moisture", "湿った地面",
-        { it.level.getMoisture(it.blockPos.below()) },
+        a@{
+            val blockState = it.level.getBlockState(it.blockPos.below())
+            if (blockState isIn Blocks.FARMLAND) return@a 0.5 + 0.5 * (blockState.getValue(FarmBlock.MOISTURE) / 7.0)
+            if (blockState isIn BlockTags.DIRT) return@a 0.5
+            if (blockState isIn BlockTags.SAND) return@a 0.25
+            0.0
+        },
     ),
     FLOOR_CRYSTAL_ERG(
         "floor_crystal_erg", Emoji.FLOOR_CRYSTAL_ERG, "Floor Crystal Erg", "鉱物質の地面",
-        { it.level.getCrystalErg(it.blockPos.below()) },
+        {
+            // TODO 妖精の継承を使って判定
+            when (it.level.getBlockState(it.blockPos.below()).block) {
+
+                Blocks.DIAMOND_BLOCK -> 1.0
+
+                Blocks.EMERALD_BLOCK -> 0.8
+                Blocks.AMETHYST_BLOCK -> 0.8
+
+                Blocks.GOLD_BLOCK -> 0.6
+                Blocks.QUARTZ_BLOCK -> 0.6
+
+                Blocks.LAPIS_BLOCK -> 0.4
+                Blocks.REDSTONE_BLOCK -> 0.4
+                Blocks.IRON_BLOCK -> 0.4
+
+                Blocks.COAL_BLOCK -> 0.2
+                Blocks.COPPER_BLOCK -> 0.2
+
+                else -> 0.0
+            }
+        },
     ),
     FLOOR_HARDNESS(
         "floor_hardness", Emoji.FLOOR_HARDNESS, "Floor Hardness", "硬い地面",
-        { getFloorHardness(it.level, it.blockPos) },
+        a@{
+            val blockState = it.level.getBlockState(it.blockPos.below())
+            if (blockState isNotIn BlockTags.MINEABLE_WITH_PICKAXE) return@a 0.0
+            val hardness = blockState.getDestroySpeed(it.level, it.blockPos.below())
+            if (hardness < 0) return@a 0.0
+            hardness / 2.0 atMost 2.0
+        },
     ),
     LIGHT(
         "light", Emoji.LIGHT, "Light", "光",
@@ -85,7 +116,7 @@ enum class TraitConditionCard(
     ),
     SUNSHINE_ENVIRONMENT(
         "sunshine_environment", Emoji.OUTDOOR, "Sunshine Environment", "日照環境",
-        { it.level.getNaturalDimensionFactor() * it.level.getPermanentSkyLightLevelFactor(it.blockPos) },
+        { (if (it.level.dimensionType().natural) 1.0 else 0.0) * (it.level.lightProxy.getPermanentSkyLightLevel(it.blockPos) / 15.0) },
     ),
     NATURAL(
         "natural", Emoji.NATURAL, "Natural", "天然",
@@ -93,11 +124,25 @@ enum class TraitConditionCard(
     ),
     HIGH_ALTITUDE(
         "high_altitude", Emoji.UP, "High Altitude", "高地",
-        { it.level.getHighAltitudeFactor(it.blockPos) },
+        {
+            when {
+                it.level.dimensionType().natural -> (it.blockPos.y.toDouble() - 64.0) / 128.0 atLeast 0.0 atMost 1.0
+                it.level.getBiome(it.blockPos) isIn ConventionalBiomeTags.IS_NETHER -> 0.0
+                it.level.getBiome(it.blockPos) isIn ConventionalBiomeTags.IS_END -> 1.0
+                else -> 0.0
+            }
+        },
     ),
     LOW_ALTITUDE(
         "low_altitude", Emoji.DOWN, "Low Altitude", "低地",
-        { it.level.getLowAltitudeFactor(it.blockPos) },
+        {
+            when {
+                it.level.dimensionType().natural -> -(it.blockPos.y.toDouble() - 64.0) / 128.0 atLeast 0.0 atMost 1.0
+                it.level.getBiome(it.blockPos) isIn ConventionalBiomeTags.IS_NETHER -> 1.0
+                it.level.getBiome(it.blockPos) isIn ConventionalBiomeTags.IS_END -> 0.0
+                else -> 0.0
+            }
+        },
     ),
     ;
 
@@ -110,36 +155,6 @@ enum class TraitConditionCard(
         override fun toString() = identifier.string
     }
 }
-
-private fun getFloorHardness(world: Level, blockPos: BlockPos): Double {
-    val blockState = world.getBlockState(blockPos.below())
-    if (blockState isNotIn BlockTags.MINEABLE_WITH_PICKAXE) return 0.0
-    val hardness = blockState.getDestroySpeed(world, blockPos.below())
-    if (hardness < 0) return 0.0
-    return hardness / 2.0 atMost 2.0
-}
-
-private fun Level.getHighAltitudeFactor(blockPos: BlockPos): Double {
-    return when {
-        this.dimensionType().natural -> (blockPos.y.toDouble() - 64.0) / 128.0 atLeast 0.0 atMost 1.0
-        this.getBiome(blockPos) isIn ConventionalBiomeTags.IS_NETHER -> 0.0
-        this.getBiome(blockPos) isIn ConventionalBiomeTags.IS_END -> 1.0
-        else -> 0.0
-    }
-}
-
-private fun Level.getLowAltitudeFactor(blockPos: BlockPos): Double {
-    return when {
-        this.dimensionType().natural -> -(blockPos.y.toDouble() - 64.0) / 128.0 atLeast 0.0 atMost 1.0
-        this.getBiome(blockPos) isIn ConventionalBiomeTags.IS_NETHER -> 1.0
-        this.getBiome(blockPos) isIn ConventionalBiomeTags.IS_END -> 0.0
-        else -> 0.0
-    }
-}
-
-private fun Level.getNaturalDimensionFactor() = if (this.dimensionType().natural) 1.0 else 0.0
-
-private fun Level.getPermanentSkyLightLevelFactor(blockPos: BlockPos) = this.lightProxy.getPermanentSkyLightLevel(blockPos) / 15.0
 
 context(ModContext)
 fun initTraitConditionCard() {
