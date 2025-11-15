@@ -24,7 +24,6 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.FarmBlock
-import net.minecraft.world.level.levelgen.Heightmap
 
 enum class TraitConditionCard(
     path: String,
@@ -109,10 +108,6 @@ enum class TraitConditionCard(
     HIGH_HUMIDITY(
         "high_humidity", Emoji.HIGH_HUMIDITY, "High Humidity", "高い湿度",
         { if (it.level.getBiome(it.blockPos).humidityCategory == HumidityCategory.HIGH) 1.0 else 0.0 },
-    ),
-    OUTDOOR(
-        "outdoor", Emoji.OUTDOOR, "Outdoor", "屋外",
-        { if (it.blockPos.y >= it.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, it.blockPos).y) 1.0 else 0.0 },
     ),
     SUNSHINE_ENVIRONMENT(
         "sunshine_environment", Emoji.OUTDOOR, "Sunshine Environment", "日照環境",
