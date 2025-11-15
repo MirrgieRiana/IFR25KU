@@ -10,8 +10,10 @@ import miragefairy2024.util.HumidityCategory
 import miragefairy2024.util.TemperatureCategory
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
+import miragefairy2024.util.getEnvironmentalWeatherAt
 import miragefairy2024.util.humidityCategory
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isDaytime
 import miragefairy2024.util.isIn
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.lightProxy
@@ -22,6 +24,7 @@ import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.atMost
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.tags.BlockTags
+import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.FarmBlock
 
@@ -138,6 +141,14 @@ enum class TraitConditionCard(
                 else -> 0.0
             }
         },
+    ),
+    FINE(
+        "fine", Emoji.SUN, "Fine", "晴れ",
+        { if (it.level.getEnvironmentalWeatherAt(it.blockPos) == Biome.Precipitation.NONE) 1.0 else 0.0 }, // 今その環境で降水していない
+    ),
+    NIGHT(
+        "night", Emoji.MOON, "Night", "夜",
+        { if (it.level.dimensionType().natural && !it.level.isDaytime) 1.0 else 0.0 }, // 空に天体がある環境で、時間帯が夜
     ),
     ;
 
