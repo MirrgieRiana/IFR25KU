@@ -12,4 +12,4 @@ interface TraitCondition {
     fun getFactor(context: TraitConditionContext): Double
 }
 
-class TraitConditionContext(val world: Level, val blockPos: BlockPos, val blockEntity: MagicPlantBlockEntity?)
+class TraitConditionContext(val level: Level, val blockPos: BlockPos, val blockEntity: MagicPlantBlockEntity?)
