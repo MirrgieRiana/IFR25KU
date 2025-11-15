@@ -5,6 +5,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.magicplant.MagicPlantBlockEntity
 import miragefairy2024.mod.magicplant.MutableTraitEffects
 import miragefairy2024.mod.magicplant.Trait
+import miragefairy2024.mod.magicplant.TraitConditionContext
 import miragefairy2024.mod.magicplant.TraitEffectKey
 import miragefairy2024.mod.magicplant.TraitEffectKeyEntry
 import miragefairy2024.mod.magicplant.enJa
@@ -309,7 +310,8 @@ class TraitCard(
         override val traitEffectKeyEntries = this@TraitCard.traitEffectKeyEntries
 
         override fun getTraitEffects(world: Level, blockPos: BlockPos, blockEntity: MagicPlantBlockEntity?, level: Int): MutableTraitEffects? {
-            val factor = traitConditionCards.map { it.traitCondition.getFactor(world, blockPos, blockEntity) }.fold(1.0) { a, b -> a * b }
+            val context = TraitConditionContext(world, blockPos, blockEntity)
+            val factor = traitConditionCards.map { it.traitCondition.getFactor(context) }.fold(1.0) { a, b -> a * b }
             return if (factor != 0.0) {
                 val traitEffects = MutableTraitEffects()
                 this@TraitCard.traitEffectKeyEntries.forEach {

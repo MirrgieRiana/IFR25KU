@@ -21,6 +21,7 @@ import miragefairy2024.client.util.topBorderLayout
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.NinePatchTextureCard
+import miragefairy2024.mod.magicplant.TraitConditionContext
 import miragefairy2024.mod.magicplant.TraitEffectKey
 import miragefairy2024.mod.magicplant.TraitListScreenHandler
 import miragefairy2024.mod.magicplant.TraitStack
@@ -81,8 +82,9 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                                 val blockEntity = level.getMagicPlantBlockEntity(menu.blockPos)
 
                                 menu.traitStacks.traitStackList.forEach { traitStack ->
+                                    val context = TraitConditionContext(level, menu.blockPos, blockEntity)
                                     val totalConditionFactor = traitStack.trait.conditions
-                                        .map { it.getFactor(level, menu.blockPos, blockEntity) }
+                                        .map { it.getFactor(context) }
                                         .fold(1.0) { a, b -> a * b }
 
                                     child(ClickableContainer(Sizing.fill(100), Sizing.content()).apply { // 特性
@@ -130,8 +132,9 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                     child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill(100)).apply { // 条件
                         verticalAlignment(VerticalAlignment.BOTTOM)
 
+                        val context = TraitConditionContext(level, menu.blockPos, blockEntity)
                         traitStack.trait.conditions.forEach { condition ->
-                            val factor = condition.getFactor(level, menu.blockPos, blockEntity)
+                            val factor = condition.getFactor(context)
                             val text = text { condition.emoji + " "() + (factor * 100.0 formatAs "%.1f%%")() }
                             child(Components.label(text).tooltip(condition.name))
                         }
@@ -143,8 +146,9 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                         horizontalAlignment(HorizontalAlignment.RIGHT)
                         verticalAlignment(VerticalAlignment.BOTTOM)
 
+                        val context = TraitConditionContext(level, menu.blockPos, blockEntity)
                         val totalConditionFactor = traitStack.trait.conditions
-                            .map { it.getFactor(level, menu.blockPos, blockEntity) }
+                            .map { it.getFactor(context) }
                             .fold(1.0) { a, b -> a * b }
 
                         traitStack.trait.traitEffectKeyEntries.forEach {

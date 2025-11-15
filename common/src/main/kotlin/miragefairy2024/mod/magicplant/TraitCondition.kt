@@ -9,5 +9,7 @@ import net.minecraft.world.level.Level
 interface TraitCondition {
     val emoji: Component
     val name: Component
-    fun getFactor(world: Level, blockPos: BlockPos, blockEntity: MagicPlantBlockEntity?): Double
+    fun getFactor(context: TraitConditionContext): Double
 }
+
+class TraitConditionContext(val world: Level, val blockPos: BlockPos, val blockEntity: MagicPlantBlockEntity?)
