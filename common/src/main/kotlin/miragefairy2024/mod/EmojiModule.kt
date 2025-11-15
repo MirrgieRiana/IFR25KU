@@ -25,6 +25,8 @@ enum class Emoji(val string: String, val charCode: String) {
     DARKNESS("闇", "\uE613"),
     OUTDOOR("屋外", "\uE614"),
     NATURAL("天然", "\uE615"),
+    MOON("☾", "\uE616"),
+    SUN("☀", "\uE617"),
 
     LOW_TEMPERATURE("低い気温", "\uE618"),
     MEDIUM_TEMPERATURE("普通の気温", "\uE619"),
