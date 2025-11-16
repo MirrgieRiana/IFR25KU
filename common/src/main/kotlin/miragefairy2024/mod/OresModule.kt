@@ -165,14 +165,25 @@ fun initOresModule() {
 
     }
 
-    fun worldGen(range: IntRange, countPerCube: Double, size: Int, card: OreCard) {
+    /**
+     * @param countPerCube
+     * 目安:
+     * バニラでは上層・下層や露出・埋没によるバリエーションがあり、固定ではない。
+     * また、収量としては各バリエーションが重複する。
+     * - ORE_LAPIS: 2 / 4
+     * - ORE_LAPIS_BURIED: 4 / 8
+     * - ORE_EMERALD: 100 / 31
+     * バニラのソースコード見た方が早い。
+     * @see [net.minecraft.data.worldgen.features.OreFeatures], [net.minecraft.data.worldgen.placement.OrePlacements]
+     */
+    fun worldGen(range: IntRange, countPerCube: Double, size: Int, discardChanceOnAirExposure: Double, card: OreCard) {
 
         val configuredKey = registerDynamicGeneration(Registries.CONFIGURED_FEATURE, card.identifier) {
             val targets = when (card.baseStoneType) {
                 BaseStoneType.STONE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), card.block().defaultBlockState()))
                 BaseStoneType.DEEPSLATE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), card.block().defaultBlockState()))
             }
-            Feature.ORE with OreConfiguration(targets, size)
+            Feature.ORE with OreConfiguration(targets, size, discardChanceOnAirExposure.toFloat())
         }
 
         registerDynamicGeneration(Registries.PLACED_FEATURE, card.identifier) {
@@ -183,12 +194,12 @@ fun initOresModule() {
         }
 
     }
-    worldGen(16 until 128, 1.6, 12, OreCard.MAGNETITE_ORE)
-    worldGen(16 until 128, 1.6, 12, OreCard.DEEPSLATE_MAGNETITE_ORE)
-    worldGen(0 until 64, 1.2, 8, OreCard.FLUORITE_ORE)
-    worldGen(0 until 64, 1.2, 8, OreCard.DEEPSLATE_FLUORITE_ORE)
-    worldGen(-64 until 128, 0.6, 12, OreCard.MIRANAGITE_ORE)
-    worldGen(-64 until 128, 0.6, 12, OreCard.DEEPSLATE_MIRANAGITE_ORE)
+    worldGen(16 until 128, 1.6, 12, 0.0, OreCard.MAGNETITE_ORE)
+    worldGen(16 until 128, 1.6, 12, 0.0, OreCard.DEEPSLATE_MAGNETITE_ORE)
+    worldGen(0 until 64, 1.2, 8, 0.0, OreCard.FLUORITE_ORE)
+    worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE)
+    worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE)
+    worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.DEEPSLATE_MIRANAGITE_ORE)
 
 }
 
