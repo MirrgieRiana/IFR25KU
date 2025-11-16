@@ -81,7 +81,9 @@ open class BlockMaterialCard(
             "nephrite_block", EnJa("Nephrite Block", "ネフライトブロック"),
             PoemList(null),
             MapColor.WARPED_WART_BLOCK, 5.0F, 5.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.NEPHRITE),
-        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase()
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
+            registerCompressionRecipeGeneration(MaterialCard.NEPHRITE.item, { MaterialCard.NEPHRITE.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
         val XARPITE_BLOCK = !BlockMaterialCard(
             "xarpite_block", EnJa("Xarpite Block", "紅天石ブロック"),
             PoemList(2).poem(EnJa("Loss and reconstruction of perception", "夢の世界の如き紅。")),

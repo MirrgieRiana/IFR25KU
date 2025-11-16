@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:nephrite_block",
+  "ingredients": [
+    {
+      "tag": "c:gems/nephrite"
+    },
+    {
+      "tag": "c:gems/nephrite"
+    },
+    {
+      "tag": "c:gems/nephrite"
+    },
+    {
+      "tag": "c:gems/nephrite"
+    },
+    {
+      "tag": "c:gems/nephrite"
+    },
+    {
+      "tag": "c:gems/nephrite"
+    },
+    {
+      "tag": "c:gems/nephrite"
+    },
+    {
+      "tag": "c:gems/nephrite"
+    },
+    {
+      "tag": "c:gems/nephrite"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:nephrite_block"
+  }
+}
