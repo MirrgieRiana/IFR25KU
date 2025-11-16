@@ -80,7 +80,7 @@ open class BlockMaterialCard(
         val NEPHRITE_BLOCK = !BlockMaterialCard(
             "nephrite_block", EnJa("Nephrite Block", "ネフライトブロック"),
             PoemList(null),
-            MapColor.WARPED_WART_BLOCK, 5.0F, 5.0F,
+            MapColor.WARPED_WART_BLOCK, 5.0F, 5.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.NEPHRITE),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase()
         val XARPITE_BLOCK = !BlockMaterialCard(
             "xarpite_block", EnJa("Xarpite Block", "紅天石ブロック"),

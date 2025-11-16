@@ -1,6 +1,10 @@
 {
   "values": [
     {
+      "id": "#c:storage_blocks/nephrite",
+      "required": false
+    },
+    {
       "id": "#c:storage_blocks/xarpite",
       "required": false
     },
