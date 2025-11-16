@@ -4,11 +4,14 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.RenderBlockPosesOutlineContext
 import miragefairy2024.mod.RenderBlockPosesOutlineListenerItem
+import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.util.Translation
 import miragefairy2024.util.blockVisitor
 import miragefairy2024.util.durability
+import miragefairy2024.util.get
+import miragefairy2024.util.getLevel
 import miragefairy2024.util.getSameItemStackCountInMainInventoryAndOffhand
 import miragefairy2024.util.invoke
 import miragefairy2024.util.notEmptyOrNull
@@ -21,6 +24,7 @@ import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
+import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.stats.Stats
 import net.minecraft.tags.ItemTags
@@ -96,26 +100,28 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
         tooltipComponents += text { DESCRIPTION_TRANSLATION().yellow }
     }
 
-    fun getDestinationBlockPoses(level: Level, player: Player, usedHand: InteractionHand, blockItemStack: ItemStack, blockHitResult: BlockHitResult, maxCount: Int?): Sequence<BlockPos> {
+    fun getDestinationBlockPoses(level: Level, player: Player, usedHand: InteractionHand, toolItemStack: ItemStack, blockItemStack: ItemStack, blockHitResult: BlockHitResult, maxCount: Int?): Sequence<BlockPos> {
 
         val targetBlockState = level.getBlockState(blockHitResult.blockPos)
         val frontBlockPos = blockHitResult.blockPos.relative(blockHitResult.direction)
         val wallDirection = blockHitResult.direction.opposite
+        val lateralLevel = level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.LATERAL_AREA_MINING.key].getLevel(toolItemStack)
+        val actualRange = range + lateralLevel
 
         val region = when (blockHitResult.direction) {
             Direction.WEST, Direction.EAST -> BlockBox.of(
-                frontBlockPos.offset(0, -range, -range),
-                frontBlockPos.offset(0, range, range),
+                frontBlockPos.offset(0, -actualRange, -actualRange),
+                frontBlockPos.offset(0, actualRange, actualRange),
             )
 
             Direction.DOWN, Direction.UP -> BlockBox.of(
-                frontBlockPos.offset(-range, 0, -range),
-                frontBlockPos.offset(range, 0, range),
+                frontBlockPos.offset(-actualRange, 0, -actualRange),
+                frontBlockPos.offset(actualRange, 0, actualRange),
             )
 
             Direction.NORTH, Direction.SOUTH -> BlockBox.of(
-                frontBlockPos.offset(-range, -range, 0),
-                frontBlockPos.offset(range, range, 0),
+                frontBlockPos.offset(-actualRange, -actualRange, 0),
+                frontBlockPos.offset(actualRange, actualRange, 0),
             )
         }
 
@@ -137,6 +143,8 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
         val level = context.level ?: return null
         val player = context.player ?: return null
 
+        val toolItemStack = player.getItemInHand(hand)
+
         val blockItemStack = player.getItemInHand(hand.opposite).notEmptyOrNull ?: return null // 逆の手が空
         val blockItem = blockItemStack.item as? BlockItem ?: return null // 逆の手がブロックアイテムでない
         if (!blockItem.block.isEnabled(level.enabledFeatures())) return null // ブロックが無効化されている
@@ -146,7 +154,7 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
 
         val count = if (player.isCreative) null else player.getSameItemStackCountInMainInventoryAndOffhand(blockItemStack)
 
-        val sequence = getDestinationBlockPoses(level, player, hand, blockItemStack, blockHitResult, count)
+        val sequence = getDestinationBlockPoses(level, player, hand, toolItemStack, blockItemStack, blockHitResult, count)
 
         return Pair(
             blockHitResult.blockPos.relative(blockHitResult.direction),
@@ -164,7 +172,7 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
         val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない
 
-        val sequence = getDestinationBlockPoses(level, player, usedHand, blockItemStack, blockHitResult, null)
+        val sequence = getDestinationBlockPoses(level, player, usedHand, toolItemStack, blockItemStack, blockHitResult, null)
 
         val sampleBlockItemStack = blockItemStack.copy()
         var count = 0
