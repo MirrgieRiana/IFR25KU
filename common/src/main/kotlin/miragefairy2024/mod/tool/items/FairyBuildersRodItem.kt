@@ -48,6 +48,7 @@ import net.minecraft.world.phys.HitResult
 
 open class FairyBuildersRodConfiguration(
     override val toolMaterialCard: ToolMaterialCard,
+    val range: Int,
 ) : ToolConfiguration() {
     override fun createItem(properties: Item.Properties) = FairyBuildersRodItem(this, properties)
 
@@ -58,7 +59,7 @@ open class FairyBuildersRodConfiguration(
 }
 
 class FairyBuildersRodItem(override val configuration: FairyBuildersRodConfiguration, settings: Properties) :
-    BuildersRodItem(configuration.toolMaterialCard.toolMaterial, settings),
+    BuildersRodItem(configuration.toolMaterialCard.toolMaterial, configuration.range, settings),
     FairyToolItem,
     ModifyItemEnchantmentsHandler {
 
@@ -85,7 +86,7 @@ class FairyBuildersRodItem(override val configuration: FairyBuildersRodConfigura
 
 }
 
-open class BuildersRodItem(toolMaterial: Tier, settings: Properties) : TieredItem(toolMaterial, settings), RenderBlockPosesOutlineListenerItem {
+open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings: Properties) : TieredItem(toolMaterial, settings), RenderBlockPosesOutlineListenerItem {
     companion object {
         val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("builders_rod").toLanguageKey()}.description" }, "Place blocks when used", "使用時、ブロックを設置")
     }
@@ -101,7 +102,6 @@ open class BuildersRodItem(toolMaterial: Tier, settings: Properties) : TieredIte
         val frontBlockPos = blockHitResult.blockPos.relative(blockHitResult.direction)
         val wallDirection = blockHitResult.direction.opposite
 
-        val range = 10
         val region = when (blockHitResult.direction) {
             Direction.WEST, Direction.EAST -> BlockBox.of(
                 frontBlockPos.offset(0, -range, -range),

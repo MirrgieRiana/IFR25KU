@@ -400,7 +400,7 @@ class ToolCard(
         val CALCULITE_BUILDERS_ROD = !ToolCard(
             "calculite_builders_rod", EnJa("Builder's Rod", "ビルダーズロッド"),
             PoemList(5).poem(EnJa("End-members of Miranagite.", "宇宙一明晰なビスマス化合物。")),
-            FairyBuildersRodConfiguration(ToolMaterialCard.CALCULITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2).enchantable(AREA_MINING_ENCHANTABLE_ITEM_TAG),
+            FairyBuildersRodConfiguration(ToolMaterialCard.CALCULITE, 10).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2).enchantable(AREA_MINING_ENCHANTABLE_ITEM_TAG),
         ) {
             registerShapedRecipeGeneration(item) {
                 pattern(" GG")
