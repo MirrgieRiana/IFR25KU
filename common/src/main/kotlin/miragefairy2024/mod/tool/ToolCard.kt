@@ -86,17 +86,6 @@ class ToolCard(
         val entries = mutableListOf<ToolCard>()
         private operator fun ToolCard.not() = this.also { entries.add(this) }
 
-        val IRON_SCYTHE = !ToolCard(
-            "iron_scythe", EnJa("Iron Scythe", "鉄の大鎌"),
-            PoemList(null),
-            FairyScytheConfiguration(ToolMaterialCard.IRON),
-        ) { registerScytheRecipeGeneration(item, tagOf(Shape.INGOT, Material.IRON)) }
-        val DIAMOND_SCYTHE = !ToolCard(
-            "diamond_scythe", EnJa("Diamond Scythe", "ダイヤモンドの大鎌"),
-            PoemList(null),
-            FairyScytheConfiguration(ToolMaterialCard.DIAMOND),
-        ) { registerScytheRecipeGeneration(item, tagOf(Shape.GEM, Material.DIAMOND)) }
-
         private fun interface Configurator<in T : ToolConfiguration> {
             fun configure(configuration: T)
         }
@@ -151,6 +140,17 @@ class ToolCard(
         val TOPAZ = toolSet("topaz", "トパーズ", ToolMaterialCard.TOPAZ, MaterialCard.TOPAZ.ore!!.tag) { it.enchantment(Enchantments.SHARPNESS, 3).tag(ItemTags.SHARP_WEAPON_ENCHANTABLE) }
         val ECHO_SHARD = toolSet("echo_shard", "残響", ToolMaterialCard.ECHO_SHARD, ItemTagCard.ECHO_SHARDS.tag) { if (it is FairySwordConfiguration) it.enchantment(Enchantments.SHARPNESS, 5) else it.enchantment(Enchantments.EFFICIENCY, 5) }
         val NETHER_STAR = toolSet("nether_star", "ネザースター", ToolMaterialCard.NETHER_STAR, ConventionalItemTags.NETHER_STARS) { if (it is FairySwordConfiguration) it.enchantment(Enchantments.LOOTING, 4).glint() else it.enchantment(Enchantments.FORTUNE, 4).glint() }
+
+        val IRON_SCYTHE = !ToolCard(
+            "iron_scythe", EnJa("Iron Scythe", "鉄の大鎌"),
+            PoemList(null),
+            FairyScytheConfiguration(ToolMaterialCard.IRON),
+        ) { registerScytheRecipeGeneration(item, tagOf(Shape.INGOT, Material.IRON)) }
+        val DIAMOND_SCYTHE = !ToolCard(
+            "diamond_scythe", EnJa("Diamond Scythe", "ダイヤモンドの大鎌"),
+            PoemList(null),
+            FairyScytheConfiguration(ToolMaterialCard.DIAMOND),
+        ) { registerScytheRecipeGeneration(item, tagOf(Shape.GEM, Material.DIAMOND)) }
 
         val FAIRY_CRYSTAL_PICKAXE = !ToolCard(
             "fairy_crystal_pickaxe", EnJa("Fairy Crystal Pickaxe", "フェアリークリスタルのつるはし"),
