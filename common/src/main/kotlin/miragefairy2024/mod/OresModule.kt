@@ -208,6 +208,8 @@ fun initOresModule() {
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.DEEPSLATE_MAGNETITE_ORE)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.FLUORITE_ORE)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE)
+    worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE)
+    worldGen(-64 until 64, 0.3, 4, 1.0, OreCard.DEEPSLATE_NEPHRITE_ORE)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.DEEPSLATE_MIRANAGITE_ORE)
 
