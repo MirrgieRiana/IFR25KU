@@ -71,6 +71,7 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
         TraitCard.SEEDS_PRODUCTION.trait to 0b00101000, // 種子生成
         TraitCard.RARE_PRODUCTION.trait to 0b00101000, // 希少品生成
         TraitCard.PHOTOSYNTHESIS.trait to 0b00101000, // 光合成
+        TraitCard.SELENOSYNTHESIS.trait to 0b00101000, // 月光合成
         TraitCard.OSMOTIC_ABSORPTION.trait to 0b00101000, // 養分吸収
         TraitCard.ADVERSITY_FLOWER.trait to 0b00101000, // 高嶺の花
     )
@@ -85,6 +86,7 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
         TraitCard.SEEDS_DILUTION.trait to 0.05, // 種子希釈
         TraitCard.NATURAL_ABSCISSION.trait to 0.05, // 自然落果
         TraitCard.PHOTOSYNTHESIS.trait to 0.05, // 光合成
+        TraitCard.SELENOSYNTHESIS.trait to 0.05, // 月光合成
         TraitCard.PHAEOSYNTHESIS.trait to 0.05, // 闇合成
         TraitCard.OSMOTIC_ABSORPTION.trait to 0.05, // 養分吸収
         TraitCard.NODED_STEM.trait to 0.05, // 節状の茎

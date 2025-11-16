@@ -151,6 +151,12 @@ class TraitCard(
             "脱フロギストン反応により、水と二酸化炭素から酸素と有機物が生産される。光合成はエーテル呼吸と並ぶ植物の生命活動の根幹であり、草食動物、肉食動物、人間など、多くの生物の存在を成り立たせている。",
             listOf(TraitConditionCard.LIGHT), traitEffectKeyEntriesOf(TraitEffectKeyCard.NUTRITION to 0.2),
         )
+        val SELENOSYNTHESIS = !TraitCard(
+            "selenosynthesis", "Selenosynthesis", "月光合成",
+            "The gaia and darkness auras emitted by lunar regolith transition into the shine spectrum as their parallelism increases during long-distance propagation. Hollow structures composed of slightly aura-resistant tissue efficiently trap them and condense them into primitive fairy wisps.",
+            "月表土が放射する土・闇オーラは、長距離伝播の過程で平行性の増大による光スペクトルへの転移を受ける。弱耐霊性組織による中空構造はこれを効率的にトラップし、原始的なフェアリーウィスプを形成する。",
+            listOf(TraitConditionCard.SUNSHINE_ENVIRONMENT, TraitConditionCard.FINE, TraitConditionCard.NIGHT), traitEffectKeyEntriesOf(TraitEffectKeyCard.NUTRITION to 0.5),
+        )
         val PHAEOSYNTHESIS = !TraitCard(
             "phaeosynthesis", "Phaeosynthesis", "闇合成",
             "By fluctuations in aura concentration, ether crystals grow from organic elements in the environment. This process is the same as the formation of undead creatures.",
