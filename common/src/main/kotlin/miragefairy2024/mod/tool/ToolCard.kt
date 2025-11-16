@@ -151,6 +151,19 @@ class ToolCard(
             PoemList(null),
             FairyScytheConfiguration(ToolMaterialCard.DIAMOND),
         ) { registerScytheRecipeGeneration(item, tagOf(Shape.GEM, Material.DIAMOND)) }
+        val NEPHRITE_BUILDERS_ROD = !ToolCard(
+            "nephrite_builders_rod", EnJa("Lesser Builder's Rod", "レッサービルダーズロッド"),
+            PoemList(null),
+            FairyBuildersRodConfiguration(ToolMaterialCard.NEPHRITE, 2).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 1).enchantable(AREA_MINING_ENCHANTABLE_ITEM_TAG),
+        ) {
+            registerShapedRecipeGeneration(item) {
+                pattern(" GG")
+                pattern(" GG")
+                pattern("R  ")
+                define('G', tagOf(Shape.GEM, Material.NEPHRITE))
+                define('R', tagOf(Shape.ROD, Material.WOOD))
+            } on MaterialCard.NEPHRITE.ore!!.tag
+        }
 
         val FAIRY_CRYSTAL_PICKAXE = !ToolCard(
             "fairy_crystal_pickaxe", EnJa("Fairy Crystal Pickaxe", "フェアリークリスタルのつるはし"),
