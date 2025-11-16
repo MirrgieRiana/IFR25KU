@@ -42,6 +42,7 @@ enum class FairyToolMaterials(
     MAGNETITE(Tiers.STONE, 220, 5.0F, 1.5F, 2.0F, 3, { ingredientOf(Shape.GEM, Material.MAGNETITE) }),
     BISMUTH(Tiers.IRON, 4, 4.0F, 1.0F, 1.5F, 19, { ingredientOf(Shape.INGOT, Material.BISMUTH) }),
     FLUORITE(Tiers.STONE, 96, 3.0F, 1.0F, 1.5F, 20, { ingredientOf(Shape.GEM, Material.FLUORITE) }),
+    NEPHRITE(Tiers.IRON, 420, 1.2F, 1.0F, 2.0F, 16, { ingredientOf(Shape.GEM, Material.NEPHRITE) }),
     TOPAZ(Tiers.DIAMOND, 1285, 6.5F, 4.0F, 1.5F, 12, { ingredientOf(Shape.GEM, Material.TOPAZ) }),
     FLINT(Tiers.STONE, 150, 3.5F, 1.5F, 1.0F, 6, { ingredientOf(Shape.GEM, Material.FLINT) }),
 
@@ -103,6 +104,7 @@ enum class ToolMaterialCard(val toolMaterial: Tier, path: String, val title: EnJ
     MAGNETITE(FairyToolMaterials.MAGNETITE, "magnetite_tool", EnJa("Magnetite Tool", "磁鉄鉱ツール")),
     BISMUTH(FairyToolMaterials.BISMUTH, "bismuth_tool", EnJa("Bismuth Tool", "ビスマスツール")),
     FLUORITE(FairyToolMaterials.FLUORITE, "fluorite_tool", EnJa("Fluorite Tool", "蛍石ツール")),
+    NEPHRITE(FairyToolMaterials.NEPHRITE, "nephrite_tool", EnJa("Nephrite Tool", "ネフライトツール")),
     TOPAZ(FairyToolMaterials.TOPAZ, "topaz_tool", EnJa("Topaz Tool", "トパーズツール")),
     FLINT(FairyToolMaterials.FLINT, "flint_tool", EnJa("Flint Tool", "火打石ツール")),
 

@@ -144,6 +144,7 @@ class ToolCard(
         val GLASS = toolSet("glass", "ガラス", ToolMaterialCard.GLASS, ConventionalItemTags.GLASS_BLOCKS) { it.enchantment(Enchantments.SHARPNESS, 2).enchantment(EnchantmentCard.CURSE_OF_SHATTERING.key, 1) }
         val FLINT = toolSet("flint", "火打石", ToolMaterialCard.FLINT, tagOf(Shape.GEM, Material.FLINT)) { it.enchantment(Enchantments.FIRE_ASPECT) }
         val FLUORITE = toolSet("fluorite", "蛍石", ToolMaterialCard.FLUORITE, MaterialCard.FLUORITE.ore!!.tag) { if (it is FairySwordConfiguration) it.enchantment(Enchantments.LOOTING, 1) else it.enchantment(Enchantments.FORTUNE, 1) }
+        val NEPHRITE = toolSet("nephrite", "ネフライト", ToolMaterialCard.NEPHRITE, MaterialCard.NEPHRITE.ore!!.tag) { it.enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 1).enchantable(AREA_MINING_ENCHANTABLE_ITEM_TAG) }
         val AMETHYST = toolSet("amethyst", "アメジスト", ToolMaterialCard.AMETHYST, tagOf(Shape.SHARD, Material.AMETHYST)) { if (it is FairySwordConfiguration) it.enchantment(Enchantments.LOOTING, 2) else it.enchantment(Enchantments.FORTUNE, 2) }
         val OBSIDIAN = toolSet("obsidian", "黒曜石", ToolMaterialCard.OBSIDIAN, ConventionalItemTags.OBSIDIANS) { it.enchantment(Enchantments.SHARPNESS, 4).enchantment(EnchantmentCard.CURSE_OF_SHATTERING.key, 3) }
         val EMERALD = toolSet("emerald", "エメラルド", ToolMaterialCard.EMERALD, tagOf(Shape.GEM, Material.EMERALD)) { if (it is FairySwordConfiguration) it.enchantment(Enchantments.LOOTING, 2) else it.enchantment(Enchantments.FORTUNE, 2) }

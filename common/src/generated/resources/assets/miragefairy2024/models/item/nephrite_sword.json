@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "miragefairy2024:item/nephrite_sword"
+  }
+}

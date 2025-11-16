@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "miragefairy2024:nephrite_shovel",
+  "key": {
+    "#": {
+      "tag": "c:gems/nephrite"
+    },
+    "R": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    "#",
+    "R",
+    "R"
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:nephrite_shovel"
+  }
+}
