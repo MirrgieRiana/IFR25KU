@@ -65,6 +65,10 @@
       "required": false
     },
     {
+      "id": "#c:gems/nephrite",
+      "required": false
+    },
+    {
       "id": "#c:gems/topaz",
       "required": false
     }

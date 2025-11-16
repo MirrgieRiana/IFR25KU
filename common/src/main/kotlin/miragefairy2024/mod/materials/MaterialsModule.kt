@@ -782,6 +782,11 @@ class MaterialCard(
                 define('S', FAIRY_SCALES.item())
             } on FLUORITE.ore!!.tag from FLUORITE.item
         }
+        val NEPHRITE: MaterialCard = !MaterialCard(
+            "nephrite", "Nephrite", "ネフライト",
+            null,
+            ore = Ore(Shape.GEM, Material.NEPHRITE),
+        )
         val TOPAZ: MaterialCard = !MaterialCard(
             "topaz", "Topaz", "トパーズ",
             null,
@@ -1310,6 +1315,7 @@ enum class Material(val path: String, val prefix: EnJa) {
     FAIRY_RUBBER("fairy_rubber", EnJa("Fairy Rubber", "夜のかけら")),
     MAGNETITE("magnetite", EnJa("Magnetite", "磁鉄鉱")),
     FLUORITE("fluorite", EnJa("Fluorite", "蛍石")),
+    NEPHRITE("nephrite", EnJa("Nephrite", "ネフライト")),
     TOPAZ("topaz", EnJa("Topaz", "トパーズ")),
     BISMUTH("bismuth", EnJa("Bismuth", "ビスマス")),
 }
