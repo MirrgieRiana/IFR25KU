@@ -86,6 +86,16 @@ enum class OreCard(
         null,
         BaseStoneType.DEEPSLATE, "fluorite_ore", MaterialCard.FLUORITE.item, 2 to 5,
     ),
+    NEPHRITE_ORE(
+        "nephrite_ore", "Nephrite Ore", "ネフライト鉱石",
+        null,
+        BaseStoneType.STONE, "nephrite_ore", MaterialCard.NEPHRITE.item, 2 to 5,
+    ),
+    DEEPSLATE_NEPHRITE_ORE(
+        "deepslate_nephrite_ore", "Deepslate Nephrite Ore", "深層ネフライト鉱石",
+        null,
+        BaseStoneType.DEEPSLATE, "nephrite_ore", MaterialCard.NEPHRITE.item, 2 to 5,
+    ),
     MIRANAGITE_ORE(
         "miranagite_ore", "Miranagite Ore", "蒼天石鉱石",
         PoemList(1).poem("What lies beyond a Garden of Eden?", "秩序の石は楽園の先に何を見るのか？"),

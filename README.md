@@ -44,6 +44,8 @@ The following files are part of MirageFairy2019 and are licensed under the **[CC
 
 - `common/src/main/resources/assets/miragefairy2024/textures/block/nephrite_block.pdn`
 - `common/src/main/resources/assets/miragefairy2024/textures/block/nephrite_block.png`
+- `common/src/main/resources/assets/miragefairy2024/textures/block/nephrite_ore.pdn`
+- `common/src/main/resources/assets/miragefairy2024/textures/block/nephrite_ore.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/rum.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/poison.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/veropedeliquora.png`
