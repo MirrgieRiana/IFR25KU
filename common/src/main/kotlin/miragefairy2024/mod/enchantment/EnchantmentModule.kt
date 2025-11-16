@@ -172,7 +172,7 @@ fun initEnchantmentModule() {
         }
 
         // サーバーサイドにおいて、ブロック破壊後に範囲採掘の効果
-        BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, tool ->
+        BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, _ ->
             val serverSide = world.serverSideOrNull ?: return@register
             if (isInMagicMining.get()) return@register
 
@@ -184,7 +184,7 @@ fun initEnchantmentModule() {
                         it.create(
                             miningDirectionCache.second,
                             world, pos, state,
-                            player, tool.item, tool,
+                            player, player.mainHandItem.item, player.mainHandItem,
                         )
                     }
                 } ?: return@run null // 範囲採掘の能力がない
