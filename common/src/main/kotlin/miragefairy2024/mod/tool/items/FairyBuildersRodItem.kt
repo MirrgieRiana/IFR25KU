@@ -60,6 +60,7 @@ open class FairyBuildersRodConfiguration(
     init {
         this.tags += ItemTags.DURABILITY_ENCHANTABLE
         this.tags += AREA_MINING_ENCHANTABLE_ITEM_TAG
+        this.tags += ItemTags.MINING_ENCHANTABLE // これをしないと金床で側方範囲採掘が付かない
         this.miningDamage = 2
     }
 }
