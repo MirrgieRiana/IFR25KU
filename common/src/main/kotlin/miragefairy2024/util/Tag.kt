@@ -54,9 +54,17 @@ class TagGenerator<T>(
         }
         val BIOME = !TagGenerator(Registries.BIOME)
         val STRUCTURE = !TagGenerator(Registries.STRUCTURE)
-        val ENTITY_TYPE = !TagGenerator(Registries.ENTITY_TYPE)
+        val ENTITY_TYPE = !TagGenerator(Registries.ENTITY_TYPE) { output, registriesFuture ->
+            object : FabricTagProvider.EntityTypeTagProvider(output, registriesFuture) {
+                override fun addTags(arg: HolderLookup.Provider) = eventRegistry.fire { it { tag -> getOrCreateTagBuilder(tag) } }
+            }
+        }
         val DAMAGE_TYPE = !TagGenerator(Registries.DAMAGE_TYPE)
-        val ENCHANTMENT = !TagGenerator(Registries.ENCHANTMENT)
+        val ENCHANTMENT = !TagGenerator(Registries.ENCHANTMENT) { output, registriesFuture ->
+            object : FabricTagProvider.EnchantmentTagProvider(output, registriesFuture) {
+                override fun addTags(arg: HolderLookup.Provider) = eventRegistry.fire { it { tag -> getOrCreateTagBuilder(tag) } }
+            }
+        }
     }
 
     val eventRegistry = InitializationEventRegistry<((TagKey<T>) -> FabricTagProvider<T>.FabricTagBuilder) -> Unit>()
