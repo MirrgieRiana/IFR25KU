@@ -512,7 +512,7 @@ class MaterialCard(
                     .build()
             },
         ) {
-            AuraReflectorFurnaceRecipe.FUELS[item.key] = 20 * 5
+            AuraReflectorFurnaceRecipe.registerFuel(item.key, 20 * 5)
             item.registerComposterInput(0.3F)
         }
         val PROMINITE: MaterialCard = !MaterialCard(
@@ -531,7 +531,7 @@ class MaterialCard(
                 )
             },
         ) {
-            AuraReflectorFurnaceRecipe.FUELS[item.key] = 20 * 60
+            AuraReflectorFurnaceRecipe.registerFuel(item.key, 20 * 60)
         }
         val GOLD_PROMINARIA_BERRY: MaterialCard = !MaterialCard(
             "gold_prominaria_berry", "Gold Prominaria Berry", "ゴールドプロミナリアの実",
@@ -550,7 +550,7 @@ class MaterialCard(
             },
             tags = listOf(ItemTags.PIGLIN_LOVED),
         ) {
-            AuraReflectorFurnaceRecipe.FUELS[item.key] = 20 * 5
+            AuraReflectorFurnaceRecipe.registerFuel(item.key, 20 * 5)
             registerSmeltingRecipeGeneration(item, { Items.GOLD_NUGGET }, 0.1) on item modId MirageFairy2024.MOD_ID from item
             registerBlastingRecipeGeneration(item, { Items.GOLD_NUGGET }, 0.1) on item modId MirageFairy2024.MOD_ID from item
             item.registerComposterInput(0.3F)

@@ -70,7 +70,7 @@ object AuraReflectorFurnaceCard : SimpleMachineCard<AuraReflectorFurnaceBlock, A
         SlotConfiguration(65, 17, setOf(Direction.WEST), setOf()),
     )
     val fuelSlot = object : SlotConfiguration(47, 53, setOf(Direction.SOUTH), setOf()) {
-        override fun isValid(itemStack: ItemStack) = AuraReflectorFurnaceRecipe.getFuelValue(itemStack.item) != null
+        override fun isValid(itemStack: ItemStack) = AuraReflectorFurnaceRecipe.getFuelValue(itemStack) != null
     }
     override val outputSlots = listOf(
         SlotConfiguration(123, 35, setOf(), setOf(Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, Direction.DOWN)),
@@ -169,7 +169,7 @@ class AuraReflectorFurnaceBlockEntity(private val card: AuraReflectorFurnaceCard
         shouldUpdateFuel = false
 
         val fuelItemStack = this[card.inventorySlotIndexTable[card.fuelSlot]!!]
-        val fuelValue = AuraReflectorFurnaceRecipe.getFuelValue(fuelItemStack.item)
+        val fuelValue = AuraReflectorFurnaceRecipe.getFuelValue(fuelItemStack)
         if (!(fuelValue != null && fuelItemStack.count >= 1)) return null
 
         return {
