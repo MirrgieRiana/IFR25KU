@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.RenderBlockPosesOutlineContext
 import miragefairy2024.mod.RenderBlockPosesOutlineListenerItem
+import miragefairy2024.mod.enchantment.AREA_MINING_ENCHANTABLE_ITEM_TAG
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
@@ -58,6 +59,7 @@ open class FairyBuildersRodConfiguration(
 
     init {
         this.tags += ItemTags.DURABILITY_ENCHANTABLE
+        this.tags += AREA_MINING_ENCHANTABLE_ITEM_TAG
         this.miningDamage = 2
     }
 }
