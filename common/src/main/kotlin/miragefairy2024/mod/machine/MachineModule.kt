@@ -13,6 +13,7 @@ fun initMachineModule() {
     AuraReflectorFurnaceCard.init()
     AuraReflectorFurnaceRecipeCard.init()
     AuraReflectorFurnaceRecipeViewerCategoryCard.init()
+    AuraReflectorFurnaceFuelRecipeViewerCategoryCard.init()
 }
 
 class BlueFuelView : FixedWidgetView(IntPoint(13, 13))
