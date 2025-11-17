@@ -10,7 +10,8 @@
     "LivingEntityMixin",
     "PlayerEntityMixin",
     "ServerGamePacketListenerImplMixin",
-    "ServerLevelMixin"
+    "ServerLevelMixin",
+    "TagBuilderMixin"
   ],
   "injectors": {
     "defaultRequire": 1
