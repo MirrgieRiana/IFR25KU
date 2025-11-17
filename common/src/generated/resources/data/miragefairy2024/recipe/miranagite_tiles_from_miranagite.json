@@ -5,14 +5,17 @@
   "key": {
     "#": {
       "tag": "c:gems/miranagite"
+    },
+    "B": {
+      "item": "minecraft:stone_bricks"
     }
   },
   "pattern": [
-    "##",
-    "##"
+    "B#",
+    "#B"
   ],
   "result": {
-    "count": 1,
+    "count": 2,
     "id": "miragefairy2024:miranagite_tiles"
   }
 }

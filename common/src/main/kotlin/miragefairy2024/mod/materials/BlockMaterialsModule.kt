@@ -103,10 +103,11 @@ open class BlockMaterialCard(
             PoemList(2).poem(EnJa("Is time really an absolute entity?", "運命を退ける、蒼神の慈愛。")),
             MapColor.LAPIS, 3.0F, 3.0F,
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
-            registerShapedRecipeGeneration(item) {
-                pattern("##")
-                pattern("##")
+            registerShapedRecipeGeneration(item, count = 2) {
+                pattern("B#")
+                pattern("#B")
                 define('#', tagOf(Shape.GEM, Material.MIRANAGITE))
+                define('B', Blocks.STONE_BRICKS)
             } on MaterialCard.MIRANAGITE.item from MaterialCard.MIRANAGITE.item
         }
         val MIRANAGITE_TILE_SLAB = !object : BlockMaterialCard(
