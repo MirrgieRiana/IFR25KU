@@ -42,6 +42,17 @@ object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
         val h = (bounds.sizeY.toDouble() * fuelRate).roundToInt()
         graphics.blit(
             AuraReflectorFurnaceScreen.BLUE_FUEL_TEXTURE,
+            bounds.x,
+            bounds.y,
+            13F,
+            0F,
+            bounds.sizeX,
+            bounds.sizeY,
+            32,
+            32,
+        )
+        graphics.blit(
+            AuraReflectorFurnaceScreen.BLUE_FUEL_TEXTURE,
             bounds.x - 1,
             bounds.y - 1 + (bounds.sizeY - h),
             0F,
