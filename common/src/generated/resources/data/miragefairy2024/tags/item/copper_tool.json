@@ -1,12 +1,12 @@
 {
   "values": [
-    "minecraft:spyglass",
     "minecraft:brush",
+    "minecraft:spyglass",
     "minecraft:trident",
-    "miragefairy2024:copper_pickaxe",
     "miragefairy2024:copper_axe",
-    "miragefairy2024:copper_shovel",
     "miragefairy2024:copper_hoe",
+    "miragefairy2024:copper_pickaxe",
+    "miragefairy2024:copper_shovel",
     "miragefairy2024:copper_sword"
   ]
 }

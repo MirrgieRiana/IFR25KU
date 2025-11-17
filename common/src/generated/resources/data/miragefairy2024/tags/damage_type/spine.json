@@ -1,8 +1,8 @@
 {
   "values": [
     "minecraft:cactus",
-    "minecraft:sweet_berry_bush",
     "minecraft:sting",
+    "minecraft:sweet_berry_bush",
     "minecraft:thorns"
   ]
 }

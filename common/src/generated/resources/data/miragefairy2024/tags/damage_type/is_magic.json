@@ -1,11 +1,11 @@
 {
   "values": [
     {
-      "id": "#minecraft:bypasses_armor",
+      "id": "#c:is_magic",
       "required": false
     },
     {
-      "id": "#c:is_magic",
+      "id": "#minecraft:bypasses_armor",
       "required": false
     },
     {

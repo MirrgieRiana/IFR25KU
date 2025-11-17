@@ -1,15 +1,7 @@
 {
   "values": [
     {
-      "id": "#c:gems/flint",
-      "required": false
-    },
-    {
-      "id": "#c:gems/xarpite",
-      "required": false
-    },
-    {
-      "id": "#c:gems/miranagite",
+      "id": "#c:gems/calculite",
       "required": false
     },
     {
@@ -17,35 +9,7 @@
       "required": false
     },
     {
-      "id": "#c:gems/noise",
-      "required": false
-    },
-    {
       "id": "#c:gems/fairy_crystal",
-      "required": false
-    },
-    {
-      "id": "#c:gems/phantom_drop",
-      "required": false
-    },
-    {
-      "id": "#c:gems/miragidian",
-      "required": false
-    },
-    {
-      "id": "#c:gems/luminite",
-      "required": false
-    },
-    {
-      "id": "#c:gems/calculite",
-      "required": false
-    },
-    {
-      "id": "#c:gems/prominite",
-      "required": false
-    },
-    {
-      "id": "#c:gems/haimeviska_rosin",
       "required": false
     },
     {
@@ -57,7 +21,7 @@
       "required": false
     },
     {
-      "id": "#c:gems/magnetite",
+      "id": "#c:gems/flint",
       "required": false
     },
     {
@@ -65,11 +29,47 @@
       "required": false
     },
     {
+      "id": "#c:gems/haimeviska_rosin",
+      "required": false
+    },
+    {
+      "id": "#c:gems/luminite",
+      "required": false
+    },
+    {
+      "id": "#c:gems/magnetite",
+      "required": false
+    },
+    {
+      "id": "#c:gems/miragidian",
+      "required": false
+    },
+    {
+      "id": "#c:gems/miranagite",
+      "required": false
+    },
+    {
       "id": "#c:gems/nephrite",
       "required": false
     },
     {
+      "id": "#c:gems/noise",
+      "required": false
+    },
+    {
+      "id": "#c:gems/phantom_drop",
+      "required": false
+    },
+    {
+      "id": "#c:gems/prominite",
+      "required": false
+    },
+    {
       "id": "#c:gems/topaz",
+      "required": false
+    },
+    {
+      "id": "#c:gems/xarpite",
       "required": false
     }
   ]

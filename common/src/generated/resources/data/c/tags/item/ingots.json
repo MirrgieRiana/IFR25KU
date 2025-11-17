@@ -1,7 +1,7 @@
 {
   "values": [
     {
-      "id": "#c:ingots/miragium",
+      "id": "#c:ingots/bismuth",
       "required": false
     },
     {
@@ -9,11 +9,11 @@
       "required": false
     },
     {
-      "id": "#c:ingots/resonite",
+      "id": "#c:ingots/miragium",
       "required": false
     },
     {
-      "id": "#c:ingots/bismuth",
+      "id": "#c:ingots/resonite",
       "required": false
     }
   ]

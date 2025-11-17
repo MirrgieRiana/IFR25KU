@@ -1,9 +1,9 @@
 {
   "values": [
-    "miragefairy2024:noise_pickaxe",
     "miragefairy2024:noise_axe",
-    "miragefairy2024:noise_shovel",
     "miragefairy2024:noise_hoe",
+    "miragefairy2024:noise_pickaxe",
+    "miragefairy2024:noise_shovel",
     "miragefairy2024:noise_sword"
   ]
 }

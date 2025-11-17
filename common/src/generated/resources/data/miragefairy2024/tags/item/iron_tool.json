@@ -1,11 +1,11 @@
 {
   "values": [
-    "minecraft:iron_sword",
-    "minecraft:iron_shovel",
-    "minecraft:iron_pickaxe",
+    "minecraft:flint_and_steel",
     "minecraft:iron_axe",
     "minecraft:iron_hoe",
-    "minecraft:flint_and_steel",
+    "minecraft:iron_pickaxe",
+    "minecraft:iron_shovel",
+    "minecraft:iron_sword",
     "minecraft:shears",
     "miragefairy2024:iron_scythe"
   ]

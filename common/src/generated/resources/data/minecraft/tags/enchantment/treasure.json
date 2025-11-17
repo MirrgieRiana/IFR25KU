@@ -1,14 +1,14 @@
 {
   "values": [
+    "miragefairy2024:area_mining_acceleration",
+    "miragefairy2024:backward_area_mining",
+    "miragefairy2024:curse_of_shattering",
+    "miragefairy2024:cut_all",
     "miragefairy2024:fortune_up",
-    "miragefairy2024:smelting",
-    "miragefairy2024:sticky_mining",
     "miragefairy2024:forward_area_mining",
     "miragefairy2024:lateral_area_mining",
-    "miragefairy2024:backward_area_mining",
-    "miragefairy2024:area_mining_acceleration",
-    "miragefairy2024:cut_all",
     "miragefairy2024:mine_all",
-    "miragefairy2024:curse_of_shattering"
+    "miragefairy2024:smelting",
+    "miragefairy2024:sticky_mining"
   ]
 }

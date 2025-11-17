@@ -1,7 +1,11 @@
 {
   "values": [
     {
-      "id": "#miragefairy2024:wooden_tool",
+      "id": "#miragefairy2024:haimeviska_rosin_tool",
+      "required": false
+    },
+    {
+      "id": "#miragefairy2024:luminite_tool",
       "required": false
     },
     {
@@ -13,11 +17,7 @@
       "required": false
     },
     {
-      "id": "#miragefairy2024:luminite_tool",
-      "required": false
-    },
-    {
-      "id": "#miragefairy2024:haimeviska_rosin_tool",
+      "id": "#miragefairy2024:wooden_tool",
       "required": false
     }
   ]

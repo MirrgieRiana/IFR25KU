@@ -1,24 +1,24 @@
 {
   "values": [
-    "miragefairy2024:magnetite_shovel",
+    "miragefairy2024:amethyst_shovel",
     "miragefairy2024:bismuth_shovel",
+    "miragefairy2024:calculite_shovel",
     "miragefairy2024:copper_shovel",
-    "miragefairy2024:glass_shovel",
+    "miragefairy2024:echo_shard_shovel",
+    "miragefairy2024:emerald_shovel",
+    "miragefairy2024:fairy_crystal_shovel",
     "miragefairy2024:flint_shovel",
     "miragefairy2024:fluorite_shovel",
-    "miragefairy2024:nephrite_shovel",
-    "miragefairy2024:amethyst_shovel",
-    "miragefairy2024:obsidian_shovel",
-    "miragefairy2024:emerald_shovel",
-    "miragefairy2024:topaz_shovel",
-    "miragefairy2024:echo_shard_shovel",
-    "miragefairy2024:nether_star_shovel",
-    "miragefairy2024:fairy_crystal_shovel",
-    "miragefairy2024:prominite_shovel",
+    "miragefairy2024:glass_shovel",
+    "miragefairy2024:haimeviska_rosin_shovel",
+    "miragefairy2024:magnetite_shovel",
     "miragefairy2024:miragidian_shovel",
-    "miragefairy2024:calculite_shovel",
+    "miragefairy2024:nephrite_shovel",
+    "miragefairy2024:nether_star_shovel",
     "miragefairy2024:noise_shovel",
+    "miragefairy2024:obsidian_shovel",
     "miragefairy2024:phantom_shovel",
-    "miragefairy2024:haimeviska_rosin_shovel"
+    "miragefairy2024:prominite_shovel",
+    "miragefairy2024:topaz_shovel"
   ]
 }

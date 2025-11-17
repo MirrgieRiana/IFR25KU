@@ -1,9 +1,9 @@
 {
   "values": [
-    "miragefairy2024:nether_star_pickaxe",
     "miragefairy2024:nether_star_axe",
-    "miragefairy2024:nether_star_shovel",
     "miragefairy2024:nether_star_hoe",
+    "miragefairy2024:nether_star_pickaxe",
+    "miragefairy2024:nether_star_shovel",
     "miragefairy2024:nether_star_sword"
   ]
 }

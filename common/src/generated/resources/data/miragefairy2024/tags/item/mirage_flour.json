@@ -1,12 +1,12 @@
 {
   "values": [
-    "miragefairy2024:tiny_mirage_flour",
     "miragefairy2024:mirage_flour",
-    "miragefairy2024:mirage_flour_of_nature",
     "miragefairy2024:mirage_flour_of_earth",
-    "miragefairy2024:mirage_flour_of_underworld",
+    "miragefairy2024:mirage_flour_of_nature",
     "miragefairy2024:mirage_flour_of_sky",
+    "miragefairy2024:mirage_flour_of_time",
+    "miragefairy2024:mirage_flour_of_underworld",
     "miragefairy2024:mirage_flour_of_universe",
-    "miragefairy2024:mirage_flour_of_time"
+    "miragefairy2024:tiny_mirage_flour"
   ]
 }

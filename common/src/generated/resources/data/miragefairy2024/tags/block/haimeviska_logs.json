@@ -1,15 +1,15 @@
 {
   "values": [
-    "miragefairy2024:haimeviska_log",
-    "miragefairy2024:haimeviska_wood",
-    "miragefairy2024:stripped_haimeviska_log",
-    "miragefairy2024:stripped_haimeviska_wood",
-    "miragefairy2024:incised_haimeviska_log",
-    "miragefairy2024:dripping_haimeviska_log",
-    "miragefairy2024:hollow_haimeviska_log",
     {
       "id": "#miragefairy2024:fairy_building",
       "required": false
-    }
+    },
+    "miragefairy2024:dripping_haimeviska_log",
+    "miragefairy2024:haimeviska_log",
+    "miragefairy2024:haimeviska_wood",
+    "miragefairy2024:hollow_haimeviska_log",
+    "miragefairy2024:incised_haimeviska_log",
+    "miragefairy2024:stripped_haimeviska_log",
+    "miragefairy2024:stripped_haimeviska_wood"
   ]
 }

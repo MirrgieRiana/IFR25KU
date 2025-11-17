@@ -8,6 +8,7 @@ import miragefairy2024.DataMapConsumer
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.Modules
+import miragefairy2024.mixins.api.TagBuilderApi
 import miragefairy2024.platformProxy
 import miragefairy2024.util.TagGenerator
 import miragefairy2024.util.string
@@ -60,6 +61,8 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
             "neoforge" -> neoForge(pack)
             else -> throw IllegalArgumentException("Unknown platform: $platform")
         }
+
+        TagBuilderApi.sorting = true
     }
 
     private fun common(pack: FabricDataGenerator.Pack) {

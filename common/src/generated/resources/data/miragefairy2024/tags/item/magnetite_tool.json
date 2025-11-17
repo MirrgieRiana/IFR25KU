@@ -1,9 +1,9 @@
 {
   "values": [
-    "miragefairy2024:magnetite_pickaxe",
     "miragefairy2024:magnetite_axe",
-    "miragefairy2024:magnetite_shovel",
     "miragefairy2024:magnetite_hoe",
+    "miragefairy2024:magnetite_pickaxe",
+    "miragefairy2024:magnetite_shovel",
     "miragefairy2024:magnetite_sword"
   ]
 }

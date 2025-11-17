@@ -1,9 +1,9 @@
 {
   "values": [
-    "miragefairy2024:echo_shard_pickaxe",
     "miragefairy2024:echo_shard_axe",
-    "miragefairy2024:echo_shard_shovel",
     "miragefairy2024:echo_shard_hoe",
+    "miragefairy2024:echo_shard_pickaxe",
+    "miragefairy2024:echo_shard_shovel",
     "miragefairy2024:echo_shard_sword"
   ]
 }
