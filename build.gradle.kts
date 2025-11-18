@@ -349,3 +349,15 @@ tasks.register<MirrorMavenTask>("mirrorMaven") {
         "dev.emi:emi-neoforge:${libs.versions.emi.get()}:sources",
     )
 }
+
+tasks.register("generateResizedImages") {
+    group = "help"
+    val inputsProvider = rootProject.provider { rootProject.getAllPngFilesInAllProjects() }
+    inputs.files(inputsProvider).withPathSensitivity(PathSensitivity.RELATIVE)
+    val outputDirectory = rootProject.layout.buildDirectory.dir("resizedImages")
+    outputs.dir(outputDirectory)
+    doLast {
+        generateResizedImagesOfAllProjects(inputsProvider.get(), rootProject.projectDir, outputDirectory.get().asFile, 2)
+        logger.lifecycle("Resized images are saved to: ${outputDirectory.get().asFile.absolutePath}")
+    }
+}
