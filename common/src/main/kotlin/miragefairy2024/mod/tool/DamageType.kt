@@ -49,21 +49,21 @@ abstract class DamageTypeCard {
 object MagicDamageTypeCard : DamageTypeCard() {
     override fun getPath() = "magic"
     override fun getKillMessage() = EnJa("%1\$s was killed by magic", "%1\$sは魔法で殺された")
-    override fun getPlayerKillMessage() = EnJa("%1\$s was killed by magic whilst trying to escape %2\$s", "%1\$sは%2\$sとの戦闘中に魔法で殺された")
+    override fun getPlayerKillMessage() = EnJa("%1\$s was killed by magic while fighting %2\$s", "%1\$sは%2\$sと戦いながら魔法で殺された")
     override fun getTags() = listOf(DamageTypeTags.IS_PROJECTILE, DamageTypeTags.BYPASSES_ARMOR, C_IS_MAGIC_DAMAGE_TYPE_TAG, NEOFORGE_IS_MAGIC_DAMAGE_TYPE_TAG)
 }
 
 object PhysicalMagicDamageTypeCard : DamageTypeCard() {
     override fun getPath() = "physical_magic"
     override fun getKillMessage() = EnJa("%1\$s was killed by magic", "%1\$sは魔法で殺された")
-    override fun getPlayerKillMessage() = EnJa("%1\$s was killed by magic whilst trying to escape %2\$s", "%1\$sは%2\$sとの戦闘中に魔法で殺された")
+    override fun getPlayerKillMessage() = EnJa("%1\$s was killed by magic while fighting %2\$s", "%1\$sは%2\$sと戦いながら魔法で殺された")
     override fun getTags() = listOf(DamageTypeTags.IS_PROJECTILE, C_IS_MAGIC_DAMAGE_TYPE_TAG, NEOFORGE_IS_MAGIC_DAMAGE_TYPE_TAG)
 }
 
 object ToolBreakDamageTypeCard : DamageTypeCard() {
     override fun getPath() = "tool_break"
     override fun getKillMessage() = EnJa("%1\$s injured their hand", "%1\$sは手を怪我した")
-    override fun getPlayerKillMessage() = EnJa("%1\$s injured their hand whilst trying to escape %2\$s", "%1\$sは%2\$sとの戦闘中に手を怪我した")
+    override fun getPlayerKillMessage() = EnJa("%1\$s injured their hand while fighting %2\$s", "%1\$sは%2\$sと戦いながら手を怪我した")
     override fun getTags() = listOf(DamageTypeTags.NO_KNOCKBACK)
 }
 
