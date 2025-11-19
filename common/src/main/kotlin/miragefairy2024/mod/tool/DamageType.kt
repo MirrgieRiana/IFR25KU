@@ -17,6 +17,20 @@ import net.minecraft.tags.DamageTypeTags
 import net.minecraft.tags.TagKey
 import net.minecraft.world.damagesource.DamageType
 
+/**
+ * # 死亡メッセージのテンプレ
+ * 使い分けは全く謎である。
+ * ## 典型的なケースでは戦闘中に発生するもの
+ * | 英語版 | 日本語版 |
+ * | --- | --- |
+ * | `[%1$s ... while fighting %2$s]`                       | `[%1$sは%2$sと戦いながら...]`      |
+ * | `%1$s was struck by lightning while fighting %2$s`     | `%1$sは%2$sと戦いながら雷に打たれた` |
+ * ## 典型的なケースでは逃走中に発生するもの
+ * | 英語版 | 日本語版 |
+ * | --- | --- |
+ * | `[%1$s ... while trying to escape %2$s]` | `[%1$sは%2$sから逃れようとして...]` |
+ * | `%1$s was killed by magic while trying to escape %2$s` | `%1$sは%2$sから逃れようとして魔法で殺された` |
+ */
 @Suppress("LeakingThis")
 abstract class DamageTypeCard {
     abstract fun getPath(): String
