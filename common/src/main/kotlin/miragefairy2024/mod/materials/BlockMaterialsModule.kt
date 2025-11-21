@@ -176,7 +176,7 @@ open class BlockMaterialCard(
             registerCompressionRecipeGeneration(MaterialCard.MIRAGIDIAN.item, { MaterialCard.MIRAGIDIAN.ore!!.ingredient }, item, { ore!!.ingredient })
         }
         val MIRAGIDIAN_LAMP = !object : BlockMaterialCard(
-            "miragidian_lamp", EnJa("Street Lamp that Shone for 30,000 Years", "3万年輝いた街灯"), // TODO 英名
+            "miragidian_lamp", EnJa("Street Lamp that Shone for 30,000 Years", "3万年輝く灯火"), // TODO 英名
             PoemList(4).poem(EnJa("TODO", "TODO")), // TODO
             MapColor.TERRACOTTA_BLUE, 60.0F, 1200.0F,
         ) {
@@ -216,7 +216,7 @@ open class BlockMaterialCard(
                 pattern("#")
                 pattern("#")
                 define('#', MaterialCard.MIRAGIDIAN.ore!!.ingredient)
-                define('L', Items.LANTERN)
+                define('L', Items.LANTERN) // TODO 妖精研究所産のランプにする
             } on MaterialCard.MIRANAGITE.item from MaterialCard.MIRANAGITE.item
         }
         val LUMINITE_BLOCK = !object : BlockMaterialCard(
