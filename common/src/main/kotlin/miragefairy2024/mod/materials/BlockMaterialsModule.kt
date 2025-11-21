@@ -18,7 +18,10 @@ import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
+import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.mod.tool.MINEABLE_WITH_NOISE_BLOCK_TAG
+import miragefairy2024.util.AdvancementCard
+import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
@@ -210,6 +213,33 @@ open class BlockMaterialCard(
             // TODO advancement
             // TODO builder's rod advancement -> ToolCard
             // TODO worldgen
+
+            val lampAdvancement = AdvancementCard(
+                identifier = MirageFairy2024.identifier("miragidian_lamp"),
+                context = AdvancementCard.Sub { rootAdvancement.await() },
+                icon = { item().createItemStack() },
+                name = EnJa("Ancient Light", "永遠の光"),
+                description = EnJa("Craft a Miragidian Street Lamp", "ミラジディアン街灯をクラフトする"),
+                criterion = AdvancementCard.hasItem(item),
+                type = AdvancementCardType.NORMAL,
+            ).also { it.init() }
+            run {
+                val buildersRodItem = miragefairy2024.mod.tool.ToolCard.entries.firstOrNull { it.identifier.path == "calculite_builders_rod" }?.item()
+                if (buildersRodItem != null) {
+                    AdvancementCard(
+                        identifier = MirageFairy2024.identifier("miragidian_lamp_builders_rod"),
+                        context = AdvancementCard.Sub { lampAdvancement.await() },
+                        icon = { item().createItemStack() },
+                        name = EnJa("Builder of Light", "光を延ばす者"),
+                        description = EnJa("Hold both a Builder's Rod and the Miragidian Street Lamp", "ビルダーズロッドとミラジディアン街灯を同時に所持する"),
+                        criterion = AdvancementCard.hasItem { buildersRodItem },
+                        type = AdvancementCardType.GOAL,
+                    ).init()
+                }
+            }
+            miragefairy2024.ModEvents.onInitialize {
+                // TODO: 平原や砂漠などで低頻度に自然生成する ConfiguredFeature / PlacedFeature を追加
+            }
 
             registerShapedRecipeGeneration(item, count = 2) {
                 pattern("L")
