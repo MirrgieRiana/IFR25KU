@@ -27,6 +27,8 @@ fun (() -> Block).registerFlammable(burn: Int, spread: Int) = ModEvents.onInitia
     FlammableBlockRegistry.getDefaultInstance().add(this(), 30, 60)
 }
 
+// TODO get
+
 fun <T : Comparable<T>> BlockState.getOrNull(property: Property<T>): T? {
     val value = this.values[property] ?: return null
     return property.valueClass.cast(value)

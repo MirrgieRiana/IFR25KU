@@ -1,0 +1,36 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "minecraft:block",
+	"textures": {
+		"0": "miragefairy2024:block/miragidian_lamp",
+		"particle": "miragefairy2024:block/miragidian_block"
+	},
+	"elements": [
+		{
+			"name": "Pole",
+			"from": [7, 4, 7],
+			"to": [9, 16, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 0, 7]},
+			"faces": {
+				"north": {"uv": [7, 0, 9, 12], "texture": "#0"},
+				"east": {"uv": [7, 0, 9, 12], "texture": "#0"},
+				"south": {"uv": [7, 0, 9, 12], "texture": "#0"},
+				"west": {"uv": [7, 0, 9, 12], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Foot",
+			"from": [6, 0, 6],
+			"to": [10, 4, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 0, 7]},
+			"faces": {
+				"north": {"uv": [0, 4, 4, 8], "texture": "#0"},
+				"east": {"uv": [0, 4, 4, 8], "texture": "#0"},
+				"south": {"uv": [0, 4, 4, 8], "texture": "#0"},
+				"west": {"uv": [0, 4, 4, 8], "texture": "#0"},
+				"up": {"uv": [0, 0, 4, 4], "texture": "#0"},
+				"down": {"uv": [0, 8, 4, 12], "texture": "#0"}
+			}
+		}
+	]
+}

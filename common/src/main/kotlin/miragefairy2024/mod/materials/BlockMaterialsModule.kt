@@ -9,6 +9,7 @@ import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
 import miragefairy2024.mod.materials.contents.FairyCrystalGlassBlock
 import miragefairy2024.mod.materials.contents.LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG
 import miragefairy2024.mod.materials.contents.LocalVacuumDecayBlock
+import miragefairy2024.mod.materials.contents.MiragidianLampBlock
 import miragefairy2024.mod.materials.contents.SemiOpaqueTransparentBlock
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassBlockModel
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassFrameBlockModel
@@ -18,13 +19,16 @@ import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.mod.tool.MINEABLE_WITH_NOISE_BLOCK_TAG
+import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.from
 import miragefairy2024.util.generator
+import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.on
+import miragefairy2024.util.propertiesOf
 import miragefairy2024.util.register
 import miragefairy2024.util.registerBlockFamily
 import miragefairy2024.util.registerBlockStateGeneration
@@ -39,6 +43,7 @@ import miragefairy2024.util.registerShapedRecipeGeneration
 import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.registerStonecutterRecipeGeneration
 import miragefairy2024.util.registerTranslucentRenderLayer
+import miragefairy2024.util.registerVariantsBlockStateGeneration
 import miragefairy2024.util.times
 import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.with
@@ -54,6 +59,7 @@ import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.SlabBlock
@@ -168,6 +174,50 @@ open class BlockMaterialCard(
             MapColor.TERRACOTTA_BLUE, 120.0F, 1200.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.MIRAGIDIAN),
         ).needTool(ToolType.PICKAXE, ToolLevel.DIAMOND).noBurn().soulStream().beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.MIRAGIDIAN.item, { MaterialCard.MIRAGIDIAN.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
+        val MIRAGIDIAN_LAMP = !object : BlockMaterialCard(
+            "miragidian_lamp", EnJa("Street Lamp that Shone for 30,000 Years", "3万年輝いた街灯"), // TODO 英名
+            PoemList(4).poem(EnJa("TODO", "TODO")), // TODO
+            MapColor.TERRACOTTA_BLUE, 60.0F, 1200.0F,
+        ) {
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
+                .lightLevel { if (it.getValue(MiragidianLampBlock.PART) == MiragidianLampBlock.Part.HEAD) 15 else 0 }
+
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = MiragidianLampBlock(properties)
+
+            context(ModContext)
+            override fun initBlockStateGeneration() {
+                block.registerVariantsBlockStateGeneration {
+                    val normal = BlockStateVariant(model = "block/" * block().getIdentifier())
+                    listOf(
+                        propertiesOf(MiragidianLampBlock.PART with MiragidianLampBlock.Part.HEAD) with normal.with(model = "block/" * block().getIdentifier() * "_head"),
+                        propertiesOf(MiragidianLampBlock.PART with MiragidianLampBlock.Part.POLE) with normal.with(model = "block/" * block().getIdentifier() * "_pole"),
+                        propertiesOf(MiragidianLampBlock.PART with MiragidianLampBlock.Part.FOOT) with normal.with(model = "block/" * block().getIdentifier() * "_foot"),
+                    )
+                }
+            }
+
+            context(ModContext) override fun initModelGeneration() = Unit
+
+            context(ModContext)
+            override fun initLootTableGeneration() {
+                block.registerLootTableGeneration { provider, _ ->
+                    provider.createSinglePropConditionTable(block(), MiragidianLampBlock.PART, MiragidianLampBlock.Part.FOOT)
+                }
+            }
+        }.needTool(ToolType.PICKAXE, ToolLevel.DIAMOND).noBurn().soulStream().init {
+
+            // TODO advancement
+            // TODO builder's rod advancement -> ToolCard
+            // TODO worldgen
+
+            registerShapedRecipeGeneration(item, count = 2) {
+                pattern("L")
+                pattern("#")
+                pattern("#")
+                define('#', MaterialCard.MIRAGIDIAN.ore!!.ingredient)
+                define('L', Items.LANTERN)
+            } on MaterialCard.MIRANAGITE.item from MaterialCard.MIRANAGITE.item
         }
         val LUMINITE_BLOCK = !object : BlockMaterialCard(
             "luminite_block", EnJa("Luminite Block", "ルミナイトブロック"),
@@ -327,6 +377,7 @@ open class BlockMaterialCard(
 
 context(ModContext)
 fun initBlockMaterialsModule() {
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("miragidian_lamp")) { MiragidianLampBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("local_vacuum_decay")) { LocalVacuumDecayBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("semi_opaque_transparent_block")) { SemiOpaqueTransparentBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("fairy_crystal_glass")) { FairyCrystalGlassBlock.CODEC }.register()

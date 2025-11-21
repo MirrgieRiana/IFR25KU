@@ -1,0 +1,22 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "minecraft:block",
+	"textures": {
+		"0": "miragefairy2024:block/miragidian_lamp",
+		"particle": "miragefairy2024:block/miragidian_block"
+	},
+	"elements": [
+		{
+			"name": "Pole",
+			"from": [7, 0, 7],
+			"to": [9, 16, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 0, 7]},
+			"faces": {
+				"north": {"uv": [7, 0, 9, 16], "texture": "#0"},
+				"east": {"uv": [7, 0, 9, 16], "texture": "#0"},
+				"south": {"uv": [7, 0, 9, 16], "texture": "#0"},
+				"west": {"uv": [7, 0, 9, 16], "texture": "#0"}
+			}
+		}
+	]
+}
