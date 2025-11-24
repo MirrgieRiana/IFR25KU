@@ -3,6 +3,7 @@ package miragefairy2024.mod.materials
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemList
+import miragefairy2024.mod.RetrospectiveCityBiomeCard
 import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
 import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
@@ -18,7 +19,6 @@ import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
-import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.mod.tool.MINEABLE_WITH_NOISE_BLOCK_TAG
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -102,6 +102,40 @@ open class BlockMaterialCard(
             MapColor.NETHER, 3.0F, 3.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.XARPITE),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.XARPITE.item, { MaterialCard.XARPITE.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
+        val AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
+            "aura_resistant_ceramic", EnJa("Aura-Resistant Ceramic", "耐霊性セラミック"),
+            PoemList(2).poem(EnJa("Weather and astral radiation resistance.", "TODO")), // TODO
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerShapedRecipeGeneration(item, count = 2) {
+                pattern("SX")
+                pattern("XS")
+                define('S', Items.SANDSTONE)
+                define('X', MaterialCard.XARPITE.ore!!.ingredient)
+            } on MaterialCard.XARPITE.ore!!.tag
+        }
+        val AURA_RESISTANT_CERAMIC_BRICKS = !BlockMaterialCard(
+            "aura_resistant_ceramic_bricks", EnJa("Aura-Resistant Ceramic Bricks", "耐霊性セラミックレンガ"),
+            PoemList(2).poem(EnJa("TODO", "TODO")), // TODO
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerShapedRecipeGeneration(item, count = 4) {
+                pattern("##")
+                pattern("##")
+                define('#', AURA_RESISTANT_CERAMIC.item)
+            } on AURA_RESISTANT_CERAMIC.item
+        }
+        val AURA_RESISTANT_CERAMIC_TILES = !BlockMaterialCard(
+            "aura_resistant_ceramic_tiles", EnJa("Aura-Resistant Ceramic Tiles", "耐霊性セラミックタイル"),
+            PoemList(2).poem(EnJa("TODO", "TODO")), // TODO
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerShapedRecipeGeneration(item, count = 4) {
+                pattern(" ##")
+                pattern("## ")
+                define('#', AURA_RESISTANT_CERAMIC.item)
+            } on AURA_RESISTANT_CERAMIC.item
         }
         val MIRANAGITE_BLOCK = !BlockMaterialCard(
             "miranagite_block", EnJa("Miranagite Block", "蒼天石ブロック"),
@@ -200,7 +234,7 @@ open class BlockMaterialCard(
             advancementCreator = {
                 AdvancementCard(
                     identifier = identifier,
-                    context = AdvancementCard.Sub { rootAdvancement.await() },
+                    context = AdvancementCard.Sub { RetrospectiveCityBiomeCard.advancement.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Light that Watched Collapse", "崩壊を見届けた光"),
                     description = EnJa("Find 30,000-Year Unfading Lamp in Retrospective City biome", "過去を見つめる都市バイオームで3万年消えない灯を見つける"),
@@ -235,6 +269,9 @@ open class BlockMaterialCard(
                 }
             }
         }.sound(SoundType.METAL).needTool(ToolType.PICKAXE, ToolLevel.DIAMOND).noBurn().soulStream().init {
+
+            // TODO worldgen
+
             item.registerGeneratedModelGeneration()
             registerShapedRecipeGeneration(item) {
                 pattern("L")
