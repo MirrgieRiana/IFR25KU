@@ -80,7 +80,6 @@ import miragefairy2024.util.toIngredient
 import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.toItemTag
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
 import net.minecraft.world.effect.MobEffectInstance
@@ -107,7 +106,7 @@ class MaterialCard(
     val tags: List<TagKey<Item>>? = null,
     val ore: Ore? = null,
     val creator: (Item.Properties) -> Item = ::Item,
-    val advancementCreator: (MaterialCard.(ResourceLocation) -> AdvancementCard)? = null,
+    val advancementCreator: (MaterialCard.() -> AdvancementCard)? = null,
     val initializer: context(ModContext) MaterialCard.() -> Unit = {},
 ) {
     companion object {
@@ -120,7 +119,7 @@ class MaterialCard(
             fuelValue = 200 * 16, ore = Ore(Shape.GEM, Material.XARPITE),
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { rootAdvancement.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Aura-Resistant Plastic", "耐霊性プラスチック"),
@@ -140,7 +139,7 @@ class MaterialCard(
             ore = Ore(Shape.GEM, Material.MIRANAGITE),
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { rootAdvancement.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("The Unknown World of Magic", "魔法の世界"),
@@ -172,7 +171,7 @@ class MaterialCard(
             ore = Ore(Shape.GEM, Material.CHAOS_STONE),
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { WeatheredAncientRemnantsCard.advancement.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("The World of Science", "知られざる科学の世界"),
@@ -197,7 +196,7 @@ class MaterialCard(
             ore = Ore(Shape.GEM, Material.NOISE), soulStreamContainable = true,
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { CALCULITE.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("The Essence of KU", "KUの本質"),
@@ -265,7 +264,7 @@ class MaterialCard(
             soulStreamContainable = true,
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { MirageFlowerCard.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Organic Amorphous Material", "水晶の飴"),
@@ -296,7 +295,7 @@ class MaterialCard(
             },
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { PhantomFlowerCard.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Materialized Fantasy", "植物が想像できることは植物が実現する"),
@@ -326,7 +325,7 @@ class MaterialCard(
             soulStreamContainable = true, ore = Ore(Shape.INGOT, Material.MIRAGIUM),
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { AuraReflectorFurnaceCard.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Solid Soul", "固形の魂"), // TODO 魂塊
@@ -342,7 +341,7 @@ class MaterialCard(
             soulStreamContainable = true, ore = Ore(Shape.INGOT, Material.LILAGIUM),
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { MIRAGIUM_INGOT.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Alloy with Plants", "植物との合金"),
@@ -383,7 +382,7 @@ class MaterialCard(
             soulStreamContainable = true, fireResistant = true, ore = Ore(Shape.GEM, Material.MIRAGIDIAN),
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { ChaosCubeCard.advancement.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Ancient Stainless Alloy", "古代のステンレス"),
@@ -443,7 +442,7 @@ class MaterialCard(
             ore = Ore(Shape.GEM, Material.LUMINITE),
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { DiamondLuminariaCard.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Etheroluminescence", "エテロルミネッセンス"),
@@ -459,7 +458,7 @@ class MaterialCard(
             soulStreamContainable = true, ore = Ore(Shape.INGOT, Material.RESONITE),
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { LUMINITE.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Ambivalence in Glass", "ガラスの中のアンビバレンス"),
@@ -486,7 +485,7 @@ class MaterialCard(
             ore = Ore(Shape.GEM, Material.CALCULITE),
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { XarpaLuminariaCard.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Edge of Chaos", "混沌の縁"),
@@ -521,7 +520,7 @@ class MaterialCard(
             fireResistant = true, fuelValue = 200 * 16, ore = Ore(Shape.GEM, Material.PROMINITE),
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { ProminariaCard.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Equality before Physical Law", "物理法則の下の平等"),
@@ -570,7 +569,7 @@ class MaterialCard(
             },
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { MerrrriaCard.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Nocturnal Nocturne", "真夜中だけのノクターン"),
@@ -608,7 +607,7 @@ class MaterialCard(
             fuelValue = 200, ore = Ore(Shape.GEM, Material.HAIMEVISKA_ROSIN),
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { haimeviskaAdvancement.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("The Taste of Nectar", "蜜の味"),
@@ -710,7 +709,7 @@ class MaterialCard(
             creator = { RandomFairySummoningItem(9.0.pow(5.0), it) },
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { MirageFlowerCard.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Warping Space", "ゆがむ空間"),
@@ -1082,7 +1081,7 @@ class MaterialCard(
             creator = { DrinkItem(it) },
             advancementCreator = {
                 AdvancementCard(
-                    identifier = it,
+                    identifier = identifier,
                     context = AdvancementCard.Sub { FermentationBarrelCard.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("May Contain Trace Toxic", "本品は毒物と共通の設備で製造してます"),
@@ -1133,7 +1132,7 @@ class MaterialCard(
             .let { if (fireResistant) it.fireResistant() else it }
             .let { creator(it) }
     }
-    val advancement = advancementCreator?.invoke(this, identifier)
+    val advancement = advancementCreator?.invoke(this)
 }
 
 val MIRAGE_FLOUR_TAG = MirageFairy2024.identifier("mirage_flour").toItemTag()
