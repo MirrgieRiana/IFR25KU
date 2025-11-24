@@ -1,0 +1,38 @@
+{
+  "parent": "miragefairy2024:root",
+  "criteria": {
+    "has_builders_rod": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#miragefairy2024:builders_rod"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.miragefairy2024.builders_rod.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "miragefairy2024:nephrite_builders_rod"
+    },
+    "title": {
+      "translate": "advancements.miragefairy2024.builders_rod.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_builders_rod"
+    ]
+  ],
+  "rewards": {
+    "loot": [
+      "miragefairy2024:jewels_100"
+    ]
+  },
+  "sends_telemetry_event": true
+}

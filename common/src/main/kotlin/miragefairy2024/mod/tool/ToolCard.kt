@@ -5,6 +5,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.enchantment.AREA_MINING_ENCHANTABLE_ITEM_TAG
+import miragefairy2024.mod.enchantment.BUILDERS_ROD_ITEM_TAG
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.MaterialCard
@@ -15,6 +16,7 @@ import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
+import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.mod.tool.effects.areaMining
 import miragefairy2024.mod.tool.effects.collection
 import miragefairy2024.mod.tool.effects.effective
@@ -65,9 +67,20 @@ import net.minecraft.world.item.enchantment.Enchantments
 
 val MINEABLE_WITH_NOISE_BLOCK_TAG = MirageFairy2024.identifier("mineable/noise").toBlockTag()
 
+val buildersRodAdvancement = AdvancementCard(
+    identifier = MirageFairy2024.identifier("builders_rod"),
+    context = AdvancementCard.Sub { rootAdvancement.await() },
+    icon = { ToolCard.NEPHRITE_BUILDERS_ROD.item().createItemStack() },
+    name = EnJa("Weaver of Everyday Life", "暮らしを紡ぐもの"),
+    description = EnJa("Craft a Builder's Rod from materials such as Nephrite and Calculite", "ネフライトや理天石からビルダーズロッドをクラフトする"),
+    criterion = AdvancementCard.hasItemTag { BUILDERS_ROD_ITEM_TAG },
+    type = AdvancementCardType.NORMAL,
+)
+
 context(ModContext)
 fun initToolCard() {
     MINEABLE_WITH_NOISE_BLOCK_TAG.enJa(EnJa("Mineable with noise", "ノイズで採掘可能"))
+    buildersRodAdvancement.init()
     ToolCard.entries.forEach {
         it.init()
     }
