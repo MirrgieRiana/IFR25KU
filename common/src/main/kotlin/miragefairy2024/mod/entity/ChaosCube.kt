@@ -25,6 +25,8 @@ import miragefairy2024.util.configure
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
+import miragefairy2024.util.get
+import miragefairy2024.util.isIn
 import miragefairy2024.util.isValid
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
@@ -35,7 +37,6 @@ import miragefairy2024.util.registerSpawn
 import miragefairy2024.util.sendToAround
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
-import miragefairy2024.util.with
 import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricDefaultAttributeRegistry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -443,8 +444,18 @@ class ChaosCubeEntity(entityType: EntityType<out ChaosCubeEntity>, world: Level)
             val world = mob.level()
             if (world.gameTime % 20L != 0L) return false
             if (world !is ServerLevel) return false
-            val structure = world.structureManager().registryAccess().registryOrThrow(Registries.STRUCTURE).get(Registries.STRUCTURE with MirageFairy2024.identifier("dripstone_caves_ruin"))!! // TODO
-            if (!world.structureManager().getStructureAt(mob.blockPosition(), structure).isValid) return false
+
+            val ng = run {
+                // TODO タグ
+
+                // 鍾乳洞の遺跡では常にアクティブ
+                val structure = world.structureManager().registryAccess()[Registries.STRUCTURE, DripstoneCavesRuinCard.key].value()
+                if (world.structureManager().getStructureAt(mob.blockPosition(), structure).isValid) return@run false
+
+                true
+            }
+            if (ng) return false
+
             return super.canUse()
         }
     }
