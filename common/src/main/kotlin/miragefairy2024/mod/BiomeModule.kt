@@ -34,6 +34,7 @@ import net.minecraft.world.entity.MobCategory
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.biome.BiomeGenerationSettings
 import net.minecraft.world.level.biome.BiomeSpecialEffects
+import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.biome.Climate
 import net.minecraft.world.level.biome.MobSpawnSettings
 import net.minecraft.world.level.block.Blocks
@@ -42,7 +43,6 @@ import net.minecraft.world.level.levelgen.Noises
 import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
-import terrablender.api.ParameterUtils
 import terrablender.api.Region
 import terrablender.api.RegionType
 import terrablender.api.Regions
@@ -62,15 +62,6 @@ abstract class BiomeCard(
     path: String,
     en: String,
     ja: String,
-    val regionType: RegionType,
-    val weight: Int,
-    val temperature: Climate.Parameter,
-    val humidity: Climate.Parameter,
-    val continentalness: Climate.Parameter,
-    val erosion: Climate.Parameter,
-    val weirdness: Climate.Parameter,
-    val depth: Climate.Parameter,
-    val offset: Float,
     vararg val tags: TagKey<Biome>,
 ) {
     abstract fun createBiome(placedFeatureLookup: HolderGetter<PlacedFeature>, configuredCarverLookup: HolderGetter<ConfiguredWorldCarver<*>>): Biome
@@ -104,30 +95,32 @@ fun initBiomeModule() {
         card.init()
     }
     ModEvents.onTerraBlenderInitialized {
-        biomeCards.forEach { card ->
 
-            // バイオームをTerraBlenderに登録
-            Regions.register(object : Region(card.identifier, card.regionType, card.weight) {
-                override fun addBiomes(registry: Registry<Biome>, mapper: Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>) {
-                    addBiome(mapper, card.temperature, card.humidity, card.continentalness, card.erosion, card.weirdness, card.depth, card.offset, card.registryKey)
+        // 地上世界用の共通RegionをTerraBlenderに登録
+        Regions.register(object : Region(MirageFairy2024.identifier("overworld"), RegionType.OVERWORLD, 1) {
+            override fun addBiomes(registry: Registry<Biome>, mapper: Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>) {
+                addModifiedVanillaOverworldBiomes(mapper) {
+                    it.replaceBiome(Biomes.FOREST, FairyForestBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.WINDSWEPT_FOREST, FairyForestBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.FLOWER_FOREST, FairyForestBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.BIRCH_FOREST, FairyForestBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.OLD_GROWTH_BIRCH_FOREST, FairyForestBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.DARK_FOREST, FairyForestBiomeCard.registryKey)
+
+                    it.replaceBiome(Biomes.TAIGA, DeepFairyForestBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.OLD_GROWTH_PINE_TAIGA, DeepFairyForestBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.OLD_GROWTH_SPRUCE_TAIGA, DeepFairyForestBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.SNOWY_TAIGA, DeepFairyForestBiomeCard.registryKey)
                 }
-            })
+            }
+        })
 
-        }
     }
 }
 
 
 object FairyForestBiomeCard : BiomeCard(
     "fairy_forest", "Fairy Forest", "妖精の森",
-    RegionType.OVERWORLD, 1,
-    ParameterUtils.Temperature.span(ParameterUtils.Temperature.COOL, ParameterUtils.Temperature.COOL),
-    ParameterUtils.Humidity.span(ParameterUtils.Humidity.WET, ParameterUtils.Humidity.WET),
-    ParameterUtils.Continentalness.span(ParameterUtils.Continentalness.FAR_INLAND, ParameterUtils.Continentalness.FAR_INLAND),
-    ParameterUtils.Erosion.span(ParameterUtils.Erosion.EROSION_1, ParameterUtils.Erosion.EROSION_1),
-    ParameterUtils.Weirdness.span(ParameterUtils.Weirdness.MID_SLICE_VARIANT_DESCENDING, ParameterUtils.Weirdness.MID_SLICE_VARIANT_DESCENDING),
-    ParameterUtils.Depth.span(ParameterUtils.Depth.SURFACE, ParameterUtils.Depth.SURFACE),
-    0.95F,
     BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST, ConventionalBiomeTags.IS_FLORAL, FAIRY_BIOME_TAG,
 ) {
     val advancement = AdvancementCard(
@@ -207,14 +200,6 @@ object FairyForestBiomeCard : BiomeCard(
 
 object DeepFairyForestBiomeCard : BiomeCard(
     "deep_fairy_forest", "Deep Fairy Forest", "妖精の樹海",
-    RegionType.OVERWORLD, 1,
-    ParameterUtils.Temperature.span(ParameterUtils.Temperature.COOL, ParameterUtils.Temperature.COOL),
-    ParameterUtils.Humidity.span(ParameterUtils.Humidity.WET, ParameterUtils.Humidity.WET),
-    ParameterUtils.Continentalness.span(ParameterUtils.Continentalness.FAR_INLAND, ParameterUtils.Continentalness.FAR_INLAND),
-    ParameterUtils.Erosion.span(ParameterUtils.Erosion.EROSION_0, ParameterUtils.Erosion.EROSION_0),
-    ParameterUtils.Weirdness.span(ParameterUtils.Weirdness.MID_SLICE_VARIANT_DESCENDING, ParameterUtils.Weirdness.MID_SLICE_VARIANT_DESCENDING),
-    ParameterUtils.Depth.span(ParameterUtils.Depth.SURFACE, ParameterUtils.Depth.SURFACE),
-    0.95F,
     BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST, FAIRY_BIOME_TAG,
 ) {
     val advancement = AdvancementCard(
