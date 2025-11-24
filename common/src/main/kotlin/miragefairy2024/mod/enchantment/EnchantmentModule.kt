@@ -35,6 +35,7 @@ import net.minecraft.world.phys.HitResult
 
 val MAGIC_WEAPON_ITEM_TAG = MirageFairy2024.identifier("magic_weapon").toItemTag()
 val SCYTHE_ITEM_TAG = MirageFairy2024.identifier("scythe").toItemTag()
+val BUILDERS_ROD_ITEM_TAG = MirageFairy2024.identifier("builders_rod").toItemTag()
 val NONE_ITEM_TAG = MirageFairy2024.identifier("none").toItemTag()
 val AREA_MINING_ENCHANTABLE_ITEM_TAG = MirageFairy2024.identifier("enchantable/area_mining").toItemTag()
 
@@ -52,6 +53,7 @@ context(ModContext)
 fun initEnchantmentModule() {
     MAGIC_WEAPON_ITEM_TAG.enJa(EnJa("Magic Weapon", "魔法武器"))
     SCYTHE_ITEM_TAG.enJa(EnJa("Scythe", "大鎌"))
+    BUILDERS_ROD_ITEM_TAG.enJa(EnJa("Builder's Rod", "ビルダーズロッド"))
     NONE_ITEM_TAG.enJa(EnJa("None", "なし"))
     AREA_MINING_ENCHANTABLE_ITEM_TAG.enJa(EnJa("Area Mining Enchantable", "範囲採掘エンチャント可能"))
 
@@ -214,4 +216,8 @@ fun initEnchantmentModule() {
     }
 
     ItemTags.MINING_LOOT_ENCHANTABLE.generator.registerChild(SCYTHE_ITEM_TAG)
+
+    ItemTags.DURABILITY_ENCHANTABLE.generator.registerChild(BUILDERS_ROD_ITEM_TAG)
+    AREA_MINING_ENCHANTABLE_ITEM_TAG.generator.registerChild(BUILDERS_ROD_ITEM_TAG)
+    ItemTags.MINING_ENCHANTABLE.generator.registerChild(BUILDERS_ROD_ITEM_TAG) // これをしないと金床で側方範囲採掘が付かない
 }

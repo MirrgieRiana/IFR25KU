@@ -1,6 +1,8 @@
 {
   "values": [
-    "miragefairy2024:calculite_builders_rod",
-    "miragefairy2024:nephrite_builders_rod"
+    {
+      "id": "#miragefairy2024:builders_rod",
+      "required": false
+    }
   ]
 }
