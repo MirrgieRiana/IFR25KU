@@ -228,7 +228,7 @@ open class BlockMaterialCard(
             } on MaterialCard.MIRAGIDIAN.item
         }
         val MIRAGIDIAN_LAMP = !object : BlockMaterialCard(
-            "miragidian_lamp", EnJa("30,000-Year Unfading Lamp", "3万年消えない灯"),
+            "miragidian_lamp", EnJa("Miragidian Street Lamp", "ミラジディアンの街灯"),
             PoemList(4).poem(EnJa("Obtains light erg from astral radiation.", "覚えてるよ…まだ人間だった妹が殺された日")),
             MapColor.TERRACOTTA_BLUE, 60.0F, 1200.0F,
             advancementCreator = {
@@ -236,7 +236,7 @@ open class BlockMaterialCard(
                     identifier = identifier,
                     context = AdvancementCard.Sub { RetrospectiveCityBiomeCard.advancement.await() },
                     icon = { item().createItemStack() },
-                    name = EnJa("Light that Watched Collapse", "崩壊を見届けた光"),
+                    name = EnJa("30,000-Year Unfading Light", "3万年消えない灯"), // Light that Watched Collapse / 崩壊を見届けた光
                     description = EnJa("Find 30,000-Year Unfading Lamp in Retrospective City biome", "過去を見つめる都市バイオームで3万年消えない灯を見つける"),
                     criterion = AdvancementCard.hasItem(item),
                     type = AdvancementCardType.TOAST_AND_JEWELS,

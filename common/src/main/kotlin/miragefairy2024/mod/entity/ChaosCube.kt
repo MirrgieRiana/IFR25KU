@@ -3,6 +3,7 @@ package miragefairy2024.mod.entity
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
+import miragefairy2024.mod.RetrospectiveCityBiomeCard
 import miragefairy2024.mod.SoundEventCard
 import miragefairy2024.mod.SoundEventChannel
 import miragefairy2024.mod.SoundEventPacket
@@ -447,6 +448,9 @@ class ChaosCubeEntity(entityType: EntityType<out ChaosCubeEntity>, world: Level)
 
             val ng = run {
                 // TODO タグ
+
+                // 過去を見つめる都市では常にアクティブ
+                if (world.getBiome(mob.blockPosition()) isIn RetrospectiveCityBiomeCard.registryKey) return@run false
 
                 // 鍾乳洞の遺跡では常にアクティブ
                 val structure = world.structureManager().registryAccess()[Registries.STRUCTURE, DripstoneCavesRuinCard.key].value()
