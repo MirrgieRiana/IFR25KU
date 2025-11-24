@@ -104,7 +104,7 @@ fun initBiomeModule() {
         card.init()
     }
     ModEvents.onTerraBlenderInitialized {
-        BiomeCards.entries.forEach { card ->
+        biomeCards.forEach { card ->
 
             // バイオームをTerraBlenderに登録
             Regions.register(object : Region(card.identifier, card.regionType, card.weight) {
