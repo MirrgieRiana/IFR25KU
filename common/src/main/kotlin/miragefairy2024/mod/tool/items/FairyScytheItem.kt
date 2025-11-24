@@ -20,7 +20,6 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.tags.BlockTags
-import net.minecraft.tags.ItemTags
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.Entity
@@ -54,7 +53,6 @@ open class FairyScytheConfiguration(
         this.magicMiningDamage = 0.2
         this.areaMining(range, range, range)
         this.enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3)
-        this.tags += ItemTags.SWORDS
         this.tags += SCYTHE_ITEM_TAG
         this.superEffectiveBlocks += Blocks.COBWEB
         this.effectiveBlockTags += BlockTags.SWORD_EFFICIENT

@@ -215,6 +215,8 @@ fun initEnchantmentModule() {
         entity.hurt(entity.level().damageSources().source(ToolBreakDamageTypeCard.registryKey), 2F * enchantLevel.toFloat())
     }
 
+
+    ItemTags.SWORDS.generator.registerChild(SCYTHE_ITEM_TAG)
     ItemTags.MINING_LOOT_ENCHANTABLE.generator.registerChild(SCYTHE_ITEM_TAG)
 
     ItemTags.DURABILITY_ENCHANTABLE.generator.registerChild(BUILDERS_ROD_ITEM_TAG)
