@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
+import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
 import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
@@ -128,6 +129,9 @@ class ProminariaBlock(settings: Properties) : SimpleMagicPlantBlock(ProminariaCa
         newBlockEntity.setTraitStacks(traitStacks)
         newBlockEntity.setRare(rare)
         newBlockEntity.setNatural(natural)
+
+        level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos)
+        stack.consume(1, player)
 
         level.playSound(null, pos, SoundEvents.PUMPKIN_CARVE, SoundSource.BLOCKS, 1.0F, 1.0F) // TODO 音を変更
 
