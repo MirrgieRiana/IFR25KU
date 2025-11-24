@@ -3,8 +3,8 @@ package miragefairy2024.mod.fairy
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
-import miragefairy2024.mod.BiomeCards
 import miragefairy2024.mod.Emoji
+import miragefairy2024.mod.FairyForestBiomeCard
 import miragefairy2024.mod.FairyStatueFountainBlock
 import miragefairy2024.mod.FoodIngredientCategoryCard
 import miragefairy2024.mod.ItemTagCard
@@ -794,7 +794,7 @@ enum class MotifCard(
             + regeneration(0.4) * outdoor
             + regeneration(0.8) * food(MaterialCard.PHANTOM_DROP.item)
             + mending(1.0, ToolMaterialCard.PHANTOM_DROP.tag),
-        MotifCardRecipes().R.common(BiomeCards.FAIRY_FOREST.registryKey).block(PhantomFlowerCard.block),
+        MotifCardRecipes().R.common(FairyForestBiomeCard.registryKey).block(PhantomFlowerCard.block),
     ),
     PHANTOM_DROP(
         "phantom_drop", 7, "Phantome Dropia", "幻想雫精ファントーメドローピャ", 0xF091FF, 0xD834E0, 0x9E34E0, 0x5C09B0,

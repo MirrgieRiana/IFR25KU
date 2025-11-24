@@ -3,7 +3,8 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.mod.BiomeCards
+import miragefairy2024.mod.DeepFairyForestBiomeCard
+import miragefairy2024.mod.FairyForestBiomeCard
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.rootAdvancement
@@ -116,7 +117,7 @@ object MirageFlowerCard : AbstractMirageFlowerCard<MirageFlowerBlock>() {
             configuredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(it))) }) { // 小さな塊
                 placedFeature("cluster", { per(16) + flower(square, surface) }) { (overworld + end * !+Biomes.THE_END) * defaultTraits }  // 地上・エンド外縁の島々に通常クラスタ
                 placedFeature("nether_cluster", { per(64) + flower(square, nether) }) { nether * defaultTraits } // ネザーにネザー用クラスタ
-                placedFeature("fairy_forest_cluster", { count(4) + flower(square, surface) }) { (+BiomeCards.FAIRY_FOREST.registryKey + +BiomeCards.DEEP_FAIRY_FOREST.registryKey) * defaultTraits } // 妖精の森
+                placedFeature("fairy_forest_cluster", { count(4) + flower(square, surface) }) { (+FairyForestBiomeCard.registryKey + +DeepFairyForestBiomeCard.registryKey) * defaultTraits } // 妖精の森
             }
         }
         FAIRY_RING_FEATURE {

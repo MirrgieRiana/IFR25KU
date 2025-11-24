@@ -51,12 +51,11 @@ import java.util.function.Consumer
 
 val FAIRY_BIOME_TAG = MirageFairy2024.identifier("fairy").toBiomeTag()
 
-@Suppress("unused")
 object BiomeCards {
-    val entries = mutableListOf<BiomeCard>()
-
-    val FAIRY_FOREST = FairyForestBiomeCard.also { entries += it }
-    val DEEP_FAIRY_FOREST = DeepFairyForestBiomeCard.also { entries += it }
+    val entries = listOf(
+        FairyForestBiomeCard,
+        DeepFairyForestBiomeCard,
+    )
 }
 
 abstract class BiomeCard(
@@ -292,7 +291,7 @@ object DeepFairyForestBiomeCard : BiomeCard(
                 SurfaceRules.ifTrue(
                     SurfaceRules.waterBlockCheck(-1, 0),
                     SurfaceRules.ifTrue(
-                        SurfaceRules.isBiome(BiomeCards.DEEP_FAIRY_FOREST.registryKey),
+                        SurfaceRules.isBiome(DeepFairyForestBiomeCard.registryKey),
                         SurfaceRules.sequence(
                             SurfaceRules.ifTrue(
                                 SurfaceRules.noiseCondition(Noises.SURFACE, 1.75 / 8.25, Double.MAX_VALUE),

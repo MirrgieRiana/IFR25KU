@@ -2,7 +2,6 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
-import miragefairy2024.mod.BiomeCards
 import miragefairy2024.mod.FairyForestBiomeCard
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
@@ -105,7 +104,7 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
         LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.generator.registerChild(block)
         Feature.FLOWER {
             configuredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(it))) }) {
-                placedFeature("cluster", { per(16) + flower(square, surface) }) { +BiomeCards.FAIRY_FOREST.registryKey * defaultTraits }
+                placedFeature("cluster", { per(16) + flower(square, surface) }) { +FairyForestBiomeCard.registryKey * defaultTraits }
             }
         }
     }
