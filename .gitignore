@@ -51,4 +51,4 @@ desktop.ini
 /modrinth_token.txt
 /curseforge_token.txt
 unpackedSources
-*.ai.html
+/ai/
