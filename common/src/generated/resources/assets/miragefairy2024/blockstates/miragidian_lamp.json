@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "part=foot": {
+      "model": "miragefairy2024:block/miragidian_lamp_foot"
+    },
+    "part=head": {
+      "model": "miragefairy2024:block/miragidian_lamp_head"
+    },
+    "part=pole": {
+      "model": "miragefairy2024:block/miragidian_lamp_pole"
+    }
+  }
+}

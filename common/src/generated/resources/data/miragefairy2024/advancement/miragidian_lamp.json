@@ -1,0 +1,39 @@
+{
+  "parent": "miragefairy2024:root",
+  "criteria": {
+    "has_miragidian_lamp": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:miragidian_lamp"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.miragefairy2024.miragidian_lamp.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "miragefairy2024:miragidian_lamp"
+    },
+    "title": {
+      "translate": "advancements.miragefairy2024.miragidian_lamp.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_miragidian_lamp"
+    ]
+  ],
+  "rewards": {
+    "loot": [
+      "miragefairy2024:jewels_50"
+    ]
+  },
+  "sends_telemetry_event": true
+}

@@ -9,6 +9,7 @@ import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
 import miragefairy2024.mod.materials.contents.FairyCrystalGlassBlock
 import miragefairy2024.mod.materials.contents.LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG
 import miragefairy2024.mod.materials.contents.LocalVacuumDecayBlock
+import miragefairy2024.mod.materials.contents.MiragidianLampBlock
 import miragefairy2024.mod.materials.contents.SemiOpaqueTransparentBlock
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassBlockModel
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassFrameBlockModel
@@ -17,15 +18,20 @@ import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
+import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.mod.tool.MINEABLE_WITH_NOISE_BLOCK_TAG
 import miragefairy2024.util.AdvancementCard
+import miragefairy2024.util.AdvancementCardType
+import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.from
 import miragefairy2024.util.generator
+import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.on
+import miragefairy2024.util.propertiesOf
 import miragefairy2024.util.register
 import miragefairy2024.util.registerBlockFamily
 import miragefairy2024.util.registerBlockStateGeneration
@@ -33,6 +39,7 @@ import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerCompressionRecipeGeneration
 import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerDefaultLootTableGeneration
+import miragefairy2024.util.registerGeneratedModelGeneration
 import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.registerLootTableGeneration
 import miragefairy2024.util.registerModelGeneration
@@ -40,7 +47,9 @@ import miragefairy2024.util.registerShapedRecipeGeneration
 import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.registerStonecutterRecipeGeneration
 import miragefairy2024.util.registerTranslucentRenderLayer
+import miragefairy2024.util.registerVariantsBlockStateGeneration
 import miragefairy2024.util.times
+import miragefairy2024.util.toIngredient
 import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.with
 import mirrg.kotlin.gson.hydrogen.jsonArray
@@ -55,6 +64,7 @@ import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.SlabBlock
@@ -182,6 +192,57 @@ open class BlockMaterialCard(
                 define('M', tagOf(Shape.GEM, Material.MIRAGIDIAN))
                 define('I', tagOf(Shape.INGOT, Material.IRON))
             } on MaterialCard.MIRAGIDIAN.item
+        }
+        val MIRAGIDIAN_LAMP = !object : BlockMaterialCard(
+            "miragidian_lamp", EnJa("30,000-Year Unfading Lamp", "3万年消えない灯"),
+            PoemList(4).poem(EnJa("Obtains light erg from astral radiation.", "覚えてるよ…まだ人間だった妹が殺された日")),
+            MapColor.TERRACOTTA_BLUE, 60.0F, 1200.0F,
+            advancementCreator = {
+                AdvancementCard(
+                    identifier = identifier,
+                    context = AdvancementCard.Sub { rootAdvancement.await() },
+                    icon = { item().createItemStack() },
+                    name = EnJa("Light that Watched Collapse", "崩壊を見届けた光"),
+                    description = EnJa("Find 30,000-Year Unfading Lamp in Retrospective City biome", "過去を見つめる都市バイオームで3万年消えない灯を見つける"),
+                    criterion = AdvancementCard.hasItem(item),
+                    type = AdvancementCardType.TOAST_AND_JEWELS,
+                )
+            },
+        ) {
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
+                .lightLevel { if (it.getValue(MiragidianLampBlock.PART) == MiragidianLampBlock.Part.HEAD) 15 else 0 }
+
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = MiragidianLampBlock(properties)
+
+            context(ModContext)
+            override fun initBlockStateGeneration() {
+                block.registerVariantsBlockStateGeneration {
+                    val normal = BlockStateVariant(model = "block/" * block().getIdentifier())
+                    listOf(
+                        propertiesOf(MiragidianLampBlock.PART with MiragidianLampBlock.Part.HEAD) with normal.with(model = "block/" * block().getIdentifier() * "_head"),
+                        propertiesOf(MiragidianLampBlock.PART with MiragidianLampBlock.Part.POLE) with normal.with(model = "block/" * block().getIdentifier() * "_pole"),
+                        propertiesOf(MiragidianLampBlock.PART with MiragidianLampBlock.Part.FOOT) with normal.with(model = "block/" * block().getIdentifier() * "_foot"),
+                    )
+                }
+            }
+
+            context(ModContext) override fun initModelGeneration() = Unit
+
+            context(ModContext)
+            override fun initLootTableGeneration() {
+                block.registerLootTableGeneration { provider, _ ->
+                    provider.createSinglePropConditionTable(block(), MiragidianLampBlock.PART, MiragidianLampBlock.Part.FOOT)
+                }
+            }
+        }.sound(SoundType.METAL).needTool(ToolType.PICKAXE, ToolLevel.DIAMOND).noBurn().soulStream().init {
+            item.registerGeneratedModelGeneration()
+            registerShapedRecipeGeneration(item) {
+                pattern("L")
+                pattern("#")
+                pattern("#")
+                define('L', Items.LANTERN) // TODO 妖精研究所産のランプにする
+                define('#', MIRAGIDIAN_STEEL_TILES.item().toIngredient())
+            } on MIRAGIDIAN_STEEL_TILES.item
         }
         val LUMINITE_BLOCK = !object : BlockMaterialCard(
             "luminite_block", EnJa("Luminite Block", "ルミナイトブロック"),
@@ -345,6 +406,7 @@ open class BlockMaterialCard(
 
 context(ModContext)
 fun initBlockMaterialsModule() {
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("miragidian_lamp")) { MiragidianLampBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("local_vacuum_decay")) { LocalVacuumDecayBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("semi_opaque_transparent_block")) { SemiOpaqueTransparentBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("fairy_crystal_glass")) { FairyCrystalGlassBlock.CODEC }.register()
