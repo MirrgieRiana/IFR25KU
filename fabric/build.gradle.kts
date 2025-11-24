@@ -118,8 +118,8 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${libs.versions.rei.get()}")
     modCompileOnly("me.shedaniel.cloth:basic-math:${libs.versions.clothBasicMath.get()}")
 
-    modCompileOnly("curse.maven:jade-324717:${libs.versions.jadeCurseFabric.get()}")
-    modRuntimeOnly("curse.maven:jade-324717:${libs.versions.jadeCurseFabric.get()}")
+    modCompileOnly("curse.maven:jade-324717:${libs.versions.jadeCurseForgeFabric.get()}")
+    modRuntimeOnly("curse.maven:jade-324717:${libs.versions.jadeCurseForgeFabric.get()}")
 
     modImplementation("io.wispforest:owo-lib:${libs.versions.owoLibFabric.get()}")
 

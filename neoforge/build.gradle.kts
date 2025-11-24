@@ -92,8 +92,8 @@ dependencies {
     modCompileOnly("dev.emi:emi-neoforge:${libs.versions.emi.get()}:api")
     modRuntimeOnly("dev.emi:emi-neoforge:${libs.versions.emi.get()}")
 
-    modCompileOnly("curse.maven:jade-324717:${libs.versions.jadeCurseNeoForge.get()}")
-    modRuntimeOnly("curse.maven:jade-324717:${libs.versions.jadeCurseNeoForge.get()}")
+    modCompileOnly("curse.maven:jade-324717:${libs.versions.jadeCurseForgeNeoForge.get()}")
+    modRuntimeOnly("curse.maven:jade-324717:${libs.versions.jadeCurseForgeNeoForge.get()}")
 
     modImplementation("io.wispforest:owo-lib-neoforge:${libs.versions.owoLibNeoForge.get()}")// { isTransitive = true }
     forgeRuntimeLibrary(include(api("io.wispforest:endec:${libs.versions.endec.get()}")!!)!!)
