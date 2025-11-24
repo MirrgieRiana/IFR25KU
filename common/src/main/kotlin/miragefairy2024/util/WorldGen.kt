@@ -18,6 +18,7 @@ import net.minecraft.data.worldgen.BootstrapContext
 import net.minecraft.data.worldgen.placement.PlacementUtils
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.tags.BiomeTags
 import net.minecraft.tags.TagKey
 import net.minecraft.util.random.SimpleWeightedRandomList
 import net.minecraft.util.valueproviders.ConstantInt
@@ -104,9 +105,9 @@ fun (() -> EntityType<*>).registerSpawn(spawnGroup: MobCategory, weight: Int, mi
 object BiomeSelectorScope
 
 context(BiomeSelectorScope) val all: Predicate<BiomeSelectionContext> get() = BiomeSelectors.all()
-context(BiomeSelectorScope) val overworld: Predicate<BiomeSelectionContext> get() = BiomeSelectors.foundInOverworld()
-context(BiomeSelectorScope) val nether: Predicate<BiomeSelectionContext> get() = BiomeSelectors.foundInTheNether()
-context(BiomeSelectorScope) val end: Predicate<BiomeSelectionContext> get() = BiomeSelectors.foundInTheEnd()
+context(BiomeSelectorScope) val overworld: Predicate<BiomeSelectionContext> get() = +BiomeTags.IS_OVERWORLD // BiomeSelectors.foundInOverworld() はTerraBlenderの追加バイオームを無視する
+context(BiomeSelectorScope) val nether: Predicate<BiomeSelectionContext> get() = +BiomeTags.IS_NETHER // 上と同じ
+context(BiomeSelectorScope) val end: Predicate<BiomeSelectionContext> get() = +BiomeTags.IS_END // 上と同じ
 context(BiomeSelectorScope) operator fun ResourceKey<Biome>.unaryPlus(): Predicate<BiomeSelectionContext> = BiomeSelectors.includeByKey(this)
 context(BiomeSelectorScope) operator fun TagKey<Biome>.unaryPlus(): Predicate<BiomeSelectionContext> = BiomeSelectors.tag(this)
 context(BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.not(): Predicate<BiomeSelectionContext> = this.negate()
