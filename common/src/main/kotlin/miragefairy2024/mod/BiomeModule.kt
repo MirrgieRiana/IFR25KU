@@ -292,7 +292,7 @@ object DeepFairyForestBiomeCard : BiomeCard(
                     SurfaceRules.ifTrue(
                         SurfaceRules.waterBlockCheck(-1, 0),
                         SurfaceRules.ifTrue(
-                            SurfaceRules.isBiome(DeepFairyForestBiomeCard.registryKey),
+                            SurfaceRules.isBiome(registryKey),
                             SurfaceRules.sequence(
                                 SurfaceRules.ifTrue(
                                     SurfaceRules.noiseCondition(Noises.SURFACE, 1.75 / 8.25, Double.MAX_VALUE),
