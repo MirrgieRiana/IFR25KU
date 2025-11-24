@@ -283,30 +283,32 @@ object DeepFairyForestBiomeCard : BiomeCard(
     }
 
     context(ModContext)
-    override fun init() = ModEvents.onTerraBlenderInitialized {
-        val rule = SurfaceRules.ifTrue(
-            SurfaceRules.abovePreliminarySurface(),
-            SurfaceRules.ifTrue(
-                SurfaceRules.ON_FLOOR,
+    override fun init() {
+        ModEvents.onTerraBlenderInitialized {
+            val rule = SurfaceRules.ifTrue(
+                SurfaceRules.abovePreliminarySurface(),
                 SurfaceRules.ifTrue(
-                    SurfaceRules.waterBlockCheck(-1, 0),
+                    SurfaceRules.ON_FLOOR,
                     SurfaceRules.ifTrue(
-                        SurfaceRules.isBiome(DeepFairyForestBiomeCard.registryKey),
-                        SurfaceRules.sequence(
-                            SurfaceRules.ifTrue(
-                                SurfaceRules.noiseCondition(Noises.SURFACE, 1.75 / 8.25, Double.MAX_VALUE),
-                                SurfaceRules.state(Blocks.COARSE_DIRT.defaultBlockState())
-                            ),
-                            SurfaceRules.ifTrue(
-                                SurfaceRules.noiseCondition(Noises.SURFACE, -0.95 / 8.25, Double.MAX_VALUE),
-                                SurfaceRules.state(Blocks.PODZOL.defaultBlockState())
+                        SurfaceRules.waterBlockCheck(-1, 0),
+                        SurfaceRules.ifTrue(
+                            SurfaceRules.isBiome(DeepFairyForestBiomeCard.registryKey),
+                            SurfaceRules.sequence(
+                                SurfaceRules.ifTrue(
+                                    SurfaceRules.noiseCondition(Noises.SURFACE, 1.75 / 8.25, Double.MAX_VALUE),
+                                    SurfaceRules.state(Blocks.COARSE_DIRT.defaultBlockState())
+                                ),
+                                SurfaceRules.ifTrue(
+                                    SurfaceRules.noiseCondition(Noises.SURFACE, -0.95 / 8.25, Double.MAX_VALUE),
+                                    SurfaceRules.state(Blocks.PODZOL.defaultBlockState())
+                                ),
                             ),
                         ),
                     ),
                 ),
-            ),
-        )
-        SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MirageFairy2024.MOD_ID, rule)
+            )
+            SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MirageFairy2024.MOD_ID, rule)
+        }
         advancement.init()
     }
 }
