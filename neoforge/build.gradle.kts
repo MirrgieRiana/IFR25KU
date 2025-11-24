@@ -95,6 +95,8 @@ dependencies {
     modCompileOnly("curse.maven:jade-324717:${libs.versions.jadeCurseForgeNeoForge.get()}")
     modRuntimeOnly("curse.maven:jade-324717:${libs.versions.jadeCurseForgeNeoForge.get()}")
 
+    //modRuntimeOnly("curse.maven:journeymap-32274:${libs.versions.journeyMapCurseForgeNeoForge.get()}") // なぜか入れるとエラーになる
+
     modImplementation("io.wispforest:owo-lib-neoforge:${libs.versions.owoLibNeoForge.get()}")// { isTransitive = true }
     forgeRuntimeLibrary(include(api("io.wispforest:endec:${libs.versions.endec.get()}")!!)!!)
     forgeRuntimeLibrary(include(api("io.wispforest.endec:netty:${libs.versions.endecNetty.get()}")!!)!!)
