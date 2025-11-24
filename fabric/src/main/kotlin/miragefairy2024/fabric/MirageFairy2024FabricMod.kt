@@ -19,6 +19,15 @@ object MirageFairy2024FabricMod : ModInitializer {
             initFabricModule()
         }
 
+        initializeRegistrationsIfNeeded()
+
+        ModEvents.onInitialize.fire { it() }
+    }
+
+    private var initialized = false
+    fun initializeRegistrationsIfNeeded() {
+        if (initialized) return
+        initialized = true
         runBlocking {
             RegistryEvents.registrations.forEach { registration ->
                 launch {
@@ -30,7 +39,5 @@ object MirageFairy2024FabricMod : ModInitializer {
                 }
             }
         }
-
-        ModEvents.onInitialize.fire { it() }
     }
 }
