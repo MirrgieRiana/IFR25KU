@@ -171,6 +171,18 @@ open class BlockMaterialCard(
         ).needTool(ToolType.PICKAXE, ToolLevel.DIAMOND).noBurn().soulStream().beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.MIRAGIDIAN.item, { MaterialCard.MIRAGIDIAN.ore!!.ingredient }, item, { ore!!.ingredient })
         }
+        val MIRAGIDIAN_STEEL_TILES = !BlockMaterialCard(
+            "miragidian_steel_tiles", EnJa("Miragidian Steel Block", "ミラジディアンスチールブロック"),
+            PoemList(4).poem(EnJa("Oxide film on the surface prevents rust.", "鉄は貴重だった。大戦で多くを失ったのだ。")),
+            MapColor.TERRACOTTA_BLUE, 120.0F, 1200.0F,
+        ).sound(SoundType.METAL).needTool(ToolType.PICKAXE, ToolLevel.DIAMOND).noBurn().soulStream().init {
+            registerShapedRecipeGeneration(item, count = 2) {
+                pattern("MI")
+                pattern("IM")
+                define('M', tagOf(Shape.GEM, Material.MIRAGIDIAN))
+                define('I', tagOf(Shape.INGOT, Material.IRON))
+            } on MaterialCard.MIRAGIDIAN.item
+        }
         val LUMINITE_BLOCK = !object : BlockMaterialCard(
             "luminite_block", EnJa("Luminite Block", "ルミナイトブロック"),
             PoemList(4).poem(EnJa("Catalytic digestion of astral vortices", "光り輝く魂のエネルギー。")),
