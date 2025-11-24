@@ -18,6 +18,7 @@ import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.mod.tool.MINEABLE_WITH_NOISE_BLOCK_TAG
+import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.createItemStack
@@ -72,6 +73,7 @@ open class BlockMaterialCard(
     private val hardness: Float,
     private val resistance: Float,
     val ore: Ore? = null,
+    val advancementCreator: (BlockMaterialCard.() -> AdvancementCard)? = null,
 ) {
     companion object {
         val entries = mutableListOf<BlockMaterialCard>()
@@ -279,6 +281,8 @@ open class BlockMaterialCard(
         BlockItem(block.await(), properties)
     }
 
+    val advancement = advancementCreator?.invoke(this)
+
     val initializers = mutableListOf<(ModContext) -> Unit>()
 
     context(ModContext)
@@ -302,6 +306,8 @@ open class BlockMaterialCard(
             ore.tag.generator.registerChild(item)
             ore.shape.tag.generator.registerChild(ore.tag)
         }
+
+        advancement?.init()
 
         initializers.forEach {
             it(this@ModContext)
