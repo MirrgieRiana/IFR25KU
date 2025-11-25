@@ -325,7 +325,7 @@ class ToolCard(
         ) { registerHoeRecipeGeneration(item, MaterialCard.MIRAGIDIAN.ore!!.tag) }
         val MIRAGIDIAN_SWORD = !ToolCard(
             "miragidian_sword", EnJa("Miragidian Sword", "ミラジディアンの剣"),
-            PoemList(4).poem(EnJa("Watching the end of civilization.", "この星の運命を写す瞳。")), // TODO 石の意思
+            PoemList(4).poem(EnJa("Watching the end of civilization.", "この星の運命を写す瞳。")), // TODO 石の意思 ←ヒヤシンスでは
             FairySwordConfiguration(ToolMaterialCard.MIRAGIDIAN).soulStreamContainable().fireResistant(),
         ) { registerSwordRecipeGeneration(item, MaterialCard.MIRAGIDIAN.ore!!.tag) }
         val MIRANAGITE_KNIFE = !ToolCard(
