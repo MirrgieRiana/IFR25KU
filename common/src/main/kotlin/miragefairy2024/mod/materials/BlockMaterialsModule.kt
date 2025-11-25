@@ -105,9 +105,10 @@ open class BlockMaterialCard(
         }
         val AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
             "aura_resistant_ceramic", EnJa("Aura-Resistant Ceramic", "耐霊性セラミック"),
-            PoemList(2).poem(EnJa("Weather and astral radiation resistance.", "TODO")), // TODO
+            PoemList(2).poem(EnJa("", "TODO")), // TODO
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            // TODO アタノールで作る
             registerShapedRecipeGeneration(item, count = 2) {
                 pattern("SX")
                 pattern("XS")
@@ -117,7 +118,7 @@ open class BlockMaterialCard(
         }
         val AURA_RESISTANT_CERAMIC_BRICKS = !BlockMaterialCard(
             "aura_resistant_ceramic_bricks", EnJa("Aura-Resistant Ceramic Bricks", "耐霊性セラミックレンガ"),
-            PoemList(2).poem(EnJa("TODO", "TODO")), // TODO
+            PoemList(2).poem(EnJa("Protects lifeforms from radiation.", "それは魂が魔物と混淆しないための護石――")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerShapedRecipeGeneration(item, count = 4) {
@@ -128,7 +129,7 @@ open class BlockMaterialCard(
         }
         val AURA_RESISTANT_CERAMIC_TILES = !BlockMaterialCard(
             "aura_resistant_ceramic_tiles", EnJa("Aura-Resistant Ceramic Tiles", "耐霊性セラミックタイル"),
-            PoemList(2).poem(EnJa("TODO", "TODO")), // TODO
+            PoemList(2).poem(EnJa("Highly weather-resistant resin-ceramic.", "恒久的繁栄の願いを敷石に込めて――")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerShapedRecipeGeneration(item, count = 4) {
@@ -236,8 +237,8 @@ open class BlockMaterialCard(
                     identifier = identifier,
                     context = AdvancementCard.Sub { RetrospectiveCityBiomeCard.advancement.await() },
                     icon = { item().createItemStack() },
-                    name = EnJa("30,000-Year Unfading Light", "3万年消えない灯"), // Light that Watched Collapse / 崩壊を見届けた光
-                    description = EnJa("Find 30,000-Year Unfading Lamp in Retrospective City biome", "過去を見つめる都市バイオームで3万年消えない灯を見つける"),
+                    name = EnJa("30,000-Year Unfading Light", "3万年消えない光"), // Light that Watched Collapse / 崩壊を見届けた光
+                    description = EnJa("Find Miragidian Street Lamp in Retrospective City biome", "過去を見つめる都市バイオームでミラジディアンの街灯を見つける"),
                     criterion = AdvancementCard.hasItem(item),
                     type = AdvancementCardType.TOAST_AND_JEWELS,
                 )
