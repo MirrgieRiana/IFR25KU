@@ -56,6 +56,7 @@ import mirrg.kotlin.gson.hydrogen.jsonArray
 import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.data.recipes.RecipeCategory
@@ -103,11 +104,19 @@ open class BlockMaterialCard(
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.XARPITE.item, { MaterialCard.XARPITE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
-        val AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
+        val AURA_RESISTANT_CERAMIC = !object : BlockMaterialCard(
             "aura_resistant_ceramic", EnJa("Protective Aura-Resistant Ceramic", "守護の耐霊石"),
             PoemList(2).poem(EnJa("Penetrates the monomer and solidifies.", "砂岩に宿るポリテルペンの祝福――")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
-        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+        ) {
+            context(ModContext)
+            override fun initModelGeneration() = block.registerModelGeneration {
+                ModelTemplates.CUBE_COLUMN.with(
+                    TextureSlot.END to "block/" * block().getIdentifier(),
+                    TextureSlot.SIDE to "block/" * block().getIdentifier() * "_side",
+                )
+            }
+        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             // TODO アタノールで作る
             // TODO 分解することで液体燃料が取れる
             registerShapedRecipeGeneration(item, count = 2) {
@@ -117,6 +126,17 @@ open class BlockMaterialCard(
                 define('X', MaterialCard.XARPITE.ore!!.ingredient)
             } on MaterialCard.XARPITE.ore!!.tag
         }
+        val POLISHED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
+            "polished_aura_resistant_ceramic", EnJa("Polished Protective Aura-Resistant Ceramic", "磨かれた守護の耐霊石"),
+            PoemList(2).poem(EnJa("", "")), // TODO
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerShapedRecipeGeneration(item, count = 4) {
+                pattern("##")
+                pattern("##")
+                define('#', AURA_RESISTANT_CERAMIC.item)
+            } on AURA_RESISTANT_CERAMIC.item
+        }
         val AURA_RESISTANT_CERAMIC_BRICKS = !BlockMaterialCard(
             "aura_resistant_ceramic_bricks", EnJa("Protective Aura-Resistant Ceramic Bricks", "守護の耐霊石レンガ"),
             PoemList(2).poem(EnJa("Protects lifeforms from radiation.", "それは魔物との混淆から魂を護るため――")),
@@ -125,8 +145,8 @@ open class BlockMaterialCard(
             registerShapedRecipeGeneration(item, count = 4) {
                 pattern("##")
                 pattern("##")
-                define('#', AURA_RESISTANT_CERAMIC.item)
-            } on AURA_RESISTANT_CERAMIC.item
+                define('#', POLISHED_AURA_RESISTANT_CERAMIC.item)
+            } on POLISHED_AURA_RESISTANT_CERAMIC.item
         }
         val AURA_RESISTANT_CERAMIC_TILES = !BlockMaterialCard(
             "aura_resistant_ceramic_tiles", EnJa("Protective Aura-Resistant Ceramic Tiles", "守護の耐霊石タイル"),
