@@ -105,30 +105,9 @@ open class BlockMaterialCard(
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.XARPITE.item, { MaterialCard.XARPITE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
-        val COBBLED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
-            "cobbled_aura_resistant_ceramic", EnJa("Cobbled Protective Aura-Resistant Ceramic", "守護の耐霊石の丸石"),
-            PoemList(2).poem(EnJa("", "")), // TODO
-            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
-        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
-            // TODO アタノールで作る
-            // TODO Tierをアタノールに合わせる
-            registerShapedRecipeGeneration(item, count = 2) {
-                pattern("SX")
-                pattern("XS")
-                define('S', Items.SANDSTONE)
-                define('X', MaterialCard.XARPITE.ore!!.ingredient)
-            } on MaterialCard.XARPITE.ore!!.tag
-        }
-        val SMOOTH_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
-            "smooth_aura_resistant_ceramic", EnJa("Smooth Protective Aura-Resistant Ceramic", "滑らかな守護の耐霊石"),
-            PoemList(2).poem(EnJa("", "")), // TODO
-            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
-        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
-            registerSmeltingRecipeGeneration(COBBLED_AURA_RESISTANT_CERAMIC.item, item) on item
-        }
-        val AURA_RESISTANT_CERAMIC = !object : BlockMaterialCard(
+        val AURA_RESISTANT_CERAMIC: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic", EnJa("Protective Aura-Resistant Ceramic", "守護の耐霊石"),
-            PoemList(2).poem(EnJa("Penetrates the monomer and solidifies.", "砂岩に宿るポリテルペンの祝福――")),
+            PoemList(2).poem(EnJa("", "")), // TODO
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
         ) {
             context(ModContext)
@@ -146,6 +125,34 @@ open class BlockMaterialCard(
                 define('#', SMOOTH_AURA_RESISTANT_CERAMIC.item)
             } on SMOOTH_AURA_RESISTANT_CERAMIC.item
             registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
+        }
+        val COBBLED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
+            "cobbled_aura_resistant_ceramic", EnJa("Cobbled Protective Aura-Resistant Ceramic", "守護の耐霊石の丸石"),
+            PoemList(2).poem(EnJa("Penetrates the monomer and solidifies.", "砂岩に宿るポリテルペンの祝福――")),
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            // TODO アタノールで作る
+            // TODO Tierをアタノールに合わせる
+            registerShapedRecipeGeneration(item, count = 2) {
+                pattern("SX")
+                pattern("XS")
+                define('S', Items.SANDSTONE)
+                define('X', MaterialCard.XARPITE.ore!!.ingredient)
+            } on MaterialCard.XARPITE.ore!!.tag
+        }
+        val SMOOTH_AURA_RESISTANT_CERAMIC: BlockMaterialCard = !object : BlockMaterialCard(
+            "smooth_aura_resistant_ceramic", EnJa("Smooth Protective Aura-Resistant Ceramic", "滑らかな守護の耐霊石"),
+            PoemList(2).poem(EnJa("", "")), // TODO
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ) {
+            context(ModContext)
+            override fun initModelGeneration() = block.registerModelGeneration {
+                ModelTemplates.CUBE_ALL.with(
+                    TextureSlot.ALL to "block/" * AURA_RESISTANT_CERAMIC.identifier,
+                )
+            }
+        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerSmeltingRecipeGeneration(COBBLED_AURA_RESISTANT_CERAMIC.item, item) on item
         }
         val POLISHED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
             "polished_aura_resistant_ceramic", EnJa("Polished Protective Aura-Resistant Ceramic", "磨かれた守護の耐霊石"),
