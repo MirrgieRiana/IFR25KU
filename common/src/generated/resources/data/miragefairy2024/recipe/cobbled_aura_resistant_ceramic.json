@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "miragefairy2024:cobbled_aura_resistant_ceramic",
+  "key": {
+    "S": {
+      "item": "minecraft:sandstone"
+    },
+    "X": {
+      "tag": "c:gems/xarpite"
+    }
+  },
+  "pattern": [
+    "SX",
+    "XS"
+  ],
+  "result": {
+    "count": 2,
+    "id": "miragefairy2024:cobbled_aura_resistant_ceramic"
+  }
+}

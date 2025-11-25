@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:aura_resistant_ceramic"
+        "recipe": "minecraft:aura_resistant_ceramic_tiles_from_smooth_aura_resistant_ceramic_stonecutting"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:aura_resistant_ceramic"
+      "minecraft:aura_resistant_ceramic_tiles_from_smooth_aura_resistant_ceramic_stonecutting"
     ]
   }
 }

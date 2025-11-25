@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "miragefairy2024:cobbled_aura_resistant_ceramic"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "miragefairy2024:blocks/cobbled_aura_resistant_ceramic"
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "category": "blocks",
+  "cookingtime": 200,
+  "experience": 0.0,
+  "group": "miragefairy2024:smooth_aura_resistant_ceramic",
+  "ingredient": {
+    "item": "miragefairy2024:cobbled_aura_resistant_ceramic"
+  },
+  "result": {
+    "id": "miragefairy2024:smooth_aura_resistant_ceramic"
+  }
+}

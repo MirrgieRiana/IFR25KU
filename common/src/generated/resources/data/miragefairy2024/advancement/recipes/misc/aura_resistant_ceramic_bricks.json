@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_aura_resistant_ceramic": {
+    "has_polished_aura_resistant_ceramic": {
       "conditions": {
         "items": [
           {
-            "items": "miragefairy2024:aura_resistant_ceramic"
+            "items": "miragefairy2024:polished_aura_resistant_ceramic"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_aura_resistant_ceramic"
+      "has_polished_aura_resistant_ceramic"
     ]
   ],
   "rewards": {

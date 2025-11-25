@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:aura_resistant_ceramic"
+        "recipe": "miragefairy2024:polished_aura_resistant_ceramic"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:aura_resistant_ceramic"
+      "miragefairy2024:polished_aura_resistant_ceramic"
     ]
   }
 }
