@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_gems/xarpite": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:gems/xarpite"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:cobbled_aura_resistant_ceramic"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_gems/xarpite"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:cobbled_aura_resistant_ceramic"
+    ]
+  }
+}

@@ -103,6 +103,20 @@ open class BlockMaterialCard(
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.XARPITE.item, { MaterialCard.XARPITE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
+        val COBBLED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
+            "cobbled_aura_resistant_ceramic", EnJa("Cobbled Protective Aura-Resistant Ceramic", "守護の耐霊石の丸石"),
+            PoemList(2).poem(EnJa("Penetrates the monomer and solidifies.", "砂岩に宿るポリテルペンの祝福――")),
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            // TODO アタノールで作る
+            // TODO Tierをアタノールに合わせる
+            registerShapedRecipeGeneration(item, count = 2) {
+                pattern("SX")
+                pattern("XS")
+                define('S', Items.SANDSTONE)
+                define('X', MaterialCard.XARPITE.ore!!.ingredient)
+            } on MaterialCard.XARPITE.ore!!.tag
+        }
         val MIRANAGITE_BLOCK = !BlockMaterialCard(
             "miranagite_block", EnJa("Miranagite Block", "蒼天石ブロック"),
             PoemList(2).poem(EnJa("Passivation confines discontinuous space", "虚空に導かれし、神域との接合点。")),
