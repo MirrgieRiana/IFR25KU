@@ -102,6 +102,7 @@ object AuraReflectorFurnaceCard : SimpleMachineCard<AuraReflectorFurnaceBlock, A
         registerModelGeneration({ "block/" * identifier * "_lit" }) { Model("block/" * identifier, TextureSlot.FRONT) with TextureMap(TextureSlot.FRONT to "block/" * identifier * "_front_lit") }
 
         BlockTags.MINEABLE_WITH_PICKAXE.generator.registerChild(block)
+        BlockTags.NEEDS_STONE_TOOL.generator.registerChild(block)
 
         registerShapedRecipeGeneration(item) {
             pattern("XXX")

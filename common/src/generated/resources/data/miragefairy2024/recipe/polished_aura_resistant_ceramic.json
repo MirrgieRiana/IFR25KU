@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "miragefairy2024:polished_aura_resistant_ceramic",
+  "key": {
+    "#": {
+      "item": "miragefairy2024:smooth_aura_resistant_ceramic"
+    }
+  },
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "result": {
+    "count": 4,
+    "id": "miragefairy2024:polished_aura_resistant_ceramic"
+  }
+}

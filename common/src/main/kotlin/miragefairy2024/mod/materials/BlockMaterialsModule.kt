@@ -3,6 +3,7 @@ package miragefairy2024.mod.materials
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemList
+import miragefairy2024.mod.RetrospectiveCityBiomeCard
 import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
 import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
@@ -18,7 +19,6 @@ import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
-import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.mod.tool.MINEABLE_WITH_NOISE_BLOCK_TAG
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -45,6 +45,7 @@ import miragefairy2024.util.registerLootTableGeneration
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerShapedRecipeGeneration
 import miragefairy2024.util.registerSingletonBlockStateGeneration
+import miragefairy2024.util.registerSmeltingRecipeGeneration
 import miragefairy2024.util.registerStonecutterRecipeGeneration
 import miragefairy2024.util.registerTranslucentRenderLayer
 import miragefairy2024.util.registerVariantsBlockStateGeneration
@@ -56,6 +57,7 @@ import mirrg.kotlin.gson.hydrogen.jsonArray
 import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.data.recipes.RecipeCategory
@@ -103,6 +105,27 @@ open class BlockMaterialCard(
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.XARPITE.item, { MaterialCard.XARPITE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
+        val AURA_RESISTANT_CERAMIC: BlockMaterialCard = !object : BlockMaterialCard(
+            "aura_resistant_ceramic", EnJa("Protective Aura-Resistant Ceramic", "守護の耐霊石"),
+            PoemList(2).poem(EnJa("", "")), // TODO
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ) {
+            context(ModContext)
+            override fun initModelGeneration() = block.registerModelGeneration {
+                ModelTemplates.CUBE_BOTTOM_TOP.with(
+                    TextureSlot.TOP to "block/" * block().getIdentifier(),
+                    TextureSlot.BOTTOM to "block/" * block().getIdentifier(),
+                    TextureSlot.SIDE to "block/" * block().getIdentifier() * "_side",
+                )
+            }
+        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            // TODO 分解することで液体燃料が取れる
+            registerShapedRecipeGeneration(item, count = 2) {
+                pattern("##")
+                define('#', SMOOTH_AURA_RESISTANT_CERAMIC.item)
+            } on SMOOTH_AURA_RESISTANT_CERAMIC.item
+            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
+        }
         val COBBLED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
             "cobbled_aura_resistant_ceramic", EnJa("Cobbled Protective Aura-Resistant Ceramic", "守護の耐霊石の丸石"),
             PoemList(2).poem(EnJa("Penetrates the monomer and solidifies.", "砂岩に宿るポリテルペンの祝福――")),
@@ -116,6 +139,58 @@ open class BlockMaterialCard(
                 define('S', Items.SANDSTONE)
                 define('X', MaterialCard.XARPITE.ore!!.ingredient)
             } on MaterialCard.XARPITE.ore!!.tag
+        }
+        val SMOOTH_AURA_RESISTANT_CERAMIC: BlockMaterialCard = !object : BlockMaterialCard(
+            "smooth_aura_resistant_ceramic", EnJa("Smooth Protective Aura-Resistant Ceramic", "滑らかな守護の耐霊石"),
+            PoemList(2).poem(EnJa("", "")), // TODO
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ) {
+            context(ModContext)
+            override fun initModelGeneration() = block.registerModelGeneration {
+                ModelTemplates.CUBE_ALL.with(
+                    TextureSlot.ALL to "block/" * AURA_RESISTANT_CERAMIC.identifier,
+                )
+            }
+        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerSmeltingRecipeGeneration(COBBLED_AURA_RESISTANT_CERAMIC.item, item) on item
+        }
+        val POLISHED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
+            "polished_aura_resistant_ceramic", EnJa("Polished Protective Aura-Resistant Ceramic", "磨かれた守護の耐霊石"),
+            PoemList(2).poem(EnJa("", "")), // TODO
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerShapedRecipeGeneration(item, count = 4) {
+                pattern("##")
+                pattern("##")
+                define('#', SMOOTH_AURA_RESISTANT_CERAMIC.item)
+            } on SMOOTH_AURA_RESISTANT_CERAMIC.item
+            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
+        }
+        val AURA_RESISTANT_CERAMIC_BRICKS = !BlockMaterialCard(
+            "aura_resistant_ceramic_bricks", EnJa("Protective Aura-Resistant Ceramic Bricks", "守護の耐霊石レンガ"),
+            PoemList(2).poem(EnJa("Protects lifeforms from radiation.", "それは魔物との混淆から魂を護るため――")),
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerShapedRecipeGeneration(item, count = 4) {
+                pattern("##")
+                pattern("##")
+                define('#', POLISHED_AURA_RESISTANT_CERAMIC.item)
+            } on POLISHED_AURA_RESISTANT_CERAMIC.item
+            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
+            registerStonecutterRecipeGeneration(item, POLISHED_AURA_RESISTANT_CERAMIC.item)
+        }
+        val AURA_RESISTANT_CERAMIC_TILES = !BlockMaterialCard(
+            "aura_resistant_ceramic_tiles", EnJa("Protective Aura-Resistant Ceramic Tiles", "守護の耐霊石タイル"),
+            PoemList(2).poem(EnJa("Highly weather-resistant resin-ceramic.", "恒久的繁栄の願いを敷石に込めて――")),
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerShapedRecipeGeneration(item, count = 4) {
+                pattern(" ##")
+                pattern("## ")
+                define('#', POLISHED_AURA_RESISTANT_CERAMIC.item)
+            } on POLISHED_AURA_RESISTANT_CERAMIC.item
+            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
+            registerStonecutterRecipeGeneration(item, POLISHED_AURA_RESISTANT_CERAMIC.item)
         }
         val MIRANAGITE_BLOCK = !BlockMaterialCard(
             "miranagite_block", EnJa("Miranagite Block", "蒼天石ブロック"),
@@ -214,7 +289,7 @@ open class BlockMaterialCard(
             advancementCreator = {
                 AdvancementCard(
                     identifier = identifier,
-                    context = AdvancementCard.Sub { rootAdvancement.await() },
+                    context = AdvancementCard.Sub { RetrospectiveCityBiomeCard.advancement.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Eye That Walked 30 Millennia", "3万年を歩んだ瞳"), // Light that Watched Collapse / 崩壊を見届けた光
                     description = EnJa("Find Miragidian Street Lamp in Retrospective City biome", "過去を見つめる都市バイオームでミラジディアンの街灯を見つける"),
@@ -249,6 +324,9 @@ open class BlockMaterialCard(
                 }
             }
         }.sound(SoundType.METAL).needTool(ToolType.PICKAXE, ToolLevel.DIAMOND).noBurn().soulStream().init {
+
+            // TODO worldgen
+
             item.registerGeneratedModelGeneration()
             registerShapedRecipeGeneration(item) {
                 pattern("L")
