@@ -104,8 +104,8 @@ open class BlockMaterialCard(
             registerCompressionRecipeGeneration(MaterialCard.XARPITE.item, { MaterialCard.XARPITE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
         val AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
-            "aura_resistant_ceramic", EnJa("Aura-Resistant Ceramic", "耐霊性セラミック"),
-            PoemList(2).poem(EnJa("", "TODO")), // TODO
+            "aura_resistant_ceramic", EnJa("Protective Aura-Resistant Ceramic", "守護の耐霊石"),
+            PoemList(2).poem(EnJa("Penetrates the monomer and solidifies.", "砂岩に宿るポリテルペンの祝福――")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             // TODO アタノールで作る
@@ -117,8 +117,8 @@ open class BlockMaterialCard(
             } on MaterialCard.XARPITE.ore!!.tag
         }
         val AURA_RESISTANT_CERAMIC_BRICKS = !BlockMaterialCard(
-            "aura_resistant_ceramic_bricks", EnJa("Aura-Resistant Ceramic Bricks", "耐霊性セラミックレンガ"),
-            PoemList(2).poem(EnJa("Protects lifeforms from radiation.", "それは魂が魔物と混淆しないための護石――")),
+            "aura_resistant_ceramic_bricks", EnJa("Protective Aura-Resistant Ceramic Bricks", "守護の耐霊石レンガ"),
+            PoemList(2).poem(EnJa("Protects lifeforms from radiation.", "それは魔物との混淆から魂を護るため――")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerShapedRecipeGeneration(item, count = 4) {
@@ -128,7 +128,7 @@ open class BlockMaterialCard(
             } on AURA_RESISTANT_CERAMIC.item
         }
         val AURA_RESISTANT_CERAMIC_TILES = !BlockMaterialCard(
-            "aura_resistant_ceramic_tiles", EnJa("Aura-Resistant Ceramic Tiles", "耐霊性セラミックタイル"),
+            "aura_resistant_ceramic_tiles", EnJa("Protective Aura-Resistant Ceramic Tiles", "守護の耐霊石タイル"),
             PoemList(2).poem(EnJa("Highly weather-resistant resin-ceramic.", "恒久的繁栄の願いを敷石に込めて――")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
@@ -230,14 +230,14 @@ open class BlockMaterialCard(
         }
         val MIRAGIDIAN_LAMP = !object : BlockMaterialCard(
             "miragidian_lamp", EnJa("Miragidian Street Lamp", "ミラジディアンの街灯"),
-            PoemList(4).poem(EnJa("Obtains light erg from astral radiation.", "覚えてるよ…まだ人間だった妹が殺された日")),
+            PoemList(4).poem(EnJa("I remember… my sister turned into a …", "覚えてるよ…まだ人間だった妹が殺された日")), // Obtains light erg from astral radiation.
             MapColor.TERRACOTTA_BLUE, 60.0F, 1200.0F,
             advancementCreator = {
                 AdvancementCard(
                     identifier = identifier,
                     context = AdvancementCard.Sub { RetrospectiveCityBiomeCard.advancement.await() },
                     icon = { item().createItemStack() },
-                    name = EnJa("30,000-Year Unfading Light", "3万年消えない光"), // Light that Watched Collapse / 崩壊を見届けた光
+                    name = EnJa("Eye That Walked 30 Millennia", "3万年を歩んだ瞳"), // Light that Watched Collapse / 崩壊を見届けた光
                     description = EnJa("Find Miragidian Street Lamp in Retrospective City biome", "過去を見つめる都市バイオームでミラジディアンの街灯を見つける"),
                     criterion = AdvancementCard.hasItem(item),
                     type = AdvancementCardType.TOAST_AND_JEWELS,
