@@ -109,6 +109,7 @@ open class BlockMaterialCard(
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             // TODO アタノールで作る
+            // TODO 分解することで液体燃料が取れる
             registerShapedRecipeGeneration(item, count = 2) {
                 pattern("SX")
                 pattern("XS")
