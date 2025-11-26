@@ -383,7 +383,7 @@ object RetrospectiveCityBiomeCard : BiomeCard(
                                 ),
                                 SurfaceRules.ifTrue(
                                     SurfaceRules.noiseCondition(Noises.SURFACE, 2.8 / 8.25, Double.MAX_VALUE),
-                                    SurfaceRules.state(BlockMaterialCard.AURA_RESISTANT_CERAMIC.block().defaultBlockState())
+                                    SurfaceRules.state(BlockMaterialCard.COBBLED_AURA_RESISTANT_CERAMIC.block().defaultBlockState())
                                 ),
                             ),
                         ),
