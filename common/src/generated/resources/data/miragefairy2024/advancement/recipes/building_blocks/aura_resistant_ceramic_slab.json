@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_aura_resistant_ceramic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:aura_resistant_ceramic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:aura_resistant_ceramic_slab"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_aura_resistant_ceramic"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:aura_resistant_ceramic_slab"
+    ]
+  }
+}
