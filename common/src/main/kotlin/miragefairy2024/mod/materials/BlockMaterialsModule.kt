@@ -84,6 +84,7 @@ open class BlockMaterialCard(
     private val resistance: Float,
     val ore: Ore? = null,
     val advancementCreator: (BlockMaterialCard.() -> AdvancementCard)? = null,
+    val texturedModelProvider: TexturedModel.Provider? = null,
 ) {
     companion object {
         val entries = mutableListOf<BlockMaterialCard>()
