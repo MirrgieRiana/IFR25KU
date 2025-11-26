@@ -8,6 +8,7 @@ import miragefairy2024.util.registerBlockFamily
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerLootTableGeneration
+import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.item.DoubleHighBlockItem
@@ -31,7 +32,7 @@ class HaimeviskaDoorBlockCard(configuration: HaimeviskaBlockConfiguration, priva
     override fun init() {
         super.init()
 
-        registerBlockFamily(parent) { it.door(block()) }
+        registerBlockFamily(TexturedModel.CUBE, parent) { it.door(block()) }
         block.registerLootTableGeneration { it, _ -> it.createDoorTable(block()) }
 
         // レンダリング
