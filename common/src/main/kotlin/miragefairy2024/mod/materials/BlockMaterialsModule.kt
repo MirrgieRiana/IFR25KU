@@ -196,7 +196,7 @@ open class BlockMaterialCard(
         }
         val AURA_RESISTANT_CERAMIC_BRICKS = !BlockMaterialCard(
             "aura_resistant_ceramic_bricks", EnJa("Protective Aura-Resistant Ceramic Bricks", "守護の耐霊石レンガ"),
-            PoemList(2).poem(EnJa("Protects lifeforms from radiation.", "それは魔物との混淆から魂を護るため――")),
+            PoemList(2).poem(EnJa("Protects lifeforms from radiation.", "魂が魔物と混淆しないために――")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerShapedRecipeGeneration(item, count = 4) {
@@ -238,7 +238,7 @@ open class BlockMaterialCard(
         }
         val AURA_RESISTANT_CERAMIC_TILES = !BlockMaterialCard(
             "aura_resistant_ceramic_tiles", EnJa("Protective Aura-Resistant Ceramic Tiles", "守護の耐霊石タイル"),
-            PoemList(2).poem(EnJa("Highly weather-resistant resin-ceramic.", "恒久的繁栄の願いを敷石に込めて――")),
+            PoemList(2).poem(EnJa("Weather-resistance due to magnetite.", "恒久的繁栄の願いを込めて――")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerShapedRecipeGeneration(item, count = 4) {
