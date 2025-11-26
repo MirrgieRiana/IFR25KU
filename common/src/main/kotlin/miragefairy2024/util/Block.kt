@@ -40,10 +40,10 @@ infix fun BlockState.isIn(tag: TagKey<Block>) = this.`is`(tag)
 infix fun BlockState.isNotIn(tag: TagKey<Block>) = !(this isIn tag)
 
 context(ModContext)
-fun registerBlockFamily(baseBlock: () -> Block, initializer: (BlockFamily.Builder) -> BlockFamily.Builder) {
+fun registerBlockFamily(texturedModelProvider: TexturedModel.Provider, baseBlock: () -> Block, initializer: (BlockFamily.Builder) -> BlockFamily.Builder) {
     val family by lazy { initializer(BlockFamily.Builder(baseBlock())).family }
     DataGenerationEvents.onGenerateBlockModel {
-        val texturedModel = TexturedModel.CUBE[baseBlock()]
+        val texturedModel = texturedModelProvider[baseBlock()]
         val blockFamilyProvider = it.BlockFamilyProvider(texturedModel.mapping)
         platformProxy!!.setFullBlock(blockFamilyProvider, "block/" * baseBlock().getIdentifier())
         blockFamilyProvider.generateFor(family)

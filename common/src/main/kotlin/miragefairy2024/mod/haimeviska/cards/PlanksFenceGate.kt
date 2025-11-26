@@ -11,6 +11,7 @@ import miragefairy2024.util.registerDefaultLootTableGeneration
 import miragefairy2024.util.registerFlammable
 import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.toItemTag
+import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.level.block.Block
@@ -26,7 +27,7 @@ class HaimeviskaPlanksFenceGateBlockCard(configuration: HaimeviskaBlockConfigura
     override fun init() {
         super.init()
 
-        registerBlockFamily(parent) { it.fenceGate(block()) }
+        registerBlockFamily(TexturedModel.CUBE, parent) { it.fenceGate(block()) }
         block.registerDefaultLootTableGeneration()
 
         // 性質

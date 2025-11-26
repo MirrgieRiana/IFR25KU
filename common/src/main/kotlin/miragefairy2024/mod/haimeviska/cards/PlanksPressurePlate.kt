@@ -8,6 +8,7 @@ import miragefairy2024.util.generator
 import miragefairy2024.util.registerBlockFamily
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerDefaultLootTableGeneration
+import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.level.block.Block
@@ -29,7 +30,7 @@ class HaimeviskaPlanksPressurePlateBlockCard(configuration: HaimeviskaBlockConfi
     override fun init() {
         super.init()
 
-        registerBlockFamily(parent) { it.pressurePlate(block()) }
+        registerBlockFamily(TexturedModel.CUBE, parent) { it.pressurePlate(block()) }
         block.registerDefaultLootTableGeneration()
 
         // タグ

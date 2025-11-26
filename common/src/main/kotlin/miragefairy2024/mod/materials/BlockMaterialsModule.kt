@@ -146,7 +146,7 @@ open class BlockMaterialCard(
             context(ModContext) override fun initModelGeneration() = Unit
             context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
-            registerBlockFamily(MIRANAGITE_TILES.block) { it.slab(block()) }
+            registerBlockFamily(TexturedModel.CUBE, MIRANAGITE_TILES.block) { it.slab(block()) }
             registerStonecutterRecipeGeneration(item, MIRANAGITE_TILES.item, 2)
         }
         val MIRANAGITE_TILE_STAIRS = !object : BlockMaterialCard(
@@ -158,7 +158,7 @@ open class BlockMaterialCard(
             context(ModContext) override fun initBlockStateGeneration() = Unit
             context(ModContext) override fun initModelGeneration() = Unit
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
-            registerBlockFamily(MIRANAGITE_TILES.block) { it.stairs(block()) }
+            registerBlockFamily(TexturedModel.CUBE, MIRANAGITE_TILES.block) { it.stairs(block()) }
             registerStonecutterRecipeGeneration(item, MIRANAGITE_TILES.item)
         }
         val MIRANAGITE_TILE_WALL = !object : BlockMaterialCard(
@@ -171,7 +171,7 @@ open class BlockMaterialCard(
             context(ModContext) override fun initBlockStateGeneration() = Unit
             context(ModContext) override fun initModelGeneration() = Unit
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.WALLS).tag(ItemTags.WALLS).init {
-            registerBlockFamily(MIRANAGITE_TILES.block) { it.wall(block()) }
+            registerBlockFamily(TexturedModel.CUBE, MIRANAGITE_TILES.block) { it.wall(block()) }
             registerStonecutterRecipeGeneration(item, MIRANAGITE_TILES.item, category = RecipeCategory.DECORATIONS)
         }
         val CHAOS_STONE_BLOCK = !BlockMaterialCard(
