@@ -1,6 +1,12 @@
 # IFR25KU
 
-This is an unofficial fork of MirageFairy2024, a Minecraft mod originally developed by The Developer of MirageFairy, Generation 7, and is now independently developed by Yoruno Kakera.
+This project is an unofficial fork of [MF24KU](https://github.com/MirrgieRiana/MirageFairy2024-Kakera-Unofficial).
+
+MF24KU is an unofficial fork of [MirageFairy2024](https://github.com/MirageFairy/MirageFairy2024).
+
+MirageFairy2024 is a Minecraft mod originally developed by The Developer of MirageFairy, Generation 7.
+
+IFR25KU is now independently developed by Yoruno Kakera.
 
 Since this mod is compatible with the original MirageFairy2024 save data, it cannot be installed simultaneously due to conflicts.
 
