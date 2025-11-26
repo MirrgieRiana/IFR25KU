@@ -2,7 +2,7 @@
   "parent": "minecraft:block/slab",
   "textures": {
     "bottom": "miragefairy2024:block/aura_resistant_ceramic",
-    "side": "miragefairy2024:block/aura_resistant_ceramic",
+    "side": "miragefairy2024:block/aura_resistant_ceramic_side",
     "top": "miragefairy2024:block/aura_resistant_ceramic"
   }
 }

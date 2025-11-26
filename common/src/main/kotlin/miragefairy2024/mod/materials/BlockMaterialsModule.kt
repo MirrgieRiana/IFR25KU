@@ -110,15 +110,15 @@ open class BlockMaterialCard(
             "aura_resistant_ceramic", EnJa("Protective Aura-Resistant Ceramic", "守護の耐霊石"),
             PoemList(2).poem(EnJa("", "")), // TODO
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
-        ) {
-            context(ModContext)
-            override fun initModelGeneration() = block.registerModelGeneration {
+            texturedModelProvider = {
                 ModelTemplates.CUBE_BOTTOM_TOP.with(
-                    TextureSlot.TOP to "block/" * block().getIdentifier(),
-                    TextureSlot.BOTTOM to "block/" * block().getIdentifier(),
-                    TextureSlot.SIDE to "block/" * block().getIdentifier() * "_side",
+                    TextureSlot.TOP to "block/" * it.getIdentifier(),
+                    TextureSlot.BOTTOM to "block/" * it.getIdentifier(),
+                    TextureSlot.SIDE to "block/" * it.getIdentifier() * "_side",
                 )
-            }
+            },
+        ) {
+            context(ModContext) override fun initModelGeneration() = block.registerModelGeneration { texturedModelProvider!![block()] }
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             // TODO 分解することで液体燃料が取れる
             registerShapedRecipeGeneration(item, count = 2) {
@@ -137,7 +137,8 @@ open class BlockMaterialCard(
             context(ModContext) override fun initModelGeneration() = Unit
             context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
-            registerBlockFamily(AURA_RESISTANT_CERAMIC.block) { it.slab(block()) }
+            registerBlockFamily(AURA_RESISTANT_CERAMIC.texturedModelProvider!!, AURA_RESISTANT_CERAMIC.block) { it.slab(block()) }
+            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
             registerStonecutterRecipeGeneration(item, AURA_RESISTANT_CERAMIC.item, 2)
         }
         val AURA_RESISTANT_CERAMIC_STAIRS: BlockMaterialCard = !object : BlockMaterialCard(
@@ -149,7 +150,8 @@ open class BlockMaterialCard(
             context(ModContext) override fun initBlockStateGeneration() = Unit
             context(ModContext) override fun initModelGeneration() = Unit
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
-            registerBlockFamily(AURA_RESISTANT_CERAMIC.block) { it.stairs(block()) }
+            registerBlockFamily(AURA_RESISTANT_CERAMIC.texturedModelProvider!!, AURA_RESISTANT_CERAMIC.block) { it.stairs(block()) }
+            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
             registerStonecutterRecipeGeneration(item, AURA_RESISTANT_CERAMIC.item)
         }
         val COBBLED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
@@ -204,6 +206,35 @@ open class BlockMaterialCard(
             } on POLISHED_AURA_RESISTANT_CERAMIC.item
             registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
             registerStonecutterRecipeGeneration(item, POLISHED_AURA_RESISTANT_CERAMIC.item)
+        }
+        val AURA_RESISTANT_CERAMIC_BRICKS_SLAB: BlockMaterialCard = !object : BlockMaterialCard(
+            "aura_resistant_ceramic_bricks_slab", EnJa("Protective Aura-Resistant Ceramic Bricks Slab", "守護の耐霊石レンガのハーフブロック"),
+            PoemList(2).poem(EnJa("", "")), // TODO
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ) {
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
+            context(ModContext) override fun initBlockStateGeneration() = Unit
+            context(ModContext) override fun initModelGeneration() = Unit
+            context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
+        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
+            registerBlockFamily(TexturedModel.CUBE, AURA_RESISTANT_CERAMIC_BRICKS.block) { it.slab(block()) }
+            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
+            registerStonecutterRecipeGeneration(item, POLISHED_AURA_RESISTANT_CERAMIC.item)
+            registerStonecutterRecipeGeneration(item, AURA_RESISTANT_CERAMIC_BRICKS.item, 2)
+        }
+        val AURA_RESISTANT_CERAMIC_BRICKS_STAIRS: BlockMaterialCard = !object : BlockMaterialCard(
+            "aura_resistant_ceramic_bricks_stairs", EnJa("Protective Aura-Resistant Ceramic Bricks Stairs", "守護の耐霊石レンガの階段"),
+            PoemList(2).poem(EnJa("", "")), // TODO
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ) {
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(AURA_RESISTANT_CERAMIC.block.await().defaultBlockState(), properties)
+            context(ModContext) override fun initBlockStateGeneration() = Unit
+            context(ModContext) override fun initModelGeneration() = Unit
+        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
+            registerBlockFamily(TexturedModel.CUBE, AURA_RESISTANT_CERAMIC_BRICKS.block) { it.stairs(block()) }
+            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
+            registerStonecutterRecipeGeneration(item, POLISHED_AURA_RESISTANT_CERAMIC.item)
+            registerStonecutterRecipeGeneration(item, AURA_RESISTANT_CERAMIC_BRICKS.item)
         }
         val AURA_RESISTANT_CERAMIC_TILES = !BlockMaterialCard(
             "aura_resistant_ceramic_tiles", EnJa("Protective Aura-Resistant Ceramic Tiles", "守護の耐霊石タイル"),
