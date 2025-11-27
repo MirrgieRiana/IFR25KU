@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "miragefairy2024:block/aura_resistant_ceramic_tiles"
+  }
+}
