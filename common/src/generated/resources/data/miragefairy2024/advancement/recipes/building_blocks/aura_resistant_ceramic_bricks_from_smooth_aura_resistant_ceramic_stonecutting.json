@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_smooth_aura_resistant_ceramic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:smooth_aura_resistant_ceramic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:aura_resistant_ceramic_bricks_from_smooth_aura_resistant_ceramic_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_smooth_aura_resistant_ceramic"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:aura_resistant_ceramic_bricks_from_smooth_aura_resistant_ceramic_stonecutting"
+    ]
+  }
+}

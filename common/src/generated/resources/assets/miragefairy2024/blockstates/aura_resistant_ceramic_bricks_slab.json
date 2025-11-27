@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "miragefairy2024:block/aura_resistant_ceramic_bricks_slab"
+    },
+    "type=double": {
+      "model": "miragefairy2024:block/aura_resistant_ceramic_bricks"
+    },
+    "type=top": {
+      "model": "miragefairy2024:block/aura_resistant_ceramic_bricks_slab_top"
+    }
+  }
+}
