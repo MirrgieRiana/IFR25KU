@@ -3,6 +3,7 @@ package miragefairy2024.mod.materials
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemList
+import miragefairy2024.mod.RetrospectiveCityBiomeCard
 import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
 import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
@@ -18,7 +19,6 @@ import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
-import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.mod.tool.MINEABLE_WITH_NOISE_BLOCK_TAG
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -359,7 +359,7 @@ open class BlockMaterialCard(
             advancementCreator = {
                 AdvancementCard(
                     identifier = identifier,
-                    context = AdvancementCard.Sub { rootAdvancement.await() },
+                    context = AdvancementCard.Sub { RetrospectiveCityBiomeCard.advancement.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Eye That Walked 30 Millennia", "3万年を歩んだ瞳"), // Light that Watched Collapse / 崩壊を見届けた光
                     description = EnJa("Find Miragidian Street Lamp in Retrospective City biome", "過去を見つめる都市バイオームでミラジディアンの街灯を見つける"),
