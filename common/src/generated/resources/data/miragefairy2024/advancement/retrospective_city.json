@@ -1,0 +1,40 @@
+{
+  "parent": "miragefairy2024:fairy_forest",
+  "criteria": {
+    "retrospective_city": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "biomes": "miragefairy2024:retrospective_city"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.miragefairy2024.retrospective_city.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "miragefairy2024:aura_resistant_ceramic_tiles"
+    },
+    "title": {
+      "translate": "advancements.miragefairy2024.retrospective_city.title"
+    }
+  },
+  "requirements": [
+    [
+      "retrospective_city"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

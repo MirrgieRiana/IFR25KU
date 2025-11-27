@@ -4,10 +4,12 @@ import com.mojang.datafixers.util.Pair
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
+import miragefairy2024.mod.entity.ChaosCubeCard
 import miragefairy2024.mod.haimeviska.HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.mod.haimeviska.HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.magicplant.contents.magicplants.PhantomFlowerCard
+import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -55,6 +57,7 @@ object BiomeCards {
     val entries = listOf(
         FairyForestBiomeCard,
         DeepFairyForestBiomeCard,
+        RetrospectiveCityBiomeCard,
     )
 }
 
@@ -111,6 +114,13 @@ fun initBiomeModule() {
                     it.replaceBiome(Biomes.OLD_GROWTH_PINE_TAIGA, DeepFairyForestBiomeCard.registryKey)
                     it.replaceBiome(Biomes.OLD_GROWTH_SPRUCE_TAIGA, DeepFairyForestBiomeCard.registryKey)
                     it.replaceBiome(Biomes.SNOWY_TAIGA, DeepFairyForestBiomeCard.registryKey)
+
+                    it.replaceBiome(Biomes.SAVANNA, RetrospectiveCityBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.SAVANNA_PLATEAU, RetrospectiveCityBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.WINDSWEPT_SAVANNA, RetrospectiveCityBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.BADLANDS, RetrospectiveCityBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.ERODED_BADLANDS, RetrospectiveCityBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.WOODED_BADLANDS, RetrospectiveCityBiomeCard.registryKey)
                 }
             }
         })
@@ -286,6 +296,94 @@ object DeepFairyForestBiomeCard : BiomeCard(
                                 SurfaceRules.ifTrue(
                                     SurfaceRules.noiseCondition(Noises.SURFACE, -0.95 / 8.25, Double.MAX_VALUE),
                                     SurfaceRules.state(Blocks.PODZOL.defaultBlockState())
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            )
+            SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MirageFairy2024.MOD_ID, rule)
+        }
+        advancement.init()
+    }
+}
+
+object RetrospectiveCityBiomeCard : BiomeCard(
+    "retrospective_city", "Retrospective City", "過去を見つめる都市",
+    BiomeTags.IS_OVERWORLD, ConventionalBiomeTags.IS_COLD_OVERWORLD, ConventionalBiomeTags.IS_DRY_OVERWORLD,
+) {
+    val advancement = AdvancementCard(
+        identifier = identifier,
+        context = AdvancementCard.Sub { FairyForestBiomeCard.advancement.await() },
+        icon = { BlockMaterialCard.AURA_RESISTANT_CERAMIC_TILES.item().createItemStack() },
+        name = EnJa("Graveyard of Civilization", "文明の墓場"),
+        description = EnJa("Travel the overworld and discover the Retrospective City", "地上を旅して過去を見つめる都市を探す"),
+        criterion = AdvancementCard.visit(registryKey),
+        type = AdvancementCardType.TOAST_ONLY,
+    )
+
+    override fun createBiome(placedFeatureLookup: HolderGetter<PlacedFeature>, configuredCarverLookup: HolderGetter<ConfiguredWorldCarver<*>>): Biome {
+        return Biome.BiomeBuilder()
+            .hasPrecipitation(true)
+            .temperature(0.4F)
+            .downfall(0.4F)
+            .specialEffects(
+                BiomeSpecialEffects.Builder()
+                    .waterColor(0x5D7C8C)
+                    .waterFogColor(0x1E2123)
+                    .fogColor(0xC0D8FF)
+                    .skyColor(0x78A7FF)
+                    .grassColorOverride(0xCCA672)
+                    .foliageColorOverride(0x9E6045)
+                    .build()
+            )
+            .mobSpawnSettings(MobSpawnSettings.Builder().also { spawnSettings ->
+                BiomeDefaultFeatures.plainsSpawns(spawnSettings)
+                spawnSettings.addSpawn(MobCategory.MONSTER, MobSpawnSettings.SpawnerData(ChaosCubeCard.entityType(), 2, 1, 4))
+            }.build())
+            .generationSettings(BiomeGenerationSettings.Builder(placedFeatureLookup, configuredCarverLookup).also { lookupBackedBuilder ->
+
+                // BasicFeatures
+                BiomeDefaultFeatures.addDefaultCarversAndLakes(lookupBackedBuilder)
+                BiomeDefaultFeatures.addDefaultCrystalFormations(lookupBackedBuilder)
+                BiomeDefaultFeatures.addDefaultMonsterRoom(lookupBackedBuilder)
+                BiomeDefaultFeatures.addDefaultUndergroundVariety(lookupBackedBuilder)
+                BiomeDefaultFeatures.addDefaultSprings(lookupBackedBuilder)
+                BiomeDefaultFeatures.addSurfaceFreezing(lookupBackedBuilder)
+
+                BiomeDefaultFeatures.addPlainGrass(lookupBackedBuilder)
+                BiomeDefaultFeatures.addSavannaGrass(lookupBackedBuilder)
+
+                BiomeDefaultFeatures.addDefaultOres(lookupBackedBuilder)
+                BiomeDefaultFeatures.addDefaultSoftDisks(lookupBackedBuilder)
+
+                BiomeDefaultFeatures.addPlainVegetation(lookupBackedBuilder)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)
+                BiomeDefaultFeatures.addDefaultMushrooms(lookupBackedBuilder)
+                BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
+
+            }.build()).build()
+    }
+
+    context(ModContext)
+    override fun init() {
+        ModEvents.onTerraBlenderInitialized {
+            val rule = SurfaceRules.ifTrue(
+                SurfaceRules.abovePreliminarySurface(),
+                SurfaceRules.ifTrue(
+                    SurfaceRules.ON_FLOOR,
+                    SurfaceRules.ifTrue(
+                        SurfaceRules.waterBlockCheck(-1, 0),
+                        SurfaceRules.ifTrue(
+                            SurfaceRules.isBiome(registryKey),
+                            SurfaceRules.sequence(
+                                SurfaceRules.ifTrue(
+                                    SurfaceRules.noiseCondition(Noises.SURFACE, 3.0 / 8.25, Double.MAX_VALUE),
+                                    SurfaceRules.state(BlockMaterialCard.AURA_RESISTANT_CERAMIC_TILES.block().defaultBlockState())
+                                ),
+                                SurfaceRules.ifTrue(
+                                    SurfaceRules.noiseCondition(Noises.SURFACE, 2.8 / 8.25, Double.MAX_VALUE),
+                                    SurfaceRules.state(BlockMaterialCard.COBBLED_AURA_RESISTANT_CERAMIC.block().defaultBlockState())
                                 ),
                             ),
                         ),
