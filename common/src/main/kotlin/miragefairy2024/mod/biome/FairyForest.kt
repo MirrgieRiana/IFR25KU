@@ -1,5 +1,6 @@
 package miragefairy2024.mod.biome
 
+import miragefairy2024.ModContext
 import miragefairy2024.mod.haimeviska.HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.mod.magicplant.contents.magicplants.PhantomFlowerCard
 import miragefairy2024.mod.rootAdvancement
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.MobCategory
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.biome.BiomeGenerationSettings
 import net.minecraft.world.level.biome.BiomeSpecialEffects
+import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.biome.MobSpawnSettings
 import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
@@ -94,5 +96,16 @@ object FairyForestBiomeCard : BiomeCard(
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, AquaticPlacements.SEAGRASS_RIVER)
 
             }.build()).build()
+    }
+
+    context(ModContext)
+    override fun init() {
+        super.init()
+        registerOverworldBiomeOverride(Biomes.FOREST)
+        registerOverworldBiomeOverride(Biomes.WINDSWEPT_FOREST)
+        registerOverworldBiomeOverride(Biomes.FLOWER_FOREST)
+        registerOverworldBiomeOverride(Biomes.BIRCH_FOREST)
+        registerOverworldBiomeOverride(Biomes.OLD_GROWTH_BIRCH_FOREST)
+        registerOverworldBiomeOverride(Biomes.DARK_FOREST)
     }
 }

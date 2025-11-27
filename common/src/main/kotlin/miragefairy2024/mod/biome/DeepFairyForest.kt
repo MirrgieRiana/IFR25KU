@@ -19,6 +19,7 @@ import net.minecraft.world.entity.MobCategory
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.biome.BiomeGenerationSettings
 import net.minecraft.world.level.biome.BiomeSpecialEffects
+import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.biome.MobSpawnSettings
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.levelgen.GenerationStep
@@ -100,6 +101,11 @@ object DeepFairyForestBiomeCard : BiomeCard(
 
     context(ModContext)
     override fun init() {
+        super.init()
+        registerOverworldBiomeOverride(Biomes.TAIGA)
+        registerOverworldBiomeOverride(Biomes.OLD_GROWTH_PINE_TAIGA)
+        registerOverworldBiomeOverride(Biomes.OLD_GROWTH_SPRUCE_TAIGA)
+        registerOverworldBiomeOverride(Biomes.SNOWY_TAIGA)
         ModEvents.onTerraBlenderInitialized {
             val rule = SurfaceRules.ifTrue(
                 SurfaceRules.abovePreliminarySurface(),

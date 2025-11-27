@@ -14,12 +14,13 @@ import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.biome.Biome
-import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.biome.Climate
 import terrablender.api.Region
 import terrablender.api.RegionType
 import terrablender.api.Regions
 import java.util.function.Consumer
+
+val OVERWORLD_BIOME_OVERRIDES = mutableMapOf<ResourceKey<Biome>, ResourceKey<Biome>>()
 
 val FAIRY_BIOME_TAG = MirageFairy2024.identifier("fairy").toBiomeTag()
 
@@ -49,24 +50,9 @@ fun initBiomeModule() {
         Regions.register(object : Region(MirageFairy2024.identifier("overworld"), RegionType.OVERWORLD, 1) {
             override fun addBiomes(registry: Registry<Biome>, mapper: Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>) {
                 addModifiedVanillaOverworldBiomes(mapper) {
-                    it.replaceBiome(Biomes.FOREST, FairyForestBiomeCard.key)
-                    it.replaceBiome(Biomes.WINDSWEPT_FOREST, FairyForestBiomeCard.key)
-                    it.replaceBiome(Biomes.FLOWER_FOREST, FairyForestBiomeCard.key)
-                    it.replaceBiome(Biomes.BIRCH_FOREST, FairyForestBiomeCard.key)
-                    it.replaceBiome(Biomes.OLD_GROWTH_BIRCH_FOREST, FairyForestBiomeCard.key)
-                    it.replaceBiome(Biomes.DARK_FOREST, FairyForestBiomeCard.key)
-
-                    it.replaceBiome(Biomes.TAIGA, DeepFairyForestBiomeCard.key)
-                    it.replaceBiome(Biomes.OLD_GROWTH_PINE_TAIGA, DeepFairyForestBiomeCard.key)
-                    it.replaceBiome(Biomes.OLD_GROWTH_SPRUCE_TAIGA, DeepFairyForestBiomeCard.key)
-                    it.replaceBiome(Biomes.SNOWY_TAIGA, DeepFairyForestBiomeCard.key)
-
-                    it.replaceBiome(Biomes.SAVANNA, RetrospectiveCityBiomeCard.key)
-                    it.replaceBiome(Biomes.SAVANNA_PLATEAU, RetrospectiveCityBiomeCard.key)
-                    it.replaceBiome(Biomes.WINDSWEPT_SAVANNA, RetrospectiveCityBiomeCard.key)
-                    it.replaceBiome(Biomes.BADLANDS, RetrospectiveCityBiomeCard.key)
-                    it.replaceBiome(Biomes.ERODED_BADLANDS, RetrospectiveCityBiomeCard.key)
-                    it.replaceBiome(Biomes.WOODED_BADLANDS, RetrospectiveCityBiomeCard.key)
+                    OVERWORLD_BIOME_OVERRIDES.forEach { (old, new) ->
+                        it.replaceBiome(old, new)
+                    }
                 }
             }
         })

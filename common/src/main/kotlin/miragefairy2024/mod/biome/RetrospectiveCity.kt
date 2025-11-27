@@ -30,6 +30,7 @@ import net.minecraft.world.entity.MobCategory
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.biome.BiomeGenerationSettings
 import net.minecraft.world.level.biome.BiomeSpecialEffects
+import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.biome.MobSpawnSettings
 import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.Noises
@@ -105,6 +106,13 @@ object RetrospectiveCityBiomeCard : BiomeCard(
 
     context(ModContext)
     override fun init() {
+        super.init()
+        registerOverworldBiomeOverride(Biomes.SAVANNA)
+        registerOverworldBiomeOverride(Biomes.SAVANNA_PLATEAU)
+        registerOverworldBiomeOverride(Biomes.WINDSWEPT_SAVANNA)
+        registerOverworldBiomeOverride(Biomes.BADLANDS)
+        registerOverworldBiomeOverride(Biomes.ERODED_BADLANDS)
+        registerOverworldBiomeOverride(Biomes.WOODED_BADLANDS)
         ModEvents.onTerraBlenderInitialized {
             val rule = SurfaceRules.ifTrue(
                 SurfaceRules.abovePreliminarySurface(),
