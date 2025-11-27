@@ -46,7 +46,7 @@ object RetrospectiveCityBiomeCard : BiomeCard(
     val advancement = AdvancementCard(
         identifier = identifier,
         context = AdvancementCard.Sub { FairyForestBiomeCard.advancement.await() },
-        icon = { BlockMaterialCard.AURA_RESISTANT_CERAMIC_TILES.item().createItemStack() },
+        icon = { BlockMaterialCard.AURA_RESISTANT_CERAMIC_STAIRS.item().createItemStack() },
         name = EnJa("Graveyard of Civilization", "文明の墓場"),
         description = EnJa("Travel the overworld and discover the Retrospective City", "地上を旅して過去を見つめる都市を探す"),
         criterion = AdvancementCard.visit(key),
