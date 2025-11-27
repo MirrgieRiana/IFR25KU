@@ -1,6 +1,7 @@
 package miragefairy2024.mod
 
 import com.mojang.datafixers.util.Pair
+import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
@@ -10,20 +11,30 @@ import miragefairy2024.mod.haimeviska.HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.magicplant.contents.magicplants.PhantomFlowerCard
 import miragefairy2024.mod.materials.BlockMaterialCard
+import miragefairy2024.mod.materials.contents.MiragidianLampBlock
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.Registration
 import miragefairy2024.util.Translation
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
+import miragefairy2024.util.flower
 import miragefairy2024.util.generator
+import miragefairy2024.util.get
+import miragefairy2024.util.per
+import miragefairy2024.util.placementModifiers
+import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerDynamicGeneration
+import miragefairy2024.util.square
+import miragefairy2024.util.surface
 import miragefairy2024.util.toBiomeTag
 import miragefairy2024.util.with
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.core.HolderGetter
 import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.worldgen.BiomeDefaultFeatures
 import net.minecraft.data.worldgen.placement.AquaticPlacements
@@ -44,6 +55,9 @@ import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.Noises
 import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
+import net.minecraft.world.level.levelgen.feature.Feature
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 import terrablender.api.Region
 import terrablender.api.RegionType
@@ -322,6 +336,10 @@ object RetrospectiveCityBiomeCard : BiomeCard(
         type = AdvancementCardType.TOAST_ONLY,
     )
 
+    private val MIRAGIDIAN_LAMP_FEATURE = MiragidianLampFeature(NoneFeatureConfiguration.CODEC)
+    private val MIRAGIDIAN_LAMP_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("miragidian_lamp")
+    private val MIRAGIDIAN_LAMP_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("miragidian_lamp")
+
     override fun createBiome(placedFeatureLookup: HolderGetter<PlacedFeature>, configuredCarverLookup: HolderGetter<ConfiguredWorldCarver<*>>): Biome {
         return Biome.BiomeBuilder()
             .hasPrecipitation(true)
@@ -361,6 +379,7 @@ object RetrospectiveCityBiomeCard : BiomeCard(
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)
                 BiomeDefaultFeatures.addDefaultMushrooms(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MIRAGIDIAN_LAMP_PLACED_FEATURE_KEY)
 
             }.build()).build()
     }
@@ -393,5 +412,42 @@ object RetrospectiveCityBiomeCard : BiomeCard(
             SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MirageFairy2024.MOD_ID, rule)
         }
         advancement.init()
+
+        Registration(BuiltInRegistries.FEATURE, MirageFairy2024.identifier("miragidian_lamp")) { MIRAGIDIAN_LAMP_FEATURE }.register()
+        registerDynamicGeneration(MIRAGIDIAN_LAMP_CONFIGURED_FEATURE_KEY) {
+            MIRAGIDIAN_LAMP_FEATURE with NoneFeatureConfiguration.INSTANCE
+        }
+        registerDynamicGeneration(MIRAGIDIAN_LAMP_PLACED_FEATURE_KEY) {
+            val placementModifiers = placementModifiers { per(8) + flower(square, surface) }
+            Registries.CONFIGURED_FEATURE[MIRAGIDIAN_LAMP_CONFIGURED_FEATURE_KEY] with placementModifiers
+        }
+    }
+}
+
+class MiragidianLampFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeatureConfiguration>(codec) {
+    override fun place(context: FeaturePlaceContext<NoneFeatureConfiguration>): Boolean {
+        val level = context.level()
+        val blockPos = context.origin()
+        val height = context.random().nextIntBetweenInclusive(3, 8)
+
+        repeat(height) { i ->
+            val targetBlockPos = blockPos.above(i)
+            if (targetBlockPos.y >= level.maxBuildHeight) return false
+            if (!level.isEmptyBlock(targetBlockPos)) return false
+        }
+        if (!level.getBlockState(blockPos.below()).isSolidRender(level, blockPos.below())) return false
+
+        repeat(height) { i ->
+            val targetBlockPos = blockPos.above(i)
+            val part = when (i) {
+                0 -> MiragidianLampBlock.Part.FOOT
+                height - 1 -> MiragidianLampBlock.Part.HEAD
+                else -> MiragidianLampBlock.Part.POLE
+            }
+            val blockState = BlockMaterialCard.MIRAGIDIAN_LAMP.block().defaultBlockState().setValue(MiragidianLampBlock.PART, part)
+            level.setBlock(targetBlockPos, blockState, 2)
+        }
+
+        return true
     }
 }
