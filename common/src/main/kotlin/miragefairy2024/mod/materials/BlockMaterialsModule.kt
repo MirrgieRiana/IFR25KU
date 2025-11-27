@@ -29,6 +29,7 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.from
 import miragefairy2024.util.generator
+import miragefairy2024.util.get
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.on
 import miragefairy2024.util.propertiesOf
@@ -369,7 +370,7 @@ open class BlockMaterialCard(
             },
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
-                .lightLevel { if (it.getValue(MiragidianLampBlock.PART) == MiragidianLampBlock.Part.HEAD) 15 else 0 }
+                .lightLevel { if (it[MiragidianLampBlock.PART] == MiragidianLampBlock.Part.HEAD) 15 else 0 }
 
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = MiragidianLampBlock(properties)
 

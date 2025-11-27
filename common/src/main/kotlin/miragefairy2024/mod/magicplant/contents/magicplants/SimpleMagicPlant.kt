@@ -98,7 +98,7 @@ abstract class SimpleMagicPlantBlock(private val card: SimpleMagicPlantCard<*>, 
         builder.add(getAgeProperty()/* この関数は親クラスのinitで呼ばれるのでフィールドを参照できない */)
     }
 
-    fun getAge(state: BlockState) = state.getValue(agePropertyCache)
+    fun getAge(state: BlockState) = state[agePropertyCache]
     fun isMaxAge(state: BlockState) = getAge(state) >= maxAge
     fun withAge(age: Int): BlockState = defaultBlockState().setValue(agePropertyCache, age atLeast 0 atMost maxAge)
 

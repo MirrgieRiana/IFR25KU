@@ -10,6 +10,7 @@ import miragefairy2024.util.HumidityCategory
 import miragefairy2024.util.TemperatureCategory
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
+import miragefairy2024.util.get
 import miragefairy2024.util.getEnvironmentalWeatherAt
 import miragefairy2024.util.humidityCategory
 import miragefairy2024.util.invoke
@@ -39,7 +40,7 @@ enum class TraitConditionCard(
         "floor_moisture", Emoji.FLOOR_MOISTURE, "Floor Moisture", "湿った地面",
         a@{
             val blockState = it.level.getBlockState(it.blockPos.below())
-            if (blockState isIn Blocks.FARMLAND) return@a 0.5 + 0.5 * (blockState.getValue(FarmBlock.MOISTURE) / 7.0)
+            if (blockState isIn Blocks.FARMLAND) return@a 0.5 + 0.5 * (blockState[FarmBlock.MOISTURE] / 7.0)
             if (blockState isIn BlockTags.DIRT) return@a 0.5
             if (blockState isIn BlockTags.SAND) return@a 0.25
             0.0

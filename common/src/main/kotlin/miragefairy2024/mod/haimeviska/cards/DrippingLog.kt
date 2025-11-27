@@ -82,7 +82,7 @@ class DrippingHaimeviskaLogBlock(settings: Properties) : SimpleHorizontalFacingB
 
     override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
         if (level.isClientSide) return ItemInteractionResult.SUCCESS
-        val direction = state.getValue(FACING)
+        val direction = state[FACING]
 
         // 消費
         level.setBlock(pos, HaimeviskaBlockCard.INCISED_LOG.block().defaultBlockState().setValue(FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
@@ -110,7 +110,7 @@ class DrippingHaimeviskaLogBlock(settings: Properties) : SimpleHorizontalFacingB
     override fun animateTick(state: BlockState, world: Level, pos: BlockPos, random: RandomSource) {
         if (random.nextFloat() >= 0.2F) return
 
-        val direction = state.getValue(FACING)
+        val direction = state[FACING]
         val destBlockPos = pos.relative(direction)
         val destBlockState = world.getBlockState(destBlockPos)
         val destShape = destBlockState.getCollisionShape(world, destBlockPos)

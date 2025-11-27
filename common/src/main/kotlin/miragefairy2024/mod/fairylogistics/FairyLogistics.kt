@@ -18,6 +18,7 @@ import miragefairy2024.util.BlockStateVariantRotation
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
+import miragefairy2024.util.get
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.propertiesOf
 import miragefairy2024.util.registerChild
@@ -154,9 +155,9 @@ abstract class FairyLogisticsBlockEntity<E : FairyLogisticsBlockEntity<E>>(card:
             if (blockEntity !is Container) return null
             return Pair(blockEntity, side)
         }
-        return when (blockState.getValue(FairyLogisticsBlock.VERTICAL_FACING)) {
+        return when (blockState[FairyLogisticsBlock.VERTICAL_FACING]) {
             FairyLogisticsBlock.VerticalFacing.UP -> f(worldPosition.above(), Direction.DOWN)
-            FairyLogisticsBlock.VerticalFacing.SIDE -> when (blockState.getValue(HorizontalDirectionalBlock.FACING)) {
+            FairyLogisticsBlock.VerticalFacing.SIDE -> when (blockState[HorizontalDirectionalBlock.FACING]) {
                 Direction.NORTH -> f(worldPosition.north(), Direction.SOUTH)
                 Direction.SOUTH -> f(worldPosition.south(), Direction.NORTH)
                 Direction.WEST -> f(worldPosition.west(), Direction.EAST)

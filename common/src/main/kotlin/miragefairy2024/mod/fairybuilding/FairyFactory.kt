@@ -39,7 +39,7 @@ abstract class FairyFactoryCard<B : FairyFactoryBlock, E : FairyFactoryBlockEnti
         }
     }
 
-    override fun createBlockSettings(): BlockBehaviour.Properties = super.createBlockSettings().lightLevel { blockState -> if (blockState.getValue(FairyFactoryBlock.STATUS).isLit) 8 else 0 }
+    override fun createBlockSettings(): BlockBehaviour.Properties = super.createBlockSettings().lightLevel { blockState -> if (blockState[FairyFactoryBlock.STATUS].isLit) 8 else 0 }
 
     override fun createPropertyConfigurations() = super.createPropertyConfigurations() + FOLIA_PROPERTY
 
@@ -84,7 +84,7 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
 
     fun setStatus(status: FairyFactoryBlock.Status) {
         val world = level ?: return
-        if (blockState.getValue(FairyFactoryBlock.STATUS) != status) {
+        if (blockState[FairyFactoryBlock.STATUS] != status) {
             world.setBlock(worldPosition, blockState.setValue(FairyFactoryBlock.STATUS, status), Block.UPDATE_ALL)
         }
     }
@@ -133,7 +133,7 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
                 world.getBlockState(toBlockPos) isIn HaimeviskaBlockCard.LEAVES.block()
             }.forEach { (_, blockPos) ->
                 val blockState = world.getBlockState(blockPos)
-                if (blockState.getValue(HaimeviskaLeavesBlock.CHARGED)) {
+                if (blockState[HaimeviskaLeavesBlock.CHARGED]) {
                     folia += 1000
                     changed = true
                     world.setBlock(blockPos, blockState.setValue(HaimeviskaLeavesBlock.CHARGED, false), Block.UPDATE_CLIENTS)
@@ -146,11 +146,11 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
     }
 
 
-    override val doMovePosition get() = blockState.getValue(FairyFactoryBlock.STATUS).doMovePosition
+    override val doMovePosition get() = blockState[FairyFactoryBlock.STATUS].doMovePosition
 
     override fun renderRotated(renderingProxy: RenderingProxy, tickDelta: Float, light: Int, overlay: Int) {
         super.renderRotated(renderingProxy, tickDelta, light, overlay)
-        if (blockState.getValue(FairyFactoryBlock.STATUS).isLit) {
+        if (blockState[FairyFactoryBlock.STATUS].isLit) {
             renderingProxy.renderCutoutBlock(FairyBuildingModelCard.LANTERN.identifier, null, 1.0F, 1.0F, 1.0F, (light and 0x0000FF) or 0xF00000, overlay)
         } else {
             renderingProxy.renderCutoutBlock(FairyBuildingModelCard.LANTERN_OFF.identifier, null, 1.0F, 1.0F, 1.0F, light, overlay)

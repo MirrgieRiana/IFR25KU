@@ -183,7 +183,7 @@ class AuraReflectorFurnaceBlockEntity(private val card: AuraReflectorFurnaceCard
 
     fun setLit(lit: Boolean) {
         val world = level ?: return
-        if (blockState.getValue(AuraReflectorFurnaceBlock.LIT) != lit) {
+        if (blockState[AuraReflectorFurnaceBlock.LIT] != lit) {
             world.setBlock(worldPosition, blockState.setValue(AuraReflectorFurnaceBlock.LIT, lit), Block.UPDATE_ALL)
         }
     }

@@ -10,6 +10,7 @@ import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.Model
 import miragefairy2024.util.generator
+import miragefairy2024.util.get
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.lightProxy
 import miragefairy2024.util.propertiesOf
@@ -113,12 +114,12 @@ class HaimeviskaLeavesBlock(settings: Properties) : LeavesBlock(settings) {
         builder.add(CHARGED)
     }
 
-    override fun isRandomlyTicking(state: BlockState) = super.isRandomlyTicking(state) || !state.getValue(CHARGED)
+    override fun isRandomlyTicking(state: BlockState) = super.isRandomlyTicking(state) || !state[CHARGED]
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun randomTick(state: BlockState, world: ServerLevel, pos: BlockPos, random: RandomSource) {
         super.randomTick(state, world, pos, random)
-        if (!state.getValue(CHARGED)) {
+        if (!state[CHARGED]) {
             if (random.randomBoolean(15, world.lightProxy.getLightLevel(pos))) {
                 world.setBlock(pos, state.setValue(CHARGED, true), UPDATE_CLIENTS)
             }

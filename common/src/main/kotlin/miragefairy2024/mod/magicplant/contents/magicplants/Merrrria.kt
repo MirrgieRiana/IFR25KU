@@ -15,6 +15,7 @@ import miragefairy2024.util.createCuboidShape
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.defaultTraits
 import miragefairy2024.util.flower
+import miragefairy2024.util.get
 import miragefairy2024.util.per
 import miragefairy2024.util.square
 import miragefairy2024.util.surface
@@ -50,7 +51,7 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
 
     override val ageProperty: IntegerProperty = BlockStateProperties.AGE_4
     override val blockCodec = MerrrriaBlock.CODEC
-    override fun createBlock() = MerrrriaBlock(createCommonSettings().instabreak().mapColor(MapColor.ICE).lightLevel { if (it.getValue(ageProperty) == 4) 6 else 0 }.emissiveRendering { it, _, _ -> it.getValue(ageProperty) == 4 }.sound(SoundType.AMETHYST))
+    override fun createBlock() = MerrrriaBlock(createCommonSettings().instabreak().mapColor(MapColor.ICE).lightLevel { if (it[ageProperty] == 4) 6 else 0 }.emissiveRendering { it, _, _ -> it[ageProperty] == 4 }.sound(SoundType.AMETHYST))
 
     override val outlineShapes = listOf(
         createCuboidShape(3.0, 7.0),

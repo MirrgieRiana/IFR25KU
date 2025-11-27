@@ -2,6 +2,7 @@ package miragefairy2024.mod.materials.contents
 
 import com.mojang.math.Axis
 import com.mojang.serialization.MapCodec
+import miragefairy2024.util.get
 import miragefairy2024.util.isIn
 import miragefairy2024.util.isNotIn
 import net.minecraft.core.BlockPos
@@ -94,9 +95,9 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
     // Remove
 
     override fun updateShape(state: BlockState, direction: Direction, neighborState: BlockState, level: LevelAccessor, pos: BlockPos, neighborPos: BlockPos): BlockState? {
-        val part = state.getValue(PART)
+        val part = state[PART]
         if (direction in part.connections) {
-            return if (neighborState isIn this && direction.opposite in neighborState.getValue(PART).connections) {
+            return if (neighborState isIn this && direction.opposite in neighborState[PART].connections) {
                 neighborState.setValue(PART, part)
             } else {
                 Blocks.AIR.defaultBlockState()
@@ -107,7 +108,7 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
 
     override fun playerWillDestroy(level: Level, pos: BlockPos, state: BlockState, player: Player): BlockState {
         if (!level.isClientSide && (player.isCreative || !player.hasCorrectToolForDrops(state))) {
-            if (state.getValue(PART) != Part.FOOT) run {
+            if (state[PART] != Part.FOOT) run {
                 val parts = validate(level, pos) ?: return@run
                 val footBlockState = level.getBlockState(parts.footBlockPos)
                 level.setBlock(parts.footBlockPos, Blocks.AIR.defaultBlockState(), 1 or 2 or 32)
@@ -155,7 +156,7 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
                 val blockPos2 = blockPos.atY(y)
                 val blockState = level.getBlockState(blockPos2)
                 if (blockState isNotIn this) return null
-                when (blockState.getValue(PART)) {
+                when (blockState[PART]) {
                     Part.HEAD -> return@run blockPos2
                     Part.POLE -> poleBlockPoses += blockPos2
                     Part.FOOT -> Unit
@@ -171,7 +172,7 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
                 val blockPos2 = blockPos.atY(y)
                 val blockState = level.getBlockState(blockPos2)
                 if (blockState isNotIn this) return null
-                when (blockState.getValue(PART)) {
+                when (blockState[PART]) {
                     Part.HEAD -> Unit
                     Part.POLE -> poleBlockPoses += blockPos2
                     Part.FOOT -> return@run blockPos2
@@ -189,7 +190,7 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
-        return when (state.getValue(PART)) {
+        return when (state[PART]) {
             Part.HEAD -> HEAD_SHAPE
             Part.POLE -> POLE_SHAPE
             Part.FOOT -> FOOT_SHAPE
@@ -207,7 +208,7 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
-        if (state.getValue(PART) == Part.HEAD) {
+        if (state[PART] == Part.HEAD) {
             if (random.nextInt(3) == 0) {
                 val position = Vector3d(
                     2.0 + 12.0 * random.nextDouble(),
