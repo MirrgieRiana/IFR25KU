@@ -15,9 +15,11 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.biome.Climate
+import net.minecraft.world.level.levelgen.SurfaceRules
 import terrablender.api.Region
 import terrablender.api.RegionType
 import terrablender.api.Regions
+import terrablender.api.SurfaceRuleManager
 import java.util.function.Consumer
 
 val OVERWORLD_BIOME_OVERRIDES = mutableMapOf<ResourceKey<Biome>, ResourceKey<Biome>>()
@@ -57,5 +59,13 @@ fun initBiomeModule() {
             }
         })
 
+    }
+}
+
+context(ModContext)
+fun registerOverworldSurfaceRules(namespace: String, rulesCreator: () -> SurfaceRules.RuleSource) {
+    ModEvents.onTerraBlenderInitialized {
+        val rule = rulesCreator()
+        SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, namespace, rule)
     }
 }

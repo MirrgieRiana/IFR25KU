@@ -2,7 +2,6 @@ package miragefairy2024.mod.biome
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.ModEvents
 import miragefairy2024.mod.haimeviska.HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.util.AdvancementCard
@@ -27,7 +26,6 @@ import net.minecraft.world.level.levelgen.Noises
 import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
-import terrablender.api.SurfaceRuleManager
 
 object DeepFairyForestBiomeCard : BiomeCard(
     "deep_fairy_forest", EnJa("Deep Fairy Forest", "妖精の樹海"),
@@ -106,8 +104,8 @@ object DeepFairyForestBiomeCard : BiomeCard(
         registerOverworldBiomeOverride(Biomes.OLD_GROWTH_PINE_TAIGA)
         registerOverworldBiomeOverride(Biomes.OLD_GROWTH_SPRUCE_TAIGA)
         registerOverworldBiomeOverride(Biomes.SNOWY_TAIGA)
-        ModEvents.onTerraBlenderInitialized {
-            val rule = SurfaceRules.ifTrue(
+        registerOverworldSurfaceRules(MirageFairy2024.MOD_ID) {
+            SurfaceRules.ifTrue(
                 SurfaceRules.abovePreliminarySurface(),
                 SurfaceRules.ifTrue(
                     SurfaceRules.ON_FLOOR,
@@ -129,7 +127,6 @@ object DeepFairyForestBiomeCard : BiomeCard(
                     ),
                 ),
             )
-            SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MirageFairy2024.MOD_ID, rule)
         }
     }
 }

@@ -2,7 +2,6 @@ package miragefairy2024.mod.biome
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.ModEvents
 import miragefairy2024.mod.entity.ChaosCubeCard
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.util.AdvancementCard
@@ -38,7 +37,6 @@ import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
-import terrablender.api.SurfaceRuleManager
 
 object RetrospectiveCityBiomeCard : BiomeCard(
     "retrospective_city", EnJa("Retrospective City", "過去を見つめる都市"),
@@ -113,8 +111,8 @@ object RetrospectiveCityBiomeCard : BiomeCard(
         registerOverworldBiomeOverride(Biomes.BADLANDS)
         registerOverworldBiomeOverride(Biomes.ERODED_BADLANDS)
         registerOverworldBiomeOverride(Biomes.WOODED_BADLANDS)
-        ModEvents.onTerraBlenderInitialized {
-            val rule = SurfaceRules.ifTrue(
+        registerOverworldSurfaceRules(MirageFairy2024.MOD_ID) {
+            SurfaceRules.ifTrue(
                 SurfaceRules.abovePreliminarySurface(),
                 SurfaceRules.ifTrue(
                     SurfaceRules.ON_FLOOR,
@@ -136,7 +134,6 @@ object RetrospectiveCityBiomeCard : BiomeCard(
                     ),
                 ),
             )
-            SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MirageFairy2024.MOD_ID, rule)
         }
 
         Registration(BuiltInRegistries.FEATURE, MirageFairy2024.identifier("miragidian_lamp")) { MIRAGIDIAN_LAMP_FEATURE }.register()
