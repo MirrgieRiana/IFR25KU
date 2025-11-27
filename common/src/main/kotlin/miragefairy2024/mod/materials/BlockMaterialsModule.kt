@@ -170,7 +170,7 @@ open class BlockMaterialCard(
         }
         val SMOOTH_AURA_RESISTANT_CERAMIC: BlockMaterialCard = !object : BlockMaterialCard(
             "smooth_aura_resistant_ceramic", EnJa("Smooth Protective Aura-Resistant Ceramic", "滑らかな守護の耐霊石"),
-            PoemList(2).poem(EnJa("Turpentine improves its lubricity.", "空隙に走る樹脂の流れ――")),
+            PoemList(2).poem(EnJa("Turpentine improves its flowability.", "空隙に走る樹脂の流れ――")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
         ) {
             context(ModContext)
