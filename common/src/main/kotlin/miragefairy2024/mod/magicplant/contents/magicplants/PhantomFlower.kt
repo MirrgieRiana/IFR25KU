@@ -90,7 +90,7 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
 
     override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
         identifier = identifier,
-        context = AdvancementCard.Sub { FairyForestBiomeCard.advancement.await() },
+        context = AdvancementCard.Sub { FairyForestBiomeCard.advancement!!.await() },
         icon = { iconItem().createItemStack() },
         name = EnJa("Selective Pressure of Cuteness", "かわいいの淘汰圧"),
         description = EnJa("Search for the Phantom Flower hidden in the Fairy Forest", "妖精の森に隠れている幻花ファントムを探す"),

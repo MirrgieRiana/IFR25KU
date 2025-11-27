@@ -359,7 +359,7 @@ open class BlockMaterialCard(
             advancementCreator = {
                 AdvancementCard(
                     identifier = identifier,
-                    context = AdvancementCard.Sub { RetrospectiveCityBiomeCard.advancement.await() },
+                    context = AdvancementCard.Sub { RetrospectiveCityBiomeCard.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Eye That Walked 30 Millennia", "3万年を歩んだ瞳"), // Light that Watched Collapse / 崩壊を見届けた光
                     description = EnJa("Find Miragidian Street Lamp in Retrospective City biome", "過去を見つめる都市バイオームでミラジディアンの街灯を見つける"),
