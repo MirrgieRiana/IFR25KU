@@ -30,18 +30,19 @@ import terrablender.api.SurfaceRuleManager
 
 object DeepFairyForestBiomeCard : BiomeCard(
     "deep_fairy_forest", EnJa("Deep Fairy Forest", "妖精の樹海"),
+    advancementCreator = {
+        AdvancementCard(
+            identifier = identifier,
+            context = AdvancementCard.Sub { FairyForestBiomeCard.advancement!!.await() },
+            icon = { HaimeviskaBlockCard.SAPLING.item().createItemStack() },
+            name = EnJa("The Forest of Memories", "記憶の森"),
+            description = EnJa("Travel the overworld and discover the Deep Fairy Forest", "地上を旅して妖精の樹海を探す"),
+            criterion = AdvancementCard.visit(key),
+            type = AdvancementCardType.TOAST_ONLY,
+        )
+    },
     BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST, FAIRY_BIOME_TAG,
 ) {
-    val advancement = AdvancementCard(
-        identifier = identifier,
-        context = AdvancementCard.Sub { FairyForestBiomeCard.advancement.await() },
-        icon = { HaimeviskaBlockCard.SAPLING.item().createItemStack() },
-        name = EnJa("The Forest of Memories", "記憶の森"),
-        description = EnJa("Travel the overworld and discover the Deep Fairy Forest", "地上を旅して妖精の樹海を探す"),
-        criterion = AdvancementCard.visit(key),
-        type = AdvancementCardType.TOAST_ONLY,
-    )
-
     override fun createBiome(placedFeatureLookup: HolderGetter<PlacedFeature>, configuredCarverLookup: HolderGetter<ConfiguredWorldCarver<*>>): Biome {
         return Biome.BiomeBuilder()
             .hasPrecipitation(true)
@@ -124,6 +125,5 @@ object DeepFairyForestBiomeCard : BiomeCard(
             )
             SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MirageFairy2024.MOD_ID, rule)
         }
-        advancement.init()
     }
 }

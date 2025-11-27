@@ -1,6 +1,5 @@
 package miragefairy2024.mod.biome
 
-import miragefairy2024.ModContext
 import miragefairy2024.mod.haimeviska.HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.mod.magicplant.contents.magicplants.PhantomFlowerCard
 import miragefairy2024.mod.rootAdvancement
@@ -25,18 +24,19 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
 object FairyForestBiomeCard : BiomeCard(
     "fairy_forest", EnJa("Fairy Forest", "妖精の森"),
+    advancementCreator = {
+        AdvancementCard(
+            identifier = identifier,
+            context = AdvancementCard.Sub { rootAdvancement.await() },
+            icon = { PhantomFlowerCard.item().createItemStack() }, // TODO もっと相応しいアイコンに変える
+            name = EnJa("Fairylands", "世界のそこかしこにあるおとぎの国"),
+            description = EnJa("Travel the overworld and discover the Fairy Forest", "地上を旅して妖精の森を探す"),
+            criterion = AdvancementCard.visit(key),
+            type = AdvancementCardType.TOAST_ONLY,
+        )
+    },
     BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST, ConventionalBiomeTags.IS_FLORAL, FAIRY_BIOME_TAG,
 ) {
-    val advancement = AdvancementCard(
-        identifier = identifier,
-        context = AdvancementCard.Sub { rootAdvancement.await() },
-        icon = { PhantomFlowerCard.item().createItemStack() }, // TODO もっと相応しいアイコンに変える
-        name = EnJa("Fairylands", "世界のそこかしこにあるおとぎの国"),
-        description = EnJa("Travel the overworld and discover the Fairy Forest", "地上を旅して妖精の森を探す"),
-        criterion = AdvancementCard.visit(key),
-        type = AdvancementCardType.TOAST_ONLY,
-    )
-
     override fun createBiome(placedFeatureLookup: HolderGetter<PlacedFeature>, configuredCarverLookup: HolderGetter<ConfiguredWorldCarver<*>>): Biome {
         return Biome.BiomeBuilder()
             .hasPrecipitation(true)
@@ -94,10 +94,5 @@ object FairyForestBiomeCard : BiomeCard(
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, AquaticPlacements.SEAGRASS_RIVER)
 
             }.build()).build()
-    }
-
-    context(ModContext)
-    override fun init() {
-        advancement.init()
     }
 }

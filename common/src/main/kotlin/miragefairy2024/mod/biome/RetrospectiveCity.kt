@@ -41,17 +41,19 @@ import terrablender.api.SurfaceRuleManager
 
 object RetrospectiveCityBiomeCard : BiomeCard(
     "retrospective_city", EnJa("Retrospective City", "過去を見つめる都市"),
+    advancementCreator = {
+        AdvancementCard(
+            identifier = identifier,
+            context = AdvancementCard.Sub { FairyForestBiomeCard.advancement!!.await() },
+            icon = { BlockMaterialCard.AURA_RESISTANT_CERAMIC_STAIRS.item().createItemStack() },
+            name = EnJa("Graveyard of Civilization", "文明の墓場"),
+            description = EnJa("Travel the overworld and discover the Retrospective City", "地上を旅して過去を見つめる都市を探す"),
+            criterion = AdvancementCard.visit(key),
+            type = AdvancementCardType.TOAST_ONLY,
+        )
+    },
     BiomeTags.IS_OVERWORLD, ConventionalBiomeTags.IS_COLD_OVERWORLD, ConventionalBiomeTags.IS_DRY_OVERWORLD,
 ) {
-    val advancement = AdvancementCard(
-        identifier = identifier,
-        context = AdvancementCard.Sub { FairyForestBiomeCard.advancement.await() },
-        icon = { BlockMaterialCard.AURA_RESISTANT_CERAMIC_STAIRS.item().createItemStack() },
-        name = EnJa("Graveyard of Civilization", "文明の墓場"),
-        description = EnJa("Travel the overworld and discover the Retrospective City", "地上を旅して過去を見つめる都市を探す"),
-        criterion = AdvancementCard.visit(key),
-        type = AdvancementCardType.TOAST_ONLY,
-    )
 
     private val MIRAGIDIAN_LAMP_FEATURE = MiragidianLampFeature(NoneFeatureConfiguration.CODEC)
     private val MIRAGIDIAN_LAMP_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("miragidian_lamp")
@@ -128,7 +130,6 @@ object RetrospectiveCityBiomeCard : BiomeCard(
             )
             SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MirageFairy2024.MOD_ID, rule)
         }
-        advancement.init()
 
         Registration(BuiltInRegistries.FEATURE, MirageFairy2024.identifier("miragidian_lamp")) { MIRAGIDIAN_LAMP_FEATURE }.register()
         registerDynamicGeneration(MIRAGIDIAN_LAMP_CONFIGURED_FEATURE_KEY) {
