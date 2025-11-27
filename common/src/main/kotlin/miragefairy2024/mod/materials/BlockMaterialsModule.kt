@@ -108,7 +108,7 @@ open class BlockMaterialCard(
         }
         val AURA_RESISTANT_CERAMIC: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic", EnJa("Protective Aura-Resistant Ceramic", "守護の耐霊石"),
-            PoemList(2).poem(EnJa("The eternal glorious city of Xarperia.", "恒久の栄華を讃える紅天市街――")),
+            PoemList(2).poem(EnJa("The eternally glorious city of Xarperia.", "恒久の栄華を讃える紅天市街――")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
             texturedModelProvider = {
                 ModelTemplates.CUBE_BOTTOM_TOP.with(
@@ -208,7 +208,7 @@ open class BlockMaterialCard(
             registerStonecutterRecipeGeneration(item, POLISHED_AURA_RESISTANT_CERAMIC.item)
         }
         val AURA_RESISTANT_CERAMIC_BRICKS_SLAB: BlockMaterialCard = !object : BlockMaterialCard(
-            "aura_resistant_ceramic_bricks_slab", EnJa("Protective Aura-Resistant Ceramic Bricks Slab", "守護の耐霊石レンガのハーフブロック"),
+            "aura_resistant_ceramic_bricks_slab", EnJa("Protective Aura-Resistant Ceramic Brick Slab", "守護の耐霊石レンガのハーフブロック"),
             PoemList(2).poem(EnJa("Transmutation caused by solar flares.", "魔物と混淆しないために――")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
         ) {
@@ -223,7 +223,7 @@ open class BlockMaterialCard(
             registerStonecutterRecipeGeneration(item, AURA_RESISTANT_CERAMIC_BRICKS.item, 2)
         }
         val AURA_RESISTANT_CERAMIC_BRICKS_STAIRS: BlockMaterialCard = !object : BlockMaterialCard(
-            "aura_resistant_ceramic_bricks_stairs", EnJa("Protective Aura-Resistant Ceramic Bricks Stairs", "守護の耐霊石レンガの階段"),
+            "aura_resistant_ceramic_bricks_stairs", EnJa("Protective Aura-Resistant Ceramic Brick Stairs", "守護の耐霊石レンガの階段"),
             PoemList(2).poem(EnJa("The scarlet roofs that protect citizens.", "暮らしを守る紅い盾――")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F,
         ) {
