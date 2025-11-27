@@ -45,6 +45,7 @@ import miragefairy2024.util.registerLootTableGeneration
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerShapedRecipeGeneration
 import miragefairy2024.util.registerSingletonBlockStateGeneration
+import miragefairy2024.util.registerSmeltingRecipeGeneration
 import miragefairy2024.util.registerStonecutterRecipeGeneration
 import miragefairy2024.util.registerTranslucentRenderLayer
 import miragefairy2024.util.registerVariantsBlockStateGeneration
@@ -56,6 +57,7 @@ import mirrg.kotlin.gson.hydrogen.jsonArray
 import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.data.recipes.RecipeCategory
@@ -104,6 +106,27 @@ open class BlockMaterialCard(
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.XARPITE.item, { MaterialCard.XARPITE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
+        val AURA_RESISTANT_CERAMIC: BlockMaterialCard = !object : BlockMaterialCard(
+            "aura_resistant_ceramic", EnJa("Protective Aura-Resistant Ceramic", "守護の耐霊石"),
+            PoemList(2).poem(EnJa("The eternal glorious city of Xarperia.", "恒久の栄華を讃える紅天市街――")),
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+            texturedModelProvider = {
+                ModelTemplates.CUBE_BOTTOM_TOP.with(
+                    TextureSlot.TOP to "block/" * it.getIdentifier(),
+                    TextureSlot.BOTTOM to "block/" * it.getIdentifier(),
+                    TextureSlot.SIDE to "block/" * it.getIdentifier() * "_side",
+                )
+            },
+        ) {
+            context(ModContext) override fun initModelGeneration() = block.registerModelGeneration { texturedModelProvider!![block()] }
+        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            // TODO 分解することで液体燃料が取れる
+            registerShapedRecipeGeneration(item, count = 2) {
+                pattern("##")
+                define('#', SMOOTH_AURA_RESISTANT_CERAMIC.item)
+            } on SMOOTH_AURA_RESISTANT_CERAMIC.item
+            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
+        }
         val COBBLED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
             "cobbled_aura_resistant_ceramic", EnJa("Cobbled Protective Aura-Resistant Ceramic", "守護の耐霊石の丸石"),
             PoemList(2).poem(EnJa("Penetrates the monomer and solidifies.", "砂岩に宿るポリテルペンの祝福――")),
@@ -117,6 +140,20 @@ open class BlockMaterialCard(
                 define('S', Items.SANDSTONE)
                 define('X', MaterialCard.XARPITE.ore!!.ingredient)
             } on MaterialCard.XARPITE.ore!!.tag
+        }
+        val SMOOTH_AURA_RESISTANT_CERAMIC: BlockMaterialCard = !object : BlockMaterialCard(
+            "smooth_aura_resistant_ceramic", EnJa("Smooth Protective Aura-Resistant Ceramic", "滑らかな守護の耐霊石"),
+            PoemList(2).poem(EnJa("Turpentine improves its lubricity.", "空隙に走る樹脂の流れ――")),
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ) {
+            context(ModContext)
+            override fun initModelGeneration() = block.registerModelGeneration {
+                ModelTemplates.CUBE_ALL.with(
+                    TextureSlot.ALL to "block/" * AURA_RESISTANT_CERAMIC.identifier,
+                )
+            }
+        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerSmeltingRecipeGeneration(COBBLED_AURA_RESISTANT_CERAMIC.item, item) on item
         }
         val MIRANAGITE_BLOCK = !BlockMaterialCard(
             "miranagite_block", EnJa("Miranagite Block", "蒼天石ブロック"),
