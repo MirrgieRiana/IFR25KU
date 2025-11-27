@@ -27,10 +27,10 @@ abstract class BiomeCard(
 ) {
     abstract fun createBiome(placedFeatureLookup: HolderGetter<PlacedFeature>, configuredCarverLookup: HolderGetter<ConfiguredWorldCarver<*>>): Biome
 
-    context(ModContext)
-    open fun init() = Unit
-
     val identifier = MirageFairy2024.identifier(path)
     val key = Registries.BIOME with identifier
     val translation = Translation({ identifier.toLanguageKey("biome") }, name)
+
+    context(ModContext)
+    open fun init() = Unit
 }
