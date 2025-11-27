@@ -4,11 +4,11 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.mod.Emoji
-import miragefairy2024.mod.FairyForestBiomeCard
 import miragefairy2024.mod.FairyStatueFountainBlock
 import miragefairy2024.mod.FoodIngredientCategoryCard
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.OreCard
+import miragefairy2024.mod.biome.FairyForestBiomeCard
 import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.magicplant.contents.magicplants.MirageFlowerCard
 import miragefairy2024.mod.magicplant.contents.magicplants.PhantomFlowerCard

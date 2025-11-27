@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.PlacedItemFeature
+import miragefairy2024.mod.biome.FAIRY_BIOME_TAG
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.BiomeSelectorScope
 import miragefairy2024.util.Registration

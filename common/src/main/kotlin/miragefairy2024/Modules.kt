@@ -1,5 +1,6 @@
 package miragefairy2024
 
+import miragefairy2024.mod.biome.initBiomeModule
 import miragefairy2024.mod.enchantment.initEnchantmentModule
 import miragefairy2024.mod.entity.initEntityModule
 import miragefairy2024.mod.fairy.initFairyModule
@@ -9,7 +10,6 @@ import miragefairy2024.mod.fairyquest.initFairyQuestModule
 import miragefairy2024.mod.haimeviska.initHaimeviskaModule
 import miragefairy2024.mod.initAttachmentChangedEventModule
 import miragefairy2024.mod.initBagModule
-import miragefairy2024.mod.initBiomeModule
 import miragefairy2024.mod.initCommonModule
 import miragefairy2024.mod.initDebrisModule
 import miragefairy2024.mod.initFairyFountainModule

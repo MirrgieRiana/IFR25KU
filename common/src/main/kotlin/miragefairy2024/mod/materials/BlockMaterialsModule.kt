@@ -3,7 +3,7 @@ package miragefairy2024.mod.materials
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemList
-import miragefairy2024.mod.RetrospectiveCityBiomeCard
+import miragefairy2024.mod.biome.RetrospectiveCityBiomeCard
 import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
 import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration

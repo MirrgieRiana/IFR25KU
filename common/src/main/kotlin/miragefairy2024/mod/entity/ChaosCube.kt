@@ -3,10 +3,10 @@ package miragefairy2024.mod.entity
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
-import miragefairy2024.mod.RetrospectiveCityBiomeCard
 import miragefairy2024.mod.SoundEventCard
 import miragefairy2024.mod.SoundEventChannel
 import miragefairy2024.mod.SoundEventPacket
+import miragefairy2024.mod.biome.RetrospectiveCityBiomeCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.particle.MagicSquareParticleChannel

@@ -1,4 +1,4 @@
-package miragefairy2024.mod
+package miragefairy2024.mod.biome
 
 import com.mojang.datafixers.util.Pair
 import com.mojang.serialization.Codec
@@ -12,6 +12,7 @@ import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.magicplant.contents.magicplants.PhantomFlowerCard
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.contents.MiragidianLampBlock
+import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa

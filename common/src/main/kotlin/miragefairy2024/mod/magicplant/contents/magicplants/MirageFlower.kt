@@ -3,8 +3,8 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.mod.DeepFairyForestBiomeCard
-import miragefairy2024.mod.FairyForestBiomeCard
+import miragefairy2024.mod.biome.DeepFairyForestBiomeCard
+import miragefairy2024.mod.biome.FairyForestBiomeCard
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.rootAdvancement
