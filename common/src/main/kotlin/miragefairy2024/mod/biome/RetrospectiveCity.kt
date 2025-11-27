@@ -106,13 +106,6 @@ object RetrospectiveCityBiomeCard : BiomeCard(
     override fun init() {
         super.init()
 
-        registerOverworldBiomeOverride(Biomes.SAVANNA)
-        registerOverworldBiomeOverride(Biomes.SAVANNA_PLATEAU)
-        registerOverworldBiomeOverride(Biomes.WINDSWEPT_SAVANNA)
-        registerOverworldBiomeOverride(Biomes.BADLANDS)
-        registerOverworldBiomeOverride(Biomes.ERODED_BADLANDS)
-        registerOverworldBiomeOverride(Biomes.WOODED_BADLANDS)
-
         registerOverworldSurfaceRules(MirageFairy2024.MOD_ID) {
             SurfaceRules.ifTrue(
                 SurfaceRules.abovePreliminarySurface(),
@@ -146,6 +139,13 @@ object RetrospectiveCityBiomeCard : BiomeCard(
             val placementModifiers = placementModifiers { per(8) + flower(square, surface) }
             Registries.CONFIGURED_FEATURE[MIRAGIDIAN_LAMP_CONFIGURED_FEATURE_KEY] with placementModifiers
         }
+
+        registerOverworldBiomeOverride(Biomes.SAVANNA)
+        registerOverworldBiomeOverride(Biomes.SAVANNA_PLATEAU)
+        registerOverworldBiomeOverride(Biomes.WINDSWEPT_SAVANNA)
+        registerOverworldBiomeOverride(Biomes.BADLANDS)
+        registerOverworldBiomeOverride(Biomes.ERODED_BADLANDS)
+        registerOverworldBiomeOverride(Biomes.WOODED_BADLANDS)
 
     }
 }
