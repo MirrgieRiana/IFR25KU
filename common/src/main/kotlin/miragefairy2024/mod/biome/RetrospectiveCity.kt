@@ -40,7 +40,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature
 import terrablender.api.SurfaceRuleManager
 
 object RetrospectiveCityBiomeCard : BiomeCard(
-    "retrospective_city", "Retrospective City", "過去を見つめる都市",
+    "retrospective_city", EnJa("Retrospective City", "過去を見つめる都市"),
     BiomeTags.IS_OVERWORLD, ConventionalBiomeTags.IS_COLD_OVERWORLD, ConventionalBiomeTags.IS_DRY_OVERWORLD,
 ) {
     val advancement = AdvancementCard(

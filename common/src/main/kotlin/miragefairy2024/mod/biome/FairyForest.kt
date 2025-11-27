@@ -24,7 +24,7 @@ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
 object FairyForestBiomeCard : BiomeCard(
-    "fairy_forest", "Fairy Forest", "妖精の森",
+    "fairy_forest", EnJa("Fairy Forest", "妖精の森"),
     BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST, ConventionalBiomeTags.IS_FLORAL, FAIRY_BIOME_TAG,
 ) {
     val advancement = AdvancementCard(

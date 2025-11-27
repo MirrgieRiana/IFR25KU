@@ -29,7 +29,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature
 import terrablender.api.SurfaceRuleManager
 
 object DeepFairyForestBiomeCard : BiomeCard(
-    "deep_fairy_forest", "Deep Fairy Forest", "妖精の樹海",
+    "deep_fairy_forest", EnJa("Deep Fairy Forest", "妖精の樹海"),
     BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST, FAIRY_BIOME_TAG,
 ) {
     val advancement = AdvancementCard(

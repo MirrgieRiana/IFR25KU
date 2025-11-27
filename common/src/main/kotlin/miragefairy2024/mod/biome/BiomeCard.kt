@@ -2,6 +2,7 @@ package miragefairy2024.mod.biome
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.util.EnJa
 import miragefairy2024.util.Translation
 import miragefairy2024.util.with
 import net.minecraft.core.HolderGetter
@@ -21,8 +22,7 @@ object BiomeCards {
 
 abstract class BiomeCard(
     path: String,
-    en: String,
-    ja: String,
+    name: EnJa,
     vararg val tags: TagKey<Biome>,
 ) {
     abstract fun createBiome(placedFeatureLookup: HolderGetter<PlacedFeature>, configuredCarverLookup: HolderGetter<ConfiguredWorldCarver<*>>): Biome
@@ -32,5 +32,5 @@ abstract class BiomeCard(
 
     val identifier = MirageFairy2024.identifier(path)
     val key = Registries.BIOME with identifier
-    val translation = Translation({ identifier.toLanguageKey("biome") }, en, ja)
+    val translation = Translation({ identifier.toLanguageKey("biome") }, name)
 }
