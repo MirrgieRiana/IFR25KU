@@ -104,7 +104,7 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
         LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.generator.registerChild(block)
         Feature.FLOWER {
             configuredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(it))) }) {
-                placedFeature("cluster", { per(16) + flower(square, surface) }) { +FairyForestBiomeCard.registryKey * defaultTraits }
+                placedFeature("cluster", { per(16) + flower(square, surface) }) { +FairyForestBiomeCard.key * defaultTraits }
             }
         }
     }

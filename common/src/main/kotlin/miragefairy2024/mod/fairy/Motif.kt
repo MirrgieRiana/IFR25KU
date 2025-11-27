@@ -794,7 +794,7 @@ enum class MotifCard(
             + regeneration(0.4) * outdoor
             + regeneration(0.8) * food(MaterialCard.PHANTOM_DROP.item)
             + mending(1.0, ToolMaterialCard.PHANTOM_DROP.tag),
-        MotifCardRecipes().R.common(FairyForestBiomeCard.registryKey).block(PhantomFlowerCard.block),
+        MotifCardRecipes().R.common(FairyForestBiomeCard.key).block(PhantomFlowerCard.block),
     ),
     PHANTOM_DROP(
         "phantom_drop", 7, "Phantome Dropia", "幻想雫精ファントーメドローピャ", 0xF091FF, 0xD834E0, 0x9E34E0, 0x5C09B0,

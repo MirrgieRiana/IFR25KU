@@ -38,7 +38,7 @@ object DeepFairyForestBiomeCard : BiomeCard(
         icon = { HaimeviskaBlockCard.SAPLING.item().createItemStack() },
         name = EnJa("The Forest of Memories", "記憶の森"),
         description = EnJa("Travel the overworld and discover the Deep Fairy Forest", "地上を旅して妖精の樹海を探す"),
-        criterion = AdvancementCard.visit(registryKey),
+        criterion = AdvancementCard.visit(key),
         type = AdvancementCardType.TOAST_ONLY,
     )
 
@@ -107,7 +107,7 @@ object DeepFairyForestBiomeCard : BiomeCard(
                     SurfaceRules.ifTrue(
                         SurfaceRules.waterBlockCheck(-1, 0),
                         SurfaceRules.ifTrue(
-                            SurfaceRules.isBiome(registryKey),
+                            SurfaceRules.isBiome(key),
                             SurfaceRules.sequence(
                                 SurfaceRules.ifTrue(
                                     SurfaceRules.noiseCondition(Noises.SURFACE, 1.75 / 8.25, Double.MAX_VALUE),

@@ -29,7 +29,7 @@ fun initBiomeModule() {
     BiomeCards.entries.forEach { card ->
 
         // バイオームの生成
-        registerDynamicGeneration(card.registryKey) {
+        registerDynamicGeneration(card.key) {
             card.createBiome(lookup(Registries.PLACED_FEATURE), lookup(Registries.CONFIGURED_CARVER))
         }
 
@@ -49,24 +49,24 @@ fun initBiomeModule() {
         Regions.register(object : Region(MirageFairy2024.identifier("overworld"), RegionType.OVERWORLD, 1) {
             override fun addBiomes(registry: Registry<Biome>, mapper: Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>) {
                 addModifiedVanillaOverworldBiomes(mapper) {
-                    it.replaceBiome(Biomes.FOREST, FairyForestBiomeCard.registryKey)
-                    it.replaceBiome(Biomes.WINDSWEPT_FOREST, FairyForestBiomeCard.registryKey)
-                    it.replaceBiome(Biomes.FLOWER_FOREST, FairyForestBiomeCard.registryKey)
-                    it.replaceBiome(Biomes.BIRCH_FOREST, FairyForestBiomeCard.registryKey)
-                    it.replaceBiome(Biomes.OLD_GROWTH_BIRCH_FOREST, FairyForestBiomeCard.registryKey)
-                    it.replaceBiome(Biomes.DARK_FOREST, FairyForestBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.FOREST, FairyForestBiomeCard.key)
+                    it.replaceBiome(Biomes.WINDSWEPT_FOREST, FairyForestBiomeCard.key)
+                    it.replaceBiome(Biomes.FLOWER_FOREST, FairyForestBiomeCard.key)
+                    it.replaceBiome(Biomes.BIRCH_FOREST, FairyForestBiomeCard.key)
+                    it.replaceBiome(Biomes.OLD_GROWTH_BIRCH_FOREST, FairyForestBiomeCard.key)
+                    it.replaceBiome(Biomes.DARK_FOREST, FairyForestBiomeCard.key)
 
-                    it.replaceBiome(Biomes.TAIGA, DeepFairyForestBiomeCard.registryKey)
-                    it.replaceBiome(Biomes.OLD_GROWTH_PINE_TAIGA, DeepFairyForestBiomeCard.registryKey)
-                    it.replaceBiome(Biomes.OLD_GROWTH_SPRUCE_TAIGA, DeepFairyForestBiomeCard.registryKey)
-                    it.replaceBiome(Biomes.SNOWY_TAIGA, DeepFairyForestBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.TAIGA, DeepFairyForestBiomeCard.key)
+                    it.replaceBiome(Biomes.OLD_GROWTH_PINE_TAIGA, DeepFairyForestBiomeCard.key)
+                    it.replaceBiome(Biomes.OLD_GROWTH_SPRUCE_TAIGA, DeepFairyForestBiomeCard.key)
+                    it.replaceBiome(Biomes.SNOWY_TAIGA, DeepFairyForestBiomeCard.key)
 
-                    it.replaceBiome(Biomes.SAVANNA, RetrospectiveCityBiomeCard.registryKey)
-                    it.replaceBiome(Biomes.SAVANNA_PLATEAU, RetrospectiveCityBiomeCard.registryKey)
-                    it.replaceBiome(Biomes.WINDSWEPT_SAVANNA, RetrospectiveCityBiomeCard.registryKey)
-                    it.replaceBiome(Biomes.BADLANDS, RetrospectiveCityBiomeCard.registryKey)
-                    it.replaceBiome(Biomes.ERODED_BADLANDS, RetrospectiveCityBiomeCard.registryKey)
-                    it.replaceBiome(Biomes.WOODED_BADLANDS, RetrospectiveCityBiomeCard.registryKey)
+                    it.replaceBiome(Biomes.SAVANNA, RetrospectiveCityBiomeCard.key)
+                    it.replaceBiome(Biomes.SAVANNA_PLATEAU, RetrospectiveCityBiomeCard.key)
+                    it.replaceBiome(Biomes.WINDSWEPT_SAVANNA, RetrospectiveCityBiomeCard.key)
+                    it.replaceBiome(Biomes.BADLANDS, RetrospectiveCityBiomeCard.key)
+                    it.replaceBiome(Biomes.ERODED_BADLANDS, RetrospectiveCityBiomeCard.key)
+                    it.replaceBiome(Biomes.WOODED_BADLANDS, RetrospectiveCityBiomeCard.key)
                 }
             }
         })

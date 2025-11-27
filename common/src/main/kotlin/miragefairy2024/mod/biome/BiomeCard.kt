@@ -31,6 +31,6 @@ abstract class BiomeCard(
     open fun init() = Unit
 
     val identifier = MirageFairy2024.identifier(path)
-    val registryKey = Registries.BIOME with identifier
+    val key = Registries.BIOME with identifier
     val translation = Translation({ identifier.toLanguageKey("biome") }, en, ja)
 }

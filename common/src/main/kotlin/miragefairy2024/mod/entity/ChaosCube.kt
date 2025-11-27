@@ -450,7 +450,7 @@ class ChaosCubeEntity(entityType: EntityType<out ChaosCubeEntity>, world: Level)
                 // TODO タグ
 
                 // 過去を見つめる都市では常にアクティブ
-                if (world.getBiome(mob.blockPosition()) isIn RetrospectiveCityBiomeCard.registryKey) return@run false
+                if (world.getBiome(mob.blockPosition()) isIn RetrospectiveCityBiomeCard.key) return@run false
 
                 // 鍾乳洞の遺跡では常にアクティブ
                 val structure = world.structureManager().registryAccess()[Registries.STRUCTURE, DripstoneCavesRuinCard.key].value()

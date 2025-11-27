@@ -33,7 +33,7 @@ object FairyForestBiomeCard : BiomeCard(
         icon = { PhantomFlowerCard.item().createItemStack() }, // TODO もっと相応しいアイコンに変える
         name = EnJa("Fairylands", "世界のそこかしこにあるおとぎの国"),
         description = EnJa("Travel the overworld and discover the Fairy Forest", "地上を旅して妖精の森を探す"),
-        criterion = AdvancementCard.visit(registryKey),
+        criterion = AdvancementCard.visit(key),
         type = AdvancementCardType.TOAST_ONLY,
     )
 

@@ -49,7 +49,7 @@ object RetrospectiveCityBiomeCard : BiomeCard(
         icon = { BlockMaterialCard.AURA_RESISTANT_CERAMIC_TILES.item().createItemStack() },
         name = EnJa("Graveyard of Civilization", "文明の墓場"),
         description = EnJa("Travel the overworld and discover the Retrospective City", "地上を旅して過去を見つめる都市を探す"),
-        criterion = AdvancementCard.visit(registryKey),
+        criterion = AdvancementCard.visit(key),
         type = AdvancementCardType.TOAST_ONLY,
     )
 
@@ -111,7 +111,7 @@ object RetrospectiveCityBiomeCard : BiomeCard(
                     SurfaceRules.ifTrue(
                         SurfaceRules.waterBlockCheck(-1, 0),
                         SurfaceRules.ifTrue(
-                            SurfaceRules.isBiome(registryKey),
+                            SurfaceRules.isBiome(key),
                             SurfaceRules.sequence(
                                 SurfaceRules.ifTrue(
                                     SurfaceRules.noiseCondition(Noises.SURFACE, 3.0 / 8.25, Double.MAX_VALUE),
