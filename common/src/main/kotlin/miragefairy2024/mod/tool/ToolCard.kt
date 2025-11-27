@@ -415,7 +415,7 @@ class ToolCard(
         ) { registerShovelRecipeGeneration(item, MaterialCard.CALCULITE.ore!!.tag) }
         val CALCULITE_HOE = !ToolCard(
             "calculite_hoe", EnJa("Calculite Hoe", "理天石のクワ"),
-            PoemList(5).poem(EnJa("A stellar automaton.", "幽星質の脳細胞。")),
+            PoemList(5).poem(EnJa("A stellar automaton.", "星幽質の脳細胞。")),
             FairyHoeConfiguration(ToolMaterialCard.CALCULITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2).enchantable(AREA_MINING_ENCHANTABLE_ITEM_TAG),
         ) { registerHoeRecipeGeneration(item, MaterialCard.CALCULITE.ore!!.tag) }
         val CALCULITE_SCYTHE = !ToolCard(
