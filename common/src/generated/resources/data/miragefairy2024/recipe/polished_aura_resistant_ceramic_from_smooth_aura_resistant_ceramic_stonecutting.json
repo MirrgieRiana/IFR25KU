@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "miragefairy2024:smooth_aura_resistant_ceramic"
+  },
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:polished_aura_resistant_ceramic"
+  }
+}

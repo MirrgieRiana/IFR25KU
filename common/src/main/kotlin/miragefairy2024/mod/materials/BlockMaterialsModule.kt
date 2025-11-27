@@ -182,6 +182,18 @@ open class BlockMaterialCard(
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerSmeltingRecipeGeneration(COBBLED_AURA_RESISTANT_CERAMIC.item, item) on item
         }
+        val POLISHED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
+            "polished_aura_resistant_ceramic", EnJa("Polished Protective Aura-Resistant Ceramic", "磨かれた守護の耐霊石"),
+            PoemList(2).poem(EnJa("Economical urban astral shielding.", "情緒線の被曝に備えて――")),
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerShapedRecipeGeneration(item, count = 4) {
+                pattern("##")
+                pattern("##")
+                define('#', SMOOTH_AURA_RESISTANT_CERAMIC.item)
+            } on SMOOTH_AURA_RESISTANT_CERAMIC.item
+            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
+        }
         val MIRANAGITE_BLOCK = !BlockMaterialCard(
             "miranagite_block", EnJa("Miranagite Block", "蒼天石ブロック"),
             PoemList(2).poem(EnJa("Passivation confines discontinuous space", "虚空に導かれし、神域との接合点。")),
