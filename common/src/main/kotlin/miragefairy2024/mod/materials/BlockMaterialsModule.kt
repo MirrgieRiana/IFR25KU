@@ -249,6 +249,19 @@ open class BlockMaterialCard(
             registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
             registerStonecutterRecipeGeneration(item, POLISHED_AURA_RESISTANT_CERAMIC.item)
         }
+        val CHISELED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
+            "chiseled_aura_resistant_ceramic", EnJa("Chiseled Protective Aura-Resistant Ceramic", "模様入りの守護の耐霊石"),
+            PoemList(2).poem(EnJa("The Truth-Gazer.", "瞳の中のサティアン。")),
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerShapedRecipeGeneration(item) {
+                pattern("#")
+                pattern("#")
+                define('#', AURA_RESISTANT_CERAMIC_SLAB.item)
+            } on AURA_RESISTANT_CERAMIC_SLAB.item
+            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
+            registerStonecutterRecipeGeneration(item, AURA_RESISTANT_CERAMIC.item)
+        }
         val MIRANAGITE_BLOCK = !BlockMaterialCard(
             "miranagite_block", EnJa("Miranagite Block", "蒼天石ブロック"),
             PoemList(2).poem(EnJa("Passivation confines discontinuous space", "虚空に導かれし、神域との接合点。")),

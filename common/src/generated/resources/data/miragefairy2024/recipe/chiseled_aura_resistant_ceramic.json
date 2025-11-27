@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "miragefairy2024:chiseled_aura_resistant_ceramic",
+  "key": {
+    "#": {
+      "item": "miragefairy2024:aura_resistant_ceramic_slab"
+    }
+  },
+  "pattern": [
+    "#",
+    "#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:chiseled_aura_resistant_ceramic"
+  }
+}
