@@ -100,10 +100,12 @@ object DeepFairyForestBiomeCard : BiomeCard(
     context(ModContext)
     override fun init() {
         super.init()
+
         registerOverworldBiomeOverride(Biomes.TAIGA)
         registerOverworldBiomeOverride(Biomes.OLD_GROWTH_PINE_TAIGA)
         registerOverworldBiomeOverride(Biomes.OLD_GROWTH_SPRUCE_TAIGA)
         registerOverworldBiomeOverride(Biomes.SNOWY_TAIGA)
+
         registerOverworldSurfaceRules(MirageFairy2024.MOD_ID) {
             SurfaceRules.ifTrue(
                 SurfaceRules.abovePreliminarySurface(),
@@ -128,5 +130,6 @@ object DeepFairyForestBiomeCard : BiomeCard(
                 ),
             )
         }
+
     }
 }

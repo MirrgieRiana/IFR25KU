@@ -101,11 +101,13 @@ object FairyForestBiomeCard : BiomeCard(
     context(ModContext)
     override fun init() {
         super.init()
+
         registerOverworldBiomeOverride(Biomes.FOREST)
         registerOverworldBiomeOverride(Biomes.WINDSWEPT_FOREST)
         registerOverworldBiomeOverride(Biomes.FLOWER_FOREST)
         registerOverworldBiomeOverride(Biomes.BIRCH_FOREST)
         registerOverworldBiomeOverride(Biomes.OLD_GROWTH_BIRCH_FOREST)
         registerOverworldBiomeOverride(Biomes.DARK_FOREST)
+
     }
 }
