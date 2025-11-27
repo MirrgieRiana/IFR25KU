@@ -53,11 +53,6 @@ object RetrospectiveCityBiomeCard : BiomeCard(
     },
     BiomeTags.IS_OVERWORLD, ConventionalBiomeTags.IS_COLD_OVERWORLD, ConventionalBiomeTags.IS_DRY_OVERWORLD,
 ) {
-
-    private val MIRAGIDIAN_LAMP_FEATURE = MiragidianLampFeature(NoneFeatureConfiguration.CODEC)
-    private val MIRAGIDIAN_LAMP_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("miragidian_lamp")
-    private val MIRAGIDIAN_LAMP_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("miragidian_lamp")
-
     override fun createBiome(placedFeatureLookup: HolderGetter<PlacedFeature>, configuredCarverLookup: HolderGetter<ConfiguredWorldCarver<*>>): Biome {
         return Biome.BiomeBuilder()
             .hasPrecipitation(true)
@@ -101,6 +96,10 @@ object RetrospectiveCityBiomeCard : BiomeCard(
 
             }.build()).build()
     }
+
+    private val MIRAGIDIAN_LAMP_FEATURE = MiragidianLampFeature(NoneFeatureConfiguration.CODEC)
+    private val MIRAGIDIAN_LAMP_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("miragidian_lamp")
+    private val MIRAGIDIAN_LAMP_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("miragidian_lamp")
 
     context(ModContext)
     override fun init() {
