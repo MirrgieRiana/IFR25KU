@@ -89,6 +89,39 @@ fun <T : Any> registerDynamicGeneration(key: ResourceKey<T>, creator: context(Bo
     }
 }
 
+class FeatureGenerationScope<C : FeatureConfiguration>(val feature: Feature<C>, val identifier: ResourceLocation)
+class ConfiguredFeatureGenerationScope<C : FeatureConfiguration>(val configuredFeatureKey: ResourceKey<ConfiguredFeature<*, *>>, val identifier: ResourceLocation)
+
+context(ModContext)
+fun <C : FeatureConfiguration> Feature<C>.generator(identifier: ResourceLocation, block: FeatureGenerationScope<C>.() -> Unit) {
+    block(FeatureGenerationScope(this, identifier))
+}
+
+context(ModContext, FeatureGenerationScope<C>)
+fun <C : FeatureConfiguration> registerConfiguredFeature(suffix: String, configurationCreator: () -> C): ResourceKey<ConfiguredFeature<*, *>> {
+    return registerDynamicGeneration(Registries.CONFIGURED_FEATURE, this@FeatureGenerationScope.identifier * "_" * suffix) {
+        this@FeatureGenerationScope.feature with configurationCreator()
+    }
+}
+
+context(ModContext, FeatureGenerationScope<C>)
+fun <C : FeatureConfiguration> ResourceKey<ConfiguredFeature<*, *>>.generator(block: ConfiguredFeatureGenerationScope<C>.() -> Unit) {
+    block(ConfiguredFeatureGenerationScope(this, this@FeatureGenerationScope.identifier))
+}
+
+context(ModContext, ConfiguredFeatureGenerationScope<C>)
+fun <C : FeatureConfiguration> registerPlacedFeature(suffix: String, placementModifierCreator: PlacementModifiersScope.() -> List<PlacementModifier>): ResourceKey<PlacedFeature> {
+    return registerDynamicGeneration(Registries.PLACED_FEATURE, this@ConfiguredFeatureGenerationScope.identifier * "_" * suffix) {
+        val placementModifiers = placementModifiers { placementModifierCreator() }
+        Registries.CONFIGURED_FEATURE[this@ConfiguredFeatureGenerationScope.configuredFeatureKey] with placementModifiers
+    }
+}
+
+context(ModContext)
+fun ResourceKey<PlacedFeature>.place(biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>) {
+    this.registerFeature(GenerationStep.Decoration.VEGETAL_DECORATION) { biomePredicate() }
+}
+
 context(ModContext)
 fun ResourceKey<PlacedFeature>.registerFeature(step: GenerationStep.Decoration, biomeSelectorCreator: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>) = ModEvents.onInitialize {
     BiomeModifications.addFeature(biomeSelectorCreator(BiomeSelectorScope), step, this)

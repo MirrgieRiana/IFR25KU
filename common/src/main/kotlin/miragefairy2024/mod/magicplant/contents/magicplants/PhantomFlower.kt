@@ -14,7 +14,10 @@ import miragefairy2024.util.defaultTraits
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
 import miragefairy2024.util.per
+import miragefairy2024.util.place
 import miragefairy2024.util.registerChild
+import miragefairy2024.util.registerConfiguredFeature
+import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.square
 import miragefairy2024.util.surface
 import miragefairy2024.util.times
