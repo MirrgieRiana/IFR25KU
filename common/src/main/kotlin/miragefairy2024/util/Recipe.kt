@@ -161,7 +161,7 @@ fun registerBlastingRecipeGeneration(
     output: () -> Item,
     experience: Double = 0.0,
     cookingTime: Int = 100,
-    block: SimpleCookingRecipeBuilder. () -> Unit = {},
+    block: SimpleCookingRecipeBuilder.() -> Unit = {},
 ): RecipeGenerationSettings<SimpleCookingRecipeBuilder> {
     val settings = RecipeGenerationSettings<SimpleCookingRecipeBuilder>()
     DataGenerationEvents.onGenerateRecipe {
