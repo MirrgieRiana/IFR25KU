@@ -14,7 +14,7 @@ import miragefairy2024.util.defaultTraits
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
 import miragefairy2024.util.per
-import miragefairy2024.util.place
+import miragefairy2024.util.placeWhenVegetalDecoration
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
@@ -105,7 +105,7 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
         LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.generator.registerChild(block)
         Feature.FLOWER.generator(blockIdentifier) {
             registerConfiguredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, placer) }).generator {
-                registerPlacedFeature("cluster", { per(16) + flower(square, surface) }).place { +FairyForestBiomeCard.key * defaultTraits }
+                registerPlacedFeature("cluster", { per(16) + flower(square, surface) }).placeWhenVegetalDecoration { +FairyForestBiomeCard.key * defaultTraits }
             }
         }
     }

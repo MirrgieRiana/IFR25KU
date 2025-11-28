@@ -14,7 +14,7 @@ import miragefairy2024.util.flower
 import miragefairy2024.util.generator
 import miragefairy2024.util.getOr
 import miragefairy2024.util.per
-import miragefairy2024.util.place
+import miragefairy2024.util.placeWhenVegetalDecoration
 import miragefairy2024.util.plus
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
@@ -91,7 +91,7 @@ object DiamondLuminariaCard : AbstractLuminariaCard<DiamondLuminariaBlock>() {
         super.init()
         Feature.FLOWER.generator(blockIdentifier) {
             registerConfiguredFeature("cluster", { RandomPatchConfiguration(1, 0, 0, placer) }).generator {
-                registerPlacedFeature("cluster", { per(128) + flower(square, surface) }).place { (+ConventionalBiomeTags.IS_SNOWY + +ConventionalBiomeTags.IS_ICY) * defaultTraits }
+                registerPlacedFeature("cluster", { per(128) + flower(square, surface) }).placeWhenVegetalDecoration { (+ConventionalBiomeTags.IS_SNOWY + +ConventionalBiomeTags.IS_ICY) * defaultTraits }
             }
         }
     }

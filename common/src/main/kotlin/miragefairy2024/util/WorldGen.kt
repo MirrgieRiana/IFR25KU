@@ -119,10 +119,8 @@ fun <C : FeatureConfiguration> registerPlacedFeature(suffix: String? = null, pla
     }
 }
 
-context(ModContext)
-fun ResourceKey<PlacedFeature>.place(biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>) {
-    this.registerFeature(GenerationStep.Decoration.VEGETAL_DECORATION) { biomePredicate() }
-}
+context(ModContext) fun ResourceKey<PlacedFeature>.placeWhenUndergroundOres(biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>) = this.registerFeature(GenerationStep.Decoration.UNDERGROUND_ORES) { biomePredicate() }
+context(ModContext) fun ResourceKey<PlacedFeature>.placeWhenVegetalDecoration(biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>) = this.registerFeature(GenerationStep.Decoration.VEGETAL_DECORATION) { biomePredicate() }
 
 context(ModContext)
 fun ResourceKey<PlacedFeature>.registerFeature(step: GenerationStep.Decoration, biomeSelectorCreator: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>) = ModEvents.onInitialize {

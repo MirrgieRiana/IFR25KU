@@ -13,7 +13,7 @@ import miragefairy2024.util.defaultTraits
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
 import miragefairy2024.util.per
-import miragefairy2024.util.place
+import miragefairy2024.util.placeWhenVegetalDecoration
 import miragefairy2024.util.plus
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
@@ -91,7 +91,7 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
 
         Feature.FLOWER.generator(blockIdentifier) {
             registerConfiguredFeature("cluster", { RandomPatchConfiguration(20, 8, 3, placer) }).generator {
-                registerPlacedFeature("cluster", { per(8) + flower(center, surface) }).place { (+ConventionalBiomeTags.IS_SWAMP + +ConventionalBiomeTags.IS_JUNGLE + +Biomes.MANGROVE_SWAMP) * defaultTraits }
+                registerPlacedFeature("cluster", { per(8) + flower(center, surface) }).placeWhenVegetalDecoration { (+ConventionalBiomeTags.IS_SWAMP + +ConventionalBiomeTags.IS_JUNGLE + +Biomes.MANGROVE_SWAMP) * defaultTraits }
             }
         }
     }

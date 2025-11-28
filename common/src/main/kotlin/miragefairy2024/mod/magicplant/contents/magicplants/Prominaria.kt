@@ -18,7 +18,7 @@ import miragefairy2024.util.generator
 import miragefairy2024.util.getOr
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.per
-import miragefairy2024.util.place
+import miragefairy2024.util.placeWhenVegetalDecoration
 import miragefairy2024.util.plus
 import miragefairy2024.util.rangedNether
 import miragefairy2024.util.registerConfiguredFeature
@@ -101,7 +101,7 @@ object ProminariaCard : AbstractProminariaCard<ProminariaBlock>() {
         super.init()
         Feature.FLOWER.generator(blockIdentifier) {
             registerConfiguredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, placer) }).generator {
-                registerPlacedFeature("cluster", { per(4) + flower(square, rangedNether(32, 45)) }).place { (+Biomes.NETHER_WASTES + +Biomes.CRIMSON_FOREST) * defaultTraits }
+                registerPlacedFeature("cluster", { per(4) + flower(square, rangedNether(32, 45)) }).placeWhenVegetalDecoration { (+Biomes.NETHER_WASTES + +Biomes.CRIMSON_FOREST) * defaultTraits }
             }
         }
     }
