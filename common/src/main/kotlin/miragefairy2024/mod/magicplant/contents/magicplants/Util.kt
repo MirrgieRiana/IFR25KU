@@ -46,13 +46,16 @@ fun <C : FeatureConfiguration> ResourceKey<ConfiguredFeature<*, *>>.generator(bl
 }
 
 context(ModContext, ConfiguredFeatureGenerationScope<C>)
-fun <C : FeatureConfiguration> registerPlacedFeature(suffix: String, placementModifierCreator: PlacementModifiersScope.() -> List<PlacementModifier>, biomePredicate: (BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>)? = null) {
-    val placedFeatureKey = Registries.PLACED_FEATURE with this@ConfiguredFeatureGenerationScope.identifier * "_" * suffix
-    registerDynamicGeneration(placedFeatureKey) {
+fun <C : FeatureConfiguration> registerPlacedFeature(suffix: String, placementModifierCreator: PlacementModifiersScope.() -> List<PlacementModifier>): ResourceKey<PlacedFeature> {
+    return registerDynamicGeneration(Registries.PLACED_FEATURE, this@ConfiguredFeatureGenerationScope.identifier * "_" * suffix) {
         val placementModifiers = placementModifiers { placementModifierCreator() }
         Registries.CONFIGURED_FEATURE[this@ConfiguredFeatureGenerationScope.configuredFeatureKey] with placementModifiers
     }
-    if (biomePredicate != null) placedFeatureKey.registerFeature(GenerationStep.Decoration.VEGETAL_DECORATION) { biomePredicate() }
+}
+
+context(ModContext)
+fun ResourceKey<PlacedFeature>.place(biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>) {
+    this.registerFeature(GenerationStep.Decoration.VEGETAL_DECORATION) { biomePredicate() }
 }
 
 val SimpleMagicPlantCard<*>.maxAgedBlockState get() = this.block().withAge(this.block().maxAge)

@@ -113,14 +113,14 @@ object MirageFlowerCard : AbstractMirageFlowerCard<MirageFlowerBlock>() {
         Registration(BuiltInRegistries.FEATURE, MirageFairy2024.identifier("fairy_ring")) { FAIRY_RING_FEATURE }.register() // Fairy Ring
         Feature.FLOWER.generator(blockIdentifier) {
             registerConfiguredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, placer) }).generator { // 小さな塊
-                registerPlacedFeature("cluster", { per(16) + flower(square, surface) }) { (overworld + end * !+Biomes.THE_END) * defaultTraits }  // 地上・エンド外縁の島々に通常クラスタ
-                registerPlacedFeature("nether_cluster", { per(64) + flower(square, nether) }) { nether * defaultTraits } // ネザーにネザー用クラスタ
-                registerPlacedFeature("fairy_forest_cluster", { count(4) + flower(square, surface) }) { (+FairyForestBiomeCard.key + +DeepFairyForestBiomeCard.key) * defaultTraits } // 妖精の森
+                registerPlacedFeature("cluster", { per(16) + flower(square, surface) }).place { (overworld + end * !+Biomes.THE_END) * defaultTraits }  // 地上・エンド外縁の島々に通常クラスタ
+                registerPlacedFeature("nether_cluster", { per(64) + flower(square, nether) }).place { nether * defaultTraits } // ネザーにネザー用クラスタ
+                registerPlacedFeature("fairy_forest_cluster", { count(4) + flower(square, surface) }).place { (+FairyForestBiomeCard.key + +DeepFairyForestBiomeCard.key) * defaultTraits } // 妖精の森
             }
         }
         FAIRY_RING_FEATURE.generator(blockIdentifier) {
             registerConfiguredFeature("fairy_ring", { FairyRingFeatureConfig(100, 6F, 8F, 3, placer) }).generator { // Fairy Ring
-                registerPlacedFeature("fairy_ring", { per(600) + flower(center, surface) }) { overworld * defaultTraits }  // 地上にFairy Ring
+                registerPlacedFeature("fairy_ring", { per(600) + flower(center, surface) }).place { overworld * defaultTraits }  // 地上にFairy Ring
             }
         }
     }

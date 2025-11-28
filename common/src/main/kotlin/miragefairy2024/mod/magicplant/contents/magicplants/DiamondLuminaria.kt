@@ -87,7 +87,7 @@ object DiamondLuminariaCard : AbstractLuminariaCard<DiamondLuminariaBlock>() {
         super.init()
         Feature.FLOWER.generator(blockIdentifier) {
             registerConfiguredFeature("cluster", { RandomPatchConfiguration(1, 0, 0, placer) }).generator {
-                registerPlacedFeature("cluster", { per(128) + flower(square, surface) }) { (+ConventionalBiomeTags.IS_SNOWY + +ConventionalBiomeTags.IS_ICY) * defaultTraits }
+                registerPlacedFeature("cluster", { per(128) + flower(square, surface) }).place { (+ConventionalBiomeTags.IS_SNOWY + +ConventionalBiomeTags.IS_ICY) * defaultTraits }
             }
         }
     }
