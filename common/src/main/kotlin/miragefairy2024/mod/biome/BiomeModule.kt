@@ -46,6 +46,7 @@ fun initBiomeModule() {
     FAIRY_BIOME_TAG.enJa(EnJa("Fairy", "妖精"))
 
     MiragidianLampFeatureCard.init()
+    SmallWallRuinsFeatureCard.init()
 
     FairyForestBiomeCard.init()
     DeepFairyForestBiomeCard.init()

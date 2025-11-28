@@ -80,6 +80,19 @@ object RetrospectiveCityBiomeCard : BiomeCard(
                 BiomeDefaultFeatures.addDefaultMushrooms(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MiragidianLampFeatureCard.placedFeatureKey)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, SmallWallRuinsFeatureCard.placedFeatureKey)
+
+                // TODO 小さな壁の残骸
+                //      2辺だけを作る
+                //      頂点のところにレンガの半ブロック
+                //      純粋な装飾で報酬はなし
+                // TODO 大きめの建物の残骸
+                //      3階建てくらいのサイズ
+                //      小さいのと比べてアルゴリズム自体が異なる
+                //      出来れば報酬チェスト
+                // TODO 小さなトーテム
+                //      1x1の太さの柱
+                //      いずれにしても設置先にタイルを除く耐霊石がある場合は失敗
 
             }.build()).build()
     }
