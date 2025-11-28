@@ -25,9 +25,8 @@ val FAIRY_BIOME_TAG = MirageFairy2024.identifier("fairy").toBiomeTag()
 context(ModContext)
 fun initBiomeModule() {
 
+    // 地上世界用の共通RegionをTerraBlenderに登録
     ModEvents.onTerraBlenderInitialized {
-
-        // 地上世界用の共通RegionをTerraBlenderに登録
         Regions.register(object : Region(MirageFairy2024.identifier("overworld"), RegionType.OVERWORLD, 1) {
             override fun addBiomes(registry: Registry<Biome>, mapper: Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>>) {
                 addModifiedVanillaOverworldBiomes(mapper) {
@@ -37,7 +36,6 @@ fun initBiomeModule() {
                 }
             }
         })
-
     }
 
     FAIRY_BIOME_TAG.enJa(EnJa("Fairy", "妖精"))
