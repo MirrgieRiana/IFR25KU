@@ -34,18 +34,15 @@ abstract class BiomeCard(
     context(ModContext)
     open fun init() {
 
-        // バイオームの生成
         registerDynamicGeneration(key) {
             createBiome(lookup(Registries.PLACED_FEATURE), lookup(Registries.CONFIGURED_CARVER))
         }
 
-        // このバイオームをタグに登録
+        translation.enJa()
+
         tags.forEach { tag ->
             tag.generator.registerChild(identifier)
         }
-
-        // 翻訳生成
-        translation.enJa()
 
         advancement?.init()
 
