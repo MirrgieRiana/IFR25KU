@@ -10,11 +10,11 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.flower
-import miragefairy2024.util.get
+import miragefairy2024.util.generator
 import miragefairy2024.util.per
-import miragefairy2024.util.placementModifiers
 import miragefairy2024.util.register
-import miragefairy2024.util.registerDynamicGeneration
+import miragefairy2024.util.registerConfiguredFeature
+import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.square
 import miragefairy2024.util.surface
 import miragefairy2024.util.with
@@ -98,7 +98,6 @@ object RetrospectiveCityBiomeCard : BiomeCard(
     }
 
     private val MIRAGIDIAN_LAMP_FEATURE = MiragidianLampFeature(NoneFeatureConfiguration.CODEC)
-    private val MIRAGIDIAN_LAMP_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("miragidian_lamp")
     private val MIRAGIDIAN_LAMP_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("miragidian_lamp")
 
     context(ModContext)
@@ -131,12 +130,10 @@ object RetrospectiveCityBiomeCard : BiomeCard(
         }
 
         Registration(BuiltInRegistries.FEATURE, MirageFairy2024.identifier("miragidian_lamp")) { MIRAGIDIAN_LAMP_FEATURE }.register()
-        registerDynamicGeneration(MIRAGIDIAN_LAMP_CONFIGURED_FEATURE_KEY) {
-            MIRAGIDIAN_LAMP_FEATURE with NoneFeatureConfiguration.INSTANCE
-        }
-        registerDynamicGeneration(MIRAGIDIAN_LAMP_PLACED_FEATURE_KEY) {
-            val placementModifiers = placementModifiers { per(8) + flower(square, surface) }
-            Registries.CONFIGURED_FEATURE[MIRAGIDIAN_LAMP_CONFIGURED_FEATURE_KEY] with placementModifiers
+        MIRAGIDIAN_LAMP_FEATURE.generator(MirageFairy2024.identifier("miragidian_lamp")) {
+            registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
+                registerPlacedFeature(MIRAGIDIAN_LAMP_PLACED_FEATURE_KEY) { per(8) + flower(square, surface) }
+            }
         }
 
         registerOverworldBiomeOverride(Biomes.SAVANNA)
