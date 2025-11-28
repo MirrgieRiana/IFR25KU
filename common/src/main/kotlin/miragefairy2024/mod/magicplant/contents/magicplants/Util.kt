@@ -25,29 +25,29 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature
 import net.minecraft.world.level.levelgen.placement.PlacementModifier
 import java.util.function.Predicate
 
-class FeatureContext<C : FeatureConfiguration>(val feature: Feature<C>, val identifier: ResourceLocation)
-class ConfiguredFeatureContext<C : FeatureConfiguration>(val configuredFeatureKey: ResourceKey<ConfiguredFeature<*, *>>, val featureContext: FeatureContext<C>)
+class FeatureGenerationScope<C : FeatureConfiguration>(val feature: Feature<C>, val identifier: ResourceLocation)
+class ConfiguredFeatureGenerationScope<C : FeatureConfiguration>(val configuredFeatureKey: ResourceKey<ConfiguredFeature<*, *>>, val identifier: ResourceLocation)
 
 context(ModContext)
-fun <C : FeatureConfiguration> Feature<C>.generation(identifier: ResourceLocation, block: FeatureContext<C>. () -> Unit) {
-    block(FeatureContext(this, identifier))
+fun <C : FeatureConfiguration> Feature<C>.generation(identifier: ResourceLocation, block: FeatureGenerationScope<C>.() -> Unit) {
+    block(FeatureGenerationScope(this, identifier))
 }
 
-context(ModContext, FeatureContext<C>)
-fun <C : FeatureConfiguration> configuredFeature(suffix: String, configurationCreator: () -> C, block: ConfiguredFeatureContext<C> .() -> Unit) {
-    val configuredFeatureKey = Registries.CONFIGURED_FEATURE with this@FeatureContext.identifier * "_" * suffix
+context(ModContext, FeatureGenerationScope<C>)
+fun <C : FeatureConfiguration> configuredFeature(suffix: String, configurationCreator: () -> C, block: ConfiguredFeatureGenerationScope<C>.() -> Unit) {
+    val configuredFeatureKey = Registries.CONFIGURED_FEATURE with this@FeatureGenerationScope.identifier * "_" * suffix
     registerDynamicGeneration(configuredFeatureKey) {
-        this@FeatureContext.feature with configurationCreator()
+        this@FeatureGenerationScope.feature with configurationCreator()
     }
-    block(ConfiguredFeatureContext(configuredFeatureKey, this@FeatureContext))
+    block(ConfiguredFeatureGenerationScope(configuredFeatureKey, this@FeatureGenerationScope.identifier))
 }
 
-context(ModContext, ConfiguredFeatureContext<C>)
+context(ModContext, ConfiguredFeatureGenerationScope<C>)
 fun <C : FeatureConfiguration> placedFeature(suffix: String, placementModifierCreator: PlacementModifiersScope.() -> List<PlacementModifier>, biomePredicate: (BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>)? = null) {
-    val placedFeatureKey = Registries.PLACED_FEATURE with this@ConfiguredFeatureContext.featureContext.identifier * "_" * suffix
+    val placedFeatureKey = Registries.PLACED_FEATURE with this@ConfiguredFeatureGenerationScope.identifier * "_" * suffix
     registerDynamicGeneration(placedFeatureKey) {
         val placementModifiers = placementModifiers { placementModifierCreator() }
-        Registries.CONFIGURED_FEATURE[this@ConfiguredFeatureContext.configuredFeatureKey] with placementModifiers
+        Registries.CONFIGURED_FEATURE[this@ConfiguredFeatureGenerationScope.configuredFeatureKey] with placementModifiers
     }
     if (biomePredicate != null) placedFeatureKey.registerFeature(GenerationStep.Decoration.VEGETAL_DECORATION) { biomePredicate() }
 }
