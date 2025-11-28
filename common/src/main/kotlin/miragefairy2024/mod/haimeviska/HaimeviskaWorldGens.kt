@@ -5,13 +5,13 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.util.Registration
 import miragefairy2024.util.count
-import miragefairy2024.util.get
+import miragefairy2024.util.generator
 import miragefairy2024.util.per
-import miragefairy2024.util.placementModifiers
+import miragefairy2024.util.placeWhenVegetalDecoration
 import miragefairy2024.util.plus
 import miragefairy2024.util.register
-import miragefairy2024.util.registerDynamicGeneration
-import miragefairy2024.util.registerFeature
+import miragefairy2024.util.registerConfiguredFeature
+import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.tree
 import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.with
@@ -22,7 +22,6 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.util.valueproviders.ConstantInt
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.RotatedPillarBlock
-import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize
@@ -51,37 +50,29 @@ fun initHaimeviskaWorldGens() {
     // TreeDecoratorの登録
     Registration(BuiltInRegistries.TREE_DECORATOR_TYPE, HaimeviskaTreeDecoratorCard.identifier) { HaimeviskaTreeDecoratorCard.type }.register()
 
-    // ConfiguredFeatureの登録
-    registerDynamicGeneration(HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
-        Feature.TREE with TreeConfiguration.TreeConfigurationBuilder(
-            BlockStateProvider.simple(HaimeviskaBlockCard.LOG.block()),
-            FancyTrunkPlacer(22, 10, 0), // 最大32
-            BlockStateProvider.simple(HaimeviskaBlockCard.LEAVES.block()),
-            FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(2), 4),
-            TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)),
-        ).ignoreVines().decorators(listOf(HaimeviskaTreeDecoratorCard.treeDecorator)).build()
-    }
+    // 地形生成
+    Feature.TREE.generator(MirageFairy2024.identifier("haimeviska")) {
+        registerConfiguredFeature(HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
+            TreeConfiguration.TreeConfigurationBuilder(
+                BlockStateProvider.simple(HaimeviskaBlockCard.LOG.block()),
+                FancyTrunkPlacer(22, 10, 0), // 最大32
+                BlockStateProvider.simple(HaimeviskaBlockCard.LEAVES.block()),
+                FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(2), 4),
+                TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)),
+            ).ignoreVines().decorators(listOf(HaimeviskaTreeDecoratorCard.treeDecorator)).build()
+        }.generator {
 
-    // まばらなPlacedFeature
-    registerDynamicGeneration(HAIMEVISKA_PLACED_FEATURE_KEY) {
-        val placementModifiers = placementModifiers { per(512) + tree(HaimeviskaBlockCard.SAPLING.block()) }
-        Registries.CONFIGURED_FEATURE[HAIMEVISKA_CONFIGURED_FEATURE_KEY] with placementModifiers
-    }
+            // まばら
+            registerPlacedFeature(HAIMEVISKA_PLACED_FEATURE_KEY) { per(512) + tree(HaimeviskaBlockCard.SAPLING.block()) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_PLAINS + +ConventionalBiomeTags.IS_FOREST } // 平原・森林バイオームに配置
 
-    // 高密度のPlacedFeature
-    registerDynamicGeneration(HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY) {
-        val placementModifiers = placementModifiers { per(16) + tree(HaimeviskaBlockCard.SAPLING.block()) }
-        Registries.CONFIGURED_FEATURE[HAIMEVISKA_CONFIGURED_FEATURE_KEY] with placementModifiers
-    }
+            // 高密度
+            registerPlacedFeature(HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY) { per(16) + tree(HaimeviskaBlockCard.SAPLING.block()) }
 
-    // 超高密度のPlacedFeature
-    registerDynamicGeneration(HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY) {
-        val placementModifiers = placementModifiers { count(8) + tree(HaimeviskaBlockCard.SAPLING.block()) }
-        Registries.CONFIGURED_FEATURE[HAIMEVISKA_CONFIGURED_FEATURE_KEY] with placementModifiers
-    }
+            // 超高密度
+            registerPlacedFeature(HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY) { count(8) + tree(HaimeviskaBlockCard.SAPLING.block()) }
 
-    // 平原・森林バイオームに配置
-    HAIMEVISKA_PLACED_FEATURE_KEY.registerFeature(GenerationStep.Decoration.VEGETAL_DECORATION) { +ConventionalBiomeTags.IS_PLAINS + +ConventionalBiomeTags.IS_FOREST }
+        }
+    }
 
 }
 
