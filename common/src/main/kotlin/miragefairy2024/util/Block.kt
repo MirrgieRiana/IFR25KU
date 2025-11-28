@@ -36,6 +36,8 @@ fun <T : Comparable<T>> BlockState.getOrNull(property: Property<T>): T? {
 
 fun <T : Comparable<T>> BlockState.getOr(property: Property<T>, default: () -> T) = this.getOrNull(property) ?: default()
 
+fun <T : Comparable<T>> BlockState.with(property: Property<T>, value: T): BlockState = this.setValue(property, value)
+
 infix fun BlockState.isIn(block: Block) = this.`is`(block)
 infix fun BlockState.isNotIn(block: Block) = !(this isIn block)
 infix fun BlockState.isIn(tag: TagKey<Block>) = this.`is`(tag)

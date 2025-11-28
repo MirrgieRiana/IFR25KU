@@ -106,7 +106,7 @@ class HaimeviskaLeavesBlock(settings: Properties) : LeavesBlock(settings) {
     override fun codec() = CODEC
 
     init {
-        registerDefaultState(defaultBlockState().setValue(CHARGED, true))
+        registerDefaultState(defaultBlockState().with(CHARGED, true))
     }
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
@@ -121,7 +121,7 @@ class HaimeviskaLeavesBlock(settings: Properties) : LeavesBlock(settings) {
         super.randomTick(state, world, pos, random)
         if (!state[CHARGED]) {
             if (random.randomBoolean(15, world.lightProxy.getLightLevel(pos))) {
-                world.setBlock(pos, state.setValue(CHARGED, true), UPDATE_CLIENTS)
+                world.setBlock(pos, state.with(CHARGED, true), UPDATE_CLIENTS)
             }
         }
     }

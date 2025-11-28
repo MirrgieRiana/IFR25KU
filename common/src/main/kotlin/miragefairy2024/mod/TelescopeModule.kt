@@ -47,6 +47,7 @@ import miragefairy2024.util.set
 import miragefairy2024.util.text
 import miragefairy2024.util.times
 import miragefairy2024.util.toTextureSource
+import miragefairy2024.util.with
 import miragefairy2024.util.withHorizontalRotation
 import mirrg.kotlin.hydrogen.formatAs
 import mirrg.kotlin.java.hydrogen.floorMod
@@ -211,7 +212,7 @@ class TelescopeBlock(settings: Properties) : SimpleHorizontalFacingBlock(setting
         }
     }
 
-    override fun getStateForPlacement(ctx: BlockPlaceContext): BlockState = defaultBlockState().setValue(FACING, ctx.horizontalDirection)
+    override fun getStateForPlacement(ctx: BlockPlaceContext): BlockState = defaultBlockState().with(FACING, ctx.horizontalDirection)
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun isPathfindable(state: BlockState, pathComputationType: PathComputationType) = false

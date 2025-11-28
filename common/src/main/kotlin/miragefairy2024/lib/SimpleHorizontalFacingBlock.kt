@@ -1,5 +1,6 @@
 package miragefairy2024.lib
 
+import miragefairy2024.util.with
 import net.minecraft.core.Direction
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.block.Block
@@ -9,7 +10,7 @@ import net.minecraft.world.level.block.state.StateDefinition
 
 abstract class SimpleHorizontalFacingBlock(settings: Properties) : HorizontalDirectionalBlock(settings) {
     init {
-        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH))
+        registerDefaultState(defaultBlockState().with(FACING, Direction.NORTH))
     }
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
@@ -17,6 +18,6 @@ abstract class SimpleHorizontalFacingBlock(settings: Properties) : HorizontalDir
     }
 
     override fun getStateForPlacement(ctx: BlockPlaceContext): BlockState {
-        return defaultBlockState().setValue(FACING, ctx.horizontalDirection.opposite)
+        return defaultBlockState().with(FACING, ctx.horizontalDirection.opposite)
     }
 }

@@ -14,6 +14,7 @@ import miragefairy2024.util.get
 import miragefairy2024.util.int
 import miragefairy2024.util.isIn
 import miragefairy2024.util.isNotIn
+import miragefairy2024.util.with
 import miragefairy2024.util.wrapper
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
@@ -62,7 +63,7 @@ abstract class FairyFactoryBlock(card: FairyFactoryCard<*, *, *>) : FairyBuildin
     }
 
     init {
-        registerDefaultState(defaultBlockState().setValue(STATUS, Status.OFFLINE))
+        registerDefaultState(defaultBlockState().with(STATUS, Status.OFFLINE))
     }
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
@@ -85,7 +86,7 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
     fun setStatus(status: FairyFactoryBlock.Status) {
         val world = level ?: return
         if (blockState[FairyFactoryBlock.STATUS] != status) {
-            world.setBlock(worldPosition, blockState.setValue(FairyFactoryBlock.STATUS, status), Block.UPDATE_ALL)
+            world.setBlock(worldPosition, blockState.with(FairyFactoryBlock.STATUS, status), Block.UPDATE_ALL)
         }
     }
 
@@ -136,7 +137,7 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
                 if (blockState[HaimeviskaLeavesBlock.CHARGED]) {
                     folia += 1000
                     changed = true
-                    world.setBlock(blockPos, blockState.setValue(HaimeviskaLeavesBlock.CHARGED, false), Block.UPDATE_CLIENTS)
+                    world.setBlock(blockPos, blockState.with(HaimeviskaLeavesBlock.CHARGED, false), Block.UPDATE_CLIENTS)
                     if (folia >= card.maxFolia) return@finished
                 }
             }

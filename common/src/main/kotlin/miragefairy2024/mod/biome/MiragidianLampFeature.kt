@@ -3,6 +3,7 @@ package miragefairy2024.mod.biome
 import com.mojang.serialization.Codec
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.contents.MiragidianLampBlock
+import miragefairy2024.util.with
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
@@ -27,7 +28,7 @@ class MiragidianLampFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<No
                 height - 1 -> MiragidianLampBlock.Part.HEAD
                 else -> MiragidianLampBlock.Part.POLE
             }
-            val blockState = BlockMaterialCard.MIRAGIDIAN_LAMP.block().defaultBlockState().setValue(MiragidianLampBlock.PART, part)
+            val blockState = BlockMaterialCard.MIRAGIDIAN_LAMP.block().defaultBlockState().with(MiragidianLampBlock.PART, part)
             level.setBlock(targetBlockPos, blockState, 2)
         }
 

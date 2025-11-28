@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec
 import miragefairy2024.util.get
 import miragefairy2024.util.isIn
 import miragefairy2024.util.isNotIn
+import miragefairy2024.util.with
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.particles.ParticleTypes
@@ -69,7 +70,7 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
     }
 
     init {
-        registerDefaultState(defaultBlockState().setValue(PART, Part.FOOT))
+        registerDefaultState(defaultBlockState().with(PART, Part.FOOT))
     }
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
@@ -84,11 +85,11 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
         val level = context.level
         if (blockPos.y + 1 >= level.maxBuildHeight) return null
         if (!level.getBlockState(blockPos.above()).canBeReplaced(context)) return null
-        return defaultBlockState().setValue(PART, Part.FOOT)
+        return defaultBlockState().with(PART, Part.FOOT)
     }
 
     override fun setPlacedBy(level: Level, pos: BlockPos, state: BlockState, placer: LivingEntity?, stack: ItemStack) {
-        level.setBlock(pos.above(), state.setValue(PART, Part.HEAD), 3)
+        level.setBlock(pos.above(), state.with(PART, Part.HEAD), 3)
     }
 
 
@@ -98,7 +99,7 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
         val part = state[PART]
         if (direction in part.connections) {
             return if (neighborState isIn this && direction.opposite in neighborState[PART].connections) {
-                neighborState.setValue(PART, part)
+                neighborState.with(PART, part)
             } else {
                 Blocks.AIR.defaultBlockState()
             }
@@ -132,15 +133,15 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
 
         if (level.isClientSide) return ItemInteractionResult.SUCCESS
 
-        level.setBlock(newPoleBlockPos, defaultBlockState().setValue(PART, Part.POLE), 2)
-        level.setBlock(newHeadBlockPos, defaultBlockState().setValue(PART, Part.HEAD), 2)
+        level.setBlock(newPoleBlockPos, defaultBlockState().with(PART, Part.POLE), 2)
+        level.setBlock(newHeadBlockPos, defaultBlockState().with(PART, Part.HEAD), 2)
         level.blockUpdated(newPoleBlockPos, this)
         level.blockUpdated(newHeadBlockPos, this)
         level.gameEvent(player, GameEvent.BLOCK_CHANGE, newPoleBlockPos)
         level.gameEvent(player, GameEvent.BLOCK_CHANGE, newHeadBlockPos)
         // ミラジディアンのランプは無償で長さを伸長できる
 
-        val soundType = defaultBlockState().setValue(PART, Part.HEAD).soundType
+        val soundType = defaultBlockState().with(PART, Part.HEAD).soundType
         level.playSound(null, newHeadBlockPos, soundType.placeSound, SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F)
 
         return ItemInteractionResult.CONSUME

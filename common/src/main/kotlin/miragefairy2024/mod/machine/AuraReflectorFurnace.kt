@@ -130,7 +130,7 @@ class AuraReflectorFurnaceBlock(card: AuraReflectorFurnaceCard) : SimpleMachineB
     }
 
     init {
-        registerDefaultState(defaultBlockState().setValue(LIT, false))
+        registerDefaultState(defaultBlockState().with(LIT, false))
     }
 
     override fun codec() = CODEC
@@ -184,7 +184,7 @@ class AuraReflectorFurnaceBlockEntity(private val card: AuraReflectorFurnaceCard
     fun setLit(lit: Boolean) {
         val world = level ?: return
         if (blockState[AuraReflectorFurnaceBlock.LIT] != lit) {
-            world.setBlock(worldPosition, blockState.setValue(AuraReflectorFurnaceBlock.LIT, lit), Block.UPDATE_ALL)
+            world.setBlock(worldPosition, blockState.with(AuraReflectorFurnaceBlock.LIT, lit), Block.UPDATE_ALL)
         }
     }
 

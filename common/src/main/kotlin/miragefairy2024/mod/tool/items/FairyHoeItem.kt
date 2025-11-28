@@ -3,6 +3,7 @@ package miragefairy2024.mod.tool.items
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.tool.FairyMiningToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
+import miragefairy2024.util.with
 import mirrg.kotlin.helium.atMost
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
@@ -109,7 +110,7 @@ open class AdvancedHoeItem(toolMaterial: Tier, private val tillingRecipe: Tillin
             )
         )
         val CREATIVE_RECIPE = object : TillingRecipe {
-            private val target = Blocks.FARMLAND.defaultBlockState().setValue(FarmBlock.MOISTURE, FarmBlock.MAX_MOISTURE)
+            private val target = Blocks.FARMLAND.defaultBlockState().with(FarmBlock.MOISTURE, FarmBlock.MAX_MOISTURE)
             override fun test(context: UseOnContext, blockState: BlockState): Consumer<UseOnContext>? {
                 if (blockState == target) return null
                 return changeIntoState(target)

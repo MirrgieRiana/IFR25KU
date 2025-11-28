@@ -11,6 +11,7 @@ import miragefairy2024.util.ModelTexturesData
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.isIn
 import miragefairy2024.util.string
+import miragefairy2024.util.with
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.data.models.model.TextureSlot
@@ -33,12 +34,12 @@ class FairyCrystalGlassBlock(properties: Properties) : TransparentBlock(properti
     init {
         registerDefaultState(
             defaultBlockState()
-                .setValue(BlockStateProperties.NORTH, false)
-                .setValue(BlockStateProperties.EAST, false)
-                .setValue(BlockStateProperties.SOUTH, false)
-                .setValue(BlockStateProperties.WEST, false)
-                .setValue(BlockStateProperties.UP, false)
-                .setValue(BlockStateProperties.DOWN, false)
+                .with(BlockStateProperties.NORTH, false)
+                .with(BlockStateProperties.EAST, false)
+                .with(BlockStateProperties.SOUTH, false)
+                .with(BlockStateProperties.WEST, false)
+                .with(BlockStateProperties.UP, false)
+                .with(BlockStateProperties.DOWN, false)
         )
     }
 
@@ -55,16 +56,16 @@ class FairyCrystalGlassBlock(properties: Properties) : TransparentBlock(properti
 
     override fun getStateForPlacement(ctx: BlockPlaceContext): BlockState? {
         return defaultBlockState()
-            .setValue(BlockStateProperties.NORTH, ctx.level.getBlockState(ctx.clickedPos.north()) isIn this)
-            .setValue(BlockStateProperties.EAST, ctx.level.getBlockState(ctx.clickedPos.east()) isIn this)
-            .setValue(BlockStateProperties.SOUTH, ctx.level.getBlockState(ctx.clickedPos.south()) isIn this)
-            .setValue(BlockStateProperties.WEST, ctx.level.getBlockState(ctx.clickedPos.west()) isIn this)
-            .setValue(BlockStateProperties.UP, ctx.level.getBlockState(ctx.clickedPos.above()) isIn this)
-            .setValue(BlockStateProperties.DOWN, ctx.level.getBlockState(ctx.clickedPos.below()) isIn this)
+            .with(BlockStateProperties.NORTH, ctx.level.getBlockState(ctx.clickedPos.north()) isIn this)
+            .with(BlockStateProperties.EAST, ctx.level.getBlockState(ctx.clickedPos.east()) isIn this)
+            .with(BlockStateProperties.SOUTH, ctx.level.getBlockState(ctx.clickedPos.south()) isIn this)
+            .with(BlockStateProperties.WEST, ctx.level.getBlockState(ctx.clickedPos.west()) isIn this)
+            .with(BlockStateProperties.UP, ctx.level.getBlockState(ctx.clickedPos.above()) isIn this)
+            .with(BlockStateProperties.DOWN, ctx.level.getBlockState(ctx.clickedPos.below()) isIn this)
     }
 
     override fun updateShape(state: BlockState, direction: Direction, neighborState: BlockState, level: LevelAccessor, pos: BlockPos, neighborPos: BlockPos): BlockState {
-        return state.setValue(PipeBlock.PROPERTY_BY_DIRECTION[direction]!!, neighborState isIn this)
+        return state.with(PipeBlock.PROPERTY_BY_DIRECTION[direction]!!, neighborState isIn this)
     }
 }
 

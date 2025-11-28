@@ -20,6 +20,7 @@ import miragefairy2024.util.registerFlammable
 import miragefairy2024.util.registerShapedRecipeGeneration
 import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.toItemTag
+import miragefairy2024.util.with
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -154,7 +155,7 @@ class HaimeviskaLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
 
         // 加工
         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand))
-        level.setBlock(pos, HaimeviskaBlockCard.INCISED_LOG.block().defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
+        level.setBlock(pos, HaimeviskaBlockCard.INCISED_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
         player.awardStat(Stats.ITEM_USED.get(stack.item))
 
         // エフェクト

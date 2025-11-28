@@ -91,7 +91,7 @@ abstract class SimpleMagicPlantBlock(private val card: SimpleMagicPlantCard<*>, 
     val maxAge: Int = agePropertyCache.possibleValues.max()
 
     init {
-        registerDefaultState(defaultBlockState().setValue(agePropertyCache, 0))
+        registerDefaultState(defaultBlockState().with(agePropertyCache, 0))
     }
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
@@ -100,7 +100,7 @@ abstract class SimpleMagicPlantBlock(private val card: SimpleMagicPlantCard<*>, 
 
     fun getAge(state: BlockState) = state[agePropertyCache]
     fun isMaxAge(state: BlockState) = getAge(state) >= maxAge
-    fun withAge(age: Int): BlockState = defaultBlockState().setValue(agePropertyCache, age atLeast 0 atMost maxAge)
+    fun withAge(age: Int): BlockState = defaultBlockState().with(agePropertyCache, age atLeast 0 atMost maxAge)
 
 
     // Shape

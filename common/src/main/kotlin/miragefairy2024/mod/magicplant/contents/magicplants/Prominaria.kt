@@ -22,6 +22,7 @@ import miragefairy2024.util.rangedNether
 import miragefairy2024.util.square
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
+import miragefairy2024.util.with
 import net.minecraft.core.BlockPos
 import net.minecraft.data.worldgen.placement.PlacementUtils
 import net.minecraft.resources.ResourceLocation
@@ -124,7 +125,7 @@ class ProminariaBlock(settings: Properties) : SimpleMagicPlantBlock(ProminariaCa
         val rare = blockEntity.isRare()
         val natural = blockEntity.isNatural()
 
-        level.setBlock(pos, GoldProminariaCard.block().defaultBlockState().setValue(BlockStateProperties.AGE_3, age), 0b1011)
+        level.setBlock(pos, GoldProminariaCard.block().defaultBlockState().with(BlockStateProperties.AGE_3, age), 0b1011)
         val newBlockEntity = level.getBlockEntity(pos) as MagicPlantBlockEntity
         newBlockEntity.setTraitStacks(traitStacks)
         newBlockEntity.setRare(rare)

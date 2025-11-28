@@ -15,6 +15,7 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.get
 import miragefairy2024.util.randomInt
 import miragefairy2024.util.registerLootTableGeneration
+import miragefairy2024.util.with
 import mirrg.kotlin.helium.atMost
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -85,7 +86,7 @@ class DrippingHaimeviskaLogBlock(settings: Properties) : SimpleHorizontalFacingB
         val direction = state[FACING]
 
         // 消費
-        level.setBlock(pos, HaimeviskaBlockCard.INCISED_LOG.block().defaultBlockState().setValue(FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
+        level.setBlock(pos, HaimeviskaBlockCard.INCISED_LOG.block().defaultBlockState().with(FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
 
         fun drop(item: Item, count: Double) {
             val actualCount = level.random.randomInt(count) atMost item.defaultMaxStackSize
