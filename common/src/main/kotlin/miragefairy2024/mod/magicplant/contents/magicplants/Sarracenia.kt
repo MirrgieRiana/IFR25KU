@@ -90,8 +90,8 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
         super.init()
 
         Feature.FLOWER.generator(blockIdentifier) {
-            registerConfiguredFeature("cluster", { RandomPatchConfiguration(20, 8, 3, placer) }).generator {
-                registerPlacedFeature("cluster", { per(8) + flower(center, surface) }).placeWhenVegetalDecoration { (+ConventionalBiomeTags.IS_SWAMP + +ConventionalBiomeTags.IS_JUNGLE + +Biomes.MANGROVE_SWAMP) * defaultTraits }
+            registerConfiguredFeature("cluster") { RandomPatchConfiguration(20, 8, 3, placer) }.generator {
+                registerPlacedFeature("cluster") { per(8) + flower(center, surface) }.placeWhenVegetalDecoration { (+ConventionalBiomeTags.IS_SWAMP + +ConventionalBiomeTags.IS_JUNGLE + +Biomes.MANGROVE_SWAMP) * defaultTraits }
             }
         }
     }

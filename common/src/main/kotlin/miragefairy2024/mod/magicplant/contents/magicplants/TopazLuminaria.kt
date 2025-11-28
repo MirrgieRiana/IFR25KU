@@ -85,8 +85,8 @@ object TopazLuminariaCard : AbstractLuminariaCard<TopazLuminariaBlock>() {
     override fun init() {
         super.init()
         Feature.FLOWER.generator(blockIdentifier) {
-            registerConfiguredFeature("cluster", { RandomPatchConfiguration(1, 0, 0, placer) }).generator {
-                registerPlacedFeature("cluster", { per(128) + flower(square, surface) }).placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_DESERT * defaultTraits }
+            registerConfiguredFeature("cluster") { RandomPatchConfiguration(1, 0, 0, placer) }.generator {
+                registerPlacedFeature("cluster") { per(128) + flower(square, surface) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_DESERT * defaultTraits }
             }
         }
     }

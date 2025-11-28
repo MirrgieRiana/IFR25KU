@@ -100,8 +100,8 @@ object ProminariaCard : AbstractProminariaCard<ProminariaBlock>() {
     override fun init() {
         super.init()
         Feature.FLOWER.generator(blockIdentifier) {
-            registerConfiguredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, placer) }).generator {
-                registerPlacedFeature("cluster", { per(4) + flower(square, rangedNether(32, 45)) }).placeWhenVegetalDecoration { (+Biomes.NETHER_WASTES + +Biomes.CRIMSON_FOREST) * defaultTraits }
+            registerConfiguredFeature("cluster") { RandomPatchConfiguration(6, 6, 2, placer) }.generator {
+                registerPlacedFeature("cluster") { per(4) + flower(square, rangedNether(32, 45)) }.placeWhenVegetalDecoration { (+Biomes.NETHER_WASTES + +Biomes.CRIMSON_FOREST) * defaultTraits }
             }
         }
     }
