@@ -86,9 +86,9 @@ object EmeraldLuminariaCard : AbstractLuminariaCard<EmeraldLuminariaBlock>() {
     override fun init() {
         super.init()
         Feature.FLOWER.generator(blockIdentifier) {
-            configuredFeature("cluster", { RandomPatchConfiguration(1, 0, 0, placer) }) {
-                placedFeature("cluster", { per(128) + flower(square, surface) }) { (+ConventionalBiomeTags.IS_JUNGLE + +ConventionalBiomeTags.IS_SWAMP) * defaultTraits }  // 地上
-                placedFeature("underground_cluster", { count(16) + flower(square, underground) }) { +Biomes.LUSH_CAVES * defaultTraits } // 地下
+            registerConfiguredFeature("cluster", { RandomPatchConfiguration(1, 0, 0, placer) }) {
+                registerPlacedFeature("cluster", { per(128) + flower(square, surface) }) { (+ConventionalBiomeTags.IS_JUNGLE + +ConventionalBiomeTags.IS_SWAMP) * defaultTraits }  // 地上
+                registerPlacedFeature("underground_cluster", { count(16) + flower(square, underground) }) { +Biomes.LUSH_CAVES * defaultTraits } // 地下
             }
         }
     }

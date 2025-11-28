@@ -34,7 +34,7 @@ fun <C : FeatureConfiguration> Feature<C>.generator(identifier: ResourceLocation
 }
 
 context(ModContext, FeatureGenerationScope<C>)
-fun <C : FeatureConfiguration> configuredFeature(suffix: String, configurationCreator: () -> C, block: ConfiguredFeatureGenerationScope<C>.() -> Unit) {
+fun <C : FeatureConfiguration> registerConfiguredFeature(suffix: String, configurationCreator: () -> C, block: ConfiguredFeatureGenerationScope<C>.() -> Unit) {
     val configuredFeatureKey = Registries.CONFIGURED_FEATURE with this@FeatureGenerationScope.identifier * "_" * suffix
     registerDynamicGeneration(configuredFeatureKey) {
         this@FeatureGenerationScope.feature with configurationCreator()
@@ -43,7 +43,7 @@ fun <C : FeatureConfiguration> configuredFeature(suffix: String, configurationCr
 }
 
 context(ModContext, ConfiguredFeatureGenerationScope<C>)
-fun <C : FeatureConfiguration> placedFeature(suffix: String, placementModifierCreator: PlacementModifiersScope.() -> List<PlacementModifier>, biomePredicate: (BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>)? = null) {
+fun <C : FeatureConfiguration> registerPlacedFeature(suffix: String, placementModifierCreator: PlacementModifiersScope.() -> List<PlacementModifier>, biomePredicate: (BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>)? = null) {
     val placedFeatureKey = Registries.PLACED_FEATURE with this@ConfiguredFeatureGenerationScope.identifier * "_" * suffix
     registerDynamicGeneration(placedFeatureKey) {
         val placementModifiers = placementModifiers { placementModifierCreator() }
