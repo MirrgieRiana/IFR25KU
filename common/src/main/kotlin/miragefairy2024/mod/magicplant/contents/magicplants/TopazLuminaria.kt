@@ -80,7 +80,7 @@ object TopazLuminariaCard : AbstractLuminariaCard<TopazLuminariaBlock>() {
     context(ModContext)
     override fun init() {
         super.init()
-        Feature.FLOWER {
+        Feature.FLOWER.generation(blockIdentifier) {
             configuredFeature("cluster", { RandomPatchConfiguration(1, 0, 0, placer) }) {
                 placedFeature("cluster", { per(128) + flower(square, surface) }) { +ConventionalBiomeTags.IS_DESERT * defaultTraits }
             }

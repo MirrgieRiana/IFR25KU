@@ -85,7 +85,7 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
     override fun init() {
         super.init()
 
-        Feature.FLOWER {
+        Feature.FLOWER.generation(blockIdentifier) {
             configuredFeature("cluster", { RandomPatchConfiguration(20, 8, 3, placer) }) {
                 placedFeature("cluster", { per(8) + flower(center, surface) }) { (+ConventionalBiomeTags.IS_SWAMP + +ConventionalBiomeTags.IS_JUNGLE + +Biomes.MANGROVE_SWAMP) * defaultTraits }
             }

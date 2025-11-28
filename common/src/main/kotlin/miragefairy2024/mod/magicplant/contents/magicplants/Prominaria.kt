@@ -95,7 +95,7 @@ object ProminariaCard : AbstractProminariaCard<ProminariaBlock>() {
     context(ModContext)
     override fun init() {
         super.init()
-        Feature.FLOWER {
+        Feature.FLOWER.generation(blockIdentifier) {
             configuredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, placer) }) {
                 placedFeature("cluster", { per(4) + flower(square, rangedNether(32, 45)) }) { (+Biomes.NETHER_WASTES + +Biomes.CRIMSON_FOREST) * defaultTraits }
             }

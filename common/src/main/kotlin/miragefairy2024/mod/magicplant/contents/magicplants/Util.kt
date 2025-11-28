@@ -14,6 +14,7 @@ import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.worldgen.placement.PlacementUtils
 import net.minecraft.resources.ResourceKey
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature
 import net.minecraft.world.level.levelgen.feature.Feature
@@ -24,17 +25,17 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature
 import net.minecraft.world.level.levelgen.placement.PlacementModifier
 import java.util.function.Predicate
 
-class FeatureContext<C : FeatureConfiguration>(val feature: Feature<C>, val card: SimpleMagicPlantCard<*>)
+class FeatureContext<C : FeatureConfiguration>(val feature: Feature<C>, val identifier: ResourceLocation)
 class ConfiguredFeatureContext<C : FeatureConfiguration>(val configuredFeatureKey: ResourceKey<ConfiguredFeature<*, *>>, val featureContext: FeatureContext<C>)
 
-context(ModContext, SimpleMagicPlantCard<*>)
-operator fun <C : FeatureConfiguration> Feature<C>.invoke(block: FeatureContext<C>. () -> Unit) {
-    block(FeatureContext(this, this@SimpleMagicPlantCard))
+context(ModContext)
+fun <C : FeatureConfiguration> Feature<C>.generation(identifier: ResourceLocation, block: FeatureContext<C>. () -> Unit) {
+    block(FeatureContext(this, identifier))
 }
 
 context(ModContext, FeatureContext<C>)
 fun <C : FeatureConfiguration> configuredFeature(suffix: String, configurationCreator: () -> C, block: ConfiguredFeatureContext<C> .() -> Unit) {
-    val configuredFeatureKey = Registries.CONFIGURED_FEATURE with card.blockIdentifier * "_" * suffix
+    val configuredFeatureKey = Registries.CONFIGURED_FEATURE with this@FeatureContext.identifier * "_" * suffix
     registerDynamicGeneration(configuredFeatureKey) {
         this@FeatureContext.feature with configurationCreator()
     }
@@ -43,7 +44,7 @@ fun <C : FeatureConfiguration> configuredFeature(suffix: String, configurationCr
 
 context(ModContext, ConfiguredFeatureContext<C>)
 fun <C : FeatureConfiguration> placedFeature(suffix: String, placementModifierCreator: PlacementModifiersScope.() -> List<PlacementModifier>, biomePredicate: (BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>)? = null) {
-    val placedFeatureKey = Registries.PLACED_FEATURE with this@ConfiguredFeatureContext.featureContext.card.blockIdentifier * "_" * suffix
+    val placedFeatureKey = Registries.PLACED_FEATURE with this@ConfiguredFeatureContext.featureContext.identifier * "_" * suffix
     registerDynamicGeneration(placedFeatureKey) {
         val placementModifiers = placementModifiers { placementModifierCreator() }
         Registries.CONFIGURED_FEATURE[this@ConfiguredFeatureContext.configuredFeatureKey] with placementModifiers
