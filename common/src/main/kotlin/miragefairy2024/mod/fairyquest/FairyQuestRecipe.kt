@@ -34,35 +34,32 @@ import miragefairy2024.util.Translation
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.flower
-import miragefairy2024.util.get
+import miragefairy2024.util.generator
 import miragefairy2024.util.invoke
 import miragefairy2024.util.overworld
 import miragefairy2024.util.per
-import miragefairy2024.util.placementModifiers
+import miragefairy2024.util.placeWhenVegetalDecoration
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChestLoot
-import miragefairy2024.util.registerDynamicGeneration
-import miragefairy2024.util.registerFeature
+import miragefairy2024.util.registerConfiguredFeature
+import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.square
 import miragefairy2024.util.surface
 import miragefairy2024.util.text
 import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.weightedRandom
-import miragefairy2024.util.with
 import mirrg.kotlin.helium.join
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
 import net.minecraft.world.level.storage.loot.BuiltInLootTables
@@ -300,14 +297,11 @@ fun initFairyQuestRecipe() {
     FairyQuestRecipeRecipeViewerCategoryCard.init()
 
     // 地形生成
-    val configuredFeatureKey = registerDynamicGeneration(Registries.CONFIGURED_FEATURE, MirageFairy2024.identifier("fairy_quest_card")) {
-        FAIRY_QUEST_CARD_FEATURE with NoneFeatureConfiguration.INSTANCE
+    FAIRY_QUEST_CARD_FEATURE.generator(MirageFairy2024.identifier("fairy_quest_card")) {
+        registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
+            registerPlacedFeature { per(256) + flower(square, surface) }.placeWhenVegetalDecoration { overworld }
+        }
     }
-    val placedFeatureKey = registerDynamicGeneration(Registries.PLACED_FEATURE, MirageFairy2024.identifier("fairy_quest_card")) {
-        val placementModifiers = placementModifiers { per(256) + flower(square, surface) }
-        Registries.CONFIGURED_FEATURE[configuredFeatureKey] with placementModifiers
-    }
-    placedFeatureKey.registerFeature(GenerationStep.Decoration.VEGETAL_DECORATION) { overworld }
 
     Registration(BuiltInRegistries.LOOT_FUNCTION_TYPE, MirageFairy2024.identifier("set_fairy_quest_recipe")) { SET_FAIRY_QUEST_RECIPE_LOOT_FUNCTION_TYPE }.register()
 
