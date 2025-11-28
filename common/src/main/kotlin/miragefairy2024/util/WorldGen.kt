@@ -106,6 +106,14 @@ fun <C : FeatureConfiguration> registerConfiguredFeature(suffix: String? = null,
 }
 
 context(ModContext, FeatureGenerationScope<C>)
+fun <C : FeatureConfiguration> registerConfiguredFeature(configuredFeatureKey: ResourceKey<ConfiguredFeature<*, *>>, configurationCreator: () -> C): ResourceKey<ConfiguredFeature<*, *>> {
+    registerDynamicGeneration(configuredFeatureKey) {
+        this@FeatureGenerationScope.feature with configurationCreator()
+    }
+    return configuredFeatureKey
+}
+
+context(ModContext, FeatureGenerationScope<C>)
 fun <C : FeatureConfiguration> ResourceKey<ConfiguredFeature<*, *>>.generator(block: ConfiguredFeatureGenerationScope<C>.() -> Unit) {
     block(ConfiguredFeatureGenerationScope(this, this@FeatureGenerationScope.identifier))
 }
@@ -117,6 +125,15 @@ fun <C : FeatureConfiguration> registerPlacedFeature(suffix: String? = null, pla
         val placementModifiers = placementModifiers { placementModifierCreator() }
         Registries.CONFIGURED_FEATURE[this@ConfiguredFeatureGenerationScope.configuredFeatureKey] with placementModifiers
     }
+}
+
+context(ModContext, ConfiguredFeatureGenerationScope<C>)
+fun <C : FeatureConfiguration> registerPlacedFeature(placedFeatureKey: ResourceKey<PlacedFeature>, placementModifierCreator: PlacementModifiersScope.() -> List<PlacementModifier>): ResourceKey<PlacedFeature> {
+    registerDynamicGeneration(placedFeatureKey) {
+        val placementModifiers = placementModifiers { placementModifierCreator() }
+        Registries.CONFIGURED_FEATURE[this@ConfiguredFeatureGenerationScope.configuredFeatureKey] with placementModifiers
+    }
+    return placedFeatureKey
 }
 
 context(ModContext) fun ResourceKey<PlacedFeature>.placeWhenUndergroundOres(biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>) = this.registerFeature(GenerationStep.Decoration.UNDERGROUND_ORES) { biomePredicate() }
