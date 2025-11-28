@@ -29,7 +29,7 @@ class FeatureGenerationScope<C : FeatureConfiguration>(val feature: Feature<C>, 
 class ConfiguredFeatureGenerationScope<C : FeatureConfiguration>(val configuredFeatureKey: ResourceKey<ConfiguredFeature<*, *>>, val identifier: ResourceLocation)
 
 context(ModContext)
-fun <C : FeatureConfiguration> Feature<C>.generation(identifier: ResourceLocation, block: FeatureGenerationScope<C>.() -> Unit) {
+fun <C : FeatureConfiguration> Feature<C>.generator(identifier: ResourceLocation, block: FeatureGenerationScope<C>.() -> Unit) {
     block(FeatureGenerationScope(this, identifier))
 }
 

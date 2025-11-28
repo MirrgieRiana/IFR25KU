@@ -87,7 +87,7 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
     context(ModContext)
     override fun init() {
         super.init()
-        Feature.FLOWER.generation(blockIdentifier) {
+        Feature.FLOWER.generator(blockIdentifier) {
             configuredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, placer) }) { // 小さな塊
                 placedFeature("cluster", { per(16) + flower(square, surface) }) { (+ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA + +ConventionalBiomeTags.IS_BADLANDS) * defaultTraits } // 地上用クラスタ
             }

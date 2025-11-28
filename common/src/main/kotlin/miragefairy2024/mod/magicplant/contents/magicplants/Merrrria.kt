@@ -105,7 +105,7 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
     context(ModContext)
     override fun init() {
         super.init()
-        Feature.FLOWER.generation(blockIdentifier) {
+        Feature.FLOWER.generator(blockIdentifier) {
             configuredFeature("cluster", { RandomPatchConfiguration(1, 0, 0, placer) }) {
                 placedFeature("cluster", { per(8) + flower(square, surface) }) { +ConventionalBiomeTags.IS_WINDSWEPT * defaultTraits }
             }
