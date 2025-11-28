@@ -12,7 +12,6 @@ import miragefairy2024.util.registerDynamicGeneration
 import miragefairy2024.util.with
 import net.minecraft.core.HolderGetter
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.TagKey
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
@@ -47,9 +46,4 @@ abstract class BiomeCard(
         advancement?.init()
 
     }
-}
-
-context(ModContext, BiomeCard)
-fun registerOverworldBiomeOverride(biome: ResourceKey<Biome>) {
-    OVERWORLD_BIOME_OVERRIDES[biome] = key
 }

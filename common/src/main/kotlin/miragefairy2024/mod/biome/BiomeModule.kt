@@ -20,6 +20,11 @@ import java.util.function.Consumer
 
 val OVERWORLD_BIOME_OVERRIDES = mutableMapOf<ResourceKey<Biome>, ResourceKey<Biome>>()
 
+context(ModContext, BiomeCard)
+fun registerOverworldBiomeOverride(biome: ResourceKey<Biome>) {
+    OVERWORLD_BIOME_OVERRIDES[biome] = key
+}
+
 val FAIRY_BIOME_TAG = MirageFairy2024.identifier("fairy").toBiomeTag()
 
 context(ModContext)
