@@ -7,21 +7,9 @@ import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
-import miragefairy2024.util.Registration
 import miragefairy2024.util.createItemStack
-import miragefairy2024.util.flower
-import miragefairy2024.util.generator
-import miragefairy2024.util.per
-import miragefairy2024.util.register
-import miragefairy2024.util.registerConfiguredFeature
-import miragefairy2024.util.registerPlacedFeature
-import miragefairy2024.util.square
-import miragefairy2024.util.surface
-import miragefairy2024.util.with
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.core.HolderGetter
-import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.core.registries.Registries
 import net.minecraft.data.worldgen.BiomeDefaultFeatures
 import net.minecraft.data.worldgen.placement.VegetationPlacements
 import net.minecraft.tags.BiomeTags
@@ -35,7 +23,6 @@ import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.Noises
 import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
 object RetrospectiveCityBiomeCard : BiomeCard(
@@ -92,13 +79,10 @@ object RetrospectiveCityBiomeCard : BiomeCard(
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)
                 BiomeDefaultFeatures.addDefaultMushrooms(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
-                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MIRAGIDIAN_LAMP_PLACED_FEATURE_KEY)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MiragidianLampFeatureCard.placedFeatureKey)
 
             }.build()).build()
     }
-
-    private val MIRAGIDIAN_LAMP_FEATURE = MiragidianLampFeature(NoneFeatureConfiguration.CODEC)
-    private val MIRAGIDIAN_LAMP_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("miragidian_lamp")
 
     context(ModContext)
     override fun init() {
@@ -127,13 +111,6 @@ object RetrospectiveCityBiomeCard : BiomeCard(
                     ),
                 ),
             )
-        }
-
-        Registration(BuiltInRegistries.FEATURE, MirageFairy2024.identifier("miragidian_lamp")) { MIRAGIDIAN_LAMP_FEATURE }.register()
-        MIRAGIDIAN_LAMP_FEATURE.generator(MirageFairy2024.identifier("miragidian_lamp")) {
-            registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature(MIRAGIDIAN_LAMP_PLACED_FEATURE_KEY) { per(8) + flower(square, surface) }
-            }
         }
 
         registerOverworldBiomeOverride(Biomes.SAVANNA)

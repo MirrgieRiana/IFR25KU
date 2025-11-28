@@ -1,12 +1,41 @@
 package miragefairy2024.mod.biome
 
 import com.mojang.serialization.Codec
+import miragefairy2024.MirageFairy2024
+import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.contents.MiragidianLampBlock
+import miragefairy2024.util.Registration
+import miragefairy2024.util.flower
+import miragefairy2024.util.generator
+import miragefairy2024.util.per
+import miragefairy2024.util.register
+import miragefairy2024.util.registerConfiguredFeature
+import miragefairy2024.util.registerPlacedFeature
+import miragefairy2024.util.square
+import miragefairy2024.util.surface
 import miragefairy2024.util.with
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.core.registries.Registries
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
+
+object MiragidianLampFeatureCard {
+    val identifier = MirageFairy2024.identifier("miragidian_lamp")
+    val feature = MiragidianLampFeature(NoneFeatureConfiguration.CODEC)
+    val placedFeatureKey = Registries.PLACED_FEATURE with identifier
+
+    context(ModContext)
+    fun init() {
+        Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
+        feature.generator(identifier) {
+            registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
+                registerPlacedFeature(placedFeatureKey) { per(8) + flower(square, surface) }
+            }
+        }
+    }
+}
 
 class MiragidianLampFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeatureConfiguration>(codec) {
     override fun place(context: FeaturePlaceContext<NoneFeatureConfiguration>): Boolean {
