@@ -24,7 +24,6 @@ import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.with
 import net.minecraft.core.BlockPos
-import net.minecraft.data.worldgen.placement.PlacementUtils
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
@@ -42,7 +41,6 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
-import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.phys.BlockHitResult
 
@@ -98,7 +96,7 @@ object ProminariaCard : AbstractProminariaCard<ProminariaBlock>() {
     override fun init() {
         super.init()
         Feature.FLOWER {
-            configuredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(it))) }) {
+            configuredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, placer) }) {
                 placedFeature("cluster", { per(4) + flower(square, rangedNether(32, 45)) }) { (+Biomes.NETHER_WASTES + +Biomes.CRIMSON_FOREST) * defaultTraits }
             }
         }

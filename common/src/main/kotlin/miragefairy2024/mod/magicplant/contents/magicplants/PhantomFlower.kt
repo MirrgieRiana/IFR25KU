@@ -19,7 +19,6 @@ import miragefairy2024.util.square
 import miragefairy2024.util.surface
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
-import net.minecraft.data.worldgen.placement.PlacementUtils
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.SoundType
@@ -27,7 +26,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
-import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
 import net.minecraft.world.level.material.MapColor
 
 object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
@@ -103,7 +101,7 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
         super.init()
         LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.generator.registerChild(block)
         Feature.FLOWER {
-            configuredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(it))) }) {
+            configuredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, placer) }) {
                 placedFeature("cluster", { per(16) + flower(square, surface) }) { +FairyForestBiomeCard.key * defaultTraits }
             }
         }

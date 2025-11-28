@@ -10,13 +10,17 @@ import miragefairy2024.util.registerFeature
 import miragefairy2024.util.times
 import miragefairy2024.util.with
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext
+import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
+import net.minecraft.data.worldgen.placement.PlacementUtils
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration
+import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
+import net.minecraft.world.level.levelgen.placement.PlacedFeature
 import net.minecraft.world.level.levelgen.placement.PlacementModifier
 import java.util.function.Predicate
 
@@ -29,11 +33,10 @@ operator fun <C : FeatureConfiguration> Feature<C>.invoke(block: FeatureContext<
 }
 
 context(ModContext, FeatureContext<C>)
-fun <C : FeatureConfiguration> configuredFeature(suffix: String, configurationCreator: (BlockStateProvider) -> C, block: ConfiguredFeatureContext<C> .() -> Unit) {
+fun <C : FeatureConfiguration> configuredFeature(suffix: String, configurationCreator: () -> C, block: ConfiguredFeatureContext<C> .() -> Unit) {
     val configuredFeatureKey = Registries.CONFIGURED_FEATURE with card.blockIdentifier * "_" * suffix
     registerDynamicGeneration(configuredFeatureKey) {
-        val blockStateProvider = BlockStateProvider.simple(this@FeatureContext.card.block().withAge(this@FeatureContext.card.block().maxAge))
-        this@FeatureContext.feature with configurationCreator(blockStateProvider)
+        this@FeatureContext.feature with configurationCreator()
     }
     block(ConfiguredFeatureContext(configuredFeatureKey, this@FeatureContext))
 }
@@ -47,3 +50,6 @@ fun <C : FeatureConfiguration> placedFeature(suffix: String, placementModifierCr
     }
     if (biomePredicate != null) placedFeatureKey.registerFeature(GenerationStep.Decoration.VEGETAL_DECORATION) { biomePredicate() }
 }
+
+val SimpleMagicPlantCard<*>.maxAgedBlockState get() = this.block().withAge(this.block().maxAge)
+val SimpleMagicPlantCard<*>.placer: Holder<PlacedFeature> get() = PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(this.maxAgedBlockState)))

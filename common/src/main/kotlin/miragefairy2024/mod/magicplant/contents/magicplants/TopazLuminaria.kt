@@ -17,7 +17,6 @@ import miragefairy2024.util.surface
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
-import net.minecraft.data.worldgen.placement.PlacementUtils
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.SoundType
@@ -25,7 +24,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
-import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
 import net.minecraft.world.level.material.MapColor
 
 object TopazLuminariaCard : AbstractLuminariaCard<TopazLuminariaBlock>() {
@@ -83,7 +81,7 @@ object TopazLuminariaCard : AbstractLuminariaCard<TopazLuminariaBlock>() {
     override fun init() {
         super.init()
         Feature.FLOWER {
-            configuredFeature("cluster", { RandomPatchConfiguration(1, 0, 0, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(it))) }) {
+            configuredFeature("cluster", { RandomPatchConfiguration(1, 0, 0, placer) }) {
                 placedFeature("cluster", { per(128) + flower(square, surface) }) { +ConventionalBiomeTags.IS_DESERT * defaultTraits }
             }
         }

@@ -17,7 +17,6 @@ import miragefairy2024.util.surface
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
-import net.minecraft.data.worldgen.placement.PlacementUtils
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.biome.Biomes
@@ -26,7 +25,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
-import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
 import net.minecraft.world.level.material.MapColor
 
 object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
@@ -88,7 +86,7 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
         super.init()
 
         Feature.FLOWER {
-            configuredFeature("cluster", { RandomPatchConfiguration(20, 8, 3, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(it))) }) {
+            configuredFeature("cluster", { RandomPatchConfiguration(20, 8, 3, placer) }) {
                 placedFeature("cluster", { per(8) + flower(center, surface) }) { (+ConventionalBiomeTags.IS_SWAMP + +ConventionalBiomeTags.IS_JUNGLE + +Biomes.MANGROVE_SWAMP) * defaultTraits }
             }
         }

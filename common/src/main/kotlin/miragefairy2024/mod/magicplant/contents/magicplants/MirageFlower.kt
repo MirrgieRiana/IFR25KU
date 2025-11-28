@@ -29,7 +29,6 @@ import miragefairy2024.util.surface
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.data.worldgen.placement.PlacementUtils
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.biome.Biomes
@@ -38,7 +37,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
-import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
 import net.minecraft.world.level.material.MapColor
 
 object MirageFlowerCard : AbstractMirageFlowerCard<MirageFlowerBlock>() {
@@ -114,14 +112,14 @@ object MirageFlowerCard : AbstractMirageFlowerCard<MirageFlowerBlock>() {
         super.init()
         Registration(BuiltInRegistries.FEATURE, MirageFairy2024.identifier("fairy_ring")) { FAIRY_RING_FEATURE }.register() // Fairy Ring
         Feature.FLOWER {
-            configuredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(it))) }) { // 小さな塊
+            configuredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, placer) }) { // 小さな塊
                 placedFeature("cluster", { per(16) + flower(square, surface) }) { (overworld + end * !+Biomes.THE_END) * defaultTraits }  // 地上・エンド外縁の島々に通常クラスタ
                 placedFeature("nether_cluster", { per(64) + flower(square, nether) }) { nether * defaultTraits } // ネザーにネザー用クラスタ
                 placedFeature("fairy_forest_cluster", { count(4) + flower(square, surface) }) { (+FairyForestBiomeCard.key + +DeepFairyForestBiomeCard.key) * defaultTraits } // 妖精の森
             }
         }
         FAIRY_RING_FEATURE {
-            configuredFeature("fairy_ring", { FairyRingFeatureConfig(100, 6F, 8F, 3, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(it))) }) { // Fairy Ring
+            configuredFeature("fairy_ring", { FairyRingFeatureConfig(100, 6F, 8F, 3, placer) }) { // Fairy Ring
                 placedFeature("fairy_ring", { per(600) + flower(center, surface) }) { overworld * defaultTraits }  // 地上にFairy Ring
             }
         }

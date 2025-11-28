@@ -20,7 +20,6 @@ import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.underground
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
-import net.minecraft.data.worldgen.placement.PlacementUtils
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.RandomSource
 import net.minecraft.world.item.Items
@@ -30,7 +29,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
-import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
 import net.minecraft.world.level.material.MapColor
 
 object EmeraldLuminariaCard : AbstractLuminariaCard<EmeraldLuminariaBlock>() {
@@ -88,7 +86,7 @@ object EmeraldLuminariaCard : AbstractLuminariaCard<EmeraldLuminariaBlock>() {
     override fun init() {
         super.init()
         Feature.FLOWER {
-            configuredFeature("cluster", { RandomPatchConfiguration(1, 0, 0, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(it))) }) {
+            configuredFeature("cluster", { RandomPatchConfiguration(1, 0, 0, placer) }) {
                 placedFeature("cluster", { per(128) + flower(square, surface) }) { (+ConventionalBiomeTags.IS_JUNGLE + +ConventionalBiomeTags.IS_SWAMP) * defaultTraits }  // 地上
                 placedFeature("underground_cluster", { count(16) + flower(square, underground) }) { +Biomes.LUSH_CAVES * defaultTraits } // 地下
             }

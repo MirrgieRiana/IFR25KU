@@ -23,7 +23,6 @@ import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.core.BlockPos
-import net.minecraft.data.worldgen.placement.PlacementUtils
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundEvents
@@ -36,7 +35,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
-import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
 import net.minecraft.world.level.material.MapColor
 import kotlin.math.pow
 
@@ -108,10 +106,10 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
     override fun init() {
         super.init()
         Feature.FLOWER {
-            configuredFeature("cluster", { RandomPatchConfiguration(1, 0, 0, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(it))) }) {
+            configuredFeature("cluster", { RandomPatchConfiguration(1, 0, 0, placer) }) {
                 placedFeature("cluster", { per(8) + flower(square, surface) }) { +ConventionalBiomeTags.IS_WINDSWEPT * defaultTraits }
             }
-            configuredFeature("large_cluster", { RandomPatchConfiguration(40, 8, 3, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(it))) }) {
+            configuredFeature("large_cluster", { RandomPatchConfiguration(40, 8, 3, placer) }) {
                 placedFeature("large_cluster", { per(64) + flower(center, surface) }) { +ConventionalBiomeTags.IS_WINDSWEPT * defaultTraits }
             }
         }
