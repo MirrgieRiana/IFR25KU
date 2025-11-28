@@ -15,18 +15,17 @@ import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
-import miragefairy2024.util.get
 import miragefairy2024.util.overworld
-import miragefairy2024.util.placementModifiers
+import miragefairy2024.util.placeWhenUndergroundOres
 import miragefairy2024.util.randomIntCount
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
+import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerCutoutRenderLayer
-import miragefairy2024.util.registerDynamicGeneration
-import miragefairy2024.util.registerFeature
 import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerOreLootTableGeneration
+import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.string
 import miragefairy2024.util.times
@@ -34,7 +33,6 @@ import miragefairy2024.util.uniformOre
 import miragefairy2024.util.with
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.core.registries.Registries
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.tags.BlockTags
@@ -45,7 +43,6 @@ import net.minecraft.world.level.block.DropExperienceBlock
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
-import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
@@ -187,22 +184,17 @@ fun initOresModule() {
      * @see [net.minecraft.data.worldgen.features.OreFeatures], [net.minecraft.data.worldgen.placement.OrePlacements]
      */
     fun worldGen(range: IntRange, countPerCube: Double, size: Int, discardChanceOnAirExposure: Double, card: OreCard) {
-
-        val configuredKey = registerDynamicGeneration(Registries.CONFIGURED_FEATURE, card.identifier) {
-            val targets = when (card.baseStoneType) {
-                BaseStoneType.STONE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), card.block().defaultBlockState()))
-                BaseStoneType.DEEPSLATE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), card.block().defaultBlockState()))
+        Feature.ORE.generator(card.identifier) {
+            registerConfiguredFeature {
+                val targets = when (card.baseStoneType) {
+                    BaseStoneType.STONE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), card.block().defaultBlockState()))
+                    BaseStoneType.DEEPSLATE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), card.block().defaultBlockState()))
+                }
+                OreConfiguration(targets, size, discardChanceOnAirExposure.toFloat())
+            }.generator {
+                registerPlacedFeature { randomIntCount(countPerCube * (range.last - range.first + 1).toDouble() / 16.0) + uniformOre(range.first, range.last) }.placeWhenUndergroundOres { overworld }
             }
-            Feature.ORE with OreConfiguration(targets, size, discardChanceOnAirExposure.toFloat())
         }
-
-        registerDynamicGeneration(Registries.PLACED_FEATURE, card.identifier) {
-            val placementModifiers = placementModifiers { randomIntCount(countPerCube * (range.last - range.first + 1).toDouble() / 16.0) + uniformOre(range.first, range.last) }
-            Registries.CONFIGURED_FEATURE[configuredKey] with placementModifiers
-        }.also {
-            it.registerFeature(GenerationStep.Decoration.UNDERGROUND_ORES) { overworld }
-        }
-
     }
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.MAGNETITE_ORE)
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.DEEPSLATE_MAGNETITE_ORE)
