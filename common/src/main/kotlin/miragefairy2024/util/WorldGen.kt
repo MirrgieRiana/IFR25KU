@@ -98,8 +98,9 @@ fun <C : FeatureConfiguration> Feature<C>.generator(identifier: ResourceLocation
 }
 
 context(ModContext, FeatureGenerationScope<C>)
-fun <C : FeatureConfiguration> registerConfiguredFeature(suffix: String, configurationCreator: () -> C): ResourceKey<ConfiguredFeature<*, *>> {
-    return registerDynamicGeneration(Registries.CONFIGURED_FEATURE, this@FeatureGenerationScope.identifier * "_" * suffix) {
+fun <C : FeatureConfiguration> registerConfiguredFeature(suffix: String? = null, configurationCreator: () -> C): ResourceKey<ConfiguredFeature<*, *>> {
+    val actualIdentifier = this@FeatureGenerationScope.identifier * (if (suffix != null) "_$suffix" else "")
+    return registerDynamicGeneration(Registries.CONFIGURED_FEATURE, actualIdentifier) {
         this@FeatureGenerationScope.feature with configurationCreator()
     }
 }
@@ -110,8 +111,9 @@ fun <C : FeatureConfiguration> ResourceKey<ConfiguredFeature<*, *>>.generator(bl
 }
 
 context(ModContext, ConfiguredFeatureGenerationScope<C>)
-fun <C : FeatureConfiguration> registerPlacedFeature(suffix: String, placementModifierCreator: PlacementModifiersScope.() -> List<PlacementModifier>): ResourceKey<PlacedFeature> {
-    return registerDynamicGeneration(Registries.PLACED_FEATURE, this@ConfiguredFeatureGenerationScope.identifier * "_" * suffix) {
+fun <C : FeatureConfiguration> registerPlacedFeature(suffix: String? = null, placementModifierCreator: PlacementModifiersScope.() -> List<PlacementModifier>): ResourceKey<PlacedFeature> {
+    val actualIdentifier = this@ConfiguredFeatureGenerationScope.identifier * (if (suffix != null) "_$suffix" else "")
+    return registerDynamicGeneration(Registries.PLACED_FEATURE, actualIdentifier) {
         val placementModifiers = placementModifiers { placementModifierCreator() }
         Registries.CONFIGURED_FEATURE[this@ConfiguredFeatureGenerationScope.configuredFeatureKey] with placementModifiers
     }
