@@ -34,12 +34,15 @@ fun <C : FeatureConfiguration> Feature<C>.generator(identifier: ResourceLocation
 }
 
 context(ModContext, FeatureGenerationScope<C>)
-fun <C : FeatureConfiguration> registerConfiguredFeature(suffix: String, configurationCreator: () -> C, block: ConfiguredFeatureGenerationScope<C>.() -> Unit) {
-    val configuredFeatureKey = Registries.CONFIGURED_FEATURE with this@FeatureGenerationScope.identifier * "_" * suffix
-    registerDynamicGeneration(configuredFeatureKey) {
+fun <C : FeatureConfiguration> registerConfiguredFeature(suffix: String, configurationCreator: () -> C): ResourceKey<ConfiguredFeature<*, *>> {
+    return registerDynamicGeneration(Registries.CONFIGURED_FEATURE, this@FeatureGenerationScope.identifier * "_" * suffix) {
         this@FeatureGenerationScope.feature with configurationCreator()
     }
-    block(ConfiguredFeatureGenerationScope(configuredFeatureKey, this@FeatureGenerationScope.identifier))
+}
+
+context(ModContext, FeatureGenerationScope<C>)
+fun <C : FeatureConfiguration> ResourceKey<ConfiguredFeature<*, *>>.generator(block: ConfiguredFeatureGenerationScope<C>.() -> Unit) {
+    block(ConfiguredFeatureGenerationScope(this, this@FeatureGenerationScope.identifier))
 }
 
 context(ModContext, ConfiguredFeatureGenerationScope<C>)

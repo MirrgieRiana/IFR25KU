@@ -88,10 +88,10 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
     override fun init() {
         super.init()
         Feature.FLOWER.generator(blockIdentifier) {
-            registerConfiguredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, placer) }) { // 小さな塊
+            registerConfiguredFeature("cluster", { RandomPatchConfiguration(6, 6, 2, placer) }).generator { // 小さな塊
                 registerPlacedFeature("cluster", { per(16) + flower(square, surface) }) { (+ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA + +ConventionalBiomeTags.IS_BADLANDS) * defaultTraits } // 地上用クラスタ
             }
-            registerConfiguredFeature("large_cluster", { RandomPatchConfiguration(40, 8, 3, placer) }) { // 大きな塊
+            registerConfiguredFeature("large_cluster", { RandomPatchConfiguration(40, 8, 3, placer) }).generator { // 大きな塊
                 registerPlacedFeature("nether_cluster", { per(8) + flower(center, nether) }) { nether * defaultTraits } // ネザー用クラスタ
             }
         }
