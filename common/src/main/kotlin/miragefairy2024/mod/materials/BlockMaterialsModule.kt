@@ -25,8 +25,10 @@ import miragefairy2024.mod.tool.MINEABLE_WITH_NOISE_BLOCK_TAG
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.BlockStateVariant
+import miragefairy2024.util.BlockStateVariantRotation
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
+import miragefairy2024.util.TextureMap
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.from
@@ -59,6 +61,7 @@ import miragefairy2024.util.with
 import mirrg.kotlin.gson.hydrogen.jsonArray
 import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
+import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureSlot
@@ -72,11 +75,13 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.SlabBlock
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.StairBlock
 import net.minecraft.world.level.block.WallBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
+import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.minecraft.world.level.material.MapColor
 
@@ -260,11 +265,32 @@ open class BlockMaterialCard(
             registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
             registerStonecutterRecipeGeneration(item, POLISHED_AURA_RESISTANT_CERAMIC.item)
         }
-        val CHISELED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
+        val CHISELED_AURA_RESISTANT_CERAMIC = !object : BlockMaterialCard(
             "chiseled_aura_resistant_ceramic", EnJa("Chiseled Protective Aura-Resistant Ceramic", "模様入りの守護の耐霊石"),
             PoemList(2).poem(EnJa("The Truth-Gazer.", "瞳の中のサティアン。")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
-        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+        ) {
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
+            context(ModContext) override fun initBlockStateGeneration() = Unit
+            context(ModContext) override fun initModelGeneration() = Unit
+        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            run {
+                val textureMapping by lazy {
+                    TextureMap(
+                        TextureSlot.SIDE to "block/" * identifier,
+                        TextureSlot.END to "block/" * AURA_RESISTANT_CERAMIC.identifier,
+                    )
+                }
+                registerModelGeneration({ "block/" * identifier }) { ModelTemplates.CUBE_COLUMN with textureMapping }
+                registerModelGeneration({ "block/" * identifier * "_horizontal" }) { ModelTemplates.CUBE_COLUMN_HORIZONTAL with textureMapping }
+                block.registerVariantsBlockStateGeneration {
+                    listOf(
+                        propertiesOf(BlockStateProperties.AXIS with Direction.Axis.Y) with BlockStateVariant(model = "block/" * identifier),
+                        propertiesOf(BlockStateProperties.AXIS with Direction.Axis.Z) with BlockStateVariant(model = "block/" * identifier * "_horizontal", x = BlockStateVariantRotation.R90),
+                        propertiesOf(BlockStateProperties.AXIS with Direction.Axis.X) with BlockStateVariant(model = "block/" * identifier * "_horizontal", x = BlockStateVariantRotation.R90, y = BlockStateVariantRotation.R90),
+                    )
+                }
+            }
             registerShapedRecipeGeneration(item) {
                 pattern("#")
                 pattern("#")

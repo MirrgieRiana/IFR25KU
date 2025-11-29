@@ -1,7 +1,16 @@
 {
   "variants": {
-    "": {
+    "axis=x": {
+      "model": "miragefairy2024:block/chiseled_aura_resistant_ceramic_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
       "model": "miragefairy2024:block/chiseled_aura_resistant_ceramic"
+    },
+    "axis=z": {
+      "model": "miragefairy2024:block/chiseled_aura_resistant_ceramic_horizontal",
+      "x": 90
     }
   }
 }
