@@ -88,6 +88,8 @@ class RetrospectiveCitySmallRuinFeature(codec: Codec<NoneFeatureConfiguration>) 
                             3 -> BlockMaterialCard.AURA_RESISTANT_CERAMIC_BRICKS_STAIRS.block().defaultBlockState().with(StairBlock.FACING, Direction.EAST)
                             else -> BlockMaterialCard.AURA_RESISTANT_CERAMIC_BRICKS.block().defaultBlockState()
                         }
+                    } else if (dy <= -1) {
+                        BlockMaterialCard.SMOOTH_AURA_RESISTANT_CERAMIC.block().defaultBlockState()
                     } else {
                         if (random.nextInt(3) == 0) {
                             BlockMaterialCard.CRACKED_AURA_RESISTANT_CERAMIC_BRICKS.block().defaultBlockState()
