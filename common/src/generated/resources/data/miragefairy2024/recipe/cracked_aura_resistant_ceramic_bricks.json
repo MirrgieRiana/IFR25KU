@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "category": "blocks",
+  "cookingtime": 200,
+  "experience": 0.0,
+  "group": "miragefairy2024:cracked_aura_resistant_ceramic_bricks",
+  "ingredient": {
+    "item": "miragefairy2024:aura_resistant_ceramic_bricks"
+  },
+  "result": {
+    "id": "miragefairy2024:cracked_aura_resistant_ceramic_bricks"
+  }
+}

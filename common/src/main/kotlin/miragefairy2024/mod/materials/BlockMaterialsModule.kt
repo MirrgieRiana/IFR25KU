@@ -240,6 +240,13 @@ open class BlockMaterialCard(
             registerStonecutterRecipeGeneration(item, POLISHED_AURA_RESISTANT_CERAMIC.item)
             registerStonecutterRecipeGeneration(item, AURA_RESISTANT_CERAMIC_BRICKS.item)
         }
+        val CRACKED_AURA_RESISTANT_CERAMIC_BRICKS = !BlockMaterialCard(
+            "cracked_aura_resistant_ceramic_bricks", EnJa("Cracked Protective Aura-Resistant Ceramic Bricks", "ひび割れた守護の耐霊石レンガ"),
+            PoemList(2).poem(EnJa("Exposed and degraded fairy blood", "損傷した遺伝子の断片――")),
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerSmeltingRecipeGeneration(AURA_RESISTANT_CERAMIC_BRICKS.item, item) on item
+        }
         val AURA_RESISTANT_CERAMIC_TILES = !BlockMaterialCard(
             "aura_resistant_ceramic_tiles", EnJa("Protective Aura-Resistant Ceramic Tiles", "守護の耐霊石タイル"),
             PoemList(2).poem(EnJa("Weather-resistance due to magnetite", "生存の願いを敷石に込めて――")),
