@@ -3,6 +3,8 @@ package miragefairy2024.mod.materials
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemList
+import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG
+import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG
 import miragefairy2024.mod.biome.RetrospectiveCityBiomeCard
 import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
@@ -111,7 +113,7 @@ open class BlockMaterialCard(
         val AURA_RESISTANT_CERAMIC: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic", EnJa("Protective Aura-Resistant Ceramic", "守護の耐霊石"),
             PoemList(2).poem(EnJa("The eternally glorious city of Xarperia", "恒久の栄華を讃える紅天市街――")),
-            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
             texturedModelProvider = {
                 ModelTemplates.CUBE_BOTTOM_TOP.with(
                     TextureSlot.TOP to "block/" * it.getIdentifier(),
@@ -132,7 +134,7 @@ open class BlockMaterialCard(
         val AURA_RESISTANT_CERAMIC_SLAB: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic_slab", EnJa("Protective Aura-Resistant Ceramic Slab", "守護の耐霊石のハーフブロック"),
             PoemList(2).poem(EnJa("The unified meta-/retro-physics theory", "光素力学と万物の理論の統合――")),
-            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
             context(ModContext) override fun initBlockStateGeneration() = Unit
@@ -146,7 +148,7 @@ open class BlockMaterialCard(
         val AURA_RESISTANT_CERAMIC_STAIRS: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic_stairs", EnJa("Protective Aura-Resistant Ceramic Stairs", "守護の耐霊石の階段"),
             PoemList(2).poem(EnJa("The final creative research of humanity", "アカーシャに続く路――")),
-            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(AURA_RESISTANT_CERAMIC.block.await().defaultBlockState(), properties)
             context(ModContext) override fun initBlockStateGeneration() = Unit
@@ -159,7 +161,7 @@ open class BlockMaterialCard(
         val COBBLED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
             "cobbled_aura_resistant_ceramic", EnJa("Cobbled Protective Aura-Resistant Ceramic", "守護の耐霊石の丸石"),
             PoemList(2).poem(EnJa("Penetrates the monomer and solidifies", "砂岩に宿るポリテルペンの祝福――")),
-            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG, RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             // TODO アタノールで作る
             // TODO Tierをアタノールに合わせる
@@ -173,7 +175,7 @@ open class BlockMaterialCard(
         val SMOOTH_AURA_RESISTANT_CERAMIC: BlockMaterialCard = !object : BlockMaterialCard(
             "smooth_aura_resistant_ceramic", EnJa("Smooth Protective Aura-Resistant Ceramic", "滑らかな守護の耐霊石"),
             PoemList(2).poem(EnJa("Turpentine improves its flowability", "空隙に走る樹脂の流れ――")),
-            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ) {
             context(ModContext)
             override fun initModelGeneration() = block.registerModelGeneration {
@@ -187,7 +189,7 @@ open class BlockMaterialCard(
         val POLISHED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
             "polished_aura_resistant_ceramic", EnJa("Polished Protective Aura-Resistant Ceramic", "磨かれた守護の耐霊石"),
             PoemList(2).poem(EnJa("Economical urban astral shielding", "情緒線の被曝に備えて――")),
-            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerShapedRecipeGeneration(item, count = 4) {
                 pattern("##")
@@ -199,7 +201,7 @@ open class BlockMaterialCard(
         val AURA_RESISTANT_CERAMIC_BRICKS = !BlockMaterialCard(
             "aura_resistant_ceramic_bricks", EnJa("Protective Aura-Resistant Ceramic Bricks", "守護の耐霊石レンガ"),
             PoemList(2).poem(EnJa("Protects lifeforms from radiation", "常に純潔な魂であれ――")),
-            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerShapedRecipeGeneration(item, count = 4) {
                 pattern("##")
@@ -212,7 +214,7 @@ open class BlockMaterialCard(
         val AURA_RESISTANT_CERAMIC_BRICKS_SLAB: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic_bricks_slab", EnJa("Protective Aura-Resistant Ceramic Brick Slab", "守護の耐霊石レンガのハーフブロック"),
             PoemList(2).poem(EnJa("Transmutation caused by solar flares", "魔物と混淆しないために――")),
-            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
             context(ModContext) override fun initBlockStateGeneration() = Unit
@@ -227,7 +229,7 @@ open class BlockMaterialCard(
         val AURA_RESISTANT_CERAMIC_BRICKS_STAIRS: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic_bricks_stairs", EnJa("Protective Aura-Resistant Ceramic Brick Stairs", "守護の耐霊石レンガの階段"),
             PoemList(2).poem(EnJa("The scarlet roofs that protect citizens", "暮らしを守る紅い盾――")),
-            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(AURA_RESISTANT_CERAMIC.block.await().defaultBlockState(), properties)
             context(ModContext) override fun initBlockStateGeneration() = Unit
@@ -241,7 +243,7 @@ open class BlockMaterialCard(
         val AURA_RESISTANT_CERAMIC_TILES = !BlockMaterialCard(
             "aura_resistant_ceramic_tiles", EnJa("Protective Aura-Resistant Ceramic Tiles", "守護の耐霊石タイル"),
             PoemList(2).poem(EnJa("Weather-resistance due to magnetite", "生存の願いを敷石に込めて――")),
-            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG, RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerShapedRecipeGeneration(item, count = 4) {
                 pattern(" ##")
@@ -254,7 +256,7 @@ open class BlockMaterialCard(
         val CHISELED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
             "chiseled_aura_resistant_ceramic", EnJa("Chiseled Protective Aura-Resistant Ceramic", "模様入りの守護の耐霊石"),
             PoemList(2).poem(EnJa("The Truth-Gazer.", "瞳の中のサティアン。")),
-            MapColor.COLOR_ORANGE, 30.0F, 30.0F,
+            MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerShapedRecipeGeneration(item) {
                 pattern("#")

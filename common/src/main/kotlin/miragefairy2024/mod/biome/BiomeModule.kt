@@ -7,6 +7,7 @@ import miragefairy2024.ModEvents
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.enJa
 import miragefairy2024.util.toBiomeTag
+import miragefairy2024.util.toBlockTag
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.biome.Biome
@@ -26,6 +27,8 @@ fun registerOverworldBiomeOverride(biome: ResourceKey<Biome>) {
 }
 
 val FAIRY_BIOME_TAG = MirageFairy2024.identifier("fairy").toBiomeTag()
+val RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG = MirageFairy2024.identifier("retrospective_city_building").toBlockTag()
+val RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG = MirageFairy2024.identifier("retrospective_city_floor").toBlockTag()
 
 context(ModContext)
 fun initBiomeModule() {
@@ -44,6 +47,8 @@ fun initBiomeModule() {
     }
 
     FAIRY_BIOME_TAG.enJa(EnJa("Fairy", "妖精"))
+    RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG.enJa(EnJa("Retrospective City Building", "過去を見つめる都市の建物"))
+    RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG.enJa(EnJa("Retrospective City Floor", "過去を見つめる都市の床"))
 
     MiragidianLampFeatureCard.init()
 
