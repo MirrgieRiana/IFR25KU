@@ -129,4 +129,3 @@ class RetrospectiveCityTinyRuinFeature(codec: Codec<NoneFeatureConfiguration>) :
         return schedules.isNotEmpty()
     }
 }
-

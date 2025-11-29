@@ -210,4 +210,3 @@ open class LimitedLabelComponent(protected var text: Component) : BaseComponent(
     }
 
 }
-
