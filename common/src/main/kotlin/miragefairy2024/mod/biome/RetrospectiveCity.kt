@@ -9,6 +9,7 @@ import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
+import net.minecraft.core.Direction
 import net.minecraft.core.HolderGetter
 import net.minecraft.data.worldgen.BiomeDefaultFeatures
 import net.minecraft.data.worldgen.placement.VegetationPlacements
@@ -22,7 +23,9 @@ import net.minecraft.world.level.biome.MobSpawnSettings
 import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.Noises
 import net.minecraft.world.level.levelgen.SurfaceRules
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
+import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
 object RetrospectiveCityBiomeCard : BiomeCard(
@@ -124,3 +127,5 @@ object RetrospectiveCityBiomeCard : BiomeCard(
 
     }
 }
+
+val retrospectiveCityFloorPlacementModifiers get() = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesTag(Direction.DOWN.normal, RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG)))

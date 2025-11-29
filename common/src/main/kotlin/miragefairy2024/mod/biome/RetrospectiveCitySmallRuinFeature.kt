@@ -25,11 +25,9 @@ import net.minecraft.world.level.block.SlabBlock
 import net.minecraft.world.level.block.StairBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.SlabType
-import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
-import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter
 import kotlin.math.roundToInt
 
 object RetrospectiveCitySmallRuinFeatureCard {
@@ -42,11 +40,7 @@ object RetrospectiveCitySmallRuinFeatureCard {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature(placedFeatureKey) {
-                    count(2) + flower(square, surface) + listOf(
-                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesTag(Direction.DOWN.normal, RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG))
-                    )
-                }
+                registerPlacedFeature(placedFeatureKey) { count(2) + flower(square, surface) + retrospectiveCityFloorPlacementModifiers }
             }
         }
     }

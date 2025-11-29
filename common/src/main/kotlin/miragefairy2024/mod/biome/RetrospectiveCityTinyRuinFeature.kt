@@ -24,11 +24,9 @@ import net.minecraft.world.level.block.SlabBlock
 import net.minecraft.world.level.block.StairBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.SlabType
-import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
-import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter
 
 object RetrospectiveCityTinyRuinFeatureCard {
     val identifier = MirageFairy2024.identifier("retrospective_city_tiny_ruin")
@@ -40,11 +38,7 @@ object RetrospectiveCityTinyRuinFeatureCard {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature(placedFeatureKey) {
-                    count(4) + flower(square, surface) + listOf(
-                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesTag(Direction.DOWN.normal, RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG))
-                    )
-                }
+                registerPlacedFeature(placedFeatureKey) { count(4) + flower(square, surface) + retrospectiveCityFloorPlacementModifiers }
             }
         }
     }
