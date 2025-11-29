@@ -126,6 +126,6 @@ class RetrospectiveCitySmallRuinFeature(codec: Codec<NoneFeatureConfiguration>) 
         schedules.forEach {
             it()
         }
-        return true
+        return schedules.isNotEmpty()
     }
 }
