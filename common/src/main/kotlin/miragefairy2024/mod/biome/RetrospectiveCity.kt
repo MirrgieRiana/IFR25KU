@@ -8,18 +8,23 @@ import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.isIn
+import miragefairy2024.util.isNotIn
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
+import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderGetter
 import net.minecraft.data.worldgen.BiomeDefaultFeatures
 import net.minecraft.data.worldgen.placement.VegetationPlacements
 import net.minecraft.tags.BiomeTags
 import net.minecraft.world.entity.MobCategory
+import net.minecraft.world.level.WorldGenLevel
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.biome.BiomeGenerationSettings
 import net.minecraft.world.level.biome.BiomeSpecialEffects
 import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.biome.MobSpawnSettings
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.Noises
 import net.minecraft.world.level.levelgen.SurfaceRules
@@ -130,3 +135,29 @@ object RetrospectiveCityBiomeCard : BiomeCard(
 }
 
 val retrospectiveCityFloorPlacementModifiers get() = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesTag(Direction.DOWN.normal, RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG)))
+
+fun checkConflict(level: WorldGenLevel, blockPos: BlockPos, height: Int): Pair<Int, Int>? {
+
+    fun BlockState.isConflicting() = this isIn RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG && this isNotIn RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG
+
+    // 下方向にNGブロックを探索しつつ空洞を壁で埋める
+    var down = 0
+    while (true) {
+        if (level.getBlockState(blockPos.below(down + 1)).isConflicting()) return null // 床に道を構成するブロックがある
+        if (down >= 3) break
+        if (!level.isEmptyBlock(blockPos.below(down + 1))) break // これより下に拡張できないので抜ける
+        down++
+    }
+
+    // 上方向にNGブロックを判定
+    var up = 0
+    while (true) {
+        if (level.getBlockState(blockPos.above(up)).isConflicting()) return null // そのマスに建物を構成するブロックがある
+        if (blockPos.y + up >= level.maxBuildHeight) return null // ワールドの高さ制限に達しているので抜ける
+        if (up + 1 >= height) break // 現在の高さが最大高さに到達しているので抜ける
+        if (!level.isEmptyBlock(blockPos.above(up + 1))) break // これより上に拡張できないので抜ける
+        up++
+    }
+
+    return Pair(down, up)
+}

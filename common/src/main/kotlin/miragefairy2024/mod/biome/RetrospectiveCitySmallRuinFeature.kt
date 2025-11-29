@@ -8,8 +8,6 @@ import miragefairy2024.util.Registration
 import miragefairy2024.util.count
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
-import miragefairy2024.util.isIn
-import miragefairy2024.util.isNotIn
 import miragefairy2024.util.register
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
@@ -23,7 +21,6 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.util.Mth
 import net.minecraft.world.level.block.SlabBlock
 import net.minecraft.world.level.block.StairBlock
-import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.SlabType
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
@@ -52,29 +49,8 @@ class RetrospectiveCitySmallRuinFeature(codec: Codec<NoneFeatureConfiguration>) 
         val originBlockPos = context.origin()
         val random = context.random()
 
-        fun BlockState.isConflicting() = this isIn RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG && this isNotIn RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG
-
         fun schedule(blockPos: BlockPos, maxHeight: Int): (() -> Unit)? {
-
-            // 下方向にNGブロックを探索しつつ空洞を壁で埋める
-            var down = 0
-            while (true) {
-                if (level.getBlockState(blockPos.below(down + 1)).isConflicting()) return null // 床に道を構成するブロックがある
-                if (down >= 3) break
-                if (!level.isEmptyBlock(blockPos.below(down + 1))) break // これより下に拡張できないので抜ける
-                down++
-            }
-
-            // 上方向にNGブロックを判定
-            var up = 0
-            while (true) {
-                if (level.getBlockState(blockPos.above(up)).isConflicting()) return null // そのマスに建物を構成するブロックがある
-                if (blockPos.y + up >= level.maxBuildHeight) return null // ワールドの高さ制限に達しているので抜ける
-                if (up + 1 >= maxHeight) break // 現在の高さが最大高さに到達しているので抜ける
-                if (!level.isEmptyBlock(blockPos.above(up + 1))) break // これより上に拡張できないので抜ける
-                up++
-            }
-
+            val (down, up) = checkConflict(level, blockPos, maxHeight) ?: return null
             return {
                 (-down..up).forEach { dy ->
                     val blockState = if (dy == up) {
