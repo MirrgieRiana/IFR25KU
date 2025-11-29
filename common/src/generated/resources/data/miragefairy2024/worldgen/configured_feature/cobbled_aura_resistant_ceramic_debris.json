@@ -1,0 +1,14 @@
+{
+  "type": "miragefairy2024:debris",
+  "config": {
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 24,
+      "min_inclusive": 8
+    },
+    "item": {
+      "count": 1,
+      "id": "miragefairy2024:cobbled_aura_resistant_ceramic"
+    }
+  }
+}
