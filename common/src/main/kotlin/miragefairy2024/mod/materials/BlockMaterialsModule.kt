@@ -86,6 +86,7 @@ open class BlockMaterialCard(
     private val hardness: Float,
     private val resistance: Float,
     val ore: Ore? = null,
+    val tags: List<TagKey<Block>>? = null,
     val advancementCreator: (BlockMaterialCard.() -> AdvancementCard)? = null,
     val texturedModelProvider: TexturedModel.Provider? = null,
 ) {
@@ -538,6 +539,12 @@ open class BlockMaterialCard(
         if (ore != null) {
             ore.tag.generator.registerChild(item)
             ore.shape.tag.generator.registerChild(ore.tag)
+        }
+
+        if (tags != null) {
+            tags.forEach {
+                it.generator.registerChild(block)
+            }
         }
 
         advancement?.init()
