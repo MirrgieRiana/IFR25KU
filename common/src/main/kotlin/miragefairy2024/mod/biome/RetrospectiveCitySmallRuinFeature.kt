@@ -21,8 +21,10 @@ import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.util.Mth
+import net.minecraft.world.level.block.SlabBlock
 import net.minecraft.world.level.block.StairBlock
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.block.state.properties.SlabType
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
@@ -86,6 +88,7 @@ class RetrospectiveCitySmallRuinFeature(codec: Codec<NoneFeatureConfiguration>) 
                             1 -> BlockMaterialCard.AURA_RESISTANT_CERAMIC_BRICKS_STAIRS.block().defaultBlockState().with(StairBlock.FACING, Direction.SOUTH)
                             2 -> BlockMaterialCard.AURA_RESISTANT_CERAMIC_BRICKS_STAIRS.block().defaultBlockState().with(StairBlock.FACING, Direction.WEST)
                             3 -> BlockMaterialCard.AURA_RESISTANT_CERAMIC_BRICKS_STAIRS.block().defaultBlockState().with(StairBlock.FACING, Direction.EAST)
+                            4, 5 -> BlockMaterialCard.AURA_RESISTANT_CERAMIC_BRICKS_SLAB.block().defaultBlockState().with(SlabBlock.TYPE, SlabType.BOTTOM)
                             else -> BlockMaterialCard.AURA_RESISTANT_CERAMIC_BRICKS.block().defaultBlockState()
                         }
                     } else if (dy <= -1) {
