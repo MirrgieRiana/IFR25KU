@@ -100,11 +100,11 @@ object RetrospectiveCityBiomeCard : BiomeCard(
                             SurfaceRules.isBiome(key),
                             SurfaceRules.sequence(
                                 SurfaceRules.ifTrue(
-                                    SurfaceRules.noiseCondition(Noises.SURFACE, 3.0 / 8.25, Double.MAX_VALUE),
+                                    SurfaceRules.noiseCondition(Noises.SURFACE, 3.5 / 8.25, Double.MAX_VALUE),
                                     SurfaceRules.state(BlockMaterialCard.AURA_RESISTANT_CERAMIC_TILES.block().defaultBlockState())
                                 ),
                                 SurfaceRules.ifTrue(
-                                    SurfaceRules.noiseCondition(Noises.SURFACE, 2.8 / 8.25, Double.MAX_VALUE),
+                                    SurfaceRules.noiseCondition(Noises.SURFACE, 3.3 / 8.25, Double.MAX_VALUE),
                                     SurfaceRules.state(BlockMaterialCard.COBBLED_AURA_RESISTANT_CERAMIC.block().defaultBlockState())
                                 ),
                             ),
