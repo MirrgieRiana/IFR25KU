@@ -8,6 +8,7 @@ import miragefairy2024.lib.PlacedItemFeature
 import miragefairy2024.mod.biome.FAIRY_BIOME_TAG
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.BiomeSelectorScope
+import miragefairy2024.util.PlacementModifiersScope
 import miragefairy2024.util.Registration
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.flower
@@ -30,6 +31,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration
+import net.minecraft.world.level.levelgen.placement.PlacementModifier
 import java.util.function.Predicate
 
 val DEBRIS_FEATURE = DebrisFeature(DebrisFeature.Config.CODEC)
@@ -40,6 +42,7 @@ enum class DebrisCard(
     val count: IntRange,
     val itemStackGetter: () -> ItemStack,
     val biomeSelectorCreator: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>,
+    val extraPlacementModifier: PlacementModifiersScope.() -> List<PlacementModifier> = { emptyList() },
 ) {
     STICK("stick", 32, 2..6, { Items.STICK.createItemStack() }, { overworld }),
     STICK_DENSE("stick_dense", 32 / 8, 2..6, { Items.STICK.createItemStack() }, { +BiomeTags.IS_FOREST }),
@@ -67,7 +70,9 @@ fun initDebrisModule() {
     DebrisCard.entries.forEach { card ->
         DEBRIS_FEATURE.generator(card.identifier) {
             registerConfiguredFeature { DebrisFeature.Config(UniformInt.of(card.count.first, card.count.last), card.itemStackGetter()) }.generator {
-                registerPlacedFeature { per(card.perChunks) + flower(square, surface) }.placeWhenVegetalDecoration(card.biomeSelectorCreator)
+                registerPlacedFeature {
+                    per(card.perChunks) + flower(square, surface) + card.extraPlacementModifier(this)
+                }.placeWhenVegetalDecoration(card.biomeSelectorCreator)
             }
         }
     }
