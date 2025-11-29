@@ -26,6 +26,7 @@ import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
 import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter
+import net.minecraft.world.level.levelgen.placement.CaveSurface
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
 object RetrospectiveCityBiomeCard : BiomeCard(
@@ -97,7 +98,7 @@ object RetrospectiveCityBiomeCard : BiomeCard(
             SurfaceRules.ifTrue(
                 SurfaceRules.abovePreliminarySurface(),
                 SurfaceRules.ifTrue(
-                    SurfaceRules.ON_FLOOR,
+                    SurfaceRules.stoneDepthCheck(3, false, CaveSurface.FLOOR),
                     SurfaceRules.ifTrue(
                         SurfaceRules.waterBlockCheck(-1, 0),
                         SurfaceRules.ifTrue(
