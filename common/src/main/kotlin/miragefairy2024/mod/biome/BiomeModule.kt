@@ -51,6 +51,7 @@ fun initBiomeModule() {
     RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG.enJa(EnJa("Retrospective City Floor", "過去を見つめる都市の床"))
 
     MiragidianLampFeatureCard.init()
+    RetrospectiveCitySmallRuinFeatureCard.init()
 
     FairyForestBiomeCard.init()
     DeepFairyForestBiomeCard.init()

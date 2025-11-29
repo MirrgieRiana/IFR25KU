@@ -80,6 +80,7 @@ object RetrospectiveCityBiomeCard : BiomeCard(
                 BiomeDefaultFeatures.addDefaultMushrooms(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MiragidianLampFeatureCard.placedFeatureKey)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, RetrospectiveCitySmallRuinFeatureCard.placedFeatureKey)
 
             }.build()).build()
     }
