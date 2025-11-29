@@ -69,12 +69,12 @@ class FairyCrystalGlassBlock(properties: Properties) : TransparentBlock(properti
     }
 }
 
-val fairyCrystalGlassFrameBlockModel = Model { textureMap ->
+val fairyCrystalGlassFrameBlockModel = Model { textureMapping ->
     ModelData(
         parent = ResourceLocation("block/block"),
         textures = ModelTexturesData(
-            TextureSlot.PARTICLE.id to textureMap.get(TextureSlot.TEXTURE).string,
-            TextureSlot.TEXTURE.id to textureMap.get(TextureSlot.TEXTURE).string,
+            TextureSlot.PARTICLE.id to textureMapping.get(TextureSlot.TEXTURE).string,
+            TextureSlot.TEXTURE.id to textureMapping.get(TextureSlot.TEXTURE).string,
         ),
         elements = ModelElementsData(
             ModelElementData(
@@ -91,7 +91,7 @@ val fairyCrystalGlassFrameBlockModel = Model { textureMap ->
     )
 }
 
-val fairyCrystalGlassBlockModel = Model { textureMap ->
+val fairyCrystalGlassBlockModel = Model { textureMapping ->
     fun createPart(rotation: Int) = ModelElementData(
         from = listOf(0, 0, 0),
         to = listOf(16, 16, 16),
@@ -107,8 +107,8 @@ val fairyCrystalGlassBlockModel = Model { textureMap ->
     ModelData(
         parent = ResourceLocation("block/block"),
         textures = ModelTexturesData(
-            TextureSlot.PARTICLE.id to textureMap.get(TextureSlot.TEXTURE).string,
-            TextureSlot.TEXTURE.id to textureMap.get(TextureSlot.TEXTURE).string,
+            TextureSlot.PARTICLE.id to textureMapping.get(TextureSlot.TEXTURE).string,
+            TextureSlot.TEXTURE.id to textureMapping.get(TextureSlot.TEXTURE).string,
         ),
         elements = ModelElementsData(
             createPart(0),

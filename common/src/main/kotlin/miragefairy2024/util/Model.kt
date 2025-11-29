@@ -107,19 +107,19 @@ class ModelFaceData(
 
 // Util
 
-fun TextureMap(vararg entries: Pair<TextureSlot, ResourceLocation>, initializer: TextureMapping.() -> Unit = {}): TextureMapping {
-    val textureMap = TextureMapping()
+fun TextureMapping(vararg entries: Pair<TextureSlot, ResourceLocation>, initializer: TextureMapping.() -> Unit = {}): TextureMapping {
+    val textureMapping = TextureMapping()
     entries.forEach {
-        textureMap.put(it.first, it.second)
+        textureMapping.put(it.first, it.second)
     }
-    initializer(textureMap)
-    return textureMap
+    initializer(textureMapping)
+    return textureMapping
 }
 
 val TextureSlot.string get() = this.toString()
 
-infix fun ModelTemplate.with(textureMap: TextureMapping): TexturedModel = TexturedModel.createDefault({ textureMap }, this).get(Blocks.AIR)
-fun ModelTemplate.with(vararg textureEntries: Pair<TextureSlot, ResourceLocation>) = this with TextureMap(*textureEntries)
+infix fun ModelTemplate.with(textureMapping: TextureMapping): TexturedModel = TexturedModel.createDefault({ textureMapping }, this).get(Blocks.AIR)
+fun ModelTemplate.with(vararg textureEntries: Pair<TextureSlot, ResourceLocation>) = this with TextureMapping(*textureEntries)
 
 
 // registerModelGeneration
@@ -136,7 +136,7 @@ fun (() -> Item).registerModelGeneration(texturedModelCreator: () -> TexturedMod
 
 context(ModContext)
 @JvmName("registerItemModelGeneration")
-fun (() -> Item).registerModelGeneration(model: ModelTemplate, textureMapCreator: () -> TextureMapping = { TextureMapping.layer0(this()) }) = this.registerModelGeneration { model with textureMapCreator() }
+fun (() -> Item).registerModelGeneration(model: ModelTemplate, textureMappingCreator: () -> TextureMapping = { TextureMapping.layer0(this()) }) = this.registerModelGeneration { model with textureMappingCreator() }
 
 context(ModContext)
 @JvmName("registerItemGeneratedModelGeneration")

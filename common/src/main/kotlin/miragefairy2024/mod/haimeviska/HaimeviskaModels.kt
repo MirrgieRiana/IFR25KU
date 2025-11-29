@@ -16,12 +16,12 @@ import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
 
 val unchargedHaimeviskaLeavesTexturedModelFactory = TexturedModel.Provider { block ->
-    Model { textureMap ->
+    Model { textureMapping ->
         ModelData(
             parent = ResourceLocation("minecraft", "block/block"),
             textures = ModelTexturesData(
                 TextureSlot.PARTICLE.id to TextureSlot.BACK.string,
-                TextureSlot.BACK.id to textureMap.get(TextureSlot.BACK).string,
+                TextureSlot.BACK.id to textureMapping.get(TextureSlot.BACK).string,
             ),
             elements = ModelElementsData(
                 ModelElementData(
@@ -44,13 +44,13 @@ val unchargedHaimeviskaLeavesTexturedModelFactory = TexturedModel.Provider { blo
 }
 
 val chargedHaimeviskaLeavesTexturedModelFactory = TexturedModel.Provider { block ->
-    Model { textureMap ->
+    Model { textureMapping ->
         ModelData(
             parent = ResourceLocation("minecraft", "block/block"),
             textures = ModelTexturesData(
                 TextureSlot.PARTICLE.id to TextureSlot.BACK.string,
-                TextureSlot.BACK.id to textureMap.get(TextureSlot.BACK).string,
-                TextureSlot.FRONT.id to textureMap.get(TextureSlot.FRONT).string,
+                TextureSlot.BACK.id to textureMapping.get(TextureSlot.BACK).string,
+                TextureSlot.FRONT.id to textureMapping.get(TextureSlot.FRONT).string,
             ),
             elements = ModelElementsData(
                 ModelElementData(

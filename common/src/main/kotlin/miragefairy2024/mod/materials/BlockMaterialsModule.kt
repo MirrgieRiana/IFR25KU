@@ -28,7 +28,7 @@ import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.BlockStateVariantRotation
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
-import miragefairy2024.util.TextureMap
+import miragefairy2024.util.TextureMapping
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.from
@@ -276,7 +276,7 @@ open class BlockMaterialCard(
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             run {
                 val textureMapping by lazy {
-                    TextureMap(
+                    TextureMapping(
                         TextureSlot.SIDE to "block/" * identifier,
                         TextureSlot.END to "block/" * AURA_RESISTANT_CERAMIC.identifier,
                     )

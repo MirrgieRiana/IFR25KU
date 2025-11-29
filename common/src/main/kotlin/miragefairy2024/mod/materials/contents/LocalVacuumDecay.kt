@@ -62,13 +62,13 @@ class LocalVacuumDecayBlock(settings: Properties) : Block(settings) {
 }
 
 val localVacuumDecayTexturedModelFactory = TexturedModel.Provider { block ->
-    Model { textureMap ->
+    Model { textureMapping ->
         ModelData(
             parent = ResourceLocation("minecraft", "block/block"),
             textures = ModelTexturesData(
-                TextureSlot.PARTICLE.id to textureMap.get(TextureSlot.BACK).string,
-                TextureSlot.BACK.id to textureMap.get(TextureSlot.BACK).string,
-                TextureSlot.FRONT.id to textureMap.get(TextureSlot.FRONT).string,
+                TextureSlot.PARTICLE.id to textureMapping.get(TextureSlot.BACK).string,
+                TextureSlot.BACK.id to textureMapping.get(TextureSlot.BACK).string,
+                TextureSlot.FRONT.id to textureMapping.get(TextureSlot.FRONT).string,
             ),
             elements = ModelElementsData(
                 ModelElementData(

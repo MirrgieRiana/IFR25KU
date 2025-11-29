@@ -14,7 +14,7 @@ import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Model
 import miragefairy2024.util.Registration
-import miragefairy2024.util.TextureMap
+import miragefairy2024.util.TextureMapping
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.generator
 import miragefairy2024.util.get
@@ -99,7 +99,7 @@ object AuraReflectorFurnaceCard : SimpleMachineCard<AuraReflectorFurnaceBlock, A
 
         Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("aura_reflector_furnace")) { AuraReflectorFurnaceBlock.CODEC }.register()
 
-        registerModelGeneration({ "block/" * identifier * "_lit" }) { Model("block/" * identifier, TextureSlot.FRONT) with TextureMap(TextureSlot.FRONT to "block/" * identifier * "_front_lit") }
+        registerModelGeneration({ "block/" * identifier * "_lit" }) { Model("block/" * identifier, TextureSlot.FRONT) with TextureMapping(TextureSlot.FRONT to "block/" * identifier * "_front_lit") }
 
         BlockTags.MINEABLE_WITH_PICKAXE.generator.registerChild(block)
         BlockTags.NEEDS_STONE_TOOL.generator.registerChild(block)

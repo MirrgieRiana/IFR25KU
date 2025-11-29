@@ -8,7 +8,7 @@ import miragefairy2024.mod.magicplant.Trait
 import miragefairy2024.mod.magicplant.TraitStacks
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.util.Registration
-import miragefairy2024.util.TextureMap
+import miragefairy2024.util.TextureMapping
 import miragefairy2024.util.get
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.normal
@@ -73,7 +73,7 @@ abstract class SimpleMagicPlantCard<B : SimpleMagicPlantBlock> : MagicPlantCard<
             }
         }
         iconItem.registerModelGeneration(ModelTemplates.FLAT_ITEM) {
-            TextureMap(TextureSlot.LAYER0 to "block/magic_plant/" * block().getIdentifier() * "_age${ageProperty.possibleValues.max()}")
+            TextureMapping(TextureSlot.LAYER0 to "block/magic_plant/" * block().getIdentifier() * "_age${ageProperty.possibleValues.max()}")
         }
 
     }
