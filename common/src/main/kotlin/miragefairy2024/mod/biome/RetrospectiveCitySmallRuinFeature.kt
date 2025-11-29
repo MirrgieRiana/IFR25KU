@@ -69,6 +69,7 @@ class RetrospectiveCitySmallRuinFeature(codec: Codec<NoneFeatureConfiguration>) 
             var up = 0
             while (true) {
                 if (level.getBlockState(blockPos.above(up)).isConflicting()) return null // そのマスに建物を構成するブロックがある
+                if (blockPos.y + up >= level.maxBuildHeight) return null // ワールドの高さ制限に達しているので抜ける
                 if (up + 1 >= maxHeight) break // 現在の高さが最大高さに到達しているので抜ける
                 if (!level.isEmptyBlock(blockPos.above(up + 1))) break // これより上に拡張できないので抜ける
                 up++
