@@ -38,7 +38,7 @@ object RetrospectiveCityTinyRuinFeatureCard {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature(placedFeatureKey) { count(4) + flower(square, surface) + retrospectiveCityFloorPlacementModifiers }
+                registerPlacedFeature(placedFeatureKey) { count(8) + flower(square, surface) + retrospectiveCityFloorPlacementModifiers }
             }
         }
     }
@@ -52,7 +52,7 @@ class RetrospectiveCityTinyRuinFeature(codec: Codec<NoneFeatureConfiguration>) :
 
         fun BlockState.isConflicting() = this isIn RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG && this isNotIn RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG
 
-        val height = random.nextIntBetweenInclusive(2, 8)
+        val height = random.nextIntBetweenInclusive(2, 4)
         val isBricks = random.nextBoolean()
 
         fun schedule(blockPos: BlockPos, maxHeight: Int): (() -> Unit)? {
@@ -113,14 +113,14 @@ class RetrospectiveCityTinyRuinFeature(codec: Codec<NoneFeatureConfiguration>) :
             return true
         }
         if (!f(0, 0, 1.0F, false)) return false
-        if (!f(-1, 0, 0.5F, true)) return false
-        if (!f(1, 0, 0.5F, true)) return false
-        if (!f(0, -1, 0.5F, true)) return false
-        if (!f(0, 1, 0.5F, true)) return false
-        if (!f(-1, -1, 0.25F, true)) return false
-        if (!f(-1, 1, 0.25F, true)) return false
-        if (!f(1, -1, 0.25F, true)) return false
-        if (!f(1, 1, 0.25F, true)) return false
+        if (!f(-1, 0, 0.25F, true)) return false
+        if (!f(1, 0, 0.25F, true)) return false
+        if (!f(0, -1, 0.25F, true)) return false
+        if (!f(0, 1, 0.25F, true)) return false
+        if (!f(-1, -1, 0.10F, true)) return false
+        if (!f(-1, 1, 0.10F, true)) return false
+        if (!f(1, -1, 0.10F, true)) return false
+        if (!f(1, 1, 0.10F, true)) return false
 
         schedules.forEach {
             it()
