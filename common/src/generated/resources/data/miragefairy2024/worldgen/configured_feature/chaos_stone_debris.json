@@ -1,0 +1,14 @@
+{
+  "type": "miragefairy2024:debris",
+  "config": {
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 1,
+      "min_inclusive": 1
+    },
+    "item": {
+      "count": 1,
+      "id": "miragefairy2024:chaos_stone"
+    }
+  }
+}

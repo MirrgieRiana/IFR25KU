@@ -59,6 +59,9 @@ enum class DebrisCard(
     XARPITE("xarpite", 128, 2..6, { MaterialCard.XARPITE.item().createItemStack() }, { overworld }),
     FAIRY_SCALES("fairy_scales", 128, 2..6, { MaterialCard.FAIRY_SCALES.item().createItemStack() }, { overworld }),
     FAIRY_SCALES_DENSE("fairy_scales_dense", 128 / 2, 8..24, { MaterialCard.FAIRY_SCALES.item().createItemStack() }, { +FAIRY_BIOME_TAG }),
+
+    RETROSPECTIVE_CITY_XARPITE("retrospective_city_xarpite", 8, 1..2, { MaterialCard.XARPITE.item().createItemStack() }, { +RetrospectiveCityBiomeCard.key }, extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
+    CHAOS_STONE("chaos_stone", 8, 1..1, { MaterialCard.CHAOS_STONE.item().createItemStack() }, { +RetrospectiveCityBiomeCard.key }, extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
     MIRAGIDIAN_SHARD("miragidian_shard", 8, 1..4, { MaterialCard.MIRAGIDIAN_SHARD.item().createItemStack() }, { +RetrospectiveCityBiomeCard.key }, extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
     COBBLED_AURA_RESISTANT_CERAMIC("cobbled_aura_resistant_ceramic", 1, 8..24, { BlockMaterialCard.COBBLED_AURA_RESISTANT_CERAMIC.item().createItemStack() }, { +RetrospectiveCityBiomeCard.key }, extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
     AURA_RESISTANT_CERAMIC_BRICKS("aura_resistant_ceramic_bricks", 2, 4..12, { BlockMaterialCard.AURA_RESISTANT_CERAMIC_BRICKS.item().createItemStack() }, { +RetrospectiveCityBiomeCard.key }, extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
