@@ -144,6 +144,7 @@ fun checkConflict(level: WorldGenLevel, blockPos: BlockPos, height: Int): Pair<I
     var down = 0
     while (true) {
         if (level.getBlockState(blockPos.below(down + 1)).isConflicting()) return null // 床に道を構成するブロックがある
+        if (!level.getBlockState(blockPos.below(down + 1)).fluidState.isEmpty) return null // 床に流体がある
         if (down >= 3) break
         if (!level.isEmptyBlock(blockPos.below(down + 1))) break // これより下に拡張できないので抜ける
         down++
