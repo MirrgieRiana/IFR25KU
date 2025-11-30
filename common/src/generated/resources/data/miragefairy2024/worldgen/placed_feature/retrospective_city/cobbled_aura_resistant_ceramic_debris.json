@@ -1,9 +1,9 @@
 {
-  "feature": "miragefairy2024:retrospective_city_xarpite_debris",
+  "feature": "miragefairy2024:retrospective_city/cobbled_aura_resistant_ceramic_debris",
   "placement": [
     {
       "type": "minecraft:rarity_filter",
-      "chance": 8
+      "chance": 1
     },
     {
       "type": "minecraft:in_square"

@@ -1,9 +1,9 @@
 {
-  "feature": "miragefairy2024:cobbled_aura_resistant_ceramic_debris",
+  "feature": "miragefairy2024:retrospective_city/miragidian_shard_debris",
   "placement": [
     {
       "type": "minecraft:rarity_filter",
-      "chance": 1
+      "chance": 8
     },
     {
       "type": "minecraft:in_square"
