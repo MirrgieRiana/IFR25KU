@@ -53,6 +53,7 @@ fun initBiomeModule() {
     MiragidianLampFeatureCard.init()
     RetrospectiveCitySmallRuinFeatureCard.init()
     RetrospectiveCityTinyRuinFeatureCard.init()
+    XarperiaObeliskFeatureCard.init()
 
     FairyForestBiomeCard.init()
     DeepFairyForestBiomeCard.init()

@@ -84,6 +84,7 @@ object RetrospectiveCityBiomeCard : BiomeCard(
                 BiomeDefaultFeatures.addDefaultOres(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultSoftDisks(lookupBackedBuilder)
 
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, XarperiaObeliskFeatureCard.placedFeatureKey)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MiragidianLampFeatureCard.placedFeatureKey)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, RetrospectiveCitySmallRuinFeatureCard.placedFeatureKey)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, RetrospectiveCityTinyRuinFeatureCard.placedFeatureKey)
