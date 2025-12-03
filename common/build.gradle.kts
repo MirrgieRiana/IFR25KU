@@ -33,11 +33,32 @@ configurations.named("mainNamedElements") {
 }
 
 repositories {
-    maven("https://maven.shedaniel.me") // RoughlyEnoughItems
-    maven("https://maven.terraformersmc.com/releases") // EMI
-    maven("https://maven.wispforest.io/releases/") // owo-lib
-    maven("https://maven.minecraftforge.net/") // com.github.glitchfiend:TerraBlender-fabric
-    maven("https://raw.githubusercontent.com/MirrgieRiana/mirrg.kotlin/refs/heads/maven/maven/") // mirrg.kotlin.helium
+    maven("https://maven.shedaniel.me") { // RoughlyEnoughItems
+        content {
+            includeGroup("me.shedaniel")
+        }
+    }
+    maven("https://maven.terraformersmc.com/releases") { // EMI
+        content {
+            includeGroup("dev.emi")
+        }
+    }
+    maven("https://maven.wispforest.io/releases/") { // owo-lib
+        content {
+            includeGroup("io.wispforest")
+            includeGroup("io.wispforest.endec")
+        }
+    }
+    maven("https://maven.minecraftforge.net/") { // com.github.glitchfiend:TerraBlender-fabric
+        content {
+            includeModule("com.github.glitchfiend", "TerraBlender-fabric")
+        }
+    }
+    maven("https://raw.githubusercontent.com/MirrgieRiana/mirrg.kotlin/refs/heads/maven/maven/") { // mirrg.kotlin.helium
+        content {
+            includeGroup("mirrg.kotlin")
+        }
+    }
 }
 
 dependencies {

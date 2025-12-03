@@ -46,15 +46,51 @@ configurations {
 
 repositories {
     maven("https://maven.neoforged.net/releases") // NeoForged
-    maven("https://maven.su5ed.dev/releases") // forgified-fabric-api
-    maven("https://thedarkcolour.github.io/KotlinForForge/") // kotlin-for-forge
-    maven("https://maven.shedaniel.me") // RoughlyEnoughItems
-    maven("https://maven.wispforest.io/releases/") // owo-lib
-    maven("https://maven.minecraftforge.net/") // com.github.glitchfiend:TerraBlender-neoforge
-    maven("https://maven.blamejared.com") // JEI
-    maven("https://maven.terraformersmc.com/releases") // EMI
-    maven("https://www.cursemaven.com") // Jade
-    maven("https://raw.githubusercontent.com/MirrgieRiana/mirrg.kotlin/refs/heads/maven/maven/") // mirrg.kotlin.helium
+    maven("https://maven.su5ed.dev/releases") { // forgified-fabric-api
+        content {
+            includeGroup("org.sinytra")
+            includeGroup("org.sinytra.forgified-fabric-api")
+        }
+    }
+    //maven("https://thedarkcolour.github.io/KotlinForForge/") { // kotlin-for-forge
+
+    //}
+    maven("https://maven.shedaniel.me") { // RoughlyEnoughItems
+        content {
+            includeGroup("me.shedaniel")
+        }
+    }
+    maven("https://maven.wispforest.io/releases/") { // owo-lib
+        content {
+            includeGroup("io.wispforest")
+            includeGroup("io.wispforest.endec")
+        }
+    }
+    maven("https://maven.minecraftforge.net/") { // com.github.glitchfiend:TerraBlender-neoforge
+        content {
+            includeModule("com.github.glitchfiend", "TerraBlender-neoforge")
+        }
+    }
+    maven("https://maven.blamejared.com") { // JEI
+        content {
+            includeGroup("mezz.jei")
+        }
+    }
+    maven("https://maven.terraformersmc.com/releases") { // EMI
+        content {
+            includeGroup("dev.emi")
+        }
+    }
+    maven("https://www.cursemaven.com") { // Jade
+        content {
+            includeModule("curse.maven", "jade-324717")
+        }
+    }
+    maven("https://raw.githubusercontent.com/MirrgieRiana/mirrg.kotlin/refs/heads/maven/maven/") { // mirrg.kotlin.helium
+        content {
+            includeGroup("mirrg.kotlin")
+        }
+    }
 }
 
 dependencies {
