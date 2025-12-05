@@ -5,15 +5,9 @@ import miragefairy2024.lib.HorizontalFacingMachineBlock
 import miragefairy2024.lib.MachineBlockEntity
 import miragefairy2024.lib.MachineCard
 import miragefairy2024.lib.MachineScreenHandler
-import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.fairybuilding.FairyBuildingCard
 import miragefairy2024.mod.mirageFairy2024ItemGroupCard
-import miragefairy2024.mod.poem
-import miragefairy2024.mod.registerPoem
-import miragefairy2024.mod.registerPoemGeneration
-import miragefairy2024.util.EnJa
 import miragefairy2024.util.compound
-import miragefairy2024.util.enJa
 import miragefairy2024.util.get
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.int
@@ -47,10 +41,6 @@ abstract class SimpleMachineCard<B : SimpleMachineBlock, E : SimpleMachineBlockE
         val PROGRESS_MAX_PROPERTY = FairyBuildingCard.PropertyConfiguration<SimpleMachineBlockEntity<*>>({ progressMax }, { progressMax = it })
     }
 
-    abstract val name: EnJa
-    abstract val poem: EnJa
-    abstract val tier: Int
-
     open class SlotConfiguration(
         override val x: Int,
         override val y: Int,
@@ -82,11 +72,6 @@ abstract class SimpleMachineCard<B : SimpleMachineBlock, E : SimpleMachineBlockE
         item.registerItemGroup(mirageFairy2024ItemGroupCard.itemGroupKey)
 
         registerBlockStateGeneration()
-
-        block.enJa(name)
-        val poemList = PoemList(tier).poem(poem)
-        item.registerPoem(poemList)
-        item.registerPoemGeneration(poemList)
 
         block.registerDefaultLootTableGeneration()
 

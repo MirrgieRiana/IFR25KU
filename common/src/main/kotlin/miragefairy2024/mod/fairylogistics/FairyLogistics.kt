@@ -1,22 +1,14 @@
 package miragefairy2024.mod.fairylogistics
 
-import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.HorizontalFacingMachineBlock
 import miragefairy2024.lib.MachineBlockEntity
 import miragefairy2024.lib.MachineCard
 import miragefairy2024.lib.MachineScreenHandler
-import miragefairy2024.mod.PoemList
-import miragefairy2024.mod.description
 import miragefairy2024.mod.mirageFairy2024ItemGroupCard
-import miragefairy2024.mod.poem
-import miragefairy2024.mod.registerPoem
-import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.BlockStateVariantEntry
 import miragefairy2024.util.BlockStateVariantRotation
-import miragefairy2024.util.EnJa
-import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.get
 import miragefairy2024.util.getIdentifier
@@ -45,21 +37,9 @@ import net.minecraft.world.level.material.PushReaction
 
 abstract class FairyLogisticsCard<B : FairyLogisticsBlock, E : FairyLogisticsBlockEntity<E>, H : FairyLogisticsScreenHandler> : MachineCard<B, E, H>() {
 
-    // Specification
-
-    abstract fun getPath(): String
-    override fun createIdentifier() = MirageFairy2024.identifier(getPath())
-
-    abstract val tier: Int
-    abstract val name: EnJa
-    abstract val poem: EnJa
-    abstract val description: EnJa
-
-
     // Block
 
     override fun createBlockSettings(): BlockBehaviour.Properties = BlockBehaviour.Properties.of().noCollission().strength(1.0F).pushReaction(PushReaction.DESTROY)
-
 
     context(ModContext)
     override fun init() {
@@ -91,11 +71,6 @@ abstract class FairyLogisticsCard<B : FairyLogisticsBlock, E : FairyLogisticsBlo
         }
         block.registerCutoutRenderLayer()
         blockEntityType.registerRenderingProxyBlockEntityRendererFactory()
-
-        block.enJa(name)
-        val poemList = PoemList(tier).poem(poem).description(description)
-        item.registerPoem(poemList)
-        item.registerPoemGeneration(poemList)
 
         BlockTags.MINEABLE_WITH_PICKAXE.generator.registerChild(block)
 

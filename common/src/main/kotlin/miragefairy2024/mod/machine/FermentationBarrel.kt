@@ -4,11 +4,13 @@ import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.MachineScreenHandler
+import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.Shape
 import miragefairy2024.mod.materials.tagOf
+import miragefairy2024.mod.poem
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -31,9 +33,8 @@ import net.minecraft.world.level.material.MapColor
 
 object FermentationBarrelCard : SimpleMachineCard<FermentationBarrelBlock, FermentationBarrelBlockEntity, FermentationBarrelScreenHandler, FermentationBarrelRecipe>() {
     override fun createIdentifier() = MirageFairy2024.identifier("fermentation_barrel")
-    override val name = EnJa("Fermentation Barrel", "醸造樽")
-    override val poem = EnJa("The scent of Haimeviska feel nostalgic", "懐かしき故郷の香り。")
-    override val tier = 2
+    override fun createName() = EnJa("Fermentation Barrel", "醸造樽")
+    override fun createPoemList() = PoemList(2).poem(EnJa("The scent of Haimeviska feel nostalgic", "懐かしき故郷の香り。"))
     override fun createBlockSettings(): BlockBehaviour.Properties = BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.BASS).sound(SoundType.WOOD).strength(3.0F).mapColor(MapColor.TERRACOTTA_ORANGE)
     override fun createBlock() = FermentationBarrelBlock(this)
     override fun createBlockEntityAccessor() = BlockEntityAccessor(::FermentationBarrelBlockEntity)

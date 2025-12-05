@@ -4,8 +4,10 @@ import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.MachineScreenHandler
+import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.fairy.FairyCard
 import miragefairy2024.mod.fairy.MotifCard
+import miragefairy2024.mod.poem
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -35,10 +37,9 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 
 object FairyCollectorCard : FairyFactoryCard<FairyCollectorBlock, FairyCollectorBlockEntity, FairyCollectorScreenHandler>() {
-    override fun getPath() = "fairy_collector"
-    override val tier = 2
-    override val name = EnJa("Fairy Collector", "いたずら妖精エンデルマーニャの隠れ家")
-    override val poem = EnJa("An attractor of curiosity", "あれ？ここにあったリモコン知らない？")
+    override fun createIdentifier() = MirageFairy2024.identifier("fairy_collector")
+    override fun createName() = EnJa("Fairy Collector", "いたずら妖精エンデルマーニャの隠れ家")
+    override fun createPoemList() = PoemList(2).poem(EnJa("An attractor of curiosity", "あれ？ここにあったリモコン知らない？"))
 
     override fun createBlock() = FairyCollectorBlock(this)
 

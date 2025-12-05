@@ -5,9 +5,12 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.MachineBlockEntity
 import miragefairy2024.lib.MachineScreenHandler
+import miragefairy2024.mod.PoemList
+import miragefairy2024.mod.description
 import miragefairy2024.mod.fairy.FairyCard
 import miragefairy2024.mod.fairybuilding.FairyFactoryBlockEntity
 import miragefairy2024.mod.materials.BlockMaterialCard
+import miragefairy2024.mod.poem
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.generator
@@ -37,11 +40,11 @@ import net.minecraft.world.phys.shapes.VoxelShape
 
 // TODO WIP
 object FairyPassiveSupplierCard : FairyLogisticsCard<FairyPassiveSupplierBlock, FairyPassiveSupplierBlockEntity, FairyPassiveSupplierScreenHandler>() {
-    override fun getPath() = "fairy_passive_supplier"
-    override val tier = 3
-    override val name = EnJa("Fairy Passive Supplier(WIP)", "妖精の郵便屋さん(WIP)") // TODO rename
-    override val poem = EnJa("Fairies' Delivery Service", "落ち込んだりもしたけれど、私は元気です。")
-    override val description = EnJa("Accepts and delivers orders", "注文を受け付けて配達する")
+    override fun createIdentifier() = MirageFairy2024.identifier("fairy_passive_supplier")
+    override fun createName() = EnJa("Fairy Passive Supplier(WIP)", "妖精の郵便屋さん(WIP)") // TODO rename
+    override fun createPoemList() = PoemList(3)
+        .poem(EnJa("Fairies' Delivery Service", "落ち込んだりもしたけれど、私は元気です。"))
+        .description(EnJa("Accepts and delivers orders", "注文を受け付けて配達する"))
 
     override fun createBlockSettings(): BlockBehaviour.Properties = super.createBlockSettings().mapColor(MapColor.COLOR_PINK).sound(SoundType.WOOD)
     override fun createBlock() = FairyPassiveSupplierBlock(this)

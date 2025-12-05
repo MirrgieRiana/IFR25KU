@@ -4,11 +4,13 @@ import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.MachineScreenHandler
+import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.fairybuilding.FairyBuildingCard
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.Shape
 import miragefairy2024.mod.materials.tagOf
+import miragefairy2024.mod.poem
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -53,9 +55,8 @@ import net.minecraft.world.level.material.MapColor
 
 object AuraReflectorFurnaceCard : SimpleMachineCard<AuraReflectorFurnaceBlock, AuraReflectorFurnaceBlockEntity, AuraReflectorFurnaceScreenHandler, AuraReflectorFurnaceRecipe>() {
     override fun createIdentifier() = MirageFairy2024.identifier("aura_reflector_furnace")
-    override val name = EnJa("Aura Reflector Furnace", "オーラ反射炉")
-    override val poem = EnJa("Life is essentially inorganic.", "生命と無機物の境界。")
-    override val tier = 2
+    override fun createName() = EnJa("Aura Reflector Furnace", "オーラ反射炉")
+    override fun createPoemList() = PoemList(2).poem(EnJa("Life is essentially inorganic.", "生命と無機物の境界。"))
     override fun createBlockSettings(): BlockBehaviour.Properties = BlockBehaviour.Properties.of().mapColor(MapColor.NETHER).requiresCorrectToolForDrops().strength(3.0F).lightLevel(Blocks.litBlockEmission(8))
     override fun createBlock() = AuraReflectorFurnaceBlock(this)
     override fun createBlockEntityAccessor() = BlockEntityAccessor(::AuraReflectorFurnaceBlockEntity)

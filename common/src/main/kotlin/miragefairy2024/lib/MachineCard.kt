@@ -1,11 +1,16 @@
 package miragefairy2024.lib
 
 import miragefairy2024.ModContext
+import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.registerPoem
+import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.BlockEntityType
+import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.dummyUnitStreamCodec
+import miragefairy2024.util.enJa
 import miragefairy2024.util.register
 import miragefairy2024.util.times
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
@@ -39,6 +44,9 @@ abstract class MachineCard<B : Block, E : MachineBlockEntity<E>, H : MachineScre
 
     abstract fun createIdentifier(): ResourceLocation
     val identifier = createIdentifier()
+
+    abstract fun createName(): EnJa
+    abstract fun createPoemList(): PoemList?
 
 
     // Block
@@ -129,10 +137,22 @@ abstract class MachineCard<B : Block, E : MachineBlockEntity<E>, H : MachineScre
 
     context(ModContext)
     open fun init() {
+
         block.register()
+        block.enJa(createName())
+
         blockEntityType.register()
+
         item.register()
+        val poemList = createPoemList()
+        if (poemList != null) {
+            item.registerPoem(poemList)
+            item.registerPoemGeneration(poemList)
+        }
+
         screenHandlerType.register()
+
         advancement?.init()
+
     }
 }

@@ -1,19 +1,12 @@
 package miragefairy2024.mod.fairybuilding
 
-import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.RenderingProxy
 import miragefairy2024.lib.HorizontalFacingMachineBlock
 import miragefairy2024.lib.MachineBlockEntity
 import miragefairy2024.lib.MachineCard
 import miragefairy2024.lib.MachineScreenHandler
-import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.mirageFairy2024ItemGroupCard
-import miragefairy2024.mod.poem
-import miragefairy2024.mod.registerPoem
-import miragefairy2024.mod.registerPoemGeneration
-import miragefairy2024.util.EnJa
-import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.getOrNull
@@ -76,15 +69,6 @@ abstract class FairyBuildingCard<B : FairyBuildingBlock, E : FairyBuildingBlockE
         fun p(x: Double, y: Double, z: Double, pitch: Float, yaw: Float, duration: Double) = listOf(FairyAnimation.Position(x, y, z, pitch, yaw, duration))
     }
 
-    // Specification
-
-    abstract fun getPath(): String
-    override fun createIdentifier() = MirageFairy2024.identifier(getPath())
-
-    abstract val tier: Int
-    abstract val name: EnJa
-    abstract val poem: EnJa
-
 
     // Block
 
@@ -127,11 +111,6 @@ abstract class FairyBuildingCard<B : FairyBuildingBlock, E : FairyBuildingBlockE
         block.registerVariantsBlockStateGeneration { normal("block/" * block().getIdentifier()).withHorizontalRotation(HorizontalDirectionalBlock.FACING) }
         block.registerCutoutRenderLayer()
         blockEntityType.registerRenderingProxyBlockEntityRendererFactory()
-
-        block.enJa(name)
-        val poemList = PoemList(tier).poem(poem)
-        item.registerPoem(poemList)
-        item.registerPoemGeneration(poemList)
 
         BlockTags.MINEABLE_WITH_AXE.generator.registerChild(block)
         FAIRY_BUILDING_BLOCK_TAG.generator.registerChild(block)

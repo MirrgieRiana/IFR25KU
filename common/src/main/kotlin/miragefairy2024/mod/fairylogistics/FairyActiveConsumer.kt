@@ -5,10 +5,13 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.MachineBlockEntity
 import miragefairy2024.lib.MachineScreenHandler
+import miragefairy2024.mod.PoemList
+import miragefairy2024.mod.description
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.Shape
 import miragefairy2024.mod.materials.tagOf
+import miragefairy2024.mod.poem
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
@@ -41,11 +44,11 @@ import net.minecraft.world.phys.shapes.VoxelShape
 
 // TODO WIP
 object FairyActiveConsumerCard : FairyLogisticsCard<FairyActiveConsumerBlock, FairyActiveConsumerBlockEntity, FairyActiveConsumerScreenHandler>() {
-    override fun getPath() = "fairy_active_consumer"
-    override val tier = 3
-    override val name = EnJa("Fairy Active Consumer(WIP)", "妖精の郵便受け(WIP)") // TODO rename
-    override val poem = EnJa("Tonight, I'll Be Eating...", "焼き鯖だよ――")
-    override val description = EnJa("The ordered items are delivered", "注文したアイテムが搬入される")
+    override fun createIdentifier() = MirageFairy2024.identifier("fairy_active_consumer")
+    override fun createName() = EnJa("Fairy Active Consumer(WIP)", "妖精の郵便受け(WIP)") // TODO rename
+    override fun createPoemList() = PoemList(3)
+        .poem(EnJa("Tonight, I'll Be Eating...", "焼き鯖だよ――"))
+        .description(EnJa("The ordered items are delivered", "注文したアイテムが搬入される"))
 
     override fun createBlockSettings(): BlockBehaviour.Properties = super.createBlockSettings().mapColor(MapColor.ICE).sound(SoundType.METAL)
     override fun createBlock() = FairyActiveConsumerBlock(this)

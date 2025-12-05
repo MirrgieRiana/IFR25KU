@@ -4,12 +4,14 @@ import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.MachineScreenHandler
+import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.fairy.FairyCard
 import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.Shape
 import miragefairy2024.mod.materials.tagOf
+import miragefairy2024.mod.poem
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -29,10 +31,9 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 
 object FairyHouseCard : FairyFactoryCard<FairyHouseBlock, FairyHouseBlockEntity, FairyHouseScreenHandler>() {
-    override fun getPath() = "fairy_house"
-    override val tier = 2
-    override val name = EnJa("Fairy House", "妖精の家")
-    override val poem = EnJa("Home sweet home", "あたたかいおうち")
+    override fun createIdentifier() = MirageFairy2024.identifier("fairy_house")
+    override fun createName() = EnJa("Fairy House", "妖精の家")
+    override fun createPoemList() = PoemList(2).poem(EnJa("Home sweet home", "あたたかいおうち"))
 
     override fun createBlock() = FairyHouseBlock(this)
 
