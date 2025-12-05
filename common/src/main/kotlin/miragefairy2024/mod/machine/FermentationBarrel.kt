@@ -31,16 +31,15 @@ import net.minecraft.world.level.material.MapColor
 
 object FermentationBarrelCard : SimpleMachineCard<FermentationBarrelBlock, FermentationBarrelBlockEntity, FermentationBarrelScreenHandler, FermentationBarrelRecipe>() {
     override fun createIdentifier() = MirageFairy2024.identifier("fermentation_barrel")
+    override val name = EnJa("Fermentation Barrel", "醸造樽")
+    override val poem = EnJa("The scent of Haimeviska feel nostalgic", "懐かしき故郷の香り。")
+    override val tier = 2
     override fun createBlockSettings(): BlockBehaviour.Properties = BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.BASS).sound(SoundType.WOOD).strength(3.0F).mapColor(MapColor.TERRACOTTA_ORANGE)
     override fun createBlock() = FermentationBarrelBlock(this)
     override fun createBlockEntityAccessor() = BlockEntityAccessor(::FermentationBarrelBlockEntity)
     override fun createScreenHandler(arguments: MachineScreenHandler.Arguments) = FermentationBarrelScreenHandler(this, arguments)
     override val guiWidth = 176
     override val guiHeight = 152
-
-    override val name = EnJa("Fermentation Barrel", "醸造樽")
-    override val poem = EnJa("The scent of Haimeviska feel nostalgic", "懐かしき故郷の香り。")
-    override val tier = 2
 
     override val inputSlots = listOf(
         SlotConfiguration(42, 17, setOf(Direction.UP), setOf()),

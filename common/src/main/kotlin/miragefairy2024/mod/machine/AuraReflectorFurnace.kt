@@ -53,16 +53,15 @@ import net.minecraft.world.level.material.MapColor
 
 object AuraReflectorFurnaceCard : SimpleMachineCard<AuraReflectorFurnaceBlock, AuraReflectorFurnaceBlockEntity, AuraReflectorFurnaceScreenHandler, AuraReflectorFurnaceRecipe>() {
     override fun createIdentifier() = MirageFairy2024.identifier("aura_reflector_furnace")
+    override val name = EnJa("Aura Reflector Furnace", "オーラ反射炉")
+    override val poem = EnJa("Life is essentially inorganic.", "生命と無機物の境界。")
+    override val tier = 2
     override fun createBlockSettings(): BlockBehaviour.Properties = BlockBehaviour.Properties.of().mapColor(MapColor.NETHER).requiresCorrectToolForDrops().strength(3.0F).lightLevel(Blocks.litBlockEmission(8))
     override fun createBlock() = AuraReflectorFurnaceBlock(this)
     override fun createBlockEntityAccessor() = BlockEntityAccessor(::AuraReflectorFurnaceBlockEntity)
     override fun createScreenHandler(arguments: MachineScreenHandler.Arguments) = AuraReflectorFurnaceScreenHandler(this, arguments)
     override val guiWidth = 176
     override val guiHeight = 166
-
-    override val name = EnJa("Aura Reflector Furnace", "オーラ反射炉")
-    override val poem = EnJa("Life is essentially inorganic.", "生命と無機物の境界。")
-    override val tier = 2
 
     override val inputSlots = listOf(
         SlotConfiguration(29, 17, setOf(Direction.EAST), setOf()),
