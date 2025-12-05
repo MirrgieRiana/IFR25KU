@@ -258,7 +258,7 @@ tasks.register<Copy>("buildPages") {
     from("pages") {
         include("**/*")
 
-        filesMatching("/lang_table.html") {
+        filesMatching("lang_table.html") {
             filter {
                 filteringCharset = "UTF-8"
                 it.replace("<%= trs %>", computeTrs())
