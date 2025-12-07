@@ -134,7 +134,7 @@ open class BlockMaterialCard(
                 pattern("##")
                 define('#', SMOOTH_AURA_RESISTANT_CERAMIC.item)
             } on SMOOTH_AURA_RESISTANT_CERAMIC.item
-            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
+            registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
         }
         val AURA_RESISTANT_CERAMIC_SLAB: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic_slab", EnJa("Protective Aura-Resistant Ceramic Slab", "守護の耐霊石のハーフブロック"),
@@ -147,8 +147,8 @@ open class BlockMaterialCard(
             context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
             registerBlockFamily(AURA_RESISTANT_CERAMIC.texturedModelProvider!!, AURA_RESISTANT_CERAMIC.block) { it.slab(block()) }
-            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
-            registerStonecutterRecipeGeneration(item, AURA_RESISTANT_CERAMIC.item, 2)
+            registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
+            registerStonecutterRecipeGeneration(AURA_RESISTANT_CERAMIC.item, item, 2)
         }
         val AURA_RESISTANT_CERAMIC_STAIRS: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic_stairs", EnJa("Protective Aura-Resistant Ceramic Stairs", "守護の耐霊石の階段"),
@@ -160,8 +160,8 @@ open class BlockMaterialCard(
             context(ModContext) override fun initModelGeneration() = Unit
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
             registerBlockFamily(AURA_RESISTANT_CERAMIC.texturedModelProvider!!, AURA_RESISTANT_CERAMIC.block) { it.stairs(block()) }
-            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
-            registerStonecutterRecipeGeneration(item, AURA_RESISTANT_CERAMIC.item)
+            registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
+            registerStonecutterRecipeGeneration(AURA_RESISTANT_CERAMIC.item, item)
         }
         val COBBLED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
             "cobbled_aura_resistant_ceramic", EnJa("Cobbled Protective Aura-Resistant Ceramic", "守護の耐霊石の丸石"),
@@ -201,7 +201,7 @@ open class BlockMaterialCard(
                 pattern("##")
                 define('#', SMOOTH_AURA_RESISTANT_CERAMIC.item)
             } on SMOOTH_AURA_RESISTANT_CERAMIC.item
-            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
+            registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
         }
         val AURA_RESISTANT_CERAMIC_BRICKS = !BlockMaterialCard(
             "aura_resistant_ceramic_bricks", EnJa("Protective Aura-Resistant Ceramic Bricks", "守護の耐霊石レンガ"),
@@ -213,8 +213,8 @@ open class BlockMaterialCard(
                 pattern("##")
                 define('#', POLISHED_AURA_RESISTANT_CERAMIC.item)
             } on POLISHED_AURA_RESISTANT_CERAMIC.item
-            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
-            registerStonecutterRecipeGeneration(item, POLISHED_AURA_RESISTANT_CERAMIC.item)
+            registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
+            registerStonecutterRecipeGeneration(POLISHED_AURA_RESISTANT_CERAMIC.item, item)
         }
         val AURA_RESISTANT_CERAMIC_BRICKS_SLAB: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic_bricks_slab", EnJa("Protective Aura-Resistant Ceramic Brick Slab", "守護の耐霊石レンガのハーフブロック"),
@@ -227,9 +227,9 @@ open class BlockMaterialCard(
             context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
             registerBlockFamily(TexturedModel.CUBE, AURA_RESISTANT_CERAMIC_BRICKS.block) { it.slab(block()) }
-            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
-            registerStonecutterRecipeGeneration(item, POLISHED_AURA_RESISTANT_CERAMIC.item)
-            registerStonecutterRecipeGeneration(item, AURA_RESISTANT_CERAMIC_BRICKS.item, 2)
+            registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
+            registerStonecutterRecipeGeneration(POLISHED_AURA_RESISTANT_CERAMIC.item, item)
+            registerStonecutterRecipeGeneration(AURA_RESISTANT_CERAMIC_BRICKS.item, item, 2)
         }
         val AURA_RESISTANT_CERAMIC_BRICKS_STAIRS: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic_bricks_stairs", EnJa("Protective Aura-Resistant Ceramic Brick Stairs", "守護の耐霊石レンガの階段"),
@@ -241,9 +241,9 @@ open class BlockMaterialCard(
             context(ModContext) override fun initModelGeneration() = Unit
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
             registerBlockFamily(TexturedModel.CUBE, AURA_RESISTANT_CERAMIC_BRICKS.block) { it.stairs(block()) }
-            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
-            registerStonecutterRecipeGeneration(item, POLISHED_AURA_RESISTANT_CERAMIC.item)
-            registerStonecutterRecipeGeneration(item, AURA_RESISTANT_CERAMIC_BRICKS.item)
+            registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
+            registerStonecutterRecipeGeneration(POLISHED_AURA_RESISTANT_CERAMIC.item, item)
+            registerStonecutterRecipeGeneration(AURA_RESISTANT_CERAMIC_BRICKS.item, item)
         }
         val CRACKED_AURA_RESISTANT_CERAMIC_BRICKS = !BlockMaterialCard(
             "cracked_aura_resistant_ceramic_bricks", EnJa("Cracked Protective Aura-Resistant Ceramic Bricks", "ひび割れた守護の耐霊石レンガ"),
@@ -262,8 +262,8 @@ open class BlockMaterialCard(
                 pattern("## ")
                 define('#', POLISHED_AURA_RESISTANT_CERAMIC.item)
             } on POLISHED_AURA_RESISTANT_CERAMIC.item
-            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
-            registerStonecutterRecipeGeneration(item, POLISHED_AURA_RESISTANT_CERAMIC.item)
+            registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
+            registerStonecutterRecipeGeneration(POLISHED_AURA_RESISTANT_CERAMIC.item, item)
         }
         val CHISELED_AURA_RESISTANT_CERAMIC = !object : BlockMaterialCard(
             "chiseled_aura_resistant_ceramic", EnJa("Chiseled Protective Aura-Resistant Ceramic", "模様入りの守護の耐霊石"),
@@ -296,8 +296,8 @@ open class BlockMaterialCard(
                 pattern("#")
                 define('#', AURA_RESISTANT_CERAMIC_SLAB.item)
             } on AURA_RESISTANT_CERAMIC_SLAB.item
-            registerStonecutterRecipeGeneration(item, SMOOTH_AURA_RESISTANT_CERAMIC.item)
-            registerStonecutterRecipeGeneration(item, AURA_RESISTANT_CERAMIC.item)
+            registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
+            registerStonecutterRecipeGeneration(AURA_RESISTANT_CERAMIC.item, item)
         }
         val MIRANAGITE_BLOCK = !BlockMaterialCard(
             "miranagite_block", EnJa("Miranagite Block", "蒼天石ブロック"),
@@ -329,7 +329,7 @@ open class BlockMaterialCard(
             context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
             registerBlockFamily(TexturedModel.CUBE, MIRANAGITE_TILES.block) { it.slab(block()) }
-            registerStonecutterRecipeGeneration(item, MIRANAGITE_TILES.item, 2)
+            registerStonecutterRecipeGeneration(MIRANAGITE_TILES.item, item, 2)
         }
         val MIRANAGITE_TILE_STAIRS = !object : BlockMaterialCard(
             "miranagite_tile_stairs", EnJa("Miranagite Tile Stairs", "蒼天石タイルの階段"),
@@ -341,7 +341,7 @@ open class BlockMaterialCard(
             context(ModContext) override fun initModelGeneration() = Unit
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
             registerBlockFamily(TexturedModel.CUBE, MIRANAGITE_TILES.block) { it.stairs(block()) }
-            registerStonecutterRecipeGeneration(item, MIRANAGITE_TILES.item)
+            registerStonecutterRecipeGeneration(MIRANAGITE_TILES.item, item)
         }
         val MIRANAGITE_TILE_WALL = !object : BlockMaterialCard(
             "miranagite_tile_wall", EnJa("Miranagite Tile Wall", "蒼天石タイルの塀"),
@@ -354,7 +354,7 @@ open class BlockMaterialCard(
             context(ModContext) override fun initModelGeneration() = Unit
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.WALLS).tag(ItemTags.WALLS).init {
             registerBlockFamily(TexturedModel.CUBE, MIRANAGITE_TILES.block) { it.wall(block()) }
-            registerStonecutterRecipeGeneration(item, MIRANAGITE_TILES.item, category = RecipeCategory.DECORATIONS)
+            registerStonecutterRecipeGeneration(MIRANAGITE_TILES.item, item, category = RecipeCategory.DECORATIONS)
         }
         val CHAOS_STONE_BLOCK = !BlockMaterialCard(
             "chaos_stone_block", EnJa("Chaos Stone Block", "混沌の石ブロック"),
@@ -554,7 +554,7 @@ open class BlockMaterialCard(
                 define('F', MaterialCard.FAIRY_SCALES.item)
                 define('B', Blocks.BRICKS)
             } on MaterialCard.FAIRY_SCALES.item from { Items.BRICKS }
-            registerStonecutterRecipeGeneration(item, FAIRY_CERAMIC.item)
+            registerStonecutterRecipeGeneration(FAIRY_CERAMIC.item, item)
         }
         val FAIRY_CERAMIC_BRICKS_SLAB = !object : BlockMaterialCard(
             "fairy_ceramic_bricks_slab", EnJa("Fairy Ceramic Brick Slab", "妖精のセラミックレンガのハーフブロック"),
@@ -567,8 +567,8 @@ open class BlockMaterialCard(
             context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
             registerBlockFamily(TexturedModel.CUBE, FAIRY_CERAMIC_BRICKS.block) { it.slab(block()) }
-            registerStonecutterRecipeGeneration(item, FAIRY_CERAMIC.item)
-            registerStonecutterRecipeGeneration(item, FAIRY_CERAMIC_BRICKS.item, 2)
+            registerStonecutterRecipeGeneration(FAIRY_CERAMIC.item, item)
+            registerStonecutterRecipeGeneration(FAIRY_CERAMIC_BRICKS.item, item, 2)
         }
         val FAIRY_CERAMIC_BRICKS_STAIRS = !object : BlockMaterialCard(
             "fairy_ceramic_bricks_stairs", EnJa("Fairy Ceramic Brick Stairs", "妖精のセラミックレンガの階段"),
@@ -580,8 +580,8 @@ open class BlockMaterialCard(
             context(ModContext) override fun initModelGeneration() = Unit
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
             registerBlockFamily(TexturedModel.CUBE, FAIRY_CERAMIC_BRICKS.block) { it.stairs(block()) }
-            registerStonecutterRecipeGeneration(item, FAIRY_CERAMIC.item)
-            registerStonecutterRecipeGeneration(item, FAIRY_CERAMIC_BRICKS.item)
+            registerStonecutterRecipeGeneration(FAIRY_CERAMIC.item, item)
+            registerStonecutterRecipeGeneration(FAIRY_CERAMIC_BRICKS.item, item)
         }
     }
 
