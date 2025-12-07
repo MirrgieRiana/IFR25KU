@@ -38,6 +38,18 @@ Currently known unofficial documentation:
 
 - [MirageFairy2024-KU非公式Wiki Wiki*](https://wikiwiki.jp/mifai2024/)
 
+## Troubleshooting
+
+### World generation error: `Feature order cycle found, involved sources`
+
+In some mod configurations, world generation may fail with the following error:
+
+```text
+java.lang.IllegalStateException: Feature order cycle found, involved sources
+```
+
+This can be resolved by installing [Feature Recycler](https://modrinth.com/mod/feature-recycler).
+
 # Licensing and Attribution
 
 ## Minecraft Resources
