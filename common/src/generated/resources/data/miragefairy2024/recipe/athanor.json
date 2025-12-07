@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "miragefairy2024:athanor",
+  "key": {
+    "B": {
+      "item": "miragefairy2024:fairy_ceramic_bricks"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "I": {
+      "item": "minecraft:iron_trapdoor"
+    },
+    "P": {
+      "item": "miragefairy2024:fairy_pot"
+    }
+  },
+  "pattern": [
+    "BIB",
+    "BPB",
+    "BFB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:athanor"
+  }
+}

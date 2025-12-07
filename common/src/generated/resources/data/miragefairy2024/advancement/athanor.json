@@ -1,0 +1,38 @@
+{
+  "parent": "miragefairy2024:fairy_crystal",
+  "criteria": {
+    "has_athanor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:athanor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.miragefairy2024.athanor.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "miragefairy2024:athanor"
+    },
+    "title": {
+      "translate": "advancements.miragefairy2024.athanor.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_athanor"
+    ]
+  ],
+  "rewards": {
+    "loot": [
+      "miragefairy2024:jewels_100"
+    ]
+  },
+  "sends_telemetry_event": true
+}

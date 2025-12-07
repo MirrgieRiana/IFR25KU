@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [],
+  "textures": {
+    "particle": "miragefairy2024:block/fairy_ceramic_bricks"
+  }
+}

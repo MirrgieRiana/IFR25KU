@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_merrrria_drop": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:merrrria_drop"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:fairy_rubber"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_merrrria_drop"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:fairy_rubber"
+    ]
+  }
+}
