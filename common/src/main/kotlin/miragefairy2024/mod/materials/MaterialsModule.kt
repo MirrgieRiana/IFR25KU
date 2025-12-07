@@ -274,6 +274,17 @@ class MaterialCard(
                 )
             },
         )
+        val FAIRY_POT: MaterialCard = !MaterialCard(
+            "fairy_pot", "Fairy Pot", "妖精のポット",
+            PoemList(2).poem("Nanoporous insulation", "とろけるアステリア。"),
+            soulStreamContainable = true,
+        ) {
+            registerShapedRecipeGeneration(item) {
+                pattern("# #")
+                pattern(" # ")
+                define('#', FAIRY_CRYSTAL.ore!!.ingredient)
+            } on FAIRY_CRYSTAL.ore!!.tag
+        }
         val PHANTOM_LEAVES: MaterialCard = !MaterialCard(
             "phantom_leaves", "Phantom Leaves", "ファントムの葉",
             PoemList(3).poem("The eroding reality", "析出する空想。"),

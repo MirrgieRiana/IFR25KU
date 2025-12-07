@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "miragefairy2024:fairy_pot",
+  "key": {
+    "#": {
+      "tag": "c:gems/fairy_crystal"
+    }
+  },
+  "pattern": [
+    "# #",
+    " # "
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:fairy_pot"
+  }
+}
