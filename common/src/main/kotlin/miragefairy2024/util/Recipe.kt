@@ -391,6 +391,6 @@ fun (() -> Item).registerFuel(ticks: Int) = ModEvents.onInitialize {
 }
 
 context(ModContext)
-fun registerStonecutterRecipeGeneration(input: () -> Item, output: () -> Item, count: Int = 1, category: RecipeCategory = RecipeCategory.BUILDING_BLOCKS) = DataGenerationEvents.onGenerateRecipe {
-    RecipeProvider.stonecutterResultFromBase(it, category, input(), output(), count)
+fun registerStonecutterRecipeGeneration(output: () -> Item, input: () -> Item, count: Int = 1, category: RecipeCategory = RecipeCategory.BUILDING_BLOCKS) = DataGenerationEvents.onGenerateRecipe {
+    RecipeProvider.stonecutterResultFromBase(it, category, output(), input(), count)
 }
