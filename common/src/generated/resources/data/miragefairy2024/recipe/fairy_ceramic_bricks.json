@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "miragefairy2024:fairy_ceramic_bricks",
+  "key": {
+    "#": {
+      "item": "miragefairy2024:fairy_ceramic"
+    }
+  },
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "result": {
+    "count": 4,
+    "id": "miragefairy2024:fairy_ceramic_bricks"
+  }
+}

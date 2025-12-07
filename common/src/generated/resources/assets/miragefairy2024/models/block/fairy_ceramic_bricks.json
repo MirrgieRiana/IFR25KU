@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "miragefairy2024:block/fairy_ceramic_bricks"
+  }
+}

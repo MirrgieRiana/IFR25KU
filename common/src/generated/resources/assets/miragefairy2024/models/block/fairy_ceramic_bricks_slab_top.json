@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "miragefairy2024:block/fairy_ceramic_bricks",
+    "side": "miragefairy2024:block/fairy_ceramic_bricks",
+    "top": "miragefairy2024:block/fairy_ceramic_bricks"
+  }
+}

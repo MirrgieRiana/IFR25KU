@@ -526,6 +526,63 @@ open class BlockMaterialCard(
 
             registerCompressionRecipeGeneration(MaterialCard.FAIRY_CRYSTAL.item, { MaterialCard.FAIRY_CRYSTAL.ore!!.ingredient }, item, { ore!!.ingredient })
         }
+        val FAIRY_CERAMIC = !BlockMaterialCard(
+            "fairy_ceramic", EnJa("Fairy Ceramic", "妖精のセラミック"),
+            PoemList(1).poem(EnJa("Activation by natural excitation aura", "四角いスフィア。")),
+            MapColor.COLOR_RED, 1.25F, 4.2F,
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerShapedRecipeGeneration(item, count = 2) {
+                pattern("FT")
+                pattern("TF")
+                define('F', MaterialCard.FAIRY_SCALES.item)
+                define('T', Blocks.TERRACOTTA)
+            } on MaterialCard.FAIRY_SCALES.item
+        }
+        val FAIRY_CERAMIC_BRICKS = !BlockMaterialCard(
+            "fairy_ceramic_bricks", EnJa("Fairy Ceramic Bricks", "妖精のセラミックレンガ"),
+            PoemList(1).poem(EnJa("Suitable for walls of furnaces, etc.", "練り込められた≪堅牢≫のエルグ。")),
+            MapColor.COLOR_RED, 2.0F, 6.0F,
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerShapedRecipeGeneration(item, count = 4) {
+                pattern("##")
+                pattern("##")
+                define('#', FAIRY_CERAMIC.item)
+            } on FAIRY_CERAMIC.item
+            registerShapedRecipeGeneration(item, count = 2) {
+                pattern("FB")
+                pattern("BF")
+                define('F', MaterialCard.FAIRY_SCALES.item)
+                define('B', Blocks.BRICKS)
+            } on MaterialCard.FAIRY_SCALES.item from { Items.BRICKS }
+            registerStonecutterRecipeGeneration(item, FAIRY_CERAMIC.item)
+        }
+        val FAIRY_CERAMIC_BRICKS_SLAB = !object : BlockMaterialCard(
+            "fairy_ceramic_bricks_slab", EnJa("Fairy Ceramic Brick Slab", "妖精のセラミックレンガのハーフブロック"),
+            PoemList(1).poem(EnJa("Suitable for slopes.", "石切台への敗北。")),
+            MapColor.COLOR_RED, 2.0F, 6.0F,
+        ) {
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
+            context(ModContext) override fun initBlockStateGeneration() = Unit
+            context(ModContext) override fun initModelGeneration() = Unit
+            context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
+        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
+            registerBlockFamily(TexturedModel.CUBE, FAIRY_CERAMIC_BRICKS.block) { it.slab(block()) }
+            registerStonecutterRecipeGeneration(item, FAIRY_CERAMIC.item)
+            registerStonecutterRecipeGeneration(item, FAIRY_CERAMIC_BRICKS.item, 2)
+        }
+        val FAIRY_CERAMIC_BRICKS_STAIRS = !object : BlockMaterialCard(
+            "fairy_ceramic_bricks_stairs", EnJa("Fairy Ceramic Brick Stairs", "妖精のセラミックレンガの階段"),
+            PoemList(1).poem(EnJa("Reached that fairy!!", "その手、届かせたくて。")),
+            MapColor.COLOR_RED, 2.0F, 6.0F,
+        ) {
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(FAIRY_CERAMIC_BRICKS.block.await().defaultBlockState(), properties)
+            context(ModContext) override fun initBlockStateGeneration() = Unit
+            context(ModContext) override fun initModelGeneration() = Unit
+        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
+            registerBlockFamily(TexturedModel.CUBE, FAIRY_CERAMIC_BRICKS.block) { it.stairs(block()) }
+            registerStonecutterRecipeGeneration(item, FAIRY_CERAMIC.item)
+            registerStonecutterRecipeGeneration(item, FAIRY_CERAMIC_BRICKS.item)
+        }
     }
 
     val identifier = MirageFairy2024.identifier(path)

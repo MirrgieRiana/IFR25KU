@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "miragefairy2024:fairy_ceramic_bricks"
+  },
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:fairy_ceramic_bricks_stairs"
+  }
+}
