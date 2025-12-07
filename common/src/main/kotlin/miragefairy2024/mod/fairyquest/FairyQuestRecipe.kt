@@ -114,7 +114,7 @@ enum class FairyQuestRecipeCard(
         "We are actively seeking donations of ceramic bricks for the reconstruction project of the vacuum decay reactor. If you are in need, we will selectively provide reusable building materials.",
         "真空崩壊炉改修工事に向けてセラミックレンガの寄付を広く募集しております。必要な場合は、リユース可能な建築資材を選別してご提供いたします。",
         "The Institute of Fairy Research\nCordelia Branch", "妖精研究所\nコーディリア支部",
-        listOf({ Items.BRICKS.toIngredientStack(1) }),
+        listOf({ BlockMaterialCard.FAIRY_CERAMIC_BRICKS.item().toIngredientStack(1) }),
         listOf({ BlockMaterialCard.DRYWALL.item().createItemStack(1) }, { Items.STONE_BRICKS.createItemStack(1) }, { Items.WHITE_CONCRETE.createItemStack(1) }),
     ),
     IMPROMPTU_FANTASTIC_CARNIVAL(
