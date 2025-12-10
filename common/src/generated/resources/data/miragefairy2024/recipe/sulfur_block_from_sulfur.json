@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:sulfur_block",
+  "ingredients": [
+    {
+      "tag": "c:gems/sulfur"
+    },
+    {
+      "tag": "c:gems/sulfur"
+    },
+    {
+      "tag": "c:gems/sulfur"
+    },
+    {
+      "tag": "c:gems/sulfur"
+    },
+    {
+      "tag": "c:gems/sulfur"
+    },
+    {
+      "tag": "c:gems/sulfur"
+    },
+    {
+      "tag": "c:gems/sulfur"
+    },
+    {
+      "tag": "c:gems/sulfur"
+    },
+    {
+      "tag": "c:gems/sulfur"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:sulfur_block"
+  }
+}

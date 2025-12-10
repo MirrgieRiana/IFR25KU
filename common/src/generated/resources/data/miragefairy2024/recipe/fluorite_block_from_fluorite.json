@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:fluorite_block",
+  "ingredients": [
+    {
+      "tag": "c:gems/fluorite"
+    },
+    {
+      "tag": "c:gems/fluorite"
+    },
+    {
+      "tag": "c:gems/fluorite"
+    },
+    {
+      "tag": "c:gems/fluorite"
+    },
+    {
+      "tag": "c:gems/fluorite"
+    },
+    {
+      "tag": "c:gems/fluorite"
+    },
+    {
+      "tag": "c:gems/fluorite"
+    },
+    {
+      "tag": "c:gems/fluorite"
+    },
+    {
+      "tag": "c:gems/fluorite"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:fluorite_block"
+  }
+}

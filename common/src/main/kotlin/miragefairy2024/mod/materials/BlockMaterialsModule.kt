@@ -101,6 +101,27 @@ open class BlockMaterialCard(
         val entries = mutableListOf<BlockMaterialCard>()
         private operator fun BlockMaterialCard.not() = this.apply { entries.add(this) }
 
+        val MAGNETITE_BLOCK = !BlockMaterialCard(
+            "magnetite_block", EnJa("Magnetite Block", "磁鉄鉱ブロック"),
+            PoemList(null),
+            MapColor.TERRACOTTA_BLUE, 5.0F, 5.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.MAGNETITE),
+        ).needTool(ToolType.PICKAXE).beaconBase().init {
+            registerCompressionRecipeGeneration(MaterialCard.MAGNETITE.item, { MaterialCard.MAGNETITE.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
+        val FLUORITE_BLOCK = !BlockMaterialCard(
+            "fluorite_block", EnJa("Fluorite Block", "蛍石ブロック"),
+            PoemList(null),
+            MapColor.WARPED_WART_BLOCK, 5.0F, 5.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.FLUORITE),
+        ).needTool(ToolType.PICKAXE).beaconBase().init {
+            registerCompressionRecipeGeneration(MaterialCard.FLUORITE.item, { MaterialCard.FLUORITE.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
+        val SULFUR_BLOCK = !BlockMaterialCard(
+            "sulfur_block", EnJa("Sulfur Block", "硫黄ブロック"),
+            PoemList(null),
+            MapColor.COLOR_YELLOW, 5.0F, 5.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.SULFUR),
+        ).needTool(ToolType.PICKAXE).beaconBase().init {
+            registerCompressionRecipeGeneration(MaterialCard.SULFUR.item, { MaterialCard.SULFUR.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
         val NEPHRITE_BLOCK = !BlockMaterialCard(
             "nephrite_block", EnJa("Nephrite Block", "ネフライトブロック"),
             PoemList(null),

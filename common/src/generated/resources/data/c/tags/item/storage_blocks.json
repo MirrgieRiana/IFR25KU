@@ -9,7 +9,15 @@
       "required": false
     },
     {
+      "id": "#c:storage_blocks/fluorite",
+      "required": false
+    },
+    {
       "id": "#c:storage_blocks/luminite",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/magnetite",
       "required": false
     },
     {
@@ -26,6 +34,10 @@
     },
     {
       "id": "#c:storage_blocks/noise",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/sulfur",
       "required": false
     },
     {

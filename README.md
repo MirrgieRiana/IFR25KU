@@ -60,10 +60,14 @@ The copyright for all texture data derived from Minecraft, including any found i
 
 The following files are part of MirageFairy2019 and are licensed under the **[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)** license from MirageFairy Server:
 
+- `common/src/main/resources/assets/miragefairy2024/textures/block/apatite_block.pdn`
+- `common/src/main/resources/assets/miragefairy2024/textures/block/magnetite_block.png`
+- `common/src/main/resources/assets/miragefairy2024/textures/block/fluorite_block.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/block/nephrite_block.pdn`
 - `common/src/main/resources/assets/miragefairy2024/textures/block/nephrite_block.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/block/nephrite_ore.pdn`
 - `common/src/main/resources/assets/miragefairy2024/textures/block/nephrite_ore.png`
+- `common/src/main/resources/assets/miragefairy2024/textures/block/sulfur_block.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/block/sulfur_ore.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/rum.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/poison.png`

@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:magnetite_block",
+  "ingredients": [
+    {
+      "tag": "c:gems/magnetite"
+    },
+    {
+      "tag": "c:gems/magnetite"
+    },
+    {
+      "tag": "c:gems/magnetite"
+    },
+    {
+      "tag": "c:gems/magnetite"
+    },
+    {
+      "tag": "c:gems/magnetite"
+    },
+    {
+      "tag": "c:gems/magnetite"
+    },
+    {
+      "tag": "c:gems/magnetite"
+    },
+    {
+      "tag": "c:gems/magnetite"
+    },
+    {
+      "tag": "c:gems/magnetite"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:magnetite_block"
+  }
+}
