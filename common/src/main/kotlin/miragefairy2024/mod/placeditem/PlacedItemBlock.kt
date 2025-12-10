@@ -7,13 +7,10 @@ import miragefairy2024.RenderingProxy
 import miragefairy2024.RenderingProxyBlockEntity
 import miragefairy2024.util.BlockEntityType
 import miragefairy2024.util.EMPTY_ITEM_STACK
-import miragefairy2024.util.Model
-import miragefairy2024.util.ModelData
-import miragefairy2024.util.ModelElementsData
-import miragefairy2024.util.ModelTexturesData
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.compound
+import miragefairy2024.util.createEmptyModel
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.double
 import miragefairy2024.util.generator
@@ -24,10 +21,8 @@ import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerRenderingProxyBlockEntityRendererFactory
 import miragefairy2024.util.registerSingletonBlockStateGeneration
-import miragefairy2024.util.string
 import miragefairy2024.util.toItemStack
 import miragefairy2024.util.toNbt
-import miragefairy2024.util.with
 import miragefairy2024.util.wrapper
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.atMost
@@ -37,7 +32,6 @@ import mirrg.kotlin.helium.min
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
@@ -74,17 +68,7 @@ fun initPlacedItemBlock() {
         card.blockEntityType.register()
 
         card.block.registerSingletonBlockStateGeneration()
-        card.block.registerModelGeneration {
-            Model {
-                ModelData(
-                    parent = ResourceLocation("minecraft", "block/block"),
-                    textures = ModelTexturesData(
-                        TextureSlot.PARTICLE.id to ResourceLocation("minecraft", "block/glass").string,
-                    ),
-                    elements = ModelElementsData(),
-                )
-            }.with()
-        }
+        card.block.registerModelGeneration { createEmptyModel(ResourceLocation("block/glass")) }
         card.blockEntityType.registerRenderingProxyBlockEntityRendererFactory()
 
         BlockTags.MINEABLE_WITH_HOE.generator.registerChild(card.block)

@@ -121,6 +121,18 @@ val TextureSlot.string get() = this.toString()
 infix fun ModelTemplate.with(textureMapping: TextureMapping): TexturedModel = TexturedModel.createDefault({ textureMapping }, this).get(Blocks.AIR)
 fun ModelTemplate.with(vararg textureEntries: Pair<TextureSlot, ResourceLocation>) = this with TextureMapping(*textureEntries)
 
+fun createEmptyModel(particleTexture: ResourceLocation): TexturedModel {
+    return Model { textureMapping ->
+        ModelData(
+            parent = ResourceLocation("block/block"),
+            textures = ModelTexturesData(
+                TextureSlot.PARTICLE.id to textureMapping.get(TextureSlot.PARTICLE).string,
+            ),
+            elements = ModelElementsData(),
+        )
+    }.with(TextureSlot.PARTICLE to particleTexture)
+}
+
 
 // registerModelGeneration
 
