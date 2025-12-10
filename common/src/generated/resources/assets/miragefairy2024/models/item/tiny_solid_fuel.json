@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "miragefairy2024:item/tiny_solid_fuel"
+  }
+}

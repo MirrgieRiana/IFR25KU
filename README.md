@@ -77,6 +77,8 @@ The following files are part of MirageFairy2019 and are licensed under the **[CC
 - `common/src/main/resources/assets/miragefairy2024/textures/item/nephrite.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/fairy_pot.pdn`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/fairy_pot.png`
+- `common/src/main/resources/assets/miragefairy2024/textures/item/solid_fuel.png`
+- `common/src/main/resources/assets/miragefairy2024/textures/item/tiny_solid_fuel.png`
 
 For further details, please refer to [the original repository](https://github.com/MirageFairy/MirageFairy2019).
 

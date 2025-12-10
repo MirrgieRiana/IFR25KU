@@ -1133,6 +1133,32 @@ class MaterialCard(
                 duration = 20 * 5,
             ) on { Items.SPIDER_EYE } from { Items.SPIDER_EYE }
         }
+        val SOLID_FUEL: MaterialCard = !MaterialCard(
+            "solid_fuel", "Solid Fuel", "固形燃料",
+            PoemList(2).poem("Caramelized Ethanol", "なぜかこれを食べる妖精が続出した"),
+            fuelValue = 200 * 8,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(4)
+                    .saturationModifier(0.8F)
+                    .effect(MobEffectInstance(MobEffects.FIRE_RESISTANCE, 20 * 40), 1.0F)
+                    .build()
+            },
+        )
+        val TINY_SOLID_FUEL: MaterialCard = !MaterialCard(
+            "tiny_solid_fuel", "1/8 Solid Fuel", "1/8の固形燃料",
+            PoemList(2).poem("Chewing Fuel", "ひとくちサイズの固形燃料"),
+            fuelValue = 200,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(1)
+                    .saturationModifier(0.1F)
+                    .effect(MobEffectInstance(MobEffects.FIRE_RESISTANCE, 20 * 5), 1.0F)
+                    .build()
+            },
+        ) {
+            registerCompressionRecipeGeneration(item, { item().toIngredient() }, SOLID_FUEL.item, { SOLID_FUEL.item().toIngredient() }, 8)
+        }
     }
 
     val identifier = MirageFairy2024.identifier(path)

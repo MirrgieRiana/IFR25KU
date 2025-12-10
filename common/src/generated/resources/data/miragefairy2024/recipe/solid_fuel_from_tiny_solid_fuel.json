@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:solid_fuel",
+  "ingredients": [
+    {
+      "item": "miragefairy2024:tiny_solid_fuel"
+    },
+    {
+      "item": "miragefairy2024:tiny_solid_fuel"
+    },
+    {
+      "item": "miragefairy2024:tiny_solid_fuel"
+    },
+    {
+      "item": "miragefairy2024:tiny_solid_fuel"
+    },
+    {
+      "item": "miragefairy2024:tiny_solid_fuel"
+    },
+    {
+      "item": "miragefairy2024:tiny_solid_fuel"
+    },
+    {
+      "item": "miragefairy2024:tiny_solid_fuel"
+    },
+    {
+      "item": "miragefairy2024:tiny_solid_fuel"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:solid_fuel"
+  }
+}

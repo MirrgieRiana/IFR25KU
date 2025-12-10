@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:solid_fuel_from_tiny_solid_fuel"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tiny_solid_fuel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:tiny_solid_fuel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tiny_solid_fuel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:solid_fuel_from_tiny_solid_fuel"
+    ]
+  }
+}
