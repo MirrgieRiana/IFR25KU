@@ -12,6 +12,7 @@ import miragefairy2024.mod.machine.AuraReflectorFurnaceScreenHandler
 import miragefairy2024.mod.machine.BlueFuelView
 import miragefairy2024.mod.machine.FermentationBarrelCard
 import miragefairy2024.mod.machine.FermentationBarrelScreenHandler
+import miragefairy2024.mod.machine.FuelView
 import miragefairy2024.mod.machine.SimpleMachineCard
 import miragefairy2024.mod.machine.SimpleMachineScreenHandler
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
@@ -31,7 +32,40 @@ fun initMachineClientModule() {
     ScreenClassRegistry.register(FermentationBarrelCard.screenHandlerType.key, FermentationBarrelScreen::class.java)
     ScreenClassRegistry.register(AuraReflectorFurnaceCard.screenHandlerType.key, AuraReflectorFurnaceScreen::class.java)
 
+    ViewRendererRegistry.register(FuelView::class.java, FuelViewRenderer)
     ViewRendererRegistry.register(BlueFuelView::class.java, BlueFuelViewRenderer)
+}
+
+object FuelViewRenderer : ViewRenderer<FuelView> {
+    val TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/fuel.png")
+    override fun render(view: FuelView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+        val fuelMax = 20 * 10
+        val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
+        val fuelRate = fuel.toDouble() / fuelMax.toDouble()
+        val h = (bounds.sizeY.toDouble() * fuelRate).roundToInt()
+        graphics.blit(
+            TEXTURE,
+            bounds.x,
+            bounds.y,
+            13F,
+            0F,
+            bounds.sizeX,
+            bounds.sizeY,
+            32,
+            32,
+        )
+        graphics.blit(
+            TEXTURE,
+            bounds.x - 1,
+            bounds.y - 1 + (bounds.sizeY - h),
+            0F,
+            bounds.sizeY.toFloat() - h.toFloat(),
+            bounds.sizeX,
+            h,
+            32,
+            32,
+        )
+    }
 }
 
 object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {

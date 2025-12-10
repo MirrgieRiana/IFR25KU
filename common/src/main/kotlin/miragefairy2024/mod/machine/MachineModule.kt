@@ -16,4 +16,6 @@ fun initMachineModule() {
     AuraReflectorFurnaceFuelRecipeViewerCategoryCard.init()
 }
 
+class FuelView : FixedWidgetView(IntPoint(13, 13))
+
 class BlueFuelView : FixedWidgetView(IntPoint(13, 13))
