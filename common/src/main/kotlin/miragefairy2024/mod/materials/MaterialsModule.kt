@@ -686,7 +686,7 @@ class MaterialCard(
                     { MERRRRIA_DROP.item().toIngredientStack(1) },
                     { SARRACENIA_LEAF.item().toIngredientStack(1) },
                     { ItemTags.COALS.toIngredientStack(1) },
-                    { Items.BLAZE_POWDER.toIngredientStack(1) },
+                    { SULFUR.item().toIngredientStack(1) },
                 ),
                 output = { item().createItemStack() },
                 duration = 20 * 60 * 5,
