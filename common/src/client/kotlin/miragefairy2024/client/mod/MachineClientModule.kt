@@ -35,13 +35,14 @@ fun initMachineClientModule() {
 }
 
 object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
+    val TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/blue_fuel.png")
     override fun render(view: BlueFuelView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         val fuelMax = 20 * 10
         val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
         val fuelRate = fuel.toDouble() / fuelMax.toDouble()
         val h = (bounds.sizeY.toDouble() * fuelRate).roundToInt()
         graphics.blit(
-            AuraReflectorFurnaceScreen.BLUE_FUEL_TEXTURE,
+            TEXTURE,
             bounds.x,
             bounds.y,
             13F,
@@ -52,7 +53,7 @@ object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
             32,
         )
         graphics.blit(
-            AuraReflectorFurnaceScreen.BLUE_FUEL_TEXTURE,
+            TEXTURE,
             bounds.x - 1,
             bounds.y - 1 + (bounds.sizeY - h),
             0F,
@@ -112,10 +113,6 @@ class FermentationBarrelScreen(card: FermentationBarrelCard, arguments: Argument
 }
 
 class AuraReflectorFurnaceScreen(card: AuraReflectorFurnaceCard, arguments: Arguments<AuraReflectorFurnaceScreenHandler>) : SimpleMachineScreen<AuraReflectorFurnaceScreenHandler>(card, arguments) {
-    companion object {
-        val BLUE_FUEL_TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/blue_fuel.png")
-    }
-
     override val arrowBound = Rect2i(88, 34, 24, 17)
     val fuelBound = Rect2i(48, 37, 13, 13)
 
@@ -125,7 +122,7 @@ class AuraReflectorFurnaceScreen(card: AuraReflectorFurnaceCard, arguments: Argu
         if (menu.fuelMax > 0) {
             val h = (fuelBound.height.toDouble() * (menu.fuel.toDouble() / menu.fuelMax.toDouble() atMost 1.0)).roundToInt()
             context.blit(
-                BLUE_FUEL_TEXTURE,
+                BlueFuelViewRenderer.TEXTURE,
                 leftPos + fuelBound.x - 1,
                 topPos + fuelBound.y - 1 + (fuelBound.height - h),
                 0F,
