@@ -90,11 +90,11 @@ fun BlockStateVariant.with(
     weight: Int? = null,
 ) = BlockStateVariant(
     parent = this,
-    model = model,
-    x = x,
-    y = y,
-    uvlock = uvlock,
-    weight = weight,
+    model = model ?: this.getModel(),
+    x = x ?: this.getX(),
+    y = y ?: this.getY(),
+    uvlock = uvlock ?: this.getUvlock(),
+    weight = weight ?: this.getWeight(),
 )
 
 fun BlockStateVariant.toJson(): JsonElement = jsonObjectNotNull(
