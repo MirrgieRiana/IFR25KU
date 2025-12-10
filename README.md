@@ -64,6 +64,7 @@ The following files are part of MirageFairy2019 and are licensed under the **[CC
 - `common/src/main/resources/assets/miragefairy2024/textures/block/nephrite_block.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/block/nephrite_ore.pdn`
 - `common/src/main/resources/assets/miragefairy2024/textures/block/nephrite_ore.png`
+- `common/src/main/resources/assets/miragefairy2024/textures/block/sulfur_ore.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/rum.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/poison.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/veropedeliquora.png`
@@ -75,6 +76,7 @@ The following files are part of MirageFairy2019 and are licensed under the **[CC
 - `common/src/main/resources/assets/miragefairy2024/textures/item/topaz.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/nephrite.pdn`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/nephrite.png`
+- `common/src/main/resources/assets/miragefairy2024/textures/item/sulfur.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/fairy_pot.pdn`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/fairy_pot.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/solid_fuel.png`

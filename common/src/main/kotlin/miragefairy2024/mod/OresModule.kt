@@ -83,6 +83,16 @@ enum class OreCard(
         null,
         BaseStoneType.DEEPSLATE, "fluorite_ore", MaterialCard.FLUORITE.item, 2 to 5,
     ),
+    SULFUR_ORE(
+        "sulfur_ore", "Sulfur Ore", "硫黄鉱石",
+        null,
+        BaseStoneType.STONE, "sulfur_ore", MaterialCard.SULFUR.item, 2 to 5,
+    ),
+    DEEPSLATE_SULFUR_ORE(
+        "deepslate_sulfur_ore", "Deepslate Sulfur Ore", "深層硫黄鉱石",
+        null,
+        BaseStoneType.DEEPSLATE, "sulfur_ore", MaterialCard.SULFUR.item, 2 to 5,
+    ),
     NEPHRITE_ORE(
         "nephrite_ore", "Nephrite Ore", "ネフライト鉱石",
         null,
@@ -200,6 +210,8 @@ fun initOresModule() {
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.DEEPSLATE_MAGNETITE_ORE)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.FLUORITE_ORE)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE)
+    worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE)
+    worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.DEEPSLATE_SULFUR_ORE)
     worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE)
     worldGen(-64 until 64, 0.3, 4, 1.0, OreCard.DEEPSLATE_NEPHRITE_ORE)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE)

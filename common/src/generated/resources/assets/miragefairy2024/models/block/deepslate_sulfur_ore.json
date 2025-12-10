@@ -1,0 +1,7 @@
+{
+  "parent": "miragefairy2024:block/ore",
+  "textures": {
+    "back": "minecraft:block/deepslate",
+    "front": "miragefairy2024:block/sulfur_ore"
+  }
+}

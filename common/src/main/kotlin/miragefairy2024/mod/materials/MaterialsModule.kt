@@ -779,6 +779,11 @@ class MaterialCard(
             null,
             ore = Ore(Shape.GEM, Material.FLUORITE),
         )
+        val SULFUR: MaterialCard = !MaterialCard(
+            "sulfur", "Sulfur", "硫黄",
+            null,
+            ore = Ore(Shape.GEM, Material.SULFUR),
+        )
         val SPHERE_BASE: MaterialCard = !MaterialCard(
             "sphere_base", "Sphere Base", "スフィアベース",
             PoemList(2)
@@ -1352,6 +1357,7 @@ enum class Material(val path: String, val prefix: EnJa) {
     FAIRY_RUBBER("fairy_rubber", EnJa("Fairy Rubber", "夜のかけら")),
     MAGNETITE("magnetite", EnJa("Magnetite", "磁鉄鉱")),
     FLUORITE("fluorite", EnJa("Fluorite", "蛍石")),
+    SULFUR("sulfur", EnJa("Sulfur", "硫黄")),
     NEPHRITE("nephrite", EnJa("Nephrite", "ネフライト")),
     TOPAZ("topaz", EnJa("Topaz", "トパーズ")),
     BISMUTH("bismuth", EnJa("Bismuth", "ビスマス")),
