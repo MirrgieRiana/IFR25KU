@@ -6,6 +6,7 @@ import miragefairy2024.ModEvents
 import miragefairy2024.mod.FoodIngredientCategoryCard
 import miragefairy2024.mod.FoodIngredients
 import miragefairy2024.mod.FoodIngredientsRegistry
+import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.PoemType
 import miragefairy2024.mod.WaterBottleIngredient
@@ -968,7 +969,7 @@ class MaterialCard(
         val RUM: MaterialCard = !MaterialCard(
             "rum", "Rum", "ラム酒",
             null,
-            fuelValue = 200 * 4, recipeRemainder = Items.GLASS_BOTTLE,
+            fuelValue = 200 * 4, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
             foodComponentCreator = {
                 FoodProperties.Builder()
                     .nutrition(6)
@@ -1024,7 +1025,7 @@ class MaterialCard(
         val FAIRY_LIQUEUR: MaterialCard = !MaterialCard(
             "fairy_liqueur", "Fairy Liqueur", "妖精のリキュール",
             PoemList(2).poem("Fairies get high, humans get burned", "妖精はハイになり、人間は火傷する。"),
-            fuelValue = 200 * 12, recipeRemainder = Items.GLASS_BOTTLE,
+            fuelValue = 200 * 12, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
             foodComponentCreator = {
                 FoodProperties.Builder()
                     .nutrition(6)
@@ -1052,7 +1053,7 @@ class MaterialCard(
         val VEROPEDELIQUORA: MaterialCard = !MaterialCard(
             "veropedeliquora", "Veropedeliquora", "ヴェロペデリコラ",
             PoemList(2).poem("A dark flavour from the underworld.", "冥界へといざなう、暗黒の味。"),
-            fuelValue = 200 * 12, recipeRemainder = Items.GLASS_BOTTLE,
+            fuelValue = 200 * 12, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
             foodComponentCreator = {
                 FoodProperties.Builder()
                     .nutrition(6)
