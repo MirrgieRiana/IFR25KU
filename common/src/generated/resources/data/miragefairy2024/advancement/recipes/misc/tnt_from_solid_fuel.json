@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_solid_fuel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:solid_fuel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:tnt_from_solid_fuel"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_solid_fuel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:tnt_from_solid_fuel"
+    ]
+  }
+}

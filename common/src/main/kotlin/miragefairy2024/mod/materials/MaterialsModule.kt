@@ -1150,7 +1150,16 @@ class MaterialCard(
                     .effect(MobEffectInstance(MobEffects.FIRE_RESISTANCE, 20 * 40), 1.0F)
                     .build()
             },
-        )
+        ) {
+            // →TNT
+            registerShapedRecipeGeneration({ Items.TNT }) {
+                pattern(" G ")
+                pattern("GFG")
+                pattern(" G ")
+                define('F', item)
+                define('G', Items.GUNPOWDER)
+            } on item from item modId MirageFairy2024.MOD_ID
+        }
         val TINY_SOLID_FUEL: MaterialCard = !MaterialCard(
             "tiny_solid_fuel", "1/8 Solid Fuel", "1/8の固形燃料",
             PoemList(2).poem("Chewing Fuel", "ひとくちサイズの固形燃料"),
