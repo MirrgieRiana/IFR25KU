@@ -1,0 +1,6 @@
+{
+  "parent": "miragefairy2024:block/athanor",
+  "textures": {
+    "main": "miragefairy2024:block/athanor_lit"
+  }
+}

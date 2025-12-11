@@ -21,6 +21,7 @@ import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.getFairyCondensation
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.haimeviska.haimeviskaAdvancement
+import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipe
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
@@ -133,6 +134,17 @@ class MaterialCard(
         ) {
             item.registerGrassDrop(0.03F, 1) // TODO 古代の遺構
             item.registerMobDrop(EntityType.WITCH, onlyKilledByPlayer = true, dropRate = Pair(0.2F, 0.1F))
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { FAIRY_PLASTIC.item().toIngredientStack(1) },
+                    { MIRAGIUM_INGOT.ore!!.ingredient.toIngredientStack(1) },
+                    { MAGNETITE.ore!!.ingredient.toIngredientStack(1) },
+                    { Items.REDSTONE.toIngredientStack(1) }, // TODO 妖精の血
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60 * 5,
+            ) on FAIRY_PLASTIC.item
         }
         val MIRANAGITE: MaterialCard = !MaterialCard(
             "miranagite", "Miranagite", "蒼天石",
@@ -214,7 +226,7 @@ class MaterialCard(
                     { FAIRY_SCALES.item().toIngredientStack(8) },
                     { POISON.item().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 10,
             ) on CALCULITE.item
         }
@@ -327,7 +339,7 @@ class MaterialCard(
                 inputs = listOf(
                     { MIRAGE_FLOUR.item().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60,
             ) on MIRAGE_FLOUR.item
         }
@@ -370,7 +382,7 @@ class MaterialCard(
                     { Items.LILAC.toIngredientStack(4) },
                     { Items.PEONY.toIngredientStack(4) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60,
             ) on { Items.LILAC }
         } // TODO "Botanical alloy", "牡丹合金。"
@@ -384,7 +396,7 @@ class MaterialCard(
                 inputs = listOf(
                     { item().toIngredientStack(9) },
                 ),
-                output = { MIRAGIDIAN.item().createItemStack() },
+                outputs = listOf({ MIRAGIDIAN.item().createItemStack() }),
                 duration = 20 * 60,
             ) on ore!!.tag from item
         }
@@ -487,7 +499,7 @@ class MaterialCard(
                     { LUMINITE.item().toIngredientStack(1) },
                     { Items.ECHO_SHARD.toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60,
             ) on LUMINITE.ore!!.tag
         }
@@ -667,7 +679,19 @@ class MaterialCard(
             "fairy_rubber", "Fairy Rubber", "夜のかけら",
             PoemList(3).poem("Minimize the risk of losing belongings", "空は怯える夜精に一握りの温かい闇を与えた"),
             ore = Ore(Shape.GEM, Material.FAIRY_RUBBER),
-        )
+        ) {
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { MERRRRIA_DROP.item().toIngredientStack(1) },
+                    { SARRACENIA_LEAF.item().toIngredientStack(1) },
+                    { ItemTags.COALS.toIngredientStack(1) },
+                    { SULFUR.item().toIngredientStack(1) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60 * 5,
+            ) on MERRRRIA_DROP.item
+        }
 
         val TINY_MIRAGE_FLOUR: MaterialCard = !MaterialCard(
             "tiny_mirage_flour", "Tiny Pile of Mirage Flour", "小さなミラージュの花粉",
@@ -783,7 +807,7 @@ class MaterialCard(
             "sulfur", "Sulfur", "硫黄",
             null,
             ore = Ore(Shape.GEM, Material.SULFUR),
-        )
+        ) // TODO 黒色火薬
         val SPHERE_BASE: MaterialCard = !MaterialCard(
             "sphere_base", "Sphere Base", "スフィアベース",
             PoemList(2)
@@ -993,7 +1017,7 @@ class MaterialCard(
                     { Items.SUGAR_CANE.toIngredientStack(16) },
                     { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
             ) on { Items.SUGAR_CANE }
             ModEvents.onInitialize {
@@ -1020,7 +1044,7 @@ class MaterialCard(
                     { Items.APPLE.toIngredientStack(4) },
                     { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 1,
             ) on { Items.APPLE }
             ModEvents.onInitialize {
@@ -1048,7 +1072,7 @@ class MaterialCard(
                     { HAIMEVISKA_SAP.item().toIngredientStack(8) },
                     { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
             ) on HAIMEVISKA_SAP.item
             ModEvents.onInitialize {
@@ -1076,7 +1100,7 @@ class MaterialCard(
                     { VEROPEDA_BERRIES.item().toIngredientStack(8) },
                     { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
             ) on VEROPEDA_BERRIES.item
             ModEvents.onInitialize {
@@ -1115,7 +1139,7 @@ class MaterialCard(
                     { Items.PUFFERFISH.toIngredientStack(1) },
                     { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 5,
             ) on { Items.PUFFERFISH } from { Items.PUFFERFISH }
             registerSimpleMachineRecipeGeneration(
@@ -1125,7 +1149,7 @@ class MaterialCard(
                     { Items.POISONOUS_POTATO.toIngredientStack(4) },
                     { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 5,
             ) on { Items.POISONOUS_POTATO } from { Items.POISONOUS_POTATO }
             registerSimpleMachineRecipeGeneration(
@@ -1135,7 +1159,7 @@ class MaterialCard(
                     { Items.SPIDER_EYE.toIngredientStack(4) },
                     { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 5,
             ) on { Items.SPIDER_EYE } from { Items.SPIDER_EYE }
         }
@@ -1151,6 +1175,16 @@ class MaterialCard(
                     .build()
             },
         ) {
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { Items.SUGAR.toIngredientStack(8) },
+                    { HAIMEVISKA_SAP.item().toIngredientStack(4) }, // 200 * 1 * 4 = 800
+                    { ItemTagCard.SPIRITS.tag.toIngredientStack(1) }, // 200 * 12 * 1 = 2400
+                ),
+                outputs = listOf({ item().createItemStack(8) }), // 800 + 2400 + 1200 = 4400 -> 200 * 8 * 8 = 12800
+                duration = 20 * 60, // 1200 = 200 * 6
+            ) on ItemTagCard.SPIRITS.tag
             // →TNT
             registerShapedRecipeGeneration({ Items.TNT }) {
                 pattern(" G ")

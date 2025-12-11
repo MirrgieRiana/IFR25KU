@@ -15,8 +15,8 @@ object AuraReflectorFurnaceRecipeCard : SimpleMachineRecipeCard<AuraReflectorFur
     override val identifier = MirageFairy2024.identifier("aura_reflector_furnace")
     override fun getIcon() = AuraReflectorFurnaceCard.item().createItemStack()
     override val recipeClass = AuraReflectorFurnaceRecipe::class.java
-    override fun createRecipe(group: String, inputs: List<IngredientStack>, output: ItemStack, duration: Int): AuraReflectorFurnaceRecipe {
-        return AuraReflectorFurnaceRecipe(this, group, inputs, output, duration)
+    override fun createRecipe(group: String, inputs: List<IngredientStack>, outputs: List<ItemStack>, duration: Int): AuraReflectorFurnaceRecipe {
+        return AuraReflectorFurnaceRecipe(this, group, inputs, outputs, duration)
     }
 }
 
@@ -24,13 +24,13 @@ class AuraReflectorFurnaceRecipe(
     card: AuraReflectorFurnaceRecipeCard,
     group: String,
     inputs: List<IngredientStack>,
-    output: ItemStack,
+    outputs: List<ItemStack>,
     duration: Int,
 ) : SimpleMachineRecipe(
     card,
     group,
     inputs,
-    output,
+    outputs,
     duration,
 ) {
     companion object {

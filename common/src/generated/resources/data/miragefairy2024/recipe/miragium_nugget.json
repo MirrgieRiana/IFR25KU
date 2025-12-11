@@ -10,8 +10,10 @@
       }
     }
   ],
-  "output": {
-    "count": 1,
-    "id": "miragefairy2024:miragium_nugget"
-  }
+  "outputs": [
+    {
+      "count": 1,
+      "id": "miragefairy2024:miragium_nugget"
+    }
+  ]
 }

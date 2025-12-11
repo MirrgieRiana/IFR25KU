@@ -155,7 +155,9 @@ abstract class SimpleMachineBlockEntity<E : SimpleMachineBlockEntity<E>>(private
             (0 until recipe.inputs.size).forEach { index ->
                 craftingInventory += inventory.getItem(index).split(recipe.inputs[index].count)
             }
-            waitingInventory += recipe.output.copy()
+            recipe.outputs.forEach {
+                waitingInventory += it.copy()
+            }
             waitingInventory += remainder
             progressMax = recipe.duration
             setChanged()
