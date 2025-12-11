@@ -59,7 +59,7 @@ import net.minecraft.world.level.material.MapColor
 object AthanorCard : SimpleMachineCard<AthanorBlock, AthanorBlockEntity, AthanorScreenHandler, AthanorRecipe>() {
     override fun createIdentifier() = MirageFairy2024.identifier("athanor")
     override fun createName() = EnJa("Athanor", "アタノール")
-    override fun createPoemList() = PoemList(2).poem(EnJa("Long-term heating by fuel tower", "天をつらぬく燃料塔。")) // 油脂、灰、そして金属塩。 // 天を貫く // 時空に聳えるフロギストン。
+    override fun createPoemList() = PoemList(2).poem(EnJa("Long-term heating by fuel tower", "天をつらぬく燃料塔。")) // 油脂、灰、そして金属塩。 // 時空に聳えるフロギストン。
     override fun createBlockSettings(): BlockBehaviour.Properties = BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).requiresCorrectToolForDrops().strength(2.0F, 6.0F).noOcclusion().lightLevel(Blocks.litBlockEmission(12))
     override fun createBlock() = AthanorBlock(this)
     override fun createBlockEntityAccessor() = BlockEntityAccessor(::AthanorBlockEntity)
