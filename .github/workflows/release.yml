@@ -14,7 +14,6 @@ jobs:
           fetch-depth: 0
       - name: 現在のリビジョン
         run: git log -n 1
-      - uses: gradle/actions/wrapper-validation@v3
       - uses: actions/setup-java@v5
         with:
           java-version: '21'
