@@ -103,14 +103,15 @@ object ChaosCubeCard {
     fun init() {
         entityType.register()
         ModEvents.onConstruction {
-            val attributes = Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 100.0)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 0.4)
-                .add(Attributes.ARMOR, 12.0)
-                .add(Attributes.ATTACK_DAMAGE, 20.0)
-                .add(Attributes.MOVEMENT_SPEED, 0.1)
-                .add(Attributes.FOLLOW_RANGE, 48.0)
-            EntityAttributeRegistry.register({ entityType() }, { attributes })
+            EntityAttributeRegistry.register({ entityType() }, {
+                Monster.createMonsterAttributes()
+                    .add(Attributes.MAX_HEALTH, 100.0)
+                    .add(Attributes.KNOCKBACK_RESISTANCE, 0.4)
+                    .add(Attributes.ARMOR, 12.0)
+                    .add(Attributes.ATTACK_DAMAGE, 20.0)
+                    .add(Attributes.MOVEMENT_SPEED, 0.1)
+                    .add(Attributes.FOLLOW_RANGE, 48.0)
+            })
         }
         entityType.enJa(name)
         EntityTypeTags.FALL_DAMAGE_IMMUNE.generator.registerChild(entityType)
