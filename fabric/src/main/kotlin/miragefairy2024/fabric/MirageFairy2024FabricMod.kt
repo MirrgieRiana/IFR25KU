@@ -21,6 +21,8 @@ object MirageFairy2024FabricMod : ModInitializer {
 
         initializeRegistrationsIfNeeded()
 
+        ModEvents.onConstruction.fire { it() }
+
         ModEvents.onInitialize.fire { it() }
     }
 

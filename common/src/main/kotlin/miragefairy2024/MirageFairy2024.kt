@@ -19,6 +19,7 @@ import net.minecraft.world.level.storage.loot.LootTable
 import java.util.function.Consumer
 
 object ModEvents {
+    val onConstruction = InitializationEventRegistry<() -> Unit>()
     val onInitialize = InitializationEventRegistry<() -> Unit>()
     val onClientInit = InitializationEventRegistry<() -> Unit>()
     val onTerraBlenderInitialized = InitializationEventRegistry<() -> Unit>()

@@ -34,6 +34,8 @@ class MirageFairy2024NeoForgeMod(modEventBus: IEventBus, modContainer: ModContai
             if (FMLEnvironment.dist == Dist.CLIENT) initClientModules()
         }
 
+        ModEvents.onConstruction.fire { it() }
+
         modEventBus.addListener(RegisterEvent::class.java) { event ->
             RegistryEvents.registrations.forEach { registration ->
                 fun <T : Any, U : T> f(registration: Registration<T, U>) {
