@@ -1,5 +1,6 @@
 package miragefairy2024.mod.entity
 
+import dev.architectury.registry.level.entity.EntityAttributeRegistry
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
@@ -38,7 +39,6 @@ import miragefairy2024.util.registerSpawn
 import miragefairy2024.util.sendToAround
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
-import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricDefaultAttributeRegistry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerLevel
@@ -110,7 +110,7 @@ object ChaosCubeCard {
                 .add(Attributes.ATTACK_DAMAGE, 20.0)
                 .add(Attributes.MOVEMENT_SPEED, 0.1)
                 .add(Attributes.FOLLOW_RANGE, 48.0)
-            FabricDefaultAttributeRegistry.register(entityType(), attributes)
+            EntityAttributeRegistry.register({ entityType() }, { attributes })
         }
         entityType.enJa(name)
         EntityTypeTags.FALL_DAMAGE_IMMUNE.generator.registerChild(entityType)
