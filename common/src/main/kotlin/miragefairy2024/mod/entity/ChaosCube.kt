@@ -102,7 +102,7 @@ object ChaosCubeCard {
     context(ModContext)
     fun init() {
         entityType.register()
-        ModEvents.onInitialize {
+        ModEvents.onConstruction {
             val attributes = Monster.createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 100.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.4)
