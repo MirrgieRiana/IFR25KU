@@ -30,6 +30,8 @@ Other official links:
 
 - [Japanese Official Website of Kakera-Unofficial](https://kakera-unofficial.notion.site/)
 - [IFR25KU Lang Table](https://mirrgieriana.github.io/IFR25KU/lang_table.html)
+- [IFR25KU Lang Table (JSON)](https://mirrgieriana.github.io/IFR25KU/lang_table.json)
+- [IFR25KU Lang Table (CSV)](https://mirrgieriana.github.io/IFR25KU/lang_table.csv)
 - [Modrinth (Mod Distribution Page)](https://modrinth.com/mod/ifr25ku)
 
 ## Unofficial Documents
