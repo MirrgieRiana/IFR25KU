@@ -240,10 +240,11 @@ tasks.register("showSourceSets") {
 tasks.register<Sync>("buildPages") {
     dependsOn(project("fabric").tasks.named("runDatagen"))
 
+    val en by lazy { GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json").readText(), JsonElement::class.java).asJsonObject }
+    val ja by lazy { GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json").readText(), JsonElement::class.java).asJsonObject }
+    val keys by lazy { (en.keySet() + ja.keySet()).sorted() }
+
     fun getTrs(): String {
-        val en = GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json").readText(), JsonElement::class.java).asJsonObject
-        val ja = GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json").readText(), JsonElement::class.java).asJsonObject
-        val keys = (en.keySet() + ja.keySet()).sorted()
         return keys.joinToString("") { key ->
             listOf(
                 """<tr>""",
