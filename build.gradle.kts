@@ -268,6 +268,44 @@ tasks.register<Sync>("buildPages") {
     }
 
     into(layout.buildDirectory.dir("pages"))
+
+    doLast {
+        fun write(path: String, content: String) {
+            val outFile = layout.buildDirectory.file(path).get().asFile
+            outFile.parentFile.mkdirs()
+            outFile.writeText(content)
+            println("Wrote to ${outFile.absolutePath}")
+        }
+        run {
+            val table = keys.associateWith { key ->
+                mapOf(
+                    "en_us" to (en.get(key) as JsonPrimitive?)?.asString,
+                    "ja_jp" to (ja.get(key) as JsonPrimitive?)?.asString,
+                )
+            }
+            val json = GsonBuilder().setPrettyPrinting().create().toJson(table)
+            write("pages/lang_table.json", json)
+        }
+        run {
+            val table = keys.map { key ->
+                listOf(
+                    key,
+                    (en.get(key) as JsonPrimitive?)?.asString ?: "-",
+                    (ja.get(key) as JsonPrimitive?)?.asString ?: "-",
+                )
+            }
+            val csv = table.joinToString("") { row ->
+                row.joinToString(",") {
+                    if (',' in it || '"' in it || '\r' in it || '\n' in it) {
+                        "\"" + it.replace("\"", "\"\"") + "\""
+                    } else {
+                        it
+                    }
+                } + "\n"
+            }
+            write("pages/lang_table.csv", csv)
+        }
+    }
 }
 
 tasks.register("configurations") {
