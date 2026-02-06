@@ -1,0 +1,4726 @@
+{
+  "advancements.miragefairy2024.aura_reflector_furnace.description": {
+    "en_us": "Build an Aura Reflector Furnace and feed it with soul fuel",
+    "ja_jp": "オーラ反射炉を作って魂の燃料をくべよう"
+  },
+  "advancements.miragefairy2024.aura_reflector_furnace.title": {
+    "en_us": "Polymerization of the Ego",
+    "ja_jp": "自我の重合"
+  },
+  "advancements.miragefairy2024.bag.description": {
+    "en_us": "Craft a bag that can store a decent number of specific items",
+    "ja_jp": "特定のアイテムをそこそこ収納できるカバンを作成する"
+  },
+  "advancements.miragefairy2024.bag.title": {
+    "en_us": "Explore the Overworld!!",
+    "ja_jp": "インベに余裕があるなら探検しよう！！"
+  },
+  "advancements.miragefairy2024.builders_rod.description": {
+    "en_us": "Craft a Builder\u0027s Rod from materials such as Nephrite and Calculite",
+    "ja_jp": "ネフライトや理天石からビルダーズロッドをクラフトする"
+  },
+  "advancements.miragefairy2024.builders_rod.title": {
+    "en_us": "Weaver of Everyday Life",
+    "ja_jp": "暮らしを紡ぐもの"
+  },
+  "advancements.miragefairy2024.calculite.description": {
+    "en_us": "Obtain Calculite from the special drop of Xarpie Luminara",
+    "ja_jp": "シャルピエ・ルミナーラの特殊品ドロップから理天石を手に入れる"
+  },
+  "advancements.miragefairy2024.calculite.title": {
+    "en_us": "Edge of Chaos",
+    "ja_jp": "混沌の縁"
+  },
+  "advancements.miragefairy2024.chaos_cube.description": {
+    "en_us": "Defeat the Chaos Cube that appears in the Dripstone Cave Ruin",
+    "ja_jp": "鍾乳洞の遺跡に出現する混沌のキューブを倒す"
+  },
+  "advancements.miragefairy2024.chaos_cube.title": {
+    "en_us": "Magical Control Program",
+    "ja_jp": "魔導制御プログラム"
+  },
+  "advancements.miragefairy2024.chaos_stone.description": {
+    "en_us": "Obtain Chaos Stone from Weathered Ancient Remnants and other locations around the world",
+    "ja_jp": "風化した旧世代の遺構やその他の世界中の場所にある混沌の石を入手する"
+  },
+  "advancements.miragefairy2024.chaos_stone.title": {
+    "en_us": "The World of Science",
+    "ja_jp": "知られざる科学の世界"
+  },
+  "advancements.miragefairy2024.deep_fairy_forest.description": {
+    "en_us": "Travel the overworld and discover the Deep Fairy Forest",
+    "ja_jp": "地上を旅して妖精の樹海を探す"
+  },
+  "advancements.miragefairy2024.deep_fairy_forest.title": {
+    "en_us": "The Forest of Memories",
+    "ja_jp": "記憶の森"
+  },
+  "advancements.miragefairy2024.diamond_luminaria.description": {
+    "en_us": "Search for Diamond Luminaria in a cold biome",
+    "ja_jp": "寒冷バイオームでダイヤモンドルミナリアを探す"
+  },
+  "advancements.miragefairy2024.diamond_luminaria.title": {
+    "en_us": "Even Carbon Freezes",
+    "ja_jp": "炭素も凍る季節"
+  },
+  "advancements.miragefairy2024.dripstone_caves_ruin.description": {
+    "en_us": "Unearth a map from the Weathered Ancient Remnants and explore the Dripstone Cave Ruin",
+    "ja_jp": "風化した旧世代の遺構から地図を発掘し、鍾乳洞の遺跡を訪れる"
+  },
+  "advancements.miragefairy2024.dripstone_caves_ruin.title": {
+    "en_us": "The Ancient Future Civ",
+    "ja_jp": "古代の未来文明"
+  },
+  "advancements.miragefairy2024.emerald_luminaria.description": {
+    "en_us": "Search for Emerald Luminaria in a plant-rich biome",
+    "ja_jp": "植物の繁茂するバイオームでエメラルドルミナリアを探す"
+  },
+  "advancements.miragefairy2024.emerald_luminaria.title": {
+    "en_us": "Money Tree",
+    "ja_jp": "お金のなる木"
+  },
+  "advancements.miragefairy2024.fairy_collector.description": {
+    "en_us": "Place four chests in the Fairy House",
+    "ja_jp": "妖精の家にチェストを置く"
+  },
+  "advancements.miragefairy2024.fairy_collector.title": {
+    "en_us": "Cleaner Driven by Curiosity",
+    "ja_jp": "好奇心の収集家"
+  },
+  "advancements.miragefairy2024.fairy_crystal.description": {
+    "en_us": "Cultivate Mirage flowers and harvest a rare item",
+    "ja_jp": "妖花ミラージュを栽培し希少品を収穫する"
+  },
+  "advancements.miragefairy2024.fairy_crystal.title": {
+    "en_us": "Organic Amorphous Material",
+    "ja_jp": "水晶の飴"
+  },
+  "advancements.miragefairy2024.fairy_forest.description": {
+    "en_us": "Travel the overworld and discover the Fairy Forest",
+    "ja_jp": "地上を旅して妖精の森を探す"
+  },
+  "advancements.miragefairy2024.fairy_forest.title": {
+    "en_us": "Fairylands",
+    "ja_jp": "世界のそこかしこにあるおとぎの国"
+  },
+  "advancements.miragefairy2024.fairy_house.description": {
+    "en_us": "Hollow out a log to create a home for fairies",
+    "ja_jp": "原木をくりぬいて妖精の住み家を作ろう"
+  },
+  "advancements.miragefairy2024.fairy_house.title": {
+    "en_us": "My New Home",
+    "ja_jp": "新しい我が家"
+  },
+  "advancements.miragefairy2024.fairy_quest_card.description": {
+    "en_us": "Look for the Fairy Quest Card lying around nearby",
+    "ja_jp": "その辺に落ちているフェアリークエストカードを探そう"
+  },
+  "advancements.miragefairy2024.fairy_quest_card.title": {
+    "en_us": "Time Crystal Radio",
+    "ja_jp": "時間結晶ラジオ"
+  },
+  "advancements.miragefairy2024.fairy_statue_fountain.description": {
+    "en_us": "Throw a Fairy Jewel into a fairy statue fountain",
+    "ja_jp": "妖精の像の泉にフェアリージュエルを投げ込もう"
+  },
+  "advancements.miragefairy2024.fairy_statue_fountain.title": {
+    "en_us": "The Desire for Rerolls",
+    "ja_jp": "リセマラの誘い"
+  },
+  "advancements.miragefairy2024.fermentation_barrel.description": {
+    "en_us": "Craft a Fermentation Barrel for alcoholic beverages and certain poisons",
+    "ja_jp": "アルコール飲料および一部の毒物のための醸造樽を作る"
+  },
+  "advancements.miragefairy2024.fermentation_barrel.title": {
+    "en_us": "The Scent of Haimeviska",
+    "ja_jp": "ハイメヴィスカの香り"
+  },
+  "advancements.miragefairy2024.gold_prominaria.description": {
+    "en_us": "Use a gold ingot on the Prominaria",
+    "ja_jp": "プロミナリアに金インゴットを使用する"
+  },
+  "advancements.miragefairy2024.gold_prominaria.title": {
+    "en_us": "Gold Tree",
+    "ja_jp": "金のなる木"
+  },
+  "advancements.miragefairy2024.haimeviska.description": {
+    "en_us": "Explore the overworld to find Haimeviska the fairy tree",
+    "ja_jp": "地上を探検して精樹ハイメヴィスカを探す"
+  },
+  "advancements.miragefairy2024.haimeviska.title": {
+    "en_us": "What is it like to be a plant?",
+    "ja_jp": "植物として生きるとはどのようなことか"
+  },
+  "advancements.miragefairy2024.haimeviska_rosin.description": {
+    "en_us": "Obtain Haimeviska Rosin, rarely harvested from the Dripping Haimeviska Logs",
+    "ja_jp": "滴るハイメヴィスカの原木から稀に採取されるハイメヴィスカの涙を入手する"
+  },
+  "advancements.miragefairy2024.haimeviska_rosin.title": {
+    "en_us": "The Taste of Nectar",
+    "ja_jp": "蜜の味"
+  },
+  "advancements.miragefairy2024.lilagium_ingot.description": {
+    "en_us": "Create Lilagium using Miragium, lilac, and other materials",
+    "ja_jp": "ミラジウム、ライラックおよびその他の素材からリラジウムを作る"
+  },
+  "advancements.miragefairy2024.lilagium_ingot.title": {
+    "en_us": "Alloy with Plants",
+    "ja_jp": "植物との合金"
+  },
+  "advancements.miragefairy2024.luminite.description": {
+    "en_us": "Obtain Luminite, a rare item from plants of Luminariaceae family",
+    "ja_jp": "ルミナリア科植物のレアドロップであるルミナイトを手に入れる"
+  },
+  "advancements.miragefairy2024.luminite.title": {
+    "en_us": "Etheroluminescence",
+    "ja_jp": "エテロルミネッセンス"
+  },
+  "advancements.miragefairy2024.merrrria.description": {
+    "en_us": "Search for Merrrria flowers blooming in the windswept",
+    "ja_jp": "吹きさらしの丘に咲くメルルルリアの花を探す"
+  },
+  "advancements.miragefairy2024.merrrria.title": {
+    "en_us": "Hill Where a Moon Blooms",
+    "ja_jp": "月の咲く丘"
+  },
+  "advancements.miragefairy2024.merrrria_drop.description": {
+    "en_us": "Harvest a drop from Merrrria",
+    "ja_jp": "月鈴花メルルルリアから月のしずくを収穫する"
+  },
+  "advancements.miragefairy2024.merrrria_drop.title": {
+    "en_us": "Nocturnal Nocturne",
+    "ja_jp": "真夜中だけのノクターン"
+  },
+  "advancements.miragefairy2024.mirage_flour_of_universe.description": {
+    "en_us": "Condense Mirage Flour into Mirage Flour of Universe",
+    "ja_jp": "ミラージュの花粉を宇宙のミラージュの花粉まで濃縮する"
+  },
+  "advancements.miragefairy2024.mirage_flour_of_universe.title": {
+    "en_us": "Warping Space",
+    "ja_jp": "ゆがむ空間"
+  },
+  "advancements.miragefairy2024.mirage_flower.description": {
+    "en_us": "Find the Mirage flower",
+    "ja_jp": "妖花ミラージュを摘もう"
+  },
+  "advancements.miragefairy2024.mirage_flower.title": {
+    "en_us": "A World Ruled by Plants",
+    "ja_jp": "植物の支配する世界"
+  },
+  "advancements.miragefairy2024.miragidian.description": {
+    "en_us": "Process Etheroballistic Bolt Fragments and sinter them using an Aura Reflector Furnace",
+    "ja_jp": "エテロバリスティック弾の破片を加工し、オーラ反射炉で焼結する"
+  },
+  "advancements.miragefairy2024.miragidian.title": {
+    "en_us": "Ancient Stainless Alloy",
+    "ja_jp": "古代のステンレス"
+  },
+  "advancements.miragefairy2024.miragidian_lamp.description": {
+    "en_us": "Find Miragidian Street Lamp in Retrospective City biome",
+    "ja_jp": "過去を見つめる都市バイオームでミラジディアンの街灯を見つける"
+  },
+  "advancements.miragefairy2024.miragidian_lamp.title": {
+    "en_us": "Eye That Walked 30 Millennia",
+    "ja_jp": "3万年を歩んだ瞳"
+  },
+  "advancements.miragefairy2024.miragium_ingot.description": {
+    "en_us": "Use the Aura Reflector Furnace to refine Mirage Flour",
+    "ja_jp": "オーラ反射炉を使ってミラージュの花粉を製錬する"
+  },
+  "advancements.miragefairy2024.miragium_ingot.title": {
+    "en_us": "Solid Soul",
+    "ja_jp": "固形の魂"
+  },
+  "advancements.miragefairy2024.miranagi_staff.description": {
+    "en_us": "Craft the Staff of Miranagi",
+    "ja_jp": "みらなぎの杖を作成する"
+  },
+  "advancements.miragefairy2024.miranagi_staff.title": {
+    "en_us": "Innocent Dogma",
+    "ja_jp": "盲目のドグマ"
+  },
+  "advancements.miragefairy2024.miranagite.description": {
+    "en_us": "Mine the Miranagite underground",
+    "ja_jp": "地中の蒼天石を採掘する"
+  },
+  "advancements.miragefairy2024.miranagite.title": {
+    "en_us": "The Unknown World of Magic",
+    "ja_jp": "魔法の世界"
+  },
+  "advancements.miragefairy2024.noise.description": {
+    "en_us": "Produce Noise from Calculite using a Aura Reflector Furnace",
+    "ja_jp": "オーラ反射炉で理天石からノイズを作る"
+  },
+  "advancements.miragefairy2024.noise.title": {
+    "en_us": "The Essence of KU",
+    "ja_jp": "KUの本質"
+  },
+  "advancements.miragefairy2024.phantom_drop.description": {
+    "en_us": "Obtain Phantom Drop, rarely harvested from the Phantom Flower",
+    "ja_jp": "幻花ファントムから稀に収穫できる幻想の雫を入手する"
+  },
+  "advancements.miragefairy2024.phantom_drop.title": {
+    "en_us": "Materialized Fantasy",
+    "ja_jp": "植物が想像できることは植物が実現する"
+  },
+  "advancements.miragefairy2024.phantom_flower.description": {
+    "en_us": "Search for the Phantom Flower hidden in the Fairy Forest",
+    "ja_jp": "妖精の森に隠れている幻花ファントムを探す"
+  },
+  "advancements.miragefairy2024.phantom_flower.title": {
+    "en_us": "Selective Pressure of Cuteness",
+    "ja_jp": "かわいいの淘汰圧"
+  },
+  "advancements.miragefairy2024.poison.description": {
+    "en_us": "Produce poisons using a Fermentation Barrel",
+    "ja_jp": "醸造樽で毒薬を作る"
+  },
+  "advancements.miragefairy2024.poison.title": {
+    "en_us": "May Contain Trace Toxic",
+    "ja_jp": "本品は毒物と共通の設備で製造してます"
+  },
+  "advancements.miragefairy2024.prominaria.description": {
+    "en_us": "Search for Prominaria in the bottom of Nether Wastes",
+    "ja_jp": "ネザーの荒地の最下層でプロミナリアを探す"
+  },
+  "advancements.miragefairy2024.prominaria.title": {
+    "en_us": "Subterranean Sun",
+    "ja_jp": "地獄にともる灯"
+  },
+  "advancements.miragefairy2024.prominite.description": {
+    "en_us": "Harvest Prominite from Prominaria",
+    "ja_jp": "ネザーのプロミナリアからプロミナイトを収穫する"
+  },
+  "advancements.miragefairy2024.prominite.title": {
+    "en_us": "Equality before Physical Law",
+    "ja_jp": "物理法則の下の平等"
+  },
+  "advancements.miragefairy2024.rare_10_fairy.description": {
+    "en_us": "Summon a level 10 rarity fairy",
+    "ja_jp": "レア度10の妖精を召喚する"
+  },
+  "advancements.miragefairy2024.rare_10_fairy.title": {
+    "en_us": "Transcendence of Nature",
+    "ja_jp": "自然の超越"
+  },
+  "advancements.miragefairy2024.resonite_ingot.description": {
+    "en_us": "Craft a Resonite using an Aura Reflector Furnace with Fairy Crystal, Luminite, and Echo Shard",
+    "ja_jp": "フェアリークリスタル、ルミナイト、および残響の欠片からオーラ反射炉を使って共鳴石を製作する"
+  },
+  "advancements.miragefairy2024.resonite_ingot.title": {
+    "en_us": "Ambivalence in Glass",
+    "ja_jp": "ガラスの中のアンビバレンス"
+  },
+  "advancements.miragefairy2024.retrospective_city.description": {
+    "en_us": "Travel the overworld and discover the Retrospective City",
+    "ja_jp": "地上を旅して過去を見つめる都市を探す"
+  },
+  "advancements.miragefairy2024.retrospective_city.title": {
+    "en_us": "Graveyard of Civilization",
+    "ja_jp": "文明の墓場"
+  },
+  "advancements.miragefairy2024.root.description": {
+    "en_us": "The Noisy Land of Tertia",
+    "ja_jp": "かしましきテルティアの地"
+  },
+  "advancements.miragefairy2024.root.title": {
+    "en_us": "IFR25KU",
+    "ja_jp": "IFR25KU"
+  },
+  "advancements.miragefairy2024.sarracenia.description": {
+    "en_us": "Find Sarracenia in the swampland",
+    "ja_jp": "沼地のサラセニアを見つける"
+  },
+  "advancements.miragefairy2024.sarracenia.title": {
+    "en_us": "Temptation of Sugar and Acid",
+    "ja_jp": "糖と酸の誘惑"
+  },
+  "advancements.miragefairy2024.telescope.description": {
+    "en_us": "Craft a telescope for a daily mission",
+    "ja_jp": "デイリーミッションのための望遠鏡をクラフトする"
+  },
+  "advancements.miragefairy2024.telescope.title": {
+    "en_us": "The Eyes of Tertia",
+    "ja_jp": "第三の目"
+  },
+  "advancements.miragefairy2024.time.description": {
+    "en_us": "Summon Timia the fairy of time",
+    "ja_jp": "時精ティーミャを召喚する"
+  },
+  "advancements.miragefairy2024.time.title": {
+    "en_us": "Fairy of Time",
+    "ja_jp": "時の妖精"
+  },
+  "advancements.miragefairy2024.topaz_luminaria.description": {
+    "en_us": "Search for Topaz Luminaria in the desert",
+    "ja_jp": "砂漠でトパーズルミナリアを探す"
+  },
+  "advancements.miragefairy2024.topaz_luminaria.title": {
+    "en_us": "Golden Dust",
+    "ja_jp": "黄金の塵"
+  },
+  "advancements.miragefairy2024.veropeda.description": {
+    "en_us": "Harvest Veropeda the cursed grass, which grows in arid biomes and the nether",
+    "ja_jp": "乾燥系バイオームとネザーに分布する呪草ヴェロペダを収穫する"
+  },
+  "advancements.miragefairy2024.veropeda.title": {
+    "en_us": "Artificial Plant Species",
+    "ja_jp": "人造植物"
+  },
+  "advancements.miragefairy2024.weathered_ancient_remnants.description": {
+    "en_us": "Discover Weathered Ancient Remnants left on the surface",
+    "ja_jp": "地上に遺された風化した旧世代の遺構を発見する"
+  },
+  "advancements.miragefairy2024.weathered_ancient_remnants.title": {
+    "en_us": "Spacefaring Humanity\u0027s Scars",
+    "ja_jp": "宇宙人類の爪痕"
+  },
+  "advancements.miragefairy2024.xarpa_luminaria.description": {
+    "en_us": "Search for Xarpie Luminara in Dripstone Cave Ruin",
+    "ja_jp": "鍾乳洞の遺跡でシャルピエ・ルミナーラを探す"
+  },
+  "advancements.miragefairy2024.xarpa_luminaria.title": {
+    "en_us": "Destruction of \"Arcana\"",
+    "ja_jp": "「神秘」の破壊"
+  },
+  "advancements.miragefairy2024.xarpite.description": {
+    "en_us": "Pick up the Xarpite lying around nearby",
+    "ja_jp": "その辺に落ちている紅天石を拾う"
+  },
+  "advancements.miragefairy2024.xarpite.title": {
+    "en_us": "Aura-Resistant Plastic",
+    "ja_jp": "耐霊性プラスチック"
+  },
+  "biome.miragefairy2024.deep_fairy_forest": {
+    "en_us": "Deep Fairy Forest",
+    "ja_jp": "妖精の樹海"
+  },
+  "biome.miragefairy2024.fairy_forest": {
+    "en_us": "Fairy Forest",
+    "ja_jp": "妖精の森"
+  },
+  "biome.miragefairy2024.retrospective_city": {
+    "en_us": "Retrospective City",
+    "ja_jp": "過去を見つめる都市"
+  },
+  "block.miragefairy2024.aura_reflector_furnace": {
+    "en_us": "Aura Reflector Furnace",
+    "ja_jp": "オーラ反射炉"
+  },
+  "block.miragefairy2024.aura_reflector_furnace.poem": {
+    "en_us": "Life is essentially inorganic.",
+    "ja_jp": "生命と無機物の境界。"
+  },
+  "block.miragefairy2024.aura_resistant_ceramic": {
+    "en_us": "Protective Aura-Resistant Ceramic",
+    "ja_jp": "守護の耐霊石"
+  },
+  "block.miragefairy2024.aura_resistant_ceramic.poem": {
+    "en_us": "The eternally glorious city of Xarperia",
+    "ja_jp": "恒久の栄華を讃える紅天市街――"
+  },
+  "block.miragefairy2024.aura_resistant_ceramic_bricks": {
+    "en_us": "Protective Aura-Resistant Ceramic Bricks",
+    "ja_jp": "守護の耐霊石レンガ"
+  },
+  "block.miragefairy2024.aura_resistant_ceramic_bricks.poem": {
+    "en_us": "Protects lifeforms from radiation",
+    "ja_jp": "常に純潔な魂であれ――"
+  },
+  "block.miragefairy2024.aura_resistant_ceramic_bricks_slab": {
+    "en_us": "Protective Aura-Resistant Ceramic Brick Slab",
+    "ja_jp": "守護の耐霊石レンガのハーフブロック"
+  },
+  "block.miragefairy2024.aura_resistant_ceramic_bricks_slab.poem": {
+    "en_us": "Transmutation caused by solar flares",
+    "ja_jp": "魔物と混淆しないために――"
+  },
+  "block.miragefairy2024.aura_resistant_ceramic_bricks_stairs": {
+    "en_us": "Protective Aura-Resistant Ceramic Brick Stairs",
+    "ja_jp": "守護の耐霊石レンガの階段"
+  },
+  "block.miragefairy2024.aura_resistant_ceramic_bricks_stairs.poem": {
+    "en_us": "The scarlet roofs that protect citizens",
+    "ja_jp": "暮らしを守る紅い盾――"
+  },
+  "block.miragefairy2024.aura_resistant_ceramic_slab": {
+    "en_us": "Protective Aura-Resistant Ceramic Slab",
+    "ja_jp": "守護の耐霊石のハーフブロック"
+  },
+  "block.miragefairy2024.aura_resistant_ceramic_slab.poem": {
+    "en_us": "The unified meta-/retro-physics theory",
+    "ja_jp": "光素力学と万物の理論の統合――"
+  },
+  "block.miragefairy2024.aura_resistant_ceramic_stairs": {
+    "en_us": "Protective Aura-Resistant Ceramic Stairs",
+    "ja_jp": "守護の耐霊石の階段"
+  },
+  "block.miragefairy2024.aura_resistant_ceramic_stairs.poem": {
+    "en_us": "The final creative research of humanity",
+    "ja_jp": "アカーシャに続く路――"
+  },
+  "block.miragefairy2024.aura_resistant_ceramic_tiles": {
+    "en_us": "Protective Aura-Resistant Ceramic Tiles",
+    "ja_jp": "守護の耐霊石タイル"
+  },
+  "block.miragefairy2024.aura_resistant_ceramic_tiles.poem": {
+    "en_us": "Weather-resistance due to magnetite",
+    "ja_jp": "生存の願いを敷石に込めて――"
+  },
+  "block.miragefairy2024.aura_stone": {
+    "en_us": "Aura Stone",
+    "ja_jp": "霊氣石"
+  },
+  "block.miragefairy2024.aura_stone.poem": {
+    "en_us": "It absorbs auras and seals them away",
+    "ja_jp": "呼吸する石。"
+  },
+  "block.miragefairy2024.chaos_stone_block": {
+    "en_us": "Chaos Stone Block",
+    "ja_jp": "混沌の石ブロック"
+  },
+  "block.miragefairy2024.chaos_stone_block.poem": {
+    "en_us": "The eye of entropy.",
+    "ja_jp": "無秩序の目。"
+  },
+  "block.miragefairy2024.chiseled_aura_resistant_ceramic": {
+    "en_us": "Chiseled Protective Aura-Resistant Ceramic",
+    "ja_jp": "模様入りの守護の耐霊石"
+  },
+  "block.miragefairy2024.chiseled_aura_resistant_ceramic.poem": {
+    "en_us": "The Truth-Gazer.",
+    "ja_jp": "瞳の中のサティアン。"
+  },
+  "block.miragefairy2024.cobbled_aura_resistant_ceramic": {
+    "en_us": "Cobbled Protective Aura-Resistant Ceramic",
+    "ja_jp": "守護の耐霊石の丸石"
+  },
+  "block.miragefairy2024.cobbled_aura_resistant_ceramic.poem": {
+    "en_us": "Penetrates the monomer and solidifies",
+    "ja_jp": "砂岩に宿るポリテルペンの祝福――"
+  },
+  "block.miragefairy2024.cracked_aura_resistant_ceramic_bricks": {
+    "en_us": "Cracked Protective Aura-Resistant Ceramic Bricks",
+    "ja_jp": "ひび割れた守護の耐霊石レンガ"
+  },
+  "block.miragefairy2024.cracked_aura_resistant_ceramic_bricks.poem": {
+    "en_us": "Exposed and degraded fairy blood",
+    "ja_jp": "損傷した遺伝子の断片――"
+  },
+  "block.miragefairy2024.deepslate_fluorite_ore": {
+    "en_us": "Deepslate Fluorite Ore",
+    "ja_jp": "深層蛍石鉱石"
+  },
+  "block.miragefairy2024.deepslate_magnetite_ore": {
+    "en_us": "Deepslate Magnetite Ore",
+    "ja_jp": "深層磁鉄鉱鉱石"
+  },
+  "block.miragefairy2024.deepslate_miranagite_ore": {
+    "en_us": "Deepslate Miranagite Ore",
+    "ja_jp": "深層蒼天石鉱石"
+  },
+  "block.miragefairy2024.deepslate_miranagite_ore.poem": {
+    "en_us": "Singularities built by the Creator",
+    "ja_jp": "楽園が楽園であるための奇跡。"
+  },
+  "block.miragefairy2024.deepslate_nephrite_ore": {
+    "en_us": "Deepslate Nephrite Ore",
+    "ja_jp": "深層ネフライト鉱石"
+  },
+  "block.miragefairy2024.deepslate_sulfur_ore": {
+    "en_us": "Deepslate Sulfur Ore",
+    "ja_jp": "深層硫黄鉱石"
+  },
+  "block.miragefairy2024.diamond_luminaria": {
+    "en_us": "Diamond Luminaria",
+    "ja_jp": "金剛石輝草ダイヤモンドルミナリア"
+  },
+  "block.miragefairy2024.dripping_haimeviska_log": {
+    "en_us": "Dripping Haimeviska Log",
+    "ja_jp": "滴るハイメヴィスカの原木"
+  },
+  "block.miragefairy2024.dripping_haimeviska_log.description": {
+    "en_us": "Harvest sap when used",
+    "ja_jp": "使用時、樹液を収穫"
+  },
+  "block.miragefairy2024.dripping_haimeviska_log.poem": {
+    "en_us": "A spirit named \u0027glucose\u0027",
+    "ja_jp": "霊界より降りしもの。"
+  },
+  "block.miragefairy2024.drywall": {
+    "en_us": "Drywall",
+    "ja_jp": "石膏ボード"
+  },
+  "block.miragefairy2024.drywall.poem": {
+    "en_us": "Please use on the office ceiling, etc.",
+    "ja_jp": "オフィスの天井等にどうぞ。"
+  },
+  "block.miragefairy2024.emerald_luminaria": {
+    "en_us": "Emerald Luminaria",
+    "ja_jp": "翠玉輝草エメラルドルミナリア"
+  },
+  "block.miragefairy2024.fairy_active_consumer": {
+    "en_us": "Fairy Active Consumer(WIP)",
+    "ja_jp": "妖精の郵便受け(WIP)"
+  },
+  "block.miragefairy2024.fairy_active_consumer.description": {
+    "en_us": "The ordered items are delivered",
+    "ja_jp": "注文したアイテムが搬入される"
+  },
+  "block.miragefairy2024.fairy_active_consumer.poem": {
+    "en_us": "Tonight, I\u0027ll Be Eating...",
+    "ja_jp": "焼き鯖だよ――"
+  },
+  "block.miragefairy2024.fairy_ceramic": {
+    "en_us": "Fairy Ceramic",
+    "ja_jp": "妖精のセラミック"
+  },
+  "block.miragefairy2024.fairy_ceramic.poem": {
+    "en_us": "Activation by natural excitation aura",
+    "ja_jp": "四角いスフィア。"
+  },
+  "block.miragefairy2024.fairy_ceramic_bricks": {
+    "en_us": "Fairy Ceramic Bricks",
+    "ja_jp": "妖精のセラミックレンガ"
+  },
+  "block.miragefairy2024.fairy_ceramic_bricks.poem": {
+    "en_us": "Suitable for walls of furnaces, etc.",
+    "ja_jp": "練り込められた≪堅牢≫のエルグ。"
+  },
+  "block.miragefairy2024.fairy_ceramic_bricks_slab": {
+    "en_us": "Fairy Ceramic Brick Slab",
+    "ja_jp": "妖精のセラミックレンガのハーフブロック"
+  },
+  "block.miragefairy2024.fairy_ceramic_bricks_slab.poem": {
+    "en_us": "Suitable for slopes.",
+    "ja_jp": "石切台への敗北。"
+  },
+  "block.miragefairy2024.fairy_ceramic_bricks_stairs": {
+    "en_us": "Fairy Ceramic Brick Stairs",
+    "ja_jp": "妖精のセラミックレンガの階段"
+  },
+  "block.miragefairy2024.fairy_ceramic_bricks_stairs.poem": {
+    "en_us": "Reached that fairy!!",
+    "ja_jp": "その手、届かせたくて。"
+  },
+  "block.miragefairy2024.fairy_collector": {
+    "en_us": "Fairy Collector",
+    "ja_jp": "いたずら妖精エンデルマーニャの隠れ家"
+  },
+  "block.miragefairy2024.fairy_collector.poem": {
+    "en_us": "An attractor of curiosity",
+    "ja_jp": "あれ？ここにあったリモコン知らない？"
+  },
+  "block.miragefairy2024.fairy_crystal_glass": {
+    "en_us": "Fairy Crystal Glass",
+    "ja_jp": "フェアリークリスタルガラス"
+  },
+  "block.miragefairy2024.fairy_crystal_glass.poem": {
+    "en_us": "It is displaying the scene behind it.",
+    "ja_jp": "家の外を映し出す鏡。"
+  },
+  "block.miragefairy2024.fairy_house": {
+    "en_us": "Fairy House",
+    "ja_jp": "妖精の家"
+  },
+  "block.miragefairy2024.fairy_house.poem": {
+    "en_us": "Home sweet home",
+    "ja_jp": "あたたかいおうち"
+  },
+  "block.miragefairy2024.fairy_passive_supplier": {
+    "en_us": "Fairy Passive Supplier(WIP)",
+    "ja_jp": "妖精の郵便屋さん(WIP)"
+  },
+  "block.miragefairy2024.fairy_passive_supplier.description": {
+    "en_us": "Accepts and delivers orders",
+    "ja_jp": "注文を受け付けて配達する"
+  },
+  "block.miragefairy2024.fairy_passive_supplier.poem": {
+    "en_us": "Fairies\u0027 Delivery Service",
+    "ja_jp": "落ち込んだりもしたけれど、私は元気です。"
+  },
+  "block.miragefairy2024.fairy_statue": {
+    "en_us": "Broken Fairy Statue",
+    "ja_jp": "破損した妖精の像"
+  },
+  "block.miragefairy2024.fairy_statue.description": {
+    "en_us": "Fairy dream can be obtained",
+    "ja_jp": "妖精の夢を獲得可能"
+  },
+  "block.miragefairy2024.fairy_statue.format": {
+    "en_us": "%s Statue",
+    "ja_jp": "%sの像"
+  },
+  "block.miragefairy2024.fairy_statue.poem": {
+    "en_us": "Mysterious Method of Creation",
+    "ja_jp": "その製法は誰にも知られていない"
+  },
+  "block.miragefairy2024.fairy_statue_fountain": {
+    "en_us": "Fairy Statue Fountain",
+    "ja_jp": "妖精の像の泉"
+  },
+  "block.miragefairy2024.fairy_statue_fountain.description1": {
+    "en_us": "Can draw lottery with 100 Fairy Jewels",
+    "ja_jp": "100フェアリージュエルで抽選ができる"
+  },
+  "block.miragefairy2024.fairy_statue_fountain.description2": {
+    "en_us": "Use while sneaking to show loot table",
+    "ja_jp": "スニーク中に使用時、提供割合を表示"
+  },
+  "block.miragefairy2024.fairy_statue_fountain.poem": {
+    "en_us": "Where does this water spring from...?",
+    "ja_jp": "この水は一体どこから湧いてくるのだろう…"
+  },
+  "block.miragefairy2024.fairy_statue_fountain.usage": {
+    "en_us": "Please use it while holding %s",
+    "ja_jp": "%sを持って使用してください"
+  },
+  "block.miragefairy2024.fantastic_fairy_statue": {
+    "en_us": "Broken Fairy Statue",
+    "ja_jp": "破損した妖精の像"
+  },
+  "block.miragefairy2024.fantastic_fairy_statue.format": {
+    "en_us": "%s Statue",
+    "ja_jp": "%sの像"
+  },
+  "block.miragefairy2024.fantastic_fairy_statue.poem": {
+    "en_us": "Glossier and more beautiful.",
+    "ja_jp": "その翅は艶やかで、本物よりも美しい。"
+  },
+  "block.miragefairy2024.fermentation_barrel": {
+    "en_us": "Fermentation Barrel",
+    "ja_jp": "醸造樽"
+  },
+  "block.miragefairy2024.fermentation_barrel.poem": {
+    "en_us": "The scent of Haimeviska feel nostalgic",
+    "ja_jp": "懐かしき故郷の香り。"
+  },
+  "block.miragefairy2024.fluorite_block": {
+    "en_us": "Fluorite Block",
+    "ja_jp": "蛍石ブロック"
+  },
+  "block.miragefairy2024.fluorite_ore": {
+    "en_us": "Fluorite Ore",
+    "ja_jp": "蛍石鉱石"
+  },
+  "block.miragefairy2024.gold_prominaria": {
+    "en_us": "Gold Prominaria",
+    "ja_jp": "金炎草ゴールドプロミナリア"
+  },
+  "block.miragefairy2024.golden_fairy_statue": {
+    "en_us": "Broken Fairy Statue",
+    "ja_jp": "破損した妖精の像"
+  },
+  "block.miragefairy2024.golden_fairy_statue.format": {
+    "en_us": "%s Statue",
+    "ja_jp": "%sの像"
+  },
+  "block.miragefairy2024.golden_fairy_statue.poem": {
+    "en_us": "Was their hair always this long...?",
+    "ja_jp": "妖精の髪が伸びている気がする…"
+  },
+  "block.miragefairy2024.haimeviska_bricks": {
+    "en_us": "Haimeviska Bricks",
+    "ja_jp": "ハイメヴィスカレンガ"
+  },
+  "block.miragefairy2024.haimeviska_bricks.poem": {
+    "en_us": "An ecosystem called \u0027civilization\u0027",
+    "ja_jp": "人がもたらした原生林。"
+  },
+  "block.miragefairy2024.haimeviska_bricks_slab": {
+    "en_us": "Haimeviska Brick Slab",
+    "ja_jp": "ハイメヴィスカレンガのハーフブロック"
+  },
+  "block.miragefairy2024.haimeviska_bricks_slab.poem": {
+    "en_us": "Extremely modularized memory",
+    "ja_jp": "ひとまわり細かくなった私。"
+  },
+  "block.miragefairy2024.haimeviska_bricks_stairs": {
+    "en_us": "Haimeviska Brick Stairs",
+    "ja_jp": "ハイメヴィスカレンガの階段"
+  },
+  "block.miragefairy2024.haimeviska_bricks_stairs.poem": {
+    "en_us": "Forgotten paths of the technology",
+    "ja_jp": "生体工学の歩み。"
+  },
+  "block.miragefairy2024.haimeviska_button": {
+    "en_us": "Haimeviska Button",
+    "ja_jp": "ハイメヴィスカのボタン"
+  },
+  "block.miragefairy2024.haimeviska_button.poem": {
+    "en_us": "What is this soft and warm thing?",
+    "ja_jp": "指先の感触。"
+  },
+  "block.miragefairy2024.haimeviska_door": {
+    "en_us": "Haimeviska Door",
+    "ja_jp": "ハイメヴィスカのドア"
+  },
+  "block.miragefairy2024.haimeviska_door.poem": {
+    "en_us": "Astral read-only vortex",
+    "ja_jp": "遺伝子の水平伝播。"
+  },
+  "block.miragefairy2024.haimeviska_fence": {
+    "en_us": "Haimeviska Fence",
+    "ja_jp": "ハイメヴィスカのフェンス"
+  },
+  "block.miragefairy2024.haimeviska_fence.poem": {
+    "en_us": "Personality flowing through the xylem",
+    "ja_jp": "樹のなかに住む。"
+  },
+  "block.miragefairy2024.haimeviska_fence_gate": {
+    "en_us": "Haimeviska Fence Gate",
+    "ja_jp": "ハイメヴィスカのフェンスゲート"
+  },
+  "block.miragefairy2024.haimeviska_fence_gate.poem": {
+    "en_us": "It chose this path of its own will",
+    "ja_jp": "知性の邂逅。"
+  },
+  "block.miragefairy2024.haimeviska_leaves": {
+    "en_us": "Haimeviska Leaves",
+    "ja_jp": "ハイメヴィスカの葉"
+  },
+  "block.miragefairy2024.haimeviska_leaves.poem": {
+    "en_us": "All original flowers are consumed by ivy",
+    "ja_jp": "妖精になれる花、なれない花。"
+  },
+  "block.miragefairy2024.haimeviska_log": {
+    "en_us": "Haimeviska Log",
+    "ja_jp": "ハイメヴィスカの原木"
+  },
+  "block.miragefairy2024.haimeviska_log.description": {
+    "en_us": "Can be incised with a sword",
+    "ja_jp": "剣を使って傷を付けられる"
+  },
+  "block.miragefairy2024.haimeviska_log.poem": {
+    "en_us": "Symbiosis with parasitic Mirages",
+    "ja_jp": "妖精の滲み込んだ樹。"
+  },
+  "block.miragefairy2024.haimeviska_planks": {
+    "en_us": "Haimeviska Planks",
+    "ja_jp": "ハイメヴィスカの板材"
+  },
+  "block.miragefairy2024.haimeviska_planks.poem": {
+    "en_us": "Flexible and friendly, good for interior",
+    "ja_jp": "考える、壁。"
+  },
+  "block.miragefairy2024.haimeviska_pressure_plate": {
+    "en_us": "Haimeviska Pressure Plate",
+    "ja_jp": "ハイメヴィスカの感圧板"
+  },
+  "block.miragefairy2024.haimeviska_pressure_plate.poem": {
+    "en_us": "Creature with the name of a machine",
+    "ja_jp": "反応と感覚の違い。"
+  },
+  "block.miragefairy2024.haimeviska_sapling": {
+    "en_us": "Haimeviska Sapling",
+    "ja_jp": "ハイメヴィスカの苗木"
+  },
+  "block.miragefairy2024.haimeviska_sapling.poem": {
+    "en_us": "Assembling molecules with Ergs",
+    "ja_jp": "第二の葉緑体。"
+  },
+  "block.miragefairy2024.haimeviska_slab": {
+    "en_us": "Haimeviska Slab",
+    "ja_jp": "ハイメヴィスカのハーフブロック"
+  },
+  "block.miragefairy2024.haimeviska_slab.poem": {
+    "en_us": "Searching for another personality.",
+    "ja_jp": "半人前の側頭葉。"
+  },
+  "block.miragefairy2024.haimeviska_stairs": {
+    "en_us": "Haimeviska Stairs",
+    "ja_jp": "ハイメヴィスカの階段"
+  },
+  "block.miragefairy2024.haimeviska_stairs.poem": {
+    "en_us": "Step that pierces the sky",
+    "ja_jp": "情緒体を喰らう頂となれ。"
+  },
+  "block.miragefairy2024.haimeviska_trapdoor": {
+    "en_us": "Haimeviska Trapdoor",
+    "ja_jp": "ハイメヴィスカのトラップドア"
+  },
+  "block.miragefairy2024.haimeviska_trapdoor.poem": {
+    "en_us": "Intermingling astral vortices",
+    "ja_jp": "自己認識の防衛線。"
+  },
+  "block.miragefairy2024.haimeviska_wood": {
+    "en_us": "Haimeviska Wood",
+    "ja_jp": "ハイメヴィスカの木"
+  },
+  "block.miragefairy2024.haimeviska_wood.poem": {
+    "en_us": "Hydraulic communication system",
+    "ja_jp": "ウィスプたちの集合知。"
+  },
+  "block.miragefairy2024.hollow_haimeviska_log": {
+    "en_us": "Hollow Haimeviska Log",
+    "ja_jp": "ハイメヴィスカの樹洞"
+  },
+  "block.miragefairy2024.hollow_haimeviska_log.poem": {
+    "en_us": "Auric conceptual attractor",
+    "ja_jp": "限界巡回アステリア。"
+  },
+  "block.miragefairy2024.incised_haimeviska_log": {
+    "en_us": "Incised Haimeviska Log",
+    "ja_jp": "傷の付いたハイメヴィスカの原木"
+  },
+  "block.miragefairy2024.incised_haimeviska_log.description": {
+    "en_us": "Produces sap over time",
+    "ja_jp": "時間経過で樹液を生産"
+  },
+  "block.miragefairy2024.incised_haimeviska_log.poem": {
+    "en_us": "Do fairy trees have qualia of pain?",
+    "ja_jp": "動物を守るということ。"
+  },
+  "block.miragefairy2024.local_vacuum_decay": {
+    "en_us": "Local Vacuum Decay",
+    "ja_jp": "局所真空崩壊"
+  },
+  "block.miragefairy2024.local_vacuum_decay.poem": {
+    "en_us": "Stable instability due to anti-entropy",
+    "ja_jp": "これが秩序の究極の形だというのか？"
+  },
+  "block.miragefairy2024.luminite_block": {
+    "en_us": "Luminite Block",
+    "ja_jp": "ルミナイトブロック"
+  },
+  "block.miragefairy2024.luminite_block.poem": {
+    "en_us": "Catalytic digestion of astral vortices",
+    "ja_jp": "光り輝く魂のエネルギー。"
+  },
+  "block.miragefairy2024.magnetite_block": {
+    "en_us": "Magnetite Block",
+    "ja_jp": "磁鉄鉱ブロック"
+  },
+  "block.miragefairy2024.magnetite_ore": {
+    "en_us": "Magnetite Ore",
+    "ja_jp": "磁鉄鉱鉱石"
+  },
+  "block.miragefairy2024.merrrria": {
+    "en_us": "Merrrria",
+    "ja_jp": "月鈴花メルルルリア"
+  },
+  "block.miragefairy2024.mirage_flower": {
+    "en_us": "Mirage Flower",
+    "ja_jp": "妖花ミラージュ"
+  },
+  "block.miragefairy2024.miragidian_block": {
+    "en_us": "Miragidian Block",
+    "ja_jp": "ミラジディアンブロック"
+  },
+  "block.miragefairy2024.miragidian_block.poem": {
+    "en_us": "The wall feels like it\u0027s protecting us",
+    "ja_jp": "その身に宿る、黒曜石の魂。"
+  },
+  "block.miragefairy2024.miragidian_lamp": {
+    "en_us": "Miragidian Street Lamp",
+    "ja_jp": "ミラジディアンの街灯"
+  },
+  "block.miragefairy2024.miragidian_lamp.poem": {
+    "en_us": "I remember… my sister turned into a …",
+    "ja_jp": "覚えてるよ…まだ人間だった妹が殺された日"
+  },
+  "block.miragefairy2024.miragidian_steel_tiles": {
+    "en_us": "Miragidian Steel Block",
+    "ja_jp": "ミラジディアンスチールブロック"
+  },
+  "block.miragefairy2024.miragidian_steel_tiles.poem": {
+    "en_us": "Oxide film on the surface prevents rust.",
+    "ja_jp": "鉄は貴重だった。大戦で多くを失ったのだ。"
+  },
+  "block.miragefairy2024.miranagite_block": {
+    "en_us": "Miranagite Block",
+    "ja_jp": "蒼天石ブロック"
+  },
+  "block.miragefairy2024.miranagite_block.poem": {
+    "en_us": "Passivation confines discontinuous space",
+    "ja_jp": "虚空に導かれし、神域との接合点。"
+  },
+  "block.miragefairy2024.miranagite_ore": {
+    "en_us": "Miranagite Ore",
+    "ja_jp": "蒼天石鉱石"
+  },
+  "block.miragefairy2024.miranagite_ore.poem": {
+    "en_us": "What lies beyond a Garden of Eden?",
+    "ja_jp": "秩序の石は楽園の先に何を見るのか？"
+  },
+  "block.miragefairy2024.miranagite_tile_slab": {
+    "en_us": "Miranagite Tile Slab",
+    "ja_jp": "蒼天石タイルのハーフブロック"
+  },
+  "block.miragefairy2024.miranagite_tile_slab.poem": {
+    "en_us": "A Turing-complete crystal lattice",
+    "ja_jp": "開闢よりすべてが預言された世界。"
+  },
+  "block.miragefairy2024.miranagite_tile_stairs": {
+    "en_us": "Miranagite Tile Stairs",
+    "ja_jp": "蒼天石タイルの階段"
+  },
+  "block.miragefairy2024.miranagite_tile_stairs.poem": {
+    "en_us": "Negative-time-evolution region",
+    "ja_jp": "因果の遡上、楽園への道。"
+  },
+  "block.miragefairy2024.miranagite_tile_wall": {
+    "en_us": "Miranagite Tile Wall",
+    "ja_jp": "蒼天石タイルの塀"
+  },
+  "block.miragefairy2024.miranagite_tile_wall.poem": {
+    "en_us": "An unreachable domain",
+    "ja_jp": "二度と踏み入ることの許されぬ地。"
+  },
+  "block.miragefairy2024.miranagite_tiles": {
+    "en_us": "Miranagite Tiles",
+    "ja_jp": "蒼天石タイル"
+  },
+  "block.miragefairy2024.miranagite_tiles.poem": {
+    "en_us": "Is time really an absolute entity?",
+    "ja_jp": "運命を退ける、蒼神の慈愛。"
+  },
+  "block.miragefairy2024.nephrite_block": {
+    "en_us": "Nephrite Block",
+    "ja_jp": "ネフライトブロック"
+  },
+  "block.miragefairy2024.nephrite_ore": {
+    "en_us": "Nephrite Ore",
+    "ja_jp": "ネフライト鉱石"
+  },
+  "block.miragefairy2024.noise_block": {
+    "en_us": "Noise Block",
+    "ja_jp": "ノイズブロック"
+  },
+  "block.miragefairy2024.noise_block.poem": {
+    "en_us": "No one can block that noise.",
+    "ja_jp": "誰もその雑音を止めることはできない。"
+  },
+  "block.miragefairy2024.phantom_flower": {
+    "en_us": "Phantom Flower",
+    "ja_jp": "幻花ファントム"
+  },
+  "block.miragefairy2024.polished_aura_resistant_ceramic": {
+    "en_us": "Polished Protective Aura-Resistant Ceramic",
+    "ja_jp": "磨かれた守護の耐霊石"
+  },
+  "block.miragefairy2024.polished_aura_resistant_ceramic.poem": {
+    "en_us": "Economical urban astral shielding",
+    "ja_jp": "情緒線の被曝に備えて――"
+  },
+  "block.miragefairy2024.prominaria": {
+    "en_us": "Prominaria",
+    "ja_jp": "紅炎草プロミナリア"
+  },
+  "block.miragefairy2024.sarracenia": {
+    "en_us": "Sarracenia",
+    "ja_jp": "瓶子草サラセニア"
+  },
+  "block.miragefairy2024.smooth_aura_resistant_ceramic": {
+    "en_us": "Smooth Protective Aura-Resistant Ceramic",
+    "ja_jp": "滑らかな守護の耐霊石"
+  },
+  "block.miragefairy2024.smooth_aura_resistant_ceramic.poem": {
+    "en_us": "Turpentine improves its flowability",
+    "ja_jp": "空隙に走る樹脂の流れ――"
+  },
+  "block.miragefairy2024.stripped_haimeviska_log": {
+    "en_us": "Stripped Haimeviska Log",
+    "ja_jp": "樹皮を剥いだハイメヴィスカの原木"
+  },
+  "block.miragefairy2024.stripped_haimeviska_log.poem": {
+    "en_us": "Something lacking the essence",
+    "ja_jp": "ぬぐわれたペルソナ。"
+  },
+  "block.miragefairy2024.stripped_haimeviska_wood": {
+    "en_us": "Stripped Haimeviska Wood",
+    "ja_jp": "樹皮を剥いだハイメヴィスカの木"
+  },
+  "block.miragefairy2024.stripped_haimeviska_wood.poem": {
+    "en_us": "Loss of self",
+    "ja_jp": "寄生蔦からの解放。"
+  },
+  "block.miragefairy2024.sulfur_block": {
+    "en_us": "Sulfur Block",
+    "ja_jp": "硫黄ブロック"
+  },
+  "block.miragefairy2024.sulfur_ore": {
+    "en_us": "Sulfur Ore",
+    "ja_jp": "硫黄鉱石"
+  },
+  "block.miragefairy2024.telescope": {
+    "en_us": "Minia\u0027s Telescope",
+    "ja_jp": "ミーニャの望遠鏡"
+  },
+  "block.miragefairy2024.telescope.description": {
+    "en_us": "Use once a day to obtain Fairy Jewels",
+    "ja_jp": "1日1回使用時にフェアリージュエルを獲得"
+  },
+  "block.miragefairy2024.telescope.poem": {
+    "en_us": "Tell me more about the human world!",
+    "ja_jp": "きみは妖精には見えないものが見えるんだね。"
+  },
+  "block.miragefairy2024.topaz_luminaria": {
+    "en_us": "Topaz Luminaria",
+    "ja_jp": "黄玉輝草トパーズルミナリア"
+  },
+  "block.miragefairy2024.veropeda": {
+    "en_us": "Veropeda",
+    "ja_jp": "呪草ヴェロペダ"
+  },
+  "block.miragefairy2024.xarpa_luminaria": {
+    "en_us": "Xarpie Luminara",
+    "ja_jp": "紅天輝草シャルピエ・ルミナーラ"
+  },
+  "block.miragefairy2024.xarpite_block": {
+    "en_us": "Xarpite Block",
+    "ja_jp": "紅天石ブロック"
+  },
+  "block.miragefairy2024.xarpite_block.poem": {
+    "en_us": "Loss and reconstruction of perception",
+    "ja_jp": "夢の世界の如き紅。"
+  },
+  "category.rei.miragefairy2024.aura_reflector_furnace": {
+    "en_us": "Aura Reflector Furnace",
+    "ja_jp": "オーラ反射炉"
+  },
+  "category.rei.miragefairy2024.aura_reflector_furnace_fuel": {
+    "en_us": "Aura Reflector Furnace Fuel",
+    "ja_jp": "オーラ反射炉の燃料"
+  },
+  "category.rei.miragefairy2024.block_fairy_dream_recipe": {
+    "en_us": "Fairy Dream: Block",
+    "ja_jp": "妖精の夢：ブロック"
+  },
+  "category.rei.miragefairy2024.common_motif_recipe": {
+    "en_us": "Common Fairy",
+    "ja_jp": "コモン妖精"
+  },
+  "category.rei.miragefairy2024.entity_fairy_dream_recipe": {
+    "en_us": "Fairy Dream: Entity",
+    "ja_jp": "妖精の夢：エンティティ"
+  },
+  "category.rei.miragefairy2024.fairy_family": {
+    "en_us": "Fairy Family",
+    "ja_jp": "妖精系統"
+  },
+  "category.rei.miragefairy2024.fairy_quest_recipe": {
+    "en_us": "Fairy Quest",
+    "ja_jp": "フェアリークエスト"
+  },
+  "category.rei.miragefairy2024.fermentation_barrel": {
+    "en_us": "Fermentation Barrel",
+    "ja_jp": "醸造樽"
+  },
+  "category.rei.miragefairy2024.harvest_notation": {
+    "en_us": "Harvest",
+    "ja_jp": "収穫"
+  },
+  "category.rei.miragefairy2024.item_fairy_dream_recipe": {
+    "en_us": "Fairy Dream: Item",
+    "ja_jp": "妖精の夢：アイテム"
+  },
+  "category.rei.miragefairy2024.trait_encyclopedia": {
+    "en_us": "Trait Encyclopedia",
+    "ja_jp": "特性図鑑"
+  },
+  "commands.miragefairy2024.fairy_dream.already_have_dream": {
+    "en_us": "You already have %s dream",
+    "ja_jp": "すでに %s の夢を持っています"
+  },
+  "commands.miragefairy2024.fairy_dream.do_not_have_dream": {
+    "en_us": "You don\u0027t have %s dream",
+    "ja_jp": "あなたは %s の夢を持っていません"
+  },
+  "commands.miragefairy2024.fairy_dream.give.all.success": {
+    "en_us": "Gave %s fairy dreams",
+    "ja_jp": "%s 個の妖精の夢を付与しました"
+  },
+  "commands.miragefairy2024.fairy_dream.give.one.success": {
+    "en_us": "Gave %s dream",
+    "ja_jp": "%s の夢を付与しました"
+  },
+  "commands.miragefairy2024.fairy_dream.remove.all.success": {
+    "en_us": "Removed %s fairy dreams",
+    "ja_jp": "%s 個の妖精の夢を削除しました"
+  },
+  "commands.miragefairy2024.fairy_dream.remove.one.success": {
+    "en_us": "Removed %s dream",
+    "ja_jp": "%s の夢を削除しました"
+  },
+  "commands.miragefairy2024.fairy_dream.unknown_motif": {
+    "en_us": "Unknown motif: %s",
+    "ja_jp": "不明なモチーフ: %s"
+  },
+  "commands.miragefairy2024.negative_trait_bits.invalid_bits_format": {
+    "en_us": "Invalid bits format: %s",
+    "ja_jp": "ビットの形式が無効です: %s"
+  },
+  "commands.miragefairy2024.negative_trait_bits.success": {
+    "en_us": "Set negative trait bits for %s \u003d %s",
+    "ja_jp": "特性 %s のネガティブビットを %s に設定しました"
+  },
+  "commands.miragefairy2024.negative_trait_bits.unknown_trait": {
+    "en_us": "Unknown trait: %s",
+    "ja_jp": "不明な特性: %s"
+  },
+  "container.miragefairy2024.soul_stream": {
+    "en_us": "Soul Stream",
+    "ja_jp": "ソウルストリーム"
+  },
+  "container.miragefairy2024.tooltip_viewer": {
+    "en_us": "Tooltip Viewer",
+    "ja_jp": "ツールチップビューワー"
+  },
+  "death.attack.miragefairy2024.magic": {
+    "en_us": "%1$s was killed by magic",
+    "ja_jp": "%1$sは魔法で殺された"
+  },
+  "death.attack.miragefairy2024.magic.player": {
+    "en_us": "%1$s was killed by magic while fighting %2$s",
+    "ja_jp": "%1$sは%2$sと戦いながら魔法で殺された"
+  },
+  "death.attack.miragefairy2024.physical_magic": {
+    "en_us": "%1$s was killed by magic",
+    "ja_jp": "%1$sは魔法で殺された"
+  },
+  "death.attack.miragefairy2024.physical_magic.player": {
+    "en_us": "%1$s was killed by magic while fighting %2$s",
+    "ja_jp": "%1$sは%2$sと戦いながら魔法で殺された"
+  },
+  "death.attack.miragefairy2024.tool_break": {
+    "en_us": "%1$s injured their hand",
+    "ja_jp": "%1$sは手を怪我した"
+  },
+  "death.attack.miragefairy2024.tool_break.player": {
+    "en_us": "%1$s injured their hand while fighting %2$s",
+    "ja_jp": "%1$sは%2$sと戦いながら手を怪我した"
+  },
+  "effect.miragefairy2024.experience": {
+    "en_us": "Experience",
+    "ja_jp": "経験値獲得"
+  },
+  "enchantment.miragefairy2024.area_mining_acceleration": {
+    "en_us": "Area Mining Acceleration",
+    "ja_jp": "範囲採掘加速"
+  },
+  "enchantment.miragefairy2024.backward_area_mining": {
+    "en_us": "Backward Area Mining",
+    "ja_jp": "後方範囲採掘"
+  },
+  "enchantment.miragefairy2024.curse_of_shattering": {
+    "en_us": "Curse of Shattering",
+    "ja_jp": "破断の呪い"
+  },
+  "enchantment.miragefairy2024.cut_all": {
+    "en_us": "Cut All",
+    "ja_jp": "一括伐採"
+  },
+  "enchantment.miragefairy2024.fortune_up": {
+    "en_us": "Fortune Up",
+    "ja_jp": "幸運強化"
+  },
+  "enchantment.miragefairy2024.forward_area_mining": {
+    "en_us": "Forward Area Mining",
+    "ja_jp": "前方範囲採掘"
+  },
+  "enchantment.miragefairy2024.lateral_area_mining": {
+    "en_us": "Lateral Area Mining",
+    "ja_jp": "側方範囲採掘"
+  },
+  "enchantment.miragefairy2024.magic_acceleration": {
+    "en_us": "Magic Acceleration",
+    "ja_jp": "魔法加速"
+  },
+  "enchantment.miragefairy2024.magic_power": {
+    "en_us": "Magic Power",
+    "ja_jp": "魔法ダメージ増加"
+  },
+  "enchantment.miragefairy2024.magic_reach": {
+    "en_us": "Magic Reach",
+    "ja_jp": "魔法射程増加"
+  },
+  "enchantment.miragefairy2024.mine_all": {
+    "en_us": "Mine All",
+    "ja_jp": "一括採掘"
+  },
+  "enchantment.miragefairy2024.smelting": {
+    "en_us": "Smelting",
+    "ja_jp": "精錬"
+  },
+  "enchantment.miragefairy2024.sticky_mining": {
+    "en_us": "Sticky Mining",
+    "ja_jp": "粘着採掘"
+  },
+  "entity.miragefairy2024.chaos_cube": {
+    "en_us": "Chaos Cube",
+    "ja_jp": "混沌のキューブ"
+  },
+  "gui.miragefairy2024.common.back_to_game": {
+    "en_us": "Back to game",
+    "ja_jp": "ゲームに戻る"
+  },
+  "gui.miragefairy2024.common.dead_player": {
+    "en_us": "Player %s is dead",
+    "ja_jp": "プレイヤー%sは死亡しています"
+  },
+  "gui.miragefairy2024.common.full_screen": {
+    "en_us": "Click to full screen",
+    "ja_jp": "クリックで全画面表示"
+  },
+  "gui.miragefairy2024.common_motif_recipe.always": {
+    "en_us": "Always",
+    "ja_jp": "常時"
+  },
+  "gui.miragefairy2024.fairy_building.folia": {
+    "en_us": "Folia",
+    "ja_jp": "フォリア"
+  },
+  "gui.miragefairy2024.fairy_building.specified_fairy_slot": {
+    "en_us": "Only %s Family",
+    "ja_jp": "%s系統のみ"
+  },
+  "gui.miragefairy2024.fairy_decondensation.description.description": {
+    "en_us": "To decondense a condensed fairy, craft 1 fairy with 8 sticks. Sticks are not consumed.\nThe split ratio depends on the fairy\u0027s slot: top-left splits into 1/10; other slots split into 1/2 to 1/9.\nSticks are only a frame to define the recipe size, and may be omitted in some cases.",
+    "ja_jp": "凝縮された妖精を展開するには、1体の妖精と8個の木の棒を使ってクラフトします。妖精の展開によって木の棒は消費されません。\n妖精を置く場所によって、10分の1、および2～9分の1に展開できます。\n木の棒は、実際には配置したレシピを規定のサイズとして認識させるための枠です。場合によっては木の棒は省略できます。"
+  },
+  "gui.miragefairy2024.fairy_decondensation.title.description": {
+    "en_us": "Decondensing Fairies",
+    "ja_jp": "妖精の展開"
+  },
+  "gui.miragefairy2024.fairy_dream.gain": {
+    "en_us": "Dreamed of a new fairy!",
+    "ja_jp": "新たな妖精の夢を見た！"
+  },
+  "gui.miragefairy2024.fairy_dream.gain_fairy": {
+    "en_us": "%s found!",
+    "ja_jp": "%sを発見した！"
+  },
+  "gui.miragefairy2024.passive_skill": {
+    "en_us": "Passive Skills",
+    "ja_jp": "パッシブスキル"
+  },
+  "gui.miragefairy2024.passive_skill.disabled": {
+    "en_us": "Outside target slot",
+    "ja_jp": "対象スロット外"
+  },
+  "gui.miragefairy2024.passive_skill.effective": {
+    "en_us": "Effective",
+    "ja_jp": "発動中"
+  },
+  "gui.miragefairy2024.passive_skill.overflowed": {
+    "en_us": "Too many passive skills!",
+    "ja_jp": "パッシブスキルが多すぎます！"
+  },
+  "gui.miragefairy2024.passive_skill.supporting": {
+    "en_us": "Supporting other item",
+    "ja_jp": "他のアイテムを支援中"
+  },
+  "gui.miragefairy2024.recipe_viewer.seconds": {
+    "en_us": "%s sec",
+    "ja_jp": "%s 秒"
+  },
+  "gui.miragefairy2024.soul_stream.global_search": {
+    "en_us": "Highlight even outside of Soul Stream",
+    "ja_jp": "ソウルストリームの外でもハイライト"
+  },
+  "gui.miragefairy2024.soul_stream.no_passive_skill_effects": {
+    "en_us": "No passive skill effects",
+    "ja_jp": "パッシブスキル効果なし"
+  },
+  "gui.miragefairy2024.soul_stream.passive_skill_effect": {
+    "en_us": "Passive Skill Effect",
+    "ja_jp": "パッシブスキル効果"
+  },
+  "gui.miragefairy2024.soul_stream.reset_highlights": {
+    "en_us": "Reset Highlights",
+    "ja_jp": "ハイライトをリセット"
+  },
+  "gui.miragefairy2024.tooltip_viewer.example": {
+    "en_us": "Example: %s",
+    "ja_jp": "例: %s"
+  },
+  "gui.miragefairy2024.trait_encyclopedia.default_trait": {
+    "en_us": "Default Trait",
+    "ja_jp": "初期状態で発現"
+  },
+  "gui.miragefairy2024.trait_encyclopedia.random_trait": {
+    "en_us": "Random Trait",
+    "ja_jp": "ランダムで発現"
+  },
+  "gui.miragefairy2024.trait_list": {
+    "en_us": "Traits",
+    "ja_jp": "特性"
+  },
+  "item.miragefairy2024.amethyst_axe": {
+    "en_us": "Amethyst Axe",
+    "ja_jp": "アメジストの斧"
+  },
+  "item.miragefairy2024.amethyst_hoe": {
+    "en_us": "Amethyst Hoe",
+    "ja_jp": "アメジストのクワ"
+  },
+  "item.miragefairy2024.amethyst_pickaxe": {
+    "en_us": "Amethyst Pickaxe",
+    "ja_jp": "アメジストのつるはし"
+  },
+  "item.miragefairy2024.amethyst_shovel": {
+    "en_us": "Amethyst Shovel",
+    "ja_jp": "アメジストのシャベル"
+  },
+  "item.miragefairy2024.amethyst_sword": {
+    "en_us": "Amethyst Sword",
+    "ja_jp": "アメジストの剣"
+  },
+  "item.miragefairy2024.apostle_wand": {
+    "en_us": "Apostle\u0027s Wand",
+    "ja_jp": "使徒のステッキ"
+  },
+  "item.miragefairy2024.apostle_wand.poem": {
+    "en_us": "The key to the fairy world",
+    "ja_jp": "妖精界への鍵。"
+  },
+  "item.miragefairy2024.bag.description1": {
+    "en_us": "Display GUI when used",
+    "ja_jp": "使用時、GUIを表示"
+  },
+  "item.miragefairy2024.bag.description2": {
+    "en_us": "Store to inventory when right-clicked",
+    "ja_jp": "インベントリ上で右クリックで収納"
+  },
+  "item.miragefairy2024.bismuth_axe": {
+    "en_us": "Bismuth Axe",
+    "ja_jp": "ビスマスの斧"
+  },
+  "item.miragefairy2024.bismuth_dust": {
+    "en_us": "Bismuth Dust",
+    "ja_jp": "ビスマスの粉"
+  },
+  "item.miragefairy2024.bismuth_hoe": {
+    "en_us": "Bismuth Hoe",
+    "ja_jp": "ビスマスのクワ"
+  },
+  "item.miragefairy2024.bismuth_ingot": {
+    "en_us": "Bismuth Ingot",
+    "ja_jp": "ビスマスインゴット"
+  },
+  "item.miragefairy2024.bismuth_pickaxe": {
+    "en_us": "Bismuth Pickaxe",
+    "ja_jp": "ビスマスのつるはし"
+  },
+  "item.miragefairy2024.bismuth_shovel": {
+    "en_us": "Bismuth Shovel",
+    "ja_jp": "ビスマスのシャベル"
+  },
+  "item.miragefairy2024.bismuth_sword": {
+    "en_us": "Bismuth Sword",
+    "ja_jp": "ビスマスの剣"
+  },
+  "item.miragefairy2024.builders_rod.description": {
+    "en_us": "Place blocks when used",
+    "ja_jp": "使用時、ブロックを設置"
+  },
+  "item.miragefairy2024.calculite": {
+    "en_us": "Calculite",
+    "ja_jp": "理天石"
+  },
+  "item.miragefairy2024.calculite.poem": {
+    "en_us": "Class 4 time evolution rule",
+    "ja_jp": "時の模様を刻む石。"
+  },
+  "item.miragefairy2024.calculite_axe": {
+    "en_us": "Calculite Axe",
+    "ja_jp": "理天石の斧"
+  },
+  "item.miragefairy2024.calculite_axe.poem": {
+    "en_us": "A world where chaos resolves everything.",
+    "ja_jp": "秩序がすべてを結束する世界。"
+  },
+  "item.miragefairy2024.calculite_builders_rod": {
+    "en_us": "Builder\u0027s Rod",
+    "ja_jp": "ビルダーズロッド"
+  },
+  "item.miragefairy2024.calculite_builders_rod.poem": {
+    "en_us": "End-members of Miranagite.",
+    "ja_jp": "宇宙一明晰なビスマス化合物。"
+  },
+  "item.miragefairy2024.calculite_hoe": {
+    "en_us": "Calculite Hoe",
+    "ja_jp": "理天石のクワ"
+  },
+  "item.miragefairy2024.calculite_hoe.poem": {
+    "en_us": "A stellar automaton.",
+    "ja_jp": "星幽質の脳細胞。"
+  },
+  "item.miragefairy2024.calculite_pickaxe": {
+    "en_us": "Calculite Pickaxe",
+    "ja_jp": "理天石のつるはし"
+  },
+  "item.miragefairy2024.calculite_pickaxe.poem": {
+    "en_us": "Integrated neural circuits.",
+    "ja_jp": "理性の結晶。"
+  },
+  "item.miragefairy2024.calculite_scythe": {
+    "en_us": "Calculite Scythe",
+    "ja_jp": "理天石の大鎌"
+  },
+  "item.miragefairy2024.calculite_scythe.poem": {
+    "en_us": "Perpetual-motion biocomputer.",
+    "ja_jp": "人工生命は何を思い、そして感じるのか。"
+  },
+  "item.miragefairy2024.calculite_shovel": {
+    "en_us": "Calculite Shovel",
+    "ja_jp": "理天石のシャベル"
+  },
+  "item.miragefairy2024.calculite_shovel.poem": {
+    "en_us": "Biological parallel processor.",
+    "ja_jp": "汎用デジタル集合知。"
+  },
+  "item.miragefairy2024.chaos_cube_egg": {
+    "en_us": "Chaos Cube Spawn Egg",
+    "ja_jp": "混沌のキューブのスポーンエッグ"
+  },
+  "item.miragefairy2024.chaos_stone": {
+    "en_us": "Chaos Stone",
+    "ja_jp": "混沌の石"
+  },
+  "item.miragefairy2024.chaos_stone.poem": {
+    "en_us": "Chemical promoting catalyst",
+    "ja_jp": "魔力の暴走、加速する無秩序の流れ。"
+  },
+  "item.miragefairy2024.chaos_stone_pickaxe": {
+    "en_us": "Chaos Stone Pickaxe",
+    "ja_jp": "混沌のつるはし"
+  },
+  "item.miragefairy2024.chaos_stone_pickaxe.poem": {
+    "en_us": "Is this made of metal? Or clay?",
+    "ja_jp": "時空結晶の交点に、古代の産業が芽吹く。"
+  },
+  "item.miragefairy2024.cidre": {
+    "en_us": "Cidre",
+    "ja_jp": "シードル"
+  },
+  "item.miragefairy2024.copper_axe": {
+    "en_us": "Copper Axe",
+    "ja_jp": "銅の斧"
+  },
+  "item.miragefairy2024.copper_hoe": {
+    "en_us": "Copper Hoe",
+    "ja_jp": "銅のクワ"
+  },
+  "item.miragefairy2024.copper_pickaxe": {
+    "en_us": "Copper Pickaxe",
+    "ja_jp": "銅のつるはし"
+  },
+  "item.miragefairy2024.copper_shovel": {
+    "en_us": "Copper Shovel",
+    "ja_jp": "銅のシャベル"
+  },
+  "item.miragefairy2024.copper_sword": {
+    "en_us": "Copper Sword",
+    "ja_jp": "銅の剣"
+  },
+  "item.miragefairy2024.creative_gene_ampoule": {
+    "en_us": "Creative Gene Ampoule",
+    "ja_jp": "アカーシャによる生命設計の針"
+  },
+  "item.miragefairy2024.creative_gene_ampoule.description1": {
+    "en_us": "Use: Grant the trait",
+    "ja_jp": "使用時、特性を付与"
+  },
+  "item.miragefairy2024.creative_gene_ampoule.description2": {
+    "en_us": "Use while sneaking: Remove the trait",
+    "ja_jp": "スニーク中に使用時、特性を削除"
+  },
+  "item.miragefairy2024.creative_gene_ampoule.description3": {
+    "en_us": "Use: Increases bits",
+    "ja_jp": "使用時、ビットを増加"
+  },
+  "item.miragefairy2024.creative_gene_ampoule.description4": {
+    "en_us": "Use while sneaking: Decreases bits",
+    "ja_jp": "スニーク中に使用時、ビットを減少"
+  },
+  "item.miragefairy2024.creative_gene_ampoule.poem": {
+    "en_us": "This allows you to freely edit traits.",
+    "ja_jp": "種類に従って球根を持つ草を生えさせよ。"
+  },
+  "item.miragefairy2024.creative_hoe": {
+    "en_us": "Creative Hoe",
+    "ja_jp": "アカーシャのクワ"
+  },
+  "item.miragefairy2024.creative_hoe.poem": {
+    "en_us": "Changes everything into farmland.",
+    "ja_jp": "適度に湿った地が現れよ。"
+  },
+  "item.miragefairy2024.diamond_luminaria_bulb": {
+    "en_us": "Diamond Luminaria Bulb",
+    "ja_jp": "金剛石輝草ダイヤモンドルミナリアの球根"
+  },
+  "item.miragefairy2024.diamond_luminaria_bulb.classification": {
+    "en_us": "Order Miragales, family Luminariaceae",
+    "ja_jp": "妖花目ルミナリア科"
+  },
+  "item.miragefairy2024.diamond_luminaria_bulb.poem": {
+    "en_us": "Fruits the crystallized carbon",
+    "ja_jp": "表土を飾る、凍てつく星。"
+  },
+  "item.miragefairy2024.diamond_scythe": {
+    "en_us": "Diamond Scythe",
+    "ja_jp": "ダイヤモンドの大鎌"
+  },
+  "item.miragefairy2024.drink.burning": {
+    "en_us": "Flaming",
+    "ja_jp": "炎上"
+  },
+  "item.miragefairy2024.echo_shard_axe": {
+    "en_us": "Echo Shard Axe",
+    "ja_jp": "残響の斧"
+  },
+  "item.miragefairy2024.echo_shard_hoe": {
+    "en_us": "Echo Shard Hoe",
+    "ja_jp": "残響のクワ"
+  },
+  "item.miragefairy2024.echo_shard_pickaxe": {
+    "en_us": "Echo Shard Pickaxe",
+    "ja_jp": "残響のつるはし"
+  },
+  "item.miragefairy2024.echo_shard_shovel": {
+    "en_us": "Echo Shard Shovel",
+    "ja_jp": "残響のシャベル"
+  },
+  "item.miragefairy2024.echo_shard_sword": {
+    "en_us": "Echo Shard Sword",
+    "ja_jp": "残響の剣"
+  },
+  "item.miragefairy2024.emerald_axe": {
+    "en_us": "Emerald Axe",
+    "ja_jp": "エメラルドの斧"
+  },
+  "item.miragefairy2024.emerald_hoe": {
+    "en_us": "Emerald Hoe",
+    "ja_jp": "エメラルドのクワ"
+  },
+  "item.miragefairy2024.emerald_luminaria_bulb": {
+    "en_us": "Emerald Luminaria Bulb",
+    "ja_jp": "翠玉輝草エメラルドルミナリアの球根"
+  },
+  "item.miragefairy2024.emerald_luminaria_bulb.classification": {
+    "en_us": "Order Miragales, family Luminariaceae",
+    "ja_jp": "妖花目ルミナリア科"
+  },
+  "item.miragefairy2024.emerald_luminaria_bulb.poem": {
+    "en_us": "Makes Berryllium by unknown means",
+    "ja_jp": "幸福もたらす、栄光の樹。"
+  },
+  "item.miragefairy2024.emerald_pickaxe": {
+    "en_us": "Emerald Pickaxe",
+    "ja_jp": "エメラルドのつるはし"
+  },
+  "item.miragefairy2024.emerald_shovel": {
+    "en_us": "Emerald Shovel",
+    "ja_jp": "エメラルドのシャベル"
+  },
+  "item.miragefairy2024.emerald_sword": {
+    "en_us": "Emerald Sword",
+    "ja_jp": "エメラルドの剣"
+  },
+  "item.miragefairy2024.etheroballistic_bolt_fragment": {
+    "en_us": "Etheroballistic Bolt Fragment",
+    "ja_jp": "エテロバリスティック弾の破片"
+  },
+  "item.miragefairy2024.etheroballistic_bolt_fragment.poem": {
+    "en_us": "More abrasion resistant than lethal",
+    "ja_jp": "合金として生きるということ。"
+  },
+  "item.miragefairy2024.fairy": {
+    "en_us": "Mirage Fairy",
+    "ja_jp": "妖精"
+  },
+  "item.miragefairy2024.fairy.condensation": {
+    "en_us": "Condensation",
+    "ja_jp": "凝縮数"
+  },
+  "item.miragefairy2024.fairy.condensation_recipe": {
+    "en_us": "Can be (de)condensed by crafting table",
+    "ja_jp": "作業台で凝縮・展開"
+  },
+  "item.miragefairy2024.fairy.level": {
+    "en_us": "Level",
+    "ja_jp": "レベル"
+  },
+  "item.miragefairy2024.fairy.mana": {
+    "en_us": "Mana",
+    "ja_jp": "魔力"
+  },
+  "item.miragefairy2024.fairy.rare": {
+    "en_us": "Rare",
+    "ja_jp": "レア"
+  },
+  "item.miragefairy2024.fairy_crystal": {
+    "en_us": "Fairy Crystal",
+    "ja_jp": "フェアリークリスタル"
+  },
+  "item.miragefairy2024.fairy_crystal.poem": {
+    "en_us": "Crystallized soul",
+    "ja_jp": "生物を生物たらしめるもの"
+  },
+  "item.miragefairy2024.fairy_crystal_axe": {
+    "en_us": "Fairy Crystal Axe",
+    "ja_jp": "フェアリークリスタルの斧"
+  },
+  "item.miragefairy2024.fairy_crystal_axe.poem": {
+    "en_us": "A tree that raised many fairies",
+    "ja_jp": "年輪が語る、自然の姿。"
+  },
+  "item.miragefairy2024.fairy_crystal_battle_axe": {
+    "en_us": "Fairy Crystal Battle Axe",
+    "ja_jp": "フェアリークリスタルの戦斧"
+  },
+  "item.miragefairy2024.fairy_crystal_battle_axe.poem": {
+    "en_us": "The embodiment of fighting spirit",
+    "ja_jp": "妖精の本能を呼び覚ませ。"
+  },
+  "item.miragefairy2024.fairy_crystal_hoe": {
+    "en_us": "Fairy Crystal Hoe",
+    "ja_jp": "フェアリークリスタルのクワ"
+  },
+  "item.miragefairy2024.fairy_crystal_hoe.poem": {
+    "en_us": "Essence of life within the soul stream",
+    "ja_jp": "ソウルストリームに宿る、生命の息吹。"
+  },
+  "item.miragefairy2024.fairy_crystal_pickaxe": {
+    "en_us": "Fairy Crystal Pickaxe",
+    "ja_jp": "フェアリークリスタルのつるはし"
+  },
+  "item.miragefairy2024.fairy_crystal_pickaxe.poem": {
+    "en_us": "A brain frozen in crystal",
+    "ja_jp": "闇を打ち砕く、透き通る心。"
+  },
+  "item.miragefairy2024.fairy_crystal_scythe": {
+    "en_us": "Fairy Crystal Scythe",
+    "ja_jp": "フェアリークリスタルの大鎌"
+  },
+  "item.miragefairy2024.fairy_crystal_scythe.poem": {
+    "en_us": "What color is fairy blood?",
+    "ja_jp": "妖精を刈り取るための道具。"
+  },
+  "item.miragefairy2024.fairy_crystal_shovel": {
+    "en_us": "Fairy Crystal Shovel",
+    "ja_jp": "フェアリークリスタルのシャベル"
+  },
+  "item.miragefairy2024.fairy_crystal_shovel.poem": {
+    "en_us": "Spiritual cycle of carbon",
+    "ja_jp": "いつか妖精になるものたち。"
+  },
+  "item.miragefairy2024.fairy_crystal_sword": {
+    "en_us": "Fairy Crystal Sword",
+    "ja_jp": "フェアリークリスタルの剣"
+  },
+  "item.miragefairy2024.fairy_crystal_sword.poem": {
+    "en_us": "Nutrients for the soul",
+    "ja_jp": "妖精はこれをおやつにするという"
+  },
+  "item.miragefairy2024.fairy_glass_fiber": {
+    "en_us": "Fairy Glass Fiber",
+    "ja_jp": "きらめきの糸"
+  },
+  "item.miragefairy2024.fairy_glass_fiber.poem": {
+    "en_us": "Fiber-optic nervous system",
+    "ja_jp": "意識の一部だったもの。"
+  },
+  "item.miragefairy2024.fairy_hoe.tilling_recipe": {
+    "en_us": "Special tilling effects",
+    "ja_jp": "特殊な耕作効果"
+  },
+  "item.miragefairy2024.fairy_liqueur": {
+    "en_us": "Fairy Liqueur",
+    "ja_jp": "妖精のリキュール"
+  },
+  "item.miragefairy2024.fairy_liqueur.poem": {
+    "en_us": "Fairies get high, humans get burned",
+    "ja_jp": "妖精はハイになり、人間は火傷する。"
+  },
+  "item.miragefairy2024.fairy_mining_tool.collection": {
+    "en_us": "Collect drop items when killed",
+    "ja_jp": "撃破時にドロップ品を回収"
+  },
+  "item.miragefairy2024.fairy_mining_tool.effective": {
+    "en_us": "Mineable: %s",
+    "ja_jp": "採掘可能: %s"
+  },
+  "item.miragefairy2024.fairy_mining_tool.obtain_fairy": {
+    "en_us": "Obtain a fairy when mined or killed",
+    "ja_jp": "採掘・撃破時に妖精を入手"
+  },
+  "item.miragefairy2024.fairy_mining_tool.self_mending": {
+    "en_us": "Durability regenerates while held",
+    "ja_jp": "手に持っている間、耐久値自然回復"
+  },
+  "item.miragefairy2024.fairy_mining_tool.soul_stream_containable": {
+    "en_us": "Soul Stream Containable",
+    "ja_jp": "ソウルストリームに格納可能"
+  },
+  "item.miragefairy2024.fairy_plastic": {
+    "en_us": "Fairy Plastic",
+    "ja_jp": "妖精のプラスチック"
+  },
+  "item.miragefairy2024.fairy_plastic.poem": {
+    "en_us": "Thermoplastic organic polymer",
+    "ja_jp": "凍てつく記憶の宿る石。"
+  },
+  "item.miragefairy2024.fairy_pot": {
+    "en_us": "Fairy Pot",
+    "ja_jp": "妖精のポット"
+  },
+  "item.miragefairy2024.fairy_pot.poem": {
+    "en_us": "Nanoporous insulation",
+    "ja_jp": "とろけるアステリア。"
+  },
+  "item.miragefairy2024.fairy_quest_card": {
+    "en_us": "Broken Fairy Quest Card",
+    "ja_jp": "破損したフェアリークエストカード"
+  },
+  "item.miragefairy2024.fairy_quest_card.format": {
+    "en_us": "“%s”",
+    "ja_jp": "『%s』"
+  },
+  "item.miragefairy2024.fairy_quest_card_base": {
+    "en_us": "Fairy Quest Card Base",
+    "ja_jp": "フェアリークエストカードベース"
+  },
+  "item.miragefairy2024.fairy_quest_card_base.poem": {
+    "en_us": "Am I hopeful in the parallel world?",
+    "ja_jp": "存在したかもしれない僕たちのかたち。"
+  },
+  "item.miragefairy2024.fairy_rubber": {
+    "en_us": "Fairy Rubber",
+    "ja_jp": "夜のかけら"
+  },
+  "item.miragefairy2024.fairy_rubber.poem": {
+    "en_us": "Minimize the risk of losing belongings",
+    "ja_jp": "空は怯える夜精に一握りの温かい闇を与えた"
+  },
+  "item.miragefairy2024.fairy_scales": {
+    "en_us": "Fairy Scales",
+    "ja_jp": "妖精の鱗粉"
+  },
+  "item.miragefairy2024.fairy_scales.poem": {
+    "en_us": "A catalyst that converts mana into erg",
+    "ja_jp": "湧き上がる、エルグの誘い。"
+  },
+  "item.miragefairy2024.fairy_tool_item.not_enough_experience": {
+    "en_us": "Not enough experience",
+    "ja_jp": "経験値が足りません"
+  },
+  "item.miragefairy2024.filled_map.template": {
+    "en_us": "%s Map",
+    "ja_jp": "%sの地図"
+  },
+  "item.miragefairy2024.flint_axe": {
+    "en_us": "Flint Axe",
+    "ja_jp": "火打石の斧"
+  },
+  "item.miragefairy2024.flint_hoe": {
+    "en_us": "Flint Hoe",
+    "ja_jp": "火打石のクワ"
+  },
+  "item.miragefairy2024.flint_pickaxe": {
+    "en_us": "Flint Pickaxe",
+    "ja_jp": "火打石のつるはし"
+  },
+  "item.miragefairy2024.flint_shovel": {
+    "en_us": "Flint Shovel",
+    "ja_jp": "火打石のシャベル"
+  },
+  "item.miragefairy2024.flint_sword": {
+    "en_us": "Flint Sword",
+    "ja_jp": "火打石の剣"
+  },
+  "item.miragefairy2024.fluorite": {
+    "en_us": "Fluorite",
+    "ja_jp": "蛍石"
+  },
+  "item.miragefairy2024.fluorite_axe": {
+    "en_us": "Fluorite Axe",
+    "ja_jp": "蛍石の斧"
+  },
+  "item.miragefairy2024.fluorite_hoe": {
+    "en_us": "Fluorite Hoe",
+    "ja_jp": "蛍石のクワ"
+  },
+  "item.miragefairy2024.fluorite_pickaxe": {
+    "en_us": "Fluorite Pickaxe",
+    "ja_jp": "蛍石のつるはし"
+  },
+  "item.miragefairy2024.fluorite_shovel": {
+    "en_us": "Fluorite Shovel",
+    "ja_jp": "蛍石のシャベル"
+  },
+  "item.miragefairy2024.fluorite_sword": {
+    "en_us": "Fluorite Sword",
+    "ja_jp": "蛍石の剣"
+  },
+  "item.miragefairy2024.fractal_wisp": {
+    "en_us": "Fractal Wisp",
+    "ja_jp": "フラクタルウィスプ"
+  },
+  "item.miragefairy2024.fractal_wisp.poem1": {
+    "en_us": "The fairy of the fairy of the fairy",
+    "ja_jp": "妖精の妖精の妖精の妖精の妖精の妖精の妖精"
+  },
+  "item.miragefairy2024.fractal_wisp.poem2": {
+    "en_us": "of the fairy of the fairy of the f",
+    "ja_jp": "の妖精の妖精の妖精の妖精の妖精の妖精の妖"
+  },
+  "item.miragefairy2024.glass_axe": {
+    "en_us": "Glass Axe",
+    "ja_jp": "ガラスの斧"
+  },
+  "item.miragefairy2024.glass_hoe": {
+    "en_us": "Glass Hoe",
+    "ja_jp": "ガラスのクワ"
+  },
+  "item.miragefairy2024.glass_pickaxe": {
+    "en_us": "Glass Pickaxe",
+    "ja_jp": "ガラスのつるはし"
+  },
+  "item.miragefairy2024.glass_shovel": {
+    "en_us": "Glass Shovel",
+    "ja_jp": "ガラスのシャベル"
+  },
+  "item.miragefairy2024.glass_sword": {
+    "en_us": "Glass Sword",
+    "ja_jp": "ガラスの剣"
+  },
+  "item.miragefairy2024.gold_prominaria_berry": {
+    "en_us": "Gold Prominaria Berry",
+    "ja_jp": "ゴールドプロミナリアの実"
+  },
+  "item.miragefairy2024.gold_prominaria_berry.description": {
+    "en_us": "Grants absorption when eaten",
+    "ja_jp": "食べると衝撃吸収を付与"
+  },
+  "item.miragefairy2024.gold_prominaria_berry.poem": {
+    "en_us": "Gold-plated prominence.",
+    "ja_jp": "摂氏100度の金環食。"
+  },
+  "item.miragefairy2024.gold_prominaria_bulb": {
+    "en_us": "Gold Prominaria Bulb",
+    "ja_jp": "金炎草ゴールドプロミナリアの球根"
+  },
+  "item.miragefairy2024.gold_prominaria_bulb.classification": {
+    "en_us": "Order Miragales, family Luminariaceae",
+    "ja_jp": "妖花目ルミナリア科"
+  },
+  "item.miragefairy2024.gold_prominaria_bulb.poem": {
+    "en_us": "Those who have become livestock of gold.",
+    "ja_jp": "地獄の沙汰も金次第。"
+  },
+  "item.miragefairy2024.haimeviska_rosin": {
+    "en_us": "Haimeviska Rosin",
+    "ja_jp": "ハイメヴィスカの涙"
+  },
+  "item.miragefairy2024.haimeviska_rosin.poem": {
+    "en_us": "High-friction material",
+    "ja_jp": "琥珀の月が昇るとき、妖精の木は静かに泣く"
+  },
+  "item.miragefairy2024.haimeviska_rosin_axe": {
+    "en_us": "Rosin Axe",
+    "ja_jp": "涙の斧"
+  },
+  "item.miragefairy2024.haimeviska_rosin_axe.poem": {
+    "en_us": "That which might once have been a friend",
+    "ja_jp": "したたる樹液は、誰の涙か。"
+  },
+  "item.miragefairy2024.haimeviska_rosin_hoe": {
+    "en_us": "Rosin Hoe",
+    "ja_jp": "涙のクワ"
+  },
+  "item.miragefairy2024.haimeviska_rosin_hoe.poem": {
+    "en_us": "Looking for companions",
+    "ja_jp": "そこにあるべき大樹を見上げ。"
+  },
+  "item.miragefairy2024.haimeviska_rosin_pickaxe": {
+    "en_us": "Rosin Pickaxe",
+    "ja_jp": "涙のつるはし"
+  },
+  "item.miragefairy2024.haimeviska_rosin_pickaxe.poem": {
+    "en_us": "Enduring in the stone",
+    "ja_jp": "生きた証は石の中。"
+  },
+  "item.miragefairy2024.haimeviska_rosin_shovel": {
+    "en_us": "Rosin Shovel",
+    "ja_jp": "涙のシャベル"
+  },
+  "item.miragefairy2024.haimeviska_rosin_shovel.poem": {
+    "en_us": "The story of the lonely tree",
+    "ja_jp": "琥珀のしずくが刻む道。"
+  },
+  "item.miragefairy2024.haimeviska_rosin_sword": {
+    "en_us": "Rosin Sword",
+    "ja_jp": "涙の剣"
+  },
+  "item.miragefairy2024.haimeviska_rosin_sword.poem": {
+    "en_us": "The oppressed Viska\u0027s desire",
+    "ja_jp": "傷つけられた幹の声。"
+  },
+  "item.miragefairy2024.haimeviska_sap": {
+    "en_us": "Haimeviska Sap",
+    "ja_jp": "ハイメヴィスカの樹液"
+  },
+  "item.miragefairy2024.haimeviska_sap.description": {
+    "en_us": "Gain experience by eating",
+    "ja_jp": "食べると経験値を獲得"
+  },
+  "item.miragefairy2024.haimeviska_sap.poem": {
+    "en_us": "Smooth and mellow on the palate",
+    "ja_jp": "口福のアナムネシス。"
+  },
+  "item.miragefairy2024.iron_scythe": {
+    "en_us": "Iron Scythe",
+    "ja_jp": "鉄の大鎌"
+  },
+  "item.miragefairy2024.jewel_1": {
+    "en_us": "1 Fairy Jewel",
+    "ja_jp": "1フェアリージュエル"
+  },
+  "item.miragefairy2024.jewel_1.poem": {
+    "en_us": "Long ago, fairies were the nectar.",
+    "ja_jp": "その昔、妖精は木の蜜だった。"
+  },
+  "item.miragefairy2024.jewel_10": {
+    "en_us": "10 Fairy Jewel",
+    "ja_jp": "10フェアリージュエル"
+  },
+  "item.miragefairy2024.jewel_10.poem": {
+    "en_us": "The wind, sky, and sun laughed.",
+    "ja_jp": "風と空と太陽が笑った。"
+  },
+  "item.miragefairy2024.jewel_100": {
+    "en_us": "100 Fairy Jewel",
+    "ja_jp": "100フェアリージュエル"
+  },
+  "item.miragefairy2024.jewel_100.poem": {
+    "en_us": "One day, humans touched fairies.",
+    "ja_jp": "その日、人が現れ、妖精に触れた。"
+  },
+  "item.miragefairy2024.jewel_1000": {
+    "en_us": "1000 Fairy Jewel",
+    "ja_jp": "1000フェアリージュエル"
+  },
+  "item.miragefairy2024.jewel_1000.poem": {
+    "en_us": "Fairies learned joy and pain.",
+    "ja_jp": "妖精は悦びと痛みを知った。"
+  },
+  "item.miragefairy2024.jewel_10000": {
+    "en_us": "10000 Fairy Jewel",
+    "ja_jp": "10000フェアリージュエル"
+  },
+  "item.miragefairy2024.jewel_10000.poem": {
+    "en_us": "Thus, humans lost their form.",
+    "ja_jp": "こうして、人は人の姿を失った。"
+  },
+  "item.miragefairy2024.jewel_5": {
+    "en_us": "5 Fairy Jewel",
+    "ja_jp": "5フェアリージュエル"
+  },
+  "item.miragefairy2024.jewel_5.poem": {
+    "en_us": "The nectar bloomed from the ground.",
+    "ja_jp": "木の蜜は地に触れ、花を咲かせた。"
+  },
+  "item.miragefairy2024.jewel_50": {
+    "en_us": "50 Fairy Jewel",
+    "ja_jp": "50フェアリージュエル"
+  },
+  "item.miragefairy2024.jewel_50.poem": {
+    "en_us": "Fairies simply drifted along.",
+    "ja_jp": "妖精はただ漂っていた。"
+  },
+  "item.miragefairy2024.jewel_500": {
+    "en_us": "500 Fairy Jewel",
+    "ja_jp": "500フェアリージュエル"
+  },
+  "item.miragefairy2024.jewel_500.poem": {
+    "en_us": "Fairies took form and learned emotion.",
+    "ja_jp": "妖精は妖精の姿へとなり、感情を知った。"
+  },
+  "item.miragefairy2024.jewel_5000": {
+    "en_us": "5000 Fairy Jewel",
+    "ja_jp": "5000フェアリージュエル"
+  },
+  "item.miragefairy2024.jewel_5000.poem": {
+    "en_us": "Humans saw the fairies and felt relief.",
+    "ja_jp": "人は妖精を見て、安堵した。"
+  },
+  "item.miragefairy2024.lilagium_ingot": {
+    "en_us": "Lilagium Ingot",
+    "ja_jp": "リラジウムインゴット"
+  },
+  "item.miragefairy2024.lilagium_ingot.poem": {
+    "en_us": "Ethereal plant-attractant polysaccharide",
+    "ja_jp": "セルロースの精霊よ、エーテルの道を開け。"
+  },
+  "item.miragefairy2024.lilagium_scythe": {
+    "en_us": "Lilagium Scythe",
+    "ja_jp": "リラジウムの大鎌"
+  },
+  "item.miragefairy2024.lilagium_scythe.poem": {
+    "en_us": "Wish upon the grass",
+    "ja_jp": "葉っぱが吸い込まれてくる"
+  },
+  "item.miragefairy2024.luminite": {
+    "en_us": "Luminite",
+    "ja_jp": "ルミナイト"
+  },
+  "item.miragefairy2024.luminite.poem": {
+    "en_us": "An end point of reincarnation",
+    "ja_jp": "彷徨える魂の行方。"
+  },
+  "item.miragefairy2024.luminite_axe": {
+    "en_us": "Luminite Axe",
+    "ja_jp": "ルミナイトの斧"
+  },
+  "item.miragefairy2024.luminite_axe.poem": {
+    "en_us": "Spiritual ectoplasm recycler",
+    "ja_jp": "失われた記憶の断片。"
+  },
+  "item.miragefairy2024.luminite_pickaxe": {
+    "en_us": "Luminite Pickaxe",
+    "ja_jp": "ルミナイトのつるはし"
+  },
+  "item.miragefairy2024.luminite_pickaxe.poem": {
+    "en_us": "Energetic soul extract",
+    "ja_jp": "精製された魂の残滓。"
+  },
+  "item.miragefairy2024.luminite_sword": {
+    "en_us": "Luminite Sword",
+    "ja_jp": "ルミナイトの剣"
+  },
+  "item.miragefairy2024.luminite_sword.poem": {
+    "en_us": "Bionic etheroluminescence illuminator",
+    "ja_jp": "光を生み出す力。"
+  },
+  "item.miragefairy2024.magic_plant.creativeOnly": {
+    "en_us": "Creative Only",
+    "ja_jp": "クリエイティブ専用"
+  },
+  "item.miragefairy2024.magic_plant.gui": {
+    "en_us": "Use while sneaking to show traits",
+    "ja_jp": "スニーク中に使用時、特性GUIを表示"
+  },
+  "item.miragefairy2024.magic_plant.invalid": {
+    "en_us": "Invalid",
+    "ja_jp": "無効"
+  },
+  "item.miragefairy2024.magic_plant.trait": {
+    "en_us": "Trait",
+    "ja_jp": "特性"
+  },
+  "item.miragefairy2024.magnetite": {
+    "en_us": "Magnetite",
+    "ja_jp": "磁鉄鉱"
+  },
+  "item.miragefairy2024.magnetite_axe": {
+    "en_us": "Magnetite Axe",
+    "ja_jp": "磁鉄鉱の斧"
+  },
+  "item.miragefairy2024.magnetite_hoe": {
+    "en_us": "Magnetite Hoe",
+    "ja_jp": "磁鉄鉱のクワ"
+  },
+  "item.miragefairy2024.magnetite_pickaxe": {
+    "en_us": "Magnetite Pickaxe",
+    "ja_jp": "磁鉄鉱のつるはし"
+  },
+  "item.miragefairy2024.magnetite_shovel": {
+    "en_us": "Magnetite Shovel",
+    "ja_jp": "磁鉄鉱のシャベル"
+  },
+  "item.miragefairy2024.magnetite_sword": {
+    "en_us": "Magnetite Sword",
+    "ja_jp": "磁鉄鉱の剣"
+  },
+  "item.miragefairy2024.merrrria_bulb": {
+    "en_us": "Merrrria Bulb",
+    "ja_jp": "月鈴花メルルルリアの球根"
+  },
+  "item.miragefairy2024.merrrria_bulb.classification": {
+    "en_us": "Order Miragales, family Merrrriaceae",
+    "ja_jp": "妖花目メルルルリア科"
+  },
+  "item.miragefairy2024.merrrria_bulb.poem": {
+    "en_us": "Windswept concert.",
+    "ja_jp": "風の知らせる演奏会。"
+  },
+  "item.miragefairy2024.merrrria_drop": {
+    "en_us": "Merrrria Drop",
+    "ja_jp": "月のしずく"
+  },
+  "item.miragefairy2024.merrrria_drop.description": {
+    "en_us": "Grants night vision when eaten",
+    "ja_jp": "食べると暗視を付与"
+  },
+  "item.miragefairy2024.merrrria_drop.poem": {
+    "en_us": "Tales of latex that charm fairies.",
+    "ja_jp": "闇夜に響く、月鈴の詩。"
+  },
+  "item.miragefairy2024.mina.description": {
+    "en_us": "Can exchange for Minia with apostle\u0027s wand",
+    "ja_jp": "使徒のステッキでミーニャと両替可能"
+  },
+  "item.miragefairy2024.mina_1": {
+    "en_us": "1 Mina",
+    "ja_jp": "1ミナ"
+  },
+  "item.miragefairy2024.mina_1.poem": {
+    "en_us": "Put this money to work until I come back",
+    "ja_jp": "私が帰って来るまでこれで商売をしなさい"
+  },
+  "item.miragefairy2024.mina_10": {
+    "en_us": "10 Mina",
+    "ja_jp": "10ミナ"
+  },
+  "item.miragefairy2024.mina_10.poem": {
+    "en_us": "Can purchase the souls of ten fairies.",
+    "ja_jp": "10の妖精が宿る石。"
+  },
+  "item.miragefairy2024.mina_100": {
+    "en_us": "100 Mina",
+    "ja_jp": "100ミナ"
+  },
+  "item.miragefairy2024.mina_100.poem": {
+    "en_us": "Place where fairies and humans intersect",
+    "ja_jp": "妖精と人間が交差する場所。"
+  },
+  "item.miragefairy2024.mina_1000": {
+    "en_us": "1000 Mina",
+    "ja_jp": "1000ミナ"
+  },
+  "item.miragefairy2024.mina_1000.poem": {
+    "en_us": "Created by the fairies of commerce.",
+    "ja_jp": "妖精の業が磨き上げる。"
+  },
+  "item.miragefairy2024.mina_10000": {
+    "en_us": "10000 Mina",
+    "ja_jp": "10000ミナ"
+  },
+  "item.miragefairy2024.mina_10000.poem": {
+    "en_us": "Become an eternal gemstone.",
+    "ja_jp": "妖花の蜜よ、永遠の宝石となれ。"
+  },
+  "item.miragefairy2024.mina_5": {
+    "en_us": "5 Mina",
+    "ja_jp": "5ミナ"
+  },
+  "item.miragefairy2024.mina_5.poem": {
+    "en_us": "Fairy snack",
+    "ja_jp": "ご縁があるよ"
+  },
+  "item.miragefairy2024.mina_50": {
+    "en_us": "50 Mina",
+    "ja_jp": "50ミナ"
+  },
+  "item.miragefairy2024.mina_50.poem": {
+    "en_us": "The Society failed to replicate this.",
+    "ja_jp": "形而上学的有機結晶"
+  },
+  "item.miragefairy2024.mina_500": {
+    "en_us": "500 Mina",
+    "ja_jp": "500ミナ"
+  },
+  "item.miragefairy2024.mina_500.poem": {
+    "en_us": "A brilliance with a hardness of 7.5",
+    "ja_jp": "硬度7.5の輝き。"
+  },
+  "item.miragefairy2024.mina_5000": {
+    "en_us": "5000 Mina",
+    "ja_jp": "5000ミナ"
+  },
+  "item.miragefairy2024.mina_5000.poem": {
+    "en_us": "The price of a soul.",
+    "ja_jp": "魂の値段。"
+  },
+  "item.miragefairy2024.mirage_bulb": {
+    "en_us": "Mirage Bulb",
+    "ja_jp": "妖花ミラージュの球根"
+  },
+  "item.miragefairy2024.mirage_bulb.classification": {
+    "en_us": "Order Miragales, family Miragaceae",
+    "ja_jp": "妖花目ミラージュ科"
+  },
+  "item.miragefairy2024.mirage_bulb.poem": {
+    "en_us": "Evolution to escape extermination",
+    "ja_jp": "可憐にして人畜無害たる魔物。"
+  },
+  "item.miragefairy2024.mirage_flour": {
+    "en_us": "Mirage Flour",
+    "ja_jp": "ミラージュの花粉"
+  },
+  "item.miragefairy2024.mirage_flour.appearance_rate_bonus": {
+    "en_us": "Appearance Rate Bonus",
+    "ja_jp": "出現率ボーナス"
+  },
+  "item.miragefairy2024.mirage_flour.description.sneaking_use": {
+    "en_us": "Use while sneaking to show loot table",
+    "ja_jp": "スニーク中に使用時、提供割合を表示"
+  },
+  "item.miragefairy2024.mirage_flour.description.use": {
+    "en_us": "Use and hold to summon fairies",
+    "ja_jp": "使用時、長押しで妖精を連続召喚"
+  },
+  "item.miragefairy2024.mirage_flour.poem": {
+    "en_us": "Containing metallic organic matter",
+    "ja_jp": "叡智の根源、創発のファンタジア。"
+  },
+  "item.miragefairy2024.mirage_flour_of_earth": {
+    "en_us": "Mirage Flour of Earth",
+    "ja_jp": "大地のミラージュの花粉"
+  },
+  "item.miragefairy2024.mirage_flour_of_earth.poem": {
+    "en_us": "As intelligent as humans",
+    "ja_jp": "黄金の魂が示す、好奇心の輝き。"
+  },
+  "item.miragefairy2024.mirage_flour_of_nature": {
+    "en_us": "Mirage Flour of Nature",
+    "ja_jp": "自然のミラージュの花粉"
+  },
+  "item.miragefairy2024.mirage_flour_of_nature.poem": {
+    "en_us": "Use the difference in ether resistance",
+    "ja_jp": "艶やかなほたる色に煌めく鱗粉。"
+  },
+  "item.miragefairy2024.mirage_flour_of_sky": {
+    "en_us": "Mirage Flour of Sky",
+    "ja_jp": "天空のミラージュの花粉"
+  },
+  "item.miragefairy2024.mirage_flour_of_sky.poem": {
+    "en_us": "Explore atmosphere and nearby universe",
+    "ja_jp": "蒼淵を彷徨う影、導きの光。"
+  },
+  "item.miragefairy2024.mirage_flour_of_time": {
+    "en_us": "Mirage Flour of Time",
+    "ja_jp": "時空のミラージュの花粉"
+  },
+  "item.miragefairy2024.mirage_flour_of_time.poem1": {
+    "en_us": "Attracts nearby parallel worlds outside",
+    "ja_jp": "虚空に眠る時の断片。因果の光が貫くとき、"
+  },
+  "item.miragefairy2024.mirage_flour_of_time.poem2": {
+    "en_us": "this universe and collects their ether.",
+    "ja_jp": "亡失の世界は探し始める。無慈悲な真実を。"
+  },
+  "item.miragefairy2024.mirage_flour_of_underworld": {
+    "en_us": "Mirage Flour of Underworld",
+    "ja_jp": "地底のミラージュの花粉"
+  },
+  "item.miragefairy2024.mirage_flour_of_underworld.poem": {
+    "en_us": "Awaken fairies in the world and below",
+    "ja_jp": "1,300ケルビンの夜景。"
+  },
+  "item.miragefairy2024.mirage_flour_of_universe": {
+    "en_us": "Mirage Flour of Universe",
+    "ja_jp": "宇宙のミラージュの花粉"
+  },
+  "item.miragefairy2024.mirage_flour_of_universe.poem1": {
+    "en_us": "Leap spaces by collapsing time crystals,",
+    "ja_jp": "運命の束、時の結晶、光速の呪いを退けよ、"
+  },
+  "item.miragefairy2024.mirage_flour_of_universe.poem2": {
+    "en_us": "capture ether beyond observable universe",
+    "ja_jp": "讃えよ、アーカーシャに眠る自由の頂きを。"
+  },
+  "item.miragefairy2024.mirage_leaves": {
+    "en_us": "Mirage Leaves",
+    "ja_jp": "ミラージュの葉"
+  },
+  "item.miragefairy2024.mirage_leaves.poem": {
+    "en_us": "Don\u0027t cut your fingers!",
+    "ja_jp": "刻まれる、記憶の破片。"
+  },
+  "item.miragefairy2024.mirage_stem": {
+    "en_us": "Mirage Stem",
+    "ja_jp": "ミラージュの茎"
+  },
+  "item.miragefairy2024.mirage_stem.poem": {
+    "en_us": "Cell wall composed of amorphous ether",
+    "ja_jp": "植物が手掛ける、分子レベルの硝子細工。"
+  },
+  "item.miragefairy2024.miragidian": {
+    "en_us": "Miragidian",
+    "ja_jp": "ミラジディアン"
+  },
+  "item.miragefairy2024.miragidian.poem": {
+    "en_us": "A fantasy world told by tungsten",
+    "ja_jp": "タングステンが語る幻想世界。"
+  },
+  "item.miragefairy2024.miragidian_axe": {
+    "en_us": "Miragidian Axe",
+    "ja_jp": "ミラジディアンの斧"
+  },
+  "item.miragefairy2024.miragidian_axe.poem": {
+    "en_us": "The Ancient Future Relic",
+    "ja_jp": "古代の未来遺物。"
+  },
+  "item.miragefairy2024.miragidian_hoe": {
+    "en_us": "Miragidian Hoe",
+    "ja_jp": "ミラジディアンのクワ"
+  },
+  "item.miragefairy2024.miragidian_hoe.poem": {
+    "en_us": "They were killed by containment targets",
+    "ja_jp": "宇宙人類の然程輝きのない栄光。"
+  },
+  "item.miragefairy2024.miragidian_pickaxe": {
+    "en_us": "Miragidian Pickaxe",
+    "ja_jp": "ミラジディアンのつるはし"
+  },
+  "item.miragefairy2024.miragidian_pickaxe.poem": {
+    "en_us": "The reinforced will of the substance",
+    "ja_jp": "高速度鋼という名の誇り。"
+  },
+  "item.miragefairy2024.miragidian_shard": {
+    "en_us": "Miragidian Shard",
+    "ja_jp": "ミラジディアンの欠片"
+  },
+  "item.miragefairy2024.miragidian_shard.poem": {
+    "en_us": "The great collapse 30,000 years ago",
+    "ja_jp": "遥か三万年前のミラジウムが見た夢。"
+  },
+  "item.miragefairy2024.miragidian_shovel": {
+    "en_us": "Miragidian Shovel",
+    "ja_jp": "ミラジディアンのシャベル"
+  },
+  "item.miragefairy2024.miragidian_shovel.poem": {
+    "en_us": "An alloy that will outlive humanity",
+    "ja_jp": "文明の光よりも堅牢な闇。"
+  },
+  "item.miragefairy2024.miragidian_sword": {
+    "en_us": "Miragidian Sword",
+    "ja_jp": "ミラジディアンの剣"
+  },
+  "item.miragefairy2024.miragidian_sword.poem": {
+    "en_us": "Watching the end of civilization.",
+    "ja_jp": "この星の運命を写す瞳。"
+  },
+  "item.miragefairy2024.miragium_axe": {
+    "en_us": "Miragium Axe",
+    "ja_jp": "ミラジウムの斧"
+  },
+  "item.miragefairy2024.miragium_axe.poem": {
+    "en_us": "Crack! Squish!",
+    "ja_jp": "バキッ！ぐにっ"
+  },
+  "item.miragefairy2024.miragium_ingot": {
+    "en_us": "Miragium Ingot",
+    "ja_jp": "ミラジウムインゴット"
+  },
+  "item.miragefairy2024.miragium_ingot.poem": {
+    "en_us": "Metallic body",
+    "ja_jp": "妖精インゴット。"
+  },
+  "item.miragefairy2024.miragium_nugget": {
+    "en_us": "Miragium Nugget",
+    "ja_jp": "ミラジウムナゲット"
+  },
+  "item.miragefairy2024.miragium_nugget.poem": {
+    "en_us": "Dismembered metallic body",
+    "ja_jp": "小分けにされた妖精のインゴット。"
+  },
+  "item.miragefairy2024.miragium_pickaxe": {
+    "en_us": "Miragium Pickaxe",
+    "ja_jp": "ミラジウムのつるはし"
+  },
+  "item.miragefairy2024.miragium_pickaxe.poem": {
+    "en_us": "More durable than gold",
+    "ja_jp": "妖精の肉体労働"
+  },
+  "item.miragefairy2024.miranagi_staff": {
+    "en_us": "Staff of Miranagi",
+    "ja_jp": "みらなぎの杖"
+  },
+  "item.miragefairy2024.miranagi_staff.poem": {
+    "en_us": "Risk of vacuum decay due to anti-entropy",
+    "ja_jp": "創世の神光は混沌をも翻す。"
+  },
+  "item.miragefairy2024.miranagi_staff_0": {
+    "en_us": "Miranagite Staff",
+    "ja_jp": "蒼天石のスタッフ"
+  },
+  "item.miragefairy2024.miranagi_staff_0.poem": {
+    "en_us": "Inflating anti-entropy force",
+    "ja_jp": "膨張する秩序の力。"
+  },
+  "item.miragefairy2024.miranagite": {
+    "en_us": "Miranagite",
+    "ja_jp": "蒼天石"
+  },
+  "item.miragefairy2024.miranagite.poem": {
+    "en_us": "Astral body crystallized by anti-entropy",
+    "ja_jp": "秩序の叛乱、天地創造の逆光。"
+  },
+  "item.miragefairy2024.miranagite_knife": {
+    "en_us": "Miranagite Knife",
+    "ja_jp": "蒼天石のナイフ"
+  },
+  "item.miragefairy2024.miranagite_knife.poem": {
+    "en_us": "Gardener\u0027s tool invented by Miranagi",
+    "ja_jp": "大自然を駆ける探究者のナイフ。"
+  },
+  "item.miragefairy2024.miranagite_pickaxe": {
+    "en_us": "Miranagite Pickaxe",
+    "ja_jp": "蒼天石のつるはし"
+  },
+  "item.miragefairy2024.miranagite_pickaxe.poem": {
+    "en_us": "Promotes ore recrystallization",
+    "ja_jp": "凝集する秩序、蒼穹彩煌が如く。"
+  },
+  "item.miragefairy2024.miranagite_rod": {
+    "en_us": "Miranagite Rod",
+    "ja_jp": "蒼天石の棒"
+  },
+  "item.miragefairy2024.miranagite_rod.poem": {
+    "en_us": "Mana flows well through the core",
+    "ja_jp": "蒼天に従える光条は、魔力の祝福を示す。"
+  },
+  "item.miragefairy2024.miranagite_scythe": {
+    "en_us": "Miranagite Scythe",
+    "ja_jp": "蒼天石の大鎌"
+  },
+  "item.miragefairy2024.miranagite_scythe.poem": {
+    "en_us": "Releases the souls of weeds",
+    "ja_jp": "宙を切り裂く創世の刃、草魂を蒼天へ導く。"
+  },
+  "item.miragefairy2024.nephrite": {
+    "en_us": "Nephrite",
+    "ja_jp": "ネフライト"
+  },
+  "item.miragefairy2024.nephrite_axe": {
+    "en_us": "Nephrite Axe",
+    "ja_jp": "ネフライトの斧"
+  },
+  "item.miragefairy2024.nephrite_builders_rod": {
+    "en_us": "Lesser Builder\u0027s Rod",
+    "ja_jp": "レッサービルダーズロッド"
+  },
+  "item.miragefairy2024.nephrite_hoe": {
+    "en_us": "Nephrite Hoe",
+    "ja_jp": "ネフライトのクワ"
+  },
+  "item.miragefairy2024.nephrite_pickaxe": {
+    "en_us": "Nephrite Pickaxe",
+    "ja_jp": "ネフライトのつるはし"
+  },
+  "item.miragefairy2024.nephrite_shovel": {
+    "en_us": "Nephrite Shovel",
+    "ja_jp": "ネフライトのシャベル"
+  },
+  "item.miragefairy2024.nephrite_sword": {
+    "en_us": "Nephrite Sword",
+    "ja_jp": "ネフライトの剣"
+  },
+  "item.miragefairy2024.nether_star_axe": {
+    "en_us": "Nether Star Axe",
+    "ja_jp": "ネザースターの斧"
+  },
+  "item.miragefairy2024.nether_star_hoe": {
+    "en_us": "Nether Star Hoe",
+    "ja_jp": "ネザースターのクワ"
+  },
+  "item.miragefairy2024.nether_star_pickaxe": {
+    "en_us": "Nether Star Pickaxe",
+    "ja_jp": "ネザースターのつるはし"
+  },
+  "item.miragefairy2024.nether_star_shovel": {
+    "en_us": "Nether Star Shovel",
+    "ja_jp": "ネザースターのシャベル"
+  },
+  "item.miragefairy2024.nether_star_sword": {
+    "en_us": "Nether Star Sword",
+    "ja_jp": "ネザースターの剣"
+  },
+  "item.miragefairy2024.noise": {
+    "en_us": "Noise",
+    "ja_jp": "ノイズ"
+  },
+  "item.miragefairy2024.noise.poem": {
+    "en_us": "An object no one sympathizes with.",
+    "ja_jp": "新しい「自由」の形。"
+  },
+  "item.miragefairy2024.noise_axe": {
+    "en_us": "Noise Axe",
+    "ja_jp": "ノイズの斧"
+  },
+  "item.miragefairy2024.noise_axe.poem": {
+    "en_us": "What is the value in a work?",
+    "ja_jp": "人知れずノイズが現れ、そして消える。"
+  },
+  "item.miragefairy2024.noise_hoe": {
+    "en_us": "Noise Hoe",
+    "ja_jp": "ノイズのクワ"
+  },
+  "item.miragefairy2024.noise_hoe.poem": {
+    "en_us": "Ideational waste.",
+    "ja_jp": "哲学的うんこ。"
+  },
+  "item.miragefairy2024.noise_pickaxe": {
+    "en_us": "Noise Pickaxe",
+    "ja_jp": "ノイズのつるはし"
+  },
+  "item.miragefairy2024.noise_pickaxe.poem": {
+    "en_us": "Demolish the Value.",
+    "ja_jp": "無価値の創出。"
+  },
+  "item.miragefairy2024.noise_shovel": {
+    "en_us": "Noise Shovel",
+    "ja_jp": "ノイズのシャベル"
+  },
+  "item.miragefairy2024.noise_shovel.poem": {
+    "en_us": "A world where everything exists.",
+    "ja_jp": "可能なすべての表現の集合。"
+  },
+  "item.miragefairy2024.noise_sword": {
+    "en_us": "Noise Sword",
+    "ja_jp": "ノイズの剣"
+  },
+  "item.miragefairy2024.noise_sword.poem": {
+    "en_us": "Liberation in the name of nonsense.",
+    "ja_jp": "意味という名の抑圧。"
+  },
+  "item.miragefairy2024.obsidian_axe": {
+    "en_us": "Obsidian Axe",
+    "ja_jp": "黒曜石の斧"
+  },
+  "item.miragefairy2024.obsidian_hoe": {
+    "en_us": "Obsidian Hoe",
+    "ja_jp": "黒曜石のクワ"
+  },
+  "item.miragefairy2024.obsidian_pickaxe": {
+    "en_us": "Obsidian Pickaxe",
+    "ja_jp": "黒曜石のつるはし"
+  },
+  "item.miragefairy2024.obsidian_shovel": {
+    "en_us": "Obsidian Shovel",
+    "ja_jp": "黒曜石のシャベル"
+  },
+  "item.miragefairy2024.obsidian_sword": {
+    "en_us": "Obsidian Sword",
+    "ja_jp": "黒曜石の剣"
+  },
+  "item.miragefairy2024.phantom_bulb": {
+    "en_us": "Phantom Bulb",
+    "ja_jp": "幻花ファントムの球根"
+  },
+  "item.miragefairy2024.phantom_bulb.classification": {
+    "en_us": "Order Miragales, family Miragaceae",
+    "ja_jp": "妖花目ミラージュ科"
+  },
+  "item.miragefairy2024.phantom_bulb.poem": {
+    "en_us": "Illusory telepathy",
+    "ja_jp": "――おいでよ、僕たちのところへ"
+  },
+  "item.miragefairy2024.phantom_drop": {
+    "en_us": "Phantom Drop",
+    "ja_jp": "幻想の雫"
+  },
+  "item.miragefairy2024.phantom_drop.poem": {
+    "en_us": "Beyond the end of the world",
+    "ja_jp": "祈りを形に、再生の蜜。"
+  },
+  "item.miragefairy2024.phantom_leaves": {
+    "en_us": "Phantom Leaves",
+    "ja_jp": "ファントムの葉"
+  },
+  "item.miragefairy2024.phantom_leaves.poem": {
+    "en_us": "The eroding reality",
+    "ja_jp": "析出する空想。"
+  },
+  "item.miragefairy2024.phantom_pickaxe": {
+    "en_us": "Phantom Pickaxe",
+    "ja_jp": "幻想のつるはし"
+  },
+  "item.miragefairy2024.phantom_pickaxe.poem": {
+    "en_us": "\"Creation\" is the true power.",
+    "ja_jp": "人間が手にした唯一の幻想。"
+  },
+  "item.miragefairy2024.phantom_shovel": {
+    "en_us": "Phantom Shovel",
+    "ja_jp": "幻想のシャベル"
+  },
+  "item.miragefairy2024.phantom_shovel.poem": {
+    "en_us": "The sound of the world\u0027s end echoed",
+    "ja_jp": "破壊された世界の音――"
+  },
+  "item.miragefairy2024.phantom_sword": {
+    "en_us": "Phantom Sword",
+    "ja_jp": "幻想の剣"
+  },
+  "item.miragefairy2024.phantom_sword.poem": {
+    "en_us": "Pray. For rebirth.",
+    "ja_jp": "闇を切り裂く、再生の光。"
+  },
+  "item.miragefairy2024.plant_bag": {
+    "en_us": "Plant Bag",
+    "ja_jp": "植物カバン"
+  },
+  "item.miragefairy2024.plant_bag.poem": {
+    "en_us": "Basket wall composed of uneven stems",
+    "ja_jp": "人間が手掛ける、初級レベルの藁細工。"
+  },
+  "item.miragefairy2024.poison": {
+    "en_us": "Poison",
+    "ja_jp": "毒薬"
+  },
+  "item.miragefairy2024.prominaria_berry": {
+    "en_us": "Prominaria Berry",
+    "ja_jp": "プロミナリアの実"
+  },
+  "item.miragefairy2024.prominaria_berry.description": {
+    "en_us": "Grants fire resistance when eaten",
+    "ja_jp": "食べると火炎耐性を付与"
+  },
+  "item.miragefairy2024.prominaria_berry.poem": {
+    "en_us": "Guardian flame of lost souls.",
+    "ja_jp": "心頭滅却のプロミネンス。"
+  },
+  "item.miragefairy2024.prominaria_bulb": {
+    "en_us": "Prominaria Bulb",
+    "ja_jp": "紅炎草プロミナリアの球根"
+  },
+  "item.miragefairy2024.prominaria_bulb.classification": {
+    "en_us": "Order Miragales, family Luminariaceae",
+    "ja_jp": "妖花目ルミナリア科"
+  },
+  "item.miragefairy2024.prominaria_bulb.poem": {
+    "en_us": "Cleansing of tainted souls.",
+    "ja_jp": "死霊を貪り、命に変える。"
+  },
+  "item.miragefairy2024.prominite": {
+    "en_us": "Prominite",
+    "ja_jp": "プロミナイト"
+  },
+  "item.miragefairy2024.prominite.poem": {
+    "en_us": "Arbitrament of randomness.",
+    "ja_jp": "炎になる魂、光になる魂。"
+  },
+  "item.miragefairy2024.prominite_axe": {
+    "en_us": "Prominite Axe",
+    "ja_jp": "プロミナイトの斧"
+  },
+  "item.miragefairy2024.prominite_axe.poem": {
+    "en_us": "Unpredictable movement of flames.",
+    "ja_jp": "カオスの鉄槌。"
+  },
+  "item.miragefairy2024.prominite_hoe": {
+    "en_us": "Prominite Hoe",
+    "ja_jp": "プロミナイトのクワ"
+  },
+  "item.miragefairy2024.prominite_hoe.poem": {
+    "en_us": "Regenerated spirit.",
+    "ja_jp": "生命の萌芽。"
+  },
+  "item.miragefairy2024.prominite_pickaxe": {
+    "en_us": "Prominite Pickaxe",
+    "ja_jp": "プロミナイトのつるはし"
+  },
+  "item.miragefairy2024.prominite_pickaxe.poem": {
+    "en_us": "Refined soul fuel.",
+    "ja_jp": "打ち砕かれた魂の残骸。"
+  },
+  "item.miragefairy2024.prominite_scythe": {
+    "en_us": "Prominite Scythe",
+    "ja_jp": "プロミナイトの大鎌"
+  },
+  "item.miragefairy2024.prominite_scythe.poem": {
+    "en_us": "Piles of what was once consciousness.",
+    "ja_jp": "折り重なる沈黙の宴。"
+  },
+  "item.miragefairy2024.prominite_shovel": {
+    "en_us": "Prominite Shovel",
+    "ja_jp": "プロミナイトのシャベル"
+  },
+  "item.miragefairy2024.prominite_shovel.poem": {
+    "en_us": "Flame that burns misfortune.",
+    "ja_jp": "救済の火。"
+  },
+  "item.miragefairy2024.prominite_sword": {
+    "en_us": "Prominite Sword",
+    "ja_jp": "プロミナイトの剣"
+  },
+  "item.miragefairy2024.prominite_sword.poem": {
+    "en_us": "Struggle for the fate.",
+    "ja_jp": "「存在」の争奪。"
+  },
+  "item.miragefairy2024.resonite_axe": {
+    "en_us": "Resonance Axe",
+    "ja_jp": "共鳴の斧"
+  },
+  "item.miragefairy2024.resonite_axe.poem": {
+    "en_us": "Wavelength matched to tree height",
+    "ja_jp": "共振する樹の繊維。"
+  },
+  "item.miragefairy2024.resonite_battle_axe": {
+    "en_us": "Resonite Battle Axe",
+    "ja_jp": "共鳴の戦斧"
+  },
+  "item.miragefairy2024.resonite_battle_axe.poem": {
+    "en_us": "The mind synchronize with the body",
+    "ja_jp": "精神と肉体の調和。"
+  },
+  "item.miragefairy2024.resonite_ingot": {
+    "en_us": "Resonite",
+    "ja_jp": "共鳴石"
+  },
+  "item.miragefairy2024.resonite_ingot.poem": {
+    "en_us": "Synchronized sound and light",
+    "ja_jp": "同調する魂の波動。"
+  },
+  "item.miragefairy2024.resonite_knife": {
+    "en_us": "Resonite Knife",
+    "ja_jp": "共鳴のナイフ"
+  },
+  "item.miragefairy2024.resonite_knife.poem": {
+    "en_us": "The ultrasonic vibration knife",
+    "ja_jp": "音波を超えた破壊の力。"
+  },
+  "item.miragefairy2024.resonite_pickaxe": {
+    "en_us": "Resonance Pickaxe",
+    "ja_jp": "共鳴のつるはし"
+  },
+  "item.miragefairy2024.resonite_pickaxe.poem": {
+    "en_us": "The compound of light and sound",
+    "ja_jp": "光と闇の純結晶。"
+  },
+  "item.miragefairy2024.resonite_scythe": {
+    "en_us": "Resonite Scythe",
+    "ja_jp": "共鳴の大鎌"
+  },
+  "item.miragefairy2024.resonite_scythe.poem": {
+    "en_us": "Vacuum wave that cuts down grasses",
+    "ja_jp": "虚空を切り裂く碧の波。"
+  },
+  "item.miragefairy2024.resonite_sword": {
+    "en_us": "Resonite Sword",
+    "ja_jp": "共鳴の剣"
+  },
+  "item.miragefairy2024.resonite_sword.poem": {
+    "en_us": "The pulsating ectoplasm",
+    "ja_jp": "生命の脈動を砥ぎ澄ませ。"
+  },
+  "item.miragefairy2024.rum": {
+    "en_us": "Rum",
+    "ja_jp": "ラム酒"
+  },
+  "item.miragefairy2024.sarracenia_bulb": {
+    "en_us": "Sarracenia Bulb",
+    "ja_jp": "瓶子草サラセニアの球根"
+  },
+  "item.miragefairy2024.sarracenia_bulb.classification": {
+    "en_us": "Order Miragales, family Veropedaceae",
+    "ja_jp": "妖花目ヴェロペダ科"
+  },
+  "item.miragefairy2024.sarracenia_bulb.poem": {
+    "en_us": "Waiting for a flying creature...",
+    "ja_jp": "妖精たちの憩いの場。"
+  },
+  "item.miragefairy2024.sarracenia_leaf": {
+    "en_us": "Sarracenia Leaf",
+    "ja_jp": "サラセニアの葉"
+  },
+  "item.miragefairy2024.sarracenia_leaf.poem": {
+    "en_us": "Fruity and sweet and sour.",
+    "ja_jp": "とけた果肉と蜜の味。"
+  },
+  "item.miragefairy2024.scythe.description": {
+    "en_us": "Perform area harvesting when used %s",
+    "ja_jp": "使用時、範囲収穫 %s"
+  },
+  "item.miragefairy2024.seed_bag": {
+    "en_us": "Seed Bag",
+    "ja_jp": "種子カバン"
+  },
+  "item.miragefairy2024.seed_bag.poem": {
+    "en_us": "Maintains the freshness of plants",
+    "ja_jp": "両手に、花。"
+  },
+  "item.miragefairy2024.shooting_staff.description": {
+    "en_us": "Perform a ranged attack when used",
+    "ja_jp": "使用時、射撃攻撃"
+  },
+  "item.miragefairy2024.solid_fuel": {
+    "en_us": "Solid Fuel",
+    "ja_jp": "固形燃料"
+  },
+  "item.miragefairy2024.solid_fuel.poem": {
+    "en_us": "Caramelized Ethanol",
+    "ja_jp": "なぜかこれを食べる妖精が続出した"
+  },
+  "item.miragefairy2024.sphere_base": {
+    "en_us": "Sphere Base",
+    "ja_jp": "スフィアベース"
+  },
+  "item.miragefairy2024.sphere_base.poem": {
+    "en_us": "A mirror that reflects sadistic desires",
+    "ja_jp": "前世が見える。              （らしい）"
+  },
+  "item.miragefairy2024.sulfur": {
+    "en_us": "Sulfur",
+    "ja_jp": "硫黄"
+  },
+  "item.miragefairy2024.telescope.available": {
+    "en_us": "Available",
+    "ja_jp": "獲得可能"
+  },
+  "item.miragefairy2024.telescope.daily": {
+    "en_us": "Daily",
+    "ja_jp": "日間"
+  },
+  "item.miragefairy2024.telescope.days": {
+    "en_us": "%s days",
+    "ja_jp": "%s 日"
+  },
+  "item.miragefairy2024.telescope.first": {
+    "en_us": "First-time reward",
+    "ja_jp": "初回報酬"
+  },
+  "item.miragefairy2024.telescope.first_gain": {
+    "en_us": "Obtain %s Jewels",
+    "ja_jp": "%s ジュエルを獲得"
+  },
+  "item.miragefairy2024.telescope.hours": {
+    "en_us": "%s hours",
+    "ja_jp": "%s 時間"
+  },
+  "item.miragefairy2024.telescope.minutes": {
+    "en_us": "%s minutes",
+    "ja_jp": "%s 分"
+  },
+  "item.miragefairy2024.telescope.monthly": {
+    "en_us": "Monthly",
+    "ja_jp": "月間"
+  },
+  "item.miragefairy2024.telescope.received": {
+    "en_us": "Received",
+    "ja_jp": "獲得済"
+  },
+  "item.miragefairy2024.telescope.reuse": {
+    "en_us": "%s left until reusable",
+    "ja_jp": "再使用可能まで %s"
+  },
+  "item.miragefairy2024.telescope.seconds": {
+    "en_us": "%s seconds",
+    "ja_jp": "%s 秒"
+  },
+  "item.miragefairy2024.telescope.weekly": {
+    "en_us": "Weekly",
+    "ja_jp": "週間"
+  },
+  "item.miragefairy2024.tiny_bismuth_dust": {
+    "en_us": "Tiny Pile of Bismuth Dust",
+    "ja_jp": "小さなビスマスの粉"
+  },
+  "item.miragefairy2024.tiny_mirage_flour": {
+    "en_us": "Tiny Pile of Mirage Flour",
+    "ja_jp": "小さなミラージュの花粉"
+  },
+  "item.miragefairy2024.tiny_mirage_flour.poem": {
+    "en_us": "Compose the body of Mirage fairy",
+    "ja_jp": "ささやかな温もりを、てのひらの上に。"
+  },
+  "item.miragefairy2024.tiny_solid_fuel": {
+    "en_us": "1/8 Solid Fuel",
+    "ja_jp": "1/8の固形燃料"
+  },
+  "item.miragefairy2024.tiny_solid_fuel.poem": {
+    "en_us": "Chewing Fuel",
+    "ja_jp": "ひとくちサイズの固形燃料"
+  },
+  "item.miragefairy2024.topaz": {
+    "en_us": "Topaz",
+    "ja_jp": "トパーズ"
+  },
+  "item.miragefairy2024.topaz_axe": {
+    "en_us": "Topaz Axe",
+    "ja_jp": "トパーズの斧"
+  },
+  "item.miragefairy2024.topaz_hoe": {
+    "en_us": "Topaz Hoe",
+    "ja_jp": "トパーズのクワ"
+  },
+  "item.miragefairy2024.topaz_luminaria_bulb": {
+    "en_us": "Topaz Luminaria Bulb",
+    "ja_jp": "黄玉輝草トパーズルミナリアの球根"
+  },
+  "item.miragefairy2024.topaz_luminaria_bulb.classification": {
+    "en_us": "Order Miragales, family Luminariaceae",
+    "ja_jp": "妖花目ルミナリア科"
+  },
+  "item.miragefairy2024.topaz_luminaria_bulb.poem": {
+    "en_us": "Applicability to phytoremediation",
+    "ja_jp": "猛々しく、砂漠の神秘。"
+  },
+  "item.miragefairy2024.topaz_pickaxe": {
+    "en_us": "Topaz Pickaxe",
+    "ja_jp": "トパーズのつるはし"
+  },
+  "item.miragefairy2024.topaz_shovel": {
+    "en_us": "Topaz Shovel",
+    "ja_jp": "トパーズのシャベル"
+  },
+  "item.miragefairy2024.topaz_sword": {
+    "en_us": "Topaz Sword",
+    "ja_jp": "トパーズの剣"
+  },
+  "item.miragefairy2024.veropeda_berries": {
+    "en_us": "Veropeda Berries",
+    "ja_jp": "ヴェロペダの実"
+  },
+  "item.miragefairy2024.veropeda_berries.description": {
+    "en_us": "Healing and rare nausea by eating",
+    "ja_jp": "食べると回復、まれに吐き気"
+  },
+  "item.miragefairy2024.veropeda_berries.poem": {
+    "en_us": "Has analgesic and stimulant effects",
+    "ja_jp": "悪魔の囁きを喰らう。"
+  },
+  "item.miragefairy2024.veropeda_bulb": {
+    "en_us": "Veropeda Bulb",
+    "ja_jp": "呪草ヴェロペダの球根"
+  },
+  "item.miragefairy2024.veropeda_bulb.classification": {
+    "en_us": "Order Miragales, family Veropedaceae",
+    "ja_jp": "妖花目ヴェロペダ科"
+  },
+  "item.miragefairy2024.veropeda_bulb.poem": {
+    "en_us": "Contains strong acids made from insects",
+    "ja_jp": "毒を喰らい、毒と化す。"
+  },
+  "item.miragefairy2024.veropeda_leaf": {
+    "en_us": "Veropeda Leaf",
+    "ja_jp": "ヴェロペダの葉"
+  },
+  "item.miragefairy2024.veropeda_leaf.poem": {
+    "en_us": "Said to house the soul of a demon",
+    "ja_jp": "その身融かされるまでの快楽。"
+  },
+  "item.miragefairy2024.veropedeliquora": {
+    "en_us": "Veropedeliquora",
+    "ja_jp": "ヴェロペデリコラ"
+  },
+  "item.miragefairy2024.veropedeliquora.poem": {
+    "en_us": "A dark flavour from the underworld.",
+    "ja_jp": "冥界へといざなう、暗黒の味。"
+  },
+  "item.miragefairy2024.xarpa_luminaria_bulb": {
+    "en_us": "Xarpie Luminara Bulb",
+    "ja_jp": "紅天輝草シャルピエ・ルミナーラの球根"
+  },
+  "item.miragefairy2024.xarpa_luminaria_bulb.classification": {
+    "en_us": "Order Miragales, family Luminariaceae",
+    "ja_jp": "妖花目ルミナリア科"
+  },
+  "item.miragefairy2024.xarpa_luminaria_bulb.poem": {
+    "en_us": "The essence of a gene is matter.",
+    "ja_jp": "遺伝子のすべては、形而下に属する。"
+  },
+  "item.miragefairy2024.xarpite": {
+    "en_us": "Xarpite",
+    "ja_jp": "紅天石"
+  },
+  "item.miragefairy2024.xarpite.poem": {
+    "en_us": "Binds astral flux with magnetic force",
+    "ja_jp": "黒鉄の鎖は繋がれる。血腥い魂の檻へ。"
+  },
+  "item.miragefairy2024.xarpite_axe": {
+    "en_us": "Xarpite Axe",
+    "ja_jp": "紅天石の斧"
+  },
+  "item.miragefairy2024.xarpite_axe.poem": {
+    "en_us": "Strip the log from the space",
+    "ja_jp": "空間にこびりついた丸太の除去に。"
+  },
+  "item.miragefairy2024.xarpite_pickaxe": {
+    "en_us": "Xarpite Pickaxe",
+    "ja_jp": "紅天石のつるはし"
+  },
+  "item.miragefairy2024.xarpite_pickaxe.poem": {
+    "en_us": "Shears space using astral induction",
+    "ja_jp": "鉱石の魂を貪る血塗られた有機質。"
+  },
+  "itemGroup.miragefairy2024.creative_gene_ampoule": {
+    "en_us": "Creative Gene Ampoule",
+    "ja_jp": "アカーシャによる生命設計の針"
+  },
+  "itemGroup.miragefairy2024.fairies": {
+    "en_us": "Fairies",
+    "ja_jp": "妖精"
+  },
+  "itemGroup.miragefairy2024.fairy_statue": {
+    "en_us": "Fairy Statue",
+    "ja_jp": "妖精の像"
+  },
+  "itemGroup.miragefairy2024.miragefairy2024": {
+    "en_us": "IFR25KU",
+    "ja_jp": "IFR25KU"
+  },
+  "key.miragefairy2024.open_soul_stream": {
+    "en_us": "Open Soul Stream",
+    "ja_jp": "ソウルストリームを開く"
+  },
+  "key.miragefairy2024.open_tooltip_viewer": {
+    "en_us": "Open Tooltip Viewer",
+    "ja_jp": "ツールチップビューワーを開く"
+  },
+  "key.miragefairy2024.place_item": {
+    "en_us": "Place Item",
+    "ja_jp": "アイテムを置く"
+  },
+  "key.miragefairy2024.toggle_collection_enabled": {
+    "en_us": "Toggle Collection",
+    "ja_jp": "収集のオンオフ"
+  },
+  "miragefairy2024.collection_disabled": {
+    "en_us": "Collection Disabled",
+    "ja_jp": "収集効果が無効"
+  },
+  "miragefairy2024.collection_enabled": {
+    "en_us": "Collection Enabled",
+    "ja_jp": "収集効果が有効"
+  },
+  "miragefairy2024.fairyQuestRecipe.emergency_situation.client": {
+    "en_us": "The Institute of Fairy Research\nEthics Department\nTirirknofe Herirmina",
+    "ja_jp": "妖精研究所\n倫理部\nティリルクノフェ・ヘリルミーナ"
+  },
+  "miragefairy2024.fairyQuestRecipe.emergency_situation.message": {
+    "en_us": "Help!!!\n\n!!!!\n\n!!!!!\n\nI\u0027m out of toilet paper!!!!!!",
+    "ja_jp": "助けて！！！\n\n！！！！\n\n！！！！！\n\nトイレットペーパーが無いの！！！！！！"
+  },
+  "miragefairy2024.fairyQuestRecipe.emergency_situation.title": {
+    "en_us": "Emergency Situation",
+    "ja_jp": "非常事態"
+  },
+  "miragefairy2024.fairyQuestRecipe.fatal_accident.client": {
+    "en_us": "The Institute of Fairy Research\nOphelia Branch\nLibrariania the fairy of librarian",
+    "ja_jp": "妖精研究所\nオフィーリア支部\n司書精リブラリアーニャ"
+  },
+  "miragefairy2024.fairyQuestRecipe.fatal_accident.message": {
+    "en_us": "I pray that this message reaches some human in a parallel world.\n\nNo, at this point, it could be fairies, malformed creatures, anything.\n\nA catastrophic accident has occurred, and our world is on the verge of ending.\n\nThe vacuum decay reactor at Cordelia Branch has gone out of control, and an asteroid was swallowed by the vacuum decay.\n\nIt\u0027s not just Cordelia.\n\nEuropa, Haumea, and even Headquarters are unresponsive.\n\nCommunication has ceased, and even the Divine Ear is silent.\n\nAnti-entropy sludge is leaking from the warp routes, and there\u0027s no telling when this place will be disintegrated to zero.\n\nBefore being engulfed by the vacuum decay, we plan to escape into space with colonization pods.\n\nDamn it, the vacuum decay reactor was never something humans should have messed with!\n\nIf someone is reading this, please understand.\n\nThe vacuum decay reactor wasn\u0027t a safe, environmentally friendly source of energy.\n\nOne wrong move, and it\u0027s a terrifying thing that could wipe out an entire planet.\n\nIf anyone is in control of the vacuum decay reactor, please stop it now!\n\nBefore your world ceases to exist!!!",
+    "ja_jp": "このメッセージが平行世界の人間に届くことを祈る。\n\nいや、この際妖精でも奇形生物でも何でもいい。\n\n重大な事故が起こって俺の世界が終わろうとしている。\n\nコーディリア支部の真空崩壊炉が制御を失い、小惑星ごと真空崩壊に飲み込まれちまった。\n\nコーディリアだけじゃない。\n\nエウロパも、ハウメアも、本部も応答しない。\n\nもう通信も途絶えたし、天耳通も反応しない。\n\nアンチエントロピースラッジが縮地路から漏れ出て、ここもいつゼロまで分解されるか分からない。\n\n真空崩壊に飲み込まれる前に、俺たちは植民ポッドで宇宙に脱出するつもりだ。\n\nクソッ、真空崩壊炉なんて人間が手を出していい代物じゃなかったんだ！\n\nもし誰かがこれを見ているなら、理解してくれ。\n\n真空崩壊炉は安全で環境に優しいエネルギーなんかじゃなかった。\n\n一歩間違えば惑星ごと消し去ってしまうヤバい奴だ。\n\n真空崩壊炉を管理している奴がいたら、今すぐそれを止めてくれ！\n\nお前たちの世界がまだ生きているうちに！！！"
+  },
+  "miragefairy2024.fairyQuestRecipe.fatal_accident.title": {
+    "en_us": "Fatal Accident",
+    "ja_jp": "重大な事故"
+  },
+  "miragefairy2024.fairyQuestRecipe.impromptu_fantastic_carnival.client": {
+    "en_us": "Breadia the fairy of bread",
+    "ja_jp": "麺麭精ブレアージャ"
+  },
+  "miragefairy2024.fairyQuestRecipe.impromptu_fantastic_carnival.message": {
+    "en_us": "Help! We\u0027re running out of cakes, and the chickens are taking their sweet time laying eggs! Can someone please help out? We don\u0027t have time to bake, so substitute it right away!",
+    "ja_jp": "たいへん！ケーキが足りないのにニワトリがなかなか卵を産まないの！お願い！作ってる時間はないから、今すぐ誰か代わりになって！"
+  },
+  "miragefairy2024.fairyQuestRecipe.impromptu_fantastic_carnival.title": {
+    "en_us": "Impromptu Fantastic Carnival",
+    "ja_jp": "即席ファンタスティックカーニバル"
+  },
+  "miragefairy2024.fairyQuestRecipe.new_product_from_fri.client": {
+    "en_us": "The Institute of Fairy Research\nCreation Department",
+    "ja_jp": "妖精研究所\n創製部"
+  },
+  "miragefairy2024.fairyQuestRecipe.new_product_from_fri.message": {
+    "en_us": "The Institute of Fairy Research proudly presents its latest product, the “Fairy Quest Card”! It\u0027s an innovative communication device that allows communication and material transfer with different and parallel worlds!\nHave you ever been caught in a sudden thunderstorm while out and about? With this, you won\u0027t fear unexpected thunderstorms anymore!\nSimply insert the payment into the “Fairy Quest Card” connected to the stores of parallel worlds, and all you need to do is receive the data for the product. The built-in 3D printer will handle the rest, just like this!\n\n*For receiving items containing special elements, a separate cartridge for special elements (sold separately) may be required.\n*For receiving items with low entropy, a separate anti-entropy cartridge (sold separately) may be required.\n*The institute assumes no responsibility for disputes arising from transactions with communication destinations.\n*Please be cautious to avoid trapping your fingers in the portal.\n*Keep out of reach of children.",
+    "ja_jp": "妖精研究所が誇りを持ってお届けする新商品、“フェアリークエストカード”が待望の新登場！異世界や並行世界との通信や物質転送が可能な画期的な通信端末です！\n外出先で急に雷雨が降りだしちゃったなんて経験、一度はありませんか？これさえあれば、急な雷なんて怖くない！\n平行世界のストアに接続された“フェアリークエストカード”に代金を投入すれば、あとは商品のデータを受け取るだけで、内蔵の3Dプリンターが、ほら、この通り！\n\n※特殊な元素を含む物品の受け取りには、特殊元素用カートリッジ（別売り）が必要となる場合がございます。\n※エントロピーの低い物品の受け取りには、反エントロピー用カートリッジ（別売り）が必要となる場合がございます。\n※通信先との取引に伴う紛争については、当研究所は一切の責任を負いません。\n※ポータルに指等を挟まないようご注意ください。\n※お子様の手の届かない場所に保管してください。"
+  },
+  "miragefairy2024.fairyQuestRecipe.new_product_from_fri.title": {
+    "en_us": "New product from FRI!",
+    "ja_jp": "妖精研究所から新商品登場！"
+  },
+  "miragefairy2024.fairyQuestRecipe.notice_for_ceramic_brick_donations.client": {
+    "en_us": "The Institute of Fairy Research\nCordelia Branch",
+    "ja_jp": "妖精研究所\nコーディリア支部"
+  },
+  "miragefairy2024.fairyQuestRecipe.notice_for_ceramic_brick_donations.message": {
+    "en_us": "We are actively seeking donations of ceramic bricks for the reconstruction project of the vacuum decay reactor. If you are in need, we will selectively provide reusable building materials.",
+    "ja_jp": "真空崩壊炉改修工事に向けてセラミックレンガの寄付を広く募集しております。必要な場合は、リユース可能な建築資材を選別してご提供いたします。"
+  },
+  "miragefairy2024.fairyQuestRecipe.notice_for_ceramic_brick_donations.title": {
+    "en_us": "Notice for Ceramic Brick Donations",
+    "ja_jp": "セラミックレンガ募集のお知らせ"
+  },
+  "miragefairy2024.fairyQuestRecipe.vegetation_survey.client": {
+    "en_us": "The Pearl Knights of Miranagi\nShinonome Astrology Academy\nRumeri",
+    "ja_jp": "みらなぎ聖騎士団\n東雲占卜院\nるめり"
+  },
+  "miragefairy2024.fairyQuestRecipe.vegetation_survey.message": {
+    "en_us": "The fairy trees...? We should be over a million light-years away from the Habitabilis Zona. I\u0027m curious to divine the past of this star, so would you consider sending me samples of the vegetation?",
+    "ja_jp": "妖精の樹…？ここはハビタビリスゾーナから100万光年以上も離れた場所のはず…。この星の過去を占ってみたいから、植生サンプルを送ってくれないかしら？"
+  },
+  "miragefairy2024.fairyQuestRecipe.vegetation_survey.title": {
+    "en_us": "Vegetation Survey",
+    "ja_jp": "植生調査"
+  },
+  "miragefairy2024.food_ingredient.alcohol": {
+    "en_us": "Alcohol",
+    "ja_jp": "アルコール"
+  },
+  "miragefairy2024.food_ingredient.fish": {
+    "en_us": "Fish",
+    "ja_jp": "魚"
+  },
+  "miragefairy2024.food_ingredient.mushroom": {
+    "en_us": "Mushroom",
+    "ja_jp": "キノコ"
+  },
+  "miragefairy2024.motif.miragefairy2024.air": {
+    "en_us": "Airia",
+    "ja_jp": "空気精アイリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.amethyst": {
+    "en_us": "Amethystia",
+    "ja_jp": "紫水晶精アメティスチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.anti_entropy": {
+    "en_us": "Ante Entropia",
+    "ja_jp": "秩序精アンテエントローピャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.antimatter": {
+    "en_us": "Antimatteria",
+    "ja_jp": "反物質精アンティマッテーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.anvil": {
+    "en_us": "Anvilia",
+    "ja_jp": "金床精アンヴィーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.apple": {
+    "en_us": "Applia",
+    "ja_jp": "林檎精アップーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.arrow": {
+    "en_us": "Arrowia",
+    "ja_jp": "矢精アッローウャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.avalon": {
+    "en_us": "Avalonia",
+    "ja_jp": "阿瓦隆精アヴァローニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.axe": {
+    "en_us": "Axia",
+    "ja_jp": "斧精アーシャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.beacon": {
+    "en_us": "Beaconia",
+    "ja_jp": "信標精ベアツォーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.beetroot": {
+    "en_us": "Beetrootia",
+    "ja_jp": "火焔菜精ベートローチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.blaze": {
+    "en_us": "Blazia",
+    "ja_jp": "烈炎精ブラージャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.brewing_stand": {
+    "en_us": "Brewinge Standia",
+    "ja_jp": "醸造台精ブレウィンゲスタンジャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.brown_mushroom": {
+    "en_us": "Browne Mushroomia",
+    "ja_jp": "茶茸精ブロウネムシュローミャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.cactus": {
+    "en_us": "Cactusia",
+    "ja_jp": "仙人掌精ツァツトゥーシャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.cake": {
+    "en_us": "Cakia",
+    "ja_jp": "蛋麭精ツァーキャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.candle": {
+    "en_us": "Candlia",
+    "ja_jp": "蝋燭精ツァンドゥリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.carrot": {
+    "en_us": "Carrotia",
+    "ja_jp": "人参精ツァッローチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.carry": {
+    "en_us": "Carria",
+    "ja_jp": "運搬精ツァッリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.chaos_stone": {
+    "en_us": "Chaose Stonia",
+    "ja_jp": "混沌石精キャオセストーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.chest": {
+    "en_us": "Chestia",
+    "ja_jp": "箱精ケスチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.chicken": {
+    "en_us": "Chickenia",
+    "ja_jp": "鶏精キッケーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.cookie": {
+    "en_us": "Cookia",
+    "ja_jp": "麭精ツォーキャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.copper": {
+    "en_us": "Copperia",
+    "ja_jp": "銅精ツォッペーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.cow": {
+    "en_us": "Cowia",
+    "ja_jp": "牛精ツォーウャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.creeper": {
+    "en_us": "Creeperia",
+    "ja_jp": "匠精ツレペーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.cupid": {
+    "en_us": "Cupidia",
+    "ja_jp": "恋射手精ツピージャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.dark_oak": {
+    "en_us": "Darke Oakia",
+    "ja_jp": "濃樫精ダルケオアキャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.dead_bush": {
+    "en_us": "Deade Bushia",
+    "ja_jp": "枯木精デアデブーシャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.deepslate": {
+    "en_us": "Deepslatia",
+    "ja_jp": "深層岩精デープスラーチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.diamond": {
+    "en_us": "Diamondia",
+    "ja_jp": "金剛石精ディアモンジャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.dirt": {
+    "en_us": "Dirtia",
+    "ja_jp": "土精ディルチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.dripstone": {
+    "en_us": "Dripstonia",
+    "ja_jp": "鍾乳石精ドリプストーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.egg": {
+    "en_us": "Eggia",
+    "ja_jp": "卵精エッギャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.emerald": {
+    "en_us": "Emeraldia",
+    "ja_jp": "翠玉精エメラルジャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.enchant": {
+    "en_us": "Enchantia",
+    "ja_jp": "付魔精エンキャンチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.enchanted_golden_apple": {
+    "en_us": "Enchantede Goldene Applia",
+    "ja_jp": "付魔金林檎精エンキャンテーデゴルデーネアップーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.enchanting_table": {
+    "en_us": "Enchantinge Tablia",
+    "ja_jp": "付魔台精エンキャンティンゲターブリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.ender_eye": {
+    "en_us": "Endere Ia",
+    "ja_jp": "終界眼精エンデーレッイャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.enderman": {
+    "en_us": "Endermania",
+    "ja_jp": "終界人精エンデルマーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.ethanol": {
+    "en_us": "Ethanolia",
+    "ja_jp": "酒精エタノーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.evoker": {
+    "en_us": "Evokeria",
+    "ja_jp": "召喚士精エヴォケーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.fire": {
+    "en_us": "Firia",
+    "ja_jp": "火精フィーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.flint_and_steel": {
+    "en_us": "Flinte Ande Steelia",
+    "ja_jp": "火打石打金精フリンテアンデステーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.fluorite": {
+    "en_us": "Fluoritia",
+    "ja_jp": "蛍石精フルオリーチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.food": {
+    "en_us": "Foodia",
+    "ja_jp": "食物精フォージャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.glass": {
+    "en_us": "Glassia",
+    "ja_jp": "硝子精グラッシャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.glow_berry": {
+    "en_us": "Glowe Berria",
+    "ja_jp": "蛍光液果精グローウェベッリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.glow_lichen": {
+    "en_us": "Glowe Lichenia",
+    "ja_jp": "光苔精グローウェリケーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.gold": {
+    "en_us": "Goldia",
+    "ja_jp": "金精ゴルジャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.golden_apple": {
+    "en_us": "Goldene Applia",
+    "ja_jp": "金林檎精ゴルデーネアップーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.golem": {
+    "en_us": "Golemia",
+    "ja_jp": "鉄魔像精ゴレーミャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.gravel": {
+    "en_us": "Gravelia",
+    "ja_jp": "砂利精グラヴェーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.gravity": {
+    "en_us": "Gravitia",
+    "ja_jp": "重力精グラヴィーチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.haimeviska": {
+    "en_us": "Haimeviskia",
+    "ja_jp": "精樹精ハイメヴィスキャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.hoe": {
+    "en_us": "Hia",
+    "ja_jp": "鍬精ヒャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.hopper": {
+    "en_us": "Hopperia",
+    "ja_jp": "漏斗精ホッペーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.human": {
+    "en_us": "Humania",
+    "ja_jp": "人類精フマーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.iron": {
+    "en_us": "Ironia",
+    "ja_jp": "鉄精イローニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.iron_bars": {
+    "en_us": "Irone Barsia",
+    "ja_jp": "鉄格子精イローネバルシャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.lava": {
+    "en_us": "Lavia",
+    "ja_jp": "溶岩精ラーヴャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.light": {
+    "en_us": "Lightia",
+    "ja_jp": "光精リグチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.lightning_rod": {
+    "en_us": "Lightninge Rodia",
+    "ja_jp": "避雷針精リグトニンゲロージャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.luminite": {
+    "en_us": "Luminitia",
+    "ja_jp": "輝石精ルミニーチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.magenta_glazed_terracotta": {
+    "en_us": "Magente Glazede Terracottia",
+    "ja_jp": "赤紫釉陶精マゲンテグラゼデテッラツォッチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.magma_cube": {
+    "en_us": "Magme Cubia",
+    "ja_jp": "溶岩賽精マグメツービャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.magnetism": {
+    "en_us": "Magnetismia",
+    "ja_jp": "磁気精マグネティスミャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.magnetite": {
+    "en_us": "Magnetitia",
+    "ja_jp": "磁鉄鉱精マグネティーチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.melon": {
+    "en_us": "Melonia",
+    "ja_jp": "西瓜精メローニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.mina": {
+    "en_us": "Minia",
+    "ja_jp": "銀子精ミーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.mirage": {
+    "en_us": "Miragia",
+    "ja_jp": "妖精ミラージャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.miranagite": {
+    "en_us": "Miranagitia",
+    "ja_jp": "蒼天石精ミラナギーチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.moon": {
+    "en_us": "Moonia",
+    "ja_jp": "月精モーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.mushroom": {
+    "en_us": "Mushroomia",
+    "ja_jp": "茸精ムシュローミャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.mycelium": {
+    "en_us": "Myceliumia",
+    "ja_jp": "菌糸精ミツェリウミャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.nether_star": {
+    "en_us": "Nethere Staria",
+    "ja_jp": "地獄星精ネテーレスターリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.netherite": {
+    "en_us": "Netheritia",
+    "ja_jp": "地獄合金精ネテリーチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.netherrack": {
+    "en_us": "Netherrackia",
+    "ja_jp": "地獄岩精ネテッラッキャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.night": {
+    "en_us": "Nightia",
+    "ja_jp": "夜精ニグチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.obsidian": {
+    "en_us": "Obsidiania",
+    "ja_jp": "黒曜石精オブシディアーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.phantom_drop": {
+    "en_us": "Phantome Dropia",
+    "ja_jp": "幻想雫精ファントーメドローピャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.phantom_flower": {
+    "en_us": "Phantomia",
+    "ja_jp": "幻花精ファントーミャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.pickaxe": {
+    "en_us": "Pickaxia",
+    "ja_jp": "鶴嘴精ピッカーシャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.pig": {
+    "en_us": "Pigia",
+    "ja_jp": "豚精ピーギャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.piglin_brute": {
+    "en_us": "Pigline Brutia",
+    "ja_jp": "豚人畜生精ピグリーネブルーチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.player": {
+    "en_us": "Playeria",
+    "ja_jp": "人精プライェーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.poisonous_potato": {
+    "en_us": "Poisonouse Potatia",
+    "ja_jp": "毒芋精ポイソノウセポターチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.potato": {
+    "en_us": "Potatia",
+    "ja_jp": "芋精ポターチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.pumpkin": {
+    "en_us": "Pumpkinia",
+    "ja_jp": "南瓜精プンプキーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.purpur": {
+    "en_us": "Purpuria",
+    "ja_jp": "紫珀精プルプーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.rabbit": {
+    "en_us": "Rabbitia",
+    "ja_jp": "兎精ラッビーチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.red_mushroom": {
+    "en_us": "Rede Mushroomia",
+    "ja_jp": "赤茸精レーデムシュローミャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.rotten_flesh": {
+    "en_us": "Rottene Fleshia",
+    "ja_jp": "腐肉精ロッテーネフレーシャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.sculk": {
+    "en_us": "Sculkia",
+    "ja_jp": "幽匿塊精スツルキャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.sheep": {
+    "en_us": "Sheepia",
+    "ja_jp": "羊精シェーピャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.shield": {
+    "en_us": "Shieldia",
+    "ja_jp": "盾精シエルジャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.shovel": {
+    "en_us": "Shovelia",
+    "ja_jp": "円匙精ショヴェーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.silverfish": {
+    "en_us": "Silverfishia",
+    "ja_jp": "紙魚精シルヴェルフィーシャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.skeleton": {
+    "en_us": "Skeletonia",
+    "ja_jp": "骸骨精スケレトーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.spruce": {
+    "en_us": "Sprucia",
+    "ja_jp": "松精スプルーツァ"
+  },
+  "miragefairy2024.motif.miragefairy2024.star": {
+    "en_us": "Staria",
+    "ja_jp": "星精スターリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.stone": {
+    "en_us": "Stonia",
+    "ja_jp": "石精ストーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.sugar": {
+    "en_us": "Sugaria",
+    "ja_jp": "砂糖精スガーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.sun": {
+    "en_us": "Sunia",
+    "ja_jp": "太陽精スーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.sweet_berry": {
+    "en_us": "Sweete Berria",
+    "ja_jp": "甘液果精スウェーテベッリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.sword": {
+    "en_us": "Swordia",
+    "ja_jp": "剣精スウォルジャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.thunder": {
+    "en_us": "Thunderia",
+    "ja_jp": "雷精ツンデーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.time": {
+    "en_us": "Timia",
+    "ja_jp": "時精ティーミャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.trinitrotoluene": {
+    "en_us": "Trinitrotoluenia",
+    "ja_jp": "茶褐薬精トリニトロトルエーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.vacuum_decay": {
+    "en_us": "Vacuume Decia",
+    "ja_jp": "真空崩壊精ヴァツーメデーツャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.velopeda": {
+    "en_us": "Velopedia",
+    "ja_jp": "呪草精ヴェロページャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.villager": {
+    "en_us": "Villageria",
+    "ja_jp": "村人精ヴィッラゲーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.warden": {
+    "en_us": "Wardenia",
+    "ja_jp": "監守者精ワルデーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.water": {
+    "en_us": "Wateria",
+    "ja_jp": "水精ワテーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.wheat": {
+    "en_us": "Wheatia",
+    "ja_jp": "麦精ウェアーチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.witch": {
+    "en_us": "Witchia",
+    "ja_jp": "魔女精ウィツキャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.wither": {
+    "en_us": "Witheria",
+    "ja_jp": "枯精ウィテーリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.wither_skeleton": {
+    "en_us": "Withere Skeletonia",
+    "ja_jp": "枯骸骨精ウィテーレスケレトーニャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.wither_skeleton_skull": {
+    "en_us": "Withere Skeletone Skullia",
+    "ja_jp": "枯頭蓋骨精ウィテーレスケレトーネスクッリャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.wolf": {
+    "en_us": "Wolfia",
+    "ja_jp": "狼精ウォルフャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.wood": {
+    "en_us": "Woodia",
+    "ja_jp": "木精ウォージャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.xarpite": {
+    "en_us": "Xarpitia",
+    "ja_jp": "紅天石精シャルピーチャ"
+  },
+  "miragefairy2024.motif.miragefairy2024.zombie": {
+    "en_us": "Zombia",
+    "ja_jp": "硬屍精ゾンビャ"
+  },
+  "miragefairy2024.passive_skill.per_second": {
+    "en_us": "%s/s",
+    "ja_jp": "%s/秒"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.axe": {
+    "en_us": "Axe",
+    "ja_jp": "斧"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.daytime": {
+    "en_us": "Daytime",
+    "ja_jp": "昼間"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.fine": {
+    "en_us": "Fine",
+    "ja_jp": "晴天"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.food_ingredient": {
+    "en_us": "%s Dishes",
+    "ja_jp": "%s料理"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.hoe": {
+    "en_us": "Hoe",
+    "ja_jp": "クワ"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.in_nether": {
+    "en_us": "In Nether",
+    "ja_jp": "ネザー"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.in_the_air": {
+    "en_us": "In the Air",
+    "ja_jp": "空中"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.indoor": {
+    "en_us": "Indoor",
+    "ja_jp": "屋内"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.night": {
+    "en_us": "Night",
+    "ja_jp": "夜間"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.not_in_nether": {
+    "en_us": "Not In Nether",
+    "ja_jp": "ネザー外"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.on_fire": {
+    "en_us": "On Fire",
+    "ja_jp": "炎上"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.outdoor": {
+    "en_us": "Outdoor",
+    "ja_jp": "屋外"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.overworld": {
+    "en_us": "Overworld",
+    "ja_jp": "地上世界"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.pickaxe": {
+    "en_us": "Pickaxe",
+    "ja_jp": "つるはし"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.raining": {
+    "en_us": "Raining",
+    "ja_jp": "雨天"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.shovel": {
+    "en_us": "Shovel",
+    "ja_jp": "シャベル"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.sky_visible": {
+    "en_us": "Sky Visible",
+    "ja_jp": "空が見える"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.sword": {
+    "en_us": "Sword",
+    "ja_jp": "剣"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.thundering": {
+    "en_us": "Thundering",
+    "ja_jp": "雷雨"
+  },
+  "miragefairy2024.passive_skill_condition.miragefairy2024.underwater": {
+    "en_us": "Underwater",
+    "ja_jp": "水中"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.collection": {
+    "en_us": "Collection",
+    "ja_jp": "収集"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.element.attack": {
+    "en_us": "%s Attack",
+    "ja_jp": "%s攻撃力"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.element.defence": {
+    "en_us": "%s Defence",
+    "ja_jp": "%s防御力"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.element.elements.fall": {
+    "en_us": "Fall",
+    "ja_jp": "落下"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.element.elements.fire": {
+    "en_us": "Fire",
+    "ja_jp": "火属性"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.element.elements.magic": {
+    "en_us": "Magic",
+    "ja_jp": "魔法"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.element.elements.melee": {
+    "en_us": "Melee",
+    "ja_jp": "近接"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.element.elements.overall": {
+    "en_us": "Overall",
+    "ja_jp": "全体"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.element.elements.shooting": {
+    "en_us": "Shooting",
+    "ja_jp": "射撃"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.element.elements.spine": {
+    "en_us": "Spine",
+    "ja_jp": "棘"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.experience": {
+    "en_us": "Gain XP",
+    "ja_jp": "経験値獲得"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.hunger": {
+    "en_us": "Hunger",
+    "ja_jp": "空腹"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.ignition": {
+    "en_us": "Ignition",
+    "ja_jp": "発火"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.mana_boost": {
+    "en_us": "Mana",
+    "ja_jp": "魔力"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.mana_boost.family": {
+    "en_us": "%s Family",
+    "ja_jp": "%s系統"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.mending": {
+    "en_us": "Durability Regeneration",
+    "ja_jp": "耐久値自然回復"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.mining_speed": {
+    "en_us": "Mining Speed",
+    "ja_jp": "採掘速度"
+  },
+  "miragefairy2024.passive_skill_type.miragefairy2024.regeneration": {
+    "en_us": "Regeneration",
+    "ja_jp": "持続回復"
+  },
+  "miragefairy2024.trait.miragefairy2024.adversity_flower": {
+    "en_us": "Adversity Flower",
+    "ja_jp": "高嶺の花"
+  },
+  "miragefairy2024.trait.miragefairy2024.adversity_flower.poem": {
+    "en_us": "A flower that blooms in adversity is rarer and more beautiful than any other. Even if it shines only for a fleeting moment, it becomes an unattainable object of desire, forever etched in people\u0027s hearts.",
+    "ja_jp": "逆境に咲く花は、どんな花よりも希少で美しい。たとえそれが一瞬の輝きであったとしても、手に入れることのできない、あこがれの存在として人々の胸に刻まれる。"
+  },
+  "miragefairy2024.trait.miragefairy2024.air_adaptation": {
+    "en_us": "Spatial Adaptation",
+    "ja_jp": "空間適応"
+  },
+  "miragefairy2024.trait.miragefairy2024.air_adaptation.poem": {
+    "en_us": "By decomposing ether with high-energy astral radiation, life support is maintained in outer space. This process is essential for the terraforming of rocky planets.",
+    "ja_jp": "高エネルギーアストラル放射線によってエーテルを分解することで、宇宙空間での生命維持を行う。この作用は岩石惑星のテラフォーミングの上で重要である。"
+  },
+  "miragefairy2024.trait.miragefairy2024.arid_adaptation": {
+    "en_us": "Arid Adaptation",
+    "ja_jp": "乾燥適応"
+  },
+  "miragefairy2024.trait.miragefairy2024.arid_adaptation.poem": {
+    "en_us": "Evolution is often ruthless. The prosperity of the species as a whole does not necessarily lead to the happiness of each individual.",
+    "ja_jp": "進化とは、ときに非情である。種という全体の繁栄が、必ずしも個々の個体の幸福に繋がるとは限らないのだ。"
+  },
+  "miragefairy2024.trait.miragefairy2024.carnivorous_plant": {
+    "en_us": "Carnivorous Plant",
+    "ja_jp": "食虫植物"
+  },
+  "miragefairy2024.trait.miragefairy2024.carnivorous_plant.poem": {
+    "en_us": "It captures small animals like insects and breaks them down with digestive fluids. This is one of the strategies for surviving in nutrient-poor soil.",
+    "ja_jp": "昆虫などの小動物を捕らえ、消化液により分解する。栄養の少ない土壌で生活するための戦略の一つである。"
+  },
+  "miragefairy2024.trait.miragefairy2024.cold_adaptation": {
+    "en_us": "Cold Adaptation",
+    "ja_jp": "低温適応"
+  },
+  "miragefairy2024.trait.miragefairy2024.cold_adaptation.poem": {
+    "en_us": "Only plants that have adapted to low solar radiation, low temperatures, water freezing, snow cover, and harsh cold environments can survive under the extreme cold of the ice.",
+    "ja_jp": "低い日射量、低い気温、水分の凍結、雪による遮蔽、過酷な低温環境に適応した植物だけが極寒の氷の下で生き残ることができる。"
+  },
+  "miragefairy2024.trait.miragefairy2024.creative_growth": {
+    "en_us": "Creative Growth",
+    "ja_jp": "アカーシャのお導き"
+  },
+  "miragefairy2024.trait.miragefairy2024.creative_growth.poem": {
+    "en_us": "The structural and physiological intricacy and imperfection of living organisms suggests that life was designed by a greater intelligence after drinking heavily.",
+    "ja_jp": "生命組織の構造的・生理学的な精緻さおよび不完全さは、生命が大いなる知性によって、泥酔しながら設計されたことを示唆する。"
+  },
+  "miragefairy2024.trait.miragefairy2024.crossbreeding": {
+    "en_us": "Crossbreeding",
+    "ja_jp": "交雑"
+  },
+  "miragefairy2024.trait.miragefairy2024.crossbreeding.poem": {
+    "en_us": "By crossbreeding with different species of plants within the same family, it is possible to introduce genetic traits that the original plant species does not naturally possess.",
+    "ja_jp": "同じ科の異種の植物との交配により、その植物種には本来備わらない遺伝的形質を持たせることができる。"
+  },
+  "miragefairy2024.trait.miragefairy2024.crystal_absorption": {
+    "en_us": "Crystal Absorption",
+    "ja_jp": "鉱物吸収"
+  },
+  "miragefairy2024.trait.miragefairy2024.crystal_absorption.poem": {
+    "en_us": "The shine aura contained within the gemstone is excited by natural astral rays, and the replication erg generated by enzymatic action triggers the self-replication of plant tissues.",
+    "ja_jp": "宝石質に含まれる光のオーラが自然アストラル線によって励起され、酵素の作用で生成された増殖のエルグが植物組織の自己複製作用を誘発する。"
+  },
+  "miragefairy2024.trait.miragefairy2024.desert_gem": {
+    "en_us": "Desert Gem",
+    "ja_jp": "砂漠の宝石"
+  },
+  "miragefairy2024.trait.miragefairy2024.desert_gem.poem": {
+    "en_us": "Legends of plants that bear beautiful gemstones can be found in various desert regions and are often revered. Physiologically, these gemstones are formed as a means for the plants to expel excess metal ions, absorbed due to the low moisture content in the soil.",
+    "ja_jp": "美しい宝石を実らせる植物の伝承は各地の砂漠地帯において見られ、信仰の対象とされる。生理学的には、土中の水分含有量が少ないために過剰に吸収した金属イオンを排出するために形成される。"
+  },
+  "miragefairy2024.trait.miragefairy2024.eternal_treasure": {
+    "en_us": "Eternal Treasure",
+    "ja_jp": "悠久の秘宝"
+  },
+  "miragefairy2024.trait.miragefairy2024.eternal_treasure.poem": {
+    "en_us": "A mysterious fruit shown by nature. Many greedy humans attempted to cultivate it, but not a single one succeeded, or so the story goes.",
+    "ja_jp": "自然が見せる神秘の果実。多くの欲深き人間がその栽培化を試みたものの、成功した者は誰一人として居なかったという。"
+  },
+  "miragefairy2024.trait.miragefairy2024.ether_predation": {
+    "en_us": "Ether Predation",
+    "ja_jp": "エーテル捕食"
+  },
+  "miragefairy2024.trait.miragefairy2024.ether_predation.poem": {
+    "en_us": "All living beings possess an etheric soul. If that is the case, where do the souls of fairies come from? In a sense, the Mirage is a carnivorous plant.",
+    "ja_jp": "生きとし生ける者はみな、エーテルの魂を持つ。なれば、妖精の魂はどこから来るのか？ミラージュはある意味肉食植物だ。"
+  },
+  "miragefairy2024.trait.miragefairy2024.ether_respiration": {
+    "en_us": "Ether Respiration",
+    "ja_jp": "エーテル呼吸"
+  },
+  "miragefairy2024.trait.miragefairy2024.ether_respiration.poem": {
+    "en_us": "Through the action of the astral radiation, ether is vaporized, generating a vortex of souls. Since the appearance of etherobacteria billions of years ago, the universe has been filled with life forms possessing will.",
+    "ja_jp": "情緒体の作用によってエーテルを気化し、魂の渦を生成する。数十億年前にエテロバクテリアが姿を現して以来、宇宙には意志を持った生命で溢れた。"
+  },
+  "miragefairy2024.trait.miragefairy2024.experience_production": {
+    "en_us": "Xp Production",
+    "ja_jp": "経験値生成"
+  },
+  "miragefairy2024.trait.miragefairy2024.experience_production.poem": {
+    "en_us": "The question of whether plants experience consciousness has long been a subject of debate. The discovery of plants that generate experience orbs has brought this discussion to a new stage.",
+    "ja_jp": "植物は意識体験をするか？という問いかけは、長年の議論の対象であった。経験値オーブを生成する植物の発見は、この議論を新たな局面へと導いた。"
+  },
+  "miragefairy2024.trait.miragefairy2024.fairy_blessing": {
+    "en_us": "Fairy Blessing",
+    "ja_jp": "妖精の祝福"
+  },
+  "miragefairy2024.trait.miragefairy2024.fairy_blessing.poem": {
+    "en_us": "A powerful light illuminates the world. A gentle breeze sways the trees. Mirage petals brush against the cheeks. Swirling pollen comes together, transforming into the body of a fairy. The fairy knows. The fate of everything in this world.",
+    "ja_jp": "力強い光が世界を照らす。朗らかな風が木々を揺らす。ミラージュの花びらが頬を撫でる。渦巻く花粉は一つになり、妖精へと姿を変える。妖精は知っている。この世のすべての運命を。"
+  },
+  "miragefairy2024.trait.miragefairy2024.fleshy_leaves": {
+    "en_us": "Fleshy Leaves",
+    "ja_jp": "肉厚の葉"
+  },
+  "miragefairy2024.trait.miragefairy2024.fleshy_leaves.poem": {
+    "en_us": "As a result of evolving to minimize surface area exposed to the air in order to prevent water loss, the leaves have become thick and are now capable of storing water internally.",
+    "ja_jp": "水分の蒸発を防ぐために空気との接触面積を最小化するように進化した結果、葉は肉厚になり、内部に水分を蓄えるようになった。"
+  },
+  "miragefairy2024.trait.miragefairy2024.flower_of_the_end": {
+    "en_us": "Flower of the End",
+    "ja_jp": "終焉の花"
+  },
+  "miragefairy2024.trait.miragefairy2024.flower_of_the_end.poem": {
+    "en_us": "When the vacuum decayed and the concept of the world met its end, that flower never lost its smile until the very last moment.",
+    "ja_jp": "真空が崩壊し、世界という概念が消滅を迎えるとき、その花は最後の瞬間まで笑顔を絶やさなかった。"
+  },
+  "miragefairy2024.trait.miragefairy2024.four_leafed": {
+    "en_us": "Four-leafed",
+    "ja_jp": "四つ葉"
+  },
+  "miragefairy2024.trait.miragefairy2024.four_leafed.poem": {
+    "en_us": "The probability of a certain type of plant having a set of four leaves is typically less than 1 in 10,000, reflecting the high luck of the discoverer. Therefore, by adjusting random numbers so that all leaves are in sets of four, it is theoretically possible to maximize the luck of all humanity at all times.",
+    "ja_jp": "ある種の植物の葉が4枚組となる確率は通常1万分の1以下であり、これは発見者の運気の高さを反映している。したがって、すべての葉が4枚組となるように乱数調整を行うことで、理論上全人類の運気を常に最大化できる。"
+  },
+  "miragefairy2024.trait.miragefairy2024.fruit_of_knowledge": {
+    "en_us": "Forbidden Fruit",
+    "ja_jp": "禁断の果実"
+  },
+  "miragefairy2024.trait.miragefairy2024.fruit_of_knowledge.poem": {
+    "en_us": "Consciousness, memory, soul, and genes--all this information is produced by the vortex motion of the gaseous etheric body. It is prophesied that the astral vortex, bound by the forbidden fruit, will connect to the creative demon, who possesses all knowledge beyond time and space.",
+    "ja_jp": "意識、記憶、魂、遺伝子、これらすべての情報は、気相エーテル体の渦状運動によってもたらされる。禁断の果実に束縛されたアストラル渦は、時空を超えたありとあらゆる知識を持つというアカーシャの悪魔につながることが予言されている。"
+  },
+  "miragefairy2024.trait.miragefairy2024.fruits_production": {
+    "en_us": "Fruits Production",
+    "ja_jp": "果実生成"
+  },
+  "miragefairy2024.trait.miragefairy2024.fruits_production.poem": {
+    "en_us": "Human ancestors lived arboreal lives and primarily consumed fruit. While humans cannot eat raw meat, they can eat raw fruit. Interestingly, the nutritional values of fairies shares many similarities with that of common fruit.",
+    "ja_jp": "ヒトの祖先は樹上生活を行い、果実食であった。ヒトは肉を生食できないが、果実は生食することができる。ところで、興味深いことに妖精の栄養価は一般的な果実のそれと多くが共通している。"
+  },
+  "miragefairy2024.trait.miragefairy2024.golden_apple": {
+    "en_us": "Golden Apple",
+    "ja_jp": "金のリンゴ"
+  },
+  "miragefairy2024.trait.miragefairy2024.golden_apple.poem": {
+    "en_us": "When a sheep is dyed with lapis lazuli powder and then sheared, it will subsequently grow blue wool. This phenomenon is known as exogenous pigment induction.",
+    "ja_jp": "ヒツジをラピスラズリの粉末で着色して毛を刈り取ると、そのヒツジは以後、青色の毛を生やすようになる。このような現象を外因性色素誘導と呼ぶ。"
+  },
+  "miragefairy2024.trait.miragefairy2024.heating_mechanism": {
+    "en_us": "Heating Mechanism",
+    "ja_jp": "発熱機構"
+  },
+  "miragefairy2024.trait.miragefairy2024.heating_mechanism.poem": {
+    "en_us": "Bacteria symbiotic within the cells generate heat through their metabolism. This heat helps prevent growth from stalling in cold environments.",
+    "ja_jp": "細胞内に共生するバクテリアが、代謝によって熱を発生させる。この熱によって低温環境で成長が停滞することを防ぐ。"
+  },
+  "miragefairy2024.trait.miragefairy2024.hot_adaptation": {
+    "en_us": "Hot Adaptation",
+    "ja_jp": "高温適応"
+  },
+  "miragefairy2024.trait.miragefairy2024.hot_adaptation.poem": {
+    "en_us": "The jungle, a paradise for plants, the scorching desert, the fiery inferno—though all these are high-temperature environments, their actual conditions vary greatly. This trait is merely a collection of minor techniques that prove useful across various high-temperature environments.",
+    "ja_jp": "植物の楽園であるジャングル地帯、炎天下の砂漠、灼熱地獄、一口に高温環境といっても、その実態は様々である。この形質は、高温環境全般で役に立つ小技の寄せ集めにすぎない。"
+  },
+  "miragefairy2024.trait.miragefairy2024.humid_adaptation": {
+    "en_us": "Humid Adaptation",
+    "ja_jp": "湿潤適応"
+  },
+  "miragefairy2024.trait.miragefairy2024.humid_adaptation.poem": {
+    "en_us": "The plant that designs and operates the most efficient flow for converting H2O and CO2 into O2 and organic matter will ultimately dominate humid environments.",
+    "ja_jp": "H2OとCO2をO2と有機物に加工するフローを最も効率的に設計・運用した工場が、最終的に湿潤な環境を制覇する。"
+  },
+  "miragefairy2024.trait.miragefairy2024.leaves_production": {
+    "en_us": "Leaves Production",
+    "ja_jp": "葉面生成"
+  },
+  "miragefairy2024.trait.miragefairy2024.leaves_production.poem": {
+    "en_us": "Between 1.2 and 0.8 billion years ago, green plants emerged and developed the ability to fix carbon, while simultaneously losing their symbiotic relationship with etherobacteria. The fact that most modern plants lack intelligence is said to be a remnant of this evolutionary change.",
+    "ja_jp": "12-8億年前、緑色植物が出現し、炭素固定能力を発達させた一方で、エテロバクテリアとの細胞内共生を退化させた。現生植物の多くに知性が欠落している事実は、この進化の名残りと言われている。"
+  },
+  "miragefairy2024.trait.miragefairy2024.mesic_adaptation": {
+    "en_us": "Mesic Adaptation",
+    "ja_jp": "中湿適応"
+  },
+  "miragefairy2024.trait.miragefairy2024.mesic_adaptation.poem": {
+    "en_us": "Moderate humidity provide comfort for plants as well, allowing a diverse range of species to thrive. In such an environment, a straightforward struggle for survival is required, with no possibility of escape or hiding, and no tricks. Winning in an ordinary world is the most challenging of all.",
+    "ja_jp": "極端でない湿度は、植物にとっても快適であり、多様な植物が繁栄する。ここでは、逃げも隠れもできない、小細工なしの生存競争が求められる。普通の世界で勝利することが最も難しいのだ。"
+  },
+  "miragefairy2024.trait.miragefairy2024.mutation": {
+    "en_us": "Mutation",
+    "ja_jp": "突然変異"
+  },
+  "miragefairy2024.trait.miragefairy2024.mutation.poem": {
+    "en_us": "Mutation, in a narrow sense, refers to the irreversible disruption of a part of the read-only region of an individual\u0027s astral vortex, under the influence of an internal attractor generated by natural aura fluctuations. Typically, this effect is inherited by its offspring.",
+    "ja_jp": "突然変異とは、狭義には個体のアストラル渦の読み取り専用領域の一部が、自然オーラゆらぎによる内部アトラクタの影響によって不可逆的に錯乱を受けることを指す。通常、この影響は子に受け継がれる。"
+  },
+  "miragefairy2024.trait.miragefairy2024.natural_abscission": {
+    "en_us": "Natural Abscission",
+    "ja_jp": "自然落果"
+  },
+  "miragefairy2024.trait.miragefairy2024.natural_abscission.poem": {
+    "en_us": "A part of the plant\u0027s body falls off and drops to the ground. The wind, animals, and sometimes even humans carry it far away. For the plant, the automation of harvesting is merely a means of reproduction.",
+    "ja_jp": "植物の体の一部が欠落し、地面に落ちる。それを風や動物、ときには人間が遠くへ運ぶ。収穫の自動化は、植物にとっては繁殖の手段にすぎないのだ。"
+  },
+  "miragefairy2024.trait.miragefairy2024.noded_stem": {
+    "en_us": "Noded Stem",
+    "ja_jp": "節状の茎"
+  },
+  "miragefairy2024.trait.miragefairy2024.noded_stem.poem": {
+    "en_us": "The stems of plants in the order Miragales are known for having nodes, similar to bamboo or wheat. These nodes are deactivated growth points, and in principle, rapid growth is possible by activating growth at all nodes simultaneously.",
+    "ja_jp": "妖花目の植物の茎は、竹や麦などと同様に節目を持つことで知られる。これらの節目は失活した成長点であり、原理的にはすべての節目で成長を行うことにより高速な生育が可能である。"
+  },
+  "miragefairy2024.trait.miragefairy2024.osmotic_absorption": {
+    "en_us": "Nutrient Absorption",
+    "ja_jp": "養分吸収"
+  },
+  "miragefairy2024.trait.miragefairy2024.osmotic_absorption.poem": {
+    "en_us": "When the ion concentration in the root cells is higher than that in the surrounding soil, osmosis causes the water in the soil, along with nutrients, to be absorbed into the roots. This process requires the transpiration action of the leaves.",
+    "ja_jp": "根の細胞のイオン濃度が周囲の土中に比べて高いとき、浸透圧によって土中の水分が養分とともに根に吸収される。この過程には葉の蒸散作用が不可欠である。"
+  },
+  "miragefairy2024.trait.miragefairy2024.pavement_flowers": {
+    "en_us": "Pavement Flowers",
+    "ja_jp": "アスファルトに咲く花"
+  },
+  "miragefairy2024.trait.miragefairy2024.pavement_flowers.poem": {
+    "en_us": "The sight of a small flower piercing through hard ground and transforming bitumen into nutrients is known as a symbol of the powerful vitality possessed by plants.",
+    "ja_jp": "小さな花が硬い地面を穿ち瀝青を栄養に変えるその姿は、植物の持つ力強い生命力の象徴として知られる。"
+  },
+  "miragefairy2024.trait.miragefairy2024.phaeosynthesis": {
+    "en_us": "Phaeosynthesis",
+    "ja_jp": "闇合成"
+  },
+  "miragefairy2024.trait.miragefairy2024.phaeosynthesis.poem": {
+    "en_us": "By fluctuations in aura concentration, ether crystals grow from organic elements in the environment. This process is the same as the formation of undead creatures.",
+    "ja_jp": "オーラ濃度のゆらぎにより、環境中の有機元素からエーテル結晶を成長させる。これはアンデッド生物の形成と同じ作用である。"
+  },
+  "miragefairy2024.trait.miragefairy2024.phantom_flower": {
+    "en_us": "Phantom Flower",
+    "ja_jp": "幻の花"
+  },
+  "miragefairy2024.trait.miragefairy2024.phantom_flower.poem": {
+    "en_us": "A phantom flower that blooms in the distant land of fairies. Is its true nature that of an illusory flower? Or is it a flower that shows illusions?",
+    "ja_jp": "遥か妖精の地に咲く幻の花。その正体は幻のような花か？幻を見せる花か？"
+  },
+  "miragefairy2024.trait.miragefairy2024.photosynthesis": {
+    "en_us": "Photosynthesis",
+    "ja_jp": "光合成"
+  },
+  "miragefairy2024.trait.miragefairy2024.photosynthesis.poem": {
+    "en_us": "Through the Dephlogistication Reaction, oxygen and organic matter are produced from water and carbon dioxide. Photosynthesis is a fundamental life activity of plants, alongside etheric respiration, and it supports the existence of many organisms, including herbivores, carnivores, and humans.",
+    "ja_jp": "脱フロギストン反応により、水と二酸化炭素から酸素と有機物が生産される。光合成はエーテル呼吸と並ぶ植物の生命活動の根幹であり、草食動物、肉食動物、人間など、多くの生物の存在を成り立たせている。"
+  },
+  "miragefairy2024.trait.miragefairy2024.plants_with_self_awareness": {
+    "en_us": "Plants with Self-Awareness",
+    "ja_jp": "自我を持つ植物"
+  },
+  "miragefairy2024.trait.miragefairy2024.plants_with_self_awareness.poem": {
+    "en_us": "On a colonized planet lacking native flying animals, giving mobility to airborne reproductive cells is beneficial in terms of increasing the probability of encounters between individual organisms.",
+    "ja_jp": "固有の飛行性動物を欠いた開拓型惑星において、空中散布式の生殖細胞に運動能力を与えることは、個体同士の遭遇確率の点で有益である。"
+  },
+  "miragefairy2024.trait.miragefairy2024.prosperity_of_species": {
+    "en_us": "Prosperity of Species",
+    "ja_jp": "種の繁栄"
+  },
+  "miragefairy2024.trait.miragefairy2024.prosperity_of_species.poem": {
+    "en_us": "Those who bear many offspring, those who are flexible to change, those who are greedy, those who eliminate their enemies, and those who, in the end, leave behind many descendants are the ones who win the struggle for survival.",
+    "ja_jp": "多くの子を産む者、変化に柔軟な者、欲張りな者、敵を蹴落とす者、結果的に多くの子孫を遺せた者が生存競争を勝ち抜くのだ。"
+  },
+  "miragefairy2024.trait.miragefairy2024.rare_production": {
+    "en_us": "Rare Production",
+    "ja_jp": "希少品生成"
+  },
+  "miragefairy2024.trait.miragefairy2024.rare_production.poem": {
+    "en_us": "This trait does not actually exist as a single gene, but is instead a collection of various genetic characteristics responsible for the formation of certain parts, such as the crystallization of phytoliths in the fruit, which humans deem rare or valuable.",
+    "ja_jp": "この特性は、実際には遺伝子上には存在せず、果実部におけるプラントオパールの結晶化など、人間が希少と判断するいくつかの部位を形成する遺伝的形質をまとめたものである。"
+  },
+  "miragefairy2024.trait.miragefairy2024.seeds_dilution": {
+    "en_us": "Seeds Dilution",
+    "ja_jp": "種子希釈"
+  },
+  "miragefairy2024.trait.miragefairy2024.seeds_dilution.poem": {
+    "en_us": "Through the Homology Resonance System, seeds carrying genetic sequences that partially match those of the parent plant are selectively protected. As a result, at the cost of genetic diversity, resources can be reallocated to a larger number of seeds.",
+    "ja_jp": "ホモロジー共鳴系により親植物と部分的に一致する遺伝子配列を持つ種子を選択的に保護する。これにより、遺伝的多様性を犠牲にしてより多くの種子に資源を再分配できる。"
+  },
+  "miragefairy2024.trait.miragefairy2024.seeds_production": {
+    "en_us": "Seeds Production",
+    "ja_jp": "種子生成"
+  },
+  "miragefairy2024.trait.miragefairy2024.seeds_production.poem": {
+    "en_us": "Strictly speaking, seeds refer to the reproductive structures formed in the lower part of the pistil. However, in many plants in the order Miragales, seeds tend to detach and disperse quickly. For convenience, bulbs are often treated as seeds in these plants.",
+    "ja_jp": "種子とは、狭義にはめしべの下部に形成される繁殖組織をいう。しかし、妖花目の植物は種子がすぐに欠落し拡散されるものが多いため、便宜上球根を種子同然に扱うことが多い。"
+  },
+  "miragefairy2024.trait.miragefairy2024.selenosynthesis": {
+    "en_us": "Selenosynthesis",
+    "ja_jp": "月光合成"
+  },
+  "miragefairy2024.trait.miragefairy2024.selenosynthesis.poem": {
+    "en_us": "The gaia and darkness auras emitted by lunar regolith transition into the shine spectrum as their parallelism increases during long-distance propagation. Hollow structures composed of slightly aura-resistant tissue efficiently trap them and condense them into primitive fairy wisps.",
+    "ja_jp": "月表土が放射する土・闇オーラは、長距離伝播の過程で平行性の増大による光スペクトルへの転移を受ける。弱耐霊性組織による中空構造はこれを効率的にトラップし、原始的なフェアリーウィスプを形成する。"
+  },
+  "miragefairy2024.trait.miragefairy2024.spiny_leaves": {
+    "en_us": "Spiny Leaves",
+    "ja_jp": "棘のある葉"
+  },
+  "miragefairy2024.trait.miragefairy2024.spiny_leaves.poem": {
+    "en_us": "Spines prevent the loss of water through transpiration and are also used for defense against herbivorous animals. The spines of plants in the Miragaceae family are made of sharp tissues containing silicates, which can easily pierce human skin and cause mild inflammation.",
+    "ja_jp": "棘は水分の蒸散を防ぎ、草食動物からの防御にも使われる。ミラージュ科の植物が持つ棘はケイ酸塩を含む鋭利な組織でできており、人間の皮膚を容易に傷つけ、軽度の炎症を引き起こす。"
+  },
+  "miragefairy2024.trait.miragefairy2024.treasure_of_xarpa": {
+    "en_us": "Treasure of Xarpa",
+    "ja_jp": "シャルパの秘宝"
+  },
+  "miragefairy2024.trait.miragefairy2024.treasure_of_xarpa.poem": {
+    "en_us": "Since ancient times, people have revered what lies beyond their understanding, calling it mysterious or sacred. The formation of crystals is a natural ability in plants of the Miragales order, and it is easy to destroy the genes that prevent this. Humanity has transcended the mysterious.",
+    "ja_jp": "人々は昔から、理解を超えた対象を神秘と呼び、神聖視してきた。結晶の生成は妖花目の植物における生来の能力であり、これを妨げる遺伝子を破壊することは容易だ。人類は神秘を超越したのだ。"
+  },
+  "miragefairy2024.trait.miragefairy2024.warm_adaptation": {
+    "en_us": "Warm Adaptation",
+    "ja_jp": "中温適応"
+  },
+  "miragefairy2024.trait.miragefairy2024.warm_adaptation.poem": {
+    "en_us": "In environments with comfortable temperatures, plants can save evolutionary energy that would otherwise be allocated to cold or heat resistance. As a result, they are able to devote more energy to growth and reproduction.",
+    "ja_jp": "快適な気温の環境では、耐寒や耐暑に割り当てる進化的エネルギーを節約できる。その結果、植物はより多くのエネルギーを成長や繁殖に割くことができる。"
+  },
+  "miragefairy2024.trait.miragefairy2024.waterlogging_tolerance": {
+    "en_us": "Waterlogging Tolerance",
+    "ja_jp": "浸水耐性"
+  },
+  "miragefairy2024.trait.miragefairy2024.waterlogging_tolerance.poem": {
+    "en_us": "By developing hollow stems that actively transport oxygen, this plant prevents its roots from becoming oxygen-deprived even in waterlogged conditions. As a result, it can thrive in environments where other plants would suffer from root rot.",
+    "ja_jp": "中空の茎を発達させ、能動的に酸素を送り込むことで、浸水状態にあっても根が酸欠状態になるのを防ぐ。これにより、他の植物が根腐れを起こすような環境でも生育できる。"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.darkness": {
+    "en_us": "Darkness",
+    "ja_jp": "闇"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.fine": {
+    "en_us": "Fine",
+    "ja_jp": "晴れ"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.floor_crystal_erg": {
+    "en_us": "Floor Crystal Erg",
+    "ja_jp": "鉱物質の地面"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.floor_hardness": {
+    "en_us": "Floor Hardness",
+    "ja_jp": "硬い地面"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.floor_moisture": {
+    "en_us": "Floor Moisture",
+    "ja_jp": "湿った地面"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.high_altitude": {
+    "en_us": "High Altitude",
+    "ja_jp": "高地"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.high_humidity": {
+    "en_us": "High Humidity",
+    "ja_jp": "高い湿度"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.high_temperature": {
+    "en_us": "High Temperature",
+    "ja_jp": "高い気温"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.light": {
+    "en_us": "Light",
+    "ja_jp": "光"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.low_altitude": {
+    "en_us": "Low Altitude",
+    "ja_jp": "低地"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.low_humidity": {
+    "en_us": "Low Humidity",
+    "ja_jp": "低い湿度"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.low_temperature": {
+    "en_us": "Low Temperature",
+    "ja_jp": "低い気温"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.medium_humidity": {
+    "en_us": "Medium Humidity",
+    "ja_jp": "普通の湿度"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.medium_temperature": {
+    "en_us": "Medium Temperature",
+    "ja_jp": "普通の気温"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.natural": {
+    "en_us": "Natural",
+    "ja_jp": "天然"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.night": {
+    "en_us": "Night",
+    "ja_jp": "夜"
+  },
+  "miragefairy2024.trait_condition.miragefairy2024.sunshine_environment": {
+    "en_us": "Sunshine Environment",
+    "ja_jp": "日照環境"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.crossbreeding": {
+    "en_us": "Crossbreeding",
+    "ja_jp": "交雑"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.experience_production": {
+    "en_us": "Experience Production",
+    "ja_jp": "経験値生成"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.fortune_factor": {
+    "en_us": "Fortune Factor",
+    "ja_jp": "幸運係数"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.fruits_production": {
+    "en_us": "Fruits Production",
+    "ja_jp": "果実生成"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.growth_boost": {
+    "en_us": "Growth Boost",
+    "ja_jp": "成長速度ブースト"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.humidity": {
+    "en_us": "Humidity Environment",
+    "ja_jp": "湿度環境値"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.leaves_production": {
+    "en_us": "Leaves Production",
+    "ja_jp": "葉面生成"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.mutation": {
+    "en_us": "Mutation",
+    "ja_jp": "突然変異"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.natural_abscission": {
+    "en_us": "Natural Abscission",
+    "ja_jp": "自然落果"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.nutrition": {
+    "en_us": "Nutrition",
+    "ja_jp": "栄養値"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.production_boost": {
+    "en_us": "Production Boost",
+    "ja_jp": "生産量ブースト"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.rare_production": {
+    "en_us": "Rare Production",
+    "ja_jp": "希少品生成"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.seeds_dilution": {
+    "en_us": "Seeds Dilution",
+    "ja_jp": "種子希釈"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.seeds_production": {
+    "en_us": "Seeds Production",
+    "ja_jp": "種子生成"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.special_production": {
+    "en_us": "Special Production",
+    "ja_jp": "特殊品生成"
+  },
+  "miragefairy2024.trait_effect.miragefairy2024.temperature": {
+    "en_us": "Temperature Environment",
+    "ja_jp": "気温環境値"
+  },
+  "structure.miragefairy2024.dripstone_caves_ruin": {
+    "en_us": "Dripstone Cave Ruin",
+    "ja_jp": "鍾乳洞の遺跡"
+  },
+  "structure.miragefairy2024.weathered_ancient_remnants": {
+    "en_us": "Weathered Ancient Remnants",
+    "ja_jp": "風化した旧世代の遺構"
+  },
+  "subtitles.miragefairy2024.cancel": {
+    "en_us": "TODO",
+    "ja_jp": "TODO"
+  },
+  "subtitles.miragefairy2024.collect": {
+    "en_us": "Collect item",
+    "ja_jp": "アイテムを集める"
+  },
+  "subtitles.miragefairy2024.entity.chaos_cube.ambient": {
+    "en_us": "Chaos Cube roars",
+    "ja_jp": "混沌のキューブがうなる"
+  },
+  "subtitles.miragefairy2024.entity.chaos_cube.attack": {
+    "en_us": "Chaos Cube chants",
+    "ja_jp": "混沌のキューブが詠唱する"
+  },
+  "subtitles.miragefairy2024.entity.chaos_cube.death": {
+    "en_us": "Chaos Cube dies",
+    "ja_jp": "混沌のキューブが死ぬ"
+  },
+  "subtitles.miragefairy2024.entity.chaos_cube.hurt": {
+    "en_us": "Chaos Cube hurts",
+    "ja_jp": "混沌のキューブがダメージを受ける"
+  },
+  "subtitles.miragefairy2024.entity.etheroballistic_bolt.hit": {
+    "en_us": "Etheroballistic Bolt hits",
+    "ja_jp": "エテロバリスティック弾が当たる"
+  },
+  "subtitles.miragefairy2024.entity.etheroballistic_bolt.shoot": {
+    "en_us": "Etheroballistic Bolt fired",
+    "ja_jp": "エテロバリスティック弾が発射される"
+  },
+  "subtitles.miragefairy2024.magic1": {
+    "en_us": "Magic fired",
+    "ja_jp": "魔法が発射される"
+  },
+  "subtitles.miragefairy2024.magic2": {
+    "en_us": "Magic fired",
+    "ja_jp": "魔法が発射される"
+  },
+  "subtitles.miragefairy2024.magic3": {
+    "en_us": "Magic fired",
+    "ja_jp": "魔法が発射される"
+  },
+  "subtitles.miragefairy2024.magic_hit": {
+    "en_us": "Magic hits",
+    "ja_jp": "魔法が当たる"
+  },
+  "tag.block.miragefairy2024.concrete": {
+    "en_us": "Concrete",
+    "ja_jp": "コンクリート"
+  },
+  "tag.block.miragefairy2024.fairy_building": {
+    "en_us": "Fairy Building",
+    "ja_jp": "妖精の建物"
+  },
+  "tag.block.miragefairy2024.haimeviska_logs": {
+    "en_us": "Haimeviska Logs",
+    "ja_jp": "ハイメヴィスカの原木"
+  },
+  "tag.block.miragefairy2024.local_vacuum_decay_resistant": {
+    "en_us": "Local Vacuum Decay Resistant",
+    "ja_jp": "局所真空崩壊耐性"
+  },
+  "tag.block.miragefairy2024.mineable.noise": {
+    "en_us": "Mineable with noise",
+    "ja_jp": "ノイズで採掘可能"
+  },
+  "tag.block.miragefairy2024.retrospective_city_building": {
+    "en_us": "Retrospective City Building",
+    "ja_jp": "過去を見つめる都市の建物"
+  },
+  "tag.block.miragefairy2024.retrospective_city_floor": {
+    "en_us": "Retrospective City Floor",
+    "ja_jp": "過去を見つめる都市の床"
+  },
+  "tag.damage_type.c.is_magic": {
+    "en_us": "Magic",
+    "ja_jp": "魔法"
+  },
+  "tag.damage_type.miragefairy2024.is_magic": {
+    "en_us": "Magic",
+    "ja_jp": "魔法"
+  },
+  "tag.damage_type.miragefairy2024.spine": {
+    "en_us": "Spine",
+    "ja_jp": "棘"
+  },
+  "tag.damage_type.neoforge.is_magic": {
+    "en_us": "Magic",
+    "ja_jp": "魔法"
+  },
+  "tag.item.c.dusts": {
+    "en_us": "Dusts",
+    "ja_jp": "粉"
+  },
+  "tag.item.c.dusts.bismuth": {
+    "en_us": "Bismuth Dusts",
+    "ja_jp": "ビスマスの粉"
+  },
+  "tag.item.c.echo_shards": {
+    "en_us": "Echo Shards",
+    "ja_jp": "残響の欠片"
+  },
+  "tag.item.c.gems": {
+    "en_us": "Gems",
+    "ja_jp": "ジェム"
+  },
+  "tag.item.c.gems.calculite": {
+    "en_us": "Calculite Gems",
+    "ja_jp": "理天石のジェム"
+  },
+  "tag.item.c.gems.chaos_stone": {
+    "en_us": "Chaos Stone Gems",
+    "ja_jp": "混沌の石のジェム"
+  },
+  "tag.item.c.gems.fairy_crystal": {
+    "en_us": "Fairy Crystal Gems",
+    "ja_jp": "フェアリークリスタルのジェム"
+  },
+  "tag.item.c.gems.fairy_plastic": {
+    "en_us": "Fairy Plastic Gems",
+    "ja_jp": "妖精のプラスチックのジェム"
+  },
+  "tag.item.c.gems.fairy_rubber": {
+    "en_us": "Fairy Rubber Gems",
+    "ja_jp": "夜のかけらのジェム"
+  },
+  "tag.item.c.gems.fluorite": {
+    "en_us": "Fluorite Gems",
+    "ja_jp": "蛍石のジェム"
+  },
+  "tag.item.c.gems.haimeviska_rosin": {
+    "en_us": "Haimeviska Rosin Gems",
+    "ja_jp": "ハイメヴィスカの涙のジェム"
+  },
+  "tag.item.c.gems.luminite": {
+    "en_us": "Luminite Gems",
+    "ja_jp": "ルミナイトのジェム"
+  },
+  "tag.item.c.gems.magnetite": {
+    "en_us": "Magnetite Gems",
+    "ja_jp": "磁鉄鉱のジェム"
+  },
+  "tag.item.c.gems.miragidian": {
+    "en_us": "Miragidian Gems",
+    "ja_jp": "ミラジディアンのジェム"
+  },
+  "tag.item.c.gems.miranagite": {
+    "en_us": "Miranagite Gems",
+    "ja_jp": "蒼天石のジェム"
+  },
+  "tag.item.c.gems.nephrite": {
+    "en_us": "Nephrite Gems",
+    "ja_jp": "ネフライトのジェム"
+  },
+  "tag.item.c.gems.noise": {
+    "en_us": "Noise Gems",
+    "ja_jp": "ノイズのジェム"
+  },
+  "tag.item.c.gems.phantom_drop": {
+    "en_us": "Phantom Drop Gems",
+    "ja_jp": "幻想の雫のジェム"
+  },
+  "tag.item.c.gems.prominite": {
+    "en_us": "Prominite Gems",
+    "ja_jp": "プロミナイトのジェム"
+  },
+  "tag.item.c.gems.sulfur": {
+    "en_us": "Sulfur Gems",
+    "ja_jp": "硫黄のジェム"
+  },
+  "tag.item.c.gems.topaz": {
+    "en_us": "Topaz Gems",
+    "ja_jp": "トパーズのジェム"
+  },
+  "tag.item.c.gems.xarpite": {
+    "en_us": "Xarpite Gems",
+    "ja_jp": "紅天石のジェム"
+  },
+  "tag.item.c.ingots": {
+    "en_us": "Ingots",
+    "ja_jp": "インゴット"
+  },
+  "tag.item.c.ingots.bismuth": {
+    "en_us": "Bismuth Ingots",
+    "ja_jp": "ビスマスのインゴット"
+  },
+  "tag.item.c.ingots.lilagium": {
+    "en_us": "Lilagium Ingots",
+    "ja_jp": "リラジウムのインゴット"
+  },
+  "tag.item.c.ingots.miragium": {
+    "en_us": "Miragium Ingots",
+    "ja_jp": "ミラジウムのインゴット"
+  },
+  "tag.item.c.ingots.resonite": {
+    "en_us": "Resonite Ingots",
+    "ja_jp": "共鳴石のインゴット"
+  },
+  "tag.item.c.nuggets": {
+    "en_us": "Nuggets",
+    "ja_jp": "塊"
+  },
+  "tag.item.c.nuggets.miragium": {
+    "en_us": "Miragium Nuggets",
+    "ja_jp": "ミラジウムの塊"
+  },
+  "tag.item.c.prismarine_shards": {
+    "en_us": "Prismarine Shards",
+    "ja_jp": "プリズマリンの欠片"
+  },
+  "tag.item.c.rods": {
+    "en_us": "Rods",
+    "ja_jp": "棒"
+  },
+  "tag.item.c.rods.miranagite": {
+    "en_us": "Miranagite Rods",
+    "ja_jp": "蒼天石の棒"
+  },
+  "tag.item.c.shards": {
+    "en_us": "Shards",
+    "ja_jp": "欠片"
+  },
+  "tag.item.c.shards.miragidian": {
+    "en_us": "Miragidian Shards",
+    "ja_jp": "ミラジディアンの欠片"
+  },
+  "tag.item.c.tiny_dusts": {
+    "en_us": "Tiny Dusts",
+    "ja_jp": "微粉"
+  },
+  "tag.item.c.tiny_dusts.bismuth": {
+    "en_us": "Bismuth Tiny Dusts",
+    "ja_jp": "ビスマスの微粉"
+  },
+  "tag.item.miragefairy2024.amethyst_tool": {
+    "en_us": "Amethyst Tool",
+    "ja_jp": "アメジストツール"
+  },
+  "tag.item.miragefairy2024.bag": {
+    "en_us": "Bag",
+    "ja_jp": "カバン"
+  },
+  "tag.item.miragefairy2024.bismuth_tool": {
+    "en_us": "Bismuth Tool",
+    "ja_jp": "ビスマスツール"
+  },
+  "tag.item.miragefairy2024.builders_rod": {
+    "en_us": "Builder\u0027s Rod",
+    "ja_jp": "ビルダーズロッド"
+  },
+  "tag.item.miragefairy2024.calculite_tool": {
+    "en_us": "Calculite Tool",
+    "ja_jp": "理天石ツール"
+  },
+  "tag.item.miragefairy2024.chaos_tool": {
+    "en_us": "Chaos Tool",
+    "ja_jp": "混沌ツール"
+  },
+  "tag.item.miragefairy2024.copper_tool": {
+    "en_us": "Copper Tool",
+    "ja_jp": "銅ツール"
+  },
+  "tag.item.miragefairy2024.diamond_tool": {
+    "en_us": "Diamond Tool",
+    "ja_jp": "ダイヤモンドツール"
+  },
+  "tag.item.miragefairy2024.echo_shard_tool": {
+    "en_us": "Echo Shard Tool",
+    "ja_jp": "残響ツール"
+  },
+  "tag.item.miragefairy2024.emerald_tool": {
+    "en_us": "Emerald Tool",
+    "ja_jp": "エメラルドツール"
+  },
+  "tag.item.miragefairy2024.enchantable.area_mining": {
+    "en_us": "Area Mining Enchantable",
+    "ja_jp": "範囲採掘エンチャント可能"
+  },
+  "tag.item.miragefairy2024.fairy_crystal_tool": {
+    "en_us": "Fairy Crystal",
+    "ja_jp": "フェアリークリスタルツール"
+  },
+  "tag.item.miragefairy2024.flint_tool": {
+    "en_us": "Flint Tool",
+    "ja_jp": "火打石ツール"
+  },
+  "tag.item.miragefairy2024.fluorite_tool": {
+    "en_us": "Fluorite Tool",
+    "ja_jp": "蛍石ツール"
+  },
+  "tag.item.miragefairy2024.glass_tool": {
+    "en_us": "Glass Tool",
+    "ja_jp": "ガラスツール"
+  },
+  "tag.item.miragefairy2024.golden_tool": {
+    "en_us": "Golden Tool",
+    "ja_jp": "金ツール"
+  },
+  "tag.item.miragefairy2024.haimeviska_logs": {
+    "en_us": "Haimeviska Logs",
+    "ja_jp": "ハイメヴィスカの原木"
+  },
+  "tag.item.miragefairy2024.haimeviska_rosin_tool": {
+    "en_us": "Rosin Tool",
+    "ja_jp": "涙ツール"
+  },
+  "tag.item.miragefairy2024.iron_tool": {
+    "en_us": "Iron Tool",
+    "ja_jp": "鉄ツール"
+  },
+  "tag.item.miragefairy2024.lilagium_tool": {
+    "en_us": "Lilagium Tool",
+    "ja_jp": "リラジウムツール"
+  },
+  "tag.item.miragefairy2024.luminite_tool": {
+    "en_us": "Luminite Tool",
+    "ja_jp": "ルミナイトツール"
+  },
+  "tag.item.miragefairy2024.magic_weapon": {
+    "en_us": "Magic Weapon",
+    "ja_jp": "魔法武器"
+  },
+  "tag.item.miragefairy2024.magnetite_tool": {
+    "en_us": "Magnetite Tool",
+    "ja_jp": "磁鉄鉱ツール"
+  },
+  "tag.item.miragefairy2024.mirage_flour": {
+    "en_us": "Mirage Flour",
+    "ja_jp": "ミラージュの花粉"
+  },
+  "tag.item.miragefairy2024.mirage_tool": {
+    "en_us": "Mirage Tool",
+    "ja_jp": "ミラージュツール"
+  },
+  "tag.item.miragefairy2024.miragidian_tool": {
+    "en_us": "Miragidian Tool",
+    "ja_jp": "ミラジディアンツール"
+  },
+  "tag.item.miragefairy2024.miragium_tool": {
+    "en_us": "Miragium Tool",
+    "ja_jp": "ミラジウムツール"
+  },
+  "tag.item.miragefairy2024.miranagite_tool": {
+    "en_us": "Miranagite Tool",
+    "ja_jp": "蒼天石ツール"
+  },
+  "tag.item.miragefairy2024.nephrite_tool": {
+    "en_us": "Nephrite Tool",
+    "ja_jp": "ネフライトツール"
+  },
+  "tag.item.miragefairy2024.nether_star_tool": {
+    "en_us": "Nether Star Tool",
+    "ja_jp": "ネザースターツール"
+  },
+  "tag.item.miragefairy2024.netherite_tool": {
+    "en_us": "Netherite Tool",
+    "ja_jp": "ネザライトツール"
+  },
+  "tag.item.miragefairy2024.neutronium_tool": {
+    "en_us": "Neutronium Tool",
+    "ja_jp": "ニュートロニウムツール"
+  },
+  "tag.item.miragefairy2024.noise_tool": {
+    "en_us": "Noise Tool",
+    "ja_jp": "ノイズツール"
+  },
+  "tag.item.miragefairy2024.none": {
+    "en_us": "None",
+    "ja_jp": "なし"
+  },
+  "tag.item.miragefairy2024.obsidian_tool": {
+    "en_us": "Obsidian Tool",
+    "ja_jp": "黒曜石ツール"
+  },
+  "tag.item.miragefairy2024.phantom_tool": {
+    "en_us": "Phantom Tool",
+    "ja_jp": "幻想ツール"
+  },
+  "tag.item.miragefairy2024.plant_tools": {
+    "en_us": "Plant Tools",
+    "ja_jp": "植物ツール"
+  },
+  "tag.item.miragefairy2024.prominite_tool": {
+    "en_us": "Prominite Tool",
+    "ja_jp": "プロミナイトツール"
+  },
+  "tag.item.miragefairy2024.resonite_tool": {
+    "en_us": "Resonance Tool",
+    "ja_jp": "共鳴ツール"
+  },
+  "tag.item.miragefairy2024.scythe": {
+    "en_us": "Scythe",
+    "ja_jp": "大鎌"
+  },
+  "tag.item.miragefairy2024.soul_stream_containable": {
+    "en_us": "Soul Stream Containable",
+    "ja_jp": "ソウルストリームに格納可能"
+  },
+  "tag.item.miragefairy2024.spirits": {
+    "en_us": "Spirits",
+    "ja_jp": "蒸留酒"
+  },
+  "tag.item.miragefairy2024.stone_tool": {
+    "en_us": "Stone Tool",
+    "ja_jp": "石ツール"
+  },
+  "tag.item.miragefairy2024.topaz_tool": {
+    "en_us": "Topaz Tool",
+    "ja_jp": "トパーズツール"
+  },
+  "tag.item.miragefairy2024.wooden_tool": {
+    "en_us": "Wooden Tool",
+    "ja_jp": "木ツール"
+  },
+  "tag.item.miragefairy2024.xarpite_tool": {
+    "en_us": "Xarpite Tool",
+    "ja_jp": "紅天石ツール"
+  },
+  "tag.worldgen.biome.miragefairy2024.fairy": {
+    "en_us": "Fairy",
+    "ja_jp": "妖精"
+  },
+  "tag.worldgen.structure.miragefairy2024.on_weathered_ancient_remnants_archaeology_maps": {
+    "en_us": "On Weathered Ancient Remnants Archaeology Maps",
+    "ja_jp": "風化した旧世代の遺構の考古学地図で"
+  }
+}
