@@ -240,7 +240,7 @@ tasks.register("showSourceSets") {
 tasks.register<Sync>("buildPages") {
     dependsOn(project("fabric").tasks.named("runDatagen"))
 
-    fun computeTrs(): String {
+    fun getTrs(): String {
         val en = GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json").readText(), JsonElement::class.java).asJsonObject
         val ja = GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json").readText(), JsonElement::class.java).asJsonObject
         val keys = (en.keySet() + ja.keySet()).sorted()
@@ -261,7 +261,7 @@ tasks.register<Sync>("buildPages") {
         filesMatching("lang_table.html") {
             filter {
                 filteringCharset = "UTF-8"
-                it.replace("<%= trs %>", computeTrs())
+                it.replace("<%= trs %>", getTrs())
             }
         }
     }
