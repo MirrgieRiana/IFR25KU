@@ -237,7 +237,7 @@ tasks.register("showSourceSets") {
     }
 }
 
-tasks.register<Copy>("buildPages") {
+tasks.register<Sync>("buildPages") {
     dependsOn(project("fabric").tasks.named("runDatagen"))
 
     fun computeTrs(): String {
