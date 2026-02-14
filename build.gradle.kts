@@ -287,13 +287,16 @@ tasks.register<Sync>("buildPages") {
             write("pages/lang_table.json", json)
         }
         run {
-            val table = keys.map { key ->
-                listOf(
-                    key,
-                    (en.get(key) as JsonPrimitive?)?.asString ?: "-",
-                    (ja.get(key) as JsonPrimitive?)?.asString ?: "-",
-                )
-            }
+            val table = listOf(
+                listOf("key", "en_us", "ja_jp"),
+                *keys.map { key ->
+                    listOf(
+                        key,
+                        (en.get(key) as JsonPrimitive?)?.asString ?: "-",
+                        (ja.get(key) as JsonPrimitive?)?.asString ?: "-",
+                    )
+                }.toTypedArray(),
+            )
             val csv = table.joinToString("") { row ->
                 row.joinToString(",") {
                     if (',' in it || '"' in it || '\r' in it || '\n' in it) {
