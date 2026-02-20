@@ -1,4 +1,6 @@
 {
+  "advancements.miragefairy2024.athanor.description": "Craft an Athanor from a Fairy Pot, Fairy Ceramic Bricks, and a few other materials",
+  "advancements.miragefairy2024.athanor.title": "Magical Furnace",
   "advancements.miragefairy2024.aura_reflector_furnace.description": "Build an Aura Reflector Furnace and feed it with soul fuel",
   "advancements.miragefairy2024.aura_reflector_furnace.title": "Polymerization of the Ego",
   "advancements.miragefairy2024.bag.description": "Craft a bag that can store a decent number of specific items",
@@ -100,6 +102,8 @@
   "biome.miragefairy2024.deep_fairy_forest": "Deep Fairy Forest",
   "biome.miragefairy2024.fairy_forest": "Fairy Forest",
   "biome.miragefairy2024.retrospective_city": "Retrospective City",
+  "block.miragefairy2024.athanor": "Athanor",
+  "block.miragefairy2024.athanor.poem": "Long-term heating by fuel tower",
   "block.miragefairy2024.aura_reflector_furnace": "Aura Reflector Furnace",
   "block.miragefairy2024.aura_reflector_furnace.poem": "Life is essentially inorganic.",
   "block.miragefairy2024.aura_resistant_ceramic": "Protective Aura-Resistant Ceramic",

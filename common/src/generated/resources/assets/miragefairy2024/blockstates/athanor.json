@@ -1,0 +1,68 @@
+{
+  "variants": {
+    "facing=east,half=lower,lit=false": {
+      "model": "miragefairy2024:block/athanor",
+      "y": 90
+    },
+    "facing=east,half=lower,lit=true": {
+      "model": "miragefairy2024:block/athanor_lit",
+      "y": 90
+    },
+    "facing=east,half=upper,lit=false": {
+      "model": "miragefairy2024:block/athanor_top",
+      "y": 90
+    },
+    "facing=east,half=upper,lit=true": {
+      "model": "miragefairy2024:block/athanor_lit_top",
+      "y": 90
+    },
+    "facing=north,half=lower,lit=false": {
+      "model": "miragefairy2024:block/athanor",
+      "y": 0
+    },
+    "facing=north,half=lower,lit=true": {
+      "model": "miragefairy2024:block/athanor_lit",
+      "y": 0
+    },
+    "facing=north,half=upper,lit=false": {
+      "model": "miragefairy2024:block/athanor_top",
+      "y": 0
+    },
+    "facing=north,half=upper,lit=true": {
+      "model": "miragefairy2024:block/athanor_lit_top",
+      "y": 0
+    },
+    "facing=south,half=lower,lit=false": {
+      "model": "miragefairy2024:block/athanor",
+      "y": 180
+    },
+    "facing=south,half=lower,lit=true": {
+      "model": "miragefairy2024:block/athanor_lit",
+      "y": 180
+    },
+    "facing=south,half=upper,lit=false": {
+      "model": "miragefairy2024:block/athanor_top",
+      "y": 180
+    },
+    "facing=south,half=upper,lit=true": {
+      "model": "miragefairy2024:block/athanor_lit_top",
+      "y": 180
+    },
+    "facing=west,half=lower,lit=false": {
+      "model": "miragefairy2024:block/athanor",
+      "y": 270
+    },
+    "facing=west,half=lower,lit=true": {
+      "model": "miragefairy2024:block/athanor_lit",
+      "y": 270
+    },
+    "facing=west,half=upper,lit=false": {
+      "model": "miragefairy2024:block/athanor_top",
+      "y": 270
+    },
+    "facing=west,half=upper,lit=true": {
+      "model": "miragefairy2024:block/athanor_lit_top",
+      "y": 270
+    }
+  }
+}

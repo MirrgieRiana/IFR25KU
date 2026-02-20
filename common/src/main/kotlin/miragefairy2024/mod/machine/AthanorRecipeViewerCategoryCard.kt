@@ -1,12 +1,7 @@
 package miragefairy2024.mod.machine
 
-import com.mojang.serialization.Codec
 import dev.architectury.registry.fuel.FuelRegistry
 import miragefairy2024.MirageFairy2024
-import miragefairy2024.ModContext
-import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
-import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
-import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.toSecondsTextAsTicks
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
@@ -30,24 +25,18 @@ import miragefairy2024.mod.recipeviewer.views.noMargin
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
-import miragefairy2024.util.plusAssign
 import miragefairy2024.util.toIngredientStack
-import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.world.item.ItemStack
 
-object AthanorRecipeViewerCategoryCard : RecipeViewerCategoryCard<AthanorRecipe>() {
+object AthanorRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<AthanorRecipe>() {
     override fun getId() = MirageFairy2024.identifier("athanor")
     override fun getName() = EnJa("Athanor", "アタノール")
-    override fun getIcon() = AthanorRecipeCard.getIcon()
-    override fun getWorkstations() = listOf<ItemStack>() // TODO AthanorCard.item().createItemStack()
-    override fun getRecipeCodec(registryAccess: RegistryAccess): Codec<AthanorRecipe> = AthanorRecipeCard.serializer.codec().codec()
     private fun getFuelIngredientStack(): IngredientStack = BuiltInRegistries.ITEM.filter { FuelRegistry.get(it.defaultInstance) != 0 }.toIngredientStack()
-    override fun getInputs(recipeEntry: RecipeEntry<AthanorRecipe>) = recipeEntry.recipe.inputs.map { input -> Input(input.ingredient.toIngredientStack(input.count), false) } + listOf(Input(getFuelIngredientStack(), true))
-    override fun getOutputs(recipeEntry: RecipeEntry<AthanorRecipe>) = recipeEntry.recipe.outputs
-
-    private val backgroundTexture = MirageFairy2024.identifier("textures/gui/container/athanor.png")
-    private val backgroundTextureSize = IntPoint(256, 256)
+    override fun getInputs(recipeEntry: RecipeEntry<AthanorRecipe>) = super.getInputs(recipeEntry) + listOf(Input(getFuelIngredientStack(), true))
+    override fun getRecipeCard() = AthanorRecipeCard
+    override fun getMachineCard() = AthanorCard
+    override fun getScreenClickAreas() = listOf(Pair(getMachineCard().screenHandlerType.key, IntRectangle(85, 40, 24, 17)))
 
     override fun createView(recipeEntry: RecipeEntry<AthanorRecipe>) = View {
         val imageBound = IntRectangle(17, 16, 142, 62)
@@ -55,7 +44,7 @@ object AthanorRecipeViewerCategoryCard : RecipeViewerCategoryCard<AthanorRecipe>
         val p = bounds.offset
         view += AbsoluteView(bounds.size).configure {
 
-            view += ImageView(ViewTexture(backgroundTexture, backgroundTextureSize, bounds))
+            view += ImageView(getTexture(bounds))
 
             fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
             view += InputSlotView(getInput(0)).noBackground().noMargin().configure {
@@ -105,11 +94,5 @@ object AthanorRecipeViewerCategoryCard : RecipeViewerCategoryCard<AthanorRecipe>
             }
 
         }
-    }
-
-    context(ModContext)
-    override fun init() {
-        super.init()
-        RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges += RecipeViewerCategoryCardRecipeManagerBridge(AthanorRecipeCard.recipeClass, AthanorRecipeCard.type, this)
     }
 }

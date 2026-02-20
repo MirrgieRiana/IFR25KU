@@ -7,6 +7,8 @@ import miragefairy2024.client.mod.recipeviewer.ScreenClassRegistry
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.util.registerHandledScreen
+import miragefairy2024.mod.machine.AthanorCard
+import miragefairy2024.mod.machine.AthanorScreenHandler
 import miragefairy2024.mod.machine.AuraReflectorFurnaceCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceScreenHandler
 import miragefairy2024.mod.machine.BlueFuelView
@@ -30,9 +32,11 @@ context(ModContext)
 fun initMachineClientModule() {
     FermentationBarrelCard.screenHandlerType.registerHandledScreen { gui, inventory, title -> FermentationBarrelScreen(FermentationBarrelCard, MachineScreen.Arguments(gui, inventory, title)) }
     AuraReflectorFurnaceCard.screenHandlerType.registerHandledScreen { gui, inventory, title -> AuraReflectorFurnaceScreen(AuraReflectorFurnaceCard, MachineScreen.Arguments(gui, inventory, title)) }
+    AthanorCard.screenHandlerType.registerHandledScreen { gui, inventory, title -> AthanorScreen(AthanorCard, MachineScreen.Arguments(gui, inventory, title)) }
 
     ScreenClassRegistry.register(FermentationBarrelCard.screenHandlerType.key, FermentationBarrelScreen::class.java)
     ScreenClassRegistry.register(AuraReflectorFurnaceCard.screenHandlerType.key, AuraReflectorFurnaceScreen::class.java)
+    ScreenClassRegistry.register(AthanorCard.screenHandlerType.key, AthanorScreen::class.java)
 
     ViewRendererRegistry.register(FuelView::class.java, FuelViewRenderer)
     ViewRendererRegistry.register(BlueFuelView::class.java, BlueFuelViewRenderer)
@@ -201,6 +205,31 @@ class AuraReflectorFurnaceScreen(card: AuraReflectorFurnaceCard, arguments: Argu
             val h = (fuelBound.height.toDouble() * (menu.fuel.toDouble() / menu.fuelMax.toDouble() atMost 1.0)).roundToInt()
             context.blit(
                 BlueFuelViewRenderer.TEXTURE,
+                leftPos + fuelBound.x - 1,
+                topPos + fuelBound.y - 1 + (fuelBound.height - h),
+                0F,
+                fuelBound.height.toFloat() - h.toFloat(),
+                fuelBound.width,
+                h,
+                32,
+                32,
+            )
+        }
+    }
+}
+
+class AthanorScreen(card: AthanorCard, arguments: Arguments<AthanorScreenHandler>) : SimpleMachineScreen<AthanorScreenHandler>(card, arguments) {
+    override val arrowTexture = MirageFairy2024.identifier("textures/gui/sprites/athanor_progress.png")
+    override val arrowBound = Rect2i(84, 39, 24, 16)
+    val fuelBound = Rect2i(90, 64, 13, 13)
+
+    override fun renderBg(context: GuiGraphics, delta: Float, mouseX: Int, mouseY: Int) {
+        super.renderBg(context, delta, mouseX, mouseY)
+
+        if (menu.fuelMax > 0) {
+            val h = (fuelBound.height.toDouble() * (menu.fuel.toDouble() / menu.fuelMax.toDouble() atMost 1.0)).roundToInt()
+            context.blit(
+                FuelViewRenderer.TEXTURE,
                 leftPos + fuelBound.x - 1,
                 topPos + fuelBound.y - 1 + (fuelBound.height - h),
                 0F,
