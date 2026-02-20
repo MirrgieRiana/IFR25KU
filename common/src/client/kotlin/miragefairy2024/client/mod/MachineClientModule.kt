@@ -15,12 +15,14 @@ import miragefairy2024.mod.machine.FermentationBarrelScreenHandler
 import miragefairy2024.mod.machine.FuelView
 import miragefairy2024.mod.machine.SimpleMachineCard
 import miragefairy2024.mod.machine.SimpleMachineScreenHandler
+import miragefairy2024.mod.machine.TexturedArrowView
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.atMost
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.Rect2i
+import net.minecraft.resources.ResourceLocation
 import java.util.Optional
 import kotlin.math.roundToInt
 
@@ -34,6 +36,7 @@ fun initMachineClientModule() {
 
     ViewRendererRegistry.register(FuelView::class.java, FuelViewRenderer)
     ViewRendererRegistry.register(BlueFuelView::class.java, BlueFuelViewRenderer)
+    ViewRendererRegistry.register(TexturedArrowView::class.java, TexturedArrowViewRenderer)
 }
 
 object FuelViewRenderer : ViewRenderer<FuelView> {
@@ -100,11 +103,50 @@ object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
     }
 }
 
+object TexturedArrowViewRenderer : ViewRenderer<TexturedArrowView> {
+    override fun render(view: TexturedArrowView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+        val rate = view.durationMilliSeconds?.let {
+            (System.nanoTime() / 1_000_000 % it.toLong()).toDouble() / it.toDouble()
+        } ?: 1.0
+        view.backgroundTexture?.let {
+            graphics.blit(
+                it.id,
+                bounds.x,
+                bounds.y,
+                bounds.sizeX,
+                bounds.sizeY,
+                it.bounds.x.toFloat(),
+                it.bounds.y.toFloat(),
+                it.bounds.sizeX,
+                it.bounds.sizeY,
+                it.size.x,
+                it.size.y,
+            )
+        }
+        view.foregroundTexture?.let {
+            graphics.blit(
+                it.id,
+                bounds.x,
+                bounds.y,
+                (bounds.sizeX.toDouble() * rate).roundToInt(),
+                bounds.sizeY,
+                it.bounds.x.toFloat(),
+                it.bounds.y.toFloat(),
+                (it.bounds.sizeX.toDouble() * rate).roundToInt(),
+                it.bounds.sizeY,
+                it.size.x,
+                it.size.y,
+            )
+        }
+    }
+}
+
 abstract class SimpleMachineScreen<H : SimpleMachineScreenHandler>(card: SimpleMachineCard<*, *, *, *>, arguments: Arguments<H>) : MachineScreen<H>(card, arguments) {
     companion object {
         val PROGRESS_ARROW_TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/progress.png")
     }
 
+    abstract val arrowTexture: ResourceLocation
     abstract val arrowBound: Rect2i
 
     override fun renderBg(context: GuiGraphics, delta: Float, mouseX: Int, mouseY: Int) {
@@ -113,7 +155,7 @@ abstract class SimpleMachineScreen<H : SimpleMachineScreenHandler>(card: SimpleM
         if (menu.progressMax > 0) {
             val w = (arrowBound.width.toDouble() * (menu.progress.toDouble() / menu.progressMax.toDouble() atMost 1.0)).roundToInt()
             context.blit(
-                PROGRESS_ARROW_TEXTURE,
+                arrowTexture,
                 leftPos + arrowBound.x,
                 topPos + arrowBound.y,
                 0F,
@@ -143,10 +185,12 @@ abstract class SimpleMachineScreen<H : SimpleMachineScreenHandler>(card: SimpleM
 }
 
 class FermentationBarrelScreen(card: FermentationBarrelCard, arguments: Arguments<FermentationBarrelScreenHandler>) : SimpleMachineScreen<FermentationBarrelScreenHandler>(card, arguments) {
+    override val arrowTexture = PROGRESS_ARROW_TEXTURE
     override val arrowBound = Rect2i(76, 27, 24, 17)
 }
 
 class AuraReflectorFurnaceScreen(card: AuraReflectorFurnaceCard, arguments: Arguments<AuraReflectorFurnaceScreenHandler>) : SimpleMachineScreen<AuraReflectorFurnaceScreenHandler>(card, arguments) {
+    override val arrowTexture = PROGRESS_ARROW_TEXTURE
     override val arrowBound = Rect2i(88, 34, 24, 17)
     val fuelBound = Rect2i(48, 37, 13, 13)
 
