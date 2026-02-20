@@ -10,8 +10,10 @@
       }
     }
   ],
-  "output": {
-    "count": 1,
-    "id": "miragefairy2024:miragidian"
-  }
+  "outputs": [
+    {
+      "count": 1,
+      "id": "miragefairy2024:miragidian"
+    }
+  ]
 }

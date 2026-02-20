@@ -52,7 +52,7 @@ abstract class SimpleMachineRecipeCard<R : SimpleMachineRecipe> {
 
     abstract val recipeClass: Class<R>
 
-    abstract fun createRecipe(group: String, inputs: List<IngredientStack>, output: ItemStack, duration: Int): R
+    abstract fun createRecipe(group: String, inputs: List<IngredientStack>, outputs: List<ItemStack>, duration: Int): R
 
     context(ModContext)
     fun init() {
@@ -71,9 +71,12 @@ open class SimpleMachineRecipe(
     private val card: SimpleMachineRecipeCard<*>,
     private val group: String,
     val inputs: List<IngredientStack>,
-    val output: ItemStack,
+    val outputs: List<ItemStack>,
     val duration: Int,
 ) : Recipe<SimpleMachineRecipeInput> {
+    init {
+        require(outputs.isNotEmpty())
+    }
 
     override fun getGroup() = group
 
@@ -104,9 +107,9 @@ open class SimpleMachineRecipe(
         return list
     }
 
-    override fun assemble(inventory: SimpleMachineRecipeInput, registries: HolderLookup.Provider): ItemStack = output.copy()
+    override fun assemble(inventory: SimpleMachineRecipeInput, registries: HolderLookup.Provider): ItemStack = outputs.first().copy()
     override fun canCraftInDimensions(width: Int, height: Int) = width * height >= inputs.size
-    override fun getResultItem(registries: HolderLookup.Provider) = output
+    override fun getResultItem(registries: HolderLookup.Provider) = outputs.first()
     override fun getToastSymbol() = card.getIcon()
     override fun getSerializer() = card.serializer
     override fun getType() = card.type
@@ -116,7 +119,7 @@ open class SimpleMachineRecipe(
             instance.group(
                 Codec.STRING.fieldOf("group").forGetter { it.group },
                 IngredientStack.CODEC.listOf().fieldOf("inputs").forGetter { it.inputs },
-                ItemStack.CODEC.fieldOf("output").forGetter { it.output },
+                ItemStack.CODEC.listOf().fieldOf("outputs").forGetter { it.outputs },
                 Codec.INT.fieldOf("duration").forGetter { it.duration },
             ).apply(instance, card::createRecipe)
         }
@@ -126,8 +129,8 @@ open class SimpleMachineRecipe(
             { it.group },
             IngredientStack.STREAM_CODEC.list(),
             { it.inputs },
-            ItemStack.STREAM_CODEC,
-            { it.output },
+            ItemStack.STREAM_CODEC.list(),
+            { it.outputs },
             ByteBufCodecs.VAR_INT,
             { it.duration },
             card::createRecipe,
@@ -140,19 +143,20 @@ context(ModContext)
 fun <R : SimpleMachineRecipe> registerSimpleMachineRecipeGeneration(
     card: SimpleMachineRecipeCard<R>,
     inputs: List<() -> IngredientStack>,
-    output: () -> ItemStack,
+    outputs: List<() -> ItemStack>,
     duration: Int,
     block: SimpleMachineRecipeJsonBuilder<R>.() -> Unit = {},
 ): RecipeGenerationSettings<SimpleMachineRecipeJsonBuilder<R>> {
+    require(outputs.isNotEmpty())
     val settings = RecipeGenerationSettings<SimpleMachineRecipeJsonBuilder<R>>()
     DataGenerationEvents.onGenerateRecipe {
-        val builder = SimpleMachineRecipeJsonBuilder(card, RecipeCategory.MISC, inputs.map { p -> p() }, output(), duration)
-        builder.group(output().item)
+        val builder = SimpleMachineRecipeJsonBuilder(card, RecipeCategory.MISC, inputs.map { p -> p() }, outputs.map { p -> p() }, duration)
+        builder.group(outputs.first()().item)
         settings.listeners.forEach { listener ->
             listener(builder)
         }
         block(builder)
-        val identifier = settings.idModifiers.fold(output().item.getIdentifier()) { id, idModifier -> idModifier(id) }
+        val identifier = settings.idModifiers.fold(outputs.first()().item.getIdentifier()) { id, idModifier -> idModifier(id) }
         builder.save(it, identifier)
     }
     return settings
@@ -162,15 +166,19 @@ class SimpleMachineRecipeJsonBuilder<R : SimpleMachineRecipe>(
     private val card: SimpleMachineRecipeCard<R>,
     private val category: RecipeCategory,
     private val inputs: List<IngredientStack>,
-    private val output: ItemStack,
+    private val outputs: List<ItemStack>,
     private val duration: Int,
 ) : RecipeBuilder {
+    init {
+        require(outputs.isNotEmpty())
+    }
+
     private val criteria = mutableMapOf<String, Criterion<*>>()
     private var group = ""
 
     override fun unlockedBy(name: String, condition: Criterion<*>) = this.also { criteria[name] = condition }
     override fun group(string: String?) = this.also { this.group = string ?: "" }
-    override fun getResult(): Item = output.item
+    override fun getResult(): Item = outputs.first().item
 
     override fun save(recipeOutput: RecipeOutput, recipeId: ResourceLocation) {
         check(criteria.isNotEmpty()) { "No way of obtaining recipe $recipeId" }
@@ -181,6 +189,6 @@ class SimpleMachineRecipeJsonBuilder<R : SimpleMachineRecipe>(
         criteria.forEach {
             advancementBuilder.addCriterion(it.key, it.value)
         }
-        recipeOutput.accept(recipeId, card.createRecipe(group, inputs, output, duration), advancementBuilder.build("recipes/${category.folderName}/" * recipeId))
+        recipeOutput.accept(recipeId, card.createRecipe(group, inputs, outputs, duration), advancementBuilder.build("recipes/${category.folderName}/" * recipeId))
     }
 }

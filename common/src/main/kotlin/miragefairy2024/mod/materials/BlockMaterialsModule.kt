@@ -496,7 +496,7 @@ open class BlockMaterialCard(
                     { MaterialCard.XARPITE.item().toIngredientStack(4) },
                     { MaterialCard.MIRANAGITE.item().toIngredientStack(4) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60,
             ) on MaterialCard.FAIRY_CRYSTAL.item
         }

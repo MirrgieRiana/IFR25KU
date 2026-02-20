@@ -214,7 +214,7 @@ class MaterialCard(
                     { FAIRY_SCALES.item().toIngredientStack(8) },
                     { POISON.item().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 10,
             ) on CALCULITE.item
         }
@@ -327,7 +327,7 @@ class MaterialCard(
                 inputs = listOf(
                     { MIRAGE_FLOUR.item().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60,
             ) on MIRAGE_FLOUR.item
         }
@@ -370,7 +370,7 @@ class MaterialCard(
                     { Items.LILAC.toIngredientStack(4) },
                     { Items.PEONY.toIngredientStack(4) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60,
             ) on { Items.LILAC }
         } // TODO "Botanical alloy", "牡丹合金。"
@@ -384,7 +384,7 @@ class MaterialCard(
                 inputs = listOf(
                     { item().toIngredientStack(9) },
                 ),
-                output = { MIRAGIDIAN.item().createItemStack() },
+                outputs = listOf({ MIRAGIDIAN.item().createItemStack() }),
                 duration = 20 * 60,
             ) on ore!!.tag from item
         }
@@ -487,7 +487,7 @@ class MaterialCard(
                     { LUMINITE.item().toIngredientStack(1) },
                     { Items.ECHO_SHARD.toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60,
             ) on LUMINITE.ore!!.tag
         }
@@ -993,7 +993,7 @@ class MaterialCard(
                     { Items.SUGAR_CANE.toIngredientStack(16) },
                     { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
             ) on { Items.SUGAR_CANE }
             ModEvents.onInitialize {
@@ -1020,7 +1020,7 @@ class MaterialCard(
                     { Items.APPLE.toIngredientStack(4) },
                     { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 1,
             ) on { Items.APPLE }
             ModEvents.onInitialize {
@@ -1048,7 +1048,7 @@ class MaterialCard(
                     { HAIMEVISKA_SAP.item().toIngredientStack(8) },
                     { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
             ) on HAIMEVISKA_SAP.item
             ModEvents.onInitialize {
@@ -1076,7 +1076,7 @@ class MaterialCard(
                     { VEROPEDA_BERRIES.item().toIngredientStack(8) },
                     { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
             ) on VEROPEDA_BERRIES.item
             ModEvents.onInitialize {
@@ -1115,7 +1115,7 @@ class MaterialCard(
                     { Items.PUFFERFISH.toIngredientStack(1) },
                     { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 5,
             ) on { Items.PUFFERFISH } from { Items.PUFFERFISH }
             registerSimpleMachineRecipeGeneration(
@@ -1125,7 +1125,7 @@ class MaterialCard(
                     { Items.POISONOUS_POTATO.toIngredientStack(4) },
                     { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 5,
             ) on { Items.POISONOUS_POTATO } from { Items.POISONOUS_POTATO }
             registerSimpleMachineRecipeGeneration(
@@ -1135,7 +1135,7 @@ class MaterialCard(
                     { Items.SPIDER_EYE.toIngredientStack(4) },
                     { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
                 ),
-                output = { item().createItemStack() },
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 5,
             ) on { Items.SPIDER_EYE } from { Items.SPIDER_EYE }
         }
