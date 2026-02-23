@@ -329,6 +329,7 @@ enum class FairyQuestRecipeCard(
         "The Superphysical Society of Xarpa\nCity of Xarperia (Official)", "シャルパ形而学会\n紅天市（公式）",
         listOf { MaterialCard.HAIMEVISKA_ROSIN.item().toIngredientStack(7) },
         listOf { Items.EMERALD.createItemStack(2) },
+        duration = 10,
         icon = { MaterialCard.HAIMEVISKA_ROSIN.item().createItemStack() },
     ),
     ;
