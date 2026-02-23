@@ -234,6 +234,15 @@ enum class FairyQuestRecipeCard(
     }
 }
 
+private fun String.formatFairyQuest(): String {
+    val lines = this.lines().toMutableList()
+    check(lines.first().isEmpty())
+    lines.removeFirst()
+    check(lines.last().isBlank())
+    lines.removeLast()
+    return lines.joinToString("\n") { it.trim() }
+}
+
 val SET_FAIRY_QUEST_RECIPE_LOOT_FUNCTION_TYPE = LootItemFunctionType(SetFairyQuestRecipeLootFunction.SERIALIZER)
 
 val FAIRY_QUEST_CARD_FEATURE = FairyQuestCardFeature(NoneFeatureConfiguration.CODEC)
