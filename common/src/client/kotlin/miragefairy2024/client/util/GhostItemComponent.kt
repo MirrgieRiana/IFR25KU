@@ -49,7 +49,7 @@ class GhostItemComponent(var itemStacks: List<ItemStack> = listOf()) : BaseCompo
 
     /** スロットのツールチップに通常のTooltip機能を使用すると、スロットのオーバーレイの四角形が後にレンダリングされ表示が壊れます。 */
     fun drawGhostTooltip(context: OwoUIDrawContext, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
-        if (!shouldDrawTooltip(mouseX.toDouble(), mouseY.toDouble())) return
+        if (!isInBoundingBox(mouseX.toDouble(), mouseY.toDouble())) return
 
         val itemStack = if (itemStacks.isNotEmpty()) itemStacks[(time / 30.0).toInt() % itemStacks.size] else EMPTY_ITEM_STACK
         if (itemStack.isEmpty) return
