@@ -35,6 +35,7 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
+import miragefairy2024.util.gray
 import miragefairy2024.util.invoke
 import miragefairy2024.util.overworld
 import miragefairy2024.util.per
@@ -53,6 +54,7 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
+import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceKey
@@ -60,6 +62,7 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
 import net.minecraft.world.level.storage.loot.BuiltInLootTables
@@ -214,6 +217,87 @@ enum class FairyQuestRecipeCard(
             { BlockMaterialCard.LOCAL_VACUUM_DECAY.item().createItemStack(64) },
             { BlockMaterialCard.MIRANAGITE_BLOCK.item().createItemStack(64) },
         ),
+    ),
+    SUSPICION_OF_ILLEGAL_DRUG_POSSESSION_BY_HARTEKAZONIE_PANELCA(
+        "suspicion_of_illegal_drug_possession_by_hartekazonie_panelca", 0XD83D2A, LootCategory.COMMON,
+        "Re: Re: Re: Suspicion of Illegal Drug Possession by Hartekazonie Panelca", "Re: Re: Re: パネッツァ氏の違法薬物所持の疑い",
+        """
+            I'm sorry, the password included in the email I sent earlier was not meant to be shared with others.
+            I would appreciate it if you could discard the previous email.
+
+            === Herirmina: 2 hours ago
+
+            Please use this to access the Fairy Quest Card management screen.
+            Thank you.
+
+            -----START IFR HIDDEN KEY-----
+            MII6QW4gYWRtaW5pc3RyYXRpdmUgbWFzdGVyIGtleSBzaGFyZWQgYW1vbmcgRmFpcnkgUXVlc3QgQ2FyZHMgaW4gbmVhcmJ5IHBhcmFsbGVsIHdvcmxkcy4=
+            -----FINISH IFR HIDDEN KEY-----
+
+            === Enchantia: 17 hours ago
+
+            Herirmina,
+
+            This is Enchantia, the fairy of enchantment, from the Institute of Fairy Research Assistant Service.
+            Regarding the investigation of the data on the device owned by Mr./Ms. Hartekazonie Panelca, as this pertains to data on a civilian's private computer, we do not have any means of access on our side.
+            Could you provide us with a means to access the data in question, or provide the data itself?
+            Thank you.
+
+            === Herirmina: 18 hours ago
+
+            A report has been filed indicating that the local storage of the Fairy Quest Card owned by Mr./Ms. Hartekazonie Panelca (Human Number 1129 A008 F495 AA27), a resident of central Hartekazona, the Ophelia Meteorite, contains the following illegal content.
+            Please verify this as soon as possible.
+
+            * Two images believed to be of packaged Veropederezjoma
+            * Seven images of a dish believed to be Veropeda porridge
+            * Just under 80 images that appear to show a meal gathering
+            * Four images depicting nude fairies
+        """.formatFairyQuest(),
+        """
+            すみません、先ほど送信したメールに記載のパスワードは他人に共有してはならないものでした。
+            先ほどのメールは破棄していただけると幸いです。
+
+            === ヘリルミーナ: 2時間前
+
+            フェアリークエストカードの管理画面へのアクセスにはこちらをお使いください。
+            宜しくお願い致します。
+
+            -----START IFR HIDDEN KEY-----
+            MII6QW4gYWRtaW5pc3RyYXRpdmUgbWFzdGVyIGtleSBzaGFyZWQgYW1vbmcgRmFpcnkgUXVlc3QgQ2FyZHMgaW4gbmVhcmJ5IHBhcmFsbGVsIHdvcmxkcy4=
+            -----FINISH IFR HIDDEN KEY-----
+
+            === エンキャンチャ: 17時間前
+
+            ヘリルミーナ様
+
+            こちらは妖精研究所アシスタントサービスの付魔精エンキャンチャです。
+            さて、ハルテカゾニエ・パネッツァ氏所有の端末内データの調査とのことですが、こちらは民間人の私物コンピュータ内のデータとなりますので、当方はアクセス手段を持ち合わせておりません。
+            当該データにアクセス可能な手段、もしくは当該データをご提供いただけますか？
+            よろしくお願いいたします。
+
+            === ヘリルミーナ: 18時間前
+
+            先ほど、オフィーリア隕石ハルテカゾナ市区在住ハルテカゾニエ・パネッツァ氏（人間番号 1129 A008 F495 AA27）所有のフェアリークエストカードのローカルストレージ内に、以下の違法なコンテンツが含まれているとの通報がありました。
+            至急確認の程を宜しくお願い致します。
+
+            ○包装されたヴェロペデレジョマと思しき画像2点
+            ○ヴェロペダ粥と思しき料理の画像7点
+            ○会食と思しき様子を写した画像80点弱
+            ○妖精の裸体を写した画像4点
+       """.formatFairyQuest(),
+        "The Institute of Fairy Research\nEthics Department\nTirirknofe Herirmina", "妖精研究所\n倫理部\nティリルクノフェ・ヘリルミーナ",
+        listOf {
+            Items.PAPER.createItemStack().also {
+                it[DataComponents.CUSTOM_NAME] = text { "From: Tirirknofe Herirmina"() }
+                it[DataComponents.LORE] = ItemLore(listOf(text { "<@ifr.ethics.tirirknofe-herirmina>"().gray }))
+            }.toIngredientStack()
+        },
+        listOf {
+            Items.PAPER.createItemStack().also {
+                it[DataComponents.CUSTOM_NAME] = text { "To: Enchantia"() }
+                it[DataComponents.LORE] = ItemLore(listOf(text { "<@ifras.issue441586>"().gray }))
+            }
+        },
     ),
     ;
 
