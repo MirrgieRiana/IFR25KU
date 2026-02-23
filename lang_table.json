@@ -3139,6 +3139,18 @@
     "en_us": "Notice for Ceramic Brick Donations",
     "ja_jp": "セラミックレンガ募集のお知らせ"
   },
+  "miragefairy2024.fairyQuestRecipe.suspicion_of_illegal_drug_possession_by_hartekazonie_panelca.client": {
+    "en_us": "The Institute of Fairy Research\nEthics Department\nTirirknofe Herirmina",
+    "ja_jp": "妖精研究所\n倫理部\nティリルクノフェ・ヘリルミーナ"
+  },
+  "miragefairy2024.fairyQuestRecipe.suspicion_of_illegal_drug_possession_by_hartekazonie_panelca.message": {
+    "en_us": "I\u0027m sorry, the password included in the email I sent earlier was not meant to be shared with others.\nI would appreciate it if you could discard the previous email.\n\n\u003d\u003d\u003d Herirmina: 2 hours ago\n\nPlease use this to access the Fairy Quest Card management screen.\nThank you.\n\n-----START IFR HIDDEN KEY-----\nMII6QW4gYWRtaW5pc3RyYXRpdmUgbWFzdGVyIGtleSBzaGFyZWQgYW1vbmcgRmFpcnkgUXVlc3QgQ2FyZHMgaW4gbmVhcmJ5IHBhcmFsbGVsIHdvcmxkcy4\u003d\n-----FINISH IFR HIDDEN KEY-----\n\n\u003d\u003d\u003d Enchantia: 17 hours ago\n\nHerirmina,\n\nThis is Enchantia, the fairy of enchantment, from the Institute of Fairy Research Assistant Service.\nRegarding the investigation of the data on the device owned by Mr./Ms. Hartekazonie Panelca, as this pertains to data on a civilian\u0027s private computer, we do not have any means of access on our side.\nCould you provide us with a means to access the data in question, or provide the data itself?\nThank you.\n\n\u003d\u003d\u003d Herirmina: 18 hours ago\n\nA report has been filed indicating that the local storage of the Fairy Quest Card owned by Mr./Ms. Hartekazonie Panelca (Human Number 1129 A008 F495 AA27), a resident of central Hartekazona, the Ophelia Meteorite, contains the following illegal content.\nPlease verify this as soon as possible.\n\n* Two images believed to be of packaged Veropederezjoma\n* Seven images of a dish believed to be Veropeda porridge\n* Just under 80 images that appear to show a meal gathering\n* Four images depicting nude fairies",
+    "ja_jp": "すみません、先ほど送信したメールに記載のパスワードは他人に共有してはならないものでした。\n先ほどのメールは破棄していただけると幸いです。\n\n\u003d\u003d\u003d ヘリルミーナ: 2時間前\n\nフェアリークエストカードの管理画面へのアクセスにはこちらをお使いください。\n宜しくお願い致します。\n\n-----START IFR HIDDEN KEY-----\nMII6QW4gYWRtaW5pc3RyYXRpdmUgbWFzdGVyIGtleSBzaGFyZWQgYW1vbmcgRmFpcnkgUXVlc3QgQ2FyZHMgaW4gbmVhcmJ5IHBhcmFsbGVsIHdvcmxkcy4\u003d\n-----FINISH IFR HIDDEN KEY-----\n\n\u003d\u003d\u003d エンキャンチャ: 17時間前\n\nヘリルミーナ様\n\nこちらは妖精研究所アシスタントサービスの付魔精エンキャンチャです。\nさて、ハルテカゾニエ・パネッツァ氏所有の端末内データの調査とのことですが、こちらは民間人の私物コンピュータ内のデータとなりますので、当方はアクセス手段を持ち合わせておりません。\n当該データにアクセス可能な手段、もしくは当該データをご提供いただけますか？\nよろしくお願いいたします。\n\n\u003d\u003d\u003d ヘリルミーナ: 18時間前\n\n先ほど、オフィーリア隕石ハルテカゾナ市区在住ハルテカゾニエ・パネッツァ氏（人間番号 1129 A008 F495 AA27）所有のフェアリークエストカードのローカルストレージ内に、以下の違法なコンテンツが含まれているとの通報がありました。\n至急確認の程を宜しくお願い致します。\n\n○包装されたヴェロペデレジョマと思しき画像2点\n○ヴェロペダ粥と思しき料理の画像7点\n○会食と思しき様子を写した画像80点弱\n○妖精の裸体を写した画像4点"
+  },
+  "miragefairy2024.fairyQuestRecipe.suspicion_of_illegal_drug_possession_by_hartekazonie_panelca.title": {
+    "en_us": "Re: Re: Re: Suspicion of Illegal Drug Possession by Hartekazonie Panelca",
+    "ja_jp": "Re: Re: Re: パネッツァ氏の違法薬物所持の疑い"
+  },
   "miragefairy2024.fairyQuestRecipe.vegetation_survey.client": {
     "en_us": "The Pearl Knights of Miranagi\nShinonome Astrology Academy\nRumeri",
     "ja_jp": "みらなぎ聖騎士団\n東雲占卜院\nるめり"
