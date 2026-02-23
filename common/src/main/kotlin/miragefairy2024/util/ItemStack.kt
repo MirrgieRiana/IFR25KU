@@ -2,7 +2,10 @@ package miragefairy2024.util
 
 import mirrg.kotlin.helium.atMost
 import net.minecraft.core.HolderLookup
+import net.minecraft.core.component.DataComponentType
+import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.Tag
+import net.minecraft.network.chat.Component
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -36,3 +39,7 @@ infix fun ItemStack.isIn(tag: TagKey<Item>) = this.`is`(tag)
 infix fun ItemStack.isNotIn(tag: TagKey<Item>) = !(this isIn tag)
 
 val ItemStack.durability get() = this.maxDamage - this.damageValue
+
+fun <T> ItemStack.with(type: DataComponentType<T>, value: T): ItemStack = this.copy().also { it.set(type, value) }
+fun ItemStack.withCustomName(customName: Component): ItemStack = this.with(DataComponents.CUSTOM_NAME, customName)
+fun ItemStack.withCustomName(customName: String): ItemStack = this.with(DataComponents.CUSTOM_NAME, text { customName() })
