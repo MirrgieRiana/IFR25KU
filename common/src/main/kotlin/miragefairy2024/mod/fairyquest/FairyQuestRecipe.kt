@@ -299,6 +299,38 @@ enum class FairyQuestRecipeCard(
             }
         },
     ),
+    XARPA_NIGHT(
+        "xarpa_night", 0XC49531, LootCategory.COMMON,
+        "XARPA NIGHT - Resin Glow Across the Night Sky", "シャルパの夜 ～夜空を彩るレジンの光～",
+        """
+                ~ XARPA NIGHT ~
+                Resin Glow Across the Night Sky
+
+                0/0 is #XarpaIndependenceDay !
+
+                Know someone you're grateful for?
+                Why not celebrate by tossing some resin for them?
+
+                -- Hard as plastic, hard as love --
+            """.formatFairyQuest(),
+        """
+                ☆＊*・*＊☆＊*・*＊☆＊*・*＊☆
+                |　　　　シャルパの夜　　　　|
+                |　　夜空を彩るレジンの星　　|
+                ☆＊*・*＊☆＊*・*＊☆＊*・*＊☆
+
+                0月0日は #シャルパ独立記念日 ♪
+
+                普段お世話になっている ～あの人～ のために
+                レジンを投げ合ってお祝いしませんか？
+
+                ☆彡 プラスチックの硬さは愛の硬さ ☆彡
+           """.formatFairyQuest(),
+        "The Superphysical Society of Xarpa\nCity of Xarperia (Official)", "シャルパ形而学会\n紅天市（公式）",
+        listOf { MaterialCard.HAIMEVISKA_ROSIN.item().toIngredientStack(7) },
+        listOf { Items.EMERALD.createItemStack(2) },
+        icon = { MaterialCard.HAIMEVISKA_ROSIN.item().createItemStack() },
+    ),
     ;
 
     val identifier = MirageFairy2024.identifier(path)
