@@ -3163,6 +3163,18 @@
     "en_us": "Vegetation Survey",
     "ja_jp": "植生調査"
   },
+  "miragefairy2024.fairyQuestRecipe.xarpa_night.client": {
+    "en_us": "The Superphysical Society of Xarpa\nCity of Xarperia (Official)",
+    "ja_jp": "シャルパ形而学会\n紅天市（公式）"
+  },
+  "miragefairy2024.fairyQuestRecipe.xarpa_night.message": {
+    "en_us": "~ XARPA NIGHT ~\nResin Glow Across the Night Sky\n\n0/0 is #XarpaIndependenceDay !\n\nKnow someone you\u0027re grateful for?\nWhy not celebrate by tossing some resin for them?\n\n-- Hard as plastic, hard as love --",
+    "ja_jp": "☆＊*・*＊☆＊*・*＊☆＊*・*＊☆\n|　　　　シャルパの夜　　　　|\n|　　夜空を彩るレジンの星　　|\n☆＊*・*＊☆＊*・*＊☆＊*・*＊☆\n\n0月0日は #シャルパ独立記念日 ♪\n\n普段お世話になっている ～あの人～ のために\nレジンを投げ合ってお祝いしませんか？\n\n☆彡 プラスチックの硬さは愛の硬さ ☆彡"
+  },
+  "miragefairy2024.fairyQuestRecipe.xarpa_night.title": {
+    "en_us": "XARPA NIGHT - Resin Glow Across the Night Sky",
+    "ja_jp": "シャルパの夜 ～夜空を彩るレジンの光～"
+  },
   "miragefairy2024.food_ingredient.alcohol": {
     "en_us": "Alcohol",
     "ja_jp": "アルコール"
