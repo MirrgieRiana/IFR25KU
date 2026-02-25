@@ -338,12 +338,12 @@ enum class FairyQuestRecipeCard(
         """
                 (Footsteps)
                 Mizna: "--But Herirmina, not once in history has humanity ever granted rights to plants, you know?"
-                Herirmina: "That's beside the point. Fairies are living beings. Why shouldn't they have rights?"
+                Herirmina: "That's beside the point. Fairies are alive. Why shouldn't they have rights?"
                 Mizna: "...I get what you're saying, Herirmina. But come on. If we accept that, wouldn't metals and ores need rights too? We wouldn't be able to mine anything anymore."
-                Herirmina: "That's not how it works. Fairies are plants. Plants are properly alive, unlike mere inorganic matter. So fairies are alive too. Metals and ores aren't alive--they're different from fairies."
+                Herirmina: "That's not going to happen. Fairies are plants. Plants are actually alive, unlike mere inorganic matter, right? So fairies are alive too. Metals and ores aren't alive--they're different from fairies."
                 Mizna: "I think I sort of see your point, Herirmina. But then, what about Miragium? Miragium is a type of metal too, right? Wouldn't that make it alive?"
-                Herirmina: "...Miragium is alive. The proof is right there--it exhibits astral responses. There are research reports stating that a soul of the same nature as a human's resides within Miragium. I believe its rights should be recognized."
-                Mizna: "Hah... You've got me there, Herirmina. Rights for Miragium... I'd never even considered that..."
+                Herirmina: "...Miragium is alive. The proof is right there--it exhibits astral responses, doesn't it? There are even research reports saying that a soul of the same nature as a human's resides within Miragium. I really do think its rights should be recognized."
+                Mizna: "Haah... You've got me there, Herirmina. Rights for Miragium... I'd never even considered that..."
                 Herirmina: "Hehe, you've changed, Mizna--"
                 (Footsteps)
             """.formatFairyQuest(),
