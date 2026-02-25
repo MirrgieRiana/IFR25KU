@@ -5,8 +5,8 @@ import miragefairy2024.RenderingProxyBlockEntity
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.readFromNbt
 import miragefairy2024.util.reset
+import miragefairy2024.util.toNonNullList
 import miragefairy2024.util.writeToNbt
-import mirrg.kotlin.helium.unit
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
@@ -17,7 +17,6 @@ import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
 import net.minecraft.world.Container
-import net.minecraft.world.ContainerHelper
 import net.minecraft.world.Containers
 import net.minecraft.world.WorldlyContainer
 import net.minecraft.world.entity.player.Inventory
@@ -64,72 +63,132 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
 
     // Container
 
-    /**
-     * スロットの内容が変化する際に呼び出されます。
-     * このイベントはスロットの更新が行われた後に呼び出されることは保証されません。
-     */
-    open fun onStackChange(slot: Int?) {
-        // TODO スロットアップデートのための軽量カスタムパケット
-        if (slot == null || card.inventorySlotConfigurations[slot].isObservable) {
-            level?.sendBlockUpdated(worldPosition, blockState, blockState, Block.UPDATE_ALL)
+    private val inventory: NonNullList<ItemStack> = NonNullList.withSize(card.inventorySlotConfigurations.size, EMPTY_ITEM_STACK)
+    private var isDataChanged = false
+    private var isViewChanged = false
+
+    private val inventorySlotAccessors = (0 until card.inventorySlotConfigurations.size).map { accessorIndex ->
+        val slotIndex = accessorIndex
+        val configuration = card.inventorySlotConfigurations[slotIndex]
+        object : InventorySlotAccessor {
+            override fun get() = inventory[slotIndex]
+
+            override fun set(itemStack: ItemStack) {
+                inventory[slotIndex] = itemStack
+                isDataChanged = true
+                if (configuration.isObservable) isViewChanged = true
+            }
+
+            override fun onChanged() {
+                if (isViewChanged) {
+                    isViewChanged = false
+                    // TODO スロットアップデートのための軽量カスタムパケット
+                    level?.sendBlockUpdated(worldPosition, blockState, blockState, Block.UPDATE_ALL)
+                }
+                if (isDataChanged) {
+                    isDataChanged = false
+                    setChanged()
+                }
+            }
+
+            override fun isValid(itemStack: ItemStack) = configuration.isValid(itemStack)
+
+            override fun canInsert(actualSide: Direction) = configuration.canInsert(actualSide)
+
+            override fun canExtract(actualSide: Direction) = configuration.canExtract(actualSide)
+
+            override val dropItem: Boolean get() = configuration.dropItem
         }
     }
 
-    private var inventory: NonNullList<ItemStack> = NonNullList.withSize(card.inventorySlotConfigurations.size, EMPTY_ITEM_STACK)
+    override fun getContainerSize() = inventorySlotAccessors.size
 
-    override fun getContainerSize() = inventory.size
+    override fun isEmpty() = inventorySlotAccessors.all { it.get().isEmpty }
 
-    override fun isEmpty() = inventory.all { it.isEmpty }
+    override fun getItem(slot: Int): ItemStack = inventorySlotAccessors.getOrNull(slot)?.get() ?: EMPTY_ITEM_STACK
 
-    override fun getItem(slot: Int): ItemStack = inventory.getOrElse(slot) { EMPTY_ITEM_STACK }
-
-    override fun getItems() = inventory
+    override fun getItems() = inventorySlotAccessors.map { it.get() }.toNonNullList()
 
     override fun setItem(slot: Int, stack: ItemStack) {
-        if (slot in inventory.indices) {
-            inventory[slot] = stack
-        }
-        onStackChange(slot)
-        setChanged()
+        val inventorySlotAccessor = inventorySlotAccessors.getOrNull(slot) ?: return
+        inventorySlotAccessor.set(stack)
+        inventorySlotAccessor.onChanged()
     }
 
-    override fun setItems(items: NonNullList<ItemStack>) = unit { inventory = items }
+    override fun setItems(items: NonNullList<ItemStack>) {
+        items.forEachIndexed { accessorIndex, itemStack ->
+            setItem(accessorIndex, itemStack)
+        }
+    }
 
     override fun removeItem(slot: Int, amount: Int): ItemStack {
-        onStackChange(slot)
-        setChanged()
-        return ContainerHelper.removeItem(inventory, slot, amount)
+        val inventorySlotAccessor = inventorySlotAccessors.getOrNull(slot) ?: return EMPTY_ITEM_STACK
+        val itemStack = inventorySlotAccessor.get()
+        if (itemStack.isEmpty) return EMPTY_ITEM_STACK
+        if (amount <= 0) return EMPTY_ITEM_STACK
+        val result = itemStack.split(amount)
+        inventorySlotAccessor.set(itemStack)
+        inventorySlotAccessor.onChanged()
+        return result
     }
 
     override fun removeItemNoUpdate(slot: Int): ItemStack {
-        onStackChange(slot)
-        setChanged()
-        return ContainerHelper.takeItem(inventory, slot)
+        val inventorySlotAccessor = inventorySlotAccessors.getOrNull(slot) ?: return EMPTY_ITEM_STACK
+        val itemStack = inventorySlotAccessor.get()
+        inventorySlotAccessor.set(EMPTY_ITEM_STACK)
+        inventorySlotAccessor.onChanged()
+        return itemStack
     }
 
-    override fun canPlaceItem(slot: Int, stack: ItemStack) = card.inventorySlotConfigurations[slot].isValid(stack)
+    override fun canPlaceItem(slot: Int, stack: ItemStack) = inventorySlotAccessors.getOrNull(slot)?.isValid(stack) ?: false
 
     abstract fun getActualSide(side: Direction): Direction
 
-    override fun getSlotsForFace(side: Direction) = card.availableInventorySlotsTable[getActualSide(side).get3DDataValue()]
+    private val actualSideToInventorySlotAccessorIndicesTable by lazy {
+        Direction.entries.map { actualSide ->
+            inventorySlotAccessors.withIndex()
+                .filter { (_, it) -> it.canInsert(actualSide) || it.canExtract(actualSide) }
+                .map { it.index }
+                .toIntArray()
+        }.toTypedArray()
+    }
 
-    override fun canPlaceItemThroughFace(slot: Int, stack: ItemStack, dir: Direction?) = (dir == null || card.inventorySlotConfigurations[slot].canInsert(getActualSide(dir))) && canPlaceItem(slot, stack)
+    override fun getSlotsForFace(side: Direction) = actualSideToInventorySlotAccessorIndicesTable[getActualSide(side).get3DDataValue()]
 
-    override fun canTakeItemThroughFace(slot: Int, stack: ItemStack, dir: Direction) = card.inventorySlotConfigurations[slot].canExtract(getActualSide(dir))
+    override fun canPlaceItemThroughFace(slot: Int, stack: ItemStack, dir: Direction?): Boolean {
+        val inventorySlotAccessor = inventorySlotAccessors.getOrNull(slot) ?: return false
+        val isBlockedBySlot = dir != null && !inventorySlotAccessor.canInsert(getActualSide(dir))
+        return !isBlockedBySlot && canPlaceItem(slot, stack)
+    }
+
+    override fun canTakeItemThroughFace(slot: Int, stack: ItemStack, dir: Direction): Boolean {
+        val inventorySlotAccessor = inventorySlotAccessors.getOrNull(slot) ?: return false
+        return inventorySlotAccessor.canExtract(getActualSide(dir))
+    }
 
     override fun clearContent() {
-        onStackChange(null)
-        setChanged()
-        inventory.replaceAll { EMPTY_ITEM_STACK }
+        inventorySlotAccessors.forEach {
+            it.set(EMPTY_ITEM_STACK)
+        }
+        inventorySlotAccessors.forEach {
+            it.onChanged()
+        }
     }
 
     open fun dropItems() {
         val level = level ?: return
-        inventory.forEachIndexed { index, itemStack ->
-            if (card.inventorySlotConfigurations[index].dropItem) Containers.dropItemStack(level, worldPosition.x.toDouble(), worldPosition.y.toDouble(), worldPosition.z.toDouble(), itemStack)
+        inventorySlotAccessors.forEach {
+            if (it.dropItem) {
+                val itemStack = it.get()
+                it.set(EMPTY_ITEM_STACK)
+                Containers.dropItemStack(level, worldPosition.x.toDouble(), worldPosition.y.toDouble(), worldPosition.z.toDouble(), itemStack)
+            }
         }
-        onStackChange(null)
-        setChanged()
+        inventorySlotAccessors.forEach {
+            if (it.dropItem) {
+                it.onChanged()
+            }
+        }
     }
 
 
@@ -191,4 +250,14 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
         return card.createScreenHandler(arguments)
     }
 
+}
+
+interface InventorySlotAccessor {
+    fun get(): ItemStack
+    fun set(itemStack: ItemStack)
+    fun onChanged()
+    fun isValid(itemStack: ItemStack): Boolean
+    fun canInsert(actualSide: Direction): Boolean
+    fun canExtract(actualSide: Direction): Boolean
+    val dropItem: Boolean
 }

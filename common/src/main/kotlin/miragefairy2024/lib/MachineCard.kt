@@ -15,7 +15,6 @@ import miragefairy2024.util.register
 import miragefairy2024.util.times
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.SimpleContainer
@@ -62,15 +61,6 @@ abstract class MachineCard<B : Block, E : MachineBlockEntity<E>, H : MachineScre
 
     val inventorySlotIndexTable by lazy {
         inventorySlotConfigurations.withIndex().associate { (index, it) -> it to index }
-    }
-
-    val availableInventorySlotsTable by lazy {
-        Direction.entries.map { direction ->
-            inventorySlotConfigurations.withIndex()
-                .filter { it.value.canInsert(direction) || it.value.canExtract(direction) }
-                .map { it.index }
-                .toIntArray()
-        }.toTypedArray()
     }
 
     val animationConfigurations = mutableListOf<MachineBlockEntity.AnimationConfiguration<E>>()
