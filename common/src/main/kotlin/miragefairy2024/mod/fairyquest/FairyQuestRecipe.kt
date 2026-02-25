@@ -59,7 +59,6 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.tags.ItemTags
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
@@ -156,7 +155,7 @@ enum class FairyQuestRecipeCard(
             "※お子様の手の届かない場所に保管してください。",
         ).join("\n"),
         "The Institute of Fairy Research\nCreation Department", "妖精研究所\n創製部",
-        listOf({ ItemTags.COALS.toIngredientStack(1) }),
+        listOf({ Items.DIRT.toIngredientStack(8) }),
         listOf { Items.WHITE_BED.createItemStack(1) },
     ),
     VEGETATION_SURVEY(
