@@ -47,13 +47,12 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
 
     override fun loadAdditional(nbt: CompoundTag, registries: HolderLookup.Provider) {
         super.loadAdditional(nbt, registries)
-        inventory.reset()
-        inventory.readFromNbt(nbt, registries)
+        inventory.load(nbt, registries)
     }
 
     override fun saveAdditional(nbt: CompoundTag, registries: HolderLookup.Provider) {
         super.saveAdditional(nbt, registries)
-        inventory.writeToNbt(nbt, registries)
+        inventory.save(nbt, registries)
     }
 
     override fun getUpdateTag(registries: HolderLookup.Provider): CompoundTag = saveWithoutMetadata(registries) // TODO スロットの更新はカスタムパケットに分けるのでこちらはオーバーライドしない
@@ -63,42 +62,19 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
 
     // Container
 
-    private val inventory = MutableList(card.inventorySlotConfigurations.size) { EMPTY_ITEM_STACK }
-    private var isDataChanged = false
-    private var isViewChanged = false
-
-    private val inventorySlotAccessors = (0 until card.inventorySlotConfigurations.size).map { accessorIndex ->
-        val slotIndex = accessorIndex
-        val configuration = card.inventorySlotConfigurations[slotIndex]
-        object : InventorySlotAccessor {
-            override fun get() = inventory[slotIndex]
-
-            override fun set(itemStack: ItemStack) {
-                inventory[slotIndex] = itemStack
-                isDataChanged = true
-                if (configuration.isObservable) isViewChanged = true
-            }
-
-            override fun onChanged() {
-                if (isViewChanged) {
-                    isViewChanged = false
-                    // TODO スロットアップデートのための軽量カスタムパケット
-                    level?.sendBlockUpdated(worldPosition, blockState, blockState, Block.UPDATE_ALL)
-                }
-                if (isDataChanged) {
-                    isDataChanged = false
-                    setChanged()
-                }
-            }
-
-            override fun isValid(itemStack: ItemStack) = configuration.isValid(itemStack)
-
-            override fun canInsert(actualSide: Direction) = configuration.canInsert(actualSide)
-
-            override fun canExtract(actualSide: Direction) = configuration.canExtract(actualSide)
-
-            override val dropItem: Boolean get() = configuration.dropItem
+    private val inventory = BlockEntityInventory(card.inventorySlotConfigurations.size, object : BlockEntityInventory.Callback {
+        override fun onDataChanged() {
+            // TODO スロットアップデートのための軽量カスタムパケット
+            level?.sendBlockUpdated(worldPosition, blockState, blockState, Block.UPDATE_ALL)
         }
+
+        override fun onViewChanged() {
+            setChanged()
+        }
+    })
+
+    private val inventorySlotAccessors = (0 until card.inventorySlotConfigurations.size).map {
+        inventory.getInventorySlotAccessor(it, card.inventorySlotConfigurations[it])
     }
 
     override fun getContainerSize() = inventorySlotAccessors.size
@@ -250,6 +226,57 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
         return card.createScreenHandler(arguments)
     }
 
+}
+
+class BlockEntityInventory(size: Int, private val callback: Callback) {
+    interface Callback {
+        fun onDataChanged()
+        fun onViewChanged()
+    }
+
+    private val inventory = MutableList(size) { EMPTY_ITEM_STACK }
+    private var isDataChanged = false
+    private var isViewChanged = false
+
+    fun save(nbt: CompoundTag, registries: HolderLookup.Provider) {
+        inventory.writeToNbt(nbt, registries)
+    }
+
+    fun load(nbt: CompoundTag, registries: HolderLookup.Provider) {
+        inventory.reset()
+        inventory.readFromNbt(nbt, registries)
+    }
+
+    fun getInventorySlotAccessor(index: Int, configuration: MachineBlockEntity.InventorySlotConfiguration): InventorySlotAccessor {
+        return object : InventorySlotAccessor {
+            override fun get() = inventory[index]
+
+            override fun set(itemStack: ItemStack) {
+                inventory[index] = itemStack
+                isDataChanged = true
+                if (configuration.isObservable) isViewChanged = true
+            }
+
+            override fun onChanged() {
+                if (isDataChanged) {
+                    isDataChanged = false
+                    callback.onDataChanged()
+                }
+                if (isViewChanged) {
+                    isViewChanged = false
+                    callback.onViewChanged()
+                }
+            }
+
+            override fun isValid(itemStack: ItemStack) = configuration.isValid(itemStack)
+
+            override fun canInsert(actualSide: Direction) = configuration.canInsert(actualSide)
+
+            override fun canExtract(actualSide: Direction) = configuration.canExtract(actualSide)
+
+            override val dropItem: Boolean get() = configuration.dropItem
+        }
+    }
 }
 
 interface InventorySlotAccessor {
