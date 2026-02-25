@@ -110,6 +110,7 @@ enum class FairyQuestRecipeCard(
         "The Institute of Fairy Research\nEthics Department\nTirirknofe Herirmina", "妖精研究所\n倫理部\nティリルクノフェ・ヘリルミーナ",
         listOf({ Items.PAPER.toIngredientStack(24) }),
         listOf { Items.EMERALD.createItemStack(1) },
+        icon = { Items.PAPER.createItemStack() },
     ),
     NOTICE_FOR_CERAMIC_BRICK_DONATIONS(
         "notice_for_ceramic_brick_donations", 0xFFFAF2, LootCategory.RARE,
