@@ -63,7 +63,7 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
 
     // Container
 
-    private val inventory: NonNullList<ItemStack> = NonNullList.withSize(card.inventorySlotConfigurations.size, EMPTY_ITEM_STACK)
+    private val inventory = MutableList(card.inventorySlotConfigurations.size) { EMPTY_ITEM_STACK }
     private var isDataChanged = false
     private var isViewChanged = false
 
