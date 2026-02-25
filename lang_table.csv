@@ -773,6 +773,31 @@ key.miragefairy2024.place_item,Place Item,アイテムを置く
 key.miragefairy2024.toggle_collection_enabled,Toggle Collection,収集のオンオフ
 miragefairy2024.collection_disabled,Collection Disabled,収集効果が無効
 miragefairy2024.collection_enabled,Collection Enabled,収集効果が有効
+miragefairy2024.fairyQuestRecipe.citizens_for_fairy_ethics.client,"The Institute of Fairy Research
+Creation Department
+Kretroknofe Mizna","妖精研究所
+創製部
+クレトロクノフェ・ミズナ"
+miragefairy2024.fairyQuestRecipe.citizens_for_fairy_ethics.message,"(Footsteps)
+Mizna: ""--But Herirmina, not once in history has humanity ever granted rights to plants, you know?""
+Herirmina: ""That's beside the point. Fairies are alive. Why shouldn't they have rights?""
+Mizna: ""...I get what you're saying, Herirmina. But come on. If we accept that, wouldn't metals and ores need rights too? We wouldn't be able to mine anything anymore.""
+Herirmina: ""That's not going to happen. Fairies are plants. Plants are actually alive, unlike mere inorganic matter, right? So fairies are alive too. Metals and ores aren't alive--they're different from fairies.""
+Mizna: ""I think I sort of see your point, Herirmina. But then, what about Miragium? Miragium is a type of metal too, right? Wouldn't that make it alive?""
+Herirmina: ""...Miragium is alive. The proof is right there--it exhibits astral responses, doesn't it? There are even research reports saying that a soul of the same nature as a human's resides within Miragium. I really do think its rights should be recognized.""
+Mizna: ""Haah... You've got me there, Herirmina. Rights for Miragium... I'd never even considered that...""
+Herirmina: ""Hehe, you've changed, Mizna--""
+(Footsteps)","（足音）
+ミズナ「――しかしヘリルミーナ？　これまで人類は植物に人権を与えた歴史なんて無いんだよ？」
+ヘリルミーナ「それとこれとは別の話でしょ？　妖精だって生きてるんだもの、人権があったっていいじゃない。」
+ミズナ「……ヘリルミーナの言いたいことは分かるよ？　でもさあ。　それを認めたら、今度は金属とか鉱石とかにも人権が必要になってくるんじゃない？　そうなったらもう、何も採掘できなくなっちゃうよ。」
+ヘリルミーナ「そんなことないわよ。　だって、妖精は植物だから。　植物は単なる無機物とは違ってちゃんと生きてるでしょ？　だから妖精も生きてるの。　金属や鉱石は生きてないから、妖精とは違うのよ。」
+ミズナ「僕にはヘリルミーナの言ってること、ちょっとわかる気がするよ。　でもさ、それを認めたらミラジウムはどうなっちゃうの？　ミラジウムも金属の亜種だよね？　あれも生きてるってことになんないかな？」
+ヘリルミーナ「……ミラジウムは生きてるわ。　その証拠に、霊体反応だってあるでしょ？　ミラジウムには人間と同質の魂が宿っているって、そういう研究報告もあるわ。　ミラジウムには人権を認めるべきだと思うのよ。」
+ミズナ「はぁ……　ヘリルミーナには参ったよ。　ミラジウムに人権があるだなんて、そんなこと考えたこともなかったなあ……」
+ヘリルミーナ「ふふっ、ミズナも変わったわね――」
+（足音）"
+miragefairy2024.fairyQuestRecipe.citizens_for_fairy_ethics.title,Citizens for Fairy Ethics,妖精の倫理について考える市民の会
 miragefairy2024.fairyQuestRecipe.emergency_situation.client,"The Institute of Fairy Research
 Ethics Department
 Tirirknofe Herirmina","妖精研究所
