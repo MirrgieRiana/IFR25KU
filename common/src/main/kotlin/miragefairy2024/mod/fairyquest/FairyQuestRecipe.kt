@@ -332,6 +332,39 @@ enum class FairyQuestRecipeCard(
         duration = 10,
         icon = { MaterialCard.HAIMEVISKA_ROSIN.item().createItemStack() },
     ),
+    CITIZENS_FOR_FAIRY_ETHICS(
+        "citizens_for_fairy_ethics", 0xC4E0EA, LootCategory.COMMON,
+        "Citizens for Fairy Ethics", "妖精の倫理について考える市民の会",
+        """
+                (Footsteps)
+                Mizna: "--But Herirmina, not once in history has humanity ever granted rights to plants, you know?"
+                Herirmina: "That's beside the point. Fairies are living beings. Why shouldn't they have rights?"
+                Mizna: "...I get what you're saying, Herirmina. But come on. If we accept that, wouldn't metals and ores need rights too? We wouldn't be able to mine anything anymore."
+                Herirmina: "That's not how it works. Fairies are plants. Plants are properly alive, unlike mere inorganic matter. So fairies are alive too. Metals and ores aren't alive--they're different from fairies."
+                Mizna: "I think I sort of see your point, Herirmina. But then, what about Miragium? Miragium is a type of metal too, right? Wouldn't that make it alive?"
+                Herirmina: "...Miragium is alive. The proof is right there--it exhibits astral responses. There are research reports stating that a soul of the same nature as a human's resides within Miragium. I believe its rights should be recognized."
+                Mizna: "Hah... You've got me there, Herirmina. Rights for Miragium... I'd never even considered that..."
+                Herirmina: "Hehe, you've changed, Mizna--"
+                (Footsteps)
+            """.formatFairyQuest(),
+        """
+                （足音）
+                ミズナ「――しかしヘリルミーナ？　これまで人類は植物に人権を与えた歴史なんて無いんだよ？」
+                ヘリルミーナ「それとこれとは別の話でしょ？　妖精だって生きてるんだもの、人権があったっていいじゃない。」
+                ミズナ「……ヘリルミーナの言いたいことは分かるよ？　でもさあ。　それを認めたら、今度は金属とか鉱石とかにも人権が必要になってくるんじゃない？　そうなったらもう、何も採掘できなくなっちゃうよ。」
+                ヘリルミーナ「そんなことないわよ。　だって、妖精は植物だから。　植物は単なる無機物とは違ってちゃんと生きてるでしょ？　だから妖精も生きてるの。　金属や鉱石は生きてないから、妖精とは違うのよ。」
+                ミズナ「僕にはヘリルミーナの言ってること、ちょっとわかる気がするよ。　でもさ、それを認めたらミラジウムはどうなっちゃうの？　ミラジウムも金属の亜種だよね？　あれも生きてるってことになんないかな？」
+                ヘリルミーナ「……ミラジウムは生きてるわ。　その証拠に、霊体反応だってあるでしょ？　ミラジウムには人間と同質の魂が宿っているって、そういう研究報告もあるわ。　ミラジウムには人権を認めるべきだと思うのよ。」
+                ミズナ「はぁ……　ヘリルミーナには参ったよ。　ミラジウムに人権があるだなんて、そんなこと考えたこともなかったなあ……」
+                ヘリルミーナ「ふふっ、ミズナも変わったわね――」
+                （足音）
+            """.formatFairyQuest(),
+        "The Institute of Fairy Research\nCreation Department\nKretroknofe Mizna", "妖精研究所\n創製部\nクレトロクノフェ・ミズナ",
+        listOf { MaterialCard.MIRAGIUM_INGOT.item().toIngredientStack(5) },
+        listOf { Items.EMERALD.createItemStack() },
+        duration = 10,
+        icon = { MaterialCard.MIRAGIUM_INGOT.item().createItemStack() },
+    ),
     ;
 
     val identifier = MirageFairy2024.identifier(path)
