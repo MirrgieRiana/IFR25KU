@@ -28,7 +28,7 @@ abstract class HorizontalFacingMachineBlock(private val card: MachineCard<*, *, 
 
                 else -> {
                     val direction = blockState.getOrNull(FACING) ?: Direction.NORTH
-                    Direction.from2DDataValue((direction.get2DDataValue() + side.get2DDataValue()) % 4)
+                    Direction.from2DDataValue((side.get2DDataValue() - direction.get2DDataValue() + 4) % 4)
                 }
             }
         }
