@@ -109,6 +109,7 @@ enum class FairyQuestRecipeCard(
         "The Institute of Fairy Research\nEthics Department\nTirirknofe Herirmina", "妖精研究所\n倫理部\nティリルクノフェ・ヘリルミーナ",
         listOf({ Items.PAPER.toIngredientStack(24) }),
         listOf { Items.EMERALD.createItemStack(1) },
+        duration = 10,
         icon = { Items.PAPER.createItemStack() },
     ),
     NOTICE_FOR_CERAMIC_BRICK_DONATIONS(
@@ -118,7 +119,7 @@ enum class FairyQuestRecipeCard(
         "真空崩壊炉改修工事に向けてセラミックレンガの寄付を広く募集しております。必要な場合は、リユース可能な建築資材を選別してご提供いたします。",
         "The Institute of Fairy Research\nCordelia Branch", "妖精研究所\nコーディリア支部",
         listOf({ BlockMaterialCard.FAIRY_CERAMIC_BRICKS.item().toIngredientStack(1) }),
-        listOf({ BlockMaterialCard.DRYWALL.item().createItemStack(1) }, { Items.STONE_BRICKS.createItemStack(1) }, { Items.WHITE_CONCRETE.createItemStack(1) }),
+        listOf { BlockMaterialCard.DRYWALL.item().createItemStack(4) },
     ),
     IMPROMPTU_FANTASTIC_CARNIVAL(
         "impromptu_fantastic_carnival", 0xFCF5DF, LootCategory.RARE,
@@ -127,7 +128,9 @@ enum class FairyQuestRecipeCard(
         "たいへん！ケーキが足りないのにニワトリがなかなか卵を産まないの！お願い！作ってる時間はないから、今すぐ誰か代わりになって！",
         "Breadia the fairy of bread", "麺麭精ブレアージャ",
         listOf({ MaterialCard.FRACTAL_WISP.item().toIngredientStack(1) }), // TODO -> ケーキ精
-        listOf { Items.CAKE.createItemStack(1) },
+        listOf { Items.EMERALD.createItemStack(1) },
+        duration = 10,
+        icon = { MaterialCard.FRACTAL_WISP.item().createItemStack() }, // TODO -> ケーキ精
     ),
     NEW_PRODUCT_FROM_FRI(
         "new_product_from_fri", 0xAC5BD8, LootCategory.COMMON,
@@ -157,6 +160,7 @@ enum class FairyQuestRecipeCard(
         "The Institute of Fairy Research\nCreation Department", "妖精研究所\n創製部",
         listOf({ Items.DIRT.toIngredientStack(8) }),
         listOf { Items.WHITE_BED.createItemStack(1) },
+        duration = 10,
     ),
     VEGETATION_SURVEY(
         "vegetation_survey", 0x6BAF7C, LootCategory.RARE,
@@ -164,8 +168,10 @@ enum class FairyQuestRecipeCard(
         "The fairy trees...? We should be over a million light-years away from the Habitabilis Zona. I'm curious to divine the past of this star, so would you consider sending me samples of the vegetation?",
         "妖精の樹…？ここはハビタビリスゾーナから100万光年以上も離れた場所のはず…。この星の過去を占ってみたいから、植生サンプルを送ってくれないかしら？",
         "The Pearl Knights of Miranagi\nShinonome Astrology Academy\nRumeri", "みらなぎ聖騎士団\n東雲占卜院\nるめり",
-        listOf({ HaimeviskaBlockCard.LOG.item().toIngredientStack(4) }, { HaimeviskaBlockCard.LEAVES.item().toIngredientStack(16) }),
-        listOf { MaterialCard.MIRANAGITE.item().createItemStack(1) },
+        listOf { HaimeviskaBlockCard.SAPLING.item().toIngredientStack(10) },
+        listOf { Items.EMERALD.createItemStack(1) },
+        duration = 10,
+        icon = { HaimeviskaBlockCard.SAPLING.item().createItemStack() },
     ),
     FATAL_ACCIDENT(
         "fatal_accident", 0x000027, LootCategory.RARE,
@@ -315,8 +321,8 @@ enum class FairyQuestRecipeCard(
             """.formatFairyQuest(),
         """
                 ☆＊*・*＊☆＊*・*＊☆＊*・*＊☆
-                |　　　　シャルパの夜　　　　|
-                |　　夜空を彩るレジンの星　　|
+                ｜ 　　　シャルパの夜　　　 ｜
+                ｜ 　夜空を彩るレジンの星　 ｜
                 ☆＊*・*＊☆＊*・*＊☆＊*・*＊☆
 
                 0月0日は #シャルパ独立記念日 ♪
