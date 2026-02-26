@@ -10,6 +10,7 @@ import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.toSecondsTextAsTicks
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.Sizing
@@ -26,6 +27,7 @@ import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.Chance
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
@@ -547,7 +549,7 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
                     view.color = ColorPair.DARK_GRAY
                     view.shadow = false
                     view.scroll = true
-                }
+                }.tooltip(recipeEntry.recipe.title)
             }
 
             view += YSpaceView(2)
@@ -587,7 +589,7 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
                 view += ArrowView().configure {
                     position.alignmentY = Alignment.CENTER
                     view.durationMilliSeconds = recipeEntry.recipe.duration * 50
-                }
+                }.tooltip(recipeEntry.recipe.duration.toSecondsTextAsTicks())
 
                 view += XSpaceView(2)
 
