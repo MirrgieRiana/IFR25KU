@@ -225,7 +225,7 @@ enum class FairyQuestRecipeCard(
         ),
     ),
     SUSPICION_OF_ILLEGAL_DRUG_POSSESSION_BY_HARTEKAZONIE_PANELCA(
-        "suspicion_of_illegal_drug_possession_by_hartekazonie_panelca", 0XD83D2A, LootCategory.COMMON,
+        "suspicion_of_illegal_drug_possession_by_hartekazonie_panelca", 0xD85A30, LootCategory.COMMON,
         "Re: Re: Re: Suspicion of Illegal Drug Possession by Hartekazonie Panelca", "Re: Re: Re: パネッツァ氏の違法薬物所持の疑い",
         """
             I'm sorry, the password included in the email I sent earlier was not meant to be shared with others.
