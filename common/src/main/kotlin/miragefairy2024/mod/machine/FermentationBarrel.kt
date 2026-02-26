@@ -44,8 +44,8 @@ object FermentationBarrelCard : SimpleMachineCard<FermentationBarrelBlock, Ferme
 
     override val inputSlots = listOf(
         SlotConfiguration(42, 17, setOf(Direction.UP), setOf()),
-        SlotConfiguration(31, 39, setOf(Direction.NORTH), setOf()),
-        SlotConfiguration(53, 39, setOf(Direction.SOUTH, Direction.WEST, Direction.EAST, Direction.DOWN), setOf()),
+        SlotConfiguration(31, 39, setOf(Direction.WEST), setOf()),
+        SlotConfiguration(53, 39, setOf(Direction.EAST), setOf()),
     )
     override val outputSlots = listOf(
         SlotConfiguration(111, 28, setOf(), setOf(Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, Direction.DOWN)),
