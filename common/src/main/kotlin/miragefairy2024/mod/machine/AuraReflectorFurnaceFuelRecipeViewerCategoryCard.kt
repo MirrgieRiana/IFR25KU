@@ -3,7 +3,7 @@ package miragefairy2024.mod.machine
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
-import miragefairy2024.mod.recipeviewer.SECONDS_TRANSLATION
+import miragefairy2024.mod.recipeviewer.toSecondsTextAsTicks
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.Sizing
@@ -18,11 +18,7 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.get
-import miragefairy2024.util.invoke
-import miragefairy2024.util.text
 import miragefairy2024.util.toIngredientStack
-import mirrg.kotlin.helium.stripTrailingZeros
-import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.Registries
 
@@ -48,7 +44,7 @@ object AuraReflectorFurnaceFuelRecipeViewerCategoryCard : RecipeViewerCategoryCa
                 position.alignmentY = Alignment.CENTER
             }
             view += XSpaceView(4)
-            view += TextView(text { SECONDS_TRANSLATION((recipeEntry.recipe.duration.toDouble() / 20.0 formatAs "%.2f").stripTrailingZeros()) }).configure {
+            view += TextView(recipeEntry.recipe.duration.toSecondsTextAsTicks()).configure {
                 position.alignmentY = Alignment.CENTER
                 view.sizingX = Sizing.FILL
                 view.alignmentX = Alignment.CENTER

@@ -1,7 +1,7 @@
 package miragefairy2024.mod.machine
 
 import miragefairy2024.MirageFairy2024
-import miragefairy2024.mod.recipeviewer.SECONDS_TRANSLATION
+import miragefairy2024.mod.recipeviewer.toSecondsTextAsTicks
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
@@ -25,11 +25,7 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.get
-import miragefairy2024.util.invoke
-import miragefairy2024.util.text
 import miragefairy2024.util.toIngredientStack
-import mirrg.kotlin.helium.stripTrailingZeros
-import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.core.registries.Registries
 
 object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<AuraReflectorFurnaceRecipe>() {
@@ -70,7 +66,7 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
                 position = AbsoluteView.Offset(IntPoint(88, 34) - p)
                 view.durationMilliSeconds = recipeEntry.recipe.duration * 50
             }
-            view += TextView(text { SECONDS_TRANSLATION((recipeEntry.recipe.duration.toDouble() / 20.0 formatAs "%.2f").stripTrailingZeros()) }).configure {
+            view += TextView(recipeEntry.recipe.duration.toSecondsTextAsTicks()).configure {
                 position = AbsoluteView.Offset(IntPoint(108, 18) - p)
                 view.alignmentX = Alignment.CENTER
                 view.color = ColorPair.DARK_GRAY

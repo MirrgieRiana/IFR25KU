@@ -8,7 +8,11 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.SubscribableBuffer
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
+import miragefairy2024.util.invoke
 import miragefairy2024.util.plusAssign
+import miragefairy2024.util.text
+import mirrg.kotlin.helium.stripTrailingZeros
+import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -30,6 +34,8 @@ class InformationEntry(val input: () -> Ingredient, val title: Component, val co
 class RecipeViewerCategoryCardRecipeManagerBridge<I : RecipeInput, R : Recipe<I>>(val recipeClass: Class<R>, val recipeType: RecipeType<R>, val card: RecipeViewerCategoryCard<R>)
 
 val SECONDS_TRANSLATION = Translation({ MirageFairy2024.identifier("recipe_viewer").toLanguageKey("gui", "seconds").toString() }, EnJa("%s sec", "%s 秒"))
+
+fun Int.toSecondsTextAsTicks() = text { SECONDS_TRANSLATION((this@toSecondsTextAsTicks.toDouble() / 20.0 formatAs "%.2f").stripTrailingZeros()) }
 
 context(ModContext)
 fun initRecipeViewerModule() {
