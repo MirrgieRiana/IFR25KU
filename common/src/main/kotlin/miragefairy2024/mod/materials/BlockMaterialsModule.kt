@@ -129,6 +129,13 @@ open class BlockMaterialCard(
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.NEPHRITE.item, { MaterialCard.NEPHRITE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
+        val MIRAGE_LEAVES_BLOCK = !BlockMaterialCard(
+            "mirage_leaves_block", EnJa("Mirage Leaves Block", "ミラージュの葉ブロック"),
+            PoemList(null),
+            MapColor.PLANT, 0.2F, 0.2F,
+        ).sound(SoundType.GRASS).tag(BlockTags.MINEABLE_WITH_HOE).init {
+            registerCompressionRecipeGeneration(MaterialCard.MIRAGE_LEAVES.item, { MaterialCard.MIRAGE_LEAVES.item().toIngredient() }, item, { item().toIngredient() })
+        }
         val XARPITE_BLOCK = !BlockMaterialCard(
             "xarpite_block", EnJa("Xarpite Block", "紅天石ブロック"),
             PoemList(2).poem(EnJa("Loss and reconstruction of perception", "夢の世界の如き紅。")),
