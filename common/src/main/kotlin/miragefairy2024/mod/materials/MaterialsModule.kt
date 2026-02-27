@@ -830,6 +830,12 @@ class MaterialCard(
             registerSmeltingRecipeGeneration(BISMUTH_DUST.item, item) on BISMUTH_DUST.item from BISMUTH_DUST.item
         }
 
+        val ASH: MaterialCard = !MaterialCard(
+            "ash", "Ash", "灰",
+            null,
+            ore = Ore(Shape.DUST, Material.ASH),
+        )
+
         val MINA_1: MaterialCard = !MaterialCard(
             "mina_1", "1 Mina", "1ミナ",
             PoemList(null)
@@ -1370,4 +1376,5 @@ enum class Material(val path: String, val prefix: EnJa) {
     NEPHRITE("nephrite", EnJa("Nephrite", "ネフライト")),
     TOPAZ("topaz", EnJa("Topaz", "トパーズ")),
     BISMUTH("bismuth", EnJa("Bismuth", "ビスマス")),
+    ASH("ash", EnJa("Ash", "灰")),
 }
