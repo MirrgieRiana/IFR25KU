@@ -766,6 +766,12 @@ class MaterialCard(
             PoemList(1).poem("Am I hopeful in the parallel world?", "存在したかもしれない僕たちのかたち。")
         )
 
+        val SALTPETER_GEM: MaterialCard = !MaterialCard(
+            "saltpeter_gem", "Saltpeter Gem", "硝石",
+            null,
+            ore = Ore(Shape.GEM, Material.SALTPETER),
+        )
+
         val MAGNETITE: MaterialCard = !MaterialCard(
             "magnetite", "Magnetite", "磁鉄鉱",
             null,
@@ -807,11 +813,6 @@ class MaterialCard(
             "topaz", "Topaz", "トパーズ",
             null,
             ore = Ore(Shape.GEM, Material.TOPAZ),
-        )
-        val SALTPETER_GEM: MaterialCard = !MaterialCard(
-            "saltpeter_gem", "Saltpeter Gem", "硝石",
-            null,
-            ore = Ore(Shape.GEM, Material.SALTPETER),
         )
 
         val TINY_BISMUTH_DUST: MaterialCard = !MaterialCard(
@@ -1369,11 +1370,11 @@ enum class Material(val path: String, val prefix: EnJa) {
     HAIMEVISKA_ROSIN("haimeviska_rosin", EnJa("Haimeviska Rosin", "ハイメヴィスカの涙")),
     FAIRY_PLASTIC("fairy_plastic", EnJa("Fairy Plastic", "妖精のプラスチック")),
     FAIRY_RUBBER("fairy_rubber", EnJa("Fairy Rubber", "夜のかけら")),
+    SALTPETER("saltpeter", EnJa("Saltpeter", "硝石")),
     MAGNETITE("magnetite", EnJa("Magnetite", "磁鉄鉱")),
     FLUORITE("fluorite", EnJa("Fluorite", "蛍石")),
     SULFUR("sulfur", EnJa("Sulfur", "硫黄")),
     NEPHRITE("nephrite", EnJa("Nephrite", "ネフライト")),
     TOPAZ("topaz", EnJa("Topaz", "トパーズ")),
-    SALTPETER("saltpeter", EnJa("Saltpeter", "硝石")),
     BISMUTH("bismuth", EnJa("Bismuth", "ビスマス")),
 }
