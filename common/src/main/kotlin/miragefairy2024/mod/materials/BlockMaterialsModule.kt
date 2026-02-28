@@ -12,6 +12,7 @@ import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
 import miragefairy2024.mod.materials.contents.FairyCrystalGlassBlock
 import miragefairy2024.mod.materials.contents.LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG
 import miragefairy2024.mod.materials.contents.LocalVacuumDecayBlock
+import miragefairy2024.mod.materials.contents.MirageLeavesBlock
 import miragefairy2024.mod.materials.contents.MiragidianLampBlock
 import miragefairy2024.mod.materials.contents.SemiOpaqueTransparentBlock
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassBlockModel
@@ -41,9 +42,11 @@ import miragefairy2024.util.register
 import miragefairy2024.util.registerBlockFamily
 import miragefairy2024.util.registerBlockStateGeneration
 import miragefairy2024.util.registerChild
+import miragefairy2024.util.registerComposterInput
 import miragefairy2024.util.registerCompressionRecipeGeneration
 import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerDefaultLootTableGeneration
+import miragefairy2024.util.registerFlammable
 import miragefairy2024.util.registerGeneratedModelGeneration
 import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.registerLootTableGeneration
@@ -135,6 +138,17 @@ open class BlockMaterialCard(
             MapColor.NETHER, 3.0F, 3.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.XARPITE),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.XARPITE.item, { MaterialCard.XARPITE.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
+        val MIRAGE_LEAVES_BLOCK: BlockMaterialCard = !object : BlockMaterialCard(
+            "mirage_leaves_block", EnJa("Mirage Leaves Block", "ミラージュの葉ブロック"),
+            PoemList(null),
+            MapColor.WARPED_STEM, 2.0F, 2.0F,
+        ) {
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = MirageLeavesBlock(properties)
+        }.sound(SoundType.GLASS).tag(BlockTags.MINEABLE_WITH_HOE).init {
+            registerCompressionRecipeGeneration(MaterialCard.MIRAGE_LEAVES.item, { MaterialCard.MIRAGE_LEAVES.item().toIngredient() }, item, { item().toIngredient() })
+            item.registerComposterInput(0.65F)
+            block.registerFlammable(60, 20)
         }
         val AURA_RESISTANT_CERAMIC: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic", EnJa("Protective Aura-Resistant Ceramic", "守護の耐霊石"),
@@ -690,6 +704,7 @@ fun initBlockMaterialsModule() {
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("local_vacuum_decay")) { LocalVacuumDecayBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("semi_opaque_transparent_block")) { SemiOpaqueTransparentBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("fairy_crystal_glass")) { FairyCrystalGlassBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("mirage_leaves_block")) { MirageLeavesBlock.CODEC }.register()
 
     LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.enJa(EnJa("Local Vacuum Decay Resistant", "局所真空崩壊耐性"))
 

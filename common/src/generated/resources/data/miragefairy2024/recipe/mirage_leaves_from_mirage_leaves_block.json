@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:mirage_leaves",
+  "ingredients": [
+    {
+      "item": "miragefairy2024:mirage_leaves_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "miragefairy2024:mirage_leaves"
+  }
+}
