@@ -225,6 +225,7 @@ block.miragefairy2024.magnetite_block,Magnetite Block,磁鉄鉱ブロック
 block.miragefairy2024.magnetite_ore,Magnetite Ore,磁鉄鉱鉱石
 block.miragefairy2024.merrrria,Merrrria,月鈴花メルルルリア
 block.miragefairy2024.mirage_flower,Mirage Flower,妖花ミラージュ
+block.miragefairy2024.mirage_leaves_block,Mirage Leaves Block,ミラージュの葉ブロック
 block.miragefairy2024.miragidian_block,Miragidian Block,ミラジディアンブロック
 block.miragefairy2024.miragidian_block.poem,The wall feels like it's protecting us,その身に宿る、黒曜石の魂。
 block.miragefairy2024.miragidian_lamp,Miragidian Street Lamp,ミラジディアンの街灯
@@ -293,6 +294,8 @@ container.miragefairy2024.soul_stream,Soul Stream,ソウルストリーム
 container.miragefairy2024.tooltip_viewer,Tooltip Viewer,ツールチップビューワー
 death.attack.miragefairy2024.magic,%1$s was killed by magic,%1$sは魔法で殺された
 death.attack.miragefairy2024.magic.player,%1$s was killed by magic while fighting %2$s,%1$sは%2$sと戦いながら魔法で殺された
+death.attack.miragefairy2024.mirage_leaves,%1$s was pricked to death by mirage leaves,%1$sはミラージュの葉で手を切って死んだ
+death.attack.miragefairy2024.mirage_leaves.player,%1$s was pricked to death by mirage leaves while trying to escape %2$s,%1$sは%2$sから逃れようとしてミラージュの葉で手を切って死んだ
 death.attack.miragefairy2024.physical_magic,%1$s was killed by magic,%1$sは魔法で殺された
 death.attack.miragefairy2024.physical_magic.player,%1$s was killed by magic while fighting %2$s,%1$sは%2$sと戦いながら魔法で殺された
 death.attack.miragefairy2024.tool_break,%1$s injured their hand,%1$sは手を怪我した

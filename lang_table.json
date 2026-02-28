@@ -903,6 +903,10 @@
     "en_us": "Mirage Flower",
     "ja_jp": "妖花ミラージュ"
   },
+  "block.miragefairy2024.mirage_leaves_block": {
+    "en_us": "Mirage Leaves Block",
+    "ja_jp": "ミラージュの葉ブロック"
+  },
   "block.miragefairy2024.miragidian_block": {
     "en_us": "Miragidian Block",
     "ja_jp": "ミラジディアンブロック"
@@ -1174,6 +1178,14 @@
   "death.attack.miragefairy2024.magic.player": {
     "en_us": "%1$s was killed by magic while fighting %2$s",
     "ja_jp": "%1$sは%2$sと戦いながら魔法で殺された"
+  },
+  "death.attack.miragefairy2024.mirage_leaves": {
+    "en_us": "%1$s was pricked to death by mirage leaves",
+    "ja_jp": "%1$sはミラージュの葉で手を切って死んだ"
+  },
+  "death.attack.miragefairy2024.mirage_leaves.player": {
+    "en_us": "%1$s was pricked to death by mirage leaves while trying to escape %2$s",
+    "ja_jp": "%1$sは%2$sから逃れようとしてミラージュの葉で手を切って死んだ"
   },
   "death.attack.miragefairy2024.physical_magic": {
     "en_us": "%1$s was killed by magic",
