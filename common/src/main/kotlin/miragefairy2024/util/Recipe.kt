@@ -139,12 +139,11 @@ fun registerSmeltingRecipeGeneration(
     output: () -> Item,
     experience: Double = 0.0,
     cookingTime: Int = 200,
-    count: Int = 1,
     block: SimpleCookingRecipeBuilder.() -> Unit = {},
 ): RecipeGenerationSettings<SimpleCookingRecipeBuilder> {
     val settings = RecipeGenerationSettings<SimpleCookingRecipeBuilder>()
     DataGenerationEvents.onGenerateRecipe {
-        val builder = SimpleCookingRecipeBuilder.smelting(input().toIngredient(), RecipeCategory.MISC, ItemStack(output(), count), experience.toFloat(), cookingTime)
+        val builder = SimpleCookingRecipeBuilder.smelting(input().toIngredient(), RecipeCategory.MISC, output(), experience.toFloat(), cookingTime)
         builder.group(output())
         settings.listeners.forEach { listener ->
             listener(builder)
