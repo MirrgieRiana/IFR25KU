@@ -17,6 +17,25 @@ import net.minecraft.tags.DamageTypeTags
 import net.minecraft.tags.TagKey
 import net.minecraft.world.damagesource.DamageType
 
+val C_IS_MAGIC_DAMAGE_TYPE_TAG = ResourceLocation("c", "is_magic").toDamageTypeTag()
+val NEOFORGE_IS_MAGIC_DAMAGE_TYPE_TAG = ResourceLocation("neoforge", "is_magic").toDamageTypeTag()
+val IS_MAGIC_DAMAGE_TYPE_TAG = MirageFairy2024.identifier("is_magic").toDamageTypeTag()
+
+context(ModContext)
+fun initDamageType() {
+    MagicDamageTypeCard.init()
+    PhysicalMagicDamageTypeCard.init()
+    ToolBreakDamageTypeCard.init()
+    MirageLeavesDamageTypeCard.init()
+
+    C_IS_MAGIC_DAMAGE_TYPE_TAG.enJa(EnJa("Magic", "魔法"))
+    NEOFORGE_IS_MAGIC_DAMAGE_TYPE_TAG.enJa(EnJa("Magic", "魔法"))
+    IS_MAGIC_DAMAGE_TYPE_TAG.enJa(EnJa("Magic", "魔法"))
+    IS_MAGIC_DAMAGE_TYPE_TAG.generator.registerChild(DamageTypeTags.BYPASSES_ARMOR)
+    IS_MAGIC_DAMAGE_TYPE_TAG.generator.registerChild(C_IS_MAGIC_DAMAGE_TYPE_TAG)
+    IS_MAGIC_DAMAGE_TYPE_TAG.generator.registerChild(NEOFORGE_IS_MAGIC_DAMAGE_TYPE_TAG)
+}
+
 /**
  * # 死亡メッセージのテンプレ
  * 使い分けは全く謎である。
@@ -86,23 +105,4 @@ object MirageLeavesDamageTypeCard : DamageTypeCard() {
     override fun getKillMessage() = EnJa("%1\$s was pricked to death by mirage leaves", "%1\$sはミラージュの葉で手を切って死んだ")
     override fun getPlayerKillMessage() = EnJa("%1\$s was pricked to death by mirage leaves while trying to escape %2\$s", "%1\$sは%2\$sから逃れようとしてミラージュの葉で手を切って死んだ")
     override fun getTags() = listOf(DamageTypeTags.NO_KNOCKBACK)
-}
-
-val C_IS_MAGIC_DAMAGE_TYPE_TAG = ResourceLocation("c", "is_magic").toDamageTypeTag()
-val NEOFORGE_IS_MAGIC_DAMAGE_TYPE_TAG = ResourceLocation("neoforge", "is_magic").toDamageTypeTag()
-val IS_MAGIC_DAMAGE_TYPE_TAG = MirageFairy2024.identifier("is_magic").toDamageTypeTag()
-
-context(ModContext)
-fun initDamageType() {
-    MagicDamageTypeCard.init()
-    PhysicalMagicDamageTypeCard.init()
-    ToolBreakDamageTypeCard.init()
-    MirageLeavesDamageTypeCard.init()
-
-    C_IS_MAGIC_DAMAGE_TYPE_TAG.enJa(EnJa("Magic", "魔法"))
-    NEOFORGE_IS_MAGIC_DAMAGE_TYPE_TAG.enJa(EnJa("Magic", "魔法"))
-    IS_MAGIC_DAMAGE_TYPE_TAG.enJa(EnJa("Magic", "魔法"))
-    IS_MAGIC_DAMAGE_TYPE_TAG.generator.registerChild(DamageTypeTags.BYPASSES_ARMOR)
-    IS_MAGIC_DAMAGE_TYPE_TAG.generator.registerChild(C_IS_MAGIC_DAMAGE_TYPE_TAG)
-    IS_MAGIC_DAMAGE_TYPE_TAG.generator.registerChild(NEOFORGE_IS_MAGIC_DAMAGE_TYPE_TAG)
 }
