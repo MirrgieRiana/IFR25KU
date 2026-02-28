@@ -86,12 +86,22 @@ infix fun <T : RecipeBuilder> RecipeGenerationSettings<T>.on(tag: TagKey<Item>) 
     this.listeners += { it.criterion(tag) }
 }
 
+@JvmName("onId")
+infix fun <T : RecipeBuilder> RecipeGenerationSettings<T>.on(id: ResourceLocation) = this.apply {
+    this.listeners += { it.criterion(id.toItem()!!) }
+}
+
 infix fun <T> RecipeGenerationSettings<T>.modId(modId: String) = this.apply {
     this.idModifiers += { ResourceLocation(modId, it.path) }
 }
 
 infix fun <T> RecipeGenerationSettings<T>.from(item: () -> Item) = this.apply {
     this.idModifiers += { it * "_from_" * item().getIdentifier().path }
+}
+
+@JvmName("fromId")
+infix fun <T> RecipeGenerationSettings<T>.from(id: ResourceLocation) = this.apply {
+    this.idModifiers += { it * "_from_" * id.path }
 }
 
 fun <T> RecipeGenerationSettings<T>.noGroup(noGroup: Boolean = true) = this.apply {
@@ -155,6 +165,16 @@ fun registerSmeltingRecipeGeneration(
     }
     return settings
 }
+
+context(ModContext)
+fun registerSmeltingRecipeGeneration(
+    inputId: ResourceLocation,
+    output: () -> Item,
+    experience: Double = 0.0,
+    cookingTime: Int = 200,
+    count: Int = 1,
+    block: SimpleCookingRecipeBuilder.() -> Unit = {},
+): RecipeGenerationSettings<SimpleCookingRecipeBuilder> = registerSmeltingRecipeGeneration({ inputId.toItem()!! }, output, experience, cookingTime, count, block)
 
 context(ModContext)
 fun registerBlastingRecipeGeneration(
