@@ -771,7 +771,7 @@ class MaterialCard(
             null,
             ore = Ore(Shape.DUST, Material.ASH),
         ) {
-            registerSmeltingRecipeGeneration(MirageFairy2024.identifier("mirage_leaves_block"), item, count = 2) on MirageFairy2024.identifier("mirage_leaves_block") from MirageFairy2024.identifier("mirage_leaves_block")
+            registerSmeltingRecipeGeneration(BlockMaterialCard.MIRAGE_LEAVES_BLOCK.item, item, count = 2) on BlockMaterialCard.MIRAGE_LEAVES_BLOCK.item from BlockMaterialCard.MIRAGE_LEAVES_BLOCK.item
         }
 
         val MAGNETITE: MaterialCard = !MaterialCard(
