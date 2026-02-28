@@ -293,6 +293,8 @@
   "container.miragefairy2024.tooltip_viewer": "ツールチップビューワー",
   "death.attack.miragefairy2024.magic": "%1$sは魔法で殺された",
   "death.attack.miragefairy2024.magic.player": "%1$sは%2$sと戦いながら魔法で殺された",
+  "death.attack.miragefairy2024.mirage_leaves": "%1$sはミラージュの葉で手を切って死んだ",
+  "death.attack.miragefairy2024.mirage_leaves.player": "%1$sは%2$sから逃れようとしてミラージュの葉で手を切って死んだ",
   "death.attack.miragefairy2024.physical_magic": "%1$sは魔法で殺された",
   "death.attack.miragefairy2024.physical_magic.player": "%1$sは%2$sと戦いながら魔法で殺された",
   "death.attack.miragefairy2024.tool_break": "%1$sは手を怪我した",
