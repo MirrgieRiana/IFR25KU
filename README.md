@@ -58,13 +58,17 @@ This can be resolved by installing [Feature Recycler](https://modrinth.com/mod/f
 
 The copyright for all texture data derived from Minecraft, including any found in `*.pdn` file layers, belongs to the original author.
 
-## Legacy Mod Resources
+## Resources Derived from MirageFairy2019
 
-The following files are part of MirageFairy2019 and are licensed under the **[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)** license from MirageFairy Server:
+The following files are licensed under the **[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)** license from MirageFairy Server.
+
+Original assets from [MirageFairy2019](https://github.com/MirageFairy/MirageFairy2019):
 
 - `common/src/main/resources/assets/miragefairy2024/textures/block/apatite_block.pdn`
 - `common/src/main/resources/assets/miragefairy2024/textures/block/fluorite_block.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/block/magnetite_block.png`
+- `common/src/main/resources/assets/miragefairy2024/textures/block/mirage_leaves_block.pdn`
+- `common/src/main/resources/assets/miragefairy2024/textures/block/mirage_leaves_block.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/block/nephrite_block.pdn`
 - `common/src/main/resources/assets/miragefairy2024/textures/block/nephrite_block.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/block/nephrite_ore.pdn`
@@ -88,7 +92,9 @@ The following files are part of MirageFairy2019 and are licensed under the **[CC
 - `common/src/main/resources/assets/miragefairy2024/textures/item/topaz_gem.pdn`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/veropedeliquora.png`
 
-For further details, please refer to [the original repository](https://github.com/MirageFairy/MirageFairy2019).
+Derivative works based on [MirageFairy2019](https://github.com/MirageFairy/MirageFairy2019):
+
+- `common/src/main/resources/assets/miragefairy2024/textures/block/salpeter_ore.png`
 
 ## Codes (Programs, Data Packs)
 
