@@ -2823,6 +2823,10 @@
     "en_us": "Rum",
     "ja_jp": "ラム酒"
   },
+  "item.miragefairy2024.saltpeter": {
+    "en_us": "Saltpeter",
+    "ja_jp": "硝石"
+  },
   "item.miragefairy2024.sarracenia_bulb": {
     "en_us": "Sarracenia Bulb",
     "ja_jp": "瓶子草サラセニアの球根"
@@ -4522,6 +4526,10 @@
   "tag.item.c.gems.prominite": {
     "en_us": "Prominite Gems",
     "ja_jp": "プロミナイトのジェム"
+  },
+  "tag.item.c.gems.saltpeter": {
+    "en_us": "Saltpeter Gems",
+    "ja_jp": "硝石のジェム"
   },
   "tag.item.c.gems.sulfur": {
     "en_us": "Sulfur Gems",
