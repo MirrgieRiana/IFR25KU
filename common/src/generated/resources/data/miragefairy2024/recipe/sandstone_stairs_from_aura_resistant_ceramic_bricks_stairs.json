@@ -1,0 +1,23 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 6000,
+  "group": "minecraft:sandstone_stairs",
+  "inputs": [
+    {
+      "Amount": 16,
+      "Ingredient": {
+        "item": "miragefairy2024:aura_resistant_ceramic_bricks_stairs"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 16,
+      "id": "minecraft:sandstone_stairs"
+    },
+    {
+      "count": 3,
+      "id": "miragefairy2024:xarpite"
+    }
+  ]
+}
