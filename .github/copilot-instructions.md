@@ -28,12 +28,11 @@ JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :common:genSources --no-da
 
 ### datagenの実行
 
-datagen（ `:fabric:runDatagen` ）は以下のワークアラウンドにより実行可能です。
+`-Penabled_platforms=fabric` フラグにより、NeoForgeプロジェクトを除外して実行できます。 `--configure-on-demand` は **使わない** でください。
 
-1. `settings.gradle.kts` の `include("neoforge")` を一時的にコメントアウトします。
-2. `gradle.properties` の `enabled_platforms` を `fabric` のみに変更します。
-3. `--configure-on-demand` は **使わない** でください。datagenでは `--configure-on-demand` を使うと `:common` の `transformProductionFabric` タスクが見つからずエラーになります。
-4. datagen完了後、上記の変更をすべて元に戻してください。
+```
+JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :fabric:runDatagen --no-daemon -Penabled_platforms=fabric
+```
 
 # コードスタイル
 
