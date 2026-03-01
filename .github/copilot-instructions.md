@@ -15,9 +15,8 @@ Minecraftのコードのうち一部が展開されていないという可能�
 ## Gradleタスクのエージェント環境での動作（実験結果）
 
 コーディングエージェントのサンドボックス環境では、 `genSources` や `unpackSources` などのGradleタスクは **実行できません** 。
-これは、Architectury Loomプラグインの解決に必要なMavenリポジトリ（ `maven.architectury.dev` 、 `maven.fabricmc.net` 、 `maven.minecraftforge.net` ）がサンドボックスからアクセスできないためです。
-標準的なMaven Central（ `repo.maven.apache.org` ）やGradle Plugin Portal（ `plugins.gradle.org` ）はアクセス可能ですが、Architectury Loomプラグインはそこにはホストされていません。
-結果として、ビルドはプラグイン解決の段階で失敗します。
+Architectury Loomプラグインの解決に必要なMavenリポジトリ（ `maven.architectury.dev` 、 `maven.fabricmc.net` 、 `maven.minecraftforge.net` ）と、標準的なMaven Central（ `repo.maven.apache.org` ）やGradle Plugin Portal（ `plugins.gradle.org` ）はサンドボックスからアクセス可能です。
+しかし、Architectury Loomが依存するMinecraftのライブラリホスト（ `libraries.minecraft.net` 、 `piston-meta.mojang.com` 、 `launchermeta.mojang.com` 、 `resources.download.minecraft.net` 、 `maven.parchmentmc.org` ）がサンドボックスからアクセスできないため、プロジェクトの構成段階で依存性の解決に失敗します。
 
 ## Zipファイルからのソースコード参照（実験結果）
 
