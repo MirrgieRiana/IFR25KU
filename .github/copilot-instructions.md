@@ -24,20 +24,23 @@ Minecraftのコードのうち一部が展開されていないという可能�
 - `maven.parchmentmc.org` 、 `ldtteam.jfrog.io` 、 `storage.googleapis.com` （Parchmentマッピング、 `maven.parchmentmc.org` から `ldtteam.jfrog.io` 、 `storage.googleapis.com` へのリダイレクトチェーン全体がアクセス可能）
 - `maven.wispforest.io` （owo-lib）、 `maven.shedaniel.me` （REI、cloth-config）
 - `www.cursemaven.com` （Jade）
-- `maven.neoforged.net` 、 `maven.su5ed.dev` （NeoForge本体。ただし `maven.blamejared.com` がブロックされているためJEI依存の解決に失敗し、NeoForgeプロジェクトの構成は完了できない）
+- `maven.neoforged.net` 、 `maven.su5ed.dev` （NeoForge本体。ただし `maven.blamejared.com` にJEIアーティファクトが存在しないためJEI依存の解決に失敗し、NeoForgeプロジェクトの構成は完了できない）
 - `raw.githubusercontent.com`
 
 以下のホストは **ブロック** されています：
 
 - `maven.terraformersmc.com` （EMI。ただしローカル `maven/` にミラー済み）
-- `maven.blamejared.com` （JEI。NeoForgeプロジェクトが依存）
 - `launchermeta.mojang.com` 、 `resources.download.minecraft.net`
+
+以下のホストはアクセス可能だが、 **必要なアーティファクトが存在しません** ：
+
+- `maven.blamejared.com` （JEI。NeoForgeプロジェクトが依存。サーバー自体は応答するが、JEIアーティファクトが404を返す）
 
 ### genSourcesの実行
 
 `genSources` は **`--configure-on-demand` フラグのみで実行可能** です。Parchmentマッピングを含むすべての依存関係がネットワーク経由で正常に解決されます。
 
-1. `--configure-on-demand` フラグにより、NeoForgeプロジェクトの構成をスキップします（ `maven.blamejared.com` がブロックされておりJEI依存の解決に失敗するため）。
+1. `--configure-on-demand` フラグにより、NeoForgeプロジェクトの構成をスキップします（ `maven.blamejared.com` にJEIアーティファクトが存在せずJEI依存の解決に失敗するため）。
 2. Java 21が必要です（ `JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64` ）。
 3. Parchmentマッピング、owo-lib、REI、cloth-config等のサードパーティmod依存関係はすべてネットワーク経由で正常に解決されます。EMIはローカル `maven/` からの解決です。
 
@@ -58,7 +61,7 @@ JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :common:genSources --no-da
 
 datagen（ `:fabric:runDatagen` ）は **追加のワークアラウンドにより実行可能** です。
 
-1. `settings.gradle.kts` の `include("neoforge")` を一時的にコメントアウトします（ `maven.blamejared.com` がブロックされておりNeoForgeプロジェクトの構成が失敗するため）。
+1. `settings.gradle.kts` の `include("neoforge")` を一時的にコメントアウトします（ `maven.blamejared.com` にJEIアーティファクトが存在せずNeoForgeプロジェクトの構成が失敗するため）。
 2. `gradle.properties` の `enabled_platforms` を `fabric` のみに変更します。
 3. `--configure-on-demand` は **使わない** でください。genSources等では必須ですが、datagenでは `--configure-on-demand` を使うとfabricが参照する `:common` の `transformProductionFabric` タスクが見つからずエラーになります。NeoForge除外により `--configure-on-demand` なしでもビルドが通ります。
 4. datagen完了後、上記の変更をすべて元に戻してください。
