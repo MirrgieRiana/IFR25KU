@@ -16,6 +16,25 @@ Minecraftのコードのうち一部が展開されていないという可能�
 
 `maven.blamejared.com` にJEIアーティファクトが存在しない（404）ため、NeoForgeプロジェクトの構成が失敗します。
 
+### 障害の詳細
+
+`neoforge/build.gradle.kts` は `maven.blamejared.com` からJEIの3つのアーティファクト（`mezz.jei:jei-1.21.1-common-api`、`mezz.jei:jei-1.21.1-neoforge-api`、`mezz.jei:jei-1.21.1-neoforge`、すべてバージョン `19.21.2.313`）を依存として宣言しています。これらは `modCompileOnly` および `modRuntimeOnly` コンフィギュレーションで使用されています。
+
+エージェント環境（GitHub Copilot Coding Agent のサンドボックス）からは `maven.blamejared.com` にHTTP接続は可能ですが、サーバーがルートパス `/` を含む **すべてのパスに対して404 Not Foundを返します** 。これはサンドボックスのネットワーク制限ではなく、 `maven.blamejared.com` 側の問題です（ドメイン解決とTCP接続は成功し、nginxが応答しているが、コンテンツが提供されていない）。
+
+この結果、NeoForgeプロジェクトの構成フェーズで以下のエラーが発生します：
+
+```
+A problem occurred configuring project ':neoforge'.
+> Could not resolve all files for configuration ':neoforge:modCompileOnly'.
+   > Could not find mezz.jei:jei-1.21.1-common-api:19.21.2.313.
+   > Could not find mezz.jei:jei-1.21.1-neoforge-api:19.21.2.313.
+```
+
+Gradleは以下のすべての場所を検索しましたが、どこにも見つかりませんでした：Loomキャッシュ、Fabric Loomキャッシュ、maven.fabricmc.net、libraries.minecraft.net、Maven Central、maven.architectury.dev、maven.parchmentmc.org、ローカル `maven/` ディレクトリ、maven.neoforged.net、そして maven.blamejared.com（404）。
+
+この障害はビルドスクリプトを編集せずに解決する必要があります。ビルドスクリプトの編集は禁止されています。
+
 ### 根本解決：JEIのローカルミラー
 
 EMIと同様に、JEIもローカルの `maven/` ディレクトリにミラーリングすることで、 `maven.blamejared.com` が利用不可能な環境でもNeoForgeプロジェクトが正常に構成されます。ユーザーに `mirrorMaven` タスクにJEI座標を追加し実行するよう依頼してください。ミラーリング済みのアーティファクトがコミットされていれば、以下のすべてのGradleタスクはワークアラウンドなしで動作します。
