@@ -228,7 +228,15 @@ fun initOresModule() {
      * バニラのソースコード見た方が早い。
      * @see [net.minecraft.data.worldgen.features.OreFeatures], [net.minecraft.data.worldgen.placement.OrePlacements]
      */
-    fun worldGen(range: IntRange, countPerCube: Double, size: Int, discardChanceOnAirExposure: Double, card: OreCard, suffix: String? = null, biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext> = { overworld }) {
+    fun worldGen(
+        range: IntRange,
+        countPerCube: Double,
+        size: Int,
+        discardChanceOnAirExposure: Double,
+        card: OreCard,
+        suffix: String? = null,
+        biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext> = { overworld },
+    ) {
         Feature.ORE.generator(card.identifier) {
             registerConfiguredFeature(suffix) {
                 val targets = when (card.baseStoneType) {

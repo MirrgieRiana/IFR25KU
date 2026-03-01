@@ -309,7 +309,7 @@ enum class FairyQuestRecipeCard(
     ),
     XARPA_NIGHT(
         "xarpa_night", 0xC49531, LootCategory.COMMON,
-        "XARPA NIGHT - Resin Glow Across the Night Sky", "シャルパの夜 ～夜空を彩るレジンの光～",
+        "XARPA NIGHT - Resin Glow Across the Night Sky", "シャルパの夜 ～夜空を彩るレジンの星～",
         """
                 ~ XARPA NIGHT ~
                 Resin Glow Across the Night Sky
