@@ -766,6 +766,14 @@ class MaterialCard(
             PoemList(1).poem("Am I hopeful in the parallel world?", "存在したかもしれない僕たちのかたち。")
         )
 
+        val ASH: MaterialCard = !MaterialCard(
+            "ash", "Ash", "灰",
+            null,
+            ore = Ore(Shape.DUST, Material.ASH),
+        ) {
+            registerSmeltingRecipeGeneration(BlockMaterialCard.MIRAGE_LEAVES_BLOCK.item, item) on BlockMaterialCard.MIRAGE_LEAVES_BLOCK.item from BlockMaterialCard.MIRAGE_LEAVES_BLOCK.item
+        }
+
         val MAGNETITE: MaterialCard = !MaterialCard(
             "magnetite", "Magnetite", "磁鉄鉱",
             null,
@@ -1364,6 +1372,7 @@ enum class Material(val path: String, val prefix: EnJa) {
     HAIMEVISKA_ROSIN("haimeviska_rosin", EnJa("Haimeviska Rosin", "ハイメヴィスカの涙")),
     FAIRY_PLASTIC("fairy_plastic", EnJa("Fairy Plastic", "妖精のプラスチック")),
     FAIRY_RUBBER("fairy_rubber", EnJa("Fairy Rubber", "夜のかけら")),
+    ASH("ash", EnJa("Ash", "灰")),
     MAGNETITE("magnetite", EnJa("Magnetite", "磁鉄鉱")),
     FLUORITE("fluorite", EnJa("Fluorite", "蛍石")),
     SULFUR("sulfur", EnJa("Sulfur", "硫黄")),
