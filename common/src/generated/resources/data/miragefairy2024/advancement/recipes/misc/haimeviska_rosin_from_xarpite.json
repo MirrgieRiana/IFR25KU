@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:fairy_plastic_from_xarpite"
+        "recipe": "miragefairy2024:haimeviska_rosin_from_xarpite"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:fairy_plastic_from_xarpite"
+      "miragefairy2024:haimeviska_rosin_from_xarpite"
     ]
   }
 }

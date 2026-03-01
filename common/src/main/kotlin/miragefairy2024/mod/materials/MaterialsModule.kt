@@ -151,12 +151,12 @@ class MaterialCard(
                     { ore!!.ingredient.toIngredientStack(9) },
                 ),
                 outputs = listOf(
-                    { FAIRY_PLASTIC.item().createItemStack(1) },
                     { HAIMEVISKA_ROSIN.item().createItemStack(6) },
+                    { FAIRY_PLASTIC.item().createItemStack(1) },
                     { MAGNETITE.item().createItemStack(1) },
                     { MIRAGIUM_INGOT.item().createItemStack(1) },
                 ),
-                duration = 20 * 60 * 5,
+                duration = 20 * 60,
             ) on item from item
         }
         val MIRANAGITE: MaterialCard = !MaterialCard(
