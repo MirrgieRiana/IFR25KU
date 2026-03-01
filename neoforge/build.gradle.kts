@@ -76,6 +76,11 @@ repositories {
             includeGroup("mezz.jei")
         }
     }
+    maven("https://modmaven.dev") { // JEI（非常用）
+        content {
+            includeGroup("mezz.jei")
+        }
+    }
     maven("https://maven.terraformersmc.com/releases") { // EMI
         content {
             includeGroup("dev.emi")
