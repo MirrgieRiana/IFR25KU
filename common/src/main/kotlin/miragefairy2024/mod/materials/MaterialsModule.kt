@@ -145,6 +145,19 @@ class MaterialCard(
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
             ) on FAIRY_PLASTIC.item
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { ore!!.ingredient.toIngredientStack(9) },
+                ),
+                outputs = listOf(
+                    { FAIRY_PLASTIC.item().createItemStack(1) },
+                    { HAIMEVISKA_ROSIN.item().createItemStack(6) },
+                    { MAGNETITE.item().createItemStack(1) },
+                    { MIRAGIUM_INGOT.item().createItemStack(1) },
+                ),
+                duration = 20 * 60 * 5,
+            ) on item from item
         }
         val MIRANAGITE: MaterialCard = !MaterialCard(
             "miranagite", "Miranagite", "蒼天石",

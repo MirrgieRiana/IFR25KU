@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:fairy_plastic_from_xarpite"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_xarpite": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:xarpite"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_xarpite"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:fairy_plastic_from_xarpite"
+    ]
+  }
+}
