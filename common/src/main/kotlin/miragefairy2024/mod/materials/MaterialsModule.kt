@@ -779,42 +779,21 @@ class MaterialCard(
             null,
             ore = Ore(Shape.GEM, Material.SALTPETER),
         ) {
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { ASH.item().toIngredientStack(4) },
-                    { Items.ROTTEN_FLESH.toIngredientStack(4) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on ASH.item from { Items.ROTTEN_FLESH }
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { ASH.item().toIngredientStack(4) },
-                    { Items.FERMENTED_SPIDER_EYE.toIngredientStack(2) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on ASH.item from { Items.FERMENTED_SPIDER_EYE }
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { Items.DRIED_KELP.toIngredientStack(8) },
-                    { Items.ROTTEN_FLESH.toIngredientStack(4) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on { Items.DRIED_KELP } from { Items.DRIED_KELP }
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { Items.DRIED_KELP.toIngredientStack(8) },
-                    { Items.FERMENTED_SPIDER_EYE.toIngredientStack(2) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on { Items.DRIED_KELP } from { Items.DRIED_KELP } from { Items.FERMENTED_SPIDER_EYE }
+            fun register(input1Item: () -> Item, input1Count: Int, input2Item: () -> Item, input2Count: Int) {
+                registerSimpleMachineRecipeGeneration(
+                    AthanorRecipeCard,
+                    inputs = listOf(
+                        { input1Item().toIngredientStack(input1Count) },
+                        { input2Item().toIngredientStack(input2Count) },
+                    ),
+                    outputs = listOf({ item().createItemStack() }),
+                    duration = 20 * 60 * 5,
+                ) on input1Item from input1Item from input2Item
+            }
+            register(ASH.item, 4, { Items.ROTTEN_FLESH }, 4)
+            register(ASH.item, 4, { Items.FERMENTED_SPIDER_EYE }, 2)
+            register({ Items.DRIED_KELP }, 8, { Items.ROTTEN_FLESH }, 4)
+            register({ Items.DRIED_KELP }, 8, { Items.FERMENTED_SPIDER_EYE }, 2)
         }
 
         val MAGNETITE: MaterialCard = !MaterialCard(

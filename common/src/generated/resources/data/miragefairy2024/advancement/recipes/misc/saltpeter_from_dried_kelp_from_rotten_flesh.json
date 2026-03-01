@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ash": {
+    "has_dried_kelp": {
       "conditions": {
         "items": [
           {
-            "items": "miragefairy2024:ash"
+            "items": "minecraft:dried_kelp"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:saltpeter_from_fermented_spider_eye"
+        "recipe": "miragefairy2024:saltpeter_from_dried_kelp_from_rotten_flesh"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_ash"
+      "has_dried_kelp"
     ]
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:saltpeter_from_fermented_spider_eye"
+      "miragefairy2024:saltpeter_from_dried_kelp_from_rotten_flesh"
     ]
   }
 }

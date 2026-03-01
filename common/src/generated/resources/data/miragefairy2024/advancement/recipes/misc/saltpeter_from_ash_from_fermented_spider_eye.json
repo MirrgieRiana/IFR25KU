@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:saltpeter_from_rotten_flesh"
+        "recipe": "miragefairy2024:saltpeter_from_ash_from_fermented_spider_eye"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:saltpeter_from_rotten_flesh"
+      "miragefairy2024:saltpeter_from_ash_from_fermented_spider_eye"
     ]
   }
 }
