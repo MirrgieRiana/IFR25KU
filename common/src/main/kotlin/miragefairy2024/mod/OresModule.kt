@@ -53,6 +53,7 @@ import net.minecraft.world.level.material.MapColor
 enum class BaseStoneType {
     STONE,
     DEEPSLATE,
+    SANDSTONE,
 }
 
 enum class OreCard(
@@ -142,6 +143,12 @@ enum class OreCard(
                 .requiresCorrectToolForDrops()
                 .strength(4.5F, 3.0F)
                 .sound(SoundType.DEEPSLATE)
+
+            BaseStoneType.SANDSTONE -> BlockBehaviour.Properties.of()
+                .mapColor(MapColor.SAND)
+                .instrument(NoteBlockInstrument.BASEDRUM)
+                .requiresCorrectToolForDrops()
+                .strength(1.0F, 1.0F)
         }
         DropExperienceBlock(UniformInt.of(experience.first, experience.second), settings)
     }
@@ -150,6 +157,7 @@ enum class OreCard(
         val baseStoneTexture = when (baseStoneType) {
             BaseStoneType.STONE -> ResourceLocation("minecraft", "block/stone")
             BaseStoneType.DEEPSLATE -> ResourceLocation("minecraft", "block/deepslate")
+            BaseStoneType.SANDSTONE -> ResourceLocation("minecraft", "block/sandstone_top")
         }
         OreModelCard.model.with(
             TextureSlot.BACK to baseStoneTexture,
@@ -216,6 +224,7 @@ fun initOresModule() {
                 val targets = when (card.baseStoneType) {
                     BaseStoneType.STONE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), card.block().defaultBlockState()))
                     BaseStoneType.DEEPSLATE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), card.block().defaultBlockState()))
+                    BaseStoneType.SANDSTONE -> listOf(OreConfiguration.target(TagMatchTest(SANDSTONE_ORE_REPLACEABLES), card.block().defaultBlockState()))
                 }
                 OreConfiguration(targets, size, discardChanceOnAirExposure.toFloat())
             }.generator {
