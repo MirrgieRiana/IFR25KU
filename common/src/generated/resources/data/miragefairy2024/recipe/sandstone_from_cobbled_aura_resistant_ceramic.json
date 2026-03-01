@@ -1,0 +1,23 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 1200,
+  "group": "minecraft:sandstone",
+  "inputs": [
+    {
+      "Amount": 4,
+      "Ingredient": {
+        "item": "miragefairy2024:cobbled_aura_resistant_ceramic"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 4,
+      "id": "minecraft:sandstone"
+    },
+    {
+      "count": 1,
+      "id": "miragefairy2024:xarpite"
+    }
+  ]
+}
