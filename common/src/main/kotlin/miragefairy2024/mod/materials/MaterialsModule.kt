@@ -797,8 +797,12 @@ class MaterialCard(
 
             // →火薬
             registerShapelessRecipeGeneration({ Items.GUNPOWDER }, 9) {
-                repeat(6) { requires(item()) }
-                repeat(2) { requires(ItemTags.COALS) }
+                repeat(6) {
+                    requires(item())
+                }
+                repeat(2) {
+                    requires(ItemTags.COALS)
+                }
                 requires(SULFUR.item())
             } on item from item modId MirageFairy2024.MOD_ID
         }
