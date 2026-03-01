@@ -14,11 +14,44 @@ Minecraftのコードのうち一部が展開されていないという可能�
 
 ## Gradleタスクのエージェント環境での動作（実験結果）
 
-コーディングエージェントのサンドボックス環境では、 `genSources` や `unpackSources` などのGradleタスクは **実行できません** 。
-Architectury Loomプラグインの解決に必要なMavenリポジトリ（ `maven.architectury.dev` 、 `maven.fabricmc.net` 、 `maven.minecraftforge.net` ）と、標準的なMaven Central（ `repo.maven.apache.org` ）やGradle Plugin Portal（ `plugins.gradle.org` ）はサンドボックスからアクセス可能です。
-Minecraftのメタデータ・ライブラリホスト（ `libraries.minecraft.net` 、 `piston-meta.mojang.com` 、 `maven.parchmentmc.org` ）もアクセス可能で、プラグインの解決と依存性の解決は成功します。
-しかし、Minecraftクライアントjarのダウンロード元（ `piston-data.mojang.com` ）がブロックされているため、Minecraft本体のセットアップ段階で失敗します。
-なお、 `launchermeta.mojang.com` と `resources.download.minecraft.net` もアクセスできません。
+### ネットワーク接続性
+
+コーディングエージェントのサンドボックス環境では、以下のホストにアクセス **可能** です：
+
+- `maven.architectury.dev` 、 `maven.fabricmc.net` 、 `maven.minecraftforge.net` （Architectury Loomプラグイン）
+- `repo.maven.apache.org` （Maven Central）、 `plugins.gradle.org` （Gradle Plugin Portal）
+- `libraries.minecraft.net` 、 `piston-meta.mojang.com` 、 `piston-data.mojang.com` （Minecraft本体）
+- `maven.parchmentmc.org` （Parchmentマッピング、302リダイレクト応答のみ返却）
+- `raw.githubusercontent.com`
+
+以下のホストは **ブロック** されています：
+
+- `ldtteam.jfrog.io` （ `maven.parchmentmc.org` のリダイレクト先）
+- `maven.wispforest.io` 、 `maven.shedaniel.me` 、 `maven.terraformersmc.com` 、 `www.cursemaven.com` （サードパーティmod依存関係）
+- `maven.neoforged.net` 、 `maven.su5ed.dev` 、 `maven.blamejared.com` （NeoForge関連）
+- `launchermeta.mojang.com` 、 `resources.download.minecraft.net`
+
+### genSourcesの実行
+
+`genSources` は **`--configure-on-demand` フラグとスタブ依存関係を使用することで実行可能** です。
+
+1. Parchmentマッピングは `maven.parchmentmc.org` → `ldtteam.jfrog.io` のリダイレクト先がブロックされているため、ローカルの `maven/` ディレクトリに最小限の空のParchment ZIPを配置して回避します。
+2. サードパーティmod依存関係（owo-lib、REI、cloth-config、Jade等）のMavenリポジトリがブロックされているため、空のスタブJAR/POMをローカルの `maven/` ディレクトリに配置して回避します。
+3. `--configure-on-demand` フラグにより、NeoForgeプロジェクトの構成をスキップします（NeoForge userdev jarには実際のメタデータが必要なため）。
+4. Java 21が必要です（ `JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64` ）。
+
+実行例（スタブ配置後）：
+```
+JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :common:genSources --no-daemon --configure-on-demand
+```
+
+### unpackSourcesの実行
+
+`unpackSources` も同様の条件で **実行可能** です。Minecraft以外の外部依存関係のソースは正常に展開されます。ただし、Minecraftの逆コンパイル済みソースは標準のsources artifactとして公開されないため、 `[Failed] Could not resolve component: net.minecraft:minecraft:1.21.1` という警告が出ます。
+
+### compileKotlinの実行
+
+`compileKotlin` はスタブ依存関係では実際のコードが含まれないため、コンパイルエラーが発生します。実際の依存関係がローカルにミラーされている場合は動作する可能性があります。
 
 ## Zipファイルからのソースコード参照（実験結果）
 
@@ -29,8 +62,7 @@ Minecraftのメタデータ・ライブラリホスト（ `libraries.minecraft.n
 - `unzip -p <file.jar> <path/to/File.java>` ― 個別ファイルの内容を標準出力に抽出
 - `zipgrep "<pattern>" <file.jar>` ― jar内のファイル横断でのパターン検索
 
-ただし、 `genSources` が生成するMinecraftの逆コンパイル済みソースjarはサンドボックス内では生成不可能なため、この方法はMinecraftソースのアクセスには使用できません。
-ローカルのmavenディレクトリに存在するEMIなどの外部依存関係のソースjarに対しては有効です。
+ローカルのmavenディレクトリに存在するEMIなどの外部依存関係のソースjarに対して有効です。
 
 # コードスタイル
 
