@@ -24,7 +24,7 @@ fun ResourceLocation.toBlock() = BuiltInRegistries.BLOCK.get(this)
 
 context(ModContext)
 fun (() -> Block).registerFlammable(burn: Int, spread: Int) = ModEvents.onInitialize {
-    FlammableBlockRegistry.getDefaultInstance().add(this(), 30, 60)
+    FlammableBlockRegistry.getDefaultInstance().add(this(), burn, spread)
 }
 
 operator fun <T : Comparable<T>> BlockState.get(property: Property<T>): T = this.getValue(property)
