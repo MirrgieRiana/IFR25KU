@@ -3,6 +3,7 @@ package miragefairy2024.mod
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.util.BiomeSelectorScope
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Model
 import miragefairy2024.util.ModelData
@@ -17,6 +18,8 @@ import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.overworld
 import miragefairy2024.util.placeWhenUndergroundOres
+import miragefairy2024.util.plus
+import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.randomIntCount
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
@@ -32,6 +35,8 @@ import miragefairy2024.util.times
 import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.uniformOre
 import miragefairy2024.util.with
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.TextureSlot
@@ -49,6 +54,7 @@ import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
 import net.minecraft.world.level.material.MapColor
+import java.util.function.Predicate
 
 enum class BaseStoneType {
     STONE,
@@ -223,7 +229,7 @@ fun initOresModule() {
      * バニラのソースコード見た方が早い。
      * @see [net.minecraft.data.worldgen.features.OreFeatures], [net.minecraft.data.worldgen.placement.OrePlacements]
      */
-    fun worldGen(range: IntRange, countPerCube: Double, size: Int, discardChanceOnAirExposure: Double, card: OreCard) {
+    fun worldGen(range: IntRange, countPerCube: Double, size: Int, discardChanceOnAirExposure: Double, card: OreCard, biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext> = { overworld }) {
         Feature.ORE.generator(card.identifier) {
             registerConfiguredFeature {
                 val targets = when (card.baseStoneType) {
@@ -233,7 +239,7 @@ fun initOresModule() {
                 }
                 OreConfiguration(targets, size, discardChanceOnAirExposure.toFloat())
             }.generator {
-                registerPlacedFeature { randomIntCount(countPerCube * (range.last - range.first + 1).toDouble() / 16.0) + uniformOre(range.first, range.last) }.placeWhenUndergroundOres { overworld }
+                registerPlacedFeature { randomIntCount(countPerCube * (range.last - range.first + 1).toDouble() / 16.0) + uniformOre(range.first, range.last) }.placeWhenUndergroundOres(biomePredicate)
             }
         }
     }
@@ -241,9 +247,9 @@ fun initOresModule() {
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.DEEPSLATE_MAGNETITE_ORE)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.FLUORITE_ORE)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE)
-    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.SALTPETER_ORE)
-    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE)
-    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE)
+    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
+    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
+    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE)
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.DEEPSLATE_SULFUR_ORE)
     worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE)
