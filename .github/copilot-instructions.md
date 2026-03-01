@@ -16,7 +16,7 @@ Minecraftのコードのうち一部が展開されていないという可能�
 
 ### 結論
 
-`modmaven.dev` フォールバック追加（94484ec）により、サンドボックス環境で **すべてのGradleタスクがワークアラウンドなしで動作する** ことを確認済みです。JEIスタブや `-Penabled_platforms` の指定は不要です。
+サンドボックス環境で **すべてのGradleタスクがワークアラウンドなしで動作する** ことを確認済みです。
 
 | タスク | 結果 | コマンド |
 |---|---|---|
@@ -25,11 +25,7 @@ Minecraftのコードのうち一部が展開されていないという可能�
 | `compileKotlin` | ✅ 成功 | `JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :common:compileKotlin --no-daemon` |
 | `runDatagen` | ✅ 成功 | `JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :fabric:runDatagen --no-daemon` |
 
-**注1:** `unpackSources` では `[Failed] Could not resolve component: net.minecraft:minecraft:1.21.1` という警告が出ますが、Minecraftの逆コンパイル済みソースは標準のsources artifactとして公開されないため、正常な動作です。展開結果は各サブプロジェクトの `unpackedSources/` ディレクトリに出力されます。
-
-### 背景
-
-`maven.blamejared.com` がすべてのパスに404を返すため、JEIの依存解決が本来失敗します。`neoforge/build.gradle.kts` に追加された `modmaven.dev` フォールバックリポジトリにより、この問題は解決されました。
+**注1:** `unpackSources` では `[Failed] Could not resolve component: net.minecraft:minecraft:1.21.1` という警告が出ますが、Minecraftの逆コンパイル済みソースは標準のsources artifactとして公開されないため、正常な動作です。
 
 # コードスタイル
 
