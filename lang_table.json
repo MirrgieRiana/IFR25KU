@@ -1391,6 +1391,10 @@
     "en_us": "The key to the fairy world",
     "ja_jp": "妖精界への鍵。"
   },
+  "item.miragefairy2024.ash": {
+    "en_us": "Ash",
+    "ja_jp": "灰"
+  },
   "item.miragefairy2024.bag.description1": {
     "en_us": "Display GUI when used",
     "ja_jp": "使用時、GUIを表示"
@@ -4442,6 +4446,10 @@
   "tag.item.c.dusts": {
     "en_us": "Dusts",
     "ja_jp": "粉"
+  },
+  "tag.item.c.dusts.ash": {
+    "en_us": "Ash Dusts",
+    "ja_jp": "灰の粉"
   },
   "tag.item.c.dusts.bismuth": {
     "en_us": "Bismuth Dusts",
