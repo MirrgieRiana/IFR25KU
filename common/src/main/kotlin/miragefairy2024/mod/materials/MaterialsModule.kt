@@ -773,8 +773,8 @@ class MaterialCard(
         ) {
             registerSmeltingRecipeGeneration(BlockMaterialCard.MIRAGE_LEAVES_BLOCK.item, item) on BlockMaterialCard.MIRAGE_LEAVES_BLOCK.item from BlockMaterialCard.MIRAGE_LEAVES_BLOCK.item
         }
-        val SALTPETER_GEM: MaterialCard = !MaterialCard(
-            "saltpeter_gem", "Saltpeter Gem", "硝石",
+        val SALTPETER: MaterialCard = !MaterialCard(
+            "saltpeter", "Saltpeter", "硝石",
             null,
             ore = Ore(Shape.GEM, Material.SALTPETER),
         )
@@ -1377,6 +1377,8 @@ enum class Material(val path: String, val prefix: EnJa) {
     HAIMEVISKA_ROSIN("haimeviska_rosin", EnJa("Haimeviska Rosin", "ハイメヴィスカの涙")),
     FAIRY_PLASTIC("fairy_plastic", EnJa("Fairy Plastic", "妖精のプラスチック")),
     FAIRY_RUBBER("fairy_rubber", EnJa("Fairy Rubber", "夜のかけら")),
+    ASH("ash", EnJa("Ash", "灰")),
+    SALTPETER("saltpeter", EnJa("Saltpeter", "硝石")),
     MAGNETITE("magnetite", EnJa("Magnetite", "磁鉄鉱")),
     FLUORITE("fluorite", EnJa("Fluorite", "蛍石")),
     SULFUR("sulfur", EnJa("Sulfur", "硫黄")),
