@@ -1,25 +1,21 @@
 {
-  "type": "miragefairy2024:athanor",
-  "duration": 6000,
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "miragefairy2024:cobbled_aura_resistant_ceramic",
-  "inputs": [
-    {
-      "Amount": 1,
-      "Ingredient": {
-        "item": "minecraft:sandstone"
-      }
+  "key": {
+    "S": {
+      "item": "minecraft:sandstone"
     },
-    {
-      "Amount": 1,
-      "Ingredient": {
-        "tag": "c:gems/xarpite"
-      }
+    "X": {
+      "tag": "c:gems/xarpite"
     }
+  },
+  "pattern": [
+    "SX",
+    "XS"
   ],
-  "outputs": [
-    {
-      "count": 1,
-      "id": "miragefairy2024:cobbled_aura_resistant_ceramic"
-    }
-  ]
+  "result": {
+    "count": 2,
+    "id": "miragefairy2024:cobbled_aura_resistant_ceramic"
+  }
 }
