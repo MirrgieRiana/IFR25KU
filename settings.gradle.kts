@@ -15,6 +15,4 @@ include("mirrg.kotlin")
 
 include("common")
 include("fabric")
-if ("neoforge" in providers.gradleProperty("enabled_platforms").getOrElse("fabric,neoforge").split(",")) {
-    include("neoforge")
-}
+include("neoforge")

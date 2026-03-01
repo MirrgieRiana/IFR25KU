@@ -14,25 +14,41 @@ Minecraftのコードのうち一部が展開されていないという可能�
 
 ## Gradleタスクのエージェント環境での動作（実験結果）
 
-`maven.blamejared.com` にJEIアーティファクトが存在しない（404）ため、NeoForgeプロジェクトの構成が失敗します。以下の各Gradleタスクはこの制約のワークアラウンドを含みます。
+`maven.blamejared.com` にJEIアーティファクトが存在しない（404）ため、NeoForgeプロジェクトの構成が失敗します。
 
-### genSources / unpackSources / compileKotlinの実行
+### 根本解決：JEIのローカルミラー
 
-`--configure-on-demand` フラグにより、JEI依存の解決に失敗するNeoForgeプロジェクトの構成をスキップして実行できます。
+EMIと同様に、JEIもローカルの `maven/` ディレクトリにミラーリングすることで、 `maven.blamejared.com` が利用不可能な環境でもNeoForgeプロジェクトが正常に構成されます。ユーザーに `mirrorMaven` タスクにJEI座標を追加し実行するよう依頼してください。ミラーリング済みのアーティファクトがコミットされていれば、以下のすべてのGradleタスクはワークアラウンドなしで動作します。
+
+### JEIがミラーリングされていない場合のワークアラウンド
+
+JEIのスタブをローカルの `maven/` ディレクトリに作成することで、NeoForgeプロジェクトを構成可能にできます。以下のコマンドでスタブを作成してください：
 
 ```
-JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :common:genSources --no-daemon --configure-on-demand
+JEI_VERSION=$(grep '^jei ' gradle/libs.versions.toml | sed 's/.*= *"//;s/"//')
+JEI_STUB_TMP=$(mktemp -d)
+for artifact in jei-1.21.1-common-api jei-1.21.1-neoforge-api jei-1.21.1-neoforge; do
+  dir="maven/mezz/jei/${artifact}/${JEI_VERSION}"
+  mkdir -p "$dir"
+  cat > "$dir/${artifact}-${JEI_VERSION}.pom" << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion><groupId>mezz.jei</groupId><artifactId>${artifact}</artifactId><version>${JEI_VERSION}</version></project>
+EOF
+  mkdir -p "$JEI_STUB_TMP/META-INF"
+  echo "Manifest-Version: 1.0" > "$JEI_STUB_TMP/META-INF/MANIFEST.MF"
+  (cd "$JEI_STUB_TMP" && jar cf "$OLDPWD/$dir/${artifact}-${JEI_VERSION}.jar" META-INF/MANIFEST.MF)
+done
+rm -rf "$JEI_STUB_TMP"
+```
+
+スタブを作成すれば、NeoForgeプロジェクトを含むすべてのGradleタスクがワークアラウンドなしで動作します。スタブは `maven/mezz/` ディレクトリに作成されます。 **作業完了後、 `maven/mezz/` ディレクトリを必ず削除してください。スタブ自体は第三者のコードを含みませんが、本物のアーティファクトと誤認されないように清掃が必要です。**
+
+```
+JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :common:genSources --no-daemon
+JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :fabric:runDatagen --no-daemon
 ```
 
 なお、 `unpackSources` では `[Failed] Could not resolve component: net.minecraft:minecraft:1.21.1` という警告が出ますが、Minecraftの逆コンパイル済みソースは標準のsources artifactとして公開されないため、正常な動作です。
-
-### datagenの実行
-
-`-Penabled_platforms=fabric` フラグにより、NeoForgeプロジェクトを除外して実行できます。 `--configure-on-demand` は **使わない** でください。
-
-```
-JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :fabric:runDatagen --no-daemon -Penabled_platforms=fabric
-```
 
 # コードスタイル
 
