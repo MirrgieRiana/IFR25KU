@@ -29,6 +29,7 @@ import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.string
 import miragefairy2024.util.times
+import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.uniformOre
 import miragefairy2024.util.with
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags
@@ -39,6 +40,7 @@ import net.minecraft.tags.BlockTags
 import net.minecraft.util.valueproviders.UniformInt
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.DropExperienceBlock
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
@@ -162,10 +164,15 @@ object OreModelCard {
     val model = Model(identifier, TextureSlot.BACK, TextureSlot.FRONT)
 }
 
+val SANDSTONE_ORE_REPLACEABLES = MirageFairy2024.identifier("sandstone_ore_replaceables").toBlockTag()
+
 context(ModContext)
 fun initOresModule() {
 
     registerModelGeneration({ OreModelCard.identifier }) { OreModelCard.parentModel.with() }
+
+    SANDSTONE_ORE_REPLACEABLES.enJa(EnJa("Sandstone Ore Replaceables", "砂岩鉱石が置換可能"))
+    SANDSTONE_ORE_REPLACEABLES.generator.registerChild { Blocks.SANDSTONE }
 
     OreCard.entries.forEach { card ->
 
