@@ -6,11 +6,11 @@
     "targets": [
       {
         "state": {
-          "Name": "miragefairy2024:deepslate_saltpeter_ore"
+          "Name": "miragefairy2024:sandstone_saltpeter_ore"
         },
         "target": {
           "predicate_type": "minecraft:tag_match",
-          "tag": "minecraft:deepslate_ore_replaceables"
+          "tag": "miragefairy2024:sandstone_ore_replaceables"
         }
       }
     ]

@@ -26,7 +26,7 @@
                   }
                 }
               ],
-              "name": "miragefairy2024:deepslate_saltpeter_ore"
+              "name": "miragefairy2024:sandstone_saltpeter_ore"
             },
             {
               "type": "minecraft:item",
@@ -48,5 +48,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "miragefairy2024:blocks/deepslate_saltpeter_ore"
+  "random_sequence": "miragefairy2024:blocks/sandstone_saltpeter_ore"
 }
