@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_saltpeter": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:saltpeter"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:gunpowder_from_saltpeter"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_saltpeter"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:gunpowder_from_saltpeter"
+    ]
+  }
+}

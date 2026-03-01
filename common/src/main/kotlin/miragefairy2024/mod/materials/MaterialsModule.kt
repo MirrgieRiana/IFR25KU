@@ -21,6 +21,7 @@ import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.getFairyCondensation
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.haimeviska.haimeviskaAdvancement
+import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipe
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
@@ -777,7 +778,34 @@ class MaterialCard(
             "saltpeter", "Saltpeter", "硝石",
             null,
             ore = Ore(Shape.GEM, Material.SALTPETER),
-        )
+        ) {
+            fun register(inputItem1: () -> Item, inputCount1: Int, inputItem2: () -> Item, inputCount2: Int) {
+                registerSimpleMachineRecipeGeneration(
+                    AthanorRecipeCard,
+                    inputs = listOf(
+                        { inputItem1().toIngredientStack(inputCount1) },
+                        { inputItem2().toIngredientStack(inputCount2) },
+                    ),
+                    outputs = listOf({ item().createItemStack() }),
+                    duration = 20 * 60 * 5,
+                ) on inputItem1 from inputItem1 from inputItem2
+            }
+            register(ASH.item, 4, { Items.ROTTEN_FLESH }, 4)
+            register(ASH.item, 4, { Items.FERMENTED_SPIDER_EYE }, 2)
+            register({ Items.DRIED_KELP }, 8, { Items.ROTTEN_FLESH }, 4)
+            register({ Items.DRIED_KELP }, 8, { Items.FERMENTED_SPIDER_EYE }, 2)
+
+            // →火薬
+            registerShapelessRecipeGeneration({ Items.GUNPOWDER }, 9) {
+                repeat(6) {
+                    requires(item())
+                }
+                repeat(2) {
+                    requires(ItemTags.COALS)
+                }
+                requires(SULFUR.item())
+            } on item from item modId MirageFairy2024.MOD_ID
+        }
 
         val MAGNETITE: MaterialCard = !MaterialCard(
             "magnetite", "Magnetite", "磁鉄鉱",

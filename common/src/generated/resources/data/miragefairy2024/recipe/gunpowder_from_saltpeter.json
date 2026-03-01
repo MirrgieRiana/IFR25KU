@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "minecraft:gunpowder",
+  "ingredients": [
+    {
+      "item": "miragefairy2024:saltpeter"
+    },
+    {
+      "item": "miragefairy2024:saltpeter"
+    },
+    {
+      "item": "miragefairy2024:saltpeter"
+    },
+    {
+      "item": "miragefairy2024:saltpeter"
+    },
+    {
+      "item": "miragefairy2024:saltpeter"
+    },
+    {
+      "item": "miragefairy2024:saltpeter"
+    },
+    {
+      "tag": "minecraft:coals"
+    },
+    {
+      "tag": "minecraft:coals"
+    },
+    {
+      "item": "miragefairy2024:sulfur"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "minecraft:gunpowder"
+  }
+}

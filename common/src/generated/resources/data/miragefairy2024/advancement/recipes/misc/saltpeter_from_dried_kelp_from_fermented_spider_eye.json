@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dried_kelp": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:dried_kelp"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:saltpeter_from_dried_kelp_from_fermented_spider_eye"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_dried_kelp"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:saltpeter_from_dried_kelp_from_fermented_spider_eye"
+    ]
+  }
+}
