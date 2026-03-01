@@ -21,39 +21,46 @@ Minecraftのコードのうち一部が展開されていないという可能�
 - `maven.architectury.dev` 、 `maven.fabricmc.net` 、 `maven.minecraftforge.net` （Architectury Loomプラグイン）
 - `repo.maven.apache.org` （Maven Central）、 `plugins.gradle.org` （Gradle Plugin Portal）
 - `libraries.minecraft.net` 、 `piston-meta.mojang.com` 、 `piston-data.mojang.com` （Minecraft本体）
-- `maven.parchmentmc.org` （Parchmentマッピング、302リダイレクト応答のみ返却）
-- `ldtteam.jfrog.io` （ `maven.parchmentmc.org` のリダイレクト先、ただしさらに `storage.googleapis.com` へリダイレクトされそこで403エラー）
+- `maven.parchmentmc.org` 、 `ldtteam.jfrog.io` 、 `storage.googleapis.com` （Parchmentマッピング、 `maven.parchmentmc.org` から `ldtteam.jfrog.io` 、 `storage.googleapis.com` へのリダイレクトチェーン全体がアクセス可能）
 - `maven.wispforest.io` （owo-lib）、 `maven.shedaniel.me` （REI、cloth-config）
 - `raw.githubusercontent.com`
 
 以下のホストは **ブロック** されています：
 
-- `storage.googleapis.com` （ `ldtteam.jfrog.io` からの最終リダイレクト先、Parchmentマッピングの実体）
 - `maven.terraformersmc.com` 、 `www.cursemaven.com` （EMI、Jade。ただしEMIはローカル `maven/` にミラー済み）
 - `maven.neoforged.net` 、 `maven.su5ed.dev` 、 `maven.blamejared.com` （NeoForge関連）
 - `launchermeta.mojang.com` 、 `resources.download.minecraft.net`
 
 ### genSourcesの実行
 
-`genSources` は **`--configure-on-demand` フラグとParchmentスタブを使用することで実行可能** です。
+`genSources` は **`--configure-on-demand` フラグのみで実行可能** です。Parchmentマッピングを含むすべての依存関係がネットワーク経由で正常に解決されます。
 
-1. Parchmentマッピングは `maven.parchmentmc.org` → `ldtteam.jfrog.io` → `storage.googleapis.com` のリダイレクト先がブロックされています。 `build.gradle.kts` のリポジトリ宣言でローカル `maven/` をParchmentリモートより **前** に配置し、ローカル `maven/` ディレクトリに最小限の空のParchment ZIPを配置して回避します。
-2. `--configure-on-demand` フラグにより、NeoForgeプロジェクトの構成をスキップします（NeoForge関連のMavenリポジトリがブロックされているため）。
-3. Java 21が必要です（ `JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64` ）。
-4. owo-lib、REI、cloth-config等のサードパーティmod依存関係は `maven.wispforest.io` 、 `maven.shedaniel.me` 経由で正常に解決されます。EMIはローカル `maven/` からの解決です。
+1. `--configure-on-demand` フラグにより、NeoForgeプロジェクトの構成をスキップします（NeoForge関連のMavenリポジトリがブロックされているため）。
+2. Java 21が必要です（ `JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64` ）。
+3. Parchmentマッピング、owo-lib、REI、cloth-config等のサードパーティmod依存関係はすべてネットワーク経由で正常に解決されます。EMIはローカル `maven/` からの解決です。
 
-実行例（Parchmentスタブ配置・リポジトリ順序変更後）：
+実行例：
 ```
 JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :common:genSources --no-daemon --configure-on-demand
 ```
 
 ### unpackSourcesの実行
 
-`unpackSources` も同様の条件で **実行可能** です。Minecraft以外の外部依存関係のソースは正常に展開されます。ただし、Minecraftの逆コンパイル済みソースは標準のsources artifactとして公開されないため、 `[Failed] Could not resolve component: net.minecraft:minecraft:1.21.1` という警告が出ます。
+`unpackSources` も同様の条件（ `--configure-on-demand` のみ）で **実行可能** です。Minecraft以外の外部依存関係のソースは正常に展開されます。ただし、Minecraftの逆コンパイル済みソースは標準のsources artifactとして公開されないため、 `[Failed] Could not resolve component: net.minecraft:minecraft:1.21.1` という警告が出ます。
 
 ### compileKotlinの実行
 
-`compileKotlin` は上記と同様の条件（Parchmentスタブ + `--configure-on-demand` ）で **実行可能** です。サードパーティmod依存関係の実体がネットワーク経由またはローカルmavenから正常に解決されるため、 `:common:compileKotlin` は成功します。
+`compileKotlin` も同様の条件（ `--configure-on-demand` のみ）で **実行可能** です。サードパーティmod依存関係の実体がネットワーク経由またはローカルmavenから正常に解決されるため、 `:common:compileKotlin` は成功します。
+
+### datagenの実行
+
+datagen（ `:fabric:runDatagen` ）は **追加のワークアラウンドにより実行可能** です。
+
+1. `settings.gradle.kts` の `include("neoforge")` を一時的にコメントアウトします（NeoForge関連のMavenリポジトリがブロックされているため）。
+2. `gradle.properties` の `enabled_platforms` を `fabric` のみに変更します。
+3. Jade（ `curse.maven:jade-324717` ）のスタブJAR/POMをローカル `maven/` ディレクトリに配置します（ `www.cursemaven.com` がブロックされているため）。
+4. `--configure-on-demand` は **使わない** でください。genSources等では必須ですが、datagenでは `--configure-on-demand` を使うとfabricが参照する `:common` の `transformProductionFabric` タスクが見つからずエラーになります。NeoForge除外により `--configure-on-demand` なしでもビルドが通ります。
+5. datagen完了後、上記の変更をすべて元に戻してください。
 
 ## Zipファイルからのソースコード参照（実験結果）
 
