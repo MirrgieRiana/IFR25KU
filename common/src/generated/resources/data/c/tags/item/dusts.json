@@ -1,6 +1,10 @@
 {
   "values": [
     {
+      "id": "#c:dusts/ash",
+      "required": false
+    },
+    {
       "id": "#c:dusts/bismuth",
       "required": false
     }
