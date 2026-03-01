@@ -809,6 +809,22 @@ class MaterialCard(
             ore = Ore(Shape.DUST, Material.ASH),
         ) {
             registerSmeltingRecipeGeneration(BlockMaterialCard.MIRAGE_LEAVES_BLOCK.item, item) on BlockMaterialCard.MIRAGE_LEAVES_BLOCK.item from BlockMaterialCard.MIRAGE_LEAVES_BLOCK.item
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { ItemTags.PLANKS.toIngredientStack(1) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 10,
+            ) on ItemTags.PLANKS
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { Items.STICK.toIngredientStack(2) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 10,
+            ) on { Items.STICK } from { Items.STICK }
         }
         val SALTPETER: MaterialCard = !MaterialCard(
             "saltpeter", "Saltpeter", "硝石",

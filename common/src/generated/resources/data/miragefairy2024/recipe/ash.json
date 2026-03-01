@@ -1,0 +1,19 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 200,
+  "group": "miragefairy2024:ash",
+  "inputs": [
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "tag": "minecraft:planks"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "miragefairy2024:ash"
+    }
+  ]
+}
