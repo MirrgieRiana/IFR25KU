@@ -19,7 +19,6 @@ import miragefairy2024.util.generator
 import miragefairy2024.util.overworld
 import miragefairy2024.util.placeWhenUndergroundOres
 import miragefairy2024.util.plus
-import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.randomIntCount
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
@@ -33,6 +32,7 @@ import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.string
 import miragefairy2024.util.times
 import miragefairy2024.util.toBlockTag
+import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.uniformOre
 import miragefairy2024.util.with
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext
