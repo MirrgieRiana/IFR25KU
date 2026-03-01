@@ -12,6 +12,25 @@ Minecraftのコードのうち一部が展開されていないという可能�
 もし展開済みでない場合、あなたはそのタスクを、決してツールやコマンド呼び出し等によって直接自分で呼び出す試みをしてはなりません。
 代わりに、ユーザーが手動でそのタスクを実行するように、自然言語を使って提案と説明を行ってください。
 
+## Gradleタスクのエージェント環境での動作（実験結果）
+
+コーディングエージェントのサンドボックス環境では、 `genSources` や `unpackSources` などのGradleタスクは **実行できません** 。
+これは、Architectury Loomプラグインの解決に必要なMavenリポジトリ（ `maven.architectury.dev` 、 `maven.fabricmc.net` 、 `maven.minecraftforge.net` ）がサンドボックスからアクセスできないためです。
+標準的なMaven Central（ `repo.maven.apache.org` ）やGradle Plugin Portal（ `plugins.gradle.org` ）はアクセス可能ですが、Architectury Loomプラグインはそこにはホストされていません。
+結果として、ビルドはプラグイン解決の段階で失敗します。
+
+## Zipファイルからのソースコード参照（実験結果）
+
+ソースjar/zipが存在する場合、エージェントはそれらの中身を展開せずにコマンドで直接アクセスできます：
+
+- `jar tf <file.jar>` ― ファイル一覧の表示
+- `unzip -l <file.jar>` ― ファイル一覧の表示（サイズ付き）
+- `unzip -p <file.jar> <path/to/File.java>` ― 個別ファイルの内容を標準出力に抽出
+- `zipgrep "<pattern>" <file.jar>` ― jar内のファイル横断でのパターン検索
+
+ただし、 `genSources` が生成するMinecraftの逆コンパイル済みソースjarはサンドボックス内では生成不可能なため、この方法はMinecraftソースのアクセスには使用できません。
+ローカルのmavenディレクトリに存在するEMIなどの外部依存関係のソースjarに対しては有効です。
+
 # コードスタイル
 
 原則として、あなたが記述するコードと同様なコードをリポジトリ内から探し、それらとのあらゆる観点でのコードスタイルの一貫性を最大限に尊重してください。
