@@ -794,6 +794,13 @@ class MaterialCard(
             register(ASH.item, 4, { Items.FERMENTED_SPIDER_EYE }, 2)
             register({ Items.DRIED_KELP }, 8, { Items.ROTTEN_FLESH }, 4)
             register({ Items.DRIED_KELP }, 8, { Items.FERMENTED_SPIDER_EYE }, 2)
+
+            // →火薬
+            registerShapelessRecipeGeneration({ Items.GUNPOWDER }, 9) {
+                repeat(6) { requires(item()) }
+                repeat(2) { requires(ItemTags.COALS) }
+                requires(SULFUR.item())
+            } on item from item modId MirageFairy2024.MOD_ID
         }
 
         val MAGNETITE: MaterialCard = !MaterialCard(
