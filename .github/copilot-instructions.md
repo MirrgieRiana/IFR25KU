@@ -14,60 +14,22 @@ Minecraftのコードのうち一部が展開されていないという可能�
 
 ## Gradleタスクのエージェント環境での動作（実験結果）
 
-`maven.blamejared.com` にJEIアーティファクトが存在しない（404）ため、NeoForgeプロジェクトの構成が失敗します。
+### 結論
 
-### 障害の詳細
+`modmaven.dev` フォールバック追加（94484ec）により、サンドボックス環境で **すべてのGradleタスクがワークアラウンドなしで動作する** ことを確認済みです。JEIスタブや `-Penabled_platforms` の指定は不要です。
 
-`neoforge/build.gradle.kts` は `maven.blamejared.com` からJEIの3つのアーティファクト（`mezz.jei:jei-1.21.1-common-api`、`mezz.jei:jei-1.21.1-neoforge-api`、`mezz.jei:jei-1.21.1-neoforge`、すべてバージョン `19.21.2.313`）を依存として宣言しています。これらは `modCompileOnly` および `modRuntimeOnly` コンフィギュレーションで使用されています。
+| タスク | 結果 | コマンド |
+|---|---|---|
+| `genSources` | ✅ 成功 | `JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :common:genSources --no-daemon` |
+| `unpackSources` | ✅ 成功（注1） | `JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew unpackSources --no-daemon` |
+| `compileKotlin` | ✅ 成功 | `JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :common:compileKotlin --no-daemon` |
+| `runDatagen` | ✅ 成功 | `JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :fabric:runDatagen --no-daemon` |
 
-エージェント環境（GitHub Copilot Coding Agent のサンドボックス）からは `maven.blamejared.com` にHTTP接続は可能ですが、サーバーがルートパス `/` を含む **すべてのパスに対して404 Not Foundを返します** 。これはサンドボックスのネットワーク制限ではなく、 `maven.blamejared.com` 側の問題です（ドメイン解決とTCP接続は成功し、nginxが応答しているが、コンテンツが提供されていない）。
+**注1:** `unpackSources` では `[Failed] Could not resolve component: net.minecraft:minecraft:1.21.1` という警告が出ますが、Minecraftの逆コンパイル済みソースは標準のsources artifactとして公開されないため、正常な動作です。展開結果は各サブプロジェクトの `unpackedSources/` ディレクトリに出力されます。
 
-この結果、NeoForgeプロジェクトの構成フェーズで以下のエラーが発生します：
+### 背景
 
-```
-A problem occurred configuring project ':neoforge'.
-> Could not resolve all files for configuration ':neoforge:modCompileOnly'.
-   > Could not find mezz.jei:jei-1.21.1-common-api:19.21.2.313.
-   > Could not find mezz.jei:jei-1.21.1-neoforge-api:19.21.2.313.
-```
-
-Gradleは以下のすべての場所を検索しましたが、どこにも見つかりませんでした：Loomキャッシュ、Fabric Loomキャッシュ、maven.fabricmc.net、libraries.minecraft.net、Maven Central、maven.architectury.dev、maven.parchmentmc.org、ローカル `maven/` ディレクトリ、maven.neoforged.net、そして maven.blamejared.com（404）。
-
-この障害はビルドスクリプトを編集せずに解決する必要があります。ビルドスクリプトの編集は禁止されています。
-
-### 根本解決：JEIのローカルミラー
-
-EMIと同様に、JEIもローカルの `maven/` ディレクトリにミラーリングすることで、 `maven.blamejared.com` が利用不可能な環境でもNeoForgeプロジェクトが正常に構成されます。ユーザーに `mirrorMaven` タスクにJEI座標を追加し実行するよう依頼してください。ミラーリング済みのアーティファクトがコミットされていれば、以下のすべてのGradleタスクはワークアラウンドなしで動作します。
-
-### JEIがミラーリングされていない場合のワークアラウンド
-
-JEIのスタブをローカルの `maven/` ディレクトリに作成することで、NeoForgeプロジェクトを構成可能にできます。以下のコマンドでスタブを作成してください：
-
-```
-JEI_VERSION=$(grep '^jei ' gradle/libs.versions.toml | sed 's/.*= *"//;s/"//')
-JEI_STUB_TMP=$(mktemp -d)
-for artifact in jei-1.21.1-common-api jei-1.21.1-neoforge-api jei-1.21.1-neoforge; do
-  dir="maven/mezz/jei/${artifact}/${JEI_VERSION}"
-  mkdir -p "$dir"
-  cat > "$dir/${artifact}-${JEI_VERSION}.pom" << EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion><groupId>mezz.jei</groupId><artifactId>${artifact}</artifactId><version>${JEI_VERSION}</version></project>
-EOF
-  mkdir -p "$JEI_STUB_TMP/META-INF"
-  echo "Manifest-Version: 1.0" > "$JEI_STUB_TMP/META-INF/MANIFEST.MF"
-  (cd "$JEI_STUB_TMP" && jar cf "$OLDPWD/$dir/${artifact}-${JEI_VERSION}.jar" META-INF/MANIFEST.MF)
-done
-rm -rf "$JEI_STUB_TMP"
-```
-
-スタブを作成すれば、NeoForgeプロジェクトを含むすべてのGradleタスクがワークアラウンドなしで動作します。スタブは `maven/mezz/` ディレクトリに作成されます。 **作業完了後、 `maven/mezz/` ディレクトリを必ず削除してください。スタブ自体は第三者のコードを含みませんが、本物のアーティファクトと誤認されないように清掃が必要です。**
-
-```
-JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :common:genSources --no-daemon
-JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :fabric:runDatagen --no-daemon
-```
-
-なお、 `unpackSources` では `[Failed] Could not resolve component: net.minecraft:minecraft:1.21.1` という警告が出ますが、Minecraftの逆コンパイル済みソースは標準のsources artifactとして公開されないため、正常な動作です。
+`maven.blamejared.com` がすべてのパスに404を返すため、JEIの依存解決が本来失敗します。`neoforge/build.gradle.kts` に追加された `modmaven.dev` フォールバックリポジトリにより、この問題は解決されました。
 
 # コードスタイル
 
