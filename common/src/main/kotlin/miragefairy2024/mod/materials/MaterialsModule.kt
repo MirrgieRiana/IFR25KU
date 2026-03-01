@@ -766,8 +766,8 @@ class MaterialCard(
             PoemList(1).poem("Am I hopeful in the parallel world?", "存在したかもしれない僕たちのかたち。")
         )
 
-        val SALTPETER: MaterialCard = !MaterialCard(
-            "saltpeter", "Saltpeter", "硝石",
+        val SALTPETER_GEM: MaterialCard = !MaterialCard(
+            "saltpeter_gem", "Saltpeter Gem", "硝石",
             null,
             ore = Ore(Shape.GEM, Material.SALTPETER),
         )

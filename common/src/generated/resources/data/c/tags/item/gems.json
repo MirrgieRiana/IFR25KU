@@ -65,10 +65,6 @@
       "required": false
     },
     {
-      "id": "#c:gems/saltpeter",
-      "required": false
-    },
-    {
       "id": "#c:gems/sulfur",
       "required": false
     },
