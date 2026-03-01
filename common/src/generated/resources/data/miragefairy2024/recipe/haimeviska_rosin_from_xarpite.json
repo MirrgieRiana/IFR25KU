@@ -1,0 +1,31 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 1200,
+  "group": "miragefairy2024:haimeviska_rosin",
+  "inputs": [
+    {
+      "Amount": 9,
+      "Ingredient": {
+        "tag": "c:gems/xarpite"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 6,
+      "id": "miragefairy2024:haimeviska_rosin"
+    },
+    {
+      "count": 1,
+      "id": "miragefairy2024:fairy_plastic"
+    },
+    {
+      "count": 1,
+      "id": "miragefairy2024:magnetite"
+    },
+    {
+      "count": 1,
+      "id": "miragefairy2024:miragium_ingot"
+    }
+  ]
+}
