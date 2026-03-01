@@ -1,0 +1,7 @@
+{
+  "parent": "miragefairy2024:block/ore",
+  "textures": {
+    "back": "minecraft:block/sandstone_top",
+    "front": "miragefairy2024:block/saltpeter_ore"
+  }
+}

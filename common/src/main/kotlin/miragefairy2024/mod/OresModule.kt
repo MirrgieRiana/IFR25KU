@@ -29,6 +29,7 @@ import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.string
 import miragefairy2024.util.times
+import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.uniformOre
 import miragefairy2024.util.with
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags
@@ -39,6 +40,7 @@ import net.minecraft.tags.BlockTags
 import net.minecraft.util.valueproviders.UniformInt
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.DropExperienceBlock
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
@@ -51,6 +53,7 @@ import net.minecraft.world.level.material.MapColor
 enum class BaseStoneType {
     STONE,
     DEEPSLATE,
+    SANDSTONE,
 }
 
 enum class OreCard(
@@ -82,6 +85,21 @@ enum class OreCard(
         "deepslate_fluorite_ore", "Deepslate Fluorite Ore", "深層蛍石鉱石",
         null,
         BaseStoneType.DEEPSLATE, "fluorite_ore", MaterialCard.FLUORITE.item, 2 to 5,
+    ),
+    SALTPETER_ORE(
+        "saltpeter_ore", "Saltpeter Ore", "硝石鉱石",
+        null,
+        BaseStoneType.STONE, "saltpeter_ore", MaterialCard.SALTPETER.item, 2 to 5,
+    ),
+    DEEPSLATE_SALTPETER_ORE(
+        "deepslate_saltpeter_ore", "Deepslate Saltpeter Ore", "深層硝石鉱石",
+        null,
+        BaseStoneType.DEEPSLATE, "saltpeter_ore", MaterialCard.SALTPETER.item, 2 to 5,
+    ),
+    SANDSTONE_SALTPETER_ORE(
+        "sandstone_saltpeter_ore", "Sandstone Saltpeter Ore", "砂岩硝石鉱石",
+        null,
+        BaseStoneType.SANDSTONE, "saltpeter_ore", MaterialCard.SALTPETER.item, 2 to 5,
     ),
     SULFUR_ORE(
         "sulfur_ore", "Sulfur Ore", "硫黄鉱石",
@@ -130,6 +148,12 @@ enum class OreCard(
                 .requiresCorrectToolForDrops()
                 .strength(4.5F, 3.0F)
                 .sound(SoundType.DEEPSLATE)
+
+            BaseStoneType.SANDSTONE -> BlockBehaviour.Properties.of()
+                .mapColor(MapColor.SAND)
+                .instrument(NoteBlockInstrument.BASEDRUM)
+                .requiresCorrectToolForDrops()
+                .strength(1.0F, 1.0F)
         }
         DropExperienceBlock(UniformInt.of(experience.first, experience.second), settings)
     }
@@ -138,6 +162,7 @@ enum class OreCard(
         val baseStoneTexture = when (baseStoneType) {
             BaseStoneType.STONE -> ResourceLocation("minecraft", "block/stone")
             BaseStoneType.DEEPSLATE -> ResourceLocation("minecraft", "block/deepslate")
+            BaseStoneType.SANDSTONE -> ResourceLocation("minecraft", "block/sandstone_top")
         }
         OreModelCard.model.with(
             TextureSlot.BACK to baseStoneTexture,
@@ -152,10 +177,15 @@ object OreModelCard {
     val model = Model(identifier, TextureSlot.BACK, TextureSlot.FRONT)
 }
 
+val SANDSTONE_ORE_REPLACEABLES = MirageFairy2024.identifier("sandstone_ore_replaceables").toBlockTag()
+
 context(ModContext)
 fun initOresModule() {
 
     registerModelGeneration({ OreModelCard.identifier }) { OreModelCard.parentModel.with() }
+
+    SANDSTONE_ORE_REPLACEABLES.enJa(EnJa("Sandstone Ore Replaceables", "砂岩鉱石が置換可能"))
+    SANDSTONE_ORE_REPLACEABLES.generator.registerChild { Blocks.SANDSTONE }
 
     OreCard.entries.forEach { card ->
 
@@ -199,6 +229,7 @@ fun initOresModule() {
                 val targets = when (card.baseStoneType) {
                     BaseStoneType.STONE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), card.block().defaultBlockState()))
                     BaseStoneType.DEEPSLATE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), card.block().defaultBlockState()))
+                    BaseStoneType.SANDSTONE -> listOf(OreConfiguration.target(TagMatchTest(SANDSTONE_ORE_REPLACEABLES), card.block().defaultBlockState()))
                 }
                 OreConfiguration(targets, size, discardChanceOnAirExposure.toFloat())
             }.generator {
@@ -210,6 +241,9 @@ fun initOresModule() {
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.DEEPSLATE_MAGNETITE_ORE)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.FLUORITE_ORE)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE)
+    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.SALTPETER_ORE)
+    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE)
+    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE)
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE)
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.DEEPSLATE_SULFUR_ORE)
     worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE)
