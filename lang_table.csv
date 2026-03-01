@@ -131,6 +131,7 @@ block.miragefairy2024.deepslate_magnetite_ore,Deepslate Magnetite Ore,深層磁�
 block.miragefairy2024.deepslate_miranagite_ore,Deepslate Miranagite Ore,深層蒼天石鉱石
 block.miragefairy2024.deepslate_miranagite_ore.poem,Singularities built by the Creator,楽園が楽園であるための奇跡。
 block.miragefairy2024.deepslate_nephrite_ore,Deepslate Nephrite Ore,深層ネフライト鉱石
+block.miragefairy2024.deepslate_saltpeter_ore,Deepslate Saltpeter Ore,深層硝石鉱石
 block.miragefairy2024.deepslate_sulfur_ore,Deepslate Sulfur Ore,深層硫黄鉱石
 block.miragefairy2024.diamond_luminaria,Diamond Luminaria,金剛石輝草ダイヤモンドルミナリア
 block.miragefairy2024.dripping_haimeviska_log,Dripping Haimeviska Log,滴るハイメヴィスカの原木
@@ -253,6 +254,8 @@ block.miragefairy2024.phantom_flower,Phantom Flower,幻花ファントム
 block.miragefairy2024.polished_aura_resistant_ceramic,Polished Protective Aura-Resistant Ceramic,磨かれた守護の耐霊石
 block.miragefairy2024.polished_aura_resistant_ceramic.poem,Economical urban astral shielding,情緒線の被曝に備えて――
 block.miragefairy2024.prominaria,Prominaria,紅炎草プロミナリア
+block.miragefairy2024.saltpeter_ore,Saltpeter Ore,硝石鉱石
+block.miragefairy2024.sandstone_saltpeter_ore,Sandstone Saltpeter Ore,砂岩硝石鉱石
 block.miragefairy2024.sarracenia,Sarracenia,瓶子草サラセニア
 block.miragefairy2024.smooth_aura_resistant_ceramic,Smooth Protective Aura-Resistant Ceramic,滑らかな守護の耐霊石
 block.miragefairy2024.smooth_aura_resistant_ceramic.poem,Turpentine improves its flowability,空隙に走る樹脂の流れ――
@@ -1315,6 +1318,7 @@ tag.block.miragefairy2024.local_vacuum_decay_resistant,Local Vacuum Decay Resist
 tag.block.miragefairy2024.mineable.noise,Mineable with noise,ノイズで採掘可能
 tag.block.miragefairy2024.retrospective_city_building,Retrospective City Building,過去を見つめる都市の建物
 tag.block.miragefairy2024.retrospective_city_floor,Retrospective City Floor,過去を見つめる都市の床
+tag.block.miragefairy2024.sandstone_ore_replaceables,Sandstone Ore Replaceables,砂岩鉱石が置換可能
 tag.damage_type.c.is_magic,Magic,魔法
 tag.damage_type.miragefairy2024.is_magic,Magic,魔法
 tag.damage_type.miragefairy2024.spine,Spine,棘

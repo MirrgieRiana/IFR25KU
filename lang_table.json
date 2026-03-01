@@ -527,6 +527,10 @@
     "en_us": "Deepslate Nephrite Ore",
     "ja_jp": "深層ネフライト鉱石"
   },
+  "block.miragefairy2024.deepslate_saltpeter_ore": {
+    "en_us": "Deepslate Saltpeter Ore",
+    "ja_jp": "深層硝石鉱石"
+  },
   "block.miragefairy2024.deepslate_sulfur_ore": {
     "en_us": "Deepslate Sulfur Ore",
     "ja_jp": "深層硫黄鉱石"
@@ -1014,6 +1018,14 @@
   "block.miragefairy2024.prominaria": {
     "en_us": "Prominaria",
     "ja_jp": "紅炎草プロミナリア"
+  },
+  "block.miragefairy2024.saltpeter_ore": {
+    "en_us": "Saltpeter Ore",
+    "ja_jp": "硝石鉱石"
+  },
+  "block.miragefairy2024.sandstone_saltpeter_ore": {
+    "en_us": "Sandstone Saltpeter Ore",
+    "ja_jp": "砂岩硝石鉱石"
   },
   "block.miragefairy2024.sarracenia": {
     "en_us": "Sarracenia",
@@ -4430,6 +4442,10 @@
   "tag.block.miragefairy2024.retrospective_city_floor": {
     "en_us": "Retrospective City Floor",
     "ja_jp": "過去を見つめる都市の床"
+  },
+  "tag.block.miragefairy2024.sandstone_ore_replaceables": {
+    "en_us": "Sandstone Ore Replaceables",
+    "ja_jp": "砂岩鉱石が置換可能"
   },
   "tag.damage_type.c.is_magic": {
     "en_us": "Magic",
