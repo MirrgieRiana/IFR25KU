@@ -779,16 +779,16 @@ class MaterialCard(
             null,
             ore = Ore(Shape.GEM, Material.SALTPETER),
         ) {
-            fun register(input1Item: () -> Item, input1Count: Int, input2Item: () -> Item, input2Count: Int) {
+            fun register(inputItem1: () -> Item, inputCount1: Int, inputItem2: () -> Item, inputCount2: Int) {
                 registerSimpleMachineRecipeGeneration(
                     AthanorRecipeCard,
                     inputs = listOf(
-                        { input1Item().toIngredientStack(input1Count) },
-                        { input2Item().toIngredientStack(input2Count) },
+                        { inputItem1().toIngredientStack(inputCount1) },
+                        { inputItem2().toIngredientStack(inputCount2) },
                     ),
                     outputs = listOf({ item().createItemStack() }),
                     duration = 20 * 60 * 5,
-                ) on input1Item from input1Item from input2Item
+                ) on inputItem1 from inputItem1 from inputItem2
             }
             register(ASH.item, 4, { Items.ROTTEN_FLESH }, 4)
             register(ASH.item, 4, { Items.FERMENTED_SPIDER_EYE }, 2)
