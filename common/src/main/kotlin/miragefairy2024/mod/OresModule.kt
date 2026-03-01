@@ -223,7 +223,13 @@ fun initOresModule() {
      * バニラのソースコード見た方が早い。
      * @see [net.minecraft.data.worldgen.features.OreFeatures], [net.minecraft.data.worldgen.placement.OrePlacements]
      */
-    fun worldGen(range: IntRange, countPerCube: Double, size: Int, discardChanceOnAirExposure: Double, card: OreCard) {
+    fun worldGen(
+        range: IntRange,
+        countPerCube: Double,
+        size: Int,
+        discardChanceOnAirExposure: Double,
+        card: OreCard,
+    ) {
         Feature.ORE.generator(card.identifier) {
             registerConfiguredFeature {
                 val targets = when (card.baseStoneType) {
