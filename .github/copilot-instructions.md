@@ -16,7 +16,9 @@ Minecraftのコードのうち一部が展開されていないという可能�
 
 コーディングエージェントのサンドボックス環境では、 `genSources` や `unpackSources` などのGradleタスクは **実行できません** 。
 Architectury Loomプラグインの解決に必要なMavenリポジトリ（ `maven.architectury.dev` 、 `maven.fabricmc.net` 、 `maven.minecraftforge.net` ）と、標準的なMaven Central（ `repo.maven.apache.org` ）やGradle Plugin Portal（ `plugins.gradle.org` ）はサンドボックスからアクセス可能です。
-しかし、Architectury Loomが依存するMinecraftのライブラリホスト（ `libraries.minecraft.net` 、 `piston-meta.mojang.com` 、 `launchermeta.mojang.com` 、 `resources.download.minecraft.net` 、 `maven.parchmentmc.org` ）がサンドボックスからアクセスできないため、プロジェクトの構成段階で依存性の解決に失敗します。
+Minecraftのメタデータ・ライブラリホスト（ `libraries.minecraft.net` 、 `piston-meta.mojang.com` 、 `maven.parchmentmc.org` ）もアクセス可能で、プラグインの解決と依存性の解決は成功します。
+しかし、Minecraftクライアントjarのダウンロード元（ `piston-data.mojang.com` ）がブロックされているため、Minecraft本体のセットアップ段階で失敗します。
+なお、 `launchermeta.mojang.com` と `resources.download.minecraft.net` もアクセスできません。
 
 ## Zipファイルからのソースコード参照（実験結果）
 
