@@ -11,8 +11,8 @@
 
 ## genSources / unpackSources
 
-- `genSources` : Loom（Architectury Loom）が提供するタスク。Minecraftのソースコードを逆コンパイル・難読化解除して生成する。
-- `unpackSources` : カスタムタスク（`UnpackSourcesTask`）。`genSources` に依存し、すべての外部依存関係の `-sources.jar` を各サブプロジェクトの `unpackedSources/` ディレクトリに展開する。
+- `genSources` : Loom（Architectury Loom）が提供するタスク。Minecraftのソースコードを逆コンパイル・難読化解除して生成する。出力先は `{projectDir}/.gradle/loom-cache/minecraftMaven/net/minecraft/` 配下で、`-sources.jar`（逆コンパイルされたソース）と `.jar`（ラインマッピング適用済みバイナリ）が生成される。IDEはこれらをソースアタッチメントとして自動的に参照する。
+- `unpackSources` : カスタムタスク（`UnpackSourcesTask`）。`genSources` に依存し、`genSources` が生成したMinecraftソースと、すべての外部依存関係の `-sources.jar` を各サブプロジェクトの `unpackedSources/` ディレクトリに展開する。
 
 ## Gradleタスクのエージェント環境での動作
 
