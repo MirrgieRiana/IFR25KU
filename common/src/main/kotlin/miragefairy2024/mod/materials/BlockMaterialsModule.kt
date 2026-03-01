@@ -7,6 +7,7 @@ import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG
 import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG
 import miragefairy2024.mod.biome.RetrospectiveCityBiomeCard
 import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
+import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
 import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
 import miragefairy2024.mod.materials.contents.FairyCrystalGlassBlock
@@ -203,14 +204,15 @@ open class BlockMaterialCard(
             PoemList(2).poem(EnJa("Penetrates the monomer and solidifies", "砂岩に宿るポリテルペンの祝福――")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG, RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
-            // TODO アタノールで作る
-            // TODO Tierをアタノールに合わせる
-            registerShapedRecipeGeneration(item, count = 2) {
-                pattern("SX")
-                pattern("XS")
-                define('S', Items.SANDSTONE)
-                define('X', MaterialCard.XARPITE.ore!!.ingredient)
-            } on MaterialCard.XARPITE.ore!!.tag
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { Items.SANDSTONE.toIngredientStack(1) },
+                    { MaterialCard.XARPITE.ore!!.ingredient.toIngredientStack(1) },
+                ),
+                outputs = listOf({ item().createItemStack(1) }),
+                duration = 20 * 60 * 5,
+            ) on MaterialCard.XARPITE.ore!!.tag
         }
         val SMOOTH_AURA_RESISTANT_CERAMIC: BlockMaterialCard = !object : BlockMaterialCard(
             "smooth_aura_resistant_ceramic", EnJa("Smooth Protective Aura-Resistant Ceramic", "滑らかな守護の耐霊石"),

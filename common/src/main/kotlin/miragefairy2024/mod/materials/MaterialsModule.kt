@@ -134,6 +134,17 @@ class MaterialCard(
         ) {
             item.registerGrassDrop(0.03F, 1) // TODO 古代の遺構
             item.registerMobDrop(EntityType.WITCH, onlyKilledByPlayer = true, dropRate = Pair(0.2F, 0.1F))
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { FAIRY_PLASTIC.item().toIngredientStack(1) },
+                    { MIRAGIUM_INGOT.ore!!.ingredient.toIngredientStack(1) },
+                    { MAGNETITE.ore!!.ingredient.toIngredientStack(1) },
+                    { Items.REDSTONE.toIngredientStack(1) }, // TODO 妖精の血
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60 * 5,
+            ) on FAIRY_PLASTIC.item
         }
         val MIRANAGITE: MaterialCard = !MaterialCard(
             "miranagite", "Miranagite", "蒼天石",
@@ -668,7 +679,19 @@ class MaterialCard(
             "fairy_rubber", "Fairy Rubber", "夜のかけら",
             PoemList(3).poem("Minimize the risk of losing belongings", "空は怯える夜精に一握りの温かい闇を与えた"),
             ore = Ore(Shape.GEM, Material.FAIRY_RUBBER),
-        )
+        ) {
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { MERRRRIA_DROP.item().toIngredientStack(1) },
+                    { SARRACENIA_LEAF.item().toIngredientStack(1) },
+                    { ItemTags.COALS.toIngredientStack(1) },
+                    { SULFUR.item().toIngredientStack(1) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60 * 5,
+            ) on MERRRRIA_DROP.item
+        }
 
         val TINY_MIRAGE_FLOUR: MaterialCard = !MaterialCard(
             "tiny_mirage_flour", "Tiny Pile of Mirage Flour", "小さなミラージュの花粉",
@@ -1192,6 +1215,16 @@ class MaterialCard(
                     .build()
             },
         ) {
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { Items.SUGAR.toIngredientStack(8) },
+                    { HAIMEVISKA_SAP.item().toIngredientStack(4) }, // 200 * 1 * 4 = 800
+                    { ItemTagCard.SPIRITS.tag.toIngredientStack(1) }, // 200 * 12 * 1 = 2400
+                ),
+                outputs = listOf({ item().createItemStack(8) }), // 800 + 2400 + 1200 = 4400 -> 200 * 8 * 8 = 12800
+                duration = 20 * 60, // 1200 = 200 * 6
+            ) on ItemTagCard.SPIRITS.tag
             // →TNT
             registerShapedRecipeGeneration({ Items.TNT }) {
                 pattern(" G ")

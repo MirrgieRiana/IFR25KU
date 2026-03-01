@@ -1,0 +1,37 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 6000,
+  "group": "miragefairy2024:xarpite",
+  "inputs": [
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "miragefairy2024:fairy_plastic"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "tag": "c:ingots/miragium"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "tag": "c:gems/magnetite"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:redstone"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "miragefairy2024:xarpite"
+    }
+  ]
+}
