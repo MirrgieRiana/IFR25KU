@@ -89,12 +89,17 @@ enum class OreCard(
     SALTPETER_ORE(
         "saltpeter_ore", "Saltpeter Ore", "硝石鉱石",
         null,
-        BaseStoneType.STONE, "saltpeter_ore", MaterialCard.FLUORITE.item, 2 to 5,
+        BaseStoneType.STONE, "saltpeter_ore", MaterialCard.SALTPETER.item, 2 to 5,
     ),
     DEEPSLATE_SALTPETER_ORE(
         "deepslate_saltpeter_ore", "Deepslate Saltpeter Ore", "深層硝石鉱石",
         null,
-        BaseStoneType.DEEPSLATE, "saltpeter_ore", MaterialCard.FLUORITE.item, 2 to 5,
+        BaseStoneType.DEEPSLATE, "saltpeter_ore", MaterialCard.SALTPETER.item, 2 to 5,
+    ),
+    SANDSTONE_SALTPETER_ORE(
+        "sandstone_saltpeter_ore", "Sandstone Saltpeter Ore", "砂岩硝石鉱石",
+        null,
+        BaseStoneType.SANDSTONE, "saltpeter_ore", MaterialCard.SALTPETER.item, 2 to 5,
     ),
     SULFUR_ORE(
         "sulfur_ore", "Sulfur Ore", "硫黄鉱石",
@@ -236,8 +241,9 @@ fun initOresModule() {
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.DEEPSLATE_MAGNETITE_ORE)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.FLUORITE_ORE)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE)
-    worldGen(0 until 64, 1.2, 8, 0.0, OreCard.SALTPETER_ORE)
-    worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE)
+    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.SALTPETER_ORE)
+    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE)
+    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE)
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE)
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.DEEPSLATE_SULFUR_ORE)
     worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE)
