@@ -172,7 +172,7 @@ open class BlockMaterialCard(
                 define('#', SMOOTH_AURA_RESISTANT_CERAMIC.item)
             } on SMOOTH_AURA_RESISTANT_CERAMIC.item
             registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
-            registerAuraResistantCeramicDecompositionRecipeGeneration(Items.SANDSTONE, 4, 1)
+            registerAuraResistantCeramicDecompositionRecipeGeneration(item, Items.SANDSTONE, 4, 1)
         }
         val AURA_RESISTANT_CERAMIC_SLAB: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic_slab", EnJa("Protective Aura-Resistant Ceramic Slab", "守護の耐霊石のハーフブロック"),
@@ -187,7 +187,7 @@ open class BlockMaterialCard(
             registerBlockFamily(AURA_RESISTANT_CERAMIC.texturedModelProvider!!, AURA_RESISTANT_CERAMIC.block) { it.slab(block()) }
             registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
             registerStonecutterRecipeGeneration(AURA_RESISTANT_CERAMIC.item, item, 2)
-            registerAuraResistantCeramicDecompositionRecipeGeneration(Items.SANDSTONE_SLAB, 8, 1)
+            registerAuraResistantCeramicDecompositionRecipeGeneration(item, Items.SANDSTONE_SLAB, 8, 1)
         }
         val AURA_RESISTANT_CERAMIC_STAIRS: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic_stairs", EnJa("Protective Aura-Resistant Ceramic Stairs", "守護の耐霊石の階段"),
@@ -201,7 +201,7 @@ open class BlockMaterialCard(
             registerBlockFamily(AURA_RESISTANT_CERAMIC.texturedModelProvider!!, AURA_RESISTANT_CERAMIC.block) { it.stairs(block()) }
             registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
             registerStonecutterRecipeGeneration(AURA_RESISTANT_CERAMIC.item, item)
-            registerAuraResistantCeramicDecompositionRecipeGeneration(Items.SANDSTONE_STAIRS, 16, 3)
+            registerAuraResistantCeramicDecompositionRecipeGeneration(item, Items.SANDSTONE_STAIRS, 16, 3)
         }
         val COBBLED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
             "cobbled_aura_resistant_ceramic", EnJa("Cobbled Protective Aura-Resistant Ceramic", "守護の耐霊石の丸石"),
@@ -217,7 +217,7 @@ open class BlockMaterialCard(
                 outputs = listOf({ item().createItemStack(1) }),
                 duration = 20 * 60 * 5,
             ) on MaterialCard.XARPITE.ore!!.tag
-            registerAuraResistantCeramicDecompositionRecipeGeneration(Items.SANDSTONE, 4, 1)
+            registerAuraResistantCeramicDecompositionRecipeGeneration(item, Items.SANDSTONE, 4, 1)
         }
         val SMOOTH_AURA_RESISTANT_CERAMIC: BlockMaterialCard = !object : BlockMaterialCard(
             "smooth_aura_resistant_ceramic", EnJa("Smooth Protective Aura-Resistant Ceramic", "滑らかな守護の耐霊石"),
@@ -232,7 +232,7 @@ open class BlockMaterialCard(
             }
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerSmeltingRecipeGeneration(COBBLED_AURA_RESISTANT_CERAMIC.item, item) on item
-            registerAuraResistantCeramicDecompositionRecipeGeneration(Items.SANDSTONE, 4, 1)
+            registerAuraResistantCeramicDecompositionRecipeGeneration(item, Items.SANDSTONE, 4, 1)
         }
         val POLISHED_AURA_RESISTANT_CERAMIC = !BlockMaterialCard(
             "polished_aura_resistant_ceramic", EnJa("Polished Protective Aura-Resistant Ceramic", "磨かれた守護の耐霊石"),
@@ -245,7 +245,7 @@ open class BlockMaterialCard(
                 define('#', SMOOTH_AURA_RESISTANT_CERAMIC.item)
             } on SMOOTH_AURA_RESISTANT_CERAMIC.item
             registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
-            registerAuraResistantCeramicDecompositionRecipeGeneration(Items.SANDSTONE, 4, 1)
+            registerAuraResistantCeramicDecompositionRecipeGeneration(item, Items.SANDSTONE, 4, 1)
         }
         val AURA_RESISTANT_CERAMIC_BRICKS = !BlockMaterialCard(
             "aura_resistant_ceramic_bricks", EnJa("Protective Aura-Resistant Ceramic Bricks", "守護の耐霊石レンガ"),
@@ -259,7 +259,7 @@ open class BlockMaterialCard(
             } on POLISHED_AURA_RESISTANT_CERAMIC.item
             registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
             registerStonecutterRecipeGeneration(POLISHED_AURA_RESISTANT_CERAMIC.item, item)
-            registerAuraResistantCeramicDecompositionRecipeGeneration(Items.SANDSTONE, 4, 1)
+            registerAuraResistantCeramicDecompositionRecipeGeneration(item, Items.SANDSTONE, 4, 1)
         }
         val AURA_RESISTANT_CERAMIC_BRICKS_SLAB: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic_bricks_slab", EnJa("Protective Aura-Resistant Ceramic Brick Slab", "守護の耐霊石レンガのハーフブロック"),
@@ -275,7 +275,7 @@ open class BlockMaterialCard(
             registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
             registerStonecutterRecipeGeneration(POLISHED_AURA_RESISTANT_CERAMIC.item, item)
             registerStonecutterRecipeGeneration(AURA_RESISTANT_CERAMIC_BRICKS.item, item, 2)
-            registerAuraResistantCeramicDecompositionRecipeGeneration(Items.SANDSTONE_SLAB, 8, 1)
+            registerAuraResistantCeramicDecompositionRecipeGeneration(item, Items.SANDSTONE_SLAB, 8, 1)
         }
         val AURA_RESISTANT_CERAMIC_BRICKS_STAIRS: BlockMaterialCard = !object : BlockMaterialCard(
             "aura_resistant_ceramic_bricks_stairs", EnJa("Protective Aura-Resistant Ceramic Brick Stairs", "守護の耐霊石レンガの階段"),
@@ -290,7 +290,7 @@ open class BlockMaterialCard(
             registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
             registerStonecutterRecipeGeneration(POLISHED_AURA_RESISTANT_CERAMIC.item, item)
             registerStonecutterRecipeGeneration(AURA_RESISTANT_CERAMIC_BRICKS.item, item)
-            registerAuraResistantCeramicDecompositionRecipeGeneration(Items.SANDSTONE_STAIRS, 16, 3)
+            registerAuraResistantCeramicDecompositionRecipeGeneration(item, Items.SANDSTONE_STAIRS, 16, 3)
         }
         val CRACKED_AURA_RESISTANT_CERAMIC_BRICKS = !BlockMaterialCard(
             "cracked_aura_resistant_ceramic_bricks", EnJa("Cracked Protective Aura-Resistant Ceramic Bricks", "ひび割れた守護の耐霊石レンガ"),
@@ -298,7 +298,7 @@ open class BlockMaterialCard(
             MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerSmeltingRecipeGeneration(AURA_RESISTANT_CERAMIC_BRICKS.item, item) on item
-            registerAuraResistantCeramicDecompositionRecipeGeneration(Items.SANDSTONE, 4, 1)
+            registerAuraResistantCeramicDecompositionRecipeGeneration(item, Items.SANDSTONE, 4, 1)
         }
         val AURA_RESISTANT_CERAMIC_TILES = !BlockMaterialCard(
             "aura_resistant_ceramic_tiles", EnJa("Protective Aura-Resistant Ceramic Tiles", "守護の耐霊石タイル"),
@@ -312,7 +312,7 @@ open class BlockMaterialCard(
             } on POLISHED_AURA_RESISTANT_CERAMIC.item
             registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
             registerStonecutterRecipeGeneration(POLISHED_AURA_RESISTANT_CERAMIC.item, item)
-            registerAuraResistantCeramicDecompositionRecipeGeneration(Items.SANDSTONE, 4, 1)
+            registerAuraResistantCeramicDecompositionRecipeGeneration(item, Items.SANDSTONE, 4, 1)
         }
         val CHISELED_AURA_RESISTANT_CERAMIC = !object : BlockMaterialCard(
             "chiseled_aura_resistant_ceramic", EnJa("Chiseled Protective Aura-Resistant Ceramic", "模様入りの守護の耐霊石"),
@@ -347,7 +347,7 @@ open class BlockMaterialCard(
             } on AURA_RESISTANT_CERAMIC_SLAB.item
             registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
             registerStonecutterRecipeGeneration(AURA_RESISTANT_CERAMIC.item, item)
-            registerAuraResistantCeramicDecompositionRecipeGeneration(Items.SANDSTONE, 4, 1)
+            registerAuraResistantCeramicDecompositionRecipeGeneration(item, Items.SANDSTONE, 4, 1)
         }
         val MIRANAGITE_BLOCK = !BlockMaterialCard(
             "miranagite_block", EnJa("Miranagite Block", "蒼天石ブロック"),
@@ -800,7 +800,7 @@ private fun <T : BlockMaterialCard> T.invincible() = this
     )
 
 context(ModContext)
-private fun BlockMaterialCard.registerAuraResistantCeramicDecompositionRecipeGeneration(sandstoneItem: Item, count: Int, xarpiteCount: Int) {
+private fun registerAuraResistantCeramicDecompositionRecipeGeneration(item: () -> Item, sandstoneItem: Item, count: Int, xarpiteCount: Int) {
     registerSimpleMachineRecipeGeneration(
         AthanorRecipeCard,
         inputs = listOf({ item().toIngredientStack(count) }),
