@@ -31,10 +31,10 @@ import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.string
 import miragefairy2024.util.times
 import miragefairy2024.util.toBlockTag
+import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.uniformOre
 import miragefairy2024.util.with
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.TextureSlot
@@ -257,9 +257,9 @@ fun initOresModule() {
     worldGen(48 until 128, 4.0, 4, 0.0, OreCard.SALTPETER_ORE)
     worldGen(48 until 128, 4.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE)
     worldGen(48 until 128, 4.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE)
-    worldGen(0 until 64, 1.0, 4, 0.0, OreCard.SALTPETER_ORE, "dripstone_caves") { BiomeSelectors.includeByKey(Biomes.DRIPSTONE_CAVES) }
-    worldGen(0 until 64, 1.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE, "dripstone_caves") { BiomeSelectors.includeByKey(Biomes.DRIPSTONE_CAVES) }
-    worldGen(0 until 64, 1.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE, "dripstone_caves") { BiomeSelectors.includeByKey(Biomes.DRIPSTONE_CAVES) }
+    worldGen(0 until 64, 1.0, 4, 0.0, OreCard.SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
+    worldGen(0 until 64, 1.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
+    worldGen(0 until 64, 1.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE)
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.DEEPSLATE_SULFUR_ORE)
     worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE)
