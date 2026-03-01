@@ -14,68 +14,26 @@ Minecraftのコードのうち一部が展開されていないという可能�
 
 ## Gradleタスクのエージェント環境での動作（実験結果）
 
-### ネットワーク接続性
+`maven.blamejared.com` にJEIアーティファクトが存在しない（404）ため、NeoForgeプロジェクトの構成が失敗します。以下の各Gradleタスクはこの制約のワークアラウンドを含みます。
 
-コーディングエージェントのサンドボックス環境では、以下のホストにアクセス **可能** です：
+### genSources / unpackSources / compileKotlinの実行
 
-- `maven.architectury.dev` 、 `maven.fabricmc.net` 、 `maven.minecraftforge.net` （Architectury Loomプラグイン）
-- `repo.maven.apache.org` （Maven Central）、 `plugins.gradle.org` （Gradle Plugin Portal）
-- `libraries.minecraft.net` 、 `piston-meta.mojang.com` 、 `piston-data.mojang.com` （Minecraft本体）
-- `maven.parchmentmc.org` 、 `ldtteam.jfrog.io` 、 `storage.googleapis.com` （Parchmentマッピング、 `maven.parchmentmc.org` から `ldtteam.jfrog.io` 、 `storage.googleapis.com` へのリダイレクトチェーン全体がアクセス可能）
-- `maven.wispforest.io` （owo-lib）、 `maven.shedaniel.me` （REI、cloth-config）
-- `www.cursemaven.com` （Jade）
-- `maven.neoforged.net` 、 `maven.su5ed.dev` （NeoForge本体。ただし `maven.blamejared.com` にJEIアーティファクトが存在しないためJEI依存の解決に失敗し、NeoForgeプロジェクトの構成は完了できない）
-- `raw.githubusercontent.com`
+`--configure-on-demand` フラグにより、JEI依存の解決に失敗するNeoForgeプロジェクトの構成をスキップして実行できます。
 
-以下のホストは **ブロック** されています：
-
-- `maven.terraformersmc.com` （EMI。ただしローカル `maven/` にミラー済み）
-- `launchermeta.mojang.com` 、 `resources.download.minecraft.net`
-
-以下のホストはアクセス可能だが、 **必要なアーティファクトが存在しません** ：
-
-- `maven.blamejared.com` （JEI。NeoForgeプロジェクトが依存。サーバー自体は応答するが、JEIアーティファクトが404を返す）
-
-### genSourcesの実行
-
-`genSources` は **`--configure-on-demand` フラグのみで実行可能** です。Parchmentマッピングを含むすべての依存関係がネットワーク経由で正常に解決されます。
-
-1. `--configure-on-demand` フラグにより、NeoForgeプロジェクトの構成をスキップします（ `maven.blamejared.com` にJEIアーティファクトが存在せずJEI依存の解決に失敗するため）。
-2. Java 21が必要です（ `JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64` ）。
-3. Parchmentマッピング、owo-lib、REI、cloth-config等のサードパーティmod依存関係はすべてネットワーク経由で正常に解決されます。EMIはローカル `maven/` からの解決です。
-
-実行例：
 ```
 JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64 ./gradlew :common:genSources --no-daemon --configure-on-demand
 ```
 
-### unpackSourcesの実行
-
-`unpackSources` も同様の条件（ `--configure-on-demand` のみ）で **実行可能** です。Minecraft以外の外部依存関係のソースは正常に展開されます。ただし、Minecraftの逆コンパイル済みソースは標準のsources artifactとして公開されないため、 `[Failed] Could not resolve component: net.minecraft:minecraft:1.21.1` という警告が出ます。
-
-### compileKotlinの実行
-
-`compileKotlin` も同様の条件（ `--configure-on-demand` のみ）で **実行可能** です。サードパーティmod依存関係の実体がネットワーク経由またはローカルmavenから正常に解決されるため、 `:common:compileKotlin` は成功します。
+なお、 `unpackSources` では `[Failed] Could not resolve component: net.minecraft:minecraft:1.21.1` という警告が出ますが、Minecraftの逆コンパイル済みソースは標準のsources artifactとして公開されないため、正常な動作です。
 
 ### datagenの実行
 
-datagen（ `:fabric:runDatagen` ）は **追加のワークアラウンドにより実行可能** です。
+datagen（ `:fabric:runDatagen` ）は以下のワークアラウンドにより実行可能です。
 
-1. `settings.gradle.kts` の `include("neoforge")` を一時的にコメントアウトします（ `maven.blamejared.com` にJEIアーティファクトが存在せずNeoForgeプロジェクトの構成が失敗するため）。
+1. `settings.gradle.kts` の `include("neoforge")` を一時的にコメントアウトします。
 2. `gradle.properties` の `enabled_platforms` を `fabric` のみに変更します。
-3. `--configure-on-demand` は **使わない** でください。genSources等では必須ですが、datagenでは `--configure-on-demand` を使うとfabricが参照する `:common` の `transformProductionFabric` タスクが見つからずエラーになります。NeoForge除外により `--configure-on-demand` なしでもビルドが通ります。
+3. `--configure-on-demand` は **使わない** でください。datagenでは `--configure-on-demand` を使うと `:common` の `transformProductionFabric` タスクが見つからずエラーになります。
 4. datagen完了後、上記の変更をすべて元に戻してください。
-
-## Zipファイルからのソースコード参照（実験結果）
-
-ソースjar/zipが存在する場合、エージェントはそれらの中身を展開せずにコマンドで直接アクセスできます：
-
-- `jar tf <file.jar>` ― ファイル一覧の表示
-- `unzip -l <file.jar>` ― ファイル一覧の表示（サイズ付き）
-- `unzip -p <file.jar> <path/to/File.java>` ― 個別ファイルの内容を標準出力に抽出
-- `zipgrep "<pattern>" <file.jar>` ― jar内のファイル横断でのパターン検索
-
-ローカルのmavenディレクトリに存在するEMIなどの外部依存関係のソースjarに対して有効です。
 
 # コードスタイル
 
