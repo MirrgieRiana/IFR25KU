@@ -1,0 +1,25 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 6000,
+  "group": "miragefairy2024:saltpeter",
+  "inputs": [
+    {
+      "Amount": 8,
+      "Ingredient": {
+        "item": "minecraft:dried_kelp"
+      }
+    },
+    {
+      "Amount": 4,
+      "Ingredient": {
+        "item": "minecraft:rotten_flesh"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "miragefairy2024:saltpeter"
+    }
+  ]
+}

@@ -787,7 +787,34 @@ class MaterialCard(
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
-            ) on ASH.item
+            ) on ASH.item from { Items.ROTTEN_FLESH }
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { ASH.item().toIngredientStack(4) },
+                    { Items.FERMENTED_SPIDER_EYE.toIngredientStack(2) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60 * 5,
+            ) on ASH.item from { Items.FERMENTED_SPIDER_EYE }
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { Items.DRIED_KELP.toIngredientStack(8) },
+                    { Items.ROTTEN_FLESH.toIngredientStack(4) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60 * 5,
+            ) on { Items.DRIED_KELP } from { Items.DRIED_KELP }
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { Items.DRIED_KELP.toIngredientStack(8) },
+                    { Items.FERMENTED_SPIDER_EYE.toIngredientStack(2) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60 * 5,
+            ) on { Items.DRIED_KELP } from { Items.DRIED_KELP } from { Items.FERMENTED_SPIDER_EYE }
         }
 
         val MAGNETITE: MaterialCard = !MaterialCard(

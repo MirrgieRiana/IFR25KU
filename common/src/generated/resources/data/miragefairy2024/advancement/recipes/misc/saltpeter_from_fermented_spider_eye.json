@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:saltpeter"
+        "recipe": "miragefairy2024:saltpeter_from_fermented_spider_eye"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:saltpeter"
+      "miragefairy2024:saltpeter_from_fermented_spider_eye"
     ]
   }
 }
