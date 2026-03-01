@@ -62,16 +62,20 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
 
     // Container
 
-    private val inventory = BlockEntityInventory(card.inventorySlotConfigurations.size, object : BlockEntityInventory.Callback {
-        override fun onDataChanged() {
-            // TODO スロットアップデートのための軽量カスタムパケット
-            level?.sendBlockUpdated(worldPosition, blockState, blockState, Block.UPDATE_ALL)
-        }
+    open fun createInventory(): BlockEntityStorage {
+        return InventoryBlockEntityStorage(card.inventorySlotConfigurations.size, object : BlockEntityStorage.Callback {
+            override fun onDataChanged() {
+                // TODO スロットアップデートのための軽量カスタムパケット
+                level?.sendBlockUpdated(worldPosition, blockState, blockState, Block.UPDATE_ALL)
+            }
 
-        override fun onViewChanged() {
-            setChanged()
-        }
-    })
+            override fun onViewChanged() {
+                setChanged()
+            }
+        })
+    }
+
+    private val inventory = createInventory()
 
     private val inventorySlotAccessors = (0 until card.inventorySlotConfigurations.size).map {
         inventory.getInventorySlotAccessor(it, card.inventorySlotConfigurations[it])
@@ -228,26 +232,33 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
 
 }
 
-class BlockEntityInventory(size: Int, private val callback: Callback) {
+interface BlockEntityStorage {
     interface Callback {
         fun onDataChanged()
         fun onViewChanged()
     }
 
+    fun save(nbt: CompoundTag, registries: HolderLookup.Provider)
+    fun load(nbt: CompoundTag, registries: HolderLookup.Provider)
+    fun getInventorySlotAccessor(index: Int, configuration: MachineBlockEntity.InventorySlotConfiguration): miragefairy2024.lib.InventorySlotAccessor
+}
+
+class InventoryBlockEntityStorage(size: Int, private val callback: BlockEntityStorage.Callback) : BlockEntityStorage {
+
     private val inventory = MutableList(size) { EMPTY_ITEM_STACK }
     private var isDataChanged = false
     private var isViewChanged = false
 
-    fun save(nbt: CompoundTag, registries: HolderLookup.Provider) {
+    override fun save(nbt: CompoundTag, registries: HolderLookup.Provider) {
         inventory.writeToNbt(nbt, registries)
     }
 
-    fun load(nbt: CompoundTag, registries: HolderLookup.Provider) {
+    override fun load(nbt: CompoundTag, registries: HolderLookup.Provider) {
         inventory.reset()
         inventory.readFromNbt(nbt, registries)
     }
 
-    fun getInventorySlotAccessor(index: Int, configuration: MachineBlockEntity.InventorySlotConfiguration): InventorySlotAccessor {
+    override fun getInventorySlotAccessor(index: Int, configuration: MachineBlockEntity.InventorySlotConfiguration): InventorySlotAccessor {
         return object : InventorySlotAccessor {
             override fun get() = inventory[index]
 
