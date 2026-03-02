@@ -1,0 +1,7 @@
+{
+  "parent": "miragefairy2024:block/ore",
+  "textures": {
+    "back": "minecraft:block/dirt",
+    "front": "miragefairy2024:block/fairy_plastic_ore"
+  }
+}

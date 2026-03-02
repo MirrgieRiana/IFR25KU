@@ -2,6 +2,7 @@ package miragefairy2024.mod
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.biome.DeepFairyForestBiomeCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.BiomeSelectorScope
 import miragefairy2024.util.EnJa
@@ -61,6 +62,7 @@ enum class BaseStoneType {
     STONE,
     DEEPSLATE,
     SANDSTONE,
+    DIRT,
 }
 
 enum class OreCard(
@@ -138,6 +140,11 @@ enum class OreCard(
         PoemList(1).poem("Singularities built by the Creator", "楽園が楽園であるための奇跡。"),
         BaseStoneType.DEEPSLATE, "miranagite_ore", MaterialCard.MIRANAGITE.item, 2 to 5,
     ),
+    DIRT_FAIRY_PLASTIC_ORE(
+        "dirt_fairy_plastic_ore", "Dirt Fairy Plastic Ore", "土妖精のプラスチック鉱石",
+        null,
+        BaseStoneType.DIRT, "fairy_plastic_ore", MaterialCard.FAIRY_PLASTIC.item, 2 to 5,
+    ),
     ;
 
     val identifier = MirageFairy2024.identifier(path)
@@ -161,6 +168,12 @@ enum class OreCard(
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .requiresCorrectToolForDrops()
                 .strength(1.0F, 1.0F)
+
+            BaseStoneType.DIRT -> BlockBehaviour.Properties.of()
+                .mapColor(MapColor.DIRT)
+                .requiresCorrectToolForDrops()
+                .strength(0.5F, 0.5F)
+                .sound(SoundType.GRAVEL)
         }
         DropExperienceBlock(UniformInt.of(experience.first, experience.second), settings)
     }
@@ -170,6 +183,7 @@ enum class OreCard(
             BaseStoneType.STONE -> ResourceLocation("minecraft", "block/stone")
             BaseStoneType.DEEPSLATE -> ResourceLocation("minecraft", "block/deepslate")
             BaseStoneType.SANDSTONE -> ResourceLocation("minecraft", "block/sandstone_top")
+            BaseStoneType.DIRT -> ResourceLocation("minecraft", "block/dirt")
         }
         OreModelCard.model.with(
             TextureSlot.BACK to baseStoneTexture,
@@ -185,6 +199,7 @@ object OreModelCard {
 }
 
 val SANDSTONE_ORE_REPLACEABLES = MirageFairy2024.identifier("sandstone_ore_replaceables").toBlockTag()
+val DIRT_ORE_REPLACEABLES = MirageFairy2024.identifier("dirt_ore_replaceables").toBlockTag()
 
 context(ModContext)
 fun initOresModule() {
@@ -193,6 +208,12 @@ fun initOresModule() {
 
     SANDSTONE_ORE_REPLACEABLES.enJa(EnJa("Sandstone Ore Replaceables", "砂岩鉱石が置換可能"))
     SANDSTONE_ORE_REPLACEABLES.generator.registerChild { Blocks.SANDSTONE }
+
+    DIRT_ORE_REPLACEABLES.enJa(EnJa("Dirt Ore Replaceables", "土鉱石が置換可能"))
+    DIRT_ORE_REPLACEABLES.generator.registerChild { Blocks.DIRT }
+    DIRT_ORE_REPLACEABLES.generator.registerChild { Blocks.GRASS_BLOCK }
+    DIRT_ORE_REPLACEABLES.generator.registerChild { Blocks.PODZOL }
+    DIRT_ORE_REPLACEABLES.generator.registerChild { Blocks.COARSE_DIRT }
 
     OreCard.entries.forEach { card ->
 
@@ -245,6 +266,7 @@ fun initOresModule() {
                     BaseStoneType.STONE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), card.block().defaultBlockState()))
                     BaseStoneType.DEEPSLATE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), card.block().defaultBlockState()))
                     BaseStoneType.SANDSTONE -> listOf(OreConfiguration.target(TagMatchTest(SANDSTONE_ORE_REPLACEABLES), card.block().defaultBlockState()))
+                    BaseStoneType.DIRT -> listOf(OreConfiguration.target(TagMatchTest(DIRT_ORE_REPLACEABLES), card.block().defaultBlockState()))
                 }
                 OreConfiguration(targets, size, discardChanceOnAirExposure.toFloat())
             }.generator {
@@ -268,6 +290,7 @@ fun initOresModule() {
     worldGen(-64 until 64, 0.3, 4, 1.0, OreCard.DEEPSLATE_NEPHRITE_ORE)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.DEEPSLATE_MIRANAGITE_ORE)
+    worldGen(48 until 128, 0.1, 3, 0.0, OreCard.DIRT_FAIRY_PLASTIC_ORE) { +DeepFairyForestBiomeCard.key }
 
 }
 
