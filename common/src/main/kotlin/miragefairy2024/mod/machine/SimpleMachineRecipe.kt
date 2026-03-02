@@ -138,9 +138,9 @@ open class SimpleMachineRecipe(
 
             var totalRemainderCount = remainder.count * it.count
             while (totalRemainderCount > 0) {
-                val stackCount = totalRemainderCount atMost remainder.maxStackSize
-                list += remainder.copyWithCount(stackCount)
-                totalRemainderCount -= stackCount
+                val count = totalRemainderCount atMost remainder.maxStackSize
+                list += remainder.copyWithCount(count)
+                totalRemainderCount -= count
             }
         }
         return list
