@@ -35,9 +35,9 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.from
 import miragefairy2024.util.generator
-import miragefairy2024.util.modId
 import miragefairy2024.util.get
 import miragefairy2024.util.getIdentifier
+import miragefairy2024.util.modId
 import miragefairy2024.util.on
 import miragefairy2024.util.propertiesOf
 import miragefairy2024.util.register
