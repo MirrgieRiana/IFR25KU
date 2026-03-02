@@ -883,13 +883,15 @@ class MaterialCard(
                 .poem("A mirror that reflects sadistic desires", "前世が見える。              （らしい）"),
             // TODO 用途
         ) {
-            registerShapedRecipeGeneration(item) {
-                pattern(" S ")
-                pattern("SFS")
-                pattern(" S ")
-                define('F', FLUORITE.ore!!.tag)
-                define('S', FAIRY_SCALES.item())
-            } on FLUORITE.ore!!.tag from FLUORITE.item
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { FLUORITE.ore!!.ingredient.toIngredientStack(1) },
+                    { FAIRY_SCALES.item().toIngredientStack(4) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60 * 5,
+            ) on FLUORITE.ore!!.tag from FLUORITE.item
         }
         val NEPHRITE: MaterialCard = !MaterialCard(
             "nephrite", "Nephrite", "ネフライト",

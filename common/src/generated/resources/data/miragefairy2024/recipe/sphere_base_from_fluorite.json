@@ -1,22 +1,25 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "misc",
+  "type": "miragefairy2024:athanor",
+  "duration": 6000,
   "group": "miragefairy2024:sphere_base",
-  "key": {
-    "F": {
-      "tag": "c:gems/fluorite"
+  "inputs": [
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "tag": "c:gems/fluorite"
+      }
     },
-    "S": {
-      "item": "miragefairy2024:fairy_scales"
+    {
+      "Amount": 4,
+      "Ingredient": {
+        "item": "miragefairy2024:fairy_scales"
+      }
     }
-  },
-  "pattern": [
-    " S ",
-    "SFS",
-    " S "
   ],
-  "result": {
-    "count": 1,
-    "id": "miragefairy2024:sphere_base"
-  }
+  "outputs": [
+    {
+      "count": 1,
+      "id": "miragefairy2024:sphere_base"
+    }
+  ]
 }
