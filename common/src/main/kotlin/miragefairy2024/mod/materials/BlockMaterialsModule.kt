@@ -708,6 +708,7 @@ open class BlockMaterialCard(
 
 context(ModContext)
 fun initBlockMaterialsModule() {
+
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("miragidian_lamp")) { MiragidianLampBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("local_vacuum_decay")) { LocalVacuumDecayBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("semi_opaque_transparent_block")) { SemiOpaqueTransparentBlock.CODEC }.register()
@@ -752,6 +753,7 @@ fun initBlockMaterialsModule() {
         ),
         duration = 20 * 60,
     ) on AURA_RESISTANT_CERAMIC_STAIRS_TAG modId MirageFairy2024.MOD_ID
+
 }
 
 
