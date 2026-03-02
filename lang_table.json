@@ -4623,6 +4623,18 @@
     "en_us": "Amethyst Tool",
     "ja_jp": "アメジストツール"
   },
+  "tag.item.miragefairy2024.aura_resistant_ceramic_slabs": {
+    "en_us": "Protective Aura-Resistant Ceramic Slabs",
+    "ja_jp": "守護の耐霊石のハーフブロック"
+  },
+  "tag.item.miragefairy2024.aura_resistant_ceramic_stairs": {
+    "en_us": "Protective Aura-Resistant Ceramic Stairs",
+    "ja_jp": "守護の耐霊石の階段"
+  },
+  "tag.item.miragefairy2024.aura_resistant_ceramics": {
+    "en_us": "Protective Aura-Resistant Ceramics",
+    "ja_jp": "守護の耐霊石"
+  },
   "tag.item.miragefairy2024.bag": {
     "en_us": "Bag",
     "ja_jp": "カバン"
