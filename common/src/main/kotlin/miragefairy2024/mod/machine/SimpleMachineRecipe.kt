@@ -15,6 +15,7 @@ import miragefairy2024.util.register
 import miragefairy2024.util.string
 import miragefairy2024.util.times
 import mirrg.kotlin.helium.atMost
+import mirrg.kotlin.helium.min
 import net.minecraft.advancements.AdvancementRequirements
 import net.minecraft.advancements.AdvancementRewards
 import net.minecraft.advancements.Criterion
@@ -84,38 +85,38 @@ open class SimpleMachineRecipe(
         fun craft(): List<ItemStack>
     }
 
-    private data class SlotConsumption(val slotIndex: Int, val count: Int)
+    private data class Consumption(val slotIndex: Int, val count: Int)
 
-    private fun computeConsumptionPlan(inventory: SimpleMachineRecipeInput): List<List<SlotConsumption>>? {
-        val remaining = IntArray(inventory.size()) { inventory.getItem(it).count }
-        val result = mutableListOf<List<SlotConsumption>>()
+    private fun matchImpl(inventory: SimpleMachineRecipeInput): List<Consumption>? {
+        val virtualCounts = IntArray(inventory.size()) { inventory.getItem(it).count }
+        val result = mutableListOf<List<Consumption>>()
         inputs.forEach { input ->
-            var needed = input.count
-            val consumptions = mutableListOf<SlotConsumption>()
-            for (slotIndex in 0 until inventory.size()) {
-                if (remaining[slotIndex] <= 0) continue
-                if (!input.ingredient.test(inventory.getItem(slotIndex))) continue
-                val take = needed atMost remaining[slotIndex]
-                remaining[slotIndex] -= take
-                needed -= take
-                consumptions += SlotConsumption(slotIndex, take)
-                if (needed == 0) break
+            val consumptions = mutableListOf<Consumption>()
+            run inputEntryCompleted@{
+                var neededCount = input.count
+                (0 until inventory.size()).forEach nextSlot@{ slotIndex ->
+                    if (virtualCounts[slotIndex] == 0) return@nextSlot
+                    if (!input.ingredient.test(inventory.getItem(slotIndex))) return@nextSlot
+                    val takeCount = neededCount min virtualCounts[slotIndex]
+                    virtualCounts[slotIndex] -= takeCount
+                    neededCount -= takeCount
+                    consumptions += Consumption(slotIndex, takeCount)
+                    if (neededCount == 0) return@inputEntryCompleted
+                }
+                return null
             }
-            if (needed > 0) return null
             result += consumptions
         }
-        return result
+        return result.flatten()
     }
 
     fun match(inventory: SimpleMachineRecipeInput): MatchResult? {
-        val plan = computeConsumptionPlan(inventory) ?: return null
+        val consumptions = matchImpl(inventory) ?: return null
         return object : MatchResult {
             override fun craft(): List<ItemStack> {
                 val result = mutableListOf<ItemStack>()
-                plan.forEach { consumptions ->
-                    consumptions.forEach { (slotIndex, count) ->
-                        result += inventory.getItem(slotIndex).split(count)
-                    }
+                consumptions.forEach {
+                    result += inventory.getItem(it.slotIndex).split(it.count)
                 }
                 return result
             }
@@ -130,17 +131,16 @@ open class SimpleMachineRecipe(
 
     override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
         val list = NonNullList.create<ItemStack>()
-        val plan = computeConsumptionPlan(inventory) ?: return list
-        plan.forEach { consumptions ->
-            consumptions.forEach { (slotIndex, count) ->
-                val remainder = getCustomizedRemainder(inventory.getItem(slotIndex))
-                if (remainder.isEmpty) return@forEach
-                var totalRemainderCount = remainder.count * count
-                while (totalRemainderCount > 0) {
-                    val stackCount = totalRemainderCount atMost remainder.maxStackSize
-                    list += remainder.copyWithCount(stackCount)
-                    totalRemainderCount -= stackCount
-                }
+        val consumptions = matchImpl(inventory) ?: return list
+        consumptions.forEach {
+            val remainder = getCustomizedRemainder(inventory.getItem(it.slotIndex))
+            if (remainder.isEmpty) return@forEach
+
+            var totalRemainderCount = remainder.count * it.count
+            while (totalRemainderCount > 0) {
+                val stackCount = totalRemainderCount atMost remainder.maxStackSize
+                list += remainder.copyWithCount(stackCount)
+                totalRemainderCount -= stackCount
             }
         }
         return list
