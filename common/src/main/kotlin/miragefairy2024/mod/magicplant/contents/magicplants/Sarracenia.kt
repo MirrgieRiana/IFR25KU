@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
-import miragefairy2024.mod.tool.CarnivorousPlantDamageTypeCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -22,17 +21,10 @@ import miragefairy2024.util.surface
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
-import net.minecraft.core.BlockPos
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.RandomSource
-import net.minecraft.world.entity.Entity
-import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.level.Level
 import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.block.SoundType
-import net.minecraft.world.level.block.state.BlockState
-import net.minecraft.world.level.block.state.properties.BlockStateProperties
-import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
 import net.minecraft.world.level.material.MapColor
@@ -103,19 +95,10 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
     }
 }
 
-class SarraceniaBlock(settings: Properties) : SimpleMagicPlantBlock(SarraceniaCard, settings) {
+class SarraceniaBlock(settings: Properties) : AbstractVeropedaBlock(SarraceniaCard, settings) {
     companion object {
         val CODEC: MapCodec<SarraceniaBlock> = simpleCodec(::SarraceniaBlock)
     }
 
     override fun codec() = CODEC
-
-    override fun getAgeProperty(): IntegerProperty = BlockStateProperties.AGE_3
-
-    @Suppress("OVERRIDE_DEPRECATION")
-    override fun entityInside(state: BlockState, level: Level, pos: BlockPos, entity: Entity) {
-        if (entity is LivingEntity) {
-            entity.hurt(level.damageSources().source(CarnivorousPlantDamageTypeCard.registryKey), 1.0F)
-        }
-    }
 }
