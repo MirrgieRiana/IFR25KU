@@ -64,6 +64,8 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
         }
 
         repeat(16) {
+            if (random.nextInt(config.tries.coerceAtLeast(1)) >= count) return@repeat
+
             val r = random.nextFloat() * config.maxRadius
             val theta = random.nextFloat() * Mth.TWO_PI
             val x = Mth.floor(Mth.cos(theta) * r)
