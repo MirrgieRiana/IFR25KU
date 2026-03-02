@@ -112,5 +112,5 @@ object CarnivorousPlantDamageTypeCard : DamageTypeCard() {
     override fun getPath() = "carnivorous_plant"
     override fun getKillMessage() = EnJa("%1\$s was eaten by a carnivorous plant", "%1\$sは食虫植物に食べられた")
     override fun getPlayerKillMessage() = EnJa("%1\$s was eaten by a carnivorous plant while trying to escape %2\$s", "%1\$sは%2\$sから逃れようとして食虫植物に食べられた")
-    override fun getTags() = listOf<TagKey<DamageType>>()
+    override fun getTags() = listOf(DamageTypeTags.NO_KNOCKBACK, DamageTypeTags.PANIC_ENVIRONMENTAL_CAUSES)
 }
