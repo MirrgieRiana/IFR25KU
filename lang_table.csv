@@ -297,6 +297,8 @@ commands.miragefairy2024.negative_trait_bits.success,Set negative trait bits for
 commands.miragefairy2024.negative_trait_bits.unknown_trait,Unknown trait: %s,不明な特性: %s
 container.miragefairy2024.soul_stream,Soul Stream,ソウルストリーム
 container.miragefairy2024.tooltip_viewer,Tooltip Viewer,ツールチップビューワー
+death.attack.miragefairy2024.carnivorous_plant,%1$s was eaten by a carnivorous plant,%1$sは食虫植物に食べられた
+death.attack.miragefairy2024.carnivorous_plant.player,%1$s was eaten by a carnivorous plant while trying to escape %2$s,%1$sは%2$sから逃れようとして食虫植物に食べられた
 death.attack.miragefairy2024.magic,%1$s was killed by magic,%1$sは魔法で殺された
 death.attack.miragefairy2024.magic.player,%1$s was killed by magic while fighting %2$s,%1$sは%2$sと戦いながら魔法で殺された
 death.attack.miragefairy2024.mirage_leaves,%1$s was pricked to death by mirage leaves,%1$sはミラージュの葉で手を切って死んだ

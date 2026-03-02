@@ -1191,6 +1191,14 @@
     "en_us": "Tooltip Viewer",
     "ja_jp": "ツールチップビューワー"
   },
+  "death.attack.miragefairy2024.carnivorous_plant": {
+    "en_us": "%1$s was eaten by a carnivorous plant",
+    "ja_jp": "%1$sは食虫植物に食べられた"
+  },
+  "death.attack.miragefairy2024.carnivorous_plant.player": {
+    "en_us": "%1$s was eaten by a carnivorous plant while trying to escape %2$s",
+    "ja_jp": "%1$sは%2$sから逃れようとして食虫植物に食べられた"
+  },
   "death.attack.miragefairy2024.magic": {
     "en_us": "%1$s was killed by magic",
     "ja_jp": "%1$sは魔法で殺された"
