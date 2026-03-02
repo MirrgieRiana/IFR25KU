@@ -501,7 +501,16 @@ class ToolCard(
             PoemList(2).poem(EnJa("The oppressed Viska's desire", "傷つけられた幹の声。")),
             FairySwordConfiguration(ToolMaterialCard.HAIMEVISKA_ROSIN).enchantment(Enchantments.SWEEPING_EDGE, 3).collection().enchantment(Enchantments.UNBREAKING, 2),
         ) { registerSwordRecipeGeneration(item, MaterialCard.HAIMEVISKA_ROSIN.ore!!.tag) }
-        // TODO 地脈を流れる大樹の血。 妖精のプラスチックのつるはし
+        val FAIRY_PLASTIC_PICKAXE = !ToolCard(
+            "fairy_plastic_pickaxe", EnJa("Fairy Plastic Pickaxe", "妖精のプラスチックのつるはし"),
+            PoemList(4).poem(EnJa("Blood of the great tree flowing through ley lines", "地脈を流れる大樹の血。")),
+            FairyPickaxeConfiguration(ToolMaterialCard.FAIRY_PLASTIC).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).enchantment(Enchantments.UNBREAKING, 2),
+        ) { registerPickaxeRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
+        val FAIRY_PLASTIC_SWORD = !ToolCard(
+            "fairy_plastic_sword", EnJa("Fairy Plastic Sword", "妖精のプラスチックの剣"),
+            PoemList(4).poem(EnJa("Solidified memories of the ancient tree", "古木の記憶が凍る刃。")),
+            FairySwordConfiguration(ToolMaterialCard.FAIRY_PLASTIC).enchantment(Enchantments.SWEEPING_EDGE, 3).collection().enchantment(Enchantments.UNBREAKING, 2),
+        ) { registerSwordRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
 
         val CREATIVE_HOE = !ToolCard(
             "creative_hoe", EnJa("Creative Hoe", "アカーシャのクワ"),
