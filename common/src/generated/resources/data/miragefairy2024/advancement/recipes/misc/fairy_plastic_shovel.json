@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_gems/fairy_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:gems/fairy_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:fairy_plastic_shovel"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_gems/fairy_plastic"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:fairy_plastic_shovel"
+    ]
+  }
+}
