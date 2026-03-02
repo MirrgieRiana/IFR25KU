@@ -81,7 +81,7 @@ open class SimpleMachineRecipe(
     override fun getGroup() = group
 
     interface MatchResult {
-        fun consume(): List<ItemStack>
+        fun craft(): List<ItemStack>
     }
 
     private data class SlotConsumption(val slotIndex: Int, val count: Int)
@@ -89,7 +89,7 @@ open class SimpleMachineRecipe(
     private fun computeConsumptionPlan(inventory: SimpleMachineRecipeInput): List<List<SlotConsumption>>? {
         val remaining = IntArray(inventory.size()) { inventory.getItem(it).count }
         val result = mutableListOf<List<SlotConsumption>>()
-        for (input in inputs) {
+        inputs.forEach { input ->
             var needed = input.count
             val consumptions = mutableListOf<SlotConsumption>()
             for (slotIndex in 0 until inventory.size()) {
@@ -110,10 +110,10 @@ open class SimpleMachineRecipe(
     fun match(inventory: SimpleMachineRecipeInput): MatchResult? {
         val plan = computeConsumptionPlan(inventory) ?: return null
         return object : MatchResult {
-            override fun consume(): List<ItemStack> {
+            override fun craft(): List<ItemStack> {
                 val result = mutableListOf<ItemStack>()
-                for (consumptions in plan) {
-                    for ((slotIndex, count) in consumptions) {
+                plan.forEach { consumptions ->
+                    consumptions.forEach { (slotIndex, count) ->
                         result += inventory.getItem(slotIndex).split(count)
                     }
                 }
@@ -131,10 +131,10 @@ open class SimpleMachineRecipe(
     override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
         val list = NonNullList.create<ItemStack>()
         val plan = computeConsumptionPlan(inventory) ?: return list
-        for (consumptions in plan) {
-            for ((slotIndex, count) in consumptions) {
+        plan.forEach { consumptions ->
+            consumptions.forEach { (slotIndex, count) ->
                 val remainder = getCustomizedRemainder(inventory.getItem(slotIndex))
-                if (remainder.isEmpty) continue
+                if (remainder.isEmpty) return@forEach
                 var totalRemainderCount = remainder.count * count
                 while (totalRemainderCount > 0) {
                     val stackCount = totalRemainderCount atMost remainder.maxStackSize
