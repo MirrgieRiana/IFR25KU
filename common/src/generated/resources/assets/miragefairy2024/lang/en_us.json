@@ -297,6 +297,8 @@
   "commands.miragefairy2024.negative_trait_bits.unknown_trait": "Unknown trait: %s",
   "container.miragefairy2024.soul_stream": "Soul Stream",
   "container.miragefairy2024.tooltip_viewer": "Tooltip Viewer",
+  "death.attack.miragefairy2024.carnivorous_plant": "%1$s was eaten by a carnivorous plant",
+  "death.attack.miragefairy2024.carnivorous_plant.player": "%1$s was eaten by a carnivorous plant while trying to escape %2$s",
   "death.attack.miragefairy2024.magic": "%1$s was killed by magic",
   "death.attack.miragefairy2024.magic.player": "%1$s was killed by magic while fighting %2$s",
   "death.attack.miragefairy2024.mirage_leaves": "%1$s was pricked to death by mirage leaves",
