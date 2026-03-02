@@ -151,11 +151,7 @@ abstract class SimpleMachineBlockEntity<E : SimpleMachineBlockEntity<E>>(private
 
         return {
             val remainder = recipe.getRemainingItems(inventory)
-            matchResult.forEach { consumptions ->
-                consumptions.forEach { (slotIndex, count) ->
-                    craftingInventory += inventory.getItem(slotIndex).split(count)
-                }
-            }
+            craftingInventory += matchResult.consume()
             recipe.outputs.forEach {
                 waitingInventory += it.copy()
             }

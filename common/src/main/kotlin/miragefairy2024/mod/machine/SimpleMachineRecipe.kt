@@ -80,9 +80,13 @@ open class SimpleMachineRecipe(
 
     override fun getGroup() = group
 
-    data class SlotConsumption(val slotIndex: Int, val count: Int)
+    interface MatchResult {
+        fun consume(): List<ItemStack>
+    }
 
-    fun match(inventory: SimpleMachineRecipeInput): List<List<SlotConsumption>>? {
+    private data class SlotConsumption(val slotIndex: Int, val count: Int)
+
+    private fun computeConsumptionPlan(inventory: SimpleMachineRecipeInput): List<List<SlotConsumption>>? {
         val remaining = IntArray(inventory.size()) { inventory.getItem(it).count }
         val result = mutableListOf<List<SlotConsumption>>()
         for (input in inputs) {
@@ -103,6 +107,21 @@ open class SimpleMachineRecipe(
         return result
     }
 
+    fun match(inventory: SimpleMachineRecipeInput): MatchResult? {
+        val plan = computeConsumptionPlan(inventory) ?: return null
+        return object : MatchResult {
+            override fun consume(): List<ItemStack> {
+                val result = mutableListOf<ItemStack>()
+                for (consumptions in plan) {
+                    for ((slotIndex, count) in consumptions) {
+                        result += inventory.getItem(slotIndex).split(count)
+                    }
+                }
+                return result
+            }
+        }
+    }
+
     override fun matches(inventory: SimpleMachineRecipeInput, world: Level): Boolean {
         return match(inventory) != null
     }
@@ -111,8 +130,8 @@ open class SimpleMachineRecipe(
 
     override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
         val list = NonNullList.create<ItemStack>()
-        val matchResult = match(inventory) ?: return list
-        for (consumptions in matchResult) {
+        val plan = computeConsumptionPlan(inventory) ?: return list
+        for (consumptions in plan) {
             for ((slotIndex, count) in consumptions) {
                 val remainder = getCustomizedRemainder(inventory.getItem(slotIndex))
                 if (remainder.isEmpty) continue
