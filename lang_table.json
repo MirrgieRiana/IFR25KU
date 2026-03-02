@@ -1807,6 +1807,30 @@
     "en_us": "Thermoplastic organic polymer",
     "ja_jp": "凍てつく記憶の宿る石。"
   },
+  "item.miragefairy2024.fairy_plastic_pickaxe": {
+    "en_us": "Fairy Plastic Pickaxe",
+    "ja_jp": "妖精のプラスチックのつるはし"
+  },
+  "item.miragefairy2024.fairy_plastic_pickaxe.poem": {
+    "en_us": "Nectar turns into fairies underground",
+    "ja_jp": "地脈を流れる大樹の血。"
+  },
+  "item.miragefairy2024.fairy_plastic_shovel": {
+    "en_us": "Fairy Plastic Shovel",
+    "ja_jp": "妖精のプラスチックのシャベル"
+  },
+  "item.miragefairy2024.fairy_plastic_shovel.poem": {
+    "en_us": "Were you grown in earth, or a furnace?",
+    "ja_jp": "土から産まれ、土に還る。"
+  },
+  "item.miragefairy2024.fairy_plastic_sword": {
+    "en_us": "Fairy Plastic Sword",
+    "ja_jp": "妖精のプラスチックの剣"
+  },
+  "item.miragefairy2024.fairy_plastic_sword.poem": {
+    "en_us": "Souls for the nutrient",
+    "ja_jp": "これは妖精をおやつにするという"
+  },
   "item.miragefairy2024.fairy_pot": {
     "en_us": "Fairy Pot",
     "ja_jp": "妖精のポット"
@@ -4686,6 +4710,10 @@
   "tag.item.miragefairy2024.fairy_crystal_tool": {
     "en_us": "Fairy Crystal",
     "ja_jp": "フェアリークリスタルツール"
+  },
+  "tag.item.miragefairy2024.fairy_plastic_tool": {
+    "en_us": "Fairy Plastic Tool",
+    "ja_jp": "妖精のプラスチックツール"
   },
   "tag.item.miragefairy2024.flint_tool": {
     "en_us": "Flint Tool",

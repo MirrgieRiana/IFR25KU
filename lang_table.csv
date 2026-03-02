@@ -455,6 +455,12 @@ item.miragefairy2024.fairy_mining_tool.self_mending,Durability regenerates while
 item.miragefairy2024.fairy_mining_tool.soul_stream_containable,Soul Stream Containable,ソウルストリームに格納可能
 item.miragefairy2024.fairy_plastic,Fairy Plastic,妖精のプラスチック
 item.miragefairy2024.fairy_plastic.poem,Thermoplastic organic polymer,凍てつく記憶の宿る石。
+item.miragefairy2024.fairy_plastic_pickaxe,Fairy Plastic Pickaxe,妖精のプラスチックのつるはし
+item.miragefairy2024.fairy_plastic_pickaxe.poem,Nectar turns into fairies underground,地脈を流れる大樹の血。
+item.miragefairy2024.fairy_plastic_shovel,Fairy Plastic Shovel,妖精のプラスチックのシャベル
+item.miragefairy2024.fairy_plastic_shovel.poem,"Were you grown in earth, or a furnace?",土から産まれ、土に還る。
+item.miragefairy2024.fairy_plastic_sword,Fairy Plastic Sword,妖精のプラスチックの剣
+item.miragefairy2024.fairy_plastic_sword.poem,Souls for the nutrient,これは妖精をおやつにするという
 item.miragefairy2024.fairy_pot,Fairy Pot,妖精のポット
 item.miragefairy2024.fairy_pot.poem,Nanoporous insulation,とろけるアステリア。
 item.miragefairy2024.fairy_quest_card,Broken Fairy Quest Card,破損したフェアリークエストカード
@@ -1379,6 +1385,7 @@ tag.item.miragefairy2024.echo_shard_tool,Echo Shard Tool,残響ツール
 tag.item.miragefairy2024.emerald_tool,Emerald Tool,エメラルドツール
 tag.item.miragefairy2024.enchantable.area_mining,Area Mining Enchantable,範囲採掘エンチャント可能
 tag.item.miragefairy2024.fairy_crystal_tool,Fairy Crystal,フェアリークリスタルツール
+tag.item.miragefairy2024.fairy_plastic_tool,Fairy Plastic Tool,妖精のプラスチックツール
 tag.item.miragefairy2024.flint_tool,Flint Tool,火打石ツール
 tag.item.miragefairy2024.fluorite_tool,Fluorite Tool,蛍石ツール
 tag.item.miragefairy2024.glass_tool,Glass Tool,ガラスツール
