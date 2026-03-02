@@ -143,7 +143,7 @@ enum class OreCard(
     DIRT_FAIRY_PLASTIC_ORE(
         "dirt_fairy_plastic_ore", "Dirt Fairy Plastic Ore", "土妖精のプラスチック鉱石",
         null,
-        BaseStoneType.DIRT, "fairy_plastic_ore", MaterialCard.FAIRY_PLASTIC.item, 2 to 5,
+        BaseStoneType.DIRT, "fairy_plastic_ore", MaterialCard.FAIRY_PLASTIC.item, 10 to 20,
     ),
     ;
 
@@ -290,7 +290,7 @@ fun initOresModule() {
     worldGen(-64 until 64, 0.3, 4, 1.0, OreCard.DEEPSLATE_NEPHRITE_ORE)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.DEEPSLATE_MIRANAGITE_ORE)
-    worldGen(48 until 128, 0.1, 3, 0.0, OreCard.DIRT_FAIRY_PLASTIC_ORE) { +DeepFairyForestBiomeCard.key }
+    worldGen(48 until 128, 0.2, 4, 1.0, OreCard.DIRT_FAIRY_PLASTIC_ORE) { +DeepFairyForestBiomeCard.key }
 
 }
 
