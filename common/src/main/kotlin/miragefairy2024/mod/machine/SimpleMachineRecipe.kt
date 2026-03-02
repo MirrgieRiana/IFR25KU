@@ -82,7 +82,7 @@ open class SimpleMachineRecipe(
 
     data class SlotConsumption(val slotIndex: Int, val count: Int)
 
-    fun matchUnordered(inventory: SimpleMachineRecipeInput): List<List<SlotConsumption>>? {
+    fun match(inventory: SimpleMachineRecipeInput): List<List<SlotConsumption>>? {
         val remaining = IntArray(inventory.size()) { inventory.getItem(it).count }
         val result = mutableListOf<List<SlotConsumption>>()
         for (input in inputs) {
@@ -104,14 +104,14 @@ open class SimpleMachineRecipe(
     }
 
     override fun matches(inventory: SimpleMachineRecipeInput, world: Level): Boolean {
-        return matchUnordered(inventory) != null
+        return match(inventory) != null
     }
 
     open fun getCustomizedRemainder(itemStack: ItemStack): ItemStack = itemStack.item.getRecipeRemainder(itemStack)
 
     override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
         val list = NonNullList.create<ItemStack>()
-        val matchResult = matchUnordered(inventory) ?: return list
+        val matchResult = match(inventory) ?: return list
         for (consumptions in matchResult) {
             for ((slotIndex, count) in consumptions) {
                 val remainder = getCustomizedRemainder(inventory.getItem(slotIndex))
