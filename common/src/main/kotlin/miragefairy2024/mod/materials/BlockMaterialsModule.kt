@@ -717,9 +717,9 @@ fun initBlockMaterialsModule() {
 
     LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.enJa(EnJa("Local Vacuum Decay Resistant", "局所真空崩壊耐性"))
 
-    AURA_RESISTANT_CERAMICS_TAG.enJa(EnJa("Aura-Resistant Ceramics", "耐霊石"))
-    AURA_RESISTANT_CERAMIC_SLABS_TAG.enJa(EnJa("Aura-Resistant Ceramic Slabs", "耐霊石のハーフブロック"))
-    AURA_RESISTANT_CERAMIC_STAIRS_TAG.enJa(EnJa("Aura-Resistant Ceramic Stairs", "耐霊石の階段"))
+    AURA_RESISTANT_CERAMICS_TAG.enJa(EnJa("Protective Aura-Resistant Ceramics", "守護の耐霊石"))
+    AURA_RESISTANT_CERAMIC_SLABS_TAG.enJa(EnJa("Protective Aura-Resistant Ceramic Slabs", "守護の耐霊石のハーフブロック"))
+    AURA_RESISTANT_CERAMIC_STAIRS_TAG.enJa(EnJa("Protective Aura-Resistant Ceramic Stairs", "守護の耐霊石の階段"))
 
     BlockMaterialCard.entries.forEach { card ->
         card.init()
