@@ -720,6 +720,10 @@ fun initBlockMaterialsModule() {
     AURA_RESISTANT_CERAMIC_SLABS_TAG.enJa(EnJa("Aura-Resistant Ceramic Slabs", "耐霊石のハーフブロック"))
     AURA_RESISTANT_CERAMIC_STAIRS_TAG.enJa(EnJa("Aura-Resistant Ceramic Stairs", "耐霊石の階段"))
 
+    BlockMaterialCard.entries.forEach { card ->
+        card.init()
+    }
+
     // 耐霊石の分解レシピ
     registerSimpleMachineRecipeGeneration(
         AthanorRecipeCard,
@@ -748,10 +752,6 @@ fun initBlockMaterialsModule() {
         ),
         duration = 20 * 60,
     ) on AURA_RESISTANT_CERAMIC_STAIRS_TAG modId MirageFairy2024.MOD_ID
-
-    BlockMaterialCard.entries.forEach { card ->
-        card.init()
-    }
 }
 
 
