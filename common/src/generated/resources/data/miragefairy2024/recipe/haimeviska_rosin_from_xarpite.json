@@ -8,6 +8,12 @@
       "Ingredient": {
         "tag": "c:gems/xarpite"
       }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "miragefairy2024:phantom_drop"
+      }
     }
   ],
   "outputs": [
