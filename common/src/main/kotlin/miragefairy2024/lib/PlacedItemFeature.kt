@@ -37,7 +37,6 @@ abstract class PlacedItemFeature<C : FeatureConfiguration>(codec: Codec<C>) : Fe
             if (placePlacedItem(world, currentBlockPos, itemStack, random)) {
                 count++
             }
-
         }
         return count > 0
     }
