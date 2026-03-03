@@ -41,6 +41,7 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.TagKey
 import net.minecraft.util.valueproviders.UniformInt
@@ -59,10 +60,10 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
 import net.minecraft.world.level.material.MapColor
 import java.util.function.Predicate
 
-enum class BaseStoneType(val targetBlockTag: TagKey<Block>) {
-    STONE(BlockTags.STONE_ORE_REPLACEABLES),
-    DEEPSLATE(BlockTags.DEEPSLATE_ORE_REPLACEABLES),
-    SANDSTONE(SANDSTONE_ORE_REPLACEABLES),
+enum class BaseStoneType(val targetBlockTag: TagKey<Block>, val baseStoneTexture: ResourceLocation) {
+    STONE(BlockTags.STONE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/stone")),
+    DEEPSLATE(BlockTags.DEEPSLATE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/deepslate")),
+    SANDSTONE(SANDSTONE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/sandstone_top")),
 }
 
 enum class OreCard(
@@ -168,13 +169,8 @@ enum class OreCard(
     }
     val item = Registration(BuiltInRegistries.ITEM, identifier) { BlockItem(block.await(), Item.Properties()) }
     val texturedModelFactory = TexturedModel.Provider {
-        val baseStoneTexture = when (baseStoneType) {
-            BaseStoneType.STONE -> ResourceLocation("minecraft", "block/stone")
-            BaseStoneType.DEEPSLATE -> ResourceLocation("minecraft", "block/deepslate")
-            BaseStoneType.SANDSTONE -> ResourceLocation("minecraft", "block/sandstone_top")
-        }
         OreModelCard.model.with(
-            TextureSlot.BACK to baseStoneTexture,
+            TextureSlot.BACK to baseStoneType.baseStoneTexture,
             TextureSlot.FRONT to "block/" * MirageFairy2024.identifier(texturePath),
         )
     }
