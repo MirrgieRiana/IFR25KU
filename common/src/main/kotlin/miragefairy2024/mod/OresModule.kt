@@ -189,6 +189,8 @@ val SANDSTONE_ORE_REPLACEABLES = MirageFairy2024.identifier("sandstone_ore_repla
 context(ModContext)
 fun initOresModule() {
 
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("ore")) { OreBlock.CODEC }.register()
+
     registerModelGeneration({ OreModelCard.identifier }) { OreModelCard.parentModel.with() }
 
     SANDSTONE_ORE_REPLACEABLES.enJa(EnJa("Sandstone Ore Replaceables", "砂岩鉱石が置換可能"))
