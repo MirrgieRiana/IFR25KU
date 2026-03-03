@@ -60,16 +60,17 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
             }
         }
 
-        repeat(16) {
-            if (random.nextInt(config.tries.coerceAtLeast(1)) >= count) return@repeat
-
+        repeat(16 * count / config.tries.coerceAtLeast(1)) {
             val r = random.nextFloat() * config.maxRadius
             val theta = random.nextFloat() * Mth.TWO_PI
             val x = Mth.floor(Mth.cos(theta) * r)
+            val y = random.nextInt(y1) - random.nextInt(y1)
             val z = Mth.floor(Mth.sin(theta) * r)
 
-            mutableBlockPos.setWithOffset(originBlockPos, x, 0, z)
-            placePlacedItem(world, mutableBlockPos, MaterialCard.FAIRY_SCALES.item().createItemStack(), random)
+            mutableBlockPos.setWithOffset(originBlockPos, x, y, z)
+            if (placePlacedItem(world, mutableBlockPos, MaterialCard.FAIRY_SCALES.item().createItemStack(), random)) {
+                count++
+            }
         }
 
         return count > 0
