@@ -60,10 +60,10 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
 import net.minecraft.world.level.material.MapColor
 import java.util.function.Predicate
 
-enum class BaseStoneType(val targetBlockTag: TagKey<Block>, val baseStoneTexture: ResourceLocation) {
-    STONE(BlockTags.STONE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/stone")),
-    DEEPSLATE(BlockTags.DEEPSLATE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/deepslate")),
-    SANDSTONE(SANDSTONE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/sandstone_top")),
+enum class BaseStoneType(val targetBlockTag: TagKey<Block>, val baseStoneTexture: ResourceLocation, val mineableTag: TagKey<Block>, val needsToolTag: TagKey<Block>?) {
+    STONE(BlockTags.STONE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/stone"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    DEEPSLATE(BlockTags.DEEPSLATE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    SANDSTONE(SANDSTONE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
 }
 
 enum class OreCard(
@@ -213,8 +213,8 @@ fun initOresModule() {
 
         card.block.registerOreLootTableGeneration(card.dropItem)
 
-        BlockTags.MINEABLE_WITH_PICKAXE.generator.registerChild(card.block)
-        BlockTags.NEEDS_STONE_TOOL.generator.registerChild(card.block)
+        card.baseStoneType.mineableTag.generator.registerChild(card.block)
+        card.baseStoneType.needsToolTag?.generator?.registerChild(card.block)
         ConventionalBlockTags.ORES.generator.registerChild(card.block)
 
     }
