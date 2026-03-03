@@ -1,0 +1,33 @@
+name: datagen
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  datagen:
+    runs-on: ubuntu-latest
+    steps:
+
+      # セットアップ
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'microsoft'
+      - uses: gradle/actions/setup-gradle@v5
+
+      # datagen
+      - name: datagen
+        run: ./gradlew :datagen
+
+      # 差分チェック
+      - name: 差分チェック
+        run: |
+          git add -A
+          git diff --cached --exit-code
