@@ -38,12 +38,12 @@ class FairyRingFeatureConfig(val tries: Int, val minRadius: Float, val maxRadius
 
 class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRingFeatureConfig>(codec) {
     override fun place(context: FeaturePlaceContext<FairyRingFeatureConfig>): Boolean {
-        if (config.tries == 0) return false
-
         val config = context.config()
         val random = context.random()
         val originBlockPos = context.origin()
         val world = context.level()
+
+        if (config.tries == 0) return false
 
         var count = 0
         val minRadius = config.minRadius
