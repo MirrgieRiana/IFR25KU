@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockState
 /**
  * 経験値を10を超えて多くドロップすることができます。
  *
- * @see net.minecraft.world.level.block.DropExperienceBlock]
+ * @see net.minecraft.world.level.block.DropExperienceBlock
  */
 class OreBlock(private val xpRange: IntProvider, properties: Properties) : Block(properties) {
     companion object {
