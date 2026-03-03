@@ -2,6 +2,9 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import miragefairy2024.lib.placePlacedItem
+import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.util.createItemStack
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Holder
 import net.minecraft.util.Mth
@@ -9,6 +12,7 @@ import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
+import kotlin.math.roundToInt
 
 class FairyRingFeatureConfig(val tries: Int, val minRadius: Float, val maxRadius: Float, val ySpread: Int, val feature: Holder<PlacedFeature>) : FeatureConfiguration {
     companion object {
@@ -39,12 +43,15 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
         val originBlockPos = context.origin()
         val world = context.level()
 
+        if (config.tries == 0) return false
+
         var count = 0
         val minRadius = config.minRadius
         val radiusRange = config.maxRadius - minRadius
         val y1 = config.ySpread + 1
         val mutableBlockPos = BlockPos.MutableBlockPos()
-        for (l in 0 until config.tries) {
+
+        repeat(config.tries) {
             val r = random.nextFloat() * radiusRange + minRadius
             val theta = random.nextFloat() * Mth.TWO_PI
             val x = Mth.floor(Mth.cos(theta) * r)
@@ -53,6 +60,19 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
 
             mutableBlockPos.setWithOffset(originBlockPos, x, y, z)
             if (config.feature.value().place(world, context.chunkGenerator(), random, mutableBlockPos)) {
+                count++
+            }
+        }
+
+        repeat((4.0 * count / config.tries).roundToInt()) {
+            val r = random.nextFloat() * config.maxRadius
+            val theta = random.nextFloat() * Mth.TWO_PI
+            val x = Mth.floor(Mth.cos(theta) * r)
+            val y = random.nextInt(y1) - random.nextInt(y1)
+            val z = Mth.floor(Mth.sin(theta) * r)
+
+            mutableBlockPos.setWithOffset(originBlockPos, x, y, z)
+            if (placePlacedItem(world, mutableBlockPos, MaterialCard.FAIRY_SCALES.item().createItemStack(), random)) {
                 count++
             }
         }
