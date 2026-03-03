@@ -2,6 +2,7 @@ package miragefairy2024.mod
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.lib.OreBlock
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.BiomeSelectorScope
 import miragefairy2024.util.EnJa
@@ -50,7 +51,6 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.level.block.DropExperienceBlock
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
@@ -165,7 +165,7 @@ enum class OreCard(
                 .requiresCorrectToolForDrops()
                 .strength(1.0F, 1.0F)
         }
-        DropExperienceBlock(UniformInt.of(experience.first, experience.second), settings)
+        OreBlock(UniformInt.of(experience.first, experience.second), settings)
     }
     val item = Registration(BuiltInRegistries.ITEM, identifier) { BlockItem(block.await(), Item.Properties()) }
     val texturedModelFactory = TexturedModel.Provider {
@@ -186,6 +186,8 @@ val SANDSTONE_ORE_REPLACEABLES = MirageFairy2024.identifier("sandstone_ore_repla
 
 context(ModContext)
 fun initOresModule() {
+
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("ore")) { OreBlock.CODEC }.register()
 
     registerModelGeneration({ OreModelCard.identifier }) { OreModelCard.parentModel.with() }
 
