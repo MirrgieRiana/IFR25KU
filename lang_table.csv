@@ -134,6 +134,7 @@ block.miragefairy2024.deepslate_nephrite_ore,Deepslate Nephrite Ore,深層ネフ
 block.miragefairy2024.deepslate_saltpeter_ore,Deepslate Saltpeter Ore,深層硝石鉱石
 block.miragefairy2024.deepslate_sulfur_ore,Deepslate Sulfur Ore,深層硫黄鉱石
 block.miragefairy2024.diamond_luminaria,Diamond Luminaria,金剛石輝草ダイヤモンドルミナリア
+block.miragefairy2024.dirt_fairy_plastic_ore,Dirt Fairy Plastic Ore,土妖精のプラスチック鉱石
 block.miragefairy2024.dripping_haimeviska_log,Dripping Haimeviska Log,滴るハイメヴィスカの原木
 block.miragefairy2024.dripping_haimeviska_log.description,Harvest sap when used,使用時、樹液を収穫
 block.miragefairy2024.dripping_haimeviska_log.poem,A spirit named 'glucose',霊界より降りしもの。
@@ -1321,6 +1322,7 @@ subtitles.miragefairy2024.magic2,Magic fired,魔法が発射される
 subtitles.miragefairy2024.magic3,Magic fired,魔法が発射される
 subtitles.miragefairy2024.magic_hit,Magic hits,魔法が当たる
 tag.block.miragefairy2024.concrete,Concrete,コンクリート
+tag.block.miragefairy2024.dirt_ore_replaceables,Dirt Ore Replaceables,土鉱石が置換可能
 tag.block.miragefairy2024.fairy_building,Fairy Building,妖精の建物
 tag.block.miragefairy2024.haimeviska_logs,Haimeviska Logs,ハイメヴィスカの原木
 tag.block.miragefairy2024.local_vacuum_decay_resistant,Local Vacuum Decay Resistant,局所真空崩壊耐性

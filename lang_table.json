@@ -539,6 +539,10 @@
     "en_us": "Diamond Luminaria",
     "ja_jp": "金剛石輝草ダイヤモンドルミナリア"
   },
+  "block.miragefairy2024.dirt_fairy_plastic_ore": {
+    "en_us": "Dirt Fairy Plastic Ore",
+    "ja_jp": "土妖精のプラスチック鉱石"
+  },
   "block.miragefairy2024.dripping_haimeviska_log": {
     "en_us": "Dripping Haimeviska Log",
     "ja_jp": "滴るハイメヴィスカの原木"
@@ -4454,6 +4458,10 @@
   "tag.block.miragefairy2024.concrete": {
     "en_us": "Concrete",
     "ja_jp": "コンクリート"
+  },
+  "tag.block.miragefairy2024.dirt_ore_replaceables": {
+    "en_us": "Dirt Ore Replaceables",
+    "ja_jp": "土鉱石が置換可能"
   },
   "tag.block.miragefairy2024.fairy_building": {
     "en_us": "Fairy Building",
