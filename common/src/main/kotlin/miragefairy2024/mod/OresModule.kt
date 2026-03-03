@@ -42,10 +42,12 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.tags.BlockTags
+import net.minecraft.tags.TagKey
 import net.minecraft.util.valueproviders.UniformInt
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.biome.Biomes
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.DropExperienceBlock
 import net.minecraft.world.level.block.SoundType
@@ -57,10 +59,10 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
 import net.minecraft.world.level.material.MapColor
 import java.util.function.Predicate
 
-enum class BaseStoneType {
-    STONE,
-    DEEPSLATE,
-    SANDSTONE,
+enum class BaseStoneType(val targetBlockTag: TagKey<Block>) {
+    STONE(BlockTags.STONE_ORE_REPLACEABLES),
+    DEEPSLATE(BlockTags.DEEPSLATE_ORE_REPLACEABLES),
+    SANDSTONE(SANDSTONE_ORE_REPLACEABLES),
 }
 
 enum class OreCard(
@@ -241,11 +243,7 @@ fun initOresModule() {
     ) {
         Feature.ORE.generator(card.identifier) {
             registerConfiguredFeature(suffix) {
-                val targets = when (card.baseStoneType) {
-                    BaseStoneType.STONE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), card.block().defaultBlockState()))
-                    BaseStoneType.DEEPSLATE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), card.block().defaultBlockState()))
-                    BaseStoneType.SANDSTONE -> listOf(OreConfiguration.target(TagMatchTest(SANDSTONE_ORE_REPLACEABLES), card.block().defaultBlockState()))
-                }
+                val targets = listOf(OreConfiguration.target(TagMatchTest(card.baseStoneType.targetBlockTag), card.block().defaultBlockState()))
                 OreConfiguration(targets, size, discardChanceOnAirExposure.toFloat())
             }.generator {
                 registerPlacedFeature(suffix) { randomIntCount(countPerCube * (range.last - range.first + 1).toDouble() / 16.0) + uniformOre(range.first, range.last) }.placeWhenUndergroundOres(biomePredicate)
