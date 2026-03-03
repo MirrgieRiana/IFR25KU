@@ -143,18 +143,15 @@ abstract class SimpleMachineBlockEntity<E : SimpleMachineBlockEntity<E>>(private
         if (!shouldUpdateRecipe) return null
         shouldUpdateRecipe = false
 
-        // TODO 順不同
         val inventory = SimpleMachineRecipeInput(card.inputSlots.map { this[card.inventorySlotIndexTable[it]!!] })
 
         val recipeHolder = card.match(world, inventory) ?: return null
         val recipe = recipeHolder.value()
-        if (recipe.inputs.size > inventory.size()) return null
+        val matchResult = recipe.match(inventory) ?: return null
 
         return {
             val remainder = recipe.getRemainingItems(inventory)
-            (0 until recipe.inputs.size).forEach { index ->
-                craftingInventory += inventory.getItem(index).split(recipe.inputs[index].count)
-            }
+            craftingInventory += matchResult.craft()
             recipe.outputs.forEach {
                 waitingInventory += it.copy()
             }

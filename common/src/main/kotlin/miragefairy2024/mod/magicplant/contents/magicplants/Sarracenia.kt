@@ -25,8 +25,6 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.block.SoundType
-import net.minecraft.world.level.block.state.properties.BlockStateProperties
-import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
 import net.minecraft.world.level.material.MapColor
@@ -97,12 +95,10 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
     }
 }
 
-class SarraceniaBlock(settings: Properties) : SimpleMagicPlantBlock(SarraceniaCard, settings) {
+class SarraceniaBlock(settings: Properties) : AbstractVeropedaBlock(SarraceniaCard, settings) {
     companion object {
         val CODEC: MapCodec<SarraceniaBlock> = simpleCodec(::SarraceniaBlock)
     }
 
     override fun codec() = CODEC
-
-    override fun getAgeProperty(): IntegerProperty = BlockStateProperties.AGE_3
 }

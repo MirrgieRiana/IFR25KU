@@ -27,8 +27,6 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.SoundType
-import net.minecraft.world.level.block.state.properties.BlockStateProperties
-import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
 import net.minecraft.world.level.material.MapColor
@@ -102,12 +100,10 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
     }
 }
 
-class VeropedaBlock(settings: Properties) : SimpleMagicPlantBlock(VeropedaCard, settings) {
+class VeropedaBlock(settings: Properties) : AbstractVeropedaBlock(VeropedaCard, settings) {
     companion object {
         val CODEC: MapCodec<VeropedaBlock> = simpleCodec(::VeropedaBlock)
     }
 
     override fun codec() = CODEC
-
-    override fun getAgeProperty(): IntegerProperty = BlockStateProperties.AGE_3
 }

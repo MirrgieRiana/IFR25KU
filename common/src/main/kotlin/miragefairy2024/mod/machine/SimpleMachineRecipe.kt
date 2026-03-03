@@ -15,6 +15,7 @@ import miragefairy2024.util.register
 import miragefairy2024.util.string
 import miragefairy2024.util.times
 import mirrg.kotlin.helium.atMost
+import mirrg.kotlin.helium.min
 import net.minecraft.advancements.AdvancementRequirements
 import net.minecraft.advancements.AdvancementRewards
 import net.minecraft.advancements.Criterion
@@ -80,24 +81,62 @@ open class SimpleMachineRecipe(
 
     override fun getGroup() = group
 
-    // TODO 順不同
-    override fun matches(inventory: SimpleMachineRecipeInput, world: Level): Boolean {
-        inputs.forEachIndexed { index, input ->
-            if (!input.ingredient.test(inventory.getItem(index))) return false
-            if (inventory.getItem(index).count < input.count) return false
+    interface MatchResult {
+        fun craft(): List<ItemStack>
+    }
+
+    private data class Consumption(val slotIndex: Int, val count: Int)
+
+    private fun matchImpl(inventory: SimpleMachineRecipeInput): List<Consumption>? {
+        val virtualCounts = IntArray(inventory.size()) { inventory.getItem(it).count }
+        val result = mutableListOf<List<Consumption>>()
+        inputs.forEach { input ->
+            val consumptions = mutableListOf<Consumption>()
+            run inputEntryCompleted@{
+                var neededCount = input.count
+                (0 until inventory.size()).forEach nextSlot@{ slotIndex ->
+                    if (virtualCounts[slotIndex] == 0) return@nextSlot
+                    if (!input.ingredient.test(inventory.getItem(slotIndex))) return@nextSlot
+                    val takeCount = neededCount min virtualCounts[slotIndex]
+                    virtualCounts[slotIndex] -= takeCount
+                    neededCount -= takeCount
+                    consumptions += Consumption(slotIndex, takeCount)
+                    if (neededCount == 0) return@inputEntryCompleted
+                }
+                return null
+            }
+            result += consumptions
         }
-        return true
+        return result.flatten()
+    }
+
+    fun match(inventory: SimpleMachineRecipeInput): MatchResult? {
+        val consumptions = matchImpl(inventory) ?: return null
+        return object : MatchResult {
+            override fun craft(): List<ItemStack> {
+                val result = mutableListOf<ItemStack>()
+                consumptions.forEach {
+                    result += inventory.getItem(it.slotIndex).split(it.count)
+                }
+                return result
+            }
+        }
+    }
+
+    override fun matches(inventory: SimpleMachineRecipeInput, world: Level): Boolean {
+        return match(inventory) != null
     }
 
     open fun getCustomizedRemainder(itemStack: ItemStack): ItemStack = itemStack.item.getRecipeRemainder(itemStack)
 
     override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
         val list = NonNullList.create<ItemStack>()
-        inputs.forEachIndexed { index, input ->
-            val remainder = getCustomizedRemainder(inventory.getItem(index))
-            if (remainder.isEmpty) return@forEachIndexed
+        val consumptions = matchImpl(inventory) ?: return list
+        consumptions.forEach {
+            val remainder = getCustomizedRemainder(inventory.getItem(it.slotIndex))
+            if (remainder.isEmpty) return@forEach
 
-            var totalRemainderCount = remainder.count * input.count
+            var totalRemainderCount = remainder.count * it.count
             while (totalRemainderCount > 0) {
                 val count = totalRemainderCount atMost remainder.maxStackSize
                 list += remainder.copyWithCount(count)

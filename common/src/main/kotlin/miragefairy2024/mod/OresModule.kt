@@ -2,6 +2,7 @@ package miragefairy2024.mod
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.lib.OreBlock
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.BiomeSelectorScope
 import miragefairy2024.util.EnJa
@@ -41,13 +42,15 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BlockTags
+import net.minecraft.tags.TagKey
 import net.minecraft.util.valueproviders.UniformInt
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.biome.Biomes
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.level.block.DropExperienceBlock
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
@@ -57,10 +60,10 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
 import net.minecraft.world.level.material.MapColor
 import java.util.function.Predicate
 
-enum class BaseStoneType {
-    STONE,
-    DEEPSLATE,
-    SANDSTONE,
+enum class BaseStoneType(val targetBlockTag: TagKey<Block>, val baseStoneTexture: ResourceLocation, val mineableTag: TagKey<Block>, val needsToolTag: TagKey<Block>?) {
+    STONE(BlockTags.STONE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/stone"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    DEEPSLATE(BlockTags.DEEPSLATE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    SANDSTONE(SANDSTONE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
 }
 
 enum class OreCard(
@@ -162,17 +165,12 @@ enum class OreCard(
                 .requiresCorrectToolForDrops()
                 .strength(1.0F, 1.0F)
         }
-        DropExperienceBlock(UniformInt.of(experience.first, experience.second), settings)
+        OreBlock(UniformInt.of(experience.first, experience.second), settings)
     }
     val item = Registration(BuiltInRegistries.ITEM, identifier) { BlockItem(block.await(), Item.Properties()) }
     val texturedModelFactory = TexturedModel.Provider {
-        val baseStoneTexture = when (baseStoneType) {
-            BaseStoneType.STONE -> ResourceLocation("minecraft", "block/stone")
-            BaseStoneType.DEEPSLATE -> ResourceLocation("minecraft", "block/deepslate")
-            BaseStoneType.SANDSTONE -> ResourceLocation("minecraft", "block/sandstone_top")
-        }
         OreModelCard.model.with(
-            TextureSlot.BACK to baseStoneTexture,
+            TextureSlot.BACK to baseStoneType.baseStoneTexture,
             TextureSlot.FRONT to "block/" * MirageFairy2024.identifier(texturePath),
         )
     }
@@ -188,6 +186,8 @@ val SANDSTONE_ORE_REPLACEABLES = MirageFairy2024.identifier("sandstone_ore_repla
 
 context(ModContext)
 fun initOresModule() {
+
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("ore")) { OreBlock.CODEC }.register()
 
     registerModelGeneration({ OreModelCard.identifier }) { OreModelCard.parentModel.with() }
 
@@ -213,8 +213,8 @@ fun initOresModule() {
 
         card.block.registerOreLootTableGeneration(card.dropItem)
 
-        BlockTags.MINEABLE_WITH_PICKAXE.generator.registerChild(card.block)
-        BlockTags.NEEDS_STONE_TOOL.generator.registerChild(card.block)
+        card.baseStoneType.mineableTag.generator.registerChild(card.block)
+        card.baseStoneType.needsToolTag?.generator?.registerChild(card.block)
         ConventionalBlockTags.ORES.generator.registerChild(card.block)
 
     }
@@ -241,11 +241,7 @@ fun initOresModule() {
     ) {
         Feature.ORE.generator(card.identifier) {
             registerConfiguredFeature(suffix) {
-                val targets = when (card.baseStoneType) {
-                    BaseStoneType.STONE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), card.block().defaultBlockState()))
-                    BaseStoneType.DEEPSLATE -> listOf(OreConfiguration.target(TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), card.block().defaultBlockState()))
-                    BaseStoneType.SANDSTONE -> listOf(OreConfiguration.target(TagMatchTest(SANDSTONE_ORE_REPLACEABLES), card.block().defaultBlockState()))
-                }
+                val targets = listOf(OreConfiguration.target(TagMatchTest(card.baseStoneType.targetBlockTag), card.block().defaultBlockState()))
                 OreConfiguration(targets, size, discardChanceOnAirExposure.toFloat())
             }.generator {
                 registerPlacedFeature(suffix) { randomIntCount(countPerCube * (range.last - range.first + 1).toDouble() / 16.0) + uniformOre(range.first, range.last) }.placeWhenUndergroundOres(biomePredicate)

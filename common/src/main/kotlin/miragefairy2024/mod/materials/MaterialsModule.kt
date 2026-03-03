@@ -149,6 +149,7 @@ class MaterialCard(
                 AthanorRecipeCard,
                 inputs = listOf(
                     { ore!!.ingredient.toIngredientStack(9) },
+                    { PHANTOM_DROP.item().toIngredientStack(1) },
                 ),
                 outputs = listOf(
                     { HAIMEVISKA_ROSIN.item().createItemStack(6) },
