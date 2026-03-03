@@ -43,10 +43,12 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.tags.BlockTags
+import net.minecraft.tags.TagKey
 import net.minecraft.util.valueproviders.UniformInt
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.biome.Biomes
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.DropExperienceBlock
 import net.minecraft.world.level.block.SoundType
@@ -58,11 +60,14 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
 import net.minecraft.world.level.material.MapColor
 import java.util.function.Predicate
 
-enum class BaseStoneType {
-    STONE,
-    DEEPSLATE,
-    SANDSTONE,
-    DIRT,
+enum class BaseStoneType(
+    val mineableTag: TagKey<Block>,
+    val needsToolTag: TagKey<Block>?,
+) {
+    STONE(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    DEEPSLATE(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    SANDSTONE(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    DIRT(BlockTags.MINEABLE_WITH_SHOVEL, null),
 }
 
 enum class OreCard(
@@ -143,7 +148,7 @@ enum class OreCard(
     DIRT_FAIRY_PLASTIC_ORE(
         "dirt_fairy_plastic_ore", "Dirt Fairy Plastic Ore", "土妖精のプラスチック鉱石",
         null,
-        BaseStoneType.DIRT, "fairy_plastic_ore", MaterialCard.FAIRY_PLASTIC.item, 2 to 5,
+        BaseStoneType.DIRT, "fairy_plastic_ore", MaterialCard.FAIRY_PLASTIC.item, 10 to 20,
     ),
     ;
 
@@ -171,8 +176,7 @@ enum class OreCard(
 
             BaseStoneType.DIRT -> BlockBehaviour.Properties.of()
                 .mapColor(MapColor.DIRT)
-                .requiresCorrectToolForDrops()
-                .strength(0.5F, 0.5F)
+                .strength(1.0F, 1.0F)
                 .sound(SoundType.GRAVEL)
         }
         DropExperienceBlock(UniformInt.of(experience.first, experience.second), settings)
@@ -210,10 +214,7 @@ fun initOresModule() {
     SANDSTONE_ORE_REPLACEABLES.generator.registerChild { Blocks.SANDSTONE }
 
     DIRT_ORE_REPLACEABLES.enJa(EnJa("Dirt Ore Replaceables", "土鉱石が置換可能"))
-    DIRT_ORE_REPLACEABLES.generator.registerChild { Blocks.DIRT }
-    DIRT_ORE_REPLACEABLES.generator.registerChild { Blocks.GRASS_BLOCK }
-    DIRT_ORE_REPLACEABLES.generator.registerChild { Blocks.PODZOL }
-    DIRT_ORE_REPLACEABLES.generator.registerChild { Blocks.COARSE_DIRT }
+    DIRT_ORE_REPLACEABLES.generator.registerChild(BlockTags.DIRT)
 
     OreCard.entries.forEach { card ->
 
@@ -234,8 +235,8 @@ fun initOresModule() {
 
         card.block.registerOreLootTableGeneration(card.dropItem)
 
-        BlockTags.MINEABLE_WITH_PICKAXE.generator.registerChild(card.block)
-        BlockTags.NEEDS_STONE_TOOL.generator.registerChild(card.block)
+        card.baseStoneType.mineableTag.generator.registerChild(card.block)
+        card.baseStoneType.needsToolTag?.let { it.generator.registerChild(card.block) }
         ConventionalBlockTags.ORES.generator.registerChild(card.block)
 
     }
