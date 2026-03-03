@@ -9,6 +9,11 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
 
+/**
+ * 経験値を10を超えて多くドロップすることができます。
+ *
+ * @see net.minecraft.world.level.block.DropExperienceBlock]
+ */
 class OreBlock(private val xpRange: IntProvider, properties: Properties) : Block(properties) {
     companion object {
         val CODEC: MapCodec<OreBlock> = RecordCodecBuilder.mapCodec { instance ->
@@ -24,7 +29,7 @@ class OreBlock(private val xpRange: IntProvider, properties: Properties) : Block
     override fun spawnAfterBreak(state: BlockState, level: ServerLevel, pos: BlockPos, stack: ItemStack, dropExperience: Boolean) {
         super.spawnAfterBreak(state, level, pos, stack, dropExperience)
         if (dropExperience) {
-            this.tryDropExperience(level, pos, stack, this.xpRange)
+            tryDropExperience(level, pos, stack, xpRange)
         }
     }
 }
