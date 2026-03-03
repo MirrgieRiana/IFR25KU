@@ -230,7 +230,7 @@ fun initOresModule() {
         card.block.registerOreLootTableGeneration(card.dropItem)
 
         card.baseStoneType.mineableTag.generator.registerChild(card.block)
-        card.baseStoneType.needsToolTag?.let { it.generator.registerChild(card.block) }
+        card.baseStoneType.needsToolTag?.generator?.registerChild(card.block)
         ConventionalBlockTags.ORES.generator.registerChild(card.block)
 
     }
