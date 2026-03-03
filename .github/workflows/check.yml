@@ -1,4 +1,4 @@
-name: datagen
+name: check
 on:
   push:
     branches:
