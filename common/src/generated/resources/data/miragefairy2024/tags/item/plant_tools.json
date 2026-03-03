@@ -1,6 +1,10 @@
 {
   "values": [
     {
+      "id": "#miragefairy2024:fairy_plastic_tool",
+      "required": false
+    },
+    {
       "id": "#miragefairy2024:haimeviska_rosin_tool",
       "required": false
     },
