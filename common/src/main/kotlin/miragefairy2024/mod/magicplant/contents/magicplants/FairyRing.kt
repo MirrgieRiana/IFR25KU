@@ -12,6 +12,7 @@ import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
+import kotlin.math.roundToInt
 
 class FairyRingFeatureConfig(val tries: Int, val minRadius: Float, val maxRadius: Float, val ySpread: Int, val feature: Holder<PlacedFeature>) : FeatureConfiguration {
     companion object {
@@ -37,6 +38,8 @@ class FairyRingFeatureConfig(val tries: Int, val minRadius: Float, val maxRadius
 
 class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRingFeatureConfig>(codec) {
     override fun place(context: FeaturePlaceContext<FairyRingFeatureConfig>): Boolean {
+        if (config.tries == 0) return false
+
         val config = context.config()
         val random = context.random()
         val originBlockPos = context.origin()
@@ -47,7 +50,8 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
         val radiusRange = config.maxRadius - minRadius
         val y1 = config.ySpread + 1
         val mutableBlockPos = BlockPos.MutableBlockPos()
-        for (l in 0 until config.tries) {
+
+        repeat(config.tries) {
             val r = random.nextFloat() * radiusRange + minRadius
             val theta = random.nextFloat() * Mth.TWO_PI
             val x = Mth.floor(Mth.cos(theta) * r)
@@ -60,7 +64,7 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
             }
         }
 
-        repeat(16 * count / config.tries.coerceAtLeast(1)) {
+        repeat((4.0 * count / config.tries).roundToInt()) {
             val r = random.nextFloat() * config.maxRadius
             val theta = random.nextFloat() * Mth.TWO_PI
             val x = Mth.floor(Mth.cos(theta) * r)
