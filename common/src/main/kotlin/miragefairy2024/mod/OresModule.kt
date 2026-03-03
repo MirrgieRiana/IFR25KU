@@ -143,7 +143,7 @@ enum class OreCard(
     DIRT_FAIRY_PLASTIC_ORE(
         "dirt_fairy_plastic_ore", "Dirt Fairy Plastic Ore", "土妖精のプラスチック鉱石",
         null,
-        BaseStoneType.DIRT, "fairy_plastic_ore", MaterialCard.FAIRY_PLASTIC.item, 10 to 20,
+        BaseStoneType.DIRT, "fairy_plastic_ore", MaterialCard.FAIRY_PLASTIC.item, 2 to 5,
     ),
     ;
 
