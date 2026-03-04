@@ -831,7 +831,7 @@ class MaterialCard(
                     { ItemTags.PLANKS.toIngredientStack(1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 10,
+                duration = 20 * 2,
             ) on ItemTags.PLANKS
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
@@ -839,7 +839,7 @@ class MaterialCard(
                     { Items.STICK.toIngredientStack(2) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 10,
+                duration = 20 * 2,
             ) on { Items.STICK } from { Items.STICK }
         }
         val SALTPETER: MaterialCard = !MaterialCard(
