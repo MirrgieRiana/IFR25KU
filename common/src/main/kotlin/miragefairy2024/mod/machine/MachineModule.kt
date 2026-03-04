@@ -16,6 +16,7 @@ fun initMachineModule() {
     AuraReflectorFurnaceRecipeViewerCategoryCard.init()
     AuraReflectorFurnaceFuelRecipeViewerCategoryCard.init()
 
+    AthanorCard.init()
     AthanorRecipeCard.init()
     AthanorRecipeViewerCategoryCard.init()
 }

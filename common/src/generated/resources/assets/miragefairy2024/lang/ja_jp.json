@@ -1,4 +1,6 @@
 {
+  "advancements.miragefairy2024.athanor.description": "妖精のポット、妖精のセラミックレンガ、およびいくつかの素材からアタノールを作る",
+  "advancements.miragefairy2024.athanor.title": "魔法の炉",
   "advancements.miragefairy2024.aura_reflector_furnace.description": "オーラ反射炉を作って魂の燃料をくべよう",
   "advancements.miragefairy2024.aura_reflector_furnace.title": "自我の重合",
   "advancements.miragefairy2024.bag.description": "特定のアイテムをそこそこ収納できるカバンを作成する",
@@ -100,6 +102,8 @@
   "biome.miragefairy2024.deep_fairy_forest": "妖精の樹海",
   "biome.miragefairy2024.fairy_forest": "妖精の森",
   "biome.miragefairy2024.retrospective_city": "過去を見つめる都市",
+  "block.miragefairy2024.athanor": "アタノール",
+  "block.miragefairy2024.athanor.poem": "天をつらぬく燃料塔。",
   "block.miragefairy2024.aura_reflector_furnace": "オーラ反射炉",
   "block.miragefairy2024.aura_reflector_furnace.poem": "生命と無機物の境界。",
   "block.miragefairy2024.aura_resistant_ceramic": "守護の耐霊石",
