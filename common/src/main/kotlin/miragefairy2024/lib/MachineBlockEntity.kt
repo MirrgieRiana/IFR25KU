@@ -62,7 +62,7 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
 
     // Container
 
-    open fun createInventory(): BlockEntityStorage {
+    protected open fun createInventory(): BlockEntityStorage {
         return InventoryBlockEntityStorage(card.inventorySlotConfigurations.size, object : BlockEntityStorage.Callback {
             override fun onDataChanged() {
                 // TODO スロットアップデートのための軽量カスタムパケット
@@ -77,7 +77,7 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
 
     private val inventory by lazy { createInventory() }
 
-    private val inventorySlotAccessors by lazy {
+    val inventorySlotAccessors by lazy {
         (0 until card.inventorySlotConfigurations.size).map {
             inventory.getInventorySlotAccessor(it, card.inventorySlotConfigurations[it])
         }
