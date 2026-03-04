@@ -1,4 +1,12 @@
 {
+  "advancements.miragefairy2024.athanor.description": {
+    "en_us": "Craft an Athanor from a Fairy Pot, Fairy Ceramic Bricks, and a few other materials",
+    "ja_jp": "妖精のポット、妖精のセラミックレンガ、およびいくつかの素材からアタノールを作る"
+  },
+  "advancements.miragefairy2024.athanor.title": {
+    "en_us": "Magical Furnace",
+    "ja_jp": "魔法の炉"
+  },
   "advancements.miragefairy2024.aura_reflector_furnace.description": {
     "en_us": "Build an Aura Reflector Furnace and feed it with soul fuel",
     "ja_jp": "オーラ反射炉を作って魂の燃料をくべよう"
@@ -402,6 +410,14 @@
   "biome.miragefairy2024.retrospective_city": {
     "en_us": "Retrospective City",
     "ja_jp": "過去を見つめる都市"
+  },
+  "block.miragefairy2024.athanor": {
+    "en_us": "Athanor",
+    "ja_jp": "アタノール"
+  },
+  "block.miragefairy2024.athanor.poem": {
+    "en_us": "Long-term heating by fuel tower",
+    "ja_jp": "天をつらぬく燃料塔。"
   },
   "block.miragefairy2024.aura_reflector_furnace": {
     "en_us": "Aura Reflector Furnace",
