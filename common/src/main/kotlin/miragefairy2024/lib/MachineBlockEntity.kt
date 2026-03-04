@@ -242,7 +242,7 @@ interface BlockEntityStorage {
 
     fun save(nbt: CompoundTag, registries: HolderLookup.Provider)
     fun load(nbt: CompoundTag, registries: HolderLookup.Provider)
-    fun getInventorySlotAccessor(index: Int, configuration: MachineBlockEntity.InventorySlotConfiguration): miragefairy2024.lib.InventorySlotAccessor
+    fun getInventorySlotAccessor(index: Int, configuration: MachineBlockEntity.InventorySlotConfiguration): InventorySlotAccessor
 }
 
 class InventoryBlockEntityStorage(size: Int, private val callback: BlockEntityStorage.Callback) : BlockEntityStorage {
