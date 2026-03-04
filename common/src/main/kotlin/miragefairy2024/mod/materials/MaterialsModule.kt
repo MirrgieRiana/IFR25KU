@@ -90,6 +90,8 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.food.FoodProperties
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
+import net.minecraft.world.item.alchemy.PotionContents
+import net.minecraft.world.item.alchemy.Potions
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.storage.loot.BuiltInLootTables
 import java.math.BigInteger
@@ -631,6 +633,19 @@ class MaterialCard(
                     .build()
             },
         ) {
+            // →砂糖+水入り瓶
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { item().toIngredientStack(1) },
+                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
+                ),
+                outputs = listOf(
+                    { Items.SUGAR.createItemStack(2) },
+                    { PotionContents.createItemStack(Items.POTION, Potions.WATER) },
+                ),
+                duration = 20 * 2,
+            ) on item modId MirageFairy2024.MOD_ID from item
             // →松明
             registerShapedRecipeGeneration({ Items.TORCH }) {
                 pattern("#")
