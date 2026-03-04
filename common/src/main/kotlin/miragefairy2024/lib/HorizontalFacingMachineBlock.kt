@@ -76,15 +76,19 @@ abstract class HorizontalFacingMachineBlock(private val card: MachineCard<*, *, 
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun useWithoutItem(state: BlockState, level: Level, pos: BlockPos, player: Player, hitResult: BlockHitResult): InteractionResult {
-        if (level.isClientSide) return InteractionResult.SUCCESS
-        val blockEntity = card.blockEntityAccessor.castOrNull(level.getBlockEntity(pos)) ?: return InteractionResult.CONSUME
+        openMenu(level, pos, player)
+        return InteractionResult.sidedSuccess(level.isClientSide)
+    }
+
+    protected fun openMenu(level: Level, pos: BlockPos, player: Player) {
+        if (level.isClientSide) return
+        val blockEntity = card.blockEntityAccessor.castOrNull(level.getBlockEntity(pos)) ?: return
         player.openMenu(object : ExtendedScreenHandlerFactory<Unit> {
             override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player) = blockEntity.createMenu(syncId, playerInventory, player)
             override fun getDisplayName() = blockEntity.displayName
             override fun getScreenOpeningData(player: ServerPlayer) = Unit
         })
         player.awardStat(Stats.ITEM_USED.get(this.asItem()))
-        return InteractionResult.CONSUME
     }
 
 }
