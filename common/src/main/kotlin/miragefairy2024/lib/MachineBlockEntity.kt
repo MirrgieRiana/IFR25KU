@@ -75,10 +75,12 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
         })
     }
 
-    private val inventory = createInventory()
+    private val inventory by lazy { createInventory() }
 
-    private val inventorySlotAccessors = (0 until card.inventorySlotConfigurations.size).map {
-        inventory.getInventorySlotAccessor(it, card.inventorySlotConfigurations[it])
+    private val inventorySlotAccessors by lazy {
+        (0 until card.inventorySlotConfigurations.size).map {
+            inventory.getInventorySlotAccessor(it, card.inventorySlotConfigurations[it])
+        }
     }
 
     override fun getContainerSize() = inventorySlotAccessors.size
