@@ -292,6 +292,14 @@ class InventoryBlockEntityStorage(size: Int, private val callback: BlockEntitySt
     }
 }
 
+class ProxyBlockEntityStorage(private val inventorySlotAccessorGetter: (Int) -> InventorySlotAccessor?) : BlockEntityStorage {
+    override fun save(nbt: CompoundTag, registries: HolderLookup.Provider) = Unit
+    override fun load(nbt: CompoundTag, registries: HolderLookup.Provider) = Unit
+    override fun getInventorySlotAccessor(index: Int, configuration: MachineBlockEntity.InventorySlotConfiguration): InventorySlotAccessor {
+        return ProxyInventorySlotAccessor { inventorySlotAccessorGetter(index) }
+    }
+}
+
 interface InventorySlotAccessor {
     fun get(): ItemStack
     fun set(itemStack: ItemStack)
@@ -300,4 +308,14 @@ interface InventorySlotAccessor {
     fun canInsert(actualSide: Direction): Boolean
     fun canExtract(actualSide: Direction): Boolean
     val dropItem: Boolean
+}
+
+class ProxyInventorySlotAccessor(private val inventorySlotAccessorGetter: () -> InventorySlotAccessor?) : InventorySlotAccessor {
+    override fun get() = inventorySlotAccessorGetter()?.get() ?: EMPTY_ITEM_STACK
+    override fun set(itemStack: ItemStack) = inventorySlotAccessorGetter()?.set(itemStack) ?: Unit
+    override fun onChanged() = inventorySlotAccessorGetter()?.onChanged() ?: Unit
+    override fun isValid(itemStack: ItemStack) = inventorySlotAccessorGetter()?.isValid(itemStack) ?: false
+    override fun canInsert(actualSide: Direction) = inventorySlotAccessorGetter()?.canInsert(actualSide) ?: false
+    override fun canExtract(actualSide: Direction) = inventorySlotAccessorGetter()?.canExtract(actualSide) ?: false
+    override val dropItem = false
 }
