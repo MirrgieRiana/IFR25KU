@@ -73,7 +73,7 @@ abstract class SimpleMachineCard<B : SimpleMachineBlock, E : SimpleMachineBlockE
 
         registerBlockStateGeneration()
 
-        block.registerDefaultLootTableGeneration()
+        registerBlockLootTableGeneration()
 
         inventorySlotConfigurations += slots
         guiSlotConfigurations += slots
@@ -84,6 +84,11 @@ abstract class SimpleMachineCard<B : SimpleMachineBlock, E : SimpleMachineBlockE
     context(ModContext)
     open fun registerBlockStateGeneration() {
         block.registerVariantsBlockStateGeneration { normal("block/" * block().getIdentifier()).withHorizontalRotation(HorizontalDirectionalBlock.FACING) }
+    }
+
+    context(ModContext)
+    open fun registerBlockLootTableGeneration() {
+        block.registerDefaultLootTableGeneration()
     }
 }
 
