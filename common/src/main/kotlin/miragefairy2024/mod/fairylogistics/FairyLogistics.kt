@@ -105,13 +105,13 @@ abstract class FairyLogisticsBlock(card: FairyLogisticsCard<*, *, *>) : Horizont
         builder.add(VERTICAL_FACING)
     }
 
-    override fun getStateForPlacement(ctx: BlockPlaceContext): BlockState {
-        val verticalFacing = when (ctx.clickedFace) {
+    override fun getStateForPlacement(context: BlockPlaceContext): BlockState {
+        val verticalFacing = when (context.clickedFace) {
             Direction.UP -> VerticalFacing.DOWN
             Direction.DOWN -> VerticalFacing.UP
             else -> VerticalFacing.SIDE
         }
-        val facing = if (verticalFacing == VerticalFacing.SIDE) ctx.clickedFace.opposite else ctx.horizontalDirection
+        val facing = if (verticalFacing == VerticalFacing.SIDE) context.clickedFace.opposite else context.horizontalDirection
         return defaultBlockState().with(VERTICAL_FACING, verticalFacing).with(FACING, facing)
     }
 

@@ -54,14 +54,14 @@ class FairyCrystalGlassBlock(properties: Properties) : TransparentBlock(properti
         )
     }
 
-    override fun getStateForPlacement(ctx: BlockPlaceContext): BlockState? {
+    override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
         return defaultBlockState()
-            .with(BlockStateProperties.NORTH, ctx.level.getBlockState(ctx.clickedPos.north()) isIn this)
-            .with(BlockStateProperties.EAST, ctx.level.getBlockState(ctx.clickedPos.east()) isIn this)
-            .with(BlockStateProperties.SOUTH, ctx.level.getBlockState(ctx.clickedPos.south()) isIn this)
-            .with(BlockStateProperties.WEST, ctx.level.getBlockState(ctx.clickedPos.west()) isIn this)
-            .with(BlockStateProperties.UP, ctx.level.getBlockState(ctx.clickedPos.above()) isIn this)
-            .with(BlockStateProperties.DOWN, ctx.level.getBlockState(ctx.clickedPos.below()) isIn this)
+            .with(BlockStateProperties.NORTH, context.level.getBlockState(context.clickedPos.north()) isIn this)
+            .with(BlockStateProperties.EAST, context.level.getBlockState(context.clickedPos.east()) isIn this)
+            .with(BlockStateProperties.SOUTH, context.level.getBlockState(context.clickedPos.south()) isIn this)
+            .with(BlockStateProperties.WEST, context.level.getBlockState(context.clickedPos.west()) isIn this)
+            .with(BlockStateProperties.UP, context.level.getBlockState(context.clickedPos.above()) isIn this)
+            .with(BlockStateProperties.DOWN, context.level.getBlockState(context.clickedPos.below()) isIn this)
     }
 
     override fun updateShape(state: BlockState, direction: Direction, neighborState: BlockState, level: LevelAccessor, pos: BlockPos, neighborPos: BlockPos): BlockState {

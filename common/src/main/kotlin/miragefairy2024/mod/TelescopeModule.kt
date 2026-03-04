@@ -212,7 +212,7 @@ class TelescopeBlock(settings: Properties) : SimpleHorizontalFacingBlock(setting
         }
     }
 
-    override fun getStateForPlacement(ctx: BlockPlaceContext): BlockState = defaultBlockState().with(FACING, ctx.horizontalDirection)
+    override fun getStateForPlacement(context: BlockPlaceContext): BlockState = defaultBlockState().with(FACING, context.horizontalDirection)
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun isPathfindable(state: BlockState, pathComputationType: PathComputationType) = false

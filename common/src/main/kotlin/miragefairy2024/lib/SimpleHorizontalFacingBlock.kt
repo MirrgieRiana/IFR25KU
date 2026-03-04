@@ -17,7 +17,7 @@ abstract class SimpleHorizontalFacingBlock(settings: Properties) : HorizontalDir
         builder.add(FACING)
     }
 
-    override fun getStateForPlacement(ctx: BlockPlaceContext): BlockState? {
-        return defaultBlockState().with(FACING, ctx.horizontalDirection.opposite)
+    override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
+        return defaultBlockState().with(FACING, context.horizontalDirection.opposite)
     }
 }
