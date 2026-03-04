@@ -95,7 +95,7 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
 
     // Remove
 
-    override fun updateShape(state: BlockState, direction: Direction, neighborState: BlockState, level: LevelAccessor, pos: BlockPos, neighborPos: BlockPos): BlockState? {
+    override fun updateShape(state: BlockState, direction: Direction, neighborState: BlockState, level: LevelAccessor, pos: BlockPos, neighborPos: BlockPos): BlockState {
         val part = state[PART]
         if (direction in part.connections) {
             return if (neighborState isIn this && direction.opposite in neighborState[PART].connections) {
