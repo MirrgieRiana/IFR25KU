@@ -1,0 +1,29 @@
+name: プロトコル102
+description: プロトコル102
+title: ""
+labels: [ ]
+body:
+
+  - type: textarea
+    id: main
+    attributes:
+      label: プロンプト
+      render: markdown
+      value: |
+        # コーディングAIが厳守しなければならないルール
+
+        あなたは、すべての作業を始める前に、まず必ず以下のコードを実行して、表示されるプロトコル102を厳守してください。
+        また、標準的な AGENTS.md や copilot-instructions.md にも準拠しなければなりません。
+
+        ```shell
+        curl -sL https://raw.githubusercontent.com/MirrgieRiana/xarpite/main/.github/ISSUE_TEMPLATE/protocol-102.agent.md
+        ```
+
+        # このIssueを元にしてPRを作成するAIが厳守しなければならないルール
+
+        PRのタイトルは、本Issueのタイトルと厳密に同一でなければなりません。
+        PRの本文には、「Issueのタイトル、説明文、コメントを参照せよ」以外の事柄、例えばIssueの要約等を書いてはいけません。
+        あなたがIssueの原文に基づかない出鱈目な内容をPRに記述することで、開発は大幅に遅れます。
+        お願いですから如何なる要約もやめ、単にIssueを参照せよと書いてください。
+
+        ブランチ名は自由に書いてかまいません。
