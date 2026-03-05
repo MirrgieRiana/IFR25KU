@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.OreBlock
 import miragefairy2024.mod.biome.DeepFairyForestBiomeCard
+import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.BiomeSelectorScope
 import miragefairy2024.util.EnJa
@@ -209,6 +210,9 @@ fun initOresModule() {
 
     DIRT_ORE_REPLACEABLES.enJa(EnJa("Dirt Ore Replaceables", "土鉱石が置換可能"))
     DIRT_ORE_REPLACEABLES.generator.registerChild(BlockTags.DIRT)
+
+    BlockTags.STONE_ORE_REPLACEABLES.generator.registerChild(BlockMaterialCard.MIRANAGITE_BLOCK.block)
+    BlockTags.STONE_ORE_REPLACEABLES.generator.registerChild(OreCard.MIRANAGITE_ORE.block)
 
     OreCard.entries.forEach { card ->
 

@@ -3,10 +3,15 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.lib.placePlacedItem
+import miragefairy2024.mod.OreCard
+import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.isIn
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.core.Holder
+import net.minecraft.tags.BlockTags
 import net.minecraft.util.Mth
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
@@ -74,6 +79,20 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
             mutableBlockPos.setWithOffset(originBlockPos, x, y, z)
             if (placePlacedItem(world, mutableBlockPos, MaterialCard.FAIRY_SCALES.item().createItemStack(), random)) {
                 count++
+            }
+        }
+
+        run {
+            val depth = 10 + random.nextInt(11)
+            val centerPos = originBlockPos.below(depth)
+            if (world.getBlockState(centerPos) isIn BlockTags.STONE_ORE_REPLACEABLES) {
+                world.setBlock(centerPos, BlockMaterialCard.MIRANAGITE_BLOCK.block().defaultBlockState(), 2)
+            }
+            for (direction in Direction.entries) {
+                val adjacentPos = centerPos.relative(direction)
+                if (world.getBlockState(adjacentPos) isIn BlockTags.STONE_ORE_REPLACEABLES) {
+                    world.setBlock(adjacentPos, OreCard.MIRANAGITE_ORE.block().defaultBlockState(), 2)
+                }
             }
         }
 
