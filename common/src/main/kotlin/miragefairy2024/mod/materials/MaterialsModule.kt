@@ -1295,6 +1295,16 @@ class MaterialCard(
                 outputs = listOf({ item().createItemStack(8) }), // 800 + 2400 + 1200 = 4400 -> 200 * 8 * 8 = 12800
                 duration = 20 * 60, // 1200 = 200 * 6
             ) on ItemTagCard.SPIRITS.tag
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { Items.SUGAR.toIngredientStack(8) },
+                    { HAIMEVISKA_SAP.item().toIngredientStack(4) },
+                    { ETHANOL.item().toIngredientStack(1) },
+                ),
+                outputs = listOf({ item().createItemStack(32) }),
+                duration = 20 * 60,
+            ) on ETHANOL.item from ETHANOL.item
             // →TNT
             registerShapedRecipeGeneration({ Items.TNT }) {
                 pattern(" G ")
