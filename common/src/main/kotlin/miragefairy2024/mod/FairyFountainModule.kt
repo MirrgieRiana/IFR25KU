@@ -241,7 +241,11 @@ class FairyStatueFountainBlock(settings: Properties) : SimpleHorizontalFacingBlo
         }
     }
 
-    /** excludeR=falseの場合、確率の合計が1.0+εであることが保証されます。excludeR=trueの場合、R以下のエントリーが除外され、確率の合計は1.0未満になりますが、weightedRandomにより自動的に正規化されます。 */
+    /**
+     * excludeR=falseの場合、確率の合計が1.0+εであることが保証されます。
+     * excludeR=trueの場合、R以下のエントリーが除外され、確率の合計は1.0未満になります。
+     * weightedRandomは確率をtotalWeightでスケーリングするため、各エントリーの確率比は維持されます。
+     */
     private fun getChanceTable(excludeR: Boolean = false): List<Chance<Single<Pair<Motif, Rarity>?>>> {
         val chanceTable = mutableListOf<Chance<Single<Pair<Motif, Rarity>?>>>()
 
