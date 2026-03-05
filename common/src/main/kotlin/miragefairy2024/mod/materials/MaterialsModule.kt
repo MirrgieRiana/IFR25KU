@@ -878,22 +878,6 @@ class MaterialCard(
             } on item from item modId MirageFairy2024.MOD_ID
         }
 
-        val ESSENCE_OF_LIFE: MaterialCard = !MaterialCard(
-            "essence_of_life", "Essence of Life", "生命の素",
-            null,
-        ) {
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { Items.ROTTEN_FLESH.toIngredientStack(20) },
-                    { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
-                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on { Items.ROTTEN_FLESH } from { Items.ROTTEN_FLESH }
-        }
-
         val MAGNETITE: MaterialCard = !MaterialCard(
             "magnetite", "Magnetite", "磁鉄鉱",
             null,
@@ -1273,7 +1257,18 @@ class MaterialCard(
             "aqua_vitae", "Aqua Vitae", "生命の水",
             null,
             recipeRemainder = Items.GLASS_BOTTLE,
-        )
+        ) {
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { Items.ROTTEN_FLESH.toIngredientStack(20) },
+                    { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
+                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60 * 5,
+            ) on { Items.ROTTEN_FLESH } from { Items.ROTTEN_FLESH }
+        }
         val ETHANOL: MaterialCard = !MaterialCard(
             "ethanol", "Ethanol", "エタノール",
             null,

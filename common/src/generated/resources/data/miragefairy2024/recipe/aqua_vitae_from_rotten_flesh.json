@@ -1,7 +1,7 @@
 {
   "type": "miragefairy2024:athanor",
   "duration": 6000,
-  "group": "miragefairy2024:essence_of_life",
+  "group": "miragefairy2024:aqua_vitae",
   "inputs": [
     {
       "Amount": 20,
@@ -25,7 +25,7 @@
   "outputs": [
     {
       "count": 1,
-      "id": "miragefairy2024:essence_of_life"
+      "id": "miragefairy2024:aqua_vitae"
     }
   ]
 }
