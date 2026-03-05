@@ -50,7 +50,7 @@ class ElevatedSpawnerFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
         // 支柱の高さ（8～16ブロック）
         val pillarHeight = random.nextIntBetweenInclusive(8, 16)
 
-        // 構造物の全高: 支柱 + 台(1) + 空間(3) + 天井(1) + フェンス(1) + ラピス(1) = 支柱 + 7
+        // 構造物の全高: 支柱 + 台(1) + 空間(3) + 天井(1) + フェンス(1) + ラピスラズリ(1) = 支柱 + 7
         val totalHeight = pillarHeight + 7
         if (origin.y + totalHeight >= level.maxBuildHeight) return false
 
@@ -95,7 +95,7 @@ class ElevatedSpawnerFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
             blockEntity.setEntityId(EntityType.SKELETON, random)
         }
 
-        // 台の四隅に高さ3の石レンガのフェンス（壁）を配置
+        // 台の四隅に高さ3の石レンガフェンスを配置
         for ((dx, dz) in listOf(-2 to -2, -2 to 2, 2 to -2, 2 to 2)) {
             for (dy in 1..3) {
                 level.setBlock(origin.above(platformY + dy).offset(dx, 0, dz), stoneWall(), 2)
@@ -107,15 +107,12 @@ class ElevatedSpawnerFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
         // 7x1x7の天井を配置（下置きハーフブロック、中央は全ブロック）
         for (dx in -3..3) {
             for (dz in -3..3) {
-                if (dx == 0 && dz == 0) {
-                    level.setBlock(origin.above(ceilingY).offset(dx, 0, dz), stoneBricks(), 2)
-                } else {
-                    level.setBlock(origin.above(ceilingY).offset(dx, 0, dz), stoneSlab(), 2)
-                }
+                val blockState = if (dx == 0 && dz == 0) stoneBricks() else stoneSlab()
+                level.setBlock(origin.above(ceilingY).offset(dx, 0, dz), blockState, 2)
             }
         }
 
-        // 天井中央の上に石レンガのフェンス（壁）を配置
+        // 天井中央の上に石レンガフェンスを配置
         level.setBlock(origin.above(ceilingY + 1), stoneWall(), 2)
 
         // その上にラピスラズリブロックを配置
