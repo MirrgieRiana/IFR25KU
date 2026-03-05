@@ -13,6 +13,7 @@ import net.minecraft.core.Direction
 import net.minecraft.core.Holder
 import net.minecraft.tags.BlockTags
 import net.minecraft.util.Mth
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration
@@ -56,6 +57,7 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
         val y1 = config.ySpread + 1
         val mutableBlockPos = BlockPos.MutableBlockPos()
 
+        // ミラージュの花
         repeat(config.tries) {
             val r = random.nextFloat() * radiusRange + minRadius
             val theta = random.nextFloat() * Mth.TWO_PI
@@ -69,6 +71,7 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
             }
         }
 
+        // 周辺に妖精の鱗粉
         repeat((4.0 * count / config.tries).roundToInt()) {
             val r = random.nextFloat() * config.maxRadius
             val theta = random.nextFloat() * Mth.TWO_PI
@@ -82,17 +85,17 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
             }
         }
 
+        // 地下に蒼天石の塊
         run {
-            val depth = 10 + random.nextInt(11)
-            val centerPos = originBlockPos.below(depth)
-            if (world.getBlockState(centerPos) isIn BlockTags.STONE_ORE_REPLACEABLES) {
-                world.setBlock(centerPos, BlockMaterialCard.MIRANAGITE_BLOCK.block().defaultBlockState(), 2)
-            }
-            for (direction in Direction.entries) {
-                val adjacentPos = centerPos.relative(direction)
-                if (world.getBlockState(adjacentPos) isIn BlockTags.STONE_ORE_REPLACEABLES) {
-                    world.setBlock(adjacentPos, OreCard.MIRANAGITE_ORE.block().defaultBlockState(), 2)
+            val centerPos = originBlockPos.below(random.nextIntBetweenInclusive(10, 20))
+            fun replace(targetPos: BlockPos, block: Block) {
+                if (world.getBlockState(targetPos) isIn BlockTags.STONE_ORE_REPLACEABLES) {
+                    world.setBlock(targetPos, block.defaultBlockState(), 2)
                 }
+            }
+            replace(centerPos, BlockMaterialCard.MIRANAGITE_BLOCK.block())
+            Direction.entries.forEach { direction ->
+                replace(centerPos.relative(direction), OreCard.MIRANAGITE_ORE.block())
             }
         }
 
