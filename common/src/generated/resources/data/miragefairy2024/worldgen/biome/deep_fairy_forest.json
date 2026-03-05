@@ -29,7 +29,9 @@
       "minecraft:monster_room",
       "minecraft:monster_room_deep"
     ],
-    [],
+    [
+      "miragefairy2024:elevated_spawner"
+    ],
     [],
     [
       "minecraft:ore_dirt",
@@ -72,7 +74,6 @@
       "minecraft:forest_flowers",
       "minecraft:patch_large_fern",
       "miragefairy2024:haimeviska_deep_fairy_forest",
-      "miragefairy2024:elevated_spawner",
       "minecraft:patch_grass_taiga_2",
       "minecraft:brown_mushroom_taiga",
       "minecraft:red_mushroom_taiga",
