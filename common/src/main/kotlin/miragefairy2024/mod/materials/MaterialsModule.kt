@@ -1429,7 +1429,7 @@ fun initMaterialsModule() {
         ),
         outputs = listOf({ Items.BREAD.createItemStack(2) }),
         duration = 20 * 10,
-    ).using("athanor") on { Items.WHEAT } modId MirageFairy2024.MOD_ID
+    ) using "athanor" on { Items.WHEAT } modId MirageFairy2024.MOD_ID
 
 }
 
