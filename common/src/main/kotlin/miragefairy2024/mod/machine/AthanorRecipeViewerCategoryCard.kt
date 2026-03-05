@@ -46,18 +46,18 @@ object AthanorRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<A
 
             view += ImageView(getTexture(bounds))
 
-            fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
-            fun getConsumptionChance(index: Int) = recipeEntry.recipe.consumptionChances.getOrElse(index) { 1.0 }
+            fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: MachineInput.EMPTY
             fun addInputSlot(index: Int, point: IntPoint) {
-                val chance = getConsumptionChance(index)
+                val input = getInput(index)
+                val chance = input.consumptionChance
                 if (chance < 1.0) {
                     val alpha = ((1.0 - chance) * 255).toInt()
                     val color = (alpha shl 24) or 0xFFFF00
-                    view += FilledRectView(IntPoint(16, 16), color).configure {
-                        position = AbsoluteView.Offset(point - p)
+                    view += FilledRectangleView().also { it.color.value = color }.configure {
+                        position = AbsoluteView.Bounds(IntRectangle(point.x - p.x, point.y - p.y, 16, 16))
                     }
                 }
-                view += InputSlotView(getInput(index)).also { it.consumptionChance = chance }.noBackground().noMargin().configure {
+                view += InputSlotView(input.ingredientStack).also { it.consumptionChance = chance }.noBackground().noMargin().configure {
                     position = AbsoluteView.Offset(point - p)
                 }
             }

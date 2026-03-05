@@ -39,6 +39,25 @@ import net.minecraft.world.item.crafting.RecipeSerializer
 import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.level.Level
 
+data class MachineInput(val ingredientStack: IngredientStack, val consumptionChance: Double = 1.0) {
+    companion object {
+        val CODEC: Codec<MachineInput> = RecordCodecBuilder.create { instance ->
+            instance.group(
+                IngredientStack.CODEC.fieldOf("ingredient").forGetter { it.ingredientStack },
+                Codec.DOUBLE.optionalFieldOf("consumptionChance", 1.0).forGetter { it.consumptionChance },
+            ).apply(instance, ::MachineInput)
+        }
+        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, MachineInput> = StreamCodec.composite(
+            IngredientStack.STREAM_CODEC,
+            { it.ingredientStack },
+            ByteBufCodecs.DOUBLE,
+            { it.consumptionChance },
+            ::MachineInput,
+        )
+        val EMPTY = MachineInput(IngredientStack.EMPTY)
+    }
+}
+
 abstract class SimpleMachineRecipeCard<R : SimpleMachineRecipe> {
 
     abstract val identifier: ResourceLocation
@@ -54,7 +73,7 @@ abstract class SimpleMachineRecipeCard<R : SimpleMachineRecipe> {
 
     abstract val recipeClass: Class<R>
 
-    abstract fun createRecipe(group: String, inputs: List<IngredientStack>, outputs: List<ItemStack>, duration: Int, consumptionChances: List<Double> = listOf()): R
+    abstract fun createRecipe(group: String, inputs: List<MachineInput>, outputs: List<ItemStack>, duration: Int): R
 
     context(ModContext)
     fun init() {
@@ -72,10 +91,9 @@ class SimpleMachineRecipeInput(private val itemStacks: List<ItemStack>) : Recipe
 open class SimpleMachineRecipe(
     private val card: SimpleMachineRecipeCard<*>,
     private val group: String,
-    val inputs: List<IngredientStack>,
+    val inputs: List<MachineInput>,
     val outputs: List<ItemStack>,
     val duration: Int,
-    val consumptionChances: List<Double> = listOf(),
 ) : Recipe<SimpleMachineRecipeInput> {
     init {
         require(outputs.isNotEmpty())
@@ -96,10 +114,10 @@ open class SimpleMachineRecipe(
         inputs.forEachIndexed { inputIndex, input ->
             val consumptions = mutableListOf<Consumption>()
             run inputEntryCompleted@{
-                var neededCount = input.count
+                var neededCount = input.ingredientStack.count
                 (0 until inventory.size()).forEach nextSlot@{ slotIndex ->
                     if (virtualCounts[slotIndex] == 0) return@nextSlot
-                    if (!input.ingredient.test(inventory.getItem(slotIndex))) return@nextSlot
+                    if (!input.ingredientStack.ingredient.test(inventory.getItem(slotIndex))) return@nextSlot
                     val takeCount = neededCount min virtualCounts[slotIndex]
                     virtualCounts[slotIndex] -= takeCount
                     neededCount -= takeCount
@@ -118,7 +136,7 @@ open class SimpleMachineRecipe(
 
         val consumedInputIndices = mutableSetOf<Int>()
         inputs.indices.forEach { inputIndex ->
-            val chance = consumptionChances.getOrElse(inputIndex) { 1.0 }
+            val chance = inputs[inputIndex].consumptionChance
             if (chance >= 1.0 || random == null || random.nextDouble() < chance) {
                 consumedInputIndices += inputIndex
             }
@@ -187,31 +205,23 @@ open class SimpleMachineRecipe(
         override fun codec(): MapCodec<R> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 Codec.STRING.fieldOf("group").forGetter { it.group },
-                IngredientStack.CODEC.listOf().fieldOf("inputs").forGetter { it.inputs },
+                MachineInput.CODEC.listOf().fieldOf("inputs").forGetter { it.inputs },
                 ItemStack.CODEC.listOf().fieldOf("outputs").forGetter { it.outputs },
                 Codec.INT.fieldOf("duration").forGetter { it.duration },
-                Codec.DOUBLE.listOf().optionalFieldOf("consumptionChances", listOf()).forGetter { it.consumptionChances },
             ).apply(instance, card::createRecipe)
         }
 
-        override fun streamCodec(): StreamCodec<RegistryFriendlyByteBuf, R> = object : StreamCodec<RegistryFriendlyByteBuf, R> {
-            override fun decode(buf: RegistryFriendlyByteBuf): R {
-                val group = ByteBufCodecs.STRING_UTF8.decode(buf)
-                val inputs = IngredientStack.STREAM_CODEC.list().decode(buf)
-                val outputs = ItemStack.STREAM_CODEC.list().decode(buf)
-                val duration = ByteBufCodecs.VAR_INT.decode(buf)
-                val consumptionChances = ByteBufCodecs.DOUBLE.list().decode(buf)
-                return card.createRecipe(group, inputs, outputs, duration, consumptionChances)
-            }
-
-            override fun encode(buf: RegistryFriendlyByteBuf, value: R) {
-                ByteBufCodecs.STRING_UTF8.encode(buf, value.group)
-                IngredientStack.STREAM_CODEC.list().encode(buf, value.inputs)
-                ItemStack.STREAM_CODEC.list().encode(buf, value.outputs)
-                ByteBufCodecs.VAR_INT.encode(buf, value.duration)
-                ByteBufCodecs.DOUBLE.list().encode(buf, value.consumptionChances)
-            }
-        }
+        override fun streamCodec(): StreamCodec<RegistryFriendlyByteBuf, R> = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8,
+            { it.group },
+            MachineInput.STREAM_CODEC.list(),
+            { it.inputs },
+            ItemStack.STREAM_CODEC.list(),
+            { it.outputs },
+            ByteBufCodecs.VAR_INT,
+            { it.duration },
+            card::createRecipe,
+        )
     }
 
 }
@@ -228,7 +238,10 @@ fun <R : SimpleMachineRecipe> registerSimpleMachineRecipeGeneration(
     require(outputs.isNotEmpty())
     val settings = RecipeGenerationSettings<SimpleMachineRecipeJsonBuilder<R>>()
     DataGenerationEvents.onGenerateRecipe {
-        val builder = SimpleMachineRecipeJsonBuilder(card, RecipeCategory.MISC, inputs.map { p -> p() }, outputs.map { p -> p() }, duration, consumptionChances)
+        val machineInputs = inputs.mapIndexed { index, supplier ->
+            MachineInput(supplier(), consumptionChances.getOrElse(index) { 1.0 })
+        }
+        val builder = SimpleMachineRecipeJsonBuilder(card, RecipeCategory.MISC, machineInputs, outputs.map { p -> p() }, duration)
         builder.group(outputs.first()().item)
         settings.listeners.forEach { listener ->
             listener(builder)
@@ -243,10 +256,9 @@ fun <R : SimpleMachineRecipe> registerSimpleMachineRecipeGeneration(
 class SimpleMachineRecipeJsonBuilder<R : SimpleMachineRecipe>(
     private val card: SimpleMachineRecipeCard<R>,
     private val category: RecipeCategory,
-    private val inputs: List<IngredientStack>,
+    private val inputs: List<MachineInput>,
     private val outputs: List<ItemStack>,
     private val duration: Int,
-    private val consumptionChances: List<Double> = listOf(),
 ) : RecipeBuilder {
     init {
         require(outputs.isNotEmpty())
@@ -268,6 +280,6 @@ class SimpleMachineRecipeJsonBuilder<R : SimpleMachineRecipe>(
         criteria.forEach {
             advancementBuilder.addCriterion(it.key, it.value)
         }
-        recipeOutput.accept(recipeId, card.createRecipe(group, inputs, outputs, duration, consumptionChances), advancementBuilder.build("recipes/${category.folderName}/" * recipeId))
+        recipeOutput.accept(recipeId, card.createRecipe(group, inputs, outputs, duration), advancementBuilder.build("recipes/${category.folderName}/" * recipeId))
     }
 }

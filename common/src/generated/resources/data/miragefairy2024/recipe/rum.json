@@ -4,21 +4,27 @@
   "group": "miragefairy2024:rum",
   "inputs": [
     {
-      "Amount": 1,
-      "Ingredient": {
-        "item": "minecraft:glass_bottle"
+      "ingredient": {
+        "Amount": 1,
+        "Ingredient": {
+          "item": "minecraft:glass_bottle"
+        }
       }
     },
     {
-      "Amount": 16,
-      "Ingredient": {
-        "item": "minecraft:sugar_cane"
+      "ingredient": {
+        "Amount": 16,
+        "Ingredient": {
+          "item": "minecraft:sugar_cane"
+        }
       }
     },
     {
-      "Amount": 1,
-      "Ingredient": {
-        "fabric:type": "miragefairy2024:water_bottle"
+      "ingredient": {
+        "Amount": 1,
+        "Ingredient": {
+          "fabric:type": "miragefairy2024:water_bottle"
+        }
       }
     }
   ],

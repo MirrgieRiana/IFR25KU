@@ -4,9 +4,11 @@
   "group": "miragefairy2024:miragium_nugget",
   "inputs": [
     {
-      "Amount": 1,
-      "Ingredient": {
-        "item": "miragefairy2024:mirage_flour"
+      "ingredient": {
+        "Amount": 1,
+        "Ingredient": {
+          "item": "miragefairy2024:mirage_flour"
+        }
       }
     }
   ],

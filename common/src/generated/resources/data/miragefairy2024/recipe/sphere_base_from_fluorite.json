@@ -4,15 +4,19 @@
   "group": "miragefairy2024:sphere_base",
   "inputs": [
     {
-      "Amount": 1,
-      "Ingredient": {
-        "tag": "c:gems/fluorite"
+      "ingredient": {
+        "Amount": 1,
+        "Ingredient": {
+          "tag": "c:gems/fluorite"
+        }
       }
     },
     {
-      "Amount": 4,
-      "Ingredient": {
-        "item": "miragefairy2024:fairy_scales"
+      "ingredient": {
+        "Amount": 4,
+        "Ingredient": {
+          "item": "miragefairy2024:fairy_scales"
+        }
       }
     }
   ],

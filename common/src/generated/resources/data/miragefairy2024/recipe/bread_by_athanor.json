@@ -4,15 +4,19 @@
   "group": "minecraft:bread",
   "inputs": [
     {
-      "Amount": 1,
-      "Ingredient": {
-        "item": "minecraft:wheat"
+      "ingredient": {
+        "Amount": 1,
+        "Ingredient": {
+          "item": "minecraft:wheat"
+        }
       }
     },
     {
-      "Amount": 1,
-      "Ingredient": {
-        "fabric:type": "miragefairy2024:water_bottle"
+      "ingredient": {
+        "Amount": 1,
+        "Ingredient": {
+          "fabric:type": "miragefairy2024:water_bottle"
+        }
       }
     }
   ],
