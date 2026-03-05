@@ -87,6 +87,7 @@ object DeepFairyForestBiomeCard : BiomeCard(
                 BiomeDefaultFeatures.addDefaultSoftDisks(lookupBackedBuilder)
 
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ElevatedSpawnerFeatureCard.placedFeatureKey)
 
                 BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)
