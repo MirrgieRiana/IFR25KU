@@ -98,6 +98,10 @@ fun <T> RecipeGenerationSettings<T>.noGroup(noGroup: Boolean = true) = this.appl
     this.noGroup = noGroup
 }
 
+fun <T> RecipeGenerationSettings<T>.using(string: String) = this.apply {
+    this.idModifiers += { it * "_by_" * string }
+}
+
 context(ModContext)
 fun <T : RecipeBuilder> registerRecipeGeneration(
     creator: (RecipeCategory, Item, Int) -> T,

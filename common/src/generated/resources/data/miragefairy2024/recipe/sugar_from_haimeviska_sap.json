@@ -1,0 +1,34 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 40,
+  "group": "minecraft:sugar",
+  "inputs": [
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "miragefairy2024:haimeviska_sap"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:glass_bottle"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 2,
+      "id": "minecraft:sugar"
+    },
+    {
+      "components": {
+        "minecraft:potion_contents": {
+          "potion": "minecraft:water"
+        }
+      },
+      "count": 1,
+      "id": "minecraft:potion"
+    }
+  ]
+}
