@@ -13,12 +13,13 @@ import miragefairy2024.mod.WaterBottleIngredient
 import miragefairy2024.mod.description
 import miragefairy2024.mod.entity.ChaosCubeCard
 import miragefairy2024.mod.experienceStatusEffect
-import miragefairy2024.mod.fairy.FairyMotifIngredient
+import miragefairy2024.mod.fairy.FairyCard
 import miragefairy2024.mod.fairy.MotifCard
 import miragefairy2024.mod.fairy.RandomFairySummoningItem
 import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.getFairyCondensation
+import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.haimeviska.haimeviskaAdvancement
 import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceCard
@@ -1392,8 +1393,7 @@ fun initMaterialsModule() {
     registerSpecialRecipe("mina_from_minia", minSlots = 1) { inventory ->
         val itemStacks = inventory.items().filter { it.isNotEmpty }.toMutableList()
         if (itemStacks.pull { it isIn MaterialCard.APOSTLE_WAND.item() } == null) return@registerSpecialRecipe null // 使徒のステッキ取得
-        val minaFairyIngredient = FairyMotifIngredient(MotifCard.MINA)
-        val fairyItemStack = itemStacks.pull { minaFairyIngredient.test(it) } ?: return@registerSpecialRecipe null // ミーニャ取得
+        val fairyItemStack = itemStacks.pull { it isIn FairyCard.item() && it.getFairyMotif() == MotifCard.MINA } ?: return@registerSpecialRecipe null // ミーニャ取得
         if (itemStacks.isNotEmpty()) return@registerSpecialRecipe null // 余計なアイテムが入っている
         val item = when (fairyItemStack.getFairyCondensation()) {
             BigInteger.ONE -> MaterialCard.MINA_1.item()

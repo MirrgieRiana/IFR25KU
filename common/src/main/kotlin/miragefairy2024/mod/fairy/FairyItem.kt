@@ -460,7 +460,7 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
     override fun getName() = EnJa("Fairy Family", "妖精系統")
     override fun getIcon() = MotifCard.IRON.createFairyItemStack()
     override fun getRecipeCodec(registryAccess: RegistryAccess) = FairyFamilyNotation.CODEC
-    override fun getInputs(recipeEntry: RecipeEntry<FairyFamilyNotation>) = listOf(Input(FairyMotifIngredient(recipeEntry.recipe.motif).toVanilla().toIngredientStack(), true))
+    override fun getInputs(recipeEntry: RecipeEntry<FairyFamilyNotation>) = listOf(Input(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack(), true))
     override fun getOutputs(recipeEntry: RecipeEntry<FairyFamilyNotation>) = (recipeEntry.recipe.parents + recipeEntry.recipe.children).map { it.createFairyItemStack() }
 
     override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<FairyFamilyNotation>> {
@@ -510,7 +510,7 @@ object FairyFamilyRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyFamil
                 val texture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/fairy_family_arrow.png"), IntPoint(16, 34), IntRectangle(0, 0, 16, 34))
                 view += ImageView(texture).configure { }.margin(1, -8)
 
-                view += CatalystSlotView(FairyMotifIngredient(recipeEntry.recipe.motif).toVanilla().toIngredientStack()).noBackground()
+                view += CatalystSlotView(recipeEntry.recipe.motif.createFairyItemStack().toIngredientStack()).noBackground()
 
             }
 
