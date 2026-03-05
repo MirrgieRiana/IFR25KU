@@ -26,7 +26,7 @@ import miragefairy2024.util.filled
 import miragefairy2024.util.generator
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.invoke
-import miragefairy2024.util.isNotIn
+import miragefairy2024.util.isIn
 import miragefairy2024.util.isServer
 import miragefairy2024.util.normal
 import miragefairy2024.util.obtain
@@ -105,7 +105,8 @@ fun initFairyFountainModule() {
         val poemList = PoemList(1)
             .poem("Where does this water spring from...?", "この水は一体どこから湧いてくるのだろう…")
             .description("description1", "Can draw lottery with 100 Fairy Jewels", "100フェアリージュエルで抽選ができる")
-            .description("description2", "Use while sneaking to show loot table", "スニーク中に使用時、提供割合を表示")
+            .description("description2", "Can draw lottery with 1000 Fairy Jewels (R excluded)", "1000フェアリージュエルで抽選ができる（R以下が除外される）")
+            .description("description3", "Use while sneaking to show loot table", "スニーク中に使用時、提供割合を表示")
         card.item.registerPoem(poemList)
         card.item.registerPoemGeneration(poemList)
 
@@ -130,7 +131,7 @@ fun initFairyFountainModule() {
 class FairyStatueFountainBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
     companion object {
         val CODEC: MapCodec<FairyStatueFountainBlock> = simpleCodec(::FairyStatueFountainBlock)
-        val USAGE_TRANSLATION = Translation({ "block.${MirageFairy2024.identifier("fairy_statue_fountain").toLanguageKey()}.usage" }, "Please use it while holding %s", "%sを持って使用してください")
+        val USAGE_TRANSLATION = Translation({ "block.${MirageFairy2024.identifier("fairy_statue_fountain").toLanguageKey()}.usage" }, "Please use it while holding %s or %s", "%sまたは%sを持って使用してください")
         private val SHAPE: VoxelShape = box(2.0, 0.0, 2.0, 14.0, 9.0, 14.0)
         val recipes = mutableListOf<Recipe>()
     }
@@ -157,12 +158,17 @@ class FairyStatueFountainBlock(settings: Properties) : SimpleHorizontalFacingBlo
     override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
 
         // 入力判定
-        if (stack isNotIn MaterialCard.JEWEL_100.item()) { // 持っているアイテムが違う
-            if (level.isServer) player.displayClientMessage(text { USAGE_TRANSLATION(MaterialCard.JEWEL_100.item().description) }, true)
+        val excludeR: Boolean
+        if (stack isIn MaterialCard.JEWEL_1000.item()) {
+            excludeR = true
+        } else if (stack isIn MaterialCard.JEWEL_100.item()) {
+            excludeR = false
+        } else { // 持っているアイテムが違う
+            if (level.isServer) player.displayClientMessage(text { USAGE_TRANSLATION(MaterialCard.JEWEL_100.item().description, MaterialCard.JEWEL_1000.item().description) }, true)
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION // なぜかFAILにすると後続のイベントがキャンセルされない
         }
         if (stack.count < 1) { // 個数が足りない
-            if (level.isServer) player.displayClientMessage(text { USAGE_TRANSLATION(MaterialCard.JEWEL_100.item().description) }, true)
+            if (level.isServer) player.displayClientMessage(text { USAGE_TRANSLATION(MaterialCard.JEWEL_100.item().description, MaterialCard.JEWEL_1000.item().description) }, true)
             return ItemInteractionResult.CONSUME // なぜかFAILにすると後続のイベントがキャンセルされない
         }
 
@@ -176,7 +182,7 @@ class FairyStatueFountainBlock(settings: Properties) : SimpleHorizontalFacingBlo
         // 生産
         if (level.isServer) {
             val outputItemStack = run {
-                val chanceTable = getChanceTable()
+                val chanceTable = getChanceTable(excludeR)
                 val entry = chanceTable.weightedRandom(level.random)?.first
                 entry?.let { it.second.getFairyStatueCard().item().createItemStack().also { itemStack -> itemStack.setFairyMotif(it.first) } } ?: Items.IRON_INGOT.createItemStack()
             }
@@ -230,13 +236,13 @@ class FairyStatueFountainBlock(settings: Properties) : SimpleHorizontalFacingBlo
 
             return InteractionResult.CONSUME
         } else {
-            if (level.isServer) player.displayClientMessage(text { USAGE_TRANSLATION(MaterialCard.JEWEL_100.item().description) }, true)
+            if (level.isServer) player.displayClientMessage(text { USAGE_TRANSLATION(MaterialCard.JEWEL_100.item().description, MaterialCard.JEWEL_1000.item().description) }, true)
             return InteractionResult.CONSUME // なぜかFAILにすると後続のイベントがキャンセルされない
         }
     }
 
-    /** 確率の合計が1.0+εであることが保証されます。 */
-    private fun getChanceTable(): List<Chance<Single<Pair<Motif, Rarity>?>>> {
+    /** excludeR=falseの場合、確率の合計が1.0+εであることが保証されます。excludeR=trueの場合、R以下のエントリーが除外され、確率の合計は1.0未満になりますが、weightedRandomにより自動的に正規化されます。 */
+    private fun getChanceTable(excludeR: Boolean = false): List<Chance<Single<Pair<Motif, Rarity>?>>> {
         val chanceTable = mutableListOf<Chance<Single<Pair<Motif, Rarity>?>>>()
 
         var consumedChance = 0.0
@@ -252,9 +258,12 @@ class FairyStatueFountainBlock(settings: Properties) : SimpleHorizontalFacingBlo
         f(0.01 + 0.02, Rarity.SSR)
         f(0.01 + 0.02 + 0.03, Rarity.PICKUP_SR)
         f(0.01 + 0.02 + 0.03 + 0.09, Rarity.SR)
-        f(0.01 + 0.02 + 0.03 + 0.09 + 0.85, Rarity.R)
+        if (!excludeR) {
+            f(0.01 + 0.02 + 0.03 + 0.09 + 0.85, Rarity.R)
+            return chanceTable.filled { Single(null) }
+        }
 
-        return chanceTable.filled { Single(null) }
+        return chanceTable
     }
 
 }
