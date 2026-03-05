@@ -492,7 +492,9 @@ class MaterialCard(
                     type = AdvancementCardType.NORMAL,
                 )
             },
-        )
+        ) {
+            AuraReflectorFurnaceRecipe.registerFuel(item.key, 20 * 10)
+        }
         val RESONITE_INGOT: MaterialCard = !MaterialCard(
             "resonite_ingot", "Resonite", "共鳴石",
             PoemList(5).poem("Synchronized sound and light", "同調する魂の波動。"),
