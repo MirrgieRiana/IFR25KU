@@ -13,8 +13,8 @@ object FermentationBarrelRecipeCard : SimpleMachineRecipeCard<FermentationBarrel
     override val identifier = MirageFairy2024.identifier("fermentation_barrel")
     override fun getIcon() = FermentationBarrelCard.item().createItemStack()
     override val recipeClass = FermentationBarrelRecipe::class.java
-    override fun createRecipe(group: String, inputs: List<IngredientStack>, outputs: List<ItemStack>, duration: Int): FermentationBarrelRecipe {
-        return FermentationBarrelRecipe(this, group, inputs, outputs, duration)
+    override fun createRecipe(group: String, inputs: List<IngredientStack>, outputs: List<ItemStack>, duration: Int, consumptionChances: List<Double>): FermentationBarrelRecipe {
+        return FermentationBarrelRecipe(this, group, inputs, outputs, duration, consumptionChances)
     }
 }
 
@@ -24,12 +24,14 @@ class FermentationBarrelRecipe(
     inputs: List<IngredientStack>,
     outputs: List<ItemStack>,
     duration: Int,
+    consumptionChances: List<Double> = listOf(),
 ) : SimpleMachineRecipe(
     card,
     group,
     inputs,
     outputs,
     duration,
+    consumptionChances,
 ) {
     override fun getCustomizedRemainder(itemStack: ItemStack): ItemStack {
         val remainder = super.getCustomizedRemainder(itemStack)

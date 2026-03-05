@@ -30,3 +30,5 @@ class TexturedArrowView(size: IntPoint) : FixedWidgetView(size) {
     var foregroundTexture: ViewTexture? = null
     var durationMilliSeconds: Int? = null
 }
+
+class FilledRectView(size: IntPoint, val color: Int) : FixedWidgetView(size)

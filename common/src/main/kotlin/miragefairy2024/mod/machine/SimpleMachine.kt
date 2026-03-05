@@ -152,10 +152,10 @@ abstract class SimpleMachineBlockEntity<E : SimpleMachineBlockEntity<E>>(private
 
         val recipeHolder = card.match(world, inventory) ?: return null
         val recipe = recipeHolder.value()
-        val matchResult = recipe.match(inventory) ?: return null
+        val matchResult = recipe.match(inventory, world.random) ?: return null
 
         return {
-            val remainder = recipe.getRemainingItems(inventory)
+            val remainder = matchResult.getRemainingItems()
             craftingInventory += matchResult.craft()
             recipe.outputs.forEach {
                 waitingInventory += it.copy()
