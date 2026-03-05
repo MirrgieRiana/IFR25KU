@@ -1088,7 +1088,7 @@ class MaterialCard(
         val RUM: MaterialCard = !MaterialCard(
             "rum", "Rum", "ラム酒",
             null,
-            fuelValue = 200 * 4, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
+            fuelValue = 200 * 12, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
             foodComponentCreator = {
                 FoodProperties.Builder()
                     .nutrition(6)
@@ -1253,18 +1253,25 @@ class MaterialCard(
                 duration = 20 * 5,
             ) on { Items.SPIDER_EYE } from { Items.SPIDER_EYE }
         }
+        val AQUA_VITAE: MaterialCard = !MaterialCard(
+            "aqua_vitae", "Aqua Vitae", "生命の水",
+            null,
+            recipeRemainder = Items.GLASS_BOTTLE,
+        )
         val ETHANOL: MaterialCard = !MaterialCard(
             "ethanol", "Ethanol", "エタノール",
             null,
+            fuelValue = 200 * 30, recipeRemainder = Items.GLASS_BOTTLE,
         ) {
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { FAIRY_LIQUEUR.item().toIngredientStack(5) },
+                    { ItemTagCard.SPIRITS.tag.toIngredientStack(5) },
+                    { Items.GLASS_BOTTLE.toIngredientStack(2) },
                 ),
                 outputs = listOf({ item().createItemStack(2) }),
                 duration = 20 * 60,
-            ) on FAIRY_LIQUEUR.item
+            ) on ItemTagCard.SPIRITS.tag
         }
         val SOLID_FUEL: MaterialCard = !MaterialCard(
             "solid_fuel", "Solid Fuel", "固形燃料",

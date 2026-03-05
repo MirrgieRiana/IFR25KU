@@ -6,7 +6,13 @@
     {
       "Amount": 5,
       "Ingredient": {
-        "item": "miragefairy2024:fairy_liqueur"
+        "tag": "miragefairy2024:spirits"
+      }
+    },
+    {
+      "Amount": 2,
+      "Ingredient": {
+        "item": "minecraft:glass_bottle"
       }
     }
   ],

@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_fairy_liqueur": {
+    "has_spirits": {
       "conditions": {
         "items": [
           {
-            "items": "miragefairy2024:fairy_liqueur"
+            "items": "#miragefairy2024:spirits"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_fairy_liqueur"
+      "has_spirits"
     ]
   ],
   "rewards": {
