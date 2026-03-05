@@ -1262,7 +1262,17 @@ class MaterialCard(
             "ethanol", "Ethanol", "エタノール",
             null,
             fuelValue = 200 * 30, recipeRemainder = Items.GLASS_BOTTLE,
-        )
+        ) {
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { ItemTagCard.SPIRITS.tag.toIngredientStack(5) },
+                    { Items.GLASS_BOTTLE.toIngredientStack(2) },
+                ),
+                outputs = listOf({ item().createItemStack(2) }),
+                duration = 20 * 60,
+            ) on ItemTagCard.SPIRITS.tag
+        }
         val SOLID_FUEL: MaterialCard = !MaterialCard(
             "solid_fuel", "Solid Fuel", "固形燃料",
             PoemList(2).poem("Caramelized Ethanol", "なぜかこれを食べる妖精が続出した"),
