@@ -1302,7 +1302,7 @@ class MaterialCard(
                     { HAIMEVISKA_SAP.item().toIngredientStack(4) },
                     { ETHANOL.item().toIngredientStack(1) },
                 ),
-                outputs = listOf({ item().createItemStack(24) }),
+                outputs = listOf({ item().createItemStack(32) }),
                 duration = 20 * 60,
             ) on ETHANOL.item from ETHANOL.item
             // →TNT
