@@ -105,7 +105,7 @@ fun initFairyFountainModule() {
         val poemList = PoemList(1)
             .poem("Where does this water spring from...?", "この水は一体どこから湧いてくるのだろう…")
             .description("description1", "Can draw lottery with 100 Fairy Jewels", "100フェアリージュエルで抽選ができる")
-            .description("description2", "Can draw lottery with 1000 Fairy Jewels (R excluded)", "1000フェアリージュエルで抽選ができる（R以下が除外される）")
+            .description("description2", "Can draw lottery 10 times with 1000 Fairy Jewels (R excluded)", "1000フェアリージュエルで10回抽選ができる（R以下が除外される）")
             .description("description3", "Use while sneaking to show loot table", "スニーク中に使用時、提供割合を表示")
         card.item.registerPoem(poemList)
         card.item.registerPoemGeneration(poemList)
@@ -181,12 +181,15 @@ class FairyStatueFountainBlock(settings: Properties) : SimpleHorizontalFacingBlo
 
         // 生産
         if (level.isServer) {
-            val outputItemStack = run {
-                val chanceTable = getChanceTable(excludeR)
-                val entry = chanceTable.weightedRandom(level.random)?.first
-                entry?.let { it.second.getFairyStatueCard().item().createItemStack().also { itemStack -> itemStack.setFairyMotif(it.first) } } ?: Items.IRON_INGOT.createItemStack()
+            val count = if (excludeR) 10 else 1
+            repeat(count) {
+                val outputItemStack = run {
+                    val chanceTable = getChanceTable(excludeR)
+                    val entry = chanceTable.weightedRandom(level.random)?.first
+                    entry?.let { it.second.getFairyStatueCard().item().createItemStack().also { itemStack -> itemStack.setFairyMotif(it.first) } } ?: Items.IRON_INGOT.createItemStack()
+                }
+                player.obtain(outputItemStack)
             }
-            player.obtain(outputItemStack)
         }
 
         // エフェクト
