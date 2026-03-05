@@ -493,7 +493,7 @@ class MaterialCard(
                 )
             },
         ) {
-            AuraReflectorFurnaceRecipe.registerFuel(item.key, 20 * 60 / 8)
+            AuraReflectorFurnaceRecipe.registerFuel(item.key, 20 * 10)
         }
         val RESONITE_INGOT: MaterialCard = !MaterialCard(
             "resonite_ingot", "Resonite", "共鳴石",
