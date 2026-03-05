@@ -1257,7 +1257,18 @@ class MaterialCard(
             "aqua_vitae", "Aqua Vitae", "生命の水",
             null,
             recipeRemainder = Items.GLASS_BOTTLE,
-        )
+        ) {
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { Items.ROTTEN_FLESH.toIngredientStack(20) },
+                    { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
+                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60 * 5,
+            ) on { Items.ROTTEN_FLESH } from { Items.ROTTEN_FLESH }
+        }
         val ETHANOL: MaterialCard = !MaterialCard(
             "ethanol", "Ethanol", "エタノール",
             null,
