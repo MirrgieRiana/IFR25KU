@@ -72,7 +72,7 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
         }
 
         // 周辺に妖精の鱗粉
-        repeat((4.0 * count / config.tries).roundToInt()) {
+        repeat((16.0 * count / config.tries).roundToInt()) {
             val r = random.nextFloat() * config.maxRadius
             val theta = random.nextFloat() * Mth.TWO_PI
             val x = Mth.floor(Mth.cos(theta) * r)
