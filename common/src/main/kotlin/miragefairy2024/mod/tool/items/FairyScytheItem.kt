@@ -186,12 +186,16 @@ private inline fun withStickyMining(world: Level, blockPos: BlockPos, range: Int
         action()
         return
     }
+
     val aabb = AABB(blockPos).inflate(range.toDouble())
     val oldItemEntities = world.getEntitiesOfClass(ItemEntity::class.java, aabb) { it.isValid }.toSet()
     val oldExperienceOrbs = world.getEntitiesOfClass(ExperienceOrb::class.java, aabb) { it.isValid }.toSet()
+
     action()
+
     val newItemEntities = world.getEntitiesOfClass(ItemEntity::class.java, aabb) { it.isValid }.toSet()
     val newExperienceOrbs = world.getEntitiesOfClass(ExperienceOrb::class.java, aabb) { it.isValid }.toSet()
+
     (newItemEntities - oldItemEntities).forEach {
         it.teleportTo(player.x, player.y, player.z)
         it.setNoPickUpDelay()
