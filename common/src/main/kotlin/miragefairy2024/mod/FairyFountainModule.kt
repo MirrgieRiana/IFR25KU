@@ -181,10 +181,10 @@ class FairyStatueFountainBlock(settings: Properties) : SimpleHorizontalFacingBlo
 
         // 生産
         if (level.isServer) {
+            val chanceTable = getChanceTable(excludeR)
             val count = if (excludeR) 10 else 1
             repeat(count) {
                 val outputItemStack = run {
-                    val chanceTable = getChanceTable(excludeR)
                     val entry = chanceTable.weightedRandom(level.random)?.first
                     entry?.let { it.second.getFairyStatueCard().item().createItemStack().also { itemStack -> itemStack.setFairyMotif(it.first) } } ?: Items.IRON_INGOT.createItemStack()
                 }
