@@ -62,6 +62,15 @@ class ElevatedSpawnerFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
             if (!level.isEmptyBlock(origin.above(y))) return false
         }
 
+        // 台から上の7x7範囲が空であることを確認（ラピスラズリの高さまで）
+        for (dy in 0..6) {
+            for (dx in -3..3) {
+                for (dz in -3..3) {
+                    if (!level.isEmptyBlock(origin.above(pillarHeight + dy).offset(dx, 0, dz))) return false
+                }
+            }
+        }
+
         // ランダムな石レンガバリアント
         fun stoneBricks(): BlockState = when (random.nextInt(10)) {
             0 -> Blocks.MOSSY_STONE_BRICKS.defaultBlockState()
