@@ -1404,6 +1404,17 @@ fun initMaterialsModule() {
     registerCompressionRecipeGeneration(MaterialCard.JEWEL_1000.item, { MaterialCard.JEWEL_1000.item().toIngredient() }, MaterialCard.JEWEL_5000.item, { MaterialCard.JEWEL_5000.item().toIngredient() }, 5)
     registerCompressionRecipeGeneration(MaterialCard.JEWEL_5000.item, { MaterialCard.JEWEL_5000.item().toIngredient() }, MaterialCard.JEWEL_10000.item, { MaterialCard.JEWEL_10000.item().toIngredient() }, 2)
 
+    // パン
+    registerSimpleMachineRecipeGeneration(
+        AthanorRecipeCard,
+        inputs = listOf(
+            { Items.WHEAT.toIngredientStack(1) },
+            { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
+        ),
+        outputs = listOf({ Items.BREAD.createItemStack(2) }),
+        duration = 20 * 10,
+    ) on { Items.WHEAT } modId MirageFairy2024.MOD_ID
+
 }
 
 data class Ore(val shape: Shape, val material: Material)
