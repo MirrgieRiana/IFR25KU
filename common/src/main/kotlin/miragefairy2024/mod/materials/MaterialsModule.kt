@@ -81,6 +81,7 @@ import miragefairy2024.util.registerSpecialRecipe
 import miragefairy2024.util.toIngredient
 import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.toItemTag
+import miragefairy2024.util.using
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
@@ -1428,7 +1429,7 @@ fun initMaterialsModule() {
         ),
         outputs = listOf({ Items.BREAD.createItemStack(2) }),
         duration = 20 * 10,
-    ) on { Items.WHEAT } modId MirageFairy2024.MOD_ID
+    ).using("athanor") on { Items.WHEAT } modId MirageFairy2024.MOD_ID
 
 }
 

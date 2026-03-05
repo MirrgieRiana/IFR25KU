@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:bread"
+        "recipe": "miragefairy2024:bread_by_athanor"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:bread"
+      "miragefairy2024:bread_by_athanor"
     ]
   }
 }
