@@ -3,11 +3,17 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.lib.placePlacedItem
+import miragefairy2024.mod.OreCard
+import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.isIn
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.core.Holder
+import net.minecraft.tags.BlockTags
 import net.minecraft.util.Mth
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration
@@ -51,6 +57,7 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
         val y1 = config.ySpread + 1
         val mutableBlockPos = BlockPos.MutableBlockPos()
 
+        // ミラージュの花
         repeat(config.tries) {
             val r = random.nextFloat() * radiusRange + minRadius
             val theta = random.nextFloat() * Mth.TWO_PI
@@ -64,6 +71,7 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
             }
         }
 
+        // 周辺に妖精の鱗粉
         repeat((4.0 * count / config.tries).roundToInt()) {
             val r = random.nextFloat() * config.maxRadius
             val theta = random.nextFloat() * Mth.TWO_PI
@@ -74,6 +82,20 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
             mutableBlockPos.setWithOffset(originBlockPos, x, y, z)
             if (placePlacedItem(world, mutableBlockPos, MaterialCard.FAIRY_SCALES.item().createItemStack(), random)) {
                 count++
+            }
+        }
+
+        // 地下に蒼天石の塊
+        run {
+            val centerPos = originBlockPos.below(random.nextIntBetweenInclusive(10, 20))
+            fun replace(targetPos: BlockPos, block: Block) {
+                if (world.getBlockState(targetPos) isIn BlockTags.STONE_ORE_REPLACEABLES) {
+                    world.setBlock(targetPos, block.defaultBlockState(), 2)
+                }
+            }
+            replace(centerPos, BlockMaterialCard.MIRANAGITE_BLOCK.block())
+            Direction.entries.forEach { direction ->
+                replace(centerPos.relative(direction), OreCard.MIRANAGITE_ORE.block())
             }
         }
 
