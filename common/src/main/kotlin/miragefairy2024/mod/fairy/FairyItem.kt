@@ -395,9 +395,10 @@ class FairyRareItemSubPredicate(val rare: MinMaxBounds.Ints) : SingleComponentIt
     override fun matches(stack: ItemStack, value: Motif) = rare.matches(value.rare)
 }
 
+
 class FairyMotifIngredient(val motif: Motif) : CustomIngredient {
     companion object {
-        val ID = MirageFairy2024.identifier("fairy_motif_ingredient")
+        val ID = MirageFairy2024.identifier("fairy_motif")
         val SERIALIZER = object : CustomIngredientSerializer<FairyMotifIngredient> {
             override fun getIdentifier() = ID
             override fun getCodec(allowEmpty: Boolean): MapCodec<FairyMotifIngredient> = motifRegistry.byNameCodec().fieldOf("motif").xmap(::FairyMotifIngredient, FairyMotifIngredient::motif)
