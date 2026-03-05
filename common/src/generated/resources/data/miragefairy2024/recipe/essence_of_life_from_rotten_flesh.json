@@ -1,0 +1,31 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 6000,
+  "group": "miragefairy2024:essence_of_life",
+  "inputs": [
+    {
+      "Amount": 20,
+      "Ingredient": {
+        "item": "minecraft:rotten_flesh"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "fabric:type": "miragefairy2024:water_bottle"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:glass_bottle"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "miragefairy2024:essence_of_life"
+    }
+  ]
+}
