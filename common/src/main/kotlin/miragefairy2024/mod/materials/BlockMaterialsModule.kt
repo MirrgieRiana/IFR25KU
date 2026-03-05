@@ -148,7 +148,7 @@ open class BlockMaterialCard(
         }
         val MIRAGE_LEAVES_BLOCK: BlockMaterialCard = !object : BlockMaterialCard(
             "mirage_leaves_block", EnJa("Mirage Leaves Block", "ミラージュの葉ブロック"),
-            PoemList(1).poem("Archive the forgotten leaves", "喪われ、そして、収集されたメメント。"),
+            PoemList(1).poem("Archive the forgotten leaves", "喪われ、そして収集されたメメント。"),
             MapColor.WARPED_STEM, 2.0F, 2.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = MirageLeavesBlock(properties)
