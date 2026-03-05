@@ -1297,7 +1297,7 @@ class MaterialCard(
                 ),
                 outputs = listOf({ item().createItemStack(24) }),
                 duration = 20 * 60,
-            ) from ETHANOL.item on ETHANOL.item
+            ) on ETHANOL.item from ETHANOL.item
             // →TNT
             registerShapedRecipeGeneration({ Items.TNT }) {
                 pattern(" G ")
