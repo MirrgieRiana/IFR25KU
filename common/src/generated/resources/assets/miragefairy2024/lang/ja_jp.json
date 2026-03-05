@@ -171,7 +171,7 @@
   "block.miragefairy2024.fairy_statue.poem": "その製法は誰にも知られていない",
   "block.miragefairy2024.fairy_statue_fountain": "妖精の像の泉",
   "block.miragefairy2024.fairy_statue_fountain.description1": "100フェアリージュエルで抽選ができる",
-  "block.miragefairy2024.fairy_statue_fountain.description2": "1000フェアリージュエルで10回抽選ができる（R以下が除外される）",
+  "block.miragefairy2024.fairy_statue_fountain.description2": "1000フェアリージュエルで10回抽選ができる（最後の1回はR以下が除外される）",
   "block.miragefairy2024.fairy_statue_fountain.description3": "スニーク中に使用時、提供割合を表示",
   "block.miragefairy2024.fairy_statue_fountain.poem": "この水は一体どこから湧いてくるのだろう…",
   "block.miragefairy2024.fairy_statue_fountain.usage": "%sまたは%sを持って使用してください",
