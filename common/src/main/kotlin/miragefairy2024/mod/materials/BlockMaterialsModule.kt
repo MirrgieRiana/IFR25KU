@@ -346,14 +346,14 @@ open class BlockMaterialCard(
             "miranagite_block", EnJa("Miranagite Block", "蒼天石ブロック"),
             PoemList(2).poem(EnJa("Passivation confines discontinuous space", "虚空に導かれし、神域との接合点。")),
             MapColor.LAPIS, 3.0F, 3.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.MIRANAGITE),
-        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().tag(LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG).init {
             registerCompressionRecipeGeneration(MaterialCard.MIRANAGITE.item, { MaterialCard.MIRANAGITE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
         val MIRANAGITE_TILES = !BlockMaterialCard(
             "miranagite_tiles", EnJa("Miranagite Tiles", "蒼天石タイル"),
             PoemList(2).poem(EnJa("Is time really an absolute entity?", "運命を退ける、蒼神の慈愛。")),
             MapColor.LAPIS, 3.0F, 3.0F,
-        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG).init {
             registerShapedRecipeGeneration(item, count = 2) {
                 pattern("B#")
                 pattern("#B")
@@ -370,7 +370,7 @@ open class BlockMaterialCard(
             context(ModContext) override fun initBlockStateGeneration() = Unit
             context(ModContext) override fun initModelGeneration() = Unit
             context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
-        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
+        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).tag(LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG).init {
             registerBlockFamily(TexturedModel.CUBE, MIRANAGITE_TILES.block) { it.slab(block()) }
             registerStonecutterRecipeGeneration(MIRANAGITE_TILES.item, item, 2)
         }
@@ -382,7 +382,7 @@ open class BlockMaterialCard(
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(MIRANAGITE_TILES.block.await().defaultBlockState(), properties)
             context(ModContext) override fun initBlockStateGeneration() = Unit
             context(ModContext) override fun initModelGeneration() = Unit
-        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
+        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).tag(LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG).init {
             registerBlockFamily(TexturedModel.CUBE, MIRANAGITE_TILES.block) { it.stairs(block()) }
             registerStonecutterRecipeGeneration(MIRANAGITE_TILES.item, item)
         }
@@ -395,7 +395,7 @@ open class BlockMaterialCard(
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = WallBlock(properties)
             context(ModContext) override fun initBlockStateGeneration() = Unit
             context(ModContext) override fun initModelGeneration() = Unit
-        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.WALLS).tag(ItemTags.WALLS).init {
+        }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.WALLS).tag(ItemTags.WALLS).tag(LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG).init {
             registerBlockFamily(TexturedModel.CUBE, MIRANAGITE_TILES.block) { it.wall(block()) }
             registerStonecutterRecipeGeneration(MIRANAGITE_TILES.item, item, category = RecipeCategory.DECORATIONS)
         }
