@@ -1088,7 +1088,7 @@ class MaterialCard(
         val RUM: MaterialCard = !MaterialCard(
             "rum", "Rum", "ラム酒",
             null,
-            fuelValue = 200 * 4, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
+            fuelValue = 200 * 12, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
             foodComponentCreator = {
                 FoodProperties.Builder()
                     .nutrition(6)
@@ -1254,14 +1254,14 @@ class MaterialCard(
             ) on { Items.SPIDER_EYE } from { Items.SPIDER_EYE }
         }
         val AQUA_VITAE: MaterialCard = !MaterialCard(
-            "aqua_vitae", "Aqua Vitae", "アクアヴィテ",
+            "aqua_vitae", "Aqua Vitae", "生命の水",
             null,
             recipeRemainder = Items.GLASS_BOTTLE,
         )
         val ETHANOL: MaterialCard = !MaterialCard(
             "ethanol", "Ethanol", "エタノール",
             null,
-            fuelValue = 200 * 4, recipeRemainder = Items.GLASS_BOTTLE,
+            fuelValue = 200 * 30, recipeRemainder = Items.GLASS_BOTTLE,
         )
         val SOLID_FUEL: MaterialCard = !MaterialCard(
             "solid_fuel", "Solid Fuel", "固形燃料",
