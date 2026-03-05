@@ -11,20 +11,25 @@ import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.mod.tool.effects.areaMining
 import miragefairy2024.mod.tool.effects.enchantment
 import miragefairy2024.util.Translation
+import miragefairy2024.util.get
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isValid
 import miragefairy2024.util.text
 import miragefairy2024.util.toRomanText
 import miragefairy2024.util.yellow
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.component.DataComponents
+import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EquipmentSlot
+import net.minecraft.world.entity.ExperienceOrb
 import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -32,6 +37,7 @@ import net.minecraft.world.item.SwordItem
 import net.minecraft.world.item.Tier
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.enchantment.Enchantment
+import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.item.enchantment.ItemEnchantments
 import net.minecraft.world.level.ClipContext
 import net.minecraft.world.level.Level
@@ -39,6 +45,7 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.CaveVines
 import net.minecraft.world.level.block.SweetBerryBushBlock
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.BlockHitResult
 
 open class FairyScytheConfiguration(
@@ -105,20 +112,22 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
             val blockPos = blockHitResult.blockPos
             var effective = false
             // TODO 貫通判定
-            (-range..range).forEach { x ->
-                (-range..range).forEach { y ->
-                    (-range..range).forEach { z ->
-                        val targetBlockPos = blockPos.offset(x, y, z)
-                        val targetBlockState = world.getBlockState(targetBlockPos)
-                        when (val targetBlock = targetBlockState.block) {
-                            is MagicPlantBlock -> {
-                                val result = targetBlock.tryPick(world, targetBlockPos, user, itemStack, true, false)
-                                if (result) effective = true
-                            }
+            withStickyMining(world, blockPos, range, user, itemStack) {
+                (-range..range).forEach { x ->
+                    (-range..range).forEach { y ->
+                        (-range..range).forEach { z ->
+                            val targetBlockPos = blockPos.offset(x, y, z)
+                            val targetBlockState = world.getBlockState(targetBlockPos)
+                            when (val targetBlock = targetBlockState.block) {
+                                is MagicPlantBlock -> {
+                                    val result = targetBlock.tryPick(world, targetBlockPos, user, itemStack, true, false)
+                                    if (result) effective = true
+                                }
 
-                            is SweetBerryBushBlock, is CaveVines -> {
-                                val result = targetBlockState.useWithoutItem(world, user, BlockHitResult(blockHitResult.location.add(x.toDouble(), y.toDouble(), z.toDouble()), blockHitResult.direction, targetBlockPos, false))
-                                if (result.consumesAction()) effective = true
+                                is SweetBerryBushBlock, is CaveVines -> {
+                                    val result = targetBlockState.useWithoutItem(world, user, BlockHitResult(blockHitResult.location.add(x.toDouble(), y.toDouble(), z.toDouble()), blockHitResult.direction, targetBlockPos, false))
+                                    if (result.consumesAction()) effective = true
+                                }
                             }
                         }
                     }
@@ -148,19 +157,46 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
     override fun postTryPick(world: Level, blockPos: BlockPos, player: Player?, itemStack: ItemStack, succeed: Boolean) {
         if (world.isClientSide) return
         if (player?.isShiftKeyDown == true) return
-        (-range..range).forEach { x ->
-            (-range..range).forEach { y ->
-                (-range..range).forEach { z ->
-                    if (x != 0 || y != 0 || z != 0) {
-                        val targetBlockPos = blockPos.offset(x, y, z)
-                        val targetBlockState = world.getBlockState(targetBlockPos)
-                        val targetBlock = targetBlockState.block
-                        if (targetBlock is MagicPlantBlock) {
-                            targetBlock.tryPick(world, targetBlockPos, player, itemStack, true, false)
+        withStickyMining(world, blockPos, range, player, itemStack) {
+            (-range..range).forEach { x ->
+                (-range..range).forEach { y ->
+                    (-range..range).forEach { z ->
+                        if (x != 0 || y != 0 || z != 0) {
+                            val targetBlockPos = blockPos.offset(x, y, z)
+                            val targetBlockState = world.getBlockState(targetBlockPos)
+                            val targetBlock = targetBlockState.block
+                            if (targetBlock is MagicPlantBlock) {
+                                targetBlock.tryPick(world, targetBlockPos, player, itemStack, true, false)
+                            }
                         }
                     }
                 }
             }
         }
+    }
+}
+
+private inline fun withStickyMining(world: Level, blockPos: BlockPos, range: Int, player: Player?, tool: ItemStack, action: () -> Unit) {
+    if (world.isClientSide || player == null) {
+        action()
+        return
+    }
+    val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
+    if (stickyMiningLevel == 0) {
+        action()
+        return
+    }
+    val aabb = AABB(blockPos).inflate(range.toDouble())
+    val oldItemEntities = world.getEntitiesOfClass(ItemEntity::class.java, aabb) { it.isValid }.toSet()
+    val oldExperienceOrbs = world.getEntitiesOfClass(ExperienceOrb::class.java, aabb) { it.isValid }.toSet()
+    action()
+    val newItemEntities = world.getEntitiesOfClass(ItemEntity::class.java, aabb) { it.isValid }.toSet()
+    val newExperienceOrbs = world.getEntitiesOfClass(ExperienceOrb::class.java, aabb) { it.isValid }.toSet()
+    (newItemEntities - oldItemEntities).forEach {
+        it.teleportTo(player.x, player.y, player.z)
+        it.setNoPickUpDelay()
+    }
+    (newExperienceOrbs - oldExperienceOrbs).forEach {
+        it.teleportTo(player.x, player.y, player.z)
     }
 }
