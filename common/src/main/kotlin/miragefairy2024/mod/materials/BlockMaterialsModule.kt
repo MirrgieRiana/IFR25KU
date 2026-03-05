@@ -346,7 +346,7 @@ open class BlockMaterialCard(
             "miranagite_block", EnJa("Miranagite Block", "蒼天石ブロック"),
             PoemList(2).poem(EnJa("Passivation confines discontinuous space", "虚空に導かれし、神域との接合点。")),
             MapColor.LAPIS, 3.0F, 3.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.MIRANAGITE),
-        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().tag(LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG).tag(BlockTags.STONE_ORE_REPLACEABLES).init {
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().tag(LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG).init {
             registerCompressionRecipeGeneration(MaterialCard.MIRANAGITE.item, { MaterialCard.MIRANAGITE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
         val MIRANAGITE_TILES = !BlockMaterialCard(

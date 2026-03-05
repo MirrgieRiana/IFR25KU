@@ -235,8 +235,6 @@ fun initOresModule() {
 
     }
 
-    BlockTags.STONE_ORE_REPLACEABLES.generator.registerChild(OreCard.MIRANAGITE_ORE.block)
-
     /**
      * @param countPerCube
      * 目安:
