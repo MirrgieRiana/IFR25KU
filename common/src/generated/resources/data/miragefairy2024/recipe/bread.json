@@ -1,0 +1,25 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 200,
+  "group": "minecraft:bread",
+  "inputs": [
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:wheat"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "fabric:type": "miragefairy2024:water_bottle"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 2,
+      "id": "minecraft:bread"
+    }
+  ]
+}
