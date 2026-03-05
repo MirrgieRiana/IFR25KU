@@ -1253,6 +1253,19 @@ class MaterialCard(
                 duration = 20 * 5,
             ) on { Items.SPIDER_EYE } from { Items.SPIDER_EYE }
         }
+        val ETHANOL: MaterialCard = !MaterialCard(
+            "ethanol", "Ethanol", "エタノール",
+            null,
+        ) {
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { FAIRY_LIQUEUR.item().toIngredientStack(5) },
+                ),
+                outputs = listOf({ item().createItemStack(2) }),
+                duration = 20 * 60,
+            ) on FAIRY_LIQUEUR.item
+        }
         val SOLID_FUEL: MaterialCard = !MaterialCard(
             "solid_fuel", "Solid Fuel", "固形燃料",
             PoemList(2).poem("Caramelized Ethanol", "なぜかこれを食べる妖精が続出した"),
@@ -1275,6 +1288,16 @@ class MaterialCard(
                 outputs = listOf({ item().createItemStack(8) }), // 800 + 2400 + 1200 = 4400 -> 200 * 8 * 8 = 12800
                 duration = 20 * 60, // 1200 = 200 * 6
             ) on ItemTagCard.SPIRITS.tag
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { Items.SUGAR.toIngredientStack(8) },
+                    { HAIMEVISKA_SAP.item().toIngredientStack(4) },
+                    { ETHANOL.item().toIngredientStack(1) },
+                ),
+                outputs = listOf({ item().createItemStack(24) }),
+                duration = 20 * 60,
+            ) from ETHANOL.item on ETHANOL.item
             // →TNT
             registerShapedRecipeGeneration({ Items.TNT }) {
                 pattern(" G ")
