@@ -81,6 +81,7 @@ import miragefairy2024.util.registerSpecialRecipe
 import miragefairy2024.util.toIngredient
 import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.toItemTag
+import miragefairy2024.util.using
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
@@ -1418,6 +1419,17 @@ fun initMaterialsModule() {
     registerCompressionRecipeGeneration(MaterialCard.JEWEL_500.item, { MaterialCard.JEWEL_500.item().toIngredient() }, MaterialCard.JEWEL_1000.item, { MaterialCard.JEWEL_1000.item().toIngredient() }, 2)
     registerCompressionRecipeGeneration(MaterialCard.JEWEL_1000.item, { MaterialCard.JEWEL_1000.item().toIngredient() }, MaterialCard.JEWEL_5000.item, { MaterialCard.JEWEL_5000.item().toIngredient() }, 5)
     registerCompressionRecipeGeneration(MaterialCard.JEWEL_5000.item, { MaterialCard.JEWEL_5000.item().toIngredient() }, MaterialCard.JEWEL_10000.item, { MaterialCard.JEWEL_10000.item().toIngredient() }, 2)
+
+    // パン
+    registerSimpleMachineRecipeGeneration(
+        AthanorRecipeCard,
+        inputs = listOf(
+            { Items.WHEAT.toIngredientStack(1) },
+            { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
+        ),
+        outputs = listOf({ Items.BREAD.createItemStack(2) }),
+        duration = 20 * 10,
+    ) using "athanor" on { Items.WHEAT } modId MirageFairy2024.MOD_ID
 
 }
 
