@@ -14,6 +14,7 @@ import miragefairy2024.mod.description
 import miragefairy2024.mod.entity.ChaosCubeCard
 import miragefairy2024.mod.experienceStatusEffect
 import miragefairy2024.mod.fairy.FairyCard
+import miragefairy2024.mod.fairy.FairyMotifIngredient
 import miragefairy2024.mod.fairy.MotifCard
 import miragefairy2024.mod.fairy.RandomFairySummoningItem
 import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
@@ -1462,6 +1463,18 @@ fun initMaterialsModule() {
         outputs = listOf({ Items.BREAD.createItemStack(2) }),
         duration = 20 * 10,
     ) using "athanor" on { Items.WHEAT } modId MirageFairy2024.MOD_ID
+
+    // 牛肉
+    registerSimpleMachineRecipeGeneration(
+        AthanorRecipeCard,
+        inputs = listOf(
+            { FairyMotifIngredient(MotifCard.COW).toVanilla().toIngredientStack(1) },
+            { MaterialCard.AQUA_VITAE.item().toIngredientStack(1) },
+            { Items.DIRT.toIngredientStack(1) },
+        ),
+        outputs = listOf({ Items.BEEF.createItemStack() }),
+        duration = 20 * 60 * 5,
+    ) using "athanor" on { MaterialCard.AQUA_VITAE.item() } modId MirageFairy2024.MOD_ID
 
 }
 
