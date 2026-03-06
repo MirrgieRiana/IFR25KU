@@ -35,7 +35,7 @@ object ElevatedSpawnerFeatureCard {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature(placedFeatureKey) { per(64) + flower(square, surface) }
+                registerPlacedFeature(placedFeatureKey) { per(16) + flower(square, surface) }
             }
         }
     }
@@ -47,8 +47,8 @@ class ElevatedSpawnerFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
         val origin = context.origin()
         val random = context.random()
 
-        // 支柱の高さ（8～16ブロック）
-        val pillarHeight = random.nextIntBetweenInclusive(8, 16)
+        // 支柱の高さ（4～10ブロック）
+        val pillarHeight = random.nextIntBetweenInclusive(4, 10)
 
         // 構造物の全高: 支柱 + 台(1) + 空間(3) + 天井(1) + フェンス(1) + ラピスラズリ(1) = 支柱 + 7
         val totalHeight = pillarHeight + 7
@@ -72,15 +72,15 @@ class ElevatedSpawnerFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
         }
 
         // ランダムな石レンガバリアント
-        fun stoneBricks(): BlockState = when (random.nextInt(10)) {
+        fun stoneBricks(): BlockState = when (random.nextInt(3)) {
             0 -> Blocks.MOSSY_STONE_BRICKS.defaultBlockState()
             1 -> Blocks.CRACKED_STONE_BRICKS.defaultBlockState()
             else -> Blocks.STONE_BRICKS.defaultBlockState()
         }
 
-        fun stoneWall(): BlockState = if (random.nextInt(5) == 0) Blocks.MOSSY_STONE_BRICK_WALL.defaultBlockState() else Blocks.STONE_BRICK_WALL.defaultBlockState()
+        fun stoneWall(): BlockState = if (random.nextInt(2) == 0) Blocks.MOSSY_STONE_BRICK_WALL.defaultBlockState() else Blocks.STONE_BRICK_WALL.defaultBlockState()
 
-        fun stoneSlab(): BlockState = (if (random.nextInt(5) == 0) Blocks.MOSSY_STONE_BRICK_SLAB else Blocks.STONE_BRICK_SLAB).defaultBlockState().with(SlabBlock.TYPE, SlabType.BOTTOM)
+        fun stoneSlab(): BlockState = (if (random.nextInt(2) == 0) Blocks.MOSSY_STONE_BRICK_SLAB else Blocks.STONE_BRICK_SLAB).defaultBlockState().with(SlabBlock.TYPE, SlabType.BOTTOM)
 
         // 支柱を配置
         for (y in 0 until pillarHeight) {
