@@ -30,8 +30,8 @@ fun initMagicPlantClientModule() {
 
         graphics.pose().pushPose()
         try {
-            graphics.pose().translate(x.toFloat(), y.toFloat(), 200.0F)
-            graphics.pose().scale(0.5F, 0.5F, 1.0F)
+            graphics.pose().translate(x.toFloat() + 8.0F, y.toFloat() + 8.0F, 200.0F)
+            graphics.pose().scale(0.25F, 0.25F, 1.0F)
             graphics.blit(texture, 0, 0, 0F, 0F, 32, 32, 32, 32)
         } finally {
             graphics.pose().popPose()
