@@ -83,6 +83,7 @@ open class SimpleMachineRecipe(
 
     interface MatchResult {
         fun craft(): List<ItemStack>
+        fun getRemainingItems(): List<ItemStack>
     }
 
     private data class Consumption(val slotIndex: Int, val count: Int)
@@ -112,6 +113,7 @@ open class SimpleMachineRecipe(
 
     open fun match(inventory: SimpleMachineRecipeInput): MatchResult? {
         val consumptions = matchImpl(inventory) ?: return null
+        val recipe = this
         return object : MatchResult {
             override fun craft(): List<ItemStack> {
                 val result = mutableListOf<ItemStack>()
@@ -119,6 +121,22 @@ open class SimpleMachineRecipe(
                     result += inventory.getItem(it.slotIndex).split(it.count)
                 }
                 return result
+            }
+
+            override fun getRemainingItems(): List<ItemStack> {
+                val list = mutableListOf<ItemStack>()
+                consumptions.forEach {
+                    val remainder = recipe.getCustomizedRemainder(inventory.getItem(it.slotIndex))
+                    if (remainder.isEmpty) return@forEach
+
+                    var totalRemainderCount = remainder.count * it.count
+                    while (totalRemainderCount > 0) {
+                        val count = totalRemainderCount atMost remainder.maxStackSize
+                        list += remainder.copyWithCount(count)
+                        totalRemainderCount -= count
+                    }
+                }
+                return list
             }
         }
     }

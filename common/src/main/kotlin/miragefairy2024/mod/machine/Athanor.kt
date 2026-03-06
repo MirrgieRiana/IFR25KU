@@ -381,7 +381,7 @@ class AthanorBlockEntity(private val card: AthanorCard, pos: BlockPos, state: Bl
         val matchResult = recipe.match(inventory, world.random) ?: return null
 
         return {
-            val remainder = recipe.getRemainingItems(inventory, world.random)
+            val remainder = matchResult.getRemainingItems()
             craftingInventory += matchResult.craft()
             recipe.outputs.forEach {
                 waitingInventory += it.copy()

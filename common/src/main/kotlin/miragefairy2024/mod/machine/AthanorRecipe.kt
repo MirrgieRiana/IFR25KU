@@ -128,6 +128,7 @@ class AthanorRecipe(
         }
 
         val consumptions = consumedGroups.flatten()
+        val recipe = this
 
         return object : MatchResult {
             override fun craft(): List<ItemStack> {
@@ -137,35 +138,26 @@ class AthanorRecipe(
                 }
                 return result
             }
+
+            override fun getRemainingItems(): List<ItemStack> {
+                val list = mutableListOf<ItemStack>()
+                consumptions.forEach {
+                    val remainder = recipe.getCustomizedRemainder(inventory.getItem(it.slotIndex))
+                    if (remainder.isEmpty) return@forEach
+
+                    var totalRemainderCount = remainder.count * it.count
+                    while (totalRemainderCount > 0) {
+                        val count = totalRemainderCount atMost remainder.maxStackSize
+                        list += remainder.copyWithCount(count)
+                        totalRemainderCount -= count
+                    }
+                }
+                return list
+            }
         }
     }
 
     override fun match(inventory: SimpleMachineRecipeInput): MatchResult? {
         return match(inventory, null)
-    }
-
-    fun getRemainingItems(inventory: SimpleMachineRecipeInput, random: RandomSource?): List<ItemStack> {
-        val groupedConsumptions = matchImplGrouped(inventory) ?: return listOf()
-
-        val consumedGroups = groupedConsumptions.filter { group ->
-            val athanorInput = group.first().athanorInput
-            val chance = athanorInput.consumptionChance
-            chance >= 1.0 || random == null || random.nextDouble() < chance
-        }
-
-        val consumptions = consumedGroups.flatten()
-        val list = mutableListOf<ItemStack>()
-        consumptions.forEach {
-            val remainder = getCustomizedRemainder(inventory.getItem(it.slotIndex))
-            if (remainder.isEmpty) return@forEach
-
-            var totalRemainderCount = remainder.count * it.count
-            while (totalRemainderCount > 0) {
-                val count = totalRemainderCount atMost remainder.maxStackSize
-                list += remainder.copyWithCount(count)
-                totalRemainderCount -= count
-            }
-        }
-        return list
     }
 }
