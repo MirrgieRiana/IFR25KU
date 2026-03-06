@@ -1309,7 +1309,7 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { Items.SUGAR.toIngredientStack(8) },
+                    { Items.SUGAR.toIngredientStack(16) },
                     { HAIMEVISKA_SAP.item().toIngredientStack(4) },
                     { ETHANOL.item().toIngredientStack(1) },
                 ),
