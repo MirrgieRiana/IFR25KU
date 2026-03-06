@@ -336,6 +336,8 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
 
     // Visual
 
+    // TODO パーティクル
+
 }
 
 interface PostTryPickHandlerItem {
