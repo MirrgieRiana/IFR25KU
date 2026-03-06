@@ -835,7 +835,7 @@ class MaterialCard(
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 2,
-            ) on ItemTags.PLANKS
+            ) on ItemTags.PLANKS from ItemTags.PLANKS
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
