@@ -1317,7 +1317,7 @@ class MaterialCard(
                 duration = 20 * 60,
             ) on ETHANOL.item from ETHANOL.item
             // →TNT
-            registerShapedRecipeGeneration({ Items.TNT }) {
+            registerShapedRecipeGeneration({ Items.TNT }, count = 2) {
                 pattern(" G ")
                 pattern("GFG")
                 pattern(" G ")
