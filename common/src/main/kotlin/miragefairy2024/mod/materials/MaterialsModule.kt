@@ -1255,7 +1255,7 @@ class MaterialCard(
         }
         val AQUA_VITAE: MaterialCard = !MaterialCard(
             "aqua_vitae", "Aqua Vitae", "生命の水",
-            null,
+            PoemList(2).poem("Every life was once water.", "遊離するエーテル結晶核。"),
             recipeRemainder = Items.GLASS_BOTTLE,
         ) {
             registerSimpleMachineRecipeGeneration(
@@ -1309,7 +1309,7 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { Items.SUGAR.toIngredientStack(8) },
+                    { Items.SUGAR.toIngredientStack(16) },
                     { HAIMEVISKA_SAP.item().toIngredientStack(4) },
                     { ETHANOL.item().toIngredientStack(1) },
                 ),
@@ -1317,7 +1317,7 @@ class MaterialCard(
                 duration = 20 * 60,
             ) on ETHANOL.item from ETHANOL.item
             // →TNT
-            registerShapedRecipeGeneration({ Items.TNT }) {
+            registerShapedRecipeGeneration({ Items.TNT }, count = 2) {
                 pattern(" G ")
                 pattern("GFG")
                 pattern(" G ")
