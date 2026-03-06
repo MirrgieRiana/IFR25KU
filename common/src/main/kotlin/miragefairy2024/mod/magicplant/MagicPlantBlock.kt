@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.BonemealableBlock
 import net.minecraft.world.level.block.BushBlock
 import net.minecraft.world.level.block.EntityBlock
+import net.minecraft.world.level.block.LevelEvent
 import net.minecraft.world.level.block.SupportType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.storage.loot.LootParams
@@ -251,6 +252,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
         blockEntity.setNatural(false)
 
         // エフェクト
+        world.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, Block.getId(blockState))
         world.playSound(null, blockPos, soundType.breakSound, SoundSource.BLOCKS, (soundType.volume + 1.0F) / 2.0F * 0.5F, soundType.pitch * 0.8F)
 
     }
@@ -333,8 +335,6 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
 
 
     // Visual
-
-    // TODO パーティクル
 
 }
 
