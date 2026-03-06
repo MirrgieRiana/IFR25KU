@@ -30,7 +30,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.util.RandomSource
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Recipe
@@ -38,25 +37,6 @@ import net.minecraft.world.item.crafting.RecipeInput
 import net.minecraft.world.item.crafting.RecipeSerializer
 import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.level.Level
-
-data class MachineInput(val ingredientStack: IngredientStack, val consumptionChance: Double = 1.0) {
-    companion object {
-        val CODEC: Codec<MachineInput> = RecordCodecBuilder.create { instance ->
-            instance.group(
-                IngredientStack.CODEC.fieldOf("ingredient").forGetter { it.ingredientStack },
-                Codec.DOUBLE.optionalFieldOf("consumptionChance", 1.0).forGetter { it.consumptionChance },
-            ).apply(instance, ::MachineInput)
-        }
-        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, MachineInput> = StreamCodec.composite(
-            IngredientStack.STREAM_CODEC,
-            { it.ingredientStack },
-            ByteBufCodecs.DOUBLE,
-            { it.consumptionChance },
-            ::MachineInput,
-        )
-        val EMPTY = MachineInput(IngredientStack.EMPTY)
-    }
-}
 
 abstract class SimpleMachineRecipeCard<R : SimpleMachineRecipe> {
 
@@ -69,11 +49,11 @@ abstract class SimpleMachineRecipeCard<R : SimpleMachineRecipe> {
     }
 
     @Suppress("LeakingThis")
-    val serializer = SimpleMachineRecipe.Serializer(this)
+    open val serializer: RecipeSerializer<R> = SimpleMachineRecipe.Serializer(this)
 
     abstract val recipeClass: Class<R>
 
-    abstract fun createRecipe(group: String, inputs: List<MachineInput>, outputs: List<ItemStack>, duration: Int): R
+    abstract fun createRecipe(group: String, inputs: List<IngredientStack>, outputs: List<ItemStack>, duration: Int): R
 
     context(ModContext)
     fun init() {
@@ -91,7 +71,7 @@ class SimpleMachineRecipeInput(private val itemStacks: List<ItemStack>) : Recipe
 open class SimpleMachineRecipe(
     private val card: SimpleMachineRecipeCard<*>,
     private val group: String,
-    val inputs: List<MachineInput>,
+    val inputs: List<IngredientStack>,
     val outputs: List<ItemStack>,
     val duration: Int,
 ) : Recipe<SimpleMachineRecipeInput> {
@@ -103,47 +83,35 @@ open class SimpleMachineRecipe(
 
     interface MatchResult {
         fun craft(): List<ItemStack>
-        fun getRemainingItems(): List<ItemStack>
     }
 
-    private data class Consumption(val inputIndex: Int, val slotIndex: Int, val count: Int)
+    private data class Consumption(val slotIndex: Int, val count: Int)
 
-    private fun matchImplGrouped(inventory: SimpleMachineRecipeInput): List<List<Consumption>>? {
+    private fun matchImpl(inventory: SimpleMachineRecipeInput): List<Consumption>? {
         val virtualCounts = IntArray(inventory.size()) { inventory.getItem(it).count }
         val result = mutableListOf<List<Consumption>>()
-        inputs.forEachIndexed { inputIndex, input ->
+        inputs.forEach { input ->
             val consumptions = mutableListOf<Consumption>()
             run inputEntryCompleted@{
-                var neededCount = input.ingredientStack.count
+                var neededCount = input.count
                 (0 until inventory.size()).forEach nextSlot@{ slotIndex ->
                     if (virtualCounts[slotIndex] == 0) return@nextSlot
-                    if (!input.ingredientStack.ingredient.test(inventory.getItem(slotIndex))) return@nextSlot
+                    if (!input.ingredient.test(inventory.getItem(slotIndex))) return@nextSlot
                     val takeCount = neededCount min virtualCounts[slotIndex]
                     virtualCounts[slotIndex] -= takeCount
                     neededCount -= takeCount
-                    consumptions += Consumption(inputIndex, slotIndex, takeCount)
+                    consumptions += Consumption(slotIndex, takeCount)
                     if (neededCount == 0) return@inputEntryCompleted
                 }
                 return null
             }
             result += consumptions
         }
-        return result
+        return result.flatten()
     }
 
-    fun match(inventory: SimpleMachineRecipeInput, random: RandomSource? = null): MatchResult? {
-        val allConsumptions = matchImplGrouped(inventory) ?: return null
-
-        val consumedInputIndices = mutableSetOf<Int>()
-        inputs.indices.forEach { inputIndex ->
-            val chance = inputs[inputIndex].consumptionChance
-            if (chance >= 1.0 || random == null || random.nextDouble() < chance) {
-                consumedInputIndices += inputIndex
-            }
-        }
-
-        val consumptions = allConsumptions.flatten().filter { it.inputIndex in consumedInputIndices }
-
+    open fun match(inventory: SimpleMachineRecipeInput): MatchResult? {
+        val consumptions = matchImpl(inventory) ?: return null
         return object : MatchResult {
             override fun craft(): List<ItemStack> {
                 val result = mutableListOf<ItemStack>()
@@ -151,22 +119,6 @@ open class SimpleMachineRecipe(
                     result += inventory.getItem(it.slotIndex).split(it.count)
                 }
                 return result
-            }
-
-            override fun getRemainingItems(): List<ItemStack> {
-                val list = mutableListOf<ItemStack>()
-                consumptions.forEach {
-                    val remainder = getCustomizedRemainder(inventory.getItem(it.slotIndex))
-                    if (remainder.isEmpty) return@forEach
-
-                    var totalRemainderCount = remainder.count * it.count
-                    while (totalRemainderCount > 0) {
-                        val count = totalRemainderCount atMost remainder.maxStackSize
-                        list += remainder.copyWithCount(count)
-                        totalRemainderCount -= count
-                    }
-                }
-                return list
             }
         }
     }
@@ -179,7 +131,7 @@ open class SimpleMachineRecipe(
 
     override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
         val list = NonNullList.create<ItemStack>()
-        val consumptions = matchImplGrouped(inventory)?.flatten() ?: return list
+        val consumptions = matchImpl(inventory) ?: return list
         consumptions.forEach {
             val remainder = getCustomizedRemainder(inventory.getItem(it.slotIndex))
             if (remainder.isEmpty) return@forEach
@@ -205,7 +157,7 @@ open class SimpleMachineRecipe(
         override fun codec(): MapCodec<R> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 Codec.STRING.fieldOf("group").forGetter { it.group },
-                MachineInput.CODEC.listOf().fieldOf("inputs").forGetter { it.inputs },
+                IngredientStack.CODEC.listOf().fieldOf("inputs").forGetter { it.inputs },
                 ItemStack.CODEC.listOf().fieldOf("outputs").forGetter { it.outputs },
                 Codec.INT.fieldOf("duration").forGetter { it.duration },
             ).apply(instance, card::createRecipe)
@@ -214,7 +166,7 @@ open class SimpleMachineRecipe(
         override fun streamCodec(): StreamCodec<RegistryFriendlyByteBuf, R> = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8,
             { it.group },
-            MachineInput.STREAM_CODEC.list(),
+            IngredientStack.STREAM_CODEC.list(),
             { it.inputs },
             ItemStack.STREAM_CODEC.list(),
             { it.outputs },
@@ -232,16 +184,12 @@ fun <R : SimpleMachineRecipe> registerSimpleMachineRecipeGeneration(
     inputs: List<() -> IngredientStack>,
     outputs: List<() -> ItemStack>,
     duration: Int,
-    consumptionChances: List<Double> = listOf(),
     block: SimpleMachineRecipeJsonBuilder<R>.() -> Unit = {},
 ): RecipeGenerationSettings<SimpleMachineRecipeJsonBuilder<R>> {
     require(outputs.isNotEmpty())
     val settings = RecipeGenerationSettings<SimpleMachineRecipeJsonBuilder<R>>()
     DataGenerationEvents.onGenerateRecipe {
-        val machineInputs = inputs.mapIndexed { index, supplier ->
-            MachineInput(supplier(), consumptionChances.getOrElse(index) { 1.0 })
-        }
-        val builder = SimpleMachineRecipeJsonBuilder(card, RecipeCategory.MISC, machineInputs, outputs.map { p -> p() }, duration)
+        val builder = SimpleMachineRecipeJsonBuilder(card, RecipeCategory.MISC, inputs.map { p -> p() }, outputs.map { p -> p() }, duration)
         builder.group(outputs.first()().item)
         settings.listeners.forEach { listener ->
             listener(builder)
@@ -256,7 +204,7 @@ fun <R : SimpleMachineRecipe> registerSimpleMachineRecipeGeneration(
 class SimpleMachineRecipeJsonBuilder<R : SimpleMachineRecipe>(
     private val card: SimpleMachineRecipeCard<R>,
     private val category: RecipeCategory,
-    private val inputs: List<MachineInput>,
+    private val inputs: List<IngredientStack>,
     private val outputs: List<ItemStack>,
     private val duration: Int,
 ) : RecipeBuilder {

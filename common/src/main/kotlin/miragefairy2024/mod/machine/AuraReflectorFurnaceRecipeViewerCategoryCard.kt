@@ -45,7 +45,7 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
 
             view += ImageView(getTexture(bounds))
 
-            fun getInput(index: Int) = (recipeEntry.recipe.inputs.getOrNull(index) ?: MachineInput.EMPTY).ingredientStack
+            fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
             view += InputSlotView(getInput(0)).noBackground().noMargin().configure {
                 position = AbsoluteView.Offset(IntPoint(29, 17) - p)
             }

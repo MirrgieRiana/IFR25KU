@@ -4,27 +4,21 @@
   "group": "miragefairy2024:lilagium_ingot",
   "inputs": [
     {
-      "ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "item": "miragefairy2024:miragium_ingot"
-        }
+      "Amount": 1,
+      "Ingredient": {
+        "item": "miragefairy2024:miragium_ingot"
       }
     },
     {
-      "ingredient": {
-        "Amount": 4,
-        "Ingredient": {
-          "item": "minecraft:lilac"
-        }
+      "Amount": 4,
+      "Ingredient": {
+        "item": "minecraft:lilac"
       }
     },
     {
-      "ingredient": {
-        "Amount": 4,
-        "Ingredient": {
-          "item": "minecraft:peony"
-        }
+      "Amount": 4,
+      "Ingredient": {
+        "item": "minecraft:peony"
       }
     }
   ],

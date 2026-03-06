@@ -144,7 +144,7 @@ abstract class SimpleMachineBlockEntity<E : SimpleMachineBlockEntity<E>>(private
     var progressMax = 0
     var progress = 0
 
-    fun checkRecipe(world: Level): (() -> Unit)? {
+    open fun checkRecipe(world: Level): (() -> Unit)? {
         if (!shouldUpdateRecipe) return null
         shouldUpdateRecipe = false
 
@@ -152,10 +152,10 @@ abstract class SimpleMachineBlockEntity<E : SimpleMachineBlockEntity<E>>(private
 
         val recipeHolder = card.match(world, inventory) ?: return null
         val recipe = recipeHolder.value()
-        val matchResult = recipe.match(inventory, world.random) ?: return null
+        val matchResult = recipe.match(inventory) ?: return null
 
         return {
-            val remainder = matchResult.getRemainingItems()
+            val remainder = recipe.getRemainingItems(inventory)
             craftingInventory += matchResult.craft()
             recipe.outputs.forEach {
                 waitingInventory += it.copy()

@@ -21,8 +21,6 @@ fun <V : SlotView> V.noBackground() = this.apply { this.drawBackground = false }
 fun <V : SlotView> V.margin(margin: Int) = this.apply { this.margin = margin }
 fun <V : SlotView> V.noMargin() = this.margin(0)
 
-class InputSlotView(val ingredientStack: IngredientStack) : SlotView() {
-    var consumptionChance = 1.0
-}
+class InputSlotView(val ingredientStack: IngredientStack) : SlotView()
 class CatalystSlotView(val ingredientStack: IngredientStack) : SlotView()
 class OutputSlotView(val itemStack: ItemStack) : SlotView()
