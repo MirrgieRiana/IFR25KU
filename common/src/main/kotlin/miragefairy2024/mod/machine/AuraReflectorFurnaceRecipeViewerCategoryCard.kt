@@ -32,7 +32,6 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
     override fun getId() = MirageFairy2024.identifier("aura_reflector_furnace")
     override fun getName() = EnJa("Aura Reflector Furnace", "オーラ反射炉")
     private fun getFuelIngredientStack(recipeEntry: RecipeEntry<AuraReflectorFurnaceRecipe>) = AuraReflectorFurnaceRecipe.FUELS.map { recipeEntry.registryAccess[Registries.ITEM, it.key].value() }.toIngredientStack()
-    override fun getInputs(recipeEntry: RecipeEntry<AuraReflectorFurnaceRecipe>) = super.getInputs(recipeEntry) + listOf(Input(getFuelIngredientStack(recipeEntry), true))
     override fun getRecipeCard() = AuraReflectorFurnaceRecipeCard
     override fun getMachineCard() = AuraReflectorFurnaceCard
     override fun getScreenClickAreas() = listOf(Pair(getMachineCard().screenHandlerType.key, IntRectangle(88, 34, 24, 17)))
@@ -45,7 +44,7 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
 
             view += ImageView(getTexture(bounds))
 
-            fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
+            fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index)?.ingredientStack ?: IngredientStack.EMPTY
             view += InputSlotView(getInput(0)).noBackground().noMargin().configure {
                 position = AbsoluteView.Offset(IntPoint(29, 17) - p)
             }

@@ -5,7 +5,7 @@
   "inputs": [
     {
       "ingredient": {
-        "Amount": 8,
+        "Amount": 16,
         "Ingredient": {
           "item": "minecraft:sugar"
         }

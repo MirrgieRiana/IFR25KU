@@ -95,6 +95,7 @@ Original assets from [MirageFairy2019](https://github.com/MirageFairy/MirageFair
 Derivative works based on [MirageFairy2019](https://github.com/MirageFairy/MirageFairy2019):
 
 - `common/src/main/resources/assets/miragefairy2024/textures/block/salpeter_ore.png`
+- `common/src/main/resources/assets/miragefairy2024/textures/item/apple_brandy.png`
 
 ## Codes (Programs, Data Packs)
 

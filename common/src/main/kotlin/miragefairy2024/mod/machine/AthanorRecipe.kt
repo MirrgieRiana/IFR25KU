@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
-import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.list
 import mirrg.kotlin.helium.atMost
@@ -16,22 +15,22 @@ import net.minecraft.util.RandomSource
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeSerializer
 
-data class AthanorInput(val ingredientStack: IngredientStack, val consumptionChance: Double) {
+data class AthanorInput(val input: SimpleMachineRecipe.Input, val consumptionChance: Double) {
     companion object {
         val CODEC: Codec<AthanorInput> = RecordCodecBuilder.create { instance ->
             instance.group(
-                IngredientStack.CODEC.fieldOf("ingredient").forGetter { it.ingredientStack },
+                SimpleMachineRecipe.Input.CODEC.fieldOf("ingredient").forGetter { it.input },
                 Codec.DOUBLE.optionalFieldOf("consumptionChance", 1.0).forGetter { it.consumptionChance },
             ).apply(instance, ::AthanorInput)
         }
         val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, AthanorInput> = StreamCodec.composite(
-            IngredientStack.STREAM_CODEC,
-            { it.ingredientStack },
+            SimpleMachineRecipe.Input.STREAM_CODEC,
+            { it.input },
             ByteBufCodecs.DOUBLE,
             { it.consumptionChance },
             ::AthanorInput,
         )
-        val EMPTY = AthanorInput(IngredientStack.EMPTY, 1.0)
+        val EMPTY = AthanorInput(SimpleMachineRecipe.Input.EMPTY, 1.0)
     }
 }
 
@@ -39,7 +38,7 @@ object AthanorRecipeCard : SimpleMachineRecipeCard<AthanorRecipe>() {
     override val identifier = MirageFairy2024.identifier("athanor")
     override fun getIcon() = AthanorCard.item().createItemStack()
     override val recipeClass = AthanorRecipe::class.java
-    override fun createRecipe(group: String, inputs: List<IngredientStack>, outputs: List<ItemStack>, duration: Int): AthanorRecipe {
+    override fun createRecipe(group: String, inputs: List<SimpleMachineRecipe.Input>, outputs: List<ItemStack>, duration: Int): AthanorRecipe {
         return AthanorRecipe(this, group, inputs.map { AthanorInput(it, 1.0) }, outputs, duration)
     }
 
@@ -81,7 +80,7 @@ class AthanorRecipe(
 ) : SimpleMachineRecipe(
     card,
     group,
-    athanorInputs.map { it.ingredientStack },
+    athanorInputs.map { it.input },
     outputs,
     duration,
 ) {
@@ -95,10 +94,10 @@ class AthanorRecipe(
         athanorInputs.forEach { athanorInput ->
             val consumptions = mutableListOf<AthanorConsumption>()
             run inputEntryCompleted@{
-                var neededCount = athanorInput.ingredientStack.count
+                var neededCount = athanorInput.input.count
                 (0 until inventory.size()).forEach nextSlot@{ slotIndex ->
                     if (virtualCounts[slotIndex] == 0) return@nextSlot
-                    if (!athanorInput.ingredientStack.ingredient.test(inventory.getItem(slotIndex))) return@nextSlot
+                    if (!athanorInput.input.ingredient.test(inventory.getItem(slotIndex))) return@nextSlot
                     val takeCount = neededCount min virtualCounts[slotIndex]
                     virtualCounts[slotIndex] -= takeCount
                     neededCount -= takeCount
