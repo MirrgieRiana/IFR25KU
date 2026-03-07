@@ -4,7 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.SCYTHE_ITEM_TAG
-import miragefairy2024.mod.enchantment.StickyMiningSnapshot
+import miragefairy2024.mod.enchantment.contents.StickyMiningSnapshot
 import miragefairy2024.mod.magicplant.MagicPlantBlock
 import miragefairy2024.mod.magicplant.PostTryPickHandlerItem
 import miragefairy2024.mod.tool.FairyMiningToolConfiguration
@@ -185,7 +185,7 @@ private inline fun withStickyMining(world: Level, blockPos: BlockPos, range: Int
         return
     }
 
-    val snapshot = StickyMiningSnapshot(world, AABB(blockPos).inflate(range.toDouble()))
+    val snapshot = StickyMiningSnapshot.take(world, AABB(blockPos).inflate(range.toDouble()))
 
     action()
 

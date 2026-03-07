@@ -38,13 +38,13 @@ fun initStickyMining() {
 
 class StickyMiningSnapshot private constructor(
     private val level: Level,
-    private val pos: BlockPos,
+    private val aabb: AABB,
     private val oldItemEntities: Set<ItemEntity>,
     private val oldExperienceOrbs: Set<ExperienceOrb>,
 ) {
     fun teleportNewEntities(entity: Entity) {
-        val newItemEntities = getItemEntities(level, pos)
-        val newExperienceOrbs = getExperienceOrbs(level, pos)
+        val newItemEntities = getItemEntities(level, aabb)
+        val newExperienceOrbs = getExperienceOrbs(level, aabb)
 
         (newItemEntities - oldItemEntities).forEach {
             it.teleportTo(entity.x, entity.y, entity.z)
@@ -56,16 +56,20 @@ class StickyMiningSnapshot private constructor(
     }
 
     companion object {
-        private fun getItemEntities(level: Level, pos: BlockPos): Set<ItemEntity> {
-            return level.getEntitiesOfClass(ItemEntity::class.java, AABB(pos)) { it.isValid }.toSet()
+        private fun getItemEntities(level: Level, aabb: AABB): Set<ItemEntity> {
+            return level.getEntitiesOfClass(ItemEntity::class.java, aabb) { it.isValid }.toSet()
         }
 
-        private fun getExperienceOrbs(level: Level, pos: BlockPos): Set<ExperienceOrb> {
-            return level.getEntitiesOfClass(ExperienceOrb::class.java, AABB(pos)) { it.isValid }.toSet()
+        private fun getExperienceOrbs(level: Level, aabb: AABB): Set<ExperienceOrb> {
+            return level.getEntitiesOfClass(ExperienceOrb::class.java, aabb) { it.isValid }.toSet()
         }
 
         fun take(level: Level, pos: BlockPos): StickyMiningSnapshot {
-            return StickyMiningSnapshot(level, pos, getItemEntities(level, pos), getExperienceOrbs(level, pos))
+            return take(level, AABB(pos))
+        }
+
+        fun take(level: Level, aabb: AABB): StickyMiningSnapshot {
+            return StickyMiningSnapshot(level, aabb, getItemEntities(level, aabb), getExperienceOrbs(level, aabb))
         }
     }
 }
