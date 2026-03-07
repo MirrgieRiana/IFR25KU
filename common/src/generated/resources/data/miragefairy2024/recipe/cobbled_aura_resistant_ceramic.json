@@ -4,19 +4,15 @@
   "group": "miragefairy2024:cobbled_aura_resistant_ceramic",
   "inputs": [
     {
-      "ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "item": "minecraft:sandstone"
-        }
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:sandstone"
       }
     },
     {
-      "ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "tag": "c:gems/xarpite"
-        }
+      "Amount": 1,
+      "Ingredient": {
+        "tag": "c:gems/xarpite"
       }
     }
   ],

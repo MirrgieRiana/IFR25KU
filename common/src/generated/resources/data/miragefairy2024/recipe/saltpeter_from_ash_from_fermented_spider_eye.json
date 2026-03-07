@@ -4,19 +4,15 @@
   "group": "miragefairy2024:saltpeter",
   "inputs": [
     {
-      "ingredient": {
-        "Amount": 4,
-        "Ingredient": {
-          "item": "miragefairy2024:ash"
-        }
+      "Amount": 4,
+      "Ingredient": {
+        "item": "miragefairy2024:ash"
       }
     },
     {
-      "ingredient": {
-        "Amount": 2,
-        "Ingredient": {
-          "item": "minecraft:fermented_spider_eye"
-        }
+      "Amount": 2,
+      "Ingredient": {
+        "item": "minecraft:fermented_spider_eye"
       }
     }
   ],

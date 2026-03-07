@@ -13,15 +13,17 @@ import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.util.RandomSource
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.item.crafting.RecipeSerializer
 
 data class AthanorInput(val input: SimpleMachineRecipe.Input, val consumptionChance: Double) {
     companion object {
         val CODEC: Codec<AthanorInput> = RecordCodecBuilder.create { instance ->
             instance.group(
-                SimpleMachineRecipe.Input.CODEC.fieldOf("ingredient").forGetter { it.input },
+                Ingredient.CODEC.fieldOf("Ingredient").forGetter { it.input.ingredient },
+                Codec.INT.fieldOf("Amount").forGetter { it.input.count },
                 Codec.DOUBLE.optionalFieldOf("consumptionChance", 1.0).forGetter { it.consumptionChance },
-            ).apply(instance, ::AthanorInput)
+            ).apply(instance) { ingredient, count, chance -> AthanorInput(SimpleMachineRecipe.Input(ingredient, count), chance) }
         }
         val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, AthanorInput> = StreamCodec.composite(
             SimpleMachineRecipe.Input.STREAM_CODEC,

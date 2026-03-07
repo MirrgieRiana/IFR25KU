@@ -4,11 +4,9 @@
   "group": "minecraft:sandstone",
   "inputs": [
     {
-      "ingredient": {
-        "Amount": 4,
-        "Ingredient": {
-          "tag": "miragefairy2024:aura_resistant_ceramics"
-        }
+      "Amount": 4,
+      "Ingredient": {
+        "tag": "miragefairy2024:aura_resistant_ceramics"
       }
     }
   ],

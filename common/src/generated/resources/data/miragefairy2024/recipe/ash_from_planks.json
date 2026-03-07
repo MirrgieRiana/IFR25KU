@@ -4,11 +4,9 @@
   "group": "miragefairy2024:ash",
   "inputs": [
     {
-      "ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "tag": "minecraft:planks"
-        }
+      "Amount": 1,
+      "Ingredient": {
+        "tag": "minecraft:planks"
       }
     }
   ],

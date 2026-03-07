@@ -4,35 +4,27 @@
   "group": "miragefairy2024:xarpite",
   "inputs": [
     {
-      "ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "item": "miragefairy2024:fairy_plastic"
-        }
+      "Amount": 1,
+      "Ingredient": {
+        "item": "miragefairy2024:fairy_plastic"
       }
     },
     {
-      "ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "tag": "c:ingots/miragium"
-        }
+      "Amount": 1,
+      "Ingredient": {
+        "tag": "c:ingots/miragium"
       }
     },
     {
-      "ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "tag": "c:gems/magnetite"
-        }
+      "Amount": 1,
+      "Ingredient": {
+        "tag": "c:gems/magnetite"
       }
     },
     {
-      "ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "item": "minecraft:redstone"
-        }
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:redstone"
       }
     }
   ],

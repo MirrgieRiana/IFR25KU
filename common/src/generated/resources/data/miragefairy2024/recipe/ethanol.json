@@ -4,19 +4,15 @@
   "group": "miragefairy2024:ethanol",
   "inputs": [
     {
-      "ingredient": {
-        "Amount": 5,
-        "Ingredient": {
-          "tag": "miragefairy2024:spirits"
-        }
+      "Amount": 5,
+      "Ingredient": {
+        "tag": "miragefairy2024:spirits"
       }
     },
     {
-      "ingredient": {
-        "Amount": 2,
-        "Ingredient": {
-          "item": "minecraft:glass_bottle"
-        }
+      "Amount": 2,
+      "Ingredient": {
+        "item": "minecraft:glass_bottle"
       }
     }
   ],

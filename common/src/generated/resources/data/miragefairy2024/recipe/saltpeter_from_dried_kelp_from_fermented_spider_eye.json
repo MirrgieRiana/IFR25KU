@@ -4,19 +4,15 @@
   "group": "miragefairy2024:saltpeter",
   "inputs": [
     {
-      "ingredient": {
-        "Amount": 8,
-        "Ingredient": {
-          "item": "minecraft:dried_kelp"
-        }
+      "Amount": 8,
+      "Ingredient": {
+        "item": "minecraft:dried_kelp"
       }
     },
     {
-      "ingredient": {
-        "Amount": 2,
-        "Ingredient": {
-          "item": "minecraft:fermented_spider_eye"
-        }
+      "Amount": 2,
+      "Ingredient": {
+        "item": "minecraft:fermented_spider_eye"
       }
     }
   ],

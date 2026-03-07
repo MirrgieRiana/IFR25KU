@@ -4,27 +4,21 @@
   "group": "miragefairy2024:solid_fuel",
   "inputs": [
     {
-      "ingredient": {
-        "Amount": 16,
-        "Ingredient": {
-          "item": "minecraft:sugar"
-        }
+      "Amount": 16,
+      "Ingredient": {
+        "item": "minecraft:sugar"
       }
     },
     {
-      "ingredient": {
-        "Amount": 4,
-        "Ingredient": {
-          "item": "miragefairy2024:haimeviska_sap"
-        }
+      "Amount": 4,
+      "Ingredient": {
+        "item": "miragefairy2024:haimeviska_sap"
       }
     },
     {
-      "ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "item": "miragefairy2024:ethanol"
-        }
+      "Amount": 1,
+      "Ingredient": {
+        "item": "miragefairy2024:ethanol"
       }
     }
   ],
