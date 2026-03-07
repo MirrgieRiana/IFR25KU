@@ -30,6 +30,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.util.RandomSource
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Ingredient
@@ -80,7 +81,7 @@ open class SimpleMachineRecipe(
         require(outputs.isNotEmpty())
     }
 
-    data class Input(val ingredient: Ingredient, val count: Int) {
+    data class Input(val ingredient: Ingredient, val count: Int, val consumptionChance: Double = 1.0) {
         val ingredientStack by lazy { ingredient.toIngredientStack(count) }
 
         companion object {
@@ -88,6 +89,7 @@ open class SimpleMachineRecipe(
                 instance.group(
                     Ingredient.CODEC.fieldOf("Ingredient").forGetter { it.ingredient },
                     Codec.INT.fieldOf("Amount").forGetter { it.count },
+                    Codec.DOUBLE.optionalFieldOf("consumptionChance", 1.0).forGetter { it.consumptionChance },
                 ).apply(instance, ::Input)
             }
             val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, Input> = StreamCodec.composite(
@@ -95,6 +97,8 @@ open class SimpleMachineRecipe(
                 { it.ingredient },
                 ByteBufCodecs.VAR_INT,
                 { it.count },
+                ByteBufCodecs.DOUBLE,
+                { it.consumptionChance },
                 ::Input,
             )
 
@@ -105,14 +109,18 @@ open class SimpleMachineRecipe(
     override fun getGroup() = group
 
     interface MatchResult {
-        fun craft(): List<ItemStack>
+        fun craft(random: RandomSource): CraftResult
     }
+
+    class CraftResult(val consumedItems: List<ItemStack>, val returnedItems: List<ItemStack>)
 
     private data class Consumption(val slotIndex: Int, val count: Int)
 
-    private fun matchImpl(inventory: SimpleMachineRecipeInput): List<Consumption>? {
+    private class InputMatch(val consumptions: List<Consumption>, val consumptionChance: Double)
+
+    private fun matchImpl(inventory: SimpleMachineRecipeInput): List<InputMatch>? {
         val virtualCounts = IntArray(inventory.size()) { inventory.getItem(it).count }
-        val result = mutableListOf<List<Consumption>>()
+        val result = mutableListOf<InputMatch>()
         inputs.forEach { input ->
             val consumptions = mutableListOf<Consumption>()
             run inputEntryCompleted@{
@@ -128,20 +136,37 @@ open class SimpleMachineRecipe(
                 }
                 return null
             }
-            result += consumptions
+            result += InputMatch(consumptions, input.consumptionChance)
         }
-        return result.flatten()
+        return result
     }
 
     fun match(inventory: SimpleMachineRecipeInput): MatchResult? {
-        val consumptions = matchImpl(inventory) ?: return null
+        val inputMatches = matchImpl(inventory) ?: return null
         return object : MatchResult {
-            override fun craft(): List<ItemStack> {
-                val result = mutableListOf<ItemStack>()
-                consumptions.forEach {
-                    result += inventory.getItem(it.slotIndex).split(it.count)
+            override fun craft(random: RandomSource): CraftResult {
+                val consumedItems = mutableListOf<ItemStack>()
+                val returnedItems = mutableListOf<ItemStack>()
+                inputMatches.forEach { inputMatch ->
+                    val isConsumed = inputMatch.consumptionChance >= 1.0 || random.nextDouble() < inputMatch.consumptionChance
+                    inputMatch.consumptions.forEach { consumption ->
+                        val originalItem = inventory.getItem(consumption.slotIndex)
+                        val remainder = if (isConsumed) getCustomizedRemainder(originalItem) else ItemStack.EMPTY
+                        val split = originalItem.split(consumption.count)
+                        consumedItems += split
+                        if (!isConsumed) {
+                            returnedItems += split.copy()
+                        } else if (!remainder.isEmpty) {
+                            var totalRemainderCount = remainder.count * consumption.count
+                            while (totalRemainderCount > 0) {
+                                val count = totalRemainderCount atMost remainder.maxStackSize
+                                returnedItems += remainder.copyWithCount(count)
+                                totalRemainderCount -= count
+                            }
+                        }
+                    }
                 }
-                return result
+                return CraftResult(consumedItems, returnedItems)
             }
         }
     }
@@ -154,16 +179,18 @@ open class SimpleMachineRecipe(
 
     override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
         val list = NonNullList.create<ItemStack>()
-        val consumptions = matchImpl(inventory) ?: return list
-        consumptions.forEach {
-            val remainder = getCustomizedRemainder(inventory.getItem(it.slotIndex))
-            if (remainder.isEmpty) return@forEach
+        val inputMatches = matchImpl(inventory) ?: return list
+        inputMatches.forEach { inputMatch ->
+            inputMatch.consumptions.forEach {
+                val remainder = getCustomizedRemainder(inventory.getItem(it.slotIndex))
+                if (remainder.isEmpty) return@forEach
 
-            var totalRemainderCount = remainder.count * it.count
-            while (totalRemainderCount > 0) {
-                val count = totalRemainderCount atMost remainder.maxStackSize
-                list += remainder.copyWithCount(count)
-                totalRemainderCount -= count
+                var totalRemainderCount = remainder.count * it.count
+                while (totalRemainderCount > 0) {
+                    val count = totalRemainderCount atMost remainder.maxStackSize
+                    list += remainder.copyWithCount(count)
+                    totalRemainderCount -= count
+                }
             }
         }
         return list
