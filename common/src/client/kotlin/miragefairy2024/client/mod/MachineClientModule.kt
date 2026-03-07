@@ -14,6 +14,7 @@ import miragefairy2024.mod.machine.AuraReflectorFurnaceScreenHandler
 import miragefairy2024.mod.machine.BlueFuelView
 import miragefairy2024.mod.machine.FermentationBarrelCard
 import miragefairy2024.mod.machine.FermentationBarrelScreenHandler
+import miragefairy2024.mod.machine.FilledRectangleView
 import miragefairy2024.mod.machine.FuelView
 import miragefairy2024.mod.machine.SimpleMachineCard
 import miragefairy2024.mod.machine.SimpleMachineScreenHandler
@@ -41,6 +42,7 @@ fun initMachineClientModule() {
     ViewRendererRegistry.register(FuelView::class.java, FuelViewRenderer)
     ViewRendererRegistry.register(BlueFuelView::class.java, BlueFuelViewRenderer)
     ViewRendererRegistry.register(TexturedArrowView::class.java, TexturedArrowViewRenderer)
+    ViewRendererRegistry.register(FilledRectangleView::class.java, FilledRectangleViewRenderer)
 }
 
 object FuelViewRenderer : ViewRenderer<FuelView> {
@@ -240,5 +242,11 @@ class AthanorScreen(card: AthanorCard, arguments: Arguments<AthanorScreenHandler
                 32,
             )
         }
+    }
+}
+
+object FilledRectangleViewRenderer : ViewRenderer<FilledRectangleView> {
+    override fun render(view: FilledRectangleView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+        graphics.fill(bounds.x, bounds.y, bounds.x + bounds.sizeX, bounds.y + bounds.sizeY, view.color.value)
     }
 }

@@ -45,19 +45,25 @@ object AthanorRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<A
 
             view += ImageView(getTexture(bounds))
 
-            fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index)?.ingredientStack ?: IngredientStack.EMPTY
-            view += InputSlotView(getInput(0)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(40, 17) - p)
+            fun getAthanorInput(index: Int) = recipeEntry.recipe.athanorInputs.getOrNull(index) ?: AthanorInput.EMPTY
+            fun addInputSlot(index: Int, point: IntPoint) {
+                val athanorInput = getAthanorInput(index)
+                val chance = athanorInput.consumptionChance
+                if (chance < 1.0) {
+                    val alpha = ((1.0 - chance) * 255).toInt()
+                    val color = (alpha shl 24) or 0xFFFF00
+                    view += FilledRectangleView().also { it.color.value = color }.configure {
+                        position = AbsoluteView.Bounds(IntRectangle(point.x - p.x, point.y - p.y, 16, 16))
+                    }
+                }
+                view += InputSlotView(athanorInput.input.ingredientStack).noBackground().noMargin().configure {
+                    position = AbsoluteView.Offset(point - p)
+                }
             }
-            view += InputSlotView(getInput(1)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(18, 39) - p)
-            }
-            view += InputSlotView(getInput(2)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(62, 39) - p)
-            }
-            view += InputSlotView(getInput(3)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(40, 61) - p)
-            }
+            addInputSlot(0, IntPoint(40, 17))
+            addInputSlot(1, IntPoint(18, 39))
+            addInputSlot(2, IntPoint(62, 39))
+            addInputSlot(3, IntPoint(40, 61))
             view += CatalystSlotView(getFuelIngredientStack()).noBackground().noMargin().configure {
                 position = AbsoluteView.Offset(IntPoint(40, 39) - p)
             }

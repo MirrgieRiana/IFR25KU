@@ -144,7 +144,7 @@ abstract class SimpleMachineBlockEntity<E : SimpleMachineBlockEntity<E>>(private
     var progressMax = 0
     var progress = 0
 
-    fun checkRecipe(world: Level): (() -> Unit)? {
+    open fun checkRecipe(world: Level): (() -> Unit)? {
         if (!shouldUpdateRecipe) return null
         shouldUpdateRecipe = false
 

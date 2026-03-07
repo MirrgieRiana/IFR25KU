@@ -370,6 +370,28 @@ class AthanorBlockEntity(private val card: AthanorCard, pos: BlockPos, state: Bl
         // TODO state
     }
 
+    override fun checkRecipe(world: Level): (() -> Unit)? {
+        if (!shouldUpdateRecipe) return null
+        shouldUpdateRecipe = false
+
+        val inventory = SimpleMachineRecipeInput(card.inputSlots.map { this[card.inventorySlotIndexTable[it]!!] })
+
+        val recipeHolder = card.match(world, inventory) ?: return null
+        val recipe = recipeHolder.value()
+        val matchResult = recipe.match(inventory, world.random) ?: return null
+
+        return {
+            val remainder = matchResult.getRemainingItems()
+            craftingInventory += matchResult.craft()
+            recipe.outputs.forEach {
+                waitingInventory += it.copy()
+            }
+            waitingInventory += remainder
+            progressMax = recipe.duration
+            setChanged()
+        }
+    }
+
     override fun onRecipeCheck(world: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
         if (!super.onRecipeCheck(world, pos, state, listeners)) return false
         if (fuel == 0) listeners += checkFuelInsert() ?: return false
