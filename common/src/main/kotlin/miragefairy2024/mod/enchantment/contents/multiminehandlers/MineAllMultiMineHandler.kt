@@ -1,4 +1,4 @@
-package miragefairy2024.mod.enchantment.contents.areaminingmultiminehandlers
+package miragefairy2024.mod.enchantment.contents.multiminehandlers
 
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.contents.MultiMineHandler
