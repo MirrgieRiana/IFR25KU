@@ -8,6 +8,7 @@ import miragefairy2024.ClientProxy
 import miragefairy2024.ItemColorProvider
 import miragefairy2024.RenderingProxy
 import miragefairy2024.RenderingProxyBlockEntity
+import miragefairy2024.client.util.stack
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.minecraft.client.Minecraft
@@ -87,11 +88,8 @@ class RenderingProxyBlockEntityRenderer<T>(
     override fun render(blockEntity: T, tickDelta: Float, matrices: PoseStack, vertexConsumers: MultiBufferSource, light: Int, overlay: Int) {
         val renderingProxy = object : RenderingProxy {
             override fun stack(block: () -> Unit) {
-                matrices.pushPose()
-                try {
+                matrices.stack {
                     block()
-                } finally {
-                    matrices.popPose()
                 }
             }
 

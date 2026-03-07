@@ -1,6 +1,7 @@
 package miragefairy2024.mod.fairy
 
 import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
@@ -63,6 +64,7 @@ import miragefairy2024.util.gold
 import miragefairy2024.util.gray
 import miragefairy2024.util.green
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isIn
 import miragefairy2024.util.join
 import miragefairy2024.util.plus
 import miragefairy2024.util.red
@@ -79,6 +81,8 @@ import miragefairy2024.util.toHolderSetCodec
 import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.yellow
 import mirrg.kotlin.hydrogen.formatAs
+import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient
+import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer
 import net.minecraft.advancements.critereon.InventoryChangeTrigger
 import net.minecraft.advancements.critereon.ItemPredicate
 import net.minecraft.advancements.critereon.ItemSubPredicate
@@ -88,8 +92,10 @@ import net.minecraft.core.HolderSet
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.chat.Component
 import net.minecraft.network.codec.ByteBufCodecs
+import net.minecraft.network.codec.StreamCodec
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
@@ -183,6 +189,8 @@ fun initFairyItem() {
 
     FairyMotifItemSubPredicate.INSTANCE.register()
     FairyRareItemSubPredicate.INSTANCE.register()
+
+    FairyMotifIngredient.SERIALIZER.register()
 
     rare10Advancement.init()
     timiaAdvancement.init()
@@ -385,6 +393,23 @@ class FairyRareItemSubPredicate(val rare: MinMaxBounds.Ints) : SingleComponentIt
 
     override fun componentType() = FAIRY_MOTIF_DATA_COMPONENT_TYPE
     override fun matches(stack: ItemStack, value: Motif) = rare.matches(value.rare)
+}
+
+
+class FairyMotifIngredient(val motif: Motif) : CustomIngredient {
+    companion object {
+        val ID = MirageFairy2024.identifier("fairy_motif")
+        val SERIALIZER = object : CustomIngredientSerializer<FairyMotifIngredient> {
+            override fun getIdentifier() = ID
+            override fun getCodec(allowEmpty: Boolean): MapCodec<FairyMotifIngredient> = motifRegistry.byNameCodec().fieldOf("motif").xmap(::FairyMotifIngredient, FairyMotifIngredient::motif)
+            override fun getPacketCodec(): StreamCodec<RegistryFriendlyByteBuf, FairyMotifIngredient> = ByteBufCodecs.registry(motifRegistryKey).map(::FairyMotifIngredient, FairyMotifIngredient::motif)
+        }
+    }
+
+    override fun requiresTesting() = true
+    override fun test(stack: ItemStack) = stack isIn FairyCard.item() && stack.getFairyMotif() == motif
+    override fun getMatchingStacks() = listOf(motif.createFairyItemStack())
+    override fun getSerializer() = SERIALIZER
 }
 
 

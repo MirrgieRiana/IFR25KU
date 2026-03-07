@@ -1,5 +1,10 @@
 {
   "values": [
+    "miragefairy2024:miranagite_block",
+    "miragefairy2024:miranagite_tile_slab",
+    "miragefairy2024:miranagite_tile_stairs",
+    "miragefairy2024:miranagite_tile_wall",
+    "miragefairy2024:miranagite_tiles",
     "miragefairy2024:phantom_flower"
   ]
 }

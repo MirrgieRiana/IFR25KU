@@ -33,7 +33,6 @@ object AthanorRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<A
     override fun getId() = MirageFairy2024.identifier("athanor")
     override fun getName() = EnJa("Athanor", "アタノール")
     private fun getFuelIngredientStack(): IngredientStack = BuiltInRegistries.ITEM.filter { FuelRegistry.get(it.defaultInstance) != 0 }.toIngredientStack()
-    override fun getInputs(recipeEntry: RecipeEntry<AthanorRecipe>) = super.getInputs(recipeEntry) + listOf(Input(getFuelIngredientStack(), true))
     override fun getRecipeCard() = AthanorRecipeCard
     override fun getMachineCard() = AthanorCard
     override fun getScreenClickAreas() = listOf(Pair(getMachineCard().screenHandlerType.key, IntRectangle(85, 40, 24, 17)))

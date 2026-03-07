@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_planks": {
+    "has_spirits": {
       "conditions": {
         "items": [
           {
-            "items": "#minecraft:planks"
+            "items": "#miragefairy2024:spirits"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:ash"
+        "recipe": "miragefairy2024:ethanol"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_planks"
+      "has_spirits"
     ]
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:ash"
+      "miragefairy2024:ethanol"
     ]
   }
 }
