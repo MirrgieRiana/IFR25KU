@@ -21,6 +21,7 @@ import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.getFairyCondensation
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.haimeviska.haimeviskaAdvancement
+import miragefairy2024.mod.machine.AthanorRecipe
 import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipe
@@ -28,6 +29,7 @@ import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
 import miragefairy2024.mod.machine.FermentationBarrelCard
 import miragefairy2024.mod.machine.FermentationBarrelRecipeCard
 import miragefairy2024.mod.machine.SimpleMachineRecipe
+import miragefairy2024.mod.machine.SimpleMachineRecipeJsonBuilder
 import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
 import miragefairy2024.mod.magicplant.contents.magicplants.DiamondLuminariaCard
 import miragefairy2024.mod.magicplant.contents.magicplants.MerrrriaCard
@@ -49,6 +51,7 @@ import miragefairy2024.mod.translation
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.RecipeGenerationSettings
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.SpecialRecipeResult
@@ -93,6 +96,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.item.alchemy.Potions
+import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.storage.loot.BuiltInLootTables
 import java.math.BigInteger
@@ -1285,16 +1289,44 @@ class MaterialCard(
             PoemList(2).poem("The free ether crystal nucleus.", "かつて水であったものたち。"),
             recipeRemainder = Items.GLASS_BOTTLE,
         ) {
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { SimpleMachineRecipe.Input(Items.ROTTEN_FLESH.toIngredient(), 20) },
-                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
-                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on { Items.ROTTEN_FLESH } from { Items.ROTTEN_FLESH }
+            fun f(ingredient: () -> Ingredient, count: Int): RecipeGenerationSettings<SimpleMachineRecipeJsonBuilder<AthanorRecipe>> {
+                return registerSimpleMachineRecipeGeneration(
+                    AthanorRecipeCard,
+                    inputs = listOf(
+                        { SimpleMachineRecipe.Input(ingredient(), count) },
+                        { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
+                        { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+                    ),
+                    outputs = listOf({ item().createItemStack() }),
+                    duration = 20 * 60 * 5,
+                )
+            }
+
+            fun item(item: () -> Item, count: Int) = f({ item().toIngredient() }, count) on item from item
+
+            // 肉系
+            item({ Items.RABBIT }, 29)
+            item({ Items.CHICKEN }, 26)
+            item({ Items.PORKCHOP }, 22)
+            item({ Items.MUTTON }, 20)
+            item({ Items.BEEF }, 19)
+
+            // 魚系
+            item({ Items.COD }, 8)
+            item({ Items.SALMON }, 6)
+            item({ Items.PUFFERFISH }, 2)
+            item({ Items.TROPICAL_FISH }, 1)
+
+            // その他
+            item({ Items.BONE_MEAL }, 56)
+            item({ Items.EGG }, 52)
+            item({ Items.ROTTEN_FLESH }, 20)
+            item({ Items.SLIME_BALL }, 4)
+            item({ Items.SPIDER_EYE }, 4)
+            item({ Items.FERMENTED_SPIDER_EYE }, 2)
+            item(PHANTOM_DROP.item, 1)
+            item({ Items.PHANTOM_MEMBRANE }, 1)
+
         }
         val ETHANOL: MaterialCard = !MaterialCard(
             "ethanol", "Ethanol", "エタノール",
