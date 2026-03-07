@@ -1282,7 +1282,7 @@ class MaterialCard(
         }
         val AQUA_VITAE: MaterialCard = !MaterialCard(
             "aqua_vitae", "Aqua Vitae", "生命の水",
-            PoemList(2).poem("Every life was once water.", "遊離するエーテル結晶核。"),
+            PoemList(2).poem("The free ether crystal nucleus.", "かつて水であったものたち。"),
             recipeRemainder = Items.GLASS_BOTTLE,
         ) {
             registerSimpleMachineRecipeGeneration(
