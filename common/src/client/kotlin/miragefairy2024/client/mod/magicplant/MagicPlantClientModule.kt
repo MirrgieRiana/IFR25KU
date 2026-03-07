@@ -3,6 +3,7 @@ package miragefairy2024.client.mod.magicplant
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.RenderingEvent
 import miragefairy2024.client.util.registerHandledScreen
+import miragefairy2024.client.util.stack
 import miragefairy2024.mod.magicplant.MagicPlantSeedItem
 import miragefairy2024.mod.magicplant.getTraitStacks
 import miragefairy2024.mod.magicplant.minus
@@ -31,14 +32,11 @@ fun initMagicPlantClientModule() {
         val plusBitCount = (traitStacks - otherTraitStacks).positiveBitCount + (otherTraitStacks - traitStacks).negativeBitCount
         val minusBitCount = (otherTraitStacks - traitStacks).positiveBitCount + (traitStacks - otherTraitStacks).negativeBitCount
 
-        graphics.pose().pushPose()
-        try {
+        graphics.pose().stack {
             graphics.fill(RenderType.guiOverlay(), x, y, x + 16, y + 8, 0x888B8B8B.toInt())
             graphics.pose().translate(0.0F, 0.0F, 200.0F)
             if (plusBitCount > 0) graphics.drawString(font, "$plusBitCount", x, y, ChatFormatting.GREEN.color!!, false)
             if (minusBitCount > 0) graphics.drawString(font, "$minusBitCount", x + 19 - 2 - font.width("$minusBitCount"), y, ChatFormatting.DARK_RED.color!!, false)
-        } finally {
-            graphics.pose().popPose()
         }
     }
 

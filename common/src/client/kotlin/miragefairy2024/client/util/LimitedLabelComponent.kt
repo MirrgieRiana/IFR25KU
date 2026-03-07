@@ -160,39 +160,39 @@ open class LimitedLabelComponent(protected var text: Component) : BaseComponent(
 
     override fun draw(context: OwoUIDrawContext, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
         val matrices = context.pose()
-        matrices.pushPose()
-        matrices.translate(0.0, 1 / Minecraft.getInstance().window.guiScale, 0.0)
-        var x = x
-        var y = y
-        if (horizontalSizing.get().isContent) {
-            x += horizontalSizing.get().value
-        }
-        if (verticalSizing.get().isContent) {
-            y += verticalSizing.get().value
-        }
-        when (verticalTextAlignment) {
-            VerticalAlignment.CENTER -> y += (height - (wrappedText.size * (this.lineHeight() + 2) - 2)) / 2
-            VerticalAlignment.BOTTOM -> y += height - (wrappedText.size * (this.lineHeight() + 2) - 2)
-            else -> Unit
-        }
-        val lambdaX = x
-        val lambdaY = y
-        @Suppress("DEPRECATION")
-        context.drawManaged {
-            for (i in wrappedText.indices) {
-                val renderText = wrappedText[i]
-                var renderX = lambdaX
-                when (horizontalTextAlignment) {
-                    HorizontalAlignment.CENTER -> renderX += (width - textRenderer.width(renderText)) / 2
-                    HorizontalAlignment.RIGHT -> renderX += width - textRenderer.width(renderText)
-                    else -> Unit
+        matrices.stack {
+            matrices.translate(0.0, 1 / Minecraft.getInstance().window.guiScale, 0.0)
+            var x = x
+            var y = y
+            if (horizontalSizing.get().isContent) {
+                x += horizontalSizing.get().value
+            }
+            if (verticalSizing.get().isContent) {
+                y += verticalSizing.get().value
+            }
+            when (verticalTextAlignment) {
+                VerticalAlignment.CENTER -> y += (height - (wrappedText.size * (this.lineHeight() + 2) - 2)) / 2
+                VerticalAlignment.BOTTOM -> y += height - (wrappedText.size * (this.lineHeight() + 2) - 2)
+                else -> Unit
+            }
+            val lambdaX = x
+            val lambdaY = y
+            @Suppress("DEPRECATION")
+            context.drawManaged {
+                for (i in wrappedText.indices) {
+                    val renderText = wrappedText[i]
+                    var renderX = lambdaX
+                    when (horizontalTextAlignment) {
+                        HorizontalAlignment.CENTER -> renderX += (width - textRenderer.width(renderText)) / 2
+                        HorizontalAlignment.RIGHT -> renderX += width - textRenderer.width(renderText)
+                        else -> Unit
+                    }
+                    var renderY = lambdaY + i * (this.lineHeight() + 2)
+                    renderY += this.lineHeight() - textRenderer.lineHeight
+                    context.drawString(textRenderer, renderText, renderX, renderY, color.get().argb(), shadow)
                 }
-                var renderY = lambdaY + i * (this.lineHeight() + 2)
-                renderY += this.lineHeight() - textRenderer.lineHeight
-                context.drawString(textRenderer, renderText, renderX, renderY, color.get().argb(), shadow)
             }
         }
-        matrices.popPose()
     }
 
     override fun drawTooltip(context: OwoUIDrawContext, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
