@@ -7,6 +7,7 @@ import miragefairy2024.util.Registration
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
 import miragefairy2024.util.per
+import miragefairy2024.util.randomOrThrow
 import miragefairy2024.util.register
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
@@ -19,7 +20,6 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.SlabBlock
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity
-import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.SlabType
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
@@ -46,86 +46,87 @@ class ElevatedSpawnerFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
         val level = context.level()
         val originBlockPos = context.origin()
         val random = context.random()
-
-        // 支柱の高さ（4～10ブロック）
         val pillarHeight = random.nextIntBetweenInclusive(4, 10)
+        val totalHeight = pillarHeight + 1 + 3 + 1 + 1 + 1
 
-        // 構造物の全高: 支柱 + 台(1) + 空間(3) + 天井(1) + フェンス(1) + ラピスラズリ(1) = 支柱 + 7
-        val totalHeight = pillarHeight + 7
-        if (originBlockPos.y + totalHeight >= level.maxBuildHeight) return false
+        if (originBlockPos.y + totalHeight - 1 > level.maxBuildHeight - 1) return false
 
-        // 地面が固体であることを確認
+        // 検証
         if (!level.getBlockState(originBlockPos.below()).isSolidRender(level, originBlockPos.below())) return false
-
-        // 支柱の位置が空であることを確認
-        (0 until pillarHeight).forEach { y ->
-            if (!level.isEmptyBlock(originBlockPos.above(y))) return false
+        (0 until pillarHeight).forEach { dy ->
+            if (!level.isEmptyBlock(originBlockPos.above(dy))) return false
         }
-
-        // 台から上の7x7範囲が空であることを確認（ラピスラズリの高さまで）
-        (0..6).forEach { dy ->
-            (-3..3).forEach { dx ->
+        (-3..3).forEach { dx ->
+            (pillarHeight until totalHeight).forEach { dy ->
                 (-3..3).forEach { dz ->
-                    if (!level.isEmptyBlock(originBlockPos.above(pillarHeight + dy).offset(dx, 0, dz))) return false
+                    if (!level.isEmptyBlock(originBlockPos.offset(dx, dy, dz))) return false
                 }
             }
         }
 
-        // ランダムな石レンガバリアント
-        fun stoneBricks(): BlockState = when (random.nextInt(3)) {
-            0 -> Blocks.MOSSY_STONE_BRICKS.defaultBlockState()
-            1 -> Blocks.CRACKED_STONE_BRICKS.defaultBlockState()
-            else -> Blocks.STONE_BRICKS.defaultBlockState()
+        // バリアントリスト
+        val blocks = listOf(Blocks.STONE_BRICKS, Blocks.MOSSY_STONE_BRICKS, Blocks.CRACKED_STONE_BRICKS)
+        fun nextBlock() = blocks.randomOrThrow(random).defaultBlockState()
+        val walls = listOf(Blocks.STONE_BRICK_WALL, Blocks.MOSSY_STONE_BRICK_WALL)
+        fun nextWall() = walls.randomOrThrow(random).defaultBlockState()
+        val slabs = listOf(Blocks.STONE_BRICK_SLAB, Blocks.MOSSY_STONE_BRICK_SLAB)
+        fun nextBottomSlab() = slabs.randomOrThrow(random).defaultBlockState().with(SlabBlock.TYPE, SlabType.BOTTOM)
+
+        var y2 = 0
+
+        // 支柱
+        (0 until pillarHeight).forEach { dy ->
+            level.setBlock(originBlockPos.above(y2 + dy), nextBlock(), 2)
         }
+        y2 += pillarHeight
 
-        fun stoneWall(): BlockState = if (random.nextInt(2) == 0) Blocks.MOSSY_STONE_BRICK_WALL.defaultBlockState() else Blocks.STONE_BRICK_WALL.defaultBlockState()
-
-        fun stoneSlab(): BlockState = (if (random.nextInt(2) == 0) Blocks.MOSSY_STONE_BRICK_SLAB else Blocks.STONE_BRICK_SLAB).defaultBlockState().with(SlabBlock.TYPE, SlabType.BOTTOM)
-
-        // 支柱を配置
-        (0 until pillarHeight).forEach { y ->
-            level.setBlock(originBlockPos.above(y), stoneBricks(), 2)
-        }
-
-        val platformY = pillarHeight
-
-        // 5x1x5の台を配置
+        // 支柱の上に5x1x5の台
         (-2..2).forEach { dx ->
             (-2..2).forEach { dz ->
-                level.setBlock(originBlockPos.above(platformY).offset(dx, 0, dz), stoneBricks(), 2)
+                level.setBlock(originBlockPos.offset(dx, y2, dz), nextBlock(), 2)
+            }
+        }
+        y2 += 1
+
+        // 台の中央にスケルトンスポナー
+        run {
+            val spawnerBlockPos = originBlockPos.above(y2)
+            level.setBlock(spawnerBlockPos, Blocks.SPAWNER.defaultBlockState(), 2)
+            val blockEntity = level.getBlockEntity(spawnerBlockPos)
+            if (blockEntity is SpawnerBlockEntity) {
+                blockEntity.setEntityId(EntityType.SKELETON, random)
             }
         }
 
-        // 台の中央にスケルトンスポナーを配置
-        val spawnerPos = originBlockPos.above(platformY + 1)
-        level.setBlock(spawnerPos, Blocks.SPAWNER.defaultBlockState(), 2)
-        val blockEntity = level.getBlockEntity(spawnerPos)
-        if (blockEntity is SpawnerBlockEntity) {
-            blockEntity.setEntityId(EntityType.SKELETON, random)
-        }
 
-        // 台の四隅に高さ3の石レンガフェンスを配置
-        listOf(-2 to -2, -2 to 2, 2 to -2, 2 to 2).forEach { (dx, dz) ->
-            (1..3).forEach { dy ->
-                level.setBlock(originBlockPos.above(platformY + dy).offset(dx, 0, dz), stoneWall(), 2)
+        // 台の四隅に高さ3の石レンガフェンス
+        fun f(dx: Int, dz: Int) {
+            repeat(3) { dy ->
+                level.setBlock(originBlockPos.offset(dx, y2 + dy, dz), nextWall(), 2)
             }
         }
+        f(-2, -2)
+        f(-2, 2)
+        f(2, -2)
+        f(2, 2)
+        y2 += 3
 
-        val ceilingY = platformY + 4
-
-        // 7x1x7の天井を配置（下置きハーフブロック、中央は全ブロック）
+        // フェンスの上に7x1x7の下置きハーフブロック・中央は全ブロックの天井
         (-3..3).forEach { dx ->
             (-3..3).forEach { dz ->
-                val blockState = if (dx == 0 && dz == 0) stoneBricks() else stoneSlab()
-                level.setBlock(originBlockPos.above(ceilingY).offset(dx, 0, dz), blockState, 2)
+                val blockState = if (dx == 0 && dz == 0) nextBlock() else nextBottomSlab()
+                level.setBlock(originBlockPos.offset(dx, y2, dz), blockState, 2)
             }
         }
+        y2 += 1
 
-        // 天井中央の上に石レンガフェンスを配置
-        level.setBlock(originBlockPos.above(ceilingY + 1), stoneWall(), 2)
+        // 天井中央の上に石レンガフェンス
+        level.setBlock(originBlockPos.above(y2), nextWall(), 2)
+        y2 += 1
 
-        // その上にラピスラズリブロックを配置
-        level.setBlock(originBlockPos.above(ceilingY + 2), Blocks.LAPIS_BLOCK.defaultBlockState(), 2)
+        // 石レンガフェンスの上にラピスラズリブロック
+        level.setBlock(originBlockPos.above(y2), Blocks.LAPIS_BLOCK.defaultBlockState(), 2)
+        y2 += 1
 
         return true
     }
