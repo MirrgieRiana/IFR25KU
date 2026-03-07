@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.SCYTHE_ITEM_TAG
+import miragefairy2024.mod.enchantment.StickyMiningSnapshot
 import miragefairy2024.mod.magicplant.MagicPlantBlock
 import miragefairy2024.mod.magicplant.PostTryPickHandlerItem
 import miragefairy2024.mod.tool.FairyMiningToolConfiguration
@@ -13,7 +14,6 @@ import miragefairy2024.mod.tool.effects.enchantment
 import miragefairy2024.util.Translation
 import miragefairy2024.util.get
 import miragefairy2024.util.invoke
-import miragefairy2024.util.isValid
 import miragefairy2024.util.text
 import miragefairy2024.util.toRomanText
 import miragefairy2024.util.yellow
@@ -27,9 +27,7 @@ import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EquipmentSlot
-import net.minecraft.world.entity.ExperienceOrb
 import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -187,20 +185,9 @@ private inline fun withStickyMining(world: Level, blockPos: BlockPos, range: Int
         return
     }
 
-    val aabb = AABB(blockPos).inflate(range.toDouble())
-    val oldItemEntities = world.getEntitiesOfClass(ItemEntity::class.java, aabb) { it.isValid }.toSet()
-    val oldExperienceOrbs = world.getEntitiesOfClass(ExperienceOrb::class.java, aabb) { it.isValid }.toSet()
+    val snapshot = StickyMiningSnapshot(world, AABB(blockPos).inflate(range.toDouble()))
 
     action()
 
-    val newItemEntities = world.getEntitiesOfClass(ItemEntity::class.java, aabb) { it.isValid }.toSet()
-    val newExperienceOrbs = world.getEntitiesOfClass(ExperienceOrb::class.java, aabb) { it.isValid }.toSet()
-
-    (newItemEntities - oldItemEntities).forEach {
-        it.teleportTo(player.x, player.y, player.z)
-        it.setNoPickUpDelay()
-    }
-    (newExperienceOrbs - oldExperienceOrbs).forEach {
-        it.teleportTo(player.x, player.y, player.z)
-    }
+    snapshot.teleportNewEntities(player)
 }

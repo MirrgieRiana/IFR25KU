@@ -22,6 +22,7 @@ import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.Registries
 import net.minecraft.tags.ItemTags
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.ExperienceOrb
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
@@ -29,6 +30,7 @@ import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.item.crafting.SingleRecipeInput
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.item.enchantment.Enchantments
+import net.minecraft.world.level.Level
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
@@ -38,6 +40,21 @@ val SCYTHE_ITEM_TAG = MirageFairy2024.identifier("scythe").toItemTag()
 val BUILDERS_ROD_ITEM_TAG = MirageFairy2024.identifier("builders_rod").toItemTag()
 val NONE_ITEM_TAG = MirageFairy2024.identifier("none").toItemTag()
 val AREA_MINING_ENCHANTABLE_ITEM_TAG = MirageFairy2024.identifier("enchantable/area_mining").toItemTag()
+
+class StickyMiningSnapshot(private val world: Level, private val aabb: AABB) {
+    private val oldItemEntities = world.getEntitiesOfClass(ItemEntity::class.java, aabb) { it.isValid }.toSet()
+    private val oldExperienceOrbs = world.getEntitiesOfClass(ExperienceOrb::class.java, aabb) { it.isValid }.toSet()
+
+    fun teleportNewEntities(target: Entity) {
+        (world.getEntitiesOfClass(ItemEntity::class.java, aabb) { it.isValid }.toSet() - oldItemEntities).forEach {
+            it.teleportTo(target.x, target.y, target.z)
+            it.setNoPickUpDelay()
+        }
+        (world.getEntitiesOfClass(ExperienceOrb::class.java, aabb) { it.isValid }.toSet() - oldExperienceOrbs).forEach {
+            it.teleportTo(target.x, target.y, target.z)
+        }
+    }
+}
 
 private val latestPlayerMiningDirectionCache = mutableMapOf<Int, Pair<Long, Direction>>()
 
@@ -92,20 +109,10 @@ fun initEnchantmentModule() {
             val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
             if (stickyMiningLevel == 0) return@register
 
-            val oldItemEntities = level.getEntitiesOfClass(ItemEntity::class.java, AABB(pos)) { it.isValid }.toSet()
-            val oldExperienceOrbs = level.getEntitiesOfClass(ExperienceOrb::class.java, AABB(pos)) { it.isValid }.toSet()
+            val snapshot = StickyMiningSnapshot(level, AABB(pos))
 
             listener.set {
-                val newItemEntities = level.getEntitiesOfClass(ItemEntity::class.java, AABB(pos)) { it.isValid }.toSet()
-                val newExperienceOrbs = level.getEntitiesOfClass(ExperienceOrb::class.java, AABB(pos)) { it.isValid }.toSet()
-
-                (newItemEntities - oldItemEntities).forEach {
-                    it.teleportTo(entity.x, entity.y, entity.z)
-                    it.setNoPickUpDelay()
-                }
-                (newExperienceOrbs - oldExperienceOrbs).forEach {
-                    it.teleportTo(entity.x, entity.y, entity.z)
-                }
+                snapshot.teleportNewEntities(entity)
             }
         }
         BlockCallback.AFTER_DROP_BY_ENTITY.register { _, _, _, _, _, _ ->
