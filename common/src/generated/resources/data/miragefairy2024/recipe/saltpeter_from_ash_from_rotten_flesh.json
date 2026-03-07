@@ -4,19 +4,15 @@
   "group": "miragefairy2024:saltpeter",
   "inputs": [
     {
+      "Amount": 4,
       "Ingredient": {
-        "Amount": 4,
-        "Ingredient": {
-          "item": "miragefairy2024:ash"
-        }
+        "item": "miragefairy2024:ash"
       }
     },
     {
+      "Amount": 4,
       "Ingredient": {
-        "Amount": 4,
-        "Ingredient": {
-          "item": "minecraft:rotten_flesh"
-        }
+        "item": "minecraft:rotten_flesh"
       }
     }
   ],

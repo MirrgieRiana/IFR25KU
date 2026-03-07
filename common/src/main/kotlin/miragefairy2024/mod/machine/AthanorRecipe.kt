@@ -8,7 +8,7 @@ object AthanorRecipeCard : SimpleMachineRecipeCard<AthanorRecipe>() {
     override val identifier = MirageFairy2024.identifier("athanor")
     override fun getIcon() = AthanorCard.item().createItemStack()
     override val recipeClass = AthanorRecipe::class.java
-    override fun createRecipe(group: String, inputs: List<MachineInput>, outputs: List<ItemStack>, duration: Int): AthanorRecipe {
+    override fun createRecipe(group: String, inputs: List<SimpleMachineRecipe.Input>, outputs: List<ItemStack>, duration: Int): AthanorRecipe {
         return AthanorRecipe(this, group, inputs, outputs, duration)
     }
 }
@@ -16,7 +16,7 @@ object AthanorRecipeCard : SimpleMachineRecipeCard<AthanorRecipe>() {
 class AthanorRecipe(
     card: AthanorRecipeCard,
     group: String,
-    inputs: List<MachineInput>,
+    inputs: List<SimpleMachineRecipe.Input>,
     outputs: List<ItemStack>,
     duration: Int,
 ) : SimpleMachineRecipe(

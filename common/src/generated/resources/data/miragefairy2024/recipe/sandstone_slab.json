@@ -4,11 +4,9 @@
   "group": "minecraft:sandstone_slab",
   "inputs": [
     {
+      "Amount": 8,
       "Ingredient": {
-        "Amount": 8,
-        "Ingredient": {
-          "tag": "miragefairy2024:aura_resistant_ceramic_slabs"
-        }
+        "tag": "miragefairy2024:aura_resistant_ceramic_slabs"
       }
     }
   ],

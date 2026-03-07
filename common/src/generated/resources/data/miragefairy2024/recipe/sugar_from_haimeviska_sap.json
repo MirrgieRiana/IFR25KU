@@ -4,19 +4,15 @@
   "group": "minecraft:sugar",
   "inputs": [
     {
+      "Amount": 1,
       "Ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "item": "miragefairy2024:haimeviska_sap"
-        }
+        "item": "miragefairy2024:haimeviska_sap"
       }
     },
     {
+      "Amount": 1,
       "Ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "item": "minecraft:glass_bottle"
-        }
+        "item": "minecraft:glass_bottle"
       }
     }
   ],

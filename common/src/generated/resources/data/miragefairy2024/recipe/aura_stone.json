@@ -4,27 +4,21 @@
   "group": "miragefairy2024:aura_stone",
   "inputs": [
     {
+      "Amount": 1,
       "Ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "item": "miragefairy2024:fairy_crystal"
-        }
+        "item": "miragefairy2024:fairy_crystal"
       }
     },
     {
+      "Amount": 4,
       "Ingredient": {
-        "Amount": 4,
-        "Ingredient": {
-          "item": "miragefairy2024:xarpite"
-        }
+        "item": "miragefairy2024:xarpite"
       }
     },
     {
+      "Amount": 4,
       "Ingredient": {
-        "Amount": 4,
-        "Ingredient": {
-          "item": "miragefairy2024:miranagite"
-        }
+        "item": "miragefairy2024:miranagite"
       }
     }
   ],

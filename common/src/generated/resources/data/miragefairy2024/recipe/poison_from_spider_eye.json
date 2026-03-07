@@ -4,27 +4,21 @@
   "group": "miragefairy2024:poison",
   "inputs": [
     {
+      "Amount": 1,
       "Ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "item": "minecraft:glass_bottle"
-        }
+        "item": "minecraft:glass_bottle"
       }
     },
     {
+      "Amount": 4,
       "Ingredient": {
-        "Amount": 4,
-        "Ingredient": {
-          "item": "minecraft:spider_eye"
-        }
+        "item": "minecraft:spider_eye"
       }
     },
     {
+      "Amount": 1,
       "Ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "fabric:type": "miragefairy2024:water_bottle"
-        }
+        "fabric:type": "miragefairy2024:water_bottle"
       }
     }
   ],

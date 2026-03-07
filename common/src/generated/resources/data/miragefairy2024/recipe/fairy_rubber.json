@@ -4,35 +4,27 @@
   "group": "miragefairy2024:fairy_rubber",
   "inputs": [
     {
+      "Amount": 1,
       "Ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "item": "miragefairy2024:merrrria_drop"
-        }
+        "item": "miragefairy2024:merrrria_drop"
       }
     },
     {
+      "Amount": 1,
       "Ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "item": "miragefairy2024:sarracenia_leaf"
-        }
+        "item": "miragefairy2024:sarracenia_leaf"
       }
     },
     {
+      "Amount": 1,
       "Ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "tag": "minecraft:coals"
-        }
+        "tag": "minecraft:coals"
       }
     },
     {
+      "Amount": 1,
       "Ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "item": "miragefairy2024:sulfur"
-        }
+        "item": "miragefairy2024:sulfur"
       }
     }
   ],

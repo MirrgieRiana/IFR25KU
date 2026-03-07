@@ -4,27 +4,21 @@
   "group": "miragefairy2024:fairy_liqueur",
   "inputs": [
     {
+      "Amount": 1,
       "Ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "item": "minecraft:glass_bottle"
-        }
+        "item": "minecraft:glass_bottle"
       }
     },
     {
+      "Amount": 8,
       "Ingredient": {
-        "Amount": 8,
-        "Ingredient": {
-          "item": "miragefairy2024:haimeviska_sap"
-        }
+        "item": "miragefairy2024:haimeviska_sap"
       }
     },
     {
+      "Amount": 1,
       "Ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "fabric:type": "miragefairy2024:water_bottle"
-        }
+        "fabric:type": "miragefairy2024:water_bottle"
       }
     }
   ],

@@ -4,27 +4,21 @@
   "group": "miragefairy2024:aqua_vitae",
   "inputs": [
     {
+      "Amount": 20,
       "Ingredient": {
-        "Amount": 20,
-        "Ingredient": {
-          "item": "minecraft:rotten_flesh"
-        }
+        "item": "minecraft:rotten_flesh"
       }
     },
     {
+      "Amount": 1,
       "Ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "fabric:type": "miragefairy2024:water_bottle"
-        }
+        "fabric:type": "miragefairy2024:water_bottle"
       }
     },
     {
+      "Amount": 1,
       "Ingredient": {
-        "Amount": 1,
-        "Ingredient": {
-          "item": "minecraft:glass_bottle"
-        }
+        "item": "minecraft:glass_bottle"
       }
     }
   ],
