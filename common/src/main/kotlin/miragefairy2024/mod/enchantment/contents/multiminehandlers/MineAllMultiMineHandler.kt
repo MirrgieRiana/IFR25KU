@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:common/src/main/kotlin/miragefairy2024/mod/enchantment/contents/areaminingmultiminehandlers/MineAllMultiMineHandler.kt
-package miragefairy2024.mod.enchantment.contents.areaminingmultiminehandlers
-========
 package miragefairy2024.mod.enchantment.contents.multiminehandlers
->>>>>>>> cb78b7ec34942b08a7144cb67e5023e3cb0b6270:common/src/main/kotlin/miragefairy2024/mod/enchantment/contents/multiminehandlers/MineAllMultiMineHandler.kt
 
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.contents.MultiMineHandler
