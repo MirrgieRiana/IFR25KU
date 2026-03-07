@@ -1141,6 +1141,32 @@ class MaterialCard(
                 FoodIngredientsRegistry.registry[item()] = FoodIngredients() + FoodIngredientCategoryCard.ALCOHOL + Items.APPLE
             }
         }
+        val APPLE_BRANDY: MaterialCard = !MaterialCard(
+            "apple_brandy", "Apple Brandy", "アップルブランデー",
+            null,
+            fuelValue = 200 * 12, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(6)
+                    .saturationModifier(0.1F)
+                    .effect(MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20 * 60, 1), 1.0F)
+                    .effect(MobEffectInstance(MobEffects.CONFUSION, 20 * 60), 0.1F)
+                    .build()
+            },
+            creator = { DrinkItem(it) },
+        ) {
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { CIDRE.item().toIngredientStack(1) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60,
+            ) on CIDRE.item
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + FoodIngredientCategoryCard.ALCOHOL + Items.APPLE
+            }
+        }
         val FAIRY_LIQUEUR: MaterialCard = !MaterialCard(
             "fairy_liqueur", "Fairy Liqueur", "妖精のリキュール",
             PoemList(2).poem("Fairies get high, humans get burned", "妖精はハイになり、人間は火傷する。"),
