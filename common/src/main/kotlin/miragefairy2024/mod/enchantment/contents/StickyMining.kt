@@ -5,6 +5,7 @@ import miragefairy2024.mixins.api.BlockCallback
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.util.get
 import miragefairy2024.util.isValid
+import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.ExperienceOrb
@@ -12,21 +13,6 @@ import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.AABB
-
-class StickyMiningSnapshot(private val world: Level, private val aabb: AABB) {
-    private val oldItemEntities = world.getEntitiesOfClass(ItemEntity::class.java, aabb) { it.isValid }.toSet()
-    private val oldExperienceOrbs = world.getEntitiesOfClass(ExperienceOrb::class.java, aabb) { it.isValid }.toSet()
-
-    fun teleportNewEntities(target: Entity) {
-        (world.getEntitiesOfClass(ItemEntity::class.java, aabb) { it.isValid }.toSet() - oldItemEntities).forEach {
-            it.teleportTo(target.x, target.y, target.z)
-            it.setNoPickUpDelay()
-        }
-        (world.getEntitiesOfClass(ExperienceOrb::class.java, aabb) { it.isValid }.toSet() - oldExperienceOrbs).forEach {
-            it.teleportTo(target.x, target.y, target.z)
-        }
-    }
-}
 
 context(ModContext)
 fun initStickyMining() {
@@ -36,8 +22,7 @@ fun initStickyMining() {
         val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
         if (stickyMiningLevel == 0) return@register
 
-        val snapshot = StickyMiningSnapshot(level, AABB(pos))
-
+        val snapshot = StickyMiningSnapshot.take(level, pos)
         listener.set {
             snapshot.teleportNewEntities(entity)
         }
@@ -47,6 +32,40 @@ fun initStickyMining() {
         if (listener2 != null) {
             listener2.invoke()
             listener.remove()
+        }
+    }
+}
+
+class StickyMiningSnapshot private constructor(
+    private val level: Level,
+    private val pos: BlockPos,
+    private val oldItemEntities: Set<ItemEntity>,
+    private val oldExperienceOrbs: Set<ExperienceOrb>,
+) {
+    fun teleportNewEntities(entity: Entity) {
+        val newItemEntities = getItemEntities(level, pos)
+        val newExperienceOrbs = getExperienceOrbs(level, pos)
+
+        (newItemEntities - oldItemEntities).forEach {
+            it.teleportTo(entity.x, entity.y, entity.z)
+            it.setNoPickUpDelay()
+        }
+        (newExperienceOrbs - oldExperienceOrbs).forEach {
+            it.teleportTo(entity.x, entity.y, entity.z)
+        }
+    }
+
+    companion object {
+        private fun getItemEntities(level: Level, pos: BlockPos): Set<ItemEntity> {
+            return level.getEntitiesOfClass(ItemEntity::class.java, AABB(pos)) { it.isValid }.toSet()
+        }
+
+        private fun getExperienceOrbs(level: Level, pos: BlockPos): Set<ExperienceOrb> {
+            return level.getEntitiesOfClass(ExperienceOrb::class.java, AABB(pos)) { it.isValid }.toSet()
+        }
+
+        fun take(level: Level, pos: BlockPos): StickyMiningSnapshot {
+            return StickyMiningSnapshot(level, pos, getItemEntities(level, pos), getExperienceOrbs(level, pos))
         }
     }
 }
