@@ -2,9 +2,9 @@ package miragefairy2024.mod.enchantment
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.mod.enchantment.contents.initAreaMining
 import miragefairy2024.mod.enchantment.contents.initCurseOfShattering
 import miragefairy2024.mod.enchantment.contents.initFortuneUp
+import miragefairy2024.mod.enchantment.contents.initMultiMine
 import miragefairy2024.mod.enchantment.contents.initSmelting
 import miragefairy2024.mod.enchantment.contents.initStickyMining
 import miragefairy2024.util.EnJa
@@ -30,7 +30,7 @@ fun initEnchantmentModule() {
     initFortuneUp()
     initSmelting()
     initStickyMining()
-    initAreaMining()
+    initMultiMine()
     initCurseOfShattering()
 
     MAGIC_WEAPON_ITEM_TAG.enJa(EnJa("Magic Weapon", "魔法武器"))

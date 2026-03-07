@@ -22,7 +22,7 @@ import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
 
 context(ModContext)
-fun initAreaMining() {
+fun initMultiMine() {
 
     // 採掘範囲オーバーレイ
     CommonRenderingEvents.onRenderBlockPosesOutline.add { context ->
