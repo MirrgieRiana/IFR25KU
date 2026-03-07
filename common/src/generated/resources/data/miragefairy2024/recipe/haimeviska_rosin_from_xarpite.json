@@ -4,15 +4,19 @@
   "group": "miragefairy2024:haimeviska_rosin",
   "inputs": [
     {
-      "Amount": 9,
       "Ingredient": {
-        "tag": "c:gems/xarpite"
+        "Amount": 9,
+        "Ingredient": {
+          "tag": "c:gems/xarpite"
+        }
       }
     },
     {
-      "Amount": 1,
       "Ingredient": {
-        "item": "miragefairy2024:phantom_drop"
+        "Amount": 1,
+        "Ingredient": {
+          "item": "miragefairy2024:phantom_drop"
+        }
       }
     }
   ],

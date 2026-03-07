@@ -4,9 +4,11 @@
   "group": "minecraft:sandstone_stairs",
   "inputs": [
     {
-      "Amount": 16,
       "Ingredient": {
-        "tag": "miragefairy2024:aura_resistant_ceramic_stairs"
+        "Amount": 16,
+        "Ingredient": {
+          "tag": "miragefairy2024:aura_resistant_ceramic_stairs"
+        }
       }
     }
   ],

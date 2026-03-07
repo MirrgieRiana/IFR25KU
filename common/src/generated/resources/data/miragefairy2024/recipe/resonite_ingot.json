@@ -4,21 +4,27 @@
   "group": "miragefairy2024:resonite_ingot",
   "inputs": [
     {
-      "Amount": 1,
       "Ingredient": {
-        "item": "miragefairy2024:fairy_crystal"
+        "Amount": 1,
+        "Ingredient": {
+          "item": "miragefairy2024:fairy_crystal"
+        }
       }
     },
     {
-      "Amount": 1,
       "Ingredient": {
-        "item": "miragefairy2024:luminite"
+        "Amount": 1,
+        "Ingredient": {
+          "item": "miragefairy2024:luminite"
+        }
       }
     },
     {
-      "Amount": 1,
       "Ingredient": {
-        "item": "minecraft:echo_shard"
+        "Amount": 1,
+        "Ingredient": {
+          "item": "minecraft:echo_shard"
+        }
       }
     }
   ],

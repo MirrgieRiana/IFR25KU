@@ -45,7 +45,7 @@ object AthanorRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<A
 
             view += ImageView(getTexture(bounds))
 
-            fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
+            fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index)?.ingredientStack ?: IngredientStack.EMPTY
             view += InputSlotView(getInput(0)).noBackground().noMargin().configure {
                 position = AbsoluteView.Offset(IntPoint(40, 17) - p)
             }

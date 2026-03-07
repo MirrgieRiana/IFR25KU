@@ -53,7 +53,7 @@ abstract class SimpleMachineRecipeCard<R : SimpleMachineRecipe> {
 
     abstract val recipeClass: Class<R>
 
-    abstract fun createRecipe(group: String, inputs: List<IngredientStack>, outputs: List<ItemStack>, duration: Int): R
+    abstract fun createRecipe(group: String, inputs: List<MachineInput>, outputs: List<ItemStack>, duration: Int): R
 
     context(ModContext)
     fun init() {
@@ -68,10 +68,26 @@ class SimpleMachineRecipeInput(private val itemStacks: List<ItemStack>) : Recipe
     override fun size() = itemStacks.size
 }
 
+data class MachineInput(val ingredientStack: IngredientStack) {
+    companion object {
+        val CODEC: Codec<MachineInput> = RecordCodecBuilder.create { instance ->
+            instance.group(
+                IngredientStack.CODEC.fieldOf("Ingredient").forGetter { it.ingredientStack },
+            ).apply(instance, ::MachineInput)
+        }
+        val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, MachineInput> = StreamCodec.composite(
+            IngredientStack.STREAM_CODEC,
+            { it.ingredientStack },
+            ::MachineInput,
+        )
+        val EMPTY = MachineInput(IngredientStack.EMPTY)
+    }
+}
+
 open class SimpleMachineRecipe(
     private val card: SimpleMachineRecipeCard<*>,
     private val group: String,
-    val inputs: List<IngredientStack>,
+    val inputs: List<MachineInput>,
     val outputs: List<ItemStack>,
     val duration: Int,
 ) : Recipe<SimpleMachineRecipeInput> {
@@ -90,7 +106,8 @@ open class SimpleMachineRecipe(
     private fun matchImpl(inventory: SimpleMachineRecipeInput): List<Consumption>? {
         val virtualCounts = IntArray(inventory.size()) { inventory.getItem(it).count }
         val result = mutableListOf<List<Consumption>>()
-        inputs.forEach { input ->
+        inputs.forEach { machineInput ->
+            val input = machineInput.ingredientStack
             val consumptions = mutableListOf<Consumption>()
             run inputEntryCompleted@{
                 var neededCount = input.count
@@ -157,7 +174,7 @@ open class SimpleMachineRecipe(
         override fun codec(): MapCodec<R> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 Codec.STRING.fieldOf("group").forGetter { it.group },
-                IngredientStack.CODEC.listOf().fieldOf("inputs").forGetter { it.inputs },
+                MachineInput.CODEC.listOf().fieldOf("inputs").forGetter { it.inputs },
                 ItemStack.CODEC.listOf().fieldOf("outputs").forGetter { it.outputs },
                 Codec.INT.fieldOf("duration").forGetter { it.duration },
             ).apply(instance, card::createRecipe)
@@ -166,7 +183,7 @@ open class SimpleMachineRecipe(
         override fun streamCodec(): StreamCodec<RegistryFriendlyByteBuf, R> = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8,
             { it.group },
-            IngredientStack.STREAM_CODEC.list(),
+            MachineInput.STREAM_CODEC.list(),
             { it.inputs },
             ItemStack.STREAM_CODEC.list(),
             { it.outputs },
@@ -189,7 +206,7 @@ fun <R : SimpleMachineRecipe> registerSimpleMachineRecipeGeneration(
     require(outputs.isNotEmpty())
     val settings = RecipeGenerationSettings<SimpleMachineRecipeJsonBuilder<R>>()
     DataGenerationEvents.onGenerateRecipe {
-        val builder = SimpleMachineRecipeJsonBuilder(card, RecipeCategory.MISC, inputs.map { p -> p() }, outputs.map { p -> p() }, duration)
+        val builder = SimpleMachineRecipeJsonBuilder(card, RecipeCategory.MISC, inputs.map { p -> MachineInput(p()) }, outputs.map { p -> p() }, duration)
         builder.group(outputs.first()().item)
         settings.listeners.forEach { listener ->
             listener(builder)
@@ -204,7 +221,7 @@ fun <R : SimpleMachineRecipe> registerSimpleMachineRecipeGeneration(
 class SimpleMachineRecipeJsonBuilder<R : SimpleMachineRecipe>(
     private val card: SimpleMachineRecipeCard<R>,
     private val category: RecipeCategory,
-    private val inputs: List<IngredientStack>,
+    private val inputs: List<MachineInput>,
     private val outputs: List<ItemStack>,
     private val duration: Int,
 ) : RecipeBuilder {

@@ -16,7 +16,7 @@ abstract class SimpleMachineRecipeViewerCategoryCard<R : SimpleMachineRecipe> : 
     override fun getIcon() = getRecipeCard().getIcon()
     override fun getWorkstations() = listOf(getMachineCard().item().createItemStack())
     override fun getRecipeCodec(registryAccess: RegistryAccess): Codec<R> = getRecipeCard().serializer.codec().codec()
-    override fun getInputs(recipeEntry: RecipeEntry<R>) = recipeEntry.recipe.inputs.map { input -> Input(input.ingredient.toIngredientStack(input.count), false) }
+    override fun getInputs(recipeEntry: RecipeEntry<R>) = recipeEntry.recipe.inputs.map { machineInput -> Input(machineInput.ingredientStack.ingredient.toIngredientStack(machineInput.ingredientStack.count), false) }
     override fun getOutputs(recipeEntry: RecipeEntry<R>) = recipeEntry.recipe.outputs
     abstract fun getRecipeCard(): SimpleMachineRecipeCard<R>
     abstract fun getMachineCard(): SimpleMachineCard<*, *, *, R>

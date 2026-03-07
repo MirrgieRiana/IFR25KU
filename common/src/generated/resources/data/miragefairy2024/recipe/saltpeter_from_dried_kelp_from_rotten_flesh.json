@@ -4,15 +4,19 @@
   "group": "miragefairy2024:saltpeter",
   "inputs": [
     {
-      "Amount": 8,
       "Ingredient": {
-        "item": "minecraft:dried_kelp"
+        "Amount": 8,
+        "Ingredient": {
+          "item": "minecraft:dried_kelp"
+        }
       }
     },
     {
-      "Amount": 4,
       "Ingredient": {
-        "item": "minecraft:rotten_flesh"
+        "Amount": 4,
+        "Ingredient": {
+          "item": "minecraft:rotten_flesh"
+        }
       }
     }
   ],
