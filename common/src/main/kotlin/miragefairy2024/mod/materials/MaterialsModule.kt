@@ -1150,7 +1150,7 @@ class MaterialCard(
                     .nutrition(6)
                     .saturationModifier(0.1F)
                     .effect(MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20 * 60, 1), 1.0F)
-                    .effect(MobEffectInstance(MobEffects.CONFUSION, 20 * 60), 0.1F)
+                    .effect(MobEffectInstance(MobEffects.POISON, 20 * 60), 0.1F)
                     .build()
             },
             creator = { DrinkItem(it) },
@@ -1158,13 +1158,14 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { CIDRE.item().toIngredientStack(1) },
+                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
+                    { CIDRE.item().toIngredientStack(8) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60,
             ) on CIDRE.item
             ModEvents.onInitialize {
-                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + FoodIngredientCategoryCard.ALCOHOL + Items.APPLE
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + CIDRE.item()
             }
         }
         val FAIRY_LIQUEUR: MaterialCard = !MaterialCard(

@@ -6,6 +6,12 @@
     {
       "Amount": 1,
       "Ingredient": {
+        "item": "minecraft:glass_bottle"
+      }
+    },
+    {
+      "Amount": 8,
+      "Ingredient": {
         "item": "miragefairy2024:cidre"
       }
     }
