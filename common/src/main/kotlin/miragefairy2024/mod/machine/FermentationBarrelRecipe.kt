@@ -20,7 +20,7 @@ object FermentationBarrelRecipeCard : SimpleMachineRecipeCard<FermentationBarrel
 class FermentationBarrelRecipe(
     card: FermentationBarrelRecipeCard,
     group: String,
-    inputs: List<SimpleMachineRecipe.Input>,
+    inputs: List<Input>,
     outputs: List<ItemStack>,
     duration: Int,
 ) : SimpleMachineRecipe(

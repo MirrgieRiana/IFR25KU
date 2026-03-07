@@ -22,7 +22,7 @@ object AuraReflectorFurnaceRecipeCard : SimpleMachineRecipeCard<AuraReflectorFur
 class AuraReflectorFurnaceRecipe(
     card: AuraReflectorFurnaceRecipeCard,
     group: String,
-    inputs: List<SimpleMachineRecipe.Input>,
+    inputs: List<Input>,
     outputs: List<ItemStack>,
     duration: Int,
 ) : SimpleMachineRecipe(

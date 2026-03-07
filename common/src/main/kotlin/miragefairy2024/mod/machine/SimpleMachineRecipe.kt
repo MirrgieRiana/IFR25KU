@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.DataGenerationEvents
 import miragefairy2024.ModContext
-import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.RecipeGenerationSettings
 import miragefairy2024.util.Registration
 import miragefairy2024.util.getIdentifier
@@ -14,6 +13,7 @@ import miragefairy2024.util.list
 import miragefairy2024.util.register
 import miragefairy2024.util.string
 import miragefairy2024.util.times
+import miragefairy2024.util.toIngredientStack
 import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.helium.min
 import net.minecraft.advancements.AdvancementRequirements
@@ -81,7 +81,8 @@ open class SimpleMachineRecipe(
     }
 
     data class Input(val ingredient: Ingredient, val count: Int) {
-        val ingredientStack by lazy { IngredientStack(ingredient, count) }
+        val ingredientStack by lazy { ingredient.toIngredientStack(count) }
+
         companion object {
             val CODEC: Codec<Input> = RecordCodecBuilder.create { instance ->
                 instance.group(
@@ -202,7 +203,7 @@ open class SimpleMachineRecipe(
 context(ModContext)
 fun <R : SimpleMachineRecipe> registerSimpleMachineRecipeGeneration(
     card: SimpleMachineRecipeCard<R>,
-    inputs: List<() -> IngredientStack>,
+    inputs: List<() -> SimpleMachineRecipe.Input>,
     outputs: List<() -> ItemStack>,
     duration: Int,
     block: SimpleMachineRecipeJsonBuilder<R>.() -> Unit = {},
