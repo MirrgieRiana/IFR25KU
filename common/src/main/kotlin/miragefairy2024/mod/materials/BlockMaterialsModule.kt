@@ -9,6 +9,7 @@ import miragefairy2024.mod.biome.RetrospectiveCityBiomeCard
 import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
 import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
+import miragefairy2024.mod.machine.SimpleMachineRecipe
 import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
 import miragefairy2024.mod.materials.contents.FairyCrystalGlassBlock
 import miragefairy2024.mod.materials.contents.LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG
@@ -61,7 +62,6 @@ import miragefairy2024.util.registerTranslucentRenderLayer
 import miragefairy2024.util.registerVariantsBlockStateGeneration
 import miragefairy2024.util.times
 import miragefairy2024.util.toIngredient
-import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.toItemTag
 import miragefairy2024.util.with
 import mirrg.kotlin.gson.hydrogen.jsonArray
@@ -213,8 +213,8 @@ open class BlockMaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { Items.SANDSTONE.toIngredientStack(1) },
-                    { MaterialCard.XARPITE.ore!!.ingredient.toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(Items.SANDSTONE.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(MaterialCard.XARPITE.ore!!.ingredient, 1) },
                 ),
                 outputs = listOf({ item().createItemStack(1) }),
                 duration = 20 * 60 * 5,
@@ -514,9 +514,9 @@ open class BlockMaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AuraReflectorFurnaceRecipeCard,
                 inputs = listOf(
-                    { MaterialCard.FAIRY_CRYSTAL.item().toIngredientStack(1) },
-                    { MaterialCard.XARPITE.item().toIngredientStack(4) },
-                    { MaterialCard.MIRANAGITE.item().toIngredientStack(4) },
+                    { SimpleMachineRecipe.Input(MaterialCard.FAIRY_CRYSTAL.item().toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(MaterialCard.XARPITE.item().toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(MaterialCard.MIRANAGITE.item().toIngredient(), 4) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60,
@@ -728,7 +728,7 @@ fun initBlockMaterialsModule() {
     // 耐霊石の分解レシピ
     registerSimpleMachineRecipeGeneration(
         AthanorRecipeCard,
-        inputs = listOf({ AURA_RESISTANT_CERAMICS_TAG.toIngredientStack(4) }),
+        inputs = listOf({ SimpleMachineRecipe.Input(AURA_RESISTANT_CERAMICS_TAG.toIngredient(), 4) }),
         outputs = listOf(
             { Items.SANDSTONE.createItemStack(4) },
             { MaterialCard.XARPITE.item().createItemStack(1) },
@@ -737,7 +737,7 @@ fun initBlockMaterialsModule() {
     ) on AURA_RESISTANT_CERAMICS_TAG modId MirageFairy2024.MOD_ID
     registerSimpleMachineRecipeGeneration(
         AthanorRecipeCard,
-        inputs = listOf({ AURA_RESISTANT_CERAMIC_SLABS_TAG.toIngredientStack(8) }),
+        inputs = listOf({ SimpleMachineRecipe.Input(AURA_RESISTANT_CERAMIC_SLABS_TAG.toIngredient(), 8) }),
         outputs = listOf(
             { Items.SANDSTONE_SLAB.createItemStack(8) },
             { MaterialCard.XARPITE.item().createItemStack(1) },
@@ -746,7 +746,7 @@ fun initBlockMaterialsModule() {
     ) on AURA_RESISTANT_CERAMIC_SLABS_TAG modId MirageFairy2024.MOD_ID
     registerSimpleMachineRecipeGeneration(
         AthanorRecipeCard,
-        inputs = listOf({ AURA_RESISTANT_CERAMIC_STAIRS_TAG.toIngredientStack(16) }),
+        inputs = listOf({ SimpleMachineRecipe.Input(AURA_RESISTANT_CERAMIC_STAIRS_TAG.toIngredient(), 16) }),
         outputs = listOf(
             { Items.SANDSTONE_STAIRS.createItemStack(16) },
             { MaterialCard.XARPITE.item().createItemStack(3) },
