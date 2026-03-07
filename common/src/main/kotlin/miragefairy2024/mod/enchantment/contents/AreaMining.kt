@@ -4,10 +4,10 @@ import miragefairy2024.ModContext
 import miragefairy2024.mixins.api.BlockCallback
 import miragefairy2024.mixins.api.LevelEvent
 import miragefairy2024.mod.CommonRenderingEvents
-import miragefairy2024.mod.enchantment.AreaMiningMultiMineHandler
-import miragefairy2024.mod.enchantment.CutAllMultiMineHandler
-import miragefairy2024.mod.enchantment.MineAllMultiMineHandler
 import miragefairy2024.mod.enchantment.MultiMineHandler
+import miragefairy2024.mod.enchantment.contents.areaminingmultiminehandlers.AreaMiningMultiMineHandler
+import miragefairy2024.mod.enchantment.contents.areaminingmultiminehandlers.CutAllMultiMineHandler
+import miragefairy2024.mod.enchantment.contents.areaminingmultiminehandlers.MineAllMultiMineHandler
 import miragefairy2024.util.isInMagicMining
 import miragefairy2024.util.serverSideOrNull
 import mirrg.kotlin.helium.max
