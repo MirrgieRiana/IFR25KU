@@ -81,6 +81,7 @@ import miragefairy2024.util.registerSpecialRecipe
 import miragefairy2024.util.toIngredient
 import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.toItemTag
+import miragefairy2024.util.using
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
@@ -491,7 +492,9 @@ class MaterialCard(
                     type = AdvancementCardType.NORMAL,
                 )
             },
-        )
+        ) {
+            AuraReflectorFurnaceRecipe.registerFuel(item.key, 20 * 10)
+        }
         val RESONITE_INGOT: MaterialCard = !MaterialCard(
             "resonite_ingot", "Resonite", "共鳴石",
             PoemList(5).poem("Synchronized sound and light", "同調する魂の波動。"),
@@ -832,7 +835,7 @@ class MaterialCard(
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 2,
-            ) on ItemTags.PLANKS
+            ) on ItemTags.PLANKS from ItemTags.PLANKS
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
@@ -1085,7 +1088,7 @@ class MaterialCard(
         val RUM: MaterialCard = !MaterialCard(
             "rum", "Rum", "ラム酒",
             null,
-            fuelValue = 200 * 4, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
+            fuelValue = 200 * 12, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
             foodComponentCreator = {
                 FoodProperties.Builder()
                     .nutrition(6)
@@ -1250,6 +1253,37 @@ class MaterialCard(
                 duration = 20 * 5,
             ) on { Items.SPIDER_EYE } from { Items.SPIDER_EYE }
         }
+        val AQUA_VITAE: MaterialCard = !MaterialCard(
+            "aqua_vitae", "Aqua Vitae", "生命の水",
+            PoemList(2).poem("Every life was once water.", "遊離するエーテル結晶核。"),
+            recipeRemainder = Items.GLASS_BOTTLE,
+        ) {
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { Items.ROTTEN_FLESH.toIngredientStack(20) },
+                    { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
+                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60 * 5,
+            ) on { Items.ROTTEN_FLESH } from { Items.ROTTEN_FLESH }
+        }
+        val ETHANOL: MaterialCard = !MaterialCard(
+            "ethanol", "Ethanol", "エタノール",
+            null,
+            fuelValue = 200 * 30, recipeRemainder = Items.GLASS_BOTTLE,
+        ) {
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { ItemTagCard.SPIRITS.tag.toIngredientStack(5) },
+                    { Items.GLASS_BOTTLE.toIngredientStack(2) },
+                ),
+                outputs = listOf({ item().createItemStack(2) }),
+                duration = 20 * 60,
+            ) on ItemTagCard.SPIRITS.tag
+        }
         val SOLID_FUEL: MaterialCard = !MaterialCard(
             "solid_fuel", "Solid Fuel", "固形燃料",
             PoemList(2).poem("Caramelized Ethanol", "なぜかこれを食べる妖精が続出した"),
@@ -1272,8 +1306,18 @@ class MaterialCard(
                 outputs = listOf({ item().createItemStack(8) }), // 800 + 2400 + 1200 = 4400 -> 200 * 8 * 8 = 12800
                 duration = 20 * 60, // 1200 = 200 * 6
             ) on ItemTagCard.SPIRITS.tag
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { Items.SUGAR.toIngredientStack(16) },
+                    { HAIMEVISKA_SAP.item().toIngredientStack(4) },
+                    { ETHANOL.item().toIngredientStack(1) },
+                ),
+                outputs = listOf({ item().createItemStack(32) }),
+                duration = 20 * 60,
+            ) on ETHANOL.item from ETHANOL.item
             // →TNT
-            registerShapedRecipeGeneration({ Items.TNT }) {
+            registerShapedRecipeGeneration({ Items.TNT }, count = 2) {
                 pattern(" G ")
                 pattern("GFG")
                 pattern(" G ")
@@ -1418,6 +1462,17 @@ fun initMaterialsModule() {
     registerCompressionRecipeGeneration(MaterialCard.JEWEL_500.item, { MaterialCard.JEWEL_500.item().toIngredient() }, MaterialCard.JEWEL_1000.item, { MaterialCard.JEWEL_1000.item().toIngredient() }, 2)
     registerCompressionRecipeGeneration(MaterialCard.JEWEL_1000.item, { MaterialCard.JEWEL_1000.item().toIngredient() }, MaterialCard.JEWEL_5000.item, { MaterialCard.JEWEL_5000.item().toIngredient() }, 5)
     registerCompressionRecipeGeneration(MaterialCard.JEWEL_5000.item, { MaterialCard.JEWEL_5000.item().toIngredient() }, MaterialCard.JEWEL_10000.item, { MaterialCard.JEWEL_10000.item().toIngredient() }, 2)
+
+    // パン
+    registerSimpleMachineRecipeGeneration(
+        AthanorRecipeCard,
+        inputs = listOf(
+            { Items.WHEAT.toIngredientStack(1) },
+            { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
+        ),
+        outputs = listOf({ Items.BREAD.createItemStack(2) }),
+        duration = 20 * 10,
+    ) using "athanor" on { Items.WHEAT } modId MirageFairy2024.MOD_ID
 
 }
 

@@ -90,12 +90,22 @@ infix fun <T> RecipeGenerationSettings<T>.modId(modId: String) = this.apply {
     this.idModifiers += { ResourceLocation(modId, it.path) }
 }
 
+@JvmName("fromItem")
 infix fun <T> RecipeGenerationSettings<T>.from(item: () -> Item) = this.apply {
     this.idModifiers += { it * "_from_" * item().getIdentifier().path }
 }
 
+@JvmName("fromTag")
+infix fun <T> RecipeGenerationSettings<T>.from(tag: TagKey<Item>) = this.apply {
+    this.idModifiers += { it * "_from_" * tag.location.path }
+}
+
 fun <T> RecipeGenerationSettings<T>.noGroup(noGroup: Boolean = true) = this.apply {
     this.noGroup = noGroup
+}
+
+infix fun <T> RecipeGenerationSettings<T>.using(string: String) = this.apply {
+    this.idModifiers += { it * "_by_" * string }
 }
 
 context(ModContext)
