@@ -1158,8 +1158,8 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
-                    { CIDRE.item().toIngredientStack(8) },
+                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(CIDRE.item().toIngredient(), 8) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60,
