@@ -4,15 +4,20 @@ import miragefairy2024.ModContext
 import miragefairy2024.mixins.api.BlockCallback
 import miragefairy2024.mixins.api.LevelEvent
 import miragefairy2024.mod.CommonRenderingEvents
-import miragefairy2024.mod.enchantment.MultiMineHandler
 import miragefairy2024.mod.enchantment.contents.areaminingmultiminehandlers.AreaMiningMultiMineHandler
 import miragefairy2024.mod.enchantment.contents.areaminingmultiminehandlers.CutAllMultiMineHandler
 import miragefairy2024.mod.enchantment.contents.areaminingmultiminehandlers.MineAllMultiMineHandler
+import miragefairy2024.util.MultiMine
 import miragefairy2024.util.isInMagicMining
 import miragefairy2024.util.serverSideOrNull
 import mirrg.kotlin.helium.max
+import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
 
@@ -101,6 +106,20 @@ fun initAreaMining() {
     MultiMineHandler.REGISTRY += MineAllMultiMineHandler
 
 }
+
+
+interface MultiMineHandler {
+    companion object {
+        val REGISTRY = mutableListOf<MultiMineHandler>()
+    }
+
+    fun create(
+        miningDirection: Direction,
+        level: Level, blockPos: BlockPos, blockState: BlockState,
+        miner: Player, toolItem: Item, toolItemStack: ItemStack,
+    ): MultiMine?
+}
+
 
 private val latestPlayerMiningDirectionCache = mutableMapOf<Int, Pair<Long, Direction>>()
 
