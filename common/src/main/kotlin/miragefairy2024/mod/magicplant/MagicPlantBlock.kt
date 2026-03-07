@@ -17,7 +17,6 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.sounds.SoundSource
 import net.minecraft.util.RandomSource
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.EntityType
@@ -35,6 +34,7 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.BonemealableBlock
 import net.minecraft.world.level.block.BushBlock
 import net.minecraft.world.level.block.EntityBlock
+import net.minecraft.world.level.block.LevelEvent
 import net.minecraft.world.level.block.SupportType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.storage.loot.LootParams
@@ -251,7 +251,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
         blockEntity.setNatural(false)
 
         // エフェクト
-        world.playSound(null, blockPos, soundType.breakSound, SoundSource.BLOCKS, (soundType.volume + 1.0F) / 2.0F * 0.5F, soundType.pitch * 0.8F)
+        world.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, Block.getId(blockState))
 
     }
 

@@ -3,6 +3,7 @@ package miragefairy2024.client.mod
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
 import miragefairy2024.ModContext
+import miragefairy2024.client.util.stack
 import miragefairy2024.mod.CommonRenderingEvents
 import miragefairy2024.mod.RenderBlockPosesOutlineContext
 import mirrg.kotlin.helium.max
@@ -50,8 +51,7 @@ fun initCommonClientModule() {
             if (blockPoses.isEmpty()) return@register
 
             val poseStack = context.matrixStack()!!
-            poseStack.pushPose()
-            try {
+            poseStack.stack {
                 val camera = context.camera()
                 poseStack.translate(-camera.position.x, -camera.position.y, -camera.position.z)
 
@@ -76,8 +76,6 @@ fun initCommonClientModule() {
                         .setColor(brightness, brightness, brightness, alpha)
                         .setNormal(x1.toFloat() - x0.toFloat(), y1.toFloat() - y0.toFloat(), z1.toFloat() - z0.toFloat())
                 }
-            } finally {
-                poseStack.popPose()
             }
         }
     }
