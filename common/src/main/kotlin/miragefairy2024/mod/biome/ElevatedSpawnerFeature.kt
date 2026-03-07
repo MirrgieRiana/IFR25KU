@@ -98,7 +98,6 @@ class ElevatedSpawnerFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
             }
         }
 
-
         // 台の四隅に高さ3の石レンガフェンス
         fun f(dx: Int, dz: Int) {
             repeat(3) { dy ->
