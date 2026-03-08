@@ -173,8 +173,22 @@ open class SimpleMachineRecipe(
 
     open fun getCustomizedRemainder(itemStack: ItemStack): ItemStack = itemStack.item.getRecipeRemainder(itemStack)
 
+    @Deprecated("Use MatchResult.craft(RandomSource) instead")
     override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
-        throw UnsupportedOperationException("Use MatchResult.craft(RandomSource) instead")
+        val list = NonNullList.create<ItemStack>()
+        val consumptions = matchImpl(inventory) ?: return list
+        consumptions.forEach {
+            val remainder = getCustomizedRemainder(inventory.getItem(it.slotIndex))
+            if (remainder.isEmpty) return@forEach
+
+            var totalRemainderCount = remainder.count * it.count
+            while (totalRemainderCount > 0) {
+                val count = totalRemainderCount atMost remainder.maxStackSize
+                list += remainder.copyWithCount(count)
+                totalRemainderCount -= count
+            }
+        }
+        return list
     }
 
     override fun assemble(inventory: SimpleMachineRecipeInput, registries: HolderLookup.Provider): ItemStack = outputs.first().copy()
