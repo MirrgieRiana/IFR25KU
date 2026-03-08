@@ -1,8 +1,11 @@
 package miragefairy2024.mod.magicplant
 
+import miragefairy2024.mod.enchantment.EnchantmentCard
+import miragefairy2024.mod.enchantment.contents.StickyMiningSnapshot
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isIn
 import miragefairy2024.util.isNotIn
@@ -15,6 +18,7 @@ import mirrg.kotlin.helium.or
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.util.RandomSource
@@ -26,6 +30,7 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.ContainerLevelAccess
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelReader
@@ -238,11 +243,25 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
         val drops = getAdditionalDrops(world, blockPos, block, blockState, traitStacks, traitEffects, randomTraitChances, player, tool)
         val experience = if (dropExperience) world.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey]) else 0
 
+        // 粘着採掘のスナップショットを取得
+        val stickyMiningSnapshot = run {
+            if (player == null) return@run null
+            if (tool == null) return@run null
+            val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
+            if (stickyMiningLevel == 0) return@run null
+            StickyMiningSnapshot.take(world, blockPos.toBox())
+        }
+
         // アイテムを生成
         drops.forEach { itemStack ->
             popResource(world, blockPos, itemStack)
         }
         if (experience > 0) popExperience(world, blockPos, experience)
+
+        // 粘着採掘によるアイテムの即回収
+        if (player != null && stickyMiningSnapshot != null) {
+            stickyMiningSnapshot.teleportNewEntities(player)
+        }
 
         // 成長段階を消費
         world.setBlock(blockPos, getBlockStateAfterPicking(blockState), UPDATE_CLIENTS)
