@@ -153,7 +153,11 @@ open class SimpleMachineRecipe(
                     if (isConsumed) {
                         val inputMutableItemStack = inventory.getItem(consumption.slotIndex)
                         val remainingItemStackSample = getCustomizedRemainder(inputMutableItemStack)
-                        extractedItemStacks += inputMutableItemStack.split(consumption.count)
+                        extractedItemStacks += if (isSimulating) {
+                            inputMutableItemStack.copyWithCount(consumption.count)
+                        } else {
+                            inputMutableItemStack.split(consumption.count)
+                        }
                         if (remainingItemStackSample.isNotEmpty) {
                             var remainingItemStackCount = remainingItemStackSample.count * consumption.count
                             while (remainingItemStackCount > 0) {
