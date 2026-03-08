@@ -243,13 +243,14 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
         val drops = getAdditionalDrops(world, blockPos, block, blockState, traitStacks, traitEffects, randomTraitChances, player, tool)
         val experience = if (dropExperience) world.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey]) else 0
 
-        // 粘着採掘のスナップショットを取得
-        val stickyMiningSnapshot = run {
+        // 粘着採掘のリスナーを取得
+        val listener: (() -> Unit)? = run {
             if (player == null) return@run null
             if (tool == null) return@run null
             val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
             if (stickyMiningLevel == 0) return@run null
-            StickyMiningSnapshot.take(world, blockPos.toBox())
+            val snapshot = StickyMiningSnapshot.take(world, blockPos.toBox())
+            return@run { snapshot.teleportNewEntities(player) }
         }
 
         // アイテムを生成
@@ -259,9 +260,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
         if (experience > 0) popExperience(world, blockPos, experience)
 
         // 粘着採掘によるアイテムの即回収
-        if (player != null && stickyMiningSnapshot != null) {
-            stickyMiningSnapshot.teleportNewEntities(player)
-        }
+        listener?.invoke()
 
         // 成長段階を消費
         world.setBlock(blockPos, getBlockStateAfterPicking(blockState), UPDATE_CLIENTS)
