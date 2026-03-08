@@ -112,7 +112,7 @@ open class SimpleMachineRecipe(
         fun craft(random: RandomSource): CraftResult
     }
 
-    class CraftResult(val extractedItems: List<ItemStack>, val remainingItems: List<ItemStack>)
+    data class CraftResult(val extractedItemStacks: List<ItemStack>, val remainingItemStacks: List<ItemStack>)
 
     private data class Consumption(val slotIndex: Int, val count: Int, val consumptionChance: Double)
 
@@ -143,26 +143,26 @@ open class SimpleMachineRecipe(
         val consumptions = matchImpl(inventory) ?: return null
         return object : MatchResult {
             override fun craft(random: RandomSource): CraftResult {
-                val extractedItems = mutableListOf<ItemStack>()
-                val remainingItems = mutableListOf<ItemStack>()
+                val extractedItemStacks = mutableListOf<ItemStack>()
+                val remainingItemStacks = mutableListOf<ItemStack>()
                 consumptions.forEach { consumption ->
                     val isConsumed = consumption.consumptionChance >= 1.0 || random.nextDouble() < consumption.consumptionChance
-                    val originalItem = inventory.getItem(consumption.slotIndex)
-                    val remainder = if (isConsumed) getCustomizedRemainder(originalItem) else ItemStack.EMPTY
-                    val split = originalItem.split(consumption.count)
-                    extractedItems += split
+                    val originalItemStack = inventory.getItem(consumption.slotIndex)
+                    val remainder = if (isConsumed) getCustomizedRemainder(originalItemStack) else ItemStack.EMPTY
+                    val split = originalItemStack.split(consumption.count)
+                    extractedItemStacks += split
                     if (!isConsumed) {
-                        remainingItems += split.copy()
+                        remainingItemStacks += split.copy()
                     } else if (!remainder.isEmpty) {
                         var totalRemainderCount = remainder.count * consumption.count
                         while (totalRemainderCount > 0) {
                             val count = totalRemainderCount atMost remainder.maxStackSize
-                            remainingItems += remainder.copyWithCount(count)
+                            remainingItemStacks += remainder.copyWithCount(count)
                             totalRemainderCount -= count
                         }
                     }
                 }
-                return CraftResult(extractedItems, remainingItems)
+                return CraftResult(extractedItemStacks, remainingItemStacks)
             }
         }
     }

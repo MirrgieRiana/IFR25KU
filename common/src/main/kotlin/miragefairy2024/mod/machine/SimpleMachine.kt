@@ -156,11 +156,11 @@ abstract class SimpleMachineBlockEntity<E : SimpleMachineBlockEntity<E>>(private
 
         return {
             val craftResult = matchResult.craft(world.random)
-            craftingInventory += craftResult.extractedItems
+            craftingInventory += craftResult.extractedItemStacks
             recipe.outputs.forEach {
                 waitingInventory += it.copy()
             }
-            waitingInventory += craftResult.remainingItems
+            waitingInventory += craftResult.remainingItemStacks
             progressMax = recipe.duration
             setChanged()
         }
