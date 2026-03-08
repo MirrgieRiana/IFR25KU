@@ -2,6 +2,7 @@ package miragefairy2024.mod.machine
 
 import dev.architectury.registry.fuel.FuelRegistry
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.mod.recipeviewer.CONSUMPTION_CHANCE_TRANSLATION
 import miragefairy2024.mod.recipeviewer.toSecondsTextAsTicks
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
@@ -23,9 +24,15 @@ import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.noMargin
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
+import miragefairy2024.util.invoke
+import miragefairy2024.util.plus
+import miragefairy2024.util.text
 import miragefairy2024.util.toIngredientStack
+import mirrg.kotlin.helium.stripTrailingZeros
+import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.world.item.ItemStack
 
@@ -45,19 +52,23 @@ object AthanorRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<A
 
             view += ImageView(getTexture(bounds))
 
-            fun getAthanorInput(index: Int) = recipeEntry.recipe.athanorInputs.getOrNull(index) ?: AthanorInput.EMPTY
-            fun addInputSlot(index: Int, point: IntPoint) {
-                val athanorInput = getAthanorInput(index)
-                val chance = athanorInput.consumptionChance
-                if (chance < 1.0) {
-                    val alpha = ((1.0 - chance) * 255).toInt()
+            fun addInputSlot(index: Int, offset: IntPoint) {
+                val input = recipeEntry.recipe.inputs.getOrNull(index)
+                if (input != null && input.consumptionChance < 1.0) {
+                    val alpha = ((1.0 - input.consumptionChance) * 255).toInt()
                     val color = (alpha shl 24) or 0xFFFF00
                     view += FilledRectangleView().also { it.color.value = color }.configure {
-                        position = AbsoluteView.Bounds(IntRectangle(point.x - p.x, point.y - p.y, 16, 16))
+                        position = AbsoluteView.Bounds(IntRectangle(offset.x - p.x, offset.y - p.y, 16, 16))
                     }
                 }
-                view += InputSlotView(athanorInput.input.ingredientStack).noBackground().noMargin().configure {
-                    position = AbsoluteView.Offset(point - p)
+                view += InputSlotView(input?.ingredientStack ?: IngredientStack.EMPTY).noBackground().noMargin().configure {
+                    position = AbsoluteView.Offset(offset - p)
+                }.let {
+                    if (input != null && input.consumptionChance < 1.0) {
+                        it.tooltip(text { CONSUMPTION_CHANCE_TRANSLATION() + ": ${(input.consumptionChance * 100.0 formatAs "%.8f").stripTrailingZeros()}%"() })
+                    } else {
+                        it
+                    }
                 }
             }
             addInputSlot(0, IntPoint(40, 17))

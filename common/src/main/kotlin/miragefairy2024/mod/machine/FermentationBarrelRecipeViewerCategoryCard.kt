@@ -1,6 +1,7 @@
 package miragefairy2024.mod.machine
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.mod.recipeviewer.CONSUMPTION_CHANCE_TRANSLATION
 import miragefairy2024.mod.recipeviewer.toSecondsTextAsTicks
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
@@ -21,8 +22,14 @@ import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.noMargin
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
+import miragefairy2024.util.invoke
+import miragefairy2024.util.plus
+import miragefairy2024.util.text
+import mirrg.kotlin.helium.stripTrailingZeros
+import mirrg.kotlin.hydrogen.formatAs
 
 object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<FermentationBarrelRecipe>() {
     override fun getId() = MirageFairy2024.identifier("fermentation_barrel")
@@ -39,16 +46,21 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
 
             view += ImageView(getTexture(bounds))
 
-            fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index)?.ingredientStack ?: IngredientStack.EMPTY
-            view += InputSlotView(getInput(0)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(42, 17) - p)
+            fun addInputSlot(index: Int, offset: IntPoint) {
+                val input = recipeEntry.recipe.inputs.getOrNull(index)
+                view += InputSlotView(input?.ingredientStack ?: IngredientStack.EMPTY).noBackground().noMargin().configure {
+                    position = AbsoluteView.Offset(offset - p)
+                }.let {
+                    if (input != null && input.consumptionChance < 1.0) {
+                        it.tooltip(text { CONSUMPTION_CHANCE_TRANSLATION() + ": ${(input.consumptionChance * 100.0 formatAs "%.8f").stripTrailingZeros()}%"() })
+                    } else {
+                        it
+                    }
+                }
             }
-            view += InputSlotView(getInput(1)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(31, 39) - p)
-            }
-            view += InputSlotView(getInput(2)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(53, 39) - p)
-            }
+            addInputSlot(0, IntPoint(42, 17))
+            addInputSlot(1, IntPoint(31, 39))
+            addInputSlot(2, IntPoint(53, 39))
 
             view += ArrowView().configure {
                 position = AbsoluteView.Offset(IntPoint(76, 27) - p)
