@@ -150,18 +150,17 @@ open class SimpleMachineRecipe(
                 consumptions.forEach { consumption ->
                     val consumptionChance = if (isSimulating && consumption.consumptionChance > 0.0) 1.0 else consumption.consumptionChance
                     val isConsumed = consumptionChance >= 1.0 || random != null && random.nextDouble() < consumptionChance
-                    val inputMutableItemStack = inventory.getItem(consumption.slotIndex)
-                    val remainingItemStackSample = getCustomizedRemainder(inputMutableItemStack)
-                    val extractedItemStack = inputMutableItemStack.split(consumption.count)
-                    extractedItemStacks += extractedItemStack
-                    if (!isConsumed) {
-                        remainingItemStacks += extractedItemStack.copy()
-                    } else if (remainingItemStackSample.isNotEmpty) {
-                        var remainingItemStackCount = remainingItemStackSample.count * consumption.count
-                        while (remainingItemStackCount > 0) {
-                            val count = remainingItemStackCount atMost remainingItemStackSample.maxStackSize
-                            remainingItemStacks += remainingItemStackSample.copyWithCount(count)
-                            remainingItemStackCount -= count
+                    if (isConsumed) {
+                        val inputMutableItemStack = inventory.getItem(consumption.slotIndex)
+                        val remainingItemStackSample = getCustomizedRemainder(inputMutableItemStack)
+                        extractedItemStacks += inputMutableItemStack.split(consumption.count)
+                        if (remainingItemStackSample.isNotEmpty) {
+                            var remainingItemStackCount = remainingItemStackSample.count * consumption.count
+                            while (remainingItemStackCount > 0) {
+                                val count = remainingItemStackCount atMost remainingItemStackSample.maxStackSize
+                                remainingItemStacks += remainingItemStackSample.copyWithCount(count)
+                                remainingItemStackCount -= count
+                            }
                         }
                     }
                 }
