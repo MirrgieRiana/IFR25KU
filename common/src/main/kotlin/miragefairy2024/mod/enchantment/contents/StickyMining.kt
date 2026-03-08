@@ -5,6 +5,7 @@ import miragefairy2024.mixins.api.BlockCallback
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.util.get
 import miragefairy2024.util.isValid
+import miragefairy2024.util.toBox
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.ExperienceOrb
@@ -21,7 +22,7 @@ fun initStickyMining() {
         val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
         if (stickyMiningLevel == 0) return@register
 
-        val snapshot = StickyMiningSnapshot.take(level, AABB(pos))
+        val snapshot = StickyMiningSnapshot.take(level, pos.toBox())
         listener.set {
             snapshot.teleportNewEntities(entity)
         }

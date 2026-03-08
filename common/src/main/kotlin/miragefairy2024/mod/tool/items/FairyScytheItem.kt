@@ -15,6 +15,7 @@ import miragefairy2024.util.Translation
 import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
+import miragefairy2024.util.toBox
 import miragefairy2024.util.toRomanText
 import miragefairy2024.util.yellow
 import net.minecraft.core.BlockPos
@@ -43,7 +44,6 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.CaveVines
 import net.minecraft.world.level.block.SweetBerryBushBlock
 import net.minecraft.world.level.block.state.BlockState
-import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.BlockHitResult
 
 open class FairyScytheConfiguration(
@@ -181,7 +181,7 @@ private inline fun withStickyMining(world: Level, blockPos: BlockPos, range: Int
         val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
         if (stickyMiningLevel == 0) return@run
 
-        val snapshot = StickyMiningSnapshot.take(world, AABB(blockPos).inflate(range.toDouble()))
+        val snapshot = StickyMiningSnapshot.take(world, blockPos.toBox().inflate(range.toDouble()))
         action()
         snapshot.teleportNewEntities(player)
 
