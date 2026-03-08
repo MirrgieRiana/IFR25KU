@@ -14,6 +14,7 @@ import miragefairy2024.mod.recipeviewer.view.size
 import miragefairy2024.mod.recipeviewer.views.AbsoluteView
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
+import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
@@ -53,6 +54,13 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
 
             fun addInputSlot(index: Int, offset: IntPoint) {
                 val input = recipeEntry.recipe.inputs.getOrNull(index)
+                if (input != null && input.consumptionChance < 1.0) {
+                    val alpha = ((1.0 - input.consumptionChance) * 255).toInt()
+                    val color = (alpha shl 24) or 0xFFFF00
+                    view += FilledRectangleView().also { it.color.value = color }.configure {
+                        position = AbsoluteView.Bounds(IntRectangle(offset.x - p.x, offset.y - p.y, 16, 16))
+                    }
+                }
                 view += InputSlotView(input?.ingredientStack ?: IngredientStack.EMPTY).noBackground().noMargin().configure {
                     position = AbsoluteView.Offset(offset - p)
                 }.let {
