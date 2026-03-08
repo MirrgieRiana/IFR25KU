@@ -1538,9 +1538,9 @@ fun initMaterialsModule() {
     registerSimpleMachineRecipeGeneration(
         AthanorRecipeCard,
         inputs = listOf(
-            { FairyMotifIngredient(MotifCard.COW).toVanilla().toIngredientStack(1) },
-            { MaterialCard.AQUA_VITAE.item().toIngredientStack(1) },
-            { Items.DIRT.toIngredientStack(1) },
+            { SimpleMachineRecipe.Input(FairyMotifIngredient(MotifCard.COW).toVanilla(), 1, 0.0) },
+            { SimpleMachineRecipe.Input(MaterialCard.AQUA_VITAE.item().toIngredient(), 1) },
+            { SimpleMachineRecipe.Input(Items.DIRT.toIngredient(), 1) },
         ),
         outputs = listOf({ Items.BEEF.createItemStack() }),
         duration = 20 * 60 * 5,

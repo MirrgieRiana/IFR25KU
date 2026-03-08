@@ -8,7 +8,8 @@
       "Ingredient": {
         "fabric:type": "miragefairy2024:fairy_motif",
         "motif": "miragefairy2024:cow"
-      }
+      },
+      "consumptionChance": 0.0
     },
     {
       "Amount": 1,
