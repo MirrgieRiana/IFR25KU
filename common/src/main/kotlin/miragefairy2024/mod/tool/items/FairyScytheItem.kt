@@ -175,19 +175,17 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
 }
 
 private inline fun withStickyMining(world: Level, blockPos: BlockPos, range: Int, player: Player?, tool: ItemStack, action: () -> Unit) {
-    if (world.isClientSide || player == null) {
+    run {
+        if (world.isClientSide) return@run
+        if (player == null) return@run
+        val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
+        if (stickyMiningLevel == 0) return@run
+
+        val snapshot = StickyMiningSnapshot.take(world, AABB(blockPos).inflate(range.toDouble()))
         action()
+        snapshot.teleportNewEntities(player)
+
         return
     }
-    val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
-    if (stickyMiningLevel == 0) {
-        action()
-        return
-    }
-
-    val snapshot = StickyMiningSnapshot.take(world, AABB(blockPos).inflate(range.toDouble()))
-
     action()
-
-    snapshot.teleportNewEntities(player)
 }
