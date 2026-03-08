@@ -137,11 +137,11 @@ open class SimpleMachineRecipe(
         val consumptions = matchImpl(inventory) ?: return null
         return object : MatchResult {
             override fun craft(): List<ItemStack> {
-                val result = mutableListOf<ItemStack>()
-                consumptions.forEach {
-                    result += inventory.getItem(it.slotIndex).split(it.count)
+                val remainingItems = mutableListOf<ItemStack>()
+                consumptions.forEach { consumption ->
+                    remainingItems += inventory.getItem(consumption.slotIndex).split(consumption.count)
                 }
-                return result
+                return remainingItems
             }
         }
     }
