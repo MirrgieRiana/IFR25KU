@@ -9,11 +9,13 @@ import miragefairy2024.util.RecipeGenerationSettings
 import miragefairy2024.util.Registration
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.group
+import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.list
 import miragefairy2024.util.register
 import miragefairy2024.util.string
 import miragefairy2024.util.times
 import miragefairy2024.util.toIngredientStack
+import miragefairy2024.util.toNonNullList
 import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.helium.min
 import net.minecraft.advancements.AdvancementRequirements
@@ -109,10 +111,10 @@ open class SimpleMachineRecipe(
     override fun getGroup() = group
 
     interface MatchResult {
-        fun craft(random: RandomSource): CraftResult
+        fun craft(random: RandomSource?, isSimulating: Boolean): CraftResult
     }
 
-    data class CraftResult(val remainingItemStacks: List<ItemStack>, val recipeRemainderItemStacks: List<ItemStack>)
+    data class CraftResult(val extractedItemStacks: List<ItemStack>, val remainingItemStacks: List<ItemStack>)
 
     private data class Consumption(val slotIndex: Int, val count: Int, val consumptionChance: Double)
 
@@ -139,34 +141,32 @@ open class SimpleMachineRecipe(
         return result.flatten()
     }
 
-    private fun craftImpl(consumptions: List<Consumption>, inventory: SimpleMachineRecipeInput, random: RandomSource, forceNonZeroConsumption: Boolean = false): CraftResult {
-        val remainingItemStacks = mutableListOf<ItemStack>()
-        val recipeRemainderItemStacks = mutableListOf<ItemStack>()
-        consumptions.forEach { consumption ->
-            val consumptionChance = if (forceNonZeroConsumption && consumption.consumptionChance > 0.0) 1.0 else consumption.consumptionChance
-            val isConsumed = consumptionChance >= 1.0 || random.nextDouble() < consumptionChance
-            val originalItemStack = inventory.getItem(consumption.slotIndex)
-            val remainder = if (isConsumed) getCustomizedRemainder(originalItemStack) else ItemStack.EMPTY
-            val split = originalItemStack.split(consumption.count)
-            remainingItemStacks += split
-            if (!isConsumed) {
-                recipeRemainderItemStacks += split.copy()
-            } else if (!remainder.isEmpty) {
-                var totalRemainderCount = remainder.count * consumption.count
-                while (totalRemainderCount > 0) {
-                    val count = totalRemainderCount atMost remainder.maxStackSize
-                    recipeRemainderItemStacks += remainder.copyWithCount(count)
-                    totalRemainderCount -= count
-                }
-            }
-        }
-        return CraftResult(remainingItemStacks, recipeRemainderItemStacks)
-    }
-
     fun match(inventory: SimpleMachineRecipeInput): MatchResult? {
         val consumptions = matchImpl(inventory) ?: return null
         return object : MatchResult {
-            override fun craft(random: RandomSource) = craftImpl(consumptions, inventory, random)
+            override fun craft(random: RandomSource?, isSimulating: Boolean): CraftResult {
+                val extractedItemStacks = mutableListOf<ItemStack>()
+                val remainingItemStacks = mutableListOf<ItemStack>()
+                consumptions.forEach { consumption ->
+                    val consumptionChance = if (isSimulating && consumption.consumptionChance > 0.0) 1.0 else consumption.consumptionChance
+                    val isConsumed = consumptionChance >= 1.0 || random != null && random.nextDouble() < consumptionChance
+                    val originalItemStack = inventory.getItem(consumption.slotIndex)
+                    val remainder = if (isConsumed) getCustomizedRemainder(originalItemStack) else ItemStack.EMPTY
+                    val split = originalItemStack.split(consumption.count)
+                    extractedItemStacks += split
+                    if (!isConsumed) {
+                        remainingItemStacks += split.copy()
+                    } else if (!remainder.isEmpty) {
+                        var totalRemainderCount = remainder.count * consumption.count
+                        while (totalRemainderCount > 0) {
+                            val count = totalRemainderCount atMost remainder.maxStackSize
+                            remainingItemStacks += remainder.copyWithCount(count)
+                            totalRemainderCount -= count
+                        }
+                    }
+                }
+                return CraftResult(extractedItemStacks, remainingItemStacks)
+            }
         }
     }
 
@@ -178,11 +178,9 @@ open class SimpleMachineRecipe(
 
     @Deprecated("Use MatchResult.craft(RandomSource) instead")
     override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
-        val list = NonNullList.create<ItemStack>()
-        val consumptions = matchImpl(inventory) ?: return list
-        val inventoryCopy = SimpleMachineRecipeInput((0 until inventory.size()).map { inventory.getItem(it).copy() })
-        list += craftImpl(consumptions, inventoryCopy, RandomSource.create(0), forceNonZeroConsumption = true).recipeRemainderItemStacks
-        return list
+        val matchResult = match(inventory) ?: return NonNullList.create()
+        val craftResult = matchResult.craft(null, true)
+        return craftResult.remainingItemStacks.toNonNullList()
     }
 
     override fun assemble(inventory: SimpleMachineRecipeInput, registries: HolderLookup.Provider): ItemStack = outputs.first().copy()
