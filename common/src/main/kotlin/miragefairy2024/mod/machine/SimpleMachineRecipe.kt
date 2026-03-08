@@ -9,11 +9,13 @@ import miragefairy2024.util.RecipeGenerationSettings
 import miragefairy2024.util.Registration
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.group
+import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.list
 import miragefairy2024.util.register
 import miragefairy2024.util.string
 import miragefairy2024.util.times
 import miragefairy2024.util.toIngredientStack
+import miragefairy2024.util.toNonNullList
 import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.helium.min
 import net.minecraft.advancements.AdvancementRequirements
@@ -106,10 +108,10 @@ open class SimpleMachineRecipe(
     override fun getGroup() = group
 
     interface MatchResult {
-        fun craft(random: RandomSource, isSimulating: Boolean): CraftResult
+        fun craft(random: RandomSource?, isSimulating: Boolean): CraftResult
     }
 
-    data class CraftResult(val extractedItemStacks: List<ItemStack>)
+    data class CraftResult(val extractedItemStacks: List<ItemStack>, val remainingItemStacks: List<ItemStack>)
 
     private data class Consumption(val slotIndex: Int, val count: Int)
 
@@ -139,12 +141,23 @@ open class SimpleMachineRecipe(
     fun match(inventory: SimpleMachineRecipeInput): MatchResult? {
         val consumptions = matchImpl(inventory) ?: return null
         return object : MatchResult {
-            override fun craft(random: RandomSource, isSimulating: Boolean): CraftResult {
+            override fun craft(random: RandomSource?, isSimulating: Boolean): CraftResult {
                 val extractedItemStacks = mutableListOf<ItemStack>()
+                val remainingItemStacks = mutableListOf<ItemStack>()
                 consumptions.forEach { consumption ->
-                    extractedItemStacks += inventory.getItem(consumption.slotIndex).split(consumption.count)
+                    val inputMutableItemStack = inventory.getItem(consumption.slotIndex)
+                    val remainingItemStackSample = getCustomizedRemainder(inputMutableItemStack)
+                    extractedItemStacks += inputMutableItemStack.split(consumption.count)
+                    if (remainingItemStackSample.isNotEmpty) {
+                        var remainingItemStackCount = remainingItemStackSample.count * consumption.count
+                        while (remainingItemStackCount > 0) {
+                            val count = remainingItemStackCount atMost remainingItemStackSample.maxStackSize
+                            remainingItemStacks += remainingItemStackSample.copyWithCount(count)
+                            remainingItemStackCount -= count
+                        }
+                    }
                 }
-                return CraftResult(extractedItemStacks)
+                return CraftResult(extractedItemStacks, remainingItemStacks)
             }
         }
     }
@@ -156,20 +169,9 @@ open class SimpleMachineRecipe(
     open fun getCustomizedRemainder(itemStack: ItemStack): ItemStack = itemStack.item.getRecipeRemainder(itemStack)
 
     override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
-        val list = NonNullList.create<ItemStack>()
-        val consumptions = matchImpl(inventory) ?: return list
-        consumptions.forEach {
-            val remainder = getCustomizedRemainder(inventory.getItem(it.slotIndex))
-            if (remainder.isEmpty) return@forEach
-
-            var totalRemainderCount = remainder.count * it.count
-            while (totalRemainderCount > 0) {
-                val count = totalRemainderCount atMost remainder.maxStackSize
-                list += remainder.copyWithCount(count)
-                totalRemainderCount -= count
-            }
-        }
-        return list
+        val matchResult = match(inventory) ?: return NonNullList.create()
+        val craftResult = matchResult.craft(null, true)
+        return craftResult.remainingItemStacks.toNonNullList()
     }
 
     override fun assemble(inventory: SimpleMachineRecipeInput, registries: HolderLookup.Provider): ItemStack = outputs.first().copy()
