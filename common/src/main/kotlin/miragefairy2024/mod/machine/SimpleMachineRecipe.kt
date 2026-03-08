@@ -83,7 +83,11 @@ open class SimpleMachineRecipe(
         require(outputs.isNotEmpty())
     }
 
-    data class Input(val ingredient: Ingredient, val count: Int) {
+    data class Input(val ingredient: Ingredient, val count: Int, val consumptionChance: Double = 1.0) {
+        init {
+            require(consumptionChance in 0.0..1.0)
+        }
+
         val ingredientStack by lazy { ingredient.toIngredientStack(count) }
 
         companion object {
@@ -91,6 +95,7 @@ open class SimpleMachineRecipe(
                 instance.group(
                     Ingredient.CODEC.fieldOf("Ingredient").forGetter { it.ingredient },
                     Codec.INT.fieldOf("Amount").forGetter { it.count },
+                    Codec.DOUBLE.optionalFieldOf("consumptionChance", 1.0).forGetter { it.consumptionChance },
                 ).apply(instance, ::Input)
             }
             val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, Input> = StreamCodec.composite(
@@ -98,6 +103,8 @@ open class SimpleMachineRecipe(
                 { it.ingredient },
                 ByteBufCodecs.VAR_INT,
                 { it.count },
+                ByteBufCodecs.DOUBLE,
+                { it.consumptionChance },
                 ::Input,
             )
 
@@ -113,7 +120,7 @@ open class SimpleMachineRecipe(
 
     data class CraftResult(val extractedItemStacks: List<ItemStack>, val remainingItemStacks: List<ItemStack>)
 
-    private data class Consumption(val slotIndex: Int, val count: Int)
+    private data class Consumption(val slotIndex: Int, val count: Int, val consumptionChance: Double)
 
     private fun matchImpl(inventory: SimpleMachineRecipeInput): List<Consumption>? {
         val virtualCounts = IntArray(inventory.size()) { inventory.getItem(it).count }
@@ -128,7 +135,7 @@ open class SimpleMachineRecipe(
                     val takeCount = neededCount min virtualCounts[slotIndex]
                     virtualCounts[slotIndex] -= takeCount
                     neededCount -= takeCount
-                    consumptions += Consumption(slotIndex, takeCount)
+                    consumptions += Consumption(slotIndex, takeCount, input.consumptionChance)
                     if (neededCount == 0) return@inputEntryCompleted
                 }
                 return null
@@ -145,19 +152,26 @@ open class SimpleMachineRecipe(
                 val extractedItemStacks = mutableListOf<ItemStack>()
                 val remainingItemStacks = mutableListOf<ItemStack>()
                 consumptions.forEach { consumption ->
-                    val inputMutableItemStack = inventory.getItem(consumption.slotIndex)
-                    val remainingItemStackSample = getCustomizedRemainder(inputMutableItemStack)
-                    extractedItemStacks += if (isSimulating) {
-                        inputMutableItemStack.copyWithCount(consumption.count)
+                    val isConsumed = if (isSimulating || random == null) {
+                        consumption.consumptionChance > 0.0
                     } else {
-                        inputMutableItemStack.split(consumption.count)
+                        consumption.consumptionChance >= 1.0 || random.nextDouble() < consumption.consumptionChance
                     }
-                    if (remainingItemStackSample.isNotEmpty) {
-                        var remainingItemStackCount = remainingItemStackSample.count * consumption.count
-                        while (remainingItemStackCount > 0) {
-                            val count = remainingItemStackCount atMost remainingItemStackSample.maxStackSize
-                            remainingItemStacks += remainingItemStackSample.copyWithCount(count)
-                            remainingItemStackCount -= count
+                    if (isConsumed) {
+                        val inputMutableItemStack = inventory.getItem(consumption.slotIndex)
+                        val remainingItemStackSample = getCustomizedRemainder(inputMutableItemStack)
+                        extractedItemStacks += if (isSimulating) {
+                            inputMutableItemStack.copyWithCount(consumption.count)
+                        } else {
+                            inputMutableItemStack.split(consumption.count)
+                        }
+                        if (remainingItemStackSample.isNotEmpty) {
+                            var remainingItemStackCount = remainingItemStackSample.count * consumption.count
+                            while (remainingItemStackCount > 0) {
+                                val count = remainingItemStackCount atMost remainingItemStackSample.maxStackSize
+                                remainingItemStacks += remainingItemStackSample.copyWithCount(count)
+                                remainingItemStackCount -= count
+                            }
                         }
                     }
                 }
