@@ -139,11 +139,12 @@ open class SimpleMachineRecipe(
         return result.flatten()
     }
 
-    private fun craftImpl(consumptions: List<Consumption>, inventory: SimpleMachineRecipeInput, random: RandomSource): CraftResult {
+    private fun craftImpl(consumptions: List<Consumption>, inventory: SimpleMachineRecipeInput, random: RandomSource, forceNonZeroConsumption: Boolean = false): CraftResult {
         val remainingItemStacks = mutableListOf<ItemStack>()
         val recipeRemainderItemStacks = mutableListOf<ItemStack>()
         consumptions.forEach { consumption ->
-            val isConsumed = consumption.consumptionChance >= 1.0 || random.nextDouble() < consumption.consumptionChance
+            val consumptionChance = if (forceNonZeroConsumption && consumption.consumptionChance > 0.0) 1.0 else consumption.consumptionChance
+            val isConsumed = consumptionChance >= 1.0 || random.nextDouble() < consumptionChance
             val originalItemStack = inventory.getItem(consumption.slotIndex)
             val remainder = if (isConsumed) getCustomizedRemainder(originalItemStack) else ItemStack.EMPTY
             val split = originalItemStack.split(consumption.count)
@@ -179,9 +180,8 @@ open class SimpleMachineRecipe(
     override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
         val list = NonNullList.create<ItemStack>()
         val consumptions = matchImpl(inventory) ?: return list
-        val forcedConsumptions = consumptions.map { if (it.consumptionChance > 0.0) it.copy(consumptionChance = 1.0) else it }
         val inventoryCopy = SimpleMachineRecipeInput((0 until inventory.size()).map { inventory.getItem(it).copy() })
-        list += craftImpl(forcedConsumptions, inventoryCopy, RandomSource.create(0)).recipeRemainderItemStacks
+        list += craftImpl(consumptions, inventoryCopy, RandomSource.create(0), forceNonZeroConsumption = true).recipeRemainderItemStacks
         return list
     }
 
