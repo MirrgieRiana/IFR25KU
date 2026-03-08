@@ -30,6 +30,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.util.RandomSource
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Ingredient
@@ -105,7 +106,7 @@ open class SimpleMachineRecipe(
     override fun getGroup() = group
 
     interface MatchResult {
-        fun craft(): CraftResult
+        fun craft(random: RandomSource): CraftResult
     }
 
     data class CraftResult(val remainingItemStacks: List<ItemStack>)
@@ -138,7 +139,7 @@ open class SimpleMachineRecipe(
     fun match(inventory: SimpleMachineRecipeInput): MatchResult? {
         val consumptions = matchImpl(inventory) ?: return null
         return object : MatchResult {
-            override fun craft(): CraftResult {
+            override fun craft(random: RandomSource): CraftResult {
                 val remainingItemStacks = mutableListOf<ItemStack>()
                 consumptions.forEach { consumption ->
                     remainingItemStacks += inventory.getItem(consumption.slotIndex).split(consumption.count)
