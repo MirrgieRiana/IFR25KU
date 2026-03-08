@@ -221,7 +221,7 @@ fun collectItem(
 ) {
     val box = when {
         region != null -> AABB.of(region)
-        reach != Int.MAX_VALUE -> AABB(originalBlockPos).inflate(reach.toDouble())
+        reach != Int.MAX_VALUE -> originalBlockPos.toBox().inflate(reach.toDouble())
         else -> AABB.of(BoundingBox.infinite())
     }
     val targetTable = world.getEntitiesOfClass(ItemEntity::class.java, box) {
