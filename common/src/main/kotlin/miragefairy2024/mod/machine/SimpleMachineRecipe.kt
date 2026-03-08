@@ -114,15 +114,12 @@ open class SimpleMachineRecipe(
 
     class CraftResult(val consumedItems: List<ItemStack>, val returnedItems: List<ItemStack>)
 
-    private data class Consumption(val slotIndex: Int, val count: Int)
+    private data class Consumption(val slotIndex: Int, val count: Int, val consumptionChance: Double)
 
-    private class InputMatch(val consumptions: List<Consumption>, val consumptionChance: Double)
-
-    private fun matchImpl(inventory: SimpleMachineRecipeInput): List<InputMatch>? {
+    private fun matchImpl(inventory: SimpleMachineRecipeInput): List<Consumption>? {
         val virtualCounts = IntArray(inventory.size()) { inventory.getItem(it).count }
-        val result = mutableListOf<InputMatch>()
+        val result = mutableListOf<Consumption>()
         inputs.forEach { input ->
-            val consumptions = mutableListOf<Consumption>()
             run inputEntryCompleted@{
                 var neededCount = input.count
                 (0 until inventory.size()).forEach nextSlot@{ slotIndex ->
@@ -131,38 +128,35 @@ open class SimpleMachineRecipe(
                     val takeCount = neededCount min virtualCounts[slotIndex]
                     virtualCounts[slotIndex] -= takeCount
                     neededCount -= takeCount
-                    consumptions += Consumption(slotIndex, takeCount)
+                    result += Consumption(slotIndex, takeCount, input.consumptionChance)
                     if (neededCount == 0) return@inputEntryCompleted
                 }
                 return null
             }
-            result += InputMatch(consumptions, input.consumptionChance)
         }
         return result
     }
 
     fun match(inventory: SimpleMachineRecipeInput): MatchResult? {
-        val inputMatches = matchImpl(inventory) ?: return null
+        val consumptions = matchImpl(inventory) ?: return null
         return object : MatchResult {
             override fun craft(random: RandomSource): CraftResult {
                 val consumedItems = mutableListOf<ItemStack>()
                 val returnedItems = mutableListOf<ItemStack>()
-                inputMatches.forEach { inputMatch ->
-                    val isConsumed = inputMatch.consumptionChance >= 1.0 || random.nextDouble() < inputMatch.consumptionChance
-                    inputMatch.consumptions.forEach { consumption ->
-                        val originalItem = inventory.getItem(consumption.slotIndex)
-                        val remainder = if (isConsumed) getCustomizedRemainder(originalItem) else ItemStack.EMPTY
-                        val split = originalItem.split(consumption.count)
-                        consumedItems += split
-                        if (!isConsumed) {
-                            returnedItems += split.copy()
-                        } else if (!remainder.isEmpty) {
-                            var totalRemainderCount = remainder.count * consumption.count
-                            while (totalRemainderCount > 0) {
-                                val count = totalRemainderCount atMost remainder.maxStackSize
-                                returnedItems += remainder.copyWithCount(count)
-                                totalRemainderCount -= count
-                            }
+                consumptions.forEach { consumption ->
+                    val isConsumed = consumption.consumptionChance >= 1.0 || random.nextDouble() < consumption.consumptionChance
+                    val originalItem = inventory.getItem(consumption.slotIndex)
+                    val remainder = if (isConsumed) getCustomizedRemainder(originalItem) else ItemStack.EMPTY
+                    val split = originalItem.split(consumption.count)
+                    consumedItems += split
+                    if (!isConsumed) {
+                        returnedItems += split.copy()
+                    } else if (!remainder.isEmpty) {
+                        var totalRemainderCount = remainder.count * consumption.count
+                        while (totalRemainderCount > 0) {
+                            val count = totalRemainderCount atMost remainder.maxStackSize
+                            returnedItems += remainder.copyWithCount(count)
+                            totalRemainderCount -= count
                         }
                     }
                 }
@@ -179,18 +173,16 @@ open class SimpleMachineRecipe(
 
     override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
         val list = NonNullList.create<ItemStack>()
-        val inputMatches = matchImpl(inventory) ?: return list
-        inputMatches.forEach { inputMatch ->
-            inputMatch.consumptions.forEach {
-                val remainder = getCustomizedRemainder(inventory.getItem(it.slotIndex))
-                if (remainder.isEmpty) return@forEach
+        val consumptions = matchImpl(inventory) ?: return list
+        consumptions.forEach {
+            val remainder = getCustomizedRemainder(inventory.getItem(it.slotIndex))
+            if (remainder.isEmpty) return@forEach
 
-                var totalRemainderCount = remainder.count * it.count
-                while (totalRemainderCount > 0) {
-                    val count = totalRemainderCount atMost remainder.maxStackSize
-                    list += remainder.copyWithCount(count)
-                    totalRemainderCount -= count
-                }
+            var totalRemainderCount = remainder.count * it.count
+            while (totalRemainderCount > 0) {
+                val count = totalRemainderCount atMost remainder.maxStackSize
+                list += remainder.copyWithCount(count)
+                totalRemainderCount -= count
             }
         }
         return list
