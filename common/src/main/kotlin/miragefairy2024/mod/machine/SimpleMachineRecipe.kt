@@ -148,8 +148,11 @@ open class SimpleMachineRecipe(
                 val extractedItemStacks = mutableListOf<ItemStack>()
                 val remainingItemStacks = mutableListOf<ItemStack>()
                 consumptions.forEach { consumption ->
-                    val consumptionChance = if (isSimulating && consumption.consumptionChance > 0.0) 1.0 else consumption.consumptionChance
-                    val isConsumed = consumptionChance >= 1.0 || random != null && random.nextDouble() < consumptionChance
+                    val isConsumed = if (isSimulating || random == null) {
+                        consumption.consumptionChance > 0.0
+                    } else {
+                        consumption.consumptionChance >= 1.0 || random.nextDouble() < consumption.consumptionChance
+                    }
                     if (isConsumed) {
                         val inputMutableItemStack = inventory.getItem(consumption.slotIndex)
                         val remainingItemStackSample = getCustomizedRemainder(inputMutableItemStack)
