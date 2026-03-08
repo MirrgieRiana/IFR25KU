@@ -245,7 +245,6 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
 
         // 粘着採掘判定
         val stickyMiningListener: (() -> Unit)? = run {
-            if (world.isClientSide) return@run null
             if (player == null) return@run null
             if (tool == null) return@run null
             val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
