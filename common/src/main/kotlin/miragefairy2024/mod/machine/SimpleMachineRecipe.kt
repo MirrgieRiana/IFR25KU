@@ -175,7 +175,6 @@ open class SimpleMachineRecipe(
 
     open fun getCustomizedRemainder(itemStack: ItemStack): ItemStack = itemStack.item.getRecipeRemainder(itemStack)
 
-    @Deprecated("Use MatchResult.craft(RandomSource) instead")
     override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
         val matchResult = match(inventory) ?: return NonNullList.create()
         val craftResult = matchResult.craft(null, true)
