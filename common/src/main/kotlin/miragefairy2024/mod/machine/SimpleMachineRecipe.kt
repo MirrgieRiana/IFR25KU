@@ -84,6 +84,10 @@ open class SimpleMachineRecipe(
     }
 
     data class Input(val ingredient: Ingredient, val count: Int, val consumptionChance: Double = 1.0) {
+        init {
+            require(consumptionChance in 0.0..1.0)
+        }
+
         val ingredientStack by lazy { ingredient.toIngredientStack(count) }
 
         companion object {
