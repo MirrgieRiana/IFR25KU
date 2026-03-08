@@ -242,4 +242,3 @@ class AthanorScreen(card: AthanorCard, arguments: Arguments<AthanorScreenHandler
         }
     }
 }
-
