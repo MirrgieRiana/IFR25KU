@@ -112,7 +112,7 @@ open class SimpleMachineRecipe(
         fun craft(random: RandomSource): CraftResult
     }
 
-    data class CraftResult(val extractedItemStacks: List<ItemStack>, val remainingItemStacks: List<ItemStack>)
+    data class CraftResult(val remainingItemStacks: List<ItemStack>, val recipeRemainderItemStacks: List<ItemStack>)
 
     private data class Consumption(val slotIndex: Int, val count: Int, val consumptionChance: Double)
 
@@ -143,26 +143,26 @@ open class SimpleMachineRecipe(
         val consumptions = matchImpl(inventory) ?: return null
         return object : MatchResult {
             override fun craft(random: RandomSource): CraftResult {
-                val extractedItemStacks = mutableListOf<ItemStack>()
                 val remainingItemStacks = mutableListOf<ItemStack>()
+                val recipeRemainderItemStacks = mutableListOf<ItemStack>()
                 consumptions.forEach { consumption ->
                     val isConsumed = consumption.consumptionChance >= 1.0 || random.nextDouble() < consumption.consumptionChance
                     val originalItemStack = inventory.getItem(consumption.slotIndex)
                     val remainder = if (isConsumed) getCustomizedRemainder(originalItemStack) else ItemStack.EMPTY
                     val split = originalItemStack.split(consumption.count)
-                    extractedItemStacks += split
+                    remainingItemStacks += split
                     if (!isConsumed) {
-                        remainingItemStacks += split.copy()
+                        recipeRemainderItemStacks += split.copy()
                     } else if (!remainder.isEmpty) {
                         var totalRemainderCount = remainder.count * consumption.count
                         while (totalRemainderCount > 0) {
                             val count = totalRemainderCount atMost remainder.maxStackSize
-                            remainingItemStacks += remainder.copyWithCount(count)
+                            recipeRemainderItemStacks += remainder.copyWithCount(count)
                             totalRemainderCount -= count
                         }
                     }
                 }
-                return CraftResult(extractedItemStacks, remainingItemStacks)
+                return CraftResult(remainingItemStacks, recipeRemainderItemStacks)
             }
         }
     }
