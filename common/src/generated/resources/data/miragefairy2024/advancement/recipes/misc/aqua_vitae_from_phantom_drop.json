@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_phantom_drop": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:phantom_drop"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:aqua_vitae_from_phantom_drop"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_phantom_drop"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:aqua_vitae_from_phantom_drop"
+    ]
+  }
+}

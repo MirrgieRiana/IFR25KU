@@ -4,7 +4,7 @@
   "group": "miragefairy2024:solid_fuel",
   "inputs": [
     {
-      "Amount": 8,
+      "Amount": 16,
       "Ingredient": {
         "item": "minecraft:sugar"
       }

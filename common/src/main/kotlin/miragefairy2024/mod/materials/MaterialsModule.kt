@@ -22,12 +22,15 @@ import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.getFairyCondensation
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.haimeviska.haimeviskaAdvancement
+import miragefairy2024.mod.machine.AthanorRecipe
 import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipe
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
 import miragefairy2024.mod.machine.FermentationBarrelCard
 import miragefairy2024.mod.machine.FermentationBarrelRecipeCard
+import miragefairy2024.mod.machine.SimpleMachineRecipe
+import miragefairy2024.mod.machine.SimpleMachineRecipeJsonBuilder
 import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
 import miragefairy2024.mod.magicplant.contents.magicplants.DiamondLuminariaCard
 import miragefairy2024.mod.magicplant.contents.magicplants.MerrrriaCard
@@ -49,6 +52,7 @@ import miragefairy2024.mod.translation
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.RecipeGenerationSettings
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.SpecialRecipeResult
@@ -80,7 +84,6 @@ import miragefairy2024.util.registerSinglePoolChestLoot
 import miragefairy2024.util.registerSmeltingRecipeGeneration
 import miragefairy2024.util.registerSpecialRecipe
 import miragefairy2024.util.toIngredient
-import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.toItemTag
 import miragefairy2024.util.using
 import net.minecraft.core.registries.BuiltInRegistries
@@ -94,6 +97,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.item.alchemy.Potions
+import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.storage.loot.BuiltInLootTables
 import java.math.BigInteger
@@ -141,10 +145,10 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { FAIRY_PLASTIC.item().toIngredientStack(1) },
-                    { MIRAGIUM_INGOT.ore!!.ingredient.toIngredientStack(1) },
-                    { MAGNETITE.ore!!.ingredient.toIngredientStack(1) },
-                    { Items.REDSTONE.toIngredientStack(1) }, // TODO 妖精の血
+                    { SimpleMachineRecipe.Input(FAIRY_PLASTIC.item().toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(MIRAGIUM_INGOT.ore!!.ingredient, 1) },
+                    { SimpleMachineRecipe.Input(MAGNETITE.ore!!.ingredient, 1) },
+                    { SimpleMachineRecipe.Input(Items.REDSTONE.toIngredient(), 1) }, // TODO 妖精の血
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
@@ -152,8 +156,8 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { ore!!.ingredient.toIngredientStack(9) },
-                    { PHANTOM_DROP.item().toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(ore!!.ingredient, 9) },
+                    { SimpleMachineRecipe.Input(PHANTOM_DROP.item().toIngredient(), 1) },
                 ),
                 outputs = listOf(
                     { HAIMEVISKA_ROSIN.item().createItemStack(6) },
@@ -240,9 +244,9 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AuraReflectorFurnaceRecipeCard,
                 inputs = listOf(
-                    { CALCULITE.item().toIngredientStack(1) },
-                    { FAIRY_SCALES.item().toIngredientStack(8) },
-                    { POISON.item().toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(CALCULITE.item().toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(FAIRY_SCALES.item().toIngredient(), 8) },
+                    { SimpleMachineRecipe.Input(POISON.item().toIngredient(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 10,
@@ -355,7 +359,7 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AuraReflectorFurnaceRecipeCard,
                 inputs = listOf(
-                    { MIRAGE_FLOUR.item().toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(MIRAGE_FLOUR.item().toIngredient(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60,
@@ -396,9 +400,9 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AuraReflectorFurnaceRecipeCard,
                 inputs = listOf(
-                    { MIRAGIUM_INGOT.item().toIngredientStack(1) },
-                    { Items.LILAC.toIngredientStack(4) },
-                    { Items.PEONY.toIngredientStack(4) },
+                    { SimpleMachineRecipe.Input(MIRAGIUM_INGOT.item().toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(Items.LILAC.toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(Items.PEONY.toIngredient(), 4) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60,
@@ -412,7 +416,7 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AuraReflectorFurnaceRecipeCard,
                 inputs = listOf(
-                    { item().toIngredientStack(9) },
+                    { SimpleMachineRecipe.Input(item().toIngredient(), 9) },
                 ),
                 outputs = listOf({ MIRAGIDIAN.item().createItemStack() }),
                 duration = 20 * 60,
@@ -515,9 +519,9 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AuraReflectorFurnaceRecipeCard,
                 inputs = listOf(
-                    { FAIRY_CRYSTAL.item().toIngredientStack(1) },
-                    { LUMINITE.item().toIngredientStack(1) },
-                    { Items.ECHO_SHARD.toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(FAIRY_CRYSTAL.item().toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(LUMINITE.item().toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(Items.ECHO_SHARD.toIngredient(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60,
@@ -641,8 +645,8 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { item().toIngredientStack(1) },
-                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(item().toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
                 ),
                 outputs = listOf(
                     { Items.SUGAR.createItemStack(2) },
@@ -716,10 +720,10 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { MERRRRIA_DROP.item().toIngredientStack(1) },
-                    { SARRACENIA_LEAF.item().toIngredientStack(1) },
-                    { ItemTags.COALS.toIngredientStack(1) },
-                    { SULFUR.item().toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(MERRRRIA_DROP.item().toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(SARRACENIA_LEAF.item().toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(ItemTags.COALS.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(SULFUR.item().toIngredient(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
@@ -832,15 +836,15 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { ItemTags.PLANKS.toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(ItemTags.PLANKS.toIngredient(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 2,
-            ) on ItemTags.PLANKS
+            ) on ItemTags.PLANKS from ItemTags.PLANKS
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { Items.STICK.toIngredientStack(2) },
+                    { SimpleMachineRecipe.Input(Items.STICK.toIngredient(), 2) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 2,
@@ -855,8 +859,8 @@ class MaterialCard(
                 registerSimpleMachineRecipeGeneration(
                     AthanorRecipeCard,
                     inputs = listOf(
-                        { inputItem1().toIngredientStack(inputCount1) },
-                        { inputItem2().toIngredientStack(inputCount2) },
+                        { SimpleMachineRecipe.Input(inputItem1().toIngredient(), inputCount1) },
+                        { SimpleMachineRecipe.Input(inputItem2().toIngredient(), inputCount2) },
                     ),
                     outputs = listOf({ item().createItemStack() }),
                     duration = 20 * 60 * 5,
@@ -906,8 +910,8 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { FLUORITE.ore!!.ingredient.toIngredientStack(1) },
-                    { FAIRY_SCALES.item().toIngredientStack(4) },
+                    { SimpleMachineRecipe.Input(FLUORITE.ore!!.ingredient, 1) },
+                    { SimpleMachineRecipe.Input(FAIRY_SCALES.item().toIngredient(), 4) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
@@ -1104,9 +1108,9 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 FermentationBarrelRecipeCard,
                 inputs = listOf(
-                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
-                    { Items.SUGAR_CANE.toIngredientStack(16) },
-                    { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(Items.SUGAR_CANE.toIngredient(), 16) },
+                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
@@ -1131,15 +1135,42 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 FermentationBarrelRecipeCard,
                 inputs = listOf(
-                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
-                    { Items.APPLE.toIngredientStack(4) },
-                    { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(Items.APPLE.toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 1,
             ) on { Items.APPLE }
             ModEvents.onInitialize {
                 FoodIngredientsRegistry.registry[item()] = FoodIngredients() + FoodIngredientCategoryCard.ALCOHOL + Items.APPLE
+            }
+        }
+        val APPLE_BRANDY: MaterialCard = !MaterialCard(
+            "apple_brandy", "Apple Brandy", "アップルブランデー",
+            null,
+            fuelValue = 200 * 12, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(6)
+                    .saturationModifier(0.1F)
+                    .effect(MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20 * 60, 1), 1.0F)
+                    .effect(MobEffectInstance(MobEffects.POISON, 20 * 60), 0.1F)
+                    .build()
+            },
+            creator = { DrinkItem(it) },
+        ) {
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(CIDRE.item().toIngredient(), 8) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60,
+            ) on CIDRE.item
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + CIDRE.item()
             }
         }
         val FAIRY_LIQUEUR: MaterialCard = !MaterialCard(
@@ -1159,9 +1190,9 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 FermentationBarrelRecipeCard,
                 inputs = listOf(
-                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
-                    { HAIMEVISKA_SAP.item().toIngredientStack(8) },
-                    { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(HAIMEVISKA_SAP.item().toIngredient(), 8) },
+                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
@@ -1187,9 +1218,9 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 FermentationBarrelRecipeCard,
                 inputs = listOf(
-                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
-                    { VEROPEDA_BERRIES.item().toIngredientStack(8) },
-                    { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(VEROPEDA_BERRIES.item().toIngredient(), 8) },
+                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
@@ -1226,9 +1257,9 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 FermentationBarrelRecipeCard,
                 inputs = listOf(
-                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
-                    { Items.PUFFERFISH.toIngredientStack(1) },
-                    { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(Items.PUFFERFISH.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 5,
@@ -1236,9 +1267,9 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 FermentationBarrelRecipeCard,
                 inputs = listOf(
-                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
-                    { Items.POISONOUS_POTATO.toIngredientStack(4) },
-                    { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(Items.POISONOUS_POTATO.toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 5,
@@ -1246,9 +1277,9 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 FermentationBarrelRecipeCard,
                 inputs = listOf(
-                    { Items.GLASS_BOTTLE.toIngredientStack(1) },
-                    { Items.SPIDER_EYE.toIngredientStack(4) },
-                    { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(Items.SPIDER_EYE.toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 5,
@@ -1256,9 +1287,48 @@ class MaterialCard(
         }
         val AQUA_VITAE: MaterialCard = !MaterialCard(
             "aqua_vitae", "Aqua Vitae", "生命の水",
-            null,
+            PoemList(2).poem("The free ether crystal nucleus.", "かつて水であったものたち。"),
             recipeRemainder = Items.GLASS_BOTTLE,
-        )
+        ) {
+            fun f(ingredient: () -> Ingredient, count: Int): RecipeGenerationSettings<SimpleMachineRecipeJsonBuilder<AthanorRecipe>> {
+                return registerSimpleMachineRecipeGeneration(
+                    AthanorRecipeCard,
+                    inputs = listOf(
+                        { SimpleMachineRecipe.Input(ingredient(), count) },
+                        { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
+                        { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+                    ),
+                    outputs = listOf({ item().createItemStack() }),
+                    duration = 20 * 60 * 5,
+                )
+            }
+
+            fun item(item: () -> Item, count: Int) = f({ item().toIngredient() }, count) on item from item
+
+            // 肉系
+            item({ Items.RABBIT }, 29)
+            item({ Items.CHICKEN }, 26)
+            item({ Items.PORKCHOP }, 22)
+            item({ Items.MUTTON }, 20)
+            item({ Items.BEEF }, 19)
+
+            // 魚系
+            item({ Items.COD }, 8)
+            item({ Items.SALMON }, 6)
+            item({ Items.PUFFERFISH }, 2)
+            item({ Items.TROPICAL_FISH }, 1)
+
+            // その他
+            item({ Items.BONE_MEAL }, 56)
+            item({ Items.EGG }, 52)
+            item({ Items.ROTTEN_FLESH }, 20)
+            item({ Items.SLIME_BALL }, 4)
+            item({ Items.SPIDER_EYE }, 4)
+            item({ Items.FERMENTED_SPIDER_EYE }, 2)
+            item(PHANTOM_DROP.item, 1)
+            item({ Items.PHANTOM_MEMBRANE }, 1)
+
+        }
         val ETHANOL: MaterialCard = !MaterialCard(
             "ethanol", "Ethanol", "エタノール",
             null,
@@ -1267,8 +1337,8 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { ItemTagCard.SPIRITS.tag.toIngredientStack(5) },
-                    { Items.GLASS_BOTTLE.toIngredientStack(2) },
+                    { SimpleMachineRecipe.Input(ItemTagCard.SPIRITS.tag.toIngredient(), 5) },
+                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 2) },
                 ),
                 outputs = listOf({ item().createItemStack(2) }),
                 duration = 20 * 60,
@@ -1289,9 +1359,9 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { Items.SUGAR.toIngredientStack(8) },
-                    { HAIMEVISKA_SAP.item().toIngredientStack(4) }, // 200 * 1 * 4 = 800
-                    { ItemTagCard.SPIRITS.tag.toIngredientStack(1) }, // 200 * 12 * 1 = 2400
+                    { SimpleMachineRecipe.Input(Items.SUGAR.toIngredient(), 8) },
+                    { SimpleMachineRecipe.Input(HAIMEVISKA_SAP.item().toIngredient(), 4) }, // 200 * 1 * 4 = 800
+                    { SimpleMachineRecipe.Input(ItemTagCard.SPIRITS.tag.toIngredient(), 1) }, // 200 * 12 * 1 = 2400
                 ),
                 outputs = listOf({ item().createItemStack(8) }), // 800 + 2400 + 1200 = 4400 -> 200 * 8 * 8 = 12800
                 duration = 20 * 60, // 1200 = 200 * 6
@@ -1299,15 +1369,15 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { Items.SUGAR.toIngredientStack(8) },
-                    { HAIMEVISKA_SAP.item().toIngredientStack(4) },
-                    { ETHANOL.item().toIngredientStack(1) },
+                    { SimpleMachineRecipe.Input(Items.SUGAR.toIngredient(), 16) },
+                    { SimpleMachineRecipe.Input(HAIMEVISKA_SAP.item().toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(ETHANOL.item().toIngredient(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack(32) }),
                 duration = 20 * 60,
             ) on ETHANOL.item from ETHANOL.item
             // →TNT
-            registerShapedRecipeGeneration({ Items.TNT }) {
+            registerShapedRecipeGeneration({ Items.TNT }, count = 2) {
                 pattern(" G ")
                 pattern("GFG")
                 pattern(" G ")
@@ -1457,8 +1527,8 @@ fun initMaterialsModule() {
     registerSimpleMachineRecipeGeneration(
         AthanorRecipeCard,
         inputs = listOf(
-            { Items.WHEAT.toIngredientStack(1) },
-            { WaterBottleIngredient.toVanilla().toIngredientStack(1) },
+            { SimpleMachineRecipe.Input(Items.WHEAT.toIngredient(), 1) },
+            { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
         ),
         outputs = listOf({ Items.BREAD.createItemStack(2) }),
         duration = 20 * 10,

@@ -1,0 +1,31 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 6000,
+  "group": "miragefairy2024:aqua_vitae",
+  "inputs": [
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:tropical_fish"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "fabric:type": "miragefairy2024:water_bottle"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:glass_bottle"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "miragefairy2024:aqua_vitae"
+    }
+  ]
+}
