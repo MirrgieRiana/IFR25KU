@@ -106,10 +106,10 @@ open class SimpleMachineRecipe(
     override fun getGroup() = group
 
     interface MatchResult {
-        fun craft(random: RandomSource): CraftResult
+        fun craft(random: RandomSource, isSimulating: Boolean): CraftResult
     }
 
-    data class CraftResult(val remainingItemStacks: List<ItemStack>)
+    data class CraftResult(val extractedItemStacks: List<ItemStack>)
 
     private data class Consumption(val slotIndex: Int, val count: Int)
 
@@ -139,12 +139,12 @@ open class SimpleMachineRecipe(
     fun match(inventory: SimpleMachineRecipeInput): MatchResult? {
         val consumptions = matchImpl(inventory) ?: return null
         return object : MatchResult {
-            override fun craft(random: RandomSource): CraftResult {
-                val remainingItemStacks = mutableListOf<ItemStack>()
+            override fun craft(random: RandomSource, isSimulating: Boolean): CraftResult {
+                val extractedItemStacks = mutableListOf<ItemStack>()
                 consumptions.forEach { consumption ->
-                    remainingItemStacks += inventory.getItem(consumption.slotIndex).split(consumption.count)
+                    extractedItemStacks += inventory.getItem(consumption.slotIndex).split(consumption.count)
                 }
-                return CraftResult(remainingItemStacks)
+                return CraftResult(extractedItemStacks)
             }
         }
     }
