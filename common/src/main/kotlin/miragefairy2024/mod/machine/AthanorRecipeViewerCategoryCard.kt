@@ -2,7 +2,6 @@ package miragefairy2024.mod.machine
 
 import dev.architectury.registry.fuel.FuelRegistry
 import miragefairy2024.MirageFairy2024
-import miragefairy2024.mod.recipeviewer.CONSUMPTION_CHANCE_TRANSLATION
 import miragefairy2024.mod.recipeviewer.toSecondsTextAsTicks
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
@@ -16,7 +15,6 @@ import miragefairy2024.mod.recipeviewer.view.size
 import miragefairy2024.mod.recipeviewer.views.AbsoluteView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.ImageView
-import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
@@ -24,15 +22,9 @@ import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.noMargin
 import miragefairy2024.mod.recipeviewer.views.plusAssign
-import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
-import miragefairy2024.util.invoke
-import miragefairy2024.util.plus
-import miragefairy2024.util.text
 import miragefairy2024.util.toIngredientStack
-import mirrg.kotlin.helium.stripTrailingZeros
-import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.world.item.ItemStack
 
@@ -52,22 +44,10 @@ object AthanorRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<A
 
             view += ImageView(getTexture(bounds))
 
-            fun addInputSlot(index: Int, offset: IntPoint) {
-                val input = recipeEntry.recipe.inputs.getOrNull(index)
-                view += InputSlotView(input?.ingredientStack ?: IngredientStack.EMPTY).noBackground().noMargin().configure {
-                    position = AbsoluteView.Offset(offset - p)
-                }.let {
-                    if (input != null && input.consumptionChance < 1.0) {
-                        it.tooltip(text { CONSUMPTION_CHANCE_TRANSLATION() + ": ${(input.consumptionChance * 100.0 formatAs "%.8f").stripTrailingZeros()}%"() })
-                    } else {
-                        it
-                    }
-                }
-            }
-            addInputSlot(0, IntPoint(40, 17))
-            addInputSlot(1, IntPoint(18, 39))
-            addInputSlot(2, IntPoint(62, 39))
-            addInputSlot(3, IntPoint(40, 61))
+            view += createInputSlot(recipeEntry, 0, IntPoint(40, 17) - p)
+            view += createInputSlot(recipeEntry, 1, IntPoint(18, 39) - p)
+            view += createInputSlot(recipeEntry, 2, IntPoint(62, 39) - p)
+            view += createInputSlot(recipeEntry, 3, IntPoint(40, 61) - p)
             view += CatalystSlotView(getFuelIngredientStack()).noBackground().noMargin().configure {
                 position = AbsoluteView.Offset(IntPoint(40, 39) - p)
             }
