@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack
 abstract class SlotView : AbstractView(), PlaceableView {
     var drawBackground = true
     var margin = 1
-    var additionalTooltip: List<Component> = emptyList()
+    var additionalTooltip = emptyList<Component>()
     override val sizingX = Sizing.WRAP
     override val sizingY = Sizing.WRAP
     override fun calculateContentSize() = IntPoint(margin + 16 + margin, margin + 16 + margin)
