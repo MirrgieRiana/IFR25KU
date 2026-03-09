@@ -11,6 +11,6 @@ class FilledRectangleView : AbstractView(), PlaceableView {
     val color = ObservableValue(0)
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
-    override fun calculateContentSize() = IntPoint.Companion.ZERO
+    override fun calculateContentSize() = IntPoint.ZERO
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(actualSize))
 }
