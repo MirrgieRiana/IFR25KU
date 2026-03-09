@@ -65,7 +65,7 @@ abstract class SimpleMachineRecipeViewerCategoryCard<R : SimpleMachineRecipe> : 
                 } else {
                     ((0.8 - input.consumptionChance * 0.6) * 255.0).roundToInt()
                 }
-                val color = (alpha shl 24) or 0x00FF00
+                val color = (alpha shl 24) or 0x00D000
                 view += FilledRectangleView().also { it.color.value = color }
             }
 
