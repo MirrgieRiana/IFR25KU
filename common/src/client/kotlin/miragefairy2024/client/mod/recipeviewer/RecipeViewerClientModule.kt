@@ -2,8 +2,8 @@ package miragefairy2024.client.mod.recipeviewer
 
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.common.ClickableViewRenderer
-import miragefairy2024.client.mod.recipeviewer.common.ImageButtonViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.FilledRectangleViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.ImageButtonViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.NinePatchImageViewRenderer
 import miragefairy2024.client.mod.recipeviewer.emi.hasClientEmi
 import miragefairy2024.client.mod.recipeviewer.emi.initEmiClientSupport
@@ -13,8 +13,8 @@ import miragefairy2024.client.mod.recipeviewer.rei.initReiClientSupport
 import miragefairy2024.client.mod.recipeviewer.rei.initReiViewPlacers
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.views.ClickableView
-import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
+import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.FormattedText
