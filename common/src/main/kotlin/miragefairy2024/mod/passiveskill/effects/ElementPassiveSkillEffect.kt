@@ -57,7 +57,7 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
         override fun test(damageSource: DamageSource) = predicate(damageSource)
     }
 
-    private val SPINE_DAMAGE_TYPE_TAG = MirageFairy2024.identifier("spine").toDamageTypeTag()
+    val SPINE_DAMAGE_TYPE_TAG = MirageFairy2024.identifier("spine").toDamageTypeTag()
 
     private val attackTranslation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}.attack" }, "%s Attack", "%s攻撃力")
     private val defenceTranslation = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill_type.${identifier.toLanguageKey()}.defence" }, "%s Defence", "%s防御力")
