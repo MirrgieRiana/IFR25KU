@@ -33,7 +33,9 @@ context(ModContext)
 fun initEmiViewPlacers() {
     EMI_VIEW_PLACER_REGISTRY.register { context, view: InputSlotView, bounds ->
         context.containerWidget place SlotWidget(view.ingredientStack.toEmiIngredient(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
-            .drawBack(view.drawBackground)
+            .drawBack(view.drawBackground).also { widget ->
+                view.additionalTooltip.forEach { widget.appendTooltip(it) }
+            }
     }
     EMI_VIEW_PLACER_REGISTRY.register { context, view: CatalystSlotView, bounds ->
         context.containerWidget place SlotWidget(view.ingredientStack.toEmiIngredient(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)

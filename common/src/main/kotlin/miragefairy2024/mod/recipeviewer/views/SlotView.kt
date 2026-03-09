@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.IngredientStack
+import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
 abstract class SlotView : AbstractView(), PlaceableView {
@@ -21,6 +22,8 @@ fun <V : SlotView> V.noBackground() = this.apply { this.drawBackground = false }
 fun <V : SlotView> V.margin(margin: Int) = this.apply { this.margin = margin }
 fun <V : SlotView> V.noMargin() = this.margin(0)
 
-class InputSlotView(val ingredientStack: IngredientStack) : SlotView()
+class InputSlotView(val ingredientStack: IngredientStack) : SlotView() {
+    var additionalTooltip: List<Component> = emptyList()
+}
 class CatalystSlotView(val ingredientStack: IngredientStack) : SlotView()
 class OutputSlotView(val itemStack: ItemStack) : SlotView()

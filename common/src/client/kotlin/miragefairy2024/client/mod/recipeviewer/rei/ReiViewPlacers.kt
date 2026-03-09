@@ -31,10 +31,15 @@ import miragefairy2024.util.toReiRectangle
 context(ModContext)
 fun initReiViewPlacers() {
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: InputSlotView, bounds ->
-        widgets place Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
+        val slot = Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
             .entries(view.ingredientStack.toEntryIngredient())
             .markInput()
             .backgroundEnabled(view.drawBackground)
+        if (view.additionalTooltip.isNotEmpty()) {
+            widgets place Widgets.withTooltip(slot, view.additionalTooltip)
+        } else {
+            widgets place slot
+        }
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: CatalystSlotView, bounds ->
         widgets place Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
