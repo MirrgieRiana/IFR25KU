@@ -55,6 +55,7 @@ import miragefairy2024.util.text
 import miragefairy2024.util.toIngredient
 import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.toTextureSource
+import miragefairy2024.util.using
 import miragefairy2024.util.writeAction
 import mirrg.kotlin.helium.join
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
@@ -450,7 +451,7 @@ enum class MotifCard(
             + melee.attack(0.4) * food { Items.WHEAT }
             + melee.attack(0.8) * food { Items.BEEF },
         MotifCardRecipes().R.overworld + EntityType.COW,
-        metamorphosis({ Items.DIRT.toIngredientStack(1) }, { Items.BEEF.createItemStack(1) }),
+        metamorphosis({ Items.BEEF.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 1),
     ),
     SHEEP(
         "sheep", 2, "Sheepia", "羊精シェーピャ", 0xB79680, 0xEDEEF0, 0xEDEEF0, 0xD7D7D9,
@@ -1311,8 +1312,8 @@ fun interface Initializer {
 }
 
 private fun metamorphosis(
-    input: () -> IngredientStack,
     output: () -> ItemStack,
+    vararg inputs: () -> IngredientStack,
     aquaVitaeCount: Int = 1,
     duration: Int = 20 * 60 * 5,
 ) = Initializer { motif ->
@@ -1320,12 +1321,14 @@ private fun metamorphosis(
         AthanorRecipeCard,
         inputs = listOf(
             { SimpleMachineRecipe.Input(FairyMotifIngredient(motif).toVanilla(), 1, consumptionChance = 0.0) },
-            { SimpleMachineRecipe.Input(input().ingredient, input().count) },
             { SimpleMachineRecipe.Input(MaterialCard.AQUA_VITAE.item().toIngredient(), aquaVitaeCount) },
+            *inputs.map {
+                { SimpleMachineRecipe.Input(it().ingredient, it().count) }
+            }.toTypedArray(),
         ),
         outputs = listOf(output),
         duration = duration,
-    ) path "metamorphosis" on { MaterialCard.AQUA_VITAE.item() } modId MirageFairy2024.MOD_ID
+    ) path "metamorphosis" using motif.identifier.path on { MaterialCard.AQUA_VITAE.item() } modId MirageFairy2024.MOD_ID
 }
 
 
