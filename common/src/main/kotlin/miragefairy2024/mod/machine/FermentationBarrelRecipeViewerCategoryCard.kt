@@ -1,7 +1,6 @@
 package miragefairy2024.mod.machine
 
 import miragefairy2024.MirageFairy2024
-import miragefairy2024.mod.recipeviewer.CONSUMPTION_CHANCE_TRANSLATION
 import miragefairy2024.mod.recipeviewer.toSecondsTextAsTicks
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
@@ -13,9 +12,7 @@ import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.size
 import miragefairy2024.mod.recipeviewer.views.AbsoluteView
 import miragefairy2024.mod.recipeviewer.views.ArrowView
-import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
 import miragefairy2024.mod.recipeviewer.views.ImageView
-import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
@@ -23,14 +20,7 @@ import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.noMargin
 import miragefairy2024.mod.recipeviewer.views.plusAssign
-import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.EnJa
-import miragefairy2024.util.IngredientStack
-import miragefairy2024.util.invoke
-import miragefairy2024.util.plus
-import miragefairy2024.util.text
-import mirrg.kotlin.helium.stripTrailingZeros
-import mirrg.kotlin.hydrogen.formatAs
 
 object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<FermentationBarrelRecipe>() {
     override fun getId() = MirageFairy2024.identifier("fermentation_barrel")
@@ -47,28 +37,9 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
 
             view += ImageView(getTexture(bounds))
 
-            fun addInputSlot(index: Int, offset: IntPoint) {
-                val input = recipeEntry.recipe.inputs.getOrNull(index)
-                if (input != null && input.consumptionChance < 1.0) {
-                    val alpha = ((1.0 - input.consumptionChance) * 255).toInt()
-                    val color = (alpha shl 24) or 0xFFFF00
-                    view += FilledRectangleView().also { it.color.value = color }.configure {
-                        position = AbsoluteView.Bounds(IntRectangle(offset.x - p.x, offset.y - p.y, 16, 16))
-                    }
-                }
-                view += InputSlotView(input?.ingredientStack ?: IngredientStack.EMPTY).noBackground().noMargin().configure {
-                    position = AbsoluteView.Offset(offset - p)
-                }.let {
-                    if (input != null && input.consumptionChance < 1.0) {
-                        it.tooltip(text { CONSUMPTION_CHANCE_TRANSLATION() + ": ${(input.consumptionChance * 100.0 formatAs "%.8f").stripTrailingZeros()}%"() })
-                    } else {
-                        it
-                    }
-                }
-            }
-            addInputSlot(0, IntPoint(42, 17))
-            addInputSlot(1, IntPoint(31, 39))
-            addInputSlot(2, IntPoint(53, 39))
+            view += createInputSlot(recipeEntry, 0, IntPoint(42, 17) - p)
+            view += createInputSlot(recipeEntry, 1, IntPoint(31, 39) - p)
+            view += createInputSlot(recipeEntry, 2, IntPoint(53, 39) - p)
 
             view += ArrowView().configure {
                 position = AbsoluteView.Offset(IntPoint(76, 27) - p)
