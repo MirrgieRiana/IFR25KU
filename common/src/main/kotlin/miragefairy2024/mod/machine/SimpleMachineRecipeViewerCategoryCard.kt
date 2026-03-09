@@ -20,9 +20,9 @@ import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.noMargin
 import miragefairy2024.mod.recipeviewer.views.plusAssign
-import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.gold
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.plusAssign
@@ -70,11 +70,9 @@ abstract class SimpleMachineRecipeViewerCategoryCard<R : SimpleMachineRecipe> : 
             }
 
             // アイテム
-            view += InputSlotView(input?.ingredientStack ?: IngredientStack.EMPTY).noBackground().noMargin().configure().let {
+            view += InputSlotView(input?.ingredientStack ?: IngredientStack.EMPTY).noBackground().noMargin().configure {
                 if (input != null && input.consumptionChance < 1.0) {
-                    it.tooltip(text { CONSUMPTION_CHANCE_TRANSLATION() + ": ${(input.consumptionChance * 100.0 formatAs "%.8f").stripTrailingZeros()}%"() })
-                } else {
-                    it
+                    view.additionalTooltip = listOf(text { (CONSUMPTION_CHANCE_TRANSLATION() + ": ${(input.consumptionChance * 100.0 formatAs "%.8f").stripTrailingZeros()}%"()).gold })
                 }
             }
 
