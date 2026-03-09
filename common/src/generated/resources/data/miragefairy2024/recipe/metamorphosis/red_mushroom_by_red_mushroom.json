@@ -1,0 +1,33 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 6000,
+  "group": "minecraft:red_mushroom",
+  "inputs": [
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "fabric:type": "miragefairy2024:fairy_motif",
+        "motif": "miragefairy2024:red_mushroom"
+      },
+      "consumptionChance": 0.0
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "miragefairy2024:aqua_vitae"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:dirt"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 4,
+      "id": "minecraft:red_mushroom"
+    }
+  ]
+}

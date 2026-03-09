@@ -1,0 +1,33 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 6000,
+  "group": "minecraft:glow_berries",
+  "inputs": [
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "fabric:type": "miragefairy2024:fairy_motif",
+        "motif": "miragefairy2024:glow_berry"
+      },
+      "consumptionChance": 0.0
+    },
+    {
+      "Amount": 4,
+      "Ingredient": {
+        "item": "miragefairy2024:aqua_vitae"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:dirt"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "minecraft:glow_berries"
+    }
+  ]
+}
