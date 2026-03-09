@@ -5,6 +5,7 @@ import io.wispforest.owo.ui.container.Containers
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip
 import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
 import me.shedaniel.rei.api.client.gui.widgets.Widgets
+import me.shedaniel.rei.api.common.entry.EntryIngredient
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterContext
 import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterRegistry
@@ -31,25 +32,44 @@ import miragefairy2024.util.toReiRectangle
 context(ModContext)
 fun initReiViewPlacers() {
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: InputSlotView, bounds ->
-        val slot = Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
-            .entries(view.ingredientStack.toEntryIngredient())
+        val entryIngredient = view.ingredientStack.toEntryIngredient()
+            .let {
+                if (view.additionalTooltip.isNotEmpty()) {
+                    EntryIngredient.of(it.map { entryStack -> entryStack.tooltip(view.additionalTooltip) })
+                } else {
+                    it
+                }
+            }
+        widgets place Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
+            .entries(entryIngredient)
             .markInput()
             .backgroundEnabled(view.drawBackground)
-        if (view.additionalTooltip.isNotEmpty()) {
-            widgets place Widgets.withTooltip(slot, view.additionalTooltip)
-        } else {
-            widgets place slot
-        }
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: CatalystSlotView, bounds ->
+        val entryIngredient = view.ingredientStack.toEntryIngredient()
+            .let {
+                if (view.additionalTooltip.isNotEmpty()) {
+                    EntryIngredient.of(it.map { entryStack -> entryStack.tooltip(view.additionalTooltip) })
+                } else {
+                    it
+                }
+            }
         widgets place Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
-            .entries(view.ingredientStack.toEntryIngredient())
+            .entries(entryIngredient)
             .markInput()
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: OutputSlotView, bounds ->
+        val entryIngredient = view.itemStack.toEntryIngredient()
+            .let {
+                if (view.additionalTooltip.isNotEmpty()) {
+                    EntryIngredient.of(it.map { entryStack -> entryStack.tooltip(view.additionalTooltip) })
+                } else {
+                    it
+                }
+            }
         widgets place Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
-            .entries(view.itemStack.toEntryIngredient())
+            .entries(entryIngredient)
             .markOutput()
             .backgroundEnabled(view.drawBackground)
     }
