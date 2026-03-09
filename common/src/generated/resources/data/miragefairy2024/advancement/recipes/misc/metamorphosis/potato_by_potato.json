@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_aqua_vitae": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:aqua_vitae"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:metamorphosis/potato_by_potato"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_aqua_vitae"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:metamorphosis/potato_by_potato"
+    ]
+  }
+}

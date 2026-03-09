@@ -250,6 +250,7 @@ enum class MotifCard(
             + miningSpeed(0.3) * light.atMost(12)
             + mana(2.0) { MUSHROOM },
         MotifCardRecipes().R.common(ConventionalBiomeTags.IS_MUSHROOM).block { Blocks.MYCELIUM },
+        metamorphosis({ Items.MYCELIUM.createItemStack(1) }, { Items.DIRT.toIngredientStack(2) }, aquaVitaeCount = 4),
     ),
     SCULK(
         "sculk", 8, "Sculkia", "幽匿塊精スツルキャ", 0x19222C, 0x023F3D, 0x023F3D, 0x19C0C0,
@@ -442,6 +443,7 @@ enum class MotifCard(
             + miningSpeed(0.2) * food { Items.BEETROOT }
             + miningSpeed(0.8) * food { Items.PORKCHOP },
         MotifCardRecipes().R.overworld + EntityType.PIG,
+        metamorphosis({ Items.PORKCHOP.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 1),
     ),
     COW(
         "cow", 2, "Cowia", "牛精ツォーウャ", 0x433626, 0x644B37, 0x4A3828, 0xADADAD,
@@ -461,6 +463,7 @@ enum class MotifCard(
             + overall.defence(0.4) * food { Items.WHEAT }
             + overall.defence(0.8) * food { Items.MUTTON },
         MotifCardRecipes().R.overworld + EntityType.SHEEP,
+        metamorphosis({ Items.MUTTON.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 1),
     ),
     CHICKEN(
         "chicken", 2, "Chickenia", "鶏精キッケーニャ", 0xF3DE71, 0xEDEDED, 0xEDEDED, 0xD93117,
@@ -471,6 +474,7 @@ enum class MotifCard(
             + fall.defence(6.0) * food { Items.CHICKEN }
             + MobEffects.SLOW_FALLING() * food { Items.WHEAT } * fairyLevel.atLeast(11.0),
         MotifCardRecipes().R.overworld + EntityType.CHICKEN,
+        metamorphosis({ Items.CHICKEN.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 1),
     ),
     EGG(
         "egg", 2, "Eggia", "卵精エッギャ", 0xF0E6C6, 0xE0CC91, 0xE0CC91, 0xBAAA79,
@@ -480,6 +484,7 @@ enum class MotifCard(
             + regeneration(0.8) * food { Items.EGG }
             + mana(5.0) { CHICKEN },
         MotifCardRecipes().R.overworld + EntityType.EGG,
+        metamorphosis({ Items.EGG.createItemStack(8) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 1),
     ),
     RABBIT(
         "rabbit", 5, "Rabbitia", "兎精ラッビーチャ", 0x9E866A, 0x8C7A64, 0x8C7962, 0x615345,
@@ -490,6 +495,7 @@ enum class MotifCard(
             + luck(0.8) * food { Items.RABBIT }
             + MobEffects.JUMP(2) * food { Items.CARROT } * fairyLevel.atLeast(14.0),
         MotifCardRecipes().R.overworld + EntityType.RABBIT,
+        metamorphosis({ Items.RABBIT.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 4),
     ),
     WOLF(
         "wolf", 4, "Wolfia", "狼精ウォルフャ", 0x827165, 0xBFBDBE, 0x9E9A96, 0x3F3E3A,
@@ -600,6 +606,7 @@ enum class MotifCard(
             + melee.attack(0.6) * food.atMost(6)
             + melee.attack(0.6) * indoor,
         MotifCardRecipes().R.overworld + EntityType.ZOMBIE,
+        metamorphosis({ Items.ROTTEN_FLESH.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 1),
     ),
     ROTTEN_FLESH(
         "rotten_flesh", 2, "Rottene Fleshia", "腐肉精ロッテーネフレーシャ", 0x846129, 0xBD5B2D, 0xBD5B2D, 0xBD422D,
@@ -609,6 +616,7 @@ enum class MotifCard(
             + regeneration(0.4) * food.atMost(6)
             + hunger(1.0) * food.atLeast(7),
         MotifCardRecipes().R.item { Items.ROTTEN_FLESH },
+        metamorphosis({ Items.ROTTEN_FLESH.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 1),
     ),
     SKELETON(
         "skeleton", 2, "Skeletonia", "骸骨精スケレトーニャ", 0xCACACA, 0xCFCFCF, 0xCFCFCF, 0x494949,
@@ -617,6 +625,7 @@ enum class MotifCard(
             + shooting.attack(0.6) * food.atMost(6)
             + shooting.attack(0.6) * indoor,
         MotifCardRecipes().R.overworld + EntityType.SKELETON,
+        metamorphosis({ Items.BONE.createItemStack(1) }, { Items.BONE_MEAL.toIngredientStack(5) }, aquaVitaeCount = 1),
     ),
     WITHER_SKELETON(
         "wither_skeleton", 7, "Withere Skeletonia", "枯骸骨精ウィテーレスケレトーニャ", 0x505252, 0x1C1C1C, 0x1C1C1C, 0x060606,
@@ -665,6 +674,7 @@ enum class MotifCard(
             + shooting.attack(2.0) * onFire
             + ignition * MobEffects.FIRE_RESISTANCE,
         MotifCardRecipes().R.nether + EntityType.BLAZE,
+        metamorphosis({ Items.BLAZE_ROD.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, { MaterialCard.SULFUR.item().toIngredientStack(1) }, aquaVitaeCount = 16),
     ),
     MAGMA_CUBE(
         "magma_cube", 7, "Magme Cubia", "溶岩賽精マグメツービャ", 0x3A0000, 0x592301, 0x300000, 0xE35C05,
@@ -701,6 +711,7 @@ enum class MotifCard(
             + MobEffects.HEALTH_BOOST(2) * food { Items.RED_MUSHROOM } * fairyLevel.atLeast(10.0)
             + magic.attack(0.6) * food.atLeast(12),
         MotifCardRecipes().R.overworld.nether.block { Blocks.RED_MUSHROOM }.item { Items.RED_MUSHROOM },
+        metamorphosis({ Items.RED_MUSHROOM.createItemStack(4) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 1),
     ),
     BROWN_MUSHROOM(
         "brown_mushroom", 3, "Browne Mushroomia", "茶茸精ブロウネムシュローミャ", 0xDEB6A2, 0xF0AD8B, 0xC28C70, 0xDE9571,
@@ -709,6 +720,7 @@ enum class MotifCard(
             + regeneration(1.0) * food { Items.BROWN_MUSHROOM }
             + magic.defence(0.6) * food.atLeast(12),
         MotifCardRecipes().R.overworld.nether.block { Blocks.BROWN_MUSHROOM }.item { Items.BROWN_MUSHROOM },
+        metamorphosis({ Items.BROWN_MUSHROOM.createItemStack(4) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 1),
     ),
 
     // 植物
@@ -719,6 +731,7 @@ enum class MotifCard(
             + miningSpeed(0.4) * outdoor
             + miningSpeed(0.8) * food { Items.WHEAT },
         MotifCardRecipes().R.overworld.block { Blocks.WHEAT }.item { Items.WHEAT_SEEDS }.item { Items.WHEAT },
+        metamorphosis({ Items.WHEAT_SEEDS.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 1),
     ),
     CARROT(
         "carrot", 4, "Carrotia", "人参精ツァッローチャ", 0xF98D10, 0xFD7F11, 0xE3710F, 0x248420,
@@ -727,6 +740,7 @@ enum class MotifCard(
             + MobEffects.NIGHT_VISION(additionalSeconds = 10) * food { Items.GOLDEN_CARROT }
             + MobEffects.NIGHT_VISION(additionalSeconds = 10) * food { Items.CARROT } * fairyLevel.atLeast(10.0),
         MotifCardRecipes().R.overworld.block { Blocks.CARROTS }.item { Items.CARROT },
+        metamorphosis({ Items.CARROT.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 2),
     ),
     POTATO(
         "potato", 4, "Potatia", "芋精ポターチャ", 0xEAC278, 0xE7B456, 0xE7B456, 0x248420,
@@ -735,6 +749,7 @@ enum class MotifCard(
             + melee.attack(0.4) * outdoor
             + melee.attack(0.8) * food { Items.POTATO },
         MotifCardRecipes().R.overworld.block { Blocks.POTATOES }.item { Items.POTATO },
+        metamorphosis({ Items.POTATO.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 2),
     ),
     POISONOUS_POTATO(
         "poisonous_potato", 5, "Poisonouse Potatia", "毒芋精ポイソノウセポターチャ", 0xCFE661, 0xE7B456, 0xE7B456, 0x61B835,
@@ -751,6 +766,7 @@ enum class MotifCard(
             + fire.attack(0.4) * outdoor // TODO 火属性攻撃
             + fire.attack(0.8) * food { Items.BEETROOT },
         MotifCardRecipes().R.overworld.block { Blocks.BEETROOTS }.item { Items.BEETROOT },
+        metamorphosis({ Items.BEETROOT_SEEDS.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 2),
     ),
     PUMPKIN(
         "pumpkin", 4, "Pumpkinia", "南瓜精プンプキーニャ", 0x792D0F, 0xE48A40, 0xE48A40, 0xDCBE00,
@@ -759,6 +775,7 @@ enum class MotifCard(
             + magic.attack(0.4) * outdoor
             + magic.attack(0.8) * food { Items.PUMPKIN },
         MotifCardRecipes().R.overworld.block { Blocks.PUMPKIN }.block { Blocks.CARVED_PUMPKIN },
+        metamorphosis({ Items.PUMPKIN_SEEDS.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 2),
     ),
     MELON(
         "melon", 6, "Melonia", "西瓜精メローニャ", 0xFF5440, 0xA6EE63, 0x195612, 0x01A900,
@@ -767,6 +784,7 @@ enum class MotifCard(
             + luck(0.4) * outdoor
             + luck(0.8) * food { Items.MELON_SLICE },
         MotifCardRecipes().R.common(ConventionalBiomeTags.IS_JUNGLE).block { Blocks.MELON }.item { Items.MELON_SLICE },
+        metamorphosis({ Items.MELON_SEEDS.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 8),
     ),
     APPLE(
         "apple", 4, "Applia", "林檎精アップーリャ", 0xFF755D, 0xFF564E, 0xFF0000, 0x01A900,
@@ -784,6 +802,7 @@ enum class MotifCard(
             + shooting.attack(0.8) * food { Items.SWEET_BERRIES }
             + spine.defence(2.0),
         MotifCardRecipes().R.common(ConventionalBiomeTags.IS_TAIGA).item { Items.SWEET_BERRIES }.block { Blocks.SWEET_BERRY_BUSH },
+        metamorphosis({ Items.SWEET_BERRIES.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 4),
     ),
     GLOW_BERRY(
         "glow_berry", 6, "Glowe Berria", "蛍光液果精グローウェベッリャ", 0xFFB73A, 0x8F650C, 0x8F650C, 0x00841A,
@@ -792,6 +811,7 @@ enum class MotifCard(
             + magic.attack(0.4) * indoor
             + magic.attack(0.8) * food { Items.GLOW_BERRIES },
         MotifCardRecipes().R.common(Biomes.LUSH_CAVES).item { Items.GLOW_BERRIES }.block { Blocks.CAVE_VINES }.block { Blocks.CAVE_VINES_PLANT },
+        metamorphosis({ Items.GLOW_BERRIES.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 4),
     ),
     MIRAGE(
         "mirage", 5, "Miragia", "妖精ミラージャ", 0x6DE3BE, 0x43FAFA, 0x43FAFA, 0x00F5F5,
@@ -842,6 +862,7 @@ enum class MotifCard(
         PassiveSkillBuilder()
             + magic.attack(1.2) * indoor, // TODO 発光パッシブ
         MotifCardRecipes().R.overworld.block { Blocks.GLOW_LICHEN },
+        metamorphosis({ Items.GLOW_LICHEN.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 1),
     ),
     CACTUS(
         "cactus", 3, "Cactusia", "仙人掌精ツァツトゥーシャ", 0x008200, 0xB0FFAC, 0x00E100, 0x010000,
@@ -851,6 +872,7 @@ enum class MotifCard(
             + regeneration(0.1) * outdoor
             + spine.defence(3.0),
         MotifCardRecipes().R.common(ConventionalBiomeTags.IS_DESERT).block { Blocks.CACTUS },
+        metamorphosis({ Items.CACTUS.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 2),
     ),
     DEAD_BUSH(
         "dead_bush", 3, "Deade Bushia", "枯木精デアデブーシャ", 0xB38247, 0xA17743, 0xA17743, 0x6E583F,
@@ -858,6 +880,7 @@ enum class MotifCard(
         PassiveSkillBuilder()
             + shooting.attack(1.4) * outdoor,
         MotifCardRecipes().R.common(ConventionalBiomeTags.IS_DESERT).common(ConventionalBiomeTags.IS_BADLANDS).block { Blocks.DEAD_BUSH },
+        metamorphosis({ Items.DEAD_BUSH.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 1),
     ),
 
     // 樹木
@@ -870,6 +893,7 @@ enum class MotifCard(
             + MobEffects.MOVEMENT_SPEED(2) * ToolMaterialCard.WOOD() * fairyLevel.atLeast(12.0)
             + mending(1.0, ToolMaterialCard.WOOD.tag),
         MotifCardRecipes().SR.overworld + BlockTags.LOGS + BlockTags.PLANKS,
+        metamorphosis({ Items.OAK_SAPLING.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 1),
     ),
     SPRUCE(
         "spruce", 4, "Sprucia", "松精スプルーツァ", 0x795C36, 0x583E1F, 0x23160A, 0x4C784C,
@@ -878,6 +902,7 @@ enum class MotifCard(
             + shooting.attack(0.4)
             + health(0.6),
         MotifCardRecipes().R.common(ConventionalBiomeTags.IS_TAIGA).block { Blocks.SPRUCE_SAPLING }.block { Blocks.SPRUCE_LOG },
+        metamorphosis({ Items.SPRUCE_SAPLING.createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 1),
     ),
     DARK_OAK(
         "dark_oak", 5, "Darke Oakia", "濃樫精ダルケオアキャ", 0x4A361A, 0x478F1B, 0x2A5410, 0x326313,
@@ -886,6 +911,7 @@ enum class MotifCard(
             + magic.attack(0.4)
             + health(0.6),
         MotifCardRecipes().R.common(Biomes.DARK_FOREST).block { Blocks.DARK_OAK_SAPLING }.block { Blocks.DARK_OAK_LOG },
+        metamorphosis({ Items.DARK_OAK_SAPLING.createItemStack(4) }, { Items.DIRT.toIngredientStack(4) }, aquaVitaeCount = 4),
     ),
     HAIMEVISKA(
         "haimeviska", 3, "Haimeviskia", "精樹精ハイメヴィスキャ", 0x8A4C16, 0xB85CC4, 0x3E5918, 0x3C7A4D,
@@ -896,6 +922,7 @@ enum class MotifCard(
             + experience(0.2) * level.atMost(39) * food(MaterialCard.HAIMEVISKA_SAP.item)
             + mending(1.0, ToolMaterialCard.HAIMEVISKA_ROSIN.tag),
         MotifCardRecipes().R.overworld.block(HaimeviskaBlockCard.SAPLING.block).block(HaimeviskaBlockCard.LOG.block),
+        metamorphosis({ HaimeviskaBlockCard.SAPLING.item().createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 2),
     ),
 
     // 植物モブ

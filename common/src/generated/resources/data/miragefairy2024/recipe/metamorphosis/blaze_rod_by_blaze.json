@@ -1,0 +1,39 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 6000,
+  "group": "minecraft:blaze_rod",
+  "inputs": [
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "fabric:type": "miragefairy2024:fairy_motif",
+        "motif": "miragefairy2024:blaze"
+      },
+      "consumptionChance": 0.0
+    },
+    {
+      "Amount": 16,
+      "Ingredient": {
+        "item": "miragefairy2024:aqua_vitae"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:dirt"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "miragefairy2024:sulfur"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "minecraft:blaze_rod"
+    }
+  ]
+}
