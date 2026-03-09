@@ -10,6 +10,9 @@ import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.OreCard
 import miragefairy2024.mod.biome.FairyForestBiomeCard
 import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
+import miragefairy2024.mod.machine.AthanorRecipeCard
+import miragefairy2024.mod.machine.SimpleMachineRecipe
+import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
 import miragefairy2024.mod.magicplant.contents.magicplants.MirageFlowerCard
 import miragefairy2024.mod.magicplant.contents.magicplants.PhantomFlowerCard
 import miragefairy2024.mod.magicplant.contents.magicplants.VeropedaCard
@@ -37,13 +40,20 @@ import miragefairy2024.mod.passiveskill.effects.MiningSpeedPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.effects.RegenerationPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.effects.StatusEffectPassiveSkillEffect
 import miragefairy2024.mod.tool.ToolMaterialCard
+import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.Registration
 import miragefairy2024.util.Translation
+import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
+import miragefairy2024.util.modId
+import miragefairy2024.util.on
+import miragefairy2024.util.path
 import miragefairy2024.util.register
 import miragefairy2024.util.registerClientDebugItem
 import miragefairy2024.util.text
+import miragefairy2024.util.toIngredient
+import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.toTextureSource
 import miragefairy2024.util.writeAction
 import mirrg.kotlin.helium.join
@@ -64,6 +74,7 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.ai.attributes.Attribute
 import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.biome.Biomes
@@ -101,6 +112,7 @@ enum class MotifCard(
     private val parentMotifs: ParentMotifs,
     passiveSkillBuilder: PassiveSkillBuilder,
     val recipes: MotifCardRecipes,
+    vararg val initializers: Initializer,
 ) : Motif {
 
     // アイリャ
@@ -438,6 +450,7 @@ enum class MotifCard(
             + melee.attack(0.4) * food { Items.WHEAT }
             + melee.attack(0.8) * food { Items.BEEF },
         MotifCardRecipes().R.overworld + EntityType.COW,
+        metamorphosis({ Items.DIRT.toIngredientStack(1) }, { Items.BEEF.createItemStack(1) }),
     ),
     SHEEP(
         "sheep", 2, "Sheepia", "羊精シェーピャ", 0xB79680, 0xEDEEF0, 0xEDEEF0, 0xD7D7D9,
@@ -1290,6 +1303,32 @@ private operator fun MotifCardRecipes.plus(tag: TagKey<Block>) = this.onInit { F
 private operator fun MotifCardRecipes.plus(tag: TagKey<EntityType<*>>) = this.onInit { FairyDreamRecipes.ENTITY_TYPE.registerFromTag(tag, it) }
 
 
+// Initializer
+
+fun interface Initializer {
+    context(ModContext)
+    fun init(motif: MotifCard)
+}
+
+private fun metamorphosis(
+    input: () -> IngredientStack,
+    output: () -> ItemStack,
+    aquaVitaeCount: Int = 1,
+    duration: Int = 20 * 60 * 5,
+) = Initializer { motif ->
+    registerSimpleMachineRecipeGeneration(
+        AthanorRecipeCard,
+        inputs = listOf(
+            { SimpleMachineRecipe.Input(FairyMotifIngredient(motif).toVanilla(), 1, consumptionChance = 0.0) },
+            { SimpleMachineRecipe.Input(input().ingredient, input().count) },
+            { SimpleMachineRecipe.Input(MaterialCard.AQUA_VITAE.item().toIngredient(), aquaVitaeCount) },
+        ),
+        outputs = listOf(output),
+        duration = duration,
+    ) path "metamorphosis" on { MaterialCard.AQUA_VITAE.item() } modId MirageFairy2024.MOD_ID
+}
+
+
 // パッシブスキル
 
 private class PassiveSkillBuilder {
@@ -1374,6 +1413,9 @@ fun initMotif() {
         card.translation.enJa()
         card.recipes.recipes.forEach {
             it(this@ModContext, card)
+        }
+        card.initializers.forEach {
+            it.init(card)
         }
     }
 

@@ -14,8 +14,6 @@ import miragefairy2024.mod.description
 import miragefairy2024.mod.entity.ChaosCubeCard
 import miragefairy2024.mod.experienceStatusEffect
 import miragefairy2024.mod.fairy.FairyCard
-import miragefairy2024.mod.fairy.FairyMotifIngredient
-import miragefairy2024.mod.fairy.Motif
 import miragefairy2024.mod.fairy.MotifCard
 import miragefairy2024.mod.fairy.RandomFairySummoningItem
 import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
@@ -53,7 +51,6 @@ import miragefairy2024.mod.translation
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
-import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.RecipeGenerationSettings
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
@@ -86,7 +83,6 @@ import miragefairy2024.util.registerSinglePoolChestLoot
 import miragefairy2024.util.registerSmeltingRecipeGeneration
 import miragefairy2024.util.registerSpecialRecipe
 import miragefairy2024.util.toIngredient
-import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.toItemTag
 import miragefairy2024.util.using
 import net.minecraft.core.registries.BuiltInRegistries
@@ -97,7 +93,6 @@ import net.minecraft.world.effect.MobEffects
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.food.FoodProperties
 import net.minecraft.world.item.Item
-import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.item.alchemy.Potions
@@ -1537,21 +1532,6 @@ fun initMaterialsModule() {
         outputs = listOf({ Items.BREAD.createItemStack(2) }),
         duration = 20 * 10,
     ) using "athanor" on { Items.WHEAT } modId MirageFairy2024.MOD_ID
-
-    // 妖精変成レシピ
-    fun registerFairyMetamorphosisRecipeGeneration(motif: Motif, input: () -> IngredientStack, aquaVitaeCount: Int, output: () -> ItemStack) {
-        registerSimpleMachineRecipeGeneration(
-            AthanorRecipeCard,
-            inputs = listOf(
-                { SimpleMachineRecipe.Input(FairyMotifIngredient(motif).toVanilla(), 1, consumptionChance = 0.0) },
-                { SimpleMachineRecipe.Input(input().ingredient, input().count) },
-                { SimpleMachineRecipe.Input(MaterialCard.AQUA_VITAE.item().toIngredient(), aquaVitaeCount) },
-            ),
-            outputs = listOf(output),
-            duration = 20 * 60 * 5,
-        ) using "athanor" on { MaterialCard.AQUA_VITAE.item() } modId MirageFairy2024.MOD_ID
-    }
-    registerFairyMetamorphosisRecipeGeneration(MotifCard.COW, { Items.DIRT.toIngredientStack(1) }, 1, { Items.BEEF.createItemStack(1) })
 
 }
 
