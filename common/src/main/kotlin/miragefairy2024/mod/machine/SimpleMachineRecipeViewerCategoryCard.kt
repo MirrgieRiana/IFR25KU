@@ -70,11 +70,11 @@ abstract class SimpleMachineRecipeViewerCategoryCard<R : SimpleMachineRecipe> : 
             }
 
             // アイテム
-            view += InputSlotView(input?.ingredientStack ?: IngredientStack.EMPTY).also {
+            view += InputSlotView(input?.ingredientStack ?: IngredientStack.EMPTY).noBackground().noMargin().configure {
                 if (input != null && input.consumptionChance < 1.0) {
-                    it.additionalTooltip = listOf(text { (CONSUMPTION_CHANCE_TRANSLATION() + ": ${(input.consumptionChance * 100.0 formatAs "%.8f").stripTrailingZeros()}%"()).gold })
+                    view.additionalTooltip = listOf(text { (CONSUMPTION_CHANCE_TRANSLATION() + ": ${(input.consumptionChance * 100.0 formatAs "%.8f").stripTrailingZeros()}%"()).gold })
                 }
-            }.noBackground().noMargin().configure()
+            }
 
         }
     }
