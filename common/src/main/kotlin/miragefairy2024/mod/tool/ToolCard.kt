@@ -516,6 +516,11 @@ class ToolCard(
             PoemList(4).poem(EnJa("Souls for the nutrient", "これは妖精をおやつにするという")),
             FairySwordConfiguration(ToolMaterialCard.FAIRY_PLASTIC).enchantment(Enchantments.SWEEPING_EDGE, 3).collection().obtainFairy(81.0),
         ) { registerSwordRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
+        val FAIRY_PLASTIC_SCYTHE = !ToolCard(
+            "fairy_plastic_scythe", EnJa("Fairy Plastic Scythe", "妖精のプラスチックの大鎌"),
+            PoemList(4).poem(EnJa("Reaping the gifts of the fairy tree", "大樹の恵みを余さず刈り取る。")),
+            FairyScytheConfiguration(ToolMaterialCard.FAIRY_PLASTIC).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
+        ) { registerScytheRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
 
         val CREATIVE_HOE = !ToolCard(
             "creative_hoe", EnJa("Creative Hoe", "アカーシャのクワ"),
