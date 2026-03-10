@@ -721,11 +721,11 @@ class MaterialCard(
                 inputs = listOf(
                     { SimpleMachineRecipe.Input(MERRRRIA_DROP.item().toIngredient(), 1) },
                     { SimpleMachineRecipe.Input(SARRACENIA_LEAF.item().toIngredient(), 1) },
-                    { SimpleMachineRecipe.Input(ItemTags.COALS.toIngredient(), 1) },
                     { SimpleMachineRecipe.Input(SULFUR.item().toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(ItemTags.COALS.toIngredient(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
+                duration = 20 * 10,
             ) on MERRRRIA_DROP.item
         }
 

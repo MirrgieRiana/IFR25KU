@@ -1,6 +1,6 @@
 {
   "type": "miragefairy2024:athanor",
-  "duration": 6000,
+  "duration": 200,
   "group": "miragefairy2024:fairy_rubber",
   "inputs": [
     {
@@ -18,13 +18,13 @@
     {
       "Amount": 1,
       "Ingredient": {
-        "tag": "minecraft:coals"
+        "item": "miragefairy2024:sulfur"
       }
     },
     {
       "Amount": 1,
       "Ingredient": {
-        "item": "miragefairy2024:sulfur"
+        "tag": "minecraft:coals"
       }
     }
   ],
