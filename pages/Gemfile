@@ -1,4 +1,5 @@
 source "https://rubygems.org"
 
 gem "jekyll", "~> 4.4"
-gem "minima", "~> 2.5"
+gem "minimal-mistakes-jekyll", "~> 4.24"
+gem "jekyll-include-cache"

@@ -29,20 +29,13 @@ jobs:
           java-version: '21'
           distribution: 'microsoft'
       - uses: gradle/actions/setup-gradle@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
 
       # ビルド
       - name: ビルド
         run: ./gradlew buildPages
-
-      # Jekyll
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.3'
-          bundler-cache: true
-          working-directory: build/pages
-      - name: Jekyll
-        run: bundle exec jekyll build --destination _site
-        working-directory: build/pages
 
       # デプロイ
       - uses: actions/upload-pages-artifact@v3
