@@ -725,7 +725,7 @@ class MaterialCard(
                     { SimpleMachineRecipe.Input(SULFUR.item().toIngredient(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
+                duration = 20 * 60 * 1,
             ) on MERRRRIA_DROP.item
         }
 
