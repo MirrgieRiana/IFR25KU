@@ -41,13 +41,13 @@ jobs:
           bundler-cache: true
           working-directory: build/pages
       - name: Jekyll
-        run: bundle exec jekyll build --destination ${{ github.workspace }}/_site
+        run: bundle exec jekyll build --destination _site
         working-directory: build/pages
 
       # デプロイ
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: build/pages/_site
       - name: デプロイ
         id: deployment
         uses: actions/deploy-pages@v4
