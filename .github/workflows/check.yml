@@ -10,15 +10,34 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      # セットアップ
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'microsoft'
+      - uses: gradle/actions/setup-gradle@v5
+
+      # ビルド
+      - name: ビルド
+        run: ./gradlew build
+
   datagen:
     runs-on: ubuntu-latest
     steps:
 
       # セットアップ
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
       - uses: actions/setup-java@v5
         with:
           java-version: '21'
