@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.contents.StickyMiningSnapshot
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
+import miragefairy2024.mod.tool.CarnivorousPlantDamageTypeCard
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.get
@@ -23,6 +24,7 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.util.RandomSource
 import net.minecraft.world.InteractionResult
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Inventory
@@ -63,6 +65,20 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
     // Behaviour
 
     override fun mayPlaceOn(floor: BlockState, world: BlockGetter, pos: BlockPos) = world.getBlockState(pos).isFaceSturdy(world, pos, Direction.UP, SupportType.CENTER) || floor isIn Blocks.FARMLAND
+
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun entityInside(state: BlockState, level: Level, pos: BlockPos, entity: Entity) {
+        if (entity is LivingEntity) {
+            val blockEntity = level.getMagicPlantBlockEntity(pos)
+            val traitStacks = blockEntity?.getTraitStacks() ?: return
+            val traitEffects = calculateTraitEffects(level, pos, blockEntity, traitStacks)
+            val contactDamage = traitEffects[TraitEffectKeyCard.CONTACT_DAMAGE.traitEffectKey]
+            val damage = level.random.randomInt(contactDamage)
+            if (damage > 0) {
+                entity.hurt(level.damageSources().source(CarnivorousPlantDamageTypeCard.registryKey), damage.toFloat())
+            }
+        }
+    }
 
 
     // Trait
