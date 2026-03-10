@@ -24,20 +24,18 @@ jobs:
 
       # セットアップ
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
       - uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'microsoft'
       - uses: gradle/actions/setup-gradle@v5
-      - uses: actions/configure-pages@v5
 
       # ビルド
       - name: ビルド
         run: ./gradlew buildPages
 
       # デプロイ
+      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build/pages
