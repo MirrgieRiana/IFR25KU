@@ -34,11 +34,17 @@ jobs:
       - name: ビルド
         run: ./gradlew buildPages
 
-      # デプロイ
+      # Jekyll
       - uses: actions/configure-pages@v5
+      - uses: actions/jekyll-build-pages@v1
+        with:
+          source: build/pages
+          destination: _site
+
+      # デプロイ
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: build/pages
+          path: _site
       - name: デプロイ
         id: deployment
         uses: actions/deploy-pages@v4

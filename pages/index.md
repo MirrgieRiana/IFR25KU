@@ -1,4 +1,7 @@
-# IFR25KU Documentation
+---
+title: IFR25KU Documentation
+layout: page
+---
 
 - [CHANGELOG](CHANGELOG.md)
 - [IFR25KU Lang Table](lang_table.html)
