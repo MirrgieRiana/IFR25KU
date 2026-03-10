@@ -35,11 +35,14 @@ jobs:
         run: ./gradlew buildPages
 
       # Jekyll
-      - uses: actions/configure-pages@v5
-      - uses: actions/jekyll-build-pages@v1
+      - uses: ruby/setup-ruby@v1
         with:
-          source: build/pages
-          destination: _site
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: build/pages
+      - name: Jekyll
+        run: bundle exec jekyll build --destination ${{ github.workspace }}/_site
+        working-directory: build/pages
 
       # デプロイ
       - uses: actions/upload-pages-artifact@v3
