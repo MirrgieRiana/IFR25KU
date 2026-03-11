@@ -28,37 +28,26 @@ import miragefairy2024.util.toEmiBounds
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
+import net.minecraft.network.chat.Component
 
 context(ModContext)
 fun initEmiViewPlacers() {
     EMI_VIEW_PLACER_REGISTRY.register { context, view: InputSlotView, bounds ->
         context.containerWidget place SlotWidget(view.ingredientStack.toEmiIngredient(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
             .drawBack(view.drawBackground)
-            .also { widget ->
-                view.additionalTooltip.forEach {
-                    widget.appendTooltip(it)
-                }
-            }
+            .appendAdditionalTooltip(view.additionalTooltip)
     }
     EMI_VIEW_PLACER_REGISTRY.register { context, view: CatalystSlotView, bounds ->
         context.containerWidget place SlotWidget(view.ingredientStack.toEmiIngredient(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
             .catalyst(true)
             .drawBack(view.drawBackground)
-            .also { widget ->
-                view.additionalTooltip.forEach {
-                    widget.appendTooltip(it)
-                }
-            }
+            .appendAdditionalTooltip(view.additionalTooltip)
     }
     EMI_VIEW_PLACER_REGISTRY.register { context, view: OutputSlotView, bounds ->
         context.widgets += SlotWidget(view.itemStack.toEmiStack(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
             .recipeContext(context.emiRecipe)
             .drawBack(view.drawBackground)
-            .also { widget ->
-                view.additionalTooltip.forEach {
-                    widget.appendTooltip(it)
-                }
-            }
+            .appendAdditionalTooltip(view.additionalTooltip)
         Remover { throw UnsupportedOperationException("Cannot remove OutputSlotWidget from EMI") }
     }
     EMI_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
@@ -133,4 +122,8 @@ fun initEmiViewPlacers() {
         }
         f(entry)
     }
+}
+
+private fun SlotWidget.appendAdditionalTooltip(tooltips: List<Component>): SlotWidget = also { widget ->
+    tooltips.forEach { widget.appendTooltip(it) }
 }
