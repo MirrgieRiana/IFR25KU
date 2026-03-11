@@ -46,6 +46,19 @@ html {
   background: transparent;
 }
 
+.page__footer {
+  background: linear-gradient(135deg, rgba(180, 80, 220, 0.45), rgba(200, 64, 224, 0.25));
+  color: #3a2050;
+
+  a {
+    color: #7b20a0;
+
+    &:hover {
+      color: #5a0880;
+    }
+  }
+}
+
 body {
   background: transparent;
 
