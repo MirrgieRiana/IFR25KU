@@ -72,8 +72,8 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
             val blockEntity = level.getMagicPlantBlockEntity(pos)
             val traitStacks = blockEntity?.getTraitStacks() ?: return
             val traitEffects = calculateTraitEffects(level, pos, blockEntity, traitStacks)
-            val contactDamage = traitEffects[TraitEffectKeyCard.SPINE_DAMAGE.traitEffectKey]
-            val damage = level.random.randomInt(contactDamage)
+            val spineDamage = traitEffects[TraitEffectKeyCard.SPINE_DAMAGE.traitEffectKey]
+            val damage = level.random.randomInt(spineDamage)
             if (damage > 0) {
                 entity.hurt(level.damageSources().source(CarnivorousPlantDamageTypeCard.registryKey), damage.toFloat())
             }
