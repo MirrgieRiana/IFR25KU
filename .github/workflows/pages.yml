@@ -29,16 +29,18 @@ jobs:
           java-version: '21'
           distribution: 'microsoft'
       - uses: gradle/actions/setup-gradle@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
 
       # ビルド
       - name: ビルド
         run: ./gradlew buildPages
 
       # デプロイ
-      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: build/pages
+          path: build/pages/_site
       - name: デプロイ
         id: deployment
         uses: actions/deploy-pages@v4

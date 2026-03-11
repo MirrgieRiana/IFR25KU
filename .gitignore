@@ -40,6 +40,13 @@ replay_*.log
 *.hprof
 *.jfr
 
+# jekyll
+
+_site/
+.jekyll-cache/
+Gemfile.lock
+.bundle/
+
 # custom
 
 /backup

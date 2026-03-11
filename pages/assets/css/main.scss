@@ -1,0 +1,26 @@
+---
+---
+
+@charset "utf-8";
+
+$sans-serif: sans-serif;
+
+@import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}";
+@import "minimal-mistakes";
+
+// minimal-mistakesのデフォルトフォントサイズ(16/18/20/22px)を上書きするため、全ブレークポイントの指定が必要
+html {
+  font-size: 14px;
+  @include breakpoint($medium) { font-size: 14px; }
+  @include breakpoint($large) { font-size: 16px; }
+  @include breakpoint($x-large) { font-size: 16px; }
+}
+
+.site-title {
+  font-size: 1.5rem;
+}
+
+.page__hero-image {
+  height: 400px;
+  object-fit: cover;
+}

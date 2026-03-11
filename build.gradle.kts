@@ -237,7 +237,8 @@ tasks.register("showSourceSets") {
     }
 }
 
-tasks.register<Sync>("buildPages") {
+tasks.register<Sync>("syncPages") {
+    group = "pages"
     dependsOn(project("fabric").tasks.named("runDatagen"))
 
     val en by lazy { GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json").readText(), JsonElement::class.java).asJsonObject }
@@ -268,6 +269,12 @@ tasks.register<Sync>("buildPages") {
     }
 
     into(layout.buildDirectory.dir("pages"))
+
+    // bundle installで生成されるファイルをSyncの削除対象から除外する
+    preserve {
+        include("vendor/**")
+        include(".bundle/**")
+    }
 
     doLast {
         fun write(path: String, content: String) {
@@ -309,6 +316,18 @@ tasks.register<Sync>("buildPages") {
             write("pages/lang_table.csv", csv)
         }
     }
+}
+
+tasks.register<Exec>("buildPages") {
+    group = "pages"
+    dependsOn("syncPages")
+    commandLine("bash", "scripts/buildPages.sh")
+}
+
+tasks.register<Exec>("servePages") {
+    group = "pages"
+    dependsOn("syncPages")
+    commandLine("bash", "scripts/servePages.sh")
 }
 
 tasks.register("configurations") {

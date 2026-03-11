@@ -1,0 +1,15 @@
+title: IFR25KU
+url: https://mirrgieriana.github.io
+baseurl: /IFR25KU
+theme: minimal-mistakes-jekyll
+minimal_mistakes_skin: default
+
+plugins:
+  - jekyll-include-cache
+
+defaults:
+  - scope:
+      path: "CHANGELOG.md"
+    values:
+      layout: single
+      title: CHANGELOG
