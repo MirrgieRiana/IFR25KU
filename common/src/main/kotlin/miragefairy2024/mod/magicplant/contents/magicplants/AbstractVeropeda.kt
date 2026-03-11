@@ -6,7 +6,7 @@ import miragefairy2024.util.createCuboidShape
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
 
-abstract class AbstractVeropedaCard<B : AbstractVeropedaBlock> : SimpleMagicPlantCard<B>() {
+abstract class AbstractVeropedaCard<B : SimpleMagicPlantBlock> : SimpleMagicPlantCard<B>() {
     override val classification = EnJa("Order Miragales, family Veropedaceae", "妖花目ヴェロペダ科")
 
     override val ageProperty: IntegerProperty = BlockStateProperties.AGE_3
@@ -19,8 +19,4 @@ abstract class AbstractVeropedaCard<B : AbstractVeropedaBlock> : SimpleMagicPlan
     )
 
     override val family = MirageFairy2024.identifier("veropeda")
-}
-
-abstract class AbstractVeropedaBlock(card: AbstractVeropedaCard<*>, settings: Properties) : SimpleMagicPlantBlock(card, settings) {
-    override fun getAgeProperty(): IntegerProperty = BlockStateProperties.AGE_3
 }
