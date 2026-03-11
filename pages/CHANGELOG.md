@@ -16,7 +16,7 @@ For the official translation mappings, see the [Lang Table](lang_table.html), [L
 - toc
 {:toc}
 
-## 31.31.1
+## 31.31.2
 
 **NeoForgeの必要バージョンを21.1.219に上昇。**
 
