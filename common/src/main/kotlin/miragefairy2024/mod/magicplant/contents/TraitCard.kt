@@ -217,7 +217,7 @@ class TraitCard(
             "spiny_leaves", "Spiny Leaves", "棘のある葉",
             "Spines prevent the loss of water through transpiration and are also used for defense against herbivorous animals. The spines of plants in the Miragaceae family are made of sharp tissues containing silicates, which can easily pierce human skin and cause mild inflammation.",
             "棘は水分の蒸散を防ぎ、草食動物からの防御にも使われる。ミラージュ科の植物が持つ棘はケイ酸塩を含む鋭利な組織でできており、人間の皮膚を容易に傷つけ、軽度の炎症を引き起こす。",
-            listOf(), traitEffectKeyEntriesOf(TraitEffectKeyCard.GROWTH_BOOST to 0.5, TraitEffectKeyCard.CONTACT_DAMAGE to 0.1),
+            listOf(), traitEffectKeyEntriesOf(TraitEffectKeyCard.GROWTH_BOOST to 0.5, TraitEffectKeyCard.SPINE_DAMAGE to 0.1),
         )
         val HEATING_MECHANISM = !TraitCard(
             "heating_mechanism", "Heating Mechanism", "発熱機構",
