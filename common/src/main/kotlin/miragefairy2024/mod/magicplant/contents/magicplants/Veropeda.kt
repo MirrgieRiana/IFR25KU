@@ -54,9 +54,9 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
         TraitCard.SEEDS_PRODUCTION.trait to 0b00101000, // 種子生成
         TraitCard.FRUITS_PRODUCTION.trait to 0b00101000, // 果実生成
         TraitCard.LEAVES_PRODUCTION.trait to 0b00101000, // 葉面生成
-        TraitCard.SPINY_LEAVES.trait to 0b00101000, // 棘のある葉
         TraitCard.CARNIVOROUS_PLANT.trait to 0b00101000, // 食虫植物
         TraitCard.PAVEMENT_FLOWERS.trait to 0b00101000, // アスファルトに咲く花
+        TraitCard.SPINY_LEAVES.trait to 0b00101000, // 棘のある葉
     )
     override val randomTraitChances = super.randomTraitChances + mapOf(
         TraitCard.HOT_ADAPTATION.trait to 0.05, // 高温適応
@@ -108,6 +108,7 @@ class VeropedaBlock(settings: Properties) : SimpleMagicPlantBlock(VeropedaCard, 
         val CODEC: MapCodec<VeropedaBlock> = simpleCodec(::VeropedaBlock)
     }
 
-    override fun getAgeProperty(): IntegerProperty = BlockStateProperties.AGE_3
     override fun codec() = CODEC
+
+    override fun getAgeProperty(): IntegerProperty = BlockStateProperties.AGE_3
 }

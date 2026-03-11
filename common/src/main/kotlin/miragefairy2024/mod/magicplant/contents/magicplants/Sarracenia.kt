@@ -102,6 +102,7 @@ class SarraceniaBlock(settings: Properties) : SimpleMagicPlantBlock(SarraceniaCa
         val CODEC: MapCodec<SarraceniaBlock> = simpleCodec(::SarraceniaBlock)
     }
 
-    override fun getAgeProperty(): IntegerProperty = BlockStateProperties.AGE_3
     override fun codec() = CODEC
+
+    override fun getAgeProperty(): IntegerProperty = BlockStateProperties.AGE_3
 }
