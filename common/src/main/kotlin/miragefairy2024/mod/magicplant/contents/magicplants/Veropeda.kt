@@ -54,8 +54,8 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
         TraitCard.SEEDS_PRODUCTION.trait to 0b00101000, // 種子生成
         TraitCard.FRUITS_PRODUCTION.trait to 0b00101000, // 果実生成
         TraitCard.LEAVES_PRODUCTION.trait to 0b00101000, // 葉面生成
-        TraitCard.CARNIVOROUS_PLANT.trait to 0b00101000, // 食虫植物
         TraitCard.PAVEMENT_FLOWERS.trait to 0b00101000, // アスファルトに咲く花
+        TraitCard.CARNIVOROUS_PLANT.trait to 0b00101000, // 食虫植物
         TraitCard.SPINY_LEAVES.trait to 0b00101000, // 棘のある葉
     )
     override val randomTraitChances = super.randomTraitChances + mapOf(
@@ -69,14 +69,14 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
         TraitCard.MUTATION.trait to 0.05, // 突然変異
         TraitCard.SEEDS_DILUTION.trait to 0.05, // 種子希釈
         TraitCard.NATURAL_ABSCISSION.trait to 0.05, // 自然落果
+        TraitCard.PAVEMENT_FLOWERS.trait to 0.05, // アスファルトに咲く花
         TraitCard.PHOTOSYNTHESIS.trait to 0.05, // 光合成
         TraitCard.PHAEOSYNTHESIS.trait to 0.05, // 闇合成
-        TraitCard.FOUR_LEAFED.trait to 0.05, // 四つ葉
+        TraitCard.CARNIVOROUS_PLANT.trait to 0.05, // 食虫植物
         TraitCard.FRUIT_OF_KNOWLEDGE.trait to 0.05, // 禁断の果実
+        TraitCard.FOUR_LEAFED.trait to 0.05, // 四つ葉
         TraitCard.SPINY_LEAVES.trait to 0.05, // 棘のある葉
         TraitCard.FLESHY_LEAVES.trait to 0.05, // 肉厚の葉
-        TraitCard.CARNIVOROUS_PLANT.trait to 0.05, // 食虫植物
-        TraitCard.PAVEMENT_FLOWERS.trait to 0.05, // アスファルトに咲く花
     )
 
     override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
