@@ -29,7 +29,7 @@ fun initStickyMining() {
     BlockCallback.BEFORE_DROP_BY_ENTITY.register { state, level, pos, _, entity, tool ->
         if (entity == null) return@register
         val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
-        if (stickyMiningLevel == 0 && !(state isIn STICKY_MINING_BLOCK_TAG)) return@register
+        if (!(stickyMiningLevel > 0 || (state isIn STICKY_MINING_BLOCK_TAG))) return@register
 
         val snapshot = StickyMiningSnapshot.take(level, pos.toBox())
         listener.set {

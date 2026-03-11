@@ -78,16 +78,19 @@ enum class OreCard(
     texturePath: String,
     val dropItem: () -> Item,
     experience: Pair<Int, Int>,
+    val tags: List<TagKey<Block>> = emptyList(),
 ) {
     MAGNETITE_ORE(
         "magnetite_ore", "Magnetite Ore", "磁鉄鉱鉱石",
         null,
         BaseStoneType.STONE, "magnetite_ore", MaterialCard.MAGNETITE.item, 2 to 5,
+        tags = listOf(STICKY_MINING_BLOCK_TAG),
     ),
     DEEPSLATE_MAGNETITE_ORE(
         "deepslate_magnetite_ore", "Deepslate Magnetite Ore", "深層磁鉄鉱鉱石",
         null,
         BaseStoneType.DEEPSLATE, "magnetite_ore", MaterialCard.MAGNETITE.item, 2 to 5,
+        tags = listOf(STICKY_MINING_BLOCK_TAG),
     ),
     FLUORITE_ORE(
         "fluorite_ore", "Fluorite Ore", "蛍石鉱石",
@@ -234,10 +237,11 @@ fun initOresModule() {
         card.baseStoneType.needsToolTag?.generator?.registerChild(card.block)
         ConventionalBlockTags.ORES.generator.registerChild(card.block)
 
-    }
+        card.tags.forEach {
+            it.generator.registerChild(card.block)
+        }
 
-    STICKY_MINING_BLOCK_TAG.generator.registerChild(OreCard.MAGNETITE_ORE.block)
-    STICKY_MINING_BLOCK_TAG.generator.registerChild(OreCard.DEEPSLATE_MAGNETITE_ORE.block)
+    }
 
     /**
      * @param countPerCube
