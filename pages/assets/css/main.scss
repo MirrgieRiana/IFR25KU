@@ -5,6 +5,22 @@
 
 $sans-serif: sans-serif;
 
+$background-color: #faf5ff;
+$text-color: #2d1f3d;
+$muted-text-color: #8a72a8;
+$primary-color: #c840e0;
+$border-color: #dcc0f0;
+$code-background-color: #f0e4fa;
+$code-background-color-dark: #dcc0f0;
+$form-background-color: #f0e4fa;
+$footer-background-color: #e4d0f4;
+$link-color: #a83dba;
+$link-color-hover: #8a20a0;
+$link-color-visited: #c070d0;
+$masthead-link-color: #2d1f3d;
+$masthead-link-color-hover: #a83dba;
+$navicon-link-color-hover: #a83dba;
+
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}";
 @import "minimal-mistakes";
 
@@ -23,4 +39,38 @@ html {
 .page__hero-image {
   height: 400px;
   object-fit: cover;
+}
+
+// ヒーロー画像をぼかして全面背景にし、白い半透明レイヤーを重ねる
+.greedy-nav {
+  background: transparent;
+}
+
+body {
+  background: transparent;
+
+  &::before {
+    content: "";
+    position: fixed;
+    top: -5%;
+    left: -5%;
+    width: 110%;
+    height: 110%;
+    background-image: url('{{ site.baseurl }}/assets/images/banner.png');
+    background-size: cover;
+    background-position: center;
+    filter: blur(24px);
+    z-index: -2;
+  }
+
+  &::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.78);
+    z-index: -1;
+  }
 }
