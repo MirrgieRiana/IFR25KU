@@ -28,25 +28,48 @@ import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toReiPoint
 import miragefairy2024.util.toReiRectangle
-import net.minecraft.network.chat.Component
 
 context(ModContext)
 fun initReiViewPlacers() {
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: InputSlotView, bounds ->
+        val entryIngredient = view.ingredientStack.toEntryIngredient()
+            .let {
+                if (view.additionalTooltip.isNotEmpty()) {
+                    EntryIngredient.of(it.map { entryStack -> entryStack.tooltip(view.additionalTooltip) })
+                } else {
+                    it
+                }
+            }
         widgets place Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
-            .entries(view.ingredientStack.toEntryIngredient().withAdditionalTooltip(view.additionalTooltip))
+            .entries(entryIngredient)
             .markInput()
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: CatalystSlotView, bounds ->
+        val entryIngredient = view.ingredientStack.toEntryIngredient()
+            .let {
+                if (view.additionalTooltip.isNotEmpty()) {
+                    EntryIngredient.of(it.map { entryStack -> entryStack.tooltip(view.additionalTooltip) })
+                } else {
+                    it
+                }
+            }
         widgets place Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
-            .entries(view.ingredientStack.toEntryIngredient().withAdditionalTooltip(view.additionalTooltip))
+            .entries(entryIngredient)
             .markInput()
             .backgroundEnabled(view.drawBackground)
     }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: OutputSlotView, bounds ->
+        val entryIngredient = view.itemStack.toEntryIngredient()
+            .let {
+                if (view.additionalTooltip.isNotEmpty()) {
+                    EntryIngredient.of(it.map { entryStack -> entryStack.tooltip(view.additionalTooltip) })
+                } else {
+                    it
+                }
+            }
         widgets place Widgets.createSlot(bounds.offset.offset(view.margin, view.margin).toReiPoint())
-            .entries(view.itemStack.toEntryIngredient().withAdditionalTooltip(view.additionalTooltip))
+            .entries(entryIngredient)
             .markOutput()
             .backgroundEnabled(view.drawBackground)
     }
@@ -103,6 +126,3 @@ fun initReiViewPlacers() {
         f(entry)
     }
 }
-
-private fun EntryIngredient.withAdditionalTooltip(tooltips: List<Component>): EntryIngredient =
-    if (tooltips.isNotEmpty()) EntryIngredient.of(map { entryStack -> entryStack.tooltip(tooltips) }) else this
