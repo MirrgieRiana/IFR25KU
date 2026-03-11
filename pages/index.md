@@ -5,8 +5,6 @@ header:
   image: /assets/images/banner.png
 ---
 
-# IFR25KU
-
 ## 更新履歴
 
 - [CHANGELOG](CHANGELOG.html)

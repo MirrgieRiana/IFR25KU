@@ -1,7 +1,8 @@
 title: IFR25KU
+url: https://mirrgieriana.github.io
 baseurl: /IFR25KU
 theme: minimal-mistakes-jekyll
-minimal_mistakes_skin: "catppuccin-mocha"
+minimal_mistakes_skin: catppuccin-mocha
 
 plugins:
   - jekyll-include-cache
