@@ -41,6 +41,16 @@ html {
   object-fit: cover;
 }
 
+.toc {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+
+  .nav__title {
+    display: none;
+  }
+}
+
 // ヒーロー画像をぼかして全面背景にし、白い半透明レイヤーを重ねる
 .greedy-nav {
   background: transparent;

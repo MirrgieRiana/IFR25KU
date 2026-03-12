@@ -1,3 +1,17 @@
 main:
   - title: CHANGELOG
     url: /CHANGELOG.html
+
+sidebar:
+  - title: ページ一覧
+    children:
+      - title: Home
+        url: /
+      - title: CHANGELOG
+        url: /CHANGELOG.html
+      - title: Lang Table
+        url: /lang_table.html
+      - title: Lang Table (JSON)
+        url: /lang_table.json
+      - title: Lang Table (CSV)
+        url: /lang_table.csv
