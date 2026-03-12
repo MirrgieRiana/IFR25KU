@@ -9,7 +9,12 @@ plugins:
 
 defaults:
   - scope:
-      path: "CHANGELOG.md"
+      path: ""
     values:
       layout: single
+      toc: true
+      toc_sticky: true
+  - scope:
+      path: "CHANGELOG.md"
+    values:
       title: CHANGELOG
