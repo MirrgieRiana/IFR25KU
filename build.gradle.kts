@@ -239,7 +239,7 @@ tasks.register("showSourceSets") {
 
 tasks.register<Sync>("syncPages") {
     group = "pages"
-    dependsOn(project("fabric").tasks.named("runDatagen"))
+    //dependsOn(project("fabric").tasks.named("runDatagen")) // CI上でrunDatagenが実行済みであることを強制しているので実行しないことにする
 
     val en by lazy { GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json").readText(), JsonElement::class.java).asJsonObject }
     val ja by lazy { GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json").readText(), JsonElement::class.java).asJsonObject }
