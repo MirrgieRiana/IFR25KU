@@ -16,7 +16,3 @@ defaults:
       toc_sticky: true
       sidebar:
         nav: sidebar
-  - scope:
-      path: "CHANGELOG.md"
-    values:
-      title: CHANGELOG

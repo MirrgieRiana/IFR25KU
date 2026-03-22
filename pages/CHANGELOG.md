@@ -1,4 +1,5 @@
 ---
+title: CHANGELOG
 ---
 
 [Markdown版はこちら](CHANGELOG.md)
