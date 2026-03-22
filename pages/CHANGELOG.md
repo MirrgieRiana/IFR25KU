@@ -1,5 +1,10 @@
 ---
 title: CHANGELOG
+description: バージョンごとの変更履歴
+header:
+  image: /assets/images/changelog/changelog-header.svg
+  teaser: /assets/images/changelog/changelog-header.svg
+  height: 200px
 ---
 
 [Markdown版はこちら](CHANGELOG.md)

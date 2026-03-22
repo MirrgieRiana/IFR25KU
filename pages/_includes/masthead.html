@@ -1,0 +1,54 @@
+{% assign locale = include.locale | default: site.locale %}
+{% capture logo_path %}{{ site.logo }}{% endcapture %}
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav" aria-label="Primary navigation">
+        <a class="site-title" href="{{ '/' | relative_url }}">
+          <img src="{{ '/assets/images/miragefairy_face_256.webp' | relative_url }}" alt="" class="site-title__face">
+          <img src="{{ '/assets/images/ifr25ku_banner-black-gothic.webp' | relative_url }}" alt="{{ site.title }}" class="site-title__logo">
+        </a>
+        <ul class="visible-links">
+          {%- for link in site.data.navigation.main -%}
+            {% if link.children %}
+              <li class="masthead__menu-item masthead__menu-item--dropdown">
+                <span class="masthead__menu-item-trigger">{{ link.title }}</span>
+                <ul class="masthead__dropdown">
+                  {% for child in link.children %}
+                    <li>
+                      <a
+                        href="{{ child.url | relative_url }}"
+                        {% if child.description %} title="{{ child.description }}"{% endif %}
+                        {% if child.url contains "://" %} target="_blank" rel="noopener noreferrer"{% endif %}
+                      >{{ child.title }}{% if child.url contains "://" %} <i class="fas fa-external-link-alt fa-xs"></i>{% endif %}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </li>
+            {% else %}
+              <li class="masthead__menu-item">
+                <a
+                  href="{{ link.url | relative_url }}"
+                  {% if link.description %} title="{{ link.description }}"{% endif %}
+                  {% if link.url contains "://" %} target="_blank" rel="noopener noreferrer"{% endif %}
+                >{{ link.title }}{% if link.url contains "://" %} <i class="fas fa-external-link-alt fa-xs"></i>{% endif %}</a>
+              </li>
+            {% endif %}
+          {%- endfor -%}
+        </ul>
+        {% if site.search == true %}
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">{{ site.data.ui-text[locale].search_label | default: "Toggle search" }}</span>
+          <i class="fas fa-search"></i>
+        </button>
+        {% endif %}
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">{{ site.data.ui-text[locale].menu_label | default: "Toggle menu" }}</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>

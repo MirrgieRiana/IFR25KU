@@ -1,0 +1,23 @@
+<section class="recent-posts">
+  <div class="recent-posts__grid">
+    {% assign page_paths = include.pages | split: "," %}
+    {% for page_path in page_paths %}
+      {% assign target_page = site.pages | where: "path", page_path | first %}
+      {% if target_page %}
+      <a href="{{ target_page.url | relative_url }}" class="recent-posts__card">
+        <div class="recent-posts__teaser">
+          {% if target_page.header.teaser %}
+          <img src="{{ target_page.header.teaser | relative_url }}" alt="">
+          {% endif %}
+        </div>
+        <div class="recent-posts__body">
+          <h3 class="recent-posts__title">{{ target_page.title }}</h3>
+          {% if target_page.description %}
+          <p class="recent-posts__excerpt">{{ target_page.description }}</p>
+          {% endif %}
+        </div>
+      </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>

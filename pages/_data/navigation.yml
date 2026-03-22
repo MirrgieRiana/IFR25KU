@@ -1,6 +1,24 @@
 main:
-  - title: CHANGELOG
-    url: /CHANGELOG.html
+  - title: DOWNLOADS
+    children:
+      - title: Modrinth
+        url: https://modrinth.com/mod/ifr25ku
+      - title: CurseForge
+        url: https://www.curseforge.com/minecraft/mc-mods/ifr25ku
+  - title: ARTICLES
+    children:
+      - title: 記事一覧
+        url: /posts.html
+  - title: INFO
+    children:
+      - title: CHANGELOG
+        url: /CHANGELOG.html
+      - title: GitHub
+        url: https://github.com/MirrgieRiana/IFR25KU
+      - title: Lang Table
+        url: /lang-table-index.html
+      - title: IFRKU Official Web Site (Old)
+        url: https://kakera-unofficial.notion.site/ifrku
 
 sidebar:
   - title: ページ一覧

@@ -1,0 +1,28 @@
+<section class="recent-posts">
+  {% if site.posts.size > 0 %}
+  {% assign post_limit = include.limit | default: 9999 %}
+  <div class="recent-posts__grid">
+    {% for post in site.posts limit:post_limit %}
+    <a href="{{ post.url | relative_url }}" class="recent-posts__card">
+      <div class="recent-posts__teaser">
+        {% if post.header.teaser %}
+        <img src="{{ post.header.teaser | relative_url }}" alt="">
+        {% endif %}
+      </div>
+      <div class="recent-posts__body">
+        <h3 class="recent-posts__title">{{ post.title }}</h3>
+        <span class="recent-posts__date">{{ post.date | date: "%Y-%m-%d" }}</span>
+        {% if post.excerpt %}
+        <p class="recent-posts__excerpt">{{ post.excerpt | markdownify | strip_html | truncate: 100 }}</p>
+        {% endif %}
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% if include.more %}
+  <p class="recent-posts__more"><a href="{{ '/posts.html' | relative_url }}">すべての記事を見る &rarr;</a></p>
+  {% endif %}
+  {% else %}
+  <p>まだ記事がありません。</p>
+  {% endif %}
+</section>

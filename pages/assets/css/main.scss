@@ -24,6 +24,115 @@ $navicon-link-color-hover: #a83dba;
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}";
 @import "minimal-mistakes";
 
+// テーマのfloatレイアウトをFlexbox/Gridに全面移行
+#main {
+  @include breakpoint($large) {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  &::after {
+    display: none;
+  }
+}
+
+.sidebar {
+  @include breakpoint($large) {
+    float: none;
+    flex-shrink: 0;
+  }
+}
+
+.page,
+.splash {
+  @include breakpoint($large) {
+    float: none;
+    flex: 1;
+    min-width: 0;
+    width: auto;
+    padding-inline-end: 0;
+  }
+}
+
+.page .page__inner-wrap {
+  float: none;
+  clear: none;
+
+  @include breakpoint($large) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-columns: $right-sidebar-width-narrow;
+  }
+
+  @include breakpoint($x-large) {
+    grid-auto-columns: $right-sidebar-width;
+  }
+}
+
+.page .page__inner-wrap .page__content,
+.page .page__inner-wrap .page__meta,
+.page .page__inner-wrap .page__share {
+  float: none;
+  clear: none;
+  position: static;
+}
+
+.sidebar__right {
+  @include breakpoint($large) {
+    position: static;
+    inset-inline-end: auto;
+    width: auto;
+    margin-inline-end: 0;
+    grid-column: 2;
+    grid-row: 1 / span 999;
+    align-self: start;
+  }
+
+  &.sticky {
+    @include breakpoint($large) {
+      float: none;
+      position: sticky;
+      top: 2em;
+    }
+  }
+}
+
+.splash .sidebar__right {
+  @include breakpoint($large) {
+    float: none;
+  }
+}
+
+.page__related {
+  float: none;
+
+  @include breakpoint($large) {
+    float: none;
+    width: auto;
+  }
+}
+
+.archive {
+  @include breakpoint($large) {
+    float: none;
+    flex: 1;
+    min-width: 0;
+    width: auto;
+    padding-inline-end: 0;
+  }
+}
+
+.breadcrumbs ol {
+  @include breakpoint($large) {
+    float: none;
+    width: auto;
+  }
+}
+
+.page__comments {
+  float: none;
+}
+
 // minimal-mistakesのデフォルトフォントサイズ(16/18/20/22px)を上書きするため、全ブレークポイントの指定が必要
 html {
   font-size: 14px;
@@ -32,13 +141,70 @@ html {
   @include breakpoint($x-large) { font-size: 16px; }
 }
 
-.site-title {
-  font-size: 1.5rem;
+// テーマの .greedy-nav a の広すぎるセレクタを狭める
+.greedy-nav a {
+  display: revert;
+  margin: revert;
+}
+
+.greedy-nav .visible-links a,
+.greedy-nav .hidden-links a {
+  display: block;
+  margin: 0 1rem;
+}
+
+.greedy-nav .visible-links a:before {
+  background: #FF2DAB;
+}
+
+a.site-title {
+  display: flex;
+  align-items: center;
+  padding: 0.5em;
+  gap: 1em;
+}
+
+.site-title__face {
+  height: 3em;
+}
+
+.site-title__logo {
+  height: 2.5em;
 }
 
 .page__hero-image {
   height: 400px;
   object-fit: cover;
+}
+
+.page__hero--overlay {
+  min-height: 600px;
+  margin-top: -2em;
+  margin-bottom: 0;
+  padding-bottom: 2em;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  .wrapper {
+    margin-bottom: 0;
+  }
+
+  .btn--light-outline:hover {
+    color: #FF2DAB;
+    border-color: #FF2DAB;
+    background-color: transparent;
+  }
+}
+
+::selection {
+  color: revert;
+  background: revert;
+}
+
+::-moz-selection {
+  color: revert;
+  background: revert;
 }
 
 .toc {
@@ -51,24 +217,227 @@ html {
   }
 }
 
-// ヒーロー画像をぼかして全面背景にし、白い半透明レイヤーを重ねる
+.masthead {
+  border-bottom: 4px solid #FF2DAB;
+}
+
+// splashレイアウトのフルワイド化
+body.layout--splash #main {
+  max-width: none;
+  padding-inline: 0;
+}
+
+// コンテンツ幅を制限するラッパー
+.content-wrap {
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 1em;
+}
+
+// フルワイドのセクションヘッダー
+.section-header {
+  height: 150px;
+  margin: 2em 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  border-top: 4px solid #FF2DAB;
+  border-bottom: 4px solid #FF2DAB;
+
+  .section-header__text {
+    font-size: 2em;
+    font-weight: bold;
+    letter-spacing: 0.2em;
+    color: #ffffff;
+  }
+
+  .section-header__sub {
+    font-size: 1.3em;
+    color: #ffffff;
+    margin-top: 0.3em;
+  }
+}
+
+// フルワイドのセパレータ
+.section-separator {
+  height: 2em;
+  margin: 2em 0;
+  background: #000000;
+  border-top: 4px solid #FF2DAB;
+  border-bottom: 4px solid #FF2DAB;
+}
+
+// 図鑑風カード
+.encyclopedia-frame {
+  margin: 2em auto;
+  max-width: 700px;
+  padding: 2em;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.encyclopedia-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+
+  @include breakpoint(700px) {
+    flex-direction: row;
+  }
+
+  &, h3, p {
+    font-family: serif;
+  }
+}
+
+.encyclopedia-card__image {
+  flex-shrink: 0;
+
+  @include breakpoint(700px) {
+    width: 200px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.encyclopedia-card__body {
+  padding: 0;
+  flex: 1;
+}
+
+.encyclopedia-card__classification {
+  font-size: 0.75em;
+  color: $muted-text-color;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.3em;
+}
+
+.encyclopedia-card__title {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 0 0 1.5em;
+}
+
+.encyclopedia-card__text {
+  font-size: 0.85em;
+  line-height: 1.7;
+  margin: 0 0 0.3em;
+  color: $text-color;
+}
+
+// 見出し下の線を灰色に
+.archive__subtitle {
+  border-bottom-color: #ccc;
+}
+
+// mastheadの背景を黒に
+.masthead {
+  background: #000000;
+  color: #ffffff;
+}
+
+.greedy-nav .visible-links a,
+.greedy-nav .hidden-links a,
+.greedy-nav .masthead__menu-item-trigger {
+  color: #ffffff;
+
+  &:hover {
+    color: #FF2DAB;
+  }
+}
+
+.masthead__inner-wrap {
+  padding: 0;
+}
+
 .greedy-nav {
+  min-height: 0;
   background: transparent;
+}
+
+// visible-linksのoverflowを解除してドロップダウンを表示可能にする
+.greedy-nav .visible-links {
+  overflow: visible;
+  align-self: stretch;
+  align-items: stretch;
+}
+
+// mastheadドロップダウンメニュー
+.masthead__menu-item--dropdown {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+
+  .masthead__menu-item-trigger {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    font-size: 1.2em;
+  }
+
+  .masthead__dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 30;
+    min-width: 10em;
+    padding: 0.5em 0;
+    margin: 0;
+    list-style: none;
+    background: #000000;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+
+    li a {
+      display: block;
+      padding: 0.5em 1.2em;
+      color: rgba(255, 255, 255, 0.85);
+      white-space: nowrap;
+      text-decoration: none;
+
+      &:hover {
+        color: #FF2DAB;
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+
+    .masthead__dropdown {
+      display: block;
+    }
+  }
 }
 
 .page__footer-links {
   font-size: 0.75em;
 }
 
+
+.social-icons .fa-sitemap {
+  color: #fa9b39;
+}
+
 .page__footer {
-  background: linear-gradient(135deg, rgba(180, 80, 220, 0.18), rgba(200, 64, 224, 0.10));
-  color: #4a3060;
+  margin-top: 0;
+  border-top: 4px solid #FF2DAB;
+  background: #000000;
+  color: rgba(255, 255, 255, 0.7);
 
   a {
-    color: #9040b0;
+    color: #FF2DAB;
 
     &:hover {
-      color: #702090;
+      color: #ff6ec7;
     }
   }
 }
@@ -83,21 +452,128 @@ body {
     left: -5%;
     width: 110%;
     height: 110%;
-    background-image: url('{{ site.baseurl }}/assets/images/banner.png');
+    background-image: url('{{ site.baseurl }}/assets/images/background.webp');
     background-size: cover;
     background-position: center;
     filter: blur(24px);
     z-index: -2;
   }
 
-  &::after {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
+}
+
+.initial-content {
+  background: rgba(255, 255, 255, 0.80);
+  padding: 2em 0;
+}
+
+// ブログ新着カードレイアウト
+.recent-posts__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5em;
+  margin: 2em 0;
+}
+
+.recent-posts__card {
+  display: block;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.2s, background 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    background: rgba(200, 160, 240, 0.15);
+    color: inherit;
+    text-decoration: none;
+
+    .recent-posts__teaser img {
+      transform: scale(1.05);
+    }
+  }
+}
+
+// .page__content内のカードの下線とvisited色を無効化
+.page__content a.recent-posts__card,
+.page__content a.recent-posts__card:visited,
+.page__content a.recent-posts__card:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+.recent-posts__teaser {
+  aspect-ratio: 16 / 9;
+  background: $code-background-color;
+  overflow: hidden;
+
+  img {
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.78);
-    z-index: -1;
+    object-fit: cover;
+    transition: transform 0.3s;
   }
+}
+
+.recent-posts__body {
+  padding: 1em;
+}
+
+.recent-posts__title {
+  margin: 0 0 0.5em;
+  font-size: 1em;
+  text-decoration: none;
+}
+
+.recent-posts__date {
+  font-size: 0.8em;
+  color: $muted-text-color;
+}
+
+.recent-posts__excerpt {
+  font-size: 0.85em;
+}
+
+.recent-posts__more {
+  margin-top: 1.5em;
+}
+
+.page__title {
+  color: #000000;
+}
+
+// ヘッダー画像がないページのh1下マージン
+.page__header--plain {
+  margin-bottom: 1em;
+}
+
+// 記事の前後ナビゲーション
+.post-nav {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr auto;
+  align-items: center;
+  margin-top: 2em;
+  padding-top: 2em;
+  border-top: 1px solid $border-color;
+}
+
+.post-nav__arrow {
+  padding: 0 0.5em;
+  color: $muted-text-color;
+}
+
+.post-nav__title {
+  padding: 0.5em;
+
+  &--next {
+    text-align: end;
+    grid-column: 3;
+  }
+}
+
+// teaser自動表示画像の下マージン
+.page__teaser-banner {
+  width: 100%;
+  margin-bottom: 1.5em;
 }
