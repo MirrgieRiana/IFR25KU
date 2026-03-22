@@ -11,3 +11,6 @@ cd -- "$(dirname -- "$0")/../build/pages"
 bundle config set --local path vendor/bundle
 bundle install
 bundle exec jekyll build --destination _site
+
+# CHANGELOG.mdをmd版として同封
+cp CHANGELOG.md _site/CHANGELOG.md

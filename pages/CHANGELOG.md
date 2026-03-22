@@ -1,6 +1,8 @@
 ---
 ---
 
+[Markdown版はこちら](CHANGELOG.md)
+
 ## Translation
 
 In this project, not only proper nouns but also ordinary terms often have names that do not correspond at all between English and Japanese.
