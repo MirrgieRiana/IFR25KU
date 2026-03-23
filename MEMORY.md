@@ -6,11 +6,11 @@ AIアシスタントが自由に編集できる、コミットされる永続的
 ## ビルドフロー
 
 1. `syncPages`（Gradleタスク、siteサブプロジェクト）: `site/pages/` → `site/build/pages/` にコピー。lang_table.htmlの`<%= trs %>`を展開し、lang_table.json/csvを生成
-2. `buildPages`（Gradleタスク、siteサブプロジェクト）: `site/scripts/buildPages.sh` を実行
-3. `buildPages.sh`: `site/build/pages/` で `bundle exec jekyll build --destination _site`
+2. `buildPages`（Gradleタスク、siteサブプロジェクト）: `site/scripts/build-pages.sh` を実行
+3. `build-pages.sh`: `site/build/pages/` で `bundle exec jekyll build --destination _site`
 4. 出力先: `site/build/pages/_site/`
 
-`servePages` / `site/scripts/servePages.sh` でローカルプレビュー可能。
+`servePages` / `site/scripts/serve-pages.sh` でローカルプレビュー可能。
 
 ## テーマオーバーライド
 
@@ -199,7 +199,7 @@ tags: [お知らせ]
 ## CHANGELOG
 
 - `site/pages/CHANGELOG.md`: front matterあり → JekyllがHTMLに変換 → `CHANGELOG.html` として出力
-- `site/scripts/buildPages.sh` でJekyllビルド後に `CHANGELOG.md` を `_site/` にコピーしてmd版も配信
+- `site/scripts/build-pages.sh` でJekyllビルド後に `CHANGELOG.md` を `_site/` にコピーしてmd版も配信
 - CHANGELOG.html冒頭に「Markdown版はこちら」リンクあり
 
 ## Lang Table

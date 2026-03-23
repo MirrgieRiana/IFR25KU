@@ -86,11 +86,11 @@ tasks.register<Sync>("syncPages") {
 tasks.register<Exec>("buildPages") {
     group = "pages"
     dependsOn("syncPages")
-    commandLine("bash", "scripts/buildPages.sh")
+    commandLine("bash", "scripts/build-pages.sh")
 }
 
 tasks.register<Exec>("servePages") {
     group = "pages"
     dependsOn("syncPages")
-    commandLine("bash", "scripts/servePages.sh")
+    commandLine("bash", "scripts/serve-pages.sh")
 }
