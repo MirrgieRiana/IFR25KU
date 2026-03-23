@@ -4,11 +4,6 @@ import com.google.gson.JsonPrimitive
 
 tasks.register<Sync>("syncPages") {
     group = "pages"
-    //dependsOn(project("fabric").tasks.named("runDatagen")) // CI上でrunDatagenが実行済みであることを強制しているので実行しないことにする
-
-    val en by lazy { GsonBuilder().create().fromJson(rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json").readText(), JsonElement::class.java).asJsonObject }
-    val ja by lazy { GsonBuilder().create().fromJson(rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json").readText(), JsonElement::class.java).asJsonObject }
-    val keys by lazy { (en.keySet() + ja.keySet()).sorted() }
 
     from("pages") {
         include("**/*")
@@ -29,7 +24,13 @@ tasks.register<Sync>("syncPages") {
         println("Wrote to ${outFile.absolutePath}")
     }
 
+    //dependsOn(project("fabric").tasks.named("runDatagen")) // CI上でrunDatagenが実行済みであることを強制しているので実行しないことにする
+
     doLast {
+        val en by lazy { GsonBuilder().create().fromJson(rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json").readText(), JsonElement::class.java).asJsonObject }
+        val ja by lazy { GsonBuilder().create().fromJson(rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json").readText(), JsonElement::class.java).asJsonObject }
+        val keys by lazy { (en.keySet() + ja.keySet()).sorted() }
+
         run {
             val trs = keys.joinToString("") { key ->
                 listOf(
