@@ -191,6 +191,12 @@ a.site-title {
     margin-bottom: 0;
   }
 
+  .page__hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+  }
+
   .btn--light-outline:hover {
     color: #FF2DAB;
     border-color: #FF2DAB;
@@ -220,6 +226,7 @@ a.site-title {
 
 .masthead {
   border-bottom: 4px solid #FF2DAB;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 // splashレイアウトのフルワイド化
@@ -246,6 +253,7 @@ body.layout--splash #main {
   background: #000000;
   border-top: 4px solid #FF2DAB;
   border-bottom: 4px solid #FF2DAB;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
   .section-header__text {
     font-size: 2em;
@@ -268,6 +276,7 @@ body.layout--splash #main {
   background: #000000;
   border-top: 4px solid #FF2DAB;
   border-bottom: 4px solid #FF2DAB;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 // 図鑑風カード
@@ -365,8 +374,13 @@ body.layout--splash #main {
     background: rgba(#000000, 0.85);
     border-color: rgba(#ffffff, 0.1);
 
+    .masthead__menu-item--dropdown + .masthead__menu-item--dropdown {
+      border-top: 1px solid rgba(#ffffff, 0.5);
+      padding-top: 4px;
+    }
+
     .masthead__menu-item-trigger {
-      padding: 10px 20px 2px;
+      padding: 6px 20px 2px;
       font-size: 0.75em;
       color: rgba(#ffffff, 0.5);
       cursor: default;
@@ -377,12 +391,27 @@ body.layout--splash #main {
       display: block;
       position: static;
       min-width: 0;
-      padding: 0;
+      padding: 0 0 4px;
       margin: 0;
       background: transparent;
       box-shadow: none;
+
+      li {
+        border-bottom: none;
+      }
     }
   }
+}
+
+.navicon,
+.navicon::before,
+.navicon::after,
+.close .navicon::before,
+.close .navicon::after,
+.greedy-nav__toggle:hover .navicon,
+.greedy-nav__toggle:hover .navicon::before,
+.greedy-nav__toggle:hover .navicon::after {
+  background: #fff;
 }
 
 .greedy-nav__toggle:before {
@@ -395,7 +424,7 @@ body.layout--splash #main {
 
 // visible-linksのoverflowを解除してドロップダウンを表示可能にする
 .greedy-nav .visible-links {
-  overflow: visible;
+  overflow: clip visible;
   align-self: stretch;
   align-items: stretch;
 }
@@ -462,6 +491,7 @@ body.layout--splash #main {
 .page__footer {
   margin-top: 0;
   border-top: 4px solid #FF2DAB;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   background: #000000;
   color: rgba(255, 255, 255, 0.7);
 

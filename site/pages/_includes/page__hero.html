@@ -38,7 +38,7 @@
       {% endif %}
       {% include page__meta.html locale=locale %}
       {% if page.header.actions %}
-        <p>
+        <p class="page__hero-actions">
         {% for action in page.header.actions %}
           <a href="{{ action.url | relative_url }}" class="btn btn--light-outline btn--large">{{ action.label | default: site.data.ui-text[locale].more_label | default: "Learn More" }}{% if action.url contains "://" %} <i class="fas fa-external-link-alt fa-xs"></i>{% endif %}</a>
         {% endfor %}
