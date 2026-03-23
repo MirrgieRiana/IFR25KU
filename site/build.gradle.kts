@@ -20,6 +20,7 @@ val makeLangTable = tasks.register("makeLangTable") {
         val ja by lazy { GsonBuilder().create().fromJson(rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json").readText(), JsonElement::class.java).asJsonObject }
         val keys by lazy { (en.keySet() + ja.keySet()).sorted() }
 
+        // lang_table.html: テンプレート展開
         run {
             val trs = keys.joinToString("") { key ->
                 listOf(
@@ -33,6 +34,8 @@ val makeLangTable = tasks.register("makeLangTable") {
             val html = file("src/langTable/html/lang_table.html").readText().replace("<%= trs %>", trs)
             write("langTable/lang_table.html", html)
         }
+
+        // lang_table.json
         run {
             val table = keys.associateWith { key ->
                 mapOf(
@@ -43,6 +46,8 @@ val makeLangTable = tasks.register("makeLangTable") {
             val json = GsonBuilder().setPrettyPrinting().create().toJson(table)
             write("langTable/lang_table.json", json)
         }
+
+        // lang_table.csv
         run {
             val table = listOf(
                 listOf("key", "en_us", "ja_jp"),
