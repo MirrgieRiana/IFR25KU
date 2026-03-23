@@ -360,6 +360,37 @@ body.layout--splash #main {
 .greedy-nav {
   min-height: 0;
   background: transparent;
+
+  .hidden-links {
+    background: rgba(#000000, 0.85);
+    border-color: rgba(#ffffff, 0.1);
+
+    .masthead__menu-item-trigger {
+      padding: 10px 20px 2px;
+      font-size: 0.75em;
+      color: rgba(#ffffff, 0.5);
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .masthead__dropdown {
+      display: block;
+      position: static;
+      min-width: 0;
+      padding: 0;
+      margin: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+  }
+}
+
+.greedy-nav__toggle:before {
+  background-color: #000000;
+}
+
+.greedy-nav__toggle.close:before {
+  opacity: 0.5;
 }
 
 // visible-linksのoverflowを解除してドロップダウンを表示可能にする
