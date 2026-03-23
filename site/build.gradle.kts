@@ -15,7 +15,6 @@ val makeLangTable = tasks.register("makeLangTable") {
         println("Wrote to ${outFile.absolutePath}")
     }
 
-
     doLast {
         val en by lazy { GsonBuilder().create().fromJson(rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json").readText(), JsonElement::class.java).asJsonObject }
         val ja by lazy { GsonBuilder().create().fromJson(rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json").readText(), JsonElement::class.java).asJsonObject }
