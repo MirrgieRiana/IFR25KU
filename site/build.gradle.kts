@@ -80,29 +80,45 @@ val makeLangTable = tasks.register("makeLangTable") {
     }
 }
 
-val syncPages = tasks.register<Sync>("syncPages") {
+val installJekyllBundle = tasks.register<Exec>("installJekyllBundle") {
     group = "other"
 
-    from("pages")
-    from(makeLangTable)
+    inputs.file("src/main/bundle/Gemfile")
+    inputs.file("src/main/bundle/Gemfile.lock")
+    outputs.dir("src/main/bundle/vendor")
+    outputs.dir("src/main/bundle/.bundle")
 
-    into(layout.buildDirectory.dir("pages"))
-
-    // bundle installで生成されるファイルをSyncの削除対象から除外する
-    preserve {
-        include("vendor/**")
-        include(".bundle/**")
-    }
+    commandLine("bash", "scripts/bundle-install.sh")
 }
 
-val buildPages = tasks.register<Exec>("buildPages") {
+val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
+    group = "other"
+    dependsOn(installJekyllBundle)
+    from("src/main/resources")
+    from("src/main/bundle")
+    into(layout.buildDirectory.dir("jekyllSource"))
+}
+
+val jekyllBuild = tasks.register<Exec>("jekyllBuild") {
     group = "build"
-    dependsOn(syncPages)
-    commandLine("bash", "scripts/build-pages.sh")
+    inputs.files(syncJekyllSource)
+    outputs.dir(layout.buildDirectory.dir("jekyllBuild"))
+    commandLine("bash", "scripts/build-site.sh")
 }
 
-val servePages = tasks.register<Exec>("servePages") {
+val buildSite = tasks.register<Sync>("buildSite") {
+    group = "build"
+    from(jekyllBuild)
+    from(makeLangTable)
+    from("src/main/resources") {
+        include("**/*.md")
+    }
+    into(layout.buildDirectory.dir("site"))
+}
+
+val serveSite = tasks.register<Exec>("serveSite") {
     group = "application"
-    dependsOn(syncPages) // serveは内部的にbuildもするのでbuildへの依存は不要
+    inputs.files(buildSite)
+    inputs.files(syncJekyllSource) // bundle exec のために必要
     commandLine("bash", "scripts/serve-pages.sh")
 }

@@ -6,11 +6,6 @@ if [ -d "$HOME/.rbenv" ]; then
     eval "$("$HOME/.rbenv/bin/rbenv" init - bash)"
 fi
 
-cd -- "$(dirname -- "$0")/../build/pages"
+cd -- "$(dirname -- "$0")/../build/jekyllSource"
 
-bundle config set --local path vendor/bundle
-bundle install
-bundle exec jekyll build --destination _site
-
-# CHANGELOG.mdをmd版として同封
-cp CHANGELOG.md _site/CHANGELOG.md
+bundle exec jekyll build --destination ../jekyllBuild

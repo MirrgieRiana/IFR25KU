@@ -44,8 +44,8 @@ replay_*.log
 
 _site/
 .jekyll-cache/
-Gemfile.lock
 .bundle/
+vendor/
 
 # custom
 

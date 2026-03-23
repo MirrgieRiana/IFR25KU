@@ -6,6 +6,7 @@ if [ -d "$HOME/.rbenv" ]; then
     eval "$("$HOME/.rbenv/bin/rbenv" init - bash)"
 fi
 
-cd -- "$(dirname -- "$0")/../build/jekyllSource"
+cd -- "$(dirname -- "$0")/../src/main/bundle"
 
-bundle exec jekyll serve --skip-initial-build --no-watch --destination ../site
+bundle config set --local path vendor/bundle
+bundle install
