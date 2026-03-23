@@ -13,11 +13,11 @@ header:
 
 In this project, not only proper nouns but also ordinary terms often have names that do not correspond at all between English and Japanese.
 
-For the official translation mappings, see the [Lang Table](lang_table.html), [Lang Table (JSON)](lang_table.json) or [Lang Table (csv)](lang_table.csv).
+For the official translation mappings, see the [Lang Table](lang-table-index.html).
 
 ## ドキュメンテーションされない変更
 
-各種レシピなどは、REIタブをご参照ください。
+各種レシピなどは、REI/EMIタブをご参照ください。
 
 ## 目次
 
