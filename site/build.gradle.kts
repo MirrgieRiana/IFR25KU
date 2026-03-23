@@ -9,6 +9,8 @@ tasks.register<Sync>("syncPages") {
         include("**/*")
     }
 
+    from(tasks.named("makeLangTable"))
+
     into(layout.buildDirectory.dir("pages"))
 
     // bundle installで生成されるファイルをSyncの削除対象から除外する
@@ -16,6 +18,12 @@ tasks.register<Sync>("syncPages") {
         include("vendor/**")
         include(".bundle/**")
     }
+}
+
+tasks.register("makeLangTable") {
+    group = "pages"
+
+    outputs.dir(layout.buildDirectory.dir("langTable"))
 
     fun write(path: String, content: String) {
         val outFile = layout.buildDirectory.file(path).get().asFile
@@ -42,7 +50,7 @@ tasks.register<Sync>("syncPages") {
                 ).joinToString("\n") { it }
             }
             val html = file("src/langTable/html/lang_table.html").readText().replace("<%= trs %>", trs)
-            write("pages/lang_table.html", html)
+            write("langTable/lang_table.html", html)
         }
         run {
             val table = keys.associateWith { key ->
@@ -52,7 +60,7 @@ tasks.register<Sync>("syncPages") {
                 )
             }
             val json = GsonBuilder().setPrettyPrinting().create().toJson(table)
-            write("pages/lang_table.json", json)
+            write("langTable/lang_table.json", json)
         }
         run {
             val table = listOf(
@@ -74,7 +82,7 @@ tasks.register<Sync>("syncPages") {
                     }
                 } + "\n"
             }
-            write("pages/lang_table.csv", csv)
+            write("langTable/lang_table.csv", csv)
         }
     }
 }
