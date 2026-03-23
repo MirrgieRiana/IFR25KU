@@ -10,31 +10,8 @@ tasks.register<Sync>("syncPages") {
     val ja by lazy { GsonBuilder().create().fromJson(rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json").readText(), JsonElement::class.java).asJsonObject }
     val keys by lazy { (en.keySet() + ja.keySet()).sorted() }
 
-    fun getTrs(): String {
-        return keys.joinToString("") { key ->
-            listOf(
-                """<tr>""",
-                """<td class="key">$key</td>""",
-                """<td class="value">${(en.get(key) as JsonPrimitive?)?.asString ?: "-"}</td>""",
-                """<td class="value">${(ja.get(key) as JsonPrimitive?)?.asString ?: "-"}</td>""",
-                """</tr>""",
-            ).joinToString("\n") { it }
-        }
-    }
-
     from("pages") {
         include("**/*")
-    }
-
-    from("src/langTable/html") {
-        include("**/*")
-
-        filesMatching("lang_table.html") {
-            filter {
-                filteringCharset = "UTF-8"
-                it.replace("<%= trs %>", getTrs())
-            }
-        }
     }
 
     into(layout.buildDirectory.dir("pages"))
@@ -43,6 +20,26 @@ tasks.register<Sync>("syncPages") {
     preserve {
         include("vendor/**")
         include(".bundle/**")
+    }
+
+    from("src/langTable/html") {
+        include("**/*")
+
+        filesMatching("lang_table.html") {
+            filter {
+                filteringCharset = "UTF-8"
+                val trs = keys.joinToString("") { key ->
+                    listOf(
+                        """<tr>""",
+                        """<td class="key">$key</td>""",
+                        """<td class="value">${(en.get(key) as JsonPrimitive?)?.asString ?: "-"}</td>""",
+                        """<td class="value">${(ja.get(key) as JsonPrimitive?)?.asString ?: "-"}</td>""",
+                        """</tr>""",
+                    ).joinToString("\n") { it }
+                }
+                it.replace("<%= trs %>", trs)
+            }
+        }
     }
 
     doLast {
