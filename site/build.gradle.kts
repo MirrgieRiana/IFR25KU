@@ -3,7 +3,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 
 val makeLangTable = tasks.register("makeLangTable") {
-    group = "pages"
+    group = "generate"
     //dependsOn(project("fabric").tasks.named("runDatagen")) // CI上でrunDatagenが実行済みであることを強制しているので実行しないことにする
 
     outputs.dir(layout.buildDirectory.dir("langTable"))
@@ -74,7 +74,7 @@ val makeLangTable = tasks.register("makeLangTable") {
 }
 
 val syncPages = tasks.register<Sync>("syncPages") {
-    group = "pages"
+    group = "other"
 
     from("pages")
     from(makeLangTable)
@@ -89,13 +89,13 @@ val syncPages = tasks.register<Sync>("syncPages") {
 }
 
 val buildPages = tasks.register<Exec>("buildPages") {
-    group = "pages"
+    group = "build"
     dependsOn(syncPages)
     commandLine("bash", "scripts/build-pages.sh")
 }
 
 val servePages = tasks.register<Exec>("servePages") {
-    group = "pages"
+    group = "application"
     dependsOn(syncPages)
     commandLine("bash", "scripts/serve-pages.sh")
 }
