@@ -24,6 +24,10 @@ tasks.register<Sync>("syncPages") {
 
     from("pages") {
         include("**/*")
+    }
+
+    from("src/langTable/html") {
+        include("**/*")
 
         filesMatching("lang_table.html") {
             filter {
