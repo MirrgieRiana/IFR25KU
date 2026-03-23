@@ -166,11 +166,12 @@ a.site-title {
 }
 
 .site-title__face {
+  width: 3em;
   height: 3em;
 }
 
 .site-title__logo {
-  height: 2.5em;
+  width: 7.8em;
 }
 
 .page__hero-image {
@@ -374,9 +375,8 @@ body.layout--splash #main {
     background: rgba(#000000, 0.85);
     border-color: rgba(#ffffff, 0.1);
 
-    .masthead__menu-item--dropdown + .masthead__menu-item--dropdown {
-      border-top: 1px solid rgba(#ffffff, 0.5);
-      padding-top: 4px;
+    .masthead__menu-item--dropdown {
+      border: none;
     }
 
     .masthead__menu-item-trigger {

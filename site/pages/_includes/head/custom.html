@@ -1,2 +1,7 @@
 <!-- favicon -->
 <link rel="icon" href="{{ '/assets/images/miragefairy_face_256.webp' | relative_url }}" type="image/webp">
+
+<!-- SNSで大きいサムネイルを表示 -->
+{% if page.header.og_image or page.header.overlay_image or page.header.image or page.header.teaser or site.og_image %}
+<meta name="twitter:card" content="summary_large_image">
+{% endif %}
