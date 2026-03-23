@@ -29,27 +29,20 @@ tasks.register<Sync>("syncPages") {
         println("Wrote to ${outFile.absolutePath}")
     }
 
-    from("src/langTable/html") {
-        include("**/*")
-
-        filesMatching("lang_table.html") {
-            filter {
-                filteringCharset = "UTF-8"
-                val trs = keys.joinToString("") { key ->
-                    listOf(
-                        """<tr>""",
-                        """<td class="key">$key</td>""",
-                        """<td class="value">${(en.get(key) as JsonPrimitive?)?.asString ?: "-"}</td>""",
-                        """<td class="value">${(ja.get(key) as JsonPrimitive?)?.asString ?: "-"}</td>""",
-                        """</tr>""",
-                    ).joinToString("\n") { it }
-                }
-                it.replace("<%= trs %>", trs)
-            }
-        }
-    }
-
     doLast {
+        run {
+            val trs = keys.joinToString("") { key ->
+                listOf(
+                    """<tr>""",
+                    """<td class="key">$key</td>""",
+                    """<td class="value">${(en.get(key) as JsonPrimitive?)?.asString ?: "-"}</td>""",
+                    """<td class="value">${(ja.get(key) as JsonPrimitive?)?.asString ?: "-"}</td>""",
+                    """</tr>""",
+                ).joinToString("\n") { it }
+            }
+            val html = file("src/langTable/html/lang_table.html").readText().replace("<%= trs %>", trs)
+            write("pages/lang_table.html", html)
+        }
         run {
             val table = keys.associateWith { key ->
                 mapOf(
