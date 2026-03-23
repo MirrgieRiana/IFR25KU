@@ -120,5 +120,5 @@ val serveSite = tasks.register<Exec>("serveSite") {
     group = "application"
     inputs.files(buildSite)
     inputs.files(syncJekyllSource) // bundle exec のために必要
-    commandLine("bash", "scripts/serve-pages.sh")
+    commandLine("bash", "scripts/serve-site.sh")
 }
