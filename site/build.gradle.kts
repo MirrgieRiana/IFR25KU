@@ -96,6 +96,6 @@ val buildPages = tasks.register<Exec>("buildPages") {
 
 val servePages = tasks.register<Exec>("servePages") {
     group = "application"
-    dependsOn(syncPages)
+    dependsOn(syncPages) // serveは内部的にbuildもするのでbuildへの依存は不要
     commandLine("bash", "scripts/serve-pages.sh")
 }
