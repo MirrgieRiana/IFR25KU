@@ -5,12 +5,12 @@ AIアシスタントが自由に編集できる、コミットされる永続的
 
 ## ビルドフロー
 
-1. `syncPages`（Gradleタスク、siteサブプロジェクト）: `site/pages/` → `site/build/pages/` にコピー。lang_table.htmlの`<%= trs %>`を展開し、lang_table.json/csvを生成
+1. `syncPages`（Gradleタスク、siteサブプロジェクト）: `site/pages/` → `site/build/pages/` にコピー。`lang_table.html` の `<%= trs %>` を展開し、`lang_table.json` / `lang_table.csv` を生成
 2. `buildPages`（Gradleタスク、siteサブプロジェクト）: `site/scripts/build-pages.sh` を実行
-3. `build-pages.sh`: `site/build/pages/` で `bundle exec jekyll build --destination _site`
+3. `build-pages.sh`: `site/build/pages/` で `bundle install` → `bundle exec jekyll build --destination _site` → `CHANGELOG.md` を `_site/` にコピー
 4. 出力先: `site/build/pages/_site/`
 
-`servePages` / `site/scripts/serve-pages.sh` でローカルプレビュー可能。
+`servePages` / `site/scripts/serve-pages.sh` でローカルプレビュー可能（`bundle exec jekyll serve`）。
 
 ## テーマオーバーライド
 
@@ -18,8 +18,27 @@ minimal-mistakesテーマのファイルは `site/build/pages/vendor/bundle/ruby
 
 オーバーライドするには、同じ相対パスで `site/pages/` 内にファイルを配置する。
 
-- `site/pages/_layouts/single.html` → `_layouts/single.html` をオーバーライド
-- `site/pages/_includes/masthead.html` → `_includes/masthead.html` をオーバーライド
+### _layouts/
+
+- `single.html` — 各コンテンツページ。ヘッダー画像3パターン対応、Grid化
+- `splash.html` — トップページ・記事一覧。ヘッダーなし時に `content-wrap` で囲む
+
+### _includes/
+
+- `masthead.html` — ドロップダウンメニュー（`children` キー対応、外部リンクアイコン付き）
+- `page__hero.html` — ヒーロー画像（背景画像・overlay_filter・actions対応）
+- `recent-posts.html` — ブログ新着カード表示（`limit` / `more` パラメータ）
+- `page-cards.html` — 指定ページをカード表示（`include.pages` でCSV指定）
+- `post_pagination.html` — 記事の前後ナビゲーション
+- `section-header.html` — フルワイドのセクションヘッダー（`title` / `subtitle` パラメータ）
+- `scripts.html` — Gumshoeスクロールスパイの無効化処理
+- `footer.html` — テーマデフォルト（social-icons、RSS、Sitemap）
+- `footer/custom.html` — GitHubソースリンク、生ファイルリンク、ページURL表示
+- `head/custom.html` — Favicon設定（webp形式）
+
+### _sass/
+
+- `minimal-mistakes/skins/_catppuccin-mocha.scss` — カスタムスキン（未使用）
 
 **注意**: `_sass/` のパーシャルはこの方法ではオーバーライドできない。Sassの `@import` はインポート元ファイルのディレクトリを最初に検索するため、テーマのパーシャルが常に優先される。CSSのカスタマイズは `site/pages/assets/css/main.scss` の `@import "minimal-mistakes"` の後に記述する。
 
@@ -34,7 +53,7 @@ minimal-mistakesテーマのファイルは `site/build/pages/vendor/bundle/ruby
 - `.sidebar__right`: `grid-column: 2; grid-row: 1 / span 999; align-self: start;` で右カラムに配置。`position: sticky` でスクロール追従。
 - `.page__related`, `.archive`, `.breadcrumbs ol`, `.page__comments`: floatを解除済み。
 
-テーマの `.greedy-nav a { display: block; margin: 0 1rem; }` はナビリンク用だがバナーにも適用される。`main.scss` で `.greedy-nav a` をrevertし、`.greedy-nav .visible-links a, .greedy-nav .hidden-links a` にのみ再適用。バナーは `a.site-title` で特定性を揃えて `display: flex` を適用。
+テーマの `.greedy-nav a { display: block; margin: 0 1rem; }` はナビリンク用だがバナーにも適用される。`main.scss` で `.greedy-nav a` を `display: revert; margin: revert;` でリセットし、`.greedy-nav .visible-links a, .greedy-nav .hidden-links a` にのみ再適用。バナーは `a.site-title` で特定性を揃えて `display: flex` を適用。
 
 ## ページレイアウト
 
@@ -45,8 +64,8 @@ minimal-mistakesテーマのファイルは `site/build/pages/vendor/bundle/ruby
 **パターン1: ヘッダー画像なし**
 
 ```
-page__inner-wrap > header > h1.page__title
-                           > page__meta
+page__inner-wrap > header.page__header--plain > h1.page__title
+                                                > page__meta
                  > section.page__content
 ```
 
@@ -83,15 +102,41 @@ page__inner-wrap > section.page__content（headerなし）
 
 ## CSS構造
 
-`site/pages/assets/css/main.scss` にテーマの変数定義とカスタムスタイルを記述。
+`site/pages/assets/css/main.scss` にテーマの変数定義とカスタムスタイルを記述（約620行）。
+
+### カラーパレット
+
+```scss
+$sans-serif: sans-serif;
+
+$background-color: #faf5ff;           // 淡紫
+$text-color: #2d1f3d;                 // 濃紫
+$muted-text-color: #8a72a8;           // くすみ紫
+$primary-color: #c840e0;              // マゼンタ
+$border-color: #dcc0f0;               // 薄紫ボーダー
+$code-background-color: #f0e4fa;      // ライトバイオレット
+$code-background-color-dark: #dcc0f0; // ダークバイオレット
+$form-background-color: #f0e4fa;      // フォーム背景
+$footer-background-color: #e4d0f4;    // パステルバイオレット
+$link-color: #FF2DAB;                 // ホットピンク
+$link-color-hover: #8a20a0;           // ダークパープル
+$link-color-visited: #CB62A1;         // ピンクパープル
+$masthead-link-color: #2d1f3d;        // mastheadリンク
+$masthead-link-color-hover: #a83dba;  // mastheadリンクホバー
+$navicon-link-color-hover: #a83dba;   // ナビアイコンホバー
+```
 
 ### 主要なカスタムスタイル
 
 - `.masthead { border-bottom: 4px solid #FF2DAB; background: #000; }` — mastheadの装飾
 - `.greedy-nav { background: transparent; }` — mastheadの背景を透過
-- `body::before` — background.webpをぼかして全面背景に
+- `body::before` — `background.webp` を `blur(24px)` で全面背景に
+- `.initial-content { background: rgba(255, 255, 255, 0.80); }` — 半透明白の本文背景
 - `.page__hero--overlay` — min-height: 600px、flex-end配置
 - `.page__header--plain { margin-bottom: 1em; }` — ヘッダー画像なし時のh1下マージン
+- `.recent-posts__grid` — `repeat(auto-fill, minmax(250px, 1fr))` のカードグリッド
+- `.section-header` — フルワイド黒背景、上下 `4px #FF2DAB` ボーダー
+- `html { font-size: 14px; }` — テーマのデフォルトから縮小
 
 ### テーマのデフォルトで注意すべき点
 
@@ -110,29 +155,71 @@ page__inner-wrap > section.page__content（headerなし）
 
 ```yaml
 main:
-  - title: ダウンロード
+  - title: DOWNLOADS
     children:
       - title: Modrinth
         url: https://modrinth.com/mod/ifr25ku
+      - title: CurseForge
+        url: https://www.curseforge.com/minecraft/mc-mods/ifr25ku
+  - title: ARTICLES
+    children:
+      - title: 記事一覧
+        url: /posts.html
+  - title: INFO
+    children:
+      - title: CHANGELOG
+        url: /CHANGELOG.html
+      - title: GitHub
+        url: https://github.com/MirrgieRiana/IFR25KU
+      - title: Lang Table
+        url: /lang-table-index.html
+      - title: IFRKU Official Web Site (Old)
+        url: https://kakera-unofficial.notion.site/ifrku
 ```
 
 ドロップダウンCSS: `.masthead__menu-item--dropdown` でホバー時に `.masthead__dropdown` を表示。
 
 ### サイドバー
 
-`sidebar` キーで定義。テーマの `nav_list` includeがchildrenに対応済み。
+```yaml
+sidebar:
+  - title: ページ一覧
+    children:
+      - title: Home
+        url: /
+      - title: CHANGELOG
+        url: /CHANGELOG.html
+      - title: Lang Table
+        url: /lang_table.html
+      - title: Lang Table (JSON)
+        url: /lang_table.json
+      - title: Lang Table (CSV)
+        url: /lang_table.csv
+```
+
+テーマの `nav_list` includeがchildrenに対応済み。
 
 ## Jekyllの挙動
 
 ### front matterとファイル変換
 
 - front matter（`---`で囲まれたブロック）を持つファイルはJekyllに「処理対象」として扱われる
-- `.md` ファイルは front matter があるとHTMLに変換される（元の.mdは_siteに残らない）
+- `.md` ファイルはfront matterがあるとHTMLに変換される（元の.mdは_siteに残らない）
 - front matterがないファイルは静的ファイルとしてそのままコピーされる
 
-### _config.yml defaults
+### _config.yml
 
 ```yaml
+locale: "ja-JP"
+title: IFR25KU
+url: https://mirrgieriana.github.io
+baseurl: /IFR25KU
+theme: minimal-mistakes-jekyll
+minimal_mistakes_skin: default
+
+plugins:
+  - jekyll-include-cache
+
 defaults:
   - scope:
       path: ""
@@ -148,9 +235,9 @@ defaults:
 
 ## テーマのJS
 
-`site/pages/_includes/scripts.html` でオーバーライド済み。テーマの `main.min.js` 読み込み後に、`scrollTocToContent`（Gumshoeのスクロールスパイによるスクロール妨害）を `gumshoeActivate` イベントのキャプチャフェーズで `stopImmediatePropagation()` して無効化。
+`site/pages/_includes/scripts.html` でオーバーライド済み。テーマの `main.min.js` 読み込み後に、`gumshoeActivate` イベントのキャプチャフェーズで `stopImmediatePropagation()` して無効化。これにより、GumshoeのスクロールスパイがアクティブなTOC項目へ自動スクロールする挙動（`scrollTocToContent`）を抑制。
 
-## 画像変換
+## 画像
 
 ### convert-image.sh
 
@@ -170,8 +257,20 @@ ImageMagickの `convert` を使用（-quality 80）。
 
 ### 画像配置
 
-- バナー: `site/pages/assets/images/banner.webp`
-- ブログ記事画像: `site/pages/assets/images/posts/<記事名>/` 以下
+```
+assets/images/
+├── background.webp                    — 全面背景（blur処理）
+├── ifr25ku_banner-black-gothic.webp   — ロゴバナー
+├── miragefairy_face_256.webp          — Favicon
+├── index/
+│   └── banner1.webp                   — トップページヒーロー
+├── changelog/
+│   └── changelog-header.svg           — CHANGELOGページヘッダー
+├── lang-table-index/
+│   └── lang-table-header.svg          — Lang Tableページヘッダー
+└── posts/
+    └── YYYY-MM-DD-slug/               — 各記事の画像
+```
 
 ## ブログ記事
 
@@ -184,8 +283,7 @@ front matter例:
 title: 記事タイトル
 layout: single
 header:
-  image: /assets/images/posts/2026-03-21-hello-world/2025-11-04_20.09.58.webp
-  teaser: /assets/images/posts/2026-03-21-hello-world/2025-11-04_20.09.58.webp
+  teaser: /assets/images/posts/YYYY-MM-DD-slug/image.webp
 tags: [お知らせ]
 ---
 ```
@@ -199,10 +297,10 @@ tags: [お知らせ]
 ## CHANGELOG
 
 - `site/pages/CHANGELOG.md`: front matterあり → JekyllがHTMLに変換 → `CHANGELOG.html` として出力
-- `site/scripts/build-pages.sh` でJekyllビルド後に `CHANGELOG.md` を `_site/` にコピーしてmd版も配信
+- `build-pages.sh` でJekyllビルド後に `CHANGELOG.md` を `_site/` にコピーしてmd版も配信
 - CHANGELOG.html冒頭に「Markdown版はこちら」リンクあり
 
 ## Lang Table
 
-- `site/pages/lang_table.html`: スタンドアロンHTML（テーマレイアウトなし）。`<%= trs %>` はGradleの `syncPages` タスクで展開
-- `site/pages/lang-table.md`: テーマレイアウトを使った特設ページ。各形式（HTML/JSON/CSV）へのリンクを配置
+- `site/pages/lang_table.html`: スタンドアロンHTML（テーマレイアウトなし）。`<%= trs %>` はGradleの `syncPages` タスクで展開。JavaScript検索機能付き
+- `site/pages/lang-table-index.md`: テーマレイアウトを使った特設ページ。各形式（HTML/JSON/CSV）へのリンクを配置
