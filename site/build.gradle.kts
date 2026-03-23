@@ -22,6 +22,13 @@ tasks.register<Sync>("syncPages") {
         include(".bundle/**")
     }
 
+    fun write(path: String, content: String) {
+        val outFile = layout.buildDirectory.file(path).get().asFile
+        outFile.parentFile.mkdirs()
+        outFile.writeText(content)
+        println("Wrote to ${outFile.absolutePath}")
+    }
+
     from("src/langTable/html") {
         include("**/*")
 
@@ -43,12 +50,6 @@ tasks.register<Sync>("syncPages") {
     }
 
     doLast {
-        fun write(path: String, content: String) {
-            val outFile = layout.buildDirectory.file(path).get().asFile
-            outFile.parentFile.mkdirs()
-            outFile.writeText(content)
-            println("Wrote to ${outFile.absolutePath}")
-        }
         run {
             val table = keys.associateWith { key ->
                 mapOf(
