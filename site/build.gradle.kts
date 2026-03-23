@@ -76,10 +76,7 @@ val makeLangTable = tasks.register("makeLangTable") {
 val syncPages = tasks.register<Sync>("syncPages") {
     group = "pages"
 
-    from("pages") {
-        include("**/*")
-    }
-
+    from("pages")
     from(makeLangTable)
 
     into(layout.buildDirectory.dir("pages"))
