@@ -5,18 +5,32 @@ AIアシスタントが自由に編集できる、コミットされる永続的
 
 ## ビルドフロー
 
-1. `syncPages`（Gradleタスク、siteサブプロジェクト）: `site/pages/` → `site/build/pages/` にコピー。`lang_table.html` の `<%= trs %>` を展開し、`lang_table.json` / `lang_table.csv` を生成
-2. `buildPages`（Gradleタスク、siteサブプロジェクト）: `site/scripts/build-pages.sh` を実行
-3. `build-pages.sh`: `site/build/pages/` で `bundle install` → `bundle exec jekyll build --destination _site` → `CHANGELOG.md` を `_site/` にコピー
-4. 出力先: `site/build/pages/_site/`
+1. `makeLangTable`（group: generate）: 言語JSONとHTMLテンプレートからlang_table.html/json/csvを `site/build/langTable/` に生成。`inputs`/`outputs` 宣言によりUP-TO-DATE判定あり
+2. `installJekyllBundle`（Exec、group: other）: `site/scripts/bundle-install.sh` を実行。`inputs`（`src/main/bundle/Gemfile`, `Gemfile.lock`）/`outputs`（`src/main/bundle/vendor`, `.bundle`）宣言によりUP-TO-DATE判定あり
+3. `bundle-install.sh`: `site/src/main/bundle/` で `bundle config set --local path vendor/bundle` → `bundle install`
+4. `syncJekyllSource`（Sync、group: other）: `site/src/main/resources/` と `site/src/main/bundle/` を `site/build/jekyllSource/` に同期。`installJekyllBundle` に依存
+5. `jekyllBuild`（Exec、group: build）: `site/scripts/build-site.sh` を実行。`inputs.files(syncJekyllSource)` / `outputs.dir(jekyllBuild/)` 宣言あり
+6. `build-site.sh`: `site/build/jekyllSource/` で `bundle exec jekyll build --destination ../jekyllBuild`
+7. `buildSite`（Sync、group: build）: `jekyllBuild` の出力と `makeLangTable` の出力と `src/main/resources/` 内の `.md` ファイルを `site/build/site/` に統合
+8. CI出力先: `site/build/site/`（`pages.yml` で `buildSite` タスクを実行し、そこからデプロイ）
 
-`servePages` / `site/scripts/serve-pages.sh` でローカルプレビュー可能（`bundle exec jekyll serve`）。
+`serveSite`（group: application） / `site/scripts/serve-site.sh` でローカルプレビュー可能（`bundle exec jekyll serve --skip-initial-build --no-watch --destination ../site`）。`serveSite` は `buildSite` と `syncJekyllSource` に依存（`inputs.files` による）。
+
+### CSSの手動コンパイル
+
+Gradleを経由せずにSCSSの変更を素早く確認する方法:
+
+```bash
+cp site/src/main/resources/assets/css/main.scss site/build/jekyllSource/assets/css/main.scss && (cd site/build/jekyllSource && bundle exec jekyll build --destination ../jekyllBuild)
+```
+
+WSL2の `/mnt/` ドライブでは `inotify` が動作しないため、`jekyll serve` の自動リビルドは使えない。
 
 ## テーマオーバーライド
 
-minimal-mistakesテーマのファイルは `site/build/pages/vendor/bundle/ruby/3.3.0/gems/minimal-mistakes-jekyll-4.28.0/` にある。
+minimal-mistakesテーマのファイルは `site/src/main/bundle/vendor/bundle/ruby/3.3.0/gems/minimal-mistakes-jekyll-4.28.0/` にある。
 
-オーバーライドするには、同じ相対パスで `site/pages/` 内にファイルを配置する。
+オーバーライドするには、同じ相対パスで `site/src/main/resources/` 内にファイルを配置する。
 
 ### _layouts/
 
@@ -40,7 +54,7 @@ minimal-mistakesテーマのファイルは `site/build/pages/vendor/bundle/ruby
 
 - `minimal-mistakes/skins/_catppuccin-mocha.scss` — カスタムスキン（未使用）
 
-**注意**: `_sass/` のパーシャルはこの方法ではオーバーライドできない。Sassの `@import` はインポート元ファイルのディレクトリを最初に検索するため、テーマのパーシャルが常に優先される。CSSのカスタマイズは `site/pages/assets/css/main.scss` の `@import "minimal-mistakes"` の後に記述する。
+**注意**: `_sass/` のパーシャルはこの方法ではオーバーライドできない。Sassの `@import` はインポート元ファイルのディレクトリを最初に検索するため、テーマのパーシャルが常に優先される。CSSのカスタマイズは `site/src/main/resources/assets/css/main.scss` の `@import "minimal-mistakes"` の後に記述する。
 
 ## ペインレイアウト
 
@@ -98,11 +112,11 @@ page__inner-wrap > section.page__content（headerなし）
 ### splashレイアウト（トップページ・記事一覧）
 
 `index.md` で使用。`page__hero--overlay` でヒーロー画像を表示し、feature_rowやrecent-postsを配置。
-ヘッダー画像がない場合は通常のh1を `<div class="content-wrap">` で囲んで表示（`site/pages/_layouts/splash.html` でオーバーライド済み）。
+ヘッダー画像がない場合は通常のh1を `<div class="content-wrap">` で囲んで表示（`site/src/main/resources/_layouts/splash.html` でオーバーライド済み）。
 
 ## CSS構造
 
-`site/pages/assets/css/main.scss` にテーマの変数定義とカスタムスタイルを記述（約620行）。
+`site/src/main/resources/assets/css/main.scss` にテーマの変数定義とカスタムスタイルを記述（約640行）。
 
 ### カラーパレット
 
@@ -128,14 +142,21 @@ $navicon-link-color-hover: #a83dba;   // ナビアイコンホバー
 
 ### 主要なカスタムスタイル
 
-- `.masthead { border-bottom: 4px solid #FF2DAB; background: #000; }` — mastheadの装飾
+- `.masthead { border-bottom: 4px solid #FF2DAB; box-shadow; background: #000; }` — mastheadの装飾
 - `.greedy-nav { background: transparent; }` — mastheadの背景を透過
+- `.greedy-nav .visible-links { overflow: clip visible; }` — ドロップダウン表示のためoverflowを解除
+- `.site-title__face { width: 3em; height: 3em; }` — 正方形、greedy-nav幅計測対策
+- `.site-title__logo { width: 7.8em; }` — 109×35px画像の比率に基づく明示幅、greedy-nav幅計測対策
 - `body::before` — `background.webp` を `blur(24px)` で全面背景に
 - `.initial-content { background: rgba(255, 255, 255, 0.80); }` — 半透明白の本文背景
 - `.page__hero--overlay` — min-height: 600px、flex-end配置
 - `.page__header--plain { margin-bottom: 1em; }` — ヘッダー画像なし時のh1下マージン
 - `.recent-posts__grid` — `repeat(auto-fill, minmax(250px, 1fr))` のカードグリッド
-- `.section-header` — フルワイド黒背景、上下 `4px #FF2DAB` ボーダー
+- `.section-header` — フルワイド黒背景、上下 `4px #FF2DAB` ボーダー、box-shadow
+- `.section-separator` — フルワイド黒背景、上下 `4px #FF2DAB` ボーダー、box-shadow
+- `.page__footer` — 黒背景、上 `4px #FF2DAB` ボーダー、box-shadow
+- `.hidden-links .masthead__menu-item--dropdown { border: none; }` — ハンバーガーメニュー内のドロップダウン区切り線を除去
+- `.hidden-links .masthead__dropdown li { border-bottom: none; }` — ハンバーガーメニュー内の子項目間ボーダーを除去
 - `html { font-size: 14px; }` — テーマのデフォルトから縮小
 
 ### テーマのデフォルトで注意すべき点
@@ -146,12 +167,12 @@ $navicon-link-color-hover: #a83dba;   // ナビアイコンホバー
 
 ## ナビゲーション
 
-`site/pages/_data/navigation.yml` で定義。
+`site/src/main/resources/_data/navigation.yml` で定義。
 
 ### mastheadメニュー
 
 テーマのデフォルトmastheadはドロップダウン非対応（フラットなliリスト）。
-`site/pages/_includes/masthead.html` でオーバーライドし、`children` キーに対応。
+`site/src/main/resources/_includes/masthead.html` でオーバーライドし、`children` キーに対応。
 
 ```yaml
 main:
@@ -204,7 +225,7 @@ sidebar:
 ### front matterとファイル変換
 
 - front matter（`---`で囲まれたブロック）を持つファイルはJekyllに「処理対象」として扱われる
-- `.md` ファイルはfront matterがあるとHTMLに変換される（元の.mdは_siteに残らない）
+- `.md` ファイルはfront matterがあるとHTMLに変換される（元の.mdはJekyll出力に残らない）
 - front matterがないファイルは静的ファイルとしてそのままコピーされる
 
 ### _config.yml
@@ -235,7 +256,11 @@ defaults:
 
 ## テーマのJS
 
-`site/pages/_includes/scripts.html` でオーバーライド済み。テーマの `main.min.js` 読み込み後に、`gumshoeActivate` イベントのキャプチャフェーズで `stopImmediatePropagation()` して無効化。これにより、GumshoeのスクロールスパイがアクティブなTOC項目へ自動スクロールする挙動（`scrollTocToContent`）を抑制。
+`site/src/main/resources/_includes/scripts.html` でオーバーライド済み。テーマの `main.min.js` 読み込み後に、`gumshoeActivate` イベントのキャプチャフェーズで `stopImmediatePropagation()` して無効化。これにより、GumshoeのスクロールスパイがアクティブなTOC項目へ自動スクロールする挙動（`scrollTocToContent`）を抑制。
+
+### greedy-navの幅計測
+
+greedy-navは `overflow` ではなく `outerWidth()` の明示的な幅比較でアイテム移動を判定する。テーマは `.site-logo img` のロード完了を待ってから `check()` を実行するが、このプロジェクトでは `.site-logo` を使わず `.site-title` 内に画像を2枚配置しているため、画像ロード待ちが効かない。対策として `.site-title__face` と `.site-title__logo` にCSS明示幅を設定し、画像ロード前でもレイアウトが確定するようにしている。
 
 ## 画像
 
@@ -274,7 +299,7 @@ assets/images/
 
 ## ブログ記事
 
-`site/pages/_posts/YYYY-MM-DD-slug.md` に配置。
+`site/src/main/resources/_posts/YYYY-MM-DD-slug.md` に配置。
 
 front matter例:
 
@@ -296,11 +321,11 @@ tags: [お知らせ]
 
 ## CHANGELOG
 
-- `site/pages/CHANGELOG.md`: front matterあり → JekyllがHTMLに変換 → `CHANGELOG.html` として出力
-- `build-pages.sh` でJekyllビルド後に `CHANGELOG.md` を `_site/` にコピーしてmd版も配信
+- `site/src/main/resources/CHANGELOG.md`: front matterあり → JekyllがHTMLに変換 → `CHANGELOG.html` として出力
+- `buildSite` タスクで `src/main/resources/` 内の `.md` ファイルを `site/build/site/` にコピーしてmd版も配信
 - CHANGELOG.html冒頭に「Markdown版はこちら」リンクあり
 
 ## Lang Table
 
-- `site/pages/lang_table.html`: スタンドアロンHTML（テーマレイアウトなし）。`<%= trs %>` はGradleの `syncPages` タスクで展開。JavaScript検索機能付き
-- `site/pages/lang-table-index.md`: テーマレイアウトを使った特設ページ。各形式（HTML/JSON/CSV）へのリンクを配置
+- `site/src/langTable/html/lang_table.html`: テンプレートHTML（テーマレイアウトなし）。`<%= trs %>` はGradleの `makeLangTable` タスクで展開。JavaScript検索機能付き。出力先は `site/build/langTable/`
+- `site/src/main/resources/lang-table-index.md`: テーマレイアウトを使った特設ページ。各形式（HTML/JSON/CSV）へのリンクを配置
