@@ -35,12 +35,12 @@ jobs:
 
       # ビルド
       - name: ビルド
-        run: ./gradlew buildPages
+        run: ./gradlew :site:buildPages
 
       # デプロイ
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: build/pages/_site
+          path: site/build/pages/_site
       - name: デプロイ
         id: deployment
         uses: actions/deploy-pages@v4

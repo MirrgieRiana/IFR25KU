@@ -3,7 +3,7 @@
 # 画像をwebp形式に変換し、build/ 以下に出力する。
 #
 # 使い方:
-#   scripts/convert-image.sh <input-file> [slug]
+#   site/scripts/convert-image.sh <input-file> [slug]
 #
 # 引数:
 #   input-file  変換元の画像ファイルパス
@@ -17,10 +17,10 @@
 #   ImageMagick (convert)
 #
 # 例:
-#   scripts/convert-image.sh /path/to/image.png banner
+#   site/scripts/convert-image.sh /path/to/image.png banner
 #   -> build/banner.webp
 #
-#   scripts/convert-image.sh /path/to/2026-03-22_15.11.57.png
+#   site/scripts/convert-image.sh /path/to/2026-03-22_15.11.57.png
 #   -> build/2026-03-22_15.11.57.webp
 
 set -euo pipefail

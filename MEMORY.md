@@ -5,23 +5,23 @@ AIアシスタントが自由に編集できる、コミットされる永続的
 
 ## ビルドフロー
 
-1. `syncPages`（Gradleタスク）: `pages/` → `build/pages/` にコピー。lang_table.htmlの`<%= trs %>`を展開し、lang_table.json/csvを生成
-2. `buildPages`（Gradleタスク）: `scripts/buildPages.sh` を実行
-3. `buildPages.sh`: `build/pages/` で `bundle exec jekyll build --destination _site`
-4. 出力先: `build/pages/_site/`
+1. `syncPages`（Gradleタスク、siteサブプロジェクト）: `site/pages/` → `site/build/pages/` にコピー。lang_table.htmlの`<%= trs %>`を展開し、lang_table.json/csvを生成
+2. `buildPages`（Gradleタスク、siteサブプロジェクト）: `site/scripts/buildPages.sh` を実行
+3. `buildPages.sh`: `site/build/pages/` で `bundle exec jekyll build --destination _site`
+4. 出力先: `site/build/pages/_site/`
 
-`servePages` / `scripts/servePages.sh` でローカルプレビュー可能。
+`servePages` / `site/scripts/servePages.sh` でローカルプレビュー可能。
 
 ## テーマオーバーライド
 
-minimal-mistakesテーマのファイルは `build/pages/vendor/bundle/ruby/3.3.0/gems/minimal-mistakes-jekyll-4.28.0/` にある。
+minimal-mistakesテーマのファイルは `site/build/pages/vendor/bundle/ruby/3.3.0/gems/minimal-mistakes-jekyll-4.28.0/` にある。
 
-オーバーライドするには、同じ相対パスで `pages/` 内にファイルを配置する。
+オーバーライドするには、同じ相対パスで `site/pages/` 内にファイルを配置する。
 
-- `pages/_layouts/single.html` → `_layouts/single.html` をオーバーライド
-- `pages/_includes/masthead.html` → `_includes/masthead.html` をオーバーライド
+- `site/pages/_layouts/single.html` → `_layouts/single.html` をオーバーライド
+- `site/pages/_includes/masthead.html` → `_includes/masthead.html` をオーバーライド
 
-**注意**: `_sass/` のパーシャルはこの方法ではオーバーライドできない。Sassの `@import` はインポート元ファイルのディレクトリを最初に検索するため、テーマのパーシャルが常に優先される。CSSのカスタマイズは `pages/assets/css/main.scss` の `@import "minimal-mistakes"` の後に記述する。
+**注意**: `_sass/` のパーシャルはこの方法ではオーバーライドできない。Sassの `@import` はインポート元ファイルのディレクトリを最初に検索するため、テーマのパーシャルが常に優先される。CSSのカスタマイズは `site/pages/assets/css/main.scss` の `@import "minimal-mistakes"` の後に記述する。
 
 ## ペインレイアウト
 
@@ -79,11 +79,11 @@ page__inner-wrap > section.page__content（headerなし）
 ### splashレイアウト（トップページ・記事一覧）
 
 `index.md` で使用。`page__hero--overlay` でヒーロー画像を表示し、feature_rowやrecent-postsを配置。
-ヘッダー画像がない場合は通常のh1を `<div class="content-wrap">` で囲んで表示（`pages/_layouts/splash.html` でオーバーライド済み）。
+ヘッダー画像がない場合は通常のh1を `<div class="content-wrap">` で囲んで表示（`site/pages/_layouts/splash.html` でオーバーライド済み）。
 
 ## CSS構造
 
-`pages/assets/css/main.scss` にテーマの変数定義とカスタムスタイルを記述。
+`site/pages/assets/css/main.scss` にテーマの変数定義とカスタムスタイルを記述。
 
 ### 主要なカスタムスタイル
 
@@ -101,12 +101,12 @@ page__inner-wrap > section.page__content（headerなし）
 
 ## ナビゲーション
 
-`pages/_data/navigation.yml` で定義。
+`site/pages/_data/navigation.yml` で定義。
 
 ### mastheadメニュー
 
 テーマのデフォルトmastheadはドロップダウン非対応（フラットなliリスト）。
-`pages/_includes/masthead.html` でオーバーライドし、`children` キーに対応。
+`site/pages/_includes/masthead.html` でオーバーライドし、`children` キーに対応。
 
 ```yaml
 main:
@@ -148,13 +148,13 @@ defaults:
 
 ## テーマのJS
 
-`pages/_includes/scripts.html` でオーバーライド済み。テーマの `main.min.js` 読み込み後に、`scrollTocToContent`（Gumshoeのスクロールスパイによるスクロール妨害）を `gumshoeActivate` イベントのキャプチャフェーズで `stopImmediatePropagation()` して無効化。
+`site/pages/_includes/scripts.html` でオーバーライド済み。テーマの `main.min.js` 読み込み後に、`scrollTocToContent`（Gumshoeのスクロールスパイによるスクロール妨害）を `gumshoeActivate` イベントのキャプチャフェーズで `stopImmediatePropagation()` して無効化。
 
 ## 画像変換
 
 ### convert-image.sh
 
-`scripts/convert-image.sh <入力ファイル> [slug]` で `build/<slug>.webp` に変換。
+`site/scripts/convert-image.sh <入力ファイル> [slug]` で `build/<slug>.webp` に変換。
 slug省略時は入力ファイルの拡張子を除いた名前を使用。
 ImageMagickの `convert` を使用（-quality 80）。
 
@@ -170,12 +170,12 @@ ImageMagickの `convert` を使用（-quality 80）。
 
 ### 画像配置
 
-- バナー: `pages/assets/images/banner.webp`
-- ブログ記事画像: `pages/assets/images/posts/<記事名>/` 以下
+- バナー: `site/pages/assets/images/banner.webp`
+- ブログ記事画像: `site/pages/assets/images/posts/<記事名>/` 以下
 
 ## ブログ記事
 
-`pages/_posts/YYYY-MM-DD-slug.md` に配置。
+`site/pages/_posts/YYYY-MM-DD-slug.md` に配置。
 
 front matter例:
 
@@ -198,11 +198,11 @@ tags: [お知らせ]
 
 ## CHANGELOG
 
-- `pages/CHANGELOG.md`: front matterあり → JekyllがHTMLに変換 → `CHANGELOG.html` として出力
-- `scripts/buildPages.sh` でJekyllビルド後に `CHANGELOG.md` を `_site/` にコピーしてmd版も配信
+- `site/pages/CHANGELOG.md`: front matterあり → JekyllがHTMLに変換 → `CHANGELOG.html` として出力
+- `site/scripts/buildPages.sh` でJekyllビルド後に `CHANGELOG.md` を `_site/` にコピーしてmd版も配信
 - CHANGELOG.html冒頭に「Markdown版はこちら」リンクあり
 
 ## Lang Table
 
-- `pages/lang_table.html`: スタンドアロンHTML（テーマレイアウトなし）。`<%= trs %>` はGradleの `syncPages` タスクで展開
-- `pages/lang-table.md`: テーマレイアウトを使った特設ページ。各形式（HTML/JSON/CSV）へのリンクを配置
+- `site/pages/lang_table.html`: スタンドアロンHTML（テーマレイアウトなし）。`<%= trs %>` はGradleの `syncPages` タスクで展開
+- `site/pages/lang-table.md`: テーマレイアウトを使った特設ページ。各形式（HTML/JSON/CSV）へのリンクを配置
