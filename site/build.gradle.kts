@@ -2,26 +2,9 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 
-tasks.register<Sync>("syncPages") {
+val makeLangTable = tasks.register("makeLangTable") {
     group = "pages"
-
-    from("pages") {
-        include("**/*")
-    }
-
-    from(tasks.named("makeLangTable"))
-
-    into(layout.buildDirectory.dir("pages"))
-
-    // bundle installで生成されるファイルをSyncの削除対象から除外する
-    preserve {
-        include("vendor/**")
-        include(".bundle/**")
-    }
-}
-
-tasks.register("makeLangTable") {
-    group = "pages"
+    //dependsOn(project("fabric").tasks.named("runDatagen")) // CI上でrunDatagenが実行済みであることを強制しているので実行しないことにする
 
     outputs.dir(layout.buildDirectory.dir("langTable"))
 
@@ -32,7 +15,6 @@ tasks.register("makeLangTable") {
         println("Wrote to ${outFile.absolutePath}")
     }
 
-    //dependsOn(project("fabric").tasks.named("runDatagen")) // CI上でrunDatagenが実行済みであることを強制しているので実行しないことにする
 
     doLast {
         val en by lazy { GsonBuilder().create().fromJson(rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json").readText(), JsonElement::class.java).asJsonObject }
@@ -87,14 +69,32 @@ tasks.register("makeLangTable") {
     }
 }
 
-tasks.register<Exec>("buildPages") {
+val syncPages = tasks.register<Sync>("syncPages") {
     group = "pages"
-    dependsOn("syncPages")
+
+    from("pages") {
+        include("**/*")
+    }
+
+    from(makeLangTable)
+
+    into(layout.buildDirectory.dir("pages"))
+
+    // bundle installで生成されるファイルをSyncの削除対象から除外する
+    preserve {
+        include("vendor/**")
+        include(".bundle/**")
+    }
+}
+
+val buildPages = tasks.register<Exec>("buildPages") {
+    group = "pages"
+    dependsOn(syncPages)
     commandLine("bash", "scripts/build-pages.sh")
 }
 
-tasks.register<Exec>("servePages") {
+val servePages = tasks.register<Exec>("servePages") {
     group = "pages"
-    dependsOn("syncPages")
+    dependsOn(syncPages)
     commandLine("bash", "scripts/serve-pages.sh")
 }
