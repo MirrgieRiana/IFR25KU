@@ -86,28 +86,37 @@ repositories {
     }
 }
 
-loom {
-    runs {
-        // これにより、datagen API を実行する新しい gradle タスク "gradlew runDatagen" が追加されます。
-        register("datagen") {
-            inherit(runs["server"])
-            name("Data Generation")
-            vmArg("-Dfabric-api.datagen")
-            vmArg("-Dfabric-api.datagen.output-dir=${rootProject.file("common/src/generated/resources")}")
-            vmArg("-Dfabric-api.datagen.modid=miragefairy2024")
-            vmArg("-Dmiragefairy2024.datagen.platform=common")
+run {
+    loom {
+        runs {
+            // これにより、datagen API を実行する新しい gradle タスク "gradlew runDatagen" が追加されます。
+            register("datagen") {
+                inherit(runs["server"])
+                name("Data Generation")
+                vmArg("-Dfabric-api.datagen")
+                vmArg("-Dfabric-api.datagen.output-dir=${rootProject.file("common/src/generated/resources")}")
+                vmArg("-Dfabric-api.datagen.modid=miragefairy2024")
+                vmArg("-Dmiragefairy2024.datagen.platform=common")
 
-            runDir("build/datagen")
+                runDir("build/datagen")
+            }
         }
-        register("datagenNeoForge") {
-            inherit(runs["server"])
-            name("NeoForge Data Generation")
-            vmArg("-Dfabric-api.datagen")
-            vmArg("-Dfabric-api.datagen.output-dir=${rootProject.file("neoforge/src/generated/resources")}")
-            vmArg("-Dfabric-api.datagen.modid=miragefairy2024")
-            vmArg("-Dmiragefairy2024.datagen.platform=neoforge")
+    }
+}
+run {
+    loom {
+        runs {
+            // これにより、datagen API を実行する新しい gradle タスク "runDatagenNeoForge" が追加されます。
+            register("datagenNeoForge") {
+                inherit(runs["server"])
+                name("NeoForge Data Generation")
+                vmArg("-Dfabric-api.datagen")
+                vmArg("-Dfabric-api.datagen.output-dir=${rootProject.file("neoforge/src/generated/resources")}")
+                vmArg("-Dfabric-api.datagen.modid=miragefairy2024")
+                vmArg("-Dmiragefairy2024.datagen.platform=neoforge")
 
-            runDir("build/datagen")
+                runDir("build/datagen")
+            }
         }
     }
 }
