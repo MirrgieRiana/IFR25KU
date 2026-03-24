@@ -661,3 +661,79 @@ body {
   width: 100%;
   margin-bottom: 1.5em;
 }
+
+// ヒーローカルーセル
+.hero-carousel {
+  position: relative;
+  margin-top: -2em;
+}
+
+.hero-carousel__viewport {
+  overflow: hidden;
+}
+
+.hero-carousel__container {
+  display: flex;
+}
+
+.hero-carousel__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+
+  .page__hero--overlay {
+    position: relative;
+    overflow: hidden;
+    margin-top: 0;
+  }
+
+  .hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-size: cover;
+    background-position: center;
+    transform-origin: 0 50%;
+  }
+
+  .hero-bg-filter {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.hero-carousel__dots {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 1em 0;
+}
+
+.hero-carousel__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+
+  &:hover {
+    border-color: #FF2DAB;
+  }
+
+  &--active {
+    background: #FF2DAB;
+    border-color: #FF2DAB;
+  }
+}

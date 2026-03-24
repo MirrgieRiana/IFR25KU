@@ -14,6 +14,90 @@ document.addEventListener("gumshoeActivate", function(e) {
 }, true);
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/embla-carousel@latest/embla-carousel.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/embla-carousel-autoplay@latest/embla-carousel-autoplay.umd.js"></script>
+<script>
+(function() {
+  var viewportNode = document.querySelector('.hero-carousel__viewport');
+  if (!viewportNode) return;
+  var dotsNode = document.querySelector('.hero-carousel__dots');
+  var embla = EmblaCarousel(viewportNode, { loop: true }, [EmblaCarouselAutoplay({ delay: 10000 })]);
+
+  // ドットナビゲーション
+  var slides = embla.scrollSnapList();
+  slides.forEach(function(_, index) {
+    var dot = document.createElement('button');
+    dot.className = 'hero-carousel__dot';
+    dot.addEventListener('click', function() { embla.scrollTo(index); });
+    dotsNode.appendChild(dot);
+  });
+  var updateDots = function() {
+    var selected = embla.selectedScrollSnap();
+    dotsNode.querySelectorAll('.hero-carousel__dot').forEach(function(dot, index) {
+      dot.classList.toggle('hero-carousel__dot--active', index === selected);
+    });
+  };
+  embla.on('select', updateDots);
+  updateDots();
+
+  // ヒーロー背景パンアニメーション
+  var bgEls = viewportNode.querySelectorAll('.hero-bg');
+  var imageSizes = [];
+  var panAnimations = [];
+  var loaded = 0;
+
+  function setupPan(index) {
+    var el = bgEls[index];
+    var container = el.parentElement;
+    var size = imageSizes[index];
+    if (!size) return;
+    var W = container.clientWidth;
+    var H = container.clientHeight;
+    var iw = size.w;
+    var ih = size.h;
+    var scale = Math.max(W / (iw * 0.9), H / ih);
+    var bgW = scale * iw;
+    var bgH = scale * ih;
+    var panX = bgW - W;
+    var offsetY = -(bgH - H) / 2;
+    el.style.width = bgW + 'px';
+    el.style.height = bgH + 'px';
+    el.style.top = offsetY + 'px';
+    el.style.left = '0';
+    var zoomStart = 1 / 0.9;
+    return el.animate([
+      { transform: 'scale(' + zoomStart + ') translateX(0)' },
+      { transform: 'scale(1) translateX(' + (-panX) + 'px)' }
+    ], { duration: 10000, easing: 'ease-in-out', fill: 'forwards' });
+  }
+
+  function startPan(index) {
+    panAnimations.forEach(function(a) { if (a) a.cancel(); });
+    panAnimations[index] = setupPan(index);
+  }
+
+  function initPan() {
+    startPan(embla.selectedScrollSnap());
+    embla.on('settle', function() {
+      startPan(embla.selectedScrollSnap());
+    });
+    new ResizeObserver(function() {
+      startPan(embla.selectedScrollSnap());
+    }).observe(viewportNode);
+  }
+
+  bgEls.forEach(function(el, i) {
+    var img = new Image();
+    img.src = el.dataset.src;
+    img.onload = function() {
+      imageSizes[i] = { w: img.naturalWidth, h: img.naturalHeight };
+      loaded++;
+      if (loaded === bgEls.length) initPan();
+    };
+  });
+})();
+</script>
+
 {% if site.search == true or page.layout == "search" %}
   {%- assign search_provider = site.search_provider | default: "lunr" -%}
   {%- case search_provider -%}
