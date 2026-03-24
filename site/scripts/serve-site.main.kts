@@ -7,13 +7,24 @@
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
+import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.io.File
 
-val siteDir = File("site/build/site")
+val extraMimeTypes = mapOf(
+    "md" to ContentType.Text.Plain.withCharset(Charsets.UTF_8),
+)
+
+fun resolveContentType(file: File): ContentType =
+    ContentType.defaultForFile(file)
+        .takeIf { it != ContentType.Application.OctetStream }
+        ?: extraMimeTypes[file.extension.lowercase()]
+        ?: ContentType.Application.OctetStream
+
+val siteDir = File("build/site")
 require(siteDir.isDirectory) { "Site directory not found: ${siteDir.canonicalPath}" }
 
 println("Serving ${siteDir.canonicalPath} at http://localhost:4000/IFR25KU/")
@@ -23,7 +34,7 @@ embeddedServer(Netty, host = "0.0.0.0", port = 4000) {
         get("/IFR25KU/") {
             val file = siteDir.resolve("index.html")
             if (file.isFile) {
-                call.respondFile(file)
+                call.respond(LocalFileContent(file, resolveContentType(file)))
             } else {
                 call.respond(HttpStatusCode.NotFound)
             }
@@ -33,7 +44,7 @@ embeddedServer(Netty, host = "0.0.0.0", port = 4000) {
             val target = if (path.isEmpty()) siteDir else siteDir.resolve(path)
             val file = if (target.isDirectory) target.resolve("index.html") else target
             if (file.isFile) {
-                call.respondFile(file)
+                call.respond(LocalFileContent(file, resolveContentType(file)))
             } else {
                 call.respond(HttpStatusCode.NotFound)
             }
