@@ -1,9 +1,10 @@
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
-import org.yaml.snakeyaml.Yaml
 import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
+import org.yaml.snakeyaml.Yaml
+import java.util.Base64.*
 
 buildscript {
     repositories {
@@ -126,26 +127,28 @@ private fun parseFrontMatter(file: File): Map<String, Any>? {
     return Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any>
 }
 
-class OgImageRenderer : AutoCloseable {
+class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
     private val playwright = Playwright.create()
     private val browser = playwright.chromium().launch()
     private val page = browser.newPage().apply { setViewportSize(1200, 630) }
 
-    fun render(title: String, backgroundImageFile: File?, outputFile: File) {
-        val backgroundCss = if (backgroundImageFile != null && backgroundImageFile.exists()) {
-            val base64 = java.util.Base64.getEncoder().encodeToString(backgroundImageFile.readBytes())
-            val mimeType = when (backgroundImageFile.extension.lowercase()) {
-                "webp" -> "image/webp"
-                "svg" -> "image/svg+xml"
-                "png" -> "image/png"
-                "jpg", "jpeg" -> "image/jpeg"
-                else -> "application/octet-stream"
-            }
-            "background: url('data:$mimeType;base64,$base64') center/cover no-repeat"
-        } else {
-            "background: #1a1a2e"
+    private fun toDataUri(file: File): String {
+        val base64 = getEncoder().encodeToString(file.readBytes())
+        val mimeType = when (file.extension.lowercase()) {
+            "webp" -> "image/webp"
+            "svg" -> "image/svg+xml"
+            "png" -> "image/png"
+            "jpg", "jpeg" -> "image/jpeg"
+            else -> "application/octet-stream"
         }
-        page.setContent("""
+        return "data:$mimeType;base64,$base64"
+    }
+
+    fun render(title: String, backgroundImageFile: File?, outputFile: File) {
+        val effectiveFile = if (backgroundImageFile != null && backgroundImageFile.exists()) backgroundImageFile else defaultBackgroundFile
+        val backgroundCss = "background: url('${toDataUri(effectiveFile)}') center/cover no-repeat"
+        page.setContent(
+            """
             <!DOCTYPE html>
             <html>
             <head><meta charset="utf-8"></head>
@@ -155,7 +158,8 @@ class OgImageRenderer : AutoCloseable {
                 </div>
             </body>
             </html>
-        """.trimIndent())
+        """.trimIndent()
+        )
         page.screenshot(Page.ScreenshotOptions().setPath(outputFile.toPath()))
     }
 
@@ -183,7 +187,8 @@ val generateOgImages = tasks.register("generateOgImages") {
         val mdFiles = resourcesDir.listFiles { f -> f.isFile && f.extension == "md" }?.toList().orEmpty() +
             (resourcesDir.resolve("_posts").listFiles { f -> f.isFile && f.extension == "md" }?.toList().orEmpty())
 
-        OgImageRenderer().use { renderer ->
+        val defaultBg = resourcesDir.resolve("assets/images/og-default-background.svg")
+        OgImageRenderer(defaultBg).use { renderer ->
             for (mdFile in mdFiles) {
                 val frontMatter = parseFrontMatter(mdFile) ?: continue
 
