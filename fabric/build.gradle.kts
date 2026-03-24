@@ -87,6 +87,7 @@ repositories {
 }
 
 run {
+    val outputDir = rootProject.file("common/src/generated/resources")
     loom {
         runs {
             // これにより、datagen API を実行する新しい gradle タスク "runDatagen" が追加されます。
@@ -94,7 +95,7 @@ run {
                 inherit(runs["server"])
                 name("Data Generation")
                 vmArg("-Dfabric-api.datagen")
-                vmArg("-Dfabric-api.datagen.output-dir=${rootProject.file("common/src/generated/resources")}")
+                vmArg("-Dfabric-api.datagen.output-dir=$outputDir")
                 vmArg("-Dfabric-api.datagen.modid=miragefairy2024")
                 vmArg("-Dmiragefairy2024.datagen.platform=common")
 
@@ -105,6 +106,7 @@ run {
     rootProject.tasks.named("datagen").configure { dependsOn(tasks.named("runDatagen")) }
 }
 run {
+    val outputDir = rootProject.file("neoforge/src/generated/resources")
     loom {
         runs {
             // これにより、datagen API を実行する新しい gradle タスク "runDatagenNeoForge" が追加されます。
@@ -112,7 +114,7 @@ run {
                 inherit(runs["server"])
                 name("NeoForge Data Generation")
                 vmArg("-Dfabric-api.datagen")
-                vmArg("-Dfabric-api.datagen.output-dir=${rootProject.file("neoforge/src/generated/resources")}")
+                vmArg("-Dfabric-api.datagen.output-dir=$outputDir")
                 vmArg("-Dfabric-api.datagen.modid=miragefairy2024")
                 vmArg("-Dmiragefairy2024.datagen.platform=neoforge")
 
