@@ -12,6 +12,8 @@ header:
       url: "https://modrinth.com/mod/ifr25ku"
     - label: "CurseForge"
       url: "https://www.curseforge.com/minecraft/mc-mods/ifr25ku"
+    - label: "Discord"
+      url: "https://discord.gg/bppQyAZtkA"
 sidebar: false
 toc: false
 ---

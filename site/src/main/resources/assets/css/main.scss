@@ -188,6 +188,11 @@ a.site-title {
   flex-direction: column;
   justify-content: flex-end;
 
+  .page__title,
+  .page__lead {
+    font-family: serif;
+  }
+
   .wrapper {
     margin-bottom: 0;
   }
@@ -261,12 +266,14 @@ body.layout--splash #main {
     font-weight: bold;
     letter-spacing: 0.2em;
     color: #ffffff;
+    font-family: serif;
   }
 
   .section-header__sub {
     font-size: 1.3em;
     color: #ffffff;
     margin-top: 0.3em;
+    font-family: serif;
   }
 }
 
@@ -305,6 +312,9 @@ body.layout--splash #main {
 
 .encyclopedia-card__image {
   flex-shrink: 0;
+  max-width: 200px;
+  aspect-ratio: 1;
+  align-self: center;
 
   @include breakpoint(700px) {
     width: 200px;
@@ -590,7 +600,7 @@ body {
 
 .recent-posts__date {
   font-size: 0.8em;
-  color: #A87192;
+  color: #888;
 }
 
 .recent-posts__excerpt {
@@ -603,6 +613,10 @@ body {
 
 .page__title {
   color: #000000;
+}
+
+.page__date {
+  color: #888;
 }
 
 // ヘッダー画像がないページのh1下マージン

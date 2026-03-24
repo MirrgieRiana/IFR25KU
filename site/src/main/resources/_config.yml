@@ -4,6 +4,11 @@ url: https://mirrgieriana.github.io
 baseurl: /IFR25KU
 theme: minimal-mistakes-jekyll
 minimal_mistakes_skin: default
+copyright:
+  - year: 2024
+    name: "The Developer of MirageFairy, Generation 7"
+  - year: 2025
+    name: "Yoruno Kakera"
 
 plugins:
   - jekyll-include-cache
