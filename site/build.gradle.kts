@@ -4,7 +4,7 @@ import com.google.gson.JsonPrimitive
 import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
 import org.yaml.snakeyaml.Yaml
-import java.util.Base64.*
+import java.util.Base64.getEncoder
 
 buildscript {
     repositories {
@@ -230,6 +230,5 @@ val buildSite = tasks.register<Sync>("buildSite") {
 val serveSite = tasks.register<Exec>("serveSite") {
     group = "application"
     inputs.files(buildSite)
-    inputs.files(syncJekyllSource) // bundle exec のために必要
     commandLine("bash", "scripts/serve-site.sh")
 }
