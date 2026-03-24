@@ -1,6 +1,19 @@
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
+import org.yaml.snakeyaml.Yaml
+import com.microsoft.playwright.Page
+import com.microsoft.playwright.Playwright
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.yaml:snakeyaml:2.2")
+        classpath("com.microsoft.playwright:playwright:1.58.0")
+    }
+}
 
 val makeLangTable = tasks.register("makeLangTable") {
     group = "generate"
@@ -106,10 +119,103 @@ val jekyllBuild = tasks.register<Exec>("jekyllBuild") {
     commandLine("bash", "scripts/build-site.sh")
 }
 
+private fun parseFrontMatter(file: File): Map<String, Any>? {
+    val content = file.readText()
+    val match = Regex("\\A---\\r?\\n(.*?)\\r?\\n---", RegexOption.DOT_MATCHES_ALL).find(content) ?: return null
+    @Suppress("UNCHECKED_CAST")
+    return Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any>
+}
+
+class OgImageRenderer : AutoCloseable {
+    private val playwright = Playwright.create()
+    private val browser = playwright.chromium().launch()
+    private val page = browser.newPage().apply { setViewportSize(1200, 630) }
+
+    fun render(title: String, backgroundImageFile: File?, outputFile: File) {
+        val backgroundCss = if (backgroundImageFile != null && backgroundImageFile.exists()) {
+            val base64 = java.util.Base64.getEncoder().encodeToString(backgroundImageFile.readBytes())
+            val mimeType = when (backgroundImageFile.extension.lowercase()) {
+                "webp" -> "image/webp"
+                "svg" -> "image/svg+xml"
+                "png" -> "image/png"
+                "jpg", "jpeg" -> "image/jpeg"
+                else -> "application/octet-stream"
+            }
+            "background: url('data:$mimeType;base64,$base64') center/cover no-repeat"
+        } else {
+            "background: #1a1a2e"
+        }
+        page.setContent("""
+            <!DOCTYPE html>
+            <html>
+            <head><meta charset="utf-8"></head>
+            <body style="margin: 0; width: 1200px; height: 630px; $backgroundCss; display: flex; align-items: flex-end;">
+                <div style="width: 100%; padding: 24px 40px; background: rgba(0, 0, 0, 0.5); color: white; font-family: 'Noto Sans CJK JP', sans-serif; font-size: 36px; line-height: 1.4; word-break: auto-phrase;">
+                    $title
+                </div>
+            </body>
+            </html>
+        """.trimIndent())
+        page.screenshot(Page.ScreenshotOptions().setPath(outputFile.toPath()))
+    }
+
+    override fun close() {
+        browser.close()
+        playwright.close()
+    }
+}
+
+val generateOgImages = tasks.register("generateOgImages") {
+    group = "generate"
+
+    val resourcesDir = file("src/main/resources")
+    val outputDir = layout.buildDirectory.dir("ogImages/assets/images/og")
+
+    inputs.dir(resourcesDir)
+    outputs.dir(outputDir)
+
+    doLast {
+        val outputDirFile = outputDir.get().asFile
+        if (outputDirFile.exists()) outputDirFile.deleteRecursively()
+        outputDirFile.mkdirs()
+
+        // .mdファイルを収集（ルート + _posts）
+        val mdFiles = resourcesDir.listFiles { f -> f.isFile && f.extension == "md" }?.toList().orEmpty() +
+            (resourcesDir.resolve("_posts").listFiles { f -> f.isFile && f.extension == "md" }?.toList().orEmpty())
+
+        OgImageRenderer().use { renderer ->
+            for (mdFile in mdFiles) {
+                val frontMatter = parseFrontMatter(mdFile) ?: continue
+
+                // titleを取得
+                val title = frontMatter["title"] as? String ?: continue
+
+                // header画像パスを取得（優先順位: overlay_image > image > teaser）
+                @Suppress("UNCHECKED_CAST")
+                val header = frontMatter["header"] as? Map<String, Any>
+                val imagePath = (header?.get("overlay_image") ?: header?.get("image") ?: header?.get("teaser")) as? String
+
+                // slugを決定
+                val slug = mdFile.nameWithoutExtension
+
+                // 出力ファイル
+                val outputFile = outputDirFile.resolve("$slug.png")
+
+                // ベース画像を解決
+                val baseImageFile = if (imagePath != null) resourcesDir.resolve(imagePath.removePrefix("/")) else null
+
+                renderer.render(title, baseImageFile, outputFile)
+                logger.lifecycle("Generated OG image: ${outputFile.absolutePath}")
+            }
+        }
+    }
+}
+
 val buildSite = tasks.register<Sync>("buildSite") {
     group = "build"
     from(jekyllBuild)
     from(makeLangTable)
+    from(generateOgImages)
     from("src/main/resources") {
         include("**/*.md")
     }
