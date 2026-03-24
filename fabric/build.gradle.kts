@@ -102,6 +102,7 @@ run {
             }
         }
     }
+    rootProject.tasks.named("datagen").configure { dependsOn(tasks.named("runDatagen")) }
 }
 run {
     loom {
@@ -119,9 +120,8 @@ run {
             }
         }
     }
+    rootProject.tasks.named("datagen").configure { dependsOn(tasks.named("runDatagenNeoForge")) }
 }
-rootProject.tasks.named("datagen").configure { dependsOn(tasks.named("runDatagen")) }
-rootProject.tasks.named("datagen").configure { dependsOn(tasks.named("runDatagenNeoForge")) }
 
 dependencies {
 
