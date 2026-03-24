@@ -737,3 +737,17 @@ body {
     border-color: #FF2DAB;
   }
 }
+
+.hero-carousel__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: #ffffff;
+  animation: hero-carousel-progress 10000ms linear forwards;
+}
+
+@keyframes hero-carousel-progress {
+  from { width: 0; }
+  to { width: 100%; }
+}

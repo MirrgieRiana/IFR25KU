@@ -21,7 +21,7 @@ document.addEventListener("gumshoeActivate", function(e) {
   var viewportNode = document.querySelector('.hero-carousel__viewport');
   if (!viewportNode) return;
   var dotsNode = document.querySelector('.hero-carousel__dots');
-  var embla = EmblaCarousel(viewportNode, { loop: true }, [EmblaCarouselAutoplay({ delay: 10000 })]);
+  var embla = EmblaCarousel(viewportNode, { loop: true }, [EmblaCarouselAutoplay({ delay: 10000, defaultInteraction: false })]);
 
   // ドットナビゲーション
   var slides = embla.scrollSnapList();
@@ -38,7 +38,18 @@ document.addEventListener("gumshoeActivate", function(e) {
     });
   };
   embla.on('select', updateDots);
+  embla.on('select', function() { embla.plugins().autoplay.reset(); });
   updateDots();
+
+  // プログレスバー
+  var progressEl = document.querySelector('.hero-carousel__progress');
+  var resetProgress = function() {
+    progressEl.style.animation = 'none';
+    progressEl.offsetHeight;
+    progressEl.style.animation = '';
+  };
+  embla.on('select', resetProgress);
+  resetProgress();
 
   // ヒーロー背景パンアニメーション
   var bgEls = viewportNode.querySelectorAll('.hero-bg');
