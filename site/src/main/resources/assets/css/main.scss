@@ -188,7 +188,15 @@ a.site-title {
   flex-direction: column;
   justify-content: flex-end;
 
-  .page__title,
+  .page__title {
+    font-family: serif;
+    font-size: 1.855em;
+
+    @include breakpoint(600px) {
+      font-size: 2.319em;
+    }
+  }
+
   .page__lead {
     font-family: serif;
   }

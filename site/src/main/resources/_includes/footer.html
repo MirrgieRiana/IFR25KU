@@ -27,4 +27,5 @@
 {% endif %}
 
 <div class="page__footer-copyright">{% for entry in site.copyright %}&copy; {{ entry.year }} {{ entry.name | escape_once }}{% unless forloop.last %} / {% endunless %}{% endfor %}. {{ site.data.ui-text[locale].powered_by | default: "Powered by" }} <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+<div class="page__footer-copyright">This site uses resources licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0" rel="nofollow">Apache License, Version 2.0</a>.</div>
 <div class="page__footer-copyright">All trademarks and copyrights belong to their respective owners.</div>
