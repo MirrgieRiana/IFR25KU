@@ -89,7 +89,7 @@ repositories {
 run {
     loom {
         runs {
-            // これにより、datagen API を実行する新しい gradle タスク "gradlew runDatagen" が追加されます。
+            // これにより、datagen API を実行する新しい gradle タスク "runDatagen" が追加されます。
             register("datagen") {
                 inherit(runs["server"])
                 name("Data Generation")
