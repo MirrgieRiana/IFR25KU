@@ -122,7 +122,7 @@ val jekyllBuild = tasks.register<Exec>("jekyllBuild") {
 
 private fun parseFrontMatter(file: File): Map<String, Any>? {
     val content = file.readText()
-    val match = Regex("\\A---\\r?\\n(.*?)\\r?\\n---", RegexOption.DOT_MATCHES_ALL).find(content) ?: return null
+    val match = Regex("\\A---\\r?\\n(.*?)\\r?\\n---(?:\\r?\\n|\\Z)", RegexOption.DOT_MATCHES_ALL).find(content) ?: return null
     @Suppress("UNCHECKED_CAST")
     return Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any>
 }
@@ -147,6 +147,7 @@ class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
     fun render(title: String, backgroundImageFile: File?, outputFile: File) {
         val effectiveFile = if (backgroundImageFile != null && backgroundImageFile.exists()) backgroundImageFile else defaultBackgroundFile
         val backgroundCss = "background: url('${toDataUri(effectiveFile)}') center/cover no-repeat"
+        val escapedTitle = title.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;")
         page.setContent(
             """
             <!DOCTYPE html>
@@ -154,7 +155,7 @@ class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
             <head><meta charset="utf-8"></head>
             <body style="margin: 0; width: 1200px; height: 630px; $backgroundCss; display: flex; align-items: flex-end;">
                 <div style="width: 100%; padding: 24px 40px; background: rgba(0, 0, 0, 0.5); color: white; font-family: 'Noto Sans CJK JP', sans-serif; font-size: 36px; line-height: 1.4; word-break: auto-phrase;">
-                    $title
+                    $escapedTitle
                 </div>
             </body>
             </html>
@@ -164,6 +165,7 @@ class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
     }
 
     override fun close() {
+        page.close()
         browser.close()
         playwright.close()
     }
@@ -175,7 +177,8 @@ val generateOgImages = tasks.register("generateOgImages") {
     val resourcesDir = file("src/main/resources")
     val outputDir = layout.buildDirectory.dir("ogImages/assets/images/og")
 
-    inputs.dir(resourcesDir)
+    inputs.files(fileTree(resourcesDir) { include("*.md", "_posts/*.md") })
+    inputs.dir(resourcesDir.resolve("assets/images"))
     outputs.dir(outputDir)
 
     doLast {
