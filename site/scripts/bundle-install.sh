@@ -6,7 +6,11 @@ if [ -d "$HOME/.rbenv" ]; then
     eval "$("$HOME/.rbenv/bin/rbenv" init - bash)"
 fi
 
-cd -- "$(dirname -- "$0")/../src/main/bundle"
+SITE_DIR="$(cd -- "$(dirname -- "$0")/.." && pwd)"
 
-bundle config set --local path vendor/bundle
+export BUNDLE_APP_CONFIG="$SITE_DIR/build/bundleConfig"
+
+cd -- "$SITE_DIR/src/main/bundle"
+
+bundle config set --local path "$SITE_DIR/build/bundleVendor"
 bundle install

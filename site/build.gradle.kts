@@ -99,15 +99,14 @@ val installJekyllBundle = tasks.register<Exec>("installJekyllBundle") {
 
     inputs.file("src/main/bundle/Gemfile")
     inputs.file("src/main/bundle/Gemfile.lock")
-    outputs.dir("src/main/bundle/vendor")
-    outputs.dir("src/main/bundle/.bundle")
+    outputs.dir(layout.buildDirectory.dir("bundleVendor"))
+    outputs.dir(layout.buildDirectory.dir("bundleConfig"))
 
     commandLine("bash", "scripts/bundle-install.sh")
 }
 
 val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     group = "other"
-    dependsOn(installJekyllBundle)
     from("src/main/resources")
     from("src/main/bundle")
     into(layout.buildDirectory.dir("jekyllSource"))
@@ -115,6 +114,7 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
 
 val jekyllBuild = tasks.register<Exec>("jekyllBuild") {
     group = "build"
+    dependsOn(installJekyllBundle) // UP-TO-DATE の判定にかかるコストの削減のために敢えて inputs にしない
     inputs.files(syncJekyllSource)
     outputs.dir(layout.buildDirectory.dir("jekyllBuild"))
     commandLine("bash", "scripts/build-site.sh")
