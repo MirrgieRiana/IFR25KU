@@ -6,11 +6,11 @@ AIアシスタントが自由に編集できる、コミットされる永続的
 ## ビルドフロー
 
 1. `makeLangTable`（group: generate）: 言語JSONとHTMLテンプレートからlang_table.html/json/csvを `site/build/langTable/` に生成。`inputs`/`outputs` 宣言によりUP-TO-DATE判定あり
-2. `installJekyllBundle`（Exec、group: other）: `site/scripts/bundle-install.sh` を実行。`inputs`（`src/main/bundle/Gemfile`, `Gemfile.lock`）/`outputs`（`src/main/bundle/vendor`, `.bundle`）宣言によりUP-TO-DATE判定あり
-3. `bundle-install.sh`: `site/src/main/bundle/` で `bundle config set --local path vendor/bundle` → `bundle install`
-4. `syncJekyllSource`（Sync、group: other）: `site/src/main/resources/` と `site/src/main/bundle/` を `site/build/jekyllSource/` に同期。`installJekyllBundle` に依存
+2. `installJekyllBundle`（Exec、group: other）: `site/scripts/bundle-install.sh` を実行。`inputs`（`src/main/bundle/Gemfile`, `Gemfile.lock`）/`outputs`（`build/bundleVendor`, `build/bundleConfig`）宣言によりUP-TO-DATE判定あり
+3. `bundle-install.sh`: `BUNDLE_APP_CONFIG=$SITE_DIR/build/bundleConfig` を設定し、`site/src/main/bundle/` で `bundle config set --local path $SITE_DIR/build/bundleVendor` → `bundle install`。gemは `site/build/bundleVendor/` にインストールされる
+4. `syncJekyllSource`（Sync、group: other）: `site/src/main/resources/` と `site/src/main/bundle/`（`vendor/`・`.bundle/` を除外）を `site/build/jekyllSource/` に同期。`installJekyllBundle` に依存
 5. `jekyllBuild`（Exec、group: build）: `site/scripts/build-site.sh` を実行。`inputs.files(syncJekyllSource)` / `outputs.dir(jekyllBuild/)` 宣言あり
-6. `build-site.sh`: `site/build/jekyllSource/` で `bundle exec jekyll build --destination ../jekyllBuild`
+6. `build-site.sh`: `BUNDLE_APP_CONFIG=$SITE_DIR/build/bundleConfig` を設定し、`site/build/jekyllSource/` で `bundle exec jekyll build --destination ../jekyllBuild`
 7. `buildSite`（Sync、group: build）: `jekyllBuild` の出力と `makeLangTable` の出力と `src/main/resources/` 内の `.md` ファイルを `site/build/site/` に統合
 8. CI出力先: `site/build/site/`（`pages.yml` で `buildSite` タスクを実行し、そこからデプロイ）
 
@@ -21,14 +21,14 @@ AIアシスタントが自由に編集できる、コミットされる永続的
 Gradleを経由せずにSCSSの変更を素早く確認する方法:
 
 ```bash
-cp site/src/main/resources/assets/css/main.scss site/build/jekyllSource/assets/css/main.scss && (cd site/build/jekyllSource && bundle exec jekyll build --destination ../jekyllBuild)
+cp site/src/main/resources/assets/css/main.scss site/build/jekyllSource/assets/css/main.scss && (cd site/build/jekyllSource && BUNDLE_APP_CONFIG="$(pwd)/../bundleConfig" bundle exec jekyll build --destination ../jekyllBuild)
 ```
 
 WSL2の `/mnt/` ドライブでは `inotify` が動作しないため、`jekyll serve` の自動リビルドは使えない。
 
 ## テーマオーバーライド
 
-minimal-mistakesテーマのファイルは `site/src/main/bundle/vendor/bundle/ruby/3.3.0/gems/minimal-mistakes-jekyll-4.28.0/` にある。
+minimal-mistakesテーマのファイルは `site/build/bundleVendor/bundle/ruby/3.3.0/gems/minimal-mistakes-jekyll-4.28.0/` にある。
 
 オーバーライドするには、同じ相対パスで `site/src/main/resources/` 内にファイルを配置する。
 
