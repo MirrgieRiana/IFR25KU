@@ -36,7 +36,7 @@
               {% if page.header.actions %}
                 <p class="page__hero-actions">
                 {% for action in page.header.actions %}
-                  <a href="{{ action.url | relative_url }}" class="btn btn--light-outline btn--large"{% if action.url contains "://" %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ action.label | default: site.data.ui-text[locale].more_label | default: "Learn More" }}{% if action.url contains "://" %} <i class="fas fa-external-link-alt fa-xs"></i>{% endif %}</a>
+                  <a href="{{ action.url | relative_url }}" class="btn btn--light-outline btn--large"{% if action.url contains "://" %} target="_blank" rel="noopener noreferrer"{% endif %}>{% if action.icon %}<span class="inline-icon" style="-webkit-mask-image: url('{{ action.icon | relative_url }}'); mask-image: url('{{ action.icon | relative_url }}');"></span> {% endif %}{{ action.label | default: site.data.ui-text[locale].more_label | default: "Learn More" }}{% if action.url contains "://" %} <i class="fas fa-external-link-alt fa-xs"></i>{% endif %}</a>
                 {% endfor %}
                 </p>
               {% endif %}
