@@ -21,7 +21,7 @@ document.addEventListener("gumshoeActivate", function(e) {
   var viewportNode = document.querySelector('.hero-carousel__viewport');
   if (!viewportNode) return;
   var dotsNode = document.querySelector('.hero-carousel__dots');
-  var embla = EmblaCarousel(viewportNode, { loop: true }, [EmblaCarouselAutoplay({ delay: 10000, defaultInteraction: false })]);
+  var embla = EmblaCarousel(viewportNode, { loop: true }, [EmblaCarouselAutoplay({ delay: 10000, stopOnInteraction: false })]);
 
   // ドットナビゲーション
   var slides = embla.scrollSnapList();
@@ -38,18 +38,39 @@ document.addEventListener("gumshoeActivate", function(e) {
     });
   };
   embla.on('select', updateDots);
-  embla.on('select', function() { embla.plugins().autoplay.reset(); });
   updateDots();
 
   // プログレスバー
   var progressEl = document.querySelector('.hero-carousel__progress');
-  var resetProgress = function() {
+  var clearProgress = function() {
     progressEl.style.animation = 'none';
     progressEl.offsetHeight;
+  };
+  var startProgress = function() {
     progressEl.style.animation = '';
   };
-  embla.on('select', resetProgress);
-  resetProgress();
+  var slideChanged = false;
+  var previousSnap = embla.selectedScrollSnap();
+  embla.on('select', function() {
+    slideChanged = true;
+    clearProgress();
+    // 旧スライドのパンをキャンセルしてCSS既定に戻す
+    if (panAnimations[previousSnap]) {
+      panAnimations[previousSnap].cancel();
+      panAnimations[previousSnap] = null;
+    }
+    var prevEl = bgEls[previousSnap];
+    prevEl.style.width = '';
+    prevEl.style.height = '';
+    prevEl.style.top = '';
+    prevEl.style.left = '';
+    // 新スライドのパンを遷移中に開始
+    startPan(embla.selectedScrollSnap());
+    previousSnap = embla.selectedScrollSnap();
+  });
+  embla.on('pointerDown', clearProgress);
+  clearProgress();
+  startProgress();
 
   // ヒーロー背景パンアニメーション
   var bgEls = viewportNode.querySelectorAll('.hero-bg');
@@ -87,11 +108,16 @@ document.addEventListener("gumshoeActivate", function(e) {
     panAnimations[index] = setupPan(index);
   }
 
+  // settleでプログレスとautoplayを同期リセット
+  embla.on('settle', function() {
+    embla.plugins().autoplay.play();
+    clearProgress();
+    startProgress();
+    slideChanged = false;
+  });
+
   function initPan() {
     startPan(embla.selectedScrollSnap());
-    embla.on('settle', function() {
-      startPan(embla.selectedScrollSnap());
-    });
     new ResizeObserver(function() {
       startPan(embla.selectedScrollSnap());
     }).observe(viewportNode);
@@ -102,6 +128,14 @@ document.addEventListener("gumshoeActivate", function(e) {
     img.src = el.dataset.src;
     img.onload = function() {
       imageSizes[i] = { w: img.naturalWidth, h: img.naturalHeight };
+      loaded++;
+      if (loaded === bgEls.length) initPan();
+    };
+    img.onerror = function() {
+      el.style.backgroundImage = 'none';
+      el.style.position = 'absolute';
+      el.style.inset = '0';
+      el.style.background = '#d0d0d0';
       loaded++;
       if (loaded === bgEls.length) initPan();
     };

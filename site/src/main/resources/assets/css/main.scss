@@ -688,8 +688,7 @@ body {
 
   .hero-bg {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     background-size: cover;
     background-position: center;
     transform-origin: 0 50%;

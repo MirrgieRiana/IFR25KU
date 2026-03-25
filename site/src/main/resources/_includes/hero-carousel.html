@@ -24,7 +24,7 @@
               <div class="hero-bg-filter" style="background: {{ overlay_filter }};"></div>
             {% endif %}
             <div class="wrapper">
-              <h1 id="page-title" class="page__title" itemprop="headline">
+              <h1{% if forloop.first %} id="page-title" itemprop="headline"{% endif %} class="page__title">
                 {{ page.title | default: site.title | markdownify | remove: "<p>" | remove: "</p>" }}
               </h1>
               {% if page.tagline %}
