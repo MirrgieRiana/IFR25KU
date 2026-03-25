@@ -219,6 +219,10 @@ val generateOgImages = tasks.register("generateOgImages") {
     }
 }
 
+val build = tasks.register("build") {
+    group = "build"
+}
+
 val buildSite = tasks.register<Sync>("buildSite") {
     group = "build"
     from(jekyllBuild)
@@ -229,6 +233,7 @@ val buildSite = tasks.register<Sync>("buildSite") {
     }
     into(layout.buildDirectory.dir("site"))
 }
+build.configure { dependsOn(buildSite) }
 
 val serveSite = tasks.register<Exec>("serveSite") {
     group = "application"
