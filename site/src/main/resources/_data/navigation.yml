@@ -3,8 +3,10 @@ main:
     children:
       - title: Modrinth
         url: https://modrinth.com/mod/ifr25ku
+        icon: /assets/images/modrinth.svg
       - title: CurseForge
         url: https://www.curseforge.com/minecraft/mc-mods/ifr25ku
+        icon: /assets/images/curseforge.svg
   - title: ARTICLES
     children:
       - title: 記事一覧
@@ -21,6 +23,7 @@ main:
         url: https://kakera-unofficial.notion.site/ifrku
       - title: Discord
         url: https://discord.gg/bppQyAZtkA
+        icon: /assets/images/discord.svg
 
 sidebar:
   - title: ページ一覧

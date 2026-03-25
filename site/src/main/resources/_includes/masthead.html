@@ -21,7 +21,7 @@
                         href="{{ child.url | relative_url }}"
                         {% if child.description %} title="{{ child.description }}"{% endif %}
                         {% if child.url contains "://" %} target="_blank" rel="noopener noreferrer"{% endif %}
-                      >{{ child.title }}{% if child.url contains "://" %} <i class="fas fa-external-link-alt fa-xs"></i>{% endif %}</a>
+                      >{% if child.icon %}<span class="inline-icon" style="-webkit-mask-image: url('{{ child.icon | relative_url }}'); mask-image: url('{{ child.icon | relative_url }}');"></span> {% endif %}{{ child.title }}{% if child.url contains "://" %} <i class="fas fa-external-link-alt fa-xs"></i>{% endif %}</a>
                     </li>
                   {% endfor %}
                 </ul>

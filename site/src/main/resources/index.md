@@ -10,10 +10,13 @@ header:
   actions:
     - label: "Modrinth"
       url: "https://modrinth.com/mod/ifr25ku"
+      icon: "/assets/images/modrinth.svg"
     - label: "CurseForge"
       url: "https://www.curseforge.com/minecraft/mc-mods/ifr25ku"
+      icon: "/assets/images/curseforge.svg"
     - label: "Discord"
       url: "https://discord.gg/bppQyAZtkA"
+      icon: "/assets/images/discord.svg"
 carousel:
   - overlay_image: /assets/images/index/banner1.webp
   - overlay_image: /assets/images/index/banner2.webp
