@@ -8,13 +8,14 @@ AIアシスタントが自由に編集できる、コミットされる永続的
 1. `makeLangTable`（group: generate）: 言語JSONとHTMLテンプレートからlang_table.html/json/csvを `site/build/langTable/` に生成。`inputs`/`outputs` 宣言によりUP-TO-DATE判定あり
 2. `installJekyllBundle`（Exec、group: other）: `site/scripts/bundle-install.sh` を実行。`inputs`（`src/main/bundle/Gemfile`, `Gemfile.lock`）/`outputs`（`build/bundleVendor`, `build/bundleConfig`）宣言によりUP-TO-DATE判定あり
 3. `bundle-install.sh`: `BUNDLE_APP_CONFIG=$SITE_DIR/build/bundleConfig` を設定し、`site/src/main/bundle/` で `bundle config set --local path $SITE_DIR/build/bundleVendor` → `bundle install`。gemは `site/build/bundleVendor/` にインストールされる
-4. `syncJekyllSource`（Sync、group: other）: `site/src/main/resources/` と `site/src/main/bundle/`（`vendor/`・`.bundle/` を除外）を `site/build/jekyllSource/` に同期。`installJekyllBundle` に依存
-5. `jekyllBuild`（Exec、group: build）: `site/scripts/build-site.sh` を実行。`inputs.files(syncJekyllSource)` / `outputs.dir(jekyllBuild/)` 宣言あり
+4. `syncJekyllSource`（Sync、group: other）: `site/src/main/resources/` と `site/src/main/bundle/` を `site/build/jekyllSource/` に同期
+5. `jekyllBuild`（Exec、group: build）: `site/scripts/build-site.sh` を実行。`dependsOn(installJekyllBundle)`（UP-TO-DATE判定コスト削減のため敢えてinputsにしない）。`inputs.files(syncJekyllSource)` / `outputs.dir(jekyllBuild/)` 宣言あり
 6. `build-site.sh`: `BUNDLE_APP_CONFIG=$SITE_DIR/build/bundleConfig` を設定し、`site/build/jekyllSource/` で `bundle exec jekyll build --destination ../jekyllBuild`
-7. `buildSite`（Sync、group: build）: `jekyllBuild` の出力と `makeLangTable` の出力と `src/main/resources/` 内の `.md` ファイルを `site/build/site/` に統合
-8. CI出力先: `site/build/site/`（`pages.yml` で `buildSite` タスクを実行し、そこからデプロイ）
+7. `generateOgImages`（group: generate）: `src/main/resources/` 内の `.md` ファイルのfront matterからタイトルとヘッダー画像を読み取り、Playwrightで1200×630のOG画像を `site/build/ogImages/` に生成。`inputs`（`.md`ファイル、`assets/images/`）/ `outputs` 宣言あり
+8. `buildSite`（Sync、group: build）: `jekyllBuild` の出力と `makeLangTable` の出力と `generateOgImages` の出力と `src/main/resources/` 内の `.md` ファイルを `site/build/site/` に統合
+9. CI出力先: `site/build/site/`（`pages.yml` で `buildSite` タスクを実行し、そこからデプロイ）
 
-`serveSite`（group: application） / `site/scripts/serve-site.sh` でローカルプレビュー可能（`bundle exec jekyll serve --skip-initial-build --no-watch --destination ../site`）。`serveSite` は `buildSite` と `syncJekyllSource` に依存（`inputs.files` による）。
+`serveSite`（Exec、group: application）: `site/scripts/serve-site.sh` → `serve-site.main.kts`（Ktor Nettyサーバー）で `site/build/site/` を `http://localhost:4000/IFR25KU/` に配信。`inputs.files(buildSite)` による依存。
 
 ### CSSの手動コンパイル
 
@@ -40,12 +41,13 @@ minimal-mistakesテーマのファイルは `site/build/bundleVendor/bundle/ruby
 ### _includes/
 
 - `masthead.html` — ドロップダウンメニュー（`children` キー対応、外部リンクアイコン付き）
+- `hero-carousel.html` — ヒーローカルーセル（Embla Carousel、ドットナビ・プログレスバー・パンアニメーション）
 - `page__hero.html` — ヒーロー画像（背景画像・overlay_filter・actions対応）
 - `recent-posts.html` — ブログ新着カード表示（`limit` / `more` パラメータ）
 - `page-cards.html` — 指定ページをカード表示（`include.pages` でCSV指定）
 - `post_pagination.html` — 記事の前後ナビゲーション
 - `section-header.html` — フルワイドのセクションヘッダー（`title` / `subtitle` パラメータ）
-- `scripts.html` — Gumshoeスクロールスパイの無効化処理
+- `scripts.html` — Gumshoeスクロールスパイの無効化処理、Embla Carouselの初期化
 - `footer.html` — テーマデフォルト（social-icons、RSS、Sitemap）
 - `footer/custom.html` — GitHubソースリンク、生ファイルリンク、ページURL表示
 - `head/custom.html` — Favicon設定（webp形式）
@@ -116,7 +118,7 @@ page__inner-wrap > section.page__content（headerなし）
 
 ## CSS構造
 
-`site/src/main/resources/assets/css/main.scss` にテーマの変数定義とカスタムスタイルを記述（約640行）。
+`site/src/main/resources/assets/css/main.scss` にテーマの変数定義とカスタムスタイルを記述（約770行）。
 
 ### カラーパレット
 
@@ -180,8 +182,10 @@ main:
     children:
       - title: Modrinth
         url: https://modrinth.com/mod/ifr25ku
+        icon: /assets/images/modrinth.svg
       - title: CurseForge
         url: https://www.curseforge.com/minecraft/mc-mods/ifr25ku
+        icon: /assets/images/curseforge.svg
   - title: ARTICLES
     children:
       - title: 記事一覧
@@ -196,6 +200,9 @@ main:
         url: /lang-table-index.html
       - title: IFRKU Official Web Site (Old)
         url: https://kakera-unofficial.notion.site/ifrku
+      - title: Discord
+        url: https://discord.gg/bppQyAZtkA
+        icon: /assets/images/discord.svg
 ```
 
 ドロップダウンCSS: `.masthead__menu-item--dropdown` でホバー時に `.masthead__dropdown` を表示。
@@ -237,6 +244,16 @@ url: https://mirrgieriana.github.io
 baseurl: /IFR25KU
 theme: minimal-mistakes-jekyll
 minimal_mistakes_skin: default
+copyright:
+  - year: 2019
+    name: "MirageFairy Server"
+    license: "CC BY-SA 3.0"
+  - year: 2024
+    name: "The Developer of MirageFairy, Generation 7"
+    license: "CC BY 4.0"
+  - year: 2025
+    name: "Yoruno Kakera"
+    license: "CC BY 4.0"
 
 plugins:
   - jekyll-include-cache
@@ -256,7 +273,10 @@ defaults:
 
 ## テーマのJS
 
-`site/src/main/resources/_includes/scripts.html` でオーバーライド済み。テーマの `main.min.js` 読み込み後に、`gumshoeActivate` イベントのキャプチャフェーズで `stopImmediatePropagation()` して無効化。これにより、GumshoeのスクロールスパイがアクティブなTOC項目へ自動スクロールする挙動（`scrollTocToContent`）を抑制。
+`site/src/main/resources/_includes/scripts.html` でオーバーライド済み。
+
+- テーマの `main.min.js` 読み込み後に、`gumshoeActivate` イベントのキャプチャフェーズで `stopImmediatePropagation()` して無効化。これにより、GumshoeのスクロールスパイがアクティブなTOC項目へ自動スクロールする挙動（`scrollTocToContent`）を抑制。
+- Embla Carousel（CDN読み込み）: `.hero-carousel__viewport` に対してloop・autoplay（10秒間隔）を初期化。ドットナビゲーション、プログレスバー（autoplayと同期）、ヒーロー背景パンアニメーション（Web Animations APIによるズーム＆パン、ResizeObserverで追従）を実装。
 
 ### greedy-navの幅計測
 
@@ -285,10 +305,16 @@ ImageMagickの `convert` を使用（-quality 80）。
 ```
 assets/images/
 ├── background.webp                    — 全面背景（blur処理）
+├── curseforge.svg                     — mastheadアイコン
+├── discord.svg                        — mastheadアイコン
 ├── ifr25ku_banner-black-gothic.webp   — ロゴバナー
 ├── miragefairy_face_256.webp          — Favicon
+├── modrinth.svg                       — mastheadアイコン
+├── og-default-background.svg          — OG画像デフォルト背景
 ├── index/
-│   └── banner1.webp                   — トップページヒーロー
+│   ├── banner1.webp                   — カルーセルヒーロー
+│   ├── banner2.webp                   — カルーセルヒーロー
+│   └── banner3.webp                   — カルーセルヒーロー
 ├── changelog/
 │   └── changelog-header.svg           — CHANGELOGページヘッダー
 ├── lang-table-index/
