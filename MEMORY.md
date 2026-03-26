@@ -52,11 +52,7 @@ minimal-mistakesテーマのファイルは `site/build/bundleVendor/bundle/ruby
 - `footer/custom.html` — GitHubソースリンク、生ファイルリンク、ページURL表示
 - `head/custom.html` — Favicon設定（webp形式）
 
-### _sass/
-
-- `minimal-mistakes/skins/_catppuccin-mocha.scss` — カスタムスキン（未使用）
-
-**注意**: `_sass/` のパーシャルはこの方法ではオーバーライドできない。Sassの `@import` はインポート元ファイルのディレクトリを最初に検索するため、テーマのパーシャルが常に優先される。CSSのカスタマイズは `site/src/main/resources/assets/css/main.scss` の `@import "minimal-mistakes"` の後に記述する。
+**注意**: `_sass/` のパーシャルはオーバーライドできない。Sassの `@import` はインポート元ファイルのディレクトリを最初に検索するため、テーマのパーシャルが常に優先される。CSSのカスタマイズは `site/src/main/resources/assets/css/main.scss` の `@import "minimal-mistakes"` の後に記述する。
 
 ## ペインレイアウト
 
