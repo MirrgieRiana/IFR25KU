@@ -334,11 +334,11 @@ body.layout--splash #main {
 
 .encyclopedia-card__image {
   flex-shrink: 0;
-  max-width: 300px;
+  max-width: 250px;
   align-self: center;
 
   @include breakpoint(800px) {
-    width: 300px;
+    width: 250px;
   }
 
   img {
