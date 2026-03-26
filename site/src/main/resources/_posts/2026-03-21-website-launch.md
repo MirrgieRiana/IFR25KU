@@ -1,5 +1,6 @@
 ---
 title: 公式Webサイトを公開しました
+description: IFR25KUの公式Webサイトを公開。CHANGELOG、翻訳テーブル、ブログなどのコンテンツを提供
 layout: single
 header:
   teaser: /assets/images/posts/2026-03-21-website-launch/2025-11-04_20.09.58.webp
