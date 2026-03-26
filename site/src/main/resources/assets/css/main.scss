@@ -236,6 +236,20 @@ a.site-title {
   .nav__title {
     display: none;
   }
+
+  .active a {
+    color: #000;
+    background: transparent;
+  }
+}
+
+.toc__menu a {
+  color: #888;
+  border-bottom-color: transparent;
+
+  &:hover {
+    color: #FF2DAB;
+  }
 }
 
 .masthead {
