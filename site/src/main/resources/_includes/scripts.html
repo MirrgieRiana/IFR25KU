@@ -14,8 +14,8 @@ document.addEventListener("gumshoeActivate", function(e) {
 }, true);
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/embla-carousel@latest/embla-carousel.umd.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/embla-carousel-autoplay@latest/embla-carousel-autoplay.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/embla-carousel@8.6.0/embla-carousel.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/embla-carousel-autoplay@8.6.0/embla-carousel-autoplay.umd.js"></script>
 <script>
 (function() {
   var viewportNode = document.querySelector('.hero-carousel__viewport');
@@ -118,8 +118,12 @@ document.addEventListener("gumshoeActivate", function(e) {
 
   function initPan() {
     startPan(embla.selectedScrollSnap());
+    var resizeTimer;
     new ResizeObserver(function() {
-      startPan(embla.selectedScrollSnap());
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        startPan(embla.selectedScrollSnap());
+      }, 150);
     }).observe(viewportNode);
   }
 
