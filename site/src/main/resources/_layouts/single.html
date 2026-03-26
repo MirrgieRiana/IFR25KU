@@ -50,7 +50,7 @@ layout: default
       {% endunless %}
 
       {% if page.header.teaser and page.header.image == nil and page.header.overlay_image == nil %}
-        <img src="{{ page.header.teaser | relative_url }}" alt="" class="page__teaser-banner">
+        <img src="{{ page.header.teaser | relative_url }}" alt="{{ page.title | escape }}" class="page__teaser-banner">
       {% endif %}
 
       <section class="page__content e-content" itemprop="text">

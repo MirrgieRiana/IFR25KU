@@ -6,14 +6,14 @@
     <div class="masthead__menu">
       <nav id="site-nav" class="greedy-nav" aria-label="Primary navigation">
         <a class="site-title" href="{{ '/' | relative_url }}">
-          <img src="{{ '/assets/images/miragefairy_face_256.webp' | relative_url }}" alt="" class="site-title__face">
+          <img src="{{ '/assets/images/miragefairy_face_256.webp' | relative_url }}" alt="" aria-hidden="true" class="site-title__face">
           <img src="{{ '/assets/images/ifr25ku_banner-black-gothic.webp' | relative_url }}" alt="{{ site.title }}" class="site-title__logo">
         </a>
         <ul class="visible-links">
           {%- for link in site.data.navigation.main -%}
             {% if link.children %}
               <li class="masthead__menu-item masthead__menu-item--dropdown">
-                <span class="masthead__menu-item-trigger">{{ link.title }}</span>
+                <button type="button" class="masthead__menu-item-trigger">{{ link.title }}</button>
                 <ul class="masthead__dropdown">
                   {% for child in link.children %}
                     <li>

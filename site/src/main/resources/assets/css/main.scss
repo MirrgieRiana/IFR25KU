@@ -107,7 +107,6 @@ $navicon-link-color-hover: #a83dba;
   float: none;
 
   @include breakpoint($large) {
-    float: none;
     width: auto;
   }
 }
@@ -459,6 +458,10 @@ body.layout--splash #main {
   align-items: stretch;
 
   .masthead__menu-item-trigger {
+    background: none;
+    border: none;
+    font: inherit;
+    color: inherit;
     cursor: pointer;
     display: flex;
     align-items: center;

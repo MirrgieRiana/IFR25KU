@@ -25,28 +25,32 @@ document.addEventListener("gumshoeActivate", function(e) {
 
   // ドットナビゲーション
   var slides = embla.scrollSnapList();
-  slides.forEach(function(_, index) {
-    var dot = document.createElement('button');
-    dot.className = 'hero-carousel__dot';
-    dot.addEventListener('click', function() { embla.scrollTo(index); });
-    dotsNode.appendChild(dot);
-  });
-  var updateDots = function() {
-    var selected = embla.selectedScrollSnap();
-    dotsNode.querySelectorAll('.hero-carousel__dot').forEach(function(dot, index) {
-      dot.classList.toggle('hero-carousel__dot--active', index === selected);
+  if (dotsNode) {
+    slides.forEach(function(_, index) {
+      var dot = document.createElement('button');
+      dot.className = 'hero-carousel__dot';
+      dot.addEventListener('click', function() { embla.scrollTo(index); });
+      dotsNode.appendChild(dot);
     });
-  };
-  embla.on('select', updateDots);
-  updateDots();
+    var updateDots = function() {
+      var selected = embla.selectedScrollSnap();
+      dotsNode.querySelectorAll('.hero-carousel__dot').forEach(function(dot, index) {
+        dot.classList.toggle('hero-carousel__dot--active', index === selected);
+      });
+    };
+    embla.on('select', updateDots);
+    updateDots();
+  }
 
   // プログレスバー
   var progressEl = document.querySelector('.hero-carousel__progress');
   var clearProgress = function() {
+    if (!progressEl) return;
     progressEl.style.animation = 'none';
     progressEl.offsetHeight;
   };
   var startProgress = function() {
+    if (!progressEl) return;
     progressEl.style.animation = '';
   };
   var slideChanged = false;
@@ -116,15 +120,18 @@ document.addEventListener("gumshoeActivate", function(e) {
     slideChanged = false;
   });
 
+  var resizeObserver;
   function initPan() {
     startPan(embla.selectedScrollSnap());
     var resizeTimer;
-    new ResizeObserver(function() {
+    if (resizeObserver) resizeObserver.disconnect();
+    resizeObserver = new ResizeObserver(function() {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function() {
         startPan(embla.selectedScrollSnap());
       }, 150);
-    }).observe(viewportNode);
+    });
+    resizeObserver.observe(viewportNode);
   }
 
   bgEls.forEach(function(el, i) {
