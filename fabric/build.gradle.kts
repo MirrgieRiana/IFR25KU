@@ -103,6 +103,24 @@ run {
             }
         }
     }
+    val markerFile = file("build/datagen-markers/.lastrun")
+    val inputFiles = files(
+        tasks.named("compileJava"),
+        tasks.named("compileKotlin"),
+        project(":common").tasks.named("compileJava"),
+        project(":common").tasks.named("compileKotlin"),
+    )
+    tasks.named<JavaExec>("runDatagen") {
+        onlyIf {
+            if (!markerFile.exists()) return@onlyIf true
+            val lastRun = markerFile.lastModified()
+            inputFiles.files.any { it.lastModified() > lastRun }
+        }
+        doLast {
+            markerFile.parentFile.mkdirs()
+            markerFile.writeText("")
+        }
+    }
     rootProject.tasks.named("datagen").configure { dependsOn(tasks.named("runDatagen")) }
 }
 run {
@@ -120,6 +138,24 @@ run {
 
                 runDir("build/datagen")
             }
+        }
+    }
+    val markerFile = file("build/datagen-markers/.lastrunNeoForge")
+    val inputFiles = files(
+        tasks.named("compileJava"),
+        tasks.named("compileKotlin"),
+        project(":common").tasks.named("compileJava"),
+        project(":common").tasks.named("compileKotlin"),
+    )
+    tasks.named<JavaExec>("runDatagenNeoForge") {
+        onlyIf {
+            if (!markerFile.exists()) return@onlyIf true
+            val lastRun = markerFile.lastModified()
+            inputFiles.files.any { it.lastModified() > lastRun }
+        }
+        doLast {
+            markerFile.parentFile.mkdirs()
+            markerFile.writeText("")
         }
     }
     rootProject.tasks.named("datagen").configure { dependsOn(tasks.named("runDatagenNeoForge")) }
