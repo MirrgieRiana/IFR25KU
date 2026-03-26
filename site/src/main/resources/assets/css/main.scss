@@ -312,7 +312,7 @@ body.layout--splash #main {
 // 図鑑風カード
 .encyclopedia-frame {
   margin: 2em auto;
-  max-width: 800px;
+  max-width: 750px;
   padding: 2em;
   background: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -323,7 +323,7 @@ body.layout--splash #main {
   flex-direction: column;
   gap: 2em;
 
-  @include breakpoint(800px) {
+  @include breakpoint(750px) {
     flex-direction: row;
   }
 
@@ -337,7 +337,7 @@ body.layout--splash #main {
   max-width: 250px;
   align-self: center;
 
-  @include breakpoint(800px) {
+  @include breakpoint(750px) {
     width: 250px;
   }
 
