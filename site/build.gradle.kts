@@ -1,6 +1,7 @@
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
+import com.luciad.imageio.webp.WebPWriteParam
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
@@ -8,7 +9,9 @@ import org.yaml.snakeyaml.Yaml
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.util.Base64.getEncoder
+import javax.imageio.IIOImage
 import javax.imageio.ImageIO
+import javax.imageio.ImageWriteParam
 
 buildscript {
     repositories {
@@ -178,8 +181,17 @@ class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
         )
         val pngBytes = page!!.screenshot()
         val image = ImageIO.read(ByteArrayInputStream(pngBytes))!!
+        val writer = ImageIO.getImageWritersByMIMEType("image/webp").next()
+        val writeParam = writer.defaultWriteParam as WebPWriteParam
+        writeParam.compressionMode = ImageWriteParam.MODE_EXPLICIT
+        writeParam.compressionType = writeParam.compressionTypes[WebPWriteParam.LOSSY_COMPRESSION]
+        writeParam.compressionQuality = 0.80f
         val webpBuffer = ByteArrayOutputStream()
-        require(ImageIO.write(image, "webp", webpBuffer)) { "Failed to write WebP image: $outputFile" }
+        ImageIO.createImageOutputStream(webpBuffer).use { imageOut ->
+            writer.output = imageOut
+            writer.write(null, IIOImage(image, null, null), writeParam)
+        }
+        writer.dispose()
         outputFile.writeBytes(webpBuffer.toByteArray())
     }
 
