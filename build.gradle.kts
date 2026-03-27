@@ -5,6 +5,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import publishing.CurseforgeClient
 import publishing.MarkdownType
 import publishing.getModBody
+import tools.MirrorMavenTask
+import tools.UnpackSourcesTask
+import tools.generateResizedImagesOfAllProjects
+import tools.getAllPngFilesInAllProjects
 
 plugins {
     id("dev.architectury.loom") version "1.7-SNAPSHOT" apply false

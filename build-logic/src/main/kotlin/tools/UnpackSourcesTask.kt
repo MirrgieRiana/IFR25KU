@@ -1,3 +1,5 @@
+package tools
+
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier

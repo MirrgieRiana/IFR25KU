@@ -1,3 +1,5 @@
+package publishing
+
 import java.io.File
 
 fun getChangeLog(file: File, version: String): String {

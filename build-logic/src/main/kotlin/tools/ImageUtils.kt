@@ -1,3 +1,5 @@
+package tools
+
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSetContainer
 import java.awt.RenderingHints
