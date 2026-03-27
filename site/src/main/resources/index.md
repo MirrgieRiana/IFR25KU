@@ -1,7 +1,7 @@
 ---
 title: "IFR25KU: The Institute of Fairy Research 2025 Kakera Unofficial"
 tagline: "MirageFairyの世界観に基づいた、可能な世界の一つを表現するMinecraft MOD。"
-description: "IFR25KU, Official Website, 公式Webサイト, Minecraft, マインクラフト, MOD, fairy, 妖精, magic, 魔法, alchemy, 錬金術, SF"
+description: "MirageFairyの世界観に基づいた、可能な世界の一つを表現するMinecraft MOD。"
 layout: splash
 header:
   og_background: /assets/images/index/banner1.webp
