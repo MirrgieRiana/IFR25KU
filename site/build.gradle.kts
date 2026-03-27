@@ -1,6 +1,7 @@
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
+import com.microsoft.playwright.Browser
 import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
 import org.yaml.snakeyaml.Yaml
@@ -128,9 +129,17 @@ private fun parseFrontMatter(file: File): Map<String, Any>? {
 }
 
 class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
-    private val playwright = Playwright.create()
-    private val browser = playwright.chromium().launch()
-    private val page = browser.newPage().apply { setViewportSize(1200, 630) }
+    private var playwright: Playwright? = null
+    private var browser: Browser? = null
+    private var page: Page? = null
+
+    private fun ensureInitialized() {
+        if (playwright == null) {
+            playwright = Playwright.create()
+            browser = playwright!!.chromium().launch()
+            page = browser!!.newPage().apply { setViewportSize(1200, 630) }
+        }
+    }
 
     private fun toDataUri(file: File): String {
         val base64 = getEncoder().encodeToString(file.readBytes())
@@ -145,10 +154,11 @@ class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
     }
 
     fun render(title: String, backgroundImageFile: File?, outputFile: File) {
+        ensureInitialized()
         val effectiveFile = if (backgroundImageFile != null && backgroundImageFile.exists()) backgroundImageFile else defaultBackgroundFile
         val backgroundCss = "background: url('${toDataUri(effectiveFile)}') center/cover no-repeat"
         val escapedTitle = title.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;")
-        page.setContent(
+        page!!.setContent(
             """
             <!DOCTYPE html>
             <html>
@@ -161,13 +171,13 @@ class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
             </html>
         """.trimIndent()
         )
-        page.screenshot(Page.ScreenshotOptions().setPath(outputFile.toPath()))
+        page!!.screenshot(Page.ScreenshotOptions().setPath(outputFile.toPath()))
     }
 
     override fun close() {
-        page.close()
-        browser.close()
-        playwright.close()
+        page?.close()
+        browser?.close()
+        playwright?.close()
     }
 }
 
@@ -183,7 +193,6 @@ val generateOgImages = tasks.register("generateOgImages") {
 
     doLast {
         val outputDirFile = outputDir.get().asFile
-        if (outputDirFile.exists()) outputDirFile.deleteRecursively()
         outputDirFile.mkdirs()
 
         // .mdファイルを収集（ルート + _posts）
@@ -217,6 +226,13 @@ val generateOgImages = tasks.register("generateOgImages") {
                     // page.md → page.og.webp
                     outputDirFile.resolve("${mdFile.nameWithoutExtension}.og.webp")
                 }
+
+                // 既に存在する場合はスキップ
+                if (outputFile.exists()) {
+                    logger.lifecycle("OG image already exists, skipping: ${outputFile.absolutePath}")
+                    return@forEach
+                }
+
                 outputFile.parentFile.mkdirs()
 
                 // ベース画像を解決
