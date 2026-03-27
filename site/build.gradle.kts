@@ -192,11 +192,11 @@ val generateOgImages = tasks.register("generateOgImages") {
 
         val defaultBg = resourcesDir.resolve("assets/images/og-default-background.svg")
         OgImageRenderer(defaultBg).use { renderer ->
-            for (mdFile in mdFiles) {
-                val frontMatter = parseFrontMatter(mdFile) ?: continue
+            mdFiles.forEach { mdFile ->
+                val frontMatter = parseFrontMatter(mdFile) ?: return@forEach
 
                 // titleを取得
-                val title = frontMatter["title"] as? String ?: continue
+                val title = frontMatter["title"] as? String ?: return@forEach
 
                 // header画像パスを取得（優先順位: overlay_image > image > teaser）
                 @Suppress("UNCHECKED_CAST")
