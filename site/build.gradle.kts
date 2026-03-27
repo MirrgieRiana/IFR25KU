@@ -17,7 +17,7 @@ buildscript {
     dependencies {
         classpath("org.yaml:snakeyaml:2.2")
         classpath("com.microsoft.playwright:playwright:1.58.0")
-        classpath("com.twelvemonkeys.imageio:imageio-webp:3.12.0")
+        classpath("org.sejda.imageio:webp-imageio:0.1.6")
     }
 }
 
