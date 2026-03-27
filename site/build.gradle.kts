@@ -171,7 +171,7 @@ class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
             <!DOCTYPE html>
             <html>
             <head><meta charset="utf-8"></head>
-            <body style="margin: 0; width: 1200px; height: 630px; $backgroundCss; display: flex; align-items: flex-end;">
+            <body style="margin: 0; width: 1200px; height: 630px; $backgroundCss; display: flex; align-items: flex-start;">
                 <div style="width: 100%; padding: 24px 40px; background: rgba(0, 0, 0, 0.5); color: white; font-family: 'Noto Sans CJK JP', sans-serif; font-size: 36px; line-height: 1.4; word-break: auto-phrase;">
                     $escapedTitle
                 </div>
