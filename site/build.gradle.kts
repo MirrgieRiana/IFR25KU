@@ -190,15 +190,14 @@ val generateOgImages = tasks.register("generateOgImages") {
     group = "generate"
 
     val resourcesDir = file("src/main/resources")
-    val outputDir = layout.buildDirectory.dir("ogImages")
+    val outputDir = resourcesDir.resolve("assets/images")
     val regenerate = project.hasProperty("regenerate")
 
     inputs.files(fileTree(resourcesDir) { include("*.md", "_posts/*.md") })
     inputs.dir(resourcesDir.resolve("assets/images"))
-    outputs.dir(outputDir)
 
     doLast {
-        val outputDirFile = outputDir.get().asFile
+        val outputDirFile = outputDir
         outputDirFile.mkdirs()
 
         // .mdファイルを収集（ルート + _posts）
@@ -259,9 +258,6 @@ val buildSite = tasks.register<Sync>("buildSite") {
     group = "build"
     from(jekyllBuild)
     from(makeLangTable)
-    from(generateOgImages) {
-        into("assets/images")
-    }
     from("src/main/resources") {
         include("**/*.md")
     }
