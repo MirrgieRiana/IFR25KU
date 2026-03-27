@@ -1,0 +1,78 @@
+{% assign locale = include.locale | default: site.locale %}
+<!-- begin _includes/seo.html -->
+{%- assign title_separator = site.title_separator | default: '-' -%}
+
+{%- assign page_title = page.title | default: site.title | replace: '|', '&#124;' -%}
+{%- if page_title contains site.title -%}
+  {%- assign seo_title = page_title | replace: '|', '&#124;' -%}
+{%- else -%}
+  {%- assign seo_title = page_title | append: " " | append: title_separator | append: " " | append: site.title | replace: '|', '&#124;' -%}
+{%- endif -%}
+
+{%- assign page_title = page_title | markdownify | strip_html | strip_newlines | escape_once -%}
+{%- assign seo_title  = seo_title  | markdownify | strip_html | strip_newlines | escape_once -%}
+
+{%- assign canonical_url = page.canonical_url | default: page.url | replace: "/index.html", "/" | absolute_url %}
+
+{%- assign seo_description = page.description | default: page.excerpt | default: site.description -%}
+{%- if seo_description -%}
+  {%- assign seo_description = seo_description | markdownify | strip_html | newline_to_br | strip_newlines | replace: '<br />', ' ' | escape_once | strip -%}
+{%- endif -%}
+
+{%- assign author = page.author | default: page.authors[0] | default: site.author -%}
+{%- assign author = site.data.authors[author] | default: author -%}
+
+{%- assign og_image_slug = page.name | replace: ".md", "" -%}
+{%- assign og_image_url = '/assets/images/og/' | append: og_image_slug | append: '.png' | absolute_url -%}
+
+{%- if page.date -%}
+  {%- assign og_type = "article" -%}
+{%- else -%}
+  {%- assign og_type = "website" -%}
+{%- endif -%}
+
+<title>{{ seo_title }}{% if paginator %}{% unless paginator.page == 1 %} {{ title_separator }} {{ site.data.ui-text[locale].page | default: "Page" }} {{ paginator.page }}{% endunless %}{% endif %}</title>
+<meta name="description" content="{{ seo_description }}">
+
+{% if author.name %}
+  <meta name="author" content="{{ author.name | default: author | escape_once | strip }}">
+  {% if og_type == "article" %}
+  <meta property="article:author" content="{{ author.name | default: author | escape_once | strip }}">
+  {% endif %}
+{% endif %}
+
+<meta property="og:type" content="{{ og_type }}">
+<meta property="og:locale" content="{{ locale | replace: "-", "_" | default: "en_US" }}">
+<meta property="og:site_name" content="{{ site.title | escape_once | strip }}">
+<meta property="og:title" content="{{ page_title }}">
+<meta property="og:url" content="{{ canonical_url }}">
+
+{% if seo_description %}
+  <meta property="og:description" content="{{ seo_description }}">
+{% endif %}
+
+<meta property="og:image" content="{{ og_image_url }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{{ og_image_url }}">
+
+{% if page.date %}
+  <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
+{% endif %}
+
+{% if og_type == "article" and page.last_modified_at %}
+  <meta property="article:modified_time" content="{{ page.last_modified_at | date_to_xmlschema }}">
+{% endif %}
+
+<link rel="canonical" href="{{ canonical_url }}">
+
+{% if paginator.previous_page %}
+  <link rel="prev" href="{{ paginator.previous_page_path | absolute_url }}">
+{% endif %}
+{% if paginator.next_page %}
+  <link rel="next" href="{{ paginator.next_page_path | absolute_url }}">
+{% endif %}
+
+{% if page.url == '/' %}
+  {% include schema.html %}
+{% endif %}
+<!-- end _includes/seo.html -->
