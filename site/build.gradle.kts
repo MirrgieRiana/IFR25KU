@@ -176,7 +176,7 @@ class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
         )
         val pngBytes = page!!.screenshot()
         val image = ImageIO.read(ByteArrayInputStream(pngBytes))
-        ImageIO.write(image, "webp", outputFile)
+        require(ImageIO.write(image, "webp", outputFile)) { "Failed to write WebP image: $outputFile" }
     }
 
     override fun close() {
