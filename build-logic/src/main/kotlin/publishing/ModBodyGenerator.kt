@@ -1,3 +1,5 @@
+package publishing
+
 import kotlin.math.abs
 
 enum class MarkdownType {

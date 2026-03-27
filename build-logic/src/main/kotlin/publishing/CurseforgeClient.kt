@@ -1,3 +1,5 @@
+package publishing
+
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import java.net.URI

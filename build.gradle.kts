@@ -2,6 +2,9 @@ import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import publishing.CurseforgeClient
+import publishing.MarkdownType
+import publishing.getModBody
 
 plugins {
     id("dev.architectury.loom") version "1.7-SNAPSHOT" apply false
