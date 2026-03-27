@@ -22,8 +22,7 @@
 {%- assign author = page.author | default: page.authors[0] | default: site.author -%}
 {%- assign author = site.data.authors[author] | default: author -%}
 
-{%- assign og_image_slug = page.name | replace: ".md", "" -%}
-{%- assign og_image_url = '/assets/images/og/' | append: og_image_slug | append: '.png' | absolute_url -%}
+{%- assign og_image_url = '/assets/images' | append: page.url | replace: '.html', '.og.webp' | absolute_url -%}
 
 {%- if page.date -%}
   {%- assign og_type = "article" -%}

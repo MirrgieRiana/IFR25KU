@@ -175,7 +175,7 @@ val generateOgImages = tasks.register("generateOgImages") {
     group = "generate"
 
     val resourcesDir = file("src/main/resources")
-    val outputDir = layout.buildDirectory.dir("ogImages/assets/images/og")
+    val outputDir = layout.buildDirectory.dir("ogImages")
 
     inputs.files(fileTree(resourcesDir) { include("*.md", "_posts/*.md") })
     inputs.dir(resourcesDir.resolve("assets/images"))
@@ -203,11 +203,21 @@ val generateOgImages = tasks.register("generateOgImages") {
                 val header = frontMatter["header"] as? Map<String, Any>
                 val imagePath = (header?.get("overlay_image") ?: header?.get("image") ?: header?.get("teaser")) as? String
 
-                // slugを決定
-                val slug = mdFile.nameWithoutExtension
-
-                // 出力ファイル
-                val outputFile = outputDirFile.resolve("$slug.png")
+                // page.url準拠の出力パスを決定
+                val isPost = mdFile.parentFile.name == "_posts"
+                val outputFile = if (isPost) {
+                    // _posts/YYYY-MM-DD-title.md → YYYY/MM/DD/title.og.webp
+                    val name = mdFile.nameWithoutExtension
+                    val year = name.substring(0, 4)
+                    val month = name.substring(5, 7)
+                    val day = name.substring(8, 10)
+                    val slug = name.substring(11)
+                    outputDirFile.resolve("$year/$month/$day/$slug.og.webp")
+                } else {
+                    // page.md → page.og.webp
+                    outputDirFile.resolve("${mdFile.nameWithoutExtension}.og.webp")
+                }
+                outputFile.parentFile.mkdirs()
 
                 // ベース画像を解決
                 val baseImageFile = if (imagePath != null) resourcesDir.resolve(imagePath.removePrefix("/")) else null
@@ -227,7 +237,9 @@ val buildSite = tasks.register<Sync>("buildSite") {
     group = "build"
     from(jekyllBuild)
     from(makeLangTable)
-    from(generateOgImages)
+    from(generateOgImages) {
+        into("assets/images")
+    }
     from("src/main/resources") {
         include("**/*.md")
     }
