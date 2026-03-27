@@ -6,6 +6,7 @@ import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
 import org.yaml.snakeyaml.Yaml
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.util.Base64.getEncoder
 import javax.imageio.ImageIO
 
@@ -138,6 +139,7 @@ class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
 
     private fun ensureInitialized() {
         if (playwright == null) {
+            ImageIO.scanForPlugins()
             playwright = Playwright.create()
             browser = playwright!!.chromium().launch()
             page = browser!!.newPage().apply { setViewportSize(1200, 630) }
@@ -175,8 +177,10 @@ class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
         """.trimIndent()
         )
         val pngBytes = page!!.screenshot()
-        val image = ImageIO.read(ByteArrayInputStream(pngBytes))
-        require(ImageIO.write(image, "webp", outputFile)) { "Failed to write WebP image: $outputFile" }
+        val image = ImageIO.read(ByteArrayInputStream(pngBytes))!!
+        val webpBuffer = ByteArrayOutputStream()
+        require(ImageIO.write(image, "webp", webpBuffer)) { "Failed to write WebP image: $outputFile" }
+        outputFile.writeBytes(webpBuffer.toByteArray())
     }
 
     override fun close() {
