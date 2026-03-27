@@ -5,7 +5,9 @@ import com.microsoft.playwright.Browser
 import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
 import org.yaml.snakeyaml.Yaml
+import java.io.ByteArrayInputStream
 import java.util.Base64.getEncoder
+import javax.imageio.ImageIO
 
 buildscript {
     repositories {
@@ -14,6 +16,7 @@ buildscript {
     dependencies {
         classpath("org.yaml:snakeyaml:2.2")
         classpath("com.microsoft.playwright:playwright:1.58.0")
+        classpath("com.twelvemonkeys.imageio:imageio-webp:3.12.0")
     }
 }
 
@@ -171,7 +174,9 @@ class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
             </html>
         """.trimIndent()
         )
-        page!!.screenshot(Page.ScreenshotOptions().setPath(outputFile.toPath()))
+        val pngBytes = page!!.screenshot()
+        val image = ImageIO.read(ByteArrayInputStream(pngBytes))
+        ImageIO.write(image, "webp", outputFile)
     }
 
     override fun close() {
@@ -186,6 +191,7 @@ val generateOgImages = tasks.register("generateOgImages") {
 
     val resourcesDir = file("src/main/resources")
     val outputDir = layout.buildDirectory.dir("ogImages")
+    val regenerate = project.hasProperty("regenerate")
 
     inputs.files(fileTree(resourcesDir) { include("*.md", "_posts/*.md") })
     inputs.dir(resourcesDir.resolve("assets/images"))
@@ -227,8 +233,8 @@ val generateOgImages = tasks.register("generateOgImages") {
                     outputDirFile.resolve("${mdFile.nameWithoutExtension}.og.webp")
                 }
 
-                // 既に存在する場合はスキップ
-                if (outputFile.exists()) {
+                // 既に存在する場合はスキップ（-Pregenerateで強制再生成）
+                if (!regenerate && outputFile.exists()) {
                     logger.lifecycle("OG image already exists, skipping: ${outputFile.absolutePath}")
                     return@forEach
                 }
