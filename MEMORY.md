@@ -11,11 +11,19 @@ AIアシスタントが自由に編集できる、コミットされる永続的
 4. `syncJekyllSource`（Sync、group: other）: `site/src/main/resources/` と `site/src/main/bundle/` を `site/build/jekyllSource/` に同期
 5. `jekyllBuild`（Exec、group: build）: `site/scripts/build-site.sh` を実行。`dependsOn(installJekyllBundle)`（UP-TO-DATE判定コスト削減のため敢えてinputsにしない）。`inputs.files(syncJekyllSource)` / `outputs.dir(jekyllBuild/)` 宣言あり
 6. `build-site.sh`: `BUNDLE_APP_CONFIG=$SITE_DIR/build/bundleConfig` を設定し、`site/build/jekyllSource/` で `bundle exec jekyll build --destination ../jekyllBuild`
-7. `generateOgImages`（group: generate）: `src/main/resources/` 内の `.md` ファイルのfront matterからタイトルとヘッダー画像を読み取り、Playwrightで1200×630のOG画像を `site/build/ogImages/` に生成。`inputs`（`.md`ファイル、`assets/images/`）/ `outputs` 宣言あり
-8. `buildSite`（Sync、group: build）: `jekyllBuild` の出力と `makeLangTable` の出力と `generateOgImages` の出力と `src/main/resources/` 内の `.md` ファイルを `site/build/site/` に統合
+7. `generateOgImages`（group: generate）: `src/main/resources/` 内の `.md` ファイルのfront matterからタイトルとヘッダー画像を読み取り、Playwrightで1200×630のスクリーンショット（PNG）を取得後、TwelveMonkeys imageio-webpライブラリでWebPに変換して `src/main/resources/assets/images/` 直下に出力。既存ファイルはスキップ（`-Pregenerate` で強制再生成）
+8. `buildSite`（Sync、group: build）: `jekyllBuild` の出力と `makeLangTable` の出力と `src/main/resources/` 内の `.md` ファイルを `site/build/site/` に統合。OG画像は `src/main/resources/assets/images/` に直接書き込まれるため、Jekyllパイプライン（syncJekyllSource → jekyllBuild）を経由して自動的に最終出力に含まれる
 9. CI出力先: `site/build/site/`（`pages.yml` で `buildSite` タスクを実行し、そこからデプロイ）
 
-`serveSite`（Exec、group: application）: `site/scripts/serve-site.sh` → `serve-site.main.kts`（Ktor Nettyサーバー）で `site/build/site/` を `http://localhost:4000/IFR25KU/` に配信。`inputs.files(buildSite)` による依存。
+`serveSite`（Exec、group: application）: `site/scripts/serve-site.sh` → `serve-site.main.kts`（Ktor Nettyサーバー）で `site/build/site/` を `http://localhost:4000/IFR25KU/` に配信。`inputs.files(buildSite)` による依存。Jekyll標準の `jekyll serve` ではなくKtor Nettyを使用する理由は、jekyll serveが頻繁に落ちて使い物にならないため。MIMEタイプ: `.md` を `text/plain; charset=utf-8` として配信。
+
+### buildscript依存関係
+
+```kotlin
+classpath("org.yaml:snakeyaml:2.2")                        // front matter解析
+classpath("com.microsoft.playwright:playwright:1.58.0")     // OG画像生成（Chromiumスクリーンショット）
+classpath("com.twelvemonkeys.imageio:imageio-webp:3.12.0")  // WebP変換（~290KB）
+```
 
 ### CSSの手動コンパイル
 
@@ -36,20 +44,22 @@ minimal-mistakesテーマのファイルは `site/build/bundleVendor/bundle/ruby
 ### _layouts/
 
 - `single.html` — 各コンテンツページ。ヘッダー画像3パターン対応、Grid化
-- `splash.html` — トップページ・記事一覧。ヘッダーなし時に `content-wrap` で囲む
+- `splash.html` — トップページ・記事一覧。`carousel` 配列対応（hero-carousel.htmlを呼び出し）。ヘッダーなし時に `content-wrap` で囲む
 
 ### _includes/
 
-- `masthead.html` — ドロップダウンメニュー（`children` キー対応、外部リンクアイコン付き）
-- `hero-carousel.html` — ヒーローカルーセル（Embla Carousel、ドットナビ・プログレスバー・パンアニメーション）
-- `page__hero.html` — ヒーロー画像（背景画像・overlay_filter・actions対応）
+- `masthead.html` — ドロップダウンメニュー（`children` キー対応、外部リンクアイコン付き）。ロゴはフェイス画像とバナー画像の2枚配置
+- `hero-carousel.html` — ヒーローカルーセル（Embla Carousel、ドットナビ・プログレスバー・パンアニメーション）。`page.carousel` 配列のスライドをレンダリング
+- `page__hero.html` — ヒーロー画像（背景画像・overlay_filter・actions対応）。overlay_filterは `gradient` / `rgba` / 数値に対応し自動変換
+- `page__hero_actions.html` — ヒーロー内のアクションボタン表示。`page.header.actions` 配列をループ。外部リンク自動判定
 - `recent-posts.html` — ブログ新着カード表示（`limit` / `more` パラメータ）
 - `page-cards.html` — 指定ページをカード表示（`include.pages` でCSV指定）
-- `post_pagination.html` — 記事の前後ナビゲーション
+- `post_pagination.html` — 記事の前後ナビゲーション（Grid 4列レイアウト）
 - `section-header.html` — フルワイドのセクションヘッダー（`title` / `subtitle` パラメータ）
 - `scripts.html` — Gumshoeスクロールスパイの無効化処理、Embla Carouselの初期化
-- `footer.html` — テーマデフォルト（social-icons、RSS、Sitemap）
-- `footer/custom.html` — GitHubソースリンク、生ファイルリンク、ページURL表示
+- `seo.html` — OG画像パスの自動導出（`page.url` ベース）。詳細は「OG画像」セクション参照
+- `footer.html` — `site.copyright` 配列をループ表示（MirageFairy Server/Generation 7/Yoruno Kakera）、Apache 2.0ライセンス表記、social-icons・RSS・Sitemap
+- `footer/custom.html` — GitHubソースリンク（`page.path` をリポジトリURLに組み込み）、Markdownファイルのダイレクトリンク
 - `head/custom.html` — Favicon設定（webp形式）
 
 **注意**: `_sass/` のパーシャルはオーバーライドできない。Sassの `@import` はインポート元ファイルのディレクトリを最初に検索するため、テーマのパーシャルが常に優先される。CSSのカスタマイズは `site/src/main/resources/assets/css/main.scss` の `@import "minimal-mistakes"` の後に記述する。
@@ -109,12 +119,11 @@ page__inner-wrap > section.page__content（headerなし）
 
 ### splashレイアウト（トップページ・記事一覧）
 
-`index.md` で使用。`page__hero--overlay` でヒーロー画像を表示し、feature_rowやrecent-postsを配置。
-ヘッダー画像がない場合は通常のh1を `<div class="content-wrap">` で囲んで表示（`site/src/main/resources/_layouts/splash.html` でオーバーライド済み）。
+`index.md` で使用。`page.carousel` が定義されている場合は `hero-carousel.html` でカルーセル表示、それ以外は `page__hero.html` で通常のヒーロー表示。ヘッダー画像がない場合は通常のh1を `<div class="content-wrap">` で囲んで表示（`site/src/main/resources/_layouts/splash.html` でオーバーライド済み）。
 
 ## CSS構造
 
-`site/src/main/resources/assets/css/main.scss` にテーマの変数定義とカスタムスタイルを記述（約770行）。
+`site/src/main/resources/assets/css/main.scss` にテーマの変数定義とカスタムスタイルを記述（約775行）。
 
 ### カラーパレット
 
@@ -244,12 +253,15 @@ copyright:
   - year: 2019
     name: "MirageFairy Server"
     license: "CC BY-SA 3.0"
+    license_url: "https://creativecommons.org/licenses/by-sa/3.0/"
   - year: 2024
     name: "The Developer of MirageFairy, Generation 7"
     license: "CC BY 4.0"
+    license_url: "https://creativecommons.org/licenses/by/4.0/"
   - year: 2025
     name: "Yoruno Kakera"
     license: "CC BY 4.0"
+    license_url: "https://creativecommons.org/licenses/by/4.0/"
 
 plugins:
   - jekyll-include-cache
@@ -272,7 +284,7 @@ defaults:
 `site/src/main/resources/_includes/scripts.html` でオーバーライド済み。
 
 - テーマの `main.min.js` 読み込み後に、`gumshoeActivate` イベントのキャプチャフェーズで `stopImmediatePropagation()` して無効化。これにより、GumshoeのスクロールスパイがアクティブなTOC項目へ自動スクロールする挙動（`scrollTocToContent`）を抑制。
-- Embla Carousel（CDN読み込み）: `.hero-carousel__viewport` に対してloop・autoplay（10秒間隔）を初期化。ドットナビゲーション、プログレスバー（autoplayと同期）、ヒーロー背景パンアニメーション（Web Animations APIによるズーム＆パン、ResizeObserverで追従）を実装。
+- Embla Carousel（CDN読み込み、v8.6.0）: `.hero-carousel__viewport` に対してloop・autoplay（10秒間隔、`stopOnInteraction: false`）を初期化。ドットナビゲーション（JS動的生成）、プログレスバー（CSS animation `hero-carousel-progress` 10秒、スライド遷移時リセット）、ヒーロー背景パンアニメーション（Web Animations APIによるズーム＆パン、ResizeObserverで追従、スケール1/0.9→1.0 + X軸移動、画像サイズ動的検出）を実装。
 
 ### greedy-navの幅計測
 
@@ -284,7 +296,7 @@ greedy-navは `overflow` ではなく `outerWidth()` の明示的な幅比較で
 
 `site/scripts/convert-image.sh <入力ファイル> [slug]` で `build/<slug>.webp` に変換。
 slug省略時は入力ファイルの拡張子を除いた名前を使用。
-ImageMagickの `convert` を使用（-quality 80）。
+ImageMagickの `convert` を使用（-quality 80）。スラグ検証: `^[a-zA-Z0-9_.-]+$`。
 
 ### 画像変換ツール比較
 
@@ -298,6 +310,12 @@ ImageMagickの `convert` を使用（-quality 80）。
 
 ### 画像配置
 
+画像パスは `page.url` に基づくディレクトリ構造で配置する。
+
+- 通常ページ: `assets/images/<ページ名>/` — 例: `assets/images/changelog/`
+- ブログ記事: `assets/images/YYYY/MM/DD/<slug>/` — 例: `assets/images/2026/03/22/athanor/`
+- OG画像: 同じ階層に `<slug>.og.webp` として配置 — 例: `assets/images/2026/03/22/athanor.og.webp`
+
 ```
 assets/images/
 ├── background.webp                    — 全面背景（blur処理）
@@ -306,7 +324,7 @@ assets/images/
 ├── ifr25ku_banner-black-gothic.webp   — ロゴバナー
 ├── miragefairy_face_256.webp          — Favicon
 ├── modrinth.svg                       — mastheadアイコン
-├── og-default-background.svg          — OG画像デフォルト背景
+├── og-default-background.svg          — OG画像デフォルト背景（1200×630 SVG、淡紫グラデーション+六角形パターン）
 ├── index/
 │   ├── banner1.webp                   — カルーセルヒーロー
 │   ├── banner2.webp                   — カルーセルヒーロー
@@ -315,9 +333,45 @@ assets/images/
 │   └── changelog-header.svg           — CHANGELOGページヘッダー
 ├── lang-table-index/
 │   └── lang-table-header.svg          — Lang Tableページヘッダー
-└── posts/
-    └── YYYY-MM-DD-slug/               — 各記事の画像
+└── YYYY/MM/DD/slug/                   — 各記事の画像（page.urlベース）
 ```
+
+## OG画像
+
+### seo.htmlによるパス導出
+
+`seo.html` で `page.url` からOG画像パスを自動導出する。
+
+```liquid
+{%- assign og_page_url = page.url -%}
+{%- if og_page_url == '/' or og_page_url == '' -%}
+  {%- assign og_page_url = '/index.html' -%}
+{%- endif -%}
+{%- assign og_image_url = '/assets/images' | append: og_page_url | replace: '.html', '.og.webp' | absolute_url -%}
+```
+
+変換例:
+
+| page.url | og_image_url |
+|---|---|
+| `/` | `/assets/images/index.og.webp` |
+| `/CHANGELOG.html` | `/assets/images/CHANGELOG.og.webp` |
+| `/2026/03/22/athanor.html` | `/assets/images/2026/03/22/athanor.og.webp` |
+
+### generateOgImagesタスクの出力パス
+
+Gradle側で `.md` ファイルから同じ `page.url` ベースのパスを導出する。
+
+- `_posts/YYYY-MM-DD-slug.md` → `src/main/resources/assets/images/YYYY/MM/DD/slug.og.webp`
+- `page.md` → `src/main/resources/assets/images/page.og.webp`
+
+### OgImageRenderer
+
+- Playwright Chromium で 1200×630 のビューポートにHTMLをレンダリング
+- ベース画像の優先順位: `header.overlay_image` > `header.image` > `header.teaser` > `og-default-background.svg`
+- ベース画像をData URI化してCSS `background: url(...) center/cover no-repeat` で表示
+- タイトルを半透明黒帯（`rgba(0,0,0,0.5)`）の上に白文字36pxで表示
+- スクリーンショットをPNG byte[]として取得 → `ImageIO.read()` で BufferedImage → `ImageIO.write(image, "webp", ...)` でWebP出力
 
 ## ブログ記事
 
@@ -327,19 +381,50 @@ front matter例:
 
 ```yaml
 ---
-title: 記事タイトル
+title: "バージョン31.31.2: アタノール追加"
+description: 燃料駆動の加工機械「アタノール」の追加と、新鉱石・素材ブロック・レシピ変更について
 layout: single
 header:
-  teaser: /assets/images/posts/YYYY-MM-DD-slug/image.webp
-tags: [お知らせ]
+  teaser: /assets/images/2026/03/22/athanor/2026-03-22_15.11.57.webp
+tags: [アップデート]
 ---
 ```
 
-- `header.image`: ヒーロー画像（非overlay、タイトルは画像の下）
-- `header.teaser`: 一覧カードのサムネイル
-- `header.overlay_image`: overlay型（タイトルが画像に重なる）
+- `header.overlay_image`: overlay型（タイトルが画像に重なる）。OG画像生成のベース画像としても使用
+- `header.image`: ヒーロー画像（非overlay、タイトルは画像の下）。OG画像生成のベース画像としても使用
+- `header.teaser`: 一覧カードのサムネイル。OG画像生成のベース画像としても使用（最低優先度）
+- `header.height`: ヒーロー画像の高さ指定（例: `200px`）
 
-トップページの `{% include recent-posts.html %}` で新着5件をカード表示。
+画像パスは `page.url` ベース: `/assets/images/YYYY/MM/DD/slug/ファイル名.webp`
+
+トップページの `{% include recent-posts.html limit=8 more=true %}` で新着8件をカード表示。記事一覧ページ（`posts.md`）では `{% include recent-posts.html %}` でデフォルト10件表示。
+
+## ページ一覧
+
+| ファイル | Layout | Header型 | TOC | Sidebar |
+|---|---|---|---|---|
+| `index.md` | splash | overlay_color + carousel + actions | false | false |
+| `CHANGELOG.md` | single（デフォルト） | image（非overlay）+ height | デフォルト | デフォルト |
+| `posts.md` | splash | なし | false | false |
+| `lang-table-index.md` | single（デフォルト） | image（非overlay）+ height | デフォルト | デフォルト |
+| `_posts/*.md` | single | teaserのみ（ヒーロー画像なし） | デフォルト | デフォルト |
+
+### index.md特有のfront matter
+
+```yaml
+carousel:
+  - overlay_image: /assets/images/index/banner1.webp
+  - overlay_image: /assets/images/index/banner2.webp
+  - overlay_image: /assets/images/index/banner3.webp
+header:
+  og_image: /assets/images/index/banner1.webp
+  overlay_color: "#1a1a2e"
+  overlay_filter: "linear-gradient(...)"
+  actions:
+    - label: "Modrinth"
+      url: "https://modrinth.com/mod/ifr25ku"
+      icon: "/assets/images/modrinth.svg"
+```
 
 ## CHANGELOG
 
@@ -349,5 +434,5 @@ tags: [お知らせ]
 
 ## Lang Table
 
-- `site/src/langTable/html/lang_table.html`: テンプレートHTML（テーマレイアウトなし）。`<%= trs %>` はGradleの `makeLangTable` タスクで展開。JavaScript検索機能付き。出力先は `site/build/langTable/`
+- `site/src/langTable/html/lang_table.html`: テンプレートHTML（テーマレイアウトなし）。`<%= trs %>` はGradleの `makeLangTable` タスクで展開。JavaScript検索機能付き（正規表現対応、URLパラメータ `?q=` で初期値復元）。出力先は `site/build/langTable/`
 - `site/src/main/resources/lang-table-index.md`: テーマレイアウトを使った特設ページ。各形式（HTML/JSON/CSV）へのリンクを配置
