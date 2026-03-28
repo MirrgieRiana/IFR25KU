@@ -8,6 +8,14 @@
 {% endif %}
 
 <script>
+// greedy-nav初期化後にvisible-linksのoverflowを解除してドロップダウンを表示可能にする
+document.addEventListener("DOMContentLoaded", function() {
+  var vl = document.querySelector(".greedy-nav .visible-links");
+  if (vl) vl.style.overflow = "visible";
+});
+</script>
+
+<script>
 // scrollTocToContentによるスクロール妨害を無効化
 document.addEventListener("gumshoeActivate", function(e) {
   e.stopImmediatePropagation();

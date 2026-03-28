@@ -394,8 +394,17 @@ body.layout--splash #main {
   background: transparent;
 
   .hidden-links {
-    background: rgba(#000000, 0.85);
-    border-color: rgba(#ffffff, 0.1);
+    margin-top: 0;
+    padding: 0.5em 0;
+    border: none;
+    border-radius: 0;
+    background: #000000;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+
+    &::before,
+    &::after {
+      display: none;
+    }
 
     .masthead__menu-item--dropdown {
       border: none;
@@ -444,9 +453,8 @@ body.layout--splash #main {
   opacity: 0.5;
 }
 
-// visible-linksのoverflowを解除してドロップダウンを表示可能にする
+// ドロップダウンのためにメニュー項目の高さを拡張（overflowの解除はJS側で行う）
 .greedy-nav .visible-links {
-  overflow: clip visible;
   align-self: stretch;
   align-items: stretch;
 }
@@ -496,7 +504,7 @@ body.layout--splash #main {
     }
   }
 
-  &:hover {
+  .visible-links &:hover {
     background: rgba(255, 255, 255, 0.1);
 
     .masthead__dropdown {
