@@ -21,6 +21,7 @@ carousel:
   - overlay_image: /assets/images/index/banner1.webp
   - overlay_image: /assets/images/index/banner2.webp
   - overlay_image: /assets/images/index/banner3.webp
+  - overlay_image: /assets/images/index/banner4.webp
 sidebar: false
 toc: false
 ---
