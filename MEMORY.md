@@ -292,9 +292,9 @@ greedy-navは `overflow` ではなく `outerWidth()` の明示的な幅比較で
 
 ## 画像
 
-### convert-image.sh
+### convert-to-webp.sh
 
-`site/scripts/convert-image.sh <入力ファイル> [slug]` で `build/<slug>.webp` に変換。
+`site/scripts/convert-to-webp.sh <入力ファイル> [slug]` で `site/build/convertedWebp/<slug>.webp` に変換。
 slug省略時は入力ファイルの拡張子を除いた名前を使用。
 ImageMagickの `convert` を使用（-quality 80）。スラグ検証: `^[a-zA-Z0-9_.-]+$`。
 

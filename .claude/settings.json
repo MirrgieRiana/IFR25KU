@@ -1,7 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(scripts/convert-image.sh *)"
+      "Bash(site/scripts/convert-to-webp.sh *)"
     ]
   }
 }

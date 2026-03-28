@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# 画像をwebp形式に変換し、build/ 以下に出力する。
+# 画像をwebp形式に変換し、site/build/convertedWebp/ 以下に出力する。
 #
 # 使い方:
-#   site/scripts/convert-image.sh <input-file> [slug]
+#   site/scripts/convert-to-webp.sh <input-file> [slug]
 #
 # 引数:
 #   input-file  変換元の画像ファイルパス
@@ -11,17 +11,17 @@
 #               省略時は入力ファイルの拡張子を除いた名前を使用
 #
 # 出力:
-#   build/<slug>.webp
+#   site/build/convertedWebp/<slug>.webp
 #
 # 必要なツール:
 #   ImageMagick (convert)
 #
 # 例:
-#   site/scripts/convert-image.sh /path/to/image.png banner
-#   -> build/banner.webp
+#   site/scripts/convert-to-webp.sh /path/to/image.png banner
+#   -> site/build/convertedWebp/banner.webp
 #
-#   site/scripts/convert-image.sh /path/to/2026-03-22_15.11.57.png
-#   -> build/2026-03-22_15.11.57.webp
+#   site/scripts/convert-to-webp.sh /path/to/2026-03-22_15.11.57.png
+#   -> site/build/convertedWebp/2026-03-22_15.11.57.webp
 
 set -euo pipefail
 
@@ -54,8 +54,8 @@ if ! command -v convert > /dev/null 2>&1; then
     exit 1
 fi
 
-output="build/${slug}.webp"
-mkdir -p build
+output="site/build/convertedWebp/${slug}.webp"
+mkdir -p site/build/convertedWebp
 
 convert "$input" -quality 80 "$output"
 echo "$output"
