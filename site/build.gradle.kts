@@ -76,6 +76,20 @@ val makeLangTable = tasks.register("makeLangTable") {
             write("langTable/lang_table.json", json)
         }
 
+        // lang_table.jsonl
+        run {
+            val list = keys.map { key ->
+                mapOf(
+                    "key" to key,
+                    "en_us" to (en.get(key) as JsonPrimitive?)?.asString,
+                    "ja_jp" to (ja.get(key) as JsonPrimitive?)?.asString,
+                )
+            }
+            val gson = GsonBuilder().create()
+            val jsonl = list.joinToString("") { gson.toJson(it) + "\n" }
+            write("langTable/lang_table.jsonl", jsonl)
+        }
+
         // lang_table.csv
         run {
             val table = listOf(

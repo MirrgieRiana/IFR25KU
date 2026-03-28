@@ -36,5 +36,7 @@ sidebar:
         url: /lang_table.html
       - title: Lang Table (JSON)
         url: /lang_table.json
+      - title: Lang Table (JSONL)
+        url: /lang_table.jsonl
       - title: Lang Table (CSV)
         url: /lang_table.csv
