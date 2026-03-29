@@ -5,10 +5,6 @@
 {% if site.footer.links or show_atom %}
 <div class="page__footer-follow">
   <ul class="social-icons">
-    {% if site.data.ui-text[locale].follow_label %}
-      <li><strong>{{ site.data.ui-text[locale].follow_label }}</strong></li>
-    {% endif %}
-
     {% if site.footer.links %}
       {% for link in site.footer.links %}
         {% if link.label and link.url %}
