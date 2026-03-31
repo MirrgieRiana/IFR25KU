@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+error() {
+  echo "$1" >&2
+  exit 1
+}
+
+check() {
+  command -v "$1" > /dev/null 2>&1 || error "Error: $1 is required but not installed."
+}
+check curl
+check tar
+check perl
+check sort
+check rsync
+check readlink
+check mktemp
+
+cd -- "$(dirname -- "$(readlink -f -- "$0")")"
+
+# Setup temporary directory with cleanup trap
+tmpdir=""
+cleanup() {
+  if [ -n "$tmpdir" ] && [ -d "$tmpdir" ]; then
+    echo "Cleaning up temporary files" >&2
+    rm -rf "$tmpdir" || true
+  fi
+}
+
+on_exit() {
+  exit_code=$?
+  cleanup
+  exit "$exit_code"
+}
+
+on_int() {
+  cleanup
+  exit 130  # 128 + SIGINT
+}
+
+on_term() {
+  cleanup
+  exit 143  # 128 + SIGTERM
+}
+
+trap on_exit EXIT
+trap on_int INT
+trap on_term TERM
+
+
+# Determine the downloading version
+
+echo "Fetching metadata"
+
+export metadata=$(curl -s 'https://repo1.maven.org/maven2/io/github/mirrgieriana/xarpite-bin/maven-metadata.xml')
+
+version=$(
+  perl -E '
+    $ENV{metadata} =~ /<versions>(.*?)<\/versions>/s or die;
+    my $versions = $1;
+    while ($versions =~ /<version>(\d+\.\d+\.\d+(?:\+[^<]*)?)<\/version>/g) {
+        say $1;
+    }
+  ' | sort -Vr | head -n 1
+)
+[ -z "$version" ] && error "Error: Failed to determine latest version."
+echo "Latest version: $version"
+
+echo
+
+
+# Download and extract
+
+CLASSIFIER_FILE="$(pwd)/classifier"
+[ -f "$CLASSIFIER_FILE" ] || error "Error: classifier file not found: $CLASSIFIER_FILE"
+CLASSIFIER="$(cat "$CLASSIFIER_FILE")"
+[ -z "$CLASSIFIER" ] && error "Error: Failed to determine classifier."
+
+file="xarpite-bin-$version-$CLASSIFIER.tar.gz"
+tmpdir=$(mktemp -d "/tmp/xarpite-update.XXXXXX") || error "Error: Failed to create temporary directory."
+# Create a subdirectory to avoid permission issues with the temporary directory itself
+workdir="$tmpdir/work"
+mkdir -p "$workdir"
+url="https://repo1.maven.org/maven2/io/github/mirrgieriana/xarpite-bin/$version/$file"
+
+echo "Downloading from: $url"
+
+curl -L -o - "$url" | tar -xzf - -C "$workdir"
+echo "Successfully downloaded and extracted to: $workdir"
+
+echo
+
+
+# Update
+
+echo "Updating"
+
+# Match destination directory permissions to avoid spurious ./ diffs
+chmod --reference=. "$workdir"
+
+echo "--- Dry run (no changes) ---"
+rsync -n --itemize-changes -rlpgoDc --delete "$workdir"/ ./
+echo
+printf "Type Y to apply (otherwise cancel): " >&2
+read -r answer
+echo
+case "$answer" in
+  [Yy]*)
+    ;;
+  *)
+    error "Cancelled."
+    ;;
+esac
+echo "Syncing"
+rsync --itemize-changes -rlpgoDc --delete "$workdir"/ ./
+
+echo
+
+
+echo "Successfully Updated"

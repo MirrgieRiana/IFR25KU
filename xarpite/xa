@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)
+
+# Set environment variable for actual program name of Xarpite
+if [ -z "$XARPITE_PROGRAM_NAME" ]
+then
+  XARPITE_PROGRAM_NAME=${0##*/}
+  export XARPITE_PROGRAM_NAME
+fi
+
+# Set environment variable to indicate short command mode
+export XARPITE_SHORT_COMMAND=1
+
+# Call xarpite with all arguments
+exec "$SCRIPT_DIR/xarpite" "$@"
