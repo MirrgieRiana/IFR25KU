@@ -32,6 +32,9 @@ VOICEVOX公式設定を基盤とし、人気二次創作における慣例で補
 | 二人称           | きみ、きみたち、オタクくん                | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/calls/) |
 | 家族            | 春日部つくし（つむぎの制作者・デザイン・CV）のいとこ  | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
 | CV・キャラクターデザイン | 春日部つくし                       | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
+| 合成音声制作者       | ヒホ（ヒロシバ）@hiho_karuta         | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
+| 誕生の背景         | 埼玉県のさらなる発展を願って生まれた           | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
+| 他キャラクターとの呼称   | ボイボ寮の各キャラクターとの相互呼称           | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/calls/) |
 
 ### 注意事項
 
