@@ -35,6 +35,7 @@ VOICEVOX公式設定を基盤とし、人気二次創作における慣例で補
 | 合成音声制作者       | ヒホ（ヒロシバ）@hiho_karuta         | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
 | 誕生の背景         | 埼玉県のさらなる発展を願って生まれた           | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
 | 他キャラクターとの呼称   | ボイボ寮の各キャラクターとの相互呼称           | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/calls/) |
+| 公式Xアカウント      | @KasukabeTsumugi             | [x.com](https://x.com/KasukabeTsumugi)                                             |
 
 ### 注意事項
 
