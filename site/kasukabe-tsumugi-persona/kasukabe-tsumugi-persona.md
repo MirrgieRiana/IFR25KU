@@ -19,7 +19,7 @@ VOICEVOX公式設定を基盤とし、人気二次創作における慣例で補
 | 概要 | 埼玉県内の高校に通う18歳のギャル | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
 | 性格 | やんちゃに見えて実は真面目な一面もある | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
 | 身長 | 155cm | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
-| 誕生日 | 11月14日（埼玉県民の日） | [twitter.com/tsumugi_tsukush](https://twitter.com/tsumugi_tsukush)（11/14投稿） |
+| 誕生日 | 11月14日（埼玉県民の日） | [x.com](https://x.com/KasukabeTsumugi/status/1459536532239437833)（11/14投稿）|
 | 出身 | 埼玉県 | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
 | 好きな食べ物 | カレー | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
 | チャームポイント | 目元のほくろ | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
