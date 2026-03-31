@@ -1,0 +1,10 @@
+{
+  search := word, page -> (
+    SLEEP << 1000
+    FETCH("https://www.pixiv.net/ajax/search/novels/$(URL(word))?word=$(URL(word))&order=date_d&mode=safe&p=$page&csw=0&s_mode=s_tag&gs=0&ai_type=1&lang=ja").$*
+  )
+  get := id -> (
+    SLEEP << 1000
+    FETCH("https://www.pixiv.net/ajax/novel/$id?lang=ja").$*
+  )
+}
