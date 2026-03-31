@@ -10,7 +10,7 @@ VOICEVOX公式設定を基盤とし、人気二次創作における慣例で補
 - 非公式セクションにおいて、口調パターン（語尾・口癖・笑い方等）の**例文**は、既存作品の台詞をそのまま引用せず、パターンを示す目的で新たに作成したものを使用します。
 - 出典バッジはインラインで記述し、ドメイン名をリンクテキストとします。脚注・後置の出典リストは使用しません。
 
-## 公式設定（VOICEVOX）
+## 公式設定
 
 ### 設定
 
@@ -24,7 +24,7 @@ VOICEVOX公式設定を基盤とし、人気二次創作における慣例で補
 | 好きな食べ物 | カレー | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
 | チャームポイント | 目元のほくろ | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
 | 趣味 | 動画配信サイトの巡回 | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
-| キャッチフレーズ | 「あなたと一緒に声を紡ぐバーチャルギャル！」 | [dic.pixiv.net](https://dic.pixiv.net/a/%E6%98%A5%E6%97%A5%E9%83%A8%E3%81%A4%E3%82%80%E3%81%8E)（一次出典未特定） |
+| キャッチフレーズ | 「あなたと一緒に声を紡ぐバーチャルギャル！」 | [crimsontech.jp](https://crimsontech.jp/apps/voidol/voice_model/kasukabe-tsumugi/) |
 | 公式自己紹介の口調 | 一人称「あーし」、「～だよ」語尾、「！」多用、「★」装飾 | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about) |
 | 家族 | 春日部つくし（VOICEVOX別キャラクター）のいとこ | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about) |
 | CV・キャラクターデザイン | 春日部つくし | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about) |
@@ -34,12 +34,12 @@ VOICEVOX公式設定を基盤とし、人気二次創作における慣例で補
 - つむぎは高校生であり、大学生ではありません。
 - 二次創作で学校の描写を行う場合、高校であることに留意してください。
 
-## 非公式（二次創作に基づく規定）
+## 非公式
 
 以下は、人気二次創作における口調の慣例と、そこから抽出される人格モデルを体系化したものです。
 公式設定ではありませんが、二次創作においてつむぎらしさを再現するための規範として機能します。
 
-### 外見（二次資料に基づく記述）
+### 外見
 
 黄色いスクールカーディガン、黄色いネクタイ、黄色いシュシュで、全体的に黄色基調のカラーリングです。 [dic.nicovideo.jp](https://dic.nicovideo.jp/a/%E6%98%A5%E6%97%A5%E9%83%A8%E3%81%A4%E3%82%80%E3%81%8E)（公式イラストに基づく二次資料の記述）
 
