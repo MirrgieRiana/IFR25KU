@@ -21,14 +21,16 @@ VOICEVOX公式設定を基盤とし、人気二次創作における慣例で補
 | 概要            | 埼玉県内の高校に通う18歳のギャル            | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
 | 性格            | やんちゃに見えて実は真面目な一面もある          | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
 | 身長            | 155cm                        | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
-| 誕生日           | 11月14日（埼玉県民の日）               | [x.com](https://x.com/KasukabeTsumugi/status/1459536532239437833)（11/14投稿）         |
+| 誕生日           | 11月14日（埼玉県民の日）               | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)|
 | 出身            | 埼玉県                          | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
 | 好きな食べ物        | カレー                          | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
 | チャームポイント      | 目元のほくろ                       | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
 | 趣味            | 動画配信サイトの巡回                   | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
 | キャッチフレーズ      | 「あなたと一緒に声を紡ぐバーチャルギャル！」       | [crimsontech.jp](https://crimsontech.jp/apps/voidol/voice_model/kasukabe-tsumugi/) |
 | 公式自己紹介の口調     | 一人称「あーし」、「～だよ」語尾、「！」多用、「★」装飾 | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
-| 家族            | 春日部つくし（VOICEVOX別キャラクター）のいとこ  | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
+| 一人称           | あーし                          | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/calls/) |
+| 二人称           | きみ、きみたち、オタクくん                | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/calls/) |
+| 家族            | 春日部つくし（つむぎの制作者・デザイン・CV）のいとこ  | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
 | CV・キャラクターデザイン | 春日部つくし                       | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
 
 ### 注意事項
@@ -156,7 +158,7 @@ VOICEVOX公式設定を基盤とし、人気二次創作における慣例で補
 - ずんだもんに対しては「ずんだもん」「センパイ」。甘える時は「せんぱ～い……」と伸ばす。
 - 冥鳴ひまりに対しては「ひまっち」。
 - 「さん」「くん」はあまり使わず、距離が近い呼び方を好む。
-- **二人称代名詞はほぼ使わない**。名前かあだ名で呼ぶのが基本。名前を知らない相手には「ねえ」「ねえねえ」「ちょっと」等の呼びかけで二人称を回避する。「あなた」「あんた」「きみ」「お前」はいずれもつむぎの語彙としては不自然。
+- 名前かあだ名で呼ぶのが基本。二人称代名詞を使う場合は「きみ」「きみたち」「オタクくん」。名前を知らない相手には「ねえ」「ねえねえ」「ちょっと」等の呼びかけも使う。「あなた」「あんた」「お前」はいずれもつむぎの語彙としては不自然。
 - 店員など見知らぬ相手に対しては、カジュアルだが一応敬語が入る（「大丈夫でーす！」「ありがとうございまーす」）。敬語の崩れ方にもつむぎらしさが出る。
 
 #### 会話パターン
