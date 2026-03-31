@@ -16,26 +16,26 @@ VOICEVOX公式設定を基盤とし、人気二次創作における慣例で補
 
 ### 設定
 
-| 項目            | 内容                           | 出典                                                                                 |
-|---------------|------------------------------|------------------------------------------------------------------------------------|
-| 概要            | 埼玉県内の高校に通う18歳のギャル            | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
-| 性格            | やんちゃに見えて実は真面目な一面もある          | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
-| 身長            | 155cm                        | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
-| 誕生日           | 11月14日（埼玉県民の日）               | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)|
-| 出身            | 埼玉県                          | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
-| 好きな食べ物        | カレー                          | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
-| チャームポイント      | 目元のほくろ                       | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
-| 趣味            | 動画配信サイトの巡回                   | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/) |
-| キャッチフレーズ      | 「あなたと一緒に声を紡ぐバーチャルギャル！」       | [crimsontech.jp](https://crimsontech.jp/apps/voidol/voice_model/kasukabe-tsumugi/) |
-| 公式自己紹介の口調     | 一人称「あーし」、「～だよ」語尾、「！」多用、「★」装飾 | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
+| 項目            | 内容                           | 出典                                                                                       |
+|---------------|------------------------------|------------------------------------------------------------------------------------------|
+| 概要            | 埼玉県内の高校に通う18歳のギャル            | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/)       |
+| 性格            | やんちゃに見えて実は真面目な一面もある          | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/)       |
+| 身長            | 155cm                        | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/)       |
+| 誕生日           | 11月14日（埼玉県民の日）               | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)               |
+| 出身            | 埼玉県                          | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/)       |
+| 好きな食べ物        | カレー                          | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/)       |
+| チャームポイント      | 目元のほくろ                       | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/)       |
+| 趣味            | 動画配信サイトの巡回                   | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/)       |
+| キャッチフレーズ      | 「あなたと一緒に声を紡ぐバーチャルギャル！」       | [crimsontech.jp](https://crimsontech.jp/apps/voidol/voice_model/kasukabe-tsumugi/)       |
+| 公式自己紹介の口調     | 一人称「あーし」、「～だよ」語尾、「！」多用、「★」装飾 | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)               |
 | 一人称           | あーし                          | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/calls/) |
 | 二人称           | きみ、きみたち、オタクくん                | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/calls/) |
-| 家族            | 春日部つくし（つむぎの制作者・デザイン・CV）のいとこ  | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
-| CV・キャラクターデザイン | 春日部つくし                       | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
-| 合成音声制作者       | ヒホ（ヒロシバ）@hiho_karuta         | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
-| 誕生の背景         | 埼玉県のさらなる発展を願って生まれた           | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)         |
+| 家族            | 春日部つくし（つむぎの制作者・デザイン・CV）のいとこ  | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)               |
+| CV・キャラクターデザイン | 春日部つくし                       | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)               |
+| 合成音声制作者       | ヒホ（ヒロシバ）@hiho_karuta         | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)               |
+| 誕生の背景         | 埼玉県のさらなる発展を願って生まれた           | [tsumugi-official.studio.site](https://tsumugi-official.studio.site/about)               |
 | 他キャラクターとの呼称   | ボイボ寮の各キャラクターとの相互呼称           | [voicevox.hiroshiba.jp](https://voicevox.hiroshiba.jp/dormitory/kasukabe_tsumugi/calls/) |
-| 公式Xアカウント      | @KasukabeTsumugi             | [x.com](https://x.com/KasukabeTsumugi)                                             |
+| 公式Xアカウント      | @KasukabeTsumugi             | [x.com](https://x.com/KasukabeTsumugi)                                                   |
 
 ### 注意事項
 
