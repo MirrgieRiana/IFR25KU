@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7a3520"/>
+      <stop offset="50%" stop-color="#9c4a2b"/>
+      <stop offset="100%" stop-color="#6b2e1a"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="line-fade" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0)"/>
+      <stop offset="20%" stop-color="rgba(255,255,255,0.25)"/>
+      <stop offset="80%" stop-color="rgba(255,255,255,0.25)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1200" height="400" fill="url(#bg)"/>
+
+  <!-- 装飾の水平線 -->
+  <rect x="0" y="215" width="1200" height="1" fill="url(#line-fade)" opacity="0.5"/>
+
+  <!-- 装飾の円 -->
+  <circle cx="150" cy="200" r="120" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <circle cx="1050" cy="200" r="80" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- 上段: Recipe Table（中央���セリフ、グロー付き�� -->
+  <text x="600" y="195" font-family="serif" font-size="48" fill="#ffffff" text-anchor="middle" font-weight="bold" letter-spacing="4" filter="url(#glow)">Recipe Table</text>
+
+  <!-- 下段: レシピデータ（中央、セリフ） -->
+  <text x="600" y="250" font-family="serif" font-size="24" fill="rgba(255,255,255,0.55)" text-anchor="middle" letter-spacing="3">レシピデー���</text>
+</svg>

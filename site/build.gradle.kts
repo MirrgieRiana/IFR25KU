@@ -1,5 +1,7 @@
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonArray
 import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import com.luciad.imageio.webp.WebPWriteParam
 import com.microsoft.playwright.Browser
@@ -113,6 +115,54 @@ val makeLangTable = tasks.register("makeLangTable") {
             }
             write("langTable/lang_table.csv", csv)
         }
+    }
+}
+
+val makeRecipeTable = tasks.register("makeRecipeTable") {
+    group = "generate"
+
+    val recipeDir = rootProject.file("common/src/generated/resources/data/miragefairy2024/recipe")
+
+    inputs.dir(recipeDir)
+    outputs.dir(layout.buildDirectory.dir("recipeTable"))
+
+    fun normalizeJson(element: JsonElement): JsonElement = when {
+        element.isJsonObject -> {
+            val sorted = JsonObject()
+            element.asJsonObject.entrySet().sortedBy { it.key }.forEach { (key, value) ->
+                sorted.add(key, normalizeJson(value))
+            }
+            sorted
+        }
+
+        element.isJsonArray -> {
+            val array = JsonArray()
+            element.asJsonArray.forEach { array.add(normalizeJson(it)) }
+            array
+        }
+
+        else -> element
+    }
+
+    fun write(path: String, content: String) {
+        val outFile = layout.buildDirectory.file(path).get().asFile
+        outFile.parentFile.mkdirs()
+        outFile.writeText(content)
+        println("Wrote to ${outFile.absolutePath}")
+    }
+
+    doLast {
+        val gson = GsonBuilder().create()
+        val jsonl = recipeDir.walkTopDown()
+            .filter { it.isFile && it.extension == "json" }
+            .sortedBy { it.relativeTo(recipeDir).path }
+            .joinToString("") { file ->
+                val json = gson.fromJson(file.readText(), JsonElement::class.java).asJsonObject
+                val relativePath = file.relativeTo(recipeDir).invariantSeparatorsPath.removeSuffix(".json")
+                json.addProperty("id", "miragefairy2024:$relativePath")
+                gson.toJson(normalizeJson(json)) + "\n"
+            }
+        write("recipeTable/recipe_table.jsonl", jsonl)
     }
 }
 
@@ -288,6 +338,7 @@ val buildSite = tasks.register<Sync>("buildSite") {
     group = "build"
     from(jekyllBuild)
     from(makeLangTable)
+    from(makeRecipeTable)
     from("src/main/resources") {
         include("**/*.md")
     }

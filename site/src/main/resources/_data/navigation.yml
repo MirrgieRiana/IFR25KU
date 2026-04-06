@@ -19,6 +19,8 @@ main:
         url: https://github.com/MirrgieRiana/IFR25KU
       - title: Lang Table
         url: /lang-table-index.html
+      - title: Recipe Table
+        url: /recipe-table-index.html
       - title: IFRKU Official Web Site (Old)
         url: https://kakera-unofficial.notion.site/ifrku
       - title: Discord
@@ -40,3 +42,7 @@ sidebar:
         url: /lang_table.jsonl
       - title: Lang Table (CSV)
         url: /lang_table.csv
+      - title: Recipe Table
+        url: /recipe-table-index.html
+      - title: Recipe Table (JSONL)
+        url: /recipe_table.jsonl
