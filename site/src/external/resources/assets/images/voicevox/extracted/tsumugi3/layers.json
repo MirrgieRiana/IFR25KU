@@ -1,0 +1,122 @@
+{
+  "width": 1082,
+  "height": 1820,
+  "layers": [
+    { "type": "leaf", "name": "背景", "visible": false, "id": "1", "bounds": [0, 0, 1082, 1820] },
+    { "type": "leaf", "name": "*体", "visible": true, "id": "2", "bounds": [272, 37, 510, 1761] },
+    { "type": "leaf", "name": "!サイドテール:flipx", "visible": false, "id": "3", "bounds": [126, 94, 275, 631] },
+    { "type": "leaf", "name": "!サイドテール", "visible": true, "id": "4", "bounds": [693, 98, 289, 631] },
+    {
+      "type": "group",
+      "name": "!右腕",
+      "visible": true,
+      "children": [
+        { "type": "leaf", "name": "*ゆびさし", "visible": false, "id": "5-1", "bounds": [173, 395, 262, 682] },
+        { "type": "leaf", "name": "挿入されたイメージ", "visible": false, "id": "5-2", "bounds": [243, 503, 192, 574] },
+        { "type": "leaf", "name": "*口元", "visible": false, "id": "5-3", "bounds": [243, 449, 277, 628] },
+        { "type": "leaf", "name": "*ピース", "visible": false, "id": "5-4", "bounds": [197, 379, 238, 698] },
+        { "type": "leaf", "name": "*基本", "visible": true, "id": "5-5", "bounds": [130, 503, 305, 575] },
+        { "type": "leaf", "name": "レイヤー 57", "visible": false, "id": "5-6", "bounds": [135, 838, 163, 171] }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "!左腕",
+      "visible": true,
+      "children": [
+        { "type": "leaf", "name": "*ピース", "visible": false, "id": "6-1", "bounds": [585, 368, 244, 723] },
+        { "type": "leaf", "name": "*口元", "visible": false, "id": "6-2", "bounds": [522, 447, 307, 644] },
+        { "type": "leaf", "name": "*基本", "visible": true, "id": "6-3", "bounds": [556, 528, 362, 663] }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "!顔色",
+      "visible": true,
+      "children": [
+        { "type": "leaf", "name": "かげり", "visible": false, "id": "7-1", "bounds": [382, 197, 275, 145] },
+        { "type": "leaf", "name": "ほっぺ", "visible": true, "id": "7-2", "bounds": [375, 300, 289, 141] },
+        { "type": "leaf", "name": "ほっぺ赤め", "visible": false, "id": "7-3", "bounds": [369, 300, 318, 154] }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "!目",
+      "visible": true,
+      "children": [
+        { "type": "leaf", "name": "*〇〇", "visible": false, "id": "8-1", "bounds": [407, 286, 225, 77] },
+        { "type": "leaf", "name": "*><", "visible": false, "id": "8-2", "bounds": [390, 275, 252, 96] },
+        { "type": "leaf", "name": "*にっこり", "visible": false, "id": "8-3", "bounds": [373, 301, 291, 58] },
+        { "type": "leaf", "name": "*閉じ", "visible": false, "id": "8-4", "bounds": [389, 293, 272, 70] },
+        { "type": "leaf", "name": "*上向き", "visible": false, "id": "8-5", "bounds": [369, 255, 290, 116] },
+        {
+          "type": "group",
+          "name": "*基本目セット",
+          "visible": true,
+          "children": [
+            { "type": "leaf", "name": "*白目見開き", "visible": false, "id": "8-6-1", "bounds": [369, 255, 290, 116] },
+            { "type": "leaf", "name": "*白目基本", "visible": true, "id": "8-6-2", "bounds": [378, 263, 287, 103] },
+            {
+              "type": "group",
+              "name": "!黒目",
+              "visible": true,
+              "children": [
+                { "type": "leaf", "name": "*無", "visible": false, "id": "8-6-3-1", "bounds": [414, 278, 215, 86] },
+                { "type": "leaf", "name": "*ハート", "visible": false, "id": "8-6-3-2", "bounds": [414, 278, 215, 86] },
+                { "type": "leaf", "name": "*きらーん", "visible": false, "id": "8-6-3-3", "bounds": [414, 278, 215, 86] },
+                { "type": "leaf", "name": "*目逸らし", "visible": false, "id": "8-6-3-4", "bounds": [407, 279, 217, 86] },
+                { "type": "leaf", "name": "*カメラ目線", "visible": false, "id": "8-6-3-5", "bounds": [418, 276, 219, 87] },
+                { "type": "leaf", "name": "*基本", "visible": true, "id": "8-6-3-6", "bounds": [414, 278, 215, 86] }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "!まゆ",
+      "visible": true,
+      "children": [
+        { "type": "leaf", "name": "*困り眉", "visible": false, "id": "9-1", "bounds": [396, 218, 231, 33] },
+        { "type": "leaf", "name": "*おこ眉", "visible": false, "id": "9-2", "bounds": [396, 203, 222, 58] },
+        { "type": "leaf", "name": "*ごきげん眉", "visible": false, "id": "9-3", "bounds": [386, 220, 244, 36] },
+        { "type": "leaf", "name": "*普通眉", "visible": true, "id": "9-4", "bounds": [394, 222, 238, 30] }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "!口",
+      "visible": true,
+      "children": [
+        { "type": "leaf", "name": "*にしー", "visible": false, "id": "10-1", "bounds": [492, 403, 72, 38] },
+        { "type": "leaf", "name": "*いー", "visible": false, "id": "10-2", "bounds": [497, 407, 65, 33] },
+        { "type": "leaf", "name": "*△", "visible": false, "id": "10-3", "bounds": [508, 398, 44, 39] },
+        { "type": "leaf", "name": "*ぺろり", "visible": false, "id": "10-4", "bounds": [498, 410, 76, 24] },
+        { "type": "leaf", "name": "*えあー", "visible": false, "id": "10-5", "bounds": [490, 401, 76, 40] },
+        { "type": "leaf", "name": "*むん", "visible": false, "id": "10-6", "bounds": [498, 418, 66, 15] },
+        { "type": "leaf", "name": "*おあー", "visible": false, "id": "10-7", "bounds": [497, 383, 63, 66] },
+        { "type": "leaf", "name": "*お", "visible": false, "id": "10-8", "bounds": [503, 401, 51, 40] },
+        { "type": "leaf", "name": "*む", "visible": false, "id": "10-9", "bounds": [521, 423, 18, 12] },
+        { "type": "leaf", "name": "*ほあー", "visible": false, "id": "10-10", "bounds": [494, 392, 65, 57] },
+        { "type": "leaf", "name": "*むふ", "visible": false, "id": "10-11", "bounds": [497, 412, 61, 19] },
+        { "type": "leaf", "name": "*わあーい", "visible": false, "id": "10-12", "bounds": [493, 392, 68, 60] },
+        { "type": "leaf", "name": "*わあ", "visible": true, "id": "10-13", "bounds": [494, 400, 65, 44] },
+        { "type": "leaf", "name": "*ほほえみ", "visible": false, "id": "10-14", "bounds": [501, 411, 57, 26] }
+      ]
+    },
+    { "type": "leaf", "name": "!ほくろ:flipx", "visible": false, "id": "11", "bounds": [623, 364, 12, 12] },
+    { "type": "leaf", "name": "!ほくろ", "visible": true, "id": "12", "bounds": [405, 374, 12, 12] },
+    {
+      "type": "group",
+      "name": "表情記号",
+      "visible": true,
+      "children": [
+        { "type": "leaf", "name": "なみだめ", "visible": false, "id": "13-1", "bounds": [396, 341, 253, 36] },
+        { "type": "leaf", "name": "汗", "visible": false, "id": "13-2", "bounds": [430, 412, 21, 30] },
+        { "type": "leaf", "name": "ヘアピン", "visible": true, "id": "13-3", "bounds": [438, 179, 80, 54] },
+        { "type": "leaf", "name": "鼻", "visible": true, "id": "13-4", "bounds": [446, 298, 108, 86] }
+      ]
+    }
+  ]
+}
