@@ -1,5 +1,5 @@
 ---
-title: 公式Webサイトを公開しました
+title: IFR25KU公式Webサイトを公開しました
 description: IFR25KUの公式Webサイトを公開。CHANGELOG、翻訳テーブル、ブログなどのコンテンツを提供
 layout: single
 header:
