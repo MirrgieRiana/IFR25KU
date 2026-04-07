@@ -19,19 +19,21 @@
 #   パーツ名（"眉"、"目"、"口" 等）をキー、選択肢のラベルを値として指定する。
 #   radio パーツ: 未指定時は "default": true の要素が使用される。
 #   checkbox パーツ: 未指定時は何も選択されない。カンマ区切りで複数指定可能。
-#   "color": 枠線のベース色（16進数カラーコード、デフォルト: "#cccccc"）。
-#            枠線色は Say.derive_border_color で自動導出される。
+#   "color": 枠線色の上書き（16進数カラーコード）。
+#            未指定時は _data/voicevox.yml で定義されたデフォルト色を使用する。
 #
 # =============================================================================
 
 require "json"
+require "yaml"
 
 module Say
   class VoicevoxProvider
     # extracted/ ディレクトリのパスとスラグを受け取り、
     # presets.json と layers.json を読み込んで初期化する。
-    def initialize(slug, data_dir)
+    def initialize(slug, data_dir, color)
       @slug = slug
+      @color = color
       presets_data = JSON.parse(File.read(File.join(data_dir, "presets.json")))
       layers_data = JSON.parse(File.read(File.join(data_dir, "layers.json")))
       @layers_tree = layers_data["layers"]
@@ -51,8 +53,7 @@ module Say
       face_base = "#{baseurl}/assets/images/voicevox/extracted/#{@slug}/face"
 
       layer_ids = collect_layer_ids(params)
-      color = params["color"] || "#cccccc"
-      border_color = Say.derive_border_color(color)
+      border_color = params["color"] || @color
 
       imgs = layer_ids.map { |id| %(<img src="#{face_base}/#{id}.png" alt="" />) }
       border_svg = %(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="none" stroke="#{border_color}" stroke-width="4"/></svg>)
@@ -138,14 +139,19 @@ module Say
   end
 end
 
-# extracted/ ディレクトリ内のキャラクターを登録する
+# _data/voicevox.yml に定義されたキャラクターを登録する
 # _plugins/say/ の 2 階層上が Jekyll ソースルート
-voicevox_base = File.join(File.expand_path("../..", __dir__), "assets/images/voicevox/extracted")
-if File.directory?(voicevox_base)
-  Dir.children(voicevox_base).sort.each do |entry|
-    data_dir = File.join(voicevox_base, entry)
-    next unless File.directory?(data_dir)
-    next unless File.exist?(File.join(data_dir, "presets.json"))
-    Say.register_character(entry, Say::VoicevoxProvider.new(entry, data_dir))
-  end
+source_root = File.expand_path("../..", __dir__)
+voicevox_yml = File.join(source_root, "_data/voicevox.yml")
+voicevox_base = File.join(source_root, "assets/images/voicevox/extracted")
+
+raise "VOICEVOX: _data/voicevox.yml not found" unless File.exist?(voicevox_yml)
+
+YAML.safe_load(File.read(voicevox_yml))&.each do |slug, config|
+  data_dir = File.join(voicevox_base, slug)
+  raise "VOICEVOX: extracted directory not found: #{slug}" unless File.directory?(data_dir)
+  raise "VOICEVOX: presets.json not found: #{slug}" unless File.exist?(File.join(data_dir, "presets.json"))
+  color = config&.dig("color")
+  raise "VOICEVOX: color not defined for #{slug}" unless color
+  Say.register_character(slug, Say::VoicevoxProvider.new(slug, data_dir, color))
 end
