@@ -7,10 +7,10 @@
         "name": "まゆ",
         "mode": "radio",
         "elements": [
+          { "label": "普通眉", "layers": ["!まゆ/*普通眉"], "default": true },
           { "label": "困り眉", "layers": ["!まゆ/*困り眉"] },
           { "label": "おこ眉", "layers": ["!まゆ/*おこ眉"] },
-          { "label": "ごきげん眉", "layers": ["!まゆ/*ごきげん眉"] },
-          { "label": "普通眉", "layers": ["!まゆ/*普通眉"] }
+          { "label": "ごきげん眉", "layers": ["!まゆ/*ごきげん眉"] }
         ]
       },
       {
@@ -23,7 +23,7 @@
           { "label": "閉じ", "layers": ["!目/*閉じ"] },
           { "label": "上向き", "layers": ["!目/*上向き"] },
           "break",
-          { "label": "通常目", "layers": ["!目/*基本目セット/*白目基本", "!目/*基本目セット/!黒目/*基本"] },
+          { "label": "通常目", "layers": ["!目/*基本目セット/*白目基本", "!目/*基本目セット/!黒目/*基本"], "default": true },
           { "label": "無", "layers": ["!目/*基本目セット/*白目基本", "!目/*基本目セット/!黒目/*無"] },
           { "label": "ハート", "layers": ["!目/*基本目セット/*白目基本", "!目/*基本目セット/!黒目/*ハート"] },
           { "label": "きらーん", "layers": ["!目/*基本目セット/*白目基本", "!目/*基本目セット/!黒目/*きらーん"] },
@@ -51,7 +51,7 @@
           { "label": "おあー", "layers": ["!口/*おあー"] },
           { "label": "お", "layers": ["!口/*お"] },
           { "label": "む", "layers": ["!口/*む"] },
-          { "label": "ほあー", "layers": ["!口/*ほあー"] },
+          { "label": "ほあー", "layers": ["!口/*ほあー"], "default": true },
           { "label": "むふ", "layers": ["!口/*むふ"] },
           { "label": "わあーい", "layers": ["!口/*わあーい"] },
           { "label": "わあ", "layers": ["!口/*わあ"] },
@@ -62,28 +62,35 @@
         "name": "顔色",
         "mode": "checkbox",
         "elements": [
-          { "label": "かげり", "layers": ["!顔色/かげり"] },
-          { "label": "ほっぺ", "layers": ["!顔色/ほっぺ"] },
-          { "label": "ほっぺ赤め", "layers": ["!顔色/ほっぺ赤め"] }
+          { "label": "かげり", "layers": ["!顔色/かげり"] }
+        ]
+      },
+      {
+        "name": "ほっぺ",
+        "mode": "radio",
+        "elements": [
+          { "label": "なし", "layers": [] },
+          { "label": "基本", "layers": ["!顔色/ほっぺ"], "default": true },
+          { "label": "赤め", "layers": ["!顔色/ほっぺ赤め"] }
         ]
       },
       {
         "name": "左腕",
         "mode": "radio",
         "elements": [
+          { "label": "基本", "layers": ["!左腕/*基本"], "default": true },
           { "label": "ピース", "layers": ["!左腕/*ピース"] },
-          { "label": "口元", "layers": ["!左腕/*口元"] },
-          { "label": "基本", "layers": ["!左腕/*基本"] }
+          { "label": "口元", "layers": ["!左腕/*口元"] }
         ]
       },
       {
         "name": "右腕",
         "mode": "radio",
         "elements": [
+          { "label": "基本", "layers": ["!右腕/*基本"], "default": true },
           { "label": "ゆびさし", "layers": ["!右腕/*ゆびさし"] },
           { "label": "口元", "layers": ["!右腕/*口元"] },
-          { "label": "ピース", "layers": ["!右腕/*ピース"] },
-          { "label": "基本", "layers": ["!右腕/*基本"] }
+          { "label": "ピース", "layers": ["!右腕/*ピース"] }
         ]
       },
       {
