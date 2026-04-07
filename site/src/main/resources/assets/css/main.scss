@@ -800,6 +800,22 @@ body {
   }
 }
 
+.say-voicevox {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 50%;
+
+  img, svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
 .say__balloon {
   flex: 1;
   min-width: 0;

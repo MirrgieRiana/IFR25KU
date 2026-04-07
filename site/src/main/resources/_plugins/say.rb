@@ -46,7 +46,7 @@
 # ## Provider インターフェース
 #
 #   presets  — プリセット名からパラメータハッシュへのマッピングを返す
-#   resolve(params) — 解決済みパラメータを受け取り、顔部分のHTML文字列を返す
+#   resolve(params, context) — 解決済みパラメータとLiquidコンテキストを受け取り、顔部分のHTML文字列を返す
 #
 # ## HTML出力構造
 #
@@ -132,7 +132,7 @@ module Say
       params.merge!(@overrides)
 
       # 顔部分の HTML を生成
-      face_html = provider.resolve(params)
+      face_html = provider.resolve(params, context)
 
       # ブロック内容を取得（Liquid の処理済み、Markdown は未処理）
       content = super

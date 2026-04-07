@@ -180,6 +180,7 @@ val installJekyllBundle = tasks.register<Exec>("installJekyllBundle") {
 val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     group = "other"
     from("src/main/resources")
+    from("src/external/resources")
     from("src/main/bundle")
     into(layout.buildDirectory.dir("jekyllSource"))
 }
