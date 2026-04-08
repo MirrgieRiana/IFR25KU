@@ -4,7 +4,7 @@ description: IFR25KUの公式Webサイトを公開。CHANGELOG、翻訳テーブ
 layout: single
 header:
   teaser: /assets/images/2026/03/21/website-launch/2025-11-04_20.09.58.webp
-tags: [お知らせ]
+tags: [ お知らせ ]
 ---
 
 IFR25KU（The Institute of Fairy Research 2025 Kakera Unofficial）の公式Webサイトを公開しました。
