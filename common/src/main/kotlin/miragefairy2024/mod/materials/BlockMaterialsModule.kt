@@ -6,6 +6,7 @@ import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG
 import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG
 import miragefairy2024.mod.biome.RetrospectiveCityBiomeCard
+import miragefairy2024.mod.enchantment.contents.STICKY_MINING_BLOCK_TAG
 import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
 import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
@@ -115,7 +116,7 @@ open class BlockMaterialCard(
             "magnetite_block", EnJa("Magnetite Block", "磁鉄鉱ブロック"),
             PoemList(null),
             MapColor.TERRACOTTA_BLUE, 5.0F, 5.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.MAGNETITE),
-        ).needTool(ToolType.PICKAXE).beaconBase().init {
+        ).needTool(ToolType.PICKAXE).beaconBase().tag(STICKY_MINING_BLOCK_TAG).init {
             registerCompressionRecipeGeneration(MaterialCard.MAGNETITE.item, { MaterialCard.MAGNETITE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
         val FLUORITE_BLOCK = !BlockMaterialCard(
