@@ -807,7 +807,15 @@ body {
   overflow: hidden;
   border-radius: 50%;
 
-  img, svg {
+  img {
+    position: absolute;
+    top: 3%;
+    left: 3%;
+    width: 94%;
+    height: 94%;
+  }
+
+  svg {
     position: absolute;
     top: 0;
     left: 0;

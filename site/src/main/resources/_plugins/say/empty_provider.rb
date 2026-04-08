@@ -48,8 +48,8 @@ module Say
       color = params["color"] || "#cccccc"
       border_color = Say.derive_border_color(color)
       <<~SVG
-        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-          <circle cx="32" cy="32" r="28" fill="#{color}" stroke="#{border_color}" stroke-width="4"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="44" fill="#{color}" stroke="#{border_color}" stroke-width="6"/>
         </svg>
       SVG
     end
