@@ -689,6 +689,8 @@ body {
 // teaser自動表示画像の下マージン
 .page__teaser-banner {
   width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
   margin-bottom: 1.5em;
 }
 
