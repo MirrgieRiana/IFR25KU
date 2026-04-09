@@ -166,6 +166,70 @@ val makeRecipeTable = tasks.register("makeRecipeTable") {
     }
 }
 
+val generateOgImages = tasks.register("generateOgImages") {
+    group = "generate"
+
+    val resourcesDir = file("src/main/resources")
+    val outputDir = resourcesDir.resolve("assets/images")
+    val regenerate = project.hasProperty("regenerate")
+
+    inputs.files(fileTree(resourcesDir) { include("*.md", "_posts/*.md") })
+    inputs.dir(resourcesDir.resolve("assets/images"))
+
+    doLast {
+        val outputDirFile = outputDir
+        outputDirFile.mkdirs()
+
+        // .mdファイルを収集（ルート + _posts）
+        val mdFiles = resourcesDir.listFiles { f -> f.isFile && f.extension == "md" }?.toList().orEmpty() +
+            (resourcesDir.resolve("_posts").listFiles { f -> f.isFile && f.extension == "md" }?.toList().orEmpty())
+
+        val defaultBg = resourcesDir.resolve("assets/images/og-default-background.svg")
+        OgImageRenderer(defaultBg).use { renderer ->
+            mdFiles.forEach { mdFile ->
+                val frontMatter = parseFrontMatter(mdFile) ?: return@forEach
+
+                // titleを取得
+                val title = frontMatter["title"] as? String ?: return@forEach
+
+                // header画像パスを取得（優先順位: og_background > overlay_image > image > teaser）
+                @Suppress("UNCHECKED_CAST")
+                val header = frontMatter["header"] as? Map<String, Any>
+                val imagePath = (header?.get("og_background") ?: header?.get("overlay_image") ?: header?.get("image") ?: header?.get("teaser")) as? String
+
+                // page.url準拠の出力パスを決定
+                val isPost = mdFile.parentFile.name == "_posts"
+                val outputFile = if (isPost) {
+                    // _posts/YYYY-MM-DD-title.md → YYYY/MM/DD/title.og.webp
+                    val name = mdFile.nameWithoutExtension
+                    val year = name.substring(0, 4)
+                    val month = name.substring(5, 7)
+                    val day = name.substring(8, 10)
+                    val slug = name.substring(11)
+                    outputDirFile.resolve("$year/$month/$day/$slug.og.webp")
+                } else {
+                    // page.md → page.og.webp
+                    outputDirFile.resolve("${mdFile.nameWithoutExtension}.og.webp")
+                }
+
+                // 既に存在する場合はスキップ（-Pregenerateで強制再生成）
+                if (!regenerate && outputFile.exists()) {
+                    logger.lifecycle("OG image already exists, skipping: ${outputFile.absolutePath}")
+                    return@forEach
+                }
+
+                outputFile.parentFile.mkdirs()
+
+                // ベース画像を解決
+                val baseImageFile = if (imagePath != null) resourcesDir.resolve(imagePath.removePrefix("/")) else null
+
+                renderer.render(title, baseImageFile, outputFile)
+                logger.lifecycle("Generated OG image: ${outputFile.absolutePath}")
+            }
+        }
+    }
+}
+
 val installJekyllBundle = tasks.register<Exec>("installJekyllBundle") {
     group = "other"
 
@@ -179,6 +243,7 @@ val installJekyllBundle = tasks.register<Exec>("installJekyllBundle") {
 
 val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     group = "other"
+    dependsOn(generateOgImages)
     from("src/main/resources")
     from("src/external/resources")
     from("src/main/bundle")
@@ -264,70 +329,6 @@ class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
         page?.close()
         browser?.close()
         playwright?.close()
-    }
-}
-
-val generateOgImages = tasks.register("generateOgImages") {
-    group = "generate"
-
-    val resourcesDir = file("src/main/resources")
-    val outputDir = resourcesDir.resolve("assets/images")
-    val regenerate = project.hasProperty("regenerate")
-
-    inputs.files(fileTree(resourcesDir) { include("*.md", "_posts/*.md") })
-    inputs.dir(resourcesDir.resolve("assets/images"))
-
-    doLast {
-        val outputDirFile = outputDir
-        outputDirFile.mkdirs()
-
-        // .mdファイルを収集（ルート + _posts）
-        val mdFiles = resourcesDir.listFiles { f -> f.isFile && f.extension == "md" }?.toList().orEmpty() +
-            (resourcesDir.resolve("_posts").listFiles { f -> f.isFile && f.extension == "md" }?.toList().orEmpty())
-
-        val defaultBg = resourcesDir.resolve("assets/images/og-default-background.svg")
-        OgImageRenderer(defaultBg).use { renderer ->
-            mdFiles.forEach { mdFile ->
-                val frontMatter = parseFrontMatter(mdFile) ?: return@forEach
-
-                // titleを取得
-                val title = frontMatter["title"] as? String ?: return@forEach
-
-                // header画像パスを取得（優先順位: og_background > overlay_image > image > teaser）
-                @Suppress("UNCHECKED_CAST")
-                val header = frontMatter["header"] as? Map<String, Any>
-                val imagePath = (header?.get("og_background") ?: header?.get("overlay_image") ?: header?.get("image") ?: header?.get("teaser")) as? String
-
-                // page.url準拠の出力パスを決定
-                val isPost = mdFile.parentFile.name == "_posts"
-                val outputFile = if (isPost) {
-                    // _posts/YYYY-MM-DD-title.md → YYYY/MM/DD/title.og.webp
-                    val name = mdFile.nameWithoutExtension
-                    val year = name.substring(0, 4)
-                    val month = name.substring(5, 7)
-                    val day = name.substring(8, 10)
-                    val slug = name.substring(11)
-                    outputDirFile.resolve("$year/$month/$day/$slug.og.webp")
-                } else {
-                    // page.md → page.og.webp
-                    outputDirFile.resolve("${mdFile.nameWithoutExtension}.og.webp")
-                }
-
-                // 既に存在する場合はスキップ（-Pregenerateで強制再生成）
-                if (!regenerate && outputFile.exists()) {
-                    logger.lifecycle("OG image already exists, skipping: ${outputFile.absolutePath}")
-                    return@forEach
-                }
-
-                outputFile.parentFile.mkdirs()
-
-                // ベース画像を解決
-                val baseImageFile = if (imagePath != null) resourcesDir.resolve(imagePath.removePrefix("/")) else null
-
-                renderer.render(title, baseImageFile, outputFile)
-                logger.lifecycle("Generated OG image: ${outputFile.absolutePath}")
-            }
-        }
     }
 }
 
