@@ -844,7 +844,7 @@ body {
   position: relative;
   padding: calc(1em - 2px) 1.2em;
   background: #ffffff;
-  border: 2px solid $border-color;
+  border: 2px solid var(--say-color, #{$border-color});
   border-radius: 12px;
 
   &::before {
@@ -854,7 +854,7 @@ body {
     left: -10px;
     border-width: 8px 10px 8px 0;
     border-style: solid;
-    border-color: transparent $border-color transparent transparent;
+    border-color: transparent var(--say-color, #{$border-color}) transparent transparent;
   }
 
   &::after {
@@ -879,4 +879,13 @@ body {
 .say--error {
   color: #cc0000;
   font-weight: bold;
+}
+
+.page__content img {
+  display: block;
+  margin: 0 auto;
+}
+
+.space {
+  height: 4em;
 }

@@ -43,6 +43,12 @@ module Say
       PRESETS
     end
 
+    # 吹き出し枠線に使うキャラクター色を返す。
+    def color(params)
+      fill = params["color"] || "#cccccc"
+      Say.derive_border_color(fill)
+    end
+
     # 解決済みパラメータから、顔部分の HTML（SVG）を生成して返す。
     def resolve(params, _context = nil)
       color = params["color"] || "#cccccc"

@@ -46,6 +46,11 @@ module Say
       {}
     end
 
+    # 吹き出し枠線に使うキャラクター色を返す。
+    def color(params)
+      params["color"] || @color
+    end
+
     # 解決済みパラメータから、顔部分の HTML を生成して返す。
     # 各パーツのレイヤー PNG を absolute 配置で重ね合わせる。
     def resolve(params, context = nil)

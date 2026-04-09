@@ -134,6 +134,10 @@ module Say
       # 顔部分の HTML を生成
       face_html = provider.resolve(params, context)
 
+      # キャラクター色を取得し、CSS カスタムプロパティとして .say に付与する
+      character_color = provider.color(params)
+      style = character_color ? %( style="--say-color: #{character_color}") : ""
+
       # ブロック内容を取得（Liquid の処理済み、Markdown は未処理）
       content = super
 
@@ -141,7 +145,7 @@ module Say
       # say__balloon に markdown="1" を付けることで、
       # kramdown がブロック内容を Markdown として処理する
       <<~HTML
-        <div class="say">
+        <div class="say"#{style}>
           <div class="say__face">
             #{face_html}
           </div>
