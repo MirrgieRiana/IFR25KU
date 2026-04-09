@@ -14,9 +14,6 @@ tags: [ アップデート, ミラージュフェアリー劇場 ]
 {% say zundamon23 %}これがアタノールなのだ。燃料をゆっくり供給して素材を長い時間かけて加工できる機械なのだ。{% endsay %}
 {% say tsumugi3:口=にしー %}へーーー！！今日は何作るの？{% endsay %}
 {% say zundamon23 %}今からやるのだ。ちょうど材料を準備してたのだ。{% endsay %}
-
-{% space %}
-
 ![]({{ "/assets/images/2026/04/09/aqua_vitae/aqua-vitae.webp" | relative_url }})
 {% say tsumugi3 %}あ、その瓶、何？{% endsay %}
 {% say zundamon23 %}生命の水なのだ。{% endsay %}
@@ -26,9 +23,6 @@ tags: [ アップデート, ミラージュフェアリー劇場 ]
 {% say tsumugi3:まゆ=困り眉 %}炉に注ぐ……{% endsay %}
 {% say zundamon23 %}妖精の力と合わさると、素材の性質を変えられるのだ。{% endsay %}
 {% say tsumugi3 %}性質を……一体何を変えるの？{% endsay %}
-
-{% space %}
-
 ![]({{ "/assets/images/2026/04/09/aqua_vitae/recipe.webp" | relative_url }})
 {% say zundamon23 %}土を入れるのだ。{% endsay %}
 {% say tsumugi3:口=わあ %}土？{% endsay %}
@@ -36,15 +30,15 @@ tags: [ アップデート, ミラージュフェアリー劇場 ]
 {% say tsumugi3 %}――一体何が出てくるんだろ……{% endsay %}
 {% say zundamon23 %}もうすぐなのだ。{% endsay %}
 {% say tsumugi3 %}……{% endsay %}
+
+{% space %}
+
 {% say tsumugi3:口=わあ %}え。{% endsay %}
 ![]({{ "/assets/images/2026/04/09/aqua_vitae/pork.webp" | relative_url }})
 {% say tsumugi3 %}……お肉…？{% endsay %}
 {% say zundamon23 %}豚肉なのだ。{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}土から……豚肉！？{% endsay %}
 {% say zundamon23 %}土から豚肉なのだ。{% endsay %}
-
-{% space %}
-
 ![]({{ "/assets/images/2026/04/09/aqua_vitae/aqua-vitae.webp" | relative_url }})
 {% say tsumugi3 %}……生命の水って、そういうことなの！？！？！？{% endsay %}
 ![]({{ "/assets/images/2026/04/09/aqua_vitae/aqua-vitae-crafting.webp" | relative_url }})
