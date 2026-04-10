@@ -85,16 +85,9 @@ $navicon-link-color-hover: #a83dba;
     margin-inline-end: 0;
     grid-column: 2;
     grid-row: 1 / span 999;
-    align-self: start;
+    align-self: stretch;
   }
 
-  &.sticky {
-    @include breakpoint($large) {
-      float: none;
-      position: sticky;
-      top: 2em;
-    }
-  }
 }
 
 .splash .sidebar__right {
@@ -228,6 +221,10 @@ a.site-title {
 }
 
 .toc {
+  position: sticky;
+  top: 2em;
+  max-height: calc(100vh - 4em);
+  overflow-y: auto;
   background: transparent;
   border: none;
   box-shadow: none;
