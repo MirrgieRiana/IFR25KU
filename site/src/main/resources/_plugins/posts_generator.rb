@@ -3,22 +3,21 @@
 require "json"
 
 # =============================================================================
-# theater_posts_generator.rb — Theater Posts JSON Generator
+# posts_generator.rb — Posts JSON Generator
 # =============================================================================
 #
-# "ミラージュフェアリー劇場" タグを持つ全記事のメタデータを JSON ファイルとして
-# ビルド成果物に書き出す Jekyll フック。
+# 全記事のメタデータを JSON ファイルとしてビルド成果物に書き出す Jekyll フック。
 #
 # ## 出力先
 #
-#   <dest>/theater-posts.json
+#   <dest>/posts.json
 #
 # ## 出力形式
 #
 #   [
 #     {
 #       "title":  "記事タイトル",
-#       "url":    "/IFR25KU/2026/04/09/aqua_vitae.html",
+#       "url":    "/IFR25KU/2026/04/09/aqua-vitae.html",
 #       "teaser": "/IFR25KU/assets/images/.../teaser.webp",  // null の場合あり
 #       "tags":   ["アップデート", "ミラージュフェアリー劇場"]
 #     },
@@ -27,12 +26,10 @@ require "json"
 #
 # =============================================================================
 
-THEATER_TAG = "ミラージュフェアリー劇場"
-
 Jekyll::Hooks.register :site, :post_write do |site|
   baseurl = site.config["baseurl"].to_s
 
-  posts = (site.tags[THEATER_TAG] || []).map do |post|
+  posts = site.posts.docs.map do |post|
     teaser = post.data.dig("header", "teaser")
     {
       "title"  => post.data["title"],
@@ -42,6 +39,6 @@ Jekyll::Hooks.register :site, :post_write do |site|
     }
   end
 
-  dest = File.join(site.dest, "theater-posts.json")
+  dest = File.join(site.dest, "posts.json")
   File.write(dest, JSON.generate(posts))
 end
