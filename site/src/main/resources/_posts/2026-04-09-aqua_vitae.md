@@ -1,6 +1,6 @@
 ---
-title: "【生命の水】土で豚肉を作る方法【つむぎ×ずんだもん】"
-description: 春日部つむぎとずんだもんが生命の水をアタノールに注いだお話です。
+title: "【生命の水】土で肉を作る方法【つむぎ×ずんだもん】"
+description: 春日部つむぎとずんだもんが生命の水をアタノールに注ぐ話
 layout: single
 header:
   teaser: /assets/images/2026/04/09/aqua_vitae/aqua-vitae-overview.webp
