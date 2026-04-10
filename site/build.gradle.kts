@@ -166,6 +166,80 @@ val makeRecipeTable = tasks.register("makeRecipeTable") {
     }
 }
 
+private fun parseFrontMatter(file: File): Map<String, Any>? {
+    val content = file.readText()
+    val match = Regex("\\A---\\r?\\n(.*?)\\r?\\n---(?:\\r?\\n|\\Z)", RegexOption.DOT_MATCHES_ALL).find(content) ?: return null
+    @Suppress("UNCHECKED_CAST")
+    return Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any>
+}
+
+class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
+    private var playwright: Playwright? = null
+    private var browser: Browser? = null
+    private var page: Page? = null
+
+    private fun ensureInitialized() {
+        if (playwright == null) {
+            ImageIO.scanForPlugins()
+            playwright = Playwright.create()
+            browser = playwright!!.chromium().launch()
+            page = browser!!.newPage().apply { setViewportSize(1200, 630) }
+        }
+    }
+
+    private fun toDataUri(file: File): String {
+        val base64 = getEncoder().encodeToString(file.readBytes())
+        val mimeType = when (file.extension.lowercase()) {
+            "webp" -> "image/webp"
+            "svg" -> "image/svg+xml"
+            "png" -> "image/png"
+            "jpg", "jpeg" -> "image/jpeg"
+            else -> "application/octet-stream"
+        }
+        return "data:$mimeType;base64,$base64"
+    }
+
+    fun render(title: String, backgroundImageFile: File?, outputFile: File) {
+        ensureInitialized()
+        val effectiveFile = if (backgroundImageFile != null && backgroundImageFile.exists()) backgroundImageFile else defaultBackgroundFile
+        val backgroundCss = "background: url('${toDataUri(effectiveFile)}') center/cover no-repeat"
+        val escapedTitle = title.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;")
+        page!!.setContent(
+            """
+            <!DOCTYPE html>
+            <html>
+            <head><meta charset="utf-8"></head>
+            <body style="margin: 0; width: 1200px; height: 630px; $backgroundCss; display: flex; align-items: flex-start;">
+                <div style="width: 100%; padding: 24px 40px; background: rgba(0, 0, 0, 0.5); color: white; font-family: 'Noto Sans CJK JP', sans-serif; font-size: 36px; line-height: 1.4; word-break: auto-phrase;">
+                    $escapedTitle
+                </div>
+            </body>
+            </html>
+        """.trimIndent()
+        )
+        val pngBytes = page!!.screenshot()
+        val image = ImageIO.read(ByteArrayInputStream(pngBytes))!!
+        val writer = ImageIO.getImageWritersByMIMEType("image/webp").next()
+        val writeParam = writer.defaultWriteParam as WebPWriteParam
+        writeParam.compressionMode = ImageWriteParam.MODE_EXPLICIT
+        writeParam.compressionType = writeParam.compressionTypes[WebPWriteParam.LOSSY_COMPRESSION]
+        writeParam.compressionQuality = 0.80f
+        val webpBuffer = ByteArrayOutputStream()
+        ImageIO.createImageOutputStream(webpBuffer).use { imageOut ->
+            writer.output = imageOut
+            writer.write(null, IIOImage(image, null, null), writeParam)
+        }
+        writer.dispose()
+        outputFile.writeBytes(webpBuffer.toByteArray())
+    }
+
+    override fun close() {
+        page?.close()
+        browser?.close()
+        playwright?.close()
+    }
+}
+
 val generateOgImages = tasks.register("generateOgImages") {
     group = "generate"
 
@@ -256,80 +330,6 @@ val jekyllBuild = tasks.register<Exec>("jekyllBuild") {
     inputs.files(syncJekyllSource)
     outputs.dir(layout.buildDirectory.dir("jekyllBuild"))
     commandLine("bash", "scripts/build-site.sh")
-}
-
-private fun parseFrontMatter(file: File): Map<String, Any>? {
-    val content = file.readText()
-    val match = Regex("\\A---\\r?\\n(.*?)\\r?\\n---(?:\\r?\\n|\\Z)", RegexOption.DOT_MATCHES_ALL).find(content) ?: return null
-    @Suppress("UNCHECKED_CAST")
-    return Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any>
-}
-
-class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
-    private var playwright: Playwright? = null
-    private var browser: Browser? = null
-    private var page: Page? = null
-
-    private fun ensureInitialized() {
-        if (playwright == null) {
-            ImageIO.scanForPlugins()
-            playwright = Playwright.create()
-            browser = playwright!!.chromium().launch()
-            page = browser!!.newPage().apply { setViewportSize(1200, 630) }
-        }
-    }
-
-    private fun toDataUri(file: File): String {
-        val base64 = getEncoder().encodeToString(file.readBytes())
-        val mimeType = when (file.extension.lowercase()) {
-            "webp" -> "image/webp"
-            "svg" -> "image/svg+xml"
-            "png" -> "image/png"
-            "jpg", "jpeg" -> "image/jpeg"
-            else -> "application/octet-stream"
-        }
-        return "data:$mimeType;base64,$base64"
-    }
-
-    fun render(title: String, backgroundImageFile: File?, outputFile: File) {
-        ensureInitialized()
-        val effectiveFile = if (backgroundImageFile != null && backgroundImageFile.exists()) backgroundImageFile else defaultBackgroundFile
-        val backgroundCss = "background: url('${toDataUri(effectiveFile)}') center/cover no-repeat"
-        val escapedTitle = title.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;")
-        page!!.setContent(
-            """
-            <!DOCTYPE html>
-            <html>
-            <head><meta charset="utf-8"></head>
-            <body style="margin: 0; width: 1200px; height: 630px; $backgroundCss; display: flex; align-items: flex-start;">
-                <div style="width: 100%; padding: 24px 40px; background: rgba(0, 0, 0, 0.5); color: white; font-family: 'Noto Sans CJK JP', sans-serif; font-size: 36px; line-height: 1.4; word-break: auto-phrase;">
-                    $escapedTitle
-                </div>
-            </body>
-            </html>
-        """.trimIndent()
-        )
-        val pngBytes = page!!.screenshot()
-        val image = ImageIO.read(ByteArrayInputStream(pngBytes))!!
-        val writer = ImageIO.getImageWritersByMIMEType("image/webp").next()
-        val writeParam = writer.defaultWriteParam as WebPWriteParam
-        writeParam.compressionMode = ImageWriteParam.MODE_EXPLICIT
-        writeParam.compressionType = writeParam.compressionTypes[WebPWriteParam.LOSSY_COMPRESSION]
-        writeParam.compressionQuality = 0.80f
-        val webpBuffer = ByteArrayOutputStream()
-        ImageIO.createImageOutputStream(webpBuffer).use { imageOut ->
-            writer.output = imageOut
-            writer.write(null, IIOImage(image, null, null), writeParam)
-        }
-        writer.dispose()
-        outputFile.writeBytes(webpBuffer.toByteArray())
-    }
-
-    override fun close() {
-        page?.close()
-        browser?.close()
-        playwright?.close()
-    }
 }
 
 val build = tasks.register("build") {
