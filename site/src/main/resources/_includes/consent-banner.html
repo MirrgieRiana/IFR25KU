@@ -11,33 +11,41 @@
 </div>
 <script>
 (function() {
-  var CONSENT_KEY = 'ifr25ku:consent';
+  var CONSENT_KEY = 'ifr25ku:consent:accepted';
 
-  window.IFR25KU_CONSENT = {
-    hasAccepted: function() {
-      try {
-        return localStorage.getItem(CONSENT_KEY) === 'accepted';
-      } catch (e) {
-        return false;
-      }
+  function loadAccepted() {
+    try {
+      return JSON.parse(localStorage.getItem(CONSENT_KEY) ?? 'null');
+    } catch (e) {
+      return null;
     }
-  };
+  }
+
+  function saveAccepted(accepted) {
+    try {
+      localStorage.setItem(CONSENT_KEY, JSON.stringify(accepted));
+    } catch (e) {}
+  }
+
+  window.ifr25ku.consent = window.ifr25ku.consent || {};
+  window.ifr25ku.consent.accepted = loadAccepted();
+
+  if (window.ifr25ku.consent.accepted !== null) {
+    window.ifr25ku.events.dispatchEvent(new CustomEvent('consent-change'));
+    return;
+  }
 
   var banner = document.getElementById('consent-banner');
   if (!banner) return;
-  try {
-    if (localStorage.getItem(CONSENT_KEY)) return;
-  } catch (e) {
-    return;
-  }
+
   banner.hidden = false;
-  banner.querySelector('.consent-banner__button--accept').addEventListener('click', function() {
-    try {
-      localStorage.setItem(CONSENT_KEY, 'accepted');
-    } catch (e) {}
+  banner.querySelector('.consent-banner__button--accept').addEventListener('click', () => {
+    saveAccepted(true);
+    window.ifr25ku.consent.accepted = true;
+    window.ifr25ku.events.dispatchEvent(new CustomEvent('consent-change'));
     banner.hidden = true;
   });
-  banner.querySelector('.consent-banner__button--decline').addEventListener('click', function() {
+  banner.querySelector('.consent-banner__button--decline').addEventListener('click', () => {
     banner.hidden = true;
   });
 })();
