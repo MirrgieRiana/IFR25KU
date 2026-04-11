@@ -302,7 +302,7 @@ Markdown 記法で画像を挿入する。`relative_url` フィルタで baseurl
 carousel:
   # 実際の定義は site/src/main/resources/index.md を参照
 header:
-  og_background: /assets/images/index/banner1.webp  # 未使用キー（seo.html・page__hero.html どちらも参照しない）
+  og_background: /assets/images/index/banner1.webp  # Gradle の generateOgImages 専用ヒントキー。Jekyll 側（seo.html・page__hero.html）は参照しない
   overlay_color: "#1a1a2e"
   overlay_filter: "linear-gradient(...)"
   actions:
@@ -569,7 +569,7 @@ Gradle側の `generateOgImages` タスクは `.md` ファイルから同じ `pag
 `OgImageRenderer` の実装:
 
 - Playwright Chromium で 1200×630 のビューポートにHTMLをレンダリング
-- ベース画像の優先順位: `header.overlay_image` > `header.image` > `header.teaser` > `og-default-background.svg`
+- ベース画像の優先順位: `header.og_background` > `header.overlay_image` > `header.image` > `header.teaser` > `og-default-background.svg`
 - ベース画像をData URI化してCSS `background: url(...) center/cover no-repeat` で表示
 - タイトルを半透明黒帯（`rgba(0,0,0,0.5)`）の上に白文字36pxで表示
 - スクリーンショットをPNG byte[]として取得 → `ImageIO.read()` で BufferedImage → `ImageIO.write(image, "webp", ...)` でWebP出力
