@@ -909,3 +909,74 @@ body {
   flex-direction: column;
   gap: 1em;
 }
+
+// 同意UIバナー
+.consent-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #000000;
+  border: 4px solid #00A7A7;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+  padding: 1em 1.5em;
+  color: #ffffff;
+
+  @include breakpoint($large) {
+    bottom: 1em;
+    left: 1em;
+    right: 1em;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.consent-banner__content {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1em;
+
+  @include breakpoint($large) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.consent-banner__message {
+  flex: 1;
+  margin: 0;
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+
+.consent-banner__actions {
+  display: flex;
+  gap: 0.5em;
+  flex-shrink: 0;
+}
+
+.consent-banner__button {
+  padding: 0.5em 1.5em;
+  border: 2px solid #00A7A7;
+  background: transparent;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.85em;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &--accept {
+    background: #00A7A7;
+    color: #000000;
+  }
+}

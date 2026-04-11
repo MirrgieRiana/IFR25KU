@@ -1,0 +1,44 @@
+<div class="consent-banner" id="consent-banner" hidden>
+  <div class="consent-banner__content">
+    <p class="consent-banner__message">
+      このサイトは、ユーザーの利便性向上を目的として、お使いのブラウザ内に情報を保存します。
+    </p>
+    <div class="consent-banner__actions">
+      <button class="consent-banner__button consent-banner__button--accept" type="button">同意する</button>
+      <button class="consent-banner__button consent-banner__button--decline" type="button">同意しない</button>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  var CONSENT_KEY = 'ifr25ku:consent';
+
+  window.IFR25KU_CONSENT = {
+    hasAccepted: function() {
+      try {
+        return localStorage.getItem(CONSENT_KEY) === 'accepted';
+      } catch (e) {
+        return false;
+      }
+    }
+  };
+
+  var banner = document.getElementById('consent-banner');
+  if (!banner) return;
+  try {
+    if (localStorage.getItem(CONSENT_KEY)) return;
+  } catch (e) {
+    return;
+  }
+  banner.hidden = false;
+  banner.querySelector('.consent-banner__button--accept').addEventListener('click', function() {
+    try {
+      localStorage.setItem(CONSENT_KEY, 'accepted');
+    } catch (e) {}
+    banner.hidden = true;
+  });
+  banner.querySelector('.consent-banner__button--decline').addEventListener('click', function() {
+    banner.hidden = true;
+  });
+})();
+</script>
