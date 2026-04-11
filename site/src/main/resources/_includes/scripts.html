@@ -178,6 +178,7 @@ document.addEventListener("gumshoeActivate", function(e) {
 {% include /comments-providers/scripts.html locale=locale %}
 
 {% include consent-banner.html %}
+{% include visit-tracker.html %}
 
 {% if site.after_footer_scripts %}
   {% for script in site.after_footer_scripts %}

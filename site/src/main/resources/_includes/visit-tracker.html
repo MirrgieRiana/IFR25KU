@@ -1,0 +1,38 @@
+<script>
+(function() {
+  var STORAGE_KEY = 'ifr25ku:visits:pages';
+  var BASE_URL = '{{ site.baseurl }}';
+
+  function loadVisits() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}');
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveVisits(visits) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(visits));
+    } catch (e) {}
+  }
+
+  function getPageId() {
+    var path = location.pathname;
+    if (BASE_URL && path.startsWith(BASE_URL)) {
+      path = path.slice(BASE_URL.length);
+    }
+    return path || '/';
+  }
+
+  function recordVisit() {
+    if (window.ifr25ku.consent?.accepted !== true) return;
+    var visits = loadVisits();
+    visits[getPageId()] = Date.now();
+    saveVisits(visits);
+  }
+
+  recordVisit();
+  window.ifr25ku.events.addEventListener('consent-change', recordVisit);
+})();
+</script>
