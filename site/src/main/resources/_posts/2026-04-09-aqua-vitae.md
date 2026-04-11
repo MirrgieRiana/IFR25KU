@@ -12,40 +12,36 @@ tags: [ ミラージュフェアリー劇場, 生命の水, アタノール, 豚
 ![]({{ "/assets/images/2026/04/09/aqua_vitae/2026-03-20_00.44.19.webp" | relative_url }})
 {% say tsumugi3:口=わあ %}え、これ何！？めっちゃデカっ！{% endsay %}
 {% say zundamon23 %}これがアタノールなのだ。燃料をゆっくり供給して素材を長い時間かけて加工できる機械なのだ。{% endsay %}
-{% say tsumugi3:口=にしー %}へーーー！！今日は何作るの？{% endsay %}
-{% say zundamon23 %}今からやるのだ。ちょうど材料を準備してたのだ。{% endsay %}
+{% say tsumugi3:口=にしー %}へーー！今日は何作るの？{% endsay %}
+{% say zundamon23 %}今からやるのだ。{% endsay %}
 ![]({{ "/assets/images/2026/04/09/aqua_vitae/aqua-vitae.webp" | relative_url }})
 {% say tsumugi3 %}その瓶何？{% endsay %}
 {% say zundamon23 %}生命の水なのだ。{% endsay %}
-{% say tsumugi3 %}……生命の水？{% endsay %}
-{% say tsumugi3:口=にしー %}なんか、すごい名前じゃん！！飲めるの？{% endsay %}
-{% say zundamon23 %}飲めなくもないのだが、今日は炉に注ぐのだ。{% endsay %}
-{% say tsumugi3:まゆ=困り眉 %}炉に注ぐ……{% endsay %}
-{% say zundamon23 %}妖精の力と合わさると、物質の性質を変えられるのだ。{% endsay %}
-{% say tsumugi3 %}性質を……一体何を変えるの？{% endsay %}
+{% say tsumugi3:口=にしー %}生命の水！？なんか、すごそうな名前じゃん！飲めるの？{% endsay %}
+{% say zundamon23 %}飲めなくもないのだが、今日は土に注ぐのだ。{% endsay %}
 ![]({{ "/assets/images/2026/04/09/aqua_vitae/recipe.webp" | relative_url }})
-{% say zundamon23 %}土を入れるのだ。{% endsay %}
-{% say tsumugi3:口=わあ %}土？{% endsay %}
+{% say zundamon23 %}妖精の力と合わせると、物質の性質を変えられるのだ。{% endsay %}
+{% say tsumugi3:口=わあ %}土！？{% endsay %}
 {% say zundamon23 %}そうなのだ。生命の水と、妖精と、土と。全部入れるのだ。{% endsay %}
-{% say tsumugi3 %}――一体何が出てくるんだろ……{% endsay %}
+{% say tsumugi3:口=わあーい %}え！？じゃあここから何か出てくるの！？{% endsay %}
+{% say tsumugi3:口=わあーい %}金とか！？ダイヤとか！？{% endsay %}
+{% say zundamon23 %}……場合によってはなのだ。{% endsay %}
+{% say tsumugi3:口=わあーい %}やばい！絶対見てる！{% endsay %}
 
 {% space %}
 
-{% say zundamon23 %}もうすぐなのだ。{% endsay %}
-{% say tsumugi3 %}……{% endsay %}
+{% say tsumugi3 %}……なんか、土がちょっと赤っぽくなってきた……？{% endsay %}
+{% say zundamon23 %}なってるのだ。{% endsay %}
+{% say tsumugi3 %}……もうそろそろ？{% endsay %}
+{% say zundamon23 %}もうそろそろかもなのだ。{% endsay %}
+{% say tsumugi3 %}え！？できた！？金出た！？{% endsay %}
 ![]({{ "/assets/images/2026/04/09/aqua_vitae/pork.webp" | relative_url }})
-{% say tsumugi3:口=わあ %}え。{% endsay %}
-{% say tsumugi3 %}……お肉…？{% endsay %}
+{% say tsumugi3:口=わあ %}……えっ！？{% endsay %}
+{% say tsumugi3:口=わあ %}ちょっ、何これ！？{% endsay %}
+{% say tsumugi3:まゆ=困り眉 %}肉！？肉じゃんこれ！？{% endsay %}
 {% say zundamon23 %}豚肉なのだ。{% endsay %}
-{% say tsumugi3:まゆ=困り眉 %}土から……豚肉！？{% endsay %}
-{% say zundamon23 %}土から豚肉なのだ。{% endsay %}
-![]({{ "/assets/images/2026/04/09/aqua_vitae/aqua-vitae.webp" | relative_url }})
-{% say tsumugi3 %}……生命の水って、そういうことなの！？！？！？{% endsay %}
-![]({{ "/assets/images/2026/04/09/aqua_vitae/aqua-vitae-crafting.webp" | relative_url }})
-{% say zundamon23:口=にしー %}そういうことなのだ。{% endsay %}
-{% say tsumugi3:まゆ=困り眉 %}なんか……怖いじゃん、それ……{% endsay %}
-{% say zundamon23 %}怖いのだ？{% endsay %}
-{% say tsumugi3 %}だって……土がお肉になるって……何がどうなってんの……？{% endsay %}
+{% say tsumugi3:口=わあ %}土じゃなかったの！？あーし、ずっと見てたのに！！{% endsay %}
+{% say tsumugi3:まゆ=困り眉 %}いつの間に肉になったの！？{% endsay %}
 {% say zundamon23:口=ほほえみ %}産まれたいものに、材料と生命の水が注がれるのだ。{% endsay %}
-{% say zundamon23 %}この機械は、産まれたいものたちのための機械なのだ。{% endsay %}
-{% say tsumugi3 %}……{% endsay %}
+{% say zundamon23 %}この機械は産まれたいものたちのための機械なのだ。{% endsay %}
+{% say tsumugi3:口=わあ %}何それ！？全然金とかダイヤじゃないじゃん！！{% endsay %}
