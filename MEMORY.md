@@ -67,6 +67,17 @@ minimal-mistakesテーマのファイルは `site/build/bundleVendor/bundle/ruby
 - `footer.html` — `site.copyright` 配列をループ表示（MirageFairy Server/Generation 7/Yoruno Kakera）、Apache 2.0ライセンス表記、social-icons・RSS・Sitemap
 - `footer/custom.html` — GitHubソースリンク（`page.path` をリポジトリURLに組み込み）、Markdownファイルのダイレクトリンク
 
+### _plugins/
+
+Jekyllビルド時に読み込まれるカスタムRubyプラグイン（`site/src/main/resources/_plugins/` 配下）。
+
+- `say.rb` — `{% say %}` ブロックタグの実装。キャラ名・プリセット・属性パラメータをパースし、立ち絵と吹き出しを組み立てる
+- `say/voicevox_provider.rb` — VOICEVOX立ち絵のレイヤー合成。`extracted/{slug}/presets.json` と `layers.json` を読み、パーツ単位でレイヤーを重ね合わせる
+- `say/empty_provider.rb` — デフォルトのProvider（空実装、デバッグ用）
+- `00_registries.rb` — キャラクターレジストリと色計算ユーティリティ（`Say.register_character()` など）
+- `space.rb` — `{% space %}` タグの実装（`<div class="space">` 挿入）
+- `posts_generator.rb` — Jekyll post_write フックで全記事メタ（title/url/teaser/tags）を `site/build/site/posts.json` に書き出す（劇場レイアウトの関連記事抽選が依存）
+
 ### _config.yml
 
 ```yaml
@@ -204,7 +215,67 @@ tags: [ミラージュフェアリー劇場, アタノール]
 
 画像パスは `page.url` ベース: `/assets/images/YYYY/MM/DD/slug/ファイル名.webp`
 
+ファイル名の例（既存記事より）:
+
+- `YYYY-MM-DD_HH.MM.SS.webp` — Minecraftスクリーンショットの元ファイル名そのまま
+- `recipe-<素材>.webp`, `<状態>.webp` — 内容を表す説明的なスラグ
+- `<slug>.og.webp` — OG画像（Gradleが自動生成、`assets/images/YYYY/MM/DD/` 直下）
+
 トップページの `{% include recent-posts.html limit=8 more=true %}` で新着8件をカード表示。記事一覧ページ（`posts.md`）では `{% include recent-posts.html %}` でデフォルト10件表示。
+
+### 劇場記事
+
+`_posts/*.md` はすべて劇場形式（つむぎとずんだもんの会話劇）で書かれている。劇場レイアウト（`layout: theater`）とカスタム Liquid タグを使用する。
+
+**制作ルールとキャラクター資料**
+
+詳細は `site/persona/` 配下の原本を参照する（MEMORY.md に複写すると陳腐化する）。
+
+- `site/persona/SKILL.md` — 会話記事の目的・タイトル形式・ストーリーの原則・ゲーム仕様やポエムの直接登場禁止などの規約
+- `site/persona/zundamon-persona.md` — ずんだもんの人格・語尾規則・内面設定
+- `site/persona/kasukabe-tsumugi-persona.md` — つむぎの口調・口癖・笑い方のバリエーション
+
+**`{% say %}` タグ**
+
+キャラクターの会話を表示するブロックタグ。構文:
+
+```
+{% say <char>[:<preset>...][:<key>=<value>...] %}
+本文（Markdown可）
+{% endsay %}
+```
+
+例:
+
+```
+{% say zundamon23 %}のだ。{% endsay %}
+{% say tsumugi3:口=わあーい:まゆ=困り眉 %}センパーイ！{% endsay %}
+```
+
+- 登録済みキャラ: `zundamon23`, `tsumugi3`（`_data/voicevox.yml` で定義）
+- 属性のキー（`眉`, `目`, `口` 等）と値は VOICEVOX 立ち絵の `presets.json` で定義される。全リストは `site/build/jekyllSource/assets/images/voicevox/extracted/{slug}/presets.json` を参照
+- `radio` パーツは1つだけ選択（未指定時は default 要素）、`checkbox` パーツはカンマ区切りで複数指定可
+- 実装: `_plugins/say.rb` と `_plugins/say/voicevox_provider.rb`
+
+**`{% space %}` タグ**
+
+場面転換の区切りを挿入するインラインタグ。`<div class="space"></div>` を出力。実装: `_plugins/space.rb`。
+
+**インライン画像の挿入**
+
+Markdown 記法で画像を挿入する。`relative_url` フィルタで baseurl（`/IFR25KU`）を自動付与する:
+
+```
+![]({{ "/assets/images/YYYY/MM/DD/slug/filename.webp" | relative_url }})
+```
+
+**タグの設計**
+
+劇場レイアウトは右ペインで**タグ一致数による関連記事抽選**を行うため、タグの付け方が関連記事の質に直結する。
+
+- 必須: `ミラージュフェアリー劇場`（カテゴリ分類）
+- 機能タグ: 登場する具体的アイテム名（`アタノール`, `生命の水`, `豚肉` など）。重なりが多い記事ほど関連度が高く抽選される
+- メタタグ: `アップデート`, `お知らせ` 等（必要に応じて）
 
 ### 特殊ファイル
 
@@ -212,6 +283,7 @@ tags: [ミラージュフェアリー劇場, アタノール]
 
 - **CHANGELOG** (`site/src/main/resources/CHANGELOG.md`): front matterあり → JekyllがHTMLに変換 → `CHANGELOG.html` として出力。`buildSite` タスクで `src/main/resources/` 内の `.md` ファイルを `site/build/site/` にコピーしてmd版も配信。CHANGELOG.html冒頭に「Markdown版はこちら」リンクあり。
 - **Lang Table**: `site/src/langTable/html/lang_table.html` はテンプレートHTML（テーマレイアウトなし）。`<%= trs %>` はGradleの `makeLangTable` タスクで展開。JavaScript検索機能付き（正規表現対応、URLパラメータ `?q=` で初期値復元）。出力先は `site/build/langTable/`。`site/src/main/resources/lang-table-index.md` はテーマレイアウトを使った特設ページで、各形式（HTML/JSON/JSONL/CSV）へのリンクを配置。
+- **posts.json**: `_plugins/posts_generator.rb` が Jekyll post_write フックで全記事メタ（title/url/teaser/tags）を `site/build/site/posts.json` に書き出す。劇場レイアウトの関連記事抽選JS（`theater.html` 末尾）が `fetch('/posts.json')` で読み込む。
 
 ### ページ一覧
 
@@ -240,6 +312,46 @@ header:
       url: "https://modrinth.com/mod/ifr25ku"
       icon: "/assets/images/modrinth.svg"
 ```
+
+## 世界観リファレンス
+
+IFR25KU の世界観用語・アイテム説明・ポエムはゲーム本体の lang ファイルとコード側の Module に定義されている。劇場記事を書くときの発想源として参照する。
+
+### lang JSON
+
+`common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json` に全テキストが集約されている（ビルド時にコードから自動生成）。
+
+主要なキー命名パターン:
+
+| パターン | 説明 |
+|---|---|
+| `item.miragefairy2024.<item>.name` | アイテム名 |
+| `item.miragefairy2024.<item>.poem` | アイテムの短いポエム |
+| `item.miragefairy2024.<item>.description` | アイテムの長い説明文 |
+| `block.miragefairy2024.<block>.name` | ブロック名 |
+| `advancements.miragefairy2024.<item>.title` | 進捗（advancement）のタイトル |
+| `advancements.miragefairy2024.<item>.description` | 進捗の説明文 |
+
+ポエム例:
+
+- `"item.miragefairy2024.xarpite.poem": "暮らしを守る紅い盾――"`
+- `"item.miragefairy2024.builders_rod.poem": "暮らしを紡ぐもの"`
+- `"item.miragefairy2024.luminite.poem": "エテロルミネッセンス"`
+
+### Lang Table での検索
+
+`site/build/site/lang_table.html` をブラウザで開くと、正規表現対応のJavaScript検索UIが使える。URLパラメータ `?q=xxx` で初期検索値を渡せる。grep用途には `lang_table.jsonl` が便利。
+
+### コード側の定義
+
+ポエムや説明文は最終的に lang JSON に出力されるが、元々は Kotlin コードのハードコードとして定義されている。
+
+- `common/src/main/kotlin/miragefairy2024/mod/PoemModule.kt` — ポエム管理の本体
+- `common/src/main/kotlin/miragefairy2024/mod/` 配下の各種 Module ファイル（Materials / Ores / Athanor / FairyBuilding / MagicPlant / 各種ToolModule 等）に `.poem` と `.description` の定義が散在
+
+### 制作時の注意
+
+**世界観テキストを劇中キャラが直接喋ってはいけない**（`site/persona/SKILL.md` に明記）。劇中キャラクターはゲーム内 GUI や公式テキストを知らないため、ポエムをそのまま口にすると不自然になる。世界観資料は「発想源」として扱い、キャラクターの視点に翻訳して表現する必要がある。
 
 ## レイアウト
 
