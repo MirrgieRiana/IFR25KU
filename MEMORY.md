@@ -300,11 +300,9 @@ Markdown 記法で画像を挿入する。`relative_url` フィルタで baseurl
 
 ```yaml
 carousel:
-  - overlay_image: /assets/images/index/banner1.webp
-  - overlay_image: /assets/images/index/banner2.webp
-  - overlay_image: /assets/images/index/banner3.webp
+  # 実際の定義は site/src/main/resources/index.md を参照
 header:
-  og_image: /assets/images/index/banner1.webp
+  og_background: /assets/images/index/banner1.webp  # 未使用キー（seo.html・page__hero.html どちらも参照しない）
   overlay_color: "#1a1a2e"
   overlay_filter: "linear-gradient(...)"
   actions:
@@ -535,9 +533,7 @@ assets/images/
 ├── modrinth.svg                       — mastheadアイコン
 ├── og-default-background.svg          — OG画像デフォルト背景（1200×630 SVG、淡紫グラデーション+六角形パターン）
 ├── index/
-│   ├── banner1.webp                   — カルーセルヒーロー
-│   ├── banner2.webp                   — カルーセルヒーロー
-│   └── banner3.webp                   — カルーセルヒーロー
+│   └── banner*.webp                   — カルーセルヒーロー（実際の枚数は index.md を参照）
 ├── changelog/
 │   └── changelog-header.svg           — CHANGELOGページヘッダー
 ├── lang-table-index/
