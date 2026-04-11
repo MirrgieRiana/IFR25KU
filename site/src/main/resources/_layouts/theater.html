@@ -76,9 +76,13 @@ layout: default
   // createCard: 記事1件分のカードDOM要素を生成して返す
   //
   //  構造:
-  //    <a class="theater-recommendations__card" href="...">
-  //      <img class="theater-recommendations__card-image" ...>  ← teaserがある場合のみ
-  //      <div class="theater-recommendations__card-title">...</div>
+  //    <a class="recent-posts__card" href="...">
+  //      <div class="recent-posts__teaser">
+  //        <img ...>  ← teaserがある場合のみ
+  //      </div>
+  //      <div class="recent-posts__body">
+  //        <h3 class="recent-posts__title">...</h3>
+  //      </div>
   //    </a>
   //
   //  テキストは textContent で設定するため、HTMLエスケープ不要。
@@ -87,20 +91,25 @@ layout: default
   function createCard(post) {
     const card = document.createElement('a');
     card.href = post.url;
-    card.className = 'theater-recommendations__card';
+    card.className = 'recent-posts__card';
 
+    const teaser = document.createElement('div');
+    teaser.className = 'recent-posts__teaser';
     if (post.teaser) {
       const img = document.createElement('img');
       img.src = post.teaser;
       img.alt = '';
-      img.className = 'theater-recommendations__card-image';
-      card.appendChild(img);
+      teaser.appendChild(img);
     }
+    card.appendChild(teaser);
 
-    const title = document.createElement('div');
-    title.className = 'theater-recommendations__card-title';
+    const body = document.createElement('div');
+    body.className = 'recent-posts__body';
+    const title = document.createElement('h3');
+    title.className = 'recent-posts__title';
     title.textContent = post.title;
-    card.appendChild(title);
+    body.appendChild(title);
+    card.appendChild(body);
 
     return card;
   }
