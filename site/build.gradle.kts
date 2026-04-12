@@ -1,7 +1,5 @@
 import com.google.gson.GsonBuilder
-import com.google.gson.JsonArray
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import com.luciad.imageio.webp.WebPWriteParam
 import com.microsoft.playwright.Browser
@@ -14,6 +12,7 @@ import java.util.Base64.getEncoder
 import javax.imageio.IIOImage
 import javax.imageio.ImageIO
 import javax.imageio.ImageWriteParam
+import tools.normalizeJson
 
 buildscript {
     repositories {
@@ -125,24 +124,6 @@ val makeRecipeTable = tasks.register("makeRecipeTable") {
 
     inputs.dir(recipeDir)
     outputs.dir(layout.buildDirectory.dir("recipeTable"))
-
-    fun normalizeJson(element: JsonElement): JsonElement = when {
-        element.isJsonObject -> {
-            val sorted = JsonObject()
-            element.asJsonObject.entrySet().sortedBy { it.key }.forEach { (key, value) ->
-                sorted.add(key, normalizeJson(value))
-            }
-            sorted
-        }
-
-        element.isJsonArray -> {
-            val array = JsonArray()
-            element.asJsonArray.forEach { array.add(normalizeJson(it)) }
-            array
-        }
-
-        else -> element
-    }
 
     fun write(path: String, content: String) {
         val outFile = layout.buildDirectory.file(path).get().asFile
