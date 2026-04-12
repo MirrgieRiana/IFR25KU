@@ -143,7 +143,7 @@ val makeRecipeTable = tasks.register("makeRecipeTable") {
                 val json = gson.fromJson(file.readText(), JsonElement::class.java).asJsonObject
                 val relativePath = file.relativeTo(recipeDir).invariantSeparatorsPath.removeSuffix(".json")
                 json.addProperty("id", "miragefairy2024:$relativePath")
-                gson.toJson(normalizeJson(json)) + "\n"
+                gson.toJson(json.normalizeJson()) + "\n"
             }
         write("recipeTable/recipe_table.jsonl", jsonl)
     }
@@ -279,10 +279,10 @@ val generateOgImages = tasks.register("generateOgImages") {
                 // キャッシュ用入力JSONを計算
                 val inputsFile = outputFile.resolveSibling("${outputFile.name.removeSuffix(".og.webp")}.inputs.json")
                 val inputsJson = GsonBuilder().disableHtmlEscaping().create().toJson(
-                    normalizeJson(JsonObject().also {
+                    JsonObject().also {
                         it.addProperty("background_hash", effectiveFile.sha256())
                         it.addProperty("html_hash", buildOgHtml(title, "BACKGROUND").sha256())
-                    })
+                    }.normalizeJson()
                 )
 
                 // 入力に変化がない場合はスキップ（-Pregenerateで強制再生成）

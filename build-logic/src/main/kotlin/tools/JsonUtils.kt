@@ -6,22 +6,22 @@ import com.google.gson.JsonObject
 import java.io.File
 import java.security.MessageDigest
 
-fun normalizeJson(element: JsonElement): JsonElement = when {
-    element.isJsonObject -> {
+fun JsonElement.normalizeJson(): JsonElement = when {
+    isJsonObject -> {
         val sorted = JsonObject()
-        element.asJsonObject.entrySet().sortedBy { it.key }.forEach { (key, value) ->
-            sorted.add(key, normalizeJson(value))
+        asJsonObject.entrySet().sortedBy { it.key }.forEach { (key, value) ->
+            sorted.add(key, value.normalizeJson())
         }
         sorted
     }
 
-    element.isJsonArray -> {
+    isJsonArray -> {
         val array = JsonArray()
-        element.asJsonArray.forEach { array.add(normalizeJson(it)) }
+        asJsonArray.forEach { array.add(it.normalizeJson()) }
         array
     }
 
-    else -> element
+    else -> this
 }
 
 fun File.sha256(): String {
