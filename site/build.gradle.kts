@@ -147,6 +147,18 @@ val makeRecipeTable = tasks.register("makeRecipeTable") {
     }
 }
 
+private fun buildOgHtml(escapedTitle: String, backgroundUrl: String): String = """
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"></head>
+    <body style="margin: 0; width: 1200px; height: 630px; background: url('$backgroundUrl') center/cover no-repeat; display: flex; align-items: flex-start;">
+        <div style="width: 100%; padding: 24px 40px; background: rgba(0, 0, 0, 0.5); color: white; font-family: 'Noto Sans CJK JP', sans-serif; font-size: 36px; line-height: 1.4; word-break: auto-phrase;">
+            $escapedTitle
+        </div>
+    </body>
+    </html>
+""".trimIndent()
+
 private fun parseFrontMatter(file: File): Map<String, Any>? {
     val content = file.readText()
     val match = Regex("\\A---\\r?\\n(.*?)\\r?\\n---(?:\\r?\\n|\\Z)", RegexOption.DOT_MATCHES_ALL).find(content) ?: return null
@@ -183,21 +195,8 @@ class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
     fun render(title: String, backgroundImageFile: File?, outputFile: File) {
         ensureInitialized()
         val effectiveFile = if (backgroundImageFile != null && backgroundImageFile.exists()) backgroundImageFile else defaultBackgroundFile
-        val backgroundCss = "background: url('${toDataUri(effectiveFile)}') center/cover no-repeat"
         val escapedTitle = title.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;")
-        page!!.setContent(
-            """
-            <!DOCTYPE html>
-            <html>
-            <head><meta charset="utf-8"></head>
-            <body style="margin: 0; width: 1200px; height: 630px; $backgroundCss; display: flex; align-items: flex-start;">
-                <div style="width: 100%; padding: 24px 40px; background: rgba(0, 0, 0, 0.5); color: white; font-family: 'Noto Sans CJK JP', sans-serif; font-size: 36px; line-height: 1.4; word-break: auto-phrase;">
-                    $escapedTitle
-                </div>
-            </body>
-            </html>
-        """.trimIndent()
-        )
+        page!!.setContent(buildOgHtml(escapedTitle, toDataUri(effectiveFile)))
         val pngBytes = page!!.screenshot()
         val image = ImageIO.read(ByteArrayInputStream(pngBytes))!!
         val writer = ImageIO.getImageWritersByMIMEType("image/webp").next()
