@@ -905,9 +905,13 @@ body {
 }
 
 .theater-recommendations {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1em;
+
+  @include breakpoint($large) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .page__recommend {
