@@ -166,7 +166,7 @@ private fun parseFrontMatter(file: File): Map<String, Any>? {
     return Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any>
 }
 
-class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
+class OgImageRenderer : AutoCloseable {
     private var playwright: Playwright? = null
     private var browser: Browser? = null
     private var page: Page? = null
@@ -192,11 +192,10 @@ class OgImageRenderer(private val defaultBackgroundFile: File) : AutoCloseable {
         return "data:$mimeType;base64,$base64"
     }
 
-    fun render(title: String, backgroundImageFile: File?, outputFile: File) {
+    fun render(title: String, backgroundImageFile: File, outputFile: File) {
         ensureInitialized()
-        val effectiveFile = if (backgroundImageFile != null && backgroundImageFile.exists()) backgroundImageFile else defaultBackgroundFile
         val escapedTitle = title.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;")
-        page!!.setContent(buildOgHtml(escapedTitle, toDataUri(effectiveFile)))
+        page!!.setContent(buildOgHtml(escapedTitle, toDataUri(backgroundImageFile)))
         val pngBytes = page!!.screenshot()
         val image = ImageIO.read(ByteArrayInputStream(pngBytes))!!
         val writer = ImageIO.getImageWritersByMIMEType("image/webp").next()
@@ -240,7 +239,7 @@ val generateOgImages = tasks.register("generateOgImages") {
             (resourcesDir.resolve("_posts").listFiles { f -> f.isFile && f.extension == "md" }?.toList().orEmpty())
 
         val defaultBg = resourcesDir.resolve("assets/images/og-default-background.svg")
-        OgImageRenderer(defaultBg).use { renderer ->
+        OgImageRenderer().use { renderer ->
             mdFiles.forEach { mdFile ->
                 val frontMatter = parseFrontMatter(mdFile) ?: return@forEach
 
@@ -270,15 +269,18 @@ val generateOgImages = tasks.register("generateOgImages") {
                 // 既に存在する場合はスキップ（-Pregenerateで強制再生成）
                 if (!regenerate && outputFile.exists()) {
                     logger.lifecycle("OG image already exists, skipping: ${outputFile.absolutePath}")
+                // ベース画像を解決
+                val effectiveFile = if (imagePath != null) {
+                    val f = resourcesDir.resolve(imagePath.removePrefix("/"))
+                    if (f.exists()) f else defaultBg
+                } else defaultBg
+
                     return@forEach
                 }
 
                 outputFile.parentFile.mkdirs()
 
-                // ベース画像を解決
-                val baseImageFile = if (imagePath != null) resourcesDir.resolve(imagePath.removePrefix("/")) else null
-
-                renderer.render(title, baseImageFile, outputFile)
+                renderer.render(title, effectiveFile, outputFile)
                 logger.lifecycle("Generated OG image: ${outputFile.absolutePath}")
             }
         }
