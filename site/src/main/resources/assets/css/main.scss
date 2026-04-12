@@ -26,8 +26,11 @@ $navicon-link-color-hover: #a83dba;
 
 // テーマのfloatレイアウトをFlexbox/Gridに全面移行
 #main {
+  display: flex;
+  flex-direction: column;
+
   @include breakpoint($large) {
-    display: flex;
+    flex-direction: row;
     align-items: flex-start;
   }
 
@@ -37,7 +40,10 @@ $navicon-link-color-hover: #a83dba;
 }
 
 .sidebar {
+  order: 1;
+
   @include breakpoint($large) {
+    order: 0;
     float: none;
     flex-shrink: 0;
   }
@@ -57,6 +63,8 @@ $navicon-link-color-hover: #a83dba;
 .page .page__inner-wrap {
   float: none;
   clear: none;
+  display: flex;
+  flex-direction: column;
 
   @include breakpoint($large) {
     display: grid;
@@ -78,7 +86,10 @@ $navicon-link-color-hover: #a83dba;
 }
 
 .sidebar__right {
+  order: 1;
+
   @include breakpoint($large) {
+    order: 0;
     position: static;
     inset-inline-end: auto;
     width: auto;
@@ -87,7 +98,6 @@ $navicon-link-color-hover: #a83dba;
     grid-row: 1 / span 999;
     align-self: stretch;
   }
-
 }
 
 .splash .sidebar__right {
