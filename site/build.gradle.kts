@@ -244,7 +244,8 @@ val generateOgImages = tasks.register("generateOgImages") {
     group = "generate"
 
     val resourcesDir = file("src/main/resources")
-    val outputDir = resourcesDir.resolve("assets/images")
+    val ogImagesDir = file("src/ogImages/resources")
+    val outputDir = ogImagesDir.resolve("assets/images")
     val regenerate = project.hasProperty("regenerate")
 
     inputs.files(fileTree(resourcesDir) { include("*.md", "_posts/*.md") })
@@ -319,6 +320,7 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     group = "other"
     dependsOn(generateOgImages)
     from("src/main/resources")
+    from("src/ogImages/resources")
     from("src/external/resources")
     from("src/main/bundle")
     into(layout.buildDirectory.dir("jekyllSource"))
