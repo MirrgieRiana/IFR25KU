@@ -147,7 +147,9 @@ val makeRecipeTable = tasks.register("makeRecipeTable") {
     }
 }
 
-private fun buildOgHtml(escapedTitle: String, backgroundUrl: String): String = """
+private fun buildOgHtml(title: String, backgroundUrl: String): String {
+    val escapedTitle = title.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;")
+    return """
     <!DOCTYPE html>
     <html>
     <head><meta charset="utf-8"></head>
@@ -158,6 +160,7 @@ private fun buildOgHtml(escapedTitle: String, backgroundUrl: String): String = "
     </body>
     </html>
 """.trimIndent()
+}
 
 private fun parseFrontMatter(file: File): Map<String, Any>? {
     val content = file.readText()
@@ -194,8 +197,7 @@ class OgImageRenderer : AutoCloseable {
 
     fun render(title: String, backgroundImageFile: File, outputFile: File) {
         ensureInitialized()
-        val escapedTitle = title.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;")
-        page!!.setContent(buildOgHtml(escapedTitle, toDataUri(backgroundImageFile)))
+        page!!.setContent(buildOgHtml(title, toDataUri(backgroundImageFile)))
         val pngBytes = page!!.screenshot()
         val image = ImageIO.read(ByteArrayInputStream(pngBytes))!!
         val writer = ImageIO.getImageWritersByMIMEType("image/webp").next()
