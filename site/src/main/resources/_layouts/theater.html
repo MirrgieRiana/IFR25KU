@@ -29,10 +29,7 @@ layout: default
     <div class="page__inner-wrap">
       <aside class="sidebar__right theater__sidebar">
         <header><h4 class="nav__title"><i class="fas fa-film"></i> 関連記事</h4></header>
-        <div class="theater-recommendations"
-             data-current-url="{{ page.url | relative_url }}"
-             data-current-tags="{{ page.tags | join: ',' }}">
-        </div>
+        <div class="theater-recommendations"></div>
       </aside>
 
       {% unless page.header.overlay_color or page.header.overlay_image %}
@@ -52,6 +49,11 @@ layout: default
 
       <section class="page__content e-content" itemprop="text">
         {{ content }}
+      </section>
+
+      <section class="page__recommend">
+        <h3 class="page__recommend-title"><i class="fas fa-film"></i> 他の記事を読む</h3>
+        <div class="page__recommend-grid"></div>
       </section>
 
       <footer class="page__meta">
@@ -183,17 +185,13 @@ layout: default
   }
 
   // ============================================================
-  // 1. サイドバーのコンテナ要素を取得
-  //
-  //    data-current-url  … 現在表示中のページURL（自身を候補から除外するため）
-  //    data-current-tags … 現在ページのタグをカンマ区切りで持つ（重み計算に使用）
+  // 1. コンテナ要素を取得
   // ============================================================
 
-  const container = document.querySelector('.theater-recommendations');
-  if (!container) return;
-
-  const currentUrl = container.dataset.currentUrl;
-  const currentTags = container.dataset.currentTags.split(',').map(tag => tag.trim()).filter(Boolean);
+  const sidebarContainer = document.querySelector('.theater-recommendations');
+  const recommendContainer = document.querySelector('.page__recommend-grid');
+  const currentUrl = '{{ page.url | relative_url }}';
+  const currentTags = {{ page.tags | jsonify }};
 
   // ============================================================
   // 2. posts.json を取得
@@ -244,24 +242,20 @@ layout: default
   });
 
   // ============================================================
-  // 6. 重み付きランダムサンプリング（非復元抽出）
+  // 6. 重み付きランダムサンプリング（非復元抽出）と 7. カードのレンダリング
   //
+  //    サイドバーと本文下部はそれぞれ独立して抽選する。
   //    weight が大きい記事ほど高確率で選ばれる。
   //    同じ記事が2回選ばれることはない（選んだ記事を候補から取り除くため）。
-  //    候補が8件未満の場合は取れるだけ取る。
-  // ============================================================
-
-  const picks = weightedSample(weighted, 8);
-
-  // ============================================================
-  // 7. カードのレンダリング
+  //    候補が件数未満の場合は取れるだけ取る。
   //
   //    picks の各記事を createCard でDOM要素として生成し、
   //    replaceChildren でコンテナの子要素をまとめて差し替える。
   //    innerHTML を使わないため、XSSリスクがない。
   // ============================================================
 
-  container.replaceChildren(...picks.map(createCard));
+  sidebarContainer.replaceChildren(...weightedSample(weighted, 8).map(createCard));
+  recommendContainer.replaceChildren(...weightedSample(weighted, 4).map(createCard));
 
 })();
 </script>

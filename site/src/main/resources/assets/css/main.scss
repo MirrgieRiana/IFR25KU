@@ -910,6 +910,21 @@ body {
   gap: 1em;
 }
 
+.page__recommend {
+  margin: 2em 0;
+}
+
+.page__recommend-title {
+  margin: 0 0 1em;
+  font-size: 1em;
+}
+
+.page__recommend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5em;
+}
+
 // 同意UIバナー
 .consent-banner {
   position: fixed;
