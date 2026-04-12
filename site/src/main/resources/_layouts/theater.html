@@ -118,7 +118,7 @@ layout: default
   // weightedSample: 重み付き非復元ランダムサンプリング
   //
   //  引数:
-  //    items … { post, weight } の配列。weight は正の整数。
+  //    items … { post, weight } の配列。weight は正の数。
   //    count … 取り出す件数。
   //
   //  仕組み（1件取り出すたびに繰り返す）:
@@ -134,7 +134,7 @@ layout: default
 
   function weightedSample(items, count) {
     const result = [];
-    const remaining = items.slice(); // 元配列を壊さないようにコピー
+    const remaining = items.slice();
 
     while (result.length < count && remaining.length > 0) {
       const totalWeight = remaining.reduce((sum, item) => sum + item.weight, 0);
@@ -157,6 +157,29 @@ layout: default
     }
 
     return result;
+  }
+
+  // posts.json の url は baseurl を含む形式（例: /IFR25KU/2026/03/22/athanor.html）のため、
+  // baseurl を除去した形式（例: /2026/03/22/athanor.html）に変換して
+  // ifr25ku:visits:pages のキーと照合できるようにする。
+  function getPageKey(url) {
+    const BASE_URL = '{{ site.baseurl }}';
+    if (BASE_URL && url.startsWith(BASE_URL)) return url.slice(BASE_URL.length);
+    return url || '/';
+  }
+
+  // 最終訪問からの経過日数に応じた訪問係数を返す。
+  //   未訪問          → 1
+  //   7日未満         → 1/3
+  //   7日以上365日未満 → 2/3
+  //   365日以上       → 1（抑制なし、未訪問と同等）
+  function getVisitMultiplier(lastVisited) {
+    if (lastVisited === undefined) return 1;
+    const elapsed = Date.now() - lastVisited;
+    const DAY_MS = 24 * 60 * 60 * 1000;
+    if (elapsed < 7 * DAY_MS) return 1/3;
+    if (elapsed < 365 * DAY_MS) return 2/3;
+    return 1;
   }
 
   // ============================================================
@@ -190,27 +213,38 @@ layout: default
   const candidates = posts.filter(post => post.url !== currentUrl);
 
   // ============================================================
-  // 4. 重みの計算
+  // 4. 訪問記録の取得
+  //
+  //    LocalStorage から訪問記録を読み込む。
+  //    形式は { "/page-url": timestamp_ms, ... }。
+  // ============================================================
+
+  const visits = window.ifr25ku.loadJson('ifr25ku:visits:pages', {});
+
+  // ============================================================
+  // 5. 重みの計算
   //
   //    現在ページとタグが多く被るほど関連性が高いとみなし、高い重みを与える。
   //
-  //      weight = (現在ページのタグと一致するタグの数) + 1
+  //      weight = ((現在ページのタグと一致するタグの数) + 1) × 訪問係数
   //
   //    +1 は「タグが全く被らない記事」を抽選から完全に排除しないための底上げ。
   //    これにより、記事数が少ない状況でも件数を埋めることができる。
   //
-  //    例: currentTags = ["アタノール", "ミラージュフェアリー劇場"] のとき
+  //    例: currentTags = ["アタノール", "ミラージュフェアリー劇場"] のとき（未訪問）
   //      タグ ["ミラージュフェアリー劇場", "パン"] → overlap=1 → weight=2
   //      タグ ["お知らせ"]                         → overlap=0 → weight=1
+  //    7日未満の訪問済みの場合はそれぞれ 2/3、1/3 になる。
   // ============================================================
 
   const weighted = candidates.map(post => {
     const overlap = post.tags.filter(tag => currentTags.includes(tag)).length;
-    return { post, weight: overlap + 1 };
+    const lastVisited = visits[getPageKey(post.url)];
+    return { post, weight: (overlap + 1) * getVisitMultiplier(lastVisited) };
   });
 
   // ============================================================
-  // 5. 重み付きランダムサンプリング（非復元抽出）
+  // 6. 重み付きランダムサンプリング（非復元抽出）
   //
   //    weight が大きい記事ほど高確率で選ばれる。
   //    同じ記事が2回選ばれることはない（選んだ記事を候補から取り除くため）。
@@ -220,7 +254,7 @@ layout: default
   const picks = weightedSample(weighted, 8);
 
   // ============================================================
-  // 6. カードのレンダリング
+  // 7. カードのレンダリング
   //
   //    picks の各記事を createCard でDOM要素として生成し、
   //    replaceChildren でコンテナの子要素をまとめて差し替える。
