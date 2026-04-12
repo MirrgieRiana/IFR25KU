@@ -5,4 +5,29 @@
 <script>
 window.ifr25ku = window.ifr25ku || {};
 window.ifr25ku.events = window.ifr25ku.events || new EventTarget();
+window.ifr25ku.loadJson = window.ifr25ku.loadJson || function(key, defaultValue) {
+  try {
+    const item = localStorage.getItem(key);
+    if (item === null) return defaultValue;
+    return JSON.parse(item);
+  } catch (e) {
+    console.error(`Failed to load ${key} from localStorage:`, e);
+    return defaultValue;
+  }
+};
+window.ifr25ku.saveJson = window.ifr25ku.saveJson || function(key, value) {
+  if (value == null) {
+    try {
+      localStorage.removeItem(key);
+    } catch (e) {
+      console.error(`Failed to remove ${key} from localStorage:`, e);
+    }
+  } else {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (e) {
+      console.error(`Failed to save ${key} to localStorage:`, e);
+    }
+  }
+};
 </script>
