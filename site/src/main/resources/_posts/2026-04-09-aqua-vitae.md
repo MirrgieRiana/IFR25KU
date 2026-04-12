@@ -3,7 +3,7 @@ title: "【生命の水】生命の水と、妖精と、土と。全部入れる
 description: 春日部つむぎとずんだもんが生命の水をアタノールに注ぐ話
 layout: theater
 header:
-  teaser: /assets/images/2026/04/09/aqua_vitae/aqua-vitae-overview.webp
+  teaser: /assets/images/2026/04/09/aqua_vitae/aqua-vitae-overview.png
 tags: [ ミラージュフェアリー劇場, 生命の水, アタノール, 豚肉, 肉, 土, 妖精 ]
 ---
 
@@ -14,12 +14,12 @@ tags: [ ミラージュフェアリー劇場, 生命の水, アタノール, 豚
 {% say zundamon23 %}これがアタノールなのだ。燃料をゆっくり供給して素材を長い時間かけて加工できる機械なのだ。{% endsay %}
 {% say tsumugi3:口=にしー %}へーー！今日は何作るの？{% endsay %}
 {% say zundamon23 %}今からやるのだ。{% endsay %}
-![]({{ "/assets/images/2026/04/09/aqua_vitae/aqua-vitae.webp" | relative_url }})
+![]({{ "/assets/images/2026/04/09/aqua_vitae/aqua-vitae.png" | relative_url }})
 {% say tsumugi3 %}その瓶何？{% endsay %}
 {% say zundamon23 %}生命の水なのだ。{% endsay %}
 {% say tsumugi3:口=にしー %}生命の水！？なんか、すごそうな名前じゃん！飲めるの？{% endsay %}
 {% say zundamon23 %}飲めなくもないのだが、今日は土に注ぐのだ。{% endsay %}
-![]({{ "/assets/images/2026/04/09/aqua_vitae/recipe.webp" | relative_url }})
+![]({{ "/assets/images/2026/04/09/aqua_vitae/recipe.png" | relative_url }})
 {% say zundamon23 %}妖精の力と合わせると、物質の性質を変えられるのだ。{% endsay %}
 {% say tsumugi3:口=わあ %}土！？{% endsay %}
 {% say zundamon23 %}そうなのだ。生命の水と、妖精と、土と。全部入れるのだ。{% endsay %}
@@ -35,7 +35,7 @@ tags: [ ミラージュフェアリー劇場, 生命の水, アタノール, 豚
 {% say tsumugi3 %}……もうそろそろ？{% endsay %}
 {% say zundamon23 %}もうそろそろかもなのだ。{% endsay %}
 {% say tsumugi3 %}え！？できた！？金出た！？{% endsay %}
-![]({{ "/assets/images/2026/04/09/aqua_vitae/pork.webp" | relative_url }})
+![]({{ "/assets/images/2026/04/09/aqua_vitae/pork.png" | relative_url }})
 {% say tsumugi3:口=わあ %}……えっ！？{% endsay %}
 {% say tsumugi3:口=わあ %}ちょっ、何これ！？{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}肉！？肉じゃんこれ！？{% endsay %}
