@@ -1,5 +1,6 @@
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import com.luciad.imageio.webp.WebPWriteParam
 import com.microsoft.playwright.Browser
@@ -13,6 +14,7 @@ import javax.imageio.IIOImage
 import javax.imageio.ImageIO
 import javax.imageio.ImageWriteParam
 import tools.normalizeJson
+import tools.sha256
 
 buildscript {
     repositories {
@@ -268,15 +270,24 @@ val generateOgImages = tasks.register("generateOgImages") {
                     outputDirFile.resolve("${mdFile.nameWithoutExtension}.og.webp")
                 }
 
-                // 既に存在する場合はスキップ（-Pregenerateで強制再生成）
-                if (!regenerate && outputFile.exists()) {
-                    logger.lifecycle("OG image already exists, skipping: ${outputFile.absolutePath}")
                 // ベース画像を解決
                 val effectiveFile = if (imagePath != null) {
                     val f = resourcesDir.resolve(imagePath.removePrefix("/"))
                     if (f.exists()) f else defaultBg
                 } else defaultBg
 
+                // キャッシュ用入力JSONを計算
+                val inputsFile = outputFile.resolveSibling("${outputFile.name.removeSuffix(".og.webp")}.inputs.json")
+                val inputsJson = GsonBuilder().disableHtmlEscaping().create().toJson(
+                    normalizeJson(JsonObject().also {
+                        it.addProperty("background_hash", effectiveFile.sha256())
+                        it.addProperty("html_hash", buildOgHtml(title, "BACKGROUND").sha256())
+                    })
+                )
+
+                // 入力に変化がない場合はスキップ（-Pregenerateで強制再生成）
+                if (!regenerate && outputFile.exists() && inputsFile.exists() && inputsFile.readText() == inputsJson) {
+                    logger.lifecycle("OG image is up-to-date, skipping: ${outputFile.absolutePath}")
                     return@forEach
                 }
 
@@ -284,6 +295,7 @@ val generateOgImages = tasks.register("generateOgImages") {
 
                 renderer.render(title, effectiveFile, outputFile)
                 logger.lifecycle("Generated OG image: ${outputFile.absolutePath}")
+                inputsFile.writeText(inputsJson)
             }
         }
     }
@@ -304,7 +316,9 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     group = "other"
     dependsOn(generateOgImages)
     from("src/main/resources")
-    from("src/ogImages/resources")
+    from("src/ogImages/resources") {
+        include("**/*.webp")
+    }
     from("src/external/resources")
     from("src/main/bundle")
     into(layout.buildDirectory.dir("jekyllSource"))
