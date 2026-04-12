@@ -29,7 +29,7 @@ tags: [ ミラージュフェアリー劇場, サラセニア, 食虫植物, 砂
 {% say tsumugi3 %}通りすがりの子がよくここで休みに来るんだよね。昨日は緑の子が来てさ、おとといは白くて丸い子で。{% endsay %}
 ![]({{ "/assets/images/2026/04/12/sarracenia/fairies.webp" | relative_url }})
 {% say tsumugi3 %}今日はちょっと大きめかな、羽がふわっとしてる。{% endsay %}
-{% say zundamon23 %}……可愛いのだ。{% endsay %}
+{% say zundamon23 %}……かわいいのだ。{% endsay %}
 {% say tsumugi3 %}でしょ！あーしのサラセニア大人気じゃん！！{% endsay %}
 
 {% space %}
