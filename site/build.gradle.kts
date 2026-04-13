@@ -7,14 +7,14 @@ import com.microsoft.playwright.Browser
 import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
 import org.yaml.snakeyaml.Yaml
+import tools.normalizeJson
+import tools.sha256
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.util.Base64.getEncoder
 import javax.imageio.IIOImage
 import javax.imageio.ImageIO
 import javax.imageio.ImageWriteParam
-import tools.normalizeJson
-import tools.sha256
 
 buildscript {
     repositories {
@@ -226,21 +226,29 @@ class OgImageRenderer : AutoCloseable {
 val generateOgImages = tasks.register("generateOgImages") {
     group = "generate"
 
+    val pagesDir = file("src/pages/resources")
     val resourcesDir = file("src/main/resources")
     val ogImagesDir = file("src/ogImages/resources")
     val outputDir = ogImagesDir.resolve("assets/images")
     val regenerate = project.hasProperty("regenerate")
 
-    inputs.files(fileTree(resourcesDir) { include("*.md", "_posts/*.md") })
-    inputs.dir(resourcesDir.resolve("assets/images"))
+    inputs.dir(pagesDir)
+    inputs.file(resourcesDir.resolve("assets/images/og-default-background.svg"))
 
     doLast {
         val outputDirFile = outputDir
         outputDirFile.mkdirs()
 
-        // .mdファイルを収集（ルート + _posts）
-        val mdFiles = resourcesDir.listFiles { f -> f.isFile && f.extension == "md" }?.toList().orEmpty() +
-            (resourcesDir.resolve("_posts").listFiles { f -> f.isFile && f.extension == "md" }?.toList().orEmpty())
+        // .mdファイルを収集
+        val mdFiles = pagesDir.listFiles().orEmpty()
+            .mapNotNull { dir ->
+                if (!dir.isDirectory) return@mapNotNull null
+                val otherMds = dir.listFiles { f -> f.isFile && f.extension == "md" && f.name != "${dir.name}.md" }
+                if (!otherMds.isNullOrEmpty()) error("Unexpected markdown files in ${dir.name}: ${otherMds.map { it.name }}")
+                val expectedMd = dir.resolve("${dir.name}.md")
+                if (!expectedMd.exists()) error("Expected markdown file not found: ${expectedMd.absolutePath}")
+                expectedMd
+            }
 
         val defaultBg = resourcesDir.resolve("assets/images/og-default-background.svg")
         OgImageRenderer().use { renderer ->
@@ -256,24 +264,21 @@ val generateOgImages = tasks.register("generateOgImages") {
                 val imagePath = (header?.get("og_background") ?: header?.get("overlay_image") ?: header?.get("image") ?: header?.get("teaser")) as? String
 
                 // page.url準拠の出力パスを決定
-                val isPost = mdFile.parentFile.name == "_posts"
-                val outputFile = if (isPost) {
-                    // _posts/YYYY-MM-DD-title.md → YYYY/MM/DD/title.og.webp
-                    val name = mdFile.nameWithoutExtension
-                    val year = name.substring(0, 4)
-                    val month = name.substring(5, 7)
-                    val day = name.substring(8, 10)
-                    val slug = name.substring(11)
+                val pageDirName = mdFile.parentFile.name
+                val postMatch = """(\d{4})-(\d{2})-(\d{2})-(.+)""".toRegex().matchEntire(pageDirName)
+                val outputFile = if (postMatch != null) {
+                    val (year, month, day, slug) = postMatch.destructured
                     outputDirFile.resolve("$year/$month/$day/$slug.og.webp")
                 } else {
-                    // page.md → page.og.webp
                     outputDirFile.resolve("${mdFile.nameWithoutExtension}.og.webp")
                 }
 
                 // ベース画像を解決
                 val effectiveFile = if (imagePath != null) {
-                    val f = resourcesDir.resolve(imagePath.removePrefix("/"))
-                    if (f.exists()) f else defaultBg
+                    val fileName = File(imagePath).name
+                    val localFile = mdFile.parentFile.resolve(fileName)
+                    if (localFile.exists()) localFile
+                    else error("OG background image not found: $fileName in ${mdFile.parentFile}")
                 } else defaultBg
 
                 // キャッシュ用入力JSONを計算
@@ -320,6 +325,27 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
         include("**/*.webp")
     }
     from("src/external/resources")
+    from("src/pages/resources") {
+        includeEmptyDirs = false
+        eachFile {
+            val dirName = relativePath.pathString.substringBefore("/")
+            val postMatch = Regex("(\\d{4})-(\\d{2})-(\\d{2})-(.+)").matchEntire(dirName)
+            if (postMatch != null) {
+                val (year, month, day, slug) = postMatch.destructured
+                if (name.endsWith(".md")) {
+                    relativePath = RelativePath(true, "_posts", name)
+                } else {
+                    relativePath = RelativePath(true, "assets", "images", year, month, day, slug, name)
+                }
+            } else {
+                if (name.endsWith(".md")) {
+                    relativePath = RelativePath(true, name)
+                } else {
+                    relativePath = RelativePath(true, "assets", "images", dirName, name)
+                }
+            }
+        }
+    }
     from("src/main/bundle")
     into(layout.buildDirectory.dir("jekyllSource"))
 }
@@ -341,8 +367,18 @@ val buildSite = tasks.register<Sync>("buildSite") {
     from(jekyllBuild)
     from(makeLangTable)
     from(makeRecipeTable)
-    from("src/main/resources") {
+    from("src/pages/resources") {
         include("**/*.md")
+        includeEmptyDirs = false
+        eachFile {
+            val dirName = relativePath.pathString.substringBefore("/")
+            val postMatch = Regex("(\\d{4})-(\\d{2})-(\\d{2})-(.+)").matchEntire(dirName)
+            if (postMatch != null) {
+                relativePath = RelativePath(true, "_posts", name)
+            } else {
+                relativePath = RelativePath(true, name)
+            }
+        }
     }
     into(layout.buildDirectory.dir("site"))
 }
