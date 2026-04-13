@@ -193,7 +193,7 @@ sidebar:
 
 ### ブログ記事
 
-`site/src/main/resources/_posts/YYYY-MM-DD-slug.md` に配置。
+`site/src/pages/resources/YYYY-MM-DD-slug/YYYY-MM-DD-slug.md` に配置。画像も同じディレクトリ内に同梱する。
 
 front matter例:
 
@@ -225,7 +225,7 @@ tags: [ミラージュフェアリー劇場, アタノール]
 
 ### 劇場記事
 
-`_posts/*.md` はすべて劇場形式（つむぎとずんだもんの会話劇）で書かれている。劇場レイアウト（`layout: theater`）とカスタム Liquid タグを使用する。
+`site/src/pages/resources/` 配下の記事はすべて劇場形式（つむぎとずんだもんの会話劇）で書かれている。劇場レイアウト（`layout: theater`）とカスタム Liquid タグを使用する。
 
 **theater-creator スキル**
 
@@ -294,7 +294,7 @@ Markdown 記法で画像を挿入する。`relative_url` フィルタで baseurl
 | `posts.md` | splash | なし | なし | なし |
 | `lang-table-index.md` | single（デフォルト） | image（非overlay）+ height | TOC | デフォルト |
 | `recipe-table-index.md` | single（デフォルト） | image（非overlay）+ height | TOC | デフォルト |
-| `_posts/*.md` | theater | teaserのみ（ヒーロー画像なし） | 関連記事リスト | デフォルト |
+| `site/src/pages/resources/*/*.md` | theater | teaserのみ（ヒーロー画像なし） | 関連記事リスト | デフォルト |
 
 `index.md` 特有のfront matter:
 
@@ -407,7 +407,7 @@ page__inner-wrap > section.page__content（headerなし）
 
 ### 劇場レイアウト
 
-ミラージュフェアリー劇場記事（`_posts/*.md`）専用のレイアウト。`site/src/main/resources/_layouts/theater.html` で定義。`single.html` を元に分離したもので、右ペインを TOC から関連記事リストに置き換えている。`page.header.video`, `page.link`, `site.comments`, `page__related` の各ブロックは劇場記事では不要なため削除済み。シェアボタンは常に表示（`if page.share` 分岐なし）。
+ミラージュフェアリー劇場記事（`site/src/pages/resources/*/*.md`）専用のレイアウト。`site/src/main/resources/_layouts/theater.html` で定義。`single.html` を元に分離したもので、右ペインを TOC から関連記事リストに置き換えている。`page.header.video`, `page.link`, `site.comments`, `page__related` の各ブロックは劇場記事では不要なため削除済み。シェアボタンは常に表示（`if page.share` 分岐なし）。
 
 **DOM構造**:
 
@@ -563,7 +563,7 @@ assets/images/
 
 Gradle側の `generateOgImages` タスクは `.md` ファイルから同じ `page.url` ベースのパスを導出する:
 
-- `_posts/YYYY-MM-DD-slug.md` → `src/main/resources/assets/images/YYYY/MM/DD/slug.og.webp`
+- `site/src/pages/resources/YYYY-MM-DD-slug/YYYY-MM-DD-slug.md` → `src/ogImages/resources/assets/images/YYYY/MM/DD/slug.og.webp`
 - `page.md` → `src/main/resources/assets/images/page.og.webp`
 
 `OgImageRenderer` の実装:
