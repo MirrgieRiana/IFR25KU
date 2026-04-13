@@ -1,5 +1,5 @@
 ---
-title: "【ミラージュの葉】……また指切るじゃん。【つむぎ×ずんだもん】"
+title: "【ミラージュの葉】気を付けねばなのだ。【つむぎ×ずんだもん】"
 description: ずんだもんと春日部つむぎがミラージュの葉でカバンを作る話
 layout: theater
 header:
@@ -17,7 +17,7 @@ tags: [ ミラージュフェアリー劇場, ミラージュの葉, カバン ]
 ![]({{ "/assets/images/2026/04/12/mirage-leaves/recipe-stem.png" | relative_url }})
 {% say tsumugi3 %}これを茎だけにすればいいんだよね！{% endsay %}
 {% say zundamon23 %}ちょっと待つのだ、それは——{% endsay %}
-{% say tsumugi3 %}～♪……あっ{% endsay %}
+{% say tsumugi3 %}～♪えいっ！！……あっ{% endsay %}
 {% say tsumugi3 %}いったーーーい！！！{% endsay %}
 {% say zundamon23 %}大丈夫かなのだ。{% endsay %}
 {% say tsumugi3 %}……血は出てないみたい……{% endsay %}
@@ -26,7 +26,8 @@ tags: [ ミラージュフェアリー劇場, ミラージュの葉, カバン ]
 {% say tsumugi3 %}むぇー……{% endsay %}
 {% say tsumugi3 %}！？――ていうか、そんなのでカバンなんか作って大丈夫なの！？{% endsay %}
 {% say zundamon23 %}ちゃんと向きを揃えて編めば大丈夫なのだ。{% endsay %}
-{% say tsumugi3 %}そんなもんなんだ……？確かに、カバンは危なくない……{% endsay %}
+{% say tsumugi3 %}そんなもんなんだ……？{% endsay %}
+{% say tsumugi3 %}……確かに、カバンは大丈夫みたい……{% endsay %}
 {% say zundamon23 %}初級レベルなのだ。{% endsay %}
 
 {% space %}
@@ -47,4 +48,4 @@ tags: [ ミラージュフェアリー劇場, ミラージュの葉, カバン ]
 {% say zundamon23 %}ミラージュの球根なのだ。{% endsay %}
 ![]({{ "/assets/images/2026/04/12/mirage-leaves/plant-bag-contents.png" | relative_url }})
 {% say tsumugi3 %}……また指切るじゃん。{% endsay %}
-{% say zundamon23 %}気を付けなければなのだ。{% endsay %}
+{% say zundamon23 %}気を付けねばなのだ。{% endsay %}
