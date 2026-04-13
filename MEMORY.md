@@ -227,13 +227,13 @@ tags: [ミラージュフェアリー劇場, アタノール]
 
 `_posts/*.md` はすべて劇場形式（つむぎとずんだもんの会話劇）で書かれている。劇場レイアウト（`layout: theater`）とカスタム Liquid タグを使用する。
 
-**制作ルールとキャラクター資料**
+**theater-creator スキル**
 
-詳細は `site/theater-creator/` 配下の原本を参照する（MEMORY.md に複写すると陳腐化する）。
+`site/theater-creator/` は Claude Code スキル定義（`name: theater-creator`）である。劇場記事の制作時にはこのスキルを呼び出す。詳細は原本を参照する（MEMORY.md に複写すると陳腐化する）。
 
-- `site/theater-creator/SKILL.md` — 会話記事の目的・タイトル形式・ストーリーの原則・ゲーム仕様やポエムの直接登場禁止などの規約
-- `site/theater-creator/zundamon-persona.md` — ずんだもんの人格・語尾規則・内面設定
-- `site/theater-creator/kasukabe-tsumugi-persona.md` — つむぎの口調・口癖・笑い方のバリエーション
+- `site/theater-creator/SKILL.md` — スキル定義本体。劇場の目的・タイトル形式・説明文形式・ストーリーの原則・画像の正規化ルール・会話生成の禁止事項（ゲーム仕様の登場、ゲーム内テキストの使用、設定の強引な回収、キャラクター設定の再現の目的化、誤った認識を抱かせる表現、LLM自体の口癖）
+- `site/theater-creator/zundamon-persona.md` — ずんだもんの包括的ペルソナ資料。出典付き公式設定、「のだ」語尾の体系（変形・消失・復帰の文学的機能）、人格モデル（自己認識・感情構造・対人スタイル・知的特性）
+- `site/theater-creator/kasukabe-tsumugi-persona.md` — 春日部つむぎの包括的ペルソナ資料。出典付き公式設定、口調・口癖・笑い方・感情表現、人格モデル（認知スタイル・対人スタイル・感情構造・価値観・経済感覚・知的特性・行動原理）
 
 **`{% say %}` タグ**
 
