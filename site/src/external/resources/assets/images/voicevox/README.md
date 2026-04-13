@@ -25,8 +25,8 @@ V3.2→im11206626(9/3更新)
 （ず・ω・きょ）
 
 ダウンロードは下記URLからどうぞ。
-https://ux.getuploader.com/s_ahiru/download/37
-pass:zunda
+????????
+pass:????????
 ```
 
 `voicevox/unofficial/ずんだもん立ち絵素材2.3.zip`
@@ -45,8 +45,8 @@ https://seiga.nicovideo.jp/seiga/im11148236
 （ず・ω・きょ）
 
 ダウンロードは下記URLからどうぞ。
-https://ux.getuploader.com/s_ahiru/download/51
-pass:zundaarrow
+????????
+pass:????????
 ```
 
 `voicevox/unofficial/ずんだもん立ち絵素材改1.1.1.zip`
@@ -65,8 +65,8 @@ https://seiga.nicovideo.jp/seiga/im11206626
 （ず・ω・きょ）
 
 ダウンロードは下記URLからどうぞ。
-https://ux.getuploader.com/s_ahiru/download/59
-pass:zunda
+????????
+pass:????????
 ```
 
 `voicevox/unofficial/ずんだもん立ち絵素材V3.2.zip`
@@ -84,8 +84,8 @@ https://seiga.nicovideo.jp/seiga/im10849150
 公式の規約の範囲なら何に使ってもだいじょうぶ！
 
 ダウンロードは下記URLからどうぞ。
-https://ux.getuploader.com/s_ahiru/download/42
-pass:saitama
+????????
+pass:????????
 ```
 
 `voicevox/unofficial/春日部つむぎ立ち絵素材3.0.zip`
