@@ -236,8 +236,7 @@ val generateOgImages = tasks.register("generateOgImages") {
     inputs.file(resourcesDir.resolve("assets/images/og-default-background.svg"))
 
     doLast {
-        val outputDirFile = outputDir
-        outputDirFile.mkdirs()
+        outputDir.mkdirs()
 
         // .mdファイルを収集
         val mdFiles = pagesDir.listFiles().orEmpty()
@@ -268,9 +267,9 @@ val generateOgImages = tasks.register("generateOgImages") {
                 val postMatch = """(\d{4})-(\d{2})-(\d{2})-(.+)""".toRegex().matchEntire(pageDirName)
                 val outputFile = if (postMatch != null) {
                     val (year, month, day, slug) = postMatch.destructured
-                    outputDirFile.resolve("$year/$month/$day/$slug.og.webp")
+                    outputDir.resolve("$year/$month/$day/$slug.og.webp")
                 } else {
-                    outputDirFile.resolve("${mdFile.nameWithoutExtension}.og.webp")
+                    outputDir.resolve("${mdFile.nameWithoutExtension}.og.webp")
                 }
 
                 // ベース画像を解決
@@ -329,7 +328,7 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
         includeEmptyDirs = false
         eachFile {
             val dirName = relativePath.pathString.substringBefore("/")
-            val postMatch = Regex("(\\d{4})-(\\d{2})-(\\d{2})-(.+)").matchEntire(dirName)
+            val postMatch = """(\d{4})-(\d{2})-(\d{2})-(.+)""".toRegex().matchEntire(dirName)
             if (postMatch != null) {
                 val (year, month, day, slug) = postMatch.destructured
                 if (name.endsWith(".md")) {
@@ -372,7 +371,7 @@ val buildSite = tasks.register<Sync>("buildSite") {
         includeEmptyDirs = false
         eachFile {
             val dirName = relativePath.pathString.substringBefore("/")
-            val postMatch = Regex("(\\d{4})-(\\d{2})-(\\d{2})-(.+)").matchEntire(dirName)
+            val postMatch = """(\d{4})-(\d{2})-(\d{2})-(.+)""".toRegex().matchEntire(dirName)
             if (postMatch != null) {
                 relativePath = RelativePath(true, "_posts", name)
             } else {
