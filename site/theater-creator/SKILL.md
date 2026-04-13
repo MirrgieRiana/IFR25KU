@@ -1,9 +1,9 @@
 ---
-name: persona
+name: theater-creator
 description: ミラージュフェアリー劇場制作のための資料を提供する。
 ---
 
-# persona
+# theater-creator
 
 ミラージュフェアリー劇場制作のための資料を提供する。
 
