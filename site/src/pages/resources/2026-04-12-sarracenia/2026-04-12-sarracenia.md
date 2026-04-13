@@ -17,7 +17,7 @@ tags: [ ミラージュフェアリー劇場, サラセニア, 食虫植物, 砂
 {% say zundamon23 %}沼地に生息する食虫植物の一種なのだ。{% endsay %}
 {% say zundamon23 %}葉っぱから砂糖を抽出したり、錬金術の材料に使われたりするのだ。{% endsay %}
 ![]({{ "/assets/images/2026/04/12/sarracenia/recipe-sugar.png" | relative_url }})
-{% say tsumugi3 %}へ～。それでこんなに甘酸っぱい匂いなんだ。センパイ物知りだな～{% endsay %}
+{% say tsumugi3 %}へ～。それでこんなに甘酸っぱい香りなんだ。センパイ物知りだな～{% endsay %}
 {% say zundamon23 %}ジャムにしても多分おいしいのだ。{% endsay %}
 {% say tsumugi3 %}ジャム！！美味しそう！！絶対いつか作るっ！{% endsay %}
 
