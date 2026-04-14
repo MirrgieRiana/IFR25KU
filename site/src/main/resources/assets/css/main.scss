@@ -856,6 +856,16 @@ body {
   border: 2px solid var(--say-color, #{$border-color});
   border-radius: 12px;
 
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.say--has-tail .say__balloon {
   &::before {
     content: "";
     position: absolute;
@@ -874,14 +884,6 @@ body {
     border-width: 7px 9px 7px 0;
     border-style: solid;
     border-color: transparent #ffffff transparent transparent;
-  }
-
-  > :first-child {
-    margin-top: 0;
-  }
-
-  > :last-child {
-    margin-bottom: 0;
   }
 }
 

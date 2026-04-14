@@ -50,15 +50,21 @@ module Say
       Say.derive_border_color(fill)
     end
 
-    # 解決済みパラメータから、顔部分の HTML（SVG）を生成して返す。
+    # 吹き出しのトゲを表示するか否かを返す。
+    def tail?
+      true
+    end
+
+    # 解決済みパラメータから、顔部分の HTML（.say__face div）を生成して返す。
     def resolve(params, _context = nil)
       color = params["color"] || "#cccccc"
       border_color = Say.derive_border_color(color)
-      <<~SVG
+      svg = <<~SVG
         <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="44" fill="#{color}" stroke="#{border_color}" stroke-width="6"/>
         </svg>
       SVG
+      Say.face_html(svg)
     end
   end
 end

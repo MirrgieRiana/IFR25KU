@@ -39,25 +39,29 @@
 #
 # ## キャラクターの追加方法
 #
-#   1. 別ファイルに Provider クラスを作成し、presets と resolve を実装する
+#   1. 別ファイルに Provider クラスを作成し、presets・color・tail?・resolve を実装する
 #   2. Say.register_character でキャラ名とインスタンスを登録する
 #      （_plugins/ 内の .rb ファイルは Jekyll が自動的に読み込む）
 #
 # ## Provider インターフェース
 #
 #   presets  — プリセット名からパラメータハッシュへのマッピングを返す
-#   resolve(params, context) — 解決済みパラメータとLiquidコンテキストを受け取り、顔部分のHTML文字列を返す
+#   color(params) — 吹き出し枠線に使うキャラクター色を返す
+#   tail?    — 吹き出しのトゲを表示するか否かを boolean で返す
+#   resolve(params, context) — 解決済みパラメータとLiquidコンテキストを受け取り、
+#                              <div class="say__face">...</div> を含む HTML 文字列を返す。
+#                              `Say.face_html(inner)` ヘルパーの使用を推奨する。
 #
 # ## HTML出力構造
 #
-#   <div class="say">
-#     <div class="say__face">
-#       （Provider#resolve が返すHTML）
-#     </div>
+#   <div class="say [say--has-tail]">
+#     （Provider#resolve が返すHTML、通常は <div class="say__face">...</div>）
 #     <div class="say__balloon" markdown="1">
 #       （ブロック内のテキスト、kramdownによりMarkdown処理される）
 #     </div>
 #   </div>
+#
+#   `say--has-tail` クラスはプロバイダーの tail? が true のときに付与される。
 #
 # =============================================================================
 
@@ -108,8 +112,9 @@ module Say
   # 初期化時に markup をパースし、レンダリング時に以下の処理を行う:
   #   1. キャラ名から Provider を引く
   #   2. プリセットと直接指定からパラメータを解決する
-  #   3. Provider#resolve で顔部分の HTML を生成する
-  #   4. ブロック内容と合わせて吹き出しの HTML を組み立てる
+  #   3. Provider#resolve で顔部分の HTML（.say__face div 全体）を取得する
+  #   4. Provider#tail? でトゲの有無を判定してクラスを組み立てる
+  #   5. ブロック内容と合わせて吹き出しの HTML を組み立てる
   class SayTag < Liquid::Block
     def initialize(tag_name, markup, tokens)
       super
@@ -131,12 +136,16 @@ module Say
       end
       params.merge!(@overrides)
 
-      # 顔部分の HTML を生成
+      # 顔部分の HTML（.say__face div 全体）を生成
       face_html = provider.resolve(params, context)
 
       # キャラクター色を取得し、CSS カスタムプロパティとして .say に付与する
       character_color = provider.color(params)
       style = character_color ? %( style="--say-color: #{character_color}") : ""
+
+      # トゲの有無に応じてクラスを組み立てる
+      classes = ["say"]
+      classes << "say--has-tail" if provider.tail?
 
       # ブロック内容を取得（Liquid の処理済み、Markdown は未処理）
       content = super
@@ -145,10 +154,8 @@ module Say
       # say__balloon に markdown="1" を付けることで、
       # kramdown がブロック内容を Markdown として処理する
       <<~HTML
-        <div class="say"#{style}>
-          <div class="say__face">
-            #{face_html}
-          </div>
+        <div class="#{classes.join(' ')}"#{style}>
+          #{face_html}
           <div class="say__balloon" markdown="1">
         #{content}
           </div>
