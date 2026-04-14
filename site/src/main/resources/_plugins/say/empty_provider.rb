@@ -36,6 +36,7 @@ module Say
       "yellow"   => { "color" => "#ffff66" },
       "white"    => { "color" => "#ffffff" },
       "black"    => { "color" => "#333333" },
+      "gray"     => { "color" => "#cccccc" },
     }.freeze
 
     # プリセット名からパラメータハッシュへのマッピングを返す。
