@@ -30,4 +30,9 @@ window.ifr25ku.saveJson = window.ifr25ku.saveJson || function(key, value) {
     }
   }
 };
+window.ifr25ku.stripBaseUrl = window.ifr25ku.stripBaseUrl || function(pathOrUrl) {
+  const BASE_URL = '{{ site.baseurl }}';
+  if (BASE_URL && pathOrUrl.startsWith(BASE_URL)) return pathOrUrl.slice(BASE_URL.length);
+  return pathOrUrl || '/';
+};
 </script>

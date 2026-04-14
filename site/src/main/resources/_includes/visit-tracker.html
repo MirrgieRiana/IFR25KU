@@ -1,20 +1,11 @@
 <script>
 (function() {
   var STORAGE_KEY = 'ifr25ku:visits:pages';
-  var BASE_URL = '{{ site.baseurl }}';
-
-  function getPageId() {
-    var path = location.pathname;
-    if (BASE_URL && path.startsWith(BASE_URL)) {
-      path = path.slice(BASE_URL.length);
-    }
-    return path || '/';
-  }
 
   function recordVisit() {
     if (window.ifr25ku.consent?.accepted !== true) return;
     var visits = window.ifr25ku.loadJson(STORAGE_KEY, {});
-    visits[getPageId()] = Date.now();
+    visits[window.ifr25ku.stripBaseUrl(location.pathname)] = Date.now();
     window.ifr25ku.saveJson(STORAGE_KEY, visits);
   }
 

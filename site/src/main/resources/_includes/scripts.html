@@ -55,16 +55,15 @@ document.addEventListener("gumshoeActivate", function(e) {
   var clearProgress = function() {
     if (!progressEl) return;
     progressEl.style.animation = 'none';
+    // リフローを強制してanimationの再開を可能にする
     progressEl.offsetHeight;
   };
   var startProgress = function() {
     if (!progressEl) return;
     progressEl.style.animation = '';
   };
-  var slideChanged = false;
   var previousSnap = embla.selectedScrollSnap();
   embla.on('select', function() {
-    slideChanged = true;
     clearProgress();
     // 旧スライドのパンをキャンセルしてCSS既定に戻す
     if (panAnimations[previousSnap]) {
@@ -125,7 +124,6 @@ document.addEventListener("gumshoeActivate", function(e) {
     embla.plugins().autoplay.play();
     clearProgress();
     startProgress();
-    slideChanged = false;
   });
 
   var resizeObserver;

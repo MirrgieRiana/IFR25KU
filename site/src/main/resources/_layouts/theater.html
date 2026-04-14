@@ -161,15 +161,6 @@ layout: default
     return result;
   }
 
-  // posts.json の url は baseurl を含む形式（例: /IFR25KU/2026/03/22/athanor.html）のため、
-  // baseurl を除去した形式（例: /2026/03/22/athanor.html）に変換して
-  // ifr25ku:visits:pages のキーと照合できるようにする。
-  function getPageKey(url) {
-    const BASE_URL = '{{ site.baseurl }}';
-    if (BASE_URL && url.startsWith(BASE_URL)) return url.slice(BASE_URL.length);
-    return url || '/';
-  }
-
   // 最終訪問からの経過日数に応じた訪問係数を返す。
   //   未訪問          → 1
   //   7日未満         → 1/3
@@ -237,7 +228,7 @@ layout: default
 
   const weighted = candidates.map(post => {
     const overlap = post.tags.filter(tag => currentTags.includes(tag)).length;
-    const lastVisited = visits[getPageKey(post.url)];
+    const lastVisited = visits[window.ifr25ku.stripBaseUrl(post.url)];
     return { post, weight: (overlap + 1) * getVisitMultiplier(lastVisited) };
   });
 
