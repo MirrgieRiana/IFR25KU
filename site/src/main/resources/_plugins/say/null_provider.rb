@@ -28,7 +28,7 @@ module Say
 
     # 吹き出し枠線に使うキャラクター色を返す。
     def color(params)
-      params["color"]
+      params["color"] || "#cccccc"
     end
 
     # 吹き出しのトゲを表示するか否かを返す。
