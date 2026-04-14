@@ -326,15 +326,22 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     from("src/external/resources")
     from("src/pages/resources") {
         includeEmptyDirs = false
+        val seenImagePaths = mutableMapOf<String, String>()
         eachFile {
             val dirName = relativePath.pathString.substringBefore("/")
             val postMatch = """(\d{4})-(\d{2})-(\d{2})-(.+)""".toRegex().matchEntire(dirName)
             if (postMatch != null) {
-                val (year, month, day, slug) = postMatch.destructured
+                val (year, month, day, _) = postMatch.destructured
                 if (name.endsWith(".md")) {
                     relativePath = RelativePath(true, "_posts", name)
                 } else {
-                    relativePath = RelativePath(true, "assets", "images", year, month, day, slug, name)
+                    val sourcePath = relativePath.pathString
+                    relativePath = RelativePath(true, year, month, day, name)
+                    val outputKey = relativePath.pathString
+                    seenImagePaths[outputKey]?.let { existingSource ->
+                        error("Image filename collision at '$outputKey': '$existingSource' and '$sourcePath'")
+                    }
+                    seenImagePaths[outputKey] = sourcePath
                 }
             } else {
                 if (name.endsWith(".md")) {

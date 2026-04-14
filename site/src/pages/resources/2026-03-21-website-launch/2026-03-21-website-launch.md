@@ -3,7 +3,7 @@ title: "【公式サイト】IFR25KU Official Websiteを公開しました【つ
 description: IFR25KUの公式サイトを公開した話
 layout: theater
 header:
-  teaser: /assets/images/2026/03/21/website-launch/2025-11-04_20.09.58.webp
+  teaser: /2026/03/21/2025-11-04_20.09.58.webp
 tags: [ ミラージュフェアリー劇場, アップデート, IFR25KU, 公式サイト, ブログ ]
 ---
 
