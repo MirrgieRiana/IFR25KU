@@ -7,118 +7,69 @@ AIアシスタントが自由に編集できる、コミットされる永続的
 
 ### タスクフロー
 
-1. `makeLangTable`（group: generate）: 言語JSONとHTMLテンプレートからlang_table.html/json/csvを `site/build/langTable/` に生成。`inputs`/`outputs` 宣言によりUP-TO-DATE判定あり
-2. `installJekyllBundle`（Exec、group: other）: `site/scripts/bundle-install.sh` を実行。`inputs`（`src/main/bundle/Gemfile`, `Gemfile.lock`）/`outputs`（`build/bundleVendor`, `build/bundleConfig`）宣言によりUP-TO-DATE判定あり
-    - `bundle-install.sh`: `BUNDLE_APP_CONFIG=$SITE_DIR/build/bundleConfig` を設定し、`site/src/main/bundle/` で `bundle config set --local path $SITE_DIR/build/bundleVendor` → `bundle install`。gemは `site/build/bundleVendor/` にインストールされる
-3. `syncJekyllSource`（Sync、group: other）: `site/src/main/resources/`・`src/ogImages/resources`（`**/*.webp`）・`src/external/resources`・`src/pages/resources`（画像を `YYYY/MM/DD/filename` にフラット配置、.mdは `_posts/` へ）・`site/src/main/bundle/` を `site/build/jekyllSource/` に同期。`dependsOn(generateOgImages)`
-4. `jekyllBuild`（Exec、group: build）: `site/scripts/build-site.sh` を実行。`dependsOn(installJekyllBundle)`（UP-TO-DATE判定コスト削減のため敢えてinputsにしない）。`inputs.files(syncJekyllSource)` / `outputs.dir(jekyllBuild/)` 宣言あり
-    - `build-site.sh`: `BUNDLE_APP_CONFIG=$SITE_DIR/build/bundleConfig` を設定し、`site/build/jekyllSource/` で `bundle exec jekyll build --destination ../jekyllBuild`
-5. `generateOgImages`（group: generate）: `src/pages/resources/` 内の `.md` ファイルのfront matterからタイトルとヘッダー画像を読み取り、Playwrightで1200×630のスクリーンショット（PNG）を取得後、sejda webp-imageioライブラリでWebPに変換して `src/ogImages/resources/assets/images/` に出力。入力のSHA-256ハッシュを `*.inputs.json` に記録し、変化がなければスキップ（`-Pregenerate` で強制再生成）
-6. `buildSite`（Sync、group: build）: `jekyllBuild` の出力と `makeLangTable` の出力と `makeRecipeTable` の出力と `src/pages/resources/` 内の `.md` ファイルを `site/build/site/` に統合。OG画像は `src/ogImages/resources/` に出力され、`syncJekyllSource` が取り込むことでJekyllパイプラインを経由して最終出力に含まれる
+`site/build.gradle.kts` で定義。主要なタスクの依存関係:
 
-CI出力先は `site/build/site/`（`pages.yml` で `buildSite` タスクを実行し、そこからデプロイ）。
+1. `makeLangTable`（generate）: 言語JSONとHTMLテンプレートから `site/build/langTable/` に生成
+2. `makeRecipeTable`（generate）: レシピデータを生成
+3. `installJekyllBundle`（other）: `site/scripts/bundle-install.sh` を実行。gemは `site/build/bundleVendor/` にインストール
+4. `generateOgImages`（generate）: `src/pages/resources/` 内の `.md` からOG画像を `src/ogImages/resources/assets/images/` に生成。入力ハッシュで差分スキップ（`-Pregenerate` で強制再生成）
+5. `syncJekyllSource`（other）: 複数ソースを `site/build/jekyllSource/` に統合。`dependsOn(generateOgImages)`
+    - `src/main/resources/` — テーマオーバーライド、レイアウト、プラグイン、共通画像
+    - `src/ogImages/resources`（`**/*.webp`） — 生成済みOG画像
+    - `src/external/resources` — 外部リソース
+    - `src/pages/resources` — ページと記事（.mdは `_posts/` へ、画像は `YYYY/MM/DD/filename` にフラット配置。衝突チェックあり）
+    - `src/main/bundle` — Gemfile等
+6. `jekyllBuild`（build）: `site/scripts/build-site.sh` を実行。`dependsOn(installJekyllBundle)` だが、UP-TO-DATE判定コスト削減のため敢えてinputsにしていない
+7. `buildSite`（build）: `jekyllBuild` + `makeLangTable` + `makeRecipeTable` + `src/pages/resources/` 内の `.md` を `site/build/site/` に統合
 
-`serveSite`（Exec、group: application）: `site/scripts/serve-site.sh` → `serve-site.main.kts`（Ktor Nettyサーバー）で `site/build/site/` を `http://localhost:4000/IFR25KU/` に配信。`inputs.files(buildSite)` による依存。Jekyll標準の `jekyll serve` ではなくKtor Nettyを使用する理由は、jekyll serveが頻繁に落ちて使い物にならないため。MIMEタイプ: `.md` を `text/plain; charset=utf-8` として配信。
+CI出力先は `site/build/site/`。
+
+`serveSite`（application）: Ktor Nettyサーバーで `site/build/site/` を `http://localhost:4000/IFR25KU/` に配信。Jekyll標準の `jekyll serve` ではなくKtor Nettyを使用する理由は、jekyll serveが頻繁に落ちて使い物にならないため。
 
 ### buildscript依存関係
 
-```kotlin
-classpath("org.yaml:snakeyaml:2.2")                        // front matter解析
-classpath("com.microsoft.playwright:playwright:1.58.0")     // OG画像生成（Chromiumスクリーンショット）
-classpath("org.sejda.imageio:webp-imageio:0.1.6")           // WebP変換
-```
+`site/build.gradle.kts` の `buildscript` で定義。SnakeYAML（front matter解析）、Playwright（OG画像のChromiumスクリーンショット）、WebP変換ライブラリを使用。具体的なライブラリとバージョンはファイルを参照。
 
 ## Jekyll
 
 ### テーマオーバーライドの仕組み
 
-minimal-mistakesテーマのファイルは `site/build/bundleVendor/bundle/ruby/3.3.0/gems/minimal-mistakes-jekyll-4.28.0/` にある。オーバーライドするには、同じ相対パスで `site/src/main/resources/` 内にファイルを配置する。
+minimal-mistakesテーマのファイルは `site/build/bundleVendor/` 配下にある。オーバーライドするには、同じ相対パスで `site/src/main/resources/` 内にファイルを配置する。
 
 **注意**: `_sass/` のパーシャルはオーバーライドできない。Sassの `@import` はインポート元ファイルのディレクトリを最初に検索するため、テーマのパーシャルが常に優先される。CSSのカスタマイズは `site/src/main/resources/assets/css/main.scss` の `@import "minimal-mistakes"` の後に記述する。
 
 ### _layouts/
 
-- `single.html` — 各コンテンツページ。ヘッダー画像3パターン対応、Grid化
-- `splash.html` — トップページ・記事一覧。`carousel` 配列対応（hero-carousel.htmlを呼び出し）。ヘッダーなし時に `content-wrap` で囲む
-- `theater.html` — ミラージュフェアリー劇場記事用。`single.html` から分離。右サイドバーを TOC ではなく関連記事（`posts.json` + タグ重み付きランダム抽選）に置き換え。末尾にインラインJSを持つ
+`site/src/main/resources/_layouts/` に配置。
+
+- `single.html` — 各コンテンツページ。ヘッダー画像の設定方式で3パターンのDOM構造が生じる（overlay / image / なし）
+- `splash.html` — トップページ・記事一覧。`page.carousel` 定義時はカルーセル表示
+- `theater.html` — 劇場記事専用。`single.html` から分離し、右ペインをTOCから関連記事に置き換え、本文下部にも推薦グリッドを配置。末尾にインラインJSを持つ
 
 ### _includes/
 
-**ヘッダー・ヒーロー系**
+`site/src/main/resources/_includes/` に配置。各ファイルの役割はファイル先頭を読めば分かる。以下は読んだだけでは分かりにくい設計上のポイント:
 
-- `masthead.html` — ドロップダウンメニュー（`children` キー対応、外部リンクアイコン付き）。ロゴはフェイス画像とバナー画像の2枚配置
-- `hero-carousel.html` — ヒーローカルーセル（Embla Carousel、ドットナビ・プログレスバー・パンアニメーション）。`page.carousel` 配列のスライドをレンダリング
-- `page__hero.html` — ヒーロー画像（背景画像・overlay_filter・actions対応）。overlay_filterは `gradient` / `rgba` / 数値に対応し自動変換
-- `page__hero_actions.html` — ヒーロー内のアクションボタン表示。`page.header.actions` 配列をループ。外部リンク自動判定
-
-**コンテンツ表示系**
-
-- `recent-posts.html` — ブログ新着カード表示（`limit` / `more` パラメータ）
-- `page-cards.html` — 指定ページをカード表示（`include.pages` でCSV指定）
-- `post_pagination.html` — 記事の前後ナビゲーション（Grid 4列レイアウト）
-- `section-header.html` — フルワイドのセクションヘッダー（`title` / `subtitle` パラメータ）
-
-**ページ全体系**
-
-- `head/custom.html` — Favicon設定（PNG形式、`miragefairy_face_192.png`）、`window.ifr25ku` グローバルオブジェクト（`loadJson`/`saveJson`/`stripBaseUrl`/`events`）の定義
-- `seo.html` — OG画像パスの自動導出（`page.url` ベース）。詳細は「画像 > OG画像」セクション参照
-- `scripts.html` — greedy-navのvisible-links overflow解除、Gumshoeスクロールスパイの無効化、Embla Carouselの初期化、consent-banner.html・visit-tracker.htmlのインクルード
-- `consent-banner.html` — 同意バナー。localStorage `ifr25ku:consent` で状態管理し、`window.ifr25ku.consent` を公開
-- `visit-tracker.html` — ページ訪問記録。同意済みの場合に `ifr25ku:visits:pages` へ `{ "/page-url": timestamp_ms }` を保存。劇場レイアウトの関連記事抽選の重み調整に使用
-- `footer.html` — `site.copyright` 配列をループ表示（MirageFairy Server/Generation 7/Yoruno Kakera）、Apache 2.0ライセンス表記、social-icons・RSS・Sitemap
-- `footer/custom.html` — GitHubソースリンク（`page.path` をリポジトリURLに組み込み）、Markdownファイルのダイレクトリンク
+- `masthead.html` — テーマデフォルトはドロップダウン非対応。`children` キーに対応するためオーバーライドしている
+- `head/custom.html` — Favicon設定に加えて `window.ifr25ku` グローバルオブジェクト（`loadJson`/`saveJson`/`stripBaseUrl`/`events`）を定義。他の複数includeがこれに依存する
+- `scripts.html` — greedy-navのoverflowをJS側で `visible` に書き換えている理由は、CSS初期値のままだとドロップダウンが切れるため。Gumshoeのスクロールスパイはキャプチャフェーズで無効化している（TOC項目への自動スクロールが邪魔になるため）
+- `consent-banner.html` — `window.ifr25ku.consent` を公開。`visit-tracker.html` がこの同意状態に依存する
+- `visit-tracker.html` — 訪問記録（`ifr25ku:visits:pages`）を保存。劇場レイアウトの関連記事抽選の重み調整に使用される
 
 ### _plugins/
 
-Jekyllビルド時に読み込まれるカスタムRubyプラグイン（`site/src/main/resources/_plugins/` 配下）。
+`site/src/main/resources/_plugins/` に配置。主要な機能:
 
-- `say.rb` — `{% say %}` ブロックタグの実装。キャラ名・プリセット・属性パラメータをパースし、立ち絵と吹き出しを組み立てる
-- `say/voicevox_provider.rb` — VOICEVOX立ち絵のレイヤー合成。`extracted/{slug}/presets.json` と `layers.json` を読み、パーツ単位でレイヤーを重ね合わせる
-- `say/empty_provider.rb` — デフォルトのProvider（空実装、デバッグ用）
-- `say/null_provider.rb` — Null Provider
-- `00_registries.rb` — キャラクターレジストリと色計算ユーティリティ（`Say.register_character()` など）
-- `space.rb` — `{% space %}` タグの実装（`<div class="space">` 挿入）
-- `posts_generator.rb` — Jekyll post_write フックで全記事メタ（title/url/teaser/tags）を `site/build/site/posts.json` に書き出す（劇場レイアウトの関連記事抽選が依存）
+- `say.rb` + `say/` 配下のprovider群 — `{% say %}` ブロックタグでキャラクター会話を表示。VOICEVOX立ち絵のレイヤー合成を行う。キャラクターは `_data/voicevox.yml` で登録
+- `posts_generator.rb` — 全記事メタを `posts.json` に書き出す。劇場レイアウトの関連記事抽選が依存
+- `space.rb` — `{% space %}` タグで場面転換の区切りを挿入
 
 ### _config.yml
 
-```yaml
-locale: "ja-JP"
-title: IFR25KU
-url: https://mirrgieriana.github.io
-baseurl: /IFR25KU
-theme: minimal-mistakes-jekyll
-minimal_mistakes_skin: default
-copyright:
-  - year: 2019
-    name: "MirageFairy Server"
-    license: "CC BY-SA 3.0"
-    license_url: "https://creativecommons.org/licenses/by-sa/3.0/"
-  - year: 2024
-    name: "The Developer of MirageFairy, Generation 7"
-    license: "CC BY 4.0"
-    license_url: "https://creativecommons.org/licenses/by/4.0/"
-  - year: 2025
-    name: "Yoruno Kakera"
-    license: "CC BY 4.0"
-    license_url: "https://creativecommons.org/licenses/by/4.0/"
+`site/src/main/resources/_config.yml` で定義。読んだだけでは分かりにくい設定:
 
-future: true
-
-plugins:
-  - jekyll-include-cache
-
-defaults:
-  - scope:
-      path: ""
-    values:
-      layout: single
-      toc: true
-      sidebar:
-        nav: sidebar
-```
-
-全ページにsingleレイアウト・TOC・サイドバーがデフォルト適用される。テーマの `toc_sticky` は未使用（TOCのsticky挙動は「レイアウト > ペイン構造」で実装）。
+- `future: true` — ビルド時に未来日付の記事も出力する（デフォルトでは未来日付は除外される）
+- `defaults` で全ページに `single` レイアウト・TOC・サイドバーをデフォルト適用。テーマの `toc_sticky` は未使用（TOCのsticky挙動は `main.scss` 側の `.toc { position: sticky; }` で実装）
 
 ### front matterとファイル変換
 
@@ -128,115 +79,37 @@ defaults:
 
 ## ナビゲーション
 
-`site/src/main/resources/_data/navigation.yml` で定義。
-
-### mastheadメニュー
-
-テーマのデフォルトmastheadはドロップダウン非対応（フラットなliリスト）。`site/src/main/resources/_includes/masthead.html` でオーバーライドし、`children` キーに対応。
-
-```yaml
-main:
-  - title: DOWNLOADS
-    children:
-      - title: Modrinth
-        url: https://modrinth.com/mod/ifr25ku
-        icon: /assets/images/modrinth.svg
-      - title: CurseForge
-        url: https://www.curseforge.com/minecraft/mc-mods/ifr25ku
-        icon: /assets/images/curseforge.svg
-  - title: ARTICLES
-    children:
-      - title: 記事一覧
-        url: /posts.html
-  - title: INFO
-    children:
-      - title: CHANGELOG
-        url: /CHANGELOG.html
-      - title: GitHub
-        url: https://github.com/MirrgieRiana/IFR25KU
-      - title: Lang Table
-        url: /lang-table-index.html
-      - title: Recipe Table
-        url: /recipe-table-index.html
-      - title: IFRKU Official Web Site (Old)
-        url: https://kakera-unofficial.notion.site/ifrku
-      - title: Discord
-        url: https://discord.gg/bppQyAZtkA
-        icon: /assets/images/discord.svg
-```
-
-ドロップダウンCSS: `.masthead__menu-item--dropdown` でホバー時に `.masthead__dropdown` を表示。
-
-### 左サイドバー
-
-```yaml
-sidebar:
-  - title: ページ一覧
-    children:
-      - title: Home
-        url: /
-      - title: CHANGELOG
-        url: /CHANGELOG.html
-      - title: Lang Table
-        url: /lang_table.html
-      - title: Lang Table (JSON)
-        url: /lang_table.json
-      - title: Lang Table (JSONL)
-        url: /lang_table.jsonl
-      - title: Lang Table (CSV)
-        url: /lang_table.csv
-      - title: Recipe Table
-        url: /recipe-table-index.html
-      - title: Recipe Table (JSONL)
-        url: /recipe_table.jsonl
-```
-
-テーマの `nav_list` includeがchildrenに対応済み。
+`site/src/main/resources/_data/navigation.yml` で定義。テーマデフォルトのmastheadはドロップダウン非対応（フラットなliリスト）だが、`masthead.html` のオーバーライドで `children` キーに対応させている。
 
 ## コンテンツ
+
+### ページの配置
+
+全ページは `site/src/pages/resources/<name>/<name>.md` に配置される。`syncJekyllSource` がJekyllソースに変換する:
+
+- ブログ記事（`YYYY-MM-DD-slug/` 形式のディレクトリ）: .mdは `_posts/` へ、画像は `YYYY/MM/DD/filename` にフラット配置
+- その他のページ: .mdはルートへ、画像は `assets/images/<name>/` へ
+
+各ページのレイアウトやfront matterの詳細は、個々のファイルを参照。
 
 ### ブログ記事
 
 `site/src/pages/resources/YYYY-MM-DD-slug/YYYY-MM-DD-slug.md` に配置。画像も同じディレクトリ内に同梱する。
 
-front matter例:
+front matterの要点:
 
-```yaml
----
-title: "【アタノール】記事タイトル【つむぎ×ずんだもん】"
-description: 記事の簡単な説明
-layout: theater
-header:
-  teaser: /2026/03/22/2026-03-22_15.11.57.webp
-tags: [ミラージュフェアリー劇場, アタノール]
----
-```
+- `header.teaser`: パスは `/YYYY/MM/DD/ファイル名.webp` 形式（`/assets/images/` プレフィックスなし、slug階層なし）。ビルド時に `syncJekyllSource` がフラット配置するため
+- `header.overlay_image` / `header.image` / `header.teaser`: OG画像生成のベース画像としても使用される（優先順位はこの順）
 
-- `header.overlay_image`: overlay型（タイトルが画像に重なる）。OG画像生成のベース画像としても使用
-- `header.image`: ヒーロー画像（非overlay、タイトルは画像の下）。OG画像生成のベース画像としても使用
-- `header.teaser`: 一覧カードのサムネイル。OG画像生成のベース画像としても使用（最低優先度）。パスは `/YYYY/MM/DD/ファイル名.webp` 形式（`/assets/images/` なし、slug階層なし）
-- `header.height`: ヒーロー画像の高さ指定（例: `200px`）
-
-ビルド時の画像出力パスは `/YYYY/MM/DD/ファイル名.webp`（`syncJekyllSource` がフラット配置する）。
-
-ファイル名の例（既存記事より）:
-
-- `YYYY-MM-DD_HH.MM.SS.webp` — Minecraftスクリーンショットの元ファイル名そのまま
-- `recipe-<素材>.webp`, `<状態>.webp` — 内容を表す説明的なスラグ
-
-トップページの `{% include recent-posts.html limit=8 more=true %}` で新着8件をカード表示。記事一覧ページ（`posts.md`）では `{% include recent-posts.html %}` でデフォルト10件表示。
+インライン画像は相対パスで参照: `![](filename.webp)`（`syncJekyllSource` が記事の出力先と同じ階層にフラット配置するため、`relative_url` フィルタ不要）
 
 ### 劇場記事
 
-`site/src/pages/resources/` 配下の記事はすべて劇場形式（つむぎとずんだもんの会話劇）で書かれている。劇場レイアウト（`layout: theater`）とカスタム Liquid タグを使用する。
+`site/src/pages/resources/` 配下のブログ記事はすべて劇場形式（つむぎとずんだもんの会話劇）で書かれている。`layout: theater` とカスタム Liquid タグを使用する。
 
 **theater-creator スキル**
 
-`site/theater-creator/` は Claude Code スキル定義（`name: theater-creator`）である。劇場記事の制作時にはこのスキルを呼び出す。詳細は原本を参照する（MEMORY.md に複写すると陳腐化する）。
-
-- `site/theater-creator/SKILL.md` — スキル定義本体。劇場の目的・タイトル形式・説明文形式・ストーリーの原則・画像の正規化ルール・会話生成の禁止事項（ゲーム仕様の登場、ゲーム内テキストの使用、設定の強引な回収、キャラクター設定の再現の目的化、誤った認識を抱かせる表現、LLM自体の口癖）
-- `site/theater-creator/zundamon-persona.md` — ずんだもんの包括的ペルソナ資料。出典付き公式設定、「のだ」語尾の体系（変形・消失・復帰の文学的機能）、人格モデル（自己認識・感情構造・対人スタイル・知的特性）
-- `site/theater-creator/kasukabe-tsumugi-persona.md` — 春日部つむぎの包括的ペルソナ資料。出典付き公式設定、口調・口癖・笑い方・感情表現、人格モデル（認知スタイル・対人スタイル・感情構造・価値観・経済感覚・知的特性・行動原理）
+`site/theater-creator/` は Claude Code スキル定義。劇場記事の制作時にはこのスキルを呼び出す。詳細は原本を参照する（MEMORY.md に複写すると陳腐化する）。
 
 **`{% say %}` タグ**
 
@@ -255,66 +128,27 @@ tags: [ミラージュフェアリー劇場, アタノール]
 {% say tsumugi3:口=わあーい:まゆ=困り眉 %}センパーイ！{% endsay %}
 ```
 
-- 登録済みキャラ: `zundamon23`, `tsumugi3`（`_data/voicevox.yml` で定義）
-- 属性のキー（`眉`, `目`, `口` 等）と値は VOICEVOX 立ち絵の `presets.json` で定義される。全リストは `site/build/jekyllSource/assets/images/voicevox/extracted/{slug}/presets.json` を参照
+- 登録済みキャラは `_data/voicevox.yml` で定義
+- 属性のキー・値は `site/build/jekyllSource/assets/images/voicevox/extracted/{slug}/presets.json` を参照
 - `radio` パーツは1つだけ選択（未指定時は default 要素）、`checkbox` パーツはカンマ区切りで複数指定可
-- 実装: `_plugins/say.rb` と `_plugins/say/voicevox_provider.rb`
 
-**`{% space %}` タグ**
-
-場面転換の区切りを挿入するインラインタグ。`<div class="space"></div>` を出力。実装: `_plugins/space.rb`。
-
-**インライン画像の挿入**
-
-Markdown 記法で画像を挿入する。画像は記事ディレクトリに同梱されており、`syncJekyllSource` が記事の出力先と同じ階層にフラット配置するため、ファイル名のみの相対パスで参照できる:
-
-```
-![](filename.webp)
-```
+**`{% space %}` タグ** — 場面転換の区切りを挿入するインラインタグ。
 
 **タグの設計**
 
-劇場レイアウトは右ペインで**タグ一致数による関連記事抽選**を行うため、タグの付け方が関連記事の質に直結する。
+劇場レイアウトの関連記事抽選はタグ一致数で重み付けされるため、タグの付け方が関連記事の質に直結する。
 
 - 必須: `ミラージュフェアリー劇場`（カテゴリ分類）
-- 機能タグ: 登場する具体的アイテム名（`アタノール`, `生命の水`, `豚肉` など）。重なりが多い記事ほど関連度が高く抽選される
+- 機能タグ: 登場する具体的アイテム名。重なりが多い記事ほど関連度が高く抽選される
 - メタタグ: `アップデート`, `お知らせ` 等（必要に応じて）
 
 ### 特殊ファイル
 
 標準的なJekyll変換では済まない、独自のビルドパイプラインを持つファイル。
 
-- **CHANGELOG** (`site/src/pages/resources/CHANGELOG/CHANGELOG.md`): front matterあり → JekyllがHTMLに変換 → `CHANGELOG.html` として出力。`buildSite` タスクで `src/pages/resources/` 内の `.md` ファイルを `site/build/site/` にコピーしてmd版も配信。CHANGELOG.html冒頭に「Markdown版はこちら」リンクあり。
-- **Lang Table**: `site/src/langTable/html/lang_table.html` はテンプレートHTML（テーマレイアウトなし）。`<%= trs %>` はGradleの `makeLangTable` タスクで展開。JavaScript検索機能付き（正規表現対応、URLパラメータ `?q=` で初期値復元）。出力先は `site/build/langTable/`。`site/src/pages/resources/lang-table-index/lang-table-index.md` はテーマレイアウトを使った特設ページで、各形式（HTML/JSON/JSONL/CSV）へのリンクを配置。
-- **posts.json**: `_plugins/posts_generator.rb` が Jekyll post_write フックで全記事メタ（title/url/teaser/tags）を `site/build/site/posts.json` に書き出す。劇場レイアウトの関連記事抽選JS（`theater.html` 末尾）が `fetch('/posts.json')` で読み込む。
-
-### ページ一覧
-
-全ページは `site/src/pages/resources/<name>/<name>.md` に配置される（`syncJekyllSource` がJekyllソースに変換）。
-
-| ファイル | Layout | Header型 | 右ペイン | 左サイドバー |
-|---|---|---|---|---|
-| `index/index.md` | splash | overlay_color + carousel + actions | なし | なし |
-| `CHANGELOG/CHANGELOG.md` | single（デフォルト） | image（非overlay）+ height | TOC | デフォルト |
-| `posts/posts.md` | splash | なし | なし | なし |
-| `lang-table-index/lang-table-index.md` | single（デフォルト） | image（非overlay）+ height | TOC | デフォルト |
-| `recipe-table-index/recipe-table-index.md` | single（デフォルト） | image（非overlay）+ height | TOC | デフォルト |
-| `YYYY-MM-DD-slug/YYYY-MM-DD-slug.md` | theater | teaserバナー（ヒーロー画像なし） | 関連記事リスト | デフォルト |
-
-`index.md` 特有のfront matter:
-
-```yaml
-carousel:
-  # 実際の定義は site/src/pages/resources/index/index.md を参照
-header:
-  og_background: /assets/images/index/banner1.webp  # Gradle の generateOgImages 専用ヒントキー。Jekyll 側（seo.html・page__hero.html）は参照しない
-  overlay_color: "#1a1a2e"
-  overlay_filter: "linear-gradient(...)"
-  actions:
-    - label: "Modrinth"
-      url: "https://modrinth.com/mod/ifr25ku"
-      icon: "/assets/images/modrinth.svg"
-```
+- **CHANGELOG** (`site/src/pages/resources/CHANGELOG/CHANGELOG.md`): JekyllがHTMLに変換し、`buildSite` が `.md` もそのままコピーしてmd版も配信
+- **Lang Table**: `site/src/langTable/html/lang_table.html` はテンプレートHTML。`<%= trs %>` をGradleの `makeLangTable` タスクで展開。`site/src/pages/resources/lang-table-index/lang-table-index.md` はテーマレイアウトを使った特設ページ
+- **posts.json**: `_plugins/posts_generator.rb` がJekyllビルド時に全記事メタを書き出す。劇場レイアウトのJSが読み込む
 
 ## 世界観リファレンス
 
@@ -322,35 +156,11 @@ IFR25KU の世界観用語・アイテム説明・ポエムはゲーム本体の
 
 ### lang JSON
 
-`common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json` に全テキストが集約されている（ビルド時にコードから自動生成）。
-
-主要なキー命名パターン:
-
-| パターン | 説明 |
-|---|---|
-| `item.miragefairy2024.<item>.name` | アイテム名 |
-| `item.miragefairy2024.<item>.poem` | アイテムの短いポエム |
-| `item.miragefairy2024.<item>.description` | アイテムの長い説明文 |
-| `block.miragefairy2024.<block>.name` | ブロック名 |
-| `advancements.miragefairy2024.<item>.title` | 進捗（advancement）のタイトル |
-| `advancements.miragefairy2024.<item>.description` | 進捗の説明文 |
-
-ポエム例:
-
-- `"item.miragefairy2024.xarpite.poem": "暮らしを守る紅い盾――"`
-- `"item.miragefairy2024.builders_rod.poem": "暮らしを紡ぐもの"`
-- `"item.miragefairy2024.luminite.poem": "エテロルミネッセンス"`
-
-### Lang Table での検索
-
-`site/build/site/lang_table.html` をブラウザで開くと、正規表現対応のJavaScript検索UIが使える。URLパラメータ `?q=xxx` で初期検索値を渡せる。grep用途には `lang_table.jsonl` が便利。
+`common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json` に全テキストが集約されている（ビルド時にコードから自動生成）。主要なキーパターン: `item.miragefairy2024.<item>.name` / `.poem` / `.description`、`block.miragefairy2024.<block>.name`、`advancements.miragefairy2024.<item>.title` / `.description`。
 
 ### コード側の定義
 
-ポエムや説明文は最終的に lang JSON に出力されるが、元々は Kotlin コードのハードコードとして定義されている。
-
-- `common/src/main/kotlin/miragefairy2024/mod/PoemModule.kt` — ポエム管理の本体
-- `common/src/main/kotlin/miragefairy2024/mod/` 配下の各種 Module ファイル（Materials / Ores / Athanor / FairyBuilding / MagicPlant / 各種ToolModule 等）に `.poem` と `.description` の定義が散在
+ポエムや説明文は Kotlin コードのハードコードとして定義されている。`common/src/main/kotlin/miragefairy2024/mod/` 配下の各種 Module ファイルに `.poem` と `.description` の定義が散在。
 
 ### 制作時の注意
 
@@ -360,150 +170,40 @@ IFR25KU の世界観用語・アイテム説明・ポエムはゲーム本体の
 
 ### ペイン構造
 
-テーマのfloatベースのレイアウトをFlexbox/Gridに全面移行済み。`main.scss` でテーマのfloatを打ち消している。
+テーマのfloatベースのレイアウトをFlexbox/Gridに全面移行済み。`main.scss` でテーマのfloatを打ち消している。具体的なプロパティは `main.scss` 冒頭を参照。
 
-- `#main`: `display: flex`（左サイドバー + メインコンテンツの横並び）。テーマのclearfix `::after` は `display: none` で除去
-- `.sidebar`: `float: none; flex-shrink: 0;`
-- `.page`, `.splash`: `float: none; flex: 1; min-width: 0;`
-- `.page__inner-wrap`: `display: grid`（コンテンツ + 右ペインの2カラム）。右ペインがあれば暗黙的な2列目が生成される
-- `.sidebar__right`: `grid-column: 2; grid-row: 1 / span 999; align-self: stretch;` で右カラムに配置
-- 子要素の `.toc` は `position: sticky; max-height: calc(100vh - 4em); overflow-y: auto;` でスクロール追従する（stickyはsidebar自身ではなく `.toc` が持つ）
-- 劇場レイアウトの `.theater__sidebar` はstickyを使わず通常配置
-- `.page__related`, `.archive`, `.breadcrumbs ol`, `.page__comments`: floatを解除済み
+設計上の注意点:
+
+- `#main` は `display: flex` で左サイドバーとメインコンテンツを横並びにしている（テーマのclearfix `::after` は除去）
+- `.page__inner-wrap` は `display: grid` で右ペイン（TOCまたは関連記事）を配置
+- TOCのsticky挙動は `.sidebar__right` ではなく子要素の `.toc` が `position: sticky` を持つことで実現
 
 ### singleレイアウト
 
-ヘッダー画像の設定方式で3パターンのDOM構造が生じる。条件分岐は `{% unless page.header.overlay_color or page.header.overlay_image %}` で `<header>` の出力を制御。
-
-**パターン1: ヘッダー画像なし**
-
-```
-page__inner-wrap > header.page__header--plain > h1.page__title
-                                                > page__meta
-                 > section.page__content
-```
-
-**パターン2: `header.image`（非overlay）**
-
-ヒーロー画像がimgとして表示され、タイトルはその下。
-
-```
-div.page__hero > img.page__hero-image
-...
-page__inner-wrap > header > h1.page__title
-                          > page__meta
-                 > section.page__content
-```
-
-**パターン3: `header.overlay_image`**
-
-ヒーロー画像がbackground-imageとして表示され、タイトルが画像の上に重なる。`page__inner-wrap` 内の `<header>` はレンダリングされない（h1はヒーロー内のみ）。
-
-```
-div.page__hero--overlay > div.wrapper > h1.page__title
-                                       > page__meta
-...
-page__inner-wrap > section.page__content（headerなし）
-```
-
-### splashレイアウト
-
-`index.md` で使用。`page.carousel` が定義されている場合は `hero-carousel.html` でカルーセル表示、それ以外は `page__hero.html` で通常のヒーロー表示。ヘッダー画像がない場合は通常のh1を `<div class="content-wrap">` で囲んで表示（`site/src/main/resources/_layouts/splash.html` でオーバーライド済み）。
+ヘッダー画像の設定方式で3パターンのDOM構造が生じる。`{% unless page.header.overlay_color or page.header.overlay_image %}` で分岐する。具体的な構造は `_layouts/single.html` を参照。
 
 ### 劇場レイアウト
 
-ミラージュフェアリー劇場記事（`site/src/pages/resources/*/*.md`）専用のレイアウト。`site/src/main/resources/_layouts/theater.html` で定義。`single.html` を元に分離したもので、右ペインを TOC から関連記事リストに置き換えている。`page.header.video`, `page.link`, `site.comments`, `page__related` の各ブロックは劇場記事では不要なため削除済み。シェアボタンは常に表示（`if page.share` 分岐なし）。
+`site/src/main/resources/_layouts/theater.html` で定義。`single.html` から分離したもので、以下の点が異なる:
 
-**DOM構造**:
+- 右ペインがTOCではなく関連記事リスト（サイドバー8件）
+- 本文下部にも推薦グリッド（4件）を配置
+- teaser画像をヒーロー画像なし時にバナー表示（`page__teaser-banner`）
+- `page.header.video`, `page.link`, `site.comments`, `page__related` は不要なため削除済み
 
-```
-.page__inner-wrap
-├── .theater__sidebar (aside, flex column, gap: 1em) ← 右サイドバー
-│   ├── header
-│   │   └── h4.nav__title ― 「関連記事」見出し
-│   └── .theater-recommendations (flex column, gap: 1em)
-│       ├── a.recent-posts__card
-│       └── ...（最大8枚）
-├── header（非overlay時のみ）
-├── img.page__teaser-banner（teaser指定時、overlay/image未指定時）
-├── section.page__content
-├── section.page__recommend ← 本文下部の推薦グリッド
-│   ├── h3.page__recommend-title ― 「他の記事を読む」
-│   └── .page__recommend-grid（最大4枚、auto-fill gridレイアウト）
-├── footer.page__meta
-├── social-share
-└── post_pagination
-```
-
-- `.theater__sidebar` は `display: flex; flex-direction: column; gap: 1em;` で見出しとカードリストを分離
-- `.theater-recommendations` も `flex column + gap: 1em;` でカード間を分離
-- sticky は使わず通常のスクロールに任せる
-- カードはトップページの新着記事カードと同じ `recent-posts__card` / `recent-posts__teaser` / `recent-posts__body` / `recent-posts__title` クラスを共有してスタイルを統一
-- `.nav__title` はグローバルに `padding: 0` に上書きされている（テーマの `padding: 0.5rem 0.75rem` を打ち消し、上下のギャップは親の `gap` に委ねる。`.toc .nav__title` は `display: none` なので影響なし）
-- `.page__teaser-banner` は `width: 100%; aspect-ratio: 16/9; object-fit: cover;` でteaser画像をバナー表示
-
-**関連記事の抽選**: `theater.html` 末尾のインラインJSで次の手順を実装する。
-
-1. `fetch('/posts.json')` で全記事メタ（title/url/teaser/tags）を取得
-2. 現在ページ自身を除外
-3. LocalStorageから訪問記録（`ifr25ku:visits:pages`）を取得
-4. 各記事の重みを計算：`weight = (現在ページのタグと一致するタグ数 + 1) × getVisitMultiplier(lastVisited)`（+1で全記事の抽選機会を確保、訪問済み記事は抑制）
-    - 訪問係数: 未訪問→1、7日未満→1/3、7日以上365日未満→2/3、365日以上→1
-5. 非復元の重み付きランダムサンプリングで、サイドバー8件・本文下部4件をそれぞれ独立に抽選
-6. `createCard` でDOM要素を生成し `container.replaceChildren(...)` でまとめて描画
-
-テキストは `textContent` で設定するため HTML エスケープ不要、XSS リスクなし。JSはこの1レイアウトでしか使わず小規模なので外部ファイル化していない。
+**関連記事の抽選**: タグ一致数と訪問履歴で重み付けした非復元ランダムサンプリング。サイドバーと本文下部はそれぞれ独立に抽選する。具体的な重み計算や閾値は `theater.html` 末尾のインラインJSを参照。
 
 ## CSS
 
-`site/src/main/resources/assets/css/main.scss` にテーマの変数定義とカスタムスタイルを記述する。
+`site/src/main/resources/assets/css/main.scss` にテーマの変数オーバーライドとカスタムスタイルを記述する。紫系を基調とし、アクセントにホットピンクを多用。具体的な変数値はファイル冒頭を参照。
 
-### カラーパレット
+### 設計上の注意点
 
-```scss
-$sans-serif: sans-serif;
-
-$background-color: #faf5ff;           // 淡紫
-$text-color: #2d1f3d;                 // 濃紫
-$muted-text-color: #8a72a8;           // くすみ紫
-$primary-color: #c840e0;              // マゼンタ
-$border-color: #999999;               // グレー
-$code-background-color: #f0e4fa;      // ライトバイオレット
-$code-background-color-dark: #dcc0f0; // ダークバイオレット
-$form-background-color: #f0e4fa;      // フォーム背景
-$footer-background-color: #e4d0f4;    // パステルバイオレット
-$link-color: #FF2DAB;                 // ホットピンク
-$link-color-hover: #8a20a0;           // ダークパープル
-$link-color-visited: #CB62A1;         // ピンクパープル
-$masthead-link-color: #2d1f3d;        // mastheadリンク
-$masthead-link-color-hover: #a83dba;  // mastheadリンクホバー
-$navicon-link-color-hover: #a83dba;   // ナビアイコンホバー
-```
-
-### 主要なカスタムスタイル
-
-- `.masthead { border-bottom: 4px solid #FF2DAB; box-shadow; background: #000; }` — mastheadの装飾
-- `.greedy-nav { background: transparent; }` — mastheadの背景を透過
-- `.greedy-nav .visible-links { overflow: clip visible; }` — ドロップダウン表示のためoverflowを解除
-- `.greedy-nav a` — テーマの広すぎるセレクタを打ち消すため `display: revert; margin: revert;` でリセットし、`.greedy-nav .visible-links a, .greedy-nav .hidden-links a` にのみ再適用。バナーは `a.site-title` で特定性を揃えて `display: flex` を適用
-- `.site-title__face { width: 3em; height: 3em; }` — 正方形、greedy-nav幅計測対策
-- `.site-title__logo { width: 7.8em; }` — 109×35px画像の比率に基づく明示幅、greedy-nav幅計測対策
-- `body::before` — `background.webp` を `blur(24px)` で全面背景に
-- `.initial-content { background: rgba(255, 255, 255, 0.80); }` — 半透明白の本文背景
-- `.page__hero--overlay` — min-height: 600px、flex-end配置
-- `.page__header--plain { margin-bottom: 1em; }` — ヘッダー画像なし時のh1下マージン
-- `.recent-posts__grid` — `repeat(auto-fill, minmax(250px, 1fr))` のカードグリッド
-- `.section-header` — フルワイド黒背景、上下 `4px #FF2DAB` ボーダー、box-shadow
-- `.section-separator` — フルワイド黒背景、上下 `4px #FF2DAB` ボーダー、box-shadow
-- `.page__footer` — 黒背景、上 `4px #FF2DAB` ボーダー、box-shadow
-- `.hidden-links .masthead__menu-item--dropdown { border: none; }` — ハンバーガーメニュー内のドロップダウン区切り線を除去
-- `.hidden-links .masthead__dropdown li { border-bottom: none; }` — ハンバーガーメニュー内の子項目間ボーダーを除去
-- `html { font-size: 14px / 14px / 16px / 16px; }` — ブレークポイントごとのフォントサイズ（default/medium/large/x-large）
-
-### テーマデフォルトの注意点
-
-- `.masthead` にはデフォルトで `border-bottom: 1px solid $border-color` がある
-- `.page__hero--overlay` にはデフォルトで `margin-bottom: 2em` がある
+- `.greedy-nav a` はテーマの広すぎるセレクタを打ち消すため `display: revert; margin: revert;` でリセットし、`.visible-links a` と `.hidden-links a` にのみ再適用している
+- `.site-title__face` と `.site-title__logo` にCSS明示幅を設定している理由: greedy-navは `outerWidth()` で幅計測してアイテム移動を判定するが、このプロジェクトでは `.site-logo` を使わず `.site-title` 内に画像を2枚配置しているため、テーマの画像ロード待ちが効かない。明示幅により画像ロード前でもレイアウトを確定させている
+- `body::before` で `background.webp` を `blur(24px)` で全面背景にしている
+- `.masthead` にはテーマデフォルトで `border-bottom: 1px solid $border-color` がある（カスタムスタイルで上書き）
+- `.page__hero--overlay` にはテーマデフォルトで `margin-bottom: 2em` がある（カスタムスタイルで上書き）
 
 ### 手動コンパイル
 
@@ -515,89 +215,24 @@ cp site/src/main/resources/assets/css/main.scss site/build/jekyllSource/assets/c
 
 WSL2の `/mnt/` ドライブでは `inotify` が動作しないため、`jekyll serve` の自動リビルドは使えない。
 
-## JavaScript
-
-### scripts.html
-
-`site/src/main/resources/_includes/scripts.html` でオーバーライド済み。
-
-- DOMContentLoaded後に `.greedy-nav .visible-links` の `overflow` を `visible` に書き換えてドロップダウン表示を可能にする
-- テーマの `main.min.js` 読み込み後に、`gumshoeActivate` イベントのキャプチャフェーズで `stopImmediatePropagation()` して無効化。これにより、GumshoeのスクロールスパイがアクティブなTOC項目へ自動スクロールする挙動（`scrollTocToContent`）を抑制
-- Embla Carousel（CDN読み込み、v8.6.0）: `.hero-carousel__viewport` に対してloop・autoplay（10秒間隔、`stopOnInteraction: false`）を初期化。ドットナビゲーション（JS動的生成）、プログレスバー（CSS animation `hero-carousel-progress` 10秒、スライド遷移時リセット）、ヒーロー背景パンアニメーション（Web Animations APIによるズーム＆パン、ResizeObserverで追従、スケール1/0.9→1.0 + X軸移動、画像サイズ動的検出）を実装
-- `{% include consent-banner.html %}` で同意バナーを描画
-- `{% include visit-tracker.html %}` で訪問記録
-
-### greedy-navの幅計測
-
-greedy-navは `overflow` ではなく `outerWidth()` の明示的な幅比較でアイテム移動を判定する。テーマは `.site-logo img` のロード完了を待ってから `check()` を実行するが、このプロジェクトでは `.site-logo` を使わず `.site-title` 内に画像を2枚配置しているため、画像ロード待ちが効かない。対策として `.site-title__face` と `.site-title__logo` にCSS明示幅を設定し、画像ロード前でもレイアウトが確定するようにしている。
-
 ## 画像
 
 ### 配置規則
 
 画像のソースと出力先の関係:
 
-- **共通画像**: `site/src/main/resources/assets/images/` に配置 → そのまま `assets/images/` に出力
+- **共通画像**: `site/src/main/resources/assets/images/` に配置 → そのまま `assets/images/` に出力。Favicon、ロゴ、mastheadアイコン、背景等
 - **通常ページ画像**: `site/src/pages/resources/<ページ名>/` に .md と同梱 → `syncJekyllSource` が `assets/images/<ページ名>/` に配置
 - **ブログ記事画像**: `site/src/pages/resources/YYYY-MM-DD-slug/` に .md と同梱 → `syncJekyllSource` が `YYYY/MM/DD/ファイル名` にフラット配置（slug階層なし、`assets/images/` なし）。ファイル名の衝突チェックあり
-- **OG画像**: `generateOgImages` が `site/src/ogImages/resources/assets/images/YYYY/MM/DD/slug.og.webp` に生成 → `syncJekyllSource` が取り込み
-
-```
-site/src/main/resources/assets/images/  — 共通画像（ビルド時にそのまま出力）
-├── background.webp                    — 全面背景（blur処理）
-├── curseforge.svg                     — mastheadアイコン
-├── discord.svg                        — mastheadアイコン
-├── ifr25ku_banner-black-gothic.webp   — ロゴバナー
-├── miragefairy_face_192.png           — Favicon（PNG）
-├── miragefairy_face_256.webp          — 旧Favicon（未使用）
-└── modrinth.svg                       — mastheadアイコン
-```
-
-OG画像デフォルト背景は `site/src/ogImages/assets/default-background.svg`（1200×630 SVG、淡紫グラデーション+六角形パターン）に配置されている（`generateOgImages` タスクが直接参照）。
+- **OG画像**: `generateOgImages` が `site/src/ogImages/resources/assets/images/` に生成 → `syncJekyllSource` が取り込み
+- **OG画像デフォルト背景**: `site/src/ogImages/assets/default-background.svg` に配置（`generateOgImages` タスクが直接参照。Jekyllパイプラインには含まれない）
 
 ### OG画像
 
-`seo.html` で `page.url` からOG画像パスを自動導出する。
+`seo.html` が `page.url` から `/assets/images/` + url + `.og.webp` のパスを自動導出する。Gradle側の `generateOgImages` タスクも同じ規則で出力先を決定する。
 
-```liquid
-{%- assign og_page_url = page.url -%}
-{%- if og_page_url == '/' or og_page_url == '' -%}
-  {%- assign og_page_url = '/index.html' -%}
-{%- endif -%}
-{%- assign og_image_url = '/assets/images' | append: og_page_url | replace: '.html', '.og.webp' | absolute_url -%}
-```
-
-変換例:
-
-| page.url | og_image_url |
-|---|---|
-| `/` | `/assets/images/index.og.webp` |
-| `/CHANGELOG.html` | `/assets/images/CHANGELOG.og.webp` |
-| `/2026/03/22/athanor.html` | `/assets/images/2026/03/22/athanor.og.webp` |
-
-Gradle側の `generateOgImages` タスクは `src/pages/resources/` 内の `.md` ファイルから `page.url` ベースのパスを導出する:
-
-- `site/src/pages/resources/YYYY-MM-DD-slug/YYYY-MM-DD-slug.md` → `site/src/ogImages/resources/assets/images/YYYY/MM/DD/slug.og.webp`
-- `site/src/pages/resources/<name>/<name>.md` → `site/src/ogImages/resources/assets/images/<name>.og.webp`
-
-ベース画像の解決: front matterの画像パスからファイル名を抽出し、.mdファイルと同じディレクトリ内のローカルファイルを参照する。
-
-`OgImageRenderer` の実装:
-
-- Playwright Chromium で 1200×630 のビューポートにHTMLをレンダリング
-- ベース画像の優先順位: `header.og_background` > `header.overlay_image` > `header.image` > `header.teaser` > `default-background.svg`
-- ベース画像をData URI化してCSS `background: url(...) center/cover no-repeat` で表示
-- タイトルを半透明黒帯（`rgba(0,0,0,0.5)`）の上に白文字36pxで表示
-- スクリーンショットをPNG byte[]として取得 → `ImageIO.read()` で BufferedImage → sejda webp-imageioで WebP出力
+ベース画像の優先順位: `header.og_background` > `header.overlay_image` > `header.image` > `header.teaser` > デフォルト背景SVG。front matterの画像パスからファイル名を抽出し、.mdファイルと同じディレクトリ内のローカルファイルを参照する。
 
 ### 画像変換ユーティリティ
 
-`site/scripts/convert-to-webp.sh <入力ファイル> [slug]` で `site/build/convertedWebp/<slug>.webp` に変換。slug省略時は入力ファイルの拡張子を除いた名前を使用。ImageMagickの `convert` を使用（-quality 80）。スラグ検証: `^[a-zA-Z0-9_.-]+$`。
-
-| ツール | パッケージ | 用途 | 標準インストール |
-|---|---|---|---|
-| convert | imagemagick | 画像全般（最もメジャー） | No |
-| ffmpeg | ffmpeg | 動画・音声・画像 | No |
-| cwebp | webp | webp変換専用（Google公式） | No |
-
-いずれもUbuntuで標準インストールされない。事前に変換してコミットすればビルド環境に依存しない。
+`site/scripts/convert-to-webp.sh` でImageMagickによるWebP変換が可能。ImageMagick・ffmpeg・cwebp はいずれもUbuntuで標準インストールされないため、事前に変換してコミットすればビルド環境に依存しない。
