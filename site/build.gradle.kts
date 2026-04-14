@@ -233,7 +233,7 @@ val generateOgImages = tasks.register("generateOgImages") {
     val regenerate = project.hasProperty("regenerate")
 
     inputs.dir(pagesDir)
-    inputs.file(resourcesDir.resolve("assets/images/og-default-background.svg"))
+    inputs.file(file("src/ogImages/assets/default-background.svg"))
 
     doLast {
         outputDir.mkdirs()
@@ -249,7 +249,7 @@ val generateOgImages = tasks.register("generateOgImages") {
                 expectedMd
             }
 
-        val defaultBg = resourcesDir.resolve("assets/images/og-default-background.svg")
+        val defaultBg = file("src/ogImages/assets/default-background.svg")
         OgImageRenderer().use { renderer ->
             mdFiles.forEach { mdFile ->
                 val frontMatter = parseFrontMatter(mdFile) ?: return@forEach
