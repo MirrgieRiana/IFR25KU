@@ -186,8 +186,8 @@ IFR25KU の世界観用語・アイテム説明・ポエムはゲーム本体の
 
 `site/src/main/resources/_layouts/theater.html` で定義。`single.html` から分離したもので、以下の点が異なる:
 
-- 右ペインがTOCではなく関連記事リスト（サイドバー8件）
-- 本文下部にも推薦グリッド（4件）を配置
+- 右ペインがTOCではなく関連記事リスト
+- 本文下部にも推薦グリッドを配置
 - teaser画像をヒーロー画像なし時にバナー表示（`page__teaser-banner`）
 - `page.header.video`, `page.link`, `site.comments`, `page__related` は不要なため削除済み
 
