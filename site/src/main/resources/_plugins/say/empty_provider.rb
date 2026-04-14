@@ -36,7 +36,7 @@ module Say
       "yellow"   => { "color" => "#ffff66" },
       "white"    => { "color" => "#ffffff" },
       "black"    => { "color" => "#333333" },
-      "gray"     => { "color" => "#cccccc" },
+      "gray"     => { "color" => "#999999" },
     }.freeze
 
     # プリセット名からパラメータハッシュへのマッピングを返す。
@@ -46,7 +46,7 @@ module Say
 
     # 吹き出し枠線に使うキャラクター色を返す。
     def color(params)
-      fill = params["color"] || "#cccccc"
+      fill = params["color"] || "#999999"
       Say.derive_border_color(fill)
     end
 
@@ -57,7 +57,7 @@ module Say
 
     # 解決済みパラメータから、顔部分の HTML（SVG）を生成して返す。
     def resolve(params, _context = nil)
-      color = params["color"] || "#cccccc"
+      color = params["color"] || "#999999"
       border_color = Say.derive_border_color(color)
       <<~SVG
         <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
