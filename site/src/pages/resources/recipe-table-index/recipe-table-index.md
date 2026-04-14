@@ -2,8 +2,8 @@
 title: Recipe Table
 description: MODのレシピデータ
 header:
-  image: /assets/images/recipe-table-index/recipe-table-header.svg
-  teaser: /assets/images/recipe-table-index/recipe-table-header.svg
+  image: /assets/images/recipe-table-index/recipe-table-index.teaser.svg
+  teaser: /assets/images/recipe-table-index/recipe-table-index.teaser.svg
   height: 200px
 ---
 

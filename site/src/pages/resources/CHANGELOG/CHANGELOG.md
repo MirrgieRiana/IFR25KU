@@ -2,8 +2,8 @@
 title: CHANGELOG
 description: バージョンごとの変更履歴
 header:
-  image: /assets/images/CHANGELOG/changelog-header.svg
-  teaser: /assets/images/CHANGELOG/changelog-header.svg
+  image: /assets/images/CHANGELOG/CHANGELOG.teaser.svg
+  teaser: /assets/images/CHANGELOG/CHANGELOG.teaser.svg
   height: 200px
 ---
 

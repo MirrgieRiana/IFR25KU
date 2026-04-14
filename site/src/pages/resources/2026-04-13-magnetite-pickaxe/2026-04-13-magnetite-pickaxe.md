@@ -3,7 +3,7 @@ title: "【磁鉄鉱のつるはし】溶岩の上でも関係ないもんね！
 description: 春日部つむぎが磁鉄鉱のつるはしを気に入る話
 layout: theater
 header:
-  teaser: /2026/04/13/narrow-cave.webp
+  teaser: /2026/04/13/magnetite-pickaxe.teaser.webp
 tags: [ ミラージュフェアリー劇場, 磁鉄鉱のつるはし, 磁鉄鉱, 採掘, つるはし, 鉄鉱石, ダイヤモンド鉱石 ]
 ---
 

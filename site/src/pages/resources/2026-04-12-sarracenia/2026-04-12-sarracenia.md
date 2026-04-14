@@ -3,7 +3,7 @@ title: "【サラセニア】あーしのサラセニア大人気じゃん！！
 description: 春日部つむぎのサラセニアに妖精が訪れる話
 layout: theater
 header:
-  teaser: /2026/04/12/sarracenia.webp
+  teaser: /2026/04/12/sarracenia.teaser.webp
 tags: [ ミラージュフェアリー劇場, サラセニア, 食虫植物, 砂糖, 妖精 ]
 ---
 
