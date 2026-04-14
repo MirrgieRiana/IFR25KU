@@ -49,13 +49,15 @@
 #   color(params) — 吹き出し枠線に使うキャラクター色を返す
 #   tail?    — 吹き出しのトゲを表示するか否かを boolean で返す
 #   resolve(params, context) — 解決済みパラメータとLiquidコンテキストを受け取り、
-#                              <div class="say__face">...</div> を含む HTML 文字列を返す。
-#                              `Say.face_html(inner)` ヘルパーの使用を推奨する。
+#                              .say__face の内側に入るHTML文字列を返す。
+#                              アイコンを持たない場合は空文字列を返す。
 #
 # ## HTML出力構造
 #
 #   <div class="say [say--has-tail]">
-#     （Provider#resolve が返すHTML、通常は <div class="say__face">...</div>）
+#     <div class="say__face">
+#       （Provider#resolve が返すHTML）
+#     </div>
 #     <div class="say__balloon" markdown="1">
 #       （ブロック内のテキスト、kramdownによりMarkdown処理される）
 #     </div>
@@ -112,7 +114,7 @@ module Say
   # 初期化時に markup をパースし、レンダリング時に以下の処理を行う:
   #   1. キャラ名から Provider を引く
   #   2. プリセットと直接指定からパラメータを解決する
-  #   3. Provider#resolve で顔部分の HTML（.say__face div 全体）を取得する
+  #   3. Provider#resolve で顔部分の HTML（.say__face の内側）を取得する
   #   4. Provider#tail? でトゲの有無を判定してクラスを組み立てる
   #   5. ブロック内容と合わせて吹き出しの HTML を組み立てる
   class SayTag < Liquid::Block
@@ -136,7 +138,7 @@ module Say
       end
       params.merge!(@overrides)
 
-      # 顔部分の HTML（.say__face div 全体）を生成
+      # 顔部分の HTML（.say__face の内側）を生成
       face_html = provider.resolve(params, context)
 
       # キャラクター色を取得し、CSS カスタムプロパティとして .say に付与する
@@ -155,7 +157,9 @@ module Say
       # kramdown がブロック内容を Markdown として処理する
       <<~HTML
         <div class="#{classes.join(' ')}"#{style}>
-          #{face_html}
+          <div class="say__face">
+            #{face_html}
+          </div>
           <div class="say__balloon" markdown="1">
         #{content}
           </div>

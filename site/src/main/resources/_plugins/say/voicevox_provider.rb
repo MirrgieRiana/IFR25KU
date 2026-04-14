@@ -56,7 +56,7 @@ module Say
       true
     end
 
-    # 解決済みパラメータから、顔部分の HTML（.say__face div）を生成して返す。
+    # 解決済みパラメータから、顔部分の HTML を生成して返す。
     # 各パーツのレイヤー PNG を absolute 配置で重ね合わせる。
     def resolve(params, context = nil)
       baseurl = context ? (context.registers[:site].config["baseurl"] || "") : ""
@@ -67,7 +67,7 @@ module Say
 
       imgs = layer_ids.map { |id| %(<img src="#{face_base}/#{id}.png" alt="" />) }
       border_svg = %(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="none" stroke="#{border_color}" stroke-width="6"/></svg>)
-      Say.face_html(%(<div class="say-voicevox">#{imgs.join}#{border_svg}</div>))
+      %(<div class="say-voicevox">#{imgs.join}#{border_svg}</div>)
     end
 
     private
