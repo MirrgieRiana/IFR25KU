@@ -242,11 +242,10 @@ val generateOgImages = tasks.register("generateOgImages") {
         val mdFiles = pagesDir.listFiles().orEmpty()
             .mapNotNull { dir ->
                 if (!dir.isDirectory) return@mapNotNull null
-                val otherMds = dir.listFiles { f -> f.isFile && f.extension == "md" && f.name != "${dir.name}.md" }
-                if (!otherMds.isNullOrEmpty()) error("Unexpected markdown files in ${dir.name}: ${otherMds.map { it.name }}")
-                val expectedMd = dir.resolve("${dir.name}.md")
-                if (!expectedMd.exists()) error("Expected markdown file not found: ${expectedMd.absolutePath}")
-                expectedMd
+                val mdFilesInDir = dir.listFiles { f -> f.isFile && f.extension == "md" }.orEmpty()
+                if (mdFilesInDir.isEmpty()) error("No markdown file found in ${dir.name}")
+                if (mdFilesInDir.size > 1) error("Multiple markdown files in ${dir.name}: ${mdFilesInDir.map { it.name }}")
+                mdFilesInDir.single()
             }
 
         val defaultBg = file("src/ogImages/assets/default-background.svg")
@@ -333,7 +332,7 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
             if (postMatch != null) {
                 val (year, month, day, _) = postMatch.destructured
                 if (name.endsWith(".md")) {
-                    relativePath = RelativePath(true, "_posts", name)
+                    relativePath = RelativePath(true, "_posts", "$dirName.md")
                 } else {
                     val sourcePath = relativePath.pathString
                     relativePath = RelativePath(true, year, month, day, name)
@@ -380,7 +379,7 @@ val buildSite = tasks.register<Sync>("buildSite") {
             val dirName = relativePath.pathString.substringBefore("/")
             val postMatch = """(\d{4})-(\d{2})-(\d{2})-(.+)""".toRegex().matchEntire(dirName)
             if (postMatch != null) {
-                relativePath = RelativePath(true, "_posts", name)
+                relativePath = RelativePath(true, "_posts", "$dirName.md")
             } else {
                 relativePath = RelativePath(true, name)
             }
