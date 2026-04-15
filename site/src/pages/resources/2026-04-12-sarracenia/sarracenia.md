@@ -35,6 +35,7 @@ tags: [ ミラージュフェアリー劇場, サラセニア, 食虫植物, 砂
 
 {% space %}
 
+{% say zundamon23 %}……{% endsay %}
 {% say zundamon23 %}ねえつむぎ。{% endsay %}
 {% say zundamon23 %}同じ子がまた来たことはあるのだ？{% endsay %}
 {% say tsumugi3 %}えー……？毎回違う感じはするかなぁ。でもいっぱい来るし、覚えてないだけかも。{% endsay %}
