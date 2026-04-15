@@ -3,5 +3,16 @@
     "allow": [
       "Bash(site/scripts/convert-to-webp.sh *)"
     ]
+  },
+  "extraKnownMarketplaces": {
+    "local": {
+      "source": {
+        "source": "directory",
+        "path": "site/ifr25ku-site-claude-marketplace"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "ifr25ku-site@local": true
   }
 }
