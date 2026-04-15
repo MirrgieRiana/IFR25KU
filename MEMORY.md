@@ -109,7 +109,7 @@ front matterの要点:
 
 **theater-creator スキル**
 
-`site/theater-creator/` は Claude Code スキル定義。劇場記事の制作時にはこのスキルを呼び出す。詳細は原本を参照する（MEMORY.md に複写すると陳腐化する）。
+`site/ifr25ku-site-claude-marketplace/ifr25ku-site/skills/theater-creator/` は Claude Code プラグイン `ifr25ku-site` 内のスキル定義。劇場記事の制作時には `/ifr25ku-site:theater-creator` で呼び出す。詳細は原本を参照する（MEMORY.md に複写すると陳腐化する）。
 
 **`{% say %}` タグ**
 
@@ -164,7 +164,7 @@ IFR25KU の世界観用語・アイテム説明・ポエムはゲーム本体の
 
 ### 制作時の注意
 
-**世界観テキストを劇中キャラが直接喋ってはいけない**（`site/theater-creator/SKILL.md` に明記）。劇中キャラクターはゲーム内 GUI や公式テキストを知らないため、ポエムをそのまま口にすると不自然になる。世界観資料は「発想源」として扱い、キャラクターの視点に翻訳して表現する必要がある。
+**世界観テキストを劇中キャラが直接喋ってはいけない**（`site/ifr25ku-site-claude-marketplace/ifr25ku-site/skills/theater-creator/SKILL.md` に明記）。劇中キャラクターはゲーム内 GUI や公式テキストを知らないため、ポエムをそのまま口にすると不自然になる。世界観資料は「発想源」として扱い、キャラクターの視点に翻訳して表現する必要がある。
 
 ## レイアウト
 
