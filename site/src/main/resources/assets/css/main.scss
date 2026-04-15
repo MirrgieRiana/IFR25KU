@@ -596,28 +596,21 @@ body {
   overflow: hidden;
   background: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  text-decoration: none;
-  color: inherit;
   transition: box-shadow 0.2s, background 0.2s;
+
+  &:any-link {
+    color: inherit;
+    text-decoration: none;
+  }
 
   &:hover {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     background: rgba(#FF2DAB, 0.1);
-    color: inherit;
-    text-decoration: none;
 
     .recent-posts__teaser img {
       transform: scale(1.05);
     }
   }
-}
-
-// .page__content内のカードの下線とvisited色を無効化
-.page__content a.recent-posts__card,
-.page__content a.recent-posts__card:visited,
-.page__content a.recent-posts__card:hover {
-  color: inherit;
-  text-decoration: none;
 }
 
 .recent-posts__teaser {
