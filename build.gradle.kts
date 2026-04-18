@@ -74,12 +74,12 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
 
             runs {
                 named("client") {
-                    vmArgs += listOf("-Xmx4G")
+                    vmArgs += listOf("-Xmx4G", "-Dfile.encoding=UTF-8", "-Dstdout.encoding=UTF-8", "-Dstderr.encoding=UTF-8")
                     programArgs += listOf("--username", "Player1")
                 }
                 named("server") {
                     runDir = "run_server" // ファイルロックを回避しクライアントと同時に起動可能にする
-                    vmArgs += listOf("-Xmx4G")
+                    vmArgs += listOf("-Xmx4G", "-Dfile.encoding=UTF-8", "-Dstdout.encoding=UTF-8", "-Dstderr.encoding=UTF-8")
                 }
             }
         }
