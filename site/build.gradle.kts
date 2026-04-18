@@ -179,6 +179,7 @@ class OgImageRenderer : AutoCloseable {
 
     private fun ensureInitialized() {
         if (playwright == null) {
+            ImageIO.scanForPlugins()
             playwright = Playwright.create()
             browser = playwright!!.chromium().launch()
             page = browser!!.newPage().apply { setViewportSize(1200, 630) }
@@ -237,7 +238,6 @@ val generateOgImages = tasks.register("generateOgImages") {
 
     doLast {
         outputDir.mkdirs()
-        ImageIO.scanForPlugins()
 
         // .mdファイルを収集
         val mdFiles = pagesDir.listFiles().orEmpty()
@@ -281,12 +281,7 @@ val generateOgImages = tasks.register("generateOgImages") {
                 } else defaultBg
 
                 // ピクセル化判定
-                val pixelated = if (effectiveFile.extension.equals("svg", ignoreCase = true)) {
-                    false
-                } else {
-                    val image = ImageIO.read(effectiveFile) ?: error("Failed to read image: ${effectiveFile.absolutePath}")
-                    1200.0 / maxOf(image.width, image.height) >= 4.0
-                }
+                val pixelated = effectiveFile.extension.equals("png", ignoreCase = true)
 
                 // キャッシュ用入力JSONを計算
                 val inputsFile = outputFile.resolveSibling("${outputFile.name.removeSuffix(".og.webp")}.inputs.json")
