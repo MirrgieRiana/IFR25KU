@@ -61,7 +61,7 @@ tags: [ ミラージュフェアリー劇場, 紅天石の斧, 紅天石, 伐採
 
 ![forest-by-river.webp](forest-by-river.webp)
 {% say tsumugi3:口=わあーい %}すっごい、木！木！！木！！！{% endsay %}
-{% say tsumugi3:口=わあーい %}これ全部持って帰ったら、いったい松明何本分になるのかな～！！{% endsay %}
+{% say tsumugi3:口=わあーい %}これ全部持って帰ったら、いったい松明何本分になるのかな～♪{% endsay %}
 
 {% space %}
 
