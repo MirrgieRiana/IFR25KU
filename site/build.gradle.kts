@@ -149,13 +149,14 @@ val makeRecipeTable = tasks.register("makeRecipeTable") {
     }
 }
 
-private fun buildOgHtml(title: String, backgroundUrl: String): String {
+private fun buildOgHtml(title: String, backgroundUrl: String, pixelated: Boolean): String {
     val escapedTitle = title.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;")
+    val imageRendering = if (pixelated) "image-rendering: pixelated; " else ""
     return """
     <!DOCTYPE html>
     <html>
     <head><meta charset="utf-8"></head>
-    <body style="margin: 0; width: 1200px; height: 630px; background: url('$backgroundUrl') center/cover no-repeat; display: flex; align-items: flex-start;">
+    <body style="margin: 0; width: 1200px; height: 630px; background: url('$backgroundUrl') center/cover no-repeat; ${imageRendering}display: flex; align-items: flex-start;">
         <div style="width: 100%; padding: 24px 40px; background: rgba(0, 0, 0, 0.5); color: white; font-family: 'Noto Sans CJK JP', sans-serif; font-size: 36px; line-height: 1.4; word-break: auto-phrase;">
             $escapedTitle
         </div>
@@ -178,7 +179,6 @@ class OgImageRenderer : AutoCloseable {
 
     private fun ensureInitialized() {
         if (playwright == null) {
-            ImageIO.scanForPlugins()
             playwright = Playwright.create()
             browser = playwright!!.chromium().launch()
             page = browser!!.newPage().apply { setViewportSize(1200, 630) }
@@ -197,9 +197,9 @@ class OgImageRenderer : AutoCloseable {
         return "data:$mimeType;base64,$base64"
     }
 
-    fun render(title: String, backgroundImageFile: File, outputFile: File) {
+    fun render(title: String, backgroundImageFile: File, outputFile: File, pixelated: Boolean) {
         ensureInitialized()
-        page!!.setContent(buildOgHtml(title, toDataUri(backgroundImageFile)))
+        page!!.setContent(buildOgHtml(title, toDataUri(backgroundImageFile), pixelated))
         val pngBytes = page!!.screenshot()
         val image = ImageIO.read(ByteArrayInputStream(pngBytes))!!
         val writer = ImageIO.getImageWritersByMIMEType("image/webp").next()
@@ -237,6 +237,7 @@ val generateOgImages = tasks.register("generateOgImages") {
 
     doLast {
         outputDir.mkdirs()
+        ImageIO.scanForPlugins()
 
         // .mdファイルを収集
         val mdFiles = pagesDir.listFiles().orEmpty()
@@ -279,12 +280,20 @@ val generateOgImages = tasks.register("generateOgImages") {
                     else error("OG background image not found: $fileName in ${mdFile.parentFile}")
                 } else defaultBg
 
+                // ピクセル化判定
+                val pixelated = if (effectiveFile.extension.equals("svg", ignoreCase = true)) {
+                    false
+                } else {
+                    val image = ImageIO.read(effectiveFile) ?: error("Failed to read image: ${effectiveFile.absolutePath}")
+                    1200.0 / maxOf(image.width, image.height) >= 4.0
+                }
+
                 // キャッシュ用入力JSONを計算
                 val inputsFile = outputFile.resolveSibling("${outputFile.name.removeSuffix(".og.webp")}.inputs.json")
                 val inputsJson = GsonBuilder().disableHtmlEscaping().create().toJson(
                     JsonObject().also {
                         it.addProperty("background_hash", effectiveFile.sha256())
-                        it.addProperty("html_hash", buildOgHtml(title, "BACKGROUND").sha256())
+                        it.addProperty("html_hash", buildOgHtml(title, "BACKGROUND", pixelated).sha256())
                     }.normalizeJson()
                 )
 
@@ -296,7 +305,7 @@ val generateOgImages = tasks.register("generateOgImages") {
 
                 outputFile.parentFile.mkdirs()
 
-                renderer.render(title, effectiveFile, outputFile)
+                renderer.render(title, effectiveFile, outputFile, pixelated)
                 logger.lifecycle("Generated OG image: ${outputFile.absolutePath}")
                 inputsFile.writeText(inputsJson)
             }
