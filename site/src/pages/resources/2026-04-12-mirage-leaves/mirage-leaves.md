@@ -14,14 +14,14 @@ tags: [ ミラージュフェアリー劇場, ミラージュの葉, カバン ]
 
 {% space %}
 
-![](recipe-stem.png)
+![ミラージュの葉からミラージュの茎を作るレシピ画面](recipe-stem.png)
 {% say tsumugi3 %}これを茎だけにすればいいんだよね！{% endsay %}
 {% say zundamon23 %}ちょっと待つのだ、それは——{% endsay %}
 {% say tsumugi3 %}～♪えいっ！！……あっ{% endsay %}
 {% say tsumugi3 %}いったーーーい！！！{% endsay %}
 {% say zundamon23 %}大丈夫かなのだ。{% endsay %}
 {% say tsumugi3 %}……血は出てないみたい……{% endsay %}
-![](mirage-leaves.png)
+![青緑色の葉の形をしたミラージュの葉アイテム](mirage-leaves.png)
 {% say zundamon23 %}これはミラージュの葉なのだ。気を付けて触らないと怪我するのだ。{% endsay %}
 {% say tsumugi3 %}むぇー……{% endsay %}
 {% say tsumugi3 %}！？――ていうか、そんなのでカバンなんか作って大丈夫なの！？{% endsay %}
@@ -36,16 +36,16 @@ tags: [ ミラージュフェアリー劇場, ミラージュの葉, カバン ]
 {% say zundamon23 %}不揃いだけど、カバンとしては十分なのだ。{% endsay %}
 {% say tsumugi3 %}あーし、他に何か手伝えること、ある？{% endsay %}
 {% say zundamon23 %}持ち手の部分に茎を通してほしいのだ。{% endsay %}
-![](recipe-plant-bag.png)
+![ミラージュの茎1個とミラージュの葉5枚から植物カバンを作るレシピ画面](recipe-plant-bag.png)
 {% say tsumugi3 %}こう……？あ、なるほどね。こうなってるんだ。{% endsay %}
 {% say zundamon23 %}完成なのだ。{% endsay %}
-![](plant-bag-item.png)
+![青緑色のショルダーバッグの形をした植物カバンアイテム](plant-bag-item.png)
 {% say tsumugi3 %}わっ、ちゃんとカバンだ！{% endsay %}
 
 {% space %}
 
 {% say tsumugi3 %}ねえ、これ何入れるの？{% endsay %}
 {% say zundamon23 %}ミラージュの球根なのだ。{% endsay %}
-![](plant-bag-contents.png)
+![ミラージュの球根15スタックで埋め尽くされた植物カバンのGUI画面](plant-bag-contents.png)
 {% say tsumugi3 %}……また指切るじゃん。{% endsay %}
 {% say zundamon23 %}気を付けねばなのだ。{% endsay %}

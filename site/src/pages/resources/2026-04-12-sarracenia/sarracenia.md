@@ -11,24 +11,24 @@ tags: [ ミラージュフェアリー劇場, サラセニア, 食虫植物, 砂
 {% say tsumugi3 %}水やり～。センパイ、これ見てよ。なんかすごい形してない？{% endsay %}
 {% say zundamon23 %}すごいのだ。{% endsay %}
 {% say tsumugi3 %}よく分かんないけど、なんか面白いから育ててみることにしたの。{% endsay %}
-![](sarracenia-bulb.png)
+![緑の芽を出した茶色の球根のサラセニアの球根アイテム](sarracenia-bulb.png)
 {% say zundamon23 %}妖花目ヴェロペダ科、瓶子草サラセニアなのだ。{% endsay %}
 {% say tsumugi3 %}センパイ知ってるの、この草？{% endsay %}
 {% say zundamon23 %}沼地に生息する食虫植物の一種なのだ。{% endsay %}
 {% say zundamon23 %}葉っぱから砂糖を抽出したり、錬金術の材料に使われたりするのだ。{% endsay %}
-![](recipe-sugar.png)
+![サラセニアの葉1枚から砂糖を作るレシピ画面](recipe-sugar.png)
 {% say tsumugi3 %}へ～。それでこんなに甘酸っぱい香りなんだ。センパイ物知りだな～{% endsay %}
 {% say zundamon23 %}ジャムにしても多分おいしいのだ。{% endsay %}
 {% say tsumugi3 %}ジャム！！美味しそう！！絶対いつか作るっ！{% endsay %}
 
 {% space %}
 
-![](sarracenia-plant.webp)
+![沼地の草地に赤いグラデーションを帯びたくすんだ緑色の葉とピンクの花びらを持つサラセニアが生え、傍らに黄色い妖精がいる様子](sarracenia-plant.webp)
 {% say tsumugi3 %}あっ、来た来た！！{% endsay %}
 {% say zundamon23 %}……何なのだ？{% endsay %}
 {% say tsumugi3 %}通りすがりの子がよくここで休みに来るんだよね。{% endsay %}
 {% say tsumugi3 %}昨日は緑の子が来てさ、おとといは白くて丸い子で。やっぱ妖精も甘いのが好きなのかな。{% endsay %}
-![](fairies.png)
+![緑色の羽と薄緑色の肌を持つ妖精と白の羽とくすんだ茶色の肌を持つ妖精](fairies.png)
 {% say tsumugi3 %}今日の子はちょっと大きめかな、羽がふわっとしてる。{% endsay %}
 {% say zundamon23 %}……かわいいのだ。{% endsay %}
 {% say tsumugi3 %}でしょー！！あーしのサラセニアめっちゃ大人気じゃん！！{% endsay %}
@@ -42,7 +42,7 @@ tags: [ ミラージュフェアリー劇場, サラセニア, 食虫植物, 砂
 {% say zundamon23 %}来た子は、どこへ帰っていくのだ？{% endsay %}
 {% say tsumugi3 %}どこへ……？{% endsay %}
 {% say tsumugi3 %}……そういえば帰るの、見たことないかも……{% endsay %}
-![](encyclopedia.png)
+![特性図鑑：『食虫植物』昆虫などの小動物を捕らえ、消化液により分解する。栄養の少ない土壌で生活するための戦略の一つである。](encyclopedia.png)
 {% say tsumugi3 %}……えっ……じゃあこの葉っぱの中って……{% endsay %}
 {% say zundamon23 %}……のだ。{% endsay %}
 {% say tsumugi3 %}あの子たち、みんなあーしのサラセニアに食べられちゃったの！？{% endsay %}
