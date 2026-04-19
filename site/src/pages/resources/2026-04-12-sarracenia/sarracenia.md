@@ -11,12 +11,12 @@ tags: [ ミラージュフェアリー劇場, サラセニア, 食虫植物, 砂
 {% say tsumugi3 %}水やり～。センパイ、これ見てよ。なんかすごい形してない？{% endsay %}
 {% say zundamon23 %}すごいのだ。{% endsay %}
 {% say tsumugi3 %}よく分かんないけど、なんか面白いから育ててみることにしたの。{% endsay %}
-![緑の芽を出した茶色の球根のサラセニアの球根アイテム](sarracenia-bulb.png)
+![緑色の芽を出した茶色の球根であるサラセニアの球根](sarracenia-bulb.png)
 {% say zundamon23 %}妖花目ヴェロペダ科、瓶子草サラセニアなのだ。{% endsay %}
 {% say tsumugi3 %}センパイ知ってるの、この草？{% endsay %}
 {% say zundamon23 %}沼地に生息する食虫植物の一種なのだ。{% endsay %}
 {% say zundamon23 %}葉っぱから砂糖を抽出したり、錬金術の材料に使われたりするのだ。{% endsay %}
-![サラセニアの葉1枚から砂糖を作るレシピ画面](recipe-sugar.png)
+![サラセニアの葉1枚から砂糖を作るレシピ](recipe-sugar.png)
 {% say tsumugi3 %}へ～。それでこんなに甘酸っぱい香りなんだ。センパイ物知りだな～{% endsay %}
 {% say zundamon23 %}ジャムにしても多分おいしいのだ。{% endsay %}
 {% say tsumugi3 %}ジャム！！美味しそう！！絶対いつか作るっ！{% endsay %}
