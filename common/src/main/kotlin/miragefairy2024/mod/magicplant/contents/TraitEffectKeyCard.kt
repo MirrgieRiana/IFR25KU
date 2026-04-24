@@ -46,6 +46,7 @@ enum class TraitEffectKeyCard(
     CROSSBREEDING("crossbreeding", Emoji.CROSSBREEDING, "Crossbreeding", "交雑", 4300.0, 0xFFA011, ::LogTraitEffectKey),
     MUTATION("mutation", Emoji.MUTATION, "Mutation", "突然変異", 4400.0, 0xFF668C, ::LogTraitEffectKey),
     SEEDS_DILUTION("seeds_dilution", Emoji.SEEDS_PRODUCTION, "Seeds Dilution", "種子希釈", 4500.0, 0xFF8C63, ::NormalTraitEffectKey),
+    SPINE_DAMAGE("spine_damage", Emoji.SWORD, "Spine Damage", "棘ダメージ", 4600.0, 0xCC4444, ::NormalTraitEffectKey),
     ;
 
     val identifier = MirageFairy2024.identifier(path)
