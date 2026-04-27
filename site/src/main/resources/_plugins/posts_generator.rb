@@ -17,8 +17,8 @@ require "json"
 #   [
 #     {
 #       "title":  "記事タイトル",
-#       "url":    "/IFR25KU/2026/04/09/aqua-vitae.html",
-#       "teaser": "/IFR25KU/assets/images/.../teaser.webp",  // null の場合あり
+#       "url":    "/2026/04/09/aqua-vitae.html",
+#       "teaser": "/assets/images/.../teaser.webp",  // null の場合あり
 #       "tags":   ["アップデート", "ミラージュフェアリー劇場"]
 #     },
 #     ...

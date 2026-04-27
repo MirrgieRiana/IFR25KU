@@ -1,7 +1,7 @@
 locale: "ja-JP"
 title: IFR25KU
-url: https://mirrgieriana.github.io
-baseurl: /IFR25KU
+url: https://ifr25ku.mirrgieriana.net
+baseurl: ""
 theme: minimal-mistakes-jekyll
 minimal_mistakes_skin: default
 copyright:

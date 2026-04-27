@@ -27,11 +27,11 @@ fun resolveContentType(file: File): ContentType =
 val siteDir = File("build/site")
 require(siteDir.isDirectory) { "Site directory not found: ${siteDir.canonicalPath}" }
 
-println("Serving ${siteDir.canonicalPath} at http://localhost:4000/IFR25KU/")
+println("Serving ${siteDir.canonicalPath} at http://localhost:4000/")
 
 embeddedServer(Netty, host = "0.0.0.0", port = 4000) {
     routing {
-        get("/IFR25KU/") {
+        get("/") {
             val file = siteDir.resolve("index.html")
             if (file.isFile) {
                 call.respond(LocalFileContent(file, resolveContentType(file)))
@@ -39,7 +39,7 @@ embeddedServer(Netty, host = "0.0.0.0", port = 4000) {
                 call.respond(HttpStatusCode.NotFound)
             }
         }
-        get("/IFR25KU/{path...}") {
+        get("/{path...}") {
             val path = call.parameters.getAll("path")?.joinToString("/") ?: ""
             val target = if (path.isEmpty()) siteDir else siteDir.resolve(path)
             val file = if (target.isDirectory) target.resolve("index.html") else target

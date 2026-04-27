@@ -215,7 +215,7 @@ modrinth {
     additionalFiles.add(tasks["sourcesJar"])
     //gameVersions = ["1.20.2"]
     //loaders = ["fabric"]
-    changelog.set("This project maintains a comprehensive [CHANGELOG](https://mirrgieriana.github.io/IFR25KU/CHANGELOG.html) in Japanese.")
+    changelog.set("This project maintains a comprehensive [CHANGELOG](https://ifr25ku.mirrgieriana.net/CHANGELOG.html) in Japanese.")
     dependencies {
         required.project("fabric-api")
         required.project("fabric-language-kotlin")
@@ -244,7 +244,7 @@ curseforge {
             releaseType = if ("alpha" in project.version.toString()) ReleaseType.ALPHA else if ("beta" in project.version.toString()) ReleaseType.BETA else ReleaseType.RELEASE
             changelog {
                 format = ChangelogFormat.MARKDOWN
-                content = "This project maintains a comprehensive [CHANGELOG](https://mirrgieriana.github.io/IFR25KU/CHANGELOG.html) in Japanese."
+                content = "This project maintains a comprehensive [CHANGELOG](https://ifr25ku.mirrgieriana.net/CHANGELOG.html) in Japanese."
             }
             relations {
                 requiredDependency("fabric-api")

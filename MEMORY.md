@@ -30,7 +30,7 @@ AIアシスタントが自由に編集できる、コミットされる永続的
 
 ### `serveSite` がKtor Nettyを使う理由
 
-Jekyll標準の `jekyll serve` は頻繁にクラッシュするため、`site/build/site/` を `http://localhost:4000/IFR25KU/` に配信する独自のKtor Nettyサーバーを使用している。
+Jekyll標準の `jekyll serve` は頻繁にクラッシュするため、`site/build/site/` を `http://localhost:4000/` に配信する独自のKtor Nettyサーバーを使用している。
 
 ### `jekyllBuild` が `installJekyllBundle` を inputs にしていない理由
 

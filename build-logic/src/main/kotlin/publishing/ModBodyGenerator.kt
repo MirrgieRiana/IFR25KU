@@ -302,7 +302,7 @@ fun getModBody(type: MarkdownType): String {
             !"It lets you experience a possible world set in the MirageFairy universe."
         }
         !h2("Documents") {
-            !"[CHANGELOG](https://mirrgieriana.github.io/IFR25KU/CHANGELOG.html) is the only official Japanese document that comprehensively describes IFR25KU's specifications."
+            !"[CHANGELOG](https://ifr25ku.mirrgieriana.net/CHANGELOG.html) is the only official Japanese document that comprehensively describes IFR25KU's specifications."
             !"There are no other official documents; however, some unofficial resources exist, including:"
             !li {
                 !"[MFKU非公式Wiki (Japanese)](https://wikiwiki.jp/mifai2024/)"
