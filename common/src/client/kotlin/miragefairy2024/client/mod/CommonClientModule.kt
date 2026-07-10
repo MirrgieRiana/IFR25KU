@@ -42,6 +42,7 @@ fun initCommonClientModule() {
         WorldRenderEvents.LAST.register { context ->
             val minecraft = Minecraft.getInstance() ?: return@register
             val level = minecraft.level ?: return@register
+            if (minecraft.player?.isSpectator == true) return@register // スペクテイターにはオーバーレイを表示しない
 
             val (baseBlockPos, blockPoses) = listener.getBlockPoses(object : RenderBlockPosesOutlineContext {
                 override val level get() = level
