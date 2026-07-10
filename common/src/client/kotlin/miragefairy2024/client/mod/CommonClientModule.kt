@@ -43,10 +43,11 @@ fun initCommonClientModule() {
             val minecraft = Minecraft.getInstance() ?: return@register
             val level = minecraft.level ?: return@register
             if (minecraft.player?.isSpectator == true) return@register // スペクテイターにはオーバーレイを表示しない
+            val player = minecraft.player ?: return@register
 
             val (baseBlockPos, blockPoses) = listener.getBlockPoses(object : RenderBlockPosesOutlineContext {
                 override val level get() = level
-                override val player get() = minecraft.player
+                override val player get() = player
                 override val hitResult get() = minecraft.hitResult
             }) ?: return@register
             if (blockPoses.isEmpty()) return@register

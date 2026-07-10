@@ -140,21 +140,19 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
     }
 
     override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): Pair<BlockPos, Set<BlockPos>>? {
-        val level = context.level ?: return null
-        val player = context.player ?: return null
 
-        val toolItemStack = player.getItemInHand(hand)
+        val toolItemStack = context.player.getItemInHand(hand)
 
-        val blockItemStack = player.getItemInHand(hand.opposite).notEmptyOrNull ?: return null // 逆の手が空
+        val blockItemStack = context.player.getItemInHand(hand.opposite).notEmptyOrNull ?: return null // 逆の手が空
         val blockItem = blockItemStack.item as? BlockItem ?: return null // 逆の手がブロックアイテムでない
-        if (!blockItem.block.isEnabled(level.enabledFeatures())) return null // ブロックが無効化されている
+        if (!blockItem.block.isEnabled(context.level.enabledFeatures())) return null // ブロックが無効化されている
 
-        val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
+        val blockHitResult = getPlayerPOVHitResult(context.level, context.player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return null // ブロックをタゲっていない
 
-        val count = if (player.isCreative) null else player.getSameItemStackCountInMainInventoryAndOffhand(blockItemStack)
+        val count = if (context.player.isCreative) null else context.player.getSameItemStackCountInMainInventoryAndOffhand(blockItemStack)
 
-        val sequence = getDestinationBlockPoses(level, player, hand, toolItemStack, blockItemStack, blockHitResult, count)
+        val sequence = getDestinationBlockPoses(context.level, context.player, hand, toolItemStack, blockItemStack, blockHitResult, count)
 
         return Pair(
             blockHitResult.blockPos.relative(blockHitResult.direction),
