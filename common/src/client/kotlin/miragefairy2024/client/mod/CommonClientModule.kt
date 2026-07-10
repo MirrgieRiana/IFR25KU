@@ -6,6 +6,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.client.util.stack
 import miragefairy2024.mod.CommonRenderingEvents
 import miragefairy2024.mod.RenderBlockPosesOutlineContext
+import miragefairy2024.util.isValid
 import mirrg.kotlin.helium.max
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.Minecraft
@@ -42,8 +43,8 @@ fun initCommonClientModule() {
         WorldRenderEvents.LAST.register { context ->
             val minecraft = Minecraft.getInstance() ?: return@register
             val level = minecraft.level ?: return@register
-            if (minecraft.player?.isSpectator == true) return@register // スペクテイターにはオーバーレイを表示しない
             val player = minecraft.player ?: return@register
+            if (!player.isValid) return@register
 
             val (baseBlockPos, blockPoses) = listener.getBlockPoses(object : RenderBlockPosesOutlineContext {
                 override val level get() = level
