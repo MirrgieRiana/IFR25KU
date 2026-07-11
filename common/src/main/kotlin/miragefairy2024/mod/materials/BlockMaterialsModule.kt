@@ -509,6 +509,7 @@ open class BlockMaterialCard(
             context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
         }.tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_AXE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
             registerBlockFamily(TexturedModel.CUBE, DRYWALL.block) { it.slab(block()) }
+            registerStonecutterRecipeGeneration(DRYWALL.item, item, 2)
         }
         val DRYWALL_STAIRS = !object : BlockMaterialCard(
             "drywall_stairs", EnJa("Drywall Stairs", "石膏ボードの階段"),
@@ -520,6 +521,7 @@ open class BlockMaterialCard(
             context(ModContext) override fun initModelGeneration() = Unit
         }.tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_AXE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
             registerBlockFamily(TexturedModel.CUBE, DRYWALL.block) { it.stairs(block()) }
+            registerStonecutterRecipeGeneration(DRYWALL.item, item)
         }
         val LOCAL_VACUUM_DECAY = !object : BlockMaterialCard(
             "local_vacuum_decay", EnJa("Local Vacuum Decay", "局所真空崩壊"),
