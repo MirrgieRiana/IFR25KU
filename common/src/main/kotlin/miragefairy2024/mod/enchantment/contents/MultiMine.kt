@@ -26,8 +26,6 @@ fun initMultiMine() {
 
     // 採掘範囲オーバーレイ
     CommonRenderingEvents.onRenderBlockPosesOutline.add { context ->
-        val level = context.level ?: return@add null
-        val player = context.player ?: return@add null
         val hitResult = context.hitResult ?: return@add null
 
         if (hitResult.type != HitResult.Type.BLOCK) return@add null // ブロックをタゲっていない
@@ -38,8 +36,8 @@ fun initMultiMine() {
                 MultiMineHandler.REGISTRY.firstNotNullOfOrNull {
                     it.create(
                         hitResult.direction,
-                        level, hitResult.blockPos, level.getBlockState(hitResult.blockPos),
-                        player, player.mainHandItem.item, player.mainHandItem,
+                        context.level, hitResult.blockPos, context.level.getBlockState(hitResult.blockPos),
+                        context.player, context.player.mainHandItem.item, context.player.mainHandItem,
                     )
                 }
             } ?: return@run null // 範囲採掘の能力がない

@@ -102,8 +102,8 @@ fun interface RenderBlockPosesOutlineListenerItem {
 }
 
 interface RenderBlockPosesOutlineContext {
-    val level: Level?
-    val player: Player?
+    val level: Level
+    val player: Player
     val hitResult: HitResult?
 }
 
@@ -283,8 +283,7 @@ fun initCommonModule() {
     }
 
     CommonRenderingEvents.onRenderBlockPosesOutline.add { context ->
-        val player = context.player ?: return@add null
-        val item = player.mainHandItem.item
+        val item = context.player.mainHandItem.item
         if (item is RenderBlockPosesOutlineListenerItem) {
             item.getBlockPoses(InteractionHand.MAIN_HAND, context)
         } else {
@@ -292,8 +291,7 @@ fun initCommonModule() {
         }
     }
     CommonRenderingEvents.onRenderBlockPosesOutline.add { context ->
-        val player = context.player ?: return@add null
-        val item = player.offhandItem.item
+        val item = context.player.offhandItem.item
         if (item is RenderBlockPosesOutlineListenerItem) {
             item.getBlockPoses(InteractionHand.OFF_HAND, context)
         } else {
