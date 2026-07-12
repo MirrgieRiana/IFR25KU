@@ -513,7 +513,7 @@ open class BlockMaterialCard(
         }
         val DRYWALL_STAIRS = !object : BlockMaterialCard(
             "drywall_stairs", EnJa("Drywall Stairs", "石膏ボードの階段"),
-            PoemList(1).poem(EnJa("The ceiling is getting closer.", "天がお迎えに来る。")),
+            PoemList(1).poem(EnJa("The ceiling is getting closer.", "天が迎えに来る。")),
             MapColor.SAND, 3.0F, 3.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(DRYWALL.block.await().defaultBlockState(), properties)
