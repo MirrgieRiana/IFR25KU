@@ -19,43 +19,30 @@ OUT="build/site"
 # リポジトリ同梱の xarpite ランタイム（相対パス）なのだぁ🌱
 XARPITE="../xarpite/xarpite"
 
-# 出力先を用意して、素材（png/svg）を build/site/ にそのまま配置するのだぁ🌱
-# HTML/CSS は素材を相対URL（./name.png など）で参照するので、同じディレクトリに置くのだぁ〜
-# 素材はライセンスごとにサブディレクトリに分けてあるので、平坦化して build/site/ 直下に集めるのだぁ🌱
+# 出力先を用意して、素材（png/svg）を build/site/ に配置するのだぁ🌱
+# 素材はライセンスごとにサブディレクトリに分けてあるので、その構造をそのまま build/site/ に持ち込むのだぁ🌱
+# HTML/CSS は素材を相対URL（./item-texture/name.png など）でサブディレクトリごと参照するのだぁ〜
 # フォントはコミットせず、ページのheadからCDNで読み込むため、ここでは配置しないのだぁ🌱
 mkdir -p "$OUT"
-find "$SRC" -type f -exec cp -- {} "$OUT"/ \;
+cp -r -- "$SRC"/. "$OUT"/
 
-# xarpite（API5）でプラグイン・ページを読み込み、HTML と CSS を組み立てるのだぁ🌱
+# xarpite（API5）で global をマウントして、その build 関数にビルド一切をまかせるのだぁ🌱
 # メインは stdin 実行なので、相対パスの起点は cd 済みのプロジェクトルート（PWD）になるのだぁ〜
 "$XARPITE" -A 5 -q -f - <<'XARPITE_EOF'
 # ============================================================
 #   スフィアクラフト紹介スライドのビルドメイン（xarpite / API5）なのだぁ🌱
-#   main・plugins・pages を INC に入れ、bare 名で USE してロードするのだぁ〜
-#   その後、pageGenerators を回して各ページを書き出し、組み上げた CSS を style.css に書き出すのだぁ🌱
+#   global を INC 経由でマウントして、その build 関数を呼ぶだけなのだぁ〜
+#   プラグイン・ページの読み込みと書き出しは、ぜんぶ build 関数の中でやるのだぁ🌱
 # ============================================================
 
-DIR := "build/site"
-
-# main・plugins・pages を INC に入れ、bare 名の USE を各ソースセットから解決できるようにするのだぁ🌱
+# global を bare 名の USE で解決できるように、main のソースセットを INC に入れるのだぁ🌱
 INC::push << "src/main/xa1"
-INC::push << "src/plugins/xa1"
-INC::push << "src/pages/xa1"
 
-# 登録簿 templates・pageGenerators・CSS行の箱 cssLines・ヘルパー（htmlEscape, colors）をマウントするのだぁ🌱
+# global をマウントして build 関数を取り出すのだぁ🌱
 @USE("global")
 
-# プラグインとページを名前順に列挙して、すべて USE で読み込むのだぁ🌱
-# 各プラグインは templates と cssLines へ、各ページは pageGenerators へ登録するのだぁ〜
-# トップレベルのストリームは -q でも消費されるので、そのまま置けば副作用が走るのだぁ🌱
-FILE_NAMES("src/plugins/xa1") >> SORT | f => USE(f)
-FILE_NAMES("src/pages/xa1") >> SORT | f => USE(f)
-
-# 各ページを書き出すのだぁ🌱（キー＝出力ファイル名、値＝内容を返す関数なのだぁ〜）
-pageGenerators() | e => WRITE[DIR & "/" & e.0] << e.1()
-
-# 各プラグインが push した CSS 行を空行区切りでつないで書き出すのだぁ🌱（各行末に改行を付けたいので WRITEL なのだぁ〜）
-WRITEL[DIR & "/style.css"] << cssLines() >> JOIN["\n\n"]
+# ビルド本体をまるごと build 関数にまかせるのだぁ🌱
+build()
 XARPITE_EOF
 
 echo "ビルド完了なのだぁ🌱 : $OUT/slides.html, $OUT/style.css"

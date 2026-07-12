@@ -8,7 +8,7 @@ templates.slide1 = () -> (
   card1 := %>
     <div class="card">
       <div class="art art-or">
-        <%= templates.texture("fluorite"; 78) %>
+        <%= templates.texture("item-texture/fluorite"; 78) %>
         <%= templates.orOperator() %>
         <%= templates.flowerGem(60) %>
       </div>
@@ -18,23 +18,23 @@ templates.slide1 = () -> (
   <%
   card2 := %>
     <div class="card">
-      <div class="art"><%= templates.materialBox(118; templates.texture("sphere_base"; 118); templates.roundSparkles(118)) %></div>
+      <div class="art"><%= templates.materialBox(118; templates.texture("item-texture/sphere_base"; 118); templates.roundSparkles(118)) %></div>
       <%= templates.label("label purple-dark"; "スフィア") %>
       <%= templates.label("label-sub ink-soft"; "ぴかっと光る魔法の珠") %>
     </div>
   <%
   card3 := %>
     <div class="card">
-      <div class="art"><%= templates.materialBox(132; templates.texture("nephrite_builders_rod"; 132); templates.rodSparkles(132)) %></div>
+      <div class="art"><%= templates.materialBox(132; templates.texture("item-texture/nephrite_builders_rod"; 132); templates.rodSparkles(132)) %></div>
       <%= templates.label("label pink-dark"; "魔法のアイテム") %>
       <%= templates.label("label-sub ink-soft"; "道具にくみこむのだぁ") %>
     </div>
   <%
   inner := %>
     <div class="title-row">
-      <%= templates.materialBox(60; templates.texture("sphere_base"; 60); templates.roundSparkles(60)) %>
+      <%= templates.materialBox(60; templates.texture("item-texture/sphere_base"; 60); templates.roundSparkles(60)) %>
       <h1>スフィアクラフト</h1>
-      <%= templates.materialBox(60; templates.texture("sphere_base"; 60); templates.roundSparkles(60)) %>
+      <%= templates.materialBox(60; templates.texture("item-texture/sphere_base"; 60); templates.roundSparkles(60)) %>
     </div>
     <%= templates.subtext(["宝石か、お花とダイヤモンドから “スフィア” をつくって", "そのスフィアから 魔法のアイテム をつくるのだっ♪"]) %>
     <%= templates.flow(""; %>
@@ -44,7 +44,7 @@ templates.slide1 = () -> (
       <%= templates.arrowWide(colors.purple) %>
       <%= card3 %>
     <%) %>
-    <div class="band"><%= templates.emoji("sparkles"; 32) %><span>ねむっていた宝石やお花が、魔法のアイテムになるのだぁ♪</span></div>
+    <div class="band"><%= templates.emoji("fluentui-emoji/sparkles"; 32) %><span>ねむっていた宝石やお花が、魔法のアイテムになるのだぁ♪</span></div>
   <%
   templates.shell(1; "pink"; inner)
 )
@@ -117,7 +117,7 @@ templates.slide2 = () -> (
     <div class="route routeA">
       <div class="tab aqua-dark">ルートA</div>
       <div class="route-main">
-        <div class="route-icon"><%= templates.texture("fluorite"; 78) %><div class="label-sub ink-soft">宝石 ひとつ</div></div>
+        <div class="route-icon"><%= templates.texture("item-texture/fluorite"; 78) %><div class="label-sub ink-soft">宝石 ひとつ</div></div>
         <div class="route-text"><div>土地ごとの宝石、</div><div>それひとつで</div><div class="aqua-dark">つくれちゃうのだっ♪</div></div>
       </div>
     </div>
@@ -133,13 +133,13 @@ templates.slide2 = () -> (
   <%
   merge := %>
     <div class="merge">
-      <%= templates.materialBox(168; templates.texture("sphere_base"; 168); templates.roundSparkles(168)) %>
+      <%= templates.materialBox(168; templates.texture("item-texture/sphere_base"; 168); templates.roundSparkles(168)) %>
       <div class="label-sub ink-soft">おなじ</div>
       <%= templates.label("label purple-dark"; "“○○のスフィア”") %>
     </div>
   <%
   inner := %>
-    <%= templates.heading("ざいりょう ―"; "gem"; "宝石か、お花とダイヤモンドなのだっ"; 40) %>
+    <%= templates.heading("ざいりょう ―"; "fluentui-emoji/gem"; "宝石か、お花とダイヤモンドなのだっ"; 40) %>
     <%= templates.subtext(["どっちを使っても、おなじスフィアができるのだぁ♪", "ヒマワリ＋ダイヤ は、太陽の宝石とおなじ “太陽のスフィア” になるのだっ"]) %>
     <div class="content content2">
       <div class="routes"><%= routeA %><%= routeB %></div>
@@ -235,7 +235,7 @@ templates.slide3 = () -> (
   switchPanel := %>
     <div class="recipe-card">
       <div class="switch-row">
-        <%= templates.unit(" switch-item"; templates.materialBox(60; templates.texture("fluorite"; 60); "") & templates.label("label ink"; "宝石")) %>
+        <%= templates.unit(" switch-item"; templates.materialBox(60; templates.texture("item-texture/fluorite"; 60); "") & templates.label("label ink"; "宝石")) %>
         <%= templates.orOperator() %>
         <%= templates.unit(" switch-item"; templates.flowerGem(52) & templates.label("label ink"; "花＋ダイヤ")) %>
       </div>
@@ -244,18 +244,18 @@ templates.slide3 = () -> (
     </div>
   <%
   inner := %>
-    <%= templates.heading("レシピ ―"; "sparkles"; "魔法のスフィアのつくりかたなのだっ"; 38) %>
+    <%= templates.heading("レシピ ―"; "fluentui-emoji/sparkles"; "魔法のスフィアのつくりかたなのだっ"; 38) %>
     <%= templates.subtext(["スフィアが “どんな魔法になるか” は、宝石が決めてくれるのだっ♪"]) %>
     <div class="recipe-box">
       <div class="recipe-head gold-dark">スフィアのレシピなのだっ</div>
       <div class="recipe-flow">
-        <%= templates.unit(""; templates.materialBox(96; templates.emoji("green_circle"; 96); "") & templates.label("label green-dark"; "スフィアベース") & templates.label("label-sub ink-soft"; "珠のもとなのだ〜")) %>
+        <%= templates.unit(""; templates.materialBox(96; templates.emoji("fluentui-emoji/green_circle"; 96); "") & templates.label("label green-dark"; "スフィアベース") & templates.label("label-sub ink-soft"; "珠のもとなのだ〜")) %>
         <%= templates.plusOperator() %>
         <%= switchPanel %>
         <%= templates.arrowThin(colors.purple) %>
         <%= templates.unit(""; templates.athanor() & templates.label("label brick-dark"; "アタノール")) %>
         <%= templates.arrowThin(colors.purple) %>
-        <%= templates.unit(""; templates.materialBox(120; templates.texture("sphere_base"; 120); templates.roundSparkles(120)) & templates.label("label purple-dark"; "○○のスフィア") & templates.label("label-sub ink-soft"; "魔法の珠なのだっ♪")) %>
+        <%= templates.unit(""; templates.materialBox(120; templates.texture("item-texture/sphere_base"; 120); templates.roundSparkles(120)) & templates.label("label purple-dark"; "○○のスフィア") & templates.label("label-sub ink-soft"; "魔法の珠なのだっ♪")) %>
       </div>
     </div>
   <%
@@ -312,12 +312,12 @@ cssLines::push << %>
 # 追加CSSは無しなのだぁ🌱 flow/flow4/unit は layout プラグインが登録するのだぁ〜
 templates.slide4 = () -> (
   # 🔥と✨はテクスチャ中心からの相対位置（テクスチャの絵柄に合わせた比率）で重ねるのだぁ🌱
-  fireSphere := templates.unit(""; templates.materialBox(150; templates.texture("sphere_base"; 150); templates.decoration("fire"; 0.333; -0.347; 58) & templates.decoration("fire"; -0.373; 0.200; 34) & templates.decoration("sparkles"; -0.520; -0.427; 26) & templates.decoration("sparkles"; 0.480; 0.387; 18)) & templates.label("label purple-dark"; "火炎のスフィア"))
+  fireSphere := templates.unit(""; templates.materialBox(150; templates.texture("item-texture/sphere_base"; 150); templates.decoration("fluentui-emoji/fire"; 0.333; -0.347; 58) & templates.decoration("fluentui-emoji/fire"; -0.373; 0.200; 34) & templates.decoration("fluentui-emoji/sparkles"; -0.520; -0.427; 26) & templates.decoration("fluentui-emoji/sparkles"; 0.480; 0.387; 18)) & templates.label("label purple-dark"; "火炎のスフィア"))
   # ロッドは右上にヘッド・左下から右上へ柄が伸びる構図なのだぁ🌱 杖の魔法の先端であるヘッドに🔥を重ね、空いた左上・右下の対角の角に✨を置くのだぁ〜
   # 座標はロッドの画素に紐づくのだぁ🌱（ヘッド重心・ヘッド頂点・左上の空き角・右下の空き角なのだぁ〜）
-  wand := templates.unit(""; templates.materialBox(168; templates.texture("nephrite_builders_rod"; 168); templates.decoration("fire"; 0.241; -0.240; 56) & templates.decoration("fire"; 0.375; -0.406; 30) & templates.decoration("sparkles"; -0.312; -0.281; 24) & templates.decoration("sparkles"; 0.312; 0.312; 18)) & templates.label("label ink"; "魔法の杖 完成なのだっ"))
+  wand := templates.unit(""; templates.materialBox(168; templates.texture("item-texture/nephrite_builders_rod"; 168); templates.decoration("fluentui-emoji/fire"; 0.241; -0.240; 56) & templates.decoration("fluentui-emoji/fire"; 0.375; -0.406; 30) & templates.decoration("fluentui-emoji/sparkles"; -0.312; -0.281; 24) & templates.decoration("fluentui-emoji/sparkles"; 0.312; 0.312; 18)) & templates.label("label ink"; "魔法の杖 完成なのだっ"))
   inner := %>
-    <%= templates.heading("魔法のアイテム ―"; "magic_wand"; "スフィアを道具にくみこむのだっ"; 40) %>
+    <%= templates.heading("魔法のアイテム ―"; "fluentui-emoji/magic_wand"; "スフィアを道具にくみこむのだっ"; 40) %>
     <%= templates.subtext(["ねむっていた宝石やお花が、魔法のアイテムに化けるのだぁ。", "あつめて、いろんな魔法をためしてみるのだ〜♪"]) %>
     <%= templates.flow(" flow4"; %>
       <%= fireSphere %>

@@ -6,6 +6,7 @@
 #   - cssLines:       CSSの行をためていく箱なのだぁ。各プラグインが自分のパーツのCSSを push するのだぁ〜
 #   - htmlEscape:     テキスト用のHTMLエスケープなのだぁ。& < > だけ処理するのだぁ〜
 #   - colors:         矢印や演算子などに使うアクセント色なのだぁ〜
+#   - build:          ビルド本体なのだぁ🌱。プラグイン・ページを読み込んで build/site/ に書き出すのだぁ〜
 #   同じロケーションのUSEは再利用されるので、これらは全プラグイン・ページで単一の共有インスタンスになるのだぁ🌱
 # ============================================================
 
@@ -20,4 +21,26 @@
     purple: "#8d72d8"
     aqua: "#3fc4c0"
   }
+  # ビルド本体なのだぁ🌱 冒頭で @USE("global") して共有の登録簿（templates/pageGenerators/cssLines）を受け取り、
+  # プラグイン・ページを名前順に読み込んでから、各ページと組み上げた CSS を build/site/ に書き出すのだぁ〜
+  # オブジェクトリテラル内の関数はとなりのキーを直接は見れないので、@USE で共有インスタンスを受け取るのだぁ🌱
+  build: () -> (
+    @USE("global")
+    DIR := "build/site"
+
+    # プラグインとページを INC に入れ、bare 名の USE を各ソースセットから解決できるようにするのだぁ🌱
+    INC::push << "src/plugins/xa1"
+    INC::push << "src/pages/xa1"
+
+    # プラグインとページを名前順に列挙して、すべて USE で読み込むのだぁ🌱
+    # 各プラグインは templates と cssLines へ、各ページは pageGenerators へ登録するのだぁ〜
+    FILE_NAMES("src/plugins/xa1") >> SORT | f => USE(f)
+    FILE_NAMES("src/pages/xa1") >> SORT | f => USE(f)
+
+    # 各ページを書き出すのだぁ🌱（キー＝出力ファイル名、値＝内容を返す関数なのだぁ〜）
+    pageGenerators() | e => WRITE[DIR & "/" & e.0] << e.1()
+
+    # 各プラグインが push した CSS 行を空行区切りでつないで書き出すのだぁ🌱（各行末に改行を付けたいので WRITEL なのだぁ〜）
+    WRITEL[DIR & "/style.css"] << cssLines() >> JOIN["\n\n"]
+  )
 }

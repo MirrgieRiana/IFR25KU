@@ -4,7 +4,7 @@
 templates.footer = n -> %>
   <div class="footer">
     <div class="foot-left"><%= templates.texture("fairy_face"; 40) %><span>IFR25KU アップデートけいかく</span></div>
-    <div class="foot-right"><%= templates.emoji("seedling"; 26) %><span class="credit">Claude Fairy がつくったのだぁ</span><span class="page-number"><%= n %> / 4</span></div>
+    <div class="foot-right"><%= templates.emoji("fluentui-emoji/seedling"; 26) %><span class="credit">Claude Fairy がつくったのだぁ</span><span class="page-number"><%= n %> / 4</span></div>
   </div>
 <%
 
