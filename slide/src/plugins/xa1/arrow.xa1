@@ -1,19 +1,23 @@
-# arrow: 横向き矢印（やじりは短め幅広の塗り三角形・根もとを少し絵側へ食い込ませる）
+# arrow: 横向き矢印なのだぁ🌱 やじりは短め幅広の塗り三角形で、根もとを少し絵側へ食い込ませるのだぁ〜
 @USE("global")
 
-# 幅16の太い矢印。色だけ差し替える。
-templates.arrowWide = (col -> %>
+# 幅16の太い矢印なのだぁ🌱 色だけ差し替えるのだぁ〜
+templates.arrowWide = col -> %>
   <svg class="arrow" width="96" height="56" viewBox="0 0 96 56">
     <rect x="0" y="20" width="78" height="16" rx="8" fill="<%= col %>"/>
     <polygon points="70,0 96,28 70,56" fill="<%= col %>" stroke="<%= col %>" stroke-width="5" stroke-linejoin="round"/>
   </svg>
-<%)
-# 幅14の細い矢印（レシピの流れ用）。色だけ差し替える。
-templates.arrowThin = (col -> %>
+<%
+# 幅14の細い矢印（レシピの流れ用）なのだぁ🌱 色だけ差し替えるのだぁ〜
+templates.arrowThin = col -> %>
   <svg class="arrow" width="96" height="56" viewBox="0 0 96 56">
     <rect x="0" y="21" width="78" height="14" rx="7" fill="<%= col %>"/>
     <polygon points="70,3.5 96,28 70,52.5" fill="<%= col %>" stroke="<%= col %>" stroke-width="5" stroke-linejoin="round"/>
   </svg>
-<%)
+<%
 
-cssLines::push << %>.arrow { flex: none; }<%
+cssLines::push << %>
+  .arrow {
+    flex: none;
+  }
+<%

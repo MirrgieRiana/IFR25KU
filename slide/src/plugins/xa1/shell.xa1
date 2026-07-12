@@ -1,41 +1,83 @@
-# shell: スライドの外枠（四隅の飾り＋本体＋フッター）
+# shell: スライドの外枠なのだぁ🌱 四隅の飾り＋本体＋フッターなのだぁ〜
 @USE("global")
 
-templates.slideShell = (n, theme, inner -> %>
+templates.slideShell = n, theme, inner -> %>
   <section class="slide theme-<%= theme %>">
-    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span>
+    <span class="blob blob-1"></span><span class="blob blob-2"></span><span class="blob blob-3"></span><span class="blob blob-4"></span>
     <div class="body"><%= inner %></div>
     <%= templates.footer(n) %>
   </section>
-<%)
+<%
 
 cssLines::push << %>
-  /* ---- スライド1枚＝固定サイズのブロック。すきまなく縦に積む ---- */
-  /* テーマ色: 見出しアクセント・ページ番号などが --accent を参照する */
+  /* ---- スライド1枚＝固定サイズのブロックなのだぁ🌱 すきまなく縦に積むのだぁ〜 ---- */
+  /* テーマ色なのだぁ🌱 見出しアクセント・ページ番号などが --accent を参照するのだぁ〜 */
   .slide {
     position: relative;
-    width: 1280px; height: 720px;
+    width: 1280px;
+    height: 720px;
     overflow: hidden;
     background: linear-gradient(180deg, #fff7fc 0%, #f0ecff 100%);
     color: var(--ink);
   }
-  .theme-pink { --accent: var(--pink); }
-  .theme-aqua { --accent: var(--aqua); }
-  .theme-purple { --accent: var(--purple); }
-  .theme-pinkD { --accent: var(--pinkD); }
+  .theme-pink {
+    --accent: var(--pink);
+  }
+  .theme-aqua {
+    --accent: var(--aqua);
+  }
+  .theme-purple {
+    --accent: var(--purple);
+  }
+  .theme-pink-dark {
+    --accent: var(--pink-dark);
+  }
 
-  /* 四隅のパステルなまるい飾り */
-  .blob { position: absolute; border-radius: 50%; }
-  .b1 { width: 340px; height: 340px; left: -90px; top: -100px; background: var(--pinkL); opacity: .45; }
-  .b2 { width: 300px; height: 300px; right: -40px; top: -30px; background: var(--purpleL); opacity: .5; }
-  .b3 { width: 360px; height: 360px; right: -90px; bottom: -120px; background: var(--aquaL); opacity: .4; }
-  .b4 { width: 300px; height: 300px; left: -30px; bottom: -100px; background: var(--greenL); opacity: .4; }
+  /* 四隅のパステルなまるい飾りなのだぁ🌱 */
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+  }
+  .blob-1 {
+    width: 340px;
+    height: 340px;
+    left: -90px;
+    top: -100px;
+    background: var(--pink-light);
+    opacity: .45;
+  }
+  .blob-2 {
+    width: 300px;
+    height: 300px;
+    right: -40px;
+    top: -30px;
+    background: var(--purple-light);
+    opacity: .5;
+  }
+  .blob-3 {
+    width: 360px;
+    height: 360px;
+    right: -90px;
+    bottom: -120px;
+    background: var(--aqua-light);
+    opacity: .4;
+  }
+  .blob-4 {
+    width: 300px;
+    height: 300px;
+    left: -30px;
+    bottom: -100px;
+    background: var(--green-light);
+    opacity: .4;
+  }
 
-  /* スライド中身。見出し→説明→ダイアグラム、を縦に流す */
+  /* スライド中身なのだぁ🌱 見出し→説明→ダイアグラム、を縦に流すのだぁ〜 */
   .body {
-    position: relative; z-index: 1;
+    position: relative;
+    z-index: 1;
     height: 100%;
     padding: 38px 48px 70px;
-    display: flex; flex-direction: column;
+    display: flex;
+    flex-direction: column;
   }
 <%

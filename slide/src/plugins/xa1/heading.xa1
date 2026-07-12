@@ -1,12 +1,36 @@
-# heading: 見出し（スタイルはCSS側。HTMLは構造だけ・アクセント色はテーマ変数）
+# heading: 見出しなのだぁ🌱 スタイルはCSS側で、HTMLは構造だけ・アクセント色はテーマ変数なのだぁ〜
 @USE("global")
 
-templates.splitTitle = (left, mid, right, midSize -> %><div class="title"><span class="accent"></span><span class="ttl"><%= esc(left) %></span><%= templates.emo(mid; midSize) %><span class="ttl"><%= esc(right) %></span></div><%)
+templates.splitTitle = left, mid, right, midSize -> %>
+  <div class="title">
+    <span class="accent"></span>
+    <span class="title-text"><%= htmlEscape(left) %></span>
+    <%= templates.emoji(mid; midSize) %>
+    <span class="title-text"><%= htmlEscape(right) %></span>
+  </div>
+<%
 
 cssLines::push << %>
-  /* ---- 見出し ---- */
-  .title { display: flex; align-items: center; gap: 14px; }
-  .accent { width: 16px; height: 62px; border-radius: 8px; flex: none; background: var(--accent); }
-  .ttl { font-size: 42px; font-weight: 900; color: var(--ink); white-space: nowrap; }
-  .title .emo { flex: none; }
+  /* ---- 見出しなのだぁ🌱 ---- */
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .accent {
+    width: 16px;
+    height: 62px;
+    border-radius: 8px;
+    flex: none;
+    background: var(--accent);
+  }
+  .title-text {
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .title .emoji {
+    flex: none;
+  }
 <%

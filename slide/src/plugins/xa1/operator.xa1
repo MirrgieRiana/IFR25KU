@@ -1,13 +1,25 @@
-# operator: 方程式の演算子（＋ / or）。一貫した中立色にする
+# operator: 方程式の演算子（＋ / or）なのだぁ🌱 一貫した中立色にするのだぁ〜
 @USE("global")
 
-# 二択（宝石ルート or 花＋ダイヤルート）を表す共通の演算子。
-templates.orb = () -> %><span class="orb">or</span><%
-# 「両方必要」を表す演算子。
-templates.plus = () -> %><span class="plus">＋</span><%
+# 二択（宝石ルート or 花＋ダイヤルート）を表す共通の演算子なのだぁ🌱
+templates.orOperator = () -> %><span class="or-operator">or</span><%
+# 「両方必要」を表す演算子なのだぁ🌱
+templates.plusOperator = () -> %><span class="plus-operator">＋</span><%
 
 cssLines::push << %>
-  /* ---- 演算子（＋ / or）は方程式の“文字”として一貫した中立色にする ---- */
-  .plus { font-size: 44px; font-weight: 900; color: var(--inkSoft); flex: none; line-height: 1; }
-  .orb { font-size: var(--min); font-weight: 900; color: var(--inkSoft); flex: none; line-height: 1; }
+  /* ---- 演算子（＋ / or）は方程式の“文字”として一貫した中立色にするのだぁ🌱 ---- */
+  .plus-operator {
+    font-size: 44px;
+    font-weight: 900;
+    color: var(--ink-soft);
+    flex: none;
+    line-height: 1;
+  }
+  .or-operator {
+    font-size: var(--min-font-size);
+    font-weight: 900;
+    color: var(--ink-soft);
+    flex: none;
+    line-height: 1;
+  }
 <%

@@ -1,17 +1,49 @@
-# label: 汎用ラベルと色ユーティリティ
+# label: 汎用ラベルと色ユーティリティなのだぁ🌱
 @USE("global")
 
-# ---- 文字（ラベル）と色ユーティリティ。色ユーティリティは .lbl より後に置く ----
+# ---- 文字（ラベル）と色ユーティリティなのだぁ🌱 色ユーティリティは .label より後に置くのだぁ〜 ----
 cssLines::push << %>
-  .lbl { font-size: var(--min); font-weight: 900; color: var(--ink); text-align: center; white-space: nowrap; }
-  .lbl-sub { font-size: var(--min); font-weight: 800; color: var(--inkSoft); text-align: center; white-space: nowrap; }
+  .label {
+    font-size: var(--min-font-size);
+    font-weight: 900;
+    color: var(--ink);
+    text-align: center;
+    white-space: nowrap;
+  }
+  .label-sub {
+    font-size: var(--min-font-size);
+    font-weight: 800;
+    color: var(--ink-soft);
+    text-align: center;
+    white-space: nowrap;
+  }
 
-  /* 色ユーティリティ */
-  .ink { color: var(--ink); } .inkSoft { color: var(--inkSoft); }
-  .pinkD { color: var(--pinkD); } .purpleD { color: var(--purpleD); }
-  .aquaD { color: var(--aquaD); } .goldD { color: var(--goldD); }
-  .brickD { color: var(--brickD); } .greenD { color: var(--greenD); }
+  /* 色ユーティリティなのだぁ🌱 */
+  .ink {
+    color: var(--ink);
+  }
+  .ink-soft {
+    color: var(--ink-soft);
+  }
+  .pink-dark {
+    color: var(--pink-dark);
+  }
+  .purple-dark {
+    color: var(--purple-dark);
+  }
+  .aqua-dark {
+    color: var(--aqua-dark);
+  }
+  .gold-dark {
+    color: var(--gold-dark);
+  }
+  .brick-dark {
+    color: var(--brick-dark);
+  }
+  .green-dark {
+    color: var(--green-dark);
+  }
 <%
 
-# 汎用ラベル div
-templates.T = (cls, s -> %><div class="<%= cls %>"><%= esc(s) %></div><%)
+# 汎用ラベル div なのだぁ🌱
+templates.label = cls, s -> %><div class="<%= cls %>"><%= htmlEscape(s) %></div><%

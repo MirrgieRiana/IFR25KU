@@ -1,29 +1,49 @@
-# base: デッキ全体の基盤スタイル（テンプレート関数は持たず、CSSだけを登録する）
-# フォントはコミットせず、ページのheadからGoogle Fonts CDNを読み込む（pages/slides.xa1）。
+# base: デッキ全体の基盤スタイルなのだぁ🌱 テンプレート関数は持たず、CSSだけを登録するのだぁ〜
+# フォントはコミットせず、ページのheadからGoogle Fonts CDNを読み込むのだぁ🌱（pages/slides.xa1 を見るのだぁ〜）
 @USE("global")
 
-# ---- 共通スタイル基盤 ----
+# ---- 共通スタイル基盤なのだぁ🌱 ----
 cssLines::push << %>
   :root {
-    --ink: #4d3a6e; --inkSoft: #6f5a93;
-    --pink: #ef6cb0; --pinkD: #d94f9b; --pinkL: #ffd7ec;
-    --purple: #8d72d8; --purpleL: #ded3f7; --purpleD: #6a51b8;
-    --aqua: #3fc4c0; --aquaL: #cdf2f0; --aquaD: #2a9b97;
-    --gold: #ffc94d; --goldD: #e8a92b;
-    --green: #69bf5b; --greenL: #d8f2d0; --greenD: #4c9e3f;
-    --card: #ffffff; --line: #e7dcf6; --cream: #fff3e6;
-    --brickD: #9a4a32;
-    /* 文字サイズの床は24px（フッターもふくむ全域に効く） */
-    --min: 24px;
+    --ink: #4d3a6e;
+    --ink-soft: #6f5a93;
+    --pink: #ef6cb0;
+    --pink-dark: #d94f9b;
+    --pink-light: #ffd7ec;
+    --purple: #8d72d8;
+    --purple-light: #ded3f7;
+    --purple-dark: #6a51b8;
+    --aqua: #3fc4c0;
+    --aqua-light: #cdf2f0;
+    --aqua-dark: #2a9b97;
+    --gold: #ffc94d;
+    --gold-dark: #e8a92b;
+    --green: #69bf5b;
+    --green-light: #d8f2d0;
+    --green-dark: #4c9e3f;
+    --card: #ffffff;
+    --line: #e7dcf6;
+    --cream: #fff3e6;
+    --brick-dark: #9a4a32;
+    /* 文字サイズの床は24pxなのだぁ🌱 フッターもふくむ全域に効くのだぁ〜 */
+    --min-font-size: 24px;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
   body {
     font-family: 'Zen Maru Gothic', sans-serif;
     background: #d9d2ee;
-    /* 固定サイズのブロックを上下にぴったり積むので、デッキ幅にそろえて中央寄せ */
-    display: flex; justify-content: center;
+    /* 固定サイズのブロックを上下にぴったり積むので、デッキ幅にそろえて中央寄せなのだぁ🌱 */
+    display: flex;
+    justify-content: center;
   }
-  .deck { width: 1280px; }
+
+  .deck {
+    width: 1280px;
+  }
 <%

@@ -1,31 +1,57 @@
-# material: 素材（img 1個の単位）と、そのまわりに飾りを重ねるヘルパー群
+# material: 素材（img 1個の単位）と、そのまわりに飾りを重ねるヘルパー群なのだぁ🌱
 @USE("global")
 
-# ---- 素材ヘルパー（素材1個＝img 1個） ----
-# テクスチャ（IFR固有ドット絵）。ドット感は image-rendering:pixelated（CSS）で保つ。
-templates.tex = (name, size -> %><img class="tex" src="./<%= name %>.png" width="<%= size %>" height="<%= size %>" alt=""><%)
-# 絵文字（fluentui, MIT）。文中でもインライン画像として貼れる。
-templates.emo = (name, size -> %><img class="emo" src="./<%= name %>.svg" width="<%= size %>" height="<%= size %>" alt=""><%)
-# 飾り（✨や🔥）。テクスチャ中心からのオフセット比率 x,y を left/top の％に変換して置く。
-templates.deco = (name, x, y, s -> %><img class="deco" src="./<%= name %>.svg" style="left:<%= "$%.2f(50 + x * 100)" %>%;top:<%= "$%.2f(50 + y * 100)" %>%;width:<%= s %>px;height:<%= s %>px" alt=""><%)
+# ---- 素材ヘルパーなのだぁ🌱 素材1個＝img 1個なのだぁ〜 ----
+# テクスチャなのだぁ🌱 IFR固有のドット絵で、ドット感は image-rendering:pixelated（CSS）で保つのだぁ〜
+templates.texture = name, size -> %><img class="texture" src="./<%= name %>.png" width="<%= size %>" height="<%= size %>" alt=""><%
+# 絵文字なのだぁ🌱 fluentui（MIT）で、文中でもインライン画像として貼れるのだぁ〜
+templates.emoji = name, size -> %><img class="emoji" src="./<%= name %>.svg" width="<%= size %>" height="<%= size %>" alt=""><%
+# 飾りなのだぁ🌱 ✨や🔥で、テクスチャ中心からのオフセット比率 x,y を left/top の％に変換して置くのだぁ〜
+templates.decoration = name, x, y, s -> %><img class="decoration" src="./<%= name %>.svg" style="left:<%= "$%.2f(50 + x * 100)" %>%;top:<%= "$%.2f(50 + y * 100)" %>%;width:<%= s %>px;height:<%= s %>px" alt=""><%
 
-# 素材のまわりに飾りを、テクスチャ中心からの相対位置で貼る。
-# mat の箱をテクスチャと同寸にすることで、left/top の％がそのままテクスチャ基準の相対位置になり、
-# テクスチャを拡縮しても飾りが自動追従する。decos は deco() を連結した文字列。
-templates.mat = (size, inner, decos -> %><span class="mat" style="width:<%= size %>px;height:<%= size %>px"><%= inner %><%= decos %></span><%)
-
-cssLines::push << %>
-  /* ---- 素材（img 1個の単位）と飾り（✨/🔥）の相対配置 ---- */
-  .mat { position: relative; display: inline-flex; align-items: center; justify-content: center; }
-  /* 飾りはmatの箱＝テクスチャ寸に対する％で置くので、テクスチャ基準の相対位置になる */
-  .deco { position: absolute; transform: translate(-50%, -50%); display: block; }
-  .emo { display: inline-block; vertical-align: middle; }
-  .tex { display: block; image-rendering: pixelated; }
+# 素材のまわりに飾りを、テクスチャ中心からの相対位置で貼るのだぁ🌱
+# material-box の箱をテクスチャと同寸にすることで、left/top の％がそのままテクスチャ基準の相対位置になり、
+# テクスチャを拡縮しても飾りが自動追従するのだぁ〜。decorations は decoration() を連結した文字列なのだぁ🌱
+templates.materialBox = size, inner, decorations -> %>
+  <span class="material-box" style="width:<%= size %>px;height:<%= size %>px"><%= inner %><%= decorations %></span>
 <%
 
-# 丸いテクスチャ（スフィア）用の✨2個。対角の透明な角へ。サイズは元SVGの比率に合わせる。
-templates.round2 = (size -> templates.deco("sparkles"; 0.46; -0.46; FLOOR(size * 0.34 + 0.5)) & templates.deco("sparkles"; -0.46; 0.46; FLOOR(size * 0.20 + 0.5)))
-# 斜めの杖テクスチャ（ロッド）用の✨2個。透明な左上・右下の角へ。
-templates.rod2 = (size -> templates.deco("sparkles"; -0.42; -0.42; FLOOR(size * 0.20 + 0.5)) & templates.deco("sparkles"; 0.42; 0.42; FLOOR(size * 0.14 + 0.5)))
-# お花＋ダイヤ: お花を裏に、右下へ小さめのダイヤを重ねる（他ページ共通の描き方）。
-templates.flowerGem = (flower -> %><span class="mat" style="width:<%= flower %>px;height:<%= flower %>px"><%= templates.emo("tulip"; flower) %><img class="deco" src="./gem.svg" style="left:82%;top:82%;width:<%= FLOOR(flower * 0.46 + 0.5) %>px;height:<%= FLOOR(flower * 0.46 + 0.5) %>px" alt=""></span><%)
+cssLines::push << %>
+  /* ---- 素材（img 1個の単位）と飾り（✨/🔥）の相対配置なのだぁ🌱 ---- */
+  .material-box {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* 飾りは material-box の箱＝テクスチャ寸に対する％で置くので、テクスチャ基準の相対位置になるのだぁ🌱 */
+  .decoration {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: block;
+  }
+  .emoji {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .texture {
+    display: block;
+    image-rendering: pixelated;
+  }
+<%
+
+# 丸いテクスチャ（スフィア）用の✨2個なのだぁ🌱 対角の透明な角へ置いて、サイズは元SVGの比率に合わせるのだぁ〜
+templates.roundSparkles = size ->
+  templates.decoration("sparkles"; 0.46; -0.46; FLOOR(size * 0.34 + 0.5)) &
+  templates.decoration("sparkles"; -0.46; 0.46; FLOOR(size * 0.20 + 0.5))
+# 斜めの杖テクスチャ（ロッド）用の✨2個なのだぁ🌱 透明な左上・右下の角へ置くのだぁ〜
+templates.rodSparkles = size ->
+  templates.decoration("sparkles"; -0.42; -0.42; FLOOR(size * 0.20 + 0.5)) &
+  templates.decoration("sparkles"; 0.42; 0.42; FLOOR(size * 0.14 + 0.5))
+# お花＋ダイヤなのだぁ🌱 お花を裏に、右下へ小さめのダイヤを重ねるのだぁ〜（他ページ共通の描き方なのだぁ🌱）
+templates.flowerGem = flower -> %>
+  <span class="material-box" style="width:<%= flower %>px;height:<%= flower %>px">
+    <%= templates.emoji("tulip"; flower) %>
+    <img class="decoration" src="./gem.svg" style="left:82%;top:82%;width:<%= FLOOR(flower * 0.46 + 0.5) %>px;height:<%= FLOOR(flower * 0.46 + 0.5) %>px" alt="">
+  </span>
+<%

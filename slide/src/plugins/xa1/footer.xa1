@@ -1,23 +1,43 @@
-# footer: 各スライド下部のフッター（スタイルはCSS側。HTMLは構造だけ）
+# footer: 各スライド下部のフッターなのだぁ🌱 スタイルはCSS側で、HTMLは構造だけなのだぁ〜
 @USE("global")
 
-templates.footer = (n -> %>
+templates.footer = n -> %>
   <div class="footer">
-    <div class="foot-left"><%= templates.tex("fairy_face"; 40) %><span>IFR25KU アップデートけいかく</span></div>
-    <div class="foot-right"><%= templates.emo("seedling"; 26) %><span class="cf">Claude Fairy がつくったのだぁ</span><span class="pg"><%= n %> / 4</span></div>
+    <div class="foot-left"><%= templates.texture("fairy_face"; 40) %><span>IFR25KU アップデートけいかく</span></div>
+    <div class="foot-right"><%= templates.emoji("seedling"; 26) %><span class="credit">Claude Fairy がつくったのだぁ</span><span class="page-number"><%= n %> / 4</span></div>
   </div>
-<%)
+<%
 
 cssLines::push << %>
-  /* ---- フッター（最小24px・Claude Fairy表記は右ぞろえ） ---- */
+  /* ---- フッターなのだぁ🌱 最小24pxで、Claude Fairy表記は右ぞろえなのだぁ〜 ---- */
   .footer {
-    position: absolute; left: 0; right: 0; bottom: 0; height: 54px; z-index: 2;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 54px;
+    z-index: 2;
     background: rgba(255,255,255,.55);
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 0 36px 0 16px;
   }
-  .foot-left, .foot-right { display: flex; align-items: center; gap: 12px; }
-  .footer span { font-size: var(--min); font-weight: 800; color: var(--inkSoft); }
-  .footer .cf { font-weight: 700; }
-  .footer .pg { font-weight: 900; color: var(--accent); }
+  .foot-left, .foot-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .footer span {
+    font-size: var(--min-font-size);
+    font-weight: 800;
+    color: var(--ink-soft);
+  }
+  .footer .credit {
+    font-weight: 700;
+  }
+  .footer .page-number {
+    font-weight: 900;
+    color: var(--accent);
+  }
 <%
