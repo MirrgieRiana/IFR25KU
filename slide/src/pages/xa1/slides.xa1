@@ -46,7 +46,7 @@ templates.slide1 = () -> (
     </div>
     <div class="band"><%= templates.emoji("sparkles"; 32) %><span>ねむっていた宝石やお花が、魔法のアイテムになるのだぁ♪</span></div>
   <%
-  templates.slideShell(1; "pink"; inner)
+  templates.shell(1; "pink"; inner)
 )
 
 cssLines::push << %>
@@ -151,7 +151,7 @@ templates.slide2 = () -> (
     </div>
   <%
   inner := %>
-    <%= templates.splitTitle("ざいりょう ―"; "gem"; "宝石か、お花とダイヤモンドなのだっ"; 40) %>
+    <%= templates.heading("ざいりょう ―"; "gem"; "宝石か、お花とダイヤモンドなのだっ"; 40) %>
     <%= templates.subtext(["どっちを使っても、おなじスフィアができるのだぁ♪", "ヒマワリ＋ダイヤ は、太陽の宝石とおなじ “太陽のスフィア” になるのだっ"]) %>
     <div class="content content2">
       <div class="routes"><%= routeA %><%= routeB %></div>
@@ -159,7 +159,7 @@ templates.slide2 = () -> (
       <%= merge %>
     </div>
   <%
-  templates.slideShell(2; "aqua"; inner)
+  templates.shell(2; "aqua"; inner)
 )
 
 cssLines::push << %>
@@ -256,7 +256,7 @@ templates.slide3 = () -> (
     </div>
   <%
   inner := %>
-    <%= templates.splitTitle("レシピ ―"; "sparkles"; "魔法のスフィアのつくりかたなのだっ"; 38) %>
+    <%= templates.heading("レシピ ―"; "sparkles"; "魔法のスフィアのつくりかたなのだっ"; 38) %>
     <%= templates.subtext(["スフィアが “どんな魔法になるか” は、宝石が決めてくれるのだっ♪"]) %>
     <div class="recipe-box">
       <div class="recipe-head gold-dark">スフィアのレシピなのだっ</div>
@@ -271,7 +271,7 @@ templates.slide3 = () -> (
       </div>
     </div>
   <%
-  templates.slideShell(3; "purple"; inner)
+  templates.shell(3; "purple"; inner)
 )
 
 cssLines::push << %>
@@ -338,7 +338,7 @@ templates.slide4 = () -> (
     <div class="unit"><%= templates.materialBox(168; templates.texture("nephrite_builders_rod"; 168); templates.decoration("fire"; 0.250; -0.393; 56) & templates.decoration("fire"; 0.476; -0.214; 30) & templates.decoration("sparkles"; -0.036; -0.583; 24) & templates.decoration("sparkles"; -0.429; 0.345; 18)) %><div class="label ink">魔法の杖 完成なのだっ</div></div>
   <%
   inner := %>
-    <%= templates.splitTitle("魔法のアイテム ―"; "magic_wand"; "スフィアを道具にくみこむのだっ"; 40) %>
+    <%= templates.heading("魔法のアイテム ―"; "magic_wand"; "スフィアを道具にくみこむのだっ"; 40) %>
     <%= templates.subtext(["ねむっていた宝石やお花が、魔法のアイテムに化けるのだぁ。", "あつめて、いろんな魔法をためしてみるのだ〜♪"]) %>
     <div class="flow flow4">
       <%= fireSphere %>
@@ -348,7 +348,7 @@ templates.slide4 = () -> (
       <%= wand %>
     </div>
   <%
-  templates.slideShell(4; "pink-dark"; inner)
+  templates.shell(4; "pink-dark"; inner)
 )
 
 # ---- 出力ページ: 4枚を1枚のHTMLにまとめるのだぁ🌱 ----

@@ -1,7 +1,7 @@
 # heading: 見出しなのだぁ🌱 スタイルはCSS側で、HTMLは構造だけ・アクセント色はテーマ変数なのだぁ〜
 @USE("global")
 
-templates.splitTitle = left, mid, right, midSize -> %>
+templates.heading = left, mid, right, midSize -> %>
   <div class="title">
     <span class="accent"></span>
     <span class="title-text"><%= htmlEscape(left) %></span>
