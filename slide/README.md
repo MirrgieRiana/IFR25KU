@@ -30,7 +30,7 @@
 | `src/site/resources/fairy_face.png` | `site/src/main/resources/favicon.png`（IFR25KU のマスコット原画） | 本リポジトリの [ルート README](../README.md) の規定に従う |
 | `src/site/resources/sphere.png` | `common/src/main/resources/assets/miragefairy2024/textures/item/sphere_base.png` を拡大したもの | 同上 |
 | `src/site/resources/fluorite.png` | `common/src/main/resources/assets/miragefairy2024/textures/item/fluorite.png` を拡大したもの | 同上 |
-| `src/site/resources/rod.png` | `common/src/main/resources/assets/miragefairy2024/textures/item/nephrite_builders_rod.png` を拡大したもの | 同上 |
+| `src/site/resources/rod.png` | `common/src/main/resources/assets/miragefairy2024/textures/item/nephrite_builders_rod.png` をそのままコピーしたもの（16×16のまま。表示はCSSで拡大） | 同上 |
 
 これらは本リポジトリ自身のリソースを流用したもので、ルート README の「Other Resources」等の規定でカバーされるのだぁ。ルート README で名指し除外されている MirageFairy2019 由来（CC BY-SA 3.0）のテクスチャは、いずれも含んでいないのだぁ。`build/site/` 内の同名 png は、ビルドがこれらをコピーしたものなのだぁ。
 
