@@ -21,9 +21,10 @@ XARPITE="../xarpite/xarpite"
 
 # 出力先を用意して、素材（png/svg）を build/site/ にそのまま配置するのだぁ🌱
 # HTML/CSS は素材を相対URL（./name.png など）で参照するので、同じディレクトリに置くのだぁ〜
+# 素材はライセンスごとにサブディレクトリに分けてあるので、平坦化して build/site/ 直下に集めるのだぁ🌱
 # フォントはコミットせず、ページのheadからCDNで読み込むため、ここでは配置しないのだぁ🌱
 mkdir -p "$OUT"
-cp "$SRC"/* "$OUT"/
+find "$SRC" -type f -exec cp -- {} "$OUT"/ \;
 
 # xarpite（API5）でプラグイン・ページを読み込み、HTML と CSS を組み立てるのだぁ🌱
 # メインは stdin 実行なので、相対パスの起点は cd 済みのプロジェクトルート（PWD）になるのだぁ〜
@@ -53,8 +54,8 @@ FILE_NAMES("src/pages/xa1") >> SORT | f => USE(f)
 # 各ページを書き出すのだぁ🌱（キー＝出力ファイル名、値＝内容を返す関数なのだぁ〜）
 pageGenerators() | e => WRITE[DIR & "/" & e.0] << e.1()
 
-# 組み上げた CSS を書き出すのだぁ🌱（各行末に改行を付けたいので WRITEL なのだぁ〜）
-WRITEL[DIR & "/style.css"] << getCss()
+# 各プラグインが push した CSS 行を空行区切りでつないで書き出すのだぁ🌱（各行末に改行を付けたいので WRITEL なのだぁ〜）
+WRITEL[DIR & "/style.css"] << cssLines() >> JOIN["\n\n"]
 XARPITE_EOF
 
 echo "ビルド完了なのだぁ🌱 : $OUT/slides.html, $OUT/style.css"

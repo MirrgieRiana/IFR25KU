@@ -1,4 +1,4 @@
-# slides: スフィアクラフト紹介スライドなのだぁ🌱 4ページ分を1モジュールにまとめるのだぁ〜
+# sphere-crafting: スフィアクラフト紹介スライドなのだぁ🌱 4ページ分を1モジュールにまとめるのだぁ〜
 # 各スライドを templates.slideN に組み、pageGenerators."slides.html" で1枚のHTMLにまとめて出力するのだぁ🌱
 @USE("global")
 
@@ -18,7 +18,7 @@ templates.slide1 = () -> (
   <%
   card2 := %>
     <div class="card">
-      <div class="art"><%= templates.materialBox(118; templates.texture("sphere"; 118); templates.roundSparkles(118)) %></div>
+      <div class="art"><%= templates.materialBox(118; templates.texture("sphere_base"; 118); templates.roundSparkles(118)) %></div>
       <%= templates.label("label purple-dark"; "スフィア") %>
       <%= templates.label("label-sub ink-soft"; "ぴかっと光る魔法の珠") %>
     </div>
@@ -32,18 +32,18 @@ templates.slide1 = () -> (
   <%
   inner := %>
     <div class="title-row">
-      <%= templates.materialBox(60; templates.texture("sphere"; 60); templates.roundSparkles(60)) %>
+      <%= templates.materialBox(60; templates.texture("sphere_base"; 60); templates.roundSparkles(60)) %>
       <h1>スフィアクラフト</h1>
-      <%= templates.materialBox(60; templates.texture("sphere"; 60); templates.roundSparkles(60)) %>
+      <%= templates.materialBox(60; templates.texture("sphere_base"; 60); templates.roundSparkles(60)) %>
     </div>
     <%= templates.subtext(["宝石か、お花とダイヤモンドから “スフィア” をつくって", "そのスフィアから 魔法のアイテム をつくるのだっ♪"]) %>
-    <div class="flow">
+    <%= templates.flow(""; %>
       <%= card1 %>
       <%= templates.arrowWide(colors.pink) %>
       <%= card2 %>
       <%= templates.arrowWide(colors.purple) %>
       <%= card3 %>
-    </div>
+    <%) %>
     <div class="band"><%= templates.emoji("sparkles"; 32) %><span>ねむっていた宝石やお花が、魔法のアイテムになるのだぁ♪</span></div>
   <%
   templates.shell(1; "pink"; inner)
@@ -63,18 +63,6 @@ cssLines::push << %>
     font-weight: 900;
     color: var(--pink-dark);
     white-space: nowrap;
-  }
-
-  /* ---- 横並びフロー（材料→珠→アイテム など）なのだぁ🌱 ---- */
-  .flow {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-  }
-  .flow4 {
-    gap: 10px;
   }
 
   /* ---- カードなのだぁ🌱 ---- */
@@ -145,7 +133,7 @@ templates.slide2 = () -> (
   <%
   merge := %>
     <div class="merge">
-      <%= templates.materialBox(168; templates.texture("sphere"; 168); templates.roundSparkles(168)) %>
+      <%= templates.materialBox(168; templates.texture("sphere_base"; 168); templates.roundSparkles(168)) %>
       <div class="label-sub ink-soft">おなじ</div>
       <%= templates.label("label purple-dark"; "“○○のスフィア”") %>
     </div>
@@ -247,9 +235,9 @@ templates.slide3 = () -> (
   switchPanel := %>
     <div class="recipe-card">
       <div class="switch-row">
-        <div class="unit switch-item"><%= templates.materialBox(60; templates.texture("fluorite"; 60); "") %><div class="label ink">宝石</div></div>
+        <%= templates.unit(" switch-item"; templates.materialBox(60; templates.texture("fluorite"; 60); "") & templates.label("label ink"; "宝石")) %>
         <%= templates.orOperator() %>
-        <div class="unit switch-item"><%= templates.flowerGem(52) %><div class="label ink">花＋ダイヤ</div></div>
+        <%= templates.unit(" switch-item"; templates.flowerGem(52) & templates.label("label ink"; "花＋ダイヤ")) %>
       </div>
       <div class="label-sub ink-soft">珠の魔法を決める</div>
       <div class="label-sub ink-soft">スイッチなのだ〜</div>
@@ -261,13 +249,13 @@ templates.slide3 = () -> (
     <div class="recipe-box">
       <div class="recipe-head gold-dark">スフィアのレシピなのだっ</div>
       <div class="recipe-flow">
-        <div class="unit"><%= templates.materialBox(96; templates.emoji("green_circle"; 96); "") %><div class="label green-dark">スフィアベース</div><div class="label-sub ink-soft">珠のもとなのだ〜</div></div>
+        <%= templates.unit(""; templates.materialBox(96; templates.emoji("green_circle"; 96); "") & templates.label("label green-dark"; "スフィアベース") & templates.label("label-sub ink-soft"; "珠のもとなのだ〜")) %>
         <%= templates.plusOperator() %>
         <%= switchPanel %>
         <%= templates.arrowThin(colors.purple) %>
-        <div class="unit"><%= templates.athanor() %><div class="label brick-dark">アタノール</div></div>
+        <%= templates.unit(""; templates.athanor() & templates.label("label brick-dark"; "アタノール")) %>
         <%= templates.arrowThin(colors.purple) %>
-        <div class="unit"><%= templates.materialBox(120; templates.texture("sphere"; 120); templates.roundSparkles(120)) %><div class="label purple-dark">○○のスフィア</div><div class="label-sub ink-soft">魔法の珠なのだっ♪</div></div>
+        <%= templates.unit(""; templates.materialBox(120; templates.texture("sphere_base"; 120); templates.roundSparkles(120)) & templates.label("label purple-dark"; "○○のスフィア") & templates.label("label-sub ink-soft"; "魔法の珠なのだっ♪")) %>
       </div>
     </div>
   <%
@@ -298,13 +286,6 @@ cssLines::push << %>
     justify-content: center;
     gap: 12px;
   }
-  .unit {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-  }
   .recipe-card {
     background: #fff;
     border: 3px solid var(--purple-light);
@@ -328,25 +309,23 @@ cssLines::push << %>
 <%
 
 # ---- スライド4: 魔法のアイテム（火炎のスフィア＋柄→魔法の杖）なのだぁ🌱 ----
-# 追加CSSは無しなのだぁ🌱 flow/flow4/unit は slide1・slide3 側が登録するのだぁ〜
+# 追加CSSは無しなのだぁ🌱 flow/flow4/unit は layout プラグインが登録するのだぁ〜
 templates.slide4 = () -> (
-  # 🔥と✨はテクスチャ中心からの相対位置（元SVGの座標を比率化したもの）で重ねるのだぁ🌱
-  fireSphere := %>
-    <div class="unit"><%= templates.materialBox(150; templates.texture("sphere"; 150); templates.decoration("fire"; 0.333; -0.347; 58) & templates.decoration("fire"; -0.373; 0.200; 34) & templates.decoration("sparkles"; -0.520; -0.427; 26) & templates.decoration("sparkles"; 0.480; 0.387; 18)) %><div class="label purple-dark">火炎のスフィア</div></div>
-  <%
-  wand := %>
-    <div class="unit"><%= templates.materialBox(168; templates.texture("nephrite_builders_rod"; 168); templates.decoration("fire"; 0.250; -0.393; 56) & templates.decoration("fire"; 0.476; -0.214; 30) & templates.decoration("sparkles"; -0.036; -0.583; 24) & templates.decoration("sparkles"; -0.429; 0.345; 18)) %><div class="label ink">魔法の杖 完成なのだっ</div></div>
-  <%
+  # 🔥と✨はテクスチャ中心からの相対位置（テクスチャの絵柄に合わせた比率）で重ねるのだぁ🌱
+  fireSphere := templates.unit(""; templates.materialBox(150; templates.texture("sphere_base"; 150); templates.decoration("fire"; 0.333; -0.347; 58) & templates.decoration("fire"; -0.373; 0.200; 34) & templates.decoration("sparkles"; -0.520; -0.427; 26) & templates.decoration("sparkles"; 0.480; 0.387; 18)) & templates.label("label purple-dark"; "火炎のスフィア"))
+  # ロッドは右上にヘッド・左下から右上へ柄が伸びる構図なのだぁ🌱 杖の魔法の先端であるヘッドに🔥を重ね、空いた左上・右下の対角の角に✨を置くのだぁ〜
+  # 座標はロッドの画素に紐づくのだぁ🌱（ヘッド重心・ヘッド頂点・左上の空き角・右下の空き角なのだぁ〜）
+  wand := templates.unit(""; templates.materialBox(168; templates.texture("nephrite_builders_rod"; 168); templates.decoration("fire"; 0.241; -0.240; 56) & templates.decoration("fire"; 0.375; -0.406; 30) & templates.decoration("sparkles"; -0.312; -0.281; 24) & templates.decoration("sparkles"; 0.312; 0.312; 18)) & templates.label("label ink"; "魔法の杖 完成なのだっ"))
   inner := %>
     <%= templates.heading("魔法のアイテム ―"; "magic_wand"; "スフィアを道具にくみこむのだっ"; 40) %>
     <%= templates.subtext(["ねむっていた宝石やお花が、魔法のアイテムに化けるのだぁ。", "あつめて、いろんな魔法をためしてみるのだ〜♪"]) %>
-    <div class="flow flow4">
+    <%= templates.flow(" flow4"; %>
       <%= fireSphere %>
       <%= templates.plusOperator() %>
-      <div class="unit"><%= templates.materialBox(168; templates.stick(); "") %><div class="label ink">魔法の杖の柄</div></div>
+      <%= templates.unit(""; templates.materialBox(168; templates.stick(); "") & templates.label("label ink"; "魔法の杖の柄")) %>
       <%= templates.arrowWide(colors.pink) %>
       <%= wand %>
-    </div>
+    <%) %>
   <%
   templates.shell(4; "pink-dark"; inner)
 )

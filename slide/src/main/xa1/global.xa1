@@ -4,38 +4,20 @@
 #   - templates:      テンプレート関数の登録簿なのだぁ。各プラグインが templates.名前 = 関数 で登録するのだぁ〜
 #   - pageGenerators: 出力ページの登録簿なのだぁ。キーが出力ファイル名で、値がその中身を返す関数なのだぁ。各ページが登録するのだぁ〜
 #   - cssLines:       CSSの行をためていく箱なのだぁ。各プラグインが自分のパーツのCSSを push するのだぁ〜
+#   - htmlEscape:     テキスト用のHTMLエスケープなのだぁ。& < > だけ処理するのだぁ〜
+#   - colors:         矢印や演算子などに使うアクセント色なのだぁ〜
 #   同じロケーションのUSEは再利用されるので、これらは全プラグイン・ページで単一の共有インスタンスになるのだぁ🌱
 # ============================================================
 
-# テンプレート関数の登録簿なのだぁ🌱 呼び出しは templates.テンプレート名(引数) の形なのだぁ〜
-templates := {}
-
-# 出力ページの登録簿なのだぁ🌱 キーに出力ファイル名、値にその中身を返す関数を入れるのだぁ〜
-# 例: pageGenerators."foo.html" = () -> %>
-#   html
-# <%
-pageGenerators := {}
-
-# CSSの行をためていく箱なのだぁ🌱 各パーツの登録のそばで、そのパーツに必要なCSSを push するのだぁ〜
-cssLines := []
-getCss := () -> cssLines() >> JOIN["\n\n"]
-
-# HTMLエスケープなのだぁ🌱 テキストなので & < > だけ処理するのだぁ〜
-htmlEscape := s -> s::replaceAll("&"; "&amp;")::replaceAll("<"; "&lt;")::replaceAll(">"; "&gt;")
-
-# アクセント色なのだぁ🌱 矢印や演算子などに使うのだぁ〜
-colors := {
-  pink: "#ef6cb0"
-  purple: "#8d72d8"
-  aqua: "#3fc4c0"
-}
-
 # @USE("global") でこれらをまとめてマウントするのだぁ🌱
 {
-  templates: templates
-  pageGenerators: pageGenerators
-  cssLines: cssLines
-  getCss: getCss
-  htmlEscape: htmlEscape
-  colors: colors
+  templates: {}
+  pageGenerators: {}
+  cssLines: []
+  htmlEscape: s -> s::replaceAll("&"; "&amp;")::replaceAll("<"; "&lt;")::replaceAll(">"; "&gt;")
+  colors: {
+    pink: "#ef6cb0"
+    purple: "#8d72d8"
+    aqua: "#3fc4c0"
+  }
 }

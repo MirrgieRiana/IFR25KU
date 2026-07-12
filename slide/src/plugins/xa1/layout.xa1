@@ -1,0 +1,32 @@
+# layout: スライド共通のレイアウト土台なのだぁ🌱 横並びフロー(flow)と縦積みユニット(unit)を、複数のスライドで使いまわすのだぁ〜
+@USE("global")
+
+# 横並びフローなのだぁ🌱 材料→珠→アイテム のような並びを中央ぞろえで流すのだぁ〜
+# mod は " flow4" のような追加クラスなのだぁ（追加が無ければ "" を渡すのだぁ〜）
+templates.flow = mod, inner -> %><div class="flow<%= mod %>"><%= inner %></div><%
+# 縦積みユニットなのだぁ🌱 画像＋ラベルを縦の中央ぞろえにひとまとめにするのだぁ〜
+# mod は " switch-item" のような追加クラスなのだぁ（追加が無ければ "" を渡すのだぁ〜）
+templates.unit = mod, inner -> %><div class="unit<%= mod %>"><%= inner %></div><%
+
+cssLines::push << %>
+  /* ---- 横並びフロー（材料→珠→アイテム など）なのだぁ🌱 ---- */
+  .flow {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .flow4 {
+    gap: 10px;
+  }
+
+  /* ---- 縦積みユニット（画像＋ラベル）を縦の中央ぞろえにまとめるのだぁ🌱 ---- */
+  .unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+<%
