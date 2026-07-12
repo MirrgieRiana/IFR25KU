@@ -500,7 +500,7 @@ open class BlockMaterialCard(
         ).tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_AXE)
         val DRYWALL_SLAB = !object : BlockMaterialCard(
             "drywall_slab", EnJa("Drywall Slab", "石膏ボードのハーフブロック"),
-            PoemList(1).poem(EnJa("Please use for the dropped ceiling, etc.", "下がり天井等にどうぞ。")),
+            PoemList(1).poem(EnJa("The top half is sold separately.", "上半分は別売りです。")),
             MapColor.SAND, 3.0F, 3.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
@@ -513,7 +513,7 @@ open class BlockMaterialCard(
         }
         val DRYWALL_STAIRS = !object : BlockMaterialCard(
             "drywall_stairs", EnJa("Drywall Stairs", "石膏ボードの階段"),
-            PoemList(1).poem(EnJa("Please do not actually walk on it.", "実際に上らないでください。")),
+            PoemList(1).poem(EnJa("The ceiling is getting closer.", "天が降りてくる。")),
             MapColor.SAND, 3.0F, 3.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(DRYWALL.block.await().defaultBlockState(), properties)
