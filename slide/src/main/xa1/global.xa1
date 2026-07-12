@@ -1,0 +1,41 @@
+# ============================================================
+#   グローバルモジュール（xarpite / API5）
+#   メインと各プラグイン・ページが @USE("global") でマウントして共有する土台。
+#   - templates:      テンプレート関数の登録簿。各プラグインが templates.名前 = 関数 で登録する。
+#   - pageGenerators: 出力ページの登録簿。キー=出力ファイル名・値=その内容を返す関数。各ページが登録する。
+#   - cssLines:       CSSの行を貯める箱。各プラグインが自分のパーツのCSSを push する。
+#   同じロケーションのUSEは再利用されるので、これらは全プラグイン・ページで単一の共有インスタンスになる。
+# ============================================================
+
+# テンプレート関数の登録簿。呼び出しは templates.templateName(args) の形。
+templates := {}
+
+# 出力ページの登録簿。キーに出力ファイル名、値にその内容を返す関数を入れる。
+# 例: pageGenerators."foo.html" = () -> %>
+#   html
+# <%
+pageGenerators := {}
+
+# CSSの行を貯めていく箱。各パーツの登録のそばで、そのパーツに必要なCSSを push する。
+cssLines := []
+CSS := () -> cssLines() >> JOIN["\n\n"]
+
+# HTMLエスケープ（テキストは & < > だけ処理する）
+esc := s -> s::replaceAll("&"; "&amp;")::replaceAll("<"; "&lt;")::replaceAll(">"; "&gt;")
+
+# アクセント色（矢印・演算子などに使う）
+pink := "#ef6cb0"
+purple := "#8d72d8"
+aqua := "#3fc4c0"
+
+# @USE("global") でこれらをまとめてマウントする。
+{
+  templates: templates
+  pageGenerators: pageGenerators
+  cssLines: cssLines
+  CSS: CSS
+  esc: esc
+  pink: pink
+  purple: purple
+  aqua: aqua
+}

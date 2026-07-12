@@ -1,0 +1,13 @@
+# stick: 魔法の杖の柄＝木の棒だけ（右上上がりの傾き）。数値は固定なのでそのまま書く。
+@USE("global")
+
+templates.stick = () -> %>
+  <svg class="stick" width="168" height="168" viewBox="0 0 168 168">
+    <g transform="rotate(32 84 84)">
+      <rect x="73.08" y="6.719999999999999" width="21.84" height="154.56" rx="10.92" fill="#7a5230"/>
+      <rect x="73.08" y="6.719999999999999" width="9.172799999999999" height="154.56" rx="4.586399999999999" fill="#9a6c3e"/>
+    </g>
+  </svg>
+<%
+
+cssLines::push << %>.stick { display: block; }<%

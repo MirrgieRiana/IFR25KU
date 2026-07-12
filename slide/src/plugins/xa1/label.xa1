@@ -1,0 +1,17 @@
+# label: 汎用ラベルと色ユーティリティ
+@USE("global")
+
+# ---- 文字（ラベル）と色ユーティリティ。色ユーティリティは .lbl より後に置く ----
+cssLines::push << %>
+  .lbl { font-size: var(--min); font-weight: 900; color: var(--ink); text-align: center; white-space: nowrap; }
+  .lbl-sub { font-size: var(--min); font-weight: 800; color: var(--inkSoft); text-align: center; white-space: nowrap; }
+
+  /* 色ユーティリティ */
+  .ink { color: var(--ink); } .inkSoft { color: var(--inkSoft); }
+  .pinkD { color: var(--pinkD); } .purpleD { color: var(--purpleD); }
+  .aquaD { color: var(--aquaD); } .goldD { color: var(--goldD); }
+  .brickD { color: var(--brickD); } .greenD { color: var(--greenD); }
+<%
+
+# 汎用ラベル div
+templates.T = (cls, s -> %><div class="<%= cls %>"><%= esc(s) %></div><%)
