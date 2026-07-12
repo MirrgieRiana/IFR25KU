@@ -1,5 +1,5 @@
 # base: デッキ全体の基盤スタイルなのだぁ🌱 テンプレート関数は持たず、CSSだけを登録するのだぁ〜
-# フォントはコミットせず、ページのheadからGoogle Fonts CDNを読み込むのだぁ🌱（pages/slides.xa1 を見るのだぁ〜）
+# フォントはコミットせず、ページのheadからGoogle Fonts CDNを読み込むのだぁ🌱（pages/sphere-crafting.xa1 を見るのだぁ〜）
 @USE("global")
 
 # ---- 共通スタイル基盤なのだぁ🌱 ----
