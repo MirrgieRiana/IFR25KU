@@ -2,13 +2,13 @@
 @USE("global")
 
 # ---- 素材ヘルパーなのだぁ🌱 素材1個＝img 1個なのだぁ〜 ----
-# path は build/site/ からの相対パス（拡張子ぬき）なのだぁ🌱 素材のライセンス別サブディレクトリごと指すのだぁ〜（例: item-texture/fluorite・fluentui-emoji/gem）
+# src は build/site/ からの相対パス（拡張子ふくむ）なのだぁ🌱 素材のライセンス別サブディレクトリごと指すのだぁ〜（例: ./item-texture/fluorite.png・./fluentui-emoji/gem.svg）
 # テクスチャなのだぁ🌱 IFR固有のドット絵で、ドット感は image-rendering:pixelated（CSS）で保つのだぁ〜
-templates.texture = path, size -> %><img class="texture" src="./<%= path %>.png" width="<%= size %>" height="<%= size %>" alt=""><%
+templates.texture = src, size -> %><img class="texture" src="<%= src %>" width="<%= size %>" height="<%= size %>" alt=""><%
 # 絵文字なのだぁ🌱 fluentui（MIT）で、文中でもインライン画像として貼れるのだぁ〜
-templates.emoji = path, size -> %><img class="emoji" src="./<%= path %>.svg" width="<%= size %>" height="<%= size %>" alt=""><%
-# 飾りなのだぁ🌱 ✨や🔥で、テクスチャ中心からのオフセット比率 x,y を left/top の％に変換して置くのだぁ〜
-templates.decoration = path, x, y, s -> %><img class="decoration" src="./<%= path %>.svg" style="left:<%= "$%.2f(50 + x * 100)" %>%;top:<%= "$%.2f(50 + y * 100)" %>%;width:<%= s %>px;height:<%= s %>px" alt=""><%
+templates.emoji = src, size -> %><img class="emoji" src="<%= src %>" width="<%= size %>" height="<%= size %>" alt=""><%
+# 飾りなのだぁ🌱 ✨や🔥で、テクスチャ中心からのオフセット比率 offsetX,offsetY を left/top の％に変換して置くのだぁ〜
+templates.decoration = src, offsetX, offsetY, size -> %><img class="decoration" src="<%= src %>" style="left:<%= "$%.2f(50 + offsetX * 100)" %>%;top:<%= "$%.2f(50 + offsetY * 100)" %>%;width:<%= size %>px;height:<%= size %>px" alt=""><%
 
 # 素材のまわりに飾りを、テクスチャ中心からの相対位置で貼るのだぁ🌱
 # material-box の箱をテクスチャと同寸にすることで、left/top の％がそのままテクスチャ基準の相対位置になり、
@@ -42,17 +42,19 @@ cssLines::push << %>
 <%
 
 # 丸いテクスチャ（スフィア）用の✨2個なのだぁ🌱 対角の透明な角へ置いて、サイズは元SVGの比率に合わせるのだぁ〜
-templates.roundSparkles = size ->
-  templates.decoration("fluentui-emoji/sparkles"; 0.46; -0.46; FLOOR(size * 0.34 + 0.5)) &
-  templates.decoration("fluentui-emoji/sparkles"; -0.46; 0.46; FLOOR(size * 0.20 + 0.5))
+templates.roundSparkles = size -> %>
+  <%= templates.decoration("./fluentui-emoji/sparkles.svg"; 0.46; -0.46; FLOOR(size * 0.34 + 0.5)) %>
+  <%= templates.decoration("./fluentui-emoji/sparkles.svg"; -0.46; 0.46; FLOOR(size * 0.20 + 0.5)) %>
+<%
 # 斜めの杖テクスチャ（ロッド）用の✨2個なのだぁ🌱 透明な左上・右下の角へ置くのだぁ〜
-templates.rodSparkles = size ->
-  templates.decoration("fluentui-emoji/sparkles"; -0.42; -0.42; FLOOR(size * 0.20 + 0.5)) &
-  templates.decoration("fluentui-emoji/sparkles"; 0.42; 0.42; FLOOR(size * 0.14 + 0.5))
+templates.rodSparkles = size -> %>
+  <%= templates.decoration("./fluentui-emoji/sparkles.svg"; -0.42; -0.42; FLOOR(size * 0.20 + 0.5)) %>
+  <%= templates.decoration("./fluentui-emoji/sparkles.svg"; 0.42; 0.42; FLOOR(size * 0.14 + 0.5)) %>
+<%
 # お花＋ダイヤなのだぁ🌱 お花を裏に、右下へ小さめのダイヤを重ねるのだぁ〜（他ページ共通の描き方なのだぁ🌱）
-templates.flowerGem = flower -> %>
-  <span class="material-box" style="width:<%= flower %>px;height:<%= flower %>px">
-    <%= templates.emoji("fluentui-emoji/tulip"; flower) %>
-    <img class="decoration" src="./fluentui-emoji/gem.svg" style="left:82%;top:82%;width:<%= FLOOR(flower * 0.46 + 0.5) %>px;height:<%= FLOOR(flower * 0.46 + 0.5) %>px" alt="">
+templates.flowerGem = flowerSize -> %>
+  <span class="material-box" style="width:<%= flowerSize %>px;height:<%= flowerSize %>px">
+    <%= templates.emoji("./fluentui-emoji/tulip.svg"; flowerSize) %>
+    <img class="decoration" src="./fluentui-emoji/gem.svg" style="left:82%;top:82%;width:<%= FLOOR(flowerSize * 0.46 + 0.5) %>px;height:<%= FLOOR(flowerSize * 0.46 + 0.5) %>px" alt="">
   </span>
 <%

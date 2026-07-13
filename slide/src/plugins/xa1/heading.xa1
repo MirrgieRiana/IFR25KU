@@ -1,12 +1,12 @@
 # heading: 見出しなのだぁ🌱 スタイルはCSS側で、HTMLは構造だけ・アクセント色はテーマ変数なのだぁ〜
 @USE("global")
 
-templates.heading = left, mid, right, midSize -> %>
+templates.heading = leftText, emojiSrc, rightText, emojiSize -> %>
   <div class="title">
     <span class="accent"></span>
-    <span class="title-text"><%= htmlEscape(left) %></span>
-    <%= templates.emoji(mid; midSize) %>
-    <span class="title-text"><%= htmlEscape(right) %></span>
+    <span class="title-text"><%= leftText >> htmlEscape %></span>
+    <%= templates.emoji(emojiSrc; emojiSize) %>
+    <span class="title-text"><%= rightText >> htmlEscape %></span>
   </div>
 <%
 

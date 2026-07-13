@@ -1,11 +1,11 @@
 # shell: スライドの外枠なのだぁ🌱 四隅の飾り＋本体＋フッターなのだぁ〜
 @USE("global")
 
-templates.shell = n, theme, inner -> %>
+templates.shell = pageNumber, theme, inner -> %>
   <section class="slide theme-<%= theme %>">
     <span class="blob blob-1"></span><span class="blob blob-2"></span><span class="blob blob-3"></span><span class="blob blob-4"></span>
     <div class="body"><%= inner %></div>
-    <%= templates.footer(n) %>
+    <%= templates.footer(pageNumber) %>
   </section>
 <%
 

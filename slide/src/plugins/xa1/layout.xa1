@@ -2,11 +2,11 @@
 @USE("global")
 
 # 横並びフローなのだぁ🌱 材料→珠→アイテム のような並びを中央ぞろえで流すのだぁ〜
-# mod は " flow4" のような追加クラスなのだぁ（追加が無ければ "" を渡すのだぁ〜）
-templates.flow = mod, inner -> %><div class="flow<%= mod %>"><%= inner %></div><%
+# modifierClass は " flow4" のような追加クラスなのだぁ（追加が無ければ "" を渡すのだぁ〜）
+templates.flow = modifierClass, inner -> %><div class="flow<%= modifierClass %>"><%= inner %></div><%
 # 縦積みユニットなのだぁ🌱 画像＋ラベルを縦の中央ぞろえにひとまとめにするのだぁ〜
-# mod は " switch-item" のような追加クラスなのだぁ（追加が無ければ "" を渡すのだぁ〜）
-templates.unit = mod, inner -> %><div class="unit<%= mod %>"><%= inner %></div><%
+# modifierClass は " switch-item" のような追加クラスなのだぁ（追加が無ければ "" を渡すのだぁ〜）
+templates.unit = modifierClass, inner -> %><div class="unit<%= modifierClass %>"><%= inner %></div><%
 
 cssLines::push << %>
   /* ---- 横並びフロー（材料→珠→アイテム など）なのだぁ🌱 ---- */

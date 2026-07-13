@@ -3,7 +3,9 @@
 
 templates.subtext = lines -> %>
   <div class="subtext">
-    <%= lines() | l => %><div><%= htmlEscape(l) %></div><% %>
+    <%= lines() | line => %>
+      <div><%= line >> htmlEscape %></div>
+    <% %>
   </div>
 <%
 
