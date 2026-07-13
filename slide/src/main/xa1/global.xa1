@@ -25,17 +25,24 @@
   # ビルド本体なのだぁ🌱 素材を出力先に配置してから、各ページと組み上げた CSS を書き出すのだぁ〜
   # プラグイン・ページの読み込みは build.xa1 が済ませているので、ここでは共有の登録簿を使うだけなのだぁ🌱
   build := dir -> (
+    # 1ファイルを書き出して、その場で完了メッセージを OUT するヘルパーなのだぁ🌱
+    writeFile := path, content -> (
+      WRITE[path] << content
+      OUT << "書き出したのだぁ🌱 : $(path)"
+    )
+
     # 出力先を作り直して素材（png/svg）を配置するのだぁ🌱 既存のゴミも一掃してから作り直すのだぁ〜
     # 素材はライセンス別サブディレクトリのまま持ち込むので、cp -r で構造ごとコピーするのだぁ〜
-    EXEC("bash", "-c", %>rm -rf -- "$1" && mkdir -p -- "$1" && cp -r -- src/site/resources/. "$1"/<%, "bash", dir)
+    EXEC("bash", "-c", %>
+      rm -rf -- "$1" &&
+      mkdir -p -- "$1" &&
+      cp -r -- src/site/resources/. "$1"/
+    <%, "bash", dir)
 
     # 各ページを書き出すのだぁ🌱（キー＝出力ファイル名、値＝内容を返す関数なのだぁ〜）
-    pageGenerators() | entry => WRITE["$(dir)/$(entry.0)"] << entry.1()
+    pageGenerators() | entry => writeFile("$(dir)/$(entry.0)"; entry.1())
 
-    # 各プラグインが push した CSS 行を空行区切りでつないで書き出すのだぁ🌱（各行末に改行を付けたいので WRITEL なのだぁ〜）
-    WRITEL["$(dir)/style.css"] << cssLines() >> JOIN["\n\n"]
-
-    # 完了メッセージなのだぁ🌱
-    OUT << "ビルド完了なのだぁ🌱 : $(dir)/slides.html, $(dir)/style.css"
+    # 各プラグインが push した CSS 行を空行区切りでつないで書き出すのだぁ🌱（末尾も改行1個で閉じるのだぁ〜）
+    writeFile("$(dir)/style.css"; (cssLines() >> JOIN["\n\n"]) & "\n")
   )
 }

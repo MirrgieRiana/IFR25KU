@@ -12,7 +12,12 @@ templates.athanor = () -> %>
     <line x1="112" y1="64" x2="112" y2="116" stroke="#9a4a32" stroke-width="3" opacity="0.4"/>
     <rect x="15" y="-6" width="120" height="26" rx="12" fill="#9a4a32"/>
     <path d="M 37 170 L 37 92 Q 75 40 113 92 L 113 170 Z" fill="#3a2a55"/>
-  </svg><img class="decoration" src="./fluentui-emoji/fire.svg" style="left:50%;top:63%;width:64px;height:64px" alt=""></span>
+  </svg><img
+    class="decoration"
+    src="./fluentui-emoji/fire.svg"
+    style="left: 50%; top: 63%; width: 64px; height: 64px;"
+    alt=""
+  ></span>
 <%
 
 cssLines::push << %>

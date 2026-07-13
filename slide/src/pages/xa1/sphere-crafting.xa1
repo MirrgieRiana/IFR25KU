@@ -1,9 +1,9 @@
 # sphere-crafting: スフィアクラフト紹介スライドなのだぁ🌱 4ページ分を1モジュールにまとめるのだぁ〜
-# 各スライドを templates.slideN に組み、pageGenerators."slides.html" で1枚のHTMLにまとめて出力するのだぁ🌱
+# 各スライドを templates.sphereCraftingSlideN に組み、pageGenerators."slides.html" で1枚のHTMLにまとめて出力するのだぁ🌱
 @USE("global")
 
 # ---- スライド1: 表紙（材料→珠→アイテムの全体像）なのだぁ🌱 ----
-templates.slide1 = () -> (
+templates.sphereCraftingSlide1 = () -> (
   # 一番左の入口なのだぁ🌱 宝石 or （花＋ダイヤ）で、orで二択、花＋ダイヤは重ねて1組に見せるのだぁ〜
   card1 := %>
     <div class="card">
@@ -111,7 +111,7 @@ cssLines::push << %>
 <%
 
 # ---- スライド2: ざいりょう（2つのルート→合流スフィア）なのだぁ🌱 ----
-templates.slide2 = () -> (
+templates.sphereCraftingSlide2 = () -> (
   # ルートは縦積みなのだぁ🌱 タブ→（アイコン＋説明）で、タブを通常フローに置き、文字の重なりを構造的に不可能にするのだぁ〜
   routeA := %>
     <div class="route routeA">
@@ -230,7 +230,7 @@ cssLines::push << %>
 <%
 
 # ---- スライド3: レシピ（スフィアベース＋宝石スイッチ→アタノール→スフィア）なのだぁ🌱 ----
-templates.slide3 = () -> (
+templates.sphereCraftingSlide3 = () -> (
   # スイッチ部なのだぁ🌱 宝石 or （花＋ダイヤ）で、画像とラベルを縦に中央ぞろえし、orは共通スタイルで中央へ置くのだぁ〜
   switchPanel := %>
     <div class="recipe-card">
@@ -327,7 +327,7 @@ cssLines::push << %>
 
 # ---- スライド4: 魔法のアイテム（火炎のスフィア＋柄→魔法の杖）なのだぁ🌱 ----
 # 追加CSSは無しなのだぁ🌱 flow/flow4/unit は layout プラグインが登録するのだぁ〜
-templates.slide4 = () -> (
+templates.sphereCraftingSlide4 = () -> (
   # 🔥と✨はテクスチャ中心からの相対位置（テクスチャの絵柄に合わせた比率）で重ねるのだぁ🌱
   fireSphere := templates.unit(""; %>
     <%= templates.materialBox(150; templates.texture("./item-texture/sphere_base.png"; 150); %>
@@ -371,21 +371,21 @@ templates.slide4 = () -> (
 pageGenerators."slides.html" = () -> %>
   <!doctype html>
   <html lang="ja">
-  <head>
-  <meta charset="utf-8">
-  <title>スフィアクラフト 紹介スライド（HTML版）</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-  <div class="deck">
-  <%= templates.slide1() %>
-  <%= templates.slide2() %>
-  <%= templates.slide3() %>
-  <%= templates.slide4() %>
-  </div>
-  </body>
+    <head>
+      <meta charset="utf-8">
+      <title>スフィアクラフト 紹介スライド（HTML版）</title>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+      <div class="deck">
+        <%= templates.sphereCraftingSlide1() %>
+        <%= templates.sphereCraftingSlide2() %>
+        <%= templates.sphereCraftingSlide3() %>
+        <%= templates.sphereCraftingSlide4() %>
+      </div>
+    </body>
   </html>
 <%
