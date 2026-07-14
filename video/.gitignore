@@ -1,0 +1,34 @@
+# =============================================================================
+# 動画ビルドで生成・取得されるファイルは、すべてここで ignore するのだぁ🌱
+# コミットするのは「スクリプト類」「script.json（台本）」「README」「build.sh」
+# 「外部取得リソースの *.md5」だけなのだぁ。
+# =============================================================================
+
+# --- 外部取得リソースの実体（著作権上コミットしない。中身と置き場所は *.md5 が示すのだぁ） ---
+resources/psd/*.psd
+resources/font/*.ttf
+resources/font/*.otf
+resources/emoji/*.svg
+resources/bgm/*.flac
+resources/bgm/*.mp3
+resources/bgm/*.ogg
+resources/bgm/*.wav
+
+# --- Node の依存関係とツール（実体・シンボリックリンクとも） ---
+node_modules
+/libs
+
+# --- 中間生成物（build.sh が作り直すのだぁ） ---
+assets.js
+audio/
+full.wav
+timeline.json
+kana.json
+moras.json
+durations.json
+tachie/
+
+# --- 出力（完成物・連番フレーム） ---
+frames/
+*.mp4
+*.png
