@@ -15,7 +15,7 @@ resources/bgm/*.ogg
 resources/bgm/*.wav
 
 # --- Node の依存関係とツール（実体・シンボリックリンクとも） ---
-node_modules
+/node_modules
 /libs
 
 # --- 中間生成物（build.sh が作り直すのだぁ） ---

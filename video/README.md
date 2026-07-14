@@ -207,6 +207,10 @@ BGM は「冒頭＝やや強め → 本編＝弱め → クレジット＝冒頭
 手元に Chrome がある場合は `CHROMIUM_PATH=/path/to/chrome` を指定するのが一番簡単です。
 
 Chrome を入れられない環境では、`package.json` に含まれる `@sparticuz/chromium`（同梱 Chromium）を
-`node setup_chromium.js` で `/tmp/chromium` に展開して使えます。この Chromium は一部の共有ライブラリ（NSS 系など）を
-別途必要とすることがあります。その場合は、必要な `.so` を集めたディレクトリを用意し、`CHROMIUM_LD_PATH` にそのパスを
-指定してください（`build.sh` が render 時に `LD_LIBRARY_PATH` へ前置します）。
+`node setup_chromium.js` で `/tmp/chromium` に展開して使えます。ふつうの Linux なら、これだけで動きます。
+
+ごく限られた環境（root 権限が無く、NSS 系の共有ライブラリが OS に無いなど）では、この Chromium が
+`libnss3.so` などを見つけられず起動に失敗することがあります。その NSS 一式は、`@sparticuz/chromium` パッケージが
+同梱している `bin/al2023.tar.br`（Brotli 圧縮された tar）を展開すると得られます。取り出した `.so` を 1 つのディレクトリに
+集め、`CHROMIUM_LD_PATH` にそのパスを指定してください（`build.sh` が render 時に `LD_LIBRARY_PATH` へ前置します）。
+なお、この共有ライブラリの補完は上記のような特殊な環境でだけ必要で、Chrome のある環境では `CHROMIUM_PATH` を指すだけで済みます。
