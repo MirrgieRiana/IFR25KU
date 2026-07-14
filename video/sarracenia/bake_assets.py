@@ -13,18 +13,18 @@
 #     2 行目： window.TIMELINE = { assemble.py が作った timeline.json の中身そのまま }
 #
 # 入力：
-#   - timeline.json                         … assemble.py の出力（尺・台詞区間・シーン・アイテム）
-#   - ../common/.../*.png（IFR25KU リポジトリのテクスチャ）… plant / leaf / logo / bg
+#   - ../timeline.json                      … assemble.py（雑多パート）の出力（尺・台詞区間・シーン・アイテム）
+#   - ../../common/.../*.png（IFR25KU リポジトリのテクスチャ）… plant / leaf / logo / bg
 #   - resources/emoji/seedling.svg          … クレジットの🌱（Fluent Emoji, 外部取得リソース）
 #   - resources/font/ZenMaruGothic-*.ttf    … 字幕フォント（外部取得リソース）
 #
 # 出力：
 #   - assets.js
 # =============================================================================
-import base64, json, os
+import base64, json, os, sys
 
 B = os.path.dirname(os.path.abspath(__file__))
-REPO = os.path.dirname(B)   # video/ の親＝IFR25KU リポジトリのルートなのだぁ
+REPO = os.path.dirname(os.path.dirname(B))   # video/sarracenia/ の 2 つ上＝IFR25KU リポジトリのルートなのだぁ
 
 # IFR25KU リポジトリ内のテクスチャ（＝コミット済みの素材なので、リポジトリから直接読むのだぁ）
 TEX = os.path.join(REPO, "common", "src", "main", "resources", "assets", "miragefairy2024")
@@ -60,7 +60,9 @@ with open(SEEDLING, encoding="utf-8") as f:
 assets["fontBlack"] = ttf_data_url(FONT_BLACK)
 assets["fontBold"] = ttf_data_url(FONT_BOLD)
 
-timeline = json.load(open(os.path.join(B, "timeline.json"), encoding="utf-8"))
+# timeline.json は雑多パート（assemble.py）の出力なのだぁ。既定は video/ 直下（../timeline.json）を読むのだぁ。
+timeline_path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(B, "..", "timeline.json")
+timeline = json.load(open(timeline_path, encoding="utf-8"))
 
 with open(os.path.join(B, "assets.js"), "w", encoding="utf-8") as f:
     f.write("window.ASSETS=" + json.dumps(assets, ensure_ascii=False) + ";\n")

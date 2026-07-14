@@ -6,11 +6,11 @@
 #   render.js が書き出した frames/f_00000.png … を 30fps の映像トラックにして、
 #   ナレーション音声 full.wav と、BGM を重ねて、最終的な mp4 を作るのだぁ。
 #
-# 入力（すべてこのスクリプトと同じディレクトリ、または resources/ 以下）：
-#   - frames/f_%05d.png  … render.js が書き出したフレーム画像（中間生成物）
-#   - full.wav           … assemble.py が作ったナレーション（中間生成物）
-#   - timeline.json      … assemble.py が作ったタイムライン（尺・区切り時刻）
-#   - resources/bgm/chopin_op10-4.flac … BGM（外部取得リソース。ここに置いてもらうのだぁ）
+# 入力：
+#   - sarracenia/frames/f_%05d.png … 汎用レンダラー（renderer/render.js）が書き出したフレーム画像（中間生成物）
+#   - full.wav                     … assemble.py が作ったナレーション（中間生成物・video/直下）
+#   - timeline.json                … assemble.py が作ったタイムライン（尺・区切り時刻・video/直下）
+#   - sarracenia/resources/bgm/chopin_op10-4.flac … BGM（外部取得リソース。ここに置いてもらうのだぁ）
 #
 # 出力：
 #   - sarracenia.mp4     … 完成した動画
@@ -28,9 +28,12 @@ total = tl["total"]
 T0 = tl["lead"]                                        # 開幕（タイトル）から寸劇（初回発話）へ切り替わる時刻
 CS = tl["creditStart"]                                 # クレジット開始時刻
 
-BGM = os.path.join(B, "resources", "bgm", "chopin_op10-4.flac")
+# frames は汎用レンダラーの出力、BGM は動画タイトルのディレクトリ（sarracenia/）配下なのだぁ。
+# 既定値のほか、build.sh から環境変数 FRAMES_DIR / BGM_PATH / OUT_PATH で差し替えできるのだぁ。
+FRAMES_DIR = os.environ.get("FRAMES_DIR", os.path.join(B, "sarracenia", "frames"))
+BGM = os.environ.get("BGM_PATH", os.path.join(B, "sarracenia", "resources", "bgm", "chopin_op10-4.flac"))
 BASE = float(sys.argv[1]) if len(sys.argv) > 1 else 0.45   # BGM の基準音量
-OUT = os.path.join(B, "sarracenia.mp4")
+OUT = os.environ.get("OUT_PATH", os.path.join(B, "sarracenia.mp4"))
 
 # -----------------------------------------------------------------------------
 # BGM の音量は「2 ステートの線形補間」なのだぁ🌱
@@ -62,7 +65,7 @@ fc = (
 )
 cmd = [
     FF, "-y", "-hide_banner",
-    "-framerate", "30", "-i", os.path.join(B, "frames", "f_%05d.png"),
+    "-framerate", "30", "-i", os.path.join(FRAMES_DIR, "f_%05d.png"),
     "-i", os.path.join(B, "full.wav"),
     "-stream_loop", "-1", "-i", BGM,
     "-filter_complex", fc,

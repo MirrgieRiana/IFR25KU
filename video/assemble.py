@@ -3,7 +3,8 @@
 import json, wave, os
 
 B = os.path.dirname(os.path.abspath(__file__))
-script = json.load(open(os.path.join(B, "script.json"), encoding="utf-8"))
+# 台本は動画タイトルのディレクトリ（sarracenia/）から読み、音声・タイムラインはこの雑多パート（video/直下）に置くのだぁ。
+script = json.load(open(os.path.join(B, "sarracenia", "script.json"), encoding="utf-8"))
 moras = {m["i"]: m["moras"] for m in json.load(open(os.path.join(B, "moras.json"), encoding="utf-8"))}
 SR = 24000
 
