@@ -391,6 +391,17 @@ function fitThumb(sel, maxW, maxH){
   el.style.fontSize=best+'px';
   el.style.webkitTextStrokeWidth=Math.max(7,best*0.14).toFixed(1)+'px';
 }
+
+// 汎用レンダラー（../renderer/render.js）向けの入口なのだぁ🌱
+// レンダラーは、このシーンの中身を何も知らずに、構成jsonl の 1 行（cfg）を applyFrame に渡すだけなのだぁ。
+// cfg = {t: 秒} で、その時刻の画面を seek() で組み立て、見た目を一意に表す再利用キーを返すのだぁ
+// （キーが前フレームと同じならレンダラーは撮り直さず前のコマを使い回すのだぁ）。
+window.applyFrame = function(cfg){
+  window.seek(cfg.t);
+  const op = s => (+getComputedStyle(document.querySelector(s)).opacity).toFixed(2);
+  return [op('#thumbTop'),op('#bgBog'),op('#itemPlant'),op('#itemLeaf'),
+          op('#subwrap'),op('#credit'),op('#band'),window.__lastSubKey||'',window.__tachieKey||'',window.__poseKey||''].join(',');
+};
 window.__ready = true;
 </script>
 </body>

@@ -1,34 +1,44 @@
 # =============================================================================
 # 動画ビルドで生成・取得されるファイルは、すべてここで ignore するのだぁ🌱
-# コミットするのは「スクリプト類」「script.json（台本）」「README」「build.sh」
+# コミットするのは各パートの「スクリプト類」「script.json（台本）」「scene.html」
+# 「README」「build.sh / build_scene.sh」「package.json / package-lock.json」
 # 「外部取得リソースの *.md5」だけなのだぁ。
 # =============================================================================
 
 # --- 外部取得リソースの実体（著作権上コミットしない。中身と置き場所は *.md5 が示すのだぁ） ---
-resources/psd/*.psd
-resources/font/*.ttf
-resources/font/*.otf
-resources/emoji/*.svg
-resources/bgm/*.flac
-resources/bgm/*.mp3
-resources/bgm/*.ogg
-resources/bgm/*.wav
+sarracenia/resources/psd/*.psd
+sarracenia/resources/font/*.ttf
+sarracenia/resources/font/*.otf
+sarracenia/resources/emoji/*.svg
+sarracenia/resources/bgm/*.flac
+sarracenia/resources/bgm/*.mp3
+sarracenia/resources/bgm/*.ogg
+sarracenia/resources/bgm/*.wav
 
-# --- Node の依存関係とツール（実体・シンボリックリンクとも） ---
-/node_modules
+# --- Node の依存関係とツール（各パート配下・実体/シンボリックリンクとも） ---
+node_modules/
 /libs
 
-# --- 中間生成物（build.sh が作り直すのだぁ） ---
-assets.js
+# --- 音声の中間生成物（雑多パート＝video/ 直下。build.sh が作り直すのだぁ） ---
 audio/
 full.wav
 timeline.json
 kana.json
 moras.json
 durations.json
-tachie/
 
-# --- 出力（完成物・連番フレーム） ---
-frames/
+# --- scene の中間生成物（動画タイトルのディレクトリ＝sarracenia/。build_scene.sh が作り直すのだぁ） ---
+sarracenia/assets.js
+sarracenia/tachie/
+sarracenia/frames.jsonl
+
+# --- レンダラーの出力（連番フレーム） ---
+sarracenia/frames/
+
+# --- Python バイトコード ---
+__pycache__/
+*.pyc
+
+# --- 完成物 ---
 *.mp4
 *.png

@@ -1,1 +1,0 @@
-{"name":"sarracenia-v3","private":true,"version":"1.0.0","dependencies":{"@sparticuz/chromium":"^131.0.1","ag-psd":"^31.0.2","pngjs":"^7.0.0","puppeteer":"^23.11.1","puppeteer-core":"^23.11.1"}}

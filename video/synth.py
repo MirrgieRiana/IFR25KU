@@ -6,7 +6,8 @@ import json, urllib.request, urllib.parse, wave, os
 
 HOST = os.environ.get("VOICEVOX_HOST", "http://127.0.0.1:50021")   # VOICEVOX ENGINE の URL（環境変数で差し替え可）
 B = os.path.dirname(os.path.abspath(__file__))
-script = json.load(open(os.path.join(B, "script.json"), encoding="utf-8"))
+# 台本は動画タイトルのディレクトリ（sarracenia/）にあるのだぁ。音声の中間生成物は、この雑多パート（video/直下）に置くのだぁ。
+script = json.load(open(os.path.join(B, "sarracenia", "script.json"), encoding="utf-8"))
 
 def post(path, data=None):
     req = urllib.request.Request(HOST + path, data=data, method="POST")
