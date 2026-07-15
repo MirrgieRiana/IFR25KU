@@ -7,6 +7,7 @@ import io.github.themrmilchmann.gradle.publish.curseforge.ChangelogFormat
 import io.github.themrmilchmann.gradle.publish.curseforge.GameVersion
 import io.github.themrmilchmann.gradle.publish.curseforge.ReleaseType
 import net.fabricmc.loom.task.RemapJarTask
+import publishing.CurseforgeClient
 
 plugins {
     id("com.github.johnrengelman.shadow")
@@ -86,33 +87,80 @@ repositories {
     }
 }
 
-loom {
-    runs {
-        // これにより、datagen API を実行する新しい gradle タスク "gradlew runDatagen" が追加されます。
-        register("datagen") {
-            inherit(runs["server"])
-            name("Data Generation")
-            vmArg("-Dfabric-api.datagen")
-            vmArg("-Dfabric-api.datagen.output-dir=${rootProject.file("common/src/generated/resources")}")
-            vmArg("-Dfabric-api.datagen.modid=miragefairy2024")
-            vmArg("-Dmiragefairy2024.datagen.platform=common")
+run {
+    val outputDir = rootProject.file("common/src/generated/resources")
+    loom {
+        runs {
+            // これにより、datagen API を実行する新しい gradle タスク "runDatagen" が追加されます。
+            register("datagen") {
+                inherit(runs["server"])
+                name("Data Generation")
+                vmArg("-Dfabric-api.datagen")
+                vmArg("-Dfabric-api.datagen.output-dir=$outputDir")
+                vmArg("-Dfabric-api.datagen.modid=miragefairy2024")
+                vmArg("-Dmiragefairy2024.datagen.platform=common")
 
-            runDir("build/datagen")
-        }
-        register("datagenNeoForge") {
-            inherit(runs["server"])
-            name("NeoForge Data Generation")
-            vmArg("-Dfabric-api.datagen")
-            vmArg("-Dfabric-api.datagen.output-dir=${rootProject.file("neoforge/src/generated/resources")}")
-            vmArg("-Dfabric-api.datagen.modid=miragefairy2024")
-            vmArg("-Dmiragefairy2024.datagen.platform=neoforge")
-
-            runDir("build/datagen")
+                runDir("build/datagen")
+            }
         }
     }
+    val markerFile = file("build/datagen-markers/.lastrun")
+    val inputFiles = files(
+        tasks.named("compileJava"),
+        tasks.named("compileKotlin"),
+        project(":common").tasks.named("compileJava"),
+        project(":common").tasks.named("compileKotlin"),
+    )
+    tasks.named<JavaExec>("runDatagen") {
+        onlyIf {
+            if (!markerFile.exists()) return@onlyIf true
+            val lastRun = markerFile.lastModified()
+            inputFiles.files.any { it.lastModified() > lastRun }
+        }
+        doLast {
+            markerFile.parentFile.mkdirs()
+            markerFile.writeText("")
+        }
+    }
+    rootProject.tasks.named("datagen").configure { dependsOn(tasks.named("runDatagen")) }
 }
-rootProject.tasks.named("datagen").configure { dependsOn(tasks.named("runDatagen")) }
-rootProject.tasks.named("datagen").configure { dependsOn(tasks.named("runDatagenNeoForge")) }
+run {
+    val outputDir = rootProject.file("neoforge/src/generated/resources")
+    loom {
+        runs {
+            // これにより、datagen API を実行する新しい gradle タスク "runDatagenNeoForge" が追加されます。
+            register("datagenNeoForge") {
+                inherit(runs["server"])
+                name("NeoForge Data Generation")
+                vmArg("-Dfabric-api.datagen")
+                vmArg("-Dfabric-api.datagen.output-dir=$outputDir")
+                vmArg("-Dfabric-api.datagen.modid=miragefairy2024")
+                vmArg("-Dmiragefairy2024.datagen.platform=neoforge")
+
+                runDir("build/datagen")
+            }
+        }
+    }
+    val markerFile = file("build/datagen-markers/.lastrunNeoForge")
+    val inputFiles = files(
+        tasks.named("compileJava"),
+        tasks.named("compileKotlin"),
+        project(":common").tasks.named("compileJava"),
+        project(":common").tasks.named("compileKotlin"),
+    )
+    tasks.named<JavaExec>("runDatagenNeoForge") {
+        onlyIf {
+            if (!markerFile.exists()) return@onlyIf true
+            val lastRun = markerFile.lastModified()
+            inputFiles.files.any { it.lastModified() > lastRun }
+        }
+        doLast {
+            markerFile.parentFile.mkdirs()
+            markerFile.writeText("")
+        }
+    }
+    rootProject.tasks.named("datagen").configure { dependsOn(tasks.named("runDatagenNeoForge")) }
+}
 
 dependencies {
 
@@ -167,7 +215,7 @@ modrinth {
     additionalFiles.add(tasks["sourcesJar"])
     //gameVersions = ["1.20.2"]
     //loaders = ["fabric"]
-    changelog.set("This project maintains a comprehensive [CHANGELOG](https://mirrgieriana.github.io/IFR25KU/CHANGELOG.html) in Japanese.")
+    changelog.set("This project maintains a comprehensive [CHANGELOG](https://ifr25ku.mirrgieriana.net/CHANGELOG.html) in Japanese.")
     dependencies {
         required.project("fabric-api")
         required.project("fabric-language-kotlin")
@@ -196,7 +244,7 @@ curseforge {
             releaseType = if ("alpha" in project.version.toString()) ReleaseType.ALPHA else if ("beta" in project.version.toString()) ReleaseType.BETA else ReleaseType.RELEASE
             changelog {
                 format = ChangelogFormat.MARKDOWN
-                content = "This project maintains a comprehensive [CHANGELOG](https://mirrgieriana.github.io/IFR25KU/CHANGELOG.html) in Japanese."
+                content = "This project maintains a comprehensive [CHANGELOG](https://ifr25ku.mirrgieriana.net/CHANGELOG.html) in Japanese."
             }
             relations {
                 requiredDependency("fabric-api")

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5a8a4a"/>
+      <stop offset="50%" stop-color="#6da05a"/>
+      <stop offset="100%" stop-color="#4a7a3c"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="line-fade" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0)"/>
+      <stop offset="20%" stop-color="rgba(255,255,255,0.2)"/>
+      <stop offset="80%" stop-color="rgba(255,255,255,0.2)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="400" fill="url(#bg)"/>
+
+  <rect x="0" y="215" width="1200" height="1" fill="url(#line-fade)" opacity="0.5"/>
+
+  <circle cx="200" cy="200" r="100" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+  <circle cx="1000" cy="200" r="70" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+  <text x="600" y="195" font-family="serif" font-size="48" fill="#ffffff" text-anchor="middle" font-weight="bold" letter-spacing="4" filter="url(#glow)">CHANGELOG</text>
+
+  <text x="600" y="250" font-family="serif" font-size="24" fill="rgba(255,255,255,0.55)" text-anchor="middle" letter-spacing="3">変更履歴</text>
+</svg>

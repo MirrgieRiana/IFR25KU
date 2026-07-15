@@ -8,19 +8,17 @@ MirageFairy2024 is a Minecraft mod originally developed by The Developer of Mira
 
 IFR25KU is now independently developed by Yoruno Kakera.
 
-Since this mod is compatible with the original MirageFairy2024 save data, it cannot be installed simultaneously due to conflicts.
-
 ---
 
-Links related to the original MirageFairy:
+Since this mod is compatible with the original MirageFairy2024 save data, it cannot be installed simultaneously due to conflicts.
 
-- [Original MirageFairy2024 Repository](https://github.com/MirageFairy/MirageFairy2024)
+# Information
 
-# Documentation
+Visit [the official Japanese website for IFR25KU](https://ifr25ku.mirrgieriana.net/).
 
 ## Official Documents
 
-The specifications of this mod are officially documented only in Japanese in [CHANGELOG](https://mirrgieriana.github.io/IFR25KU/CHANGELOG.html).
+The specifications of this mod are officially documented only in Japanese in [CHANGELOG](https://ifr25ku.mirrgieriana.net/CHANGELOG.html).
 
 There is currently no comprehensive official documentation explaining the specifications of this mod, and the only available resources are unofficial wikis.
 
@@ -28,10 +26,9 @@ There is currently no comprehensive official documentation explaining the specif
 
 Other official links:
 
-- [Japanese Official Website of Kakera-Unofficial](https://kakera-unofficial.notion.site/)
-- [IFR25KU Lang Table](https://mirrgieriana.github.io/IFR25KU/lang_table.html)
-- [IFR25KU Lang Table (JSON)](https://mirrgieriana.github.io/IFR25KU/lang_table.json)
-- [IFR25KU Lang Table (CSV)](https://mirrgieriana.github.io/IFR25KU/lang_table.csv)
+- [IFR25KU Lang Table](https://ifr25ku.mirrgieriana.net/lang_table.html)
+- [IFR25KU Lang Table (JSON)](https://ifr25ku.mirrgieriana.net/lang_table.json)
+- [IFR25KU Lang Table (CSV)](https://ifr25ku.mirrgieriana.net/lang_table.csv)
 - [Modrinth (Mod Distribution Page)](https://modrinth.com/mod/ifr25ku)
 
 ## Unofficial Documents

@@ -7,8 +7,7 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
+  deployments: write
 
 concurrency:
   group: pages
@@ -17,9 +16,6 @@ concurrency:
 jobs:
   pages:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
 
       # セットアップ
@@ -29,16 +25,19 @@ jobs:
           java-version: '21'
           distribution: 'microsoft'
       - uses: gradle/actions/setup-gradle@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
 
       # ビルド
       - name: ビルド
-        run: ./gradlew buildPages
+        run: ./gradlew :site:buildSite
 
       # デプロイ
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: build/pages
       - name: デプロイ
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy site/build/site --project-name=ifr25ku --branch=main
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}

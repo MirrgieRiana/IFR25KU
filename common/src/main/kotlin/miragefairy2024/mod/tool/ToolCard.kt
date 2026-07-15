@@ -508,7 +508,7 @@ class ToolCard(
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_SHOVEL = !ToolCard(
             "fairy_plastic_shovel", EnJa("Fairy Plastic Shovel", "妖精のプラスチックのシャベル"),
-            PoemList(4).poem(EnJa("Were you grown in earth, or a furnace?", "土から産まれ、土に還る。")),
+            PoemList(4).poem(EnJa("Were you grown in earth, or a furnace?", "土から産まれ、土へと還る。")),
             FairyShovelConfiguration(ToolMaterialCard.FAIRY_PLASTIC).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
         ) { registerShovelRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_SWORD = !ToolCard(

@@ -40,6 +40,13 @@ replay_*.log
 *.hprof
 *.jfr
 
+# jekyll
+
+_site/
+.jekyll-cache/
+.bundle/
+vendor/
+
 # custom
 
 /backup
@@ -53,3 +60,4 @@ desktop.ini
 unpackedSources
 /ai/
 .claude/
+.wrangler/

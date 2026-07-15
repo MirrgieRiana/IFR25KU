@@ -499,6 +499,31 @@ open class BlockMaterialCard(
             PoemList(1).poem(EnJa("Please use on the office ceiling, etc.", "オフィスの天井等にどうぞ。")),
             MapColor.SAND, 3.0F, 3.0F,
         ).tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_AXE)
+        val DRYWALL_SLAB = !object : BlockMaterialCard(
+            "drywall_slab", EnJa("Drywall Slab", "石膏ボードのハーフブロック"),
+            PoemList(1).poem(EnJa("The top half is sold separately.", "上半分は別売りです。")),
+            MapColor.SAND, 3.0F, 3.0F,
+        ) {
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
+            context(ModContext) override fun initBlockStateGeneration() = Unit
+            context(ModContext) override fun initModelGeneration() = Unit
+            context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
+        }.tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_AXE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
+            registerBlockFamily(TexturedModel.CUBE, DRYWALL.block) { it.slab(block()) }
+            registerStonecutterRecipeGeneration(DRYWALL.item, item, 2)
+        }
+        val DRYWALL_STAIRS = !object : BlockMaterialCard(
+            "drywall_stairs", EnJa("Drywall Stairs", "石膏ボードの階段"),
+            PoemList(1).poem(EnJa("The ceiling is calling you home.", "天が迎えに来る。")),
+            MapColor.SAND, 3.0F, 3.0F,
+        ) {
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(DRYWALL.block.await().defaultBlockState(), properties)
+            context(ModContext) override fun initBlockStateGeneration() = Unit
+            context(ModContext) override fun initModelGeneration() = Unit
+        }.tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_AXE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
+            registerBlockFamily(TexturedModel.CUBE, DRYWALL.block) { it.stairs(block()) }
+            registerStonecutterRecipeGeneration(DRYWALL.item, item)
+        }
         val LOCAL_VACUUM_DECAY = !object : BlockMaterialCard(
             "local_vacuum_decay", EnJa("Local Vacuum Decay", "局所真空崩壊"),
             PoemList(99).poem(EnJa("Stable instability due to anti-entropy", "これが秩序の究極の形だというのか？")),

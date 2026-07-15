@@ -1,0 +1,33 @@
+locale: "ja-JP"
+title: IFR25KU
+url: https://ifr25ku.mirrgieriana.net
+baseurl: ""
+theme: minimal-mistakes-jekyll
+minimal_mistakes_skin: default
+copyright:
+  - year: 2019
+    name: "MirageFairy Server"
+    license: "CC BY-SA 3.0"
+    license_url: "https://creativecommons.org/licenses/by-sa/3.0/"
+  - year: 2024
+    name: "The Developer of MirageFairy, Generation 7"
+    license: "CC BY 4.0"
+    license_url: "https://creativecommons.org/licenses/by/4.0/"
+  - year: 2025
+    name: "Yoruno Kakera"
+    license: "CC BY 4.0"
+    license_url: "https://creativecommons.org/licenses/by/4.0/"
+
+future: true
+
+plugins:
+  - jekyll-include-cache
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: single
+      toc: true
+      sidebar:
+        nav: sidebar
