@@ -77,7 +77,9 @@ object AmberPrimevalForestBiomeCard : BiomeCard(
     override fun init() {
         super.init()
 
-        registerOverworldBiomeOverride(Biomes.OLD_GROWTH_SPRUCE_TAIGA)
+        registerOverworldBiomeOverride(Biomes.JUNGLE)
+        registerOverworldBiomeOverride(Biomes.SPARSE_JUNGLE)
+        registerOverworldBiomeOverride(Biomes.BAMBOO_JUNGLE)
 
     }
 }
