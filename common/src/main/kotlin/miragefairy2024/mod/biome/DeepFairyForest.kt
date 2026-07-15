@@ -130,7 +130,6 @@ object DeepFairyForestBiomeCard : BiomeCard(
 
         registerOverworldBiomeOverride(Biomes.TAIGA)
         registerOverworldBiomeOverride(Biomes.OLD_GROWTH_PINE_TAIGA)
-        registerOverworldBiomeOverride(Biomes.OLD_GROWTH_SPRUCE_TAIGA)
         registerOverworldBiomeOverride(Biomes.SNOWY_TAIGA)
 
     }
