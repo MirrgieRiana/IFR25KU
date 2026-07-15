@@ -1,0 +1,36 @@
+# heading: 見出しなのだぁ🌱 スタイルはCSS側で、HTMLは構造だけ・アクセント色はテーマ変数なのだぁ〜
+@USE("global")
+
+templates.heading = leftText, emojiSrc, rightText, emojiSize -> %>
+  <div class="title">
+    <span class="accent"></span>
+    <span class="title-text"><%= leftText >> htmlEscape %></span>
+    <%= templates.emoji(emojiSrc; emojiSize) %>
+    <span class="title-text"><%= rightText >> htmlEscape %></span>
+  </div>
+<%
+
+cssLines::push << %>
+  /* ---- 見出しなのだぁ🌱 ---- */
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .accent {
+    width: 16px;
+    height: 62px;
+    border-radius: 8px;
+    flex: none;
+    background: var(--accent);
+  }
+  .title-text {
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .title .emoji {
+    flex: none;
+  }
+<%
