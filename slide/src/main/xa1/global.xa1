@@ -28,7 +28,7 @@
     # 1ファイルを書き出して、その場で完了メッセージを OUT するヘルパーなのだぁ🌱
     writeFile := path, content -> (
       WRITE[path] << content
-      OUT << "書き出したのだぁ🌱 : $(path)"
+      OUT << "書き出したのだぁ🌱 : $path"
     )
 
     # 出力先を作り直して素材（png/svg）を配置するのだぁ🌱 既存のゴミも一掃してから作り直すのだぁ〜
@@ -40,9 +40,9 @@
     <%, "bash", dir)
 
     # 各ページを書き出すのだぁ🌱（キー＝出力ファイル名、値＝内容を返す関数なのだぁ〜）
-    pageGenerators() | entry => writeFile("$(dir)/$(entry.0)"; entry.1())
+    pageGenerators() | entry => writeFile["$dir/$(entry.0)"] << entry.1()
 
-    # 各プラグインが push した CSS 行を空行区切りでつないで書き出すのだぁ🌱（末尾も改行1個で閉じるのだぁ〜）
-    writeFile("$(dir)/style.css"; (cssLines() >> JOIN["\n\n"]) & "\n")
+    # 各プラグインが push した CSS 行の間に空行を挟んで、最後に統合して書き出すのだぁ🌱（末尾も改行1個で閉じるのだぁ〜）
+    writeFile["$dir/style.css"] << cssLines() >> REDUCE[a, b -> a, "", b] >> LINESD
   )
 }
