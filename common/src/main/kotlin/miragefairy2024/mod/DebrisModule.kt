@@ -10,24 +10,43 @@ import miragefairy2024.mod.biome.RetrospectiveCityBiomeCard
 import miragefairy2024.mod.biome.retrospectiveCityFloorPlacementModifiers
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
+import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.ColorPair
+import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.views.OutputSlotView
+import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.View
+import miragefairy2024.mod.recipeviewer.views.XListView
+import miragefairy2024.mod.recipeviewer.views.XSpaceView
+import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.BiomeSelectorScope
+import miragefairy2024.util.EnJa
 import miragefairy2024.util.PlacementModifiersScope
 import miragefairy2024.util.Registration
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
-import miragefairy2024.util.overworld
+import miragefairy2024.util.invoke
 import miragefairy2024.util.per
 import miragefairy2024.util.placeWhenVegetalDecoration
 import miragefairy2024.util.register
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.square
+import miragefairy2024.util.string
 import miragefairy2024.util.surface
+import miragefairy2024.util.text
+import miragefairy2024.util.translate
 import miragefairy2024.util.unaryPlus
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext
+import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.ResourceKey
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BiomeTags
+import net.minecraft.tags.TagKey
 import net.minecraft.util.valueproviders.IntProvider
 import net.minecraft.util.valueproviders.UniformInt
 import net.minecraft.world.item.ItemStack
@@ -39,40 +58,58 @@ import java.util.function.Predicate
 
 val DEBRIS_FEATURE = DebrisFeature(DebrisFeature.Config.CODEC)
 
+val DEBRIS_CODEC: Codec<DebrisCard> = ResourceLocation.CODEC.xmap(
+    { location -> DebrisCard.entries.first { it.identifier == location } },
+    { it.identifier },
+)
+
+// バイオーム条件を、REIで表示できてワールド生成のPredicateも導出できる形にするための記述子
+sealed class DebrisBiomeCondition {
+    class Biome(val biome: ResourceKey<net.minecraft.world.level.biome.Biome>) : DebrisBiomeCondition()
+    class BiomeTag(val biomeTag: TagKey<net.minecraft.world.level.biome.Biome>) : DebrisBiomeCondition()
+}
+
 enum class DebrisCard(
     path: String,
     val perChunks: Int,
     val count: IntRange,
     val itemStackGetter: () -> ItemStack,
-    val biomeSelectorCreator: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>,
+    val biomeCondition: DebrisBiomeCondition,
     val extraPlacementModifier: PlacementModifiersScope.() -> List<PlacementModifier> = { emptyList() },
 ) {
-    STICK("stick", 32, 2..6, { Items.STICK.createItemStack() }, { overworld }),
-    STICK_DENSE("stick_dense", 32 / 8, 2..6, { Items.STICK.createItemStack() }, { +BiomeTags.IS_FOREST }),
-    BONE("bone", 64, 2..6, { Items.BONE.createItemStack() }, { overworld }),
-    STRING("string", 64, 2..6, { Items.STRING.createItemStack() }, { overworld }),
-    FLINT("flint", 64, 2..6, { Items.FLINT.createItemStack() }, { overworld }),
-    RAW_IRON("raw_iron", 128, 2..6, { Items.RAW_IRON.createItemStack() }, { overworld }),
-    RAW_IRON_DENSE("raw_iron_dense", 128 / 2, 8..24, { Items.RAW_IRON.createItemStack() }, { +BiomeTags.IS_MOUNTAIN }),
-    RAW_COPPER("raw_copper", 128, 2..6, { Items.RAW_COPPER.createItemStack() }, { overworld }),
-    RAW_COPPER_DENSE("raw_copper_dense", 128 / 2, 8..24, { Items.RAW_COPPER.createItemStack() }, { +BiomeTags.IS_MOUNTAIN }),
-    XARPITE("xarpite", 128, 2..6, { MaterialCard.XARPITE.item().createItemStack() }, { overworld }),
-    FAIRY_SCALES("fairy_scales", 128, 2..6, { MaterialCard.FAIRY_SCALES.item().createItemStack() }, { overworld }),
-    FAIRY_SCALES_DENSE("fairy_scales_dense", 128 / 2, 8..24, { MaterialCard.FAIRY_SCALES.item().createItemStack() }, { +FAIRY_BIOME_TAG }),
+    STICK("stick", 32, 2..6, { Items.STICK.createItemStack() }, DebrisBiomeCondition.BiomeTag(BiomeTags.IS_OVERWORLD)),
+    STICK_DENSE("stick_dense", 32 / 8, 2..6, { Items.STICK.createItemStack() }, DebrisBiomeCondition.BiomeTag(BiomeTags.IS_FOREST)),
+    BONE("bone", 64, 2..6, { Items.BONE.createItemStack() }, DebrisBiomeCondition.BiomeTag(BiomeTags.IS_OVERWORLD)),
+    STRING("string", 64, 2..6, { Items.STRING.createItemStack() }, DebrisBiomeCondition.BiomeTag(BiomeTags.IS_OVERWORLD)),
+    FLINT("flint", 64, 2..6, { Items.FLINT.createItemStack() }, DebrisBiomeCondition.BiomeTag(BiomeTags.IS_OVERWORLD)),
+    RAW_IRON("raw_iron", 128, 2..6, { Items.RAW_IRON.createItemStack() }, DebrisBiomeCondition.BiomeTag(BiomeTags.IS_OVERWORLD)),
+    RAW_IRON_DENSE("raw_iron_dense", 128 / 2, 8..24, { Items.RAW_IRON.createItemStack() }, DebrisBiomeCondition.BiomeTag(BiomeTags.IS_MOUNTAIN)),
+    RAW_COPPER("raw_copper", 128, 2..6, { Items.RAW_COPPER.createItemStack() }, DebrisBiomeCondition.BiomeTag(BiomeTags.IS_OVERWORLD)),
+    RAW_COPPER_DENSE("raw_copper_dense", 128 / 2, 8..24, { Items.RAW_COPPER.createItemStack() }, DebrisBiomeCondition.BiomeTag(BiomeTags.IS_MOUNTAIN)),
+    XARPITE("xarpite", 128, 2..6, { MaterialCard.XARPITE.item().createItemStack() }, DebrisBiomeCondition.BiomeTag(BiomeTags.IS_OVERWORLD)),
+    FAIRY_SCALES("fairy_scales", 128, 2..6, { MaterialCard.FAIRY_SCALES.item().createItemStack() }, DebrisBiomeCondition.BiomeTag(BiomeTags.IS_OVERWORLD)),
+    FAIRY_SCALES_DENSE("fairy_scales_dense", 128 / 2, 8..24, { MaterialCard.FAIRY_SCALES.item().createItemStack() }, DebrisBiomeCondition.BiomeTag(FAIRY_BIOME_TAG)),
 
-    RETROSPECTIVE_CITY_XARPITE("retrospective_city/xarpite", 8, 1..2, { MaterialCard.XARPITE.item().createItemStack() }, { +RetrospectiveCityBiomeCard.key }, extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
-    RETROSPECTIVE_CITY_CHAOS_STONE("retrospective_city/chaos_stone", 8, 1..1, { MaterialCard.CHAOS_STONE.item().createItemStack() }, { +RetrospectiveCityBiomeCard.key }, extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
-    RETROSPECTIVE_CITY_MIRAGIDIAN_SHARD("retrospective_city/miragidian_shard", 8, 1..4, { MaterialCard.MIRAGIDIAN_SHARD.item().createItemStack() }, { +RetrospectiveCityBiomeCard.key }, extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
-    RETROSPECTIVE_CITY_COBBLED_AURA_RESISTANT_CERAMIC("retrospective_city/cobbled_aura_resistant_ceramic", 1, 8..24, { BlockMaterialCard.COBBLED_AURA_RESISTANT_CERAMIC.item().createItemStack() }, { +RetrospectiveCityBiomeCard.key }, extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
-    RETROSPECTIVE_CITY_AURA_RESISTANT_CERAMIC_BRICKS("retrospective_city/aura_resistant_ceramic_bricks", 2, 4..12, { BlockMaterialCard.AURA_RESISTANT_CERAMIC_BRICKS.item().createItemStack() }, { +RetrospectiveCityBiomeCard.key }, extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
+    RETROSPECTIVE_CITY_XARPITE("retrospective_city/xarpite", 8, 1..2, { MaterialCard.XARPITE.item().createItemStack() }, DebrisBiomeCondition.Biome(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
+    RETROSPECTIVE_CITY_CHAOS_STONE("retrospective_city/chaos_stone", 8, 1..1, { MaterialCard.CHAOS_STONE.item().createItemStack() }, DebrisBiomeCondition.Biome(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
+    RETROSPECTIVE_CITY_MIRAGIDIAN_SHARD("retrospective_city/miragidian_shard", 8, 1..4, { MaterialCard.MIRAGIDIAN_SHARD.item().createItemStack() }, DebrisBiomeCondition.Biome(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
+    RETROSPECTIVE_CITY_COBBLED_AURA_RESISTANT_CERAMIC("retrospective_city/cobbled_aura_resistant_ceramic", 1, 8..24, { BlockMaterialCard.COBBLED_AURA_RESISTANT_CERAMIC.item().createItemStack() }, DebrisBiomeCondition.Biome(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
+    RETROSPECTIVE_CITY_AURA_RESISTANT_CERAMIC_BRICKS("retrospective_city/aura_resistant_ceramic_bricks", 2, 4..12, { BlockMaterialCard.AURA_RESISTANT_CERAMIC_BRICKS.item().createItemStack() }, DebrisBiomeCondition.Biome(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
     ;
 
     val identifier = MirageFairy2024.identifier("${path}_debris")
+
+    val biomeSelectorCreator: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext> = {
+        when (val condition = biomeCondition) {
+            is DebrisBiomeCondition.Biome -> +condition.biome
+            is DebrisBiomeCondition.BiomeTag -> +condition.biomeTag
+        }
+    }
 }
 
-// TODO rei
 context(ModContext)
 fun initDebrisModule() {
+    DebrisRecipeViewerCategoryCard.init()
 
     Registration(BuiltInRegistries.FEATURE, MirageFairy2024.identifier("debris")) { DEBRIS_FEATURE }.register()
 
@@ -102,4 +139,40 @@ class DebrisFeature(codec: Codec<Config>) : PlacedItemFeature<DebrisFeature.Conf
 
     override fun getCount(context: FeaturePlaceContext<Config>) = context.config().count.sample(context.random())
     override fun createItemStack(context: FeaturePlaceContext<Config>) = context.config().itemStack.copy()
+}
+
+object DebrisRecipeViewerCategoryCard : RecipeViewerCategoryCard<DebrisCard>() {
+    override fun getId() = MirageFairy2024.identifier("debris")
+    override fun getName() = EnJa("Debris", "がれき")
+    override fun getIcon() = MaterialCard.XARPITE.item().createItemStack()
+    override fun getRecipeCodec(registryAccess: RegistryAccess) = DEBRIS_CODEC
+    override fun getOutputs(recipeEntry: RecipeEntry<DebrisCard>) = listOf(recipeEntry.recipe.itemStackGetter())
+
+    override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<DebrisCard>> {
+        return DebrisCard.entries.map { RecipeEntry(registryAccess, it.identifier, it, true) }
+    }
+
+    override fun createView(recipeEntry: RecipeEntry<DebrisCard>) = View {
+        view += XListView().configure {
+            view.sizingX = Sizing.FILL
+            val recipeText = when (val condition = recipeEntry.recipe.biomeCondition) {
+                is DebrisBiomeCondition.Biome -> text { translate(condition.biome.location().toLanguageKey("biome")) }
+                is DebrisBiomeCondition.BiomeTag -> text { condition.biomeTag.location().path() }
+            }
+            view += TextView(recipeText).configure {
+                position.alignmentY = Alignment.CENTER
+                position.weight = 1.0
+                view.sizingX = Sizing.FILL
+                view.color = ColorPair.DARK_GRAY
+                view.shadow = false
+                view.scroll = true
+                when (val condition = recipeEntry.recipe.biomeCondition) {
+                    is DebrisBiomeCondition.Biome -> Unit
+                    is DebrisBiomeCondition.BiomeTag -> view.tooltip = listOf(text { condition.biomeTag.location().string() })
+                }
+            }
+            view += XSpaceView(2)
+            view += OutputSlotView(recipeEntry.recipe.itemStackGetter())
+        }
+    }
 }
