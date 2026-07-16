@@ -31,3 +31,9 @@ defaults:
       toc: true
       sidebar:
         nav: sidebar
+
+analytics:
+  provider: "google-gtag"
+  google:
+    tracking_id: "G-EVTRMXNC6V"
+    anonymize_ip: false
