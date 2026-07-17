@@ -17,6 +17,7 @@ import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.util.BiomeCondition
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
@@ -42,15 +43,17 @@ sealed class CommonMotifRecipe(val motif: Motif) {
             { recipe: CommonMotifRecipe ->
                 when (recipe) {
                     is AlwaysCommonMotifRecipe -> "always"
-                    is BiomeCommonMotifRecipe -> "biome"
-                    is BiomeTagCommonMotifRecipe -> "biome_tag"
+                    is BiomeConditionCommonMotifRecipe -> when (recipe.biomeCondition) {
+                        is BiomeCondition.BiomeKey -> "biome"
+                        is BiomeCondition.BiomeTag -> "biome_tag"
+                    }
                 }
             },
             { type: String ->
                 when (type) {
                     "always" -> AlwaysCommonMotifRecipe.CODEC
-                    "biome" -> BiomeCommonMotifRecipe.CODEC
-                    "biome_tag" -> BiomeTagCommonMotifRecipe.CODEC
+                    "biome" -> BiomeConditionCommonMotifRecipe.BIOME_CODEC
+                    "biome_tag" -> BiomeConditionCommonMotifRecipe.BIOME_TAG_CODEC
                     else -> throw IllegalArgumentException("Unknown CommonMotifRecipe type: $type")
                 }
             }
@@ -68,24 +71,19 @@ class AlwaysCommonMotifRecipe(motif: Motif) : CommonMotifRecipe(motif) {
     }
 }
 
-class BiomeCommonMotifRecipe(motif: Motif, val biome: ResourceKey<Biome>) : CommonMotifRecipe(motif) {
+class BiomeConditionCommonMotifRecipe(motif: Motif, val biomeCondition: BiomeCondition) : CommonMotifRecipe(motif) {
     companion object {
-        val CODEC: MapCodec<BiomeCommonMotifRecipe> = RecordCodecBuilder.mapCodec { instance ->
+        val BIOME_CODEC: MapCodec<BiomeConditionCommonMotifRecipe> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 motifRegistry.byNameCodec().fieldOf("Motif").forGetter { it.motif },
-                ResourceKey.codec(Registries.BIOME).fieldOf("Biome").forGetter { it.biome }
-            ).apply(instance, ::BiomeCommonMotifRecipe)
+                ResourceKey.codec(Registries.BIOME).fieldOf("Biome").forGetter { (it.biomeCondition as BiomeCondition.BiomeKey).biome },
+            ).apply(instance) { motif, biome -> BiomeConditionCommonMotifRecipe(motif, BiomeCondition.BiomeKey(biome)) }
         }
-    }
-}
-
-class BiomeTagCommonMotifRecipe(motif: Motif, val biomeTag: TagKey<Biome>) : CommonMotifRecipe(motif) {
-    companion object {
-        val CODEC: MapCodec<BiomeTagCommonMotifRecipe> = RecordCodecBuilder.mapCodec { instance ->
+        val BIOME_TAG_CODEC: MapCodec<BiomeConditionCommonMotifRecipe> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 motifRegistry.byNameCodec().fieldOf("Motif").forGetter { it.motif },
-                TagKey.codec(Registries.BIOME).fieldOf("BiomeTag").forGetter { it.biomeTag }
-            ).apply(instance, ::BiomeTagCommonMotifRecipe)
+                TagKey.codec(Registries.BIOME).fieldOf("BiomeTag").forGetter { (it.biomeCondition as BiomeCondition.BiomeTag).biomeTag },
+            ).apply(instance) { motif, biomeTag -> BiomeConditionCommonMotifRecipe(motif, BiomeCondition.BiomeTag(biomeTag)) }
         }
     }
 }
@@ -112,8 +110,10 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
             .map {
                 val prefix = when (it) {
                     is AlwaysCommonMotifRecipe -> "1_always"
-                    is BiomeCommonMotifRecipe -> "2_biome/" + it.biome.location().pathString
-                    is BiomeTagCommonMotifRecipe -> "3_biome_tag/" + it.biomeTag.location().pathString
+                    is BiomeConditionCommonMotifRecipe -> when (val condition = it.biomeCondition) {
+                        is BiomeCondition.BiomeKey -> "2_biome/" + condition.biome.location().pathString
+                        is BiomeCondition.BiomeTag -> "3_biome_tag/" + condition.biomeTag.location().pathString
+                    }
                 }
                 val syntheticIdentifier = "$prefix/" * it.motif.getIdentifier()!!
                 Pair(it, syntheticIdentifier)
@@ -127,8 +127,10 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
             view.sizingX = Sizing.FILL
             val recipeText = when (val recipe = recipeEntry.recipe) {
                 is AlwaysCommonMotifRecipe -> text { COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION() }
-                is BiomeCommonMotifRecipe -> text { translate(recipe.biome.location().toLanguageKey("biome")) }
-                is BiomeTagCommonMotifRecipe -> text { recipe.biomeTag.location().path() }
+                is BiomeConditionCommonMotifRecipe -> when (val condition = recipe.biomeCondition) {
+                    is BiomeCondition.BiomeKey -> text { translate(condition.biome.location().toLanguageKey("biome")) }
+                    is BiomeCondition.BiomeTag -> text { condition.biomeTag.location().path() }
+                }
             }
             view += TextView(recipeText).configure {
                 position.alignmentY = Alignment.CENTER
@@ -139,8 +141,10 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
                 view.scroll = true
                 when (val recipe = recipeEntry.recipe) {
                     is AlwaysCommonMotifRecipe -> Unit
-                    is BiomeCommonMotifRecipe -> Unit
-                    is BiomeTagCommonMotifRecipe -> view.tooltip = listOf(text { recipe.biomeTag.location().string() })
+                    is BiomeConditionCommonMotifRecipe -> when (val condition = recipe.biomeCondition) {
+                        is BiomeCondition.BiomeKey -> Unit
+                        is BiomeCondition.BiomeTag -> view.tooltip = listOf(text { condition.biomeTag.location().string() })
+                    }
                 }
             }
             view += XSpaceView(2)

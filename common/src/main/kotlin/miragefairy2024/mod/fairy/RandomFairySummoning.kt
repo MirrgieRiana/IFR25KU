@@ -3,6 +3,7 @@ package miragefairy2024.mod.fairy
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.APPEARANCE_RATE_BONUS_TRANSLATION
+import miragefairy2024.util.BiomeCondition
 import miragefairy2024.util.Chance
 import miragefairy2024.util.CondensedItem
 import miragefairy2024.util.Translation
@@ -194,8 +195,10 @@ fun getCommonMotifSet(player: Player): Set<Motif> {
     return COMMON_MOTIF_RECIPES.filter {
         when (it) {
             is AlwaysCommonMotifRecipe -> true
-            is BiomeCommonMotifRecipe -> biome isIn it.biome
-            is BiomeTagCommonMotifRecipe -> biome isIn it.biomeTag
+            is BiomeConditionCommonMotifRecipe -> when (val condition = it.biomeCondition) {
+                is BiomeCondition.BiomeKey -> biome isIn condition.biome
+                is BiomeCondition.BiomeTag -> biome isIn condition.biomeTag
+            }
         }
     }.map { it.motif }.toSet()
 }
