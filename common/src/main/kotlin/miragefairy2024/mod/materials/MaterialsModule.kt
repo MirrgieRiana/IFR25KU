@@ -1089,6 +1089,59 @@ class MaterialCard(
             } on MIRAGE_STEM.item
         }
 
+        val BLACK_TREACLE: MaterialCard = !MaterialCard(
+            "black_treacle", "Black Treacle", "黒蜜",
+            null,
+            recipeRemainder = Items.GLASS_BOTTLE,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(4)
+                    .saturationModifier(0.3F)
+                    .build()
+            },
+            creator = { DrinkItem(it) },
+        ) {
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(Items.SUGAR_CANE.toIngredient(), 16) },
+                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
+                ),
+                outputs = listOf(
+                    { item().createItemStack() },
+                    { Items.SUGAR.createItemStack(13) },
+                ),
+                duration = 20 * 20,
+            ) on { Items.SUGAR_CANE }
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + Items.SUGAR_CANE
+            }
+        }
+        val FERMENTED_BLACK_TREACLE: MaterialCard = !MaterialCard(
+            "fermented_black_treacle", "Fermented Black Treacle", "発酵した黒蜜",
+            null,
+            recipeRemainder = Items.GLASS_BOTTLE,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(4)
+                    .saturationModifier(0.1F)
+                    .build()
+            },
+            creator = { DrinkItem(it) },
+        ) {
+            registerSimpleMachineRecipeGeneration(
+                FermentationBarrelRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(BLACK_TREACLE.item().toIngredient(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60 * 1,
+            ) on BLACK_TREACLE.item
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + FoodIngredientCategoryCard.ALCOHOL + BLACK_TREACLE.item()
+            }
+        }
         val RUM: MaterialCard = !MaterialCard(
             "rum", "Rum", "ラム酒",
             null,
@@ -1103,19 +1156,17 @@ class MaterialCard(
             },
             creator = { DrinkItem(it) },
         ) {
-            // TODO 蒸留装置
             registerSimpleMachineRecipeGeneration(
-                FermentationBarrelRecipeCard,
+                AthanorRecipeCard,
                 inputs = listOf(
                     { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
-                    { SimpleMachineRecipe.Input(Items.SUGAR_CANE.toIngredient(), 16) },
-                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
+                    { SimpleMachineRecipe.Input(FERMENTED_BLACK_TREACLE.item().toIngredient(), 8) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on { Items.SUGAR_CANE }
+                duration = 20 * 60,
+            ) on FERMENTED_BLACK_TREACLE.item
             ModEvents.onInitialize {
-                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + FoodIngredientCategoryCard.ALCOHOL + Items.SUGAR_CANE
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + FERMENTED_BLACK_TREACLE.item()
             }
         }
         val CIDRE: MaterialCard = !MaterialCard(
