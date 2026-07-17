@@ -11,6 +11,7 @@ import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
 import miragefairy2024.mod.machine.SimpleMachineRecipe
 import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
+import miragefairy2024.mod.materials.contents.EggBlock
 import miragefairy2024.mod.materials.contents.FairyCrystalGlassBlock
 import miragefairy2024.mod.materials.contents.LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG
 import miragefairy2024.mod.materials.contents.LocalVacuumDecayBlock
@@ -30,7 +31,9 @@ import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.BlockStateVariantRotation
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.Model
 import miragefairy2024.util.Registration
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.TextureMapping
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
@@ -55,6 +58,7 @@ import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.registerLootTableGeneration
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerShapedRecipeGeneration
+import miragefairy2024.util.registerShapelessRecipeGeneration
 import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.registerSmeltingRecipeGeneration
 import miragefairy2024.util.registerStonecutterRecipeGeneration
@@ -651,6 +655,28 @@ open class BlockMaterialCard(
             registerStonecutterRecipeGeneration(FAIRY_CERAMIC.item, item)
             registerStonecutterRecipeGeneration(FAIRY_CERAMIC_BRICKS.item, item)
         }
+        val EGG_BLOCK: BlockMaterialCard = !object : BlockMaterialCard(
+            "egg_block", EnJa("Egg Block", "卵ブロック"),
+            PoemList(1).poem(EnJa("Handle with care.", "割れ物注意。")),
+            MapColor.SAND, 0.5F, 0.5F,
+        ) {
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = EggBlock(properties)
+            context(ModContext) override fun initModelGeneration() = block.registerModelGeneration {
+                Model(ResourceLocation("minecraft", "block/dragon_egg"), TextureSlot.ALL, TextureSlot.PARTICLE).with(
+                    TextureSlot.ALL to "block/" * block().getIdentifier(),
+                    TextureSlot.PARTICLE to "block/" * block().getIdentifier(),
+                )
+            }
+        }.init {
+            registerShapedRecipeGeneration(item, count = 1) {
+                pattern("##")
+                pattern("##")
+                define('#', Items.EGG)
+            } on { Items.EGG }
+            registerShapelessRecipeGeneration({ Items.EGG }, count = 4) {
+                requires(item())
+            } on item modId MirageFairy2024.MOD_ID from item
+        }
     }
 
     val identifier = MirageFairy2024.identifier(path)
@@ -739,6 +765,7 @@ fun initBlockMaterialsModule() {
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("semi_opaque_transparent_block")) { SemiOpaqueTransparentBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("fairy_crystal_glass")) { FairyCrystalGlassBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("mirage_leaves_block")) { MirageLeavesBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("egg_block")) { EggBlock.CODEC }.register()
 
     LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.enJa(EnJa("Local Vacuum Decay Resistant", "局所真空崩壊耐性"))
 
