@@ -43,6 +43,8 @@ import miragefairy2024.util.unaryPlus
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.core.registries.Registries
+import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BiomeTags
@@ -56,22 +58,25 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration
 import net.minecraft.world.level.levelgen.placement.PlacementModifier
 import java.util.function.Predicate
+import kotlin.jvm.optionals.getOrElse
 
 val DEBRIS_FEATURE = DebrisFeature(DebrisFeature.Config.CODEC)
 
-// バイオーム条件を、REIで表示できてワールド生成のPredicateも導出できる形にするための記述子
 sealed class DebrisBiomeCondition {
-    context(BiomeSelectorScope)
     abstract fun createBiomeSelector(): Predicate<BiomeSelectionContext>
+    abstract fun getText(): Component
+    abstract fun getTooltip(registryAccess: RegistryAccess): List<Component>
 
     class BiomeKey(val biome: ResourceKey<Biome>) : DebrisBiomeCondition() {
-        context(BiomeSelectorScope)
-        override fun createBiomeSelector() = +biome
+        override fun createBiomeSelector() = with(BiomeSelectorScope) { +biome }
+        override fun getText() = text { translate(biome.location().toLanguageKey("biome")) }
+        override fun getTooltip(registryAccess: RegistryAccess) = listOf(text { biome.location().string() })
     }
 
     class BiomeTag(val biomeTag: TagKey<Biome>) : DebrisBiomeCondition() {
-        context(BiomeSelectorScope)
-        override fun createBiomeSelector() = +biomeTag
+        override fun createBiomeSelector() = with(BiomeSelectorScope) { +biomeTag }
+        override fun getText() = text { biomeTag.location().path() }
+        override fun getTooltip(registryAccess: RegistryAccess) = registryAccess.registryOrThrow(Registries.BIOME).getTag(biomeTag).getOrElse { listOf() }.map { it.unwrapKey().get() }.sortedBy { it.location() }.map { text { it.location().string() } }
     }
 }
 
@@ -105,10 +110,6 @@ enum class DebrisCard(
 
     val identifier = MirageFairy2024.identifier("${path}_debris")
 
-    val biomeSelectorCreator: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext> = {
-        biomeCondition.createBiomeSelector()
-    }
-
     companion object {
         val CODEC: Codec<DebrisCard> = ResourceLocation.CODEC.xmap(
             { identifier -> DebrisCard.entries.first { it.identifier == identifier } },
@@ -128,7 +129,7 @@ fun initDebrisModule() {
             registerConfiguredFeature { DebrisFeature.Config(UniformInt.of(card.count.first, card.count.last), card.itemStackGetter()) }.generator {
                 registerPlacedFeature {
                     per(card.perChunks) + flower(square, surface) + card.extraPlacementModifier(this)
-                }.placeWhenVegetalDecoration(card.biomeSelectorCreator)
+                }.placeWhenVegetalDecoration { card.biomeCondition.createBiomeSelector() }
             }
         }
     }
@@ -165,21 +166,15 @@ object DebrisRecipeViewerCategoryCard : RecipeViewerCategoryCard<DebrisCard>() {
     override fun createView(recipeEntry: RecipeEntry<DebrisCard>) = View {
         view += XListView().configure {
             view.sizingX = Sizing.FILL
-            val recipeText = when (val condition = recipeEntry.recipe.biomeCondition) {
-                is DebrisBiomeCondition.BiomeKey -> text { translate(condition.biome.location().toLanguageKey("biome")) }
-                is DebrisBiomeCondition.BiomeTag -> text { condition.biomeTag.location().path() }
-            }
-            view += TextView(recipeText).configure {
+            val condition = recipeEntry.recipe.biomeCondition
+            view += TextView(condition.getText()).configure {
                 position.alignmentY = Alignment.CENTER
                 position.weight = 1.0
                 view.sizingX = Sizing.FILL
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
                 view.scroll = true
-                when (val condition = recipeEntry.recipe.biomeCondition) {
-                    is DebrisBiomeCondition.BiomeKey -> Unit
-                    is DebrisBiomeCondition.BiomeTag -> view.tooltip = listOf(text { condition.biomeTag.location().string() })
-                }
+                view.tooltip = condition.getTooltip(recipeEntry.registryAccess)
             }
             view += XSpaceView(2)
             view += OutputSlotView(recipeEntry.recipe.itemStackGetter())
