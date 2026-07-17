@@ -1310,9 +1310,9 @@ private val MotifCardRecipes.PICKUP_SR get() = this.fairyStatueFountainRecipe(Fa
 private val MotifCardRecipes.SSR get() = this.fairyStatueFountainRecipe(FairyStatueFountainBlock.Rarity.SSR)
 private val MotifCardRecipes.PICKUP_SSR get() = this.fairyStatueFountainRecipe(FairyStatueFountainBlock.Rarity.PICKUP_SSR).SSR
 
-private fun MotifCardRecipes.common() = this.onInit { COMMON_MOTIF_RECIPES += AlwaysCommonMotifRecipe(it) }
-private fun MotifCardRecipes.common(biome: ResourceKey<Biome>) = this.onInit { COMMON_MOTIF_RECIPES += BiomeConditionCommonMotifRecipe(it, BiomeCondition.BiomeKey(biome)) }
-private fun MotifCardRecipes.common(biomeTag: TagKey<Biome>) = this.onInit { COMMON_MOTIF_RECIPES += BiomeConditionCommonMotifRecipe(it, BiomeCondition.BiomeTag(biomeTag)) }
+private fun MotifCardRecipes.common() = this.onInit { COMMON_MOTIF_RECIPES += CommonMotifRecipe(it, BiomeCondition.Always) }
+private fun MotifCardRecipes.common(biome: ResourceKey<Biome>) = this.onInit { COMMON_MOTIF_RECIPES += CommonMotifRecipe(it, BiomeCondition.BiomeKey(biome)) }
+private fun MotifCardRecipes.common(biomeTag: TagKey<Biome>) = this.onInit { COMMON_MOTIF_RECIPES += CommonMotifRecipe(it, BiomeCondition.BiomeTag(biomeTag)) }
 private val MotifCardRecipes.always get() = this.common()
 private val MotifCardRecipes.overworld get() = this.common(ConventionalBiomeTags.IS_OVERWORLD)
 private val MotifCardRecipes.nether get() = this.common(ConventionalBiomeTags.IS_NETHER)
