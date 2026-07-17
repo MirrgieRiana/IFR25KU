@@ -68,15 +68,20 @@ sealed class DebrisBiomeCondition {
     abstract fun getTooltip(registryAccess: RegistryAccess): List<Component>
 
     class BiomeKey(val biome: ResourceKey<Biome>) : DebrisBiomeCondition() {
-        override fun createBiomeSelector() = with(BiomeSelectorScope) { +biome }
+        override fun createBiomeSelector() = BiomeSelectorScope.run { +biome }
         override fun getText() = text { translate(biome.location().toLanguageKey("biome")) }
         override fun getTooltip(registryAccess: RegistryAccess) = listOf(text { biome.location().string() })
     }
 
     class BiomeTag(val biomeTag: TagKey<Biome>) : DebrisBiomeCondition() {
-        override fun createBiomeSelector() = with(BiomeSelectorScope) { +biomeTag }
+        override fun createBiomeSelector() = BiomeSelectorScope.run { +biomeTag }
         override fun getText() = text { biomeTag.location().path() }
-        override fun getTooltip(registryAccess: RegistryAccess) = registryAccess.registryOrThrow(Registries.BIOME).getTag(biomeTag).getOrElse { listOf() }.map { it.unwrapKey().get() }.sortedBy { it.location() }.map { text { it.location().string() } }
+        override fun getTooltip(registryAccess: RegistryAccess): List<Component> {
+            val biomes = registryAccess.registryOrThrow(Registries.BIOME).getTag(biomeTag).getOrElse { listOf() }.map { it.unwrapKey().get() }.sortedBy { it.location() }
+            val lines = biomes.take(10).map { text { it.location().string() } }.toMutableList()
+            if (biomes.size > 10) lines += text { "..."() }
+            return lines
+        }
     }
 }
 
