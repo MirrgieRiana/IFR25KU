@@ -657,7 +657,7 @@ open class BlockMaterialCard(
         }
         val EGG_BLOCK: BlockMaterialCard = !object : BlockMaterialCard(
             "egg_block", EnJa("Egg Block", "卵ブロック"),
-            PoemList(1).poem(EnJa("Handle with care.", "割れ物注意。")),
+            PoemList(null),
             MapColor.SAND, 0.5F, 0.5F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = EggBlock(properties)
@@ -668,7 +668,7 @@ open class BlockMaterialCard(
                 )
             }
         }.init {
-            registerShapedRecipeGeneration(item, count = 1) {
+            registerShapedRecipeGeneration(item) {
                 pattern("##")
                 pattern("##")
                 define('#', Items.EGG)

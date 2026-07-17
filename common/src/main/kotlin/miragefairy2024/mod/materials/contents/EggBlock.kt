@@ -16,7 +16,7 @@ class EggBlock(settings: Properties) : FallingBlock(settings) {
 
     override fun codec() = CODEC
 
-    // 卵は着地時に必ず割れて、ブロックとして残らず、自分自身もドロップしないのだぁ
+    // 卵は着地時に必ず割れて、ブロックとして残らず、自分自身もドロップしない
     override fun falling(entity: FallingBlockEntity) {
         entity.disableDrop()
     }
