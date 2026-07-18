@@ -17,9 +17,9 @@ import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
-object AmberPrimevalForestBiomeCard : BiomeCard(
-    "amber_primeval_forest", EnJa("Old Growth Amber Forest", "琥珀色の原生林"),
-    null,
+object OldGrowthAmberForestBiomeCard : BiomeCard(
+    "old_growth_amber_forest", EnJa("Old Growth Amber Forest", "琥珀色の原生林"),
+    advancementCreator = null,
     BiomeTags.IS_OVERWORLD, BiomeTags.IS_TAIGA,
 ) {
     override fun createBiome(placedFeatureLookup: HolderGetter<PlacedFeature>, configuredCarverLookup: HolderGetter<ConfiguredWorldCarver<*>>): Biome {
@@ -62,7 +62,7 @@ object AmberPrimevalForestBiomeCard : BiomeCard(
                 BiomeDefaultFeatures.addDefaultOres(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultSoftDisks(lookupBackedBuilder)
 
-                // トウヒの巨木を撤去するため、巨大トウヒが出る TREES_OLD_GROWTH_SPRUCE_TAIGA を通常のトウヒの TREES_TAIGA に差し替えているのだ。
+                // TREES_OLD_GROWTH_SPRUCE_TAIGA を TREES_TAIGA に差し替え（トウヒの巨木の撤去）
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_TAIGA)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
                 BiomeDefaultFeatures.addGiantTaigaVegetation(lookupBackedBuilder)
