@@ -18,7 +18,6 @@ import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.BiomeCondition
 import miragefairy2024.util.EnJa
-import miragefairy2024.util.enJa
 import miragefairy2024.util.invoke
 import miragefairy2024.util.pathString
 import miragefairy2024.util.string
@@ -43,8 +42,6 @@ class CommonMotifRecipe(val motif: Motif, val biomeCondition: BiomeCondition) {
 context(ModContext)
 fun initCommonMotifRecipe() {
     CommonMotifRecipeRecipeViewerCategoryCard.init()
-
-    BiomeCondition.Always.TRANSLATION.enJa()
 }
 
 object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<CommonMotifRecipe>() {
@@ -58,12 +55,12 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
     override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<CommonMotifRecipe>> {
         return COMMON_MOTIF_RECIPES
             .map {
-                val sortKey = when (val condition = it.biomeCondition) {
+                val prefix = when (val condition = it.biomeCondition) {
                     is BiomeCondition.Always -> "1_always"
-                    is BiomeCondition.BiomeKey -> "2_biome/" + condition.biome.location().pathString
+                    is BiomeCondition.BiomeKey -> "2_biome/" + condition.key.location().pathString
                     is BiomeCondition.BiomeTag -> "3_biome_tag/" + condition.biomeTag.location().pathString
                 }
-                val syntheticIdentifier = "$sortKey/" * it.motif.getIdentifier()!!
+                val syntheticIdentifier = "$prefix/" * it.motif.getIdentifier()!!
                 Pair(it, syntheticIdentifier)
             }
             .sortedBy { it.second }
@@ -74,11 +71,6 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
         view += XListView().configure {
             view.sizingX = Sizing.FILL
             val recipeText = recipeEntry.recipe.biomeCondition.getDisplayName()
-            val tooltip = when (val condition = recipeEntry.recipe.biomeCondition) {
-                is BiomeCondition.Always -> emptyList()
-                is BiomeCondition.BiomeKey -> emptyList()
-                is BiomeCondition.BiomeTag -> listOf(text { condition.biomeTag.location().string() })
-            }
             view += TextView(recipeText).configure {
                 position.alignmentY = Alignment.CENTER
                 position.weight = 1.0
@@ -86,7 +78,11 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
                 view.scroll = true
-                if (tooltip.isNotEmpty()) view.tooltip = tooltip
+                when (val condition = recipeEntry.recipe.biomeCondition) {
+                    is BiomeCondition.Always -> Unit
+                    is BiomeCondition.BiomeKey -> Unit
+                    is BiomeCondition.BiomeTag -> view.tooltip = listOf(text { condition.biomeTag.location().string() })
+                }
             }
             view += XSpaceView(2)
             view += OutputSlotView(recipeEntry.recipe.motif.createFairyItemStack())

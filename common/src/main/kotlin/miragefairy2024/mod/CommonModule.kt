@@ -83,6 +83,7 @@ object CommandEvents {
     val onRegisterClientSubCommand = InitializationEventRegistry<(LiteralArgumentBuilder<ClientCommandRegistrationEvent.ClientCommandSourceStack>) -> LiteralArgumentBuilder<ClientCommandRegistrationEvent.ClientCommandSourceStack>>()
 }
 
+val guiAlwaysTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.always" }, "Always", "常時")
 val guiFullScreenTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.full_screen" }, "Click to full screen", "クリックで全画面表示")
 val guiBackToGameTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.back_to_game" }, "Back to game", "ゲームに戻る")
 val guiDeadPlayer = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.dead_player" }, "Player %s is dead", "プレイヤー%sは死亡しています")
@@ -299,6 +300,7 @@ fun initCommonModule() {
         }
     }
 
+    guiAlwaysTranslation.enJa()
     guiFullScreenTranslation.enJa()
     guiBackToGameTranslation.enJa()
     guiDeadPlayer.enJa()

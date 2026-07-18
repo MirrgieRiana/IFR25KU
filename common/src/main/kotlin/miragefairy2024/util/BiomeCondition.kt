@@ -3,7 +3,7 @@ package miragefairy2024.util
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import miragefairy2024.MirageFairy2024
+import miragefairy2024.mod.guiAlwaysTranslation
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
@@ -37,22 +37,21 @@ sealed class BiomeCondition {
     abstract fun getDisplayName(): Component
 
     data object Always : BiomeCondition() {
-        val TRANSLATION = Translation({ "gui.${MirageFairy2024.identifier("common_motif_recipe").toLanguageKey()}.always" }, "Always", "常時")
         val CODEC: MapCodec<Always> = MapCodec.unit(Always)
         override fun test(biome: Holder<Biome>) = true
-        override fun getDisplayName() = text { translate(TRANSLATION.keyGetter()) }
+        override fun getDisplayName() = text { translate(guiAlwaysTranslation.keyGetter()) }
     }
 
-    class BiomeKey(val biome: ResourceKey<Biome>) : BiomeCondition() {
+    class BiomeKey(val key: ResourceKey<Biome>) : BiomeCondition() {
         companion object {
             val CODEC: MapCodec<BiomeKey> = RecordCodecBuilder.mapCodec { instance ->
                 instance.group(
-                    ResourceKey.codec(Registries.BIOME).fieldOf("Biome").forGetter { it.biome },
+                    ResourceKey.codec(Registries.BIOME).fieldOf("Biome").forGetter { it.key },
                 ).apply(instance, ::BiomeKey)
             }
         }
-        override fun test(biome: Holder<Biome>) = biome isIn this.biome
-        override fun getDisplayName() = text { translate(this@BiomeKey.biome.location().toLanguageKey("biome")) }
+        override fun test(biome: Holder<Biome>) = biome isIn key
+        override fun getDisplayName() = text { translate(key.location().toLanguageKey("biome")) }
     }
 
     class BiomeTag(val biomeTag: TagKey<Biome>) : BiomeCondition() {
@@ -63,7 +62,7 @@ sealed class BiomeCondition {
                 ).apply(instance, ::BiomeTag)
             }
         }
-        override fun test(biome: Holder<Biome>) = biome isIn this.biomeTag
+        override fun test(biome: Holder<Biome>) = biome isIn biomeTag
         override fun getDisplayName() = text { biomeTag.location().path() }
     }
 }
