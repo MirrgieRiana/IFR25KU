@@ -667,6 +667,9 @@ open class BlockMaterialCard(
                     TextureSlot.PARTICLE to "block/" * block().getIdentifier(),
                 )
             }
+            context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ ->
+                it.createSilkTouchOnlyTable(block())
+            }
         }.init {
             registerShapedRecipeGeneration(item) {
                 pattern("##")
