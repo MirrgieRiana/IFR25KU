@@ -18,7 +18,7 @@ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
 object AmberPrimevalForestBiomeCard : BiomeCard(
-    "amber_primeval_forest", EnJa("Amber Primeval Forest", "琥珀色の原生林"),
+    "amber_primeval_forest", EnJa("Old Growth Amber Forest", "琥珀色の原生林"),
     null,
     BiomeTags.IS_OVERWORLD, BiomeTags.IS_TAIGA,
 ) {
