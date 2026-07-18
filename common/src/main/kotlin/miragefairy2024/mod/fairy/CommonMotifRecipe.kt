@@ -19,6 +19,10 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.BiomeCondition
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.enJa
+import miragefairy2024.util.invoke
+import miragefairy2024.util.pathString
+import miragefairy2024.util.string
+import miragefairy2024.util.text
 import miragefairy2024.util.times
 import miragefairy2024.util.toIngredient
 import net.minecraft.core.RegistryAccess
@@ -54,7 +58,12 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
     override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<CommonMotifRecipe>> {
         return COMMON_MOTIF_RECIPES
             .map {
-                val syntheticIdentifier = "${it.biomeCondition.sortKey}/" * it.motif.getIdentifier()!!
+                val sortKey = when (val condition = it.biomeCondition) {
+                    is BiomeCondition.Always -> "1_always"
+                    is BiomeCondition.BiomeKey -> "2_biome/" + condition.biome.location().pathString
+                    is BiomeCondition.BiomeTag -> "3_biome_tag/" + condition.biomeTag.location().pathString
+                }
+                val syntheticIdentifier = "$sortKey/" * it.motif.getIdentifier()!!
                 Pair(it, syntheticIdentifier)
             }
             .sortedBy { it.second }
@@ -65,6 +74,11 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
         view += XListView().configure {
             view.sizingX = Sizing.FILL
             val recipeText = recipeEntry.recipe.biomeCondition.getDisplayName()
+            val tooltip = when (val condition = recipeEntry.recipe.biomeCondition) {
+                is BiomeCondition.Always -> emptyList()
+                is BiomeCondition.BiomeKey -> emptyList()
+                is BiomeCondition.BiomeTag -> listOf(text { condition.biomeTag.location().string() })
+            }
             view += TextView(recipeText).configure {
                 position.alignmentY = Alignment.CENTER
                 position.weight = 1.0
@@ -72,7 +86,6 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
                 view.scroll = true
-                val tooltip = recipeEntry.recipe.biomeCondition.getTooltip()
                 if (tooltip.isNotEmpty()) view.tooltip = tooltip
             }
             view += XSpaceView(2)
