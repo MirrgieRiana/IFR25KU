@@ -1118,24 +1118,21 @@ class MaterialCard(
             }
         }
         val FERMENTED_BLACK_TREACLE: MaterialCard = !MaterialCard(
-            "fermented_black_treacle", "Fermented Black Treacle", "発酵した黒蜜",
+            "fermented_black_treacle_bucket", "Fermented Black Treacle Bucket", "発酵した黒蜜入りバケツ",
             null,
-            recipeRemainder = Items.GLASS_BOTTLE,
-            foodComponentCreator = {
-                FoodProperties.Builder()
-                    .nutrition(4)
-                    .saturationModifier(0.1F)
-                    .build()
-            },
-            creator = { DrinkItem(it) },
+            recipeRemainder = Items.BUCKET,
+            creator = { Item(it.stacksTo(1)) },
         ) {
             registerSimpleMachineRecipeGeneration(
                 FermentationBarrelRecipeCard,
                 inputs = listOf(
-                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
-                    { SimpleMachineRecipe.Input(BLACK_TREACLE.item().toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(Items.BUCKET.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(BLACK_TREACLE.item().toIngredient(), 4) },
                 ),
-                outputs = listOf({ item().createItemStack() }),
+                outputs = listOf(
+                    { item().createItemStack() },
+                    { Items.GLASS_BOTTLE.createItemStack(4) },
+                ),
                 duration = 20 * 60 * 1,
             ) on BLACK_TREACLE.item
             ModEvents.onInitialize {
@@ -1160,9 +1157,12 @@ class MaterialCard(
                 AthanorRecipeCard,
                 inputs = listOf(
                     { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
-                    { SimpleMachineRecipe.Input(FERMENTED_BLACK_TREACLE.item().toIngredient(), 8) },
+                    { SimpleMachineRecipe.Input(FERMENTED_BLACK_TREACLE.item().toIngredient(), 2) },
                 ),
-                outputs = listOf({ item().createItemStack() }),
+                outputs = listOf(
+                    { item().createItemStack() },
+                    { Items.BUCKET.createItemStack(2) },
+                ),
                 duration = 20 * 60,
             ) on FERMENTED_BLACK_TREACLE.item
             ModEvents.onInitialize {
