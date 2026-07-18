@@ -94,6 +94,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.minecraft.world.level.material.MapColor
+import net.minecraft.world.level.material.PushReaction
 
 val AURA_RESISTANT_CERAMICS_TAG = MirageFairy2024.identifier("aura_resistant_ceramics").toItemTag()
 val AURA_RESISTANT_CERAMIC_SLABS_TAG = MirageFairy2024.identifier("aura_resistant_ceramic_slabs").toItemTag()
@@ -660,6 +661,7 @@ open class BlockMaterialCard(
             PoemList(null),
             MapColor.SAND, 0.5F, 0.5F,
         ) {
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().pushReaction(PushReaction.DESTROY)
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = EggBlock(properties)
             context(ModContext) override fun initModelGeneration() = block.registerModelGeneration {
                 Model(ResourceLocation("minecraft", "block/dragon_egg"), TextureSlot.ALL, TextureSlot.PARTICLE).with(

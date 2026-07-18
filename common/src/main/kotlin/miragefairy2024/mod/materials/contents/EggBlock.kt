@@ -11,17 +11,26 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.item.FallingBlockEntity
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.enchantment.Enchantments
+import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.FallingBlock
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.pathfinder.PathComputationType
+import net.minecraft.world.phys.shapes.CollisionContext
+import net.minecraft.world.phys.shapes.VoxelShape
 
 class EggBlock(settings: Properties) : FallingBlock(settings) {
     companion object {
         val CODEC: MapCodec<EggBlock> = simpleCodec(::EggBlock)
+        private val SHAPE: VoxelShape = Block.box(1.0, 0.0, 1.0, 15.0, 16.0, 15.0)
     }
 
     override fun codec() = CODEC
+
+    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = SHAPE
+
+    override fun isPathfindable(state: BlockState, pathComputationType: PathComputationType) = false
 
     private fun spawnChickens(level: Level, x: Double, y: Double, z: Double) {
         if (!level.random.randomBoolean(2, 1)) return
