@@ -135,12 +135,12 @@ enum class OreCard(
     ),
     MIRANAGITE_ORE(
         "miranagite_ore", "Miranagite Ore", "蒼天石鉱石",
-        PoemList(1).poem("What lies beyond a Garden of Eden?", "秩序の石は楽園の先に何を見るのか？"),
+        PoemList(2).poem("What lies beyond a Garden of Eden?", "秩序の石は楽園の先に何を見るのか？"),
         BaseStoneType.STONE, "miranagite_ore", MaterialCard.MIRANAGITE.item, 2 to 5,
     ),
     DEEPSLATE_MIRANAGITE_ORE(
         "deepslate_miranagite_ore", "Deepslate Miranagite Ore", "深層蒼天石鉱石",
-        PoemList(1).poem("Singularities built by the Creator", "楽園が楽園であるための奇跡。"),
+        PoemList(2).poem("Singularities built by the Creator", "楽園が楽園であるための奇跡。"),
         BaseStoneType.DEEPSLATE, "miranagite_ore", MaterialCard.MIRANAGITE.item, 2 to 5,
     ),
     DIRT_FAIRY_PLASTIC_ORE(
