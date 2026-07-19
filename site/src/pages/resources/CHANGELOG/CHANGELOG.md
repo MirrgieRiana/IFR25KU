@@ -24,6 +24,12 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 - toc
 {:toc}
 
+## 未リリース
+
+その他
+
+- 変更: 蒼天石鉱石・深層蒼天石鉱石のポエムの tier を 1 → 2 に変更。
+
 ## 31.31.2
 
 **NeoForgeの必要バージョンを21.1.219に上昇。**
