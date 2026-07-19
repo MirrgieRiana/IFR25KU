@@ -28,7 +28,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 
 その他
 
-- 変更: 土妖精のプラスチック鉱石にポエムを追加。
+- 追加: 土妖精のプラスチック鉱石にポエムを追加。
 
 ## 31.31.2
 
