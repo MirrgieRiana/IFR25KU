@@ -145,7 +145,7 @@ enum class OreCard(
     ),
     DIRT_FAIRY_PLASTIC_ORE(
         "dirt_fairy_plastic_ore", "Dirt Fairy Plastic Ore", "土妖精のプラスチック鉱石",
-        null,
+        PoemList(3).poem("An asteric condensation chamber.", "千年越しに見る光。"),
         BaseStoneType.DIRT, "fairy_plastic_ore", MaterialCard.FAIRY_PLASTIC.item, 10 to 20,
     ),
     ;
