@@ -24,6 +24,12 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 - toc
 {:toc}
 
+## 未リリース
+
+その他
+
+- 変更: 土妖精のプラスチック鉱石にポエムを追加。
+
 ## 31.31.2
 
 **NeoForgeの必要バージョンを21.1.219に上昇。**
