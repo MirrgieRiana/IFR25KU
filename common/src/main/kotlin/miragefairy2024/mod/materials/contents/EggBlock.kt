@@ -23,7 +23,7 @@ import net.minecraft.world.phys.shapes.VoxelShape
 class EggBlock(settings: Properties) : FallingBlock(settings) {
     companion object {
         val CODEC: MapCodec<EggBlock> = simpleCodec(::EggBlock)
-        private val SHAPE: VoxelShape = Block.box(1.0, 0.0, 1.0, 15.0, 16.0, 15.0)
+        private val SHAPE: VoxelShape = box(1.0, 0.0, 1.0, 15.0, 16.0, 15.0)
     }
 
     override fun codec() = CODEC
@@ -43,13 +43,12 @@ class EggBlock(settings: Properties) : FallingBlock(settings) {
         }
     }
 
-    // 卵は着地時に必ず割れて、ブロックとして残らず、自分自身もドロップしない
     override fun falling(entity: FallingBlockEntity) {
         entity.disableDrop()
     }
 
     override fun onBrokenAfterFall(level: Level, pos: BlockPos, fallingBlock: FallingBlockEntity) {
-        level.levelEvent(2001, pos, Block.getId(fallingBlock.blockState))
+        level.levelEvent(2001, pos, getId(fallingBlock.blockState))
         spawnChickens(level, pos.x + 0.5, pos.y.toDouble(), pos.z + 0.5)
     }
 
