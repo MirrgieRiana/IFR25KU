@@ -38,6 +38,11 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 
 - 変更: 生命の水のアタノールレシピの材料を卵から卵ブロックに変更。
 
+地形生成
+
+- 追加: オーバーワールドの草地に鳥の巣を追加。
+  - 麦俵と卵ブロックで構成された3×3の構造物。
+
 その他
 
 - 追加: 土妖精のプラスチック鉱石にポエムを追加。
