@@ -29,6 +29,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 その他
 
 - 追加: 土妖精のプラスチック鉱石にポエムを追加。
+- 表示: がれきの生成条件をレシピビューワーで確認できるようになった。
 
 ## 31.31.2
 
