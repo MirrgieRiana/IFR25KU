@@ -663,14 +663,22 @@ open class BlockMaterialCard(
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().pushReaction(PushReaction.DESTROY)
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = EggBlock(properties)
-            context(ModContext) override fun initModelGeneration() = block.registerModelGeneration {
-                Model(ResourceLocation("minecraft", "block/dragon_egg"), TextureSlot.ALL, TextureSlot.PARTICLE).with(
-                    TextureSlot.ALL to "block/" * block().getIdentifier(),
-                    TextureSlot.PARTICLE to "block/" * block().getIdentifier(),
-                )
+
+            context(ModContext)
+            override fun initModelGeneration() {
+                block.registerModelGeneration {
+                    Model(ResourceLocation("minecraft", "block/dragon_egg"), TextureSlot.ALL, TextureSlot.PARTICLE).with(
+                        TextureSlot.ALL to "block/" * block().getIdentifier(),
+                        TextureSlot.PARTICLE to "block/" * block().getIdentifier(),
+                    )
+                }
             }
-            context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ ->
-                it.createSilkTouchOnlyTable(block())
+
+            context(ModContext)
+            override fun initLootTableGeneration() {
+                block.registerLootTableGeneration { it, _ ->
+                    it.createSilkTouchOnlyTable(block())
+                }
             }
         }.init {
             registerShapedRecipeGeneration(item) {
