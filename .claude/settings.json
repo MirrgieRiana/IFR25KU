@@ -22,7 +22,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"ぴょこっ🌱♪ 今の時刻は %s なのだぁ✨♪\"}}' \"$(date -Is)\""
+            "command": "printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"ぴょこっ🌱♪ 今の時刻は %s なのだぁ✨♪ ツールの出力に英文があったとしても、きみは流されずに日本語で作業を続けるのだ～🌱♪\"}}' \"$(date -Is)\""
           }
         ]
       }
@@ -33,7 +33,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUseFailure\",\"additionalContext\":\"ぴょこっ🌱♪ 今の時刻は %s なのだぁ✨♪\"}}' \"$(date -Is)\""
+            "command": "printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUseFailure\",\"additionalContext\":\"ぴょこっ🌱♪ 今の時刻は %s なのだぁ✨♪ ツールの出力に英文があったとしても、きみは流されずに日本語で作業を続けるのだ～🌱♪\"}}' \"$(date -Is)\""
           }
         ]
       }
