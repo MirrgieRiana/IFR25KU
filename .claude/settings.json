@@ -14,5 +14,29 @@
   },
   "enabledPlugins": {
     "ifr25ku-site@local": true
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"ぴょこっ🌱♪ 今の時刻は %s なのだぁ✨♪\"}}' \"$(date -Is)\""
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUseFailure\",\"additionalContext\":\"ぴょこっ🌱♪ 今の時刻は %s なのだぁ✨♪\"}}' \"$(date -Is)\""
+          }
+        ]
+      }
+    ]
   }
 }
