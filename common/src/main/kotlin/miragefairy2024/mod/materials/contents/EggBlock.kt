@@ -43,12 +43,9 @@ class EggBlock(settings: Properties) : FallingBlock(settings) {
         }
     }
 
-    override fun falling(entity: FallingBlockEntity) {
-        entity.disableDrop()
-    }
-
-    override fun onBrokenAfterFall(level: Level, pos: BlockPos, fallingBlock: FallingBlockEntity) {
-        level.levelEvent(2001, pos, getId(fallingBlock.blockState))
+    override fun onLand(level: Level, pos: BlockPos, state: BlockState, replaceableState: BlockState, fallingBlock: FallingBlockEntity) {
+        level.removeBlock(pos, false)
+        level.levelEvent(2001, pos, getId(state))
         spawnChickens(level, pos.x + 0.5, pos.y.toDouble(), pos.z + 0.5)
     }
 
