@@ -36,7 +36,7 @@ class EggBlock(settings: Properties) : FallingBlock(settings) {
 
     private fun spawnChickens(level: Level, x: Double, y: Double, z: Double) {
         if (!level.random.randomBoolean(2, 1)) return
-        val count = if (level.random.randomBoolean(8, 1)) 4 else 1
+        val count = if (level.random.randomBoolean(32, 1)) 4 else 1
         repeat(count) {
             val chicken = EntityType.CHICKEN.create(level) ?: return@repeat
             chicken.setAge(-24000)
