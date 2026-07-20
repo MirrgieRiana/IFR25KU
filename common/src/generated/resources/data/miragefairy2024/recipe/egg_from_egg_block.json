@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "minecraft:egg",
+  "ingredients": [
+    {
+      "item": "miragefairy2024:egg_block"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "minecraft:egg"
+  }
+}
