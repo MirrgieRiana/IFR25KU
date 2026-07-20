@@ -1,0 +1,23 @@
+# ============================================================
+#   スフィアクラフト紹介スライドのビルドメイン（xarpite / API5）なのだぁ🌱
+#   global をマウントし、プラグイン・ページを読み込んでから、build 関数にビルドをまかせるのだぁ〜
+#   ビルド本体（素材の配置・HTML/CSS の生成・完了メッセージ）は global の build 関数の中なのだぁ🌱
+# ============================================================
+
+# このスクリプトが従う API バージョンを宣言するのだぁ🌱 ランタイムと食い違っていたらエラーになるのだぁ〜
+API(5)
+
+# global・プラグイン・ページを bare 名の USE で解決できるように、各ソースセットを INC に入れるのだぁ🌱
+INC::push << "src/main/xa1"
+INC::push << "src/plugins/xa1"
+INC::push << "src/pages/xa1"
+
+# global をマウントして、共有の登録簿（templates・pageGenerators・cssLines）と build 関数を取り出すのだぁ🌱
+@USE("global")
+
+# プラグインとページを名前順に読み込むのだぁ🌱 各プラグインは templates と cssLines へ、各ページは pageGenerators へ登録するのだぁ〜
+FILE_NAMES("src/plugins/xa1") >> SORT | fileName => USE(fileName)
+FILE_NAMES("src/pages/xa1") >> SORT | fileName => USE(fileName)
+
+# ビルド本体をまるごと build 関数にまかせるのだぁ🌱 出力先を渡すのだぁ〜
+build("build/site")

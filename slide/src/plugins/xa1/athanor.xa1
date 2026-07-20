@@ -1,0 +1,31 @@
+# athanor: アタノール窯（レンガ色）なのだぁ🌱 火の部分は🔥をimgで重ねるのだぁ〜。形状は固定なのでそのまま書くのだぁ🌱
+@USE("global")
+
+templates.athanor = () -> %>
+  <span class="athanor"><svg width="150" height="184" viewBox="0 0 150 184">
+    <rect x="1" y="10" width="148" height="160" rx="26" fill="#e09a7e"/>
+    <rect x="1" y="10" width="148" height="160" rx="26" fill="none" stroke="#9a4a32" stroke-width="5"/>
+    <line x1="1" y1="64" x2="149" y2="64" stroke="#9a4a32" stroke-width="3" opacity="0.55"/>
+    <line x1="1" y1="116" x2="149" y2="116" stroke="#9a4a32" stroke-width="3" opacity="0.55"/>
+    <line x1="75" y1="10" x2="75" y2="64" stroke="#9a4a32" stroke-width="3" opacity="0.4"/>
+    <line x1="38" y1="64" x2="38" y2="116" stroke="#9a4a32" stroke-width="3" opacity="0.4"/>
+    <line x1="112" y1="64" x2="112" y2="116" stroke="#9a4a32" stroke-width="3" opacity="0.4"/>
+    <rect x="15" y="-6" width="120" height="26" rx="12" fill="#9a4a32"/>
+    <path d="M 37 170 L 37 92 Q 75 40 113 92 L 113 170 Z" fill="#3a2a55"/>
+  </svg><img
+    class="decoration"
+    src="./fluentui-emoji/fire.svg"
+    style="left: 50%; top: 63%; width: 64px; height: 64px;"
+    alt=""
+  ></span>
+<%
+
+cssLines::push << %>
+  /* アタノール窯なのだぁ🌱 レンガ本体＋🔥を窯口に重ねるのだぁ〜 */
+  .athanor {
+    position: relative;
+    display: inline-block;
+    width: 150px;
+    height: 184px;
+  }
+<%

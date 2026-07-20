@@ -1,0 +1,49 @@
+# label: 汎用ラベルと色ユーティリティなのだぁ🌱
+@USE("global")
+
+# 汎用ラベル div なのだぁ🌱
+templates.label = className, text -> %><div class="<%= className %>"><%= text >> htmlEscape %></div><%
+
+# ---- 文字（ラベル）と色ユーティリティのCSSなのだぁ🌱 色ユーティリティは .label より後に置くのだぁ〜 ----
+cssLines::push << %>
+  .label {
+    font-size: var(--min-font-size);
+    font-weight: 900;
+    color: var(--ink);
+    text-align: center;
+    white-space: nowrap;
+  }
+  .label-sub {
+    font-size: var(--min-font-size);
+    font-weight: 800;
+    color: var(--ink-soft);
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* 色ユーティリティなのだぁ🌱 */
+  .ink {
+    color: var(--ink);
+  }
+  .ink-soft {
+    color: var(--ink-soft);
+  }
+  .pink-dark {
+    color: var(--pink-dark);
+  }
+  .purple-dark {
+    color: var(--purple-dark);
+  }
+  .aqua-dark {
+    color: var(--aqua-dark);
+  }
+  .gold-dark {
+    color: var(--gold-dark);
+  }
+  .brick-dark {
+    color: var(--brick-dark);
+  }
+  .green-dark {
+    color: var(--green-dark);
+  }
+<%
