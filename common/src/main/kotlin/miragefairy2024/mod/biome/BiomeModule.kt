@@ -52,6 +52,7 @@ fun initBiomeModule() {
 
     ElevatedSpawnerFeatureCard.init()
     MiragidianLampFeatureCard.init()
+    RetrospectiveCityWallRuinFeatureCard.init()
     RetrospectiveCitySmallRuinFeatureCard.init()
     RetrospectiveCityTinyRuinFeatureCard.init()
     XarperiaObeliskFeatureCard.init()
