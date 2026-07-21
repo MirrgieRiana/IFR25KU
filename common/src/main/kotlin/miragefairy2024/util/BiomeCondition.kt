@@ -42,16 +42,16 @@ sealed class BiomeCondition {
         override fun getDisplayName() = text { translate(guiAlwaysTranslation.keyGetter()) }
     }
 
-    class BiomeKey(val key: ResourceKey<Biome>) : BiomeCondition() {
+    class BiomeKey(val biomeKey: ResourceKey<Biome>) : BiomeCondition() {
         companion object {
             val CODEC: MapCodec<BiomeKey> = RecordCodecBuilder.mapCodec { instance ->
                 instance.group(
-                    ResourceKey.codec(Registries.BIOME).fieldOf("Biome").forGetter { it.key },
+                    ResourceKey.codec(Registries.BIOME).fieldOf("Biome").forGetter { it.biomeKey },
                 ).apply(instance, ::BiomeKey)
             }
         }
-        override fun test(biome: Holder<Biome>) = biome isIn key
-        override fun getDisplayName() = text { translate(key.location().toLanguageKey("biome")) }
+        override fun test(biome: Holder<Biome>) = biome isIn biomeKey
+        override fun getDisplayName() = text { translate(biomeKey.location().toLanguageKey("biome")) }
     }
 
     class BiomeTag(val biomeTag: TagKey<Biome>) : BiomeCondition() {

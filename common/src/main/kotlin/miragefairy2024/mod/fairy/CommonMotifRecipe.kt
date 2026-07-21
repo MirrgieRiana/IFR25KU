@@ -57,7 +57,7 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
             .map {
                 val prefix = when (val condition = it.biomeCondition) {
                     is BiomeCondition.Always -> "1_always"
-                    is BiomeCondition.BiomeKey -> "2_biome/" + condition.key.location().pathString
+                    is BiomeCondition.BiomeKey -> "2_biome/" + condition.biomeKey.location().pathString
                     is BiomeCondition.BiomeTag -> "3_biome_tag/" + condition.biomeTag.location().pathString
                 }
                 val syntheticIdentifier = "$prefix/" * it.motif.getIdentifier()!!
