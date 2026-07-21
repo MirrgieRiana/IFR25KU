@@ -39,7 +39,7 @@ sealed class BiomeCondition {
     data object Always : BiomeCondition() {
         val CODEC: MapCodec<Always> = MapCodec.unit(Always)
         override fun test(biome: Holder<Biome>) = true
-        override fun getDisplayName() = text { translate(guiAlwaysTranslation.keyGetter()) }
+        override fun getDisplayName() = text { guiAlwaysTranslation() }
     }
 
     class BiomeKey(val biomeKey: ResourceKey<Biome>) : BiomeCondition() {
@@ -65,6 +65,6 @@ sealed class BiomeCondition {
         }
 
         override fun test(biome: Holder<Biome>) = biome isIn biomeTag
-        override fun getDisplayName() = text { biomeTag.location().path() }
+        override fun getDisplayName(): Component = biomeTag.name
     }
 }
