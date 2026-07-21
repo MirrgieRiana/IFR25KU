@@ -41,6 +41,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 その他
 
 - 追加: 土妖精のプラスチック鉱石にポエムを追加。
+- 追加: 磁鉄鉱鉱石・深層磁鉄鉱鉱石・磁鉄鉱ブロックの採掘時に、所持ツールによらず粘着採掘が発動するようになった。
 
 ## 31.31.2
 
