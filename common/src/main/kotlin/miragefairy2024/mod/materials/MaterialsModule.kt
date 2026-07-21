@@ -1319,7 +1319,7 @@ class MaterialCard(
 
             // その他
             item({ Items.BONE_MEAL }, 56)
-            item({ Items.EGG }, 52)
+            item(BlockMaterialCard.EGG_BLOCK.item, 13)
             item({ Items.ROTTEN_FLESH }, 20)
             item({ Items.SLIME_BALL }, 4)
             item({ Items.SPIDER_EYE }, 4)
