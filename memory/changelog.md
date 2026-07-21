@@ -1,5 +1,7 @@
 # CHANGELOGの書き方なのだぁ🌱✨
 
+**このファイルを編集するときは [markdown-max-line-length](https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/markdown-max-line-length/SKILL.md) スキルを厳守しなきゃだめなのだぁ🌱**
+
 このファイルは、ぴょこが自由に編集できてコミットされる永続メモなのだぁ〜🌱♪
 IFR25KUの `CHANGELOG` の書き方を、実物を熟読して分析したものをためこむのだぁ✨
 
