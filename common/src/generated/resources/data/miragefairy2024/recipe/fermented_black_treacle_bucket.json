@@ -1,0 +1,29 @@
+{
+  "type": "miragefairy2024:fermentation_barrel",
+  "duration": 1200,
+  "group": "miragefairy2024:fermented_black_treacle_bucket",
+  "inputs": [
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:bucket"
+      }
+    },
+    {
+      "Amount": 4,
+      "Ingredient": {
+        "item": "miragefairy2024:black_treacle"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "miragefairy2024:fermented_black_treacle_bucket"
+    },
+    {
+      "count": 4,
+      "id": "minecraft:glass_bottle"
+    }
+  ]
+}
