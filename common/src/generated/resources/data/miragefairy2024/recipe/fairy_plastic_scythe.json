@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "miragefairy2024:fairy_plastic_scythe",
+  "key": {
+    "#": {
+      "tag": "c:gems/fairy_plastic"
+    },
+    "R": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    " ##",
+    "# R",
+    "  R"
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:fairy_plastic_scythe"
+  }
+}
