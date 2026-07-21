@@ -50,6 +50,7 @@ sealed class BiomeCondition {
                 ).apply(instance, ::BiomeKey)
             }
         }
+
         override fun test(biome: Holder<Biome>) = biome isIn biomeKey
         override fun getDisplayName() = text { translate(biomeKey.location().toLanguageKey("biome")) }
     }
@@ -62,6 +63,7 @@ sealed class BiomeCondition {
                 ).apply(instance, ::BiomeTag)
             }
         }
+
         override fun test(biome: Holder<Biome>) = biome isIn biomeTag
         override fun getDisplayName() = text { biomeTag.location().path() }
     }
