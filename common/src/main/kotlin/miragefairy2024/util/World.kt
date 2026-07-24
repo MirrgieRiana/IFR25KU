@@ -14,6 +14,7 @@ import net.minecraft.world.level.LightLayer
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.GameMasterBlock
+import net.minecraft.world.level.block.LevelEvent
 import net.minecraft.world.level.levelgen.Heightmap
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 import net.minecraft.world.phys.AABB
@@ -158,7 +159,7 @@ fun breakBlock(itemStack: ItemStack, world: Level, blockPos: BlockPos, player: S
     }
     if (player.blockActionRestricted(world, blockPos, player.gameMode.gameModeForPlayer)) return false // 破壊する権限がない
 
-    player.connection.send(ClientboundLevelEventPacket(2001, blockPos, Block.getId(blockState), false)) // playerWillDestroyは採掘者本人にはエフェクトを送らない
+    player.connection.send(ClientboundLevelEventPacket(LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, Block.getId(blockState), false)) // playerWillDestroyは採掘者本人にはエフェクトを送らない
     block.playerWillDestroy(world, blockPos, blockState, player)
     val success = world.removeBlock(blockPos, false)
     if (success) block.destroy(world, blockPos, blockState)
@@ -196,7 +197,7 @@ fun breakBlockByMagic(itemStack: ItemStack, world: Level, blockPos: BlockPos, pl
         }
         if (player.blockActionRestricted(world, blockPos, player.gameMode.gameModeForPlayer)) return false // 破壊する権限がない
 
-        player.connection.send(ClientboundLevelEventPacket(2001, blockPos, Block.getId(blockState), false)) // playerWillDestroyは採掘者本人にはエフェクトを送らない
+        player.connection.send(ClientboundLevelEventPacket(LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, Block.getId(blockState), false)) // playerWillDestroyは採掘者本人にはエフェクトを送らない
         block.playerWillDestroy(world, blockPos, blockState, player)
         val success = world.removeBlock(blockPos, false)
         if (success) block.destroy(world, blockPos, blockState)
