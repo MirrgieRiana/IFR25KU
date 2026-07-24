@@ -59,24 +59,25 @@ class BirdNestFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeat
         val eggBlockBlockState = BlockMaterialCard.EGG_BLOCK.block().defaultBlockState()
 
         // 置換可能ブロック、もしくは土や草系ブロックの場合に麦俵を配置するのだぁ🌱
-        fun tryPlaceHay(pos: BlockPos) {
-            val state = level.getBlockState(pos)
-            if (state.canBeReplaced() || state isIn BlockTags.DIRT) {
-                level.setBlock(pos, hayBlockBlockState, 2)
+        fun tryPlaceHayBlock(blockPos: BlockPos) {
+            val blockState = level.getBlockState(blockPos)
+            if (blockState.canBeReplaced() || blockState isIn BlockTags.DIRT) {
+                level.setBlock(blockPos, hayBlockBlockState, 2)
             }
         }
 
         // 置換可能ブロックの場合に卵ブロックを配置するのだぁ✨
-        fun tryPlaceEgg(pos: BlockPos) {
-            if (level.getBlockState(pos).canBeReplaced()) {
-                level.setBlock(pos, eggBlockBlockState, 2)
+        fun tryPlaceEggBlock(blockPos: BlockPos) {
+            val blockState = level.getBlockState(blockPos)
+            if (blockState.canBeReplaced()) {
+                level.setBlock(blockPos, eggBlockBlockState, 2)
             }
         }
 
         // 底面（Y-1）：3x3に麦俵を配置するのだぁ🌱
         (-1..1).forEach { dx ->
             (-1..1).forEach { dz ->
-                tryPlaceHay(originBlockPos.offset(dx, -1, dz))
+                tryPlaceHayBlock(originBlockPos.offset(dx, -1, dz))
             }
         }
 
@@ -84,7 +85,7 @@ class BirdNestFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeat
         (-1..1).forEach { dx ->
             (-1..1).forEach { dz ->
                 if (random.nextFloat() < 0.25f) {
-                    tryPlaceEgg(originBlockPos.offset(dx, 0, dz))
+                    tryPlaceEggBlock(originBlockPos.offset(dx, 0, dz))
                 }
             }
         }
@@ -93,7 +94,7 @@ class BirdNestFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeat
         listOf(-2, 2).forEach { dx ->
             (-1..1).forEach { dz ->
                 if (random.nextFloat() < 0.75f) {
-                    tryPlaceHay(originBlockPos.offset(dx, 0, dz))
+                    tryPlaceHayBlock(originBlockPos.offset(dx, 0, dz))
                 }
             }
         }
@@ -102,7 +103,7 @@ class BirdNestFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeat
         listOf(-2, 2).forEach { dz ->
             (-1..1).forEach { dx ->
                 if (random.nextFloat() < 0.75f) {
-                    tryPlaceHay(originBlockPos.offset(dx, 0, dz))
+                    tryPlaceHayBlock(originBlockPos.offset(dx, 0, dz))
                 }
             }
         }
