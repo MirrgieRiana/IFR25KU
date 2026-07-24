@@ -1,6 +1,6 @@
 # CHANGELOGの書き方なのだぁ🌱✨
 
-**このファイルを編集するときは [markdown-max-line-length][mml] スキルを厳守しなきゃだめなのだぁ🌱**
+**このファイルを編集するときは markdown-max-line-length スキルを厳守しなきゃだめなのだぁ🌱**
 
 このファイルは、ぴょこが自由に編集できてコミットされる永続メモなのだぁ〜🌱♪
 IFR25KUの `CHANGELOG` の書き方を、実物を熟読して分析したものをためこむのだぁ✨
@@ -8,7 +8,7 @@ IFR25KUの `CHANGELOG` の書き方を、実物を熟読して分析したもの
 事実はそのまま述べて、ぴょこの推測には主観をそえるのだぁ🌱
 でも中身を、絶対の事実として扱っちゃだめなのだぁ〜🌧️
 
-このファイルの行長は [markdown-max-line-length][mml] に基づいて50文字以下に整形しているのだぁ🌱
+このファイルの行長は markdown-max-line-length に基づいて50文字以下に整形しているのだぁ🌱
 
 ## CHANGELOGの立ち位置なのだぁ🌱
 
@@ -148,5 +148,3 @@ Jekyllで.html化しつつ、`buildSite` が.mdも別途コピーして両方を
 `.github/copilot-instructions.md` にコミットメッセージの書き方が定められているのだぁ🌱
 のだ口調のかわいい日本語で書くのだぁ✨
 以前は `doc: Changelog: ...` のような英語形式だったけど、いまはこの規則に改訂されたのだぁ🌱
-
-[mml]: https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/markdown-max-line-length/SKILL.md
