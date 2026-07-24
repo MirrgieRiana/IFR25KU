@@ -1,10 +1,15 @@
 package miragefairy2024.mod.enchantment.contents
 
+import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mixins.api.BlockCallback
 import miragefairy2024.mod.enchantment.EnchantmentCard
+import miragefairy2024.util.EnJa
+import miragefairy2024.util.enJa
 import miragefairy2024.util.get
+import miragefairy2024.util.isIn
 import miragefairy2024.util.isValid
+import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.toBox
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.entity.Entity
@@ -14,13 +19,17 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.AABB
 
+val STICKY_MINING_BLOCK_TAG = MirageFairy2024.identifier("sticky_mining_block").toBlockTag()
+
 context(ModContext)
 fun initStickyMining() {
+    STICKY_MINING_BLOCK_TAG.enJa(EnJa("Sticky Mining Block", "粘着採掘ブロック"))
+
     val listener = ThreadLocal<() -> Unit>()
-    BlockCallback.BEFORE_DROP_BY_ENTITY.register { _, level, pos, _, entity, tool ->
+    BlockCallback.BEFORE_DROP_BY_ENTITY.register { state, level, pos, _, entity, tool ->
         if (entity == null) return@register
         val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
-        if (stickyMiningLevel == 0) return@register
+        if (!(stickyMiningLevel > 0 || state isIn STICKY_MINING_BLOCK_TAG)) return@register
 
         val snapshot = StickyMiningSnapshot.take(level, pos.toBox())
         listener.set {
