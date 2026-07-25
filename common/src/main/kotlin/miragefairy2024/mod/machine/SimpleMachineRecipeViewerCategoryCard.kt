@@ -57,7 +57,7 @@ abstract class SimpleMachineRecipeViewerCategoryCard<R : SimpleMachineRecipe> : 
                 }
             }
         }
-        return recipeEntry.recipe.outputs.toMutableList() + remainingItemStacks
+        return recipeEntry.recipe.outputs + remainingItemStacks
     }
 
     abstract fun getRecipeCard(): SimpleMachineRecipeCard<R>
