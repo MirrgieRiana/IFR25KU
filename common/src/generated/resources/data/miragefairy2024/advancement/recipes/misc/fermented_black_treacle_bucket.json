@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_fermented_black_treacle_bucket": {
+    "has_black_treacle": {
       "conditions": {
         "items": [
           {
-            "items": "miragefairy2024:fermented_black_treacle_bucket"
+            "items": "miragefairy2024:black_treacle"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:rum"
+        "recipe": "miragefairy2024:fermented_black_treacle_bucket"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_fermented_black_treacle_bucket"
+      "has_black_treacle"
     ]
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:rum"
+      "miragefairy2024:fermented_black_treacle_bucket"
     ]
   }
 }

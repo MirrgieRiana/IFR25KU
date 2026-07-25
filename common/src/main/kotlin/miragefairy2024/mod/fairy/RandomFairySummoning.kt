@@ -12,7 +12,6 @@ import miragefairy2024.util.enJa
 import miragefairy2024.util.filled
 import miragefairy2024.util.getOrCreate
 import miragefairy2024.util.invoke
-import miragefairy2024.util.isIn
 import miragefairy2024.util.mutate
 import miragefairy2024.util.obtain
 import miragefairy2024.util.plus
@@ -191,13 +190,7 @@ fun getRandomFairy(random: RandomSource, motifSet: Set<Motif>, appearanceRateBon
 
 fun getCommonMotifSet(player: Player): Set<Motif> {
     val biome = player.level().getBiome(player.blockPosition())
-    return COMMON_MOTIF_RECIPES.filter {
-        when (it) {
-            is AlwaysCommonMotifRecipe -> true
-            is BiomeCommonMotifRecipe -> biome isIn it.biome
-            is BiomeTagCommonMotifRecipe -> biome isIn it.biomeTag
-        }
-    }.map { it.motif }.toSet()
+    return COMMON_MOTIF_RECIPES.filter { it.biomeCondition.test(biome) }.map { it.motif }.toSet()
 }
 
 fun Iterable<Motif>.toChanceTable(amplifier: Double = 1.0) = this.map { Chance((1.0 / 3.0).pow(it.rare - 1) * amplifier, it) } // 通常花粉・レア度1で100%になる
