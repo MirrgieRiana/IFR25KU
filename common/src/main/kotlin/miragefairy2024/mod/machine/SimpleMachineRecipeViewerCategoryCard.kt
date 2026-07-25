@@ -23,7 +23,6 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.gold
-import miragefairy2024.util.hasSameItemAndComponents
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.plus
@@ -42,20 +41,18 @@ abstract class SimpleMachineRecipeViewerCategoryCard<R : SimpleMachineRecipe> : 
     override fun getRecipeCodec(registryAccess: RegistryAccess): Codec<R> = getRecipeCard().serializer.codec().codec()
     override fun getInputs(recipeEntry: RecipeEntry<R>) = recipeEntry.recipe.inputs.map { input -> Input(input.ingredient.toIngredientStack(input.count), false) }
     override fun getOutputs(recipeEntry: RecipeEntry<R>): List<ItemStack> {
-        val result = recipeEntry.recipe.outputs.toMutableList()
-        // 各入力アイテムのレシピリマインダーも出力に含めるのだ～🌱
+        val remainders = mutableListOf<ItemStack>()
         recipeEntry.recipe.inputs.forEach { input ->
-            if (input.consumptionChance > 0.0) {
-                input.ingredient.items.forEach { itemStack ->
-                    val remainder = recipeEntry.recipe.getCustomizedRemainder(itemStack)
-                    if (remainder.isNotEmpty && result.none { it hasSameItemAndComponents remainder }) {
-                        result += remainder
-                    }
-                }
+            if (input.consumptionChance > 0.0) { // TODO 半端な確率で生成される容器の表示方法
+                val inputItemStack = input.ingredient.items.firstOrNull() ?: return@forEach // TODO 複数マッチする場合の表示方法
+                val remainder = recipeEntry.recipe.getCustomizedRemainder(inputItemStack)
+                if (!remainder.isNotEmpty) return@forEach
+                remainders += remainder
             }
         }
-        return result
+        return recipeEntry.recipe.outputs.toMutableList() + remainders
     }
+
     abstract fun getRecipeCard(): SimpleMachineRecipeCard<R>
     abstract fun getMachineCard(): SimpleMachineCard<*, *, *, R>
 

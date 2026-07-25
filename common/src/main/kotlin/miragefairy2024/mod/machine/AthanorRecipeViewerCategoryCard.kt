@@ -69,17 +69,10 @@ object AthanorRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<A
             }
 
             fun getOutput(index: Int) = recipeEntry.recipe.outputs.getOrNull(index) ?: ItemStack.EMPTY
-            view += OutputSlotView(getOutput(0)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(120, 30) - p)
-            }
-            view += OutputSlotView(getOutput(1)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(138, 30) - p)
-            }
-            view += OutputSlotView(getOutput(2)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(120, 48) - p)
-            }
-            view += OutputSlotView(getOutput(3)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(138, 48) - p)
+            recipeEntry.recipe.outputs.forEachIndexed { i, it ->
+                view += OutputSlotView(getOutput(0)).noBackground().noMargin().configure {
+                    position = AbsoluteView.Offset(IntPoint(120 + 18 * (i % 2), 30 + 18 * (i / 2)) - p)
+                }
             }
 
         }

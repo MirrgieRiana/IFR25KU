@@ -63,8 +63,10 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
                 view.shadow = false
             }
 
-            view += OutputSlotView(recipeEntry.recipe.outputs[0]).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(123, 35) - p)
+            recipeEntry.recipe.outputs.forEachIndexed { i, it ->
+                view += OutputSlotView(it).noBackground().noMargin().configure {
+                    position = AbsoluteView.Offset(IntPoint(123 + 18 * i, 35) - p)
+                }
             }
 
         }
