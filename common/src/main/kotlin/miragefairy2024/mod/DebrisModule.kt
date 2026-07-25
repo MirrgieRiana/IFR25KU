@@ -39,6 +39,7 @@ import miragefairy2024.util.square
 import miragefairy2024.util.string
 import miragefairy2024.util.surface
 import miragefairy2024.util.text
+import miragefairy2024.util.translate
 import miragefairy2024.util.unaryPlus
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.BuiltInRegistries
@@ -151,12 +152,12 @@ object DebrisRecipeViewerCategoryCard : RecipeViewerCategoryCard<DebrisCard>() {
                 view.scroll = true
                 when (val condition = recipeEntry.recipe.biomeCondition) {
                     is BiomeCondition.Always -> Unit
-                    is BiomeCondition.BiomeKey -> view.tooltip = listOf(text { condition.biomeKey.location().string() })
+                    is BiomeCondition.BiomeKey -> view.tooltip = listOf(text { translate(condition.biomeKey.location().toLanguageKey("biome")) })
                     is BiomeCondition.BiomeTag -> {
                         val biomes = recipeEntry.registryAccess.registryOrThrow(Registries.BIOME)[condition.biomeTag].toList()
                         val lines = mutableListOf<Component>()
                         lines += biomes.sortedBy { it.unwrapKey().get().location() }.take(10).map {
-                            text { it.unwrapKey().get().location().string() }
+                            text { translate(it.unwrapKey().get().location().toLanguageKey("biome")) }
                         }
                         if (biomes.size > 10) lines += text { "..."() } // TODO 完全なリストGUI
                         view.tooltip = lines
