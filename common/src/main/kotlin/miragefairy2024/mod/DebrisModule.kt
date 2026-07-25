@@ -28,6 +28,7 @@ import miragefairy2024.util.Registration
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
+import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.per
 import miragefairy2024.util.placeWhenVegetalDecoration
@@ -42,6 +43,7 @@ import miragefairy2024.util.unaryPlus
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
+import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BiomeTags
 import net.minecraft.util.valueproviders.IntProvider
@@ -51,7 +53,6 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration
 import net.minecraft.world.level.levelgen.placement.PlacementModifier
-import kotlin.jvm.optionals.getOrElse
 
 val DEBRIS_FEATURE = DebrisFeature(DebrisFeature.Config.CODEC)
 
@@ -152,9 +153,12 @@ object DebrisRecipeViewerCategoryCard : RecipeViewerCategoryCard<DebrisCard>() {
                     is BiomeCondition.Always -> Unit
                     is BiomeCondition.BiomeKey -> view.tooltip = listOf(text { condition.biomeKey.location().string() })
                     is BiomeCondition.BiomeTag -> {
-                        val biomeKeys = recipeEntry.registryAccess.registryOrThrow(Registries.BIOME).getTag(condition.biomeTag).getOrElse { listOf() }.map { it.unwrapKey().get() }.sortedBy { it.location() }
-                        val lines = biomeKeys.take(10).map { text { it.location().string() } }.toMutableList()
-                        if (biomeKeys.size > 10) lines += text { "..."() }
+                        val biomes = recipeEntry.registryAccess.registryOrThrow(Registries.BIOME)[condition.biomeTag].toList()
+                        val lines = mutableListOf<Component>()
+                        lines += biomes.sortedBy { it.unwrapKey().get().location() }.take(10).map {
+                            text { it.unwrapKey().get().location().string() }
+                        }
+                        if (biomes.size > 10) lines += text { "..."() } // TODO 完全なリストGUI
                         view.tooltip = lines
                     }
                 }

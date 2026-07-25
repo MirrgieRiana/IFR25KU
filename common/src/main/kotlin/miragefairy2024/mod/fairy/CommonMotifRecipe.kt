@@ -18,6 +18,7 @@ import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.BiomeCondition
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.pathString
 import miragefairy2024.util.string
@@ -25,6 +26,8 @@ import miragefairy2024.util.text
 import miragefairy2024.util.times
 import miragefairy2024.util.toIngredient
 import net.minecraft.core.RegistryAccess
+import net.minecraft.core.registries.Registries
+import net.minecraft.network.chat.Component
 
 val COMMON_MOTIF_RECIPES = mutableListOf<CommonMotifRecipe>()
 
@@ -81,7 +84,15 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
                 when (val condition = recipeEntry.recipe.biomeCondition) {
                     is BiomeCondition.Always -> Unit
                     is BiomeCondition.BiomeKey -> Unit
-                    is BiomeCondition.BiomeTag -> view.tooltip = listOf(text { condition.biomeTag.location().string() })
+                    is BiomeCondition.BiomeTag -> {
+                        val biomes = recipeEntry.registryAccess.registryOrThrow(Registries.BIOME)[condition.biomeTag].toList()
+                        val lines = mutableListOf<Component>()
+                        lines += biomes.sortedBy { it.unwrapKey().get().location() }.take(10).map {
+                            text { it.unwrapKey().get().location().string() }
+                        }
+                        if (biomes.size > 10) lines += text { "..."() } // TODO 完全なリストGUI
+                        view.tooltip = lines
+                    }
                 }
             }
             view += XSpaceView(2)
