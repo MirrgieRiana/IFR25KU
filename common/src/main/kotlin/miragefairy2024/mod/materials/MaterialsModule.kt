@@ -1097,6 +1097,7 @@ class MaterialCard(
                 FoodProperties.Builder()
                     .nutrition(6)
                     .saturationModifier(0.1F)
+                    .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 30), 1.0F)
                     .build()
             },
             creator = { DrinkItem(it) },
