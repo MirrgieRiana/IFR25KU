@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_egg": {
+    "has_egg_block": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:egg"
+            "items": "miragefairy2024:egg_block"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:aqua_vitae_from_egg"
+        "recipe": "miragefairy2024:aqua_vitae_from_egg_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_egg"
+      "has_egg_block"
     ]
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:aqua_vitae_from_egg"
+      "miragefairy2024:aqua_vitae_from_egg_block"
     ]
   }
 }

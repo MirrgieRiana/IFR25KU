@@ -32,6 +32,8 @@ jobs:
       # ビルド
       - name: ビルド
         run: ./gradlew :site:buildSite
+        env:
+          JEKYLL_ENV: production
 
       # デプロイ
       - name: デプロイ
