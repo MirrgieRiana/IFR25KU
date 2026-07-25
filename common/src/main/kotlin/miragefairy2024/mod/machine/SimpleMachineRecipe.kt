@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.DataGenerationEvents
 import miragefairy2024.ModContext
+import miragefairy2024.mod.CustomizedRemainderRegistry
 import miragefairy2024.util.RecipeGenerationSettings
 import miragefairy2024.util.Registration
 import miragefairy2024.util.getIdentifier
@@ -184,7 +185,12 @@ open class SimpleMachineRecipe(
         return match(inventory) != null
     }
 
-    open fun getCustomizedRemainder(itemStack: ItemStack): ItemStack = itemStack.item.getRecipeRemainder(itemStack)
+    fun getCustomizedRemainder(itemStack: ItemStack): ItemStack {
+        val remainder = itemStack.item.getRecipeRemainder(itemStack)
+        if (remainder.isNotEmpty) return remainder
+
+        return CustomizedRemainderRegistry.getCustomizedRemainder(itemStack)
+    }
 
     override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
         val matchResult = match(inventory) ?: return NonNullList.create()
