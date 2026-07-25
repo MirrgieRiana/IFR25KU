@@ -1095,8 +1095,8 @@ class MaterialCard(
             recipeRemainder = Items.GLASS_BOTTLE,
             foodComponentCreator = {
                 FoodProperties.Builder()
-                    .nutrition(4)
-                    .saturationModifier(0.3F)
+                    .nutrition(6)
+                    .saturationModifier(0.1F)
                     .build()
             },
             creator = { DrinkItem(it) },
@@ -1104,14 +1104,15 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
+                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
                     { SimpleMachineRecipe.Input(Items.SUGAR_CANE.toIngredient(), 16) },
                     { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
                 ),
                 outputs = listOf(
                     { item().createItemStack() },
-                    { Items.SUGAR.createItemStack(13) },
+                    { Items.SUGAR.createItemStack(24) },
                 ),
-                duration = 20 * 20,
+                duration = 20 * 10,
             ) on { Items.SUGAR_CANE }
             ModEvents.onInitialize {
                 FoodIngredientsRegistry.registry[item()] = FoodIngredients() + Items.SUGAR_CANE
@@ -1129,10 +1130,7 @@ class MaterialCard(
                     { SimpleMachineRecipe.Input(Items.BUCKET.toIngredient(), 1) },
                     { SimpleMachineRecipe.Input(BLACK_TREACLE.item().toIngredient(), 4) },
                 ),
-                outputs = listOf(
-                    { item().createItemStack() },
-                    { Items.GLASS_BOTTLE.createItemStack(4) },
-                ),
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 1,
             ) on BLACK_TREACLE.item
             ModEvents.onInitialize {
@@ -1159,10 +1157,7 @@ class MaterialCard(
                     { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
                     { SimpleMachineRecipe.Input(FERMENTED_BLACK_TREACLE.item().toIngredient(), 2) },
                 ),
-                outputs = listOf(
-                    { item().createItemStack() },
-                    { Items.BUCKET.createItemStack(2) },
-                ),
+                outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60,
             ) on FERMENTED_BLACK_TREACLE.item
             ModEvents.onInitialize {
