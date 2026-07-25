@@ -52,7 +52,7 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
                 view.shadow = false
             }
 
-            recipeEntry.recipe.outputs.forEachIndexed { i, it ->
+            getOutputs(recipeEntry).forEachIndexed { i, it ->
                 view += OutputSlotView(it).noBackground().noMargin().configure {
                     position = AbsoluteView.Offset(IntPoint(111 + 18 * i, 28) - p)
                 }
