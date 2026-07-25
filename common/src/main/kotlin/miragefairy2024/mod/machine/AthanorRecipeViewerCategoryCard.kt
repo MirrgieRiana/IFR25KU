@@ -26,7 +26,6 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.toIngredientStack
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.world.item.ItemStack
 
 object AthanorRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<AthanorRecipe>() {
     override fun getId() = MirageFairy2024.identifier("athanor")
@@ -68,18 +67,10 @@ object AthanorRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<A
                 view.shadow = false
             }
 
-            fun getOutput(index: Int) = recipeEntry.recipe.outputs.getOrNull(index) ?: ItemStack.EMPTY
-            view += OutputSlotView(getOutput(0)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(120, 30) - p)
-            }
-            view += OutputSlotView(getOutput(1)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(138, 30) - p)
-            }
-            view += OutputSlotView(getOutput(2)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(120, 48) - p)
-            }
-            view += OutputSlotView(getOutput(3)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(138, 48) - p)
+            getOutputs(recipeEntry).forEachIndexed { i, it ->
+                view += OutputSlotView(it).noBackground().noMargin().configure {
+                    position = AbsoluteView.Offset(IntPoint(120 + 18 * (i % 2), 30 + 18 * (i / 2)) - p)
+                }
             }
 
         }
