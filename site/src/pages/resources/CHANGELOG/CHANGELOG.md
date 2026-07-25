@@ -37,6 +37,8 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
   - アタノールで入手可能。
 - 追加: 素材アイテム「発酵した黒蜜入りバケツ」を追加。
   - 醸造樽で入手可能。
+- 追加: ブロック「石化した樹脂状の土」を追加。
+  - 採掘には石以上のシャベルが必要。
 
 レシピ
 

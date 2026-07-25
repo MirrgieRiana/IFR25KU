@@ -691,6 +691,12 @@ open class BlockMaterialCard(
                 requires(item())
             } on item modId MirageFairy2024.MOD_ID from item
         }
+        // TODO シルクタッチ無しで壊したときに石化した樹脂をドロップ
+        val PETRIFIED_RESINOUS_DIRT = !BlockMaterialCard(
+            "petrified_resinous_dirt", EnJa("Petrified Resinous Dirt", "石化した樹脂状の土"),
+            PoemList(4).poem(EnJa("TODO", "TODO")),
+            MapColor.COLOR_ORANGE, 1.5F, 3.0F,
+        ).sound(SoundType.GRAVEL).needTool(ToolType.SHOVEL, ToolLevel.STONE)
     }
 
     val identifier = MirageFairy2024.identifier(path)
