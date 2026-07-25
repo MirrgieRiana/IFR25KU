@@ -10,6 +10,7 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
+import miragefairy2024.util.get
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerClientDebugItem
 import miragefairy2024.util.toBlockTag
@@ -20,7 +21,6 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Blocks
-import kotlin.jvm.optionals.getOrElse
 
 enum class ItemTagCard(identifier: ResourceLocation, val title: EnJa) {
     ECHO_SHARDS(ResourceLocation("c", "echo_shards"), EnJa("Echo Shards", "残響の欠片")),
@@ -79,7 +79,7 @@ fun initVanillaModule() {
         val sb = StringBuilder()
         tags.sortedBy { it.location() }.forEach { tag ->
             sb.append("${tag.location()}\n")
-            val biomes = world.registryAccess().registryOrThrow(Registries.BIOME).getTag(tag).getOrElse { listOf() }.toList()
+            val biomes = world.registryAccess().registryOrThrow(Registries.BIOME)[tag].toList()
             biomes.sortedBy { it.unwrapKey().get().location() }.forEach { biome ->
                 sb.append("  ${biome.unwrapKey().get().location()}\n")
             }
