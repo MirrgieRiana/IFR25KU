@@ -13,6 +13,7 @@ import miragefairy2024.util.generator
 import miragefairy2024.util.get
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerClientDebugItem
+import miragefairy2024.util.string
 import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.toItemTag
 import miragefairy2024.util.toTextureSource
@@ -81,7 +82,7 @@ fun initVanillaModule() {
             sb.append("${tag.location()}\n")
             val biomes = world.registryAccess().registryOrThrow(Registries.BIOME)[tag].toList()
             biomes.sortedBy { it.unwrapKey().get().location() }.forEach { biome ->
-                sb.append("  ${biome.unwrapKey().get().location()}\n")
+                sb.append("  ${biome.unwrapKey().get().location().string}\n")
             }
         }
         writeAction(player, "dump_biome_tags.txt", sb.toString())
