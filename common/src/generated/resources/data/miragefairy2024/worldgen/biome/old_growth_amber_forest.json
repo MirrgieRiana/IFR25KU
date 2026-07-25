@@ -6,7 +6,7 @@
       "minecraft:canyon"
     ]
   },
-  "downfall": 0.8,
+  "downfall": 0.6,
   "effects": {
     "fog_color": 14729352,
     "foliage_color": 13209372,
@@ -29,7 +29,9 @@
       "minecraft:monster_room",
       "minecraft:monster_room_deep"
     ],
-    [],
+    [
+      "miragefairy2024:elevated_spawner"
+    ],
     [],
     [
       "minecraft:ore_dirt",
@@ -69,7 +71,11 @@
     ],
     [
       "minecraft:glow_lichen",
+      "minecraft:forest_flowers",
       "minecraft:patch_large_fern",
+      "minecraft:patch_grass_taiga_2",
+      "minecraft:brown_mushroom_taiga",
+      "minecraft:red_mushroom_taiga",
       "minecraft:trees_taiga",
       "minecraft:flower_default",
       "minecraft:patch_grass_taiga",
@@ -79,8 +85,7 @@
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:patch_sugar_cane",
-      "minecraft:patch_pumpkin",
-      "minecraft:patch_berry_common"
+      "minecraft:patch_pumpkin"
     ],
     [
       "minecraft:freeze_top_layer"
@@ -204,5 +209,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.25
+  "temperature": 0.4
 }

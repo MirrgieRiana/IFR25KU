@@ -1,7 +1,11 @@
 package miragefairy2024.mod.biome
 
 import miragefairy2024.ModContext
+import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.util.AdvancementCard
+import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.createItemStack
 import net.minecraft.core.HolderGetter
 import net.minecraft.data.worldgen.BiomeDefaultFeatures
 import net.minecraft.data.worldgen.placement.VegetationPlacements
@@ -19,14 +23,24 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
 object OldGrowthAmberForestBiomeCard : BiomeCard(
     "old_growth_amber_forest", EnJa("Old Growth Amber Forest", "琥珀色の原生林"),
-    advancementCreator = null,
-    BiomeTags.IS_OVERWORLD, BiomeTags.IS_TAIGA,
+    advancementCreator = {
+        AdvancementCard(
+            identifier = identifier,
+            context = AdvancementCard.Sub { FairyForestBiomeCard.advancement!!.await() },
+            icon = { MaterialCard.FAIRY_PLASTIC.item().createItemStack() }, // TODO →プラノキの苗木
+            name = EnJa("The Forest of Memories", "生きた化石"),
+            description = EnJa("Travel the overworld and discover the Old Growth Amber Forest", "地上を旅して琥珀色の原生林を探す"),
+            criterion = AdvancementCard.visit(key),
+            type = AdvancementCardType.TOAST_ONLY,
+        )
+    },
+    BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST,
 ) {
     override fun createBiome(placedFeatureLookup: HolderGetter<PlacedFeature>, configuredCarverLookup: HolderGetter<ConfiguredWorldCarver<*>>): Biome {
         return Biome.BiomeBuilder()
             .hasPrecipitation(true)
-            .temperature(0.25F)
-            .downfall(0.8F)
+            .temperature(0.4F)
+            .downfall(0.6F)
             .specialEffects(
                 BiomeSpecialEffects.Builder()
                     .waterColor(0x5B2A8A)
@@ -57,18 +71,20 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                 BiomeDefaultFeatures.addSurfaceFreezing(lookupBackedBuilder)
 
                 BiomeDefaultFeatures.addMossyStoneBlock(lookupBackedBuilder)
+                BiomeDefaultFeatures.addForestFlowers(lookupBackedBuilder)
                 BiomeDefaultFeatures.addFerns(lookupBackedBuilder)
 
                 BiomeDefaultFeatures.addDefaultOres(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultSoftDisks(lookupBackedBuilder)
 
-                // TREES_OLD_GROWTH_SPRUCE_TAIGA を TREES_TAIGA に差し替え（トウヒの巨木の撤去）
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, ElevatedSpawnerFeatureCard.placedFeatureKey)
+
+                BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_TAIGA)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
                 BiomeDefaultFeatures.addGiantTaigaVegetation(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultMushrooms(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
-                BiomeDefaultFeatures.addCommonBerryBushes(lookupBackedBuilder)
 
             }.build()).build()
     }
