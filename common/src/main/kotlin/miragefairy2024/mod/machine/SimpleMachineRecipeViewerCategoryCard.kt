@@ -23,7 +23,9 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.gold
+import miragefairy2024.util.hasSameItemAndComponents
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.plus
 import miragefairy2024.util.plusAssign
 import miragefairy2024.util.text
@@ -31,6 +33,7 @@ import miragefairy2024.util.toIngredientStack
 import mirrg.kotlin.helium.stripTrailingZeros
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.core.RegistryAccess
+import net.minecraft.world.item.ItemStack
 import kotlin.math.roundToInt
 
 abstract class SimpleMachineRecipeViewerCategoryCard<R : SimpleMachineRecipe> : RecipeViewerCategoryCard<R>() {
@@ -38,7 +41,21 @@ abstract class SimpleMachineRecipeViewerCategoryCard<R : SimpleMachineRecipe> : 
     override fun getWorkstations() = listOf(getMachineCard().item().createItemStack())
     override fun getRecipeCodec(registryAccess: RegistryAccess): Codec<R> = getRecipeCard().serializer.codec().codec()
     override fun getInputs(recipeEntry: RecipeEntry<R>) = recipeEntry.recipe.inputs.map { input -> Input(input.ingredient.toIngredientStack(input.count), false) }
-    override fun getOutputs(recipeEntry: RecipeEntry<R>) = recipeEntry.recipe.outputs
+    override fun getOutputs(recipeEntry: RecipeEntry<R>): List<ItemStack> {
+        val result = recipeEntry.recipe.outputs.toMutableList()
+        // 各入力アイテムのレシピリマインダーも出力に含めるのだ～🌱
+        recipeEntry.recipe.inputs.forEach { input ->
+            if (input.consumptionChance > 0.0) {
+                input.ingredient.items.forEach { itemStack ->
+                    val remainder = recipeEntry.recipe.getCustomizedRemainder(itemStack)
+                    if (remainder.isNotEmpty && result.none { it hasSameItemAndComponents remainder }) {
+                        result += remainder
+                    }
+                }
+            }
+        }
+        return result
+    }
     abstract fun getRecipeCard(): SimpleMachineRecipeCard<R>
     abstract fun getMachineCard(): SimpleMachineCard<*, *, *, R>
 
