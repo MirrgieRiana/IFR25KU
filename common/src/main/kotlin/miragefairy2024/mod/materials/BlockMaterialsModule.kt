@@ -728,6 +728,7 @@ open class BlockMaterialCard(
             item.registerBlockGeneratedModelGeneration(block)
             block.registerGrassColorProvider()
             item.registerRedirectColorProvider()
+            block.registerFlammable(60, 100)
         }
     }
 
