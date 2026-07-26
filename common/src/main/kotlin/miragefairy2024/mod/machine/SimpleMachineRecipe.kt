@@ -185,10 +185,9 @@ open class SimpleMachineRecipe(
         return match(inventory) != null
     }
 
-    fun getCustomizedRemainder(itemStack: ItemStack): ItemStack {
+    open fun getCustomizedRemainder(itemStack: ItemStack): ItemStack {
         val remainder = itemStack.item.getRecipeRemainder(itemStack)
         if (remainder.isNotEmpty) return remainder
-
         return CustomizedRemainderRegistry.getCustomizedRemainder(itemStack)
     }
 
