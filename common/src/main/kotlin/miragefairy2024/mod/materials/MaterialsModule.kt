@@ -9,7 +9,9 @@ import miragefairy2024.mod.FoodIngredientsRegistry
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.PoemType
-import miragefairy2024.mod.WaterBottleIngredient
+import miragefairy2024.mod.common.WaterBottleIngredient
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
+import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.description
 import miragefairy2024.mod.entity.ChaosCubeCard
 import miragefairy2024.mod.experienceStatusEffect
@@ -40,12 +42,10 @@ import miragefairy2024.mod.magicplant.contents.magicplants.XarpaLuminariaCard
 import miragefairy2024.mod.materials.contents.ApostleWandItem
 import miragefairy2024.mod.materials.contents.DrinkItem
 import miragefairy2024.mod.materials.contents.MinaItem
-import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.plus
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
-import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.mod.structure.WeatheredAncientRemnantsCard
 import miragefairy2024.mod.translation
 import miragefairy2024.util.AdvancementCard

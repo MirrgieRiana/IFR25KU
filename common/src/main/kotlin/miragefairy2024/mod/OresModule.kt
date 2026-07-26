@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.OreBlock
 import miragefairy2024.mod.biome.DeepFairyForestBiomeCard
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.enchantment.contents.STICKY_MINING_BLOCK_TAG
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.BiomeSelectorScope

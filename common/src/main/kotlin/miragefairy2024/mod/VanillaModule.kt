@@ -2,6 +2,7 @@ package miragefairy2024.mod
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.common.CustomizedRemainderRegistry
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.Shape
 import miragefairy2024.mod.materials.tag

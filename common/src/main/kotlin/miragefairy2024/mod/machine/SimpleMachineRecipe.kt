@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.DataGenerationEvents
 import miragefairy2024.ModContext
-import miragefairy2024.mod.CustomizedRemainderRegistry
+import miragefairy2024.mod.common.CustomizedRemainderRegistry
 import miragefairy2024.util.RecipeGenerationSettings
 import miragefairy2024.util.Registration
 import miragefairy2024.util.getIdentifier

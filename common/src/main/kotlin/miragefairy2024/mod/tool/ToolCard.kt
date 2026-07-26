@@ -4,6 +4,8 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.PoemList
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
+import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.enchantment.AREA_MINING_ENCHANTABLE_ITEM_TAG
 import miragefairy2024.mod.enchantment.BUILDERS_ROD_ITEM_TAG
 import miragefairy2024.mod.enchantment.EnchantmentCard
@@ -12,11 +14,9 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.Shape
 import miragefairy2024.mod.materials.tag
 import miragefairy2024.mod.materials.tagOf
-import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
-import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.mod.tool.effects.areaMining
 import miragefairy2024.mod.tool.effects.collection
 import miragefairy2024.mod.tool.effects.effective

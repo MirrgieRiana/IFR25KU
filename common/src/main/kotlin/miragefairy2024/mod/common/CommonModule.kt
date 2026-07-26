@@ -1,4 +1,4 @@
-package miragefairy2024.mod
+package miragefairy2024.mod.common
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
