@@ -30,6 +30,7 @@ import net.minecraft.advancements.AdvancementHolder
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistrySetBuilder
+import net.minecraft.core.registries.Registries
 import net.minecraft.data.CachedOutput
 import net.minecraft.data.DataProvider
 import net.minecraft.data.PackOutput
@@ -40,6 +41,7 @@ import net.minecraft.data.models.ItemModelGenerators
 import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.level.biome.FeatureSorter
 import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets
 import java.util.concurrent.CompletableFuture
@@ -138,6 +140,23 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                 override fun configure(registries: HolderLookup.Provider, entries: Entries) {
                     DataGenerationEvents.dynamicGenerationRegistries.forEach {
                         entries.addAll(registries.lookupOrThrow(it))
+                    }
+                }
+            }
+        }
+
+        // PlacedFeatureの循環検出
+        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
+            object : DataProvider {
+                override fun getName() = "Feature Order Cycle Validation"
+                override fun run(writer: CachedOutput): CompletableFuture<*> {
+                    return registriesFuture.thenAccept { registries ->
+                        val biomes = registries.lookupOrThrow(Registries.BIOME).listElements().toList()
+                        FeatureSorter.buildFeaturesPerStep(
+                            biomes,
+                            { it.value().generationSettings.features() },
+                            true,
+                        )
                     }
                 }
             }
