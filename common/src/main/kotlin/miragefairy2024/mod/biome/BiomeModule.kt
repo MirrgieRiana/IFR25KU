@@ -60,6 +60,7 @@ fun initBiomeModule() {
     FairyForestBiomeCard.init()
     DeepFairyForestBiomeCard.init()
     RetrospectiveCityBiomeCard.init()
+    OldGrowthAmberForestBiomeCard.init()
 
 }
 
