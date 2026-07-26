@@ -24,13 +24,16 @@ import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.gold
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.plus
 import miragefairy2024.util.plusAssign
 import miragefairy2024.util.text
 import miragefairy2024.util.toIngredientStack
+import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.helium.stripTrailingZeros
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.core.RegistryAccess
+import net.minecraft.world.item.ItemStack
 import kotlin.math.roundToInt
 
 abstract class SimpleMachineRecipeViewerCategoryCard<R : SimpleMachineRecipe> : RecipeViewerCategoryCard<R>() {
@@ -38,7 +41,25 @@ abstract class SimpleMachineRecipeViewerCategoryCard<R : SimpleMachineRecipe> : 
     override fun getWorkstations() = listOf(getMachineCard().item().createItemStack())
     override fun getRecipeCodec(registryAccess: RegistryAccess): Codec<R> = getRecipeCard().serializer.codec().codec()
     override fun getInputs(recipeEntry: RecipeEntry<R>) = recipeEntry.recipe.inputs.map { input -> Input(input.ingredient.toIngredientStack(input.count), false) }
-    override fun getOutputs(recipeEntry: RecipeEntry<R>) = recipeEntry.recipe.outputs
+    override fun getOutputs(recipeEntry: RecipeEntry<R>): List<ItemStack> {
+        val remainingItemStacks = mutableListOf<ItemStack>()
+        recipeEntry.recipe.inputs.forEach { input ->
+            if (input.consumptionChance > 0.0) { // TODO 半端な確率で生成される容器の表示方法
+                val inputItemStack = input.ingredient.items.firstOrNull() ?: return@forEach // TODO 複数マッチする場合の表示方法
+                val remainingItemStackSample = recipeEntry.recipe.getCustomizedRemainder(inputItemStack)
+                if (remainingItemStackSample.isNotEmpty) {
+                    var remainingItemStackCount = remainingItemStackSample.count * input.count
+                    while (remainingItemStackCount > 0) {
+                        val count = remainingItemStackCount atMost remainingItemStackSample.maxStackSize
+                        remainingItemStacks += remainingItemStackSample.copyWithCount(count)
+                        remainingItemStackCount -= count
+                    }
+                }
+            }
+        }
+        return recipeEntry.recipe.outputs + remainingItemStacks
+    }
+
     abstract fun getRecipeCard(): SimpleMachineRecipeCard<R>
     abstract fun getMachineCard(): SimpleMachineCard<*, *, *, R>
 

@@ -1,7 +1,6 @@
 package miragefairy2024.mod.fairy
 
 import com.mojang.serialization.Codec
-import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
@@ -17,86 +16,35 @@ import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.util.BiomeCondition
 import miragefairy2024.util.EnJa
-import miragefairy2024.util.Translation
-import miragefairy2024.util.enJa
+import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.pathString
-import miragefairy2024.util.string
 import miragefairy2024.util.text
 import miragefairy2024.util.times
 import miragefairy2024.util.toIngredient
 import miragefairy2024.util.translate
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceKey
-import net.minecraft.tags.TagKey
-import net.minecraft.world.level.biome.Biome
+import net.minecraft.network.chat.Component
 
 val COMMON_MOTIF_RECIPES = mutableListOf<CommonMotifRecipe>()
 
-sealed class CommonMotifRecipe(val motif: Motif) {
+class CommonMotifRecipe(val motif: Motif, val biomeCondition: BiomeCondition) {
     companion object {
-        val CODEC: Codec<CommonMotifRecipe> = Codec.STRING.dispatch(
-            "Type",
-            { recipe: CommonMotifRecipe ->
-                when (recipe) {
-                    is AlwaysCommonMotifRecipe -> "always"
-                    is BiomeCommonMotifRecipe -> "biome"
-                    is BiomeTagCommonMotifRecipe -> "biome_tag"
-                }
-            },
-            { type: String ->
-                when (type) {
-                    "always" -> AlwaysCommonMotifRecipe.CODEC
-                    "biome" -> BiomeCommonMotifRecipe.CODEC
-                    "biome_tag" -> BiomeTagCommonMotifRecipe.CODEC
-                    else -> throw IllegalArgumentException("Unknown CommonMotifRecipe type: $type")
-                }
-            }
-        )
-    }
-}
-
-class AlwaysCommonMotifRecipe(motif: Motif) : CommonMotifRecipe(motif) {
-    companion object {
-        val CODEC: MapCodec<AlwaysCommonMotifRecipe> = RecordCodecBuilder.mapCodec { instance ->
+        val CODEC: Codec<CommonMotifRecipe> = RecordCodecBuilder.create { instance ->
             instance.group(
                 motifRegistry.byNameCodec().fieldOf("Motif").forGetter { it.motif },
-            ).apply(instance, ::AlwaysCommonMotifRecipe)
+                BiomeCondition.CODEC.fieldOf("BiomeCondition").forGetter { it.biomeCondition },
+            ).apply(instance, ::CommonMotifRecipe)
         }
     }
 }
-
-class BiomeCommonMotifRecipe(motif: Motif, val biome: ResourceKey<Biome>) : CommonMotifRecipe(motif) {
-    companion object {
-        val CODEC: MapCodec<BiomeCommonMotifRecipe> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
-                motifRegistry.byNameCodec().fieldOf("Motif").forGetter { it.motif },
-                ResourceKey.codec(Registries.BIOME).fieldOf("Biome").forGetter { it.biome }
-            ).apply(instance, ::BiomeCommonMotifRecipe)
-        }
-    }
-}
-
-class BiomeTagCommonMotifRecipe(motif: Motif, val biomeTag: TagKey<Biome>) : CommonMotifRecipe(motif) {
-    companion object {
-        val CODEC: MapCodec<BiomeTagCommonMotifRecipe> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
-                motifRegistry.byNameCodec().fieldOf("Motif").forGetter { it.motif },
-                TagKey.codec(Registries.BIOME).fieldOf("BiomeTag").forGetter { it.biomeTag }
-            ).apply(instance, ::BiomeTagCommonMotifRecipe)
-        }
-    }
-}
-
-val COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION = Translation({ "gui.${MirageFairy2024.identifier("common_motif_recipe").toLanguageKey()}.always" }, "Always", "常時")
 
 context(ModContext)
 fun initCommonMotifRecipe() {
     CommonMotifRecipeRecipeViewerCategoryCard.init()
-
-    COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION.enJa()
 }
 
 object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<CommonMotifRecipe>() {
@@ -110,10 +58,10 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
     override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<CommonMotifRecipe>> {
         return COMMON_MOTIF_RECIPES
             .map {
-                val prefix = when (it) {
-                    is AlwaysCommonMotifRecipe -> "1_always"
-                    is BiomeCommonMotifRecipe -> "2_biome/" + it.biome.location().pathString
-                    is BiomeTagCommonMotifRecipe -> "3_biome_tag/" + it.biomeTag.location().pathString
+                val prefix = when (val condition = it.biomeCondition) {
+                    is BiomeCondition.Always -> "1_always"
+                    is BiomeCondition.BiomeKey -> "2_biome/" + condition.biomeKey.location().pathString
+                    is BiomeCondition.BiomeTag -> "3_biome_tag/" + condition.biomeTag.location().pathString
                 }
                 val syntheticIdentifier = "$prefix/" * it.motif.getIdentifier()!!
                 Pair(it, syntheticIdentifier)
@@ -125,11 +73,7 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
     override fun createView(recipeEntry: RecipeEntry<CommonMotifRecipe>) = View {
         view += XListView().configure {
             view.sizingX = Sizing.FILL
-            val recipeText = when (val recipe = recipeEntry.recipe) {
-                is AlwaysCommonMotifRecipe -> text { COMMON_MOTIF_RECIPE_ALWAYS_TRANSLATION() }
-                is BiomeCommonMotifRecipe -> text { translate(recipe.biome.location().toLanguageKey("biome")) }
-                is BiomeTagCommonMotifRecipe -> text { recipe.biomeTag.location().path() }
-            }
+            val recipeText = recipeEntry.recipe.biomeCondition.getDisplayName()
             view += TextView(recipeText).configure {
                 position.alignmentY = Alignment.CENTER
                 position.weight = 1.0
@@ -137,10 +81,18 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
                 view.scroll = true
-                when (val recipe = recipeEntry.recipe) {
-                    is AlwaysCommonMotifRecipe -> Unit
-                    is BiomeCommonMotifRecipe -> Unit
-                    is BiomeTagCommonMotifRecipe -> view.tooltip = listOf(text { recipe.biomeTag.location().string() })
+                when (val condition = recipeEntry.recipe.biomeCondition) {
+                    is BiomeCondition.Always -> Unit
+                    is BiomeCondition.BiomeKey -> view.tooltip = listOf(text { translate(condition.biomeKey.location().toLanguageKey("biome")) })
+                    is BiomeCondition.BiomeTag -> {
+                        val biomes = recipeEntry.registryAccess.registryOrThrow(Registries.BIOME)[condition.biomeTag].toList()
+                        val lines = mutableListOf<Component>()
+                        lines += biomes.sortedBy { it.unwrapKey().get().location() }.take(10).map {
+                            text { translate(it.unwrapKey().get().location().toLanguageKey("biome")) }
+                        }
+                        if (biomes.size > 10) lines += text { "..."() } // TODO 完全なリストGUI
+                        view.tooltip = lines
+                    }
                 }
             }
             view += XSpaceView(2)

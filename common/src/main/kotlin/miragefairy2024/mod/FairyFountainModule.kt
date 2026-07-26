@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.SimpleHorizontalFacingBlock
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.fairy.CondensedMotifChance
 import miragefairy2024.mod.fairy.FairyStatueCard
 import miragefairy2024.mod.fairy.Motif

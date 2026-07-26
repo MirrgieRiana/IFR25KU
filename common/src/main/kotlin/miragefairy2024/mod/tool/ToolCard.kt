@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.PoemList
+import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.enchantment.AREA_MINING_ENCHANTABLE_ITEM_TAG
 import miragefairy2024.mod.enchantment.BUILDERS_ROD_ITEM_TAG
 import miragefairy2024.mod.enchantment.EnchantmentCard
@@ -12,11 +13,9 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.Shape
 import miragefairy2024.mod.materials.tag
 import miragefairy2024.mod.materials.tagOf
-import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
-import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.mod.tool.effects.areaMining
 import miragefairy2024.mod.tool.effects.collection
 import miragefairy2024.mod.tool.effects.effective
@@ -44,6 +43,7 @@ import miragefairy2024.mod.tool.items.FairyToolProperties
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.ItemGroupCard
 import miragefairy2024.util.Registration
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
@@ -67,6 +67,10 @@ import net.minecraft.world.item.enchantment.Enchantments
 
 val MINEABLE_WITH_NOISE_BLOCK_TAG = MirageFairy2024.identifier("mineable/noise").toBlockTag()
 
+val toolsItemGroupCard = ItemGroupCard(
+    MirageFairy2024.identifier("tools"), "IFR25KU Tools", "IFR25KU ツール",
+) { ToolCard.XARPITE_PICKAXE.item().createItemStack() }
+
 val buildersRodAdvancement = AdvancementCard(
     identifier = MirageFairy2024.identifier("builders_rod"),
     context = AdvancementCard.Sub { rootAdvancement.await() },
@@ -80,6 +84,7 @@ val buildersRodAdvancement = AdvancementCard(
 context(ModContext)
 fun initToolCard() {
     MINEABLE_WITH_NOISE_BLOCK_TAG.enJa(EnJa("Mineable with noise", "ノイズで採掘可能"))
+    toolsItemGroupCard.init()
     buildersRodAdvancement.init()
     ToolCard.entries.forEach {
         it.init()
@@ -508,7 +513,7 @@ class ToolCard(
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_SHOVEL = !ToolCard(
             "fairy_plastic_shovel", EnJa("Fairy Plastic Shovel", "妖精のプラスチックのシャベル"),
-            PoemList(4).poem(EnJa("Were you grown in earth, or a furnace?", "土から産まれ、土に還る。")),
+            PoemList(4).poem(EnJa("Were you grown in earth, or a furnace?", "土から産まれ、土へと還る。")),
             FairyShovelConfiguration(ToolMaterialCard.FAIRY_PLASTIC).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
         ) { registerShovelRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_SWORD = !ToolCard(
@@ -559,7 +564,7 @@ class ToolCard(
     fun init() {
         item.register()
 
-        item.registerItemGroup(mirageFairy2024ItemGroupCard.itemGroupKey)
+        item.registerItemGroup(toolsItemGroupCard.itemGroupKey)
 
         item.registerModelGeneration(ModelTemplates.FLAT_HANDHELD_ITEM)
 

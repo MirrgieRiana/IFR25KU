@@ -160,6 +160,7 @@ context(BiomeSelectorScope) val nether: Predicate<BiomeSelectionContext> get() =
 context(BiomeSelectorScope) val end: Predicate<BiomeSelectionContext> get() = +BiomeTags.IS_END // 上と同じ
 context(BiomeSelectorScope) operator fun ResourceKey<Biome>.unaryPlus(): Predicate<BiomeSelectionContext> = BiomeSelectors.includeByKey(this)
 context(BiomeSelectorScope) operator fun TagKey<Biome>.unaryPlus(): Predicate<BiomeSelectionContext> = BiomeSelectors.tag(this)
+context(BiomeSelectorScope) operator fun BiomeCondition.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { this.test(it.biomeRegistryEntry) }
 context(BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.not(): Predicate<BiomeSelectionContext> = this.negate()
 context(BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.times(other: Predicate<BiomeSelectionContext>): Predicate<BiomeSelectionContext> = this.and(other)
 context(BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.plus(other: Predicate<BiomeSelectionContext>): Predicate<BiomeSelectionContext> = this.or(other)

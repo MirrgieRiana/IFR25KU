@@ -3,6 +3,7 @@ import io.github.themrmilchmann.gradle.publish.curseforge.ChangelogFormat
 import io.github.themrmilchmann.gradle.publish.curseforge.GameVersion
 import io.github.themrmilchmann.gradle.publish.curseforge.ReleaseType
 import net.fabricmc.loom.task.RemapJarTask
+import publishing.CurseforgeClient
 
 plugins {
     id("com.github.johnrengelman.shadow")
@@ -158,7 +159,7 @@ modrinth {
     additionalFiles.add(tasks["sourcesJar"])
     //gameVersions = ["1.20.2"]
     //loaders = ["neoforge"]
-    changelog.set("This project maintains a comprehensive [CHANGELOG](https://mirrgieriana.github.io/IFR25KU/CHANGELOG.html) in Japanese.")
+    changelog.set("This project maintains a comprehensive [CHANGELOG](https://ifr25ku.mirrgieriana.net/CHANGELOG.html) in Japanese.")
     dependencies {
         required.project("forgified-fabric-api")
         required.project("kotlin-for-forge")
@@ -187,7 +188,7 @@ curseforge {
             releaseType = if ("alpha" in project.version.toString()) ReleaseType.ALPHA else if ("beta" in project.version.toString()) ReleaseType.BETA else ReleaseType.RELEASE
             changelog {
                 format = ChangelogFormat.MARKDOWN
-                content = "This project maintains a comprehensive [CHANGELOG](https://mirrgieriana.github.io/IFR25KU/CHANGELOG.html) in Japanese."
+                content = "This project maintains a comprehensive [CHANGELOG](https://ifr25ku.mirrgieriana.net/CHANGELOG.html) in Japanese."
             }
             relations {
                 requiredDependency("forgified-fabric-api")

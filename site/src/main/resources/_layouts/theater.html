@@ -1,0 +1,252 @@
+---
+layout: default
+---
+{%- assign locale = page.locale | default: layout.locale | default: site.locale %}
+
+{% if page.header.overlay_color or page.header.overlay_image or page.header.image %}
+  {% include page__hero.html locale=locale %}
+{% endif %}
+
+{% assign breadcrumbs_enabled = site.breadcrumbs %}
+{% if page.breadcrumbs != null %}
+  {% assign breadcrumbs_enabled = page.breadcrumbs %}
+{% endif %}
+{% if page.url != "/" and breadcrumbs_enabled %}
+  {% unless paginator %}
+    {% include breadcrumbs.html locale=locale %}
+  {% endunless %}
+{% endif %}
+
+<div id="main" role="main">
+  {% include sidebar.html locale=locale %}
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork"{% if page.locale %} lang="{{ page.locale }}"{% endif %}>
+    {% if page.title %}<meta itemprop="headline" content="{{ page.title | replace: '|', '&#124;' | markdownify | strip_html | strip_newlines | escape_once }}">{% endif %}
+    {% if page.excerpt %}<meta itemprop="description" content="{{ page.excerpt | markdownify | strip_html | strip_newlines | escape_once }}">{% endif %}
+    {% if page.date %}<meta itemprop="datePublished" content="{{ page.date | date_to_xmlschema }}">{% endif %}
+    {% if page.last_modified_at %}<meta itemprop="dateModified" content="{{ page.last_modified_at | date_to_xmlschema }}">{% endif %}
+
+    <div class="page__inner-wrap">
+      <aside class="sidebar__right theater__sidebar">
+        <header><h4 class="nav__title"><i class="fas fa-film"></i> 関連記事</h4></header>
+        <div class="theater-recommendations"></div>
+      </aside>
+
+      {% unless page.header.overlay_color or page.header.overlay_image %}
+        <header{% unless page.header.image %} class="page__header--plain"{% endunless %}>
+          {% if page.title -%}
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            {{ page.title | markdownify | remove: "<p>" | remove: "</p>" }}
+          </h1>
+          {%- endif %}
+          {% include page__meta.html locale=locale %}
+        </header>
+      {% endunless %}
+
+      {% if page.header.teaser and page.header.image == nil and page.header.overlay_image == nil %}
+        <img src="{{ page.header.teaser | relative_url }}" alt="{{ page.title | escape }}" class="page__teaser-banner">
+      {% endif %}
+
+      <section class="page__content e-content" itemprop="text">
+        {{ content }}
+      </section>
+
+      <section class="page__recommend">
+        <h3 class="page__recommend-title"><i class="fas fa-film"></i> 他の記事を読む</h3>
+        <div class="page__recommend-grid"></div>
+      </section>
+
+      <footer class="page__meta">
+        {% if site.data.ui-text[locale].meta_label %}
+          <h4 class="page__meta-title">{{ site.data.ui-text[locale].meta_label }}</h4>
+        {% endif %}
+        {% include page__taxonomy.html locale=locale %}
+        {% include page__date.html locale=locale %}
+      </footer>
+
+      {% include social-share.html locale=locale %}
+
+      {% include post_pagination.html locale=locale %}
+    </div>
+  </article>
+</div>
+
+<script>
+(async () => {
+
+  // ============================================================
+  // createCard: 記事1件分のカードDOM要素を生成して返す
+  //
+  //  構造:
+  //    <a class="recent-posts__card" href="...">
+  //      <div class="recent-posts__teaser">
+  //        <img ...>  ← teaserがある場合のみ
+  //      </div>
+  //      <div class="recent-posts__body">
+  //        <h3 class="recent-posts__title">...</h3>
+  //      </div>
+  //    </a>
+  //
+  //  テキストは textContent で設定するため、HTMLエスケープ不要。
+  // ============================================================
+
+  function createCard(post) {
+    const card = document.createElement('a');
+    card.href = post.url;
+    card.className = 'recent-posts__card';
+
+    const teaser = document.createElement('div');
+    teaser.className = 'recent-posts__teaser';
+    if (post.teaser) {
+      const img = document.createElement('img');
+      img.src = post.teaser;
+      img.alt = '';
+      teaser.appendChild(img);
+    }
+    card.appendChild(teaser);
+
+    const body = document.createElement('div');
+    body.className = 'recent-posts__body';
+    const title = document.createElement('h3');
+    title.className = 'recent-posts__title';
+    title.textContent = post.title;
+    body.appendChild(title);
+    card.appendChild(body);
+
+    return card;
+  }
+
+  // ============================================================
+  // weightedSample: 重み付き非復元ランダムサンプリング
+  //
+  //  引数:
+  //    items … { post, weight } の配列。weight は正の数。
+  //    count … 取り出す件数。
+  //
+  //  仕組み（1件取り出すたびに繰り返す）:
+  //    1. 残り候補の weight を合計する
+  //    2. [0, 合計) の一様乱数を生成する
+  //    3. 先頭から順に weight を乱数から引いていき、
+  //       初めて 0 以下になったインデックスの記事を選ぶ
+  //    4. 選んだ記事を残り候補から取り除く
+  //
+  //  例: weight が [1, 3, 1] の3件なら合計=5 で、
+  //      選ばれる確率はそれぞれ 1/5・3/5・1/5。
+  // ============================================================
+
+  function weightedSample(items, count) {
+    const result = [];
+    const remaining = items.slice();
+
+    while (result.length < count && remaining.length > 0) {
+      const totalWeight = remaining.reduce((sum, item) => sum + item.weight, 0);
+      let rand = Math.random() * totalWeight;
+
+      // rand から各候補の weight を引いていき、0 以下になった位置で選ぶ。
+      // ループの終端（最後の1件）は必ず選ばれるようにするため、
+      // `remaining.length - 1` までしかループしない。
+      let selectedIndex = remaining.length - 1;
+      for (let i = 0; i < remaining.length - 1; i++) {
+        rand -= remaining[i].weight;
+        if (rand <= 0) {
+          selectedIndex = i;
+          break;
+        }
+      }
+
+      result.push(remaining[selectedIndex].post);
+      remaining.splice(selectedIndex, 1);
+    }
+
+    return result;
+  }
+
+  // 最終訪問からの経過日数に応じた訪問係数を返す。
+  //   未訪問          → 1
+  //   7日未満         → 1/3
+  //   7日以上365日未満 → 2/3
+  //   365日以上       → 1（抑制なし、未訪問と同等）
+  function getVisitMultiplier(lastVisited) {
+    if (lastVisited === undefined) return 1;
+    const elapsed = Date.now() - lastVisited;
+    const DAY_MS = 24 * 60 * 60 * 1000;
+    if (elapsed < 7 * DAY_MS) return 1/3;
+    if (elapsed < 365 * DAY_MS) return 2/3;
+    return 1;
+  }
+
+  // ============================================================
+  // 1. コンテナ要素を取得
+  // ============================================================
+
+  const sidebarContainer = document.querySelector('.theater-recommendations');
+  const recommendContainer = document.querySelector('.page__recommend-grid');
+  const currentUrl = '{{ page.url | relative_url }}';
+  const currentTags = {{ page.tags | jsonify }};
+
+  // ============================================================
+  // 2. posts.json を取得
+  //
+  //    Jekyll プラグイン posts_generator.rb がビルド時に生成するファイル。
+  //    全記事の { title, url, teaser, tags } を配列で持つ。
+  // ============================================================
+
+  const posts = await fetch('{{ "/posts.json" | relative_url }}').then(r => r.json());
+
+  // ============================================================
+  // 3. 候補の絞り込み
+  //
+  //    現在ページ自身は「関連記事」として表示しても意味がないため除外する。
+  // ============================================================
+
+  const candidates = posts.filter(post => post.url !== currentUrl);
+
+  // ============================================================
+  // 4. 訪問記録の取得
+  //
+  //    LocalStorage から訪問記録を読み込む。
+  //    形式は { "/page-url": timestamp_ms, ... }。
+  // ============================================================
+
+  const visits = window.ifr25ku.loadJson('ifr25ku:visits:pages', {});
+
+  // ============================================================
+  // 5. 重みの計算
+  //
+  //    現在ページとタグが多く被るほど関連性が高いとみなし、高い重みを与える。
+  //
+  //      weight = ((現在ページのタグと一致するタグの数) + 1) × 訪問係数
+  //
+  //    +1 は「タグが全く被らない記事」を抽選から完全に排除しないための底上げ。
+  //    これにより、記事数が少ない状況でも件数を埋めることができる。
+  //
+  //    例: currentTags = ["アタノール", "ミラージュフェアリー劇場"] のとき（未訪問）
+  //      タグ ["ミラージュフェアリー劇場", "パン"] → overlap=1 → weight=2
+  //      タグ ["お知らせ"]                         → overlap=0 → weight=1
+  //    7日未満の訪問済みの場合はそれぞれ 2/3、1/3 になる。
+  // ============================================================
+
+  const weighted = candidates.map(post => {
+    const overlap = post.tags.filter(tag => currentTags.includes(tag)).length;
+    const lastVisited = visits[window.ifr25ku.stripBaseUrl(post.url)];
+    return { post, weight: (overlap + 1) * getVisitMultiplier(lastVisited) };
+  });
+
+  // ============================================================
+  // 6. 重み付きランダムサンプリング（非復元抽出）と 7. カードのレンダリング
+  //
+  //    サイドバーと本文下部はそれぞれ独立して抽選する。
+  //    weight が大きい記事ほど高確率で選ばれる。
+  //    同じ記事が2回選ばれることはない（選んだ記事を候補から取り除くため）。
+  //    候補が件数未満の場合は取れるだけ取る。
+  //
+  //    picks の各記事を createCard でDOM要素として生成し、
+  //    replaceChildren でコンテナの子要素をまとめて差し替える。
+  //    innerHTML を使わないため、XSSリスクがない。
+  // ============================================================
+
+  sidebarContainer.replaceChildren(...weightedSample(weighted, 8).map(createCard));
+  recommendContainer.replaceChildren(...weightedSample(weighted, 4).map(createCard));
+
+})();
+</script>
