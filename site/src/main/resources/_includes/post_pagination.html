@@ -1,0 +1,12 @@
+{% if page.previous or page.next %}
+  <nav class="post-nav" aria-label="Post pagination">
+    {% if page.previous %}
+      <span class="post-nav__arrow">&larr;</span>
+      <span class="post-nav__title"><a href="{{ page.previous.url | relative_url }}">{{ page.previous.title | markdownify | strip_html | strip }}</a></span>
+    {% endif %}
+    {% if page.next %}
+      <span class="post-nav__title post-nav__title--next"><a href="{{ page.next.url | relative_url }}">{{ page.next.title | markdownify | strip_html | strip }}</a></span>
+      <span class="post-nav__arrow">&rarr;</span>
+    {% endif %}
+  </nav>
+{% endif %}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "miragefairy2024:block/drywall_slab"
+    },
+    "type=double": {
+      "model": "miragefairy2024:block/drywall"
+    },
+    "type=top": {
+      "model": "miragefairy2024:block/drywall_slab_top"
+    }
+  }
+}

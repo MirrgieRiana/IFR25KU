@@ -1,0 +1,15 @@
+<script>
+(function() {
+  var STORAGE_KEY = 'ifr25ku:visits:pages';
+
+  function recordVisit() {
+    if (window.ifr25ku.consent?.accepted !== true) return;
+    var visits = window.ifr25ku.loadJson(STORAGE_KEY, {});
+    visits[window.ifr25ku.stripBaseUrl(location.pathname)] = Date.now();
+    window.ifr25ku.saveJson(STORAGE_KEY, visits);
+  }
+
+  recordVisit();
+  window.ifr25ku.events.addEventListener('consent-change', recordVisit);
+})();
+</script>

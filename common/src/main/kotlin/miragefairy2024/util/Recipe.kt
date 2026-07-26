@@ -108,6 +108,10 @@ infix fun <T> RecipeGenerationSettings<T>.using(string: String) = this.apply {
     this.idModifiers += { it * "_by_" * string }
 }
 
+infix fun <T> RecipeGenerationSettings<T>.path(string: String) = this.apply {
+    this.idModifiers += { string * ("/" * it) }
+}
+
 context(ModContext)
 fun <T : RecipeBuilder> registerRecipeGeneration(
     creator: (RecipeCategory, Item, Int) -> T,

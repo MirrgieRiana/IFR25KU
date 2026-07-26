@@ -14,7 +14,6 @@ import miragefairy2024.mod.recipeviewer.views.AbsoluteView
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.ImageView
-import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
@@ -23,7 +22,6 @@ import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.noMargin
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
-import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.get
 import miragefairy2024.util.toIngredientStack
 import net.minecraft.core.registries.Registries
@@ -44,16 +42,9 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
 
             view += ImageView(getTexture(bounds))
 
-            fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
-            view += InputSlotView(getInput(0)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(29, 17) - p)
-            }
-            view += InputSlotView(getInput(1)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(47, 17) - p)
-            }
-            view += InputSlotView(getInput(2)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(65, 17) - p)
-            }
+            view += createInputSlot(recipeEntry, 0, IntPoint(29, 17) - p)
+            view += createInputSlot(recipeEntry, 1, IntPoint(47, 17) - p)
+            view += createInputSlot(recipeEntry, 2, IntPoint(65, 17) - p)
             view += CatalystSlotView(getFuelIngredientStack(recipeEntry)).noBackground().noMargin().configure {
                 position = AbsoluteView.Offset(IntPoint(47, 53) - p)
             }
@@ -72,8 +63,10 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
                 view.shadow = false
             }
 
-            view += OutputSlotView(recipeEntry.recipe.outputs[0]).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(123, 35) - p)
+            getOutputs(recipeEntry).forEachIndexed { i, it ->
+                view += OutputSlotView(it).noBackground().noMargin().configure {
+                    position = AbsoluteView.Offset(IntPoint(123 + 18 * i, 35) - p)
+                }
             }
 
         }

@@ -8,6 +8,7 @@ import miragefairy2024.ClientProxy
 import miragefairy2024.ItemColorProvider
 import miragefairy2024.RenderingProxy
 import miragefairy2024.RenderingProxyBlockEntity
+import miragefairy2024.client.util.stack
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.minecraft.client.Minecraft
@@ -26,6 +27,7 @@ import net.minecraft.world.item.ItemDisplayContext
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.BlockAndTintGetter
 import net.minecraft.world.level.FoliageColor
+import net.minecraft.world.level.GrassColor
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
@@ -59,6 +61,10 @@ class ClientProxyImpl : ClientProxy {
         }, block())
     }
 
+    override fun getGrassBlockColorProvider() = BlockColorProvider { _, world, blockPos, _ ->
+        if (world == null || blockPos == null) GrassColor.getDefaultColor() else BiomeColors.getAverageGrassColor(world as BlockAndTintGetter, blockPos)
+    }
+
     override fun getFoliageBlockColorProvider() = BlockColorProvider { _, world, blockPos, _ ->
         if (world == null || blockPos == null) FoliageColor.getDefaultColor() else BiomeColors.getAverageFoliageColor(world as BlockAndTintGetter, blockPos)
     }
@@ -87,11 +93,8 @@ class RenderingProxyBlockEntityRenderer<T>(
     override fun render(blockEntity: T, tickDelta: Float, matrices: PoseStack, vertexConsumers: MultiBufferSource, light: Int, overlay: Int) {
         val renderingProxy = object : RenderingProxy {
             override fun stack(block: () -> Unit) {
-                matrices.pushPose()
-                try {
+                matrices.stack {
                     block()
-                } finally {
-                    matrices.popPose()
                 }
             }
 

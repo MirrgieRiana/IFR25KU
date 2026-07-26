@@ -2,6 +2,7 @@ package miragefairy2024.mod.tool
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.passiveskill.effects.ElementPassiveSkillEffect.SPINE_DAMAGE_TYPE_TAG
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.en
@@ -105,12 +106,12 @@ object MirageLeavesDamageTypeCard : DamageTypeCard() {
     override fun getPath() = "mirage_leaves"
     override fun getKillMessage() = EnJa("%1\$s was pricked to death by mirage leaves", "%1\$sはミラージュの葉で手を切って死んだ")
     override fun getPlayerKillMessage() = EnJa("%1\$s was pricked to death by mirage leaves while trying to escape %2\$s", "%1\$sは%2\$sから逃れようとしてミラージュの葉で手を切って死んだ")
-    override fun getTags() = listOf(DamageTypeTags.NO_KNOCKBACK)
+    override fun getTags() = listOf(DamageTypeTags.NO_KNOCKBACK, SPINE_DAMAGE_TYPE_TAG)
 }
 
 object CarnivorousPlantDamageTypeCard : DamageTypeCard() {
     override fun getPath() = "carnivorous_plant"
     override fun getKillMessage() = EnJa("%1\$s was eaten by a carnivorous plant", "%1\$sは食虫植物に食べられた")
     override fun getPlayerKillMessage() = EnJa("%1\$s was eaten by a carnivorous plant while trying to escape %2\$s", "%1\$sは%2\$sから逃れようとして食虫植物に食べられた")
-    override fun getTags() = listOf(DamageTypeTags.NO_KNOCKBACK, DamageTypeTags.PANIC_ENVIRONMENTAL_CAUSES)
+    override fun getTags() = listOf(DamageTypeTags.NO_KNOCKBACK, DamageTypeTags.PANIC_ENVIRONMENTAL_CAUSES, SPINE_DAMAGE_TYPE_TAG)
 }

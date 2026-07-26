@@ -29,7 +29,9 @@
       "minecraft:monster_room",
       "minecraft:monster_room_deep"
     ],
-    [],
+    [
+      "miragefairy2024:elevated_spawner"
+    ],
     [],
     [
       "minecraft:ore_dirt",

@@ -4,6 +4,8 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.OreBlock
 import miragefairy2024.mod.biome.DeepFairyForestBiomeCard
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
+import miragefairy2024.mod.enchantment.contents.STICKY_MINING_BLOCK_TAG
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.BiomeSelectorScope
 import miragefairy2024.util.EnJa
@@ -77,16 +79,19 @@ enum class OreCard(
     texturePath: String,
     val dropItem: () -> Item,
     experience: Pair<Int, Int>,
+    val tags: List<TagKey<Block>> = emptyList(),
 ) {
     MAGNETITE_ORE(
         "magnetite_ore", "Magnetite Ore", "磁鉄鉱鉱石",
         null,
         BaseStoneType.STONE, "magnetite_ore", MaterialCard.MAGNETITE.item, 2 to 5,
+        tags = listOf(STICKY_MINING_BLOCK_TAG),
     ),
     DEEPSLATE_MAGNETITE_ORE(
         "deepslate_magnetite_ore", "Deepslate Magnetite Ore", "深層磁鉄鉱鉱石",
         null,
         BaseStoneType.DEEPSLATE, "magnetite_ore", MaterialCard.MAGNETITE.item, 2 to 5,
+        tags = listOf(STICKY_MINING_BLOCK_TAG),
     ),
     FLUORITE_ORE(
         "fluorite_ore", "Fluorite Ore", "蛍石鉱石",
@@ -145,7 +150,7 @@ enum class OreCard(
     ),
     DIRT_FAIRY_PLASTIC_ORE(
         "dirt_fairy_plastic_ore", "Dirt Fairy Plastic Ore", "土妖精のプラスチック鉱石",
-        null,
+        PoemList(4).poem("An asteric condensation chamber.", "千年越しに見る光。"),
         BaseStoneType.DIRT, "fairy_plastic_ore", MaterialCard.FAIRY_PLASTIC.item, 10 to 20,
     ),
     ;
@@ -233,6 +238,10 @@ fun initOresModule() {
         card.baseStoneType.needsToolTag?.generator?.registerChild(card.block)
         ConventionalBlockTags.ORES.generator.registerChild(card.block)
 
+        card.tags.forEach {
+            it.generator.registerChild(card.block)
+        }
+
     }
 
     /**
@@ -268,12 +277,12 @@ fun initOresModule() {
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.DEEPSLATE_MAGNETITE_ORE)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.FLUORITE_ORE)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE)
-    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
-    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
-    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
-    worldGen(0 until 64, 1.0, 4, 0.0, OreCard.SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
-    worldGen(0 until 64, 1.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
-    worldGen(0 until 64, 1.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
+    worldGen(48 until 128, 8.0, 4, 0.0, OreCard.SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
+    worldGen(48 until 128, 8.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
+    worldGen(48 until 128, 8.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
+    worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
+    worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
+    worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE)
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.DEEPSLATE_SULFUR_ORE)
     worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE)

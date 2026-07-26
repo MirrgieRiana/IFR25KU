@@ -1,0 +1,13 @@
+{
+  "name": "local",
+  "owner": {
+    "name": "IFR25KU"
+  },
+  "plugins": [
+    {
+      "name": "ifr25ku-site",
+      "source": "./ifr25ku-site",
+      "description": "IFR25KU site content creation plugin"
+    }
+  ]
+}

@@ -13,7 +13,6 @@ import miragefairy2024.mod.recipeviewer.view.size
 import miragefairy2024.mod.recipeviewer.views.AbsoluteView
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.ImageView
-import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
@@ -22,7 +21,6 @@ import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.noMargin
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
-import miragefairy2024.util.IngredientStack
 
 object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<FermentationBarrelRecipe>() {
     override fun getId() = MirageFairy2024.identifier("fermentation_barrel")
@@ -39,16 +37,9 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
 
             view += ImageView(getTexture(bounds))
 
-            fun getInput(index: Int) = recipeEntry.recipe.inputs.getOrNull(index) ?: IngredientStack.EMPTY
-            view += InputSlotView(getInput(0)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(42, 17) - p)
-            }
-            view += InputSlotView(getInput(1)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(31, 39) - p)
-            }
-            view += InputSlotView(getInput(2)).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(53, 39) - p)
-            }
+            view += createInputSlot(recipeEntry, 0, IntPoint(42, 17) - p)
+            view += createInputSlot(recipeEntry, 1, IntPoint(31, 39) - p)
+            view += createInputSlot(recipeEntry, 2, IntPoint(53, 39) - p)
 
             view += ArrowView().configure {
                 position = AbsoluteView.Offset(IntPoint(76, 27) - p)
@@ -61,8 +52,10 @@ object FermentationBarrelRecipeViewerCategoryCard : SimpleMachineRecipeViewerCat
                 view.shadow = false
             }
 
-            view += OutputSlotView(recipeEntry.recipe.outputs[0]).noBackground().noMargin().configure {
-                position = AbsoluteView.Offset(IntPoint(111, 28) - p)
+            getOutputs(recipeEntry).forEachIndexed { i, it ->
+                view += OutputSlotView(it).noBackground().noMargin().configure {
+                    position = AbsoluteView.Offset(IntPoint(111 + 18 * i, 28) - p)
+                }
             }
 
         }

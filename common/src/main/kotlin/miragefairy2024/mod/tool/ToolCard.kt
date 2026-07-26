@@ -4,6 +4,8 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.PoemList
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
+import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.enchantment.AREA_MINING_ENCHANTABLE_ITEM_TAG
 import miragefairy2024.mod.enchantment.BUILDERS_ROD_ITEM_TAG
 import miragefairy2024.mod.enchantment.EnchantmentCard
@@ -12,11 +14,9 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.Shape
 import miragefairy2024.mod.materials.tag
 import miragefairy2024.mod.materials.tagOf
-import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
-import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.mod.tool.effects.areaMining
 import miragefairy2024.mod.tool.effects.collection
 import miragefairy2024.mod.tool.effects.effective
@@ -508,7 +508,7 @@ class ToolCard(
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_SHOVEL = !ToolCard(
             "fairy_plastic_shovel", EnJa("Fairy Plastic Shovel", "妖精のプラスチックのシャベル"),
-            PoemList(4).poem(EnJa("Were you grown in earth, or a furnace?", "土から産まれ、土に還る。")),
+            PoemList(4).poem(EnJa("Were you grown in earth, or a furnace?", "土から産まれ、土へと還る。")),
             FairyShovelConfiguration(ToolMaterialCard.FAIRY_PLASTIC).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
         ) { registerShovelRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_SWORD = !ToolCard(

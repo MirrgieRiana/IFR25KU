@@ -1,10 +1,14 @@
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonElement
-import com.google.gson.JsonPrimitive
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import publishing.CurseforgeClient
+import publishing.MarkdownType
+import publishing.getModBody
+import tools.MirrorMavenTask
+import tools.UnpackSourcesTask
+import tools.generateResizedImagesOfAllProjects
+import tools.getAllPngFilesInAllProjects
 
 plugins {
     id("dev.architectury.loom") version "1.7-SNAPSHOT" apply false
@@ -70,11 +74,12 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
 
             runs {
                 named("client") {
-                    vmArgs += listOf("-Xmx4G")
+                    vmArgs += listOf("-Xmx4G", "-Dfile.encoding=UTF-8", "-Dstdout.encoding=UTF-8", "-Dstderr.encoding=UTF-8")
                     programArgs += listOf("--username", "Player1")
                 }
                 named("server") {
                     runDir = "run_server" // ファイルロックを回避しクライアントと同時に起動可能にする
+                    vmArgs += listOf("-Xmx4G", "-Dfile.encoding=UTF-8", "-Dstdout.encoding=UTF-8", "-Dstderr.encoding=UTF-8")
                 }
             }
         }
@@ -113,6 +118,7 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
             exclude("**/*.scr.png")
             exclude("**/*.sc2.png")
             exclude("**/*.wav")
+            exclude("**/.cache/**")
         }
 
         tasks.named<Jar>("jar") {
@@ -233,80 +239,6 @@ tasks.register("showSourceSets") {
                     if (file.isDirectory) println("Classpath: $file")
                 }
             }
-        }
-    }
-}
-
-tasks.register<Sync>("buildPages") {
-    dependsOn(project("fabric").tasks.named("runDatagen"))
-
-    val en by lazy { GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json").readText(), JsonElement::class.java).asJsonObject }
-    val ja by lazy { GsonBuilder().create().fromJson(File("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json").readText(), JsonElement::class.java).asJsonObject }
-    val keys by lazy { (en.keySet() + ja.keySet()).sorted() }
-
-    fun getTrs(): String {
-        return keys.joinToString("") { key ->
-            listOf(
-                """<tr>""",
-                """<td class="key">$key</td>""",
-                """<td class="value">${(en.get(key) as JsonPrimitive?)?.asString ?: "-"}</td>""",
-                """<td class="value">${(ja.get(key) as JsonPrimitive?)?.asString ?: "-"}</td>""",
-                """</tr>""",
-            ).joinToString("\n") { it }
-        }
-    }
-
-    from("pages") {
-        include("**/*")
-
-        filesMatching("lang_table.html") {
-            filter {
-                filteringCharset = "UTF-8"
-                it.replace("<%= trs %>", getTrs())
-            }
-        }
-    }
-
-    into(layout.buildDirectory.dir("pages"))
-
-    doLast {
-        fun write(path: String, content: String) {
-            val outFile = layout.buildDirectory.file(path).get().asFile
-            outFile.parentFile.mkdirs()
-            outFile.writeText(content)
-            println("Wrote to ${outFile.absolutePath}")
-        }
-        run {
-            val table = keys.associateWith { key ->
-                mapOf(
-                    "en_us" to (en.get(key) as JsonPrimitive?)?.asString,
-                    "ja_jp" to (ja.get(key) as JsonPrimitive?)?.asString,
-                )
-            }
-            val json = GsonBuilder().setPrettyPrinting().create().toJson(table)
-            write("pages/lang_table.json", json)
-        }
-        run {
-            val table = listOf(
-                listOf("key", "en_us", "ja_jp"),
-                *keys.map { key ->
-                    listOf(
-                        key,
-                        (en.get(key) as JsonPrimitive?)?.asString ?: "-",
-                        (ja.get(key) as JsonPrimitive?)?.asString ?: "-",
-                    )
-                }.toTypedArray(),
-            )
-            val csv = table.joinToString("") { row ->
-                row.joinToString(",") {
-                    if (',' in it || '"' in it || '\r' in it || '\n' in it) {
-                        "\"" + it.replace("\"", "\"\"") + "\""
-                    } else {
-                        it
-                    }
-                } + "\n"
-            }
-            write("pages/lang_table.csv", csv)
         }
     }
 }

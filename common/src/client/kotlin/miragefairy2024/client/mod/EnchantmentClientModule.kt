@@ -3,7 +3,7 @@ package miragefairy2024.client.mod
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.ClientPlayerEvent
 import miragefairy2024.mixins.api.LevelEvent
-import miragefairy2024.mod.enchantment.MultiMineHandler
+import miragefairy2024.mod.enchantment.contents.MultiMineHandler
 import miragefairy2024.util.MultiMine
 import net.minecraft.client.Minecraft
 import net.minecraft.world.entity.player.Player
