@@ -1422,6 +1422,14 @@ class MaterialCard(
                 outputs = listOf({ item().createItemStack(32) }),
                 duration = 20 * 60,
             ) on ETHANOL.item from ETHANOL.item
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(FERMENTED_BLACK_TREACLE.item().toIngredient(), 1) }, // 黒蜜4本分なので、その製造に 200 * 4 = 800 が掛かっているのだ
+                ),
+                outputs = listOf({ item().createItemStack(2) }), // 800 + 200 = 1000 -> 200 * 8 * 2 = 1600
+                duration = 20 * 10,
+            ) on FERMENTED_BLACK_TREACLE.item from FERMENTED_BLACK_TREACLE.item
             // →TNT
             registerShapedRecipeGeneration({ Items.TNT }, count = 2) {
                 pattern(" G ")
