@@ -4,7 +4,6 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.PoemList
-import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.enchantment.AREA_MINING_ENCHANTABLE_ITEM_TAG
 import miragefairy2024.mod.enchantment.BUILDERS_ROD_ITEM_TAG
@@ -44,6 +43,7 @@ import miragefairy2024.mod.tool.items.FairyToolProperties
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.ItemGroupCard
 import miragefairy2024.util.Registration
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
@@ -67,6 +67,10 @@ import net.minecraft.world.item.enchantment.Enchantments
 
 val MINEABLE_WITH_NOISE_BLOCK_TAG = MirageFairy2024.identifier("mineable/noise").toBlockTag()
 
+val toolsItemGroupCard = ItemGroupCard(
+    MirageFairy2024.identifier("tools"), "Tools", "ツール",
+) { ToolCard.FAIRY_CRYSTAL_PICKAXE.item().createItemStack() }
+
 val buildersRodAdvancement = AdvancementCard(
     identifier = MirageFairy2024.identifier("builders_rod"),
     context = AdvancementCard.Sub { rootAdvancement.await() },
@@ -80,6 +84,7 @@ val buildersRodAdvancement = AdvancementCard(
 context(ModContext)
 fun initToolCard() {
     MINEABLE_WITH_NOISE_BLOCK_TAG.enJa(EnJa("Mineable with noise", "ノイズで採掘可能"))
+    toolsItemGroupCard.init()
     buildersRodAdvancement.init()
     ToolCard.entries.forEach {
         it.init()
@@ -554,7 +559,7 @@ class ToolCard(
     fun init() {
         item.register()
 
-        item.registerItemGroup(mirageFairy2024ItemGroupCard.itemGroupKey)
+        item.registerItemGroup(toolsItemGroupCard.itemGroupKey)
 
         item.registerModelGeneration(ModelTemplates.FLAT_HANDHELD_ITEM)
 
