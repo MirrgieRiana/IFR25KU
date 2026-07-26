@@ -295,13 +295,13 @@ enum class FairyQuestRecipeCard(
        """.formatFairyQuest(),
         "The Institute of Fairy Research\nEthics Department\nTirirknofe Herirmina", "妖精研究所\n倫理部\nティリルクノフェ・ヘリルミーナ",
         listOf {
-            Items.PAPER.createItemStack().also {
+            Items.NAME_TAG.createItemStack().also {
                 it[DataComponents.CUSTOM_NAME] = text { "From: Tirirknofe Herirmina"() }
                 it[DataComponents.LORE] = ItemLore(listOf(text { "<@ifr.ethics.tirirknofe-herirmina>"().gray }))
             }.toIngredientStack()
         },
         listOf {
-            Items.PAPER.createItemStack().also {
+            Items.NAME_TAG.createItemStack().also {
                 it[DataComponents.CUSTOM_NAME] = text { "To: Enchantia"() }
                 it[DataComponents.LORE] = ItemLore(listOf(text { "<@ifras.issue441586>"().gray }))
             }
