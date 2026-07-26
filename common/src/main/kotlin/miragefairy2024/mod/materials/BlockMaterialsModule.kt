@@ -694,8 +694,8 @@ open class BlockMaterialCard(
         // TODO シルクタッチ無しで壊したときに石化した樹脂をドロップ
         val PETRIFIED_RESINOUS_DIRT = !BlockMaterialCard(
             "petrified_resinous_dirt", EnJa("Petrified Resinous Dirt", "石化した樹脂状の土"),
-            PoemList(4).poem(EnJa("TODO", "TODO")),
-            MapColor.COLOR_ORANGE, 1.5F, 3.0F,
+            PoemList(2).poem(EnJa("TODO", "TODO")),
+            MapColor.COLOR_ORANGE, 0.8F, 0.8F,
         ).sound(SoundType.GRAVEL).needTool(ToolType.SHOVEL, ToolLevel.STONE)
     }
 
