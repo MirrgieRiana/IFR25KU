@@ -8,6 +8,7 @@ import miragefairy2024.mod.materials.tag
 import miragefairy2024.mod.materials.tagOf
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.ResourceLocation
+import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.get
@@ -73,6 +74,9 @@ fun initVanillaModule() {
     BlockTagCard.CONCRETE.tag.generator.registerChild { Blocks.GREEN_CONCRETE }
     BlockTagCard.CONCRETE.tag.generator.registerChild { Blocks.RED_CONCRETE }
     BlockTagCard.CONCRETE.tag.generator.registerChild { Blocks.BLACK_CONCRETE }
+
+
+    CustomizedRemainderRegistry.register(Items.POTION) { Items.GLASS_BOTTLE.createItemStack() }
 
 
     registerClientDebugItem("dump_biome_tags", Items.STRING.toTextureSource(), 0xFF00FF00.toInt()) { world, player, _, _ ->

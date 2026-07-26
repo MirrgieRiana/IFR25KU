@@ -16,7 +16,9 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.platformProxy
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
+import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.FreezableRegistry
 import miragefairy2024.util.ItemGroupCard
 import miragefairy2024.util.SubscribableBuffer
 import miragefairy2024.util.Translation
@@ -29,6 +31,7 @@ import miragefairy2024.util.isIn
 import miragefairy2024.util.register
 import miragefairy2024.util.registerClientDebugItem
 import miragefairy2024.util.registerServerDebugItem
+import miragefairy2024.util.set
 import miragefairy2024.util.string
 import miragefairy2024.util.temperatureCategory
 import miragefairy2024.util.text
@@ -53,6 +56,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.PotionContents
@@ -106,6 +110,20 @@ interface RenderBlockPosesOutlineContext {
     val level: Level
     val player: Player
     val hitResult: HitResult?
+}
+
+// アイテム側にレシピ残留物を設定できないアイテムのために、外からアイテムごとの残留物を足せるようにするのだぁ🌱
+object CustomizedRemainderRegistry {
+    private val registry = FreezableRegistry<Item, (ItemStack) -> ItemStack>()
+
+    fun register(item: Item, handler: (ItemStack) -> ItemStack) {
+        registry[item] = handler
+    }
+
+    fun getCustomizedRemainder(itemStack: ItemStack): ItemStack {
+        val handler = registry.freezeAndGet()[itemStack.item] ?: return EMPTY_ITEM_STACK
+        return handler(itemStack)
+    }
 }
 
 context(ModContext)
