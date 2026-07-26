@@ -68,8 +68,8 @@ import net.minecraft.world.item.enchantment.Enchantments
 val MINEABLE_WITH_NOISE_BLOCK_TAG = MirageFairy2024.identifier("mineable/noise").toBlockTag()
 
 val toolsItemGroupCard = ItemGroupCard(
-    MirageFairy2024.identifier("tools"), "Tools", "ツール",
-) { ToolCard.FAIRY_CRYSTAL_PICKAXE.item().createItemStack() }
+    MirageFairy2024.identifier("tools"), "IFR25KU Tools", "IFR25KU ツール",
+) { ToolCard.XARPITE_PICKAXE.item().createItemStack() }
 
 val buildersRodAdvancement = AdvancementCard(
     identifier = MirageFairy2024.identifier("builders_rod"),
