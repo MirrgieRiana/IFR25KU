@@ -129,6 +129,11 @@ enum class OreCard(
         null,
         BaseStoneType.DEEPSLATE, "sulfur_ore", MaterialCard.SULFUR.item, 2 to 5,
     ),
+    NETHERRACK_SULFUR_ORE(
+        "netherrack_sulfur_ore", "Netherrack Sulfur Ore", "ネザーラック硫黄鉱石",
+        null,
+        BaseStoneType.NETHERRACK, "sulfur_ore", MaterialCard.SULFUR.item, 2 to 5,
+    ),
     NEPHRITE_ORE(
         "nephrite_ore", "Nephrite Ore", "ネフライト鉱石",
         null,

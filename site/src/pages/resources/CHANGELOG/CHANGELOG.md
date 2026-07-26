@@ -59,6 +59,10 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 - 表示: がれきの生成条件をレシピビューワーで確認できるようになった。
 - 修正: アタノールで水入り瓶を消費した際にガラス瓶が返却されないのを修正。
 
+クリエイティブ専用
+
+- 追加: 鉱石ブロック「ネザーラック硫黄鉱石」を追加。
+
 ## 31.31.2
 
 **NeoForgeの必要バージョンを21.1.219に上昇。**
