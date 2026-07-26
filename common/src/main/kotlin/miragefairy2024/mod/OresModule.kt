@@ -68,6 +68,7 @@ enum class BaseStoneType(val targetBlockTag: TagKey<Block>, val baseStoneTexture
     DEEPSLATE(BlockTags.DEEPSLATE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
     SANDSTONE(SANDSTONE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
     DIRT(DIRT_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
+    NETHERRACK(NETHERRACK_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/netherrack"), BlockTags.MINEABLE_WITH_PICKAXE, null), // バニラのネザークォーツ鉱石に倣って、採掘ティアの制限は設けないのだぁ🌱
 }
 
 enum class OreCard(
@@ -181,6 +182,13 @@ enum class OreCard(
                 .mapColor(MapColor.DIRT)
                 .strength(1.0F, 1.0F)
                 .sound(SoundType.GRAVEL)
+
+            BaseStoneType.NETHERRACK -> BlockBehaviour.Properties.of()
+                .mapColor(MapColor.NETHER)
+                .instrument(NoteBlockInstrument.BASEDRUM)
+                .requiresCorrectToolForDrops()
+                .strength(3.0F, 3.0F)
+                .sound(SoundType.NETHER_ORE)
         }
         OreBlock(UniformInt.of(experience.first, experience.second), settings)
     }
@@ -201,6 +209,7 @@ object OreModelCard {
 
 val SANDSTONE_ORE_REPLACEABLES = MirageFairy2024.identifier("sandstone_ore_replaceables").toBlockTag()
 val DIRT_ORE_REPLACEABLES = MirageFairy2024.identifier("dirt_ore_replaceables").toBlockTag()
+val NETHERRACK_ORE_REPLACEABLES = MirageFairy2024.identifier("netherrack_ore_replaceables").toBlockTag()
 
 context(ModContext)
 fun initOresModule() {
@@ -214,6 +223,9 @@ fun initOresModule() {
 
     DIRT_ORE_REPLACEABLES.enJa(EnJa("Dirt Ore Replaceables", "土鉱石が置換可能"))
     DIRT_ORE_REPLACEABLES.generator.registerChild(BlockTags.DIRT)
+
+    NETHERRACK_ORE_REPLACEABLES.enJa(EnJa("Netherrack Ore Replaceables", "ネザーラック鉱石が置換可能"))
+    NETHERRACK_ORE_REPLACEABLES.generator.registerChild { Blocks.NETHERRACK }
 
     OreCard.entries.forEach { card ->
 
