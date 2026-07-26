@@ -27,9 +27,9 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
 import kotlin.math.roundToInt
 
-object RetrospectiveCityWallRuinFeatureCard {
-    val identifier = MirageFairy2024.identifier("retrospective_city_wall_ruin")
-    val feature = RetrospectiveCityWallRuinFeature(NoneFeatureConfiguration.CODEC)
+object RetrospectiveCityGazingWallFeatureCard {
+    val identifier = MirageFairy2024.identifier("retrospective_city_gazing_wall")
+    val feature = RetrospectiveCityGazingWallFeature(NoneFeatureConfiguration.CODEC)
     val placedFeatureKey = Registries.PLACED_FEATURE with identifier
 
     context(ModContext)
@@ -43,17 +43,17 @@ object RetrospectiveCityWallRuinFeatureCard {
     }
 }
 
-class RetrospectiveCityWallRuinFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeatureConfiguration>(codec) {
+class RetrospectiveCityGazingWallFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeatureConfiguration>(codec) {
     override fun place(context: FeaturePlaceContext<NoneFeatureConfiguration>): Boolean {
         val level = context.level()
         val originBlockPos = context.origin()
         val random = context.random()
 
-        fun schedule(blockPos: BlockPos, maxHeight: Int, isChiseledPosition: Boolean): (() -> Unit)? {
+        fun schedule(blockPos: BlockPos, maxHeight: Int, isChiseled: Boolean): (() -> Unit)? {
             val (down, up) = checkConflict(level, blockPos, maxHeight) ?: return null
             return {
                 (-down..up).forEach { dy ->
-                    val blockState = if (isChiseledPosition && dy == 2 && up >= 2) {
+                    val blockState = if (isChiseled && dy == 1) {
                         BlockMaterialCard.CHISELED_AURA_RESISTANT_CERAMIC.block().defaultBlockState()
                     } else if (dy == up) {
                         when (random.nextInt(8)) {
@@ -81,20 +81,20 @@ class RetrospectiveCityWallRuinFeature(codec: Codec<NoneFeatureConfiguration>) :
         fun nextHeightFactor() = 0.75F + 0.25F * random.nextFloat()
 
         val height = random.nextIntBetweenInclusive(3, 6)
-        val lengthPositive = random.nextIntBetweenInclusive(3, 5)
-        val lengthNegative = random.nextIntBetweenInclusive(3, 5)
+        val lengthPositive = random.nextIntBetweenInclusive(3, 6)
+        val lengthNegative = random.nextIntBetweenInclusive(3, 6)
         val isXAxis = random.nextBoolean()
 
         val schedules = mutableListOf<() -> Unit>()
         schedules += schedule(originBlockPos, (height.toFloat() * nextHeightFactor()).roundToInt(), false) ?: return false
         (1..lengthPositive).forEach { distance ->
-            val maxHeight = (height.toFloat() * Mth.cos(Mth.HALF_PI * (distance.toFloat() / (lengthPositive + 1).toFloat())) * nextHeightFactor()).roundToInt()
             val blockPos = if (isXAxis) originBlockPos.offset(distance, 0, 0) else originBlockPos.offset(0, 0, distance)
+            val maxHeight = (height.toFloat() * Mth.cos(Mth.HALF_PI * (distance.toFloat() / (lengthPositive + 1).toFloat())) * nextHeightFactor()).roundToInt()
             schedules += schedule(blockPos, maxHeight, distance == 1) ?: return false
         }
         (1..lengthNegative).forEach { distance ->
-            val maxHeight = (height.toFloat() * Mth.cos(Mth.HALF_PI * (distance.toFloat() / (lengthNegative + 1).toFloat())) * nextHeightFactor()).roundToInt()
             val blockPos = if (isXAxis) originBlockPos.offset(-distance, 0, 0) else originBlockPos.offset(0, 0, -distance)
+            val maxHeight = (height.toFloat() * Mth.cos(Mth.HALF_PI * (distance.toFloat() / (lengthNegative + 1).toFloat())) * nextHeightFactor()).roundToInt()
             schedules += schedule(blockPos, maxHeight, distance == 1) ?: return false
         }
 
