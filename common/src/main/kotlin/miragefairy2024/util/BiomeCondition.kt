@@ -3,7 +3,7 @@ package miragefairy2024.util
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import miragefairy2024.mod.guiAlwaysTranslation
+import miragefairy2024.mod.common.guiAlwaysTranslation
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component

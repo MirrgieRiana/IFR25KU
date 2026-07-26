@@ -5,7 +5,7 @@ import miragefairy2024.lib.HorizontalFacingMachineBlock
 import miragefairy2024.lib.MachineBlockEntity
 import miragefairy2024.lib.MachineCard
 import miragefairy2024.lib.MachineScreenHandler
-import miragefairy2024.mod.mirageFairy2024ItemGroupCard
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.BlockStateVariantEntry
 import miragefairy2024.util.BlockStateVariantRotation

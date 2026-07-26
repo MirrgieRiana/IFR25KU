@@ -21,8 +21,8 @@ import miragefairy2024.client.util.slotContainer
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.NinePatchTextureCard
+import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.fairyquest.FairyQuestCardScreenHandler
-import miragefairy2024.mod.guiFullScreenTranslation
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.orEmpty

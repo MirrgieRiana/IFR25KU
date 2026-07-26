@@ -4,8 +4,8 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
 import miragefairy2024.ModContext
 import miragefairy2024.client.util.stack
-import miragefairy2024.mod.CommonRenderingEvents
-import miragefairy2024.mod.RenderBlockPosesOutlineContext
+import miragefairy2024.mod.common.CommonRenderingEvents
+import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
 import miragefairy2024.util.isValid
 import mirrg.kotlin.helium.max
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents

@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.mod.CommandEvents
-import miragefairy2024.mod.deadPlayerCommandExceptionType
+import miragefairy2024.mod.common.CommandEvents
+import miragefairy2024.mod.common.deadPlayerCommandExceptionType
 import miragefairy2024.util.executesThrowable
 import miragefairy2024.util.failure
 import miragefairy2024.util.get

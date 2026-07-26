@@ -7,6 +7,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
 import miragefairy2024.lib.SimpleHorizontalFacingBlock
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.Shape

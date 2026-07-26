@@ -9,7 +9,9 @@ import miragefairy2024.mod.FoodIngredientsRegistry
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.PoemType
-import miragefairy2024.mod.WaterBottleIngredient
+import miragefairy2024.mod.common.WaterBottleIngredient
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
+import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.description
 import miragefairy2024.mod.entity.ChaosCubeCard
 import miragefairy2024.mod.experienceStatusEffect
@@ -40,12 +42,10 @@ import miragefairy2024.mod.magicplant.contents.magicplants.XarpaLuminariaCard
 import miragefairy2024.mod.materials.contents.ApostleWandItem
 import miragefairy2024.mod.materials.contents.DrinkItem
 import miragefairy2024.mod.materials.contents.MinaItem
-import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.plus
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
-import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.mod.structure.WeatheredAncientRemnantsCard
 import miragefairy2024.mod.translation
 import miragefairy2024.util.AdvancementCard
@@ -664,7 +664,7 @@ class MaterialCard(
         val HAIMEVISKA_ROSIN: MaterialCard = !MaterialCard(
             "haimeviska_rosin", "Haimeviska Rosin", "ハイメヴィスカの涙",
             PoemList(2).poem("High-friction material", "琥珀の月が昇るとき、妖精の木は静かに泣く"),
-            fuelValue = 200, ore = Ore(Shape.GEM, Material.HAIMEVISKA_ROSIN),
+            fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.HAIMEVISKA_ROSIN),
             advancementCreator = {
                 AdvancementCard(
                     identifier = identifier,
@@ -1584,7 +1584,7 @@ fun initMaterialsModule() {
             { SimpleMachineRecipe.Input(Items.WHEAT.toIngredient(), 1) },
             { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
         ),
-        outputs = listOf({ Items.BREAD.createItemStack(2) }),
+        outputs = listOf({ Items.BREAD.createItemStack() }),
         duration = 20 * 10,
     ) using "athanor" on { Items.WHEAT } modId MirageFairy2024.MOD_ID
 

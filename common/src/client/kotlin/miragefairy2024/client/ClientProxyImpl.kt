@@ -61,12 +61,12 @@ class ClientProxyImpl : ClientProxy {
         }, block())
     }
 
-    override fun getFoliageBlockColorProvider() = BlockColorProvider { _, world, blockPos, _ ->
-        if (world == null || blockPos == null) FoliageColor.getDefaultColor() else BiomeColors.getAverageFoliageColor(world as BlockAndTintGetter, blockPos)
-    }
-
     override fun getGrassBlockColorProvider() = BlockColorProvider { _, world, blockPos, _ ->
         if (world == null || blockPos == null) GrassColor.getDefaultColor() else BiomeColors.getAverageGrassColor(world as BlockAndTintGetter, blockPos)
+    }
+
+    override fun getFoliageBlockColorProvider() = BlockColorProvider { _, world, blockPos, _ ->
+        if (world == null || blockPos == null) FoliageColor.getDefaultColor() else BiomeColors.getAverageFoliageColor(world as BlockAndTintGetter, blockPos)
     }
 
     override fun getItemColorProvider(item: Item): ItemColorProvider? {

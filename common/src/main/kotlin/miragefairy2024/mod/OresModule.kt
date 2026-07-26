@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.OreBlock
 import miragefairy2024.mod.biome.DeepFairyForestBiomeCard
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.enchantment.contents.STICKY_MINING_BLOCK_TAG
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.BiomeSelectorScope
@@ -278,10 +279,10 @@ fun initOresModule() {
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE)
     worldGen(48 until 128, 8.0, 4, 0.0, OreCard.SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
     worldGen(48 until 128, 8.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
-    worldGen(48 until 128, 8.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
+    worldGen(48 until 128, 16.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
     worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
     worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
-    worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
+    worldGen(-64 until 64, 8.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE)
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.DEEPSLATE_SULFUR_ORE)
     worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE)
