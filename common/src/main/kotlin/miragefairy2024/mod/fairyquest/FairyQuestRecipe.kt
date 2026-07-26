@@ -257,7 +257,7 @@ enum class FairyQuestRecipeCard(
             Please verify this as soon as possible.
 
             * Two images believed to be of packaged Veropederezjoma
-            * Seven images of a dish believed to be Veropeda porridge
+            * Seven images of dishes believed to be Veropeda porridge
             * Just under 80 images that appear to show a meal gathering
             * Four images depicting nude fairies
         """.formatFairyQuest(),
