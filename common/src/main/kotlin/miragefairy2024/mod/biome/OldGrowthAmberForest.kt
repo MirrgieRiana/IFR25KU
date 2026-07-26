@@ -32,7 +32,7 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
             identifier = identifier,
             context = AdvancementCard.Sub { FairyForestBiomeCard.advancement!!.await() },
             icon = { MaterialCard.FAIRY_PLASTIC.item().createItemStack() }, // TODO →プラノキの苗木
-            name = EnJa("The Forest of Memories", "蜜の咲き誇る地"), // TODO 蜜から産まれた雑草
+            name = EnJa("Land Where Nectar Blooms", "蜜の咲き誇る地"), // TODO 蜜から産まれた雑草
             description = EnJa("Travel the overworld and discover the Old Growth Amber Forest", "地上を旅して琥珀色の原生林を探す"),
             criterion = AdvancementCard.visit(key),
             type = AdvancementCardType.TOAST_ONLY,
