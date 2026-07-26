@@ -18,6 +18,7 @@ import miragefairy2024.mod.materials.contents.LOCAL_VACUUM_DECAY_RESISTANT_BLOCK
 import miragefairy2024.mod.materials.contents.LocalVacuumDecayBlock
 import miragefairy2024.mod.materials.contents.MirageLeavesBlock
 import miragefairy2024.mod.materials.contents.MiragidianLampBlock
+import miragefairy2024.mod.materials.contents.NectarflowerBlock
 import miragefairy2024.mod.materials.contents.SemiOpaqueTransparentBlock
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassBlockModel
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassFrameBlockModel
@@ -47,6 +48,7 @@ import miragefairy2024.util.on
 import miragefairy2024.util.propertiesOf
 import miragefairy2024.util.register
 import miragefairy2024.util.registerBlockFamily
+import miragefairy2024.util.registerBlockGeneratedModelGeneration
 import miragefairy2024.util.registerBlockStateGeneration
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerComposterInput
@@ -55,9 +57,11 @@ import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerDefaultLootTableGeneration
 import miragefairy2024.util.registerFlammable
 import miragefairy2024.util.registerGeneratedModelGeneration
+import miragefairy2024.util.registerGrassColorProvider
 import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.registerLootTableGeneration
 import miragefairy2024.util.registerModelGeneration
+import miragefairy2024.util.registerRedirectColorProvider
 import miragefairy2024.util.registerShapedRecipeGeneration
 import miragefairy2024.util.registerShapelessRecipeGeneration
 import miragefairy2024.util.registerSingletonBlockStateGeneration
@@ -691,6 +695,40 @@ open class BlockMaterialCard(
                 requires(item())
             } on item modId MirageFairy2024.MOD_ID from item
         }
+        val NECTARFLOWER: BlockMaterialCard = !object : BlockMaterialCard(
+            "nectarflower", EnJa("Nectarflower", "ミツクサ"),
+            PoemList(1).poem(EnJa("TODO", "TODO")),
+            MapColor.PLANT, 0.0F, 0.0F,
+        ) {
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
+                .replaceable()
+                .noCollission()
+                .offsetType(BlockBehaviour.OffsetType.XYZ)
+                .ignitedByLava()
+                .pushReaction(PushReaction.DESTROY)
+
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = NectarflowerBlock(properties)
+
+            context(ModContext)
+            override fun initModelGeneration() {
+                block.registerModelGeneration {
+                    ModelTemplates.TINTED_CROSS.with(
+                        TextureSlot.CROSS to "block/" * block().getIdentifier(),
+                    )
+                }
+            }
+
+            context(ModContext)
+            override fun initLootTableGeneration() {
+                block.registerLootTableGeneration { it, _ ->
+                    it.createGrassDrops(block())
+                }
+            }
+        }.cutout().sound(SoundType.GRASS).tag(BlockTags.MINEABLE_WITH_AXE, BlockTags.SWORD_EFFICIENT, BlockTags.REPLACEABLE, BlockTags.REPLACEABLE_BY_TREES).init {
+            item.registerBlockGeneratedModelGeneration(block)
+            block.registerGrassColorProvider()
+            item.registerRedirectColorProvider()
+        }
     }
 
     val identifier = MirageFairy2024.identifier(path)
@@ -780,6 +818,7 @@ fun initBlockMaterialsModule() {
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("fairy_crystal_glass")) { FairyCrystalGlassBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("mirage_leaves_block")) { MirageLeavesBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("egg_block")) { EggBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("nectarflower")) { NectarflowerBlock.CODEC }.register()
 
     LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.enJa(EnJa("Local Vacuum Decay Resistant", "局所真空崩壊耐性"))
 

@@ -36,6 +36,11 @@ fun (() -> Block).registerFoliageColorProvider() = this.registerColorProvider { 
 }
 
 context(ModContext)
+fun (() -> Block).registerGrassColorProvider() = this.registerColorProvider { blockState, world, blockPos, tintIndex ->
+    clientProxy!!.getGrassBlockColorProvider().invoke(blockState, world, blockPos, tintIndex)
+}
+
+context(ModContext)
 fun (() -> Item).registerColorProvider(provider: ItemColorProvider) = ModEvents.onClientInit {
     clientProxy!!.registerItemColorProvider(this(), provider)
 }

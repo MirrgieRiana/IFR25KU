@@ -37,6 +37,9 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
   - アタノールで入手可能。
 - 追加: 素材アイテム「発酵した黒蜜入りバケツ」を追加。
   - 醸造樽で入手可能。
+- 追加: ブロック「ミツクサ」を追加。
+  - シダと同様の草ブロック。
+  - 現時点では地形生成されない。
 
 レシピ
 
