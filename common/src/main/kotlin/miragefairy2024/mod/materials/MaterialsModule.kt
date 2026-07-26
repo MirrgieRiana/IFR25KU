@@ -9,7 +9,9 @@ import miragefairy2024.mod.FoodIngredientsRegistry
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.PoemType
-import miragefairy2024.mod.WaterBottleIngredient
+import miragefairy2024.mod.common.WaterBottleIngredient
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
+import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.description
 import miragefairy2024.mod.entity.ChaosCubeCard
 import miragefairy2024.mod.experienceStatusEffect
@@ -40,12 +42,10 @@ import miragefairy2024.mod.magicplant.contents.magicplants.XarpaLuminariaCard
 import miragefairy2024.mod.materials.contents.ApostleWandItem
 import miragefairy2024.mod.materials.contents.DrinkItem
 import miragefairy2024.mod.materials.contents.MinaItem
-import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.plus
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
-import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.mod.structure.WeatheredAncientRemnantsCard
 import miragefairy2024.mod.translation
 import miragefairy2024.util.AdvancementCard
@@ -664,7 +664,7 @@ class MaterialCard(
         val HAIMEVISKA_ROSIN: MaterialCard = !MaterialCard(
             "haimeviska_rosin", "Haimeviska Rosin", "ハイメヴィスカの涙",
             PoemList(2).poem("High-friction material", "琥珀の月が昇るとき、妖精の木は静かに泣く"),
-            fuelValue = 200, ore = Ore(Shape.GEM, Material.HAIMEVISKA_ROSIN),
+            fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.HAIMEVISKA_ROSIN),
             advancementCreator = {
                 AdvancementCard(
                     identifier = identifier,
@@ -725,7 +725,7 @@ class MaterialCard(
                     { SimpleMachineRecipe.Input(SULFUR.item().toIngredient(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
+                duration = 20 * 60 * 1,
             ) on MERRRRIA_DROP.item
         }
 
@@ -1089,6 +1089,55 @@ class MaterialCard(
             } on MIRAGE_STEM.item
         }
 
+        val BLACK_TREACLE: MaterialCard = !MaterialCard(
+            "black_treacle", "Black Treacle", "黒蜜",
+            null,
+            recipeRemainder = Items.GLASS_BOTTLE,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(6)
+                    .saturationModifier(0.1F)
+                    .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 30), 1.0F)
+                    .build()
+            },
+            creator = { DrinkItem(it) },
+        ) {
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(Items.SUGAR_CANE.toIngredient(), 16) },
+                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
+                ),
+                outputs = listOf(
+                    { item().createItemStack() },
+                    { Items.SUGAR.createItemStack(24) },
+                ),
+                duration = 20 * 10,
+            ) on { Items.SUGAR_CANE }
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + Items.SUGAR_CANE
+            }
+        }
+        val FERMENTED_BLACK_TREACLE: MaterialCard = !MaterialCard(
+            "fermented_black_treacle_bucket", "Fermented Black Treacle Bucket", "発酵した黒蜜入りバケツ",
+            null,
+            recipeRemainder = Items.BUCKET,
+            creator = { Item(it.stacksTo(1)) },
+        ) {
+            registerSimpleMachineRecipeGeneration(
+                FermentationBarrelRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(Items.BUCKET.toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(BLACK_TREACLE.item().toIngredient(), 4) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60 * 1,
+            ) on BLACK_TREACLE.item
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + FoodIngredientCategoryCard.ALCOHOL + BLACK_TREACLE.item()
+            }
+        }
         val RUM: MaterialCard = !MaterialCard(
             "rum", "Rum", "ラム酒",
             null,
@@ -1103,19 +1152,17 @@ class MaterialCard(
             },
             creator = { DrinkItem(it) },
         ) {
-            // TODO 蒸留装置
             registerSimpleMachineRecipeGeneration(
-                FermentationBarrelRecipeCard,
+                AthanorRecipeCard,
                 inputs = listOf(
                     { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
-                    { SimpleMachineRecipe.Input(Items.SUGAR_CANE.toIngredient(), 16) },
-                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
+                    { SimpleMachineRecipe.Input(FERMENTED_BLACK_TREACLE.item().toIngredient(), 2) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on { Items.SUGAR_CANE }
+                duration = 20 * 60,
+            ) on FERMENTED_BLACK_TREACLE.item
             ModEvents.onInitialize {
-                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + FoodIngredientCategoryCard.ALCOHOL + Items.SUGAR_CANE
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + FERMENTED_BLACK_TREACLE.item()
             }
         }
         val CIDRE: MaterialCard = !MaterialCard(
@@ -1319,7 +1366,7 @@ class MaterialCard(
 
             // その他
             item({ Items.BONE_MEAL }, 56)
-            item({ Items.EGG }, 52)
+            item(BlockMaterialCard.EGG_BLOCK.item, 13)
             item({ Items.ROTTEN_FLESH }, 20)
             item({ Items.SLIME_BALL }, 4)
             item({ Items.SPIDER_EYE }, 4)
@@ -1375,6 +1422,14 @@ class MaterialCard(
                 outputs = listOf({ item().createItemStack(32) }),
                 duration = 20 * 60,
             ) on ETHANOL.item from ETHANOL.item
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(FERMENTED_BLACK_TREACLE.item().toIngredient(), 1) }, // 黒蜜4本分なので、その製造に 200 * 4 = 800 が掛かっているのだ
+                ),
+                outputs = listOf({ item().createItemStack(2) }), // 800 + 200 = 1000 -> 200 * 8 * 2 = 1600
+                duration = 20 * 10,
+            ) on FERMENTED_BLACK_TREACLE.item from FERMENTED_BLACK_TREACLE.item
             // →TNT
             registerShapedRecipeGeneration({ Items.TNT }, count = 2) {
                 pattern(" G ")

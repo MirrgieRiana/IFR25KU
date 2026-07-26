@@ -1,0 +1,185 @@
+{% assign locale = include.locale | default: site.locale %}
+{% if site.footer_scripts %}
+  {% for script in site.footer_scripts %}
+    <script src="{{ script | relative_url }}"></script>
+  {% endfor %}
+{% else %}
+  <script src="{{ '/assets/js/main.min.js' | relative_url }}"></script>
+{% endif %}
+
+<script>
+// greedy-nav初期化後にvisible-linksのoverflowを解除してドロップダウンを表示可能にする
+document.addEventListener("DOMContentLoaded", function() {
+  var vl = document.querySelector(".greedy-nav .visible-links");
+  if (vl) vl.style.overflow = "visible";
+});
+</script>
+
+<script>
+// scrollTocToContentによるスクロール妨害を無効化
+document.addEventListener("gumshoeActivate", function(e) {
+  e.stopImmediatePropagation();
+}, true);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/embla-carousel@8.6.0/embla-carousel.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/embla-carousel-autoplay@8.6.0/embla-carousel-autoplay.umd.js"></script>
+<script>
+(function() {
+  var viewportNode = document.querySelector('.hero-carousel__viewport');
+  if (!viewportNode) return;
+  var dotsNode = document.querySelector('.hero-carousel__dots');
+  var embla = EmblaCarousel(viewportNode, { loop: true }, [EmblaCarouselAutoplay({ delay: 10000, stopOnInteraction: false })]);
+
+  // ドットナビゲーション
+  var slides = embla.scrollSnapList();
+  if (dotsNode) {
+    slides.forEach(function(_, index) {
+      var dot = document.createElement('button');
+      dot.className = 'hero-carousel__dot';
+      dot.addEventListener('click', function() { embla.scrollTo(index); });
+      dotsNode.appendChild(dot);
+    });
+    var updateDots = function() {
+      var selected = embla.selectedScrollSnap();
+      dotsNode.querySelectorAll('.hero-carousel__dot').forEach(function(dot, index) {
+        dot.classList.toggle('hero-carousel__dot--active', index === selected);
+      });
+    };
+    embla.on('select', updateDots);
+    updateDots();
+  }
+
+  // プログレスバー
+  var progressEl = document.querySelector('.hero-carousel__progress');
+  var clearProgress = function() {
+    if (!progressEl) return;
+    progressEl.style.animation = 'none';
+    // リフローを強制してanimationの再開を可能にする
+    progressEl.offsetHeight;
+  };
+  var startProgress = function() {
+    if (!progressEl) return;
+    progressEl.style.animation = '';
+  };
+  var previousSnap = embla.selectedScrollSnap();
+  embla.on('select', function() {
+    clearProgress();
+    // 旧スライドのパンをキャンセルしてCSS既定に戻す
+    if (panAnimations[previousSnap]) {
+      panAnimations[previousSnap].cancel();
+      panAnimations[previousSnap] = null;
+    }
+    var prevEl = bgEls[previousSnap];
+    prevEl.style.width = '';
+    prevEl.style.height = '';
+    prevEl.style.top = '';
+    prevEl.style.left = '';
+    // 新スライドのパンを遷移中に開始
+    startPan(embla.selectedScrollSnap());
+    previousSnap = embla.selectedScrollSnap();
+  });
+  embla.on('pointerDown', clearProgress);
+  clearProgress();
+  startProgress();
+
+  // ヒーロー背景パンアニメーション
+  var bgEls = viewportNode.querySelectorAll('.hero-bg');
+  var imageSizes = [];
+  var panAnimations = [];
+  var loaded = 0;
+
+  function setupPan(index) {
+    var el = bgEls[index];
+    var container = el.parentElement;
+    var size = imageSizes[index];
+    if (!size) return;
+    var W = container.clientWidth;
+    var H = container.clientHeight;
+    var iw = size.w;
+    var ih = size.h;
+    var scale = Math.max(W / (iw * 0.9), H / ih);
+    var bgW = scale * iw;
+    var bgH = scale * ih;
+    var panX = bgW - W;
+    var offsetY = -(bgH - H) / 2;
+    el.style.width = bgW + 'px';
+    el.style.height = bgH + 'px';
+    el.style.top = offsetY + 'px';
+    el.style.left = '0';
+    var zoomStart = 1 / 0.9;
+    return el.animate([
+      { transform: 'scale(' + zoomStart + ') translateX(0)' },
+      { transform: 'scale(1) translateX(' + (-panX) + 'px)' }
+    ], { duration: 10000, easing: 'ease-in-out', fill: 'forwards' });
+  }
+
+  function startPan(index) {
+    panAnimations.forEach(function(a) { if (a) a.cancel(); });
+    panAnimations[index] = setupPan(index);
+  }
+
+  // settleでプログレスとautoplayを同期リセット
+  embla.on('settle', function() {
+    embla.plugins().autoplay.play();
+    clearProgress();
+    startProgress();
+  });
+
+  var resizeObserver;
+  function initPan() {
+    startPan(embla.selectedScrollSnap());
+    var resizeTimer;
+    if (resizeObserver) resizeObserver.disconnect();
+    resizeObserver = new ResizeObserver(function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        startPan(embla.selectedScrollSnap());
+      }, 150);
+    });
+    resizeObserver.observe(viewportNode);
+  }
+
+  bgEls.forEach(function(el, i) {
+    var img = new Image();
+    img.src = el.dataset.src;
+    img.onload = function() {
+      imageSizes[i] = { w: img.naturalWidth, h: img.naturalHeight };
+      loaded++;
+      if (loaded === bgEls.length) initPan();
+    };
+    img.onerror = function() {
+      el.style.backgroundImage = 'none';
+      el.style.position = 'absolute';
+      el.style.inset = '0';
+      el.style.background = '#d0d0d0';
+      loaded++;
+      if (loaded === bgEls.length) initPan();
+    };
+  });
+})();
+</script>
+
+{% if site.search == true or page.layout == "search" %}
+  {%- assign search_provider = site.search_provider | default: "lunr" -%}
+  {%- case search_provider -%}
+    {%- when "lunr" -%}
+      {% include_cached search/lunr-search-scripts.html locale=locale %}
+    {%- when "google" -%}
+      {% include_cached search/google-search-scripts.html %}
+    {%- when "algolia" -%}
+      {% include_cached search/algolia-search-scripts.html locale=locale %}
+  {%- endcase -%}
+{% endif %}
+
+{% include analytics.html %}
+{% include /comments-providers/scripts.html locale=locale %}
+
+{% include consent-banner.html %}
+{% include visit-tracker.html %}
+
+{% if site.after_footer_scripts %}
+  {% for script in site.after_footer_scripts %}
+    <script src="{{ script | relative_url }}"></script>
+  {% endfor %}
+{% endif %}

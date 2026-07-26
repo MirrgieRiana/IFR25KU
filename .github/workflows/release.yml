@@ -3,6 +3,14 @@ on:
   push:
     tags:
       - 'v*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -10,32 +18,32 @@ jobs:
 
       # セットアップ
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - name: 現在のリビジョン
-        run: git log -n 1
       - uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'microsoft'
       - uses: gradle/actions/setup-gradle@v5
 
+      - name: 現在のリビジョン
+        run: git log -n 1
+
       # ビルド
       - name: ビルド
         run: ./gradlew build
+
       - name: ビルドされたファイルの一覧
         run: |
           ls -l build/libs
           ls -l fabric/build/libs
           ls -l neoforge/build/libs
+
+      # リリース
       - name: リリースに必要な情報の抽出
         run: |
           mod_version=$(echo ${{ github.ref }} | perl -lpE 's|^refs/tags/v||')
           echo "Mod Version: $mod_version"
           echo "mod_version=$mod_version" >> $GITHUB_ENV
-
-      # リリース
-      - name: リリースの作成
+      - name: GitHub Releaseの作成
         run: >
           gh release create
           v${{ env.mod_version }}
@@ -45,7 +53,7 @@ jobs:
           neoforge/build/libs/ifr25ku-${{ env.mod_version }}+neoforge.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: リリース
+      - name: Modrinth・CurseForgeへのアップロード
         run: ./gradlew upload
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}

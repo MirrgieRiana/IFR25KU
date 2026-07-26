@@ -111,7 +111,7 @@ open class LimitedLabelComponent(protected var text: Component) : BaseComponent(
 
     override fun determineHorizontalContentSize(sizing: Sizing): Int {
         var widestText = 0
-        for (line in wrappedText) {
+        wrappedText.forEach { line ->
             val width = textRenderer.width(line)
             if (width > widestText) widestText = width
         }
@@ -179,7 +179,7 @@ open class LimitedLabelComponent(protected var text: Component) : BaseComponent(
             val lambdaY = y
             @Suppress("DEPRECATION")
             context.drawManaged {
-                for (i in wrappedText.indices) {
+                wrappedText.indices.forEach { i ->
                     val renderText = wrappedText[i]
                     var renderX = lambdaX
                     when (horizontalTextAlignment) {

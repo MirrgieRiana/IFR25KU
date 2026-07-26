@@ -6,11 +6,14 @@ import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG
 import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG
 import miragefairy2024.mod.biome.RetrospectiveCityBiomeCard
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
+import miragefairy2024.mod.enchantment.contents.STICKY_MINING_BLOCK_TAG
 import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
 import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
 import miragefairy2024.mod.machine.SimpleMachineRecipe
 import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
+import miragefairy2024.mod.materials.contents.EggBlock
 import miragefairy2024.mod.materials.contents.FairyCrystalGlassBlock
 import miragefairy2024.mod.materials.contents.LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG
 import miragefairy2024.mod.materials.contents.LocalVacuumDecayBlock
@@ -20,7 +23,6 @@ import miragefairy2024.mod.materials.contents.SemiOpaqueTransparentBlock
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassBlockModel
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassFrameBlockModel
 import miragefairy2024.mod.materials.contents.localVacuumDecayTexturedModelFactory
-import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
@@ -30,7 +32,9 @@ import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.BlockStateVariantRotation
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.Model
 import miragefairy2024.util.Registration
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.TextureMapping
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
@@ -55,6 +59,7 @@ import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.registerLootTableGeneration
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerShapedRecipeGeneration
+import miragefairy2024.util.registerShapelessRecipeGeneration
 import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.registerSmeltingRecipeGeneration
 import miragefairy2024.util.registerStonecutterRecipeGeneration
@@ -90,6 +95,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.minecraft.world.level.material.MapColor
+import net.minecraft.world.level.material.PushReaction
 
 val AURA_RESISTANT_CERAMICS_TAG = MirageFairy2024.identifier("aura_resistant_ceramics").toItemTag()
 val AURA_RESISTANT_CERAMIC_SLABS_TAG = MirageFairy2024.identifier("aura_resistant_ceramic_slabs").toItemTag()
@@ -115,7 +121,7 @@ open class BlockMaterialCard(
             "magnetite_block", EnJa("Magnetite Block", "磁鉄鉱ブロック"),
             PoemList(null),
             MapColor.TERRACOTTA_BLUE, 5.0F, 5.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.MAGNETITE),
-        ).needTool(ToolType.PICKAXE).beaconBase().init {
+        ).needTool(ToolType.PICKAXE).beaconBase().tag(STICKY_MINING_BLOCK_TAG).init {
             registerCompressionRecipeGeneration(MaterialCard.MAGNETITE.item, { MaterialCard.MAGNETITE.ore!!.ingredient }, item, { ore!!.ingredient })
         }
         val FLUORITE_BLOCK = !BlockMaterialCard(
@@ -498,6 +504,31 @@ open class BlockMaterialCard(
             PoemList(1).poem(EnJa("Please use on the office ceiling, etc.", "オフィスの天井等にどうぞ。")),
             MapColor.SAND, 3.0F, 3.0F,
         ).tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_AXE)
+        val DRYWALL_SLAB = !object : BlockMaterialCard(
+            "drywall_slab", EnJa("Drywall Slab", "石膏ボードのハーフブロック"),
+            PoemList(1).poem(EnJa("The top half is sold separately.", "上半分は別売りです。")),
+            MapColor.SAND, 3.0F, 3.0F,
+        ) {
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
+            context(ModContext) override fun initBlockStateGeneration() = Unit
+            context(ModContext) override fun initModelGeneration() = Unit
+            context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
+        }.tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_AXE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
+            registerBlockFamily(TexturedModel.CUBE, DRYWALL.block) { it.slab(block()) }
+            registerStonecutterRecipeGeneration(DRYWALL.item, item, 2)
+        }
+        val DRYWALL_STAIRS = !object : BlockMaterialCard(
+            "drywall_stairs", EnJa("Drywall Stairs", "石膏ボードの階段"),
+            PoemList(1).poem(EnJa("The ceiling is calling you home.", "天が迎えに来る。")),
+            MapColor.SAND, 3.0F, 3.0F,
+        ) {
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(DRYWALL.block.await().defaultBlockState(), properties)
+            context(ModContext) override fun initBlockStateGeneration() = Unit
+            context(ModContext) override fun initModelGeneration() = Unit
+        }.tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_AXE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
+            registerBlockFamily(TexturedModel.CUBE, DRYWALL.block) { it.stairs(block()) }
+            registerStonecutterRecipeGeneration(DRYWALL.item, item)
+        }
         val LOCAL_VACUUM_DECAY = !object : BlockMaterialCard(
             "local_vacuum_decay", EnJa("Local Vacuum Decay", "局所真空崩壊"),
             PoemList(99).poem(EnJa("Stable instability due to anti-entropy", "これが秩序の究極の形だというのか？")),
@@ -626,6 +657,40 @@ open class BlockMaterialCard(
             registerStonecutterRecipeGeneration(FAIRY_CERAMIC.item, item)
             registerStonecutterRecipeGeneration(FAIRY_CERAMIC_BRICKS.item, item)
         }
+        val EGG_BLOCK: BlockMaterialCard = !object : BlockMaterialCard(
+            "egg_block", EnJa("Egg Block", "卵ブロック"),
+            PoemList(null),
+            MapColor.SAND, 0.5F, 0.5F,
+        ) {
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().pushReaction(PushReaction.DESTROY)
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = EggBlock(properties)
+
+            context(ModContext)
+            override fun initModelGeneration() {
+                block.registerModelGeneration {
+                    Model(ResourceLocation("minecraft", "block/dragon_egg"), TextureSlot.ALL, TextureSlot.PARTICLE).with(
+                        TextureSlot.ALL to "block/" * block().getIdentifier(),
+                        TextureSlot.PARTICLE to "block/" * block().getIdentifier(),
+                    )
+                }
+            }
+
+            context(ModContext)
+            override fun initLootTableGeneration() {
+                block.registerLootTableGeneration { it, _ ->
+                    it.createSilkTouchOnlyTable(block())
+                }
+            }
+        }.init {
+            registerShapedRecipeGeneration(item) {
+                pattern("##")
+                pattern("##")
+                define('#', Items.EGG)
+            } on { Items.EGG }
+            registerShapelessRecipeGeneration({ Items.EGG }, count = 4) {
+                requires(item())
+            } on item modId MirageFairy2024.MOD_ID from item
+        }
     }
 
     val identifier = MirageFairy2024.identifier(path)
@@ -714,6 +779,7 @@ fun initBlockMaterialsModule() {
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("semi_opaque_transparent_block")) { SemiOpaqueTransparentBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("fairy_crystal_glass")) { FairyCrystalGlassBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("mirage_leaves_block")) { MirageLeavesBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("egg_block")) { EggBlock.CODEC }.register()
 
     LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.enJa(EnJa("Local Vacuum Decay Resistant", "局所真空崩壊耐性"))
 

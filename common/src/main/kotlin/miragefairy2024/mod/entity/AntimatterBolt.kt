@@ -156,7 +156,7 @@ class AntimatterBoltEntity(entityType: EntityType<out AntimatterBoltEntity>, wor
 
             level().playLocalSound(x, y, z, SoundEventCard.MAGIC_HIT.soundEvent, SoundSource.NEUTRAL, 0.5F, 0.90F + (level().random.nextFloat() - 0.5F) * 0.3F, true)
 
-            for (i in 0..7) {
+            repeat(8) {
                 level().addParticle(
                     ParticleTypeCard.AURA.particleType,
                     x, y, z,
