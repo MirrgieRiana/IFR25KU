@@ -118,6 +118,11 @@ enum class OreCard(
         null,
         BaseStoneType.SANDSTONE, "saltpeter_ore", MaterialCard.SALTPETER.item, 2 to 5,
     ),
+    DIRT_SALTPETER_ORE(
+        "dirt_saltpeter_ore", "Dirt Saltpeter Ore", "土硝石鉱石",
+        null,
+        BaseStoneType.DIRT, "saltpeter_ore", MaterialCard.SALTPETER.item, 2 to 5,
+    ),
     SULFUR_ORE(
         "sulfur_ore", "Sulfur Ore", "硫黄鉱石",
         null,
@@ -280,6 +285,8 @@ fun initOresModule() {
     worldGen(48 until 128, 8.0, 4, 0.0, OreCard.SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
     worldGen(48 until 128, 8.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
     worldGen(48 until 128, 8.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
+    worldGen(48 until 128, 0.5, 4, 0.0, OreCard.DIRT_SALTPETER_ORE)
+    worldGen(48 until 128, 4.0, 4, 0.0, OreCard.DIRT_SALTPETER_ORE, "savanna") { +ConventionalBiomeTags.IS_SAVANNA }
     worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
     worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
     worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
