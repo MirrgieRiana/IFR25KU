@@ -1,5 +1,6 @@
 package miragefairy2024.mod.biome
 
+import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
@@ -17,7 +18,10 @@ import net.minecraft.world.level.biome.BiomeGenerationSettings
 import net.minecraft.world.level.biome.BiomeSpecialEffects
 import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.biome.MobSpawnSettings
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.levelgen.GenerationStep
+import net.minecraft.world.level.levelgen.Noises
+import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
@@ -28,7 +32,7 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
             identifier = identifier,
             context = AdvancementCard.Sub { FairyForestBiomeCard.advancement!!.await() },
             icon = { MaterialCard.FAIRY_PLASTIC.item().createItemStack() }, // TODO →プラノキの苗木
-            name = EnJa("The Forest of Memories", "生きた化石"),
+            name = EnJa("The Forest of Memories", "蜜の咲き誇る地"), // TODO 蜜から産まれた雑草
             description = EnJa("Travel the overworld and discover the Old Growth Amber Forest", "地上を旅して琥珀色の原生林を探す"),
             criterion = AdvancementCard.visit(key),
             type = AdvancementCardType.TOAST_ONLY,
@@ -79,11 +83,10 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
 
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, ElevatedSpawnerFeatureCard.placedFeatureKey)
 
-                BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_TAIGA)
+                BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
                 BiomeDefaultFeatures.addGiantTaigaVegetation(lookupBackedBuilder)
-                BiomeDefaultFeatures.addDefaultMushrooms(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
 
             }.build()).build()
@@ -92,6 +95,31 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
     context(ModContext)
     override fun init() {
         super.init()
+
+        registerOverworldSurfaceRules(MirageFairy2024.MOD_ID) {
+            SurfaceRules.ifTrue(
+                SurfaceRules.abovePreliminarySurface(),
+                SurfaceRules.ifTrue(
+                    SurfaceRules.ON_FLOOR,
+                    SurfaceRules.ifTrue(
+                        SurfaceRules.waterBlockCheck(-1, 0),
+                        SurfaceRules.ifTrue(
+                            SurfaceRules.isBiome(key),
+                            SurfaceRules.sequence(
+                                SurfaceRules.ifTrue(
+                                    SurfaceRules.noiseCondition(Noises.SURFACE, 1.75 / 8.25, Double.MAX_VALUE),
+                                    SurfaceRules.state(Blocks.COARSE_DIRT.defaultBlockState())
+                                ),
+                                SurfaceRules.ifTrue(
+                                    SurfaceRules.noiseCondition(Noises.SURFACE, -0.95 / 8.25, Double.MAX_VALUE),
+                                    SurfaceRules.state(Blocks.PODZOL.defaultBlockState())
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            )
+        }
 
         registerOverworldBiomeOverride(Biomes.JUNGLE)
         registerOverworldBiomeOverride(Biomes.SPARSE_JUNGLE)
