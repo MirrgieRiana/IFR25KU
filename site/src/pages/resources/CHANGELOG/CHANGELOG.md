@@ -55,6 +55,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 - 追加: オーバーワールドの草地に鳥の巣を追加。
   - 麦俵と卵ブロックで構成された3×3の構造物。
 - 追加: バイオーム「琥珀色の原生林」を追加。
+- 変更: 砂岩硝石鉱石の生成頻度を2倍に増加。
 
 その他
 
