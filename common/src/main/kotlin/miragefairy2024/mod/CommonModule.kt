@@ -139,8 +139,6 @@ fun initCommonModule() {
         item.modifyItemEnchantments(itemStack, mutableItemEnchantments, enchantmentLookup)
     }
 
-    CustomizedRemainderRegistry.register(Items.POTION) { Items.GLASS_BOTTLE.createItemStack() }
-
     registerClientDebugItem("dump_biome_attributes", Blocks.OAK_SAPLING.toTextureSource(), 0xFFFF00FF.toInt()) { world, player, _, _ ->
         val lines = mutableListOf<List<String>>()
         world.registryAccess()[Registries.BIOME].listElements().forEach { biome ->
