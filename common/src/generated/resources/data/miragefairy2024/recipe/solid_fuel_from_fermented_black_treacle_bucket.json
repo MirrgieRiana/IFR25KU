@@ -4,7 +4,7 @@
   "group": "miragefairy2024:solid_fuel",
   "inputs": [
     {
-      "Amount": 2,
+      "Amount": 1,
       "Ingredient": {
         "item": "miragefairy2024:fermented_black_treacle_bucket"
       }
@@ -12,7 +12,7 @@
   ],
   "outputs": [
     {
-      "count": 5,
+      "count": 2,
       "id": "miragefairy2024:solid_fuel"
     }
   ]
