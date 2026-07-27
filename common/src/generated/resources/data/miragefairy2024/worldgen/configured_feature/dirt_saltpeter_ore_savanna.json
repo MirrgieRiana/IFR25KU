@@ -10,7 +10,7 @@
         },
         "target": {
           "predicate_type": "minecraft:tag_match",
-          "tag": "miragefairy2024:dirt_ore_replaceables"
+          "tag": "minecraft:dirt"
         }
       }
     ]
