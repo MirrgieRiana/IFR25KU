@@ -3,7 +3,7 @@ package miragefairy2024.mod.magicplant
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.contents.StickyMiningSnapshot
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
-import miragefairy2024.mod.tool.CarnivorousPlantDamageTypeCard
+import miragefairy2024.mod.tool.SpineDamageTypeCard
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.get
@@ -76,7 +76,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
             val spineDamage = traitEffects[TraitEffectKeyCard.SPINE_DAMAGE.traitEffectKey]
             val damage = level.random.randomInt(spineDamage)
             if (damage > 0) {
-                entity.hurt(level.damageSources().source(CarnivorousPlantDamageTypeCard.registryKey), damage.toFloat())
+                entity.hurt(level.damageSources().source(SpineDamageTypeCard.registryKey), damage.toFloat())
             }
         }
     }
