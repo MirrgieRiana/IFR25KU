@@ -37,6 +37,9 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
   - アタノールで入手可能。
 - 追加: 素材アイテム「発酵した黒蜜入りバケツ」を追加。
   - 醸造樽で入手可能。
+- 追加: 鉱石ブロック「土硝石鉱石」を追加。
+  - 地上世界全域のY48～128の土に低確率で生成。
+  - サバンナではより高い密度で生成。
 
 レシピ
 
