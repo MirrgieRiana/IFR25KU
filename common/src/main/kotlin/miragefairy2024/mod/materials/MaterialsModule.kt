@@ -870,6 +870,19 @@ class MaterialCard(
             register({ Items.DRIED_KELP }, 8, { Items.ROTTEN_FLESH }, 4)
             register({ Items.DRIED_KELP }, 8, { Items.FERMENTED_SPIDER_EYE }, 2)
 
+            // 荒い土の分解レシピ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(Items.COARSE_DIRT.toIngredient(), 8) },
+                ),
+                outputs = listOf(
+                    { Items.DIRT.createItemStack(6) },
+                    { item().createItemStack(1) },
+                ),
+                duration = 20 * 60,
+            ) on { Items.COARSE_DIRT } modId MirageFairy2024.MOD_ID from { Items.COARSE_DIRT }
+
             // →火薬
             registerShapelessRecipeGeneration({ Items.GUNPOWDER }, 9) {
                 repeat(6) {
@@ -1584,7 +1597,7 @@ fun initMaterialsModule() {
             { SimpleMachineRecipe.Input(Items.WHEAT.toIngredient(), 1) },
             { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
         ),
-        outputs = listOf({ Items.BREAD.createItemStack(2) }),
+        outputs = listOf({ Items.BREAD.createItemStack() }),
         duration = 20 * 10,
     ) using "athanor" on { Items.WHEAT } modId MirageFairy2024.MOD_ID
 

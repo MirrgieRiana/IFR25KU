@@ -6,11 +6,11 @@
     "targets": [
       {
         "state": {
-          "Name": "miragefairy2024:dirt_fairy_plastic_ore"
+          "Name": "miragefairy2024:dirt_saltpeter_ore"
         },
         "target": {
           "predicate_type": "minecraft:tag_match",
-          "tag": "minecraft:dirt"
+          "tag": "miragefairy2024:dirt_ore_replaceables"
         }
       }
     ]
