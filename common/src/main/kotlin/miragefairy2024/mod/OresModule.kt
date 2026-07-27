@@ -35,7 +35,6 @@ import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.string
 import miragefairy2024.util.times
-import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.uniformOre
 import miragefairy2024.util.with
@@ -59,6 +58,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
 import net.minecraft.world.level.material.MapColor
@@ -67,8 +67,8 @@ import java.util.function.Predicate
 enum class BaseStoneType(val target: RuleTest, val baseStoneTexture: ResourceLocation, val mineableTag: TagKey<Block>, val needsToolTag: TagKey<Block>?) {
     STONE(TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/stone"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
     DEEPSLATE(TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    SANDSTONE(TagMatchTest(SANDSTONE_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    DIRT(TagMatchTest(DIRT_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
+    SANDSTONE(BlockMatchTest(Blocks.SANDSTONE), ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    DIRT(TagMatchTest(BlockTags.DIRT), ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
 }
 
 enum class OreCard(
@@ -200,21 +200,12 @@ object OreModelCard {
     val model = Model(identifier, TextureSlot.BACK, TextureSlot.FRONT)
 }
 
-val SANDSTONE_ORE_REPLACEABLES = MirageFairy2024.identifier("sandstone_ore_replaceables").toBlockTag()
-val DIRT_ORE_REPLACEABLES = MirageFairy2024.identifier("dirt_ore_replaceables").toBlockTag()
-
 context(ModContext)
 fun initOresModule() {
 
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("ore")) { OreBlock.CODEC }.register()
 
     registerModelGeneration({ OreModelCard.identifier }) { OreModelCard.parentModel.with() }
-
-    SANDSTONE_ORE_REPLACEABLES.enJa(EnJa("Sandstone Ore Replaceables", "砂岩鉱石が置換可能"))
-    SANDSTONE_ORE_REPLACEABLES.generator.registerChild { Blocks.SANDSTONE }
-
-    DIRT_ORE_REPLACEABLES.enJa(EnJa("Dirt Ore Replaceables", "土鉱石が置換可能"))
-    DIRT_ORE_REPLACEABLES.generator.registerChild(BlockTags.DIRT)
 
     OreCard.entries.forEach { card ->
 
