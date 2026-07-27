@@ -873,7 +873,9 @@ class MaterialCard(
             // 荒い土の分解レシピ
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
-                inputs = listOf({ SimpleMachineRecipe.Input(Items.COARSE_DIRT.toIngredient(), 8) }),
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(Items.COARSE_DIRT.toIngredient(), 8) },
+                ),
                 outputs = listOf(
                     { Items.DIRT.createItemStack(6) },
                     { item().createItemStack(1) },
