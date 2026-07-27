@@ -9,8 +9,8 @@
           "Name": "miragefairy2024:sandstone_saltpeter_ore"
         },
         "target": {
-          "predicate_type": "minecraft:tag_match",
-          "tag": "miragefairy2024:sandstone_ore_replaceables"
+          "block": "minecraft:sandstone",
+          "predicate_type": "minecraft:block_match"
         }
       }
     ]

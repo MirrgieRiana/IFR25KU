@@ -84,8 +84,8 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, ElevatedSpawnerFeatureCard.placedFeatureKey)
 
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_TAIGA)
-                BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
+                BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)
                 BiomeDefaultFeatures.addGiantTaigaVegetation(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
 

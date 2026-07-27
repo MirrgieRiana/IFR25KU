@@ -35,7 +35,6 @@ import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.string
 import miragefairy2024.util.times
-import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.uniformOre
 import miragefairy2024.util.with
@@ -59,15 +58,17 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
 import net.minecraft.world.level.material.MapColor
 import java.util.function.Predicate
 
-enum class BaseStoneType(val targetBlockTag: TagKey<Block>, val baseStoneTexture: ResourceLocation, val mineableTag: TagKey<Block>, val needsToolTag: TagKey<Block>?) {
-    STONE(BlockTags.STONE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/stone"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    DEEPSLATE(BlockTags.DEEPSLATE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    SANDSTONE(SANDSTONE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    DIRT(DIRT_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
+enum class BaseStoneType(val target: RuleTest, val baseStoneTexture: ResourceLocation, val mineableTag: TagKey<Block>, val needsToolTag: TagKey<Block>?) {
+    STONE(TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/stone"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    DEEPSLATE(TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    SANDSTONE(BlockMatchTest(Blocks.SANDSTONE), ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    DIRT(TagMatchTest(BlockTags.DIRT), ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
 }
 
 enum class OreCard(
@@ -204,21 +205,12 @@ object OreModelCard {
     val model = Model(identifier, TextureSlot.BACK, TextureSlot.FRONT)
 }
 
-val SANDSTONE_ORE_REPLACEABLES = MirageFairy2024.identifier("sandstone_ore_replaceables").toBlockTag()
-val DIRT_ORE_REPLACEABLES = MirageFairy2024.identifier("dirt_ore_replaceables").toBlockTag()
-
 context(ModContext)
 fun initOresModule() {
 
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("ore")) { OreBlock.CODEC }.register()
 
     registerModelGeneration({ OreModelCard.identifier }) { OreModelCard.parentModel.with() }
-
-    SANDSTONE_ORE_REPLACEABLES.enJa(EnJa("Sandstone Ore Replaceables", "砂岩鉱石が置換可能"))
-    SANDSTONE_ORE_REPLACEABLES.generator.registerChild { Blocks.SANDSTONE }
-
-    DIRT_ORE_REPLACEABLES.enJa(EnJa("Dirt Ore Replaceables", "土鉱石が置換可能"))
-    DIRT_ORE_REPLACEABLES.generator.registerChild(BlockTags.DIRT)
 
     OreCard.entries.forEach { card ->
 
@@ -271,7 +263,7 @@ fun initOresModule() {
     ) {
         Feature.ORE.generator(card.identifier) {
             registerConfiguredFeature(suffix) {
-                val targets = listOf(OreConfiguration.target(TagMatchTest(card.baseStoneType.targetBlockTag), card.block().defaultBlockState()))
+                val targets = listOf(OreConfiguration.target(card.baseStoneType.target, card.block().defaultBlockState()))
                 OreConfiguration(targets, size, discardChanceOnAirExposure.toFloat())
             }.generator {
                 registerPlacedFeature(suffix) { randomIntCount(countPerCube * (range.last - range.first + 1).toDouble() / 16.0) + uniformOre(range.first, range.last) }.placeWhenUndergroundOres(biomePredicate)
@@ -284,10 +276,10 @@ fun initOresModule() {
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE)
     worldGen(48 until 128, 8.0, 4, 0.0, OreCard.SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
     worldGen(48 until 128, 8.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
-    worldGen(48 until 128, 8.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
+    worldGen(48 until 128, 16.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
     worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
     worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
-    worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
+    worldGen(-64 until 64, 8.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
     worldGen(48 until 128, 0.2, 4, 1.0, OreCard.DIRT_SALTPETER_ORE)
     worldGen(48 until 128, 2.0, 4, 1.0, OreCard.DIRT_SALTPETER_ORE, "savanna") { +ConventionalBiomeTags.IS_SAVANNA }
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE)
