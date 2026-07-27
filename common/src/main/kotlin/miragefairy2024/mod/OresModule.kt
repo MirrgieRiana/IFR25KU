@@ -59,15 +59,16 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
 import net.minecraft.world.level.material.MapColor
 import java.util.function.Predicate
 
-enum class BaseStoneType(val targetBlockTag: TagKey<Block>, val baseStoneTexture: ResourceLocation, val mineableTag: TagKey<Block>, val needsToolTag: TagKey<Block>?) {
-    STONE(BlockTags.STONE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/stone"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    DEEPSLATE(BlockTags.DEEPSLATE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    SANDSTONE(SANDSTONE_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    DIRT(DIRT_ORE_REPLACEABLES, ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
+enum class BaseStoneType(val target: RuleTest, val baseStoneTexture: ResourceLocation, val mineableTag: TagKey<Block>, val needsToolTag: TagKey<Block>?) {
+    STONE(TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/stone"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    DEEPSLATE(TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    SANDSTONE(TagMatchTest(SANDSTONE_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    DIRT(TagMatchTest(DIRT_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
 }
 
 enum class OreCard(
@@ -266,7 +267,7 @@ fun initOresModule() {
     ) {
         Feature.ORE.generator(card.identifier) {
             registerConfiguredFeature(suffix) {
-                val targets = listOf(OreConfiguration.target(TagMatchTest(card.baseStoneType.targetBlockTag), card.block().defaultBlockState()))
+                val targets = listOf(OreConfiguration.target(card.baseStoneType.target, card.block().defaultBlockState()))
                 OreConfiguration(targets, size, discardChanceOnAirExposure.toFloat())
             }.generator {
                 registerPlacedFeature(suffix) { randomIntCount(countPerCube * (range.last - range.first + 1).toDouble() / 16.0) + uniformOre(range.first, range.last) }.placeWhenUndergroundOres(biomePredicate)
