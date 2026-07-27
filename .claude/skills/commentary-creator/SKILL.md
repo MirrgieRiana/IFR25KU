@@ -141,5 +141,5 @@ description: "つむぎとずんだもんが二人で喋りながら、資料の
 - [markdown-max-line-length](https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/markdown-max-line-length/SKILL.md)
 
 1 行は 50 文字以下で、1 行には 1 文だけ書くのだぁ✨
-フロントマター・箇条書き・コードブロック・引用は、文字数制限の対象外なのだぁ🌱
+フロントマター・箇条書き・表組・コードブロック・引用などは、文字数制限の対象外なのだぁ🌱
 体裁のために情報を削ったり劣化させるのは、本末転倒だから禁止なのだぁ🌧️
