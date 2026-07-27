@@ -45,6 +45,7 @@ fun initCommonClientModule() {
             val level = minecraft.level ?: return@register
             val player = minecraft.player ?: return@register
             if (!player.isValid) return@register
+            if (minecraft.options.hideGui) return@register // F1でHUDを隠している間は、バニラのブロックのアウトラインに合わせて隠すのだ～🌱
 
             val (baseBlockPos, blockPoses) = listener.getBlockPoses(object : RenderBlockPosesOutlineContext {
                 override val level get() = level
