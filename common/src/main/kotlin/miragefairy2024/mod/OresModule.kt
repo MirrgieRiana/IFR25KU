@@ -20,6 +20,7 @@ import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
+import miragefairy2024.util.nether
 import miragefairy2024.util.overworld
 import miragefairy2024.util.placeWhenUndergroundOres
 import miragefairy2024.util.plus
@@ -93,6 +94,12 @@ enum class OreCard(
         "deepslate_magnetite_ore", "Deepslate Magnetite Ore", "深層磁鉄鉱鉱石",
         null,
         BaseStoneType.DEEPSLATE, "magnetite_ore", MaterialCard.MAGNETITE.item, 2 to 5,
+        tags = listOf(STICKY_MINING_BLOCK_TAG),
+    ),
+    NETHERRACK_MAGNETITE_ORE(
+        "netherrack_magnetite_ore", "Netherrack Magnetite Ore", "ネザーラック磁鉄鉱鉱石",
+        null,
+        BaseStoneType.NETHERRACK, "magnetite_ore", MaterialCard.MAGNETITE.item, 2 to 5,
         tags = listOf(STICKY_MINING_BLOCK_TAG),
     ),
     FLUORITE_ORE(
@@ -280,6 +287,7 @@ fun initOresModule() {
     }
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.MAGNETITE_ORE)
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.DEEPSLATE_MAGNETITE_ORE)
+    worldGen(10 until 118, 0.6, 12, 0.0, OreCard.NETHERRACK_MAGNETITE_ORE) { nether } // 高さ範囲はバニラのネザー鉱石と同じく、底と天井の岩盤層を避けた範囲なのだ～🌱
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.FLUORITE_ORE)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE)
     worldGen(48 until 128, 8.0, 4, 0.0, OreCard.SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
