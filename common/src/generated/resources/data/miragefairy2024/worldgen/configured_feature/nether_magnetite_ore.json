@@ -6,7 +6,7 @@
     "targets": [
       {
         "state": {
-          "Name": "miragefairy2024:netherrack_magnetite_ore"
+          "Name": "miragefairy2024:nether_magnetite_ore"
         },
         "target": {
           "block": "minecraft:netherrack",
