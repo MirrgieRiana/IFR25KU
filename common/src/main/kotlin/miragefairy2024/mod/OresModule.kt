@@ -21,13 +21,13 @@ import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.overworld
-import miragefairy2024.util.placeWhenUndergroundOres
 import miragefairy2024.util.plus
 import miragefairy2024.util.randomIntCount
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerCutoutRenderLayer
+import miragefairy2024.util.registerFeature
 import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerOreLootTableGeneration
@@ -56,6 +56,7 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
+import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest
@@ -259,6 +260,7 @@ fun initOresModule() {
         discardChanceOnAirExposure: Double,
         card: OreCard,
         suffix: String? = null,
+        step: GenerationStep.Decoration = GenerationStep.Decoration.UNDERGROUND_ORES,
         biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext> = { overworld },
     ) {
         Feature.ORE.generator(card.identifier) {
@@ -266,7 +268,7 @@ fun initOresModule() {
                 val targets = listOf(OreConfiguration.target(card.baseStoneType.target, card.block().defaultBlockState()))
                 OreConfiguration(targets, size, discardChanceOnAirExposure.toFloat())
             }.generator {
-                registerPlacedFeature(suffix) { randomIntCount(countPerCube * (range.last - range.first + 1).toDouble() / 16.0) + uniformOre(range.first, range.last) }.placeWhenUndergroundOres(biomePredicate)
+                registerPlacedFeature(suffix) { randomIntCount(countPerCube * (range.last - range.first + 1).toDouble() / 16.0) + uniformOre(range.first, range.last) }.registerFeature(step) { biomePredicate() }
             }
         }
     }
