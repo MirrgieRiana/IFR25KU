@@ -9,10 +9,12 @@ description: ミラージュフェアリー劇場制作のための資料やル�
 
 ## 登場人物のペルソナ資料
 
-登場人物のペルソナ資料は別スキルとして切り出されています。劇場記事を制作する際は以下のスキルを併せて参照してください。
+登場人物のペルソナ資料は別のリポジトリのスキルとして切り出されています。劇場記事を制作する際は以下のスキルを取得して併せて参照してください。
 
-- `ifr25ku-site:zundamon-persona` - ずんだもん
-- `ifr25ku-site:kasukabe-tsumugi-persona` - 春日部つむぎ
+- `zundamon-persona` - ずんだもん
+  https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/zundamon-persona/SKILL.md
+- `kasukabe-tsumugi-persona` - 春日部つむぎ
+  https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/kasukabe-tsumugi-persona/SKILL.md
 
 ## ミラージュフェアリー劇場の目的
 
