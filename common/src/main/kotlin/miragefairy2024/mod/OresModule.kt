@@ -259,8 +259,8 @@ fun initOresModule() {
         size: Int,
         discardChanceOnAirExposure: Double,
         card: OreCard,
+        step: GenerationStep.Decoration,
         suffix: String? = null,
-        step: GenerationStep.Decoration = GenerationStep.Decoration.UNDERGROUND_ORES,
         biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext> = { overworld },
     ) {
         Feature.ORE.generator(card.identifier) {
@@ -272,25 +272,25 @@ fun initOresModule() {
             }
         }
     }
-    worldGen(16 until 128, 1.6, 12, 0.0, OreCard.MAGNETITE_ORE)
-    worldGen(16 until 128, 1.6, 12, 0.0, OreCard.DEEPSLATE_MAGNETITE_ORE)
-    worldGen(0 until 64, 1.2, 8, 0.0, OreCard.FLUORITE_ORE)
-    worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE)
-    worldGen(48 until 128, 8.0, 4, 0.0, OreCard.SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
-    worldGen(48 until 128, 8.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
-    worldGen(48 until 128, 16.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
-    worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
-    worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
-    worldGen(-64 until 64, 8.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
-    worldGen(48 until 128, 0.2, 4, 1.0, OreCard.DIRT_SALTPETER_ORE)
-    worldGen(48 until 128, 2.0, 4, 1.0, OreCard.DIRT_SALTPETER_ORE, "savanna") { +ConventionalBiomeTags.IS_SAVANNA }
-    worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE)
-    worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.DEEPSLATE_SULFUR_ORE)
-    worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE)
-    worldGen(-64 until 64, 0.3, 4, 1.0, OreCard.DEEPSLATE_NEPHRITE_ORE)
-    worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE)
-    worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.DEEPSLATE_MIRANAGITE_ORE)
-    worldGen(48 until 128, 0.2, 4, 1.0, OreCard.DIRT_FAIRY_PLASTIC_ORE) { +DeepFairyForestBiomeCard.key }
+    worldGen(16 until 128, 1.6, 12, 0.0, OreCard.MAGNETITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
+    worldGen(16 until 128, 1.6, 12, 0.0, OreCard.DEEPSLATE_MAGNETITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
+    worldGen(0 until 64, 1.2, 8, 0.0, OreCard.FLUORITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
+    worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
+    worldGen(48 until 128, 8.0, 4, 0.0, OreCard.SALTPETER_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
+    worldGen(48 until 128, 8.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
+    worldGen(48 until 128, 16.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
+    worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.SALTPETER_ORE, GenerationStep.Decoration.UNDERGROUND_ORES, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
+    worldGen(-64 until 64, 4.0, 4, 0.0, OreCard.DEEPSLATE_SALTPETER_ORE, GenerationStep.Decoration.UNDERGROUND_ORES, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
+    worldGen(-64 until 64, 8.0, 4, 0.0, OreCard.SANDSTONE_SALTPETER_ORE, GenerationStep.Decoration.UNDERGROUND_ORES, "dripstone_caves") { +Biomes.DRIPSTONE_CAVES }
+    worldGen(48 until 128, 0.2, 4, 1.0, OreCard.DIRT_SALTPETER_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
+    worldGen(48 until 128, 2.0, 4, 1.0, OreCard.DIRT_SALTPETER_ORE, GenerationStep.Decoration.UNDERGROUND_ORES, "savanna") { +ConventionalBiomeTags.IS_SAVANNA }
+    worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
+    worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.DEEPSLATE_SULFUR_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
+    worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
+    worldGen(-64 until 64, 0.3, 4, 1.0, OreCard.DEEPSLATE_NEPHRITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
+    worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
+    worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.DEEPSLATE_MIRANAGITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
+    worldGen(48 until 128, 0.2, 4, 1.0, OreCard.DIRT_FAIRY_PLASTIC_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +DeepFairyForestBiomeCard.key }
 
 }
 
