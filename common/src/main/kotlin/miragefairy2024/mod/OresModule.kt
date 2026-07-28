@@ -20,6 +20,7 @@ import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
+import miragefairy2024.util.nether
 import miragefairy2024.util.overworld
 import miragefairy2024.util.placeWhenUndergroundOres
 import miragefairy2024.util.plus
@@ -70,6 +71,7 @@ enum class BaseStoneType(val target: RuleTest, val baseStoneTexture: ResourceLoc
     SANDSTONE(BlockMatchTest(Blocks.SANDSTONE), ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
     DIRT(TagMatchTest(BlockTags.DIRT), ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
     NETHERRACK(BlockMatchTest(Blocks.NETHERRACK), ResourceLocation("minecraft", "block/netherrack"), BlockTags.MINEABLE_WITH_PICKAXE, null),
+    BLACKSTONE(BlockMatchTest(Blocks.BLACKSTONE), ResourceLocation("minecraft", "block/blackstone"), BlockTags.MINEABLE_WITH_PICKAXE, null),
 }
 
 enum class OreCard(
@@ -140,6 +142,11 @@ enum class OreCard(
         null,
         BaseStoneType.NETHERRACK, "sulfur_ore", MaterialCard.SULFUR.item, 2 to 5,
     ),
+    BLACKSTONE_SULFUR_ORE(
+        "blackstone_sulfur_ore", "Blackstone Sulfur Ore", "ブラックストーン硫黄鉱石",
+        null,
+        BaseStoneType.BLACKSTONE, "sulfur_ore", MaterialCard.SULFUR.item, 2 to 5,
+    ),
     NEPHRITE_ORE(
         "nephrite_ore", "Nephrite Ore", "ネフライト鉱石",
         null,
@@ -200,6 +207,12 @@ enum class OreCard(
                 .requiresCorrectToolForDrops()
                 .strength(3.0F, 3.0F)
                 .sound(SoundType.NETHER_ORE)
+
+            BaseStoneType.BLACKSTONE -> BlockBehaviour.Properties.of()
+                .mapColor(MapColor.COLOR_BLACK)
+                .instrument(NoteBlockInstrument.BASEDRUM)
+                .requiresCorrectToolForDrops()
+                .strength(3.0F, 3.0F)
         }
         OreBlock(UniformInt.of(experience.first, experience.second), settings)
     }
@@ -297,6 +310,7 @@ fun initOresModule() {
     worldGen(48 until 128, 2.0, 4, 1.0, OreCard.DIRT_SALTPETER_ORE, "savanna") { +ConventionalBiomeTags.IS_SAVANNA }
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE)
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.DEEPSLATE_SULFUR_ORE)
+    worldGen(0 until 128, 4.0, 8, 0.0, OreCard.BLACKSTONE_SULFUR_ORE) { nether }
     worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE)
     worldGen(-64 until 64, 0.3, 4, 1.0, OreCard.DEEPSLATE_NEPHRITE_ORE)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE)

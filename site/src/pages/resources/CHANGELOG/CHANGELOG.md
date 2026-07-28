@@ -40,6 +40,8 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 - 追加: 鉱石ブロック「土硝石鉱石」を追加。
   - 地上世界全域のY48～128の土に低確率で生成。
   - サバンナではより高い密度で生成。
+- 追加: 鉱石ブロック「ブラックストーン硫黄鉱石」を追加。
+  - ネザー全域のブラックストーンに、高さを問わず生成。
 
 レシピ
 
