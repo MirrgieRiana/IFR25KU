@@ -287,7 +287,7 @@ fun initOresModule() {
     }
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.MAGNETITE_ORE)
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.DEEPSLATE_MAGNETITE_ORE)
-    worldGen(10 until 118, 0.6, 12, 0.0, OreCard.NETHER_MAGNETITE_ORE) { nether } // 高さ範囲はバニラのネザー鉱石と同じく、底と天井の岩盤層を避けた範囲なのだ～🌱
+    worldGen(10 until 118, 0.6, 12, 0.0, OreCard.NETHER_MAGNETITE_ORE) { nether }
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.FLUORITE_ORE)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE)
     worldGen(48 until 128, 8.0, 4, 0.0, OreCard.SALTPETER_ORE) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
