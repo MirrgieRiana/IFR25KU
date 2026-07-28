@@ -80,6 +80,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 クリエイティブ専用
 
 - 追加: 鉱石ブロック「ネザー硫黄鉱石」を追加。
+- 表示: アカーシャによる生命設計の針の説明文を、使用対象ごとの挙動が分かるように変更。
 
 ## 31.31.2
 
