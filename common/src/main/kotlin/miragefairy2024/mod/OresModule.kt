@@ -41,6 +41,7 @@ import miragefairy2024.util.with
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
@@ -247,6 +248,7 @@ fun initOresModule() {
         card.baseStoneType.mineableTag.generator.registerChild(card.block)
         card.baseStoneType.needsToolTag?.generator?.registerChild(card.block)
         ConventionalBlockTags.ORES.generator.registerChild(card.block)
+        ConventionalItemTags.ORES.generator.registerChild(card.item)
 
         card.tags.forEach {
             it.generator.registerChild(card.block)
