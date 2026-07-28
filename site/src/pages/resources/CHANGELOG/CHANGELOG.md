@@ -40,6 +40,8 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 - 追加: 鉱石ブロック「土硝石鉱石」を追加。
   - 地上世界全域のY48～128の土に低確率で生成。
   - サバンナではより高い密度で生成。
+- 追加: 鉱石ブロック「ネザー硫黄鉱石」を追加。
+  - ネザー全域のY10～42のネザーラックに生成。
 
 レシピ
 
@@ -79,7 +81,6 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 
 クリエイティブ専用
 
-- 追加: 鉱石ブロック「ネザー硫黄鉱石」を追加。
 - 表示: アカーシャによる生命設計の針の説明文を、使用対象ごとの挙動が分かるように変更。
 
 ## 31.31.2
