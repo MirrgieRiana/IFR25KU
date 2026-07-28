@@ -20,6 +20,7 @@ import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
+import miragefairy2024.util.nether
 import miragefairy2024.util.overworld
 import miragefairy2024.util.placeWhenUndergroundOres
 import miragefairy2024.util.plus
@@ -297,6 +298,7 @@ fun initOresModule() {
     worldGen(48 until 128, 2.0, 4, 1.0, OreCard.DIRT_SALTPETER_ORE, "savanna") { +ConventionalBiomeTags.IS_SAVANNA }
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE)
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.DEEPSLATE_SULFUR_ORE)
+    worldGen(10 until 43, 4.0, 8, 0.0, OreCard.NETHER_SULFUR_ORE) { nether }
     worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE)
     worldGen(-64 until 64, 0.3, 4, 1.0, OreCard.DEEPSLATE_NEPHRITE_ORE)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE)
