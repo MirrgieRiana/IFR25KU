@@ -26,7 +26,7 @@
                   }
                 }
               ],
-              "name": "miragefairy2024:netherrack_sulfur_ore"
+              "name": "miragefairy2024:nether_sulfur_ore"
             },
             {
               "type": "minecraft:item",
@@ -48,5 +48,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "miragefairy2024:blocks/netherrack_sulfur_ore"
+  "random_sequence": "miragefairy2024:blocks/nether_sulfur_ore"
 }

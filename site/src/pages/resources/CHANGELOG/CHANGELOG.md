@@ -79,7 +79,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 
 クリエイティブ専用
 
-- 追加: 鉱石ブロック「ネザーラック硫黄鉱石」を追加。
+- 追加: 鉱石ブロック「ネザー硫黄鉱石」を追加。
 
 ## 31.31.2
 
