@@ -50,8 +50,10 @@ fun initBiomeModule() {
     RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG.enJa(EnJa("Retrospective City Building", "過去を見つめる都市の建物"))
     RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG.enJa(EnJa("Retrospective City Floor", "過去を見つめる都市の床"))
 
+    BirdNestFeatureCard.init()
     ElevatedSpawnerFeatureCard.init()
     MiragidianLampFeatureCard.init()
+    RetrospectiveCityGazingWallFeatureCard.init()
     RetrospectiveCitySmallRuinFeatureCard.init()
     RetrospectiveCityTinyRuinFeatureCard.init()
     XarperiaObeliskFeatureCard.init()
@@ -59,6 +61,7 @@ fun initBiomeModule() {
     FairyForestBiomeCard.init()
     DeepFairyForestBiomeCard.init()
     RetrospectiveCityBiomeCard.init()
+    OldGrowthAmberForestBiomeCard.init()
 
 }
 

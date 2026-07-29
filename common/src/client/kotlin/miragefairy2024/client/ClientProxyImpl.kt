@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemDisplayContext
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.BlockAndTintGetter
 import net.minecraft.world.level.FoliageColor
+import net.minecraft.world.level.GrassColor
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
@@ -58,6 +59,10 @@ class ClientProxyImpl : ClientProxy {
         ColorProviderRegistry.BLOCK.register({ blockState, world, blockPos, tintIndex ->
             provider(blockState, world, blockPos, tintIndex)
         }, block())
+    }
+
+    override fun getGrassBlockColorProvider() = BlockColorProvider { _, world, blockPos, _ ->
+        if (world == null || blockPos == null) GrassColor.getDefaultColor() else BiomeColors.getAverageGrassColor(world as BlockAndTintGetter, blockPos)
     }
 
     override fun getFoliageBlockColorProvider() = BlockColorProvider { _, world, blockPos, _ ->

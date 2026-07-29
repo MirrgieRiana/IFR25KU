@@ -3,6 +3,7 @@ package miragefairy2024.mod.haimeviska
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemList
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.description
 import miragefairy2024.mod.haimeviska.cards.DrippingHaimeviskaLogBlock
 import miragefairy2024.mod.haimeviska.cards.HaimeviskaBricksBlockCard
@@ -28,7 +29,6 @@ import miragefairy2024.mod.haimeviska.cards.HaimeviskaTrapdoorBlockCard
 import miragefairy2024.mod.haimeviska.cards.HaimeviskaWoodBlockCard
 import miragefairy2024.mod.haimeviska.cards.HollowHaimeviskaLogBlock
 import miragefairy2024.mod.haimeviska.cards.IncisedHaimeviskaLogBlock
-import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration

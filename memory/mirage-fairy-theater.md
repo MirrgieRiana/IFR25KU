@@ -15,12 +15,12 @@
 | 個々の劇場記事の本文・元ネタ | `site/src/pages/resources/YYYY-MM-DD-<slug>/<slug>.md` — フロントマターが `layout: theater` の記事たちなのだぁ |
 | 関連記事の抽選やレイアウトの仕組み | `site/src/main/resources/_layouts/theater.html` 末尾のインラインJSなのだぁ |
 | ゲーム本体のポエム・分類・特性・死亡メッセージの原文 | `common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json` なのだぁ |
-| 劇場の制作ルール・目的・翻訳思想 | `site/ifr25ku-site-claude-marketplace/ifr25ku-site/skills/theater-creator/SKILL.md` なのだぁ |
-| つむぎ・ずんだもんのペルソナ | 同じ `skills/` 下の `kasukabe-tsumugi-persona`・`zundamon-persona` なのだぁ |
+| 劇場の制作ルール・目的・翻訳思想 | `.claude/skills/theater-creator/SKILL.md` なのだぁ |
+| つむぎ・ずんだもんのペルソナ | `MirrgieRiana/MirrgieRiana.github.io` の `.claude/skills/` 下の `kasukabe-tsumugi-persona`・`zundamon-persona` なのだぁ |
 
 ## 劇場のねらい — 文化を伝える読み物なのだぁ🌱
 
-劇場の制作ルールは、`site/ifr25ku-site-claude-marketplace/ifr25ku-site/skills/theater-creator/SKILL.md` にちゃんと明文化されているのだぁ〜🌱♪
+劇場の制作ルールは、`.claude/skills/theater-creator/SKILL.md` にちゃんと明文化されているのだぁ〜🌱♪
 そこで宣言されている本当のねらいは、アップデート内容の報告やゲーム仕様の説明じゃなくて、「IFRKUという文化を多くの人に知ってもらうこと」なのだぁ✨
 Web検索でのヒット → クリック → 読み始め → 釘付け → 別記事への誘導 → 再訪 → 共有、っていう読み手の行動の連鎖を狙う、集客戦略に立っているのだぁ🌱
 
@@ -54,7 +54,7 @@ Web検索でのヒット → クリック → 読み始め → 釘付け → 別
 
 ## 制作スキルとの対応なのだぁ🎬
 
-劇場を生み出す側のルールは、Claude Code のローカルマーケットプレイスのプラグイン `ifr25ku-site` として実装されていて、3本のスキルからできているのだぁ〜🌱✨
+劇場を生み出す側のルールは、Claude Code のスキルとして実装されていて、3本のスキルからできているのだぁ〜🌱✨ このリポジトリの `.claude/skills/` にあるのは `theater-creator` の1本だけで、ペルソナ2本は `MirrgieRiana/MirrgieRiana.github.io` の `.claude/skills/` 側にあるのだぁ🌱
 
 - `theater-creator`：制作ルール本体で、目的・翻訳思想・タイトル・画像正規化・倫理の線引きなどが入っているのだぁ🌱
 - `zundamon-persona`：ずんだもんのペルソナ定義なのだぁ🌱

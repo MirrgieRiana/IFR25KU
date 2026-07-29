@@ -2,6 +2,7 @@ package miragefairy2024.mod
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.magicplant.MagicPlantSeedItem
 import miragefairy2024.mod.magicplant.contents.magicplants.MirageFlowerCard
 import miragefairy2024.mod.materials.MaterialCard
