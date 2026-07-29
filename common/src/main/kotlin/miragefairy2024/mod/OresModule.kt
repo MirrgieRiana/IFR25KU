@@ -20,6 +20,7 @@ import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
+import miragefairy2024.util.nether
 import miragefairy2024.util.overworld
 import miragefairy2024.util.plus
 import miragefairy2024.util.randomIntCount
@@ -70,6 +71,7 @@ enum class BaseStoneType(val target: RuleTest, val baseStoneTexture: ResourceLoc
     DEEPSLATE(TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
     SANDSTONE(BlockMatchTest(Blocks.SANDSTONE), ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
     DIRT(TagMatchTest(BlockTags.DIRT), ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
+    NETHERRACK(BlockMatchTest(Blocks.NETHERRACK), ResourceLocation("minecraft", "block/netherrack"), BlockTags.MINEABLE_WITH_PICKAXE, null),
 }
 
 enum class OreCard(
@@ -135,6 +137,11 @@ enum class OreCard(
         null,
         BaseStoneType.DEEPSLATE, "sulfur_ore", MaterialCard.SULFUR.item, 2 to 5,
     ),
+    NETHER_SULFUR_ORE(
+        "nether_sulfur_ore", "Nether Sulfur Ore", "ネザー硫黄鉱石",
+        null,
+        BaseStoneType.NETHERRACK, "sulfur_ore", MaterialCard.SULFUR.item, 2 to 5,
+    ),
     NEPHRITE_ORE(
         "nephrite_ore", "Nephrite Ore", "ネフライト鉱石",
         null,
@@ -147,12 +154,12 @@ enum class OreCard(
     ),
     MIRANAGITE_ORE(
         "miranagite_ore", "Miranagite Ore", "蒼天石鉱石",
-        PoemList(1).poem("What lies beyond a Garden of Eden?", "秩序の石は楽園の先に何を見るのか？"),
+        PoemList(2).poem("What lies beyond a Garden of Eden?", "秩序の石は楽園の先に何を見るのか？"),
         BaseStoneType.STONE, "miranagite_ore", MaterialCard.MIRANAGITE.item, 2 to 5,
     ),
     DEEPSLATE_MIRANAGITE_ORE(
         "deepslate_miranagite_ore", "Deepslate Miranagite Ore", "深層蒼天石鉱石",
-        PoemList(1).poem("Singularities built by the Creator", "楽園が楽園であるための奇跡。"),
+        PoemList(2).poem("Singularities built by the Creator", "楽園が楽園であるための奇跡。"),
         BaseStoneType.DEEPSLATE, "miranagite_ore", MaterialCard.MIRANAGITE.item, 2 to 5,
     ),
     DIRT_FAIRY_PLASTIC_ORE(
@@ -188,6 +195,13 @@ enum class OreCard(
                 .mapColor(MapColor.DIRT)
                 .strength(1.0F, 1.0F)
                 .sound(SoundType.GRAVEL)
+
+            BaseStoneType.NETHERRACK -> BlockBehaviour.Properties.of()
+                .mapColor(MapColor.NETHER)
+                .instrument(NoteBlockInstrument.BASEDRUM)
+                .requiresCorrectToolForDrops()
+                .strength(3.0F, 3.0F)
+                .sound(SoundType.NETHER_ORE)
         }
         OreBlock(UniformInt.of(experience.first, experience.second), settings)
     }
@@ -286,6 +300,7 @@ fun initOresModule() {
     worldGen(48 until 128, 2.0, 4, 1.0, OreCard.DIRT_SALTPETER_ORE, GenerationStep.Decoration.UNDERGROUND_ORES, "savanna") { +ConventionalBiomeTags.IS_SAVANNA }
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.DEEPSLATE_SULFUR_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
+    worldGen(10 until 43, 4.0, 8, 0.0, OreCard.NETHER_SULFUR_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { nether }
     worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(-64 until 64, 0.3, 4, 1.0, OreCard.DEEPSLATE_NEPHRITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
