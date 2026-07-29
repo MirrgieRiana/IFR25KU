@@ -2,8 +2,8 @@ package miragefairy2024.mod.tool.items
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
-import miragefairy2024.mod.RenderBlockPosesOutlineContext
-import miragefairy2024.mod.RenderBlockPosesOutlineListenerItem
+import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
+import miragefairy2024.mod.common.RenderBlockPosesOutlineListenerItem
 import miragefairy2024.mod.enchantment.BUILDERS_ROD_ITEM_TAG
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.tool.ToolConfiguration

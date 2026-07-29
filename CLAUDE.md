@@ -6,7 +6,7 @@
 
 ## AI のための共通指示文
 
-@.github/copilot-instructions.md
+@AGENTS.md
 
 ## AI によるメモ
 

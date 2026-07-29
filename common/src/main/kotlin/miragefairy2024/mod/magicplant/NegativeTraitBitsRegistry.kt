@@ -5,7 +5,7 @@ import dev.architectury.event.events.client.ClientCommandRegistrationEvent
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
-import miragefairy2024.mod.CommandEvents
+import miragefairy2024.mod.common.CommandEvents
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
 import miragefairy2024.util.executesThrowable

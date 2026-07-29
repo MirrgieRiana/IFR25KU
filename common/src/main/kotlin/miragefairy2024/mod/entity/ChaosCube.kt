@@ -8,8 +8,8 @@ import miragefairy2024.mod.SoundEventCard
 import miragefairy2024.mod.SoundEventChannel
 import miragefairy2024.mod.SoundEventPacket
 import miragefairy2024.mod.biome.RetrospectiveCityBiomeCard
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.materials.MaterialCard
-import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.particle.MagicSquareParticleChannel
 import miragefairy2024.mod.particle.MagicSquareParticlePacket
 import miragefairy2024.mod.particle.ParticleTypeCard
