@@ -4,7 +4,7 @@
 # 汎用ラベル div なのだぁ🌱
 templates.label = className, text -> %><div class="<%= className %>"><%= text >> htmlEscape %></div><%
 
-# ---- 文字（ラベル）と色ユーティリティのCSSなのだぁ🌱 色ユーティリティは .label より後に置くのだぁ〜 ----
+# ---- 文字（ラベル）と色ユーティリティのCSSなのだぁ🌱 色ユーティリティは .label より後に置くのだぁ～ ----
 cssLines::push << %>
   .label {
     font-size: var(--min-font-size);
