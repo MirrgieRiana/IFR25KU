@@ -17,7 +17,6 @@
 - `scripts/` — `bundle-install.sh`, `build-site.sh`, `convert-to-webp.sh` に加えて、`serveSite` の本体になる `serve-site.sh` と `serve-site.main.kts`（Ktor Netty サーバー）もここなのだぁ🌱
 - `build/site/` — CIの最終出力先なのだぁ🌱
 - `build/bundleVendor/` — minimal-mistakesテーマを含む gem のインストール先なのだぁ🌱
-- `ifr25ku-site-claude-marketplace/ifr25ku-site/` — Claude Code プラグイン `ifr25ku-site` の本体なのだぁ✨ `skills/theater-creator/` は劇場記事制作スキル、`skills/zundamon-persona/` と `skills/kasukabe-tsumugi-persona/` は登場人物のペルソナ定義なのだぁ🌱
 
 ### 世界観テキスト (`common/`) なのだぁ🌱
 
@@ -104,7 +103,7 @@ minimal-mistakesテーマのfloatベースのレイアウトを `main.scss` で�
 
 ### 制作スキルなのだぁ🌱
 
-`/ifr25ku-site:theater-creator` で呼び出すのだぁ🌱 登場人物のペルソナ定義は別スキルの `/ifr25ku-site:zundamon-persona`（ずんだもん）、`/ifr25ku-site:kasukabe-tsumugi-persona`（春日部つむぎ）として切り出されているのだぁ✨ 詳しくは `site/ifr25ku-site-claude-marketplace/ifr25ku-site/skills/` 配下の各スキルの原本を見るのだぁ（main.md への複写は陳腐化を招くから避けるのだぁ）🌱
+`/theater-creator` で呼び出すのだぁ🌱 本体は `.claude/skills/theater-creator/` なのだぁ✨ 登場人物のペルソナ定義は `MirrgieRiana/MirrgieRiana.github.io` の `.claude/skills/` にある `zundamon-persona`（ずんだもん）、`kasukabe-tsumugi-persona`（春日部つむぎ）で、このリポジトリには置かれていないのだぁ🌱 詳しくは各スキルの原本を見るのだぁ（main.md への複写は陳腐化を招くから避けるのだぁ）🌱
 
 ### 関連記事抽選とタグ設計なのだぁ🌱
 
@@ -116,4 +115,4 @@ minimal-mistakesテーマのfloatベースのレイアウトを `main.scss` で�
 
 ### 世界観テキストの扱いなのだぁ🌱
 
-ゲーム本体のポエム・説明文（lang JSON や Module ファイル内のハードコード）を、劇中キャラがそのまま喋っちゃいけないのだぁ〜🌱（`site/ifr25ku-site-claude-marketplace/ifr25ku-site/skills/theater-creator/SKILL.md` に明記されているのだぁ）劇中キャラはゲーム内 GUI や公式テキストを知らないから、世界観資料は「発想源」として扱って、キャラクターの視点に翻訳する必要があるのだぁ✨
+ゲーム本体のポエム・説明文（lang JSON や Module ファイル内のハードコード）を、劇中キャラがそのまま喋っちゃいけないのだぁ〜🌱（`.claude/skills/theater-creator/SKILL.md` に明記されているのだぁ）劇中キャラはゲーム内 GUI や公式テキストを知らないから、世界観資料は「発想源」として扱って、キャラクターの視点に翻訳する必要があるのだぁ✨

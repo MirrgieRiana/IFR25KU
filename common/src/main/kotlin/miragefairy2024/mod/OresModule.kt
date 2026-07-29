@@ -42,6 +42,7 @@ import miragefairy2024.util.with
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
@@ -142,6 +143,11 @@ enum class OreCard(
         null,
         BaseStoneType.DEEPSLATE, "sulfur_ore", MaterialCard.SULFUR.item, 2 to 5,
     ),
+    NETHER_SULFUR_ORE(
+        "nether_sulfur_ore", "Nether Sulfur Ore", "ネザー硫黄鉱石",
+        null,
+        BaseStoneType.NETHERRACK, "sulfur_ore", MaterialCard.SULFUR.item, 2 to 5,
+    ),
     NEPHRITE_ORE(
         "nephrite_ore", "Nephrite Ore", "ネフライト鉱石",
         null,
@@ -154,12 +160,12 @@ enum class OreCard(
     ),
     MIRANAGITE_ORE(
         "miranagite_ore", "Miranagite Ore", "蒼天石鉱石",
-        PoemList(1).poem("What lies beyond a Garden of Eden?", "秩序の石は楽園の先に何を見るのか？"),
+        PoemList(2).poem("What lies beyond a Garden of Eden?", "秩序の石は楽園の先に何を見るのか？"),
         BaseStoneType.STONE, "miranagite_ore", MaterialCard.MIRANAGITE.item, 2 to 5,
     ),
     DEEPSLATE_MIRANAGITE_ORE(
         "deepslate_miranagite_ore", "Deepslate Miranagite Ore", "深層蒼天石鉱石",
-        PoemList(1).poem("Singularities built by the Creator", "楽園が楽園であるための奇跡。"),
+        PoemList(2).poem("Singularities built by the Creator", "楽園が楽園であるための奇跡。"),
         BaseStoneType.DEEPSLATE, "miranagite_ore", MaterialCard.MIRANAGITE.item, 2 to 5,
     ),
     DIRT_FAIRY_PLASTIC_ORE(
@@ -249,6 +255,7 @@ fun initOresModule() {
         card.baseStoneType.mineableTag.generator.registerChild(card.block)
         card.baseStoneType.needsToolTag?.generator?.registerChild(card.block)
         ConventionalBlockTags.ORES.generator.registerChild(card.block)
+        ConventionalItemTags.ORES.generator.registerChild(card.item)
 
         card.tags.forEach {
             it.generator.registerChild(card.block)
@@ -300,6 +307,7 @@ fun initOresModule() {
     worldGen(48 until 128, 2.0, 4, 1.0, OreCard.DIRT_SALTPETER_ORE, "savanna") { +ConventionalBiomeTags.IS_SAVANNA }
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE)
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.DEEPSLATE_SULFUR_ORE)
+    worldGen(10 until 43, 4.0, 8, 0.0, OreCard.NETHER_SULFUR_ORE) { nether }
     worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE)
     worldGen(-64 until 64, 0.3, 4, 1.0, OreCard.DEEPSLATE_NEPHRITE_ORE)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE)
