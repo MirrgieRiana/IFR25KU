@@ -143,11 +143,12 @@ fun blockVisitor(
 fun spaceVisitor(
     world: Level,
     originalBlockPos: BlockPos,
+    visitOrigins: Boolean = true,
     maxDistance: Int = Int.MAX_VALUE,
     ignoreOriginalWall: Boolean = false,
     predicate: (blockPos: BlockPos) -> Boolean,
 ): Sequence<Pair<Int, BlockPos>> {
-    return blockVisitor(listOf(originalBlockPos), maxDistance = maxDistance) { _, fromBlockPos, toBlockPos ->
+    return blockVisitor(listOf(originalBlockPos), visitOrigins = visitOrigins, maxDistance = maxDistance) { _, fromBlockPos, toBlockPos ->
         if (fromBlockPos == null) return@blockVisitor true
         if (!predicate(toBlockPos)) return@blockVisitor false
         val offset = toBlockPos.subtract(fromBlockPos)
