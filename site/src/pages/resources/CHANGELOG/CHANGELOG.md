@@ -44,6 +44,8 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
   - ネザー全域のY10～42のネザーラックに生成。
 - 追加: 鉱石ブロック「ブラックストーン硫黄鉱石」を追加。
   - ネザー全域のブラックストーンに、高さを問わず生成。
+- 追加: 鉱石ブロック「ネザー磁鉄鉱鉱石」を追加。
+  - ネザー全域のY10～118のネザーラックにまばらに生成。
 
 レシピ
 

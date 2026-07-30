@@ -99,6 +99,12 @@ enum class OreCard(
         BaseStoneType.DEEPSLATE, "magnetite_ore", MaterialCard.MAGNETITE.item, 2 to 5,
         tags = listOf(STICKY_MINING_BLOCK_TAG),
     ),
+    NETHER_MAGNETITE_ORE(
+        "nether_magnetite_ore", "Nether Magnetite Ore", "ネザー磁鉄鉱鉱石",
+        null,
+        BaseStoneType.NETHERRACK, "magnetite_ore", MaterialCard.MAGNETITE.item, 2 to 5,
+        tags = listOf(STICKY_MINING_BLOCK_TAG),
+    ),
     FLUORITE_ORE(
         "fluorite_ore", "Fluorite Ore", "蛍石鉱石",
         null,
@@ -302,6 +308,7 @@ fun initOresModule() {
     }
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.MAGNETITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.DEEPSLATE_MAGNETITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
+    worldGen(10 until 118, 0.6, 12, 0.0, OreCard.NETHER_MAGNETITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { nether }
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.FLUORITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(48 until 128, 8.0, 4, 0.0, OreCard.SALTPETER_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
