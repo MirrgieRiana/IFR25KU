@@ -140,37 +140,33 @@ fun blockVisitor(
 
 }
 
-/**
- * ブロックの塞がった面に遮られない範囲で、[originalBlockPos]から到達できるブロックを列挙するのだ～🌱
- *
- * [blockVisitor]と同様に、開始地点からの距離とブロック座標のペアを返すのだ～🌱
- *
- * [ignoreOriginalWall]は、[originalBlockPos]自身の面の塞がりを無視するのだ～🌱 開始地点がブロックの内部である場合に使うのだ～🌱
- */
 fun spaceVisitor(
     world: Level,
     originalBlockPos: BlockPos,
     visitOrigins: Boolean = true,
     maxDistance: Int = Int.MAX_VALUE,
     ignoreOriginalWall: Boolean = false,
-    predicate: (blockPos: BlockPos) -> Boolean = { true },
-) = blockVisitor(listOf(originalBlockPos), visitOrigins = visitOrigins, maxDistance = maxDistance) { _, fromBlockPos, toBlockPos ->
-    if (fromBlockPos == null) return@blockVisitor true // 開始地点なのだ～🌱
-    if (!predicate(toBlockPos)) return@blockVisitor false // 呼び出し元の条件を満たさないのだ～🌱
-    val offset = toBlockPos.subtract(fromBlockPos)
-    val direction = when {
-        offset.y == -1 -> Direction.DOWN
-        offset.y == 1 -> Direction.UP
-        offset.z == -1 -> Direction.NORTH
-        offset.z == 1 -> Direction.SOUTH
-        offset.x == -1 -> Direction.WEST
-        offset.x == 1 -> Direction.EAST
-        else -> throw AssertionError()
+    predicate: (blockPos: BlockPos) -> Boolean,
+): Sequence<Pair<Int, BlockPos>> {
+    return blockVisitor(listOf(originalBlockPos), visitOrigins = visitOrigins, maxDistance = maxDistance) { _, fromBlockPos, toBlockPos ->
+        if (fromBlockPos == null) return@blockVisitor true
+        if (!predicate(toBlockPos)) return@blockVisitor false
+        val offset = toBlockPos.subtract(fromBlockPos)
+        val direction = when {
+            offset.y == -1 -> Direction.DOWN
+            offset.y == 1 -> Direction.UP
+            offset.z == -1 -> Direction.NORTH
+            offset.z == 1 -> Direction.SOUTH
+            offset.x == -1 -> Direction.WEST
+            offset.x == 1 -> Direction.EAST
+            else -> throw AssertionError()
+        }
+        if (ignoreOriginalWall && fromBlockPos == originalBlockPos) {
+            !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite)
+        } else {
+            !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite) && !world.getBlockState(fromBlockPos).isFaceSturdy(world, fromBlockPos, direction)
+        }
     }
-    if (world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite)) return@blockVisitor false // 進入先の面が塞がっているのだ～🌱
-    if (ignoreOriginalWall && fromBlockPos == originalBlockPos) return@blockVisitor true // 開始地点自身の面は見ないのだ～🌱
-    if (world.getBlockState(fromBlockPos).isFaceSturdy(world, fromBlockPos, direction)) return@blockVisitor false // 進出元の面が塞がっているのだ～🌱
-    true
 }
 
 /**
