@@ -146,23 +146,25 @@ fun spaceVisitor(
     maxDistance: Int = Int.MAX_VALUE,
     ignoreOriginalWall: Boolean = false,
     predicate: (blockPos: BlockPos) -> Boolean,
-) = blockVisitor(listOf(originalBlockPos), maxDistance = maxDistance) { _, fromBlockPos, toBlockPos ->
-    if (fromBlockPos == null) return@blockVisitor true
-    if (!predicate(toBlockPos)) return@blockVisitor false
-    val offset = toBlockPos.subtract(fromBlockPos)
-    val direction = when {
-        offset.y == -1 -> Direction.DOWN
-        offset.y == 1 -> Direction.UP
-        offset.z == -1 -> Direction.NORTH
-        offset.z == 1 -> Direction.SOUTH
-        offset.x == -1 -> Direction.WEST
-        offset.x == 1 -> Direction.EAST
-        else -> throw AssertionError()
-    }
-    if (ignoreOriginalWall && fromBlockPos == originalBlockPos) {
-        !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite)
-    } else {
-        !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite) && !world.getBlockState(fromBlockPos).isFaceSturdy(world, fromBlockPos, direction)
+): Sequence<Pair<Int, BlockPos>> {
+    return blockVisitor(listOf(originalBlockPos), maxDistance = maxDistance) { _, fromBlockPos, toBlockPos ->
+        if (fromBlockPos == null) return@blockVisitor true
+        if (!predicate(toBlockPos)) return@blockVisitor false
+        val offset = toBlockPos.subtract(fromBlockPos)
+        val direction = when {
+            offset.y == -1 -> Direction.DOWN
+            offset.y == 1 -> Direction.UP
+            offset.z == -1 -> Direction.NORTH
+            offset.z == 1 -> Direction.SOUTH
+            offset.x == -1 -> Direction.WEST
+            offset.x == 1 -> Direction.EAST
+            else -> throw AssertionError()
+        }
+        if (ignoreOriginalWall && fromBlockPos == originalBlockPos) {
+            !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite)
+        } else {
+            !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite) && !world.getBlockState(fromBlockPos).isFaceSturdy(world, fromBlockPos, direction)
+        }
     }
 }
 
