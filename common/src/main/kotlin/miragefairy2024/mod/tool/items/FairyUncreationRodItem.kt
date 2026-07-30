@@ -125,7 +125,7 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
             val wallBlockState = level.getBlockState(wallBlockPos)
             if (wallBlockState != targetBlockState) return@blockVisitor false // 壁が対象ブロックでない
 
-            if (level.getBlockState(frontBlockPos) == targetBlockState) return@blockVisitor false // 壁が対象ブロックに覆われていて露出していない
+            if (!level.getBlockState(frontBlockPos).canBeReplaced()) return@blockVisitor false // 壁の手前が塞がっていて滑らかな面になっていない
 
             true
         }.map { it.second.relative(wallDirection) }.toSet()
