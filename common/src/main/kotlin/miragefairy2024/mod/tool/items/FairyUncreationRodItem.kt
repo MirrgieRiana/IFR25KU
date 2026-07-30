@@ -95,11 +95,12 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
      * 判定に落ちたマスは[blockVisitor]の探索済み集合に入らず、世界が変化すると再び判定にかけられてしまうから、
      * 破壊しながら探索を進めるのではなく、先にすべての対象を確定させるのだ～🌱
      */
-    fun getTargetBlockPoses(level: Level, blockHitResult: BlockHitResult): Set<BlockPos> {
+    fun getTargetBlockPoses(level: Level, player: Player, blockHitResult: BlockHitResult): Set<BlockPos> {
 
         val targetBlockState = level.getBlockState(blockHitResult.blockPos)
         val originalFrontBlockPos = blockHitResult.blockPos.relative(blockHitResult.direction)
         val wallDirection = blockHitResult.direction.opposite
+        val ignoresBlockStateProperties = player.isShiftKeyDown // スニーク中は向きや雪の有無などの違いで面が途切れないのだ～🌱
 
         val region = when (blockHitResult.direction) {
             Direction.WEST, Direction.EAST -> BlockBox.of(
@@ -123,7 +124,8 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
 
             val wallBlockPos = frontBlockPos.relative(wallDirection)
             val wallBlockState = level.getBlockState(wallBlockPos)
-            if (wallBlockState != targetBlockState) return@blockVisitor false // 壁が対象ブロックでない
+            val isTargetBlock = if (ignoresBlockStateProperties) wallBlockState.block === targetBlockState.block else wallBlockState == targetBlockState
+            if (!isTargetBlock) return@blockVisitor false // 壁が対象ブロックでない
 
             if (!level.getBlockState(frontBlockPos).canBeReplaced()) return@blockVisitor false // 壁の手前が塞がっていて滑らかな面になっていない
 
@@ -138,7 +140,7 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
 
         return Pair(
             blockHitResult.blockPos,
-            getTargetBlockPoses(context.level, blockHitResult),
+            getTargetBlockPoses(context.level, context.player, blockHitResult),
         )
     }
 
@@ -148,7 +150,7 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
         val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない
 
-        val wallBlockPoses = getTargetBlockPoses(level, blockHitResult)
+        val wallBlockPoses = getTargetBlockPoses(level, player, blockHitResult)
         if (wallBlockPoses.isEmpty()) return InteractionResultHolder.fail(toolItemStack) // 破壊対象が無い
 
         if (player !is ServerPlayer) return InteractionResultHolder.success(toolItemStack) // 破壊はサーバー側でのみ行う
