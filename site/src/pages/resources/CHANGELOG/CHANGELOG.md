@@ -42,6 +42,8 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
   - サバンナではより高い密度で生成。
 - 追加: 鉱石ブロック「ネザー硫黄鉱石」を追加。
   - ネザー全域のY10～42のネザーラックに生成。
+- 追加: 鉱石ブロック「ネザー磁鉄鉱鉱石」を追加。
+  - ネザー全域のY10～118のネザーラックにまばらに生成。
 
 レシピ
 
