@@ -308,7 +308,7 @@ fun initOresModule() {
     }
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.MAGNETITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(16 until 128, 1.6, 12, 0.0, OreCard.DEEPSLATE_MAGNETITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
-    worldGen(10 until 118, 0.6, 12, 0.0, OreCard.NETHER_MAGNETITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { nether }
+    worldGen(10 until 118, 0.6, 12, 0.0, OreCard.NETHER_MAGNETITE_ORE, GenerationStep.Decoration.UNDERGROUND_DECORATION) { nether }
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.FLUORITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(0 until 64, 1.2, 8, 0.0, OreCard.DEEPSLATE_FLUORITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(48 until 128, 8.0, 4, 0.0, OreCard.SALTPETER_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA }
@@ -321,8 +321,8 @@ fun initOresModule() {
     worldGen(48 until 128, 2.0, 4, 1.0, OreCard.DIRT_SALTPETER_ORE, GenerationStep.Decoration.UNDERGROUND_ORES, "savanna") { +ConventionalBiomeTags.IS_SAVANNA }
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.SULFUR_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(-64 until 0, 2.0, 8, 0.0, OreCard.DEEPSLATE_SULFUR_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
-    worldGen(10 until 43, 4.0, 8, 0.0, OreCard.NETHER_SULFUR_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { nether }
-    worldGen(0 until 128, 4.0, 8, 0.0, OreCard.BLACKSTONE_SULFUR_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { nether }
+    worldGen(10 until 43, 4.0, 8, 0.0, OreCard.NETHER_SULFUR_ORE, GenerationStep.Decoration.UNDERGROUND_DECORATION) { nether }
+    worldGen(0 until 128, 4.0, 8, 0.0, OreCard.BLACKSTONE_SULFUR_ORE, GenerationStep.Decoration.UNDERGROUND_DECORATION) { nether }
     worldGen(-64 until 64, 1.0, 4, 1.0, OreCard.NEPHRITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(-64 until 64, 0.3, 4, 1.0, OreCard.DEEPSLATE_NEPHRITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
