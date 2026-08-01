@@ -696,7 +696,7 @@ open class BlockMaterialCard(
             "petrified_resinous_dirt", EnJa("Petrified Resinous Dirt", "石化した樹脂状の土"),
             PoemList(2).poem(EnJa("TODO", "TODO")),
             MapColor.COLOR_ORANGE, 0.8F, 0.8F,
-        ).sound(SoundType.GRAVEL).needTool(ToolType.SHOVEL, ToolLevel.STONE)
+        ).sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE)
     }
 
     val identifier = MirageFairy2024.identifier(path)
