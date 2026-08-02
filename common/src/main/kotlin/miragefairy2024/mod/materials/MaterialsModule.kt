@@ -939,6 +939,16 @@ class MaterialCard(
             null,
             ore = Ore(Shape.GEM, Material.TOPAZ),
         )
+        val RETINITE: MaterialCard = !MaterialCard(
+            "retinite", "Retinite", "レチナイト",
+            null,
+            fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.RETINITE),
+        )
+        val COPAL: MaterialCard = !MaterialCard(
+            "copal", "Copal", "コーパル",
+            null,
+            fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.COPAL),
+        )
 
         val TINY_BISMUTH_DUST: MaterialCard = !MaterialCard(
             "tiny_bismuth_dust", "Tiny Pile of Bismuth Dust", "小さなビスマスの粉",
@@ -1674,5 +1684,7 @@ enum class Material(val path: String, val prefix: EnJa) {
     SULFUR("sulfur", EnJa("Sulfur", "硫黄")),
     NEPHRITE("nephrite", EnJa("Nephrite", "ネフライト")),
     TOPAZ("topaz", EnJa("Topaz", "トパーズ")),
+    RETINITE("retinite", EnJa("Retinite", "レチナイト")),
+    COPAL("copal", EnJa("Copal", "コーパル")),
     BISMUTH("bismuth", EnJa("Bismuth", "ビスマス")),
 }
