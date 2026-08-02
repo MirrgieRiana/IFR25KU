@@ -721,7 +721,7 @@ open class BlockMaterialCard(
                     }
                 }
             }
-        }.sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE)
+        }.sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.DIRT)
     }
 
     val identifier = MirageFairy2024.identifier(path)
