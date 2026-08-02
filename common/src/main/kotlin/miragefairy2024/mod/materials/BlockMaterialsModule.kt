@@ -696,7 +696,7 @@ open class BlockMaterialCard(
         }
         val RESIN_CEMENTED_DIRT: BlockMaterialCard = !object : BlockMaterialCard(
             "resin_cemented_dirt", EnJa("Resin-Cemented Dirt", "石化した樹脂状の土"),
-            PoemList(2).poem(EnJa("Antimicrobial terpenes prevent decay", "電気の由来を語る土。")),
+            PoemList(2).poem(EnJa("Antimicrobial terpenes prevent decay.", "電気の由来を語る土。")),
             MapColor.COLOR_ORANGE, 0.8F, 0.8F,
         ) {
             context(ModContext)
