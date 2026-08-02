@@ -2,6 +2,7 @@ package miragefairy2024.mod.biome
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -106,6 +107,10 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                         SurfaceRules.ifTrue(
                             SurfaceRules.isBiome(key),
                             SurfaceRules.sequence(
+                                SurfaceRules.ifTrue(
+                                    SurfaceRules.noiseCondition(Noises.SURFACE, 2.0 / 8.25, Double.MAX_VALUE),
+                                    SurfaceRules.state(BlockMaterialCard.PETRIFIED_RESINOUS_DIRT.block().defaultBlockState())
+                                ),
                                 SurfaceRules.ifTrue(
                                     SurfaceRules.noiseCondition(Noises.SURFACE, 1.75 / 8.25, Double.MAX_VALUE),
                                     SurfaceRules.state(Blocks.COARSE_DIRT.defaultBlockState())

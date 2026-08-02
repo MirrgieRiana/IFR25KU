@@ -32,6 +32,9 @@ import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.BlockStateVariantRotation
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.ItemLootPoolEntry
+import miragefairy2024.util.LootPool
+import miragefairy2024.util.LootTable
 import miragefairy2024.util.Model
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
@@ -691,12 +694,30 @@ open class BlockMaterialCard(
                 requires(item())
             } on item modId MirageFairy2024.MOD_ID from item
         }
-        // TODO シルクタッチ無しで壊したときに石化した樹脂をドロップ
-        val PETRIFIED_RESINOUS_DIRT = !BlockMaterialCard(
+        val PETRIFIED_RESINOUS_DIRT: BlockMaterialCard = !object : BlockMaterialCard(
             "petrified_resinous_dirt", EnJa("Petrified Resinous Dirt", "石化した樹脂状の土"),
             PoemList(2).poem(EnJa("TODO", "TODO")),
             MapColor.COLOR_ORANGE, 0.8F, 0.8F,
-        ).sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE)
+        ) {
+            context(ModContext)
+            override fun initLootTableGeneration() {
+                block.registerLootTableGeneration { provider, _ ->
+                    LootTable(
+                        LootPool(ItemLootPoolEntry(item())) {
+                            `when`(provider.hasSilkTouch())
+                        },
+                        LootPool(
+                            ItemLootPoolEntry(MaterialCard.RETINITE.item()).setWeight(9),
+                            ItemLootPoolEntry(MaterialCard.COPAL.item()).setWeight(1),
+                        ) {
+                            `when`(provider.doesNotHaveSilkTouch())
+                        },
+                    ) {
+                        provider.applyExplosionDecay(block(), this)
+                    }
+                }
+            }
+        }.sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE)
     }
 
     val identifier = MirageFairy2024.identifier(path)
