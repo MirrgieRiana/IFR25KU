@@ -58,11 +58,25 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "enchantment": "minecraft:fortune",
+              "formula": "minecraft:ore_drops",
+              "function": "minecraft:apply_bonus"
+            }
+          ],
           "name": "miragefairy2024:retinite",
           "weight": 9
         },
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "enchantment": "minecraft:fortune",
+              "formula": "minecraft:ore_drops",
+              "function": "minecraft:apply_bonus"
+            }
+          ],
           "name": "miragefairy2024:copal"
         }
       ],

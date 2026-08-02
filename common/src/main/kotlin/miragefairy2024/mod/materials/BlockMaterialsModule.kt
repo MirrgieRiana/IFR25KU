@@ -77,6 +77,7 @@ import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.core.registries.Registries
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
@@ -87,6 +88,7 @@ import net.minecraft.tags.TagKey
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
+import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.RotatedPillarBlock
@@ -99,6 +101,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.material.PushReaction
+import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 
 val AURA_RESISTANT_CERAMICS_TAG = MirageFairy2024.identifier("aura_resistant_ceramics").toItemTag()
 val AURA_RESISTANT_CERAMIC_SLABS_TAG = MirageFairy2024.identifier("aura_resistant_ceramic_slabs").toItemTag()
@@ -701,14 +704,15 @@ open class BlockMaterialCard(
         ) {
             context(ModContext)
             override fun initLootTableGeneration() {
-                block.registerLootTableGeneration { provider, _ ->
+                block.registerLootTableGeneration { provider, registries ->
+                    val fortune = registries[Registries.ENCHANTMENT, Enchantments.FORTUNE]
                     LootTable(
                         LootPool(ItemLootPoolEntry(item())) {
                             `when`(provider.hasSilkTouch())
                         },
                         LootPool(
-                            ItemLootPoolEntry(MaterialCard.RETINITE.item()).setWeight(9),
-                            ItemLootPoolEntry(MaterialCard.COPAL.item()).setWeight(1),
+                            ItemLootPoolEntry(MaterialCard.RETINITE.item()) { apply(ApplyBonusCount.addOreBonusCount(fortune)) }.setWeight(9),
+                            ItemLootPoolEntry(MaterialCard.COPAL.item()) { apply(ApplyBonusCount.addOreBonusCount(fortune)) }.setWeight(1),
                         ) {
                             `when`(provider.doesNotHaveSilkTouch())
                         },
