@@ -1,9 +1,9 @@
 package miragefairy2024.mod.biome
 
 import miragefairy2024.ModContext
+import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.haimeviska.HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.mod.magicplant.contents.magicplants.PhantomFlowerCard
-import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
