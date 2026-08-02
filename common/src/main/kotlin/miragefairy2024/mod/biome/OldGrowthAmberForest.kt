@@ -109,7 +109,7 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                             SurfaceRules.sequence(
                                 SurfaceRules.ifTrue(
                                     SurfaceRules.noiseCondition(Noises.SURFACE, 2.0 / 8.25, Double.MAX_VALUE),
-                                    SurfaceRules.state(BlockMaterialCard.PETRIFIED_RESINOUS_DIRT.block().defaultBlockState())
+                                    SurfaceRules.state(BlockMaterialCard.RESIN_CEMENTED_DIRT.block().defaultBlockState())
                                 ),
                                 SurfaceRules.ifTrue(
                                     SurfaceRules.noiseCondition(Noises.SURFACE, 1.75 / 8.25, Double.MAX_VALUE),

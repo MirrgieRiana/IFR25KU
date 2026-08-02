@@ -694,9 +694,9 @@ open class BlockMaterialCard(
                 requires(item())
             } on item modId MirageFairy2024.MOD_ID from item
         }
-        val PETRIFIED_RESINOUS_DIRT: BlockMaterialCard = !object : BlockMaterialCard(
-            "petrified_resinous_dirt", EnJa("Petrified Resinous Dirt", "石化した樹脂状の土"),
-            PoemList(2).poem(EnJa("TODO", "TODO")),
+        val RESIN_CEMENTED_DIRT: BlockMaterialCard = !object : BlockMaterialCard(
+            "resin_cemented_dirt", EnJa("Resin-Cemented Dirt", "石化した樹脂状の土"),
+            PoemList(2).poem(EnJa("TODO", "電気の語源の眠る土。")),
             MapColor.COLOR_ORANGE, 0.8F, 0.8F,
         ) {
             context(ModContext)

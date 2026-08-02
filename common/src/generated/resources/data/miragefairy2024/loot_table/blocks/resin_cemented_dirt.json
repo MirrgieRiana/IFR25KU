@@ -28,7 +28,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "miragefairy2024:petrified_resinous_dirt"
+          "name": "miragefairy2024:resin_cemented_dirt"
         }
       ],
       "rolls": 1.0
@@ -69,5 +69,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "miragefairy2024:blocks/petrified_resinous_dirt"
+  "random_sequence": "miragefairy2024:blocks/resin_cemented_dirt"
 }
