@@ -6,6 +6,7 @@ import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG
 import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG
 import miragefairy2024.mod.biome.RetrospectiveCityBiomeCard
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.enchantment.contents.STICKY_MINING_BLOCK_TAG
 import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
 import miragefairy2024.mod.machine.AthanorRecipeCard
@@ -22,7 +23,6 @@ import miragefairy2024.mod.materials.contents.SemiOpaqueTransparentBlock
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassBlockModel
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassFrameBlockModel
 import miragefairy2024.mod.materials.contents.localVacuumDecayTexturedModelFactory
-import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration

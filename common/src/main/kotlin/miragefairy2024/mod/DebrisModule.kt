@@ -36,7 +36,6 @@ import miragefairy2024.util.register
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.square
-import miragefairy2024.util.string
 import miragefairy2024.util.surface
 import miragefairy2024.util.text
 import miragefairy2024.util.translate
