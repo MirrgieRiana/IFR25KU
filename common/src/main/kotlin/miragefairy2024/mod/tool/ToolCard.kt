@@ -531,7 +531,7 @@ class ToolCard(
         val CREATIVE_UNCREATION_ROD = !ToolCard(
             "creative_uncreation_rod", EnJa("Creative Uncreation Rod", "アンチアカシックロッド"),
             PoemList(null).poem(EnJa("Erases the connected surface of blocks.", "地の表面をぬぐい去ろう。")),
-            FairyUncreationRodConfiguration(ToolMaterialCard.NEUTRONIUM, 16).enchantable(AREA_MINING_ENCHANTABLE_ITEM_TAG),
+            FairyUncreationRodConfiguration(ToolMaterialCard.NEUTRONIUM, 16),
         )
     }
 
