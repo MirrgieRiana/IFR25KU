@@ -7,7 +7,6 @@ import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.get
 import miragefairy2024.util.invoke
-import miragefairy2024.util.isIn
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.isServer
 import miragefairy2024.util.randomInt
@@ -35,7 +34,6 @@ import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelReader
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.BonemealableBlock
 import net.minecraft.world.level.block.BushBlock
 import net.minecraft.world.level.block.EntityBlock
@@ -62,7 +60,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
 
     // Behaviour
 
-    override fun mayPlaceOn(state: BlockState, level: BlockGetter, pos: BlockPos) = level.getBlockState(pos).isFaceSturdy(level, pos, Direction.UP, SupportType.CENTER) || state isIn Blocks.FARMLAND
+    override fun mayPlaceOn(state: BlockState, level: BlockGetter, pos: BlockPos) = level.getBlockState(pos).isFaceSturdy(level, pos, Direction.UP, SupportType.CENTER) || super.mayPlaceOn(state, level, pos)
 
 
     // Trait
