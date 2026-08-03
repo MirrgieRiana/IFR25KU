@@ -1,6 +1,6 @@
 # リポジトリの俯瞰と暗黙知なのだぁ🌱✨
 
-このファイルは、ぴょこ（Claude Fairy）が自由に編集できる、コミットされる永続的なメモ帳なのだぁ〜🌱♪
+このファイルは、ぴょこ（Claude Fairy）が自由に編集できる、コミットされる永続的なメモ帳なのだぁ～🌱♪
 ソースコード上のドキュメントやコメントからは読み取れない暗黙知と、リポジトリのファイル構造の俯瞰を、ここにためこんでいくのだぁ✨
 
 ## ファイル構造なのだぁ🌱
@@ -17,11 +17,10 @@
 - `scripts/` — `bundle-install.sh`, `build-site.sh`, `convert-to-webp.sh` に加えて、`serveSite` の本体になる `serve-site.sh` と `serve-site.main.kts`（Ktor Netty サーバー）もここなのだぁ🌱
 - `build/site/` — CIの最終出力先なのだぁ🌱
 - `build/bundleVendor/` — minimal-mistakesテーマを含む gem のインストール先なのだぁ🌱
-- `ifr25ku-site-claude-marketplace/ifr25ku-site/` — Claude Code プラグイン `ifr25ku-site` の本体なのだぁ✨ `skills/theater-creator/` は劇場記事制作スキル、`skills/zundamon-persona/` と `skills/kasukabe-tsumugi-persona/` は登場人物のペルソナ定義なのだぁ🌱
 
 ### 世界観テキスト (`common/`) なのだぁ🌱
 
-劇場記事を書くときの発想源として参照するところなのだぁ〜🌱♪
+劇場記事を書くときの発想源として参照するところなのだぁ～🌱♪
 
 - `src/generated/resources/assets/miragefairy2024/lang/ja_jp.json` — 全テキストの集約先で、コードから自動生成されるのだぁ🌱 アイテム名・ブロック名は `item.miragefairy2024.<item>` / `block.miragefairy2024.<block>` みたいに、`.name` を付けないキーそのものに値が入っているのだぁ✨ ポエムや説明文は `item.miragefairy2024.<item>.poem` / `.description`、進捗は `advancements.miragefairy2024.<item>.title` / `.description` みたいなキーパターンなのだぁ🌱
 - `src/main/kotlin/miragefairy2024/mod/` — Module ファイル群なのだぁ🌱 ポエムや説明文のハードコード定義が散らばっているのだぁ✨
@@ -30,7 +29,7 @@
 
 ### `serveSite` がKtor Nettyを使う理由なのだぁ🌱
 
-Jekyll標準の `jekyll serve` は頻繁にクラッシュしちゃうから、`site/build/site/` を `http://localhost:4000/` に配信する独自のKtor Nettyサーバーを使っているのだぁ〜🌱♪
+Jekyll標準の `jekyll serve` は頻繁にクラッシュしちゃうから、`site/build/site/` を `http://localhost:4000/` に配信する独自のKtor Nettyサーバーを使っているのだぁ～🌱♪
 
 ### `jekyllBuild` が `installJekyllBundle` を inputs にしていない理由なのだぁ🌱
 
@@ -42,7 +41,7 @@ Jekyll標準の `jekyll serve` は頻繁にクラッシュしちゃうから、`
 
 ### WSL2環境での `jekyll serve` 制約なのだぁ🌱
 
-`/mnt/` ドライブでは `inotify` が動かないから、`jekyll serve` の自動リビルドは使えないのだぁ〜💧
+`/mnt/` ドライブでは `inotify` が動かないから、`jekyll serve` の自動リビルドは使えないのだぁ～💧
 
 ### SCSSの手動コンパイルなのだぁ🌱
 
@@ -56,7 +55,7 @@ cp site/src/main/resources/assets/css/main.scss site/build/jekyllSource/assets/c
 
 ### Sassパーシャルはオーバーライド不能なのだぁ🌱
 
-minimal-mistakesテーマの通常ファイルは `site/src/main/resources/` 内に同じ相対パスで置けばオーバーライドできるんだけど、`_sass/` のパーシャルは例外なのだぁ〜💧 Sassの `@import` がインポート元ファイルのディレクトリを最初に探すから、テーマのパーシャルがいつも優先されちゃうのだぁ🌱 CSSのカスタマイズは `assets/css/main.scss` の `@import "minimal-mistakes"` の後に書くのだぁ✨
+minimal-mistakesテーマの通常ファイルは `site/src/main/resources/` 内に同じ相対パスで置けばオーバーライドできるんだけど、`_sass/` のパーシャルは例外なのだぁ～💧 Sassの `@import` がインポート元ファイルのディレクトリを最初に探すから、テーマのパーシャルがいつも優先されちゃうのだぁ🌱 CSSのカスタマイズは `assets/css/main.scss` の `@import "minimal-mistakes"` の後に書くのだぁ✨
 
 ### `syncJekyllSource` の画像配置規則なのだぁ🌱
 
@@ -86,7 +85,7 @@ minimal-mistakesテーマの通常ファイルは `site/src/main/resources/` 内
 
 ### floatからFlexbox/Gridへの全面移行なのだぁ🌱
 
-minimal-mistakesテーマのfloatベースのレイアウトを `main.scss` で打ち消して、`#main` を `display: flex`、`.page__inner-wrap` を `display: grid`（大画面のとき）に置き換えているのだぁ〜🌱♪ テーマのclearfix `::after` は `display: none` で打ち消してあるのだぁ✨
+minimal-mistakesテーマのfloatベースのレイアウトを `main.scss` で打ち消して、`#main` を `display: flex`、`.page__inner-wrap` を `display: grid`（大画面のとき）に置き換えているのだぁ～🌱♪ テーマのclearfix `::after` は `display: none` で打ち消してあるのだぁ✨
 
 ### TOCのsticky挙動なのだぁ🌱
 
@@ -104,11 +103,11 @@ minimal-mistakesテーマのfloatベースのレイアウトを `main.scss` で�
 
 ### 制作スキルなのだぁ🌱
 
-`/ifr25ku-site:theater-creator` で呼び出すのだぁ🌱 登場人物のペルソナ定義は別スキルの `/ifr25ku-site:zundamon-persona`（ずんだもん）、`/ifr25ku-site:kasukabe-tsumugi-persona`（春日部つむぎ）として切り出されているのだぁ✨ 詳しくは `site/ifr25ku-site-claude-marketplace/ifr25ku-site/skills/` 配下の各スキルの原本を見るのだぁ（main.md への複写は陳腐化を招くから避けるのだぁ）🌱
+`/theater-creator` で呼び出すのだぁ🌱 本体は `.claude/skills/theater-creator/` なのだぁ✨ 登場人物のペルソナ定義は `MirrgieRiana/MirrgieRiana.github.io` の `.claude/skills/` にある `zundamon-persona`（ずんだもん）、`kasukabe-tsumugi-persona`（春日部つむぎ）で、このリポジトリには置かれていないのだぁ🌱 詳しくは各スキルの原本を見るのだぁ（main.md への複写は陳腐化を招くから避けるのだぁ）🌱
 
 ### 関連記事抽選とタグ設計なのだぁ🌱
 
-劇場レイアウト (`_layouts/theater.html` 末尾のインラインJS) は、タグ一致数と訪問履歴 (`ifr25ku:visits:pages`、`_includes/visit-tracker.html` が記録) で重み付けした非復元ランダムサンプリングで関連記事を抽選するのだぁ〜🌱♪ サイドバーと本文下部は、それぞれ独立に抽選するのだぁ✨ タグの付け方が関連記事の質に直結するのだぁ🌱
+劇場レイアウト (`_layouts/theater.html` 末尾のインラインJS) は、タグ一致数と訪問履歴 (`ifr25ku:visits:pages`、`_includes/visit-tracker.html` が記録) で重み付けした非復元ランダムサンプリングで関連記事を抽選するのだぁ～🌱♪ サイドバーと本文下部は、それぞれ独立に抽選するのだぁ✨ タグの付け方が関連記事の質に直結するのだぁ🌱
 
 - 必須: `ミラージュフェアリー劇場`（カテゴリ分類）なのだぁ🌱
 - 機能タグ: 登場する具体的アイテム名なのだぁ✨ 重なりが多い記事ほど関連度が高く抽選されるのだぁ
@@ -116,4 +115,4 @@ minimal-mistakesテーマのfloatベースのレイアウトを `main.scss` で�
 
 ### 世界観テキストの扱いなのだぁ🌱
 
-ゲーム本体のポエム・説明文（lang JSON や Module ファイル内のハードコード）を、劇中キャラがそのまま喋っちゃいけないのだぁ〜🌱（`site/ifr25ku-site-claude-marketplace/ifr25ku-site/skills/theater-creator/SKILL.md` に明記されているのだぁ）劇中キャラはゲーム内 GUI や公式テキストを知らないから、世界観資料は「発想源」として扱って、キャラクターの視点に翻訳する必要があるのだぁ✨
+ゲーム本体のポエム・説明文（lang JSON や Module ファイル内のハードコード）を、劇中キャラがそのまま喋っちゃいけないのだぁ～🌱（`.claude/skills/theater-creator/SKILL.md` に明記されているのだぁ）劇中キャラはゲーム内 GUI や公式テキストを知らないから、世界観資料は「発想源」として扱って、キャラクターの視点に翻訳する必要があるのだぁ✨
