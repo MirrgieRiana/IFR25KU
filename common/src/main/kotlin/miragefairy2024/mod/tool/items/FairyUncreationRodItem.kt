@@ -4,12 +4,15 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
 import miragefairy2024.mod.common.RenderBlockPosesOutlineListenerItem
+import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.UNCREATION_ROD_ITEM_TAG
 import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.util.Translation
 import miragefairy2024.util.blockVisitor
 import miragefairy2024.util.breakBlockByMagic
+import miragefairy2024.util.get
+import miragefairy2024.util.getLevel
 import miragefairy2024.util.invoke
 import miragefairy2024.util.opposite
 import miragefairy2024.util.text
@@ -18,6 +21,7 @@ import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
+import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.stats.Stats
@@ -93,32 +97,35 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
     /**
      * 与えられた面と地続きになっている、同種のブロックの位置を返すのだ～🌱
      * 同種の判定は通常はblockstateの完全一致だけど、[player]がスニーク中はブロックの種類だけを見るのだ～🌱
+     * 探索できる範囲は、[toolItemStack]に付いた側方範囲採掘のレベルの分だけ広がるのだ～🌱
      *
      * 探索のノードは面の手前側のマスで、そこから奥のブロックを見るのだ～🌱
      * 判定に落ちたマスは[blockVisitor]の探索済み集合に入らず、世界が変化すると再び判定にかけられてしまうから、
      * 破壊しながら探索を進めるのではなく、先にすべての対象を確定させるのだ～🌱
      */
-    fun getTargetBlockPoses(level: Level, player: Player, blockHitResult: BlockHitResult): Set<BlockPos> {
+    fun getTargetBlockPoses(level: Level, player: Player, toolItemStack: ItemStack, blockHitResult: BlockHitResult): Set<BlockPos> {
 
         val targetBlockState = level.getBlockState(blockHitResult.blockPos)
         val originalFrontBlockPos = blockHitResult.blockPos.relative(blockHitResult.direction)
         val wallDirection = blockHitResult.direction.opposite
         val ignoresBlockStateProperties = player.isShiftKeyDown // スニーク中は向きや雪の有無などの違いで面が途切れないのだ～🌱
+        val lateralLevel = level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.LATERAL_AREA_MINING.key].getLevel(toolItemStack)
+        val actualRange = range + lateralLevel
 
         val region = when (blockHitResult.direction) {
             Direction.WEST, Direction.EAST -> BlockBox.of(
-                originalFrontBlockPos.offset(0, -range, -range),
-                originalFrontBlockPos.offset(0, range, range),
+                originalFrontBlockPos.offset(0, -actualRange, -actualRange),
+                originalFrontBlockPos.offset(0, actualRange, actualRange),
             )
 
             Direction.DOWN, Direction.UP -> BlockBox.of(
-                originalFrontBlockPos.offset(-range, 0, -range),
-                originalFrontBlockPos.offset(range, 0, range),
+                originalFrontBlockPos.offset(-actualRange, 0, -actualRange),
+                originalFrontBlockPos.offset(actualRange, 0, actualRange),
             )
 
             Direction.NORTH, Direction.SOUTH -> BlockBox.of(
-                originalFrontBlockPos.offset(-range, -range, 0),
-                originalFrontBlockPos.offset(range, range, 0),
+                originalFrontBlockPos.offset(-actualRange, -actualRange, 0),
+                originalFrontBlockPos.offset(actualRange, actualRange, 0),
             )
         }
 
@@ -138,12 +145,14 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
 
     override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): Pair<BlockPos, Set<BlockPos>>? {
 
+        val toolItemStack = context.player.getItemInHand(hand)
+
         val blockHitResult = getPlayerPOVHitResult(context.level, context.player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return null // ブロックをタゲっていない
 
         return Pair(
             blockHitResult.blockPos.relative(blockHitResult.direction),
-            getTargetBlockPoses(context.level, context.player, blockHitResult),
+            getTargetBlockPoses(context.level, context.player, toolItemStack, blockHitResult),
         )
     }
 
@@ -153,7 +162,7 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
         val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない
 
-        val wallBlockPoses = getTargetBlockPoses(level, player, blockHitResult)
+        val wallBlockPoses = getTargetBlockPoses(level, player, toolItemStack, blockHitResult)
         if (wallBlockPoses.isEmpty()) return InteractionResultHolder.fail(toolItemStack) // 破壊対象が無い
 
         if (player !is ServerPlayer) return InteractionResultHolder.success(toolItemStack) // 破壊はサーバー側でのみ行う
