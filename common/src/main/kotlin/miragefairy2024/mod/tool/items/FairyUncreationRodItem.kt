@@ -130,7 +130,7 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
             val isTargetBlock = if (ignoresBlockStateProperties) wallBlockState.block === targetBlockState.block else wallBlockState == targetBlockState
             if (!isTargetBlock) return@blockVisitor false // 壁が対象ブロックでない
 
-            if (!level.getBlockState(frontBlockPos).canBeReplaced()) return@blockVisitor false // 壁の手前が塞がっていて滑らかな面になっていない
+            if (level.getBlockState(frontBlockPos).isSolidRender(level, frontBlockPos)) return@blockVisitor false // 壁の手前が塞がっていて滑らかな面になっていない
 
             true
         }.map { it.second.relative(wallDirection) }.toSet()
