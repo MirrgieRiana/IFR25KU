@@ -37,7 +37,7 @@ fun initEnchantmentModule() {
     MAGIC_WEAPON_ITEM_TAG.enJa(EnJa("Magic Weapon", "魔法武器"))
     SCYTHE_ITEM_TAG.enJa(EnJa("Scythe", "大鎌"))
     BUILDERS_ROD_ITEM_TAG.enJa(EnJa("Builder's Rod", "ビルダーズロッド"))
-    UNCREATION_ROD_ITEM_TAG.enJa(EnJa("Uncreation Rod", "アンチアカシックロッド"))
+    UNCREATION_ROD_ITEM_TAG.enJa(EnJa("Uncreation Rod", "アンクリエイションロッド"))
     NONE_ITEM_TAG.enJa(EnJa("None", "なし"))
     AREA_MINING_ENCHANTABLE_ITEM_TAG.enJa(EnJa("Area Mining Enchantable", "範囲採掘エンチャント可能"))
 
