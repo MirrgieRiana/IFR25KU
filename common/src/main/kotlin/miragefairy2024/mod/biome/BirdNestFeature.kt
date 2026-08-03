@@ -11,6 +11,7 @@ import miragefairy2024.util.isIn
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.per
 import miragefairy2024.util.placeWhenVegetalDecoration
+import miragefairy2024.util.plus
 import miragefairy2024.util.register
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
@@ -38,7 +39,7 @@ object BirdNestFeatureCard {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature(placedFeatureKey) { per(24) + flower(square, surface) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_OVERWORLD }
+                registerPlacedFeature(placedFeatureKey) { per(24) + flower(square, surface) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_PLAINS + +ConventionalBiomeTags.IS_FOREST } // 平原・森林バイオームに配置
             }
         }
     }
