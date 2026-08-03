@@ -87,11 +87,13 @@ class FairyUncreationRodItem(override val configuration: FairyUncreationRodConfi
 open class UncreationRodItem(toolMaterial: Tier, private val range: Int, settings: Properties) : TieredItem(toolMaterial, settings), RenderBlockPosesOutlineListenerItem {
     companion object {
         val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("uncreation_rod").toLanguageKey()}.description" }, "Break blocks when used", "使用時、ブロックを破壊")
+        val DESCRIPTION_SNEAKING_USE_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("uncreation_rod").toLanguageKey()}.description.sneaking_use" }, "While sneaking: Ignore block states", "スニーク中は状態の違いを無視")
     }
 
     override fun appendHoverText(stack: ItemStack, context: TooltipContext, tooltipComponents: MutableList<Component>, tooltipFlag: TooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
         tooltipComponents += text { DESCRIPTION_TRANSLATION().yellow }
+        tooltipComponents += text { DESCRIPTION_SNEAKING_USE_TRANSLATION().yellow }
     }
 
     /**

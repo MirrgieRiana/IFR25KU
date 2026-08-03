@@ -27,6 +27,7 @@ fun initFairyToolItem() {
     ShootingStaffItem.DESCRIPTION_TRANSLATION.enJa()
     BuildersRodItem.DESCRIPTION_TRANSLATION.enJa()
     UncreationRodItem.DESCRIPTION_TRANSLATION.enJa()
+    UncreationRodItem.DESCRIPTION_SNEAKING_USE_TRANSLATION.enJa()
 }
 
 

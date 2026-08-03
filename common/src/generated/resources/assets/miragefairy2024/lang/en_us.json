@@ -786,6 +786,7 @@
   "item.miragefairy2024.topaz_shovel": "Topaz Shovel",
   "item.miragefairy2024.topaz_sword": "Topaz Sword",
   "item.miragefairy2024.uncreation_rod.description": "Break blocks when used",
+  "item.miragefairy2024.uncreation_rod.description.sneaking_use": "While sneaking: Ignore block states",
   "item.miragefairy2024.veropeda_berries": "Veropeda Berries",
   "item.miragefairy2024.veropeda_berries.description": "Healing and rare nausea by eating",
   "item.miragefairy2024.veropeda_berries.poem": "Has analgesic and stimulant effects",
