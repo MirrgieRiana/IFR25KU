@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
 import miragefairy2024.mod.common.RenderBlockPosesOutlineListenerItem
+import miragefairy2024.mod.enchantment.UNCREATION_ROD_ITEM_TAG
 import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.util.Translation
@@ -46,6 +47,7 @@ open class FairyUncreationRodConfiguration(
     override fun createItem(properties: Item.Properties) = FairyUncreationRodItem(this, properties)
 
     init {
+        this.tags += UNCREATION_ROD_ITEM_TAG
         this.miningDamage = 2
     }
 }

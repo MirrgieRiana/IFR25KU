@@ -3,6 +3,10 @@
     {
       "id": "#miragefairy2024:builders_rod",
       "required": false
+    },
+    {
+      "id": "#miragefairy2024:uncreation_rod",
+      "required": false
     }
   ]
 }
