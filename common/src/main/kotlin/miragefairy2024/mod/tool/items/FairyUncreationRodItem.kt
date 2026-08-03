@@ -142,7 +142,7 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
         if (blockHitResult.type != HitResult.Type.BLOCK) return null // ブロックをタゲっていない
 
         return Pair(
-            blockHitResult.blockPos,
+            blockHitResult.blockPos.relative(blockHitResult.direction),
             getTargetBlockPoses(context.level, context.player, blockHitResult),
         )
     }
