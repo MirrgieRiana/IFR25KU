@@ -11,6 +11,7 @@ import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.util.Translation
 import miragefairy2024.util.blockVisitor
 import miragefairy2024.util.breakBlockByMagic
+import miragefairy2024.util.durability
 import miragefairy2024.util.get
 import miragefairy2024.util.getLevel
 import miragefairy2024.util.invoke
@@ -170,16 +171,20 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
         if (player !is ServerPlayer) return InteractionResultHolder.success(toolItemStack) // 破壊はサーバー側でのみ行う
 
         var count = 0
-        wallBlockPoses.forEach next@{ wallBlockPos ->
-            if (!breakBlockByMagic(toolItemStack, level, wallBlockPos, player)) return@next // 破壊失敗
+        run finish@{
+            wallBlockPoses.forEach next@{ wallBlockPos ->
+                if (!breakBlockByMagic(toolItemStack, level, wallBlockPos, player)) return@next // 破壊失敗
 
-            // 成功
+                // 成功
 
-            count++
+                count++
 
-            // ツールの使用
-            toolItemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(usedHand))
-            player.awardStat(Stats.ITEM_USED.get(this))
+                // ツールの使用
+                toolItemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(usedHand))
+                player.awardStat(Stats.ITEM_USED.get(this))
+
+                if (toolItemStack.isEmpty || toolItemStack.durability <= 1) return@finish false // ツールの耐久が枯渇
+            }
         }
 
         return if (count > 0) InteractionResultHolder.success(toolItemStack) else InteractionResultHolder.fail(toolItemStack)
