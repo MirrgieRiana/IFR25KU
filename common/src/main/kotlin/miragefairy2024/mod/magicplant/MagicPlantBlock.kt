@@ -62,7 +62,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
 
     // Behaviour
 
-    override fun mayPlaceOn(floor: BlockState, world: BlockGetter, pos: BlockPos) = world.getBlockState(pos).isFaceSturdy(world, pos, Direction.UP, SupportType.CENTER) || floor isIn Blocks.FARMLAND
+    override fun mayPlaceOn(state: BlockState, level: BlockGetter, pos: BlockPos) = level.getBlockState(pos).isFaceSturdy(level, pos, Direction.UP, SupportType.CENTER) || state isIn Blocks.FARMLAND
 
 
     // Trait
