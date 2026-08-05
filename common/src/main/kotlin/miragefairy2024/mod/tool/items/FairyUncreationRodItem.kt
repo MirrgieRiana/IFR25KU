@@ -15,7 +15,6 @@ import miragefairy2024.util.durability
 import miragefairy2024.util.get
 import miragefairy2024.util.getLevel
 import miragefairy2024.util.invoke
-import miragefairy2024.util.opposite
 import miragefairy2024.util.text
 import miragefairy2024.util.yellow
 import net.minecraft.core.BlockBox
@@ -165,15 +164,15 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
         val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない
 
-        val wallBlockPoses = getTargetBlockPoses(level, player, toolItemStack, blockHitResult)
-        if (wallBlockPoses.isEmpty()) return InteractionResultHolder.fail(toolItemStack) // 破壊対象が無い
+        val targetBlockPoses = getTargetBlockPoses(level, player, toolItemStack, blockHitResult)
+        if (targetBlockPoses.isEmpty()) return InteractionResultHolder.fail(toolItemStack) // 破壊対象が無い
 
         if (player !is ServerPlayer) return InteractionResultHolder.success(toolItemStack) // 破壊はサーバー側でのみ行う
 
         var count = 0
         run finish@{
-            wallBlockPoses.forEach next@{ wallBlockPos ->
-                if (!breakBlockByMagic(toolItemStack, level, wallBlockPos, player)) return@next // 破壊失敗
+            targetBlockPoses.forEach next@{ targetBlockPos ->
+                if (!breakBlockByMagic(toolItemStack, level, targetBlockPos, player)) return@next // 破壊失敗
 
                 // 成功
 
