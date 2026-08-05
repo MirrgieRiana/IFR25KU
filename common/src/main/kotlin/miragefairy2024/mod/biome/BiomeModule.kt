@@ -5,19 +5,31 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.SURFACE_NOISE_STANDARD_DEVIATIONS
 import miragefairy2024.util.enJa
+import miragefairy2024.util.get
+import miragefairy2024.util.invoke
+import miragefairy2024.util.registerServerDebugItem
+import miragefairy2024.util.text
 import miragefairy2024.util.toBiomeTag
 import miragefairy2024.util.toBlockTag
+import miragefairy2024.util.toTextureSource
 import net.minecraft.core.Registry
+import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
+import net.minecraft.util.RandomSource
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.biome.Climate
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.levelgen.SurfaceRules
+import net.minecraft.world.level.levelgen.XoroshiroRandomSource
+import net.minecraft.world.level.levelgen.synth.NormalNoise
 import terrablender.api.Region
 import terrablender.api.RegionType
 import terrablender.api.Regions
 import terrablender.api.SurfaceRuleManager
 import java.util.function.Consumer
+import kotlin.math.sqrt
 
 val OVERWORLD_BIOME_OVERRIDES = mutableMapOf<ResourceKey<Biome>, ResourceKey<Biome>>()
 
@@ -62,6 +74,31 @@ fun initBiomeModule() {
     DeepFairyForestBiomeCard.init()
     RetrospectiveCityBiomeCard.init()
     OldGrowthAmberForestBiomeCard.init()
+
+    // ランダムなシードとランダムな座標で、地表ルールで使う2種のノイズの標準偏差を実測するのだ～🌱
+    // ノイズの平均は理論上厳密に0だから、標準偏差の導出に使う平均にも0を使うのだ✨
+    // 平均に0を使うと分散が二乗和を個数で割ったものそのものになるから、標準偏差と個数だけで複数の結果を正しく集約できるのだ🌱
+    registerServerDebugItem("debug_surface_noise_statistics", Blocks.PODZOL.toTextureSource(), 0xFFFFAA00.toInt()) { world, player, _, _ ->
+        val seedCount = 1000
+        val sampleCountPerSeed = 1000
+        val coordinateRange = 1000000
+        val random = RandomSource.create()
+        SURFACE_NOISE_STANDARD_DEVIATIONS.forEach { (noiseKey, constantStandardDeviation) ->
+            val noiseParameters = world.registryAccess()[Registries.NOISE, noiseKey].value()
+            var count = 0L
+            var squareSum = 0.0
+            repeat(seedCount) {
+                val noise = NormalNoise.create(XoroshiroRandomSource(random.nextLong()), noiseParameters)
+                repeat(sampleCountPerSeed) {
+                    val value = noise.getValue((random.nextInt(coordinateRange * 2) - coordinateRange).toDouble(), 0.0, (random.nextInt(coordinateRange * 2) - coordinateRange).toDouble())
+                    count++
+                    squareSum += value * value
+                }
+            }
+            val standardDeviation = sqrt(squareSum / count.toDouble())
+            player.displayClientMessage(text { "${noiseKey.location()}: standardDeviation=${"%.6f".format(standardDeviation)}, count=$count, constant=$constantStandardDeviation, ratio=${"%.4f".format(standardDeviation / constantStandardDeviation)}"() }, false)
+        }
+    }
 
 }
 
