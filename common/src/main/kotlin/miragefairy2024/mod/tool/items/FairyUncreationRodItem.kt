@@ -105,7 +105,7 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
      * 判定に落ちたマスは[blockVisitor]の探索済み集合に入らず、世界が変化すると再び判定にかけられてしまうから、
      * 破壊しながら探索を進めるのではなく、先にすべての対象を確定させるのだ～🌱
      */
-    fun getTargetBlockPoses(level: Level, player: Player, toolItemStack: ItemStack, blockHitResult: BlockHitResult): Set<BlockPos> {
+    fun getDestinationBlockPoses(level: Level, player: Player, toolItemStack: ItemStack, blockHitResult: BlockHitResult): Sequence<BlockPos> {
 
         val targetBlockState = level.getBlockState(blockHitResult.blockPos)
         val frontBlockPos = blockHitResult.blockPos.relative(blockHitResult.direction)
@@ -139,10 +139,10 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
             val isTargetBlock = if (ignoresBlockStateProperties) wallBlockState.block === targetBlockState.block else wallBlockState == targetBlockState
             if (!isTargetBlock) return@blockVisitor false // 壁が対象ブロックでない
 
-            if (level.getBlockState(airBlockPos).isSolidRender(level, airBlockPos)) return@blockVisitor false // 壁の手前が塞がっていて滑らかな面になっていない
+            if (level.getBlockState(airBlockPos).isSolidRender(level, airBlockPos)) return@blockVisitor false // 壁の手前が塞がっている
 
             true
-        }.map { it.second.relative(wallDirection) }.toSet()
+        }.map { it.second.relative(wallDirection) }
     }
 
     override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): Pair<BlockPos, Set<BlockPos>>? {
@@ -152,9 +152,11 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
         val blockHitResult = getPlayerPOVHitResult(context.level, context.player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return null // ブロックをタゲっていない
 
+        val sequence = getDestinationBlockPoses(context.level, context.player, toolItemStack, blockHitResult)
+
         return Pair(
             blockHitResult.blockPos.relative(blockHitResult.direction),
-            getTargetBlockPoses(context.level, context.player, toolItemStack, blockHitResult),
+            sequence.toSet(),
         )
     }
 
@@ -164,14 +166,13 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
         val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない
 
-        val targetBlockPoses = getTargetBlockPoses(level, player, toolItemStack, blockHitResult)
-        if (targetBlockPoses.isEmpty()) return InteractionResultHolder.fail(toolItemStack) // 破壊対象が無い
+        val sequence = getDestinationBlockPoses(level, player, toolItemStack, blockHitResult)
 
         if (player !is ServerPlayer) return InteractionResultHolder.success(toolItemStack) // 破壊はサーバー側でのみ行う
 
         var count = 0
         run finish@{
-            targetBlockPoses.forEach next@{ targetBlockPos ->
+            sequence.forEach next@{ targetBlockPos ->
 
                 if (!breakBlockByMagic(toolItemStack, level, targetBlockPos, player)) return@next // 破壊失敗
 
