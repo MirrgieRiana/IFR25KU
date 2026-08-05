@@ -108,7 +108,7 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
     fun getTargetBlockPoses(level: Level, player: Player, toolItemStack: ItemStack, blockHitResult: BlockHitResult): Set<BlockPos> {
 
         val targetBlockState = level.getBlockState(blockHitResult.blockPos)
-        val originalFrontBlockPos = blockHitResult.blockPos.relative(blockHitResult.direction)
+        val frontBlockPos = blockHitResult.blockPos.relative(blockHitResult.direction)
         val wallDirection = blockHitResult.direction.opposite
         val ignoresBlockStateProperties = player.isShiftKeyDown // スニーク中は向きや雪の有無などの違いで面が途切れないのだ～🌱
         val lateralLevel = level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.LATERAL_AREA_MINING.key].getLevel(toolItemStack)
@@ -116,30 +116,30 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
 
         val region = when (blockHitResult.direction) {
             Direction.WEST, Direction.EAST -> BlockBox.of(
-                originalFrontBlockPos.offset(0, -actualRange, -actualRange),
-                originalFrontBlockPos.offset(0, actualRange, actualRange),
+                frontBlockPos.offset(0, -actualRange, -actualRange),
+                frontBlockPos.offset(0, actualRange, actualRange),
             )
 
             Direction.DOWN, Direction.UP -> BlockBox.of(
-                originalFrontBlockPos.offset(-actualRange, 0, -actualRange),
-                originalFrontBlockPos.offset(actualRange, 0, actualRange),
+                frontBlockPos.offset(-actualRange, 0, -actualRange),
+                frontBlockPos.offset(actualRange, 0, actualRange),
             )
 
             Direction.NORTH, Direction.SOUTH -> BlockBox.of(
-                originalFrontBlockPos.offset(-actualRange, -actualRange, 0),
-                originalFrontBlockPos.offset(actualRange, actualRange, 0),
+                frontBlockPos.offset(-actualRange, -actualRange, 0),
+                frontBlockPos.offset(actualRange, actualRange, 0),
             )
         }
 
-        return blockVisitor(listOf(originalFrontBlockPos)) { _, _, frontBlockPos ->
-            if (frontBlockPos !in region) return@blockVisitor false // 範囲外
+        return blockVisitor(listOf(frontBlockPos)) { _, _, airBlockPos ->
+            if (airBlockPos !in region) return@blockVisitor false // 範囲外
 
-            val wallBlockPos = frontBlockPos.relative(wallDirection)
+            val wallBlockPos = airBlockPos.relative(wallDirection)
             val wallBlockState = level.getBlockState(wallBlockPos)
             val isTargetBlock = if (ignoresBlockStateProperties) wallBlockState.block === targetBlockState.block else wallBlockState == targetBlockState
             if (!isTargetBlock) return@blockVisitor false // 壁が対象ブロックでない
 
-            if (level.getBlockState(frontBlockPos).isSolidRender(level, frontBlockPos)) return@blockVisitor false // 壁の手前が塞がっていて滑らかな面になっていない
+            if (level.getBlockState(airBlockPos).isSolidRender(level, airBlockPos)) return@blockVisitor false // 壁の手前が塞がっていて滑らかな面になっていない
 
             true
         }.map { it.second.relative(wallDirection) }.toSet()
