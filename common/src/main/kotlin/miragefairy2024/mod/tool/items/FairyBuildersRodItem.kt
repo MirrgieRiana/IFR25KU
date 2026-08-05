@@ -131,8 +131,8 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
 
             val wallBlockPos = airBlockPos.relative(wallDirection)
             val wallBlockState = level.getBlockState(wallBlockPos)
-            val isTargetBlock = if (ignoresBlockStateProperties) wallBlockState.block !== targetBlockState.block else wallBlockState != targetBlockState
-            if (isTargetBlock) return@blockVisitor false // 壁が対象ブロックでない
+            val isTargetBlock = if (ignoresBlockStateProperties) wallBlockState.block === targetBlockState.block else wallBlockState == targetBlockState
+            if (!isTargetBlock) return@blockVisitor false // 壁が対象ブロックでない
 
             val context = BlockPlaceContext(player, usedHand, blockItemStack, blockHitResult.withBlockPosAndLocation(airBlockPos))
             if (!level.getBlockState(airBlockPos).canBeReplaced(context)) return@blockVisitor false // 設置先が埋まっている
