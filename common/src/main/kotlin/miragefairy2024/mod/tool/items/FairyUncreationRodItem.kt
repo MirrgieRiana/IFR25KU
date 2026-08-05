@@ -172,6 +172,7 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
         var count = 0
         run finish@{
             targetBlockPoses.forEach next@{ targetBlockPos ->
+
                 if (!breakBlockByMagic(toolItemStack, level, targetBlockPos, player)) return@next // 破壊失敗
 
                 // 成功
