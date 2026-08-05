@@ -705,14 +705,17 @@ open class BlockMaterialCard(
             context(ModContext)
             override fun initLootTableGeneration() {
                 block.registerLootTableGeneration { provider, registries ->
-                    val fortune = registries[Registries.ENCHANTMENT, Enchantments.FORTUNE]
                     LootTable(
                         LootPool(ItemLootPoolEntry(item())) {
                             `when`(provider.hasSilkTouch())
                         },
                         LootPool(
-                            ItemLootPoolEntry(MaterialCard.RETINITE.item()) { apply(ApplyBonusCount.addOreBonusCount(fortune)) }.setWeight(9),
-                            ItemLootPoolEntry(MaterialCard.COPAL.item()) { apply(ApplyBonusCount.addOreBonusCount(fortune)) }.setWeight(1),
+                            ItemLootPoolEntry(MaterialCard.RETINITE.item()) {
+                                apply(ApplyBonusCount.addOreBonusCount(registries[Registries.ENCHANTMENT, Enchantments.FORTUNE]))
+                            }.setWeight(9),
+                            ItemLootPoolEntry(MaterialCard.COPAL.item()) {
+                                apply(ApplyBonusCount.addOreBonusCount(registries[Registries.ENCHANTMENT, Enchantments.FORTUNE]))
+                            }.setWeight(1),
                         ) {
                             `when`(provider.doesNotHaveSilkTouch())
                         },
