@@ -71,7 +71,7 @@ enum class BaseStoneType(val target: RuleTest, val baseStoneTexture: ResourceLoc
     STONE(TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/stone"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
     DEEPSLATE(TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
     SANDSTONE(BlockMatchTest(Blocks.SANDSTONE), ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    DIRT(TagMatchTest(BlockTags.DIRT), ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
+    DIRT(BlockMatchTest(Blocks.DIRT), ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
     NETHERRACK(BlockMatchTest(Blocks.NETHERRACK), ResourceLocation("minecraft", "block/netherrack"), BlockTags.MINEABLE_WITH_PICKAXE, null),
     BLACKSTONE(BlockMatchTest(Blocks.BLACKSTONE), ResourceLocation("minecraft", "block/blackstone"), BlockTags.MINEABLE_WITH_PICKAXE, null),
 }
