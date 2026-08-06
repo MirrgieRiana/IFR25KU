@@ -39,7 +39,10 @@ fun getNormalDistributionUpperProbability(x: Double, standardDeviation: Double):
     return 0.5 * (1.0 - if (z < 0) -erfOfAbsoluteZ else erfOfAbsoluteZ)
 }
 
-/** [getNormalDistributionUpperProbability]の逆関数なのだ～🌱 二分探索で求めるのだ✨ */
+/**
+ * [getNormalDistributionUpperProbability]の逆関数なのだ～🌱
+ * 二分探索で求めるのだ✨
+ */
 fun getNormalDistributionUpperProbabilityInverse(probability: Double, standardDeviation: Double): Double {
     var low = -100.0 * standardDeviation
     var high = 100.0 * standardDeviation
