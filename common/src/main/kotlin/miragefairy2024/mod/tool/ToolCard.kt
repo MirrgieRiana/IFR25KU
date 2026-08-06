@@ -40,6 +40,7 @@ import miragefairy2024.mod.tool.items.FairyShootingStaffConfiguration
 import miragefairy2024.mod.tool.items.FairyShovelConfiguration
 import miragefairy2024.mod.tool.items.FairySwordConfiguration
 import miragefairy2024.mod.tool.items.FairyToolProperties
+import miragefairy2024.mod.tool.items.FairyUncreationRodConfiguration
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -526,6 +527,11 @@ class ToolCard(
             "creative_hoe", EnJa("Creative Hoe", "アカーシャのクワ"),
             PoemList(null).poem(EnJa("Changes everything into farmland.", "適度に湿った地が現れよ。")),
             FairyHoeConfiguration(ToolMaterialCard.NEUTRONIUM).tillingRecipe(AdvancedHoeItem.CREATIVE_RECIPE),
+        )
+        val CREATIVE_UNCREATION_ROD = !ToolCard(
+            "creative_uncreation_rod", EnJa("Creative Uncreation Rod", "アンチアカシックロッド"),
+            PoemList(null).poem(EnJa("Erases the connected surface of blocks.", "地の表面をぬぐい去ろう。")),
+            FairyUncreationRodConfiguration(ToolMaterialCard.NEUTRONIUM, 16),
         )
     }
 

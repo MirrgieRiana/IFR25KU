@@ -4,22 +4,18 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
 import miragefairy2024.mod.common.RenderBlockPosesOutlineListenerItem
-import miragefairy2024.mod.enchantment.BUILDERS_ROD_ITEM_TAG
 import miragefairy2024.mod.enchantment.EnchantmentCard
+import miragefairy2024.mod.enchantment.UNCREATION_ROD_ITEM_TAG
 import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.util.Translation
 import miragefairy2024.util.blockVisitor
+import miragefairy2024.util.breakBlockByMagic
 import miragefairy2024.util.durability
 import miragefairy2024.util.get
 import miragefairy2024.util.getLevel
-import miragefairy2024.util.getSameItemStackCountInMainInventoryAndOffhand
 import miragefairy2024.util.invoke
-import miragefairy2024.util.notEmptyOrNull
-import miragefairy2024.util.opposite
-import miragefairy2024.util.removeItemStackFromMainInventoryAndOffhand
 import miragefairy2024.util.text
-import miragefairy2024.util.withBlockPosAndLocation
 import miragefairy2024.util.yellow
 import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
@@ -27,21 +23,19 @@ import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.stats.Stats
 import net.minecraft.world.InteractionHand
-import net.minecraft.world.InteractionResult
 import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Tier
 import net.minecraft.world.item.TieredItem
 import net.minecraft.world.item.TooltipFlag
-import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.ItemEnchantments
 import net.minecraft.world.level.ClipContext
@@ -50,20 +44,20 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
 
-open class FairyBuildersRodConfiguration(
+open class FairyUncreationRodConfiguration(
     override val toolMaterialCard: ToolMaterialCard,
     val range: Int,
 ) : ToolConfiguration() {
-    override fun createItem(properties: Item.Properties) = FairyBuildersRodItem(this, properties)
+    override fun createItem(properties: Item.Properties) = FairyUncreationRodItem(this, properties)
 
     init {
-        this.tags += BUILDERS_ROD_ITEM_TAG
+        this.tags += UNCREATION_ROD_ITEM_TAG
         this.miningDamage = 2
     }
 }
 
-class FairyBuildersRodItem(override val configuration: FairyBuildersRodConfiguration, settings: Properties) :
-    BuildersRodItem(configuration.toolMaterialCard.toolMaterial, configuration.range, settings),
+class FairyUncreationRodItem(override val configuration: FairyUncreationRodConfiguration, settings: Properties) :
+    UncreationRodItem(configuration.toolMaterialCard.toolMaterial, configuration.range, settings),
     FairyToolItem,
     ModifyItemEnchantmentsHandler {
 
@@ -90,17 +84,28 @@ class FairyBuildersRodItem(override val configuration: FairyBuildersRodConfigura
 
 }
 
-open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings: Properties) : TieredItem(toolMaterial, settings), RenderBlockPosesOutlineListenerItem {
+open class UncreationRodItem(toolMaterial: Tier, private val range: Int, settings: Properties) : TieredItem(toolMaterial, settings), RenderBlockPosesOutlineListenerItem {
     companion object {
-        val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("builders_rod").toLanguageKey()}.description" }, "Place blocks when used", "使用時、ブロックを設置")
+        val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("uncreation_rod").toLanguageKey()}.description" }, "Break blocks when used", "使用時、ブロックを破壊")
+        val DESCRIPTION_SNEAKING_USE_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("uncreation_rod").toLanguageKey()}.description.sneaking_use" }, "While sneaking: Ignore block states", "スニーク中は状態の違いを無視")
     }
 
     override fun appendHoverText(stack: ItemStack, context: TooltipContext, tooltipComponents: MutableList<Component>, tooltipFlag: TooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
         tooltipComponents += text { DESCRIPTION_TRANSLATION().yellow }
+        tooltipComponents += text { DESCRIPTION_SNEAKING_USE_TRANSLATION().yellow }
     }
 
-    fun getDestinationBlockPoses(level: Level, player: Player, usedHand: InteractionHand, toolItemStack: ItemStack, blockItemStack: ItemStack, blockHitResult: BlockHitResult, maxCount: Int?): Sequence<BlockPos> {
+    /**
+     * 与えられた面と地続きになっている、同種のブロックの位置を返すのだ～🌱
+     * 同種の判定は通常はblockstateの完全一致だけど、[player]がスニーク中はブロックの種類だけを見るのだ～🌱
+     * 探索できる範囲は、[toolItemStack]に付いた側方範囲採掘のレベルの分だけ広がるのだ～🌱
+     *
+     * 探索のノードは面の手前側のマスで、そこから奥のブロックを見るのだ～🌱
+     * 判定に落ちたマスは[blockVisitor]の探索済み集合に入らず、世界が変化すると再び判定にかけられてしまうから、
+     * 破壊しながら探索を進めるのではなく、先にすべての対象を確定させるのだ～🌱
+     */
+    fun getDestinationBlockPoses(level: Level, player: Player, toolItemStack: ItemStack, blockHitResult: BlockHitResult): Sequence<BlockPos> {
 
         val targetBlockState = level.getBlockState(blockHitResult.blockPos)
         val frontBlockPos = blockHitResult.blockPos.relative(blockHitResult.direction)
@@ -126,7 +131,7 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
             )
         }
 
-        return blockVisitor(listOf(frontBlockPos), maxCount = maxCount) { _, _, airBlockPos ->
+        return blockVisitor(listOf(frontBlockPos)) { _, _, airBlockPos ->
             if (airBlockPos !in region) return@blockVisitor false // 範囲外
 
             val wallBlockPos = airBlockPos.relative(wallDirection)
@@ -134,27 +139,20 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
             val isTargetBlock = if (ignoresBlockStateProperties) wallBlockState.block === targetBlockState.block else wallBlockState == targetBlockState
             if (!isTargetBlock) return@blockVisitor false // 壁が対象ブロックでない
 
-            val context = BlockPlaceContext(player, usedHand, blockItemStack, blockHitResult.withBlockPosAndLocation(airBlockPos))
-            if (!level.getBlockState(airBlockPos).canBeReplaced(context)) return@blockVisitor false // 設置先が埋まっている
+            if (level.getBlockState(airBlockPos).isSolidRender(level, airBlockPos)) return@blockVisitor false // 壁の手前が塞がっている
 
             true
-        }.map { it.second }
+        }.map { it.second.relative(wallDirection) }
     }
 
     override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): Pair<BlockPos, Set<BlockPos>>? {
 
         val toolItemStack = context.player.getItemInHand(hand)
 
-        val blockItemStack = context.player.getItemInHand(hand.opposite).notEmptyOrNull ?: return null // 逆の手が空
-        val blockItem = blockItemStack.item as? BlockItem ?: return null // 逆の手がブロックアイテムでない
-        if (!blockItem.block.isEnabled(context.level.enabledFeatures())) return null // ブロックが無効化されている
-
         val blockHitResult = getPlayerPOVHitResult(context.level, context.player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return null // ブロックをタゲっていない
 
-        val count = if (context.player.isCreative) null else context.player.getSameItemStackCountInMainInventoryAndOffhand(blockItemStack)
-
-        val sequence = getDestinationBlockPoses(context.level, context.player, hand, toolItemStack, blockItemStack, blockHitResult, count)
+        val sequence = getDestinationBlockPoses(context.level, context.player, toolItemStack, blockHitResult)
 
         return Pair(
             blockHitResult.blockPos.relative(blockHitResult.direction),
@@ -165,27 +163,18 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
     override fun use(level: Level, player: Player, usedHand: InteractionHand): InteractionResultHolder<ItemStack> {
         val toolItemStack = player.getItemInHand(usedHand)
 
-        val blockItemStack = player.getItemInHand(usedHand.opposite).notEmptyOrNull ?: return InteractionResultHolder.fail(toolItemStack) // 逆の手が空
-        val blockItem = blockItemStack.item as? BlockItem ?: return InteractionResultHolder.fail(toolItemStack) // 逆の手がブロックアイテムでない
-        if (!blockItem.block.isEnabled(level.enabledFeatures())) return InteractionResultHolder.fail(toolItemStack) // ブロックが無効化されている
-
         val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない
 
-        val sequence = getDestinationBlockPoses(level, player, usedHand, toolItemStack, blockItemStack, blockHitResult, null)
+        val sequence = getDestinationBlockPoses(level, player, toolItemStack, blockHitResult)
 
-        val sampleBlockItemStack = blockItemStack.copy()
+        if (player !is ServerPlayer) return InteractionResultHolder.success(toolItemStack) // 破壊はサーバー側でのみ行う
+
         var count = 0
         run finish@{
-            sequence.forEach next@{ airBlockPos ->
-                val context = BlockPlaceContext(player, usedHand, blockItemStack, blockHitResult.withBlockPosAndLocation(airBlockPos))
+            sequence.forEach next@{ targetBlockPos ->
 
-                val result = blockItem.place(context)
-                if (blockItemStack.isEmpty) {
-                    val foundItemStack = player.removeItemStackFromMainInventoryAndOffhand(sampleBlockItemStack)
-                    if (foundItemStack != null) blockItemStack.count = foundItemStack.count
-                }
-                if (result == InteractionResult.FAIL || result == InteractionResult.PASS) return@next // 設置失敗
+                if (!breakBlockByMagic(toolItemStack, level, targetBlockPos, player)) return@next // 破壊失敗
 
                 // 成功
 
@@ -195,7 +184,6 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
                 toolItemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(usedHand))
                 player.awardStat(Stats.ITEM_USED.get(this))
 
-                if (blockItemStack.isEmpty) return@finish false // ブロックが枯渇
                 if (toolItemStack.isEmpty || toolItemStack.durability <= 1) return@finish false // ツールの耐久が枯渇
             }
         }
