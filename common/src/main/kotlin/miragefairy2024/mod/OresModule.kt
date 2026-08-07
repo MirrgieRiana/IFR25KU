@@ -334,6 +334,7 @@ fun initOresModule() {
 fun createOreModel() = Model {
     ModelData(
         parent = ResourceLocation("minecraft", "block/block"),
+        ambientOcclusion = true, // Minecraftの既定値と同じだけど、母岩と鉱石を重ねる特殊なモデルなので、環境光を使うことを明示しておくのだ～🌱
         textures = ModelTexturesData(
             TextureSlot.PARTICLE.id to TextureSlot.BACK.string,
         ),

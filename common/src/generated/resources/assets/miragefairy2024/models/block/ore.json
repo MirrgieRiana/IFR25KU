@@ -1,5 +1,6 @@
 {
   "parent": "minecraft:block/block",
+  "ambientocclusion": true,
   "elements": [
     {
       "faces": {
