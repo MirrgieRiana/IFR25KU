@@ -1,12 +1,4 @@
 {
-  "type": "minecraft:multiface_growth",
-  "config": {
-    "block": "miragefairy2024:deposited_sulfur",
-    "can_be_placed_on": "minecraft:basalt",
-    "can_place_on_ceiling": true,
-    "can_place_on_floor": true,
-    "can_place_on_wall": true,
-    "chance_of_spreading": 0.5,
-    "search_range": 4
-  }
+  "type": "miragefairy2024:deposited_sulfur",
+  "config": {}
 }
