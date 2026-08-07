@@ -36,11 +36,13 @@ fun Model(parent: ResourceLocation, variant: String, vararg textureKeys: Texture
 
 class ModelData(
     val parent: ResourceLocation,
+    val ambientOcclusion: Boolean? = null,
     val textures: ModelTexturesData? = null,
     val elements: ModelElementsData? = null,
 ) {
     fun toJsonElement(): JsonElement = jsonObjectNotNull(
         "parent" to parent.string.jsonElement,
+        "ambientocclusion" to ambientOcclusion?.jsonElement,
         "textures" to textures?.toJsonElement(),
         "elements" to elements?.toJsonElement(),
     )
