@@ -7,12 +7,18 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.mod.particle.ParticleTypeCard
+import miragefairy2024.util.BlockEntityType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Model
+import miragefairy2024.util.ModelData
+import miragefairy2024.util.ModelTexturesData
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.aboveLava
+import miragefairy2024.util.checkType
 import miragefairy2024.util.count
+import miragefairy2024.util.createEmptyModel
 import miragefairy2024.util.enJa
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
@@ -22,13 +28,17 @@ import miragefairy2024.util.register
 import miragefairy2024.util.registerBlockGeneratedModelGeneration
 import miragefairy2024.util.registerBlockStateGeneration
 import miragefairy2024.util.registerChild
+import miragefairy2024.util.registerColorProvider
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerItemGroup
+import miragefairy2024.util.registerLootTableGeneration
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerOreLootTableGeneration
 import miragefairy2024.util.registerPlacedFeature
+import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.square
+import miragefairy2024.util.string
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.with
@@ -46,12 +56,18 @@ import net.minecraft.util.valueproviders.UniformInt
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.EntityBlock
 import net.minecraft.world.level.block.MultifaceBlock
 import net.minecraft.world.level.block.MultifaceSpreader
+import net.minecraft.world.level.block.RenderShape
 import net.minecraft.world.level.block.SoundType
+import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.world.level.block.entity.BlockEntityTicker
+import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.feature.Feature
@@ -78,10 +94,29 @@ object DepositedSulfurCard {
     val feature = DepositedSulfurFeature(NoneFeatureConfiguration.CODEC)
 }
 
+object SolfataraCard {
+    val identifier = MirageFairy2024.identifier("solfatara")
+    val block = Registration(BuiltInRegistries.BLOCK, identifier) {
+        SolfataraBlock(
+            BlockBehaviour.Properties.of()
+                .mapColor(MapColor.COLOR_YELLOW)
+                .noCollission()
+                .noOcclusion()
+                .noTerrainParticles()
+                .strength(0.2F)
+                .sound(SoundType.STONE)
+                .pushReaction(PushReaction.DESTROY),
+        )
+    }
+    val item = Registration(BuiltInRegistries.ITEM, identifier) { BlockItem(block.await(), Item.Properties()) }
+    val blockEntityType = Registration(BuiltInRegistries.BLOCK_ENTITY_TYPE, identifier) { BlockEntityType(::SolfataraBlockEntity, setOf(block.await())) }
+}
+
 context(ModContext)
 fun initDepositedSulfurModule() {
 
     Registration(BuiltInRegistries.BLOCK_TYPE, DepositedSulfurCard.identifier) { DepositedSulfurBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, SolfataraCard.identifier) { SolfataraBlock.CODEC }.register()
     Registration(BuiltInRegistries.FEATURE, DepositedSulfurCard.identifier) { DepositedSulfurCard.feature }.register()
 
     DepositedSulfurCard.let { card ->
@@ -156,6 +191,39 @@ fun initDepositedSulfurModule() {
 
     }
 
+    SolfataraCard.let { card ->
+
+        card.block.register()
+        card.item.register()
+        card.blockEntityType.register()
+
+        card.item.registerItemGroup(mirageFairy2024ItemGroupCard.itemGroupKey)
+
+        card.block.registerSingletonBlockStateGeneration()
+        card.block.registerModelGeneration { createEmptyModel("block/" * DepositedSulfurCard.identifier) }
+        card.item.registerModelGeneration(createSolfataraItemModel())
+        card.item.registerColorProvider { _, tintIndex ->
+            // 析出した硫黄のテクスチャに、噴き出す火山ガスの熱を思わせるオレンジを掛け合わせるのだぁ🌱
+            if (tintIndex == 0) 0xFFFFA500.toInt() else 0xFFFFFFFF.toInt()
+        }
+
+        card.block.enJa(EnJa("Solfatara", "硫気孔"))
+
+        card.block.registerLootTableGeneration { it, _ -> it.createSilkTouchOnlyTable(card.block()) }
+
+        BlockTags.MINEABLE_WITH_PICKAXE.generator.registerChild(card.block)
+
+    }
+
+}
+
+private fun createSolfataraItemModel() = Model {
+    ModelData(
+        parent = ResourceLocation("item/generated"),
+        textures = ModelTexturesData(
+            "layer0" to ("block/" * DepositedSulfurCard.identifier).string,
+        ),
+    )
 }
 
 /**
@@ -181,6 +249,51 @@ class DepositedSulfurBlock(properties: Properties) : MultifaceBlock(properties) 
         super.spawnAfterBreak(state, level, pos, stack, dropExperience)
         if (dropExperience) {
             tryDropExperience(level, pos, stack, XP_RANGE)
+        }
+    }
+}
+
+/**
+ * 硫黄を含む火山ガスを噴き上げる噴気孔なのだぁ🌱 見た目を持たず、煙だけが見えるのだぁ✨
+ *
+ * @see net.minecraft.world.level.block.BarrierBlock
+ */
+@Suppress("OVERRIDE_DEPRECATION")
+class SolfataraBlock(properties: Properties) : Block(properties), EntityBlock {
+    companion object {
+        val CODEC: MapCodec<SolfataraBlock> = simpleCodec(::SolfataraBlock)
+    }
+
+    override fun codec() = CODEC
+
+    override fun getRenderShape(state: BlockState) = RenderShape.INVISIBLE
+
+    override fun newBlockEntity(pos: BlockPos, state: BlockState) = SolfataraBlockEntity(pos, state)
+
+    override fun <T : BlockEntity> getTicker(level: Level, state: BlockState, blockEntityType: BlockEntityType<T>): BlockEntityTicker<T>? {
+        if (!level.isClientSide) return null // 煙は見えるだけのものだから、クライアント側でしか動かす必要がないのだぁ🌱
+        return checkType(blockEntityType, SolfataraCard.blockEntityType()) { level2, blockPos, _, blockEntity ->
+            blockEntity.clientTick(level2, blockPos)
+        }
+    }
+}
+
+/**
+ * 噴気孔から硫黄の色をした煙を噴き上げるのだぁ🌱
+ */
+class SolfataraBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(SolfataraCard.blockEntityType(), pos, state) {
+    fun clientTick(level: Level, blockPos: BlockPos) {
+        if (level.gameTime % 10L != 0L) return // 0.5秒おきに噴き上げるのだぁ✨
+        repeat(8) {
+            level.addParticle(
+                ParticleTypeCard.SULFUR_SMOKE.particleType,
+                blockPos.x + level.random.nextDouble(),
+                blockPos.y + level.random.nextDouble(),
+                blockPos.z + level.random.nextDouble(),
+                level.random.nextGaussian() * 0.02,
+                0.08 + level.random.nextGaussian() * 0.02, // 一定の上向きの速さに、ばらつきを足すのだぁ🌱
+                level.random.nextGaussian() * 0.02,
+            )
         }
     }
 }
@@ -228,6 +341,11 @@ class DepositedSulfurFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
                     }
                 }
             }
+        }
+
+        // 析出した硫黄が湧いた塊の中央に、その源となる噴気孔を据えるのだぁ🌱 起点は溶岩の直上だから、そこがちょうど中央なのだぁ✨
+        if (succeeded && level.getBlockState(originBlockPos).isAir) {
+            level.setBlock(originBlockPos, SolfataraCard.block().defaultBlockState(), Block.UPDATE_ALL)
         }
 
         return succeeded
