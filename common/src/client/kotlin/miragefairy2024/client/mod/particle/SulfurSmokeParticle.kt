@@ -5,11 +5,11 @@ import net.minecraft.client.particle.BaseAshSmokeParticle
 import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.SpriteSet
 import net.minecraft.core.particles.SimpleParticleType
+import net.minecraft.util.Mth
 
-/** 重力の向きは引数で決まるのだぁ🌱 負の値を渡すと、煙が上へ昇っていくのだぁ✨ */
-fun createSulfurSmokeParticleFactory(gravity: Float) = { spriteProvider: SpriteSet ->
+fun createSulfurSmokeParticleFactory() = { spriteProvider: SpriteSet ->
     ParticleProvider<SimpleParticleType> { _, world, x, y, z, velocityX, velocityY, velocityZ ->
-        SulfurSmokeParticle(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider, gravity)
+        SulfurSmokeParticle(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider)
     }
 }
 
@@ -30,10 +30,25 @@ class SulfurSmokeParticle(
     velocityY: Double,
     velocityZ: Double,
     spriteProvider: SpriteSet,
-    gravity: Float,
-) : BaseAshSmokeParticle(world, x, y, z, 0.1F, 0.1F, 0.1F, velocityX, velocityY, velocityZ, 2.5F, spriteProvider, 0.3F, 8, gravity, true) {
+) : BaseAshSmokeParticle(world, x, y, z, 0.1F, 0.1F, 0.1F, velocityX, velocityY, velocityZ, 2.5F + world.random.nextFloat() * 2.5F, spriteProvider, 0.3F, 27, -0.1F, true) {
+    companion object {
+        /** 風がひとまわりするのにかかるティック数なのだぁ🌱 */
+        private const val WIND_CYCLE = 1200.0F
+
+        /** 毎ティック風から受ける水平方向の加速度なのだぁ🌱 摩擦0.96と釣り合って、終端速度は0.05になるのだぁ✨ */
+        private const val WIND_ACCELERATION = 0.002
+    }
+
     init {
         // 析出した硫黄のテクスチャの代表的な色なのだぁ🌱
         setColor(226 / 255F, 214 / 255F, 144 / 255F)
+    }
+
+    override fun tick() {
+        super.tick()
+        // 火山の噴煙は真上には昇らず、風を受けて横へたなびくのだぁ🌱 風向きはワールド全体で共通で、ゆっくりとひとまわりするのだぁ✨
+        val windAngle = level.gameTime / WIND_CYCLE * Mth.TWO_PI
+        xd += Mth.cos(windAngle) * WIND_ACCELERATION
+        zd += Mth.sin(windAngle) * WIND_ACCELERATION
     }
 }

@@ -1,5 +1,39 @@
 {
   "parent": "minecraft:block/glow_lichen",
+  "elements": [
+    {
+      "faces": {
+        "north": {
+          "texture": "#glow_lichen",
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#glow_lichen",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      },
+      "from": [
+        -0.2,
+        -0.2,
+        0.1
+      ],
+      "to": [
+        16.2,
+        16.2,
+        0.1
+      ]
+    }
+  ],
   "textures": {
     "glow_lichen": "miragefairy2024:block/deposited_sulfur",
     "particle": "miragefairy2024:block/deposited_sulfur"

@@ -12,9 +12,14 @@ import miragefairy2024.util.BlockEntityType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Model
 import miragefairy2024.util.ModelData
+import miragefairy2024.util.ModelElementData
+import miragefairy2024.util.ModelElementsData
+import miragefairy2024.util.ModelFaceData
+import miragefairy2024.util.ModelFacesData
 import miragefairy2024.util.ModelTexturesData
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
+import miragefairy2024.util.TextureMapping
 import miragefairy2024.util.aboveLava
 import miragefairy2024.util.checkType
 import miragefairy2024.util.count
@@ -49,6 +54,7 @@ import mirrg.kotlin.gson.hydrogen.jsonObjectNotNull
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.tags.BlockTags
@@ -139,7 +145,7 @@ fun initDepositedSulfurModule() {
                         "when" to jsonObject(
                             direction to "true".jsonElement,
                         ),
-                        "apply" to variant
+                        "apply" to variant,
                     ),
                     // どの面にも貼り付いていない状態を表すのだぁ🌱 本来そんな状態にはならないのだけど、バニラのヒカリゴケに倣って、そのときも全方向のモデルを出しておくのだぁ✨
                     jsonObject(
@@ -151,7 +157,7 @@ fun initDepositedSulfurModule() {
                             "up" to "false".jsonElement,
                             "down" to "false".jsonElement,
                         ),
-                        "apply" to variant
+                        "apply" to variant,
                     ),
                 )
             }
@@ -169,10 +175,27 @@ fun initDepositedSulfurModule() {
         card.block.registerModelGeneration {
             // バニラのヒカリゴケのモデルは、貼り付く平面のテクスチャを glow_lichen という名前のスロットで受け取るのだぁ🌱
             val textureSlot = TextureSlot.create("glow_lichen")
-            Model(ResourceLocation("minecraft", "block/glow_lichen"), textureSlot, TextureSlot.PARTICLE).with(
-                textureSlot to "block/" * card.identifier,
-                TextureSlot.PARTICLE to "block/" * card.identifier,
-            )
+            val texture = ("block/" * card.identifier).string
+            Model {
+                ModelData(
+                    parent = ResourceLocation("minecraft", "block/glow_lichen"),
+                    textures = ModelTexturesData(
+                        textureSlot.id to texture,
+                        TextureSlot.PARTICLE.id to texture,
+                    ),
+                    // ヒカリゴケの平面は貼り付け先から0.1だけ浮いているから、隣り合う面同士の継ぎ目に岩肌の角が覗いてしまうのだぁ🌧️ 平面を上下左右に0.2だけはみ出させて、直交する面の裏に隠すのだぁ✨
+                    elements = ModelElementsData(
+                        ModelElementData(
+                            from = listOf(-0.2, -0.2, 0.1),
+                            to = listOf(16.2, 16.2, 0.1),
+                            faces = ModelFacesData(
+                                north = ModelFaceData(uv = listOf(16, 0, 0, 16), texture = textureSlot.string),
+                                south = ModelFaceData(uv = listOf(0, 0, 16, 16), texture = textureSlot.string),
+                            ),
+                        ),
+                    ),
+                )
+            } with TextureMapping()
         }
         card.item.registerBlockGeneratedModelGeneration(card.block)
         card.block.registerCutoutRenderLayer()
@@ -201,9 +224,8 @@ fun initDepositedSulfurModule() {
 
         card.block.registerSingletonBlockStateGeneration()
         card.block.registerModelGeneration { createEmptyModel("block/" * DepositedSulfurCard.identifier) }
-        card.item.registerModelGeneration(createSolfataraItemModel())
+        card.item.registerModelGeneration(ModelTemplates.FLAT_ITEM) { TextureMapping(TextureSlot.LAYER0 to "block/" * DepositedSulfurCard.identifier) }
         card.item.registerColorProvider { _, tintIndex ->
-            // 析出した硫黄のテクスチャに、噴き出す火山ガスの熱を思わせるオレンジを掛け合わせるのだぁ🌱
             if (tintIndex == 0) 0xFFFFA500.toInt() else 0xFFFFFFFF.toInt()
         }
 
@@ -215,15 +237,6 @@ fun initDepositedSulfurModule() {
 
     }
 
-}
-
-private fun createSolfataraItemModel() = Model {
-    ModelData(
-        parent = ResourceLocation("item/generated"),
-        textures = ModelTexturesData(
-            "layer0" to ("block/" * DepositedSulfurCard.identifier).string,
-        ),
-    )
 }
 
 /**
@@ -284,7 +297,7 @@ class SolfataraBlock(properties: Properties) : Block(properties), EntityBlock {
 class SolfataraBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(SolfataraCard.blockEntityType(), pos, state) {
     fun clientTick(level: Level, blockPos: BlockPos) {
         if (level.gameTime % 10L != 0L) return // 0.5秒おきに噴き上げるのだぁ✨
-        repeat(8) {
+        repeat(2) { // 煙は10秒ほど滞留するから、これで常に40個ほどが宙に漂うのだぁ🌱
             level.addParticle(
                 ParticleTypeCard.SULFUR_SMOKE.particleType,
                 blockPos.x + level.random.nextDouble(),
@@ -309,9 +322,12 @@ class DepositedSulfurFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
         val originBlockPos = context.origin()
         val random = context.random()
 
+        // 塊の中央に、その源となる噴気孔を据えるのだぁ🌱 起点は溶岩の直上だから、そこがちょうど中央なのだぁ✨
+        if (!level.getBlockState(originBlockPos).isAir) return false // PlacedFeatureの設定上ここは常に空気のはずだけど、将来そうでなくなったときに備えるのだぁ🌱
+        level.setBlock(originBlockPos, SolfataraCard.block().defaultBlockState(), Block.UPDATE_ALL)
+
         val depositedSulfurBlock = DepositedSulfurCard.block()
 
-        var succeeded = false
         repeat(4) {
             fun nextOffset() = random.nextInt(4) + random.nextInt(4) - 3
             val centerBlockPos = originBlockPos.offset(nextOffset(), nextOffset(), nextOffset())
@@ -337,17 +353,11 @@ class DepositedSulfurFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
 
                         level.setBlock(targetBlockPos, newBlockState, Block.UPDATE_ALL)
                         level.getChunk(targetBlockPos).markPosForPostprocessing(targetBlockPos) // 貼り付け先が後から失われたときに、この面も消えるようにするのだぁ🌱
-                        succeeded = true
                     }
                 }
             }
         }
 
-        // 析出した硫黄が湧いた塊の中央に、その源となる噴気孔を据えるのだぁ🌱 起点は溶岩の直上だから、そこがちょうど中央なのだぁ✨
-        if (succeeded && level.getBlockState(originBlockPos).isAir) {
-            level.setBlock(originBlockPos, SolfataraCard.block().defaultBlockState(), Block.UPDATE_ALL)
-        }
-
-        return succeeded
+        return true
     }
 }
