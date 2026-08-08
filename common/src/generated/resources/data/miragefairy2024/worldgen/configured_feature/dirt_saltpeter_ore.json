@@ -9,8 +9,8 @@
           "Name": "miragefairy2024:dirt_saltpeter_ore"
         },
         "target": {
-          "predicate_type": "minecraft:tag_match",
-          "tag": "minecraft:dirt"
+          "block": "minecraft:dirt",
+          "predicate_type": "minecraft:block_match"
         }
       }
     ]
