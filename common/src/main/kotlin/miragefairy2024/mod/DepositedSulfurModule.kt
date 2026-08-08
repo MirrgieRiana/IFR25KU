@@ -62,6 +62,7 @@ import net.minecraft.util.valueproviders.UniformInt
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.block.Block
@@ -81,6 +82,8 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.material.PushReaction
+import net.minecraft.world.phys.shapes.CollisionContext
+import net.minecraft.world.phys.shapes.VoxelShape
 
 object DepositedSulfurCard {
     val identifier = MirageFairy2024.identifier("deposited_sulfur")
@@ -106,9 +109,11 @@ object SolfataraCard {
         SolfataraBlock(
             BlockBehaviour.Properties.of()
                 .mapColor(MapColor.COLOR_YELLOW)
+                .replaceable()
                 .noCollission()
                 .noOcclusion()
                 .noTerrainParticles()
+                .requiresCorrectToolForDrops()
                 .strength(0.2F)
                 .sound(SoundType.STONE)
                 .pushReaction(PushReaction.DESTROY),
@@ -179,15 +184,17 @@ fun initDepositedSulfurModule() {
             Model {
                 ModelData(
                     parent = ResourceLocation("minecraft", "block/glow_lichen"),
+                    // ヒカリゴケは薄い平面だから環境光遮蔽を切っているのだけど、こちらは岩肌のくぼみに溜まったもののつもりだから、周りの陰影に馴染ませるのだぁ✨
+                    ambientOcclusion = true,
                     textures = ModelTexturesData(
                         textureSlot.id to texture,
                         TextureSlot.PARTICLE.id to texture,
                     ),
-                    // ヒカリゴケの平面は貼り付け先から0.1だけ浮いているから、隣り合う面同士の継ぎ目に岩肌の角が覗いてしまうのだぁ🌧️ 平面を上下左右に0.2だけはみ出させて、直交する面の裏に隠すのだぁ✨
+                    // ヒカリゴケの平面は貼り付け先から0.1だけ浮いているから、隣り合う面同士の継ぎ目に岩肌の角が覗いてしまうのだぁ🌧️ 平面を上下左右に0.11だけはみ出させて、直交する面の裏に隠すのだぁ✨
                     elements = ModelElementsData(
                         ModelElementData(
-                            from = listOf(-0.2, -0.2, 0.1),
-                            to = listOf(16.2, 16.2, 0.1),
+                            from = listOf(-0.11, -0.11, 0.1),
+                            to = listOf(16.11, 16.11, 0.1),
                             faces = ModelFacesData(
                                 north = ModelFaceData(uv = listOf(16, 0, 0, 16), texture = textureSlot.string),
                                 south = ModelFaceData(uv = listOf(0, 0, 16, 16), texture = textureSlot.string),
@@ -275,9 +282,14 @@ class DepositedSulfurBlock(properties: Properties) : MultifaceBlock(properties) 
 class SolfataraBlock(properties: Properties) : Block(properties), EntityBlock {
     companion object {
         val CODEC: MapCodec<SolfataraBlock> = simpleCodec(::SolfataraBlock)
+
+        /** 姿が見えないブロックをマス全体で狙えてしまうと邪魔だから、体積が8分の1になる中央の立方体だけを狙えるようにするのだぁ🌱 */
+        private val SHAPE: VoxelShape = box(4.0, 4.0, 4.0, 12.0, 12.0, 12.0)
     }
 
     override fun codec() = CODEC
+
+    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = SHAPE
 
     override fun getRenderShape(state: BlockState) = RenderShape.INVISIBLE
 
