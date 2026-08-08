@@ -196,31 +196,36 @@ class DepositedSulfurFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
         val originBlockPos = context.origin()
         val random = context.random()
 
-        fun nextOffset() = random.nextInt(5) + random.nextInt(5) - 4
-
         val depositedSulfurBlock = DepositedSulfurCard.block()
 
         var succeeded = false
-        repeat(64) {
-            val targetBlockPos = originBlockPos.offset(nextOffset(), nextOffset(), nextOffset())
+        repeat(4) {
+            fun nextOffset() = random.nextInt(4) + random.nextInt(4) - 3
+            val centerBlockPos = originBlockPos.offset(nextOffset(), nextOffset(), nextOffset())
+            val radius = random.nextIntBetweenInclusive(2, 5)
+            (-radius..radius).forEach { x ->
+                (-radius..radius).forEach { y ->
+                    (-radius..radius).forEach nextTarget@{ z ->
+                        val targetBlockPos = centerBlockPos.offset(x, y, z)
 
-            if (!level.getBlockState(targetBlockPos).isAir) return@repeat // 配置先は空気じゃないとだめなのだぁ…🌧️
+                        if (!level.getBlockState(targetBlockPos).isAir) return@nextTarget // 配置先は空気じゃないとだめなのだぁ…🌧️
 
-            // 面ごとに80%の確率で試行
-            var newBlockState = depositedSulfurBlock.defaultBlockState()
-            var directionSucceeded = false
-            Direction.entries.forEach nextDirection@{ direction ->
-                val wallBlockState = level.getBlockState(targetBlockPos.relative(direction))
-                if (!(wallBlockState isIn Blocks.BASALT || wallBlockState isIn Blocks.BLACKSTONE)) return@nextDirection
-                if (random.nextInt(10) >= 8) return@nextDirection
-                newBlockState = newBlockState.with(MultifaceBlock.getFaceProperty(direction), true)
-                directionSucceeded = true
+                        var newBlockState = depositedSulfurBlock.defaultBlockState()
+                        var directionSucceeded = false
+                        Direction.entries.forEach nextDirection@{ direction ->
+                            val wallBlockState = level.getBlockState(targetBlockPos.relative(direction))
+                            if (!(wallBlockState isIn Blocks.BASALT || wallBlockState isIn Blocks.BLACKSTONE)) return@nextDirection
+                            newBlockState = newBlockState.with(MultifaceBlock.getFaceProperty(direction), true)
+                            directionSucceeded = true
+                        }
+                        if (!directionSucceeded) return@nextTarget // 配置先の面が1個も見つからなかったのだぁ…🌧️
+
+                        level.setBlock(targetBlockPos, newBlockState, Block.UPDATE_ALL)
+                        level.getChunk(targetBlockPos).markPosForPostprocessing(targetBlockPos) // 貼り付け先が後から失われたときに、この面も消えるようにするのだぁ🌱
+                        succeeded = true
+                    }
+                }
             }
-            if (!directionSucceeded) return@repeat // 配置先の面が1個も見つからなかったのだぁ…🌧️
-
-            level.setBlock(targetBlockPos, newBlockState, Block.UPDATE_ALL)
-            level.getChunk(targetBlockPos).markPosForPostprocessing(targetBlockPos) // 貼り付け先が後から失われたときに、この面も消えるようにするのだぁ🌱
-            succeeded = true
         }
 
         return succeeded
