@@ -17,7 +17,6 @@ import miragefairy2024.util.enJa
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
 import miragefairy2024.util.isIn
-import miragefairy2024.util.nether
 import miragefairy2024.util.placeWhenVegetalDecoration
 import miragefairy2024.util.register
 import miragefairy2024.util.registerBlockGeneratedModelGeneration
@@ -31,6 +30,7 @@ import miragefairy2024.util.registerOreLootTableGeneration
 import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.square
 import miragefairy2024.util.times
+import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.with
 import mirrg.kotlin.gson.hydrogen.jsonArray
 import mirrg.kotlin.gson.hydrogen.jsonElement
@@ -46,6 +46,7 @@ import net.minecraft.util.valueproviders.UniformInt
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.MultifaceBlock
@@ -149,7 +150,7 @@ fun initDepositedSulfurModule() {
 
         card.feature.generator(card.identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature { count(32) + flower(square, aboveLava) }.placeWhenVegetalDecoration { nether }
+                registerPlacedFeature { count(16) + flower(square, aboveLava) }.placeWhenVegetalDecoration { +Biomes.BASALT_DELTAS }
             }
         }
 
@@ -195,12 +196,12 @@ class DepositedSulfurFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
         val originBlockPos = context.origin()
         val random = context.random()
 
-        fun nextOffset() = random.nextInt(4) + random.nextInt(4) - 3
+        fun nextOffset() = random.nextInt(5) + random.nextInt(5) - 4
 
         val depositedSulfurBlock = DepositedSulfurCard.block()
 
         var succeeded = false
-        repeat(16) {
+        repeat(64) {
             val targetBlockPos = originBlockPos.offset(nextOffset(), nextOffset(), nextOffset())
 
             if (!level.getBlockState(targetBlockPos).isAir) return@repeat // 配置先は空気じゃないとだめなのだぁ…🌧️
