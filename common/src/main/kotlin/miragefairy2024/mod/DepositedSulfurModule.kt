@@ -36,7 +36,6 @@ import mirrg.kotlin.gson.hydrogen.jsonArray
 import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
 import mirrg.kotlin.gson.hydrogen.jsonObjectNotNull
-import net.minecraft.Util
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
@@ -70,7 +69,7 @@ object DepositedSulfurCard {
                 .noCollission()
                 .requiresCorrectToolForDrops()
                 .strength(0.2F)
-                .sound(SoundType.NETHER_ORE)
+                .sound(SoundType.STONE)
                 .pushReaction(PushReaction.DESTROY),
         )
     }
@@ -92,46 +91,48 @@ fun initDepositedSulfurModule() {
         card.item.registerItemGroup(mirageFairy2024ItemGroupCard.itemGroupKey)
 
         card.block.registerBlockStateGeneration {
-            val model = "${"block/" * card.identifier}".jsonElement
-
-            // どの面にも貼り付いていない状態を表すのだぁ🌱 本来そんな状態にはならないのだけど、バニラのヒカリゴケに倣って、そのときも全方向のモデルを出しておくのだぁ✨
-            val vacantCondition = jsonObject(
-                "north" to "false".jsonElement,
-                "east" to "false".jsonElement,
-                "south" to "false".jsonElement,
-                "west" to "false".jsonElement,
-                "up" to "false".jsonElement,
-                "down" to "false".jsonElement,
-            )
-
             fun createParts(direction: String, x: Int?, y: Int?): List<JsonElement> {
                 val variant = jsonObjectNotNull(
-                    "model" to model,
+                    "model" to "${"block/" * card.identifier}".jsonElement,
                     "x" to x?.jsonElement,
                     "y" to y?.jsonElement,
                     "uvlock" to if (x != null || y != null) true.jsonElement else null,
                 )
                 return listOf(
-                    jsonObject("when" to jsonObject(direction to "true".jsonElement), "apply" to variant),
-                    jsonObject("when" to vacantCondition, "apply" to variant),
+                    jsonObject(
+                        "when" to jsonObject(
+                            direction to "true".jsonElement,
+                        ),
+                        "apply" to variant
+                    ),
+                    // どの面にも貼り付いていない状態を表すのだぁ🌱 本来そんな状態にはならないのだけど、バニラのヒカリゴケに倣って、そのときも全方向のモデルを出しておくのだぁ✨
+                    jsonObject(
+                        "when" to jsonObject(
+                            "north" to "false".jsonElement,
+                            "east" to "false".jsonElement,
+                            "south" to "false".jsonElement,
+                            "west" to "false".jsonElement,
+                            "up" to "false".jsonElement,
+                            "down" to "false".jsonElement,
+                        ),
+                        "apply" to variant
+                    ),
                 )
             }
-
             jsonObject(
-                "multipart" to (
-                    createParts("north", null, null) +
-                        createParts("east", null, 90) +
-                        createParts("south", null, 180) +
-                        createParts("west", null, 270) +
-                        createParts("up", 270, null) +
-                        createParts("down", 90, null)
-                    ).jsonArray,
+                "multipart" to listOf(
+                    createParts("north", null, null),
+                    createParts("east", null, 90),
+                    createParts("south", null, 180),
+                    createParts("west", null, 270),
+                    createParts("up", 270, null),
+                    createParts("down", 90, null),
+                ).flatten().jsonArray,
             )
         }
         card.block.registerModelGeneration {
             // バニラのヒカリゴケのモデルは、貼り付く平面のテクスチャを glow_lichen という名前のスロットで受け取るのだぁ🌱
             val textureSlot = TextureSlot.create("glow_lichen")
-
             Model(ResourceLocation("minecraft", "block/glow_lichen"), textureSlot, TextureSlot.PARTICLE).with(
                 textureSlot to "block/" * card.identifier,
                 TextureSlot.PARTICLE to "block/" * card.identifier,
@@ -189,43 +190,35 @@ class DepositedSulfurBlock(properties: Properties) : MultifaceBlock(properties) 
  * @see net.minecraft.world.level.levelgen.feature.MultifaceGrowthFeature
  */
 class DepositedSulfurFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeatureConfiguration>(codec) {
-    companion object {
-        /** 1回の呼び出しで、析出した硫黄の配置を試みる回数なのだぁ🌱 */
-        private const val TRIAL_COUNT = 16
-
-        /** 析出した硫黄が貼り付くことのできるブロックなのだぁ✨ */
-        private val CAN_BE_PLACED_ON_BLOCKS = listOf(Blocks.BASALT, Blocks.BLACKSTONE)
-    }
-
     override fun place(context: FeaturePlaceContext<NoneFeatureConfiguration>): Boolean {
         val level = context.level()
         val originBlockPos = context.origin()
         val random = context.random()
 
-        val depositedSulfurBlock = DepositedSulfurCard.block()
-
-        // 0～3の乱数を2回引いて足してから3を引くことで、-3～3の範囲で、中央ほど厚い1:2:3:4:3:2:1の重みの分布になるのだぁ🌱
         fun nextOffset() = random.nextInt(4) + random.nextInt(4) - 3
 
+        val depositedSulfurBlock = DepositedSulfurCard.block()
+
         var succeeded = false
-        repeat(TRIAL_COUNT) {
-            // 起点を中心とする7x7x7の範囲から、配置先の候補を選ぶのだぁ🌱
-            val blockPos = originBlockPos.offset(nextOffset(), nextOffset(), nextOffset())
-            val blockState = level.getBlockState(blockPos)
-            if (!blockState.isAir) return@repeat
+        repeat(16) {
+            val targetBlockPos = originBlockPos.offset(nextOffset(), nextOffset(), nextOffset())
 
-            // 貼り付けられる面をランダムな順序で探して、最初に見つかった面に貼り付けるのだぁ✨
-            val newBlockState = Util.shuffledCopy(Direction.entries.toTypedArray(), random).firstNotNullOfOrNull { direction ->
-                val targetBlockState = level.getBlockState(blockPos.relative(direction))
-                if (CAN_BE_PLACED_ON_BLOCKS.none { targetBlockState isIn it }) return@firstNotNullOfOrNull null
-                depositedSulfurBlock.getStateForPlacement(blockState, level, blockPos, direction)
-            } ?: return@repeat
+            if (!level.getBlockState(targetBlockPos).isAir) return@repeat // 配置先は空気じゃないとだめなのだぁ…🌧️
 
-            level.setBlock(blockPos, newBlockState, Block.UPDATE_ALL)
+            // 面ごとに80%の確率で試行
+            var newBlockState = depositedSulfurBlock.defaultBlockState()
+            var directionSucceeded = false
+            Direction.entries.forEach nextDirection@{ direction ->
+                val wallBlockState = level.getBlockState(targetBlockPos.relative(direction))
+                if (!(wallBlockState isIn Blocks.BASALT || wallBlockState isIn Blocks.BLACKSTONE)) return@nextDirection
+                if (random.nextInt(10) >= 8) return@nextDirection
+                newBlockState = newBlockState.with(MultifaceBlock.getFaceProperty(direction), true)
+                directionSucceeded = true
+            }
+            if (!directionSucceeded) return@repeat // 配置先の面が1個も見つからなかったのだぁ…🌧️
 
-            // 貼り付け先が後から失われたときに、この面も消えるようにするのだぁ🌱
-            level.getChunk(blockPos).markPosForPostprocessing(blockPos)
-
+            level.setBlock(targetBlockPos, newBlockState, Block.UPDATE_ALL)
+            level.getChunk(targetBlockPos).markPosForPostprocessing(targetBlockPos) // 貼り付け先が後から失われたときに、この面も消えるようにするのだぁ🌱
             succeeded = true
         }
 
