@@ -28,7 +28,7 @@ fun initDamageType() {
     PhysicalMagicDamageTypeCard.init()
     ToolBreakDamageTypeCard.init()
     MirageLeavesDamageTypeCard.init()
-    CarnivorousPlantDamageTypeCard.init()
+    SpineDamageTypeCard.init()
 
     C_IS_MAGIC_DAMAGE_TYPE_TAG.enJa(EnJa("Magic", "魔法"))
     NEOFORGE_IS_MAGIC_DAMAGE_TYPE_TAG.enJa(EnJa("Magic", "魔法"))
@@ -109,9 +109,9 @@ object MirageLeavesDamageTypeCard : DamageTypeCard() {
     override fun getTags() = listOf(DamageTypeTags.NO_KNOCKBACK, SPINE_DAMAGE_TYPE_TAG)
 }
 
-object CarnivorousPlantDamageTypeCard : DamageTypeCard() {
-    override fun getPath() = "carnivorous_plant"
-    override fun getKillMessage() = EnJa("%1\$s was eaten by a carnivorous plant", "%1\$sは食虫植物に食べられた")
-    override fun getPlayerKillMessage() = EnJa("%1\$s was eaten by a carnivorous plant while trying to escape %2\$s", "%1\$sは%2\$sから逃れようとして食虫植物に食べられた")
+object SpineDamageTypeCard : DamageTypeCard() {
+    override fun getPath() = "spine"
+    override fun getKillMessage() = EnJa("%1\$s was pricked to death by spines", "%1\$sは棘が刺さって死んだ")
+    override fun getPlayerKillMessage() = EnJa("%1\$s was pricked to death by spines while trying to escape %2\$s", "%1\$sは%2\$sから逃れようとして棘が刺さって死んだ")
     override fun getTags() = listOf(DamageTypeTags.NO_KNOCKBACK, DamageTypeTags.PANIC_ENVIRONMENTAL_CAUSES, SPINE_DAMAGE_TYPE_TAG)
 }
