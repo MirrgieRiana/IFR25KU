@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.particle
 
+import miragefairy2024.client.util.setColor
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.client.particle.BaseAshSmokeParticle
 import net.minecraft.client.particle.ParticleProvider
@@ -41,7 +42,7 @@ class SulfurSmokeParticle(
 
     init {
         // 析出した硫黄のテクスチャの代表的な色なのだぁ🌱
-        setColor(226 / 255F, 214 / 255F, 144 / 255F)
+        setColor(0xE2D690)
     }
 
     override fun tick() {
