@@ -150,7 +150,7 @@ fun initDepositedSulfurModule() {
 
         card.feature.generator(card.identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature { count(16) + flower(square, aboveLava) }.placeWhenVegetalDecoration { +Biomes.BASALT_DELTAS }
+                registerPlacedFeature { count(8) + flower(square, aboveLava) }.placeWhenVegetalDecoration { +Biomes.BASALT_DELTAS }
             }
         }
 
@@ -203,9 +203,11 @@ class DepositedSulfurFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
             fun nextOffset() = random.nextInt(4) + random.nextInt(4) - 3
             val centerBlockPos = originBlockPos.offset(nextOffset(), nextOffset(), nextOffset())
             val radius = random.nextIntBetweenInclusive(2, 5)
+            val squaredRadius = radius * radius
             (-radius..radius).forEach { x ->
                 (-radius..radius).forEach { y ->
                     (-radius..radius).forEach nextTarget@{ z ->
+                        if (x * x + y * y + z * z > squaredRadius) return@nextTarget // 球の外側は対象外なのだ～
                         val targetBlockPos = centerBlockPos.offset(x, y, z)
 
                         if (!level.getBlockState(targetBlockPos).isAir) return@nextTarget // 配置先は空気じゃないとだめなのだぁ…🌧️
