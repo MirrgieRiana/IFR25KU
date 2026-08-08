@@ -512,11 +512,21 @@ class ToolCard(
             PoemList(4).poem(EnJa("Nectar turns into fairies underground", "地脈を流れる大樹の血。")),
             FairyPickaxeConfiguration(ToolMaterialCard.FAIRY_PLASTIC).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
+        val FAIRY_PLASTIC_AXE = !ToolCard(
+            "fairy_plastic_axe", EnJa("Fairy Plastic Axe", "妖精のプラスチックの斧"),
+            PoemList(4).poem(EnJa("TODO", "芳しき、かつての姿。")),
+            FairyAxeConfiguration(ToolMaterialCard.FAIRY_PLASTIC).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
+        ) { registerAxeRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_SHOVEL = !ToolCard(
             "fairy_plastic_shovel", EnJa("Fairy Plastic Shovel", "妖精のプラスチックのシャベル"),
             PoemList(4).poem(EnJa("Were you grown in earth, or a furnace?", "土から産まれ、土へと還る。")),
             FairyShovelConfiguration(ToolMaterialCard.FAIRY_PLASTIC).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
         ) { registerShovelRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
+        val FAIRY_PLASTIC_SCYTHE = !ToolCard(
+            "fairy_plastic_scythe", EnJa("Fairy Plastic Scythe", "妖精のプラスチックの大鎌"),
+            PoemList(4).poem(EnJa("TODO", "土の上で感じる風。")),
+            FairyScytheConfiguration(ToolMaterialCard.FAIRY_PLASTIC).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
+        ) { registerScytheRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_SWORD = !ToolCard(
             "fairy_plastic_sword", EnJa("Fairy Plastic Sword", "妖精のプラスチックの剣"),
             PoemList(4).poem(EnJa("Souls for the nutrient", "これは妖精をおやつにするという")),
