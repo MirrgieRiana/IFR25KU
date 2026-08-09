@@ -14,6 +14,7 @@ import miragefairy2024.util.text
 import miragefairy2024.util.toBiomeTag
 import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.toTextureSource
+import mirrg.kotlin.helium.join
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
@@ -79,12 +80,12 @@ fun initBiomeModule() {
     // ランダムなシードとランダムな座標で、地表ルールで使う2種のノイズの標準偏差を実測するのだ～🌱
     // ノイズの平均は理論上厳密に0だから、標準偏差の導出に使う平均にも0を使うのだ✨
     // 平均に0を使うと分散が二乗和を個数で割ったものそのものになるから、標準偏差と個数だけで複数の結果を正しく集約できるのだ🌱
-    registerServerDebugItem("debug_surface_noise_statistics", Blocks.PODZOL.toTextureSource(), 0xFFFFAA00.toInt()) { world, player, _, _ ->
+    registerServerDebugItem("debug_surface_noise_statistics", Blocks.COARSE_DIRT.toTextureSource(), 0xFFFFAA00.toInt()) { world, player, _, _ ->
         val seedCount = 1000
         val sampleCountPerSeed = 1000
         val coordinateRange = 1_000_000
         val random = RandomSource.create()
-        fun nextCoordinate() = (random.nextInt(coordinateRange * 2) - coordinateRange).toDouble()
+        fun nextCoordinate() = random.nextInt(-coordinateRange, coordinateRange).toDouble()
         SURFACE_NOISE_STANDARD_DEVIATIONS.forEach { (noiseKey, constantStandardDeviation) ->
             val noiseParameters = world.registryAccess()[Registries.NOISE, noiseKey].value()
             var count = 0L
@@ -98,7 +99,13 @@ fun initBiomeModule() {
                 }
             }
             val standardDeviation = sqrt(squareSum / count.toDouble())
-            player.displayClientMessage(text { "${noiseKey.location()}: standardDeviation=${standardDeviation formatAs "%.6f"}, count=$count, constant=$constantStandardDeviation, ratio=${(standardDeviation / constantStandardDeviation) formatAs "%.4f"}"() }, false)
+            val statistics = listOf(
+                "standardDeviation=${standardDeviation formatAs "%.6f"}",
+                "count=$count",
+                "constant=$constantStandardDeviation",
+                "ratio=${(standardDeviation / constantStandardDeviation) formatAs "%.4f"}",
+            ).join(", ")
+            player.displayClientMessage(text { "${noiseKey.location()}: $statistics"() }, false)
         }
     }
 

@@ -28,7 +28,8 @@ private fun getStandardDeviation(noiseKey: ResourceKey<NormalNoise.NoiseParamete
  * 地表ルールの閾値から、ノイズがその閾値以上になる割合を求めるのだ～🌱
  *
  * 引数の[threshold]は、[SURFACE_NOISE_THRESHOLD_DIVISOR]で割る前の値なのだ✨
- * ノイズの分布を正規分布で近似しているから、閾値が0から遠いところでは1ポイントほど外れることがあるのだ🌧️
+ * ノイズの分布を正規分布で近似しているから、割合が小さくなる遠くの閾値では、実測より多めの値を返すのだ🌧️
+ * 閾値6.0のあたりで、実測0.872%に対して0.983%を返すから、1.13倍なのだ✨
  */
 fun getSurfaceNoiseMatchRatio(noiseKey: ResourceKey<NormalNoise.NoiseParameters>, threshold: Double): Double {
     return getNormalDistributionUpperProbability(threshold / SURFACE_NOISE_THRESHOLD_DIVISOR, getStandardDeviation(noiseKey))
