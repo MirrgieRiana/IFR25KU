@@ -3,7 +3,6 @@ package miragefairy2024.client.mod
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
 import miragefairy2024.ModContext
-import miragefairy2024.client.util.stack
 import miragefairy2024.mod.common.CommonRenderingEvents
 import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
 import miragefairy2024.util.isValid
@@ -55,37 +54,35 @@ fun initCommonClientModule() {
             if (blockPoses.isEmpty()) return@register
 
             val poseStack = context.matrixStack()!!
-            poseStack.stack {
-                val camera = context.camera()
-                poseStack.translate(-camera.position.x, -camera.position.y, -camera.position.z)
+            val cameraPosition = context.camera().position
 
-                val vertexConsumer = context.consumers()!!.getBuffer(LINES_NO_DEPTH)
-                val pose = poseStack.last().pose()
-                val packedLight = LevelRenderer.getLightColor(level, baseBlockPos)
-                val skyLightLevel = (packedLight ushr 20) and 0xF
-                val blockLightLevel = (packedLight ushr 4) and 0xF
-                val skyFactor = 0.15 + 0.85 * (skyLightLevel.toDouble() / 15.0)
-                val blockFactor = 0.15 + 0.85 * (blockLightLevel.toDouble() / 15.0)
-                val lightFactor = skyFactor max blockFactor
-                val brightness = (255.0 * lightFactor).roundToInt().coerceIn(0, 255)
-                val theta = (System.nanoTime() % 2_000_000_000L).toDouble() / 1_000_000_000.0 * 2.0 * Math.PI
-                val alpha = (255.0 * (0.5 + 0.25 * sin(theta))).roundToInt()
-                collectEdges(blockPoses) { x0, y0, z0, x1, y1, z1 ->
-                    val relativeX0 = x0.toFloat()
-                    val relativeY0 = y0.toFloat()
-                    val relativeZ0 = z0.toFloat()
-                    val relativeX1 = x1.toFloat()
-                    val relativeY1 = y1.toFloat()
-                    val relativeZ1 = z1.toFloat()
-                    vertexConsumer
-                        .addVertex(pose, relativeX0, relativeY0, relativeZ0)
-                        .setColor(brightness, brightness, brightness, alpha)
-                        .setNormal(relativeX1 - relativeX0, relativeY1 - relativeY0, relativeZ1 - relativeZ0)
-                    vertexConsumer
-                        .addVertex(pose, relativeX1, relativeY1, relativeZ1)
-                        .setColor(brightness, brightness, brightness, alpha)
-                        .setNormal(relativeX1 - relativeX0, relativeY1 - relativeY0, relativeZ1 - relativeZ0)
-                }
+            val vertexConsumer = context.consumers()!!.getBuffer(LINES_NO_DEPTH)
+            val pose = poseStack.last().pose()
+            val packedLight = LevelRenderer.getLightColor(level, baseBlockPos)
+            val skyLightLevel = (packedLight ushr 20) and 0xF
+            val blockLightLevel = (packedLight ushr 4) and 0xF
+            val skyFactor = 0.15 + 0.85 * (skyLightLevel.toDouble() / 15.0)
+            val blockFactor = 0.15 + 0.85 * (blockLightLevel.toDouble() / 15.0)
+            val lightFactor = skyFactor max blockFactor
+            val brightness = (255.0 * lightFactor).roundToInt().coerceIn(0, 255)
+            val theta = (System.nanoTime() % 2_000_000_000L).toDouble() / 1_000_000_000.0 * 2.0 * Math.PI
+            val alpha = (255.0 * (0.5 + 0.25 * sin(theta))).roundToInt()
+            collectEdges(blockPoses) { x0, y0, z0, x1, y1, z1 ->
+                // ワールド座標のままFloatにすると、原点から遠い場所では刻みが粗くなって線が震えてしまうから、Doubleでカメラからの相対位置にしてからFloatにするのだ～🌱
+                val relativeX0 = (x0 - cameraPosition.x).toFloat()
+                val relativeY0 = (y0 - cameraPosition.y).toFloat()
+                val relativeZ0 = (z0 - cameraPosition.z).toFloat()
+                val relativeX1 = (x1 - cameraPosition.x).toFloat()
+                val relativeY1 = (y1 - cameraPosition.y).toFloat()
+                val relativeZ1 = (z1 - cameraPosition.z).toFloat()
+                vertexConsumer
+                    .addVertex(pose, relativeX0, relativeY0, relativeZ0)
+                    .setColor(brightness, brightness, brightness, alpha)
+                    .setNormal(relativeX1 - relativeX0, relativeY1 - relativeY0, relativeZ1 - relativeZ0)
+                vertexConsumer
+                    .addVertex(pose, relativeX1, relativeY1, relativeZ1)
+                    .setColor(brightness, brightness, brightness, alpha)
+                    .setNormal(relativeX1 - relativeX0, relativeY1 - relativeY0, relativeZ1 - relativeZ0)
             }
         }
     }
