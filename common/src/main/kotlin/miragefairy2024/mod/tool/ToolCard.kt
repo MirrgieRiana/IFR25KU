@@ -525,7 +525,7 @@ class ToolCard(
         val FAIRY_PLASTIC_SCYTHE = !ToolCard(
             "fairy_plastic_scythe", EnJa("Fairy Plastic Scythe", "妖精のプラスチックの大鎌"),
             PoemList(4).poem(EnJa("Electronics for harvesting crops.", "土の上で感じる風。")),
-            FairyScytheConfiguration(ToolMaterialCard.FAIRY_PLASTIC).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
+            FairyScytheConfiguration(ToolMaterialCard.FAIRY_PLASTIC, range = 2).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
         ) { registerScytheRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_SWORD = !ToolCard(
             "fairy_plastic_sword", EnJa("Fairy Plastic Sword", "妖精のプラスチックの剣"),
