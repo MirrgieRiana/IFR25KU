@@ -78,6 +78,7 @@ fun initBiomeModule() {
 
     // ランダムなシードとランダムな座標で、地表ルールで使う2種のノイズの標準偏差を実測するのだ～🌱
     // ノイズの平均は理論上厳密に0だから、標準偏差の導出に使う平均にも0を使うのだ✨
+    // 平均に0を使うと分散が二乗和を個数で割ったものそのものになるから、標準偏差と個数だけで複数の結果を正しく集約できるのだ🌱
     registerServerDebugItem("debug_surface_noise_statistics", Blocks.PODZOL.toTextureSource(), 0xFFFFAA00.toInt()) { world, player, _, _ ->
         val seedCount = 1000
         val sampleCountPerSeed = 1000
