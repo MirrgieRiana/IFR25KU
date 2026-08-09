@@ -1,6 +1,4 @@
 {
-  "parent": "minecraft:block/glow_lichen",
-  "ambientocclusion": true,
   "elements": [
     {
       "faces": {
