@@ -1,6 +1,6 @@
 package miragefairy2024.client.mod.particle
 
-import miragefairy2024.client.util.setColor
+import miragefairy2024.client.util.setRgb
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.client.particle.ParticleRenderType
 import net.minecraft.client.particle.SpriteSet
@@ -14,7 +14,7 @@ open class HaimeviskaSapParticle(world: ClientLevel, x: Double, y: Double, z: Do
     init {
         setSize(0.01F, 0.01F)
         gravity = 0.06F
-        setColor(0xFF9F32)
+        setRgb(0xFF9F32)
     }
 
     override fun getRenderType(): ParticleRenderType = ParticleRenderType.PARTICLE_SHEET_OPAQUE
