@@ -178,12 +178,11 @@ fun initDepositedSulfurModule() {
         }
         card.block.registerModelGeneration {
             Model {
-                val textureSlot = TextureSlot.create("glow_lichen")
                 val texture = ("block/" * card.identifier).string
                 ModelData(
                     textures = ModelTexturesData(
                         TextureSlot.PARTICLE.id to texture,
-                        textureSlot.id to texture,
+                        TextureSlot.TEXTURE.id to texture,
                     ),
                     // ヒカリゴケの平面は貼り付け先から0.1だけ浮いているから、隣り合う面同士の継ぎ目に岩肌の角が覗いてしまうのだぁ🌧️ 平面を上下左右に0.11だけはみ出させて、直交する面の裏に隠すのだぁ✨
                     elements = ModelElementsData(
@@ -191,8 +190,8 @@ fun initDepositedSulfurModule() {
                             from = listOf(-0.11, -0.11, 0.1),
                             to = listOf(16.11, 16.11, 0.1),
                             faces = ModelFacesData(
-                                north = ModelFaceData(uv = listOf(16, 0, 0, 16), texture = textureSlot.string),
-                                south = ModelFaceData(uv = listOf(0, 0, 16, 16), texture = textureSlot.string),
+                                north = ModelFaceData(uv = listOf(16, 0, 0, 16), texture = TextureSlot.TEXTURE.string),
+                                south = ModelFaceData(uv = listOf(0, 0, 16, 16), texture = TextureSlot.TEXTURE.string),
                             ),
                         ),
                     ),

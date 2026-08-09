@@ -3,7 +3,7 @@
     {
       "faces": {
         "north": {
-          "texture": "#glow_lichen",
+          "texture": "#texture",
           "uv": [
             16,
             0,
@@ -12,7 +12,7 @@
           ]
         },
         "south": {
-          "texture": "#glow_lichen",
+          "texture": "#texture",
           "uv": [
             0,
             0,
@@ -34,7 +34,7 @@
     }
   ],
   "textures": {
-    "glow_lichen": "miragefairy2024:block/deposited_sulfur",
-    "particle": "miragefairy2024:block/deposited_sulfur"
+    "particle": "miragefairy2024:block/deposited_sulfur",
+    "texture": "miragefairy2024:block/deposited_sulfur"
   }
 }
