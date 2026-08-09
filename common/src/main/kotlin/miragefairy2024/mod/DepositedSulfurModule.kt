@@ -18,7 +18,6 @@ import miragefairy2024.util.ModelFaceData
 import miragefairy2024.util.ModelFacesData
 import miragefairy2024.util.ModelTexturesData
 import miragefairy2024.util.Registration
-import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.TextureMapping
 import miragefairy2024.util.aboveLava
 import miragefairy2024.util.checkType
@@ -100,7 +99,6 @@ object DepositedSulfurCard {
         )
     }
     val item = Registration(BuiltInRegistries.ITEM, identifier) { BlockItem(block.await(), Item.Properties()) }
-    val feature = DepositedSulfurFeature(NoneFeatureConfiguration.CODEC)
 }
 
 object SolfataraCard {
@@ -112,7 +110,6 @@ object SolfataraCard {
                 .replaceable()
                 .noCollission()
                 .noOcclusion()
-                .noTerrainParticles()
                 .requiresCorrectToolForDrops()
                 .strength(0.2F)
                 .sound(SoundType.STONE)
@@ -123,12 +120,14 @@ object SolfataraCard {
     val blockEntityType = Registration(BuiltInRegistries.BLOCK_ENTITY_TYPE, identifier) { BlockEntityType(::SolfataraBlockEntity, setOf(block.await())) }
 }
 
+val DEPOSITED_SULFUR_FEATURE = DepositedSulfurFeature(NoneFeatureConfiguration.CODEC)
+
 context(ModContext)
 fun initDepositedSulfurModule() {
 
     Registration(BuiltInRegistries.BLOCK_TYPE, DepositedSulfurCard.identifier) { DepositedSulfurBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, SolfataraCard.identifier) { SolfataraBlock.CODEC }.register()
-    Registration(BuiltInRegistries.FEATURE, DepositedSulfurCard.identifier) { DepositedSulfurCard.feature }.register()
+    Registration(BuiltInRegistries.FEATURE, DepositedSulfurCard.identifier) { DEPOSITED_SULFUR_FEATURE }.register()
 
     DepositedSulfurCard.let { card ->
 
@@ -178,17 +177,10 @@ fun initDepositedSulfurModule() {
             )
         }
         card.block.registerModelGeneration {
-            // バニラのヒカリゴケのモデルは、貼り付く平面のテクスチャを glow_lichen という名前のスロットで受け取るのだぁ🌱
-            val textureSlot = TextureSlot.create("glow_lichen")
-            val texture = ("block/" * card.identifier).string
             Model {
                 ModelData(
-                    parent = ResourceLocation("minecraft", "block/glow_lichen"),
-                    // ヒカリゴケは薄い平面だから環境光遮蔽を切っているのだけど、こちらは岩肌のくぼみに溜まったもののつもりだから、周りの陰影に馴染ませるのだぁ✨
-                    ambientOcclusion = true,
                     textures = ModelTexturesData(
-                        textureSlot.id to texture,
-                        TextureSlot.PARTICLE.id to texture,
+                        TextureSlot.PARTICLE.id to ("block/" * card.identifier).string,
                     ),
                     // ヒカリゴケの平面は貼り付け先から0.1だけ浮いているから、隣り合う面同士の継ぎ目に岩肌の角が覗いてしまうのだぁ🌧️ 平面を上下左右に0.11だけはみ出させて、直交する面の裏に隠すのだぁ✨
                     elements = ModelElementsData(
@@ -196,8 +188,8 @@ fun initDepositedSulfurModule() {
                             from = listOf(-0.11, -0.11, 0.1),
                             to = listOf(16.11, 16.11, 0.1),
                             faces = ModelFacesData(
-                                north = ModelFaceData(uv = listOf(16, 0, 0, 16), texture = textureSlot.string),
-                                south = ModelFaceData(uv = listOf(0, 0, 16, 16), texture = textureSlot.string),
+                                north = ModelFaceData(uv = listOf(16, 0, 0, 16), texture = ("block/" * card.identifier).string),
+                                south = ModelFaceData(uv = listOf(0, 0, 16, 16), texture = ("block/" * card.identifier).string),
                             ),
                         ),
                     ),
@@ -213,12 +205,6 @@ fun initDepositedSulfurModule() {
 
         BlockTags.MINEABLE_WITH_PICKAXE.generator.registerChild(card.block)
 
-        card.feature.generator(card.identifier) {
-            registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature { count(8) + flower(square, aboveLava) }.placeWhenVegetalDecoration { +Biomes.BASALT_DELTAS }
-            }
-        }
-
     }
 
     SolfataraCard.let { card ->
@@ -232,9 +218,7 @@ fun initDepositedSulfurModule() {
         card.block.registerSingletonBlockStateGeneration()
         card.block.registerModelGeneration { createEmptyModel("block/" * DepositedSulfurCard.identifier) }
         card.item.registerModelGeneration(ModelTemplates.FLAT_ITEM) { TextureMapping(TextureSlot.LAYER0 to "block/" * DepositedSulfurCard.identifier) }
-        card.item.registerColorProvider { _, tintIndex ->
-            if (tintIndex == 0) 0xFFFFA500.toInt() else 0xFFFFFFFF.toInt()
-        }
+        card.item.registerColorProvider { _, _ -> 0xFFFFA500.toInt() }
 
         card.block.enJa(EnJa("Solfatara", "硫気孔"))
 
@@ -242,6 +226,12 @@ fun initDepositedSulfurModule() {
 
         BlockTags.MINEABLE_WITH_PICKAXE.generator.registerChild(card.block)
 
+    }
+
+    DEPOSITED_SULFUR_FEATURE.generator(MirageFairy2024.identifier("deposited_sulfur")) {
+        registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
+            registerPlacedFeature { count(8) + flower(square, aboveLava) }.placeWhenVegetalDecoration { +Biomes.BASALT_DELTAS }
+        }
     }
 
 }
@@ -282,8 +272,6 @@ class DepositedSulfurBlock(properties: Properties) : MultifaceBlock(properties) 
 class SolfataraBlock(properties: Properties) : Block(properties), EntityBlock {
     companion object {
         val CODEC: MapCodec<SolfataraBlock> = simpleCodec(::SolfataraBlock)
-
-        /** 姿が見えないブロックをマス全体で狙えてしまうと邪魔だから、体積が8分の1になる中央の立方体だけを狙えるようにするのだぁ🌱 */
         private val SHAPE: VoxelShape = box(4.0, 4.0, 4.0, 12.0, 12.0, 12.0)
     }
 
@@ -296,7 +284,7 @@ class SolfataraBlock(properties: Properties) : Block(properties), EntityBlock {
     override fun newBlockEntity(pos: BlockPos, state: BlockState) = SolfataraBlockEntity(pos, state)
 
     override fun <T : BlockEntity> getTicker(level: Level, state: BlockState, blockEntityType: BlockEntityType<T>): BlockEntityTicker<T>? {
-        if (!level.isClientSide) return null // 煙は見えるだけのものだから、クライアント側でしか動かす必要がないのだぁ🌱
+        if (!level.isClientSide) return null
         return checkType(blockEntityType, SolfataraCard.blockEntityType()) { level2, blockPos, _, blockEntity ->
             blockEntity.clientTick(level2, blockPos)
         }
@@ -308,15 +296,17 @@ class SolfataraBlock(properties: Properties) : Block(properties), EntityBlock {
  */
 class SolfataraBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(SolfataraCard.blockEntityType(), pos, state) {
     fun clientTick(level: Level, blockPos: BlockPos) {
-        if (level.gameTime % 10L != 0L) return // 0.5秒おきに噴き上げるのだぁ✨
-        repeat(2) { // 煙は10秒ほど滞留するから、これで常に40個ほどが宙に漂うのだぁ🌱
+        if (level.gameTime % 10L != 0L) return
+        // 煙は10秒ほど滞留するから、これで常に40個ほどが宙に漂うのだぁ🌱
+        // 0.5 秒おきに 2 個で、1 個が 10 秒生きるのだぁ～🌱 10 秒の間に 20 回出るから、2 かける 20 で 40 個なのだぁ～✨
+        repeat(2) {
             level.addParticle(
                 ParticleTypeCard.SULFUR_SMOKE.particleType,
                 blockPos.x + level.random.nextDouble(),
                 blockPos.y + level.random.nextDouble(),
                 blockPos.z + level.random.nextDouble(),
                 level.random.nextGaussian() * 0.02,
-                0.08 + level.random.nextGaussian() * 0.02, // 一定の上向きの速さに、ばらつきを足すのだぁ🌱
+                0.08 + level.random.nextGaussian() * 0.02,
                 level.random.nextGaussian() * 0.02,
             )
         }

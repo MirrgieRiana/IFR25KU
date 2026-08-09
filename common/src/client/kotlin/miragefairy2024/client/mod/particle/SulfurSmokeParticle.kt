@@ -8,7 +8,11 @@ import net.minecraft.core.particles.SimpleParticleType
 import net.minecraft.util.Mth
 
 private const val WIND_CYCLE_TICKS = 20F * 60F
-private const val WIND_HORIZONTAL_ACCELERATION = 0.002 // 摩擦0.96と釣り合って、終端速度は0.05になるのだぁ✨
+
+// 摩擦0.96と釣り合って、終端速度は0.05になるのだぁ✨
+// 毎ティック 0.002 足して、0.96 をかける、を繰り返すと、だんだん速さが一定に近づくのだぁ～🌱
+// その落ち着き先が、0.002 を 1 引く 0.96 の 0.04 で割った値で、0.05 なのだぁ～✨
+private const val WIND_HORIZONTAL_ACCELERATION = 0.002
 
 fun createSulfurSmokeParticleFactory() = { spriteProvider: SpriteSet ->
     ParticleProvider<SimpleParticleType> { _, world, x, y, z, xSpeed, ySpeed, zSpeed ->
@@ -23,7 +27,7 @@ fun createSulfurSmokeParticleFactory() = { spriteProvider: SpriteSet ->
             x, y, z,
             0.1F, 0.1F, 0.1F,
             xSpeed, ySpeed, zSpeed,
-            2.5F + world.random.nextFloat() * 2.5F,
+            2.5F * (1F + world.random.nextFloat()),
             spriteProvider,
             0.3F,
             27,
