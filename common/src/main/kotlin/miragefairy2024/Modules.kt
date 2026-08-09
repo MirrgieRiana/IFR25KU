@@ -12,6 +12,7 @@ import miragefairy2024.mod.haimeviska.initHaimeviskaModule
 import miragefairy2024.mod.initAttachmentChangedEventModule
 import miragefairy2024.mod.initBagModule
 import miragefairy2024.mod.initDebrisModule
+import miragefairy2024.mod.initDepositedSulfurModule
 import miragefairy2024.mod.initFairyFountainModule
 import miragefairy2024.mod.initFoodIngredientsModule
 import miragefairy2024.mod.initHarvestNotationModule
@@ -45,6 +46,7 @@ fun initModules() {
     initMaterialsModule()
     initBlockMaterialsModule()
     initOresModule()
+    initDepositedSulfurModule()
     initMagicPlantModule()
     initHaimeviskaModule()
     initFairyQuestModule()
