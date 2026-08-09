@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemType
 import miragefairy2024.mod.TextPoem
+import miragefairy2024.mod.enchantment.contents.isStickyMiningEnabled
 import miragefairy2024.mod.fairy.FairyDreamRecipes
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.fairyHistoryContainer
@@ -31,7 +32,7 @@ object ObtainFairyToolEffectType : DoubleAddToolEffectType<ToolConfiguration>() 
     override fun apply(configuration: ToolConfiguration, value: Double) {
         if (value <= 0.0) return
         configuration.descriptions += TextPoem(PoemType.DESCRIPTION, text { TRANSLATION() })
-        configuration.onAfterBreakBlockListeners += fail@{ _, world, player, pos, state, _, _ ->
+        configuration.onAfterBreakBlockListeners += fail@{ _, world, player, pos, state, _, tool ->
             if (player !is ServerPlayer) return@fail // 使用者がプレイヤーでない
 
             // モチーフの判定
@@ -42,7 +43,15 @@ object ObtainFairyToolEffectType : DoubleAddToolEffectType<ToolConfiguration>() 
 
             // 入手
             val fairyItemStack = result.motif.createFairyItemStack(condensation = result.condensation, count = result.count)
-            world.addFreshEntity(ItemEntity(world, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, fairyItemStack))
+            val itemEntity = ItemEntity(world, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, fairyItemStack)
+            world.addFreshEntity(itemEntity)
+
+            // 粘着採掘効果
+            // 妖精は粘着採掘による引き寄せが済んだ後に出現するため、ここで改めて引き寄せるのだ～🌱
+            if (isStickyMiningEnabled(world, state, tool)) {
+                itemEntity.teleportTo(player.x, player.y, player.z)
+                itemEntity.setNoPickUpDelay()
+            }
 
             // 妖精召喚履歴に追加
             player.fairyHistoryContainer.mutate { it[result.motif] += result.condensation * result.count.toBigInteger() }
