@@ -80,6 +80,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
   - デフォルトで粘着採掘と範囲採掘を持つ。
 - 追加: ツール「妖精のプラスチックの大鎌」を追加。
   - デフォルトで粘着採掘を持つ。
+- 表示: ビルダーズロッドの使用時、逆の手に設置可能なブロックがない場合に、その旨のメッセージが表示されるようになった。
 
 フェアリークエスト
 

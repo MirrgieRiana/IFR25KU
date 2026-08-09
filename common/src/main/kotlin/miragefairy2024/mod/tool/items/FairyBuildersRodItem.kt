@@ -15,6 +15,7 @@ import miragefairy2024.util.get
 import miragefairy2024.util.getLevel
 import miragefairy2024.util.getSameItemStackCountInMainInventoryAndOffhand
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isServer
 import miragefairy2024.util.notEmptyOrNull
 import miragefairy2024.util.opposite
 import miragefairy2024.util.removeItemStackFromMainInventoryAndOffhand
@@ -93,6 +94,7 @@ class FairyBuildersRodItem(override val configuration: FairyBuildersRodConfigura
 open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings: Properties) : TieredItem(toolMaterial, settings), RenderBlockPosesOutlineListenerItem {
     companion object {
         val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("builders_rod").toLanguageKey()}.description" }, "Place blocks when used", "使用時、ブロックを設置")
+        val NO_PLACEABLE_BLOCK_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("builders_rod").toLanguageKey()}.no_placeable_block" }, "No placeable block in the other hand", "逆の手に設置可能なブロックがありません")
     }
 
     override fun appendHoverText(stack: ItemStack, context: TooltipContext, tooltipComponents: MutableList<Component>, tooltipFlag: TooltipFlag) {
@@ -162,12 +164,17 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
         )
     }
 
+    private fun failByNoPlaceableBlock(level: Level, player: Player, toolItemStack: ItemStack): InteractionResultHolder<ItemStack> {
+        if (level.isServer) player.displayClientMessage(text { NO_PLACEABLE_BLOCK_TRANSLATION() }, true)
+        return InteractionResultHolder.fail(toolItemStack)
+    }
+
     override fun use(level: Level, player: Player, usedHand: InteractionHand): InteractionResultHolder<ItemStack> {
         val toolItemStack = player.getItemInHand(usedHand)
 
-        val blockItemStack = player.getItemInHand(usedHand.opposite).notEmptyOrNull ?: return InteractionResultHolder.fail(toolItemStack) // 逆の手が空
-        val blockItem = blockItemStack.item as? BlockItem ?: return InteractionResultHolder.fail(toolItemStack) // 逆の手がブロックアイテムでない
-        if (!blockItem.block.isEnabled(level.enabledFeatures())) return InteractionResultHolder.fail(toolItemStack) // ブロックが無効化されている
+        val blockItemStack = player.getItemInHand(usedHand.opposite).notEmptyOrNull ?: return failByNoPlaceableBlock(level, player, toolItemStack) // 逆の手が空
+        val blockItem = blockItemStack.item as? BlockItem ?: return failByNoPlaceableBlock(level, player, toolItemStack) // 逆の手がブロックアイテムでない
+        if (!blockItem.block.isEnabled(level.enabledFeatures())) return failByNoPlaceableBlock(level, player, toolItemStack) // ブロックが無効化されている
 
         val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない
