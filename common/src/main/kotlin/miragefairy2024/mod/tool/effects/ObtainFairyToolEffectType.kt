@@ -4,7 +4,8 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemType
 import miragefairy2024.mod.TextPoem
-import miragefairy2024.mod.enchantment.contents.isStickyMiningEnabled
+import miragefairy2024.mod.enchantment.EnchantmentCard
+import miragefairy2024.mod.enchantment.contents.StickyMiningSnapshot
 import miragefairy2024.mod.fairy.FairyDreamRecipes
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.fairyHistoryContainer
@@ -13,11 +14,15 @@ import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.merge
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
+import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.mutate
 import miragefairy2024.util.text
+import miragefairy2024.util.toBox
+import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.item.enchantment.EnchantmentHelper
 
 fun <T : ToolConfiguration> T.obtainFairy(appearanceRateBonus: Double) = this.merge(ObtainFairyToolEffectType, appearanceRateBonus)
 
@@ -41,17 +46,22 @@ object ObtainFairyToolEffectType : DoubleAddToolEffectType<ToolConfiguration>() 
             // 抽選
             val result = getRandomFairy(world.random, motifSet, value) ?: return@fail
 
+            // 粘着採掘判定
+            val stickyMiningListener: (() -> Unit)? = run {
+                val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
+                if (stickyMiningLevel == 0) return@run null
+                val snapshot = StickyMiningSnapshot.take(world, pos.toBox())
+                return@run {
+                    snapshot.teleportNewEntities(player)
+                }
+            }
+
             // 入手
             val fairyItemStack = result.motif.createFairyItemStack(condensation = result.condensation, count = result.count)
-            val itemEntity = ItemEntity(world, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, fairyItemStack)
-            world.addFreshEntity(itemEntity)
+            world.addFreshEntity(ItemEntity(world, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, fairyItemStack))
 
             // 粘着採掘効果
-            // 妖精は粘着採掘による引き寄せが済んだ後に出現するため、ここで改めて引き寄せるのだ～🌱
-            if (isStickyMiningEnabled(world, state, tool)) {
-                itemEntity.teleportTo(player.x, player.y, player.z)
-                itemEntity.setNoPickUpDelay()
-            }
+            stickyMiningListener?.invoke()
 
             // 妖精召喚履歴に追加
             player.fairyHistoryContainer.mutate { it[result.motif] += result.condensation * result.count.toBigInteger() }
