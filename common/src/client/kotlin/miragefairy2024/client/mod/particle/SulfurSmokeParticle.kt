@@ -1,56 +1,46 @@
 package miragefairy2024.client.mod.particle
 
 import miragefairy2024.client.util.setRgb
-import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.client.particle.BaseAshSmokeParticle
 import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.SpriteSet
 import net.minecraft.core.particles.SimpleParticleType
 import net.minecraft.util.Mth
 
+private const val WIND_CYCLE_TICKS = 20F * 60F
+private const val WIND_HORIZONTAL_ACCELERATION = 0.002 // 摩擦0.96と釣り合って、終端速度は0.05になるのだぁ✨
+
 fun createSulfurSmokeParticleFactory() = { spriteProvider: SpriteSet ->
     ParticleProvider<SimpleParticleType> { _, world, x, y, z, xSpeed, ySpeed, zSpeed ->
-        SulfurSmokeParticle(world, x, y, z, xSpeed, ySpeed, zSpeed, spriteProvider)
-    }
-}
+        /**
+         * バニラの白い煙が、灰色の煙の色だけを差し替えたものなので、それに倣ったのだぁ✨
+         *
+         * @see net.minecraft.client.particle.WhiteSmokeParticle
+         * @see net.minecraft.client.particle.LargeSmokeParticle
+         */
+        object : BaseAshSmokeParticle(
+            world,
+            x, y, z,
+            0.1F, 0.1F, 0.1F,
+            xSpeed, ySpeed, zSpeed,
+            2.5F + world.random.nextFloat() * 2.5F,
+            spriteProvider,
+            0.3F,
+            27,
+            -0.1F,
+            true,
+        ) {
+            init {
+                setRgb(0xE2D690)
+            }
 
-/**
- * バニラの白い煙が、灰色の煙の色だけを差し替えたものなので、それに倣ったのだぁ✨
- *
- * @see net.minecraft.client.particle.WhiteSmokeParticle
- * @see net.minecraft.client.particle.LargeSmokeParticle
- */
-class SulfurSmokeParticle(
-    world: ClientLevel,
-    x: Double, y: Double, z: Double,
-    xSpeed: Double, ySpeed: Double, zSpeed: Double,
-    spriteProvider: SpriteSet,
-) : BaseAshSmokeParticle(
-    world,
-    x, y, z,
-    0.1F, 0.1F, 0.1F,
-    xSpeed, ySpeed, zSpeed,
-    2.5F + world.random.nextFloat() * 2.5F,
-    spriteProvider,
-    0.3F,
-    27,
-    -0.1F,
-    true,
-) {
-    companion object {
-        private const val WIND_CYCLE_TICKS = 20F * 60F
-        private const val WIND_HORIZONTAL_ACCELERATION = 0.002 // 摩擦0.96と釣り合って、終端速度は0.05になるのだぁ✨
-    }
-
-    init {
-        setRgb(0xE2D690)
-    }
-
-    override fun tick() {
-        super.tick()
-        // 火山の噴煙は真上には昇らず、風を受けて横へたなびくのだぁ🌱 風向きはワールド全体で共通で、ゆっくりとひとまわりするのだぁ✨
-        val windAngle = level.gameTime / WIND_CYCLE_TICKS * Mth.TWO_PI
-        xd += Mth.cos(windAngle) * WIND_HORIZONTAL_ACCELERATION
-        zd += Mth.sin(windAngle) * WIND_HORIZONTAL_ACCELERATION
+            override fun tick() {
+                super.tick()
+                // 火山の噴煙は真上には昇らず、風を受けて横へたなびくのだぁ🌱 風向きはワールド全体で共通で、ゆっくりとひとまわりするのだぁ✨
+                val windAngle = level.gameTime / WIND_CYCLE_TICKS * Mth.TWO_PI
+                xd += Mth.cos(windAngle) * WIND_HORIZONTAL_ACCELERATION
+                zd += Mth.sin(windAngle) * WIND_HORIZONTAL_ACCELERATION
+            }
+        }
     }
 }
