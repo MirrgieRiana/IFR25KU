@@ -15,10 +15,8 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.ExperienceOrb
 import net.minecraft.world.entity.item.ItemEntity
-import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.Level
-import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.AABB
 
 val STICKY_MINING_BLOCK_TAG = MirageFairy2024.identifier("sticky_mining_block").toBlockTag()
@@ -30,7 +28,8 @@ fun initStickyMining() {
     val listener = ThreadLocal<() -> Unit>()
     BlockCallback.BEFORE_DROP_BY_ENTITY.register { state, level, pos, _, entity, tool ->
         if (entity == null) return@register
-        if (!isStickyMiningEnabled(level, state, tool)) return@register
+        val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
+        if (!(stickyMiningLevel > 0 || state isIn STICKY_MINING_BLOCK_TAG)) return@register
 
         val snapshot = StickyMiningSnapshot.take(level, pos.toBox())
         listener.set {
@@ -44,12 +43,6 @@ fun initStickyMining() {
             listener.remove()
         }
     }
-}
-
-/** ツールのエンチャントもしくはブロックのタグによって粘着採掘が発動するか否かを返すのだ～🌱 */
-fun isStickyMiningEnabled(level: Level, state: BlockState, tool: ItemStack): Boolean {
-    val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
-    return stickyMiningLevel > 0 || state isIn STICKY_MINING_BLOCK_TAG
 }
 
 class StickyMiningSnapshot private constructor(
