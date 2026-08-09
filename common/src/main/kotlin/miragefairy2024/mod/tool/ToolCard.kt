@@ -514,7 +514,7 @@ class ToolCard(
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_AXE = !ToolCard(
             "fairy_plastic_axe", EnJa("Fairy Plastic Axe", "妖精のプラスチックの斧"),
-            PoemList(4).poem(EnJa("TODO", "芳しき、かつての姿。")),
+            PoemList(4).poem(EnJa("Dissipation of monoterpenes.", "芳しき、かつての姿。")),
             FairyAxeConfiguration(ToolMaterialCard.FAIRY_PLASTIC).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
         ) { registerAxeRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_SHOVEL = !ToolCard(
@@ -524,7 +524,7 @@ class ToolCard(
         ) { registerShovelRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_SCYTHE = !ToolCard(
             "fairy_plastic_scythe", EnJa("Fairy Plastic Scythe", "妖精のプラスチックの大鎌"),
-            PoemList(4).poem(EnJa("TODO", "土の上で感じる風。")),
+            PoemList(4).poem(EnJa("Electronics for harvesting crops.", "土の上で感じる風。")),
             FairyScytheConfiguration(ToolMaterialCard.FAIRY_PLASTIC).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
         ) { registerScytheRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_SWORD = !ToolCard(
