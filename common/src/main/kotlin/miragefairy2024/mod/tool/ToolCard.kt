@@ -40,6 +40,7 @@ import miragefairy2024.mod.tool.items.FairyShootingStaffConfiguration
 import miragefairy2024.mod.tool.items.FairyShovelConfiguration
 import miragefairy2024.mod.tool.items.FairySwordConfiguration
 import miragefairy2024.mod.tool.items.FairyToolProperties
+import miragefairy2024.mod.tool.items.FairyUncreationRodConfiguration
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -511,11 +512,21 @@ class ToolCard(
             PoemList(4).poem(EnJa("Nectar turns into fairies underground", "地脈を流れる大樹の血。")),
             FairyPickaxeConfiguration(ToolMaterialCard.FAIRY_PLASTIC).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
+        val FAIRY_PLASTIC_AXE = !ToolCard(
+            "fairy_plastic_axe", EnJa("Fairy Plastic Axe", "妖精のプラスチックの斧"),
+            PoemList(4).poem(EnJa("Dissipation of monoterpenes.", "芳しき、かつての姿。")),
+            FairyAxeConfiguration(ToolMaterialCard.FAIRY_PLASTIC).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
+        ) { registerAxeRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_SHOVEL = !ToolCard(
             "fairy_plastic_shovel", EnJa("Fairy Plastic Shovel", "妖精のプラスチックのシャベル"),
             PoemList(4).poem(EnJa("Were you grown in earth, or a furnace?", "土から産まれ、土へと還る。")),
             FairyShovelConfiguration(ToolMaterialCard.FAIRY_PLASTIC).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
         ) { registerShovelRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
+        val FAIRY_PLASTIC_SCYTHE = !ToolCard(
+            "fairy_plastic_scythe", EnJa("Fairy Plastic Scythe", "妖精のプラスチックの大鎌"),
+            PoemList(4).poem(EnJa("Electronics for harvesting crops.", "土の上で感じる風。")),
+            FairyScytheConfiguration(ToolMaterialCard.FAIRY_PLASTIC, range = 2).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
+        ) { registerScytheRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
         val FAIRY_PLASTIC_SWORD = !ToolCard(
             "fairy_plastic_sword", EnJa("Fairy Plastic Sword", "妖精のプラスチックの剣"),
             PoemList(4).poem(EnJa("Souls for the nutrient", "これは妖精をおやつにするという")),
@@ -526,6 +537,11 @@ class ToolCard(
             "creative_hoe", EnJa("Creative Hoe", "アカーシャのクワ"),
             PoemList(null).poem(EnJa("Changes everything into farmland.", "適度に湿った地が現れよ。")),
             FairyHoeConfiguration(ToolMaterialCard.NEUTRONIUM).tillingRecipe(AdvancedHoeItem.CREATIVE_RECIPE),
+        )
+        val CREATIVE_UNCREATION_ROD = !ToolCard(
+            "creative_uncreation_rod", EnJa("Creative Uncreation Rod", "アンチアカシックロッド"),
+            PoemList(null).poem(EnJa("Erases the connected surface of blocks.", "地の表面をぬぐい去ろう。")),
+            FairyUncreationRodConfiguration(ToolMaterialCard.NEUTRONIUM, 16),
         )
     }
 

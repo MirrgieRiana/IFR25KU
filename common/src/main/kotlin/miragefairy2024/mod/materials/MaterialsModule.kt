@@ -708,7 +708,6 @@ class MaterialCard(
             PoemList(4).poem("Thermoplastic organic polymer", "凍てつく記憶の宿る石。"),
             fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.FAIRY_PLASTIC),
             // TODO advancement
-            // 琥珀色の～～
         )
         val FAIRY_RUBBER: MaterialCard = !MaterialCard(
             // TODO add purpose

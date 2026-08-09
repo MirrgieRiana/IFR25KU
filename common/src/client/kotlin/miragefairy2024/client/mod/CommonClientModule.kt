@@ -71,14 +71,20 @@ fun initCommonClientModule() {
                 val theta = (System.nanoTime() % 2_000_000_000L).toDouble() / 1_000_000_000.0 * 2.0 * Math.PI
                 val alpha = (255.0 * (0.5 + 0.25 * sin(theta))).roundToInt()
                 collectEdges(blockPoses) { x0, y0, z0, x1, y1, z1 ->
+                    val relativeX0 = x0.toFloat()
+                    val relativeY0 = y0.toFloat()
+                    val relativeZ0 = z0.toFloat()
+                    val relativeX1 = x1.toFloat()
+                    val relativeY1 = y1.toFloat()
+                    val relativeZ1 = z1.toFloat()
                     vertexConsumer
-                        .addVertex(pose, x0.toFloat(), y0.toFloat(), z0.toFloat())
+                        .addVertex(pose, relativeX0, relativeY0, relativeZ0)
                         .setColor(brightness, brightness, brightness, alpha)
-                        .setNormal(x1.toFloat() - x0.toFloat(), y1.toFloat() - y0.toFloat(), z1.toFloat() - z0.toFloat())
+                        .setNormal(relativeX1 - relativeX0, relativeY1 - relativeY0, relativeZ1 - relativeZ0)
                     vertexConsumer
-                        .addVertex(pose, x1.toFloat(), y1.toFloat(), z1.toFloat())
+                        .addVertex(pose, relativeX1, relativeY1, relativeZ1)
                         .setColor(brightness, brightness, brightness, alpha)
-                        .setNormal(x1.toFloat() - x0.toFloat(), y1.toFloat() - y0.toFloat(), z1.toFloat() - z0.toFloat())
+                        .setNormal(relativeX1 - relativeX0, relativeY1 - relativeY0, relativeZ1 - relativeZ0)
                 }
             }
         }

@@ -105,6 +105,7 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
         val targetBlockState = level.getBlockState(blockHitResult.blockPos)
         val frontBlockPos = blockHitResult.blockPos.relative(blockHitResult.direction)
         val wallDirection = blockHitResult.direction.opposite
+        val ignoresBlockStateProperties = player.isShiftKeyDown // スニーク中は向きや雪の有無などの違いで面が途切れないのだ～🌱
         val lateralLevel = level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.LATERAL_AREA_MINING.key].getLevel(toolItemStack)
         val actualRange = range + lateralLevel
 
@@ -130,7 +131,8 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
 
             val wallBlockPos = airBlockPos.relative(wallDirection)
             val wallBlockState = level.getBlockState(wallBlockPos)
-            if (wallBlockState != targetBlockState) return@blockVisitor false // 壁が対象ブロックでない
+            val isTargetBlock = if (ignoresBlockStateProperties) wallBlockState.block === targetBlockState.block else wallBlockState == targetBlockState
+            if (!isTargetBlock) return@blockVisitor false // 壁が対象ブロックでない
 
             val context = BlockPlaceContext(player, usedHand, blockItemStack, blockHitResult.withBlockPosAndLocation(airBlockPos))
             if (!level.getBlockState(airBlockPos).canBeReplaced(context)) return@blockVisitor false // 設置先が埋まっている
