@@ -164,17 +164,17 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
         )
     }
 
-    private fun failByNoPlaceableBlock(level: Level, player: Player, toolItemStack: ItemStack): InteractionResultHolder<ItemStack> {
-        if (level.isServer) player.displayClientMessage(text { NO_PLACEABLE_BLOCK_TRANSLATION() }, true)
-        return InteractionResultHolder.fail(toolItemStack)
-    }
-
     override fun use(level: Level, player: Player, usedHand: InteractionHand): InteractionResultHolder<ItemStack> {
         val toolItemStack = player.getItemInHand(usedHand)
 
-        val blockItemStack = player.getItemInHand(usedHand.opposite).notEmptyOrNull ?: return failByNoPlaceableBlock(level, player, toolItemStack) // 逆の手が空
-        val blockItem = blockItemStack.item as? BlockItem ?: return failByNoPlaceableBlock(level, player, toolItemStack) // 逆の手がブロックアイテムでない
-        if (!blockItem.block.isEnabled(level.enabledFeatures())) return failByNoPlaceableBlock(level, player, toolItemStack) // ブロックが無効化されている
+        fun failByNoPlaceableBlock(): InteractionResultHolder<ItemStack> {
+            if (level.isServer) player.displayClientMessage(text { NO_PLACEABLE_BLOCK_TRANSLATION() }, true)
+            return InteractionResultHolder.fail(toolItemStack)
+        }
+
+        val blockItemStack = player.getItemInHand(usedHand.opposite).notEmptyOrNull ?: return failByNoPlaceableBlock() // 逆の手が空
+        val blockItem = blockItemStack.item as? BlockItem ?: return failByNoPlaceableBlock() // 逆の手がブロックアイテムでない
+        if (!blockItem.block.isEnabled(level.enabledFeatures())) return failByNoPlaceableBlock() // ブロックが無効化されている
 
         val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない
