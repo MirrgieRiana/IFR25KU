@@ -20,12 +20,13 @@ import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.util.valueproviders.ConstantInt
+import net.minecraft.util.valueproviders.UniformInt
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize
-import net.minecraft.world.level.levelgen.feature.foliageplacers.FancyFoliagePlacer
+import net.minecraft.world.level.levelgen.feature.foliageplacers.MegaPineFoliagePlacer
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType
@@ -57,7 +58,7 @@ fun initHaimeviskaWorldGens() {
                 BlockStateProvider.simple(HaimeviskaBlockCard.LOG.block()),
                 FancyTrunkPlacer(22, 10, 0), // 最大32
                 BlockStateProvider.simple(HaimeviskaBlockCard.LEAVES.block()),
-                FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(2), 4),
+                MegaPineFoliagePlacer(ConstantInt.of(0), ConstantInt.of(0), UniformInt.of(13, 17)), // 針葉樹風の円錐形の葉
                 TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)),
             ).ignoreVines().decorators(listOf(HaimeviskaTreeDecoratorCard.treeDecorator)).build()
         }.generator {
