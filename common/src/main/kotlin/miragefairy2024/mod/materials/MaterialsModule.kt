@@ -702,12 +702,20 @@ class MaterialCard(
             } on ore!!.tag modId MirageFairy2024.MOD_ID from item
         }
         val FAIRY_PLASTIC: MaterialCard = !MaterialCard(
-            // TODO add recipe
-            // TODO add purpose
             "fairy_plastic", "Fairy Plastic", "妖精のプラスチック",
             PoemList(4).poem("Thermoplastic organic polymer", "凍てつく記憶の宿る石。"),
             fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.FAIRY_PLASTIC),
-            // TODO advancement
+            advancementCreator = {
+                AdvancementCard(
+                    identifier = identifier,
+                    context = AdvancementCard.Sub { HAIMEVISKA_ROSIN.advancement!!.await() },
+                    icon = { item().createItemStack() },
+                    name = EnJa("TODO", "TODO"),
+                    description = EnJa("TODO", "TODO"),
+                    criterion = AdvancementCard.hasItem(item),
+                    type = AdvancementCardType.NORMAL,
+                )
+            },
         )
         val FAIRY_RUBBER: MaterialCard = !MaterialCard(
             // TODO add purpose
