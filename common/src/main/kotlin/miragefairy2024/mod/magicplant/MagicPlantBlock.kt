@@ -73,12 +73,18 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
         val traitStacks = blockEntity?.getTraitStacks() ?: return
         // TODO 特性効果リファクタリングが来たら効率化する
         val traitEffects = calculateTraitEffects(level, pos, blockEntity, traitStacks)
+        var actualDamage = 0.0
+        var actualDamageTypeCard: DamageTypeCard? = null
         fun hurt(traitEffectKeyCard: TraitEffectKeyCard, damageTypeCard: DamageTypeCard) {
-            val damage = level.random.randomInt(traitEffects[traitEffectKeyCard.traitEffectKey])
-            if (damage > 0) entity.hurt(level.damageSources().source(damageTypeCard.registryKey), damage.toFloat())
+            val damage = traitEffects[traitEffectKeyCard.traitEffectKey]
+            if (damage > 0) {
+                actualDamage += damage
+                actualDamageTypeCard = damageTypeCard
+            }
         }
         hurt(TraitEffectKeyCard.SPINE_DAMAGE, SpineDamageTypeCard)
         hurt(TraitEffectKeyCard.PREDATION_DAMAGE, CarnivorousPlantDamageTypeCard)
+        if (actualDamageTypeCard != null) entity.hurt(level.damageSources().source(actualDamageTypeCard.registryKey), actualDamage.toFloat())
     }
 
 
