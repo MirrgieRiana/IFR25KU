@@ -16,22 +16,32 @@ import miragefairy2024.util.tree
 import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.with
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
+import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
+import net.minecraft.util.Mth
+import net.minecraft.util.RandomSource
 import net.minecraft.util.valueproviders.ConstantInt
-import net.minecraft.util.valueproviders.UniformInt
+import net.minecraft.world.level.LevelSimulatedReader
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize
-import net.minecraft.world.level.levelgen.feature.foliageplacers.MegaPineFoliagePlacer
+import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer
+import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType
 import net.minecraft.world.level.levelgen.feature.trunkplacers.FancyTrunkPlacer
 import java.util.OptionalInt
+
+object HaimeviskaFoliagePlacerCard {
+    val identifier = MirageFairy2024.identifier("haimeviska")
+    private val codec: MapCodec<HaimeviskaConiferFoliagePlacer> = MapCodec.unit { HaimeviskaConiferFoliagePlacer }
+    val type: FoliagePlacerType<HaimeviskaConiferFoliagePlacer> = FoliagePlacerType(codec)
+}
 
 object HaimeviskaTreeDecoratorCard {
     val identifier = MirageFairy2024.identifier("haimeviska")
@@ -48,6 +58,9 @@ val HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE 
 context(ModContext)
 fun initHaimeviskaWorldGens() {
 
+    // FoliagePlacerの登録
+    Registration(BuiltInRegistries.FOLIAGE_PLACER_TYPE, HaimeviskaFoliagePlacerCard.identifier) { HaimeviskaFoliagePlacerCard.type }.register()
+
     // TreeDecoratorの登録
     Registration(BuiltInRegistries.TREE_DECORATOR_TYPE, HaimeviskaTreeDecoratorCard.identifier) { HaimeviskaTreeDecoratorCard.type }.register()
 
@@ -58,7 +71,7 @@ fun initHaimeviskaWorldGens() {
                 BlockStateProvider.simple(HaimeviskaBlockCard.LOG.block()),
                 FancyTrunkPlacer(22, 10, 0), // 最大32
                 BlockStateProvider.simple(HaimeviskaBlockCard.LEAVES.block()),
-                MegaPineFoliagePlacer(ConstantInt.of(0), ConstantInt.of(0), UniformInt.of(13, 17)), // 針葉樹風の円錐形の葉
+                HaimeviskaConiferFoliagePlacer, // 枝付き針葉樹風の葉配置
                 TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)),
             ).ignoreVines().decorators(listOf(HaimeviskaTreeDecoratorCard.treeDecorator)).build()
         }.generator {
@@ -75,6 +88,61 @@ fun initHaimeviskaWorldGens() {
         }
     }
 
+}
+
+// 枝付き針葉樹風の葉配置なのだ～🌱
+// foliageHeightは4で、元のFancyFoliagePlacerと同じ高さなのだ。
+// 各層に円形の葉を置いた上で、さらに各層で東西南北のうちランダムな方向に枝先の葉の房を追加するのだ。
+// これにより、針葉樹らしく各段から横に枝が出ているように見えるのだ。
+object HaimeviskaConiferFoliagePlacer : FoliagePlacer(ConstantInt.of(2), ConstantInt.of(0)) {
+    override fun type() = HaimeviskaFoliagePlacerCard.type
+
+    override fun createFoliage(
+        level: LevelSimulatedReader,
+        blockSetter: FoliageSetter,
+        random: RandomSource,
+        config: TreeConfiguration,
+        maxFreeTreeHeight: Int,
+        attachment: FoliageAttachment,
+        foliageHeight: Int,
+        foliageRadius: Int,
+        offset: Int,
+    ) {
+        val blockPos = attachment.pos()
+
+        // 上から下に各層をループするのだ
+        (offset downTo offset - foliageHeight).forEach { localY ->
+            // この層の針葉樹的な基本半径（上ほど小さく、下ほど大きい）なのだ
+            val depth = offset - localY // 0 = 頂上, foliageHeight = 最下層
+            val baseRadius = foliageRadius + attachment.radiusOffset() + Mth.floor(depth.toFloat() / foliageHeight.toFloat() * 2.0F)
+
+            // 中心の水平円形の葉の層を置くのだ
+            placeLeavesRow(level, blockSetter, random, config, blockPos, baseRadius, localY, attachment.doubleTrunk())
+
+            // 各層から枝先の葉の房を追加するのだ（1〜2方向）
+            val branchCount = if (depth % 2 == 0) 2 else 1 // 偶数層は2方向、奇数層は1方向なのだ
+            // 東西南北の中からbranchCount個の方向をランダムに選ぶのだ
+            val allDirections = Direction.Plane.HORIZONTAL.toMutableList()
+            val directions = (0 until branchCount).map { allDirections.removeAt(random.nextInt(allDirections.size)) }
+            directions.forEach { direction ->
+                // 枝先の中心位置（中心から baseRadius + 1 だけ離れた位置）なのだ
+                val branchTipBlockPos = BlockPos(
+                    blockPos.x + direction.stepX * (baseRadius + 1),
+                    blockPos.y,
+                    blockPos.z + direction.stepZ * (baseRadius + 1),
+                )
+                // 枝先に小さな葉の房を置くのだ（半径1）
+                placeLeavesRow(level, blockSetter, random, config, branchTipBlockPos, 1, localY, attachment.doubleTrunk())
+            }
+        }
+    }
+
+    override fun foliageHeight(random: RandomSource, height: Int, config: TreeConfiguration) = 4 // 元のFancyFoliagePlacerと同じ高さなのだ
+
+    override fun shouldSkipLocation(random: RandomSource, localX: Int, localY: Int, localZ: Int, range: Int, large: Boolean): Boolean {
+        // 円形に近い形状にするのだ
+        return localX * localX + localZ * localZ > range * range
+    }
 }
 
 class HaimeviskaTreeDecorator : TreeDecorator() {
