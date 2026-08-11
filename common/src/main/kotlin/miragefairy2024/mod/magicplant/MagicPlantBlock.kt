@@ -68,10 +68,9 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun entityInside(state: BlockState, level: Level, pos: BlockPos, entity: Entity) {
-        if (level.isClientSide) return
         if (entity !is LivingEntity) return
-        val blockEntity = level.getMagicPlantBlockEntity(pos) ?: return
-        val traitStacks = blockEntity.getTraitStacks() ?: return
+        val blockEntity = level.getMagicPlantBlockEntity(pos)
+        val traitStacks = blockEntity?.getTraitStacks() ?: return
         // TODO 特性効果リファクタリングが来たら効率化する
         val traitEffects = calculateTraitEffects(level, pos, blockEntity, traitStacks)
         fun hurt(traitEffectKeyCard: TraitEffectKeyCard, damageTypeCard: DamageTypeCard) {

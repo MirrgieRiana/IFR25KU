@@ -56,7 +56,6 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
         TraitCard.LEAVES_PRODUCTION.trait to 0b00101000, // 葉面生成
         TraitCard.CARNIVOROUS_PLANT.trait to 0b00101000, // 食虫植物
         TraitCard.PAVEMENT_FLOWERS.trait to 0b00101000, // アスファルトに咲く花
-        TraitCard.SPINY_LEAVES.trait to 0b00101000, // 棘のある葉
     )
     override val randomTraitChances = super.randomTraitChances + mapOf(
         TraitCard.HOT_ADAPTATION.trait to 0.05, // 高温適応
