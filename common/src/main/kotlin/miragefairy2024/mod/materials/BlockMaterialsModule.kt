@@ -725,6 +725,20 @@ open class BlockMaterialCard(
                 }
             }
         }.sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.DIRT)
+        val COPAL_BLOCK = !BlockMaterialCard(
+            "copal_block", EnJa("Copal Block", "コーパルブロック"),
+            PoemList(null),
+            MapColor.COLOR_ORANGE, 2.5F, 3.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.COPAL),
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerCompressionRecipeGeneration(MaterialCard.COPAL.item, { MaterialCard.COPAL.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
+        val RETINITE_BLOCK = !BlockMaterialCard(
+            "retinite_block", EnJa("Retinite Block", "レチナイトブロック"),
+            PoemList(null),
+            MapColor.COLOR_ORANGE, 2.5F, 3.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.RETINITE),
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerCompressionRecipeGeneration(MaterialCard.RETINITE.item, { MaterialCard.RETINITE.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
     }
 
     val identifier = MirageFairy2024.identifier(path)
