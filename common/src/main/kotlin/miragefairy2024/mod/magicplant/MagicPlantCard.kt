@@ -4,9 +4,9 @@ import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemList
+import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.magicplant.contents.TraitConditionCard
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
-import miragefairy2024.mod.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.recipeviewer.registerIdentificationDataComponentTypes
 import miragefairy2024.mod.registerHarvestNotation

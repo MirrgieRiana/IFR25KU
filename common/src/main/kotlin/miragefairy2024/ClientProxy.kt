@@ -22,6 +22,7 @@ interface ClientProxy {
     fun getClientPlayer(): Player?
     fun getBlockColorProvider(block: Block): BlockColorProvider?
     fun registerBlockColorProvider(block: () -> Block, provider: BlockColorProvider)
+    fun getGrassBlockColorProvider(): BlockColorProvider
     fun getFoliageBlockColorProvider(): BlockColorProvider
     fun getItemColorProvider(item: Item): ItemColorProvider?
     fun registerItemColorProvider(item: Item, provider: ItemColorProvider)

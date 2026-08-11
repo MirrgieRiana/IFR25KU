@@ -4,6 +4,10 @@
       "id": "#miragefairy2024:builders_rod",
       "required": false
     },
+    {
+      "id": "#miragefairy2024:uncreation_rod",
+      "required": false
+    },
     "miragefairy2024:calculite_axe",
     "miragefairy2024:calculite_builders_rod",
     "miragefairy2024:calculite_hoe",

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "miragefairy2024:block/drywall",
+    "side": "miragefairy2024:block/drywall",
+    "top": "miragefairy2024:block/drywall"
+  }
+}

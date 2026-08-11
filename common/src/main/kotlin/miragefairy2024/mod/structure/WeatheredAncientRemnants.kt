@@ -2,9 +2,9 @@ package miragefairy2024.mod.structure
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.placeditem.PlacedItemCard
-import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.mod.tool.ToolCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType

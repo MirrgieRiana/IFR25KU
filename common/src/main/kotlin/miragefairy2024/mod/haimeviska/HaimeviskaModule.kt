@@ -2,7 +2,7 @@ package miragefairy2024.mod.haimeviska
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.mod.rootAdvancement
+import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa

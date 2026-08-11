@@ -257,7 +257,7 @@ enum class FairyQuestRecipeCard(
             Please verify this as soon as possible.
 
             * Two images believed to be of packaged Veropederezjoma
-            * Seven images of a dish believed to be Veropeda porridge
+            * Seven images of dishes believed to be Veropeda porridge
             * Just under 80 images that appear to show a meal gathering
             * Four images depicting nude fairies
         """.formatFairyQuest(),
@@ -295,13 +295,13 @@ enum class FairyQuestRecipeCard(
        """.formatFairyQuest(),
         "The Institute of Fairy Research\nEthics Department\nTirirknofe Herirmina", "妖精研究所\n倫理部\nティリルクノフェ・ヘリルミーナ",
         listOf {
-            Items.PAPER.createItemStack().also {
+            Items.NAME_TAG.createItemStack().also {
                 it[DataComponents.CUSTOM_NAME] = text { "From: Tirirknofe Herirmina"() }
                 it[DataComponents.LORE] = ItemLore(listOf(text { "<@ifr.ethics.tirirknofe-herirmina>"().gray }))
             }.toIngredientStack()
         },
         listOf {
-            Items.PAPER.createItemStack().also {
+            Items.NAME_TAG.createItemStack().also {
                 it[DataComponents.CUSTOM_NAME] = text { "To: Enchantia"() }
                 it[DataComponents.LORE] = ItemLore(listOf(text { "<@ifras.issue441586>"().gray }))
             }

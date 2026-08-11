@@ -9,8 +9,8 @@
           "Name": "miragefairy2024:dirt_fairy_plastic_ore"
         },
         "target": {
-          "predicate_type": "minecraft:tag_match",
-          "tag": "miragefairy2024:dirt_ore_replaceables"
+          "block": "minecraft:dirt",
+          "predicate_type": "minecraft:block_match"
         }
       }
     ]

@@ -17,7 +17,7 @@ import miragefairy2024.client.util.horizontalSpace
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.NinePatchTextureCard
-import miragefairy2024.mod.guiBackToGameTranslation
+import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.mod.magicplant.Trait
 import miragefairy2024.mod.magicplant.getName
 import miragefairy2024.mod.magicplant.texture

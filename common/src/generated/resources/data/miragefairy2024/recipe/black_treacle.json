@@ -1,0 +1,35 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 200,
+  "group": "miragefairy2024:black_treacle",
+  "inputs": [
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:glass_bottle"
+      }
+    },
+    {
+      "Amount": 16,
+      "Ingredient": {
+        "item": "minecraft:sugar_cane"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "fabric:type": "miragefairy2024:water_bottle"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "miragefairy2024:black_treacle"
+    },
+    {
+      "count": 24,
+      "id": "minecraft:sugar"
+    }
+  ]
+}

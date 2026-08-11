@@ -2,9 +2,9 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
+import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
-import miragefairy2024.mod.rootAdvancement
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa

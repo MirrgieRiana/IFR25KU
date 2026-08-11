@@ -1,0 +1,24 @@
+# subtext: 中央ぞろえの説明文なのだぁ🌱
+@USE("global")
+
+templates.subtext = lines -> %>
+  <div class="subtext">
+    <%= lines() | line => %>
+      <div><%= line >> htmlEscape %></div>
+    <% %>
+  </div>
+<%
+
+cssLines::push << %>
+  /* ---- 中央ぞろえの説明文なのだぁ🌱 ---- */
+  .subtext {
+    text-align: center;
+    margin-top: 14px;
+    color: var(--purple-dark);
+  }
+  .subtext div {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.42;
+  }
+<%

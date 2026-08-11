@@ -11,6 +11,7 @@ import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
+import kotlin.jvm.optionals.getOrElse
 
 object RegistryEvents {
     val registrations = mutableListOf<Registration<*, *>>()
@@ -55,6 +56,8 @@ fun <T : Any> Registry<T>.getHolderOrNull(key: ResourceKey<T>): Holder.Reference
 fun <T : Any> Registry<T>.getHolderOfOrNull(value: T) = this.getResourceKeyOrNull(value).or { return null }.let { this.getHolderOrNull(it) }
 
 fun <T : Any> Registry<T>.isIn(value: T, tag: TagKey<T>) = this.getHolderOfOrNull(value).or { return false } isIn tag
+
+operator fun <T> Registry<T>.get(tag: TagKey<T>): Iterable<Holder<T>> = this.getTag(tag).getOrElse { emptyList() }
 
 
 operator fun <T> HolderLookup.Provider.get(registry: ResourceKey<Registry<T>>): HolderLookup.RegistryLookup<T> = this.lookupOrThrow(registry)

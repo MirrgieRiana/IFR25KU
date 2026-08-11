@@ -14,6 +14,7 @@ import net.minecraft.world.level.LightLayer
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.GameMasterBlock
+import net.minecraft.world.level.block.LevelEvent
 import net.minecraft.world.level.levelgen.Heightmap
 import net.minecraft.world.level.levelgen.structure.BoundingBox
 import net.minecraft.world.phys.AABB
@@ -139,6 +140,35 @@ fun blockVisitor(
 
 }
 
+fun spaceVisitor(
+    world: Level,
+    originalBlockPos: BlockPos,
+    visitOrigins: Boolean = true,
+    maxDistance: Int = Int.MAX_VALUE,
+    ignoreOriginalWall: Boolean = false,
+    predicate: (blockPos: BlockPos) -> Boolean,
+): Sequence<Pair<Int, BlockPos>> {
+    return blockVisitor(listOf(originalBlockPos), visitOrigins = visitOrigins, maxDistance = maxDistance) { _, fromBlockPos, toBlockPos ->
+        if (fromBlockPos == null) return@blockVisitor true
+        if (!predicate(toBlockPos)) return@blockVisitor false
+        val offset = toBlockPos.subtract(fromBlockPos)
+        val direction = when {
+            offset.y == -1 -> Direction.DOWN
+            offset.y == 1 -> Direction.UP
+            offset.z == -1 -> Direction.NORTH
+            offset.z == 1 -> Direction.SOUTH
+            offset.x == -1 -> Direction.WEST
+            offset.x == 1 -> Direction.EAST
+            else -> throw AssertionError()
+        }
+        if (ignoreOriginalWall && fromBlockPos == originalBlockPos) {
+            !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite)
+        } else {
+            !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite) && !world.getBlockState(fromBlockPos).isFaceSturdy(world, fromBlockPos, direction)
+        }
+    }
+}
+
 /**
  * プレイヤーの動作としてブロックを壊します。
  *
@@ -158,7 +188,7 @@ fun breakBlock(itemStack: ItemStack, world: Level, blockPos: BlockPos, player: S
     }
     if (player.blockActionRestricted(world, blockPos, player.gameMode.gameModeForPlayer)) return false // 破壊する権限がない
 
-    player.connection.send(ClientboundLevelEventPacket(2001, blockPos, Block.getId(blockState), false)) // playerWillDestroyは採掘者本人にはエフェクトを送らない
+    player.connection.send(ClientboundLevelEventPacket(LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, Block.getId(blockState), false)) // playerWillDestroyは採掘者本人にはエフェクトを送らない
     block.playerWillDestroy(world, blockPos, blockState, player)
     val success = world.removeBlock(blockPos, false)
     if (success) block.destroy(world, blockPos, blockState)
@@ -196,7 +226,7 @@ fun breakBlockByMagic(itemStack: ItemStack, world: Level, blockPos: BlockPos, pl
         }
         if (player.blockActionRestricted(world, blockPos, player.gameMode.gameModeForPlayer)) return false // 破壊する権限がない
 
-        player.connection.send(ClientboundLevelEventPacket(2001, blockPos, Block.getId(blockState), false)) // playerWillDestroyは採掘者本人にはエフェクトを送らない
+        player.connection.send(ClientboundLevelEventPacket(LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, Block.getId(blockState), false)) // playerWillDestroyは採掘者本人にはエフェクトを送らない
         block.playerWillDestroy(world, blockPos, blockState, player)
         val success = world.removeBlock(blockPos, false)
         if (success) block.destroy(world, blockPos, blockState)
@@ -231,24 +261,8 @@ fun collectItem(
     var remainingAmount = maxCount
     var processedCount = 0
     if (targetTable.isNotEmpty()) run finish@{
-        blockVisitor(listOf(originalBlockPos), maxDistance = reach) { _, fromBlockPos, toBlockPos ->
-            if (fromBlockPos == null) return@blockVisitor true
-            if (region != null && !region.isInside(toBlockPos)) return@blockVisitor false
-            val offset = toBlockPos.subtract(fromBlockPos)
-            val direction = when {
-                offset.y == -1 -> Direction.DOWN
-                offset.y == 1 -> Direction.UP
-                offset.z == -1 -> Direction.NORTH
-                offset.z == 1 -> Direction.SOUTH
-                offset.x == -1 -> Direction.WEST
-                offset.x == 1 -> Direction.EAST
-                else -> throw AssertionError()
-            }
-            if (ignoreOriginalWall && fromBlockPos == originalBlockPos) {
-                !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite)
-            } else {
-                !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite) && !world.getBlockState(fromBlockPos).isFaceSturdy(world, fromBlockPos, direction)
-            }
+        spaceVisitor(world, originalBlockPos, maxDistance = reach, ignoreOriginalWall = ignoreOriginalWall) { toBlockPos ->
+            region == null || region.isInside(toBlockPos)
         }.forEach { (_, blockPos) ->
             targetTable[blockPos]?.forEach {
 

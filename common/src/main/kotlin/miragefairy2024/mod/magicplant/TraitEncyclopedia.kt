@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.Emoji
-import miragefairy2024.mod.guiFullScreenTranslation
+import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.invoke
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.magicplant.contents.magicplants.MirageFlowerCard

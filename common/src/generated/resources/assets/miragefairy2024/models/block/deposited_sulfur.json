@@ -1,0 +1,40 @@
+{
+  "elements": [
+    {
+      "faces": {
+        "north": {
+          "texture": "#texture",
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#texture",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      },
+      "from": [
+        -0.11,
+        -0.11,
+        0.1
+      ],
+      "to": [
+        16.11,
+        16.11,
+        0.1
+      ]
+    }
+  ],
+  "textures": {
+    "particle": "miragefairy2024:block/deposited_sulfur",
+    "texture": "miragefairy2024:block/deposited_sulfur"
+  }
+}

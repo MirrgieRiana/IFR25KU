@@ -70,10 +70,9 @@ fun initCreativeGeneAmpoule() {
         card.item.enJa(EnJa("Creative Gene Ampoule", "アカーシャによる生命設計の針"))
         val poemList = PoemList(null)
             .poem("This allows you to freely edit traits.", "種類に従って球根を持つ草を生えさせよ。")
-            .description("description1", "Use: Grant the trait", "使用時、特性を付与")
-            .description("description2", "Use while sneaking: Remove the trait", "スニーク中に使用時、特性を削除")
-            .description("description3", "Use: Increases bits", "使用時、ビットを増加")
-            .description("description4", "Use while sneaking: Decreases bits", "スニーク中に使用時、ビットを減少")
+            .description("description1", "Use on magic plant: Grant trait", "魔法植物に使用時、特性を付与")
+            .description("description2", "Use elsewhere: Increase bits", "魔法植物以外に使用時、ビットを増加")
+            .description("description3", "While sneaking: Reversed effect", "スニーク中は逆の効果")
         card.item.registerPoem(poemList)
         card.item.registerPoemGeneration(poemList)
     }

@@ -3,7 +3,7 @@ package miragefairy2024.mod.enchantment.contents
 import miragefairy2024.ModContext
 import miragefairy2024.mixins.api.BlockCallback
 import miragefairy2024.mixins.api.LevelEvent
-import miragefairy2024.mod.CommonRenderingEvents
+import miragefairy2024.mod.common.CommonRenderingEvents
 import miragefairy2024.mod.enchantment.contents.multiminehandlers.AreaMiningMultiMineHandler
 import miragefairy2024.mod.enchantment.contents.multiminehandlers.CutAllMultiMineHandler
 import miragefairy2024.mod.enchantment.contents.multiminehandlers.MineAllMultiMineHandler

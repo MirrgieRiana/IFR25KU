@@ -30,6 +30,7 @@ import net.minecraft.advancements.AdvancementHolder
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistrySetBuilder
+import net.minecraft.core.registries.Registries
 import net.minecraft.data.CachedOutput
 import net.minecraft.data.DataProvider
 import net.minecraft.data.PackOutput
@@ -40,6 +41,7 @@ import net.minecraft.data.models.ItemModelGenerators
 import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.level.biome.FeatureSorter
 import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets
 import java.util.concurrent.CompletableFuture
@@ -66,17 +68,23 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
     }
 
     private fun common(pack: FabricDataGenerator.Pack) {
+
+        // モデル
         pack.addProvider { output: FabricDataOutput ->
             object : FabricModelProvider(output) {
                 override fun generateBlockStateModels(blockStateModelGenerator: BlockModelGenerators) = DataGenerationEvents.onGenerateBlockModel.fire { it(blockStateModelGenerator) }
                 override fun generateItemModels(itemModelGenerator: ItemModelGenerators) = DataGenerationEvents.onGenerateItemModel.fire { it(itemModelGenerator) }
             }
         }
+
+        // タグ
         TagGenerator.entries.forEach {
             pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
                 it.createProvider(output, registriesFuture)
             }
         }
+
+        // 戦利品
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
             val registries = registriesFuture.join()
             object : FabricBlockLootTableProvider(output, registriesFuture) {
@@ -117,11 +125,15 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                 }
             }
         }
+
+        // レシピ
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
             object : FabricRecipeProvider(output, registriesFuture) {
                 override fun buildRecipes(recipeOutput: RecipeOutput) = DataGenerationEvents.onGenerateRecipe.fire { it(recipeOutput) }
             }
         }
+
+        // Dynamic系
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
             object : FabricDynamicRegistryProvider(output, registriesFuture) {
                 override fun getName() = "World Gen"
@@ -132,6 +144,25 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                 }
             }
         }
+
+        // PlacedFeatureの循環検出
+        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
+            object : DataProvider {
+                override fun getName() = "Feature Order Cycle Validation"
+                override fun run(writer: CachedOutput): CompletableFuture<*> {
+                    return registriesFuture.thenAccept { registries ->
+                        val biomes = registries.lookupOrThrow(Registries.BIOME).listElements().toList()
+                        FeatureSorter.buildFeaturesPerStep(
+                            biomes,
+                            { it.value().generationSettings.features() },
+                            true,
+                        )
+                    }
+                }
+            }
+        }
+
+        // 翻訳
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
             object : FabricLanguageProvider(output, "en_us", registriesFuture) {
                 override fun generateTranslations(holderLookupProvider: HolderLookup.Provider, translationBuilder: TranslationBuilder) = DataGenerationEvents.onGenerateEnglishTranslation.fire { it(translationBuilder) }
@@ -142,6 +173,8 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                 override fun generateTranslations(holderLookupProvider: HolderLookup.Provider, translationBuilder: TranslationBuilder) = DataGenerationEvents.onGenerateJapaneseTranslation.fire { it(translationBuilder) }
             }
         }
+
+        // owoのNine Patch Texture
         pack.addProvider { output: FabricDataOutput ->
             object : DataProvider {
                 private val pathResolver = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "nine_patch_textures")
@@ -167,6 +200,8 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                 }
             }
         }
+
+        // SE
         pack.addProvider { output: FabricDataOutput ->
             object : DataProvider {
                 private val destination = MirageFairy2024.identifier("sounds")
@@ -194,6 +229,8 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                 }
             }
         }
+
+        // パーティクル
         pack.addProvider { output: FabricDataOutput ->
             object : DataProvider {
                 private val pathResolver = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "particles")
@@ -216,6 +253,8 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                 }
             }
         }
+
+        // 進捗
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
             AdvancementProvider(output, registriesFuture, listOf(object : AdvancementSubProvider {
                 override fun generate(registries: HolderLookup.Provider, writer: Consumer<AdvancementHolder>) {
@@ -229,6 +268,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                 }
             }))
         }
+
     }
 
     private fun neoForge(pack: FabricDataGenerator.Pack) {

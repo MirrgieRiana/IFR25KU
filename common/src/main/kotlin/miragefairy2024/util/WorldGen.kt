@@ -28,6 +28,7 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.MobCategory
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.VerticalAnchor
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
@@ -160,6 +161,7 @@ context(BiomeSelectorScope) val nether: Predicate<BiomeSelectionContext> get() =
 context(BiomeSelectorScope) val end: Predicate<BiomeSelectionContext> get() = +BiomeTags.IS_END // 上と同じ
 context(BiomeSelectorScope) operator fun ResourceKey<Biome>.unaryPlus(): Predicate<BiomeSelectionContext> = BiomeSelectors.includeByKey(this)
 context(BiomeSelectorScope) operator fun TagKey<Biome>.unaryPlus(): Predicate<BiomeSelectionContext> = BiomeSelectors.tag(this)
+context(BiomeSelectorScope) operator fun BiomeCondition.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { this.test(it.biomeRegistryEntry) }
 context(BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.not(): Predicate<BiomeSelectionContext> = this.negate()
 context(BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.times(other: Predicate<BiomeSelectionContext>): Predicate<BiomeSelectionContext> = this.and(other)
 context(BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.plus(other: Predicate<BiomeSelectionContext>): Predicate<BiomeSelectionContext> = this.or(other)
@@ -259,6 +261,17 @@ val underground
         listOf(
             PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT,
             EnvironmentScanPlacement.scanningFor(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.ONLY_IN_AIR_PREDICATE, 12),
+            RandomOffsetPlacement.vertical(ConstantInt.of(1)),
+        )
+    }
+
+/** 溶岩の水面の直上なのだ～🌱 */
+context(PlacementModifiersScope)
+val aboveLava
+    get() = VerticalPlacementType {
+        listOf(
+            PlacementUtils.FULL_RANGE,
+            EnvironmentScanPlacement.scanningFor(Direction.DOWN, BlockPredicate.matchesBlocks(Blocks.LAVA), BlockPredicate.ONLY_IN_AIR_PREDICATE, 12),
             RandomOffsetPlacement.vertical(ConstantInt.of(1)),
         )
     }
