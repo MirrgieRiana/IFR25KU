@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_haimeviska_sap": {
+    "has_merrrria_drop": {
       "conditions": {
         "items": [
           {
-            "items": "miragefairy2024:haimeviska_sap"
+            "items": "miragefairy2024:merrrria_drop"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:yellow_kohakuto"
+        "recipe": "miragefairy2024:merrrria_kohakuto"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_haimeviska_sap"
+      "has_merrrria_drop"
     ]
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:yellow_kohakuto"
+      "miragefairy2024:merrrria_kohakuto"
     ]
   }
 }

@@ -1,7 +1,7 @@
 {
   "type": "miragefairy2024:athanor",
-  "duration": 3600,
-  "group": "miragefairy2024:white_kohakuto",
+  "duration": 6000,
+  "group": "miragefairy2024:kohakuto",
   "inputs": [
     {
       "Amount": 4,
@@ -10,22 +10,16 @@
       }
     },
     {
-      "Amount": 2,
-      "Ingredient": {
-        "item": "minecraft:dried_kelp"
-      }
-    },
-    {
       "Amount": 1,
       "Ingredient": {
-        "fabric:type": "miragefairy2024:water_bottle"
+        "item": "minecraft:dried_kelp"
       }
     }
   ],
   "outputs": [
     {
       "count": 4,
-      "id": "miragefairy2024:white_kohakuto"
+      "id": "miragefairy2024:kohakuto"
     }
   ]
 }

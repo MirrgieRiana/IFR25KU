@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_sugar": {
+    "has_black_treacle": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:sugar"
+            "items": "miragefairy2024:black_treacle"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:white_kohakuto_from_sugar"
+        "recipe": "miragefairy2024:black_treacle_kohakuto_from_dried_kelp_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_sugar"
+      "has_black_treacle"
     ]
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:white_kohakuto_from_sugar"
+      "miragefairy2024:black_treacle_kohakuto_from_dried_kelp_block"
     ]
   }
 }
