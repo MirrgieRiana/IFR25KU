@@ -639,12 +639,13 @@ class MaterialCard(
                     .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 10), 1.0F)
                     .build()
             },
+            tags = listOf(ItemTagCard.SAP.tag),
         ) {
             // →砂糖+水入り瓶
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { SimpleMachineRecipe.Input(item().toIngredient(), 1) },
+                    { SimpleMachineRecipe.Input(ItemTagCard.SAP.tag.toIngredient(), 1) },
                     { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
                 ),
                 outputs = listOf(
@@ -652,14 +653,14 @@ class MaterialCard(
                     { PotionContents.createItemStack(Items.POTION, Potions.WATER) },
                 ),
                 duration = 20 * 2,
-            ) on item modId MirageFairy2024.MOD_ID from item
+            ) on ItemTagCard.SAP.tag
             // →松明
             registerShapedRecipeGeneration({ Items.TORCH }) {
                 pattern("#")
                 pattern("S")
-                define('#', item())
+                define('#', ItemTagCard.SAP.tag)
                 define('S', tagOf(Shape.ROD, Material.WOOD))
-            } on item modId MirageFairy2024.MOD_ID from item
+            } on ItemTagCard.SAP.tag modId MirageFairy2024.MOD_ID
         }
         val HAIMEVISKA_ROSIN: MaterialCard = !MaterialCard(
             "haimeviska_rosin", "Haimeviska Rosin", "ハイメヴィスカの涙",
@@ -697,7 +698,7 @@ class MaterialCard(
                 pattern("sss")
                 pattern("s#s")
                 pattern("sss")
-                define('s', HAIMEVISKA_SAP.item())
+                define('s', ItemTagCard.SAP.tag)
                 define('#', ore!!.tag)
             } on ore!!.tag modId MirageFairy2024.MOD_ID from item
         }
@@ -1259,12 +1260,12 @@ class MaterialCard(
                 FermentationBarrelRecipeCard,
                 inputs = listOf(
                     { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
-                    { SimpleMachineRecipe.Input(HAIMEVISKA_SAP.item().toIngredient(), 8) },
+                    { SimpleMachineRecipe.Input(ItemTagCard.SAP.tag.toIngredient(), 8) },
                     { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
-            ) on HAIMEVISKA_SAP.item
+            ) on ItemTagCard.SAP.tag
             ModEvents.onInitialize {
                 FoodIngredientsRegistry.registry[item()] = FoodIngredients() + FoodIngredientCategoryCard.ALCOHOL + HAIMEVISKA_SAP.item()
             }
@@ -1428,7 +1429,7 @@ class MaterialCard(
                 AthanorRecipeCard,
                 inputs = listOf(
                     { SimpleMachineRecipe.Input(Items.SUGAR.toIngredient(), 8) },
-                    { SimpleMachineRecipe.Input(HAIMEVISKA_SAP.item().toIngredient(), 4) }, // 200 * 1 * 4 = 800
+                    { SimpleMachineRecipe.Input(ItemTagCard.SAP.tag.toIngredient(), 4) }, // 200 * 1 * 4 = 800
                     { SimpleMachineRecipe.Input(ItemTagCard.SPIRITS.tag.toIngredient(), 1) }, // 200 * 12 * 1 = 2400
                 ),
                 outputs = listOf({ item().createItemStack(8) }), // 800 + 2400 + 1200 = 4400 -> 200 * 8 * 8 = 12800
@@ -1438,7 +1439,7 @@ class MaterialCard(
                 AthanorRecipeCard,
                 inputs = listOf(
                     { SimpleMachineRecipe.Input(Items.SUGAR.toIngredient(), 16) },
-                    { SimpleMachineRecipe.Input(HAIMEVISKA_SAP.item().toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(ItemTagCard.SAP.tag.toIngredient(), 4) },
                     { SimpleMachineRecipe.Input(ETHANOL.item().toIngredient(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack(32) }),
