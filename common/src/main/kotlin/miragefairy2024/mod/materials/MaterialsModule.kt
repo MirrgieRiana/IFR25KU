@@ -661,6 +661,12 @@ class MaterialCard(
                 define('S', tagOf(Shape.ROD, Material.WOOD))
             } on item modId MirageFairy2024.MOD_ID from item
         }
+        val PLASTIC_TREE_SAP: MaterialCard = !MaterialCard(
+            "plastic_tree_sap", "Plastic Tree Sap", "プラノキの樹液",
+            PoemList(1)
+                .poem("TODO", "TODO"),
+            fuelValue = 200,
+        )
         val HAIMEVISKA_ROSIN: MaterialCard = !MaterialCard(
             "haimeviska_rosin", "Haimeviska Rosin", "ハイメヴィスカの涙",
             PoemList(2).poem("High-friction material", "琥珀の月が昇るとき、妖精の木は静かに泣く"),
