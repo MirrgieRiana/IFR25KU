@@ -7,8 +7,8 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
-import miragefairy2024.util.SURFACE_NOISE_THRESHOLD_DIVISOR
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.getSurfaceNoiseThreshold
 import net.minecraft.core.HolderGetter
 import net.minecraft.data.worldgen.BiomeDefaultFeatures
 import net.minecraft.data.worldgen.placement.VegetationPlacements
@@ -110,7 +110,7 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                             SurfaceRules.ifTrue(
                                 SurfaceRules.UNDER_FLOOR,
                                 SurfaceRules.ifTrue(
-                                    SurfaceRules.noiseCondition(Noises.SURFACE_SECONDARY, -0.7 / SURFACE_NOISE_THRESHOLD_DIVISOR, Double.MAX_VALUE),
+                                    SurfaceRules.noiseCondition(Noises.SURFACE_SECONDARY, getSurfaceNoiseThreshold(Noises.SURFACE_SECONDARY, 0.61), Double.MAX_VALUE),
                                     SurfaceRules.state(BlockMaterialCard.RESIN_CEMENTED_DIRT.block().defaultBlockState())
                                 ),
                             ),
@@ -118,11 +118,11 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                                 SurfaceRules.ON_FLOOR,
                                 SurfaceRules.sequence(
                                     SurfaceRules.ifTrue(
-                                        SurfaceRules.noiseCondition(Noises.SURFACE, 1.75 / SURFACE_NOISE_THRESHOLD_DIVISOR, Double.MAX_VALUE),
+                                        SurfaceRules.noiseCondition(Noises.SURFACE, getSurfaceNoiseThreshold(Noises.SURFACE, 0.25), Double.MAX_VALUE),
                                         SurfaceRules.state(Blocks.COARSE_DIRT.defaultBlockState())
                                     ),
                                     SurfaceRules.ifTrue(
-                                        SurfaceRules.noiseCondition(Noises.SURFACE, -0.95 / SURFACE_NOISE_THRESHOLD_DIVISOR, Double.MAX_VALUE),
+                                        SurfaceRules.noiseCondition(Noises.SURFACE, getSurfaceNoiseThreshold(Noises.SURFACE, 0.64), Double.MAX_VALUE),
                                         SurfaceRules.state(Blocks.PODZOL.defaultBlockState())
                                     ),
                                 ),
