@@ -7,6 +7,7 @@ import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.SURFACE_NOISE_THRESHOLD_DIVISOR
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.isIn
 import miragefairy2024.util.isNotIn
@@ -112,11 +113,11 @@ object RetrospectiveCityBiomeCard : BiomeCard(
                             SurfaceRules.isBiome(key),
                             SurfaceRules.sequence(
                                 SurfaceRules.ifTrue(
-                                    SurfaceRules.noiseCondition(Noises.SURFACE, 2.0 / 8.25, Double.MAX_VALUE),
+                                    SurfaceRules.noiseCondition(Noises.SURFACE, 2.0 / SURFACE_NOISE_THRESHOLD_DIVISOR, Double.MAX_VALUE),
                                     SurfaceRules.state(BlockMaterialCard.AURA_RESISTANT_CERAMIC_TILES.block().defaultBlockState())
                                 ),
                                 SurfaceRules.ifTrue(
-                                    SurfaceRules.noiseCondition(Noises.SURFACE, 1.8 / 8.25, Double.MAX_VALUE),
+                                    SurfaceRules.noiseCondition(Noises.SURFACE, 1.8 / SURFACE_NOISE_THRESHOLD_DIVISOR, Double.MAX_VALUE),
                                     SurfaceRules.state(BlockMaterialCard.COBBLED_AURA_RESISTANT_CERAMIC.block().defaultBlockState())
                                 ),
                             ),
