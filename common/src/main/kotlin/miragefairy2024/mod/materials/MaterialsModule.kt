@@ -664,8 +664,16 @@ class MaterialCard(
         val PLASTIC_TREE_SAP: MaterialCard = !MaterialCard(
             "plastic_tree_sap", "Plastic Tree Sap", "プラノキの樹液",
             PoemList(1)
-                .poem("TODO", "TODO"),
+                .poem("TODO", "TODO")
+                .description("Gain speed by eating", "食べると移動速度を獲得"),
             fuelValue = 200,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(1)
+                    .saturationModifier(0.1F)
+                    .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 30), 1.0F)
+                    .build()
+            },
         )
         val HAIMEVISKA_ROSIN: MaterialCard = !MaterialCard(
             "haimeviska_rosin", "Haimeviska Rosin", "ハイメヴィスカの涙",
