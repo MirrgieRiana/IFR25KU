@@ -6,7 +6,7 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise
 
 /**
  * 地表ルールの閾値は、ノイズの値をこの数で割ったものと比べられるのだ～🌱
- * バニラの[SurfaceRuleData.surfaceNoiseAbove]と同じ数なのだ✨
+ * バニラの[net.minecraft.data.worldgen.SurfaceRuleData.surfaceNoiseAbove]と同じ数なのだ✨
  */
 const val SURFACE_NOISE_THRESHOLD_DIVISOR = 8.25
 
@@ -20,9 +20,7 @@ val SURFACE_NOISE_STANDARD_DEVIATIONS = mapOf(
     Noises.SURFACE_SECONDARY to 0.3050,
 )
 
-private fun getStandardDeviation(noiseKey: ResourceKey<NormalNoise.NoiseParameters>): Double {
-    return SURFACE_NOISE_STANDARD_DEVIATIONS[noiseKey] ?: throw IllegalArgumentException("Standard deviation is not measured: ${noiseKey.location()}")
-}
+private fun getStandardDeviation(noiseKey: ResourceKey<NormalNoise.NoiseParameters>) = SURFACE_NOISE_STANDARD_DEVIATIONS[noiseKey]!!
 
 /**
  * 地表ルールの閾値から、ノイズがその閾値以上になる割合を求めるのだ～🌱
@@ -40,5 +38,5 @@ fun getSurfaceNoiseMatchRatio(noiseKey: ResourceKey<NormalNoise.NoiseParameters>
  * [getSurfaceNoiseMatchRatio]の逆関数なのだ✨
  */
 fun getSurfaceNoiseThreshold(noiseKey: ResourceKey<NormalNoise.NoiseParameters>, matchRatio: Double): Double {
-    return getNormalDistributionUpperProbabilityInverse(matchRatio, getStandardDeviation(noiseKey)) * SURFACE_NOISE_THRESHOLD_DIVISOR
+    return getXFromNormalDistributionUpperProbability(matchRatio, getStandardDeviation(noiseKey)) * SURFACE_NOISE_THRESHOLD_DIVISOR
 }

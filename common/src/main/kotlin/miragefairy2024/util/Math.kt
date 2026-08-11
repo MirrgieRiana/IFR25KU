@@ -43,7 +43,7 @@ fun getNormalDistributionUpperProbability(x: Double, standardDeviation: Double):
  * [getNormalDistributionUpperProbability]の逆関数なのだ～🌱
  * 二分探索で求めるのだ✨
  */
-fun getNormalDistributionUpperProbabilityInverse(probability: Double, standardDeviation: Double): Double {
+fun getXFromNormalDistributionUpperProbability(probability: Double, standardDeviation: Double): Double {
     var low = -100.0 * standardDeviation
     var high = 100.0 * standardDeviation
     repeat(80) {

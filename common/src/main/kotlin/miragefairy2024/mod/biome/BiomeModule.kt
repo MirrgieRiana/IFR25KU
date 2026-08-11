@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource
 import net.minecraft.world.level.levelgen.synth.NormalNoise
+import org.apache.logging.log4j.LogManager.getLogger
 import terrablender.api.Region
 import terrablender.api.RegionType
 import terrablender.api.Regions
@@ -81,31 +82,41 @@ fun initBiomeModule() {
     // ノイズの平均は理論上厳密に0だから、標準偏差の導出に使う平均にも0を使うのだ✨
     // 平均に0を使うと分散が二乗和を個数で割ったものそのものになるから、標準偏差と個数だけで複数の結果を正しく集約できるのだ🌱
     registerServerDebugItem("debug_surface_noise_statistics", Blocks.COARSE_DIRT.toTextureSource(), 0xFFFFAA00.toInt()) { world, player, _, _ ->
-        val seedCount = 1000
-        val sampleCountPerSeed = 1000
-        val coordinateRange = 1_000_000
         val random = RandomSource.create()
-        fun nextCoordinate() = random.nextInt(-coordinateRange, coordinateRange).toDouble()
         SURFACE_NOISE_STANDARD_DEVIATIONS.forEach { (noiseKey, constantStandardDeviation) ->
             val noiseParameters = world.registryAccess()[Registries.NOISE, noiseKey].value()
             var count = 0L
-            var squareSum = 0.0
-            repeat(seedCount) {
+            var squaredSum = 0.0
+            repeat(1000) {
                 val noise = NormalNoise.create(XoroshiroRandomSource(random.nextLong()), noiseParameters)
-                repeat(sampleCountPerSeed) {
+                repeat(1000) {
+                    fun nextCoordinate() = random.nextIntBetweenInclusive(-1_000_000, 1_000_000).toDouble()
                     val value = noise.getValue(nextCoordinate(), 0.0, nextCoordinate())
                     count++
-                    squareSum += value * value
+                    squaredSum += value * value
                 }
             }
-            val standardDeviation = sqrt(squareSum / count.toDouble())
-            val statistics = listOf(
-                "standardDeviation=${standardDeviation formatAs "%.6f"}",
-                "count=$count",
-                "constant=$constantStandardDeviation",
-                "ratio=${(standardDeviation / constantStandardDeviation) formatAs "%.4f"}",
-            ).join(", ")
-            player.displayClientMessage(text { "${noiseKey.location()}: $statistics"() }, false)
+            val standardDeviation = sqrt(squaredSum / count.toDouble())
+            run {
+                val body = listOf(
+                    "noise=${noiseKey.location()}",
+                    "standardDeviation=${standardDeviation formatAs "%.6f"}",
+                    "count=$count",
+                    "constant=$constantStandardDeviation",
+                    "ratio=${(standardDeviation / constantStandardDeviation) formatAs "%.4f"}",
+                ).join(", ")
+                player.displayClientMessage(text { "${noiseKey.location()}: $body"() }, false)
+            }
+            run {
+                val body = listOf(
+                    "noise=${noiseKey.location()}",
+                    "standardDeviation=$standardDeviation",
+                    "count=$count",
+                    "constant=$constantStandardDeviation",
+                    "ratio=${standardDeviation / constantStandardDeviation}",
+                ).join(", ")
+                getLogger(object {}).info("${noiseKey.location()}: $body")
+            }
         }
     }
 

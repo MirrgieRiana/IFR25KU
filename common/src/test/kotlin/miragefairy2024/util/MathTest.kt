@@ -5,6 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class MathTest {
+
     /** [getNormalDistributionUpperProbability]が使っている近似式の、誤差の上限なのだ～🌱 */
     private val probabilityTolerance = 1.0E-7
 
@@ -86,7 +87,7 @@ class MathTest {
             (-30..30).forEach { i ->
                 val x = i / 10.0 * standardDeviation
                 val probability = getNormalDistributionUpperProbability(x, standardDeviation)
-                val actual = getNormalDistributionUpperProbabilityInverse(probability, standardDeviation)
+                val actual = getXFromNormalDistributionUpperProbability(probability, standardDeviation)
                 // 上側確率の傾きは端に行くほど緩やかになるから、許容する誤差も確率の誤差を傾きで割った大きさになるのだ🌱
                 val tolerance = 0.01 * standardDeviation
                 assertTrue(abs(actual - x) <= tolerance, "x=$x standardDeviation=$standardDeviation actual=$actual")
@@ -97,7 +98,7 @@ class MathTest {
     @Test
     fun `getNormalDistributionUpperProbabilityInverse returns zero for one half`() {
         listOf(0.3050, 0.3121, 1.0).forEach { standardDeviation ->
-            val actual = getNormalDistributionUpperProbabilityInverse(0.5, standardDeviation)
+            val actual = getXFromNormalDistributionUpperProbability(0.5, standardDeviation)
             assertTrue(abs(actual) <= 1.0E-9, "standardDeviation=$standardDeviation actual=$actual")
         }
     }
@@ -106,9 +107,10 @@ class MathTest {
     fun `getNormalDistributionUpperProbabilityInverse decreases monotonically`() {
         var previous = Double.MAX_VALUE
         (1..99).forEach { i ->
-            val actual = getNormalDistributionUpperProbabilityInverse(i / 100.0, 0.3121)
+            val actual = getXFromNormalDistributionUpperProbability(i / 100.0, 0.3121)
             assertTrue(actual < previous, "i=$i previous=$previous actual=$actual")
             previous = actual
         }
     }
+
 }
