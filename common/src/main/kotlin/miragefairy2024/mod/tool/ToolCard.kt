@@ -507,6 +507,34 @@ class ToolCard(
             PoemList(2).poem(EnJa("The oppressed Viska's desire", "傷つけられた幹の声。")),
             FairySwordConfiguration(ToolMaterialCard.HAIMEVISKA_ROSIN).enchantment(Enchantments.SWEEPING_EDGE, 3).collection().enchantment(Enchantments.UNBREAKING, 2),
         ) { registerSwordRecipeGeneration(item, MaterialCard.HAIMEVISKA_ROSIN.ore!!.tag) }
+
+        // コーパルツール一式なのだぁ～ 宝石として粗悪品だけど、粘着採掘の特性を持つのだぁ🌱
+        val COPAL_PICKAXE = !ToolCard(
+            "copal_pickaxe", EnJa("Copal Pickaxe", "コーパルのつるはし"),
+            PoemList(2).poem(EnJa("TODO", "TODO")),
+            FairyPickaxeConfiguration(ToolMaterialCard.COPAL).enchantment(EnchantmentCard.STICKY_MINING.key),
+        ) { registerPickaxeRecipeGeneration(item, MaterialCard.COPAL.ore!!.tag) }
+        val COPAL_AXE = !ToolCard(
+            "copal_axe", EnJa("Copal Axe", "コーパルの斧"),
+            PoemList(2).poem(EnJa("TODO", "TODO")),
+            FairyAxeConfiguration(ToolMaterialCard.COPAL).enchantment(EnchantmentCard.STICKY_MINING.key),
+        ) { registerAxeRecipeGeneration(item, MaterialCard.COPAL.ore!!.tag) }
+        val COPAL_SHOVEL = !ToolCard(
+            "copal_shovel", EnJa("Copal Shovel", "コーパルのシャベル"),
+            PoemList(2).poem(EnJa("TODO", "TODO")),
+            FairyShovelConfiguration(ToolMaterialCard.COPAL).enchantment(EnchantmentCard.STICKY_MINING.key),
+        ) { registerShovelRecipeGeneration(item, MaterialCard.COPAL.ore!!.tag) }
+        val COPAL_HOE = !ToolCard(
+            "copal_hoe", EnJa("Copal Hoe", "コーパルのクワ"),
+            PoemList(2).poem(EnJa("TODO", "TODO")),
+            FairyHoeConfiguration(ToolMaterialCard.COPAL).enchantment(EnchantmentCard.STICKY_MINING.key),
+        ) { registerHoeRecipeGeneration(item, MaterialCard.COPAL.ore!!.tag) }
+        val COPAL_SWORD = !ToolCard(
+            "copal_sword", EnJa("Copal Sword", "コーパルの剣"),
+            PoemList(2).poem(EnJa("TODO", "TODO")),
+            FairySwordConfiguration(ToolMaterialCard.COPAL).enchantment(Enchantments.SWEEPING_EDGE, 1).collection(),
+        ) { registerSwordRecipeGeneration(item, MaterialCard.COPAL.ore!!.tag) }
+
         val FAIRY_PLASTIC_PICKAXE = !ToolCard(
             "fairy_plastic_pickaxe", EnJa("Fairy Plastic Pickaxe", "妖精のプラスチックのつるはし"),
             PoemList(4).poem(EnJa("Nectar turns into fairies underground", "地脈を流れる大樹の血。")),
