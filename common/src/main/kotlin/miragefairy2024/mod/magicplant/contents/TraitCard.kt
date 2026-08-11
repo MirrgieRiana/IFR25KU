@@ -167,7 +167,7 @@ class TraitCard(
             "carnivorous_plant", "Carnivorous Plant", "食虫植物",
             "It captures small animals like insects and breaks them down with digestive fluids. This is one of the strategies for surviving in nutrient-poor soil.",
             "昆虫などの小動物を捕らえ、消化液により分解する。栄養の少ない土壌で生活するための戦略の一つである。",
-            listOf(), traitEffectKeyEntriesOf(TraitEffectKeyCard.NUTRITION to 0.2, TraitEffectKeyCard.SPINE_DAMAGE to 0.1),
+            listOf(), traitEffectKeyEntriesOf(TraitEffectKeyCard.NUTRITION to 0.2, TraitEffectKeyCard.PREDATION_DAMAGE to 0.1),
         )
         val ETHER_RESPIRATION = !TraitCard(
             "ether_respiration", "Ether Respiration", "エーテル呼吸",

@@ -3,6 +3,8 @@ package miragefairy2024.mod.magicplant
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.contents.StickyMiningSnapshot
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
+import miragefairy2024.mod.tool.CarnivorousPlantDamageTypeCard
+import miragefairy2024.mod.tool.DamageTypeCard
 import miragefairy2024.mod.tool.SpineDamageTypeCard
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.createItemStack
@@ -66,17 +68,18 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun entityInside(state: BlockState, level: Level, pos: BlockPos, entity: Entity) {
+        if (level.isClientSide) return
+        if (entity !is LivingEntity) return
+        val blockEntity = level.getMagicPlantBlockEntity(pos) ?: return
+        val traitStacks = blockEntity.getTraitStacks() ?: return
         // TODO 特性効果リファクタリングが来たら効率化する
-        if (entity is LivingEntity) {
-            val blockEntity = level.getMagicPlantBlockEntity(pos)
-            val traitStacks = blockEntity?.getTraitStacks() ?: return
-            val traitEffects = calculateTraitEffects(level, pos, blockEntity, traitStacks)
-            val spineDamage = traitEffects[TraitEffectKeyCard.SPINE_DAMAGE.traitEffectKey]
-            val damage = level.random.randomInt(spineDamage)
-            if (damage > 0) {
-                entity.hurt(level.damageSources().source(SpineDamageTypeCard.registryKey), damage.toFloat())
-            }
+        val traitEffects = calculateTraitEffects(level, pos, blockEntity, traitStacks)
+        fun hurt(traitEffectKeyCard: TraitEffectKeyCard, damageTypeCard: DamageTypeCard) {
+            val damage = level.random.randomInt(traitEffects[traitEffectKeyCard.traitEffectKey])
+            if (damage > 0) entity.hurt(level.damageSources().source(damageTypeCard.registryKey), damage.toFloat())
         }
+        hurt(TraitEffectKeyCard.SPINE_DAMAGE, SpineDamageTypeCard)
+        hurt(TraitEffectKeyCard.PREDATION_DAMAGE, CarnivorousPlantDamageTypeCard)
     }
 
 
