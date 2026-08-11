@@ -1,0 +1,31 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 3600,
+  "group": "miragefairy2024:brown_kohakuto",
+  "inputs": [
+    {
+      "Amount": 2,
+      "Ingredient": {
+        "item": "miragefairy2024:black_treacle"
+      }
+    },
+    {
+      "Amount": 2,
+      "Ingredient": {
+        "item": "minecraft:dried_kelp"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "fabric:type": "miragefairy2024:water_bottle"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 4,
+      "id": "miragefairy2024:brown_kohakuto"
+    }
+  ]
+}

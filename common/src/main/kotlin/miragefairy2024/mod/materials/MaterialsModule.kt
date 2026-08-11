@@ -1475,6 +1475,79 @@ class MaterialCard(
         ) {
             registerCompressionRecipeGeneration(item, { item().toIngredient() }, SOLID_FUEL.item, { SOLID_FUEL.item().toIngredient() }, 8)
         }
+
+        // 琥珀糖3種なのだ～🌱
+        // 現実の琥珀糖は寒天・甘味・水を煮溶かして型に流し、数日乾燥させた日本の伝統的な干菓子なのだ。
+        // アタノールで煮詰め・乾燥を再現するのだ。甘味の違いで白・黄・茶の3色にするのだ！
+
+        val WHITE_KOHAKUTO: MaterialCard = !MaterialCard(
+            "white_kohakuto", "White Kohakuto", "白い琥珀糖",
+            null,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(3)
+                    .saturationModifier(0.3F)
+                    .build()
+            },
+        ) {
+            // 砂糖＋乾燥昆布（寒天代わり）をアタノールで煮詰め・乾燥させるのだ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(Items.SUGAR.toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 2) },
+                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack(4) }),
+                duration = 20 * 60 * 3, // 3分：煮溶かし＋乾燥工程を表現するのだ
+            ) on { Items.SUGAR } from { Items.SUGAR }
+        }
+
+        val YELLOW_KOHAKUTO: MaterialCard = !MaterialCard(
+            "yellow_kohakuto", "Yellow Kohakuto", "黄色い琥珀糖",
+            null,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(3)
+                    .saturationModifier(0.3F)
+                    .build()
+            },
+        ) {
+            // ハイメヴィスカの樹液＋乾燥昆布（寒天代わり）をアタノールで煮詰め・乾燥させるのだ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(HAIMEVISKA_SAP.item().toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 2) },
+                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack(4) }),
+                duration = 20 * 60 * 3, // 3分：煮溶かし＋乾燥工程を表現するのだ
+            ) on HAIMEVISKA_SAP.item
+        }
+
+        val BROWN_KOHAKUTO: MaterialCard = !MaterialCard(
+            "brown_kohakuto", "Brown Kohakuto", "茶色い琥珀糖",
+            null,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(3)
+                    .saturationModifier(0.3F)
+                    .build()
+            },
+        ) {
+            // 黒蜜＋乾燥昆布（寒天代わり）をアタノールで煮詰め・乾燥させるのだ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(BLACK_TREACLE.item().toIngredient(), 2) },
+                    { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 2) },
+                    { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack(4) }),
+                duration = 20 * 60 * 3, // 3分：煮溶かし＋乾燥工程を表現するのだ
+            ) on BLACK_TREACLE.item
+        }
     }
 
     val identifier = MirageFairy2024.identifier(path)
