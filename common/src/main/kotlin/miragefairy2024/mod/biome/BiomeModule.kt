@@ -105,7 +105,7 @@ fun initBiomeModule() {
                     "constant=$constantStandardDeviation",
                     "ratio=${(standardDeviation / constantStandardDeviation) formatAs "%.4f"}",
                 ).join(", ")
-                player.displayClientMessage(text { "${noiseKey.location()}: $body"() }, false)
+                player.displayClientMessage(text { body() }, false)
             }
             run {
                 val body = listOf(
@@ -115,7 +115,7 @@ fun initBiomeModule() {
                     "constant=$constantStandardDeviation",
                     "ratio=${standardDeviation / constantStandardDeviation}",
                 ).join(", ")
-                getLogger(object {}).info("${noiseKey.location()}: $body")
+                getLogger(object {}).info(body)
             }
         }
     }

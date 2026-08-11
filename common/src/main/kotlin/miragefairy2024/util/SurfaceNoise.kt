@@ -20,7 +20,9 @@ val SURFACE_NOISE_STANDARD_DEVIATIONS = mapOf(
     Noises.SURFACE_SECONDARY to 0.3050,
 )
 
-private fun getStandardDeviation(noiseKey: ResourceKey<NormalNoise.NoiseParameters>) = SURFACE_NOISE_STANDARD_DEVIATIONS[noiseKey]!!
+private fun getStandardDeviation(noiseKey: ResourceKey<NormalNoise.NoiseParameters>): Double {
+    return SURFACE_NOISE_STANDARD_DEVIATIONS[noiseKey] ?: throw IllegalArgumentException("Standard deviation is not measured: ${noiseKey.location()}")
+}
 
 /**
  * 地表ルールの閾値から、ノイズがその閾値以上になる割合を求めるのだ～🌱
