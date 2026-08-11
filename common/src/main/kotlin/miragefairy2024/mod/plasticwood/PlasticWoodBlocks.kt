@@ -9,11 +9,7 @@ import miragefairy2024.mod.plasticwood.cards.PlasticTreeLeavesBlock
 import miragefairy2024.mod.plasticwood.cards.PlasticTreeLeavesBlockCard
 import miragefairy2024.mod.plasticwood.cards.PlasticTreeLogBlock
 import miragefairy2024.mod.plasticwood.cards.PlasticTreeLogBlockCard
-import miragefairy2024.mod.plasticwood.cards.PlasticTreePlanksBlockCard
 import miragefairy2024.mod.plasticwood.cards.PlasticTreeSaplingBlockCard
-import miragefairy2024.mod.plasticwood.cards.PlasticTreeStrippedLogBlockCard
-import miragefairy2024.mod.plasticwood.cards.PlasticTreeStrippedWoodBlockCard
-import miragefairy2024.mod.plasticwood.cards.PlasticTreeWoodBlockCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
@@ -55,22 +51,6 @@ abstract class PlasticWoodBlockCard(val configuration: PlasticWoodBlockConfigura
             "plastic_tree_log", EnJa("Plastic Tree Log", "プラノキの原木"),
             PoemList(1).poem(EnJa("TODO", "TODO")),
         ).let { PlasticTreeLogBlockCard(it) }
-        val WOOD = !PlasticWoodBlockConfiguration(
-            "plastic_tree_wood", EnJa("Plastic Tree Wood", "プラノキの木"),
-            PoemList(1).poem(EnJa("TODO", "TODO")),
-        ).let { PlasticTreeWoodBlockCard(it) }
-        val STRIPPED_LOG = !PlasticWoodBlockConfiguration(
-            "stripped_plastic_tree_log", EnJa("Stripped Plastic Tree Log", "樹皮を剥いだプラノキの原木"),
-            PoemList(1).poem(EnJa("TODO", "TODO")),
-        ).let { PlasticTreeStrippedLogBlockCard(it) }
-        val STRIPPED_WOOD = !PlasticWoodBlockConfiguration(
-            "stripped_plastic_tree_wood", EnJa("Stripped Plastic Tree Wood", "樹皮を剥いだプラノキの木"),
-            PoemList(1).poem(EnJa("TODO", "TODO")),
-        ).let { PlasticTreeStrippedWoodBlockCard(it) }
-        val PLANKS = !PlasticWoodBlockConfiguration(
-            "plastic_tree_planks", EnJa("Plastic Tree Planks", "プラノキの板材"),
-            PoemList(1).poem(EnJa("TODO", "TODO")),
-        ).let { PlasticTreePlanksBlockCard(it, LOG.item) }
         val SAPLING = !PlasticWoodBlockConfiguration(
             "plastic_tree_sapling", EnJa("Plastic Tree Sapling", "プラノキの苗木"),
             PoemList(1).poem(EnJa("TODO", "TODO")),
