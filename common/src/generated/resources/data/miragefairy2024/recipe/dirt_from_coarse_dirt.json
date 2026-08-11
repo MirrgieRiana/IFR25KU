@@ -1,0 +1,23 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 1200,
+  "group": "minecraft:dirt",
+  "inputs": [
+    {
+      "Amount": 8,
+      "Ingredient": {
+        "item": "minecraft:coarse_dirt"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 6,
+      "id": "minecraft:dirt"
+    },
+    {
+      "count": 1,
+      "id": "miragefairy2024:saltpeter"
+    }
+  ]
+}

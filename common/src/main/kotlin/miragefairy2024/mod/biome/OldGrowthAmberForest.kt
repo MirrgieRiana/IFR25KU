@@ -2,11 +2,13 @@ package miragefairy2024.mod.biome
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.getSurfaceNoiseThreshold
 import net.minecraft.core.HolderGetter
 import net.minecraft.data.worldgen.BiomeDefaultFeatures
 import net.minecraft.data.worldgen.placement.VegetationPlacements
@@ -100,19 +102,29 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
             SurfaceRules.ifTrue(
                 SurfaceRules.abovePreliminarySurface(),
                 SurfaceRules.ifTrue(
-                    SurfaceRules.ON_FLOOR,
+                    SurfaceRules.waterBlockCheck(-1, 0),
                     SurfaceRules.ifTrue(
-                        SurfaceRules.waterBlockCheck(-1, 0),
-                        SurfaceRules.ifTrue(
-                            SurfaceRules.isBiome(key),
-                            SurfaceRules.sequence(
+                        SurfaceRules.isBiome(key),
+                        SurfaceRules.sequence(
+                            // 地表だけでなく、その下に通常できる土の層ごと置き換えるのだぁ🌱
+                            SurfaceRules.ifTrue(
+                                SurfaceRules.UNDER_FLOOR,
                                 SurfaceRules.ifTrue(
-                                    SurfaceRules.noiseCondition(Noises.SURFACE, 1.75 / 8.25, Double.MAX_VALUE),
-                                    SurfaceRules.state(Blocks.COARSE_DIRT.defaultBlockState())
+                                    SurfaceRules.noiseCondition(Noises.SURFACE_SECONDARY, getSurfaceNoiseThreshold(Noises.SURFACE_SECONDARY, 0.61), Double.MAX_VALUE),
+                                    SurfaceRules.state(BlockMaterialCard.RESIN_CEMENTED_DIRT.block().defaultBlockState())
                                 ),
-                                SurfaceRules.ifTrue(
-                                    SurfaceRules.noiseCondition(Noises.SURFACE, -0.95 / 8.25, Double.MAX_VALUE),
-                                    SurfaceRules.state(Blocks.PODZOL.defaultBlockState())
+                            ),
+                            SurfaceRules.ifTrue(
+                                SurfaceRules.ON_FLOOR,
+                                SurfaceRules.sequence(
+                                    SurfaceRules.ifTrue(
+                                        SurfaceRules.noiseCondition(Noises.SURFACE, getSurfaceNoiseThreshold(Noises.SURFACE, 0.25), Double.MAX_VALUE),
+                                        SurfaceRules.state(Blocks.COARSE_DIRT.defaultBlockState())
+                                    ),
+                                    SurfaceRules.ifTrue(
+                                        SurfaceRules.noiseCondition(Noises.SURFACE, getSurfaceNoiseThreshold(Noises.SURFACE, 0.64), Double.MAX_VALUE),
+                                        SurfaceRules.state(Blocks.PODZOL.defaultBlockState())
+                                    ),
                                 ),
                             ),
                         ),

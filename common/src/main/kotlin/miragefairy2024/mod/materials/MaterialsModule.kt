@@ -708,7 +708,6 @@ class MaterialCard(
             PoemList(4).poem("Thermoplastic organic polymer", "凍てつく記憶の宿る石。"),
             fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.FAIRY_PLASTIC),
             // TODO advancement
-            // 琥珀色の～～
         )
         val FAIRY_RUBBER: MaterialCard = !MaterialCard(
             // TODO add purpose
@@ -870,6 +869,19 @@ class MaterialCard(
             register({ Items.DRIED_KELP }, 8, { Items.ROTTEN_FLESH }, 4)
             register({ Items.DRIED_KELP }, 8, { Items.FERMENTED_SPIDER_EYE }, 2)
 
+            // 荒い土の分解レシピ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(Items.COARSE_DIRT.toIngredient(), 8) },
+                ),
+                outputs = listOf(
+                    { Items.DIRT.createItemStack(6) },
+                    { item().createItemStack(1) },
+                ),
+                duration = 20 * 60,
+            ) on { Items.COARSE_DIRT } modId MirageFairy2024.MOD_ID from { Items.COARSE_DIRT }
+
             // →火薬
             registerShapelessRecipeGeneration({ Items.GUNPOWDER }, 9) {
                 repeat(6) {
@@ -925,6 +937,16 @@ class MaterialCard(
             "topaz", "Topaz", "トパーズ",
             null,
             ore = Ore(Shape.GEM, Material.TOPAZ),
+        )
+        val RETINITE: MaterialCard = !MaterialCard(
+            "retinite", "Retinite", "レチナイト",
+            null,
+            fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.RETINITE),
+        )
+        val COPAL: MaterialCard = !MaterialCard(
+            "copal", "Copal", "コーパル",
+            null,
+            fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.COPAL),
         )
 
         val TINY_BISMUTH_DUST: MaterialCard = !MaterialCard(
@@ -1584,7 +1606,7 @@ fun initMaterialsModule() {
             { SimpleMachineRecipe.Input(Items.WHEAT.toIngredient(), 1) },
             { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
         ),
-        outputs = listOf({ Items.BREAD.createItemStack(2) }),
+        outputs = listOf({ Items.BREAD.createItemStack() }),
         duration = 20 * 10,
     ) using "athanor" on { Items.WHEAT } modId MirageFairy2024.MOD_ID
 
@@ -1661,5 +1683,7 @@ enum class Material(val path: String, val prefix: EnJa) {
     SULFUR("sulfur", EnJa("Sulfur", "硫黄")),
     NEPHRITE("nephrite", EnJa("Nephrite", "ネフライト")),
     TOPAZ("topaz", EnJa("Topaz", "トパーズ")),
+    RETINITE("retinite", EnJa("Retinite", "レチナイト")),
+    COPAL("copal", EnJa("Copal", "コーパル")),
     BISMUTH("bismuth", EnJa("Bismuth", "ビスマス")),
 }

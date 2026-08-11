@@ -140,6 +140,35 @@ fun blockVisitor(
 
 }
 
+fun spaceVisitor(
+    world: Level,
+    originalBlockPos: BlockPos,
+    visitOrigins: Boolean = true,
+    maxDistance: Int = Int.MAX_VALUE,
+    ignoreOriginalWall: Boolean = false,
+    predicate: (blockPos: BlockPos) -> Boolean,
+): Sequence<Pair<Int, BlockPos>> {
+    return blockVisitor(listOf(originalBlockPos), visitOrigins = visitOrigins, maxDistance = maxDistance) { _, fromBlockPos, toBlockPos ->
+        if (fromBlockPos == null) return@blockVisitor true
+        if (!predicate(toBlockPos)) return@blockVisitor false
+        val offset = toBlockPos.subtract(fromBlockPos)
+        val direction = when {
+            offset.y == -1 -> Direction.DOWN
+            offset.y == 1 -> Direction.UP
+            offset.z == -1 -> Direction.NORTH
+            offset.z == 1 -> Direction.SOUTH
+            offset.x == -1 -> Direction.WEST
+            offset.x == 1 -> Direction.EAST
+            else -> throw AssertionError()
+        }
+        if (ignoreOriginalWall && fromBlockPos == originalBlockPos) {
+            !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite)
+        } else {
+            !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite) && !world.getBlockState(fromBlockPos).isFaceSturdy(world, fromBlockPos, direction)
+        }
+    }
+}
+
 /**
  * プレイヤーの動作としてブロックを壊します。
  *
@@ -232,24 +261,8 @@ fun collectItem(
     var remainingAmount = maxCount
     var processedCount = 0
     if (targetTable.isNotEmpty()) run finish@{
-        blockVisitor(listOf(originalBlockPos), maxDistance = reach) { _, fromBlockPos, toBlockPos ->
-            if (fromBlockPos == null) return@blockVisitor true
-            if (region != null && !region.isInside(toBlockPos)) return@blockVisitor false
-            val offset = toBlockPos.subtract(fromBlockPos)
-            val direction = when {
-                offset.y == -1 -> Direction.DOWN
-                offset.y == 1 -> Direction.UP
-                offset.z == -1 -> Direction.NORTH
-                offset.z == 1 -> Direction.SOUTH
-                offset.x == -1 -> Direction.WEST
-                offset.x == 1 -> Direction.EAST
-                else -> throw AssertionError()
-            }
-            if (ignoreOriginalWall && fromBlockPos == originalBlockPos) {
-                !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite)
-            } else {
-                !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite) && !world.getBlockState(fromBlockPos).isFaceSturdy(world, fromBlockPos, direction)
-            }
+        spaceVisitor(world, originalBlockPos, maxDistance = reach, ignoreOriginalWall = ignoreOriginalWall) { toBlockPos ->
+            region == null || region.isInside(toBlockPos)
         }.forEach { (_, blockPos) ->
             targetTable[blockPos]?.forEach {
 

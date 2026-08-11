@@ -14,10 +14,12 @@ import miragefairy2024.mod.tool.effects.enchantment
 import miragefairy2024.util.Translation
 import miragefairy2024.util.get
 import miragefairy2024.util.invoke
+import miragefairy2024.util.spaceVisitor
 import miragefairy2024.util.text
 import miragefairy2024.util.toBox
 import miragefairy2024.util.toRomanText
 import miragefairy2024.util.yellow
+import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.component.DataComponents
@@ -108,25 +110,21 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
             val itemStack = user.getItemInHand(hand)
             val blockHitResult = getPlayerPOVHitResult(world, user, ClipContext.Fluid.NONE)
             val blockPos = blockHitResult.blockPos
+            val region = BlockBox.of(blockPos.offset(-range, -range, -range), blockPos.offset(range, range, range))
             var effective = false
-            // TODO 貫通判定
             withStickyMining(world, blockPos, range, user, itemStack) {
-                (-range..range).forEach { x ->
-                    (-range..range).forEach { y ->
-                        (-range..range).forEach { z ->
-                            val targetBlockPos = blockPos.offset(x, y, z)
-                            val targetBlockState = world.getBlockState(targetBlockPos)
-                            when (val targetBlock = targetBlockState.block) {
-                                is MagicPlantBlock -> {
-                                    val result = targetBlock.tryPick(world, targetBlockPos, user, itemStack, true, false)
-                                    if (result) effective = true
-                                }
+                spaceVisitor(world, blockPos) { it in region }.forEach { (_, targetBlockPos) ->
+                    val targetBlockState = world.getBlockState(targetBlockPos)
+                    when (val targetBlock = targetBlockState.block) {
+                        is MagicPlantBlock -> {
+                            val result = targetBlock.tryPick(world, targetBlockPos, user, itemStack, true, false)
+                            if (result) effective = true
+                        }
 
-                                is SweetBerryBushBlock, is CaveVines -> {
-                                    val result = targetBlockState.useWithoutItem(world, user, BlockHitResult(blockHitResult.location.add(x.toDouble(), y.toDouble(), z.toDouble()), blockHitResult.direction, targetBlockPos, false))
-                                    if (result.consumesAction()) effective = true
-                                }
-                            }
+                        is SweetBerryBushBlock, is CaveVines -> {
+                            val offset = targetBlockPos.subtract(blockPos)
+                            val result = targetBlockState.useWithoutItem(world, user, BlockHitResult(blockHitResult.location.add(offset.x.toDouble(), offset.y.toDouble(), offset.z.toDouble()), blockHitResult.direction, targetBlockPos, false))
+                            if (result.consumesAction()) effective = true
                         }
                     }
                 }
@@ -155,19 +153,13 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
     override fun postTryPick(world: Level, blockPos: BlockPos, player: Player?, itemStack: ItemStack, succeed: Boolean) {
         if (world.isClientSide) return
         if (player?.isShiftKeyDown == true) return
+        val region = BlockBox.of(blockPos.offset(-range, -range, -range), blockPos.offset(range, range, range))
         withStickyMining(world, blockPos, range, player, itemStack) {
-            (-range..range).forEach { x ->
-                (-range..range).forEach { y ->
-                    (-range..range).forEach { z ->
-                        if (x != 0 || y != 0 || z != 0) {
-                            val targetBlockPos = blockPos.offset(x, y, z)
-                            val targetBlockState = world.getBlockState(targetBlockPos)
-                            val targetBlock = targetBlockState.block
-                            if (targetBlock is MagicPlantBlock) {
-                                targetBlock.tryPick(world, targetBlockPos, player, itemStack, true, false)
-                            }
-                        }
-                    }
+            spaceVisitor(world, blockPos, visitOrigins = false) { it in region }.forEach { (_, targetBlockPos) ->
+                val targetBlockState = world.getBlockState(targetBlockPos)
+                val targetBlock = targetBlockState.block
+                if (targetBlock is MagicPlantBlock) {
+                    targetBlock.tryPick(world, targetBlockPos, player, itemStack, true, false)
                 }
             }
         }
