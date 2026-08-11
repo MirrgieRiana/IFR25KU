@@ -92,8 +92,6 @@ dependencies {
 
     modCompileOnly("dev.emi:emi-fabric:${libs.versions.emi.get()}:api")
 
-    testImplementation(kotlin("test"))
-
 }
 configurations.named("architecturyTransformerClasspath") {
     extendsFrom(configurations.named("clientCompileClasspath").get()) // transformProductionFabric でバニラのclient用クラスが見れなくて死ぬ対策
@@ -101,8 +99,4 @@ configurations.named("architecturyTransformerClasspath") {
 
 tasks.named<Jar>("jar") {
     duplicatesStrategy = DuplicatesStrategy.WARN // clientとmainのclassの出力先を分けた関係で IFR25KU-common.kotlin_module がclientとmainで重複するため
-}
-
-tasks.named<Test>("test") {
-    useJUnitPlatform()
 }

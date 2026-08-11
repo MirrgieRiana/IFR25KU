@@ -24,7 +24,7 @@ class MathTest {
     )
 
     @Test
-    fun `getNormalDistributionUpperProbability returns known values of the standard normal distribution`() {
+    fun `getNormalDistributionUpperProbabilityは標準正規分布の既知の値を返すのだ`() {
         standardNormalDistributionUpperProbabilities.forEach { (x, expected) ->
             val actual = getNormalDistributionUpperProbability(x, 1.0)
             assertTrue(abs(actual - expected) <= probabilityTolerance, "x=$x expected=$expected actual=$actual")
@@ -32,7 +32,7 @@ class MathTest {
     }
 
     @Test
-    fun `getNormalDistributionUpperProbability scales with the standard deviation`() {
+    fun `getNormalDistributionUpperProbabilityはxと標準偏差の比だけで決まるのだ`() {
         // 上側確率は、xと標準偏差の比だけで決まるのだ～🌱
         listOf(0.3050, 0.3121, 2.0).forEach { standardDeviation ->
             standardNormalDistributionUpperProbabilities.forEach { (x, expected) ->
@@ -43,7 +43,7 @@ class MathTest {
     }
 
     @Test
-    fun `getNormalDistributionUpperProbability is symmetric around zero`() {
+    fun `getNormalDistributionUpperProbabilityは0を中心に対称なのだ`() {
         listOf(0.0, 0.25, 0.5, 1.0, 2.0, 3.0, 5.0).forEach { x ->
             val sum = getNormalDistributionUpperProbability(x, 0.3121) + getNormalDistributionUpperProbability(-x, 0.3121)
             assertTrue(abs(sum - 1.0) <= probabilityTolerance * 2.0, "x=$x sum=$sum")
@@ -51,7 +51,7 @@ class MathTest {
     }
 
     @Test
-    fun `getNormalDistributionUpperProbability decreases monotonically within the unsaturated range`() {
+    fun `getNormalDistributionUpperProbabilityは飽和しない範囲で単調減少するのだ`() {
         // 標準偏差の8倍より遠いところでは、返る値が0か1に飽和するから、厳密な単調減少はその内側でのみ成り立つのだ～🌱
         val standardDeviation = 0.3050
         var previous = Double.MAX_VALUE
@@ -63,7 +63,7 @@ class MathTest {
     }
 
     @Test
-    fun `getNormalDistributionUpperProbability never increases`() {
+    fun `getNormalDistributionUpperProbabilityは決して増加しないのだ`() {
         var previous = Double.MAX_VALUE
         (-1000..1000).forEach { i ->
             val actual = getNormalDistributionUpperProbability(i / 10.0, 0.3050)
@@ -73,7 +73,7 @@ class MathTest {
     }
 
     @Test
-    fun `getNormalDistributionUpperProbability stays within the unit interval`() {
+    fun `getNormalDistributionUpperProbabilityは0以上1以下に収まるのだ`() {
         (-1000..1000).forEach { i ->
             val actual = getNormalDistributionUpperProbability(i / 10.0, 0.3121)
             assertTrue(actual in 0.0..1.0, "i=$i actual=$actual")
@@ -81,7 +81,7 @@ class MathTest {
     }
 
     @Test
-    fun `getNormalDistributionUpperProbabilityInverse recovers the argument`() {
+    fun `getXFromNormalDistributionUpperProbabilityは元のxを復元するのだ`() {
         // 二分探索の範囲は標準偏差の100倍までだから、その内側で確かめるのだ～🌱
         listOf(0.3050, 0.3121, 1.0).forEach { standardDeviation ->
             (-30..30).forEach { i ->
@@ -96,7 +96,7 @@ class MathTest {
     }
 
     @Test
-    fun `getNormalDistributionUpperProbabilityInverse returns zero for one half`() {
+    fun `getXFromNormalDistributionUpperProbabilityは確率が2分の1のとき0を返すのだ`() {
         listOf(0.3050, 0.3121, 1.0).forEach { standardDeviation ->
             val actual = getXFromNormalDistributionUpperProbability(0.5, standardDeviation)
             assertTrue(abs(actual) <= 1.0E-9, "standardDeviation=$standardDeviation actual=$actual")
@@ -104,7 +104,7 @@ class MathTest {
     }
 
     @Test
-    fun `getNormalDistributionUpperProbabilityInverse decreases monotonically`() {
+    fun `getXFromNormalDistributionUpperProbabilityは単調減少するのだ`() {
         var previous = Double.MAX_VALUE
         (1..99).forEach { i ->
             val actual = getXFromNormalDistributionUpperProbability(i / 100.0, 0.3121)
