@@ -39,7 +39,8 @@ class HaimeviskaSaplingBlockCard(configuration: HaimeviskaBlockConfiguration, pr
         .pushReaction(PushReaction.DESTROY)
 
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = SaplingBlock(
-        TreeGrower(treeGrowerName.string, Optional.empty(), Optional.of(HAIMEVISKA_CONFIGURED_FEATURE_KEY), Optional.empty()),
+        // 2x2に苗木を植えないと育たない仕様にするため、megaTree に設定するのだ
+        TreeGrower(treeGrowerName.string, Optional.of(HAIMEVISKA_CONFIGURED_FEATURE_KEY), Optional.empty(), Optional.empty()),
         properties,
     )
 

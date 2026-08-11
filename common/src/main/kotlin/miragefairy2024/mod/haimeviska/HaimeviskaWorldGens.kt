@@ -29,8 +29,7 @@ import net.minecraft.world.level.levelgen.feature.foliageplacers.FancyFoliagePla
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType
-import net.minecraft.world.level.levelgen.feature.trunkplacers.FancyTrunkPlacer
-import java.util.OptionalInt
+import net.minecraft.world.level.levelgen.feature.trunkplacers.GiantTrunkPlacer
 
 object HaimeviskaTreeDecoratorCard {
     val identifier = MirageFairy2024.identifier("haimeviska")
@@ -55,10 +54,10 @@ fun initHaimeviskaWorldGens() {
         registerConfiguredFeature(HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
             TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(HaimeviskaBlockCard.LOG.block()),
-                FancyTrunkPlacer(22, 10, 0), // 最大32
+                GiantTrunkPlacer(22, 10, 0), // 2x2の太い幹、最大32
                 BlockStateProvider.simple(HaimeviskaBlockCard.LEAVES.block()),
                 FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(2), 4),
-                TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)),
+                TwoLayersFeatureSize(1, 1, 2),
             ).ignoreVines().decorators(listOf(HaimeviskaTreeDecoratorCard.treeDecorator)).build()
         }.generator {
 
@@ -83,10 +82,11 @@ class HaimeviskaTreeDecorator : TreeDecorator() {
             if (!generator.level().isStateAtPosition(blockPos) { it == HaimeviskaBlockCard.LOG.block().defaultBlockState().with(RotatedPillarBlock.AXIS, Direction.Axis.Y) }) return@forEach // 垂直の幹のみ
             val direction = Direction.from2DDataValue(generator.random().nextInt(4))
             if (!generator.isAir(blockPos.relative(direction))) return@forEach // 正面が空気の場合のみ
+            // 2x2幹では幹ブロック数が約4倍になるため、装飾の出現確率を約1/4に調整するのだ
             val r = generator.random().nextInt(100)
-            if (r < 25) {
+            if (r < 6) {
                 generator.setBlock(blockPos, HaimeviskaBlockCard.DRIPPING_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
-            } else if (r < 35) {
+            } else if (r < 9) {
                 generator.setBlock(blockPos, HaimeviskaBlockCard.HOLLOW_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
             }
         }
