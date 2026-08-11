@@ -5,6 +5,8 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.description
+import miragefairy2024.mod.plasticwood.cards.DrippingPlasticTreeLogBlock
+import miragefairy2024.mod.plasticwood.cards.PlasticTreeDrippingLogBlockCard
 import miragefairy2024.mod.plasticwood.cards.PlasticTreeLeavesBlock
 import miragefairy2024.mod.plasticwood.cards.PlasticTreeLeavesBlockCard
 import miragefairy2024.mod.plasticwood.cards.PlasticTreeLogBlock
@@ -51,6 +53,10 @@ abstract class PlasticWoodBlockCard(val configuration: PlasticWoodBlockConfigura
             "plastic_tree_log", EnJa("Plastic Tree Log", "プラノキの原木"),
             PoemList(1).poem(EnJa("TODO", "TODO")),
         ).let { PlasticTreeLogBlockCard(it) }
+        val DRIPPING_LOG = !PlasticWoodBlockConfiguration(
+            "dripping_plastic_tree_log", EnJa("Dripping Plastic Tree Log", "樹液が滴るプラノキの原木"),
+            PoemList(1).poem(EnJa("TODO", "TODO")),
+        ).let { PlasticTreeDrippingLogBlockCard(it) }
         val SAPLING = !PlasticWoodBlockConfiguration(
             "plastic_tree_sapling", EnJa("Plastic Tree Sapling", "プラノキの苗木"),
             PoemList(1).poem(EnJa("TODO", "TODO")),
@@ -101,6 +107,7 @@ fun initPlasticWoodBlocks() {
 
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("plastic_tree_leaves")) { PlasticTreeLeavesBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("plastic_tree_log")) { PlasticTreeLogBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("dripping_plastic_tree_log")) { DrippingPlasticTreeLogBlock.CODEC }.register()
 
     // タグ
     PLASTIC_TREE_LOGS_BLOCK_TAG.enJa(EnJa("Plastic Tree Logs", "プラノキの原木"))
