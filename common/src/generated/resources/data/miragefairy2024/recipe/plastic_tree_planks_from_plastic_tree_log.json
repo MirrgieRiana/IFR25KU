@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:plastic_tree_planks",
+  "ingredients": [
+    {
+      "item": "miragefairy2024:plastic_tree_log"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "miragefairy2024:plastic_tree_planks"
+  }
+}

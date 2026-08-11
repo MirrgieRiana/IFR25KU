@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "miragefairy2024:block/stripped_plastic_tree_wood",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "miragefairy2024:block/stripped_plastic_tree_wood"
+    },
+    "axis=z": {
+      "model": "miragefairy2024:block/stripped_plastic_tree_wood",
+      "x": 90
+    }
+  }
+}
