@@ -12,6 +12,7 @@ import miragefairy2024.mod.plasticwood.createPlasticTreeBaseWoodSetting
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.generator
 import miragefairy2024.util.get
+import miragefairy2024.util.isNotIn
 import miragefairy2024.util.on
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerDefaultLootTableGeneration
@@ -19,15 +20,30 @@ import miragefairy2024.util.registerFlammable
 import miragefairy2024.util.registerShapedRecipeGeneration
 import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.toItemTag
+import miragefairy2024.util.with
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry
+import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.data.models.BlockModelGenerators.WoodProvider
+import net.minecraft.sounds.SoundEvents
+import net.minecraft.sounds.SoundSource
+import net.minecraft.stats.Stats
 import net.minecraft.tags.BlockTags
+import net.minecraft.tags.ItemTags
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.ItemInteractionResult
+import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
+import net.minecraft.world.phys.BlockHitResult
 
 // プラノキ原木系のブロックカードの抽象基底クラスなのだ
 abstract class AbstractPlasticTreeLogBlockCard(configuration: PlasticWoodBlockConfiguration) : PlasticWoodBlockCard(configuration) {
@@ -71,7 +87,7 @@ abstract class AbstractPlasticTreeLogBlockCard(configuration: PlasticWoodBlockCo
     }
 }
 
-// 通常のプラノキ原木カードなのだ。樹液の仕組みは次のPRで追加するのだ
+// 通常のプラノキ原木カードなのだ
 class PlasticTreeLogBlockCard(configuration: PlasticWoodBlockConfiguration) : AbstractPlasticTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { if (it[RotatedPillarBlock.AXIS] === Direction.Axis.Y) MapColor.SAND else MapColor.COLOR_YELLOW }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = PlasticTreeLogBlock(properties)
@@ -128,11 +144,29 @@ class PlasticTreeStrippedWoodBlockCard(configuration: PlasticWoodBlockConfigurat
     }
 }
 
-// プラノキ原木ブロッククラスなのだ。樹液の仕組みは次のPRで追加するのだ
+// プラノキ原木ブロッククラスなのだ。剣で傷を付けると傷原木に変わるのだ
+@Suppress("OVERRIDE_DEPRECATION")
 class PlasticTreeLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
     companion object {
         val CODEC: MapCodec<PlasticTreeLogBlock> = simpleCodec(::PlasticTreeLogBlock)
     }
 
     override fun codec() = CODEC
+
+    override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
+        if (state[AXIS] != Direction.Axis.Y) @Suppress("DEPRECATION") return super.useItemOn(stack, state, level, pos, player, hand, hitResult) // 縦方向でなければスルー
+        if (stack isNotIn ItemTags.SWORDS) @Suppress("DEPRECATION") return super.useItemOn(stack, state, level, pos, player, hand, hitResult) // 剣でなければスルー
+        if (level.isClientSide) return ItemInteractionResult.SUCCESS
+        val direction = if (hitResult.direction.axis === Direction.Axis.Y) player.direction.opposite else hitResult.direction
+
+        // 加工するのだ
+        stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand))
+        level.setBlock(pos, PlasticWoodBlockCard.INCISED_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
+        player.awardStat(Stats.ITEM_USED.get(stack.item))
+
+        // エフェクト
+        level.playSound(null, pos, SoundEvents.PUMPKIN_CARVE, SoundSource.BLOCKS, 1.0F, 1.0F)
+
+        return ItemInteractionResult.CONSUME
+    }
 }

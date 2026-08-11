@@ -5,11 +5,16 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.description
+import miragefairy2024.mod.plasticwood.cards.DrippingPlasticTreeLogBlock
+import miragefairy2024.mod.plasticwood.cards.IncisedPlasticTreeLogBlock
+import miragefairy2024.mod.plasticwood.cards.PlasticTreeDrippingLogBlockCard
+import miragefairy2024.mod.plasticwood.cards.PlasticTreeIncisedLogBlockCard
 import miragefairy2024.mod.plasticwood.cards.PlasticTreeLeavesBlock
 import miragefairy2024.mod.plasticwood.cards.PlasticTreeLeavesBlockCard
 import miragefairy2024.mod.plasticwood.cards.PlasticTreeLogBlock
 import miragefairy2024.mod.plasticwood.cards.PlasticTreeLogBlockCard
 import miragefairy2024.mod.plasticwood.cards.PlasticTreePlanksBlockCard
+import miragefairy2024.mod.plasticwood.cards.PlasticTreeSapBlockCard
 import miragefairy2024.mod.plasticwood.cards.PlasticTreeSaplingBlockCard
 import miragefairy2024.mod.plasticwood.cards.PlasticTreeStrippedLogBlockCard
 import miragefairy2024.mod.plasticwood.cards.PlasticTreeStrippedWoodBlockCard
@@ -53,7 +58,9 @@ abstract class PlasticWoodBlockCard(val configuration: PlasticWoodBlockConfigura
         ).let { PlasticTreeLeavesBlockCard(it) }
         val LOG = !PlasticWoodBlockConfiguration(
             "plastic_tree_log", EnJa("Plastic Tree Log", "プラノキの原木"),
-            PoemList(1).poem(EnJa("TODO", "TODO")),
+            PoemList(1)
+                .poem(EnJa("TODO", "TODO"))
+                .description(EnJa("Can be incised with a sword", "剣を使って傷を付けられる")),
         ).let { PlasticTreeLogBlockCard(it) }
         val WOOD = !PlasticWoodBlockConfiguration(
             "plastic_tree_wood", EnJa("Plastic Tree Wood", "プラノキの木"),
@@ -67,6 +74,18 @@ abstract class PlasticWoodBlockCard(val configuration: PlasticWoodBlockConfigura
             "stripped_plastic_tree_wood", EnJa("Stripped Plastic Tree Wood", "樹皮を剥いだプラノキの木"),
             PoemList(1).poem(EnJa("TODO", "TODO")),
         ).let { PlasticTreeStrippedWoodBlockCard(it) }
+        val INCISED_LOG = !PlasticWoodBlockConfiguration(
+            "incised_plastic_tree_log", EnJa("Incised Plastic Tree Log", "傷の付いたプラノキの原木"),
+            PoemList(1)
+                .poem(EnJa("TODO", "TODO"))
+                .description(EnJa("Produces sap over time", "時間経過で樹液を生産")),
+        ).let { PlasticTreeIncisedLogBlockCard(it) }
+        val DRIPPING_LOG = !PlasticWoodBlockConfiguration(
+            "dripping_plastic_tree_log", EnJa("Dripping Plastic Tree Log", "滴るプラノキの原木"),
+            PoemList(1)
+                .poem(EnJa("TODO", "TODO"))
+                .description(EnJa("Harvest sap when used", "使用時、樹液を収穫")),
+        ).let { PlasticTreeDrippingLogBlockCard(it) }
         val PLANKS = !PlasticWoodBlockConfiguration(
             "plastic_tree_planks", EnJa("Plastic Tree Planks", "プラノキの板材"),
             PoemList(1).poem(EnJa("TODO", "TODO")),
@@ -75,6 +94,9 @@ abstract class PlasticWoodBlockCard(val configuration: PlasticWoodBlockConfigura
             "plastic_tree_sapling", EnJa("Plastic Tree Sapling", "プラノキの苗木"),
             PoemList(1).poem(EnJa("TODO", "TODO")),
         ).let { PlasticTreeSaplingBlockCard(it, MirageFairy2024.identifier("plastic_tree")) }
+
+        // アイテムカード（ブロックではなくアイテムとして管理するのだ）
+        val SAP = PlasticTreeSapBlockCard()
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)
@@ -119,8 +141,13 @@ fun initPlasticWoodBlocks() {
         card.init()
     }
 
+    // アイテムの初期化
+    PlasticWoodBlockCard.SAP.init()
+
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("plastic_tree_leaves")) { PlasticTreeLeavesBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("plastic_tree_log")) { PlasticTreeLogBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("incised_plastic_tree_log")) { IncisedPlasticTreeLogBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("dripping_plastic_tree_log")) { DrippingPlasticTreeLogBlock.CODEC }.register()
 
     // タグ
     PLASTIC_TREE_LOGS_BLOCK_TAG.enJa(EnJa("Plastic Tree Logs", "プラノキの原木"))
