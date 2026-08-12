@@ -83,6 +83,10 @@ class DrippingHaimeviskaLogBlock(settings: Properties) : SimpleHorizontalFacingB
 
     override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
         if (level.isClientSide) return ItemInteractionResult.SUCCESS
+
+        // シルクタッチの場合は追加ドロップを出さないのだ
+        if (EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, Enchantments.SILK_TOUCH], stack) > 0) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION
+
         val direction = state[FACING]
 
         // 消費
