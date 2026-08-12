@@ -697,6 +697,34 @@ open class BlockMaterialCard(
                 requires(item())
             } on item modId MirageFairy2024.MOD_ID from item
         }
+        val KOHAKUTO_BLOCK: BlockMaterialCard = !object : BlockMaterialCard(
+            "kohakuto_block", EnJa("Kohakuto Block", "琥珀糖ブロック"),
+            PoemList(null),
+            MapColor.COLOR_YELLOW, 0.3F, 0.3F,
+        ) {
+            // 現実の琥珀糖と同じく半透明なのだ。氷のような見た目を持つのだ。
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
+                .instrument(NoteBlockInstrument.HAT)
+                .noOcclusion()
+                .isRedstoneConductor(Blocks::never)
+                .isSuffocating(Blocks::never)
+                .isViewBlocking(Blocks::never)
+
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
+        }.sound(SoundType.GLASS).translucent().init {
+            // 琥珀糖9個と相互変換するのだ
+            registerCompressionRecipeGeneration(MaterialCard.KOHAKUTO.item, { MaterialCard.KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
+            // 昆布ブロック＋砂糖36個からアタノールで直接作れるのだ（時短一括クラフトなのだ）
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(Items.SUGAR.toIngredient(), 36) },
+                    { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack() }),
+                duration = 20 * 60 * 5, // 5分なのだ
+            ) on { Items.SUGAR } from { Items.DRIED_KELP_BLOCK }
+        }
         val RESIN_CEMENTED_DIRT: BlockMaterialCard = !object : BlockMaterialCard(
             "resin_cemented_dirt", EnJa("Resin-Cemented Dirt", "石化した樹脂状の土"),
             PoemList(1).poem(EnJa("Antimicrobial terpenes prevent decay.", "電気の由来を語る土。")),
