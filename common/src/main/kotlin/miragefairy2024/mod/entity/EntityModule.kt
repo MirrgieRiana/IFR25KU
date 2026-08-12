@@ -7,4 +7,5 @@ fun initEntityModule() {
     AntimatterBoltCard.init()
     ChaosCubeCard.init()
     EtheroballisticBoltCard.init()
+    FairyWispCard.init()
 }
