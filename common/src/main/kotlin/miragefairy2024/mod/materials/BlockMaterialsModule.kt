@@ -714,16 +714,78 @@ open class BlockMaterialCard(
         }.sound(SoundType.GLASS).translucent().init {
             // 琥珀糖9個と相互変換するのだ
             registerCompressionRecipeGeneration(MaterialCard.KOHAKUTO.item, { MaterialCard.KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
-            // 昆布ブロック＋砂糖36個からアタノールで直接作れるのだ（時短一括クラフトなのだ）
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { SimpleMachineRecipe.Input(Items.SUGAR.toIngredient(), 36) },
-                    { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5, // 5分なのだ
-            ) on { Items.SUGAR } from { Items.DRIED_KELP_BLOCK }
+        }
+        val HAIMEVISKA_KOHAKUTO_BLOCK: BlockMaterialCard = !object : BlockMaterialCard(
+            "haimeviska_kohakuto_block", EnJa("Haimeviska Kohakuto Block", "ハイメヴィスカの琥珀糖ブロック"),
+            PoemList(null),
+            MapColor.COLOR_ORANGE, 0.3F, 0.3F,
+        ) {
+            // 現実の琥珀糖と同じく半透明なのだ。氷のような見た目を持つのだ。
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
+                .instrument(NoteBlockInstrument.HAT)
+                .noOcclusion()
+                .isRedstoneConductor(Blocks::never)
+                .isSuffocating(Blocks::never)
+                .isViewBlocking(Blocks::never)
+
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
+        }.sound(SoundType.GLASS).translucent().init {
+            // ハイメヴィスカの琥珀糖9個と相互変換するのだ
+            registerCompressionRecipeGeneration(MaterialCard.HAIMEVISKA_KOHAKUTO.item, { MaterialCard.HAIMEVISKA_KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
+        }
+        val BLACK_TREACLE_KOHAKUTO_BLOCK: BlockMaterialCard = !object : BlockMaterialCard(
+            "black_treacle_kohakuto_block", EnJa("Black Treacle Kohakuto Block", "黒蜜の琥珀糖ブロック"),
+            PoemList(null),
+            MapColor.COLOR_BROWN, 0.3F, 0.3F,
+        ) {
+            // 現実の琥珀糖と同じく半透明なのだ。氷のような見た目を持つのだ。
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
+                .instrument(NoteBlockInstrument.HAT)
+                .noOcclusion()
+                .isRedstoneConductor(Blocks::never)
+                .isSuffocating(Blocks::never)
+                .isViewBlocking(Blocks::never)
+
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
+        }.sound(SoundType.GLASS).translucent().init {
+            // 黒蜜の琥珀糖9個と相互変換するのだ
+            registerCompressionRecipeGeneration(MaterialCard.BLACK_TREACLE_KOHAKUTO.item, { MaterialCard.BLACK_TREACLE_KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
+        }
+        val MERRRRIA_KOHAKUTO_BLOCK: BlockMaterialCard = !object : BlockMaterialCard(
+            "merrrria_kohakuto_block", EnJa("Merrrria Kohakuto Block", "月の琥珀糖ブロック"),
+            PoemList(null),
+            MapColor.COLOR_LIGHT_BLUE, 0.3F, 0.3F,
+        ) {
+            // 現実の琥珀糖と同じく半透明なのだ。氷のような見た目を持つのだ。
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
+                .instrument(NoteBlockInstrument.HAT)
+                .noOcclusion()
+                .isRedstoneConductor(Blocks::never)
+                .isSuffocating(Blocks::never)
+                .isViewBlocking(Blocks::never)
+
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
+        }.sound(SoundType.GLASS).translucent().init {
+            // 月の琥珀糖9個と相互変換するのだ
+            registerCompressionRecipeGeneration(MaterialCard.MERRRRIA_KOHAKUTO.item, { MaterialCard.MERRRRIA_KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
+        }
+        val PHANTOM_KOHAKUTO_BLOCK: BlockMaterialCard = !object : BlockMaterialCard(
+            "phantom_kohakuto_block", EnJa("Phantom Kohakuto Block", "幻想の琥珀糖ブロック"),
+            PoemList(null),
+            MapColor.COLOR_PURPLE, 0.3F, 0.3F,
+        ) {
+            // 現実の琥珀糖と同じく半透明なのだ。氷のような見た目を持つのだ。
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
+                .instrument(NoteBlockInstrument.HAT)
+                .noOcclusion()
+                .isRedstoneConductor(Blocks::never)
+                .isSuffocating(Blocks::never)
+                .isViewBlocking(Blocks::never)
+
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
+        }.sound(SoundType.GLASS).translucent().init {
+            // 幻想の琥珀糖9個と相互変換するのだ
+            registerCompressionRecipeGeneration(MaterialCard.PHANTOM_KOHAKUTO.item, { MaterialCard.PHANTOM_KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
         }
         val RESIN_CEMENTED_DIRT: BlockMaterialCard = !object : BlockMaterialCard(
             "resin_cemented_dirt", EnJa("Resin-Cemented Dirt", "石化した樹脂状の土"),
