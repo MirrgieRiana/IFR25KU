@@ -1512,6 +1512,10 @@ class MaterialCard(
                 outputs = listOf({ item().createItemStack(9) }),
                 duration = 20 * 60 * 5, // 5分：1個のときと同じ加工時間なのだ
             ) on { Items.SUGAR } from { Items.DRIED_KELP_BLOCK }
+            // 甘味である砂糖と、寒天代わりの乾燥した昆布が材料なのだ
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + Items.SUGAR + Items.DRIED_KELP
+            }
         }
 
         val HAIMEVISKA_KOHAKUTO: MaterialCard = !MaterialCard(
@@ -1545,6 +1549,10 @@ class MaterialCard(
                 outputs = listOf({ item().createItemStack(9) }),
                 duration = 20 * 60 * 5,
             ) on HAIMEVISKA_SAP.item from { Items.DRIED_KELP_BLOCK }
+            // 甘味であるハイメヴィスカの樹液と、寒天代わりの乾燥した昆布が材料なのだ
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + HAIMEVISKA_SAP.item() + Items.DRIED_KELP
+            }
         }
 
         val BLACK_TREACLE_KOHAKUTO: MaterialCard = !MaterialCard(
@@ -1578,6 +1586,10 @@ class MaterialCard(
                 outputs = listOf({ item().createItemStack(9) }),
                 duration = 20 * 60 * 5,
             ) on BLACK_TREACLE.item from { Items.DRIED_KELP_BLOCK }
+            // 甘味である黒蜜と、寒天代わりの乾燥した昆布が材料なのだ
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + BLACK_TREACLE.item() + Items.DRIED_KELP
+            }
         }
 
         val MERRRRIA_KOHAKUTO: MaterialCard = !MaterialCard(
@@ -1611,6 +1623,10 @@ class MaterialCard(
                 outputs = listOf({ item().createItemStack(9) }),
                 duration = 20 * 60 * 5,
             ) on MERRRRIA_DROP.item from { Items.DRIED_KELP_BLOCK }
+            // 甘味である月のしずくと、寒天代わりの乾燥した昆布が材料なのだ
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + MERRRRIA_DROP.item() + Items.DRIED_KELP
+            }
         }
 
         val PHANTOM_KOHAKUTO: MaterialCard = !MaterialCard(
@@ -1644,6 +1660,10 @@ class MaterialCard(
                 outputs = listOf({ item().createItemStack(9) }),
                 duration = 20 * 60 * 5,
             ) on PHANTOM_DROP.item from { Items.DRIED_KELP_BLOCK }
+            // 甘味である幻想の雫と、寒天代わりの乾燥した昆布が材料なのだ
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + PHANTOM_DROP.item() + Items.DRIED_KELP
+            }
         }
     }
 
