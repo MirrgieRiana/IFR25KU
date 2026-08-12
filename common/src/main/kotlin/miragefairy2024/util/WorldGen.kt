@@ -245,6 +245,11 @@ context(PlacementModifiersScope)
 val surface
     get() = VerticalPlacementType { listOf(PlacementUtils.HEIGHTMAP) }
 
+/** 葉や水を無視した、地面の高さなのだ～🌱 */
+context(PlacementModifiersScope)
+val ground
+    get() = VerticalPlacementType { listOf(PlacementUtils.HEIGHTMAP_OCEAN_FLOOR) }
+
 context(PlacementModifiersScope)
 val nether
     get() = VerticalPlacementType {
