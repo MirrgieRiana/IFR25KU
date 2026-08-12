@@ -9,6 +9,7 @@ import miragefairy2024.mod.FoodIngredientsRegistry
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.PoemType
+import miragefairy2024.mod.biome.OldGrowthAmberForestBiomeCard
 import miragefairy2024.mod.common.WaterBottleIngredient
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.common.rootAdvancement
@@ -708,7 +709,7 @@ class MaterialCard(
             advancementCreator = {
                 AdvancementCard(
                     identifier = identifier,
-                    context = AdvancementCard.Sub { HAIMEVISKA_ROSIN.advancement!!.await() },
+                    context = AdvancementCard.Sub { OldGrowthAmberForestBiomeCard.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("TODO", "TODO"),
                     description = EnJa("TODO", "TODO"),
