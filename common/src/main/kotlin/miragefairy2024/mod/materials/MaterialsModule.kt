@@ -671,7 +671,7 @@ class MaterialCard(
                 FoodProperties.Builder()
                     .nutrition(1)
                     .saturationModifier(0.1F)
-                    .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 30), 1.0F)
+                    .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 10), 1.0F)
                     .build()
             },
         )
