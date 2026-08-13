@@ -9,6 +9,7 @@ import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.getSurfaceNoiseThreshold
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.core.HolderGetter
 import net.minecraft.data.worldgen.BiomeDefaultFeatures
 import net.minecraft.data.worldgen.placement.VegetationPlacements
@@ -40,13 +41,13 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
             type = AdvancementCardType.TOAST_ONLY,
         )
     },
-    BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST,
+    BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST, BiomeTags.INCREASED_FIRE_BURNOUT, ConventionalBiomeTags.IS_WET_OVERWORLD,
 ) {
     override fun createBiome(placedFeatureLookup: HolderGetter<PlacedFeature>, configuredCarverLookup: HolderGetter<ConfiguredWorldCarver<*>>): Biome {
         return Biome.BiomeBuilder()
             .hasPrecipitation(true)
             .temperature(0.4F)
-            .downfall(0.6F)
+            .downfall(0.9F)
             .specialEffects(
                 BiomeSpecialEffects.Builder()
                     .waterColor(0x5B2A8A)
