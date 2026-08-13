@@ -640,28 +640,7 @@ class MaterialCard(
                     .build()
             },
             tags = listOf(ItemTagCard.SAP.tag),
-        ) {
-            // →砂糖+水入り瓶
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { SimpleMachineRecipe.Input(ItemTagCard.SAP.tag.toIngredient(), 1) },
-                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
-                ),
-                outputs = listOf(
-                    { Items.SUGAR.createItemStack(2) },
-                    { PotionContents.createItemStack(Items.POTION, Potions.WATER) },
-                ),
-                duration = 20 * 2,
-            ) on ItemTagCard.SAP.tag
-            // →松明
-            registerShapedRecipeGeneration({ Items.TORCH }) {
-                pattern("#")
-                pattern("S")
-                define('#', ItemTagCard.SAP.tag)
-                define('S', tagOf(Shape.ROD, Material.WOOD))
-            } on ItemTagCard.SAP.tag modId MirageFairy2024.MOD_ID
-        }
+        )
         val HAIMEVISKA_ROSIN: MaterialCard = !MaterialCard(
             "haimeviska_rosin", "Haimeviska Rosin", "ハイメヴィスカの涙",
             PoemList(2).poem("High-friction material", "琥珀の月が昇るとき、妖精の木は静かに泣く"),
@@ -1610,6 +1589,28 @@ fun initMaterialsModule() {
         outputs = listOf({ Items.BREAD.createItemStack() }),
         duration = 20 * 10,
     ) using "athanor" on { Items.WHEAT } modId MirageFairy2024.MOD_ID
+
+    // 砂糖+水入り瓶
+    registerSimpleMachineRecipeGeneration(
+        AthanorRecipeCard,
+        inputs = listOf(
+            { SimpleMachineRecipe.Input(ItemTagCard.SAP.tag.toIngredient(), 1) },
+            { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+        ),
+        outputs = listOf(
+            { Items.SUGAR.createItemStack(2) },
+            { PotionContents.createItemStack(Items.POTION, Potions.WATER) },
+        ),
+        duration = 20 * 2,
+    ) on ItemTagCard.SAP.tag
+
+    // 松明
+    registerShapedRecipeGeneration({ Items.TORCH }) {
+        pattern("#")
+        pattern("S")
+        define('#', ItemTagCard.SAP.tag)
+        define('S', tagOf(Shape.ROD, Material.WOOD))
+    } on ItemTagCard.SAP.tag modId MirageFairy2024.MOD_ID
 
 }
 
