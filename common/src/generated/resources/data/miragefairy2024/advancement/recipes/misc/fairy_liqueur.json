@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_sap": {
+    "has_haimeviska_sap": {
       "conditions": {
         "items": [
           {
-            "items": "#miragefairy2024:sap"
+            "items": "miragefairy2024:haimeviska_sap"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_sap"
+      "has_haimeviska_sap"
     ]
   ],
   "rewards": {

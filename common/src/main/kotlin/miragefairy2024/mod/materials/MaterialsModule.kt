@@ -1260,12 +1260,12 @@ class MaterialCard(
                 FermentationBarrelRecipeCard,
                 inputs = listOf(
                     { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
-                    { SimpleMachineRecipe.Input(ItemTagCard.SAP.tag.toIngredient(), 8) },
+                    { SimpleMachineRecipe.Input(HAIMEVISKA_SAP.item().toIngredient(), 8) },
                     { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack() }),
                 duration = 20 * 60 * 5,
-            ) on ItemTagCard.SAP.tag
+            ) on HAIMEVISKA_SAP.item
             ModEvents.onInitialize {
                 FoodIngredientsRegistry.registry[item()] = FoodIngredients() + FoodIngredientCategoryCard.ALCOHOL + HAIMEVISKA_SAP.item()
             }
