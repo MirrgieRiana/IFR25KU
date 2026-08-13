@@ -1,8 +1,8 @@
 package miragefairy2024.mod.haimeviska.cards
 
 import miragefairy2024.ModContext
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockConfiguration
+import miragefairy2024.mod.wood.WoodBlockCard
+import miragefairy2024.mod.wood.WoodBlockConfiguration
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.generator
 import miragefairy2024.util.registerBlockFamily
@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.FenceGateBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.WoodType
 
-class HaimeviskaPlanksFenceGateBlockCard(configuration: HaimeviskaBlockConfiguration, private val woodType: () -> WoodType, private val parent: () -> Block) : HaimeviskaBlockCard(configuration) {
+class HaimeviskaPlanksFenceGateBlockCard(configuration: WoodBlockConfiguration, private val woodType: () -> WoodType, private val parent: () -> Block) : WoodBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createPlankSettings(sound = false).forceSolidOn()
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = FenceGateBlock(woodType(), properties)
 

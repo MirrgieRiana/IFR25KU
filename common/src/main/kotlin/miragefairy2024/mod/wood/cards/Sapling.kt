@@ -1,9 +1,8 @@
-package miragefairy2024.mod.haimeviska.cards
+package miragefairy2024.mod.wood.cards
 
 import miragefairy2024.ModContext
-import miragefairy2024.mod.haimeviska.HAIMEVISKA_CONFIGURED_FEATURE_KEY
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockConfiguration
+import miragefairy2024.mod.wood.WoodBlockCard
+import miragefairy2024.mod.wood.WoodBlockConfiguration
 import miragefairy2024.util.generator
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.registerBlockGeneratedModelGeneration
@@ -13,12 +12,10 @@ import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerDefaultLootTableGeneration
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerSingletonBlockStateGeneration
-import miragefairy2024.util.string
 import miragefairy2024.util.times
 import miragefairy2024.util.with
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureSlot
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.level.block.SaplingBlock
@@ -27,9 +24,8 @@ import net.minecraft.world.level.block.grower.TreeGrower
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.material.PushReaction
-import java.util.Optional
 
-class HaimeviskaSaplingBlockCard(configuration: HaimeviskaBlockConfiguration, private val treeGrowerName: ResourceLocation) : HaimeviskaBlockCard(configuration) {
+open class WoodSaplingBlockCard(configuration: WoodBlockConfiguration, private val treeGrower: () -> TreeGrower) : WoodBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings()
         .mapColor(MapColor.PLANT)
         .noCollission()
@@ -38,10 +34,7 @@ class HaimeviskaSaplingBlockCard(configuration: HaimeviskaBlockConfiguration, pr
         .sound(SoundType.GRASS)
         .pushReaction(PushReaction.DESTROY)
 
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = SaplingBlock(
-        TreeGrower(treeGrowerName.string, Optional.empty(), Optional.of(HAIMEVISKA_CONFIGURED_FEATURE_KEY), Optional.empty()),
-        properties,
-    )
+    override suspend fun createBlock(properties: BlockBehaviour.Properties) = SaplingBlock(treeGrower(), properties)
 
     context(ModContext)
     override fun init() {

@@ -10,6 +10,7 @@ import miragefairy2024.mod.fairylogistics.initFairyLogisticsModule
 import miragefairy2024.mod.fairyquest.initFairyQuestModule
 import miragefairy2024.mod.haimeviska.initHaimeviskaModule
 import miragefairy2024.mod.plasticwood.initPlasticWoodModule
+import miragefairy2024.mod.wood.initWoodModule
 import miragefairy2024.mod.initAttachmentChangedEventModule
 import miragefairy2024.mod.initBagModule
 import miragefairy2024.mod.initDebrisModule
@@ -49,6 +50,7 @@ fun initModules() {
     initOresModule()
     initDepositedSulfurModule()
     initMagicPlantModule()
+    initWoodModule()
     initHaimeviskaModule()
     initPlasticWoodModule()
     initFairyQuestModule()

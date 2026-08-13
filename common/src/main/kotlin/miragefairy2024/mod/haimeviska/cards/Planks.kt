@@ -1,9 +1,9 @@
 package miragefairy2024.mod.haimeviska.cards
 
 import miragefairy2024.ModContext
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockConfiguration
-import miragefairy2024.mod.haimeviska.createBaseWoodSetting
+import miragefairy2024.mod.wood.WoodBlockCard
+import miragefairy2024.mod.wood.WoodBlockConfiguration
+import miragefairy2024.mod.wood.createBaseWoodSetting
 import miragefairy2024.util.from
 import miragefairy2024.util.generator
 import miragefairy2024.util.on
@@ -26,7 +26,7 @@ fun createPlankSettings(sound: Boolean = true): BlockBehaviour.Properties = crea
     .strength(2.0F, 3.0F)
     .mapColor(MapColor.RAW_IRON)
 
-open class AbstractHaimeviskaPlanksBlockCard(configuration: HaimeviskaBlockConfiguration) : HaimeviskaBlockCard(configuration) {
+open class AbstractHaimeviskaPlanksBlockCard(configuration: WoodBlockConfiguration) : WoodBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting()
         .strength(2.0F, 3.0F)
         .mapColor(MapColor.RAW_IRON)
@@ -51,7 +51,7 @@ open class AbstractHaimeviskaPlanksBlockCard(configuration: HaimeviskaBlockConfi
     }
 }
 
-class HaimeviskaPlanksBlockCard(configuration: HaimeviskaBlockConfiguration, private val input: () -> Item) : AbstractHaimeviskaPlanksBlockCard(configuration) {
+class HaimeviskaPlanksBlockCard(configuration: WoodBlockConfiguration, private val input: () -> Item) : AbstractHaimeviskaPlanksBlockCard(configuration) {
     context(ModContext)
     override fun init() {
         super.init()
@@ -61,7 +61,7 @@ class HaimeviskaPlanksBlockCard(configuration: HaimeviskaBlockConfiguration, pri
     }
 }
 
-class HaimeviskaBricksBlockCard(configuration: HaimeviskaBlockConfiguration, private val input: () -> Item) : AbstractHaimeviskaPlanksBlockCard(configuration) {
+class HaimeviskaBricksBlockCard(configuration: WoodBlockConfiguration, private val input: () -> Item) : AbstractHaimeviskaPlanksBlockCard(configuration) {
     context(ModContext)
     override fun init() {
         super.init()

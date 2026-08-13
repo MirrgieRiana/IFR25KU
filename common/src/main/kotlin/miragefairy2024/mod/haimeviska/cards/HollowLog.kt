@@ -3,9 +3,10 @@ package miragefairy2024.mod.haimeviska.cards
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
 import miragefairy2024.lib.SimpleHorizontalFacingBlock
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockConfiguration
+import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.registerHarvestNotation
+import miragefairy2024.mod.wood.WoodBlockConfiguration
 import miragefairy2024.util.ItemLootPoolEntry
 import miragefairy2024.util.LootPool
 import miragefairy2024.util.LootTable
@@ -16,19 +17,17 @@ import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 
-class HaimeviskaHollowLogBlockCard(configuration: HaimeviskaBlockConfiguration) : HaimeviskaHorizontalFacingLogBlockCard(configuration) {
+class HaimeviskaHollowLogBlockCard(configuration: WoodBlockConfiguration) : HaimeviskaHorizontalFacingLogBlockCard(configuration) {
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = HollowHaimeviskaLogBlock(properties)
 
     context(ModContext)
-    override fun init() {
-        super.init()
-
+    override fun initLootTableGeneration() {
         block.registerLootTableGeneration { provider, registries ->
             LootTable(
                 LootPool(ItemLootPoolEntry(item())) {
                     `when`(provider.hasSilkTouch())
                 },
-                LootPool(ItemLootPoolEntry(LOG.item())) {
+                LootPool(ItemLootPoolEntry(HaimeviskaBlockCard.LOG.item())) {
                     `when`(provider.doesNotHaveSilkTouch())
                 },
                 LootPool(ItemLootPoolEntry(MaterialCard.FRACTAL_WISP.item()) {
@@ -40,6 +39,12 @@ class HaimeviskaHollowLogBlockCard(configuration: HaimeviskaBlockConfiguration) 
                 provider.applyExplosionDecay(block(), this)
             }
         }
+    }
+
+    context(ModContext)
+    override fun init() {
+        super.init()
+
         item.registerHarvestNotation(MaterialCard.FRACTAL_WISP.item)
 
     }

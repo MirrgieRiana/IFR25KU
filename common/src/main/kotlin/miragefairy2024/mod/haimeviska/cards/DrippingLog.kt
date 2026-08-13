@@ -4,10 +4,10 @@ import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
 import miragefairy2024.lib.SimpleHorizontalFacingBlock
 import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockConfiguration
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.mod.registerHarvestNotation
+import miragefairy2024.mod.wood.WoodBlockConfiguration
 import miragefairy2024.util.ItemLootPoolEntry
 import miragefairy2024.util.LootPool
 import miragefairy2024.util.LootTable
@@ -38,19 +38,17 @@ import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition
 import net.minecraft.world.phys.BlockHitResult
 
-class HaimeviskaDrippingLogBlockCard(configuration: HaimeviskaBlockConfiguration) : HaimeviskaHorizontalFacingLogBlockCard(configuration) {
+class HaimeviskaDrippingLogBlockCard(configuration: WoodBlockConfiguration) : HaimeviskaHorizontalFacingLogBlockCard(configuration) {
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = DrippingHaimeviskaLogBlock(properties)
 
     context(ModContext)
-    override fun init() {
-        super.init()
-
+    override fun initLootTableGeneration() {
         block.registerLootTableGeneration { provider, registries ->
             LootTable(
                 LootPool(ItemLootPoolEntry(item())) {
                     `when`(provider.hasSilkTouch())
                 },
-                LootPool(ItemLootPoolEntry(LOG.item())) {
+                LootPool(ItemLootPoolEntry(HaimeviskaBlockCard.LOG.item())) {
                     `when`(provider.doesNotHaveSilkTouch())
                 },
                 LootPool(ItemLootPoolEntry(MaterialCard.HAIMEVISKA_SAP.item()) {
@@ -68,6 +66,12 @@ class HaimeviskaDrippingLogBlockCard(configuration: HaimeviskaBlockConfiguration
                 provider.applyExplosionDecay(block(), this)
             }
         }
+    }
+
+    context(ModContext)
+    override fun init() {
+        super.init()
+
         item.registerHarvestNotation(MaterialCard.HAIMEVISKA_SAP.item, MaterialCard.HAIMEVISKA_ROSIN.item)
 
     }
