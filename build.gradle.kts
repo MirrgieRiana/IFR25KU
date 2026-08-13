@@ -148,6 +148,14 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
 
     }
 
+    dependencies {
+        "testImplementation"(kotlin("test"))
+    }
+
+    tasks.named<Test>("test") {
+        useJUnitPlatform()
+    }
+
     tasks.register<UnpackSourcesTask>("unpackSources") {
         dependsOn(tasks.firstOrNull { it.name == "genSources" })
         outputDirectory = project.layout.projectDirectory.dir("unpackedSources")
