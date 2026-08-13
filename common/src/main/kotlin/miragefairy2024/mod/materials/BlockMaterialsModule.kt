@@ -724,7 +724,19 @@ open class BlockMaterialCard(
                     }
                 }
             }
-        }.sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.DIRT)
+        }.sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.DIRT).init {
+            // 樹脂で膠結された土を、土と化石樹脂に分解するのだ～🌱
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf({ SimpleMachineRecipe.Input(item().toIngredient(), 16) }),
+                outputs = listOf(
+                    { Items.DIRT.createItemStack(12) },
+                    { MaterialCard.RETINITE.item().createItemStack(3) },
+                    { MaterialCard.COPAL.item().createItemStack(1) },
+                ),
+                duration = 20 * 60,
+            ) on item modId MirageFairy2024.MOD_ID from item
+        }
     }
 
     val identifier = MirageFairy2024.identifier(path)
