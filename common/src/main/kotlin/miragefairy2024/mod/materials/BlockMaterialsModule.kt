@@ -725,7 +725,7 @@ open class BlockMaterialCard(
                 }
             }
         }.sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.DIRT).init {
-            // 石化した樹脂状の土の分解レシピ
+            // 分解レシピ
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf({ SimpleMachineRecipe.Input(item().toIngredient(), 16) }),
