@@ -725,7 +725,7 @@ open class BlockMaterialCard(
                 }
             }
         }.sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.DIRT).init {
-            // 樹脂で膠結された土を、土と化石樹脂に分解するのだ～🌱
+            // 石化した樹脂状の土の分解レシピ
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf({ SimpleMachineRecipe.Input(item().toIngredient(), 16) }),
