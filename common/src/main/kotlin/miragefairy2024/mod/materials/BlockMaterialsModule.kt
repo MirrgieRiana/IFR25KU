@@ -846,7 +846,7 @@ fun initBlockMaterialsModule() {
             { MaterialCard.XARPITE.item().createItemStack(1) },
         ),
         duration = 20 * 60,
-    ) on AURA_RESISTANT_CERAMICS_TAG modId MirageFairy2024.MOD_ID
+    ) on AURA_RESISTANT_CERAMICS_TAG modId MirageFairy2024.MOD_ID from AURA_RESISTANT_CERAMICS_TAG
     registerSimpleMachineRecipeGeneration(
         AthanorRecipeCard,
         inputs = listOf({ SimpleMachineRecipe.Input(AURA_RESISTANT_CERAMIC_SLABS_TAG.toIngredient(), 8) }),
@@ -855,7 +855,7 @@ fun initBlockMaterialsModule() {
             { MaterialCard.XARPITE.item().createItemStack(1) },
         ),
         duration = 20 * 60,
-    ) on AURA_RESISTANT_CERAMIC_SLABS_TAG modId MirageFairy2024.MOD_ID
+    ) on AURA_RESISTANT_CERAMIC_SLABS_TAG modId MirageFairy2024.MOD_ID from AURA_RESISTANT_CERAMIC_SLABS_TAG
     registerSimpleMachineRecipeGeneration(
         AthanorRecipeCard,
         inputs = listOf({ SimpleMachineRecipe.Input(AURA_RESISTANT_CERAMIC_STAIRS_TAG.toIngredient(), 16) }),
@@ -864,7 +864,7 @@ fun initBlockMaterialsModule() {
             { MaterialCard.XARPITE.item().createItemStack(3) },
         ),
         duration = 20 * 60,
-    ) on AURA_RESISTANT_CERAMIC_STAIRS_TAG modId MirageFairy2024.MOD_ID
+    ) on AURA_RESISTANT_CERAMIC_STAIRS_TAG modId MirageFairy2024.MOD_ID from AURA_RESISTANT_CERAMIC_STAIRS_TAG
 
 }
 

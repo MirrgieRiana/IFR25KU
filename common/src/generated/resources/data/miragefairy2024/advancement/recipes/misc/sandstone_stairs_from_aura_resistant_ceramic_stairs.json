@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_aura_resistant_ceramics": {
+    "has_aura_resistant_ceramic_stairs": {
       "conditions": {
         "items": [
           {
-            "items": "#miragefairy2024:aura_resistant_ceramics"
+            "items": "#miragefairy2024:aura_resistant_ceramic_stairs"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:sandstone"
+        "recipe": "miragefairy2024:sandstone_stairs_from_aura_resistant_ceramic_stairs"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_aura_resistant_ceramics"
+      "has_aura_resistant_ceramic_stairs"
     ]
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:sandstone"
+      "miragefairy2024:sandstone_stairs_from_aura_resistant_ceramic_stairs"
     ]
   }
 }
