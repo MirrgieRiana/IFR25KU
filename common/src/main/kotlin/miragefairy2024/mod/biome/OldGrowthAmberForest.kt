@@ -85,6 +85,8 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
 
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, ElevatedSpawnerFeatureCard.placedFeatureKey)
 
+                // 原生林の証である倒木は、後から生える木がこれを避けるように、木よりも先に配置するのだぁ🌱
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, FallenHaimeviskaLogFeatureCard.placedFeatureKey)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_TAIGA)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
                 BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)
