@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:haimeviska_kohakuto",
+  "ingredients": [
+    {
+      "item": "miragefairy2024:haimeviska_kohakuto_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "miragefairy2024:haimeviska_kohakuto"
+  }
+}

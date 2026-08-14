@@ -1475,6 +1475,196 @@ class MaterialCard(
         ) {
             registerCompressionRecipeGeneration(item, { item().toIngredient() }, SOLID_FUEL.item, { SOLID_FUEL.item().toIngredient() }, 8)
         }
+
+        // 琥珀糖5種なのだ～🌱
+        // 現実の琥珀糖は寒天・甘味を煮溶かして型に流し、数日乾燥させた日本の伝統的な干菓子なのだ。
+        // アタノールで煮詰め・乾燥を再現するのだ。甘味の違いで5種類にするのだ！
+        // 5分かけて作るため、燃料を大量に消費するのだ。埋め合わせに性能を盛るのだ。
+
+        val KOHAKUTO: MaterialCard = !MaterialCard(
+            "kohakuto", "Kohakuto", "琥珀糖",
+            null,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(5)
+                    .saturationModifier(0.6F)
+                    .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60 * 10), 1.0F) // 移動速度I 10分なのだ
+                    .build()
+            },
+        ) {
+            // 砂糖＋昆布（寒天代わり）をアタノールで煮詰め・乾燥させるのだ（水は使わないのだ）
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(Items.SUGAR.toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack(4) }),
+                duration = 20 * 60 * 5, // 5分：何日も乾燥させる工程を表現するのだ
+            ) on { Items.SUGAR } from { Items.SUGAR }
+            // 一括レシピ：昆布ブロック＋素材36個 → 9個なのだ（時間は同じなのだ）
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(Items.SUGAR.toIngredient(), 36) },
+                    { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack(9) }),
+                duration = 20 * 60 * 5, // 5分：1個のときと同じ加工時間なのだ
+            ) on { Items.SUGAR } from { Items.DRIED_KELP_BLOCK }
+            // 甘味である砂糖と、寒天代わりの乾燥した昆布が材料なのだ
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + Items.SUGAR + Items.DRIED_KELP
+            }
+        }
+
+        val HAIMEVISKA_KOHAKUTO: MaterialCard = !MaterialCard(
+            "haimeviska_kohakuto", "Haimeviska Kohakuto", "ハイメヴィスカの琥珀糖",
+            null,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(5)
+                    .saturationModifier(0.6F)
+                    .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 20 * 60 * 5, 1), 1.0F) // 経験値獲得II 5分なのだ
+                    .build()
+            },
+        ) {
+            // ハイメヴィスカの樹液＋昆布（寒天代わり）をアタノールで煮詰め・乾燥させるのだ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(HAIMEVISKA_SAP.item().toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack(4) }),
+                duration = 20 * 60 * 5, // 5分なのだ
+            ) on HAIMEVISKA_SAP.item
+            // 一括レシピなのだ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(HAIMEVISKA_SAP.item().toIngredient(), 36) },
+                    { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack(9) }),
+                duration = 20 * 60 * 5,
+            ) on HAIMEVISKA_SAP.item from { Items.DRIED_KELP_BLOCK }
+            // 甘味であるハイメヴィスカの樹液と、寒天代わりの乾燥した昆布が材料なのだ
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + HAIMEVISKA_SAP.item() + Items.DRIED_KELP
+            }
+        }
+
+        val BLACK_TREACLE_KOHAKUTO: MaterialCard = !MaterialCard(
+            "black_treacle_kohakuto", "Black Treacle Kohakuto", "黒蜜の琥珀糖",
+            null,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(5)
+                    .saturationModifier(0.6F)
+                    .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60 * 3, 1), 1.0F) // 移動速度II 3分なのだ
+                    .build()
+            },
+        ) {
+            // 黒蜜＋昆布（寒天代わり）をアタノールで煮詰め・乾燥させるのだ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(BLACK_TREACLE.item().toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack(4) }),
+                duration = 20 * 60 * 5, // 5分なのだ
+            ) on BLACK_TREACLE.item
+            // 一括レシピなのだ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(BLACK_TREACLE.item().toIngredient(), 36) },
+                    { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack(9) }),
+                duration = 20 * 60 * 5,
+            ) on BLACK_TREACLE.item from { Items.DRIED_KELP_BLOCK }
+            // 甘味である黒蜜と、寒天代わりの乾燥した昆布が材料なのだ
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + BLACK_TREACLE.item() + Items.DRIED_KELP
+            }
+        }
+
+        val MERRRRIA_KOHAKUTO: MaterialCard = !MaterialCard(
+            "merrrria_kohakuto", "Merrrria Kohakuto", "月の琥珀糖",
+            null,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(5)
+                    .saturationModifier(0.6F)
+                    .effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60 * 5), 1.0F) // 夜視I 5分なのだ
+                    .build()
+            },
+        ) {
+            // 月のしずく＋昆布（寒天代わり）をアタノールで煮詰め・乾燥させるのだ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(MERRRRIA_DROP.item().toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack(4) }),
+                duration = 20 * 60 * 5, // 5分なのだ
+            ) on MERRRRIA_DROP.item
+            // 一括レシピなのだ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(MERRRRIA_DROP.item().toIngredient(), 36) },
+                    { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack(9) }),
+                duration = 20 * 60 * 5,
+            ) on MERRRRIA_DROP.item from { Items.DRIED_KELP_BLOCK }
+            // 甘味である月のしずくと、寒天代わりの乾燥した昆布が材料なのだ
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + MERRRRIA_DROP.item() + Items.DRIED_KELP
+            }
+        }
+
+        val PHANTOM_KOHAKUTO: MaterialCard = !MaterialCard(
+            "phantom_kohakuto", "Phantom Kohakuto", "幻想の琥珀糖",
+            null,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(5)
+                    .saturationModifier(0.6F)
+                    .effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 60 * 3, 1), 1.0F) // 再生II 3分なのだ
+                    .build()
+            },
+        ) {
+            // 幻想の雫＋昆布（寒天代わり）をアタノールで煮詰め・乾燥させるのだ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(PHANTOM_DROP.item().toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack(4) }),
+                duration = 20 * 60 * 5, // 5分なのだ
+            ) on PHANTOM_DROP.item
+            // 一括レシピなのだ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf(
+                    { SimpleMachineRecipe.Input(PHANTOM_DROP.item().toIngredient(), 36) },
+                    { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
+                ),
+                outputs = listOf({ item().createItemStack(9) }),
+                duration = 20 * 60 * 5,
+            ) on PHANTOM_DROP.item from { Items.DRIED_KELP_BLOCK }
+            // 甘味である幻想の雫と、寒天代わりの乾燥した昆布が材料なのだ
+            ModEvents.onInitialize {
+                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + PHANTOM_DROP.item() + Items.DRIED_KELP
+            }
+        }
     }
 
     val identifier = MirageFairy2024.identifier(path)

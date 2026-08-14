@@ -1,0 +1,25 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 6000,
+  "group": "miragefairy2024:kohakuto",
+  "inputs": [
+    {
+      "Amount": 4,
+      "Ingredient": {
+        "item": "minecraft:sugar"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:dried_kelp"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 4,
+      "id": "miragefairy2024:kohakuto"
+    }
+  ]
+}

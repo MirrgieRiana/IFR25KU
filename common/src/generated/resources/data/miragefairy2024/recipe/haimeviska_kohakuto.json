@@ -1,0 +1,25 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 6000,
+  "group": "miragefairy2024:haimeviska_kohakuto",
+  "inputs": [
+    {
+      "Amount": 4,
+      "Ingredient": {
+        "item": "miragefairy2024:haimeviska_sap"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:dried_kelp"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 4,
+      "id": "miragefairy2024:haimeviska_kohakuto"
+    }
+  ]
+}
