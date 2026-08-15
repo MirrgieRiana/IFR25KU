@@ -708,19 +708,19 @@ open class BlockMaterialCard(
                 duration = 20 * 60,
             ) on item modId MirageFairy2024.MOD_ID from item
         }
-        val COPAL_BLOCK = !BlockMaterialCard(
-            "copal_block", EnJa("Copal Block", "コーパルブロック"),
-            PoemList(null),
-            MapColor.COLOR_ORANGE, 1.5F, 1.5F, ore = Ore(Shape.STORAGE_BLOCKS, Material.COPAL),
-        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
-            registerCompressionRecipeGeneration(MaterialCard.COPAL.item, { MaterialCard.COPAL.ore!!.ingredient }, item, { ore!!.ingredient })
-        }
         val RETINITE_BLOCK = !BlockMaterialCard(
             "retinite_block", EnJa("Retinite Block", "レチナイトブロック"),
             PoemList(null),
-            MapColor.COLOR_ORANGE, 2.0F, 2.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.RETINITE),
+            MapColor.COLOR_ORANGE, 5.0F, 6.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.RETINITE),
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerCompressionRecipeGeneration(MaterialCard.RETINITE.item, { MaterialCard.RETINITE.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
+        val COPAL_BLOCK = !BlockMaterialCard(
+            "copal_block", EnJa("Copal Block", "コーパルブロック"),
+            PoemList(null),
+            MapColor.COLOR_ORANGE, 3.0F, 3.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.COPAL),
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
+            registerCompressionRecipeGeneration(MaterialCard.COPAL.item, { MaterialCard.COPAL.ore!!.ingredient }, item, { ore!!.ingredient })
         }
     }
 
