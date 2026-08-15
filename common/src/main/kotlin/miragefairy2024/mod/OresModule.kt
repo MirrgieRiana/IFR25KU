@@ -74,7 +74,6 @@ enum class BaseStoneType(val target: () -> RuleTest, val baseStoneTexture: Resou
     DEEPSLATE({ TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES) }, ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
     SANDSTONE({ BlockMatchTest(Blocks.SANDSTONE) }, ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
     DIRT({ BlockMatchTest(Blocks.DIRT) }, ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
-    // 石化した樹脂状の土の block は登録フェーズ後に取得できるので、ラムダで遅延評価するのだぁ🌱
     RESIN_CEMENTED_DIRT({ BlockMatchTest(BlockMaterialCard.RESIN_CEMENTED_DIRT.block()) }, MirageFairy2024.identifier("block/resin_cemented_dirt"), BlockTags.MINEABLE_WITH_SHOVEL, BlockTags.NEEDS_STONE_TOOL),
     NETHERRACK({ BlockMatchTest(Blocks.NETHERRACK) }, ResourceLocation("minecraft", "block/netherrack"), BlockTags.MINEABLE_WITH_PICKAXE, null),
     BLACKSTONE({ BlockMatchTest(Blocks.BLACKSTONE) }, ResourceLocation("minecraft", "block/blackstone"), BlockTags.MINEABLE_WITH_PICKAXE, null),
