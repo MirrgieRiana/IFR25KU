@@ -305,7 +305,8 @@ description: "新しいゲームコンテンツの名前やポエムなどのテ
 でも、ゲーム内の英語のテキストで `nectar` の語が出てくる場所は、全部で 5 か所しかなかったのだぁ～🌱
 琥珀色の原生林の進捗が `Land Abloom with Nectar`、
 妖精のプラスチックのつるはしのポエムが `Nectar turns into fairies underground`、
-5 フェアリージュエルのポエムが `The nectar bloomed from the ground.` で、この 3 つは、どれも地面について述べた文なのだぁ～🌱
+5 フェアリージュエルのポエムが `The nectar bloomed from the ground.` なのだぁ～🌱
+この 3 つは、`Land`、`underground`、`the ground` と、どれも地面や地下の側に結びついていて、木の上でも、幹の中でもないのだぁ～🌱
 1 フェアリージュエルのポエムが `Long ago, fairies were the nectar.` で、これは妖精の側から見た文なのだぁ～🌱
 そして、木から出る個々の分泌物は、樹液が `Haimeviska Sap`、樹脂が `Haimeviska Rosin` と、それぞれ別の名前で呼ばれていて、
 そこに `nectar` の語は、一度も出てこないのだぁ～🌱
