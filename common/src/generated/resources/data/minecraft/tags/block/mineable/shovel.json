@@ -2,6 +2,9 @@
   "values": [
     "miragefairy2024:dirt_fairy_plastic_ore",
     "miragefairy2024:dirt_saltpeter_ore",
-    "miragefairy2024:resin_cemented_dirt"
+    "miragefairy2024:resin_cemented_dirt",
+    "miragefairy2024:resin_cemented_dirt_bricks",
+    "miragefairy2024:resin_cemented_dirt_bricks_slab",
+    "miragefairy2024:resin_cemented_dirt_bricks_stairs"
   ]
 }
