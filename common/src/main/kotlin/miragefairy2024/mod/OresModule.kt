@@ -230,7 +230,7 @@ enum class OreCard(
             BaseStoneType.RESIN_CEMENTED_DIRT -> BlockBehaviour.Properties.of()
                 .mapColor(MapColor.COLOR_ORANGE)
                 .requiresCorrectToolForDrops()
-                .strength(0.8F, 0.8F)
+                .strength(2.0F, 2.0F)
                 .sound(SoundType.MUDDY_MANGROVE_ROOTS)
 
             BaseStoneType.NETHERRACK -> BlockBehaviour.Properties.of()
