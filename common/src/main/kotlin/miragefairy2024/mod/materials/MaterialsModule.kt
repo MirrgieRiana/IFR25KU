@@ -712,7 +712,7 @@ class MaterialCard(
                     context = AdvancementCard.Sub { OldGrowthAmberForestBiomeCard.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("TODO", "TODO"),
-                    description = EnJa("TODO", "TODO"),
+                    description = EnJa("Mine Fairy Plastic from the Resin-Cemented Dirt beneath the Old Growth Amber Forest", "琥珀色の原生林の地下の石化した樹脂状の土から妖精のプラスチックを採掘する"),
                     criterion = AdvancementCard.hasItem(item),
                     type = AdvancementCardType.NORMAL,
                 )
