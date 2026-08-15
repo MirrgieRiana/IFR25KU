@@ -351,10 +351,10 @@ fun initOresModule() {
     worldGen(-64 until 64, 0.3, 4, 1.0, OreCard.DEEPSLATE_NEPHRITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.DEEPSLATE_MIRANAGITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
-    worldGen(48 until 128, 0.2, 4, 1.0, OreCard.DIRT_FAIRY_PLASTIC_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +DeepFairyForestBiomeCard.key }
+    worldGen(48 until 128, 0.2, 4, 1.0, OreCard.DIRT_FAIRY_PLASTIC_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key + +DeepFairyForestBiomeCard.key }
     worldGen(48 until 128, 0.2, 4, 1.0, OreCard.RESIN_CEMENTED_DIRT_FAIRY_PLASTIC_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key }
-    worldGen(48 until 128, 0.2, 4, 1.0, OreCard.RESIN_CEMENTED_DIRT_RETINITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key }
-    worldGen(48 until 128, 0.2, 4, 1.0, OreCard.RESIN_CEMENTED_DIRT_COPAL_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key }
+    worldGen(48 until 128, 1.0, 12, 0.0, OreCard.RESIN_CEMENTED_DIRT_RETINITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key }
+    worldGen(48 until 128, 0.6, 4, 0.0, OreCard.RESIN_CEMENTED_DIRT_COPAL_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key }
 
 }
 
