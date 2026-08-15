@@ -186,7 +186,7 @@ enum class OreCard(
     ),
     RESIN_CEMENTED_DIRT_FAIRY_PLASTIC_ORE(
         "resin_cemented_dirt_fairy_plastic_ore", "Resin-Cemented Dirt Fairy Plastic Ore", "石化した樹脂状の土妖精のプラスチック鉱石",
-        PoemList(4).poem("TODO", "TODO"),
+        PoemList(4).poem("Negative aura-resistance in the ground", "膠着した堆積物の護り。"),
         BaseStoneType.RESIN_CEMENTED_DIRT, "fairy_plastic_ore", MaterialCard.FAIRY_PLASTIC.item, 10 to 20,
     ),
     RESIN_CEMENTED_DIRT_RETINITE_ORE(
