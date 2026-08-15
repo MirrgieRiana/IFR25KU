@@ -727,7 +727,7 @@ open class BlockMaterialCard(
         }.sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.DIRT)
         val RESIN_CEMENTED_DIRT_BRICKS = !BlockMaterialCard(
             "resin_cemented_dirt_bricks", EnJa("Resin-Cemented Dirt Bricks", "石化した樹脂状の土レンガ"),
-            PoemList(1).poem(EnJa("TODO", "TODO")),
+            PoemList(1).poem(EnJa("The only nutrient for etherobacteria.", "知性の根源。")),
             MapColor.COLOR_ORANGE, 1.0F, 1.0F,
         ).sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE).init {
             registerShapedRecipeGeneration(item, count = 4) {
@@ -739,7 +739,7 @@ open class BlockMaterialCard(
         }
         val RESIN_CEMENTED_DIRT_BRICKS_SLAB: BlockMaterialCard = !object : BlockMaterialCard(
             "resin_cemented_dirt_bricks_slab", EnJa("Resin-Cemented Dirt Brick Slab", "石化した樹脂状の土レンガのハーフブロック"),
-            PoemList(1).poem(EnJa("TODO", "TODO")),
+            PoemList(1).poem(EnJa("Inseparable mixtures of botanicals.", "木の蜜は地に触れ、そして永久に囚われる。")),
             MapColor.COLOR_ORANGE, 1.0F, 1.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
@@ -753,7 +753,7 @@ open class BlockMaterialCard(
         }
         val RESIN_CEMENTED_DIRT_BRICKS_STAIRS: BlockMaterialCard = !object : BlockMaterialCard(
             "resin_cemented_dirt_bricks_stairs", EnJa("Resin-Cemented Dirt Brick Stairs", "石化した樹脂状の土レンガの階段"),
-            PoemList(1).poem(EnJa("TODO", "TODO")),
+            PoemList(1).poem(EnJa("Spontaneous intellect formation process.", "自然が創り上げる、ウィスプの心髄。")),
             MapColor.COLOR_ORANGE, 1.0F, 1.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(RESIN_CEMENTED_DIRT_BRICKS.block.await().defaultBlockState(), properties)
