@@ -32,9 +32,6 @@ import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.BlockStateVariantRotation
 import miragefairy2024.util.EnJa
-import miragefairy2024.util.ItemLootPoolEntry
-import miragefairy2024.util.LootPool
-import miragefairy2024.util.LootTable
 import miragefairy2024.util.Model
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
@@ -77,7 +74,6 @@ import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.core.registries.Registries
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
@@ -88,7 +84,6 @@ import net.minecraft.tags.TagKey
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
-import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.RotatedPillarBlock
@@ -101,7 +96,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.material.PushReaction
-import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 
 val AURA_RESISTANT_CERAMICS_TAG = MirageFairy2024.identifier("aura_resistant_ceramics").toItemTag()
 val AURA_RESISTANT_CERAMIC_SLABS_TAG = MirageFairy2024.identifier("aura_resistant_ceramic_slabs").toItemTag()
@@ -697,34 +691,37 @@ open class BlockMaterialCard(
                 requires(item())
             } on item modId MirageFairy2024.MOD_ID from item
         }
-        val RESIN_CEMENTED_DIRT: BlockMaterialCard = !object : BlockMaterialCard(
+        val RESIN_CEMENTED_DIRT = !BlockMaterialCard(
             "resin_cemented_dirt", EnJa("Resin-Cemented Dirt", "石化した樹脂状の土"),
             PoemList(1).poem(EnJa("Antimicrobial terpenes prevent decay.", "電気の由来を語る土。")),
             MapColor.COLOR_ORANGE, 0.8F, 0.8F,
-        ) {
-            context(ModContext)
-            override fun initLootTableGeneration() {
-                block.registerLootTableGeneration { provider, registries ->
-                    LootTable(
-                        LootPool(ItemLootPoolEntry(item())) {
-                            `when`(provider.hasSilkTouch())
-                        },
-                        LootPool(
-                            ItemLootPoolEntry(MaterialCard.RETINITE.item()) {
-                                apply(ApplyBonusCount.addOreBonusCount(registries[Registries.ENCHANTMENT, Enchantments.FORTUNE]))
-                            }.setWeight(9),
-                            ItemLootPoolEntry(MaterialCard.COPAL.item()) {
-                                apply(ApplyBonusCount.addOreBonusCount(registries[Registries.ENCHANTMENT, Enchantments.FORTUNE]))
-                            }.setWeight(1),
-                        ) {
-                            `when`(provider.doesNotHaveSilkTouch())
-                        },
-                    ) {
-                        provider.applyExplosionDecay(block(), this)
-                    }
-                }
-            }
-        }.sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.DIRT)
+        ).sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.DIRT).init {
+            // 分解レシピ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf({ SimpleMachineRecipe.Input(item().toIngredient(), 16) }),
+                outputs = listOf(
+                    { Items.DIRT.createItemStack(12) },
+                    { MaterialCard.RETINITE.item().createItemStack(3) },
+                    { MaterialCard.COPAL.item().createItemStack(1) },
+                ),
+                duration = 20 * 60,
+            ) on item modId MirageFairy2024.MOD_ID from item
+        }
+        val RETINITE_BLOCK = !BlockMaterialCard(
+            "retinite_block", EnJa("Retinite Block", "レチナイトブロック"),
+            PoemList(null),
+            MapColor.TERRACOTTA_YELLOW, 5.0F, 6.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.RETINITE),
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerCompressionRecipeGeneration(MaterialCard.RETINITE.item, { MaterialCard.RETINITE.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
+        val COPAL_BLOCK = !BlockMaterialCard(
+            "copal_block", EnJa("Copal Block", "コーパルブロック"),
+            PoemList(null),
+            MapColor.GOLD, 3.0F, 3.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.COPAL),
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
+            registerCompressionRecipeGeneration(MaterialCard.COPAL.item, { MaterialCard.COPAL.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
     }
 
     val identifier = MirageFairy2024.identifier(path)
@@ -834,7 +831,7 @@ fun initBlockMaterialsModule() {
             { MaterialCard.XARPITE.item().createItemStack(1) },
         ),
         duration = 20 * 60,
-    ) on AURA_RESISTANT_CERAMICS_TAG modId MirageFairy2024.MOD_ID
+    ) on AURA_RESISTANT_CERAMICS_TAG modId MirageFairy2024.MOD_ID from AURA_RESISTANT_CERAMICS_TAG
     registerSimpleMachineRecipeGeneration(
         AthanorRecipeCard,
         inputs = listOf({ SimpleMachineRecipe.Input(AURA_RESISTANT_CERAMIC_SLABS_TAG.toIngredient(), 8) }),
@@ -843,7 +840,7 @@ fun initBlockMaterialsModule() {
             { MaterialCard.XARPITE.item().createItemStack(1) },
         ),
         duration = 20 * 60,
-    ) on AURA_RESISTANT_CERAMIC_SLABS_TAG modId MirageFairy2024.MOD_ID
+    ) on AURA_RESISTANT_CERAMIC_SLABS_TAG modId MirageFairy2024.MOD_ID from AURA_RESISTANT_CERAMIC_SLABS_TAG
     registerSimpleMachineRecipeGeneration(
         AthanorRecipeCard,
         inputs = listOf({ SimpleMachineRecipe.Input(AURA_RESISTANT_CERAMIC_STAIRS_TAG.toIngredient(), 16) }),
@@ -852,7 +849,7 @@ fun initBlockMaterialsModule() {
             { MaterialCard.XARPITE.item().createItemStack(3) },
         ),
         duration = 20 * 60,
-    ) on AURA_RESISTANT_CERAMIC_STAIRS_TAG modId MirageFairy2024.MOD_ID
+    ) on AURA_RESISTANT_CERAMIC_STAIRS_TAG modId MirageFairy2024.MOD_ID from AURA_RESISTANT_CERAMIC_STAIRS_TAG
 
 }
 

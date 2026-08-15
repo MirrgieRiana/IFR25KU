@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:copal",
+  "ingredients": [
+    {
+      "tag": "c:storage_blocks/copal"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "miragefairy2024:copal"
+  }
+}
