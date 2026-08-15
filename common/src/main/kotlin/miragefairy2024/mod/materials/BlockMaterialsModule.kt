@@ -708,6 +708,20 @@ open class BlockMaterialCard(
                 duration = 20 * 60,
             ) on item modId MirageFairy2024.MOD_ID from item
         }
+        val RETINITE_BLOCK = !BlockMaterialCard(
+            "retinite_block", EnJa("Retinite Block", "レチナイトブロック"),
+            PoemList(null),
+            MapColor.TERRACOTTA_YELLOW, 5.0F, 6.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.RETINITE),
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerCompressionRecipeGeneration(MaterialCard.RETINITE.item, { MaterialCard.RETINITE.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
+        val COPAL_BLOCK = !BlockMaterialCard(
+            "copal_block", EnJa("Copal Block", "コーパルブロック"),
+            PoemList(null),
+            MapColor.GOLD, 3.0F, 3.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.COPAL),
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
+            registerCompressionRecipeGeneration(MaterialCard.COPAL.item, { MaterialCard.COPAL.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
     }
 
     val identifier = MirageFairy2024.identifier(path)
