@@ -642,6 +642,21 @@ class MaterialCard(
             },
             tags = listOf(ItemTagCard.SAP.tag),
         )
+        val PLASTIC_TREE_SAP: MaterialCard = !MaterialCard(
+            "plastic_tree_sap", "Plastic Tree Sap", "プラノキの樹液",
+            PoemList(1)
+                .poem("Catalytic sugar cleavage", "駆け出したくなる、その甘さ。")
+                .description("Grants speed when eaten", "食べると移動速度上昇を付与"),
+            fuelValue = 200,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(1)
+                    .saturationModifier(0.1F)
+                    .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 10), 1.0F)
+                    .build()
+            },
+            tags = listOf(ItemTagCard.SAP.tag),
+        )
         val HAIMEVISKA_ROSIN: MaterialCard = !MaterialCard(
             "haimeviska_rosin", "Haimeviska Rosin", "ハイメヴィスカの涙",
             PoemList(2).poem("High-friction material", "琥珀の月が昇るとき、妖精の木は静かに泣く"),
