@@ -665,7 +665,7 @@ class MaterialCard(
             "plastic_tree_sap", "Plastic Tree Sap", "プラノキの樹液",
             PoemList(1)
                 .poem("TODO", "TODO")
-                .description("Gain speed by eating", "食べると移動速度を獲得"),
+                .description("Grants speed when eaten", "食べると移動速度上昇を付与"),
             fuelValue = 200,
             foodComponentCreator = {
                 FoodProperties.Builder()
