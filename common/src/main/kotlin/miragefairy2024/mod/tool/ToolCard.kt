@@ -148,7 +148,7 @@ class ToolCard(
 
         val MAGNETITE = toolSet("magnetite", "磁鉄鉱", ToolMaterialCard.MAGNETITE, MaterialCard.MAGNETITE.ore!!.tag) { if (it is FairySwordConfiguration) it.collection() else it.enchantment(EnchantmentCard.STICKY_MINING.key) }
         val COPAL = toolSet("copal", "コーパル", ToolMaterialCard.COPAL, MaterialCard.COPAL.ore!!.tag) { if (it is FairySwordConfiguration) it.collection() else it.enchantment(EnchantmentCard.STICKY_MINING.key) }
-        val BISMUTH =toolSet("bismuth", "ビスマス", ToolMaterialCard.BISMUTH, MaterialCard.BISMUTH_INGOT.ore!!.tag) { it.enchantment(Enchantments.FORTUNE, 1).enchantment(EnchantmentCard.FORTUNE_UP.key, 1).enchantment(Enchantments.UNBREAKING, 3) }
+        val BISMUTH = toolSet("bismuth", "ビスマス", ToolMaterialCard.BISMUTH, MaterialCard.BISMUTH_INGOT.ore!!.tag) { it.enchantment(Enchantments.FORTUNE, 1).enchantment(EnchantmentCard.FORTUNE_UP.key, 1).enchantment(Enchantments.UNBREAKING, 3) }
         val COPPER = toolSet("copper", "銅", ToolMaterialCard.COPPER, tagOf(Shape.INGOT, Material.COPPER)) { it }
         val GLASS = toolSet("glass", "ガラス", ToolMaterialCard.GLASS, ConventionalItemTags.GLASS_BLOCKS) { it.enchantment(Enchantments.SHARPNESS, 2).enchantment(EnchantmentCard.CURSE_OF_SHATTERING.key, 1) }
         val FLINT = toolSet("flint", "火打石", ToolMaterialCard.FLINT, tagOf(Shape.GEM, Material.FLINT)) { it.enchantment(Enchantments.FIRE_ASPECT) }
@@ -508,7 +508,6 @@ class ToolCard(
             PoemList(2).poem(EnJa("The oppressed Viska's desire", "傷つけられた幹の声。")),
             FairySwordConfiguration(ToolMaterialCard.HAIMEVISKA_ROSIN).enchantment(Enchantments.SWEEPING_EDGE, 3).collection().enchantment(Enchantments.UNBREAKING, 2),
         ) { registerSwordRecipeGeneration(item, MaterialCard.HAIMEVISKA_ROSIN.ore!!.tag) }
-
         val FAIRY_PLASTIC_PICKAXE = !ToolCard(
             "fairy_plastic_pickaxe", EnJa("Fairy Plastic Pickaxe", "妖精のプラスチックのつるはし"),
             PoemList(4).poem(EnJa("Nectar turns into fairies underground", "地脈を流れる大樹の血。")),
