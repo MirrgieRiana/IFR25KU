@@ -701,7 +701,8 @@ open class BlockMaterialCard(
                 AthanorRecipeCard,
                 inputs = listOf({ SimpleMachineRecipe.Input(item().toIngredient(), 16) }),
                 outputs = listOf(
-                    { Items.DIRT.createItemStack(12) },
+                    { Items.DIRT.createItemStack(4) },
+                    { MaterialCard.PLASTIC_TREE_SAP.item().createItemStack(8) },
                     { MaterialCard.RETINITE.item().createItemStack(3) },
                     { MaterialCard.COPAL.item().createItemStack(1) },
                 ),
