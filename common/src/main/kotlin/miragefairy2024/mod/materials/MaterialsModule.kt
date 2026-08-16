@@ -655,6 +655,7 @@ class MaterialCard(
                     .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 10), 1.0F)
                     .build()
             },
+            tags = listOf(ItemTagCard.SAP.tag),
         )
         val HAIMEVISKA_ROSIN: MaterialCard = !MaterialCard(
             "haimeviska_rosin", "Haimeviska Rosin", "ハイメヴィスカの涙",
