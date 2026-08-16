@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:torch"
+        "recipe": "miragefairy2024:torch_from_sap"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:torch"
+      "miragefairy2024:torch_from_sap"
     ]
   }
 }

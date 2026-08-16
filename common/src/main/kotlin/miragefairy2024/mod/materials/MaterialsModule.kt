@@ -1602,7 +1602,7 @@ fun initMaterialsModule() {
             { PotionContents.createItemStack(Items.POTION, Potions.WATER) },
         ),
         duration = 20 * 2,
-    ) on ItemTagCard.SAP.tag
+    ) on ItemTagCard.SAP.tag modId MirageFairy2024.MOD_ID from ItemTagCard.SAP.tag
 
     // 松明
     registerShapedRecipeGeneration({ Items.TORCH }) {
@@ -1610,7 +1610,7 @@ fun initMaterialsModule() {
         pattern("S")
         define('#', ItemTagCard.SAP.tag)
         define('S', tagOf(Shape.ROD, Material.WOOD))
-    } on ItemTagCard.SAP.tag modId MirageFairy2024.MOD_ID
+    } on ItemTagCard.SAP.tag modId MirageFairy2024.MOD_ID from ItemTagCard.SAP.tag
 
 }
 

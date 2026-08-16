@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:sugar"
+        "recipe": "miragefairy2024:sugar_from_sap"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:sugar"
+      "miragefairy2024:sugar_from_sap"
     ]
   }
 }
