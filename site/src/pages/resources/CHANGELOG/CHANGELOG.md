@@ -94,6 +94,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 - 変更: 生命の水のアタノールレシピの材料を卵から卵ブロックに変更。
 - 変更: ラム酒のレシピをアタノールを使ったものに変更。
 - 変更: パンのアタノールレシピの生産量を2個から1個に減少。
+- 変更: 各種レシピの材料をハイメヴィスカの樹液から樹液タグに変更。
 
 ツール
 
