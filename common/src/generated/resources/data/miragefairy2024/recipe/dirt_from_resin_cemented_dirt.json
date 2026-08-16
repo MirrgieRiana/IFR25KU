@@ -12,8 +12,12 @@
   ],
   "outputs": [
     {
-      "count": 12,
+      "count": 4,
       "id": "minecraft:dirt"
+    },
+    {
+      "count": 8,
+      "id": "miragefairy2024:plastic_tree_sap"
     },
     {
       "count": 3,
