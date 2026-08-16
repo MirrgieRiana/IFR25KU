@@ -1590,7 +1590,7 @@ fun initMaterialsModule() {
         duration = 20 * 10,
     ) using "athanor" on { Items.WHEAT } modId MirageFairy2024.MOD_ID
 
-    // 砂糖+水入り瓶
+    // 樹液→砂糖+水入り瓶
     registerSimpleMachineRecipeGeneration(
         AthanorRecipeCard,
         inputs = listOf(
@@ -1604,7 +1604,7 @@ fun initMaterialsModule() {
         duration = 20 * 2,
     ) on ItemTagCard.SAP.tag modId MirageFairy2024.MOD_ID from ItemTagCard.SAP.tag
 
-    // 松明
+    // 樹液→松明
     registerShapedRecipeGeneration({ Items.TORCH }) {
         pattern("#")
         pattern("S")
