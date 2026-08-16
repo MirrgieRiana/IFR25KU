@@ -31,6 +31,7 @@ enum class ItemTagCard(identifier: ResourceLocation, val title: EnJa) {
     PRISMARINE_SHARDS(ResourceLocation("c", "prismarine_shards"), EnJa("Prismarine Shards", "プリズマリンの欠片")),
     PLANT_TOOLS(MirageFairy2024.identifier("plant_tools"), EnJa("Plant Tools", "植物ツール")),
     SPIRITS(MirageFairy2024.identifier("spirits"), EnJa("Spirits", "蒸留酒")),
+    SAP(MirageFairy2024.identifier("sap"), EnJa("Sap", "樹液")),
     ;
 
     val tag = identifier.toItemTag()

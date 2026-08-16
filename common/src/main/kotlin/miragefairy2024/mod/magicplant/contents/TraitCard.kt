@@ -167,7 +167,7 @@ class TraitCard(
             "carnivorous_plant", "Carnivorous Plant", "食虫植物",
             "It captures small animals like insects and breaks them down with digestive fluids. This is one of the strategies for surviving in nutrient-poor soil.",
             "昆虫などの小動物を捕らえ、消化液により分解する。栄養の少ない土壌で生活するための戦略の一つである。",
-            listOf(TraitConditionCard.SUNSHINE_ENVIRONMENT), traitEffectKeyEntriesOf(TraitEffectKeyCard.NUTRITION to 0.2),
+            listOf(), traitEffectKeyEntriesOf(TraitEffectKeyCard.NUTRITION to 0.5, TraitEffectKeyCard.PREDATION_DAMAGE to 0.1),
         )
         val ETHER_RESPIRATION = !TraitCard(
             "ether_respiration", "Ether Respiration", "エーテル呼吸",
@@ -217,7 +217,7 @@ class TraitCard(
             "spiny_leaves", "Spiny Leaves", "棘のある葉",
             "Spines prevent the loss of water through transpiration and are also used for defense against herbivorous animals. The spines of plants in the Miragaceae family are made of sharp tissues containing silicates, which can easily pierce human skin and cause mild inflammation.",
             "棘は水分の蒸散を防ぎ、草食動物からの防御にも使われる。ミラージュ科の植物が持つ棘はケイ酸塩を含む鋭利な組織でできており、人間の皮膚を容易に傷つけ、軽度の炎症を引き起こす。",
-            listOf(TraitConditionCard.LOW_HUMIDITY), traitEffectKeyEntriesOf(TraitEffectKeyCard.GROWTH_BOOST to 0.2), // TODO 接触ダメージ
+            listOf(), traitEffectKeyEntriesOf(TraitEffectKeyCard.GROWTH_BOOST to 0.5, TraitEffectKeyCard.SPINE_DAMAGE to 0.1),
         )
         val HEATING_MECHANISM = !TraitCard(
             "heating_mechanism", "Heating Mechanism", "発熱機構",
