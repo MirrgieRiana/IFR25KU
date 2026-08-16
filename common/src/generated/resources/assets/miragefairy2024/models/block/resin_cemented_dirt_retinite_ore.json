@@ -1,0 +1,7 @@
+{
+  "parent": "miragefairy2024:block/ore",
+  "textures": {
+    "back": "miragefairy2024:block/resin_cemented_dirt",
+    "front": "miragefairy2024:block/retinite_ore"
+  }
+}

@@ -9,6 +9,7 @@ import miragefairy2024.mod.FoodIngredientsRegistry
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.PoemType
+import miragefairy2024.mod.biome.OldGrowthAmberForestBiomeCard
 import miragefairy2024.mod.common.WaterBottleIngredient
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.common.rootAdvancement
@@ -702,12 +703,20 @@ class MaterialCard(
             } on ore!!.tag modId MirageFairy2024.MOD_ID from item
         }
         val FAIRY_PLASTIC: MaterialCard = !MaterialCard(
-            // TODO add recipe
-            // TODO add purpose
             "fairy_plastic", "Fairy Plastic", "妖精のプラスチック",
             PoemList(4).poem("Thermoplastic organic polymer", "凍てつく記憶の宿る石。"),
             fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.FAIRY_PLASTIC),
-            // TODO advancement
+            advancementCreator = {
+                AdvancementCard(
+                    identifier = identifier,
+                    context = AdvancementCard.Sub { OldGrowthAmberForestBiomeCard.advancement!!.await() },
+                    icon = { item().createItemStack() },
+                    name = EnJa("Living fossil", "生きた化石"),
+                    description = EnJa("Mine Fairy Plastic from the Resin-Cemented Dirt beneath the Old Growth Amber Forest", "琥珀色の原生林の地下の石化した樹脂状の土から妖精のプラスチックを採掘する"),
+                    criterion = AdvancementCard.hasItem(item),
+                    type = AdvancementCardType.NORMAL,
+                )
+            },
         )
         val FAIRY_RUBBER: MaterialCard = !MaterialCard(
             // TODO add purpose
