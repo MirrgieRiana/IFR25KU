@@ -75,15 +75,15 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
         val traitEffects = calculateTraitEffects(level, pos, blockEntity, traitStacks)
         var actualDamage = 0.0
         var actualDamageTypeCard: DamageTypeCard? = null
-        fun hurt(traitEffectKeyCard: TraitEffectKeyCard, damageTypeCard: DamageTypeCard) {
+        fun addDamage(traitEffectKeyCard: TraitEffectKeyCard, damageTypeCard: DamageTypeCard) {
             val damage = traitEffects[traitEffectKeyCard.traitEffectKey]
             if (damage > 0) {
                 actualDamage += damage
                 actualDamageTypeCard = damageTypeCard
             }
         }
-        hurt(TraitEffectKeyCard.SPINE_DAMAGE, SpineDamageTypeCard)
-        hurt(TraitEffectKeyCard.PREDATION_DAMAGE, CarnivorousPlantDamageTypeCard)
+        addDamage(TraitEffectKeyCard.SPINE_DAMAGE, SpineDamageTypeCard)
+        addDamage(TraitEffectKeyCard.PREDATION_DAMAGE, CarnivorousPlantDamageTypeCard)
         if (actualDamageTypeCard != null) entity.hurt(level.damageSources().source(actualDamageTypeCard.registryKey), actualDamage.toFloat())
     }
 
