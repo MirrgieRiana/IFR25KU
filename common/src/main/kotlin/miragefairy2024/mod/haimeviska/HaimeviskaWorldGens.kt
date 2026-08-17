@@ -221,11 +221,7 @@ object HaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) { // 最大32
     }
 }
 
-// ハイメヴィスカの葉なのだ～🌱
-// FoliagePlacerには、幹に対する方角の情報が一切渡らないので、回転対称な形しか作れないのだ。
-// そこで、ここでは1個の葉の塊だけを作って、枝の張り方はHaimeviskaTrunkPlacerに任せているのだ。
 object HaimeviskaFoliagePlacer : FoliagePlacer(ConstantInt.of(2), ConstantInt.of(0)) {
-    /** 葉を積む段数なのだ。 */
     private const val FOLIAGE_LAYER_COUNT = 3
 
     override fun type() = HaimeviskaFoliagePlacerCard.type
@@ -241,15 +237,28 @@ object HaimeviskaFoliagePlacer : FoliagePlacer(ConstantInt.of(2), ConstantInt.of
         foliageRadius: Int,
         offset: Int,
     ) {
-        // 上の段ほど半径が小さい円盤を積むのだ
+        // 幹に対する方角の情報が一切渡らないので、回転対称な形しか作れないのだぁ…🌧️
+        // 上の段ほど半径が小さい円盤を積むのだ～🌱
         (0..<FOLIAGE_LAYER_COUNT).forEach { localY ->
-            placeLeavesRow(level, blockSetter, random, config, attachment.pos(), foliageRadius + attachment.radiusOffset() - localY, offset + localY, attachment.doubleTrunk())
+            val range = foliageRadius + attachment.radiusOffset() - localY
+            if (range > 0) {
+                placeLeavesRow(
+                    level,
+                    blockSetter,
+                    random,
+                    config,
+                    attachment.pos(),
+                    range,
+                    offset + localY,
+                    attachment.doubleTrunk(),
+                )
+            }
         }
     }
 
     override fun foliageHeight(random: RandomSource, height: Int, config: TreeConfiguration) = FOLIAGE_LAYER_COUNT - 1
 
-    override fun shouldSkipLocation(random: RandomSource, localX: Int, localY: Int, localZ: Int, range: Int, large: Boolean) = localX * localX + localZ * localZ > range * range // 円盤型にするのだ
+    override fun shouldSkipLocation(random: RandomSource, localX: Int, localY: Int, localZ: Int, range: Int, large: Boolean) = localX * localX + localZ * localZ > range * range
 }
 
 object HaimeviskaTreeDecorator : TreeDecorator() {
@@ -259,7 +268,6 @@ object HaimeviskaTreeDecorator : TreeDecorator() {
             if (!generator.level().isStateAtPosition(blockPos) { it == HaimeviskaBlockCard.LOG.block().defaultBlockState().with(RotatedPillarBlock.AXIS, Direction.Axis.Y) }) return@forEach // 垂直の幹のみ
             val direction = Direction.from2DDataValue(generator.random().nextInt(4))
             if (!generator.isAir(blockPos.relative(direction))) return@forEach // 正面が空気の場合のみ
-            // 2x2幹では幹ブロック数が約4倍になるため、装飾の出現確率を約1/4に調整するのだ
             val r = generator.random().nextInt(100)
             if (r < 6) {
                 generator.setBlock(blockPos, HaimeviskaBlockCard.DRIPPING_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
