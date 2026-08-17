@@ -87,9 +87,9 @@ fun initHaimeviskaWorldGens() {
         registerConfiguredFeature(HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
             TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(HaimeviskaBlockCard.LOG.block()),
-                HaimeviskaTrunkPlacer, // 2x2の太い幹と、そこから伸びる枝
+                HaimeviskaTrunkPlacer,
                 BlockStateProvider.simple(HaimeviskaBlockCard.LEAVES.block()),
-                HaimeviskaFoliagePlacer, // 枝先の葉の塊
+                HaimeviskaFoliagePlacer,
                 TwoLayersFeatureSize(1, 1, 2),
             ).ignoreVines().decorators(listOf(HaimeviskaTreeDecoratorCard.treeDecorator, TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.25F))).build()
         }.generator {
