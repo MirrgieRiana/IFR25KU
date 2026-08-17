@@ -658,7 +658,7 @@ class MaterialCard(
             tags = listOf(ItemTagCard.SAP.tag),
         )
         val HAIMEVISKA_ROSIN: MaterialCard = !MaterialCard(
-            "haimeviska_rosin", "Haimeviska Rosin", "ハイメヴィスカの涙",
+            "haimeviska_rosin", "Haimeviska Resin", "ハイメヴィスカの涙",
             PoemList(2).poem("High-friction material", "琥珀の月が昇るとき、妖精の木は静かに泣く"),
             fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.HAIMEVISKA_ROSIN),
             advancementCreator = {
@@ -667,7 +667,7 @@ class MaterialCard(
                     context = AdvancementCard.Sub { haimeviskaAdvancement.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("The Taste of Nectar", "蜜の味"),
-                    description = EnJa("Obtain Haimeviska Rosin, rarely harvested from the Dripping Haimeviska Logs", "滴るハイメヴィスカの原木から稀に採取されるハイメヴィスカの涙を入手する"),
+                    description = EnJa("Obtain Haimeviska Resin, rarely harvested from the Dripping Haimeviska Logs", "滴るハイメヴィスカの原木から稀に採取されるハイメヴィスカの涙を入手する"),
                     criterion = AdvancementCard.hasItem(item),
                     type = AdvancementCardType.NORMAL,
                 )
@@ -1699,7 +1699,7 @@ enum class Material(val path: String, val prefix: EnJa) {
     CALCULITE("calculite", EnJa("Calculite", "理天石")),
     RESONITE("resonite", EnJa("Resonite", "共鳴石")),
     PROMINITE("prominite", EnJa("Prominite", "プロミナイト")),
-    HAIMEVISKA_ROSIN("haimeviska_rosin", EnJa("Haimeviska Rosin", "ハイメヴィスカの涙")),
+    HAIMEVISKA_ROSIN("haimeviska_rosin", EnJa("Haimeviska Resin", "ハイメヴィスカの涙")),
     FAIRY_PLASTIC("fairy_plastic", EnJa("Fairy Plastic", "妖精のプラスチック")),
     FAIRY_RUBBER("fairy_rubber", EnJa("Fairy Rubber", "夜のかけら")),
     ASH("ash", EnJa("Ash", "灰")),
