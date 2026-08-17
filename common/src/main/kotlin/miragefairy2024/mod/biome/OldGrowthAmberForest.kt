@@ -107,9 +107,9 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                     SurfaceRules.ifTrue(
                         SurfaceRules.isBiome(key),
                         SurfaceRules.sequence(
-                            // 地表だけでなく、その下に通常できる土の層ごと置き換えるのだぁ🌱
+                            // 数千万年分の樹脂が堆積した土地なので、地表だけでなく、メサのテラコッタの層と同じくらい深くまで置き換えるのだぁ🌱
                             SurfaceRules.ifTrue(
-                                SurfaceRules.UNDER_FLOOR,
+                                SurfaceRules.VERY_DEEP_UNDER_FLOOR,
                                 SurfaceRules.ifTrue(
                                     SurfaceRules.noiseCondition(Noises.SURFACE_SECONDARY, getSurfaceNoiseThreshold(Noises.SURFACE_SECONDARY, 0.61), Double.MAX_VALUE),
                                     SurfaceRules.state(BlockMaterialCard.RESIN_CEMENTED_DIRT.block().defaultBlockState())
