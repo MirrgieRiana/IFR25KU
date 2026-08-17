@@ -7,7 +7,7 @@ import miragefairy2024.mod.poem
 import miragefairy2024.mod.wood.WoodBlockCard
 import miragefairy2024.mod.wood.WoodBlockConfiguration
 import miragefairy2024.mod.wood.cards.WoodHorizontalFacingLogBlockCard
-import miragefairy2024.mod.wood.cards.WoodLeavesBlockCard
+import miragefairy2024.mod.plasticwood.cards.PlasticTreeLeavesBlockCard
 import miragefairy2024.mod.wood.cards.WoodLogBlockCard
 import miragefairy2024.mod.wood.cards.WoodSaplingBlockCard
 import miragefairy2024.util.EnJa
@@ -30,7 +30,7 @@ object PlasticWoodBlockCard {
     val LEAVES = !WoodBlockConfiguration(
         "plastic_tree_leaves", EnJa("Plastic Tree Leaves", "プラノキの葉"),
         PoemList(1).poem(EnJa("TODO", "TODO")),
-    ).let { WoodLeavesBlockCard(it) { SAPLING } }
+    ).let { PlasticTreeLeavesBlockCard(it) }
     val LOG = !WoodBlockConfiguration(
         "plastic_tree_log", EnJa("Plastic Tree Log", "プラノキの原木"),
         PoemList(1).poem(EnJa("TODO", "TODO")),

@@ -7,6 +7,7 @@ import miragefairy2024.mod.haimeviska.chargedHaimeviskaLeavesTexturedModelFactor
 import miragefairy2024.mod.haimeviska.unchargedHaimeviskaLeavesTexturedModelFactory
 import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.mod.wood.WoodBlockConfiguration
+import miragefairy2024.mod.wood.cards.WoodLeavesBlock
 import miragefairy2024.mod.wood.cards.WoodLeavesBlockCard
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.Model
@@ -26,7 +27,6 @@ import net.minecraft.util.ParticleUtils
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.LeavesBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
@@ -50,13 +50,15 @@ class HaimeviskaLeavesBlockCard(configuration: WoodBlockConfiguration) : WoodLea
     }
 }
 
-class HaimeviskaLeavesBlock(settings: Properties) : LeavesBlock(settings) {
+class HaimeviskaLeavesBlock(settings: Properties) : WoodLeavesBlock(settings) {
     companion object {
         val CODEC: MapCodec<HaimeviskaLeavesBlock> = simpleCodec(::HaimeviskaLeavesBlock)
         val CHARGED: BooleanProperty = BooleanProperty.create("charged")
     }
 
     override fun codec() = CODEC
+
+    override val sapParticleOptions = ParticleTypeCard.DRIPPING_HAIMEVISKA_SAP.particleType
 
     init {
         registerDefaultState(defaultBlockState().with(CHARGED, true))
