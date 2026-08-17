@@ -143,7 +143,7 @@ object HaimeviskaBlockCard {
     val SAPLING = !WoodBlockConfiguration(
         "haimeviska_sapling", EnJa("Haimeviska Sapling", "ハイメヴィスカの苗木"),
         PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
-    ).let { WoodSaplingBlockCard(it) { TreeGrower(MirageFairy2024.identifier("haimeviska").string, Optional.empty(), Optional.of(HAIMEVISKA_CONFIGURED_FEATURE_KEY), Optional.empty()) } }
+    ).let { WoodSaplingBlockCard(it) { TreeGrower(MirageFairy2024.identifier("haimeviska").string, Optional.of(HAIMEVISKA_CONFIGURED_FEATURE_KEY), Optional.empty(), Optional.empty()) } } // 2x2に苗木を植えないと育たない仕様にするため、megaTreeに設定するのだ
 }
 
 
