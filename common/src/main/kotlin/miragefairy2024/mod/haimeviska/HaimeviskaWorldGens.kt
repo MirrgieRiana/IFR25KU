@@ -269,9 +269,9 @@ object HaimeviskaTreeDecorator : TreeDecorator() {
             val direction = Direction.from2DDataValue(generator.random().nextInt(4))
             if (!generator.isAir(blockPos.relative(direction))) return@forEach // 正面が空気の場合のみ
             val r = generator.random().nextInt(100)
-            if (r < 6) {
+            if (r < 12) {
                 generator.setBlock(blockPos, HaimeviskaBlockCard.DRIPPING_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
-            } else if (r < 9) {
+            } else if (r < 18) {
                 generator.setBlock(blockPos, HaimeviskaBlockCard.HOLLOW_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
             }
         }
