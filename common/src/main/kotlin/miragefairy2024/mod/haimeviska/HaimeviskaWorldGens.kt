@@ -60,8 +60,7 @@ object HaimeviskaFoliagePlacerCard {
 
 object HaimeviskaTreeDecoratorCard {
     val identifier = MirageFairy2024.identifier("haimeviska")
-    val treeDecorator = HaimeviskaTreeDecorator()
-    private val codec: MapCodec<HaimeviskaTreeDecorator> = MapCodec.unit { treeDecorator }
+    private val codec: MapCodec<HaimeviskaTreeDecorator> = MapCodec.unit { HaimeviskaTreeDecorator }
     val type: TreeDecoratorType<HaimeviskaTreeDecorator> = TreeDecoratorType(codec)
 }
 
@@ -91,7 +90,7 @@ fun initHaimeviskaWorldGens() {
                 BlockStateProvider.simple(HaimeviskaBlockCard.LEAVES.block()),
                 HaimeviskaFoliagePlacer,
                 TwoLayersFeatureSize(1, 1, 2),
-            ).ignoreVines().decorators(listOf(HaimeviskaTreeDecoratorCard.treeDecorator, TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.25F))).build()
+            ).ignoreVines().decorators(listOf(HaimeviskaTreeDecorator, TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.25F))).build()
         }.generator {
 
             // まばら
@@ -253,7 +252,7 @@ object HaimeviskaFoliagePlacer : FoliagePlacer(ConstantInt.of(2), ConstantInt.of
     override fun shouldSkipLocation(random: RandomSource, localX: Int, localY: Int, localZ: Int, range: Int, large: Boolean) = localX * localX + localZ * localZ > range * range // 円盤型にするのだ
 }
 
-class HaimeviskaTreeDecorator : TreeDecorator() {
+object HaimeviskaTreeDecorator : TreeDecorator() {
     override fun type() = HaimeviskaTreeDecoratorCard.type
     override fun place(generator: Context) {
         generator.logs().forEach { blockPos ->
