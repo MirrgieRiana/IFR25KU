@@ -1367,7 +1367,7 @@ class MaterialCard(
                     AthanorRecipeCard,
                     inputs = listOf(
                         { SimpleMachineRecipe.Input(ingredient(), count) },
-                        { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
+                        { SimpleMachineRecipe.Input(ETHANOL.item().toIngredient(), 1) },
                         { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
                     ),
                     outputs = listOf({ item().createItemStack() }),
