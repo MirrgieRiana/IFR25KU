@@ -3,6 +3,8 @@ package miragefairy2024.mod.plasticwood
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.wood.WoodFoliagePlacer
+import miragefairy2024.mod.wood.WoodTrunkPlacer
 import miragefairy2024.util.Registration
 import miragefairy2024.util.count
 import miragefairy2024.util.generator
@@ -17,18 +19,31 @@ import miragefairy2024.util.with
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
-import net.minecraft.util.valueproviders.ConstantInt
-import net.minecraft.util.valueproviders.UniformInt
+import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize
-import net.minecraft.world.level.levelgen.feature.foliageplacers.MegaPineFoliagePlacer
+import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType
-import net.minecraft.world.level.levelgen.feature.trunkplacers.GiantTrunkPlacer
+import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType
+
+// プラノキの TrunkPlacer カードなのだ
+object PlasticTreeTrunkPlacerCard {
+    val identifier = MirageFairy2024.identifier("plastic_tree")
+    private val codec: MapCodec<PlasticTreeTrunkPlacer> = MapCodec.unit { PlasticTreeTrunkPlacer }
+    val type: TrunkPlacerType<PlasticTreeTrunkPlacer> = TrunkPlacerType(codec)
+}
+
+// プラノキの FoliagePlacer カードなのだ
+object PlasticTreeFoliagePlacerCard {
+    val identifier = MirageFairy2024.identifier("plastic_tree")
+    private val codec: MapCodec<PlasticTreeFoliagePlacer> = MapCodec.unit { PlasticTreeFoliagePlacer }
+    val type: FoliagePlacerType<PlasticTreeFoliagePlacer> = FoliagePlacerType(codec)
+}
 
 // プラノキの TreeDecorator カードなのだ
 object PlasticTreeTreeDecoratorCard {
@@ -48,6 +63,12 @@ val PLASTIC_TREE_AMBER_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE wit
 context(ModContext)
 fun initPlasticWoodWorldGens() {
 
+    // TrunkPlacerの登録なのだ
+    Registration(BuiltInRegistries.TRUNK_PLACER_TYPE, PlasticTreeTrunkPlacerCard.identifier) { PlasticTreeTrunkPlacerCard.type }.register()
+
+    // FoliagePlacerの登録なのだ
+    Registration(BuiltInRegistries.FOLIAGE_PLACER_TYPE, PlasticTreeFoliagePlacerCard.identifier) { PlasticTreeFoliagePlacerCard.type }.register()
+
     // TreeDecoratorの登録なのだ
     Registration(BuiltInRegistries.TREE_DECORATOR_TYPE, PlasticTreeTreeDecoratorCard.identifier) { PlasticTreeTreeDecoratorCard.type }.register()
 
@@ -56,9 +77,9 @@ fun initPlasticWoodWorldGens() {
         registerConfiguredFeature(PLASTIC_TREE_CONFIGURED_FEATURE_KEY) {
             TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(PlasticWoodBlockCard.LOG.block()),
-                GiantTrunkPlacer(18, 8, 0), // 2x2の太い幹、ハイメヴィスカより少し小さめなのだ（最大26）
+                PlasticTreeTrunkPlacer, // 2x2の太い幹と、そこから伸びる枝
                 BlockStateProvider.simple(PlasticWoodBlockCard.LEAVES.block()),
-                MegaPineFoliagePlacer(ConstantInt.of(0), ConstantInt.of(0), UniformInt.of(10, 14)), // 針葉樹風の円錐形の葉、ハイメヴィスカより少し小さめなのだ
+                PlasticTreeFoliagePlacer, // 枝先の葉の塊
                 TwoLayersFeatureSize(1, 1, 2),
             ).ignoreVines().decorators(listOf(PlasticTreeTreeDecoratorCard.treeDecorator)).build()
         }.generator {
@@ -72,6 +93,18 @@ fun initPlasticWoodWorldGens() {
         }
     }
 
+}
+
+// プラノキの幹なのだ～🌱
+object PlasticTreeTrunkPlacer : WoodTrunkPlacer(18, 8, 0) { // 最大26。ハイメヴィスカより少し小さめなのだ
+    override fun type() = PlasticTreeTrunkPlacerCard.type
+
+    override fun getNextFoliageAngle(random: RandomSource, angle: Double) = random.nextDouble() * (Math.PI * 2) // ハイメヴィスカと違って螺旋を描かず、葉の向きは毎回ばらばらなのだ
+}
+
+// プラノキの葉なのだ～🌱
+object PlasticTreeFoliagePlacer : WoodFoliagePlacer() {
+    override fun type() = PlasticTreeFoliagePlacerCard.type
 }
 
 // プラノキの TreeDecorator なのだ
