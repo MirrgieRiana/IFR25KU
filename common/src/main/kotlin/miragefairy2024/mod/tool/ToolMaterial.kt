@@ -55,7 +55,7 @@ enum class FairyToolMaterials(
     LUMINITE(Tiers.DIAMOND, 1361, 9.0F, 4.0F, 3.0F, 21, { ingredientOf(Shape.GEM, Material.LUMINITE) }),
     RESONITE(Tiers.NETHERITE, 2705, 16.0F, 9.0F, 7.0F, 7, { ingredientOf(Shape.INGOT, Material.RESONITE) }),
     PROMINITE(Tiers.DIAMOND, 925, 7.0F, 2.0F, 0.0F, 13, { ingredientOf(Shape.GEM, Material.PROMINITE) }),
-    XARPITE(Tiers.IRON, 283, 1.2F, 2.0F, 2.0F, 20, { ingredientOf(Shape.GEM, Material.XARPITE) }),
+    XARPITE(Tiers.IRON, 283, 1.2F, 2.0F, 2.0F, 1, { ingredientOf(Shape.GEM, Material.XARPITE) }),
     MIRANAGITE(Tiers.IRON, 256, 6.5F, 2.0F, 2.5F, 24, { ingredientOf(Shape.GEM, Material.MIRANAGITE) }),
     CHAOS_STONE(Tiers.NETHERITE, 666, 9.0F, 2.0F, 2.0F, 6, { ingredientOf(Shape.GEM, Material.CHAOS_STONE) }),
     CALCULITE(Tiers.NETHERITE, 2048, 7.0F, 2.0F, 2.0F, 16, { ingredientOf(Shape.GEM, Material.CALCULITE) }),
