@@ -11,7 +11,6 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.register
 import net.minecraft.core.registries.BuiltInRegistries
 
-
 val haimeviskaAdvancement = AdvancementCard(
     identifier = MirageFairy2024.identifier("haimeviska"),
     context = AdvancementCard.Sub { rootAdvancement.await() },
