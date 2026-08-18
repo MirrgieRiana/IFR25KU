@@ -26,6 +26,7 @@ import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.Noises
 import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
+import net.minecraft.world.level.levelgen.placement.CaveSurface
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
 object OldGrowthAmberForestBiomeCard : BiomeCard(
@@ -107,9 +108,8 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                     SurfaceRules.ifTrue(
                         SurfaceRules.isBiome(key),
                         SurfaceRules.sequence(
-                            // 地表だけでなく、その下に通常できる土の層ごと置き換えるのだぁ🌱
                             SurfaceRules.ifTrue(
-                                SurfaceRules.UNDER_FLOOR,
+                                SurfaceRules.stoneDepthCheck(0, true, 20, CaveSurface.FLOOR),
                                 SurfaceRules.ifTrue(
                                     SurfaceRules.noiseCondition(Noises.SURFACE_SECONDARY, getSurfaceNoiseThreshold(Noises.SURFACE_SECONDARY, 0.61), Double.MAX_VALUE),
                                     SurfaceRules.state(BlockMaterialCard.RESIN_CEMENTED_DIRT.block().defaultBlockState())

@@ -55,12 +55,13 @@ enum class FairyToolMaterials(
     LUMINITE(Tiers.DIAMOND, 1361, 9.0F, 4.0F, 3.0F, 21, { ingredientOf(Shape.GEM, Material.LUMINITE) }),
     RESONITE(Tiers.NETHERITE, 2705, 16.0F, 9.0F, 7.0F, 7, { ingredientOf(Shape.INGOT, Material.RESONITE) }),
     PROMINITE(Tiers.DIAMOND, 925, 7.0F, 2.0F, 0.0F, 13, { ingredientOf(Shape.GEM, Material.PROMINITE) }),
-    XARPITE(Tiers.IRON, 283, 1.2F, 2.0F, 2.0F, 20, { ingredientOf(Shape.GEM, Material.XARPITE) }),
+    XARPITE(Tiers.IRON, 283, 1.2F, 2.0F, 2.0F, 1, { ingredientOf(Shape.GEM, Material.XARPITE) }),
     MIRANAGITE(Tiers.IRON, 256, 6.5F, 2.0F, 2.5F, 24, { ingredientOf(Shape.GEM, Material.MIRANAGITE) }),
     CHAOS_STONE(Tiers.NETHERITE, 666, 9.0F, 2.0F, 2.0F, 6, { ingredientOf(Shape.GEM, Material.CHAOS_STONE) }),
     CALCULITE(Tiers.NETHERITE, 2048, 7.0F, 2.0F, 2.0F, 16, { ingredientOf(Shape.GEM, Material.CALCULITE) }),
     NOISE(Tiers.NETHERITE, 101, 8.9F, 1.1F, 1.3F, 3, { ingredientOf(Shape.GEM, Material.NOISE) }),
     HAIMEVISKA_ROSIN(Tiers.WOOD, 73, 1.2F, 0.0F, 0.0F, 16, { ingredientOf(Shape.GEM, Material.HAIMEVISKA_ROSIN) }),
+    COPAL(Tiers.IRON, 182, 5.0F, 1.5F, 1.5F, 19, { ingredientOf(Shape.GEM, Material.COPAL) }),
     FAIRY_PLASTIC(Tiers.IRON, 966, 3.0F, 2.0F, 0.0F, 24, { ingredientOf(Shape.GEM, Material.FAIRY_PLASTIC) }),
 
     NEUTRONIUM(Tiers.NETHERITE, Int.MAX_VALUE - 100, 8.0F, 3.0F, 3.0F, 10, { Items.BEDROCK.toIngredient() }),
@@ -124,6 +125,7 @@ enum class ToolMaterialCard(val toolMaterial: Tier, path: String, val title: EnJ
     CALCULITE(FairyToolMaterials.CALCULITE, "calculite_tool", EnJa("Calculite Tool", "理天石ツール")),
     NOISE(FairyToolMaterials.NOISE, "noise_tool", EnJa("Noise Tool", "ノイズツール")),
     HAIMEVISKA_ROSIN(FairyToolMaterials.HAIMEVISKA_ROSIN, "haimeviska_rosin_tool", EnJa("Resin Tool", "涙ツール")),
+    COPAL(FairyToolMaterials.COPAL, "copal_tool", EnJa("Copal Tool", "コーパルツール")),
     FAIRY_PLASTIC(FairyToolMaterials.FAIRY_PLASTIC, "fairy_plastic_tool", EnJa("Fairy Plastic Tool", "妖精のプラスチックツール")),
 
     NEUTRONIUM(FairyToolMaterials.NEUTRONIUM, "neutronium_tool", EnJa("Neutronium Tool", "ニュートロニウムツール")),
