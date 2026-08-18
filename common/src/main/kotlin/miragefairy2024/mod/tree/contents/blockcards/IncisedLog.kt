@@ -1,4 +1,4 @@
-package miragefairy2024.mod.tree.contents.blocks
+package miragefairy2024.mod.tree.contents.blockcards
 
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockConfiguration

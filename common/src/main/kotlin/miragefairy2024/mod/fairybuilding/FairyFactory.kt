@@ -7,7 +7,7 @@ import miragefairy2024.mod.fairy.contains
 import miragefairy2024.mod.fairy.getFairyCondensation
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.tree.TreeBlockCard
-import miragefairy2024.mod.tree.contents.blocks.HaimeviskaLeavesBlock
+import miragefairy2024.mod.tree.contents.HaimeviskaLeavesBlock
 import miragefairy2024.util.NeighborType
 import miragefairy2024.util.blockVisitor
 import miragefairy2024.util.get
