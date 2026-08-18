@@ -1,11 +1,10 @@
 package miragefairy2024.mod.tree.contents.blocks
 
-import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
-import miragefairy2024.lib.SimpleHorizontalFacingBlock
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.registerHarvestNotation
 import miragefairy2024.mod.tree.TreeBlockConfiguration
+import miragefairy2024.mod.tree.contents.HollowHaimeviskaLogBlock
 import miragefairy2024.util.ItemLootPoolEntry
 import miragefairy2024.util.LootPool
 import miragefairy2024.util.LootTable
@@ -43,12 +42,4 @@ class TreeHollowLogBlockCard(configuration: TreeBlockConfiguration) : TreeHorizo
         item.registerHarvestNotation(MaterialCard.FRACTAL_WISP.item)
 
     }
-}
-
-class HollowHaimeviskaLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
-    companion object {
-        val CODEC: MapCodec<HollowHaimeviskaLogBlock> = simpleCodec(::HollowHaimeviskaLogBlock)
-    }
-
-    override fun codec() = CODEC
 }
