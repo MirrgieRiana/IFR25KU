@@ -26,6 +26,7 @@ import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.Noises
 import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
+import net.minecraft.world.level.levelgen.placement.CaveSurface
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
 object OldGrowthAmberForestBiomeCard : BiomeCard(
@@ -107,9 +108,9 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                     SurfaceRules.ifTrue(
                         SurfaceRules.isBiome(key),
                         SurfaceRules.sequence(
-                            // 数千万年分の樹脂が堆積した土地なので、地表だけでなく、メサのテラコッタの層と同じくらい深くまで置き換えるのだぁ🌱
+                            // 長い時間をかけて樹脂が積もった土地なので、地表だけでなく、最大20ブロック程度の深さまで置き換えるのだぁ🌱
                             SurfaceRules.ifTrue(
-                                SurfaceRules.VERY_DEEP_UNDER_FLOOR,
+                                SurfaceRules.stoneDepthCheck(0, true, 20, CaveSurface.FLOOR),
                                 SurfaceRules.ifTrue(
                                     SurfaceRules.noiseCondition(Noises.SURFACE_SECONDARY, getSurfaceNoiseThreshold(Noises.SURFACE_SECONDARY, 0.61), Double.MAX_VALUE),
                                     SurfaceRules.state(BlockMaterialCard.RESIN_CEMENTED_DIRT.block().defaultBlockState())
