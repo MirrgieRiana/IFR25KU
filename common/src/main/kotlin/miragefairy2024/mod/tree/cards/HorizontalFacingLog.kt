@@ -3,8 +3,8 @@ package miragefairy2024.mod.tree.cards
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_BLOCK_TAG
 import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_ITEM_TAG
-import miragefairy2024.mod.tree.HaimeviskaBlockConfiguration
 import miragefairy2024.mod.tree.TreeBlockCard
+import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.createBaseWoodSetting
 import miragefairy2024.util.generator
 import miragefairy2024.util.getIdentifier
@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
 
-abstract class TreeHorizontalFacingLogBlockCard(configuration: HaimeviskaBlockConfiguration) : TreeBlockCard(configuration) {
+abstract class TreeHorizontalFacingLogBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting().strength(2.0F).mapColor(MapColor.RAW_IRON)
 
     context(ModContext)

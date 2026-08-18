@@ -6,8 +6,8 @@ import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_BLOCK_TAG
 import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_ITEM_TAG
-import miragefairy2024.mod.tree.HaimeviskaBlockConfiguration
 import miragefairy2024.mod.tree.TreeBlockCard
+import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.createBaseWoodSetting
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.generator
@@ -45,7 +45,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.phys.BlockHitResult
 
-abstract class AbstractTreeLogBlockCard(configuration: HaimeviskaBlockConfiguration) : TreeBlockCard(configuration) {
+abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting().strength(2.0F)
 
     context(ModContext)
@@ -86,7 +86,7 @@ abstract class AbstractTreeLogBlockCard(configuration: HaimeviskaBlockConfigurat
     }
 }
 
-class TreeLogBlockCard(configuration: HaimeviskaBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
+class TreeLogBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { if (it[RotatedPillarBlock.AXIS] === Direction.Axis.Y) MapColor.RAW_IRON else MapColor.TERRACOTTA_ORANGE }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = HaimeviskaLogBlock(properties)
 
@@ -98,7 +98,7 @@ class TreeLogBlockCard(configuration: HaimeviskaBlockConfiguration) : AbstractTr
     }
 }
 
-class TreeStrippedLogBlockCard(configuration: HaimeviskaBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
+class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.RAW_IRON }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
@@ -112,7 +112,7 @@ class TreeStrippedLogBlockCard(configuration: HaimeviskaBlockConfiguration) : Ab
     }
 }
 
-class TreeWoodBlockCard(configuration: HaimeviskaBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
+class TreeWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.TERRACOTTA_ORANGE }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
@@ -124,7 +124,7 @@ class TreeWoodBlockCard(configuration: HaimeviskaBlockConfiguration) : AbstractT
     }
 }
 
-class TreeStrippedWoodBlockCard(configuration: HaimeviskaBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
+class TreeStrippedWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.RAW_IRON }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 

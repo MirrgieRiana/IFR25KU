@@ -3,8 +3,8 @@ package miragefairy2024.mod.tree.cards
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
 import miragefairy2024.lib.SimpleHorizontalFacingBlock
-import miragefairy2024.mod.tree.HaimeviskaBlockConfiguration
 import miragefairy2024.mod.tree.TreeBlockCard
+import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.util.ItemLootPoolEntry
 import miragefairy2024.util.LootPool
 import miragefairy2024.util.LootTable
@@ -17,7 +17,7 @@ import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 
-class TreeIncisedLogBlockCard(configuration: HaimeviskaBlockConfiguration) : TreeHorizontalFacingLogBlockCard(configuration) {
+class TreeIncisedLogBlockCard(configuration: TreeBlockConfiguration) : TreeHorizontalFacingLogBlockCard(configuration) {
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = IncisedHaimeviskaLogBlock(properties)
 
     context(ModContext)

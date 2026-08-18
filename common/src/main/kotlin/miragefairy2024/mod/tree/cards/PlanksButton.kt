@@ -1,8 +1,8 @@
 package miragefairy2024.mod.tree.cards
 
 import miragefairy2024.ModContext
-import miragefairy2024.mod.tree.HaimeviskaBlockConfiguration
 import miragefairy2024.mod.tree.TreeBlockCard
+import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.util.generator
 import miragefairy2024.util.registerBlockFamily
 import miragefairy2024.util.registerChild
@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.BlockSetType
 import net.minecraft.world.level.material.PushReaction
 
-class TreePlanksButtonBlockCard(configuration: HaimeviskaBlockConfiguration, private val blockSetType: () -> BlockSetType, private val parent: () -> Block) : TreeBlockCard(configuration) {
+class TreePlanksButtonBlockCard(configuration: TreeBlockConfiguration, private val blockSetType: () -> BlockSetType, private val parent: () -> Block) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings()
         .noCollission()
         .strength(0.5F)

@@ -2,8 +2,8 @@ package miragefairy2024.mod.tree.cards
 
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.HAIMEVISKA_CONFIGURED_FEATURE_KEY
-import miragefairy2024.mod.tree.HaimeviskaBlockConfiguration
 import miragefairy2024.mod.tree.TreeBlockCard
+import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.util.generator
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.registerBlockGeneratedModelGeneration
@@ -29,7 +29,7 @@ import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.material.PushReaction
 import java.util.Optional
 
-class TreeSaplingBlockCard(configuration: HaimeviskaBlockConfiguration, private val treeGrowerName: ResourceLocation) : TreeBlockCard(configuration) {
+class TreeSaplingBlockCard(configuration: TreeBlockConfiguration, private val treeGrowerName: ResourceLocation) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings()
         .mapColor(MapColor.PLANT)
         .noCollission()
