@@ -124,7 +124,7 @@ enum class ToolMaterialCard(val toolMaterial: Tier, path: String, val title: EnJ
     CHAOS_STONE(FairyToolMaterials.CHAOS_STONE, "chaos_tool", EnJa("Chaos Tool", "混沌ツール")),
     CALCULITE(FairyToolMaterials.CALCULITE, "calculite_tool", EnJa("Calculite Tool", "理天石ツール")),
     NOISE(FairyToolMaterials.NOISE, "noise_tool", EnJa("Noise Tool", "ノイズツール")),
-    HAIMEVISKA_ROSIN(FairyToolMaterials.HAIMEVISKA_ROSIN, "haimeviska_rosin_tool", EnJa("Rosin Tool", "涙ツール")),
+    HAIMEVISKA_ROSIN(FairyToolMaterials.HAIMEVISKA_ROSIN, "haimeviska_rosin_tool", EnJa("Resin Tool", "涙ツール")),
     COPAL(FairyToolMaterials.COPAL, "copal_tool", EnJa("Copal Tool", "コーパルツール")),
     FAIRY_PLASTIC(FairyToolMaterials.FAIRY_PLASTIC, "fairy_plastic_tool", EnJa("Fairy Plastic Tool", "妖精のプラスチックツール")),
 
