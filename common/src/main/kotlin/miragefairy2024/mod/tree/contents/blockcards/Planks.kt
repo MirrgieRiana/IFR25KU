@@ -27,9 +27,7 @@ fun createPlankSettings(sound: Boolean = true): BlockBehaviour.Properties = crea
     .mapColor(MapColor.RAW_IRON)
 
 open class AbstractTreePlanksBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
-    override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting()
-        .strength(2.0F, 3.0F)
-        .mapColor(MapColor.RAW_IRON)
+    override fun createSettings(): BlockBehaviour.Properties = createPlankSettings()
 
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = Block(properties)
 
