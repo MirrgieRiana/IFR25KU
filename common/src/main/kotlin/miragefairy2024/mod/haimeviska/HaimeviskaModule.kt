@@ -6,7 +6,11 @@ import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.Registration
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.register
+import net.minecraft.core.registries.BuiltInRegistries
+
 
 val haimeviskaAdvancement = AdvancementCard(
     identifier = MirageFairy2024.identifier("haimeviska"),
@@ -20,7 +24,14 @@ val haimeviskaAdvancement = AdvancementCard(
 
 context(ModContext)
 fun initHaimeviskaModule() {
+
     initHaimeviskaBlocks()
     initHaimeviskaWorldGens()
+
+    Registration(BuiltInRegistries.TRUNK_PLACER_TYPE, HaimeviskaTrunkPlacerCard.identifier) { HaimeviskaTrunkPlacerCard.type }.register()
+    Registration(BuiltInRegistries.FOLIAGE_PLACER_TYPE, HaimeviskaFoliagePlacerCard.identifier) { HaimeviskaFoliagePlacerCard.type }.register()
+    Registration(BuiltInRegistries.TREE_DECORATOR_TYPE, HaimeviskaTreeDecoratorCard.identifier) { HaimeviskaTreeDecoratorCard.type }.register()
+
     haimeviskaAdvancement.init()
+
 }

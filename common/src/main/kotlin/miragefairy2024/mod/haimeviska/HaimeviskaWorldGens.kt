@@ -2,20 +2,17 @@ package miragefairy2024.mod.haimeviska
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.util.Registration
 import miragefairy2024.util.count
 import miragefairy2024.util.generator
 import miragefairy2024.util.per
 import miragefairy2024.util.placeWhenVegetalDecoration
 import miragefairy2024.util.plus
-import miragefairy2024.util.register
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.tree
 import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.with
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
-import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration
@@ -31,17 +28,6 @@ val HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE 
 
 context(ModContext)
 fun initHaimeviskaWorldGens() {
-
-    // TrunkPlacerの登録
-    Registration(BuiltInRegistries.TRUNK_PLACER_TYPE, HaimeviskaTrunkPlacerCard.identifier) { HaimeviskaTrunkPlacerCard.type }.register()
-
-    // FoliagePlacerの登録
-    Registration(BuiltInRegistries.FOLIAGE_PLACER_TYPE, HaimeviskaFoliagePlacerCard.identifier) { HaimeviskaFoliagePlacerCard.type }.register()
-
-    // TreeDecoratorの登録
-    Registration(BuiltInRegistries.TREE_DECORATOR_TYPE, HaimeviskaTreeDecoratorCard.identifier) { HaimeviskaTreeDecoratorCard.type }.register()
-
-    // 地形生成
     Feature.TREE.generator(MirageFairy2024.identifier("haimeviska")) {
         registerConfiguredFeature(HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
             TreeConfiguration.TreeConfigurationBuilder(
@@ -64,5 +50,4 @@ fun initHaimeviskaWorldGens() {
 
         }
     }
-
 }
