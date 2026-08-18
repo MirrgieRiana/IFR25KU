@@ -21,14 +21,12 @@ object SmallHaimeviskaTrunkPlacerCard {
     val type: TrunkPlacerType<SmallHaimeviskaTrunkPlacer> = TrunkPlacerType(codec)
 }
 
-object SmallHaimeviskaTrunkPlacer : TrunkPlacer(5, 3, 0) {
-    private const val LOWEST_LEAF_OFFSET_Y = 2 // 地面から3マスの高さなのだ～🌱
-    private const val LOWEST_LEAF_DISTANCE = 2.0
-    private val ANGLE_STEP = Math.toRadians(137.5) // 実際の植物の葉序と同じ黄金角なのだ～🌱
+object SmallHaimeviskaTrunkPlacer : TrunkPlacer(6, 2, 0) {
+    private const val LOWEST_LEAF_OFFSET_Y = 2
 
     override fun type() = SmallHaimeviskaTrunkPlacerCard.type
 
-    // 枝を持たない1x1の主幹を建てて、その周りに葉を一重らせん状に付けるのだ～🌱
+    // 枝を持たない1x1の主幹を建てて、その周りに葉をらせん状に付けるのだ～🌱
     override fun placeTrunk(
         level: LevelSimulatedReader,
         blockSetter: BiConsumer<BlockPos, BlockState>,
@@ -49,18 +47,22 @@ object SmallHaimeviskaTrunkPlacer : TrunkPlacer(5, 3, 0) {
         // 幹の最上部のY+1に樹冠を乗せるのだ～🌱
         foliageAttachments += FoliagePlacer.FoliageAttachment(pos.above(freeTreeHeight), 0, false)
 
-        // 幹に沿う葉は、上に行くほど幹に近付きながららせんを描くのだ～🌱
-        val topLeafOffsetY = freeTreeHeight - 1
+        // 葉の位置を、幹の頂上から下に向かって決めていくのだ～🌱
         var angle = (Math.PI * 2) * random.nextDouble() // 最初の方位角はランダムなのだ～🌱
-        (LOWEST_LEAF_OFFSET_Y..topLeafOffsetY).forEach { leafOffsetY ->
-            val distance = if (topLeafOffsetY <= LOWEST_LEAF_OFFSET_Y) 0.0 else LOWEST_LEAF_DISTANCE * (topLeafOffsetY - leafOffsetY) / (topLeafOffsetY - LOWEST_LEAF_OFFSET_Y)
+        ((freeTreeHeight - 1) downTo LOWEST_LEAF_OFFSET_Y).forEach { leafOffsetY ->
+
+            // leafOffsetY == freeTreeHeight - 1 -> 0
+            // leafOffsetY == LOWEST_LEAF_OFFSET_Y -> 2
+            val horizontalDistance = 2.0 * (leafOffsetY - (freeTreeHeight - 1)) / (LOWEST_LEAF_OFFSET_Y - (freeTreeHeight - 1))
+
             val leafBlockPos = BlockPos(
-                (pos.x + 0.5 + distance * sin(angle)).floorToInt(),
+                (pos.x + 0.5 + horizontalDistance * sin(angle)).floorToInt(),
                 pos.y + leafOffsetY,
-                (pos.z + 0.5 - distance * cos(angle)).floorToInt(),
+                (pos.z + 0.5 - horizontalDistance * cos(angle)).floorToInt(),
             )
             foliageAttachments += FoliagePlacer.FoliageAttachment(leafBlockPos, 0, false)
-            angle += ANGLE_STEP
+
+            angle += Math.toRadians(35.0)
         }
 
         return foliageAttachments

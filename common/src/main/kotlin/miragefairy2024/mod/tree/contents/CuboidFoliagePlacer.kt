@@ -23,10 +23,9 @@ object CuboidFoliagePlacerCard {
     val type: FoliagePlacerType<CuboidFoliagePlacer> = FoliagePlacerType(codec)
 }
 
-// 角を削らずに、葉を直方体のまま積むのだ～🌱
 class CuboidFoliagePlacer(radius: IntProvider, offset: IntProvider, val height: Int) : FoliagePlacer(radius, offset) {
-    val radiusProvider get() = this.radius
-    val offsetProvider get() = this.offset
+    val radiusProvider: IntProvider get() = this.radius
+    val offsetProvider: IntProvider get() = this.offset
 
     override fun type() = CuboidFoliagePlacerCard.type
 

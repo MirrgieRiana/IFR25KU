@@ -27,17 +27,37 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvi
 import net.minecraft.world.level.levelgen.feature.treedecorators.LeaveVineDecorator
 import net.minecraft.world.level.levelgen.feature.treedecorators.TrunkVineDecorator
 
+val SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("small_haimeviska")
+val SMALL_HAIMEVISKA_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_haimeviska")
+val SMALL_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_haimeviska_fairy_forest")
+
 val HAIMEVISKA_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("haimeviska")
 val HAIMEVISKA_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("haimeviska")
 val HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("haimeviska_fairy_forest")
 val HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("haimeviska_deep_fairy_forest")
 
-val SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("small_haimeviska")
-val SMALL_HAIMEVISKA_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_haimeviska")
-val SMALL_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_haimeviska_fairy_forest")
-
 context(ModContext)
 fun initTreeWorldGens() {
+    Feature.TREE.generator(MirageFairy2024.identifier("small_haimeviska")) {
+        registerConfiguredFeature(SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
+            TreeConfiguration.TreeConfigurationBuilder(
+                BlockStateProvider.simple(TreeBlockCard.LOG.block()),
+                SmallHaimeviskaTrunkPlacer,
+                BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
+                CuboidFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
+                TwoLayersFeatureSize(1, 0, 1),
+            ).ignoreVines().decorators(listOf(HaimeviskaTreeDecorator, TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
+        }.generator {
+
+            // まばら
+            registerPlacedFeature(SMALL_HAIMEVISKA_PLACED_FEATURE_KEY) { per(1024) + tree(TreeBlockCard.SAPLING.block()) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_PLAINS + +ConventionalBiomeTags.IS_FOREST } // 平原・森林バイオームに配置
+
+            // 高密度
+            registerPlacedFeature(SMALL_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY) { per(16) + tree(TreeBlockCard.SAPLING.block()) }
+
+        }
+    }
+
     Feature.TREE.generator(MirageFairy2024.identifier("haimeviska")) {
         registerConfiguredFeature(HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
             TreeConfiguration.TreeConfigurationBuilder(
@@ -46,7 +66,7 @@ fun initTreeWorldGens() {
                 BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
                 HaimeviskaFoliagePlacer,
                 TwoLayersFeatureSize(1, 1, 2),
-            ).ignoreVines().decorators(listOf(HaimeviskaTreeDecorator, TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.25F))).build()
+            ).ignoreVines().decorators(listOf(HaimeviskaTreeDecorator, TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
         }.generator {
 
             // まばら
@@ -57,26 +77,6 @@ fun initTreeWorldGens() {
 
             // 超高密度
             registerPlacedFeature(HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY) { count(8) + tree(TreeBlockCard.SAPLING.block()) }
-
-        }
-    }
-
-    Feature.TREE.generator(MirageFairy2024.identifier("small_haimeviska")) {
-        registerConfiguredFeature(SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
-            TreeConfiguration.TreeConfigurationBuilder(
-                BlockStateProvider.simple(TreeBlockCard.LOG.block()),
-                SmallHaimeviskaTrunkPlacer,
-                BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
-                CuboidFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
-                TwoLayersFeatureSize(1, 0, 1),
-            ).ignoreVines().decorators(listOf(HaimeviskaTreeDecorator)).build()
-        }.generator {
-
-            // まばら
-            registerPlacedFeature(SMALL_HAIMEVISKA_PLACED_FEATURE_KEY) { per(1024) + tree(TreeBlockCard.SAPLING.block()) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_PLAINS + +ConventionalBiomeTags.IS_FOREST } // 平原・森林バイオームに配置
-
-            // 高密度
-            registerPlacedFeature(SMALL_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY) { per(16) + tree(TreeBlockCard.SAPLING.block()) }
 
         }
     }
