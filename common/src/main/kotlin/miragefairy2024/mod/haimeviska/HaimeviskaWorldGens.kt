@@ -47,24 +47,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-object HaimeviskaTrunkPlacerCard {
-    val identifier = MirageFairy2024.identifier("haimeviska")
-    private val codec: MapCodec<HaimeviskaTrunkPlacer> = MapCodec.unit { HaimeviskaTrunkPlacer }
-    val type: TrunkPlacerType<HaimeviskaTrunkPlacer> = TrunkPlacerType(codec)
-}
-
-object HaimeviskaFoliagePlacerCard {
-    val identifier = MirageFairy2024.identifier("haimeviska")
-    private val codec: MapCodec<HaimeviskaFoliagePlacer> = MapCodec.unit { HaimeviskaFoliagePlacer }
-    val type: FoliagePlacerType<HaimeviskaFoliagePlacer> = FoliagePlacerType(codec)
-}
-
-object HaimeviskaTreeDecoratorCard {
-    val identifier = MirageFairy2024.identifier("haimeviska")
-    private val codec: MapCodec<HaimeviskaTreeDecorator> = MapCodec.unit { HaimeviskaTreeDecorator }
-    val type: TreeDecoratorType<HaimeviskaTreeDecorator> = TreeDecoratorType(codec)
-}
-
 val HAIMEVISKA_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("haimeviska")
 val HAIMEVISKA_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("haimeviska")
 val HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("haimeviska_fairy_forest")
@@ -106,6 +88,12 @@ fun initHaimeviskaWorldGens() {
         }
     }
 
+}
+
+object HaimeviskaTrunkPlacerCard {
+    val identifier = MirageFairy2024.identifier("haimeviska")
+    private val codec: MapCodec<HaimeviskaTrunkPlacer> = MapCodec.unit { HaimeviskaTrunkPlacer }
+    val type: TrunkPlacerType<HaimeviskaTrunkPlacer> = TrunkPlacerType(codec)
 }
 
 object HaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
@@ -211,6 +199,12 @@ object HaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
     }
 }
 
+object HaimeviskaFoliagePlacerCard {
+    val identifier = MirageFairy2024.identifier("haimeviska")
+    private val codec: MapCodec<HaimeviskaFoliagePlacer> = MapCodec.unit { HaimeviskaFoliagePlacer }
+    val type: FoliagePlacerType<HaimeviskaFoliagePlacer> = FoliagePlacerType(codec)
+}
+
 object HaimeviskaFoliagePlacer : FoliagePlacer(ConstantInt.of(3), ConstantInt.of(0)) {
     private const val FOLIAGE_LAYER_COUNT = 2
 
@@ -249,6 +243,12 @@ object HaimeviskaFoliagePlacer : FoliagePlacer(ConstantInt.of(3), ConstantInt.of
     override fun foliageHeight(random: RandomSource, height: Int, config: TreeConfiguration) = FOLIAGE_LAYER_COUNT - 1
 
     override fun shouldSkipLocation(random: RandomSource, localX: Int, localY: Int, localZ: Int, range: Int, large: Boolean) = localX * localX + localZ * localZ > range * range
+}
+
+object HaimeviskaTreeDecoratorCard {
+    val identifier = MirageFairy2024.identifier("haimeviska")
+    private val codec: MapCodec<HaimeviskaTreeDecorator> = MapCodec.unit { HaimeviskaTreeDecorator }
+    val type: TreeDecoratorType<HaimeviskaTreeDecorator> = TreeDecoratorType(codec)
 }
 
 object HaimeviskaTreeDecorator : TreeDecorator() {
