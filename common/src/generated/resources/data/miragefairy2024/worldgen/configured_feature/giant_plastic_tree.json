@@ -13,7 +13,7 @@
       }
     },
     "foliage_placer": {
-      "type": "miragefairy2024:plastic_tree"
+      "type": "miragefairy2024:giant_plastic_tree"
     },
     "foliage_provider": {
       "type": "minecraft:simple_state_provider",
@@ -35,7 +35,7 @@
       "upper_size": 2
     },
     "trunk_placer": {
-      "type": "miragefairy2024:plastic_tree"
+      "type": "miragefairy2024:giant_plastic_tree"
     },
     "trunk_provider": {
       "type": "minecraft:simple_state_provider",

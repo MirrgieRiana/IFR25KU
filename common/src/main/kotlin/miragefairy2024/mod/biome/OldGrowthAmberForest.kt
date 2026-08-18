@@ -3,6 +3,9 @@ package miragefairy2024.mod.biome
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.BlockMaterialCard
+import miragefairy2024.mod.tree.GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
+import miragefairy2024.mod.tree.SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -35,7 +38,7 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
         AdvancementCard(
             identifier = identifier,
             context = AdvancementCard.Sub { FairyForestBiomeCard.advancement!!.await() },
-            icon = { MaterialCard.FAIRY_PLASTIC.item().createItemStack() }, // TODO →プラノキの苗木
+            icon = { TreeBlockCard.PLASTIC_TREE_SAPLING.item().createItemStack() },
             name = EnJa("Land Abloom with Nectar", "蜜の咲き誇る地"), // TODO 蜜から産まれた雑草
             description = EnJa("Travel the overworld and discover the Old Growth Amber Forest", "地上を旅して琥珀色の原生林を探す"),
             criterion = AdvancementCard.visit(key),
@@ -87,7 +90,9 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
 
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, ElevatedSpawnerFeatureCard.placedFeatureKey)
 
-                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_TAIGA)
+                // 琥珀色の原生林の主役はプラノキなのだ～🌱 小さいものと大きいものが同じ頻度で生えるのだ～🌱
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
                 BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)
                 BiomeDefaultFeatures.addGiantTaigaVegetation(lookupBackedBuilder)

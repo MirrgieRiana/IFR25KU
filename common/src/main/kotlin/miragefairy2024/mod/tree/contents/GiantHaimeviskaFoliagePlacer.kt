@@ -11,14 +11,34 @@ import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerTy
 
 object GiantHaimeviskaFoliagePlacerCard {
     val identifier = MirageFairy2024.identifier("giant_haimeviska")
-    private val codec: MapCodec<GiantHaimeviskaFoliagePlacer> = MapCodec.unit { GiantHaimeviskaFoliagePlacer }
-    val type: FoliagePlacerType<GiantHaimeviskaFoliagePlacer> = FoliagePlacerType(codec)
+    private val codec: MapCodec<GiantTreeFoliagePlacer> = MapCodec.unit { GiantHaimeviskaFoliagePlacer }
+    val type: FoliagePlacerType<GiantTreeFoliagePlacer> = FoliagePlacerType(codec)
 }
 
-object GiantHaimeviskaFoliagePlacer : FoliagePlacer(ConstantInt.of(3), ConstantInt.of(0)) {
-    private const val FOLIAGE_LAYER_COUNT = 2
+object GiantPlasticTreeFoliagePlacerCard {
+    val identifier = MirageFairy2024.identifier("giant_plastic_tree")
+    private val codec: MapCodec<GiantTreeFoliagePlacer> = MapCodec.unit { GiantPlasticTreeFoliagePlacer }
+    val type: FoliagePlacerType<GiantTreeFoliagePlacer> = FoliagePlacerType(codec)
+}
 
+object GiantHaimeviskaFoliagePlacer : GiantTreeFoliagePlacer(0.0F) {
     override fun type() = GiantHaimeviskaFoliagePlacerCard.type
+}
+
+// プラノキは葉が少なくて、空が結構開けているのだ～🌱
+object GiantPlasticTreeFoliagePlacer : GiantTreeFoliagePlacer(0.4F) {
+    override fun type() = GiantPlasticTreeFoliagePlacerCard.type
+}
+
+/**
+ * 枝先に葉の塊を作る葉の配置子なのだ～🌱
+ *
+ * [thinningRate] の割合で葉を間引くのだ～🌱 樹冠の透け具合が樹種によって変わるのだ～🌱
+ */
+abstract class GiantTreeFoliagePlacer(private val thinningRate: Float) : FoliagePlacer(ConstantInt.of(3), ConstantInt.of(0)) {
+    private companion object {
+        const val FOLIAGE_LAYER_COUNT = 2
+    }
 
     override fun createFoliage(
         level: LevelSimulatedReader,
@@ -52,5 +72,8 @@ object GiantHaimeviskaFoliagePlacer : FoliagePlacer(ConstantInt.of(3), ConstantI
 
     override fun foliageHeight(random: RandomSource, height: Int, config: TreeConfiguration) = FOLIAGE_LAYER_COUNT - 1
 
-    override fun shouldSkipLocation(random: RandomSource, localX: Int, localY: Int, localZ: Int, range: Int, large: Boolean) = localX * localX + localZ * localZ > range * range
+    override fun shouldSkipLocation(random: RandomSource, localX: Int, localY: Int, localZ: Int, range: Int, large: Boolean): Boolean {
+        if (localX * localX + localZ * localZ > range * range) return true
+        return random.nextFloat() < thinningRate
+    }
 }

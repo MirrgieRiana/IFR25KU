@@ -3,14 +3,7 @@
   "config": {
     "decorators": [
       {
-        "type": "miragefairy2024:haimeviska"
-      },
-      {
-        "type": "minecraft:trunk_vine"
-      },
-      {
-        "type": "minecraft:leave_vine",
-        "probability": 0.05
+        "type": "miragefairy2024:plastic_tree"
       }
     ],
     "dirt_provider": {
@@ -24,14 +17,13 @@
       "height": 0,
       "offset": 0,
       "radius": 1,
-      "thinning_rate": 0.0
+      "thinning_rate": 0.4
     },
     "foliage_provider": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "miragefairy2024:haimeviska_leaves",
+        "Name": "miragefairy2024:plastic_tree_leaves",
         "Properties": {
-          "charged": "true",
           "distance": "7",
           "persistent": "false",
           "waterlogged": "false"
@@ -47,12 +39,12 @@
       "upper_size": 1
     },
     "trunk_placer": {
-      "type": "miragefairy2024:small_haimeviska"
+      "type": "miragefairy2024:small_plastic_tree"
     },
     "trunk_provider": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "miragefairy2024:haimeviska_log",
+        "Name": "miragefairy2024:plastic_tree_log",
         "Properties": {
           "axis": "y"
         }

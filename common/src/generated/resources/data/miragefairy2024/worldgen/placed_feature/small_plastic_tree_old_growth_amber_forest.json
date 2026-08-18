@@ -1,9 +1,9 @@
 {
-  "feature": "miragefairy2024:plastic_tree",
+  "feature": "miragefairy2024:small_plastic_tree",
   "placement": [
     {
-      "type": "minecraft:rarity_filter",
-      "chance": 1024
+      "type": "minecraft:count",
+      "count": 3
     },
     {
       "type": "minecraft:in_square"

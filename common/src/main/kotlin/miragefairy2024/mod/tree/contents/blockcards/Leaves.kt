@@ -19,18 +19,26 @@ import miragefairy2024.util.registerFoliageColorProvider
 import miragefairy2024.util.registerLootTableGeneration
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerRedirectColorProvider
+import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.registerVariantsBlockStateGeneration
 import miragefairy2024.util.times
 import miragefairy2024.util.with
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.LeavesBlock
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.material.PushReaction
 
-class TreeLeavesBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
+/**
+ * 葉のブロックカードなのだ～🌱
+ *
+ * [chargeable] が有効な樹種の葉は、光を蓄えて花を咲かせるのだ～🌱
+ * これは妖精が寄生した樹だけが持つ性質だから、樹種によって分かれるのだ～🌱
+ */
+class TreeLeavesBlockCard(configuration: TreeBlockConfiguration, private val sapling: () -> TreeBlockCard, private val chargeable: Boolean) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings()
         .mapColor(MapColor.PLANT)
         .strength(0.2F)
@@ -44,30 +52,36 @@ class TreeLeavesBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard
         .pushReaction(PushReaction.DESTROY)
         .isRedstoneConductor(Blocks::never)
 
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = HaimeviskaLeavesBlock(properties)
+    override suspend fun createBlock(properties: BlockBehaviour.Properties) = if (chargeable) HaimeviskaLeavesBlock(properties) else LeavesBlock(properties)
 
     context(ModContext)
     override fun init() {
         super.init()
 
         // レンダリング
-        block.registerVariantsBlockStateGeneration {
-            val normal = BlockStateVariant(model = "block/" * block().getIdentifier())
-            listOf(
-                propertiesOf(HaimeviskaLeavesBlock.CHARGED with true) with normal.with(model = "block/charged_" * block().getIdentifier()),
-                propertiesOf(HaimeviskaLeavesBlock.CHARGED with false) with normal.with(model = "block/uncharged_" * block().getIdentifier()),
-            )
+        if (chargeable) {
+            block.registerVariantsBlockStateGeneration {
+                val normal = BlockStateVariant(model = "block/" * block().getIdentifier())
+                listOf(
+                    propertiesOf(HaimeviskaLeavesBlock.CHARGED with true) with normal.with(model = "block/charged_" * block().getIdentifier()),
+                    propertiesOf(HaimeviskaLeavesBlock.CHARGED with false) with normal.with(model = "block/uncharged_" * block().getIdentifier()),
+                )
+            }
+            registerModelGeneration({ "block/charged_" * block().getIdentifier() }, { chargedHaimeviskaLeavesTexturedModelFactory.get(block()) })
+            registerModelGeneration({ "block/uncharged_" * block().getIdentifier() }, { unchargedHaimeviskaLeavesTexturedModelFactory.get(block()) })
+            item.registerModelGeneration(Model("block/charged_" * identifier))
+        } else {
+            block.registerSingletonBlockStateGeneration()
+            registerModelGeneration({ "block/" * block().getIdentifier() }, { unchargedHaimeviskaLeavesTexturedModelFactory.get(block()) })
+            item.registerModelGeneration(Model("block/" * identifier))
         }
-        registerModelGeneration({ "block/charged_" * block().getIdentifier() }, { chargedHaimeviskaLeavesTexturedModelFactory.get(block()) })
-        registerModelGeneration({ "block/uncharged_" * block().getIdentifier() }, { unchargedHaimeviskaLeavesTexturedModelFactory.get(block()) })
-        item.registerModelGeneration(Model("block/charged_" * identifier))
         block.registerCutoutRenderLayer()
         block.registerFoliageColorProvider()
         item.registerRedirectColorProvider()
 
         // レシピ
         block.registerLootTableGeneration { it, _ ->
-            it.createLeavesDrops(block(), SAPLING.block(), 0.05F / 4F, 0.0625F / 4F, 0.083333336F / 4F, 0.1F / 4F)
+            it.createLeavesDrops(block(), sapling().block(), 0.05F / 4F, 0.0625F / 4F, 0.083333336F / 4F, 0.1F / 4F)
         }
         item.registerComposterInput(0.3F)
 

@@ -17,16 +17,42 @@ import kotlin.math.sin
 
 object SmallHaimeviskaTrunkPlacerCard {
     val identifier = MirageFairy2024.identifier("small_haimeviska")
-    private val codec: MapCodec<SmallHaimeviskaTrunkPlacer> = MapCodec.unit { SmallHaimeviskaTrunkPlacer }
-    val type: TrunkPlacerType<SmallHaimeviskaTrunkPlacer> = TrunkPlacerType(codec)
+    private val codec: MapCodec<SmallTreeTrunkPlacer> = MapCodec.unit { SmallHaimeviskaTrunkPlacer }
+    val type: TrunkPlacerType<SmallTreeTrunkPlacer> = TrunkPlacerType(codec)
 }
 
-object SmallHaimeviskaTrunkPlacer : TrunkPlacer(8, 4, 0) {
-    private const val LOWEST_LEAF_OFFSET_Y = 2
+object SmallPlasticTreeTrunkPlacerCard {
+    val identifier = MirageFairy2024.identifier("small_plastic_tree")
+    private val codec: MapCodec<SmallTreeTrunkPlacer> = MapCodec.unit { SmallPlasticTreeTrunkPlacer }
+    val type: TrunkPlacerType<SmallTreeTrunkPlacer> = TrunkPlacerType(codec)
+}
 
+object SmallHaimeviskaTrunkPlacer : SmallTreeTrunkPlacer(8, 4, 0, Math.toRadians(70.0), false) {
     override fun type() = SmallHaimeviskaTrunkPlacerCard.type
+}
 
-    // 枝を持たない1x1の主幹を建てて、その周りに葉をらせん状に付けるのだ～🌱
+// プラノキは、ハイメヴィスカより背が低くて、葉が螺旋を描かずにばらばらの向きに付くのだ～🌱
+object SmallPlasticTreeTrunkPlacer : SmallTreeTrunkPlacer(6, 3, 0, 0.0, true) {
+    override fun type() = SmallPlasticTreeTrunkPlacerCard.type
+}
+
+/**
+ * 枝を持たない1x1の主幹を建てて、その周りに葉を付ける幹の配置子なのだ～🌱
+ *
+ * [foliageAngleStep] は、1段下がるごとに葉の方位角を回す角度なのだ～🌱
+ * [randomFoliageAngle] が有効だと、方位角は段ごとに完全にランダムになるのだ～🌱
+ */
+abstract class SmallTreeTrunkPlacer(
+    baseHeight: Int,
+    heightRandA: Int,
+    heightRandB: Int,
+    private val foliageAngleStep: Double,
+    private val randomFoliageAngle: Boolean,
+) : TrunkPlacer(baseHeight, heightRandA, heightRandB) {
+    private companion object {
+        const val LOWEST_LEAF_OFFSET_Y = 2
+    }
+
     override fun placeTrunk(
         level: LevelSimulatedReader,
         blockSetter: BiConsumer<BlockPos, BlockState>,
@@ -64,7 +90,7 @@ object SmallHaimeviskaTrunkPlacer : TrunkPlacer(8, 4, 0) {
             )
             foliageAttachments += FoliagePlacer.FoliageAttachment(leafBlockPos, 0, false)
 
-            angle += Math.toRadians(70.0)
+            angle = if (randomFoliageAngle) (Math.PI * 2) * random.nextDouble() else angle + foliageAngleStep
         }
 
         return foliageAttachments

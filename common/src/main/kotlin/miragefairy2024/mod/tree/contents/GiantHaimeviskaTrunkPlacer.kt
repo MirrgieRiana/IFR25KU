@@ -24,14 +24,38 @@ import kotlin.math.sqrt
 
 object GiantHaimeviskaTrunkPlacerCard {
     val identifier = MirageFairy2024.identifier("giant_haimeviska")
-    private val codec: MapCodec<GiantHaimeviskaTrunkPlacer> = MapCodec.unit { GiantHaimeviskaTrunkPlacer }
-    val type: TrunkPlacerType<GiantHaimeviskaTrunkPlacer> = TrunkPlacerType(codec)
+    private val codec: MapCodec<GiantTreeTrunkPlacer> = MapCodec.unit { GiantHaimeviskaTrunkPlacer }
+    val type: TrunkPlacerType<GiantTreeTrunkPlacer> = TrunkPlacerType(codec)
 }
 
-object GiantHaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
-    override fun type() = GiantHaimeviskaTrunkPlacerCard.type
+object GiantPlasticTreeTrunkPlacerCard {
+    val identifier = MirageFairy2024.identifier("giant_plastic_tree")
+    private val codec: MapCodec<GiantTreeTrunkPlacer> = MapCodec.unit { GiantPlasticTreeTrunkPlacer }
+    val type: TrunkPlacerType<GiantTreeTrunkPlacer> = TrunkPlacerType(codec)
+}
 
-    // 中心にまっすぐな2x2の主幹を建てて、そこから斜め上に向かう枝を二重らせん状に何本も伸ばすのだ～🌱
+object GiantHaimeviskaTrunkPlacer : GiantTreeTrunkPlacer(22, 10, 0, Math.toRadians(35.0), false) {
+    override fun type() = GiantHaimeviskaTrunkPlacerCard.type
+}
+
+// プラノキは、ハイメヴィスカより背が低くて、枝が螺旋を描かずにばらばらの向きに伸びるのだ～🌱
+object GiantPlasticTreeTrunkPlacer : GiantTreeTrunkPlacer(18, 8, 0, 0.0, true) {
+    override fun type() = GiantPlasticTreeTrunkPlacerCard.type
+}
+
+/**
+ * 中心にまっすぐな2x2の主幹を建てて、そこから斜め上に向かう枝を何本も伸ばす幹の配置子なのだ～🌱
+ *
+ * [branchAngleStep] は、1段下がるごとに枝の方位角を回す角度なのだ～🌱
+ * [randomBranchAngle] が有効だと、方位角は段ごとに完全にランダムになるのだ～🌱
+ */
+abstract class GiantTreeTrunkPlacer(
+    baseHeight: Int,
+    heightRandA: Int,
+    heightRandB: Int,
+    private val branchAngleStep: Double,
+    private val randomBranchAngle: Boolean,
+) : TrunkPlacer(baseHeight, heightRandA, heightRandB) {
     override fun placeTrunk(
         level: LevelSimulatedReader,
         blockSetter: BiConsumer<BlockPos, BlockState>,
@@ -123,7 +147,7 @@ object GiantHaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
             placeBranch(1.0)
             placeBranch(-1.0)
 
-            angle += Math.toRadians(35.0)
+            angle = if (randomBranchAngle) (Math.PI * 2) * random.nextDouble() else angle + branchAngleStep
             leafOffsetY -= 1
         }
 
