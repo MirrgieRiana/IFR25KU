@@ -196,7 +196,7 @@ val HAIMEVISKA_LOGS_BLOCK_TAG = MirageFairy2024.identifier("haimeviska_logs").to
 val HAIMEVISKA_LOGS_ITEM_TAG = MirageFairy2024.identifier("haimeviska_logs").toItemTag()
 
 context(ModContext)
-fun initHaimeviskaBlocks() {
+fun initTreeBlocks() {
 
     TreeBlockCard.entries.forEach { card ->
         card.init()

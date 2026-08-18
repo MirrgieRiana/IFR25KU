@@ -35,7 +35,7 @@ import miragefairy2024.mod.placeditem.initPlacedItemModule
 import miragefairy2024.mod.recipeviewer.initRecipeViewerModule
 import miragefairy2024.mod.structure.initStructureModule
 import miragefairy2024.mod.tool.initToolModule
-import miragefairy2024.mod.tree.initHaimeviskaModule
+import miragefairy2024.mod.tree.initTreeModule
 
 context(ModContext)
 fun initModules() {
@@ -48,7 +48,7 @@ fun initModules() {
     initOresModule()
     initDepositedSulfurModule()
     initMagicPlantModule()
-    initHaimeviskaModule()
+    initTreeModule()
     initFairyQuestModule()
     initNinePatchTextureModule()
     initPlacedItemModule()

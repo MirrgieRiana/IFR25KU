@@ -27,7 +27,7 @@ val HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with 
 val HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("haimeviska_deep_fairy_forest")
 
 context(ModContext)
-fun initHaimeviskaWorldGens() {
+fun initTreeWorldGens() {
     Feature.TREE.generator(MirageFairy2024.identifier("haimeviska")) {
         registerConfiguredFeature(HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
             TreeConfiguration.TreeConfigurationBuilder(

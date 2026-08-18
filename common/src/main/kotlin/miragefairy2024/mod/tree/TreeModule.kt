@@ -23,10 +23,10 @@ val haimeviskaAdvancement = AdvancementCard(
 )
 
 context(ModContext)
-fun initHaimeviskaModule() {
+fun initTreeModule() {
 
-    initHaimeviskaBlocks()
-    initHaimeviskaWorldGens()
+    initTreeBlocks()
+    initTreeWorldGens()
 
     Registration(BuiltInRegistries.TRUNK_PLACER_TYPE, HaimeviskaTrunkPlacerCard.identifier) { HaimeviskaTrunkPlacerCard.type }.register()
     Registration(BuiltInRegistries.FOLIAGE_PLACER_TYPE, HaimeviskaFoliagePlacerCard.identifier) { HaimeviskaFoliagePlacerCard.type }.register()
