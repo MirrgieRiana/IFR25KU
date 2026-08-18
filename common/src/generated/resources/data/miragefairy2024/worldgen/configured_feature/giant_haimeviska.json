@@ -10,7 +10,7 @@
       },
       {
         "type": "minecraft:leave_vine",
-        "probability": 0.25
+        "probability": 0.05
       }
     ],
     "dirt_provider": {
@@ -20,7 +20,7 @@
       }
     },
     "foliage_placer": {
-      "type": "miragefairy2024:haimeviska"
+      "type": "miragefairy2024:giant_haimeviska"
     },
     "foliage_provider": {
       "type": "minecraft:simple_state_provider",
@@ -43,7 +43,7 @@
       "upper_size": 2
     },
     "trunk_placer": {
-      "type": "miragefairy2024:haimeviska"
+      "type": "miragefairy2024:giant_haimeviska"
     },
     "trunk_provider": {
       "type": "minecraft:simple_state_provider",

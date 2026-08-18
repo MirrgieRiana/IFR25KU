@@ -4,6 +4,13 @@
     "decorators": [
       {
         "type": "miragefairy2024:haimeviska"
+      },
+      {
+        "type": "minecraft:trunk_vine"
+      },
+      {
+        "type": "minecraft:leave_vine",
+        "probability": 0.05
       }
     ],
     "dirt_provider": {
@@ -13,7 +20,7 @@
       }
     },
     "foliage_placer": {
-      "type": "miragefairy2024:cuboid",
+      "type": "miragefairy2024:small_haimeviska",
       "height": 0,
       "offset": 0,
       "radius": 1

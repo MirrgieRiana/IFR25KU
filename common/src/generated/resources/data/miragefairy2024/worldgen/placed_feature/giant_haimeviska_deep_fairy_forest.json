@@ -1,9 +1,9 @@
 {
-  "feature": "miragefairy2024:haimeviska",
+  "feature": "miragefairy2024:giant_haimeviska",
   "placement": [
     {
-      "type": "minecraft:rarity_filter",
-      "chance": 1024
+      "type": "minecraft:count",
+      "count": 8
     },
     {
       "type": "minecraft:in_square"
