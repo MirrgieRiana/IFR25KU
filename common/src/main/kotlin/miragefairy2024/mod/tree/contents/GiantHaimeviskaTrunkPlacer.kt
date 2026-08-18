@@ -22,14 +22,14 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-object HaimeviskaTrunkPlacerCard {
-    val identifier = MirageFairy2024.identifier("haimeviska")
-    private val codec: MapCodec<HaimeviskaTrunkPlacer> = MapCodec.unit { HaimeviskaTrunkPlacer }
-    val type: TrunkPlacerType<HaimeviskaTrunkPlacer> = TrunkPlacerType(codec)
+object GiantHaimeviskaTrunkPlacerCard {
+    val identifier = MirageFairy2024.identifier("giant_haimeviska")
+    private val codec: MapCodec<GiantHaimeviskaTrunkPlacer> = MapCodec.unit { GiantHaimeviskaTrunkPlacer }
+    val type: TrunkPlacerType<GiantHaimeviskaTrunkPlacer> = TrunkPlacerType(codec)
 }
 
-object HaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
-    override fun type() = HaimeviskaTrunkPlacerCard.type
+object GiantHaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
+    override fun type() = GiantHaimeviskaTrunkPlacerCard.type
 
     // 中心にまっすぐな2x2の主幹を建てて、そこから斜め上に向かう枝を二重らせん状に何本も伸ばすのだ～🌱
     override fun placeTrunk(

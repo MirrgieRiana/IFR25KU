@@ -9,16 +9,16 @@ import net.minecraft.world.level.levelgen.feature.configurations.TreeConfigurati
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType
 
-object HaimeviskaFoliagePlacerCard {
-    val identifier = MirageFairy2024.identifier("haimeviska")
-    private val codec: MapCodec<HaimeviskaFoliagePlacer> = MapCodec.unit { HaimeviskaFoliagePlacer }
-    val type: FoliagePlacerType<HaimeviskaFoliagePlacer> = FoliagePlacerType(codec)
+object GiantHaimeviskaFoliagePlacerCard {
+    val identifier = MirageFairy2024.identifier("giant_haimeviska")
+    private val codec: MapCodec<GiantHaimeviskaFoliagePlacer> = MapCodec.unit { GiantHaimeviskaFoliagePlacer }
+    val type: FoliagePlacerType<GiantHaimeviskaFoliagePlacer> = FoliagePlacerType(codec)
 }
 
-object HaimeviskaFoliagePlacer : FoliagePlacer(ConstantInt.of(3), ConstantInt.of(0)) {
+object GiantHaimeviskaFoliagePlacer : FoliagePlacer(ConstantInt.of(3), ConstantInt.of(0)) {
     private const val FOLIAGE_LAYER_COUNT = 2
 
-    override fun type() = HaimeviskaFoliagePlacerCard.type
+    override fun type() = GiantHaimeviskaFoliagePlacerCard.type
 
     override fun createFoliage(
         level: LevelSimulatedReader,
