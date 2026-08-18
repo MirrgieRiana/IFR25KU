@@ -20,6 +20,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.phys.BlockHitResult
 
 @Suppress("OVERRIDE_DEPRECATION")
@@ -39,6 +40,7 @@ class HaimeviskaLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
         // 加工
         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand))
         level.setBlock(pos, TreeBlockCard.INCISED_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
+        level.gameEvent(player, GameEvent.SHEAR, pos)
         player.awardStat(Stats.ITEM_USED.get(stack.item))
 
         // エフェクト
