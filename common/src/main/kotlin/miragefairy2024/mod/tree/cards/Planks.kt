@@ -1,8 +1,8 @@
 package miragefairy2024.mod.tree.cards
 
 import miragefairy2024.ModContext
-import miragefairy2024.mod.tree.HaimeviskaBlockCard
 import miragefairy2024.mod.tree.HaimeviskaBlockConfiguration
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.createBaseWoodSetting
 import miragefairy2024.util.from
 import miragefairy2024.util.generator
@@ -26,7 +26,7 @@ fun createPlankSettings(sound: Boolean = true): BlockBehaviour.Properties = crea
     .strength(2.0F, 3.0F)
     .mapColor(MapColor.RAW_IRON)
 
-open class AbstractHaimeviskaPlanksBlockCard(configuration: HaimeviskaBlockConfiguration) : HaimeviskaBlockCard(configuration) {
+open class AbstractTreePlanksBlockCard(configuration: HaimeviskaBlockConfiguration) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting()
         .strength(2.0F, 3.0F)
         .mapColor(MapColor.RAW_IRON)
@@ -51,7 +51,7 @@ open class AbstractHaimeviskaPlanksBlockCard(configuration: HaimeviskaBlockConfi
     }
 }
 
-class HaimeviskaPlanksBlockCard(configuration: HaimeviskaBlockConfiguration, private val input: () -> Item) : AbstractHaimeviskaPlanksBlockCard(configuration) {
+class TreePlanksBlockCard(configuration: HaimeviskaBlockConfiguration, private val input: () -> Item) : AbstractTreePlanksBlockCard(configuration) {
     context(ModContext)
     override fun init() {
         super.init()
@@ -61,7 +61,7 @@ class HaimeviskaPlanksBlockCard(configuration: HaimeviskaBlockConfiguration, pri
     }
 }
 
-class HaimeviskaBricksBlockCard(configuration: HaimeviskaBlockConfiguration, private val input: () -> Item) : AbstractHaimeviskaPlanksBlockCard(configuration) {
+class TreeBricksBlockCard(configuration: HaimeviskaBlockConfiguration, private val input: () -> Item) : AbstractTreePlanksBlockCard(configuration) {
     context(ModContext)
     override fun init() {
         super.init()

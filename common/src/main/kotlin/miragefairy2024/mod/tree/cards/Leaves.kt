@@ -3,8 +3,8 @@ package miragefairy2024.mod.tree.cards
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
 import miragefairy2024.mod.particle.ParticleTypeCard
-import miragefairy2024.mod.tree.HaimeviskaBlockCard
 import miragefairy2024.mod.tree.HaimeviskaBlockConfiguration
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.chargedHaimeviskaLeavesTexturedModelFactory
 import miragefairy2024.mod.tree.unchargedHaimeviskaLeavesTexturedModelFactory
 import miragefairy2024.util.BlockStateVariant
@@ -45,7 +45,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.material.PushReaction
 
-class HaimeviskaLeavesBlockCard(configuration: HaimeviskaBlockConfiguration) : HaimeviskaBlockCard(configuration) {
+class TreeLeavesBlockCard(configuration: HaimeviskaBlockConfiguration) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings()
         .mapColor(MapColor.PLANT)
         .strength(0.2F)

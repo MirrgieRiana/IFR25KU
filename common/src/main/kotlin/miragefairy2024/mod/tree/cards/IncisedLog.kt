@@ -3,8 +3,8 @@ package miragefairy2024.mod.tree.cards
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
 import miragefairy2024.lib.SimpleHorizontalFacingBlock
-import miragefairy2024.mod.tree.HaimeviskaBlockCard
 import miragefairy2024.mod.tree.HaimeviskaBlockConfiguration
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.util.ItemLootPoolEntry
 import miragefairy2024.util.LootPool
 import miragefairy2024.util.LootTable
@@ -17,7 +17,7 @@ import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 
-class HaimeviskaIncisedLogBlockCard(configuration: HaimeviskaBlockConfiguration) : HaimeviskaHorizontalFacingLogBlockCard(configuration) {
+class TreeIncisedLogBlockCard(configuration: HaimeviskaBlockConfiguration) : TreeHorizontalFacingLogBlockCard(configuration) {
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = IncisedHaimeviskaLogBlock(properties)
 
     context(ModContext)
@@ -51,7 +51,7 @@ class IncisedHaimeviskaLogBlock(settings: Properties) : SimpleHorizontalFacingBl
     override fun isRandomlyTicking(state: BlockState) = true
     override fun randomTick(state: BlockState, world: ServerLevel, pos: BlockPos, random: RandomSource) {
         if (random.nextInt(100) == 0) {
-            world.setBlock(pos, HaimeviskaBlockCard.DRIPPING_LOG.block().defaultBlockState().with(FACING, state[FACING]), UPDATE_ALL)
+            world.setBlock(pos, TreeBlockCard.DRIPPING_LOG.block().defaultBlockState().with(FACING, state[FACING]), UPDATE_ALL)
         }
     }
 }

@@ -11,7 +11,7 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.Shape
 import miragefairy2024.mod.materials.tagOf
 import miragefairy2024.mod.poem
-import miragefairy2024.mod.tree.HaimeviskaBlockCard
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -93,7 +93,7 @@ object FairyHouseCard : FairyFactoryCard<FairyHouseBlock, FairyHouseBlockEntity,
             pattern("#U#")
             pattern("L*R")
             pattern("#D#")
-            define('#', HaimeviskaBlockCard.LOG.item())
+            define('#', TreeBlockCard.LOG.item())
             define('U', Items.LANTERN)
             define('D', ItemTags.WOOL_CARPETS)
             define('L', ConventionalItemTags.GLASS_PANES)

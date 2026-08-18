@@ -31,22 +31,22 @@ fun initHaimeviskaWorldGens() {
     Feature.TREE.generator(MirageFairy2024.identifier("haimeviska")) {
         registerConfiguredFeature(HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
             TreeConfiguration.TreeConfigurationBuilder(
-                BlockStateProvider.simple(HaimeviskaBlockCard.LOG.block()),
+                BlockStateProvider.simple(TreeBlockCard.LOG.block()),
                 HaimeviskaTrunkPlacer,
-                BlockStateProvider.simple(HaimeviskaBlockCard.LEAVES.block()),
+                BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
                 HaimeviskaFoliagePlacer,
                 TwoLayersFeatureSize(1, 1, 2),
             ).ignoreVines().decorators(listOf(HaimeviskaTreeDecorator, TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.25F))).build()
         }.generator {
 
             // まばら
-            registerPlacedFeature(HAIMEVISKA_PLACED_FEATURE_KEY) { per(512) + tree(HaimeviskaBlockCard.SAPLING.block()) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_PLAINS + +ConventionalBiomeTags.IS_FOREST } // 平原・森林バイオームに配置
+            registerPlacedFeature(HAIMEVISKA_PLACED_FEATURE_KEY) { per(512) + tree(TreeBlockCard.SAPLING.block()) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_PLAINS + +ConventionalBiomeTags.IS_FOREST } // 平原・森林バイオームに配置
 
             // 高密度
-            registerPlacedFeature(HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY) { per(16) + tree(HaimeviskaBlockCard.SAPLING.block()) }
+            registerPlacedFeature(HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY) { per(16) + tree(TreeBlockCard.SAPLING.block()) }
 
             // 超高密度
-            registerPlacedFeature(HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY) { count(8) + tree(HaimeviskaBlockCard.SAPLING.block()) }
+            registerPlacedFeature(HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY) { count(8) + tree(TreeBlockCard.SAPLING.block()) }
 
         }
     }

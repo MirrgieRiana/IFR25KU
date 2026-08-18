@@ -9,29 +9,29 @@ import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.mod.tree.cards.DrippingHaimeviskaLogBlock
-import miragefairy2024.mod.tree.cards.HaimeviskaBricksBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaDoorBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaDrippingLogBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaHollowLogBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaIncisedLogBlockCard
 import miragefairy2024.mod.tree.cards.HaimeviskaLeavesBlock
-import miragefairy2024.mod.tree.cards.HaimeviskaLeavesBlockCard
 import miragefairy2024.mod.tree.cards.HaimeviskaLogBlock
-import miragefairy2024.mod.tree.cards.HaimeviskaLogBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaPlanksBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaPlanksButtonBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaPlanksFenceBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaPlanksFenceGateBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaPlanksPressurePlateBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaPlanksSlabBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaPlanksStairsBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaSaplingBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaStrippedLogBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaStrippedWoodBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaTrapdoorBlockCard
-import miragefairy2024.mod.tree.cards.HaimeviskaWoodBlockCard
 import miragefairy2024.mod.tree.cards.HollowHaimeviskaLogBlock
 import miragefairy2024.mod.tree.cards.IncisedHaimeviskaLogBlock
+import miragefairy2024.mod.tree.cards.TreeBricksBlockCard
+import miragefairy2024.mod.tree.cards.TreeDoorBlockCard
+import miragefairy2024.mod.tree.cards.TreeDrippingLogBlockCard
+import miragefairy2024.mod.tree.cards.TreeHollowLogBlockCard
+import miragefairy2024.mod.tree.cards.TreeIncisedLogBlockCard
+import miragefairy2024.mod.tree.cards.TreeLeavesBlockCard
+import miragefairy2024.mod.tree.cards.TreeLogBlockCard
+import miragefairy2024.mod.tree.cards.TreePlanksBlockCard
+import miragefairy2024.mod.tree.cards.TreePlanksButtonBlockCard
+import miragefairy2024.mod.tree.cards.TreePlanksFenceBlockCard
+import miragefairy2024.mod.tree.cards.TreePlanksFenceGateBlockCard
+import miragefairy2024.mod.tree.cards.TreePlanksPressurePlateBlockCard
+import miragefairy2024.mod.tree.cards.TreePlanksSlabBlockCard
+import miragefairy2024.mod.tree.cards.TreePlanksStairsBlockCard
+import miragefairy2024.mod.tree.cards.TreeSaplingBlockCard
+import miragefairy2024.mod.tree.cards.TreeStrippedLogBlockCard
+import miragefairy2024.mod.tree.cards.TreeStrippedWoodBlockCard
+import miragefairy2024.mod.tree.cards.TreeTrapdoorBlockCard
+import miragefairy2024.mod.tree.cards.TreeWoodBlockCard
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.enJa
@@ -61,101 +61,101 @@ class HaimeviskaBlockConfiguration(
     val poemList: PoemList,
 )
 
-abstract class HaimeviskaBlockCard(val configuration: HaimeviskaBlockConfiguration) {
+abstract class TreeBlockCard(val configuration: HaimeviskaBlockConfiguration) {
     companion object {
-        val entries = mutableListOf<HaimeviskaBlockCard>()
-        private operator fun HaimeviskaBlockCard.not() = apply { entries += this }
+        val entries = mutableListOf<TreeBlockCard>()
+        private operator fun TreeBlockCard.not() = apply { entries += this }
 
         val LEAVES = !HaimeviskaBlockConfiguration(
             "haimeviska_leaves", EnJa("Haimeviska Leaves", "ハイメヴィスカの葉"),
             PoemList(1).poem(EnJa("All original flowers are consumed by ivy", "妖精になれる花、なれない花。")),
-        ).let { HaimeviskaLeavesBlockCard(it) }
+        ).let { TreeLeavesBlockCard(it) }
         val LOG = !HaimeviskaBlockConfiguration(
             "haimeviska_log", EnJa("Haimeviska Log", "ハイメヴィスカの原木"),
             PoemList(1)
                 .poem(EnJa("Symbiosis with parasitic Mirages", "妖精の滲み込んだ樹。"))
                 .description(EnJa("Can be incised with a sword", "剣を使って傷を付けられる")),
-        ).let { HaimeviskaLogBlockCard(it) }
+        ).let { TreeLogBlockCard(it) }
         val WOOD = !HaimeviskaBlockConfiguration(
             "haimeviska_wood", EnJa("Haimeviska Wood", "ハイメヴィスカの木"),
             PoemList(1).poem(EnJa("Hydraulic communication system", "ウィスプたちの集合知。")),
-        ).let { HaimeviskaWoodBlockCard(it) }
+        ).let { TreeWoodBlockCard(it) }
         val STRIPPED_LOG = !HaimeviskaBlockConfiguration(
             "stripped_haimeviska_log", EnJa("Stripped Haimeviska Log", "樹皮を剥いだハイメヴィスカの原木"),
             PoemList(1).poem(EnJa("Something lacking the essence", "ぬぐわれたペルソナ。")),
-        ).let { HaimeviskaStrippedLogBlockCard(it) }
+        ).let { TreeStrippedLogBlockCard(it) }
         val STRIPPED_WOOD = !HaimeviskaBlockConfiguration(
             "stripped_haimeviska_wood", EnJa("Stripped Haimeviska Wood", "樹皮を剥いだハイメヴィスカの木"),
             PoemList(1).poem(EnJa("Loss of self", "寄生蔦からの解放。")),
-        ).let { HaimeviskaStrippedWoodBlockCard(it) }
+        ).let { TreeStrippedWoodBlockCard(it) }
         val INCISED_LOG = !HaimeviskaBlockConfiguration(
             "incised_haimeviska_log", EnJa("Incised Haimeviska Log", "傷の付いたハイメヴィスカの原木"),
             PoemList(1)
                 .poem(EnJa("Do fairy trees have qualia of pain?", "動物を守るということ。"))
                 .description(EnJa("Produces sap over time", "時間経過で樹液を生産")),
-        ).let { HaimeviskaIncisedLogBlockCard(it) }
+        ).let { TreeIncisedLogBlockCard(it) }
         val DRIPPING_LOG = !HaimeviskaBlockConfiguration(
             "dripping_haimeviska_log", EnJa("Dripping Haimeviska Log", "滴るハイメヴィスカの原木"),
             PoemList(1)
                 .poem(EnJa("A spirit named 'glucose'", "霊界より降りしもの。"))
                 .description(EnJa("Harvest sap when used", "使用時、樹液を収穫")),
-        ).let { HaimeviskaDrippingLogBlockCard(it) }
+        ).let { TreeDrippingLogBlockCard(it) }
         val HOLLOW_LOG = !HaimeviskaBlockConfiguration(
             "hollow_haimeviska_log", EnJa("Hollow Haimeviska Log", "ハイメヴィスカの樹洞"),
             PoemList(1).poem(EnJa("Auric conceptual attractor", "限界巡回アステリア。")),
-        ).let { HaimeviskaHollowLogBlockCard(it) }
+        ).let { TreeHollowLogBlockCard(it) }
         val PLANKS = !HaimeviskaBlockConfiguration(
             "haimeviska_planks", EnJa("Haimeviska Planks", "ハイメヴィスカの板材"),
             PoemList(1).poem(EnJa("Flexible and friendly, good for interior", "考える、壁。")),
-        ).let { HaimeviskaPlanksBlockCard(it, LOG.item) }
+        ).let { TreePlanksBlockCard(it, LOG.item) }
         val SLAB = !HaimeviskaBlockConfiguration(
             "haimeviska_slab", EnJa("Haimeviska Slab", "ハイメヴィスカのハーフブロック"),
             PoemList(1).poem(EnJa("Searching for another personality.", "半人前の側頭葉。")),
-        ).let { HaimeviskaPlanksSlabBlockCard(it) { PLANKS.block } }
+        ).let { TreePlanksSlabBlockCard(it) { PLANKS.block } }
         val STAIRS = !HaimeviskaBlockConfiguration(
             "haimeviska_stairs", EnJa("Haimeviska Stairs", "ハイメヴィスカの階段"),
             PoemList(1).poem(EnJa("Step that pierces the sky", "情緒体を喰らう頂となれ。")),
-        ).let { HaimeviskaPlanksStairsBlockCard(it) { PLANKS.block } }
+        ).let { TreePlanksStairsBlockCard(it) { PLANKS.block } }
         val FENCE = !HaimeviskaBlockConfiguration(
             "haimeviska_fence", EnJa("Haimeviska Fence", "ハイメヴィスカのフェンス"),
             PoemList(1).poem(EnJa("Personality flowing through the xylem", "樹のなかに住む。")),
-        ).let { HaimeviskaPlanksFenceBlockCard(it, PLANKS.block) }
+        ).let { TreePlanksFenceBlockCard(it, PLANKS.block) }
         val FENCE_GATE = !HaimeviskaBlockConfiguration(
             "haimeviska_fence_gate", EnJa("Haimeviska Fence Gate", "ハイメヴィスカのフェンスゲート"),
             PoemList(1).poem(EnJa("It chose this path of its own will", "知性の邂逅。")),
-        ).let { HaimeviskaPlanksFenceGateBlockCard(it, { HAIMEVISKA_WOOD_TYPE }, PLANKS.block) }
+        ).let { TreePlanksFenceGateBlockCard(it, { HAIMEVISKA_WOOD_TYPE }, PLANKS.block) }
         val BUTTON = !HaimeviskaBlockConfiguration(
             "haimeviska_button", EnJa("Haimeviska Button", "ハイメヴィスカのボタン"),
             PoemList(1).poem(EnJa("What is this soft and warm thing?", "指先の感触。")),
-        ).let { HaimeviskaPlanksButtonBlockCard(it, { HAIMEVISKA_BLOCK_SET_TYPE }, PLANKS.block) }
+        ).let { TreePlanksButtonBlockCard(it, { HAIMEVISKA_BLOCK_SET_TYPE }, PLANKS.block) }
         val PRESSURE_PLATE = !HaimeviskaBlockConfiguration(
             "haimeviska_pressure_plate", EnJa("Haimeviska Pressure Plate", "ハイメヴィスカの感圧板"),
             PoemList(1).poem(EnJa("Creature with the name of a machine", "反応と感覚の違い。")),
-        ).let { HaimeviskaPlanksPressurePlateBlockCard(it, { HAIMEVISKA_BLOCK_SET_TYPE }, PLANKS.block) }
+        ).let { TreePlanksPressurePlateBlockCard(it, { HAIMEVISKA_BLOCK_SET_TYPE }, PLANKS.block) }
         val DOOR = !HaimeviskaBlockConfiguration(
             "haimeviska_door", EnJa("Haimeviska Door", "ハイメヴィスカのドア"),
             PoemList(1).poem(EnJa("Astral read-only vortex", "遺伝子の水平伝播。")),
-        ).let { HaimeviskaDoorBlockCard(it, { HAIMEVISKA_BLOCK_SET_TYPE }, PLANKS.block) }
+        ).let { TreeDoorBlockCard(it, { HAIMEVISKA_BLOCK_SET_TYPE }, PLANKS.block) }
         val TRAPDOOR = !HaimeviskaBlockConfiguration(
             "haimeviska_trapdoor", EnJa("Haimeviska Trapdoor", "ハイメヴィスカのトラップドア"),
             PoemList(1).poem(EnJa("Intermingling astral vortices", "自己認識の防衛線。")),
-        ).let { HaimeviskaTrapdoorBlockCard(it, { HAIMEVISKA_BLOCK_SET_TYPE }, PLANKS.block) }
+        ).let { TreeTrapdoorBlockCard(it, { HAIMEVISKA_BLOCK_SET_TYPE }, PLANKS.block) }
         val BRICKS = !HaimeviskaBlockConfiguration(
             "haimeviska_bricks", EnJa("Haimeviska Bricks", "ハイメヴィスカレンガ"),
             PoemList(1).poem(EnJa("An ecosystem called 'civilization'", "人がもたらした原生林。")),
-        ).let { HaimeviskaBricksBlockCard(it, SLAB.item) }
+        ).let { TreeBricksBlockCard(it, SLAB.item) }
         val BRICKS_SLAB = !HaimeviskaBlockConfiguration(
             "haimeviska_bricks_slab", EnJa("Haimeviska Brick Slab", "ハイメヴィスカレンガのハーフブロック"),
             PoemList(1).poem(EnJa("Extremely modularized memory", "ひとまわり細かくなった私。")),
-        ).let { HaimeviskaPlanksSlabBlockCard(it) { BRICKS.block } }
+        ).let { TreePlanksSlabBlockCard(it) { BRICKS.block } }
         val BRICKS_STAIRS = !HaimeviskaBlockConfiguration(
             "haimeviska_bricks_stairs", EnJa("Haimeviska Brick Stairs", "ハイメヴィスカレンガの階段"),
             PoemList(1).poem(EnJa("Forgotten paths of the technology", "生体工学の歩み。")),
-        ).let { HaimeviskaPlanksStairsBlockCard(it) { BRICKS.block } }
+        ).let { TreePlanksStairsBlockCard(it) { BRICKS.block } }
         val SAPLING = !HaimeviskaBlockConfiguration(
             "haimeviska_sapling", EnJa("Haimeviska Sapling", "ハイメヴィスカの苗木"),
             PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
-        ).let { HaimeviskaSaplingBlockCard(it, MirageFairy2024.identifier("haimeviska")) }
+        ).let { TreeSaplingBlockCard(it, MirageFairy2024.identifier("haimeviska")) }
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)
@@ -198,7 +198,7 @@ val HAIMEVISKA_LOGS_ITEM_TAG = MirageFairy2024.identifier("haimeviska_logs").toI
 context(ModContext)
 fun initHaimeviskaBlocks() {
 
-    HaimeviskaBlockCard.entries.forEach { card ->
+    TreeBlockCard.entries.forEach { card ->
         card.init()
     }
 

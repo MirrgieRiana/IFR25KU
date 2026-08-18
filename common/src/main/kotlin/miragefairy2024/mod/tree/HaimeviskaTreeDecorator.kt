@@ -19,14 +19,14 @@ object HaimeviskaTreeDecorator : TreeDecorator() {
     override fun type() = HaimeviskaTreeDecoratorCard.type
     override fun place(generator: Context) {
         generator.logs().forEach { blockPos ->
-            if (!generator.level().isStateAtPosition(blockPos) { it == HaimeviskaBlockCard.LOG.block().defaultBlockState().with(RotatedPillarBlock.AXIS, Direction.Axis.Y) }) return@forEach // 垂直の幹のみ
+            if (!generator.level().isStateAtPosition(blockPos) { it == TreeBlockCard.LOG.block().defaultBlockState().with(RotatedPillarBlock.AXIS, Direction.Axis.Y) }) return@forEach // 垂直の幹のみ
             val direction = Direction.from2DDataValue(generator.random().nextInt(4))
             if (!generator.isAir(blockPos.relative(direction))) return@forEach // 正面が空気の場合のみ
             val r = generator.random().nextInt(100)
             if (r < 12) {
-                generator.setBlock(blockPos, HaimeviskaBlockCard.DRIPPING_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
+                generator.setBlock(blockPos, TreeBlockCard.DRIPPING_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
             } else if (r < 18) {
-                generator.setBlock(blockPos, HaimeviskaBlockCard.HOLLOW_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
+                generator.setBlock(blockPos, TreeBlockCard.HOLLOW_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
             }
         }
     }

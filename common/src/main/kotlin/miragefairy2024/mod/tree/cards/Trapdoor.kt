@@ -1,8 +1,8 @@
 package miragefairy2024.mod.tree.cards
 
 import miragefairy2024.ModContext
-import miragefairy2024.mod.tree.HaimeviskaBlockCard
 import miragefairy2024.mod.tree.HaimeviskaBlockConfiguration
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.util.generator
 import miragefairy2024.util.registerBlockFamily
 import miragefairy2024.util.registerChild
@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.TrapDoorBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.BlockSetType
 
-class HaimeviskaTrapdoorBlockCard(configuration: HaimeviskaBlockConfiguration, private val blockSetType: () -> BlockSetType, private val parent: () -> Block) : HaimeviskaBlockCard(configuration) {
+class TreeTrapdoorBlockCard(configuration: HaimeviskaBlockConfiguration, private val blockSetType: () -> BlockSetType, private val parent: () -> Block) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createPlankSettings()
         .strength(3.0F)
         .noOcclusion()

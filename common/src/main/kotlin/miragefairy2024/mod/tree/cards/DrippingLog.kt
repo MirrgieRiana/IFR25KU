@@ -6,8 +6,8 @@ import miragefairy2024.lib.SimpleHorizontalFacingBlock
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.mod.registerHarvestNotation
-import miragefairy2024.mod.tree.HaimeviskaBlockCard
 import miragefairy2024.mod.tree.HaimeviskaBlockConfiguration
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.util.ItemLootPoolEntry
 import miragefairy2024.util.LootPool
 import miragefairy2024.util.LootTable
@@ -38,7 +38,7 @@ import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition
 import net.minecraft.world.phys.BlockHitResult
 
-class HaimeviskaDrippingLogBlockCard(configuration: HaimeviskaBlockConfiguration) : HaimeviskaHorizontalFacingLogBlockCard(configuration) {
+class TreeDrippingLogBlockCard(configuration: HaimeviskaBlockConfiguration) : TreeHorizontalFacingLogBlockCard(configuration) {
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = DrippingHaimeviskaLogBlock(properties)
 
     context(ModContext)
@@ -86,7 +86,7 @@ class DrippingHaimeviskaLogBlock(settings: Properties) : SimpleHorizontalFacingB
         val direction = state[FACING]
 
         // 消費
-        level.setBlock(pos, HaimeviskaBlockCard.INCISED_LOG.block().defaultBlockState().with(FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
+        level.setBlock(pos, TreeBlockCard.INCISED_LOG.block().defaultBlockState().with(FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
 
         fun drop(item: Item, count: Double) {
             val actualCount = level.random.randomInt(count) atMost item.defaultMaxStackSize

@@ -3,7 +3,7 @@ package miragefairy2024.mod.biome
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY
-import miragefairy2024.mod.tree.HaimeviskaBlockCard
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -34,7 +34,7 @@ object DeepFairyForestBiomeCard : BiomeCard(
         AdvancementCard(
             identifier = identifier,
             context = AdvancementCard.Sub { FairyForestBiomeCard.advancement!!.await() },
-            icon = { HaimeviskaBlockCard.SAPLING.item().createItemStack() },
+            icon = { TreeBlockCard.SAPLING.item().createItemStack() },
             name = EnJa("The Forest of Memories", "記憶の森"),
             description = EnJa("Travel the overworld and discover the Deep Fairy Forest", "地上を旅して妖精の樹海を探す"),
             criterion = AdvancementCard.visit(key),

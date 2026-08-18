@@ -6,7 +6,7 @@ import miragefairy2024.mod.fairy.Motif
 import miragefairy2024.mod.fairy.contains
 import miragefairy2024.mod.fairy.getFairyCondensation
 import miragefairy2024.mod.fairy.getFairyMotif
-import miragefairy2024.mod.tree.HaimeviskaBlockCard
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.cards.HaimeviskaLeavesBlock
 import miragefairy2024.util.NeighborType
 import miragefairy2024.util.blockVisitor
@@ -131,7 +131,7 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
         var changed = false
         run finished@{
             blockVisitor(logs, visitOrigins = false, maxDistance = 6) { _, _, toBlockPos ->
-                world.getBlockState(toBlockPos) isIn HaimeviskaBlockCard.LEAVES.block()
+                world.getBlockState(toBlockPos) isIn TreeBlockCard.LEAVES.block()
             }.forEach { (_, blockPos) ->
                 val blockState = world.getBlockState(blockPos)
                 if (blockState[HaimeviskaLeavesBlock.CHARGED]) {

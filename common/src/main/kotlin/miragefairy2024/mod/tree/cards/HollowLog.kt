@@ -16,7 +16,7 @@ import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 
-class HaimeviskaHollowLogBlockCard(configuration: HaimeviskaBlockConfiguration) : HaimeviskaHorizontalFacingLogBlockCard(configuration) {
+class TreeHollowLogBlockCard(configuration: HaimeviskaBlockConfiguration) : TreeHorizontalFacingLogBlockCard(configuration) {
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = HollowHaimeviskaLogBlock(properties)
 
     context(ModContext)

@@ -6,8 +6,8 @@ import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_BLOCK_TAG
 import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_ITEM_TAG
-import miragefairy2024.mod.tree.HaimeviskaBlockCard
 import miragefairy2024.mod.tree.HaimeviskaBlockConfiguration
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.createBaseWoodSetting
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.generator
@@ -45,7 +45,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.phys.BlockHitResult
 
-abstract class AbstractHaimeviskaLogBlockCard(configuration: HaimeviskaBlockConfiguration) : HaimeviskaBlockCard(configuration) {
+abstract class AbstractTreeLogBlockCard(configuration: HaimeviskaBlockConfiguration) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting().strength(2.0F)
 
     context(ModContext)
@@ -86,7 +86,7 @@ abstract class AbstractHaimeviskaLogBlockCard(configuration: HaimeviskaBlockConf
     }
 }
 
-class HaimeviskaLogBlockCard(configuration: HaimeviskaBlockConfiguration) : AbstractHaimeviskaLogBlockCard(configuration) {
+class TreeLogBlockCard(configuration: HaimeviskaBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { if (it[RotatedPillarBlock.AXIS] === Direction.Axis.Y) MapColor.RAW_IRON else MapColor.TERRACOTTA_ORANGE }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = HaimeviskaLogBlock(properties)
 
@@ -98,7 +98,7 @@ class HaimeviskaLogBlockCard(configuration: HaimeviskaBlockConfiguration) : Abst
     }
 }
 
-class HaimeviskaStrippedLogBlockCard(configuration: HaimeviskaBlockConfiguration) : AbstractHaimeviskaLogBlockCard(configuration) {
+class TreeStrippedLogBlockCard(configuration: HaimeviskaBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.RAW_IRON }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
@@ -112,7 +112,7 @@ class HaimeviskaStrippedLogBlockCard(configuration: HaimeviskaBlockConfiguration
     }
 }
 
-class HaimeviskaWoodBlockCard(configuration: HaimeviskaBlockConfiguration) : AbstractHaimeviskaLogBlockCard(configuration) {
+class TreeWoodBlockCard(configuration: HaimeviskaBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.TERRACOTTA_ORANGE }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
@@ -124,7 +124,7 @@ class HaimeviskaWoodBlockCard(configuration: HaimeviskaBlockConfiguration) : Abs
     }
 }
 
-class HaimeviskaStrippedWoodBlockCard(configuration: HaimeviskaBlockConfiguration) : AbstractHaimeviskaLogBlockCard(configuration) {
+class TreeStrippedWoodBlockCard(configuration: HaimeviskaBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.RAW_IRON }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
@@ -155,7 +155,7 @@ class HaimeviskaLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
 
         // 加工
         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand))
-        level.setBlock(pos, HaimeviskaBlockCard.INCISED_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
+        level.setBlock(pos, TreeBlockCard.INCISED_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
         player.awardStat(Stats.ITEM_USED.get(stack.item))
 
         // エフェクト
