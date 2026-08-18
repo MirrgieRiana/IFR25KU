@@ -1,4 +1,4 @@
-package miragefairy2024.mod.tree.cards
+package miragefairy2024.mod.tree.contents.blocks
 
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.HAIMEVISKA_CONFIGURED_FEATURE_KEY

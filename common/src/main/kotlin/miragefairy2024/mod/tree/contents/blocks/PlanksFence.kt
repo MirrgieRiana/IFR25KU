@@ -1,9 +1,8 @@
-package miragefairy2024.mod.tree.cards
+package miragefairy2024.mod.tree.contents.blocks
 
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
-import miragefairy2024.util.Registration
 import miragefairy2024.util.generator
 import miragefairy2024.util.registerBlockFamily
 import miragefairy2024.util.registerChild
@@ -13,26 +12,26 @@ import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.StairBlock
+import net.minecraft.world.level.block.FenceBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 
-class TreePlanksStairsBlockCard(configuration: TreeBlockConfiguration, private val baseBlock: () -> Registration<*, out Block>) : TreeBlockCard(configuration) {
+class TreePlanksFenceBlockCard(configuration: TreeBlockConfiguration, private val parent: () -> Block) : TreeBlockCard(configuration) {
     override fun createSettings() = createPlankSettings()
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(baseBlock().await().defaultBlockState(), properties)
+    override suspend fun createBlock(properties: BlockBehaviour.Properties) = FenceBlock(properties)
 
     context(ModContext)
     override fun init() {
         super.init()
 
-        registerBlockFamily(TexturedModel.CUBE, baseBlock()) { it.stairs(block()) }
+        registerBlockFamily(TexturedModel.CUBE, parent) { it.fence(block()) }
         block.registerDefaultLootTableGeneration()
 
         // 性質
         block.registerFlammable(5, 20)
 
         // タグ
-        BlockTags.WOODEN_STAIRS.generator.registerChild(block)
-        ItemTags.WOODEN_STAIRS.generator.registerChild(item)
+        BlockTags.WOODEN_FENCES.generator.registerChild(block)
+        ItemTags.WOODEN_FENCES.generator.registerChild(item)
 
     }
 }

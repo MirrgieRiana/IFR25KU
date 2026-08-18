@@ -1,4 +1,4 @@
-package miragefairy2024.mod.tree.cards
+package miragefairy2024.mod.tree.contents.blocks
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.DataGenerationEvents
