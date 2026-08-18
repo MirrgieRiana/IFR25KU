@@ -155,33 +155,33 @@ object HaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
         var leafOffsetY = freeTreeHeight - 1 // 葉の最上部は、幹の頂上と同じ高さなのだ～🌱
         while (leafOffsetY >= freeTreeHeight * 0.3) { // 下部30%未満には葉を付けないのだ～🌱
 
-            fun placeBranch(distanceMultiplier: Double) {
+            fun placeBranch(sign: Double) {
 
-                // 幹の中心から葉までの水平距離は、木全体を回転楕円体とした関数で決まるのだ～🌱
+                // 幹の中心から葉までの水平距離は、木全体を回転楕円体とした関数とランダムなぶれで決まるのだ～🌱
                 val horizontalDistance = run {
                     // freeTreeHeight = 10 のとき
                     val maxLeafOffsetY = freeTreeHeight - 1 // 9
                     val verticalRadius = maxLeafOffsetY / 2.0 // 4.5
                     val horizontalRadius = maxLeafOffsetY / 2.0 / 2.5 // 1.8
-                    val normalizedY = (leafOffsetY - verticalRadius) / verticalRadius // -1 ～ 0 ～ 1
+                    val normalizedY = if (verticalRadius <= 0.0) 0.0 else (leafOffsetY - verticalRadius) / verticalRadius // -1 ～ 0 ～ 1
                     val normalizedDistance = sqrt(1.0 - normalizedY * normalizedY) // 0 ～ 1 ～ 0
-                    horizontalRadius * normalizedDistance * distanceMultiplier // 0 ～ 1.8 * distanceMultiplier
+                    horizontalRadius * normalizedDistance * (1.0 + 0.3 * random.nextDouble()) // 0 ～ 1.8 * 1.3
                 }
 
                 val baseX = pos.x + 1.0
                 val baseY = pos.y + 0.5 + ((leafOffsetY - horizontalDistance * 0.5) atLeast 0.0) // 幹の接続部分のYは葉の水平距離に応じて下に下がるのだ～🌱
                 val baseZ = pos.z + 1.0
 
-                val leafX = baseX + horizontalDistance * sin(angle)
+                val leafX = baseX + horizontalDistance * sin(angle) * sign
                 val leafY = pos.y + 0.5 + leafOffsetY
-                val leafZ = baseZ - horizontalDistance * cos(angle)
+                val leafZ = baseZ - horizontalDistance * cos(angle) * sign
 
                 val steps = abs(leafX - baseX) max abs(leafY - baseY) max abs(leafZ - baseZ) // 3.2, 3.6, 4.5 のとき 4.5
                 val axis = if (abs(leafX - baseX) >= abs(leafZ - baseZ)) Direction.Axis.X else Direction.Axis.Z
 
                 // 枝の原木を設置するのだ～🌱
                 fun placeLog(step: Double) {
-                    val ratio = step / steps
+                    val ratio = if (steps <= 0.0) 0.0 else step / steps
                     val blockPos = BlockPos(
                         (leafX + (baseX - leafX) * ratio).floorToInt(),
                         (leafY + (baseY - leafY) * ratio).floorToInt(),
@@ -200,8 +200,8 @@ object HaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
                 foliageAttachments += FoliagePlacer.FoliageAttachment(leafBlockPos, 0, false)
 
             }
-            placeBranch(1.0 * (1.0 + 0.3 * random.nextDouble()))
-            placeBranch(-1.0 * (1.0 + 0.3 * random.nextDouble()))
+            placeBranch(1.0)
+            placeBranch(-1.0)
 
             angle += Math.toRadians(35.0)
             leafOffsetY -= 1
