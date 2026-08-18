@@ -9,7 +9,6 @@ import miragefairy2024.mod.FoodIngredientCategoryCard
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.OreCard
 import miragefairy2024.mod.biome.FairyForestBiomeCard
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.SimpleMachineRecipe
 import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
@@ -40,6 +39,7 @@ import miragefairy2024.mod.passiveskill.effects.MiningSpeedPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.effects.RegenerationPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.effects.StatusEffectPassiveSkillEffect
 import miragefairy2024.mod.tool.ToolMaterialCard
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.util.BiomeCondition
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.Registration
@@ -922,8 +922,8 @@ enum class MotifCard(
             + experience(0.6) * level.atMost(29) * food(MaterialCard.HAIMEVISKA_SAP.item)
             + experience(0.2) * level.atMost(39) * food(MaterialCard.HAIMEVISKA_SAP.item)
             + mending(1.0, ToolMaterialCard.HAIMEVISKA_ROSIN.tag),
-        MotifCardRecipes().R.overworld.block(HaimeviskaBlockCard.SAPLING.block).block(HaimeviskaBlockCard.LOG.block),
-        metamorphosis({ HaimeviskaBlockCard.SAPLING.item().createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 2),
+        MotifCardRecipes().R.overworld.block(TreeBlockCard.SAPLING.block).block(TreeBlockCard.LOG.block),
+        metamorphosis({ TreeBlockCard.SAPLING.item().createItemStack(1) }, { Items.DIRT.toIngredientStack(1) }, aquaVitaeCount = 2),
     ),
 
     // 植物モブ

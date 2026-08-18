@@ -23,7 +23,6 @@ import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.getFairyCondensation
 import miragefairy2024.mod.fairy.getFairyMotif
-import miragefairy2024.mod.haimeviska.haimeviskaAdvancement
 import miragefairy2024.mod.machine.AthanorRecipe
 import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceCard
@@ -49,6 +48,7 @@ import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.mod.structure.WeatheredAncientRemnantsCard
 import miragefairy2024.mod.translation
+import miragefairy2024.mod.tree.haimeviskaAdvancement
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -658,7 +658,7 @@ class MaterialCard(
             tags = listOf(ItemTagCard.SAP.tag),
         )
         val HAIMEVISKA_ROSIN: MaterialCard = !MaterialCard(
-            "haimeviska_rosin", "Haimeviska Rosin", "ハイメヴィスカの涙",
+            "haimeviska_rosin", "Haimeviska Resin", "ハイメヴィスカの涙",
             PoemList(2).poem("High-friction material", "琥珀の月が昇るとき、妖精の木は静かに泣く"),
             fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.HAIMEVISKA_ROSIN),
             advancementCreator = {
@@ -667,7 +667,7 @@ class MaterialCard(
                     context = AdvancementCard.Sub { haimeviskaAdvancement.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("The Taste of Nectar", "蜜の味"),
-                    description = EnJa("Obtain Haimeviska Rosin, rarely harvested from the Dripping Haimeviska Logs", "滴るハイメヴィスカの原木から稀に採取されるハイメヴィスカの涙を入手する"),
+                    description = EnJa("Obtain Haimeviska Resin, rarely harvested from the Dripping Haimeviska Logs", "滴るハイメヴィスカの原木から稀に採取されるハイメヴィスカの涙を入手する"),
                     criterion = AdvancementCard.hasItem(item),
                     type = AdvancementCardType.NORMAL,
                 )
@@ -1367,7 +1367,7 @@ class MaterialCard(
                     AthanorRecipeCard,
                     inputs = listOf(
                         { SimpleMachineRecipe.Input(ingredient(), count) },
-                        { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
+                        { SimpleMachineRecipe.Input(ETHANOL.item().toIngredient(), 1) },
                         { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
                     ),
                     outputs = listOf({ item().createItemStack() }),
@@ -1699,7 +1699,7 @@ enum class Material(val path: String, val prefix: EnJa) {
     CALCULITE("calculite", EnJa("Calculite", "理天石")),
     RESONITE("resonite", EnJa("Resonite", "共鳴石")),
     PROMINITE("prominite", EnJa("Prominite", "プロミナイト")),
-    HAIMEVISKA_ROSIN("haimeviska_rosin", EnJa("Haimeviska Rosin", "ハイメヴィスカの涙")),
+    HAIMEVISKA_ROSIN("haimeviska_rosin", EnJa("Haimeviska Resin", "ハイメヴィスカの涙")),
     FAIRY_PLASTIC("fairy_plastic", EnJa("Fairy Plastic", "妖精のプラスチック")),
     FAIRY_RUBBER("fairy_rubber", EnJa("Fairy Rubber", "夜のかけら")),
     ASH("ash", EnJa("Ash", "灰")),
