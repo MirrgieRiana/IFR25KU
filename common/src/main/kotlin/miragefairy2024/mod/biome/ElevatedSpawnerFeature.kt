@@ -35,7 +35,7 @@ object ElevatedSpawnerFeatureCard {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature(placedFeatureKey) { per(16) + flower(square, surface) }
+                registerPlacedFeature(placedFeatureKey) { per(64) + flower(square, surface) }
             }
         }
     }
