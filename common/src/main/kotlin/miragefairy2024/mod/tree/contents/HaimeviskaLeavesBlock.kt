@@ -40,6 +40,7 @@ class HaimeviskaLeavesBlock(settings: Properties) : LeavesBlock(settings) {
     @Suppress("OVERRIDE_DEPRECATION")
     override fun randomTick(state: BlockState, world: ServerLevel, pos: BlockPos, random: RandomSource) {
         super.randomTick(state, world, pos, random)
+        if (world.getBlockState(pos) != state) return // 親クラスの処理で葉が枯れ落ちた場合はスルー
         if (!state[CHARGED]) {
             if (random.randomBoolean(15, world.lightProxy.getLightLevel(pos))) {
                 world.setBlock(pos, state.with(CHARGED, true), UPDATE_CLIENTS)
