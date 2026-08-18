@@ -681,7 +681,7 @@ open class BlockMaterialCard(
                     it.createSilkTouchOnlyTable(block())
                 }
             }
-        }.init {
+        }.sound(SoundType.DECORATED_POT_CRACKED).init {
             registerShapedRecipeGeneration(item) {
                 pattern("##")
                 pattern("##")
