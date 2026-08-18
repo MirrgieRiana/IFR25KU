@@ -3,6 +3,9 @@ package miragefairy2024.mod.magicplant
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.contents.StickyMiningSnapshot
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
+import miragefairy2024.mod.tool.CarnivorousPlantDamageTypeCard
+import miragefairy2024.mod.tool.DamageTypeCard
+import miragefairy2024.mod.tool.SpineDamageTypeCard
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.get
@@ -22,6 +25,7 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.util.RandomSource
 import net.minecraft.world.InteractionResult
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Inventory
@@ -61,6 +65,27 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
     // Behaviour
 
     override fun mayPlaceOn(state: BlockState, level: BlockGetter, pos: BlockPos) = level.getBlockState(pos).isFaceSturdy(level, pos, Direction.UP, SupportType.CENTER) || super.mayPlaceOn(state, level, pos)
+
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun entityInside(state: BlockState, level: Level, pos: BlockPos, entity: Entity) {
+        if (entity !is LivingEntity) return
+        val blockEntity = level.getMagicPlantBlockEntity(pos)
+        val traitStacks = blockEntity?.getTraitStacks() ?: return
+        // TODO 特性効果リファクタリングが来たら効率化する
+        val traitEffects = calculateTraitEffects(level, pos, blockEntity, traitStacks)
+        var actualDamage = 0.0
+        var actualDamageTypeCard: DamageTypeCard? = null
+        fun addDamage(traitEffectKeyCard: TraitEffectKeyCard, damageTypeCard: DamageTypeCard) {
+            val damage = traitEffects[traitEffectKeyCard.traitEffectKey]
+            if (damage > 0) {
+                actualDamage += damage
+                actualDamageTypeCard = damageTypeCard
+            }
+        }
+        addDamage(TraitEffectKeyCard.SPINE_DAMAGE, SpineDamageTypeCard)
+        addDamage(TraitEffectKeyCard.PREDATION_DAMAGE, CarnivorousPlantDamageTypeCard)
+        if (actualDamageTypeCard != null) entity.hurt(level.damageSources().source(actualDamageTypeCard.registryKey), actualDamage.toFloat())
+    }
 
 
     // Trait

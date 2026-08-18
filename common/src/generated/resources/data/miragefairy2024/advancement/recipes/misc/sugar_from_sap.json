@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_aura_resistant_ceramics": {
+    "has_sap": {
       "conditions": {
         "items": [
           {
-            "items": "#miragefairy2024:aura_resistant_ceramics"
+            "items": "#miragefairy2024:sap"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:sandstone"
+        "recipe": "miragefairy2024:sugar_from_sap"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_aura_resistant_ceramics"
+      "has_sap"
     ]
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:sandstone"
+      "miragefairy2024:sugar_from_sap"
     ]
   }
 }

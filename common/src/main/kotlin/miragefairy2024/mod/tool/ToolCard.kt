@@ -484,27 +484,27 @@ class ToolCard(
             FairySwordConfiguration(ToolMaterialCard.PHANTOM_DROP).selfMending(20).obtainFairy(9.0 * 9.0),
         ) { registerSwordRecipeGeneration(item, MaterialCard.PHANTOM_DROP.ore!!.tag) }
         val HAIMEVISKA_ROSIN_PICKAXE = !ToolCard(
-            "haimeviska_rosin_pickaxe", EnJa("Rosin Pickaxe", "涙のつるはし"),
+            "haimeviska_rosin_pickaxe", EnJa("Resin Pickaxe", "涙のつるはし"),
             PoemList(2).poem(EnJa("Enduring in the stone", "生きた証は石の中。")),
             FairyPickaxeConfiguration(ToolMaterialCard.HAIMEVISKA_ROSIN).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).enchantment(Enchantments.UNBREAKING, 2),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.HAIMEVISKA_ROSIN.ore!!.tag) }
         val HAIMEVISKA_ROSIN_AXE = !ToolCard(
-            "haimeviska_rosin_axe", EnJa("Rosin Axe", "涙の斧"),
+            "haimeviska_rosin_axe", EnJa("Resin Axe", "涙の斧"),
             PoemList(2).poem(EnJa("That which might once have been a friend", "したたる樹液は、誰の涙か。")),
             FairyAxeConfiguration(ToolMaterialCard.HAIMEVISKA_ROSIN).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).enchantment(Enchantments.UNBREAKING, 2),
         ) { registerAxeRecipeGeneration(item, MaterialCard.HAIMEVISKA_ROSIN.ore!!.tag) }
         val HAIMEVISKA_ROSIN_SHOVEL = !ToolCard(
-            "haimeviska_rosin_shovel", EnJa("Rosin Shovel", "涙のシャベル"),
+            "haimeviska_rosin_shovel", EnJa("Resin Shovel", "涙のシャベル"),
             PoemList(2).poem(EnJa("The story of the lonely tree", "琥珀のしずくが刻む道。")),
             FairyShovelConfiguration(ToolMaterialCard.HAIMEVISKA_ROSIN).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).enchantment(Enchantments.UNBREAKING, 2),
         ) { registerShovelRecipeGeneration(item, MaterialCard.HAIMEVISKA_ROSIN.ore!!.tag) }
         val HAIMEVISKA_ROSIN_HOE = !ToolCard(
-            "haimeviska_rosin_hoe", EnJa("Rosin Hoe", "涙のクワ"),
+            "haimeviska_rosin_hoe", EnJa("Resin Hoe", "涙のクワ"),
             PoemList(2).poem(EnJa("Looking for companions", "そこにあるべき大樹を見上げ。")),
             FairyHoeConfiguration(ToolMaterialCard.HAIMEVISKA_ROSIN).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3)/* TODO 範囲耕作 */.enchantment(EnchantmentCard.STICKY_MINING.key).enchantment(Enchantments.UNBREAKING, 2),
         ) { registerHoeRecipeGeneration(item, MaterialCard.HAIMEVISKA_ROSIN.ore!!.tag) }
         val HAIMEVISKA_ROSIN_SWORD = !ToolCard(
-            "haimeviska_rosin_sword", EnJa("Rosin Sword", "涙の剣"),
+            "haimeviska_rosin_sword", EnJa("Resin Sword", "涙の剣"),
             PoemList(2).poem(EnJa("The oppressed Viska's desire", "傷つけられた幹の声。")),
             FairySwordConfiguration(ToolMaterialCard.HAIMEVISKA_ROSIN).enchantment(Enchantments.SWEEPING_EDGE, 3).collection().enchantment(Enchantments.UNBREAKING, 2),
         ) { registerSwordRecipeGeneration(item, MaterialCard.HAIMEVISKA_ROSIN.ore!!.tag) }

@@ -1,0 +1,31 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 1200,
+  "group": "minecraft:dirt",
+  "inputs": [
+    {
+      "Amount": 16,
+      "Ingredient": {
+        "item": "miragefairy2024:resin_cemented_dirt"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 4,
+      "id": "minecraft:dirt"
+    },
+    {
+      "count": 8,
+      "id": "miragefairy2024:plastic_tree_sap"
+    },
+    {
+      "count": 3,
+      "id": "miragefairy2024:retinite"
+    },
+    {
+      "count": 1,
+      "id": "miragefairy2024:copal"
+    }
+  ]
+}
