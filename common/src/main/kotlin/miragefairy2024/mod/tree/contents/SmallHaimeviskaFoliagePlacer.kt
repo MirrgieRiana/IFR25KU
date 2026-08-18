@@ -11,23 +11,23 @@ import net.minecraft.world.level.levelgen.feature.configurations.TreeConfigurati
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType
 
-object CuboidFoliagePlacerCard {
-    val identifier = MirageFairy2024.identifier("cuboid")
-    private val codec: MapCodec<CuboidFoliagePlacer> = RecordCodecBuilder.mapCodec { instance ->
+object SmallHaimeviskaFoliagePlacerCard {
+    val identifier = MirageFairy2024.identifier("small_haimeviska")
+    private val codec: MapCodec<SmallHaimeviskaFoliagePlacer> = RecordCodecBuilder.mapCodec { instance ->
         instance.group(
             IntProvider.codec(0, 16).fieldOf("radius").forGetter { it.radiusProvider },
             IntProvider.codec(0, 16).fieldOf("offset").forGetter { it.offsetProvider },
             Codec.intRange(0, 16).fieldOf("height").forGetter { it.height },
-        ).apply(instance, ::CuboidFoliagePlacer)
+        ).apply(instance, ::SmallHaimeviskaFoliagePlacer)
     }
-    val type: FoliagePlacerType<CuboidFoliagePlacer> = FoliagePlacerType(codec)
+    val type: FoliagePlacerType<SmallHaimeviskaFoliagePlacer> = FoliagePlacerType(codec)
 }
 
-class CuboidFoliagePlacer(radius: IntProvider, offset: IntProvider, val height: Int) : FoliagePlacer(radius, offset) {
+class SmallHaimeviskaFoliagePlacer(radius: IntProvider, offset: IntProvider, val height: Int) : FoliagePlacer(radius, offset) {
     val radiusProvider: IntProvider get() = this.radius
     val offsetProvider: IntProvider get() = this.offset
 
-    override fun type() = CuboidFoliagePlacerCard.type
+    override fun type() = SmallHaimeviskaFoliagePlacerCard.type
 
     override fun createFoliage(
         level: LevelSimulatedReader,

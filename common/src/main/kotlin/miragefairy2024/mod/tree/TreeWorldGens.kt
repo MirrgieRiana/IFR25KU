@@ -2,10 +2,10 @@ package miragefairy2024.mod.tree
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.mod.tree.contents.CuboidFoliagePlacer
 import miragefairy2024.mod.tree.contents.GiantHaimeviskaFoliagePlacer
 import miragefairy2024.mod.tree.contents.GiantHaimeviskaTrunkPlacer
 import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecorator
+import miragefairy2024.mod.tree.contents.SmallHaimeviskaFoliagePlacer
 import miragefairy2024.mod.tree.contents.SmallHaimeviskaTrunkPlacer
 import miragefairy2024.util.count
 import miragefairy2024.util.generator
@@ -44,7 +44,7 @@ fun initTreeWorldGens() {
                 BlockStateProvider.simple(TreeBlockCard.LOG.block()),
                 SmallHaimeviskaTrunkPlacer,
                 BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
-                CuboidFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
+                SmallHaimeviskaFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
                 TwoLayersFeatureSize(1, 0, 1),
             ).ignoreVines().decorators(listOf(HaimeviskaTreeDecorator, TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
         }.generator {
