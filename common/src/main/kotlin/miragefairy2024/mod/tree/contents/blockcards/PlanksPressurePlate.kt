@@ -3,7 +3,6 @@ package miragefairy2024.mod.tree.contents.blockcards
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
-import miragefairy2024.mod.tree.createBaseWoodSetting
 import miragefairy2024.util.generator
 import miragefairy2024.util.registerBlockFamily
 import miragefairy2024.util.registerChild
@@ -18,7 +17,7 @@ import net.minecraft.world.level.block.state.properties.BlockSetType
 import net.minecraft.world.level.material.PushReaction
 
 class TreePlanksPressurePlateBlockCard(configuration: TreeBlockConfiguration, private val blockSetType: () -> BlockSetType, private val parent: () -> Block) : TreeBlockCard(configuration) {
-    override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting(sound = false)
+    override fun createSettings(): BlockBehaviour.Properties = createPlankSettings(sound = false)
         .forceSolidOn()
         .noCollission()
         .strength(0.5F)
