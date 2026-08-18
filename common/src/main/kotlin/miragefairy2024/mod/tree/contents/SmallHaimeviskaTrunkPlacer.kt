@@ -21,7 +21,7 @@ object SmallHaimeviskaTrunkPlacerCard {
     val type: TrunkPlacerType<SmallHaimeviskaTrunkPlacer> = TrunkPlacerType(codec)
 }
 
-object SmallHaimeviskaTrunkPlacer : TrunkPlacer(6, 2, 0) {
+object SmallHaimeviskaTrunkPlacer : TrunkPlacer(8, 4, 0) {
     private const val LOWEST_LEAF_OFFSET_Y = 2
 
     override fun type() = SmallHaimeviskaTrunkPlacerCard.type
@@ -49,11 +49,13 @@ object SmallHaimeviskaTrunkPlacer : TrunkPlacer(6, 2, 0) {
 
         // 葉の位置を、幹の頂上から下に向かって決めていくのだ～🌱
         var angle = (Math.PI * 2) * random.nextDouble() // 最初の方位角はランダムなのだ～🌱
-        ((freeTreeHeight - 1) downTo LOWEST_LEAF_OFFSET_Y).forEach { leafOffsetY ->
+        val maxLeafOffsetY = freeTreeHeight - 1
+        (maxLeafOffsetY downTo LOWEST_LEAF_OFFSET_Y).forEach { leafOffsetY ->
 
-            // leafOffsetY == freeTreeHeight - 1 -> 0
-            // leafOffsetY == LOWEST_LEAF_OFFSET_Y -> 2
-            val horizontalDistance = 2.0 * (leafOffsetY - (freeTreeHeight - 1)) / (LOWEST_LEAF_OFFSET_Y - (freeTreeHeight - 1))
+            // leafOffsetY == maxLeafOffsetY -> 0
+            // leafOffsetY == LOWEST_LEAF_OFFSET_Y -> 1
+            val ratio = (leafOffsetY - maxLeafOffsetY) / (LOWEST_LEAF_OFFSET_Y - maxLeafOffsetY)
+            val horizontalDistance = 1.0 + 1.4 * ratio
 
             val leafBlockPos = BlockPos(
                 (pos.x + 0.5 + horizontalDistance * sin(angle)).floorToInt(),
@@ -62,7 +64,7 @@ object SmallHaimeviskaTrunkPlacer : TrunkPlacer(6, 2, 0) {
             )
             foliageAttachments += FoliagePlacer.FoliageAttachment(leafBlockPos, 0, false)
 
-            angle += Math.toRadians(35.0)
+            angle += Math.toRadians(70.0)
         }
 
         return foliageAttachments
