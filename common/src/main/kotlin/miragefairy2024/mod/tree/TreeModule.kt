@@ -3,9 +3,11 @@ package miragefairy2024.mod.tree
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.common.rootAdvancement
+import miragefairy2024.mod.tree.contents.CuboidFoliagePlacerCard
 import miragefairy2024.mod.tree.contents.HaimeviskaFoliagePlacerCard
 import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecoratorCard
 import miragefairy2024.mod.tree.contents.HaimeviskaTrunkPlacerCard
+import miragefairy2024.mod.tree.contents.SmallHaimeviskaTrunkPlacerCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -31,7 +33,9 @@ fun initTreeModule() {
     initTreeWorldGens()
 
     Registration(BuiltInRegistries.TRUNK_PLACER_TYPE, HaimeviskaTrunkPlacerCard.identifier) { HaimeviskaTrunkPlacerCard.type }.register()
+    Registration(BuiltInRegistries.TRUNK_PLACER_TYPE, SmallHaimeviskaTrunkPlacerCard.identifier) { SmallHaimeviskaTrunkPlacerCard.type }.register()
     Registration(BuiltInRegistries.FOLIAGE_PLACER_TYPE, HaimeviskaFoliagePlacerCard.identifier) { HaimeviskaFoliagePlacerCard.type }.register()
+    Registration(BuiltInRegistries.FOLIAGE_PLACER_TYPE, CuboidFoliagePlacerCard.identifier) { CuboidFoliagePlacerCard.type }.register()
     Registration(BuiltInRegistries.TREE_DECORATOR_TYPE, HaimeviskaTreeDecoratorCard.identifier) { HaimeviskaTreeDecoratorCard.type }.register()
 
     haimeviskaAdvancement.init()

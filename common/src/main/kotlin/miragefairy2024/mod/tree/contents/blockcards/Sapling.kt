@@ -2,6 +2,7 @@ package miragefairy2024.mod.tree.contents.blockcards
 
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.HAIMEVISKA_CONFIGURED_FEATURE_KEY
+import miragefairy2024.mod.tree.SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.util.generator
@@ -39,7 +40,7 @@ class TreeSaplingBlockCard(configuration: TreeBlockConfiguration, private val tr
         .pushReaction(PushReaction.DESTROY)
 
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = SaplingBlock(
-        TreeGrower(treeGrowerName.string, Optional.of(HAIMEVISKA_CONFIGURED_FEATURE_KEY), Optional.empty(), Optional.empty()),
+        TreeGrower(treeGrowerName.string, Optional.of(HAIMEVISKA_CONFIGURED_FEATURE_KEY), Optional.of(SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY), Optional.empty()),
         properties,
     )
 
