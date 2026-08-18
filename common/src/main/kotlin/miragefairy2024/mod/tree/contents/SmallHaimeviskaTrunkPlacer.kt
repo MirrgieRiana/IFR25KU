@@ -54,7 +54,7 @@ object SmallHaimeviskaTrunkPlacer : TrunkPlacer(8, 4, 0) {
 
             // leafOffsetY == maxLeafOffsetY -> 0
             // leafOffsetY == LOWEST_LEAF_OFFSET_Y -> 1
-            val ratio = (leafOffsetY - maxLeafOffsetY) / (LOWEST_LEAF_OFFSET_Y - maxLeafOffsetY)
+            val ratio = if (LOWEST_LEAF_OFFSET_Y - maxLeafOffsetY <= 0) 0.0 else (leafOffsetY - maxLeafOffsetY).toDouble() / (LOWEST_LEAF_OFFSET_Y - maxLeafOffsetY).toDouble()
             val horizontalDistance = 1.0 + 1.4 * ratio
 
             val leafBlockPos = BlockPos(
