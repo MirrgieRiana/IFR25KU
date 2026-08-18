@@ -9,7 +9,6 @@ import miragefairy2024.mod.FoodIngredientCategoryCard
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.OreCard
 import miragefairy2024.mod.biome.FairyForestBiomeCard
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.SimpleMachineRecipe
 import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
@@ -40,6 +39,7 @@ import miragefairy2024.mod.passiveskill.effects.MiningSpeedPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.effects.RegenerationPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.effects.StatusEffectPassiveSkillEffect
 import miragefairy2024.mod.tool.ToolMaterialCard
+import miragefairy2024.mod.tree.HaimeviskaBlockCard
 import miragefairy2024.util.BiomeCondition
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.Registration

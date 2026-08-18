@@ -1,4 +1,4 @@
-package miragefairy2024.mod.haimeviska
+package miragefairy2024.mod.tree
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext

@@ -1,4 +1,4 @@
-package miragefairy2024.mod.haimeviska
+package miragefairy2024.mod.tree
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024

@@ -1,11 +1,11 @@
-package miragefairy2024.mod.haimeviska.cards
+package miragefairy2024.mod.tree.cards
 
 import miragefairy2024.ModContext
-import miragefairy2024.mod.haimeviska.HAIMEVISKA_LOGS_BLOCK_TAG
-import miragefairy2024.mod.haimeviska.HAIMEVISKA_LOGS_ITEM_TAG
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockConfiguration
-import miragefairy2024.mod.haimeviska.createBaseWoodSetting
+import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_BLOCK_TAG
+import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_ITEM_TAG
+import miragefairy2024.mod.tree.HaimeviskaBlockCard
+import miragefairy2024.mod.tree.HaimeviskaBlockConfiguration
+import miragefairy2024.mod.tree.createBaseWoodSetting
 import miragefairy2024.util.generator
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.normal

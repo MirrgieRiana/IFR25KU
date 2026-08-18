@@ -1,13 +1,13 @@
-package miragefairy2024.mod.haimeviska.cards
+package miragefairy2024.mod.tree.cards
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
 import miragefairy2024.lib.SimpleHorizontalFacingBlock
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockConfiguration
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.mod.registerHarvestNotation
+import miragefairy2024.mod.tree.HaimeviskaBlockCard
+import miragefairy2024.mod.tree.HaimeviskaBlockConfiguration
 import miragefairy2024.util.ItemLootPoolEntry
 import miragefairy2024.util.LootPool
 import miragefairy2024.util.LootTable
