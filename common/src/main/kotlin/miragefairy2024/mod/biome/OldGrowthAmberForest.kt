@@ -108,7 +108,6 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                     SurfaceRules.ifTrue(
                         SurfaceRules.isBiome(key),
                         SurfaceRules.sequence(
-                            // 長い時間をかけて樹脂が積もった土地なので、地表だけでなく、最大20ブロック程度の深さまで置き換えるのだぁ🌱
                             SurfaceRules.ifTrue(
                                 SurfaceRules.stoneDepthCheck(0, true, 20, CaveSurface.FLOOR),
                                 SurfaceRules.ifTrue(
