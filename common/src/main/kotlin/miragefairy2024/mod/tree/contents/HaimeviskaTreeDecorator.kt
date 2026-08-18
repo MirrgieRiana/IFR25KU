@@ -1,7 +1,8 @@
-package miragefairy2024.mod.tree
+package miragefairy2024.mod.tree.contents
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.util.with
 import net.minecraft.core.Direction
 import net.minecraft.world.level.block.HorizontalDirectionalBlock

@@ -2,6 +2,9 @@ package miragefairy2024.mod.tree
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.tree.contents.HaimeviskaFoliagePlacer
+import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecorator
+import miragefairy2024.mod.tree.contents.HaimeviskaTrunkPlacer
 import miragefairy2024.util.count
 import miragefairy2024.util.generator
 import miragefairy2024.util.per

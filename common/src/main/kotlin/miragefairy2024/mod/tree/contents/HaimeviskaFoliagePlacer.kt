@@ -1,4 +1,4 @@
-package miragefairy2024.mod.tree
+package miragefairy2024.mod.tree.contents
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024

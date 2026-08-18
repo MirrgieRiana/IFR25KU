@@ -5,8 +5,8 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
-import miragefairy2024.mod.tree.chargedHaimeviskaLeavesTexturedModelFactory
-import miragefairy2024.mod.tree.unchargedHaimeviskaLeavesTexturedModelFactory
+import miragefairy2024.mod.tree.contents.chargedHaimeviskaLeavesTexturedModelFactory
+import miragefairy2024.mod.tree.contents.unchargedHaimeviskaLeavesTexturedModelFactory
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.Model
 import miragefairy2024.util.generator

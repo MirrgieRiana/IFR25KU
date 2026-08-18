@@ -1,4 +1,4 @@
-package miragefairy2024.mod.tree
+package miragefairy2024.mod.tree.contents
 
 import miragefairy2024.util.Model
 import miragefairy2024.util.ModelData
