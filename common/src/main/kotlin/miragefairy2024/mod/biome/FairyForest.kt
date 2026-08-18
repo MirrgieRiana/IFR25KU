@@ -3,7 +3,7 @@ package miragefairy2024.mod.biome
 import miragefairy2024.ModContext
 import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.magicplant.contents.magicplants.PhantomFlowerCard
-import miragefairy2024.mod.tree.HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY
+import miragefairy2024.mod.tree.GIANT_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.mod.tree.SMALL_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -84,7 +84,7 @@ object FairyForestBiomeCard : BiomeCard(
                 BiomeDefaultFeatures.addDefaultOres(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultSoftDisks(lookupBackedBuilder)
 
-                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GIANT_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, SMALL_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY)
                 BiomeDefaultFeatures.addOtherBirchTrees(lookupBackedBuilder)
 

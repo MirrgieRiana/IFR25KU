@@ -31,10 +31,10 @@ val SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with
 val SMALL_HAIMEVISKA_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_haimeviska")
 val SMALL_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_haimeviska_fairy_forest")
 
-val HAIMEVISKA_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("haimeviska")
-val HAIMEVISKA_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("haimeviska")
-val HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("haimeviska_fairy_forest")
-val HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("haimeviska_deep_fairy_forest")
+val GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("giant_haimeviska")
+val GIANT_HAIMEVISKA_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_haimeviska")
+val GIANT_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_haimeviska_fairy_forest")
+val GIANT_HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_haimeviska_deep_fairy_forest")
 
 context(ModContext)
 fun initTreeWorldGens() {
@@ -58,8 +58,8 @@ fun initTreeWorldGens() {
         }
     }
 
-    Feature.TREE.generator(MirageFairy2024.identifier("haimeviska")) {
-        registerConfiguredFeature(HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
+    Feature.TREE.generator(MirageFairy2024.identifier("giant_haimeviska")) {
+        registerConfiguredFeature(GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
             TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TreeBlockCard.LOG.block()),
                 GiantHaimeviskaTrunkPlacer,
@@ -70,13 +70,13 @@ fun initTreeWorldGens() {
         }.generator {
 
             // まばら
-            registerPlacedFeature(HAIMEVISKA_PLACED_FEATURE_KEY) { per(1024) + tree(TreeBlockCard.SAPLING.block()) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_PLAINS + +ConventionalBiomeTags.IS_FOREST } // 平原・森林バイオームに配置
+            registerPlacedFeature(GIANT_HAIMEVISKA_PLACED_FEATURE_KEY) { per(1024) + tree(TreeBlockCard.SAPLING.block()) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_PLAINS + +ConventionalBiomeTags.IS_FOREST } // 平原・森林バイオームに配置
 
             // 高密度
-            registerPlacedFeature(HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY) { per(16) + tree(TreeBlockCard.SAPLING.block()) }
+            registerPlacedFeature(GIANT_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY) { per(16) + tree(TreeBlockCard.SAPLING.block()) }
 
             // 超高密度
-            registerPlacedFeature(HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY) { count(8) + tree(TreeBlockCard.SAPLING.block()) }
+            registerPlacedFeature(GIANT_HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY) { count(8) + tree(TreeBlockCard.SAPLING.block()) }
 
         }
     }
