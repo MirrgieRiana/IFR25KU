@@ -61,6 +61,7 @@ enum class FairyToolMaterials(
     CALCULITE(Tiers.NETHERITE, 2048, 7.0F, 2.0F, 2.0F, 16, { ingredientOf(Shape.GEM, Material.CALCULITE) }),
     NOISE(Tiers.NETHERITE, 101, 8.9F, 1.1F, 1.3F, 3, { ingredientOf(Shape.GEM, Material.NOISE) }),
     HAIMEVISKA_ROSIN(Tiers.WOOD, 73, 1.2F, 0.0F, 0.0F, 16, { ingredientOf(Shape.GEM, Material.HAIMEVISKA_ROSIN) }),
+    COPAL(Tiers.IRON, 182, 5.0F, 1.5F, 1.5F, 19, { ingredientOf(Shape.GEM, Material.COPAL) }),
     FAIRY_PLASTIC(Tiers.IRON, 966, 3.0F, 2.0F, 0.0F, 24, { ingredientOf(Shape.GEM, Material.FAIRY_PLASTIC) }),
 
     NEUTRONIUM(Tiers.NETHERITE, Int.MAX_VALUE - 100, 8.0F, 3.0F, 3.0F, 10, { Items.BEDROCK.toIngredient() }),
@@ -124,6 +125,7 @@ enum class ToolMaterialCard(val toolMaterial: Tier, path: String, val title: EnJ
     CALCULITE(FairyToolMaterials.CALCULITE, "calculite_tool", EnJa("Calculite Tool", "理天石ツール")),
     NOISE(FairyToolMaterials.NOISE, "noise_tool", EnJa("Noise Tool", "ノイズツール")),
     HAIMEVISKA_ROSIN(FairyToolMaterials.HAIMEVISKA_ROSIN, "haimeviska_rosin_tool", EnJa("Resin Tool", "涙ツール")),
+    COPAL(FairyToolMaterials.COPAL, "copal_tool", EnJa("Copal Tool", "コーパルツール")),
     FAIRY_PLASTIC(FairyToolMaterials.FAIRY_PLASTIC, "fairy_plastic_tool", EnJa("Fairy Plastic Tool", "妖精のプラスチックツール")),
 
     NEUTRONIUM(FairyToolMaterials.NEUTRONIUM, "neutronium_tool", EnJa("Neutronium Tool", "ニュートロニウムツール")),
