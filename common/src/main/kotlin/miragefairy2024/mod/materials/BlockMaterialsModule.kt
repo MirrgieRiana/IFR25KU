@@ -695,7 +695,7 @@ open class BlockMaterialCard(
             "resin_cemented_dirt", EnJa("Resin-Cemented Dirt", "石化した樹脂状の土"),
             PoemList(1).poem(EnJa("Antimicrobial terpenes prevent decay.", "電気の由来を語る土。")),
             MapColor.COLOR_ORANGE, 0.8F, 0.8F,
-        ).sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.DIRT).init {
+        ).sound(SoundType.MUD).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.DIRT).init {
             // 分解レシピ
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
@@ -713,7 +713,7 @@ open class BlockMaterialCard(
             "resin_cemented_dirt_bricks", EnJa("Resin-Cemented Dirt Bricks", "石化した樹脂状の土レンガ"),
             PoemList(1).poem(EnJa("The only nutrient for etherobacteria.", "知性の根源。")),
             MapColor.COLOR_ORANGE, 1.0F, 1.0F,
-        ).sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE).init {
+        ).sound(SoundType.MUD_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerShapedRecipeGeneration(item, count = 4) {
                 pattern("##")
                 pattern("##")
@@ -730,7 +730,7 @@ open class BlockMaterialCard(
             context(ModContext) override fun initBlockStateGeneration() = Unit
             context(ModContext) override fun initModelGeneration() = Unit
             context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
-        }.sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
+        }.sound(SoundType.MUD_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
             registerBlockFamily(TexturedModel.CUBE, RESIN_CEMENTED_DIRT_BRICKS.block) { it.slab(block()) }
             registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT.item, item)
             registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT_BRICKS.item, item, 2)
@@ -743,7 +743,7 @@ open class BlockMaterialCard(
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(RESIN_CEMENTED_DIRT_BRICKS.block.await().defaultBlockState(), properties)
             context(ModContext) override fun initBlockStateGeneration() = Unit
             context(ModContext) override fun initModelGeneration() = Unit
-        }.sound(SoundType.MUDDY_MANGROVE_ROOTS).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
+        }.sound(SoundType.MUD_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
             registerBlockFamily(TexturedModel.CUBE, RESIN_CEMENTED_DIRT_BRICKS.block) { it.stairs(block()) }
             registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT.item, item)
             registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT_BRICKS.item, item)
