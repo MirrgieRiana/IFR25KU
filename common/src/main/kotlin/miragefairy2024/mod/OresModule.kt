@@ -11,6 +11,7 @@ import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.BiomeSelectorScope
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.FortuneEffect
 import miragefairy2024.util.Model
 import miragefairy2024.util.ModelData
 import miragefairy2024.util.ModelElementData
@@ -89,6 +90,7 @@ enum class OreCard(
     val dropItem: () -> Item,
     experience: Pair<Int, Int>,
     val tags: List<TagKey<Block>> = emptyList(),
+    val fortuneEffect: FortuneEffect = FortuneEffect.ORE,
 ) {
     MAGNETITE_ORE(
         "magnetite_ore", "Magnetite Ore", "磁鉄鉱鉱石",
@@ -191,12 +193,14 @@ enum class OreCard(
     RESIN_CEMENTED_DIRT_RETINITE_ORE(
         "resin_cemented_dirt_retinite_ore", "Resin-Cemented Dirt Retinite Ore", "石化した樹脂状の土レチナイト鉱石",
         null,
-        BaseStoneType.RESIN_CEMENTED_DIRT, "retinite_ore", MaterialCard.RETINITE.item, 2 to 5,
+        BaseStoneType.RESIN_CEMENTED_DIRT, "retinite_ore", BlockMaterialCard.RESIN_CEMENTED_DIRT.item, 2 to 5,
+        fortuneEffect = FortuneEffect.IGNORE,
     ),
     RESIN_CEMENTED_DIRT_COPAL_ORE(
         "resin_cemented_dirt_copal_ore", "Resin-Cemented Dirt Copal Ore", "石化した樹脂状の土コーパル鉱石",
         null,
-        BaseStoneType.RESIN_CEMENTED_DIRT, "copal_ore", MaterialCard.COPAL.item, 2 to 5,
+        BaseStoneType.RESIN_CEMENTED_DIRT, "copal_ore", BlockMaterialCard.RESIN_CEMENTED_DIRT.item, 2 to 5,
+        fortuneEffect = FortuneEffect.IGNORE,
     ),
     ;
 
@@ -287,7 +291,7 @@ fun initOresModule() {
             card.item.registerPoemGeneration(card.poemList)
         }
 
-        card.block.registerOreLootTableGeneration(card.dropItem)
+        card.block.registerOreLootTableGeneration(card.dropItem, fortuneEffect = card.fortuneEffect)
 
         card.baseStoneType.mineableTag.generator.registerChild(card.block)
         card.baseStoneType.needsToolTag?.generator?.registerChild(card.block)
