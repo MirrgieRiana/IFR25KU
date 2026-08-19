@@ -80,7 +80,6 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
 
                 BiomeDefaultFeatures.addMossyStoneBlock(lookupBackedBuilder)
                 BiomeDefaultFeatures.addForestFlowers(lookupBackedBuilder)
-                BiomeDefaultFeatures.addFerns(lookupBackedBuilder)
 
                 BiomeDefaultFeatures.addDefaultOres(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultSoftDisks(lookupBackedBuilder)
@@ -89,8 +88,8 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
 
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_TAIGA)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
-                BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)
-                BiomeDefaultFeatures.addGiantTaigaVegetation(lookupBackedBuilder)
+                BiomeDefaultFeatures.addDefaultGrass(lookupBackedBuilder)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)
                 BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
 
             }.build()).build()
