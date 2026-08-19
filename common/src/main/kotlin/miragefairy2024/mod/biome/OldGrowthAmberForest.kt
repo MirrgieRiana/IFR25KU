@@ -4,6 +4,8 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.mod.tree.GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
+import miragefairy2024.mod.tree.SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -86,7 +88,8 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
 
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, ElevatedSpawnerFeatureCard.placedFeatureKey)
 
-                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_TAIGA)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultGrass(lookupBackedBuilder)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)

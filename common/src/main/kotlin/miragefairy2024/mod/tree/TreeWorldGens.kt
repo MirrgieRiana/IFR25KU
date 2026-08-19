@@ -36,6 +36,10 @@ val GIANT_HAIMEVISKA_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageF
 val GIANT_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_haimeviska_fairy_forest")
 val GIANT_HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_haimeviska_deep_fairy_forest")
 
+val SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_plastic_tree_old_growth_amber_forest")
+
+val GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_plastic_tree_old_growth_amber_forest")
+
 context(ModContext)
 fun initTreeWorldGens() {
     Feature.TREE.generator(MirageFairy2024.identifier("small_haimeviska")) {
@@ -54,6 +58,8 @@ fun initTreeWorldGens() {
 
             // 高密度
             registerPlacedFeature(SMALL_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY) { per(16) + tree(TreeBlockCard.SAPLING.block()) }
+
+            registerPlacedFeature(SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { per(2) + tree(TreeBlockCard.SAPLING.block()) }
 
         }
     }
@@ -77,6 +83,8 @@ fun initTreeWorldGens() {
 
             // 超高密度
             registerPlacedFeature(GIANT_HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY) { count(8) + tree(TreeBlockCard.SAPLING.block()) }
+
+            registerPlacedFeature(GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { per(2) + tree(TreeBlockCard.SAPLING.block()) }
 
         }
     }
