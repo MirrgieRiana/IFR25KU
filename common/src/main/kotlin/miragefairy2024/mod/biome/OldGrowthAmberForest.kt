@@ -15,6 +15,7 @@ import miragefairy2024.util.getSurfaceNoiseThreshold
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.core.HolderGetter
 import net.minecraft.data.worldgen.BiomeDefaultFeatures
+import net.minecraft.data.worldgen.placement.VegetationPlacements
 import net.minecraft.tags.BiomeTags
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.MobCategory
@@ -82,7 +83,6 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
 
                 BiomeDefaultFeatures.addMossyStoneBlock(lookupBackedBuilder)
                 BiomeDefaultFeatures.addForestFlowers(lookupBackedBuilder)
-                BiomeDefaultFeatures.addFerns(lookupBackedBuilder)
 
                 BiomeDefaultFeatures.addDefaultOres(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultSoftDisks(lookupBackedBuilder)
@@ -92,8 +92,8 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
-                BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)
-                BiomeDefaultFeatures.addGiantTaigaVegetation(lookupBackedBuilder)
+                BiomeDefaultFeatures.addDefaultGrass(lookupBackedBuilder)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)
                 BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
 
             }.build()).build()

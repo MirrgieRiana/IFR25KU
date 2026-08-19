@@ -72,17 +72,11 @@
     [
       "minecraft:glow_lichen",
       "minecraft:forest_flowers",
-      "minecraft:patch_large_fern",
       "miragefairy2024:small_plastic_tree_old_growth_amber_forest",
       "miragefairy2024:giant_plastic_tree_old_growth_amber_forest",
       "minecraft:flower_default",
-      "minecraft:patch_grass_taiga_2",
-      "minecraft:brown_mushroom_taiga",
-      "minecraft:red_mushroom_taiga",
-      "minecraft:patch_grass_taiga",
+      "minecraft:patch_grass_badlands",
       "minecraft:patch_dead_bush",
-      "minecraft:brown_mushroom_old_growth",
-      "minecraft:red_mushroom_old_growth",
       "minecraft:patch_sugar_cane",
       "minecraft:patch_pumpkin"
     ],
