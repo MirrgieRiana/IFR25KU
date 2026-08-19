@@ -20,6 +20,7 @@ import miragefairy2024.mod.tree.contents.blockcards.TreeDrippingLogBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeHollowLogBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeIncisableLogBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeIncisedLogBlockCard
+import miragefairy2024.mod.tree.contents.blockcards.TreeLeavesBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreePlanksBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreePlanksButtonBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreePlanksFenceBlockCard
@@ -69,7 +70,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val LEAVES = !TreeBlockConfiguration(
             "haimeviska_leaves", EnJa("Haimeviska Leaves", "ハイメヴィスカの葉"),
             PoemList(1).poem(EnJa("All original flowers are consumed by ivy", "妖精になれる花、なれない花。")),
-        ).let { TreeChargeableLeavesBlockCard(it) }
+        ).let { TreeChargeableLeavesBlockCard(it) { SAPLING } }
         val LOG = !TreeBlockConfiguration(
             "haimeviska_log", EnJa("Haimeviska Log", "ハイメヴィスカの原木"),
             PoemList(1)
@@ -156,6 +157,11 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             "haimeviska_sapling", EnJa("Haimeviska Sapling", "ハイメヴィスカの苗木"),
             PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
         ).let { TreeSaplingBlockCard(it, MirageFairy2024.identifier("haimeviska")) }
+
+        val PLASTIC_TREE_LEAVES = !TreeBlockConfiguration(
+            "plastic_tree_leaves", EnJa("Plastic Tree Leaves", "プラノキの葉"),
+            PoemList(1).poem(EnJa("TODO", "TODO")),
+        ).let { TreeLeavesBlockCard(it) { SAPLING } }
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)
