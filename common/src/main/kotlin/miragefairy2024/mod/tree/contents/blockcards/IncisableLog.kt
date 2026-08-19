@@ -4,6 +4,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.contents.HaimeviskaLogBlock
 import miragefairy2024.util.generator
+import miragefairy2024.util.get
 import miragefairy2024.util.registerChild
 import net.minecraft.core.Direction
 import net.minecraft.tags.BlockTags
