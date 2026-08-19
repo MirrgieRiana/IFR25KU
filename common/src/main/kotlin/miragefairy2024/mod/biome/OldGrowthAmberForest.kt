@@ -88,9 +88,6 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
 
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_TAIGA)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
-                // タイガ系の草はシダが4:1の比で混ざってしまうので、シダを含まない控えめな草を生やすのだ
-                // キノコは有機物を分解する従属栄養生物なので、樹脂によって腐敗が抑えられているこの地には生やさないのだ
-                // 以下は addTaigaGrass と addGiantTaigaVegetation から、草とシダとキノコを除いた残りなのだ
                 BiomeDefaultFeatures.addDefaultGrass(lookupBackedBuilder)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)
                 BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
