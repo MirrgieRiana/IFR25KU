@@ -7,7 +7,6 @@ import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_BLOCK_TAG
 import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_ITEM_TAG
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
-import miragefairy2024.mod.tree.contents.HaimeviskaLogBlock
 import miragefairy2024.mod.tree.createBaseWoodSetting
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.generator
@@ -20,9 +19,7 @@ import miragefairy2024.util.registerShapedRecipeGeneration
 import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.toItemTag
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry
-import net.minecraft.core.Direction
 import net.minecraft.data.models.BlockModelGenerators.WoodProvider
-import net.minecraft.tags.BlockTags
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.RotatedPillarBlock
@@ -67,18 +64,6 @@ abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) :
         ModEvents.onInitialize {
             StrippableBlockRegistry.register(input(), block())
         }
-    }
-}
-
-class TreeLogBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
-    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { if (it[RotatedPillarBlock.AXIS] === Direction.Axis.Y) MapColor.RAW_IRON else MapColor.TERRACOTTA_ORANGE }
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = HaimeviskaLogBlock(properties)
-
-    context(ModContext)
-    override fun init() {
-        super.init()
-        registerModelGeneration(block) { it.logWithHorizontal(block()) }
-        BlockTags.OVERWORLD_NATURAL_LOGS.generator.registerChild(block)
     }
 }
 

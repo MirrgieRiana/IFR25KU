@@ -14,12 +14,12 @@ import miragefairy2024.mod.tree.contents.HaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.HollowHaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.IncisedHaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.blockcards.TreeBricksBlockCard
+import miragefairy2024.mod.tree.contents.blockcards.TreeChargeableLeavesBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeDoorBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeDrippingLogBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeHollowLogBlockCard
+import miragefairy2024.mod.tree.contents.blockcards.TreeIncisableLogBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeIncisedLogBlockCard
-import miragefairy2024.mod.tree.contents.blockcards.TreeLeavesBlockCard
-import miragefairy2024.mod.tree.contents.blockcards.TreeLogBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreePlanksBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreePlanksButtonBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreePlanksFenceBlockCard
@@ -69,13 +69,13 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val LEAVES = !TreeBlockConfiguration(
             "haimeviska_leaves", EnJa("Haimeviska Leaves", "ハイメヴィスカの葉"),
             PoemList(1).poem(EnJa("All original flowers are consumed by ivy", "妖精になれる花、なれない花。")),
-        ).let { TreeLeavesBlockCard(it) }
+        ).let { TreeChargeableLeavesBlockCard(it) }
         val LOG = !TreeBlockConfiguration(
             "haimeviska_log", EnJa("Haimeviska Log", "ハイメヴィスカの原木"),
             PoemList(1)
                 .poem(EnJa("Symbiosis with parasitic Mirages", "妖精の滲み込んだ樹。"))
                 .description(EnJa("Can be incised with a sword", "剣を使って傷を付けられる")),
-        ).let { TreeLogBlockCard(it) }
+        ).let { TreeIncisableLogBlockCard(it) }
         val WOOD = !TreeBlockConfiguration(
             "haimeviska_wood", EnJa("Haimeviska Wood", "ハイメヴィスカの木"),
             PoemList(1).poem(EnJa("Hydraulic communication system", "ウィスプたちの集合知。")),
