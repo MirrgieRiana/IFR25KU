@@ -155,7 +155,12 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val SAPLING = !TreeBlockConfiguration(
             "haimeviska_sapling", EnJa("Haimeviska Sapling", "ハイメヴィスカの苗木"),
             PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
-        ).let { TreeSaplingBlockCard(it, MirageFairy2024.identifier("haimeviska")) }
+        ).let { TreeSaplingBlockCard(it, MirageFairy2024.identifier("haimeviska"), GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY, SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY) }
+
+        val PLASTIC_TREE_SAPLING = !TreeBlockConfiguration(
+            "plastic_tree_sapling", EnJa("Plastic Tree Sapling", "プラノキの苗木"),
+            PoemList(1).poem(EnJa("TODO", "TODO")),
+        ).let { TreeSaplingBlockCard(it, MirageFairy2024.identifier("plastic_tree"), GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY, SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY) }
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)
