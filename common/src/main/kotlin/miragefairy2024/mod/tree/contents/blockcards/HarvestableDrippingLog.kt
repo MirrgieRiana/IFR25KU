@@ -16,16 +16,10 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
+import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition
-import net.minecraft.world.level.material.MapColor
 
-/**
- * 使用すると樹液を収穫できて、傷の付いた原木に戻る、樹液が滴る原木のブロックカードなのだ～🌱
- *
- * これは樹液の採取のループを持つ樹種だけの性質なのだ～🌱
- * 稀に [rosin] も一緒に採れるのだ～🌱
- */
 class TreeHarvestableDrippingLogBlockCard(
     configuration: TreeBlockConfiguration,
     log: () -> TreeBlockCard,

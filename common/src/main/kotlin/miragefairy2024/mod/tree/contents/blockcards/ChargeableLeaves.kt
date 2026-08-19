@@ -16,7 +16,6 @@ import miragefairy2024.util.times
 import miragefairy2024.util.with
 import net.minecraft.world.level.block.state.BlockBehaviour
 
-/** 光を蓄えて花を咲かせる葉のブロックカードなのだ～🌱 これは妖精が寄生した樹だけが持つ性質なのだ～🌱 */
 class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration, sapling: () -> TreeBlockCard) : AbstractTreeLeavesBlockCard(configuration, sapling) {
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = HaimeviskaLeavesBlock(properties)
 

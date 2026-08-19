@@ -10,34 +10,7 @@ import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType
 
-object HaimeviskaTreeDecoratorCard {
-    val identifier = MirageFairy2024.identifier("haimeviska")
-    private val codec: MapCodec<TreeSapDecorator> = MapCodec.unit { HaimeviskaTreeDecorator }
-    val type: TreeDecoratorType<TreeSapDecorator> = TreeDecoratorType(codec)
-}
-
-object PlasticTreeTreeDecoratorCard {
-    val identifier = MirageFairy2024.identifier("plastic_tree")
-    private val codec: MapCodec<TreeSapDecorator> = MapCodec.unit { PlasticTreeTreeDecorator }
-    val type: TreeDecoratorType<TreeSapDecorator> = TreeDecoratorType(codec)
-}
-
-object HaimeviskaTreeDecorator : TreeSapDecorator({ TreeBlockCard.LOG }, { TreeBlockCard.DRIPPING_LOG }, 12, { TreeBlockCard.HOLLOW_LOG }, 6) {
-    override fun type() = HaimeviskaTreeDecoratorCard.type
-}
-
-// プラノキには樹洞がないのだ～🌱
-object PlasticTreeTreeDecorator : TreeSapDecorator({ TreeBlockCard.PLASTIC_TREE_LOG }, { TreeBlockCard.PLASTIC_TREE_DRIPPING_LOG }, 25, null, 0) {
-    override fun type() = PlasticTreeTreeDecoratorCard.type
-}
-
-/**
- * 垂直の幹の一部を、樹液が滴る原木や樹洞に置き換える装飾なのだ～🌱
- *
- * [drippingLogPercentage] と [hollowLogPercentage] は、それぞれの置き換えが起こる確率をパーセントで表したものなのだ～🌱
- * [hollowLog] が `null` の樹種には、樹洞ができないのだ～🌱
- */
-abstract class TreeSapDecorator(
+abstract class TreeLogDecorator(
     private val log: () -> TreeBlockCard,
     private val drippingLog: () -> TreeBlockCard,
     private val drippingLogPercentage: Int,
@@ -57,4 +30,24 @@ abstract class TreeSapDecorator(
             }
         }
     }
+}
+
+object HaimeviskaTreeDecoratorCard {
+    val identifier = MirageFairy2024.identifier("haimeviska")
+    private val codec: MapCodec<TreeLogDecorator> = MapCodec.unit { HaimeviskaTreeDecorator }
+    val type: TreeDecoratorType<TreeLogDecorator> = TreeDecoratorType(codec)
+}
+
+object PlasticTreeTreeDecoratorCard {
+    val identifier = MirageFairy2024.identifier("plastic_tree")
+    private val codec: MapCodec<TreeLogDecorator> = MapCodec.unit { PlasticTreeTreeDecorator }
+    val type: TreeDecoratorType<TreeLogDecorator> = TreeDecoratorType(codec)
+}
+
+object HaimeviskaTreeDecorator : TreeLogDecorator({ TreeBlockCard.LOG }, { TreeBlockCard.DRIPPING_LOG }, 12, { TreeBlockCard.HOLLOW_LOG }, 6) {
+    override fun type() = HaimeviskaTreeDecoratorCard.type
+}
+
+object PlasticTreeTreeDecorator : TreeLogDecorator({ TreeBlockCard.PLASTIC_TREE_LOG }, { TreeBlockCard.PLASTIC_TREE_DRIPPING_LOG }, 25, null, 0) {
+    override fun type() = PlasticTreeTreeDecoratorCard.type
 }

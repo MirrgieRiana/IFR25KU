@@ -10,7 +10,7 @@ import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.mod.tree.contents.DrippingHaimeviskaLogBlock
-import miragefairy2024.mod.tree.contents.DrippingLogBlock
+import miragefairy2024.mod.tree.contents.DrippingPlasticTreeLogBlock
 import miragefairy2024.mod.tree.contents.HaimeviskaLeavesBlock
 import miragefairy2024.mod.tree.contents.HaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.HollowHaimeviskaLogBlock
@@ -163,8 +163,6 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
         ).let { TreeSaplingBlockCard(it, MirageFairy2024.identifier("haimeviska"), GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY, SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY) }
 
-        // プラノキは、ハイメヴィスカが寄生される前の、素の樹なのだ～🌱
-        // 妖精の寄生に由来する仕組みは持たないから、葉は光を蓄えず、原木には傷を付けられず、樹洞もできないのだ～🌱
         val PLASTIC_TREE_LEAVES = !TreeBlockConfiguration(
             "plastic_tree_leaves", EnJa("Plastic Tree Leaves", "プラノキの葉"),
             PoemList(1).poem(EnJa("TODO", "TODO")),
@@ -235,7 +233,7 @@ fun initTreeBlocks() {
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("incised_haimeviska_log")) { IncisedHaimeviskaLogBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("dripping_haimeviska_log")) { DrippingHaimeviskaLogBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("hollow_haimeviska_log")) { HollowHaimeviskaLogBlock.CODEC }.register()
-    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("dripping_plastic_tree_log")) { DrippingLogBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("dripping_plastic_tree_log")) { DrippingPlasticTreeLogBlock.CODEC }.register()
 
     // Wood Type
     HAIMEVISKA_BLOCK_SET_TYPE = BlockSetTypeBuilder().register(MirageFairy2024.identifier("haimeviska"))

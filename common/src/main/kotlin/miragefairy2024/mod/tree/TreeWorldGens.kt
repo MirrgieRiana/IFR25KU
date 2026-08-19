@@ -98,10 +98,9 @@ fun initTreeWorldGens() {
                 BlockStateProvider.simple(TreeBlockCard.PLASTIC_TREE_LEAVES.block()),
                 SmallHaimeviskaFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
                 TwoLayersFeatureSize(1, 0, 1),
-            ).ignoreVines().decorators(listOf(PlasticTreeTreeDecorator)).build() // プラノキにはツタが全く生えないのだ～🌱
+            ).ignoreVines().decorators(listOf(PlasticTreeTreeDecorator)).build()
         }.generator {
 
-            // 琥珀色の原生林の主役なのだ～🌱
             registerPlacedFeature(SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { per(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) }
 
         }
@@ -115,10 +114,9 @@ fun initTreeWorldGens() {
                 BlockStateProvider.simple(TreeBlockCard.PLASTIC_TREE_LEAVES.block()),
                 GiantHaimeviskaFoliagePlacer,
                 TwoLayersFeatureSize(1, 1, 2),
-            ).ignoreVines().decorators(listOf(PlasticTreeTreeDecorator)).build() // プラノキにはツタが全く生えないのだ～🌱
+            ).ignoreVines().decorators(listOf(PlasticTreeTreeDecorator)).build()
         }.generator {
 
-            // 小さいものと同じ頻度なのだ～🌱
             registerPlacedFeature(GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { per(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) }
 
         }

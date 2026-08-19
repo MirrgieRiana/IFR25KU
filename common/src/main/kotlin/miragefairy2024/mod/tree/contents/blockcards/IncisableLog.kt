@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
 
-/** 剣で傷を付けて樹液を採取できる原木のブロックカードなのだ～🌱 これは樹液の採取のループを持つ樹種だけの性質なのだ～🌱 */
 class TreeIncisableLogBlockCard(
     configuration: TreeBlockConfiguration,
     logsBlockTag: TagKey<Block>,

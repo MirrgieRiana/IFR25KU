@@ -8,10 +8,8 @@ import net.minecraft.client.particle.FlyTowardsPositionParticle
 import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.SuspendedTownParticle
 
-/** ハイメヴィスカの樹液のパーティクルの色なのだ。 */
 private const val HAIMEVISKA_SAP_RGB = 0xFF9F32
 
-/** プラノキの樹液のパーティクルの色なのだ。ハイメヴィスカと同じく、樹液アイテムのテクスチャの平均色を明るくした色なのだ。 */
 private const val PLASTIC_TREE_SAP_RGB = 0xBEE3F1
 
 context(ModContext)

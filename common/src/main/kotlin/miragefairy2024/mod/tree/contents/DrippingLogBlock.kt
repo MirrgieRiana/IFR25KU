@@ -29,20 +29,9 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
 
-/**
- * 樹液が滴る原木なのだ～🌱
- *
- * 正面から樹液の雫を垂らすのだ～🌱 樹液の採取のループを持たない樹種では、これがそのまま使われるのだ～🌱
- */
 @Suppress("OVERRIDE_DEPRECATION")
-open class DrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
-    companion object {
-        val CODEC: MapCodec<DrippingLogBlock> = simpleCodec(::DrippingLogBlock)
-    }
-
-    override fun codec() = CODEC
-
-    protected open val sapParticleOptions: ParticleOptions get() = ParticleTypeCard.DRIPPING_PLASTIC_TREE_SAP.particleType
+abstract class DrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
+    protected abstract val sapParticleOptions: ParticleOptions
 
     override fun animateTick(state: BlockState, world: Level, pos: BlockPos, random: RandomSource) {
         if (random.nextFloat() >= 0.2F) return
@@ -91,15 +80,10 @@ open class DrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(
     }
 }
 
-/**
- * 樹液が滴るハイメヴィスカの原木なのだ～🌱
- *
- * 使用すると樹液を収穫できて、傷の付いた原木に戻るのだ～🌱
- */
 @Suppress("OVERRIDE_DEPRECATION")
 class DrippingHaimeviskaLogBlock(settings: Properties) : DrippingLogBlock(settings) {
     companion object {
-        val CODEC: MapCodec<DrippingLogBlock> = simpleCodec(::DrippingHaimeviskaLogBlock)
+        val CODEC: MapCodec<DrippingHaimeviskaLogBlock> = simpleCodec(::DrippingHaimeviskaLogBlock)
     }
 
     override fun codec() = CODEC
@@ -132,4 +116,14 @@ class DrippingHaimeviskaLogBlock(settings: Properties) : DrippingLogBlock(settin
 
         return ItemInteractionResult.CONSUME
     }
+}
+
+class DrippingPlasticTreeLogBlock(settings: Properties) : DrippingLogBlock(settings) {
+    companion object {
+        val CODEC: MapCodec<DrippingPlasticTreeLogBlock> = simpleCodec(::DrippingPlasticTreeLogBlock)
+    }
+
+    override fun codec() = CODEC
+
+    override val sapParticleOptions get() = ParticleTypeCard.DRIPPING_PLASTIC_TREE_SAP.particleType
 }

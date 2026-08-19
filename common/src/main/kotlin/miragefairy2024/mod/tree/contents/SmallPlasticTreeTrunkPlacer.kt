@@ -21,15 +21,13 @@ object SmallPlasticTreeTrunkPlacerCard {
     val type: TrunkPlacerType<SmallPlasticTreeTrunkPlacer> = TrunkPlacerType(codec)
 }
 
-/** 枝を持たない1x1の主幹を建てて、その周りのばらばらの方角に葉を付ける幹の配置子なのだ～🌱 */
 object SmallPlasticTreeTrunkPlacer : TrunkPlacer(6, 2, 0) {
     private const val LOWEST_LEAF_OFFSET_Y = 2
-
-    /** 葉の付け根をこの割合で間引くのだ～🌱 プラノキは葉が少なくて、空が結構開けているのだ～🌱 */
     private const val FOLIAGE_THINNING_RATE = 0.4
 
     override fun type() = SmallPlasticTreeTrunkPlacerCard.type
 
+    // 枝を持たない1x1の主幹を建てて、その周りにばらばらの方角へ葉を付けるのだ～🌱
     override fun placeTrunk(
         level: LevelSimulatedReader,
         blockSetter: BiConsumer<BlockPos, BlockState>,
@@ -47,15 +45,15 @@ object SmallPlasticTreeTrunkPlacer : TrunkPlacer(6, 2, 0) {
 
         val foliageAttachments = mutableListOf<FoliagePlacer.FoliageAttachment>()
 
-        // 幹の最上部のY+1に樹冠を乗せるのだ～🌱 ここは間引かないのだ～🌱
+        // 幹の最上部のY+1に樹冠を乗せるのだ～🌱
         foliageAttachments += FoliagePlacer.FoliageAttachment(pos.above(freeTreeHeight), 0, false)
 
         // 葉の位置を、幹の頂上から下に向かって決めていくのだ～🌱
         val maxLeafOffsetY = freeTreeHeight - 1
         (maxLeafOffsetY downTo LOWEST_LEAF_OFFSET_Y).forEach { leafOffsetY ->
-            if (random.nextDouble() < FOLIAGE_THINNING_RATE) return@forEach // 葉の付け根ごと間引くのだ～🌱
+            if (random.nextDouble() < FOLIAGE_THINNING_RATE) return@forEach
 
-            val angle = (Math.PI * 2) * random.nextDouble() // プラノキの葉は螺旋を描かず、1段ごとにばらばらの方角に付くのだ～🌱
+            val angle = (Math.PI * 2) * random.nextDouble()
 
             // leafOffsetY == maxLeafOffsetY -> 0
             // leafOffsetY == LOWEST_LEAF_OFFSET_Y -> 1

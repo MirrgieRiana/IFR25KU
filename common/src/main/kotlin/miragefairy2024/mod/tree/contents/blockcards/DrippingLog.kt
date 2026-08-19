@@ -4,6 +4,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.contents.DrippingLogBlock
+import miragefairy2024.mod.tree.contents.DrippingPlasticTreeLogBlock
 import miragefairy2024.util.ItemLootPoolEntry
 import miragefairy2024.util.LootPool
 import miragefairy2024.util.LootTable
@@ -15,10 +16,9 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 import net.minecraft.world.level.material.MapColor
+import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 
-/** 樹液が滴る原木のブロックカードなのだ～🌱 壊すと、原木と一緒に、垂れていた樹液が手に入るのだ～🌱 */
 open class TreeDrippingLogBlockCard(
     configuration: TreeBlockConfiguration,
     log: () -> TreeBlockCard,
@@ -27,7 +27,7 @@ open class TreeDrippingLogBlockCard(
     protected val sap: () -> Item,
     mapColor: MapColor,
 ) : TreeHorizontalFacingLogBlockCard(configuration, log, logsBlockTag, logsItemTag, mapColor) {
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = DrippingLogBlock(properties)
+    override suspend fun createBlock(properties: BlockBehaviour.Properties): DrippingLogBlock = DrippingPlasticTreeLogBlock(properties)
 
     context(ModContext)
     override fun init() {
