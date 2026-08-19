@@ -22,16 +22,19 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-object GiantHaimeviskaTrunkPlacerCard {
-    val identifier = MirageFairy2024.identifier("giant_haimeviska")
-    private val codec: MapCodec<GiantHaimeviskaTrunkPlacer> = MapCodec.unit { GiantHaimeviskaTrunkPlacer }
-    val type: TrunkPlacerType<GiantHaimeviskaTrunkPlacer> = TrunkPlacerType(codec)
+object GiantPlasticTreeTrunkPlacerCard {
+    val identifier = MirageFairy2024.identifier("giant_plastic_tree")
+    private val codec: MapCodec<GiantPlasticTreeTrunkPlacer> = MapCodec.unit { GiantPlasticTreeTrunkPlacer }
+    val type: TrunkPlacerType<GiantPlasticTreeTrunkPlacer> = TrunkPlacerType(codec)
 }
 
-object GiantHaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
-    override fun type() = GiantHaimeviskaTrunkPlacerCard.type
+/** 中心にまっすぐな2x2の主幹を建てて、そこからばらばらの方角へ斜め上に向かう枝を何本も伸ばす幹の配置子なのだ～🌱 */
+object GiantPlasticTreeTrunkPlacer : TrunkPlacer(15, 7, 0) {
+    /** 枝の付け根をこの割合で間引くのだ～🌱 プラノキは葉が少なくて、空が結構開けているのだ～🌱 */
+    private const val BRANCH_THINNING_RATE = 0.4
 
-    // 中心にまっすぐな2x2の主幹を建てて、そこから斜め上に向かう枝を二重らせん状に何本も伸ばすのだ～🌱
+    override fun type() = GiantPlasticTreeTrunkPlacerCard.type
+
     override fun placeTrunk(
         level: LevelSimulatedReader,
         blockSetter: BiConsumer<BlockPos, BlockState>,
@@ -67,15 +70,17 @@ object GiantHaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
 
         val foliageAttachments = mutableListOf<FoliagePlacer.FoliageAttachment>()
 
-        // 頂上の1個の葉なのだ～🌱
+        // 頂上の1個の葉なのだ～🌱 ここは間引かないのだ～🌱
         foliageAttachments += FoliagePlacer.FoliageAttachment(pos.above(freeTreeHeight - 1), 1, true)
 
         // 葉の位置を、幹の頂上から下に向かって決めていくのだ～🌱
-        var angle = (Math.PI * 2) * random.nextDouble() // 最初の方位角はランダムなのだ～🌱
         var leafOffsetY = freeTreeHeight - 1 // 葉の最上部は、幹の頂上と同じ高さなのだ～🌱
         while (leafOffsetY >= freeTreeHeight * 0.3) { // 下部30%未満には葉を付けないのだ～🌱
 
-            fun placeBranch(sign: Double) {
+            fun placeBranch() {
+                if (random.nextDouble() < BRANCH_THINNING_RATE) return // 枝ごと間引くのだ～🌱
+
+                val angle = (Math.PI * 2) * random.nextDouble() // プラノキの枝は螺旋を描かず、1本ごとにばらばらの方角へ伸びるのだ～🌱
 
                 // 幹の中心から葉までの水平距離は、木全体を回転楕円体とした関数とランダムなぶれで決まるのだ～🌱
                 val horizontalDistance = run {
@@ -92,9 +97,9 @@ object GiantHaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
                 val baseY = pos.y + 0.5 + ((leafOffsetY - horizontalDistance * 0.5) atLeast 0.0) // 幹の接続部分のYは葉の水平距離に応じて下に下がるのだ～🌱
                 val baseZ = pos.z + 1.0
 
-                val leafX = baseX + horizontalDistance * sin(angle) * sign
+                val leafX = baseX + horizontalDistance * sin(angle)
                 val leafY = pos.y + 0.5 + leafOffsetY
-                val leafZ = baseZ - horizontalDistance * cos(angle) * sign
+                val leafZ = baseZ - horizontalDistance * cos(angle)
 
                 val steps = abs(leafX - baseX) max abs(leafY - baseY) max abs(leafZ - baseZ) // 3.2, 3.6, 4.5 のとき 4.5
                 val axis = if (abs(leafX - baseX) >= abs(leafZ - baseZ)) Direction.Axis.X else Direction.Axis.Z
@@ -120,10 +125,9 @@ object GiantHaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
                 foliageAttachments += FoliagePlacer.FoliageAttachment(leafBlockPos, 0, false)
 
             }
-            placeBranch(1.0)
-            placeBranch(-1.0)
+            placeBranch()
+            placeBranch()
 
-            angle += Math.toRadians(35.0)
             leafOffsetY -= 1
         }
 

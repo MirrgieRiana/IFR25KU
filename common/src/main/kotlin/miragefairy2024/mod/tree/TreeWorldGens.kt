@@ -4,7 +4,6 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.contents.GiantHaimeviskaFoliagePlacer
 import miragefairy2024.mod.tree.contents.GiantHaimeviskaTrunkPlacer
-import miragefairy2024.mod.tree.contents.GiantPlasticTreeFoliagePlacer
 import miragefairy2024.mod.tree.contents.GiantPlasticTreeTrunkPlacer
 import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecorator
 import miragefairy2024.mod.tree.contents.PlasticTreeTreeDecorator
@@ -54,7 +53,7 @@ fun initTreeWorldGens() {
                 BlockStateProvider.simple(TreeBlockCard.LOG.block()),
                 SmallHaimeviskaTrunkPlacer,
                 BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
-                SmallHaimeviskaFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0, 0.0F),
+                SmallHaimeviskaFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
                 TwoLayersFeatureSize(1, 0, 1),
             ).ignoreVines().decorators(listOf(HaimeviskaTreeDecorator, TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
         }.generator {
@@ -97,13 +96,13 @@ fun initTreeWorldGens() {
                 BlockStateProvider.simple(TreeBlockCard.PLASTIC_TREE_LOG.block()),
                 SmallPlasticTreeTrunkPlacer,
                 BlockStateProvider.simple(TreeBlockCard.PLASTIC_TREE_LEAVES.block()),
-                SmallHaimeviskaFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0, 0.4F),
+                SmallHaimeviskaFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
                 TwoLayersFeatureSize(1, 0, 1),
             ).ignoreVines().decorators(listOf(PlasticTreeTreeDecorator)).build() // プラノキにはツタが全く生えないのだ～🌱
         }.generator {
 
             // 琥珀色の原生林の主役なのだ～🌱
-            registerPlacedFeature(SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { count(3) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) }
+            registerPlacedFeature(SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { per(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) }
 
         }
     }
@@ -114,13 +113,13 @@ fun initTreeWorldGens() {
                 BlockStateProvider.simple(TreeBlockCard.PLASTIC_TREE_LOG.block()),
                 GiantPlasticTreeTrunkPlacer,
                 BlockStateProvider.simple(TreeBlockCard.PLASTIC_TREE_LEAVES.block()),
-                GiantPlasticTreeFoliagePlacer,
+                GiantHaimeviskaFoliagePlacer,
                 TwoLayersFeatureSize(1, 1, 2),
             ).ignoreVines().decorators(listOf(PlasticTreeTreeDecorator)).build() // プラノキにはツタが全く生えないのだ～🌱
         }.generator {
 
             // 小さいものと同じ頻度なのだ～🌱
-            registerPlacedFeature(GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { count(3) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) }
+            registerPlacedFeature(GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { per(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) }
 
         }
     }

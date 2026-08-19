@@ -3,14 +3,10 @@ package miragefairy2024.mod.tree.contents.blockcards
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
-import miragefairy2024.mod.tree.contents.HaimeviskaLeavesBlock
-import miragefairy2024.mod.tree.contents.chargedHaimeviskaLeavesTexturedModelFactory
 import miragefairy2024.mod.tree.contents.unchargedHaimeviskaLeavesTexturedModelFactory
-import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.Model
 import miragefairy2024.util.generator
 import miragefairy2024.util.getIdentifier
-import miragefairy2024.util.propertiesOf
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerComposterInput
 import miragefairy2024.util.registerCutoutRenderLayer
@@ -20,9 +16,7 @@ import miragefairy2024.util.registerLootTableGeneration
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerRedirectColorProvider
 import miragefairy2024.util.registerSingletonBlockStateGeneration
-import miragefairy2024.util.registerVariantsBlockStateGeneration
 import miragefairy2024.util.times
-import miragefairy2024.util.with
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.level.block.Blocks
@@ -32,13 +26,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.material.PushReaction
 
-/**
- * 葉のブロックカードなのだ～🌱
- *
- * [chargeable] が有効な樹種の葉は、光を蓄えて花を咲かせるのだ～🌱
- * これは妖精が寄生した樹だけが持つ性質だから、樹種によって分かれるのだ～🌱
- */
-class TreeLeavesBlockCard(configuration: TreeBlockConfiguration, private val sapling: () -> TreeBlockCard, private val chargeable: Boolean) : TreeBlockCard(configuration) {
+abstract class AbstractTreeLeavesBlockCard(configuration: TreeBlockConfiguration, private val sapling: () -> TreeBlockCard) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings()
         .mapColor(MapColor.PLANT)
         .strength(0.2F)
@@ -52,29 +40,12 @@ class TreeLeavesBlockCard(configuration: TreeBlockConfiguration, private val sap
         .pushReaction(PushReaction.DESTROY)
         .isRedstoneConductor(Blocks::never)
 
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = if (chargeable) HaimeviskaLeavesBlock(properties) else LeavesBlock(properties)
-
     context(ModContext)
     override fun init() {
         super.init()
 
         // レンダリング
-        if (chargeable) {
-            block.registerVariantsBlockStateGeneration {
-                val normal = BlockStateVariant(model = "block/" * block().getIdentifier())
-                listOf(
-                    propertiesOf(HaimeviskaLeavesBlock.CHARGED with true) with normal.with(model = "block/charged_" * block().getIdentifier()),
-                    propertiesOf(HaimeviskaLeavesBlock.CHARGED with false) with normal.with(model = "block/uncharged_" * block().getIdentifier()),
-                )
-            }
-            registerModelGeneration({ "block/charged_" * block().getIdentifier() }, { chargedHaimeviskaLeavesTexturedModelFactory.get(block()) })
-            registerModelGeneration({ "block/uncharged_" * block().getIdentifier() }, { unchargedHaimeviskaLeavesTexturedModelFactory.get(block()) })
-            item.registerModelGeneration(Model("block/charged_" * identifier))
-        } else {
-            block.registerSingletonBlockStateGeneration()
-            registerModelGeneration({ "block/" * block().getIdentifier() }, { unchargedHaimeviskaLeavesTexturedModelFactory.get(block()) })
-            item.registerModelGeneration(Model("block/" * identifier))
-        }
+        initRendering()
         block.registerCutoutRenderLayer()
         block.registerFoliageColorProvider()
         item.registerRedirectColorProvider()
@@ -93,5 +64,19 @@ class TreeLeavesBlockCard(configuration: TreeBlockConfiguration, private val sap
         ItemTags.LEAVES.generator.registerChild(item)
         BlockTags.MINEABLE_WITH_HOE.generator.registerChild(block)
 
+    }
+
+    context(ModContext)
+    protected abstract fun initRendering()
+}
+
+class TreeLeavesBlockCard(configuration: TreeBlockConfiguration, sapling: () -> TreeBlockCard) : AbstractTreeLeavesBlockCard(configuration, sapling) {
+    override suspend fun createBlock(properties: BlockBehaviour.Properties) = LeavesBlock(properties)
+
+    context(ModContext)
+    override fun initRendering() {
+        block.registerSingletonBlockStateGeneration()
+        registerModelGeneration({ "block/" * block().getIdentifier() }, { unchargedHaimeviskaLeavesTexturedModelFactory.get(block()) })
+        item.registerModelGeneration(Model("block/" * identifier))
     }
 }

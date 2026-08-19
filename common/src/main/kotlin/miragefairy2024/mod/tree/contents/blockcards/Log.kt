@@ -5,7 +5,6 @@ import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
-import miragefairy2024.mod.tree.contents.HaimeviskaLogBlock
 import miragefairy2024.mod.tree.createBaseWoodSetting
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.generator
@@ -69,22 +68,15 @@ abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration, p
     }
 }
 
-/**
- * 原木のブロックカードなのだ～🌱
- *
- * [incisable] が有効な樹種の原木は、剣で傷を付けて樹液を採取できるのだ～🌱
- * これは樹液の採取のループを持つ樹種だけの性質だから、樹種によって分かれるのだ～🌱
- */
-class TreeLogBlockCard(
+open class TreeLogBlockCard(
     configuration: TreeBlockConfiguration,
     logsBlockTag: TagKey<Block>,
     logsItemTag: TagKey<Item>,
-    private val incisable: Boolean,
     private val verticalMapColor: MapColor,
     private val horizontalMapColor: MapColor,
 ) : AbstractTreeLogBlockCard(configuration, logsBlockTag, logsItemTag) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { if (it[RotatedPillarBlock.AXIS] === Direction.Axis.Y) verticalMapColor else horizontalMapColor }
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = if (incisable) HaimeviskaLogBlock(properties) else RotatedPillarBlock(properties)
+    override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
     context(ModContext)
     override fun init() {
