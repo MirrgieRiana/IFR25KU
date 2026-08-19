@@ -5,9 +5,12 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.tree.contents.GiantHaimeviskaFoliagePlacerCard
 import miragefairy2024.mod.tree.contents.GiantHaimeviskaTrunkPlacerCard
+import miragefairy2024.mod.tree.contents.GiantPlasticTreeTrunkPlacerCard
 import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecoratorCard
+import miragefairy2024.mod.tree.contents.PlasticTreeTreeDecoratorCard
 import miragefairy2024.mod.tree.contents.SmallHaimeviskaFoliagePlacerCard
 import miragefairy2024.mod.tree.contents.SmallHaimeviskaTrunkPlacerCard
+import miragefairy2024.mod.tree.contents.SmallPlasticTreeTrunkPlacerCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -37,6 +40,9 @@ fun initTreeModule() {
     Registration(BuiltInRegistries.FOLIAGE_PLACER_TYPE, GiantHaimeviskaFoliagePlacerCard.identifier) { GiantHaimeviskaFoliagePlacerCard.type }.register()
     Registration(BuiltInRegistries.FOLIAGE_PLACER_TYPE, SmallHaimeviskaFoliagePlacerCard.identifier) { SmallHaimeviskaFoliagePlacerCard.type }.register()
     Registration(BuiltInRegistries.TREE_DECORATOR_TYPE, HaimeviskaTreeDecoratorCard.identifier) { HaimeviskaTreeDecoratorCard.type }.register()
+    Registration(BuiltInRegistries.TRUNK_PLACER_TYPE, GiantPlasticTreeTrunkPlacerCard.identifier) { GiantPlasticTreeTrunkPlacerCard.type }.register()
+    Registration(BuiltInRegistries.TRUNK_PLACER_TYPE, SmallPlasticTreeTrunkPlacerCard.identifier) { SmallPlasticTreeTrunkPlacerCard.type }.register()
+    Registration(BuiltInRegistries.TREE_DECORATOR_TYPE, PlasticTreeTreeDecoratorCard.identifier) { PlasticTreeTreeDecoratorCard.type }.register()
 
     haimeviskaAdvancement.init()
 
