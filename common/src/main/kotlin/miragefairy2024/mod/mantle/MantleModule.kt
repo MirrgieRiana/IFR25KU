@@ -9,4 +9,5 @@ fun initMantleModule() {
     initMantleBlockCards()
     initMantleDimension()
     FairyQuestGateFeatureCard.init()
+    MantleWispCard.init()
 }

@@ -1,5 +1,7 @@
 package miragefairy2024.client.mod.entity
 
+import miragefairy2024.mod.mantle.MantleWispCard
+import miragefairy2024.client.mod.mantle.MantleWispEntityRenderer
 import dev.architectury.registry.client.level.entity.EntityModelLayerRegistry
 import miragefairy2024.ModContext
 import miragefairy2024.client.util.registerEntityRenderer
@@ -21,6 +23,8 @@ fun initEntityClientModule() {
     ChaosCubeCard.entityType.registerEntityRenderer(::ChaosCubeEntityRenderer)
     EntityModelLayerRegistry.register(EtheroballisticBoltEntityRenderer.MAIN.entityModelLayer, EtheroballisticBoltEntityRenderer.MAIN.provider)
     EtheroballisticBoltCard.entityType.registerEntityRenderer(::EtheroballisticBoltEntityRenderer)
+    EntityModelLayerRegistry.register(MantleWispEntityRenderer.MAIN.entityModelLayer, MantleWispEntityRenderer.MAIN.provider)
+    MantleWispCard.entityType.registerEntityRenderer(::MantleWispEntityRenderer)
 }
 
 class EntityModelLayerCard(
