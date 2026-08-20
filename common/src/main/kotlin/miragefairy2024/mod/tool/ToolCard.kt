@@ -578,7 +578,7 @@ class ToolCard(
 
         item.registerItemGroup(toolsItemGroupCard.itemGroupKey)
 
-        item.registerModelGeneration(ModelTemplates.FLAT_HANDHELD_ITEM)
+        item.registerModelGeneration(configuration.modelTemplateOverride ?: ModelTemplates.FLAT_HANDHELD_ITEM)
 
         item.enJa(name)
 

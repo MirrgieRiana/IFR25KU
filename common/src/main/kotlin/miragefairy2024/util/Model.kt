@@ -14,6 +14,7 @@ import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemDisplayContext
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import java.util.Optional
@@ -39,12 +40,14 @@ class ModelData(
     val ambientOcclusion: Boolean? = null,
     val textures: ModelTexturesData? = null,
     val elements: ModelElementsData? = null,
+    val display: ModelDisplayData? = null,
 ) {
     fun toJsonElement(): JsonElement = jsonObjectNotNull(
         "parent" to parent?.string?.jsonElement,
         "ambientocclusion" to ambientOcclusion?.jsonElement,
         "textures" to textures?.toJsonElement(),
         "elements" to elements?.toJsonElement(),
+        "display" to display?.toJsonElement(),
     )
 }
 
@@ -87,6 +90,40 @@ class ModelFacesData(
         "south" to south?.toJsonElement(),
         "west" to west?.toJsonElement(),
         "east" to east?.toJsonElement(),
+    )
+}
+
+class ModelDisplayData(
+    val thirdPersonRightHand: ModelDisplayEntryData? = null,
+    val thirdPersonLeftHand: ModelDisplayEntryData? = null,
+    val firstPersonRightHand: ModelDisplayEntryData? = null,
+    val firstPersonLeftHand: ModelDisplayEntryData? = null,
+    val head: ModelDisplayEntryData? = null,
+    val gui: ModelDisplayEntryData? = null,
+    val ground: ModelDisplayEntryData? = null,
+    val fixed: ModelDisplayEntryData? = null,
+) {
+    fun toJsonElement(): JsonElement = jsonObjectNotNull(
+        ItemDisplayContext.THIRD_PERSON_RIGHT_HAND.serializedName to thirdPersonRightHand?.toJsonElement(),
+        ItemDisplayContext.THIRD_PERSON_LEFT_HAND.serializedName to thirdPersonLeftHand?.toJsonElement(),
+        ItemDisplayContext.FIRST_PERSON_RIGHT_HAND.serializedName to firstPersonRightHand?.toJsonElement(),
+        ItemDisplayContext.FIRST_PERSON_LEFT_HAND.serializedName to firstPersonLeftHand?.toJsonElement(),
+        ItemDisplayContext.HEAD.serializedName to head?.toJsonElement(),
+        ItemDisplayContext.GUI.serializedName to gui?.toJsonElement(),
+        ItemDisplayContext.GROUND.serializedName to ground?.toJsonElement(),
+        ItemDisplayContext.FIXED.serializedName to fixed?.toJsonElement(),
+    )
+}
+
+class ModelDisplayEntryData(
+    val rotation: List<Number>? = null,
+    val translation: List<Number>? = null,
+    val scale: List<Number>? = null,
+) {
+    fun toJsonElement(): JsonElement = jsonObjectNotNull(
+        "rotation" to rotation?.map { it.jsonElement }?.jsonArray,
+        "translation" to translation?.map { it.jsonElement }?.jsonArray,
+        "scale" to scale?.map { it.jsonElement }?.jsonArray,
     )
 }
 
