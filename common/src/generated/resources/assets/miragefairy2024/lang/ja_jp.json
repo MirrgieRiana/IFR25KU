@@ -788,7 +788,7 @@
   "item.miragefairy2024.scythe.description": "使用時、範囲収穫 %s",
   "item.miragefairy2024.seed_bag": "種子カバン",
   "item.miragefairy2024.seed_bag.poem": "両手に、花。",
-  "item.miragefairy2024.shooting_staff.description": "使用時、射撃攻撃",
+  "item.miragefairy2024.shooting_staff.description": "使用中、チャージし、解除時に射撃攻撃",
   "item.miragefairy2024.solid_fuel": "固形燃料",
   "item.miragefairy2024.solid_fuel.poem": "なぜかこれを食べる妖精が続出した",
   "item.miragefairy2024.sphere_base": "スフィアベース",

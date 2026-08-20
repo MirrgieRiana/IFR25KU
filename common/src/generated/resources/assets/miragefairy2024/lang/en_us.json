@@ -788,7 +788,7 @@
   "item.miragefairy2024.scythe.description": "Perform area harvesting when used %s",
   "item.miragefairy2024.seed_bag": "Seed Bag",
   "item.miragefairy2024.seed_bag.poem": "Maintains the freshness of plants",
-  "item.miragefairy2024.shooting_staff.description": "Perform a ranged attack when used",
+  "item.miragefairy2024.shooting_staff.description": "Charge while held, then perform a ranged attack when released",
   "item.miragefairy2024.solid_fuel": "Solid Fuel",
   "item.miragefairy2024.solid_fuel.poem": "Caramelized Ethanol",
   "item.miragefairy2024.sphere_base": "Sphere Base",
