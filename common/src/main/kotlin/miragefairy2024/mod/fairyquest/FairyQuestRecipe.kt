@@ -179,9 +179,9 @@ enum class FairyQuestRecipeCard(
         "fatal_accident", 0x000027, LootCategory.RARE,
         "Fatal Accident", "重大な事故",
         """
-        I pray that this message reaches some human in a parallel level.
+        I pray that this message reaches some human in a parallel world.
         No, at this point, it could be fairies, malformed creatures, anything.
-        A catastrophic accident has occurred, and our level is on the verge of ending.
+        A catastrophic accident has occurred, and our world is on the verge of ending.
         The vacuum decay reactor at Cordelia Branch has gone out of control, and an asteroid was swallowed by the vacuum decay.
         It's not just Cordelia.
         Europa, Haumea, and even Headquarters are unresponsive.
@@ -193,7 +193,7 @@ enum class FairyQuestRecipeCard(
         The vacuum decay reactor wasn't a safe, environmentally friendly source of energy.
         One wrong move, and it's a terrifying thing that could wipe out an entire planet.
         If anyone is in control of the vacuum decay reactor, please stop it now!
-        Before your level ceases to exist!!!
+        Before your world ceases to exist!!!
         """.trimIndent().trim().replace("\n", "\n\n"),
         """
         このメッセージが平行世界の人間に届くことを祈る。
