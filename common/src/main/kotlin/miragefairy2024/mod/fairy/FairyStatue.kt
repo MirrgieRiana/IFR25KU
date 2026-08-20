@@ -219,16 +219,16 @@ class FairyStatueBlock(private val card: FairyStatueCard, settings: Properties) 
     override fun newBlockEntity(pos: BlockPos, state: BlockState) = FairyStatueBlockEntity(card, pos, state)
 
     @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun triggerEvent(state: BlockState, world: Level, pos: BlockPos, type: Int, data: Int): Boolean {
-        super.triggerEvent(state, world, pos, type, data)
-        val blockEntity = world.getBlockEntity(pos) ?: return false
+    override fun triggerEvent(state: BlockState, level: Level, pos: BlockPos, type: Int, data: Int): Boolean {
+        super.triggerEvent(state, level, pos, type, data)
+        val blockEntity = level.getBlockEntity(pos) ?: return false
         return blockEntity.triggerEvent(type, data)
     }
 
-    override fun setPlacedBy(world: Level, pos: BlockPos, state: BlockState, placer: LivingEntity?, itemStack: ItemStack) {
-        super.setPlacedBy(world, pos, state, placer, itemStack)
-        if (world.isClientSide) return
-        val blockEntity = world.getBlockEntity(pos) as? FairyStatueBlockEntity ?: return
+    override fun setPlacedBy(level: Level, pos: BlockPos, state: BlockState, placer: LivingEntity?, itemStack: ItemStack) {
+        super.setPlacedBy(level, pos, state, placer, itemStack)
+        if (level.isClientSide) return
+        val blockEntity = level.getBlockEntity(pos) as? FairyStatueBlockEntity ?: return
         blockEntity.setMotif(itemStack.getFairyMotif())
     }
 
@@ -242,8 +242,8 @@ class FairyStatueBlock(private val card: FairyStatueCard, settings: Properties) 
         return asItem().createItemStack().also { itemStack -> itemStack.setFairyMotif(world.getBlockEntity(pos).castOrNull<FairyStatueBlockEntity>()?.getMotif()) }
     }
 
-    override fun getFairyDreamMotifs(world: Level, blockPos: BlockPos): List<Motif> {
-        val blockEntity = world.getBlockEntity(blockPos) as? FairyStatueBlockEntity ?: return listOf()
+    override fun getFairyDreamMotifs(level: Level, blockPos: BlockPos): List<Motif> {
+        val blockEntity = level.getBlockEntity(blockPos) as? FairyStatueBlockEntity ?: return listOf()
         return blockEntity.getMotif()?.let { listOf(it) } ?: listOf()
     }
 

@@ -80,9 +80,9 @@ fun initCommonModule() {
         item.modifyItemEnchantments(itemStack, mutableItemEnchantments, enchantmentLookup)
     }
 
-    registerClientDebugItem("dump_biome_attributes", Blocks.OAK_SAPLING.toTextureSource(), 0xFFFF00FF.toInt()) { world, player, _, _ ->
+    registerClientDebugItem("dump_biome_attributes", Blocks.OAK_SAPLING.toTextureSource(), 0xFFFF00FF.toInt()) { level, player, _, _ ->
         val lines = mutableListOf<List<String>>()
-        world.registryAccess()[Registries.BIOME].listElements().forEach { biome ->
+        level.registryAccess()[Registries.BIOME].listElements().forEach { biome ->
             lines += listOf(
                 text { translate(biome.key().location().toLanguageKey("biome")) }.string,
                 "${biome.humidityCategory}",

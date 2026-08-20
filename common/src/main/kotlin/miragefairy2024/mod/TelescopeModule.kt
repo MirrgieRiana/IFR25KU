@@ -242,7 +242,7 @@ class TelescopeBlock(settings: Properties) : SimpleHorizontalFacingBlock(setting
         return InteractionResult.CONSUME
     }
 
-    override fun animateTick(state: BlockState, world: Level, pos: BlockPos, random: RandomSource) {
+    override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
         val player = clientProxy!!.getClientPlayer() ?: return
 
         val now = Instant.now()
@@ -253,7 +253,7 @@ class TelescopeBlock(settings: Properties) : SimpleHorizontalFacingBlock(setting
             val x = pos.x.toDouble() + 0.0 + random.nextDouble() * 1.0
             val y = pos.y.toDouble() + 0.0 + random.nextDouble() * 0.5
             val z = pos.z.toDouble() + 0.0 + random.nextDouble() * 1.0
-            world.addParticle(
+            level.addParticle(
                 ParticleTypeCard.MISSION.particleType,
                 x, y, z,
                 random.nextGaussian() * 0.00,

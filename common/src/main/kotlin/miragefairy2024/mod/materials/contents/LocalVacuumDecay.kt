@@ -53,11 +53,11 @@ class LocalVacuumDecayBlock(settings: Properties) : Block(settings) {
         world.setBlockAndUpdate(targetBlockPos, state)
     }
 
-    override fun stepOn(world: Level, pos: BlockPos, state: BlockState, entity: Entity) {
+    override fun stepOn(level: Level, pos: BlockPos, state: BlockState, entity: Entity) {
         if (!entity.isSteppingCarefully) {
-            entity.hurt(world.damageSources().magic(), 1.0f)
+            entity.hurt(level.damageSources().magic(), 1.0f)
         }
-        super.stepOn(world, pos, state, entity)
+        super.stepOn(level, pos, state, entity)
     }
 }
 

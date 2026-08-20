@@ -145,11 +145,11 @@ class FairyPassiveSupplierBlockEntity(private val card: FairyPassiveSupplierCard
         return getLogisticsPower(fairyItemStack)
     }
 
-    override fun serverTick(world: Level, pos: BlockPos, state: BlockState) {
-        super.serverTick(world, pos, state)
+    override fun serverTick(level: Level, pos: BlockPos, state: BlockState) {
+        super.serverTick(level, pos, state)
 
         // 1分に1回発動する
-        if (t == -1) t = world.random.nextInt(20 * 60)
+        if (t == -1) t = level.random.nextInt(20 * 60)
         t--
         if (t > 0) return
         t = 20 * 60

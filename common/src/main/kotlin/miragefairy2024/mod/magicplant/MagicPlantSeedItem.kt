@@ -152,14 +152,14 @@ class MagicPlantSeedItem(block: Block, settings: Properties) : ItemNameBlockItem
 
     override fun isFoil(stack: ItemStack) = stack.isRare() || super.isFoil(stack)
 
-    override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
         if (user.isShiftKeyDown) {
             val itemStack = user.getItemInHand(hand)
-            if (world.isClientSide) return InteractionResultHolder.success(itemStack)
+            if (level.isClientSide) return InteractionResultHolder.success(itemStack)
             val traitStacks = itemStack.getTraitStacks() ?: TraitStacks.EMPTY
             user.openMenu(object : ExtendedScreenHandlerFactory<Pair<TraitStacks, BlockPos>> {
                 override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
-                    return TraitListScreenHandler(syncId, playerInventory, ContainerLevelAccess.create(world, player.blockPosition()), traitStacks, player.position().add(0.0, 0.5, 0.0).toBlockPos())
+                    return TraitListScreenHandler(syncId, playerInventory, ContainerLevelAccess.create(level, player.blockPosition()), traitStacks, player.position().add(0.0, 0.5, 0.0).toBlockPos())
                 }
 
                 override fun getDisplayName() = text { traitListScreenTranslation() }
@@ -168,7 +168,7 @@ class MagicPlantSeedItem(block: Block, settings: Properties) : ItemNameBlockItem
             })
             return InteractionResultHolder.consume(itemStack)
         }
-        return super.use(world, user, hand)
+        return super.use(level, user, hand)
     }
 }
 
