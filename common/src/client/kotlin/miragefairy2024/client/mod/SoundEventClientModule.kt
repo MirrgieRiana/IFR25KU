@@ -9,8 +9,8 @@ context(ModContext)
 fun initSoundEventClientModule() {
     SoundEventChannel.registerClientPacketReceiver { packet ->
         val client = Minecraft.getInstance() ?: return@registerClientPacketReceiver
-        val level = client.level ?: return@registerClientPacketReceiver
-        level.playLocalSound(
+        val world = client.level ?: return@registerClientPacketReceiver
+        world.playLocalSound(
             packet.pos,
             packet.soundEvent,
             packet.category,

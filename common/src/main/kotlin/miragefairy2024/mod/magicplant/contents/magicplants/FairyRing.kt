@@ -47,7 +47,7 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
         val config = context.config()
         val random = context.random()
         val originBlockPos = context.origin()
-        val level = context.level()
+        val world = context.level()
 
         if (config.tries == 0) return false
 
@@ -66,7 +66,7 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
             val z = Mth.floor(Mth.sin(theta) * r)
 
             mutableBlockPos.setWithOffset(originBlockPos, x, y, z)
-            if (config.feature.value().place(level, context.chunkGenerator(), random, mutableBlockPos)) {
+            if (config.feature.value().place(world, context.chunkGenerator(), random, mutableBlockPos)) {
                 count++
             }
         }
@@ -80,7 +80,7 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
             val z = Mth.floor(Mth.sin(theta) * r)
 
             mutableBlockPos.setWithOffset(originBlockPos, x, y, z)
-            if (placePlacedItem(level, mutableBlockPos, MaterialCard.FAIRY_SCALES.item().createItemStack(), random)) {
+            if (placePlacedItem(world, mutableBlockPos, MaterialCard.FAIRY_SCALES.item().createItemStack(), random)) {
                 count++
             }
         }
@@ -89,8 +89,8 @@ class FairyRingFeature(codec: Codec<FairyRingFeatureConfig>) : Feature<FairyRing
         run {
             val centerPos = originBlockPos.below(random.nextIntBetweenInclusive(10, 20))
             fun replace(targetPos: BlockPos, block: Block) {
-                if (level.getBlockState(targetPos) isIn BlockTags.STONE_ORE_REPLACEABLES) {
-                    level.setBlock(targetPos, block.defaultBlockState(), 2)
+                if (world.getBlockState(targetPos) isIn BlockTags.STONE_ORE_REPLACEABLES) {
+                    world.setBlock(targetPos, block.defaultBlockState(), 2)
                 }
             }
             replace(centerPos, BlockMaterialCard.MIRANAGITE_BLOCK.block())
