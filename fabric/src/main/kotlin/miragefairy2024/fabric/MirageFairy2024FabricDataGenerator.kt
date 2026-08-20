@@ -42,6 +42,7 @@ import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.biome.FeatureSorter
+import net.minecraft.world.level.dimension.LevelStem
 import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets
 import java.util.concurrent.CompletableFuture
@@ -171,6 +172,22 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
             object : FabricLanguageProvider(output, "ja_jp", registriesFuture) {
                 override fun generateTranslations(holderLookupProvider: HolderLookup.Provider, translationBuilder: TranslationBuilder) = DataGenerationEvents.onGenerateJapaneseTranslation.fire { it(translationBuilder) }
+            }
+        }
+
+        // ディメンション
+        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
+            object : DataProvider {
+                private val pathResolver = output.createRegistryElementsPathProvider(Registries.LEVEL_STEM)
+                override fun getName() = "Dimensions"
+                override fun run(writer: CachedOutput): CompletableFuture<*> {
+                    val registries = registriesFuture.join()
+                    val levelStemLookup = registries.lookupOrThrow(Registries.LEVEL_STEM)
+                    val futures = DataGenerationEvents.dimensionKeys.map { key ->
+                        DataProvider.saveStable(writer, registries, LevelStem.CODEC, levelStemLookup.getOrThrow(key).value(), pathResolver.json(key.location()))
+                    }
+                    return CompletableFuture.allOf(*futures.toTypedArray())
+                }
             }
         }
 
