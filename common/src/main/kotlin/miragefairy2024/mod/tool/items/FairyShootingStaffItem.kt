@@ -70,22 +70,8 @@ open class FairyShootingStaffConfiguration(
 /**
  * 杖を立てて構えた姿勢で持つためのアイテムモデルなのだ～🌱
  *
- * `minecraft:item/handheld` を親にして、手持ちの座標変換だけを差し替えているのだ～🌱
- * GUI や地面に落ちているときの見た目は、親から受け継いだ通常のアイテムのままなのだ～🌱
- *
- * テクスチャの柄は、左下の隅から右上の頭に向かう帯なのだ～🌱
- * 柄の下端の中心は画素の (0.5, 15) で、頭の中心は画素の (13, 1.5) だから、傾きは 47.2 度なのだ～🌱
- * 手に来る点はモデルの中心であり、そこから `rotation` の Z 成分だけ柄が回るから、
- * 柄の傾きは 47.2 度に Z 成分を足した値になるのだ～🌱
- * 第三者視点では、傾き 0 度がちょうど鉛直の上向きに対応するから、Z を -30 度にすると、
- * 柄は鉛直から 17.2 度だけ前に倒れた、杖を立てて構えた姿勢になるのだ～🌱
- * 第一人称視点では、傾き 90 度が鉛直の上向きに対応するから、同じ姿勢にするには Z を 60 度にするのだ～🌱
- *
- * `translation` は、柄の下端から 3 分の 1 の位置が手に来るように定めた値なのだ～🌱
- * 元の `handheld` も、柄の下端から 3 割ほどの位置を握る値になっているのだ～🌱
- *
- * `scale` は、第三者視点で全長 1.5 ブロックになる 1.2 なのだ～🌱
- * プレイヤーの身長 1.8 ブロックの 8 割強で、頭が顔の高さに、柄の下端が膝の高さに来るのだ～🌱
+ * 柄が鉛直から 17.2 度だけ前に倒れて、全長が 1.5 ブロックになり、柄の下端から 3 分の 1 の点が手に来る値なのだ～🌱
+ * 左手用の値は、`ItemTransform` が左手のときだけ `rotation` の Y と Z を反転するから、それを打ち消してあるのだ～🌱
  */
 private val SHOOTING_STAFF_MODEL_TEMPLATE = Model { textureMapping ->
     ModelData(
@@ -136,13 +122,13 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
         val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("shooting_staff").toLanguageKey()}.description" }, "Charge while held, then perform a ranged attack when released", "使用中、チャージし、解除時に射撃攻撃")
         const val BASE_EXPERIENCE_COST = 2
 
-        /** チャージの基準となる素材なのだ～🌱 この素材の採掘速度で、チャージ時間が[BASE_CHARGE_TICKS]になるのだ～🌱 */
-        private val BASE_CHARGE_TIER = Tiers.IRON
+        /** チャージ時間とダメージの基準として、並とみなす素材なのだ～🌱 */
+        private val BASE_TIER = Tiers.IRON
 
-        /** [BASE_CHARGE_TIER]の採掘速度におけるチャージ時間なのだ～🌱 */
+        /** [BASE_TIER]の採掘速度におけるチャージ時間なのだ～🌱 */
         private const val BASE_CHARGE_TICKS = 2 * 20
 
-        /** エンチャント適性が[BASE_CHARGE_TIER]から 1 離れるごとに変わる基本攻撃力なのだ～🌱 */
+        /** エンチャント適性が[BASE_TIER]から 1 離れるごとに変わる基本攻撃力なのだ～🌱 */
         private const val ENCHANTMENT_VALUE_POWER_FACTOR = 0.25F
 
         /** 使用を継続できる上限のティック数なのだ～🌱 弓と同じく、事実上の無制限なのだ～🌱 */
@@ -152,23 +138,20 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
     /**
      * チャージに要するティック数なのだ～🌱
      *
-     * 採掘速度に反比例するのだ～🌱 素材を通して魔力を汲み出す速さが、そのまま岩を掘り崩す速さと同じ性質だとみなしているのだ～🌱
-     * 魔法加速のエンチャントは、撤廃されたクールタイムの短縮の代わりに、チャージ時間を短縮するのだ～🌱
+     * 素材を通して魔力を汲み出す速さが、岩を掘り崩す速さと同じ性質だとみなして、採掘速度に反比例させているのだ～🌱
      */
     private fun getChargeTicks(world: Level, itemStack: ItemStack): Int {
         val acceleration = 1.0 + world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_ACCELERATION.key].getRate(itemStack)
-        return ceil(BASE_CHARGE_TICKS * BASE_CHARGE_TIER.speed / tier.speed / acceleration).toInt()
+        return ceil(BASE_CHARGE_TICKS * BASE_TIER.speed / tier.speed / acceleration).toInt()
     }
 
     /**
      * 魔法射撃攻撃のダメージなのだ～🌱
      *
-     * 剣の攻撃力が武器種の補正と素材の補正の和であるのと同じように、武器種の補正である[basePower]に、素材の補正を加えるのだ～🌱
-     * 素材の補正は、攻撃力ではなく、魔力の通りやすさを表すエンチャント適性を参照するのだ～🌱
-     * [BASE_CHARGE_TIER]のエンチャント適性を並のものとみなして、そこからの差に[ENCHANTMENT_VALUE_POWER_FACTOR]を掛けるのだ～🌱
+     * 剣の攻撃力が武器種の補正と素材の補正の和であるのと同じ構造で、素材の補正が、攻撃力ではなくエンチャント適性を参照するのだ～🌱
      */
     private fun getDamage(world: Level, itemStack: ItemStack): Float {
-        val materialPower = ENCHANTMENT_VALUE_POWER_FACTOR * (tier.enchantmentValue - BASE_CHARGE_TIER.enchantmentValue)
+        val materialPower = ENCHANTMENT_VALUE_POWER_FACTOR * (tier.enchantmentValue - BASE_TIER.enchantmentValue)
         return basePower + materialPower + 0.5F * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack).toFloat()
     }
 
