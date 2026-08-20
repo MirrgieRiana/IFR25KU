@@ -1,12 +1,14 @@
 package miragefairy2024.mod.mantle
 
 import com.mojang.serialization.MapCodec
+import miragefairy2024.util.isIn
+import miragefairy2024.util.isNotIn
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
-import net.minecraft.world.ItemInteractionResult
 import net.minecraft.world.InteractionHand
+import net.minecraft.world.ItemInteractionResult
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
@@ -42,14 +44,14 @@ class FairyQuestGateFrameBlock(properties: Properties) : MantleBlock(properties)
     override fun codec() = CODEC
 
     override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
-        if (!stack.`is`(Items.FLINT_AND_STEEL) && !stack.`is`(Items.FIRE_CHARGE)) return super.useItemOn(stack, state, level, pos, player, hand, hitResult)
+        if (stack isNotIn Items.FLINT_AND_STEEL && stack isNotIn Items.FIRE_CHARGE) return super.useItemOn(stack, state, level, pos, player, hand, hitResult)
 
         val insideBlockPos = pos.relative(hitResult.direction)
         if (!tryLightFairyQuestGate(level, insideBlockPos)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION
 
         level.playSound(player, insideBlockPos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 0.8F)
         if (!level.isClientSide) {
-            if (stack.`is`(Items.FLINT_AND_STEEL)) {
+            if (stack isIn Items.FLINT_AND_STEEL) {
                 stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand))
             } else {
                 stack.consume(1, player)
@@ -85,7 +87,7 @@ private class FairyQuestGateShape(val originBlockPos: BlockPos, val width: Int, 
 private fun findFairyQuestGateShape(level: LevelAccessor, insideBlockPos: BlockPos, axis: Direction.Axis): FairyQuestGateShape? {
     val widthDirection = if (axis == Direction.Axis.X) Direction.EAST else Direction.SOUTH
 
-    fun isFrame(blockPos: BlockPos) = level.getBlockState(blockPos).`is`(MantleBlockCard.FAIRY_QUEST_GATE.block())
+    fun isFrame(blockPos: BlockPos) = level.getBlockState(blockPos) isIn MantleBlockCard.FAIRY_QUEST_GATE.block()
     fun isEmpty(blockPos: BlockPos) = level.getBlockState(blockPos).isAir
 
     if (!isEmpty(insideBlockPos)) return null

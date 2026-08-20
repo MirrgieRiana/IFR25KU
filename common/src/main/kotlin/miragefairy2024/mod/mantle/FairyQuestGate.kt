@@ -1,6 +1,8 @@
 package miragefairy2024.mod.mantle
 
 import com.mojang.serialization.MapCodec
+import miragefairy2024.util.isIn
+import miragefairy2024.util.isNotIn
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerLevel
@@ -19,6 +21,12 @@ import net.minecraft.world.level.dimension.DimensionType
 import net.minecraft.world.level.portal.DimensionTransition
 import net.minecraft.world.phys.Vec3
 import net.minecraft.world.phys.shapes.CollisionContext
+
+/** 出口側のゲートを探す、水平方向の半径なのだ～🌱 */
+private const val FAIRY_QUEST_GATE_SEARCH_HORIZONTAL_RADIUS = 24
+
+/** 出口側のゲートを探す、鉛直方向の半径なのだ～🌱 */
+private const val FAIRY_QUEST_GATE_SEARCH_VERTICAL_RADIUS = 8
 
 /** ゲートの内側の、水平方向の幅なのだ～🌱 */
 const val FAIRY_QUEST_GATE_WIDTH = 2
@@ -59,8 +67,8 @@ class FairyQuestGatePortalBlock(properties: Properties) : MantleBlock(properties
         val axis = state.getValue(AXIS)
         val isAlongPortal = direction.axis == Direction.Axis.Y || direction.axis == axis
         if (isAlongPortal) return super.updateShape(state, direction, neighborState, level, pos, neighborPos)
-        if (neighborState.`is`(this)) return super.updateShape(state, direction, neighborState, level, pos, neighborPos)
-        if (neighborState.`is`(MantleBlockCard.FAIRY_QUEST_GATE.block())) return super.updateShape(state, direction, neighborState, level, pos, neighborPos)
+        if (neighborState isIn this) return super.updateShape(state, direction, neighborState, level, pos, neighborPos)
+        if (neighborState isIn MantleBlockCard.FAIRY_QUEST_GATE.block()) return super.updateShape(state, direction, neighborState, level, pos, neighborPos)
         return Blocks.AIR.defaultBlockState()
     }
 
@@ -94,13 +102,16 @@ class FairyQuestGatePortalBlock(properties: Properties) : MantleBlock(properties
  * 見つからなければ新しく作って、その内側の最下部の座標を返すのだ～🌱
  */
 private fun findOrCreateFairyQuestGate(level: ServerLevel, approximateBlockPos: BlockPos, axis: Direction.Axis): BlockPos? {
-    val searchRadius = 64
 
     // 既存のゲートを探すのだ～🌱
+    // 走査する量が膨れ上がらないように、水平方向は狭めに、鉛直方向は更に狭めに絞るのだ～🌱
     var nearestBlockPos: BlockPos? = null
     var nearestDistance = Double.MAX_VALUE
-    BlockPos.betweenClosedStream(approximateBlockPos.offset(-searchRadius, -searchRadius, -searchRadius), approximateBlockPos.offset(searchRadius, searchRadius, searchRadius)).forEach { blockPos ->
-        if (!level.getBlockState(blockPos).`is`(MantleBlockCard.FAIRY_QUEST_GATE_PORTAL.block())) return@forEach
+    BlockPos.betweenClosedStream(
+        approximateBlockPos.offset(-FAIRY_QUEST_GATE_SEARCH_HORIZONTAL_RADIUS, -FAIRY_QUEST_GATE_SEARCH_VERTICAL_RADIUS, -FAIRY_QUEST_GATE_SEARCH_HORIZONTAL_RADIUS),
+        approximateBlockPos.offset(FAIRY_QUEST_GATE_SEARCH_HORIZONTAL_RADIUS, FAIRY_QUEST_GATE_SEARCH_VERTICAL_RADIUS, FAIRY_QUEST_GATE_SEARCH_HORIZONTAL_RADIUS),
+    ).forEach { blockPos ->
+        if (level.getBlockState(blockPos) isNotIn MantleBlockCard.FAIRY_QUEST_GATE_PORTAL.block()) return@forEach
         val distance = blockPos.distSqr(approximateBlockPos)
         if (distance < nearestDistance) {
             nearestDistance = distance
