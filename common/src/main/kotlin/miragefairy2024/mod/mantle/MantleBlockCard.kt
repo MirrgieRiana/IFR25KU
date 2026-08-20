@@ -154,6 +154,7 @@ enum class MantleBlockCard(
         "fairy_quest_gate", "Fairy Quest Gate", "フェアリークエストゲート",
         PoemList(5).poem(EnJa("Buried junction of parallel dimensions.", "地の果てへの扉の縁。")),
         NEEDS_TIER5_TOOL_BLOCK_TAG, TERRACOTTA_HARDNESS * MANTLE_HARDNESS_FACTOR, 4.2F, MapColor.COLOR_BLACK,
+        blockCreator = { FairyQuestGateFrameBlock(it) },
     ),
     FAIRY_QUEST_GATE_PORTAL(
         "fairy_quest_gate_portal", "Fairy Quest Gate Portal", "フェアリークエストゲートのポータル",
@@ -185,7 +186,12 @@ enum class MantleBlockCard(
 
 context(ModContext)
 fun initMantleBlockCards() {
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("fairy_quest_gate")) { FairyQuestGateFrameBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("fairy_quest_gate_portal")) { FairyQuestGatePortalBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("mantle_block")) { MantleBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("mantle_ore")) { MantleOreBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("mantle_slab")) { MantleSlabBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("mantle_stair")) { MantleStairBlock.CODEC }.register()
 
     MantleBlockCard.entries.forEach { card ->
 

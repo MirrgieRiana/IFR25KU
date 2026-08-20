@@ -1,5 +1,6 @@
 package miragefairy2024.mod.mantle
 
+import java.util.OptionalLong
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.util.EnJa
@@ -15,6 +16,7 @@ import net.minecraft.tags.BlockTags
 import net.minecraft.util.valueproviders.UniformInt
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.biome.Biome
+import net.minecraft.world.level.biome.BiomeGenerationSettings
 import net.minecraft.world.level.biome.BiomeSpecialEffects
 import net.minecraft.world.level.biome.FixedBiomeSource
 import net.minecraft.world.level.biome.MobSpawnSettings
@@ -27,10 +29,10 @@ import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings
 import net.minecraft.world.level.levelgen.NoiseRouter
 import net.minecraft.world.level.levelgen.NoiseSettings
+import net.minecraft.world.level.levelgen.Noises
 import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.VerticalAnchor
 import net.minecraft.world.level.levelgen.synth.NormalNoise
-import java.util.OptionalLong
 
 private val identifier = MirageFairy2024.identifier("mantle")
 
@@ -78,7 +80,7 @@ fun initMantleDimension() {
                     .build()
             )
             .mobSpawnSettings(MobSpawnSettings.Builder().build())
-            .generationSettings(net.minecraft.world.level.biome.BiomeGenerationSettings.Builder(lookup(Registries.PLACED_FEATURE), lookup(Registries.CONFIGURED_CARVER)).build())
+            .generationSettings(BiomeGenerationSettings.Builder(lookup(Registries.PLACED_FEATURE), lookup(Registries.CONFIGURED_CARVER)).build())
             .build()
     }
 
@@ -165,7 +167,7 @@ private fun createMantleSurfaceRule(): SurfaceRules.RuleSource {
         SurfaceRules.ifTrue(SurfaceRules.verticalGradient("mantle_bedrock_floor", VerticalAnchor.bottom(), VerticalAnchor.aboveBottom(5)), bedrock),
         SurfaceRules.ifTrue(SurfaceRules.yBlockCheck(VerticalAnchor.absolute(MANTLE_DIMENSION_CEILING_Y), 0), bedrock),
         byNoise(
-            net.minecraft.world.level.levelgen.Noises.NETHER_STATE_SELECTOR,
+            Noises.NETHER_STATE_SELECTOR,
             MantleBlockCard.BRIDGMANITE,
             MantleBlockCard.FERROPERICLASE,
             MantleBlockCard.MAJORITE,

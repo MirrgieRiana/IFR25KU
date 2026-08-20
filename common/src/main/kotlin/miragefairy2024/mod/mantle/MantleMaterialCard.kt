@@ -10,13 +10,14 @@ import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.enJa
-import miragefairy2024.util.register
-import miragefairy2024.util.registerGeneratedModelGeneration
 import miragefairy2024.util.generator
+import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
+import miragefairy2024.util.registerGeneratedModelGeneration
 import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.toItemTag
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 
 /** ブリッジマナイトのアイテムのタグなのだ～🌱 */
@@ -33,7 +34,7 @@ enum class MantleMaterialCard(
     val enName: String,
     val jaName: String,
     val poemList: PoemList?,
-    val tag: net.minecraft.tags.TagKey<net.minecraft.world.item.Item>,
+    val tag: TagKey<Item>,
 ) {
     WADSLEYITE(
         "wadsleyite", "Wadsleyite", "ワズレアイト",

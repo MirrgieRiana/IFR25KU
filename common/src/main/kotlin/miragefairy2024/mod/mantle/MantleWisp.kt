@@ -1,6 +1,8 @@
 package miragefairy2024.mod.mantle
 
 import dev.architectury.registry.level.entity.EntityAttributeRegistry
+import java.util.EnumSet
+import java.util.UUID
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
@@ -22,14 +24,19 @@ import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.util.Mth
 import net.minecraft.util.TimeUtil
 import net.minecraft.util.valueproviders.UniformInt
+import net.minecraft.world.DifficultyInstance
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.MobCategory
+import net.minecraft.world.entity.MobSpawnType
 import net.minecraft.world.entity.NeutralMob
 import net.minecraft.world.entity.PathfinderMob
+import net.minecraft.world.entity.SpawnGroupData
 import net.minecraft.world.entity.SpawnPlacementTypes
 import net.minecraft.world.entity.SpawnPlacements
 import net.minecraft.world.entity.ai.attributes.Attributes
@@ -46,8 +53,6 @@ import net.minecraft.world.level.ServerLevelAccessor
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.Heightmap
 import net.minecraft.world.phys.Vec3
-import java.util.EnumSet
-import java.util.UUID
 
 /** マントルのウィスプが、攻撃されてから怒り続ける時間なのだ～🌱 */
 private val MANTLE_WISP_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39)
@@ -146,15 +151,15 @@ class MantleWispEntity(entityType: EntityType<out MantleWispEntity>, level: Leve
 
     override fun customServerAiStep() {
         super.customServerAiStep()
-        updatePersistentAnger(level() as net.minecraft.server.level.ServerLevel, false)
+        updatePersistentAnger(level() as ServerLevel, false)
     }
 
-    override fun addAdditionalSaveData(compound: net.minecraft.nbt.CompoundTag) {
+    override fun addAdditionalSaveData(compound: CompoundTag) {
         super.addAdditionalSaveData(compound)
         addPersistentAngerSaveData(compound)
     }
 
-    override fun readAdditionalSaveData(compound: net.minecraft.nbt.CompoundTag) {
+    override fun readAdditionalSaveData(compound: CompoundTag) {
         super.readAdditionalSaveData(compound)
         readPersistentAngerSaveData(level(), compound)
     }
@@ -171,7 +176,7 @@ class MantleWispEntity(entityType: EntityType<out MantleWispEntity>, level: Leve
 
     override fun pushEntities() = Unit
 
-    override fun finalizeSpawn(level: ServerLevelAccessor, difficulty: net.minecraft.world.DifficultyInstance, spawnType: net.minecraft.world.entity.MobSpawnType, spawnGroupData: net.minecraft.world.entity.SpawnGroupData?): net.minecraft.world.entity.SpawnGroupData? {
+    override fun finalizeSpawn(level: ServerLevelAccessor, difficulty: DifficultyInstance, spawnType: MobSpawnType, spawnGroupData: SpawnGroupData?): SpawnGroupData? {
         // 天井や床に埋まらないように、湧いた場所から少し浮かせるのだ～🌱
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData)
     }

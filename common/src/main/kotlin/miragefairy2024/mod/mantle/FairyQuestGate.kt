@@ -5,9 +5,11 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.Entity
+import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.Portal
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
@@ -16,6 +18,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.level.dimension.DimensionType
 import net.minecraft.world.level.portal.DimensionTransition
 import net.minecraft.world.phys.Vec3
+import net.minecraft.world.phys.shapes.CollisionContext
 
 /** ゲートの内側の、水平方向の幅なのだ～🌱 */
 const val FAIRY_QUEST_GATE_WIDTH = 2
@@ -46,9 +49,19 @@ class FairyQuestGatePortalBlock(properties: Properties) : MantleBlock(properties
         builder.add(AXIS)
     }
 
-    override fun getShape(state: BlockState, level: net.minecraft.world.level.BlockGetter, pos: BlockPos, context: net.minecraft.world.phys.shapes.CollisionContext) = when (state.getValue(AXIS)) {
+    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = when (state.getValue(AXIS)) {
         Direction.Axis.Z -> Z_AXIS_SHAPE
         else -> X_AXIS_SHAPE
+    }
+
+    override fun updateShape(state: BlockState, direction: Direction, neighborState: BlockState, level: LevelAccessor, pos: BlockPos, neighborPos: BlockPos): BlockState {
+        // ネザーポータルと同じく、枠が欠けると消えるのだ～🌱
+        val axis = state.getValue(AXIS)
+        val isAlongPortal = direction.axis == Direction.Axis.Y || direction.axis == axis
+        if (isAlongPortal) return super.updateShape(state, direction, neighborState, level, pos, neighborPos)
+        if (neighborState.`is`(this)) return super.updateShape(state, direction, neighborState, level, pos, neighborPos)
+        if (neighborState.`is`(MantleBlockCard.FAIRY_QUEST_GATE.block())) return super.updateShape(state, direction, neighborState, level, pos, neighborPos)
+        return Blocks.AIR.defaultBlockState()
     }
 
     override fun entityInside(state: BlockState, level: Level, pos: BlockPos, entity: Entity) {

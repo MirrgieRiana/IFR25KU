@@ -1,5 +1,6 @@
 package miragefairy2024.mod.mantle
 
+import com.mojang.serialization.MapCodec
 import net.minecraft.core.BlockPos
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.player.Player
@@ -18,6 +19,12 @@ const val MANTLE_MINING_DAMAGE_FACTOR = 100
  * 破壊時にツールの耐久値へ [MANTLE_MINING_DAMAGE_FACTOR] 倍のダメージが入るブロックなのだ～🌱
  */
 open class MantleBlock(properties: Properties) : Block(properties) {
+    companion object {
+        val CODEC: MapCodec<MantleBlock> = simpleCodec(::MantleBlock)
+    }
+
+    override fun codec(): MapCodec<out Block> = CODEC
+
     override fun getDestroyProgress(state: BlockState, player: Player, level: BlockGetter, pos: BlockPos): Float {
         if (!player.hasCorrectToolForDrops(state)) return 0.0F
         return super.getDestroyProgress(state, player, level, pos)
