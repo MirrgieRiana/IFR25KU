@@ -3,17 +3,10 @@ package miragefairy2024.mod.tree.contents.blockcards
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
-import miragefairy2024.util.ResourceLocation
-import miragefairy2024.util.generator
 import miragefairy2024.util.registerBlockFamily
-import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerDefaultLootTableGeneration
 import miragefairy2024.util.registerFlammable
-import miragefairy2024.util.toBlockTag
-import miragefairy2024.util.toItemTag
 import net.minecraft.data.models.model.TexturedModel
-import net.minecraft.tags.BlockTags
-import net.minecraft.tags.ItemTags
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.FenceGateBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
@@ -32,12 +25,6 @@ class TreePlanksFenceGateBlockCard(configuration: TreeBlockConfiguration, privat
 
         // 性質
         block.registerFlammable(5, 20)
-
-        // タグ
-        BlockTags.FENCE_GATES.generator.registerChild(block)
-        ItemTags.FENCE_GATES.generator.registerChild(item)
-        ResourceLocation("c", "fence_gates/wooden").toBlockTag().generator.registerChild(block)
-        ResourceLocation("c", "fence_gates/wooden").toItemTag().generator.registerChild(item)
 
     }
 }

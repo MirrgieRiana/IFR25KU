@@ -5,9 +5,7 @@ import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.contents.unchargedHaimeviskaLeavesTexturedModelFactory
 import miragefairy2024.util.Model
-import miragefairy2024.util.generator
 import miragefairy2024.util.getIdentifier
-import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerComposterInput
 import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerFlammable
@@ -17,8 +15,6 @@ import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerRedirectColorProvider
 import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.times
-import net.minecraft.tags.BlockTags
-import net.minecraft.tags.ItemTags
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.LeavesBlock
 import net.minecraft.world.level.block.SoundType
@@ -58,11 +54,6 @@ abstract class AbstractTreeLeavesBlockCard(configuration: TreeBlockConfiguration
 
         // 性質
         block.registerFlammable(30, 30)
-
-        // タグ
-        BlockTags.LEAVES.generator.registerChild(block)
-        ItemTags.LEAVES.generator.registerChild(item)
-        BlockTags.MINEABLE_WITH_HOE.generator.registerChild(block)
 
     }
 
