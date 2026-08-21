@@ -301,10 +301,10 @@ class AthanorBlock(private val card: AthanorCard) : SimpleMachineBlock(card) {
 
     // Move
 
-    override fun <T : BlockEntity> getTicker(world: Level, state: BlockState, type: BlockEntityType<T>): BlockEntityTicker<T>? {
+    override fun <T : BlockEntity> getTicker(level: Level, state: BlockState, type: BlockEntityType<T>): BlockEntityTicker<T>? {
         return when (state[HALF]) {
             DoubleBlockHalf.UPPER -> null
-            DoubleBlockHalf.LOWER -> super.getTicker(world, state, type)
+            DoubleBlockHalf.LOWER -> super.getTicker(level, state, type)
         }
     }
 
@@ -370,20 +370,20 @@ class AthanorBlockEntity(private val card: AthanorCard, pos: BlockPos, state: Bl
         // TODO state
     }
 
-    override fun onRecipeCheck(world: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
-        if (!super.onRecipeCheck(world, pos, state, listeners)) return false
+    override fun onRecipeCheck(level: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
+        if (!super.onRecipeCheck(level, pos, state, listeners)) return false
         if (fuel == 0) listeners += checkFuelInsert() ?: return false
         return true
     }
 
-    override fun onCraftingTick(world: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
-        if (!super.onCraftingTick(world, pos, state, listeners)) return false
+    override fun onCraftingTick(level: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
+        if (!super.onCraftingTick(level, pos, state, listeners)) return false
         if (fuel == 0) listeners += checkFuelInsert() ?: return false
         return true
     }
 
-    override fun onPostServerTick(world: Level, pos: BlockPos, state: BlockState) {
-        super.onPostServerTick(world, pos, state)
+    override fun onPostServerTick(level: Level, pos: BlockPos, state: BlockState) {
+        super.onPostServerTick(level, pos, state)
         val oldFuel = fuel
         if (fuel > 0) fuel--
         setLit(oldFuel > 0)

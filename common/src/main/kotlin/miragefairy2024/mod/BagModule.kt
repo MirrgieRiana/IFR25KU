@@ -215,9 +215,9 @@ class BagItem(val card: BagCard, settings: Properties) : Item(settings) {
         return if (count >= card.inventorySize) 0xFF0000 else 0x00FF00
     }
 
-    override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
         val itemStack = user.getItemInHand(hand)
-        if (world.isClientSide) return InteractionResultHolder.success(itemStack)
+        if (level.isClientSide) return InteractionResultHolder.success(itemStack)
         val slotIndex = if (hand == InteractionHand.MAIN_HAND) {
             val selectedSlot = user.inventory.selected
             if (!Inventory.isHotbarSlot(selectedSlot)) return InteractionResultHolder.fail(itemStack)

@@ -157,7 +157,7 @@ abstract class FairyBuildingBlock(private val card: FairyBuildingCard<*, *, *>) 
     override fun hasAnalogOutputSignal(state: BlockState) = true
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun getAnalogOutputSignal(state: BlockState, world: Level, pos: BlockPos) = card.blockEntityAccessor.castOrNull(world.getBlockEntity(pos))?.getComparatorOutput() ?: 0
+    override fun getAnalogOutputSignal(state: BlockState, level: Level, pos: BlockPos) = card.blockEntityAccessor.castOrNull(level.getBlockEntity(pos))?.getComparatorOutput() ?: 0
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun isPathfindable(state: BlockState, pathComputationType: PathComputationType) = false

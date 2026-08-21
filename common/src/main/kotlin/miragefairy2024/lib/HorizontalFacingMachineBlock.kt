@@ -39,25 +39,25 @@ abstract class HorizontalFacingMachineBlock(private val card: MachineCard<*, *, 
     override fun newBlockEntity(pos: BlockPos, state: BlockState) = card.blockEntityAccessor.create(pos, state)
 
     @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun triggerEvent(state: BlockState, world: Level, pos: BlockPos, type: Int, data: Int): Boolean {
-        super.triggerEvent(state, world, pos, type, data)
-        val blockEntity = world.getBlockEntity(pos) ?: return false
+    override fun triggerEvent(state: BlockState, level: Level, pos: BlockPos, type: Int, data: Int): Boolean {
+        super.triggerEvent(state, level, pos, type, data)
+        val blockEntity = level.getBlockEntity(pos) ?: return false
         return blockEntity.triggerEvent(type, data)
     }
 
     @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun onRemove(state: BlockState, world: Level, pos: BlockPos, newState: BlockState, moved: Boolean) {
+    override fun onRemove(state: BlockState, level: Level, pos: BlockPos, newState: BlockState, moved: Boolean) {
         if (state isNotIn newState.block) {
-            card.blockEntityAccessor.castOrNull(world.getBlockEntity(pos))?.dropItems()
-            super.onRemove(state, world, pos, newState, moved)
+            card.blockEntityAccessor.castOrNull(level.getBlockEntity(pos))?.dropItems()
+            super.onRemove(state, level, pos, newState, moved)
         }
     }
 
 
     // Move
 
-    override fun <T : BlockEntity> getTicker(world: Level, state: BlockState, type: BlockEntityType<T>): BlockEntityTicker<T>? {
-        return if (world.isClientSide) {
+    override fun <T : BlockEntity> getTicker(level: Level, state: BlockState, type: BlockEntityType<T>): BlockEntityTicker<T>? {
+        return if (level.isClientSide) {
             checkType(type, card.blockEntityType()) { world2, pos, state2, blockEntity ->
                 blockEntity.clientTick(world2, pos, state2)
             }
@@ -72,7 +72,7 @@ abstract class HorizontalFacingMachineBlock(private val card: MachineCard<*, *, 
     // Gui
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun getMenuProvider(state: BlockState, world: Level, pos: BlockPos) = world.getBlockEntity(pos) as? MenuProvider
+    override fun getMenuProvider(state: BlockState, level: Level, pos: BlockPos) = level.getBlockEntity(pos) as? MenuProvider
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun useWithoutItem(state: BlockState, level: Level, pos: BlockPos, player: Player, hitResult: BlockHitResult): InteractionResult {

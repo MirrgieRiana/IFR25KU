@@ -149,13 +149,13 @@ class MerrrriaBlock(settings: Properties) : SimpleMagicPlantBlock(MerrrriaCard, 
 
     }
 
-    override fun animateTick(state: BlockState, world: Level, pos: BlockPos, random: RandomSource) {
-        super.animateTick(state, world, pos, random)
+    override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
+        super.animateTick(state, level, pos, random)
         if (getAge(state) == 4) {
             if (random.nextInt(50) == 0) {
                 // クライアント側ではisNightが機能しないので夜だけ演奏はできない
                 val pitch = PITCHES[random.nextInt(PITCHES.size)]
-                world.playLocalSound(
+                level.playLocalSound(
                     pos.x.toDouble() + 0.5,
                     pos.y.toDouble() + 0.5,
                     pos.z.toDouble() + 0.5,
@@ -166,7 +166,7 @@ class MerrrriaBlock(settings: Properties) : SimpleMagicPlantBlock(MerrrriaCard, 
                     false,
                 )
                 repeat(4) {
-                    world.addParticle(
+                    level.addParticle(
                         ParticleTypeCard.AURA.particleType,
                         pos.x.toDouble() + random.nextDouble(),
                         pos.y.toDouble() + random.nextDouble(),

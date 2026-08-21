@@ -71,9 +71,9 @@ class FairyScytheItem(override val configuration: FairyScytheConfiguration, rang
     FairyToolItem,
     ModifyItemEnchantmentsHandler {
 
-    override fun mineBlock(stack: ItemStack, world: Level, state: BlockState, pos: BlockPos, miner: LivingEntity): Boolean {
-        super.mineBlock(stack, world, state, pos, miner)
-        postMineImpl(stack, world, state, pos, miner)
+    override fun mineBlock(stack: ItemStack, level: Level, state: BlockState, pos: BlockPos, miner: LivingEntity): Boolean {
+        super.mineBlock(stack, level, state, pos, miner)
+        postMineImpl(stack, level, state, pos, miner)
         return true
     }
 
@@ -83,9 +83,9 @@ class FairyScytheItem(override val configuration: FairyScytheConfiguration, rang
         return true
     }
 
-    override fun inventoryTick(stack: ItemStack, world: Level, entity: Entity, slot: Int, selected: Boolean) {
-        super.inventoryTick(stack, world, entity, slot, selected)
-        inventoryTickImpl(stack, world, entity, slot, selected)
+    override fun inventoryTick(stack: ItemStack, level: Level, entity: Entity, slot: Int, selected: Boolean) {
+        super.inventoryTick(stack, level, entity, slot, selected)
+        inventoryTickImpl(stack, level, entity, slot, selected)
     }
 
     override fun modifyItemEnchantments(itemStack: ItemStack, mutableItemEnchantments: ItemEnchantments.Mutable, enchantmentLookup: HolderLookup.RegistryLookup<Enchantment>) = modifyItemEnchantmentsImpl(itemStack, mutableItemEnchantments, enchantmentLookup)
@@ -104,26 +104,26 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
         tooltipComponents += text { DESCRIPTION_TRANSLATION(range.toRomanText()).yellow }
     }
 
-    override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
 
         if (!user.isShiftKeyDown) {
             val itemStack = user.getItemInHand(hand)
-            val blockHitResult = getPlayerPOVHitResult(world, user, ClipContext.Fluid.NONE)
+            val blockHitResult = getPlayerPOVHitResult(level, user, ClipContext.Fluid.NONE)
             val blockPos = blockHitResult.blockPos
             val region = BlockBox.of(blockPos.offset(-range, -range, -range), blockPos.offset(range, range, range))
             var effective = false
-            withStickyMining(world, blockPos, range, user, itemStack) {
-                spaceVisitor(world, blockPos) { it in region }.forEach { (_, targetBlockPos) ->
-                    val targetBlockState = world.getBlockState(targetBlockPos)
+            withStickyMining(level, blockPos, range, user, itemStack) {
+                spaceVisitor(level, blockPos) { it in region }.forEach { (_, targetBlockPos) ->
+                    val targetBlockState = level.getBlockState(targetBlockPos)
                     when (val targetBlock = targetBlockState.block) {
                         is MagicPlantBlock -> {
-                            val result = targetBlock.tryPick(world, targetBlockPos, user, itemStack, true, false)
+                            val result = targetBlock.tryPick(level, targetBlockPos, user, itemStack, true, false)
                             if (result) effective = true
                         }
 
                         is SweetBerryBushBlock, is CaveVines -> {
                             val offset = targetBlockPos.subtract(blockPos)
-                            val result = targetBlockState.useWithoutItem(world, user, BlockHitResult(blockHitResult.location.add(offset.x.toDouble(), offset.y.toDouble(), offset.z.toDouble()), blockHitResult.direction, targetBlockPos, false))
+                            val result = targetBlockState.useWithoutItem(level, user, BlockHitResult(blockHitResult.location.add(offset.x.toDouble(), offset.y.toDouble(), offset.z.toDouble()), blockHitResult.direction, targetBlockPos, false))
                             if (result.consumesAction()) effective = true
                         }
                     }
@@ -132,17 +132,17 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
             if (effective) return InteractionResultHolder.success(itemStack)
         }
 
-        return super.use(world, user, hand)
+        return super.use(level, user, hand)
     }
 
     override fun postHurtEnemy(stack: ItemStack, target: LivingEntity, attacker: LivingEntity) {
         stack.hurtAndBreak(2, attacker, EquipmentSlot.MAINHAND)
     }
 
-    override fun mineBlock(stack: ItemStack, world: Level, state: BlockState, pos: BlockPos, miner: LivingEntity): Boolean {
+    override fun mineBlock(stack: ItemStack, level: Level, state: BlockState, pos: BlockPos, miner: LivingEntity): Boolean {
         val tool = stack.get(DataComponents.TOOL) ?: return false
-        if (!world.isClientSide && tool.damagePerBlock > 0) {
-            val damageRate = if (state.getDestroySpeed(world, pos) != 0.0F) 0.5F else 0.1F
+        if (!level.isClientSide && tool.damagePerBlock > 0) {
+            val damageRate = if (state.getDestroySpeed(level, pos) != 0.0F) 0.5F else 0.1F
             if (miner.random.nextFloat() < damageRate) {
                 stack.hurtAndBreak(tool.damagePerBlock, miner, EquipmentSlot.MAINHAND)
             }
@@ -150,30 +150,30 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
         return true
     }
 
-    override fun postTryPick(world: Level, blockPos: BlockPos, player: Player?, itemStack: ItemStack, succeed: Boolean) {
-        if (world.isClientSide) return
+    override fun postTryPick(level: Level, blockPos: BlockPos, player: Player?, itemStack: ItemStack, succeed: Boolean) {
+        if (level.isClientSide) return
         if (player?.isShiftKeyDown == true) return
         val region = BlockBox.of(blockPos.offset(-range, -range, -range), blockPos.offset(range, range, range))
-        withStickyMining(world, blockPos, range, player, itemStack) {
-            spaceVisitor(world, blockPos, visitOrigins = false) { it in region }.forEach { (_, targetBlockPos) ->
-                val targetBlockState = world.getBlockState(targetBlockPos)
+        withStickyMining(level, blockPos, range, player, itemStack) {
+            spaceVisitor(level, blockPos, visitOrigins = false) { it in region }.forEach { (_, targetBlockPos) ->
+                val targetBlockState = level.getBlockState(targetBlockPos)
                 val targetBlock = targetBlockState.block
                 if (targetBlock is MagicPlantBlock) {
-                    targetBlock.tryPick(world, targetBlockPos, player, itemStack, true, false)
+                    targetBlock.tryPick(level, targetBlockPos, player, itemStack, true, false)
                 }
             }
         }
     }
 }
 
-private inline fun withStickyMining(world: Level, blockPos: BlockPos, range: Int, player: Player?, tool: ItemStack, action: () -> Unit) {
+private inline fun withStickyMining(level: Level, blockPos: BlockPos, range: Int, player: Player?, tool: ItemStack, action: () -> Unit) {
     run {
-        if (world.isClientSide) return@run
+        if (level.isClientSide) return@run
         if (player == null) return@run
-        val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
+        val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
         if (stickyMiningLevel == 0) return@run
 
-        val snapshot = StickyMiningSnapshot.take(world, blockPos.toBox().inflate(range.toDouble()))
+        val snapshot = StickyMiningSnapshot.take(level, blockPos.toBox().inflate(range.toDouble()))
         action()
         snapshot.teleportNewEntities(player)
 

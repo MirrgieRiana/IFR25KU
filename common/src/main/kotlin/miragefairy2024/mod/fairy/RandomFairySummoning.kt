@@ -66,7 +66,7 @@ class RandomFairySummoningItem(val appearanceRateBonus: Double, settings: Proper
     override fun getUseAnimation(stack: ItemStack) = UseAnim.BOW
     override fun getUseDuration(stack: ItemStack, entity: LivingEntity) = 72000 // 1時間
 
-    override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
         val itemStack = user.getItemInHand(hand)
         if (!user.isShiftKeyDown) {
 
@@ -75,7 +75,7 @@ class RandomFairySummoningItem(val appearanceRateBonus: Double, settings: Proper
 
             return InteractionResultHolder.consume(itemStack)
         } else {
-            if (world.isClientSide) return InteractionResultHolder.success(itemStack)
+            if (level.isClientSide) return InteractionResultHolder.success(itemStack)
 
             val motifSet: Set<Motif> = getCommonMotifSet(user) + user.fairyDreamContainer.getOrCreate().entries
             val chanceTable = motifSet.toChanceTable(appearanceRateBonus)
@@ -92,8 +92,8 @@ class RandomFairySummoningItem(val appearanceRateBonus: Double, settings: Proper
         }
     }
 
-    override fun onUseTick(world: Level, user: LivingEntity, stack: ItemStack, remainingUseTicks: Int) {
-        if (world.isClientSide) return
+    override fun onUseTick(level: Level, user: LivingEntity, stack: ItemStack, remainingUseTicks: Int) {
+        if (level.isClientSide) return
         if (user !is ServerPlayer) return
 
         run {

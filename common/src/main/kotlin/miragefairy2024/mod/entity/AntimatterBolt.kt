@@ -34,7 +34,7 @@ object AntimatterBoltCard {
     val spawnGroup = MobCategory.MISC
     val width = 0.5F
     val height = 0.5F
-    fun createEntity(entityType: EntityType<AntimatterBoltEntity>, world: Level) = AntimatterBoltEntity(entityType, world)
+    fun createEntity(entityType: EntityType<AntimatterBoltEntity>, level: Level) = AntimatterBoltEntity(entityType, level)
     val identifier = MirageFairy2024.identifier("antimatter_bolt")
     val entityType = Registration(BuiltInRegistries.ENTITY_TYPE, identifier) {
         EntityType.Builder.of({ entityType, world -> createEntity(entityType, world) }, spawnGroup)
@@ -49,7 +49,7 @@ object AntimatterBoltCard {
     }
 }
 
-class AntimatterBoltEntity(entityType: EntityType<out AntimatterBoltEntity>, world: Level) : Projectile(entityType, world) {
+class AntimatterBoltEntity(entityType: EntityType<out AntimatterBoltEntity>, level: Level) : Projectile(entityType, level) {
     companion object {
         val DAMAGE: EntityDataAccessor<Float> = SynchedEntityData.defineId(AntimatterBoltEntity::class.java, EntityDataSerializers.FLOAT)
         val MAX_DISTANCE: EntityDataAccessor<Float> = SynchedEntityData.defineId(AntimatterBoltEntity::class.java, EntityDataSerializers.FLOAT)

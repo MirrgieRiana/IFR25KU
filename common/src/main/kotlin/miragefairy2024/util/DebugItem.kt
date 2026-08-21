@@ -34,9 +34,9 @@ fun registerDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSo
     val item = Registration(BuiltInRegistries.ITEM, MirageFairy2024.identifier(path)) {
         object : Item(Properties()) {
             override fun getName(stack: ItemStack) = text { path.toUpperCamelCase(afterDelimiter = " ")() }
-            override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
-                action(world, user, hand, user.getItemInHand(hand))
-                return InteractionResultHolder.sidedSuccess(user.getItemInHand(hand), world.isClientSide)
+            override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+                action(level, user, hand, user.getItemInHand(hand))
+                return InteractionResultHolder.sidedSuccess(user.getItemInHand(hand), level.isClientSide)
             }
         }
     }
