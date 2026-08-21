@@ -43,7 +43,7 @@ enum class MantleMaterialCard(
     ),
     RINGWOODITE(
         "ringwoodite", "Ringwoodite", "リングウッダイト",
-        PoemList(6).poem(EnJa("An ocean sealed inside a crystal.", "石の中に海が眠っている。")),
+        PoemList(6).poem(EnJa("TODO", "TODO")),
         RINGWOODITES_ITEM_TAG,
     ),
     ;

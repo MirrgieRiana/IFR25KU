@@ -121,7 +121,9 @@ private fun findOrCreateFairyQuestGate(level: ServerLevel, approximateBlockPos: 
     nearestBlockPos?.let { return it }
 
     // 見つからなかったので、新しく作るのだ～🌱
+    // マントルは岩石で埋め尽くされているから、ゲートを置くだけだと、降り立った途端に閉じ込められちゃうのだ～🌱
     val originBlockPos = findFairyQuestGatePlacement(level, approximateBlockPos) ?: return null
+    clearFairyQuestGateSpace(level, originBlockPos, axis)
     placeFairyQuestGate(level, originBlockPos, axis)
     return originBlockPos
 }
@@ -133,6 +135,27 @@ private fun findFairyQuestGatePlacement(level: ServerLevel, approximateBlockPos:
     if (minY > maxY) return null
     val y = approximateBlockPos.y.coerceIn(minY, maxY)
     return BlockPos(approximateBlockPos.x, y, approximateBlockPos.z)
+}
+
+/**
+ * [originBlockPos] を内側の最下部の角として設置されるゲートの、両側の面の前に、立って動けるだけの空間を掘り抜くのだ～🌱
+ *
+ * ゲートの平面そのものは掘らないから、フレームもポータルも巻き込まれないのだ～🌱
+ * 足元も掘らないから、掘り抜いた先の床は岩石のまま残るのだ～🌱
+ */
+private fun clearFairyQuestGateSpace(level: LevelAccessor, originBlockPos: BlockPos, axis: Direction.Axis) {
+    val widthDirection = if (axis == Direction.Axis.X) Direction.EAST else Direction.SOUTH
+    val depthDirection = if (axis == Direction.Axis.X) Direction.SOUTH else Direction.EAST
+    val airBlockState = Blocks.AIR.defaultBlockState()
+
+    listOf(-1, 1).forEach { dd ->
+        (-1..FAIRY_QUEST_GATE_WIDTH).forEach { dw ->
+            (0 until FAIRY_QUEST_GATE_HEIGHT).forEach { dy ->
+                val blockPos = originBlockPos.relative(widthDirection, dw).relative(depthDirection, dd).above(dy)
+                level.setBlock(blockPos, airBlockState, Block.UPDATE_CLIENTS)
+            }
+        }
+    }
 }
 
 /**

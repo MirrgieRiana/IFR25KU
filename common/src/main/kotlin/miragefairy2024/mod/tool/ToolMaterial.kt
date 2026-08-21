@@ -1,11 +1,12 @@
 package miragefairy2024.mod.tool
 
-import miragefairy2024.mod.mantle.MantleMaterialCard
-import miragefairy2024.mod.mantle.MantleBlockCard
-import miragefairy2024.mod.mantle.INCORRECT_FOR_TIER5_TOOL_BLOCK_TAG
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.ItemTagCard
+import miragefairy2024.mod.mantle.INCORRECT_FOR_TIER5_TOOL_BLOCK_TAG
+import miragefairy2024.mod.mantle.INCORRECT_FOR_TIER6_TOOL_BLOCK_TAG
+import miragefairy2024.mod.mantle.MantleBlockCard
+import miragefairy2024.mod.mantle.MantleMaterialCard
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.Shape
@@ -69,9 +70,9 @@ enum class FairyToolMaterials(
     COPAL(Tiers.IRON, 182, 5.0F, 1.5F, 1.5F, 19, { ingredientOf(Shape.GEM, Material.COPAL) }),
     FAIRY_PLASTIC(Tiers.IRON, 966, 3.0F, 2.0F, 0.0F, 24, { ingredientOf(Shape.GEM, Material.FAIRY_PLASTIC) }),
 
-    BRIDGMANITE(Tiers.NETHERITE, 1800, 8.5F, 3.0F, 2.5F, 14, { MantleBlockCard.BRIDGMANITE.item().toIngredient() }),
-    WADSLEYITE(Tiers.NETHERITE, 2200, 9.5F, 2.5F, 2.5F, 18, { MantleMaterialCard.WADSLEYITE.item().toIngredient() }),
-    RINGWOODITE(Tiers.NETHERITE, 3200, 11.0F, 5.0F, 4.0F, 20, { MantleMaterialCard.RINGWOODITE.item().toIngredient() }, INCORRECT_FOR_TIER5_TOOL_BLOCK_TAG),
+    BRIDGMANITE(Tiers.NETHERITE, 1800, 8.5F, 3.0F, 2.5F, 14, { MantleBlockCard.BRIDGMANITE.item().toIngredient() }, INCORRECT_FOR_TIER5_TOOL_BLOCK_TAG),
+    WADSLEYITE(Tiers.NETHERITE, 2200, 9.5F, 2.5F, 2.5F, 18, { MantleMaterialCard.WADSLEYITE.item().toIngredient() }, INCORRECT_FOR_TIER5_TOOL_BLOCK_TAG),
+    RINGWOODITE(Tiers.NETHERITE, 3200, 11.0F, 5.0F, 4.0F, 20, { MantleMaterialCard.RINGWOODITE.item().toIngredient() }, INCORRECT_FOR_TIER6_TOOL_BLOCK_TAG),
 
     NEUTRONIUM(Tiers.NETHERITE, Int.MAX_VALUE - 100, 8.0F, 3.0F, 3.0F, 10, { Items.BEDROCK.toIngredient() }),
     ;

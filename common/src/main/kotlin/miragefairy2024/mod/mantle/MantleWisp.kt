@@ -1,8 +1,6 @@
 package miragefairy2024.mod.mantle
 
 import dev.architectury.registry.level.entity.EntityAttributeRegistry
-import java.util.EnumSet
-import java.util.UUID
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
@@ -49,6 +47,8 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.Heightmap
 import net.minecraft.world.phys.Vec3
+import java.util.EnumSet
+import java.util.UUID
 
 /** マントルのウィスプが、攻撃されてから怒り続ける時間なのだ～🌱 */
 private val MANTLE_WISP_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39)
@@ -90,7 +90,7 @@ object MantleWispCard {
             )
         }
 
-        entityType.registerSpawn(MobCategory.MONSTER, 30, 1, 2) { +mantleBiomeKey }
+        entityType.registerSpawn(MobCategory.MONSTER, 30, 1, 2) { +MANTLE_BIOME_KEY }
         ModEvents.onInitialize {
             SpawnPlacements.register(
                 entityType(),
@@ -183,8 +183,13 @@ private class MantleWispMoveControl(private val entity: MantleWispEntity) : Move
         floatDuration += entity.random.nextInt(5) + 2
         val delta = Vec3(wantedX - entity.x, wantedY - entity.y, wantedZ - entity.z)
         val distance = delta.length()
-        if (distance < 1.0E-4) return
-        entity.deltaMovement = entity.deltaMovement.add(delta.normalize().scale(0.08))
+        if (distance < entity.boundingBox.size) {
+            // 目的地に着いたので、惰性を殺して待機に戻るのだ～🌱
+            operation = Operation.WAIT
+            entity.deltaMovement = entity.deltaMovement.scale(0.5)
+            return
+        }
+        entity.deltaMovement = entity.deltaMovement.add(delta.scale(speedModifier * 0.05 / distance))
     }
 }
 

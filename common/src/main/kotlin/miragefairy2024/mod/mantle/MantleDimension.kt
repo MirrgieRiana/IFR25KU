@@ -1,6 +1,5 @@
 package miragefairy2024.mod.mantle
 
-import java.util.OptionalLong
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.util.EnJa
@@ -33,16 +32,17 @@ import net.minecraft.world.level.levelgen.Noises
 import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.VerticalAnchor
 import net.minecraft.world.level.levelgen.synth.NormalNoise
+import java.util.OptionalLong
 
 private val identifier = MirageFairy2024.identifier("mantle")
 
 /** マントルディメンションの [Level] としての鍵なのだ～🌱 */
 val MANTLE_DIMENSION_KEY: ResourceKey<Level> = Registries.DIMENSION with identifier
 
-val mantleDimensionStemKey: ResourceKey<LevelStem> = Registries.LEVEL_STEM with identifier
-val mantleDimensionTypeKey: ResourceKey<DimensionType> = Registries.DIMENSION_TYPE with identifier
-val mantleNoiseGeneratorSettingsKey: ResourceKey<NoiseGeneratorSettings> = Registries.NOISE_SETTINGS with identifier
-val mantleBiomeKey: ResourceKey<Biome> = Registries.BIOME with identifier
+val MANTLE_DIMENSION_STEM_KEY: ResourceKey<LevelStem> = Registries.LEVEL_STEM with identifier
+val MANTLE_DIMENSION_TYPE_KEY: ResourceKey<DimensionType> = Registries.DIMENSION_TYPE with identifier
+val MANTLE_NOISE_GENERATOR_SETTINGS_KEY: ResourceKey<NoiseGeneratorSettings> = Registries.NOISE_SETTINGS with identifier
+val MANTLE_BIOME_KEY: ResourceKey<Biome> = Registries.BIOME with identifier
 
 /** マントルディメンションの、岩盤の下限なのだ～🌱 */
 const val MANTLE_DIMENSION_MIN_Y = -64
@@ -66,7 +66,7 @@ fun initMantleDimension() {
 
     mantleBiomeTranslation.enJa()
 
-    registerDynamicGeneration(mantleBiomeKey) {
+    registerDynamicGeneration(MANTLE_BIOME_KEY) {
         Biome.BiomeBuilder()
             .hasPrecipitation(false)
             .temperature(2.0F)
@@ -84,7 +84,7 @@ fun initMantleDimension() {
             .build()
     }
 
-    registerDynamicGeneration(mantleDimensionTypeKey) {
+    registerDynamicGeneration(MANTLE_DIMENSION_TYPE_KEY) {
         DimensionType(
             OptionalLong.of(18000L),
             false,
@@ -104,7 +104,7 @@ fun initMantleDimension() {
         )
     }
 
-    registerDynamicGeneration(mantleNoiseGeneratorSettingsKey) {
+    registerDynamicGeneration(MANTLE_NOISE_GENERATOR_SETTINGS_KEY) {
         NoiseGeneratorSettings(
             NoiseSettings.create(MANTLE_DIMENSION_MIN_Y, MANTLE_DIMENSION_HEIGHT, 1, 2),
             MantleBlockCard.BRIDGMANITE.block().defaultBlockState(),
@@ -120,12 +120,12 @@ fun initMantleDimension() {
         )
     }
 
-    registerDimensionGeneration(mantleDimensionStemKey) {
+    registerDimensionGeneration(MANTLE_DIMENSION_STEM_KEY) {
         LevelStem(
-            Registries.DIMENSION_TYPE[mantleDimensionTypeKey],
+            Registries.DIMENSION_TYPE[MANTLE_DIMENSION_TYPE_KEY],
             NoiseBasedChunkGenerator(
-                FixedBiomeSource(Registries.BIOME[mantleBiomeKey]),
-                Registries.NOISE_SETTINGS[mantleNoiseGeneratorSettingsKey],
+                FixedBiomeSource(Registries.BIOME[MANTLE_BIOME_KEY]),
+                Registries.NOISE_SETTINGS[MANTLE_NOISE_GENERATOR_SETTINGS_KEY],
             ),
         )
     }
