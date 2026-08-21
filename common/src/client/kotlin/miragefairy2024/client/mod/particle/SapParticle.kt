@@ -10,11 +10,11 @@ import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 
 @Suppress("LeakingThis")
-open class HaimeviskaSapParticle(world: ClientLevel, x: Double, y: Double, z: Double) : TextureSheetParticle(world, x, y, z) {
+open class SapParticle(world: ClientLevel, x: Double, y: Double, z: Double, rgb: Int) : TextureSheetParticle(world, x, y, z) {
     init {
         setSize(0.01F, 0.01F)
         gravity = 0.06F
-        setRgb(0xFF9F32)
+        setRgb(rgb)
     }
 
     override fun getRenderType(): ParticleRenderType = ParticleRenderType.PARTICLE_SHEET_OPAQUE
@@ -49,7 +49,7 @@ open class HaimeviskaSapParticle(world: ClientLevel, x: Double, y: Double, z: Do
 
     }
 
-    class Dripping(world: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, private val particleEffect: ParticleOptions) : HaimeviskaSapParticle(world, x, y, z) {
+    class Dripping(world: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, rgb: Int, private val particleEffect: ParticleOptions) : SapParticle(world, x, y, z, rgb) {
         init {
             pickSprite(spriteProvider)
             gravity *= 0.01F
@@ -67,7 +67,7 @@ open class HaimeviskaSapParticle(world: ClientLevel, x: Double, y: Double, z: Do
         }
     }
 
-    class Falling(world: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, private val particleEffect: ParticleOptions) : HaimeviskaSapParticle(world, x, y, z) {
+    class Falling(world: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, rgb: Int, private val particleEffect: ParticleOptions) : SapParticle(world, x, y, z, rgb) {
         init {
             pickSprite(spriteProvider)
             gravity = 0.01F
@@ -83,7 +83,7 @@ open class HaimeviskaSapParticle(world: ClientLevel, x: Double, y: Double, z: Do
         }
     }
 
-    class Landing(world: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet) : HaimeviskaSapParticle(world, x, y, z) {
+    class Landing(world: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, rgb: Int) : SapParticle(world, x, y, z, rgb) {
         init {
             pickSprite(spriteProvider)
             lifetime = (128.0 / (world.random.nextDouble() * 0.8 + 0.2)).toInt()

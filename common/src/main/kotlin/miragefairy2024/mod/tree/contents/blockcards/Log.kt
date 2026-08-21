@@ -3,8 +3,6 @@ package miragefairy2024.mod.tree.contents.blockcards
 import miragefairy2024.DataGenerationEvents
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
-import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_BLOCK_TAG
-import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_ITEM_TAG
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.createBaseWoodSetting
@@ -19,14 +17,17 @@ import miragefairy2024.util.registerShapedRecipeGeneration
 import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.toItemTag
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry
+import net.minecraft.core.Direction
 import net.minecraft.data.models.BlockModelGenerators.WoodProvider
+import net.minecraft.tags.BlockTags
+import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
 
-abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
+abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration, private val logsBlockTag: TagKey<Block>, private val logsItemTag: TagKey<Item>) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting().strength(2.0F)
 
     context(ModContext)
@@ -40,8 +41,8 @@ abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) :
         block.registerFlammable(5, 5)
 
         // タグ
-        HAIMEVISKA_LOGS_BLOCK_TAG.generator.registerChild(block)
-        HAIMEVISKA_LOGS_ITEM_TAG.generator.registerChild(item)
+        logsBlockTag.generator.registerChild(block)
+        logsItemTag.generator.registerChild(item)
 
     }
 
@@ -67,7 +68,25 @@ abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) :
     }
 }
 
-class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
+open class TreeLogBlockCard(
+    configuration: TreeBlockConfiguration,
+    logsBlockTag: TagKey<Block>,
+    logsItemTag: TagKey<Item>,
+    private val verticalMapColor: MapColor,
+    private val horizontalMapColor: MapColor,
+) : AbstractTreeLogBlockCard(configuration, logsBlockTag, logsItemTag) {
+    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { if (it[RotatedPillarBlock.AXIS] === Direction.Axis.Y) verticalMapColor else horizontalMapColor }
+    override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
+
+    context(ModContext)
+    override fun init() {
+        super.init()
+        registerModelGeneration(block) { it.logWithHorizontal(block()) }
+        BlockTags.OVERWORLD_NATURAL_LOGS.generator.registerChild(block)
+    }
+}
+
+class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration, logsBlockTag: TagKey<Block>, logsItemTag: TagKey<Item>) : AbstractTreeLogBlockCard(configuration, logsBlockTag, logsItemTag) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.RAW_IRON }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
@@ -81,7 +100,7 @@ class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration) : Abstract
     }
 }
 
-class TreeWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
+class TreeWoodBlockCard(configuration: TreeBlockConfiguration, logsBlockTag: TagKey<Block>, logsItemTag: TagKey<Item>) : AbstractTreeLogBlockCard(configuration, logsBlockTag, logsItemTag) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.TERRACOTTA_ORANGE }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
@@ -93,7 +112,7 @@ class TreeWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLog
     }
 }
 
-class TreeStrippedWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
+class TreeStrippedWoodBlockCard(configuration: TreeBlockConfiguration, logsBlockTag: TagKey<Block>, logsItemTag: TagKey<Item>) : AbstractTreeLogBlockCard(configuration, logsBlockTag, logsItemTag) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.RAW_IRON }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
