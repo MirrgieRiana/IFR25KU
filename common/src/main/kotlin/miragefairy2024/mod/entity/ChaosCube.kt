@@ -443,19 +443,19 @@ class ChaosCubeEntity(entityType: EntityType<out ChaosCubeEntity>, world: Level)
 
     private class TargetGoal<T : LivingEntity>(mob: Mob, targetClass: Class<T>) : NearestAttackableTargetGoal<T>(mob, targetClass, true) {
         override fun canUse(): Boolean {
-            val world = mob.level()
-            if (world.gameTime % 20L != 0L) return false
-            if (world !is ServerLevel) return false
+            val level = mob.level()
+            if (level.gameTime % 20L != 0L) return false
+            if (level !is ServerLevel) return false
 
             val ng = run {
                 // TODO タグ
 
                 // 過去を見つめる都市では常にアクティブ
-                if (world.getBiome(mob.blockPosition()) isIn RetrospectiveCityBiomeCard.key) return@run false
+                if (level.getBiome(mob.blockPosition()) isIn RetrospectiveCityBiomeCard.key) return@run false
 
                 // 鍾乳洞の遺跡では常にアクティブ
-                val structure = world.structureManager().registryAccess()[Registries.STRUCTURE, DripstoneCavesRuinCard.key].value()
-                if (world.structureManager().getStructureAt(mob.blockPosition(), structure).isValid) return@run false
+                val structure = level.structureManager().registryAccess()[Registries.STRUCTURE, DripstoneCavesRuinCard.key].value()
+                if (level.structureManager().getStructureAt(mob.blockPosition(), structure).isValid) return@run false
 
                 true
             }

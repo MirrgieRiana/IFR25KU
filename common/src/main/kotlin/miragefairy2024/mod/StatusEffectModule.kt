@@ -28,11 +28,11 @@ class ExperienceStatusEffect : MobEffect(MobEffectCategory.BENEFICIAL, 0x2FFF00)
     override fun shouldApplyEffectTickThisTick(duration: Int, amplifier: Int) = true
     override fun applyEffectTick(entity: LivingEntity, amplifier: Int): Boolean {
         super.applyEffectTick(entity, amplifier)
-        val world = entity.level()
-        if (world.gameTime % 5 != 0L) return true
-        if (world.isServer && entity is Player) {
+        val level = entity.level()
+        if (level.gameTime % 5 != 0L) return true
+        if (level.isServer && entity is Player) {
             entity.giveExperiencePoints(1 + amplifier)
-            world.playSound(null, entity.x, entity.y, entity.z, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, (world.random.nextFloat() - world.random.nextFloat()) * 0.35F + 0.9F)
+            level.playSound(null, entity.x, entity.y, entity.z, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, (level.random.nextFloat() - level.random.nextFloat()) * 0.35F + 0.9F)
         }
         return true
     }

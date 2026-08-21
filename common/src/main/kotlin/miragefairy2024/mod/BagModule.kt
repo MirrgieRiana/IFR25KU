@@ -300,11 +300,11 @@ class BagItem(val card: BagCard, settings: Properties) : Item(settings) {
     override fun canFitInsideContainerItems() = false
 
     override fun onDestroyed(entity: ItemEntity) {
-        val world = entity.level()
-        if (world.isClientSide) return
+        val level = entity.level()
+        if (level.isClientSide) return
         val bagInventory = entity.item.getBagInventory() ?: return
         bagInventory.items.forEach { itemStack ->
-            world.addFreshEntity(ItemEntity(world, entity.x, entity.y, entity.z, itemStack))
+            level.addFreshEntity(ItemEntity(level, entity.x, entity.y, entity.z, itemStack))
         }
     }
 

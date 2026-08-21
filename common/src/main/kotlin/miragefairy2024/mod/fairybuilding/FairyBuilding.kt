@@ -184,8 +184,8 @@ abstract class FairyBuildingBlockEntity<E : FairyBuildingBlockEntity<E>>(private
     open val doMovePosition get() = false
 
     override fun render(renderingProxy: RenderingProxy, tickDelta: Float, light: Int, overlay: Int) {
-        val world = level ?: return
-        val blockState = world.getBlockState(worldPosition)
+        val level = level ?: return
+        val blockState = level.getBlockState(worldPosition)
         if (blockState isNotIn card.block()) return
         val direction = blockState.getOrNull(HorizontalDirectionalBlock.FACING) ?: return
 
@@ -244,7 +244,7 @@ class FairyAnimation(private val inventorySlotIndex: Int, private val animation:
     var pitch = position.pitch
 
     override fun tick(blockEntity: FairyBuildingBlockEntity<*>) {
-        val world = blockEntity.level ?: return
+        val level = blockEntity.level ?: return
 
         // 定位置の切り替え
         val speed = animation.getSpeed(blockEntity)
@@ -256,7 +256,7 @@ class FairyAnimation(private val inventorySlotIndex: Int, private val animation:
                 if (index >= animation.positions.size) index = 0
 
                 position = animation.positions[index]
-                countdown = animation.positions[index].duration * (1.0 + world.random.nextDouble() * 0.1)
+                countdown = animation.positions[index].duration * (1.0 + level.random.nextDouble() * 0.1)
 
             }
         }

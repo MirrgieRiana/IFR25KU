@@ -19,7 +19,7 @@ abstract class PlacedItemFeature<C : FeatureConfiguration>(codec: Codec<C>) : Fe
     abstract fun createItemStack(context: FeaturePlaceContext<C>): ItemStack?
     override fun place(context: FeaturePlaceContext<C>): Boolean {
         val random = context.random()
-        val world = context.level()
+        val level = context.level()
 
         var count = 0
         val currentBlockPos = BlockPos.MutableBlockPos()
@@ -34,7 +34,7 @@ abstract class PlacedItemFeature<C : FeatureConfiguration>(codec: Codec<C>) : Fe
             // アイテム判定
             val itemStack = createItemStack(context) ?: return@repeat // アイテムを決定できなかった
 
-            if (placePlacedItem(world, currentBlockPos, itemStack, random)) {
+            if (placePlacedItem(level, currentBlockPos, itemStack, random)) {
                 count++
             }
 

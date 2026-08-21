@@ -130,7 +130,7 @@ class RandomFairySummoningItem(val appearanceRateBonus: Double, settings: Proper
     }
 
     private fun craft(player: ServerPlayer, itemStack: ItemStack) {
-        val world = player.level()
+        val level = player.level()
 
         // 消費
         if (!player.isCreative) {
@@ -146,7 +146,7 @@ class RandomFairySummoningItem(val appearanceRateBonus: Double, settings: Proper
         val motifSet: Set<Motif> = getCommonMotifSet(player) + player.fairyDreamContainer.getOrCreate().entries
 
         // 抽選
-        val result = getRandomFairy(world.random, motifSet, appearanceRateBonus) ?: return
+        val result = getRandomFairy(level.random, motifSet, appearanceRateBonus) ?: return
 
         // 入手
         player.obtain(result.motif.createFairyItemStack(condensation = result.condensation, count = result.count))
@@ -155,7 +155,7 @@ class RandomFairySummoningItem(val appearanceRateBonus: Double, settings: Proper
         player.fairyHistoryContainer.mutate { it[result.motif] += result.condensation * result.count.toBigInteger() }
 
         // エフェクト
-        world.playSound(null, player.x, player.y, player.z, SoundEvents.DEEPSLATE_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F)
+        level.playSound(null, player.x, player.y, player.z, SoundEvents.DEEPSLATE_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F)
 
     }
 }

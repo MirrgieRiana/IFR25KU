@@ -340,19 +340,19 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
         @Suppress("DEPRECATION")
         itemStacks += super.getDrops(state, builder)
         run {
-            val world = builder.level ?: return@run
+            val level = builder.level ?: return@run
             val blockPos = builder.getOptionalParameter(LootContextParams.ORIGIN).or { return@run }.toBlockPos()
             val blockState = builder.getOptionalParameter(LootContextParams.BLOCK_STATE) ?: return@run
             val block = blockState.block
             val blockEntity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY) as? MagicPlantBlockEntity ?: return@run
             val traitStacks = blockEntity.getTraitStacks() ?: return@run
-            val traitEffects = calculateTraitEffects(world, blockPos, blockEntity, traitStacks)
+            val traitEffects = calculateTraitEffects(level, blockPos, blockEntity, traitStacks)
             val randomTraitChances = blockEntity.getRandomTraitChances()
             val player = builder.getOptionalParameter(LootContextParams.THIS_ENTITY) as? Player
             val tool = builder.getOptionalParameter(LootContextParams.TOOL)
 
             itemStacks += createSeed(traitStacks, isRare = blockEntity.isRare())
-            itemStacks += getAdditionalDrops(world, blockPos, block, blockState, traitStacks, traitEffects, randomTraitChances, player, tool)
+            itemStacks += getAdditionalDrops(level, blockPos, block, blockState, traitStacks, traitEffects, randomTraitChances, player, tool)
         }
         return itemStacks
     }
