@@ -66,20 +66,13 @@ class TreeBlockConfiguration(
 }
 
 @JvmName("blockTag")
-fun TreeBlockConfiguration.tag(tag: TagKey<Block>) {
-    blockTags += tag
-}
+fun TreeBlockConfiguration.tag(tag: TagKey<Block>) = this.also { it.blockTags += tag }
 
 @JvmName("itemTag")
-fun TreeBlockConfiguration.tag(tag: TagKey<Item>) {
-    itemTags += tag
-}
+fun TreeBlockConfiguration.tag(tag: TagKey<Item>) = this.also { it.itemTags += tag }
 
 @JvmName("blockAndItemTag")
-fun TreeBlockConfiguration.tag(blockTag: TagKey<Block>, itemTag: TagKey<Item>) {
-    blockTags += blockTag
-    itemTags += itemTag
-}
+fun TreeBlockConfiguration.tag(blockTag: TagKey<Block>, itemTag: TagKey<Item>) = this.tag(blockTag).tag(itemTag)
 
 abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
     companion object {
