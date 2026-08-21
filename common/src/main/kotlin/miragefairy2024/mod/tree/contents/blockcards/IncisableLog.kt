@@ -3,11 +3,8 @@ package miragefairy2024.mod.tree.contents.blockcards
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.contents.HaimeviskaLogBlock
-import miragefairy2024.util.generator
 import miragefairy2024.util.get
-import miragefairy2024.util.registerChild
 import net.minecraft.core.Direction
-import net.minecraft.tags.BlockTags
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
@@ -20,6 +17,5 @@ class TreeIncisableLogBlockCard(configuration: TreeBlockConfiguration) : Abstrac
     override fun init() {
         super.init()
         registerModelGeneration(block) { it.logWithHorizontal(block()) }
-        BlockTags.OVERWORLD_NATURAL_LOGS.generator.registerChild(block)
     }
 }
