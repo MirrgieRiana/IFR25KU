@@ -100,7 +100,7 @@ class PlacedItemBlock(settings: Properties) : Block(settings), EntityBlock {
     }
 
     // 格納されているアイテムをドロップする
-    override fun getCloneItemStack(world: LevelReader, pos: BlockPos, state: BlockState) = world.getBlockEntity(pos).castOrNull<PlacedItemBlockEntity>()?.itemStack ?: EMPTY_ITEM_STACK
+    override fun getCloneItemStack(level: LevelReader, pos: BlockPos, state: BlockState) = level.getBlockEntity(pos).castOrNull<PlacedItemBlockEntity>()?.itemStack ?: EMPTY_ITEM_STACK
     override fun onRemove(state: BlockState, world: Level, pos: BlockPos, newState: BlockState, moved: Boolean) {
         if (state isNotIn newState.block) run {
             val blockEntity = world.getBlockEntity(pos) as? PlacedItemBlockEntity ?: return@run

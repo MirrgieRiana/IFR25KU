@@ -170,7 +170,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
     @Suppress("OVERRIDE_DEPRECATION")
     final override fun randomTick(state: BlockState, world: ServerLevel, pos: BlockPos, random: RandomSource) = move(world, pos, state, autoPick = true)
 
-    final override fun isValidBonemealTarget(world: LevelReader, pos: BlockPos, state: BlockState) = canGrow(state)
+    final override fun isValidBonemealTarget(level: LevelReader, pos: BlockPos, state: BlockState) = canGrow(state)
     final override fun isBonemealSuccess(world: Level, random: RandomSource, pos: BlockPos, state: BlockState) = true
     final override fun performBonemeal(world: ServerLevel, random: RandomSource, pos: BlockPos, state: BlockState) = move(world, pos, state, speed = 10.0)
 
@@ -326,8 +326,8 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
     }
 
     /** 中央クリックをした際は、この植物の本来の種子を返す。 */
-    final override fun getCloneItemStack(world: LevelReader, pos: BlockPos, state: BlockState): ItemStack {
-        val blockEntity = world.getMagicPlantBlockEntity(pos) ?: return EMPTY_ITEM_STACK
+    final override fun getCloneItemStack(level: LevelReader, pos: BlockPos, state: BlockState): ItemStack {
+        val blockEntity = level.getMagicPlantBlockEntity(pos) ?: return EMPTY_ITEM_STACK
         val traitStacks = blockEntity.getTraitStacks() ?: return EMPTY_ITEM_STACK
         return createSeed(traitStacks, isRare = blockEntity.isRare())
     }
