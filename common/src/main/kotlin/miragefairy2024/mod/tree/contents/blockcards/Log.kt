@@ -3,21 +3,14 @@ package miragefairy2024.mod.tree.contents.blockcards
 import miragefairy2024.DataGenerationEvents
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
-import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_BLOCK_TAG
-import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_ITEM_TAG
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.createBaseWoodSetting
-import miragefairy2024.util.ResourceLocation
-import miragefairy2024.util.generator
 import miragefairy2024.util.get
 import miragefairy2024.util.on
-import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerDefaultLootTableGeneration
 import miragefairy2024.util.registerFlammable
 import miragefairy2024.util.registerShapedRecipeGeneration
-import miragefairy2024.util.toBlockTag
-import miragefairy2024.util.toItemTag
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry
 import net.minecraft.data.models.BlockModelGenerators.WoodProvider
 import net.minecraft.world.item.Item
@@ -38,10 +31,6 @@ abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) :
 
         // 性質
         block.registerFlammable(5, 5)
-
-        // タグ
-        HAIMEVISKA_LOGS_BLOCK_TAG.generator.registerChild(block)
-        HAIMEVISKA_LOGS_ITEM_TAG.generator.registerChild(item)
 
     }
 
@@ -75,8 +64,6 @@ class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration) : Abstract
     override fun init() {
         super.init()
         registerModelGeneration(block) { it.logWithHorizontal(block()) }
-        ResourceLocation("c", "stripped_logs").toBlockTag().generator.registerChild(block)
-        ResourceLocation("c", "stripped_logs").toItemTag().generator.registerChild(item)
         initStripped(LOG.block)
     }
 }
@@ -101,8 +88,6 @@ class TreeStrippedWoodBlockCard(configuration: TreeBlockConfiguration) : Abstrac
     override fun init() {
         super.init()
         registerModelGeneration(STRIPPED_LOG.block) { it.wood(block()) }
-        ResourceLocation("c", "stripped_woods").toBlockTag().generator.registerChild(block)
-        ResourceLocation("c", "stripped_woods").toItemTag().generator.registerChild(item)
         initStripped(WOOD.block)
         initWood(STRIPPED_LOG.item)
     }
