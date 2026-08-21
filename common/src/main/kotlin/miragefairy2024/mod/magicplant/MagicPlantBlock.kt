@@ -94,10 +94,10 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
     protected abstract fun canCross(world: Level, blockPos: BlockPos, blockState: BlockState): Boolean
 
     /** あるワールド上の地点における特性の効果を計算する。 */
-    protected fun calculateTraitEffects(world: Level, blockPos: BlockPos, blockEntity: MagicPlantBlockEntity?, traitStacks: TraitStacks): MutableTraitEffects {
+    protected fun calculateTraitEffects(level: Level, blockPos: BlockPos, blockEntity: MagicPlantBlockEntity?, traitStacks: TraitStacks): MutableTraitEffects {
         val allTraitEffects = MutableTraitEffects()
-        traitStacks.traitStackMap.forEach { (trait, level) ->
-            val traitEffects = trait.getTraitEffects(world, blockPos, blockEntity, level)
+        traitStacks.traitStackMap.forEach { (trait, level2) ->
+            val traitEffects = trait.getTraitEffects(level, blockPos, blockEntity, level2)
             if (traitEffects != null) allTraitEffects += traitEffects
         }
         return allTraitEffects
