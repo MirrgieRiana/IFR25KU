@@ -50,23 +50,23 @@ class ClientProxyImpl : ClientProxy {
     override fun getClientPlayer(): Player? = Minecraft.getInstance().player
 
     override fun getBlockColorProvider(block: Block): BlockColorProvider {
-        return BlockColorProvider { blockState, world, blockPos, tintIndex ->
-            Minecraft.getInstance().blockColors.getColor(blockState, world as BlockAndTintGetter?, blockPos, tintIndex)
+        return BlockColorProvider { blockState, level, blockPos, tintIndex ->
+            Minecraft.getInstance().blockColors.getColor(blockState, level as BlockAndTintGetter?, blockPos, tintIndex)
         }
     }
 
     override fun registerBlockColorProvider(block: () -> Block, provider: BlockColorProvider) {
-        ColorProviderRegistry.BLOCK.register({ blockState, world, blockPos, tintIndex ->
-            provider(blockState, world, blockPos, tintIndex)
+        ColorProviderRegistry.BLOCK.register({ blockState, level, blockPos, tintIndex ->
+            provider(blockState, level, blockPos, tintIndex)
         }, block())
     }
 
-    override fun getGrassBlockColorProvider() = BlockColorProvider { _, world, blockPos, _ ->
-        if (world == null || blockPos == null) GrassColor.getDefaultColor() else BiomeColors.getAverageGrassColor(world as BlockAndTintGetter, blockPos)
+    override fun getGrassBlockColorProvider() = BlockColorProvider { _, level, blockPos, _ ->
+        if (level == null || blockPos == null) GrassColor.getDefaultColor() else BiomeColors.getAverageGrassColor(level as BlockAndTintGetter, blockPos)
     }
 
-    override fun getFoliageBlockColorProvider() = BlockColorProvider { _, world, blockPos, _ ->
-        if (world == null || blockPos == null) FoliageColor.getDefaultColor() else BiomeColors.getAverageFoliageColor(world as BlockAndTintGetter, blockPos)
+    override fun getFoliageBlockColorProvider() = BlockColorProvider { _, level, blockPos, _ ->
+        if (level == null || blockPos == null) FoliageColor.getDefaultColor() else BiomeColors.getAverageFoliageColor(level as BlockAndTintGetter, blockPos)
     }
 
     override fun getItemColorProvider(item: Item): ItemColorProvider? {

@@ -40,7 +40,7 @@ class MagicPlantSeedItem(block: Block, settings: Properties) : ItemNameBlockItem
     override fun appendHoverText(stack: ItemStack, context: TooltipContext, tooltipComponents: MutableList<Component>, tooltipFlag: TooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
         val player = clientProxy?.getClientPlayer() ?: return
-        val world = player.level() ?: return
+        val level = player.level() ?: return
 
         // 特性を得る、無い場合はクリエイティブ専用
         val traitStacks = stack.getTraitStacks() ?: run {
@@ -96,17 +96,17 @@ class MagicPlantSeedItem(block: Block, settings: Properties) : ItemNameBlockItem
         val traitStackMap = if (otherTraitStacks != null) otherTraitStacks.traitStackMap.mapValues { 0 } + traitStacks.traitStackMap else traitStacks.traitStackMap // 比較対象がある場合は空特性も表示
         traitStackMap.entries
             .sortedBy { it.key }
-            .forEach { (trait, level) ->
+            .forEach { (trait, level2) ->
                 val levelText = when {
-                    otherTraitStacks == null -> text { level.toString(2)() }
+                    otherTraitStacks == null -> text { level2.toString(2)() }
 
                     else -> {
                         val otherLevel = otherTraitStacks.traitStackMap[trait] ?: 0
-                        val bits = (level max otherLevel).toString(2).length
+                        val bits = (level2 max otherLevel).toString(2).length
                         (bits - 1 downTo 0).map { bit ->
                             val mask = 1 shl bit
                             val isNegative = NegativeTraitBitsRegistry.get(trait).let { if (it == null) true else it and mask != 0 }
-                            val possession = if (level and mask != 0) 1 else 0
+                            val possession = if (level2 and mask != 0) 1 else 0
                             val otherPossession = if (otherLevel and mask != 0) 1 else 0
                             when {
                                 possession > otherPossession -> text { if (isNegative) "$possession"().darkRed else "$possession"().green }
@@ -117,7 +117,7 @@ class MagicPlantSeedItem(block: Block, settings: Properties) : ItemNameBlockItem
                     }
                 }
 
-                val traitEffects = trait.getTraitEffects(world, player.blockPosition(), world.getMagicPlantBlockEntity(player.blockPosition()), level)
+                val traitEffects = trait.getTraitEffects(level, player.blockPosition(), level.getMagicPlantBlockEntity(player.blockPosition()), level2)
                 tooltipComponents += if (traitEffects != null) {
                     val description = text {
                         traitEffects.effects
@@ -152,14 +152,14 @@ class MagicPlantSeedItem(block: Block, settings: Properties) : ItemNameBlockItem
 
     override fun isFoil(stack: ItemStack) = stack.isRare() || super.isFoil(stack)
 
-    override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
         if (user.isShiftKeyDown) {
             val itemStack = user.getItemInHand(hand)
-            if (world.isClientSide) return InteractionResultHolder.success(itemStack)
+            if (level.isClientSide) return InteractionResultHolder.success(itemStack)
             val traitStacks = itemStack.getTraitStacks() ?: TraitStacks.EMPTY
             user.openMenu(object : ExtendedScreenHandlerFactory<Pair<TraitStacks, BlockPos>> {
                 override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
-                    return TraitListScreenHandler(syncId, playerInventory, ContainerLevelAccess.create(world, player.blockPosition()), traitStacks, player.position().add(0.0, 0.5, 0.0).toBlockPos())
+                    return TraitListScreenHandler(syncId, playerInventory, ContainerLevelAccess.create(level, player.blockPosition()), traitStacks, player.position().add(0.0, 0.5, 0.0).toBlockPos())
                 }
 
                 override fun getDisplayName() = text { traitListScreenTranslation() }
@@ -168,7 +168,7 @@ class MagicPlantSeedItem(block: Block, settings: Properties) : ItemNameBlockItem
             })
             return InteractionResultHolder.consume(itemStack)
         }
-        return super.use(world, user, hand)
+        return super.use(level, user, hand)
     }
 }
 

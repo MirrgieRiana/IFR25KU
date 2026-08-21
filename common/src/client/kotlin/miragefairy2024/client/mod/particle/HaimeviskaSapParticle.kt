@@ -10,7 +10,7 @@ import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 
 @Suppress("LeakingThis")
-open class HaimeviskaSapParticle(world: ClientLevel, x: Double, y: Double, z: Double) : TextureSheetParticle(world, x, y, z) {
+open class HaimeviskaSapParticle(level: ClientLevel, x: Double, y: Double, z: Double) : TextureSheetParticle(level, x, y, z) {
     init {
         setSize(0.01F, 0.01F)
         gravity = 0.06F
@@ -49,7 +49,7 @@ open class HaimeviskaSapParticle(world: ClientLevel, x: Double, y: Double, z: Do
 
     }
 
-    class Dripping(world: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, private val particleEffect: ParticleOptions) : HaimeviskaSapParticle(world, x, y, z) {
+    class Dripping(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, private val particleEffect: ParticleOptions) : HaimeviskaSapParticle(level, x, y, z) {
         init {
             pickSprite(spriteProvider)
             gravity *= 0.01F
@@ -67,11 +67,11 @@ open class HaimeviskaSapParticle(world: ClientLevel, x: Double, y: Double, z: Do
         }
     }
 
-    class Falling(world: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, private val particleEffect: ParticleOptions) : HaimeviskaSapParticle(world, x, y, z) {
+    class Falling(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, private val particleEffect: ParticleOptions) : HaimeviskaSapParticle(level, x, y, z) {
         init {
             pickSprite(spriteProvider)
             gravity = 0.01F
-            lifetime = (64.0 / (world.random.nextDouble() * 0.8 + 0.2)).toInt()
+            lifetime = (64.0 / (level.random.nextDouble() * 0.8 + 0.2)).toInt()
         }
 
         override fun updateVelocity() {
@@ -83,10 +83,10 @@ open class HaimeviskaSapParticle(world: ClientLevel, x: Double, y: Double, z: Do
         }
     }
 
-    class Landing(world: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet) : HaimeviskaSapParticle(world, x, y, z) {
+    class Landing(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet) : HaimeviskaSapParticle(level, x, y, z) {
         init {
             pickSprite(spriteProvider)
-            lifetime = (128.0 / (world.random.nextDouble() * 0.8 + 0.2)).toInt()
+            lifetime = (128.0 / (level.random.nextDouble() * 0.8 + 0.2)).toInt()
         }
     }
 }
