@@ -3,14 +3,10 @@ package miragefairy2024.mod.tree.contents.blockcards
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
-import miragefairy2024.util.generator
 import miragefairy2024.util.registerBlockFamily
-import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerLootTableGeneration
 import net.minecraft.data.models.model.TexturedModel
-import net.minecraft.tags.BlockTags
-import net.minecraft.tags.ItemTags
 import net.minecraft.world.item.DoubleHighBlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
@@ -37,10 +33,6 @@ class TreeDoorBlockCard(configuration: TreeBlockConfiguration, private val block
 
         // レンダリング
         block.registerCutoutRenderLayer()
-
-        // タグ
-        BlockTags.WOODEN_DOORS.generator.registerChild(block)
-        ItemTags.WOODEN_DOORS.generator.registerChild(item)
 
     }
 }
