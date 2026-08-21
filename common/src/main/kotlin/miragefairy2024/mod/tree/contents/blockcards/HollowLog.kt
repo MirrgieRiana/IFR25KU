@@ -12,10 +12,7 @@ import miragefairy2024.util.LootTable
 import miragefairy2024.util.get
 import miragefairy2024.util.registerLootTableGeneration
 import net.minecraft.core.registries.Registries
-import net.minecraft.tags.TagKey
-import net.minecraft.world.item.Item
 import net.minecraft.world.item.enchantment.Enchantments
-import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
@@ -23,10 +20,8 @@ import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 class TreeHollowLogBlockCard(
     configuration: TreeBlockConfiguration,
     log: () -> TreeBlockCard,
-    logsBlockTag: TagKey<Block>,
-    logsItemTag: TagKey<Item>,
     mapColor: MapColor,
-) : TreeHorizontalFacingLogBlockCard(configuration, log, logsBlockTag, logsItemTag, mapColor) {
+) : TreeHorizontalFacingLogBlockCard(configuration, log, mapColor) {
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = HollowHaimeviskaLogBlock(properties)
 
     context(ModContext)
