@@ -46,6 +46,7 @@ import net.fabricmc.fabric.api.`object`.builder.v1.block.type.WoodTypeBuilder
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
+import net.minecraft.tags.TagKey
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
@@ -59,7 +60,26 @@ class TreeBlockConfiguration(
     val path: String,
     val name: EnJa,
     val poemList: PoemList,
-)
+) {
+    val blockTags = mutableListOf<TagKey<Block>>()
+    val itemTags = mutableListOf<TagKey<Item>>()
+}
+
+@JvmName("blockTag")
+fun TreeBlockConfiguration.tag(tag: TagKey<Block>) {
+    blockTags += tag
+}
+
+@JvmName("itemTag")
+fun TreeBlockConfiguration.tag(tag: TagKey<Item>) {
+    itemTags += tag
+}
+
+@JvmName("blockAndItemTag")
+fun TreeBlockConfiguration.tag(blockTag: TagKey<Block>, itemTag: TagKey<Item>) {
+    blockTags += blockTag
+    itemTags += itemTag
+}
 
 abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
     companion object {
@@ -179,6 +199,14 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         block.enJa(configuration.name)
         item.registerPoem(configuration.poemList)
         item.registerPoemGeneration(configuration.poemList)
+
+        // タグ
+        configuration.blockTags.forEach { tag ->
+            tag.generator.registerChild(block)
+        }
+        configuration.itemTags.forEach { tag ->
+            tag.generator.registerChild(item)
+        }
 
     }
 }
