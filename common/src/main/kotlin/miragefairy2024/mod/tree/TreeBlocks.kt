@@ -11,15 +11,19 @@ import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.mod.tree.contents.DrippingHaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.HaimeviskaLeavesBlock
 import miragefairy2024.mod.tree.contents.HaimeviskaLogBlock
+import miragefairy2024.mod.tree.contents.PlasticTreeLogBlock
 import miragefairy2024.mod.tree.contents.HollowHaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.IncisedHaimeviskaLogBlock
+import miragefairy2024.mod.tree.contents.IncisedPlasticTreeLogBlock
 import miragefairy2024.mod.tree.contents.blockcards.TreeBricksBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeChargeableLeavesBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeDoorBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeDrippingLogBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeHollowLogBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeIncisableLogBlockCard
+import miragefairy2024.mod.tree.contents.blockcards.TreeIncisablePlasticTreeLogBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeIncisedLogBlockCard
+import miragefairy2024.mod.tree.contents.blockcards.TreeIncisedPlasticTreeLogBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeLogBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreePlanksBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreePlanksButtonBlockCard
@@ -109,17 +113,17 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             PoemList(1)
                 .poem(EnJa("Do fairy trees have qualia of pain?", "動物を守るということ。"))
                 .description(EnJa("Produces sap over time", "時間経過で樹液を生産")),
-        ).tag(HAIMEVISKA_LOGS_BLOCK_TAG, HAIMEVISKA_LOGS_ITEM_TAG).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeIncisedLogBlockCard(it) }
+        ).tag(HAIMEVISKA_LOGS_BLOCK_TAG, HAIMEVISKA_LOGS_ITEM_TAG).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeIncisedLogBlockCard(it) { LOG } }
         val DRIPPING_LOG = !TreeBlockConfiguration(
             "dripping_haimeviska_log", EnJa("Dripping Haimeviska Log", "滴るハイメヴィスカの原木"),
             PoemList(1)
                 .poem(EnJa("A spirit named 'glucose'", "霊界より降りしもの。"))
                 .description(EnJa("Harvest sap when used", "使用時、樹液を収穫")),
-        ).tag(HAIMEVISKA_LOGS_BLOCK_TAG, HAIMEVISKA_LOGS_ITEM_TAG).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeDrippingLogBlockCard(it) }
+        ).tag(HAIMEVISKA_LOGS_BLOCK_TAG, HAIMEVISKA_LOGS_ITEM_TAG).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeDrippingLogBlockCard(it) { LOG } }
         val HOLLOW_LOG = !TreeBlockConfiguration(
             "hollow_haimeviska_log", EnJa("Hollow Haimeviska Log", "ハイメヴィスカの樹洞"),
             PoemList(1).poem(EnJa("Auric conceptual attractor", "限界巡回アステリア。")),
-        ).tag(HAIMEVISKA_LOGS_BLOCK_TAG, HAIMEVISKA_LOGS_ITEM_TAG).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeHollowLogBlockCard(it) }
+        ).tag(HAIMEVISKA_LOGS_BLOCK_TAG, HAIMEVISKA_LOGS_ITEM_TAG).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeHollowLogBlockCard(it) { LOG } }
         val PLANKS = !TreeBlockConfiguration(
             "haimeviska_planks", EnJa("Haimeviska Planks", "ハイメヴィスカの板材"),
             PoemList(1).poem(EnJa("Flexible and friendly, good for interior", "考える、壁。")),
@@ -178,7 +182,13 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             PoemList(1)
                 .poem(EnJa("TODO", "TODO"))
                 .description(EnJa("Can be incised with a sword", "剣を使って傷を付けられる")),
-        ).tag(PLASTIC_TREE_LOGS_BLOCK_TAG, PLASTIC_TREE_LOGS_ITEM_TAG).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeIncisableLogBlockCard(it, MapColor.SAND, MapColor.COLOR_YELLOW) }
+        ).tag(PLASTIC_TREE_LOGS_BLOCK_TAG, PLASTIC_TREE_LOGS_ITEM_TAG).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeIncisablePlasticTreeLogBlockCard(it, MapColor.SAND, MapColor.COLOR_YELLOW) }
+        val INCISED_PLASTIC_TREE_LOG = !TreeBlockConfiguration(
+            "incised_plastic_tree_log", EnJa("Incised Plastic Tree Log", "傷の付いたプラノキの原木"),
+            PoemList(1)
+                .poem(EnJa("TODO", "TODO"))
+                .description(EnJa("Produces sap over time", "時間経過で樹液を生産")),
+        ).tag(PLASTIC_TREE_LOGS_BLOCK_TAG, PLASTIC_TREE_LOGS_ITEM_TAG).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeIncisedPlasticTreeLogBlockCard(it) { PLASTIC_TREE_LOG } }
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)
@@ -241,6 +251,8 @@ fun initTreeBlocks() {
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("incised_haimeviska_log")) { IncisedHaimeviskaLogBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("dripping_haimeviska_log")) { DrippingHaimeviskaLogBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("hollow_haimeviska_log")) { HollowHaimeviskaLogBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("plastic_tree_log")) { PlasticTreeLogBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("incised_plastic_tree_log")) { IncisedPlasticTreeLogBlock.CODEC }.register()
 
     // Wood Type
     HAIMEVISKA_BLOCK_SET_TYPE = BlockSetTypeBuilder().register(MirageFairy2024.identifier("haimeviska"))
