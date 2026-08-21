@@ -1,6 +1,7 @@
 package miragefairy2024.mod.tree.contents.blockcards
 
 import miragefairy2024.ModContext
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.contents.IncisedHaimeviskaLogBlock
 import miragefairy2024.util.ItemLootPoolEntry
@@ -9,9 +10,7 @@ import miragefairy2024.util.LootTable
 import miragefairy2024.util.registerLootTableGeneration
 import net.minecraft.world.level.block.state.BlockBehaviour
 
-class TreeIncisedLogBlockCard(configuration: TreeBlockConfiguration) : TreeHorizontalFacingLogBlockCard(configuration) {
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = IncisedHaimeviskaLogBlock(properties)
-
+abstract class AbstractTreeIncisedLogBlockCard(configuration: TreeBlockConfiguration, sourceLog: () -> TreeBlockCard) : TreeHorizontalFacingLogBlockCard(configuration, sourceLog) {
     context(ModContext)
     override fun init() {
         super.init()
@@ -21,7 +20,7 @@ class TreeIncisedLogBlockCard(configuration: TreeBlockConfiguration) : TreeHoriz
                 LootPool(ItemLootPoolEntry(item())) {
                     `when`(provider.hasSilkTouch())
                 },
-                LootPool(ItemLootPoolEntry(LOG.item())) {
+                LootPool(ItemLootPoolEntry(sourceLog().item())) {
                     `when`(provider.doesNotHaveSilkTouch())
                 },
             ) {
@@ -30,4 +29,8 @@ class TreeIncisedLogBlockCard(configuration: TreeBlockConfiguration) : TreeHoriz
         }
 
     }
+}
+
+class TreeIncisedLogBlockCard(configuration: TreeBlockConfiguration, sourceLog: () -> TreeBlockCard) : AbstractTreeIncisedLogBlockCard(configuration, sourceLog) {
+    override suspend fun createBlock(properties: BlockBehaviour.Properties) = IncisedHaimeviskaLogBlock(properties)
 }
