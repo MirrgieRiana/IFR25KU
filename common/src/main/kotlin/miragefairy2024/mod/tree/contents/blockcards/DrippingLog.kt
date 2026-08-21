@@ -3,6 +3,7 @@ package miragefairy2024.mod.tree.contents.blockcards
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.registerHarvestNotation
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.contents.DrippingHaimeviskaLogBlock
 import miragefairy2024.util.ItemLootPoolEntry
@@ -16,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition
 
-class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration) : TreeHorizontalFacingLogBlockCard(configuration) {
+class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration, sourceLog: () -> TreeBlockCard) : TreeHorizontalFacingLogBlockCard(configuration, sourceLog) {
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = DrippingHaimeviskaLogBlock(properties)
 
     context(ModContext)
