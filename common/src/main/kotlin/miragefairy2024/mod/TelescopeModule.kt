@@ -165,7 +165,7 @@ fun initTelescopeModule() {
     TelescopeBlock.MINUTES_TRANSLATION.enJa()
     TelescopeBlock.SECONDS_TRANSLATION.enJa()
 
-    registerServerDebugItem("reset_telescope_mission", Items.STRING.toTextureSource(), 0xFFDDC442.toInt()) { world, player, _, _ ->
+    registerServerDebugItem("reset_telescope_mission", Items.STRING.toTextureSource(), 0xFFDDC442.toInt()) { level, player, _, _ ->
         player.telescopeMission.set(null)
         player.displayClientMessage(text { "The last time the telescope was used has been reset"() }, true)
     }
@@ -219,7 +219,7 @@ class TelescopeBlock(settings: Properties) : SimpleHorizontalFacingBlock(setting
     override fun isPathfindable(state: BlockState, pathComputationType: PathComputationType) = false
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun getShape(state: BlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext) = FACING_TO_SHAPE[state[FACING]]
+    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = FACING_TO_SHAPE[state[FACING]]
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun useWithoutItem(state: BlockState, level: Level, pos: BlockPos, player: Player, hitResult: BlockHitResult): InteractionResult {
@@ -242,7 +242,7 @@ class TelescopeBlock(settings: Properties) : SimpleHorizontalFacingBlock(setting
         return InteractionResult.CONSUME
     }
 
-    override fun animateTick(state: BlockState, world: Level, pos: BlockPos, random: RandomSource) {
+    override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
         val player = clientProxy!!.getClientPlayer() ?: return
 
         val now = Instant.now()
@@ -253,7 +253,7 @@ class TelescopeBlock(settings: Properties) : SimpleHorizontalFacingBlock(setting
             val x = pos.x.toDouble() + 0.0 + random.nextDouble() * 1.0
             val y = pos.y.toDouble() + 0.0 + random.nextDouble() * 0.5
             val z = pos.z.toDouble() + 0.0 + random.nextDouble() * 1.0
-            world.addParticle(
+            level.addParticle(
                 ParticleTypeCard.MISSION.particleType,
                 x, y, z,
                 random.nextGaussian() * 0.00,

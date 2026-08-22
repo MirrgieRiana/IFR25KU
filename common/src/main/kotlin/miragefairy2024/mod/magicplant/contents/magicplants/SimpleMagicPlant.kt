@@ -108,21 +108,21 @@ abstract class SimpleMagicPlantBlock(private val card: SimpleMagicPlantCard<*>, 
     private val outlineShapesCache = card.outlineShapes.toTypedArray()
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun getShape(state: BlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext) = outlineShapesCache[getAge(state)]
+    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = outlineShapesCache[getAge(state)]
 
 
     // Magic Plant
 
-    override fun canCross(world: Level, blockPos: BlockPos, blockState: BlockState) = isMaxAge(blockState)
+    override fun canCross(level: Level, blockPos: BlockPos, blockState: BlockState) = isMaxAge(blockState)
     override fun canGrow(blockState: BlockState) = !isMaxAge(blockState)
     override fun getBlockStateAfterGrowth(blockState: BlockState, amount: Int) = withAge(getAge(blockState) + amount atMost maxAge)
     override fun canPick(blockState: BlockState) = isMaxAge(blockState)
     override fun getBlockStateAfterPicking(blockState: BlockState) = withAge(0)
 
-    override fun getAdditionalDrops(world: Level, blockPos: BlockPos, block: Block, blockState: BlockState, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, randomTraitChances: Map<Trait, Double>, player: Player?, tool: ItemStack?): List<ItemStack> {
+    override fun getAdditionalDrops(level: Level, blockPos: BlockPos, block: Block, blockState: BlockState, traitStacks: TraitStacks, traitEffects: MutableTraitEffects, randomTraitChances: Map<Trait, Double>, player: Player?, tool: ItemStack?): List<ItemStack> {
         val drops = mutableListOf<ItemStack>()
 
-        val fortune = if (tool != null) EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, Enchantments.FORTUNE], tool).toDouble() else 0.0
+        val fortune = if (tool != null) EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, Enchantments.FORTUNE], tool).toDouble() else 0.0
         val luck = player?.getAttributeValue(Attributes.LUCK) ?: 0.0
 
         val seedGeneration = traitEffects[TraitEffectKeyCard.SEEDS_PRODUCTION.traitEffectKey]
@@ -137,33 +137,33 @@ abstract class SimpleMagicPlantBlock(private val card: SimpleMagicPlantCard<*>, 
         val seedsDilution = traitEffects[TraitEffectKeyCard.SEEDS_DILUTION.traitEffectKey]
 
         if (isMaxAge(blockState)) {
-            val maxSeeds = world.random.randomInt(3.0 + seedsDilution)
-            val rawCount = world.random.randomInt(card.baseSeedGeneration * seedGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
+            val maxSeeds = level.random.randomInt(3.0 + seedsDilution)
+            val rawCount = level.random.randomInt(card.baseSeedGeneration * seedGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
             val count = rawCount atMost maxSeeds
             val condensationFactor = rawCount.toDouble() / count.toDouble()
             repeat(count) {
-                drops += calculateCrossedSeed(world, blockPos, traitStacks, randomTraitChances, crossbreeding, mutation, condensationFactor)
+                drops += calculateCrossedSeed(level, blockPos, traitStacks, randomTraitChances, crossbreeding, mutation, condensationFactor)
             }
         }
 
         if (isMaxAge(blockState)) {
-            val count = world.random.randomInt(card.baseFruitGeneration * fruitGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
-            if (count > 0) drops += card.getFruitDrops(count, world.random)
+            val count = level.random.randomInt(card.baseFruitGeneration * fruitGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
+            if (count > 0) drops += card.getFruitDrops(count, level.random)
         }
 
         if (isMaxAge(blockState)) {
-            val count = world.random.randomInt(card.baseLeafGeneration * leafGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
-            if (count > 0) drops += card.getLeafDrops(count, world.random)
+            val count = level.random.randomInt(card.baseLeafGeneration * leafGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
+            if (count > 0) drops += card.getLeafDrops(count, level.random)
         }
 
         if (isMaxAge(blockState)) {
-            val count = world.random.randomInt(card.baseRareGeneration * rareGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
-            if (count > 0) drops += card.getRareDrops(count, world.random)
+            val count = level.random.randomInt(card.baseRareGeneration * rareGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
+            if (count > 0) drops += card.getRareDrops(count, level.random)
         }
 
         if (isMaxAge(blockState)) {
-            val count = world.random.randomInt(card.baseSpecialGeneration * specialGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
-            if (count > 0) drops += card.getSpecialDrops(count, world.random)
+            val count = level.random.randomInt(card.baseSpecialGeneration * specialGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
+            if (count > 0) drops += card.getSpecialDrops(count, level.random)
         }
 
         return drops

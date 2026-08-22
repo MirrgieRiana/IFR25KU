@@ -86,28 +86,28 @@ class PlacedItemBlock(settings: Properties) : Block(settings), EntityBlock {
     override fun newBlockEntity(pos: BlockPos, state: BlockState) = PlacedItemBlockEntity(pos, state)
 
     @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
-    override fun triggerEvent(state: BlockState, world: Level, pos: BlockPos, type: Int, data: Int): Boolean {
-        super.triggerEvent(state, world, pos, type, data)
-        val blockEntity = world.getBlockEntity(pos) ?: return false
+    override fun triggerEvent(state: BlockState, level: Level, pos: BlockPos, type: Int, data: Int): Boolean {
+        super.triggerEvent(state, level, pos, type, data)
+        val blockEntity = level.getBlockEntity(pos) ?: return false
         return blockEntity.triggerEvent(type, data)
     }
 
     // レンダリング
     override fun getRenderShape(state: BlockState) = RenderShape.ENTITYBLOCK_ANIMATED
-    override fun getShape(state: BlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
-        val blockEntity = world.getBlockEntity(pos) as? PlacedItemBlockEntity ?: return Shapes.block()
+    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
+        val blockEntity = level.getBlockEntity(pos) as? PlacedItemBlockEntity ?: return Shapes.block()
         return blockEntity.shapeCache ?: Shapes.block()
     }
 
     // 格納されているアイテムをドロップする
     override fun getCloneItemStack(level: LevelReader, pos: BlockPos, state: BlockState) = level.getBlockEntity(pos).castOrNull<PlacedItemBlockEntity>()?.itemStack ?: EMPTY_ITEM_STACK
-    override fun onRemove(state: BlockState, world: Level, pos: BlockPos, newState: BlockState, moved: Boolean) {
+    override fun onRemove(state: BlockState, level: Level, pos: BlockPos, newState: BlockState, moved: Boolean) {
         if (state isNotIn newState.block) run {
-            val blockEntity = world.getBlockEntity(pos) as? PlacedItemBlockEntity ?: return@run
-            popResource(world, pos, blockEntity.itemStack)
+            val blockEntity = level.getBlockEntity(pos) as? PlacedItemBlockEntity ?: return@run
+            popResource(level, pos, blockEntity.itemStack)
         }
         @Suppress("DEPRECATION")
-        super.onRemove(state, world, pos, newState, moved)
+        super.onRemove(state, level, pos, newState, moved)
     }
 
 }
