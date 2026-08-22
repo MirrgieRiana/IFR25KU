@@ -315,14 +315,14 @@ class TraitCard(
         override val primaryEffect = this@TraitCard.traitEffectKeyEntries.first().traitEffectKey
         override val traitEffectKeyEntries = this@TraitCard.traitEffectKeyEntries
 
-        override fun getTraitEffects(level: Level, blockPos: BlockPos, blockEntity: MagicPlantBlockEntity?, level2: Int): MutableTraitEffects? {
+        override fun getTraitEffects(level: Level, blockPos: BlockPos, blockEntity: MagicPlantBlockEntity?, traitLevel: Int): MutableTraitEffects? {
             val context = TraitConditionContext(level, blockPos, blockEntity)
             val factor = traitConditionCards.map { it.traitCondition.getFactor(context) }.fold(1.0) { a, b -> a * b }
             return if (factor != 0.0) {
                 val traitEffects = MutableTraitEffects()
                 this@TraitCard.traitEffectKeyEntries.forEach {
                     fun <T : Any> f(traitEffectKey: TraitEffectKey<T>) {
-                        traitEffects[traitEffectKey] = traitEffectKey.getValue(it.factor * getTraitPower(level2) * factor)
+                        traitEffects[traitEffectKey] = traitEffectKey.getValue(it.factor * getTraitPower(traitLevel) * factor)
                     }
                     f(it.traitEffectKey)
                 }

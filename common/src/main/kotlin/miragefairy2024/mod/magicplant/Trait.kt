@@ -38,7 +38,7 @@ abstract class Trait(val style: Style, val poem: Component) : Comparable<Trait> 
     abstract val traitEffectKeyEntries: List<TraitEffectKeyEntry>
 
     /** 呼び出された時点でそこにブロックの実体が存在しない場合があります。 */
-    abstract fun getTraitEffects(level: Level, blockPos: BlockPos, blockEntity: MagicPlantBlockEntity?, level2: Int): MutableTraitEffects?
+    abstract fun getTraitEffects(level: Level, blockPos: BlockPos, blockEntity: MagicPlantBlockEntity?, traitLevel: Int): MutableTraitEffects?
 
     override fun compareTo(other: Trait): Int {
         (this.primaryEffect.sortValue cmp other.primaryEffect.sortValue).let { if (it != 0) return it }

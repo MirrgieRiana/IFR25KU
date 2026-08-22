@@ -84,9 +84,9 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
     }
 
     fun setStatus(status: FairyFactoryBlock.Status) {
-        val world = level ?: return
+        val level = level ?: return
         if (blockState[FairyFactoryBlock.STATUS] != status) {
-            world.setBlock(worldPosition, blockState.with(FairyFactoryBlock.STATUS, status), Block.UPDATE_ALL)
+            level.setBlock(worldPosition, blockState.with(FairyFactoryBlock.STATUS, status), Block.UPDATE_ALL)
         }
     }
 
@@ -107,8 +107,8 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
     var folia = 0
     private var foliaCollectionCooldown = 0
 
-    override fun serverTick(world: Level, pos: BlockPos, state: BlockState) {
-        super.serverTick(world, pos, state)
+    override fun serverTick(level: Level, pos: BlockPos, state: BlockState) {
+        super.serverTick(level, pos, state)
         if (foliaCollectionCooldown > 0) {
             foliaCollectionCooldown--
         } else {
@@ -120,24 +120,24 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
     }
 
     private fun collectFolia() {
-        val world = level ?: return
+        val level = level ?: return
 
         // 最大200ブロックのハイメヴィスカの原木を探す
         val logs = blockVisitor(listOf(worldPosition), maxCount = 200, neighborType = NeighborType.VERTICES) { _, _, toBlockPos ->
-            world.getBlockState(toBlockPos) isIn FAIRY_BUILDING_BLOCK_TAG
+            level.getBlockState(toBlockPos) isIn FAIRY_BUILDING_BLOCK_TAG
         }.map { it.second }.toList()
 
         // 最大距離6までの葉をすべて探す
         var changed = false
         run finished@{
             blockVisitor(logs, visitOrigins = false, maxDistance = 6) { _, _, toBlockPos ->
-                world.getBlockState(toBlockPos) isIn TreeBlockCard.LEAVES.block()
+                level.getBlockState(toBlockPos) isIn TreeBlockCard.LEAVES.block()
             }.forEach { (_, blockPos) ->
-                val blockState = world.getBlockState(blockPos)
+                val blockState = level.getBlockState(blockPos)
                 if (blockState[HaimeviskaLeavesBlock.CHARGED]) {
                     folia += 1000
                     changed = true
-                    world.setBlock(blockPos, blockState.with(HaimeviskaLeavesBlock.CHARGED, false), Block.UPDATE_CLIENTS)
+                    level.setBlock(blockPos, blockState.with(HaimeviskaLeavesBlock.CHARGED, false), Block.UPDATE_CLIENTS)
                     if (folia >= card.maxFolia) return@finished
                 }
             }
