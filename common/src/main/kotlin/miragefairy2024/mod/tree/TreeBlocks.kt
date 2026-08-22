@@ -45,6 +45,7 @@ import miragefairy2024.util.toItemTag
 import net.fabricmc.fabric.api.`object`.builder.v1.block.type.BlockSetTypeBuilder
 import net.fabricmc.fabric.api.`object`.builder.v1.block.type.WoodTypeBuilder
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
@@ -57,6 +58,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.BlockSetType
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.minecraft.world.level.block.state.properties.WoodType
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature
 import net.minecraft.world.level.material.MapColor
 
 interface TreeConfiguration {
@@ -67,6 +69,8 @@ interface TreeConfiguration {
     fun getBlockSetType(): BlockSetType
     fun getWoodType(): WoodType
     fun getTreeGrowerName(): ResourceLocation
+    fun getGiantConfiguredFeatureKey(): ResourceKey<ConfiguredFeature<*, *>>
+    fun getSmallConfiguredFeatureKey(): ResourceKey<ConfiguredFeature<*, *>>
 }
 
 class TreeBlockConfiguration(
@@ -109,7 +113,7 @@ private fun TreeBlockConfiguration.pressurePlate(parent: TreeBlockCard) = this.t
 private fun TreeBlockConfiguration.door(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_DOORS, ItemTags.WOODEN_DOORS).let { TreeDoorBlockCard(it, { this.tree.getBlockSetType() }, parent.block) }
 private fun TreeBlockConfiguration.trapdoor(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_TRAPDOORS, ItemTags.WOODEN_TRAPDOORS).let { TreeTrapdoorBlockCard(it, { this.tree.getBlockSetType() }, parent.block) }
 private fun TreeBlockConfiguration.bricks(input: TreeBlockCard) = this.tag(BlockTags.PLANKS, ItemTags.PLANKS).let { TreeBricksBlockCard(it, input.item) }
-private fun TreeBlockConfiguration.sapling() = this.tag(BlockTags.SAPLINGS, ItemTags.SAPLINGS).let { TreeSaplingBlockCard(it, this.tree.getTreeGrowerName()) }
+private fun TreeBlockConfiguration.sapling() = this.tag(BlockTags.SAPLINGS, ItemTags.SAPLINGS).let { TreeSaplingBlockCard(it, this.tree.getTreeGrowerName(), this.tree.getGiantConfiguredFeatureKey(), this.tree.getSmallConfiguredFeatureKey()) }
 
 abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
     companion object {
@@ -124,6 +128,20 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             override fun getBlockSetType() = HAIMEVISKA_BLOCK_SET_TYPE
             override fun getWoodType() = HAIMEVISKA_WOOD_TYPE
             override fun getTreeGrowerName() = MirageFairy2024.identifier("haimeviska")
+            override fun getGiantConfiguredFeatureKey() = GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY
+            override fun getSmallConfiguredFeatureKey() = SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY
+        }
+
+        val PLASTIC_TREE_TREE_CONFIGURATION = object : TreeConfiguration {
+            override fun getWoodMapColor() = MapColor.COLOR_YELLOW
+            override fun getPlankMapColor() = MapColor.SAND
+            override fun getBlockTag() = HAIMEVISKA_LOGS_BLOCK_TAG // プラノキの原木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+            override fun getItemTag() = HAIMEVISKA_LOGS_ITEM_TAG // プラノキの原木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+            override fun getBlockSetType() = HAIMEVISKA_BLOCK_SET_TYPE // プラノキの板材がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+            override fun getWoodType() = HAIMEVISKA_WOOD_TYPE // プラノキの板材がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+            override fun getTreeGrowerName() = MirageFairy2024.identifier("plastic_tree")
+            override fun getGiantConfiguredFeatureKey() = GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY // プラノキの樹木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+            override fun getSmallConfiguredFeatureKey() = SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY // プラノキの樹木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
         }
 
         val LEAVES = !TreeBlockConfiguration(
@@ -215,6 +233,11 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val SAPLING = !TreeBlockConfiguration(
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_sapling", EnJa("Haimeviska Sapling", "ハイメヴィスカの苗木"),
             PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
+        ).sapling()
+
+        val PLASTIC_TREE_SAPLING = !TreeBlockConfiguration(
+            PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_sapling", EnJa("Plastic Tree Sapling", "プラノキの苗木"),
+            PoemList(1).poem(EnJa("TODO", "TODO")),
         ).sapling()
     }
 
