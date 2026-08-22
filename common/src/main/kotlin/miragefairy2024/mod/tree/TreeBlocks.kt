@@ -126,6 +126,16 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             override fun getTreeGrowerName() = MirageFairy2024.identifier("haimeviska")
         }
 
+        val PLASTIC_TREE_TREE_CONFIGURATION = object : TreeConfiguration {
+            override fun getWoodMapColor() = MapColor.COLOR_YELLOW
+            override fun getPlankMapColor() = MapColor.SAND
+            override fun getBlockTag() = PLASTIC_TREE_LOGS_BLOCK_TAG
+            override fun getItemTag() = PLASTIC_TREE_LOGS_ITEM_TAG
+            override fun getBlockSetType() = HAIMEVISKA_BLOCK_SET_TYPE // プラノキの板材がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+            override fun getWoodType() = HAIMEVISKA_WOOD_TYPE // プラノキの板材がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+            override fun getTreeGrowerName() = MirageFairy2024.identifier("plastic_tree")
+        }
+
         val LEAVES = !TreeBlockConfiguration(
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_leaves", EnJa("Haimeviska Leaves", "ハイメヴィスカの葉"),
             PoemList(1).poem(EnJa("All original flowers are consumed by ivy", "妖精になれる花、なれない花。")),
@@ -216,6 +226,13 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_sapling", EnJa("Haimeviska Sapling", "ハイメヴィスカの苗木"),
             PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
         ).sapling()
+
+        val PLASTIC_TREE_LOG = !TreeBlockConfiguration(
+            PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_log", EnJa("Plastic Tree Log", "プラノキの原木"),
+            PoemList(1)
+                .poem(EnJa("TODO", "TODO"))
+                .description(EnJa("Can be incised with a sword", "剣を使って傷を付けられる")),
+        ).log()
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)
@@ -263,6 +280,9 @@ lateinit var HAIMEVISKA_WOOD_TYPE: WoodType
 val HAIMEVISKA_LOGS_BLOCK_TAG = MirageFairy2024.identifier("haimeviska_logs").toBlockTag()
 val HAIMEVISKA_LOGS_ITEM_TAG = MirageFairy2024.identifier("haimeviska_logs").toItemTag()
 
+val PLASTIC_TREE_LOGS_BLOCK_TAG = MirageFairy2024.identifier("plastic_tree_logs").toBlockTag()
+val PLASTIC_TREE_LOGS_ITEM_TAG = MirageFairy2024.identifier("plastic_tree_logs").toItemTag()
+
 context(ModContext)
 fun initTreeBlocks() {
 
@@ -285,5 +305,9 @@ fun initTreeBlocks() {
     HAIMEVISKA_LOGS_ITEM_TAG.enJa(EnJa("Haimeviska Logs", "ハイメヴィスカの原木"))
     BlockTags.LOGS_THAT_BURN.generator.registerChild(HAIMEVISKA_LOGS_BLOCK_TAG)
     ItemTags.LOGS_THAT_BURN.generator.registerChild(HAIMEVISKA_LOGS_ITEM_TAG)
+    PLASTIC_TREE_LOGS_BLOCK_TAG.enJa(EnJa("Plastic Tree Logs", "プラノキの原木"))
+    PLASTIC_TREE_LOGS_ITEM_TAG.enJa(EnJa("Plastic Tree Logs", "プラノキの原木"))
+    BlockTags.LOGS_THAT_BURN.generator.registerChild(PLASTIC_TREE_LOGS_BLOCK_TAG)
+    ItemTags.LOGS_THAT_BURN.generator.registerChild(PLASTIC_TREE_LOGS_ITEM_TAG)
 
 }
