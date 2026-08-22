@@ -8,6 +8,9 @@ import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.enchantment.AREA_MINING_ENCHANTABLE_ITEM_TAG
 import miragefairy2024.mod.enchantment.BUILDERS_ROD_ITEM_TAG
 import miragefairy2024.mod.enchantment.EnchantmentCard
+import miragefairy2024.mod.mantle.BRIDGMANITES_ITEM_TAG
+import miragefairy2024.mod.mantle.RINGWOODITES_ITEM_TAG
+import miragefairy2024.mod.mantle.WADSLEYITES_ITEM_TAG
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.Shape
@@ -534,6 +537,81 @@ class ToolCard(
             FairySwordConfiguration(ToolMaterialCard.FAIRY_PLASTIC).enchantment(Enchantments.SWEEPING_EDGE, 3).collection().obtainFairy(81.0),
         ) { registerSwordRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
 
+        val BRIDGMANITE_PICKAXE = !ToolCard(
+            "bridgmanite_pickaxe", EnJa("Bridgmanite Pickaxe", "ブリッジマナイトのつるはし"),
+            PoemList(5).poem(EnJa("TODO", "TODO")),
+            FairyPickaxeConfiguration(ToolMaterialCard.BRIDGMANITE).fireResistant().selfMending(5),
+        ) { registerPickaxeRecipeGeneration(item, BRIDGMANITES_ITEM_TAG) }
+        val BRIDGMANITE_AXE = !ToolCard(
+            "bridgmanite_axe", EnJa("Bridgmanite Axe", "ブリッジマナイトの斧"),
+            PoemList(5).poem(EnJa("TODO", "TODO")),
+            FairyAxeConfiguration(ToolMaterialCard.BRIDGMANITE).fireResistant().selfMending(5),
+        ) { registerAxeRecipeGeneration(item, BRIDGMANITES_ITEM_TAG) }
+        val BRIDGMANITE_SHOVEL = !ToolCard(
+            "bridgmanite_shovel", EnJa("Bridgmanite Shovel", "ブリッジマナイトのシャベル"),
+            PoemList(5).poem(EnJa("TODO", "TODO")),
+            FairyShovelConfiguration(ToolMaterialCard.BRIDGMANITE).fireResistant().selfMending(5),
+        ) { registerShovelRecipeGeneration(item, BRIDGMANITES_ITEM_TAG) }
+        val BRIDGMANITE_HOE = !ToolCard(
+            "bridgmanite_hoe", EnJa("Bridgmanite Hoe", "ブリッジマナイトのクワ"),
+            PoemList(5).poem(EnJa("TODO", "TODO")),
+            FairyHoeConfiguration(ToolMaterialCard.BRIDGMANITE).fireResistant().selfMending(5),
+        ) { registerHoeRecipeGeneration(item, BRIDGMANITES_ITEM_TAG) }
+        val BRIDGMANITE_SWORD = !ToolCard(
+            "bridgmanite_sword", EnJa("Bridgmanite Sword", "ブリッジマナイトの剣"),
+            PoemList(5).poem(EnJa("TODO", "TODO")),
+            FairySwordConfiguration(ToolMaterialCard.BRIDGMANITE).fireResistant().selfMending(5),
+        ) { registerSwordRecipeGeneration(item, BRIDGMANITES_ITEM_TAG) }
+        val WADSLEYITE_PICKAXE = !ToolCard(
+            "wadsleyite_pickaxe", EnJa("Wadsleyite Pickaxe", "ワズレアイトのつるはし"),
+            PoemList(5).poem(EnJa("TODO", "TODO")),
+            FairyPickaxeConfiguration(ToolMaterialCard.WADSLEYITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2),
+        ) { registerPickaxeRecipeGeneration(item, WADSLEYITES_ITEM_TAG) }
+        val WADSLEYITE_AXE = !ToolCard(
+            "wadsleyite_axe", EnJa("Wadsleyite Axe", "ワズレアイトの斧"),
+            PoemList(5).poem(EnJa("TODO", "TODO")),
+            FairyAxeConfiguration(ToolMaterialCard.WADSLEYITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2),
+        ) { registerAxeRecipeGeneration(item, WADSLEYITES_ITEM_TAG) }
+        val WADSLEYITE_SHOVEL = !ToolCard(
+            "wadsleyite_shovel", EnJa("Wadsleyite Shovel", "ワズレアイトのシャベル"),
+            PoemList(5).poem(EnJa("TODO", "TODO")),
+            FairyShovelConfiguration(ToolMaterialCard.WADSLEYITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2),
+        ) { registerShovelRecipeGeneration(item, WADSLEYITES_ITEM_TAG) }
+        val WADSLEYITE_HOE = !ToolCard(
+            "wadsleyite_hoe", EnJa("Wadsleyite Hoe", "ワズレアイトのクワ"),
+            PoemList(5).poem(EnJa("TODO", "TODO")),
+            FairyHoeConfiguration(ToolMaterialCard.WADSLEYITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2),
+        ) { registerHoeRecipeGeneration(item, WADSLEYITES_ITEM_TAG) }
+        val WADSLEYITE_SWORD = !ToolCard(
+            "wadsleyite_sword", EnJa("Wadsleyite Sword", "ワズレアイトの剣"),
+            PoemList(5).poem(EnJa("TODO", "TODO")),
+            FairySwordConfiguration(ToolMaterialCard.WADSLEYITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2),
+        ) { registerSwordRecipeGeneration(item, WADSLEYITES_ITEM_TAG) }
+        val RINGWOODITE_PICKAXE = !ToolCard(
+            "ringwoodite_pickaxe", EnJa("Ringwoodite Pickaxe", "リングウッダイトのつるはし"),
+            PoemList(6).poem(EnJa("TODO", "TODO")),
+            FairyPickaxeConfiguration(ToolMaterialCard.RINGWOODITE).selfMending(15).soulStreamContainable().enchantment(Enchantments.AQUA_AFFINITY),
+        ) { registerPickaxeRecipeGeneration(item, RINGWOODITES_ITEM_TAG) }
+        val RINGWOODITE_AXE = !ToolCard(
+            "ringwoodite_axe", EnJa("Ringwoodite Axe", "リングウッダイトの斧"),
+            PoemList(6).poem(EnJa("TODO", "TODO")),
+            FairyAxeConfiguration(ToolMaterialCard.RINGWOODITE).selfMending(15).soulStreamContainable().enchantment(Enchantments.AQUA_AFFINITY),
+        ) { registerAxeRecipeGeneration(item, RINGWOODITES_ITEM_TAG) }
+        val RINGWOODITE_SHOVEL = !ToolCard(
+            "ringwoodite_shovel", EnJa("Ringwoodite Shovel", "リングウッダイトのシャベル"),
+            PoemList(6).poem(EnJa("TODO", "TODO")),
+            FairyShovelConfiguration(ToolMaterialCard.RINGWOODITE).selfMending(15).soulStreamContainable().enchantment(Enchantments.AQUA_AFFINITY),
+        ) { registerShovelRecipeGeneration(item, RINGWOODITES_ITEM_TAG) }
+        val RINGWOODITE_HOE = !ToolCard(
+            "ringwoodite_hoe", EnJa("Ringwoodite Hoe", "リングウッダイトのクワ"),
+            PoemList(6).poem(EnJa("TODO", "TODO")),
+            FairyHoeConfiguration(ToolMaterialCard.RINGWOODITE).selfMending(15).soulStreamContainable().enchantment(Enchantments.AQUA_AFFINITY),
+        ) { registerHoeRecipeGeneration(item, RINGWOODITES_ITEM_TAG) }
+        val RINGWOODITE_SWORD = !ToolCard(
+            "ringwoodite_sword", EnJa("Ringwoodite Sword", "リングウッダイトの剣"),
+            PoemList(6).poem(EnJa("TODO", "TODO")),
+            FairySwordConfiguration(ToolMaterialCard.RINGWOODITE).selfMending(15).soulStreamContainable().enchantment(Enchantments.AQUA_AFFINITY),
+        ) { registerSwordRecipeGeneration(item, RINGWOODITES_ITEM_TAG) }
         val CREATIVE_HOE = !ToolCard(
             "creative_hoe", EnJa("Creative Hoe", "アカーシャのクワ"),
             PoemList(null).poem(EnJa("Changes everything into farmland.", "適度に湿った地が現れよ。")),
