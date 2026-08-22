@@ -106,7 +106,7 @@ fun initPlacedItemModule() {
             player.obtain(itemStack)
 
             // これを入れるとSEが2重に流れる
-            //world.playSound(null, blockPos, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.0F) * 2.0F)
+            //level.playSound(null, blockPos, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((level.random.nextFloat() - level.random.nextFloat()) * 0.7F + 1.0F) * 2.0F)
 
         }
     }
