@@ -45,6 +45,7 @@ import miragefairy2024.util.toItemTag
 import net.fabricmc.fabric.api.`object`.builder.v1.block.type.BlockSetTypeBuilder
 import net.fabricmc.fabric.api.`object`.builder.v1.block.type.WoodTypeBuilder
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
@@ -61,6 +62,11 @@ import net.minecraft.world.level.material.MapColor
 class TreeConfiguration(
     val woodMapColor: MapColor,
     val plankMapColor: MapColor,
+    val blockTag: TagKey<Block>,
+    val itemTag: TagKey<Item>,
+    val blockSetType: BlockSetType,
+    val woodType: WoodType,
+    val treeGrowerName: ResourceLocation,
 )
 
 class TreeBlockConfiguration(
@@ -83,26 +89,26 @@ fun TreeBlockConfiguration.tag(tag: TagKey<Item>) = this.also { it.itemTags += t
 fun TreeBlockConfiguration.tag(blockTag: TagKey<Block>, itemTag: TagKey<Item>) = this.tag(blockTag).tag(itemTag)
 
 fun TreeBlockConfiguration.leaves() = this.tag(BlockTags.LEAVES, ItemTags.LEAVES).tag(BlockTags.MINEABLE_WITH_HOE).let { TreeChargeableLeavesBlockCard(it) }
-fun TreeBlockConfiguration.log() = this.tag(HAIMEVISKA_LOGS_BLOCK_TAG, HAIMEVISKA_LOGS_ITEM_TAG).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeIncisableLogBlockCard(it) }
-fun TreeBlockConfiguration.wood() = this.tag(HAIMEVISKA_LOGS_BLOCK_TAG, HAIMEVISKA_LOGS_ITEM_TAG).let { TreeWoodBlockCard(it) }
-fun TreeBlockConfiguration.strippedLog() = this.tag(HAIMEVISKA_LOGS_BLOCK_TAG, HAIMEVISKA_LOGS_ITEM_TAG).tag(ResourceLocation("c", "stripped_logs").toBlockTag(), ResourceLocation("c", "stripped_logs").toItemTag()).let { TreeStrippedLogBlockCard(it) }
-fun TreeBlockConfiguration.strippedWood() = this.tag(HAIMEVISKA_LOGS_BLOCK_TAG, HAIMEVISKA_LOGS_ITEM_TAG).tag(ResourceLocation("c", "stripped_woods").toBlockTag(), ResourceLocation("c", "stripped_woods").toItemTag()).let { TreeStrippedWoodBlockCard(it) }
-fun TreeBlockConfiguration.incisedLog() = this.tag(HAIMEVISKA_LOGS_BLOCK_TAG, HAIMEVISKA_LOGS_ITEM_TAG).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeIncisedLogBlockCard(it) }
-fun TreeBlockConfiguration.drippingLog() = this.tag(HAIMEVISKA_LOGS_BLOCK_TAG, HAIMEVISKA_LOGS_ITEM_TAG).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeDrippingLogBlockCard(it) }
-fun TreeBlockConfiguration.hollowLog() = this.tag(HAIMEVISKA_LOGS_BLOCK_TAG, HAIMEVISKA_LOGS_ITEM_TAG).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeHollowLogBlockCard(it) }
+fun TreeBlockConfiguration.log() = this.tag(this.tree.blockTag, this.tree.itemTag).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeIncisableLogBlockCard(it) }
+fun TreeBlockConfiguration.wood() = this.tag(this.tree.blockTag, this.tree.itemTag).let { TreeWoodBlockCard(it) }
+fun TreeBlockConfiguration.strippedLog() = this.tag(this.tree.blockTag, this.tree.itemTag).tag(ResourceLocation("c", "stripped_logs").toBlockTag(), ResourceLocation("c", "stripped_logs").toItemTag()).let { TreeStrippedLogBlockCard(it) }
+fun TreeBlockConfiguration.strippedWood() = this.tag(this.tree.blockTag, this.tree.itemTag).tag(ResourceLocation("c", "stripped_woods").toBlockTag(), ResourceLocation("c", "stripped_woods").toItemTag()).let { TreeStrippedWoodBlockCard(it) }
+fun TreeBlockConfiguration.incisedLog() = this.tag(this.tree.blockTag, this.tree.itemTag).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeIncisedLogBlockCard(it) }
+fun TreeBlockConfiguration.drippingLog() = this.tag(this.tree.blockTag, this.tree.itemTag).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeDrippingLogBlockCard(it) }
+fun TreeBlockConfiguration.hollowLog() = this.tag(this.tree.blockTag, this.tree.itemTag).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeHollowLogBlockCard(it) }
 fun TreeBlockConfiguration.planks(input: TreeBlockCard) = this.tag(BlockTags.PLANKS, ItemTags.PLANKS).let { TreePlanksBlockCard(it, input.item) }
 fun TreeBlockConfiguration.slab(base: TreeBlockCard) = this.tag(BlockTags.WOODEN_SLABS, ItemTags.WOODEN_SLABS).let { TreePlanksSlabBlockCard(it) { base.block } }
 fun TreeBlockConfiguration.stairs(base: TreeBlockCard) = this.tag(BlockTags.WOODEN_STAIRS, ItemTags.WOODEN_STAIRS).let { TreePlanksStairsBlockCard(it) { base.block } }
 fun TreeBlockConfiguration.fence(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_FENCES, ItemTags.WOODEN_FENCES).let { TreePlanksFenceBlockCard(it, parent.block) }
-fun TreeBlockConfiguration.fenceGate(parent: TreeBlockCard) = this.tag(BlockTags.FENCE_GATES, ItemTags.FENCE_GATES).tag(ResourceLocation("c", "fence_gates/wooden").toBlockTag(), ResourceLocation("c", "fence_gates/wooden").toItemTag()).let { TreePlanksFenceGateBlockCard(it, { HAIMEVISKA_WOOD_TYPE }, parent.block) }
-fun TreeBlockConfiguration.button(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_BUTTONS, ItemTags.WOODEN_BUTTONS).let { TreePlanksButtonBlockCard(it, { HAIMEVISKA_BLOCK_SET_TYPE }, parent.block) }
-fun TreeBlockConfiguration.pressurePlate(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_PRESSURE_PLATES, ItemTags.WOODEN_PRESSURE_PLATES).let { TreePlanksPressurePlateBlockCard(it, { HAIMEVISKA_BLOCK_SET_TYPE }, parent.block) }
-fun TreeBlockConfiguration.door(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_DOORS, ItemTags.WOODEN_DOORS).let { TreeDoorBlockCard(it, { HAIMEVISKA_BLOCK_SET_TYPE }, parent.block) }
-fun TreeBlockConfiguration.trapdoor(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_TRAPDOORS, ItemTags.WOODEN_TRAPDOORS).let { TreeTrapdoorBlockCard(it, { HAIMEVISKA_BLOCK_SET_TYPE }, parent.block) }
+fun TreeBlockConfiguration.fenceGate(parent: TreeBlockCard) = this.tag(BlockTags.FENCE_GATES, ItemTags.FENCE_GATES).tag(ResourceLocation("c", "fence_gates/wooden").toBlockTag(), ResourceLocation("c", "fence_gates/wooden").toItemTag()).let { TreePlanksFenceGateBlockCard(it, { this.tree.woodType }, parent.block) }
+fun TreeBlockConfiguration.button(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_BUTTONS, ItemTags.WOODEN_BUTTONS).let { TreePlanksButtonBlockCard(it, { this.tree.blockSetType }, parent.block) }
+fun TreeBlockConfiguration.pressurePlate(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_PRESSURE_PLATES, ItemTags.WOODEN_PRESSURE_PLATES).let { TreePlanksPressurePlateBlockCard(it, { this.tree.blockSetType }, parent.block) }
+fun TreeBlockConfiguration.door(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_DOORS, ItemTags.WOODEN_DOORS).let { TreeDoorBlockCard(it, { this.tree.blockSetType }, parent.block) }
+fun TreeBlockConfiguration.trapdoor(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_TRAPDOORS, ItemTags.WOODEN_TRAPDOORS).let { TreeTrapdoorBlockCard(it, { this.tree.blockSetType }, parent.block) }
 fun TreeBlockConfiguration.bricks(input: TreeBlockCard) = this.tag(BlockTags.PLANKS, ItemTags.PLANKS).let { TreeBricksBlockCard(it, input.item) }
 fun TreeBlockConfiguration.bricksSlab(base: TreeBlockCard) = this.tag(BlockTags.WOODEN_SLABS, ItemTags.WOODEN_SLABS).let { TreePlanksSlabBlockCard(it) { base.block } }
 fun TreeBlockConfiguration.bricksStairs(base: TreeBlockCard) = this.tag(BlockTags.WOODEN_STAIRS, ItemTags.WOODEN_STAIRS).let { TreePlanksStairsBlockCard(it) { base.block } }
-fun TreeBlockConfiguration.sapling() = this.tag(BlockTags.SAPLINGS, ItemTags.SAPLINGS).let { TreeSaplingBlockCard(it, MirageFairy2024.identifier("haimeviska")) }
+fun TreeBlockConfiguration.sapling() = this.tag(BlockTags.SAPLINGS, ItemTags.SAPLINGS).let { TreeSaplingBlockCard(it, this.tree.treeGrowerName) }
 
 abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
     companion object {
@@ -112,6 +118,11 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val HAIMEVISKA_TREE_CONFIGURATION = TreeConfiguration(
             MapColor.TERRACOTTA_ORANGE,
             MapColor.RAW_IRON,
+            HAIMEVISKA_LOGS_BLOCK_TAG,
+            HAIMEVISKA_LOGS_ITEM_TAG,
+            HAIMEVISKA_BLOCK_SET_TYPE,
+            HAIMEVISKA_WOOD_TYPE,
+            MirageFairy2024.identifier("haimeviska"),
         )
 
         val LEAVES = !TreeBlockConfiguration(
