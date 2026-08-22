@@ -1,0 +1,10 @@
+{
+  "name": "sarracenia-compose",
+  "private": true,
+  "version": "1.0.0",
+  "description": "サラセニア寸劇の立ち絵切り出しなど、この動画固有の Node 依存なのだぁ🌱",
+  "dependencies": {
+    "ag-psd": "^31.0.2",
+    "pngjs": "^7.0.0"
+  }
+}
