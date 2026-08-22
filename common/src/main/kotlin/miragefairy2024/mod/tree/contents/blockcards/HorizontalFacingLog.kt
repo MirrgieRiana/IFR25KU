@@ -17,7 +17,10 @@ import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 
-abstract class TreeHorizontalFacingLogBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
+abstract class TreeHorizontalFacingLogBlockCard(
+    configuration: TreeBlockConfiguration,
+    protected val log: () -> TreeBlockCard,
+) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting().strength(2.0F).mapColor(configuration.tree.getPlankMapColor())
 
     context(ModContext)
@@ -28,8 +31,8 @@ abstract class TreeHorizontalFacingLogBlockCard(configuration: TreeBlockConfigur
         block.registerVariantsBlockStateGeneration { normal("block/" * block().getIdentifier()).withHorizontalRotation(HorizontalDirectionalBlock.FACING) }
         block.registerModelGeneration {
             ModelTemplates.CUBE_ORIENTABLE.with(
-                TextureSlot.TOP to "block/" * LOG.block().getIdentifier() * "_top",
-                TextureSlot.SIDE to "block/" * LOG.block().getIdentifier(),
+                TextureSlot.TOP to "block/" * log().block().getIdentifier() * "_top",
+                TextureSlot.SIDE to "block/" * log().block().getIdentifier(),
                 TextureSlot.FRONT to "block/" * it.getIdentifier(),
             )
         }

@@ -3,6 +3,7 @@ package miragefairy2024.mod.tree.contents.blockcards
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.registerHarvestNotation
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.contents.HollowHaimeviskaLogBlock
 import miragefairy2024.util.ItemLootPoolEntry
@@ -15,7 +16,10 @@ import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 
-class TreeHollowLogBlockCard(configuration: TreeBlockConfiguration) : TreeHorizontalFacingLogBlockCard(configuration) {
+class TreeHollowLogBlockCard(
+    configuration: TreeBlockConfiguration,
+    log: () -> TreeBlockCard,
+) : TreeHorizontalFacingLogBlockCard(configuration, log) {
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = HollowHaimeviskaLogBlock(properties)
 
     context(ModContext)
@@ -27,7 +31,7 @@ class TreeHollowLogBlockCard(configuration: TreeBlockConfiguration) : TreeHorizo
                 LootPool(ItemLootPoolEntry(item())) {
                     `when`(provider.hasSilkTouch())
                 },
-                LootPool(ItemLootPoolEntry(LOG.item())) {
+                LootPool(ItemLootPoolEntry(log().item())) {
                     `when`(provider.doesNotHaveSilkTouch())
                 },
                 LootPool(ItemLootPoolEntry(MaterialCard.FRACTAL_WISP.item()) {
