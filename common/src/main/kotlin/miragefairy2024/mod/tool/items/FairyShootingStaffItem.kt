@@ -2,6 +2,7 @@ package miragefairy2024.mod.tool.items
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
+import miragefairy2024.mixins.api.NoSlowdownWhileUsingItem
 import miragefairy2024.mod.SoundEventCard
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.MAGIC_WEAPON_ITEM_TAG
@@ -9,18 +10,26 @@ import miragefairy2024.mod.entity.AntimatterBoltCard
 import miragefairy2024.mod.entity.AntimatterBoltEntity
 import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
+import miragefairy2024.util.Model
+import miragefairy2024.util.ModelData
+import miragefairy2024.util.ModelDisplayData
+import miragefairy2024.util.ModelDisplayEntryData
+import miragefairy2024.util.ModelTexturesData
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.Translation
 import miragefairy2024.util.get
 import miragefairy2024.util.getLevel
 import miragefairy2024.util.getRate
 import miragefairy2024.util.invoke
-import miragefairy2024.util.randomInt
+import miragefairy2024.util.string
 import miragefairy2024.util.text
 import miragefairy2024.util.yellow
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.Registries
+import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.sounds.SoundSource
 import net.minecraft.stats.Stats
 import net.minecraft.tags.ItemTags
@@ -34,11 +43,14 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Tier
 import net.minecraft.world.item.TieredItem
+import net.minecraft.world.item.Tiers
 import net.minecraft.world.item.TooltipFlag
+import net.minecraft.world.item.UseAnim
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.ItemEnchantments
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
+import kotlin.math.ceil
 
 open class FairyShootingStaffConfiguration(
     override val toolMaterialCard: ToolMaterialCard,
@@ -51,7 +63,29 @@ open class FairyShootingStaffConfiguration(
         this.tags += MAGIC_WEAPON_ITEM_TAG
         this.tags += ItemTags.DURABILITY_ENCHANTABLE
         this.miningDamage = 2
+        this.modelTemplateOverride = SHOOTING_STAFF_MODEL_TEMPLATE
     }
+}
+
+/**
+ * 杖を立てて構えた姿勢で持つためのアイテムモデルなのだ～🌱
+ *
+ * 柄が鉛直から 17.2 度だけ前に倒れて、全長が 1.5 ブロックになり、柄の下端から 3 分の 1 の点が手に来る値なのだ～🌱
+ * 左手用の値は、`ItemTransform` が左手のときだけ `rotation` の Y と Z を反転するから、それを打ち消してあるのだ～🌱
+ */
+private val SHOOTING_STAFF_MODEL_TEMPLATE = Model { textureMapping ->
+    ModelData(
+        parent = ResourceLocation("item/handheld"),
+        textures = ModelTexturesData(
+            TextureSlot.LAYER0.id to textureMapping.get(TextureSlot.LAYER0).string,
+        ),
+        display = ModelDisplayData(
+            thirdPersonRightHand = ModelDisplayEntryData(rotation = listOf(0, -90, -30), translation = listOf(0, 1, 4), scale = listOf(1.2F, 1.2F, 1.2F)),
+            thirdPersonLeftHand = ModelDisplayEntryData(rotation = listOf(0, 90, 30), translation = listOf(0, 1, 4), scale = listOf(1.2F, 1.2F, 1.2F)),
+            firstPersonRightHand = ModelDisplayEntryData(rotation = listOf(0, -90, 60), translation = listOf(1.5F, 4.33F, -1.2F), scale = listOf(0.9F, 0.9F, 0.9F)),
+            firstPersonLeftHand = ModelDisplayEntryData(rotation = listOf(0, 90, -60), translation = listOf(1.5F, 4.33F, -1.2F), scale = listOf(0.9F, 0.9F, 0.9F)),
+        ),
+    )
 }
 
 class FairyShootingStaffItem(override val configuration: FairyShootingStaffConfiguration, settings: Properties) :
@@ -82,57 +116,111 @@ class FairyShootingStaffItem(override val configuration: FairyShootingStaffConfi
 
 }
 
-open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, private val baseMaxDistance: Float, settings: Properties) : TieredItem(toolMaterial, settings) {
+open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, private val baseMaxDistance: Float, settings: Properties) : TieredItem(toolMaterial, settings), NoSlowdownWhileUsingItem {
     companion object {
         val NOT_ENOUGH_EXPERIENCE_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("fairy_tool_item").toLanguageKey()}.not_enough_experience" }, "Not enough experience", "経験値が足りません")
-        val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("shooting_staff").toLanguageKey()}.description" }, "Perform a ranged attack when used", "使用時、射撃攻撃")
+        val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("shooting_staff").toLanguageKey()}.description" }, "Charge while held, then perform a ranged attack when released", "使用中、チャージし、解除時に射撃攻撃")
         const val BASE_EXPERIENCE_COST = 2
+
+        /** チャージ時間とダメージの基準として、並とみなす素材なのだ～🌱 */
+        private val BASE_TIER = Tiers.IRON
+
+        /** [BASE_TIER]の採掘速度におけるチャージ時間なのだ～🌱 */
+        private const val BASE_CHARGE_TICKS = 2 * 20
+
+        /** エンチャント適性が[BASE_TIER]から 1 離れるごとに変わる基本攻撃力なのだ～🌱 */
+        private const val ENCHANTMENT_VALUE_POWER_FACTOR = 0.25F
+
+        /** 使用を継続できる上限のティック数なのだ～🌱 弓と同じく、事実上の無制限なのだ～🌱 */
+        private const val MAX_USE_TICKS = 72000
     }
+
+    /**
+     * チャージに要するティック数なのだ～🌱
+     *
+     * 素材を通して魔力を汲み出す速さが、岩を掘り崩す速さと同じ性質だとみなして、採掘速度に反比例させているのだ～🌱
+     */
+    private fun getChargeTicks(world: Level, itemStack: ItemStack): Int {
+        val acceleration = 1.0 + world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_ACCELERATION.key].getRate(itemStack)
+        return ceil(BASE_CHARGE_TICKS * BASE_TIER.speed / tier.speed / acceleration).toInt()
+    }
+
+    /**
+     * 魔法射撃攻撃のダメージなのだ～🌱
+     *
+     * 剣の攻撃力が武器種の補正と素材の補正の和であるのと同じ構造で、素材の補正が、攻撃力ではなくエンチャント適性を参照するのだ～🌱
+     */
+    private fun getDamage(world: Level, itemStack: ItemStack): Float {
+        val materialPower = ENCHANTMENT_VALUE_POWER_FACTOR * (tier.enchantmentValue - BASE_TIER.enchantmentValue)
+        return basePower + materialPower + 0.5F * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack).toFloat()
+    }
+
+    private fun getExperienceCost(world: Level, itemStack: ItemStack) = BASE_EXPERIENCE_COST + 1 * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack)
 
     override fun appendHoverText(stack: ItemStack, context: TooltipContext, tooltipComponents: MutableList<Component>, tooltipFlag: TooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
         tooltipComponents += text { DESCRIPTION_TRANSLATION().yellow }
     }
 
+    override fun getUseDuration(stack: ItemStack, entity: LivingEntity) = MAX_USE_TICKS
+
+    override fun getUseAnimation(stack: ItemStack) = UseAnim.NONE
+
     override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
         val itemStack = user.getItemInHand(hand)
-        if (world.isClientSide) return InteractionResultHolder.success(itemStack)
 
-        val damage = basePower + 0.5F * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack).toFloat()
-        val maxDistance = baseMaxDistance + 3F * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_REACH.key].getLevel(itemStack)
-        val speed = 2.0F + 2.0F * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_REACH.key].getRate(itemStack).toFloat()
-        val frequency = 0.5 + 0.5 * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_ACCELERATION.key].getRate(itemStack)
-        val experienceCost = BASE_EXPERIENCE_COST + 1 * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack)
+        if (!user.isCreative) {
+            if (user.totalExperience < getExperienceCost(world, itemStack)) {
+                if (!world.isClientSide) user.displayClientMessage(text { NOT_ENOUGH_EXPERIENCE_TRANSLATION() }, true)
+                return InteractionResultHolder.fail(itemStack)
+            }
+        }
+
+        user.startUsingItem(hand)
+        return InteractionResultHolder.consume(itemStack)
+    }
+
+    override fun onUseTick(level: Level, livingEntity: LivingEntity, stack: ItemStack, remainingUseDuration: Int) {
+        if (level.isClientSide) return
+        if (MAX_USE_TICKS - remainingUseDuration != getChargeTicks(level, stack)) return // チャージが満ちた瞬間だけ知らせるのだ～🌱
+        level.playSound(null, livingEntity.x, livingEntity.y, livingEntity.z, SoundEventCard.MAGIC2.soundEvent, SoundSource.PLAYERS, 0.3F, 1.6F)
+    }
+
+    override fun releaseUsing(stack: ItemStack, level: Level, livingEntity: LivingEntity, timeCharged: Int) {
+        if (level.isClientSide) return
+        val user = livingEntity as? Player ?: return
+        if (MAX_USE_TICKS - timeCharged < getChargeTicks(level, stack)) return // チャージが満ちる前に離したら不発なのだ～🌱
+
+        val damage = getDamage(level, stack)
+        val maxDistance = baseMaxDistance + 3F * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_REACH.key].getLevel(stack)
+        val speed = 2.0F + 2.0F * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_REACH.key].getRate(stack).toFloat()
+        val experienceCost = getExperienceCost(level, stack)
 
         if (!user.isCreative) {
             if (user.totalExperience < experienceCost) {
                 user.displayClientMessage(text { NOT_ENOUGH_EXPERIENCE_TRANSLATION() }, true)
-                return InteractionResultHolder.consume(itemStack)
+                return
             }
         }
 
         // 生成
-        val entity = AntimatterBoltEntity(AntimatterBoltCard.entityType(), world)
+        val entity = AntimatterBoltEntity(AntimatterBoltCard.entityType(), level)
         entity.setPos(user.x, user.eyeY - 0.3, user.z)
         entity.shootFromRotation(user, user.xRot, user.yRot, 0.0F, speed, 1.0F)
         entity.owner = user
         entity.damage = damage
         entity.maxDistance = maxDistance
-        world.addFreshEntity(entity)
+        level.addFreshEntity(entity)
 
         // 消費
-        itemStack.hurtAndBreak(1, user, LivingEntity.getSlotForHand(hand))
+        stack.hurtAndBreak(1, user, LivingEntity.getSlotForHand(user.usedItemHand))
         if (!user.isCreative) user.giveExperiencePoints(-experienceCost)
-
-        user.cooldowns.addCooldown(this, world.random.randomInt(10.0 / frequency))
 
         // 統計
         user.awardStat(Stats.ITEM_USED.get(this))
 
         // エフェクト
-        world.playSound(null, user.x, user.y, user.z, SoundEventCard.MAGIC2.soundEvent, SoundSource.PLAYERS, 0.6F, 0.90F + (world.random.nextFloat() - 0.5F) * 0.3F)
-
-        return InteractionResultHolder.consume(itemStack)
+        level.playSound(null, user.x, user.y, user.z, SoundEventCard.MAGIC2.soundEvent, SoundSource.PLAYERS, 0.6F, 0.90F + (level.random.nextFloat() - 0.5F) * 0.3F)
     }
 
     override fun hurtEnemy(stack: ItemStack, target: LivingEntity, attacker: LivingEntity): Boolean {
