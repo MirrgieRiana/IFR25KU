@@ -107,8 +107,8 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
     var folia = 0
     private var foliaCollectionCooldown = 0
 
-    override fun serverTick(world: Level, pos: BlockPos, state: BlockState) {
-        super.serverTick(world, pos, state)
+    override fun serverTick(level: Level, pos: BlockPos, state: BlockState) {
+        super.serverTick(level, pos, state)
         if (foliaCollectionCooldown > 0) {
             foliaCollectionCooldown--
         } else {

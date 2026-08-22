@@ -9,10 +9,10 @@ import net.minecraft.client.particle.TextureSheetParticle
 import net.minecraft.core.particles.SimpleParticleType
 
 class AttractingParticle internal constructor(
-    clientWorld: ClientLevel,
+    level: ClientLevel,
     fromX: Double, fromY: Double, fromZ: Double,
     toX: Double, toY: Double, toZ: Double,
-) : TextureSheetParticle(clientWorld, fromX, fromY, fromZ, 0.0, 0.0, 0.0) {
+) : TextureSheetParticle(level, fromX, fromY, fromZ, 0.0, 0.0, 0.0) {
     private val aX: Double
     private val aY: Double
     private val aZ: Double
@@ -43,8 +43,8 @@ class AttractingParticle internal constructor(
     }
 
     class Factory(private val spriteProvider: SpriteSet) : ParticleProvider<SimpleParticleType> {
-        override fun createParticle(defaultParticleType: SimpleParticleType, clientWorld: ClientLevel, d: Double, e: Double, f: Double, g: Double, h: Double, i: Double): Particle {
-            val particle = AttractingParticle(clientWorld, d, e, f, g, h, i)
+        override fun createParticle(defaultParticleType: SimpleParticleType, level: ClientLevel, d: Double, e: Double, f: Double, g: Double, h: Double, i: Double): Particle {
+            val particle = AttractingParticle(level, d, e, f, g, h, i)
             particle.pickSprite(spriteProvider)
             return particle
         }

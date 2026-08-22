@@ -30,7 +30,7 @@ object CollectionPassiveSkillEffect : AbstractDoublePassiveSkillEffect("collecti
         if (newValue <= 0.0) return
         val player = context.player
         if (!player.collectionEnabled.getOrDefault()) return
-        val level = context.world
+        val level = context.level
         val actualAmount = level.random.randomInt(newValue)
         if (actualAmount <= 0) return
         collectItem(level, player.eyeBlockPos, reach = 15, maxCount = actualAmount, predicate = { !it.boundingBox.intersects(player.boundingBox) }) { // 既に触れているアイテムには無反応

@@ -151,19 +151,19 @@ abstract class FairyBuildingBlock(private val card: FairyBuildingCard<*, *, *>) 
     }
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun getLightBlock(state: BlockState, world: BlockGetter, pos: BlockPos) = 6
+    override fun getLightBlock(state: BlockState, level: BlockGetter, pos: BlockPos) = 6
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun hasAnalogOutputSignal(state: BlockState) = true
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun getAnalogOutputSignal(state: BlockState, world: Level, pos: BlockPos) = card.blockEntityAccessor.castOrNull(world.getBlockEntity(pos))?.getComparatorOutput() ?: 0
+    override fun getAnalogOutputSignal(state: BlockState, level: Level, pos: BlockPos) = card.blockEntityAccessor.castOrNull(level.getBlockEntity(pos))?.getComparatorOutput() ?: 0
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun isPathfindable(state: BlockState, pathComputationType: PathComputationType) = false
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun getShape(state: BlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape = SHAPE
+    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape = SHAPE
 
 }
 

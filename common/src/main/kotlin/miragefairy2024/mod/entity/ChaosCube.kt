@@ -79,11 +79,11 @@ object ChaosCubeCard {
     val spawnGroup = MobCategory.MONSTER
     val width = 0.8F
     val height = 1.5F
-    fun createEntity(entityType: EntityType<ChaosCubeEntity>, world: Level) = ChaosCubeEntity(entityType, world)
+    fun createEntity(entityType: EntityType<ChaosCubeEntity>, level: Level) = ChaosCubeEntity(entityType, level)
     val identifier = MirageFairy2024.identifier("chaos_cube")
     val name = EnJa("Chaos Cube", "混沌のキューブ")
     val entityType = Registration(BuiltInRegistries.ENTITY_TYPE, identifier) {
-        EntityType.Builder.of({ entityType, world -> createEntity(entityType, world) }, spawnGroup)
+        EntityType.Builder.of({ entityType, level -> createEntity(entityType, level) }, spawnGroup)
             .sized(width, height)
             .build()
     }
@@ -146,7 +146,7 @@ object ChaosCubeCard {
     }
 }
 
-class ChaosCubeEntity(entityType: EntityType<out ChaosCubeEntity>, world: Level) : Monster(entityType, world) {
+class ChaosCubeEntity(entityType: EntityType<out ChaosCubeEntity>, level: Level) : Monster(entityType, level) {
 
     class Segment(val partIndex: Int) {
         val prevRotation = Quaternionf()
