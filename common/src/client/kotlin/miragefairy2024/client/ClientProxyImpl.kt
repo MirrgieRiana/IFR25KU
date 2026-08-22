@@ -56,8 +56,8 @@ class ClientProxyImpl : ClientProxy {
     }
 
     override fun registerBlockColorProvider(block: () -> Block, provider: BlockColorProvider) {
-        ColorProviderRegistry.BLOCK.register({ blockState, level, blockPos, tintIndex ->
-            provider(blockState, level, blockPos, tintIndex)
+        ColorProviderRegistry.BLOCK.register({ blockState, world, blockPos, tintIndex ->
+            provider(blockState, world, blockPos, tintIndex)
         }, block())
     }
 
