@@ -124,7 +124,7 @@ minimal-mistakesテーマのfloatベースのレイアウトを `main.scss` で�
 
 ### 制作スキルなのだぁ🌱
 
-`/theater-creator` で呼び出すのだぁ🌱 本体は `.claude/skills/theater-creator/` なのだぁ✨ 登場人物のペルソナ定義は `MirrgieRiana/MirrgieRiana.github.io` の `.claude/skills/` にある `zundamon-persona`（ずんだもん）、`kasukabe-tsumugi-persona`（春日部つむぎ）で、このリポジトリには置かれていないのだぁ🌱 詳しくは各スキルの原本を見るのだぁ（main.md への複写は陳腐化を招くから避けるのだぁ）🌱
+`/theater-creator` で呼び出すのだぁ🌱 本体は `.claude/skills/theater-creator/` なのだぁ✨ 登場人物のペルソナ定義は `MirrgieRiana/MirrgieRiana.github.io` の `.claude/skills/` にある `zundamon-persona`（ずんだもん）、`kasukabe-tsumugi-persona`（春日部つむぎ）で、このリポジトリには置かれていないのだぁ🌱 詳しくは各スキルの原本を見るのだぁ（main.md へのコピーは陳腐化を招くから避けるのだぁ）🌱
 
 ### 関連記事抽選とタグ設計なのだぁ🌱
 
