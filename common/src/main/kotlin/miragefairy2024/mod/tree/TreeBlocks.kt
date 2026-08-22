@@ -59,15 +59,15 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.minecraft.world.level.block.state.properties.WoodType
 import net.minecraft.world.level.material.MapColor
 
-class TreeConfiguration(
-    val woodMapColor: MapColor,
-    val plankMapColor: MapColor,
-    val blockTag: TagKey<Block>,
-    val itemTag: TagKey<Item>,
-    val blockSetType: BlockSetType,
-    val woodType: WoodType,
-    val treeGrowerName: ResourceLocation,
-)
+interface TreeConfiguration {
+    fun getWoodMapColor(): MapColor
+    fun getPlankMapColor(): MapColor
+    fun getBlockTag(): TagKey<Block>
+    fun getItemTag(): TagKey<Item>
+    fun getBlockSetType(): BlockSetType
+    fun getWoodType(): WoodType
+    fun getTreeGrowerName(): ResourceLocation
+}
 
 class TreeBlockConfiguration(
     val tree: TreeConfiguration,
@@ -88,8 +88,8 @@ fun TreeBlockConfiguration.tag(tag: TagKey<Item>) = this.also { it.itemTags += t
 @JvmName("blockAndItemTag")
 fun TreeBlockConfiguration.tag(blockTag: TagKey<Block>, itemTag: TagKey<Item>) = this.tag(blockTag).tag(itemTag)
 
-private fun TreeBlockConfiguration.logBase() = this.tag(this.tree.blockTag, this.tree.itemTag).tag(BlockTags.OVERWORLD_NATURAL_LOGS)
-private fun TreeBlockConfiguration.woodBase() = this.tag(this.tree.blockTag, this.tree.itemTag)
+private fun TreeBlockConfiguration.logBase() = this.tag(this.tree.getBlockTag(), this.tree.getItemTag()).tag(BlockTags.OVERWORLD_NATURAL_LOGS)
+private fun TreeBlockConfiguration.woodBase() = this.tag(this.tree.getBlockTag(), this.tree.getItemTag())
 
 private fun TreeBlockConfiguration.leaves() = this.tag(BlockTags.LEAVES, ItemTags.LEAVES).tag(BlockTags.MINEABLE_WITH_HOE).let { TreeChargeableLeavesBlockCard(it) }
 private fun TreeBlockConfiguration.log() = this.logBase().let { TreeIncisableLogBlockCard(it) }
@@ -103,28 +103,28 @@ private fun TreeBlockConfiguration.planks(input: TreeBlockCard) = this.tag(Block
 private fun TreeBlockConfiguration.slab(base: TreeBlockCard) = this.tag(BlockTags.WOODEN_SLABS, ItemTags.WOODEN_SLABS).let { TreePlanksSlabBlockCard(it) { base.block } }
 private fun TreeBlockConfiguration.stairs(base: TreeBlockCard) = this.tag(BlockTags.WOODEN_STAIRS, ItemTags.WOODEN_STAIRS).let { TreePlanksStairsBlockCard(it) { base.block } }
 private fun TreeBlockConfiguration.fence(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_FENCES, ItemTags.WOODEN_FENCES).let { TreePlanksFenceBlockCard(it, parent.block) }
-private fun TreeBlockConfiguration.fenceGate(parent: TreeBlockCard) = this.tag(BlockTags.FENCE_GATES, ItemTags.FENCE_GATES).tag(ResourceLocation("c", "fence_gates/wooden").toBlockTag(), ResourceLocation("c", "fence_gates/wooden").toItemTag()).let { TreePlanksFenceGateBlockCard(it, { this.tree.woodType }, parent.block) }
-private fun TreeBlockConfiguration.button(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_BUTTONS, ItemTags.WOODEN_BUTTONS).let { TreePlanksButtonBlockCard(it, { this.tree.blockSetType }, parent.block) }
-private fun TreeBlockConfiguration.pressurePlate(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_PRESSURE_PLATES, ItemTags.WOODEN_PRESSURE_PLATES).let { TreePlanksPressurePlateBlockCard(it, { this.tree.blockSetType }, parent.block) }
-private fun TreeBlockConfiguration.door(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_DOORS, ItemTags.WOODEN_DOORS).let { TreeDoorBlockCard(it, { this.tree.blockSetType }, parent.block) }
-private fun TreeBlockConfiguration.trapdoor(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_TRAPDOORS, ItemTags.WOODEN_TRAPDOORS).let { TreeTrapdoorBlockCard(it, { this.tree.blockSetType }, parent.block) }
+private fun TreeBlockConfiguration.fenceGate(parent: TreeBlockCard) = this.tag(BlockTags.FENCE_GATES, ItemTags.FENCE_GATES).tag(ResourceLocation("c", "fence_gates/wooden").toBlockTag(), ResourceLocation("c", "fence_gates/wooden").toItemTag()).let { TreePlanksFenceGateBlockCard(it, { this.tree.getWoodType() }, parent.block) }
+private fun TreeBlockConfiguration.button(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_BUTTONS, ItemTags.WOODEN_BUTTONS).let { TreePlanksButtonBlockCard(it, { this.tree.getBlockSetType() }, parent.block) }
+private fun TreeBlockConfiguration.pressurePlate(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_PRESSURE_PLATES, ItemTags.WOODEN_PRESSURE_PLATES).let { TreePlanksPressurePlateBlockCard(it, { this.tree.getBlockSetType() }, parent.block) }
+private fun TreeBlockConfiguration.door(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_DOORS, ItemTags.WOODEN_DOORS).let { TreeDoorBlockCard(it, { this.tree.getBlockSetType() }, parent.block) }
+private fun TreeBlockConfiguration.trapdoor(parent: TreeBlockCard) = this.tag(BlockTags.WOODEN_TRAPDOORS, ItemTags.WOODEN_TRAPDOORS).let { TreeTrapdoorBlockCard(it, { this.tree.getBlockSetType() }, parent.block) }
 private fun TreeBlockConfiguration.bricks(input: TreeBlockCard) = this.tag(BlockTags.PLANKS, ItemTags.PLANKS).let { TreeBricksBlockCard(it, input.item) }
-private fun TreeBlockConfiguration.sapling() = this.tag(BlockTags.SAPLINGS, ItemTags.SAPLINGS).let { TreeSaplingBlockCard(it, this.tree.treeGrowerName) }
+private fun TreeBlockConfiguration.sapling() = this.tag(BlockTags.SAPLINGS, ItemTags.SAPLINGS).let { TreeSaplingBlockCard(it, this.tree.getTreeGrowerName()) }
 
 abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
     companion object {
         val entries = mutableListOf<TreeBlockCard>()
         private operator fun TreeBlockCard.not() = apply { entries += this }
 
-        val HAIMEVISKA_TREE_CONFIGURATION = TreeConfiguration(
-            MapColor.TERRACOTTA_ORANGE,
-            MapColor.RAW_IRON,
-            HAIMEVISKA_LOGS_BLOCK_TAG,
-            HAIMEVISKA_LOGS_ITEM_TAG,
-            HAIMEVISKA_BLOCK_SET_TYPE,
-            HAIMEVISKA_WOOD_TYPE,
-            MirageFairy2024.identifier("haimeviska"),
-        )
+        val HAIMEVISKA_TREE_CONFIGURATION = object : TreeConfiguration {
+            override fun getWoodMapColor() = MapColor.TERRACOTTA_ORANGE
+            override fun getPlankMapColor() = MapColor.RAW_IRON
+            override fun getBlockTag() = HAIMEVISKA_LOGS_BLOCK_TAG
+            override fun getItemTag() = HAIMEVISKA_LOGS_ITEM_TAG
+            override fun getBlockSetType() = HAIMEVISKA_BLOCK_SET_TYPE
+            override fun getWoodType() = HAIMEVISKA_WOOD_TYPE
+            override fun getTreeGrowerName() = MirageFairy2024.identifier("haimeviska")
+        }
 
         val LEAVES = !TreeBlockConfiguration(
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_leaves", EnJa("Haimeviska Leaves", "ハイメヴィスカの葉"),

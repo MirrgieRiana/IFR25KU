@@ -55,7 +55,7 @@ abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) :
 }
 
 class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
-    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.plankMapColor }
+    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getPlankMapColor() }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
     context(ModContext)
@@ -67,7 +67,7 @@ class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration) : Abstract
 }
 
 class TreeWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
-    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.woodMapColor }
+    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getWoodMapColor() }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
     context(ModContext)
@@ -79,7 +79,7 @@ class TreeWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLog
 }
 
 class TreeStrippedWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
-    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.plankMapColor }
+    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getPlankMapColor() }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
     context(ModContext)

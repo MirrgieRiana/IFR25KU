@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 
 fun TreeBlockCard.createPlankSettings(sound: Boolean = true): BlockBehaviour.Properties = createBaseWoodSetting(sound = sound)
     .strength(2.0F, 3.0F)
-    .mapColor(configuration.tree.plankMapColor)
+    .mapColor(configuration.tree.getPlankMapColor())
 
 open class AbstractTreePlanksBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createPlankSettings()
