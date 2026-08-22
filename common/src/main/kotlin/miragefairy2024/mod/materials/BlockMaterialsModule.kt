@@ -33,6 +33,8 @@ import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.BlockStateVariantRotation
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Model
+import miragefairy2024.util.ModelData
+import miragefairy2024.util.ModelTexturesData
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.TextureMapping
@@ -65,6 +67,7 @@ import miragefairy2024.util.registerSmeltingRecipeGeneration
 import miragefairy2024.util.registerStonecutterRecipeGeneration
 import miragefairy2024.util.registerTranslucentRenderLayer
 import miragefairy2024.util.registerVariantsBlockStateGeneration
+import miragefairy2024.util.string
 import miragefairy2024.util.times
 import miragefairy2024.util.toIngredient
 import miragefairy2024.util.toItemTag
@@ -668,7 +671,16 @@ open class BlockMaterialCard(
             context(ModContext)
             override fun initModelGeneration() {
                 block.registerModelGeneration {
-                    Model(ResourceLocation("minecraft", "block/dragon_egg"), TextureSlot.ALL, TextureSlot.PARTICLE).with(
+                    Model { textureMapping ->
+                        ModelData(
+                            parent = ResourceLocation("minecraft", "block/dragon_egg"),
+                            ambientOcclusion = false,
+                            textures = ModelTexturesData(
+                                TextureSlot.ALL.id to textureMapping.get(TextureSlot.ALL).string,
+                                TextureSlot.PARTICLE.id to textureMapping.get(TextureSlot.PARTICLE).string,
+                            ),
+                        )
+                    }.with(
                         TextureSlot.ALL to "block/" * block().getIdentifier(),
                         TextureSlot.PARTICLE to "block/" * block().getIdentifier(),
                     )

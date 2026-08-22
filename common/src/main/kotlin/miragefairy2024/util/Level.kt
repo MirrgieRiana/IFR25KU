@@ -141,7 +141,7 @@ fun blockVisitor(
 }
 
 fun spaceVisitor(
-    world: Level,
+    level: Level,
     originalBlockPos: BlockPos,
     visitOrigins: Boolean = true,
     maxDistance: Int = Int.MAX_VALUE,
@@ -162,9 +162,9 @@ fun spaceVisitor(
             else -> throw AssertionError()
         }
         if (ignoreOriginalWall && fromBlockPos == originalBlockPos) {
-            !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite)
+            !level.getBlockState(toBlockPos).isFaceSturdy(level, toBlockPos, direction.opposite)
         } else {
-            !world.getBlockState(toBlockPos).isFaceSturdy(world, toBlockPos, direction.opposite) && !world.getBlockState(fromBlockPos).isFaceSturdy(world, fromBlockPos, direction)
+            !level.getBlockState(toBlockPos).isFaceSturdy(level, toBlockPos, direction.opposite) && !level.getBlockState(fromBlockPos).isFaceSturdy(level, fromBlockPos, direction)
         }
     }
 }
@@ -175,28 +175,28 @@ fun spaceVisitor(
  * [ServerPlayerInteractionManager.tryBreakBlock]とは以下の点で異なります。
  * - ブロックの硬度が無限の場合、無効になる。
  */
-fun breakBlock(itemStack: ItemStack, world: Level, blockPos: BlockPos, player: ServerPlayer): Boolean {
-    val blockState = world.getBlockState(blockPos)
-    if (!itemStack.item.canAttackBlock(blockState, world, blockPos, player)) return false // このツールは採掘そのものができない
-    val blockEntity = world.getBlockEntity(blockPos)
+fun breakBlock(itemStack: ItemStack, level: Level, blockPos: BlockPos, player: ServerPlayer): Boolean {
+    val blockState = level.getBlockState(blockPos)
+    if (!itemStack.item.canAttackBlock(blockState, level, blockPos, player)) return false // このツールは採掘そのものができない
+    val blockEntity = level.getBlockEntity(blockPos)
     val block = blockState.block
 
-    if (blockState.getDestroySpeed(world, blockPos) < 0F) return false // このブロックは破壊不能
+    if (blockState.getDestroySpeed(level, blockPos) < 0F) return false // このブロックは破壊不能
     if (block is GameMasterBlock && !player.canUseGameMasterBlocks()) {
-        world.sendBlockUpdated(blockPos, blockState, blockState, Block.UPDATE_ALL)
+        level.sendBlockUpdated(blockPos, blockState, blockState, Block.UPDATE_ALL)
         return false // コマンドブロックを破壊しようとした
     }
-    if (player.blockActionRestricted(world, blockPos, player.gameMode.gameModeForPlayer)) return false // 破壊する権限がない
+    if (player.blockActionRestricted(level, blockPos, player.gameMode.gameModeForPlayer)) return false // 破壊する権限がない
 
     player.connection.send(ClientboundLevelEventPacket(LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, Block.getId(blockState), false)) // playerWillDestroyは採掘者本人にはエフェクトを送らない
-    block.playerWillDestroy(world, blockPos, blockState, player)
-    val success = world.removeBlock(blockPos, false)
-    if (success) block.destroy(world, blockPos, blockState)
+    block.playerWillDestroy(level, blockPos, blockState, player)
+    val success = level.removeBlock(blockPos, false)
+    if (success) block.destroy(level, blockPos, blockState)
     if (player.isCreative) return true // クリエイティブの場合、ドロップを省略
     val newItemStack = itemStack.copy()
     val canHarvest = player.hasCorrectToolForDrops(blockState)
-    itemStack.mineBlock(world, blockState, blockPos, player)
-    if (success && canHarvest) block.playerDestroy(world, player, blockPos, blockState, blockEntity, newItemStack)
+    itemStack.mineBlock(level, blockState, blockPos, player)
+    if (success && canHarvest) block.playerDestroy(level, player, blockPos, blockState, blockEntity, newItemStack)
     return true
 }
 
@@ -211,28 +211,28 @@ val isInMagicMining: ThreadLocal<Boolean> = ThreadLocal.withInitial { false }
  * - [Item.mineBlock]を起動せず、アイテムの耐久値の減少などが発生しません。
  * - 魔法効果による採掘中に再帰的に呼び出された場合、例外が発生します。
  */
-fun breakBlockByMagic(itemStack: ItemStack, world: Level, blockPos: BlockPos, player: ServerPlayer): Boolean {
+fun breakBlockByMagic(itemStack: ItemStack, level: Level, blockPos: BlockPos, player: ServerPlayer): Boolean {
     if (isInMagicMining.get()) throw IllegalStateException("Tried to magically mine while already in magic mining.")
     isInMagicMining.set(true)
     try {
-        val blockState = world.getBlockState(blockPos)
-        val blockEntity = world.getBlockEntity(blockPos)
+        val blockState = level.getBlockState(blockPos)
+        val blockEntity = level.getBlockEntity(blockPos)
         val block = blockState.block
 
-        if (blockState.getDestroySpeed(world, blockPos) < 0F) return false // このブロックは破壊不能
+        if (blockState.getDestroySpeed(level, blockPos) < 0F) return false // このブロックは破壊不能
         if (block is GameMasterBlock && !player.canUseGameMasterBlocks()) {
-            world.sendBlockUpdated(blockPos, blockState, blockState, Block.UPDATE_ALL)
+            level.sendBlockUpdated(blockPos, blockState, blockState, Block.UPDATE_ALL)
             return false // コマンドブロックを破壊しようとした
         }
-        if (player.blockActionRestricted(world, blockPos, player.gameMode.gameModeForPlayer)) return false // 破壊する権限がない
+        if (player.blockActionRestricted(level, blockPos, player.gameMode.gameModeForPlayer)) return false // 破壊する権限がない
 
         player.connection.send(ClientboundLevelEventPacket(LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, Block.getId(blockState), false)) // playerWillDestroyは採掘者本人にはエフェクトを送らない
-        block.playerWillDestroy(world, blockPos, blockState, player)
-        val success = world.removeBlock(blockPos, false)
-        if (success) block.destroy(world, blockPos, blockState)
+        block.playerWillDestroy(level, blockPos, blockState, player)
+        val success = level.removeBlock(blockPos, false)
+        if (success) block.destroy(level, blockPos, blockState)
         if (player.isCreative) return true // クリエイティブの場合、ドロップを省略
         val newItemStack = itemStack.copy()
-        if (success) block.playerDestroy(world, player, blockPos, blockState, blockEntity, newItemStack)
+        if (success) block.playerDestroy(level, player, blockPos, blockState, blockEntity, newItemStack)
         return true
     } finally {
         isInMagicMining.set(false)
@@ -240,7 +240,7 @@ fun breakBlockByMagic(itemStack: ItemStack, world: Level, blockPos: BlockPos, pl
 }
 
 fun collectItem(
-    world: Level,
+    level: Level,
     originalBlockPos: BlockPos,
     reach: Int = Int.MAX_VALUE,
     region: BoundingBox? = null,
@@ -254,14 +254,14 @@ fun collectItem(
         reach != Int.MAX_VALUE -> originalBlockPos.toBox().inflate(reach.toDouble())
         else -> AABB.of(BoundingBox.infinite())
     }
-    val targetTable = world.getEntitiesOfClass(ItemEntity::class.java, box) {
+    val targetTable = level.getEntitiesOfClass(ItemEntity::class.java, box) {
         it.isValid && predicate(it)
     }.groupBy { it.blockPosition() }
 
     var remainingAmount = maxCount
     var processedCount = 0
     if (targetTable.isNotEmpty()) run finish@{
-        spaceVisitor(world, originalBlockPos, maxDistance = reach, ignoreOriginalWall = ignoreOriginalWall) { toBlockPos ->
+        spaceVisitor(level, originalBlockPos, maxDistance = reach, ignoreOriginalWall = ignoreOriginalWall) { toBlockPos ->
             region == null || region.isInside(toBlockPos)
         }.forEach { (_, blockPos) ->
             targetTable[blockPos]?.forEach {
@@ -282,7 +282,7 @@ fun collectItem(
 
         // Effect
         val pos = originalBlockPos.center
-        world.playSound(null, pos.x, pos.y, pos.z, SoundEventCard.COLLECT.soundEvent, SoundSource.PLAYERS, 0.15F, 0.8F + (world.random.nextFloat() - 0.5F) * 0.5F)
+        level.playSound(null, pos.x, pos.y, pos.z, SoundEventCard.COLLECT.soundEvent, SoundSource.PLAYERS, 0.15F, 0.8F + (level.random.nextFloat() - 0.5F) * 0.5F)
 
     }
 

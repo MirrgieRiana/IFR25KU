@@ -8,10 +8,8 @@ import miragefairy2024.mod.tree.contents.chargedHaimeviskaLeavesTexturedModelFac
 import miragefairy2024.mod.tree.contents.unchargedHaimeviskaLeavesTexturedModelFactory
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.Model
-import miragefairy2024.util.generator
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.propertiesOf
-import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerComposterInput
 import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerFlammable
@@ -22,8 +20,6 @@ import miragefairy2024.util.registerRedirectColorProvider
 import miragefairy2024.util.registerVariantsBlockStateGeneration
 import miragefairy2024.util.times
 import miragefairy2024.util.with
-import net.minecraft.tags.BlockTags
-import net.minecraft.tags.ItemTags
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
@@ -73,11 +69,6 @@ class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration) : Tre
 
         // 性質
         block.registerFlammable(30, 30)
-
-        // タグ
-        BlockTags.LEAVES.generator.registerChild(block)
-        ItemTags.LEAVES.generator.registerChild(item)
-        BlockTags.MINEABLE_WITH_HOE.generator.registerChild(block)
 
     }
 }

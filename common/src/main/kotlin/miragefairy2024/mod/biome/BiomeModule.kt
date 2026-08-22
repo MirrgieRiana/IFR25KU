@@ -81,10 +81,10 @@ fun initBiomeModule() {
     // ランダムなシードとランダムな座標で、地表ルールで使う2種のノイズの標準偏差を実測するのだ～🌱
     // ノイズの平均は理論上厳密に0だから、標準偏差の導出に使う平均にも0を使うのだ✨
     // 平均に0を使うと分散が二乗和を個数で割ったものそのものになるから、標準偏差と個数だけで複数の結果を正しく集約できるのだ🌱
-    registerServerDebugItem("debug_surface_noise_statistics", Blocks.COARSE_DIRT.toTextureSource(), 0xFFFFAA00.toInt()) { world, player, _, _ ->
+    registerServerDebugItem("debug_surface_noise_statistics", Blocks.COARSE_DIRT.toTextureSource(), 0xFFFFAA00.toInt()) { level, player, _, _ ->
         val random = RandomSource.create()
         SURFACE_NOISE_STANDARD_DEVIATIONS.forEach { (noiseKey, constantStandardDeviation) ->
-            val noiseParameters = world.registryAccess()[Registries.NOISE, noiseKey].value()
+            val noiseParameters = level.registryAccess()[Registries.NOISE, noiseKey].value()
             var count = 0L
             var squaredSum = 0.0
             repeat(1000) {
