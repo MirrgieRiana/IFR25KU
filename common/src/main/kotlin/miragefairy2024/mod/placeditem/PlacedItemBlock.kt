@@ -94,13 +94,13 @@ class PlacedItemBlock(settings: Properties) : Block(settings), EntityBlock {
 
     // レンダリング
     override fun getRenderShape(state: BlockState) = RenderShape.ENTITYBLOCK_ANIMATED
-    override fun getShape(state: BlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
-        val blockEntity = world.getBlockEntity(pos) as? PlacedItemBlockEntity ?: return Shapes.block()
+    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
+        val blockEntity = level.getBlockEntity(pos) as? PlacedItemBlockEntity ?: return Shapes.block()
         return blockEntity.shapeCache ?: Shapes.block()
     }
 
     // 格納されているアイテムをドロップする
-    override fun getCloneItemStack(world: LevelReader, pos: BlockPos, state: BlockState) = world.getBlockEntity(pos).castOrNull<PlacedItemBlockEntity>()?.itemStack ?: EMPTY_ITEM_STACK
+    override fun getCloneItemStack(level: LevelReader, pos: BlockPos, state: BlockState) = level.getBlockEntity(pos).castOrNull<PlacedItemBlockEntity>()?.itemStack ?: EMPTY_ITEM_STACK
     override fun onRemove(state: BlockState, level: Level, pos: BlockPos, newState: BlockState, moved: Boolean) {
         if (state isNotIn newState.block) run {
             val blockEntity = level.getBlockEntity(pos) as? PlacedItemBlockEntity ?: return@run

@@ -37,7 +37,7 @@ object AntimatterBoltCard {
     fun createEntity(entityType: EntityType<AntimatterBoltEntity>, level: Level) = AntimatterBoltEntity(entityType, level)
     val identifier = MirageFairy2024.identifier("antimatter_bolt")
     val entityType = Registration(BuiltInRegistries.ENTITY_TYPE, identifier) {
-        EntityType.Builder.of({ entityType, world -> createEntity(entityType, world) }, spawnGroup)
+        EntityType.Builder.of({ entityType, level -> createEntity(entityType, level) }, spawnGroup)
             .sized(width, height)
             .build()
     }

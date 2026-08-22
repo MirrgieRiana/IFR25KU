@@ -37,20 +37,20 @@ object ObtainFairyToolEffectType : DoubleAddToolEffectType<ToolConfiguration>() 
     override fun apply(configuration: ToolConfiguration, value: Double) {
         if (value <= 0.0) return
         configuration.descriptions += TextPoem(PoemType.DESCRIPTION, text { TRANSLATION() })
-        configuration.onAfterBreakBlockListeners += fail@{ _, world, player, pos, state, _, tool ->
+        configuration.onAfterBreakBlockListeners += fail@{ _, level, player, pos, state, _, tool ->
             if (player !is ServerPlayer) return@fail // 使用者がプレイヤーでない
 
             // モチーフの判定
             val motifSet = FairyDreamRecipes.BLOCK.test(state.block)
 
             // 抽選
-            val result = getRandomFairy(world.random, motifSet, value) ?: return@fail
+            val result = getRandomFairy(level.random, motifSet, value) ?: return@fail
 
             // 粘着採掘判定
             val stickyMiningListener: (() -> Unit)? = run {
-                val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
+                val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
                 if (stickyMiningLevel == 0) return@run null
-                val snapshot = StickyMiningSnapshot.take(world, pos.toBox())
+                val snapshot = StickyMiningSnapshot.take(level, pos.toBox())
                 return@run {
                     snapshot.teleportNewEntities(player)
                 }
@@ -58,7 +58,7 @@ object ObtainFairyToolEffectType : DoubleAddToolEffectType<ToolConfiguration>() 
 
             // 入手
             val fairyItemStack = result.motif.createFairyItemStack(condensation = result.condensation, count = result.count)
-            world.addFreshEntity(ItemEntity(world, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, fairyItemStack))
+            level.addFreshEntity(ItemEntity(level, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, fairyItemStack))
 
             // 粘着採掘効果
             stickyMiningListener?.invoke()

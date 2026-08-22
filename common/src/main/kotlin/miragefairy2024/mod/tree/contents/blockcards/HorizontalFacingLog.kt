@@ -1,15 +1,11 @@
 package miragefairy2024.mod.tree.contents.blockcards
 
 import miragefairy2024.ModContext
-import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_BLOCK_TAG
-import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_ITEM_TAG
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.createBaseWoodSetting
-import miragefairy2024.util.generator
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.normal
-import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerFlammable
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerVariantsBlockStateGeneration
@@ -18,13 +14,11 @@ import miragefairy2024.util.with
 import miragefairy2024.util.withHorizontalRotation
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureSlot
-import net.minecraft.tags.BlockTags
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.material.MapColor
 
 abstract class TreeHorizontalFacingLogBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
-    override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting().strength(2.0F).mapColor(MapColor.RAW_IRON)
+    override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting().strength(2.0F).mapColor(configuration.tree.getPlankMapColor())
 
     context(ModContext)
     override fun init() {
@@ -42,11 +36,6 @@ abstract class TreeHorizontalFacingLogBlockCard(configuration: TreeBlockConfigur
 
         // 性質
         block.registerFlammable(5, 5)
-
-        // タグ
-        BlockTags.OVERWORLD_NATURAL_LOGS.generator.registerChild(block)
-        HAIMEVISKA_LOGS_BLOCK_TAG.generator.registerChild(block)
-        HAIMEVISKA_LOGS_ITEM_TAG.generator.registerChild(item)
 
     }
 }

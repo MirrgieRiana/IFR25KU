@@ -48,17 +48,17 @@ fun registerDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSo
 
 context(ModContext)
 fun registerClientDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSource(), color: Int = 0xFF888888.toInt(), action: (Level, Player, InteractionHand, ItemStack) -> Unit) {
-    registerDebugItem(path, icon, color) { world, player, hand, itemStack ->
-        if (world.isServer) return@registerDebugItem
-        action(world, player, hand, itemStack)
+    registerDebugItem(path, icon, color) { level, player, hand, itemStack ->
+        if (level.isServer) return@registerDebugItem
+        action(level, player, hand, itemStack)
     }
 }
 
 context(ModContext)
 fun registerServerDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSource(), color: Int = 0xFF888888.toInt(), action: (ServerLevel, ServerPlayer, InteractionHand, ItemStack) -> Unit) {
-    registerDebugItem(path, icon, color) { world, player, hand, itemStack ->
-        if (world.isClientSide) return@registerDebugItem
-        action(world as ServerLevel, player as ServerPlayer, hand, itemStack)
+    registerDebugItem(path, icon, color) { level, player, hand, itemStack ->
+        if (level.isClientSide) return@registerDebugItem
+        action(level as ServerLevel, player as ServerPlayer, hand, itemStack)
     }
 }
 

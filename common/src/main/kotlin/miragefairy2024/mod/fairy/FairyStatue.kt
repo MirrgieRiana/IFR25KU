@@ -236,10 +236,10 @@ class FairyStatueBlock(private val card: FairyStatueCard, settings: Properties) 
     override fun isPathfindable(state: BlockState, pathComputationType: PathComputationType) = false
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun getShape(state: BlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext) = SHAPE
+    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = SHAPE
 
-    override fun getCloneItemStack(world: LevelReader, pos: BlockPos, state: BlockState): ItemStack {
-        return asItem().createItemStack().also { itemStack -> itemStack.setFairyMotif(world.getBlockEntity(pos).castOrNull<FairyStatueBlockEntity>()?.getMotif()) }
+    override fun getCloneItemStack(level: LevelReader, pos: BlockPos, state: BlockState): ItemStack {
+        return asItem().createItemStack().also { itemStack -> itemStack.setFairyMotif(level.getBlockEntity(pos).castOrNull<FairyStatueBlockEntity>()?.getMotif()) }
     }
 
     override fun getFairyDreamMotifs(level: Level, blockPos: BlockPos): List<Motif> {

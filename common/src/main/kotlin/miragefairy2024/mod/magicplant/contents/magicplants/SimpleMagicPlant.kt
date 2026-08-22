@@ -108,7 +108,7 @@ abstract class SimpleMagicPlantBlock(private val card: SimpleMagicPlantCard<*>, 
     private val outlineShapesCache = card.outlineShapes.toTypedArray()
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun getShape(state: BlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext) = outlineShapesCache[getAge(state)]
+    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = outlineShapesCache[getAge(state)]
 
 
     // Magic Plant

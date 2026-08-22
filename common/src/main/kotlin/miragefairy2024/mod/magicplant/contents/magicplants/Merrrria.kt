@@ -136,14 +136,14 @@ class MerrrriaBlock(settings: Properties) : SimpleMagicPlantBlock(MerrrriaCard, 
 
     override fun canGrow(blockState: BlockState) = getAge(blockState) < 3 // 0→3までは自然成長
 
-    override fun move(world: ServerLevel, blockPos: BlockPos, blockState: BlockState, speed: Double, autoPick: Boolean) {
-        super.move(world, blockPos, blockState, speed, autoPick)
+    override fun move(level: ServerLevel, blockPos: BlockPos, blockState: BlockState, speed: Double, autoPick: Boolean) {
+        super.move(level, blockPos, blockState, speed, autoPick)
 
         // 3と4の間は昼と夜で繰り返す
         if (getAge(blockState) >= 3) {
-            val newBlockState = withAge(if (world.isNight) 4 else 3)
+            val newBlockState = withAge(if (level.isNight) 4 else 3)
             if (newBlockState != blockState) {
-                world.setBlock(blockPos, newBlockState, UPDATE_CLIENTS)
+                level.setBlock(blockPos, newBlockState, UPDATE_CLIENTS)
             }
         }
 

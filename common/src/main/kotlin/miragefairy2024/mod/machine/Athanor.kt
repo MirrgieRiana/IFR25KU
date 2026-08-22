@@ -363,9 +363,9 @@ class AthanorBlockEntity(private val card: AthanorCard, pos: BlockPos, state: Bl
     }
 
     fun setLit(lit: Boolean) {
-        val world = level ?: return
+        val level = level ?: return
         if (blockState[AthanorBlock.LIT] != lit) {
-            world.setBlock(worldPosition, blockState.with(AthanorBlock.LIT, lit), Block.UPDATE_ALL)
+            level.setBlock(worldPosition, blockState.with(AthanorBlock.LIT, lit), Block.UPDATE_ALL)
         }
         // TODO state
     }
