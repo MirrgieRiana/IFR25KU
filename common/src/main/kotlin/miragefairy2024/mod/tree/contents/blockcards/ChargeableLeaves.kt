@@ -10,43 +10,17 @@ import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.Model
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.propertiesOf
-import miragefairy2024.util.registerComposterInput
-import miragefairy2024.util.registerCutoutRenderLayer
-import miragefairy2024.util.registerFlammable
-import miragefairy2024.util.registerFoliageColorProvider
-import miragefairy2024.util.registerLootTableGeneration
 import miragefairy2024.util.registerModelGeneration
-import miragefairy2024.util.registerRedirectColorProvider
 import miragefairy2024.util.registerVariantsBlockStateGeneration
 import miragefairy2024.util.times
 import miragefairy2024.util.with
-import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.material.MapColor
-import net.minecraft.world.level.material.PushReaction
 
-class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
-    override fun createSettings(): BlockBehaviour.Properties = super.createSettings()
-        .mapColor(MapColor.PLANT)
-        .strength(0.2F)
-        .randomTicks()
-        .sound(SoundType.GRASS)
-        .noOcclusion()
-        .isValidSpawn(Blocks::ocelotOrParrot)
-        .isSuffocating(Blocks::never)
-        .isViewBlocking(Blocks::never)
-        .ignitedByLava()
-        .pushReaction(PushReaction.DESTROY)
-        .isRedstoneConductor(Blocks::never)
-
+class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration, sapling: () -> TreeBlockCard) : AbstractTreeLeavesBlockCard(configuration, sapling) {
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = HaimeviskaLeavesBlock(properties)
 
     context(ModContext)
-    override fun init() {
-        super.init()
-
-        // レンダリング
+    override fun initRendering() {
         block.registerVariantsBlockStateGeneration {
             val normal = BlockStateVariant(model = "block/" * block().getIdentifier())
             listOf(
@@ -57,18 +31,5 @@ class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration) : Tre
         registerModelGeneration({ "block/charged_" * block().getIdentifier() }, { chargedHaimeviskaLeavesTexturedModelFactory.get(block()) })
         registerModelGeneration({ "block/uncharged_" * block().getIdentifier() }, { unchargedHaimeviskaLeavesTexturedModelFactory.get(block()) })
         item.registerModelGeneration(Model("block/charged_" * identifier))
-        block.registerCutoutRenderLayer()
-        block.registerFoliageColorProvider()
-        item.registerRedirectColorProvider()
-
-        // レシピ
-        block.registerLootTableGeneration { it, _ ->
-            it.createLeavesDrops(block(), SAPLING.block(), 0.05F / 4F, 0.0625F / 4F, 0.083333336F / 4F, 0.1F / 4F)
-        }
-        item.registerComposterInput(0.3F)
-
-        // 性質
-        block.registerFlammable(30, 30)
-
     }
 }

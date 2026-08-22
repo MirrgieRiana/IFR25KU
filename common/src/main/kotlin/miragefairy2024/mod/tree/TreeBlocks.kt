@@ -20,6 +20,7 @@ import miragefairy2024.mod.tree.contents.blockcards.TreeDrippingLogBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeHollowLogBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeIncisableLogBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeIncisedLogBlockCard
+import miragefairy2024.mod.tree.contents.blockcards.TreeLeavesBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreePlanksBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreePlanksButtonBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreePlanksFenceBlockCard
@@ -91,7 +92,10 @@ fun TreeBlockConfiguration.tag(blockTag: TagKey<Block>, itemTag: TagKey<Item>) =
 private fun TreeBlockConfiguration.logBase() = this.tag(this.tree.getBlockTag(), this.tree.getItemTag()).tag(BlockTags.OVERWORLD_NATURAL_LOGS)
 private fun TreeBlockConfiguration.woodBase() = this.tag(this.tree.getBlockTag(), this.tree.getItemTag())
 
-private fun TreeBlockConfiguration.leaves() = this.tag(BlockTags.LEAVES, ItemTags.LEAVES).tag(BlockTags.MINEABLE_WITH_HOE).let { TreeChargeableLeavesBlockCard(it) }
+private fun TreeBlockConfiguration.leavesBase() = this.tag(BlockTags.LEAVES, ItemTags.LEAVES).tag(BlockTags.MINEABLE_WITH_HOE)
+
+private fun TreeBlockConfiguration.leaves(sapling: () -> TreeBlockCard) = this.leavesBase().let { TreeLeavesBlockCard(it, sapling) }
+private fun TreeBlockConfiguration.chargeableLeaves(sapling: () -> TreeBlockCard) = this.leavesBase().let { TreeChargeableLeavesBlockCard(it, sapling) }
 private fun TreeBlockConfiguration.log() = this.logBase().let { TreeIncisableLogBlockCard(it) }
 private fun TreeBlockConfiguration.wood() = this.woodBase().let { TreeWoodBlockCard(it) }
 private fun TreeBlockConfiguration.strippedLog() = this.woodBase().tag(ResourceLocation("c", "stripped_logs").toBlockTag(), ResourceLocation("c", "stripped_logs").toItemTag()).let { TreeStrippedLogBlockCard(it) }
@@ -126,10 +130,20 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             override fun getTreeGrowerName() = MirageFairy2024.identifier("haimeviska")
         }
 
+        val PLASTIC_TREE_TREE_CONFIGURATION = object : TreeConfiguration {
+            override fun getWoodMapColor() = MapColor.COLOR_YELLOW
+            override fun getPlankMapColor() = MapColor.SAND
+            override fun getBlockTag() = HAIMEVISKA_LOGS_BLOCK_TAG // プラノキの原木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+            override fun getItemTag() = HAIMEVISKA_LOGS_ITEM_TAG // プラノキの原木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+            override fun getBlockSetType() = HAIMEVISKA_BLOCK_SET_TYPE // プラノキの板材がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+            override fun getWoodType() = HAIMEVISKA_WOOD_TYPE // プラノキの板材がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+            override fun getTreeGrowerName() = MirageFairy2024.identifier("plastic_tree")
+        }
+
         val LEAVES = !TreeBlockConfiguration(
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_leaves", EnJa("Haimeviska Leaves", "ハイメヴィスカの葉"),
             PoemList(1).poem(EnJa("All original flowers are consumed by ivy", "妖精になれる花、なれない花。")),
-        ).leaves()
+        ).chargeableLeaves { SAPLING }
         val LOG = !TreeBlockConfiguration(
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_log", EnJa("Haimeviska Log", "ハイメヴィスカの原木"),
             PoemList(1)
@@ -216,6 +230,11 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_sapling", EnJa("Haimeviska Sapling", "ハイメヴィスカの苗木"),
             PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
         ).sapling()
+
+        val PLASTIC_TREE_LEAVES = !TreeBlockConfiguration(
+            PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_leaves", EnJa("Plastic Tree Leaves", "プラノキの葉"),
+            PoemList(1).poem(EnJa("TODO", "TODO")),
+        ).leaves { SAPLING }
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)
