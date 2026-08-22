@@ -8,12 +8,12 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 public interface BlockBreakingCallback {
-    Event<BlockBreakingCallback> EVENT = EventFactory.createArrayBacked(BlockBreakingCallback.class, callbacks -> (state, player, world, pos, blockBreakingDelta) -> {
+    Event<BlockBreakingCallback> EVENT = EventFactory.createArrayBacked(BlockBreakingCallback.class, callbacks -> (state, player, level, pos, blockBreakingDelta) -> {
         for (BlockBreakingCallback callback : callbacks) {
-            blockBreakingDelta = callback.calcBlockBreakingDelta(state, player, world, pos, blockBreakingDelta);
+            blockBreakingDelta = callback.calcBlockBreakingDelta(state, player, level, pos, blockBreakingDelta);
         }
         return blockBreakingDelta;
     });
 
-    float calcBlockBreakingDelta(BlockState state, Player player, BlockGetter world, BlockPos pos, float blockBreakingDelta);
+    float calcBlockBreakingDelta(BlockState state, Player player, BlockGetter level, BlockPos pos, float blockBreakingDelta);
 }
