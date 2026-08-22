@@ -4,9 +4,12 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.contents.GiantHaimeviskaFoliagePlacer
 import miragefairy2024.mod.tree.contents.GiantHaimeviskaTrunkPlacer
+import miragefairy2024.mod.tree.contents.GiantPlasticTreeTrunkPlacer
 import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecorator
+import miragefairy2024.mod.tree.contents.PlasticTreeTreeDecorator
 import miragefairy2024.mod.tree.contents.SmallHaimeviskaFoliagePlacer
 import miragefairy2024.mod.tree.contents.SmallHaimeviskaTrunkPlacer
+import miragefairy2024.mod.tree.contents.SmallPlasticTreeTrunkPlacer
 import miragefairy2024.util.count
 import miragefairy2024.util.generator
 import miragefairy2024.util.per
@@ -35,6 +38,10 @@ val GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with
 val GIANT_HAIMEVISKA_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_haimeviska")
 val GIANT_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_haimeviska_fairy_forest")
 val GIANT_HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_haimeviska_deep_fairy_forest")
+
+val SMALL_PLASTIC_TREE_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("small_plastic_tree")
+
+val GIANT_PLASTIC_TREE_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("giant_plastic_tree")
 
 context(ModContext)
 fun initTreeWorldGens() {
@@ -78,6 +85,30 @@ fun initTreeWorldGens() {
             // 超高密度
             registerPlacedFeature(GIANT_HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY) { count(8) + tree(TreeBlockCard.SAPLING.block()) }
 
+        }
+    }
+
+    Feature.TREE.generator(MirageFairy2024.identifier("small_plastic_tree")) {
+        registerConfiguredFeature(SMALL_PLASTIC_TREE_CONFIGURED_FEATURE_KEY) {
+            TreeConfiguration.TreeConfigurationBuilder(
+                BlockStateProvider.simple(TreeBlockCard.LOG.block()),
+                SmallPlasticTreeTrunkPlacer,
+                BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
+                SmallHaimeviskaFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
+                TwoLayersFeatureSize(1, 0, 1),
+            ).ignoreVines().decorators(listOf(PlasticTreeTreeDecorator)).build()
+        }
+    }
+
+    Feature.TREE.generator(MirageFairy2024.identifier("giant_plastic_tree")) {
+        registerConfiguredFeature(GIANT_PLASTIC_TREE_CONFIGURED_FEATURE_KEY) {
+            TreeConfiguration.TreeConfigurationBuilder(
+                BlockStateProvider.simple(TreeBlockCard.LOG.block()),
+                GiantPlasticTreeTrunkPlacer,
+                BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
+                GiantHaimeviskaFoliagePlacer,
+                TwoLayersFeatureSize(1, 1, 2),
+            ).ignoreVines().decorators(listOf(PlasticTreeTreeDecorator)).build()
         }
     }
 }
