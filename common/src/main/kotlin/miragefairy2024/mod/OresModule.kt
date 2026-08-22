@@ -32,7 +32,6 @@ import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerFeature
 import miragefairy2024.util.registerItemGroup
-import miragefairy2024.util.registerLootTableGeneration
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerOreLootTableGeneration
 import miragefairy2024.util.registerPlacedFeature
@@ -87,8 +86,7 @@ enum class OreCard(
     val poemList: PoemList?,
     val baseStoneType: BaseStoneType,
     texturePath: String,
-    /** null にすると、シルクタッチ以外では何も落ちなくなるのだ～🌱 */
-    val dropItem: (() -> Item)?,
+    val dropItem: () -> Item,
     experience: Pair<Int, Int>,
     val tags: List<TagKey<Block>> = emptyList(),
 ) {
@@ -193,12 +191,12 @@ enum class OreCard(
     RESIN_CEMENTED_DIRT_RETINITE_ORE(
         "resin_cemented_dirt_retinite_ore", "Resin-Cemented Dirt Retinite Ore", "石化した樹脂状の土レチナイト鉱石",
         null,
-        BaseStoneType.RESIN_CEMENTED_DIRT, "retinite_ore", null, 2 to 5,
+        BaseStoneType.RESIN_CEMENTED_DIRT, "retinite_ore", MaterialCard.RETINITE.item, 2 to 5,
     ),
     RESIN_CEMENTED_DIRT_COPAL_ORE(
         "resin_cemented_dirt_copal_ore", "Resin-Cemented Dirt Copal Ore", "石化した樹脂状の土コーパル鉱石",
         null,
-        BaseStoneType.RESIN_CEMENTED_DIRT, "copal_ore", null, 2 to 5,
+        BaseStoneType.RESIN_CEMENTED_DIRT, "copal_ore", MaterialCard.COPAL.item, 2 to 5,
     ),
     ;
 
@@ -289,12 +287,7 @@ fun initOresModule() {
             card.item.registerPoemGeneration(card.poemList)
         }
 
-        val dropItem = card.dropItem
-        if (dropItem != null) {
-            card.block.registerOreLootTableGeneration(dropItem)
-        } else {
-            card.block.registerLootTableGeneration { it, _ -> it.createSilkTouchOnlyTable(card.block()) }
-        }
+        card.block.registerOreLootTableGeneration(card.dropItem)
 
         card.baseStoneType.mineableTag.generator.registerChild(card.block)
         card.baseStoneType.needsToolTag?.generator?.registerChild(card.block)
