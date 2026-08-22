@@ -16,9 +16,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class BlockCallback {
-    public final static Event<AfterBreak> AFTER_BREAK = EventFactory.createArrayBacked(AfterBreak.class, callbacks -> (world, player, pos, state, blockEntity, tool) -> {
+    public final static Event<AfterBreak> AFTER_BREAK = EventFactory.createArrayBacked(AfterBreak.class, callbacks -> (level, player, pos, state, blockEntity, tool) -> {
         for (AfterBreak callback : callbacks) {
-            callback.afterBreak(world, player, pos, state, blockEntity, tool);
+            callback.afterBreak(level, player, pos, state, blockEntity, tool);
         }
     });
 
@@ -51,7 +51,7 @@ public class BlockCallback {
     });
 
     public interface AfterBreak {
-        void afterBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool);
+        void afterBreak(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool);
     }
 
     public interface GetDropsByEntity {

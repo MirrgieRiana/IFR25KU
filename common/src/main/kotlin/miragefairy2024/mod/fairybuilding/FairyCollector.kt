@@ -158,8 +158,8 @@ class FairyCollectorBlockEntity(card: FairyCollectorCard, pos: BlockPos, state: 
     }
 
 
-    override fun serverTick(world: Level, pos: BlockPos, state: BlockState) {
-        super.serverTick(world, pos, state)
+    override fun serverTick(level: Level, pos: BlockPos, state: BlockState) {
+        super.serverTick(level, pos, state)
 
         if (folia < 3_000) {
             setStatus(FairyFactoryBlock.Status.OFFLINE)
@@ -180,7 +180,7 @@ class FairyCollectorBlockEntity(card: FairyCollectorCard, pos: BlockPos, state: 
                 folia -= 1000
 
                 val region = BoundingBox(pos.x - 10, pos.y - 4, pos.z - 10, pos.x + 10, pos.y, pos.z + 10)
-                collectItem(world, pos, region = region, ignoreOriginalWall = true) {
+                collectItem(level, pos, region = region, ignoreOriginalWall = true) {
 
                     folia -= 500 + 30 * it.item.count
 
