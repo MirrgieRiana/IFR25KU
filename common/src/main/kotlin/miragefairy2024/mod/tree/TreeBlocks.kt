@@ -88,14 +88,17 @@ fun TreeBlockConfiguration.tag(tag: TagKey<Item>) = this.also { it.itemTags += t
 @JvmName("blockAndItemTag")
 fun TreeBlockConfiguration.tag(blockTag: TagKey<Block>, itemTag: TagKey<Item>) = this.tag(blockTag).tag(itemTag)
 
+private fun TreeBlockConfiguration.logBase() = this.tag(this.tree.blockTag, this.tree.itemTag).tag(BlockTags.OVERWORLD_NATURAL_LOGS)
+private fun TreeBlockConfiguration.woodBase() = this.tag(this.tree.blockTag, this.tree.itemTag)
+
 private fun TreeBlockConfiguration.leaves() = this.tag(BlockTags.LEAVES, ItemTags.LEAVES).tag(BlockTags.MINEABLE_WITH_HOE).let { TreeChargeableLeavesBlockCard(it) }
-private fun TreeBlockConfiguration.log() = this.tag(this.tree.blockTag, this.tree.itemTag).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeIncisableLogBlockCard(it) }
-private fun TreeBlockConfiguration.wood() = this.tag(this.tree.blockTag, this.tree.itemTag).let { TreeWoodBlockCard(it) }
-private fun TreeBlockConfiguration.strippedLog() = this.tag(this.tree.blockTag, this.tree.itemTag).tag(ResourceLocation("c", "stripped_logs").toBlockTag(), ResourceLocation("c", "stripped_logs").toItemTag()).let { TreeStrippedLogBlockCard(it) }
-private fun TreeBlockConfiguration.strippedWood() = this.tag(this.tree.blockTag, this.tree.itemTag).tag(ResourceLocation("c", "stripped_woods").toBlockTag(), ResourceLocation("c", "stripped_woods").toItemTag()).let { TreeStrippedWoodBlockCard(it) }
-private fun TreeBlockConfiguration.incisedLog() = this.tag(this.tree.blockTag, this.tree.itemTag).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeIncisedLogBlockCard(it) }
-private fun TreeBlockConfiguration.drippingLog() = this.tag(this.tree.blockTag, this.tree.itemTag).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeDrippingLogBlockCard(it) }
-private fun TreeBlockConfiguration.hollowLog() = this.tag(this.tree.blockTag, this.tree.itemTag).tag(BlockTags.OVERWORLD_NATURAL_LOGS).let { TreeHollowLogBlockCard(it) }
+private fun TreeBlockConfiguration.log() = this.logBase().let { TreeIncisableLogBlockCard(it) }
+private fun TreeBlockConfiguration.wood() = this.woodBase().let { TreeWoodBlockCard(it) }
+private fun TreeBlockConfiguration.strippedLog() = this.woodBase().tag(ResourceLocation("c", "stripped_logs").toBlockTag(), ResourceLocation("c", "stripped_logs").toItemTag()).let { TreeStrippedLogBlockCard(it) }
+private fun TreeBlockConfiguration.strippedWood() = this.woodBase().tag(ResourceLocation("c", "stripped_woods").toBlockTag(), ResourceLocation("c", "stripped_woods").toItemTag()).let { TreeStrippedWoodBlockCard(it) }
+private fun TreeBlockConfiguration.incisedLog() = this.logBase().let { TreeIncisedLogBlockCard(it) }
+private fun TreeBlockConfiguration.drippingLog() = this.logBase().let { TreeDrippingLogBlockCard(it) }
+private fun TreeBlockConfiguration.hollowLog() = this.logBase().let { TreeHollowLogBlockCard(it) }
 private fun TreeBlockConfiguration.planks(input: TreeBlockCard) = this.tag(BlockTags.PLANKS, ItemTags.PLANKS).let { TreePlanksBlockCard(it, input.item) }
 private fun TreeBlockConfiguration.slab(base: TreeBlockCard) = this.tag(BlockTags.WOODEN_SLABS, ItemTags.WOODEN_SLABS).let { TreePlanksSlabBlockCard(it) { base.block } }
 private fun TreeBlockConfiguration.stairs(base: TreeBlockCard) = this.tag(BlockTags.WOODEN_STAIRS, ItemTags.WOODEN_STAIRS).let { TreePlanksStairsBlockCard(it) { base.block } }
