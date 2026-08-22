@@ -9,13 +9,11 @@ import miragefairy2024.util.LootPool
 import miragefairy2024.util.LootTable
 import miragefairy2024.util.registerLootTableGeneration
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.material.MapColor
 
 class TreeIncisedLogBlockCard(
     configuration: TreeBlockConfiguration,
     log: () -> TreeBlockCard,
-    mapColor: MapColor,
-) : TreeHorizontalFacingLogBlockCard(configuration, log, mapColor) {
+) : TreeHorizontalFacingLogBlockCard(configuration, log) {
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = IncisedHaimeviskaLogBlock(properties)
 
     context(ModContext)

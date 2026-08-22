@@ -12,7 +12,6 @@ import miragefairy2024.util.with
 import mirrg.kotlin.helium.atMost
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
-import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.core.registries.Registries
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
@@ -31,8 +30,6 @@ import net.minecraft.world.phys.BlockHitResult
 
 @Suppress("OVERRIDE_DEPRECATION")
 abstract class DrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
-    protected abstract val sapParticleOptions: ParticleOptions
-
     override fun animateTick(state: BlockState, world: Level, pos: BlockPos, random: RandomSource) {
         if (random.nextFloat() >= 0.2F) return
 
@@ -69,7 +66,7 @@ abstract class DrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBl
         }
 
         world.addParticle(
-            sapParticleOptions,
+            ParticleTypeCard.DRIPPING_SAP.particleType,
             pos.x + x2,
             pos.y + y - 1.0 / 16.0,
             pos.z + z2,
@@ -87,8 +84,6 @@ class DrippingHaimeviskaLogBlock(settings: Properties) : DrippingLogBlock(settin
     }
 
     override fun codec() = CODEC
-
-    override val sapParticleOptions get() = ParticleTypeCard.DRIPPING_HAIMEVISKA_SAP.particleType
 
     override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
         if (level.isClientSide) return ItemInteractionResult.SUCCESS
@@ -123,7 +118,4 @@ class DrippingPlasticTreeLogBlock(settings: Properties) : DrippingLogBlock(setti
         val CODEC: MapCodec<DrippingPlasticTreeLogBlock> = simpleCodec(::DrippingPlasticTreeLogBlock)
     }
 
-    override fun codec() = CODEC
-
-    override val sapParticleOptions get() = ParticleTypeCard.DRIPPING_PLASTIC_TREE_SAP.particleType
-}
+    override fun codec() = CODEC}

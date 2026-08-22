@@ -14,7 +14,6 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition
 
@@ -23,8 +22,7 @@ class TreeHarvestableDrippingLogBlockCard(
     log: () -> TreeBlockCard,
     sap: () -> Item,
     private val rosin: () -> Item,
-    mapColor: MapColor,
-) : TreeDrippingLogBlockCard(configuration, log, sap, mapColor) {
+) : TreeDrippingLogBlockCard(configuration, log, sap) {
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = DrippingHaimeviskaLogBlock(properties)
 
     context(ModContext)

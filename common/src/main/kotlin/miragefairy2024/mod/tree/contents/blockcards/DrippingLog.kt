@@ -14,15 +14,13 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 
 open class TreeDrippingLogBlockCard(
     configuration: TreeBlockConfiguration,
     log: () -> TreeBlockCard,
     protected val sap: () -> Item,
-    mapColor: MapColor,
-) : TreeHorizontalFacingLogBlockCard(configuration, log, mapColor) {
+) : TreeHorizontalFacingLogBlockCard(configuration, log) {
     override suspend fun createBlock(properties: BlockBehaviour.Properties): DrippingLogBlock = DrippingPlasticTreeLogBlock(properties)
 
     context(ModContext)
