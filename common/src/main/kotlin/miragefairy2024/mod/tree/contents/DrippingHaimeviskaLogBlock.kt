@@ -99,7 +99,7 @@ class DrippingHaimeviskaLogBlock(settings: Properties) : SimpleHorizontalFacingB
         }
 
         level.addParticle(
-            ParticleTypeCard.DRIPPING_HAIMEVISKA_SAP.particleType,
+            ParticleTypeCard.DRIPPING_SAP.particleType,
             pos.x + x2,
             pos.y + y - 1.0 / 16.0,
             pos.z + z2,

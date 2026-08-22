@@ -96,8 +96,8 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
     /** あるワールド上の地点における特性の効果を計算する。 */
     protected fun calculateTraitEffects(level: Level, blockPos: BlockPos, blockEntity: MagicPlantBlockEntity?, traitStacks: TraitStacks): MutableTraitEffects {
         val allTraitEffects = MutableTraitEffects()
-        traitStacks.traitStackMap.forEach { (trait, level2) ->
-            val traitEffects = trait.getTraitEffects(level, blockPos, blockEntity, level2)
+        traitStacks.traitStackMap.forEach { (trait, traitLevel) ->
+            val traitEffects = trait.getTraitEffects(level, blockPos, blockEntity, traitLevel)
             if (traitEffects != null) allTraitEffects += traitEffects
         }
         return allTraitEffects

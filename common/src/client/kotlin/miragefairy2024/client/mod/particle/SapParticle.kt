@@ -10,7 +10,7 @@ import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 
 @Suppress("LeakingThis")
-open class HaimeviskaSapParticle(level: ClientLevel, x: Double, y: Double, z: Double) : TextureSheetParticle(level, x, y, z) {
+open class SapParticle(level: ClientLevel, x: Double, y: Double, z: Double) : TextureSheetParticle(level, x, y, z) {
     init {
         setSize(0.01F, 0.01F)
         gravity = 0.06F
@@ -49,7 +49,7 @@ open class HaimeviskaSapParticle(level: ClientLevel, x: Double, y: Double, z: Do
 
     }
 
-    class Dripping(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, private val particleEffect: ParticleOptions) : HaimeviskaSapParticle(level, x, y, z) {
+    class Dripping(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, private val particleEffect: ParticleOptions) : SapParticle(level, x, y, z) {
         init {
             pickSprite(spriteProvider)
             gravity *= 0.01F
@@ -67,7 +67,7 @@ open class HaimeviskaSapParticle(level: ClientLevel, x: Double, y: Double, z: Do
         }
     }
 
-    class Falling(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, private val particleEffect: ParticleOptions) : HaimeviskaSapParticle(level, x, y, z) {
+    class Falling(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, private val particleEffect: ParticleOptions) : SapParticle(level, x, y, z) {
         init {
             pickSprite(spriteProvider)
             gravity = 0.01F
@@ -83,7 +83,7 @@ open class HaimeviskaSapParticle(level: ClientLevel, x: Double, y: Double, z: Do
         }
     }
 
-    class Landing(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet) : HaimeviskaSapParticle(level, x, y, z) {
+    class Landing(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet) : SapParticle(level, x, y, z) {
         init {
             pickSprite(spriteProvider)
             lifetime = (128.0 / (level.random.nextDouble() * 0.8 + 0.2)).toInt()
