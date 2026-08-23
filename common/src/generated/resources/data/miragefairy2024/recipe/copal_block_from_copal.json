@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:copal_block",
+  "ingredients": [
+    {
+      "tag": "c:gems/copal"
+    },
+    {
+      "tag": "c:gems/copal"
+    },
+    {
+      "tag": "c:gems/copal"
+    },
+    {
+      "tag": "c:gems/copal"
+    },
+    {
+      "tag": "c:gems/copal"
+    },
+    {
+      "tag": "c:gems/copal"
+    },
+    {
+      "tag": "c:gems/copal"
+    },
+    {
+      "tag": "c:gems/copal"
+    },
+    {
+      "tag": "c:gems/copal"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:copal_block"
+  }
+}

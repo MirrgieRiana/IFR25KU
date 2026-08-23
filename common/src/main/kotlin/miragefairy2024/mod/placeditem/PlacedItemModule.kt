@@ -48,10 +48,10 @@ fun initPlacedItemModule() {
 
             // ブロックの設置判定
 
-            val world = player.level()
+            val level = player.level()
 
             // 生成環境判定
-            if (!world.getBlockState(blockPos).canBeReplaced()) return@registerServerPacketReceiver // 配置先が埋まっている
+            if (!level.getBlockState(blockPos).canBeReplaced()) return@registerServerPacketReceiver // 配置先が埋まっている
 
             // アイテム判定
             if (player.mainHandItem.isEmpty) return@registerServerPacketReceiver // アイテムを持っていない
@@ -60,8 +60,8 @@ fun initPlacedItemModule() {
 
             // 成功
 
-            world.setBlock(blockPos, PlacedItemCard.block().defaultBlockState(), Block.UPDATE_CLIENTS)
-            val blockEntity = world.getBlockEntity(blockPos) as? PlacedItemBlockEntity ?: return@registerServerPacketReceiver // ブロックの配置に失敗した
+            level.setBlock(blockPos, PlacedItemCard.block().defaultBlockState(), Block.UPDATE_CLIENTS)
+            val blockEntity = level.getBlockEntity(blockPos) as? PlacedItemBlockEntity ?: return@registerServerPacketReceiver // ブロックの配置に失敗した
             blockEntity.itemStack = itemStack
             blockEntity.itemX = packet.itemX
             blockEntity.itemY = packet.itemY
@@ -71,7 +71,7 @@ fun initPlacedItemModule() {
             blockEntity.updateShapeCache()
             blockEntity.setChanged()
 
-            world.playSound(null, blockPos, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.0F) * 2.0F)
+            level.playSound(null, blockPos, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((level.random.nextFloat() - level.random.nextFloat()) * 0.7F + 1.0F) * 2.0F)
 
         }
     }
@@ -92,21 +92,21 @@ fun initPlacedItemModule() {
 
             // ブロックの除去判定
 
-            val world = player.level()
+            val level = player.level()
 
-            if (world.getBlockState(blockPos) isNotIn PlacedItemCard.block()) return@registerServerPacketReceiver // ブロックが置かれていない
-            val blockEntity = world.getBlockEntity(blockPos) as? PlacedItemBlockEntity ?: return@registerServerPacketReceiver // ブロックの取得に失敗した
+            if (level.getBlockState(blockPos) isNotIn PlacedItemCard.block()) return@registerServerPacketReceiver // ブロックが置かれていない
+            val blockEntity = level.getBlockEntity(blockPos) as? PlacedItemBlockEntity ?: return@registerServerPacketReceiver // ブロックの取得に失敗した
             val itemStack = blockEntity.itemStack
 
 
             // 成功
 
             blockEntity.itemStack = EMPTY_ITEM_STACK
-            world.removeBlock(blockPos, false)
+            level.removeBlock(blockPos, false)
             player.obtain(itemStack)
 
             // これを入れるとSEが2重に流れる
-            //world.playSound(null, blockPos, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.0F) * 2.0F)
+            //level.playSound(null, blockPos, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((level.random.nextFloat() - level.random.nextFloat()) * 0.7F + 1.0F) * 2.0F)
 
         }
     }
