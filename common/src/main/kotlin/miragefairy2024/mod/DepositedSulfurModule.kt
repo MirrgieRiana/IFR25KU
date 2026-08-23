@@ -184,7 +184,7 @@ fun initDepositedSulfurModule() {
                         TextureSlot.PARTICLE.id to texture,
                         TextureSlot.TEXTURE.id to texture,
                     ),
-                    // ヒカリゴケの平面は貼り付け先から0.1だけ浮いているから、隣り合う面同士の継ぎ目に岩肌の角が覗いてしまうのだぁ🌧️ 平面を上下左右に0.11だけはみ出させて、直交する面の裏に隠すのだぁ✨
+                    // ヒカリゴケの平面は貼り付け先から0.1だけ浮いているから、隣り合う面同士の継ぎ目に岩肌の角が覗いてしまうのだぁ…🌧️ 平面を上下左右に0.11だけはみ出させて、直交する面の裏に隠すのだぁ✨
                     elements = ModelElementsData(
                         ModelElementData(
                             from = listOf(-0.11, -0.11, 0.1),
