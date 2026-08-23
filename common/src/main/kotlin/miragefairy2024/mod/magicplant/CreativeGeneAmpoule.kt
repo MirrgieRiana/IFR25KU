@@ -105,9 +105,9 @@ class CreativeGeneAmpouleItem(settings: Properties) : Item(settings) {
         return InteractionResult.CONSUME
     }
 
-    override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
         val itemStack = user.getItemInHand(hand)
-        if (world.isClientSide) return InteractionResultHolder.success(itemStack)
+        if (level.isClientSide) return InteractionResultHolder.success(itemStack)
         val traitStacks = itemStack.getTraitStacks() ?: TraitStacks.EMPTY
         if (!user.isShiftKeyDown) {
             itemStack.setTraitStacks(TraitStacks.of(traitStacks.traitStackMap.mapValues { (it.value shl 1).let { level -> if (level <= 0) 1 else level } }))

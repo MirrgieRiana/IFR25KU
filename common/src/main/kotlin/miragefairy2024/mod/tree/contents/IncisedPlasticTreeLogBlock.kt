@@ -19,10 +19,10 @@ class IncisedPlasticTreeLogBlock(settings: Properties) : SimpleHorizontalFacingB
     override fun codec() = CODEC
 
     override fun isRandomlyTicking(state: BlockState) = true
-    override fun randomTick(state: BlockState, world: ServerLevel, pos: BlockPos, random: RandomSource) {
+    override fun randomTick(state: BlockState, level: ServerLevel, pos: BlockPos, random: RandomSource) {
         if (random.nextInt(100) == 0) {
             // 樹液が滴るプラノキの原木が実装されるまでの間、ハイメヴィスカのものに変化するのだ～🌱
-            world.setBlock(pos, TreeBlockCard.DRIPPING_LOG.block().defaultBlockState().with(FACING, state[FACING]), UPDATE_ALL)
+            level.setBlock(pos, TreeBlockCard.DRIPPING_LOG.block().defaultBlockState().with(FACING, state[FACING]), UPDATE_ALL)
         }
     }
 }

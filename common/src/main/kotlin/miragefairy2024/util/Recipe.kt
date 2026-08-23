@@ -207,7 +207,7 @@ fun registerSpecialRecipe(
     lateinit var serializer: SimpleCraftingRecipeSerializer<*>
 
     class SpecialCraftingRecipeImpl(category: CraftingBookCategory) : CustomRecipe(category) {
-        override fun matches(input: CraftingInput, world: Level) = matcher(input) != null
+        override fun matches(input: CraftingInput, level: Level) = matcher(input) != null
         override fun assemble(input: CraftingInput, registries: HolderLookup.Provider) = matcher(input)?.craft() ?: EMPTY_ITEM_STACK
         override fun getRemainingItems(input: CraftingInput) = matcher(input)?.getRemainder() ?: getDefaultRemainingItems(input) // interfaceのsuperを呼び出そうとするとNoSuchMethodErrorになる
 

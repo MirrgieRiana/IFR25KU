@@ -6,19 +6,16 @@ import miragefairy2024.ModEvents
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.createBaseWoodSetting
-import miragefairy2024.util.get
 import miragefairy2024.util.on
 import miragefairy2024.util.registerDefaultLootTableGeneration
 import miragefairy2024.util.registerFlammable
 import miragefairy2024.util.registerShapedRecipeGeneration
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry
-import net.minecraft.core.Direction
 import net.minecraft.data.models.BlockModelGenerators.WoodProvider
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.material.MapColor
 
 abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting().strength(2.0F)
@@ -57,23 +54,8 @@ abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) :
     }
 }
 
-open class TreeLogBlockCard(
-    configuration: TreeBlockConfiguration,
-    private val verticalMapColor: MapColor,
-    private val horizontalMapColor: MapColor,
-) : AbstractTreeLogBlockCard(configuration) {
-    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { if (it[RotatedPillarBlock.AXIS] === Direction.Axis.Y) verticalMapColor else horizontalMapColor }
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
-
-    context(ModContext)
-    override fun init() {
-        super.init()
-        registerModelGeneration(block) { it.logWithHorizontal(block()) }
-    }
-}
-
 class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
-    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.RAW_IRON }
+    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getPlankMapColor() }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
     context(ModContext)
@@ -85,7 +67,7 @@ class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration) : Abstract
 }
 
 class TreeWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
-    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.TERRACOTTA_ORANGE }
+    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getWoodMapColor() }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
     context(ModContext)
@@ -97,7 +79,7 @@ class TreeWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLog
 }
 
 class TreeStrippedWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
-    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.RAW_IRON }
+    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getPlankMapColor() }
     override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
     context(ModContext)
