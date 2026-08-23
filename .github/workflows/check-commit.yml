@@ -38,7 +38,12 @@ jobs:
         run: |
           # 空白だけの行は、どのコミットにも一致してしまうから、先に落としておくのだぁ…🌧️
           # 大文字小文字を区別せずに比べるために、あらかじめ小文字にしておくのだ～🌱
-          patterns := (ENV.BLOCKED_COMMIT_EMAIL ?: "") >> LINES >> FILTER [ _ => _ !~ /^\s*$/ ] >> LC >> TO_ARRAY
+          patterns := (ENV.BLOCKED_COMMIT_EMAIL ?: "")
+            >> LINES
+            | _::replace(/^\s+|\s+$/g; "")
+            >> GREP[/./]
+            >> LC
+            >> TO_ARRAY
 
           # シークレットを設定するまでの間や、シークレットが渡らないforkからのPRでは、検査をとばすのだぁ…🌧️
           patterns.$# == 0 && :
