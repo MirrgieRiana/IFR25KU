@@ -122,9 +122,9 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
     private fun collectFolia() {
         val level = level ?: return
 
-        // 最大200ブロックのハイメヴィスカの原木を探す
+        // 最大200ブロックの導線を探す
         val logs = blockVisitor(listOf(worldPosition), maxCount = 200, neighborType = NeighborType.VERTICES) { _, _, toBlockPos ->
-            level.getBlockState(toBlockPos) isIn FAIRY_BUILDING_BLOCK_TAG
+            level.getBlockState(toBlockPos) isIn FOLIA_COLLECTION_CONDUCTOR_BLOCK_TAG
         }.map { it.second }.toList()
 
         // 最大距離6までの葉をすべて探す

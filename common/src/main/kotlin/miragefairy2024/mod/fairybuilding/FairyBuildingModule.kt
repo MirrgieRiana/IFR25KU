@@ -27,6 +27,9 @@ val SPECIFIED_FAIRY_SLOT_TRANSLATION = Translation({ "gui.${identifier.toLanguag
 
 val FAIRY_BUILDING_BLOCK_TAG = MirageFairy2024.identifier("fairy_building").toBlockTag()
 
+/** フォリアの回収の際に、妖精の工場から辿ることのできるブロックのタグなのだ～🌱 */
+val FOLIA_COLLECTION_CONDUCTOR_BLOCK_TAG = MirageFairy2024.identifier("folia_collection_conductor").toBlockTag()
+
 context(ModContext)
 fun initFairyBuildingModule() {
     fairyBuildingCards.forEach { card ->
@@ -37,5 +40,7 @@ fun initFairyBuildingModule() {
     SPECIFIED_FAIRY_SLOT_TRANSLATION.enJa()
 
     FAIRY_BUILDING_BLOCK_TAG.enJa(EnJa("Fairy Building", "妖精の建物"))
-    HAIMEVISKA_LOGS_BLOCK_TAG.generator.registerChild(FAIRY_BUILDING_BLOCK_TAG)
+    FOLIA_COLLECTION_CONDUCTOR_BLOCK_TAG.enJa(EnJa("Folia Collection Conductors", "フォリアの導線"))
+    FOLIA_COLLECTION_CONDUCTOR_BLOCK_TAG.generator.registerChild(HAIMEVISKA_LOGS_BLOCK_TAG)
+    FOLIA_COLLECTION_CONDUCTOR_BLOCK_TAG.generator.registerChild(FAIRY_BUILDING_BLOCK_TAG)
 }
