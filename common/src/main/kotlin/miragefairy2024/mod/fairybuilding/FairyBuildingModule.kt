@@ -27,7 +27,6 @@ val SPECIFIED_FAIRY_SLOT_TRANSLATION = Translation({ "gui.${identifier.toLanguag
 
 val FAIRY_BUILDING_BLOCK_TAG = MirageFairy2024.identifier("fairy_building").toBlockTag()
 
-/** フォリアの回収の際に、妖精の工場から辿ることのできるブロックのタグなのだ～🌱 */
 val FOLIA_COLLECTION_CONDUCTOR_BLOCK_TAG = MirageFairy2024.identifier("folia_collection_conductor").toBlockTag()
 
 context(ModContext)
