@@ -16,7 +16,6 @@ import miragefairy2024.util.registerRedirectColorProvider
 import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.times
 import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.level.block.LeavesBlock
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
@@ -62,8 +61,6 @@ abstract class AbstractTreeLeavesBlockCard(configuration: TreeBlockConfiguration
 }
 
 class TreeLeavesBlockCard(configuration: TreeBlockConfiguration, sapling: () -> TreeBlockCard) : AbstractTreeLeavesBlockCard(configuration, sapling) {
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = LeavesBlock(properties)
-
     context(ModContext)
     override fun initRendering() {
         block.registerSingletonBlockStateGeneration()

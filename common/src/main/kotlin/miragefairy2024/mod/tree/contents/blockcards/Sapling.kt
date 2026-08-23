@@ -1,8 +1,6 @@
 package miragefairy2024.mod.tree.contents.blockcards
 
 import miragefairy2024.ModContext
-import miragefairy2024.mod.tree.GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY
-import miragefairy2024.mod.tree.SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.util.getIdentifier
@@ -12,21 +10,16 @@ import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerDefaultLootTableGeneration
 import miragefairy2024.util.registerModelGeneration
 import miragefairy2024.util.registerSingletonBlockStateGeneration
-import miragefairy2024.util.string
 import miragefairy2024.util.times
 import miragefairy2024.util.with
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureSlot
-import net.minecraft.resources.ResourceLocation
-import net.minecraft.world.level.block.SaplingBlock
 import net.minecraft.world.level.block.SoundType
-import net.minecraft.world.level.block.grower.TreeGrower
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.material.PushReaction
-import java.util.Optional
 
-class TreeSaplingBlockCard(configuration: TreeBlockConfiguration, private val treeGrowerName: ResourceLocation) : TreeBlockCard(configuration) {
+class TreeSaplingBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings()
         .mapColor(MapColor.PLANT)
         .noCollission()
@@ -34,11 +27,6 @@ class TreeSaplingBlockCard(configuration: TreeBlockConfiguration, private val tr
         .instabreak()
         .sound(SoundType.GRASS)
         .pushReaction(PushReaction.DESTROY)
-
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = SaplingBlock(
-        TreeGrower(treeGrowerName.string, Optional.of(GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY), Optional.of(SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY), Optional.empty()),
-        properties,
-    )
 
     context(ModContext)
     override fun init() {
