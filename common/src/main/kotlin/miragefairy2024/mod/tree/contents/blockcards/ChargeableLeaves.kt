@@ -40,8 +40,6 @@ class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration) : Tre
         .pushReaction(PushReaction.DESTROY)
         .isRedstoneConductor(Blocks::never)
 
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = HaimeviskaLeavesBlock(properties)
-
     context(ModContext)
     override fun init() {
         super.init()

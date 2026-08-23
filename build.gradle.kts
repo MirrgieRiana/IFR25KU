@@ -119,6 +119,7 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
             exclude("**/*.sc2.png")
             exclude("**/*.wav")
             exclude("**/.cache/**")
+            exclude("reports/**")
         }
 
         tasks.named<Jar>("jar") {
