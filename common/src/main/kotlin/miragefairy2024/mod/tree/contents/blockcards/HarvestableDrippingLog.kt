@@ -4,7 +4,6 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.registerHarvestNotation
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
-import miragefairy2024.mod.tree.contents.DrippingHaimeviskaLogBlock
 import miragefairy2024.util.ItemLootPoolEntry
 import miragefairy2024.util.LootPool
 import miragefairy2024.util.LootTable
@@ -23,8 +22,6 @@ class TreeHarvestableDrippingLogBlockCard(
     sap: () -> Item,
     private val rosin: () -> Item,
 ) : TreeDrippingLogBlockCard(configuration, log, sap) {
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = DrippingHaimeviskaLogBlock(properties)
-
     context(ModContext)
     override fun init() {
         super.init()

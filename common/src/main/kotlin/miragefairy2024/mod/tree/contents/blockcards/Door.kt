@@ -10,18 +10,15 @@ import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.world.item.DoubleHighBlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.DoorBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.block.state.properties.BlockSetType
 import net.minecraft.world.level.material.PushReaction
 
-class TreeDoorBlockCard(configuration: TreeBlockConfiguration, private val blockSetType: () -> BlockSetType, private val parent: () -> Block) : TreeBlockCard(configuration) {
+class TreeDoorBlockCard(configuration: TreeBlockConfiguration, private val parent: () -> Block) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createPlankSettings()
         .strength(3.0F)
         .noOcclusion()
         .pushReaction(PushReaction.DESTROY)
 
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = DoorBlock(blockSetType(), properties)
     override suspend fun createItem(block: Block, properties: Item.Properties) = DoubleHighBlockItem(block, properties)
 
     context(ModContext)
