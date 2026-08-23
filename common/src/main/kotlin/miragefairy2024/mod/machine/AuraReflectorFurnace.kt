@@ -182,26 +182,26 @@ class AuraReflectorFurnaceBlockEntity(private val card: AuraReflectorFurnaceCard
     }
 
     fun setLit(lit: Boolean) {
-        val world = level ?: return
+        val level = level ?: return
         if (blockState[AuraReflectorFurnaceBlock.LIT] != lit) {
-            world.setBlock(worldPosition, blockState.with(AuraReflectorFurnaceBlock.LIT, lit), Block.UPDATE_ALL)
+            level.setBlock(worldPosition, blockState.with(AuraReflectorFurnaceBlock.LIT, lit), Block.UPDATE_ALL)
         }
     }
 
-    override fun onRecipeCheck(world: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
-        if (!super.onRecipeCheck(world, pos, state, listeners)) return false
+    override fun onRecipeCheck(level: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
+        if (!super.onRecipeCheck(level, pos, state, listeners)) return false
         if (fuel == 0) listeners += checkFuelInsert() ?: return false
         return true
     }
 
-    override fun onCraftingTick(world: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
-        if (!super.onCraftingTick(world, pos, state, listeners)) return false
+    override fun onCraftingTick(level: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
+        if (!super.onCraftingTick(level, pos, state, listeners)) return false
         if (fuel == 0) listeners += checkFuelInsert() ?: return false
         return true
     }
 
-    override fun onPostServerTick(world: Level, pos: BlockPos, state: BlockState) {
-        super.onPostServerTick(world, pos, state)
+    override fun onPostServerTick(level: Level, pos: BlockPos, state: BlockState) {
+        super.onPostServerTick(level, pos, state)
         val oldFuel = fuel
         if (fuel > 0) fuel--
         setLit(oldFuel > 0)
