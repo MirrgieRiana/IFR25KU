@@ -2,7 +2,7 @@
   "parent": "minecraft:block/orientable",
   "textures": {
     "front": "miragefairy2024:block/incised_plastic_tree_log",
-    "side": "miragefairy2024:block/plastic_tree_log",
-    "top": "miragefairy2024:block/plastic_tree_log_top"
+    "side": "miragefairy2024:block/haimeviska_log",
+    "top": "miragefairy2024:block/haimeviska_log_top"
   }
 }

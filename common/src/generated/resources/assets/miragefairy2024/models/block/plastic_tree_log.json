@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "miragefairy2024:block/plastic_tree_log_top",
-    "side": "miragefairy2024:block/plastic_tree_log"
-  }
-}
