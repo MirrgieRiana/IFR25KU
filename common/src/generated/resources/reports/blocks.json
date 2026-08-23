@@ -275334,8 +275334,9 @@
   },
   "miragefairy2024:dripping_haimeviska_log": {
     "definition": {
-      "type": "miragefairy2024:dripping_haimeviska_log",
-      "properties": {}
+      "type": "miragefairy2024:dripping_log",
+      "properties": {},
+      "tree": "miragefairy2024:haimeviska"
     },
     "properties": {
       "facing": [
@@ -280928,8 +280929,9 @@
   },
   "miragefairy2024:haimeviska_leaves": {
     "definition": {
-      "type": "miragefairy2024:haimeviska_leaves",
-      "properties": {}
+      "type": "miragefairy2024:chargeable_leaves",
+      "properties": {},
+      "tree": "miragefairy2024:haimeviska"
     },
     "properties": {
       "charged": [
@@ -281464,8 +281466,9 @@
   },
   "miragefairy2024:haimeviska_log": {
     "definition": {
-      "type": "miragefairy2024:haimeviska_log",
-      "properties": {}
+      "type": "miragefairy2024:incisable_log",
+      "properties": {},
+      "tree": "miragefairy2024:haimeviska"
     },
     "properties": {
       "axis": [
@@ -283091,7 +283094,7 @@
   },
   "miragefairy2024:hollow_haimeviska_log": {
     "definition": {
-      "type": "miragefairy2024:hollow_haimeviska_log",
+      "type": "miragefairy2024:hollow_log",
       "properties": {}
     },
     "properties": {
@@ -283132,8 +283135,9 @@
   },
   "miragefairy2024:incised_haimeviska_log": {
     "definition": {
-      "type": "miragefairy2024:incised_haimeviska_log",
-      "properties": {}
+      "type": "miragefairy2024:incised_log",
+      "properties": {},
+      "tree": "miragefairy2024:haimeviska"
     },
     "properties": {
       "facing": [
