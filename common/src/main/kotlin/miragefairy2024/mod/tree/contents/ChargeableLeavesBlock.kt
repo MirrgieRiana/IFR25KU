@@ -1,36 +1,26 @@
 package miragefairy2024.mod.tree.contents
 
 import com.mojang.serialization.MapCodec
-import com.mojang.serialization.codecs.RecordCodecBuilder
-import miragefairy2024.mod.tree.TreeConfiguration
 import miragefairy2024.util.get
 import miragefairy2024.util.lightProxy
 import miragefairy2024.util.randomBoolean
 import miragefairy2024.util.with
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerLevel
-import net.minecraft.util.ParticleUtils
 import net.minecraft.util.RandomSource
-import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.LeavesBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.BooleanProperty
 
-class ChargeableLeavesBlock(private val tree: TreeConfiguration, settings: Properties) : LeavesBlock(settings) {
+open class ChargeableLeavesBlock(settings: Properties) : LeavesBlock(settings) {
     companion object {
-        val CODEC: MapCodec<ChargeableLeavesBlock> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
-                TreeConfiguration.CODEC.fieldOf("tree").forGetter { it.tree },
-                propertiesCodec(),
-            ).apply(instance, ::ChargeableLeavesBlock)
-        }
+        val CODEC: MapCodec<ChargeableLeavesBlock> = simpleCodec(::ChargeableLeavesBlock)
         val CHARGED: BooleanProperty = BooleanProperty.create("charged")
     }
 
-    override fun codec() = CODEC
+    override fun codec(): MapCodec<out ChargeableLeavesBlock> = CODEC
 
     init {
         registerDefaultState(defaultBlockState().with(CHARGED, true))
@@ -50,16 +40,6 @@ class ChargeableLeavesBlock(private val tree: TreeConfiguration, settings: Prope
         if (!state[CHARGED]) {
             if (random.randomBoolean(15, level.lightProxy.getLightLevel(pos))) {
                 level.setBlock(pos, state.with(CHARGED, true), UPDATE_CLIENTS)
-            }
-        }
-    }
-
-    override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
-        super.animateTick(state, level, pos, random)
-        if (random.nextInt(20) == 0) {
-            val blockPos = pos.below()
-            if (!isFaceFull(level.getBlockState(blockPos).getCollisionShape(level, blockPos), Direction.UP)) {
-                ParticleUtils.spawnParticleBelow(level, pos, random, tree.getBlossomParticleType())
             }
         }
     }

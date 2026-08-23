@@ -9,9 +9,9 @@ import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.mod.materials.MaterialCard
-import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.mod.tree.contents.ChargeableLeavesBlock
 import miragefairy2024.mod.tree.contents.DrippingLogBlock
+import miragefairy2024.mod.tree.contents.HaimeviskaLeavesBlock
 import miragefairy2024.mod.tree.contents.HollowLogBlock
 import miragefairy2024.mod.tree.contents.IncisableLogBlock
 import miragefairy2024.mod.tree.contents.IncisedLogBlock
@@ -48,7 +48,6 @@ import miragefairy2024.util.toItemTag
 import com.mojang.serialization.Codec
 import net.fabricmc.fabric.api.`object`.builder.v1.block.type.BlockSetTypeBuilder
 import net.fabricmc.fabric.api.`object`.builder.v1.block.type.WoodTypeBuilder
-import net.minecraft.core.particles.SimpleParticleType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
@@ -90,7 +89,6 @@ interface TreeConfiguration {
     fun getDrippingLogBlock(): Block
     fun getSapItem(): Item
     fun getRosinItem(): Item
-    fun getBlossomParticleType(): SimpleParticleType
     fun getGiantTreeConfiguredFeatureKey(): ResourceKey<ConfiguredFeature<*, *>>
     fun getSmallTreeConfiguredFeatureKey(): ResourceKey<ConfiguredFeature<*, *>>
 
@@ -130,7 +128,8 @@ fun TreeBlockConfiguration.block(blockCreatorConverter: (suspend (BlockBehaviour
 private fun TreeBlockConfiguration.logBase() = this.tag(this.tree.getBlockTag(), this.tree.getItemTag()).tag(BlockTags.OVERWORLD_NATURAL_LOGS)
 private fun TreeBlockConfiguration.woodBase() = this.tag(this.tree.getBlockTag(), this.tree.getItemTag())
 
-private fun TreeBlockConfiguration.leaves() = this.tag(BlockTags.LEAVES, ItemTags.LEAVES).tag(BlockTags.MINEABLE_WITH_HOE).block { { ChargeableLeavesBlock(this.tree, it) } }.let { TreeChargeableLeavesBlockCard(it) }
+private fun TreeBlockConfiguration.leaves() = this.tag(BlockTags.LEAVES, ItemTags.LEAVES).tag(BlockTags.MINEABLE_WITH_HOE).block { { ChargeableLeavesBlock(it) } }.let { TreeChargeableLeavesBlockCard(it) }
+private fun TreeBlockConfiguration.haimeviskaLeaves() = this.tag(BlockTags.LEAVES, ItemTags.LEAVES).tag(BlockTags.MINEABLE_WITH_HOE).block { { HaimeviskaLeavesBlock(it) } }.let { TreeChargeableLeavesBlockCard(it) }
 private fun TreeBlockConfiguration.log() = this.logBase().block { { IncisableLogBlock(this.tree, it) } }.let { TreeIncisableLogBlockCard(it) }
 private fun TreeBlockConfiguration.wood() = this.woodBase().block { { RotatedPillarBlock(it) } }.let { TreeWoodBlockCard(it) }
 private fun TreeBlockConfiguration.strippedLog() = this.woodBase().tag(ResourceLocation("c", "stripped_logs").toBlockTag(), ResourceLocation("c", "stripped_logs").toItemTag()).block { { RotatedPillarBlock(it) } }.let { TreeStrippedLogBlockCard(it) }
@@ -169,7 +168,6 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             override fun getDrippingLogBlock(): Block = DRIPPING_LOG.block()
             override fun getSapItem() = MaterialCard.HAIMEVISKA_SAP.item()
             override fun getRosinItem() = MaterialCard.HAIMEVISKA_ROSIN.item()
-            override fun getBlossomParticleType() = ParticleTypeCard.HAIMEVISKA_BLOSSOM.particleType
             override fun getGiantTreeConfiguredFeatureKey() = GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY
             override fun getSmallTreeConfiguredFeatureKey() = SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY
         }
@@ -177,7 +175,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val LEAVES = !TreeBlockConfiguration(
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_leaves", EnJa("Haimeviska Leaves", "ハイメヴィスカの葉"),
             PoemList(1).poem(EnJa("All original flowers are consumed by ivy", "妖精になれる花、なれない花。")),
-        ).leaves()
+        ).haimeviskaLeaves()
         val LOG = !TreeBlockConfiguration(
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_log", EnJa("Haimeviska Log", "ハイメヴィスカの原木"),
             PoemList(1)
@@ -324,6 +322,7 @@ fun initTreeBlocks() {
     }
 
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("chargeable_leaves")) { ChargeableLeavesBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("haimeviska_leaves")) { HaimeviskaLeavesBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("incisable_log")) { IncisableLogBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("incised_log")) { IncisedLogBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("dripping_log")) { DrippingLogBlock.CODEC }.register()

@@ -280929,9 +280929,8 @@
   },
   "miragefairy2024:haimeviska_leaves": {
     "definition": {
-      "type": "miragefairy2024:chargeable_leaves",
-      "properties": {},
-      "tree": "miragefairy2024:haimeviska"
+      "type": "miragefairy2024:haimeviska_leaves",
+      "properties": {}
     },
     "properties": {
       "charged": [
