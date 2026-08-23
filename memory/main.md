@@ -29,7 +29,7 @@
 
 ### ぴょこの環境で `bundle` を用意するのだぁ🌱
 
-サイトのビルドには `bundle` が要るんだけど、ぴょこの環境には Ruby と `gem` しか入っていないのだぁ🌧️ しかも `/var/lib/gems/` にも `/usr/local/bin/` にも書き込めないから、`gem install bundler` は `--user-install` を付けないと通らないのだぁ🌱
+サイトのビルドには `bundle` が要るんだけど、ぴょこの環境には Ruby と `gem` しか入っていないのだぁ…🌧️ しかも `/var/lib/gems/` にも `/usr/local/bin/` にも書き込めないから、`gem install bundler` は `--user-install` を付けないと通らないのだぁ🌱
 
 そのうえ、`~/.local/` はセッションが終わるとまっさらに戻るから、毎回入れ直しになっちゃうのだぁ💧 そこで、実体を `~/.claude_tmp/` に置いて、`gem` が見に行く場所からシンボリックリンクで飛ばすのだぁ✨ こうすると、2回目からは `gem install` そのものが要らなくなるのだぁ🌱
 
@@ -44,7 +44,7 @@ command -v bundle > /dev/null || gem install bundler --user-install
 
 Gemfile のほうの gem は、`site/build/bundleVendor` に入るのだぁ🌱 `.gitignore` の `build/` に該当するから、こっちはセッションをまたいで残るのだぁ✨ だから毎回用意しなきゃいけないのは `bundle` の1本だけなのだぁ🌱
 
-ネイティブ拡張を持つ gem もいくつか混じっているんだけど、gcc と make は最初から入っているから、apt は1つも要らないのだぁ✨ そもそも `/var/lib/apt/lists/` が空だから、apt を使うなら `apt-get update` からになるのだぁ🌧️
+ネイティブ拡張を持つ gem もいくつか混じっているんだけど、gcc と make は最初から入っているから、apt は1つも要らないのだぁ✨ そもそも `/var/lib/apt/lists/` が空だから、apt を使うなら `apt-get update` からになるのだぁ…🌧️
 
 なお、`bundle` を手で叩くときは、必ず `site/scripts/bundle-install.sh`（Gradleなら `:site:installJekyllBundle`）を経由するのだぁ🌱 このスクリプトが `BUNDLE_APP_CONFIG` を `site/build/bundleConfig` に逃がしてくれるから、リポジトリの中に `.bundle/config` を作らずに済むのだぁ✨
 
