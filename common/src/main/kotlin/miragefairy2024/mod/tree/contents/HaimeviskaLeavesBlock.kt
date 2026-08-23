@@ -38,22 +38,22 @@ class HaimeviskaLeavesBlock(settings: Properties) : LeavesBlock(settings) {
     override fun isRandomlyTicking(state: BlockState) = super.isRandomlyTicking(state) || !state[CHARGED]
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun randomTick(state: BlockState, world: ServerLevel, pos: BlockPos, random: RandomSource) {
-        super.randomTick(state, world, pos, random)
-        if (world.getBlockState(pos) != state) return // 親クラスの処理で葉が枯れ落ちた場合はスルー
+    override fun randomTick(state: BlockState, level: ServerLevel, pos: BlockPos, random: RandomSource) {
+        super.randomTick(state, level, pos, random)
+        if (level.getBlockState(pos) != state) return // 親クラスの処理で葉が枯れ落ちた場合はスルー
         if (!state[CHARGED]) {
-            if (random.randomBoolean(15, world.lightProxy.getLightLevel(pos))) {
-                world.setBlock(pos, state.with(CHARGED, true), UPDATE_CLIENTS)
+            if (random.randomBoolean(15, level.lightProxy.getLightLevel(pos))) {
+                level.setBlock(pos, state.with(CHARGED, true), UPDATE_CLIENTS)
             }
         }
     }
 
-    override fun animateTick(state: BlockState, world: Level, pos: BlockPos, random: RandomSource) {
-        super.animateTick(state, world, pos, random)
+    override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
+        super.animateTick(state, level, pos, random)
         if (random.nextInt(20) == 0) {
             val blockPos = pos.below()
-            if (!isFaceFull(world.getBlockState(blockPos).getCollisionShape(world, blockPos), Direction.UP)) {
-                ParticleUtils.spawnParticleBelow(world, pos, random, ParticleTypeCard.HAIMEVISKA_BLOSSOM.particleType)
+            if (!isFaceFull(level.getBlockState(blockPos).getCollisionShape(level, blockPos), Direction.UP)) {
+                ParticleUtils.spawnParticleBelow(level, pos, random, ParticleTypeCard.HAIMEVISKA_BLOSSOM.particleType)
             }
         }
     }
