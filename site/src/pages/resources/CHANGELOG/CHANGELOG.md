@@ -176,10 +176,10 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 
 その他
 
-- 変更: 妖精の工場がフォリアを回収する際に辿るブロックを、ブロックタグ `miragefairy2024:folia_collection_conductor` で判定するようになった。
+- 修正: 妖精の工場がフォリアを回収する際に辿るブロックを、ブロックタグ `miragefairy2024:folia_collection_conductors` で判定するようになった。
   - 妖精の建物に加え、ハイメヴィスカの原木もこのタグに含まれる。
   - これにより、妖精の建物からハイメヴィスカの原木を経由した先の葉からも、フォリアを回収できるようになった。
-- 変更: 妖精の建物が、ブロックタグ `miragefairy2024:haimeviska_logs` に含まれなくなった。
+- 修正: 妖精の建物が、ブロックタグ `miragefairy2024:haimeviska_logs` に含まれなくなった。
   - これにより、妖精の建物が原木として扱われなくなった。
 - 追加: 妖精のプラスチックを入手したときの進捗を追加。
 - 追加: 土妖精のプラスチック鉱石にポエムを追加。
