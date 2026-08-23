@@ -1,4 +1,4 @@
-name: commit-email
+name: check-commit
 on:
   pull_request:
     branches:
@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: commit-email-${{ github.ref }}
+  group: check-commit-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -41,21 +41,18 @@ jobs:
           patterns := (ENV.BLOCKED_COMMIT_EMAIL ?: "") >> LINES >> FILTER [ _ => _ !~ /^\s*$/ ] >> LC >> TO_ARRAY
 
           # シークレットを設定するまでの間や、シークレットが渡らないforkからのPRでは、検査をとばすのだぁ…🌧️
-          patterns.$# == 0 && (
+          patterns.$# == 0 && :
             OUT << "::warning::シークレットBLOCKED_COMMIT_EMAILが空だから、メールアドレスの検査をとばすのだぁ…🌧️"
-            EXIT(0)
-          )
+            EXIT << 0
 
           # PRの画面に並ぶのと同じ範囲のコミットを、1個ずつ見ていくのだ～🌱
           found := FALSE
-          EXEC("git", "rev-list", "$(ENV.BASE_SHA)..$(ENV.HEAD_SHA)") >> LINES | commit => (
+          EXECL("git", "rev-list", "$(ENV.BASE_SHA)..$(ENV.HEAD_SHA)") | commit => :
             # 見るのは、著者とコミッターとコミットメッセージの全体なのだ～🌱 Co-Authored-Byの行も、ここに入るのだ～🌱
-            target := EXEC("git", "show", "--no-patch", '--format=%an <%ae>%n%cn <%ce>%n%B', commit) >> LC
-            # 検査対象のメールアドレスをログに残さないように、報告するのは引っかかったコミットのハッシュだけなのだ～🌱
-            (patterns() | _ @ target >> ANY) && (
+            target := EXEC("git", "show", "--no-patch", "--format=%an <%ae>%n%cn <%ce>%n%B", commit) >> LC
+            (patterns() | _ @ target >> ANY) && :
+              # 検査対象のメールアドレスをログに残さないように、報告するのは引っかかったコミットのハッシュだけなのだ～🌱
               OUT << "::error::コミット $commit に、混ぜてはいけないメールアドレスが入っているのだぁ…🌧️"
               found = TRUE
-            )
-          )
 
           EXIT(found ? 1 : 0)
