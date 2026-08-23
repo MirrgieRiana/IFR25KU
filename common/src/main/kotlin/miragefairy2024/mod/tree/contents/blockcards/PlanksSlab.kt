@@ -9,12 +9,9 @@ import miragefairy2024.util.registerFlammable
 import miragefairy2024.util.registerLootTableGeneration
 import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.SlabBlock
-import net.minecraft.world.level.block.state.BlockBehaviour
 
 class TreePlanksSlabBlockCard(configuration: TreeBlockConfiguration, private val baseBlock: () -> Registration<*, out Block>) : TreeBlockCard(configuration) {
     override fun createSettings() = createPlankSettings()
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
 
     context(ModContext)
     override fun init() {
