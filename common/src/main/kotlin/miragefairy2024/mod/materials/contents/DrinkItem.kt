@@ -53,12 +53,12 @@ class DrinkItem(settings: Properties, private val flaming: Int? = null) : Item(s
         if (flaming != null) tooltipComponents += text { (FLAMING_TRANSLATION() + " (${StringUtil.formatTickDuration(flaming * 20, context.tickRate())}"() + ")"()).red }
     }
 
-    override fun finishUsingItem(stack: ItemStack, world: Level, user: LivingEntity): ItemStack {
-        super.finishUsingItem(stack, world, user)
+    override fun finishUsingItem(stack: ItemStack, level: Level, user: LivingEntity): ItemStack {
+        super.finishUsingItem(stack, level, user)
         if (user is ServerPlayer) CriteriaTriggers.CONSUME_ITEM.trigger(user, stack)
         if (user is Player) user.awardStat(Stats.ITEM_USED.get(this))
         user.gameEvent(GameEvent.DRINK)
-        if (!world.isClientSide) {
+        if (!level.isClientSide) {
             if (flaming != null) user.igniteForSeconds(flaming.toFloat())
         }
         return if (stack.isEmpty) {
@@ -71,5 +71,5 @@ class DrinkItem(settings: Properties, private val flaming: Int? = null) : Item(s
 
     override fun getUseDuration(stack: ItemStack, entity: LivingEntity) = 32
     override fun getUseAnimation(stack: ItemStack) = UseAnim.DRINK
-    override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> = ItemUtils.startUsingInstantly(world, user, hand)
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> = ItemUtils.startUsingInstantly(level, user, hand)
 }

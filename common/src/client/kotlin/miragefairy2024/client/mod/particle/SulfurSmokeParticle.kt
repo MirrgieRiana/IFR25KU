@@ -15,7 +15,7 @@ private const val WIND_CYCLE_TICKS = 20F * 60F
 private const val WIND_HORIZONTAL_ACCELERATION = 0.002
 
 fun createSulfurSmokeParticleFactory() = { spriteProvider: SpriteSet ->
-    ParticleProvider<SimpleParticleType> { _, world, x, y, z, xSpeed, ySpeed, zSpeed ->
+    ParticleProvider<SimpleParticleType> { _, level, x, y, z, xSpeed, ySpeed, zSpeed ->
         /**
          * バニラの白い煙が、灰色の煙の色だけを差し替えたものなので、それに倣ったのだぁ✨
          *
@@ -23,11 +23,11 @@ fun createSulfurSmokeParticleFactory() = { spriteProvider: SpriteSet ->
          * @see net.minecraft.client.particle.LargeSmokeParticle
          */
         object : BaseAshSmokeParticle(
-            world,
+            level,
             x, y, z,
             0.1F, 0.1F, 0.1F,
             xSpeed, ySpeed, zSpeed,
-            2.5F * (1F + world.random.nextFloat()),
+            2.5F * (1F + level.random.nextFloat()),
             spriteProvider,
             0.3F,
             27,
