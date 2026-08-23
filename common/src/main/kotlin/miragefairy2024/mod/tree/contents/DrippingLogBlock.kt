@@ -30,13 +30,13 @@ import net.minecraft.world.phys.BlockHitResult
 
 @Suppress("OVERRIDE_DEPRECATION")
 abstract class DrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
-    override fun animateTick(state: BlockState, world: Level, pos: BlockPos, random: RandomSource) {
+    override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
         if (random.nextFloat() >= 0.2F) return
 
         val direction = state[FACING]
         val destBlockPos = pos.relative(direction)
-        val destBlockState = world.getBlockState(destBlockPos)
-        val destShape = destBlockState.getCollisionShape(world, destBlockPos)
+        val destBlockState = level.getBlockState(destBlockPos)
+        val destShape = destBlockState.getCollisionShape(level, destBlockPos)
         val hasSpace = when (direction) {
             Direction.NORTH -> destShape.max(Direction.Axis.Z) < 1.0
             Direction.SOUTH -> destShape.min(Direction.Axis.Z) > 0.0
@@ -44,12 +44,12 @@ abstract class DrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBl
             Direction.EAST -> destShape.min(Direction.Axis.X) > 0.0
             else -> throw IllegalStateException()
         }
-        if (!(hasSpace || !destBlockState.isCollisionShapeFullBlock(world, destBlockPos))) return
+        if (!(hasSpace || !destBlockState.isCollisionShapeFullBlock(level, destBlockPos))) return
 
         val position = random.nextInt(2)
         val x = when (position) {
-            0 -> (7.0 + 7.0 * world.random.nextDouble()) / 16.0
-            else -> (2.0 + 8.0 * world.random.nextDouble()) / 16.0
+            0 -> (7.0 + 7.0 * level.random.nextDouble()) / 16.0
+            else -> (2.0 + 8.0 * level.random.nextDouble()) / 16.0
         }
         val y = when (position) {
             0 -> 12.0 / 16.0
@@ -65,7 +65,7 @@ abstract class DrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBl
             else -> throw IllegalStateException()
         }
 
-        world.addParticle(
+        level.addParticle(
             ParticleTypeCard.DRIPPING_SAP.particleType,
             pos.x + x2,
             pos.y + y - 1.0 / 16.0,
