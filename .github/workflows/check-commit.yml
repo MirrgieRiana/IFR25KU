@@ -21,6 +21,9 @@ jobs:
         with:
           # base..headの範囲を辿るために全履歴が必要なのだ～🌱 既定の深さ1では範囲が引けないのだぁ…🌧️
           fetch-depth: 0
+      - name: xarpiteのセットアップ
+        # ステップのshellに書くコマンドはPATHから探されるのだぁ…🌧️ shellには式が書けないから、完全修飾パスを組み立てて渡すこともできないのだぁ…🌧️
+        run: echo "$PWD/xarpite" >> "$GITHUB_PATH"
 
       # メールアドレスの検査
       - name: メールアドレスの検査
@@ -28,8 +31,7 @@ jobs:
           BLOCKED_COMMIT_EMAIL: ${{ secrets.BLOCKED_COMMIT_EMAIL }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        # ステップのshellに書くコマンドは、完全修飾パスでない限りPATHから探されてしまうのだぁ…🌧️
-        shell: ${{ github.workspace }}/xarpite/xarpite -A 5 -q -f {0}
+        shell: xarpite -A 5 -q -f {0}
         run: |
           # 空白だけの行は、どのコミットにも一致してしまうから、先に落としておくのだぁ…🌧️
           # 大文字小文字を区別せずに比べるために、あらかじめ小文字にしておくのだ～🌱
