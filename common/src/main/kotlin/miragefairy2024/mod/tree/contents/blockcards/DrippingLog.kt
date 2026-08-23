@@ -1,7 +1,6 @@
 package miragefairy2024.mod.tree.contents.blockcards
 
 import miragefairy2024.ModContext
-import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.registerHarvestNotation
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.util.ItemLootPoolEntry
@@ -27,12 +26,12 @@ class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration) : TreeHori
                 LootPool(ItemLootPoolEntry(LOG.item())) {
                     `when`(provider.doesNotHaveSilkTouch())
                 },
-                LootPool(ItemLootPoolEntry(MaterialCard.HAIMEVISKA_SAP.item()) {
+                LootPool(ItemLootPoolEntry(configuration.tree.getSapItem()) {
                     apply(ApplyBonusCount.addUniformBonusCount(registries[Registries.ENCHANTMENT, Enchantments.FORTUNE]))
                 }) {
                     `when`(provider.doesNotHaveSilkTouch())
                 },
-                LootPool(ItemLootPoolEntry(MaterialCard.HAIMEVISKA_ROSIN.item()) {
+                LootPool(ItemLootPoolEntry(configuration.tree.getRosinItem()) {
                     apply(ApplyBonusCount.addUniformBonusCount(registries[Registries.ENCHANTMENT, Enchantments.FORTUNE], 2))
                 }) {
                     `when`(provider.doesNotHaveSilkTouch())
@@ -42,7 +41,7 @@ class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration) : TreeHori
                 provider.applyExplosionDecay(block(), this)
             }
         }
-        item.registerHarvestNotation(MaterialCard.HAIMEVISKA_SAP.item, MaterialCard.HAIMEVISKA_ROSIN.item)
+        item.registerHarvestNotation({ configuration.tree.getSapItem() }, { configuration.tree.getRosinItem() })
 
     }
 }

@@ -1,7 +1,8 @@
 package miragefairy2024.mod.tree.contents
 
 import com.mojang.serialization.MapCodec
-import miragefairy2024.mod.tree.TreeBlockCard
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import miragefairy2024.mod.tree.TreeConfiguration
 import miragefairy2024.util.get
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.with
@@ -24,9 +25,14 @@ import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.phys.BlockHitResult
 
 @Suppress("OVERRIDE_DEPRECATION")
-class HaimeviskaLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
+class IncisableLogBlock(private val tree: TreeConfiguration, settings: Properties) : RotatedPillarBlock(settings) {
     companion object {
-        val CODEC: MapCodec<HaimeviskaLogBlock> = simpleCodec(::HaimeviskaLogBlock)
+        val CODEC: MapCodec<IncisableLogBlock> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                TreeConfiguration.CODEC.fieldOf("tree").forGetter { it.tree },
+                propertiesCodec(),
+            ).apply(instance, ::IncisableLogBlock)
+        }
     }
 
     override fun codec() = CODEC
@@ -39,7 +45,7 @@ class HaimeviskaLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
 
         // 加工
         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand))
-        level.setBlock(pos, TreeBlockCard.INCISED_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
+        level.setBlock(pos, tree.getIncisedLogBlock().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
         level.gameEvent(player, GameEvent.SHEAR, pos)
         player.awardStat(Stats.ITEM_USED.get(stack.item))
 

@@ -7,7 +7,7 @@ import miragefairy2024.mod.fairy.contains
 import miragefairy2024.mod.fairy.getFairyCondensation
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.tree.TreeBlockCard
-import miragefairy2024.mod.tree.contents.HaimeviskaLeavesBlock
+import miragefairy2024.mod.tree.contents.ChargeableLeavesBlock
 import miragefairy2024.util.NeighborType
 import miragefairy2024.util.blockVisitor
 import miragefairy2024.util.get
@@ -134,10 +134,10 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
                 level.getBlockState(toBlockPos) isIn TreeBlockCard.LEAVES.block()
             }.forEach { (_, blockPos) ->
                 val blockState = level.getBlockState(blockPos)
-                if (blockState[HaimeviskaLeavesBlock.CHARGED]) {
+                if (blockState[ChargeableLeavesBlock.CHARGED]) {
                     folia += 1000
                     changed = true
-                    level.setBlock(blockPos, blockState.with(HaimeviskaLeavesBlock.CHARGED, false), Block.UPDATE_CLIENTS)
+                    level.setBlock(blockPos, blockState.with(ChargeableLeavesBlock.CHARGED, false), Block.UPDATE_CLIENTS)
                     if (folia >= card.maxFolia) return@finished
                 }
             }
