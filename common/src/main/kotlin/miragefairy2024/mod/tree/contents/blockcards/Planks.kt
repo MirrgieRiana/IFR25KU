@@ -14,7 +14,6 @@ import miragefairy2024.util.registerShapelessRecipeGeneration
 import miragefairy2024.util.registerSingletonBlockStateGeneration
 import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.world.item.Item
-import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
 
 fun TreeBlockCard.createPlankSettings(sound: Boolean = true): BlockBehaviour.Properties = createBaseWoodSetting(sound = sound)
@@ -23,8 +22,6 @@ fun TreeBlockCard.createPlankSettings(sound: Boolean = true): BlockBehaviour.Pro
 
 open class AbstractTreePlanksBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createPlankSettings()
-
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = Block(properties)
 
     context(ModContext)
     override fun init() {

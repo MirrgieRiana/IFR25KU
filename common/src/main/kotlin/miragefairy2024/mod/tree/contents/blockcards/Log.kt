@@ -14,7 +14,6 @@ import net.fabricmc.fabric.api.registry.StrippableBlockRegistry
 import net.minecraft.data.models.BlockModelGenerators.WoodProvider
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 
 abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
@@ -56,7 +55,6 @@ abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) :
 
 class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getPlankMapColor() }
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
     context(ModContext)
     override fun init() {
@@ -68,7 +66,6 @@ class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration) : Abstract
 
 class TreeWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getWoodMapColor() }
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
     context(ModContext)
     override fun init() {
@@ -80,7 +77,6 @@ class TreeWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLog
 
 class TreeStrippedWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getPlankMapColor() }
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
 
     context(ModContext)
     override fun init() {

@@ -9,17 +9,13 @@ import miragefairy2024.util.registerDefaultLootTableGeneration
 import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.level.block.TrapDoorBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.block.state.properties.BlockSetType
 
-class TreeTrapdoorBlockCard(configuration: TreeBlockConfiguration, private val blockSetType: () -> BlockSetType, private val parent: () -> Block) : TreeBlockCard(configuration) {
+class TreeTrapdoorBlockCard(configuration: TreeBlockConfiguration, private val parent: () -> Block) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createPlankSettings()
         .strength(3.0F)
         .noOcclusion()
         .isValidSpawn(Blocks::never)
-
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = TrapDoorBlock(blockSetType(), properties)
 
     context(ModContext)
     override fun init() {
