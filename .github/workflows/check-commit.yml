@@ -21,9 +21,6 @@ jobs:
         with:
           # base..headの範囲を辿るために全履歴が必要なのだ～🌱 既定の深さ1では範囲が引けないのだぁ…🌧️
           fetch-depth: 0
-      - name: xarpiteのセットアップ
-        # ステップのshellに書くコマンドはPATHから探されるのだぁ…🌧️ shellには式が書けないから、完全修飾パスを組み立てて渡すこともできないのだぁ…🌧️
-        run: echo "$PWD/xarpite" >> "$GITHUB_PATH"
 
       # メールアドレスの検査
       - name: メールアドレスの検査
@@ -31,7 +28,8 @@ jobs:
           BLOCKED_COMMIT_EMAIL: ${{ secrets.BLOCKED_COMMIT_EMAIL }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        shell: xarpite -A 5 -q -f {0}
+        # shellの先頭のコマンドはPATHからしか探されないから、同梱のxarpiteをそこに直接は書けないのだぁ…🌧️ bashへの引数としてなら、ワークスペースからの相対パスで渡せるのだ～🌱
+        shell: bash xarpite/xarpite -A 5 -q -f {0}
         run: |
           # 空白だけの行は、どのコミットにも一致してしまうから、先に落としておくのだぁ…🌧️
           # 大文字小文字を区別せずに比べるために、あらかじめ小文字にしておくのだ～🌱
