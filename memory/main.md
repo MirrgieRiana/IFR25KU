@@ -8,9 +8,9 @@
 ### サイト関連 (`site/`) なのだ～🌱
 
 - `build.gradle.kts` — Jekyllビルド・OG画像生成・サイト配信のタスク定義なのだ～🌱
-- `src/main/resources/` — Jekyllのテーマオーバーライドの配置先なのだぁ（`_layouts/`, `_includes/`, `_plugins/`, `_data/`, `_config.yml`, `assets/`）
+- `src/main/resources/` — Jekyllのテーマオーバーライドの配置先なのだぁ✨（`_layouts/`, `_includes/`, `_plugins/`, `_data/`, `_config.yml`, `assets/`）
 - `src/main/bundle/` — Gemfile等なのだ～🌱
-- `src/pages/resources/<name>/<name>.md` — 全ページ・記事のソースなのだぁ✨ `syncJekyllSource` がJekyll形式に変換するのだぁ
+- `src/pages/resources/<name>/<name>.md` — 全ページ・記事のソースなのだぁ✨ `syncJekyllSource` がJekyll形式に変換するのだぁ✨
 - `src/external/resources/` — 外部リソースなのだ～🌱
 - `src/ogImages/` — OG画像生成のソース・出力先・デフォルト背景SVGなのだ～🌱
 - `src/langTable/html/lang_table.html` — `<%= trs %>` を `makeLangTable` タスクで展開するテンプレートなのだぁ✨
@@ -31,7 +31,7 @@
 
 サイトのビルドには `bundle` が要るんだけど、ぴょこの環境には Ruby と `gem` しか入っていないのだぁ…🌧️ しかも `/var/lib/gems/` にも `/usr/local/bin/` にも書き込めないから、`gem install bundler` は `--user-install` を付けないと通らないのだ～🌱
 
-そのうえ、`~/.local/` はセッションが終わるとまっさらに戻るから、毎回入れ直しになっちゃうのだぁ💧 そこで、実体を `~/.claude_tmp/` に置いて、`gem` が見に行く場所からシンボリックリンクで飛ばすのだぁ✨ こうすると、2回目からは `gem install` そのものが要らなくなるのだ～🌱
+そのうえ、`~/.local/` はセッションが終わるとまっさらに戻るから、毎回入れ直しになっちゃうのだぁ…🌧️ そこで、実体を `~/.claude_tmp/` に置いて、`gem` が見に行く場所からシンボリックリンクで飛ばすのだぁ✨ こうすると、2回目からは `gem install` そのものが要らなくなるのだ～🌱
 
 ```bash
 mkdir -p ~/.claude_tmp/shared/gem/ruby/3.1.0 ~/.local/share/gem/ruby
@@ -62,7 +62,7 @@ Jekyll標準の `jekyll serve` は頻繁にクラッシュしちゃうから、`
 
 ### WSL2環境での `jekyll serve` 制約なのだ～🌱
 
-`/mnt/` ドライブでは `inotify` が動かないから、`jekyll serve` の自動リビルドは使えないのだぁ～💧
+`/mnt/` ドライブでは `inotify` が動かないから、`jekyll serve` の自動リビルドは使えないのだぁ…🌧️
 
 ### SCSSの手動コンパイルなのだ～🌱
 
@@ -76,7 +76,7 @@ cp site/src/main/resources/assets/css/main.scss site/build/jekyllSource/assets/c
 
 ### Sassパーシャルはオーバーライド不能なのだ～🌱
 
-minimal-mistakesテーマの通常ファイルは `site/src/main/resources/` 内に同じ相対パスで置けばオーバーライドできるんだけど、`_sass/` のパーシャルは例外なのだぁ～💧 Sassの `@import` がインポート元ファイルのディレクトリを最初に探すから、テーマのパーシャルがいつも優先されちゃうのだ～🌱 CSSのカスタマイズは `assets/css/main.scss` の `@import "minimal-mistakes"` の後に書くのだぁ✨
+minimal-mistakesテーマの通常ファイルは `site/src/main/resources/` 内に同じ相対パスで置けばオーバーライドできるんだけど、`_sass/` のパーシャルは例外なのだぁ…🌧️ Sassの `@import` がインポート元ファイルのディレクトリを最初に探すから、テーマのパーシャルがいつも優先されちゃうのだ～🌱 CSSのカスタマイズは `assets/css/main.scss` の `@import "minimal-mistakes"` の後に書くのだぁ✨
 
 ### `syncJekyllSource` の画像配置規則なのだ～🌱
 
@@ -86,7 +86,7 @@ minimal-mistakesテーマの通常ファイルは `site/src/main/resources/` 内
 | `src/pages/resources/<ページ名>/` の画像 | `assets/images/<ページ名>/` |
 | `src/pages/resources/YYYY-MM-DD-slug/` の画像 | `YYYY/MM/DD/ファイル名`（slug階層なし、`assets/images/` プレフィックスなし、ファイル名衝突チェックあり） |
 
-ブログ記事の `header.teaser` パスは `/YYYY/MM/DD/ファイル名` の形で書くのだ～🌱 拡張子は `.webp` が多いけど、`.png` の teaser も混じっているのだぁ✨ インライン画像は相対パス `![](ファイル名)` で参照するのだぁ（`.webp` も `.png` もあるのだぁ）。記事本体と同じ階層に出力されるから、`relative_url` フィルタは要らないのだ～🌱
+ブログ記事の `header.teaser` パスは `/YYYY/MM/DD/ファイル名` の形で書くのだ～🌱 拡張子は `.webp` が多いけど、`.png` の teaser も混じっているのだぁ✨ インライン画像は相対パス `![](ファイル名)` で参照するのだぁ✨ `.webp` も `.png` もあるのだ～🌱 記事本体と同じ階層に出力されるから、`relative_url` フィルタは要らないのだ～🌱
 
 ### OG画像のベース画像優先順位なのだ～🌱
 
@@ -131,9 +131,9 @@ minimal-mistakesテーマのfloatベースのレイアウトを `main.scss` で�
 劇場レイアウト (`_layouts/theater.html` 末尾のインラインJS) は、タグ一致数と訪問履歴 (`ifr25ku:visits:pages`、`_includes/visit-tracker.html` が記録) で重み付けした非復元ランダムサンプリングで関連記事を抽選するのだぁ～🌱♪ サイドバーと本文下部は、それぞれ独立に抽選するのだぁ✨ タグの付け方が関連記事の質に直結するのだ～🌱
 
 - 必須: `ミラージュフェアリー劇場`（カテゴリ分類）なのだ～🌱
-- 機能タグ: 登場する具体的アイテム名なのだぁ✨ 重なりが多い記事ほど関連度が高く抽選されるのだぁ
+- 機能タグ: 登場する具体的アイテム名なのだぁ✨ 重なりが多い記事ほど関連度が高く抽選されるのだぁ✨
 - メタタグ: `アップデート`, `お知らせ` 等（必要に応じて）なのだ～🌱
 
 ### 世界観テキストの扱いなのだ～🌱
 
-ゲーム本体のポエム・説明文（lang JSON や Module ファイル内のハードコード）を、劇中キャラがそのまま喋っちゃいけないのだぁ～🌱（`.claude/skills/theater-creator/SKILL.md` に明記されているのだぁ）劇中キャラはゲーム内 GUI や公式テキストを知らないから、世界観資料は「発想源」として扱って、キャラクターの視点に翻訳する必要があるのだぁ✨
+ゲーム本体のポエム・説明文（lang JSON や Module ファイル内のハードコード）を、劇中キャラがそのまま喋っちゃいけないのだ～🌱 これは `.claude/skills/theater-creator/SKILL.md` に明記されているのだぁ✨ 劇中キャラはゲーム内 GUI や公式テキストを知らないから、世界観資料は「発想源」として扱って、キャラクターの視点に翻訳する必要があるのだぁ✨
