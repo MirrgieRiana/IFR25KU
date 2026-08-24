@@ -1,8 +1,8 @@
-# base: デッキ全体の基盤スタイルなのだぁ🌱 テンプレート関数は持たず、CSSだけを登録するのだぁ～
-# フォントはコミットせず、ページのheadからGoogle Fonts CDNを読み込むのだぁ🌱（pages/sphere-crafting.xa1 を見るのだぁ～）
+# base: デッキ全体の基盤スタイルなのだ～🌱 テンプレート関数は持たず、CSSだけを登録するのだぁ～
+# フォントはコミットせず、ページのheadからGoogle Fonts CDNを読み込むのだ～🌱（pages/sphere-crafting.xa1 を見るのだぁ～）
 @USE("global")
 
-# ---- 共通スタイル基盤なのだぁ🌱 ----
+# ---- 共通スタイル基盤なのだ～🌱 ----
 cssLines::push << %>
   :root {
     --ink: #4d3a6e;
@@ -25,7 +25,7 @@ cssLines::push << %>
     --line: #e7dcf6;
     --cream: #fff3e6;
     --brick-dark: #9a4a32;
-    /* 文字サイズの床は24pxなのだぁ🌱 フッターもふくむ全域に効くのだぁ～ */
+    /* 文字サイズの床は24pxなのだ～🌱 フッターもふくむ全域に効くのだぁ～ */
     --min-font-size: 24px;
   }
 
@@ -38,7 +38,7 @@ cssLines::push << %>
   body {
     font-family: 'Zen Maru Gothic', sans-serif;
     background: #d9d2ee;
-    /* 固定サイズのブロックを上下にぴったり積むので、デッキ幅にそろえて中央寄せなのだぁ🌱 */
+    /* 固定サイズのブロックを上下にぴったり積むので、デッキ幅にそろえて中央寄せなのだ～🌱 */
     display: flex;
     justify-content: center;
   }

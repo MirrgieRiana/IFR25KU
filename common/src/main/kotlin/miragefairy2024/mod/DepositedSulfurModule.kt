@@ -151,7 +151,7 @@ fun initDepositedSulfurModule() {
                         ),
                         "apply" to variant,
                     ),
-                    // どの面にも貼り付いていない状態を表すのだぁ🌱 本来そんな状態にはならないのだけど、バニラのヒカリゴケに倣って、そのときも全方向のモデルを出しておくのだぁ✨
+                    // どの面にも貼り付いていない状態を表すのだ～🌱 本来そんな状態にはならないのだけど、バニラのヒカリゴケに倣って、そのときも全方向のモデルを出しておくのだぁ✨
                     jsonObject(
                         "when" to jsonObject(
                             "north" to "false".jsonElement,
@@ -239,7 +239,7 @@ fun initDepositedSulfurModule() {
 }
 
 /**
- * 岩肌にこびりつく硫黄なのだぁ🌱
+ * 岩肌にこびりつく硫黄なのだ～🌱
  *
  * @see net.minecraft.world.level.block.GlowLichenBlock
  */
@@ -247,7 +247,7 @@ class DepositedSulfurBlock(properties: Properties) : MultifaceBlock(properties) 
     companion object {
         val CODEC: MapCodec<DepositedSulfurBlock> = simpleCodec(::DepositedSulfurBlock)
 
-        /** 破壊したときにドロップする経験値なのだぁ✨ ネザーの硫黄鉱石に揃えているのだぁ🌱 */
+        /** 破壊したときにドロップする経験値なのだぁ✨ ネザーの硫黄鉱石に揃えているのだ～🌱 */
         private val XP_RANGE = UniformInt.of(2, 5)
     }
 
@@ -266,7 +266,7 @@ class DepositedSulfurBlock(properties: Properties) : MultifaceBlock(properties) 
 }
 
 /**
- * 硫黄を含む火山ガスを噴き上げる噴気孔なのだぁ🌱 見た目を持たず、煙だけが見えるのだぁ✨
+ * 硫黄を含む火山ガスを噴き上げる噴気孔なのだ～🌱 見た目を持たず、煙だけが見えるのだぁ✨
  *
  * @see net.minecraft.world.level.block.BarrierBlock
  */
@@ -294,12 +294,12 @@ class SolfataraBlock(properties: Properties) : Block(properties), EntityBlock {
 }
 
 /**
- * 噴気孔から硫黄の色をした煙を噴き上げるのだぁ🌱
+ * 噴気孔から硫黄の色をした煙を噴き上げるのだ～🌱
  */
 class SolfataraBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(SolfataraCard.blockEntityType(), pos, state) {
     fun clientTick(level: Level, blockPos: BlockPos) {
         if (level.gameTime % 10L != 0L) return
-        // 煙は10秒ほど滞留するから、これで常に40個ほどが宙に漂うのだぁ🌱
+        // 煙は10秒ほど滞留するから、これで常に40個ほどが宙に漂うのだ～🌱
         // 0.5 秒おきに 2 個で、1 個が 10 秒生きるのだぁ～🌱 10 秒の間に 20 回出るから、2 かける 20 で 40 個なのだぁ～✨
         repeat(2) {
             level.addParticle(
@@ -316,7 +316,7 @@ class SolfataraBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(Solfa
 }
 
 /**
- * 起点の周辺に析出した硫黄をばら撒くのだぁ🌱
+ * 起点の周辺に析出した硫黄をばら撒くのだ～🌱
  *
  * @see net.minecraft.world.level.levelgen.feature.MultifaceGrowthFeature
  */
@@ -326,8 +326,8 @@ class DepositedSulfurFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
         val originBlockPos = context.origin()
         val random = context.random()
 
-        // 塊の中央に、その源となる噴気孔を据えるのだぁ🌱 起点は溶岩の直上だから、そこがちょうど中央なのだぁ✨
-        if (!level.getBlockState(originBlockPos).isAir) return false // PlacedFeatureの設定上ここは常に空気のはずだけど、将来そうでなくなったときに備えるのだぁ🌱
+        // 塊の中央に、その源となる噴気孔を据えるのだ～🌱 起点は溶岩の直上だから、そこがちょうど中央なのだぁ✨
+        if (!level.getBlockState(originBlockPos).isAir) return false // PlacedFeatureの設定上ここは常に空気のはずだけど、将来そうでなくなったときに備えるのだ～🌱
         level.setBlock(originBlockPos, SolfataraCard.block().defaultBlockState(), Block.UPDATE_ALL)
 
         val depositedSulfurBlock = DepositedSulfurCard.block()
@@ -356,7 +356,7 @@ class DepositedSulfurFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
                         if (!directionSucceeded) return@nextTarget // 配置先の面が1個も見つからなかったのだぁ…🌧️
 
                         level.setBlock(targetBlockPos, newBlockState, Block.UPDATE_ALL)
-                        level.getChunk(targetBlockPos).markPosForPostprocessing(targetBlockPos) // 貼り付け先が後から失われたときに、この面も消えるようにするのだぁ🌱
+                        level.getChunk(targetBlockPos).markPosForPostprocessing(targetBlockPos) // 貼り付け先が後から失われたときに、この面も消えるようにするのだ～🌱
                     }
                 }
             }

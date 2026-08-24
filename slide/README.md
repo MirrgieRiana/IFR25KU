@@ -4,7 +4,7 @@
 
 ## ビルドのしかたなのだぁ～🌱♪
 
-ビルドは、次のコマンドでできちゃうのだぁ🌱：
+ビルドは、次のコマンドでできちゃうのだ～🌱：
 
 ```sh
 ./build.sh
@@ -12,56 +12,56 @@
 
 ---
 
-このスクリプトがやってくれることなのだぁ🌱♪：
+このスクリプトがやってくれることなのだ～🌱♪：
 
-- `src/site/resources/` の素材を、サブディレクトリの構造ごと `build/site/` にコピーするのだぁ🌱
-- `src/main/xa1/global.xa1` を読み込んで、共有の土台（テンプレート・ページ生成関数・CSS行）を用意するのだぁ🌱
-- `src/plugins/xa1/*.xa1` を読み込んで、プラグインのテンプレートとCSS行を登録するのだぁ🌱
-- `src/pages/xa1/*.xa1` を読み込んで、ページ生成関数を登録するのだぁ🌱
-- 登録されたページ生成関数を回して、 `build/site/` に HTML を書き出すのだぁ🌱
-- 各プラグインが積んだ CSS 行をつないで、 `build/site/style.css` に書き出すのだぁ🌱♪
+- `src/site/resources/` の素材を、サブディレクトリの構造ごと `build/site/` にコピーするのだ～🌱
+- `src/main/xa1/global.xa1` を読み込んで、共有の土台（テンプレート・ページ生成関数・CSS行）を用意するのだ～🌱
+- `src/plugins/xa1/*.xa1` を読み込んで、プラグインのテンプレートとCSS行を登録するのだ～🌱
+- `src/pages/xa1/*.xa1` を読み込んで、ページ生成関数を登録するのだ～🌱
+- 登録されたページ生成関数を回して、 `build/site/` に HTML を書き出すのだ～🌱
+- 各プラグインが積んだ CSS 行をつないで、 `build/site/style.css` に書き出すのだ～🌱♪
 
 xarpite ランタイムは、リポジトリに同梱されている `../xarpite` を相対パスで使うのだぁ～🌱
 
 ## ディレクトリ構成なのだぁ～🌱♪
 
 - `build.sh` - ビルドのエントリポイントなのだぁっ🌱♪ ここへ cd して、`build.xa1` を xarpite で呼ぶだけなのだぁ～
-- `build.xa1` - ビルドメインなのだぁ🌱。`global.xa1` をマウントして、プラグイン・ページを読み込んでから、ビルド本体の `build` 関数を呼ぶのだぁ～
-- `src/main/xa1/global.xa1` - 共有の土台（`templates`・`pageGenerators`・`cssLines` などの登録簿とヘルパー、そして素材配置と書き出しをやる `build` 関数）なのだぁ🌱
-- `src/plugins/xa1/*.xa1` - パーツ（素材・矢印・見出し・レイアウトなど）なのだぁ🌱。`templates` と `cssLines` へ登録するのだぁ～
-- `src/pages/xa1/*.xa1` - 出力ページなのだぁ🌱。`pageGenerators` へ「出力ファイル名 → 内容を返す関数」を登録するのだぁ～。スライドは `sphere-crafting.xa1` に4枚まとめて入っているのだぁ🌱
-- `src/site/resources/` - 素材なのだぁ🌱。ライセンスごとにサブディレクトリに仕分けてあるのだぁ～
-  - `src/site/resources/item-texture/` - アイテムテクスチャ由来の png なのだぁ🌱
-  - `src/site/resources/fluentui-emoji/` - 絵文字の svg なのだぁ🌱
-  - `src/site/resources/fairy_face.png` - マスコット画像なのだぁ🌱
-- `build/` - `build.sh` が生成する成果物なのだぁ～🌱。コミットはしないので（root の `.gitignore` で無視されるのだぁ）、ビルドすると手元にできるのだぁ🌱
+- `build.xa1` - ビルドメインなのだ～🌱。`global.xa1` をマウントして、プラグイン・ページを読み込んでから、ビルド本体の `build` 関数を呼ぶのだぁ～
+- `src/main/xa1/global.xa1` - 共有の土台（`templates`・`pageGenerators`・`cssLines` などの登録簿とヘルパー、そして素材配置と書き出しをやる `build` 関数）なのだ～🌱
+- `src/plugins/xa1/*.xa1` - パーツ（素材・矢印・見出し・レイアウトなど）なのだ～🌱。`templates` と `cssLines` へ登録するのだぁ～
+- `src/pages/xa1/*.xa1` - 出力ページなのだ～🌱。`pageGenerators` へ「出力ファイル名 → 内容を返す関数」を登録するのだぁ～。スライドは `sphere-crafting.xa1` に4枚まとめて入っているのだ～🌱
+- `src/site/resources/` - 素材なのだ～🌱。ライセンスごとにサブディレクトリに仕分けてあるのだぁ～
+  - `src/site/resources/item-texture/` - アイテムテクスチャ由来の png なのだ～🌱
+  - `src/site/resources/fluentui-emoji/` - 絵文字の svg なのだ～🌱
+  - `src/site/resources/fairy_face.png` - マスコット画像なのだ～🌱
+- `build/` - `build.sh` が生成する成果物なのだぁ～🌱。コミットはしないので（root の `.gitignore` で無視されるのだぁ）、ビルドすると手元にできるのだ～🌱
 
 ## ライセンスのことなのだぁ～🌱♪
 
-`src/site/resources/` の素材のように、**外部ファイルをコミットするときは、そのファイルのライセンス条項を満たすように書かなきゃだめ**なのだぁ🌱
+`src/site/resources/` の素材のように、**外部ファイルをコミットするときは、そのファイルのライセンス条項を満たすように書かなきゃだめ**なのだ～🌱
 新しい素材を足すときは、必ず下の一覧に、その出典・ライセンス・遵守に必要な表記を書き足してほしいのだぁ～🌱
 
-以下は、このディレクトリに入っている、ぜんぶの外部リソースの一覧なのだぁ🌱♪
+以下は、このディレクトリに入っている、ぜんぶの外部リソースの一覧なのだ～🌱♪
 
-### 画像テクスチャ（IFR25KU 自身のアイテムテクスチャ由来）なのだぁ🌱
+### 画像テクスチャ（IFR25KU 自身のアイテムテクスチャ由来）なのだ～🌱
 
-`src/site/resources/item-texture/` の png は、`common/src/main/resources/assets/miragefairy2024/textures/item/` にある同名のドット絵を、改変せずそのまま複製したものなのだぁ🌱♪
+`src/site/resources/item-texture/` の png は、`common/src/main/resources/assets/miragefairy2024/textures/item/` にある同名のドット絵を、改変せずそのまま複製したものなのだ～🌱♪
 どれも本リポジトリ自身のリソースを流用したものだから、ルート README の「Other Resources」などの規定でカバーされるのだぁ～🌱
-ルート README で名指し除外されている MirageFairy2019 由来（CC BY-SA 3.0）のテクスチャは、ひとつも含んでいないのだぁ🌱
+ルート README で名指し除外されている MirageFairy2019 由来（CC BY-SA 3.0）のテクスチャは、ひとつも含んでいないのだ～🌱
 
-### マスコット画像（IFR25KU のマスコット原画）なのだぁ🌱
+### マスコット画像（IFR25KU のマスコット原画）なのだ～🌱
 
-`src/site/resources/fairy_face.png` は、`site/src/main/resources/favicon.png`（IFR25KU のマスコット原画）を、改変せずそのまま複製したものなのだぁ🌱♪
+`src/site/resources/fairy_face.png` は、`site/src/main/resources/favicon.png`（IFR25KU のマスコット原画）を、改変せずそのまま複製したものなのだ～🌱♪
 これも本リポジトリ自身のリソースだから、ルート README の規定でカバーされるのだぁ～🌱
 
-### 絵文字 SVG（Fluent UI Emoji, MIT）なのだぁ🌱
+### 絵文字 SVG（Fluent UI Emoji, MIT）なのだ～🌱
 
-`src/site/resources/fluentui-emoji/` の svg は、Microsoft の Fluent UI Emoji（MIT ライセンス）由来なのだぁ🌱♪
-入手元は、次のリンクなのだぁ🌱
+`src/site/resources/fluentui-emoji/` の svg は、Microsoft の Fluent UI Emoji（MIT ライセンス）由来なのだ～🌱♪
+入手元は、次のリンクなのだ～🌱
 
 - https://github.com/microsoft/fluentui-emoji
 
-MIT ライセンスは、著作権表示と許諾表示を複製物に含めることを求めているので、その全文を以下に同封するのだぁ🌱
+MIT ライセンスは、著作権表示と許諾表示を複製物に含めることを求めているので、その全文を以下に同封するのだ～🌱
 
 ```
     MIT License
@@ -87,11 +87,11 @@ MIT ライセンスは、著作権表示と許諾表示を複製物に含める�
     SOFTWARE
 ```
 
-### フォント（Zen Maru Gothic, コミットせず CDN 取得）なのだぁ🌱
+### フォント（Zen Maru Gothic, コミットせず CDN 取得）なのだ～🌱
 
-本文フォントの Zen Maru Gothic（SIL Open Font License 1.1）は、**リポジトリにはコミットしない**のだぁ🌱♪
+本文フォントの Zen Maru Gothic（SIL Open Font License 1.1）は、**リポジトリにはコミットしない**のだ～🌱♪
 代わりに、`slides.html` の `<head>` から Google Fonts の CDN で動的に読み込むのだぁ～🌱
-再配布物として同封しないので、このディレクトリには入っていないのだぁ🌱
-フォントの入手先は、次のリンクなのだぁ🌱
+再配布物として同封しないので、このディレクトリには入っていないのだ～🌱
+フォントの入手先は、次のリンクなのだ～🌱
 
 - Zen Maru Gothic: https://fonts.google.com/specimen/Zen+Maru+Gothic

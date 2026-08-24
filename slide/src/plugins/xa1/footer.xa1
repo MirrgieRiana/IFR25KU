@@ -1,4 +1,4 @@
-# footer: 各スライド下部のフッターなのだぁ🌱 スタイルはCSS側で、HTMLは構造だけなのだぁ～
+# footer: 各スライド下部のフッターなのだ～🌱 スタイルはCSS側で、HTMLは構造だけなのだぁ～
 @USE("global")
 
 templates.footer = pageNumber -> %>
@@ -9,7 +9,7 @@ templates.footer = pageNumber -> %>
 <%
 
 cssLines::push << %>
-  /* ---- フッターなのだぁ🌱 最小24pxで、Claude Fairy表記は右ぞろえなのだぁ～ ---- */
+  /* ---- フッターなのだ～🌱 最小24pxで、Claude Fairy表記は右ぞろえなのだぁ～ ---- */
   .footer {
     position: absolute;
     left: 0;

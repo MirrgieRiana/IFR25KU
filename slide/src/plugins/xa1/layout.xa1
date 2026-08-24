@@ -1,15 +1,15 @@
-# layout: スライド共通のレイアウト土台なのだぁ🌱 横並びフロー(flow)と縦積みユニット(unit)を、複数のスライドで使いまわすのだぁ～
+# layout: スライド共通のレイアウト土台なのだ～🌱 横並びフロー(flow)と縦積みユニット(unit)を、複数のスライドで使いまわすのだぁ～
 @USE("global")
 
-# 横並びフローなのだぁ🌱 材料→珠→アイテム のような並びを中央ぞろえで流すのだぁ～
+# 横並びフローなのだ～🌱 材料→珠→アイテム のような並びを中央ぞろえで流すのだぁ～
 # modifierClass は " flow4" のような追加クラスなのだぁ（追加が無ければ "" を渡すのだぁ～）
 templates.flow = modifierClass, inner -> %><div class="flow<%= modifierClass %>"><%= inner %></div><%
-# 縦積みユニットなのだぁ🌱 画像＋ラベルを縦の中央ぞろえにひとまとめにするのだぁ～
+# 縦積みユニットなのだ～🌱 画像＋ラベルを縦の中央ぞろえにひとまとめにするのだぁ～
 # modifierClass は " switch-item" のような追加クラスなのだぁ（追加が無ければ "" を渡すのだぁ～）
 templates.unit = modifierClass, inner -> %><div class="unit<%= modifierClass %>"><%= inner %></div><%
 
 cssLines::push << %>
-  /* ---- 横並びフロー（材料→珠→アイテム など）なのだぁ🌱 ---- */
+  /* ---- 横並びフロー（材料→珠→アイテム など）なのだ～🌱 ---- */
   .flow {
     flex: 1;
     display: flex;
@@ -21,7 +21,7 @@ cssLines::push << %>
     gap: 10px;
   }
 
-  /* ---- 縦積みユニット（画像＋ラベル）を縦の中央ぞろえにまとめるのだぁ🌱 ---- */
+  /* ---- 縦積みユニット（画像＋ラベル）を縦の中央ぞろえにまとめるのだ～🌱 ---- */
   .unit {
     display: flex;
     flex-direction: column;

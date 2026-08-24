@@ -40,7 +40,7 @@ fun createSulfurSmokeParticleFactory() = { spriteProvider: SpriteSet ->
 
             override fun tick() {
                 super.tick()
-                // 火山の噴煙は真上には昇らず、風を受けて横へたなびくのだぁ🌱 風向きはワールド全体で共通で、ゆっくりとひとまわりするのだぁ✨
+                // 火山の噴煙は真上には昇らず、風を受けて横へたなびくのだ～🌱 風向きはワールド全体で共通で、ゆっくりとひとまわりするのだぁ✨
                 val windAngle = level.gameTime / WIND_CYCLE_TICKS * Mth.TWO_PI
                 xd += Mth.cos(windAngle) * WIND_HORIZONTAL_ACCELERATION
                 zd += Mth.sin(windAngle) * WIND_HORIZONTAL_ACCELERATION
