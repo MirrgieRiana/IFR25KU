@@ -1451,7 +1451,7 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { SimpleMachineRecipe.Input(FERMENTED_BLACK_TREACLE.item().toIngredient(), 1) }, // 黒蜜4本分なので、その製造に 200 * 4 = 800 が掛かっているのだ
+                    { SimpleMachineRecipe.Input(FERMENTED_BLACK_TREACLE.item().toIngredient(), 1) }, // 黒蜜4本分なので、その製造に 200 * 4 = 800 が掛かっているのだ～🌱
                 ),
                 outputs = listOf({ item().createItemStack(2) }), // 800 + 200 = 1000 -> 200 * 8 * 2 = 1600
                 duration = 20 * 10,
