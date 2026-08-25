@@ -48,7 +48,7 @@ interface FairyDreamProviderItem {
 }
 
 interface FairyDreamProviderBlock {
-    fun getFairyDreamMotifs(world: Level, blockPos: BlockPos): List<Motif>
+    fun getFairyDreamMotifs(level: Level, blockPos: BlockPos): List<Motif>
 }
 
 object FairyDreamRecipes {

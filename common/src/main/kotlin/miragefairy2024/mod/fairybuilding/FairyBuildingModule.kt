@@ -2,7 +2,7 @@ package miragefairy2024.mod.fairybuilding
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.mod.haimeviska.HAIMEVISKA_LOGS_BLOCK_TAG
+import miragefairy2024.mod.tree.HAIMEVISKA_LOGS_BLOCK_TAG
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
@@ -27,6 +27,8 @@ val SPECIFIED_FAIRY_SLOT_TRANSLATION = Translation({ "gui.${identifier.toLanguag
 
 val FAIRY_BUILDING_BLOCK_TAG = MirageFairy2024.identifier("fairy_building").toBlockTag()
 
+val FOLIA_CONDUCTORS_BLOCK_TAG = MirageFairy2024.identifier("folia_conductors").toBlockTag()
+
 context(ModContext)
 fun initFairyBuildingModule() {
     fairyBuildingCards.forEach { card ->
@@ -37,5 +39,7 @@ fun initFairyBuildingModule() {
     SPECIFIED_FAIRY_SLOT_TRANSLATION.enJa()
 
     FAIRY_BUILDING_BLOCK_TAG.enJa(EnJa("Fairy Building", "妖精の建物"))
-    HAIMEVISKA_LOGS_BLOCK_TAG.generator.registerChild(FAIRY_BUILDING_BLOCK_TAG)
+    FOLIA_CONDUCTORS_BLOCK_TAG.enJa(EnJa("Folia Conductors", "フォリアの導線"))
+    FOLIA_CONDUCTORS_BLOCK_TAG.generator.registerChild(HAIMEVISKA_LOGS_BLOCK_TAG)
+    FOLIA_CONDUCTORS_BLOCK_TAG.generator.registerChild(FAIRY_BUILDING_BLOCK_TAG)
 }

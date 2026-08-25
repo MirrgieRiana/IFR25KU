@@ -9,6 +9,7 @@ import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.getSurfaceNoiseThreshold
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.core.HolderGetter
 import net.minecraft.data.worldgen.BiomeDefaultFeatures
 import net.minecraft.data.worldgen.placement.VegetationPlacements
@@ -25,6 +26,7 @@ import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.Noises
 import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
+import net.minecraft.world.level.levelgen.placement.CaveSurface
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
 object OldGrowthAmberForestBiomeCard : BiomeCard(
@@ -40,13 +42,13 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
             type = AdvancementCardType.TOAST_ONLY,
         )
     },
-    BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST,
+    BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST, BiomeTags.INCREASED_FIRE_BURNOUT, ConventionalBiomeTags.IS_WET_OVERWORLD,
 ) {
     override fun createBiome(placedFeatureLookup: HolderGetter<PlacedFeature>, configuredCarverLookup: HolderGetter<ConfiguredWorldCarver<*>>): Biome {
         return Biome.BiomeBuilder()
             .hasPrecipitation(true)
             .temperature(0.4F)
-            .downfall(0.6F)
+            .downfall(0.9F)
             .specialEffects(
                 BiomeSpecialEffects.Builder()
                     .waterColor(0x5B2A8A)
@@ -78,7 +80,6 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
 
                 BiomeDefaultFeatures.addMossyStoneBlock(lookupBackedBuilder)
                 BiomeDefaultFeatures.addForestFlowers(lookupBackedBuilder)
-                BiomeDefaultFeatures.addFerns(lookupBackedBuilder)
 
                 BiomeDefaultFeatures.addDefaultOres(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultSoftDisks(lookupBackedBuilder)
@@ -87,8 +88,8 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
 
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_TAIGA)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
-                BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)
-                BiomeDefaultFeatures.addGiantTaigaVegetation(lookupBackedBuilder)
+                BiomeDefaultFeatures.addDefaultGrass(lookupBackedBuilder)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)
                 BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
 
             }.build()).build()
@@ -106,9 +107,8 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                     SurfaceRules.ifTrue(
                         SurfaceRules.isBiome(key),
                         SurfaceRules.sequence(
-                            // 地表だけでなく、その下に通常できる土の層ごと置き換えるのだぁ🌱
                             SurfaceRules.ifTrue(
-                                SurfaceRules.UNDER_FLOOR,
+                                SurfaceRules.stoneDepthCheck(0, true, 20, CaveSurface.FLOOR),
                                 SurfaceRules.ifTrue(
                                     SurfaceRules.noiseCondition(Noises.SURFACE_SECONDARY, getSurfaceNoiseThreshold(Noises.SURFACE_SECONDARY, 0.61), Double.MAX_VALUE),
                                     SurfaceRules.state(BlockMaterialCard.RESIN_CEMENTED_DIRT.block().defaultBlockState())

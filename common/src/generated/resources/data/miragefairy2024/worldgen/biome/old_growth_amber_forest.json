@@ -6,7 +6,7 @@
       "minecraft:canyon"
     ]
   },
-  "downfall": 0.6,
+  "downfall": 0.9,
   "effects": {
     "fog_color": 14729352,
     "foliage_color": 13209372,
@@ -72,16 +72,10 @@
     [
       "minecraft:glow_lichen",
       "minecraft:forest_flowers",
-      "minecraft:patch_large_fern",
       "minecraft:trees_taiga",
       "minecraft:flower_default",
-      "minecraft:patch_grass_taiga_2",
-      "minecraft:brown_mushroom_taiga",
-      "minecraft:red_mushroom_taiga",
-      "minecraft:patch_grass_taiga",
+      "minecraft:patch_grass_badlands",
       "minecraft:patch_dead_bush",
-      "minecraft:brown_mushroom_old_growth",
-      "minecraft:red_mushroom_old_growth",
       "minecraft:patch_sugar_cane",
       "minecraft:patch_pumpkin"
     ],

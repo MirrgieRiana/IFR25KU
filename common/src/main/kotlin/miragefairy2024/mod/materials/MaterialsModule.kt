@@ -9,6 +9,7 @@ import miragefairy2024.mod.FoodIngredientsRegistry
 import miragefairy2024.mod.ItemTagCard
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.PoemType
+import miragefairy2024.mod.biome.OldGrowthAmberForestBiomeCard
 import miragefairy2024.mod.common.WaterBottleIngredient
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.common.rootAdvancement
@@ -22,7 +23,6 @@ import miragefairy2024.mod.fairy.SOUL_STREAM_CONTAINABLE_TAG
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.getFairyCondensation
 import miragefairy2024.mod.fairy.getFairyMotif
-import miragefairy2024.mod.haimeviska.haimeviskaAdvancement
 import miragefairy2024.mod.machine.AthanorRecipe
 import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceCard
@@ -48,6 +48,7 @@ import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.mod.structure.WeatheredAncientRemnantsCard
 import miragefairy2024.mod.translation
+import miragefairy2024.mod.tree.haimeviskaAdvancement
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -639,30 +640,25 @@ class MaterialCard(
                     .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 10), 1.0F)
                     .build()
             },
-        ) {
-            // →砂糖+水入り瓶
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { SimpleMachineRecipe.Input(item().toIngredient(), 1) },
-                    { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
-                ),
-                outputs = listOf(
-                    { Items.SUGAR.createItemStack(2) },
-                    { PotionContents.createItemStack(Items.POTION, Potions.WATER) },
-                ),
-                duration = 20 * 2,
-            ) on item modId MirageFairy2024.MOD_ID from item
-            // →松明
-            registerShapedRecipeGeneration({ Items.TORCH }) {
-                pattern("#")
-                pattern("S")
-                define('#', item())
-                define('S', tagOf(Shape.ROD, Material.WOOD))
-            } on item modId MirageFairy2024.MOD_ID from item
-        }
+            tags = listOf(ItemTagCard.SAP.tag),
+        )
+        val PLASTIC_TREE_SAP: MaterialCard = !MaterialCard(
+            "plastic_tree_sap", "Plastic Tree Sap", "プラノキの樹液",
+            PoemList(1)
+                .poem("Catalytic sugar cleavage", "駆け出したくなる、その甘さ。")
+                .description("Grants speed when eaten", "食べると移動速度上昇を付与"),
+            fuelValue = 200,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(1)
+                    .saturationModifier(0.1F)
+                    .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 10), 1.0F)
+                    .build()
+            },
+            tags = listOf(ItemTagCard.SAP.tag),
+        )
         val HAIMEVISKA_ROSIN: MaterialCard = !MaterialCard(
-            "haimeviska_rosin", "Haimeviska Rosin", "ハイメヴィスカの涙",
+            "haimeviska_rosin", "Haimeviska Resin", "ハイメヴィスカの涙",
             PoemList(2).poem("High-friction material", "琥珀の月が昇るとき、妖精の木は静かに泣く"),
             fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.HAIMEVISKA_ROSIN),
             advancementCreator = {
@@ -671,7 +667,7 @@ class MaterialCard(
                     context = AdvancementCard.Sub { haimeviskaAdvancement.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("The Taste of Nectar", "蜜の味"),
-                    description = EnJa("Obtain Haimeviska Rosin, rarely harvested from the Dripping Haimeviska Logs", "滴るハイメヴィスカの原木から稀に採取されるハイメヴィスカの涙を入手する"),
+                    description = EnJa("Obtain Haimeviska Resin, rarely harvested from the Dripping Haimeviska Logs", "滴るハイメヴィスカの原木から稀に採取されるハイメヴィスカの涙を入手する"),
                     criterion = AdvancementCard.hasItem(item),
                     type = AdvancementCardType.NORMAL,
                 )
@@ -697,17 +693,25 @@ class MaterialCard(
                 pattern("sss")
                 pattern("s#s")
                 pattern("sss")
-                define('s', HAIMEVISKA_SAP.item())
+                define('s', ItemTagCard.SAP.tag)
                 define('#', ore!!.tag)
             } on ore!!.tag modId MirageFairy2024.MOD_ID from item
         }
         val FAIRY_PLASTIC: MaterialCard = !MaterialCard(
-            // TODO add recipe
-            // TODO add purpose
             "fairy_plastic", "Fairy Plastic", "妖精のプラスチック",
             PoemList(4).poem("Thermoplastic organic polymer", "凍てつく記憶の宿る石。"),
             fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.FAIRY_PLASTIC),
-            // TODO advancement
+            advancementCreator = {
+                AdvancementCard(
+                    identifier = identifier,
+                    context = AdvancementCard.Sub { OldGrowthAmberForestBiomeCard.advancement!!.await() },
+                    icon = { item().createItemStack() },
+                    name = EnJa("Living fossil", "生きた化石"),
+                    description = EnJa("Mine Fairy Plastic from the Resin-Cemented Dirt beneath the Old Growth Amber Forest", "琥珀色の原生林の地下の石化した樹脂状の土から妖精のプラスチックを採掘する"),
+                    criterion = AdvancementCard.hasItem(item),
+                    type = AdvancementCardType.NORMAL,
+                )
+            },
         )
         val FAIRY_RUBBER: MaterialCard = !MaterialCard(
             // TODO add purpose
@@ -1363,7 +1367,7 @@ class MaterialCard(
                     AthanorRecipeCard,
                     inputs = listOf(
                         { SimpleMachineRecipe.Input(ingredient(), count) },
-                        { SimpleMachineRecipe.Input(WaterBottleIngredient.toVanilla(), 1) },
+                        { SimpleMachineRecipe.Input(ETHANOL.item().toIngredient(), 1) },
                         { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
                     ),
                     outputs = listOf({ item().createItemStack() }),
@@ -1428,7 +1432,7 @@ class MaterialCard(
                 AthanorRecipeCard,
                 inputs = listOf(
                     { SimpleMachineRecipe.Input(Items.SUGAR.toIngredient(), 8) },
-                    { SimpleMachineRecipe.Input(HAIMEVISKA_SAP.item().toIngredient(), 4) }, // 200 * 1 * 4 = 800
+                    { SimpleMachineRecipe.Input(ItemTagCard.SAP.tag.toIngredient(), 4) }, // 200 * 1 * 4 = 800
                     { SimpleMachineRecipe.Input(ItemTagCard.SPIRITS.tag.toIngredient(), 1) }, // 200 * 12 * 1 = 2400
                 ),
                 outputs = listOf({ item().createItemStack(8) }), // 800 + 2400 + 1200 = 4400 -> 200 * 8 * 8 = 12800
@@ -1438,7 +1442,7 @@ class MaterialCard(
                 AthanorRecipeCard,
                 inputs = listOf(
                     { SimpleMachineRecipe.Input(Items.SUGAR.toIngredient(), 16) },
-                    { SimpleMachineRecipe.Input(HAIMEVISKA_SAP.item().toIngredient(), 4) },
+                    { SimpleMachineRecipe.Input(ItemTagCard.SAP.tag.toIngredient(), 4) },
                     { SimpleMachineRecipe.Input(ETHANOL.item().toIngredient(), 1) },
                 ),
                 outputs = listOf({ item().createItemStack(32) }),
@@ -1447,7 +1451,7 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { SimpleMachineRecipe.Input(FERMENTED_BLACK_TREACLE.item().toIngredient(), 1) }, // 黒蜜4本分なので、その製造に 200 * 4 = 800 が掛かっているのだ
+                    { SimpleMachineRecipe.Input(FERMENTED_BLACK_TREACLE.item().toIngredient(), 1) }, // 黒蜜4本分なので、その製造に 200 * 4 = 800 が掛かっているのだ～🌱
                 ),
                 outputs = listOf({ item().createItemStack(2) }), // 800 + 200 = 1000 -> 200 * 8 * 2 = 1600
                 duration = 20 * 10,
@@ -1800,6 +1804,28 @@ fun initMaterialsModule() {
         duration = 20 * 10,
     ) using "athanor" on { Items.WHEAT } modId MirageFairy2024.MOD_ID
 
+    // 樹液→砂糖+水入り瓶
+    registerSimpleMachineRecipeGeneration(
+        AthanorRecipeCard,
+        inputs = listOf(
+            { SimpleMachineRecipe.Input(ItemTagCard.SAP.tag.toIngredient(), 1) },
+            { SimpleMachineRecipe.Input(Items.GLASS_BOTTLE.toIngredient(), 1) },
+        ),
+        outputs = listOf(
+            { Items.SUGAR.createItemStack(2) },
+            { PotionContents.createItemStack(Items.POTION, Potions.WATER) },
+        ),
+        duration = 20 * 2,
+    ) on ItemTagCard.SAP.tag modId MirageFairy2024.MOD_ID from ItemTagCard.SAP.tag
+
+    // 樹液→松明
+    registerShapedRecipeGeneration({ Items.TORCH }) {
+        pattern("#")
+        pattern("S")
+        define('#', ItemTagCard.SAP.tag)
+        define('S', tagOf(Shape.ROD, Material.WOOD))
+    } on ItemTagCard.SAP.tag modId MirageFairy2024.MOD_ID from ItemTagCard.SAP.tag
+
 }
 
 data class Ore(val shape: Shape, val material: Material)
@@ -1863,7 +1889,7 @@ enum class Material(val path: String, val prefix: EnJa) {
     CALCULITE("calculite", EnJa("Calculite", "理天石")),
     RESONITE("resonite", EnJa("Resonite", "共鳴石")),
     PROMINITE("prominite", EnJa("Prominite", "プロミナイト")),
-    HAIMEVISKA_ROSIN("haimeviska_rosin", EnJa("Haimeviska Rosin", "ハイメヴィスカの涙")),
+    HAIMEVISKA_ROSIN("haimeviska_rosin", EnJa("Haimeviska Resin", "ハイメヴィスカの涙")),
     FAIRY_PLASTIC("fairy_plastic", EnJa("Fairy Plastic", "妖精のプラスチック")),
     FAIRY_RUBBER("fairy_rubber", EnJa("Fairy Rubber", "夜のかけら")),
     ASH("ash", EnJa("Ash", "灰")),

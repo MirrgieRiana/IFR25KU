@@ -36,6 +36,8 @@ import net.minecraft.data.DataProvider
 import net.minecraft.data.PackOutput
 import net.minecraft.data.advancements.AdvancementProvider
 import net.minecraft.data.advancements.AdvancementSubProvider
+import net.minecraft.data.info.BlockListReport
+import net.minecraft.data.info.ItemListReport
 import net.minecraft.data.models.BlockModelGenerators
 import net.minecraft.data.models.ItemModelGenerators
 import net.minecraft.data.recipes.RecipeOutput
@@ -267,6 +269,15 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                     }
                 }
             }))
+        }
+
+        // レポート
+        /** @see [net.minecraft.data.Main.createStandardGenerator] */
+        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
+            ItemListReport(output, registriesFuture)
+        }
+        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
+            BlockListReport(output, registriesFuture)
         }
 
     }
