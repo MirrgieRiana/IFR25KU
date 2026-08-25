@@ -20883,6 +20883,48 @@
       "minecraft:repair_cost": 0
     }
   },
+  "miragefairy2024:black_treacle_kohakuto": {
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:food": {
+        "effects": [
+          {
+            "effect": {
+              "amplifier": 1,
+              "duration": 3600,
+              "id": "minecraft:speed",
+              "show_icon": true
+            }
+          }
+        ],
+        "nutrition": 5,
+        "saturation": 6.0
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:black_treacle_kohakuto_block": {
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
   "miragefairy2024:blackstone_sulfur_ore": {
     "components": {
       "minecraft:attribute_modifiers": {
@@ -24581,6 +24623,48 @@
       "minecraft:repair_cost": 0
     }
   },
+  "miragefairy2024:haimeviska_kohakuto": {
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:food": {
+        "effects": [
+          {
+            "effect": {
+              "amplifier": 1,
+              "duration": 6000,
+              "id": "miragefairy2024:experience",
+              "show_icon": true
+            }
+          }
+        ],
+        "nutrition": 5,
+        "saturation": 6.0
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:haimeviska_kohakuto_block": {
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
   "miragefairy2024:haimeviska_leaves": {
     "components": {
       "minecraft:attribute_modifiers": {
@@ -25180,6 +25264,47 @@
         "levels": {}
       },
       "minecraft:fire_resistant": {},
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:kohakuto": {
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:food": {
+        "effects": [
+          {
+            "effect": {
+              "duration": 12000,
+              "id": "minecraft:speed",
+              "show_icon": true
+            }
+          }
+        ],
+        "nutrition": 5,
+        "saturation": 6.0
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:kohakuto_block": {
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
       "minecraft:lore": [],
       "minecraft:max_stack_size": 64,
       "minecraft:rarity": "common",
@@ -25966,6 +26091,47 @@
     }
   },
   "miragefairy2024:merrrria_icon": {
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:merrrria_kohakuto": {
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:food": {
+        "effects": [
+          {
+            "effect": {
+              "duration": 6000,
+              "id": "minecraft:night_vision",
+              "show_icon": true
+            }
+          }
+        ],
+        "nutrition": 5,
+        "saturation": 6.0
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:merrrria_kohakuto_block": {
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
@@ -28076,6 +28242,48 @@
     }
   },
   "miragefairy2024:phantom_flower_icon": {
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:phantom_kohakuto": {
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:food": {
+        "effects": [
+          {
+            "effect": {
+              "amplifier": 1,
+              "duration": 3600,
+              "id": "minecraft:regeneration",
+              "show_icon": true
+            }
+          }
+        ],
+        "nutrition": 5,
+        "saturation": 6.0
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:phantom_kohakuto_block": {
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
