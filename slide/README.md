@@ -25,16 +25,16 @@ xarpite ランタイムは、リポジトリに同梱されている `../xarpite
 
 ## ディレクトリ構成なのだ～🌱♪
 
-- `build.sh` - ビルドのエントリポイントなのだぁっ🌱♪ ここへ cd して、`build.xa1` を xarpite で呼ぶだけなのだぁ～
-- `build.xa1` - ビルドメインなのだぁ🌱。`global.xa1` をマウントして、プラグイン・ページを読み込んでから、ビルド本体の `build` 関数を呼ぶのだぁ～
-- `src/main/xa1/global.xa1` - 共有の土台（`templates`・`pageGenerators`・`cssLines` などの登録簿とヘルパー、そして素材配置と書き出しをやる `build` 関数）なのだぁ🌱
-- `src/plugins/xa1/*.xa1` - パーツ（素材・矢印・見出し・レイアウトなど）なのだぁ🌱。`templates` と `cssLines` へ登録するのだぁ～
-- `src/pages/xa1/*.xa1` - 出力ページなのだぁ🌱。`pageGenerators` へ「出力ファイル名 → 内容を返す関数」を登録するのだぁ～。スライドは `sphere-crafting.xa1` に4枚まとめて入っているのだぁ🌱
-- `src/site/resources/` - 素材なのだぁ🌱。ライセンスごとにサブディレクトリに仕分けてあるのだぁ～
-  - `src/site/resources/item-texture/` - アイテムテクスチャ由来の png なのだぁ🌱
-  - `src/site/resources/fluentui-emoji/` - 絵文字の svg なのだぁ🌱
-  - `src/site/resources/fairy_face.png` - マスコット画像なのだぁ🌱
-- `build/` - `build.sh` が生成する成果物なのだぁ～🌱。コミットはしないので（root の `.gitignore` で無視されるのだぁ）、ビルドすると手元にできるのだぁ🌱
+- `build.sh` - ビルドのエントリポイントなのだ～🌱♪ ここへ cd して、`build.xa1` を xarpite で呼ぶだけなのだ～🌱
+- `build.xa1` - ビルドメインなのだ～🌱 `global.xa1` をマウントして、プラグイン・ページを読み込んでから、ビルド本体の `build` 関数を呼ぶのだ～🌱
+- `src/main/xa1/global.xa1` - 共有の土台（`templates`・`pageGenerators`・`cssLines` などの登録簿とヘルパー、そして素材配置と書き出しをやる `build` 関数）なのだ～🌱
+- `src/plugins/xa1/*.xa1` - パーツ（素材・矢印・見出し・レイアウトなど）なのだ～🌱 `templates` と `cssLines` へ登録するのだ～🌱
+- `src/pages/xa1/*.xa1` - 出力ページなのだ～🌱 `pageGenerators` へ「出力ファイル名 → 内容を返す関数」を登録するのだ～🌱 スライドは `sphere-crafting.xa1` に4枚まとめて入っているのだ～🌱
+- `src/site/resources/` - 素材なのだ～🌱 ライセンスごとにサブディレクトリに仕分けてあるのだ～🌱
+  - `src/site/resources/item-texture/` - アイテムテクスチャ由来の png なのだ～🌱
+  - `src/site/resources/fluentui-emoji/` - 絵文字の svg なのだ～🌱
+  - `src/site/resources/fairy_face.png` - マスコット画像なのだ～🌱
+- `build/` - `build.sh` が生成する成果物なのだ～🌱 コミットはしないので（root の `.gitignore` で無視されるのだ～🌱）、ビルドすると手元にできるのだ～🌱
 
 ## ライセンスのことなのだ～🌱♪
 
