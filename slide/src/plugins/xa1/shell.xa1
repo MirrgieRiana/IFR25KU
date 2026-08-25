@@ -1,4 +1,4 @@
-# shell: スライドの外枠なのだぁ🌱 四隅の飾り＋本体＋フッターなのだぁ～
+# shell: スライドの外枠なのだ～🌱 四隅の飾り＋本体＋フッターなのだ～🌱
 @USE("global")
 
 templates.shell = pageNumber, theme, inner -> %>
@@ -10,8 +10,8 @@ templates.shell = pageNumber, theme, inner -> %>
 <%
 
 cssLines::push << %>
-  /* ---- スライド1枚＝固定サイズのブロックなのだぁ🌱 すきまなく縦に積むのだぁ～ ---- */
-  /* テーマ色なのだぁ🌱 見出しアクセント・ページ番号などが --accent を参照するのだぁ～ */
+  /* ---- スライド1枚＝固定サイズのブロックなのだ～🌱 すきまなく縦に積むのだ～🌱 ---- */
+  /* テーマ色なのだ～🌱 見出しアクセント・ページ番号などが --accent を参照するのだ～🌱 */
   .slide {
     position: relative;
     width: 1280px;
@@ -33,7 +33,7 @@ cssLines::push << %>
     --accent: var(--pink-dark);
   }
 
-  /* 四隅のパステルなまるい飾りなのだぁ🌱 */
+  /* 四隅のパステルなまるい飾りなのだ～🌱 */
   .blob {
     position: absolute;
     border-radius: 50%;
@@ -71,7 +71,7 @@ cssLines::push << %>
     opacity: .4;
   }
 
-  /* スライド中身なのだぁ🌱 見出し→説明→ダイアグラム、を縦に流すのだぁ～ */
+  /* スライド中身なのだ～🌱 見出し→説明→ダイアグラム、を縦に流すのだ～🌱 */
   .body {
     position: relative;
     z-index: 1;
