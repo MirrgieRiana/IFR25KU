@@ -122,7 +122,7 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
     private fun collectFolia() {
         val level = level ?: return
 
-        // フォリアの導線ブロックを最大200個辿るのだ
+        // フォリアの導線ブロックを最大200個辿るのだ～🌱
         val conductors = blockVisitor(listOf(worldPosition), maxCount = 200, neighborType = NeighborType.VERTICES) { _, _, toBlockPos ->
             level.getBlockState(toBlockPos) isIn FOLIA_CONDUCTORS_BLOCK_TAG
         }.map { it.second }.toList()
