@@ -637,7 +637,7 @@ class MaterialCard(
                 FoodProperties.Builder()
                     .nutrition(1)
                     .saturationModifier(0.1F)
-                    .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 10), 1.0F)
+                    .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 20), 1.0F)
                     .build()
             },
             tags = listOf(ItemTagCard.SAP.tag),

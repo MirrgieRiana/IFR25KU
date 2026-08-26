@@ -24889,7 +24889,7 @@
         "effects": [
           {
             "effect": {
-              "duration": 10,
+              "duration": 20,
               "id": "miragefairy2024:experience",
               "show_icon": true
             }
