@@ -1,7 +1,7 @@
 {
   "type": "miragefairy2024:athanor",
   "duration": 6000,
-  "group": "miragefairy2024:merrrria_kohakuto",
+  "group": "miragefairy2024:merrrria_drop_kohakuto",
   "inputs": [
     {
       "Amount": 4,
@@ -19,7 +19,7 @@
   "outputs": [
     {
       "count": 1,
-      "id": "miragefairy2024:merrrria_kohakuto"
+      "id": "miragefairy2024:merrrria_drop_kohakuto"
     }
   ]
 }

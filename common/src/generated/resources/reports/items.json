@@ -26090,21 +26090,7 @@
       "minecraft:repair_cost": 0
     }
   },
-  "miragefairy2024:merrrria_icon": {
-    "components": {
-      "minecraft:attribute_modifiers": {
-        "modifiers": []
-      },
-      "minecraft:enchantments": {
-        "levels": {}
-      },
-      "minecraft:lore": [],
-      "minecraft:max_stack_size": 64,
-      "minecraft:rarity": "common",
-      "minecraft:repair_cost": 0
-    }
-  },
-  "miragefairy2024:merrrria_kohakuto": {
+  "miragefairy2024:merrrria_drop_kohakuto": {
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
@@ -26131,7 +26117,21 @@
       "minecraft:repair_cost": 0
     }
   },
-  "miragefairy2024:merrrria_kohakuto_block": {
+  "miragefairy2024:merrrria_drop_kohakuto_block": {
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:merrrria_icon": {
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
@@ -28241,21 +28241,7 @@
       "minecraft:repair_cost": 0
     }
   },
-  "miragefairy2024:phantom_flower_icon": {
-    "components": {
-      "minecraft:attribute_modifiers": {
-        "modifiers": []
-      },
-      "minecraft:enchantments": {
-        "levels": {}
-      },
-      "minecraft:lore": [],
-      "minecraft:max_stack_size": 64,
-      "minecraft:rarity": "common",
-      "minecraft:repair_cost": 0
-    }
-  },
-  "miragefairy2024:phantom_kohakuto": {
+  "miragefairy2024:phantom_drop_kohakuto": {
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
@@ -28283,7 +28269,21 @@
       "minecraft:repair_cost": 0
     }
   },
-  "miragefairy2024:phantom_kohakuto_block": {
+  "miragefairy2024:phantom_drop_kohakuto_block": {
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:phantom_flower_icon": {
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []

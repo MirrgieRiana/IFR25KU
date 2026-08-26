@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "miragefairy2024:block/phantom_kohakuto_block"
+    "all": "miragefairy2024:block/phantom_drop_kohakuto_block"
   }
 }

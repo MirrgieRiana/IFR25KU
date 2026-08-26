@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "miragefairy2024:block/merrrria_kohakuto_block"
-  }
-}

@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_phantom_kohakuto": {
+    "has_merrrria_drop_kohakuto_block": {
       "conditions": {
         "items": [
           {
-            "items": "miragefairy2024:phantom_kohakuto"
+            "items": "miragefairy2024:merrrria_drop_kohakuto_block"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:phantom_kohakuto_block_from_phantom_kohakuto"
+        "recipe": "miragefairy2024:merrrria_drop_kohakuto_from_merrrria_drop_kohakuto_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_phantom_kohakuto"
+      "has_merrrria_drop_kohakuto_block"
     ]
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:phantom_kohakuto_block_from_phantom_kohakuto"
+      "miragefairy2024:merrrria_drop_kohakuto_from_merrrria_drop_kohakuto_block"
     ]
   }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "miragefairy2024:item/phantom_kohakuto"
+    "layer0": "miragefairy2024:item/phantom_drop_kohakuto"
   }
 }

@@ -283308,7 +283308,7 @@
       }
     ]
   },
-  "miragefairy2024:merrrria_kohakuto_block": {
+  "miragefairy2024:merrrria_drop_kohakuto_block": {
     "definition": {
       "type": "miragefairy2024:semi_opaque_transparent_block",
       "properties": {}
@@ -287967,6 +287967,18 @@
       }
     ]
   },
+  "miragefairy2024:phantom_drop_kohakuto_block": {
+    "definition": {
+      "type": "miragefairy2024:semi_opaque_transparent_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true,
+        "id": 27538
+      }
+    ]
+  },
   "miragefairy2024:phantom_flower": {
     "definition": {
       "type": "miragefairy2024:phantom_flower",
@@ -288005,18 +288017,6 @@
         "properties": {
           "age": "3"
         }
-      }
-    ]
-  },
-  "miragefairy2024:phantom_kohakuto_block": {
-    "definition": {
-      "type": "miragefairy2024:semi_opaque_transparent_block",
-      "properties": {}
-    },
-    "states": [
-      {
-        "default": true,
-        "id": 27538
       }
     ]
   },
