@@ -1506,7 +1506,7 @@ class MaterialCard(
             }
         }
         val HAIMEVISKA_SAP_KOHAKUTO: MaterialCard = !MaterialCard(
-            "haimeviska_sap_kohakuto", "Sap Kohakuto", "樹液の琥珀糖",
+            "haimeviska_sap_kohakuto", "Haimeviska Sap Kohakuto", "ハイメヴィスカの樹液の琥珀糖",
             null,
             foodComponentCreator = {
                 FoodProperties.Builder()
@@ -1554,8 +1554,8 @@ class MaterialCard(
                 FoodIngredientsRegistry.registry[item()] = FoodIngredients() + BLACK_TREACLE.item() + Items.DRIED_KELP
             }
         }
-        val MERRRRIA_KOHAKUTO: MaterialCard = !MaterialCard(
-            "merrrria_kohakuto", "Merrrria Kohakuto", "月の琥珀糖",
+        val MERRRRIA_DROP_KOHAKUTO: MaterialCard = !MaterialCard(
+            "merrrria_drop_kohakuto", "Merrrria Drop Kohakuto", "月のしずくの琥珀糖",
             null,
             foodComponentCreator = {
                 FoodProperties.Builder()
@@ -1578,8 +1578,8 @@ class MaterialCard(
                 FoodIngredientsRegistry.registry[item()] = FoodIngredients() + MERRRRIA_DROP.item() + Items.DRIED_KELP
             }
         }
-        val PHANTOM_KOHAKUTO: MaterialCard = !MaterialCard(
-            "phantom_kohakuto", "Phantom Kohakuto", "幻想の琥珀糖",
+        val PHANTOM_DROP_KOHAKUTO: MaterialCard = !MaterialCard(
+            "phantom_drop_kohakuto", "Phantom Drop Kohakuto", "幻想の雫の琥珀糖",
             null,
             foodComponentCreator = {
                 FoodProperties.Builder()
