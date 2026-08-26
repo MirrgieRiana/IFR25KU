@@ -708,7 +708,7 @@ open class BlockMaterialCard(
             PoemList(null),
             MapColor.COLOR_YELLOW, 0.6F, 0.6F,
         ) {
-            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never)
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
         }.translucent().sound(SoundType.TUFF).init {
             registerCompressionRecipeGeneration(MaterialCard.KOHAKUTO.item, { MaterialCard.KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
@@ -724,10 +724,10 @@ open class BlockMaterialCard(
         }
         val HAIMEVISKA_SAP_KOHAKUTO_BLOCK = !object : BlockMaterialCard(
             "haimeviska_sap_kohakuto_block", EnJa("Haimeviska Sap Kohakuto Block", "ハイメヴィスカの樹液の琥珀糖ブロック"),
-            PoemList(1).poem("TODO", "TODO"), // TODO
+            PoemList(1).poem("誰も見たことのない記憶のコラージュ。", "It may have once been part of a brain."),
             MapColor.COLOR_ORANGE, 0.6F, 0.6F,
         ) {
-            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never)
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
         }.translucent().sound(SoundType.TUFF).init {
             registerCompressionRecipeGeneration(MaterialCard.HAIMEVISKA_SAP_KOHAKUTO.item, { MaterialCard.HAIMEVISKA_SAP_KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
@@ -746,7 +746,7 @@ open class BlockMaterialCard(
             PoemList(null),
             MapColor.COLOR_BROWN, 0.6F, 0.6F,
         ) {
-            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never)
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
         }.translucent().sound(SoundType.TUFF).init {
             registerCompressionRecipeGeneration(MaterialCard.BLACK_TREACLE_KOHAKUTO.item, { MaterialCard.BLACK_TREACLE_KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
@@ -765,7 +765,7 @@ open class BlockMaterialCard(
             PoemList(3).poem("TODO", "TODO"), // TODO
             MapColor.COLOR_LIGHT_BLUE, 0.6F, 0.6F,
         ) {
-            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never)
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
         }.translucent().sound(SoundType.TUFF).init {
             registerCompressionRecipeGeneration(MaterialCard.MERRRRIA_DROP_KOHAKUTO.item, { MaterialCard.MERRRRIA_DROP_KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
@@ -781,10 +781,10 @@ open class BlockMaterialCard(
         }
         val PHANTOM_DROP_KOHAKUTO_BLOCK = !object : BlockMaterialCard(
             "phantom_drop_kohakuto_block", EnJa("Phantom Drop Kohakuto Block", "幻想の雫の琥珀糖ブロック"),
-            PoemList(4).poem("TODO", "TODO"), // TODO
+            PoemList(4).poem("運命に干渉するための奇跡。", "Disposing of useless parallel universes."),
             MapColor.COLOR_PURPLE, 0.6F, 0.6F,
         ) {
-            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never)
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
         }.translucent().sound(SoundType.TUFF).init {
             registerCompressionRecipeGeneration(MaterialCard.PHANTOM_DROP_KOHAKUTO.item, { MaterialCard.PHANTOM_DROP_KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
