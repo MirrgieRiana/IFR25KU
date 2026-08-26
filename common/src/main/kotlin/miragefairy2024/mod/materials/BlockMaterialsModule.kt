@@ -724,7 +724,7 @@ open class BlockMaterialCard(
         }
         val HAIMEVISKA_SAP_KOHAKUTO_BLOCK = !object : BlockMaterialCard(
             "haimeviska_sap_kohakuto_block", EnJa("Haimeviska Sap Kohakuto Block", "ハイメヴィスカの樹液の琥珀糖ブロック"),
-            PoemList(null),
+            PoemList(1).poem("TODO", "TODO"), // TODO
             MapColor.COLOR_ORANGE, 0.6F, 0.6F,
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never)
@@ -762,7 +762,7 @@ open class BlockMaterialCard(
         }
         val MERRRRIA_DROP_KOHAKUTO_BLOCK = !object : BlockMaterialCard(
             "merrrria_drop_kohakuto_block", EnJa("Merrrria Drop Kohakuto Block", "月のしずくの琥珀糖ブロック"),
-            PoemList(null),
+            PoemList(3).poem("TODO", "TODO"), // TODO
             MapColor.COLOR_LIGHT_BLUE, 0.6F, 0.6F,
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never)
@@ -781,7 +781,7 @@ open class BlockMaterialCard(
         }
         val PHANTOM_DROP_KOHAKUTO_BLOCK = !object : BlockMaterialCard(
             "phantom_drop_kohakuto_block", EnJa("Phantom Drop Kohakuto Block", "幻想の雫の琥珀糖ブロック"),
-            PoemList(null),
+            PoemList(4).poem("TODO", "TODO"), // TODO
             MapColor.COLOR_PURPLE, 0.6F, 0.6F,
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never)

@@ -1520,32 +1520,32 @@ class MaterialCard(
             "kohakuto", "Kohakuto", "琥珀糖",
             null,
             { Items.SUGAR },
-            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60 * 10), 1.0F) },
+            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60), 1.0F) },
         )
         val HAIMEVISKA_SAP_KOHAKUTO = createKohakuto(
             "haimeviska_sap_kohakuto", "Haimeviska Sap Kohakuto", "ハイメヴィスカの樹液の琥珀糖",
             PoemList(1).poem("琥珀の中のデジャヴュー。", "Steganographic agarose tablet."),
             HAIMEVISKA_SAP.item,
             // 経験値獲得は持続時間がそのまま獲得量になるのだ～🌱 樹液1個あたりの獲得量を妖精のリキュールと揃えるのだ～🌱
-            { it.effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 20 * 2, 1), 1.0F) },
+            { it.effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 20 * 2), 1.0F) },
         )
         val BLACK_TREACLE_KOHAKUTO = createKohakuto(
             "black_treacle_kohakuto", "Black Treacle Kohakuto", "黒蜜の琥珀糖",
             null,
             BLACK_TREACLE.item,
-            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60 * 3, 1), 1.0F) },
+            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60, 1), 1.0F) },
         )
         val MERRRRIA_DROP_KOHAKUTO = createKohakuto(
             "merrrria_drop_kohakuto", "Merrrria Drop Kohakuto", "月のしずくの琥珀糖",
-            PoemList(3).poem("妖精の目にだけ映る、この世界。", "A world landscape formed by aura."),
+            PoemList(3).poem("妖精の目にだけ映るこの世界。", "A world landscape formed by aura."),
             MERRRRIA_DROP.item,
-            { it.effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60 * 5), 1.0F) },
+            { it.effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60 * 10), 1.0F) },
         )
         val PHANTOM_DROP_KOHAKUTO = createKohakuto(
             "phantom_drop_kohakuto", "Phantom Drop Kohakuto", "幻想の雫の琥珀糖",
             PoemList(4).poem("希望の結晶。", "The power to give shape to hope."),
             PHANTOM_DROP.item,
-            { it.effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 60 * 3, 1), 1.0F) },
+            { it.effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 60, 1), 1.0F) },
         )
     }
 
