@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_haimeviska_kohakuto_block": {
+    "has_haimeviska_sap": {
       "conditions": {
         "items": [
           {
-            "items": "miragefairy2024:haimeviska_kohakuto_block"
+            "items": "miragefairy2024:haimeviska_sap"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:haimeviska_kohakuto_from_haimeviska_kohakuto_block"
+        "recipe": "miragefairy2024:haimeviska_sap_kohakuto_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_haimeviska_kohakuto_block"
+      "has_haimeviska_sap"
     ]
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:haimeviska_kohakuto_from_haimeviska_kohakuto_block"
+      "miragefairy2024:haimeviska_sap_kohakuto_block"
     ]
   }
 }

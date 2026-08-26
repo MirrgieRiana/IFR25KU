@@ -1,12 +1,12 @@
 {
   "type": "miragefairy2024:athanor",
   "duration": 6000,
-  "group": "miragefairy2024:phantom_kohakuto",
+  "group": "miragefairy2024:black_treacle_kohakuto_block",
   "inputs": [
     {
       "Amount": 36,
       "Ingredient": {
-        "item": "miragefairy2024:phantom_drop"
+        "item": "miragefairy2024:black_treacle"
       }
     },
     {
@@ -18,8 +18,8 @@
   ],
   "outputs": [
     {
-      "count": 9,
-      "id": "miragefairy2024:phantom_kohakuto"
+      "count": 1,
+      "id": "miragefairy2024:black_treacle_kohakuto_block"
     }
   ]
 }

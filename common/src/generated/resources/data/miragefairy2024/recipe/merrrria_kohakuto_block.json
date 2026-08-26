@@ -1,12 +1,12 @@
 {
   "type": "miragefairy2024:athanor",
   "duration": 6000,
-  "group": "miragefairy2024:haimeviska_kohakuto",
+  "group": "miragefairy2024:merrrria_kohakuto_block",
   "inputs": [
     {
       "Amount": 36,
       "Ingredient": {
-        "item": "miragefairy2024:haimeviska_sap"
+        "item": "miragefairy2024:merrrria_drop"
       }
     },
     {
@@ -18,8 +18,8 @@
   ],
   "outputs": [
     {
-      "count": 9,
-      "id": "miragefairy2024:haimeviska_kohakuto"
+      "count": 1,
+      "id": "miragefairy2024:merrrria_kohakuto_block"
     }
   ]
 }

@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "miragefairy2024:haimeviska_kohakuto_block"
+          "name": "miragefairy2024:haimeviska_sap_kohakuto_block"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "miragefairy2024:blocks/haimeviska_kohakuto_block"
+  "random_sequence": "miragefairy2024:blocks/haimeviska_sap_kohakuto_block"
 }

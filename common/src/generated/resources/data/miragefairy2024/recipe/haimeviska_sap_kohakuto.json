@@ -1,12 +1,12 @@
 {
   "type": "miragefairy2024:athanor",
   "duration": 6000,
-  "group": "miragefairy2024:phantom_kohakuto",
+  "group": "miragefairy2024:haimeviska_sap_kohakuto",
   "inputs": [
     {
       "Amount": 4,
       "Ingredient": {
-        "item": "miragefairy2024:phantom_drop"
+        "item": "miragefairy2024:haimeviska_sap"
       }
     },
     {
@@ -19,7 +19,7 @@
   "outputs": [
     {
       "count": 1,
-      "id": "miragefairy2024:phantom_kohakuto"
+      "id": "miragefairy2024:haimeviska_sap_kohakuto"
     }
   ]
 }

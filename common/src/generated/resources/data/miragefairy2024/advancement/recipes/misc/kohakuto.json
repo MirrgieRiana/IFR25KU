@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_haimeviska_sap": {
+    "has_sugar": {
       "conditions": {
         "items": [
           {
-            "items": "miragefairy2024:haimeviska_sap"
+            "items": "minecraft:sugar"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "miragefairy2024:haimeviska_kohakuto"
+        "recipe": "miragefairy2024:kohakuto"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_haimeviska_sap"
+      "has_sugar"
     ]
   ],
   "rewards": {
     "recipes": [
-      "miragefairy2024:haimeviska_kohakuto"
+      "miragefairy2024:kohakuto"
     ]
   }
 }

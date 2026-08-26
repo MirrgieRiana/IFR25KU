@@ -280938,18 +280938,6 @@
       }
     ]
   },
-  "miragefairy2024:haimeviska_kohakuto_block": {
-    "definition": {
-      "type": "miragefairy2024:semi_opaque_transparent_block",
-      "properties": {}
-    },
-    "states": [
-      {
-        "default": true,
-        "id": 27535
-      }
-    ]
-  },
   "miragefairy2024:haimeviska_leaves": {
     "definition": {
       "type": "miragefairy2024:haimeviska_leaves",
@@ -281557,6 +281545,18 @@
         "properties": {
           "powered": "false"
         }
+      }
+    ]
+  },
+  "miragefairy2024:haimeviska_sap_kohakuto_block": {
+    "definition": {
+      "type": "miragefairy2024:semi_opaque_transparent_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true,
+        "id": 27535
       }
     ]
   },

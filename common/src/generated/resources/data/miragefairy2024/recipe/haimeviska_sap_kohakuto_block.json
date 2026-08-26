@@ -1,10 +1,10 @@
 {
   "type": "miragefairy2024:athanor",
   "duration": 6000,
-  "group": "miragefairy2024:haimeviska_kohakuto",
+  "group": "miragefairy2024:haimeviska_sap_kohakuto_block",
   "inputs": [
     {
-      "Amount": 4,
+      "Amount": 36,
       "Ingredient": {
         "item": "miragefairy2024:haimeviska_sap"
       }
@@ -12,14 +12,14 @@
     {
       "Amount": 1,
       "Ingredient": {
-        "item": "minecraft:dried_kelp"
+        "item": "minecraft:dried_kelp_block"
       }
     }
   ],
   "outputs": [
     {
-      "count": 4,
-      "id": "miragefairy2024:haimeviska_kohakuto"
+      "count": 1,
+      "id": "miragefairy2024:haimeviska_sap_kohakuto_block"
     }
   ]
 }
