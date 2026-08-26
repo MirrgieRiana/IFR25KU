@@ -724,7 +724,7 @@ open class BlockMaterialCard(
         }
         val HAIMEVISKA_SAP_KOHAKUTO_BLOCK = !object : BlockMaterialCard(
             "haimeviska_sap_kohakuto_block", EnJa("Haimeviska Sap Kohakuto Block", "ハイメヴィスカの樹液の琥珀糖ブロック"),
-            PoemList(1).poem("誰も見たことのない記憶のコラージュ。", "It may have once been part of a brain."),
+            PoemList(1).poem("It may have once been part of a brain.", "誰も見たことのない記憶のコラージュ。"),
             MapColor.COLOR_ORANGE, 0.6F, 0.6F,
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
@@ -781,7 +781,7 @@ open class BlockMaterialCard(
         }
         val PHANTOM_DROP_KOHAKUTO_BLOCK = !object : BlockMaterialCard(
             "phantom_drop_kohakuto_block", EnJa("Phantom Drop Kohakuto Block", "幻想の雫の琥珀糖ブロック"),
-            PoemList(4).poem("運命に干渉するための奇跡。", "Disposing of useless parallel universes."),
+            PoemList(4).poem("Disposing of useless parallel universes.", "運命に干渉するための奇跡。"),
             MapColor.COLOR_PURPLE, 0.6F, 0.6F,
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
