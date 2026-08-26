@@ -1479,129 +1479,74 @@ class MaterialCard(
         ) {
             registerCompressionRecipeGeneration(item, { item().toIngredient() }, SOLID_FUEL.item, { SOLID_FUEL.item().toIngredient() }, 8)
         }
-        // 琥珀糖は寒天と甘味を煮溶かして固め、数日かけて乾燥させる干菓子なのだ～🌱
-        // 寒天の代わりに乾燥した昆布を使い、長い乾燥工程をアタノールの加工時間で表現するのだ～🌱
-        val KOHAKUTO: MaterialCard = !MaterialCard(
+
+        fun createKohakuto(
+            path: String,
+            enName: String,
+            jaName: String,
+            poemList: PoemList?,
+            input: () -> Item,
+            effect: suspend (FoodProperties.Builder) -> FoodProperties.Builder,
+        ): MaterialCard {
+            return !MaterialCard(
+                path, enName, jaName,
+                poemList,
+                foodComponentCreator = {
+                    FoodProperties.Builder()
+                        .nutrition(5)
+                        .saturationModifier(0.6F)
+                        .let { effect(it) }
+                        .build()
+                },
+            ) {
+                // 琥珀糖は寒天と甘味を煮溶かして固め、数日かけて乾燥させる干菓子なのだ～🌱
+                // 寒天の代わりに乾燥した昆布を使い、長い乾燥工程をアタノールの加工時間で表現するのだ～🌱
+                registerSimpleMachineRecipeGeneration(
+                    AthanorRecipeCard,
+                    inputs = listOf(
+                        { SimpleMachineRecipe.Input(input().toIngredient(), 4) },
+                        { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 1) },
+                    ),
+                    outputs = listOf({ item().createItemStack() }),
+                    duration = 20 * 60 * 5,
+                ) on input
+                ModEvents.onInitialize {
+                    FoodIngredientsRegistry.registry[item()] = FoodIngredients() + input() + Items.DRIED_KELP
+                }
+            }
+        }
+
+        val KOHAKUTO = createKohakuto(
             "kohakuto", "Kohakuto", "琥珀糖",
             null,
-            foodComponentCreator = {
-                FoodProperties.Builder()
-                    .nutrition(5)
-                    .saturationModifier(0.6F)
-                    .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60 * 10), 1.0F)
-                    .build()
-            },
-        ) {
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { SimpleMachineRecipe.Input(Items.SUGAR.toIngredient(), 4) },
-                    { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 1) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on { Items.SUGAR }
-            ModEvents.onInitialize {
-                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + Items.SUGAR + Items.DRIED_KELP
-            }
-        }
-        val HAIMEVISKA_SAP_KOHAKUTO: MaterialCard = !MaterialCard(
+            { Items.SUGAR },
+            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60 * 10), 1.0F) },
+        )
+        val HAIMEVISKA_SAP_KOHAKUTO = createKohakuto(
             "haimeviska_sap_kohakuto", "Haimeviska Sap Kohakuto", "ハイメヴィスカの樹液の琥珀糖",
-            null,
-            foodComponentCreator = {
-                FoodProperties.Builder()
-                    .nutrition(5)
-                    .saturationModifier(0.6F)
-                    // 経験値獲得は持続時間がそのまま獲得量になるのだ～🌱 樹液1個あたりの獲得量を妖精のリキュールと揃えるのだ～🌱
-                    .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 20 * 2, 1), 1.0F)
-                    .build()
-            },
-        ) {
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { SimpleMachineRecipe.Input(HAIMEVISKA_SAP.item().toIngredient(), 4) },
-                    { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 1) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on HAIMEVISKA_SAP.item
-            ModEvents.onInitialize {
-                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + HAIMEVISKA_SAP.item() + Items.DRIED_KELP
-            }
-        }
-        val BLACK_TREACLE_KOHAKUTO: MaterialCard = !MaterialCard(
+            PoemList(1).poem("TODO", "TODO"), // TODO
+            HAIMEVISKA_SAP.item,
+            // 経験値獲得は持続時間がそのまま獲得量になるのだ～🌱 樹液1個あたりの獲得量を妖精のリキュールと揃えるのだ～🌱
+            { it.effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 20 * 2, 1), 1.0F) },
+        )
+        val BLACK_TREACLE_KOHAKUTO = createKohakuto(
             "black_treacle_kohakuto", "Black Treacle Kohakuto", "黒蜜の琥珀糖",
             null,
-            foodComponentCreator = {
-                FoodProperties.Builder()
-                    .nutrition(5)
-                    .saturationModifier(0.6F)
-                    .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60 * 3, 1), 1.0F)
-                    .build()
-            },
-        ) {
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { SimpleMachineRecipe.Input(BLACK_TREACLE.item().toIngredient(), 4) },
-                    { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 1) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on BLACK_TREACLE.item
-            ModEvents.onInitialize {
-                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + BLACK_TREACLE.item() + Items.DRIED_KELP
-            }
-        }
-        val MERRRRIA_DROP_KOHAKUTO: MaterialCard = !MaterialCard(
+            BLACK_TREACLE.item,
+            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60 * 3, 1), 1.0F) },
+        )
+        val MERRRRIA_DROP_KOHAKUTO = createKohakuto(
             "merrrria_drop_kohakuto", "Merrrria Drop Kohakuto", "月のしずくの琥珀糖",
-            null,
-            foodComponentCreator = {
-                FoodProperties.Builder()
-                    .nutrition(5)
-                    .saturationModifier(0.6F)
-                    .effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60 * 5), 1.0F)
-                    .build()
-            },
-        ) {
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { SimpleMachineRecipe.Input(MERRRRIA_DROP.item().toIngredient(), 4) },
-                    { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 1) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on MERRRRIA_DROP.item
-            ModEvents.onInitialize {
-                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + MERRRRIA_DROP.item() + Items.DRIED_KELP
-            }
-        }
-        val PHANTOM_DROP_KOHAKUTO: MaterialCard = !MaterialCard(
+            PoemList(3).poem("TODO", "TODO"), // TODO
+            MERRRRIA_DROP.item,
+            { it.effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60 * 5), 1.0F) },
+        )
+        val PHANTOM_DROP_KOHAKUTO = createKohakuto(
             "phantom_drop_kohakuto", "Phantom Drop Kohakuto", "幻想の雫の琥珀糖",
-            null,
-            foodComponentCreator = {
-                FoodProperties.Builder()
-                    .nutrition(5)
-                    .saturationModifier(0.6F)
-                    .effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 60 * 3, 1), 1.0F)
-                    .build()
-            },
-        ) {
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { SimpleMachineRecipe.Input(PHANTOM_DROP.item().toIngredient(), 4) },
-                    { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 1) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on PHANTOM_DROP.item
-            ModEvents.onInitialize {
-                FoodIngredientsRegistry.registry[item()] = FoodIngredients() + PHANTOM_DROP.item() + Items.DRIED_KELP
-            }
-        }
+            PoemList(4).poem("TODO", "TODO"), // TODO
+            PHANTOM_DROP.item,
+            { it.effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 60 * 3, 1), 1.0F) },
+        )
     }
 
     val identifier = MirageFairy2024.identifier(path)
