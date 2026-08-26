@@ -20896,7 +20896,7 @@
           {
             "effect": {
               "amplifier": 1,
-              "duration": 3600,
+              "duration": 1200,
               "id": "minecraft:speed",
               "show_icon": true
             }
@@ -24958,7 +24958,6 @@
         "effects": [
           {
             "effect": {
-              "amplifier": 1,
               "duration": 40,
               "id": "miragefairy2024:experience",
               "show_icon": true
@@ -25282,7 +25281,7 @@
         "effects": [
           {
             "effect": {
-              "duration": 12000,
+              "duration": 1200,
               "id": "minecraft:speed",
               "show_icon": true
             }
@@ -26102,7 +26101,7 @@
         "effects": [
           {
             "effect": {
-              "duration": 6000,
+              "duration": 12000,
               "id": "minecraft:night_vision",
               "show_icon": true
             }
@@ -28254,7 +28253,7 @@
           {
             "effect": {
               "amplifier": 1,
-              "duration": 3600,
+              "duration": 1200,
               "id": "minecraft:regeneration",
               "show_icon": true
             }
