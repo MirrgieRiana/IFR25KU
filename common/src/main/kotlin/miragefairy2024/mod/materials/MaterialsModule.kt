@@ -1508,7 +1508,7 @@ class MaterialCard(
                         { SimpleMachineRecipe.Input(Items.DRIED_KELP.toIngredient(), 1) },
                     ),
                     outputs = listOf({ item().createItemStack() }),
-                    duration = 20 * 60 * 5,
+                    duration = 20 * 60,
                 ) on input
                 ModEvents.onInitialize {
                     FoodIngredientsRegistry.registry[item()] = FoodIngredients() + input() + Items.DRIED_KELP
