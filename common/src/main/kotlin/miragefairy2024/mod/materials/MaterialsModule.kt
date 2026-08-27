@@ -1526,7 +1526,6 @@ class MaterialCard(
             "haimeviska_sap_kohakuto", "Haimeviska Sap Kohakuto", "ハイメヴィスカの樹液の琥珀糖",
             PoemList(1).poem("Steganographic agarose tablet.", "琥珀の中のデジャヴュー。"),
             HAIMEVISKA_SAP.item,
-            // 経験値獲得は持続時間がそのまま獲得量になるのだ～🌱 樹液1個あたりの獲得量を妖精のリキュールと揃えるのだ～🌱
             { it.effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 20 * 2), 1.0F) },
         )
         val BLACK_TREACLE_KOHAKUTO = createKohakuto(
