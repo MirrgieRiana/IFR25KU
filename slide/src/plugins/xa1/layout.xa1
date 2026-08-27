@@ -1,11 +1,11 @@
-# layout: スライド共通のレイアウト土台なのだ～🌱 横並びフロー(flow)と縦積みユニット(unit)を、複数のスライドで使いまわすのだぁ～
+# layout: スライド共通のレイアウト土台なのだ～🌱 横並びフロー(flow)と縦積みユニット(unit)を、複数のスライドで使いまわすのだ～🌱
 @USE("global")
 
-# 横並びフローなのだ～🌱 材料→珠→アイテム のような並びを中央ぞろえで流すのだぁ～
-# modifierClass は " flow4" のような追加クラスなのだぁ（追加が無ければ "" を渡すのだぁ～）
+# 横並びフローなのだ～🌱 材料→珠→アイテム のような並びを中央ぞろえで流すのだ～🌱
+# modifierClass は " flow4" のような追加クラスなのだ～🌱（追加が無ければ "" を渡すのだ～🌱）
 templates.flow = modifierClass, inner -> %><div class="flow<%= modifierClass %>"><%= inner %></div><%
-# 縦積みユニットなのだ～🌱 画像＋ラベルを縦の中央ぞろえにひとまとめにするのだぁ～
-# modifierClass は " switch-item" のような追加クラスなのだぁ（追加が無ければ "" を渡すのだぁ～）
+# 縦積みユニットなのだ～🌱 画像＋ラベルを縦の中央ぞろえにひとまとめにするのだ～🌱
+# modifierClass は " switch-item" のような追加クラスなのだ～🌱（追加が無ければ "" を渡すのだ～🌱）
 templates.unit = modifierClass, inner -> %><div class="unit<%= modifierClass %>"><%= inner %></div><%
 
 cssLines::push << %>

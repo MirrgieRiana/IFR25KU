@@ -300,7 +300,7 @@ class SolfataraBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(Solfa
     fun clientTick(level: Level, blockPos: BlockPos) {
         if (level.gameTime % 10L != 0L) return
         // 煙は10秒ほど滞留するから、これで常に40個ほどが宙に漂うのだ～🌱
-        // 0.5 秒おきに 2 個で、1 個が 10 秒生きるのだぁ～🌱 10 秒の間に 20 回出るから、2 かける 20 で 40 個なのだぁ～✨
+        // 0.5 秒おきに 2 個で、1 個が 10 秒生きるのだ～🌱 10 秒の間に 20 回出るから、2 かける 20 で 40 個なのだ～✨
         repeat(2) {
             level.addParticle(
                 ParticleTypeCard.SULFUR_SMOKE.particleType,
@@ -340,7 +340,7 @@ class DepositedSulfurFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
             (-radius..radius).forEach { x ->
                 (-radius..radius).forEach { y ->
                     (-radius..radius).forEach nextTarget@{ z ->
-                        if (x * x + y * y + z * z > squaredRadius) return@nextTarget // 球の外側は対象外なのだ～
+                        if (x * x + y * y + z * z > squaredRadius) return@nextTarget // 球の外側は対象外なのだ～🌱
                         val targetBlockPos = centerBlockPos.offset(x, y, z)
 
                         if (!level.getBlockState(targetBlockPos).isAir) return@nextTarget // 配置先は空気じゃないとだめなのだぁ…🌧️

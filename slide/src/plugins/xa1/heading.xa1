@@ -1,4 +1,4 @@
-# heading: 見出しなのだ～🌱 スタイルはCSS側で、HTMLは構造だけ・アクセント色はテーマ変数なのだぁ～
+# heading: 見出しなのだ～🌱 スタイルはCSS側で、HTMLは構造だけ・アクセント色はテーマ変数なのだ～🌱
 @USE("global")
 
 templates.heading = leftText, emojiSrc, rightText, emojiSize -> %>

@@ -1,10 +1,10 @@
-# sphere-crafting: スフィアクラフト紹介スライドなのだ～🌱 4ページ分を1モジュールにまとめるのだぁ～
+# sphere-crafting: スフィアクラフト紹介スライドなのだ～🌱 4ページ分を1モジュールにまとめるのだ～🌱
 # 各スライドを templates.sphereCraftingSlideN に組み、pageGenerators."slides.html" で1枚のHTMLにまとめて出力するのだ～🌱
 @USE("global")
 
 # ---- スライド1: 表紙（材料→珠→アイテムの全体像）なのだ～🌱 ----
 templates.sphereCraftingSlide1 = () -> (
-  # 一番左の入口なのだ～🌱 宝石 or （花＋ダイヤ）で、orで二択、花＋ダイヤは重ねて1組に見せるのだぁ～
+  # 一番左の入口なのだ～🌱 宝石 or （花＋ダイヤ）で、orで二択、花＋ダイヤは重ねて1組に見せるのだ～🌱
   card1 := %>
     <div class="card">
       <div class="art art-or">
@@ -86,7 +86,7 @@ cssLines::push << %>
     justify-content: center;
     gap: 4px;
   }
-  /* 「A or (B+C)」の入口なのだ～🌱 orの左右をひろげ、3個の並列に見えないようにするのだぁ～ */
+  /* 「A or (B+C)」の入口なのだ～🌱 orの左右をひろげ、3個の並列に見えないようにするのだ～🌱 */
   .card .art-or {
     gap: 14px;
   }
@@ -112,7 +112,7 @@ cssLines::push << %>
 
 # ---- スライド2: ざいりょう（2つのルート→合流スフィア）なのだ～🌱 ----
 templates.sphereCraftingSlide2 = () -> (
-  # ルートは縦積みなのだ～🌱 タブ→（アイコン＋説明）で、タブを通常フローに置き、文字の重なりを構造的に不可能にするのだぁ～
+  # ルートは縦積みなのだ～🌱 タブ→（アイコン＋説明）で、タブを通常フローに置き、文字の重なりを構造的に不可能にするのだ～🌱
   routeA := %>
     <div class="route routeA">
       <div class="tab aqua-dark">ルートA</div>
@@ -164,7 +164,7 @@ cssLines::push << %>
     flex-direction: column;
     gap: 24px;
   }
-  /* ルートは縦積み（タブ→本体）なのだ～🌱 タブを通常フローに置くことで文字の重なりを構造的に防ぐのだぁ～ */
+  /* ルートは縦積み（タブ→本体）なのだ～🌱 タブを通常フローに置くことで文字の重なりを構造的に防ぐのだ～🌱 */
   .route {
     width: 512px;
     background: var(--card);
@@ -207,7 +207,7 @@ cssLines::push << %>
     color: var(--ink);
     line-height: 1.4;
   }
-  /* 中央カラムの2本の矢印なのだ～🌱 ルートの上下位置に合わせつつ、左右にゆとりを持たせるのだぁ～ */
+  /* 中央カラムの2本の矢印なのだ～🌱 ルートの上下位置に合わせつつ、左右にゆとりを持たせるのだ～🌱 */
   .arrows2 {
     display: flex;
     flex-direction: column;
@@ -231,7 +231,7 @@ cssLines::push << %>
 
 # ---- スライド3: レシピ（スフィアベース＋宝石スイッチ→アタノール→スフィア）なのだ～🌱 ----
 templates.sphereCraftingSlide3 = () -> (
-  # スイッチ部なのだ～🌱 宝石 or （花＋ダイヤ）で、画像とラベルを縦に中央ぞろえし、orは共通スタイルで中央へ置くのだぁ～
+  # スイッチ部なのだ～🌱 宝石 or （花＋ダイヤ）で、画像とラベルを縦に中央ぞろえし、orは共通スタイルで中央へ置くのだ～🌱
   switchPanel := %>
     <div class="recipe-card">
       <div class="switch-row">
@@ -313,7 +313,7 @@ cssLines::push << %>
     align-items: center;
     gap: 6px;
   }
-  /* 宝石 or 花＋ダイヤなのだ～🌱 画像とラベルを縦の中央ぞろえにし、orを中央に置くのだぁ～ */
+  /* 宝石 or 花＋ダイヤなのだ～🌱 画像とラベルを縦の中央ぞろえにし、orを中央に置くのだ～🌱 */
   .switch-row {
     display: flex;
     align-items: center;
@@ -326,7 +326,7 @@ cssLines::push << %>
 <%
 
 # ---- スライド4: 魔法のアイテム（火炎のスフィア＋柄→魔法の杖）なのだ～🌱 ----
-# 追加CSSは無しなのだ～🌱 flow/flow4/unit は layout プラグインが登録するのだぁ～
+# 追加CSSは無しなのだ～🌱 flow/flow4/unit は layout プラグインが登録するのだ～🌱
 templates.sphereCraftingSlide4 = () -> (
   # 🔥と✨はテクスチャ中心からの相対位置（テクスチャの絵柄に合わせた比率）で重ねるのだ～🌱
   fireSphere := templates.unit(""; %>
@@ -338,8 +338,8 @@ templates.sphereCraftingSlide4 = () -> (
     <%) %>
     <%= templates.label("label purple-dark"; "火炎のスフィア") %>
   <%)
-  # ロッドは右上にヘッド・左下から右上へ柄が伸びる構図なのだ～🌱 杖の魔法の先端であるヘッドに🔥を重ね、空いた左上・右下の対角の角に✨を置くのだぁ～
-  # 座標はロッドの画素に紐づくのだ～🌱（ヘッド重心・ヘッド頂点・左上の空き角・右下の空き角なのだぁ～）
+  # ロッドは右上にヘッド・左下から右上へ柄が伸びる構図なのだ～🌱 杖の魔法の先端であるヘッドに🔥を重ね、空いた左上・右下の対角の角に✨を置くのだ～🌱
+  # 座標はロッドの画素に紐づくのだ～🌱（ヘッド重心・ヘッド頂点・左上の空き角・右下の空き角なのだ～🌱）
   wand := templates.unit(""; %>
     <%= templates.materialBox(168; templates.texture("./item-texture/nephrite_builders_rod.png"; 168); %>
       <%= templates.decoration("./fluentui-emoji/fire.svg"; 0.241; -0.240; 56) %>

@@ -1,8 +1,8 @@
 # slide
 
-スフィアクラフト紹介スライドのビルド一式なのだぁ～🌱✨
+スフィアクラフト紹介スライドのビルド一式なのだ～🌱✨
 
-## ビルドのしかたなのだぁ～🌱♪
+## ビルドのしかたなのだ～🌱♪
 
 ビルドは、次のコマンドでできちゃうのだ～🌱：
 
@@ -21,38 +21,38 @@
 - 登録されたページ生成関数を回して、 `build/site/` に HTML を書き出すのだ～🌱
 - 各プラグインが積んだ CSS 行をつないで、 `build/site/style.css` に書き出すのだ～🌱♪
 
-xarpite ランタイムは、リポジトリに同梱されている `../xarpite` を相対パスで使うのだぁ～🌱
+xarpite ランタイムは、リポジトリに同梱されている `../xarpite` を相対パスで使うのだ～🌱
 
-## ディレクトリ構成なのだぁ～🌱♪
+## ディレクトリ構成なのだ～🌱♪
 
-- `build.sh` - ビルドのエントリポイントなのだぁっ🌱♪ ここへ cd して、`build.xa1` を xarpite で呼ぶだけなのだぁ～
-- `build.xa1` - ビルドメインなのだ～🌱。`global.xa1` をマウントして、プラグイン・ページを読み込んでから、ビルド本体の `build` 関数を呼ぶのだぁ～
+- `build.sh` - ビルドのエントリポイントなのだ～🌱♪ ここへ cd して、`build.xa1` を xarpite で呼ぶだけなのだ～🌱
+- `build.xa1` - ビルドメインなのだ～🌱 `global.xa1` をマウントして、プラグイン・ページを読み込んでから、ビルド本体の `build` 関数を呼ぶのだ～🌱
 - `src/main/xa1/global.xa1` - 共有の土台（`templates`・`pageGenerators`・`cssLines` などの登録簿とヘルパー、そして素材配置と書き出しをやる `build` 関数）なのだ～🌱
-- `src/plugins/xa1/*.xa1` - パーツ（素材・矢印・見出し・レイアウトなど）なのだ～🌱。`templates` と `cssLines` へ登録するのだぁ～
-- `src/pages/xa1/*.xa1` - 出力ページなのだ～🌱。`pageGenerators` へ「出力ファイル名 → 内容を返す関数」を登録するのだぁ～。スライドは `sphere-crafting.xa1` に4枚まとめて入っているのだ～🌱
-- `src/site/resources/` - 素材なのだ～🌱。ライセンスごとにサブディレクトリに仕分けてあるのだぁ～
+- `src/plugins/xa1/*.xa1` - パーツ（素材・矢印・見出し・レイアウトなど）なのだ～🌱 `templates` と `cssLines` へ登録するのだ～🌱
+- `src/pages/xa1/*.xa1` - 出力ページなのだ～🌱 `pageGenerators` へ「出力ファイル名 → 内容を返す関数」を登録するのだ～🌱 スライドは `sphere-crafting.xa1` に4枚まとめて入っているのだ～🌱
+- `src/site/resources/` - 素材なのだ～🌱 ライセンスごとにサブディレクトリに仕分けてあるのだ～🌱
   - `src/site/resources/item-texture/` - アイテムテクスチャ由来の png なのだ～🌱
   - `src/site/resources/fluentui-emoji/` - 絵文字の svg なのだ～🌱
   - `src/site/resources/fairy_face.png` - マスコット画像なのだ～🌱
-- `build/` - `build.sh` が生成する成果物なのだぁ～🌱。コミットはしないので（root の `.gitignore` で無視されるのだぁ）、ビルドすると手元にできるのだ～🌱
+- `build/` - `build.sh` が生成する成果物なのだ～🌱 コミットはしないので（root の `.gitignore` で無視されるのだ～🌱）、ビルドすると手元にできるのだ～🌱
 
-## ライセンスのことなのだぁ～🌱♪
+## ライセンスのことなのだ～🌱♪
 
 `src/site/resources/` の素材のように、**外部ファイルをコミットするときは、そのファイルのライセンス条項を満たすように書かなきゃだめ**なのだ～🌱
-新しい素材を足すときは、必ず下の一覧に、その出典・ライセンス・遵守に必要な表記を書き足してほしいのだぁ～🌱
+新しい素材を足すときは、必ず下の一覧に、その出典・ライセンス・遵守に必要な表記を書き足してほしいのだ～🌱
 
 以下は、このディレクトリに入っている、ぜんぶの外部リソースの一覧なのだ～🌱♪
 
 ### 画像テクスチャ（IFR25KU 自身のアイテムテクスチャ由来）なのだ～🌱
 
 `src/site/resources/item-texture/` の png は、`common/src/main/resources/assets/miragefairy2024/textures/item/` にある同名のドット絵を、改変せずそのまま複製したものなのだ～🌱♪
-どれも本リポジトリ自身のリソースを流用したものだから、ルート README の「Other Resources」などの規定でカバーされるのだぁ～🌱
+どれも本リポジトリ自身のリソースを流用したものだから、ルート README の「Other Resources」などの規定でカバーされるのだ～🌱
 ルート README で名指し除外されている MirageFairy2019 由来（CC BY-SA 3.0）のテクスチャは、ひとつも含んでいないのだ～🌱
 
 ### マスコット画像（IFR25KU のマスコット原画）なのだ～🌱
 
 `src/site/resources/fairy_face.png` は、`site/src/main/resources/favicon.png`（IFR25KU のマスコット原画）を、改変せずそのまま複製したものなのだ～🌱♪
-これも本リポジトリ自身のリソースだから、ルート README の規定でカバーされるのだぁ～🌱
+これも本リポジトリ自身のリソースだから、ルート README の規定でカバーされるのだ～🌱
 
 ### 絵文字 SVG（Fluent UI Emoji, MIT）なのだ～🌱
 
@@ -90,7 +90,7 @@ MIT ライセンスは、著作権表示と許諾表示を複製物に含める�
 ### フォント（Zen Maru Gothic, コミットせず CDN 取得）なのだ～🌱
 
 本文フォントの Zen Maru Gothic（SIL Open Font License 1.1）は、**リポジトリにはコミットしない**のだ～🌱♪
-代わりに、`slides.html` の `<head>` から Google Fonts の CDN で動的に読み込むのだぁ～🌱
+代わりに、`slides.html` の `<head>` から Google Fonts の CDN で動的に読み込むのだ～🌱
 再配布物として同封しないので、このディレクトリには入っていないのだ～🌱
 フォントの入手先は、次のリンクなのだ～🌱
 
