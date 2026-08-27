@@ -26,8 +26,8 @@ fun initStatusEffectModule() {
 
 class ExperienceStatusEffect : MobEffect(MobEffectCategory.BENEFICIAL, 0x2FFF00) {
     override fun shouldApplyEffectTickThisTick(duration: Int, amplifier: Int): Boolean {
-        // 時間に比例して増える、累積の経験値獲得量なのだ～🌱
-        fun getExperienceCount(time: Int) = time.toLong() * (amplifier + 1) / 20
+        // 時間に比例して増える、累積の経験値獲得量なのだ～🌱 +10で四捨五入することで、獲得の位置が各回の持ち時間の中央に来るのだ～🌱
+        fun getExperienceCount(time: Int) = (time.toLong() * (amplifier + 1) + 10) / 20
         // 累積量が増えたtickにだけ経験値を与えるのだ～🌱 20がレベルで割り切れない場合でも、20tickあたりレベル回になるように均等な間隔へ配分するのだ～🌱
         return getExperienceCount(duration) != getExperienceCount(duration - 1)
     }

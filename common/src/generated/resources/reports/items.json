@@ -23262,7 +23262,7 @@
           {
             "effect": {
               "amplifier": 1,
-              "duration": 80,
+              "duration": 320,
               "id": "miragefairy2024:experience",
               "show_icon": true
             }
@@ -24889,7 +24889,7 @@
         "effects": [
           {
             "effect": {
-              "duration": 20,
+              "duration": 40,
               "id": "miragefairy2024:experience",
               "show_icon": true
             }
