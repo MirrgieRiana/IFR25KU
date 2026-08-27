@@ -17,6 +17,7 @@ import mirrg.kotlin.gson.hydrogen.jsonArray
 import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
 import mirrg.kotlin.gson.hydrogen.jsonObjectNotNull
+import mirrg.kotlin.gson.hydrogen.toJsonElement
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
@@ -276,8 +277,24 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
             ItemListReport(output, registriesFuture)
         }
+        // BlockStateの数値IDはブロックが1個増減しただけで大量にずれるから、レポートから取り除くのだ～🌱
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
-            BlockListReport(output, registriesFuture)
+            val blockListReport = BlockListReport(output, registriesFuture)
+            object : DataProvider {
+                override fun getName() = blockListReport.name
+                override fun run(writer: CachedOutput): CompletableFuture<*> {
+                    val futures = mutableListOf<CompletableFuture<*>>()
+                    return blockListReport.run { filePath, data, _ ->
+                        val jsonElement = data.decodeToString().toJsonElement()!!
+                        jsonElement.asJsonObject.entrySet().forEach { (_, blockJsonElement) ->
+                            blockJsonElement.asJsonObject.getAsJsonArray("states").forEach { stateJsonElement ->
+                                stateJsonElement.asJsonObject.remove("id")
+                            }
+                        }
+                        futures.add(DataProvider.saveStable(writer, jsonElement, filePath))
+                    }.thenCompose { CompletableFuture.allOf(*futures.toTypedArray()) }
+                }
+            }
         }
 
     }
