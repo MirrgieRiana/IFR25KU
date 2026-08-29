@@ -41,6 +41,7 @@ import miragefairy2024.mod.magicplant.contents.magicplants.ProminariaCard
 import miragefairy2024.mod.magicplant.contents.magicplants.XarpaLuminariaCard
 import miragefairy2024.mod.materials.contents.ApostleWandItem
 import miragefairy2024.mod.materials.contents.DrinkItem
+import miragefairy2024.mod.materials.contents.FoodItem
 import miragefairy2024.mod.materials.contents.MinaItem
 import miragefairy2024.mod.plus
 import miragefairy2024.mod.poem
@@ -1498,6 +1499,7 @@ class MaterialCard(
                         .let { effect(it) }
                         .build()
                 },
+                creator = { FoodItem(it) },
             ) {
                 // 琥珀糖は寒天と甘味を煮溶かして固め、数日かけて乾燥させる干菓子なのだ～🌱
                 // 寒天の代わりに乾燥した昆布を使い、長い乾燥工程をアタノールの加工時間で表現するのだ～🌱
