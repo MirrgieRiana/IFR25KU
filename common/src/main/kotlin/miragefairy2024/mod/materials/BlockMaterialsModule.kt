@@ -703,101 +703,61 @@ open class BlockMaterialCard(
                 requires(item())
             } on item modId MirageFairy2024.MOD_ID from item
         }
-        val KOHAKUTO_BLOCK = !object : BlockMaterialCard(
+
+        private fun createKohakuto(
+            path: String,
+            name: EnJa,
+            poemList: PoemList,
+            mapColor: MapColor,
+            input: () -> Item,
+            lower: () -> Item,
+        ): BlockMaterialCard {
+            return !object : BlockMaterialCard(
+                path, name,
+                poemList,
+                mapColor, 0.6F, 0.6F,
+            ) {
+                override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
+                override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
+            }.translucent().sound(SoundType.TUFF).init {
+                registerCompressionRecipeGeneration(lower, { lower().toIngredient() }, item, { item().toIngredient() })
+                registerSimpleMachineRecipeGeneration(
+                    AthanorRecipeCard,
+                    inputs = listOf(
+                        { SimpleMachineRecipe.Input(input().toIngredient(), 36) },
+                        { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
+                    ),
+                    outputs = listOf({ item().createItemStack() }),
+                    duration = 20 * 60 * 5,
+                ) on input
+            }
+        }
+
+        val KOHAKUTO_BLOCK = createKohakuto(
             "kohakuto_block", EnJa("Kohakuto Block", "琥珀糖ブロック"),
             PoemList(null),
-            MapColor.COLOR_YELLOW, 0.6F, 0.6F,
-        ) {
-            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
-            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
-        }.translucent().sound(SoundType.TUFF).init {
-            registerCompressionRecipeGeneration(MaterialCard.KOHAKUTO.item, { MaterialCard.KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { SimpleMachineRecipe.Input(Items.SUGAR.toIngredient(), 36) },
-                    { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on { Items.SUGAR }
-        }
-        val HAIMEVISKA_SAP_KOHAKUTO_BLOCK = !object : BlockMaterialCard(
+            MapColor.COLOR_YELLOW, { Items.SUGAR }, MaterialCard.KOHAKUTO.item,
+        )
+        val HAIMEVISKA_SAP_KOHAKUTO_BLOCK = createKohakuto(
             "haimeviska_sap_kohakuto_block", EnJa("Haimeviska Sap Kohakuto Block", "ハイメヴィスカの樹液の琥珀糖ブロック"),
             PoemList(1).poem("It may have once been part of a brain.", "誰も見たことのない記憶のコラージュ。"),
-            MapColor.COLOR_ORANGE, 0.6F, 0.6F,
-        ) {
-            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
-            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
-        }.translucent().sound(SoundType.TUFF).init {
-            registerCompressionRecipeGeneration(MaterialCard.HAIMEVISKA_SAP_KOHAKUTO.item, { MaterialCard.HAIMEVISKA_SAP_KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { SimpleMachineRecipe.Input(MaterialCard.HAIMEVISKA_SAP.item().toIngredient(), 36) },
-                    { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on MaterialCard.HAIMEVISKA_SAP.item
-        }
-        val BLACK_TREACLE_KOHAKUTO_BLOCK = !object : BlockMaterialCard(
+            MapColor.COLOR_ORANGE, MaterialCard.HAIMEVISKA_SAP.item, MaterialCard.HAIMEVISKA_SAP_KOHAKUTO.item,
+        )
+        val BLACK_TREACLE_KOHAKUTO_BLOCK = createKohakuto(
             "black_treacle_kohakuto_block", EnJa("Black Treacle Kohakuto Block", "黒蜜の琥珀糖ブロック"),
             PoemList(null),
-            MapColor.COLOR_BROWN, 0.6F, 0.6F,
-        ) {
-            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
-            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
-        }.translucent().sound(SoundType.TUFF).init {
-            registerCompressionRecipeGeneration(MaterialCard.BLACK_TREACLE_KOHAKUTO.item, { MaterialCard.BLACK_TREACLE_KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { SimpleMachineRecipe.Input(MaterialCard.BLACK_TREACLE.item().toIngredient(), 36) },
-                    { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on MaterialCard.BLACK_TREACLE.item
-        }
-        val MERRRRIA_DROP_KOHAKUTO_BLOCK = !object : BlockMaterialCard(
+            MapColor.COLOR_BROWN, MaterialCard.BLACK_TREACLE.item, MaterialCard.BLACK_TREACLE_KOHAKUTO.item,
+        )
+        val MERRRRIA_DROP_KOHAKUTO_BLOCK = createKohakuto(
             "merrrria_drop_kohakuto_block", EnJa("Merrrria Drop Kohakuto Block", "月のしずくの琥珀糖ブロック"),
             PoemList(3).poem("Moon light, moon scent and moon taste.", "砂糖の硬さ、砕ける音、誰かの思い。"),
-            MapColor.COLOR_LIGHT_BLUE, 0.6F, 0.6F,
-        ) {
-            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
-            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
-        }.translucent().sound(SoundType.TUFF).init {
-            registerCompressionRecipeGeneration(MaterialCard.MERRRRIA_DROP_KOHAKUTO.item, { MaterialCard.MERRRRIA_DROP_KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { SimpleMachineRecipe.Input(MaterialCard.MERRRRIA_DROP.item().toIngredient(), 36) },
-                    { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on MaterialCard.MERRRRIA_DROP.item
-        }
-        val PHANTOM_DROP_KOHAKUTO_BLOCK = !object : BlockMaterialCard(
+            MapColor.COLOR_LIGHT_BLUE, MaterialCard.MERRRRIA_DROP.item, MaterialCard.MERRRRIA_DROP_KOHAKUTO.item,
+        )
+        val PHANTOM_DROP_KOHAKUTO_BLOCK = createKohakuto(
             "phantom_drop_kohakuto_block", EnJa("Phantom Drop Kohakuto Block", "幻想の雫の琥珀糖ブロック"),
             PoemList(4).poem("Dispose, useless parallel universes.", "運命に干渉するための奇跡。"),
-            MapColor.COLOR_PURPLE, 0.6F, 0.6F,
-        ) {
-            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
-            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
-        }.translucent().sound(SoundType.TUFF).init {
-            registerCompressionRecipeGeneration(MaterialCard.PHANTOM_DROP_KOHAKUTO.item, { MaterialCard.PHANTOM_DROP_KOHAKUTO.item().toIngredient() }, item, { item().toIngredient() })
-            registerSimpleMachineRecipeGeneration(
-                AthanorRecipeCard,
-                inputs = listOf(
-                    { SimpleMachineRecipe.Input(MaterialCard.PHANTOM_DROP.item().toIngredient(), 36) },
-                    { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
-                ),
-                outputs = listOf({ item().createItemStack() }),
-                duration = 20 * 60 * 5,
-            ) on MaterialCard.PHANTOM_DROP.item
-        }
+            MapColor.COLOR_PURPLE, MaterialCard.PHANTOM_DROP.item, MaterialCard.PHANTOM_DROP_KOHAKUTO.item,
+        )
         val RESIN_CEMENTED_DIRT = !BlockMaterialCard(
             "resin_cemented_dirt", EnJa("Resin-Cemented Dirt", "石化した樹脂状の土"),
             PoemList(1).poem(EnJa("Antimicrobial terpenes prevent decay.", "電気の由来を語る土。")),

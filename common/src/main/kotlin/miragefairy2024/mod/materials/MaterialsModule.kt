@@ -1480,7 +1480,7 @@ class MaterialCard(
             registerCompressionRecipeGeneration(item, { item().toIngredient() }, SOLID_FUEL.item, { SOLID_FUEL.item().toIngredient() }, 8)
         }
 
-        fun createKohakuto(
+        private fun createKohakuto(
             path: String,
             enName: String,
             jaName: String,
