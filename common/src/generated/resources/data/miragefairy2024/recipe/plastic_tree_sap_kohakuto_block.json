@@ -1,0 +1,25 @@
+{
+  "type": "miragefairy2024:athanor",
+  "duration": 6000,
+  "group": "miragefairy2024:plastic_tree_sap_kohakuto_block",
+  "inputs": [
+    {
+      "Amount": 36,
+      "Ingredient": {
+        "item": "miragefairy2024:plastic_tree_sap"
+      }
+    },
+    {
+      "Amount": 1,
+      "Ingredient": {
+        "item": "minecraft:dried_kelp_block"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "count": 1,
+      "id": "miragefairy2024:plastic_tree_sap_kohakuto_block"
+    }
+  ]
+}

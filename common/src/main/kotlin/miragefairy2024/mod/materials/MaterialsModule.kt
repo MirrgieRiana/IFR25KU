@@ -1530,6 +1530,12 @@ class MaterialCard(
             HAIMEVISKA_SAP.item,
             { it.effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 20 * 2), 1.0F) },
         )
+        val PLASTIC_TREE_SAP_KOHAKUTO = createKohakuto(
+            "plastic_tree_sap_kohakuto", "Plastic Tree Sap Kohakuto", "プラノキの樹液の琥珀糖",
+            PoemList(1).poem("TODO", "TODO"), // TODO
+            PLASTIC_TREE_SAP.item,
+            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 20, 1), 1.0F) },
+        )
         val BLACK_TREACLE_KOHAKUTO = createKohakuto(
             "black_treacle_kohakuto", "Black Treacle Kohakuto", "黒蜜の琥珀糖",
             null,
