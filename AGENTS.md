@@ -132,14 +132,7 @@ IFR の世界観では、一部を除いて、現実世界の科学の大半が�
 
 バニラのコンテンツの名称も同様です。
 ステータス効果などのバニラの和名は、英名からの類推や記憶に頼るのではなく、必ずバニラの言語ファイルで確認しなければなりません。
-バニラの日本語版の言語ファイルは、リポジトリ内にも `unpackedSources` 内にも存在せず、Mojang のアセットサーバーから取得する必要があります。
-
-取得は、次の手順で行います。
-
-1. `https://piston-meta.mojang.com/mc/game/version_manifest_v2.json` を取得し、`versions` の中から目的のバージョンの `url` を得ます。
-2. その `url` のバージョンメタデータを取得し、`assetIndex.url` を得ます。
-3. その `assetIndex.url` のアセットインデックスを取得し、`objects` の `minecraft/lang/ja_jp.json` の `hash` を得ます。
-4. `https://resources.download.minecraft.net/{hash の先頭 2 文字}/{hash}` から、言語ファイルの実体を取得します。
+バニラの日本語版の言語ファイルは、`unpackedSources` 内ではなく、`unpackedAssets` 内にあります。
 
 ### Kotlin / kts
 
