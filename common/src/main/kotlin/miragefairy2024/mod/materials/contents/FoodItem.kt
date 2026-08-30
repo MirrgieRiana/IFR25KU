@@ -17,7 +17,6 @@ import net.minecraft.world.item.TooltipFlag
 open class FoodItem(settings: Properties) : Item(settings) {
     override fun appendHoverText(stack: ItemStack, context: TooltipContext, tooltipComponents: MutableList<Component>, tooltipFlag: TooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
-
         run {
             val foodComponent = stack[DataComponents.FOOD] ?: return@run
             foodComponent.effects.forEach { entry ->
