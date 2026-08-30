@@ -1518,13 +1518,13 @@ class MaterialCard(
             "kohakuto", "Kohakuto", "琥珀糖",
             null,
             { Items.SUGAR },
-            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60), 1.0F) },
+            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60 * 2), 1.0F) },
         )
         val PLASTIC_TREE_SAP_KOHAKUTO = createKohakuto(
             "plastic_tree_sap_kohakuto", "Plastic Tree Sap Kohakuto", "プラノキの樹液の琥珀糖",
             PoemList(1).poem("TODO", "TODO"), // TODO
             PLASTIC_TREE_SAP.item,
-            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 20, 1), 1.0F) },
+            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60 * 2, 1), 1.0F) },
         )
         val HAIMEVISKA_SAP_KOHAKUTO = createKohakuto(
             "haimeviska_sap_kohakuto", "Haimeviska Sap Kohakuto", "ハイメヴィスカの樹液の琥珀糖",
@@ -1536,7 +1536,7 @@ class MaterialCard(
             "black_treacle_kohakuto", "Black Treacle Kohakuto", "黒蜜の琥珀糖",
             null,
             BLACK_TREACLE.item,
-            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60, 1), 1.0F) },
+            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60 * 2, 1), 1.0F) },
         )
         val MERRRRIA_DROP_KOHAKUTO = createKohakuto(
             "merrrria_drop_kohakuto", "Merrrria Drop Kohakuto", "月のしずくの琥珀糖",
