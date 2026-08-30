@@ -13,7 +13,6 @@ import miragefairy2024.mod.biome.OldGrowthAmberForestBiomeCard
 import miragefairy2024.mod.common.WaterBottleIngredient
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.common.rootAdvancement
-import miragefairy2024.mod.description
 import miragefairy2024.mod.entity.ChaosCubeCard
 import miragefairy2024.mod.experienceStatusEffect
 import miragefairy2024.mod.fairy.FairyCard
@@ -340,6 +339,7 @@ class MaterialCard(
                     .alwaysEdible()
                     .build()
             },
+            creator = { FoodItem(it) },
             advancementCreator = {
                 AdvancementCard(
                     identifier = identifier,
@@ -457,9 +457,7 @@ class MaterialCard(
         }
         val VEROPEDA_BERRIES: MaterialCard = !MaterialCard(
             "veropeda_berries", "Veropeda Berries", "ヴェロペダの実",
-            PoemList(1)
-                .poem("Has analgesic and stimulant effects", "悪魔の囁きを喰らう。")
-                .description("Healing and rare nausea by eating", "食べると回復、まれに吐き気"),
+            PoemList(1).poem("Has analgesic and stimulant effects", "悪魔の囁きを喰らう。"),
             foodComponentCreator = {
                 FoodProperties.Builder()
                     .nutrition(1)
@@ -469,6 +467,7 @@ class MaterialCard(
                     .effect(MobEffectInstance(MobEffects.CONFUSION, 20 * 20), 0.01F)
                     .build()
             },
+            creator = { FoodItem(it) },
         ) {
             item.registerComposterInput(0.3F)
         }
@@ -546,9 +545,7 @@ class MaterialCard(
         )
         val PROMINARIA_BERRY: MaterialCard = !MaterialCard(
             "prominaria_berry", "Prominaria Berry", "プロミナリアの実",
-            PoemList(3)
-                .poem("Guardian flame of lost souls.", "心頭滅却のプロミネンス。")
-                .description("Grants fire resistance when eaten", "食べると火炎耐性を付与"),
+            PoemList(3).poem("Guardian flame of lost souls.", "心頭滅却のプロミネンス。"),
             fireResistant = true, fuelValue = 200,
             foodComponentCreator = {
                 FoodProperties.Builder()
@@ -559,6 +556,7 @@ class MaterialCard(
                     .effect(MobEffectInstance(MobEffects.FIRE_RESISTANCE, 20 * 5), 1.0F)
                     .build()
             },
+            creator = { FoodItem(it) },
         ) {
             AuraReflectorFurnaceRecipe.registerFuel(item.key, 20 * 5)
             item.registerComposterInput(0.3F)
@@ -583,9 +581,7 @@ class MaterialCard(
         }
         val GOLD_PROMINARIA_BERRY: MaterialCard = !MaterialCard(
             "gold_prominaria_berry", "Gold Prominaria Berry", "ゴールドプロミナリアの実",
-            PoemList(3)
-                .poem("Gold-plated prominence.", "摂氏100度の金環食。")
-                .description("Grants absorption when eaten", "食べると衝撃吸収を付与"),
+            PoemList(3).poem("Gold-plated prominence.", "摂氏100度の金環食。"),
             fireResistant = true, fuelValue = 200,
             foodComponentCreator = {
                 FoodProperties.Builder()
@@ -596,6 +592,7 @@ class MaterialCard(
                     .effect(MobEffectInstance(MobEffects.ABSORPTION, 20 * 120), 1.0F)
                     .build()
             },
+            creator = { FoodItem(it) },
             tags = listOf(ItemTags.PIGLIN_LOVED),
         ) {
             AuraReflectorFurnaceRecipe.registerFuel(item.key, 20 * 5)
@@ -605,9 +602,7 @@ class MaterialCard(
         }
         val MERRRRIA_DROP: MaterialCard = !MaterialCard(
             "merrrria_drop", "Merrrria Drop", "月のしずく",
-            PoemList(3)
-                .poem("Tales of latex that charm fairies.", "闇夜に響く、月鈴の詩。")
-                .description("Grants night vision when eaten", "食べると暗視を付与"),
+            PoemList(3).poem("Tales of latex that charm fairies.", "闇夜に響く、月鈴の詩。"),
             foodComponentCreator = {
                 FoodProperties.Builder()
                     .nutrition(2)
@@ -616,6 +611,7 @@ class MaterialCard(
                     .alwaysEdible()
                     .build()
             },
+            creator = { FoodItem(it) },
             advancementCreator = {
                 AdvancementCard(
                     identifier = identifier,
@@ -630,9 +626,7 @@ class MaterialCard(
         )
         val PLASTIC_TREE_SAP: MaterialCard = !MaterialCard(
             "plastic_tree_sap", "Plastic Tree Sap", "プラノキの樹液",
-            PoemList(1)
-                .poem("Catalytic sugar cleavage", "駆け出したくなる、その甘さ。")
-                .description("Grants speed when eaten", "食べると移動速度上昇を付与"),
+            PoemList(1).poem("Catalytic sugar cleavage", "駆け出したくなる、その甘さ。"),
             fuelValue = 200,
             foodComponentCreator = {
                 FoodProperties.Builder()
@@ -641,13 +635,12 @@ class MaterialCard(
                     .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 10), 1.0F)
                     .build()
             },
+            creator = { FoodItem(it) },
             tags = listOf(ItemTagCard.SAP.tag),
         )
         val HAIMEVISKA_SAP: MaterialCard = !MaterialCard(
             "haimeviska_sap", "Haimeviska Sap", "ハイメヴィスカの樹液",
-            PoemList(1)
-                .poem("Smooth and mellow on the palate", "口福のアナムネシス。")
-                .description("Gain experience by eating", "食べると経験値を獲得"),
+            PoemList(1).poem("Smooth and mellow on the palate", "口福のアナムネシス。"),
             fuelValue = 200,
             foodComponentCreator = {
                 FoodProperties.Builder()
@@ -656,6 +649,7 @@ class MaterialCard(
                     .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 10), 1.0F)
                     .build()
             },
+            creator = { FoodItem(it) },
             tags = listOf(ItemTagCard.SAP.tag),
         )
         val HAIMEVISKA_ROSIN: MaterialCard = !MaterialCard(
@@ -1428,6 +1422,7 @@ class MaterialCard(
                     .effect(MobEffectInstance(MobEffects.FIRE_RESISTANCE, 20 * 40), 1.0F)
                     .build()
             },
+            creator = { FoodItem(it) },
         ) {
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
@@ -1477,6 +1472,7 @@ class MaterialCard(
                     .effect(MobEffectInstance(MobEffects.FIRE_RESISTANCE, 20 * 5), 1.0F)
                     .build()
             },
+            creator = { FoodItem(it) },
         ) {
             registerCompressionRecipeGeneration(item, { item().toIngredient() }, SOLID_FUEL.item, { SOLID_FUEL.item().toIngredient() }, 8)
         }
