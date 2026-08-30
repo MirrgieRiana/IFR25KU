@@ -18,6 +18,7 @@ import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
 import mirrg.kotlin.gson.hydrogen.jsonObjectNotNull
 import mirrg.kotlin.gson.hydrogen.toJsonElement
+import mirrg.kotlin.gson.hydrogen.toJsonWrapper
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
@@ -277,7 +278,6 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
             ItemListReport(output, registriesFuture)
         }
-        // BlockStateの数値IDはブロックが1個増減しただけで大量にずれるから、レポートから取り除くのだ～🌱
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
             val blockListReport = BlockListReport(output, registriesFuture)
             object : DataProvider {
@@ -285,13 +285,14 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                 override fun run(writer: CachedOutput): CompletableFuture<*> {
                     val futures = mutableListOf<CompletableFuture<*>>()
                     return blockListReport.run { filePath, data, _ ->
-                        val jsonElement = data.decodeToString().toJsonElement()!!
-                        jsonElement.asJsonObject.entrySet().forEach { (_, blockJsonElement) ->
-                            blockJsonElement.asJsonObject.getAsJsonArray("states").forEach { stateJsonElement ->
-                                stateJsonElement.asJsonObject.remove("id")
+                        val root = data.decodeToString().toJsonElement().toJsonWrapper()
+                        // BlockStateの数値IDはブロックが1個増減しただけで大量にずれるから、レポートから取り除くのだ～🌱
+                        root.asMap().forEach { (_, block) ->
+                            block["states"].asList().forEach { blockState ->
+                                blockState.asJsonObject().remove("id")
                             }
                         }
-                        futures.add(DataProvider.saveStable(writer, jsonElement, filePath))
+                        futures.add(DataProvider.saveStable(writer, root.jsonElement!!, filePath))
                     }.thenCompose { CompletableFuture.allOf(*futures.toTypedArray()) }
                 }
             }
