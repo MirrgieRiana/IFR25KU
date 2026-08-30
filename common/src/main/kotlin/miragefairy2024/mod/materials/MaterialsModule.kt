@@ -1540,7 +1540,7 @@ class MaterialCard(
         )
         val MERRRRIA_DROP_KOHAKUTO = createKohakuto(
             "merrrria_drop_kohakuto", "Merrrria Drop Kohakuto", "月のしずくの琥珀糖",
-            PoemList(3).poem("Interaction with light aura.", "妖精の目に映る世界。"),
+            PoemList(3).poem("Interaction with the shine aura.", "妖精の目に映る世界。"),
             MERRRRIA_DROP.item,
             { it.effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60 * 10), 1.0F) },
         )
