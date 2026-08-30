@@ -738,15 +738,15 @@ open class BlockMaterialCard(
             PoemList(null),
             MapColor.COLOR_YELLOW, { Items.SUGAR }, MaterialCard.KOHAKUTO.item,
         )
-        val HAIMEVISKA_SAP_KOHAKUTO_BLOCK = createKohakuto(
-            "haimeviska_sap_kohakuto_block", EnJa("Haimeviska Sap Kohakuto Block", "ハイメヴィスカの樹液の琥珀糖ブロック"),
-            PoemList(1).poem("It may have once been part of a brain.", "誰も見たことのない記憶のコラージュ。"),
-            MapColor.COLOR_ORANGE, MaterialCard.HAIMEVISKA_SAP.item, MaterialCard.HAIMEVISKA_SAP_KOHAKUTO.item,
-        )
         val PLASTIC_TREE_SAP_KOHAKUTO_BLOCK = createKohakuto(
             "plastic_tree_sap_kohakuto_block", EnJa("Plastic Tree Sap Kohakuto Block", "プラノキの樹液の琥珀糖ブロック"),
             PoemList(1).poem("TODO", "TODO"), // TODO
             MapColor.TERRACOTTA_YELLOW, MaterialCard.PLASTIC_TREE_SAP.item, MaterialCard.PLASTIC_TREE_SAP_KOHAKUTO.item,
+        )
+        val HAIMEVISKA_SAP_KOHAKUTO_BLOCK = createKohakuto(
+            "haimeviska_sap_kohakuto_block", EnJa("Haimeviska Sap Kohakuto Block", "ハイメヴィスカの樹液の琥珀糖ブロック"),
+            PoemList(1).poem("It may have once been part of a brain.", "誰も見たことのない記憶のコラージュ。"),
+            MapColor.COLOR_ORANGE, MaterialCard.HAIMEVISKA_SAP.item, MaterialCard.HAIMEVISKA_SAP_KOHAKUTO.item,
         )
         val BLACK_TREACLE_KOHAKUTO_BLOCK = createKohakuto(
             "black_treacle_kohakuto_block", EnJa("Black Treacle Kohakuto Block", "黒蜜の琥珀糖ブロック"),

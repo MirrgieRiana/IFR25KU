@@ -628,21 +628,6 @@ class MaterialCard(
                 )
             },
         )
-        val HAIMEVISKA_SAP: MaterialCard = !MaterialCard(
-            "haimeviska_sap", "Haimeviska Sap", "ハイメヴィスカの樹液",
-            PoemList(1)
-                .poem("Smooth and mellow on the palate", "口福のアナムネシス。")
-                .description("Gain experience by eating", "食べると経験値を獲得"),
-            fuelValue = 200,
-            foodComponentCreator = {
-                FoodProperties.Builder()
-                    .nutrition(1)
-                    .saturationModifier(0.1F)
-                    .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 10), 1.0F)
-                    .build()
-            },
-            tags = listOf(ItemTagCard.SAP.tag),
-        )
         val PLASTIC_TREE_SAP: MaterialCard = !MaterialCard(
             "plastic_tree_sap", "Plastic Tree Sap", "プラノキの樹液",
             PoemList(1)
@@ -654,6 +639,21 @@ class MaterialCard(
                     .nutrition(1)
                     .saturationModifier(0.1F)
                     .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 10), 1.0F)
+                    .build()
+            },
+            tags = listOf(ItemTagCard.SAP.tag),
+        )
+        val HAIMEVISKA_SAP: MaterialCard = !MaterialCard(
+            "haimeviska_sap", "Haimeviska Sap", "ハイメヴィスカの樹液",
+            PoemList(1)
+                .poem("Smooth and mellow on the palate", "口福のアナムネシス。")
+                .description("Gain experience by eating", "食べると経験値を獲得"),
+            fuelValue = 200,
+            foodComponentCreator = {
+                FoodProperties.Builder()
+                    .nutrition(1)
+                    .saturationModifier(0.1F)
+                    .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 10), 1.0F)
                     .build()
             },
             tags = listOf(ItemTagCard.SAP.tag),
@@ -1524,17 +1524,17 @@ class MaterialCard(
             { Items.SUGAR },
             { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60), 1.0F) },
         )
-        val HAIMEVISKA_SAP_KOHAKUTO = createKohakuto(
-            "haimeviska_sap_kohakuto", "Haimeviska Sap Kohakuto", "ハイメヴィスカの樹液の琥珀糖",
-            PoemList(1).poem("Steganographic agarose tablet.", "琥珀の中のデジャヴュー。"),
-            HAIMEVISKA_SAP.item,
-            { it.effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 20 * 2), 1.0F) },
-        )
         val PLASTIC_TREE_SAP_KOHAKUTO = createKohakuto(
             "plastic_tree_sap_kohakuto", "Plastic Tree Sap Kohakuto", "プラノキの樹液の琥珀糖",
             PoemList(1).poem("TODO", "TODO"), // TODO
             PLASTIC_TREE_SAP.item,
             { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 20, 1), 1.0F) },
+        )
+        val HAIMEVISKA_SAP_KOHAKUTO = createKohakuto(
+            "haimeviska_sap_kohakuto", "Haimeviska Sap Kohakuto", "ハイメヴィスカの樹液の琥珀糖",
+            PoemList(1).poem("Steganographic agarose tablet.", "琥珀の中のデジャヴュー。"),
+            HAIMEVISKA_SAP.item,
+            { it.effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 20 * 2), 1.0F) },
         )
         val BLACK_TREACLE_KOHAKUTO = createKohakuto(
             "black_treacle_kohakuto", "Black Treacle Kohakuto", "黒蜜の琥珀糖",
