@@ -17,6 +17,8 @@ import mirrg.kotlin.gson.hydrogen.jsonArray
 import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
 import mirrg.kotlin.gson.hydrogen.jsonObjectNotNull
+import mirrg.kotlin.gson.hydrogen.toJsonElement
+import mirrg.kotlin.gson.hydrogen.toJsonWrapper
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
@@ -274,7 +276,22 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
         // レポート
         /** @see [net.minecraft.data.Main.createStandardGenerator] */
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
-            ItemListReport(output, registriesFuture)
+            val itemListReport = ItemListReport(output, registriesFuture)
+            object : DataProvider {
+                override fun getName() = itemListReport.name
+                override fun run(writer: CachedOutput): CompletableFuture<*> {
+                    val futures = mutableListOf<CompletableFuture<*>>()
+                    return itemListReport.run { filePath, data, _ ->
+                        val registries = registriesFuture.join()
+                        val root = data.decodeToString().toJsonElement().toJsonWrapper()
+                        // アイテムのクラスはバニラのレポートに出力されないから、足すのだ～🌱
+                        registries.lookupOrThrow(Registries.ITEM).listElements().forEach { item ->
+                            root[item.registeredName].asJsonObject().addProperty("class", item.value().javaClass.name)
+                        }
+                        futures.add(DataProvider.saveStable(writer, root.jsonElement!!, filePath))
+                    }.thenCompose { CompletableFuture.allOf(*futures.toTypedArray()) }
+                }
+            }
         }
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
             BlockListReport(output, registriesFuture)
