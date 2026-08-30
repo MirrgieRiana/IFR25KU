@@ -28,7 +28,9 @@ class ExperienceStatusEffect : MobEffect(MobEffectCategory.BENEFICIAL, 0x2FFF00)
     private fun getExperienceAmount(time: Int, amplifier: Int): Int {
         // 時間に比例して増える、累積の経験値獲得量なのだ～🌱
         // +10で四捨五入することで、獲得の位置が各回の持ち時間の中央に来るのだ～🌱
-        fun getExperienceCount(time: Int) = (time.toLong() * (amplifier + 1) + 10) / 20
+        // +20は基準時刻をずらすだけだから、増分には影響しないのだ～🌱
+        // 時刻が0以下でも被除数が負にならないから、0方向への切り捨てで値がずれるのを防げるのだ～🌱
+        fun getExperienceCount(time: Int) = ((time.toLong() + 20) * (amplifier + 1) + 10) / 20
         // 累積量の増分を与えるのだ～🌱
         // 20がレベルで割り切れない場合でも、20tickあたりレベル個になるように均等な間隔へ配分するのだ～🌱
         // 1tickあたり2個以上も与えられるから、レベル21以上でも毎秒20個で頭打ちにならないのだ～🌱
