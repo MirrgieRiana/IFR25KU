@@ -728,7 +728,7 @@ open class BlockMaterialCard(
                         { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
                     ),
                     outputs = listOf({ item().createItemStack() }),
-                    duration = 20 * 60 * 5,
+                    duration = 20 * 60,
                 ) on input
             }
         }
