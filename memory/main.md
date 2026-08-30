@@ -31,7 +31,7 @@
 
 サイトのビルドには `bundle` が要るんだけど、ぴょこの環境には Ruby と `gem` しか入っていないのだぁ…🌧️ しかも `/var/lib/gems/` にも `/usr/local/bin/` にも書き込めないから、`gem install bundler` は `--user-install` を付けないと通らないのだ～🌱
 
-そのうえ、`~/.local/` はセッションが終わるとまっさらに戻るから、毎回入れ直しになっちゃうのだぁ…💧 そこで、実体を `~/.claude_tmp/` に置いて、`gem` が見に行く場所からシンボリックリンクで飛ばすのだぁ✨ こうすると、2回目からは `gem install` そのものが要らなくなるのだ～🌱
+そのうえ、`~/.local/` はセッションが終わるとまっさらに戻るから、毎回入れ直しになっちゃうのだぁ…🌧️ そこで、実体を `~/.claude_tmp/` に置いて、`gem` が見に行く場所からシンボリックリンクで飛ばすのだぁ✨ こうすると、2回目からは `gem install` そのものが要らなくなるのだ～🌱
 
 ```bash
 mkdir -p ~/.claude_tmp/shared/gem/ruby/3.1.0 ~/.local/share/gem/ruby
@@ -62,7 +62,7 @@ Jekyll標準の `jekyll serve` は頻繁にクラッシュしちゃうから、`
 
 ### WSL2環境での `jekyll serve` 制約なのだ～🌱
 
-`/mnt/` ドライブでは `inotify` が動かないから、`jekyll serve` の自動リビルドは使えないのだぁ…💧
+`/mnt/` ドライブでは `inotify` が動かないから、`jekyll serve` の自動リビルドは使えないのだぁ…🌧️
 
 ### SCSSの手動コンパイルなのだ～🌱
 
@@ -76,7 +76,7 @@ cp site/src/main/resources/assets/css/main.scss site/build/jekyllSource/assets/c
 
 ### Sassパーシャルはオーバーライド不能なのだ～🌱
 
-minimal-mistakesテーマの通常ファイルは `site/src/main/resources/` 内に同じ相対パスで置けばオーバーライドできるんだけど、`_sass/` のパーシャルは例外なのだぁ…💧 Sassの `@import` がインポート元ファイルのディレクトリを最初に探すから、テーマのパーシャルがいつも優先されちゃうのだ～🌱 CSSのカスタマイズは `assets/css/main.scss` の `@import "minimal-mistakes"` の後に書くのだぁ✨
+minimal-mistakesテーマの通常ファイルは `site/src/main/resources/` 内に同じ相対パスで置けばオーバーライドできるんだけど、`_sass/` のパーシャルは例外なのだぁ…🌧️ Sassの `@import` がインポート元ファイルのディレクトリを最初に探すから、テーマのパーシャルがいつも優先されちゃうのだ～🌱 CSSのカスタマイズは `assets/css/main.scss` の `@import "minimal-mistakes"` の後に書くのだぁ✨
 
 ### `syncJekyllSource` の画像配置規則なのだ～🌱
 
