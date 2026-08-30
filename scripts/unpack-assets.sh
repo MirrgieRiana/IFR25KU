@@ -12,12 +12,12 @@ script="$0" ./xarpite/xa -q '
   entryPointUrl := "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json"
   version := "1.21.1"
   assetPaths := [
-    "minecraft/lang/en_us.json"
+    //"minecraft/lang/en_us.json" // 実は英語版の言語ファイルはこちらにはない
     "minecraft/lang/ja_jp.json"
   ]
 
   ARGS.$# == 0 || :
-    ERRL << "Usage: $(ENV.script)"
+    ERR << "Usage: $(ENV.script)"
     EXIT << 1
 
   entryPointData := entryPointUrl >> get >> JSOND
@@ -25,6 +25,8 @@ script="$0" ./xarpite/xa -q '
   assetsData := versionData | _.assetIndex.url >> get >> JSOND
   assetPaths() | assetPath => :
     assetData := assetsData | _.objects.(assetPath).hash | "https://resources.download.minecraft.net/$(_::take(2))/$_" >> getb
-    mkdirs << "./unpackedAssets" RESOLVE assetPath RESOLVE ".."
-    WRITEB["./unpackedAssets" RESOLVE assetPath] << assetData
+    outputPath := "./unpackedAssets" RESOLVE assetPath
+    mkdirs << outputPath RESOLVE ".."
+    WRITEB[outputPath] << assetData
+    OUTL << "Saved $outputPath"
 ' "$@"
