@@ -740,7 +740,7 @@ open class BlockMaterialCard(
         )
         val PLASTIC_TREE_SAP_KOHAKUTO_BLOCK = createKohakuto(
             "plastic_tree_sap_kohakuto_block", EnJa("Plastic Tree Sap Kohakuto Block", "プラノキの樹液の琥珀糖ブロック"),
-            PoemList(1).poem("TODO", "TODO"), // TODO
+            PoemList(1).poem("Ideal environment for etherobacteria.", "知性を育む寒天培地。"),
             MapColor.TERRACOTTA_YELLOW, MaterialCard.PLASTIC_TREE_SAP.item, MaterialCard.PLASTIC_TREE_SAP_KOHAKUTO.item,
         )
         val HAIMEVISKA_SAP_KOHAKUTO_BLOCK = createKohakuto(
