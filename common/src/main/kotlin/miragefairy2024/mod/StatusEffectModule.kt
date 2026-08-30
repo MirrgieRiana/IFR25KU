@@ -39,7 +39,7 @@ class ExperienceStatusEffect : MobEffect(MobEffectCategory.BENEFICIAL, 0x2FFF00)
         val level = entity.level()
         if (level.isServer && entity is Player) {
             val mobEffectInstance = entity.getEffect(experienceStatusEffect.getHolder())!!
-            // MobEffectInstanceは残り効果時間を減らす前にここを呼ぶから、shouldApplyEffectTickThisTickに渡されたものと同じ時刻がここで読めるのだ～🌱 無限の効果には残り効果時間が無いので、そちらと同様にエンティティの経過tickを使うのだ～🌱
+            // MobEffectInstanceは残り効果時間を減らす前にここを呼ぶから、shouldApplyEffectTickThisTickに渡されたものと同じ時刻がここで読めるのだ～🌱 無限の効果ではそちらへ残り効果時間の代わりにエンティティの経過tickが渡されるので、ここもそれに合わせるのだ～🌱
             val time = if (mobEffectInstance.isInfiniteDuration) entity.tickCount else mobEffectInstance.duration
             entity.giveExperiencePoints(getExperienceAmount(time, amplifier))
             level.playSound(null, entity.x, entity.y, entity.z, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, (level.random.nextFloat() - level.random.nextFloat()) * 0.35F + 0.9F)
