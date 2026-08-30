@@ -694,7 +694,7 @@ class MaterialCard(
         }
         val FAIRY_PLASTIC: MaterialCard = !MaterialCard(
             "fairy_plastic", "Fairy Plastic", "妖精のプラスチック",
-            PoemList(4).poem("Thermoplastic organic polymer", "凍てつく記憶の宿る石。"),
+            PoemList(4).poem("Thermoplastic organic polymer.", "凍てつく記憶の宿る石。"),
             fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.FAIRY_PLASTIC),
             advancementCreator = {
                 AdvancementCard(
