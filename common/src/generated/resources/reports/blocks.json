@@ -14054,6 +14054,230 @@
       }
     ]
   },
+  "miragefairy2024:plastic_tree_leaves": {
+    "definition": {
+      "type": "minecraft:leaves",
+      "properties": {}
+    },
+    "properties": {
+      "distance": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "persistent": [
+        "true",
+        "false"
+      ],
+      "waterlogged": [
+        "true",
+        "false"
+      ]
+    },
+    "states": [
+      {
+        "properties": {
+          "distance": "1",
+          "persistent": "true",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "distance": "1",
+          "persistent": "true",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "distance": "1",
+          "persistent": "false",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "distance": "1",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "distance": "2",
+          "persistent": "true",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "distance": "2",
+          "persistent": "true",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "distance": "2",
+          "persistent": "false",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "distance": "2",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "distance": "3",
+          "persistent": "true",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "distance": "3",
+          "persistent": "true",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "distance": "3",
+          "persistent": "false",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "distance": "3",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "distance": "4",
+          "persistent": "true",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "distance": "4",
+          "persistent": "true",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "distance": "4",
+          "persistent": "false",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "distance": "4",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "distance": "5",
+          "persistent": "true",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "distance": "5",
+          "persistent": "true",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "distance": "5",
+          "persistent": "false",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "distance": "5",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "distance": "6",
+          "persistent": "true",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "distance": "6",
+          "persistent": "true",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "distance": "6",
+          "persistent": "false",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "distance": "6",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "distance": "7",
+          "persistent": "true",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "distance": "7",
+          "persistent": "true",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "distance": "7",
+          "persistent": "false",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "default": true,
+        "properties": {
+          "distance": "7",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      }
+    ]
+  },
   "miragefairy2024:polished_aura_resistant_ceramic": {
     "definition": {
       "type": "minecraft:block",
