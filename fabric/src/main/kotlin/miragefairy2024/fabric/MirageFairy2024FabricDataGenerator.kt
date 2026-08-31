@@ -11,12 +11,17 @@ import miragefairy2024.Modules
 import miragefairy2024.mixins.api.TagBuilderApi
 import miragefairy2024.platformProxy
 import miragefairy2024.util.TagGenerator
+import miragefairy2024.util.get
 import miragefairy2024.util.string
 import miragefairy2024.util.times
+import miragefairy2024.util.toIdentifier
+import miragefairy2024.util.with
 import mirrg.kotlin.gson.hydrogen.jsonArray
 import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
 import mirrg.kotlin.gson.hydrogen.jsonObjectNotNull
+import mirrg.kotlin.gson.hydrogen.toJsonElement
+import mirrg.kotlin.gson.hydrogen.toJsonWrapper
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
@@ -274,10 +279,59 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
         // レポート
         /** @see [net.minecraft.data.Main.createStandardGenerator] */
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
-            ItemListReport(output, registriesFuture)
+            val itemListReport = ItemListReport(output, registriesFuture)
+            object : DataProvider {
+                override fun getName() = itemListReport.name
+                override fun run(writer: CachedOutput): CompletableFuture<*> {
+                    val futures = mutableListOf<CompletableFuture<*>>()
+                    return itemListReport.run { filePath, data, _ ->
+                        val root = data.decodeToString().toJsonElement().toJsonWrapper()
+
+                        // MODのコンテンツでないものを削除するのだ～🌱
+                        root.asJsonObject().keySet().toList().forEach { key ->
+                            if (key.toIdentifier().namespace != MirageFairy2024.MOD_ID) {
+                                root.asJsonObject().remove(key)
+                            }
+                        }
+
+                        // アイテムのクラスはバニラのレポートに出力されないから、足すのだ～🌱
+                        val registries = registriesFuture.join()
+                        root.asJsonObject().entrySet().toList().forEach { (key, item) ->
+                            item.asJsonObject.addProperty("class", registries[Registries.ITEM, Registries.ITEM with key.toIdentifier()].value().javaClass.name)
+                        }
+
+                        futures.add(DataProvider.saveStable(writer, root.jsonElement!!, filePath))
+                    }.thenCompose { CompletableFuture.allOf(*futures.toTypedArray()) }
+                }
+            }
         }
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
-            BlockListReport(output, registriesFuture)
+            val blockListReport = BlockListReport(output, registriesFuture)
+            object : DataProvider {
+                override fun getName() = blockListReport.name
+                override fun run(writer: CachedOutput): CompletableFuture<*> {
+                    val futures = mutableListOf<CompletableFuture<*>>()
+                    return blockListReport.run { filePath, data, _ ->
+                        val root = data.decodeToString().toJsonElement().toJsonWrapper()
+
+                        // MODのコンテンツでないものを削除するのだ～🌱
+                        root.asJsonObject().keySet().toList().forEach { key ->
+                            if (key.toIdentifier().namespace != MirageFairy2024.MOD_ID) {
+                                root.asJsonObject().remove(key)
+                            }
+                        }
+
+                        // BlockStateの数値IDはブロックが1個増減しただけで大量にずれるから、レポートから取り除くのだ～🌱
+                        root.asJsonObject().entrySet().toList().forEach { (_, block) ->
+                            block.toJsonWrapper()["states"].asList().forEach { blockState ->
+                                blockState.asJsonObject().remove("id")
+                            }
+                        }
+
+                        futures.add(DataProvider.saveStable(writer, root.jsonElement!!, filePath))
+                    }.thenCompose { CompletableFuture.allOf(*futures.toTypedArray()) }
+                }
+            }
         }
 
     }

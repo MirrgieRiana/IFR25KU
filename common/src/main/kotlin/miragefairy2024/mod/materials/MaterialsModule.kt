@@ -637,7 +637,7 @@ class MaterialCard(
                 FoodProperties.Builder()
                     .nutrition(1)
                     .saturationModifier(0.1F)
-                    .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 10), 1.0F)
+                    .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 40), 1.0F)
                     .build()
             },
             tags = listOf(ItemTagCard.SAP.tag),
@@ -1253,7 +1253,7 @@ class MaterialCard(
                 FoodProperties.Builder()
                     .nutrition(6)
                     .saturationModifier(0.1F)
-                    .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 10 * 8, 1), 1.0F)
+                    .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 40 * 8, 1), 1.0F)
                     .build()
             },
             creator = { DrinkItem(it, flaming = 5) },
@@ -1451,7 +1451,7 @@ class MaterialCard(
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
                 inputs = listOf(
-                    { SimpleMachineRecipe.Input(FERMENTED_BLACK_TREACLE.item().toIngredient(), 1) }, // 黒蜜4本分なので、その製造に 200 * 4 = 800 が掛かっているのだ
+                    { SimpleMachineRecipe.Input(FERMENTED_BLACK_TREACLE.item().toIngredient(), 1) }, // 黒蜜4本分なので、その製造に 200 * 4 = 800 が掛かっているのだ～🌱
                 ),
                 outputs = listOf({ item().createItemStack(2) }), // 800 + 200 = 1000 -> 200 * 8 * 2 = 1600
                 duration = 20 * 10,
