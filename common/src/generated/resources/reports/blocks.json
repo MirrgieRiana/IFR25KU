@@ -14054,6 +14054,37 @@
       }
     ]
   },
+  "miragefairy2024:plastic_tree_log": {
+    "definition": {
+      "type": "miragefairy2024:haimeviska_log",
+      "properties": {}
+    },
+    "properties": {
+      "axis": [
+        "x",
+        "y",
+        "z"
+      ]
+    },
+    "states": [
+      {
+        "properties": {
+          "axis": "x"
+        }
+      },
+      {
+        "default": true,
+        "properties": {
+          "axis": "y"
+        }
+      },
+      {
+        "properties": {
+          "axis": "z"
+        }
+      }
+    ]
+  },
   "miragefairy2024:polished_aura_resistant_ceramic": {
     "definition": {
       "type": "minecraft:block",
