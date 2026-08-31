@@ -294,7 +294,23 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
             }
         }
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
-            BlockListReport(output, registriesFuture)
+            val blockListReport = BlockListReport(output, registriesFuture)
+            object : DataProvider {
+                override fun getName() = blockListReport.name
+                override fun run(writer: CachedOutput): CompletableFuture<*> {
+                    val futures = mutableListOf<CompletableFuture<*>>()
+                    return blockListReport.run { filePath, data, _ ->
+                        val root = data.decodeToString().toJsonElement().toJsonWrapper()
+                        // BlockStateの数値IDはブロックが1個増減しただけで大量にずれるから、レポートから取り除くのだ～🌱
+                        root.asMap().forEach { (_, block) ->
+                            block["states"].asList().forEach { blockState ->
+                                blockState.asJsonObject().remove("id")
+                            }
+                        }
+                        futures.add(DataProvider.saveStable(writer, root.jsonElement!!, filePath))
+                    }.thenCompose { CompletableFuture.allOf(*futures.toTypedArray()) }
+                }
+            }
         }
 
     }
