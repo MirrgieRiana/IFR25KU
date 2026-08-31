@@ -4977,7 +4977,7 @@
         "effects": [
           {
             "effect": {
-              "duration": 40,
+              "duration": 160,
               "id": "miragefairy2024:experience",
               "show_icon": true
             }
