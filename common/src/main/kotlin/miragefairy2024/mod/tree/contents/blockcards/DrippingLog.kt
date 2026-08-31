@@ -3,6 +3,7 @@ package miragefairy2024.mod.tree.contents.blockcards
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.registerHarvestNotation
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.util.ItemLootPoolEntry
 import miragefairy2024.util.LootPool
@@ -14,7 +15,7 @@ import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition
 
-class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration) : TreeHorizontalFacingLogBlockCard(configuration) {
+class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration, private val log: () -> TreeBlockCard) : TreeHorizontalFacingLogBlockCard(configuration) {
     context(ModContext)
     override fun init() {
         super.init()
@@ -24,7 +25,7 @@ class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration) : TreeHori
                 LootPool(ItemLootPoolEntry(item())) {
                     `when`(provider.hasSilkTouch())
                 },
-                LootPool(ItemLootPoolEntry(LOG.item())) {
+                LootPool(ItemLootPoolEntry(log().item())) {
                     `when`(provider.doesNotHaveSilkTouch())
                 },
                 LootPool(ItemLootPoolEntry(MaterialCard.HAIMEVISKA_SAP.item()) {
