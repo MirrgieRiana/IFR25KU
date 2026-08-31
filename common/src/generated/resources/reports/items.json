@@ -8425,6 +8425,7 @@
     }
   },
   "miragefairy2024:plastic_tree_sapling": {
+    "class": "net.minecraft.world.item.BlockItem",
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
