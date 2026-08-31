@@ -637,7 +637,7 @@ class MaterialCard(
                 FoodProperties.Builder()
                     .nutrition(1)
                     .saturationModifier(0.1F)
-                    .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 10), 1.0F)
+                    .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 40), 1.0F)
                     .build()
             },
             tags = listOf(ItemTagCard.SAP.tag),
@@ -1253,7 +1253,7 @@ class MaterialCard(
                 FoodProperties.Builder()
                     .nutrition(6)
                     .saturationModifier(0.1F)
-                    .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 10 * 8, 1), 1.0F)
+                    .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 40 * 8, 1), 1.0F)
                     .build()
             },
             creator = { DrinkItem(it, flaming = 5) },
