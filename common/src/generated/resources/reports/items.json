@@ -5026,6 +5026,7 @@
     }
   },
   "miragefairy2024:incised_plastic_tree_log": {
+    "class": "net.minecraft.world.item.BlockItem",
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
