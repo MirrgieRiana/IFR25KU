@@ -1755,7 +1755,7 @@ MOD
 
 クリエイティブ専用
 
-- 追加: 「Dump Fairy Motifs」追加。
+- 追加: 「Dump Fairy Motifs」を追加。
   - WikiWikiのテーブル行を出力する。
 - 変更: Dump Biome Tagsは専用ディレクトリに出力する。
 - 変更: Debug Gain Fairy Dreamの挙動を変更。
