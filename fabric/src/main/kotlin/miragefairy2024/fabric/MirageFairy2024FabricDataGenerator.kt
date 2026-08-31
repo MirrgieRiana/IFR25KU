@@ -297,7 +297,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                         // アイテムのクラスはバニラのレポートに出力されないから、足すのだ～🌱
                         val registries = registriesFuture.join()
                         root.asJsonObject().entrySet().toList().forEach { (key, item) ->
-                            item.asJsonObject.addProperty("class", registries[Registries.ITEM, Registries.ITEM.with(key.toIdentifier())].value().javaClass.name)
+                            item.asJsonObject.addProperty("class", registries[Registries.ITEM, Registries.ITEM with key.toIdentifier()].value().javaClass.name)
                         }
 
                         futures.add(DataProvider.saveStable(writer, root.jsonElement!!, filePath))
