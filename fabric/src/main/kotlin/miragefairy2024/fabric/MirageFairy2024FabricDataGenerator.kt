@@ -11,8 +11,11 @@ import miragefairy2024.Modules
 import miragefairy2024.mixins.api.TagBuilderApi
 import miragefairy2024.platformProxy
 import miragefairy2024.util.TagGenerator
+import miragefairy2024.util.get
 import miragefairy2024.util.string
 import miragefairy2024.util.times
+import miragefairy2024.util.toIdentifier
+import miragefairy2024.util.with
 import mirrg.kotlin.gson.hydrogen.jsonArray
 import mirrg.kotlin.gson.hydrogen.jsonElement
 import mirrg.kotlin.gson.hydrogen.jsonObject
@@ -282,12 +285,21 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                 override fun run(writer: CachedOutput): CompletableFuture<*> {
                     val futures = mutableListOf<CompletableFuture<*>>()
                     return itemListReport.run { filePath, data, _ ->
-                        val registries = registriesFuture.join()
                         val root = data.decodeToString().toJsonElement().toJsonWrapper()
-                        // アイテムのクラスはバニラのレポートに出力されないから、足すのだ～🌱
-                        registries.lookupOrThrow(Registries.ITEM).listElements().forEach { item ->
-                            root[item.registeredName].asJsonObject().addProperty("class", item.value().javaClass.name)
+
+                        // MODのコンテンツでないものを削除するのだ～🌱
+                        root.asJsonObject().keySet().toList().forEach { key ->
+                            if (key.toIdentifier().namespace != MirageFairy2024.MOD_ID) {
+                                root.asJsonObject().remove(key)
+                            }
                         }
+
+                        // アイテムのクラスはバニラのレポートに出力されないから、足すのだ～🌱
+                        val registries = registriesFuture.join()
+                        root.asJsonObject().entrySet().toList().forEach { (key, item) ->
+                            item.asJsonObject.addProperty("class", registries[Registries.ITEM, Registries.ITEM.with(key.toIdentifier())].value().javaClass.name)
+                        }
+
                         futures.add(DataProvider.saveStable(writer, root.jsonElement!!, filePath))
                     }.thenCompose { CompletableFuture.allOf(*futures.toTypedArray()) }
                 }
@@ -301,12 +313,21 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                     val futures = mutableListOf<CompletableFuture<*>>()
                     return blockListReport.run { filePath, data, _ ->
                         val root = data.decodeToString().toJsonElement().toJsonWrapper()
+
+                        // MODのコンテンツでないものを削除するのだ～🌱
+                        root.asJsonObject().keySet().toList().forEach { key ->
+                            if (key.toIdentifier().namespace != MirageFairy2024.MOD_ID) {
+                                root.asJsonObject().remove(key)
+                            }
+                        }
+
                         // BlockStateの数値IDはブロックが1個増減しただけで大量にずれるから、レポートから取り除くのだ～🌱
-                        root.asMap().forEach { (_, block) ->
-                            block["states"].asList().forEach { blockState ->
+                        root.asJsonObject().entrySet().toList().forEach { (_, block) ->
+                            block.toJsonWrapper()["states"].asList().forEach { blockState ->
                                 blockState.asJsonObject().remove("id")
                             }
                         }
+
                         futures.add(DataProvider.saveStable(writer, root.jsonElement!!, filePath))
                     }.thenCompose { CompletableFuture.allOf(*futures.toTypedArray()) }
                 }
