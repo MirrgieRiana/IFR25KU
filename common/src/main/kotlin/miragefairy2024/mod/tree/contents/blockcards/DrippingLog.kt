@@ -15,7 +15,7 @@ import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition
 
-class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration, private val log: () -> TreeBlockCard) : TreeHorizontalFacingLogBlockCard(configuration) {
+class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration, log: () -> TreeBlockCard) : TreeHorizontalFacingLogBlockCard(configuration, log) {
     context(ModContext)
     override fun init() {
         super.init()
