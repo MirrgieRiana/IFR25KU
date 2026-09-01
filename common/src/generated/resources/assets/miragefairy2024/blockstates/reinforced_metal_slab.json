@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "miragefairy2024:block/reinforced_metal_slab"
+    },
+    "type=double": {
+      "model": "miragefairy2024:block/reinforced_metal_block"
+    },
+    "type=top": {
+      "model": "miragefairy2024:block/reinforced_metal_slab_top"
+    }
+  }
+}

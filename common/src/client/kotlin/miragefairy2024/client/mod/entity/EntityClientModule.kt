@@ -2,10 +2,12 @@ package miragefairy2024.client.mod.entity
 
 import dev.architectury.registry.client.level.entity.EntityModelLayerRegistry
 import miragefairy2024.ModContext
+import miragefairy2024.client.mod.mantle.MantleWispEntityRenderer
 import miragefairy2024.client.util.registerEntityRenderer
 import miragefairy2024.mod.entity.AntimatterBoltCard
 import miragefairy2024.mod.entity.ChaosCubeCard
 import miragefairy2024.mod.entity.EtheroballisticBoltCard
+import miragefairy2024.mod.mantle.MantleWispCard
 import net.minecraft.client.model.geom.ModelLayerLocation
 import net.minecraft.client.model.geom.builders.LayerDefinition
 import net.minecraft.client.model.geom.builders.MeshDefinition
@@ -21,6 +23,8 @@ fun initEntityClientModule() {
     ChaosCubeCard.entityType.registerEntityRenderer(::ChaosCubeEntityRenderer)
     EntityModelLayerRegistry.register(EtheroballisticBoltEntityRenderer.MAIN.entityModelLayer, EtheroballisticBoltEntityRenderer.MAIN.provider)
     EtheroballisticBoltCard.entityType.registerEntityRenderer(::EtheroballisticBoltEntityRenderer)
+    EntityModelLayerRegistry.register(MantleWispEntityRenderer.MAIN.entityModelLayer, MantleWispEntityRenderer.MAIN.provider)
+    MantleWispCard.entityType.registerEntityRenderer(::MantleWispEntityRenderer)
 }
 
 class EntityModelLayerCard(
