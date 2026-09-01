@@ -91,6 +91,10 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
   - クラフトで入手可能。
 - 追加: 装飾ブロック「石膏ボードの階段」を追加。
   - クラフトで入手可能。
+- 追加: 環境モブ「フェアリーウィスプ」を追加。
+  - 鍾乳洞・茂った洞窟・ディープダークにスポーンする。
+  - 攻撃してこない。
+  - 攻撃すると何も落とさず消える。
 
 レシピ
 
