@@ -751,6 +751,50 @@
       "minecraft:repair_cost": 0
     }
   },
+  "miragefairy2024:black_treacle_kohakuto": {
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:food": {
+        "effects": [
+          {
+            "effect": {
+              "amplifier": 1,
+              "duration": 2400,
+              "id": "minecraft:speed",
+              "show_icon": true
+            }
+          }
+        ],
+        "nutrition": 5,
+        "saturation": 6.0
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:black_treacle_kohakuto_block": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
   "miragefairy2024:blackstone_sulfur_ore": {
     "class": "net.minecraft.world.item.BlockItem",
     "components": {
@@ -4406,7 +4450,7 @@
     }
   },
   "miragefairy2024:gold_prominaria_berry": {
-    "class": "net.minecraft.world.item.Item",
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
@@ -4893,7 +4937,7 @@
     }
   },
   "miragefairy2024:haimeviska_sap": {
-    "class": "net.minecraft.world.item.Item",
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
@@ -4913,6 +4957,49 @@
         ],
         "nutrition": 1,
         "saturation": 0.2
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:haimeviska_sap_kohakuto": {
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:food": {
+        "effects": [
+          {
+            "effect": {
+              "duration": 160,
+              "id": "miragefairy2024:experience",
+              "show_icon": true
+            }
+          }
+        ],
+        "nutrition": 5,
+        "saturation": 6.0
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:haimeviska_sap_kohakuto_block": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
       },
       "minecraft:lore": [],
       "minecraft:max_stack_size": 64,
@@ -5213,6 +5300,49 @@
         "levels": {}
       },
       "minecraft:fire_resistant": {},
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:kohakuto": {
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:food": {
+        "effects": [
+          {
+            "effect": {
+              "duration": 2400,
+              "id": "minecraft:speed",
+              "show_icon": true
+            }
+          }
+        ],
+        "nutrition": 5,
+        "saturation": 6.0
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:kohakuto_block": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
       "minecraft:lore": [],
       "minecraft:max_stack_size": 64,
       "minecraft:rarity": "common",
@@ -5993,7 +6123,7 @@
     }
   },
   "miragefairy2024:merrrria_drop": {
-    "class": "net.minecraft.world.item.Item",
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
@@ -6014,6 +6144,49 @@
         ],
         "nutrition": 2,
         "saturation": 1.2
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:merrrria_drop_kohakuto": {
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:food": {
+        "effects": [
+          {
+            "effect": {
+              "duration": 12000,
+              "id": "minecraft:night_vision",
+              "show_icon": true
+            }
+          }
+        ],
+        "nutrition": 5,
+        "saturation": 6.0
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:merrrria_drop_kohakuto_block": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
       },
       "minecraft:lore": [],
       "minecraft:max_stack_size": 64,
@@ -8182,7 +8355,7 @@
     }
   },
   "miragefairy2024:phantom_drop": {
-    "class": "net.minecraft.world.item.Item",
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
@@ -8203,6 +8376,50 @@
         ],
         "nutrition": 2,
         "saturation": 1.2
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:phantom_drop_kohakuto": {
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:food": {
+        "effects": [
+          {
+            "effect": {
+              "amplifier": 1,
+              "duration": 1200,
+              "id": "minecraft:regeneration",
+              "show_icon": true
+            }
+          }
+        ],
+        "nutrition": 5,
+        "saturation": 6.0
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:phantom_drop_kohakuto_block": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
       },
       "minecraft:lore": [],
       "minecraft:max_stack_size": 64,
@@ -8397,7 +8614,7 @@
     }
   },
   "miragefairy2024:plastic_tree_sap": {
-    "class": "net.minecraft.world.item.Item",
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
@@ -8417,6 +8634,50 @@
         ],
         "nutrition": 1,
         "saturation": 0.2
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:plastic_tree_sap_kohakuto": {
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:food": {
+        "effects": [
+          {
+            "effect": {
+              "amplifier": 1,
+              "duration": 2400,
+              "id": "minecraft:speed",
+              "show_icon": true
+            }
+          }
+        ],
+        "nutrition": 5,
+        "saturation": 6.0
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:plastic_tree_sap_kohakuto_block": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
       },
       "minecraft:lore": [],
       "minecraft:max_stack_size": 64,
@@ -8477,7 +8738,7 @@
     }
   },
   "miragefairy2024:prominaria_berry": {
-    "class": "net.minecraft.world.item.Item",
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
@@ -9465,7 +9726,7 @@
     }
   },
   "miragefairy2024:solid_fuel": {
-    "class": "net.minecraft.world.item.Item",
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
@@ -9628,7 +9889,7 @@
     }
   },
   "miragefairy2024:tiny_solid_fuel": {
-    "class": "net.minecraft.world.item.Item",
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
@@ -9932,7 +10193,7 @@
     }
   },
   "miragefairy2024:veropeda_berries": {
-    "class": "net.minecraft.world.item.Item",
+    "class": "miragefairy2024.mod.materials.contents.FoodItem",
     "components": {
       "minecraft:attribute_modifiers": {
         "modifiers": []
