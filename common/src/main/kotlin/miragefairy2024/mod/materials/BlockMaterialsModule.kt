@@ -755,12 +755,12 @@ open class BlockMaterialCard(
         )
         val MERRRRIA_DROP_KOHAKUTO_BLOCK = createKohakuto(
             "merrrria_drop_kohakuto_block", EnJa("Merrrria Drop Kohakuto Block", "月のしずくの琥珀糖ブロック"),
-            PoemList(3).poem("Moon light, moon scent and moon taste.", "砂糖の硬さ、砕ける音、誰かの思い。"),
+            PoemList(3).poem("Moonlight, moon scent and moon taste.", "砂糖の硬さ、砕ける音、誰かの思い。"),
             MapColor.COLOR_LIGHT_BLUE, MaterialCard.MERRRRIA_DROP.item, MaterialCard.MERRRRIA_DROP_KOHAKUTO.item,
         )
         val PHANTOM_DROP_KOHAKUTO_BLOCK = createKohakuto(
             "phantom_drop_kohakuto_block", EnJa("Phantom Drop Kohakuto Block", "幻想の雫の琥珀糖ブロック"),
-            PoemList(4).poem("Dispose, useless parallel universes.", "運命に干渉するための奇跡。"),
+            PoemList(4).poem("Dispose of useless parallel universes.", "運命に干渉するための奇跡。"),
             MapColor.COLOR_PURPLE, MaterialCard.PHANTOM_DROP.item, MaterialCard.PHANTOM_DROP_KOHAKUTO.item,
         )
         val RESIN_CEMENTED_DIRT = !BlockMaterialCard(
