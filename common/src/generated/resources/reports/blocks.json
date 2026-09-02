@@ -14120,6 +14120,32 @@
       }
     ]
   },
+  "miragefairy2024:plastic_tree_sapling": {
+    "definition": {
+      "type": "minecraft:sapling",
+      "properties": {},
+      "tree": "miragefairy2024:plastic_tree"
+    },
+    "properties": {
+      "stage": [
+        "0",
+        "1"
+      ]
+    },
+    "states": [
+      {
+        "default": true,
+        "properties": {
+          "stage": "0"
+        }
+      },
+      {
+        "properties": {
+          "stage": "1"
+        }
+      }
+    ]
+  },
   "miragefairy2024:polished_aura_resistant_ceramic": {
     "definition": {
       "type": "minecraft:block",
