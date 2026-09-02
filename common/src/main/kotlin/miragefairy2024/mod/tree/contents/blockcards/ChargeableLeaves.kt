@@ -26,7 +26,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.material.PushReaction
 
-class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
+class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration, private val sapling: () -> TreeBlockCard) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings()
         .mapColor(MapColor.PLANT)
         .strength(0.2F)
@@ -61,7 +61,7 @@ class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration) : Tre
 
         // レシピ
         block.registerLootTableGeneration { it, _ ->
-            it.createLeavesDrops(block(), SAPLING.block(), 0.05F / 4F, 0.0625F / 4F, 0.083333336F / 4F, 0.1F / 4F)
+            it.createLeavesDrops(block(), sapling().block(), 0.05F / 4F, 0.0625F / 4F, 0.083333336F / 4F, 0.1F / 4F)
         }
         item.registerComposterInput(0.3F)
 

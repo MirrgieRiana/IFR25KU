@@ -703,11 +703,71 @@ open class BlockMaterialCard(
                 requires(item())
             } on item modId MirageFairy2024.MOD_ID from item
         }
+
+        private fun createKohakuto(
+            path: String,
+            name: EnJa,
+            poemList: PoemList,
+            mapColor: MapColor,
+            input: () -> Item,
+            lower: () -> Item,
+        ): BlockMaterialCard {
+            return !object : BlockMaterialCard(
+                path, name,
+                poemList,
+                mapColor, 0.6F, 0.6F,
+            ) {
+                override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
+                override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
+            }.translucent().sound(SoundType.TUFF).init {
+                registerCompressionRecipeGeneration(lower, { lower().toIngredient() }, item, { item().toIngredient() })
+                registerSimpleMachineRecipeGeneration(
+                    AthanorRecipeCard,
+                    inputs = listOf(
+                        { SimpleMachineRecipe.Input(input().toIngredient(), 36) },
+                        { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
+                    ),
+                    outputs = listOf({ item().createItemStack() }),
+                    duration = 20 * 60,
+                ) on input
+            }
+        }
+
+        val KOHAKUTO_BLOCK = createKohakuto(
+            "kohakuto_block", EnJa("Kohakuto Block", "琥珀糖ブロック"),
+            PoemList(null),
+            MapColor.COLOR_YELLOW, { Items.SUGAR }, MaterialCard.KOHAKUTO.item,
+        )
+        val PLASTIC_TREE_SAP_KOHAKUTO_BLOCK = createKohakuto(
+            "plastic_tree_sap_kohakuto_block", EnJa("Plastic Tree Sap Kohakuto Block", "プラノキの樹液の琥珀糖ブロック"),
+            PoemList(1).poem("Ideal environment for etherobacteria.", "知性を育む寒天培地。"),
+            MapColor.TERRACOTTA_YELLOW, MaterialCard.PLASTIC_TREE_SAP.item, MaterialCard.PLASTIC_TREE_SAP_KOHAKUTO.item,
+        )
+        val HAIMEVISKA_SAP_KOHAKUTO_BLOCK = createKohakuto(
+            "haimeviska_sap_kohakuto_block", EnJa("Haimeviska Sap Kohakuto Block", "ハイメヴィスカの樹液の琥珀糖ブロック"),
+            PoemList(1).poem("It may have once been part of a brain.", "誰も見たことのない記憶のコラージュ。"),
+            MapColor.COLOR_ORANGE, MaterialCard.HAIMEVISKA_SAP.item, MaterialCard.HAIMEVISKA_SAP_KOHAKUTO.item,
+        )
+        val BLACK_TREACLE_KOHAKUTO_BLOCK = createKohakuto(
+            "black_treacle_kohakuto_block", EnJa("Black Treacle Kohakuto Block", "黒蜜の琥珀糖ブロック"),
+            PoemList(null),
+            MapColor.COLOR_BROWN, MaterialCard.BLACK_TREACLE.item, MaterialCard.BLACK_TREACLE_KOHAKUTO.item,
+        )
+        val MERRRRIA_DROP_KOHAKUTO_BLOCK = createKohakuto(
+            "merrrria_drop_kohakuto_block", EnJa("Merrrria Drop Kohakuto Block", "月のしずくの琥珀糖ブロック"),
+            PoemList(3).poem("Moonlight, moon scent and moon taste.", "砂糖の硬さ、砕ける音、誰かの思い。"),
+            MapColor.COLOR_LIGHT_BLUE, MaterialCard.MERRRRIA_DROP.item, MaterialCard.MERRRRIA_DROP_KOHAKUTO.item,
+        )
+        val PHANTOM_DROP_KOHAKUTO_BLOCK = createKohakuto(
+            "phantom_drop_kohakuto_block", EnJa("Phantom Drop Kohakuto Block", "幻想の雫の琥珀糖ブロック"),
+            PoemList(4).poem("Dispose of useless parallel universes.", "運命に干渉するための奇跡。"),
+            MapColor.COLOR_PURPLE, MaterialCard.PHANTOM_DROP.item, MaterialCard.PHANTOM_DROP_KOHAKUTO.item,
+        )
         val RESIN_CEMENTED_DIRT = !BlockMaterialCard(
             "resin_cemented_dirt", EnJa("Resin-Cemented Dirt", "石化した樹脂状の土"),
             PoemList(1).poem(EnJa("Antimicrobial terpenes prevent decay.", "電気の由来を語る土。")),
             MapColor.COLOR_ORANGE, 0.8F, 0.8F,
-        ).sound(SoundType.MUD).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.DIRT).init {
+        ).sound(SoundType.TUFF).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.DIRT).init {
             // 分解レシピ
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
@@ -725,7 +785,7 @@ open class BlockMaterialCard(
             "resin_cemented_dirt_bricks", EnJa("Resin-Cemented Dirt Bricks", "石化した樹脂状の土レンガ"),
             PoemList(1).poem(EnJa("The only nutrient for etherobacteria.", "知性の根源。")),
             MapColor.COLOR_ORANGE, 1.0F, 1.0F,
-        ).sound(SoundType.MUD_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+        ).sound(SoundType.TUFF_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerShapedRecipeGeneration(item, count = 4) {
                 pattern("##")
                 pattern("##")
@@ -742,7 +802,7 @@ open class BlockMaterialCard(
             context(ModContext) override fun initBlockStateGeneration() = Unit
             context(ModContext) override fun initModelGeneration() = Unit
             context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
-        }.sound(SoundType.MUD_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
+        }.sound(SoundType.TUFF_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
             registerBlockFamily(TexturedModel.CUBE, RESIN_CEMENTED_DIRT_BRICKS.block) { it.slab(block()) }
             registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT.item, item)
             registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT_BRICKS.item, item, 2)
@@ -755,7 +815,7 @@ open class BlockMaterialCard(
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(RESIN_CEMENTED_DIRT_BRICKS.block.await().defaultBlockState(), properties)
             context(ModContext) override fun initBlockStateGeneration() = Unit
             context(ModContext) override fun initModelGeneration() = Unit
-        }.sound(SoundType.MUD_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
+        }.sound(SoundType.TUFF_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
             registerBlockFamily(TexturedModel.CUBE, RESIN_CEMENTED_DIRT_BRICKS.block) { it.stairs(block()) }
             registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT.item, item)
             registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT_BRICKS.item, item)
