@@ -17,10 +17,7 @@ import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 
-abstract class TreeHorizontalFacingLogBlockCard(
-    configuration: TreeBlockConfiguration,
-    protected val log: () -> TreeBlockCard,
-) : TreeBlockCard(configuration) {
+abstract class TreeHorizontalFacingLogBlockCard(configuration: TreeBlockConfiguration, protected val log: () -> TreeBlockCard) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting().strength(2.0F).mapColor(configuration.tree.getPlankMapColor())
 
     context(ModContext)

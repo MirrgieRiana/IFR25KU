@@ -8,10 +8,7 @@ import miragefairy2024.util.LootPool
 import miragefairy2024.util.LootTable
 import miragefairy2024.util.registerLootTableGeneration
 
-class TreeIncisedLogBlockCard(
-    configuration: TreeBlockConfiguration,
-    log: () -> TreeBlockCard,
-) : TreeHorizontalFacingLogBlockCard(configuration, log) {
+class TreeIncisedLogBlockCard(configuration: TreeBlockConfiguration, log: () -> TreeBlockCard) : TreeHorizontalFacingLogBlockCard(configuration, log) {
     context(ModContext)
     override fun init() {
         super.init()

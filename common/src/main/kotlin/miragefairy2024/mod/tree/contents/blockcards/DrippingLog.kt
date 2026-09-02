@@ -13,11 +13,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 
-open class TreeDrippingLogBlockCard(
-    configuration: TreeBlockConfiguration,
-    log: () -> TreeBlockCard,
-    protected val sap: () -> Item,
-) : TreeHorizontalFacingLogBlockCard(configuration, log) {
+open class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration, log: () -> TreeBlockCard, protected val sap: () -> Item) : TreeHorizontalFacingLogBlockCard(configuration, log) {
     context(ModContext)
     override fun init() {
         super.init()

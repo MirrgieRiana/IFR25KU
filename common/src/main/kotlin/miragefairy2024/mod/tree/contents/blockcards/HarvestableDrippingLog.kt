@@ -16,12 +16,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition
 
-class TreeHarvestableDrippingLogBlockCard(
-    configuration: TreeBlockConfiguration,
-    log: () -> TreeBlockCard,
-    sap: () -> Item,
-    private val rosin: () -> Item,
-) : TreeDrippingLogBlockCard(configuration, log, sap) {
+class TreeHarvestableDrippingLogBlockCard(configuration: TreeBlockConfiguration, log: () -> TreeBlockCard, sap: () -> Item, private val rosin: () -> Item) : TreeDrippingLogBlockCard(configuration, log, sap) {
     context(ModContext)
     override fun init() {
         super.init()
