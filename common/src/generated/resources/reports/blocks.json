@@ -1711,6 +1711,17 @@
       }
     ]
   },
+  "miragefairy2024:black_treacle_kohakuto_block": {
+    "definition": {
+      "type": "miragefairy2024:semi_opaque_transparent_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
   "miragefairy2024:blackstone_sulfur_ore": {
     "definition": {
       "type": "miragefairy2024:ore",
@@ -8223,6 +8234,17 @@
       }
     ]
   },
+  "miragefairy2024:haimeviska_sap_kohakuto_block": {
+    "definition": {
+      "type": "miragefairy2024:semi_opaque_transparent_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
   "miragefairy2024:haimeviska_sapling": {
     "definition": {
       "type": "minecraft:sapling",
@@ -9695,6 +9717,17 @@
       }
     ]
   },
+  "miragefairy2024:kohakuto_block": {
+    "definition": {
+      "type": "miragefairy2024:semi_opaque_transparent_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
   "miragefairy2024:local_vacuum_decay": {
     "definition": {
       "type": "miragefairy2024:local_vacuum_decay",
@@ -9784,6 +9817,17 @@
         "properties": {
           "age": "4"
         }
+      }
+    ]
+  },
+  "miragefairy2024:merrrria_drop_kohakuto_block": {
+    "definition": {
+      "type": "miragefairy2024:semi_opaque_transparent_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
       }
     ]
   },
@@ -14006,6 +14050,17 @@
       }
     ]
   },
+  "miragefairy2024:phantom_drop_kohakuto_block": {
+    "definition": {
+      "type": "miragefairy2024:semi_opaque_transparent_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
   "miragefairy2024:phantom_flower": {
     "definition": {
       "type": "miragefairy2024:phantom_flower",
@@ -14054,29 +14109,14 @@
       }
     ]
   },
-  "miragefairy2024:plastic_tree_sapling": {
+  "miragefairy2024:plastic_tree_sap_kohakuto_block": {
     "definition": {
-      "type": "minecraft:sapling",
-      "properties": {},
-      "tree": "miragefairy2024:plastic_tree"
-    },
-    "properties": {
-      "stage": [
-        "0",
-        "1"
-      ]
+      "type": "miragefairy2024:semi_opaque_transparent_block",
+      "properties": {}
     },
     "states": [
       {
-        "default": true,
-        "properties": {
-          "stage": "0"
-        }
-      },
-      {
-        "properties": {
-          "stage": "1"
-        }
+        "default": true
       }
     ]
   },
