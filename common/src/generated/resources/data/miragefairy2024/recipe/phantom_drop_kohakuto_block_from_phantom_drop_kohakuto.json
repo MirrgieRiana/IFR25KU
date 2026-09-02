@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:phantom_drop_kohakuto_block",
+  "ingredients": [
+    {
+      "item": "miragefairy2024:phantom_drop_kohakuto"
+    },
+    {
+      "item": "miragefairy2024:phantom_drop_kohakuto"
+    },
+    {
+      "item": "miragefairy2024:phantom_drop_kohakuto"
+    },
+    {
+      "item": "miragefairy2024:phantom_drop_kohakuto"
+    },
+    {
+      "item": "miragefairy2024:phantom_drop_kohakuto"
+    },
+    {
+      "item": "miragefairy2024:phantom_drop_kohakuto"
+    },
+    {
+      "item": "miragefairy2024:phantom_drop_kohakuto"
+    },
+    {
+      "item": "miragefairy2024:phantom_drop_kohakuto"
+    },
+    {
+      "item": "miragefairy2024:phantom_drop_kohakuto"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:phantom_drop_kohakuto_block"
+  }
+}
