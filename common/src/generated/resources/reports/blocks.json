@@ -8168,7 +8168,8 @@
   },
   "miragefairy2024:haimeviska_log": {
     "definition": {
-      "type": "miragefairy2024:haimeviska_log",
+      "type": "miragefairy2024:incisable_log",
+      "incised_log": "miragefairy2024:incised_haimeviska_log",
       "properties": {}
     },
     "properties": {

@@ -146,7 +146,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_leaves", EnJa("Haimeviska Leaves", "ハイメヴィスカの葉"),
             PoemList(1).poem(EnJa("All original flowers are consumed by ivy", "妖精になれる花、なれない花。")),
         ).leaves { SAPLING }
-        val LOG = !TreeBlockConfiguration(
+        val LOG: TreeBlockCard = !TreeBlockConfiguration( // 傷を付けた先の原木と相互に参照するから、型を書かないと型推論が循環するのだ～🌱
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_log", EnJa("Haimeviska Log", "ハイメヴィスカの原木"),
             PoemList(1)
                 .poem(EnJa("Symbiosis with parasitic Mirages", "妖精の滲み込んだ樹。"))
