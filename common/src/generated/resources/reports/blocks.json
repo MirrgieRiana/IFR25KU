@@ -9645,7 +9645,7 @@
   },
   "miragefairy2024:hollow_haimeviska_log": {
     "definition": {
-      "type": "miragefairy2024:hollow_haimeviska_log",
+      "type": "miragefairy2024:hollow_log",
       "properties": {}
     },
     "properties": {
