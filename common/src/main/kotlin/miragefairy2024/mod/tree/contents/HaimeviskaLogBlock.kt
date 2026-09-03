@@ -1,12 +1,14 @@
 package miragefairy2024.mod.tree.contents
 
 import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.util.get
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.with
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.stats.Stats
@@ -24,9 +26,17 @@ import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.phys.BlockHitResult
 
 @Suppress("OVERRIDE_DEPRECATION")
-class HaimeviskaLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
+class HaimeviskaLogBlock(private val incisedLog: () -> TreeBlockCard, settings: Properties) : RotatedPillarBlock(settings) {
     companion object {
-        val CODEC: MapCodec<HaimeviskaLogBlock> = simpleCodec(::HaimeviskaLogBlock)
+        val CODEC: MapCodec<HaimeviskaLogBlock> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                ResourceLocation.CODEC.xmap<() -> TreeBlockCard>(
+                    { identifier -> { TreeBlockCard.entries.first { it.identifier == identifier } } },
+                    { it().identifier },
+                ).fieldOf("incised_log").forGetter { it.incisedLog },
+                propertiesCodec(),
+            ).apply(instance, ::HaimeviskaLogBlock)
+        }
     }
 
     override fun codec() = CODEC
@@ -39,7 +49,7 @@ class HaimeviskaLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
 
         // 加工
         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand))
-        level.setBlock(pos, TreeBlockCard.INCISED_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
+        level.setBlock(pos, incisedLog().block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
         level.gameEvent(player, GameEvent.SHEAR, pos)
         player.awardStat(Stats.ITEM_USED.get(stack.item))
 

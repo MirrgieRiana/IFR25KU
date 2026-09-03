@@ -1,13 +1,15 @@
 package miragefairy2024.mod.tree.contents
 
 import com.mojang.serialization.MapCodec
-import miragefairy2024.mod.particle.ParticleTypeCard
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.util.get
 import miragefairy2024.util.lightProxy
 import miragefairy2024.util.randomBoolean
 import miragefairy2024.util.with
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.particles.SimpleParticleType
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.util.ParticleUtils
 import net.minecraft.util.RandomSource
@@ -18,9 +20,14 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.BooleanProperty
 
-class HaimeviskaLeavesBlock(settings: Properties) : LeavesBlock(settings) {
+class HaimeviskaLeavesBlock(private val blossomParticleType: () -> SimpleParticleType, settings: Properties) : LeavesBlock(settings) {
     companion object {
-        val CODEC: MapCodec<HaimeviskaLeavesBlock> = simpleCodec(::HaimeviskaLeavesBlock)
+        val CODEC: MapCodec<HaimeviskaLeavesBlock> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                BuiltInRegistries.PARTICLE_TYPE.byNameCodec().xmap<() -> SimpleParticleType>({ particleType -> { particleType as SimpleParticleType } }, { it() }).fieldOf("blossom_particle_type").forGetter { it.blossomParticleType },
+                propertiesCodec(),
+            ).apply(instance, ::HaimeviskaLeavesBlock)
+        }
         val CHARGED: BooleanProperty = BooleanProperty.create("charged")
     }
 
@@ -53,7 +60,7 @@ class HaimeviskaLeavesBlock(settings: Properties) : LeavesBlock(settings) {
         if (random.nextInt(20) == 0) {
             val blockPos = pos.below()
             if (!isFaceFull(level.getBlockState(blockPos).getCollisionShape(level, blockPos), Direction.UP)) {
-                ParticleUtils.spawnParticleBelow(level, pos, random, ParticleTypeCard.HAIMEVISKA_BLOSSOM.particleType)
+                ParticleUtils.spawnParticleBelow(level, pos, random, blossomParticleType())
             }
         }
     }
