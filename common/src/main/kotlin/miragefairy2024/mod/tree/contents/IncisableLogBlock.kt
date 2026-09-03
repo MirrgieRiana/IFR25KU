@@ -24,9 +24,9 @@ import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.phys.BlockHitResult
 
 @Suppress("OVERRIDE_DEPRECATION")
-class HaimeviskaLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
+class IncisableLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
     companion object {
-        val CODEC: MapCodec<HaimeviskaLogBlock> = simpleCodec(::HaimeviskaLogBlock)
+        val CODEC: MapCodec<IncisableLogBlock> = simpleCodec(::IncisableLogBlock)
     }
 
     override fun codec() = CODEC

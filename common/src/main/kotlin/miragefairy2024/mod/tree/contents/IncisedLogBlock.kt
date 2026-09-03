@@ -11,9 +11,9 @@ import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.state.BlockState
 
 @Suppress("OVERRIDE_DEPRECATION")
-class IncisedHaimeviskaLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
+class IncisedLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
     companion object {
-        val CODEC: MapCodec<IncisedHaimeviskaLogBlock> = simpleCodec(::IncisedHaimeviskaLogBlock)
+        val CODEC: MapCodec<IncisedLogBlock> = simpleCodec(::IncisedLogBlock)
     }
 
     override fun codec() = CODEC
