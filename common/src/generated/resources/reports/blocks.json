@@ -2656,10 +2656,7 @@
   "miragefairy2024:dripping_haimeviska_log": {
     "definition": {
       "type": "miragefairy2024:dripping_haimeviska_log",
-      "incised_log": "miragefairy2024:incised_haimeviska_log",
-      "properties": {},
-      "rosin": "miragefairy2024:haimeviska_rosin",
-      "sap": "miragefairy2024:haimeviska_sap"
+      "properties": {}
     },
     "properties": {
       "facing": [
@@ -7692,7 +7689,6 @@
   "miragefairy2024:haimeviska_leaves": {
     "definition": {
       "type": "miragefairy2024:haimeviska_leaves",
-      "blossom_particle_type": "miragefairy2024:haimeviska_blossom",
       "properties": {}
     },
     "properties": {
@@ -8173,7 +8169,6 @@
   "miragefairy2024:haimeviska_log": {
     "definition": {
       "type": "miragefairy2024:haimeviska_log",
-      "incised_log": "miragefairy2024:incised_haimeviska_log",
       "properties": {}
     },
     "properties": {
@@ -9688,7 +9683,6 @@
   "miragefairy2024:incised_haimeviska_log": {
     "definition": {
       "type": "miragefairy2024:incised_haimeviska_log",
-      "dripping_log": "miragefairy2024:dripping_haimeviska_log",
       "properties": {}
     },
     "properties": {
