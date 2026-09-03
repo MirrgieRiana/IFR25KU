@@ -1,14 +1,11 @@
 package miragefairy2024.mod.tree.contents
 
-import com.mojang.serialization.MapCodec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.util.get
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.with
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.stats.Stats
@@ -26,20 +23,8 @@ import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.phys.BlockHitResult
 
 @Suppress("OVERRIDE_DEPRECATION")
-class HaimeviskaLogBlock(private val incisedLog: () -> TreeBlockCard, settings: Properties) : RotatedPillarBlock(settings) {
-    companion object {
-        val CODEC: MapCodec<HaimeviskaLogBlock> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
-                ResourceLocation.CODEC.xmap<() -> TreeBlockCard>(
-                    { identifier -> { TreeBlockCard.entries.first { it.identifier == identifier } } },
-                    { it().identifier },
-                ).fieldOf("incised_log").forGetter { it.incisedLog },
-                propertiesCodec(),
-            ).apply(instance, ::HaimeviskaLogBlock)
-        }
-    }
-
-    override fun codec() = CODEC
+abstract class IncisableLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
+    protected abstract fun getIncisedLog(): TreeBlockCard
 
     override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
         if (state[AXIS] != Direction.Axis.Y) @Suppress("DEPRECATION") return super.useItemOn(stack, state, level, pos, player, hand, hitResult) // 縦方向でなければスルー
@@ -49,7 +34,7 @@ class HaimeviskaLogBlock(private val incisedLog: () -> TreeBlockCard, settings: 
 
         // 加工
         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand))
-        level.setBlock(pos, incisedLog().block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
+        level.setBlock(pos, getIncisedLog().block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
         level.gameEvent(player, GameEvent.SHEAR, pos)
         player.awardStat(Stats.ITEM_USED.get(stack.item))
 

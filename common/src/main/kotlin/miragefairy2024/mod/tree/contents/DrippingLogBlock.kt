@@ -1,7 +1,5 @@
 package miragefairy2024.mod.tree.contents
 
-import com.mojang.serialization.MapCodec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.lib.SimpleHorizontalFacingBlock
 import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.mod.tree.TreeBlockCard
@@ -12,9 +10,7 @@ import miragefairy2024.util.with
 import mirrg.kotlin.helium.atMost
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
-import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.util.RandomSource
@@ -31,29 +27,17 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
 
 @Suppress("OVERRIDE_DEPRECATION")
-class DrippingHaimeviskaLogBlock(private val incisedLog: () -> TreeBlockCard, private val sap: () -> Item, private val rosin: () -> Item, settings: Properties) : SimpleHorizontalFacingBlock(settings) {
-    companion object {
-        val CODEC: MapCodec<DrippingHaimeviskaLogBlock> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
-                ResourceLocation.CODEC.xmap<() -> TreeBlockCard>(
-                    { identifier -> { TreeBlockCard.entries.first { it.identifier == identifier } } },
-                    { it().identifier },
-                ).fieldOf("incised_log").forGetter { it.incisedLog },
-                BuiltInRegistries.ITEM.byNameCodec().xmap<() -> Item>({ item -> { item } }, { it() }).fieldOf("sap").forGetter { it.sap },
-                BuiltInRegistries.ITEM.byNameCodec().xmap<() -> Item>({ item -> { item } }, { it() }).fieldOf("rosin").forGetter { it.rosin },
-                propertiesCodec(),
-            ).apply(instance, ::DrippingHaimeviskaLogBlock)
-        }
-    }
-
-    override fun codec() = CODEC
+abstract class DrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
+    protected abstract fun getIncisedLog(): TreeBlockCard
+    protected abstract fun getSap(): Item
+    protected abstract fun getRosin(): Item
 
     override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
         if (level.isClientSide) return ItemInteractionResult.SUCCESS
         val direction = state[FACING]
 
         // 消費
-        level.setBlock(pos, incisedLog().block().defaultBlockState().with(FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
+        level.setBlock(pos, getIncisedLog().block().defaultBlockState().with(FACING, direction), UPDATE_ALL or UPDATE_IMMEDIATE)
 
         fun drop(item: Item, count: Double) {
             val actualCount = level.random.randomInt(count) atMost item.defaultMaxStackSize
@@ -66,8 +50,8 @@ class DrippingHaimeviskaLogBlock(private val incisedLog: () -> TreeBlockCard, pr
 
         // 生産
         val fortune = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, Enchantments.FORTUNE], stack)
-        drop(sap(), 1.0 + 0.25 * fortune) // 樹液
-        drop(rosin(), 0.03 + 0.01 * fortune) // 涙
+        drop(getSap(), 1.0 + 0.25 * fortune) // 樹液
+        drop(getRosin(), 0.03 + 0.01 * fortune) // 涙
 
         // エフェクト
         level.playSound(null, pos, SoundEvents.SLIME_JUMP, SoundSource.BLOCKS, 0.75F, 1.0F + 0.5F * level.random.nextFloat())
