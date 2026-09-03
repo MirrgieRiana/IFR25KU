@@ -2655,7 +2655,7 @@
   },
   "miragefairy2024:dripping_haimeviska_log": {
     "definition": {
-      "type": "miragefairy2024:dripping_haimeviska_log",
+      "type": "miragefairy2024:dripping_log",
       "properties": {}
     },
     "properties": {
@@ -7688,7 +7688,7 @@
   },
   "miragefairy2024:haimeviska_leaves": {
     "definition": {
-      "type": "miragefairy2024:haimeviska_leaves",
+      "type": "miragefairy2024:chargeable_leaves",
       "properties": {}
     },
     "properties": {
@@ -8168,7 +8168,7 @@
   },
   "miragefairy2024:haimeviska_log": {
     "definition": {
-      "type": "miragefairy2024:haimeviska_log",
+      "type": "miragefairy2024:incisable_log",
       "properties": {}
     },
     "properties": {
@@ -9645,7 +9645,7 @@
   },
   "miragefairy2024:hollow_haimeviska_log": {
     "definition": {
-      "type": "miragefairy2024:hollow_haimeviska_log",
+      "type": "miragefairy2024:hollow_log",
       "properties": {}
     },
     "properties": {
@@ -9682,7 +9682,7 @@
   },
   "miragefairy2024:incised_haimeviska_log": {
     "definition": {
-      "type": "miragefairy2024:incised_haimeviska_log",
+      "type": "miragefairy2024:incised_log",
       "properties": {}
     },
     "properties": {
