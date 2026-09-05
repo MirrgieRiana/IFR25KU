@@ -1,9 +1,14 @@
-package miragefairy2024.mod.tree.contents
+package miragefairy2024.mod.tree.contents.haimeviska
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.mod.tree.TreeBlockCard
+import miragefairy2024.mod.tree.contents.ChargeableLeavesBlock
+import miragefairy2024.mod.tree.contents.DrippingLogBlock
+import miragefairy2024.mod.tree.contents.HollowLogBlock
+import miragefairy2024.mod.tree.contents.IncisableLogBlock
+import miragefairy2024.mod.tree.contents.IncisedLogBlock
 import miragefairy2024.util.get
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
