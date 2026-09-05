@@ -25,11 +25,11 @@ val PLASTIC_TREE_TREE_CONFIGURATION = object : TreeConfiguration {
     override fun getPlankMapColor() = MapColor.SAND
     override fun getBlockTag() = PLASTIC_TREE_LOGS_BLOCK_TAG
     override fun getItemTag() = PLASTIC_TREE_LOGS_ITEM_TAG
-    override fun getBlockSetType() = HAIMEVISKA_BLOCK_SET_TYPE // プラノキの板材がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
-    override fun getWoodType() = HAIMEVISKA_WOOD_TYPE // プラノキの板材がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+    override fun getBlockSetType() = HAIMEVISKA_BLOCK_SET_TYPE // TODO プラノキの板材がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+    override fun getWoodType() = HAIMEVISKA_WOOD_TYPE // TODO プラノキの板材がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
     override fun getTreeGrowerName() = MirageFairy2024.identifier("plastic_tree")
-    override fun getGiantTree() = GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY // プラノキの樹木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
-    override fun getSmallTree() = SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY // プラノキの樹木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+    override fun getGiantTree() = GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY // TODO プラノキの樹木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+    override fun getSmallTree() = SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY // TODO プラノキの樹木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
 }
 
 val PLASTIC_TREE_LOGS_BLOCK_TAG = MirageFairy2024.identifier("plastic_tree_logs").toBlockTag()

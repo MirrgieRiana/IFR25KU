@@ -11,5 +11,5 @@ class PlasticTreeLogBlock(settings: Properties) : IncisableLogBlock(settings) {
 
     override fun codec() = CODEC
 
-    override fun getIncisedLogBlock() = TreeBlockCard.INCISED_LOG.block() // 傷の付いたプラノキの原木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+    override fun getIncisedLogBlock() = TreeBlockCard.INCISED_LOG.block() // TODO 傷の付いたプラノキの原木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
 }
