@@ -4,7 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.SCYTHE_ITEM_TAG
-import miragefairy2024.mod.enchantment.contents.StickyMiningSnapshot
+import miragefairy2024.mod.enchantment.contents.withStickyMining
 import miragefairy2024.mod.magicplant.MagicPlantBlock
 import miragefairy2024.mod.magicplant.PostTryPickHandlerItem
 import miragefairy2024.mod.tool.FairyMiningToolConfiguration
@@ -23,7 +23,6 @@ import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.component.DataComponents
-import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.InteractionHand
@@ -38,7 +37,6 @@ import net.minecraft.world.item.SwordItem
 import net.minecraft.world.item.Tier
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.enchantment.Enchantment
-import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.item.enchantment.ItemEnchantments
 import net.minecraft.world.level.ClipContext
 import net.minecraft.world.level.Level
@@ -112,7 +110,7 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
             val blockPos = blockHitResult.blockPos
             val region = BlockBox.of(blockPos.offset(-range, -range, -range), blockPos.offset(range, range, range))
             var effective = false
-            withStickyMining(level, blockPos, range, user, itemStack) {
+            withStickyMining(level, blockPos.toBox().inflate(range.toDouble()), user, itemStack) {
                 spaceVisitor(level, blockPos) { it in region }.forEach { (_, targetBlockPos) ->
                     val targetBlockState = level.getBlockState(targetBlockPos)
                     when (val targetBlock = targetBlockState.block) {
@@ -154,7 +152,7 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
         if (level.isClientSide) return
         if (player?.isShiftKeyDown == true) return
         val region = BlockBox.of(blockPos.offset(-range, -range, -range), blockPos.offset(range, range, range))
-        withStickyMining(level, blockPos, range, player, itemStack) {
+        withStickyMining(level, blockPos.toBox().inflate(range.toDouble()), player, itemStack) {
             spaceVisitor(level, blockPos, visitOrigins = false) { it in region }.forEach { (_, targetBlockPos) ->
                 val targetBlockState = level.getBlockState(targetBlockPos)
                 val targetBlock = targetBlockState.block
@@ -164,20 +162,4 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
             }
         }
     }
-}
-
-private inline fun withStickyMining(level: Level, blockPos: BlockPos, range: Int, player: Player?, tool: ItemStack, action: () -> Unit) {
-    run {
-        if (level.isClientSide) return@run
-        if (player == null) return@run
-        val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
-        if (stickyMiningLevel == 0) return@run
-
-        val snapshot = StickyMiningSnapshot.take(level, blockPos.toBox().inflate(range.toDouble()))
-        action()
-        snapshot.teleportNewEntities(player)
-
-        return
-    }
-    action()
 }
