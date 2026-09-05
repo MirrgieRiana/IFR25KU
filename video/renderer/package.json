@@ -1,0 +1,10 @@
+{
+  "name": "video-renderer",
+  "private": true,
+  "version": "1.0.0",
+  "description": "構成jsonl と HTML テンプレートから連番フレーム画像を撮る、動画に依存しない汎用レンダラーなのだぁ🌱",
+  "dependencies": {
+    "@sparticuz/chromium": "^131.0.1",
+    "puppeteer-core": "^23.11.1"
+  }
+}
