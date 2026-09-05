@@ -3,6 +3,10 @@
     {
       "id": "#miragefairy2024:haimeviska_logs",
       "required": false
+    },
+    {
+      "id": "#miragefairy2024:plastic_tree_logs",
+      "required": false
     }
   ]
 }
