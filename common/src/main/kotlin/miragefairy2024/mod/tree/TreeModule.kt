@@ -3,11 +3,11 @@ package miragefairy2024.mod.tree
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.common.rootAdvancement
-import miragefairy2024.mod.tree.contents.GiantHaimeviskaFoliagePlacerCard
-import miragefairy2024.mod.tree.contents.GiantHaimeviskaTrunkPlacerCard
-import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecoratorCard
-import miragefairy2024.mod.tree.contents.SmallHaimeviskaFoliagePlacerCard
-import miragefairy2024.mod.tree.contents.SmallHaimeviskaTrunkPlacerCard
+import miragefairy2024.mod.tree.contents.haimeviska.GiantHaimeviskaFoliagePlacerCard
+import miragefairy2024.mod.tree.contents.haimeviska.GiantHaimeviskaTrunkPlacerCard
+import miragefairy2024.mod.tree.contents.haimeviska.HaimeviskaTreeDecoratorCard
+import miragefairy2024.mod.tree.contents.haimeviska.SmallHaimeviskaFoliagePlacerCard
+import miragefairy2024.mod.tree.contents.haimeviska.SmallHaimeviskaTrunkPlacerCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
