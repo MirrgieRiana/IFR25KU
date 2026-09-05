@@ -12,7 +12,7 @@ import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.mod.tree.contents.DrippingHaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.HaimeviskaLeavesBlock
 import miragefairy2024.mod.tree.contents.HaimeviskaLogBlock
-import miragefairy2024.mod.tree.contents.HollowHaimeviskaLogBlock
+import miragefairy2024.mod.tree.contents.HollowLogBlock
 import miragefairy2024.mod.tree.contents.IncisedHaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.blockcards.TreeBricksBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeChargeableLeavesBlockCard
@@ -117,7 +117,7 @@ private fun TreeBlockConfiguration.strippedLog(log: () -> TreeBlockCard) = this.
 private fun TreeBlockConfiguration.strippedWood(strippedLog: () -> TreeBlockCard, wood: () -> TreeBlockCard) = this.woodBase().tag(ResourceLocation("c", "stripped_woods").toBlockTag(), ResourceLocation("c", "stripped_woods").toItemTag()).block { { RotatedPillarBlock(it) } }.let { TreeStrippedWoodBlockCard(it, strippedLog, wood) }
 private fun TreeBlockConfiguration.incisedLog(log: () -> TreeBlockCard) = this.logBase().block { { IncisedHaimeviskaLogBlock(it) } }.let { TreeIncisedLogBlockCard(it, log) }
 private fun TreeBlockConfiguration.drippingLog(log: () -> TreeBlockCard, sap: () -> Item, rosin: () -> Item) = this.logBase().block { { DrippingHaimeviskaLogBlock(it) } }.let { TreeDrippingLogBlockCard(it, log, sap, rosin) }
-private fun TreeBlockConfiguration.hollowLog(log: () -> TreeBlockCard, wisp: () -> Item) = this.logBase().block { { HollowHaimeviskaLogBlock(it) } }.let { TreeHollowLogBlockCard(it, log, wisp) }
+private fun TreeBlockConfiguration.hollowLog(log: () -> TreeBlockCard, wisp: () -> Item) = this.logBase().block { { HollowLogBlock(it) } }.let { TreeHollowLogBlockCard(it, log, wisp) }
 private fun TreeBlockConfiguration.planks(input: () -> TreeBlockCard) = this.tag(BlockTags.PLANKS, ItemTags.PLANKS).block { { Block(it) } }.let { TreePlanksBlockCard(it) { input().item() } }
 private fun TreeBlockConfiguration.slab(base: () -> TreeBlockCard) = this.tag(BlockTags.WOODEN_SLABS, ItemTags.WOODEN_SLABS).block { { SlabBlock(it) } }.let { TreePlanksSlabBlockCard(it) { base().block } }
 private fun TreeBlockConfiguration.stairs(base: () -> TreeBlockCard) = this.tag(BlockTags.WOODEN_STAIRS, ItemTags.WOODEN_STAIRS).block { { StairBlock(base().block.await().defaultBlockState(), it) } }.let { TreePlanksStairsBlockCard(it) { base().block } }
@@ -297,7 +297,7 @@ fun initTreeBlocks() {
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("haimeviska_log")) { HaimeviskaLogBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("incised_haimeviska_log")) { IncisedHaimeviskaLogBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("dripping_haimeviska_log")) { DrippingHaimeviskaLogBlock.CODEC }.register()
-    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("hollow_haimeviska_log")) { HollowHaimeviskaLogBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("hollow_haimeviska_log")) { HollowLogBlock.CODEC }.register()
 
     // Wood Type
     HAIMEVISKA_BLOCK_SET_TYPE = BlockSetTypeBuilder().register(MirageFairy2024.identifier("haimeviska"))
