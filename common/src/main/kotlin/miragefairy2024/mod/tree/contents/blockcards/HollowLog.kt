@@ -1,6 +1,7 @@
 package miragefairy2024.mod.tree.contents.blockcards
 
 import miragefairy2024.ModContext
+import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.registerHarvestNotation
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
@@ -10,11 +11,10 @@ import miragefairy2024.util.LootTable
 import miragefairy2024.util.get
 import miragefairy2024.util.registerLootTableGeneration
 import net.minecraft.core.registries.Registries
-import net.minecraft.world.item.Item
 import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 
-class TreeHollowLogBlockCard(configuration: TreeBlockConfiguration, log: () -> TreeBlockCard, private val wisp: () -> Item) : TreeHorizontalFacingLogBlockCard(configuration, log) {
+class TreeHollowLogBlockCard(configuration: TreeBlockConfiguration, log: () -> TreeBlockCard) : TreeHorizontalFacingLogBlockCard(configuration, log) {
     context(ModContext)
     override fun init() {
         super.init()
@@ -27,7 +27,7 @@ class TreeHollowLogBlockCard(configuration: TreeBlockConfiguration, log: () -> T
                 LootPool(ItemLootPoolEntry(log().item())) {
                     `when`(provider.doesNotHaveSilkTouch())
                 },
-                LootPool(ItemLootPoolEntry(wisp()) {
+                LootPool(ItemLootPoolEntry(MaterialCard.FRACTAL_WISP.item()) {
                     apply(ApplyBonusCount.addUniformBonusCount(registries[Registries.ENCHANTMENT, Enchantments.FORTUNE]))
                 }) {
                     `when`(provider.doesNotHaveSilkTouch())
@@ -36,7 +36,7 @@ class TreeHollowLogBlockCard(configuration: TreeBlockConfiguration, log: () -> T
                 provider.applyExplosionDecay(block(), this)
             }
         }
-        item.registerHarvestNotation(wisp)
+        item.registerHarvestNotation(MaterialCard.FRACTAL_WISP.item)
 
     }
 }
