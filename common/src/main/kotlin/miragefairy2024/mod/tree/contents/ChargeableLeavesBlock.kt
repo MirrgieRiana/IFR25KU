@@ -5,12 +5,8 @@ import miragefairy2024.util.lightProxy
 import miragefairy2024.util.randomBoolean
 import miragefairy2024.util.with
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Direction
-import net.minecraft.core.particles.SimpleParticleType
 import net.minecraft.server.level.ServerLevel
-import net.minecraft.util.ParticleUtils
 import net.minecraft.util.RandomSource
-import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.LeavesBlock
 import net.minecraft.world.level.block.state.BlockState
@@ -21,8 +17,6 @@ abstract class ChargeableLeavesBlock(settings: Properties) : LeavesBlock(setting
     companion object {
         val CHARGED: BooleanProperty = BooleanProperty.create("charged")
     }
-
-    protected abstract fun getBlossomParticleType(): SimpleParticleType
 
     init {
         registerDefaultState(defaultBlockState().with(CHARGED, true))
@@ -42,16 +36,6 @@ abstract class ChargeableLeavesBlock(settings: Properties) : LeavesBlock(setting
         if (!state[CHARGED]) {
             if (random.randomBoolean(15, level.lightProxy.getLightLevel(pos))) {
                 level.setBlock(pos, state.with(CHARGED, true), UPDATE_CLIENTS)
-            }
-        }
-    }
-
-    override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
-        super.animateTick(state, level, pos, random)
-        if (random.nextInt(20) == 0) {
-            val blockPos = pos.below()
-            if (!isFaceFull(level.getBlockState(blockPos).getCollisionShape(level, blockPos), Direction.UP)) {
-                ParticleUtils.spawnParticleBelow(level, pos, random, getBlossomParticleType())
             }
         }
     }
