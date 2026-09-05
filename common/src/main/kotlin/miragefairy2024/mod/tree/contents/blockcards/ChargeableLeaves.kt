@@ -4,8 +4,8 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.contents.HaimeviskaLeavesBlock
-import miragefairy2024.mod.tree.contents.chargedHaimeviskaLeavesTexturedModelFactory
-import miragefairy2024.mod.tree.contents.unchargedHaimeviskaLeavesTexturedModelFactory
+import miragefairy2024.mod.tree.contents.chargedChargeableLeavesTexturedModelFactory
+import miragefairy2024.mod.tree.contents.unchargedChargeableLeavesTexturedModelFactory
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.Model
 import miragefairy2024.util.getIdentifier
@@ -52,8 +52,8 @@ class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration, priva
                 propertiesOf(HaimeviskaLeavesBlock.CHARGED with false) with normal.with(model = "block/uncharged_" * block().getIdentifier()),
             )
         }
-        registerModelGeneration({ "block/charged_" * block().getIdentifier() }, { chargedHaimeviskaLeavesTexturedModelFactory.get(block()) })
-        registerModelGeneration({ "block/uncharged_" * block().getIdentifier() }, { unchargedHaimeviskaLeavesTexturedModelFactory.get(block()) })
+        registerModelGeneration({ "block/charged_" * block().getIdentifier() }, { chargedChargeableLeavesTexturedModelFactory.get(block()) })
+        registerModelGeneration({ "block/uncharged_" * block().getIdentifier() }, { unchargedChargeableLeavesTexturedModelFactory.get(block()) })
         item.registerModelGeneration(Model("block/charged_" * identifier))
         block.registerCutoutRenderLayer()
         block.registerFoliageColorProvider()
