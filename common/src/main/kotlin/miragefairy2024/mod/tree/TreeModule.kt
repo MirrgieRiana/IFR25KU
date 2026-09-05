@@ -8,6 +8,7 @@ import miragefairy2024.mod.tree.contents.haimeviska.GiantHaimeviskaTrunkPlacerCa
 import miragefairy2024.mod.tree.contents.haimeviska.HaimeviskaTreeDecoratorCard
 import miragefairy2024.mod.tree.contents.haimeviska.SmallHaimeviskaFoliagePlacerCard
 import miragefairy2024.mod.tree.contents.haimeviska.SmallHaimeviskaTrunkPlacerCard
+import miragefairy2024.mod.tree.contents.haimeviska.initHaimeviska
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -31,6 +32,8 @@ fun initTreeModule() {
 
     initTreeBlocks()
     initTreeWorldGens()
+
+    initHaimeviska()
 
     Registration(BuiltInRegistries.TRUNK_PLACER_TYPE, GiantHaimeviskaTrunkPlacerCard.identifier) { GiantHaimeviskaTrunkPlacerCard.type }.register()
     Registration(BuiltInRegistries.TRUNK_PLACER_TYPE, SmallHaimeviskaTrunkPlacerCard.identifier) { SmallHaimeviskaTrunkPlacerCard.type }.register()
