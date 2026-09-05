@@ -3,7 +3,7 @@ package miragefairy2024.mod.tree.contents.blockcards
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
-import miragefairy2024.mod.tree.contents.unchargedHaimeviskaLeavesTexturedModelFactory
+import miragefairy2024.mod.tree.contents.unchargedChargeableLeavesTexturedModelFactory
 import miragefairy2024.util.Model
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.registerComposterInput
@@ -64,7 +64,7 @@ class TreeLeavesBlockCard(configuration: TreeBlockConfiguration, sapling: () -> 
     context(ModContext)
     override fun initRendering() {
         block.registerSingletonBlockStateGeneration()
-        registerModelGeneration({ "block/" * block().getIdentifier() }, { unchargedHaimeviskaLeavesTexturedModelFactory.get(block()) })
+        registerModelGeneration({ "block/" * block().getIdentifier() }, { unchargedChargeableLeavesTexturedModelFactory.get(block()) })
         item.registerModelGeneration(Model("block/" * identifier))
     }
 }
