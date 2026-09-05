@@ -46,3 +46,11 @@ class DrippingHaimeviskaLogBlock(settings: Properties) : DrippingLogBlock(settin
     override fun getSap() = MaterialCard.HAIMEVISKA_SAP.item()
     override fun getRosin() = MaterialCard.HAIMEVISKA_ROSIN.item()
 }
+
+class HollowHaimeviskaLogBlock(settings: Properties) : HollowLogBlock(settings) {
+    companion object {
+        val CODEC: MapCodec<HollowHaimeviskaLogBlock> = simpleCodec(::HollowHaimeviskaLogBlock)
+    }
+
+    override fun codec() = CODEC
+}
