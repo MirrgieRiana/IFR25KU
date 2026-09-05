@@ -114,7 +114,7 @@ private fun TreeBlockConfiguration.logBase() = this.tag(this.tree.getBlockTag(),
 private fun TreeBlockConfiguration.woodBase() = this.tag(this.tree.getBlockTag(), this.tree.getItemTag())
 
 private fun TreeBlockConfiguration.leaves(sapling: () -> TreeBlockCard) = this.tag(BlockTags.LEAVES, ItemTags.LEAVES).tag(BlockTags.MINEABLE_WITH_HOE).block { { HaimeviskaLeavesBlock(it) } }.let { TreeChargeableLeavesBlockCard(it, sapling) }
-private fun TreeBlockConfiguration.log(block: (BlockBehaviour.Properties) -> Block) = this.logBase().block { { block(it) } }.let { TreeIncisableLogBlockCard(it) }
+private fun TreeBlockConfiguration.log() = this.logBase().let { TreeIncisableLogBlockCard(it) }
 private fun TreeBlockConfiguration.wood(log: () -> TreeBlockCard) = this.woodBase().block { { RotatedPillarBlock(it) } }.let { TreeWoodBlockCard(it, log) }
 private fun TreeBlockConfiguration.strippedLog(log: () -> TreeBlockCard) = this.woodBase().tag(ResourceLocation("c", "stripped_logs").toBlockTag(), ResourceLocation("c", "stripped_logs").toItemTag()).block { { RotatedPillarBlock(it) } }.let { TreeStrippedLogBlockCard(it, log) }
 private fun TreeBlockConfiguration.strippedWood(strippedLog: () -> TreeBlockCard, wood: () -> TreeBlockCard) = this.woodBase().tag(ResourceLocation("c", "stripped_woods").toBlockTag(), ResourceLocation("c", "stripped_woods").toItemTag()).block { { RotatedPillarBlock(it) } }.let { TreeStrippedWoodBlockCard(it, strippedLog, wood) }
@@ -147,7 +147,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             PoemList(1)
                 .poem(EnJa("Symbiosis with parasitic Mirages", "妖精の滲み込んだ樹。"))
                 .description(EnJa("Can be incised with a sword", "剣を使って傷を付けられる")),
-        ).log { HaimeviskaLogBlock(it) }
+        ).block { { HaimeviskaLogBlock(it) } }.log()
         val WOOD = !TreeBlockConfiguration(
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_wood", EnJa("Haimeviska Wood", "ハイメヴィスカの木"),
             PoemList(1).poem(EnJa("Hydraulic communication system", "ウィスプたちの集合知。")),
@@ -234,7 +234,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             PoemList(1)
                 .poem(EnJa("TODO", "TODO"))
                 .description(EnJa("Can be incised with a sword", "剣を使って傷を付けられる")),
-        ).log { PlasticTreeLogBlock(it) }
+        ).block { { PlasticTreeLogBlock(it) } }.log()
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)
