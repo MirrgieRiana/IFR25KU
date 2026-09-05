@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "miragefairy2024:block/dripping_plastic_tree_log",
+    "side": "miragefairy2024:block/haimeviska_log",
+    "top": "miragefairy2024:block/haimeviska_log_top"
+  }
+}
