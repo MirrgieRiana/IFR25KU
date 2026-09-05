@@ -34,6 +34,7 @@ import miragefairy2024.mod.tree.contents.haimeviska.HaimeviskaLeavesBlock
 import miragefairy2024.mod.tree.contents.haimeviska.HaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.haimeviska.HollowHaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.haimeviska.IncisedHaimeviskaLogBlock
+import miragefairy2024.mod.tree.contents.plastictree.PLASTIC_TREE_TREE_CONFIGURATION
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
@@ -225,6 +226,11 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val SAPLING = !TreeBlockConfiguration(
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_sapling", EnJa("Haimeviska Sapling", "ハイメヴィスカの苗木"),
             PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
+        ).sapling()
+
+        val PLASTIC_TREE_SAPLING = !TreeBlockConfiguration(
+            PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_sapling", EnJa("Plastic Tree Sapling", "プラノキの苗木"),
+            PoemList(1).poem(EnJa("TODO", "TODO")),
         ).sapling()
     }
 
