@@ -29,6 +29,7 @@ import miragefairy2024.mod.tree.contents.blockcards.TreeStrippedWoodBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeTrapdoorBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeWoodBlockCard
 import miragefairy2024.mod.tree.contents.haimeviska.DrippingHaimeviskaLogBlock
+import miragefairy2024.mod.tree.contents.haimeviska.HAIMEVISKA_TREE_CONFIGURATION
 import miragefairy2024.mod.tree.contents.haimeviska.HaimeviskaLeavesBlock
 import miragefairy2024.mod.tree.contents.haimeviska.HaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.haimeviska.HollowHaimeviskaLogBlock
@@ -44,8 +45,6 @@ import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.string
 import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.toItemTag
-import net.fabricmc.fabric.api.`object`.builder.v1.block.type.BlockSetTypeBuilder
-import net.fabricmc.fabric.api.`object`.builder.v1.block.type.WoodTypeBuilder
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
@@ -136,18 +135,6 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
     companion object {
         val entries = mutableListOf<TreeBlockCard>()
         private operator fun TreeBlockCard.not() = apply { entries += this }
-
-        val HAIMEVISKA_TREE_CONFIGURATION = object : TreeConfiguration {
-            override fun getWoodMapColor() = MapColor.TERRACOTTA_ORANGE
-            override fun getPlankMapColor() = MapColor.RAW_IRON
-            override fun getBlockTag() = HAIMEVISKA_LOGS_BLOCK_TAG
-            override fun getItemTag() = HAIMEVISKA_LOGS_ITEM_TAG
-            override fun getBlockSetType() = HAIMEVISKA_BLOCK_SET_TYPE
-            override fun getWoodType() = HAIMEVISKA_WOOD_TYPE
-            override fun getTreeGrowerName() = MirageFairy2024.identifier("haimeviska")
-            override fun getGiantTree() = GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY
-            override fun getSmallTree() = SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY
-        }
 
         val LEAVES = !TreeBlockConfiguration(
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_leaves", EnJa("Haimeviska Leaves", "ハイメヴィスカの葉"),
@@ -283,34 +270,9 @@ fun createBaseWoodSetting(sound: Boolean = true): BlockBehaviour.Properties = Bl
     .let { if (sound) it.sound(SoundType.WOOD) else it }
     .ignitedByLava()
 
-
-lateinit var HAIMEVISKA_BLOCK_SET_TYPE: BlockSetType
-lateinit var HAIMEVISKA_WOOD_TYPE: WoodType
-
-val HAIMEVISKA_LOGS_BLOCK_TAG = MirageFairy2024.identifier("haimeviska_logs").toBlockTag()
-val HAIMEVISKA_LOGS_ITEM_TAG = MirageFairy2024.identifier("haimeviska_logs").toItemTag()
-
 context(ModContext)
 fun initTreeBlocks() {
-
     TreeBlockCard.entries.forEach { card ->
         card.init()
     }
-
-    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("haimeviska_leaves")) { HaimeviskaLeavesBlock.CODEC }.register()
-    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("haimeviska_log")) { HaimeviskaLogBlock.CODEC }.register()
-    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("incised_haimeviska_log")) { IncisedHaimeviskaLogBlock.CODEC }.register()
-    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("dripping_haimeviska_log")) { DrippingHaimeviskaLogBlock.CODEC }.register()
-    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("hollow_haimeviska_log")) { HollowHaimeviskaLogBlock.CODEC }.register()
-
-    // Wood Type
-    HAIMEVISKA_BLOCK_SET_TYPE = BlockSetTypeBuilder().register(MirageFairy2024.identifier("haimeviska"))
-    HAIMEVISKA_WOOD_TYPE = WoodTypeBuilder().register(MirageFairy2024.identifier("haimeviska"), HAIMEVISKA_BLOCK_SET_TYPE)
-
-    // タグ
-    HAIMEVISKA_LOGS_BLOCK_TAG.enJa(EnJa("Haimeviska Logs", "ハイメヴィスカの原木"))
-    HAIMEVISKA_LOGS_ITEM_TAG.enJa(EnJa("Haimeviska Logs", "ハイメヴィスカの原木"))
-    BlockTags.LOGS_THAT_BURN.generator.registerChild(HAIMEVISKA_LOGS_BLOCK_TAG)
-    ItemTags.LOGS_THAT_BURN.generator.registerChild(HAIMEVISKA_LOGS_ITEM_TAG)
-
 }
