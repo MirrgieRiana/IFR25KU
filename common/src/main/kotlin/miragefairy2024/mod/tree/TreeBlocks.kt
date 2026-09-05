@@ -83,6 +83,8 @@ interface TreeConfiguration {
     fun getBlockSetType(): BlockSetType
     fun getWoodType(): WoodType
     fun getTreeGrowerName(): ResourceLocation
+    fun getGiantTree(): ResourceKey<ConfiguredFeature<*, *>>
+    fun getSmallTree(): ResourceKey<ConfiguredFeature<*, *>>
 }
 
 class TreeBlockConfiguration(
@@ -128,7 +130,7 @@ private fun TreeBlockConfiguration.pressurePlate(parent: () -> TreeBlockCard) = 
 private fun TreeBlockConfiguration.door(parent: () -> TreeBlockCard) = this.tag(BlockTags.WOODEN_DOORS, ItemTags.WOODEN_DOORS).block { { DoorBlock(this.tree.getBlockSetType(), it) } }.let { TreeDoorBlockCard(it) { parent().block() } }
 private fun TreeBlockConfiguration.trapdoor(parent: () -> TreeBlockCard) = this.tag(BlockTags.WOODEN_TRAPDOORS, ItemTags.WOODEN_TRAPDOORS).block { { TrapDoorBlock(this.tree.getBlockSetType(), it) } }.let { TreeTrapdoorBlockCard(it) { parent().block() } }
 private fun TreeBlockConfiguration.bricks(input: () -> TreeBlockCard) = this.tag(BlockTags.PLANKS, ItemTags.PLANKS).block { { Block(it) } }.let { TreeBricksBlockCard(it) { input().item() } }
-private fun TreeBlockConfiguration.sapling(giantTree: ResourceKey<ConfiguredFeature<*, *>>, smallTree: ResourceKey<ConfiguredFeature<*, *>>) = this.tag(BlockTags.SAPLINGS, ItemTags.SAPLINGS).block { { SaplingBlock(TreeGrower(this.tree.getTreeGrowerName().string, Optional.of(giantTree), Optional.of(smallTree), Optional.empty()), it) } }.let { TreeSaplingBlockCard(it) }
+private fun TreeBlockConfiguration.sapling() = this.tag(BlockTags.SAPLINGS, ItemTags.SAPLINGS).block { { SaplingBlock(TreeGrower(this.tree.getTreeGrowerName().string, Optional.of(this.tree.getGiantTree()), Optional.of(this.tree.getSmallTree()), Optional.empty()), it) } }.let { TreeSaplingBlockCard(it) }
 
 abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
     companion object {
@@ -143,6 +145,8 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             override fun getBlockSetType() = HAIMEVISKA_BLOCK_SET_TYPE
             override fun getWoodType() = HAIMEVISKA_WOOD_TYPE
             override fun getTreeGrowerName() = MirageFairy2024.identifier("haimeviska")
+            override fun getGiantTree() = GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY
+            override fun getSmallTree() = SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY
         }
 
         val LEAVES = !TreeBlockConfiguration(
@@ -234,7 +238,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val SAPLING = !TreeBlockConfiguration(
             HAIMEVISKA_TREE_CONFIGURATION, "haimeviska_sapling", EnJa("Haimeviska Sapling", "ハイメヴィスカの苗木"),
             PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
-        ).sapling(GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY, SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY)
+        ).sapling()
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)
