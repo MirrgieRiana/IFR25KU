@@ -22,7 +22,7 @@ class HaimeviskaLogBlock(settings: Properties) : IncisableLogBlock(settings) {
 
     override fun codec() = CODEC
 
-    override fun getIncisedLog() = TreeBlockCard.INCISED_LOG
+    override fun getIncisedLogBlock() = TreeBlockCard.INCISED_LOG.block()
 }
 
 class IncisedHaimeviskaLogBlock(settings: Properties) : IncisedLogBlock(settings) {
@@ -32,7 +32,7 @@ class IncisedHaimeviskaLogBlock(settings: Properties) : IncisedLogBlock(settings
 
     override fun codec() = CODEC
 
-    override fun getDrippingLog() = TreeBlockCard.DRIPPING_LOG
+    override fun getDrippingLogBlock() = TreeBlockCard.DRIPPING_LOG.block()
 }
 
 class DrippingHaimeviskaLogBlock(settings: Properties) : DrippingLogBlock(settings) {
@@ -42,9 +42,9 @@ class DrippingHaimeviskaLogBlock(settings: Properties) : DrippingLogBlock(settin
 
     override fun codec() = CODEC
 
-    override fun getIncisedLog() = TreeBlockCard.INCISED_LOG
-    override fun getSap() = MaterialCard.HAIMEVISKA_SAP.item()
-    override fun getRosin() = MaterialCard.HAIMEVISKA_ROSIN.item()
+    override fun getIncisedLogBlock() = TreeBlockCard.INCISED_LOG.block()
+    override fun getSapItem() = MaterialCard.HAIMEVISKA_SAP.item()
+    override fun getRosinItem() = MaterialCard.HAIMEVISKA_ROSIN.item()
 }
 
 class HollowHaimeviskaLogBlock(settings: Properties) : HollowLogBlock(settings) {
