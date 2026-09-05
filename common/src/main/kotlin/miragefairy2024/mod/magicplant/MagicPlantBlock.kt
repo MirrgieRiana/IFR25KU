@@ -1,7 +1,6 @@
 package miragefairy2024.mod.magicplant
 
-import miragefairy2024.mod.enchantment.EnchantmentCard
-import miragefairy2024.mod.enchantment.contents.StickyMiningSnapshot
+import miragefairy2024.mod.enchantment.contents.withStickyMining
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.tool.CarnivorousPlantDamageTypeCard
 import miragefairy2024.mod.tool.DamageTypeCard
@@ -20,7 +19,6 @@ import mirrg.kotlin.helium.or
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
-import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.util.RandomSource
@@ -33,7 +31,6 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.ContainerLevelAccess
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelReader
@@ -266,26 +263,13 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
         val drops = getAdditionalDrops(level, blockPos, block, blockState, traitStacks, traitEffects, randomTraitChances, player, tool)
         val experience = if (dropExperience) level.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey]) else 0
 
-        // 粘着採掘判定
-        val stickyMiningListener: (() -> Unit)? = run {
-            if (player == null) return@run null
-            if (tool == null) return@run null
-            val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
-            if (stickyMiningLevel == 0) return@run null
-            val snapshot = StickyMiningSnapshot.take(level, blockPos.toBox())
-            return@run {
-                snapshot.teleportNewEntities(player)
-            }
-        }
-
         // アイテムを生成
-        drops.forEach { itemStack ->
-            popResource(level, blockPos, itemStack)
+        withStickyMining(level, blockPos.toBox(), player, tool) {
+            drops.forEach { itemStack ->
+                popResource(level, blockPos, itemStack)
+            }
+            if (experience > 0) popExperience(level, blockPos, experience)
         }
-        if (experience > 0) popExperience(level, blockPos, experience)
-
-        // 粘着採掘効果
-        stickyMiningListener?.invoke()
 
         // 成長段階を消費
         level.setBlock(blockPos, getBlockStateAfterPicking(blockState), UPDATE_CLIENTS)

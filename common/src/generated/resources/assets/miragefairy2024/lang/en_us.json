@@ -357,6 +357,7 @@
   "death.attack.miragefairy2024.tool_break": "%1$s injured their hand",
   "death.attack.miragefairy2024.tool_break.player": "%1$s injured their hand while fighting %2$s",
   "effect.miragefairy2024.experience": "Experience",
+  "effect.miragefairy2024.sticky_mining": "Sticky Mining",
   "enchantment.miragefairy2024.area_mining_acceleration": "Area Mining Acceleration",
   "enchantment.miragefairy2024.backward_area_mining": "Backward Area Mining",
   "enchantment.miragefairy2024.curse_of_shattering": "Curse of Shattering",

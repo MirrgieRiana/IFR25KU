@@ -5,31 +5,63 @@ import miragefairy2024.ModContext
 import miragefairy2024.mixins.api.BlockCallback
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.Registration
+import miragefairy2024.util.en
 import miragefairy2024.util.enJa
 import miragefairy2024.util.get
 import miragefairy2024.util.isIn
 import miragefairy2024.util.isValid
+import miragefairy2024.util.ja
+import miragefairy2024.util.register
 import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.toBox
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
+import net.minecraft.world.effect.MobEffect
+import net.minecraft.world.effect.MobEffectCategory
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.ExperienceOrb
+import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.AABB
 
 val STICKY_MINING_BLOCK_TAG = MirageFairy2024.identifier("sticky_mining_block").toBlockTag()
 
+val stickyMiningStatusEffect = Registration(BuiltInRegistries.MOB_EFFECT, MirageFairy2024.identifier("sticky_mining")) { StickyMiningStatusEffect() }
+
+/** 採掘者の側に由来する粘着採掘の発動を判定するのだ～🌱 [STICKY_MINING_BLOCK_TAG] による対象ブロック由来の発動は含まないのだ～🌱 */
+fun isStickyMining(level: Level, entity: Entity, tool: ItemStack?): Boolean {
+    if (entity is LivingEntity && entity.hasEffect(stickyMiningStatusEffect.getHolder())) return true
+    if (tool == null) return false
+    return EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool) > 0
+}
+
+/** 粘着採掘が発動している場合に、[action] が [aabb] の内部に生じさせたドロップを [entity] の位置へ引き寄せるのだ～🌱 */
+inline fun withStickyMining(level: Level, aabb: AABB, entity: Entity?, tool: ItemStack?, action: () -> Unit) {
+    if (level.isClientSide || entity == null || !isStickyMining(level, entity, tool)) {
+        action()
+        return
+    }
+    val snapshot = StickyMiningSnapshot.take(level, aabb)
+    action()
+    snapshot.teleportNewEntities(entity)
+}
+
 context(ModContext)
 fun initStickyMining() {
     STICKY_MINING_BLOCK_TAG.enJa(EnJa("Sticky Mining Block", "粘着採掘ブロック"))
 
+    stickyMiningStatusEffect.register()
+    en { stickyMiningStatusEffect().descriptionId to "Sticky Mining" }
+    ja { stickyMiningStatusEffect().descriptionId to "粘着採掘" }
+
     val listener = ThreadLocal<() -> Unit>()
     BlockCallback.BEFORE_DROP_BY_ENTITY.register { state, level, pos, _, entity, tool ->
         if (entity == null) return@register
-        val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
-        if (!(stickyMiningLevel > 0 || state isIn STICKY_MINING_BLOCK_TAG)) return@register
+        if (!(isStickyMining(level, entity, tool) || state isIn STICKY_MINING_BLOCK_TAG)) return@register
 
         val snapshot = StickyMiningSnapshot.take(level, pos.toBox())
         listener.set {
@@ -44,6 +76,8 @@ fun initStickyMining() {
         }
     }
 }
+
+class StickyMiningStatusEffect : MobEffect(MobEffectCategory.BENEFICIAL, 0x7FB238)
 
 class StickyMiningSnapshot private constructor(
     private val level: Level,

@@ -245,6 +245,8 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
   - 側方範囲採掘によって範囲が拡張する。
   - スニーク中は、状態の違いを無視して、同じ種類のブロックであれば辿る。
 - 追加: デバッグアイテム「Debug Surface Noise Statistics」を追加。
+- 追加: ステータス効果「粘着採掘」を追加。
+  - 効果を受けている間は、所持ツールによらず粘着採掘が発動する。
 - 表示: アカーシャによる生命設計の針の説明文を、使用対象ごとの挙動が分かるように変更。
 
 ## 31.31.2
