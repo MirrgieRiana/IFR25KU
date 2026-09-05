@@ -3,7 +3,7 @@ package miragefairy2024.mod.tree.contents.blockcards
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
-import miragefairy2024.mod.tree.contents.HaimeviskaLeavesBlock
+import miragefairy2024.mod.tree.contents.ChargeableLeavesBlock
 import miragefairy2024.mod.tree.contents.chargedChargeableLeavesTexturedModelFactory
 import miragefairy2024.mod.tree.contents.unchargedChargeableLeavesTexturedModelFactory
 import miragefairy2024.util.BlockStateVariant
@@ -48,8 +48,8 @@ class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration, priva
         block.registerVariantsBlockStateGeneration {
             val normal = BlockStateVariant(model = "block/" * block().getIdentifier())
             listOf(
-                propertiesOf(HaimeviskaLeavesBlock.CHARGED with true) with normal.with(model = "block/charged_" * block().getIdentifier()),
-                propertiesOf(HaimeviskaLeavesBlock.CHARGED with false) with normal.with(model = "block/uncharged_" * block().getIdentifier()),
+                propertiesOf(ChargeableLeavesBlock.CHARGED with true) with normal.with(model = "block/charged_" * block().getIdentifier()),
+                propertiesOf(ChargeableLeavesBlock.CHARGED with false) with normal.with(model = "block/uncharged_" * block().getIdentifier()),
             )
         }
         registerModelGeneration({ "block/charged_" * block().getIdentifier() }, { chargedChargeableLeavesTexturedModelFactory.get(block()) })

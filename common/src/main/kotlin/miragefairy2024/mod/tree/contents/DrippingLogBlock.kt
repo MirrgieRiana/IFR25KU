@@ -29,9 +29,9 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
 
 @Suppress("OVERRIDE_DEPRECATION")
-class DrippingHaimeviskaLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
+class DrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
     companion object {
-        val CODEC: MapCodec<DrippingHaimeviskaLogBlock> = simpleCodec(::DrippingHaimeviskaLogBlock)
+        val CODEC: MapCodec<DrippingLogBlock> = simpleCodec(::DrippingLogBlock)
     }
 
     override fun codec() = CODEC

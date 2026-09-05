@@ -18,9 +18,9 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.BooleanProperty
 
-class HaimeviskaLeavesBlock(settings: Properties) : LeavesBlock(settings) {
+class ChargeableLeavesBlock(settings: Properties) : LeavesBlock(settings) {
     companion object {
-        val CODEC: MapCodec<HaimeviskaLeavesBlock> = simpleCodec(::HaimeviskaLeavesBlock)
+        val CODEC: MapCodec<ChargeableLeavesBlock> = simpleCodec(::ChargeableLeavesBlock)
         val CHARGED: BooleanProperty = BooleanProperty.create("charged")
     }
 
