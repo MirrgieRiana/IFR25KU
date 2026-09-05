@@ -72,7 +72,8 @@
     [
       "minecraft:glow_lichen",
       "minecraft:forest_flowers",
-      "minecraft:trees_taiga",
+      "miragefairy2024:small_plastic_tree_old_growth_amber_forest",
+      "miragefairy2024:giant_plastic_tree_old_growth_amber_forest",
       "minecraft:flower_default",
       "minecraft:patch_grass_badlands",
       "minecraft:patch_dead_bush",
