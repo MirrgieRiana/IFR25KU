@@ -48,7 +48,7 @@ import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.mod.structure.WeatheredAncientRemnantsCard
 import miragefairy2024.mod.translation
-import miragefairy2024.mod.tree.haimeviskaAdvancement
+import miragefairy2024.mod.tree.contents.haimeviska.haimeviskaAdvancement
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa

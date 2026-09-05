@@ -1,6 +1,7 @@
 package miragefairy2024.mod.tree.contents.blockcards
 
 import miragefairy2024.ModContext
+import miragefairy2024.mod.registerHarvestNotation
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.util.ItemLootPoolEntry
@@ -12,8 +13,9 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition
 
-open class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration, log: () -> TreeBlockCard, protected val sap: () -> Item) : TreeHorizontalFacingLogBlockCard(configuration, log) {
+class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration, log: () -> TreeBlockCard, private val sap: () -> Item, private val rosin: () -> Item) : TreeHorizontalFacingLogBlockCard(configuration, log) {
     context(ModContext)
     override fun init() {
         super.init()
@@ -31,10 +33,17 @@ open class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration, log: 
                 }) {
                     `when`(provider.doesNotHaveSilkTouch())
                 },
+                LootPool(ItemLootPoolEntry(rosin()) {
+                    apply(ApplyBonusCount.addUniformBonusCount(registries[Registries.ENCHANTMENT, Enchantments.FORTUNE], 2))
+                }) {
+                    `when`(provider.doesNotHaveSilkTouch())
+                    `when`(LootItemRandomChanceCondition.randomChance(0.01F))
+                },
             ) {
                 provider.applyExplosionDecay(block(), this)
             }
         }
+        item.registerHarvestNotation(sap, rosin)
 
     }
 }
