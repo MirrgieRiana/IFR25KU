@@ -28,7 +28,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "miragefairy2024:dripping_haimeviska_log"
+          "name": "miragefairy2024:dripping_plastic_tree_log"
         }
       ],
       "rolls": 1.0
@@ -98,7 +98,7 @@
               }
             }
           ],
-          "name": "miragefairy2024:haimeviska_sap"
+          "name": "miragefairy2024:plastic_tree_sap"
         }
       ],
       "rolls": 1.0
@@ -148,5 +148,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "miragefairy2024:blocks/dripping_haimeviska_log"
+  "random_sequence": "miragefairy2024:blocks/dripping_plastic_tree_log"
 }
