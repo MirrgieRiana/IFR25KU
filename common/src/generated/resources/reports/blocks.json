@@ -9717,6 +9717,43 @@
       }
     ]
   },
+  "miragefairy2024:incised_plastic_tree_log": {
+    "definition": {
+      "type": "miragefairy2024:incised_plastic_tree_log",
+      "properties": {}
+    },
+    "properties": {
+      "facing": [
+        "north",
+        "south",
+        "west",
+        "east"
+      ]
+    },
+    "states": [
+      {
+        "default": true,
+        "properties": {
+          "facing": "north"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east"
+        }
+      }
+    ]
+  },
   "miragefairy2024:kohakuto_block": {
     "definition": {
       "type": "miragefairy2024:semi_opaque_transparent_block",
