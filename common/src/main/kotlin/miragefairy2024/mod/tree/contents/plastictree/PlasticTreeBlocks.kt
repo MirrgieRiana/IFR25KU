@@ -5,12 +5,23 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.contents.DrippingLogBlock
+import miragefairy2024.mod.tree.contents.IncisableLogBlock
 import miragefairy2024.util.get
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
+
+class PlasticTreeLogBlock(settings: Properties) : IncisableLogBlock(settings) {
+    companion object {
+        val CODEC: MapCodec<PlasticTreeLogBlock> = simpleCodec(::PlasticTreeLogBlock)
+    }
+
+    override fun codec() = CODEC
+
+    override fun getIncisedLogBlock() = TreeBlockCard.INCISED_LOG.block() // TODO 傷の付いたプラノキの原木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+}
 
 class DrippingPlasticTreeLogBlock(settings: Properties) : DrippingLogBlock(settings) {
     companion object {
@@ -19,9 +30,9 @@ class DrippingPlasticTreeLogBlock(settings: Properties) : DrippingLogBlock(setti
 
     override fun codec() = CODEC
 
-    override fun getIncisedLogBlock() = TreeBlockCard.INCISED_LOG.block() // 傷の付いたプラノキの原木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+    override fun getIncisedLogBlock() = TreeBlockCard.INCISED_LOG.block() // TODO 傷の付いたプラノキの原木がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
     override fun getSapItem() = MaterialCard.PLASTIC_TREE_SAP.item()
-    override fun getRosinItem() = MaterialCard.HAIMEVISKA_ROSIN.item() // プラノキは涙を持たないから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+    override fun getRosinItem() = MaterialCard.HAIMEVISKA_ROSIN.item() // TODO プラノキは涙を持たないから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
 
     override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
         if (random.nextFloat() >= 0.2F) return

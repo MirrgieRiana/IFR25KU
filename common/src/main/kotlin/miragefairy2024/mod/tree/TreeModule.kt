@@ -10,6 +10,7 @@ fun initTreeModule() {
     initTreeBlocks()
 
     initHaimeviska()
+    initPlasticTree()
 
     initPlasticTree()
 
