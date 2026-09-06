@@ -239,7 +239,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_leaves", EnJa("Plastic Tree Leaves", "プラノキの葉"),
             PoemList(1).poem(EnJa("Abnormal extrafloral nectar expression.", "フォリアの中の免疫系。")),
         ).leaves { PLASTIC_TREE_SAPLING }
-        val PLASTIC_TREE_LOG: TreeBlockCard = !TreeBlockConfiguration(
+        val PLASTIC_TREE_LOG = !TreeBlockConfiguration(
             PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_log", EnJa("Plastic Tree Log", "プラノキの原木"),
             PoemList(1)
                 .poem(EnJa("The evolutionary strategy of isolation.", "進化を止めたテラフォーマー。"))
