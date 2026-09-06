@@ -238,23 +238,16 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
         ).sapling()
 
+        val PLASTIC_TREE_LEAVES = !TreeBlockConfiguration(
+            PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_leaves", EnJa("Plastic Tree Leaves", "プラノキの葉"),
+            PoemList(1).poem(EnJa("Abnormal extrafloral nectar expression.", "フォリアの中の免疫系。")),
+        ).leaves { PLASTIC_TREE_SAPLING }
         val PLASTIC_TREE_LOG: TreeBlockCard = !TreeBlockConfiguration(
             PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_log", EnJa("Plastic Tree Log", "プラノキの原木"),
             PoemList(1)
                 .poem(EnJa("The evolutionary strategy of isolation.", "進化を止めたテラフォーマー。"))
                 .description(EnJa("Can be incised with a sword", "剣を使って傷を付けられる")),
         ).block { { PlasticTreeLogBlock(it) } }.log()
-
-        val PLASTIC_TREE_SAPLING = !TreeBlockConfiguration(
-            PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_sapling", EnJa("Plastic Tree Sapling", "プラノキの苗木"),
-            PoemList(1).poem(EnJa("TODO", "TODO")),
-        ).sapling()
-
-        val PLASTIC_TREE_LEAVES = !TreeBlockConfiguration(
-            PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_leaves", EnJa("Plastic Tree Leaves", "プラノキの葉"),
-            PoemList(1).poem(EnJa("Abnormal extrafloral nectar expression.", "フォリアの中の免疫系。")),
-        ).leaves { PLASTIC_TREE_SAPLING }
-
         val INCISED_PLASTIC_TREE_LOG = !TreeBlockConfiguration(
             PLASTIC_TREE_TREE_CONFIGURATION, "incised_plastic_tree_log", EnJa("Incised Plastic Tree Log", "傷の付いたプラノキの原木"),
             PoemList(1)
@@ -263,8 +256,12 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         ).incisedLog({ PLASTIC_TREE_LOG }) { IncisedPlasticTreeLogBlock(it) }
         val PLASTIC_TREE_DRIPPING_LOG = !TreeBlockConfiguration(
             PLASTIC_TREE_TREE_CONFIGURATION, "dripping_plastic_tree_log", EnJa("Dripping Plastic Tree Log", "樹液が滴るプラノキの原木"),
-            PoemList(1).poem(EnJa("TODO", "TODO")),
+            PoemList(1).poem(EnJa("High mana-conducting carbon isotope.", "魔力を帯びたスクロース。")),
         ).drippingLog({ PLASTIC_TREE_LOG }, { MaterialCard.PLASTIC_TREE_SAP.item() }, { MaterialCard.HAIMEVISKA_ROSIN.item() }) { DrippingPlasticTreeLogBlock(it) }
+        val PLASTIC_TREE_SAPLING = !TreeBlockConfiguration(
+            PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_sapling", EnJa("Plastic Tree Sapling", "プラノキの苗木"),
+            PoemList(1).poem(EnJa("TODO", "TODO")),
+        ).sapling()
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)
