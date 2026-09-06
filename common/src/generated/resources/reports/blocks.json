@@ -14109,6 +14109,37 @@
       }
     ]
   },
+  "miragefairy2024:plastic_tree_log": {
+    "definition": {
+      "type": "miragefairy2024:plastic_tree_log",
+      "properties": {}
+    },
+    "properties": {
+      "axis": [
+        "x",
+        "y",
+        "z"
+      ]
+    },
+    "states": [
+      {
+        "properties": {
+          "axis": "x"
+        }
+      },
+      {
+        "default": true,
+        "properties": {
+          "axis": "y"
+        }
+      },
+      {
+        "properties": {
+          "axis": "z"
+        }
+      }
+    ]
+  },
   "miragefairy2024:plastic_tree_sap_kohakuto_block": {
     "definition": {
       "type": "miragefairy2024:semi_opaque_transparent_block",
