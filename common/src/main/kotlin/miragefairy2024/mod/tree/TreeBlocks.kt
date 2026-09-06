@@ -243,7 +243,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
 
         val PLASTIC_TREE_LEAVES = !TreeBlockConfiguration(
             PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_leaves", EnJa("Plastic Tree Leaves", "プラノキの葉"),
-            PoemList(1).poem(EnJa("TODO", "TODO")),
+            PoemList(1).poem(EnJa("Abnormal extrafloral nectar expression.", "フォリアの中の免疫系。")),
         ).leaves { SAPLING }
     }
 
