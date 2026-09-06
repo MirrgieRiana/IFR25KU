@@ -230,8 +230,8 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
         ).sapling()
 
-        val INCISED_PLASTIC_TREE_LOG = !TreeBlockConfiguration(
-            PLASTIC_TREE_TREE_CONFIGURATION, "incised_plastic_tree_log", EnJa("Incised Plastic Tree Log", "傷の付いたプラノキの原木"),
+        val PLASTIC_TREE_LOG = !TreeBlockConfiguration(
+            PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_log", EnJa("Plastic Tree Log", "プラノキの原木"),
             PoemList(1)
                 .poem(EnJa("The evolutionary strategy of isolation.", "進化を止めたテラフォーマー。"))
                 .description(EnJa("Can be incised with a sword", "剣を使って傷を付けられる")),
@@ -240,9 +240,9 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val INCISED_PLASTIC_TREE_LOG = !TreeBlockConfiguration(
             PLASTIC_TREE_TREE_CONFIGURATION, "incised_plastic_tree_log", EnJa("Incised Plastic Tree Log", "傷の付いたプラノキの原木"),
             PoemList(1)
-                .poem(EnJa("TODO", "TODO"))
+                .poem(EnJa("Toxic resin that eliminates others.", "琥珀色のアレロパシー。"))
                 .description(EnJa("Produces sap over time", "時間経過で樹液を生産")),
-        ).incisedLog({ LOG }) { IncisedPlasticTreeLogBlock(it) }
+        ).incisedLog({ PLASTIC_TREE_LOG }) { IncisedPlasticTreeLogBlock(it) }
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)
