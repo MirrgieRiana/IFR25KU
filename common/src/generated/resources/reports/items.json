@@ -8613,7 +8613,7 @@
       "minecraft:repair_cost": 0
     }
   },
-  "miragefairy2024:plastic_tree_leaves": {
+  "miragefairy2024:plastic_tree_log": {
     "class": "net.minecraft.world.item.BlockItem",
     "components": {
       "minecraft:attribute_modifiers": {
