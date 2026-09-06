@@ -232,7 +232,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val PLASTIC_TREE_LOG = !TreeBlockConfiguration(
             PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_log", EnJa("Plastic Tree Log", "プラノキの原木"),
             PoemList(1)
-                .poem(EnJa("TODO", "TODO"))
+                .poem(EnJa("The evolutionary strategy of isolation.", "進化を止めたテラフォーマー。"))
                 .description(EnJa("Can be incised with a sword", "剣を使って傷を付けられる")),
         ).block { { PlasticTreeLogBlock(it) } }.log()
     }
