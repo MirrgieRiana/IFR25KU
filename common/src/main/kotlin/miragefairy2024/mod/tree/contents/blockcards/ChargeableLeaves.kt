@@ -17,7 +17,8 @@ import miragefairy2024.util.with
 
 class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration, sapling: () -> TreeBlockCard) : AbstractTreeLeavesBlockCard(configuration, sapling) {
     context(ModContext)
-    override fun initRendering() {
+    override fun init() {
+        super.init()
         block.registerVariantsBlockStateGeneration {
             val normal = BlockStateVariant(model = "block/" * block().getIdentifier())
             listOf(

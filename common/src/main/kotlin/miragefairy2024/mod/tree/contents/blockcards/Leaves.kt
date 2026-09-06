@@ -40,7 +40,6 @@ abstract class AbstractTreeLeavesBlockCard(configuration: TreeBlockConfiguration
         super.init()
 
         // レンダリング
-        initRendering()
         block.registerCutoutRenderLayer()
         block.registerFoliageColorProvider()
         item.registerRedirectColorProvider()
@@ -55,14 +54,12 @@ abstract class AbstractTreeLeavesBlockCard(configuration: TreeBlockConfiguration
         block.registerFlammable(30, 30)
 
     }
-
-    context(ModContext)
-    protected abstract fun initRendering()
 }
 
 class TreeLeavesBlockCard(configuration: TreeBlockConfiguration, sapling: () -> TreeBlockCard) : AbstractTreeLeavesBlockCard(configuration, sapling) {
     context(ModContext)
-    override fun initRendering() {
+    override fun init() {
+        super.init()
         block.registerSingletonBlockStateGeneration()
         registerModelGeneration({ "block/" * block().getIdentifier() }, { unchargedChargeableLeavesTexturedModelFactory.get(block()) })
         item.registerModelGeneration(Model("block/" * identifier))
