@@ -12,6 +12,4 @@ fun initTreeModule() {
     initHaimeviska()
     initPlasticTree()
 
-    initPlasticTree()
-
 }
