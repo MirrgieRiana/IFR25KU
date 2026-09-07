@@ -12,7 +12,6 @@ import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.mod.tool.effects.areaMining
 import miragefairy2024.mod.tool.effects.enchantment
 import miragefairy2024.util.Translation
-import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.spaceVisitor
 import miragefairy2024.util.text
