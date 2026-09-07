@@ -26,7 +26,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.material.PushReaction
 
-class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration, private val sapling: () -> TreeBlockCard) : TreeBlockCard(configuration) {
+// TODO 実装
+class TreeLeavesBlockCard(configuration: TreeBlockConfiguration, private val sapling: () -> TreeBlockCard) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings()
         .mapColor(MapColor.PLANT)
         .strength(0.2F)

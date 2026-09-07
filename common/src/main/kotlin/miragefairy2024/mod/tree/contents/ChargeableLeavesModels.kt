@@ -15,7 +15,7 @@ import miragefairy2024.util.with
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
 
-val unchargedHaimeviskaLeavesTexturedModelFactory = TexturedModel.Provider { block ->
+val unchargedChargeableLeavesTexturedModelFactory = TexturedModel.Provider { block ->
     Model { textureMapping ->
         ModelData(
             parent = ResourceLocation("minecraft", "block/block"),
@@ -43,7 +43,7 @@ val unchargedHaimeviskaLeavesTexturedModelFactory = TexturedModel.Provider { blo
     )
 }
 
-val chargedHaimeviskaLeavesTexturedModelFactory = TexturedModel.Provider { block ->
+val chargedChargeableLeavesTexturedModelFactory = TexturedModel.Provider { block ->
     Model { textureMapping ->
         ModelData(
             parent = ResourceLocation("minecraft", "block/block"),
