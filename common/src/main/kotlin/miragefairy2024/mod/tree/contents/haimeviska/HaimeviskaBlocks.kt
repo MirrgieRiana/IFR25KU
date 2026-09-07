@@ -10,13 +10,11 @@ import miragefairy2024.mod.tree.contents.HollowLogBlock
 import miragefairy2024.mod.tree.contents.IncisableLogBlock
 import miragefairy2024.mod.tree.contents.IncisedLogBlock
 import miragefairy2024.mod.tree.contents.spawnHaimeviskaBlossomParticle
-import miragefairy2024.util.get
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.util.ParticleUtils
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
-import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.state.BlockState
 
 class HaimeviskaLeavesBlock(settings: Properties) : ChargeableLeavesBlock(settings) {
