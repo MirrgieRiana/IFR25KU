@@ -9,7 +9,7 @@ import miragefairy2024.mod.tree.contents.DrippingLogBlock
 import miragefairy2024.mod.tree.contents.HollowLogBlock
 import miragefairy2024.mod.tree.contents.IncisableLogBlock
 import miragefairy2024.mod.tree.contents.IncisedLogBlock
-import miragefairy2024.mod.tree.contents.spawnHaimeviskaBlossomParticle
+import miragefairy2024.mod.tree.contents.spawnDrippingSapParticle
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.util.ParticleUtils
@@ -67,7 +67,7 @@ class DrippingHaimeviskaLogBlock(settings: Properties) : DrippingLogBlock(settin
     override fun getRosinItem() = MaterialCard.HAIMEVISKA_ROSIN.item()
 
     override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
-        spawnHaimeviskaBlossomParticle(state, level, pos, random)
+        spawnDrippingSapParticle(state, level, pos, random)
     }
 }
 
