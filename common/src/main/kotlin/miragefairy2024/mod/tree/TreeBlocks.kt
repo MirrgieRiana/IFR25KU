@@ -110,10 +110,11 @@ fun TreeBlockConfiguration.tag(blockTag: TagKey<Block>, itemTag: TagKey<Item>) =
 
 fun TreeBlockConfiguration.block(blockCreatorConverter: (suspend (BlockBehaviour.Properties) -> Block) -> suspend (BlockBehaviour.Properties) -> Block) = this.also { it.blockCreatorConverters += blockCreatorConverter }
 
+private fun TreeBlockConfiguration.leavesBase() = this.tag(BlockTags.LEAVES, ItemTags.LEAVES).tag(BlockTags.MINEABLE_WITH_HOE)
 private fun TreeBlockConfiguration.logBase() = this.tag(this.tree.getBlockTag(), this.tree.getItemTag()).tag(BlockTags.OVERWORLD_NATURAL_LOGS)
 private fun TreeBlockConfiguration.woodBase() = this.tag(this.tree.getBlockTag(), this.tree.getItemTag())
 
-private fun TreeBlockConfiguration.leaves(sapling: () -> TreeBlockCard) = this.tag(BlockTags.LEAVES, ItemTags.LEAVES).tag(BlockTags.MINEABLE_WITH_HOE).block { { HaimeviskaLeavesBlock(it) } }.let { TreeChargeableLeavesBlockCard(it, sapling) }
+private fun TreeBlockConfiguration.leaves(sapling: () -> TreeBlockCard) = this.leavesBase().block { { HaimeviskaLeavesBlock(it) } }.let { TreeChargeableLeavesBlockCard(it, sapling) }
 private fun TreeBlockConfiguration.log() = this.logBase().let { TreeIncisableLogBlockCard(it) }
 private fun TreeBlockConfiguration.wood(log: () -> TreeBlockCard) = this.woodBase().block { { RotatedPillarBlock(it) } }.let { TreeWoodBlockCard(it, log) }
 private fun TreeBlockConfiguration.strippedLog(log: () -> TreeBlockCard) = this.woodBase().tag(ResourceLocation("c", "stripped_logs").toBlockTag(), ResourceLocation("c", "stripped_logs").toItemTag()).block { { RotatedPillarBlock(it) } }.let { TreeStrippedLogBlockCard(it, log) }
