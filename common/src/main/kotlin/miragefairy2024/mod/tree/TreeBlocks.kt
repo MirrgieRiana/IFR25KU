@@ -237,7 +237,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
 
         val PLASTIC_TREE_LEAVES = !TreeBlockConfiguration(
             PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_leaves", EnJa("Plastic Tree Leaves", "プラノキの葉"),
-            PoemList(1).poem(EnJa("Abnormal extrafloral nectar expression.", "フォリアの中の免疫系。")),
+            PoemList(1).poem(EnJa("Abnormal extrafloral nectar expression.", "草魂捕食性ウィスプの護法。")),
         ).block { { LeavesBlock(it) } }.leaves { PLASTIC_TREE_SAPLING }
         val PLASTIC_TREE_LOG = !TreeBlockConfiguration(
             PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_log", EnJa("Plastic Tree Log", "プラノキの原木"),
@@ -257,7 +257,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         ).block { { DrippingPlasticTreeLogBlock(it) } }.drippingLog({ PLASTIC_TREE_LOG }, { MaterialCard.PLASTIC_TREE_SAP.item() }, { MaterialCard.HAIMEVISKA_ROSIN.item() })
         val PLASTIC_TREE_SAPLING = !TreeBlockConfiguration(
             PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_sapling", EnJa("Plastic Tree Sapling", "プラノキの苗木"),
-            PoemList(1).poem(EnJa("TODO", "TODO")),
+            PoemList(1).poem(EnJa("Etherify sugars with astral radiation.", "天空のフォリオニクス。")),
         ).sapling()
     }
 
