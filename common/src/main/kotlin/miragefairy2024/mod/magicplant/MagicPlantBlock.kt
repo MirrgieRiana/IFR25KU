@@ -1,14 +1,13 @@
 package miragefairy2024.mod.magicplant
 
-import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.contents.StickyMiningSnapshot
+import miragefairy2024.mod.enchantment.contents.isStickyMining
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.tool.CarnivorousPlantDamageTypeCard
 import miragefairy2024.mod.tool.DamageTypeCard
 import miragefairy2024.mod.tool.SpineDamageTypeCard
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.createItemStack
-import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.isServer
@@ -20,7 +19,6 @@ import mirrg.kotlin.helium.or
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
-import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.util.RandomSource
@@ -33,7 +31,6 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.ContainerLevelAccess
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelReader
@@ -270,8 +267,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
         val stickyMiningListener: (() -> Unit)? = run {
             if (player == null) return@run null
             if (tool == null) return@run null
-            val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
-            if (stickyMiningLevel == 0) return@run null
+            if (!isStickyMining(level, tool)) return@run null
             val snapshot = StickyMiningSnapshot.take(level, blockPos.toBox())
             return@run {
                 snapshot.teleportNewEntities(player)

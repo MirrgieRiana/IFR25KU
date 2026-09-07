@@ -30,8 +30,7 @@ fun initStickyMining() {
     val listener = ThreadLocal<() -> Unit>()
     BlockCallback.BEFORE_DROP_BY_ENTITY.register { state, level, pos, _, entity, tool ->
         if (entity == null) return@register
-        val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
-        if (!(stickyMiningLevel > 0 || state isIn STICKY_MINING_BLOCK_TAG)) return@register
+        if (!(isStickyMining(level, tool) || state isIn STICKY_MINING_BLOCK_TAG)) return@register
 
         val snapshot = StickyMiningSnapshot.take(level, pos.toBox())
         listener.set {
@@ -81,12 +80,15 @@ class StickyMiningSnapshot private constructor(
     }
 }
 
+fun isStickyMining(level: Level, tool: ItemStack): Boolean {
+    return EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool) > 0
+}
+
 inline fun withStickyMining(level: Level, aabb: AABB, player: Player?, tool: ItemStack, action: () -> Unit) {
     run {
         if (level.isClientSide) return@run
         if (player == null) return@run
-        val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
-        if (stickyMiningLevel == 0) return@run
+        if (!isStickyMining(level, tool)) return@run
 
         val snapshot = StickyMiningSnapshot.take(level, aabb)
         action()

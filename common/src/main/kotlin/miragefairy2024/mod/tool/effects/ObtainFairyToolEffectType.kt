@@ -4,8 +4,8 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemType
 import miragefairy2024.mod.TextPoem
-import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.contents.StickyMiningSnapshot
+import miragefairy2024.mod.enchantment.contents.isStickyMining
 import miragefairy2024.mod.fairy.FairyDreamRecipes
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.fairyHistoryContainer
@@ -14,15 +14,12 @@ import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.merge
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
-import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.mutate
 import miragefairy2024.util.text
 import miragefairy2024.util.toBox
-import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.item.ItemEntity
-import net.minecraft.world.item.enchantment.EnchantmentHelper
 
 fun <T : ToolConfiguration> T.obtainFairy(appearanceRateBonus: Double) = this.merge(ObtainFairyToolEffectType, appearanceRateBonus)
 
@@ -48,8 +45,7 @@ object ObtainFairyToolEffectType : DoubleAddToolEffectType<ToolConfiguration>() 
 
             // 粘着採掘判定
             val stickyMiningListener: (() -> Unit)? = run {
-                val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
-                if (stickyMiningLevel == 0) return@run null
+                if (!isStickyMining(level, tool)) return@run null
                 val snapshot = StickyMiningSnapshot.take(level, pos.toBox())
                 return@run {
                     snapshot.teleportNewEntities(player)
