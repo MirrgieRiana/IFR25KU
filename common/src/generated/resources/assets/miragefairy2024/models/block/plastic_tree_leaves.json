@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves",
+  "textures": {
+    "all": "miragefairy2024:block/plastic_tree_leaves"
+  }
+}
