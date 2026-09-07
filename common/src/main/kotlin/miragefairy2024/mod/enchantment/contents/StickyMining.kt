@@ -15,6 +15,8 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.ExperienceOrb
 import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.AABB
@@ -77,4 +79,20 @@ class StickyMiningSnapshot private constructor(
             return StickyMiningSnapshot(level, aabb, getItemEntities(level, aabb), getExperienceOrbs(level, aabb))
         }
     }
+}
+
+inline fun withStickyMining(level: Level, aabb: AABB, player: Player?, tool: ItemStack, action: () -> Unit) {
+    run {
+        if (level.isClientSide) return@run
+        if (player == null) return@run
+        val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
+        if (stickyMiningLevel == 0) return@run
+
+        val snapshot = StickyMiningSnapshot.take(level, aabb)
+        action()
+        snapshot.teleportNewEntities(player)
+
+        return
+    }
+    action()
 }

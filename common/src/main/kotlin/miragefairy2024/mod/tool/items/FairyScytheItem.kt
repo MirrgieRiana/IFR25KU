@@ -4,7 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.SCYTHE_ITEM_TAG
-import miragefairy2024.mod.enchantment.contents.StickyMiningSnapshot
+import miragefairy2024.mod.enchantment.contents.withStickyMining
 import miragefairy2024.mod.magicplant.MagicPlantBlock
 import miragefairy2024.mod.magicplant.PostTryPickHandlerItem
 import miragefairy2024.mod.tool.FairyMiningToolConfiguration
@@ -12,7 +12,6 @@ import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.mod.tool.effects.areaMining
 import miragefairy2024.mod.tool.effects.enchantment
 import miragefairy2024.util.Translation
-import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.spaceVisitor
 import miragefairy2024.util.text
@@ -23,7 +22,6 @@ import net.minecraft.core.BlockBox
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.component.DataComponents
-import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.InteractionHand
@@ -38,7 +36,6 @@ import net.minecraft.world.item.SwordItem
 import net.minecraft.world.item.Tier
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.enchantment.Enchantment
-import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.item.enchantment.ItemEnchantments
 import net.minecraft.world.level.ClipContext
 import net.minecraft.world.level.Level
@@ -46,7 +43,6 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.CaveVines
 import net.minecraft.world.level.block.SweetBerryBushBlock
 import net.minecraft.world.level.block.state.BlockState
-import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.BlockHitResult
 
 open class FairyScytheConfiguration(
@@ -165,20 +161,4 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
             }
         }
     }
-}
-
-private inline fun withStickyMining(level: Level, aabb: AABB, player: Player?, tool: ItemStack, action: () -> Unit) {
-    run {
-        if (level.isClientSide) return@run
-        if (player == null) return@run
-        val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
-        if (stickyMiningLevel == 0) return@run
-
-        val snapshot = StickyMiningSnapshot.take(level, aabb)
-        action()
-        snapshot.teleportNewEntities(player)
-
-        return
-    }
-    action()
 }
