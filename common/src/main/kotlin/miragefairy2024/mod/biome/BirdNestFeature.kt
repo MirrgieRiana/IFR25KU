@@ -51,15 +51,15 @@ class BirdNestFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeat
         val originBlockPos = context.origin()
         val random = context.random()
 
-        // 中心の真下が草ブロックでなければ生成しないのだぁ🌱
+        // 中心の真下が草ブロックでなければ生成しないのだ～🌱
         if (level.getBlockState(originBlockPos.below()) isNotIn Blocks.GRASS_BLOCK) return false
 
-        // この時点で生成は確定なのだぁ🌱
+        // この時点で生成は確定なのだ～🌱
 
         val hayBlockBlockState = Blocks.HAY_BLOCK.defaultBlockState()
         val eggBlockBlockState = BlockMaterialCard.EGG_BLOCK.block().defaultBlockState()
 
-        // 置換可能ブロック、もしくは土や草系ブロックの場合に麦俵を配置するのだぁ🌱
+        // 置換可能ブロック、もしくは土や草系ブロックの場合に麦俵を配置するのだ～🌱
         fun tryPlaceHayBlock(blockPos: BlockPos) {
             val blockState = level.getBlockState(blockPos)
             if (blockState.canBeReplaced() || blockState isIn BlockTags.DIRT) {
@@ -75,7 +75,7 @@ class BirdNestFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeat
             }
         }
 
-        // 底面（Y-1）：3x3に麦俵を配置するのだぁ🌱
+        // 底面（Y-1）：3x3に麦俵を配置するのだ～🌱
         (-1..1).forEach { dx ->
             (-1..1).forEach { dz ->
                 tryPlaceHayBlock(originBlockPos.offset(dx, -1, dz))
@@ -91,7 +91,7 @@ class BirdNestFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeat
             }
         }
 
-        // 壁（Y+0）：X:-2,2; Z:-1..1 の6座標に75%の確率で麦俵を設置するのだぁ🌱
+        // 壁（Y+0）：X:-2,2; Z:-1..1 の6座標に75%の確率で麦俵を設置するのだ～🌱
         listOf(-2, 2).forEach { dx ->
             (-1..1).forEach { dz ->
                 if (random.nextFloat() < 0.75f) {
@@ -100,7 +100,7 @@ class BirdNestFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeat
             }
         }
 
-        // 壁（Y+0）：Z:-2,2; X:-1..1 の6座標に75%の確率で麦俵を設置するのだぁ🌱
+        // 壁（Y+0）：Z:-2,2; X:-1..1 の6座標に75%の確率で麦俵を設置するのだ～🌱
         listOf(-2, 2).forEach { dz ->
             (-1..1).forEach { dx ->
                 if (random.nextFloat() < 0.75f) {

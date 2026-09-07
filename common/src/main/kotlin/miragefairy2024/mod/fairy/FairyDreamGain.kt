@@ -30,8 +30,8 @@ fun initFairyDreamGain() {
             server.playerList.players.forEach { player ->
                 if (!player.isValid) return@forEach
                 if (player.tickCount < 20 * 60) return@forEach
-                val world = player.level()
-                val random = world.random
+                val level = player.level()
+                val random = level.random
 
                 val motifs = mutableSetOf<Motif>()
 
@@ -53,21 +53,21 @@ fun initFairyDreamGain() {
                     }
 
                     fun insertBlockPos(blockPos: BlockPos) {
-                        val blockState = world.getBlockState(blockPos)
+                        val blockState = level.getBlockState(blockPos)
                         val block = blockState.block
 
                         blocks += block
 
-                        if (block is FairyDreamProviderBlock) motifs += block.getFairyDreamMotifs(world, blockPos)
+                        if (block is FairyDreamProviderBlock) motifs += block.getFairyDreamMotifs(level, blockPos)
 
                         run noInventory@{
                             val inventory = if (block is WorldlyContainerHolder) {
-                                block.getContainer(blockState, world, blockPos)
+                                block.getContainer(blockState, level, blockPos)
                             } else if (blockState.hasBlockEntity()) {
-                                val blockEntity = world.getBlockEntity(blockPos)
+                                val blockEntity = level.getBlockEntity(blockPos)
                                 if (blockEntity is Container) {
                                     if (blockEntity is ChestBlockEntity && block is ChestBlock) {
-                                        ChestBlock.getContainer(block, blockState, world, blockPos, true) ?: return@noInventory
+                                        ChestBlock.getContainer(block, blockState, level, blockPos, true) ?: return@noInventory
                                     } else {
                                         blockEntity
                                     }
@@ -103,11 +103,11 @@ fun initFairyDreamGain() {
                     val e = -Mth.cos(-pitch * (Mth.PI / 180))
                     val c = Mth.sin(-pitch * (Mth.PI / 180))
                     val end = start.add(a * e * 32.0, c * 32.0, d * e * 32.0)
-                    val raycastResult = world.clip(ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player))
+                    val raycastResult = level.clip(ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player))
                     if (raycastResult.type == HitResult.Type.BLOCK) insertBlockPos(raycastResult.blockPos)
 
                     // 周辺エンティティ判定
-                    val entities = world.getEntities(player, AABB(player.eyePosition.add(-8.0, -8.0, -8.0), player.eyePosition.add(8.0, 8.0, 8.0)))
+                    val entities = level.getEntities(player, AABB(player.eyePosition.add(-8.0, -8.0, -8.0), player.eyePosition.add(8.0, 8.0, 8.0)))
                     entities.forEach {
                         entityTypes += it.type
                     }

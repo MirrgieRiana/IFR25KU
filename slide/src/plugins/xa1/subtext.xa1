@@ -1,4 +1,4 @@
-# subtext: 中央ぞろえの説明文なのだぁ🌱
+# subtext: 中央ぞろえの説明文なのだ～🌱
 @USE("global")
 
 templates.subtext = lines -> %>
@@ -10,7 +10,7 @@ templates.subtext = lines -> %>
 <%
 
 cssLines::push << %>
-  /* ---- 中央ぞろえの説明文なのだぁ🌱 ---- */
+  /* ---- 中央ぞろえの説明文なのだ～🌱 ---- */
   .subtext {
     text-align: center;
     margin-top: 14px;

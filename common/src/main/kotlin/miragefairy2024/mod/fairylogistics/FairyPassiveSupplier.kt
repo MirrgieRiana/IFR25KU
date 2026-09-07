@@ -123,7 +123,7 @@ class FairyPassiveSupplierBlock(card: FairyPassiveSupplierCard) : FairyLogistics
     override fun codec() = CODEC
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun getShape(state: BlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext) = SHAPES[4 * state[VERTICAL_FACING].id + state[FACING].get2DDataValue()]
+    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = SHAPES[4 * state[VERTICAL_FACING].id + state[FACING].get2DDataValue()]
 }
 
 class FairyPassiveSupplierBlockEntity(private val card: FairyPassiveSupplierCard, pos: BlockPos, state: BlockState) : FairyLogisticsBlockEntity<FairyPassiveSupplierBlockEntity>(card, pos, state) {
@@ -145,11 +145,11 @@ class FairyPassiveSupplierBlockEntity(private val card: FairyPassiveSupplierCard
         return getLogisticsPower(fairyItemStack)
     }
 
-    override fun serverTick(world: Level, pos: BlockPos, state: BlockState) {
-        super.serverTick(world, pos, state)
+    override fun serverTick(level: Level, pos: BlockPos, state: BlockState) {
+        super.serverTick(level, pos, state)
 
         // 1分に1回発動する
-        if (t == -1) t = world.random.nextInt(20 * 60)
+        if (t == -1) t = level.random.nextInt(20 * 60)
         t--
         if (t > 0) return
         t = 20 * 60

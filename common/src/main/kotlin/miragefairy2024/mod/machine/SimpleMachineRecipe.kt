@@ -181,7 +181,7 @@ open class SimpleMachineRecipe(
         }
     }
 
-    override fun matches(inventory: SimpleMachineRecipeInput, world: Level): Boolean {
+    override fun matches(inventory: SimpleMachineRecipeInput, level: Level): Boolean {
         return match(inventory) != null
     }
 

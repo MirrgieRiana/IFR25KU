@@ -39,9 +39,9 @@ fun <P> Channel<P>.sendToClient(player: ServerPlayer, packet: P) {
     NetworkManager.sendToPlayer(player, Channel.Payload(this, packet))
 }
 
-fun <P> Channel<P>.sendToAround(world: ServerLevel, pos: Vec3, distance: Double, packet: P) {
-    val players = world.players()
-        .filter { it.level().dimension() == world.dimension() }
+fun <P> Channel<P>.sendToAround(level: ServerLevel, pos: Vec3, distance: Double, packet: P) {
+    val players = level.players()
+        .filter { it.level().dimension() == level.dimension() }
         .filter { pos.distanceToSqr(it.position()) <= distance * distance }
     NetworkManager.sendToPlayers(players, Channel.Payload(this, packet))
 }

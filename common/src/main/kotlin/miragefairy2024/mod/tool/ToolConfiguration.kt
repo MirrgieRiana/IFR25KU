@@ -28,10 +28,10 @@ import net.minecraft.world.level.block.state.BlockState
 context(ModContext)
 fun initToolConfiguration() {
 
-    BlockCallback.AFTER_BREAK.register { world, player, pos, state, blockEntity, tool ->
+    BlockCallback.AFTER_BREAK.register { level, player, pos, state, blockEntity, tool ->
         val item = tool.item
         if (item !is FairyToolItem) return@register
-        item.onAfterBreakBlock(world, player, pos, state, blockEntity, tool)
+        item.onAfterBreakBlock(level, player, pos, state, blockEntity, tool)
     }
 
     ServerLivingEntityEvents.AFTER_DEATH.register { entity, damageSource ->
@@ -88,10 +88,10 @@ abstract class ToolConfiguration {
     var fireResistant = false
     val modifyItemEnchantmentsHandlers = mutableListOf<ModifyItemEnchantmentsHandler>()
 
-    val onPostMineListeners = mutableListOf<(item: Item, stack: ItemStack, world: Level, state: BlockState, pos: BlockPos, miner: LivingEntity) -> Unit>()
-    val onAfterBreakBlockListeners = mutableListOf<(item: Item, world: Level, player: Player, pos: BlockPos, state: BlockState, blockEntity: BlockEntity?, tool: ItemStack) -> Unit>()
+    val onPostMineListeners = mutableListOf<(item: Item, stack: ItemStack, level: Level, state: BlockState, pos: BlockPos, miner: LivingEntity) -> Unit>()
+    val onAfterBreakBlockListeners = mutableListOf<(item: Item, level: Level, player: Player, pos: BlockPos, state: BlockState, blockEntity: BlockEntity?, tool: ItemStack) -> Unit>()
     val onKilledListeners = mutableListOf<(item: Item, entity: LivingEntity, attacker: LivingEntity, damageSource: DamageSource) -> Unit>()
-    val onInventoryTickListeners = mutableListOf<(item: Item, stack: ItemStack, world: Level, entity: Entity, slot: Int, selected: Boolean) -> Unit>()
+    val onInventoryTickListeners = mutableListOf<(item: Item, stack: ItemStack, level: Level, entity: Entity, slot: Int, selected: Boolean) -> Unit>()
 
     abstract fun createItem(properties: Item.Properties): Item
 

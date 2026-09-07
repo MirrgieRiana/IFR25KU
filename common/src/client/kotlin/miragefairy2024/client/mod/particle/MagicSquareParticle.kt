@@ -37,8 +37,8 @@ fun initMagicSquareParticle() {
 }
 
 fun createMagicSquareParticleFactory() = { spriteProvider: SpriteSet ->
-    ParticleProvider<MagicSquareParticleEffect> { parameters, world, x, y, z, _, _, _ ->
-        MagicSquareParticle(world, x, y, z, parameters.layer, parameters.targetPosition, spriteProvider).also {
+    ParticleProvider<MagicSquareParticleEffect> { parameters, level, x, y, z, _, _, _ ->
+        MagicSquareParticle(level, x, y, z, parameters.layer, parameters.targetPosition, spriteProvider).also {
             it.alphaTicks[0] = parameters.delay
             it.alphaTicks[1] = parameters.delay + 20F
             it.lightTicks[0] = parameters.delay
@@ -47,7 +47,7 @@ fun createMagicSquareParticleFactory() = { spriteProvider: SpriteSet ->
     }
 }
 
-class MagicSquareParticle(world: ClientLevel, x: Double, y: Double, z: Double, layer: Int, private val targetPosition: Vec3, spriteProvider: SpriteSet) : TextureSheetParticle(world, x, y, z) {
+class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, layer: Int, private val targetPosition: Vec3, spriteProvider: SpriteSet) : TextureSheetParticle(level, x, y, z) {
 
     var delay = 0
     var color1 = 0xFFF4D3
