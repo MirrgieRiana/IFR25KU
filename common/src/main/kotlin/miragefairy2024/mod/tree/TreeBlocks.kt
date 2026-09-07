@@ -251,7 +251,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
                 .poem(EnJa("Toxic resin that eliminates others.", "琥珀色のアレロパシー。"))
                 .description(EnJa("Produces sap over time", "時間経過で樹液を生産")),
         ).block { { IncisedPlasticTreeLogBlock(it) } }.incisedLog { PLASTIC_TREE_LOG }
-        val PLASTIC_TREE_DRIPPING_LOG = !TreeBlockConfiguration(
+        val DRIPPING_PLASTIC_TREE_LOG = !TreeBlockConfiguration(
             PLASTIC_TREE_TREE_CONFIGURATION, "dripping_plastic_tree_log", EnJa("Dripping Plastic Tree Log", "樹液が滴るプラノキの原木"),
             PoemList(1)
                 .poem(EnJa("High mana-conducting carbon isotope.", "魔力を帯びたスクロース。"))

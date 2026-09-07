@@ -29,7 +29,7 @@ class IncisedPlasticTreeLogBlock(settings: Properties) : IncisedLogBlock(setting
 
     override fun codec() = CODEC
 
-    override fun getDrippingLogBlock() = TreeBlockCard.PLASTIC_TREE_DRIPPING_LOG.block()
+    override fun getDrippingLogBlock() = TreeBlockCard.DRIPPING_PLASTIC_TREE_LOG.block()
 }
 
 class DrippingPlasticTreeLogBlock(settings: Properties) : DrippingLogBlock(settings) {
