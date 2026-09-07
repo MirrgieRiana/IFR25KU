@@ -9,7 +9,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.state.BlockState
 
-fun spawnHaimeviskaBlossomParticle(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
+fun spawnDrippingSapParticle(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
     if (random.nextFloat() >= 0.2F) return
 
     val direction = state[HorizontalDirectionalBlock.FACING]
