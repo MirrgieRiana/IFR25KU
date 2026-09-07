@@ -46,6 +46,7 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.CaveVines
 import net.minecraft.world.level.block.SweetBerryBushBlock
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.BlockHitResult
 
 open class FairyScytheConfiguration(
@@ -112,7 +113,7 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
             val blockPos = blockHitResult.blockPos
             val region = BlockBox.of(blockPos.offset(-range, -range, -range), blockPos.offset(range, range, range))
             var effective = false
-            withStickyMining(level, blockPos, range, user, itemStack) {
+            withStickyMining(level, blockPos.toBox().inflate(range.toDouble()), user, itemStack) {
                 spaceVisitor(level, blockPos) { it in region }.forEach { (_, targetBlockPos) ->
                     val targetBlockState = level.getBlockState(targetBlockPos)
                     when (val targetBlock = targetBlockState.block) {
@@ -154,7 +155,7 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
         if (level.isClientSide) return
         if (player?.isShiftKeyDown == true) return
         val region = BlockBox.of(blockPos.offset(-range, -range, -range), blockPos.offset(range, range, range))
-        withStickyMining(level, blockPos, range, player, itemStack) {
+        withStickyMining(level, blockPos.toBox().inflate(range.toDouble()), player, itemStack) {
             spaceVisitor(level, blockPos, visitOrigins = false) { it in region }.forEach { (_, targetBlockPos) ->
                 val targetBlockState = level.getBlockState(targetBlockPos)
                 val targetBlock = targetBlockState.block
@@ -166,14 +167,14 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
     }
 }
 
-private inline fun withStickyMining(level: Level, blockPos: BlockPos, range: Int, player: Player?, tool: ItemStack, action: () -> Unit) {
+private inline fun withStickyMining(level: Level, aabb: AABB, player: Player?, tool: ItemStack, action: () -> Unit) {
     run {
         if (level.isClientSide) return@run
         if (player == null) return@run
         val stickyMiningLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool)
         if (stickyMiningLevel == 0) return@run
 
-        val snapshot = StickyMiningSnapshot.take(level, blockPos.toBox().inflate(range.toDouble()))
+        val snapshot = StickyMiningSnapshot.take(level, aabb)
         action()
         snapshot.teleportNewEntities(player)
 
