@@ -252,11 +252,12 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
                 .description(EnJa("Produces sap over time", "時間経過で樹液を生産")),
         ).block { { IncisedPlasticTreeLogBlock(it) } }.incisedLog { PLASTIC_TREE_LOG }
         val DRIPPING_PLASTIC_TREE_LOG = !TreeBlockConfiguration(
-            PLASTIC_TREE_TREE_CONFIGURATION, "dripping_plastic_tree_log", EnJa("Dripping Plastic Tree Log", "樹液が滴るプラノキの原木"),
+            PLASTIC_TREE_TREE_CONFIGURATION, "dripping_plastic_tree_log", EnJa("Dripping Plastic Tree Log", "滴るプラノキの原木"),
             PoemList(1)
                 .poem(EnJa("High mana-conducting carbon isotope.", "魔力を帯びたスクロース。"))
                 .description(EnJa("Harvest sap when used", "使用時、樹液を収穫")),
-        ).block { { DrippingPlasticTreeLogBlock(it) } }.drippingLog({ PLASTIC_TREE_LOG }, { MaterialCard.PLASTIC_TREE_SAP.item() }, { MaterialCard.HAIMEVISKA_ROSIN.item() })
+        ).block { { DrippingPlasticTreeLogBlock(it) } }.drippingLog({ PLASTIC_TREE_LOG }, { MaterialCard.PLASTIC_TREE_SAP.item() }, { MaterialCard.HAIMEVISKA_ROSIN.item() }) // TODO プラノキは涙を持たないから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+
         val PLASTIC_TREE_SAPLING = !TreeBlockConfiguration(
             PLASTIC_TREE_TREE_CONFIGURATION, "plastic_tree_sapling", EnJa("Plastic Tree Sapling", "プラノキの苗木"),
             PoemList(1).poem(EnJa("Etherify sugars with astral radiation.", "天空のフォリオニクス。")),
