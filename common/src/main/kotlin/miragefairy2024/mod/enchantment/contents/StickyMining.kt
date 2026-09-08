@@ -84,7 +84,7 @@ fun isStickyMining(level: Level, tool: ItemStack): Boolean {
     return EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool) > 0
 }
 
-inline fun withStickyMining(level: Level, aabb: AABB, player: Player?, tool: ItemStack, action: () -> Unit) {
+fun withStickyMining(level: Level, aabb: AABB, player: Player?, tool: ItemStack, action: () -> Unit) {
     run {
         if (level.isClientSide) return@run
         if (player == null) return@run
