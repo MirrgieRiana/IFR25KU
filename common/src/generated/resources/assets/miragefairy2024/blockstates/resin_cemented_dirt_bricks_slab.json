@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "miragefairy2024:block/resin_cemented_dirt_bricks_slab"
+    },
+    "type=double": {
+      "model": "miragefairy2024:block/resin_cemented_dirt_bricks"
+    },
+    "type=top": {
+      "model": "miragefairy2024:block/resin_cemented_dirt_bricks_slab_top"
+    }
+  }
+}

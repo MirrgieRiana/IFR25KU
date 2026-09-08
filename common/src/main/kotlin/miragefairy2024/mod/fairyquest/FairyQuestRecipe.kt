@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.PlacedItemFeature
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
@@ -28,6 +27,7 @@ import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.util.Chance
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
@@ -170,10 +170,10 @@ enum class FairyQuestRecipeCard(
         "The fairy trees...? We should be over a million light-years away from the Habitabilis Zona. I'm curious to divine the past of this star, so would you consider sending me samples of the vegetation?",
         "妖精の樹…？ここはハビタビリスゾーナから100万光年以上も離れた場所のはず…。この星の過去を占ってみたいから、植生サンプルを送ってくれないかしら？",
         "The Pearl Knights of Miranagi\nShinonome Astrology Academy\nRumeri", "みらなぎ聖騎士団\n東雲占卜院\nるめり",
-        listOf { HaimeviskaBlockCard.SAPLING.item().toIngredientStack(10) },
+        listOf { TreeBlockCard.SAPLING.item().toIngredientStack(10) },
         listOf { Items.EMERALD.createItemStack(1) },
         duration = 10,
-        icon = { HaimeviskaBlockCard.SAPLING.item().createItemStack() },
+        icon = { TreeBlockCard.SAPLING.item().createItemStack() },
     ),
     FATAL_ACCIDENT(
         "fatal_accident", 0x000027, LootCategory.RARE,

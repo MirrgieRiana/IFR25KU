@@ -130,7 +130,7 @@ class FairyActiveConsumerBlock(card: FairyActiveConsumerCard) : FairyLogisticsBl
     override fun codec() = CODEC
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun getShape(state: BlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext) = SHAPES[4 * state[VERTICAL_FACING].id + state[FACING].get2DDataValue()]
+    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = SHAPES[4 * state[VERTICAL_FACING].id + state[FACING].get2DDataValue()]
 }
 
 class FairyActiveConsumerBlockEntity(private val card: FairyActiveConsumerCard, pos: BlockPos, state: BlockState) : FairyLogisticsBlockEntity<FairyActiveConsumerBlockEntity>(card, pos, state) {
@@ -147,11 +147,11 @@ class FairyActiveConsumerBlockEntity(private val card: FairyActiveConsumerCard, 
 
     private var t = -1
 
-    override fun serverTick(world: Level, pos: BlockPos, state: BlockState) {
-        super.serverTick(world, pos, state)
+    override fun serverTick(level: Level, pos: BlockPos, state: BlockState) {
+        super.serverTick(level, pos, state)
 
         // 1分に1回発動する
-        if (t == -1) t = world.random.nextInt(20 * 60)
+        if (t == -1) t = level.random.nextInt(20 * 60)
         t--
         if (t > 0) return
         t = 20 * 60
@@ -183,17 +183,17 @@ class FairyActiveConsumerBlockEntity(private val card: FairyActiveConsumerCard, 
         val centerChunkZ = SectionPos.blockToSectionCoord(pos.z)
         val neighbourChunksSuppliers = (centerChunkX - 1..centerChunkX + 1).flatMap { chunkX ->
             (centerChunkZ - 1..centerChunkZ + 1).flatMap { chunkZ ->
-                world.getChunk(chunkX, chunkZ).blockEntities.values.mapNotNull { it as? FairyPassiveSupplierBlockEntity } // TODO interface
+                level.getChunk(chunkX, chunkZ).blockEntities.values.mapNotNull { it as? FairyPassiveSupplierBlockEntity } // TODO interface
             }
         }
         val reachingSuppliers = neighbourChunksSuppliers.filter { getSquaredDistance(pos, it.blockPos) <= 16 * 16 }
 
         // 視線判定
         val posD = pos.center
-        val entity = Arrow(world, posD.x, posD.y, posD.z, Items.ARROW.createItemStack(), null)
+        val entity = Arrow(level, posD.x, posD.y, posD.z, Items.ARROW.createItemStack(), null)
         val unblockedSuppliers = reachingSuppliers.filter { supplier ->
             val supplierPosD = supplier.blockPos.center
-            val hitResult = world.clip(ClipContext(posD, supplierPosD, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity))
+            val hitResult = level.clip(ClipContext(posD, supplierPosD, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity))
             hitResult.type == HitResult.Type.MISS
         }
 

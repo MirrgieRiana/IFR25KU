@@ -4,8 +4,10 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.OreBlock
 import miragefairy2024.mod.biome.DeepFairyForestBiomeCard
+import miragefairy2024.mod.biome.OldGrowthAmberForestBiomeCard
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.enchantment.contents.STICKY_MINING_BLOCK_TAG
+import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.BiomeSelectorScope
 import miragefairy2024.util.EnJa
@@ -67,13 +69,14 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
 import net.minecraft.world.level.material.MapColor
 import java.util.function.Predicate
 
-enum class BaseStoneType(val target: RuleTest, val baseStoneTexture: ResourceLocation, val mineableTag: TagKey<Block>, val needsToolTag: TagKey<Block>?) {
-    STONE(TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/stone"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    DEEPSLATE(TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    SANDSTONE(BlockMatchTest(Blocks.SANDSTONE), ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    DIRT(BlockMatchTest(Blocks.DIRT), ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
-    NETHERRACK(BlockMatchTest(Blocks.NETHERRACK), ResourceLocation("minecraft", "block/netherrack"), BlockTags.MINEABLE_WITH_PICKAXE, null),
-    BLACKSTONE(BlockMatchTest(Blocks.BLACKSTONE), ResourceLocation("minecraft", "block/blackstone"), BlockTags.MINEABLE_WITH_PICKAXE, null),
+enum class BaseStoneType(val target: () -> RuleTest, val baseStoneTexture: ResourceLocation, val mineableTag: TagKey<Block>, val needsToolTag: TagKey<Block>?) {
+    STONE({ TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES) }, ResourceLocation("minecraft", "block/stone"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    DEEPSLATE({ TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES) }, ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    SANDSTONE({ BlockMatchTest(Blocks.SANDSTONE) }, ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
+    DIRT({ BlockMatchTest(Blocks.DIRT) }, ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
+    RESIN_CEMENTED_DIRT({ BlockMatchTest(BlockMaterialCard.RESIN_CEMENTED_DIRT.block()) }, MirageFairy2024.identifier("block/resin_cemented_dirt"), BlockTags.MINEABLE_WITH_SHOVEL, BlockTags.NEEDS_STONE_TOOL),
+    NETHERRACK({ BlockMatchTest(Blocks.NETHERRACK) }, ResourceLocation("minecraft", "block/netherrack"), BlockTags.MINEABLE_WITH_PICKAXE, null),
+    BLACKSTONE({ BlockMatchTest(Blocks.BLACKSTONE) }, ResourceLocation("minecraft", "block/blackstone"), BlockTags.MINEABLE_WITH_PICKAXE, null),
 }
 
 enum class OreCard(
@@ -180,6 +183,21 @@ enum class OreCard(
         PoemList(4).poem("An asteric condensation chamber.", "千年越しに見る光。"),
         BaseStoneType.DIRT, "fairy_plastic_ore", MaterialCard.FAIRY_PLASTIC.item, 10 to 20,
     ),
+    RESIN_CEMENTED_DIRT_FAIRY_PLASTIC_ORE(
+        "resin_cemented_dirt_fairy_plastic_ore", "Resin-Cemented Dirt Fairy Plastic Ore", "石化した樹脂状の土妖精のプラスチック鉱石",
+        PoemList(4).poem("Negative aura-resistance in the ground", "膠着した堆積物の護り。"),
+        BaseStoneType.RESIN_CEMENTED_DIRT, "fairy_plastic_ore", MaterialCard.FAIRY_PLASTIC.item, 10 to 20,
+    ),
+    RESIN_CEMENTED_DIRT_RETINITE_ORE(
+        "resin_cemented_dirt_retinite_ore", "Resin-Cemented Dirt Retinite Ore", "石化した樹脂状の土レチナイト鉱石",
+        null,
+        BaseStoneType.RESIN_CEMENTED_DIRT, "retinite_ore", MaterialCard.RETINITE.item, 2 to 5,
+    ),
+    RESIN_CEMENTED_DIRT_COPAL_ORE(
+        "resin_cemented_dirt_copal_ore", "Resin-Cemented Dirt Copal Ore", "石化した樹脂状の土コーパル鉱石",
+        null,
+        BaseStoneType.RESIN_CEMENTED_DIRT, "copal_ore", MaterialCard.COPAL.item, 2 to 5,
+    ),
     ;
 
     val identifier = MirageFairy2024.identifier(path)
@@ -208,6 +226,12 @@ enum class OreCard(
                 .mapColor(MapColor.DIRT)
                 .strength(1.0F, 1.0F)
                 .sound(SoundType.GRAVEL)
+
+            BaseStoneType.RESIN_CEMENTED_DIRT -> BlockBehaviour.Properties.of()
+                .mapColor(MapColor.COLOR_ORANGE)
+                .requiresCorrectToolForDrops()
+                .strength(2.0F, 2.0F)
+                .sound(SoundType.MUDDY_MANGROVE_ROOTS)
 
             BaseStoneType.NETHERRACK -> BlockBehaviour.Properties.of()
                 .mapColor(MapColor.NETHER)
@@ -299,7 +323,7 @@ fun initOresModule() {
     ) {
         Feature.ORE.generator(card.identifier) {
             registerConfiguredFeature(suffix) {
-                val targets = listOf(OreConfiguration.target(card.baseStoneType.target, card.block().defaultBlockState()))
+                val targets = listOf(OreConfiguration.target(card.baseStoneType.target(), card.block().defaultBlockState()))
                 OreConfiguration(targets, size, discardChanceOnAirExposure.toFloat())
             }.generator {
                 registerPlacedFeature(suffix) { randomIntCount(countPerCube * (range.last - range.first + 1).toDouble() / 16.0) + uniformOre(range.first, range.last) }.registerFeature(step) { biomePredicate() }
@@ -327,7 +351,10 @@ fun initOresModule() {
     worldGen(-64 until 64, 0.3, 4, 1.0, OreCard.DEEPSLATE_NEPHRITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.DEEPSLATE_MIRANAGITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
-    worldGen(48 until 128, 0.2, 4, 1.0, OreCard.DIRT_FAIRY_PLASTIC_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +DeepFairyForestBiomeCard.key }
+    worldGen(48 until 128, 0.2, 4, 1.0, OreCard.DIRT_FAIRY_PLASTIC_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key + +DeepFairyForestBiomeCard.key }
+    worldGen(48 until 128, 0.2, 4, 1.0, OreCard.RESIN_CEMENTED_DIRT_FAIRY_PLASTIC_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key }
+    worldGen(48 until 128, 1.0, 12, 0.0, OreCard.RESIN_CEMENTED_DIRT_RETINITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key }
+    worldGen(48 until 128, 0.6, 4, 0.0, OreCard.RESIN_CEMENTED_DIRT_COPAL_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key }
 
 }
 

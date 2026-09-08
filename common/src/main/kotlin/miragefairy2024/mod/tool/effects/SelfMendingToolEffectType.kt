@@ -27,11 +27,11 @@ object SelfMendingToolEffectType : IntAddToolEffectType<ToolConfiguration>() {
     override fun apply(configuration: ToolConfiguration, value: Int) {
         if (value <= 0) return
         configuration.descriptions += TextPoem(PoemType.DESCRIPTION, text { TRANSLATION() })
-        configuration.onInventoryTickListeners += fail@{ _, stack, world, entity, _, _ ->
-            if (world.isClientSide) return@fail
+        configuration.onInventoryTickListeners += fail@{ _, stack, level, entity, _, _ ->
+            if (level.isClientSide) return@fail
             if (entity !is Player) return@fail // プレイヤーじゃない
             if (stack !== entity.mainHandItem && stack !== entity.offhandItem) return@fail // 手に持っていない
-            stack.repair(world.random.randomInt(1.0 / 60.0 / 20.0) * value)
+            stack.repair(level.random.randomInt(1.0 / 60.0 / 20.0) * value)
         }
     }
 }

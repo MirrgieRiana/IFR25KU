@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_copal": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:copal"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:copal_block_from_copal"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_copal"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:copal_block_from_copal"
+    ]
+  }
+}

@@ -30,7 +30,7 @@ interface ClientProxy {
 }
 
 fun interface BlockColorProvider {
-    operator fun invoke(blockState: BlockState, world: BlockGetter?, blockPos: BlockPos?, tintIndex: Int): Int
+    operator fun invoke(blockState: BlockState, level: BlockGetter?, blockPos: BlockPos?, tintIndex: Int): Int
 }
 
 fun interface ItemColorProvider {

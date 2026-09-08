@@ -61,9 +61,9 @@ class FairyUncreationRodItem(override val configuration: FairyUncreationRodConfi
     FairyToolItem,
     ModifyItemEnchantmentsHandler {
 
-    override fun mineBlock(stack: ItemStack, world: Level, state: BlockState, pos: BlockPos, miner: LivingEntity): Boolean {
-        super.mineBlock(stack, world, state, pos, miner)
-        postMineImpl(stack, world, state, pos, miner)
+    override fun mineBlock(stack: ItemStack, level: Level, state: BlockState, pos: BlockPos, miner: LivingEntity): Boolean {
+        super.mineBlock(stack, level, state, pos, miner)
+        postMineImpl(stack, level, state, pos, miner)
         return true
     }
 
@@ -73,9 +73,9 @@ class FairyUncreationRodItem(override val configuration: FairyUncreationRodConfi
         return true
     }
 
-    override fun inventoryTick(stack: ItemStack, world: Level, entity: Entity, slot: Int, selected: Boolean) {
-        super.inventoryTick(stack, world, entity, slot, selected)
-        inventoryTickImpl(stack, world, entity, slot, selected)
+    override fun inventoryTick(stack: ItemStack, level: Level, entity: Entity, slot: Int, selected: Boolean) {
+        super.inventoryTick(stack, level, entity, slot, selected)
+        inventoryTickImpl(stack, level, entity, slot, selected)
     }
 
     override fun modifyItemEnchantments(itemStack: ItemStack, mutableItemEnchantments: ItemEnchantments.Mutable, enchantmentLookup: HolderLookup.RegistryLookup<Enchantment>) = modifyItemEnchantmentsImpl(itemStack, mutableItemEnchantments, enchantmentLookup)

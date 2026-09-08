@@ -1,0 +1,38 @@
+{
+  "parent": "miragefairy2024:old_growth_amber_forest",
+  "criteria": {
+    "has_fairy_plastic": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:fairy_plastic"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.miragefairy2024.fairy_plastic.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "miragefairy2024:fairy_plastic"
+    },
+    "title": {
+      "translate": "advancements.miragefairy2024.fairy_plastic.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_fairy_plastic"
+    ]
+  ],
+  "rewards": {
+    "loot": [
+      "miragefairy2024:jewels_100"
+    ]
+  },
+  "sends_telemetry_event": true
+}
