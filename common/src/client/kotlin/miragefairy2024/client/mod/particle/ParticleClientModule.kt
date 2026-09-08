@@ -8,6 +8,10 @@ import net.minecraft.client.particle.FlyTowardsPositionParticle
 import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.SuspendedTownParticle
 
+// 滴る原木のテクスチャに描かれた、垂れている樹液の主要色に合わせてあるのだ～🌱
+private const val HAIMEVISKA_SAP_RGB = 0xFF9F32
+private const val PLASTIC_TREE_SAP_RGB = 0xFFD632
+
 context(ModContext)
 fun initParticleClientModule() {
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.MISSION.particleType, SuspendedTownParticle::HappyVillagerProvider)
@@ -25,9 +29,12 @@ fun initParticleClientModule() {
     }
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.CHAOS_STONE.particleType, createRollingFallingParticleFactory(0.0F))
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.HAIMEVISKA_BLOSSOM.particleType, createRollingFallingParticleFactory(1.0F))
-    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.DRIPPING_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Dripping(level, x, y, z, spriteProvider, ParticleTypeCard.FALLING_SAP.particleType) } }
-    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.FALLING_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Falling(level, x, y, z, spriteProvider, ParticleTypeCard.LANDING_SAP.particleType) } }
-    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.LANDING_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Landing(level, x, y, z, spriteProvider) } }
+    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.DRIPPING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Dripping(level, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB, ParticleTypeCard.FALLING_HAIMEVISKA_SAP.particleType) } }
+    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.FALLING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Falling(level, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB, ParticleTypeCard.LANDING_HAIMEVISKA_SAP.particleType) } }
+    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.LANDING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Landing(level, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB) } }
+    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.DRIPPING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Dripping(level, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB, ParticleTypeCard.FALLING_PLASTIC_TREE_SAP.particleType) } }
+    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.FALLING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Falling(level, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB, ParticleTypeCard.LANDING_PLASTIC_TREE_SAP.particleType) } }
+    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.LANDING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Landing(level, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB) } }
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.MAGIC_SQUARE.particleType, createMagicSquareParticleFactory())
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.SULFUR_SMOKE.particleType, createSulfurSmokeParticleFactory())
 
