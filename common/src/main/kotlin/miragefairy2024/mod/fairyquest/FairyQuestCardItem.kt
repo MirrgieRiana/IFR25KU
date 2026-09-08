@@ -127,13 +127,13 @@ class FairyQuestCardItem(settings: Properties) : Item(settings) {
         }
     }
 
-    override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
         val itemStack = user.getItemInHand(hand)
         val recipe = itemStack.getFairyQuestRecipe() ?: return InteractionResultHolder.fail(itemStack)
-        if (world.isClientSide) return InteractionResultHolder.success(itemStack)
+        if (level.isClientSide) return InteractionResultHolder.success(itemStack)
         user.openMenu(object : ExtendedScreenHandlerFactory<ResourceLocation> {
             override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
-                return FairyQuestCardScreenHandler(syncId, playerInventory, recipe, ContainerLevelAccess.create(world, player.blockPosition()))
+                return FairyQuestCardScreenHandler(syncId, playerInventory, recipe, ContainerLevelAccess.create(level, player.blockPosition()))
             }
 
             override fun getDisplayName() = recipe.title

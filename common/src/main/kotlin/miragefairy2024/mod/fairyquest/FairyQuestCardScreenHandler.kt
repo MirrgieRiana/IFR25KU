@@ -149,8 +149,8 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
             resultInventory.mergeTo(outputInventory)
 
             // エフェクト
-            context.execute { world, blockPos ->
-                world.playSound(null, blockPos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 0.5F, 0.8F + 0.4F * world.random.nextFloat())
+            context.execute { level, blockPos ->
+                level.playSound(null, blockPos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 0.5F, 0.8F + 0.4F * level.random.nextFloat())
             }
 
             // リセット

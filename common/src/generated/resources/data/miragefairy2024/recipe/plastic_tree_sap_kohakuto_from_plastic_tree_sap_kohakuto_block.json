@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:plastic_tree_sap_kohakuto",
+  "ingredients": [
+    {
+      "item": "miragefairy2024:plastic_tree_sap_kohakuto_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "miragefairy2024:plastic_tree_sap_kohakuto"
+  }
+}

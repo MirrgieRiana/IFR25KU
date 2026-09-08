@@ -33,6 +33,7 @@ enum class FairyToolMaterials(
 ) : Tier {
     COPPER(Tiers.IRON, 196, 5.0F, 1.0F, 2.0F, 18, { ingredientOf(Shape.INGOT, Material.COPPER) }),
     GLASS(Tiers.STONE, 8, 6.0F, 4.0F, 3.5F, 14, { ConventionalItemTags.GLASS_BLOCKS.toIngredient() }),
+    LAPIS_LAZULI(Tiers.STONE, 140, 4.0F, 1.0F, 1.5F, 21, { ingredientOf(Shape.GEM, Material.LAPIS) }),
     AMETHYST(Tiers.IRON, 218, 5.5F, 2.0F, 2.5F, 23, { ingredientOf(Shape.SHARD, Material.AMETHYST) }),
     OBSIDIAN(Tiers.IRON, 804, 5.0F, 4.5F, 3.0F, 20, { ConventionalItemTags.OBSIDIANS.toIngredient() }),
     EMERALD(Tiers.DIAMOND, 1192, 7.0F, 2.5F, 2.0F, 16, { ingredientOf(Shape.GEM, Material.EMERALD) }),
@@ -97,6 +98,7 @@ enum class ToolMaterialCard(val toolMaterial: Tier, path: String, val title: EnJ
 
     COPPER(FairyToolMaterials.COPPER, "copper_tool", EnJa("Copper Tool", "銅ツール")),
     GLASS(FairyToolMaterials.GLASS, "glass_tool", EnJa("Glass Tool", "ガラスツール")),
+    LAPIS_LAZULI(FairyToolMaterials.LAPIS_LAZULI, "lapis_lazuli_tool", EnJa("Lapis Lazuli Tool", "ラピスラズリツール")),
     AMETHYST(FairyToolMaterials.AMETHYST, "amethyst_tool", EnJa("Amethyst Tool", "アメジストツール")),
     OBSIDIAN(FairyToolMaterials.OBSIDIAN, "obsidian_tool", EnJa("Obsidian Tool", "黒曜石ツール")),
     EMERALD(FairyToolMaterials.EMERALD, "emerald_tool", EnJa("Emerald Tool", "エメラルドツール")),

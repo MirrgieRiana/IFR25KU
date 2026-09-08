@@ -176,7 +176,7 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
 
     // Move
 
-    open fun serverTick(world: Level, pos: BlockPos, state: BlockState) = Unit
+    open fun serverTick(level: Level, pos: BlockPos, state: BlockState) = Unit
 
 
     // Rendering
@@ -192,7 +192,7 @@ abstract class MachineBlockEntity<E : MachineBlockEntity<E>>(private val card: M
 
     private val animations = card.animationConfigurations.mapNotNull { it.createAnimation() }
 
-    open fun clientTick(world: Level, pos: BlockPos, state: BlockState) {
+    open fun clientTick(level: Level, pos: BlockPos, state: BlockState) {
         animations.forEach {
             it.tick(getThis())
         }

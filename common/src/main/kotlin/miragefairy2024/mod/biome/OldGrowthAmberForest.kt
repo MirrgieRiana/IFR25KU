@@ -3,10 +3,9 @@ package miragefairy2024.mod.biome
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.BlockMaterialCard
-import miragefairy2024.mod.materials.MaterialCard
-import miragefairy2024.mod.tree.GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
-import miragefairy2024.mod.tree.SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.mod.tree.TreeBlockCard
+import miragefairy2024.mod.tree.contents.plastictree.GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
+import miragefairy2024.mod.tree.contents.plastictree.SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa

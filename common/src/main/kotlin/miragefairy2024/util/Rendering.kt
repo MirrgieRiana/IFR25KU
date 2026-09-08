@@ -31,13 +31,13 @@ fun (() -> Block).registerColorProvider(provider: BlockColorProvider) = ModEvent
 }
 
 context(ModContext)
-fun (() -> Block).registerGrassColorProvider() = this.registerColorProvider { blockState, world, blockPos, tintIndex ->
-    clientProxy!!.getGrassBlockColorProvider().invoke(blockState, world, blockPos, tintIndex)
+fun (() -> Block).registerGrassColorProvider() = this.registerColorProvider { blockState, level, blockPos, tintIndex ->
+    clientProxy!!.getGrassBlockColorProvider().invoke(blockState, level, blockPos, tintIndex)
 }
 
 context(ModContext)
-fun (() -> Block).registerFoliageColorProvider() = this.registerColorProvider { blockState, world, blockPos, tintIndex ->
-    clientProxy!!.getFoliageBlockColorProvider().invoke(blockState, world, blockPos, tintIndex)
+fun (() -> Block).registerFoliageColorProvider() = this.registerColorProvider { blockState, level, blockPos, tintIndex ->
+    clientProxy!!.getFoliageBlockColorProvider().invoke(blockState, level, blockPos, tintIndex)
 }
 
 context(ModContext)

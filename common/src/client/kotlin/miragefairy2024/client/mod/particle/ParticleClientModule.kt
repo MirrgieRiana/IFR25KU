@@ -21,20 +21,20 @@ fun initParticleClientModule() {
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.ATTRACTING_MAGIC.particleType, AttractingParticle::Factory)
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.AURA.particleType) { spriteProvider ->
         val factory = EndRodParticle.Provider(spriteProvider)
-        ParticleProvider { parameters, world, x, y, z, velocityX, velocityY, velocityZ ->
-            factory.createParticle(parameters, world, x, y, z, velocityX, velocityY, velocityZ)?.also { particle ->
-                particle.lifetime = 20 + world.random.nextInt(12)
+        ParticleProvider { parameters, level, x, y, z, velocityX, velocityY, velocityZ ->
+            factory.createParticle(parameters, level, x, y, z, velocityX, velocityY, velocityZ)?.also { particle ->
+                particle.lifetime = 20 + level.random.nextInt(12)
             }
         }
     }
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.CHAOS_STONE.particleType, createRollingFallingParticleFactory(0.0F))
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.HAIMEVISKA_BLOSSOM.particleType, createRollingFallingParticleFactory(1.0F))
-    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.DRIPPING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, world, x, y, z, _, _, _ -> SapParticle.Dripping(world, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB, ParticleTypeCard.FALLING_HAIMEVISKA_SAP.particleType) } }
-    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.FALLING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, world, x, y, z, _, _, _ -> SapParticle.Falling(world, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB, ParticleTypeCard.LANDING_HAIMEVISKA_SAP.particleType) } }
-    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.LANDING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, world, x, y, z, _, _, _ -> SapParticle.Landing(world, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB) } }
-    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.DRIPPING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, world, x, y, z, _, _, _ -> SapParticle.Dripping(world, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB, ParticleTypeCard.FALLING_PLASTIC_TREE_SAP.particleType) } }
-    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.FALLING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, world, x, y, z, _, _, _ -> SapParticle.Falling(world, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB, ParticleTypeCard.LANDING_PLASTIC_TREE_SAP.particleType) } }
-    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.LANDING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, world, x, y, z, _, _, _ -> SapParticle.Landing(world, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB) } }
+    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.DRIPPING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Dripping(level, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB, ParticleTypeCard.FALLING_HAIMEVISKA_SAP.particleType) } }
+    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.FALLING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Falling(level, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB, ParticleTypeCard.LANDING_HAIMEVISKA_SAP.particleType) } }
+    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.LANDING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Landing(level, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB) } }
+    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.DRIPPING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Dripping(level, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB, ParticleTypeCard.FALLING_PLASTIC_TREE_SAP.particleType) } }
+    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.FALLING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Falling(level, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB, ParticleTypeCard.LANDING_PLASTIC_TREE_SAP.particleType) } }
+    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.LANDING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Landing(level, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB) } }
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.MAGIC_SQUARE.particleType, createMagicSquareParticleFactory())
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.SULFUR_SMOKE.particleType, createSulfurSmokeParticleFactory())
 

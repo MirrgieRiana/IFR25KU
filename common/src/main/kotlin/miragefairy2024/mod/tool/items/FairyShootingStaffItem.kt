@@ -59,9 +59,9 @@ class FairyShootingStaffItem(override val configuration: FairyShootingStaffConfi
     FairyToolItem,
     ModifyItemEnchantmentsHandler {
 
-    override fun mineBlock(stack: ItemStack, world: Level, state: BlockState, pos: BlockPos, miner: LivingEntity): Boolean {
-        super.mineBlock(stack, world, state, pos, miner)
-        postMineImpl(stack, world, state, pos, miner)
+    override fun mineBlock(stack: ItemStack, level: Level, state: BlockState, pos: BlockPos, miner: LivingEntity): Boolean {
+        super.mineBlock(stack, level, state, pos, miner)
+        postMineImpl(stack, level, state, pos, miner)
         return true
     }
 
@@ -71,9 +71,9 @@ class FairyShootingStaffItem(override val configuration: FairyShootingStaffConfi
         return true
     }
 
-    override fun inventoryTick(stack: ItemStack, world: Level, entity: Entity, slot: Int, selected: Boolean) {
-        super.inventoryTick(stack, world, entity, slot, selected)
-        inventoryTickImpl(stack, world, entity, slot, selected)
+    override fun inventoryTick(stack: ItemStack, level: Level, entity: Entity, slot: Int, selected: Boolean) {
+        super.inventoryTick(stack, level, entity, slot, selected)
+        inventoryTickImpl(stack, level, entity, slot, selected)
     }
 
     override fun modifyItemEnchantments(itemStack: ItemStack, mutableItemEnchantments: ItemEnchantments.Mutable, enchantmentLookup: HolderLookup.RegistryLookup<Enchantment>) = modifyItemEnchantmentsImpl(itemStack, mutableItemEnchantments, enchantmentLookup)
@@ -94,15 +94,15 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
         tooltipComponents += text { DESCRIPTION_TRANSLATION().yellow }
     }
 
-    override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
         val itemStack = user.getItemInHand(hand)
-        if (world.isClientSide) return InteractionResultHolder.success(itemStack)
+        if (level.isClientSide) return InteractionResultHolder.success(itemStack)
 
-        val damage = basePower + 0.5F * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack).toFloat()
-        val maxDistance = baseMaxDistance + 3F * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_REACH.key].getLevel(itemStack)
-        val speed = 2.0F + 2.0F * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_REACH.key].getRate(itemStack).toFloat()
-        val frequency = 0.5 + 0.5 * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_ACCELERATION.key].getRate(itemStack)
-        val experienceCost = BASE_EXPERIENCE_COST + 1 * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack)
+        val damage = basePower + 0.5F * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack).toFloat()
+        val maxDistance = baseMaxDistance + 3F * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_REACH.key].getLevel(itemStack)
+        val speed = 2.0F + 2.0F * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_REACH.key].getRate(itemStack).toFloat()
+        val frequency = 0.5 + 0.5 * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_ACCELERATION.key].getRate(itemStack)
+        val experienceCost = BASE_EXPERIENCE_COST + 1 * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack)
 
         if (!user.isCreative) {
             if (user.totalExperience < experienceCost) {
@@ -112,25 +112,25 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
         }
 
         // 生成
-        val entity = AntimatterBoltEntity(AntimatterBoltCard.entityType(), world)
+        val entity = AntimatterBoltEntity(AntimatterBoltCard.entityType(), level)
         entity.setPos(user.x, user.eyeY - 0.3, user.z)
         entity.shootFromRotation(user, user.xRot, user.yRot, 0.0F, speed, 1.0F)
         entity.owner = user
         entity.damage = damage
         entity.maxDistance = maxDistance
-        world.addFreshEntity(entity)
+        level.addFreshEntity(entity)
 
         // 消費
         itemStack.hurtAndBreak(1, user, LivingEntity.getSlotForHand(hand))
         if (!user.isCreative) user.giveExperiencePoints(-experienceCost)
 
-        user.cooldowns.addCooldown(this, world.random.randomInt(10.0 / frequency))
+        user.cooldowns.addCooldown(this, level.random.randomInt(10.0 / frequency))
 
         // 統計
         user.awardStat(Stats.ITEM_USED.get(this))
 
         // エフェクト
-        world.playSound(null, user.x, user.y, user.z, SoundEventCard.MAGIC2.soundEvent, SoundSource.PLAYERS, 0.6F, 0.90F + (world.random.nextFloat() - 0.5F) * 0.3F)
+        level.playSound(null, user.x, user.y, user.z, SoundEventCard.MAGIC2.soundEvent, SoundSource.PLAYERS, 0.6F, 0.90F + (level.random.nextFloat() - 0.5F) * 0.3F)
 
         return InteractionResultHolder.consume(itemStack)
     }

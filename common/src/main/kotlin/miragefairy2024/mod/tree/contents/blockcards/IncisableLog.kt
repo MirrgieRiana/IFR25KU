@@ -1,19 +1,18 @@
 package miragefairy2024.mod.tree.contents.blockcards
 
+import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockConfiguration
-import miragefairy2024.mod.tree.contents.HaimeviskaLogBlock
-import net.minecraft.tags.TagKey
-import net.minecraft.world.item.Item
-import net.minecraft.world.level.block.Block
+import miragefairy2024.util.get
+import net.minecraft.core.Direction
+import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.material.MapColor
 
-class TreeIncisableLogBlockCard(
-    configuration: TreeBlockConfiguration,
-    logsBlockTag: TagKey<Block>,
-    logsItemTag: TagKey<Item>,
-    verticalMapColor: MapColor,
-    horizontalMapColor: MapColor,
-) : TreeLogBlockCard(configuration, logsBlockTag, logsItemTag, verticalMapColor, horizontalMapColor) {
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = HaimeviskaLogBlock(properties)
+class TreeIncisableLogBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
+    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { if (it[RotatedPillarBlock.AXIS] === Direction.Axis.Y) configuration.tree.getPlankMapColor() else configuration.tree.getWoodMapColor() }
+
+    context(ModContext)
+    override fun init() {
+        super.init()
+        registerModelGeneration(block) { it.logWithHorizontal(block()) }
+    }
 }

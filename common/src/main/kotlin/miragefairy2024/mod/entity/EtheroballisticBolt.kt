@@ -35,10 +35,10 @@ object EtheroballisticBoltCard {
     val spawnGroup = MobCategory.MISC
     val width = 0.5F
     val height = 0.5F
-    fun createEntity(entityType: EntityType<EtheroballisticBoltEntity>, world: Level) = EtheroballisticBoltEntity(entityType, world)
+    fun createEntity(entityType: EntityType<EtheroballisticBoltEntity>, level: Level) = EtheroballisticBoltEntity(entityType, level)
     val identifier = MirageFairy2024.identifier("etheroballistic_bolt")
     val entityType = Registration(BuiltInRegistries.ENTITY_TYPE, identifier) {
-        EntityType.Builder.of({ entityType, world -> createEntity(entityType, world) }, spawnGroup)
+        EntityType.Builder.of({ entityType, level -> createEntity(entityType, level) }, spawnGroup)
             .sized(width, height)
             .build()
     }
@@ -50,7 +50,7 @@ object EtheroballisticBoltCard {
     }
 }
 
-class EtheroballisticBoltEntity(entityType: EntityType<out EtheroballisticBoltEntity>, world: Level) : Projectile(entityType, world) {
+class EtheroballisticBoltEntity(entityType: EntityType<out EtheroballisticBoltEntity>, level: Level) : Projectile(entityType, level) {
     companion object {
         val DAMAGE: EntityDataAccessor<Float> = SynchedEntityData.defineId(EtheroballisticBoltEntity::class.java, EntityDataSerializers.FLOAT)
         val MAX_DISTANCE: EntityDataAccessor<Float> = SynchedEntityData.defineId(EtheroballisticBoltEntity::class.java, EntityDataSerializers.FLOAT)

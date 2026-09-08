@@ -6,28 +6,17 @@ import miragefairy2024.ModEvents
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.mod.tree.createBaseWoodSetting
-import miragefairy2024.util.ResourceLocation
-import miragefairy2024.util.generator
-import miragefairy2024.util.get
 import miragefairy2024.util.on
-import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerDefaultLootTableGeneration
 import miragefairy2024.util.registerFlammable
 import miragefairy2024.util.registerShapedRecipeGeneration
-import miragefairy2024.util.toBlockTag
-import miragefairy2024.util.toItemTag
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry
-import net.minecraft.core.Direction
 import net.minecraft.data.models.BlockModelGenerators.WoodProvider
-import net.minecraft.tags.BlockTags
-import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.material.MapColor
 
-abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration, private val logsBlockTag: TagKey<Block>, private val logsItemTag: TagKey<Item>) : TreeBlockCard(configuration) {
+abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting().strength(2.0F)
 
     context(ModContext)
@@ -39,10 +28,6 @@ abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration, p
 
         // 性質
         block.registerFlammable(5, 5)
-
-        // タグ
-        logsBlockTag.generator.registerChild(block)
-        logsItemTag.generator.registerChild(item)
 
     }
 
@@ -68,61 +53,36 @@ abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration, p
     }
 }
 
-open class TreeLogBlockCard(
-    configuration: TreeBlockConfiguration,
-    logsBlockTag: TagKey<Block>,
-    logsItemTag: TagKey<Item>,
-    private val verticalMapColor: MapColor,
-    private val horizontalMapColor: MapColor,
-) : AbstractTreeLogBlockCard(configuration, logsBlockTag, logsItemTag) {
-    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { if (it[RotatedPillarBlock.AXIS] === Direction.Axis.Y) verticalMapColor else horizontalMapColor }
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
+class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration, private val log: () -> TreeBlockCard) : AbstractTreeLogBlockCard(configuration) {
+    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getPlankMapColor() }
 
     context(ModContext)
     override fun init() {
         super.init()
         registerModelGeneration(block) { it.logWithHorizontal(block()) }
-        BlockTags.OVERWORLD_NATURAL_LOGS.generator.registerChild(block)
+        initStripped { log().block() }
     }
 }
 
-class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration, logsBlockTag: TagKey<Block>, logsItemTag: TagKey<Item>) : AbstractTreeLogBlockCard(configuration, logsBlockTag, logsItemTag) {
-    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.RAW_IRON }
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
+class TreeWoodBlockCard(configuration: TreeBlockConfiguration, private val log: () -> TreeBlockCard) : AbstractTreeLogBlockCard(configuration) {
+    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getWoodMapColor() }
 
     context(ModContext)
     override fun init() {
         super.init()
-        registerModelGeneration(block) { it.logWithHorizontal(block()) }
-        ResourceLocation("c", "stripped_logs").toBlockTag().generator.registerChild(block)
-        ResourceLocation("c", "stripped_logs").toItemTag().generator.registerChild(item)
-        initStripped(LOG.block)
+        registerModelGeneration({ log().block() }) { it.wood(block()) }
+        initWood { log().item() }
     }
 }
 
-class TreeWoodBlockCard(configuration: TreeBlockConfiguration, logsBlockTag: TagKey<Block>, logsItemTag: TagKey<Item>) : AbstractTreeLogBlockCard(configuration, logsBlockTag, logsItemTag) {
-    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.TERRACOTTA_ORANGE }
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
+class TreeStrippedWoodBlockCard(configuration: TreeBlockConfiguration, private val strippedLog: () -> TreeBlockCard, private val wood: () -> TreeBlockCard) : AbstractTreeLogBlockCard(configuration) {
+    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getPlankMapColor() }
 
     context(ModContext)
     override fun init() {
         super.init()
-        registerModelGeneration(LOG.block) { it.wood(block()) }
-        initWood(LOG.item)
-    }
-}
-
-class TreeStrippedWoodBlockCard(configuration: TreeBlockConfiguration, logsBlockTag: TagKey<Block>, logsItemTag: TagKey<Item>) : AbstractTreeLogBlockCard(configuration, logsBlockTag, logsItemTag) {
-    override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { MapColor.RAW_IRON }
-    override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
-
-    context(ModContext)
-    override fun init() {
-        super.init()
-        registerModelGeneration(STRIPPED_LOG.block) { it.wood(block()) }
-        ResourceLocation("c", "stripped_woods").toBlockTag().generator.registerChild(block)
-        ResourceLocation("c", "stripped_woods").toItemTag().generator.registerChild(item)
-        initStripped(WOOD.block)
-        initWood(STRIPPED_LOG.item)
+        registerModelGeneration({ strippedLog().block() }) { it.wood(block()) }
+        initStripped { wood().block() }
+        initWood { strippedLog().item() }
     }
 }
