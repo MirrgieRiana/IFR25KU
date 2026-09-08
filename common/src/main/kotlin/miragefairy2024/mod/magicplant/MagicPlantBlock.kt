@@ -11,6 +11,7 @@ import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.isServer
+import miragefairy2024.util.orEmpty
 import miragefairy2024.util.randomInt
 import miragefairy2024.util.text
 import miragefairy2024.util.toBlockPos
@@ -253,6 +254,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
     /** 成長段階を消費して収穫物を得てエフェクトを出す収穫処理。 */
     private fun pick(level: ServerLevel, blockPos: BlockPos, player: Player?, tool: ItemStack?, dropExperience: Boolean) {
 
+        // ドロップアイテムを計算
         val blockState = level.getBlockState(blockPos)
         val block = blockState.block
         val blockEntity = level.getMagicPlantBlockEntity(blockPos) ?: return
@@ -262,17 +264,21 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
         val drops = getAdditionalDrops(level, blockPos, block, blockState, traitStacks, traitEffects, randomTraitChances, player, tool)
         val experience = if (dropExperience) level.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey]) else 0
 
-        withStickyMining(level, blockPos.toBox(), player, tool) {
+        // アイテムを生成
+        withStickyMining(level, blockPos.toBox(), player, tool.orEmpty) {
             drops.forEach { itemStack ->
                 popResource(level, blockPos, itemStack)
             }
             if (experience > 0) popExperience(level, blockPos, experience)
         }
 
+        // 成長段階を消費
         level.setBlock(blockPos, getBlockStateAfterPicking(blockState), UPDATE_CLIENTS)
 
+        // 天然フラグを除去
         blockEntity.setNatural(false)
 
+        // エフェクト
         level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, Block.getId(blockState))
 
     }

@@ -35,30 +35,38 @@ object ObtainFairyToolEffectType : DoubleAddToolEffectType<ToolConfiguration>() 
         if (value <= 0.0) return
         configuration.descriptions += TextPoem(PoemType.DESCRIPTION, text { TRANSLATION() })
         configuration.onAfterBreakBlockListeners += fail@{ _, level, player, pos, state, _, tool ->
-            if (player !is ServerPlayer) return@fail
+            if (player !is ServerPlayer) return@fail // 使用者がプレイヤーでない
 
+            // モチーフの判定
             val motifSet = FairyDreamRecipes.BLOCK.test(state.block)
 
+            // 抽選
             val result = getRandomFairy(level.random, motifSet, value) ?: return@fail
 
+            // 入手
             val fairyItemStack = result.motif.createFairyItemStack(condensation = result.condensation, count = result.count)
             withStickyMining(level, pos.toBox(), player, tool) {
                 level.addFreshEntity(ItemEntity(level, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, fairyItemStack))
             }
 
+            // 妖精召喚履歴に追加
             player.fairyHistoryContainer.mutate { it[result.motif] += result.condensation * result.count.toBigInteger() }
 
         }
         configuration.onKilledListeners += fail@{ _, entity, attacker, _ ->
-            if (attacker !is ServerPlayer) return@fail
+            if (attacker !is ServerPlayer) return@fail // 使用者がプレイヤーでない
 
+            // モチーフの判定
             val motifSet = FairyDreamRecipes.ENTITY_TYPE.test(entity.type)
 
+            // 抽選
             val result = getRandomFairy(entity.level().random, motifSet, value) ?: return@fail
 
+            // 入手
             val fairyItemStack = result.motif.createFairyItemStack(condensation = result.condensation, count = result.count)
             entity.level().addFreshEntity(ItemEntity(entity.level(), entity.x, entity.y, entity.z, fairyItemStack))
 
+            // 妖精召喚履歴に追加
             attacker.fairyHistoryContainer.mutate { it[result.motif] += result.condensation * result.count.toBigInteger() }
 
         }
