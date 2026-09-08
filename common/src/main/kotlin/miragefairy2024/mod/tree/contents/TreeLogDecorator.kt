@@ -23,7 +23,7 @@ abstract class TreeLogDecorator(
             if (r < drippingLogPercentage) {
                 generator.setBlock(blockPos, drippingLog().block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
             } else if (hollowLog != null && r < drippingLogPercentage + hollowLogPercentage) {
-                generator.setBlock(blockPos, hollowLog.invoke().block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
+                generator.setBlock(blockPos, hollowLog().block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
             }
         }
     }
