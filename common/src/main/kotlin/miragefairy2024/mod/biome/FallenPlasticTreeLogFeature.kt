@@ -46,23 +46,23 @@ class FallenPlasticTreeLogFeature(codec: Codec<NoneFeatureConfiguration>) : Feat
         val originBlockPos = context.origin()
         val random = context.random()
 
-        // 幹が倒れていく方向と、その最大の長さなのだぁ🌱
+        // 幹が倒れていく方向と、その最大の長さなのだ～🌱
         val direction = Direction.from2DDataValue(random.nextInt(4))
         val maxLength = random.nextIntBetweenInclusive(7, 13)
 
-        // 折れ残った根元の高さなのだぁ🌱
+        // 折れ残った根元の高さなのだ～🌱
         val stumpHeight = random.nextIntBetweenInclusive(1, 2)
 
-        // 直下が地面で、かつ自身が空気や草などの置き換え可能なブロックである場合のみ、丸太を置けるのだぁ🌱
+        // 直下が地面で、かつ自身が空気や草などの置き換え可能なブロックである場合のみ、丸太を置けるのだ～🌱
         fun canPlaceLog(blockPos: BlockPos): Boolean {
             val blockState = level.getBlockState(blockPos)
             if (!blockState.canBeReplaced()) return false
-            if (!blockState.fluidState.isEmpty) return false // 水中や溶岩の中には倒れないのだぁ💧
+            if (!blockState.fluidState.isEmpty) return false // 水中や溶岩の中には倒れないのだ～🌱
             val belowBlockPos = blockPos.below()
             return level.getBlockState(belowBlockPos).isSolidRender(level, belowBlockPos)
         }
 
-        // 地形の起伏に沿わせるため、基準の高さから上下1ブロックの範囲で、丸太を置ける高さを探すのだぁ🌱
+        // 地形の起伏に沿わせるため、基準の高さから上下1ブロックの範囲で、丸太を置ける高さを探すのだ～🌱
         fun findLogBlockPos(baseBlockPos: BlockPos): BlockPos? {
             listOf(0, 1, -1).forEach { dy ->
                 val blockPos = baseBlockPos.above(dy)
@@ -71,10 +71,10 @@ class FallenPlasticTreeLogFeature(codec: Codec<NoneFeatureConfiguration>) : Feat
             return null
         }
 
-        // 根元の位置なのだぁ🌱
+        // 根元の位置なのだ～🌱
         val stumpBlockPos = findLogBlockPos(originBlockPos) ?: return false
 
-        // 根元から1ブロックの隙間を空けた先に、倒れた幹を地形に沿って伸ばすのだぁ🌱
+        // 根元から1ブロックの隙間を空けた先に、倒れた幹を地形に沿って伸ばすのだ～🌱
         val logBlockPosList = mutableListOf<BlockPos>()
         run {
             var previousBlockPos = stumpBlockPos
@@ -85,21 +85,21 @@ class FallenPlasticTreeLogFeature(codec: Codec<NoneFeatureConfiguration>) : Feat
             }
         }
 
-        // 大径木の倒木と呼ぶには短すぎる場合は、生成をやめるのだぁ💧
+        // 大径木の倒木と呼ぶには短すぎる場合は、生成をやめるのだ～🌱
         if (logBlockPosList.size < 5) return false
 
-        // この時点で生成は確定なのだぁ🌱
+        // この時点で生成は確定なのだ～🌱
 
         val logBlockState = TreeBlockCard.PLASTIC_TREE_LOG.block().defaultBlockState()
 
-        // 折れ残った根元なのだぁ🌱
+        // 折れ残った根元なのだ～🌱
         repeat(stumpHeight) { dy ->
             val blockPos = stumpBlockPos.above(dy)
             if (dy > 0 && !canPlaceLog(blockPos)) return@repeat
             level.setBlock(blockPos, logBlockState.with(RotatedPillarBlock.AXIS, Direction.Axis.Y), 2)
         }
 
-        // 地面に横たわる幹なのだぁ🌱
+        // 地面に横たわる幹なのだ～🌱
         logBlockPosList.forEach { blockPos ->
             level.setBlock(blockPos, logBlockState.with(RotatedPillarBlock.AXIS, direction.axis), 2)
         }
