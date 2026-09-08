@@ -33,7 +33,7 @@ templates.decoration = src, offsetX, offsetY, size -> %><img
 ><%
 
 # 素材のまわりに飾りを、テクスチャ中心からの相対位置で貼るのだ～🌱
-# material-box の箱をテクスチャと同寸にすることで、left/top の％がそのままテクスチャ基準の相対位置になり、
+# material-box のボックスをテクスチャと同寸にすることで、left/top の％がそのままテクスチャ基準の相対位置になり、
 # テクスチャを拡縮しても飾りが自動追従するのだ～🌱 decorations は decoration() を連結した文字列なのだ～🌱
 templates.materialBox = size, inner, decorations -> %>
   <span class="material-box" style="width: <%= size %>px; height: <%= size %>px;"><%= inner %><%= decorations %></span>
@@ -47,7 +47,7 @@ cssLines::push << %>
     align-items: center;
     justify-content: center;
   }
-  /* 飾りは material-box の箱＝テクスチャ寸に対する％で置くので、テクスチャ基準の相対位置になるのだ～🌱 */
+  /* 飾りは material-box のボックス＝テクスチャ寸に対する％で置くので、テクスチャ基準の相対位置になるのだ～🌱 */
   .decoration {
     position: absolute;
     transform: translate(-50%, -50%);

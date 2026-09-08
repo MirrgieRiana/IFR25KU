@@ -11,6 +11,7 @@ import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.isServer
+import miragefairy2024.util.orEmpty
 import miragefairy2024.util.randomInt
 import miragefairy2024.util.text
 import miragefairy2024.util.toBlockPos
@@ -264,7 +265,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
         val experience = if (dropExperience) level.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey]) else 0
 
         // アイテムを生成
-        withStickyMining(level, blockPos.toBox(), player, tool) {
+        withStickyMining(level, blockPos.toBox(), player, tool.orEmpty) {
             drops.forEach { itemStack ->
                 popResource(level, blockPos, itemStack)
             }

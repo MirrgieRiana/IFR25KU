@@ -15,7 +15,7 @@
 このスクリプトがやってくれることなのだ～🌱♪：
 
 - `src/site/resources/` の素材を、サブディレクトリの構造ごと `build/site/` にコピーするのだ～🌱
-- `src/main/xa1/global.xa1` を読み込んで、共有の土台（テンプレート・ページ生成関数・CSS行）を用意するのだ～🌱
+- `src/main/xa1/global.xa1` を読み込んで、共有のベース（テンプレート・ページ生成関数・CSS行）を用意するのだ～🌱
 - `src/plugins/xa1/*.xa1` を読み込んで、プラグインのテンプレートとCSS行を登録するのだ～🌱
 - `src/pages/xa1/*.xa1` を読み込んで、ページ生成関数を登録するのだ～🌱
 - 登録されたページ生成関数を回して、 `build/site/` に HTML を書き出すのだ～🌱
@@ -27,7 +27,7 @@ xarpite ランタイムは、リポジトリに同梱されている `../xarpite
 
 - `build.sh` - ビルドのエントリポイントなのだ～🌱♪ ここへ cd して、`build.xa1` を xarpite で呼ぶだけなのだ～🌱
 - `build.xa1` - ビルドメインなのだ～🌱 `global.xa1` をマウントして、プラグイン・ページを読み込んでから、ビルド本体の `build` 関数を呼ぶのだ～🌱
-- `src/main/xa1/global.xa1` - 共有の土台（`templates`・`pageGenerators`・`cssLines` などの登録簿とヘルパー、そして素材配置と書き出しをやる `build` 関数）なのだ～🌱
+- `src/main/xa1/global.xa1` - 共有のベース（`templates`・`pageGenerators`・`cssLines` などのレジストリとヘルパー、そして素材配置と書き出しをやる `build` 関数）なのだ～🌱
 - `src/plugins/xa1/*.xa1` - パーツ（素材・矢印・見出し・レイアウトなど）なのだ～🌱 `templates` と `cssLines` へ登録するのだ～🌱
 - `src/pages/xa1/*.xa1` - 出力ページなのだ～🌱 `pageGenerators` へ「出力ファイル名 → 内容を返す関数」を登録するのだ～🌱 スライドは `sphere-crafting.xa1` に4枚まとめて入っているのだ～🌱
 - `src/site/resources/` - 素材なのだ～🌱 ライセンスごとにサブディレクトリに仕分けてあるのだ～🌱

@@ -23,6 +23,7 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.ExperienceOrb
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.Level
@@ -31,24 +32,6 @@ import net.minecraft.world.phys.AABB
 val STICKY_MINING_BLOCK_TAG = MirageFairy2024.identifier("sticky_mining_block").toBlockTag()
 
 val stickyMiningStatusEffect = Registration(BuiltInRegistries.MOB_EFFECT, MirageFairy2024.identifier("sticky_mining")) { StickyMiningStatusEffect() }
-
-/** 採掘者の側に由来する粘着採掘の発動を判定するのだ～🌱 [STICKY_MINING_BLOCK_TAG] による対象ブロック由来の発動は含まないのだ～🌱 */
-fun isStickyMining(level: Level, entity: Entity, tool: ItemStack?): Boolean {
-    if (entity is LivingEntity && entity.hasEffect(stickyMiningStatusEffect.getHolder())) return true
-    if (tool == null) return false
-    return EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool) > 0
-}
-
-/** 粘着採掘が発動している場合に、[action] が [aabb] の内部に生じさせたドロップを [entity] の位置へ引き寄せるのだ～🌱 */
-inline fun withStickyMining(level: Level, aabb: AABB, entity: Entity?, tool: ItemStack?, action: () -> Unit) {
-    if (level.isClientSide || entity == null || !isStickyMining(level, entity, tool)) {
-        action()
-        return
-    }
-    val snapshot = StickyMiningSnapshot.take(level, aabb)
-    action()
-    snapshot.teleportNewEntities(entity)
-}
 
 context(ModContext)
 fun initStickyMining() {
@@ -111,4 +94,25 @@ class StickyMiningSnapshot private constructor(
             return StickyMiningSnapshot(level, aabb, getItemEntities(level, aabb), getExperienceOrbs(level, aabb))
         }
     }
+}
+
+fun isStickyMining(level: Level, entity: Entity, tool: ItemStack): Boolean {
+    if (entity is LivingEntity && entity.hasEffect(stickyMiningStatusEffect.getHolder())) return true
+    return EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool) > 0
+}
+
+/** 粘着採掘が発動している場合に、[action] が [aabb] の内部に生じさせたドロップを [player] の位置へ引き寄せるのだ～🌱 */
+fun withStickyMining(level: Level, aabb: AABB, player: Player?, tool: ItemStack, action: () -> Unit) {
+    run {
+        if (level.isClientSide) return@run
+        if (player == null) return@run
+        if (!isStickyMining(level, player, tool)) return@run
+
+        val snapshot = StickyMiningSnapshot.take(level, aabb)
+        action()
+        snapshot.teleportNewEntities(player)
+
+        return
+    }
+    action()
 }

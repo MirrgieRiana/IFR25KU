@@ -53,36 +53,36 @@ abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) :
     }
 }
 
-class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
+class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration, private val log: () -> TreeBlockCard) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getPlankMapColor() }
 
     context(ModContext)
     override fun init() {
         super.init()
         registerModelGeneration(block) { it.logWithHorizontal(block()) }
-        initStripped(LOG.block)
+        initStripped { log().block() }
     }
 }
 
-class TreeWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
+class TreeWoodBlockCard(configuration: TreeBlockConfiguration, private val log: () -> TreeBlockCard) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getWoodMapColor() }
 
     context(ModContext)
     override fun init() {
         super.init()
-        registerModelGeneration(LOG.block) { it.wood(block()) }
-        initWood(LOG.item)
+        registerModelGeneration({ log().block() }) { it.wood(block()) }
+        initWood { log().item() }
     }
 }
 
-class TreeStrippedWoodBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
+class TreeStrippedWoodBlockCard(configuration: TreeBlockConfiguration, private val strippedLog: () -> TreeBlockCard, private val wood: () -> TreeBlockCard) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getPlankMapColor() }
 
     context(ModContext)
     override fun init() {
         super.init()
-        registerModelGeneration(STRIPPED_LOG.block) { it.wood(block()) }
-        initStripped(WOOD.block)
-        initWood(STRIPPED_LOG.item)
+        registerModelGeneration({ strippedLog().block() }) { it.wood(block()) }
+        initStripped { wood().block() }
+        initWood { strippedLog().item() }
     }
 }
