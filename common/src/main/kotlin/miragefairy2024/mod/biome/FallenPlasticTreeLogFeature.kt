@@ -3,7 +3,7 @@ package miragefairy2024.mod.biome
 import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.util.Registration
 import miragefairy2024.util.center
 import miragefairy2024.util.flower
@@ -24,9 +24,9 @@ import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
 
-object FallenHaimeviskaLogFeatureCard {
-    val identifier = MirageFairy2024.identifier("fallen_haimeviska_log")
-    val feature = FallenHaimeviskaLogFeature(NoneFeatureConfiguration.CODEC)
+object FallenPlasticTreeLogFeatureCard {
+    val identifier = MirageFairy2024.identifier("fallen_plastic_tree_log")
+    val feature = FallenPlasticTreeLogFeature(NoneFeatureConfiguration.CODEC)
     val placedFeatureKey = Registries.PLACED_FEATURE with identifier
 
     context(ModContext)
@@ -40,7 +40,7 @@ object FallenHaimeviskaLogFeatureCard {
     }
 }
 
-class FallenHaimeviskaLogFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeatureConfiguration>(codec) {
+class FallenPlasticTreeLogFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeatureConfiguration>(codec) {
     override fun place(context: FeaturePlaceContext<NoneFeatureConfiguration>): Boolean {
         val level = context.level()
         val originBlockPos = context.origin()
@@ -90,7 +90,7 @@ class FallenHaimeviskaLogFeature(codec: Codec<NoneFeatureConfiguration>) : Featu
 
         // この時点で生成は確定なのだぁ🌱
 
-        val logBlockState = HaimeviskaBlockCard.LOG.block().defaultBlockState()
+        val logBlockState = TreeBlockCard.PLASTIC_TREE_LOG.block().defaultBlockState()
 
         // 折れ残った根元なのだぁ🌱
         repeat(stumpHeight) { dy ->
