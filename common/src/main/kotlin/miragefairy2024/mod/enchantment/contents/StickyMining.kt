@@ -84,7 +84,8 @@ fun isStickyMining(level: Level, tool: ItemStack): Boolean {
     return EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool) > 0
 }
 
-inline fun withStickyMining(level: Level, aabb: AABB, player: Player?, tool: ItemStack, action: () -> Unit) {
+/** 粘着採掘が発動している場合に、[action] が [aabb] の内部に生じさせたドロップを [player] の位置へ引き寄せるのだ～🌱 */
+fun withStickyMining(level: Level, aabb: AABB, player: Player?, tool: ItemStack, action: () -> Unit) {
     run {
         if (level.isClientSide) return@run
         if (player == null) return@run
