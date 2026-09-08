@@ -85,7 +85,7 @@ fun isStickyMining(level: Level, tool: ItemStack): Boolean {
 }
 
 /** 粘着採掘が発動している場合に、[action] が [aabb] の内部に生じさせたドロップを [player] の位置へ引き寄せるのだ～🌱 */
-inline fun withStickyMining(level: Level, aabb: AABB, player: Player?, tool: ItemStack, action: () -> Unit) {
+fun withStickyMining(level: Level, aabb: AABB, player: Player?, tool: ItemStack, action: () -> Unit) {
     run {
         if (level.isClientSide) return@run
         if (player == null) return@run
