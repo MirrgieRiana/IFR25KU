@@ -8,8 +8,8 @@ import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorTy
 
 object HaimeviskaTreeDecoratorCard {
     val identifier = MirageFairy2024.identifier("haimeviska")
-    private val codec: MapCodec<TreeLogDecorator> = MapCodec.unit { HaimeviskaTreeDecorator }
-    val type: TreeDecoratorType<TreeLogDecorator> = TreeDecoratorType(codec)
+    private val codec: MapCodec<HaimeviskaTreeDecorator> = MapCodec.unit { HaimeviskaTreeDecorator }
+    val type: TreeDecoratorType<HaimeviskaTreeDecorator> = TreeDecoratorType(codec)
 }
 
 object HaimeviskaTreeDecorator : TreeLogDecorator({ TreeBlockCard.LOG }, { TreeBlockCard.DRIPPING_LOG }, 12, { TreeBlockCard.HOLLOW_LOG }, 6) {

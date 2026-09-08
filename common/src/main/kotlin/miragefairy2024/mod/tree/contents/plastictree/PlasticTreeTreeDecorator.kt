@@ -8,8 +8,8 @@ import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorTy
 
 object PlasticTreeTreeDecoratorCard {
     val identifier = MirageFairy2024.identifier("plastic_tree")
-    private val codec: MapCodec<TreeLogDecorator> = MapCodec.unit { PlasticTreeTreeDecorator }
-    val type: TreeDecoratorType<TreeLogDecorator> = TreeDecoratorType(codec)
+    private val codec: MapCodec<PlasticTreeTreeDecorator> = MapCodec.unit { PlasticTreeTreeDecorator }
+    val type: TreeDecoratorType<PlasticTreeTreeDecorator> = TreeDecoratorType(codec)
 }
 
 object PlasticTreeTreeDecorator : TreeLogDecorator({ TreeBlockCard.PLASTIC_TREE_LOG }, { TreeBlockCard.DRIPPING_PLASTIC_TREE_LOG }, 25, null, 0) {
