@@ -23,13 +23,13 @@ import net.minecraft.world.phys.AABB
 
 val STICKY_MINING_BLOCK_TAG = MirageFairy2024.identifier("sticky_mining_block").toBlockTag()
 
-/** 採掘者の側に由来する粘着採掘の発動を判定するのだ～🌱 [STICKY_MINING_BLOCK_TAG] による対象ブロック由来の発動は含まないのだ～🌱 */
+/** 採掘者の側に由来する粘着採掘の発動を判定するのだ～🌱 [miragefairy2024.mod.enchantment.contents.STICKY_MINING_BLOCK_TAG] による対象ブロック由来の発動は含まないのだ～🌱 */
 fun isStickyMining(level: Level, tool: ItemStack?): Boolean {
     if (tool == null) return false
     return EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.STICKY_MINING.key], tool) > 0
 }
 
-/** 粘着採掘が発動している場合に、[action] が [aabb] の内部に生じさせたドロップを [player] の位置へ引き寄せるのだ～🌱 */
+/** 粘着採掘が発動している場合に、[miragefairy2024.mod.enchantment.contents.withStickyMining.action] が [miragefairy2024.mod.enchantment.contents.withStickyMining.aabb] の内部に生じさせたドロップを [miragefairy2024.mod.enchantment.contents.withStickyMining.player] の位置へ引き寄せるのだ～🌱 */
 inline fun withStickyMining(level: Level, aabb: AABB, player: Player?, tool: ItemStack?, action: () -> Unit) {
     run {
         if (level.isClientSide) return@run
