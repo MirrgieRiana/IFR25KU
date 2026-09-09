@@ -5,6 +5,8 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeConfiguration
+import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecorator
+import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecoratorCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -111,6 +113,13 @@ fun initHaimeviska() {
 
 
     // 地形生成
+    fun createTreeDecorator(): HaimeviskaTreeDecorator {
+        return HaimeviskaTreeDecorator(
+            TreeBlockCard.LOG.block(),
+            HaimeviskaTreeDecorator.Replacement(TreeBlockCard.DRIPPING_LOG.block(), 12),
+            HaimeviskaTreeDecorator.Replacement(TreeBlockCard.HOLLOW_LOG.block(), 6),
+        )
+    }
     Feature.TREE.generator(MirageFairy2024.identifier("small_haimeviska")) {
         registerConfiguredFeature(SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
             TreeConfiguration2.TreeConfigurationBuilder(
@@ -119,7 +128,7 @@ fun initHaimeviska() {
                 BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
                 SmallHaimeviskaFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
                 TwoLayersFeatureSize(1, 0, 1),
-            ).ignoreVines().decorators(listOf(HaimeviskaTreeDecorator, TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
+            ).ignoreVines().decorators(listOf(createTreeDecorator(), TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
         }.generator {
 
             // まばら
@@ -138,7 +147,7 @@ fun initHaimeviska() {
                 BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
                 GiantHaimeviskaFoliagePlacer,
                 TwoLayersFeatureSize(1, 1, 2),
-            ).ignoreVines().decorators(listOf(HaimeviskaTreeDecorator, TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
+            ).ignoreVines().decorators(listOf(createTreeDecorator(), TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
         }.generator {
 
             // まばら
