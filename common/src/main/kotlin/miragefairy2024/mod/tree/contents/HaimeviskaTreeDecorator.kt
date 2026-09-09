@@ -26,6 +26,8 @@ class HaimeviskaTreeDecorator(
     private val drippingLogReplacement: Replacement?,
     private val hollowLogReplacement: Replacement?,
 ) : TreeDecorator() {
+    private constructor(log: Block, drippingLogReplacement: Optional<Replacement>, hollowLogReplacement: Optional<Replacement>) : this(log, drippingLogReplacement.orNull, hollowLogReplacement.orNull)
+
     companion object {
         val CODEC: MapCodec<HaimeviskaTreeDecorator> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
@@ -36,9 +38,6 @@ class HaimeviskaTreeDecorator(
         }
     }
 
-    constructor(log: Block, drippingLogReplacement: Optional<Replacement>, hollowLogReplacement: Optional<Replacement>) : this(log, drippingLogReplacement.orNull, hollowLogReplacement.orNull)
-
-    /** 置き換え先の原木のブロックと、それが選ばれる100分率の確率なのだ～🌱 */
     class Replacement(val block: Block, val percentage: Int) {
         companion object {
             val CODEC: Codec<Replacement> = RecordCodecBuilder.create { instance ->
