@@ -38,12 +38,12 @@ import net.minecraft.util.valueproviders.ConstantInt
 import net.minecraft.world.level.block.state.properties.BlockSetType
 import net.minecraft.world.level.block.state.properties.WoodType
 import net.minecraft.world.level.levelgen.feature.Feature
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
 import net.minecraft.world.level.levelgen.feature.treedecorators.LeaveVineDecorator
 import net.minecraft.world.level.levelgen.feature.treedecorators.TrunkVineDecorator
 import net.minecraft.world.level.material.MapColor
-import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration as TreeConfiguration2
 
 val HAIMEVISKA_CARD = object : TreeCard {
     override fun getWoodMapColor() = MapColor.TERRACOTTA_ORANGE
@@ -122,7 +122,7 @@ fun initHaimeviska() {
     }
     Feature.TREE.generator(MirageFairy2024.identifier("small_haimeviska")) {
         registerConfiguredFeature(SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
-            TreeConfiguration2.TreeConfigurationBuilder(
+            TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TreeBlockCard.LOG.block()),
                 SmallHaimeviskaTrunkPlacer,
                 BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
@@ -141,7 +141,7 @@ fun initHaimeviska() {
     }
     Feature.TREE.generator(MirageFairy2024.identifier("giant_haimeviska")) {
         registerConfiguredFeature(GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
-            TreeConfiguration2.TreeConfigurationBuilder(
+            TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TreeBlockCard.LOG.block()),
                 GiantHaimeviskaTrunkPlacer,
                 BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
