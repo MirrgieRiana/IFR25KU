@@ -4,8 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemType
 import miragefairy2024.mod.TextPoem
-import miragefairy2024.mod.enchantment.contents.StickyMiningSnapshot
-import miragefairy2024.mod.enchantment.contents.isStickyMining
+import miragefairy2024.mod.enchantment.contents.withStickyMining
 import miragefairy2024.mod.fairy.FairyDreamRecipes
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.fairyHistoryContainer
@@ -14,6 +13,7 @@ import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.merge
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
+import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.mutate
 import miragefairy2024.util.text
@@ -43,21 +43,11 @@ object ObtainFairyToolEffectType : DoubleAddToolEffectType<ToolConfiguration>() 
             // 抽選
             val result = getRandomFairy(level.random, motifSet, value) ?: return@fail
 
-            // 粘着採掘判定
-            val stickyMiningListener: (() -> Unit)? = run {
-                if (!isStickyMining(level, tool)) return@run null
-                val snapshot = StickyMiningSnapshot.take(level, pos.toBox())
-                return@run {
-                    snapshot.teleportNewEntities(player)
-                }
-            }
-
             // 入手
             val fairyItemStack = result.motif.createFairyItemStack(condensation = result.condensation, count = result.count)
-            level.addFreshEntity(ItemEntity(level, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, fairyItemStack))
-
-            // 粘着採掘効果
-            stickyMiningListener?.invoke()
+            withStickyMining(level, pos.toBox(), player, tool) {
+                level.addFreshEntity(ItemEntity(level, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, fairyItemStack))
+            }
 
             // 妖精召喚履歴に追加
             player.fairyHistoryContainer.mutate { it[result.motif] += result.condensation * result.count.toBigInteger() }

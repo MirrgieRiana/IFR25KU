@@ -1,16 +1,17 @@
 package miragefairy2024.mod.magicplant
 
-import miragefairy2024.mod.enchantment.contents.StickyMiningSnapshot
-import miragefairy2024.mod.enchantment.contents.isStickyMining
+import miragefairy2024.mod.enchantment.contents.withStickyMining
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.tool.CarnivorousPlantDamageTypeCard
 import miragefairy2024.mod.tool.DamageTypeCard
 import miragefairy2024.mod.tool.SpineDamageTypeCard
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotIn
 import miragefairy2024.util.isServer
+import miragefairy2024.util.orEmpty
 import miragefairy2024.util.randomInt
 import miragefairy2024.util.text
 import miragefairy2024.util.toBlockPos
@@ -263,25 +264,13 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
         val drops = getAdditionalDrops(level, blockPos, block, blockState, traitStacks, traitEffects, randomTraitChances, player, tool)
         val experience = if (dropExperience) level.random.randomInt(traitEffects[TraitEffectKeyCard.EXPERIENCE_PRODUCTION.traitEffectKey]) else 0
 
-        // 粘着採掘判定
-        val stickyMiningListener: (() -> Unit)? = run {
-            if (player == null) return@run null
-            if (tool == null) return@run null
-            if (!isStickyMining(level, tool)) return@run null
-            val snapshot = StickyMiningSnapshot.take(level, blockPos.toBox())
-            return@run {
-                snapshot.teleportNewEntities(player)
-            }
-        }
-
         // アイテムを生成
-        drops.forEach { itemStack ->
-            popResource(level, blockPos, itemStack)
+        withStickyMining(level, blockPos.toBox(), player, tool.orEmpty) {
+            drops.forEach { itemStack ->
+                popResource(level, blockPos, itemStack)
+            }
+            if (experience > 0) popExperience(level, blockPos, experience)
         }
-        if (experience > 0) popExperience(level, blockPos, experience)
-
-        // 粘着採掘効果
-        stickyMiningListener?.invoke()
 
         // 成長段階を消費
         level.setBlock(blockPos, getBlockStateAfterPicking(blockState), UPDATE_CLIENTS)
