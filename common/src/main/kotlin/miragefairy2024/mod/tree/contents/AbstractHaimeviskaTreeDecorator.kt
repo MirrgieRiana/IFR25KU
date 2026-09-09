@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator
 
 /** 置き換え先は、原木のブロックと、それが選ばれる100分率の確率の組で与えるのだ～🌱 */
-abstract class HaimeviskaTreeDecorator(
+abstract class AbstractHaimeviskaTreeDecorator(
     private val log: () -> TreeBlockCard,
     private val drippingLogReplacement: Pair<() -> TreeBlockCard, Int>,
     private val hollowLogReplacement: Pair<() -> TreeBlockCard, Int>?,
