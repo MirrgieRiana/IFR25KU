@@ -3,11 +3,8 @@ package miragefairy2024.mod.tree.contents.plastictree
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockCard
-import miragefairy2024.mod.tree.TreeConfiguration
-import miragefairy2024.mod.tree.contents.haimeviska.GiantHaimeviskaFoliagePlacer
-import miragefairy2024.mod.tree.contents.haimeviska.HAIMEVISKA_BLOCK_SET_TYPE
-import miragefairy2024.mod.tree.contents.haimeviska.HAIMEVISKA_WOOD_TYPE
-import miragefairy2024.mod.tree.contents.haimeviska.SmallHaimeviskaFoliagePlacer
+import miragefairy2024.mod.tree.TreeCard
+import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecorator
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.enJa
@@ -24,18 +21,18 @@ import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.util.valueproviders.ConstantInt
 import net.minecraft.world.level.levelgen.feature.Feature
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
 import net.minecraft.world.level.material.MapColor
-import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration as TreeConfiguration2
 
-val PLASTIC_TREE_TREE_CONFIGURATION = object : TreeConfiguration {
+val PLASTIC_TREE_CARD = object : TreeCard {
     override fun getWoodMapColor() = MapColor.COLOR_YELLOW
     override fun getPlankMapColor() = MapColor.SAND
     override fun getBlockTag() = PLASTIC_TREE_LOGS_BLOCK_TAG
     override fun getItemTag() = PLASTIC_TREE_LOGS_ITEM_TAG
-    override fun getBlockSetType() = HAIMEVISKA_BLOCK_SET_TYPE // TODO プラノキの板材がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
-    override fun getWoodType() = HAIMEVISKA_WOOD_TYPE // TODO プラノキの板材がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+    override fun getBlockSetType() = TODO() // TODO プラノキの板材がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
+    override fun getWoodType() = TODO() // TODO プラノキの板材がまだ無いから、ハイメヴィスカのものをプレースホルダーとして置いてあるのだ～🌱
     override fun getTreeGrowerName() = MirageFairy2024.identifier("plastic_tree")
     override fun getGiantTree() = GIANT_PLASTIC_TREE_CONFIGURED_FEATURE_KEY
     override fun getSmallTree() = SMALL_PLASTIC_TREE_CONFIGURED_FEATURE_KEY
@@ -60,7 +57,8 @@ fun initPlasticTree() {
     // 木
     Registration(BuiltInRegistries.TRUNK_PLACER_TYPE, GiantPlasticTreeTrunkPlacerCard.identifier) { GiantPlasticTreeTrunkPlacerCard.type }.register()
     Registration(BuiltInRegistries.TRUNK_PLACER_TYPE, SmallPlasticTreeTrunkPlacerCard.identifier) { SmallPlasticTreeTrunkPlacerCard.type }.register()
-    Registration(BuiltInRegistries.TREE_DECORATOR_TYPE, PlasticTreeTreeDecoratorCard.identifier) { PlasticTreeTreeDecoratorCard.type }.register()
+    Registration(BuiltInRegistries.FOLIAGE_PLACER_TYPE, GiantPlasticTreeFoliagePlacerCard.identifier) { GiantPlasticTreeFoliagePlacerCard.type }.register()
+    Registration(BuiltInRegistries.FOLIAGE_PLACER_TYPE, SmallPlasticTreeFoliagePlacerCard.identifier) { SmallPlasticTreeFoliagePlacerCard.type }.register()
 
 
     // タグ
@@ -71,26 +69,33 @@ fun initPlasticTree() {
 
 
     // 地形生成
+    fun createTreeDecorator(): HaimeviskaTreeDecorator {
+        return HaimeviskaTreeDecorator(
+            TreeBlockCard.PLASTIC_TREE_LOG.block(),
+            HaimeviskaTreeDecorator.Replacement(TreeBlockCard.DRIPPING_PLASTIC_TREE_LOG.block(), 25),
+            null,
+        )
+    }
     Feature.TREE.generator(MirageFairy2024.identifier("small_plastic_tree")) {
         registerConfiguredFeature(SMALL_PLASTIC_TREE_CONFIGURED_FEATURE_KEY) {
-            TreeConfiguration2.TreeConfigurationBuilder(
+            TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TreeBlockCard.PLASTIC_TREE_LOG.block()),
                 SmallPlasticTreeTrunkPlacer,
                 BlockStateProvider.simple(TreeBlockCard.PLASTIC_TREE_LEAVES.block()),
-                SmallHaimeviskaFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
+                SmallPlasticTreeFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
                 TwoLayersFeatureSize(1, 0, 1),
-            ).ignoreVines().decorators(listOf(PlasticTreeTreeDecorator)).build()
+            ).ignoreVines().decorators(listOf(createTreeDecorator())).build()
         }
     }
     Feature.TREE.generator(MirageFairy2024.identifier("giant_plastic_tree")) {
         registerConfiguredFeature(GIANT_PLASTIC_TREE_CONFIGURED_FEATURE_KEY) {
-            TreeConfiguration2.TreeConfigurationBuilder(
+            TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TreeBlockCard.PLASTIC_TREE_LOG.block()),
                 GiantPlasticTreeTrunkPlacer,
                 BlockStateProvider.simple(TreeBlockCard.PLASTIC_TREE_LEAVES.block()),
-                GiantHaimeviskaFoliagePlacer,
+                GiantPlasticTreeFoliagePlacer,
                 TwoLayersFeatureSize(1, 1, 2),
-            ).ignoreVines().decorators(listOf(PlasticTreeTreeDecorator)).build()
+            ).ignoreVines().decorators(listOf(createTreeDecorator())).build()
         }
     }
 

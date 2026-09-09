@@ -3,7 +3,12 @@
   "config": {
     "decorators": [
       {
-        "type": "miragefairy2024:plastic_tree"
+        "type": "miragefairy2024:haimeviska",
+        "dripping_log_replacement": {
+          "block": "miragefairy2024:dripping_plastic_tree_log",
+          "percentage": 25
+        },
+        "log": "miragefairy2024:plastic_tree_log"
       }
     ],
     "dirt_provider": {
@@ -13,7 +18,7 @@
       }
     },
     "foliage_placer": {
-      "type": "miragefairy2024:small_haimeviska",
+      "type": "miragefairy2024:small_plastic_tree",
       "height": 0,
       "offset": 0,
       "radius": 1

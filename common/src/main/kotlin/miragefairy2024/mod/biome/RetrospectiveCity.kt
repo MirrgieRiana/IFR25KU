@@ -1,6 +1,5 @@
 package miragefairy2024.mod.biome
 
-import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.entity.ChaosCubeCard
 import miragefairy2024.mod.materials.BlockMaterialCard
@@ -102,7 +101,7 @@ object RetrospectiveCityBiomeCard : BiomeCard(
     override fun init() {
         super.init()
 
-        registerOverworldSurfaceRules(MirageFairy2024.MOD_ID) {
+        registerOverworldSurfaceRules {
             SurfaceRules.ifTrue(
                 SurfaceRules.abovePreliminarySurface(),
                 SurfaceRules.ifTrue(
