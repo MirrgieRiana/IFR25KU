@@ -113,11 +113,13 @@ fun initHaimeviska() {
 
 
     // 地形生成
-    fun createTreeDecorator() = HaimeviskaTreeDecorator(
-        TreeBlockCard.LOG.block(),
-        HaimeviskaTreeDecorator.Replacement(TreeBlockCard.DRIPPING_LOG.block(), 12),
-        HaimeviskaTreeDecorator.Replacement(TreeBlockCard.HOLLOW_LOG.block(), 6),
-    )
+    fun createTreeDecorator(): HaimeviskaTreeDecorator {
+        return HaimeviskaTreeDecorator(
+            TreeBlockCard.LOG.block(),
+            HaimeviskaTreeDecorator.Replacement(TreeBlockCard.DRIPPING_LOG.block(), 12),
+            HaimeviskaTreeDecorator.Replacement(TreeBlockCard.HOLLOW_LOG.block(), 6),
+        )
+    }
     Feature.TREE.generator(MirageFairy2024.identifier("small_haimeviska")) {
         registerConfiguredFeature(SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
             TreeConfiguration2.TreeConfigurationBuilder(
