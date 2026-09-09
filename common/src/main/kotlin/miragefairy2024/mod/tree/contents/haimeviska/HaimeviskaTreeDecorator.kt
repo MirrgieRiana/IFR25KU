@@ -3,11 +3,7 @@ package miragefairy2024.mod.tree.contents.haimeviska
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.mod.tree.TreeBlockCard
-import miragefairy2024.util.with
-import net.minecraft.core.Direction
-import net.minecraft.world.level.block.HorizontalDirectionalBlock
-import net.minecraft.world.level.block.RotatedPillarBlock
-import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator
+import miragefairy2024.mod.tree.contents.AbstractHaimeviskaTreeDecorator
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType
 
 object HaimeviskaTreeDecoratorCard {
@@ -16,19 +12,10 @@ object HaimeviskaTreeDecoratorCard {
     val type: TreeDecoratorType<HaimeviskaTreeDecorator> = TreeDecoratorType(codec)
 }
 
-object HaimeviskaTreeDecorator : TreeDecorator() {
+object HaimeviskaTreeDecorator : AbstractHaimeviskaTreeDecorator(
+    { TreeBlockCard.LOG.block() },
+    Pair({ TreeBlockCard.DRIPPING_LOG.block() }, 12),
+    Pair({ TreeBlockCard.HOLLOW_LOG.block() }, 6),
+) {
     override fun type() = HaimeviskaTreeDecoratorCard.type
-    override fun place(generator: Context) {
-        generator.logs().forEach { blockPos ->
-            if (!generator.level().isStateAtPosition(blockPos) { it == TreeBlockCard.LOG.block().defaultBlockState().with(RotatedPillarBlock.AXIS, Direction.Axis.Y) }) return@forEach // 垂直の幹のみ
-            val direction = Direction.from2DDataValue(generator.random().nextInt(4))
-            if (!generator.isAir(blockPos.relative(direction))) return@forEach // 正面が空気の場合のみ
-            val r = generator.random().nextInt(100)
-            if (r < 12) {
-                generator.setBlock(blockPos, TreeBlockCard.DRIPPING_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
-            } else if (r < 18) {
-                generator.setBlock(blockPos, TreeBlockCard.HOLLOW_LOG.block().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
-            }
-        }
-    }
 }
