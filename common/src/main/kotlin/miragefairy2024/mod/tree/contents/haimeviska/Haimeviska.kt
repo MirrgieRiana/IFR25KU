@@ -4,7 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.tree.TreeBlockCard
-import miragefairy2024.mod.tree.TreeConfiguration
+import miragefairy2024.mod.tree.TreeCard
 import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecorator
 import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecoratorCard
 import miragefairy2024.util.AdvancementCard
@@ -45,7 +45,7 @@ import net.minecraft.world.level.levelgen.feature.treedecorators.TrunkVineDecora
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration as TreeConfiguration2
 
-val HAIMEVISKA_TREE_CONFIGURATION = object : TreeConfiguration {
+val HAIMEVISKA_CARD = object : TreeCard {
     override fun getWoodMapColor() = MapColor.TERRACOTTA_ORANGE
     override fun getPlankMapColor() = MapColor.RAW_IRON
     override fun getBlockTag() = HAIMEVISKA_LOGS_BLOCK_TAG

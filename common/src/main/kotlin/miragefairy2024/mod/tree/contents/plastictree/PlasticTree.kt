@@ -2,7 +2,7 @@ package miragefairy2024.mod.tree.contents.plastictree
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.mod.tree.TreeConfiguration
+import miragefairy2024.mod.tree.TreeCard
 import miragefairy2024.mod.tree.contents.haimeviska.GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY
 import miragefairy2024.mod.tree.contents.haimeviska.SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY
 import miragefairy2024.util.EnJa
@@ -18,7 +18,7 @@ import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.level.material.MapColor
 
-val PLASTIC_TREE_TREE_CONFIGURATION = object : TreeConfiguration {
+val PLASTIC_TREE_CARD = object : TreeCard {
     override fun getWoodMapColor() = MapColor.COLOR_YELLOW
     override fun getPlankMapColor() = MapColor.SAND
     override fun getBlockTag() = PLASTIC_TREE_LOGS_BLOCK_TAG
