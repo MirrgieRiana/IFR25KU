@@ -3,7 +3,7 @@ package miragefairy2024.mod.tree.contents.haimeviska
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.mod.tree.TreeBlockCard
-import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecorator as HaimeviskaTreeDecorator2
+import miragefairy2024.mod.tree.contents.AbstractHaimeviskaTreeDecorator
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType
 
 object HaimeviskaTreeDecoratorCard {
@@ -12,6 +12,6 @@ object HaimeviskaTreeDecoratorCard {
     val type: TreeDecoratorType<HaimeviskaTreeDecorator> = TreeDecoratorType(codec)
 }
 
-object HaimeviskaTreeDecorator : HaimeviskaTreeDecorator2({ TreeBlockCard.LOG }, { TreeBlockCard.DRIPPING_LOG } to 12, { TreeBlockCard.HOLLOW_LOG } to 6) {
+object HaimeviskaTreeDecorator : AbstractHaimeviskaTreeDecorator({ TreeBlockCard.LOG }, { TreeBlockCard.DRIPPING_LOG } to 12, { TreeBlockCard.HOLLOW_LOG } to 6) {
     override fun type() = HaimeviskaTreeDecoratorCard.type
 }
