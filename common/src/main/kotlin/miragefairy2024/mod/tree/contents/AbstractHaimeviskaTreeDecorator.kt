@@ -23,12 +23,13 @@ abstract class AbstractHaimeviskaTreeDecorator(
             if (drippingLogReplacement != null) {
                 threshold += drippingLogReplacement.second
                 if (random < threshold) generator.setBlock(blockPos, drippingLogReplacement.first().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
+                return
             }
             if (hollowLogReplacement != null) {
                 threshold += hollowLogReplacement.second
                 if (random < threshold) generator.setBlock(blockPos, hollowLogReplacement.first().defaultBlockState().with(HorizontalDirectionalBlock.FACING, direction))
+                return
             }
-
         }
     }
 }
