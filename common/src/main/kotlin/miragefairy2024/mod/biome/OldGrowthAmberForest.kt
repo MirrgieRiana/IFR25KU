@@ -1,6 +1,5 @@
 package miragefairy2024.mod.biome
 
-import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.tree.TreeBlockCard
@@ -99,7 +98,7 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
     override fun init() {
         super.init()
 
-        registerOverworldSurfaceRules(MirageFairy2024.MOD_ID) {
+        registerOverworldSurfaceRules {
             SurfaceRules.ifTrue(
                 SurfaceRules.abovePreliminarySurface(),
                 SurfaceRules.ifTrue(

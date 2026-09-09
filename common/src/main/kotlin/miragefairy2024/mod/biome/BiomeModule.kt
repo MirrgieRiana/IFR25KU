@@ -41,6 +41,13 @@ fun registerOverworldBiomeOverride(biome: ResourceKey<Biome>) {
     OVERWORLD_BIOME_OVERRIDES[biome] = key
 }
 
+val OVERWORLD_SURFACE_RULES_CREATORS = mutableListOf<() -> SurfaceRules.RuleSource>()
+
+context(ModContext)
+fun registerOverworldSurfaceRules(surfaceRuleCreator: () -> SurfaceRules.RuleSource) {
+    OVERWORLD_SURFACE_RULES_CREATORS += surfaceRuleCreator
+}
+
 val FAIRY_BIOME_TAG = MirageFairy2024.identifier("fairy").toBiomeTag()
 val RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG = MirageFairy2024.identifier("retrospective_city_building").toBlockTag()
 val RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG = MirageFairy2024.identifier("retrospective_city_floor").toBlockTag()
@@ -59,6 +66,16 @@ fun initBiomeModule() {
                 }
             }
         })
+    }
+
+    // 地表生成物ルールは名前空間ごとに1個しか保持されず、同じ名前空間で複数回登録すると後のものだけが残るのだ～🌱
+    // だから、溜めておいたものを1回にまとめて登録するのだ～🌱
+    ModEvents.onTerraBlenderInitialized {
+        val rules = OVERWORLD_SURFACE_RULES_CREATORS.map { it() }
+        if (rules.isNotEmpty()) {
+            val rule = if (rules.size == 1) rules.single() else SurfaceRules.sequence(*rules.toTypedArray())
+            SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MirageFairy2024.MOD_ID, rule)
+        }
     }
 
     FAIRY_BIOME_TAG.enJa(EnJa("Fairy", "妖精"))
@@ -120,12 +137,4 @@ fun initBiomeModule() {
         }
     }
 
-}
-
-context(ModContext)
-fun registerOverworldSurfaceRules(namespace: String, rulesCreator: () -> SurfaceRules.RuleSource) {
-    ModEvents.onTerraBlenderInitialized {
-        val rule = rulesCreator()
-        SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, namespace, rule)
-    }
 }
