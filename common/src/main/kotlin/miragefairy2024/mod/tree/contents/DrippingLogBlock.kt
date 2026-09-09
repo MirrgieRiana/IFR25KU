@@ -1,9 +1,11 @@
 package miragefairy2024.mod.tree.contents
 
 import miragefairy2024.lib.SimpleHorizontalFacingBlock
+import miragefairy2024.mod.enchantment.contents.withStickyMining
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.get
 import miragefairy2024.util.randomInt
+import miragefairy2024.util.toBox
 import miragefairy2024.util.with
 import mirrg.kotlin.helium.atMost
 import net.minecraft.core.BlockPos
@@ -47,8 +49,10 @@ abstract class DrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBl
 
         // 生産
         val fortune = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, Enchantments.FORTUNE], stack)
-        drop(getSapItem(), 1.0 + 0.25 * fortune) // 樹液
-        drop(getRosinItem(), 0.03 + 0.01 * fortune) // 涙
+        withStickyMining(level, pos.toBox().inflate(1.0), player, stack) { // アイテムは幹の正面へずれた位置に湧くから、ブロック1個分の箱では拾えないのだ～🌱
+            drop(getSapItem(), 1.0 + 0.25 * fortune) // 樹液
+            drop(getRosinItem(), 0.03 + 0.01 * fortune) // 涙
+        }
 
         // エフェクト
         level.playSound(null, pos, SoundEvents.SLIME_JUMP, SoundSource.BLOCKS, 0.75F, 1.0F + 0.5F * level.random.nextFloat())
