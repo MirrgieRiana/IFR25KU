@@ -12,6 +12,10 @@ object HaimeviskaTreeDecoratorCard {
     val type: TreeDecoratorType<HaimeviskaTreeDecorator> = TreeDecoratorType(codec)
 }
 
-object HaimeviskaTreeDecorator : AbstractHaimeviskaTreeDecorator({ TreeBlockCard.LOG }, { TreeBlockCard.DRIPPING_LOG } to 12, { TreeBlockCard.HOLLOW_LOG } to 6) {
+object HaimeviskaTreeDecorator : AbstractHaimeviskaTreeDecorator(
+    { TreeBlockCard.LOG.block() },
+    Pair({ TreeBlockCard.DRIPPING_LOG.block() }, 12),
+    Pair({ TreeBlockCard.HOLLOW_LOG.block() }, 6),
+) {
     override fun type() = HaimeviskaTreeDecoratorCard.type
 }
