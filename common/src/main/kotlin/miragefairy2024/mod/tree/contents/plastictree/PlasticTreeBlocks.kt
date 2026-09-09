@@ -2,6 +2,7 @@ package miragefairy2024.mod.tree.contents.plastictree
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.contents.DrippingLogBlock
 import miragefairy2024.mod.tree.contents.IncisableLogBlock
@@ -44,6 +45,6 @@ class DrippingPlasticTreeLogBlock(settings: Properties) : DrippingLogBlock(setti
     override fun getRosinItem() = MaterialCard.PLASTIC_TREE_SAP.item() // TODO レア素材を指定するのだ～🌱
 
     override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
-        spawnDrippingSapParticle(state, level, pos, random) // TODO パーティクルの種類も、湧く位置も、ハイメヴィスカと共通のものをそのまま使っているのだ～🌱
+        spawnDrippingSapParticle(state, level, pos, random, ParticleTypeCard.DRIPPING_HAIMEVISKA_SAP.particleType) // TODO パーティクルの種類も、湧く位置も、ハイメヴィスカと共通のものをそのまま使っているのだ～🌱
     }
 }
