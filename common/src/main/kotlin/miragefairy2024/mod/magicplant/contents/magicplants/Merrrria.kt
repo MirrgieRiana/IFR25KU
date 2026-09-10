@@ -136,26 +136,26 @@ class MerrrriaBlock(settings: Properties) : SimpleMagicPlantBlock(MerrrriaCard, 
 
     override fun canGrow(blockState: BlockState) = getAge(blockState) < 3 // 0→3までは自然成長
 
-    override fun move(world: ServerLevel, blockPos: BlockPos, blockState: BlockState, speed: Double, autoPick: Boolean) {
-        super.move(world, blockPos, blockState, speed, autoPick)
+    override fun move(level: ServerLevel, blockPos: BlockPos, blockState: BlockState, speed: Double, autoPick: Boolean) {
+        super.move(level, blockPos, blockState, speed, autoPick)
 
         // 3と4の間は昼と夜で繰り返す
         if (getAge(blockState) >= 3) {
-            val newBlockState = withAge(if (world.isNight) 4 else 3)
+            val newBlockState = withAge(if (level.isNight) 4 else 3)
             if (newBlockState != blockState) {
-                world.setBlock(blockPos, newBlockState, UPDATE_CLIENTS)
+                level.setBlock(blockPos, newBlockState, UPDATE_CLIENTS)
             }
         }
 
     }
 
-    override fun animateTick(state: BlockState, world: Level, pos: BlockPos, random: RandomSource) {
-        super.animateTick(state, world, pos, random)
+    override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
+        super.animateTick(state, level, pos, random)
         if (getAge(state) == 4) {
             if (random.nextInt(50) == 0) {
                 // クライアント側ではisNightが機能しないので夜だけ演奏はできない
                 val pitch = PITCHES[random.nextInt(PITCHES.size)]
-                world.playLocalSound(
+                level.playLocalSound(
                     pos.x.toDouble() + 0.5,
                     pos.y.toDouble() + 0.5,
                     pos.z.toDouble() + 0.5,
@@ -166,7 +166,7 @@ class MerrrriaBlock(settings: Properties) : SimpleMagicPlantBlock(MerrrriaCard, 
                     false,
                 )
                 repeat(4) {
-                    world.addParticle(
+                    level.addParticle(
                         ParticleTypeCard.AURA.particleType,
                         pos.x.toDouble() + random.nextDouble(),
                         pos.y.toDouble() + random.nextDouble(),

@@ -14,5 +14,5 @@ class SemiOpaqueTransparentBlock(settings: Properties) : TransparentBlock(settin
     override fun codec() = CODEC
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun getLightBlock(state: BlockState, world: BlockGetter, pos: BlockPos) = 1
+    override fun getLightBlock(state: BlockState, level: BlockGetter, pos: BlockPos) = 1
 }

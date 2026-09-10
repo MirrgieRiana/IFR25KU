@@ -36,6 +36,9 @@ class ParticleTypeCard<P : ParticleType<T>, T : ParticleOptions>(
         val DRIPPING_HAIMEVISKA_SAP = !ParticleTypeCard("dripping_haimeviska_sap", listOf("minecraft:drip_hang")) { FabricParticleTypes.simple(false) }
         val FALLING_HAIMEVISKA_SAP = !ParticleTypeCard("falling_haimeviska_sap", listOf("minecraft:drip_fall")) { FabricParticleTypes.simple(false) }
         val LANDING_HAIMEVISKA_SAP = !ParticleTypeCard("landing_haimeviska_sap", listOf("minecraft:drip_land")) { FabricParticleTypes.simple(false) }
+        val DRIPPING_PLASTIC_TREE_SAP = !ParticleTypeCard("dripping_plastic_tree_sap", listOf("minecraft:drip_hang")) { FabricParticleTypes.simple(false) }
+        val FALLING_PLASTIC_TREE_SAP = !ParticleTypeCard("falling_plastic_tree_sap", listOf("minecraft:drip_fall")) { FabricParticleTypes.simple(false) }
+        val LANDING_PLASTIC_TREE_SAP = !ParticleTypeCard("landing_plastic_tree_sap", listOf("minecraft:drip_land")) { FabricParticleTypes.simple(false) }
         val MAGIC_SQUARE = !ParticleTypeCard("magic_square", (1..7).map { "magic_square_$it" }) { MagicSquareParticleType(true) }
         val SULFUR_SMOKE = !ParticleTypeCard("sulfur_smoke", (7 downTo 0).map { "minecraft:generic_$it" }) { FabricParticleTypes.simple(false) }
     }

@@ -41,6 +41,13 @@ fun registerOverworldBiomeOverride(biome: ResourceKey<Biome>) {
     OVERWORLD_BIOME_OVERRIDES[biome] = key
 }
 
+val OVERWORLD_SURFACE_RULES_CREATORS = mutableListOf<() -> SurfaceRules.RuleSource>()
+
+context(ModContext)
+fun registerOverworldSurfaceRules(surfaceRuleCreator: () -> SurfaceRules.RuleSource) {
+    OVERWORLD_SURFACE_RULES_CREATORS += surfaceRuleCreator
+}
+
 val FAIRY_BIOME_TAG = MirageFairy2024.identifier("fairy").toBiomeTag()
 val RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG = MirageFairy2024.identifier("retrospective_city_building").toBlockTag()
 val RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG = MirageFairy2024.identifier("retrospective_city_floor").toBlockTag()
@@ -61,6 +68,16 @@ fun initBiomeModule() {
         })
     }
 
+    // 地表生成物ルールは名前空間ごとに1個しか保持されず、同じ名前空間で複数回登録すると後のものだけが残るのだ～🌱
+    // だから、溜めておいたものを1回にまとめて登録するのだ～🌱
+    ModEvents.onTerraBlenderInitialized {
+        val rules = OVERWORLD_SURFACE_RULES_CREATORS.map { it() }
+        if (rules.isNotEmpty()) {
+            val rule = if (rules.size == 1) rules.single() else SurfaceRules.sequence(*rules.toTypedArray())
+            SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MirageFairy2024.MOD_ID, rule)
+        }
+    }
+
     FAIRY_BIOME_TAG.enJa(EnJa("Fairy", "妖精"))
     RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG.enJa(EnJa("Retrospective City Building", "過去を見つめる都市の建物"))
     RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG.enJa(EnJa("Retrospective City Floor", "過去を見つめる都市の床"))
@@ -79,12 +96,12 @@ fun initBiomeModule() {
     OldGrowthAmberForestBiomeCard.init()
 
     // ランダムなシードとランダムな座標で、地表ルールで使う2種のノイズの標準偏差を実測するのだ～🌱
-    // ノイズの平均は理論上厳密に0だから、標準偏差の導出に使う平均にも0を使うのだ✨
-    // 平均に0を使うと分散が二乗和を個数で割ったものそのものになるから、標準偏差と個数だけで複数の結果を正しく集約できるのだ🌱
-    registerServerDebugItem("debug_surface_noise_statistics", Blocks.COARSE_DIRT.toTextureSource(), 0xFFFFAA00.toInt()) { world, player, _, _ ->
+    // ノイズの平均は理論上厳密に0だから、標準偏差の導出に使う平均にも0を使うのだぁ✨
+    // 平均に0を使うと分散が二乗和を個数で割ったものそのものになるから、標準偏差と個数だけで複数の結果を正しく集約できるのだ～🌱
+    registerServerDebugItem("debug_surface_noise_statistics", Blocks.COARSE_DIRT.toTextureSource(), 0xFFFFAA00.toInt()) { level, player, _, _ ->
         val random = RandomSource.create()
         SURFACE_NOISE_STANDARD_DEVIATIONS.forEach { (noiseKey, constantStandardDeviation) ->
-            val noiseParameters = world.registryAccess()[Registries.NOISE, noiseKey].value()
+            val noiseParameters = level.registryAccess()[Registries.NOISE, noiseKey].value()
             var count = 0L
             var squaredSum = 0.0
             repeat(1000) {
@@ -120,12 +137,4 @@ fun initBiomeModule() {
         }
     }
 
-}
-
-context(ModContext)
-fun registerOverworldSurfaceRules(namespace: String, rulesCreator: () -> SurfaceRules.RuleSource) {
-    ModEvents.onTerraBlenderInitialized {
-        val rule = rulesCreator()
-        SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, namespace, rule)
-    }
 }

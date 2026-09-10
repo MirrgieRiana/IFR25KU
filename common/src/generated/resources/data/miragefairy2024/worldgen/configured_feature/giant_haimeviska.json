@@ -3,7 +3,16 @@
   "config": {
     "decorators": [
       {
-        "type": "miragefairy2024:haimeviska"
+        "type": "miragefairy2024:haimeviska",
+        "dripping_log_replacement": {
+          "block": "miragefairy2024:dripping_haimeviska_log",
+          "percentage": 12
+        },
+        "hollow_log_replacement": {
+          "block": "miragefairy2024:hollow_haimeviska_log",
+          "percentage": 6
+        },
+        "log": "miragefairy2024:haimeviska_log"
       },
       {
         "type": "minecraft:trunk_vine"

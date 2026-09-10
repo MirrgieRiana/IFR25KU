@@ -113,8 +113,8 @@ class FairyHouseBlock(card: FairyHouseCard) : FairyFactoryBlock(card) {
 
 class FairyHouseBlockEntity(card: FairyHouseCard, pos: BlockPos, state: BlockState) : FairyFactoryBlockEntity<FairyHouseBlockEntity>(card, pos, state) {
     override fun getThis() = this
-    override fun serverTick(world: Level, pos: BlockPos, state: BlockState) {
-        super.serverTick(world, pos, state)
+    override fun serverTick(level: Level, pos: BlockPos, state: BlockState) {
+        super.serverTick(level, pos, state)
 
         if (folia < 1_000) {
             setStatus(FairyFactoryBlock.Status.OFFLINE)

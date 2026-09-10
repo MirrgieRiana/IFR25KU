@@ -10,12 +10,12 @@ import net.minecraft.util.Mth
 private const val WIND_CYCLE_TICKS = 20F * 60F
 
 // 摩擦0.96と釣り合って、終端速度は0.05になるのだぁ✨
-// 毎ティック 0.002 足して、0.96 をかける、を繰り返すと、だんだん速さが一定に近づくのだぁ～🌱
-// その落ち着き先が、0.002 を 1 引く 0.96 の 0.04 で割った値で、0.05 なのだぁ～✨
+// 毎ティック 0.002 足して、0.96 をかける、を繰り返すと、だんだん速さが一定に近づくのだ～🌱
+// その落ち着き先が、0.002 を 1 引く 0.96 の 0.04 で割った値で、0.05 なのだ～✨
 private const val WIND_HORIZONTAL_ACCELERATION = 0.002
 
 fun createSulfurSmokeParticleFactory() = { spriteProvider: SpriteSet ->
-    ParticleProvider<SimpleParticleType> { _, world, x, y, z, xSpeed, ySpeed, zSpeed ->
+    ParticleProvider<SimpleParticleType> { _, level, x, y, z, xSpeed, ySpeed, zSpeed ->
         /**
          * バニラの白い煙が、灰色の煙の色だけを差し替えたものなので、それに倣ったのだぁ✨
          *
@@ -23,11 +23,11 @@ fun createSulfurSmokeParticleFactory() = { spriteProvider: SpriteSet ->
          * @see net.minecraft.client.particle.LargeSmokeParticle
          */
         object : BaseAshSmokeParticle(
-            world,
+            level,
             x, y, z,
             0.1F, 0.1F, 0.1F,
             xSpeed, ySpeed, zSpeed,
-            2.5F * (1F + world.random.nextFloat()),
+            2.5F * (1F + level.random.nextFloat()),
             spriteProvider,
             0.3F,
             27,
@@ -40,7 +40,7 @@ fun createSulfurSmokeParticleFactory() = { spriteProvider: SpriteSet ->
 
             override fun tick() {
                 super.tick()
-                // 火山の噴煙は真上には昇らず、風を受けて横へたなびくのだぁ🌱 風向きはワールド全体で共通で、ゆっくりとひとまわりするのだぁ✨
+                // 火山の噴煙は真上には昇らず、風を受けて横へたなびくのだ～🌱 風向きはワールド全体で共通で、ゆっくりとひとまわりするのだぁ✨
                 val windAngle = level.gameTime / WIND_CYCLE_TICKS * Mth.TWO_PI
                 xd += Mth.cos(windAngle) * WIND_HORIZONTAL_ACCELERATION
                 zd += Mth.sin(windAngle) * WIND_HORIZONTAL_ACCELERATION

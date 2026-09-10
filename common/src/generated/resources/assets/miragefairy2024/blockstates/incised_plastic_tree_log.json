@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "miragefairy2024:block/incised_plastic_tree_log",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "miragefairy2024:block/incised_plastic_tree_log",
+      "y": 0
+    },
+    "facing=south": {
+      "model": "miragefairy2024:block/incised_plastic_tree_log",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "miragefairy2024:block/incised_plastic_tree_log",
+      "y": 270
+    }
+  }
+}

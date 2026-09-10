@@ -22,8 +22,8 @@ import java.util.List;
 @Mixin(Block.class)
 public class BlockMixin {
     @Inject(method = "playerDestroy", at = @At("TAIL"))
-    private void afterBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool, CallbackInfo ci) {
-        BlockCallback.AFTER_BREAK.invoker().afterBreak(world, player, pos, state, blockEntity, tool);
+    private void afterBreak(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool, CallbackInfo ci) {
+        BlockCallback.AFTER_BREAK.invoker().afterBreak(level, player, pos, state, blockEntity, tool);
     }
 
     @Inject(method = "getDrops(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntity;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;", at = @At("RETURN"), cancellable = true)
