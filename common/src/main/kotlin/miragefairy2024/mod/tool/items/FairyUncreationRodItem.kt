@@ -2,6 +2,7 @@ package miragefairy2024.mod.tool.items
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
+import miragefairy2024.mod.common.BlockPosesOutline
 import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
 import miragefairy2024.mod.common.RenderBlockPosesOutlineListenerItem
 import miragefairy2024.mod.enchantment.EnchantmentCard
@@ -145,7 +146,7 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
         }.map { it.second.relative(wallDirection) }
     }
 
-    override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): Pair<BlockPos, Set<BlockPos>>? {
+    override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): BlockPosesOutline? {
 
         val toolItemStack = context.player.getItemInHand(hand)
 
@@ -154,9 +155,10 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
 
         val sequence = getDestinationBlockPoses(context.level, context.player, toolItemStack, blockHitResult)
 
-        return Pair(
+        return BlockPosesOutline(
             blockHitResult.blockPos.relative(blockHitResult.direction),
             sequence.toSet(),
+            0xFFFFFF,
         )
     }
 
