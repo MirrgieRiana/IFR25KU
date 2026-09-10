@@ -472,17 +472,17 @@ class ToolCard(
         val PHANTOM_PICKAXE = !ToolCard(
             "phantom_pickaxe", EnJa("Phantom Pickaxe", "幻想のつるはし"),
             PoemList(4).poem(EnJa("\"Creation\" is the true power.", "人間が手にした唯一の幻想。")),
-            FairyPickaxeConfiguration(ToolMaterialCard.PHANTOM_DROP).selfMending(20).obtainFairy(9.0 * 9.0).enchantment(Enchantments.FORTUNE, 3),
+            FairyPickaxeConfiguration(ToolMaterialCard.PHANTOM_DROP).selfMending(10).obtainFairy(9.0 * 9.0).enchantment(Enchantments.FORTUNE, 3),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.PHANTOM_DROP.ore!!.tag) }
         val PHANTOM_SHOVEL = !ToolCard(
             "phantom_shovel", EnJa("Phantom Shovel", "幻想のシャベル"),
             PoemList(4).poem(EnJa("The sound of the world's end echoed", "破壊された世界の音――")),
-            FairyShovelConfiguration(ToolMaterialCard.PHANTOM_DROP).selfMending(20).obtainFairy(9.0 * 9.0).enchantment(Enchantments.FORTUNE, 3),
+            FairyShovelConfiguration(ToolMaterialCard.PHANTOM_DROP).selfMending(10).obtainFairy(9.0 * 9.0).enchantment(Enchantments.FORTUNE, 3),
         ) { registerShovelRecipeGeneration(item, MaterialCard.PHANTOM_DROP.ore!!.tag) }
         val PHANTOM_SWORD = !ToolCard(
             "phantom_sword", EnJa("Phantom Sword", "幻想の剣"),
             PoemList(4).poem(EnJa("Pray. For rebirth.", "闇を切り裂く、再生の光。")),
-            FairySwordConfiguration(ToolMaterialCard.PHANTOM_DROP).selfMending(20).obtainFairy(9.0 * 9.0).enchantment(Enchantments.LOOTING, 3),
+            FairySwordConfiguration(ToolMaterialCard.PHANTOM_DROP).selfMending(10).obtainFairy(9.0 * 9.0).enchantment(Enchantments.LOOTING, 3),
         ) { registerSwordRecipeGeneration(item, MaterialCard.PHANTOM_DROP.ore!!.tag) }
         val HAIMEVISKA_ROSIN_PICKAXE = !ToolCard(
             "haimeviska_rosin_pickaxe", EnJa("Resin Pickaxe", "涙のつるはし"),
