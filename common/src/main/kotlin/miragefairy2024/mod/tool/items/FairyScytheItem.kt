@@ -106,8 +106,9 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
     }
 
     /**
-     * 狙ったブロックを中心とする立方体のうち、遮蔽を越えずに辿り着けて、かつ収穫の対象となる位置を返すのだ～🌱
-     * 枠が実際に収穫される位置とずれないように、範囲の求め方も対象の絞り込みも、[use]と揃えるのだ～🌱
+     * 狙ったブロックを中心とする立方体のうち、遮蔽を越えずに辿り着けて、かつ収穫の対象になりうる位置を返すのだ～🌱
+     * 範囲の求め方も、対象とするブロックの種類も、[use]と揃えるのだ～🌱
+     * ただし、実際に収穫が起こるかどうかは対象のブロックに尋ねるまで分からないから、まだ実っていないものも含むのだ～🌱
      */
     private fun getHarvestBlockPoses(level: Level, blockPos: BlockPos): Set<BlockPos> {
         val region = BlockBox.of(blockPos.offset(-range, -range, -range), blockPos.offset(range, range, range))
