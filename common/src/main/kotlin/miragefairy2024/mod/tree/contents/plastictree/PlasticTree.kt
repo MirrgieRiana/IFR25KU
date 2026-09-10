@@ -68,7 +68,7 @@ fun initPlasticTree() {
     ItemTags.LOGS_THAT_BURN.generator.registerChild(PLASTIC_TREE_LOGS_ITEM_TAG)
 
 
-    // 地形生成
+    // 苗木から育つ木
     fun createTreeDecorator(): HaimeviskaTreeDecorator {
         return HaimeviskaTreeDecorator(
             TreeBlockCard.PLASTIC_TREE_LOG.block(),
