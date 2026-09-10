@@ -34,12 +34,10 @@ val makeLangTable = tasks.register("makeLangTable") {
     val enFile = rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json")
     val jaFile = rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json")
     val templateFile = file("src/langTable/html/lang_table.html")
-    val staticTemplateFile = file("src/langTable/html/lang_table_static.html")
 
     inputs.file(enFile)
     inputs.file(jaFile)
     inputs.file(templateFile)
-    inputs.file(staticTemplateFile)
     outputs.dir(layout.buildDirectory.dir("langTable"))
 
     fun write(path: String, content: String) {
@@ -54,7 +52,7 @@ val makeLangTable = tasks.register("makeLangTable") {
         val ja by lazy { GsonBuilder().create().fromJson(jaFile.readText(), JsonElement::class.java).asJsonObject }
         val keys by lazy { (en.keySet() + ja.keySet()).sorted() }
 
-        // lang_table.html と lang_table_static.html: テンプレート展開
+        // lang_table.html: テンプレート展開
         run {
             val trs = keys.joinToString("") { key ->
                 listOf(
@@ -67,8 +65,6 @@ val makeLangTable = tasks.register("makeLangTable") {
             }
             val html = templateFile.readText().replace("<%= trs %>", trs)
             write("langTable/lang_table.html", html)
-            val staticHtml = staticTemplateFile.readText().replace("<%= trs %>", trs)
-            write("langTable/lang_table_static.html", staticHtml)
         }
 
         // lang_table.json

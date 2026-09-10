@@ -39,7 +39,7 @@
 </head>
 <body>
 <h1>IFR25KU Lang Table</h1>
-<p>
+<p id="filterContainer" style="display: none;">
     <label for="filter">Search:</label> <input type="text" id="filter" style="width: 30em;">
 </p>
 <table id="langTable">
@@ -78,6 +78,10 @@
     (function() {
         const input = document.getElementById('filter');
         const tbody = document.getElementById('lang_table');
+
+        // 表はサーバー側で完成した状態が書き出されていて、絞り込みだけがこのスクリプトの役目なのだ～🌱
+        // だから、スクリプトが動かない環境では、動かない検索欄を出さずに、完成した表だけを見せるのだ～🌱
+        document.getElementById('filterContainer').style.display = '';
 
         function search() {
             let regex;

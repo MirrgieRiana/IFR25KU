@@ -14,7 +14,6 @@ MOD内で使用されているすべてのテキストの翻訳対応表です�
 ### 形式
 
 - [Lang Table (HTML)](lang_table.html) — ブラウザ上でフィルタリング可能なテーブル
-- [Lang Table (HTML, 静的版)](lang_table_static.html) — フィルタリング機能を持たないテーブル
 - [Lang Table (JSON)](lang_table.json) — JSON形式
 - [Lang Table (JSONL)](lang_table.jsonl) — JSONL形式
 - [Lang Table (CSV)](lang_table.csv) — CSV形式
