@@ -767,7 +767,7 @@ open class BlockMaterialCard(
             "resin_cemented_dirt", EnJa("Resin-Cemented Dirt", "石化した樹脂状の土"),
             PoemList(1).poem(EnJa("Antimicrobial terpenes prevent decay.", "電気の由来を語る土。")),
             MapColor.COLOR_ORANGE, 0.8F, 0.8F,
-        ).sound(SoundType.TUFF).needTool(ToolType.SHOVEL, ToolLevel.STONE).tag(BlockTags.DIRT).init {
+        ).sound(SoundType.TUFF).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.DIRT).init {
             // 分解レシピ
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,
