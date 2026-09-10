@@ -3,6 +3,7 @@ package miragefairy2024.mod.enchantment.contents
 import miragefairy2024.ModContext
 import miragefairy2024.mixins.api.BlockCallback
 import miragefairy2024.mixins.api.LevelEvent
+import miragefairy2024.mod.common.BlockPosesOutline
 import miragefairy2024.mod.common.CommonRenderingEvents
 import miragefairy2024.mod.enchantment.contents.multiminehandlers.AreaMiningMultiMineHandler
 import miragefairy2024.mod.enchantment.contents.multiminehandlers.CutAllMultiMineHandler
@@ -45,9 +46,10 @@ fun initMultiMine() {
             miningArea
         } ?: return@add null // 範囲採掘が発動しなかった
 
-        Pair(
+        BlockPosesOutline(
             hitResult.blockPos.relative(hitResult.direction),
             miningArea.visitedBlockEntry.map { it.blockPos }.toSet() + setOf(miningArea.multiMine.blockPos),
+            0xFFFFFF,
         )
     }
 

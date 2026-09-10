@@ -2,6 +2,9 @@ package miragefairy2024.mod.tool.items
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
+import miragefairy2024.mod.common.BlockPosesOutline
+import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
+import miragefairy2024.mod.common.RenderBlockPosesOutlineListenerItem
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.SCYTHE_ITEM_TAG
 import miragefairy2024.mod.enchantment.contents.withStickyMining
@@ -44,6 +47,7 @@ import net.minecraft.world.level.block.CaveVines
 import net.minecraft.world.level.block.SweetBerryBushBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
+import net.minecraft.world.phys.HitResult
 
 open class FairyScytheConfiguration(
     override val toolMaterialCard: ToolMaterialCard,
@@ -91,7 +95,7 @@ class FairyScytheItem(override val configuration: FairyScytheConfiguration, rang
 
 }
 
-open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, private val range: Int, settings: Properties) : SwordItem(material, settings.attributes(createAttributes(material, attackDamage.toInt(), attackSpeed))), PostTryPickHandlerItem {
+open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, private val range: Int, settings: Properties) : SwordItem(material, settings.attributes(createAttributes(material, attackDamage.toInt(), attackSpeed))), PostTryPickHandlerItem, RenderBlockPosesOutlineListenerItem {
     companion object {
         val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("scythe").toLanguageKey()}.description" }, "Perform area harvesting when used %s", "使用時、範囲収穫 %s")
     }
@@ -99,6 +103,36 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
     override fun appendHoverText(stack: ItemStack, context: TooltipContext, tooltipComponents: MutableList<Component>, tooltipFlag: TooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
         tooltipComponents += text { DESCRIPTION_TRANSLATION(range.toRomanText()).yellow }
+    }
+
+    /**
+     * 狙ったブロックを中心とする立方体のうち、遮蔽を越えずに辿り着けて、かつ収穫の対象となる位置を返すのだ～🌱
+     * 枠が実際に収穫される位置とずれないように、範囲の求め方も対象の絞り込みも、[use]と揃えるのだ～🌱
+     */
+    private fun getHarvestBlockPoses(level: Level, blockPos: BlockPos): Set<BlockPos> {
+        val region = BlockBox.of(blockPos.offset(-range, -range, -range), blockPos.offset(range, range, range))
+        return spaceVisitor(level, blockPos) { it in region }
+            .map { it.second }
+            .filter {
+                when (level.getBlockState(it).block) {
+                    is MagicPlantBlock, is SweetBerryBushBlock, is CaveVines -> true
+                    else -> false
+                }
+            }
+            .toSet()
+    }
+
+    override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): BlockPosesOutline? {
+        if (context.player.isShiftKeyDown) return null // スニーク中は範囲収穫を行わないのだ～🌱
+
+        val blockHitResult = getPlayerPOVHitResult(context.level, context.player, ClipContext.Fluid.NONE)
+        if (blockHitResult.type != HitResult.Type.BLOCK) return null // ブロックをタゲっていない
+
+        return BlockPosesOutline(
+            blockHitResult.blockPos.relative(blockHitResult.direction),
+            getHarvestBlockPoses(context.level, blockHitResult.blockPos),
+            0x00FF00,
+        )
     }
 
     override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
