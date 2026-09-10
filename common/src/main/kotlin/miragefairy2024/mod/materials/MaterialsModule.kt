@@ -626,7 +626,7 @@ class MaterialCard(
         )
         val PLASTIC_TREE_SAP: MaterialCard = !MaterialCard(
             "plastic_tree_sap", "Plastic Tree Sap", "プラノキの樹液",
-            PoemList(1).poem("Catalytic sugar cleavage", "駆け出したくなる、その甘さ。"),
+            PoemList(1).poem("Catalytic sugar cleavage.", "駆け出したくなる、その甘さ。"),
             fuelValue = 200,
             foodComponentCreator = {
                 FoodProperties.Builder()
