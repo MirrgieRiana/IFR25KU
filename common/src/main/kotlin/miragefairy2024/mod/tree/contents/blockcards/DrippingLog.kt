@@ -43,7 +43,7 @@ class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration, log: () ->
                 provider.applyExplosionDecay(block(), this)
             }
         }
-        item.registerHarvestNotation(sap, rosin)
+        item.registerHarvestNotation(Pair(sap, null), Pair(rosin, null))
 
     }
 }

@@ -2,6 +2,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.mod.magicplant.contents.TraitCard
+import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.structure.DripstoneCavesRuinCard
 import miragefairy2024.util.AdvancementCard
@@ -27,7 +28,7 @@ object XarpaLuminariaCard : AbstractLuminariaCard<XarpaLuminariaBlock>() {
     override val blockCodec = XarpaLuminariaBlock.CODEC
     override fun createBlock() = XarpaLuminariaBlock(createCommonSettings().strength(0.2F).lightLevel { getLuminance(it.getOr(BlockStateProperties.AGE_3) { 0 }) }.mapColor(MapColor.TERRACOTTA_ORANGE).sound(SoundType.CROP))
 
-    override val drops = listOf(MaterialCard.LUMINITE.item, MaterialCard.CALCULITE.item)
+    override val drops = listOf(Pair(MaterialCard.LUMINITE.item, TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name), Pair(MaterialCard.CALCULITE.item, TraitEffectKeyCard.SPECIAL_PRODUCTION.traitEffectKey.name))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.LUMINITE.item().createItemStack(count))
     override fun getSpecialDrops(count: Int, random: RandomSource) = listOf(MaterialCard.CALCULITE.item().createItemStack(count))
 
