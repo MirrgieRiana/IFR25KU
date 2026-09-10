@@ -29,11 +29,9 @@ object GiantPlasticTreeTrunkPlacerCard {
 }
 
 object GiantPlasticTreeTrunkPlacer : TrunkPlacer(15, 7, 0) {
-    private const val BRANCH_THINNING_RATE = 0.4
-
     override fun type() = GiantPlasticTreeTrunkPlacerCard.type
 
-    // 中心にまっすぐな2x2の主幹を建てて、そこからばらばらの方角へ斜め上に向かう枝を何本も伸ばすのだ～🌱
+    // 中心にまっすぐな2x2の主幹を建てて、そこから斜め上に向かう枝を、方角を大きく変えながら何本も伸ばすのだ～🌱
     override fun placeTrunk(
         level: LevelSimulatedReader,
         blockSetter: BiConsumer<BlockPos, BlockState>,
@@ -73,13 +71,11 @@ object GiantPlasticTreeTrunkPlacer : TrunkPlacer(15, 7, 0) {
         foliageAttachments += FoliagePlacer.FoliageAttachment(pos.above(freeTreeHeight - 1), 1, true)
 
         // 葉の位置を、幹の頂上から下に向かって決めていくのだ～🌱
+        var angle = (Math.PI * 2) * random.nextDouble() // 最初の方位角はランダムなのだ～🌱
         var leafOffsetY = freeTreeHeight - 1 // 葉の最上部は、幹の頂上と同じ高さなのだ～🌱
         while (leafOffsetY >= freeTreeHeight * 0.3) { // 下部30%未満には葉を付けないのだ～🌱
 
             fun placeBranch() {
-                if (random.nextDouble() < BRANCH_THINNING_RATE) return
-
-                val angle = (Math.PI * 2) * random.nextDouble()
 
                 // 幹の中心から葉までの水平距離は、木全体を回転楕円体とした関数とランダムなぶれで決まるのだ～🌱
                 val horizontalDistance = run {
@@ -125,8 +121,8 @@ object GiantPlasticTreeTrunkPlacer : TrunkPlacer(15, 7, 0) {
 
             }
             placeBranch()
-            placeBranch()
 
+            angle += Math.toRadians(90.0 + 180.0 * random.nextDouble()) // 次の枝は、半周を挟んだ90°～270°だけ回った先に伸びるのだ～🌱
             leafOffsetY -= 1
         }
 
