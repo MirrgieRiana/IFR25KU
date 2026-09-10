@@ -122,7 +122,7 @@ object GiantPlasticTreeTrunkPlacer : TrunkPlacer(15, 7, 0) {
             }
             placeBranch()
 
-            angle += Math.toRadians(90.0 + 180.0 * random.nextDouble()) // 次の枝は、半周を挟んだ90°～270°だけ回った先に伸びるのだ～🌱
+            angle += Math.toRadians(90.0 + 180.0 * random.nextDouble())
             leafOffsetY -= 1
         }
 

@@ -70,7 +70,7 @@ object SmallPlasticTreeTrunkPlacer : TrunkPlacer(6, 2, 0) {
             )
             foliageAttachments += FoliagePlacer.FoliageAttachment(leafBlockPos, 0, false)
 
-            angle += Math.toRadians(90.0 + 180.0 * random.nextDouble()) // 次の葉は、半周を挟んだ90°～270°だけ回った先に付くのだ～🌱
+            angle += Math.toRadians(90.0 + 180.0 * random.nextDouble())
         }
 
         return foliageAttachments
