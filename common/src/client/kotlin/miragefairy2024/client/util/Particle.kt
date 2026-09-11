@@ -1,11 +1,14 @@
 package miragefairy2024.client.util
 
+import miragefairy2024.util.blueOfRgb
+import miragefairy2024.util.greenOfRgb
+import miragefairy2024.util.redOfRgb
 import net.minecraft.client.particle.Particle
 
 fun Particle.setRgb(rgb: Int) {
     this.setColor(
-        ((rgb shr 16) and 0xFF).toFloat() / 255F,
-        ((rgb shr 8) and 0xFF).toFloat() / 255F,
-        (rgb and 0xFF).toFloat() / 255F,
+        rgb.redOfRgb.toFloat() / 255F,
+        rgb.greenOfRgb.toFloat() / 255F,
+        rgb.blueOfRgb.toFloat() / 255F,
     )
 }
