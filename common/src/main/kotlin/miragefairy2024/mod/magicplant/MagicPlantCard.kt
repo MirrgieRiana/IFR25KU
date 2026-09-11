@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.magicplant.contents.TraitConditionCard
@@ -28,7 +29,6 @@ import miragefairy2024.util.registerGeneratedModelGeneration
 import miragefairy2024.util.registerItemGroup
 import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.item.Item
@@ -69,8 +69,7 @@ abstract class MagicPlantCard<B : MagicPlantBlock> {
     open val randomTraitChances: Map<Trait, Double> = mapOf()
 
     open val baseGrowth = 0.03
-    /** アイテムと、それが生じる判定の名前の組の一覧なのだ～🌱 */
-    abstract val drops: List<Pair<() -> Item, Component?>>
+    abstract val drops: List<HarvestNotation.CropConfiguration>
 
     open fun createAdvancement(identifier: ResourceLocation): AdvancementCard? = null
     val advancement = createAdvancement(blockIdentifier)

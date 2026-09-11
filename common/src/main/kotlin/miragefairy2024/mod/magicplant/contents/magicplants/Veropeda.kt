@@ -2,6 +2,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
@@ -45,7 +46,7 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
     override val blockCodec = VeropedaBlock.CODEC
     override fun createBlock() = VeropedaBlock(createCommonSettings().instabreak().mapColor(MapColor.NETHER).sound(SoundType.CROP))
 
-    override val drops = listOf(Pair(MaterialCard.VEROPEDA_BERRIES.item, TraitEffectKeyCard.FRUITS_PRODUCTION.traitEffectKey.name), Pair(MaterialCard.VEROPEDA_LEAF.item, TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name))
+    override val drops = listOf(HarvestNotation.CropConfiguration(MaterialCard.VEROPEDA_BERRIES.item, TraitEffectKeyCard.FRUITS_PRODUCTION.traitEffectKey.name), HarvestNotation.CropConfiguration(MaterialCard.VEROPEDA_LEAF.item, TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name))
     override fun getFruitDrops(count: Int, random: RandomSource) = listOf(MaterialCard.VEROPEDA_BERRIES.item().createItemStack(count))
     override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.VEROPEDA_LEAF.item().createItemStack(count))
 

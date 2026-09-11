@@ -2,6 +2,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.materials.MaterialCard
@@ -43,7 +44,7 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
     override val blockCodec = SarraceniaBlock.CODEC
     override fun createBlock() = SarraceniaBlock(createCommonSettings().instabreak().mapColor(MapColor.NETHER).sound(SoundType.CROP))
 
-    override val drops = listOf(Pair(MaterialCard.SARRACENIA_LEAF.item, TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name), Pair(MaterialCard.FAIRY_SCALES.item, TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name))
+    override val drops = listOf(HarvestNotation.CropConfiguration(MaterialCard.SARRACENIA_LEAF.item, TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name), HarvestNotation.CropConfiguration(MaterialCard.FAIRY_SCALES.item, TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name))
     override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.SARRACENIA_LEAF.item().createItemStack(count))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.FAIRY_SCALES.item().createItemStack(count))
 

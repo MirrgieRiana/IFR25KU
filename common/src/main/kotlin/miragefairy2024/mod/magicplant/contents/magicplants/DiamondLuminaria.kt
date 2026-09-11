@@ -2,6 +2,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
@@ -45,7 +46,7 @@ object DiamondLuminariaCard : AbstractLuminariaCard<DiamondLuminariaBlock>() {
     override val blockCodec = DiamondLuminariaBlock.CODEC
     override fun createBlock() = DiamondLuminariaBlock(createCommonSettings().strength(0.2F).lightLevel { getWeakLuminance(it.getOr(BlockStateProperties.AGE_3) { 0 }) }.mapColor(MapColor.DIAMOND).sound(SoundType.CROP))
 
-    override val drops = listOf(Pair(MaterialCard.LUMINITE.item, TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name), Pair({ Items.DIAMOND }, TraitEffectKeyCard.SPECIAL_PRODUCTION.traitEffectKey.name))
+    override val drops = listOf(HarvestNotation.CropConfiguration(MaterialCard.LUMINITE.item, TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name), HarvestNotation.CropConfiguration({ Items.DIAMOND }, TraitEffectKeyCard.SPECIAL_PRODUCTION.traitEffectKey.name))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.LUMINITE.item().createItemStack(count))
     override fun getSpecialDrops(count: Int, random: RandomSource) = listOf(Items.DIAMOND.createItemStack(count))
 

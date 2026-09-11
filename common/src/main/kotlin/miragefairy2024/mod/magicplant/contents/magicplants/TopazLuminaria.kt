@@ -2,6 +2,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.materials.MaterialCard
@@ -42,7 +43,7 @@ object TopazLuminariaCard : AbstractLuminariaCard<TopazLuminariaBlock>() {
     override val blockCodec = TopazLuminariaBlock.CODEC
     override fun createBlock() = TopazLuminariaBlock(createCommonSettings().strength(0.2F).lightLevel { getLuminance(it.getOr(BlockStateProperties.AGE_3) { 0 }) }.mapColor(MapColor.TERRACOTTA_WHITE).sound(SoundType.CROP))
 
-    override val drops = listOf(Pair(MaterialCard.LUMINITE.item, TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name), Pair(MaterialCard.TOPAZ.item, TraitEffectKeyCard.SPECIAL_PRODUCTION.traitEffectKey.name))
+    override val drops = listOf(HarvestNotation.CropConfiguration(MaterialCard.LUMINITE.item, TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name), HarvestNotation.CropConfiguration(MaterialCard.TOPAZ.item, TraitEffectKeyCard.SPECIAL_PRODUCTION.traitEffectKey.name))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.LUMINITE.item().createItemStack(count))
     override fun getSpecialDrops(count: Int, random: RandomSource) = listOf(MaterialCard.TOPAZ.item().createItemStack(count))
 

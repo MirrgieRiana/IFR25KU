@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.biome.DeepFairyForestBiomeCard
 import miragefairy2024.mod.biome.FairyForestBiomeCard
 import miragefairy2024.mod.common.rootAdvancement
@@ -55,7 +56,7 @@ object MirageFlowerCard : AbstractMirageFlowerCard<MirageFlowerBlock>() {
     override val blockCodec = MirageFlowerBlock.CODEC
     override fun createBlock() = MirageFlowerBlock(createCommonSettings().instabreak().mapColor(MapColor.DIAMOND).sound(SoundType.GLASS))
 
-    override val drops = listOf(Pair(MaterialCard.MIRAGE_FLOUR.item, TraitEffectKeyCard.FRUITS_PRODUCTION.traitEffectKey.name), Pair(MaterialCard.MIRAGE_LEAVES.item, TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name), Pair(MaterialCard.FAIRY_CRYSTAL.item, TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name))
+    override val drops = listOf(HarvestNotation.CropConfiguration(MaterialCard.MIRAGE_FLOUR.item, TraitEffectKeyCard.FRUITS_PRODUCTION.traitEffectKey.name), HarvestNotation.CropConfiguration(MaterialCard.MIRAGE_LEAVES.item, TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name), HarvestNotation.CropConfiguration(MaterialCard.FAIRY_CRYSTAL.item, TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name))
     override fun getFruitDrops(count: Int, random: RandomSource) = getMirageFlour(count, random)
     override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.MIRAGE_LEAVES.item().createItemStack(count))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.FAIRY_CRYSTAL.item().createItemStack(count))
