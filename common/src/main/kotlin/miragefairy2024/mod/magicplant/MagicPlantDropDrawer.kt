@@ -17,7 +17,7 @@ interface MagicPlantDropDrawer {
         }
     }
 
-    /** [draw]が返しうるすべての品目なのだ～🌱 */
+    /** [miragefairy2024.mod.magicplant.MagicPlantDropDrawer.draw]が返しうるすべての品目なのだ～🌱 */
     val items: List<() -> Item>
 
     /** 生産量[count]から、実際に落ちるアイテムを決めるのだ～🌱 */
