@@ -45,6 +45,6 @@ class DrippingPlasticTreeLogBlock(settings: Properties) : DrippingLogBlock(setti
     override fun getRosinItem() = MaterialCard.PLASTIC_TREE_SAP.item() // TODO レア素材を指定するのだ～🌱
 
     override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
-        spawnDrippingSapParticle(state, level, pos, random, ParticleTypeCard.DRIPPING_PLASTIC_TREE_SAP.particleType) // TODO 雫の湧く位置は、ハイメヴィスカと共通のものをそのまま使っているのだ～🌱
+        spawnDrippingSapParticle(state, level, pos, random, ParticleTypeCard.DRIPPING_PLASTIC_TREE_SAP.particleType)
     }
 }

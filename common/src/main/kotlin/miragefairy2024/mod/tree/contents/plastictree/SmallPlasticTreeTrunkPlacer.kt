@@ -14,6 +14,7 @@ import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType
 import java.util.function.BiConsumer
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 object SmallPlasticTreeTrunkPlacerCard {
     val identifier = MirageFairy2024.identifier("small_plastic_tree")
@@ -23,11 +24,15 @@ object SmallPlasticTreeTrunkPlacerCard {
 
 object SmallPlasticTreeTrunkPlacer : TrunkPlacer(6, 2, 0) {
     private const val LOWEST_LEAF_OFFSET_Y = 2
-    private const val FOLIAGE_THINNING_RATE = 0.4
+
+    // 葉は付着点を中心とする3x3で置かれるから、付着点が幹から両軸とも2ブロック離れると、幹と角でしか接さなくなって葉が崩れちゃうのだ～🌱
+    // 片方の軸が2ブロック離れるには水平成分の絶対値が1.5必要だから、両軸が同時にそうなる最短の距離が1.5√2なのだ～🌱
+    // その境界にちょうど乗せると浮動小数点数の丸めでどちらに転ぶか分からないから、0.99を掛けて確実に手前に置くのだ～🌱
+    private val MAX_HORIZONTAL_DISTANCE = 1.5 * sqrt(2.0) * 0.99
 
     override fun type() = SmallPlasticTreeTrunkPlacerCard.type
 
-    // 枝を持たない1x1の主幹を建てて、その周りにばらばらの方角へ葉を付けるのだ～🌱
+    // 枝を持たない1x1の主幹を建てて、その周りに、方角を大きく変えながら葉を付けるのだ～🌱
     override fun placeTrunk(
         level: LevelSimulatedReader,
         blockSetter: BiConsumer<BlockPos, BlockState>,
@@ -49,16 +54,14 @@ object SmallPlasticTreeTrunkPlacer : TrunkPlacer(6, 2, 0) {
         foliageAttachments += FoliagePlacer.FoliageAttachment(pos.above(freeTreeHeight), 0, false)
 
         // 葉の位置を、幹の頂上から下に向かって決めていくのだ～🌱
+        var angle = (Math.PI * 2) * random.nextDouble() // 最初の方位角はランダムなのだ～🌱
         val maxLeafOffsetY = freeTreeHeight - 1
         (maxLeafOffsetY downTo LOWEST_LEAF_OFFSET_Y).forEach { leafOffsetY ->
-            if (random.nextDouble() < FOLIAGE_THINNING_RATE) return@forEach
-
-            val angle = (Math.PI * 2) * random.nextDouble()
 
             // leafOffsetY == maxLeafOffsetY -> 0
             // leafOffsetY == LOWEST_LEAF_OFFSET_Y -> 1
-            val ratio = if (LOWEST_LEAF_OFFSET_Y - maxLeafOffsetY <= 0) 0.0 else (leafOffsetY - maxLeafOffsetY).toDouble() / (LOWEST_LEAF_OFFSET_Y - maxLeafOffsetY).toDouble()
-            val horizontalDistance = 1.0 + 1.4 * ratio
+            val ratio = if (LOWEST_LEAF_OFFSET_Y - maxLeafOffsetY == 0) 0.0 else (leafOffsetY - maxLeafOffsetY).toDouble() / (LOWEST_LEAF_OFFSET_Y - maxLeafOffsetY).toDouble()
+            val horizontalDistance = 1.0 + (MAX_HORIZONTAL_DISTANCE - 1.0) * ratio
 
             val leafBlockPos = BlockPos(
                 (pos.x + 0.5 + horizontalDistance * sin(angle)).floorToInt(),
@@ -66,6 +69,8 @@ object SmallPlasticTreeTrunkPlacer : TrunkPlacer(6, 2, 0) {
                 (pos.z + 0.5 - horizontalDistance * cos(angle)).floorToInt(),
             )
             foliageAttachments += FoliagePlacer.FoliageAttachment(leafBlockPos, 0, false)
+
+            angle += Math.toRadians(90.0 + 180.0 * random.nextDouble())
         }
 
         return foliageAttachments

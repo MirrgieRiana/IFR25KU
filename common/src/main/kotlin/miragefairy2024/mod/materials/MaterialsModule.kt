@@ -626,7 +626,7 @@ class MaterialCard(
         )
         val PLASTIC_TREE_SAP: MaterialCard = !MaterialCard(
             "plastic_tree_sap", "Plastic Tree Sap", "プラノキの樹液",
-            PoemList(1).poem("Catalytic sugar cleavage", "駆け出したくなる、その甘さ。"),
+            PoemList(1).poem("Catalytic sugar cleavage.", "駆け出したくなる、その甘さ。"),
             fuelValue = 200,
             foodComponentCreator = {
                 FoodProperties.Builder()
@@ -816,8 +816,9 @@ class MaterialCard(
                 .poem("poem1", "The fairy of the fairy of the fairy", "妖精の妖精の妖精の妖精の妖精の妖精の妖精")
                 .poem("poem2", "of the fairy of the fairy of the f", "の妖精の妖精の妖精の妖精の妖精の妖精の妖"),
             soulStreamContainable = true, fireResistant = true,
-            // TODO 用途
-        )
+        ) {
+            AuraReflectorFurnaceRecipe.registerFuel(item.key, 20 * 10)
+        }
 
         val FAIRY_QUEST_CARD_BASE: MaterialCard = !MaterialCard(
             "fairy_quest_card_base", "Fairy Quest Card Base", "フェアリークエストカードベース",
