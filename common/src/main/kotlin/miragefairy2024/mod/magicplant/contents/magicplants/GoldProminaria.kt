@@ -1,6 +1,7 @@
 package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
@@ -29,7 +30,7 @@ object GoldProminariaCard : AbstractProminariaCard<GoldProminariaBlock>() {
     override val baseGrowth = super.baseGrowth / 4
     override val baseSeedGeneration = 0.0
 
-    override val drops = listOf(MaterialCard.GOLD_PROMINARIA_BERRY.item, MaterialCard.PROMINITE.item)
+    override val drops = listOf(HarvestNotation.CropConfiguration(MaterialCard.GOLD_PROMINARIA_BERRY.item, null), HarvestNotation.CropConfiguration(MaterialCard.PROMINITE.item, null))
     override fun getFruitDrops(count: Int, random: RandomSource) = listOf(MaterialCard.GOLD_PROMINARIA_BERRY.item().createItemStack(count))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.PROMINITE.item().createItemStack(count))
 

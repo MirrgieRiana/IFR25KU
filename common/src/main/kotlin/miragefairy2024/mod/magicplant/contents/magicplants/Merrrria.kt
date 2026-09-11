@@ -41,6 +41,7 @@ import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
 import net.minecraft.world.level.material.MapColor
 import kotlin.math.pow
+import miragefairy2024.mod.HarvestNotation
 
 object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
     override fun getBlockPath() = "merrrria"
@@ -63,7 +64,7 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
         createCuboidShape(7.0, 16.0),
     )
 
-    override val drops = listOf(MaterialCard.MERRRRIA_DROP.item)
+    override val drops = listOf(HarvestNotation.CropConfiguration(MaterialCard.MERRRRIA_DROP.item, null))
 
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.MERRRRIA_DROP.item().createItemStack(count))
 

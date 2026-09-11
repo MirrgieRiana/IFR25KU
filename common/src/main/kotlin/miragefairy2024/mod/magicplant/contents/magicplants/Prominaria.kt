@@ -2,6 +2,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.magicplant.MagicPlantBlockEntity
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.Material
@@ -59,7 +60,7 @@ object ProminariaCard : AbstractProminariaCard<ProminariaBlock>() {
     override val blockCodec = ProminariaBlock.CODEC
     override fun createBlock() = ProminariaBlock(createCommonSettings().strength(0.2F).lightLevel { getLuminance(it.getOr(BlockStateProperties.AGE_3) { 0 }) }.mapColor(MapColor.CRIMSON_HYPHAE).sound(SoundType.CROP))
 
-    override val drops = listOf(MaterialCard.PROMINARIA_BERRY.item, MaterialCard.PROMINITE.item)
+    override val drops = listOf(HarvestNotation.CropConfiguration(MaterialCard.PROMINARIA_BERRY.item, null), HarvestNotation.CropConfiguration(MaterialCard.PROMINITE.item, null))
     override fun getFruitDrops(count: Int, random: RandomSource) = listOf(MaterialCard.PROMINARIA_BERRY.item().createItemStack(count))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.PROMINITE.item().createItemStack(count))
 

@@ -1,6 +1,7 @@
 package miragefairy2024.mod.tree.contents.blockcards
 
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.registerHarvestNotation
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
@@ -43,7 +44,7 @@ class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration, log: () ->
                 provider.applyExplosionDecay(block(), this)
             }
         }
-        item.registerHarvestNotation(sap, rosin)
+        item.registerHarvestNotation(HarvestNotation.CropConfiguration(sap, null), HarvestNotation.CropConfiguration(rosin, null))
 
     }
 }
