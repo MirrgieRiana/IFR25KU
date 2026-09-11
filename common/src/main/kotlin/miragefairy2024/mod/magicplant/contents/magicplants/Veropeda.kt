@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
 import miragefairy2024.mod.common.rootAdvancement
+import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropDrawer
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
@@ -25,7 +26,6 @@ import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
@@ -44,9 +44,8 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
     override val blockCodec = VeropedaBlock.CODEC
     override fun createBlock() = VeropedaBlock(createCommonSettings().instabreak().mapColor(MapColor.NETHER).sound(SoundType.CROP))
 
-    override val drops = listOf(MaterialCard.VEROPEDA_BERRIES.item, MaterialCard.VEROPEDA_LEAF.item)
-    override fun getFruitDrops(count: Int, random: RandomSource) = listOf(MaterialCard.VEROPEDA_BERRIES.item().createItemStack(count))
-    override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.VEROPEDA_LEAF.item().createItemStack(count))
+    override val fruitDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.VEROPEDA_BERRIES.item)
+    override val leafDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.VEROPEDA_LEAF.item)
 
     override val defaultTraitBits = super.defaultTraitBits + mapOf(
         TraitCard.HOT_ADAPTATION.trait to 0b00101000, // 高温適応

@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 import miragefairy2024.ModContext
 import miragefairy2024.mod.magicplant.MagicPlantBlock
 import miragefairy2024.mod.magicplant.MagicPlantCard
+import miragefairy2024.mod.magicplant.MagicPlantDropDrawer
 import miragefairy2024.mod.magicplant.MutableTraitEffects
 import miragefairy2024.mod.magicplant.Trait
 import miragefairy2024.mod.magicplant.TraitStacks
@@ -25,7 +26,6 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureSlot
-import net.minecraft.util.RandomSource
 import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
@@ -51,10 +51,12 @@ abstract class SimpleMagicPlantCard<B : SimpleMagicPlantBlock> : MagicPlantCard<
     open val baseRareGeneration = 0.03
     open val baseSpecialGeneration = 1.0
 
-    open fun getFruitDrops(count: Int, random: RandomSource): List<ItemStack> = listOf()
-    open fun getLeafDrops(count: Int, random: RandomSource): List<ItemStack> = listOf()
-    open fun getRareDrops(count: Int, random: RandomSource): List<ItemStack> = listOf()
-    open fun getSpecialDrops(count: Int, random: RandomSource): List<ItemStack> = listOf()
+    open val fruitDropDrawer = MagicPlantDropDrawer.EMPTY
+    open val leafDropDrawer = MagicPlantDropDrawer.EMPTY
+    open val rareDropDrawer = MagicPlantDropDrawer.EMPTY
+    open val specialDropDrawer = MagicPlantDropDrawer.EMPTY
+
+    override val drops get() = listOf(fruitDropDrawer, leafDropDrawer, rareDropDrawer, specialDropDrawer).flatMap { it.items }
 
     val iconItem = Registration(BuiltInRegistries.ITEM, blockIdentifier * "_icon") { Item(Item.Properties()) }
 
@@ -148,22 +150,22 @@ abstract class SimpleMagicPlantBlock(private val card: SimpleMagicPlantCard<*>, 
 
         if (isMaxAge(blockState)) {
             val count = level.random.randomInt(card.baseFruitGeneration * fruitGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
-            if (count > 0) drops += card.getFruitDrops(count, level.random)
+            if (count > 0) drops += card.fruitDropDrawer.draw(count, level.random)
         }
 
         if (isMaxAge(blockState)) {
             val count = level.random.randomInt(card.baseLeafGeneration * leafGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
-            if (count > 0) drops += card.getLeafDrops(count, level.random)
+            if (count > 0) drops += card.leafDropDrawer.draw(count, level.random)
         }
 
         if (isMaxAge(blockState)) {
             val count = level.random.randomInt(card.baseRareGeneration * rareGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
-            if (count > 0) drops += card.getRareDrops(count, level.random)
+            if (count > 0) drops += card.rareDropDrawer.draw(count, level.random)
         }
 
         if (isMaxAge(blockState)) {
             val count = level.random.randomInt(card.baseSpecialGeneration * specialGeneration * (1.0 + generationBoost) * (1.0 + (fortune + luck) * fortuneFactor))
-            if (count > 0) drops += card.getSpecialDrops(count, level.random)
+            if (count > 0) drops += card.specialDropDrawer.draw(count, level.random)
         }
 
         return drops

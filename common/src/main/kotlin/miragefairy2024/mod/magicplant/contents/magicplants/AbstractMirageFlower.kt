@@ -1,6 +1,7 @@
 package miragefairy2024.mod.magicplant.contents.magicplants
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.mod.magicplant.MagicPlantDropDrawer
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createCuboidShape
@@ -26,19 +27,24 @@ abstract class AbstractMirageFlowerCard<B : SimpleMagicPlantBlock> : SimpleMagic
     override val family = MirageFairy2024.identifier("mirage")
 }
 
-fun getMirageFlour(count: Int, random: RandomSource): List<ItemStack> {
-    var count2 = count.toDouble()
-    if (count2 < 3) return listOf(MaterialCard.MIRAGE_FLOUR.item().createItemStack(random.randomInt(count2)))
-    count2 /= 9.0
-    if (count2 < 3) return listOf(MaterialCard.MIRAGE_FLOUR_OF_NATURE.item().createItemStack(random.randomInt(count2)))
-    count2 /= 9.0
-    if (count2 < 3) return listOf(MaterialCard.MIRAGE_FLOUR_OF_EARTH.item().createItemStack(random.randomInt(count2)))
-    count2 /= 9.0
-    if (count2 < 3) return listOf(MaterialCard.MIRAGE_FLOUR_OF_UNDERWORLD.item().createItemStack(random.randomInt(count2)))
-    count2 /= 9.0
-    if (count2 < 3) return listOf(MaterialCard.MIRAGE_FLOUR_OF_SKY.item().createItemStack(random.randomInt(count2)))
-    count2 /= 9.0
-    if (count2 < 3) return listOf(MaterialCard.MIRAGE_FLOUR_OF_UNIVERSE.item().createItemStack(random.randomInt(count2)))
-    count2 /= 9.0
-    return listOf(MaterialCard.MIRAGE_FLOUR_OF_TIME.item().createItemStack(random.randomInt(count2)))
+val mirageFlourDropDrawer: MagicPlantDropDrawer = object : MagicPlantDropDrawer {
+    override val items = listOf(
+        MaterialCard.MIRAGE_FLOUR.item,
+        MaterialCard.MIRAGE_FLOUR_OF_NATURE.item,
+        MaterialCard.MIRAGE_FLOUR_OF_EARTH.item,
+        MaterialCard.MIRAGE_FLOUR_OF_UNDERWORLD.item,
+        MaterialCard.MIRAGE_FLOUR_OF_SKY.item,
+        MaterialCard.MIRAGE_FLOUR_OF_UNIVERSE.item,
+        MaterialCard.MIRAGE_FLOUR_OF_TIME.item,
+    )
+
+    override fun draw(count: Int, random: RandomSource): List<ItemStack> {
+        var count2 = count.toDouble()
+        items.dropLast(1).forEach { item ->
+            if (count2 < 3) return listOf(item().createItemStack(random.randomInt(count2)))
+            count2 /= 9.0
+        }
+        val lastItem = items.last()
+        return listOf(lastItem().createItemStack(random.randomInt(count2)))
+    }
 }

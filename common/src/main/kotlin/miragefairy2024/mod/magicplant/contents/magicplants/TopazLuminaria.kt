@@ -2,6 +2,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
+import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropDrawer
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
@@ -22,7 +23,6 @@ import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
@@ -41,9 +41,8 @@ object TopazLuminariaCard : AbstractLuminariaCard<TopazLuminariaBlock>() {
     override val blockCodec = TopazLuminariaBlock.CODEC
     override fun createBlock() = TopazLuminariaBlock(createCommonSettings().strength(0.2F).lightLevel { getLuminance(it.getOr(BlockStateProperties.AGE_3) { 0 }) }.mapColor(MapColor.TERRACOTTA_WHITE).sound(SoundType.CROP))
 
-    override val drops = listOf(MaterialCard.LUMINITE.item, MaterialCard.TOPAZ.item)
-    override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.LUMINITE.item().createItemStack(count))
-    override fun getSpecialDrops(count: Int, random: RandomSource) = listOf(MaterialCard.TOPAZ.item().createItemStack(count))
+    override val rareDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.LUMINITE.item)
+    override val specialDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.TOPAZ.item)
 
     override val defaultTraitBits = super.defaultTraitBits + mapOf(
         TraitCard.HOT_ADAPTATION.trait to 0b00101000, // 高温適応

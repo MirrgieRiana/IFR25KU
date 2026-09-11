@@ -1,6 +1,7 @@
 package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
+import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropDrawer
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.structure.DripstoneCavesRuinCard
@@ -10,7 +11,6 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.getOr
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
@@ -27,9 +27,8 @@ object XarpaLuminariaCard : AbstractLuminariaCard<XarpaLuminariaBlock>() {
     override val blockCodec = XarpaLuminariaBlock.CODEC
     override fun createBlock() = XarpaLuminariaBlock(createCommonSettings().strength(0.2F).lightLevel { getLuminance(it.getOr(BlockStateProperties.AGE_3) { 0 }) }.mapColor(MapColor.TERRACOTTA_ORANGE).sound(SoundType.CROP))
 
-    override val drops = listOf(MaterialCard.LUMINITE.item, MaterialCard.CALCULITE.item)
-    override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.LUMINITE.item().createItemStack(count))
-    override fun getSpecialDrops(count: Int, random: RandomSource) = listOf(MaterialCard.CALCULITE.item().createItemStack(count))
+    override val rareDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.LUMINITE.item)
+    override val specialDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.CALCULITE.item)
 
     override val defaultTraitBits = super.defaultTraitBits + mapOf(
         TraitCard.WARM_ADAPTATION.trait to 0b00101000, // 中温適応

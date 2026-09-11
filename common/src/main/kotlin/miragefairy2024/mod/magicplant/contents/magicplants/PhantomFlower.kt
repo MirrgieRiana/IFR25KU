@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
 import miragefairy2024.mod.biome.FairyForestBiomeCard
+import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropDrawer
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.contents.LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG
@@ -23,7 +24,6 @@ import miragefairy2024.util.surface
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
@@ -45,10 +45,9 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
     override val baseGrowth = super.baseGrowth / 8.0
     override val baseFruitGeneration = super.baseFruitGeneration * 9.0
 
-    override val drops = listOf(MaterialCard.MIRAGE_FLOUR.item, MaterialCard.PHANTOM_LEAVES.item, MaterialCard.PHANTOM_DROP.item)
-    override fun getFruitDrops(count: Int, random: RandomSource) = getMirageFlour(count, random)
-    override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.PHANTOM_LEAVES.item().createItemStack(count))
-    override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.PHANTOM_DROP.item().createItemStack(count))
+    override val fruitDropDrawer = mirageFlourDropDrawer
+    override val leafDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.PHANTOM_LEAVES.item)
+    override val rareDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.PHANTOM_DROP.item)
 
     override val defaultTraitBits = super.defaultTraitBits + mapOf(
         TraitCard.WARM_ADAPTATION.trait to 0b00101000, // 中温適応

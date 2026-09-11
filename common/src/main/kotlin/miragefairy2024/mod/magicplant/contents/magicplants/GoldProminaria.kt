@@ -1,6 +1,7 @@
 package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
+import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropDrawer
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
@@ -9,7 +10,6 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.getOr
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
@@ -29,9 +29,8 @@ object GoldProminariaCard : AbstractProminariaCard<GoldProminariaBlock>() {
     override val baseGrowth = super.baseGrowth / 4
     override val baseSeedGeneration = 0.0
 
-    override val drops = listOf(MaterialCard.GOLD_PROMINARIA_BERRY.item, MaterialCard.PROMINITE.item)
-    override fun getFruitDrops(count: Int, random: RandomSource) = listOf(MaterialCard.GOLD_PROMINARIA_BERRY.item().createItemStack(count))
-    override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.PROMINITE.item().createItemStack(count))
+    override val fruitDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.GOLD_PROMINARIA_BERRY.item)
+    override val rareDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.PROMINITE.item)
 
     override val defaultTraitBits = super.defaultTraitBits + mapOf(
         TraitCard.HOT_ADAPTATION.trait to 0b00101000, // 高温適応

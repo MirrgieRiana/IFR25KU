@@ -2,6 +2,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
+import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropDrawer
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
@@ -25,7 +26,6 @@ import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.underground
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.util.RandomSource
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.block.SoundType
@@ -46,9 +46,8 @@ object EmeraldLuminariaCard : AbstractLuminariaCard<EmeraldLuminariaBlock>() {
     override val blockCodec = EmeraldLuminariaBlock.CODEC
     override fun createBlock() = EmeraldLuminariaBlock(createCommonSettings().strength(0.2F).lightLevel { getLuminance(it.getOr(BlockStateProperties.AGE_3) { 0 }) }.mapColor(MapColor.EMERALD).sound(SoundType.CROP))
 
-    override val drops = listOf(MaterialCard.LUMINITE.item, { Items.EMERALD })
-    override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.LUMINITE.item().createItemStack(count))
-    override fun getSpecialDrops(count: Int, random: RandomSource) = listOf(Items.EMERALD.createItemStack(count))
+    override val rareDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.LUMINITE.item)
+    override val specialDropDrawer = SingleItemMagicPlantDropDrawer { Items.EMERALD }
 
     override val defaultTraitBits = super.defaultTraitBits + mapOf(
         TraitCard.WARM_ADAPTATION.trait to 0b00101000, // 中温適応
