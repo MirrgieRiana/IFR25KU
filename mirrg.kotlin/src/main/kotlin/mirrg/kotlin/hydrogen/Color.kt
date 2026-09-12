@@ -18,3 +18,5 @@ inline val Int.greenOfArgb get() = (this shr 8) and 0xFF
 inline val Int.blueOfArgb get() = this and 0xFF
 
 fun argbOf(alpha: Int, red: Int, green: Int, blue: Int) = ((alpha and 0xFF) shl 24) or ((red and 0xFF) shl 16) or ((green and 0xFF) shl 8) or (blue and 0xFF)
+
+fun argbOf(alpha: Int, rgb: Int) = ((alpha and 0xFF) shl 24) or (rgb and 0xFFFFFF)
