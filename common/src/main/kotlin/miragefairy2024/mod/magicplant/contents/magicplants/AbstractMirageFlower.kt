@@ -1,7 +1,7 @@
 package miragefairy2024.mod.magicplant.contents.magicplants
 
 import miragefairy2024.MirageFairy2024
-import miragefairy2024.mod.magicplant.MagicPlantDropDrawer
+import miragefairy2024.mod.magicplant.MagicPlantDropProvider
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createCuboidShape
@@ -27,7 +27,7 @@ abstract class AbstractMirageFlowerCard<B : SimpleMagicPlantBlock> : SimpleMagic
     override val family = MirageFairy2024.identifier("mirage")
 }
 
-val mirageFlourDropDrawer: MagicPlantDropDrawer = object : MagicPlantDropDrawer {
+val mirageFlourDropProvider: MagicPlantDropProvider = object : MagicPlantDropProvider {
     override val items = listOf(
         MaterialCard.MIRAGE_FLOUR.item,
         MaterialCard.MIRAGE_FLOUR_OF_NATURE.item,

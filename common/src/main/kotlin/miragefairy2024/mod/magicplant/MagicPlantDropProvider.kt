@@ -9,15 +9,15 @@ import net.minecraft.world.item.ItemStack
  * 魔法植物の収穫物の1カテゴリ分の抽選を司るのだ～🌱
  * 抽選の結果と、抽選に現れうる品目の一覧とが食い違わないように、両方をここで定めるのだ～🌱
  */
-interface MagicPlantDropDrawer {
+interface MagicPlantDropProvider {
     companion object {
-        val EMPTY: MagicPlantDropDrawer = object : MagicPlantDropDrawer {
+        val EMPTY: MagicPlantDropProvider = object : MagicPlantDropProvider {
             override val items = listOf<() -> Item>()
             override fun draw(count: Int, random: RandomSource) = listOf<ItemStack>()
         }
     }
 
-    /** [miragefairy2024.mod.magicplant.MagicPlantDropDrawer.draw]が返しうるすべての品目なのだ～🌱 */
+    /** [miragefairy2024.mod.magicplant.MagicPlantDropProvider.draw]が返しうるすべての品目なのだ～🌱 */
     val items: List<() -> Item>
 
     /** 生産量[count]から、実際に落ちるアイテムを決めるのだ～🌱 */
@@ -25,7 +25,7 @@ interface MagicPlantDropDrawer {
 }
 
 /** 生産量をそのまま個数として、単一の品目を落とす抽選器なのだ～🌱 */
-class SingleItemMagicPlantDropDrawer(private val item: () -> Item) : MagicPlantDropDrawer {
+class SingleItemMagicPlantDropProvider(private val item: () -> Item) : MagicPlantDropProvider {
     override val items = listOf(item)
     override fun draw(count: Int, random: RandomSource) = listOf(item().createItemStack(count))
 }

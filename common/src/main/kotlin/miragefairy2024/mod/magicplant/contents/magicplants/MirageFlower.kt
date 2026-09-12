@@ -6,7 +6,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.biome.DeepFairyForestBiomeCard
 import miragefairy2024.mod.biome.FairyForestBiomeCard
 import miragefairy2024.mod.common.rootAdvancement
-import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropDrawer
+import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropProvider
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
@@ -54,9 +54,9 @@ object MirageFlowerCard : AbstractMirageFlowerCard<MirageFlowerBlock>() {
     override val blockCodec = MirageFlowerBlock.CODEC
     override fun createBlock() = MirageFlowerBlock(createCommonSettings().instabreak().mapColor(MapColor.DIAMOND).sound(SoundType.GLASS))
 
-    override val fruitDropDrawer = mirageFlourDropDrawer
-    override val leafDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.MIRAGE_LEAVES.item)
-    override val rareDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.FAIRY_CRYSTAL.item)
+    override val fruitDropProvider = mirageFlourDropProvider
+    override val leafDropProvider = SingleItemMagicPlantDropProvider(MaterialCard.MIRAGE_LEAVES.item)
+    override val rareDropProvider = SingleItemMagicPlantDropProvider(MaterialCard.FAIRY_CRYSTAL.item)
 
     override val defaultTraitBits = super.defaultTraitBits + mapOf(
         TraitCard.WARM_ADAPTATION.trait to 0b00101000, // 中温適応

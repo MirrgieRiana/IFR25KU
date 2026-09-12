@@ -3,7 +3,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
 import miragefairy2024.mod.common.rootAdvancement
-import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropDrawer
+import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropProvider
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
@@ -44,8 +44,8 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
     override val blockCodec = VeropedaBlock.CODEC
     override fun createBlock() = VeropedaBlock(createCommonSettings().instabreak().mapColor(MapColor.NETHER).sound(SoundType.CROP))
 
-    override val fruitDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.VEROPEDA_BERRIES.item)
-    override val leafDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.VEROPEDA_LEAF.item)
+    override val fruitDropProvider = SingleItemMagicPlantDropProvider(MaterialCard.VEROPEDA_BERRIES.item)
+    override val leafDropProvider = SingleItemMagicPlantDropProvider(MaterialCard.VEROPEDA_LEAF.item)
 
     override val defaultTraitBits = super.defaultTraitBits + mapOf(
         TraitCard.HOT_ADAPTATION.trait to 0b00101000, // 高温適応

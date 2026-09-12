@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.common.rootAdvancement
-import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropDrawer
+import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropProvider
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.particle.ParticleTypeCard
@@ -64,7 +64,7 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
         createCuboidShape(7.0, 16.0),
     )
 
-    override val rareDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.MERRRRIA_DROP.item)
+    override val rareDropProvider = SingleItemMagicPlantDropProvider(MaterialCard.MERRRRIA_DROP.item)
 
     override val family = MirageFairy2024.identifier("merrrria")
     override val defaultTraitBits = mapOf(

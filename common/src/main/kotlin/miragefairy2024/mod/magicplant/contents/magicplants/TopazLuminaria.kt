@@ -2,7 +2,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
-import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropDrawer
+import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropProvider
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
@@ -41,8 +41,8 @@ object TopazLuminariaCard : AbstractLuminariaCard<TopazLuminariaBlock>() {
     override val blockCodec = TopazLuminariaBlock.CODEC
     override fun createBlock() = TopazLuminariaBlock(createCommonSettings().strength(0.2F).lightLevel { getLuminance(it.getOr(BlockStateProperties.AGE_3) { 0 }) }.mapColor(MapColor.TERRACOTTA_WHITE).sound(SoundType.CROP))
 
-    override val rareDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.LUMINITE.item)
-    override val specialDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.TOPAZ.item)
+    override val rareDropProvider = SingleItemMagicPlantDropProvider(MaterialCard.LUMINITE.item)
+    override val specialDropProvider = SingleItemMagicPlantDropProvider(MaterialCard.TOPAZ.item)
 
     override val defaultTraitBits = super.defaultTraitBits + mapOf(
         TraitCard.HOT_ADAPTATION.trait to 0b00101000, // 高温適応

@@ -3,7 +3,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
 import miragefairy2024.mod.magicplant.MagicPlantBlockEntity
-import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropDrawer
+import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropProvider
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.MaterialCard
@@ -59,8 +59,8 @@ object ProminariaCard : AbstractProminariaCard<ProminariaBlock>() {
     override val blockCodec = ProminariaBlock.CODEC
     override fun createBlock() = ProminariaBlock(createCommonSettings().strength(0.2F).lightLevel { getLuminance(it.getOr(BlockStateProperties.AGE_3) { 0 }) }.mapColor(MapColor.CRIMSON_HYPHAE).sound(SoundType.CROP))
 
-    override val fruitDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.PROMINARIA_BERRY.item)
-    override val rareDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.PROMINITE.item)
+    override val fruitDropProvider = SingleItemMagicPlantDropProvider(MaterialCard.PROMINARIA_BERRY.item)
+    override val rareDropProvider = SingleItemMagicPlantDropProvider(MaterialCard.PROMINITE.item)
 
     override val defaultTraitBits = super.defaultTraitBits + mapOf(
         TraitCard.HOT_ADAPTATION.trait to 0b00101000, // 高温適応

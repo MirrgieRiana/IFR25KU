@@ -3,7 +3,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
 import miragefairy2024.mod.biome.FairyForestBiomeCard
-import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropDrawer
+import miragefairy2024.mod.magicplant.SingleItemMagicPlantDropProvider
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.contents.LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG
@@ -45,9 +45,9 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
     override val baseGrowth = super.baseGrowth / 8.0
     override val baseFruitGeneration = super.baseFruitGeneration * 9.0
 
-    override val fruitDropDrawer = mirageFlourDropDrawer
-    override val leafDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.PHANTOM_LEAVES.item)
-    override val rareDropDrawer = SingleItemMagicPlantDropDrawer(MaterialCard.PHANTOM_DROP.item)
+    override val fruitDropProvider = mirageFlourDropProvider
+    override val leafDropProvider = SingleItemMagicPlantDropProvider(MaterialCard.PHANTOM_LEAVES.item)
+    override val rareDropProvider = SingleItemMagicPlantDropProvider(MaterialCard.PHANTOM_DROP.item)
 
     override val defaultTraitBits = super.defaultTraitBits + mapOf(
         TraitCard.WARM_ADAPTATION.trait to 0b00101000, // 中温適応
