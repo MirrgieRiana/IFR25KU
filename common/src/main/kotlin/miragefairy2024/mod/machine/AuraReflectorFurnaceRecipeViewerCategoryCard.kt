@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.grow
 import miragefairy2024.mod.recipeviewer.view.minus
 import miragefairy2024.mod.recipeviewer.view.offset
@@ -18,6 +19,8 @@ import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
+import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.noMargin
 import miragefairy2024.mod.recipeviewer.views.plusAssign
@@ -56,12 +59,15 @@ object AuraReflectorFurnaceRecipeViewerCategoryCard : SimpleMachineRecipeViewerC
                 position = AbsoluteView.Offset(IntPoint(88, 34) - p)
                 view.durationMilliSeconds = recipeEntry.recipe.duration * 50
             }
+            // 中央揃えは割り当てられた幅の中で文字列を寄せるものだから、幅を固定しないと文字列の幅と一致して効かないのだ～🌱
+            val durationTextSizeX = 24
             view += TextView(recipeEntry.recipe.duration.toSecondsTextAsTicks()).configure {
-                position = AbsoluteView.Offset(IntPoint(108, 18) - p)
+                position = AbsoluteView.Offset(IntPoint(108 - durationTextSizeX / 2, 18) - p)
+                view.sizingX = Sizing.FILL
                 view.alignmentX = Alignment.CENTER
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
-            }
+            }.minContentSizeX(durationTextSizeX).maxContentSizeX(durationTextSizeX)
 
             getOutputs(recipeEntry).forEachIndexed { i, it ->
                 view += OutputSlotView(it).noBackground().noMargin().configure {
