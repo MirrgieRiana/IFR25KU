@@ -28,10 +28,10 @@ object GiantPlasticTreeTrunkPlacerCard {
     val type: TrunkPlacerType<GiantPlasticTreeTrunkPlacer> = TrunkPlacerType(codec)
 }
 
-object GiantPlasticTreeTrunkPlacer : TrunkPlacer(22, 10, 0) {
+object GiantPlasticTreeTrunkPlacer : TrunkPlacer(15, 7, 0) {
     override fun type() = GiantPlasticTreeTrunkPlacerCard.type
 
-    // 中心にまっすぐな2x2の主幹を建てて、そこから斜め上に向かう枝を二重らせん状に何本も伸ばすのだ～🌱
+    // 中心にまっすぐな2x2の主幹を建てて、そこから斜め上に向かう枝を、方角を大きく変えながら何本も伸ばすのだ～🌱
     override fun placeTrunk(
         level: LevelSimulatedReader,
         blockSetter: BiConsumer<BlockPos, BlockState>,
@@ -75,7 +75,7 @@ object GiantPlasticTreeTrunkPlacer : TrunkPlacer(22, 10, 0) {
         var leafOffsetY = freeTreeHeight - 1 // 葉の最上部は、幹の頂上と同じ高さなのだ～🌱
         while (leafOffsetY >= freeTreeHeight * 0.3) { // 下部30%未満には葉を付けないのだ～🌱
 
-            fun placeBranch(sign: Double) {
+            fun placeBranch() {
 
                 // 幹の中心から葉までの水平距離は、木全体を回転楕円体とした関数とランダムなぶれで決まるのだ～🌱
                 val horizontalDistance = run {
@@ -92,9 +92,9 @@ object GiantPlasticTreeTrunkPlacer : TrunkPlacer(22, 10, 0) {
                 val baseY = pos.y + 0.5 + ((leafOffsetY - horizontalDistance * 0.5) atLeast 0.0) // 幹の接続部分のYは葉の水平距離に応じて下に下がるのだ～🌱
                 val baseZ = pos.z + 1.0
 
-                val leafX = baseX + horizontalDistance * sin(angle) * sign
+                val leafX = baseX + horizontalDistance * sin(angle)
                 val leafY = pos.y + 0.5 + leafOffsetY
-                val leafZ = baseZ - horizontalDistance * cos(angle) * sign
+                val leafZ = baseZ - horizontalDistance * cos(angle)
 
                 val steps = abs(leafX - baseX) max abs(leafY - baseY) max abs(leafZ - baseZ) // 3.2, 3.6, 4.5 のとき 4.5
                 val axis = if (abs(leafX - baseX) >= abs(leafZ - baseZ)) Direction.Axis.X else Direction.Axis.Z
@@ -120,10 +120,9 @@ object GiantPlasticTreeTrunkPlacer : TrunkPlacer(22, 10, 0) {
                 foliageAttachments += FoliagePlacer.FoliageAttachment(leafBlockPos, 0, false)
 
             }
-            placeBranch(1.0)
-            placeBranch(-1.0)
+            placeBranch()
 
-            angle += Math.toRadians(35.0)
+            angle += Math.toRadians(90.0 + 180.0 * random.nextDouble())
             leafOffsetY -= 1
         }
 

@@ -3,6 +3,8 @@ package miragefairy2024.mod.biome
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.tree.TreeBlockCard
+import miragefairy2024.mod.tree.contents.plastictree.GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
+import miragefairy2024.mod.tree.contents.plastictree.SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -85,7 +87,8 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
 
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, ElevatedSpawnerFeatureCard.placedFeatureKey)
 
-                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_TAIGA)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultGrass(lookupBackedBuilder)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)
@@ -109,7 +112,7 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                             SurfaceRules.ifTrue(
                                 SurfaceRules.stoneDepthCheck(0, true, 20, CaveSurface.FLOOR),
                                 SurfaceRules.ifTrue(
-                                    SurfaceRules.noiseCondition(Noises.SURFACE_SECONDARY, getSurfaceNoiseThreshold(Noises.SURFACE_SECONDARY, 0.61), Double.MAX_VALUE),
+                                    SurfaceRules.noiseCondition(Noises.SURFACE_SECONDARY, getSurfaceNoiseThreshold(Noises.SURFACE_SECONDARY, 0.80), Double.MAX_VALUE),
                                     SurfaceRules.state(BlockMaterialCard.RESIN_CEMENTED_DIRT.block().defaultBlockState())
                                 ),
                             ),
@@ -121,7 +124,7 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                                         SurfaceRules.state(Blocks.COARSE_DIRT.defaultBlockState())
                                     ),
                                     SurfaceRules.ifTrue(
-                                        SurfaceRules.noiseCondition(Noises.SURFACE, getSurfaceNoiseThreshold(Noises.SURFACE, 0.64), Double.MAX_VALUE),
+                                        SurfaceRules.noiseCondition(Noises.SURFACE, getSurfaceNoiseThreshold(Noises.SURFACE, 0.40), Double.MAX_VALUE),
                                         SurfaceRules.state(Blocks.PODZOL.defaultBlockState())
                                     ),
                                 ),
