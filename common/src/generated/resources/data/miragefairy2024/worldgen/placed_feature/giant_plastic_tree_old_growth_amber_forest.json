@@ -30,6 +30,18 @@
           }
         }
       }
+    },
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:matching_blocks",
+        "blocks": "miragefairy2024:resin_cemented_dirt",
+        "offset": [
+          0,
+          -1,
+          0
+        ]
+      }
     }
   ]
 }
