@@ -5,21 +5,10 @@
       {
         "type": "miragefairy2024:haimeviska",
         "dripping_log_replacement": {
-          "block": "miragefairy2024:dripping_haimeviska_log",
-          "percentage": 12
+          "block": "miragefairy2024:dripping_plastic_tree_log",
+          "percentage": 25
         },
-        "hollow_log_replacement": {
-          "block": "miragefairy2024:hollow_haimeviska_log",
-          "percentage": 6
-        },
-        "log": "miragefairy2024:haimeviska_log"
-      },
-      {
-        "type": "minecraft:trunk_vine"
-      },
-      {
-        "type": "minecraft:leave_vine",
-        "probability": 0.05
+        "log": "miragefairy2024:plastic_tree_log"
       }
     ],
     "dirt_provider": {
@@ -29,7 +18,7 @@
       }
     },
     "foliage_placer": {
-      "type": "miragefairy2024:small_haimeviska",
+      "type": "miragefairy2024:small_plastic_tree",
       "height": 0,
       "offset": 0,
       "radius": 1
@@ -37,9 +26,8 @@
     "foliage_provider": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "miragefairy2024:haimeviska_leaves",
+        "Name": "miragefairy2024:plastic_tree_leaves",
         "Properties": {
-          "charged": "true",
           "distance": "7",
           "persistent": "false",
           "waterlogged": "false"
@@ -55,12 +43,12 @@
       "upper_size": 1
     },
     "trunk_placer": {
-      "type": "miragefairy2024:small_haimeviska"
+      "type": "miragefairy2024:small_plastic_tree"
     },
     "trunk_provider": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "miragefairy2024:haimeviska_log",
+        "Name": "miragefairy2024:plastic_tree_log",
         "Properties": {
           "axis": "y"
         }

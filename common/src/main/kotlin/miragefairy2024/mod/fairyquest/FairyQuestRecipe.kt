@@ -369,7 +369,7 @@ enum class FairyQuestRecipeCard(
             """.formatFairyQuest(),
         "The Institute of Fairy Research\nCreation Department\nKretroknofe Mizna", "妖精研究所\n創製部\nクレトロクノフェ・ミズナ",
         listOf { MaterialCard.MIRAGIUM_INGOT.item().toIngredientStack(5) },
-        listOf { Items.EMERALD.createItemStack() },
+        listOf { Items.EMERALD.createItemStack(2) },
         duration = 10,
         icon = { MaterialCard.MIRAGIUM_INGOT.item().createItemStack() },
     ),

@@ -1,4 +1,4 @@
-package miragefairy2024.mod.tree.contents.haimeviska
+package miragefairy2024.mod.tree.contents.plastictree
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
@@ -16,13 +16,13 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-object SmallHaimeviskaTrunkPlacerCard {
-    val identifier = MirageFairy2024.identifier("small_haimeviska")
-    private val codec: MapCodec<SmallHaimeviskaTrunkPlacer> = MapCodec.unit { SmallHaimeviskaTrunkPlacer }
-    val type: TrunkPlacerType<SmallHaimeviskaTrunkPlacer> = TrunkPlacerType(codec)
+object SmallPlasticTreeTrunkPlacerCard {
+    val identifier = MirageFairy2024.identifier("small_plastic_tree")
+    private val codec: MapCodec<SmallPlasticTreeTrunkPlacer> = MapCodec.unit { SmallPlasticTreeTrunkPlacer }
+    val type: TrunkPlacerType<SmallPlasticTreeTrunkPlacer> = TrunkPlacerType(codec)
 }
 
-object SmallHaimeviskaTrunkPlacer : TrunkPlacer(8, 4, 0) {
+object SmallPlasticTreeTrunkPlacer : TrunkPlacer(6, 2, 0) {
     private const val LOWEST_LEAF_OFFSET_Y = 2
 
     // 葉は付着点を中心とする3x3で置かれるから、付着点が幹から両軸とも2ブロック離れると、幹と角でしか接さなくなって葉が崩れちゃうのだ～🌱
@@ -30,9 +30,9 @@ object SmallHaimeviskaTrunkPlacer : TrunkPlacer(8, 4, 0) {
     // その境界にちょうど乗せると浮動小数点数の丸めでどちらに転ぶか分からないから、0.99を掛けて確実に手前に置くのだ～🌱
     private val MAX_HORIZONTAL_DISTANCE = 1.5 * sqrt(2.0) * 0.99
 
-    override fun type() = SmallHaimeviskaTrunkPlacerCard.type
+    override fun type() = SmallPlasticTreeTrunkPlacerCard.type
 
-    // 枝を持たない1x1の主幹を建てて、その周りに葉をらせん状に付けるのだ～🌱
+    // 枝を持たない1x1の主幹を建てて、その周りに、方角を大きく変えながら葉を付けるのだ～🌱
     override fun placeTrunk(
         level: LevelSimulatedReader,
         blockSetter: BiConsumer<BlockPos, BlockState>,
@@ -70,7 +70,7 @@ object SmallHaimeviskaTrunkPlacer : TrunkPlacer(8, 4, 0) {
             )
             foliageAttachments += FoliagePlacer.FoliageAttachment(leafBlockPos, 0, false)
 
-            angle += Math.toRadians(70.0)
+            angle += Math.toRadians(90.0 + 180.0 * random.nextDouble())
         }
 
         return foliageAttachments
