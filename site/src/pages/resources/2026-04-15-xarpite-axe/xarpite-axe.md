@@ -13,7 +13,7 @@ tags: [ ミラージュフェアリー劇場, 紅天石の斧, 紅天石, 伐採
 {% say tsumugi3 %}渓谷の下にがれきが溜まっててさ、その中に混ざってた。{% endsay %}
 {% say zundamon23 %}紅天石なのだ。道具にすると木とか鉱石を一気に壊せるのだ。{% endsay %}
 {% say tsumugi3:口=わあーい %}一気に！？すごい！それってセンパイ作れる！？{% endsay %}
-{% say zundamon23 %}つるはしか斧、片方だけなら足りるのだ。{% endsay %}
+{% say zundamon23 %}ツルハシか斧、片方だけなら足りるのだ。{% endsay %}
 {% say tsumugi3:口=わあーい %}じゃあ、これ斧にして♪{% endsay %}
 
 {% space %}

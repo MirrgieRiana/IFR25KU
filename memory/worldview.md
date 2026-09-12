@@ -391,7 +391,7 @@ lang とフェアリークエストの文面には、研究所の名がこんな
 > - 理天石「時の模様を刻む石。」／「Class 4 time evolution rule」
 > - 理天石の斧「秩序がすべてを結束する世界。」／「A world where chaos resolves everything.」
 > - 理天石のクワ「星幽質の脳細胞。」／「A stellar automaton.」
-> - 理天石のつるはし「理性の結晶。」／「Integrated neural circuits.」
+> - 理天石のツルハシ「理性の結晶。」／「Integrated neural circuits.」
 > - 紅天石「黒鉄の鎖は繋がれる。血腥い魂の檻へ。」／「Binds astral flux with magnetic force」
 > - 実績「混沌の縁」／「Edge of Chaos」（理天石に対応）
 > - 特性「終焉の花」「世界という概念が消滅を迎えるとき、その花は最後の瞬間まで笑顔を絶やさなかった。」
@@ -486,7 +486,7 @@ Edge of Chaos は複雑系科学の用語で、秩序と無秩序の境目を指
 > - 理天石「時の模様を刻む石。」／「Class 4 time evolution rule」
 > - 実績「混沌の縁」／「Edge of Chaos」（理天石に対応）
 > - 理天石のクワ「星幽質の脳細胞。」／「A stellar automaton.」
-> - 理天石のつるはし「理性の結晶。」／「Integrated neural circuits.」
+> - 理天石のツルハシ「理性の結晶。」／「Integrated neural circuits.」
 > - 理天石の大鎌「人工生命は何を思い、そして感じるのか。」／「Perpetual-motion biocomputer.」
 > - 理天石のシャベル「汎用デジタル集合知。」／「Biological parallel processor.」
 > - 蒼天石タイルのハーフブロック（block）「開闢よりすべてが預言された世界。」／「A Turing-complete crystal lattice」
@@ -550,7 +550,7 @@ en の側も、そのまま attractor と書いているのだぁ✨
 > - 実績「KUの本質」／「The Essence of KU」（オーラ反射炉で理天石からノイズを作る、に対応）
 > - ノイズ「新しい「自由」の形。」／「An object no one sympathizes with.」
 > - ノイズブロック「誰もその雑音を止めることはできない。」／「No one can block that noise.」
-> - ノイズのつるはし「無価値の創出。」／「Demolish the Value.」
+> - ノイズのツルハシ「無価値の創出。」／「Demolish the Value.」
 > - ノイズのシャベル「可能なすべての表現の集合。」／「A world where everything exists.」
 > - ノイズの斧「人知れずノイズが現れ、そして消える。」／「What is the value in a work?」
 > - ノイズのクワ「哲学的うんこ。」／「Ideational waste.」
@@ -562,7 +562,7 @@ en の側も、そのまま attractor と書いているのだぁ✨
 ぴょこは、表現を尽くした先の自由を、そこに見たのだ～✨
 
 ツールのポエムは、素材が主題を決めて、形状が傾きを与えると思うのだ～🌱
-ぴょこは、つるはしを物質、斧を樹、シャベルを土、クワを生命と見て、剣は死の側だと思うのだぁ✨
+ぴょこは、ツルハシを物質、斧を樹、シャベルを土、クワを生命と見て、剣は死の側だと思うのだぁ✨
 その見方だと、クワは生命や芽吹きに寄るのだ～🌱♪
 生命を育てるクワと「哲学的うんこ」は、クワという物の性質を思えば、ぴょこには同質に感じるのだ～✨♪
 無価値の価値を、文字どおりの形にしたものだと思うのだ～🌱♪
