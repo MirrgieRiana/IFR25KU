@@ -1,5 +1,9 @@
 package miragefairy2024.colormaker
 
+import mirrg.kotlin.hydrogen.alphaOfArgb
+import mirrg.kotlin.hydrogen.blueOfArgb
+import mirrg.kotlin.hydrogen.greenOfArgb
+import mirrg.kotlin.hydrogen.redOfArgb
 import java.awt.Color
 import java.awt.image.BufferedImage
 import javax.swing.ImageIcon
@@ -32,10 +36,10 @@ class LayeredImage(private val zoom: Int) : JLabel() {
 
                     // 画像の色
                     val argbOver = layer.image.getRGB(x / zoom, y / zoom)
-                    val a2 = (argbOver shr 24) and 0xff
-                    var r2 = (argbOver shr 16) and 0xff
-                    var g2 = (argbOver shr 8) and 0xff
-                    var b2 = (argbOver shr 0) and 0xff
+                    val a2 = argbOver.alphaOfArgb
+                    var r2 = argbOver.redOfArgb
+                    var g2 = argbOver.greenOfArgb
+                    var b2 = argbOver.blueOfArgb
 
                     // 画像の色を乗算する色で更新
                     r2 = r2 * colorMul.red / 255

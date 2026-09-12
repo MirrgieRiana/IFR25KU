@@ -1,5 +1,8 @@
 package miragefairy2024.wave
 
+import mirrg.kotlin.hydrogen.blueOfRgb
+import mirrg.kotlin.hydrogen.greenOfRgb
+import mirrg.kotlin.hydrogen.redOfRgb
 import java.awt.image.BufferedImage
 import kotlin.math.PI
 import kotlin.math.cos
@@ -27,7 +30,7 @@ fun Spectrogram.generatePhaseSimple(): Spectrogram {
             val w = 2.0 * PI / windowSize * y
 
             val inputRgb = this.bufferedImage.getRGB(x, imageY)
-            val g = (inputRgb shr 8 and 0xFF).toDouble()
+            val g = inputRgb.greenOfRgb.toDouble()
 
             val r = g * cos(w * x)
             val b = g * sin(w * x)
@@ -68,7 +71,7 @@ fun Spectrogram.generatePhaseLegacy(): Spectrogram {
             val w = 2.0 * PI / windowSize * y
 
             val inputRgb = this.bufferedImage.getRGB(x, imageY)
-            val g = (inputRgb shr 8 and 0xFF).toDouble()
+            val g = inputRgb.greenOfRgb.toDouble()
 
             // 位相の動的攪乱の変化の度合い（サンプル位置）
             val phaseGradientResetPhase = (x + phaseGradientResetOffsets[y]) % windowSize // 0 .. 255
@@ -107,7 +110,7 @@ fun Spectrogram.generatePhaseGriffinLim(times: Int, toWaveform: (Spectrogram) ->
     repeat(width) { x ->
         repeat(height) { y ->
             val thisRgb = this.bufferedImage.getRGB(x, y)
-            val thisG = thisRgb shr 8 and 0xFF
+            val thisG = thisRgb.greenOfRgb
             correctGTable[y][x] = thisG
             doubleCorrectGTable[y][x] = thisG.toDouble()
         }
@@ -124,9 +127,9 @@ fun Spectrogram.generatePhaseGriffinLim(times: Int, toWaveform: (Spectrogram) ->
             repeat(height) { y ->
                 val rgb = spectrogram.bufferedImage.getRGB(x, y)
 
-                val r = ((rgb shr 16 and 0xFF) - 128).toDouble()
-                val g = (rgb shr 8 and 0xFF).toDouble()
-                val b = ((rgb shr 0 and 0xFF) - 128).toDouble()
+                val r = (rgb.redOfRgb - 128).toDouble()
+                val g = rgb.greenOfRgb.toDouble()
+                val b = (rgb.blueOfRgb - 128).toDouble()
 
                 val rate = if (g == 0.0) 10000.0 else doubleCorrectGTable[y][x] / g
 

@@ -30,15 +30,6 @@ val Int.bitCount: Int
         return b
     }
 
-/** RGB色の赤成分なのだ～🌱 */
-inline val Int.redOfRgb get() = (this shr 16) and 0xFF
-
-/** RGB色の緑成分なのだ～🌱 */
-inline val Int.greenOfRgb get() = (this shr 8) and 0xFF
-
-/** RGB色の青成分なのだ～🌱 */
-inline val Int.blueOfRgb get() = this and 0xFF
-
 /** 平均0、標準偏差[standardDeviation]の正規分布において、[x]より大きい値が得られる確率を求めるのだ～🌱 */
 fun getNormalDistributionUpperProbability(x: Double, standardDeviation: Double): Double {
     // 誤差関数の近似式はAbramowitz and Stegun 7.1.26によるもので、絶対誤差は1.5e-7以下なのだ～🌱

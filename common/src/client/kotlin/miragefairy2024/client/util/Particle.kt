@@ -1,8 +1,8 @@
 package miragefairy2024.client.util
 
-import miragefairy2024.util.blueOfRgb
-import miragefairy2024.util.greenOfRgb
-import miragefairy2024.util.redOfRgb
+import mirrg.kotlin.hydrogen.blueOfRgb
+import mirrg.kotlin.hydrogen.greenOfRgb
+import mirrg.kotlin.hydrogen.redOfRgb
 import net.minecraft.client.particle.Particle
 
 fun Particle.setRgb(rgb: Int) {

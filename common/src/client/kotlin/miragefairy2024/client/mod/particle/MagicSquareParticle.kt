@@ -4,9 +4,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer
 import miragefairy2024.client.util.registerClientPacketReceiver
 import miragefairy2024.mod.particle.MagicSquareParticleChannel
 import miragefairy2024.mod.particle.MagicSquareParticleEffect
-import miragefairy2024.util.blueOfRgb
-import miragefairy2024.util.greenOfRgb
-import miragefairy2024.util.redOfRgb
+import mirrg.kotlin.hydrogen.blueOfRgb
+import mirrg.kotlin.hydrogen.greenOfRgb
+import mirrg.kotlin.hydrogen.redOfRgb
 import mirrg.kotlin.helium.max
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider
 import net.minecraft.client.Camera
