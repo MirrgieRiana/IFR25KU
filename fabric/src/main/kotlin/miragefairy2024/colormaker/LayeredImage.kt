@@ -4,6 +4,7 @@ import mirrg.kotlin.hydrogen.alphaOfArgb
 import mirrg.kotlin.hydrogen.blueOfArgb
 import mirrg.kotlin.hydrogen.greenOfArgb
 import mirrg.kotlin.hydrogen.redOfArgb
+import mirrg.kotlin.hydrogen.rgbOf
 import java.awt.Color
 import java.awt.image.BufferedImage
 import javax.swing.ImageIcon
@@ -54,7 +55,7 @@ class LayeredImage(private val zoom: Int) : JLabel() {
                 }
 
                 // 色セット
-                image.setRGB(x, y, ((r1 and 0xff) shl 16) or ((g1 and 0xff) shl 8) or ((b1 and 0xff) shl 0))
+                image.setRGB(x, y, rgbOf(r1, g1, b1))
 
             }
         }

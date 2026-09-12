@@ -3,6 +3,7 @@ package miragefairy2024.wave
 import mirrg.kotlin.hydrogen.blueOfRgb
 import mirrg.kotlin.hydrogen.greenOfRgb
 import mirrg.kotlin.hydrogen.redOfRgb
+import mirrg.kotlin.hydrogen.rgbOf
 import java.awt.image.BufferedImage
 import kotlin.math.PI
 import kotlin.math.cos
@@ -34,9 +35,7 @@ fun Spectrogram.generatePhaseSimple(): Spectrogram {
 
             val r = g * cos(w * x)
             val b = g * sin(w * x)
-            val outputRgb = (r.roundToInt().coerceIn(-128, 127) + 128 and 0xFF shl 16) or
-                (g.toInt().coerceIn(0, 255) and 0xFF shl 8) or
-                (b.roundToInt().coerceIn(-128, 127) + 128 and 0xFF shl 0)
+            val outputRgb = rgbOf(r.roundToInt().coerceIn(-128, 127) + 128, g.toInt().coerceIn(0, 255), b.roundToInt().coerceIn(-128, 127) + 128)
 
             image.setRGB(x, imageY, outputRgb)
         }
@@ -84,9 +83,7 @@ fun Spectrogram.generatePhaseLegacy(): Spectrogram {
 
             val r = g * cos(phase + w * x)
             val b = g * sin(phase + w * x)
-            val outputRgb = (r.toInt().coerceIn(-128, 127) + 128 and 0xFF shl 16) or
-                (g.toInt().coerceIn(0, 255) and 0xFF shl 8) or
-                (b.toInt().coerceIn(-128, 127) + 128 and 0xFF shl 0)
+            val outputRgb = rgbOf(r.toInt().coerceIn(-128, 127) + 128, g.toInt().coerceIn(0, 255), b.toInt().coerceIn(-128, 127) + 128)
 
             // 位相の動的攪乱のリセットのタイミングである場合、リセット
             if (phaseGradientResetPhase == 0) {
@@ -136,9 +133,7 @@ fun Spectrogram.generatePhaseGriffinLim(times: Int, toWaveform: (Spectrogram) ->
                 val trueR = r * rate
                 val trueB = b * rate
 
-                val trueRgb = (trueR.roundToInt().coerceIn(-128, 127) + 128 and 0xFF shl 16) or
-                    (correctGTable[y][x].coerceIn(0, 255) and 0xFF shl 8) or
-                    (trueB.roundToInt().coerceIn(-128, 127) + 128 and 0xFF shl 0)
+                val trueRgb = rgbOf(trueR.roundToInt().coerceIn(-128, 127) + 128, correctGTable[y][x].coerceIn(0, 255), trueB.roundToInt().coerceIn(-128, 127) + 128)
 
                 spectrogram.bufferedImage.setRGB(x, y, trueRgb)
             }

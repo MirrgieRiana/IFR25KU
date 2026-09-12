@@ -3,6 +3,7 @@ package miragefairy2024.wave
 import mirrg.kotlin.hydrogen.blueOfRgb
 import mirrg.kotlin.hydrogen.greenOfRgb
 import mirrg.kotlin.hydrogen.redOfRgb
+import mirrg.kotlin.hydrogen.rgbOf
 import mirrg.kotlin.slf4j.hydrogen.getLogger
 import java.awt.image.BufferedImage
 import java.io.File
@@ -75,9 +76,7 @@ fun Waveform.toSpectrogram(bits: Int, m: Double): Spectrogram {
             val r = outputSpectrum[y].re * m
             val g = outputSpectrum[y].abs() * m
             val b = outputSpectrum[y].im * m
-            val rgb = (r.toInt().coerceIn(-128, 127) + 128 and 0xFF shl 16) or
-                (g.toInt().coerceIn(0, 255) and 0xFF shl 8) or
-                (b.toInt().coerceIn(-128, 127) + 128 and 0xFF shl 0)
+            val rgb = rgbOf(r.toInt().coerceIn(-128, 127) + 128, g.toInt().coerceIn(0, 255), b.toInt().coerceIn(-128, 127) + 128)
             image.setRGB(x, height - 1 - y, rgb)
         }
 
@@ -200,9 +199,7 @@ fun Spectrogram.resizeHorizontal(imageHeight: Int): Spectrogram {
             val r = sumR / count
             val g = sumG / count
             val b = sumB / count
-            val outputRgb = (r.toInt().coerceIn(0, 255) shl 16) or
-                (g.toInt().coerceIn(0, 255) shl 8) or
-                (b.toInt().coerceIn(0, 255) shl 0)
+            val outputRgb = rgbOf(r.toInt().coerceIn(0, 255), g.toInt().coerceIn(0, 255), b.toInt().coerceIn(0, 255))
 
             image.setRGB(x, imageY0, outputRgb)
         }
@@ -282,9 +279,7 @@ fun Spectrogram.resizeVertical(imageWidth: Int): Spectrogram {
             val r = sumR / count
             val g = sumG / count
             val b = sumB / count
-            val outputRgb = (r.toInt().coerceIn(0, 255) shl 16) or
-                (g.toInt().coerceIn(0, 255) shl 8) or
-                (b.toInt().coerceIn(0, 255) shl 0)
+            val outputRgb = rgbOf(r.toInt().coerceIn(0, 255), g.toInt().coerceIn(0, 255), b.toInt().coerceIn(0, 255))
 
             image.setRGB(imageX0, y, outputRgb)
         }
@@ -311,7 +306,7 @@ fun Spectrogram.fromLogScale(): Spectrogram {
             val r = f(rgb.redOfRgb.toDouble()).toInt().coerceIn(0, 255)
             val g = f(rgb.greenOfRgb.toDouble()).toInt().coerceIn(0, 255)
             val b = f(rgb.blueOfRgb.toDouble()).toInt().coerceIn(0, 255)
-            image.setRGB(x, y, (r shl 16) or (g shl 8) or (b shl 0))
+            image.setRGB(x, y, rgbOf(r, g, b))
         }
     }
     return Spectrogram(image)
@@ -333,7 +328,7 @@ fun Spectrogram.toLogScale(): Spectrogram {
             val r = f(rgb.redOfRgb.toDouble()).toInt().coerceIn(0, 255)
             val g = f(rgb.greenOfRgb.toDouble()).toInt().coerceIn(0, 255)
             val b = f(rgb.blueOfRgb.toDouble()).toInt().coerceIn(0, 255)
-            image.setRGB(x, y, (r shl 16) or (g shl 8) or (b shl 0))
+            image.setRGB(x, y, rgbOf(r, g, b))
         }
     }
     return Spectrogram(image)
