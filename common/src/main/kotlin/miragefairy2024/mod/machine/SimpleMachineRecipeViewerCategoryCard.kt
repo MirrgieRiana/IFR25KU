@@ -31,6 +31,7 @@ import miragefairy2024.util.text
 import miragefairy2024.util.toIngredientStack
 import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.helium.stripTrailingZeros
+import mirrg.kotlin.hydrogen.argbOf
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.core.RegistryAccess
 import net.minecraft.world.item.ItemStack
@@ -86,7 +87,7 @@ abstract class SimpleMachineRecipeViewerCategoryCard<R : SimpleMachineRecipe> : 
                 } else {
                     ((0.8 - input.consumptionChance * 0.6) * 255.0).roundToInt()
                 }
-                val color = (alpha shl 24) or 0x00D000
+                val color = argbOf(alpha, 0x00, 0xD0, 0x00)
                 view += FilledRectangleView().also { it.color.value = color }
             }
 
