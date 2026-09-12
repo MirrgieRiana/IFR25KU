@@ -35,7 +35,11 @@ fun Spectrogram.generatePhaseSimple(): Spectrogram {
 
             val r = g * cos(w * x)
             val b = g * sin(w * x)
-            val outputRgb = rgbOf(r.roundToInt().coerceIn(-128, 127) + 128, g.toInt().coerceIn(0, 255), b.roundToInt().coerceIn(-128, 127) + 128)
+            val outputRgb = rgbOf(
+                r.roundToInt().coerceIn(-128, 127) + 128,
+                g.toInt().coerceIn(0, 255),
+                b.roundToInt().coerceIn(-128, 127) + 128,
+            )
 
             image.setRGB(x, imageY, outputRgb)
         }
@@ -83,7 +87,11 @@ fun Spectrogram.generatePhaseLegacy(): Spectrogram {
 
             val r = g * cos(phase + w * x)
             val b = g * sin(phase + w * x)
-            val outputRgb = rgbOf(r.toInt().coerceIn(-128, 127) + 128, g.toInt().coerceIn(0, 255), b.toInt().coerceIn(-128, 127) + 128)
+            val outputRgb = rgbOf(
+                r.toInt().coerceIn(-128, 127) + 128,
+                g.toInt().coerceIn(0, 255),
+                b.toInt().coerceIn(-128, 127) + 128,
+            )
 
             // 位相の動的攪乱のリセットのタイミングである場合、リセット
             if (phaseGradientResetPhase == 0) {
@@ -133,7 +141,11 @@ fun Spectrogram.generatePhaseGriffinLim(times: Int, toWaveform: (Spectrogram) ->
                 val trueR = r * rate
                 val trueB = b * rate
 
-                val trueRgb = rgbOf(trueR.roundToInt().coerceIn(-128, 127) + 128, correctGTable[y][x].coerceIn(0, 255), trueB.roundToInt().coerceIn(-128, 127) + 128)
+                val trueRgb = rgbOf(
+                    trueR.roundToInt().coerceIn(-128, 127) + 128,
+                    correctGTable[y][x].coerceIn(0, 255),
+                    trueB.roundToInt().coerceIn(-128, 127) + 128,
+                )
 
                 spectrogram.bufferedImage.setRGB(x, y, trueRgb)
             }

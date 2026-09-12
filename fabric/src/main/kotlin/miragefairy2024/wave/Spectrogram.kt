@@ -76,7 +76,11 @@ fun Waveform.toSpectrogram(bits: Int, m: Double): Spectrogram {
             val r = outputSpectrum[y].re * m
             val g = outputSpectrum[y].abs() * m
             val b = outputSpectrum[y].im * m
-            val rgb = rgbOf(r.toInt().coerceIn(-128, 127) + 128, g.toInt().coerceIn(0, 255), b.toInt().coerceIn(-128, 127) + 128)
+            val rgb = rgbOf(
+                r.toInt().coerceIn(-128, 127) + 128,
+                g.toInt().coerceIn(0, 255),
+                b.toInt().coerceIn(-128, 127) + 128,
+            )
             image.setRGB(x, height - 1 - y, rgb)
         }
 
@@ -199,7 +203,11 @@ fun Spectrogram.resizeHorizontal(imageHeight: Int): Spectrogram {
             val r = sumR / count
             val g = sumG / count
             val b = sumB / count
-            val outputRgb = rgbOf(r.toInt().coerceIn(0, 255), g.toInt().coerceIn(0, 255), b.toInt().coerceIn(0, 255))
+            val outputRgb = rgbOf(
+                r.toInt().coerceIn(0, 255),
+                g.toInt().coerceIn(0, 255),
+                b.toInt().coerceIn(0, 255),
+            )
 
             image.setRGB(x, imageY0, outputRgb)
         }
@@ -279,7 +287,11 @@ fun Spectrogram.resizeVertical(imageWidth: Int): Spectrogram {
             val r = sumR / count
             val g = sumG / count
             val b = sumB / count
-            val outputRgb = rgbOf(r.toInt().coerceIn(0, 255), g.toInt().coerceIn(0, 255), b.toInt().coerceIn(0, 255))
+            val outputRgb = rgbOf(
+                r.toInt().coerceIn(0, 255),
+                g.toInt().coerceIn(0, 255),
+                b.toInt().coerceIn(0, 255),
+            )
 
             image.setRGB(imageX0, y, outputRgb)
         }
