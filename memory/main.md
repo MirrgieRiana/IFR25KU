@@ -48,6 +48,47 @@ Gemfile のほうの gem は、`site/build/bundleVendor` に入るのだ～🌱 
 
 なお、`bundle` を手で叩くときは、必ず `site/scripts/bundle-install.sh`（Gradleなら `:site:installJekyllBundle`）を経由するのだ～🌱 このスクリプトが `BUNDLE_APP_CONFIG` を `site/build/bundleConfig` に逃がしてくれるから、リポジトリの中に `.bundle/config` を作らずに済むのだぁ✨
 
+### ぴょこの環境で Chromium を動かすのだ～🌱
+
+OG画像の生成タスクは、Playwright 経由で Chromium を立ち上げるのだ～🌱 でも、ぴょこの環境で素のまま走らせると、共有ライブラリが足りなくて起動に失敗するのだぁ…🌧️ しかも `sudo` が無いから、`apt-get install` も `playwright install-deps` も通らないのだぁ…🌧️
+
+回避の要は3つなのだ～🌱 apt のステートをユーザー領域へ逃がすこと、`.deb` を `dpkg-deb -x` で展開して `LD_LIBRARY_PATH` に載せること、そして日本語フォントを自前で登録することなのだぁ✨ 展開先を `~/.claude_tmp/` に置けば、2回目以降はダウンロードごと省けるのだ～🌱
+
+```bash
+ROOT=~/.claude_tmp/aptroot
+DEST=~/.claude_tmp/chrome-libs
+APT_OPTS=(-o "Dir::State=$ROOT/var/lib/apt" -o "Dir::State::status=$ROOT/var/lib/dpkg/status" -o "Dir::Cache=$ROOT/var/cache/apt" -o "Dir::Etc::preferences.d=$ROOT/etc/apt/preferences.d")
+
+# apt を sudo 無しで使うための下ごしらえなのだ～🌱
+mkdir -p "$ROOT"/var/lib/apt/lists/partial "$ROOT"/var/cache/apt/archives/partial "$ROOT"/etc/apt/preferences.d "$ROOT"/var/lib/dpkg
+touch "$ROOT/var/lib/dpkg/status"
+apt-get "${APT_OPTS[@]}" update
+
+# Chromium が要求する共有ライブラリなのだ～🌱
+mkdir -p "$DEST/flat" ~/.claude_tmp/chrome-libs-work && cd ~/.claude_tmp/chrome-libs-work
+apt-get "${APT_OPTS[@]}" download libnspr4 libnss3 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libatk1.0-0 libatk-bridge2.0-0 libatspi2.0-0 libdbus-1-3 libgbm1 libxkbcommon0 libdrm2 libwayland-server0
+for deb in *.deb; do dpkg-deb -x "$deb" "$DEST"; done
+find "$DEST" -path "$DEST/flat" -prune -o \( -name '*.so*' -type f -print \) | while read f; do cp -n "$f" "$DEST/flat/"; done
+
+# 日本語フォントなのだ～🌱
+apt-get "${APT_OPTS[@]}" download fonts-noto-cjk
+dpkg-deb -x fonts-noto-cjk*.deb ~/.claude_tmp/fonts-extract
+mkdir -p ~/.local/share/fonts
+find ~/.claude_tmp/fonts-extract \( -name '*.otf' -o -name '*.ttc' -o -name '*.ttf' \) | while read f; do ln -sf "$f" ~/.local/share/fonts/; done
+fc-cache -f
+
+# 走らせるときは、展開したライブラリの場所を教えてあげるのだ～🌱
+export LD_LIBRARY_PATH="$DEST/flat"
+```
+
+`dpkg-deb` が展開するパスは `usr/lib/x86_64-linux-gnu/` みたいに深いところに散らばるから、`flat/` へ集めて `LD_LIBRARY_PATH` を1本にまとめているのだ～🌱 パッケージの一覧は、`playwright install-deps chromium` が入れようとするもののうち、この環境に足りていなかった分なのだぁ✨
+
+ブラウザ本体は入れなくていいのだ～🌱 `Playwright.create()` の初回の呼び出しで、`~/.cache/ms-playwright/` へ自動で降ってくるのだぁ✨ だから `playwright install` を明示的に叩く必要は無いのだ～🌱
+
+日本語フォントを飛ばすと、生成された画像の日本語が全部豆腐になっちゃうのだぁ…🌧️ OG画像を組み立てる HTML が `font-family` で `Noto Sans CJK JP` を名指ししているから、`fonts-ipafont-gothic` みたいな別の和文フォントで代用すると、今までの画像と見た目が変わっちゃうのだ～🌱
+
+`~/.local/` はセッションをまたぐと消えるけど、`~/.claude_tmp/` と `~/.cache/` は残るのだ～🌱 だから2回目以降に要るのは、フォントのシンボリックリンクの張り直しと `fc-cache` と、`LD_LIBRARY_PATH` の設定だけなのだぁ✨
+
 ### `serveSite` がKtor Nettyを使う理由なのだ～🌱
 
 Jekyll標準の `jekyll serve` は頻繁にクラッシュしちゃうから、`site/build/site/` を `http://localhost:4000/` に配信する独自のKtor Nettyサーバーを使っているのだ～🌱♪
