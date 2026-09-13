@@ -107,7 +107,7 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
 
     /**
      * 狙ったブロックを中心とする立方体のうち、遮蔽を越えずに辿り着けて、かつ収穫の対象になりうる位置を返すのだ～🌱
-     * 範囲の求め方も、対象とするブロックの種類も、[use]と揃えるのだ～🌱
+     * 範囲の求め方も、対象とするブロックの種類も、[miragefairy2024.mod.tool.items.ScytheItem.use]と揃えるのだ～🌱
      * ただし、実際に収穫が起こるかどうかは対象のブロックに尋ねるまで分からないから、まだ実っていないものも含むのだ～🌱
      */
     private fun getHarvestBlockPoses(level: Level, blockPos: BlockPos): Set<BlockPos> {
