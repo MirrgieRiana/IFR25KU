@@ -46,6 +46,7 @@ import miragefairy2024.mod.plus
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
+import miragefairy2024.mod.stickyMiningStatusEffect
 import miragefairy2024.mod.structure.WeatheredAncientRemnantsCard
 import miragefairy2024.mod.translation
 import miragefairy2024.mod.tree.contents.haimeviska.haimeviskaAdvancement
@@ -627,13 +628,13 @@ class MaterialCard(
         )
         val PLASTIC_TREE_SAP: MaterialCard = !MaterialCard(
             "plastic_tree_sap", "Plastic Tree Sap", "プラノキの樹液",
-            PoemList(1).poem("Catalytic sugar cleavage.", "駆け出したくなる、その甘さ。"),
+            PoemList(1).poem("TODO", "TODO"), // TODO 粘着採掘を言い表すポエムを記述してください。
             fuelValue = 200,
             foodComponentCreator = {
                 FoodProperties.Builder()
                     .nutrition(1)
                     .saturationModifier(0.1F)
-                    .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 10), 1.0F)
+                    .effect(MobEffectInstance(stickyMiningStatusEffect.awaitHolder(), 20 * 10), 1.0F)
                     .build()
             },
             creator = { FoodItem(it) },
@@ -1526,7 +1527,7 @@ class MaterialCard(
             "plastic_tree_sap_kohakuto", "Plastic Tree Sap Kohakuto", "プラノキの樹液の琥珀糖",
             PoemList(1).poem("Elastic organic polymer.", "凍てつく砂糖の宿る石。"),
             PLASTIC_TREE_SAP.item,
-            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60 * 2, 1), 1.0F) },
+            { it.effect(MobEffectInstance(stickyMiningStatusEffect.awaitHolder(), 20 * 60 * 2), 1.0F) },
         )
         val HAIMEVISKA_SAP_KOHAKUTO = createKohakuto(
             "haimeviska_sap_kohakuto", "Haimeviska Sap Kohakuto", "ハイメヴィスカの樹液の琥珀糖",

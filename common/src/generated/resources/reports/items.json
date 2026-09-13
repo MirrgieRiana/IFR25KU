@@ -8702,7 +8702,7 @@
           {
             "effect": {
               "duration": 200,
-              "id": "minecraft:speed",
+              "id": "miragefairy2024:sticky_mining",
               "show_icon": true
             }
           }
@@ -8729,9 +8729,8 @@
         "effects": [
           {
             "effect": {
-              "amplifier": 1,
               "duration": 2400,
-              "id": "minecraft:speed",
+              "id": "miragefairy2024:sticky_mining",
               "show_icon": true
             }
           }
