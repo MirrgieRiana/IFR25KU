@@ -66,10 +66,10 @@ object AuraReflectorFurnaceCard : SimpleMachineCard<AuraReflectorFurnaceBlock, A
 
     override val inputSlots = listOf(
         SlotConfiguration(29, 17, setOf(Direction.WEST), setOf()),
-        SlotConfiguration(47, 17, setOf(Direction.UP, Direction.NORTH, Direction.DOWN), setOf()),
+        SlotConfiguration(47, 17, setOf(Direction.UP), setOf()),
         SlotConfiguration(65, 17, setOf(Direction.EAST), setOf()),
     )
-    val fuelSlot = object : SlotConfiguration(47, 53, setOf(Direction.SOUTH), setOf()) {
+    val fuelSlot = object : SlotConfiguration(47, 53, setOf(Direction.NORTH, Direction.SOUTH), setOf()) {
         override fun isValid(itemStack: ItemStack) = AuraReflectorFurnaceRecipe.getFuelValue(itemStack) != null
     }
     override val outputSlots = listOf(

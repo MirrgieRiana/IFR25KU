@@ -1,10 +1,10 @@
 ---
-title: "【磁鉄鉱のつるはし】溶岩の上でも関係ないもんね！【つむぎ×ずんだもん】"
-description: 春日部つむぎが磁鉄鉱のつるはしを気に入る話
+title: "【磁鉄鉱のツルハシ】溶岩の上でも関係ないもんね！【つむぎ×ずんだもん】"
+description: 春日部つむぎが磁鉄鉱のツルハシを気に入る話
 layout: theater
 header:
   teaser: /2026/04/13/magnetite-pickaxe.teaser.webp
-tags: [ ミラージュフェアリー劇場, 磁鉄鉱のつるはし, 磁鉄鉱, 採掘, つるはし, 鉄鉱石, ダイヤモンド鉱石 ]
+tags: [ ミラージュフェアリー劇場, 磁鉄鉱のツルハシ, 磁鉄鉱, 採掘, ツルハシ, 鉄鉱石, ダイヤモンド鉱石 ]
 ---
 
 {% say tsumugi3:まゆ=困り眉 %}あっ……鉄鉱石が……{% endsay %}
@@ -27,8 +27,8 @@ tags: [ ミラージュフェアリー劇場, 磁鉄鉱のつるはし, 磁鉄�
 {% say zundamon23 %}お疲れ様なのだ。{% endsay %}
 {% say null %}コツ コツ コツ コツ（採掘の音）{% endsay %}
 {% say tsumugi3:口=わあ %}……ん？ねえ、センパイが掘ったやつ、勝手にそっちに飛んでってない？{% endsay %}
-{% say zundamon23 %}磁鉄鉱のつるはしなのだ。{% endsay %}
-![木の柄の先に光沢のある黒色のヘッドが付いた磁鉄鉱のつるはし](magnetite-pickaxe.png)
+{% say zundamon23 %}磁鉄鉱のツルハシなのだ。{% endsay %}
+![木の柄の先に光沢のある黒色のヘッドが付いた磁鉄鉱のツルハシ](magnetite-pickaxe.png)
 {% say zundamon23 %}これで掘ると、掘ったものがすぐ手元に来るのだ。{% endsay %}
 {% say tsumugi3:口=わあーい %}えっ！？いちいち拾いに行かなくていいの！？見せて！！！！！！{% endsay %}
 {% say zundamon23 %}え、ちょ——{% endsay %}
@@ -46,8 +46,8 @@ tags: [ ミラージュフェアリー劇場, 磁鉄鉱のつるはし, 磁鉄�
 
 {% say null %}コツ コツ コツ コツ（採掘の音）{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}ただいまー！！{% endsay %}
-![磁鉄鉱のつるはし](magnetite-pickaxe.png)
-{% say tsumugi3 %}――あれ？センパイそのつるはし2本目？{% endsay %}
+![磁鉄鉱のツルハシ](magnetite-pickaxe.png)
+{% say tsumugi3 %}――あれ？センパイそのツルハシ2本目？{% endsay %}
 {% say zundamon23 %}2本目なのだ。つむぎが取ると思ったから多めに磁鉄鉱を持って来ておいたのだ。{% endsay %}
 {% say tsumugi3 %}あはは！バレてた！{% endsay %}
 {% say tsumugi3 %}じゃああーしあっちの方掘ってくるね！{% endsay %}

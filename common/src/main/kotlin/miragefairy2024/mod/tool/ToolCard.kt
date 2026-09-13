@@ -110,7 +110,7 @@ class ToolCard(
         }
 
         private fun pickaxe(path: String, jaName: String, toolMaterialCard: ToolMaterialCard, input: TagKey<Item>, configurator: Configurator<FairyPickaxeConfiguration>) = !ToolCard(
-            "${path}_pickaxe", EnJa("${path.toUpperCamelCase("_", " ")} Pickaxe", "${jaName}のつるはし"),
+            "${path}_pickaxe", EnJa("${path.toUpperCamelCase("_", " ")} Pickaxe", "${jaName}のツルハシ"),
             FairyPickaxeConfiguration(toolMaterialCard).also { configurator.configure(it) }
         ) { registerPickaxeRecipeGeneration(item, input) }
 
@@ -187,7 +187,7 @@ class ToolCard(
         }
 
         val FAIRY_CRYSTAL_PICKAXE = !ToolCard(
-            "fairy_crystal_pickaxe", EnJa("Fairy Crystal Pickaxe", "フェアリークリスタルのつるはし"),
+            "fairy_crystal_pickaxe", EnJa("Fairy Crystal Pickaxe", "フェアリークリスタルのツルハシ"),
             PoemList(2).poem(EnJa("A brain frozen in crystal", "闇を打ち砕く、透き通る心。")),
             FairyPickaxeConfiguration(ToolMaterialCard.FAIRY_CRYSTAL).selfMending(10).obtainFairy(9.0).soulStreamContainable(),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.FAIRY_CRYSTAL.ore!!.tag) }
@@ -222,7 +222,7 @@ class ToolCard(
             FairyBattleAxeConfiguration(ToolMaterialCard.FAIRY_CRYSTAL).selfMending(10).obtainFairy(9.0).soulStreamContainable(),
         ) { registerBattleAxeRecipeGeneration(item, MaterialCard.FAIRY_CRYSTAL.ore!!.tag) }
         val MIRAGIUM_PICKAXE = !ToolCard(
-            "miragium_pickaxe", EnJa("Miragium Pickaxe", "ミラジウムのつるはし"),
+            "miragium_pickaxe", EnJa("Miragium Pickaxe", "ミラジウムのツルハシ"),
             PoemList(3).poem(EnJa("More durable than gold", "妖精の肉体労働")),
             FairyPickaxeConfiguration(ToolMaterialCard.MIRAGIUM).selfMending(20).enchantment(EnchantmentCard.MINE_ALL.key).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).soulStreamContainable(),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.MIRAGIUM_INGOT.ore!!.tag) }
@@ -237,7 +237,7 @@ class ToolCard(
             FairyScytheConfiguration(ToolMaterialCard.LILAGIUM, range = 2).enchantment(EnchantmentCard.STICKY_MINING.key).soulStreamContainable(),
         ) { registerScytheRecipeGeneration(item, MaterialCard.LILAGIUM_INGOT.ore!!.tag) }
         val LUMINITE_PICKAXE = !ToolCard(
-            "luminite_pickaxe", EnJa("Luminite Pickaxe", "ルミナイトのつるはし"),
+            "luminite_pickaxe", EnJa("Luminite Pickaxe", "ルミナイトのツルハシ"),
             PoemList(4).poem(EnJa("Energetic soul extract", "精製された魂の残滓。")),
             FairyPickaxeConfiguration(ToolMaterialCard.LUMINITE).enchantment(Enchantments.EFFICIENCY, 4).enchantment(Enchantments.FORTUNE, 3),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.LUMINITE.ore!!.tag) }
@@ -252,7 +252,7 @@ class ToolCard(
             FairySwordConfiguration(ToolMaterialCard.LUMINITE).enchantment(Enchantments.SHARPNESS, 4).enchantment(Enchantments.LOOTING, 3),
         ) { registerSwordRecipeGeneration(item, MaterialCard.LUMINITE.ore!!.tag) }
         val RESONITE_PICKAXE = !ToolCard(
-            "resonite_pickaxe", EnJa("Resonance Pickaxe", "共鳴のつるはし"),
+            "resonite_pickaxe", EnJa("Resonance Pickaxe", "共鳴のツルハシ"),
             PoemList(5).poem(EnJa("The compound of light and sound", "光と闇の純結晶。")),
             FairyPickaxeConfiguration(ToolMaterialCard.RESONITE).enchantment(EnchantmentCard.MINE_ALL.key).enchantment(Enchantments.EFFICIENCY, 6).soulStreamContainable(),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.RESONITE_INGOT.ore!!.tag) }
@@ -282,7 +282,7 @@ class ToolCard(
             FairyBattleAxeConfiguration(ToolMaterialCard.RESONITE).enchantment(EnchantmentCard.CUT_ALL.key).enchantment(Enchantments.SHARPNESS, 6).soulStreamContainable(),
         ) { registerBattleAxeRecipeGeneration(item, MaterialCard.RESONITE_INGOT.ore!!.tag) }
         val PROMINITE_PICKAXE = !ToolCard(
-            "prominite_pickaxe", EnJa("Prominite Pickaxe", "プロミナイトのつるはし"),
+            "prominite_pickaxe", EnJa("Prominite Pickaxe", "プロミナイトのツルハシ"),
             PoemList(4).poem(EnJa("Refined soul fuel.", "打ち砕かれた魂の残骸。")),
             FairyPickaxeConfiguration(ToolMaterialCard.PROMINITE).fireResistant().enchantment(EnchantmentCard.SMELTING.key),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.PROMINITE.ore!!.tag) }
@@ -312,7 +312,7 @@ class ToolCard(
             FairyScytheConfiguration(ToolMaterialCard.PROMINITE).fireResistant().enchantment(EnchantmentCard.SMELTING.key),
         ) { registerScytheRecipeGeneration(item, MaterialCard.PROMINITE.ore!!.tag) }
         val MIRAGIDIAN_PICKAXE = !ToolCard(
-            "miragidian_pickaxe", EnJa("Miragidian Pickaxe", "ミラジディアンのつるはし"),
+            "miragidian_pickaxe", EnJa("Miragidian Pickaxe", "ミラジディアンのツルハシ"),
             PoemList(4).poem(EnJa("The reinforced will of the substance", "高速度鋼という名の誇り。")),
             FairyPickaxeConfiguration(ToolMaterialCard.MIRAGIDIAN).soulStreamContainable().fireResistant(),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.MIRAGIDIAN.ore!!.tag) }
@@ -342,7 +342,7 @@ class ToolCard(
             FairyKnifeConfiguration(ToolMaterialCard.MIRANAGITE).enchantment(Enchantments.SILK_TOUCH),
         ) { registerKnifeRecipeGeneration(item, MaterialCard.MIRANAGITE.ore!!.tag) }
         val MIRANAGITE_PICKAXE = !ToolCard(
-            "miranagite_pickaxe", EnJa("Miranagite Pickaxe", "蒼天石のつるはし"),
+            "miranagite_pickaxe", EnJa("Miranagite Pickaxe", "蒼天石のツルハシ"),
             PoemList(2).poem(EnJa("Promotes ore recrystallization", "凝集する秩序、蒼穹彩煌が如く。")),
             FairyPickaxeConfiguration(ToolMaterialCard.MIRANAGITE).enchantment(Enchantments.SILK_TOUCH),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.MIRANAGITE.ore!!.tag) }
@@ -392,7 +392,7 @@ class ToolCard(
             } on MaterialCard.MIRANAGITE.ore!!.tag
         }
         val XARPITE_PICKAXE = !ToolCard(
-            "xarpite_pickaxe", EnJa("Xarpite Pickaxe", "紅天石のつるはし"),
+            "xarpite_pickaxe", EnJa("Xarpite Pickaxe", "紅天石のツルハシ"),
             PoemList(2).poem(EnJa("Shears space using astral induction", "鉱石の魂を貪る血塗られた有機質。")),
             FairyPickaxeConfiguration(ToolMaterialCard.XARPITE).enchantment(EnchantmentCard.MINE_ALL.key).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 5).collection().enchantment(EnchantmentCard.STICKY_MINING.key),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.XARPITE.ore!!.tag) }
@@ -402,12 +402,12 @@ class ToolCard(
             FairyAxeConfiguration(ToolMaterialCard.XARPITE).enchantment(EnchantmentCard.CUT_ALL.key).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 5).collection().enchantment(EnchantmentCard.STICKY_MINING.key),
         ) { registerAxeRecipeGeneration(item, MaterialCard.XARPITE.ore!!.tag) }
         val CHAOS_STONE_PICKAXE = !ToolCard(
-            "chaos_stone_pickaxe", EnJa("Chaos Stone Pickaxe", "混沌のつるはし"),
+            "chaos_stone_pickaxe", EnJa("Chaos Stone Pickaxe", "混沌のツルハシ"),
             PoemList(4).poem(EnJa("Is this made of metal? Or clay?", "時空結晶の交点に、古代の産業が芽吹く。")),
             FairyPickaxeConfiguration(ToolMaterialCard.CHAOS_STONE).effective(BlockTags.MINEABLE_WITH_SHOVEL).areaMining(1, 2, 0),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.CHAOS_STONE.ore!!.tag) }
         val CALCULITE_PICKAXE = !ToolCard(
-            "calculite_pickaxe", EnJa("Calculite Pickaxe", "理天石のつるはし"),
+            "calculite_pickaxe", EnJa("Calculite Pickaxe", "理天石のツルハシ"),
             PoemList(5).poem(EnJa("Integrated neural circuits.", "理性の結晶。")),
             FairyPickaxeConfiguration(ToolMaterialCard.CALCULITE).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 2).enchantable(AREA_MINING_ENCHANTABLE_ITEM_TAG),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.CALCULITE.ore!!.tag) }
@@ -445,7 +445,7 @@ class ToolCard(
             } on MaterialCard.CALCULITE.ore!!.tag
         }
         val NOISE_PICKAXE = !ToolCard(
-            "noise_pickaxe", EnJa("Noise Pickaxe", "ノイズのつるはし"),
+            "noise_pickaxe", EnJa("Noise Pickaxe", "ノイズのツルハシ"),
             PoemList(5).poem(EnJa("Demolish the Value.", "無価値の創出。")),
             FairyPickaxeConfiguration(ToolMaterialCard.NOISE).selfMending(100).enchantment(Enchantments.UNBREAKING, 7).enchantment(Enchantments.MENDING).enchantment(Enchantments.INFINITY).effective(MINEABLE_WITH_NOISE_BLOCK_TAG).soulStreamContainable(),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.NOISE.ore!!.tag) }
@@ -470,7 +470,7 @@ class ToolCard(
             FairySwordConfiguration(ToolMaterialCard.NOISE).selfMending(100).enchantment(Enchantments.UNBREAKING, 7).enchantment(Enchantments.MENDING).enchantment(Enchantments.INFINITY).effective(MINEABLE_WITH_NOISE_BLOCK_TAG).soulStreamContainable(),
         ) { registerSwordRecipeGeneration(item, MaterialCard.NOISE.ore!!.tag) }
         val PHANTOM_PICKAXE = !ToolCard(
-            "phantom_pickaxe", EnJa("Phantom Pickaxe", "幻想のつるはし"),
+            "phantom_pickaxe", EnJa("Phantom Pickaxe", "幻想のツルハシ"),
             PoemList(4).poem(EnJa("\"Creation\" is the true power.", "人間が手にした唯一の幻想。")),
             FairyPickaxeConfiguration(ToolMaterialCard.PHANTOM_DROP).selfMending(10).obtainFairy(9.0 * 9.0).enchantment(Enchantments.FORTUNE, 2).enchantment(EnchantmentCard.FORTUNE_UP.key, 1),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.PHANTOM_DROP.ore!!.tag) }
@@ -485,7 +485,7 @@ class ToolCard(
             FairySwordConfiguration(ToolMaterialCard.PHANTOM_DROP).selfMending(10).obtainFairy(9.0 * 9.0).enchantment(Enchantments.FORTUNE, 2).enchantment(EnchantmentCard.FORTUNE_UP.key, 1),
         ) { registerSwordRecipeGeneration(item, MaterialCard.PHANTOM_DROP.ore!!.tag) }
         val HAIMEVISKA_ROSIN_PICKAXE = !ToolCard(
-            "haimeviska_rosin_pickaxe", EnJa("Resin Pickaxe", "涙のつるはし"),
+            "haimeviska_rosin_pickaxe", EnJa("Resin Pickaxe", "涙のツルハシ"),
             PoemList(2).poem(EnJa("Enduring in the stone", "生きた証は石の中。")),
             FairyPickaxeConfiguration(ToolMaterialCard.HAIMEVISKA_ROSIN).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).enchantment(Enchantments.UNBREAKING, 2),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.HAIMEVISKA_ROSIN.ore!!.tag) }
@@ -510,7 +510,7 @@ class ToolCard(
             FairySwordConfiguration(ToolMaterialCard.HAIMEVISKA_ROSIN).enchantment(Enchantments.SWEEPING_EDGE, 3).collection().enchantment(Enchantments.UNBREAKING, 2),
         ) { registerSwordRecipeGeneration(item, MaterialCard.HAIMEVISKA_ROSIN.ore!!.tag) }
         val FAIRY_PLASTIC_PICKAXE = !ToolCard(
-            "fairy_plastic_pickaxe", EnJa("Fairy Plastic Pickaxe", "妖精のプラスチックのつるはし"),
+            "fairy_plastic_pickaxe", EnJa("Fairy Plastic Pickaxe", "妖精のプラスチックのツルハシ"),
             PoemList(4).poem(EnJa("Nectar turns into fairies underground", "地脈を流れる大樹の血。")),
             FairyPickaxeConfiguration(ToolMaterialCard.FAIRY_PLASTIC).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).obtainFairy(81.0),
         ) { registerPickaxeRecipeGeneration(item, MaterialCard.FAIRY_PLASTIC.ore!!.tag) }
