@@ -8729,7 +8729,7 @@
         "effects": [
           {
             "effect": {
-              "duration": 2400,
+              "duration": 12000,
               "id": "miragefairy2024:sticky_mining",
               "show_icon": true
             }

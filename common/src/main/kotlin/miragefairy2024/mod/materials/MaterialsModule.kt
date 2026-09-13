@@ -609,7 +609,7 @@ class MaterialCard(
                 FoodProperties.Builder()
                     .nutrition(2)
                     .saturationModifier(0.3F)
-                    .effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 30), 1.0F)
+                    .effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60 * 5 + 20 * 10), 1.0F)
                     .alwaysEdible()
                     .build()
             },
@@ -634,7 +634,7 @@ class MaterialCard(
                 FoodProperties.Builder()
                     .nutrition(1)
                     .saturationModifier(0.1F)
-                    .effect(MobEffectInstance(stickyMiningStatusEffect.awaitHolder(), 20 * 10), 1.0F)
+                    .effect(MobEffectInstance(stickyMiningStatusEffect.awaitHolder(), 20 * 60 * 5), 1.0F)
                     .build()
             },
             creator = { FoodItem(it) },
@@ -1527,7 +1527,7 @@ class MaterialCard(
             "plastic_tree_sap_kohakuto", "Plastic Tree Sap Kohakuto", "プラノキの樹液の琥珀糖",
             PoemList(1).poem("Elastic organic polymer.", "凍てつく砂糖の宿る石。"),
             PLASTIC_TREE_SAP.item,
-            { it.effect(MobEffectInstance(stickyMiningStatusEffect.awaitHolder(), 20 * 60 * 2), 1.0F) },
+            { it.effect(MobEffectInstance(stickyMiningStatusEffect.awaitHolder(), 20 * 60 * 30), 1.0F) },
         )
         val HAIMEVISKA_SAP_KOHAKUTO = createKohakuto(
             "haimeviska_sap_kohakuto", "Haimeviska Sap Kohakuto", "ハイメヴィスカの樹液の琥珀糖",
@@ -1545,7 +1545,7 @@ class MaterialCard(
             "merrrria_drop_kohakuto", "Merrrria Drop Kohakuto", "月のしずくの琥珀糖",
             PoemList(3).poem("Interaction with the shine aura.", "妖精の目に映る世界。"),
             MERRRRIA_DROP.item,
-            { it.effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60 * 10), 1.0F) },
+            { it.effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60 * 30 + 20 * 10), 1.0F) },
         )
         val PHANTOM_DROP_KOHAKUTO = createKohakuto(
             "phantom_drop_kohakuto", "Phantom Drop Kohakuto", "幻想の雫の琥珀糖",
