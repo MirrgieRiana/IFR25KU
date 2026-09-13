@@ -17,11 +17,17 @@ import net.minecraft.world.entity.player.Player
 
 val experienceStatusEffect = Registration(BuiltInRegistries.MOB_EFFECT, MirageFairy2024.identifier("experience")) { ExperienceStatusEffect() }
 
+val stickyMiningStatusEffect = Registration(BuiltInRegistries.MOB_EFFECT, MirageFairy2024.identifier("sticky_mining")) { StickyMiningStatusEffect() }
+
 context(ModContext)
 fun initStatusEffectModule() {
     experienceStatusEffect.register()
     en { experienceStatusEffect().descriptionId to "Experience" }
     ja { experienceStatusEffect().descriptionId to "経験値獲得" }
+
+    stickyMiningStatusEffect.register()
+    en { stickyMiningStatusEffect().descriptionId to "Sticky Mining" }
+    ja { stickyMiningStatusEffect().descriptionId to "粘着採掘" }
 }
 
 class ExperienceStatusEffect : MobEffect(MobEffectCategory.BENEFICIAL, 0x2FFF00) {
@@ -53,3 +59,5 @@ class ExperienceStatusEffect : MobEffect(MobEffectCategory.BENEFICIAL, 0x2FFF00)
         return true
     }
 }
+
+class StickyMiningStatusEffect : MobEffect(MobEffectCategory.BENEFICIAL, 0x7FB238)

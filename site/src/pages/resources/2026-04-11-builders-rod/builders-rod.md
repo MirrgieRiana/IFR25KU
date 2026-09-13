@@ -55,7 +55,7 @@ tags: [ ミラージュフェアリー劇場, ビルダーズロッド, 建築, 
 {% space %}
 
 {% say tsumugi3 %}こっちも……行き止まりじゃん……？？？{% endsay %}
-{% say tsumugi3 %}……あれ？あーしつるはし持って来てなかったっけ……？あれあれ？？{% endsay %}
+{% say tsumugi3 %}……あれ？あーしツルハシ持って来てなかったっけ……？あれあれ？？{% endsay %}
 {% say tsumugi3 %}……{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}センパーイ！！出られないんだけど！！{% endsay %}
 {% say zundamon23 %}どうしたのだ？{% endsay %}

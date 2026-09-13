@@ -44,9 +44,6 @@ class HarvestNotation(val seed: ItemStack, val crops: List<Crop>) {
         }
     }
 
-    /** 登録の時点ではまだアイテムが存在しないため、[Crop] を作る材料を持ち回るのだ～🌱 */
-    class CropConfiguration(val item: () -> Item, val productionType: Component?)
-
     companion object {
         val CODEC: Codec<HarvestNotation> = RecordCodecBuilder.create { instance ->
             instance.group(
@@ -67,11 +64,11 @@ class HarvestNotation(val seed: ItemStack, val crops: List<Crop>) {
 }
 
 context(ModContext)
-fun (() -> Item).registerHarvestNotation(vararg drops: HarvestNotation.CropConfiguration) = this.registerHarvestNotation(drops.asIterable())
+fun (() -> Item).registerHarvestNotation(vararg crops: () -> HarvestNotation.Crop) = this.registerHarvestNotation(crops.asIterable())
 
 context(ModContext)
-fun (() -> Item).registerHarvestNotation(drops: Iterable<HarvestNotation.CropConfiguration>) = ModEvents.onInitialize {
-    HarvestNotation.register(this().getIdentifier(), HarvestNotation(this().createItemStack(), drops.map { HarvestNotation.Crop(it.item().createItemStack(), it.productionType) }))
+fun (() -> Item).registerHarvestNotation(crops: Iterable<() -> HarvestNotation.Crop>) = ModEvents.onInitialize {
+    HarvestNotation.register(this().getIdentifier(), HarvestNotation(this().createItemStack(), crops.map { it() }))
 }
 
 context(ModContext)
