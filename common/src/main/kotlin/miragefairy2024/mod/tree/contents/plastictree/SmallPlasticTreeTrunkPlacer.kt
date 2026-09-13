@@ -22,7 +22,7 @@ object SmallPlasticTreeTrunkPlacerCard {
     val type: TrunkPlacerType<SmallPlasticTreeTrunkPlacer> = TrunkPlacerType(codec)
 }
 
-object SmallPlasticTreeTrunkPlacer : TrunkPlacer(8, 4, 0) {
+object SmallPlasticTreeTrunkPlacer : TrunkPlacer(6, 2, 0) {
     private const val LOWEST_LEAF_OFFSET_Y = 2
 
     // 葉は付着点を中心とする3x3で置かれるから、付着点が幹から両軸とも2ブロック離れると、幹と角でしか接さなくなって葉が崩れちゃうのだ～🌱
@@ -32,7 +32,7 @@ object SmallPlasticTreeTrunkPlacer : TrunkPlacer(8, 4, 0) {
 
     override fun type() = SmallPlasticTreeTrunkPlacerCard.type
 
-    // 枝を持たない1x1の主幹を建てて、その周りに葉をらせん状に付けるのだ～🌱
+    // 枝を持たない1x1の主幹を建てて、その周りに、方角を大きく変えながら葉を付けるのだ～🌱
     override fun placeTrunk(
         level: LevelSimulatedReader,
         blockSetter: BiConsumer<BlockPos, BlockState>,
@@ -70,7 +70,7 @@ object SmallPlasticTreeTrunkPlacer : TrunkPlacer(8, 4, 0) {
             )
             foliageAttachments += FoliagePlacer.FoliageAttachment(leafBlockPos, 0, false)
 
-            angle += Math.toRadians(70.0)
+            angle += Math.toRadians(90.0 + 180.0 * random.nextDouble())
         }
 
         return foliageAttachments

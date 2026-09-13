@@ -64,7 +64,9 @@ object ObtainFairyToolEffectType : DoubleAddToolEffectType<ToolConfiguration>() 
 
             // 入手
             val fairyItemStack = result.motif.createFairyItemStack(condensation = result.condensation, count = result.count)
-            entity.level().addFreshEntity(ItemEntity(entity.level(), entity.x, entity.y, entity.z, fairyItemStack))
+            withStickyMining(entity.level(), entity.boundingBox, attacker, attacker.mainHandItem) {
+                entity.level().addFreshEntity(ItemEntity(entity.level(), entity.x, entity.y, entity.z, fairyItemStack))
+            }
 
             // 妖精召喚履歴に追加
             attacker.fairyHistoryContainer.mutate { it[result.motif] += result.condensation * result.count.toBigInteger() }
