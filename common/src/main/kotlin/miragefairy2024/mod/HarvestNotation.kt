@@ -24,12 +24,18 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 
-class HarvestNotation(val seed: ItemStack, val crops: List<ItemStack>) {
+class HarvestNotation(val seed: ItemStack, val crops: List<Crop>) {
+    class Crop(val itemStack: ItemStack) {
+        companion object {
+            val CODEC: Codec<Crop> = ItemStack.CODEC.xmap(::Crop, Crop::itemStack)
+        }
+    }
+
     companion object {
         val CODEC: Codec<HarvestNotation> = RecordCodecBuilder.create { instance ->
             instance.group(
                 ItemStack.CODEC.fieldOf("Seed").forGetter { it.seed },
-                ItemStack.CODEC.listOf().fieldOf("Crops").forGetter { it.crops },
+                Crop.CODEC.listOf().fieldOf("Crops").forGetter { it.crops },
             ).apply(instance, ::HarvestNotation)
         }
 
@@ -49,7 +55,7 @@ fun (() -> Item).registerHarvestNotation(vararg drops: () -> Item) = this.regist
 
 context(ModContext)
 fun (() -> Item).registerHarvestNotation(drops: Iterable<() -> Item>) = ModEvents.onInitialize {
-    HarvestNotation.register(this().getIdentifier(), HarvestNotation(this().createItemStack(), drops.map { it().createItemStack() }))
+    HarvestNotation.register(this().getIdentifier(), HarvestNotation(this().createItemStack(), drops.map { HarvestNotation.Crop(it().createItemStack()) }))
 }
 
 context(ModContext)
@@ -63,7 +69,7 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
     override fun getIcon() = MaterialCard.VEROPEDA_BERRIES.item().createItemStack()
     override fun getRecipeCodec(registryAccess: RegistryAccess) = HarvestNotation.CODEC
     override fun getInputs(recipeEntry: RecipeEntry<HarvestNotation>) = listOf(Input(recipeEntry.recipe.seed.toIngredientStack(), true))
-    override fun getOutputs(recipeEntry: RecipeEntry<HarvestNotation>) = recipeEntry.recipe.crops
+    override fun getOutputs(recipeEntry: RecipeEntry<HarvestNotation>) = recipeEntry.recipe.crops.map { it.itemStack }
 
     override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<HarvestNotation>> {
         return HarvestNotation.getAll().map { (id, harvestNotation) ->
@@ -78,7 +84,7 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
             view += ArrowView()
             view += XSpaceView(2)
             recipeEntry.recipe.crops.forEach { crop ->
-                view += OutputSlotView(crop)
+                view += OutputSlotView(crop.itemStack)
             }
         }
     }
