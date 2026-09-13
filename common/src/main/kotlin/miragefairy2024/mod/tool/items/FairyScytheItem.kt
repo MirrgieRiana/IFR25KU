@@ -2,6 +2,9 @@ package miragefairy2024.mod.tool.items
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
+import miragefairy2024.mod.common.BlockPosesOutline
+import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
+import miragefairy2024.mod.common.RenderBlockPosesOutlineListenerItem
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.SCYTHE_ITEM_TAG
 import miragefairy2024.mod.enchantment.contents.withStickyMining
@@ -91,7 +94,7 @@ class FairyScytheItem(override val configuration: FairyScytheConfiguration, rang
 
 }
 
-open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, private val range: Int, settings: Properties) : SwordItem(material, settings.attributes(createAttributes(material, attackDamage.toInt(), attackSpeed))), PostTryPickHandlerItem {
+open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, private val range: Int, settings: Properties) : SwordItem(material, settings.attributes(createAttributes(material, attackDamage.toInt(), attackSpeed))), PostTryPickHandlerItem, RenderBlockPosesOutlineListenerItem {
     companion object {
         val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("scythe").toLanguageKey()}.description" }, "Perform area harvesting when used %s", "使用時、範囲収穫 %s")
     }
@@ -99,6 +102,54 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
     override fun appendHoverText(stack: ItemStack, context: TooltipContext, tooltipComponents: MutableList<Component>, tooltipFlag: TooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
         tooltipComponents += text { DESCRIPTION_TRANSLATION(range.toRomanText()).yellow }
+    }
+
+    private fun getHarvestHandler(level: Level, blockPos: BlockPos): ((Player, ItemStack, BlockHitResult) -> Boolean)? {
+        val targetBlockState = level.getBlockState(blockPos)
+        return when (val targetBlock = targetBlockState.block) {
+            is MagicPlantBlock -> {
+                { user, toolItemStack, _ ->
+                    targetBlock.tryPick(level, blockPos, user, toolItemStack, true, false)
+                }
+            }
+
+            is SweetBerryBushBlock, is CaveVines -> {
+                { user, _, blockHitResult ->
+                    val offset = blockPos.subtract(blockHitResult.blockPos)
+                    val result = targetBlockState.useWithoutItem(level, user, BlockHitResult(blockHitResult.location.add(offset.x.toDouble(), offset.y.toDouble(), offset.z.toDouble()), blockHitResult.direction, blockPos, false))
+                    result.consumesAction()
+                }
+            }
+
+            else -> null
+        }
+    }
+
+    override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): BlockPosesOutline? {
+        val level = context.level
+        if (context.player.isShiftKeyDown) return null // スニーク中は範囲収穫を行わないのだ～🌱
+
+        val blockHitResult = getPlayerPOVHitResult(level, context.player, ClipContext.Fluid.NONE)
+        val blockPos = blockHitResult.blockPos
+
+        /**
+         * 狙ったブロックを中心とする立方体のうち、遮蔽を越えずに辿り着けて、かつ収穫の対象になりうる位置を返すのだ～🌱
+         * 範囲の求め方は、[miragefairy2024.mod.tool.items.ScytheItem.use]と揃えるのだ～🌱
+         * ただし、実際に収穫が起こるかどうかは対象のブロックに尋ねるまで分からないから、まだ実っていないものも含むのだ～🌱
+         */
+        fun getHarvestBlockPoses(): Set<BlockPos> {
+            val region = BlockBox.of(blockPos.offset(-range, -range, -range), blockPos.offset(range, range, range))
+            return spaceVisitor(level, blockPos) { it in region }
+                .map { it.second }
+                .filter { getHarvestHandler(level, it) != null }
+                .toSet()
+        }
+
+        return BlockPosesOutline(
+            blockPos.relative(blockHitResult.direction),
+            getHarvestBlockPoses(),
+            0x00FF00,
+        )
     }
 
     override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
@@ -111,17 +162,10 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
             var effective = false
             withStickyMining(level, blockPos.toBox().inflate(range.toDouble()), user, itemStack) {
                 spaceVisitor(level, blockPos) { it in region }.forEach { (_, targetBlockPos) ->
-                    val targetBlockState = level.getBlockState(targetBlockPos)
-                    when (val targetBlock = targetBlockState.block) {
-                        is MagicPlantBlock -> {
-                            val result = targetBlock.tryPick(level, targetBlockPos, user, itemStack, true, false)
-                            if (result) effective = true
-                        }
-
-                        is SweetBerryBushBlock, is CaveVines -> {
-                            val offset = targetBlockPos.subtract(blockPos)
-                            val result = targetBlockState.useWithoutItem(level, user, BlockHitResult(blockHitResult.location.add(offset.x.toDouble(), offset.y.toDouble(), offset.z.toDouble()), blockHitResult.direction, targetBlockPos, false))
-                            if (result.consumesAction()) effective = true
+                    val handler = getHarvestHandler(level, targetBlockPos)
+                    if (handler != null) {
+                        if (handler(user, itemStack, blockHitResult)) {
+                            effective = true
                         }
                     }
                 }
