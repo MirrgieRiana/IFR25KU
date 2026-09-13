@@ -1525,7 +1525,7 @@ class MaterialCard(
         )
         val PLASTIC_TREE_SAP_KOHAKUTO = createKohakuto(
             "plastic_tree_sap_kohakuto", "Plastic Tree Sap Kohakuto", "プラノキの樹液の琥珀糖",
-            PoemList(1).poem("Elastic organic polymer.", "凍てつく砂糖の宿る石。"),
+            PoemList(1).poem("Elastic organic polymer.", "粘つく砂糖の宿る石。"),
             PLASTIC_TREE_SAP.item,
             { it.effect(MobEffectInstance(stickyMiningStatusEffect.awaitHolder(), 20 * 60 * 30), 1.0F) },
         )
