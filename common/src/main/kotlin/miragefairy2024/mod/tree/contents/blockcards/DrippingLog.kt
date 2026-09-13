@@ -9,6 +9,7 @@ import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.util.ItemLootPoolEntry
 import miragefairy2024.util.LootPool
 import miragefairy2024.util.LootTable
+import miragefairy2024.util.createItemStack
 import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.registerLootTableGeneration
@@ -47,7 +48,7 @@ class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration, log: () ->
                 provider.applyExplosionDecay(block(), this)
             }
         }
-        item.registerHarvestNotation(HarvestNotation.CropConfiguration(sap, null), HarvestNotation.CropConfiguration(rosin, text { guiRareDropTranslation() }))
+        item.registerHarvestNotation({ HarvestNotation.Crop(sap().createItemStack(), null) }, { HarvestNotation.Crop(rosin().createItemStack(), text { guiRareDropTranslation() }) })
 
     }
 }

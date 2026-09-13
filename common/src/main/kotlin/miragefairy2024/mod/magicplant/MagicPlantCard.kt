@@ -19,6 +19,7 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.HumidityCategory
 import miragefairy2024.util.Registration
 import miragefairy2024.util.TemperatureCategory
+import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.register
@@ -69,7 +70,7 @@ abstract class MagicPlantCard<B : MagicPlantBlock> {
     open val randomTraitChances: Map<Trait, Double> = mapOf()
 
     open val baseGrowth = 0.03
-    abstract val drops: List<HarvestNotation.CropConfiguration>
+    abstract val drops: List<() -> HarvestNotation.Crop>
 
     open fun createAdvancement(identifier: ResourceLocation): AdvancementCard? = null
     val advancement = createAdvancement(blockIdentifier)

@@ -35,7 +35,7 @@ enum class SimplePassiveSkillConditionCard(path: String, enName: String, jaName:
     IN_NETHER("in_nether", "In Nether", "ネザー", { it.level.getBiome(it.blockPos) isIn ConventionalBiomeTags.IS_NETHER }),
     NOT_IN_NETHER("not_in_nether", "Not In Nether", "ネザー外", { it.level.getBiome(it.blockPos) isNotIn ConventionalBiomeTags.IS_NETHER }),
 
-    PICKAXE("pickaxe", "Pickaxe", "つるはし", { it.player.mainHandItem isIn ItemTags.PICKAXES }),
+    PICKAXE("pickaxe", "Pickaxe", "ツルハシ", { it.player.mainHandItem isIn ItemTags.PICKAXES }),
     AXE("axe", "Axe", "斧", { it.player.mainHandItem isIn ItemTags.AXES }),
     SHOVEL("shovel", "Shovel", "シャベル", { it.player.mainHandItem isIn ItemTags.SHOVELS }),
     HOE("hoe", "Hoe", "クワ", { it.player.mainHandItem isIn ItemTags.HOES }),

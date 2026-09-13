@@ -56,7 +56,7 @@ object MirageFlowerCard : AbstractMirageFlowerCard<MirageFlowerBlock>() {
     override val blockCodec = MirageFlowerBlock.CODEC
     override fun createBlock() = MirageFlowerBlock(createCommonSettings().instabreak().mapColor(MapColor.DIAMOND).sound(SoundType.GLASS))
 
-    override val drops = listOf(HarvestNotation.CropConfiguration(MaterialCard.MIRAGE_FLOUR.item, TraitEffectKeyCard.FRUITS_PRODUCTION.traitEffectKey.name), HarvestNotation.CropConfiguration(MaterialCard.MIRAGE_LEAVES.item, TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name), HarvestNotation.CropConfiguration(MaterialCard.FAIRY_CRYSTAL.item, TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name))
+    override val drops = listOf({ HarvestNotation.Crop(MaterialCard.MIRAGE_FLOUR.item().createItemStack(), TraitEffectKeyCard.FRUITS_PRODUCTION.traitEffectKey.name) }, { HarvestNotation.Crop(MaterialCard.MIRAGE_LEAVES.item().createItemStack(), TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name) }, { HarvestNotation.Crop(MaterialCard.FAIRY_CRYSTAL.item().createItemStack(), TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name) })
     override fun getFruitDrops(count: Int, random: RandomSource) = getMirageFlour(count, random)
     override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.MIRAGE_LEAVES.item().createItemStack(count))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.FAIRY_CRYSTAL.item().createItemStack(count))

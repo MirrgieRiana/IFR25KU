@@ -65,7 +65,7 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
         createCuboidShape(7.0, 16.0),
     )
 
-    override val drops = listOf(HarvestNotation.CropConfiguration(MaterialCard.MERRRRIA_DROP.item, TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name))
+    override val drops = listOf({ HarvestNotation.Crop(MaterialCard.MERRRRIA_DROP.item().createItemStack(), TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name) })
 
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.MERRRRIA_DROP.item().createItemStack(count))
 
