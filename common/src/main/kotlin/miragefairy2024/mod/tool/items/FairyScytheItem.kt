@@ -105,6 +105,27 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
         tooltipComponents += text { DESCRIPTION_TRANSLATION(range.toRomanText()).yellow }
     }
 
+    private fun getHarvestHandler(level: Level, blockPos: BlockPos): ((Player, ItemStack, BlockHitResult) -> Boolean)? {
+        val targetBlockState = level.getBlockState(blockPos)
+        return when (val targetBlock = targetBlockState.block) {
+            is MagicPlantBlock -> {
+                { user, toolItemStack, _ ->
+                    targetBlock.tryPick(level, blockPos, user, toolItemStack, true, false)
+                }
+            }
+
+            is SweetBerryBushBlock, is CaveVines -> {
+                { user, toolItemStack, blockHitResult ->
+                    val offset = blockPos.subtract(blockPos)
+                    val result = targetBlockState.useWithoutItem(level, user, BlockHitResult(blockHitResult.location.add(offset.x.toDouble(), offset.y.toDouble(), offset.z.toDouble()), blockHitResult.direction, blockPos, false))
+                    result.consumesAction()
+                }
+            }
+
+            else -> null
+        }
+    }
+
     override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): BlockPosesOutline? {
         val level = context.level
         if (context.player.isShiftKeyDown) return null // スニーク中は範囲収穫を行わないのだ～🌱
@@ -122,12 +143,7 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
             val region = BlockBox.of(hitBlockPos.offset(-range, -range, -range), hitBlockPos.offset(range, range, range))
             return spaceVisitor(level, hitBlockPos) { it in region }
                 .map { it.second }
-                .filter {
-                    when (level.getBlockState(it).block) {
-                        is MagicPlantBlock, is SweetBerryBushBlock, is CaveVines -> true
-                        else -> false
-                    }
-                }
+                .filter { getHarvestHandler(level, it) != null }
                 .toSet()
         }
 
@@ -148,17 +164,10 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
             var effective = false
             withStickyMining(level, blockPos.toBox().inflate(range.toDouble()), user, itemStack) {
                 spaceVisitor(level, blockPos) { it in region }.forEach { (_, targetBlockPos) ->
-                    val targetBlockState = level.getBlockState(targetBlockPos)
-                    when (val targetBlock = targetBlockState.block) {
-                        is MagicPlantBlock -> {
-                            val result = targetBlock.tryPick(level, targetBlockPos, user, itemStack, true, false)
-                            if (result) effective = true
-                        }
-
-                        is SweetBerryBushBlock, is CaveVines -> {
-                            val offset = targetBlockPos.subtract(blockPos)
-                            val result = targetBlockState.useWithoutItem(level, user, BlockHitResult(blockHitResult.location.add(offset.x.toDouble(), offset.y.toDouble(), offset.z.toDouble()), blockHitResult.direction, targetBlockPos, false))
-                            if (result.consumesAction()) effective = true
+                    val handler = getHarvestHandler(level, targetBlockPos)
+                    if (handler != null) {
+                        if (handler(user, itemStack, blockHitResult)) {
+                            effective = true
                         }
                     }
                 }
