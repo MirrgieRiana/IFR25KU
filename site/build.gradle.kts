@@ -323,9 +323,8 @@ val installJekyllBundle = tasks.register<Exec>("installJekyllBundle") {
 
 val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     group = "other"
-    dependsOn(generateOgImages)
     from("src/main/resources")
-    from(layout.buildDirectory.dir("ogImages")) {
+    from(generateOgImages) {
         include("**/*.webp")
     }
     from("src/external/resources")
