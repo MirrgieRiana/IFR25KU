@@ -105,33 +105,35 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
         tooltipComponents += text { DESCRIPTION_TRANSLATION(range.toRomanText()).yellow }
     }
 
-    /**
-     * 狙ったブロックを中心とする立方体のうち、遮蔽を越えずに辿り着けて、かつ収穫の対象になりうる位置を返すのだ～🌱
-     * 範囲の求め方も、対象とするブロックの種類も、[miragefairy2024.mod.tool.items.ScytheItem.use]と揃えるのだ～🌱
-     * ただし、実際に収穫が起こるかどうかは対象のブロックに尋ねるまで分からないから、まだ実っていないものも含むのだ～🌱
-     */
-    private fun getHarvestBlockPoses(level: Level, blockPos: BlockPos): Set<BlockPos> {
-        val region = BlockBox.of(blockPos.offset(-range, -range, -range), blockPos.offset(range, range, range))
-        return spaceVisitor(level, blockPos) { it in region }
-            .map { it.second }
-            .filter {
-                when (level.getBlockState(it).block) {
-                    is MagicPlantBlock, is SweetBerryBushBlock, is CaveVines -> true
-                    else -> false
-                }
-            }
-            .toSet()
-    }
-
     override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): BlockPosesOutline? {
+        val level = context.level
         if (context.player.isShiftKeyDown) return null // スニーク中は範囲収穫を行わないのだ～🌱
 
-        val blockHitResult = getPlayerPOVHitResult(context.level, context.player, ClipContext.Fluid.NONE)
+        val blockHitResult = getPlayerPOVHitResult(level, context.player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return null // ブロックをタゲっていない
+        val hitBlockPos = blockHitResult.blockPos
+
+        /**
+         * 狙ったブロックを中心とする立方体のうち、遮蔽を越えずに辿り着けて、かつ収穫の対象になりうる位置を返すのだ～🌱
+         * 範囲の求め方も、対象とするブロックの種類も、[miragefairy2024.mod.tool.items.ScytheItem.use]と揃えるのだ～🌱
+         * ただし、実際に収穫が起こるかどうかは対象のブロックに尋ねるまで分からないから、まだ実っていないものも含むのだ～🌱
+         */
+        fun getHarvestBlockPoses(): Set<BlockPos> {
+            val region = BlockBox.of(hitBlockPos.offset(-range, -range, -range), hitBlockPos.offset(range, range, range))
+            return spaceVisitor(level, hitBlockPos) { it in region }
+                .map { it.second }
+                .filter {
+                    when (level.getBlockState(it).block) {
+                        is MagicPlantBlock, is SweetBerryBushBlock, is CaveVines -> true
+                        else -> false
+                    }
+                }
+                .toSet()
+        }
 
         return BlockPosesOutline(
-            blockHitResult.blockPos.relative(blockHitResult.direction),
-            getHarvestBlockPoses(context.level, blockHitResult.blockPos),
+            hitBlockPos.relative(blockHitResult.direction),
+            getHarvestBlockPoses(),
             0x00FF00,
         )
     }
