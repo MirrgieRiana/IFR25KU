@@ -628,7 +628,7 @@ class MaterialCard(
         )
         val PLASTIC_TREE_SAP: MaterialCard = !MaterialCard(
             "plastic_tree_sap", "Plastic Tree Sap", "プラノキの樹液",
-            PoemList(1).poem("TODO", "TODO"), // TODO 粘着採掘を言い表すポエムを記述してください。
+            PoemList(1).poem("Catalytic sugar cleavage.", "粘り強い、その甘さ。"),
             fuelValue = 200,
             foodComponentCreator = {
                 FoodProperties.Builder()
