@@ -47,7 +47,6 @@ import net.minecraft.world.level.block.CaveVines
 import net.minecraft.world.level.block.SweetBerryBushBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
-import net.minecraft.world.phys.HitResult
 
 open class FairyScytheConfiguration(
     override val toolMaterialCard: ToolMaterialCard,
@@ -131,7 +130,6 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
         if (context.player.isShiftKeyDown) return null // スニーク中は範囲収穫を行わないのだ～🌱
 
         val blockHitResult = getPlayerPOVHitResult(level, context.player, ClipContext.Fluid.NONE)
-        if (blockHitResult.type != HitResult.Type.BLOCK) return null // ブロックをタゲっていない
         val hitBlockPos = blockHitResult.blockPos
 
         /**
