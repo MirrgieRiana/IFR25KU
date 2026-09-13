@@ -130,7 +130,7 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
         if (context.player.isShiftKeyDown) return null // スニーク中は範囲収穫を行わないのだ～🌱
 
         val blockHitResult = getPlayerPOVHitResult(level, context.player, ClipContext.Fluid.NONE)
-        val hitBlockPos = blockHitResult.blockPos
+        val blockPos = blockHitResult.blockPos
 
         /**
          * 狙ったブロックを中心とする立方体のうち、遮蔽を越えずに辿り着けて、かつ収穫の対象になりうる位置を返すのだ～🌱
@@ -138,15 +138,15 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
          * ただし、実際に収穫が起こるかどうかは対象のブロックに尋ねるまで分からないから、まだ実っていないものも含むのだ～🌱
          */
         fun getHarvestBlockPoses(): Set<BlockPos> {
-            val region = BlockBox.of(hitBlockPos.offset(-range, -range, -range), hitBlockPos.offset(range, range, range))
-            return spaceVisitor(level, hitBlockPos) { it in region }
+            val region = BlockBox.of(blockPos.offset(-range, -range, -range), blockPos.offset(range, range, range))
+            return spaceVisitor(level, blockPos) { it in region }
                 .map { it.second }
                 .filter { getHarvestHandler(level, it) != null }
                 .toSet()
         }
 
         return BlockPosesOutline(
-            hitBlockPos.relative(blockHitResult.direction),
+            blockPos.relative(blockHitResult.direction),
             getHarvestBlockPoses(),
             0x00FF00,
         )
