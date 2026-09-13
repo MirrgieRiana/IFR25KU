@@ -335,7 +335,8 @@ class MaterialCard(
                 FoodProperties.Builder()
                     .nutrition(2)
                     .saturationModifier(0.3F)
-                    .effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 60), 1.0F)
+                    .effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 30), 1.0F)
+                    .effect(MobEffectInstance(MobEffects.LUCK, 20 * 60 * 5), 1.0F)
                     .alwaysEdible()
                     .build()
             },
@@ -1549,7 +1550,11 @@ class MaterialCard(
             "phantom_drop_kohakuto", "Phantom Drop Kohakuto", "幻想の雫の琥珀糖",
             PoemList(4).poem("The power to give shape to hope.", "希望の結晶。"),
             PHANTOM_DROP.item,
-            { it.effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 60, 1), 1.0F) },
+            {
+                it
+                    .effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 30, 1), 1.0F)
+                    .effect(MobEffectInstance(MobEffects.LUCK, 20 * 60 * 30, 1), 1.0F)
+            },
         )
     }
 
