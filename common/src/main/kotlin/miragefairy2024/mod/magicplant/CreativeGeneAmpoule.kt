@@ -28,6 +28,7 @@ import miragefairy2024.util.string
 import miragefairy2024.util.style
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.or
+import mirrg.kotlin.hydrogen.argbOf
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.world.InteractionHand
@@ -62,7 +63,7 @@ fun initCreativeGeneAmpoule() {
         card.item.registerModelGeneration(createCreativeGeneAmpouleModel())
         card.item.registerColorProvider { itemStack, tintIndex ->
             if (tintIndex == 1) {
-                itemStack.getTraitStacks().or { return@registerColorProvider 0xFFFFFFFF.toInt() }.traitStackList.firstOrNull().or { return@registerColorProvider 0xFFFFFFFF.toInt() }.trait.primaryEffect.color or 0xFF000000.toInt()
+                argbOf(0xFF, itemStack.getTraitStacks().or { return@registerColorProvider 0xFFFFFFFF.toInt() }.traitStackList.firstOrNull().or { return@registerColorProvider 0xFFFFFFFF.toInt() }.trait.primaryEffect.color)
             } else {
                 0xFFFFFFFF.toInt()
             }

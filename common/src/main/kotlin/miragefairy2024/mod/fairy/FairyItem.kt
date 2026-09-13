@@ -80,6 +80,7 @@ import miragefairy2024.util.times
 import miragefairy2024.util.toHolderSetCodec
 import miragefairy2024.util.toIngredientStack
 import miragefairy2024.util.yellow
+import mirrg.kotlin.hydrogen.argbOf
 import mirrg.kotlin.hydrogen.formatAs
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer
@@ -160,10 +161,10 @@ fun initFairyItem() {
             } else {
                 val motif = itemStack.getFairyMotif() ?: return@registerColorProvider 0xFFFF00FF.toInt()
                 when (tintIndex) {
-                    0 -> motif.skinColor or 0xFF000000.toInt()
-                    1 -> motif.frontColor or 0xFF000000.toInt()
-                    2 -> motif.backColor or 0xFF000000.toInt()
-                    3 -> motif.hairColor or 0xFF000000.toInt()
+                    0 -> argbOf(0xFF, motif.skinColor)
+                    1 -> argbOf(0xFF, motif.frontColor)
+                    2 -> argbOf(0xFF, motif.backColor)
+                    3 -> argbOf(0xFF, motif.hairColor)
                     else -> 0xFFFF00FF.toInt()
                 }
             }
