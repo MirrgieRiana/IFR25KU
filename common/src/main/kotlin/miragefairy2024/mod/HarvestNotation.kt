@@ -27,6 +27,7 @@ import net.minecraft.network.chat.ComponentSerialization
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import java.util.Optional
 
 class HarvestNotation(val seed: ItemStack, val crops: List<Crop>) {
     /**
@@ -34,12 +35,14 @@ class HarvestNotation(val seed: ItemStack, val crops: List<Crop>) {
      * 判定という概念を持たない収穫物では、[productionType] が null なのだ～🌱
      */
     class Crop(val itemStack: ItemStack, val productionType: Component?) {
+        private constructor(itemStack: ItemStack, productionType: Optional<Component>) : this(itemStack, productionType.orNull)
+
         companion object {
             val CODEC: Codec<Crop> = RecordCodecBuilder.create { instance ->
                 instance.group(
                     ItemStack.CODEC.fieldOf("ItemStack").forGetter { it.itemStack },
                     ComponentSerialization.CODEC.optionalFieldOf("ProductionType").forGetter { it.productionType.toOptional() },
-                ).apply(instance) { itemStack, productionType -> Crop(itemStack, productionType.orNull) }
+                ).apply(instance, ::Crop)
             }
         }
     }
