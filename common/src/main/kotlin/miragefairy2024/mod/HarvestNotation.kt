@@ -19,15 +19,31 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.toIngredientStack
+import mirrg.kotlin.java.hydrogen.orNull
+import mirrg.kotlin.java.hydrogen.toOptional
 import net.minecraft.core.RegistryAccess
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.ComponentSerialization
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import java.util.Optional
 
 class HarvestNotation(val seed: ItemStack, val crops: List<Crop>) {
-    class Crop(val itemStack: ItemStack) {
+    /**
+     * 収穫物と、それを生じさせる判定の名前の組なのだ～🌱
+     * 判定という概念を持たない収穫物では、[productionType] が null なのだ～🌱
+     */
+    class Crop(val itemStack: ItemStack, val productionType: Component?) {
+        private constructor(itemStack: ItemStack, productionType: Optional<Component>) : this(itemStack, productionType.orNull)
+
         companion object {
-            val CODEC: Codec<Crop> = ItemStack.CODEC.xmap(::Crop, Crop::itemStack)
+            val CODEC: Codec<Crop> = RecordCodecBuilder.create { instance ->
+                instance.group(
+                    ItemStack.CODEC.fieldOf("ItemStack").forGetter { it.itemStack },
+                    ComponentSerialization.CODEC.optionalFieldOf("ProductionType").forGetter { it.productionType.toOptional() },
+                ).apply(instance, ::Crop)
+            }
         }
     }
 
@@ -84,7 +100,9 @@ object HarvestNotationRecipeViewerCategoryCard : RecipeViewerCategoryCard<Harves
             view += ArrowView()
             view += XSpaceView(2)
             recipeEntry.recipe.crops.forEach { crop ->
-                view += OutputSlotView(crop.itemStack)
+                view += OutputSlotView(crop.itemStack).configure {
+                    if (crop.productionType != null) view.additionalTooltip = listOf(crop.productionType)
+                }
             }
         }
     }

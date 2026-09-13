@@ -108,7 +108,7 @@ abstract class MagicPlantCard<B : MagicPlantBlock> {
 
         // レシピ
         item.registerComposterInput(0.3F) // 種はコンポスターに投入可能
-        item.registerHarvestNotation(drops.map { drop -> { HarvestNotation.Crop(drop().createItemStack()) } })
+        item.registerHarvestNotation(drops.map { drop -> { HarvestNotation.Crop(drop().createItemStack(), null) } })
 
         // 進捗
         advancement?.init()

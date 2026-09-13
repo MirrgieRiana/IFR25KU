@@ -38,7 +38,7 @@ class TreeHollowLogBlockCard(configuration: TreeBlockConfiguration, log: () -> T
                 provider.applyExplosionDecay(block(), this)
             }
         }
-        item.registerHarvestNotation({ HarvestNotation.Crop(wisp().createItemStack()) })
+        item.registerHarvestNotation({ HarvestNotation.Crop(wisp().createItemStack(), null) })
 
     }
 }
