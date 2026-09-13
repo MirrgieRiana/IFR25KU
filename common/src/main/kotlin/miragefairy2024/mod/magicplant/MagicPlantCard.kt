@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.magicplant.contents.TraitConditionCard
@@ -106,7 +107,7 @@ abstract class MagicPlantCard<B : MagicPlantBlock> {
 
         // レシピ
         item.registerComposterInput(0.3F) // 種はコンポスターに投入可能
-        item.registerHarvestNotation(drops)
+        item.registerHarvestNotation(drops.map { HarvestNotation.CropConfiguration(it, null) })
 
         // 進捗
         advancement?.init()
