@@ -335,7 +335,8 @@ class MaterialCard(
                 FoodProperties.Builder()
                     .nutrition(2)
                     .saturationModifier(0.3F)
-                    .effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 60), 1.0F)
+                    .effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 30), 1.0F)
+                    .effect(MobEffectInstance(MobEffects.LUCK, 20 * 60 * 5), 1.0F)
                     .alwaysEdible()
                     .build()
             },
@@ -816,8 +817,9 @@ class MaterialCard(
                 .poem("poem1", "The fairy of the fairy of the fairy", "妖精の妖精の妖精の妖精の妖精の妖精の妖精")
                 .poem("poem2", "of the fairy of the fairy of the f", "の妖精の妖精の妖精の妖精の妖精の妖精の妖"),
             soulStreamContainable = true, fireResistant = true,
-            // TODO 用途
-        )
+        ) {
+            AuraReflectorFurnaceRecipe.registerFuel(item.key, 20 * 10)
+        }
 
         val FAIRY_QUEST_CARD_BASE: MaterialCard = !MaterialCard(
             "fairy_quest_card_base", "Fairy Quest Card Base", "フェアリークエストカードベース",
@@ -1548,7 +1550,11 @@ class MaterialCard(
             "phantom_drop_kohakuto", "Phantom Drop Kohakuto", "幻想の雫の琥珀糖",
             PoemList(4).poem("The power to give shape to hope.", "希望の結晶。"),
             PHANTOM_DROP.item,
-            { it.effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 60, 1), 1.0F) },
+            {
+                it
+                    .effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 30, 1), 1.0F)
+                    .effect(MobEffectInstance(MobEffects.LUCK, 20 * 60 * 30, 1), 1.0F)
+            },
         )
     }
 
