@@ -3,8 +3,10 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.magicplant.contents.TraitCard
+import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.util.AdvancementCard
@@ -63,7 +65,7 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
         createCuboidShape(7.0, 16.0),
     )
 
-    override val drops = listOf(MaterialCard.MERRRRIA_DROP.item)
+    override val drops = listOf(HarvestNotation.CropConfiguration(MaterialCard.MERRRRIA_DROP.item, TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name))
 
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.MERRRRIA_DROP.item().createItemStack(count))
 

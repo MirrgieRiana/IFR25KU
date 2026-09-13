@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.magicplant.contents.TraitConditionCard
@@ -68,7 +69,7 @@ abstract class MagicPlantCard<B : MagicPlantBlock> {
     open val randomTraitChances: Map<Trait, Double> = mapOf()
 
     open val baseGrowth = 0.03
-    abstract val drops: List<() -> Item>
+    abstract val drops: List<HarvestNotation.CropConfiguration>
 
     open fun createAdvancement(identifier: ResourceLocation): AdvancementCard? = null
     val advancement = createAdvancement(blockIdentifier)
