@@ -48,7 +48,10 @@ class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration, log: () ->
                 provider.applyExplosionDecay(block(), this)
             }
         }
-        item.registerHarvestNotation({ HarvestNotation.Crop(sap().createItemStack(), null) }, { HarvestNotation.Crop(rosin().createItemStack(), text { guiRareDropTranslation() }) })
+        item.registerHarvestNotation(
+            { HarvestNotation.Crop(sap().createItemStack(), null) },
+            { HarvestNotation.Crop(rosin().createItemStack(), text { guiRareDropTranslation() }) },
+        )
 
     }
 }

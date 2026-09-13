@@ -44,7 +44,10 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
     override val blockCodec = SarraceniaBlock.CODEC
     override fun createBlock() = SarraceniaBlock(createCommonSettings().instabreak().mapColor(MapColor.NETHER).sound(SoundType.CROP))
 
-    override val drops = listOf({ HarvestNotation.Crop(MaterialCard.SARRACENIA_LEAF.item().createItemStack(), TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name) }, { HarvestNotation.Crop(MaterialCard.FAIRY_SCALES.item().createItemStack(), TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name) })
+    override val drops = listOf(
+        { HarvestNotation.Crop(MaterialCard.SARRACENIA_LEAF.item().createItemStack(), TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name) },
+        { HarvestNotation.Crop(MaterialCard.FAIRY_SCALES.item().createItemStack(), TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name) },
+    )
     override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.SARRACENIA_LEAF.item().createItemStack(count))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.FAIRY_SCALES.item().createItemStack(count))
 

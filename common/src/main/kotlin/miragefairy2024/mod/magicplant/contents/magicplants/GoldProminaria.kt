@@ -31,7 +31,10 @@ object GoldProminariaCard : AbstractProminariaCard<GoldProminariaBlock>() {
     override val baseGrowth = super.baseGrowth / 4
     override val baseSeedGeneration = 0.0
 
-    override val drops = listOf({ HarvestNotation.Crop(MaterialCard.GOLD_PROMINARIA_BERRY.item().createItemStack(), TraitEffectKeyCard.FRUITS_PRODUCTION.traitEffectKey.name) }, { HarvestNotation.Crop(MaterialCard.PROMINITE.item().createItemStack(), TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name) })
+    override val drops = listOf(
+        { HarvestNotation.Crop(MaterialCard.GOLD_PROMINARIA_BERRY.item().createItemStack(), TraitEffectKeyCard.FRUITS_PRODUCTION.traitEffectKey.name) },
+        { HarvestNotation.Crop(MaterialCard.PROMINITE.item().createItemStack(), TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name) },
+    )
     override fun getFruitDrops(count: Int, random: RandomSource) = listOf(MaterialCard.GOLD_PROMINARIA_BERRY.item().createItemStack(count))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.PROMINITE.item().createItemStack(count))
 
