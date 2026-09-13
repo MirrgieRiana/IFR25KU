@@ -69,7 +69,7 @@ abstract class MagicPlantCard<B : MagicPlantBlock> {
     open val randomTraitChances: Map<Trait, Double> = mapOf()
 
     open val baseGrowth = 0.03
-    abstract val drops: List<HarvestNotation.CropConfiguration>
+    abstract val drops: List<() -> Item>
 
     open fun createAdvancement(identifier: ResourceLocation): AdvancementCard? = null
     val advancement = createAdvancement(blockIdentifier)
@@ -107,7 +107,7 @@ abstract class MagicPlantCard<B : MagicPlantBlock> {
 
         // レシピ
         item.registerComposterInput(0.3F) // 種はコンポスターに投入可能
-        item.registerHarvestNotation(drops)
+        item.registerHarvestNotation(drops.map { HarvestNotation.CropConfiguration(it, null) })
 
         // 進捗
         advancement?.init()

@@ -2,7 +2,6 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
-import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.biome.FairyForestBiomeCard
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
@@ -46,7 +45,7 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
     override val baseGrowth = super.baseGrowth / 8.0
     override val baseFruitGeneration = super.baseFruitGeneration * 9.0
 
-    override val drops = listOf(HarvestNotation.CropConfiguration(MaterialCard.MIRAGE_FLOUR.item, null), HarvestNotation.CropConfiguration(MaterialCard.PHANTOM_LEAVES.item, null), HarvestNotation.CropConfiguration(MaterialCard.PHANTOM_DROP.item, null))
+    override val drops = listOf(MaterialCard.MIRAGE_FLOUR.item, MaterialCard.PHANTOM_LEAVES.item, MaterialCard.PHANTOM_DROP.item)
     override fun getFruitDrops(count: Int, random: RandomSource) = getMirageFlour(count, random)
     override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.PHANTOM_LEAVES.item().createItemStack(count))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.PHANTOM_DROP.item().createItemStack(count))

@@ -2,7 +2,6 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
-import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
@@ -47,7 +46,7 @@ object EmeraldLuminariaCard : AbstractLuminariaCard<EmeraldLuminariaBlock>() {
     override val blockCodec = EmeraldLuminariaBlock.CODEC
     override fun createBlock() = EmeraldLuminariaBlock(createCommonSettings().strength(0.2F).lightLevel { getLuminance(it.getOr(BlockStateProperties.AGE_3) { 0 }) }.mapColor(MapColor.EMERALD).sound(SoundType.CROP))
 
-    override val drops = listOf(HarvestNotation.CropConfiguration(MaterialCard.LUMINITE.item, null), HarvestNotation.CropConfiguration({ Items.EMERALD }, null))
+    override val drops = listOf(MaterialCard.LUMINITE.item, { Items.EMERALD })
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.LUMINITE.item().createItemStack(count))
     override fun getSpecialDrops(count: Int, random: RandomSource) = listOf(Items.EMERALD.createItemStack(count))
 
