@@ -51,11 +51,11 @@ class HarvestNotation(val seed: ItemStack, val crops: List<Crop>) {
 }
 
 context(ModContext)
-fun (() -> Item).registerHarvestNotation(vararg drops: () -> Item) = this.registerHarvestNotation(drops.asIterable())
+fun (() -> Item).registerHarvestNotation(vararg crops: () -> HarvestNotation.Crop) = this.registerHarvestNotation(crops.asIterable())
 
 context(ModContext)
-fun (() -> Item).registerHarvestNotation(drops: Iterable<() -> Item>) = ModEvents.onInitialize {
-    HarvestNotation.register(this().getIdentifier(), HarvestNotation(this().createItemStack(), drops.map { HarvestNotation.Crop(it().createItemStack()) }))
+fun (() -> Item).registerHarvestNotation(crops: Iterable<() -> HarvestNotation.Crop>) = ModEvents.onInitialize {
+    HarvestNotation.register(this().getIdentifier(), HarvestNotation(this().createItemStack(), crops.map { it() }))
 }
 
 context(ModContext)
