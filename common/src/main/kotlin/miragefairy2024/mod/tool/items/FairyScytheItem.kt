@@ -115,8 +115,8 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
             }
 
             is SweetBerryBushBlock, is CaveVines -> {
-                { user, toolItemStack, blockHitResult ->
-                    val offset = blockPos.subtract(blockPos)
+                { user, _, blockHitResult ->
+                    val offset = blockPos.subtract(blockHitResult.blockPos)
                     val result = targetBlockState.useWithoutItem(level, user, BlockHitResult(blockHitResult.location.add(offset.x.toDouble(), offset.y.toDouble(), offset.z.toDouble()), blockHitResult.direction, blockPos, false))
                     result.consumesAction()
                 }
@@ -136,7 +136,7 @@ open class ScytheItem(material: Tier, attackDamage: Float, attackSpeed: Float, p
 
         /**
          * 狙ったブロックを中心とする立方体のうち、遮蔽を越えずに辿り着けて、かつ収穫の対象になりうる位置を返すのだ～🌱
-         * 範囲の求め方も、対象とするブロックの種類も、[miragefairy2024.mod.tool.items.ScytheItem.use]と揃えるのだ～🌱
+         * 範囲の求め方は、[miragefairy2024.mod.tool.items.ScytheItem.use]と揃えるのだ～🌱
          * ただし、実際に収穫が起こるかどうかは対象のブロックに尋ねるまで分からないから、まだ実っていないものも含むのだ～🌱
          */
         fun getHarvestBlockPoses(): Set<BlockPos> {
