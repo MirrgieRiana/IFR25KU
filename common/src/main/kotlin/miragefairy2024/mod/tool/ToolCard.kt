@@ -482,7 +482,7 @@ class ToolCard(
         val PHANTOM_SWORD = !ToolCard(
             "phantom_sword", EnJa("Phantom Sword", "幻想の剣"),
             PoemList(4).poem(EnJa("Pray. For rebirth.", "闇を切り裂く、再生の光。")),
-            FairySwordConfiguration(ToolMaterialCard.PHANTOM_DROP).selfMending(10).obtainFairy(9.0 * 9.0).enchantment(Enchantments.LOOTING, 2).enchantment(EnchantmentCard.FORTUNE_UP.key, 1),
+            FairySwordConfiguration(ToolMaterialCard.PHANTOM_DROP).selfMending(10).obtainFairy(9.0 * 9.0).enchantment(Enchantments.FORTUNE, 2).enchantment(EnchantmentCard.FORTUNE_UP.key, 1),
         ) { registerSwordRecipeGeneration(item, MaterialCard.PHANTOM_DROP.ore!!.tag) }
         val HAIMEVISKA_ROSIN_PICKAXE = !ToolCard(
             "haimeviska_rosin_pickaxe", EnJa("Resin Pickaxe", "涙のつるはし"),
