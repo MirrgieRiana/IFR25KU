@@ -6166,7 +6166,7 @@
         "effects": [
           {
             "effect": {
-              "duration": 600,
+              "duration": 6200,
               "id": "minecraft:night_vision",
               "show_icon": true
             }
@@ -6194,7 +6194,7 @@
         "effects": [
           {
             "effect": {
-              "duration": 12000,
+              "duration": 36200,
               "id": "minecraft:night_vision",
               "show_icon": true
             }
@@ -8701,7 +8701,7 @@
         "effects": [
           {
             "effect": {
-              "duration": 200,
+              "duration": 6000,
               "id": "miragefairy2024:sticky_mining",
               "show_icon": true
             }
@@ -8729,7 +8729,7 @@
         "effects": [
           {
             "effect": {
-              "duration": 12000,
+              "duration": 36000,
               "id": "miragefairy2024:sticky_mining",
               "show_icon": true
             }
