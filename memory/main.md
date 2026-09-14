@@ -12,7 +12,7 @@
 - `src/main/bundle/` — Gemfile等なのだ～🌱
 - `src/pages/resources/<name>/<name>.md` — 全ページ・記事のソースなのだぁ✨ `syncJekyllSource` がJekyll形式に変換するのだ～🌱
 - `src/external/resources/` — 外部リソースなのだ～🌱
-- `src/ogImages/` — OG画像生成のソース・出力先・デフォルト背景SVGなのだ～🌱
+- `src/ogImages/` — OG画像生成のソースとデフォルト背景SVGなのだ～🌱 生成された画像は `build/ogImages/` に出るのだぁ✨
 - `src/langTable/html/lang_table.html` — `<%= trs %>` を `makeLangTable` タスクで展開するテンプレートなのだぁ✨
 - `scripts/` — `bundle-install.sh`, `build-site.sh`, `convert-to-webp.sh` に加えて、`serveSite` の本体になる `serve-site.sh` と `serve-site.main.kts`（Ktor Netty サーバー）もここなのだ～🌱
 - `build/site/` — CIの最終出力先なのだ～🌱
