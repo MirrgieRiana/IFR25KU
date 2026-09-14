@@ -172,7 +172,7 @@ private fun parseFrontMatter(file: File): Map<String, Any>? {
     return Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any>
 }
 
-class OgImageRenderer(private val browsersDir: File) : AutoCloseable {
+class OgImageRenderer : AutoCloseable {
     private var playwright: Playwright? = null
     private var browser: Browser? = null
     private var page: Page? = null
@@ -182,10 +182,7 @@ class OgImageRenderer(private val browsersDir: File) : AutoCloseable {
             ImageIO.scanForPlugins()
             // ブラウザの調達は installPlaywrightBrowsers に任せるのだ～🌱
             // これを抑止しないと、既にヘッドレスシェルがあっても、FirefoxやWebKitまで含めた全部が降ってきちゃうのだぁ…🌧️
-            val env = mapOf(
-                "PLAYWRIGHT_BROWSERS_PATH" to browsersDir.absolutePath,
-                "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD" to "1",
-            )
+            val env = mapOf("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD" to "1")
             playwright = Playwright.create(Playwright.CreateOptions().setEnv(env))
             browser = playwright!!.chromium().launch()
             page = browser!!.newPage().apply { setViewportSize(1200, 630) }
@@ -230,7 +227,19 @@ class OgImageRenderer(private val browsersDir: File) : AutoCloseable {
     }
 }
 
-val playwrightBrowsersDir = layout.buildDirectory.dir("playwrightBrowsers").get().asFile
+// Playwrightがブラウザを置く既定の場所なのだ～🌱
+// 調達先を移すとCIのキャッシュの対象も移るだけで得が無いから、既定のままにして、ここでは場所を言い当てるだけなのだ～🌱
+// 決め方はplaywright-javaが同梱するdriverのregistryDirectoryに揃えてあって、食い違うとUP-TO-DATEの判定が効かなくなるのだぁ…🌧️
+val playwrightBrowsersDir = run {
+    val userHome = File(System.getProperty("user.home"))
+    val osName = System.getProperty("os.name").lowercase()
+    val cacheDir = when {
+        osName.startsWith("windows") -> System.getenv("LOCALAPPDATA")?.let { File(it) } ?: File(userHome, "AppData/Local")
+        osName.startsWith("mac") -> File(userHome, "Library/Caches")
+        else -> System.getenv("XDG_CACHE_HOME")?.let { File(it) } ?: File(userHome, ".cache")
+    }
+    File(cacheDir, "ms-playwright")
+}
 
 val installPlaywrightBrowsers = tasks.register<JavaExec>("installPlaywrightBrowsers") {
     group = "other"
@@ -244,8 +253,6 @@ val installPlaywrightBrowsers = tasks.register<JavaExec>("installPlaywrightBrows
     // OG画像の描画に使うのはヘッドレスシェルだけなのだ～🌱
     // ブラウザの種類を指定しないと、Chromium本体・Firefox・WebKitまで降ってきて、1.2GBになっちゃうのだぁ…🌧️
     args("install", "chromium-headless-shell")
-    // 既定の取得先はホームディレクトリの下で、Gradleから見ると何の管理下にもない場所なのだ～🌱
-    environment("PLAYWRIGHT_BROWSERS_PATH", playwrightBrowsersDir.absolutePath)
 }
 
 val generateOgImages = tasks.register("generateOgImages") {
@@ -278,7 +285,7 @@ val generateOgImages = tasks.register("generateOgImages") {
             }
 
         val defaultBg = file("src/ogImages/assets/default-background.svg")
-        OgImageRenderer(playwrightBrowsersDir).use { renderer ->
+        OgImageRenderer().use { renderer ->
             mdFiles.forEach { mdFile ->
                 val frontMatter = parseFrontMatter(mdFile) ?: return@forEach
 

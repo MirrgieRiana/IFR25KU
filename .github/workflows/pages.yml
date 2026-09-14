@@ -37,7 +37,7 @@ jobs:
       - name: ヘッドレスブラウザのキャッシュ
         uses: actions/cache@v4
         with:
-          path: site/build/playwrightBrowsers
+          path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-1.58.0
       # ランナーにはCJKのグリフを持つフォントが無くて、入れないとタイトルの文字が全て豆腐になっちゃうのだぁ…🌧️
       - name: 日本語フォントのインストール
