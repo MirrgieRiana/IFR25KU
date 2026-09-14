@@ -4,7 +4,9 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.tree.TreeBlockCard
-import miragefairy2024.mod.tree.TreeConfiguration
+import miragefairy2024.mod.tree.TreeCard
+import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecorator
+import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecoratorCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -36,14 +38,14 @@ import net.minecraft.util.valueproviders.ConstantInt
 import net.minecraft.world.level.block.state.properties.BlockSetType
 import net.minecraft.world.level.block.state.properties.WoodType
 import net.minecraft.world.level.levelgen.feature.Feature
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
 import net.minecraft.world.level.levelgen.feature.treedecorators.LeaveVineDecorator
 import net.minecraft.world.level.levelgen.feature.treedecorators.TrunkVineDecorator
 import net.minecraft.world.level.material.MapColor
-import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration as TreeConfiguration2
 
-val HAIMEVISKA_TREE_CONFIGURATION = object : TreeConfiguration {
+val HAIMEVISKA_CARD = object : TreeCard {
     override fun getWoodMapColor() = MapColor.TERRACOTTA_ORANGE
     override fun getPlankMapColor() = MapColor.RAW_IRON
     override fun getBlockTag() = HAIMEVISKA_LOGS_BLOCK_TAG
@@ -111,15 +113,22 @@ fun initHaimeviska() {
 
 
     // 地形生成
+    fun createTreeDecorator(): HaimeviskaTreeDecorator {
+        return HaimeviskaTreeDecorator(
+            TreeBlockCard.LOG.block(),
+            HaimeviskaTreeDecorator.Replacement(TreeBlockCard.DRIPPING_LOG.block(), 12),
+            HaimeviskaTreeDecorator.Replacement(TreeBlockCard.HOLLOW_LOG.block(), 6),
+        )
+    }
     Feature.TREE.generator(MirageFairy2024.identifier("small_haimeviska")) {
         registerConfiguredFeature(SMALL_HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
-            TreeConfiguration2.TreeConfigurationBuilder(
+            TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TreeBlockCard.LOG.block()),
                 SmallHaimeviskaTrunkPlacer,
                 BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
                 SmallHaimeviskaFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
                 TwoLayersFeatureSize(1, 0, 1),
-            ).ignoreVines().decorators(listOf(HaimeviskaTreeDecorator, TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
+            ).ignoreVines().decorators(listOf(createTreeDecorator(), TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
         }.generator {
 
             // まばら
@@ -132,13 +141,13 @@ fun initHaimeviska() {
     }
     Feature.TREE.generator(MirageFairy2024.identifier("giant_haimeviska")) {
         registerConfiguredFeature(GIANT_HAIMEVISKA_CONFIGURED_FEATURE_KEY) {
-            TreeConfiguration2.TreeConfigurationBuilder(
+            TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TreeBlockCard.LOG.block()),
                 GiantHaimeviskaTrunkPlacer,
                 BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
                 GiantHaimeviskaFoliagePlacer,
                 TwoLayersFeatureSize(1, 1, 2),
-            ).ignoreVines().decorators(listOf(HaimeviskaTreeDecorator, TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
+            ).ignoreVines().decorators(listOf(createTreeDecorator(), TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
         }.generator {
 
             // まばら

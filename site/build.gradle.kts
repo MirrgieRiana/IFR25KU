@@ -228,13 +228,14 @@ val generateOgImages = tasks.register("generateOgImages") {
     group = "generate"
 
     val pagesDir = file("src/pages/resources")
-    val resourcesDir = file("src/main/resources")
-    val ogImagesDir = file("src/ogImages/resources")
+    val ogImagesDir = layout.buildDirectory.dir("ogImages").get().asFile
     val outputDir = ogImagesDir.resolve("assets/images")
     val regenerate = project.hasProperty("regenerate")
 
     inputs.dir(pagesDir)
     inputs.file(file("src/ogImages/assets/default-background.svg"))
+    inputs.property("regenerate", regenerate)
+    outputs.dir(ogImagesDir)
 
     doLast {
         outputDir.mkdirs()
@@ -321,9 +322,8 @@ val installJekyllBundle = tasks.register<Exec>("installJekyllBundle") {
 
 val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     group = "other"
-    dependsOn(generateOgImages)
     from("src/main/resources")
-    from("src/ogImages/resources") {
+    from(generateOgImages) {
         include("**/*.webp")
     }
     from("src/external/resources")

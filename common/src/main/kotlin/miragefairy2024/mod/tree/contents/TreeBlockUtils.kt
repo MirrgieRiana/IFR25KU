@@ -1,15 +1,15 @@
 package miragefairy2024.mod.tree.contents
 
-import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.util.get
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
 import net.minecraft.world.level.block.state.BlockState
 
-fun spawnDrippingSapParticle(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
+fun spawnDrippingSapParticle(state: BlockState, level: Level, pos: BlockPos, random: RandomSource, particleOptions: ParticleOptions) {
     if (random.nextFloat() >= 0.2F) return
 
     val direction = state[HorizontalDirectionalBlock.FACING]
@@ -45,7 +45,7 @@ fun spawnDrippingSapParticle(state: BlockState, level: Level, pos: BlockPos, ran
     }
 
     level.addParticle(
-        ParticleTypeCard.DRIPPING_SAP.particleType,
+        particleOptions,
         pos.x + x2,
         pos.y + y - 1.0 / 16.0,
         pos.z + z2,

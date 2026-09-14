@@ -1,12 +1,14 @@
 package miragefairy2024.mod.tree.contents.blockcards
 
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.registerHarvestNotation
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.util.ItemLootPoolEntry
 import miragefairy2024.util.LootPool
 import miragefairy2024.util.LootTable
+import miragefairy2024.util.createItemStack
 import miragefairy2024.util.get
 import miragefairy2024.util.registerLootTableGeneration
 import net.minecraft.core.registries.Registries
@@ -36,7 +38,9 @@ class TreeHollowLogBlockCard(configuration: TreeBlockConfiguration, log: () -> T
                 provider.applyExplosionDecay(block(), this)
             }
         }
-        item.registerHarvestNotation(wisp)
+        item.registerHarvestNotation(
+            { HarvestNotation.Crop(wisp().createItemStack(), null) },
+        )
 
     }
 }

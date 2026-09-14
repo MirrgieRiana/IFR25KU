@@ -67,7 +67,7 @@ class DrippingHaimeviskaLogBlock(settings: Properties) : DrippingLogBlock(settin
     override fun getRosinItem() = MaterialCard.HAIMEVISKA_ROSIN.item()
 
     override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
-        spawnDrippingSapParticle(state, level, pos, random)
+        spawnDrippingSapParticle(state, level, pos, random, ParticleTypeCard.DRIPPING_HAIMEVISKA_SAP.particleType)
     }
 }
 

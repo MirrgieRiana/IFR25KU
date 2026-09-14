@@ -46,6 +46,7 @@ import miragefairy2024.mod.plus
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
+import miragefairy2024.mod.stickyMiningStatusEffect
 import miragefairy2024.mod.structure.WeatheredAncientRemnantsCard
 import miragefairy2024.mod.translation
 import miragefairy2024.mod.tree.contents.haimeviska.haimeviskaAdvancement
@@ -335,7 +336,8 @@ class MaterialCard(
                 FoodProperties.Builder()
                     .nutrition(2)
                     .saturationModifier(0.3F)
-                    .effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 60), 1.0F)
+                    .effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 30), 1.0F)
+                    .effect(MobEffectInstance(MobEffects.LUCK, 20 * 60 * 5), 1.0F)
                     .alwaysEdible()
                     .build()
             },
@@ -607,7 +609,7 @@ class MaterialCard(
                 FoodProperties.Builder()
                     .nutrition(2)
                     .saturationModifier(0.3F)
-                    .effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 30), 1.0F)
+                    .effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60 * 5 + 20 * 10), 1.0F)
                     .alwaysEdible()
                     .build()
             },
@@ -626,13 +628,13 @@ class MaterialCard(
         )
         val PLASTIC_TREE_SAP: MaterialCard = !MaterialCard(
             "plastic_tree_sap", "Plastic Tree Sap", "プラノキの樹液",
-            PoemList(1).poem("Catalytic sugar cleavage", "駆け出したくなる、その甘さ。"),
+            PoemList(1).poem("Hydroxyl groups deplete the free water.", "粘り強い、その甘さ。"),
             fuelValue = 200,
             foodComponentCreator = {
                 FoodProperties.Builder()
                     .nutrition(1)
                     .saturationModifier(0.1F)
-                    .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 10), 1.0F)
+                    .effect(MobEffectInstance(stickyMiningStatusEffect.awaitHolder(), 20 * 60 * 5), 1.0F)
                     .build()
             },
             creator = { FoodItem(it) },
@@ -816,8 +818,9 @@ class MaterialCard(
                 .poem("poem1", "The fairy of the fairy of the fairy", "妖精の妖精の妖精の妖精の妖精の妖精の妖精")
                 .poem("poem2", "of the fairy of the fairy of the f", "の妖精の妖精の妖精の妖精の妖精の妖精の妖"),
             soulStreamContainable = true, fireResistant = true,
-            // TODO 用途
-        )
+        ) {
+            AuraReflectorFurnaceRecipe.registerFuel(item.key, 20 * 10)
+        }
 
         val FAIRY_QUEST_CARD_BASE: MaterialCard = !MaterialCard(
             "fairy_quest_card_base", "Fairy Quest Card Base", "フェアリークエストカードベース",
@@ -1522,9 +1525,9 @@ class MaterialCard(
         )
         val PLASTIC_TREE_SAP_KOHAKUTO = createKohakuto(
             "plastic_tree_sap_kohakuto", "Plastic Tree Sap Kohakuto", "プラノキの樹液の琥珀糖",
-            PoemList(1).poem("Elastic organic polymer.", "凍てつく砂糖の宿る石。"),
+            PoemList(1).poem("Elastic organic polymer.", "粘つく砂糖の宿る石。"),
             PLASTIC_TREE_SAP.item,
-            { it.effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60 * 2, 1), 1.0F) },
+            { it.effect(MobEffectInstance(stickyMiningStatusEffect.awaitHolder(), 20 * 60 * 30), 1.0F) },
         )
         val HAIMEVISKA_SAP_KOHAKUTO = createKohakuto(
             "haimeviska_sap_kohakuto", "Haimeviska Sap Kohakuto", "ハイメヴィスカの樹液の琥珀糖",
@@ -1542,13 +1545,17 @@ class MaterialCard(
             "merrrria_drop_kohakuto", "Merrrria Drop Kohakuto", "月のしずくの琥珀糖",
             PoemList(3).poem("Interaction with the shine aura.", "妖精の目に映る世界。"),
             MERRRRIA_DROP.item,
-            { it.effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60 * 10), 1.0F) },
+            { it.effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60 * 30 + 20 * 10), 1.0F) },
         )
         val PHANTOM_DROP_KOHAKUTO = createKohakuto(
             "phantom_drop_kohakuto", "Phantom Drop Kohakuto", "幻想の雫の琥珀糖",
             PoemList(4).poem("The power to give shape to hope.", "希望の結晶。"),
             PHANTOM_DROP.item,
-            { it.effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 60, 1), 1.0F) },
+            {
+                it
+                    .effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 30, 1), 1.0F)
+                    .effect(MobEffectInstance(MobEffects.LUCK, 20 * 60 * 30, 1), 1.0F)
+            },
         )
     }
 

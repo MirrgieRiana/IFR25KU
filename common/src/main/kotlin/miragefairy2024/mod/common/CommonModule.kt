@@ -63,9 +63,10 @@ val rootAdvancement = AdvancementCard(
 val guiAlwaysTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.always" }, "Always", "常時")
 val guiFullScreenTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.full_screen" }, "Click to full screen", "クリックで全画面表示")
 val guiBackToGameTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.back_to_game" }, "Back to game", "ゲームに戻る")
-val guiDeadPlayer = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.dead_player" }, "Player %s is dead", "プレイヤー%sは死亡しています")
+val guiDeadPlayerTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.dead_player" }, "Player %s is dead", "プレイヤー%sは死亡しています")
+val guiRareDropTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.rare_drop" }, "Rare Drop", "レアドロップ")
 
-val deadPlayerCommandExceptionType = DynamicCommandExceptionType { text { guiDeadPlayer(it) } }
+val deadPlayerCommandExceptionType = DynamicCommandExceptionType { text { guiDeadPlayerTranslation(it) } }
 
 context(ModContext)
 fun initCommonModule() {
@@ -262,6 +263,7 @@ fun initCommonModule() {
     guiAlwaysTranslation.enJa()
     guiFullScreenTranslation.enJa()
     guiBackToGameTranslation.enJa()
-    guiDeadPlayer.enJa()
+    guiDeadPlayerTranslation.enJa()
+    guiRareDropTranslation.enJa()
 
 }
