@@ -89,7 +89,7 @@ export LD_LIBRARY_PATH="$DEST/flat"
 
 `dpkg-deb` が展開するパスは `usr/lib/x86_64-linux-gnu/` みたいに深いところに散らばるから、`flat/` へ集めて `LD_LIBRARY_PATH` を1本にまとめているのだ～🌱 パッケージの一覧は、`playwright install-deps chromium` が入れようとするもののうち、この環境に足りていなかった分なのだぁ✨
 
-ブラウザ本体は入れなくていいのだ～🌱 `Playwright.create()` の初回の呼び出しで、`~/.cache/ms-playwright/` へ自動で降ってくるのだぁ✨ だから `playwright install` を明示的に叩く必要は無いのだ～🌱
+ブラウザ本体は入れなくていいのだ～🌱 `generateOgImages` が依存する `installPlaywrightBrowsers` タスクが、`~/.cache/ms-playwright/` へ調達してくれるのだぁ✨ だから `playwright install` を手で叩く必要は無いのだ～🌱 `PLAYWRIGHT_BROWSERS_PATH` を指定すれば、置き場所を移すこともできるのだ～🌱
 
 日本語フォントを飛ばすと、生成された画像の日本語が全部豆腐になっちゃうのだぁ…🌧️ OG画像を組み立てる HTML が `font-family` で `Noto Sans CJK JP` を名指ししているから、`fonts-ipafont-gothic` みたいな別の和文フォントで代用すると、今までの画像と見た目が変わっちゃうのだ～🌱
 

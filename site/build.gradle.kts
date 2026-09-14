@@ -180,7 +180,9 @@ class OgImageRenderer : AutoCloseable {
     private fun ensureInitialized() {
         if (playwright == null) {
             ImageIO.scanForPlugins()
-            playwright = Playwright.create()
+            // ブラウザの調達は installPlaywrightBrowsers に任せるのだ～🌱
+            // これを抑止しないと、既にヘッドレスシェルがあっても、FirefoxやWebKitまで含めた全部が降ってきちゃうのだぁ…🌧️
+            playwright = Playwright.create(Playwright.CreateOptions().setEnv(mapOf("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD" to "1")))
             browser = playwright!!.chromium().launch()
             page = browser!!.newPage().apply { setViewportSize(1200, 630) }
         }
@@ -224,8 +226,20 @@ class OgImageRenderer : AutoCloseable {
     }
 }
 
+val installPlaywrightBrowsers = tasks.register<JavaExec>("installPlaywrightBrowsers") {
+    group = "other"
+
+    classpath = buildscript.configurations.getByName("classpath")
+    mainClass = "com.microsoft.playwright.CLI"
+    // OG画像の描画に使うのはヘッドレスシェルだけなのだ～🌱
+    // ブラウザの種類を指定しないと、Chromium本体・Firefox・WebKitまで降ってきて、1.2GBになっちゃうのだぁ…🌧️
+    args("install", "chromium-headless-shell")
+}
+
 val generateOgImages = tasks.register("generateOgImages") {
     group = "generate"
+
+    dependsOn(installPlaywrightBrowsers)
 
     val pagesDir = file("src/pages/resources")
     val resourcesDir = file("src/main/resources")
