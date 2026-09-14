@@ -2,6 +2,7 @@ package miragefairy2024.mod.tool.items
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
+import miragefairy2024.mod.common.BlockPosesOutline
 import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
 import miragefairy2024.mod.common.RenderBlockPosesOutlineListenerItem
 import miragefairy2024.mod.enchantment.BUILDERS_ROD_ITEM_TAG
@@ -15,6 +16,7 @@ import miragefairy2024.util.get
 import miragefairy2024.util.getLevel
 import miragefairy2024.util.getSameItemStackCountInMainInventoryAndOffhand
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isServer
 import miragefairy2024.util.notEmptyOrNull
 import miragefairy2024.util.opposite
 import miragefairy2024.util.removeItemStackFromMainInventoryAndOffhand
@@ -67,9 +69,9 @@ class FairyBuildersRodItem(override val configuration: FairyBuildersRodConfigura
     FairyToolItem,
     ModifyItemEnchantmentsHandler {
 
-    override fun mineBlock(stack: ItemStack, world: Level, state: BlockState, pos: BlockPos, miner: LivingEntity): Boolean {
-        super.mineBlock(stack, world, state, pos, miner)
-        postMineImpl(stack, world, state, pos, miner)
+    override fun mineBlock(stack: ItemStack, level: Level, state: BlockState, pos: BlockPos, miner: LivingEntity): Boolean {
+        super.mineBlock(stack, level, state, pos, miner)
+        postMineImpl(stack, level, state, pos, miner)
         return true
     }
 
@@ -79,9 +81,9 @@ class FairyBuildersRodItem(override val configuration: FairyBuildersRodConfigura
         return true
     }
 
-    override fun inventoryTick(stack: ItemStack, world: Level, entity: Entity, slot: Int, selected: Boolean) {
-        super.inventoryTick(stack, world, entity, slot, selected)
-        inventoryTickImpl(stack, world, entity, slot, selected)
+    override fun inventoryTick(stack: ItemStack, level: Level, entity: Entity, slot: Int, selected: Boolean) {
+        super.inventoryTick(stack, level, entity, slot, selected)
+        inventoryTickImpl(stack, level, entity, slot, selected)
     }
 
     override fun modifyItemEnchantments(itemStack: ItemStack, mutableItemEnchantments: ItemEnchantments.Mutable, enchantmentLookup: HolderLookup.RegistryLookup<Enchantment>) = modifyItemEnchantmentsImpl(itemStack, mutableItemEnchantments, enchantmentLookup)
@@ -93,6 +95,7 @@ class FairyBuildersRodItem(override val configuration: FairyBuildersRodConfigura
 open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings: Properties) : TieredItem(toolMaterial, settings), RenderBlockPosesOutlineListenerItem {
     companion object {
         val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("builders_rod").toLanguageKey()}.description" }, "Place blocks when used", "使用時、ブロックを設置")
+        val NO_PLACEABLE_BLOCK_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("builders_rod").toLanguageKey()}.no_placeable_block" }, "No placeable block in the other hand", "逆の手に設置可能なブロックがありません")
     }
 
     override fun appendHoverText(stack: ItemStack, context: TooltipContext, tooltipComponents: MutableList<Component>, tooltipFlag: TooltipFlag) {
@@ -105,6 +108,7 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
         val targetBlockState = level.getBlockState(blockHitResult.blockPos)
         val frontBlockPos = blockHitResult.blockPos.relative(blockHitResult.direction)
         val wallDirection = blockHitResult.direction.opposite
+        val ignoresBlockStateProperties = player.isShiftKeyDown // スニーク中は向きや雪の有無などの違いで面が途切れないのだ～🌱
         val lateralLevel = level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.LATERAL_AREA_MINING.key].getLevel(toolItemStack)
         val actualRange = range + lateralLevel
 
@@ -130,7 +134,8 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
 
             val wallBlockPos = airBlockPos.relative(wallDirection)
             val wallBlockState = level.getBlockState(wallBlockPos)
-            if (wallBlockState != targetBlockState) return@blockVisitor false // 壁が対象ブロックでない
+            val isTargetBlock = if (ignoresBlockStateProperties) wallBlockState.block === targetBlockState.block else wallBlockState == targetBlockState
+            if (!isTargetBlock) return@blockVisitor false // 壁が対象ブロックでない
 
             val context = BlockPlaceContext(player, usedHand, blockItemStack, blockHitResult.withBlockPosAndLocation(airBlockPos))
             if (!level.getBlockState(airBlockPos).canBeReplaced(context)) return@blockVisitor false // 設置先が埋まっている
@@ -139,7 +144,7 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
         }.map { it.second }
     }
 
-    override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): Pair<BlockPos, Set<BlockPos>>? {
+    override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): BlockPosesOutline? {
 
         val toolItemStack = context.player.getItemInHand(hand)
 
@@ -154,18 +159,24 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
 
         val sequence = getDestinationBlockPoses(context.level, context.player, hand, toolItemStack, blockItemStack, blockHitResult, count)
 
-        return Pair(
+        return BlockPosesOutline(
             blockHitResult.blockPos.relative(blockHitResult.direction),
             sequence.toSet(),
+            0xFFFFFF,
         )
     }
 
     override fun use(level: Level, player: Player, usedHand: InteractionHand): InteractionResultHolder<ItemStack> {
         val toolItemStack = player.getItemInHand(usedHand)
 
-        val blockItemStack = player.getItemInHand(usedHand.opposite).notEmptyOrNull ?: return InteractionResultHolder.fail(toolItemStack) // 逆の手が空
-        val blockItem = blockItemStack.item as? BlockItem ?: return InteractionResultHolder.fail(toolItemStack) // 逆の手がブロックアイテムでない
-        if (!blockItem.block.isEnabled(level.enabledFeatures())) return InteractionResultHolder.fail(toolItemStack) // ブロックが無効化されている
+        fun failByNoPlaceableBlock(): InteractionResultHolder<ItemStack> {
+            if (level.isServer) player.displayClientMessage(text { NO_PLACEABLE_BLOCK_TRANSLATION() }, true)
+            return InteractionResultHolder.fail(toolItemStack)
+        }
+
+        val blockItemStack = player.getItemInHand(usedHand.opposite).notEmptyOrNull ?: return failByNoPlaceableBlock() // 逆の手が空
+        val blockItem = blockItemStack.item as? BlockItem ?: return failByNoPlaceableBlock() // 逆の手がブロックアイテムでない
+        if (!blockItem.block.isEnabled(level.enabledFeatures())) return failByNoPlaceableBlock() // ブロックが無効化されている
 
         val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
         if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない

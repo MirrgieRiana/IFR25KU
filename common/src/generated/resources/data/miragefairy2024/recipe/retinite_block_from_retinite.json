@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:retinite_block",
+  "ingredients": [
+    {
+      "tag": "c:gems/retinite"
+    },
+    {
+      "tag": "c:gems/retinite"
+    },
+    {
+      "tag": "c:gems/retinite"
+    },
+    {
+      "tag": "c:gems/retinite"
+    },
+    {
+      "tag": "c:gems/retinite"
+    },
+    {
+      "tag": "c:gems/retinite"
+    },
+    {
+      "tag": "c:gems/retinite"
+    },
+    {
+      "tag": "c:gems/retinite"
+    },
+    {
+      "tag": "c:gems/retinite"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:retinite_block"
+  }
+}

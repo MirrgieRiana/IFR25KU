@@ -18,7 +18,7 @@ object ExperiencePassiveSkillEffect : AbstractDoublePassiveSkillEffect("experien
     override fun getText(value: Double) = text { translation() + ": "() + PER_SECOND_TRANSLATION(value formatAs "%+.3f") }
     override fun update(context: PassiveSkillContext, oldValue: Double, newValue: Double) {
         if (newValue <= 0.0) return
-        val actualAmount = context.world.random.randomInt(newValue)
+        val actualAmount = context.level.random.randomInt(newValue)
         if (actualAmount > 0) {
             context.player.giveExperiencePoints(actualAmount)
         }

@@ -2,7 +2,9 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.magicplant.contents.TraitCard
+import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -25,6 +27,8 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.block.SoundType
+import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
 import net.minecraft.world.level.material.MapColor
@@ -40,7 +44,10 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
     override val blockCodec = SarraceniaBlock.CODEC
     override fun createBlock() = SarraceniaBlock(createCommonSettings().instabreak().mapColor(MapColor.NETHER).sound(SoundType.CROP))
 
-    override val drops = listOf(MaterialCard.SARRACENIA_LEAF.item, MaterialCard.FAIRY_SCALES.item)
+    override val drops = listOf(
+        { HarvestNotation.Crop(MaterialCard.SARRACENIA_LEAF.item().createItemStack(), TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name) },
+        { HarvestNotation.Crop(MaterialCard.FAIRY_SCALES.item().createItemStack(), TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name) },
+    )
     override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.SARRACENIA_LEAF.item().createItemStack(count))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.FAIRY_SCALES.item().createItemStack(count))
 
@@ -95,10 +102,12 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
     }
 }
 
-class SarraceniaBlock(settings: Properties) : AbstractVeropedaBlock(SarraceniaCard, settings) {
+class SarraceniaBlock(settings: Properties) : SimpleMagicPlantBlock(SarraceniaCard, settings) {
     companion object {
         val CODEC: MapCodec<SarraceniaBlock> = simpleCodec(::SarraceniaBlock)
     }
 
     override fun codec() = CODEC
+
+    override fun getAgeProperty(): IntegerProperty = BlockStateProperties.AGE_3
 }

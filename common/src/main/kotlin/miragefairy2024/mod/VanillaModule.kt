@@ -31,6 +31,7 @@ enum class ItemTagCard(identifier: ResourceLocation, val title: EnJa) {
     PRISMARINE_SHARDS(ResourceLocation("c", "prismarine_shards"), EnJa("Prismarine Shards", "プリズマリンの欠片")),
     PLANT_TOOLS(MirageFairy2024.identifier("plant_tools"), EnJa("Plant Tools", "植物ツール")),
     SPIRITS(MirageFairy2024.identifier("spirits"), EnJa("Spirits", "蒸留酒")),
+    SAP(MirageFairy2024.identifier("sap"), EnJa("Sap", "樹液")),
     ;
 
     val tag = identifier.toItemTag()
@@ -109,12 +110,12 @@ fun initVanillaModule() {
     CustomizedRemainderRegistry.register(Items.POTION) { Items.GLASS_BOTTLE.createItemStack() }
 
 
-    registerClientDebugItem("dump_biome_tags", Items.STRING.toTextureSource(), 0xFF00FF00.toInt()) { world, player, _, _ ->
-        val tags = world.registryAccess().registryOrThrow(Registries.BIOME).tagNames.toList()
+    registerClientDebugItem("dump_biome_tags", Items.STRING.toTextureSource(), 0xFF00FF00.toInt()) { level, player, _, _ ->
+        val tags = level.registryAccess().registryOrThrow(Registries.BIOME).tagNames.toList()
         val sb = StringBuilder()
         tags.sortedBy { it.location() }.forEach { tag ->
             sb.append("${tag.location()}\n")
-            val biomes = world.registryAccess().registryOrThrow(Registries.BIOME)[tag].toList()
+            val biomes = level.registryAccess().registryOrThrow(Registries.BIOME)[tag].toList()
             biomes.sortedBy { it.unwrapKey().get().location() }.forEach { biome ->
                 sb.append("  ${biome.unwrapKey().get().location().string}\n")
             }

@@ -28,6 +28,7 @@ import miragefairy2024.util.string
 import miragefairy2024.util.style
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.or
+import mirrg.kotlin.hydrogen.argbOf
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.world.InteractionHand
@@ -62,7 +63,7 @@ fun initCreativeGeneAmpoule() {
         card.item.registerModelGeneration(createCreativeGeneAmpouleModel())
         card.item.registerColorProvider { itemStack, tintIndex ->
             if (tintIndex == 1) {
-                itemStack.getTraitStacks().or { return@registerColorProvider 0xFFFFFFFF.toInt() }.traitStackList.firstOrNull().or { return@registerColorProvider 0xFFFFFFFF.toInt() }.trait.primaryEffect.color or 0xFF000000.toInt()
+                argbOf(0xFF, itemStack.getTraitStacks().or { return@registerColorProvider 0xFFFFFFFF.toInt() }.traitStackList.firstOrNull().or { return@registerColorProvider 0xFFFFFFFF.toInt() }.trait.primaryEffect.color)
             } else {
                 0xFFFFFFFF.toInt()
             }
@@ -70,10 +71,9 @@ fun initCreativeGeneAmpoule() {
         card.item.enJa(EnJa("Creative Gene Ampoule", "アカーシャによる生命設計の針"))
         val poemList = PoemList(null)
             .poem("This allows you to freely edit traits.", "種類に従って球根を持つ草を生えさせよ。")
-            .description("description1", "Use: Grant the trait", "使用時、特性を付与")
-            .description("description2", "Use while sneaking: Remove the trait", "スニーク中に使用時、特性を削除")
-            .description("description3", "Use: Increases bits", "使用時、ビットを増加")
-            .description("description4", "Use while sneaking: Decreases bits", "スニーク中に使用時、ビットを減少")
+            .description("description1", "Use on magic plant: Grant trait", "魔法植物に使用時、特性を付与")
+            .description("description2", "Use elsewhere: Increase bits", "魔法植物以外に使用時、ビットを増加")
+            .description("description3", "While sneaking: Reversed effect", "スニーク中は逆の効果")
         card.item.registerPoem(poemList)
         card.item.registerPoemGeneration(poemList)
     }
@@ -106,9 +106,9 @@ class CreativeGeneAmpouleItem(settings: Properties) : Item(settings) {
         return InteractionResult.CONSUME
     }
 
-    override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
         val itemStack = user.getItemInHand(hand)
-        if (world.isClientSide) return InteractionResultHolder.success(itemStack)
+        if (level.isClientSide) return InteractionResultHolder.success(itemStack)
         val traitStacks = itemStack.getTraitStacks() ?: TraitStacks.EMPTY
         if (!user.isShiftKeyDown) {
             itemStack.setTraitStacks(TraitStacks.of(traitStacks.traitStackMap.mapValues { (it.value shl 1).let { level -> if (level <= 0) 1 else level } }))

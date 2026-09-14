@@ -8,10 +8,10 @@ import miragefairy2024.mod.fairy.initFairyModule
 import miragefairy2024.mod.fairybuilding.initFairyBuildingModule
 import miragefairy2024.mod.fairylogistics.initFairyLogisticsModule
 import miragefairy2024.mod.fairyquest.initFairyQuestModule
-import miragefairy2024.mod.haimeviska.initHaimeviskaModule
 import miragefairy2024.mod.initAttachmentChangedEventModule
 import miragefairy2024.mod.initBagModule
 import miragefairy2024.mod.initDebrisModule
+import miragefairy2024.mod.initDepositedSulfurModule
 import miragefairy2024.mod.initFairyFountainModule
 import miragefairy2024.mod.initFoodIngredientsModule
 import miragefairy2024.mod.initHarvestNotationModule
@@ -35,6 +35,7 @@ import miragefairy2024.mod.placeditem.initPlacedItemModule
 import miragefairy2024.mod.recipeviewer.initRecipeViewerModule
 import miragefairy2024.mod.structure.initStructureModule
 import miragefairy2024.mod.tool.initToolModule
+import miragefairy2024.mod.tree.initTreeModule
 
 context(ModContext)
 fun initModules() {
@@ -45,8 +46,9 @@ fun initModules() {
     initMaterialsModule()
     initBlockMaterialsModule()
     initOresModule()
+    initDepositedSulfurModule()
     initMagicPlantModule()
-    initHaimeviskaModule()
+    initTreeModule()
     initFairyQuestModule()
     initNinePatchTextureModule()
     initPlacedItemModule()

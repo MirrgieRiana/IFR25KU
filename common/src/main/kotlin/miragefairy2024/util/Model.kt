@@ -35,12 +35,14 @@ fun Model(parent: ResourceLocation, vararg textureKeys: TextureSlot) = ModelTemp
 fun Model(parent: ResourceLocation, variant: String, vararg textureKeys: TextureSlot) = ModelTemplate(Optional.of(parent), Optional.of(variant), *textureKeys)
 
 class ModelData(
-    val parent: ResourceLocation,
+    val parent: ResourceLocation? = null,
+    val ambientOcclusion: Boolean? = null,
     val textures: ModelTexturesData? = null,
     val elements: ModelElementsData? = null,
 ) {
     fun toJsonElement(): JsonElement = jsonObjectNotNull(
-        "parent" to parent.string.jsonElement,
+        "parent" to parent?.string?.jsonElement,
+        "ambientocclusion" to ambientOcclusion?.jsonElement,
         "textures" to textures?.toJsonElement(),
         "elements" to elements?.toJsonElement(),
     )

@@ -34,6 +34,8 @@ import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.BlockStateVariantRotation
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Model
+import miragefairy2024.util.ModelData
+import miragefairy2024.util.ModelTexturesData
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.TextureMapping
@@ -69,6 +71,7 @@ import miragefairy2024.util.registerSmeltingRecipeGeneration
 import miragefairy2024.util.registerStonecutterRecipeGeneration
 import miragefairy2024.util.registerTranslucentRenderLayer
 import miragefairy2024.util.registerVariantsBlockStateGeneration
+import miragefairy2024.util.string
 import miragefairy2024.util.times
 import miragefairy2024.util.toIngredient
 import miragefairy2024.util.toItemTag
@@ -672,7 +675,16 @@ open class BlockMaterialCard(
             context(ModContext)
             override fun initModelGeneration() {
                 block.registerModelGeneration {
-                    Model(ResourceLocation("minecraft", "block/dragon_egg"), TextureSlot.ALL, TextureSlot.PARTICLE).with(
+                    Model { textureMapping ->
+                        ModelData(
+                            parent = ResourceLocation("minecraft", "block/dragon_egg"),
+                            ambientOcclusion = false,
+                            textures = ModelTexturesData(
+                                TextureSlot.ALL.id to textureMapping.get(TextureSlot.ALL).string,
+                                TextureSlot.PARTICLE.id to textureMapping.get(TextureSlot.PARTICLE).string,
+                            ),
+                        )
+                    }.with(
                         TextureSlot.ALL to "block/" * block().getIdentifier(),
                         TextureSlot.PARTICLE to "block/" * block().getIdentifier(),
                     )
@@ -685,7 +697,7 @@ open class BlockMaterialCard(
                     it.createSilkTouchOnlyTable(block())
                 }
             }
-        }.init {
+        }.sound(SoundType.DECORATED_POT_CRACKED).init {
             registerShapedRecipeGeneration(item) {
                 pattern("##")
                 pattern("##")
@@ -694,6 +706,137 @@ open class BlockMaterialCard(
             registerShapelessRecipeGeneration({ Items.EGG }, count = 4) {
                 requires(item())
             } on item modId MirageFairy2024.MOD_ID from item
+        }
+
+        private fun createKohakuto(
+            path: String,
+            name: EnJa,
+            poemList: PoemList,
+            mapColor: MapColor,
+            input: () -> Item,
+            lower: () -> Item,
+        ): BlockMaterialCard {
+            return !object : BlockMaterialCard(
+                path, name,
+                poemList,
+                mapColor, 0.6F, 0.6F,
+            ) {
+                override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never).pushReaction(PushReaction.PUSH_ONLY)
+                override suspend fun createBlock(properties: BlockBehaviour.Properties) = SemiOpaqueTransparentBlock(properties)
+            }.translucent().sound(SoundType.TUFF).init {
+                registerCompressionRecipeGeneration(lower, { lower().toIngredient() }, item, { item().toIngredient() })
+                registerSimpleMachineRecipeGeneration(
+                    AthanorRecipeCard,
+                    inputs = listOf(
+                        { SimpleMachineRecipe.Input(input().toIngredient(), 36) },
+                        { SimpleMachineRecipe.Input(Items.DRIED_KELP_BLOCK.toIngredient(), 1) },
+                    ),
+                    outputs = listOf({ item().createItemStack() }),
+                    duration = 20 * 60,
+                ) on input
+            }
+        }
+
+        val KOHAKUTO_BLOCK = createKohakuto(
+            "kohakuto_block", EnJa("Kohakuto Block", "琥珀糖ブロック"),
+            PoemList(null),
+            MapColor.COLOR_YELLOW, { Items.SUGAR }, MaterialCard.KOHAKUTO.item,
+        )
+        val PLASTIC_TREE_SAP_KOHAKUTO_BLOCK = createKohakuto(
+            "plastic_tree_sap_kohakuto_block", EnJa("Plastic Tree Sap Kohakuto Block", "プラノキの樹液の琥珀糖ブロック"),
+            PoemList(1).poem("Ideal environment for etherobacteria.", "知性を育む寒天培地。"),
+            MapColor.TERRACOTTA_YELLOW, MaterialCard.PLASTIC_TREE_SAP.item, MaterialCard.PLASTIC_TREE_SAP_KOHAKUTO.item,
+        )
+        val HAIMEVISKA_SAP_KOHAKUTO_BLOCK = createKohakuto(
+            "haimeviska_sap_kohakuto_block", EnJa("Haimeviska Sap Kohakuto Block", "ハイメヴィスカの樹液の琥珀糖ブロック"),
+            PoemList(1).poem("It may have once been part of a brain.", "誰も知らない記憶のコラージュ。"),
+            MapColor.COLOR_ORANGE, MaterialCard.HAIMEVISKA_SAP.item, MaterialCard.HAIMEVISKA_SAP_KOHAKUTO.item,
+        )
+        val BLACK_TREACLE_KOHAKUTO_BLOCK = createKohakuto(
+            "black_treacle_kohakuto_block", EnJa("Black Treacle Kohakuto Block", "黒蜜の琥珀糖ブロック"),
+            PoemList(null),
+            MapColor.COLOR_BROWN, MaterialCard.BLACK_TREACLE.item, MaterialCard.BLACK_TREACLE_KOHAKUTO.item,
+        )
+        val MERRRRIA_DROP_KOHAKUTO_BLOCK = createKohakuto(
+            "merrrria_drop_kohakuto_block", EnJa("Merrrria Drop Kohakuto Block", "月のしずくの琥珀糖ブロック"),
+            PoemList(3).poem("Moonlight, moon scent and moon taste.", "砂糖の硬さ、砕ける音、誰かの思い。"),
+            MapColor.COLOR_LIGHT_BLUE, MaterialCard.MERRRRIA_DROP.item, MaterialCard.MERRRRIA_DROP_KOHAKUTO.item,
+        )
+        val PHANTOM_DROP_KOHAKUTO_BLOCK = createKohakuto(
+            "phantom_drop_kohakuto_block", EnJa("Phantom Drop Kohakuto Block", "幻想の雫の琥珀糖ブロック"),
+            PoemList(4).poem("Dispose of useless parallel universes.", "運命に干渉するための奇跡。"),
+            MapColor.COLOR_PURPLE, MaterialCard.PHANTOM_DROP.item, MaterialCard.PHANTOM_DROP_KOHAKUTO.item,
+        )
+        val RESIN_CEMENTED_DIRT = !BlockMaterialCard(
+            "resin_cemented_dirt", EnJa("Resin-Cemented Dirt", "石化した樹脂状の土"),
+            PoemList(1).poem(EnJa("Antimicrobial terpenes prevent decay.", "電気の由来を語る土。")),
+            MapColor.COLOR_ORANGE, 0.8F, 0.8F,
+        ).sound(SoundType.TUFF).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.DIRT).init {
+            // 分解レシピ
+            registerSimpleMachineRecipeGeneration(
+                AthanorRecipeCard,
+                inputs = listOf({ SimpleMachineRecipe.Input(item().toIngredient(), 16) }),
+                outputs = listOf(
+                    { Items.DIRT.createItemStack(4) },
+                    { MaterialCard.PLASTIC_TREE_SAP.item().createItemStack(8) },
+                    { MaterialCard.RETINITE.item().createItemStack(3) },
+                    { MaterialCard.COPAL.item().createItemStack(1) },
+                ),
+                duration = 20 * 60,
+            ) on item modId MirageFairy2024.MOD_ID from item
+        }
+        val RESIN_CEMENTED_DIRT_BRICKS = !BlockMaterialCard(
+            "resin_cemented_dirt_bricks", EnJa("Resin-Cemented Dirt Bricks", "石化した樹脂状の土レンガ"),
+            PoemList(1).poem(EnJa("The only nutrient for etherobacteria.", "知性の根源。")),
+            MapColor.COLOR_ORANGE, 1.0F, 1.0F,
+        ).sound(SoundType.TUFF_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerShapedRecipeGeneration(item, count = 4) {
+                pattern("##")
+                pattern("##")
+                define('#', RESIN_CEMENTED_DIRT.item)
+            } on RESIN_CEMENTED_DIRT.item
+            registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT.item, item)
+        }
+        val RESIN_CEMENTED_DIRT_BRICKS_SLAB: BlockMaterialCard = !object : BlockMaterialCard(
+            "resin_cemented_dirt_bricks_slab", EnJa("Resin-Cemented Dirt Brick Slab", "石化した樹脂状の土レンガのハーフブロック"),
+            PoemList(1).poem(EnJa("Inseparable mixtures of botanicals.", "木の蜜は地に触れ、そして永久に囚われる。")),
+            MapColor.COLOR_ORANGE, 1.0F, 1.0F,
+        ) {
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
+            context(ModContext) override fun initBlockStateGeneration() = Unit
+            context(ModContext) override fun initModelGeneration() = Unit
+            context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
+        }.sound(SoundType.TUFF_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
+            registerBlockFamily(TexturedModel.CUBE, RESIN_CEMENTED_DIRT_BRICKS.block) { it.slab(block()) }
+            registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT.item, item)
+            registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT_BRICKS.item, item, 2)
+        }
+        val RESIN_CEMENTED_DIRT_BRICKS_STAIRS: BlockMaterialCard = !object : BlockMaterialCard(
+            "resin_cemented_dirt_bricks_stairs", EnJa("Resin-Cemented Dirt Brick Stairs", "石化した樹脂状の土レンガの階段"),
+            PoemList(1).poem(EnJa("Spontaneous intellect formation process.", "自然が創り上げる、ウィスプの心髄。")),
+            MapColor.COLOR_ORANGE, 1.0F, 1.0F,
+        ) {
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(RESIN_CEMENTED_DIRT_BRICKS.block.await().defaultBlockState(), properties)
+            context(ModContext) override fun initBlockStateGeneration() = Unit
+            context(ModContext) override fun initModelGeneration() = Unit
+        }.sound(SoundType.TUFF_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
+            registerBlockFamily(TexturedModel.CUBE, RESIN_CEMENTED_DIRT_BRICKS.block) { it.stairs(block()) }
+            registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT.item, item)
+            registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT_BRICKS.item, item)
+        }
+        val RETINITE_BLOCK = !BlockMaterialCard(
+            "retinite_block", EnJa("Retinite Block", "レチナイトブロック"),
+            PoemList(null),
+            MapColor.TERRACOTTA_YELLOW, 5.0F, 6.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.RETINITE),
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
+            registerCompressionRecipeGeneration(MaterialCard.RETINITE.item, { MaterialCard.RETINITE.ore!!.ingredient }, item, { ore!!.ingredient })
+        }
+        val COPAL_BLOCK = !BlockMaterialCard(
+            "copal_block", EnJa("Copal Block", "コーパルブロック"),
+            PoemList(null),
+            MapColor.GOLD, 3.0F, 3.0F, ore = Ore(Shape.STORAGE_BLOCKS, Material.COPAL),
+        ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
+            registerCompressionRecipeGeneration(MaterialCard.COPAL.item, { MaterialCard.COPAL.ore!!.ingredient }, item, { ore!!.ingredient })
         }
         val NECTARFLOWER: BlockMaterialCard = !object : BlockMaterialCard(
             "nectarflower", EnJa("Nectarflower", "ミツクサ"),
@@ -840,7 +983,7 @@ fun initBlockMaterialsModule() {
             { MaterialCard.XARPITE.item().createItemStack(1) },
         ),
         duration = 20 * 60,
-    ) on AURA_RESISTANT_CERAMICS_TAG modId MirageFairy2024.MOD_ID
+    ) on AURA_RESISTANT_CERAMICS_TAG modId MirageFairy2024.MOD_ID from AURA_RESISTANT_CERAMICS_TAG
     registerSimpleMachineRecipeGeneration(
         AthanorRecipeCard,
         inputs = listOf({ SimpleMachineRecipe.Input(AURA_RESISTANT_CERAMIC_SLABS_TAG.toIngredient(), 8) }),
@@ -849,7 +992,7 @@ fun initBlockMaterialsModule() {
             { MaterialCard.XARPITE.item().createItemStack(1) },
         ),
         duration = 20 * 60,
-    ) on AURA_RESISTANT_CERAMIC_SLABS_TAG modId MirageFairy2024.MOD_ID
+    ) on AURA_RESISTANT_CERAMIC_SLABS_TAG modId MirageFairy2024.MOD_ID from AURA_RESISTANT_CERAMIC_SLABS_TAG
     registerSimpleMachineRecipeGeneration(
         AthanorRecipeCard,
         inputs = listOf({ SimpleMachineRecipe.Input(AURA_RESISTANT_CERAMIC_STAIRS_TAG.toIngredient(), 16) }),
@@ -858,7 +1001,7 @@ fun initBlockMaterialsModule() {
             { MaterialCard.XARPITE.item().createItemStack(3) },
         ),
         duration = 20 * 60,
-    ) on AURA_RESISTANT_CERAMIC_STAIRS_TAG modId MirageFairy2024.MOD_ID
+    ) on AURA_RESISTANT_CERAMIC_STAIRS_TAG modId MirageFairy2024.MOD_ID from AURA_RESISTANT_CERAMIC_STAIRS_TAG
 
 }
 

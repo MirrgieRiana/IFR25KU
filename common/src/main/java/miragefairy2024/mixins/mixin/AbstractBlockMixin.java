@@ -14,9 +14,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BlockBehaviour.class)
 public class AbstractBlockMixin {
     @Inject(method = "getDestroyProgress", at = @At("RETURN"), cancellable = true)
-    private void calcBlockBreakingDelta(BlockState state, Player player, BlockGetter world, BlockPos pos, CallbackInfoReturnable<Float> cir) {
+    private void calcBlockBreakingDelta(BlockState state, Player player, BlockGetter level, BlockPos pos, CallbackInfoReturnable<Float> cir) {
         float blockBreakingDelta = cir.getReturnValue();
-        blockBreakingDelta = BlockBreakingCallback.EVENT.invoker().calcBlockBreakingDelta(state, player, world, pos, blockBreakingDelta);
+        blockBreakingDelta = BlockBreakingCallback.EVENT.invoker().calcBlockBreakingDelta(state, player, level, pos, blockBreakingDelta);
         cir.setReturnValue(blockBreakingDelta);
     }
 }

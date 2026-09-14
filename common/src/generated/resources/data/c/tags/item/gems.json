@@ -9,6 +9,10 @@
       "required": false
     },
     {
+      "id": "#c:gems/copal",
+      "required": false
+    },
+    {
       "id": "#c:gems/fairy_crystal",
       "required": false
     },
@@ -62,6 +66,10 @@
     },
     {
       "id": "#c:gems/prominite",
+      "required": false
+    },
+    {
+      "id": "#c:gems/retinite",
       "required": false
     },
     {
