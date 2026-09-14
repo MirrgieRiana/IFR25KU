@@ -74,7 +74,7 @@ apt-get "${APT_OPTS[@]}" update
 mkdir -p "$DEST/flat" ~/.claude_tmp/chrome-libs-work && cd ~/.claude_tmp/chrome-libs-work
 apt-get "${APT_OPTS[@]}" download libnspr4 libnss3 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libatk1.0-0 libatk-bridge2.0-0 libatspi2.0-0 libdbus-1-3 libgbm1 libxkbcommon0 libdrm2 libwayland-server0
 for deb in *.deb; do dpkg-deb -x "$deb" "$DEST"; done
-find "$DEST" -path "$DEST/flat" -prune -o \( -name '*.so*' -type f -print \) | while read f; do cp -n "$f" "$DEST/flat/"; done
+find "$DEST" -path "$DEST/flat" -prune -o \( -name '*.so*' \( -type f -o -type l \) -print \) | while read f; do cp -Pn "$f" "$DEST/flat/"; done
 
 # 日本語フォントなのだ～🌱
 apt-get "${APT_OPTS[@]}" download fonts-noto-cjk
@@ -88,6 +88,8 @@ export LD_LIBRARY_PATH="$DEST/flat"
 ```
 
 `dpkg-deb` が展開するパスは `usr/lib/x86_64-linux-gnu/` みたいに深いところに散らばるから、`flat/` へ集めて `LD_LIBRARY_PATH` を1本にまとめているのだ～🌱 パッケージの一覧は、`playwright install-deps chromium` が入れようとするもののうち、この環境に足りていなかった分なのだぁ✨
+
+集めるときに `-type l` と `cp -P` が要るのは、Chromium が要求するのが `libXcomposite.so.1` みたいな SONAME の方で、その実体は `libXcomposite.so.1.0.0` という別名で入っているからなのだ～🌱 SONAME はそこへのシンボリックリンクとして展開されるから、リンクを拾わないと `flat/` の中で名前が解決できないのだぁ…🌧️
 
 ブラウザ本体は入れなくていいのだ～🌱 `generateOgImages` が依存する `installPlaywrightBrowsers` タスクが、`site/build/playwrightBrowsers/` へ調達してくれるのだぁ✨ だから `playwright install` を手で叩く必要は無いのだ～🌱 降りてくるのはヘッドレスシェルと ffmpeg だけで、Chromium 本体も Firefox も WebKit も入らないのだ～🌱
 
@@ -133,7 +135,7 @@ minimal-mistakesテーマの通常ファイルは `site/src/main/resources/` 内
 | `src/pages/resources/<ページ名>/` の画像 | `assets/images/<ページ名>/` |
 | `src/pages/resources/YYYY-MM-DD-slug/` の画像 | `YYYY/MM/DD/ファイル名`（slug階層なし、`assets/images/` プレフィックスなし、ファイル名衝突チェックあり） |
 
-ブログ記事の `header.teaser` パスは `/YYYY/MM/DD/ファイル名` の形で書くのだ～🌱 拡張子は `.webp` が多いけど、`.png` の teaser も混じっているのだぁ✨ インライン画像は相対パス `![](ファイル名)` で参照するのだ～🌱（`.webp` も `.png` もあるのだ～🌱）。記事本体と同じ階層に出力されるから、`relative_url` フィルタは要らないのだ～🌱
+ブログ記事の `header.teaser` パスは `/YYYY/MM/DD/ファイル名` の形で書くのだ～🌱 拡張子は `.webp` が多いけど、`.png` の teaser も混じっているのだぁ✨ インライン画像は相対パス `![](ファイル名)` で参照するのだ～🌱（`.webp` も `.png` もあるのだ～🌱） 記事本体と同じ階層に出力されるから、`relative_url` フィルタは要らないのだ～🌱
 
 ### OG画像のベース画像優先順位なのだ～🌱
 
