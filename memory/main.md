@@ -135,7 +135,7 @@ minimal-mistakesテーマの通常ファイルは `site/src/main/resources/` 内
 | `src/pages/resources/<ページ名>/` の画像 | `assets/images/<ページ名>/` |
 | `src/pages/resources/YYYY-MM-DD-slug/` の画像 | `YYYY/MM/DD/ファイル名`（slug階層なし、`assets/images/` プレフィックスなし、ファイル名衝突チェックあり） |
 
-ブログ記事の `header.teaser` パスは `/YYYY/MM/DD/ファイル名` の形で書くのだ～🌱 拡張子は `.webp` が多いけど、`.png` の teaser も混じっているのだぁ✨ インライン画像は相対パス `![](ファイル名)` で参照するのだ～🌱（`.webp` も `.png` もあるのだ～🌱）。記事本体と同じ階層に出力されるから、`relative_url` フィルタは要らないのだ～🌱
+ブログ記事の `header.teaser` パスは `/YYYY/MM/DD/ファイル名` の形で書くのだ～🌱 拡張子は `.webp` が多いけど、`.png` の teaser も混じっているのだぁ✨ インライン画像は相対パス `![](ファイル名)` で参照するのだ～🌱（`.webp` も `.png` もあるのだ～🌱） 記事本体と同じ階層に出力されるから、`relative_url` フィルタは要らないのだ～🌱
 
 ### OG画像のベース画像優先順位なのだ～🌱
 
