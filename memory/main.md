@@ -74,7 +74,7 @@ apt-get "${APT_OPTS[@]}" update
 mkdir -p "$DEST/flat" ~/.claude_tmp/chrome-libs-work && cd ~/.claude_tmp/chrome-libs-work
 apt-get "${APT_OPTS[@]}" download libnspr4 libnss3 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libatk1.0-0 libatk-bridge2.0-0 libatspi2.0-0 libdbus-1-3 libgbm1 libxkbcommon0 libdrm2 libwayland-server0
 for deb in *.deb; do dpkg-deb -x "$deb" "$DEST"; done
-find "$DEST" -path "$DEST/flat" -prune -o \( -name '*.so*' -type f -print \) | while read f; do cp -n "$f" "$DEST/flat/"; done
+find "$DEST" -path "$DEST/flat" -prune -o \( -name '*.so*' \( -type f -o -type l \) -print \) | while read f; do cp -an "$f" "$DEST/flat/"; done
 
 # 日本語フォントなのだ～🌱
 apt-get "${APT_OPTS[@]}" download fonts-noto-cjk
@@ -88,6 +88,8 @@ export LD_LIBRARY_PATH="$DEST/flat"
 ```
 
 `dpkg-deb` が展開するパスは `usr/lib/x86_64-linux-gnu/` みたいに深いところに散らばるから、`flat/` へ集めて `LD_LIBRARY_PATH` を1本にまとめているのだ～🌱 パッケージの一覧は、`playwright install-deps chromium` が入れようとするもののうち、この環境に足りていなかった分なのだぁ✨
+
+集めるときに `-type l` と `cp -a` を落としちゃうと、Chromium は起動できないのだぁ…🌧️ Chromium が要求するのは `libXcomposite.so.1` みたいなSONAMEなんだけど、`.deb` の中ではそれが `libXcomposite.so.1.0.0` へのシンボリックリンクになっているのだ～🌱 リンクを取りこぼすと、実体だけが `flat/` に並んで、要求されている名前が1個も見つからない状態になっちゃうのだぁ…🌧️
 
 ブラウザ本体は入れなくていいのだ～🌱 `Playwright.create()` の初回の呼び出しで、`~/.cache/ms-playwright/` へ自動で降ってくるのだぁ✨ だから `playwright install` を明示的に叩く必要は無いのだ～🌱
 
