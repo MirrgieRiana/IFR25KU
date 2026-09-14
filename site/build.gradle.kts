@@ -172,7 +172,7 @@ private fun parseFrontMatter(file: File): Map<String, Any>? {
     return Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any>
 }
 
-class OgImageRenderer : AutoCloseable {
+class OgImageRenderer(private val browsersDir: File) : AutoCloseable {
     private var playwright: Playwright? = null
     private var browser: Browser? = null
     private var page: Page? = null
@@ -182,7 +182,11 @@ class OgImageRenderer : AutoCloseable {
             ImageIO.scanForPlugins()
             // ブラウザの調達は installPlaywrightBrowsers に任せるのだ～🌱
             // これを抑止しないと、既にヘッドレスシェルがあっても、FirefoxやWebKitまで含めた全部が降ってきちゃうのだぁ…🌧️
-            playwright = Playwright.create(Playwright.CreateOptions().setEnv(mapOf("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD" to "1")))
+            val env = mapOf(
+                "PLAYWRIGHT_BROWSERS_PATH" to browsersDir.absolutePath,
+                "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD" to "1",
+            )
+            playwright = Playwright.create(Playwright.CreateOptions().setEnv(env))
             browser = playwright!!.chromium().launch()
             page = browser!!.newPage().apply { setViewportSize(1200, 630) }
         }
@@ -226,20 +230,28 @@ class OgImageRenderer : AutoCloseable {
     }
 }
 
+val playwrightBrowsersDir = layout.buildDirectory.dir("playwrightBrowsers").get().asFile
+
 val installPlaywrightBrowsers = tasks.register<JavaExec>("installPlaywrightBrowsers") {
     group = "other"
+
+    // 調達をやり直す必要があるのは、Playwrightのバージョンが上がったときだけなのだ～🌱
+    inputs.property("playwrightVersion", Playwright::class.java.`package`.implementationVersion)
+    outputs.dir(playwrightBrowsersDir)
 
     classpath = buildscript.configurations.getByName("classpath")
     mainClass = "com.microsoft.playwright.CLI"
     // OG画像の描画に使うのはヘッドレスシェルだけなのだ～🌱
     // ブラウザの種類を指定しないと、Chromium本体・Firefox・WebKitまで降ってきて、1.2GBになっちゃうのだぁ…🌧️
     args("install", "chromium-headless-shell")
+    // 既定の取得先はホームディレクトリの下で、Gradleから見ると何の管理下にもない場所なのだ～🌱
+    environment("PLAYWRIGHT_BROWSERS_PATH", playwrightBrowsersDir.absolutePath)
 }
 
 val generateOgImages = tasks.register("generateOgImages") {
     group = "generate"
 
-    dependsOn(installPlaywrightBrowsers)
+    dependsOn(installPlaywrightBrowsers) // UP-TO-DATE の判定にかかるコストの削減のために敢えて inputs にしない
 
     val pagesDir = file("src/pages/resources")
     val resourcesDir = file("src/main/resources")
@@ -266,7 +278,7 @@ val generateOgImages = tasks.register("generateOgImages") {
             }
 
         val defaultBg = file("src/ogImages/assets/default-background.svg")
-        OgImageRenderer().use { renderer ->
+        OgImageRenderer(playwrightBrowsersDir).use { renderer ->
             mdFiles.forEach { mdFile ->
                 val frontMatter = parseFrontMatter(mdFile) ?: return@forEach
 

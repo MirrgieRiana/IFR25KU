@@ -51,11 +51,11 @@ jobs:
       # ブラウザ本体はinstallPlaywrightBrowsersタスクが取得するから、ここでは共有ライブラリだけを入れるのだ～🌱
       - name: ヘッドレスブラウザの共有ライブラリのインストール
         run: npx --yes playwright@1.58.0 install-deps chromium
-      # ブラウザ本体の取得先は~/.cache/ms-playwright/で、Gradleのキャッシュの範囲外なのだ～🌱
+      # installPlaywrightBrowsersの成果物は、setup-gradleがキャッシュする~/.gradle/の範囲外なのだ～🌱
       - name: ヘッドレスブラウザのキャッシュ
         uses: actions/cache@v4
         with:
-          path: ~/.cache/ms-playwright
+          path: site/build/playwrightBrowsers
           key: playwright-${{ runner.os }}-1.58.0
       # ランナーにはCJKのグリフを持つフォントが無くて、入れないとタイトルの文字が全て豆腐になっちゃうのだぁ…🌧️
       - name: 日本語フォントのインストール
