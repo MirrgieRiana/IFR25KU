@@ -228,7 +228,6 @@ val generateOgImages = tasks.register("generateOgImages") {
     group = "generate"
 
     val pagesDir = file("src/pages/resources")
-    val resourcesDir = file("src/main/resources")
     val ogImagesDir = layout.buildDirectory.dir("ogImages").get().asFile
     val outputDir = ogImagesDir.resolve("assets/images")
     val regenerate = project.hasProperty("regenerate")
