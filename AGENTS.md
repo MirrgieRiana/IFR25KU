@@ -161,6 +161,12 @@ https://github.com/MirrgieRiana/mfku-wiki
 
 https://github.com/MirrgieRiana/MFKU-Official-Web-Site-Mirror
 
+---
+
+現実世界における同じ物体や概念の調査も、非常に有用です。
+特に日本語版および英語版の Wikipedia は、とりあえず読んでおくくらいの教科書です。
+もちろん、Wikipedia だけでなく、他の Web サイトも有用です。
+
 ### 考証
 
 IFR のコンテンツ設計には、世界観考証が不可欠です。
