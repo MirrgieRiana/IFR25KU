@@ -795,7 +795,7 @@ open class BlockMaterialCard(
         }
         val RESIN_CEMENTED_DIRT_BRICKS_SLAB: BlockMaterialCard = !object : BlockMaterialCard(
             "resin_cemented_dirt_bricks_slab", EnJa("Resin-Cemented Dirt Brick Slab", "石化した樹脂状の土レンガのハーフブロック"),
-            PoemList(1).poem(EnJa("Inseparable mixtures of botanicals.", "木の蜜は地に触れ、そして永久に囚われる。")),
+            PoemList(1).poem(EnJa("Inseparable mixtures of botanicals.", "木の蜜は地に触れ、そして永遠に囚われる。")),
             MapColor.COLOR_ORANGE, 1.0F, 1.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
