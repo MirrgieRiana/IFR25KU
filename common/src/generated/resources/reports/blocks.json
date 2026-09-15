@@ -14054,6 +14054,17 @@
       }
     ]
   },
+  "miragefairy2024:nectarflower": {
+    "definition": {
+      "type": "miragefairy2024:nectarflower",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
   "miragefairy2024:nephrite_block": {
     "definition": {
       "type": "minecraft:block",
