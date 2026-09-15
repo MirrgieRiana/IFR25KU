@@ -227,26 +227,8 @@ class OgImageRenderer : AutoCloseable {
     }
 }
 
-// Playwrightがブラウザを置く既定の場所なのだ～🌱
-// 調達先を移すとCIのキャッシュの対象も移るだけで得が無いから、既定のままにして、ここでは場所を言い当てるだけなのだ～🌱
-// 決め方はplaywright-javaが同梱するdriverのregistryDirectoryに揃えてあって、食い違うとUP-TO-DATEの判定が効かなくなるのだぁ…🌧️
-val playwrightBrowsersDir = run {
-    val userHome = File(System.getProperty("user.home"))
-    val osName = System.getProperty("os.name").lowercase()
-    val cacheDir = when {
-        osName.startsWith("windows") -> System.getenv("LOCALAPPDATA")?.let { File(it) } ?: File(userHome, "AppData/Local")
-        osName.startsWith("mac") -> File(userHome, "Library/Caches")
-        else -> System.getenv("XDG_CACHE_HOME")?.let { File(it) } ?: File(userHome, ".cache")
-    }
-    File(cacheDir, "ms-playwright")
-}
-
 val installPlaywrightBrowsers = tasks.register<JavaExec>("installPlaywrightBrowsers") {
     group = "other"
-
-    // 調達をやり直す必要があるのは、Playwrightのバージョンが上がったときだけなのだ～🌱
-    inputs.property("playwrightVersion", Playwright::class.java.`package`.implementationVersion)
-    outputs.dir(playwrightBrowsersDir)
 
     classpath = buildscript.configurations.getByName("classpath")
     mainClass = "com.microsoft.playwright.CLI"
@@ -258,7 +240,7 @@ val installPlaywrightBrowsers = tasks.register<JavaExec>("installPlaywrightBrows
 val generateOgImages = tasks.register("generateOgImages") {
     group = "generate"
 
-    dependsOn(installPlaywrightBrowsers) // UP-TO-DATE の判定にかかるコストの削減のために敢えて inputs にしない
+    dependsOn(installPlaywrightBrowsers)
 
     val pagesDir = file("src/pages/resources")
     val resourcesDir = file("src/main/resources")
