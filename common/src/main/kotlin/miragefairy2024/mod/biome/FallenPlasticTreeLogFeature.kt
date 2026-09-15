@@ -20,7 +20,6 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
-import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
@@ -48,11 +47,8 @@ class FallenPlasticTreeLogFeature(codec: Codec<NoneFeatureConfiguration>) : Feat
         val originBlockPos = context.origin()
         val random = context.random()
 
-        // 空気や草のように既存のブロックを押しのけずに済み、かつ水没もしていない位置にのみ、丸太を置けるのだ～🌱
-        fun canPlaceLog(blockPos: BlockPos): Boolean {
-            val blockState = level.getBlockState(blockPos)
-            return blockState.canBeReplaced() && blockState.fluidState.isEmpty
-        }
+        // 空気や草や水のように既存のブロックを押しのけずに済む位置にのみ、丸太を置けるのだ～🌱
+        fun canPlaceLog(blockPos: BlockPos) = level.getBlockState(blockPos).canBeReplaced()
 
         // 丸太が宙に浮かないように、直下が完全な立方体であることを確かめるのだ～🌱
         fun isSupported(blockPos: BlockPos): Boolean {
@@ -63,8 +59,8 @@ class FallenPlasticTreeLogFeature(codec: Codec<NoneFeatureConfiguration>) : Feat
         val stumpHeight = random.nextIntBetweenInclusive(1, 2)
         val stumpBlockPosList = (0 until stumpHeight).map { originBlockPos.above(it) }
 
-        // 切り株が既存の地形にめり込む位置では、倒木そのものを生成しないのだ～🌱
-        if (!stumpBlockPosList.all { canPlaceLog(it) }) return false
+        // 水没した切り株が生まれないように、切り株の範囲には空気だけを許すのだ～🌱
+        if (!stumpBlockPosList.all { level.isEmptyBlock(it) }) return false
 
         val logBlockState = TreeBlockCard.PLASTIC_TREE_LOG.block().defaultBlockState()
 
@@ -91,14 +87,6 @@ class FallenPlasticTreeLogFeature(codec: Codec<NoneFeatureConfiguration>) : Feat
         // 地面に横たわる幹なのだ～🌱
         fallenBlockPosList.forEach { blockPos ->
             level.setBlock(blockPos, logBlockState.with(RotatedPillarBlock.AXIS, direction.axis), 2)
-        }
-
-        // 幹の上には苔がまばらに生えるのだ～🌱
-        fallenBlockPosList.forEach { blockPos ->
-            if (random.nextFloat() >= 0.3F) return@forEach
-            val mossBlockPos = blockPos.above()
-            if (!level.getBlockState(mossBlockPos).canBeReplaced()) return@forEach
-            level.setBlock(mossBlockPos, Blocks.MOSS_CARPET.defaultBlockState(), 2)
         }
 
         return true
