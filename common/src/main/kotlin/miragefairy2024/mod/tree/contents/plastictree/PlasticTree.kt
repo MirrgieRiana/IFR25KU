@@ -56,7 +56,7 @@ val GIANT_PLASTIC_TREE_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE wi
 val GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_plastic_tree_old_growth_amber_forest")
 
 /** プラノキは石化した樹脂状の土からしか生えないから、真下がそのブロックである位置に限るのだ～🌱 */
-private val onResinCementedDirt get() = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, BlockMaterialCard.RESIN_CEMENTED_DIRT.block())))
+val onResinCementedDirt get() = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, BlockMaterialCard.RESIN_CEMENTED_DIRT.block())))
 
 context(ModContext)
 fun initPlasticTree() {
