@@ -4,12 +4,14 @@ import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockCard
+import miragefairy2024.mod.tree.contents.plastictree.onResinCementedDirt
 import miragefairy2024.util.Registration
 import miragefairy2024.util.center
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
 import miragefairy2024.util.ground
 import miragefairy2024.util.per
+import miragefairy2024.util.plus
 import miragefairy2024.util.register
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
@@ -34,7 +36,7 @@ object FallenPlasticTreeLogFeatureCard {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature(placedFeatureKey) { per(8) + flower(center, ground) }
+                registerPlacedFeature(placedFeatureKey) { per(8) + flower(center, ground) + onResinCementedDirt }
             }
         }
     }
@@ -46,66 +48,53 @@ class FallenPlasticTreeLogFeature(codec: Codec<NoneFeatureConfiguration>) : Feat
         val originBlockPos = context.origin()
         val random = context.random()
 
-        // 幹が倒れていく方向と、その最大の長さなのだ～🌱
-        val direction = Direction.from2DDataValue(random.nextInt(4))
-        val maxLength = random.nextIntBetweenInclusive(7, 13)
-
-        // 折れ残った根元の高さなのだ～🌱
-        val stumpHeight = random.nextIntBetweenInclusive(1, 2)
-
-        // 直下が地面で、かつ自身が空気や草などの置き換え可能なブロックである場合のみ、丸太を置けるのだ～🌱
+        // 空気や草のように既存のブロックを押しのけずに済み、かつ水没もしていない位置にのみ、丸太を置けるのだ～🌱
         fun canPlaceLog(blockPos: BlockPos): Boolean {
             val blockState = level.getBlockState(blockPos)
-            if (!blockState.canBeReplaced()) return false
-            if (!blockState.fluidState.isEmpty) return false // 水中や溶岩の中には倒れないのだ～🌱
+            return blockState.canBeReplaced() && blockState.fluidState.isEmpty
+        }
+
+        // 丸太が宙に浮かないように、直下が完全な立方体であることを確かめるのだ～🌱
+        fun isSupported(blockPos: BlockPos): Boolean {
             val belowBlockPos = blockPos.below()
             return level.getBlockState(belowBlockPos).isSolidRender(level, belowBlockPos)
         }
 
-        // 地形の起伏に沿わせるため、基準の高さから上下1ブロックの範囲で、丸太を置ける高さを探すのだ～🌱
-        fun findLogBlockPos(baseBlockPos: BlockPos): BlockPos? {
-            listOf(0, 1, -1).forEach { dy ->
-                val blockPos = baseBlockPos.above(dy)
-                if (canPlaceLog(blockPos)) return blockPos
-            }
-            return null
-        }
+        val stumpHeight = random.nextIntBetweenInclusive(1, 2)
+        val stumpBlockPosList = (0 until stumpHeight).map { originBlockPos.above(it) }
 
-        // 根元の位置なのだ～🌱
-        val stumpBlockPos = findLogBlockPos(originBlockPos) ?: return false
-
-        // 根元から1ブロックの隙間を空けた先に、倒れた幹を地形に沿って伸ばすのだ～🌱
-        val logBlockPosList = mutableListOf<BlockPos>()
-        run {
-            var previousBlockPos = stumpBlockPos
-            repeat(maxLength) {
-                val blockPos = findLogBlockPos(previousBlockPos.relative(direction, if (logBlockPosList.isEmpty()) 2 else 1)) ?: return@run
-                logBlockPosList += blockPos
-                previousBlockPos = blockPos
-            }
-        }
-
-        // 大径木の倒木と呼ぶには短すぎる場合は、生成をやめるのだ～🌱
-        if (logBlockPosList.size < 5) return false
-
-        // この時点で生成は確定なのだ～🌱
+        // 切り株が既存の地形にめり込む位置では、倒木そのものを生成しないのだ～🌱
+        if (!stumpBlockPosList.all { canPlaceLog(it) }) return false
 
         val logBlockState = TreeBlockCard.PLASTIC_TREE_LOG.block().defaultBlockState()
 
-        // 折れ残った根元なのだ～🌱
-        repeat(stumpHeight) { dy ->
-            val blockPos = stumpBlockPos.above(dy)
-            if (dy > 0 && !canPlaceLog(blockPos)) return@repeat
+        // 折れ残った切り株なのだ～🌱
+        stumpBlockPosList.forEach { blockPos ->
             level.setBlock(blockPos, logBlockState.with(RotatedPillarBlock.AXIS, Direction.Axis.Y), 2)
         }
 
+        val direction = Direction.from2DDataValue(random.nextInt(4))
+        val length = random.nextIntBetweenInclusive(5, 9)
+
+        // 折れた木が切り株から離れて倒れた様子を出すため、倒れた部分は1ブロックの隙間を空けた先から始まるのだ～🌱
+        val fallenBaseBlockPosList = (0 until length).map { originBlockPos.relative(direction, it + 2) }
+
+        // 倒れた部分は水平にまっすぐ横たわるから、その全体を一度に置ける高さを、切り株の足元を中心に上下2ブロックまで探すのだ～🌱
+        // 全体が宙に浮く高さを弾くために、どこか1か所でも直下に支えがあることを要求するのだ～🌱
+        val fallenBlockPosList = (-2..2)
+            .map { dy -> fallenBaseBlockPosList.map { it.above(dy) } }
+            .firstOrNull { blockPosList -> blockPosList.all { canPlaceLog(it) } && blockPosList.any { isSupported(it) } }
+
+        // 倒れる先が無い地形では、切り株だけが残るのだ～🌱
+        if (fallenBlockPosList == null) return true
+
         // 地面に横たわる幹なのだ～🌱
-        logBlockPosList.forEach { blockPos ->
+        fallenBlockPosList.forEach { blockPos ->
             level.setBlock(blockPos, logBlockState.with(RotatedPillarBlock.AXIS, direction.axis), 2)
         }
 
-        // 幹の上には苔がまばらに生えるのだぁ✨
-        logBlockPosList.forEach { blockPos ->
+        // 幹の上には苔がまばらに生えるのだ～🌱
+        fallenBlockPosList.forEach { blockPos ->
             if (random.nextFloat() >= 0.3F) return@forEach
             val mossBlockPos = blockPos.above()
             if (!level.getBlockState(mossBlockPos).canBeReplaced()) return@forEach
