@@ -114,14 +114,15 @@ export LD_LIBRARY_PATH="$DEST/flat"
 SONAME はそこへのシンボリックリンクとして展開されるから、リンクを拾わないと `flat/` の中で名前が解決できないのだぁ…🌧️
 
 ブラウザ本体は入れなくていいのだ～🌱
-`Playwright.create()` の初回の呼び出しで、`~/.cache/ms-playwright/` へ自動で降ってくるのだぁ✨
-だから `playwright install` を明示的に叩く必要は無いのだ～🌱
+`generateOgImages` が依存する `installPlaywrightBrowsers` タスクが、Playwright の既定の置き場所である `~/.cache/ms-playwright/` へ調達してくれるのだぁ✨
+だから `playwright install` を手で叩く必要は無いのだ～🌱
+降りてくるのはヘッドレスシェルと ffmpeg だけで、Chromium 本体も Firefox も WebKit も入らないのだ～🌱
 
 日本語フォントを飛ばすと、生成された画像の日本語が全部豆腐になっちゃうのだぁ…🌧️
 OG画像を組み立てる HTML が `font-family` で `Noto Sans CJK JP` を名指ししているから、`fonts-ipafont-gothic` みたいな別の和文フォントで代用すると、今までの画像と見た目が変わっちゃうのだ～🌱
 
-`~/.local/` はセッションをまたぐと消えるけど、`~/.claude_tmp/` と `~/.cache/` は残るのだ～🌱
-だから2回目以降に要るのは、フォントのシンボリックリンクの張り直しと `fc-cache` と、`LD_LIBRARY_PATH` の設定だけなのだぁ✨
+`~/.local/` も `~/.cache/` もセッションをまたぐと消えるけど、`~/.claude_tmp/` は残るのだ～🌱
+だから2回目以降も、フォントのシンボリックリンクの張り直しと `fc-cache` と、`LD_LIBRARY_PATH` の設定と、ブラウザ本体の調達のやり直しが要るのだぁ…🌧️
 
 ### `serveSite` がKtor Nettyを使う理由なのだ～🌱
 
