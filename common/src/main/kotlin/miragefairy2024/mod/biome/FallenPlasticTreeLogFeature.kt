@@ -47,7 +47,7 @@ class FallenPlasticTreeLogFeature(codec: Codec<NoneFeatureConfiguration>) : Feat
         val originBlockPos = context.origin()
         val random = context.random()
 
-        // 空気や草や水のように既存のブロックを押しのけずに済む位置にのみ、丸太を置けるのだ～🌱
+        // 空気や草や流体のように既存のブロックを押しのけずに済む位置にのみ、丸太を置けるのだ～🌱
         fun canPlaceLog(blockPos: BlockPos) = level.getBlockState(blockPos).canBeReplaced()
 
         // 丸太が宙に浮かないように、直下が完全な立方体であることを確かめるのだ～🌱
