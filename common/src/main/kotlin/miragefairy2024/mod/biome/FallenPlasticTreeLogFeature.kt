@@ -11,7 +11,6 @@ import miragefairy2024.util.flower
 import miragefairy2024.util.generator
 import miragefairy2024.util.ground
 import miragefairy2024.util.per
-import miragefairy2024.util.plus
 import miragefairy2024.util.register
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
@@ -35,7 +34,7 @@ object FallenPlasticTreeLogFeatureCard {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature(placedFeatureKey) { per(8) + flower(center, ground) + onResinCementedDirt }
+                registerPlacedFeature(placedFeatureKey) { per(2) + flower(center, ground) + onResinCementedDirt }
             }
         }
     }
@@ -48,7 +47,9 @@ class FallenPlasticTreeLogFeature(codec: Codec<NoneFeatureConfiguration>) : Feat
         val random = context.random()
 
         // 空気や草や流体のように既存のブロックを押しのけずに済む位置にのみ、丸太を置けるのだ～🌱
-        fun canPlaceLog(blockPos: BlockPos) = level.getBlockState(blockPos).canBeReplaced()
+        fun canPlaceLog(blockPos: BlockPos): Boolean {
+            return level.getBlockState(blockPos).canBeReplaced()
+        }
 
         // 丸太が宙に浮かないように、直下が完全な立方体であることを確かめるのだ～🌱
         fun isSupported(blockPos: BlockPos): Boolean {
@@ -77,7 +78,7 @@ class FallenPlasticTreeLogFeature(codec: Codec<NoneFeatureConfiguration>) : Feat
 
         // 倒れた部分は水平にまっすぐ横たわるから、その全体を一度に置ける高さを、切り株の足元を中心に上下2ブロックまで探すのだ～🌱
         // 全体が宙に浮く高さを弾くために、どこか1か所でも直下に支えがあることを要求するのだ～🌱
-        val fallenBlockPosList = (-2..2)
+        val fallenBlockPosList = (-2..2).asSequence()
             .map { dy -> fallenBaseBlockPosList.map { it.above(dy) } }
             .firstOrNull { blockPosList -> blockPosList.all { canPlaceLog(it) } && blockPosList.any { isSupported(it) } }
 

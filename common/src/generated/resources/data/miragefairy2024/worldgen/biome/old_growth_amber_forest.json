@@ -9,11 +9,11 @@
   "downfall": 0.9,
   "effects": {
     "fog_color": 14729352,
-    "foliage_color": 13209372,
-    "grass_color": 14722600,
-    "sky_color": 9676518,
-    "water_color": 5974666,
-    "water_fog_color": 3610458
+    "foliage_color": 16754198,
+    "grass_color": 16762398,
+    "sky_color": 7379199,
+    "water_color": 16767001,
+    "water_fog_color": 16767001
   },
   "features": [
     [],
@@ -22,16 +22,13 @@
       "minecraft:lake_lava_surface"
     ],
     [
-      "minecraft:amethyst_geode",
-      "minecraft:forest_rock"
+      "minecraft:amethyst_geode"
     ],
     [
       "minecraft:monster_room",
       "minecraft:monster_room_deep"
     ],
-    [
-      "miragefairy2024:elevated_spawner"
-    ],
+    [],
     [],
     [
       "minecraft:ore_dirt",

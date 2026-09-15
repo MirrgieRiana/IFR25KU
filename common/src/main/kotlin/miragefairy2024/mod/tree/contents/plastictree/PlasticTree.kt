@@ -8,10 +8,10 @@ import miragefairy2024.mod.tree.TreeCard
 import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecorator
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
+import miragefairy2024.util.count
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.per
-import miragefairy2024.util.plus
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerConfiguredFeature
@@ -99,7 +99,7 @@ fun initPlasticTree() {
                 TwoLayersFeatureSize(1, 0, 1),
             ).ignoreVines().decorators(listOf(createTreeDecorator())).build()
         }.generator {
-            registerPlacedFeature(SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { per(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCementedDirt }
+            registerPlacedFeature(SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { count(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCementedDirt }
         }
     }
     Feature.TREE.generator(MirageFairy2024.identifier("giant_plastic_tree")) {
@@ -112,7 +112,7 @@ fun initPlasticTree() {
                 TwoLayersFeatureSize(1, 1, 2),
             ).ignoreVines().decorators(listOf(createTreeDecorator())).build()
         }.generator {
-            registerPlacedFeature(GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { per(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCementedDirt }
+            registerPlacedFeature(GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { per(1) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCementedDirt }
         }
     }
 
