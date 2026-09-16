@@ -11,6 +11,7 @@ import miragefairy2024.client.mod.initEnchantmentClientModule
 import miragefairy2024.client.mod.initFairyBuildingClientModule
 import miragefairy2024.client.mod.initFairyLogisticsClientModule
 import miragefairy2024.client.mod.initFairyStatueClientModule
+import miragefairy2024.client.mod.initIfrEncyclopediaClientModule
 import miragefairy2024.client.mod.initMachineClientModule
 import miragefairy2024.client.mod.initPlacedItemClientModule
 import miragefairy2024.client.mod.initSoundEventClientModule
@@ -36,6 +37,7 @@ fun initClientModules() {
     initSoundEventClientModule()
     initTooltipViewerClientModule()
     initAttachmentChangedEventClientModule()
+    initIfrEncyclopediaClientModule()
     initRecipeViewerClientModule()
     initEnchantmentClientModule()
 }
