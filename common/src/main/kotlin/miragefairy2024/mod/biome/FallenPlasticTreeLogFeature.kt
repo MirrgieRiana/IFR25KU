@@ -9,11 +9,11 @@ import miragefairy2024.util.Registration
 import miragefairy2024.util.center
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
-import miragefairy2024.util.ground
 import miragefairy2024.util.per
 import miragefairy2024.util.register
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
+import miragefairy2024.util.surface
 import miragefairy2024.util.with
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -34,7 +34,7 @@ object FallenPlasticTreeLogFeatureCard {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature(placedFeatureKey) { per(2) + flower(center, ground) + onResinCementedDirt }
+                registerPlacedFeature(placedFeatureKey) { per(2) + flower(center, surface) + onResinCementedDirt }
             }
         }
     }
