@@ -16,6 +16,7 @@ import miragefairy2024.client.util.horizontalSpace
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.IfrEncyclopediaEntryCard
+import miragefairy2024.mod.IfrEncyclopediaRecipeViewerCategoryCard
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.util.invoke
@@ -23,7 +24,7 @@ import miragefairy2024.util.text
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.CommonComponents
 
-class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: IfrEncyclopediaEntryCard) : BaseOwoScreen<FlowLayout>(text { card.titleTranslation() }) {
+class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: IfrEncyclopediaEntryCard) : BaseOwoScreen<FlowLayout>(text { IfrEncyclopediaRecipeViewerCategoryCard.translation() }) {
     override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
 
     override fun build(rootComponent: FlowLayout) {
@@ -37,10 +38,10 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
                 surface(NinePatchTextureCard.TRAIT_BACKGROUND.surface)
                 padding(Insets.of(5))
 
-                // 項目名
-                child(Components.label(text { card.titleTranslation() }).apply {
-                    sizing(Sizing.fill(), Sizing.content())
-                    horizontalTextAlignment(HorizontalAlignment.CENTER)
+                // 掲げられたアイテム
+                child(Containers.stack(Sizing.fill(), Sizing.content()).apply {
+                    horizontalAlignment(HorizontalAlignment.CENTER)
+                    card.itemStacksGetter().firstOrNull()?.let { child(Components.item(it)) }
                 })
 
                 child(verticalSpace(5))
