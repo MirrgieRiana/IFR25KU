@@ -89,7 +89,7 @@ class IfrEncyclopediaEntryCard(
     }
 }
 
-/** 段落の間に挟む縦の隙間なのだ～🌱 [PagingView] はページ分割のために [ChildrenGenerator] しか受け取らないのだ～🌱 */
+/** 段落の間に挟む縦の隙間なのだ～🌱 [miragefairy2024.mod.recipeviewer.views.PagingView] はページ分割のために [miragefairy2024.mod.recipeviewer.view.ChildrenGenerator] しか受け取らないのだ～🌱 */
 private val PARAGRAPH_SPACE_CHILDREN_GENERATOR = ChildrenGenerator<Alignment> { _, _ ->
     listOf(Child(Alignment.START, YSpaceView(4)))
 }
