@@ -89,6 +89,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.HoneyBlock
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.SlabBlock
 import net.minecraft.world.level.block.SoundType
@@ -762,6 +763,35 @@ open class BlockMaterialCard(
             "phantom_drop_kohakuto_block", EnJa("Phantom Drop Kohakuto Block", "幻想の雫の琥珀糖ブロック"),
             PoemList(4).poem("Dispose of useless parallel universes.", "運命に干渉するための奇跡。"),
             MapColor.COLOR_PURPLE, MaterialCard.PHANTOM_DROP.item, MaterialCard.PHANTOM_DROP_KOHAKUTO.item,
+        )
+
+        private fun createSap(
+            path: String,
+            name: EnJa,
+            poemList: PoemList,
+            mapColor: MapColor,
+            lower: () -> Item,
+        ): BlockMaterialCard {
+            return !object : BlockMaterialCard(
+                path, name,
+                poemList,
+                mapColor, 0.0F, 0.0F,
+            ) {
+                override suspend fun createBlock(properties: BlockBehaviour.Properties) = HoneyBlock(properties)
+            }.translucent().sound(SoundType.HONEY_BLOCK).init {
+                registerCompressionRecipeGeneration(lower, { lower().toIngredient() }, item, { item().toIngredient() })
+            }
+        }
+
+        val PLASTIC_TREE_SAP_BLOCK = createSap(
+            "plastic_tree_sap_block", EnJa("Plastic Tree Sap Block", "プラノキの樹液ブロック"),
+            PoemList(1).poem("TODO", "TODO"), // TODO 塊になって初めて現れる性質を表したポエム
+            MapColor.TERRACOTTA_YELLOW, MaterialCard.PLASTIC_TREE_SAP.item,
+        )
+        val HAIMEVISKA_SAP_BLOCK = createSap(
+            "haimeviska_sap_block", EnJa("Haimeviska Sap Block", "ハイメヴィスカの樹液ブロック"),
+            PoemList(1).poem("TODO", "TODO"), // TODO 塊になって初めて現れる性質を表したポエム
+            MapColor.COLOR_ORANGE, MaterialCard.HAIMEVISKA_SAP.item,
         )
         val RESIN_CEMENTED_DIRT = !BlockMaterialCard(
             "resin_cemented_dirt", EnJa("Resin-Cemented Dirt", "石化した樹脂状の土"),
