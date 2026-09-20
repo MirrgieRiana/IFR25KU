@@ -905,6 +905,15 @@ img[src$=".png" i] {
   height: 4em;
 }
 
+// 論文ブロック（paperタグ）
+.paper {
+  margin: 2em auto;
+  max-width: 750px;
+  padding: 2em;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
 .nav__title {
   padding: 0;
 }
