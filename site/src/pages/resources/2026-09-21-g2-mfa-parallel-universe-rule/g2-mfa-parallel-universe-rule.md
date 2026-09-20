@@ -4,43 +4,43 @@ layout: single
 ---
 
 <div style="text-align:center;">
-<img src="/assets/images/g2-mfa-parallel-universe-rule/icon_256x256 1.png" style="max-width:80px; border-radius:3px;"/>
+<img src="icon_256x256 1.png" style="max-width:80px; border-radius:3px;"/>
 </div>
 
 {% paper %}
 
-# 並行宇宙ルール
+{% paper_title %}並行宇宙ルール{% endpaper_title %}
 
 並行宇宙ルールの経緯は、次の2枚の「地球」で書かれた記事によって導入されます。
 
-- [G2-MFA　宇宙からのメール解読される 外命研が発表](g2-mfa-mail-from-space.html)
-- [G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ](g2-mfa-observation-satellite.html)
+{% paper_link "g2-mfa-mail-from-space.html" "G2-MFA　宇宙からのメール解読される 外命研が発表" %}
+{% paper_link "g2-mfa-observation-satellite.html" "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ" %}
 
 かいつまんで説明すると、
 
+{% paper_list %}
 - 宇宙から謎のメッセージを受信したよ
 - 次のメッセージが送られてくるまで通常4か月もかかるよ
 - 違うメッセージが送信されていた並行宇宙から取って来ればいっぱい見れるよ
+{% endpaper_list %}
 
 といったイメージです。
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-parallel-universe-rule/Untitled 939.png)
-</figure>
+{% paper_figure "Untitled 939.png" %}
 
 この設定により、次のようなことが起こります。
 
+{% paper_list %}
 - 複数の文献間で生じた矛盾を、世界観的な意味を持って解釈できる。
 - 執筆者それぞれが自分の並行宇宙を持って創作できる。
 - 注目したい文献以外の文献で追加された設定をすべて無視できる。
+{% endpaper_list %}
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-parallel-universe-rule/Untitled 940.png)
-</figure>
+{% paper_figure "Untitled 940.png" %}
 
 並行宇宙ルールは、MirageFairy Server公式以外の、ファンの手による二次創作的な作品が簡単に作れることを目指して作られました。
 
-# MFAリポジトリ
+{% paper_section %}MFAリポジトリ{% endpaper_section %}
 
 MFAリポジトリは、国立地球外生命体研究機構（外命研）が収集した文献集です。
 

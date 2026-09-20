@@ -4,23 +4,22 @@ layout: single
 ---
 
 <div style="text-align:center;">
-<img src="/assets/images/g2-mfa-astral-ray-burst/icon_256x256 4.png" style="max-width:80px; border-radius:3px;"/>
+<img src="icon_256x256 4.png" style="max-width:80px; border-radius:3px;"/>
 </div>
 
 {% paper %}
 
-ジャーナル　　　　　　　　　　　　　　　　　　　　　　　　　　　　妖精研究誌
+{% paper_label "ジャーナル" "妖精研究誌" %}
 
-# **アストラル線バースト**
+{% paper_title %}アストラル線バースト{% endpaper_title %}
 
-地質調査員ピツカーシャ（妖精研究所地質学部）
+{% paper_authors %}地質調査員ピツカーシャ（妖精研究所地質学部）{% endpaper_authors %}
 
 ---
 
-<div style="display:flex; gap:1em;">
-<div style="flex:1;" markdown="1">
+{% paper_columns %}
 
-### 1. **特性**
+{% paper_section %}1. 特性{% endpaper_section %}
 
 アストラル線バーストは、エリトラ座第4恒星（図1）の方角から不明な発生源によって非周期的に発せられる非常に強力なアストラル線、およびそのイベントです。。
 
@@ -28,30 +27,20 @@ layout: single
 
 アストラル線バーストは多くの場合数日間に渡って続き、イベント中はアストラル線の強度が不規則に上下し続けます。大規模なものでは、数日前もしくは数日後に比較的小規模な随伴アストラル線バーストを伴って現れます。
 
-### 2. **最近の事例**
+{% paper_section %}2. 最近の事例{% endpaper_section %}
 
 図2は、2747日前後の妖精の星および祖なる星の平均的な1日における、地表面が1日の間で全天から受けるアストラル線の量です。祖なる星の平均的な1日当たりの全天アストラル線量113.0etに対し、観測史上最大の値を記録した2747日では266016.0etにも及びます。1秒当たりの全天アストラル線量は、2747日の午後に祖なる星の約200万倍を記録しました。また、妖精の星は恒常的に祖なる星の10倍程度のアストラル線に晒されています。
 
 研究者は2747日の夜にエリトラ座第4恒星の方角にアストラル線バーストの発生源となる天体を探索しましたが、肉眼でも天体望遠鏡でも明確な異常は見受けられず（図3）、人間がアストラル線バーストの存在を観測器を用いずに知覚することはできませんでした。
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-astral-ray-burst/Untitled 948.png)
-</figure>
+{% paper_figure "Untitled 948.png" "図２　 1日当たりの全天アストラル線量" %}
 
-図２　 1日当たりの全天アストラル線量
 
-</div>
-<div style="flex:1;" markdown="1">
-
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-astral-ray-burst/Untitled 949.png)
-</figure>
-
-図１　エリトラ座第4恒星
+{% paper_figure "Untitled 949.png" "図１　エリトラ座第4恒星" %}
 
 人類がこのような極高アストラル線環境に遭遇するのは妖精の星が初めてのことであり、このような環境において物質や生態系がどのような影響を受けるのかについては未だ人類の知識が及ぶところではなく、アストラル線バーストが今後の物理学研究の手掛かりとなることが期待されています。
 
-### 3. 過去の痕跡
+{% paper_section %}3. 過去の痕跡{% endpaper_section %}
 
 これまで、妖精研究所の研究者は、地表面上の植生や地下の岩石の構成から過去に妖精の星が受けたアストラル線バーストやエーテル風の痕跡を調査してきました。
 
@@ -59,15 +48,9 @@ layout: single
 
 また、高濃度のエーテルを含むミラージュの花が過去のアストラル線バーストの状況を示す生きた化石であるという指摘もあります。妖精の星に原生する生物のほとんどは、高エーテル環境に依存した代謝機構を持っている、もしくは高濃度のエーテルに耐えうる体をしています。外来種である私たち人類は高エーテル環境に適用した体を持っておらず、今後発生しうる超規模のアストラル線バーストによって人間の生命活動が脅かされる可能性があるため、さらなる研究と対策が要求されています。
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-astral-ray-burst/Untitled 950.png)
-</figure>
+{% paper_figure "Untitled 950.png" "図３　 2747日夜のエリトラ座<br>第4恒星近傍の夜空" %}
 
-図３　 2747日夜のエリトラ座  
-　　　　　第4恒星近傍の夜空
-
-</div>
-</div>
+{% endpaper_columns %}
 
 ---
 

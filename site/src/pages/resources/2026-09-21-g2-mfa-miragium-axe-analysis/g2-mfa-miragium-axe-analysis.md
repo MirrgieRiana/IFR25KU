@@ -4,23 +4,22 @@ layout: single
 ---
 
 <div style="text-align:center;">
-<img src="/assets/images/g2-mfa-miragium-axe-analysis/icon_256x256 8.png" style="max-width:80px; border-radius:3px;"/>
+<img src="icon_256x256 8.png" style="max-width:80px; border-radius:3px;"/>
 </div>
 
 {% paper %}
 
-報告書　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　妖精研究誌
+{% paper_label "報告書" "妖精研究誌" %}
 
-# ミラジウムの斧の構造分析
+{% paper_title %}ミラジウムの斧の構造分析{% endpaper_title %}
 
-魔導士レドストーネトルキャ（妖精研究所魔導工学部）
+{% paper_authors %}魔導士レドストーネトルキャ（妖精研究所魔導工学部）{% endpaper_authors %}
 
 ---
 
-<div style="display:flex; gap:1em;">
-<div style="flex:1;" markdown="1">
+{% paper_columns %}
 
-### 1. 概要
+{% paper_section %}1. 概要{% endpaper_section %}
 
 ミラジウムの斧（学名：ミラギウメ・ショテンキフトベータ／miragiume chotenkiftobeta）は、斧の形をした妖精のアイテムです（図１）。柄の部分は木製で、刃の部分は固形金属ミラジウムで出来ています。刃がミラジウムの色をしている以外は、通常の鉄の斧と見た目上の大きな違いはありません。
 
@@ -28,7 +27,7 @@ layout: single
 
 このアイテムは、エンケラドゥス州アフマッド隕石の森林探索部隊によって、隕石周辺の森林の探索中に妖精が使用しているところを発見されました。森林探索部隊はフェアリークリスタルと引き換えに彼女らのもっていたミラジウムの斧を譲りうけ、その後妖精研究所がスフィアを使用した機能の再現と大型化を成功させました。
 
-### 2. 作製
+{% paper_section %}2. 作製{% endpaper_section %}
 
 固形金属ミラジウムを軟化させ、斧ヘッド状に整形してください（図２）。刃先は直接作用物に触れることはありませんが、エルグの集中と放出制御のために鋭利に研がれている必要があります。
 
@@ -36,43 +35,28 @@ layout: single
 
 斧ヘッドを頑丈な木製の棒材の先端に紐等でしっかりと固定してください。
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-miragium-axe-analysis/Untitled 960.png)
-</figure>
+{% paper_figure "Untitled 960.png" "図２　ミラジウムの斧の構造" %}
 
-図２　ミラジウムの斧の構造
 
-</div>
-<div style="flex:1;" markdown="1">
+{% paper_figure "Untitled 961.png" "図１　ミラジウムの斧" %}
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-miragium-axe-analysis/Untitled 961.png)
-</figure>
-
-図１　ミラジウムの斧
-
-### 3. 利用
+{% paper_section %}3. 利用{% endpaper_section %}
 
 ミラジウムの斧は妖精魔法の行使および通常の斧としての利用の両方が可能です。
 
-**3.1 妖精魔法**
+{% paper_section %}3.1 妖精魔法{% endpaper_section %}
 
 妖精を肩に留まらせ、片手でミラジウムの斧の柄を握り、刃を原木に添えてください（図３）。反対側の手で刃の背に軽く触れ、解体された丸太をイメージしながら妖精に口頭もしくはテレパシーで合図を認識させると、原木が瞬時に解体されます。行使に当たっては、切断力のために水の、放出のために土のマナの供給が必要です。
 
 現在、この魔法はいくつかの種類の凹凸のない原木に対してのみ安全性が確認されています。エルグの流出により意図しない物体への作用が想定されるため、板材やカボチャといった原木以外のブロックへの行使は推奨されません。≪収穫≫のエルグにより、切断効果は植物体にのみ作用します。
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-miragium-axe-analysis/Untitled 962.png)
-</figure>
+{% paper_figure "Untitled 962.png" "図３　使用イメージ" %}
 
-図３　使用イメージ
-
-**3.2 通常の斧としての利用**
+{% paper_section %}3.2 通常の斧としての利用{% endpaper_section %}
 
 このアイテムはマナを注入せずに一般的な金属製の斧のように物理的に振り回して使うこともできますが、ミラジウムの高い展性のため、同サイズの鉄製の斧に比べて使い勝手はよくありません。
 
-</div>
-</div>
+{% endpaper_columns %}
 
 ---
 

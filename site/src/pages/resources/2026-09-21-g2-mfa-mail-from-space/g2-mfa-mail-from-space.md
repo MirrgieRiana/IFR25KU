@@ -5,39 +5,25 @@ layout: single
 
 {% paper %}
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-mail-from-space/Untitled 941.png)
-</figure>
+{% paper_figure "Untitled 941.png" %}
 
-# 宇宙からのメール解読される 外命研が発表
+{% paper_title %}宇宙からのメール解読される 外命研が発表{% endpaper_title %}
 
-**67年10月11日**　**天文学**
+{% paper_authors %}67年10月11日　天文学{% endpaper_authors %}
 
 ---
 
 地球外生命体からの信号とみられる電波の解読結果を国立地球外生命体研究機構の研究グループが発表した。この信号は、宇宙で遭難した知的生命体が近隣の宇宙空間に向けて送信した現況報告であるという可能性が強まっている。電波は、先月3日から10日にかけてヘルクレス座・かんむり座グレートウォールの方向から発せられていた。
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-mail-from-space/Untitled 942.png)
-</figure>
-
-解読された「画像データ」の一部
+{% paper_figure "Untitled 942.png" "解読された「画像データ」の一部" %}
 
 信号は約1時間の長さの送信単位を繰り返したもので、9月3日10時8分より、1週間にわたって計171回反復して送信されていた。送信単位にはメッセージ、画像データ、辞書および未解読の部分が含まれ、送信単位同士は約5分の空白で区切られていた。
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-mail-from-space/Untitled 943.png)
-</figure>
+{% paper_figure "Untitled 943.png" "電波の受信タイムライン" %}
 
-電波の受信タイムライン
+{% paper_figure "Untitled 944.png" "「辞書」の項目の一例" %}
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-mail-from-space/Untitled 944.png)
-</figure>
-
-「辞書」の項目の一例
-
-# 惑星開拓の様子を伝える「メッセージ」本文
+{% paper_section %}惑星開拓の様子を伝える「メッセージ」本文{% endpaper_section %}
 
 次の文章は「メッセージ」の内容を研究グループが意訳したものである。
 
@@ -57,27 +43,19 @@ layout: single
 
 ---
 
-# 関連記事
+{% paper_section %}関連記事{% endpaper_section %}
 
-<div style="display:flex; gap:1em;">
-<div style="flex:1;" markdown="1">
+{% paper_columns %}
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-mail-from-space/Untitled 945.png)
-</figure>
+{% paper_figure "Untitled 945.png" %}
 
-### [G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ](g2-mfa-observation-satellite.html)
-
-</div>
-<div style="flex:1;" markdown="1">
+{% paper_link "g2-mfa-observation-satellite.html" "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ" %}
 
 
-</div>
-<div style="flex:1;" markdown="1">
 
 
-</div>
-</div>
+
+{% endpaper_columns %}
 
 ---
 

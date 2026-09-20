@@ -4,36 +4,26 @@ layout: single
 ---
 
 <div style="text-align:center;">
-<img src="/assets/images/g2-mfa-observation-satellite/icon_256x256 3.png" style="max-width:80px; border-radius:3px;"/>
+<img src="icon_256x256 3.png" style="max-width:80px; border-radius:3px;"/>
 </div>
 
 {% paper %}
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-observation-satellite/Untitled 945.png)
-</figure>
+{% paper_figure "Untitled 945.png" %}
 
-# 外命研 文献探しに並行世界に 観測衛星打ち上げ
+{% paper_title %}外命研 文献探しに並行世界に 観測衛星打ち上げ{% endpaper_title %}
 
-**68年8月7日**　**天文学**
+{% paper_authors %}68年8月7日　天文学{% endpaper_authors %}
 
 ---
 
 宇宙から送信されてくる文献の収集のため、国立地球外生命体研究機構は並行世界での文献採取計画を開始した。文献はある惑星での環境調査報告書や研究資料を含むもので、昨年10月11日から数か月おきに、ヘルクレス座・かんむり座グレートウォールの方向約17億光年先から受信している。
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-observation-satellite/Untitled 946.png)
-</figure>
-
-メッセージの受信の概念図
+{% paper_figure "Untitled 946.png" "メッセージの受信の概念図" %}
 
 信号は昨年10月、今年2月および6月に受信しており、今年10月に再び受信可能になる可能性が示唆されている。信号にはメッセージ、画像データ、辞書、文献および未解読の部分で構成されている。このうち、画像データと辞書を除いた部分は送信ごとに内容が変化するという。文献には送信元惑星での調査内容等が記載されており、送信元惑星への理解を深める資料になると期待されている。
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-observation-satellite/Untitled 945.png)
-</figure>
-
-並行宇宙での文献採集計画
+{% paper_figure "Untitled 945.png" "並行宇宙での文献採集計画" %}
 
 国立地球外生命体研究機構は今回、より効率的に文献を採取するための新たな計画を実行した。信号の受信衛星を数台打ち上げ、信号が受信されると同時に、受信衛星を約17億年前以前に分岐した平行宇宙に転送する。異なる文献が送信された並行宇宙に接続できれば、別の文献を採取することができる。採取された文献は、同機関が保有するMFAリポジトリ内に集積される。
 
@@ -41,27 +31,19 @@ layout: single
 
 ---
 
-# 関連記事
+{% paper_section %}関連記事{% endpaper_section %}
 
-<div style="display:flex; gap:1em;">
-<div style="flex:1;" markdown="1">
+{% paper_columns %}
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-observation-satellite/Untitled 947.png)
-</figure>
+{% paper_figure "Untitled 947.png" %}
 
-### [G2-MFA　宇宙からのメール解読される 外命研が発表](g2-mfa-mail-from-space.html)
-
-</div>
-<div style="flex:1;" markdown="1">
+{% paper_link "g2-mfa-mail-from-space.html" "G2-MFA　宇宙からのメール解読される 外命研が発表" %}
 
 
-</div>
-<div style="flex:1;" markdown="1">
 
 
-</div>
-</div>
+
+{% endpaper_columns %}
 
 ---
 

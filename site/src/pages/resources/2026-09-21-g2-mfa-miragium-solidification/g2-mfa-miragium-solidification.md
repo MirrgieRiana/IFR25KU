@@ -4,36 +4,34 @@ layout: single
 ---
 
 <div style="text-align:center;">
-<img src="/assets/images/g2-mfa-miragium-solidification/icon_256x256 7.png" style="max-width:80px; border-radius:3px;"/>
+<img src="icon_256x256 7.png" style="max-width:80px; border-radius:3px;"/>
 </div>
 
 {% paper %}
 
-ジャーナル　　　　　　　　　　　　　　　　　　　　　　　　　　　　妖精研究誌
+{% paper_label "ジャーナル" "妖精研究誌" %}
 
-# 火炎のエルグを用いた  
-　　　金属ミラジウム粉末の固形化手法
+{% paper_title %}火炎のエルグを用いた<br>金属ミラジウム粉末の固形化手法{% endpaper_title %}
 
-魔導士レドストーネトルキャ（妖精研究所魔導工学部）
+{% paper_authors %}魔導士レドストーネトルキャ（妖精研究所魔導工学部）{% endpaper_authors %}
 
 ---
 
-<div style="display:flex; gap:1em;">
-<div style="flex:1;" markdown="1">
+{% paper_columns %}
 
-### 1. 概要
+{% paper_section %}1. 概要{% endpaper_section %}
 
 金属ミラジウムは融点が高く、一般的な金属用の炉を使用して粉末（図１）を固形化することは通常出来ません。しかし様々な実験を経て、≪火炎≫のエルグによって加熱すると金属ミラジウムの粉末を比較的容易に固形化できることが示されました。
 
-### 2. **方法**
+{% paper_section %}2. 方法{% endpaper_section %}
 
 本手法では以下の物品を消費します。
 
+{% paper_list %}
 - 大量の金属ミラジウムの粉末
-
 - ≪火炎≫のキューティクルを持つ妖精
-
 - フェアリークリスタル
+{% endpaper_list %}
 
 ミラージュの花からの直接採取、もしくは固形金属ミラジウムの研削などによって発生した粉末状の金属ミラジウムを、200ミリリットル程度用意してください。作業は風の当たらない耐火性の室内で行う必要があります。作業中は物品が非常に高温となるため、保持のために技巧のステッキが必要です。
 
@@ -45,37 +43,22 @@ layout: single
 
 多くの場合、妖精は片手で粉末の塊に触れ、その場所から金属ミラジウムが白熱しだします（図２）。粉末の大部分は高熱によって発生した気流によって飛び散り気化してしまいますが、少量の固形化された金属ミラジウムが得られます。妖精はこの作業の過程で実体を失いウィスプとなって霧散するため、再利用することはできません。
 
-</div>
-<div style="flex:1;" markdown="1">
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-miragium-solidification/Untitled 957.png)
-</figure>
+{% paper_figure "Untitled 957.png" "図１　ミラジウムの粉末と妖精" %}
 
-図１　ミラジウムの粉末と妖精
+{% paper_figure "Untitled 958.png" "図２　固形化処理の様子" %}
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-miragium-solidification/Untitled 958.png)
-</figure>
-
-図２　固形化処理の様子
-
-### 3. **利用**
+{% paper_section %}3. 利用{% endpaper_section %}
 
 固形金属ミラジウムは、マナおよびエルグの良導体として粉末状態のときよりもよく作用します。また、これ自体がある程度の強度を持った金属固体であるため、様々な妖精アイテムの作製に柔軟に活用できることが期待されます。固形金属ミラジウムは再び≪火炎≫のエルグで加熱することで軟化するほか、高い展性から、常温であってもハンマーで叩くことで容易に加工ができます。
 
-**3-1 利用例**
+{% paper_section %}3-1 利用例{% endpaper_section %}
 
 整形した≪火炎≫のスフィアを固体金属ミラジウムの棒材の先端に取り付けることで、スフィア本体に直接手で触れることなく安全に≪火炎≫のエルグを扱うことができます（図３）。
 
-<figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](/assets/images/g2-mfa-miragium-solidification/Untitled 959.png)
-</figure>
+{% paper_figure "Untitled 959.png" "図３　固形金属ミラジウムの利用例" %}
 
-図３　固形金属ミラジウムの利用例
-
-</div>
-</div>
+{% endpaper_columns %}
 
 ---
 

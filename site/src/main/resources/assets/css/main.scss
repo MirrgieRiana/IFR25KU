@@ -914,6 +914,102 @@ img[src$=".png" i] {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+// 紙面のラベル（paper_labelタグ）
+.paper__label {
+  // 中身が浮動要素だけなので、これが無いと高さが0になる
+  display: flow-root;
+  margin-bottom: 1.5em;
+  font-size: 0.85em;
+}
+
+.paper__label-kind {
+  float: left;
+}
+
+.paper__label-journal {
+  float: right;
+}
+
+// 論文タイトル（paper_titleタグ）
+.paper__title {
+  margin: 0.5em 0;
+  font-size: 1.8em;
+  font-weight: bold;
+  line-height: 1.3;
+  text-align: center;
+}
+
+// 論文サブタイトル（paper_subtitleタグ）
+.paper__subtitle {
+  margin: 0.5em 0;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-align: center;
+}
+
+// 論文の著者欄（paper_authorsタグ）
+.paper__authors {
+  margin: 1em 0 1.5em;
+  text-align: center;
+}
+
+// 論文のセクション見出し（paper_sectionタグ）
+.paper__section {
+  margin: 1.5em 0 0.5em;
+  font-size: 1.15em;
+  font-weight: bold;
+}
+
+// 論文の段組み（paper_columnsタグ）
+.paper__columns {
+  column-count: 2;
+  column-gap: 2em;
+
+  // 1段に収まらない幅のものが段をはみ出さないようにする
+  img,
+  table {
+    max-width: 100%;
+  }
+
+  // 段の先頭に来た要素の上の余白が、段の高さをずらすのを防ぐ
+  > :first-child {
+    margin-top: 0;
+  }
+}
+
+// 論文中のキャプション付き画像（paper_figureタグ）
+.paper__figure {
+  margin: 1.5em 0;
+  text-align: center;
+
+  img {
+    max-width: 100%;
+  }
+}
+
+// 論文中のキャプション付き表（paper_tableタグ）
+.paper__table {
+  margin: 1.5em 0;
+}
+
+// 図表のキャプション（paper_figureタグ、paper_tableタグ）
+.paper__caption {
+  display: block;
+  margin: 0.5em 0;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+// 論文中の箇条書き（paper_listタグ）
+.paper__list {
+  margin: 1em 0;
+}
+
+// 他の紙面へのページリンク（paper_linkタグ）
+.paper__link {
+  margin: 0.5em 0;
+}
+
 // 論文中の囲み記事
 .callout {
   margin: 1.5em 0;
