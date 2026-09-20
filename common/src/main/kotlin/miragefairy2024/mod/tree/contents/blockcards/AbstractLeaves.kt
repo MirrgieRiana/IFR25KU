@@ -6,9 +6,7 @@ import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.util.registerComposterInput
 import miragefairy2024.util.registerCutoutRenderLayer
 import miragefairy2024.util.registerFlammable
-import miragefairy2024.util.registerFoliageColorProvider
 import miragefairy2024.util.registerLootTableGeneration
-import miragefairy2024.util.registerRedirectColorProvider
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
@@ -35,8 +33,6 @@ abstract class AbstractTreeLeavesBlockCard(configuration: TreeBlockConfiguration
 
         // レンダリング
         block.registerCutoutRenderLayer()
-        block.registerFoliageColorProvider()
-        item.registerRedirectColorProvider()
 
         // レシピ
         block.registerLootTableGeneration { it, _ ->
