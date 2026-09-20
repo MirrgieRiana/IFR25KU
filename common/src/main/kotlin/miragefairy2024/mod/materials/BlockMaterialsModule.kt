@@ -855,7 +855,7 @@ open class BlockMaterialCard(
             context(ModContext)
             override fun initModelGeneration() {
                 block.registerModelGeneration {
-                    ModelTemplates.TINTED_CROSS.with(
+                    ModelTemplates.CROSS.with(
                         TextureSlot.CROSS to "block/" * block().getIdentifier(),
                     )
                 }
@@ -869,8 +869,6 @@ open class BlockMaterialCard(
             }
         }.cutout().sound(SoundType.GRASS).tag(BlockTags.MINEABLE_WITH_AXE, BlockTags.SWORD_EFFICIENT, BlockTags.REPLACEABLE, BlockTags.REPLACEABLE_BY_TREES).init {
             item.registerBlockGeneratedModelGeneration(block)
-            block.registerGrassColorProvider()
-            item.registerRedirectColorProvider()
             block.registerFlammable(60, 100)
         }
     }
