@@ -914,6 +914,14 @@ img[src$=".png" i] {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+// 論文中の囲み記事
+.callout {
+  margin: 1.5em 0;
+  padding: 1em 1.5em;
+  background: #f5f5f5;
+  border-radius: 3px;
+}
+
 .nav__title {
   padding: 0;
 }

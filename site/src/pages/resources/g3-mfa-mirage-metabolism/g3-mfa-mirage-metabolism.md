@@ -4,7 +4,7 @@ layout: single
 ---
 
 <div style="text-align:center;">
-<img src="icon_256x256 9.png" style="max-width:80px; border-radius:3px;"/>
+<img src="/assets/images/g3-mfa-mirage-metabolism/icon_256x256 9.png" style="max-width:80px; border-radius:3px;"/>
 </div>
 
 {% paper %}
@@ -44,7 +44,7 @@ layout: single
 <div style="flex:1;" markdown="1">
 
 <figure style="text-align:center; margin:1.5em 0;" markdown="1">
-![](g3-mfa-mirage-metabolism/Untitled 963.png)
+![](/assets/images/g3-mfa-mirage-metabolism/Untitled 963.png)
 </figure>
 
 　　　図１　樹冠上のミラージュ
