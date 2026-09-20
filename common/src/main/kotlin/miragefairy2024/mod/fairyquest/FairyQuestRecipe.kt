@@ -13,17 +13,11 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.toSecondsTextAsTicks
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
-import miragefairy2024.mod.recipeviewer.view.IntPoint
-import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.Sizing
-import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
-import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import miragefairy2024.mod.recipeviewer.views.InputSlotView
-import miragefairy2024.mod.recipeviewer.views.MultiLineTextChildrenGenerator
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
-import miragefairy2024.mod.recipeviewer.views.PagingView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
@@ -31,7 +25,6 @@ import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
-import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
@@ -41,7 +34,6 @@ import miragefairy2024.util.Chance
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.IngredientStack
-import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Registration
 import miragefairy2024.util.Translation
 import miragefairy2024.util.createItemStack
@@ -548,12 +540,8 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
     }
 
     override fun createView(recipeEntry: RecipeEntry<FairyQuestRecipe>) = View {
-        val pageIndex = ObservableValue(0)
-        val pageCount = ObservableValue(0)
-
         view += YListView().configure {
             view.sizingX = Sizing.FILL
-            view.sizingY = Sizing.FILL
 
             // クエスト名行
             view += XListView().configure {
@@ -567,7 +555,12 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
                     view.color = ColorPair.DARK_GRAY
                     view.shadow = false
                     view.scroll = true
-                }.tooltip(recipeEntry.recipe.title)
+                }.onClick {
+                    onOpenFairyQuestMessageScreen.fire {
+                        if (it(recipeEntry.recipe)) return@onClick true
+                    }
+                    true
+                }.tooltip(listOf(recipeEntry.recipe.title, text { guiFullScreenTranslation() }))
             }
 
             view += YSpaceView(2)
@@ -620,91 +613,6 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
                                 view += OutputSlotView(it())
                             }
                         }
-                    }
-                }
-
-            }
-
-            view += YSpaceView(2)
-
-            // 依頼文
-            view += PagingView().configure {
-                position.weight = 1.0
-                view += MultiLineTextChildrenGenerator(recipeEntry.recipe.message) { Alignment.START }
-
-                view.pageCount.register { _, it ->
-                    pageCount.value = it
-                }
-                view.pageIndex.register { _, it ->
-                    pageIndex.value = it
-                }
-                pageIndex.register { _, it ->
-                    view.pageIndex.value = it
-                }
-            }.onClick {
-                onOpenFairyQuestMessageScreen.fire {
-                    if (it(recipeEntry.recipe)) return@onClick true
-                }
-                true
-            }.tooltip(text { guiFullScreenTranslation() })
-
-            view += YSpaceView(2)
-
-            // ページ操作ボタン
-            view += XListView().configure {
-                view.sizingX = Sizing.FILL
-
-                // 左ボタン
-                view += ImageButtonView(IntPoint(12, 12)).configure {
-                    position.alignmentY = Alignment.CENTER
-                    view.texture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 0, 12, 12))
-                    view.hoveredTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 12, 12, 12))
-                    view.disabledTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 24, 12, 12))
-
-                    fun update() {
-                        view.enabled.value = pageIndex.value > 0
-                    }
-                    pageIndex.register { _, _ -> update() }
-                    update()
-
-                    view.onClick.register {
-                        pageIndex.value -= 1
-                        true
-                    }
-                }
-
-                // ページ番号
-                view += TextView().configure {
-                    position.alignmentY = Alignment.CENTER
-                    view.sizingX = Sizing.FILL
-                    view.alignmentX = Alignment.CENTER
-                    view.color = ColorPair.DARK_GRAY
-                    view.shadow = false
-
-                    fun update() {
-                        view.text.value = text { "${pageIndex.value + 1}"() }.visualOrderText
-                    }
-                    pageIndex.register { _, _ -> update() }
-                    update()
-                }.minContentSizeX(32)
-
-                // 右ボタン
-                view += ImageButtonView(IntPoint(12, 12)).configure {
-                    position.alignmentY = Alignment.CENTER
-                    view.texture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_right.png"), IntPoint(12, 36), IntRectangle(0, 0, 12, 12))
-                    view.hoveredTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_right.png"), IntPoint(12, 36), IntRectangle(0, 12, 12, 12))
-                    view.disabledTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_right.png"), IntPoint(12, 36), IntRectangle(0, 24, 12, 12))
-
-                    fun update() {
-                        view.enabled.value = pageIndex.value < pageCount.value - 1
-                    }
-                    pageIndex.register { _, _ -> update() }
-                    pageCount.register { _, _ -> update() }
-                    update()
-
-                    view.onClick.register {
-                        pageIndex.value += 1
-                        true
                     }
                 }
 
