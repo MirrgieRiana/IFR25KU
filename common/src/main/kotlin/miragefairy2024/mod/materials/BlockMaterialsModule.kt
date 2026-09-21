@@ -788,7 +788,7 @@ open class BlockMaterialCard(
             ) {
                 override suspend fun createBlock(properties: BlockBehaviour.Properties) = HoneyBlock(properties)
                 context(ModContext) override fun initModelGeneration() = block.registerModelGeneration { texturedModelProvider!![block()] }
-            }.translucent().noOcclusion().sound(SoundType.HONEY_BLOCK).speed(0.4F).jump(0.5F).init {
+            }.translucent().noOcclusion().sound(SoundType.HONEY_BLOCK).speed(0.4F).jump(0.5F).tag(BlockTags.SNOW_LAYER_CAN_SURVIVE_ON).init {
                 registerCompressionRecipeGeneration(lower, { lower().toIngredient() }, item, { item().toIngredient() })
             }
         }
