@@ -106,6 +106,18 @@ Contributions for version > v0.14.1: Copyright 2025 The Developer of MirageFairy
 
 These files are provided under the **[Apache License 2.0](LICENSE)**.
 
+## Website Articles
+
+These are the articles published on [the official website](https://ifr25ku.mirrgieriana.net/), including the Mirage Fairy Theater series, the MFA documents, and every other article.
+
+### Copyright
+
+Copyright Yoruno Kakera
+
+### License
+
+Unless an individual article states otherwise, these articles are provided under the **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**.
+
 ## Other Resources (excluding those specified above)
 
 ### Copyright
