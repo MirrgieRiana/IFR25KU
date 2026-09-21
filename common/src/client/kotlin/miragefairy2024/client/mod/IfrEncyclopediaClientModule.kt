@@ -13,7 +13,9 @@ import io.wispforest.owo.ui.core.Sizing
 import io.wispforest.owo.ui.core.Surface
 import io.wispforest.owo.ui.core.VerticalAlignment
 import miragefairy2024.ModContext
+import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.horizontalSpace
+import miragefairy2024.client.util.slotContainer
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.IfrEncyclopediaEntryCard
@@ -25,17 +27,18 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.CommonComponents
 
 context(ModContext)
 fun initIfrEncyclopediaClientModule() {
     onOpenIfrEncyclopediaPageScreen.register {
-        Minecraft.getInstance().setScreen(IfrEncyclopediaPageScreen(it))
+        Minecraft.getInstance().setScreen(IfrEncyclopediaPageScreen(Minecraft.getInstance().screen, it))
         true
     }
 }
 
-class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : BaseOwoScreen<FlowLayout>(text { IfrEncyclopediaRecipeViewerCategoryCard.translation() }) {
+class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: IfrEncyclopediaEntryCard) : BaseOwoScreen<FlowLayout>(text { IfrEncyclopediaRecipeViewerCategoryCard.translation() }) {
     override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
 
     override fun build(rootComponent: FlowLayout) {
@@ -52,7 +55,12 @@ class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : Ba
                 // 掲げられたアイテム
                 child(Containers.stack(Sizing.fill(), Sizing.content()).apply {
                     horizontalAlignment(HorizontalAlignment.CENTER)
-                    card.itemStacksGetter().firstOrNull()?.let { child(Components.item(it)) }
+                    margins(Insets.vertical(5))
+                    card.itemStacksGetter().firstOrNull()?.let {
+                        child(slotContainer(Components.item(it).apply {
+                            showOverlay(true)
+                        }, SlotType.NORMAL))
+                    }
                 })
 
                 child(verticalSpace(5))
@@ -63,6 +71,7 @@ class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : Ba
                     child().child(Components.label(text { card.textTranslation() }).apply {
                         sizing(Sizing.fill(), Sizing.content())
                         horizontalTextAlignment(HorizontalAlignment.LEFT)
+                        color(Color.ofRgb(0x6B472E))
                     })
                 })
 
@@ -100,5 +109,9 @@ class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : Ba
         if (super.mouseClicked(mouseX, mouseY, button)) return true
         onClose()
         return true
+    }
+
+    override fun onClose() {
+        minecraft!!.setScreen(parent)
     }
 }
