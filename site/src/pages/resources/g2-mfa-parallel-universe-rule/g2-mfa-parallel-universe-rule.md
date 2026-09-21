@@ -9,8 +9,8 @@ header:
 
 並行宇宙ルールの経緯は、次の2枚の「地球」で書かれた記事によって導入されます。
 
-{% paper_link "/2026/09/21/g2-mfa-mail-from-space.html" "G2-MFA　宇宙からのメール解読される 外命研が発表" %}
-{% paper_link "/2026/09/21/g2-mfa-observation-satellite.html" "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ" %}
+{% paper_link "/2026/09/22/g2-mfa-mail-from-space.html" "G2-MFA　宇宙からのメール解読される 外命研が発表" %}
+{% paper_link "/2026/09/22/g2-mfa-observation-satellite.html" "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ" %}
 
 かいつまんで説明すると、
 

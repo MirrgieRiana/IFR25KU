@@ -2,7 +2,7 @@
 title: "G2-MFA　宇宙からのメール解読される 外命研が発表"
 layout: single
 header:
-  teaser: /2026/09/21/decoded-image-data.png
+  teaser: /2026/09/22/decoded-image-data.png
 ---
 
 {% paper_figure "deep-space-field.png" %}

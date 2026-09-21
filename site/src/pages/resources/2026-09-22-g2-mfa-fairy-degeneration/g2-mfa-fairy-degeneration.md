@@ -2,7 +2,7 @@
 title: "G2-MFA　妖精の縮退現象"
 layout: single
 header:
-  teaser: /2026/09/21/degeneration-diagram.png
+  teaser: /2026/09/22/degeneration-diagram.png
 ---
 
 {% paper %}

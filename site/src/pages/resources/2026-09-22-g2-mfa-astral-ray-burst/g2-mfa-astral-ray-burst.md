@@ -2,7 +2,7 @@
 title: "G2-MFA　アストラル線バースト"
 layout: single
 header:
-  teaser: /2026/09/21/elytra-fourth-star.png
+  teaser: /2026/09/22/elytra-fourth-star.png
 ---
 
 {% paper %}

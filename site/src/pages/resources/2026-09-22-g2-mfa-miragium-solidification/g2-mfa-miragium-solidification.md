@@ -2,7 +2,7 @@
 title: "G2-MFA　火炎のエルグを用いた金属ミラジウム粉末の固形化手法"
 layout: single
 header:
-  teaser: /2026/09/21/miragium-powder-and-fairy.png
+  teaser: /2026/09/22/miragium-powder-and-fairy.png
 ---
 
 {% paper %}

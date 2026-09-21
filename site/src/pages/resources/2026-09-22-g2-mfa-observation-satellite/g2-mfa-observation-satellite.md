@@ -2,7 +2,7 @@
 title: "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ"
 layout: single
 header:
-  teaser: /2026/09/21/message-reception-diagram.png
+  teaser: /2026/09/22/message-reception-diagram.png
 ---
 
 {% paper_figure "parallel-universe-collection.png" %}
