@@ -959,6 +959,12 @@ img[src$=".png" i] {
   text-align: center;
 }
 
+// ニュース記事の日付と分野の行（paper_datelineタグ）
+.paper__dateline {
+  margin: 1em 0 1.5em;
+  font-size: 0.85em;
+}
+
 // 論文のセクション見出し（paper_sectionタグ）
 .paper__section {
   margin: 1.5em 0 0.5em;
@@ -1031,8 +1037,8 @@ img[src$=".png" i] {
   margin: 0.5em 0;
 }
 
-// 論文中の囲み記事
-.callout {
+// 論文中の囲み記事（paper_calloutタグ）
+.paper__callout {
   margin: 1.5em 0;
   padding: 1em 1.5em;
   background: #f5f5f5;

@@ -7,7 +7,7 @@ layout: single
 
 {% paper_title %}宇宙からのメール解読される 外命研が発表{% endpaper_title %}
 
-{% paper_authors %}67年10月11日　天文学{% endpaper_authors %}
+{% paper_dateline "67年10月11日　天文学" %}
 
 ---
 

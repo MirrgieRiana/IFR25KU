@@ -25,14 +25,13 @@ layout: single
 | 体重 | 0kg |
 {% endpaper_table %}
 
-<div class="callout" markdown="1">
+{% paper_callout %}
 
 {% paper_section %}目次{% endpaper_section %}
 
 * 目次
 {:toc}
-
-</div>
+{% endpaper_callout %}
 
 {% paper_title %}能力{% endpaper_title %}
 

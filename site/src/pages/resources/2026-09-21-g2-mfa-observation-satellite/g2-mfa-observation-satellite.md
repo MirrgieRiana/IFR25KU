@@ -7,7 +7,7 @@ layout: single
 
 {% paper_title %}外命研 文献探しに並行世界に 観測衛星打ち上げ{% endpaper_title %}
 
-{% paper_authors %}68年8月7日　天文学{% endpaper_authors %}
+{% paper_dateline "68年8月7日　天文学" %}
 
 ---
 
