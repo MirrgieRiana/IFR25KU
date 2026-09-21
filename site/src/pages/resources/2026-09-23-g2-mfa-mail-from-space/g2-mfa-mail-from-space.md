@@ -58,6 +58,8 @@ header:
 
 {% endpaper_columns %}
 
+{% paper_stamp %}
 2020年10月24日　MirageFairy Server創作部
+{% endpaper_stamp %}
 
-{% paper_license "宇宙からのメール解読される 外命研が発表" %}
+{% paper_license %}

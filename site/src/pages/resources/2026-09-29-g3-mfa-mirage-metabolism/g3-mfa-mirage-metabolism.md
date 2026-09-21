@@ -75,6 +75,8 @@ header:
 
 {% endpaper %}
 
+{% paper_stamp %}
 2022年9月12日　MirageFairy Server創作部
+{% endpaper_stamp %}
 
-{% paper_license "ミラージュの代謝とエーテル　～なぜミラージュは樹上にスポーンするのか？～" %}
+{% paper_license %}

@@ -7,17 +7,20 @@ header:
 
 {% paper %}
 
+{% paper_columns %}
+{% paper_column %}
+
 蝶のような翅の生えた手のひら大の少女の姿をした妖精。非常に憶病で、滅多に人前に姿を現さない。捕まえようとしても人魂（ウィスプ）のような姿に化けて逃げ、いくら追いかけても捕まえることができないさまから、ミラージュ（蜃気楼）の名で知られている。
 
 近年では飼育手法の革新とともに生産性が大きく改善され、燃料に頼らない新たな労働力の源として世界中で急速に注目を集めている。
 
-{% paper_columns %}
+{% endpaper_column %}
 {% paper_column %}
 
 {% paper_photo "mirage-fairy.webp" "赤紫色の彩釉テラコッタのミラージュ妖精" %}
 
 {% endpaper_column %}
-{% paper_column %}
+{% endpaper_columns %}
 
 {% paper_table %}
 |  |  |
@@ -27,9 +30,6 @@ header:
 | 全長 | 約16cm（爪先から頭頂部までの長さ） |
 | 体重 | 0kg |
 {% endpaper_table %}
-
-{% endpaper_column %}
-{% endpaper_columns %}
 
 {% paper_title %}能力{% endpaper_title %}
 
@@ -77,6 +77,8 @@ header:
 
 {% endpaper %}
 
+{% paper_stamp %}
 2019年7月15日　MirageFairy Server創作部
+{% endpaper_stamp %}
 
-{% paper_license "ミラージュ妖精の生態" %}
+{% paper_license %}
