@@ -1048,6 +1048,8 @@ img[src$=".png" i] {
   margin: 1.5em 0;
 
   table {
+    // テーマはtableをブロックにして横スクロールさせるため、表に戻さないと幅の指定が列に伝わらない
+    display: table;
     width: 100%;
   }
 }
