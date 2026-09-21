@@ -47,7 +47,9 @@ header:
 
 {% endpaper_columns %}
 
----
+{% endpaper %}
+
+{% paper %}
 
 事案１
 
@@ -57,7 +59,9 @@ header:
 
 {% paper_figure "incident-map.png" %}
 
----
+{% endpaper %}
+
+{% paper %}
 
 {% paper_columns %}
 
