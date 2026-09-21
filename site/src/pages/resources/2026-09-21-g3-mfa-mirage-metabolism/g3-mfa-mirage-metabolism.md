@@ -1,6 +1,8 @@
 ---
 title: "G3-MFA　ミラージュの代謝とエーテル　～なぜミラージュは樹上にスポーンするのか？～"
 layout: single
+header:
+  teaser: /2026/09/21/mirage-above-canopy.png
 ---
 
 {% paper %}
@@ -36,7 +38,7 @@ layout: single
 　ミラージュの大規模な農地において、最大で曲率半径10000ブロック程度の微弱な空間のゆがみが観測されました。これが人体に及ぼす影響は不明ですが、平常空間における曲率半径3.00×10^7ブロックと比較して、約3000倍の大きさです。
 
 
-{% paper_figure "Untitled 963.png" "図１　樹冠上のミラージュ" %}
+{% paper_figure "mirage-above-canopy.png" "図１　樹冠上のミラージュ" %}
 
 {% paper_table "表２　ミラージュの成分" %}
 | 成分 | 質量％ |

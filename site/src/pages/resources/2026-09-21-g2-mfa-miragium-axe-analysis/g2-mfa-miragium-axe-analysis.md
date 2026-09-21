@@ -1,6 +1,8 @@
 ---
 title: "G2-MFA　ミラジウムの斧の構造分析"
 layout: single
+header:
+  teaser: /2026/09/21/miragium-axe.png
 ---
 
 {% paper %}
@@ -31,10 +33,10 @@ layout: single
 
 斧ヘッドを頑丈な木製の棒材の先端に紐等でしっかりと固定してください。
 
-{% paper_figure "Untitled 960.png" "図２　ミラジウムの斧の構造" %}
+{% paper_figure "miragium-axe-structure.png" "図２　ミラジウムの斧の構造" %}
 
 
-{% paper_figure "Untitled 961.png" "図１　ミラジウムの斧" %}
+{% paper_figure "miragium-axe.png" "図１　ミラジウムの斧" %}
 
 {% paper_section %}3. 利用{% endpaper_section %}
 
@@ -46,7 +48,7 @@ layout: single
 
 現在、この魔法はいくつかの種類の凹凸のない原木に対してのみ安全性が確認されています。エルグの流出により意図しない物体への作用が想定されるため、板材やカボチャといった原木以外のブロックへの行使は推奨されません。≪収穫≫のエルグにより、切断効果は植物体にのみ作用します。
 
-{% paper_figure "Untitled 962.png" "図３　使用イメージ" %}
+{% paper_figure "miragium-axe-in-use.png" "図３　使用イメージ" %}
 
 {% paper_section %}3.2 通常の斧としての利用{% endpaper_section %}
 

@@ -1,9 +1,11 @@
 ---
 title: "G2-MFA　宇宙からのメール解読される 外命研が発表"
 layout: single
+header:
+  teaser: /2026/09/21/decoded-image-data.png
 ---
 
-{% paper_figure "Untitled 941.png" %}
+{% paper_figure "deep-space-field.png" %}
 
 {% paper_title %}宇宙からのメール解読される 外命研が発表{% endpaper_title %}
 
@@ -13,13 +15,13 @@ layout: single
 
 地球外生命体からの信号とみられる電波の解読結果を国立地球外生命体研究機構の研究グループが発表した。この信号は、宇宙で遭難した知的生命体が近隣の宇宙空間に向けて送信した現況報告であるという可能性が強まっている。電波は、先月3日から10日にかけてヘルクレス座・かんむり座グレートウォールの方向から発せられていた。
 
-{% paper_figure "Untitled 942.png" "解読された「画像データ」の一部" %}
+{% paper_figure "decoded-image-data.png" "解読された「画像データ」の一部" %}
 
 信号は約1時間の長さの送信単位を繰り返したもので、9月3日10時8分より、1週間にわたって計171回反復して送信されていた。送信単位にはメッセージ、画像データ、辞書および未解読の部分が含まれ、送信単位同士は約5分の空白で区切られていた。
 
-{% paper_figure "Untitled 943.png" "電波の受信タイムライン" %}
+{% paper_figure "reception-timeline.png" "電波の受信タイムライン" %}
 
-{% paper_figure "Untitled 944.png" "「辞書」の項目の一例" %}
+{% paper_figure "dictionary-entry.png" "「辞書」の項目の一例" %}
 
 {% paper_section %}惑星開拓の様子を伝える「メッセージ」本文{% endpaper_section %}
 
@@ -45,7 +47,7 @@ layout: single
 
 {% paper_columns %}
 
-{% paper_figure "Untitled 945.png" %}
+{% paper_figure "parallel-universe-collection.png" %}
 
 {% paper_link "g2-mfa-observation-satellite.html" "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ" %}
 

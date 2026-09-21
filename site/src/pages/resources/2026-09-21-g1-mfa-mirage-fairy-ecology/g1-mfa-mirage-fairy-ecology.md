@@ -1,6 +1,8 @@
 ---
 title: "G1-MFA　ミラージュ妖精の生態"
 layout: single
+header:
+  teaser: /2026/09/21/mirage-fairy.png
 ---
 
 {% paper %}
@@ -12,7 +14,7 @@ layout: single
 近年では飼育手法の革新とともに生産性が大きく改善され、燃料に頼らない新たな労働力の源として世界中で急速に注目を集めている。
 
 
-{% paper_figure "Untitled 938.png" "赤紫色の彩釉テラコッタのミラージュ妖精" %}
+{% paper_figure "mirage-fairy.png" "赤紫色の彩釉テラコッタのミラージュ妖精" %}
 
 {% endpaper_columns %}
 

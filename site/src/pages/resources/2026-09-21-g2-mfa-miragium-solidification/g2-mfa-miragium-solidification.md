@@ -1,6 +1,8 @@
 ---
 title: "G2-MFA　火炎のエルグを用いた金属ミラジウム粉末の固形化手法"
 layout: single
+header:
+  teaser: /2026/09/21/miragium-powder-and-fairy.png
 ---
 
 {% paper %}
@@ -40,9 +42,9 @@ layout: single
 多くの場合、妖精は片手で粉末の塊に触れ、その場所から金属ミラジウムが白熱しだします（図２）。粉末の大部分は高熱によって発生した気流によって飛び散り気化してしまいますが、少量の固形化された金属ミラジウムが得られます。妖精はこの作業の過程で実体を失いウィスプとなって霧散するため、再利用することはできません。
 
 
-{% paper_figure "Untitled 957.png" "図１　ミラジウムの粉末と妖精" %}
+{% paper_figure "miragium-powder-and-fairy.png" "図１　ミラジウムの粉末と妖精" %}
 
-{% paper_figure "Untitled 958.png" "図２　固形化処理の様子" %}
+{% paper_figure "solidification-process.png" "図２　固形化処理の様子" %}
 
 {% paper_section %}3. 利用{% endpaper_section %}
 
@@ -52,7 +54,7 @@ layout: single
 
 整形した≪火炎≫のスフィアを固体金属ミラジウムの棒材の先端に取り付けることで、スフィア本体に直接手で触れることなく安全に≪火炎≫のエルグを扱うことができます（図３）。
 
-{% paper_figure "Untitled 959.png" "図３　固形金属ミラジウムの利用例" %}
+{% paper_figure "solid-miragium-products.png" "図３　固形金属ミラジウムの利用例" %}
 
 {% endpaper_columns %}
 
