@@ -34,7 +34,7 @@ class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : Ba
             horizontalAlignment(HorizontalAlignment.CENTER)
 
             child(Containers.verticalFlow(Sizing.fixed(200), Sizing.expand()).apply { // カード外枠
-                surface(NinePatchTextureCard.TRAIT_BACKGROUND.surface)
+                surface(NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.surface)
                 padding(Insets.of(5))
 
                 // 掲げられたアイテム

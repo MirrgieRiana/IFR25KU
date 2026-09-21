@@ -135,7 +135,7 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
             view.sizingY = Sizing.FILL
 
             // 背景
-            view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 22, 22, 22, 22, 22, 22)
+            view += NinePatchImageView(NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.texture, 22, 22, 22, 22, 22, 22)
 
             view += YListView().configure {
                 view.sizingX = Sizing.FILL
