@@ -3,13 +3,12 @@ title: "G2-MFA　並行宇宙ルール"
 layout: single
 ---
 
-
 {% paper_title %}並行宇宙ルール{% endpaper_title %}
 
 並行宇宙ルールの経緯は、次の2枚の「地球」で書かれた記事によって導入されます。
 
-{% paper_link "g2-mfa-mail-from-space.html" "G2-MFA　宇宙からのメール解読される 外命研が発表" %}
-{% paper_link "g2-mfa-observation-satellite.html" "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ" %}
+{% paper_link "/2026/09/21/g2-mfa-mail-from-space.html" "G2-MFA　宇宙からのメール解読される 外命研が発表" %}
+{% paper_link "/2026/09/21/g2-mfa-observation-satellite.html" "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ" %}
 
 かいつまんで説明すると、
 
@@ -21,7 +20,7 @@ layout: single
 
 といったイメージです。
 
-{% paper_figure "Untitled 939.png" %}
+{% paper_figure "/assets/images/g2-mfa-parallel-universe-rule/Untitled 939.png" %}
 
 この設定により、次のようなことが起こります。
 
@@ -31,7 +30,7 @@ layout: single
 - 注目したい文献以外の文献で追加された設定をすべて無視できる。
 {% endpaper_list %}
 
-{% paper_figure "Untitled 940.png" %}
+{% paper_figure "/assets/images/g2-mfa-parallel-universe-rule/Untitled 940.png" %}
 
 並行宇宙ルールは、MirageFairy Server公式以外の、ファンの手による二次創作的な作品が簡単に作れることを目指して作られました。
 

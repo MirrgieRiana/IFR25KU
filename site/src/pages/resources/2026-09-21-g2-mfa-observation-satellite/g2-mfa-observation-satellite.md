@@ -3,7 +3,6 @@ title: "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上�
 layout: single
 ---
 
-
 {% paper_figure "Untitled 945.png" %}
 
 {% paper_title %}外命研 文献探しに並行世界に 観測衛星打ち上げ{% endpaper_title %}

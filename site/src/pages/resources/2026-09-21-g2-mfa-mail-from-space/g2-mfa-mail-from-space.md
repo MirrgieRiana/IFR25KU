@@ -3,7 +3,6 @@ title: "G2-MFA　宇宙からのメール解読される 外命研が発表"
 layout: single
 ---
 
-
 {% paper_figure "Untitled 941.png" %}
 
 {% paper_title %}宇宙からのメール解読される 外命研が発表{% endpaper_title %}
