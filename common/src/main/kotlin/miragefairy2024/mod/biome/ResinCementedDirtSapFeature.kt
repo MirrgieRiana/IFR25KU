@@ -26,7 +26,7 @@ object ResinCementedDirtSapFeatureCard {
         Feature.SIMPLE_BLOCK.generator(identifier) {
             registerConfiguredFeature {
                 // TODO 樹脂土から滲み出た樹液のブロック
-                SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.BEE_NEST))
+                SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.HONEY_BLOCK))
             }.generator {
                 registerPlacedFeature(placedFeatureKey) { per(4) + flower(center, surface) + onResinCementedDirt }
             }
