@@ -65,3 +65,5 @@ header:
 2020年10月12日　MirageFairy Server創作部
 
 {% endpaper %}
+
+{% paper_license "ミラジウムの斧の構造分析" %}

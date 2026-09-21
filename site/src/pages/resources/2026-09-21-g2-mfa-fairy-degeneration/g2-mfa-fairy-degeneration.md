@@ -65,3 +65,5 @@ header:
 2020年10月30日　MirageFairy Server創作部
 
 {% endpaper %}
+
+{% paper_license "妖精の縮退現象" %}

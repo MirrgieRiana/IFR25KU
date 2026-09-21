@@ -64,3 +64,4 @@ header:
 
 2020年10月24日　MirageFairy Server創作部
 
+{% paper_license "宇宙からのメール解読される 外命研が発表" %}

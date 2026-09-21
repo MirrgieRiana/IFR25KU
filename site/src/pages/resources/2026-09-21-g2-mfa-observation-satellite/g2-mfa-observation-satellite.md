@@ -48,3 +48,4 @@ header:
 
 2020年10月24日　MirageFairy Server創作部
 
+{% paper_license "外命研 文献探しに並行世界に 観測衛星打ち上げ" %}

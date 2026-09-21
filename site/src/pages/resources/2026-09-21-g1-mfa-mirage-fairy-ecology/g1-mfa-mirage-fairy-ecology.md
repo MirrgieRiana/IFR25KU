@@ -88,3 +88,5 @@ header:
 2019年7月15日　MirageFairy Server創作部
 
 {% endpaper %}
+
+{% paper_license "ミラージュ妖精の生態" %}

@@ -59,3 +59,5 @@ header:
 2021年2月3日　MirageFairy Server創作部
 
 {% endpaper %}
+
+{% paper_license "アストラル線バースト" %}
