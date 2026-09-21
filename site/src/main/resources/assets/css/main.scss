@@ -965,27 +965,6 @@ img[src$=".png" i] {
   text-align: center;
 }
 
-// ニュース記事の日付と分野の行（paper_datelineタグ）
-.paper__dateline {
-  margin: 1em 0 1.5em;
-  font-size: 0.85em;
-}
-
-// ニュース記事の日付（paper_datelineタグ）
-.paper__dateline-date {
-  // 元のNotionが灰色の文字色を当てている
-  color: #73726e;
-}
-
-// ニュース記事の分野（paper_datelineタグ）
-.paper__dateline-field {
-  margin-inline-start: 1em;
-  // 天文学などの分野を、本文と区別できるタグ状に見せるのだ～🌱
-  padding: 0.1em 0.5em;
-  background: #1a3a5c;
-  color: #ffffff;
-}
-
 // 論文のセクションの下位の見出し（paper_subsectionタグ）
 .paper__subsection {
   margin: 1.5em 0 0.5em;
@@ -1073,11 +1052,6 @@ img[src$=".png" i] {
   color: #000000;
 }
 
-// 他の紙面へのページリンク（paper_linkタグ）
-.paper__link {
-  margin: 0.5em 0;
-}
-
 // 論文中の囲み記事（paper_calloutタグ）
 .paper__callout {
   margin: 1.5em 0;
@@ -1103,6 +1077,133 @@ img[src$=".png" i] {
 
 // 紙面の末尾のライセンス表記（paper_licenseタグ）
 .paper__license {
+  margin: 1em 0;
+  padding: 0.8em 1.2em;
+  background: #eef2f7;
+  border: 1px solid #b0bec5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.10);
+  font-size: 0.85em;
+
+  p {
+    margin: 0.3em 0;
+  }
+}
+
+// ニュース記事のタイトル（news_titleタグ）
+.news__title {
+  margin: 0.5em 0;
+  font-size: 1.8em;
+  font-weight: bold;
+  line-height: 1.3;
+  text-align: center;
+}
+
+// ニュース記事の日付と分野の行（news_datelineタグ）
+.news__dateline {
+  margin: 1em 0 1.5em;
+  font-size: 0.85em;
+}
+
+// ニュース記事の日付（news_datelineタグ）
+.news__dateline-date {
+  // 元のNotionが灰色の文字色を当てている
+  color: #73726e;
+}
+
+// ニュース記事の分野（news_datelineタグ）
+.news__dateline-field {
+  margin-inline-start: 1em;
+  // 天文学などの分野を、本文と区別できるタグ状に見せるのだ～🌱
+  padding: 0.1em 0.5em;
+  background: #1a3a5c;
+  color: #ffffff;
+}
+
+// ニュース記事のセクション見出し（news_sectionタグ）
+.news__section {
+  margin: 1.5em 0 0.5em;
+  font-size: 1.15em;
+  font-weight: bold;
+}
+
+// ニュース記事の段組み（news_columnsタグ）
+.news__columns {
+  display: flex;
+  gap: 2em;
+}
+
+// ニュース記事の段組みの中の1個の段（news_columnタグ）
+.news__column {
+  flex: 1;
+
+  // flexの項目は既定で中身の最小幅より狭くならないため、これが無いと幅の広い図表を持つ段だけが広がる
+  min-width: 0;
+
+  // 1段に収まらない幅のものが段をはみ出さないようにする
+  img,
+  table {
+    max-width: 100%;
+  }
+
+  // 段の先頭に来た要素の上の余白が、段の高さをずらすのを防ぐ
+  > :first-child {
+    margin-top: 0;
+  }
+}
+
+// ニュース記事中のキャプション付きの図と写真（news_figureタグ、news_photoタグ）
+.news__figure,
+.news__photo {
+  // テーマはfigureをflexにするため、ブロックに戻さないと中身が内容の幅に縮んで左に寄る
+  display: block;
+  margin: 1.5em 0;
+  text-align: center;
+
+  img {
+    // テーマはfigureの中の画像の角を丸める
+    max-width: 100%;
+    border-radius: 0;
+  }
+}
+
+// 図の画像（news_figureタグ）
+.news__figure img {
+  // 引き伸ばすと画素の粗が出るから、画像自身が持つ寸法で掲げるのだ～🌱
+  width: auto;
+}
+
+// 写真の画像（news_photoタグ）
+.news__photo img {
+  // 拡大しても階調が保たれるから、記事や段の幅いっぱいに掲げるのだ～🌱
+  width: 100%;
+}
+
+// 図のキャプション（news_figureタグ）
+.news__caption {
+  display: block;
+  margin: 0.5em 0;
+  font-size: 0.9em;
+  text-align: center;
+  // テーマはfigcaptionを薄い紫にする
+  color: #000000;
+}
+
+// 他の記事へのページリンク（news_linkタグ）
+.news__link {
+  margin: 0.5em 0;
+}
+
+// ニュース記事の末尾の制作日スタンプ（news_stampタグ）
+.news__stamp {
+  margin: 2em 0 0;
+  padding-top: 1em;
+  border-top: 1px solid #cccccc;
+  font-size: 0.85em;
+  color: #666666;
+}
+
+// ニュース記事の末尾のライセンス表記（news_licenseタグ）
+.news__license {
   margin: 1em 0;
   padding: 0.8em 1.2em;
   background: #eef2f7;

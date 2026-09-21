@@ -33,7 +33,7 @@ module Paper
   class PaperLabelTag < Liquid::Tag
     def initialize(tag_name, markup, options)
       super
-      @kind, @journal = Paper.parse_arguments(markup)
+      @kind, @journal = TagArguments.parse(markup)
     end
 
     def render(context)

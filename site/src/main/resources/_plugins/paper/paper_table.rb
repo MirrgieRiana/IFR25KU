@@ -38,7 +38,7 @@ module Paper
   class PaperTableTag < Liquid::Block
     def initialize(tag_name, markup, options)
       super
-      @caption, = Paper.parse_arguments(markup)
+      @caption, = TagArguments.parse(markup)
     end
 
     def render(context)
