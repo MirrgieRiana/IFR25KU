@@ -46,14 +46,17 @@ header:
 {% paper_section %}関連記事{% endpaper_section %}
 
 {% paper_columns %}
+{% paper_column %}
 
 {% paper_figure "parallel-universe-collection.png" %}
 
 {% paper_link "g2-mfa-observation-satellite.html" "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ" %}
 
-
-
-
+{% endpaper_column %}
+{% paper_column %}
+{% endpaper_column %}
+{% paper_column %}
+{% endpaper_column %}
 
 {% endpaper_columns %}
 

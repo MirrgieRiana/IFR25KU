@@ -16,6 +16,7 @@ header:
 ---
 
 {% paper_columns %}
+{% paper_column %}
 
 {% paper_section %}1. 概要{% endpaper_section %}
 
@@ -35,6 +36,8 @@ header:
 
 縮退可能な妖精群の規模に制限はなく、1573日現在、10万体以上の同種の妖精が縮退した事例が確認されています。異なる品種の妖精では、体形や精神構造の違いから肉体的もしくは精神的な同期が十分に行われず、縮退は成立しません。
 
+{% endpaper_column %}
+{% paper_column %}
 
 {% paper_section %}3. 取り扱い{% endpaper_section %}
 
@@ -54,6 +57,7 @@ header:
 
 {% paper_figure "disassembly-operation.png" "図３　凝縮された妖精の解体" %}
 
+{% endpaper_column %}
 {% endpaper_columns %}
 
 ---

@@ -16,6 +16,7 @@ header:
 ---
 
 {% paper_columns %}
+{% paper_column %}
 
 {% paper_section %}1. 特性{% endpaper_section %}
 
@@ -33,6 +34,8 @@ header:
 
 {% paper_figure "daily-astral-ray-dose.png" "図２　 1日当たりの全天アストラル線量" %}
 
+{% endpaper_column %}
+{% paper_column %}
 
 {% paper_figure "elytra-fourth-star.png" "図１　エリトラ座第4恒星" %}
 
@@ -48,6 +51,7 @@ header:
 
 {% paper_figure "night-sky-near-elytra.png" "図３　 2747日夜のエリトラ座<br>第4恒星近傍の夜空" %}
 
+{% endpaper_column %}
 {% endpaper_columns %}
 
 ---

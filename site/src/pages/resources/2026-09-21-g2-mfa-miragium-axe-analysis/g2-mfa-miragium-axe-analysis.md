@@ -16,6 +16,7 @@ header:
 ---
 
 {% paper_columns %}
+{% paper_column %}
 
 {% paper_section %}1. 概要{% endpaper_section %}
 
@@ -35,6 +36,8 @@ header:
 
 {% paper_figure "miragium-axe-structure.png" "図２　ミラジウムの斧の構造" %}
 
+{% endpaper_column %}
+{% paper_column %}
 
 {% paper_figure "miragium-axe.png" "図１　ミラジウムの斧" %}
 
@@ -54,6 +57,7 @@ header:
 
 このアイテムはマナを注入せずに一般的な金属製の斧のように物理的に振り回して使うこともできますが、ミラジウムの高い展性のため、同サイズの鉄製の斧に比べて使い勝手はよくありません。
 
+{% endpaper_column %}
 {% endpaper_columns %}
 
 ---

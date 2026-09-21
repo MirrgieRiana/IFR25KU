@@ -974,8 +974,16 @@ img[src$=".png" i] {
 
 // 論文の段組み（paper_columnsタグ）
 .paper__columns {
-  column-count: 2;
-  column-gap: 2em;
+  display: flex;
+  gap: 2em;
+}
+
+// 論文の段組みの中の1個の段（paper_columnタグ）
+.paper__column {
+  flex: 1;
+
+  // flexの項目は既定で中身の最小幅より狭くならないため、これが無いと幅の広い図表を持つ段だけが広がる
+  min-width: 0;
 
   // 1段に収まらない幅のものが段をはみ出さないようにする
   img,
@@ -1001,6 +1009,12 @@ img[src$=".png" i] {
     max-width: 100%;
     border-radius: 0;
   }
+}
+
+// 原寸で掲げる図（paper_figureタグのactual_size）
+.paper__figure--actual-size img {
+  // 画像自身が持つ寸法で掲げる
+  width: auto;
 }
 
 // 論文中のキャプション付き表（paper_tableタグ）

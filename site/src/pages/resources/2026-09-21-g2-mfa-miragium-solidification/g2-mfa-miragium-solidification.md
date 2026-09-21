@@ -16,6 +16,7 @@ header:
 ---
 
 {% paper_columns %}
+{% paper_column %}
 
 {% paper_section %}1. 概要{% endpaper_section %}
 
@@ -41,6 +42,8 @@ header:
 
 多くの場合、妖精は片手で粉末の塊に触れ、その場所から金属ミラジウムが白熱しだします（図２）。粉末の大部分は高熱によって発生した気流によって飛び散り気化してしまいますが、少量の固形化された金属ミラジウムが得られます。妖精はこの作業の過程で実体を失いウィスプとなって霧散するため、再利用することはできません。
 
+{% endpaper_column %}
+{% paper_column %}
 
 {% paper_figure "miragium-powder-and-fairy.png" "図１　ミラジウムの粉末と妖精" %}
 
@@ -56,6 +59,7 @@ header:
 
 {% paper_figure "solid-miragium-products.png" "図３　固形金属ミラジウムの利用例" %}
 
+{% endpaper_column %}
 {% endpaper_columns %}
 
 ---

@@ -30,14 +30,17 @@ header:
 {% paper_section %}関連記事{% endpaper_section %}
 
 {% paper_columns %}
+{% paper_column %}
 
 {% paper_figure "deep-space-stars.png" %}
 
 {% paper_link "g2-mfa-mail-from-space.html" "G2-MFA　宇宙からのメール解読される 外命研が発表" %}
 
-
-
-
+{% endpaper_column %}
+{% paper_column %}
+{% endpaper_column %}
+{% paper_column %}
+{% endpaper_column %}
 
 {% endpaper_columns %}
 

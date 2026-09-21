@@ -6,19 +6,24 @@
 #
 # 論文の段組みを表示するためのLiquidカスタムブロックタグ。
 #
-# 段の分かれ目を記事の側で指定するのではなく、ブロック内容が通常フローのまま
-# 左の段から右の段へ流れる、CSSの段組みによって実現する。
+# 個々の段は paper_column タグで表し、このタグはそれらを横に並べる役割を持つ。
+# 段の個数は、中に置かれた paper_column の個数によって決まる。
 #
 # ## 基本的な使い方
 #
 #   {% paper_columns %}
-#   本文（Markdown記法使用可能）
+#   {% paper_column %}
+#   左の段の本文（Markdown記法使用可能）
+#   {% endpaper_column %}
+#   {% paper_column %}
+#   右の段の本文（Markdown記法使用可能）
+#   {% endpaper_column %}
 #   {% endpaper_columns %}
 #
 # ## HTML出力構造
 #
 #   <div class="paper__columns" markdown="1">
-#     （ブロック内のテキスト、kramdownによりMarkdownとして処理される）
+#     （ブロック内の paper_column、kramdownによりMarkdownとして処理される）
 #   </div>
 #
 # =============================================================================
@@ -26,7 +31,7 @@
 module Paper
 
   # {% paper_columns %}...{% endpaper_columns %} ブロックタグの実装。
-  # ブロック内容を、左右に分かれた段へ流し込む。
+  # 中に置かれた段を、横に並べる。
   class PaperColumnsTag < Liquid::Block
     def render(context)
       content = super.strip
