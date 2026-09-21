@@ -2,7 +2,7 @@
 title: "G2-MFA　火炎のエルグを用いた金属ミラジウム粉末の固形化手法"
 layout: single
 header:
-  teaser: /2026/09/22/miragium-powder-and-fairy.png
+  teaser: /2026/09/25/solidification-process.png
 ---
 
 {% paper %}
@@ -51,7 +51,7 @@ header:
 
 固形金属ミラジウムは、マナおよびエルグの良導体として粉末状態のときよりもよく作用します。また、これ自体がある程度の強度を持った金属固体であるため、様々な妖精アイテムの作製に柔軟に活用できることが期待されます。固形金属ミラジウムは再び≪火炎≫のエルグで加熱することで軟化するほか、高い展性から、常温であってもハンマーで叩くことで容易に加工ができます。
 
-{% paper_section %}3-1 利用例{% endpaper_section %}
+{% paper_subsection %}3-1 利用例{% endpaper_subsection %}
 
 整形した≪火炎≫のスフィアを固体金属ミラジウムの棒材の先端に取り付けることで、スフィア本体に直接手で触れることなく安全に≪火炎≫のエルグを扱うことができます（図３）。
 
@@ -60,10 +60,8 @@ header:
 {% endpaper_column %}
 {% endpaper_columns %}
 
----
+{% endpaper %}
 
 2020年10月26日　MirageFairy Server創作部
-
-{% endpaper %}
 
 {% paper_license "火炎のエルグを用いた金属ミラジウム粉末の固形化手法" %}

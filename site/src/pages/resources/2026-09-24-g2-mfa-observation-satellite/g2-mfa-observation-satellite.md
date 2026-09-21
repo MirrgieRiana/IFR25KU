@@ -2,14 +2,12 @@
 title: "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ"
 layout: single
 header:
-  teaser: /2026/09/22/message-reception-diagram.png
+  teaser: /2026/09/24/parallel-universe-collection.png
 ---
 
 {% paper_figure "parallel-universe-collection.png" %}
 
-{% paper_title %}外命研 文献探しに並行世界に 観測衛星打ち上げ{% endpaper_title %}
-
-{% paper_dateline "68年8月7日　天文学" %}
+{% paper_dateline "68年8月7日" "天文学" %}
 
 ---
 
@@ -43,8 +41,6 @@ header:
 {% endpaper_column %}
 
 {% endpaper_columns %}
-
----
 
 2020年10月24日　MirageFairy Server創作部
 

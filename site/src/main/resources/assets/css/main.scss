@@ -971,6 +971,26 @@ img[src$=".png" i] {
   font-size: 0.85em;
 }
 
+// ニュース記事の日付（paper_datelineタグ）
+.paper__dateline-date {
+  // 元のNotionが灰色の文字色を当てている
+  color: #73726e;
+}
+
+// ニュース記事の分野（paper_datelineタグ）
+.paper__dateline-field {
+  margin-inline-start: 1em;
+  // 元のNotionが薄い水色の背景色を当てている
+  background: #e7f3f8;
+}
+
+// 論文のセクションの下位の見出し（paper_subsectionタグ）
+.paper__subsection {
+  margin: 1.5em 0 0.5em;
+  font-size: 1.05em;
+  font-weight: bold;
+}
+
 // 論文のセクション見出し（paper_sectionタグ）
 .paper__section {
   margin: 1.5em 0 0.5em;

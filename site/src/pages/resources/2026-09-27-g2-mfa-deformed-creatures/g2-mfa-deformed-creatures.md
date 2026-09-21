@@ -2,7 +2,7 @@
 title: "G2-MFA　奇形生物"
 layout: single
 header:
-  teaser: /2026/09/22/tall-green-creature.png
+  teaser: /2026/09/27/warehouse-outbreak.png
 ---
 
 {% paper %}
@@ -68,13 +68,13 @@ header:
 {% paper_columns %}
 {% paper_column %}
 
-{% paper_section %}2.2 発生{% endpaper_section %}
+{% paper_subsection %}2.2 発生{% endpaper_subsection %}
 
 奇形生物は主に日没後の地表面で自発的に大量に発生しますが、人工の建物内にも発生した記録があります（図２）。日中の屋外で奇形生物を見かけることはまれで、発生した瞬間の目撃事例もまだありません。
 
 奇形生物は、多くの場合、時間経過で自発的に消失します。消失した奇形生物が実際に存在ごと無くなっているのか、それとも不可視になっただけでまだその場に留まっているのかは不明ですが、不可視の状態で待ち伏せ、もしくは人間を直接的に攻撃してくるといった事例は確認されていません。いくつかの種類の奇形生物は、直射日光に当たると自発的に炎上し、死亡します。奇形生物が戦闘や炎上によって死亡した場合、消失時とは異なり、死体や所持品の一部が残ります。
 
-{% paper_section %}2.3 行動{% endpaper_section %}
+{% paper_subsection %}2.3 行動{% endpaper_subsection %}
 
 奇形生物は総じて、自身が死亡するまで付近に居る人間を手当たり次第に追跡し、殺害を試みます。追跡している人間が建物内に逃げ込んだ場合、出入り口の前で翌朝まで待ち伏せすることがあります。
 
@@ -94,10 +94,8 @@ header:
 {% endpaper_column %}
 {% endpaper_columns %}
 
----
+{% endpaper %}
 
 2021年1月27日　MirageFairy Server創作部
-
-{% endpaper %}
 
 {% paper_license "奇形生物" %}

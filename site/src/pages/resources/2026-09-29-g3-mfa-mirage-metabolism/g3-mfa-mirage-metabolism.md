@@ -2,7 +2,7 @@
 title: "G3-MFA　ミラージュの代謝とエーテル　～なぜミラージュは樹上にスポーンするのか？～"
 layout: single
 header:
-  teaser: /2026/09/23/mirage-above-canopy.png
+  teaser: /2026/09/29/mirage-above-canopy.png
 ---
 
 {% paper %}
@@ -74,8 +74,6 @@ header:
 {% endpaper_table %}
 
 {% endpaper %}
-
----
 
 2022年9月12日　MirageFairy Server創作部
 

@@ -8,15 +8,21 @@
 #
 # ## 基本的な使い方
 #
-#   {% paper_dateline "68年8月7日　天文学" %}
+#   {% paper_dateline "68年8月7日" "天文学" %}
 #
 # ## markup構文
 #
-#   {% paper_dateline "<日付と分野>" %}
+#   {% paper_dateline "<日付>" "<分野>" %}
+#
+#   - 日付: 記事の日付（必須）
+#   - 分野: 記事の分野（必須）
 #
 # ## HTML出力構造
 #
-#   <div class="paper__dateline" markdown="span">（日付と分野）</div>
+#   <div class="paper__dateline">
+#   <span class="paper__dateline-date" markdown="span">（日付）</span>
+#   <span class="paper__dateline-field" markdown="span">（分野）</span>
+#   </div>
 #
 # =============================================================================
 
@@ -27,11 +33,16 @@ module Paper
   class PaperDatelineTag < Liquid::Tag
     def initialize(tag_name, markup, options)
       super
-      @dateline, = Paper.parse_arguments(markup)
+      @date, @field = Paper.parse_arguments(markup)
     end
 
     def render(context)
-      %(<div class="paper__dateline" markdown="span">#{@dateline}</div>\n)
+      <<~HTML
+        <div class="paper__dateline">
+        <span class="paper__dateline-date" markdown="span">#{@date}</span>
+        <span class="paper__dateline-field" markdown="span">#{@field}</span>
+        </div>
+      HTML
     end
   end
 end

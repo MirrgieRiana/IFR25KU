@@ -45,7 +45,7 @@ header:
 
 ミラジウムの斧は妖精魔法の行使および通常の斧としての利用の両方が可能です。
 
-{% paper_section %}3.1 妖精魔法{% endpaper_section %}
+{% paper_subsection %}3.1 妖精魔法{% endpaper_subsection %}
 
 妖精を肩に留まらせ、片手でミラジウムの斧の柄を握り、刃を原木に添えてください（図３）。反対側の手で刃の背に軽く触れ、解体された丸太をイメージしながら妖精に口頭もしくはテレパシーで合図を認識させると、原木が瞬時に解体されます。行使に当たっては、切断力のために水の、放出のために土のマナの供給が必要です。
 
@@ -53,17 +53,15 @@ header:
 
 {% paper_figure "miragium-axe-in-use.png" "図３　使用イメージ" %}
 
-{% paper_section %}3.2 通常の斧としての利用{% endpaper_section %}
+{% paper_subsection %}3.2 通常の斧としての利用{% endpaper_subsection %}
 
 このアイテムはマナを注入せずに一般的な金属製の斧のように物理的に振り回して使うこともできますが、ミラジウムの高い展性のため、同サイズの鉄製の斧に比べて使い勝手はよくありません。
 
 {% endpaper_column %}
 {% endpaper_columns %}
 
----
+{% endpaper %}
 
 2020年10月12日　MirageFairy Server創作部
-
-{% endpaper %}
 
 {% paper_license "ミラジウムの斧の構造分析" %}
