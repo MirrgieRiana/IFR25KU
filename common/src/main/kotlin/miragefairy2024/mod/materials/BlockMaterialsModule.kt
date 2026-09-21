@@ -776,9 +776,19 @@ open class BlockMaterialCard(
                 path, name,
                 poemList,
                 mapColor, 0.0F, 0.0F,
+                texturedModelProvider = {
+                    // バニラのハチミツブロックのモデルは、外枠の立方体と1ピクセル内側の立方体の2重構造で、中身が沈んで見えるのだ～🌱
+                    Model(ResourceLocation("block/honey_block"), TextureSlot.DOWN, TextureSlot.UP, TextureSlot.SIDE, TextureSlot.PARTICLE).with(
+                        TextureSlot.DOWN to "block/" * it.getIdentifier(),
+                        TextureSlot.UP to "block/" * it.getIdentifier(),
+                        TextureSlot.SIDE to "block/" * it.getIdentifier(),
+                        TextureSlot.PARTICLE to "block/" * it.getIdentifier(),
+                    )
+                },
             ) {
                 override suspend fun createBlock(properties: BlockBehaviour.Properties) = HoneyBlock(properties)
-            }.translucent().sound(SoundType.HONEY_BLOCK).init {
+                context(ModContext) override fun initModelGeneration() = block.registerModelGeneration { texturedModelProvider!![block()] }
+            }.translucent().noOcclusion().sound(SoundType.HONEY_BLOCK).speed(0.4F).jump(0.5F).init {
                 registerCompressionRecipeGeneration(lower, { lower().toIngredient() }, item, { item().toIngredient() })
             }
         }
@@ -1002,6 +1012,8 @@ private fun <T : BlockMaterialCard> T.itemProperty(converter: (Item.Properties) 
 private fun <T : BlockMaterialCard> T.noDrop() = this.blockProperty { it.noLootTable() }
 private fun <T : BlockMaterialCard> T.noSpawn() = this.blockProperty { it.isValidSpawn(Blocks::never) }
 private fun <T : BlockMaterialCard> T.speed(speedFactor: Float) = this.blockProperty { it.speedFactor(speedFactor) }
+private fun <T : BlockMaterialCard> T.jump(jumpFactor: Float) = this.blockProperty { it.jumpFactor(jumpFactor) }
+private fun <T : BlockMaterialCard> T.noOcclusion() = this.blockProperty { it.noOcclusion() }
 private fun <T : BlockMaterialCard> T.sound(blockSoundGroup: SoundType) = this.blockProperty { it.sound(blockSoundGroup) }
 
 private fun <T : BlockMaterialCard> T.noBurn() = this.itemProperty { it.fireResistant() }
