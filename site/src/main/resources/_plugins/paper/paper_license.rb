@@ -20,7 +20,7 @@
 # ## HTML出力構造
 #
 #   <div class="paper__license">
-#   <p>著作権・ライセンス情報: <a href="...">README — Website Articles</a></p>
+#   <p>この記事の著作権とライセンスについては、<a href="...">READMEのWebsite Articles</a>に記載されています。</p>
 #   </div>
 #
 # =============================================================================
@@ -36,7 +36,7 @@ module Paper
     def render(context)
       <<~HTML
         <div class="paper__license">
-        <p>著作権・ライセンス情報: <a href="#{Paper::README_LICENSE_URL}">README — Website Articles</a></p>
+        <p>この記事の著作権とライセンスについては、<a href="#{Paper::README_LICENSE_URL}">READMEのWebsite Articles</a>に記載されています。</p>
         </div>
       HTML
     end

@@ -980,7 +980,7 @@ img[src$=".png" i] {
 // ニュース記事の分野（paper_datelineタグ）
 .paper__dateline-field {
   margin-inline-start: 1em;
-  // 天文学などの分野をタグ状に表示する
+  // 天文学などの分野を、本文と区別できるタグ状に見せるのだ～🌱
   padding: 0.1em 0.5em;
   background: #1a3a5c;
   color: #ffffff;
@@ -1090,13 +1090,13 @@ img[src$=".png" i] {
 .paper__stamp {
   margin: 2em 0 0;
   padding-top: 1em;
-  // 論文外枠の下端でない場所に置かれたスタンプの上には区切り線を引く
+  // 論文外枠の下端でない場所に置かれたスタンプの上には、区切り線を引くのだ～🌱
   border-top: 1px solid #cccccc;
   font-size: 0.85em;
   color: #666666;
 }
 
-// 論文外枠（.paper）の直後に来るスタンプは区切り線が不要なのだ～🌱
+// 論文外枠の直後のスタンプは、外枠の下端がその区切りを兼ねるのだ～🌱
 .paper + .paper__stamp {
   border-top: none;
 }
