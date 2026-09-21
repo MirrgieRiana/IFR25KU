@@ -3,7 +3,6 @@ title: "G2-MFA　宇宙からのメール解読される 外命研が発表"
 layout: single
 ---
 
-{% paper %}
 
 {% paper_figure "Untitled 941.png" %}
 
@@ -61,4 +60,3 @@ layout: single
 
 2020年10月24日　MirageFairy Server創作部
 
-{% endpaper %}

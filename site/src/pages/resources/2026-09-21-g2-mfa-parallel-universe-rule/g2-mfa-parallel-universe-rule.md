@@ -3,11 +3,6 @@ title: "G2-MFA　並行宇宙ルール"
 layout: single
 ---
 
-<div style="text-align:center;">
-<img src="icon_256x256 1.png" style="max-width:80px; border-radius:3px;"/>
-</div>
-
-{% paper %}
 
 {% paper_title %}並行宇宙ルール{% endpaper_title %}
 
@@ -50,4 +45,3 @@ MFAリポジトリに関する詳しい経緯は、「地球側の文献」を�
 
 ※固有名詞は、辞書欠落のため同じ符号点の一般名詞で代用されている場合があります。
 
-{% endpaper %}

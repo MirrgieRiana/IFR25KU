@@ -3,10 +3,6 @@ title: "G2-MFA　火炎のエルグを用いた金属ミラジウム粉末の固
 layout: single
 ---
 
-<div style="text-align:center;">
-<img src="icon_256x256 7.png" style="max-width:80px; border-radius:3px;"/>
-</div>
-
 {% paper %}
 
 {% paper_label "ジャーナル" "妖精研究誌" %}

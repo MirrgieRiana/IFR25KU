@@ -3,10 +3,6 @@ title: "G2-MFA　妖精の縮退現象"
 layout: single
 ---
 
-<div style="text-align:center;">
-<img src="icon_256x256 6.png" style="max-width:80px; border-radius:3px;"/>
-</div>
-
 {% paper %}
 
 {% paper_label "ジャーナル" "妖精研究誌" %}

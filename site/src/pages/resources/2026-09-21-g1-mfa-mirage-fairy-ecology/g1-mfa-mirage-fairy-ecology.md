@@ -3,10 +3,6 @@ title: "G1-MFA　ミラージュ妖精の生態"
 layout: single
 ---
 
-<div style="text-align:center;">
-<img src="icon_256x256.png" style="max-width:80px; border-radius:3px;"/>
-</div>
-
 {% paper %}
 
 {% paper_columns %}

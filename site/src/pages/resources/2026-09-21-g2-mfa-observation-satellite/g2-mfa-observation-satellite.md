@@ -3,11 +3,6 @@ title: "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上�
 layout: single
 ---
 
-<div style="text-align:center;">
-<img src="icon_256x256 3.png" style="max-width:80px; border-radius:3px;"/>
-</div>
-
-{% paper %}
 
 {% paper_figure "Untitled 945.png" %}
 
@@ -49,4 +44,3 @@ layout: single
 
 2020年10月24日　MirageFairy Server創作部
 
-{% endpaper %}

@@ -3,10 +3,6 @@ title: "G3-MFA　ミラージュの代謝とエーテル　～なぜミラージ
 layout: single
 ---
 
-<div style="text-align:center;">
-<img src="icon_256x256 9.png" style="max-width:80px; border-radius:3px;"/>
-</div>
-
 {% paper %}
 
 {% paper_label "レター" "妖精研究誌" %}

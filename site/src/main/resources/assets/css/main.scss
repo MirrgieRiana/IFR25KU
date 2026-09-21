@@ -46,6 +46,14 @@ $navicon-link-color-hover: #a83dba;
     order: 0;
     float: none;
     flex-shrink: 0;
+
+    // テーマは幅から1emを引くことで中央ペインとの間隔を作っているが、flexでは要素同士が隣接するため間隔にならない
+    width: $right-sidebar-width-narrow;
+    padding-inline-end: 1em;
+  }
+
+  @include breakpoint($x-large) {
+    width: $right-sidebar-width;
   }
 }
 
@@ -912,22 +920,20 @@ img[src$=".png" i] {
   padding: 2em;
   background: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  // サイト全体の本文の書体と文字色を継承しないように、紙面の内側に改めて指定する
+  &, p, li, td, th {
+    font-family: serif;
+    color: #000000;
+  }
 }
 
 // 紙面のラベル（paper_labelタグ）
 .paper__label {
-  // 中身が浮動要素だけなので、これが無いと高さが0になる
-  display: flow-root;
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 1.5em;
   font-size: 0.85em;
-}
-
-.paper__label-kind {
-  float: left;
-}
-
-.paper__label-journal {
-  float: right;
 }
 
 // 論文タイトル（paper_titleタグ）
@@ -979,17 +985,25 @@ img[src$=".png" i] {
 
 // 論文中のキャプション付き画像（paper_figureタグ）
 .paper__figure {
+  // テーマはfigureをflexにするため、ブロックに戻さないと中身が内容の幅に縮んで左に寄る
+  display: block;
   margin: 1.5em 0;
   text-align: center;
 
   img {
+    // テーマはfigureの中の画像を横幅いっぱいに引き伸ばして角を丸める
     max-width: 100%;
+    border-radius: 0;
   }
 }
 
 // 論文中のキャプション付き表（paper_tableタグ）
 .paper__table {
   margin: 1.5em 0;
+
+  table {
+    width: 100%;
+  }
 }
 
 // 図表のキャプション（paper_figureタグ、paper_tableタグ）
@@ -998,11 +1012,18 @@ img[src$=".png" i] {
   margin: 0.5em 0;
   font-size: 0.9em;
   text-align: center;
+  // テーマはfigcaptionを薄い紫にする
+  color: #000000;
 }
 
 // 論文中の箇条書き（paper_listタグ）
 .paper__list {
   margin: 1em 0;
+
+  ul, ol {
+    padding-inline-start: 0;
+    list-style-position: inside;
+  }
 }
 
 // 他の紙面へのページリンク（paper_linkタグ）

@@ -3,10 +3,6 @@ title: "G2-MFA　奇形生物"
 layout: single
 ---
 
-<div style="text-align:center;">
-<img src="icon_256x256 5.png" style="max-width:80px; border-radius:3px;"/>
-</div>
-
 {% paper %}
 
 {% paper_label "レター" "妖精研究誌" %}
