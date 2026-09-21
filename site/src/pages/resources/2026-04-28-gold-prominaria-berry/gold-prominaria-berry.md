@@ -3,7 +3,7 @@ title: "【ゴールドプロミナリアの実】ぜんぜん金、出ないん
 description: 春日部つむぎがゴールドプロミナリアの実から金を取り出そうとする話
 layout: theater
 header:
-  teaser:
+  teaser: /2026/04/28/gold-prominaria-berry.teaser.webp
 tags: [ ミラージュフェアリー劇場, ゴールドプロミナリアの実, ゴールドプロミナリア, プロミナリアの実, プロミナリア, ネザー ]
 ---
 
@@ -13,9 +13,11 @@ tags: [ ミラージュフェアリー劇場, ゴールドプロミナリアの�
 
 {% say tsumugi3:まゆ=困り眉 %}……ふぅ……危うく全ロストしかけたわ{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}アレが取れてたら、もうちょっと生活が楽になっただろうにっ……！{% endsay %}
+![溶岩の海に面した岩棚と、遠くまで続く赤い岩肌が見えるネザーの荒地の様子](nether-wastes.webp)
 {% say zundamon23 %}つむぎー、こんなところで何してるのだ？{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}センパーイ……ちょっと溶岩で手怪我しちゃって……{% endsay %}
 {% say zundamon23 %}これ、食べるといいのだ。気休め程度に火に強くなるのだ。{% endsay %}
+![細長く先の尖った赤い果実であるプロミナリアの実](prominaria-berry.png)
 {% say tsumugi3:口=わあーい %}へー。（ぱくっ{% endsay %}
 {% say tsumugi3:口=わあーい %}――！！暑さが消えた！すごっ！！{% endsay %}
 {% say tsumugi3:口=わあーい %}今なら何でもできそうっ！！！！！！{% endsay %}
@@ -35,13 +37,16 @@ tags: [ ミラージュフェアリー劇場, ゴールドプロミナリアの�
 {% say tsumugi3:まゆ=困り眉 %}センパーイ……ちょっと段差で足怪我しちゃって……{% endsay %}
 {% say zundamon23 %}これ、食べるといいのだ。気休め程度に衝撃に強くなるのだ。{% endsay %}
 {% say tsumugi3:口=わあーい %}何これすごっ！！金ピカで金みたいじゃん！{% endsay %}
+![細長く先の尖った金色の果実であるゴールドプロミナリアの実](gold-prominaria-berry.png)
 {% say zundamon23 %}実際に金の抽出に使う人もいるのだ。{% endsay %}
 {% say tsumugi3:口=わあーい %}それ超超やばいんだけど！！あーしも植えたい！！{% endsay %}
 {% say zundamon23 %}プロミナリアの株に金を塗りつけると、金色の実がなるようになるのだ。{% endsay %}
+![ネザーの荒地に生える紅炎草プロミナリアに金インゴットを使う様子](use-gold-ingot.webp)
 {% say tsumugi3:口=わあーい %}ありがとう！！やってみる！！{% endsay %}
 
 {% space %}
 
+![別荘の庭一面に金炎草ゴールドプロミナリアが植えられ、金色の実が実った様子](prominaria-garden.webp)
 {% say tsumugi3:口=わあーい %}圧巻！！！何日も待った甲斐があったーーー！！{% endsay %}
 {% say tsumugi3:口=わあーい %}では早速、いっただっきまーす♪{% endsay %}
 {% say tsumugi3:口=わあーい %}――ん～！おいしー♪力が湧いてくる…！気がする！{% endsay %}
@@ -55,4 +60,5 @@ tags: [ ミラージュフェアリー劇場, ゴールドプロミナリアの�
 {% say tsumugi3:まゆ=困り眉 %}最後の1個、センパイにあげる……{% endsay %}
 {% say zundamon23 %}それは妙なのだ。ボクもやってみるのだ。{% endsay %}
 {% say null %}ぽいっ{% endsay %}
+![ゴールドプロミナリアの実1個をかまどで焼いて金塊を作るレシピ](recipe-gold-nugget.png)
 {% say tsumugi3:口=わあ %}か、かまどで焼くのかーーーっ！！！{% endsay %}
