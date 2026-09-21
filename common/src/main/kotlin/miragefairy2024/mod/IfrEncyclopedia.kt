@@ -20,6 +20,7 @@ import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextChildrenGenerator
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.PagingView
+import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
@@ -91,7 +92,6 @@ class IfrEncyclopediaEntryCard(
 
 /**
  * 段落の間に挟む縦の隙間なのだ～🌱
- * [miragefairy2024.mod.recipeviewer.views.PagingView] はページ分割のために [miragefairy2024.mod.recipeviewer.view.ChildrenGenerator] しか受け取らないのだ～🌱
  */
 private val PARAGRAPH_SPACE_CHILDREN_GENERATOR = ChildrenGenerator<Alignment> { _, _ ->
     listOf(Child(Alignment.START, YSpaceView(4)))
@@ -144,8 +144,6 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                 // 掲げられたスロットなのだ～🌱
                 view += CatalystSlotView(recipeEntry.recipe.itemStacksGetter().toIngredientStack()).configure {
                     position.alignmentX = Alignment.CENTER
-                    view.drawBackground = false
-                    view.margin = 0
                 }
 
                 view += YSpaceView(5)
@@ -179,6 +177,11 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                 // ページ操作ボタンなのだ～🌱
                 view += XListView().configure {
                     view.sizingX = Sizing.FILL
+
+                    // 左右の余白を均等に分けて、ボタンの並びを中央に寄せるのだ～🌱
+                    view += SpaceView().configure {
+                        position.weight = 1.0
+                    }
 
                     // 左ボタン
                     view += ImageButtonView(IntPoint(12, 12)).configure {
@@ -230,6 +233,10 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                             pageIndex.value += 1
                             true
                         }
+                    }
+
+                    view += SpaceView().configure {
+                        position.weight = 1.0
                     }
 
                 }

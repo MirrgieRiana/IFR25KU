@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft
 context(ModContext)
 fun initIfrEncyclopediaClientModule() {
     onOpenIfrEncyclopediaPageScreen.register {
-        Minecraft.getInstance().setScreen(IfrEncyclopediaPageScreen(Minecraft.getInstance().screen, it))
+        Minecraft.getInstance().setScreen(IfrEncyclopediaPageScreen(it))
         true
     }
 }

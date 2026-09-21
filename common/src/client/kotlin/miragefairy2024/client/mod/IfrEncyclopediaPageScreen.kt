@@ -21,10 +21,9 @@ import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
-import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.CommonComponents
 
-class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: IfrEncyclopediaEntryCard) : BaseOwoScreen<FlowLayout>(text { IfrEncyclopediaRecipeViewerCategoryCard.translation() }) {
+class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : BaseOwoScreen<FlowLayout>(text { IfrEncyclopediaRecipeViewerCategoryCard.translation() }) {
     override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
 
     override fun build(rootComponent: FlowLayout) {
@@ -89,9 +88,5 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
         if (super.mouseClicked(mouseX, mouseY, button)) return true
         onClose()
         return true
-    }
-
-    override fun onClose() {
-        minecraft!!.setScreen(parent)
     }
 }
