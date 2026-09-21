@@ -3,6 +3,12 @@ title: "G2-MFA　火炎のエルグを用いた金属ミラジウム粉末の固
 layout: single
 header:
   teaser: /2026/09/25/solidification-process.png
+recommendations: true
+tags:
+  - MFA
+  - ミラジウム
+  - エルグ
+  - 妖精研究所
 ---
 
 {% paper %}

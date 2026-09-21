@@ -3,6 +3,12 @@ title: "G2-MFA　奇形生物"
 layout: single
 header:
   teaser: /2026/09/27/warehouse-outbreak.webp
+recommendations: true
+tags:
+  - MFA
+  - 奇形生物
+  - 妖精
+  - 妖精研究所
 ---
 
 {% paper %}

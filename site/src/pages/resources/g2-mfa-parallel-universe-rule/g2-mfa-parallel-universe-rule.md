@@ -3,6 +3,11 @@ title: "G2-MFA　並行宇宙ルール"
 layout: single
 header:
   teaser: /assets/images/g2-mfa-parallel-universe-rule/parallel-universe-branching.webp
+recommendations: true
+tags:
+  - MFA
+  - 外命研
+  - 並行宇宙
 ---
 
 {% news_title %}並行宇宙ルール{% endnews_title %}

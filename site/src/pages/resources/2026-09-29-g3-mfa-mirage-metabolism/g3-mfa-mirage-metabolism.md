@@ -3,6 +3,12 @@ title: "G3-MFA　ミラージュの代謝とエーテル　～なぜミラージ
 layout: single
 header:
   teaser: /2026/09/29/mirage-above-canopy.webp
+recommendations: true
+tags:
+  - MFA
+  - ミラージュ
+  - エーテル
+  - 生態
 ---
 
 {% paper %}

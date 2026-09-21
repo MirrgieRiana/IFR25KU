@@ -3,6 +3,12 @@ title: "G2-MFA　宇宙からのメール解読される 外命研が発表"
 layout: single
 header:
   teaser: /2026/09/23/decoded-image-data.png
+recommendations: true
+tags:
+  - MFA
+  - 外命研
+  - 並行宇宙
+  - 宇宙人類
 ---
 
 {% news_photo "deep-space-field.webp" %}

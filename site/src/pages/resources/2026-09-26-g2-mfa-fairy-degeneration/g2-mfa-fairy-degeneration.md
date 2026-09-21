@@ -3,6 +3,12 @@ title: "G2-MFA　妖精の縮退現象"
 layout: single
 header:
   teaser: /2026/09/26/disassembly-operation.png
+recommendations: true
+tags:
+  - MFA
+  - 妖精
+  - 縮退
+  - 妖精研究所
 ---
 
 {% paper %}
