@@ -5,7 +5,7 @@ header:
   teaser: /2026/09/23/decoded-image-data.png
 ---
 
-{% paper_figure "deep-space-field.png" %}
+{% paper_photo "deep-space-field.webp" %}
 
 {% paper_dateline "67年10月11日" "天文学" %}
 
@@ -46,7 +46,7 @@ header:
 {% paper_columns %}
 {% paper_column %}
 
-{% paper_figure "parallel-universe-collection.png" %}
+{% paper_photo "parallel-universe-collection.webp" %}
 
 {% paper_link "g2-mfa-observation-satellite.html" "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ" %}
 

@@ -2,7 +2,7 @@
 title: "G2-MFA　ミラジウムの斧の構造分析"
 layout: single
 header:
-  teaser: /2026/09/22/miragium-axe.png
+  teaser: /2026/09/22/miragium-axe.webp
 ---
 
 {% paper %}
@@ -39,7 +39,7 @@ header:
 {% endpaper_column %}
 {% paper_column %}
 
-{% paper_figure "miragium-axe.png" "図１　ミラジウムの斧" %}
+{% paper_photo "miragium-axe.webp" "図１　ミラジウムの斧" %}
 
 {% paper_section %}3. 利用{% endpaper_section %}
 
@@ -51,7 +51,7 @@ header:
 
 現在、この魔法はいくつかの種類の凹凸のない原木に対してのみ安全性が確認されています。エルグの流出により意図しない物体への作用が想定されるため、板材やカボチャといった原木以外のブロックへの行使は推奨されません。≪収穫≫のエルグにより、切断効果は植物体にのみ作用します。
 
-{% paper_figure "miragium-axe-in-use.png" "図３　使用イメージ" %}
+{% paper_photo "miragium-axe-in-use.webp" "図３　使用イメージ" %}
 
 {% paper_subsection %}3.2 通常の斧としての利用{% endpaper_subsection %}
 

@@ -2,7 +2,7 @@
 title: "G3-MFA　ミラージュの代謝とエーテル　～なぜミラージュは樹上にスポーンするのか？～"
 layout: single
 header:
-  teaser: /2026/09/29/mirage-above-canopy.png
+  teaser: /2026/09/29/mirage-above-canopy.webp
 ---
 
 {% paper %}
@@ -41,7 +41,7 @@ header:
 {% endpaper_column %}
 {% paper_column %}
 
-{% paper_figure "mirage-above-canopy.png" "図１　樹冠上のミラージュ" %}
+{% paper_photo "mirage-above-canopy.webp" "図１　樹冠上のミラージュ" %}
 
 {% paper_table "表２　ミラージュの成分" %}
 | 成分 | 質量％ |

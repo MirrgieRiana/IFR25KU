@@ -43,7 +43,7 @@ header:
 {% endpaper_column %}
 {% paper_column %}
 
-{% paper_figure "miragium-powder-and-fairy.png" "図１　ミラジウムの粉末と妖精" %}
+{% paper_photo "miragium-powder-and-fairy.webp" "図１　ミラジウムの粉末と妖精" %}
 
 {% paper_figure "solidification-process.png" "図２　固形化処理の様子" %}
 

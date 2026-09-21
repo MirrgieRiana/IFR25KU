@@ -1023,24 +1023,31 @@ img[src$=".png" i] {
   }
 }
 
-// 論文中のキャプション付き画像（paper_figureタグ）
-.paper__figure {
+// 論文中のキャプション付きの図と写真（paper_figureタグ、paper_photoタグ）
+.paper__figure,
+.paper__photo {
   // テーマはfigureをflexにするため、ブロックに戻さないと中身が内容の幅に縮んで左に寄る
   display: block;
   margin: 1.5em 0;
   text-align: center;
 
   img {
-    // テーマはfigureの中の画像を横幅いっぱいに引き伸ばして角を丸める
+    // テーマはfigureの中の画像の角を丸める
     max-width: 100%;
     border-radius: 0;
   }
 }
 
-// 原寸で掲げる図（paper_figureタグのactual_size）
-.paper__figure--actual-size img {
-  // 画像自身が持つ寸法で掲げる
+// 図の画像（paper_figureタグ）
+.paper__figure img {
+  // 引き伸ばすと画素の粗が出るため、画像自身が持つ寸法で掲げる
   width: auto;
+}
+
+// 写真の画像（paper_photoタグ）
+.paper__photo img {
+  // 拡大しても階調が保たれるため、紙面や段の幅いっぱいに掲げる
+  width: 100%;
 }
 
 // 論文中のキャプション付き表（paper_tableタグ）

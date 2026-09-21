@@ -2,7 +2,7 @@
 title: "G2-MFA　並行宇宙ルール"
 layout: single
 header:
-  teaser: /assets/images/g2-mfa-parallel-universe-rule/parallel-universe-branching.png
+  teaser: /assets/images/g2-mfa-parallel-universe-rule/parallel-universe-branching.webp
 ---
 
 {% paper_title %}並行宇宙ルール{% endpaper_title %}
@@ -20,7 +20,7 @@ header:
 
 といったイメージです。
 
-{% paper_figure "/assets/images/g2-mfa-parallel-universe-rule/parallel-universe-branching.png" %}
+{% paper_photo "/assets/images/g2-mfa-parallel-universe-rule/parallel-universe-branching.webp" %}
 
 この設定により、次のようなことが起こります。
 
@@ -28,7 +28,7 @@ header:
 - 執筆者それぞれが自分の並行宇宙を持って創作できる。
 - 注目したい文献以外の文献で追加された設定をすべて無視できる。
 
-{% paper_figure "/assets/images/g2-mfa-parallel-universe-rule/document-reference-graph.png" %}
+{% paper_photo "/assets/images/g2-mfa-parallel-universe-rule/document-reference-graph.webp" %}
 
 並行宇宙ルールは、MirageFairy Server公式以外の、ファンの手による二次創作的な作品が簡単に作れることを目指して作られました。
 

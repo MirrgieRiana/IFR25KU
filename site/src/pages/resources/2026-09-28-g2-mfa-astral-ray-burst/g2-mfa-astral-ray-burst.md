@@ -2,7 +2,7 @@
 title: "G2-MFA　アストラル線バースト"
 layout: single
 header:
-  teaser: /2026/09/28/elytra-fourth-star.png
+  teaser: /2026/09/28/elytra-fourth-star.webp
 ---
 
 {% paper %}
@@ -37,7 +37,7 @@ header:
 {% endpaper_column %}
 {% paper_column %}
 
-{% paper_figure "elytra-fourth-star.png" "図１　エリトラ座第4恒星" %}
+{% paper_photo "elytra-fourth-star.webp" "図１　エリトラ座第4恒星" %}
 
 人類がこのような極高アストラル線環境に遭遇するのは妖精の星が初めてのことであり、このような環境において物質や生態系がどのような影響を受けるのかについては未だ人類の知識が及ぶところではなく、アストラル線バーストが今後の物理学研究の手掛かりとなることが期待されています。
 
@@ -49,7 +49,7 @@ header:
 
 また、高濃度のエーテルを含むミラージュの花が過去のアストラル線バーストの状況を示す生きた化石であるという指摘もあります。妖精の星に原生する生物のほとんどは、高エーテル環境に依存した代謝機構を持っている、もしくは高濃度のエーテルに耐えうる体をしています。外来種である私たち人類は高エーテル環境に適用した体を持っておらず、今後発生しうる超規模のアストラル線バーストによって人間の生命活動が脅かされる可能性があるため、さらなる研究と対策が要求されています。
 
-{% paper_figure "night-sky-near-elytra.png" "図３　 2747日夜のエリトラ座<br>第4恒星近傍の夜空" %}
+{% paper_photo "night-sky-near-elytra.webp" "図３　 2747日夜のエリトラ座<br>第4恒星近傍の夜空" %}
 
 {% endpaper_column %}
 {% endpaper_columns %}

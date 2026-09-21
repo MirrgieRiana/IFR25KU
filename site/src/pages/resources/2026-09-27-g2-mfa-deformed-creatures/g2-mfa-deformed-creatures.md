@@ -2,7 +2,7 @@
 title: "G2-MFA　奇形生物"
 layout: single
 header:
-  teaser: /2026/09/27/warehouse-outbreak.png
+  teaser: /2026/09/27/warehouse-outbreak.webp
 ---
 
 {% paper %}
@@ -24,7 +24,7 @@ header:
 
 その中でも奇形生物と呼ばれる固有の生物群は、私たちが妖精の星に居住する際に最初に対策が要求される、非常に重要かつ危険な存在の一つです。奇形生物は私たちが妖精の星に入植して以来、明確な殺意を伴って毎晩のように襲撃しに現れます。奇形生物への対策なしには、生活どころか、安心して基地の外を出歩くことすらままならないでしょう。
 
-{% paper_figure "tall-green-creature.png" "図１　 非人型で緑色で縦長の奇形生物" %}
+{% paper_photo "tall-green-creature.webp" "図１　 非人型で緑色で縦長の奇形生物" %}
 
 {% endpaper_column %}
 {% paper_column %}
@@ -59,7 +59,7 @@ header:
 【被害者】フラワーポット夫人  
 【記録】フラワーポットは夫人と14歳の長男の3人家族でした。19日午後、フラワーポット一家は自宅のあるポッドから約500メートルの森林内の地点Aで植物標本の採集を行っていました。日没が近づいたころ、フラワーポット一家は薄暗くなった森林に恐怖を感じ、採集を切り上げて、入手した植物標本を持って歩いてポッドを目指しました。ポッドから約400メートルの地点Bで、フラワーポットはA付近からガサゴソと音がするのを感じ、小動物ほどの大きさの何かが猛スピードで近づいて来ていることに気が付きました。フラワーポット一家は植物標本を地面に置き、全速力でポッドを目指しました。フラワーポットと長男がポッドに到着したあと、少し遅れて追いかけてくるはずの夫人が一向に到着しませんでした。フラワーポットはその夜、ポッド周辺を一晩中見張り続けました。20日朝、フラワーポット夫人はポッドから約200メートルの地点Cで死体で発見されました。
 
-{% paper_figure "incident-map.png" actual_size %}
+{% paper_figure "incident-map.png" %}
 
 {% endpaper %}
 
@@ -83,7 +83,7 @@ header:
 {% endpaper_column %}
 {% paper_column %}
 
-{% paper_figure "warehouse-outbreak.png" "図２　奇形生物の発生した倉庫" %}
+{% paper_photo "warehouse-outbreak.webp" "図２　奇形生物の発生した倉庫" %}
 
 {% paper_section %}3. 対策{% endpaper_section %}
 

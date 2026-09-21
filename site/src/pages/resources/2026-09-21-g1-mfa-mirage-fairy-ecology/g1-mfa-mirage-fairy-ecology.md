@@ -2,7 +2,7 @@
 title: "G1-MFA　ミラージュ妖精の生態"
 layout: single
 header:
-  teaser: /2026/09/21/mirage-fairy.png
+  teaser: /2026/09/21/mirage-fairy.webp
 ---
 
 {% paper %}
@@ -14,7 +14,7 @@ header:
 {% paper_columns %}
 {% paper_column %}
 
-{% paper_figure "mirage-fairy.png" "赤紫色の彩釉テラコッタのミラージュ妖精" %}
+{% paper_photo "mirage-fairy.webp" "赤紫色の彩釉テラコッタのミラージュ妖精" %}
 
 {% endpaper_column %}
 {% paper_column %}
