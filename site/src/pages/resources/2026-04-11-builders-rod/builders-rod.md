@@ -4,7 +4,7 @@ description: 春日部つむぎがビルダーズロッドを試してみる話
 layout: theater
 header:
   teaser: /2026/04/11/builders-rod.teaser.webp
-tags: [ ミラージュフェアリー劇場, ビルダーズロッド, 建築, 迷路, 丸石 ]
+tags: [ IFR劇場, ビルダーズロッド, 建築, 迷路, 丸石 ]
 ---
 
 {% say zundamon23 %}よし、ここはこの辺まで……あっち側は……{% endsay %}
