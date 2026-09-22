@@ -1,0 +1,15 @@
+<section class="tag-index">
+  {% assign all_tags = site.posts | map: "tags" | join: "," | split: "," | uniq | sort_natural %}
+  {% if all_tags.size > 0 %}
+  <ul class="tag-index__items">
+    {% for tag_word in all_tags %}
+    {% assign tagged_posts = site.posts | where_exp: "post", "post.tags contains tag_word" %}
+    <li class="tag-index__item">
+      <a href="{{ '/tag/' | append: tag_word | append: '.html' | relative_url }}">{{ tag_word }} ({{ tagged_posts.size }})</a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>まだタグがありません。</p>
+  {% endif %}
+</section>
