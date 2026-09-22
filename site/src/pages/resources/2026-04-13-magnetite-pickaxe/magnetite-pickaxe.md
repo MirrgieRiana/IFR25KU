@@ -7,6 +7,7 @@ header:
 tags: [ IFR劇場, 磁鉄鉱のツルハシ, 磁鉄鉱, 採掘, ツルハシ, 鉄鉱石, ダイヤモンド鉱石 ]
 ---
 
+![薄暗い洞窟の行き止まりに積もった砂利の奥の壁面に、鉄鉱石が1個だけ露出している様子](magnetite-pickaxe.teaser.webp)
 {% say tsumugi3:まゆ=困り眉 %}あっ……鉄鉱石が……{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}シャベル……ない！{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}……よし、這って進めば……行けるっ！{% endsay %}
