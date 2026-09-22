@@ -8,6 +8,6 @@ toc: false
 
 <div class="content-wrap" markdown="1">
 
-{% include tag-list.html %}
+{% include tag-index.html %}
 
 </div>
