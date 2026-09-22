@@ -1,8 +1,14 @@
 <section class="recent-posts">
-  {% if site.posts.size > 0 %}
+  {% assign filter_tag = include.tag %}
+  {% if filter_tag %}
+  {% assign shown_posts = site.posts | where_exp: "post", "post.tags contains filter_tag" %}
+  {% else %}
+  {% assign shown_posts = site.posts %}
+  {% endif %}
+  {% if shown_posts.size > 0 %}
   {% assign post_limit = include.limit | default: 9999 %}
   <div class="recent-posts__grid">
-    {% for post in site.posts limit:post_limit %}
+    {% for post in shown_posts limit:post_limit %}
     <a href="{{ post.url | relative_url }}" class="recent-posts__card">
       <div class="recent-posts__teaser">
         {% if post.header.teaser %}

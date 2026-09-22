@@ -4,7 +4,7 @@ description: 春日部つむぎが磁鉄鉱のツルハシを気に入る話
 layout: theater
 header:
   teaser: /2026/04/13/magnetite-pickaxe.teaser.webp
-tags: [ ミラージュフェアリー劇場, 磁鉄鉱のツルハシ, 磁鉄鉱, 採掘, ツルハシ, 鉄鉱石, ダイヤモンド鉱石 ]
+tags: [ IFR劇場, 磁鉄鉱のツルハシ, 磁鉄鉱, 採掘, ツルハシ, 鉄鉱石, ダイヤモンド鉱石 ]
 ---
 
 ![薄暗い洞窟の奥の壁面に、茶色い斑点を持つ磁鉄鉱の鉱石が1個だけ露出している様子](magnetite-pickaxe.teaser.webp)

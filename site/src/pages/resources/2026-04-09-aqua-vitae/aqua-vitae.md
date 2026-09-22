@@ -4,7 +4,7 @@ description: 春日部つむぎとずんだもんが生命の水をアタノー�
 layout: theater
 header:
   teaser: /2026/04/09/aqua-vitae.teaser.png
-tags: [ ミラージュフェアリー劇場, 生命の水, アタノール, 豚肉, 肉, 土, 妖精 ]
+tags: [ IFR劇場, 生命の水, アタノール, 豚肉, 肉, 土, 妖精 ]
 ---
 
 ![格子状に並ぶスロットの中央に1個だけ置かれた、橙色の栓と緑色に濁った液体を持つ生命の水](aqua-vitae.teaser.png)

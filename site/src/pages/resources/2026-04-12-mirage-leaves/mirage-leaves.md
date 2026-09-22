@@ -4,7 +4,7 @@ description: ずんだもんと春日部つむぎがミラージュの葉でカ�
 layout: theater
 header:
   teaser: /2026/04/12/mirage-leaves.teaser.png
-tags: [ ミラージュフェアリー劇場, ミラージュの葉, カバン ]
+tags: [ IFR劇場, ミラージュの葉, カバン ]
 ---
 
 ![水色の丸い粒2個が緑色の茎の両端に付いた形をしたミラージュの葉](mirage-leaves.teaser.png)

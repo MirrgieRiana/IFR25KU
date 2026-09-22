@@ -4,7 +4,7 @@ description: 春日部つむぎがビルダーズロッドを試してみる話
 layout: theater
 header:
   teaser: /2026/04/11/builders-rod.teaser.webp
-tags: [ ミラージュフェアリー劇場, ビルダーズロッド, 建築, 迷路, 丸石 ]
+tags: [ IFR劇場, ビルダーズロッド, 建築, 迷路, 丸石 ]
 ---
 
 ![青緑色の草地が斜面をなす妖精の樹海の中で、手前の平らな場所に灰色の丸石が1個だけ置かれている様子](builders-rod.teaser.webp)

@@ -4,7 +4,7 @@ description: IFR25KUの公式サイトを公開した話
 layout: theater
 header:
   teaser: /2026/03/21/website-launch.teaser.webp
-tags: [ ミラージュフェアリー劇場, アップデート, IFR25KU, 公式サイト, ブログ ]
+tags: [ IFR劇場, アップデート, IFR25KU, 公式サイト, ブログ ]
 ---
 
 ![赤褐色のレンガと床タイルで組まれた屋内に額縁が掛かり、その手前を紫と青に輝く妖精が4匹漂っている様子](website-launch.teaser.webp)

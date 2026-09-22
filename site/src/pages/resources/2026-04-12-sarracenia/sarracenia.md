@@ -4,7 +4,7 @@ description: 春日部つむぎのサラセニアに妖精が訪れる話
 layout: theater
 header:
   teaser: /2026/04/12/sarracenia.teaser.webp
-tags: [ ミラージュフェアリー劇場, サラセニア, 食虫植物, 砂糖, 妖精 ]
+tags: [ IFR劇場, サラセニア, 食虫植物, 砂糖, 妖精 ]
 ---
 
 ![薄暗い草地に1株だけ生えた、赤みを帯びた黄緑色の葉とピンクの花びらを持つサラセニア](sarracenia.teaser.webp)

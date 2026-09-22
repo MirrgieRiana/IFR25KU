@@ -4,7 +4,7 @@ description: 春日部つむぎが紅天石の斧で木を切る話
 layout: theater
 header:
   teaser: /2026/04/15/xarpite-axe.teaser.png
-tags: [ ミラージュフェアリー劇場, 紅天石の斧, 紅天石, 伐採, 一括伐採 ]
+tags: [ IFR劇場, 紅天石の斧, 紅天石, 伐採, 一括伐採 ]
 ---
 
 ![格子状に並ぶスロットの中央に1個だけ置かれた、赤く透き通る刃と木の柄を持つ紅天石の斧](xarpite-axe.teaser.png)
