@@ -28,7 +28,7 @@
 module Paper
 
   # READMEへのURL。
-  # 見出しへのリンクにすると、READMEの見出し構文を束縛するのだ～🌱
+  # 見出しへのリンクにすると、READMEの見出し構文を束縛する。
   README_URL = "https://github.com/MirrgieRiana/IFR25KU/blob/main/README.md"
 
   # {% paper_license %} インラインタグの実装。
