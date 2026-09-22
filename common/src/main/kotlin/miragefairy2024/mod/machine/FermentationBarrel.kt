@@ -5,12 +5,12 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.MachineScreenHandler
 import miragefairy2024.mod.PoemList
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.Shape
 import miragefairy2024.mod.materials.tagOf
 import miragefairy2024.mod.poem
+import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -77,7 +77,7 @@ object FermentationBarrelCard : SimpleMachineCard<FermentationBarrelBlock, Ferme
             pattern("ILI")
             pattern("LRL")
             pattern("ILI")
-            define('L', HaimeviskaBlockCard.LOG.item())
+            define('L', TreeBlockCard.LOG.item())
             define('R', tagOf(Shape.GEM, Material.HAIMEVISKA_ROSIN))
             define('I', tagOf(Shape.NUGGET, Material.IRON))
         } on MaterialCard.HAIMEVISKA_ROSIN.item

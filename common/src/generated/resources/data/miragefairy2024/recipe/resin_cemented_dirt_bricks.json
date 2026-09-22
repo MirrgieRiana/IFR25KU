@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "miragefairy2024:resin_cemented_dirt_bricks",
+  "key": {
+    "#": {
+      "item": "miragefairy2024:resin_cemented_dirt"
+    }
+  },
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "result": {
+    "count": 4,
+    "id": "miragefairy2024:resin_cemented_dirt_bricks"
+  }
+}

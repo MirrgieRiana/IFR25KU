@@ -119,6 +119,7 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
             exclude("**/*.sc2.png")
             exclude("**/*.wav")
             exclude("**/.cache/**")
+            exclude("reports/**")
         }
 
         tasks.named<Jar>("jar") {
@@ -146,6 +147,14 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
         }
         */
 
+    }
+
+    dependencies {
+        "testImplementation"(kotlin("test"))
+    }
+
+    tasks.named<Test>("test") {
+        useJUnitPlatform()
     }
 
     tasks.register<UnpackSourcesTask>("unpackSources") {

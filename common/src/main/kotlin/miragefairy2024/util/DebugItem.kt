@@ -34,9 +34,9 @@ fun registerDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSo
     val item = Registration(BuiltInRegistries.ITEM, MirageFairy2024.identifier(path)) {
         object : Item(Properties()) {
             override fun getName(stack: ItemStack) = text { path.toUpperCamelCase(afterDelimiter = " ")() }
-            override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
-                action(world, user, hand, user.getItemInHand(hand))
-                return InteractionResultHolder.sidedSuccess(user.getItemInHand(hand), world.isClientSide)
+            override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+                action(level, user, hand, user.getItemInHand(hand))
+                return InteractionResultHolder.sidedSuccess(user.getItemInHand(hand), level.isClientSide)
             }
         }
     }
@@ -48,17 +48,17 @@ fun registerDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSo
 
 context(ModContext)
 fun registerClientDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSource(), color: Int = 0xFF888888.toInt(), action: (Level, Player, InteractionHand, ItemStack) -> Unit) {
-    registerDebugItem(path, icon, color) { world, player, hand, itemStack ->
-        if (world.isServer) return@registerDebugItem
-        action(world, player, hand, itemStack)
+    registerDebugItem(path, icon, color) { level, player, hand, itemStack ->
+        if (level.isServer) return@registerDebugItem
+        action(level, player, hand, itemStack)
     }
 }
 
 context(ModContext)
 fun registerServerDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSource(), color: Int = 0xFF888888.toInt(), action: (ServerLevel, ServerPlayer, InteractionHand, ItemStack) -> Unit) {
-    registerDebugItem(path, icon, color) { world, player, hand, itemStack ->
-        if (world.isClientSide) return@registerDebugItem
-        action(world as ServerLevel, player as ServerPlayer, hand, itemStack)
+    registerDebugItem(path, icon, color) { level, player, hand, itemStack ->
+        if (level.isClientSide) return@registerDebugItem
+        action(level as ServerLevel, player as ServerPlayer, hand, itemStack)
     }
 }
 

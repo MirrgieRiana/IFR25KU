@@ -1,13 +1,13 @@
 package miragefairy2024.mod.biome
 
-import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.mod.haimeviska.HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY
-import miragefairy2024.mod.haimeviska.HaimeviskaBlockCard
+import miragefairy2024.mod.tree.TreeBlockCard
+import miragefairy2024.mod.tree.contents.haimeviska.GIANT_HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.getSurfaceNoiseThreshold
 import net.minecraft.core.HolderGetter
 import net.minecraft.data.worldgen.BiomeDefaultFeatures
 import net.minecraft.data.worldgen.placement.AquaticPlacements
@@ -33,7 +33,7 @@ object DeepFairyForestBiomeCard : BiomeCard(
         AdvancementCard(
             identifier = identifier,
             context = AdvancementCard.Sub { FairyForestBiomeCard.advancement!!.await() },
-            icon = { HaimeviskaBlockCard.SAPLING.item().createItemStack() },
+            icon = { TreeBlockCard.SAPLING.item().createItemStack() },
             name = EnJa("The Forest of Memories", "記憶の森"),
             description = EnJa("Travel the overworld and discover the Deep Fairy Forest", "地上を旅して妖精の樹海を探す"),
             criterion = AdvancementCard.visit(key),
@@ -89,7 +89,7 @@ object DeepFairyForestBiomeCard : BiomeCard(
 
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, ElevatedSpawnerFeatureCard.placedFeatureKey)
 
-                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GIANT_HAIMEVISKA_DEEP_FAIRY_FOREST_PLACED_FEATURE_KEY)
 
                 BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)
@@ -105,7 +105,7 @@ object DeepFairyForestBiomeCard : BiomeCard(
     override fun init() {
         super.init()
 
-        registerOverworldSurfaceRules(MirageFairy2024.MOD_ID) {
+        registerOverworldSurfaceRules {
             SurfaceRules.ifTrue(
                 SurfaceRules.abovePreliminarySurface(),
                 SurfaceRules.ifTrue(
@@ -116,11 +116,11 @@ object DeepFairyForestBiomeCard : BiomeCard(
                             SurfaceRules.isBiome(key),
                             SurfaceRules.sequence(
                                 SurfaceRules.ifTrue(
-                                    SurfaceRules.noiseCondition(Noises.SURFACE, 1.75 / 8.25, Double.MAX_VALUE),
+                                    SurfaceRules.noiseCondition(Noises.SURFACE, getSurfaceNoiseThreshold(Noises.SURFACE, 0.25), Double.MAX_VALUE),
                                     SurfaceRules.state(Blocks.COARSE_DIRT.defaultBlockState())
                                 ),
                                 SurfaceRules.ifTrue(
-                                    SurfaceRules.noiseCondition(Noises.SURFACE, -0.95 / 8.25, Double.MAX_VALUE),
+                                    SurfaceRules.noiseCondition(Noises.SURFACE, getSurfaceNoiseThreshold(Noises.SURFACE, 0.64), Double.MAX_VALUE),
                                     SurfaceRules.state(Blocks.PODZOL.defaultBlockState())
                                 ),
                             ),

@@ -2,8 +2,10 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
+import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.magicplant.contents.TraitCard
+import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -27,6 +29,8 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.SoundType
+import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
 import net.minecraft.world.level.material.MapColor
@@ -42,7 +46,10 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
     override val blockCodec = VeropedaBlock.CODEC
     override fun createBlock() = VeropedaBlock(createCommonSettings().instabreak().mapColor(MapColor.NETHER).sound(SoundType.CROP))
 
-    override val drops = listOf(MaterialCard.VEROPEDA_BERRIES.item, MaterialCard.VEROPEDA_LEAF.item)
+    override val drops = listOf(
+        { HarvestNotation.Crop(MaterialCard.VEROPEDA_BERRIES.item().createItemStack(), TraitEffectKeyCard.FRUITS_PRODUCTION.traitEffectKey.name) },
+        { HarvestNotation.Crop(MaterialCard.VEROPEDA_LEAF.item().createItemStack(), TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name) },
+    )
     override fun getFruitDrops(count: Int, random: RandomSource) = listOf(MaterialCard.VEROPEDA_BERRIES.item().createItemStack(count))
     override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.VEROPEDA_LEAF.item().createItemStack(count))
 
@@ -100,10 +107,12 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
     }
 }
 
-class VeropedaBlock(settings: Properties) : AbstractVeropedaBlock(VeropedaCard, settings) {
+class VeropedaBlock(settings: Properties) : SimpleMagicPlantBlock(VeropedaCard, settings) {
     companion object {
         val CODEC: MapCodec<VeropedaBlock> = simpleCodec(::VeropedaBlock)
     }
 
     override fun codec() = CODEC
+
+    override fun getAgeProperty(): IntegerProperty = BlockStateProperties.AGE_3
 }

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "miragefairy2024:resin_cemented_dirt_bricks"
+  },
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:resin_cemented_dirt_bricks_stairs"
+  }
+}

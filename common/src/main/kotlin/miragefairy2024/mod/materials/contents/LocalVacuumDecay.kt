@@ -39,25 +39,25 @@ class LocalVacuumDecayBlock(settings: Properties) : Block(settings) {
 
     override fun isRandomlyTicking(state: BlockState) = true
 
-    override fun randomTick(state: BlockState, world: ServerLevel, pos: BlockPos, random: RandomSource) {
+    override fun randomTick(state: BlockState, level: ServerLevel, pos: BlockPos, random: RandomSource) {
         @Suppress("DEPRECATION")
-        super.randomTick(state, world, pos, random)
+        super.randomTick(state, level, pos, random)
 
         val direction = Direction.getRandom(random)
         val targetBlockPos = pos.relative(direction)
-        val targetBlockState = world.getBlockState(targetBlockPos)
+        val targetBlockState = level.getBlockState(targetBlockPos)
         if (targetBlockState.isAir) return
-        if (targetBlockState.getDestroySpeed(world, targetBlockPos) < 0) return
+        if (targetBlockState.getDestroySpeed(level, targetBlockPos) < 0) return
         if (targetBlockState isIn state.block) return
         if (targetBlockState isIn LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG) return
-        world.setBlockAndUpdate(targetBlockPos, state)
+        level.setBlockAndUpdate(targetBlockPos, state)
     }
 
-    override fun stepOn(world: Level, pos: BlockPos, state: BlockState, entity: Entity) {
+    override fun stepOn(level: Level, pos: BlockPos, state: BlockState, entity: Entity) {
         if (!entity.isSteppingCarefully) {
-            entity.hurt(world.damageSources().magic(), 1.0f)
+            entity.hurt(level.damageSources().magic(), 1.0f)
         }
-        super.stepOn(world, pos, state, entity)
+        super.stepOn(level, pos, state, entity)
     }
 }
 
