@@ -4,7 +4,7 @@ description: 春日部つむぎがゴールドプロミナリアの実から金�
 layout: theater
 header:
   teaser: /2026/04/28/gold-prominaria-berry.teaser.webp
-tags: [ ミラージュフェアリー劇場, ゴールドプロミナリアの実, ゴールドプロミナリア, プロミナリアの実, プロミナリア, ネザー ]
+tags: [ IFR劇場, ゴールドプロミナリアの実, ゴールドプロミナリア, プロミナリアの実, プロミナリア, ネザー ]
 ---
 
 ![一面に溶岩が広がり、赤褐色のネザーラックの壁に金鉱石が露出しているネザーの様子](gold-prominaria-berry.teaser.webp)
@@ -44,7 +44,7 @@ tags: [ ミラージュフェアリー劇場, ゴールドプロミナリアの�
 {% say zundamon23 %}実際に金の抽出に使う人もいるのだ。{% endsay %}
 {% say tsumugi3:口=わあーい %}それ超超やばいんだけど！！あーしも植えたい！！{% endsay %}
 {% say zundamon23 %}プロミナリアの株に金を塗りつけると、金色の実がなるようになるのだ。{% endsay %}
-![ネザーラックの上に1株だけ生え、金色の実が実った金炎草ゴールドプロミナリア](gold-prominaria-plant.webp)
+![ネザーラックの上に金色の実が実った金炎草ゴールドプロミナリアが1株だけ生えている様子](gold-prominaria-plant.webp)
 {% say tsumugi3:口=わあーい %}ありがとう！！やってみる！！{% endsay %}
 
 {% space %}
