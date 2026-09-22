@@ -32,7 +32,7 @@ tags: [ ミラージュフェアリー劇場, ゴールドプロミナリアの�
 ![溶岩の海の上にせり出した崖の縁に金鉱石があるネザー最下層の様子](nether-lava-sea.webp)
 {% say tsumugi3:口=わあーい %}またあった！（ぱくっ{% endsay %}
 {% say tsumugi3:口=わあーい %}一丁あがり！あっ、あんなところにも！{% endsay %}
-![グロウストーンの塊が張り出したネザーの崖の高い位置にある金鉱石を見上げた様子](prominaria-on-cliff.webp)
+![グロウストーンの塊が張り出したネザーの崖の高い位置にある金鉱石を見上げた様子](gold-ore-on-cliff.webp)
 {% say null %}ドンッ！{% endsay %}
 {% say tsumugi3:口=わあーい %}あいたーっ！{% endsay %}
 {% say zundamon23 %}つむぎー、こんなところで何してるのだ？{% endsay %}
@@ -51,7 +51,7 @@ tags: [ ミラージュフェアリー劇場, ゴールドプロミナリアの�
 ![ネザーラックの中の小部屋の地面の一面に整然と植えられ、金色の実が実った大量の金炎草ゴールドプロミナリアの様子](prominaria-garden.webp)
 {% say tsumugi3:口=わあーい %}圧巻！！！何日も待った甲斐があったーーー！！{% endsay %}
 {% say tsumugi3:口=わあーい %}では早速、いっただっきまーす♪{% endsay %}
-![ゴールドプロミナリアの実が64個ずつ4スロット分並んだインベントリ](hotbar-gold-prominaria-berries.png)
+![ゴールドプロミナリアの実が64個ずつ4スロット分並んだインベントリ](inventory-gold-prominaria-berries.png)
 {% say tsumugi3:口=わあーい %}――ん～！おいしー♪力が湧いてくる…！気がする！{% endsay %}
 {% say tsumugi3:口=わあーい %}……？そういえばこれ、種が金で出来てるんだっけ？？{% endsay %}
 {% say tsumugi3:口=わあーい %}あれ？こっちも種なしだ。{% endsay %}
