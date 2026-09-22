@@ -108,7 +108,7 @@ These files are provided under the **[Apache License 2.0](LICENSE)**.
 
 ## Website Articles
 
-These are the articles published on [the official website](https://ifr25ku.mirrgieriana.net/), including the Mirage Fairy Theater series, the MFA documents, and every other article.
+These are the articles published on [the official website](https://ifr25ku.mirrgieriana.net/), including the IFR Theater series, the MFA documents, and every other article.
 
 The writers credited within the MFA documents are in-universe characters who authored those documents in the setting, and are not the authors of the MFA works themselves.
 
