@@ -1,7 +1,7 @@
 <!--
   recommendations.html — 関連記事の抽選と描画
 
-  右ペインの .theater-recommendations と、本文下の .page__recommend-grid の
+  右ペインの .recommendations__list と、本文下の .page__recommend-grid の
   中身を、posts.json からの重み付き抽選で埋める。
   両方の要素が存在することを前提とするため、この include を使うレイアウトは、
   その2個の要素を先に配置しておく必要がある。
@@ -114,7 +114,7 @@
   // 1. コンテナ要素を取得
   // ============================================================
 
-  const sidebarContainer = document.querySelector('.theater-recommendations');
+  const sidebarContainer = document.querySelector('.recommendations__list');
   const recommendContainer = document.querySelector('.page__recommend-grid');
   const currentUrl = '{{ page.url | relative_url }}';
   const currentTags = {{ page.tags | jsonify }};
