@@ -112,11 +112,11 @@ These are the articles published on [the official website](https://ifr25ku.mirrg
 
 The writers credited within the MFA documents are in-universe characters who authored those documents in the setting, and are not the authors of the MFA works themselves.
 
+Where an article contains third-party works such as Minecraft textures, those portions are excluded from both the copyright and the license stated below, and remain subject to the rights of their original copyright holders.
+
 ### Copyright
 
 Copyright Yoruno Kakera
-
-Where an article contains third-party works such as Minecraft textures, the copyright for those portions belongs to their original copyright holders.
 
 ### License
 
