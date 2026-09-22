@@ -30,6 +30,7 @@ module TagPages
       data["sidebar"] = false
       data["toc"] = false
       data["tag"] = tag
+      data["post_count_in_title"] = true
       self.content = <<~CONTENT
         <div class="content-wrap" markdown="1">
 
