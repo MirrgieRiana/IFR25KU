@@ -917,8 +917,8 @@ img[src$=".png" i] {
   padding: 0;
 }
 
-// 劇場レイアウトのおすすめサイドバー
-.theater__sidebar {
+// 関連記事の右ペイン
+.recommendations__sidebar {
   display: flex;
   flex-direction: column;
   gap: 1em;
@@ -928,7 +928,7 @@ img[src$=".png" i] {
   }
 }
 
-.theater-recommendations {
+.recommendations__list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1em;

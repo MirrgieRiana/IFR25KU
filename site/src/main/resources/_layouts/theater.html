@@ -27,9 +27,9 @@ layout: default
     {% if page.last_modified_at %}<meta itemprop="dateModified" content="{{ page.last_modified_at | date_to_xmlschema }}">{% endif %}
 
     <div class="page__inner-wrap">
-      <aside class="sidebar__right theater__sidebar">
+      <aside class="sidebar__right recommendations__sidebar">
         <header><h4 class="nav__title"><i class="fas fa-film"></i> 関連記事</h4></header>
-        <div class="theater-recommendations"></div>
+        <div class="recommendations__list"></div>
       </aside>
 
       {% unless page.header.overlay_color or page.header.overlay_image %}
@@ -175,7 +175,7 @@ layout: default
   // 1. コンテナ要素を取得
   // ============================================================
 
-  const sidebarContainer = document.querySelector('.theater-recommendations');
+  const sidebarContainer = document.querySelector('.recommendations__list');
   const recommendContainer = document.querySelector('.page__recommend-grid');
   const currentUrl = '{{ page.url | relative_url }}';
   const currentTags = {{ page.tags | jsonify }};
