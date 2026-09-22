@@ -106,6 +106,22 @@ Contributions for version > v0.14.1: Copyright 2025 The Developer of MirageFairy
 
 These files are provided under the **[Apache License 2.0](LICENSE)**.
 
+## Website Articles
+
+These are the articles published on [the official website](https://ifr25ku.mirrgieriana.net/), including the IFR Theater series, the MFA documents, and every other article.
+
+The writers credited within the MFA documents are in-universe characters who authored those documents in the setting, and are not the authors of the MFA works themselves.
+
+Where an article contains third-party works such as Minecraft textures, those portions are not covered by the copyright and license statements below; all rights remain with their original copyright holders.
+
+### Copyright
+
+Copyright Yoruno Kakera
+
+### License
+
+Unless an individual article states otherwise, these articles are provided under the **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**.
+
 ## Other Resources (excluding those specified above)
 
 ### Copyright
