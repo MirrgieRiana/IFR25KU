@@ -4,7 +4,7 @@ description: 春日部つむぎとずんだもんが火薬を作る話
 layout: theater
 header:
   teaser: /2026/04/13/gunpowder.teaser.webp
-tags: [ ミラージュフェアリー劇場, 火薬, TNT, 石炭, 木炭, ハイメヴィスカ, 固形燃料, 松明 ]
+tags: [ IFR劇場, 火薬, TNT, 石炭, 木炭, ハイメヴィスカ, 固形燃料, 松明 ]
 ---
 
 {% say tsumugi3:まゆ=困り眉 %}はー……疲れたー……{% endsay %}
