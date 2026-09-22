@@ -199,6 +199,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 - 追加: 「妖精の倫理について考える市民の会」の生産量を2倍に増加。
 - 表示: 「Re: Re: Re: パネッツァ氏の違法薬物所持の疑い」のアイコンを名札に変更。
 - 表示: 「Re: Re: Re: パネッツァ氏の違法薬物所持の疑い」の英語版の本文を修正。
+- 表示: 「妖精の倫理について考える市民の会」の本文の各行の間に空行を追加。
 
 魔法植物
 
