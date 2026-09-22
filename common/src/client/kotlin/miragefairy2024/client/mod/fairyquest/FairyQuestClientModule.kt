@@ -56,8 +56,7 @@ fun initFairyQuestClientModule() {
     fairyQuestCardScreenHandlerType.registerHandledScreen { gui, inventory, title -> FairyQuestCardScreen(gui, inventory, title) }
 
     onOpenFairyQuestMessageScreen.register { recipe ->
-        val parent = Minecraft.getInstance().screen ?: return@register false
-        Minecraft.getInstance().setScreen(FairyQuestMessageScreen(parent, recipe.title, recipe.message, recipe.client, recipe.title))
+        Minecraft.getInstance().setScreen(FairyQuestMessageScreen(Minecraft.getInstance().screen, recipe.title, recipe.message, recipe.client, recipe.title))
         true
     }
 }

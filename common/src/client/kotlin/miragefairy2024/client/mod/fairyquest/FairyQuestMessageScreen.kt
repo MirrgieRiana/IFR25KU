@@ -20,7 +20,7 @@ import miragefairy2024.mod.NinePatchTextureCard
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 
-class FairyQuestMessageScreen(private val parent: Screen, private val fairyQuestTitle: Component, private val fairyQuestMessage: Component, private val fairyQuestClient: Component, title: Component) : BaseOwoScreen<FlowLayout>(title) {
+class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQuestTitle: Component, private val fairyQuestMessage: Component, private val fairyQuestClient: Component, title: Component) : BaseOwoScreen<FlowLayout>(title) {
     override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
 
     override fun build(rootComponent: FlowLayout) {
