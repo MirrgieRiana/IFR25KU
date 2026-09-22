@@ -6,8 +6,8 @@
 #
 # 旧公式サイトから移植した紙面の、著作権・ライセンス情報へのリンクを表示するためのLiquidカスタムインラインタグ。
 #
-# 著作権とライセンスの詳細は README の Website Articles 節に記述されているため、
-# このタグはその節へのリンクを表示する。
+# 著作権とライセンスの詳細は README に記述されているため、
+# このタグは README へのリンクを表示する。
 #
 # ## 基本的な使い方
 #
@@ -20,23 +20,24 @@
 # ## HTML出力構造
 #
 #   <div class="paper__license">
-#   <p>この記事の著作権とライセンスについては、<a href="...">READMEのWebsite Articles</a>に記載されています。</p>
+#   <p>この記事の著作権とライセンスについては、<a href="...">README</a>に記載されています。</p>
 #   </div>
 #
 # =============================================================================
 
 module Paper
 
-  # README の Website Articles 節へのURL。
-  README_LICENSE_URL = "https://github.com/MirrgieRiana/IFR25KU/blob/main/README.md#website-articles"
+  # READMEへのURL。
+  # 見出しへのリンクにすると、READMEの見出し構文を束縛するのだ～🌱
+  README_URL = "https://github.com/MirrgieRiana/IFR25KU/blob/main/README.md"
 
   # {% paper_license %} インラインタグの実装。
-  # 紙面の末尾に置く、著作権・ライセンス情報が記述された README 節へのリンクを出力する。
+  # 紙面の末尾に置く、著作権・ライセンス情報が記述された README へのリンクを出力する。
   class PaperLicenseTag < Liquid::Tag
     def render(context)
       <<~HTML
         <div class="paper__license">
-        <p>この記事の著作権とライセンスについては、<a href="#{Paper::README_LICENSE_URL}">READMEのWebsite Articles</a>に記載されています。</p>
+        <p>この記事の著作権とライセンスについては、<a href="#{Paper::README_URL}">README</a>に記載されています。</p>
         </div>
       HTML
     end
