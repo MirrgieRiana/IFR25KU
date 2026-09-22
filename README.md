@@ -110,9 +110,13 @@ These files are provided under the **[Apache License 2.0](LICENSE)**.
 
 These are the articles published on [the official website](https://ifr25ku.mirrgieriana.net/), including the Mirage Fairy Theater series, the MFA documents, and every other article.
 
+The writers credited within the MFA documents are in-universe characters who authored those documents in the setting, and are not the authors of the MFA works themselves.
+
 ### Copyright
 
 Copyright Yoruno Kakera
+
+Where an article contains third-party works such as Minecraft textures, the copyright for those portions belongs to their original copyright holders.
 
 ### License
 
