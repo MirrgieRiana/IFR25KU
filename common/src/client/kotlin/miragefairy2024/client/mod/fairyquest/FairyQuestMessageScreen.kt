@@ -25,13 +25,13 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 
-class FairyQuestMessageScreen(private val parent: Screen, private val fairyQuestTitle: Component, private val fairyQuestMessage: Component, private val fairyQuestClient: Component, title: Component) : BaseOwoScreen<FlowLayout>(title) {
+class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQuestTitle: Component, private val fairyQuestMessage: Component, private val fairyQuestClient: Component, title: Component) : BaseOwoScreen<FlowLayout>(title) {
     override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
 
     override fun build(rootComponent: FlowLayout) {
         rootComponent.apply {
             surface(Surface.VANILLA_TRANSLUCENT)
-            padding(Insets.of(20, 4, 0, 0))
+            padding(Insets.of(10, 4, 0, 0))
             verticalAlignment(VerticalAlignment.CENTER)
             horizontalAlignment(HorizontalAlignment.CENTER)
 
