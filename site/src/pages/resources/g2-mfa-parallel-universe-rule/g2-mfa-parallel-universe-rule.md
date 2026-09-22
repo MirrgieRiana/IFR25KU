@@ -25,7 +25,7 @@ tags:
 
 といったイメージです。
 
-{% news_photo "/assets/images/g2-mfa-parallel-universe-rule/parallel-universe-branching.webp" %}
+{% news_figure "/assets/images/g2-mfa-parallel-universe-rule/parallel-universe-branching.webp" %}
 
 この設定により、次のようなことが起こります。
 
@@ -33,7 +33,7 @@ tags:
 - 執筆者それぞれが自分の並行宇宙を持って創作できる。
 - 注目したい文献以外の文献で追加された設定をすべて無視できる。
 
-{% news_photo "/assets/images/g2-mfa-parallel-universe-rule/document-reference-graph.webp" %}
+{% news_figure "/assets/images/g2-mfa-parallel-universe-rule/document-reference-graph.webp" %}
 
 並行宇宙ルールは、MirageFairy Server公式以外の、ファンの手による二次創作的な作品が簡単に作れることを目指して作られました。
 

@@ -11,7 +11,7 @@ tags:
   - 宇宙人類
 ---
 
-{% news_photo "deep-space-field.webp" %}
+{% news_figure "deep-space-field.webp" %}
 
 {% news_dateline "67年10月11日" "天文学" %}
 
@@ -19,13 +19,13 @@ tags:
 
 地球外生命体からの信号とみられる電波の解読結果を国立地球外生命体研究機構の研究グループが発表した。この信号は、宇宙で遭難した知的生命体が近隣の宇宙空間に向けて送信した現況報告であるという可能性が強まっている。電波は、先月3日から10日にかけてヘルクレス座・かんむり座グレートウォールの方向から発せられていた。
 
-{% news_figure "decoded-image-data.png" "解読された「画像データ」の一部" %}
+{% news_figure actual_size "decoded-image-data.png" "解読された「画像データ」の一部" %}
 
 信号は約1時間の長さの送信単位を繰り返したもので、9月3日10時8分より、1週間にわたって計171回反復して送信されていた。送信単位にはメッセージ、画像データ、辞書および未解読の部分が含まれ、送信単位同士は約5分の空白で区切られていた。
 
-{% news_figure "reception-timeline.png" "電波の受信タイムライン" %}
+{% news_figure "reception-timeline.webp" "電波の受信タイムライン" %}
 
-{% news_figure "dictionary-entry.png" "「辞書」の項目の一例" %}
+{% news_figure actual_size "dictionary-entry.png" "「辞書」の項目の一例" %}
 
 {% news_section %}惑星開拓の様子を伝える「メッセージ」本文{% endnews_section %}
 
@@ -52,7 +52,7 @@ tags:
 {% news_columns %}
 {% news_column %}
 
-{% news_photo "parallel-universe-collection.webp" %}
+{% news_figure "parallel-universe-collection.webp" %}
 
 {% news_link "g2-mfa-observation-satellite.html" "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ" %}
 

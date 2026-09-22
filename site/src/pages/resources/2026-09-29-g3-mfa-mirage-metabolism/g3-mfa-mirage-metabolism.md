@@ -47,7 +47,7 @@ tags:
 {% endpaper_column %}
 {% paper_column %}
 
-{% paper_photo "mirage-above-canopy.webp" "図１　樹冠上のミラージュ" %}
+{% paper_figure "mirage-above-canopy.webp" "図１　樹冠上のミラージュ" %}
 
 {% paper_table "表２　ミラージュの成分" %}
 | 成分 | 質量％ |

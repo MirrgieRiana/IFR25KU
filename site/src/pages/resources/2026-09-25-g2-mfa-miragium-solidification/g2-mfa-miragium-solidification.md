@@ -2,7 +2,7 @@
 title: "G2-MFA　火炎のエルグを用いた金属ミラジウム粉末の固形化手法"
 layout: single
 header:
-  teaser: /2026/09/25/solidification-process.png
+  teaser: /2026/09/25/solidification-process.webp
 recommendations: true
 tags:
   - MFA
@@ -49,9 +49,9 @@ tags:
 {% endpaper_column %}
 {% paper_column %}
 
-{% paper_photo "miragium-powder-and-fairy.webp" "図１　ミラジウムの粉末と妖精" %}
+{% paper_figure "miragium-powder-and-fairy.webp" "図１　ミラジウムの粉末と妖精" %}
 
-{% paper_figure "solidification-process.png" "図２　固形化処理の様子" %}
+{% paper_figure "solidification-process.webp" "図２　固形化処理の様子" %}
 
 {% paper_section %}3. 利用{% endpaper_section %}
 
@@ -61,7 +61,7 @@ tags:
 
 整形した≪火炎≫のスフィアを固体金属ミラジウムの棒材の先端に取り付けることで、スフィア本体に直接手で触れることなく安全に≪火炎≫のエルグを扱うことができます（図３）。
 
-{% paper_figure "solid-miragium-products.png" "図３　固形金属ミラジウムの利用例" %}
+{% paper_figure "solid-miragium-products.webp" "図３　固形金属ミラジウムの利用例" %}
 
 {% endpaper_column %}
 {% endpaper_columns %}

@@ -23,7 +23,7 @@ tags:
 {% endpaper_column %}
 {% paper_column %}
 
-{% paper_photo "mirage-fairy.webp" "赤紫色の彩釉テラコッタのミラージュ妖精" %}
+{% paper_figure "mirage-fairy.webp" "赤紫色の彩釉テラコッタのミラージュ妖精" %}
 
 {% endpaper_column %}
 {% endpaper_columns %}

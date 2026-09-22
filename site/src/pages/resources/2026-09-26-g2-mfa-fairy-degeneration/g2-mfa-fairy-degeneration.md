@@ -2,7 +2,7 @@
 title: "G2-MFA　妖精の縮退現象"
 layout: single
 header:
-  teaser: /2026/09/26/disassembly-operation.png
+  teaser: /2026/09/26/disassembly-operation.webp
 recommendations: true
 tags:
   - MFA
@@ -28,7 +28,7 @@ tags:
 
 妖精の縮退現象は、特性の非常に近い複数の妖精を狭い空間に押し込めた際に発生する、複数の妖精が1体の妖精のように振る舞う現象です（図１）。
 
-{% paper_figure "degeneration-diagram.png" "図１　妖精の縮退の概念図" %}
+{% paper_figure actual_size "degeneration-diagram.png" "図１　妖精の縮退の概念図" %}
 
 裸の（註：妖精の着ているワンピースのようなものは妖精の体の一部であるため、これを身に着けた状態が裸です。）妖精は岩や机といった一般的な物質に重なって同一の空間を占め、すり抜けて移動できることが知られていますが、同様に妖精同士も互いに重なり合うことができます。
 
@@ -55,13 +55,13 @@ tags:
 
 妖精を人為的に縮退させるには、耐透過グローブを両手にはめ、裸にした2体の妖精を片手に1体ずつ持ち、ゆっくりと互いの体を押し付けるように交差させてください（図２）。妖精の体の一部が重なり合ったら、その部位を基点にして他の部位も同様に重なり合うように、連続的に全身を押し込んでください。この過程を凝縮と呼びます。
 
-{% paper_figure "condensation-operation.png" "図２　妖精の凝縮操作" %}
+{% paper_figure "condensation-operation.webp" "図２　妖精の凝縮操作" %}
 
 {% paper_subsection %}3-2 解体{% endpaper_subsection %}
 
 妖精の縮退を人為的に解除するには、耐透過グローブを両手にはめ、裸にした妖精の髪を適当に片手で1本ずつつまみ、それぞれ逆方向にゆっくり引っ張ってください（図３）。つまんだ髪の毛が同一の肉体に由来するものであれば、引っ張った髪の毛には張力が生じます。一方別の肉体に由来する場合は、ばねのように弾性力が生じます。弾性に逆らってある程度の力を加えると、ある時点で肉体の同期が外れ、縮退が解除されます。この過程を解体と呼びます。
 
-{% paper_figure "disassembly-operation.png" "図３　凝縮された妖精の解体" %}
+{% paper_figure "disassembly-operation.webp" "図３　凝縮された妖精の解体" %}
 
 {% endpaper_column %}
 {% endpaper_columns %}

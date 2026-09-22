@@ -30,6 +30,19 @@ module TagArguments
   def self.parse(markup)
     markup.scan(/"([^"]*)"/).flatten
   end
+
+  # Liquid タグの markup 文字列に、指定したフラグが単独の語として現れるかを判定する。
+  #
+  # markup の形式: '<フラグ> "引数1" "引数2" ...'
+  #   - ダブルクォートで囲まれた部分は引数の中身なので、判定の対象から外す
+  #   - 残った部分を空白で区切り、フラグと完全に一致する語があるかを見る
+  #
+  # 使用例:
+  #   TagArguments.flag?('actual_size "incident-map.webp"', "actual_size") # => true
+  #   TagArguments.flag?('"actual_size という語"', "actual_size")          # => false
+  def self.flag?(markup, flag)
+    markup.gsub(/"[^"]*"/, " ").split.include?(flag)
+  end
 end
 
 # =============================================================================

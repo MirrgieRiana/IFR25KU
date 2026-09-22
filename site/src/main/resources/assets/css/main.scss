@@ -1004,9 +1004,8 @@ img[src$=".png" i] {
   }
 }
 
-// 論文中のキャプション付きの図と写真（paper_figureタグ、paper_photoタグ）
-.paper__figure,
-.paper__photo {
+// 論文中のキャプション付きの画像（paper_figureタグ）
+.paper__figure {
   // テーマはfigureをflexにするため、ブロックに戻さないと中身が内容の幅に縮んで左に寄る
   display: block;
   margin: 1.5em 0;
@@ -1016,19 +1015,13 @@ img[src$=".png" i] {
     // テーマはfigureの中の画像の角を丸める
     max-width: 100%;
     border-radius: 0;
+    width: 100%;
   }
 }
 
-// 図の画像（paper_figureタグ）
-.paper__figure img {
-  // 引き伸ばすと画素の粗が出るから、画像自身が持つ寸法で掲げるのだ～🌱
+// 画像自身が持つ寸法で掲げる指定（paper_figureタグのactual_size）
+.paper__figure--actual-size img {
   width: auto;
-}
-
-// 写真の画像（paper_photoタグ）
-.paper__photo img {
-  // 拡大しても階調が保たれるから、紙面や段の幅いっぱいに掲げるのだ～🌱
-  width: 100%;
 }
 
 // 論文中のキャプション付き表（paper_tableタグ）
@@ -1151,9 +1144,8 @@ img[src$=".png" i] {
   }
 }
 
-// ニュース記事中のキャプション付きの図と写真（news_figureタグ、news_photoタグ）
-.news__figure,
-.news__photo {
+// ニュース記事中のキャプション付きの画像（news_figureタグ）
+.news__figure {
   // テーマはfigureをflexにするため、ブロックに戻さないと中身が内容の幅に縮んで左に寄る
   display: block;
   margin: 1.5em 0;
@@ -1163,22 +1155,16 @@ img[src$=".png" i] {
     // テーマはfigureの中の画像の角を丸める
     max-width: 100%;
     border-radius: 0;
+    width: 100%;
   }
 }
 
-// 図の画像（news_figureタグ）
-.news__figure img {
-  // 引き伸ばすと画素の粗が出るから、画像自身が持つ寸法で掲げるのだ～🌱
+// 画像自身が持つ寸法で掲げる指定（news_figureタグのactual_size）
+.news__figure--actual-size img {
   width: auto;
 }
 
-// 写真の画像（news_photoタグ）
-.news__photo img {
-  // 拡大しても階調が保たれるから、記事や段の幅いっぱいに掲げるのだ～🌱
-  width: 100%;
-}
-
-// 図のキャプション（news_figureタグ）
+// 画像のキャプション（news_figureタグ）
 .news__caption {
   display: block;
   margin: 0.5em 0;
