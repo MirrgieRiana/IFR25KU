@@ -73,4 +73,4 @@ tags:
 2020年10月30日　MirageFairy Server創作部
 {% endpaper_stamp %}
 
-{% paper_license %}
+{% paper_mfa_footer %}

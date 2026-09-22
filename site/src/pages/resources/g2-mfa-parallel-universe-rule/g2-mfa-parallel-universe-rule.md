@@ -3,7 +3,6 @@ title: "G2-MFA　並行宇宙ルール"
 layout: single
 header:
   teaser: /assets/images/g2-mfa-parallel-universe-rule/parallel-universe-branching.webp
-recommendations: true
 tags:
   - MFA
   - 外命研
@@ -47,4 +46,4 @@ MFAリポジトリに関する詳しい経緯は、「地球側の文献」を�
 
 ※固有名詞は、辞書欠落のため同じ符号点の一般名詞で代用されている場合があります。
 
-{% news_license %}
+{% news_mfa_footer no_parallel_universe_rule %}

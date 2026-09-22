@@ -1060,8 +1060,8 @@ img[src$=".png" i] {
   color: #666666;
 }
 
-// 紙面の末尾のライセンス表記（paper_licenseタグ）
-.paper__license {
+// 紙面の末尾の注意書き（paper_mfa_footerタグ）
+.paper__mfa-footer {
   margin: 1em 0;
   padding: 0.8em 1.2em;
   background: #dbe6f0;
@@ -1177,8 +1177,8 @@ img[src$=".png" i] {
   color: #666666;
 }
 
-// ニュース記事の末尾のライセンス表記（news_licenseタグ）
-.news__license {
+// ニュース記事の末尾の注意書き（news_mfa_footerタグ）
+.news__mfa-footer {
   margin: 1em 0;
   padding: 0.8em 1.2em;
   background: #dbe6f0;

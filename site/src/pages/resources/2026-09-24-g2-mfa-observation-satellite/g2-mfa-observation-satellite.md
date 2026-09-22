@@ -52,4 +52,4 @@ tags:
 2020年10月24日　MirageFairy Server創作部
 {% endnews_stamp %}
 
-{% news_license %}
+{% news_mfa_footer %}

@@ -88,4 +88,4 @@ tags:
 2019年7月15日　MirageFairy Server創作部
 {% endpaper_stamp %}
 
-{% paper_license %}
+{% paper_mfa_footer %}
