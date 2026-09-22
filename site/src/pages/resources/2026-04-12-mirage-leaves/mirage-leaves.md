@@ -7,7 +7,6 @@ header:
 tags: [ IFR劇場, ミラージュの葉, カバン ]
 ---
 
-![水色の丸い葉2枚が緑色の茎の両側に付いた形をしたミラージュの葉](mirage-leaves.teaser.png)
 {% say tsumugi3 %}センパーイ、何してんのっ？（ぽんっ{% endsay %}
 {% say zundamon23 %}わわっ！危ないのだ！{% endsay %}
 {% say zundamon23 %}今ミラージュでカバンを編んでいるところなのだ。{% endsay %}
