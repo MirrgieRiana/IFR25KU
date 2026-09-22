@@ -3,6 +3,7 @@ title: "G1-MFA　ミラージュ妖精の生態"
 layout: single
 header:
   teaser: /2026/09/21/mirage-fairy.webp
+  teaser_banner: false
 recommendations: true
 tags:
   - MFA

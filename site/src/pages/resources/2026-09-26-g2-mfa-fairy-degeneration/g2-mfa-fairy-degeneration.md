@@ -3,6 +3,7 @@ title: "G2-MFA　妖精の縮退現象"
 layout: single
 header:
   teaser: /2026/09/26/disassembly-operation.webp
+  teaser_banner: false
 recommendations: true
 tags:
   - MFA

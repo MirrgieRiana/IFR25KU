@@ -11,8 +11,6 @@ tags:
   - 宇宙人類
 ---
 
-{% news_figure "deep-space-field.webp" %}
-
 {% news_dateline "67年10月11日" "天文学" %}
 
 ---

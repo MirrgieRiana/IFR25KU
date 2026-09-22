@@ -2,7 +2,7 @@
 title: "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ"
 layout: single
 header:
-  teaser: /2026/09/24/parallel-universe-collection.webp
+  teaser: /2026/09/24/message-reception-diagram.webp
 recommendations: true
 tags:
   - MFA
@@ -10,8 +10,6 @@ tags:
   - 並行宇宙
   - 観測衛星
 ---
-
-{% news_figure "parallel-universe-collection.webp" %}
 
 {% news_dateline "68年8月7日" "天文学" %}
 
