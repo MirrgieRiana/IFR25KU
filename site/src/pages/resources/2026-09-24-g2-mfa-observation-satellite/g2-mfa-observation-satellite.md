@@ -31,20 +31,7 @@ tags:
 
 {% news_section %}関連記事{% endnews_section %}
 
-{% news_columns %}
-{% news_column %}
-
-{% news_figure "deep-space-stars.webp" %}
-
-{% news_link "g2-mfa-mail-from-space.html" "G2-MFA　宇宙からのメール解読される 外命研が発表" %}
-
-{% endnews_column %}
-{% news_column %}
-{% endnews_column %}
-{% news_column %}
-{% endnews_column %}
-
-{% endnews_columns %}
+{% news_related "g2-mfa-mail-from-space" %}
 
 ---
 

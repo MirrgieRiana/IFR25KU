@@ -47,20 +47,7 @@ tags:
 
 {% news_section %}関連記事{% endnews_section %}
 
-{% news_columns %}
-{% news_column %}
-
-{% news_figure "parallel-universe-collection.webp" %}
-
-{% news_link "g2-mfa-observation-satellite.html" "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ" %}
-
-{% endnews_column %}
-{% news_column %}
-{% endnews_column %}
-{% news_column %}
-{% endnews_column %}
-
-{% endnews_columns %}
+{% news_related "g2-mfa-observation-satellite" %}
 
 ---
 
