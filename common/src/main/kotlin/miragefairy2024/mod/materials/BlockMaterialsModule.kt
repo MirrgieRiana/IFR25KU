@@ -795,7 +795,7 @@ open class BlockMaterialCard(
 
         val PLASTIC_TREE_SAP_BLOCK = createSap(
             "plastic_tree_sap_block", EnJa("Plastic Tree Sap Block", "プラノキの樹液ブロック"),
-            PoemList(1).poem("TODO", "TODO"), // TODO 塊になって初めて現れる性質を表したポエム
+            PoemList(1).poem("TODO", "秘境の衛生トーテム。"), // TODO 英語版ポエム
             MapColor.TERRACOTTA_YELLOW, MaterialCard.PLASTIC_TREE_SAP.item,
         )
         val HAIMEVISKA_SAP_BLOCK = createSap(
