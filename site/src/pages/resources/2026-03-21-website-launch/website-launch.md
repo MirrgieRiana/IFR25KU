@@ -7,7 +7,7 @@ header:
 tags: [ IFR劇場, アップデート, IFR25KU, 公式サイト, ブログ ]
 ---
 
-![赤褐色のレンガと床タイルで組まれた屋内に額縁が掛かり、その手前を紫と青に輝く妖精が4匹漂っている様子](website-launch.teaser.webp)
+![磨かれた花崗岩で組まれた遺跡内に混沌のキューブがあり、その付近に4個のシャルピエ・ルミナーラが生えている様子](website-launch.teaser.webp)
 {% say tsumugi3:口=わあーい %}センパーイ！IFR25KU、公式サイトできてるじゃん！{% endsay %}
 {% say zundamon23 %}ちょうど今公開したのだ。{% endsay %}
 {% say tsumugi3:口=わあ %}今！？今公開したの！？{% endsay %}
