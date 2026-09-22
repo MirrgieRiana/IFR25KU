@@ -1067,19 +1067,6 @@ img[src$=".png" i] {
   color: #666666;
 }
 
-// 紙面の末尾の注意書き（paper_mfa_footerタグ）
-.paper__mfa-footer {
-  margin: 1em 0;
-  padding: 0.8em 1.2em;
-  background: #dbe6f0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.10);
-  font-size: 0.85em;
-
-  p {
-    margin: 0.3em 0;
-  }
-}
-
 // ニュース記事のタイトル（news_titleタグ）
 .news__title {
   margin: 0.5em 0;
@@ -1184,8 +1171,8 @@ img[src$=".png" i] {
   color: #666666;
 }
 
-// ニュース記事の末尾の注意書き（news_mfa_footerタグ）
-.news__mfa-footer {
+// MFAの記事の末尾の注意書き（mfa_footerタグ）
+.mfa-footer {
   margin: 1em 0;
   padding: 0.8em 1.2em;
   background: #dbe6f0;

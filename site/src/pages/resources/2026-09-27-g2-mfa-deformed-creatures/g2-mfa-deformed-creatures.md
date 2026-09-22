@@ -107,4 +107,4 @@ tags:
 2021年1月27日　MirageFairy Server創作部
 {% endpaper_stamp %}
 
-{% paper_mfa_footer %}
+{% mfa_footer %}

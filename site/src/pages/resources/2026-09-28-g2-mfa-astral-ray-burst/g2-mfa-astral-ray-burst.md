@@ -66,4 +66,4 @@ tags:
 2021年2月3日　MirageFairy Server創作部
 {% endpaper_stamp %}
 
-{% paper_mfa_footer %}
+{% mfa_footer %}
