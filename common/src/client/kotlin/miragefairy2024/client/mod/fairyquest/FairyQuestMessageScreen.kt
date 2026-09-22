@@ -37,7 +37,7 @@ class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQues
 
             // スクロールコンテナ
             child(verticalScroll(Sizing.fixed(18 * 15), Sizing.expand(), 10, overlapped = true).apply {
-                scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
+                scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0000000.toInt())))
 
                 // 外枠装飾用パネル
                 child().child(Containers.verticalFlow(Sizing.fill(100), Sizing.content()).apply {
