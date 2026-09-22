@@ -7,6 +7,7 @@ header:
 tags: [ ミラージュフェアリー劇場, アップデート, IFR25KU, 公式サイト, ブログ ]
 ---
 
+![赤褐色のレンガで組まれた屋内の通路に、紫と青に輝く妖精たちが漂っている様子](website-launch.teaser.webp)
 {% say tsumugi3:口=わあーい %}センパーイ！IFR25KU、公式サイトできてるじゃん！{% endsay %}
 {% say zundamon23 %}ちょうど今公開したのだ。{% endsay %}
 {% say tsumugi3:口=わあ %}今！？今公開したの！？{% endsay %}

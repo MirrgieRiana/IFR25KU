@@ -7,6 +7,7 @@ header:
 tags: [ ミラージュフェアリー劇場, ミラージュの葉, カバン ]
 ---
 
+![水色の丸い粒が緑色の茎に連なったミラージュの葉のアイテム](mirage-leaves.teaser.png)
 {% say tsumugi3 %}センパーイ、何してんのっ？（ぽんっ{% endsay %}
 {% say zundamon23 %}わわっ！危ないのだ！{% endsay %}
 {% say zundamon23 %}今ミラージュでカバンを編んでいるところなのだ。{% endsay %}

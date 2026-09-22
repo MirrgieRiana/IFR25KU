@@ -7,6 +7,7 @@ header:
 tags: [ ミラージュフェアリー劇場, 磁鉄鉱のツルハシ, 磁鉄鉱, 採掘, ツルハシ, 鉄鉱石, ダイヤモンド鉱石 ]
 ---
 
+![薄暗い洞窟の奥の壁面に、茶色い磁鉄鉱の鉱石が露出している様子](magnetite-pickaxe.teaser.webp)
 {% say tsumugi3:まゆ=困り眉 %}あっ……鉄鉱石が……{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}シャベル……ない！{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}……よし、這って進めば……行けるっ！{% endsay %}

@@ -7,6 +7,7 @@ header:
 tags: [ ミラージュフェアリー劇場, ビルダーズロッド, 建築, 迷路, 丸石 ]
 ---
 
+![青緑色の草地の上に、灰色の丸石が1個だけ置かれている様子](builders-rod.teaser.webp)
 {% say zundamon23 %}よし、ここはこの辺まで……あっち側は……{% endsay %}
 {% say tsumugi3 %}セ～ンパイ！おっはよ！何してるの？{% endsay %}
 {% say zundamon23 %}おはようなのだ。新しい作業場の基礎を作っているのだ。{% endsay %}
