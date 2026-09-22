@@ -1056,24 +1056,15 @@ img[src$=".png" i] {
 // 紙面の末尾の制作日スタンプ（paper_stampタグ）
 .paper__stamp {
   margin: 2em 0 0;
-  padding-top: 1em;
-  // 論文外枠の下端でない場所に置かれたスタンプの上には、区切り線を引くのだ～🌱
-  border-top: 1px solid #cccccc;
   font-size: 0.85em;
   color: #666666;
-}
-
-// 論文外枠の直後のスタンプは、外枠の下端がその区切りを兼ねるのだ～🌱
-.paper + .paper__stamp {
-  border-top: none;
 }
 
 // 紙面の末尾のライセンス表記（paper_licenseタグ）
 .paper__license {
   margin: 1em 0;
   padding: 0.8em 1.2em;
-  background: #eef2f7;
-  border: 1px solid #b0bec5;
+  background: #dbe6f0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.10);
   font-size: 0.85em;
 
@@ -1182,8 +1173,6 @@ img[src$=".png" i] {
 // ニュース記事の末尾の制作日スタンプ（news_stampタグ）
 .news__stamp {
   margin: 2em 0 0;
-  padding-top: 1em;
-  border-top: 1px solid #cccccc;
   font-size: 0.85em;
   color: #666666;
 }
@@ -1192,8 +1181,7 @@ img[src$=".png" i] {
 .news__license {
   margin: 1em 0;
   padding: 0.8em 1.2em;
-  background: #eef2f7;
-  border: 1px solid #b0bec5;
+  background: #dbe6f0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.10);
   font-size: 0.85em;
 
