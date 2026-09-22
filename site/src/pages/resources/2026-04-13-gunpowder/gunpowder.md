@@ -7,7 +7,7 @@ header:
 tags: [ ミラージュフェアリー劇場, 火薬, TNT, 石炭, 木炭, ハイメヴィスカ, 固形燃料, 松明 ]
 ---
 
-![石を掘って作られた窪みに、チェストとかまどが並べて置かれた拠点](gunpowder.teaser.webp)
+![石を掘って作られた窪みの奥にチェストとかまどが並び、その手前に松明が2本灯っている拠点の様子](gunpowder.teaser.webp)
 {% say tsumugi3:まゆ=困り眉 %}はー……疲れたー……{% endsay %}
 {% say zundamon23 %}おかえりなのだ。今日は長かったのだ？{% endsay %}
 {% say tsumugi3 %}でかい洞窟見つけちゃって……{% endsay %}

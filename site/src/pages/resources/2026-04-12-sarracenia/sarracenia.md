@@ -7,7 +7,7 @@ header:
 tags: [ ミラージュフェアリー劇場, サラセニア, 食虫植物, 砂糖, 妖精 ]
 ---
 
-![薄暗い草地に生えた、黄緑色の筒とピンク色の花を持つサラセニア](sarracenia.teaser.webp)
+![薄暗い草地に1株だけ生えた、赤みを帯びた黄緑色の葉とピンクの花びらを持つサラセニア](sarracenia.teaser.webp)
 {% say zundamon23 %}つむぎ、何をしているのだ？{% endsay %}
 {% say tsumugi3 %}水やり～。センパイ、これ見てよ。なんかすごい形してない？{% endsay %}
 {% say zundamon23 %}すごいのだ。{% endsay %}
