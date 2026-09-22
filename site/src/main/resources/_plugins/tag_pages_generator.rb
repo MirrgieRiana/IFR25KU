@@ -1,26 +1,26 @@
 # frozen_string_literal: true
 
 # =============================================================================
-# tag_pages_generator.rb — Tag Archive Page Generator
+# tag_pages_generator.rb — タグごとの記事一覧ページのジェネレーターなのだ～🌱
 # =============================================================================
 #
-# 全記事の tags を集めて、タグごとの記事一覧ページを生成する Jekyll ジェネレーター。
+# 全記事の tags を集めて、タグごとの記事一覧ページを生成する Jekyll ジェネレーターなのだ～🌱
 #
-# ## 出力先
+# ## 出力先なのだ～🌱
 #
 #   /tag/<タグ名>.html
 #
-# ## 生成されるページ
+# ## 生成されるページなのだ～🌱
 #
 #   レイアウトは記事一覧ページと同じ splash で、本文は recent-posts.html の
-#   タグ絞り込みの呼び出し1行のみ。
+#   タグ絞り込みの呼び出し1行のみなのだ～🌱
 #
 # =============================================================================
 
 module TagPages
 
-  # タグ1個分の記事一覧ページ。
-  # 実体のファイルを持たず、ビルド時にメモリ上で組み立てる。
+  # タグ1個分の記事一覧ページなのだ～🌱
+  # 実体のファイルを持たず、ビルド時にメモリ上で組み立てるのだ～🌱
   class TagPage < Jekyll::PageWithoutAFile
     def initialize(site, tag)
       super(site, site.source, "tag", "#{tag}.html")
@@ -31,6 +31,8 @@ module TagPages
       data["toc"] = false
       data["tag"] = tag
       data["post_count_in_title"] = true
+      # OG画像の生成はソースの .md ファイルだけを走査するから、このページの分は作られないのだ～🌱
+      data["og_image"] = false
       self.content = <<~CONTENT
         <div class="content-wrap" markdown="1">
 
@@ -41,7 +43,7 @@ module TagPages
     end
   end
 
-  # 全記事のタグ集合から、タグごとのページを追加するジェネレーター。
+  # 全記事のタグ集合から、タグごとのページを追加するジェネレーターなのだ～🌱
   class TagPagesGenerator < Jekyll::Generator
     safe true
 
