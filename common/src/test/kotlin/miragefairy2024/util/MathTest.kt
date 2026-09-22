@@ -88,7 +88,7 @@ class MathTest {
                 val x = i / 10.0 * standardDeviation
                 val probability = getNormalDistributionUpperProbability(x, standardDeviation)
                 val actual = getXFromNormalDistributionUpperProbability(probability, standardDeviation)
-                // 上側確率の傾きは端に行くほど緩やかになるから、許容する誤差も確率の誤差を傾きで割った大きさになるのだ🌱
+                // 上側確率の傾きは端に行くほど緩やかになるから、許容する誤差も確率の誤差を傾きで割った大きさになるのだ～🌱
                 val tolerance = 0.01 * standardDeviation
                 assertTrue(abs(actual - x) <= tolerance, "x=$x standardDeviation=$standardDeviation actual=$actual")
             }

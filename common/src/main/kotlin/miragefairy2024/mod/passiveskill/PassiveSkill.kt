@@ -38,6 +38,6 @@ interface PassiveSkillEffect<T : Any> {
     fun getFilters(samples: List<T>): List<PassiveSkillEffectFilter<T>>
 }
 
-class PassiveSkillContext(val world: Level, val blockPos: BlockPos, val player: Player)
+class PassiveSkillContext(val level: Level, val blockPos: BlockPos, val player: Player)
 
 class PassiveSkillEffectFilter<T : Any>(val effect: PassiveSkillEffect<T>, val identifier: ResourceLocation, val text: Component, val predicate: (T) -> Boolean)

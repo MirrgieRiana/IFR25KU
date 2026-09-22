@@ -1,9 +1,10 @@
 package miragefairy2024.mod.biome
 
-import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.BlockMaterialCard
-import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.mod.tree.TreeBlockCard
+import miragefairy2024.mod.tree.contents.plastictree.GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
+import miragefairy2024.mod.tree.contents.plastictree.SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -26,6 +27,7 @@ import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.Noises
 import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
+import net.minecraft.world.level.levelgen.placement.CaveSurface
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
 object OldGrowthAmberForestBiomeCard : BiomeCard(
@@ -34,7 +36,7 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
         AdvancementCard(
             identifier = identifier,
             context = AdvancementCard.Sub { FairyForestBiomeCard.advancement!!.await() },
-            icon = { MaterialCard.FAIRY_PLASTIC.item().createItemStack() }, // TODO →プラノキの苗木
+            icon = { TreeBlockCard.PLASTIC_TREE_SAPLING.item().createItemStack() },
             name = EnJa("Land Abloom with Nectar", "蜜の咲き誇る地"), // TODO 蜜から産まれた雑草
             description = EnJa("Travel the overworld and discover the Old Growth Amber Forest", "地上を旅して琥珀色の原生林を探す"),
             criterion = AdvancementCard.visit(key),
@@ -50,12 +52,12 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
             .downfall(0.9F)
             .specialEffects(
                 BiomeSpecialEffects.Builder()
-                    .waterColor(0x5B2A8A)
-                    .waterFogColor(0x37175A)
+                    .waterColor(0xFFD819)
+                    .waterFogColor(0xFFD819)
                     .fogColor(0xE0C088)
-                    .skyColor(0x93A6E6)
-                    .grassColorOverride(0xE0A628)
-                    .foliageColorOverride(0xC98F1C)
+                    .skyColor(0x7098FF)
+                    .grassColorOverride(0xFFC61E)
+                    .foliageColorOverride(0xFFA616)
                     .build()
             )
             .mobSpawnSettings(MobSpawnSettings.Builder().also { spawnSettings ->
@@ -77,19 +79,18 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                 BiomeDefaultFeatures.addDefaultSprings(lookupBackedBuilder)
                 BiomeDefaultFeatures.addSurfaceFreezing(lookupBackedBuilder)
 
-                BiomeDefaultFeatures.addMossyStoneBlock(lookupBackedBuilder)
                 BiomeDefaultFeatures.addForestFlowers(lookupBackedBuilder)
-                BiomeDefaultFeatures.addFerns(lookupBackedBuilder)
 
                 BiomeDefaultFeatures.addDefaultOres(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultSoftDisks(lookupBackedBuilder)
 
-                lookupBackedBuilder.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, ElevatedSpawnerFeatureCard.placedFeatureKey)
-
-                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_TAIGA)
+                // 原生林の証である倒木は、後から生える木がこれを避けるように、木よりも先に配置するのだ～🌱
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, FallenPlasticTreeLogFeatureCard.placedFeatureKey)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
-                BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)
-                BiomeDefaultFeatures.addGiantTaigaVegetation(lookupBackedBuilder)
+                BiomeDefaultFeatures.addDefaultGrass(lookupBackedBuilder)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)
                 BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
 
             }.build()).build()
@@ -99,7 +100,7 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
     override fun init() {
         super.init()
 
-        registerOverworldSurfaceRules(MirageFairy2024.MOD_ID) {
+        registerOverworldSurfaceRules {
             SurfaceRules.ifTrue(
                 SurfaceRules.abovePreliminarySurface(),
                 SurfaceRules.ifTrue(
@@ -107,11 +108,10 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                     SurfaceRules.ifTrue(
                         SurfaceRules.isBiome(key),
                         SurfaceRules.sequence(
-                            // 地表だけでなく、その下に通常できる土の層ごと置き換えるのだぁ🌱
                             SurfaceRules.ifTrue(
-                                SurfaceRules.UNDER_FLOOR,
+                                SurfaceRules.stoneDepthCheck(0, true, 20, CaveSurface.FLOOR),
                                 SurfaceRules.ifTrue(
-                                    SurfaceRules.noiseCondition(Noises.SURFACE_SECONDARY, getSurfaceNoiseThreshold(Noises.SURFACE_SECONDARY, 0.61), Double.MAX_VALUE),
+                                    SurfaceRules.noiseCondition(Noises.SURFACE_SECONDARY, getSurfaceNoiseThreshold(Noises.SURFACE_SECONDARY, 0.50), Double.MAX_VALUE),
                                     SurfaceRules.state(BlockMaterialCard.RESIN_CEMENTED_DIRT.block().defaultBlockState())
                                 ),
                             ),
@@ -119,11 +119,11 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                                 SurfaceRules.ON_FLOOR,
                                 SurfaceRules.sequence(
                                     SurfaceRules.ifTrue(
-                                        SurfaceRules.noiseCondition(Noises.SURFACE, getSurfaceNoiseThreshold(Noises.SURFACE, 0.25), Double.MAX_VALUE),
+                                        SurfaceRules.noiseCondition(Noises.SURFACE, getSurfaceNoiseThreshold(Noises.SURFACE, 0.30), Double.MAX_VALUE),
                                         SurfaceRules.state(Blocks.COARSE_DIRT.defaultBlockState())
                                     ),
                                     SurfaceRules.ifTrue(
-                                        SurfaceRules.noiseCondition(Noises.SURFACE, getSurfaceNoiseThreshold(Noises.SURFACE, 0.64), Double.MAX_VALUE),
+                                        SurfaceRules.noiseCondition(Noises.SURFACE, getSurfaceNoiseThreshold(Noises.SURFACE, 0.40), Double.MAX_VALUE),
                                         SurfaceRules.state(Blocks.PODZOL.defaultBlockState())
                                     ),
                                 ),

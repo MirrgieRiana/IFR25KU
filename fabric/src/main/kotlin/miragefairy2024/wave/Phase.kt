@@ -1,5 +1,9 @@
 package miragefairy2024.wave
 
+import mirrg.kotlin.hydrogen.blueOfRgb
+import mirrg.kotlin.hydrogen.greenOfRgb
+import mirrg.kotlin.hydrogen.redOfRgb
+import mirrg.kotlin.hydrogen.rgbOf
 import java.awt.image.BufferedImage
 import kotlin.math.PI
 import kotlin.math.cos
@@ -27,13 +31,15 @@ fun Spectrogram.generatePhaseSimple(): Spectrogram {
             val w = 2.0 * PI / windowSize * y
 
             val inputRgb = this.bufferedImage.getRGB(x, imageY)
-            val g = (inputRgb shr 8 and 0xFF).toDouble()
+            val g = inputRgb.greenOfRgb.toDouble()
 
             val r = g * cos(w * x)
             val b = g * sin(w * x)
-            val outputRgb = (r.roundToInt().coerceIn(-128, 127) + 128 and 0xFF shl 16) or
-                (g.toInt().coerceIn(0, 255) and 0xFF shl 8) or
-                (b.roundToInt().coerceIn(-128, 127) + 128 and 0xFF shl 0)
+            val outputRgb = rgbOf(
+                r.roundToInt().coerceIn(-128, 127) + 128,
+                g.toInt().coerceIn(0, 255),
+                b.roundToInt().coerceIn(-128, 127) + 128,
+            )
 
             image.setRGB(x, imageY, outputRgb)
         }
@@ -68,7 +74,7 @@ fun Spectrogram.generatePhaseLegacy(): Spectrogram {
             val w = 2.0 * PI / windowSize * y
 
             val inputRgb = this.bufferedImage.getRGB(x, imageY)
-            val g = (inputRgb shr 8 and 0xFF).toDouble()
+            val g = inputRgb.greenOfRgb.toDouble()
 
             // 位相の動的攪乱の変化の度合い（サンプル位置）
             val phaseGradientResetPhase = (x + phaseGradientResetOffsets[y]) % windowSize // 0 .. 255
@@ -81,9 +87,11 @@ fun Spectrogram.generatePhaseLegacy(): Spectrogram {
 
             val r = g * cos(phase + w * x)
             val b = g * sin(phase + w * x)
-            val outputRgb = (r.toInt().coerceIn(-128, 127) + 128 and 0xFF shl 16) or
-                (g.toInt().coerceIn(0, 255) and 0xFF shl 8) or
-                (b.toInt().coerceIn(-128, 127) + 128 and 0xFF shl 0)
+            val outputRgb = rgbOf(
+                r.toInt().coerceIn(-128, 127) + 128,
+                g.toInt().coerceIn(0, 255),
+                b.toInt().coerceIn(-128, 127) + 128,
+            )
 
             // 位相の動的攪乱のリセットのタイミングである場合、リセット
             if (phaseGradientResetPhase == 0) {
@@ -107,7 +115,7 @@ fun Spectrogram.generatePhaseGriffinLim(times: Int, toWaveform: (Spectrogram) ->
     repeat(width) { x ->
         repeat(height) { y ->
             val thisRgb = this.bufferedImage.getRGB(x, y)
-            val thisG = thisRgb shr 8 and 0xFF
+            val thisG = thisRgb.greenOfRgb
             correctGTable[y][x] = thisG
             doubleCorrectGTable[y][x] = thisG.toDouble()
         }
@@ -124,18 +132,20 @@ fun Spectrogram.generatePhaseGriffinLim(times: Int, toWaveform: (Spectrogram) ->
             repeat(height) { y ->
                 val rgb = spectrogram.bufferedImage.getRGB(x, y)
 
-                val r = ((rgb shr 16 and 0xFF) - 128).toDouble()
-                val g = (rgb shr 8 and 0xFF).toDouble()
-                val b = ((rgb shr 0 and 0xFF) - 128).toDouble()
+                val r = (rgb.redOfRgb - 128).toDouble()
+                val g = rgb.greenOfRgb.toDouble()
+                val b = (rgb.blueOfRgb - 128).toDouble()
 
                 val rate = if (g == 0.0) 10000.0 else doubleCorrectGTable[y][x] / g
 
                 val trueR = r * rate
                 val trueB = b * rate
 
-                val trueRgb = (trueR.roundToInt().coerceIn(-128, 127) + 128 and 0xFF shl 16) or
-                    (correctGTable[y][x].coerceIn(0, 255) and 0xFF shl 8) or
-                    (trueB.roundToInt().coerceIn(-128, 127) + 128 and 0xFF shl 0)
+                val trueRgb = rgbOf(
+                    trueR.roundToInt().coerceIn(-128, 127) + 128,
+                    correctGTable[y][x].coerceIn(0, 255),
+                    trueB.roundToInt().coerceIn(-128, 127) + 128,
+                )
 
                 spectrogram.bufferedImage.setRGB(x, y, trueRgb)
             }

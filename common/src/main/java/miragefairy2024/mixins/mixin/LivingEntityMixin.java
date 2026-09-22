@@ -22,13 +22,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
-    public LivingEntityMixin(EntityType<?> type, Level world) {
-        super(type, world);
+    public LivingEntityMixin(EntityType<?> type, Level level) {
+        super(type, level);
     }
 
     @Inject(method = "eat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/food/FoodProperties;)Lnet/minecraft/world/item/ItemStack;", at = @At("HEAD"))
-    private void eatFood(Level world, ItemStack stack, FoodProperties foodProperties, CallbackInfoReturnable<ItemStack> info) {
-        EatFoodCallback.EVENT.invoker().eatFood((LivingEntity) (Object) this, world, stack, foodProperties);
+    private void eatFood(Level level, ItemStack stack, FoodProperties foodProperties, CallbackInfoReturnable<ItemStack> info) {
+        EatFoodCallback.EVENT.invoker().eatFood((LivingEntity) (Object) this, level, stack, foodProperties);
     }
 
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)

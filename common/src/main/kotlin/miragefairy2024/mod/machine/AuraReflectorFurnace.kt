@@ -66,10 +66,10 @@ object AuraReflectorFurnaceCard : SimpleMachineCard<AuraReflectorFurnaceBlock, A
 
     override val inputSlots = listOf(
         SlotConfiguration(29, 17, setOf(Direction.WEST), setOf()),
-        SlotConfiguration(47, 17, setOf(Direction.UP, Direction.NORTH, Direction.DOWN), setOf()),
+        SlotConfiguration(47, 17, setOf(Direction.UP), setOf()),
         SlotConfiguration(65, 17, setOf(Direction.EAST), setOf()),
     )
-    val fuelSlot = object : SlotConfiguration(47, 53, setOf(Direction.SOUTH), setOf()) {
+    val fuelSlot = object : SlotConfiguration(47, 53, setOf(Direction.NORTH, Direction.SOUTH), setOf()) {
         override fun isValid(itemStack: ItemStack) = AuraReflectorFurnaceRecipe.getFuelValue(itemStack) != null
     }
     override val outputSlots = listOf(
@@ -182,26 +182,26 @@ class AuraReflectorFurnaceBlockEntity(private val card: AuraReflectorFurnaceCard
     }
 
     fun setLit(lit: Boolean) {
-        val world = level ?: return
+        val level = level ?: return
         if (blockState[AuraReflectorFurnaceBlock.LIT] != lit) {
-            world.setBlock(worldPosition, blockState.with(AuraReflectorFurnaceBlock.LIT, lit), Block.UPDATE_ALL)
+            level.setBlock(worldPosition, blockState.with(AuraReflectorFurnaceBlock.LIT, lit), Block.UPDATE_ALL)
         }
     }
 
-    override fun onRecipeCheck(world: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
-        if (!super.onRecipeCheck(world, pos, state, listeners)) return false
+    override fun onRecipeCheck(level: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
+        if (!super.onRecipeCheck(level, pos, state, listeners)) return false
         if (fuel == 0) listeners += checkFuelInsert() ?: return false
         return true
     }
 
-    override fun onCraftingTick(world: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
-        if (!super.onCraftingTick(world, pos, state, listeners)) return false
+    override fun onCraftingTick(level: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
+        if (!super.onCraftingTick(level, pos, state, listeners)) return false
         if (fuel == 0) listeners += checkFuelInsert() ?: return false
         return true
     }
 
-    override fun onPostServerTick(world: Level, pos: BlockPos, state: BlockState) {
-        super.onPostServerTick(world, pos, state)
+    override fun onPostServerTick(level: Level, pos: BlockPos, state: BlockState) {
+        super.onPostServerTick(level, pos, state)
         val oldFuel = fuel
         if (fuel > 0) fuel--
         setLit(oldFuel > 0)
