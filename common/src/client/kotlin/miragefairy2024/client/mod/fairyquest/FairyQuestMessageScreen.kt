@@ -35,44 +35,51 @@ class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQues
             verticalAlignment(VerticalAlignment.CENTER)
             horizontalAlignment(HorizontalAlignment.CENTER)
 
-            // スクロールコンテナ
-            child(verticalScroll(Sizing.fixed(18 * 15), Sizing.expand(), 10, overlapped = true).apply {
-                scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0000000.toInt())))
+            // 反対側のスクロールバー領域確保用パネル
+            child(Containers.verticalFlow(Sizing.fixed(18 * 15), Sizing.expand()).apply {
+                padding(Insets.of(0, 0, 10, 0))
 
-                // 外枠装飾用パネル
-                child().child(Containers.verticalFlow(Sizing.fill(100), Sizing.content()).apply {
-                    surface(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.surface)
-                    padding(Insets.of(11))
+                // スクロールコンテナ
+                // スクロールバーをカードに重ねると、スクロールする中身のカードの方が手前の深度で描かれて、スクロールバーが隠れちゃうのだ～🌱
+                child(verticalScroll(Sizing.fill(100), Sizing.fill(100), 10).apply {
+                    scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
 
-                    // タイトル
-                    child(Components.label(fairyQuestTitle).apply {
-                        sizing(Sizing.fill(100), Sizing.content())
-                        horizontalTextAlignment(HorizontalAlignment.CENTER)
-                        color(Color.ofRgb(0x6B472E))
-                    })
+                    // 外枠装飾用パネル
+                    child().child(Containers.verticalFlow(Sizing.fill(100), Sizing.content()).apply {
+                        surface(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.surface)
+                        padding(Insets.of(11))
 
-                    child(verticalSpace(11))
-
-                    // 罫線装飾用パネル
-                    child(Containers.verticalFlow(Sizing.fill(100), Sizing.content()).apply {
-                        surface(Surface.tiled(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11))
-                        padding(Insets.of(0, 1, 0, 0))
-
-                        // メッセージテキストラベル
-                        child(Components.label(fairyQuestMessage).apply {
+                        // タイトル
+                        child(Components.label(fairyQuestTitle).apply {
                             sizing(Sizing.fill(100), Sizing.content())
+                            horizontalTextAlignment(HorizontalAlignment.CENTER)
                             color(Color.ofRgb(0x6B472E))
                         })
 
-                    })
+                        child(verticalSpace(11))
 
-                    child(verticalSpace(11))
+                        // 罫線装飾用パネル
+                        child(Containers.verticalFlow(Sizing.fill(100), Sizing.content()).apply {
+                            surface(Surface.tiled(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11))
+                            padding(Insets.of(0, 1, 0, 0))
 
-                    // 依頼人
-                    child(Components.label(fairyQuestClient).apply {
-                        sizing(Sizing.fill(100), Sizing.content())
-                        horizontalTextAlignment(HorizontalAlignment.RIGHT)
-                        color(Color.ofRgb(0x6B472E))
+                            // メッセージテキストラベル
+                            child(Components.label(fairyQuestMessage).apply {
+                                sizing(Sizing.fill(100), Sizing.content())
+                                color(Color.ofRgb(0x6B472E))
+                            })
+
+                        })
+
+                        child(verticalSpace(11))
+
+                        // 依頼人
+                        child(Components.label(fairyQuestClient).apply {
+                            sizing(Sizing.fill(100), Sizing.content())
+                            horizontalTextAlignment(HorizontalAlignment.RIGHT)
+                            color(Color.ofRgb(0x6B472E))
+                        })
+
                     })
 
                 })
