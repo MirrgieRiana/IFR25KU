@@ -27,9 +27,9 @@ layout: default
     {% if page.last_modified_at %}<meta itemprop="dateModified" content="{{ page.last_modified_at | date_to_xmlschema }}">{% endif %}
 
     <div class="page__inner-wrap">
-      <aside class="sidebar__right theater__sidebar">
+      <aside class="sidebar__right recommendations__sidebar">
         <header><h4 class="nav__title"><i class="fas fa-film"></i> 関連記事</h4></header>
-        <div class="theater-recommendations"></div>
+        <div class="recommendations__list"></div>
       </aside>
 
       {% unless page.header.overlay_color or page.header.overlay_image %}
@@ -42,10 +42,6 @@ layout: default
           {% include page__meta.html locale=locale %}
         </header>
       {% endunless %}
-
-      {% if page.header.teaser and page.header.image == nil and page.header.overlay_image == nil %}
-        <img src="{{ page.header.teaser | relative_url }}" alt="{{ page.title | escape }}" class="page__teaser-banner">
-      {% endif %}
 
       <section class="page__content e-content" itemprop="text">
         {{ content }}
@@ -60,7 +56,7 @@ layout: default
         {% if site.data.ui-text[locale].meta_label %}
           <h4 class="page__meta-title">{{ site.data.ui-text[locale].meta_label }}</h4>
         {% endif %}
-        {% include page__taxonomy.html locale=locale %}
+        {% include page__tags.html locale=locale %}
         {% include page__date.html locale=locale %}
       </footer>
 

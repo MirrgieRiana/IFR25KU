@@ -354,7 +354,7 @@ enum class FairyQuestRecipeCard(
                 Mizna: "Haah... You've got me there, Herirmina. Rights for Miragium... I'd never even considered that..."
                 Herirmina: "Hehe, you've changed, Mizna--"
                 (Footsteps)
-            """.formatFairyQuest(),
+            """.formatFairyQuest().replace("\n", "\n\n"),
         """
                 （足音）
                 ミズナ「――しかしヘリルミーナ？　これまで人類は植物に人権を与えた歴史なんて無いんだよ？」
@@ -366,7 +366,7 @@ enum class FairyQuestRecipeCard(
                 ミズナ「はぁ……　ヘリルミーナには参ったよ。　ミラジウムに人権があるだなんて、そんなこと考えたこともなかったなあ……」
                 ヘリルミーナ「ふふっ、ミズナも変わったわね――」
                 （足音）
-            """.formatFairyQuest(),
+            """.formatFairyQuest().replace("\n", "\n\n"),
         "The Institute of Fairy Research\nCreation Department\nKretroknofe Mizna", "妖精研究所\n創製部\nクレトロクノフェ・ミズナ",
         listOf { MaterialCard.MIRAGIUM_INGOT.item().toIngredientStack(5) },
         listOf { Items.EMERALD.createItemStack(2) },
