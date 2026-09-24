@@ -795,12 +795,12 @@ open class BlockMaterialCard(
 
         val PLASTIC_TREE_SAP_BLOCK = createSap(
             "plastic_tree_sap_block", EnJa("Plastic Tree Sap Block", "プラノキの樹液ブロック"),
-            PoemList(1).poem(EnJa("Cell destruction by plasmolysis.", "秘境の衛生トーテム。")),
+            PoemList(1).poem(EnJa("Cytorrhysis by osmotic pressure.", "秘境の衛生トーテム。")),
             MapColor.TERRACOTTA_YELLOW, MaterialCard.PLASTIC_TREE_SAP.item,
         )
         val HAIMEVISKA_SAP_BLOCK = createSap(
             "haimeviska_sap_block", EnJa("Haimeviska Sap Block", "ハイメヴィスカの樹液ブロック"),
-            PoemList(1).poem("TODO", "TODO"), // TODO 塊になって初めて現れる性質を表したポエム
+            PoemList(1).poem("TODO", "見果てぬ走馬灯のメランジュ。"), // TODO 塊になって初めて現れる性質を表したポエム
             MapColor.COLOR_ORANGE, MaterialCard.HAIMEVISKA_SAP.item,
         )
         val RESIN_CEMENTED_DIRT = !BlockMaterialCard(
