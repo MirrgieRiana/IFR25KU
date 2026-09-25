@@ -786,9 +786,10 @@ open class BlockMaterialCard(
                     )
                 },
             ) {
+                override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion()
                 override suspend fun createBlock(properties: BlockBehaviour.Properties) = HoneyBlock(properties)
                 context(ModContext) override fun initModelGeneration() = block.registerModelGeneration { texturedModelProvider!![block()] }
-            }.translucent().noOcclusion().sound(SoundType.HONEY_BLOCK).speed(0.4F).jump(0.5F).tag(BlockTags.SNOW_LAYER_CAN_SURVIVE_ON).init {
+            }.translucent().sound(SoundType.HONEY_BLOCK).speed(0.4F).jump(0.5F).tag(BlockTags.SNOW_LAYER_CAN_SURVIVE_ON).init {
                 registerCompressionRecipeGeneration(lower, { lower().toIngredient() }, item, { item().toIngredient() })
             }
         }
@@ -1013,7 +1014,6 @@ private fun <T : BlockMaterialCard> T.noDrop() = this.blockProperty { it.noLootT
 private fun <T : BlockMaterialCard> T.noSpawn() = this.blockProperty { it.isValidSpawn(Blocks::never) }
 private fun <T : BlockMaterialCard> T.speed(speedFactor: Float) = this.blockProperty { it.speedFactor(speedFactor) }
 private fun <T : BlockMaterialCard> T.jump(jumpFactor: Float) = this.blockProperty { it.jumpFactor(jumpFactor) }
-private fun <T : BlockMaterialCard> T.noOcclusion() = this.blockProperty { it.noOcclusion() }
 private fun <T : BlockMaterialCard> T.sound(blockSoundGroup: SoundType) = this.blockProperty { it.sound(blockSoundGroup) }
 
 private fun <T : BlockMaterialCard> T.noBurn() = this.itemProperty { it.fireResistant() }
