@@ -286,6 +286,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 - 表示: 各種ネフライト鉱石のテクスチャを変更。
 - 表示: 固形燃料のテクスチャを変更。
 - 表示: 1/8の固形燃料のテクスチャを変更。
+- 表示: ハイメヴィスカの涙のテクスチャを変更。
 
 その他
 
