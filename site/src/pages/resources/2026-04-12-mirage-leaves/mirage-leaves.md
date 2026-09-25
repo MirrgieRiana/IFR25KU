@@ -4,7 +4,7 @@ description: ずんだもんと春日部つむぎがミラージュの葉でカ�
 layout: theater
 header:
   teaser: /2026/04/12/mirage-leaves.teaser.png
-tags: [ ミラージュフェアリー劇場, ミラージュの葉, カバン ]
+tags: [ IFR劇場, ミラージュの葉, カバン ]
 ---
 
 {% say tsumugi3 %}センパーイ、何してんのっ？（ぽんっ{% endsay %}
