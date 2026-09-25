@@ -89,6 +89,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.HoneyBlock
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.SlabBlock
 import net.minecraft.world.level.block.SoundType
@@ -763,6 +764,47 @@ open class BlockMaterialCard(
             PoemList(4).poem("Dispose of useless parallel universes.", "運命に干渉するための奇跡。"),
             MapColor.COLOR_PURPLE, MaterialCard.PHANTOM_DROP.item, MaterialCard.PHANTOM_DROP_KOHAKUTO.item,
         )
+
+        private fun createSap(
+            path: String,
+            name: EnJa,
+            poemList: PoemList,
+            mapColor: MapColor,
+            lower: () -> Item,
+        ): BlockMaterialCard {
+            return !object : BlockMaterialCard(
+                path, name,
+                poemList,
+                mapColor, 0.0F, 0.0F,
+                texturedModelProvider = {
+                    // バニラのハチミツブロックのモデルは、外枠の立方体と1ピクセル内側の立方体の2重構造で、中身が沈んで見えるのだ～🌱
+                    Model(ResourceLocation("block/honey_block"), TextureSlot.DOWN, TextureSlot.UP, TextureSlot.SIDE, TextureSlot.PARTICLE).with(
+                        TextureSlot.DOWN to "block/" * it.getIdentifier(),
+                        TextureSlot.UP to "block/" * it.getIdentifier(),
+                        TextureSlot.SIDE to "block/" * it.getIdentifier(),
+                        TextureSlot.PARTICLE to "block/" * it.getIdentifier(),
+                    )
+                },
+            ) {
+                override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion()
+                override suspend fun createBlock(properties: BlockBehaviour.Properties) = HoneyBlock(properties)
+                context(ModContext) override fun initModelGeneration() = block.registerModelGeneration { texturedModelProvider!![block()] }
+            }.translucent().sound(SoundType.HONEY_BLOCK).speed(0.4F).jump(0.5F).tag(BlockTags.SNOW_LAYER_CAN_SURVIVE_ON).init {
+                registerCompressionRecipeGeneration(lower, { lower().toIngredient() }, item, { item().toIngredient() })
+            }
+        }
+
+        val PLASTIC_TREE_SAP_BLOCK = createSap(
+            "plastic_tree_sap_block", EnJa("Plastic Tree Sap Block", "プラノキの樹液ブロック"),
+            PoemList(1).poem(EnJa("Cytorrhysis by osmotic pressure.", "秘境の衛生トーテム。")),
+            MapColor.TERRACOTTA_YELLOW, MaterialCard.PLASTIC_TREE_SAP.item,
+        )
+        val HAIMEVISKA_SAP_BLOCK = createSap(
+            "haimeviska_sap_block", EnJa("Haimeviska Sap Block", "ハイメヴィスカの樹液ブロック"),
+            PoemList(1).poem(EnJa("Thermal agitation of sediments.", "見果てぬ走馬灯のメランジュ。")),
+            MapColor.COLOR_ORANGE, MaterialCard.HAIMEVISKA_SAP.item,
+        )
+
         val RESIN_CEMENTED_DIRT = !BlockMaterialCard(
             "resin_cemented_dirt", EnJa("Resin-Cemented Dirt", "石化した樹脂状の土"),
             PoemList(1).poem(EnJa("Antimicrobial terpenes prevent decay.", "電気の由来を語る土。")),
@@ -972,6 +1014,7 @@ private fun <T : BlockMaterialCard> T.itemProperty(converter: (Item.Properties) 
 private fun <T : BlockMaterialCard> T.noDrop() = this.blockProperty { it.noLootTable() }
 private fun <T : BlockMaterialCard> T.noSpawn() = this.blockProperty { it.isValidSpawn(Blocks::never) }
 private fun <T : BlockMaterialCard> T.speed(speedFactor: Float) = this.blockProperty { it.speedFactor(speedFactor) }
+private fun <T : BlockMaterialCard> T.jump(jumpFactor: Float) = this.blockProperty { it.jumpFactor(jumpFactor) }
 private fun <T : BlockMaterialCard> T.sound(blockSoundGroup: SoundType) = this.blockProperty { it.sound(blockSoundGroup) }
 
 private fun <T : BlockMaterialCard> T.noBurn() = this.itemProperty { it.fireResistant() }

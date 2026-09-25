@@ -8271,6 +8271,17 @@
       }
     ]
   },
+  "miragefairy2024:haimeviska_sap_block": {
+    "definition": {
+      "type": "minecraft:honey",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
   "miragefairy2024:haimeviska_sap_kohakuto_block": {
     "definition": {
       "type": "miragefairy2024:semi_opaque_transparent_block",
@@ -14435,6 +14446,17 @@
         "properties": {
           "axis": "z"
         }
+      }
+    ]
+  },
+  "miragefairy2024:plastic_tree_sap_block": {
+    "definition": {
+      "type": "minecraft:honey",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
       }
     ]
   },
