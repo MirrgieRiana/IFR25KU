@@ -800,7 +800,7 @@ open class BlockMaterialCard(
         )
         val HAIMEVISKA_SAP_BLOCK = createSap(
             "haimeviska_sap_block", EnJa("Haimeviska Sap Block", "ハイメヴィスカの樹液ブロック"),
-            PoemList(1).poem("TODO", "見果てぬ走馬灯のメランジュ。"), // TODO 塊になって初めて現れる性質を表したポエム
+            PoemList(1).poem(EnJa("Thermal agitation of sediments.", "見果てぬ走馬灯のメランジュ。")),
             MapColor.COLOR_ORANGE, MaterialCard.HAIMEVISKA_SAP.item,
         )
         val RESIN_CEMENTED_DIRT = !BlockMaterialCard(
