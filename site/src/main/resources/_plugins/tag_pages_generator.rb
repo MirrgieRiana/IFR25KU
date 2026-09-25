@@ -31,7 +31,7 @@ module TagPages
       data["toc"] = false
       data["tag"] = tag
       data["post_count_in_title"] = true
-      # OG画像の生成はソースの .md ファイルだけを走査するから、このページの分は作られないのだ～🌱
+      # OG画像の生成はソースの .md ファイルだけを走査して、このページの分は作られないから、画像のメタタグを出さないのだ～🌱
       data["og_image"] = false
       self.content = <<~CONTENT
         <div class="content-wrap" markdown="1">
