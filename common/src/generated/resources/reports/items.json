@@ -9235,7 +9235,7 @@
       "minecraft:repair_cost": 0
     }
   },
-  "miragefairy2024:resin_cemented_dirt": {
+  "miragefairy2024:resin_cement": {
     "class": "net.minecraft.world.item.BlockItem",
     "components": {
       "minecraft:attribute_modifiers": {

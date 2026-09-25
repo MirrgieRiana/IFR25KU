@@ -1,7 +1,7 @@
 {
   "type": "minecraft:stonecutting",
   "ingredient": {
-    "item": "miragefairy2024:resin_cemented_dirt"
+    "item": "miragefairy2024:resin_cement"
   },
   "result": {
     "count": 1,

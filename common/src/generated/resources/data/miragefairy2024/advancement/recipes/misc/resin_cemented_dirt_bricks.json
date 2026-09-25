@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_resin_cemented_dirt": {
+    "has_resin_cement": {
       "conditions": {
         "items": [
           {
-            "items": "miragefairy2024:resin_cemented_dirt"
+            "items": "miragefairy2024:resin_cement"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_resin_cemented_dirt"
+      "has_resin_cement"
     ]
   ],
   "rewards": {

@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "miragefairy2024:resin_cemented_dirt"
+          "name": "miragefairy2024:resin_cement"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "miragefairy2024:blocks/resin_cemented_dirt"
+  "random_sequence": "miragefairy2024:blocks/resin_cement"
 }

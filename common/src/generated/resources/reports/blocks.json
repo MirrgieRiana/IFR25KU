@@ -14473,7 +14473,7 @@
   },
   "miragefairy2024:plastic_tree_sapling": {
     "definition": {
-      "type": "minecraft:sapling",
+      "type": "miragefairy2024:plastic_tree_sapling",
       "properties": {},
       "tree": "miragefairy2024:plastic_tree"
     },
@@ -14545,7 +14545,7 @@
       }
     ]
   },
-  "miragefairy2024:resin_cemented_dirt": {
+  "miragefairy2024:resin_cement": {
     "definition": {
       "type": "minecraft:block",
       "properties": {}
