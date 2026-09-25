@@ -3,6 +3,7 @@ package miragefairy2024.mod.biome
 import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.tree.contents.plastictree.onResinCementedDirt
 import miragefairy2024.util.Registration
 import miragefairy2024.util.center
@@ -17,7 +18,6 @@ import miragefairy2024.util.with
 import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
-import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
@@ -55,8 +55,7 @@ class ResinCementedDirtSapFeature(codec: Codec<NoneFeatureConfiguration>) : Feat
             return level.getBlockState(belowBlockPos).isSolidRender(level, belowBlockPos)
         }
 
-        // TODO 樹脂土から滲み出た樹液のブロック
-        val blockState = Blocks.HONEY_BLOCK.defaultBlockState()
+        val blockState = BlockMaterialCard.PLASTIC_TREE_SAP_BLOCK.block().defaultBlockState()
 
         fun placePillar(blockPos: BlockPos, height: Int): Boolean {
             if (!isSupported(blockPos)) return false
