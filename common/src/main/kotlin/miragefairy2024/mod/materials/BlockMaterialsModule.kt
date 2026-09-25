@@ -804,6 +804,7 @@ open class BlockMaterialCard(
             PoemList(1).poem(EnJa("Thermal agitation of sediments.", "見果てぬ走馬灯のメランジュ。")),
             MapColor.COLOR_ORANGE, MaterialCard.HAIMEVISKA_SAP.item,
         )
+
         val RESIN_CEMENTED_DIRT = !BlockMaterialCard(
             "resin_cemented_dirt", EnJa("Resin-Cemented Dirt", "石化した樹脂状の土"),
             PoemList(1).poem(EnJa("Antimicrobial terpenes prevent decay.", "電気の由来を語る土。")),
