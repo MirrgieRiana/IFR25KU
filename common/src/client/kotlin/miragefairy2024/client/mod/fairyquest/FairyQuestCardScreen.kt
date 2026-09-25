@@ -75,6 +75,7 @@ class FairyQuestCardScreen(handler: FairyQuestCardScreenHandler, private val pla
                                 padding(Insets.of(11, 11, 11, 6))
 
                                 // スクロールコンテナ
+                                // スクロールバーを罫線に重ねると、スクロールする中身の罫線の方が手前の深度で描かれて、スクロールバーが罫線のところで途切れちゃうのだ～🌱
                                 child(verticalScroll(Sizing.fill(100), Sizing.fill(100), 5).apply {
 
                                     // 罫線装飾用パネル

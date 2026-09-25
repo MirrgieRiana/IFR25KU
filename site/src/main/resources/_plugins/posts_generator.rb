@@ -19,7 +19,7 @@ require "json"
 #       "title":  "記事タイトル",
 #       "url":    "/2026/04/09/aqua-vitae.html",
 #       "teaser": "/assets/images/.../teaser.webp",  // null の場合あり
-#       "tags":   ["アップデート", "ミラージュフェアリー劇場"]
+#       "tags":   ["アップデート", "IFR劇場"]
 #     },
 #     ...
 #   ]
