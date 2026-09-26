@@ -1,4 +1,15 @@
 {
+  "miragefairy2024:akimotoite": {
+    "definition": {
+      "type": "miragefairy2024:mantle_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
   "miragefairy2024:athanor": {
     "definition": {
       "type": "miragefairy2024:athanor",
@@ -1738,6 +1749,17 @@
       }
     ]
   },
+  "miragefairy2024:bridgmanite": {
+    "definition": {
+      "type": "miragefairy2024:mantle_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
   "miragefairy2024:chaos_stone_block": {
     "definition": {
       "type": "minecraft:block",
@@ -1777,6 +1799,17 @@
         "properties": {
           "axis": "z"
         }
+      }
+    ]
+  },
+  "miragefairy2024:chiseled_reinforced_metal": {
+    "definition": {
+      "type": "miragefairy2024:mantle_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
       }
     ]
   },
@@ -5321,6 +5354,42 @@
       }
     ]
   },
+  "miragefairy2024:fairy_quest_gate": {
+    "definition": {
+      "type": "miragefairy2024:fairy_quest_gate",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
+  "miragefairy2024:fairy_quest_gate_portal": {
+    "definition": {
+      "type": "miragefairy2024:fairy_quest_gate_portal",
+      "properties": {}
+    },
+    "properties": {
+      "axis": [
+        "x",
+        "z"
+      ]
+    },
+    "states": [
+      {
+        "default": true,
+        "properties": {
+          "axis": "x"
+        }
+      },
+      {
+        "properties": {
+          "axis": "z"
+        }
+      }
+    ]
+  },
   "miragefairy2024:fairy_statue": {
     "definition": {
       "type": "miragefairy2024:fairy_statue",
@@ -5466,6 +5535,17 @@
         "properties": {
           "facing": "east"
         }
+      }
+    ]
+  },
+  "miragefairy2024:ferropericlase": {
+    "definition": {
+      "type": "miragefairy2024:mantle_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
       }
     ]
   },
@@ -9802,6 +9882,745 @@
       }
     ]
   },
+  "miragefairy2024:institute_floor": {
+    "definition": {
+      "type": "miragefairy2024:mantle_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
+  "miragefairy2024:institute_floor_slab": {
+    "definition": {
+      "type": "miragefairy2024:mantle_slab",
+      "properties": {}
+    },
+    "properties": {
+      "type": [
+        "top",
+        "bottom",
+        "double"
+      ],
+      "waterlogged": [
+        "true",
+        "false"
+      ]
+    },
+    "states": [
+      {
+        "properties": {
+          "type": "top",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "type": "top",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "default": true,
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "type": "double",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "type": "double",
+          "waterlogged": "false"
+        }
+      }
+    ]
+  },
+  "miragefairy2024:institute_floor_stairs": {
+    "definition": {
+      "type": "miragefairy2024:mantle_stair",
+      "properties": {}
+    },
+    "properties": {
+      "facing": [
+        "north",
+        "south",
+        "west",
+        "east"
+      ],
+      "half": [
+        "top",
+        "bottom"
+      ],
+      "shape": [
+        "straight",
+        "inner_left",
+        "inner_right",
+        "outer_left",
+        "outer_right"
+      ],
+      "waterlogged": [
+        "true",
+        "false"
+      ]
+    },
+    "states": [
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "default": true,
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      }
+    ]
+  },
   "miragefairy2024:kohakuto_block": {
     "definition": {
       "type": "miragefairy2024:semi_opaque_transparent_block",
@@ -9854,6 +10673,17 @@
         "max_inclusive": 5,
         "min_inclusive": 2
       },
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
+  "miragefairy2024:majorite": {
+    "definition": {
+      "type": "miragefairy2024:mantle_block",
       "properties": {}
     },
     "states": [
@@ -14508,6 +15338,17 @@
       }
     ]
   },
+  "miragefairy2024:post_perovskite": {
+    "definition": {
+      "type": "miragefairy2024:mantle_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
   "miragefairy2024:prominaria": {
     "definition": {
       "type": "miragefairy2024:prominaria",
@@ -14542,6 +15383,1484 @@
         "properties": {
           "age": "3"
         }
+      }
+    ]
+  },
+  "miragefairy2024:reinforced_metal_block": {
+    "definition": {
+      "type": "miragefairy2024:mantle_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
+  "miragefairy2024:reinforced_metal_slab": {
+    "definition": {
+      "type": "miragefairy2024:mantle_slab",
+      "properties": {}
+    },
+    "properties": {
+      "type": [
+        "top",
+        "bottom",
+        "double"
+      ],
+      "waterlogged": [
+        "true",
+        "false"
+      ]
+    },
+    "states": [
+      {
+        "properties": {
+          "type": "top",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "type": "top",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "default": true,
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "type": "double",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "type": "double",
+          "waterlogged": "false"
+        }
+      }
+    ]
+  },
+  "miragefairy2024:reinforced_metal_stairs": {
+    "definition": {
+      "type": "miragefairy2024:mantle_stair",
+      "properties": {}
+    },
+    "properties": {
+      "facing": [
+        "north",
+        "south",
+        "west",
+        "east"
+      ],
+      "half": [
+        "top",
+        "bottom"
+      ],
+      "shape": [
+        "straight",
+        "inner_left",
+        "inner_right",
+        "outer_left",
+        "outer_right"
+      ],
+      "waterlogged": [
+        "true",
+        "false"
+      ]
+    },
+    "states": [
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "default": true,
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      }
+    ]
+  },
+  "miragefairy2024:reinforced_metal_tile_slab": {
+    "definition": {
+      "type": "miragefairy2024:mantle_slab",
+      "properties": {}
+    },
+    "properties": {
+      "type": [
+        "top",
+        "bottom",
+        "double"
+      ],
+      "waterlogged": [
+        "true",
+        "false"
+      ]
+    },
+    "states": [
+      {
+        "properties": {
+          "type": "top",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "type": "top",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "default": true,
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "type": "double",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "type": "double",
+          "waterlogged": "false"
+        }
+      }
+    ]
+  },
+  "miragefairy2024:reinforced_metal_tile_stairs": {
+    "definition": {
+      "type": "miragefairy2024:mantle_stair",
+      "properties": {}
+    },
+    "properties": {
+      "facing": [
+        "north",
+        "south",
+        "west",
+        "east"
+      ],
+      "half": [
+        "top",
+        "bottom"
+      ],
+      "shape": [
+        "straight",
+        "inner_left",
+        "inner_right",
+        "outer_left",
+        "outer_right"
+      ],
+      "waterlogged": [
+        "true",
+        "false"
+      ]
+    },
+    "states": [
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "default": true,
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "top",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "inner_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "inner_right",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "outer_left",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "true"
+        }
+      },
+      {
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "outer_right",
+          "waterlogged": "false"
+        }
+      }
+    ]
+  },
+  "miragefairy2024:reinforced_metal_tiles": {
+    "definition": {
+      "type": "miragefairy2024:mantle_block",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
       }
     ]
   },
@@ -15357,6 +17676,22 @@
       }
     ]
   },
+  "miragefairy2024:ringwoodite_ore": {
+    "definition": {
+      "type": "miragefairy2024:mantle_ore",
+      "experience": {
+        "type": "minecraft:uniform",
+        "max_inclusive": 24,
+        "min_inclusive": 10
+      },
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
   "miragefairy2024:saltpeter_ore": {
     "definition": {
       "type": "miragefairy2024:ore",
@@ -15645,6 +17980,22 @@
         "properties": {
           "age": "3"
         }
+      }
+    ]
+  },
+  "miragefairy2024:wadsleyite_ore": {
+    "definition": {
+      "type": "miragefairy2024:mantle_ore",
+      "experience": {
+        "type": "minecraft:uniform",
+        "max_inclusive": 12,
+        "min_inclusive": 5
+      },
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
       }
     ]
   },

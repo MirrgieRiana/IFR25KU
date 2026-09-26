@@ -15,6 +15,7 @@ import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.EntityType
+import net.minecraft.world.level.dimension.LevelStem
 import net.minecraft.world.level.storage.loot.LootTable
 import java.util.function.Consumer
 
@@ -47,6 +48,9 @@ object DataGenerationEvents {
     val onBuildRegistry = InitializationEventRegistry<(RegistrySetBuilder) -> Unit>()
 
     val dynamicGenerationRegistries = mutableSetOf<ResourceKey<out Registry<*>>>()
+
+    /** ディメンションは、[dynamicGenerationRegistries] の仕組みでは出力できないから、専用の一覧を持つのだ～🌱 */
+    val dimensionKeys = mutableSetOf<ResourceKey<LevelStem>>()
 }
 
 interface DataMapConsumer {
