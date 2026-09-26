@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<!-- 時刻 t だけで絵が決まる副作用純粋な window.seek(t) を持つ、決定論的フレームレンダラーなのだぁ🌱 -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face{font-family:ZMG-Black;src:url(FONT_BLACK) format('truetype');}
+  @font-face{font-family:ZMG-Bold;src:url(FONT_BOLD) format('truetype');}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1280px;height:720px;overflow:hidden;background:#000;}
+  #stage{position:relative;width:1280px;height:720px;overflow:hidden;font-family:ZMG-Bold,sans-serif;}
+
+  /* 背景（ブロックテクスチャのタイル＋色調＋ビネット）。タイルは haimeviska_log.png（茶色い木肌）なのだぁ🌱
+     BJ(v10)：背景がほぼ一色だったので、タイルを 64px→160px に拡大して木目の模様が見えるようにして、
+     さらに色オーバーレイ(.tone)の不透明度を「今の60%」に下げてテクスチャを透けさせるのだぁ。 */
+  .bg{position:absolute;inset:0;z-index:0;}
+  .bg .tile{position:absolute;inset:0;background-repeat:repeat;background-size:160px 160px;image-rendering:pixelated;}
+  .bg .tone{position:absolute;inset:0;}
+  .bg .vig{position:absolute;inset:0;box-shadow:inset 0 0 240px 60px rgba(0,0,0,.72);}
+  .bg.swamp .tone{background:linear-gradient(160deg,rgba(22,66,55,.49),rgba(8,28,22,.56));}
+  /* BJ(v11)：bog の紫オーバーレイは、茶色い haimeviska(平均rgb 105,68,22) の上に source-over 合成されると
+     赤茶けてしまうのだぁ。透明度(.44/.55)は固定したまま、「合成後に紫になる」ように overlay 色を逆算したのだぁ🌱
+     逆算式 overlay = (目標合成色 − base×(1−α)) ÷ α。
+     目標合成色 top=(78,54,104) bot=(52,36,86)（どちらも青>赤>緑で紫）→ overlay 下記。実測で紫になるのを確認済み。 */
+  .bg.bog   .tone{background:linear-gradient(160deg,rgba(43,36,208,.44),rgba(8,10,138,.55));}
+
+  /* 上部のアイテム枠（order_and_chaos と同等の大きめサイズなのだぁ） */
+  .itempanel{position:absolute;z-index:2;top:54px;left:50%;transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    padding:16px 20px 12px;border-radius:20px;
+    background:rgba(18,26,22,.82);border:5px solid rgba(160,210,170,.72);
+    box-shadow:0 6px 22px rgba(0,0,0,.5);opacity:0;}
+  .itempanel img{width:232px;height:232px;image-rendering:pixelated;
+    filter:drop-shadow(0 3px 6px rgba(0,0,0,.55));}
+  .itempanel .lbl{font-family:ZMG-Black;font-size:34px;color:#fff;text-align:center;line-height:1.15;
+    -webkit-text-stroke:6px #1c3a26;paint-order:stroke fill;text-shadow:0 2px 6px rgba(0,0,0,.55);}
+
+  /* 立ち絵（全身）。顔トリミングをやめて全身素材を使い、つむぎ左・ずんだもん右なのだぁ🌱
+     AZ：位置が上すぎたので、画面高さ720pxの約10%（72px）ぶん下方向に下げたのだぁ。
+     BA：つむぎは元が左向きの素材なので、scaleX(-1) で左右反転して右（中央）を向かせる苦肉の策なのだぁ */
+  .tachie{position:absolute;z-index:5;opacity:0;filter:drop-shadow(0 6px 14px rgba(0,0,0,.4));}
+  .tachie img{position:absolute;left:0;top:0;width:100%;height:auto;}
+  #tachieTsumugi{width:560px;left:-84px;top:92px;transform:scaleX(-1);}
+  #tachieZundamon{width:560px;right:-56px;top:66px;}
+
+  /* 字幕の読みやすさのための下部スクリム（箱ではなく、そっと暗くするだけ）なのだぁ */
+  .scrim{position:absolute;z-index:3;left:0;right:0;bottom:0;height:300px;pointer-events:none;opacity:0;
+    background:linear-gradient(to top,rgba(0,0,0,.62),rgba(0,0,0,.22) 45%,rgba(0,0,0,0));}
+
+  /* BC：字幕表示領域を覆う黒半透明の横帯なのだぁ🌱 画面幅いっぱいで、上端がキャラ名(top:466)を、
+     下端が字幕の下端(720-66=654)を覆う範囲。濃さはさりげなく、上下だけそっとぼかしてなじませるのだぁ。
+     字幕とは連動せず、本編のあいだ出しっぱなし（seek で opacity をフェード管理）。
+     Zオーダーは 文字類＞この帯＞キャラ で、DOM上でキャラの後・名前/字幕の前に置くのだぁ */
+  /* BC：上下をあと少し広げたいとのことで、キャラ名フォント高さ(32px)の半分＝16pxずつ上下へ拡張したのだぁ
+     （top 450→434, height 222→254）。ぼかしの割合は見た目が変わらないよう帯高に合わせて微調整なのだぁ */
+  .band{position:absolute;z-index:6;left:0;right:0;top:434px;height:254px;pointer-events:none;opacity:0;
+    background:linear-gradient(to bottom,rgba(0,0,0,0),rgba(0,0,0,.58) 12%,rgba(0,0,0,.58) 88%,rgba(0,0,0,0));}
+
+  /* キャラ名ラベル。Y は固定（台詞の行数やデカ字で動かさない＝過去を見つめる都市式）なのだぁ。
+     字幕の左上あたりで左揃え。BB：つむぎに近すぎたので少しだけ右へずらしたのだぁ */
+  .name{position:absolute;z-index:7;left:440px;top:466px;white-space:nowrap;
+    font-family:ZMG-Black;font-size:32px;
+    paint-order:stroke fill;text-shadow:0 2px 6px rgba(0,0,0,.55);opacity:0;}
+  .name.zundamon{color:#BFE88C;-webkit-text-stroke:5px #2F5A1E;}
+  .name.tsumugi{color:#F6D56A;-webkit-text-stroke:5px #6E5010;}
+
+  /* 字幕（箱なし・白抜き＋話者色の縁取りがそのまま浮く「過去を見つめる都市」式）なのだぁ。
+     下端を固定して上へ伸ばすから、名前ラベルの Y は台詞の高さに影響されないのだぁ */
+  .subwrap{position:absolute;z-index:7;left:96px;width:1088px;bottom:66px;
+    display:flex;flex-direction:column;justify-content:flex-end;align-items:center;opacity:0;}
+  .sub{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;}
+  .sub .ln{white-space:nowrap;font-family:ZMG-Black;line-height:1.22;
+    color:#ffffff;paint-order:stroke fill;text-shadow:0 3px 10px rgba(0,0,0,.6);}
+  .sub.zundamon .ln{-webkit-text-stroke:7px #2F5A1E;}
+  .sub.tsumugi  .ln{-webkit-text-stroke:7px #6E5010;}
+
+  /* BG(v10)：旧タイトル画面（中央に「あまい罠は、沼で咲く」を出す構成）は廃止したのだぁ🌱
+     動画のフレーム0＝Xのサムネイルなので、開幕そのものを下の #thumb（デカ字サムネ）が担うのだぁ。 */
+
+  /* クレジット画面 */
+  .credit{position:absolute;z-index:9;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:14px;background:rgba(4,8,7,.97);opacity:0;color:#e8f5ec;font-family:ZMG-Bold;text-align:center;}
+  .credit h2{font-family:ZMG-Black;font-size:32px;color:#bfeecb;margin-bottom:6px;}
+  .credit .row{font-size:21px;line-height:1.5;}
+  .credit .made{display:flex;align-items:center;gap:8px;font-size:24px;margin-top:10px;}
+  .credit .made svg{width:30px;height:30px;}
+  .credit .small{font-size:16px;color:#9db8a6;margin-top:6px;}
+
+  /* BG(v10)：デカ字サムネ＝動画の開幕（フレーム0）そのものなのだぁ🌱 各要素は seek(t) が開幕だけ表示して、
+     開幕明けにフェードアウトするのだぁ。Zオーダーは 左上ロゴ・デカ字・中央アイテムフレーム(z8)
+     ＞ 黒帯(z6) ＞ キャラ(z5) で、文字はキャラと被ってよく、黒帯で下地を暗くして読ませるのだぁ。
+     #thumb 自体には opacity/z を付けないのだぁ（付けると子の z8/z6 が閉じ込められてキャラ(z5)の下に沈むのだぁ）。 */
+  .thumb-band{position:absolute;z-index:6;left:0;right:0;pointer-events:none;}
+  #thumbBandTop{top:0;height:214px;
+    background:linear-gradient(to bottom,rgba(0,0,0,.86),rgba(0,0,0,.82) 62%,rgba(0,0,0,0));}
+  #thumbBandBot{bottom:0;height:230px;
+    background:linear-gradient(to top,rgba(0,0,0,.86),rgba(0,0,0,.82) 62%,rgba(0,0,0,0));}
+  .thumb-frame{position:absolute;z-index:8;left:50%;top:50%;transform:translate(-50%,-50%);
+    padding:14px;border-radius:18px;background:rgba(12,22,18,.72);
+    border:6px solid rgba(170,220,180,.78);box-shadow:0 8px 30px rgba(0,0,0,.6);}
+  .thumb-frame img{display:block;width:300px;height:300px;image-rendering:pixelated;
+    filter:drop-shadow(0 4px 8px rgba(0,0,0,.55));}
+  /* BG(v11)：デカ字の縁取りは #123a26（ずんだもん台詞の深緑と同系）だったので、
+     沼地・サラセニアをイメージした深いワイン色（サラセニアの捕虫葉の赤い斑をイメージ）に変えたのだぁ🌱 */
+  .thumb-txt{position:absolute;z-index:8;left:50%;transform:translateX(-50%);white-space:nowrap;
+    font-family:ZMG-Black;color:#fff;paint-order:stroke fill;
+    -webkit-text-stroke-color:#5A1A2E;text-shadow:0 4px 14px rgba(0,0,0,.85);}
+  #thumbTop{top:26px;}
+  #thumbBot{bottom:22px;}
+  .thumb-logo{position:absolute;z-index:8;top:24px;left:28px;width:104px;height:104px;
+    image-rendering:pixelated;filter:drop-shadow(0 3px 8px rgba(0,0,0,.7));}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="bg swamp" id="bgSwamp"><div class="tile"></div><div class="tone"></div><div class="vig"></div></div>
+  <div class="bg bog"   id="bgBog"><div class="tile"></div><div class="tone"></div><div class="vig"></div></div>
+
+  <div class="itempanel" id="itemPlant"><img><div class="lbl"></div></div>
+  <div class="itempanel" id="itemLeaf"><img><div class="lbl"></div></div>
+
+  <div class="scrim" id="scrim"></div>
+
+  <div class="tachie" id="tachieTsumugi"></div>
+  <div class="tachie" id="tachieZundamon"></div>
+
+  <div class="band" id="band"></div>
+
+  <div class="name" id="name"></div>
+  <div class="subwrap" id="subwrap"><div class="sub" id="sub"></div></div>
+
+  <!-- BG(v10)：デカ字サムネ＝動画の開幕（フレーム0）そのものなのだぁ🌱 seek(t) が開幕だけ表示するのだぁ -->
+  <div id="thumb">
+    <div class="thumb-band" id="thumbBandTop"></div>
+    <div class="thumb-band" id="thumbBandBot"></div>
+    <div class="thumb-frame"><img id="thumbFrame"></div>
+    <div class="thumb-txt" id="thumbTop">砂糖の原料</div>
+    <div class="thumb-txt" id="thumbBot">虫は見なかったことに</div>
+    <img class="thumb-logo" id="thumbLogo">
+  </div>
+
+  <div class="credit" id="credit"></div>
+</div>
+<script src="assets.js"></script>
+<script>
+const A = window.ASSETS, TL = window.TIMELINE;
+const st = document.querySelector('style');
+st.textContent = st.textContent.replace('FONT_BLACK', A.fontBlack).replace('FONT_BOLD', A.fontBold);
+
+// テクスチャの割り当て
+document.querySelectorAll('.bg .tile').forEach(e=>e.style.backgroundImage=`url(${A.bg})`);
+document.querySelector('#itemPlant img').src = A.plant;
+document.querySelector('#itemLeaf img').src = A.leaf;
+document.querySelector('#itemPlant .lbl').textContent = 'サラセニア';
+document.querySelector('#itemLeaf .lbl').textContent = 'サラセニアの葉';
+// BG(v10)：開幕（フレーム0）＝デカ字サムネのアセット（大きめサラセニア＋左上ロゴ）なのだぁ
+document.querySelector('#thumbFrame').src = A.plant;
+document.querySelector('#thumbLogo').src = A.logo;
+
+// 全身立ち絵を、劇場の provider と同じ重ね順で積むのだぁ🌱（下→上）
+// 口は3段（閉/半/開）、目は通常＋閉じ を重ねておいて、seek() が時刻で表示を切り替えるのだぁ（AV/AW）。
+//   口の開き具合はレイヤーbounds高さの意味論で選定（AV）：
+//     ずんだ 開=ほあー(h61) 半=ほあ(h44) 閉=んー(h15)／つむぎ 開=ほあー(h57) 半=お(h40) 閉=ほほえみ(h26)
+//     いー・にしー等の横広で縦に開かない特殊口や、ゆ・△等の記号的な口は発声の口パクに使わないのだぁ。
+//   閉じ目（AW）：つむぎ=閉じ 8-4／ずんだは純粋な閉じ目が無いので にっこり 7-6（縦h33の平たい弧）を採用。
+// BF：眉(brow)・腕(armR/armL)は排他グループ(radio)、汗(sweat)は独立トグル(checkbox)なのだぁ🌱
+//   衝突判定は private の voicevox/extractor/build.gradle.kts に準拠（radio=同時1つ／checkbox=独立）。
+//   pg:'グループ名', key:'名前' で切り替え候補を積んでおいて、seek() が台詞ごとに1つだけ表示するのだぁ。
+const TACHIE = {
+  zundamon: { ch:'zundamon', layers:[
+    {id:'1'},{id:'4-2'},
+    {pg:'brow',key:'normal',id:'8-5'},{pg:'brow',key:'sad',id:'8-2'},{pg:'brow',key:'up',id:'8-3'},
+    {eye:'open', ids:['7-14-3','7-14-4-9']}, {eye:'blink', ids:['7-6']},
+    {mouth:'closed', id:'5-8'}, {mouth:'half', id:'5-2'}, {mouth:'open', id:'5-1'},
+    {id:'6-6'},{id:'9-2'},
+    {pg:'armR',key:'base',id:'4-4-8'},{pg:'armR',key:'point',id:'4-4-3'},{pg:'armR',key:'raise',id:'4-4-6'},{pg:'armR',key:'mouth',id:'4-4-5'},
+    {pg:'armL',key:'base',id:'4-3-8'},{pg:'armL',key:'think',id:'4-3-3'},
+    {sym:'sweat',id:'10-3'},
+  ]},
+  tsumugi: { ch:'tsumugi', layers:[
+    {id:'2'},{id:'3'},{id:'4'},{id:'12'},{id:'13-3'},{id:'13-4'},
+    {pg:'brow',key:'normal',id:'9-4'},{pg:'brow',key:'sad',id:'9-1'},{pg:'brow',key:'angry',id:'9-2'},{pg:'brow',key:'cheer',id:'9-3'},
+    {eye:'open', ids:['8-6-2','8-6-3-6']}, {eye:'blink', ids:['8-4']},
+    {mouth:'closed', id:'10-14'}, {mouth:'half', id:'10-8'}, {mouth:'open', id:'10-10'},
+    {id:'7-2'},
+    {pg:'armL',key:'base',id:'6-3'},
+    {pg:'armR',key:'base',id:'5-5'},{pg:'armR',key:'point',id:'5-1'},{pg:'armR',key:'mouth',id:'5-3'},
+    {sym:'sweat',id:'13-2'},
+  ]},
+};
+function buildTachie(el, cfg){
+  let html='';
+  cfg.layers.forEach(L=>{
+    if(L.eye){ (L.ids||[L.id]).forEach(id=>{ html+=`<img class="eye-${L.eye}" src="tachie/${cfg.ch}/${id}.png">`; }); }
+    else if(L.mouth){ html+=`<img class="mouth-${L.mouth}" src="tachie/${cfg.ch}/${L.id}.png">`; }
+    else if(L.pg){ html+=`<img class="pg-${L.pg} pg-${L.pg}-${L.key}" src="tachie/${cfg.ch}/${L.id}.png">`; }
+    else if(L.sym){ html+=`<img class="sym-${L.sym}" style="display:none" src="tachie/${cfg.ch}/${L.id}.png">`; }
+    else { html+=`<img src="tachie/${cfg.ch}/${L.id}.png">`; }
+  });
+  el.innerHTML=html;
+}
+// 台詞ごとのポーズ（眉・腕・汗）。喋る側もきく側も、その場面の感情に合わせて姿勢を変えるのだぁ🌱
+// index は TL.lines と対応。値は上の pg key。sweat:1 で汗を出すのだぁ。
+// BG(v10)：導入部（開幕＝デカ字サムネ〜初回発話まで）は、サムネのキメ姿勢なのだぁ🌱
+//   つむぎ＝得意げに指差し／ずんだ＝やれやれの困り眉。フレーム0がこの姿でXのサムネになるのだぁ。
+const POSE_DEFAULT = {t:{brow:'cheer',armR:'point',armL:'base'}, z:{brow:'sad',armR:'base',armL:'base'}};
+const POSES = [
+  {t:{brow:'cheer',armR:'mouth',armL:'base'}, z:{brow:'normal',armR:'base',armL:'base'}},
+  {t:{brow:'cheer',armR:'base',armL:'base'},  z:{brow:'normal',armR:'point',armL:'base'}},
+  {t:{brow:'cheer',armR:'point',armL:'base'}, z:{brow:'normal',armR:'base',armL:'base'}},
+  {t:{brow:'sad',armR:'mouth',armL:'base'},   z:{brow:'normal',armR:'base',armL:'base'}},
+  {t:{brow:'sad',armR:'mouth',armL:'base'},   z:{brow:'up',armR:'raise',armL:'base'}},
+  {t:{brow:'sad',armR:'base',armL:'base',sweat:1}, z:{brow:'normal',armR:'base',armL:'base'}},
+  {t:{brow:'sad',armR:'base',armL:'base'},    z:{brow:'normal',armR:'base',armL:'think'}},
+  {t:{brow:'angry',armR:'mouth',armL:'base',sweat:1}, z:{brow:'normal',armR:'base',armL:'base'}},
+  {t:{brow:'sad',armR:'base',armL:'base'},    z:{brow:'normal',armR:'mouth',armL:'base'}},
+  {t:{brow:'cheer',armR:'mouth',armL:'base'}, z:{brow:'normal',armR:'base',armL:'base'}},
+  {t:{brow:'cheer',armR:'point',armL:'base'}, z:{brow:'sad',armR:'base',armL:'base'}},
+  {t:{brow:'cheer',armR:'point',armL:'base'}, z:{brow:'sad',armR:'base',armL:'base'}},
+];
+function setPose(el, p){
+  ['brow','armR','armL'].forEach(g=>{
+    el.querySelectorAll('.pg-'+g).forEach(e=>e.style.display='none');
+    const sel = el.querySelector('.pg-'+g+'-'+(p[g]||'base'));
+    if(sel) sel.style.display='';
+  });
+  el.querySelectorAll('.sym-sweat').forEach(e=>e.style.display = p.sweat?'':'none');
+}
+const elZ=document.querySelector('#tachieZundamon'), elT=document.querySelector('#tachieTsumugi');
+buildTachie(elZ, TACHIE.zundamon);
+buildTachie(elT, TACHIE.tsumugi);
+function setFace(el, mouth, blink){
+  ['closed','half','open'].forEach(m=>el.querySelectorAll('.mouth-'+m).forEach(e=>e.style.display=(m===mouth?'':'none')));
+  el.querySelectorAll('.eye-open').forEach(e=>e.style.display=blink?'none':'');
+  el.querySelectorAll('.eye-blink').forEach(e=>e.style.display=blink?'':'none');
+}
+// 母音→口の開き（AV）。縦の開きで3段。N/pau/っ 等の無声・休止は閉口なのだぁ
+function vowelMouth(v){ if(v==='a')return 'open'; if(v==='i'||v==='u'||v==='e'||v==='o')return 'half'; return 'closed'; }
+function mouthAt(line, t){
+  if(!line || !line.moras) return 'closed';
+  const tl = t - line.start;
+  for(const m of line.moras){ if(tl>=m[0] && tl<m[2]){ return tl<m[1] ? 'closed' : vowelMouth(m[3]); } }
+  return 'closed';
+}
+// まばたき（AW）。決定的スケジュールで、閉眼は一瞬（半目は介さず閉↔開）なのだぁ
+function blinkAt(t, period, phase, dur){ const p=(((t+phase)%period)+period)%period; return p<dur; }
+
+// クレジット（🌱は fluentui-emoji の seedling を inline SVG で描くのだぁ）
+// クレジットは項目ごとに体裁がまちまちだったので、統一体裁にしたのだぁ🌱
+//   体裁：「項目　名称（作者・権利者）　ライセンス」。作者は（）、ライセンスは末尾の全角スペース区切り。
+//   複数のときは ／ でつなぐのだぁ。ライセンスが該当しない項目（声＝VOICEVOX規約表記そのもの／
+//   立ち絵＝クレジット任意／世界観＝表現物利用なし）は、ライセンス欄を書かないのだぁ。
+// BL(v11)：末尾のタイトルは、サムネのデカ字（＝動画タイトル兼用）に差し替えたのだぁ。
+// BM(v11)：「世界観」項目を追加したのだぁ（表現物の利用は無いのでライセンスは該当なし）。
+// 制作ツールに Claude Fairy の左へ Claude Code を追加したのだぁ。
+document.querySelector('#credit').innerHTML =
+  `<h2>砂糖の原料<br>虫は見なかったことに</h2>`+
+  `<div class="row">声　VOICEVOX：ずんだもん ／ VOICEVOX：春日部つむぎ</div>`+
+  `<div class="row">立ち絵　ずんだもん立ち絵素材 ／ 春日部つむぎ立ち絵素材（坂本アヒル）</div>`+
+  `<div class="row">画像　IFR25KU テクスチャ（© 2025 The Developer of MirageFairy, Generation 7 ／ Yoruno Kakera）　CC BY 4.0</div>`+
+  `<div class="row">音楽　ショパン 練習曲 作品10 第4番（演奏 Edward Neeman）　パブリックドメイン</div>`+
+  `<div class="row">絵文字　Fluent Emoji（Microsoft）　MIT</div>`+
+  `<div class="row">フォント　Zen Maru Gothic（The Zen Maru Gothic Project Authors）　SIL OFL</div>`+
+  `<div class="row">世界観　MirageFairy（MirageFairy Server運営） ／ IFRKU（夜のかけら）</div>`+
+  `<div class="made">制作　Claude Code ／ <span id="sprout"></span> Claude Fairy</div>`;
+document.querySelector('#sprout').innerHTML = A.seedling;
+
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function fadeIn(t,start,dur){return clamp((t-start)/dur,0,1);}
+function fadeOut(t,start,dur){return 1-clamp((t-start)/dur,0,1);}
+
+// 字幕を帯からはみ出さない最大サイズにフィットさせるのだぁ（お手本の最大54px／デカ字68px基準）
+const SUB_W=1088, SUB_H=128;
+function fitSub(bigFlag){
+  const sub=document.querySelector('#sub');
+  const lines=[...sub.querySelectorAll('.ln')];
+  let hi = bigFlag?68:54, lo=22, best=lo;
+  for(let it=0;it<18;it++){
+    const mid=(hi+lo)/2;
+    lines.forEach(l=>l.style.fontSize=mid+'px');
+    let ok = sub.scrollHeight<=SUB_H;
+    lines.forEach(l=>{ if(l.scrollWidth>SUB_W) ok=false; });
+    if(ok){best=mid;lo=mid;} else {hi=mid;}
+  }
+  lines.forEach(l=>{
+    l.style.fontSize=best+'px';
+    // 縁取りはフォントサイズ比例（お手本 fontSize*0.16 相当、最小6px）なのだぁ。
+    // 幅だけの個別プロパティを使うのがキモ（AM）。短縮形 webkitTextStroke だと色が currentColor=白 に
+    // リセットされて、CSSクラスの話者色縁取りが消えて「ただの白」になっちゃうのだぁ🌱
+    l.style.webkitTextStrokeWidth = Math.max(6, best*0.15).toFixed(1)+'px';
+  });
+}
+
+let lastSubKey='';
+function setSub(line){
+  const key = line? (line.i+'|'+line.sub+'|'+line.big) : '';
+  window.__lastSubKey=key;
+  if(key===lastSubKey) return;
+  lastSubKey=key;
+  const sub=document.querySelector('#sub'), name=document.querySelector('#name');
+  if(!line){ sub.innerHTML=''; return; }
+  const cls = (line.speaker==='ずんだもん'?'zundamon':'tsumugi');
+  const segs = line.sub.split('｜');
+  sub.className = 'sub '+cls;              // 話者色の縁取りを適用（AM）なのだぁ
+  sub.innerHTML = segs.map(s=>`<div class="ln">${s}</div>`).join('');
+  name.textContent = line.speaker;
+  name.className = 'name '+cls;
+  fitSub(line.big);
+}
+
+// 時刻tだけで全要素の状態を決めるのだぁ（副作用純粋）🌱
+window.seek = function(t){
+  const F = TL.sceneFade;
+  // BG(v10)：開幕（フレーム0）＝デカ字サムネなのだぁ🌱 開幕は openOp=1 で出して、開幕明けにフェードアウト。
+  //   デカ字のフィットは、フォントが載ってから測る必要があるので、最初の seek のときに一度だけ実行するのだぁ
+  //   （render.js は document.fonts.ready を待ってから seek するので、初回 seek 時点でフォントは載っているのだぁ）。
+  if(!window.__thumbFit){ fitThumb('#thumbTop',980,150); fitThumb('#thumbBot',1180,150); window.__thumbFit=true; }
+  const openOp = t<TL.titleFadeStart ? 1 : fadeOut(t,TL.titleFadeStart,TL.titleEnd-TL.titleFadeStart);
+  ['#thumbBandTop','#thumbBandBot','.thumb-frame','#thumbTop','#thumbBot','#thumbLogo']
+    .forEach(s=>document.querySelector(s).style.opacity=openOp);
+  // シーン背景のクロスフェード
+  let bogOp = 0;
+  const bogScene = TL.scenes.find(s=>s.scene==='bog');
+  if(bogScene){ bogOp = fadeIn(t, bogScene.start, F); }
+  document.querySelector('#bgBog').style.opacity = bogOp;
+  document.querySelector('#bgSwamp').style.opacity = 1; // 下敷き
+  // アイテム枠
+  let plantOp=0, leafOp=0;
+  for(const it of TL.items){
+    const op = clamp(Math.min((t-it.start)/0.22, (it.end+0.18-t)/0.22),0,1);
+    if(it.item==='plant') plantOp=Math.max(plantOp,op);
+    if(it.item==='leaf')  leafOp=Math.max(leafOp,op);
+  }
+  document.querySelector('#itemPlant').style.opacity = plantOp;
+  document.querySelector('#itemLeaf').style.opacity = leafOp;
+  // クレジット（最後にふわっと出すのだぁ）
+  const creditOp = fadeIn(t, TL.creditStart-0.35, 0.5);
+  document.querySelector('#credit').style.opacity = creditOp;
+  // 立ち絵：BE で、最初のフレームからクレジット手前まで、ずっと固定表示にしたのだぁ🌱
+  // これでサムネイル（フレーム0＝タイトル画面）にも立ち絵が出るのだぁ。クレジット時だけ消すのだぁ。
+  const creditGate = (1-clamp(creditOp*3,0,1));
+  const tachieOp = creditGate;
+  document.querySelector('#tachieTsumugi').style.opacity = tachieOp;
+  document.querySelector('#tachieZundamon').style.opacity = tachieOp;
+  // BF：台詞ごとに眉・腕・汗を切り替えるのだぁ。ポーズは「その時点で始まっている最後の台詞」で決めて、
+  // 台詞の合間もそのまま保つのだぁ（poseIdx<0 の導入部は POSE_DEFAULT の落ち着いた立ち姿）。
+  let poseIdx=-1;
+  for(let k=0;k<TL.lines.length;k++){ if(t>=TL.lines[k].start) poseIdx=k; else break; }
+  const pose = poseIdx>=0 ? POSES[poseIdx] : POSE_DEFAULT;
+  setPose(elT, pose.t); setPose(elZ, pose.z);
+  window.__poseKey = String(poseIdx);
+  // BC：字幕を覆う横帯は、字幕とは連動させず本編のあいだ表示するのだぁ🌱 タイトル中は出さない
+  // （立ち絵と違い、サムネに空の帯が出ると不自然なので、従来どおりタイトル明けゲートを保つのだぁ）
+  document.querySelector('#band').style.opacity = (1-openOp) * creditGate;
+  // 字幕（台詞区間だけ表示、行間は消して「間」を作るのだぁ）
+  let active=null;
+  for(const ln of TL.lines){ if(t>=ln.start && t<ln.subEnd){ active=ln; break; } }
+  setSub(active);
+  // 立ち絵の口パク（AV）・まばたき（AW）。喋っている側だけ口が動き、両者はそれぞれの周期で瞬きするのだぁ🌱
+  // 字幕は音声より SUB_TAIL 長く残るので、口パクは実発話区間（active.end）だけに限るのだぁ。
+  const speaking = active && t < active.end ? active : null;
+  const spk = speaking ? (speaking.speaker==='ずんだもん'?'z':'t') : null;
+  const zMouth = spk==='z' ? mouthAt(speaking,t) : 'closed';
+  const tMouth = spk==='t' ? mouthAt(speaking,t) : 'closed';
+  // 位相は、最初のフレーム(t=0)で両者とも目を開けているように選ぶのだぁ（サムネで閉眼にしない・BE）
+  const zBlink = blinkAt(t, 3.4, 1.5, 0.12), tBlink = blinkAt(t, 4.1, 1.7, 0.12);
+  setFace(elZ, zMouth, zBlink);
+  setFace(elT, tMouth, tBlink);
+  window.__tachieKey = zMouth[0]+tMouth[0]+(zBlink?'Z':'z')+(tBlink?'T':'t');
+  const subOp = active ? clamp(Math.min((t-active.start)/0.12,(active.subEnd+0.05-t)/0.15),0,1) : 0;
+  const gate = (1-clamp(creditOp*3,0,1));
+  const so = (openOp>0.5?0:subOp)*gate;
+  document.querySelector('#subwrap').style.opacity = so;
+  document.querySelector('#name').style.opacity = so;
+  document.querySelector('#scrim').style.opacity = so*0.85;
+  return true;
+};
+
+// BG(v10)：開幕（フレーム0）のデカ字を、画面外・左上ロゴと衝突しない範囲で最大化フィットするのだぁ🌱
+//   上段は左上ロゴを避けるため控えめの最大幅、下段は画面幅いっぱい近くまで大きくするのだぁ（seek で初回に呼ぶ）。
+function fitThumb(sel, maxW, maxH){
+  const el=document.querySelector(sel);
+  let hi=170, lo=30, best=lo;
+  for(let it=0;it<20;it++){
+    const mid=(hi+lo)/2;
+    el.style.fontSize=mid+'px';
+    el.style.webkitTextStrokeWidth=Math.max(7,mid*0.14).toFixed(1)+'px';
+    const ok = el.offsetWidth<=maxW && el.offsetHeight<=maxH;
+    if(ok){best=mid;lo=mid;}else{hi=mid;}
+  }
+  el.style.fontSize=best+'px';
+  el.style.webkitTextStrokeWidth=Math.max(7,best*0.14).toFixed(1)+'px';
+}
+
+// 汎用レンダラー（../renderer/render.js）向けの入口なのだぁ🌱
+// レンダラーは、このシーンの中身を何も知らずに、構成jsonl の 1 行（cfg）を applyFrame に渡すだけなのだぁ。
+// cfg = {t: 秒} で、その時刻の画面を seek() で組み立て、見た目を一意に表す再利用キーを返すのだぁ
+// （キーが前フレームと同じならレンダラーは撮り直さず前のコマを使い回すのだぁ）。
+window.applyFrame = function(cfg){
+  window.seek(cfg.t);
+  const op = s => (+getComputedStyle(document.querySelector(s)).opacity).toFixed(2);
+  return [op('#thumbTop'),op('#bgBog'),op('#itemPlant'),op('#itemLeaf'),
+          op('#subwrap'),op('#credit'),op('#band'),window.__lastSubKey||'',window.__tachieKey||'',window.__poseKey||''].join(',');
+};
+window.__ready = true;
+</script>
+</body>
+</html>
