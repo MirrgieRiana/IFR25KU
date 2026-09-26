@@ -24,9 +24,6 @@ $navicon-link-color-hover: #a83dba;
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}";
 @import "minimal-mistakes";
 
-// トップページのヒーローとニュース記事のヘッダー画像の高さ
-$hero-height: 600px;
-
 // テーマのfloatレイアウトをFlexbox/Gridに全面移行
 #main {
   display: flex;
@@ -198,7 +195,7 @@ a.site-title {
 }
 
 .page__hero--overlay {
-  min-height: $hero-height;
+  min-height: 600px;
   margin-top: -2em;
   margin-bottom: 0;
   padding-bottom: 2em;
@@ -710,7 +707,7 @@ body {
 .news__banner img {
   display: block;
   width: 100%;
-  height: $hero-height;
+  height: 360px;
   object-fit: cover;
   object-position: center;
 }
