@@ -1,4 +1,19 @@
 {
+  "miragefairy2024:akimotoite": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
   "miragefairy2024:amethyst_axe": {
     "class": "miragefairy2024.mod.tool.items.FairyAxeItem",
     "components": {
@@ -810,6 +825,257 @@
       "minecraft:repair_cost": 0
     }
   },
+  "miragefairy2024:bridgmanite": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:bridgmanite_axe": {
+    "class": "miragefairy2024.mod.tool.items.FairyAxeItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 8.5,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": -3.0,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:fire_resistant": {},
+      "minecraft:lore": [],
+      "minecraft:max_damage": 1800,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier5_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "#minecraft:mineable/axe",
+            "correct_for_drops": true,
+            "speed": 8.5
+          }
+        ]
+      }
+    }
+  },
+  "miragefairy2024:bridgmanite_hoe": {
+    "class": "miragefairy2024.mod.tool.items.FairyHoeItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 0.0,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": 0.0,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:fire_resistant": {},
+      "minecraft:lore": [],
+      "minecraft:max_damage": 1800,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier5_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "#minecraft:mineable/hoe",
+            "correct_for_drops": true,
+            "speed": 8.5
+          }
+        ]
+      }
+    }
+  },
+  "miragefairy2024:bridgmanite_pickaxe": {
+    "class": "miragefairy2024.mod.tool.items.FairyPickaxeItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 4.0,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": -2.799999952316284,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:fire_resistant": {},
+      "minecraft:lore": [],
+      "minecraft:max_damage": 1800,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier5_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "#minecraft:mineable/pickaxe",
+            "correct_for_drops": true,
+            "speed": 8.5
+          }
+        ]
+      }
+    }
+  },
+  "miragefairy2024:bridgmanite_shovel": {
+    "class": "miragefairy2024.mod.tool.items.FairyShovelItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 4.5,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": -3.0,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:fire_resistant": {},
+      "minecraft:lore": [],
+      "minecraft:max_damage": 1800,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier5_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "#minecraft:mineable/shovel",
+            "correct_for_drops": true,
+            "speed": 8.5
+          }
+        ]
+      }
+    }
+  },
+  "miragefairy2024:bridgmanite_sword": {
+    "class": "miragefairy2024.mod.tool.items.FairySwordItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 6.0,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": -2.4000000953674316,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:fire_resistant": {},
+      "minecraft:lore": [],
+      "minecraft:max_damage": 1800,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "damage_per_block": 2,
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier5_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "minecraft:cobweb",
+            "correct_for_drops": true,
+            "speed": 15.0
+          },
+          {
+            "blocks": "#minecraft:sword_efficient",
+            "correct_for_drops": true,
+            "speed": 1.5
+          }
+        ]
+      }
+    }
+  },
   "miragefairy2024:calculite": {
     "class": "net.minecraft.world.item.Item",
     "components": {
@@ -1168,6 +1434,21 @@
     }
   },
   "miragefairy2024:chiseled_aura_resistant_ceramic": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:chiseled_reinforced_metal": {
     "class": "net.minecraft.world.item.BlockItem",
     "components": {
       "minecraft:attribute_modifiers": {
@@ -3605,6 +3886,36 @@
       "minecraft:repair_cost": 0
     }
   },
+  "miragefairy2024:fairy_quest_gate": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:fairy_quest_gate_portal": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
   "miragefairy2024:fairy_rubber": {
     "class": "net.minecraft.world.item.Item",
     "components": {
@@ -3706,6 +4017,21 @@
       },
       "minecraft:lore": [],
       "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:ferropericlase": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
       "minecraft:rarity": "common",
       "minecraft:repair_cost": 0
     }
@@ -5157,6 +5483,51 @@
       "minecraft:repair_cost": 0
     }
   },
+  "miragefairy2024:institute_floor": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:institute_floor_slab": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:institute_floor_stairs": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
   "miragefairy2024:iron_scythe": {
     "class": "miragefairy2024.mod.tool.items.FairyScytheItem",
     "components": {
@@ -6150,6 +6521,36 @@
           }
         ]
       }
+    }
+  },
+  "miragefairy2024:majorite": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:mantle_wisp_egg": {
+    "class": "net.minecraft.world.item.SpawnEggItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
     }
   },
   "miragefairy2024:merrrria_bulb": {
@@ -8856,6 +9257,21 @@
       "minecraft:repair_cost": 0
     }
   },
+  "miragefairy2024:post_perovskite": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
   "miragefairy2024:prominaria_berry": {
     "class": "miragefairy2024.mod.materials.contents.FoodItem",
     "components": {
@@ -9218,6 +9634,96 @@
           }
         ]
       }
+    }
+  },
+  "miragefairy2024:reinforced_metal_block": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:reinforced_metal_slab": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:reinforced_metal_stairs": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:reinforced_metal_tile_slab": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:reinforced_metal_tile_stairs": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:reinforced_metal_tiles": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
     }
   },
   "miragefairy2024:reset_telescope_mission": {
@@ -9670,6 +10176,267 @@
       "minecraft:max_stack_size": 64,
       "minecraft:rarity": "common",
       "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:ringwoodite": {
+    "class": "net.minecraft.world.item.Item",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:ringwoodite_axe": {
+    "class": "miragefairy2024.mod.tool.items.FairyAxeItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 10.0,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": -3.0,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_damage": 3200,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier6_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "#minecraft:mineable/axe",
+            "correct_for_drops": true,
+            "speed": 11.0
+          }
+        ]
+      }
+    }
+  },
+  "miragefairy2024:ringwoodite_hoe": {
+    "class": "miragefairy2024.mod.tool.items.FairyHoeItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 0.0,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": 0.0,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_damage": 3200,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier6_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "#minecraft:mineable/hoe",
+            "correct_for_drops": true,
+            "speed": 11.0
+          }
+        ]
+      }
+    }
+  },
+  "miragefairy2024:ringwoodite_ore": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:ringwoodite_pickaxe": {
+    "class": "miragefairy2024.mod.tool.items.FairyPickaxeItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 6.0,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": -2.799999952316284,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_damage": 3200,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier6_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "#minecraft:mineable/pickaxe",
+            "correct_for_drops": true,
+            "speed": 11.0
+          }
+        ]
+      }
+    }
+  },
+  "miragefairy2024:ringwoodite_shovel": {
+    "class": "miragefairy2024.mod.tool.items.FairyShovelItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 6.5,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": -3.0,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_damage": 3200,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier6_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "#minecraft:mineable/shovel",
+            "correct_for_drops": true,
+            "speed": 11.0
+          }
+        ]
+      }
+    }
+  },
+  "miragefairy2024:ringwoodite_sword": {
+    "class": "miragefairy2024.mod.tool.items.FairySwordItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 8.0,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": -2.4000000953674316,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_damage": 3200,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "damage_per_block": 2,
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier6_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "minecraft:cobweb",
+            "correct_for_drops": true,
+            "speed": 15.0
+          },
+          {
+            "blocks": "#minecraft:sword_efficient",
+            "correct_for_drops": true,
+            "speed": 1.5
+          }
+        ]
+      }
     }
   },
   "miragefairy2024:rum": {
@@ -10427,6 +11194,267 @@
       "minecraft:max_stack_size": 64,
       "minecraft:rarity": "common",
       "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:wadsleyite": {
+    "class": "net.minecraft.world.item.Item",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:wadsleyite_axe": {
+    "class": "miragefairy2024.mod.tool.items.FairyAxeItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 8.5,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": -3.0,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_damage": 2200,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier5_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "#minecraft:mineable/axe",
+            "correct_for_drops": true,
+            "speed": 9.5
+          }
+        ]
+      }
+    }
+  },
+  "miragefairy2024:wadsleyite_hoe": {
+    "class": "miragefairy2024.mod.tool.items.FairyHoeItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 0.0,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": -0.5,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_damage": 2200,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier5_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "#minecraft:mineable/hoe",
+            "correct_for_drops": true,
+            "speed": 9.5
+          }
+        ]
+      }
+    }
+  },
+  "miragefairy2024:wadsleyite_ore": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
+  "miragefairy2024:wadsleyite_pickaxe": {
+    "class": "miragefairy2024.mod.tool.items.FairyPickaxeItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 3.5,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": -2.799999952316284,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_damage": 2200,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier5_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "#minecraft:mineable/pickaxe",
+            "correct_for_drops": true,
+            "speed": 9.5
+          }
+        ]
+      }
+    }
+  },
+  "miragefairy2024:wadsleyite_shovel": {
+    "class": "miragefairy2024.mod.tool.items.FairyShovelItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 4.0,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": -3.0,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_damage": 2200,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier5_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "#minecraft:mineable/shovel",
+            "correct_for_drops": true,
+            "speed": 9.5
+          }
+        ]
+      }
+    }
+  },
+  "miragefairy2024:wadsleyite_sword": {
+    "class": "miragefairy2024.mod.tool.items.FairySwordItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": [
+          {
+            "type": "minecraft:generic.attack_damage",
+            "amount": 5.5,
+            "id": "minecraft:base_attack_damage",
+            "operation": "add_value",
+            "slot": "mainhand"
+          },
+          {
+            "type": "minecraft:generic.attack_speed",
+            "amount": -2.4000000953674316,
+            "id": "minecraft:base_attack_speed",
+            "operation": "add_value",
+            "slot": "mainhand"
+          }
+        ]
+      },
+      "minecraft:damage": 0,
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_damage": 2200,
+      "minecraft:max_stack_size": 1,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0,
+      "minecraft:tool": {
+        "damage_per_block": 2,
+        "rules": [
+          {
+            "blocks": "#miragefairy2024:incorrect_for_tier5_tool",
+            "correct_for_drops": false
+          },
+          {
+            "blocks": "minecraft:cobweb",
+            "correct_for_drops": true,
+            "speed": 15.0
+          },
+          {
+            "blocks": "#minecraft:sword_efficient",
+            "correct_for_drops": true,
+            "speed": 1.5
+          }
+        ]
+      }
     }
   },
   "miragefairy2024:xarpa_luminaria_bulb": {
