@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.TreeBlockCard
-import miragefairy2024.mod.tree.contents.plastictree.onResinCementedDirt
+import miragefairy2024.mod.tree.contents.plastictree.onResinCement
 import miragefairy2024.util.Registration
 import miragefairy2024.util.center
 import miragefairy2024.util.flower
@@ -34,7 +34,7 @@ object FallenPlasticTreeLogFeatureCard {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature(placedFeatureKey) { per(2) + flower(center, surface) + onResinCementedDirt }
+                registerPlacedFeature(placedFeatureKey) { per(2) + flower(center, surface) + onResinCement }
             }
         }
     }
