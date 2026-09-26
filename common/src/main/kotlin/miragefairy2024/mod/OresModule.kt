@@ -183,18 +183,18 @@ enum class OreCard(
         PoemList(4).poem("An asteric condensation chamber.", "千年越しに見る光。"),
         BaseStoneType.DIRT, "fairy_plastic_ore", MaterialCard.FAIRY_PLASTIC.item, 10 to 20,
     ),
-    RESIN_CEMENTED_DIRT_FAIRY_PLASTIC_ORE(
-        "resin_cemented_dirt_fairy_plastic_ore", "Resin-Cemented Dirt Fairy Plastic Ore", "石化した樹脂状の土妖精のプラスチック鉱石",
+    RESIN_CEMENT_FAIRY_PLASTIC_ORE(
+        "resin_cement_fairy_plastic_ore", "Resin Cement Fairy Plastic Ore", "石化した樹脂妖精のプラスチック鉱石",
         PoemList(4).poem("Negative aura-resistance in the ground", "膠着した堆積物の護り。"),
         BaseStoneType.RESIN_CEMENT, "fairy_plastic_ore", MaterialCard.FAIRY_PLASTIC.item, 10 to 20,
     ),
-    RESIN_CEMENTED_DIRT_RETINITE_ORE(
-        "resin_cemented_dirt_retinite_ore", "Resin-Cemented Dirt Retinite Ore", "石化した樹脂状の土レチナイト鉱石",
+    RESIN_CEMENT_RETINITE_ORE(
+        "resin_cement_retinite_ore", "Resin Cement Retinite Ore", "石化した樹脂レチナイト鉱石",
         null,
         BaseStoneType.RESIN_CEMENT, "retinite_ore", MaterialCard.RETINITE.item, 2 to 5,
     ),
-    RESIN_CEMENTED_DIRT_COPAL_ORE(
-        "resin_cemented_dirt_copal_ore", "Resin-Cemented Dirt Copal Ore", "石化した樹脂状の土コーパル鉱石",
+    RESIN_CEMENT_COPAL_ORE(
+        "resin_cement_copal_ore", "Resin Cement Copal Ore", "石化した樹脂コーパル鉱石",
         null,
         BaseStoneType.RESIN_CEMENT, "copal_ore", MaterialCard.COPAL.item, 2 to 5,
     ),
@@ -352,9 +352,9 @@ fun initOresModule() {
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.MIRANAGITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(-64 until 128, 0.6, 12, 0.0, OreCard.DEEPSLATE_MIRANAGITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES)
     worldGen(48 until 128, 0.2, 4, 1.0, OreCard.DIRT_FAIRY_PLASTIC_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key + +DeepFairyForestBiomeCard.key }
-    worldGen(48 until 128, 0.2, 4, 1.0, OreCard.RESIN_CEMENTED_DIRT_FAIRY_PLASTIC_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key }
-    worldGen(48 until 128, 1.0, 12, 0.0, OreCard.RESIN_CEMENTED_DIRT_RETINITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key }
-    worldGen(48 until 128, 0.6, 4, 0.0, OreCard.RESIN_CEMENTED_DIRT_COPAL_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key }
+    worldGen(48 until 128, 0.2, 4, 1.0, OreCard.RESIN_CEMENT_FAIRY_PLASTIC_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key }
+    worldGen(48 until 128, 1.0, 12, 0.0, OreCard.RESIN_CEMENT_RETINITE_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key }
+    worldGen(48 until 128, 0.6, 4, 0.0, OreCard.RESIN_CEMENT_COPAL_ORE, GenerationStep.Decoration.UNDERGROUND_ORES) { +OldGrowthAmberForestBiomeCard.key }
 
 }
 
