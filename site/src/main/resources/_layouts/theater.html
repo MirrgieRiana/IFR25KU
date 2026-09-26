@@ -47,11 +47,6 @@ layout: default
         {{ content }}
       </section>
 
-      <section class="page__recommend">
-        <h3 class="page__recommend-title"><i class="fas fa-film"></i> 他の記事を読む</h3>
-        <div class="page__recommend-grid"></div>
-      </section>
-
       <footer class="page__meta">
         {% if site.data.ui-text[locale].meta_label %}
           <h4 class="page__meta-title">{{ site.data.ui-text[locale].meta_label }}</h4>
@@ -59,6 +54,11 @@ layout: default
         {% include page__tags.html locale=locale %}
         {% include page__date.html locale=locale %}
       </footer>
+
+      <section class="page__recommend">
+        <h3 class="page__recommend-title"><i class="fas fa-film"></i> 他の記事を読む</h3>
+        <div class="page__recommend-grid"></div>
+      </section>
 
       {% include social-share.html locale=locale %}
 

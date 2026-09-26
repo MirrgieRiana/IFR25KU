@@ -656,7 +656,7 @@ class MaterialCard(
         )
         val HAIMEVISKA_ROSIN: MaterialCard = !MaterialCard(
             "haimeviska_rosin", "Haimeviska Resin", "ハイメヴィスカの涙",
-            PoemList(2).poem("High-friction material", "琥珀の月が昇るとき、妖精の木は静かに泣く"),
+            PoemList(2).poem("High-friction material", "真珠の月が昇るとき、妖精の木は静かに泣く"),
             fuelValue = 200 * 8, ore = Ore(Shape.GEM, Material.HAIMEVISKA_ROSIN),
             advancementCreator = {
                 AdvancementCard(
@@ -704,7 +704,7 @@ class MaterialCard(
                     context = AdvancementCard.Sub { OldGrowthAmberForestBiomeCard.advancement!!.await() },
                     icon = { item().createItemStack() },
                     name = EnJa("Living fossil", "生きた化石"),
-                    description = EnJa("Mine Fairy Plastic from the Resin-Cemented Dirt beneath the Old Growth Amber Forest", "琥珀色の原生林の地下の石化した樹脂状の土から妖精のプラスチックを採掘する"),
+                    description = EnJa("Mine Fairy Plastic from the Resin Cement beneath the Old Growth Amber Forest", "琥珀色の原生林の地下の石化した樹脂から妖精のプラスチックを採掘する"),
                     criterion = AdvancementCard.hasItem(item),
                     type = AdvancementCardType.NORMAL,
                 )
@@ -1531,7 +1531,7 @@ class MaterialCard(
         )
         val HAIMEVISKA_SAP_KOHAKUTO = createKohakuto(
             "haimeviska_sap_kohakuto", "Haimeviska Sap Kohakuto", "ハイメヴィスカの樹液の琥珀糖",
-            PoemList(1).poem("Steganographic agarose tablet.", "琥珀の中のデジャヴュー。"),
+            PoemList(1).poem("Steganographic agarose tablet.", "真珠の中のデジャヴュー。"),
             HAIMEVISKA_SAP.item,
             { it.effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 20 * 8), 1.0F) },
         )

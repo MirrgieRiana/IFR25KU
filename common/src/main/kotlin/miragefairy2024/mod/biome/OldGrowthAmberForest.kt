@@ -112,7 +112,7 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                                 SurfaceRules.stoneDepthCheck(0, true, 20, CaveSurface.FLOOR),
                                 SurfaceRules.ifTrue(
                                     SurfaceRules.noiseCondition(Noises.SURFACE_SECONDARY, getSurfaceNoiseThreshold(Noises.SURFACE_SECONDARY, 0.50), Double.MAX_VALUE),
-                                    SurfaceRules.state(BlockMaterialCard.RESIN_CEMENTED_DIRT.block().defaultBlockState())
+                                    SurfaceRules.state(BlockMaterialCard.RESIN_CEMENT.block().defaultBlockState())
                                 ),
                             ),
                             SurfaceRules.ifTrue(
