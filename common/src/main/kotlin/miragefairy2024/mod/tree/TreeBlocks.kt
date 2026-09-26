@@ -9,6 +9,7 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
+import miragefairy2024.mod.tree.contents.PlasticTreeFamilySaplingBlock
 import miragefairy2024.mod.tree.contents.blockcards.TreeBricksBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeChargeableLeavesBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeDoorBlockCard
@@ -33,14 +34,12 @@ import miragefairy2024.mod.tree.contents.haimeviska.DrippingHaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.haimeviska.HAIMEVISKA_CARD
 import miragefairy2024.mod.tree.contents.haimeviska.HaimeviskaLeavesBlock
 import miragefairy2024.mod.tree.contents.haimeviska.HaimeviskaLogBlock
-import miragefairy2024.mod.tree.contents.haimeviska.HaimeviskaSaplingBlock
 import miragefairy2024.mod.tree.contents.haimeviska.HollowHaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.haimeviska.IncisedHaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.plastictree.DrippingPlasticTreeLogBlock
 import miragefairy2024.mod.tree.contents.plastictree.IncisedPlasticTreeLogBlock
 import miragefairy2024.mod.tree.contents.plastictree.PLASTIC_TREE_CARD
 import miragefairy2024.mod.tree.contents.plastictree.PlasticTreeLogBlock
-import miragefairy2024.mod.tree.contents.plastictree.PlasticTreeSaplingBlock
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
@@ -235,7 +234,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val SAPLING = !TreeBlockConfiguration(
             HAIMEVISKA_CARD, "haimeviska_sapling", EnJa("Haimeviska Sapling", "ハイメヴィスカの苗木"),
             PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
-        ).sapling(::HaimeviskaSaplingBlock)
+        ).sapling(::PlasticTreeFamilySaplingBlock)
 
         val PLASTIC_TREE_LEAVES = !TreeBlockConfiguration(
             PLASTIC_TREE_CARD, "plastic_tree_leaves", EnJa("Plastic Tree Leaves", "プラノキの葉"),
@@ -262,7 +261,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val PLASTIC_TREE_SAPLING = !TreeBlockConfiguration(
             PLASTIC_TREE_CARD, "plastic_tree_sapling", EnJa("Plastic Tree Sapling", "プラノキの苗木"),
             PoemList(1).poem(EnJa("Etherify sugars with astral radiation.", "天空のフォリオニクス。")),
-        ).sapling(::PlasticTreeSaplingBlock)
+        ).sapling(::PlasticTreeFamilySaplingBlock)
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)
