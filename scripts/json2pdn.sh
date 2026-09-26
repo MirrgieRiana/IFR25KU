@@ -12,10 +12,10 @@
 # 前提:
 #   python3 が必要なのだ～🌱 標準ライブラリだけで動くのだ～🌱
 #
-# JSON の形と、.pdn の並びは、scripts/pdn2json.sh の冒頭に書いてあるのだ～🌱
+# JSON の形と、.pdn の構造は、scripts/pdn2json.sh の冒頭に書いてあるのだ～🌱
 #
 # JSON を書き換えてから戻すときは、中身の整合を取るのは書き換えた側の役目なのだ～🌱
-# このスクリプトは、JSON の形と、MemoryBlock の記録と画素の区画の対応だけを確かめるのだ～🌱
+# このスクリプトは、JSON の形と、MemoryBlock のレコードと画素のセクションの対応だけを確かめるのだ～🌱
 
 set -eu
 
@@ -198,12 +198,12 @@ class Encoder:
                 self.primitive(member_type["primitiveType"], value)
                 continue
             if not isinstance(value, dict):
-                raise PdnError(f"クラス {class_name} のメンバー {name} は、記録のはずなのに {value!r} なのだ")
+                raise PdnError(f"クラス {class_name} のメンバー {name} は、レコードのはずなのに {value!r} なのだ")
             self.record_with_libraries(value)
             if value["$record"] in NULL_MULTIPLE_RECORDS:
                 skip = value["count"] - 1
         if skip > 0:
-            raise PdnError(f"クラス {class_name} の ObjectNullMultiple の記録が、メンバーの数を {skip} 個超えているのだ")
+            raise PdnError(f"クラス {class_name} の ObjectNullMultiple のレコードが、メンバーの数を {skip} 個超えているのだ")
 
     def items(self, length, items):
         covered = 0
@@ -220,7 +220,7 @@ class Encoder:
 
     def record(self, record):
         record_type = record["$record"]
-        self.byte(lookup(RECORD_CODES, record_type, "記録の種類"))
+        self.byte(lookup(RECORD_CODES, record_type, "レコードの種類"))
         if record_type == "SerializedStreamHeader":
             self.int32(record["rootId"])
             self.int32(record["headerId"])
@@ -230,7 +230,7 @@ class Encoder:
             self.int32(record["objectId"])
             self.int32(record["metadataId"])
             if record["metadataId"] not in self.classes:
-                raise PdnError(f"ClassWithId の記録が、まだ現れていない {record['metadataId']} 番の記録を指しているのだ")
+                raise PdnError(f"ClassWithId のレコードが、まだ現れていない {record['metadataId']} 番のレコードを指しているのだ")
             class_name, names, types = self.classes[record["metadataId"]]
             self.object_members(record["objectId"], class_name, names, types, record["members"])
         elif record_type in ("SystemClassWithMembersAndTypes", "ClassWithMembersAndTypes"):
@@ -264,7 +264,7 @@ class Encoder:
             self.length_prefixed_string(record["libraryName"])
         elif record_type in NULL_MULTIPLE_RECORDS:
             if record["count"] < 1:
-                raise PdnError(f"{record_type} の記録の個数が {record['count']} なのだ")
+                raise PdnError(f"{record_type} のレコードが埋める個数が {record['count']} なのだ")
             if record_type == "ObjectNullMultiple256":
                 self.byte(record["count"])
             else:
@@ -322,7 +322,7 @@ def encode(document):
     encoder = Encoder()
     records = document["records"]
     if not records or records[-1]["$record"] != "MessageEnd":
-        raise PdnError("records の最後が MessageEnd の記録ではないのだ")
+        raise PdnError("records の最後が MessageEnd のレコードではないのだ")
     for record in records:
         encoder.record_with_libraries(record)
     output += encoder.output
@@ -331,12 +331,12 @@ def encode(document):
     expected_ids = [object_id for object_id, _ in encoder.memory_blocks]
     actual_ids = [memory_block["objectId"] for memory_block in memory_blocks]
     if actual_ids != expected_ids:
-        raise PdnError(f"memoryBlocks の objectId の並び {actual_ids} が、記録の中の MemoryBlock の並び {expected_ids} と合わないのだ")
+        raise PdnError(f"memoryBlocks の objectId の順序 {actual_ids} が、レコードの中の MemoryBlock の順序 {expected_ids} と合わないのだ")
     for memory_block, (object_id, length) in zip(memory_blocks, encoder.memory_blocks):
         chunk_size = memory_block["chunkSize"]
         chunks = memory_block["chunks"]
         if chunk_size <= 0 or len(chunks) != -(-length // chunk_size):
-            raise PdnError(f"{object_id} 番の MemoryBlock の塊の数が、length64 と chunkSize から決まる数と合わないのだ")
+            raise PdnError(f"{object_id} 番の MemoryBlock のチャンクの数が、length64 と chunkSize から決まる数と合わないのだ")
         output += struct.pack(">B", memory_block["formatVersion"])
         output += struct.pack(">I", chunk_size)
         for chunk in chunks:

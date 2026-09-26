@@ -13,30 +13,30 @@
 # 前提:
 #   python3 が必要なのだ～🌱 標準ライブラリだけで動くのだ～🌱
 #
-# .pdn の並び:
+# .pdn の構造:
 #   1. マジックナンバー `PDN3` の 4 バイトなのだ～🌱
 #   2. ヘッダーの長さの 3 バイトで、リトルエンディアンなのだ～🌱
 #   3. ヘッダーの XML なのだ～🌱 画像の大きさとレイヤーの枚数とサムネイルの PNG の Base64 を持つのだ～🌱
 #   4. 区切りの 2 バイトで、今までに見たものは全部 `00 01` なのだ～🌱
-#   5. .NET の BinaryFormatter の直列化データで、形式は Microsoft の [MS-NRBF] なのだ～🌱
+#   5. .NET の BinaryFormatter のシリアル化データで、形式は Microsoft の [MS-NRBF] なのだ～🌱
 #      https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-nrbf/75b9fe09-be15-475f-85b8-ae7b7558cfe5
-#   6. 画素のデータで、5 の中の、deferred が真の PaintDotNet.MemoryBlock ごとに、出現の順に 1 区画ずつ並ぶのだ～🌱
-#      区画は、形式の 1 バイトと、塊の大きさの 4 バイトの後に、塊の番号の 4 バイトと、データの長さの 4 バイトと、データの組が続く形なのだ～🌱
-#      区画の中の数値は、ビッグエンディアンなのだ～🌱
-#      塊の個数は、MemoryBlock の length64 を塊の大きさで割って、切り上げたものなのだ～🌱
+#   6. 画素のデータで、5 の中の、deferred が真の PaintDotNet.MemoryBlock ごとに、出現の順に 1 セクションずつ並ぶのだ～🌱
+#      セクションは、形式の 1 バイトと、チャンクの大きさの 4 バイトの後に、チャンクの番号の 4 バイトと、データの長さの 4 バイトと、データの組が続く形なのだ～🌱
+#      セクションの中の数値は、ビッグエンディアンなのだ～🌱
+#      チャンクの個数は、MemoryBlock の length64 をチャンクの大きさで割って、切り上げたものなのだ～🌱
 #
 # JSON の形:
 #   {
 #     "format": "pdn2json/1",
 #     "pdnHeader": ヘッダーの XML の文字列,
 #     "separator": 区切りの 2 バイトの 16 進数の文字列,
-#     "records": 直列化データの記録の配列,
+#     "records": シリアル化データのレコードの配列,
 #     "memoryBlocks": [
 #       {
-#         "objectId": 対応する PaintDotNet.MemoryBlock の記録の objectId,
+#         "objectId": 対応する PaintDotNet.MemoryBlock のレコードの objectId,
 #         "formatVersion": 形式の 1 バイト,
-#         "chunkSize": 塊の大きさ,
-#         "chunks": [ { "number": 塊の番号, "data": データの Base64 }, ... ]
+#         "chunkSize": チャンクの大きさ,
+#         "chunks": [ { "number": チャンクの番号, "data": データの Base64 }, ... ]
 #       },
 #       ...
 #     ],
@@ -44,16 +44,16 @@
 #   }
 #
 #   データは、展開も圧縮し直しもせずに、ファイルの中のバイト列のまま Base64 にするのだ～🌱
-#   直列化データの記録は、"$record" に [MS-NRBF] の記録の名前を持つオブジェクトなのだ～🌱
-#   クラスの記録は、"memberTypes" にメンバーの名前ごとの型を、"members" にメンバーの名前ごとの値を持つのだ～🌱
-#   ClassWithId の記録は、型を持たずに、"metadataId" が指す記録の型を使うのだ～🌱
+#   シリアル化データのレコードは、"$record" に [MS-NRBF] のレコードの名前を持つオブジェクトなのだ～🌱
+#   クラスのレコードは、"memberTypes" にメンバーの名前ごとの型を、"members" にメンバーの名前ごとの値を持つのだ～🌱
+#   ClassWithId のレコードは、型を持たずに、"metadataId" が指すレコードの型を使うのだ～🌱
 #   プリミティブの値は、JSON の値でそのまま表すのだ～🌱
 #   ただし、64 ビットの整数と DateTime と TimeSpan は、10 進数の文字列にするのだ～🌱
 #   Single と Double のうち、有限でない値は、ビット列の 16 進数の文字列にするのだ～🌱
 #   Byte の配列は、値の配列の代わりに "base64" を持つのだ～🌱
-#   値の前に置かれた BinaryLibrary の記録は、その値の記録の "$libraries" へ入れるのだ～🌱
-#   ObjectNullMultiple の記録が複数のメンバーを埋めるときは、最初のメンバーだけがその記録を持って、残りのメンバーは "members" に現れないのだ～🌱
-#   型を持たないクラスの記録と、MethodCall と MethodReturn の記録には、対応していないのだ～🌱
+#   値の前に置かれた BinaryLibrary のレコードは、その値のレコードの "$libraries" へ入れるのだ～🌱
+#   ObjectNullMultiple のレコードが複数のメンバーを埋めるときは、最初のメンバーだけがそのレコードを持って、残りのメンバーは "members" に現れないのだ～🌱
+#   型を持たないクラスのレコードと、MethodCall と MethodReturn のレコードには、対応していないのだ～🌱
 
 set -eu
 
@@ -252,7 +252,7 @@ class Decoder:
             if record["$record"] in NULL_MULTIPLE_RECORDS:
                 skip = record["count"] - 1
         if skip > 0:
-            raise PdnError(f"ObjectNullMultiple の記録が、メンバーの数を {skip} 個超えているのだ")
+            raise PdnError(f"ObjectNullMultiple のレコードが、メンバーの数を {skip} 個超えているのだ")
         return values
 
     def items(self, length):
@@ -293,7 +293,7 @@ class Decoder:
     def record(self):
         code = self.source.byte()
         if code not in RECORD_TYPES:
-            raise PdnError(f"{self.source.position - 1} バイト目に、未知の記録の種類 {code} があるのだ")
+            raise PdnError(f"{self.source.position - 1} バイト目に、未知のレコードの種類 {code} があるのだ")
         record_type = RECORD_TYPES[code]
         if record_type == "SerializedStreamHeader":
             return {
@@ -307,7 +307,7 @@ class Decoder:
             object_id = self.source.int32()
             metadata_id = self.source.int32()
             if metadata_id not in self.classes:
-                raise PdnError(f"ClassWithId の記録が、まだ現れていない {metadata_id} 番の記録を指しているのだ")
+                raise PdnError(f"ClassWithId のレコードが、まだ現れていない {metadata_id} 番のレコードを指しているのだ")
             class_name, names, types = self.classes[metadata_id]
             members = self.object_members(object_id, class_name, names, types)
             return {"$record": record_type, "objectId": object_id, "metadataId": metadata_id, "members": members}
@@ -329,7 +329,7 @@ class Decoder:
         if record_type in NULL_MULTIPLE_RECORDS:
             count = self.source.byte() if record_type == "ObjectNullMultiple256" else self.source.int32()
             if count < 1:
-                raise PdnError(f"{record_type} の記録の個数が {count} なのだ")
+                raise PdnError(f"{record_type} のレコードが埋める個数が {count} なのだ")
             return {"$record": record_type, "count": count}
         if record_type == "ArraySinglePrimitive":
             object_id = self.source.int32()
@@ -342,7 +342,7 @@ class Decoder:
             return {"$record": record_type, "objectId": object_id, "length": length, "items": self.items(length)}
         if record_type == "BinaryArray":
             return self.binary_array()
-        raise PdnError(f"記録の種類 {record_type} には、対応していないのだ")
+        raise PdnError(f"レコードの種類 {record_type} には、対応していないのだ")
 
     def binary_array(self):
         object_id = self.source.int32()
@@ -390,7 +390,7 @@ def decode(data):
         format_version = source.unpack(">B")
         chunk_size = source.unpack(">I")
         if chunk_size == 0:
-            raise PdnError(f"{object_id} 番の MemoryBlock の塊の大きさが 0 なのだ")
+            raise PdnError(f"{object_id} 番の MemoryBlock のチャンクの大きさが 0 なのだ")
         chunks = []
         for _ in range(-(-length // chunk_size)):
             number = source.unpack(">I")
