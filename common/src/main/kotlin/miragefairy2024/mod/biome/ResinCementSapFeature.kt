@@ -22,9 +22,9 @@ import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration
 
-object ResinCementedDirtSapFeatureCard {
-    val identifier = MirageFairy2024.identifier("resin_cemented_dirt_sap")
-    val feature = ResinCementedDirtSapFeature(NoneFeatureConfiguration.CODEC)
+object ResinCementSapFeatureCard {
+    val identifier = MirageFairy2024.identifier("resin_cement_sap")
+    val feature = ResinCementSapFeature(NoneFeatureConfiguration.CODEC)
     val placedFeatureKey = Registries.PLACED_FEATURE with identifier
 
     context(ModContext)
@@ -38,7 +38,7 @@ object ResinCementedDirtSapFeatureCard {
     }
 }
 
-class ResinCementedDirtSapFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeatureConfiguration>(codec) {
+class ResinCementSapFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<NoneFeatureConfiguration>(codec) {
     override fun place(context: FeaturePlaceContext<NoneFeatureConfiguration>): Boolean {
         val level = context.level()
         val originBlockPos = context.origin()
