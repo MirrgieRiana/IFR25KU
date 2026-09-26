@@ -742,12 +742,12 @@ open class BlockMaterialCard(
         val PLASTIC_TREE_SAP_KOHAKUTO_BLOCK = createKohakuto(
             "plastic_tree_sap_kohakuto_block", EnJa("Plastic Tree Sap Kohakuto Block", "プラノキの樹液の琥珀糖ブロック"),
             PoemList(1).poem("Ideal environment for etherobacteria.", "知性を育む寒天培地。"),
-            MapColor.TERRACOTTA_YELLOW, MaterialCard.PLASTIC_TREE_SAP.item, MaterialCard.PLASTIC_TREE_SAP_KOHAKUTO.item,
+            MapColor.COLOR_ORANGE, MaterialCard.PLASTIC_TREE_SAP.item, MaterialCard.PLASTIC_TREE_SAP_KOHAKUTO.item,
         )
         val HAIMEVISKA_SAP_KOHAKUTO_BLOCK = createKohakuto(
             "haimeviska_sap_kohakuto_block", EnJa("Haimeviska Sap Kohakuto Block", "ハイメヴィスカの樹液の琥珀糖ブロック"),
             PoemList(1).poem("It may have once been part of a brain.", "誰も知らない記憶のコラージュ。"),
-            MapColor.COLOR_ORANGE, MaterialCard.HAIMEVISKA_SAP.item, MaterialCard.HAIMEVISKA_SAP_KOHAKUTO.item,
+            MapColor.COLOR_LIGHT_BLUE, MaterialCard.HAIMEVISKA_SAP.item, MaterialCard.HAIMEVISKA_SAP_KOHAKUTO.item,
         )
         val BLACK_TREACLE_KOHAKUTO_BLOCK = createKohakuto(
             "black_treacle_kohakuto_block", EnJa("Black Treacle Kohakuto Block", "黒蜜の琥珀糖ブロック"),
@@ -797,12 +797,12 @@ open class BlockMaterialCard(
         val PLASTIC_TREE_SAP_BLOCK = createSap(
             "plastic_tree_sap_block", EnJa("Plastic Tree Sap Block", "プラノキの樹液ブロック"),
             PoemList(1).poem(EnJa("Cytorrhysis by osmotic pressure.", "秘境の衛生トーテム。")),
-            MapColor.TERRACOTTA_YELLOW, MaterialCard.PLASTIC_TREE_SAP.item,
+            MapColor.COLOR_ORANGE, MaterialCard.PLASTIC_TREE_SAP.item,
         )
         val HAIMEVISKA_SAP_BLOCK = createSap(
             "haimeviska_sap_block", EnJa("Haimeviska Sap Block", "ハイメヴィスカの樹液ブロック"),
             PoemList(1).poem(EnJa("Thermal agitation of sediments.", "見果てぬ走馬灯のメランジュ。")),
-            MapColor.COLOR_ORANGE, MaterialCard.HAIMEVISKA_SAP.item,
+            MapColor.COLOR_LIGHT_BLUE, MaterialCard.HAIMEVISKA_SAP.item,
         )
 
         val RESIN_CEMENT = !BlockMaterialCard(
