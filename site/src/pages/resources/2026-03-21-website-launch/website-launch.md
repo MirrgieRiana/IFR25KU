@@ -4,9 +4,10 @@ description: IFR25KUの公式サイトを公開した話
 layout: theater
 header:
   teaser: /2026/03/21/website-launch.teaser.webp
-tags: [ ミラージュフェアリー劇場, アップデート, IFR25KU, 公式サイト, ブログ ]
+tags: [ IFR劇場, アップデート, IFR25KU, 公式サイト, ブログ ]
 ---
 
+![磨かれた花崗岩で組まれた遺跡内に混沌のキューブがあり、その付近に4個のシャルピエ・ルミナーラが生えている様子](website-launch.teaser.webp)
 {% say tsumugi3:口=わあーい %}センパーイ！IFR25KU、公式サイトできてるじゃん！{% endsay %}
 {% say zundamon23 %}ちょうど今公開したのだ。{% endsay %}
 {% say tsumugi3:口=わあ %}今！？今公開したの！？{% endsay %}

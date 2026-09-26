@@ -14,10 +14,15 @@ import io.wispforest.owo.ui.core.Surface
 import io.wispforest.owo.ui.core.VerticalAlignment
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.client.mod.surface
+import miragefairy2024.client.util.horizontalSpace
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.NinePatchTextureCard
+import miragefairy2024.mod.common.guiBackToGameTranslation
+import miragefairy2024.util.invoke
+import miragefairy2024.util.text
 import net.minecraft.client.gui.screens.Screen
+import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 
 class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQuestTitle: Component, private val fairyQuestMessage: Component, private val fairyQuestClient: Component, title: Component) : BaseOwoScreen<FlowLayout>(title) {
@@ -26,15 +31,16 @@ class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQues
     override fun build(rootComponent: FlowLayout) {
         rootComponent.apply {
             surface(Surface.VANILLA_TRANSLUCENT)
-            padding(Insets.of(4))
+            padding(Insets.of(10, 4, 0, 0))
             verticalAlignment(VerticalAlignment.CENTER)
             horizontalAlignment(HorizontalAlignment.CENTER)
 
             // 反対側のスクロールバー領域確保用パネル
-            child(Containers.verticalFlow(Sizing.fixed(18 * 15), Sizing.fill(100)).apply {
+            child(Containers.verticalFlow(Sizing.fixed(18 * 15), Sizing.expand()).apply {
                 padding(Insets.of(0, 0, 10, 0))
 
                 // スクロールコンテナ
+                // スクロールバーをカードに重ねると、スクロールする中身のカードの方が手前の深度で描かれて、スクロールバーが隠れちゃうのだ～🌱
                 child(verticalScroll(Sizing.fill(100), Sizing.fill(100), 10).apply {
                     scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
 
@@ -78,6 +84,22 @@ class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQues
 
                 })
 
+            })
+
+            child(verticalSpace(10))
+
+            child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
+                child(Components.button(text { guiBackToGameTranslation() }) {
+                    minecraft!!.setScreen(null)
+                }.apply {
+                    horizontalSizing(Sizing.fixed(80))
+                })
+                child(horizontalSpace(20))
+                child(Components.button(CommonComponents.GUI_BACK) {
+                    onClose()
+                }.apply {
+                    horizontalSizing(Sizing.fixed(80))
+                })
             })
 
         }
