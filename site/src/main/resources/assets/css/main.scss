@@ -699,6 +699,19 @@ body {
   }
 }
 
+// ニュース記事のヘッダー画像
+.news__banner {
+  margin-top: -2em;
+}
+
+.news__banner img {
+  display: block;
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+  object-position: center;
+}
+
 // teaser自動表示画像の下マージン
 .page__teaser-banner {
   width: 100%;
@@ -911,6 +924,274 @@ img[src$=".png" i] {
 
 .space {
   height: 4em;
+}
+
+// 論文ブロック（paperタグ）
+.paper {
+  margin: 2em auto;
+  max-width: 750px;
+  padding: 2em;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  // サイト全体の本文の書体と文字色を継承しないように、紙面の内側に改めて指定する
+  &, p, li, td, th {
+    font-family: serif;
+    color: #000000;
+  }
+
+  // テーマは箇条書きを字下げしてマーカーを行の外に置く
+  ul, ol {
+    padding-inline-start: 0;
+    list-style-position: inside;
+  }
+}
+
+// 紙面のラベル（paper_labelタグ）
+.paper__label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5em;
+  font-size: 0.85em;
+}
+
+// 論文タイトル（paper_titleタグ）
+.paper__title {
+  margin: 0.5em 0;
+  font-size: 1.8em;
+  font-weight: bold;
+  line-height: 1.3;
+  text-align: center;
+}
+
+// 論文サブタイトル（paper_subtitleタグ）
+.paper__subtitle {
+  margin: 0.5em 0;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-align: center;
+}
+
+// 論文の著者欄（paper_authorsタグ）
+.paper__authors {
+  margin: 1em 0 1.5em;
+  text-align: center;
+}
+
+// 論文のセクションの下位の見出し（paper_subsectionタグ）
+.paper__subsection {
+  margin: 1.5em 0 0.5em;
+  font-size: 1.05em;
+  font-weight: bold;
+}
+
+// 論文のセクション見出し（paper_sectionタグ）
+.paper__section {
+  margin: 1.5em 0 0.5em;
+  font-size: 1.15em;
+  font-weight: bold;
+}
+
+// 論文の段組み（paper_columnsタグ）
+.paper__columns {
+  @include breakpoint($x-large) {
+    display: flex;
+    gap: 2em;
+  }
+}
+
+// 論文の段組みの中の1個の段（paper_columnタグ）
+.paper__column {
+  flex: 1;
+
+  // flexの項目は既定で中身の最小幅より狭くならないため、これが無いと幅の広い図表を持つ段だけが広がる
+  min-width: 0;
+
+  // 1段に収まらない幅のものが段をはみ出さないようにする
+  img,
+  table {
+    max-width: 100%;
+  }
+
+  // 段の先頭に来た要素の上の余白が、段の高さをずらすのを防ぐ
+  > :first-child {
+    margin-top: 0;
+  }
+}
+
+// 論文中のキャプション付きの画像（paper_figureタグ）
+.paper__figure {
+  // テーマはfigureをflexにするため、ブロックに戻さないと中身が内容の幅に縮んで左に寄る
+  display: block;
+  margin: 1.5em 0;
+  text-align: center;
+
+  img {
+    // テーマはfigureの中の画像の角を丸める
+    max-width: 100%;
+    border-radius: 0;
+    width: 100%;
+  }
+}
+
+// 画像自身が持つ寸法で掲げる指定（paper_figureタグのactual_size）
+.paper__figure--actual-size img {
+  width: auto;
+}
+
+// 論文中のキャプション付き表（paper_tableタグ）
+.paper__table {
+  margin: 1.5em 0;
+
+  table {
+    // テーマはtableをブロックにして横スクロールさせるから、表に戻さないと幅の指定が列に伝わらないのだ～🌱
+    display: table;
+    width: 100%;
+  }
+}
+
+// 図表のキャプション（paper_figureタグ、paper_tableタグ）
+.paper__caption {
+  display: block;
+  margin: 0.5em 0;
+  font-size: 0.9em;
+  text-align: center;
+  // テーマはfigcaptionを薄い紫にする
+  color: #000000;
+}
+
+// 論文中の囲み記事（paper_calloutタグ）
+.paper__callout {
+  margin: 1.5em 0;
+  padding: 1em 1.5em;
+  background: #f5f5f5;
+  border-radius: 3px;
+}
+
+// 紙面の末尾の制作日スタンプ（paper_stampタグ）
+.paper__stamp {
+  margin: 2em 0 0;
+  font-size: 0.85em;
+  color: #666666;
+}
+
+// ニュース記事のタイトル（news_titleタグ）
+.news__title {
+  margin: 0.5em 0;
+  font-size: 1.8em;
+  font-weight: bold;
+  line-height: 1.3;
+  text-align: center;
+}
+
+// ニュース記事の日付と分野の行（news_datelineタグ）
+.news__dateline {
+  margin: 1em 0 1.5em;
+  font-size: 0.85em;
+}
+
+// ニュース記事の日付（news_datelineタグ）
+.news__dateline-date {
+  // 元のNotionが灰色の文字色を当てている
+  color: #73726e;
+}
+
+// ニュース記事の分野（news_datelineタグ）
+.news__dateline-field {
+  margin-inline-start: 1em;
+  // 天文学などの分野を、本文と区別できるタグ状に見せるのだ～🌱
+  padding: 0.1em 0.5em;
+  background: #1a3a5c;
+  color: #ffffff;
+}
+
+// ニュース記事のセクション見出し（news_sectionタグ）
+.news__section {
+  margin: 1.5em 0 0.5em;
+  font-size: 1.15em;
+  font-weight: bold;
+}
+
+// ニュース記事の段組み（news_columnsタグ）
+.news__columns {
+  @include breakpoint($x-large) {
+    display: flex;
+    gap: 2em;
+  }
+}
+
+// ニュース記事の段組みの中の1個の段（news_columnタグ）
+.news__column {
+  flex: 1;
+
+  // flexの項目は既定で中身の最小幅より狭くならないため、これが無いと幅の広い図表を持つ段だけが広がる
+  min-width: 0;
+
+  // 1段に収まらない幅のものが段をはみ出さないようにする
+  img,
+  table {
+    max-width: 100%;
+  }
+
+  // 段の先頭に来た要素の上の余白が、段の高さをずらすのを防ぐ
+  > :first-child {
+    margin-top: 0;
+  }
+}
+
+// ニュース記事中のキャプション付きの画像（news_figureタグ）
+.news__figure {
+  // テーマはfigureをflexにするため、ブロックに戻さないと中身が内容の幅に縮んで左に寄る
+  display: block;
+  margin: 1.5em 0;
+  text-align: center;
+
+  img {
+    // テーマはfigureの中の画像の角を丸める
+    max-width: 100%;
+    border-radius: 0;
+    width: 100%;
+  }
+}
+
+// 画像自身が持つ寸法で掲げる指定（news_figureタグのactual_size）
+.news__figure--actual-size img {
+  width: auto;
+}
+
+// 画像のキャプション（news_figureタグ）
+.news__caption {
+  display: block;
+  margin: 0.5em 0;
+  font-size: 0.9em;
+  text-align: center;
+  // テーマはfigcaptionを薄い紫にする
+  color: #000000;
+}
+
+// 他の記事へのページリンク（news_linkタグ）
+.news__link {
+  margin: 0.5em 0;
+}
+
+// ニュース記事の末尾の制作日スタンプ（news_stampタグ）
+.news__stamp {
+  margin: 2em 0 0;
+  font-size: 0.85em;
+  color: #666666;
+}
+
+// MFAの記事の末尾の注意書き（mfa_footerタグ）
+.mfa-footer {
+  margin: 1em 0;
+  padding: 0.8em 1.2em;
+  background: #dbe6f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.10);
+  font-size: 0.85em;
+
+  p {
+    margin: 0.3em 0;
+  }
 }
 
 .nav__title {
