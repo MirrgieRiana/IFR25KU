@@ -92,6 +92,7 @@ Derivative works based on [MirageFairy2019](https://github.com/MirageFairy/Mirag
 
 - `common/src/main/resources/assets/miragefairy2024/textures/block/salpeter_ore.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/apple_brandy.png`
+- `common/src/main/resources/assets/miragefairy2024/textures/item/fairy_liqueur.png`
 
 ## Codes (Programs, Data Packs)
 
