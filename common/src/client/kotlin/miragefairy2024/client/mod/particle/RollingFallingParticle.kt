@@ -10,8 +10,8 @@ import net.minecraft.core.particles.SimpleParticleType
 import net.minecraft.util.Mth
 
 fun createRollingFallingParticleFactory(velocityAngleFactor: Float) = { spriteProvider: SpriteSet ->
-    ParticleProvider<SimpleParticleType> { _, world, x, y, z, _, _, _ ->
-        object : TextureSheetParticle(world, x, y, z) {
+    ParticleProvider<SimpleParticleType> { _, level, x, y, z, _, _, _ ->
+        object : TextureSheetParticle(level, x, y, z) {
 
             private var velocityAngle = 0F
 

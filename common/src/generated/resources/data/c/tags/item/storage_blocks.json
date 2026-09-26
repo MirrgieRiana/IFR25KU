@@ -5,6 +5,10 @@
       "required": false
     },
     {
+      "id": "#c:storage_blocks/copal",
+      "required": false
+    },
+    {
       "id": "#c:storage_blocks/fairy_crystal",
       "required": false
     },
@@ -34,6 +38,10 @@
     },
     {
       "id": "#c:storage_blocks/noise",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/retinite",
       "required": false
     },
     {

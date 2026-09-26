@@ -29,6 +29,22 @@ jobs:
         with:
           ruby-version: '3.3'
 
+      # OG画像の生成環境
+      # ブラウザ本体はinstallPlaywrightBrowsersタスクが取得するから、ここでは共有ライブラリだけを入れるのだ～🌱
+      - name: ヘッドレスブラウザの共有ライブラリのインストール
+        run: npx --yes playwright@1.58.0 install-deps chromium
+      # installPlaywrightBrowsersの成果物は、setup-gradleがキャッシュする~/.gradle/の範囲外なのだ～🌱
+      - name: ヘッドレスブラウザのキャッシュ
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-1.58.0
+      # ランナーにはCJKのグリフを持つフォントが無くて、入れないとタイトルの文字が全て豆腐になっちゃうのだぁ…🌧️
+      - name: 日本語フォントのインストール
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends fonts-noto-cjk
+
       # ビルド
       - name: ビルド
         run: ./gradlew :site:buildSite

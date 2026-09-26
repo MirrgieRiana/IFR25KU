@@ -12,7 +12,7 @@
     {
       "Amount": 1,
       "Ingredient": {
-        "fabric:type": "miragefairy2024:water_bottle"
+        "item": "miragefairy2024:ethanol"
       }
     },
     {

@@ -27,9 +27,9 @@ layout: default
     {% if page.last_modified_at %}<meta itemprop="dateModified" content="{{ page.last_modified_at | date_to_xmlschema }}">{% endif %}
 
     <div class="page__inner-wrap">
-      <aside class="sidebar__right theater__sidebar">
+      <aside class="sidebar__right recommendations__sidebar">
         <header><h4 class="nav__title"><i class="fas fa-film"></i> 関連記事</h4></header>
-        <div class="theater-recommendations"></div>
+        <div class="recommendations__list"></div>
       </aside>
 
       {% unless page.header.overlay_color or page.header.overlay_image %}
@@ -43,26 +43,22 @@ layout: default
         </header>
       {% endunless %}
 
-      {% if page.header.teaser and page.header.image == nil and page.header.overlay_image == nil %}
-        <img src="{{ page.header.teaser | relative_url }}" alt="{{ page.title | escape }}" class="page__teaser-banner">
-      {% endif %}
-
       <section class="page__content e-content" itemprop="text">
         {{ content }}
-      </section>
-
-      <section class="page__recommend">
-        <h3 class="page__recommend-title"><i class="fas fa-film"></i> 他の記事を読む</h3>
-        <div class="page__recommend-grid"></div>
       </section>
 
       <footer class="page__meta">
         {% if site.data.ui-text[locale].meta_label %}
           <h4 class="page__meta-title">{{ site.data.ui-text[locale].meta_label }}</h4>
         {% endif %}
-        {% include page__taxonomy.html locale=locale %}
+        {% include page__tags.html locale=locale %}
         {% include page__date.html locale=locale %}
       </footer>
+
+      <section class="page__recommend">
+        <h3 class="page__recommend-title"><i class="fas fa-film"></i> 他の記事を読む</h3>
+        <div class="page__recommend-grid"></div>
+      </section>
 
       {% include social-share.html locale=locale %}
 
@@ -123,7 +119,7 @@ layout: default
   //    items … { post, weight } の配列。weight は正の数。
   //    count … 取り出す件数。
   //
-  //  仕組み（1件取り出すたびに繰り返す）:
+  //  アルゴリズム（1件取り出すたびに繰り返す）:
   //    1. 残り候補の weight を合計する
   //    2. [0, 合計) の一様乱数を生成する
   //    3. 先頭から順に weight を乱数から引いていき、
@@ -179,7 +175,7 @@ layout: default
   // 1. コンテナ要素を取得
   // ============================================================
 
-  const sidebarContainer = document.querySelector('.theater-recommendations');
+  const sidebarContainer = document.querySelector('.recommendations__list');
   const recommendContainer = document.querySelector('.page__recommend-grid');
   const currentUrl = '{{ page.url | relative_url }}';
   const currentTags = {{ page.tags | jsonify }};
@@ -220,8 +216,8 @@ layout: default
   //    +1 は「タグが全く被らない記事」を抽選から完全に排除しないための底上げ。
   //    これにより、記事数が少ない状況でも件数を埋めることができる。
   //
-  //    例: currentTags = ["アタノール", "ミラージュフェアリー劇場"] のとき（未訪問）
-  //      タグ ["ミラージュフェアリー劇場", "パン"] → overlap=1 → weight=2
+  //    例: currentTags = ["アタノール", "IFR劇場"] のとき（未訪問）
+  //      タグ ["IFR劇場", "パン"] → overlap=1 → weight=2
   //      タグ ["お知らせ"]                         → overlap=0 → weight=1
   //    7日未満の訪問済みの場合はそれぞれ 2/3、1/3 になる。
   // ============================================================

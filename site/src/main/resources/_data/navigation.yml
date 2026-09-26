@@ -11,6 +11,8 @@ main:
     children:
       - title: 記事一覧
         url: /posts.html
+      - title: タグ一覧
+        url: /tags.html
   - title: INFO
     children:
       - title: CHANGELOG

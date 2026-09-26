@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:plastic_tree_sap_block",
+  "ingredients": [
+    {
+      "item": "miragefairy2024:plastic_tree_sap"
+    },
+    {
+      "item": "miragefairy2024:plastic_tree_sap"
+    },
+    {
+      "item": "miragefairy2024:plastic_tree_sap"
+    },
+    {
+      "item": "miragefairy2024:plastic_tree_sap"
+    },
+    {
+      "item": "miragefairy2024:plastic_tree_sap"
+    },
+    {
+      "item": "miragefairy2024:plastic_tree_sap"
+    },
+    {
+      "item": "miragefairy2024:plastic_tree_sap"
+    },
+    {
+      "item": "miragefairy2024:plastic_tree_sap"
+    },
+    {
+      "item": "miragefairy2024:plastic_tree_sap"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:plastic_tree_sap_block"
+  }
+}
