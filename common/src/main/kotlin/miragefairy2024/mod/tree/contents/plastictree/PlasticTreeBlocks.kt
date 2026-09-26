@@ -67,5 +67,5 @@ class PlasticTreeSaplingBlock(treeGrower: TreeGrower, settings: Properties) : Sa
 
     override fun codec() = CODEC
 
-    override fun mayPlaceOn(state: BlockState, level: BlockGetter, pos: BlockPos) = super.mayPlaceOn(state, level, pos) || state isIn BlockMaterialCard.RESIN_CEMENTED_DIRT.block()
+    override fun mayPlaceOn(state: BlockState, level: BlockGetter, pos: BlockPos) = super.mayPlaceOn(state, level, pos) || state isIn BlockMaterialCard.RESIN_CEMENT.block()
 }
