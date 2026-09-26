@@ -1,6 +1,8 @@
 package miragefairy2024.mod.tree.contents.plastictree
 
 import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.mod.tree.TreeBlockCard
@@ -8,9 +10,13 @@ import miragefairy2024.mod.tree.contents.DrippingLogBlock
 import miragefairy2024.mod.tree.contents.IncisableLogBlock
 import miragefairy2024.mod.tree.contents.IncisedLogBlock
 import miragefairy2024.mod.tree.contents.spawnDrippingSapParticle
+import miragefairy2024.util.isIn
 import net.minecraft.core.BlockPos
 import net.minecraft.util.RandomSource
+import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.SaplingBlock
+import net.minecraft.world.level.block.grower.TreeGrower
 import net.minecraft.world.level.block.state.BlockState
 
 class PlasticTreeLogBlock(settings: Properties) : IncisableLogBlock(settings) {
@@ -47,4 +53,19 @@ class DrippingPlasticTreeLogBlock(settings: Properties) : DrippingLogBlock(setti
     override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
         spawnDrippingSapParticle(state, level, pos, random, ParticleTypeCard.DRIPPING_PLASTIC_TREE_SAP.particleType)
     }
+}
+
+class PlasticTreeSaplingBlock(treeGrower: TreeGrower, settings: Properties) : SaplingBlock(treeGrower, settings) {
+    companion object {
+        val CODEC: MapCodec<PlasticTreeSaplingBlock> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                TreeGrower.CODEC.fieldOf("tree").forGetter { it.treeGrower },
+                propertiesCodec(),
+            ).apply(instance, ::PlasticTreeSaplingBlock)
+        }
+    }
+
+    override fun codec() = CODEC
+
+    override fun mayPlaceOn(state: BlockState, level: BlockGetter, pos: BlockPos) = super.mayPlaceOn(state, level, pos) || state isIn BlockMaterialCard.RESIN_CEMENTED_DIRT.block()
 }

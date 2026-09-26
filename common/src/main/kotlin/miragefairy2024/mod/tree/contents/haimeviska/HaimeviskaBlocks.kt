@@ -1,6 +1,8 @@
 package miragefairy2024.mod.tree.contents.haimeviska
 
 import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.mod.tree.TreeBlockCard
@@ -10,11 +12,15 @@ import miragefairy2024.mod.tree.contents.HollowLogBlock
 import miragefairy2024.mod.tree.contents.IncisableLogBlock
 import miragefairy2024.mod.tree.contents.IncisedLogBlock
 import miragefairy2024.mod.tree.contents.spawnDrippingSapParticle
+import miragefairy2024.util.isIn
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.util.ParticleUtils
 import net.minecraft.util.RandomSource
+import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.SaplingBlock
+import net.minecraft.world.level.block.grower.TreeGrower
 import net.minecraft.world.level.block.state.BlockState
 
 class HaimeviskaLeavesBlock(settings: Properties) : ChargeableLeavesBlock(settings) {
@@ -77,4 +83,19 @@ class HollowHaimeviskaLogBlock(settings: Properties) : HollowLogBlock(settings) 
     }
 
     override fun codec() = CODEC
+}
+
+class HaimeviskaSaplingBlock(treeGrower: TreeGrower, settings: Properties) : SaplingBlock(treeGrower, settings) {
+    companion object {
+        val CODEC: MapCodec<HaimeviskaSaplingBlock> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                TreeGrower.CODEC.fieldOf("tree").forGetter { it.treeGrower },
+                propertiesCodec(),
+            ).apply(instance, ::HaimeviskaSaplingBlock)
+        }
+    }
+
+    override fun codec() = CODEC
+
+    override fun mayPlaceOn(state: BlockState, level: BlockGetter, pos: BlockPos) = super.mayPlaceOn(state, level, pos) || state isIn BlockMaterialCard.RESIN_CEMENTED_DIRT.block()
 }
