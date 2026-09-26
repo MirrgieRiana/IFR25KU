@@ -175,6 +175,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 - 表示: ハイメヴィスカの涙の英名をHaimeviska Resinに修正。
   - 涙製ツール・各種タグ・進捗「蜜の味」の説明文に含まれるRosinも、Resinに修正。
 - 表示: ハイメヴィスカの樹液のテクスチャを変更。
+- 表示: 妖精のリキュールのテクスチャを変更。
 - 表示: 滴るハイメヴィスカの原木のテクスチャを変更。
 - 表示: 滴るハイメヴィスカの原木から垂れる樹液のパーティクルの色を変更。
 
