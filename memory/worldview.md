@@ -497,7 +497,7 @@ Edge of Chaos は複雑系科学の用語で、秩序と無秩序の境目を指
 > - 同（poem2）「の妖精の妖精の妖精の妖精の妖精の妖精の妖」／「of the fairy of the fairy of the f」
 > - ハイメヴィスカの樹洞（block）「限界巡回アステリア。」／「Auric conceptual attractor」
 > - ハイメヴィスカの木（block）「ウィスプたちの集合知。」／「Hydraulic communication system」
-> - 石化した樹脂状の土レンガ（block）「知性の根源。」／「The only nutrient for etherobacteria.」
+> - 石化した樹脂レンガ（block）「知性の根源。」／「The only nutrient for etherobacteria.」
 > - 同の階段（block）「自然が創り上げる、ウィスプの心髄。」／「Spontaneous intellect formation process.」
 > - 特性「月光合成」「弱耐霊性組織による中空構造はこれを効率的にトラップし、原始的なフェアリーウィスプを形成する。」
 

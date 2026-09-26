@@ -14545,7 +14545,7 @@
       }
     ]
   },
-  "miragefairy2024:resin_cemented_dirt": {
+  "miragefairy2024:resin_cement": {
     "definition": {
       "type": "minecraft:block",
       "properties": {}
@@ -14556,7 +14556,7 @@
       }
     ]
   },
-  "miragefairy2024:resin_cemented_dirt_bricks": {
+  "miragefairy2024:resin_cement_bricks": {
     "definition": {
       "type": "minecraft:block",
       "properties": {}
@@ -14567,7 +14567,7 @@
       }
     ]
   },
-  "miragefairy2024:resin_cemented_dirt_bricks_slab": {
+  "miragefairy2024:resin_cement_bricks_slab": {
     "definition": {
       "type": "minecraft:slab",
       "properties": {}
@@ -14623,11 +14623,11 @@
       }
     ]
   },
-  "miragefairy2024:resin_cemented_dirt_bricks_stairs": {
+  "miragefairy2024:resin_cement_bricks_stairs": {
     "definition": {
       "type": "minecraft:stair",
       "base_state": {
-        "Name": "miragefairy2024:resin_cemented_dirt_bricks"
+        "Name": "miragefairy2024:resin_cement_bricks"
       },
       "properties": {}
     },
@@ -15298,7 +15298,7 @@
       }
     ]
   },
-  "miragefairy2024:resin_cemented_dirt_copal_ore": {
+  "miragefairy2024:resin_cement_copal_ore": {
     "definition": {
       "type": "miragefairy2024:ore",
       "experience": {
@@ -15314,7 +15314,7 @@
       }
     ]
   },
-  "miragefairy2024:resin_cemented_dirt_fairy_plastic_ore": {
+  "miragefairy2024:resin_cement_fairy_plastic_ore": {
     "definition": {
       "type": "miragefairy2024:ore",
       "experience": {
@@ -15330,7 +15330,7 @@
       }
     ]
   },
-  "miragefairy2024:resin_cemented_dirt_retinite_ore": {
+  "miragefairy2024:resin_cement_retinite_ore": {
     "definition": {
       "type": "miragefairy2024:ore",
       "experience": {
