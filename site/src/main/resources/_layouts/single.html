@@ -38,7 +38,8 @@ layout: default
         </aside>
       {% endif %}
 
-      {% if page.recommendations %}
+      {% comment %}右ペインは目次と同じ升目に置かれるから、目次を見せたい記事は、recommendations_sidebar を false にして、関連記事の右ペインを省くのだ～🌱{% endcomment %}
+      {% if page.recommendations and page.recommendations_sidebar != false %}
         <aside class="sidebar__right recommendations__sidebar">
           <header><h4 class="nav__title"><i class="fas fa-newspaper"></i> 関連記事</h4></header>
           <div class="recommendations__list"></div>

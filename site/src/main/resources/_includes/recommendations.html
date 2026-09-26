@@ -3,8 +3,8 @@
 
   右ペインの .recommendations__list と、本文下の .page__recommend-grid の
   中身を、posts.json からの重み付き抽選で埋める。
-  両方の要素が存在することを前提とするため、この include を使うレイアウトは、
-  その2個の要素を先に配置しておく必要がある。
+  本文下の要素が存在することを前提とするため、この include を使うレイアウトは、
+  その要素を先に配置しておく必要がある。右ペインの要素は、無ければ埋めない。
 -->
 <script>
 (async () => {
@@ -180,7 +180,7 @@
   //    innerHTML を使わないため、XSSリスクがない。
   // ============================================================
 
-  sidebarContainer.replaceChildren(...weightedSample(weighted, 8).map(createCard));
+  if (sidebarContainer) sidebarContainer.replaceChildren(...weightedSample(weighted, 8).map(createCard));
   recommendContainer.replaceChildren(...weightedSample(weighted, 4).map(createCard));
 
 })();
