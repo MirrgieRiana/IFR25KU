@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
 
 @Suppress("OVERRIDE_DEPRECATION")
-abstract class IncisedLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
+abstract class PlasticTreeFamilyIncisedLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
     protected abstract fun getDrippingLogBlock(): Block
 
     override fun isRandomlyTicking(state: BlockState) = true

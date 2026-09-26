@@ -41,15 +41,6 @@ object GiantHaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
         config: TreeConfiguration,
     ): List<FoliagePlacer.FoliageAttachment> {
 
-        // 2x2の幹が乗る4マス分の足元を土にするのだ～🌱
-        run {
-            val blockPos = pos.below()
-            setDirtAt(level, blockSetter, random, blockPos, config)
-            setDirtAt(level, blockSetter, random, blockPos.east(), config)
-            setDirtAt(level, blockSetter, random, blockPos.south(), config)
-            setDirtAt(level, blockSetter, random, blockPos.south().east(), config)
-        }
-
         // 2x2の主幹を、頂上まで太さを保ったまま積むのだ～🌱
         run {
             val blockPos = BlockPos.MutableBlockPos()

@@ -809,7 +809,7 @@ open class BlockMaterialCard(
             "resin_cement", EnJa("Resin Cement", "石化した樹脂"),
             PoemList(1).poem(EnJa("Antimicrobial terpenes prevent decay.", "電気の由来を語る土。")),
             MapColor.COLOR_ORANGE, 0.8F, 0.8F,
-        ).sound(SoundType.TUFF).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.DIRT).init {
+        ).sound(SoundType.TUFF).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             // 分解レシピ
             registerSimpleMachineRecipeGeneration(
                 AthanorRecipeCard,

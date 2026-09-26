@@ -42,8 +42,6 @@ object SmallPlasticTreeTrunkPlacer : TrunkPlacer(6, 2, 0) {
         config: TreeConfiguration,
     ): List<FoliagePlacer.FoliageAttachment> {
 
-        setDirtAt(level, blockSetter, random, pos.below(), config)
-
         (0..<freeTreeHeight).forEach { y ->
             placeLog(level, blockSetter, random, pos.above(y), config)
         }

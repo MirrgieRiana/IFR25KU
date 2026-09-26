@@ -4,16 +4,16 @@ import com.mojang.serialization.MapCodec
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.mod.tree.TreeBlockCard
-import miragefairy2024.mod.tree.contents.DrippingLogBlock
-import miragefairy2024.mod.tree.contents.IncisableLogBlock
-import miragefairy2024.mod.tree.contents.IncisedLogBlock
+import miragefairy2024.mod.tree.contents.PlasticTreeFamilyDrippingLogBlock
+import miragefairy2024.mod.tree.contents.PlasticTreeFamilyIncisableLogBlock
+import miragefairy2024.mod.tree.contents.PlasticTreeFamilyIncisedLogBlock
 import miragefairy2024.mod.tree.contents.spawnDrippingSapParticle
 import net.minecraft.core.BlockPos
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 
-class PlasticTreeLogBlock(settings: Properties) : IncisableLogBlock(settings) {
+class PlasticTreeLogBlock(settings: Properties) : PlasticTreeFamilyIncisableLogBlock(settings) {
     companion object {
         val CODEC: MapCodec<PlasticTreeLogBlock> = simpleCodec(::PlasticTreeLogBlock)
     }
@@ -23,7 +23,7 @@ class PlasticTreeLogBlock(settings: Properties) : IncisableLogBlock(settings) {
     override fun getIncisedLogBlock() = TreeBlockCard.INCISED_PLASTIC_TREE_LOG.block()
 }
 
-class IncisedPlasticTreeLogBlock(settings: Properties) : IncisedLogBlock(settings) {
+class IncisedPlasticTreeLogBlock(settings: Properties) : PlasticTreeFamilyIncisedLogBlock(settings) {
     companion object {
         val CODEC: MapCodec<IncisedPlasticTreeLogBlock> = simpleCodec(::IncisedPlasticTreeLogBlock)
     }
@@ -33,7 +33,7 @@ class IncisedPlasticTreeLogBlock(settings: Properties) : IncisedLogBlock(setting
     override fun getDrippingLogBlock() = TreeBlockCard.DRIPPING_PLASTIC_TREE_LOG.block()
 }
 
-class DrippingPlasticTreeLogBlock(settings: Properties) : DrippingLogBlock(settings) {
+class DrippingPlasticTreeLogBlock(settings: Properties) : PlasticTreeFamilyDrippingLogBlock(settings) {
     companion object {
         val CODEC: MapCodec<DrippingPlasticTreeLogBlock> = simpleCodec(::DrippingPlasticTreeLogBlock)
     }

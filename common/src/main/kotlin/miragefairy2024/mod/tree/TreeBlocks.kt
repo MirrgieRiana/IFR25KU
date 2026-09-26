@@ -9,6 +9,7 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
+import miragefairy2024.mod.tree.contents.PlasticTreeFamilySaplingBlock
 import miragefairy2024.mod.tree.contents.blockcards.TreeBricksBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeChargeableLeavesBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeDoorBlockCard
@@ -137,7 +138,7 @@ private fun TreeBlockConfiguration.pressurePlate(parent: () -> TreeBlockCard) = 
 private fun TreeBlockConfiguration.door(parent: () -> TreeBlockCard) = this.tag(BlockTags.WOODEN_DOORS, ItemTags.WOODEN_DOORS).block { { DoorBlock(this.tree.getBlockSetType(), it) } }.let { TreeDoorBlockCard(it) { parent().block() } }
 private fun TreeBlockConfiguration.trapdoor(parent: () -> TreeBlockCard) = this.tag(BlockTags.WOODEN_TRAPDOORS, ItemTags.WOODEN_TRAPDOORS).block { { TrapDoorBlock(this.tree.getBlockSetType(), it) } }.let { TreeTrapdoorBlockCard(it) { parent().block() } }
 private fun TreeBlockConfiguration.bricks(input: () -> TreeBlockCard) = this.tag(BlockTags.PLANKS, ItemTags.PLANKS).block { { Block(it) } }.let { TreeBricksBlockCard(it) { input().item() } }
-private fun TreeBlockConfiguration.sapling() = this.tag(BlockTags.SAPLINGS, ItemTags.SAPLINGS).block { { SaplingBlock(TreeGrower(this.tree.getTreeGrowerName().string, Optional.of(this.tree.getGiantTree()), Optional.of(this.tree.getSmallTree()), Optional.empty()), it) } }.let { TreeSaplingBlockCard(it) }
+private fun TreeBlockConfiguration.sapling(creator: (TreeGrower, BlockBehaviour.Properties) -> SaplingBlock) = this.tag(BlockTags.SAPLINGS, ItemTags.SAPLINGS).block { { creator(TreeGrower(this.tree.getTreeGrowerName().string, Optional.of(this.tree.getGiantTree()), Optional.of(this.tree.getSmallTree()), Optional.empty()), it) } }.let { TreeSaplingBlockCard(it) }
 
 abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
     companion object {
@@ -233,7 +234,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val SAPLING = !TreeBlockConfiguration(
             HAIMEVISKA_CARD, "haimeviska_sapling", EnJa("Haimeviska Sapling", "ハイメヴィスカの苗木"),
             PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
-        ).sapling()
+        ).sapling(::PlasticTreeFamilySaplingBlock)
 
         val PLASTIC_TREE_LEAVES = !TreeBlockConfiguration(
             PLASTIC_TREE_CARD, "plastic_tree_leaves", EnJa("Plastic Tree Leaves", "プラノキの葉"),
@@ -260,7 +261,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val PLASTIC_TREE_SAPLING = !TreeBlockConfiguration(
             PLASTIC_TREE_CARD, "plastic_tree_sapling", EnJa("Plastic Tree Sapling", "プラノキの苗木"),
             PoemList(1).poem(EnJa("Etherify sugars with astral radiation.", "天空のフォリオニクス。")),
-        ).sapling()
+        ).sapling(::PlasticTreeFamilySaplingBlock)
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)

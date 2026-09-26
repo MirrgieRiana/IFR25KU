@@ -5,10 +5,10 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.particle.ParticleTypeCard
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.contents.ChargeableLeavesBlock
-import miragefairy2024.mod.tree.contents.DrippingLogBlock
 import miragefairy2024.mod.tree.contents.HollowLogBlock
-import miragefairy2024.mod.tree.contents.IncisableLogBlock
-import miragefairy2024.mod.tree.contents.IncisedLogBlock
+import miragefairy2024.mod.tree.contents.PlasticTreeFamilyDrippingLogBlock
+import miragefairy2024.mod.tree.contents.PlasticTreeFamilyIncisableLogBlock
+import miragefairy2024.mod.tree.contents.PlasticTreeFamilyIncisedLogBlock
 import miragefairy2024.mod.tree.contents.spawnDrippingSapParticle
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -35,7 +35,7 @@ class HaimeviskaLeavesBlock(settings: Properties) : ChargeableLeavesBlock(settin
     }
 }
 
-class HaimeviskaLogBlock(settings: Properties) : IncisableLogBlock(settings) {
+class HaimeviskaLogBlock(settings: Properties) : PlasticTreeFamilyIncisableLogBlock(settings) {
     companion object {
         val CODEC: MapCodec<HaimeviskaLogBlock> = simpleCodec(::HaimeviskaLogBlock)
     }
@@ -45,7 +45,7 @@ class HaimeviskaLogBlock(settings: Properties) : IncisableLogBlock(settings) {
     override fun getIncisedLogBlock() = TreeBlockCard.INCISED_LOG.block()
 }
 
-class IncisedHaimeviskaLogBlock(settings: Properties) : IncisedLogBlock(settings) {
+class IncisedHaimeviskaLogBlock(settings: Properties) : PlasticTreeFamilyIncisedLogBlock(settings) {
     companion object {
         val CODEC: MapCodec<IncisedHaimeviskaLogBlock> = simpleCodec(::IncisedHaimeviskaLogBlock)
     }
@@ -55,7 +55,7 @@ class IncisedHaimeviskaLogBlock(settings: Properties) : IncisedLogBlock(settings
     override fun getDrippingLogBlock() = TreeBlockCard.DRIPPING_LOG.block()
 }
 
-class DrippingHaimeviskaLogBlock(settings: Properties) : DrippingLogBlock(settings) {
+class DrippingHaimeviskaLogBlock(settings: Properties) : PlasticTreeFamilyDrippingLogBlock(settings) {
     companion object {
         val CODEC: MapCodec<DrippingHaimeviskaLogBlock> = simpleCodec(::DrippingHaimeviskaLogBlock)
     }
