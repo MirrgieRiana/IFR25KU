@@ -10,12 +10,17 @@
 #   .pdn は、常に標準出力へ書くのだ～🌱
 #
 # 前提:
-#   python3 が必要なのだ～🌱 標準ライブラリだけで動くのだ～🌱
+#   python3 が必要なのだ～🌱
+#   標準ライブラリだけで動くのだ～🌱
 #
 # JSON の形と、.pdn の構造は、scripts/pdn2json.sh の冒頭に書いてあるのだ～🌱
 #
 # JSON を書き換えてから戻すときは、中身の整合を取るのは書き換えた側の役目なのだ～🌱
 # このスクリプトは、JSON の形と、MemoryBlock のレコードと画素のセクションの対応だけを確かめるのだ～🌱
+#
+# この説明は、次のスキルに従って書いてあるのだ～🌱
+#   https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/markdown-max-line-length/SKILL.md
+# 書き換えるときも、そのスキルを厳守するのだ～🌱
 
 set -eu
 
