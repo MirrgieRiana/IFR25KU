@@ -3,9 +3,9 @@ layout: default
 ---
 {%- assign locale = page.locale | default: layout.locale | default: site.locale %}
 
-{% comment %}ヘッダー画像は、右ペインも含めた紙面の幅いっぱいに掲げるため、#main の外へ出すのだ～🌱{% endcomment %}
+{% comment %}ヘッダー画像は、画面の幅いっぱいに掲げるため、#main の外へ出すのだ～🌱{% endcomment %}
 {% if page.header.teaser %}
-  <div class="news__banner content-wrap">
+  <div class="news__banner">
     <img src="{{ page.header.teaser | relative_url }}" alt="{{ page.title | escape }}">
   </div>
 {% endif %}
@@ -50,13 +50,6 @@ layout: default
         {{ content }}
       </section>
 
-      {% if page.recommendations %}
-        <section class="page__recommend">
-          <h3 class="page__recommend-title"><i class="fas fa-newspaper"></i> 他の記事を読む</h3>
-          <div class="page__recommend-grid"></div>
-        </section>
-      {% endif %}
-
       <footer class="page__meta">
         {% if site.data.ui-text[locale].meta_label %}
           <h4 class="page__meta-title">{{ site.data.ui-text[locale].meta_label }}</h4>
@@ -64,6 +57,13 @@ layout: default
         {% include page__tags.html locale=locale %}
         {% include page__date.html locale=locale %}
       </footer>
+
+      {% if page.recommendations %}
+        <section class="page__recommend">
+          <h3 class="page__recommend-title"><i class="fas fa-newspaper"></i> 他の記事を読む</h3>
+          <div class="page__recommend-grid"></div>
+        </section>
+      {% endif %}
 
       {% include post_pagination.html locale=locale %}
     </div>

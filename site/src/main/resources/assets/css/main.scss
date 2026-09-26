@@ -24,6 +24,9 @@ $navicon-link-color-hover: #a83dba;
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}";
 @import "minimal-mistakes";
 
+// トップページのヒーローとニュース記事のヘッダー画像の高さ
+$hero-height: 600px;
+
 // テーマのfloatレイアウトをFlexbox/Gridに全面移行
 #main {
   display: flex;
@@ -195,7 +198,7 @@ a.site-title {
 }
 
 .page__hero--overlay {
-  min-height: 600px;
+  min-height: $hero-height;
   margin-top: -2em;
   margin-bottom: 0;
   padding-bottom: 2em;
@@ -700,10 +703,16 @@ body {
 }
 
 // ニュース記事のヘッダー画像
+.news__banner {
+  margin-top: -2em;
+}
+
 .news__banner img {
+  display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: $hero-height;
   object-fit: cover;
+  object-position: center;
 }
 
 // teaser自動表示画像の下マージン
