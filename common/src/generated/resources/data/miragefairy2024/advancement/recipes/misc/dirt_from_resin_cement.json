@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_resin_cement": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:resin_cement"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:dirt_from_resin_cement"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_resin_cement"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:dirt_from_resin_cement"
+    ]
+  }
+}

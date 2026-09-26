@@ -52,12 +52,12 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
             .downfall(0.9F)
             .specialEffects(
                 BiomeSpecialEffects.Builder()
-                    .waterColor(0x5B2A8A)
-                    .waterFogColor(0x37175A)
+                    .waterColor(0xFFD819)
+                    .waterFogColor(0xFFD819)
                     .fogColor(0xE0C088)
-                    .skyColor(0x93A6E6)
-                    .grassColorOverride(0xE0A628)
-                    .foliageColorOverride(0xC98F1C)
+                    .skyColor(0x7098FF)
+                    .grassColorOverride(0xFFC61E)
+                    .foliageColorOverride(0xFFA616)
                     .build()
             )
             .mobSpawnSettings(MobSpawnSettings.Builder().also { spawnSettings ->
@@ -79,14 +79,13 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                 BiomeDefaultFeatures.addDefaultSprings(lookupBackedBuilder)
                 BiomeDefaultFeatures.addSurfaceFreezing(lookupBackedBuilder)
 
-                BiomeDefaultFeatures.addMossyStoneBlock(lookupBackedBuilder)
                 BiomeDefaultFeatures.addForestFlowers(lookupBackedBuilder)
 
                 BiomeDefaultFeatures.addDefaultOres(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultSoftDisks(lookupBackedBuilder)
 
-                lookupBackedBuilder.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, ElevatedSpawnerFeatureCard.placedFeatureKey)
-
+                // 原生林の証である倒木は、後から生える木がこれを避けるように、木よりも先に配置するのだ～🌱
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, FallenPlasticTreeLogFeatureCard.placedFeatureKey)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
@@ -112,15 +111,15 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                             SurfaceRules.ifTrue(
                                 SurfaceRules.stoneDepthCheck(0, true, 20, CaveSurface.FLOOR),
                                 SurfaceRules.ifTrue(
-                                    SurfaceRules.noiseCondition(Noises.SURFACE_SECONDARY, getSurfaceNoiseThreshold(Noises.SURFACE_SECONDARY, 0.80), Double.MAX_VALUE),
-                                    SurfaceRules.state(BlockMaterialCard.RESIN_CEMENTED_DIRT.block().defaultBlockState())
+                                    SurfaceRules.noiseCondition(Noises.SURFACE_SECONDARY, getSurfaceNoiseThreshold(Noises.SURFACE_SECONDARY, 0.50), Double.MAX_VALUE),
+                                    SurfaceRules.state(BlockMaterialCard.RESIN_CEMENT.block().defaultBlockState())
                                 ),
                             ),
                             SurfaceRules.ifTrue(
                                 SurfaceRules.ON_FLOOR,
                                 SurfaceRules.sequence(
                                     SurfaceRules.ifTrue(
-                                        SurfaceRules.noiseCondition(Noises.SURFACE, getSurfaceNoiseThreshold(Noises.SURFACE, 0.25), Double.MAX_VALUE),
+                                        SurfaceRules.noiseCondition(Noises.SURFACE, getSurfaceNoiseThreshold(Noises.SURFACE, 0.30), Double.MAX_VALUE),
                                         SurfaceRules.state(Blocks.COARSE_DIRT.defaultBlockState())
                                     ),
                                     SurfaceRules.ifTrue(

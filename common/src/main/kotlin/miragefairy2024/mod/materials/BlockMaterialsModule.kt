@@ -93,6 +93,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.HoneyBlock
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.SlabBlock
 import net.minecraft.world.level.block.SoundType
@@ -745,12 +746,12 @@ open class BlockMaterialCard(
         val PLASTIC_TREE_SAP_KOHAKUTO_BLOCK = createKohakuto(
             "plastic_tree_sap_kohakuto_block", EnJa("Plastic Tree Sap Kohakuto Block", "プラノキの樹液の琥珀糖ブロック"),
             PoemList(1).poem("Ideal environment for etherobacteria.", "知性を育む寒天培地。"),
-            MapColor.TERRACOTTA_YELLOW, MaterialCard.PLASTIC_TREE_SAP.item, MaterialCard.PLASTIC_TREE_SAP_KOHAKUTO.item,
+            MapColor.COLOR_ORANGE, MaterialCard.PLASTIC_TREE_SAP.item, MaterialCard.PLASTIC_TREE_SAP_KOHAKUTO.item,
         )
         val HAIMEVISKA_SAP_KOHAKUTO_BLOCK = createKohakuto(
             "haimeviska_sap_kohakuto_block", EnJa("Haimeviska Sap Kohakuto Block", "ハイメヴィスカの樹液の琥珀糖ブロック"),
             PoemList(1).poem("It may have once been part of a brain.", "誰も知らない記憶のコラージュ。"),
-            MapColor.COLOR_ORANGE, MaterialCard.HAIMEVISKA_SAP.item, MaterialCard.HAIMEVISKA_SAP_KOHAKUTO.item,
+            MapColor.COLOR_LIGHT_BLUE, MaterialCard.HAIMEVISKA_SAP.item, MaterialCard.HAIMEVISKA_SAP_KOHAKUTO.item,
         )
         val BLACK_TREACLE_KOHAKUTO_BLOCK = createKohakuto(
             "black_treacle_kohakuto_block", EnJa("Black Treacle Kohakuto Block", "黒蜜の琥珀糖ブロック"),
@@ -767,8 +768,49 @@ open class BlockMaterialCard(
             PoemList(4).poem("Dispose of useless parallel universes.", "運命に干渉するための奇跡。"),
             MapColor.COLOR_PURPLE, MaterialCard.PHANTOM_DROP.item, MaterialCard.PHANTOM_DROP_KOHAKUTO.item,
         )
-        val RESIN_CEMENTED_DIRT = !BlockMaterialCard(
-            "resin_cemented_dirt", EnJa("Resin-Cemented Dirt", "石化した樹脂状の土"),
+
+        private fun createSap(
+            path: String,
+            name: EnJa,
+            poemList: PoemList,
+            mapColor: MapColor,
+            lower: () -> Item,
+        ): BlockMaterialCard {
+            return !object : BlockMaterialCard(
+                path, name,
+                poemList,
+                mapColor, 0.0F, 0.0F,
+                texturedModelProvider = {
+                    // バニラのハチミツブロックのモデルは、外枠の立方体と1ピクセル内側の立方体の2重構造で、中身が沈んで見えるのだ～🌱
+                    Model(ResourceLocation("block/honey_block"), TextureSlot.DOWN, TextureSlot.UP, TextureSlot.SIDE, TextureSlot.PARTICLE).with(
+                        TextureSlot.DOWN to "block/" * it.getIdentifier(),
+                        TextureSlot.UP to "block/" * it.getIdentifier(),
+                        TextureSlot.SIDE to "block/" * it.getIdentifier(),
+                        TextureSlot.PARTICLE to "block/" * it.getIdentifier(),
+                    )
+                },
+            ) {
+                override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion()
+                override suspend fun createBlock(properties: BlockBehaviour.Properties) = HoneyBlock(properties)
+                context(ModContext) override fun initModelGeneration() = block.registerModelGeneration { texturedModelProvider!![block()] }
+            }.translucent().sound(SoundType.HONEY_BLOCK).speed(0.4F).jump(0.5F).tag(BlockTags.SNOW_LAYER_CAN_SURVIVE_ON).init {
+                registerCompressionRecipeGeneration(lower, { lower().toIngredient() }, item, { item().toIngredient() })
+            }
+        }
+
+        val PLASTIC_TREE_SAP_BLOCK = createSap(
+            "plastic_tree_sap_block", EnJa("Plastic Tree Sap Block", "プラノキの樹液ブロック"),
+            PoemList(1).poem(EnJa("Cytorrhysis by osmotic pressure.", "秘境の衛生トーテム。")),
+            MapColor.COLOR_ORANGE, MaterialCard.PLASTIC_TREE_SAP.item,
+        )
+        val HAIMEVISKA_SAP_BLOCK = createSap(
+            "haimeviska_sap_block", EnJa("Haimeviska Sap Block", "ハイメヴィスカの樹液ブロック"),
+            PoemList(1).poem(EnJa("Thermal agitation of sediments.", "見果てぬ走馬灯のメランジュ。")),
+            MapColor.COLOR_LIGHT_BLUE, MaterialCard.HAIMEVISKA_SAP.item,
+        )
+
+        val RESIN_CEMENT = !BlockMaterialCard(
+            "resin_cement", EnJa("Resin Cement", "石化した樹脂"),
             PoemList(1).poem(EnJa("Antimicrobial terpenes prevent decay.", "電気の由来を語る土。")),
             MapColor.COLOR_ORANGE, 0.8F, 0.8F,
         ).sound(SoundType.TUFF).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.DIRT).init {
@@ -785,21 +827,21 @@ open class BlockMaterialCard(
                 duration = 20 * 60,
             ) on item modId MirageFairy2024.MOD_ID from item
         }
-        val RESIN_CEMENTED_DIRT_BRICKS = !BlockMaterialCard(
-            "resin_cemented_dirt_bricks", EnJa("Resin-Cemented Dirt Bricks", "石化した樹脂状の土レンガ"),
+        val RESIN_CEMENT_BRICKS = !BlockMaterialCard(
+            "resin_cement_bricks", EnJa("Resin Cement Bricks", "石化した樹脂レンガ"),
             PoemList(1).poem(EnJa("The only nutrient for etherobacteria.", "知性の根源。")),
             MapColor.COLOR_ORANGE, 1.0F, 1.0F,
         ).sound(SoundType.TUFF_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).init {
             registerShapedRecipeGeneration(item, count = 4) {
                 pattern("##")
                 pattern("##")
-                define('#', RESIN_CEMENTED_DIRT.item)
-            } on RESIN_CEMENTED_DIRT.item
-            registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT.item, item)
+                define('#', RESIN_CEMENT.item)
+            } on RESIN_CEMENT.item
+            registerStonecutterRecipeGeneration(RESIN_CEMENT.item, item)
         }
-        val RESIN_CEMENTED_DIRT_BRICKS_SLAB: BlockMaterialCard = !object : BlockMaterialCard(
-            "resin_cemented_dirt_bricks_slab", EnJa("Resin-Cemented Dirt Brick Slab", "石化した樹脂状の土レンガのハーフブロック"),
-            PoemList(1).poem(EnJa("Inseparable mixtures of botanicals.", "木の蜜は地に触れ、そして永久に囚われる。")),
+        val RESIN_CEMENT_BRICKS_SLAB: BlockMaterialCard = !object : BlockMaterialCard(
+            "resin_cement_bricks_slab", EnJa("Resin Cement Brick Slab", "石化した樹脂レンガのハーフブロック"),
+            PoemList(1).poem(EnJa("Inseparable mixtures of botanicals.", "木の蜜は地に触れ、そして永遠に囚われる。")),
             MapColor.COLOR_ORANGE, 1.0F, 1.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
@@ -807,22 +849,22 @@ open class BlockMaterialCard(
             context(ModContext) override fun initModelGeneration() = Unit
             context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
         }.sound(SoundType.TUFF_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
-            registerBlockFamily(TexturedModel.CUBE, RESIN_CEMENTED_DIRT_BRICKS.block) { it.slab(block()) }
-            registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT.item, item)
-            registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT_BRICKS.item, item, 2)
+            registerBlockFamily(TexturedModel.CUBE, RESIN_CEMENT_BRICKS.block) { it.slab(block()) }
+            registerStonecutterRecipeGeneration(RESIN_CEMENT.item, item)
+            registerStonecutterRecipeGeneration(RESIN_CEMENT_BRICKS.item, item, 2)
         }
-        val RESIN_CEMENTED_DIRT_BRICKS_STAIRS: BlockMaterialCard = !object : BlockMaterialCard(
-            "resin_cemented_dirt_bricks_stairs", EnJa("Resin-Cemented Dirt Brick Stairs", "石化した樹脂状の土レンガの階段"),
+        val RESIN_CEMENT_BRICKS_STAIRS: BlockMaterialCard = !object : BlockMaterialCard(
+            "resin_cement_bricks_stairs", EnJa("Resin Cement Brick Stairs", "石化した樹脂レンガの階段"),
             PoemList(1).poem(EnJa("Spontaneous intellect formation process.", "自然が創り上げる、ウィスプの心髄。")),
             MapColor.COLOR_ORANGE, 1.0F, 1.0F,
         ) {
-            override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(RESIN_CEMENTED_DIRT_BRICKS.block.await().defaultBlockState(), properties)
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(RESIN_CEMENT_BRICKS.block.await().defaultBlockState(), properties)
             context(ModContext) override fun initBlockStateGeneration() = Unit
             context(ModContext) override fun initModelGeneration() = Unit
         }.sound(SoundType.TUFF_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
-            registerBlockFamily(TexturedModel.CUBE, RESIN_CEMENTED_DIRT_BRICKS.block) { it.stairs(block()) }
-            registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT.item, item)
-            registerStonecutterRecipeGeneration(RESIN_CEMENTED_DIRT_BRICKS.item, item)
+            registerBlockFamily(TexturedModel.CUBE, RESIN_CEMENT_BRICKS.block) { it.stairs(block()) }
+            registerStonecutterRecipeGeneration(RESIN_CEMENT.item, item)
+            registerStonecutterRecipeGeneration(RESIN_CEMENT_BRICKS.item, item)
         }
         val RETINITE_BLOCK = !BlockMaterialCard(
             "retinite_block", EnJa("Retinite Block", "レチナイトブロック"),
@@ -1010,6 +1052,7 @@ private fun <T : BlockMaterialCard> T.itemProperty(converter: (Item.Properties) 
 private fun <T : BlockMaterialCard> T.noDrop() = this.blockProperty { it.noLootTable() }
 private fun <T : BlockMaterialCard> T.noSpawn() = this.blockProperty { it.isValidSpawn(Blocks::never) }
 private fun <T : BlockMaterialCard> T.speed(speedFactor: Float) = this.blockProperty { it.speedFactor(speedFactor) }
+private fun <T : BlockMaterialCard> T.jump(jumpFactor: Float) = this.blockProperty { it.jumpFactor(jumpFactor) }
 private fun <T : BlockMaterialCard> T.sound(blockSoundGroup: SoundType) = this.blockProperty { it.sound(blockSoundGroup) }
 
 private fun <T : BlockMaterialCard> T.noBurn() = this.itemProperty { it.fireResistant() }

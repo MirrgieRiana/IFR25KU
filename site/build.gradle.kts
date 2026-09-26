@@ -180,7 +180,10 @@ class OgImageRenderer : AutoCloseable {
     private fun ensureInitialized() {
         if (playwright == null) {
             ImageIO.scanForPlugins()
-            playwright = Playwright.create()
+            // ブラウザの調達は installPlaywrightBrowsers に任せるのだ～🌱
+            // これを抑止しないと、既にヘッドレスシェルがあっても、FirefoxやWebKitまで含めた全部が降ってきちゃうのだぁ…🌧️
+            val env = mapOf("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD" to "1")
+            playwright = Playwright.create(Playwright.CreateOptions().setEnv(env))
             browser = playwright!!.chromium().launch()
             page = browser!!.newPage().apply { setViewportSize(1200, 630) }
         }
@@ -224,8 +227,20 @@ class OgImageRenderer : AutoCloseable {
     }
 }
 
+val installPlaywrightBrowsers = tasks.register<JavaExec>("installPlaywrightBrowsers") {
+    group = "other"
+
+    classpath = buildscript.configurations.getByName("classpath")
+    mainClass = "com.microsoft.playwright.CLI"
+    // OG画像の描画に使うのはヘッドレスシェルだけなのだ～🌱
+    // ブラウザの種類を指定しないと、Chromium本体・Firefox・WebKitまで降ってきて、1.2GBになっちゃうのだぁ…🌧️
+    args("install", "chromium-headless-shell")
+}
+
 val generateOgImages = tasks.register("generateOgImages") {
     group = "generate"
+
+    dependsOn(installPlaywrightBrowsers)
 
     val pagesDir = file("src/pages/resources")
     val ogImagesDir = layout.buildDirectory.dir("ogImages").get().asFile
@@ -330,7 +345,18 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     from("src/pages/resources") {
         includeEmptyDirs = false
         val seenImagePaths = mutableMapOf<String, String>()
+        val pagesSourceDirPath = "${projectDir.relativeTo(rootDir).invariantSeparatorsPath}/src/pages/resources"
         eachFile {
+            // 下で配置先が平らになって元のディレクトリ名が失われるから、footer の source のリンクのために、元のパスを front matter へ書き足すのだ～🌱
+            if (name.endsWith(".md")) {
+                val sourcePath = "$pagesSourceDirPath/${relativePath.pathString}"
+                var isFirstLine = true
+                filter { line ->
+                    val result = if (isFirstLine && line == "---") "$line\nsource_path: $sourcePath" else line
+                    isFirstLine = false
+                    result
+                }
+            }
             val dirName = relativePath.pathString.substringBefore("/")
             val postMatch = """(\d{4})-(\d{2})-(\d{2})-(.+)""".toRegex().matchEntire(dirName)
             if (postMatch != null) {

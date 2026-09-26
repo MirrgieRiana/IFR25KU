@@ -4979,6 +4979,21 @@
       "minecraft:repair_cost": 0
     }
   },
+  "miragefairy2024:haimeviska_sap_block": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
   "miragefairy2024:haimeviska_sap_kohakuto": {
     "class": "miragefairy2024.mod.materials.contents.FoodItem",
     "components": {
@@ -8731,6 +8746,21 @@
       "minecraft:repair_cost": 0
     }
   },
+  "miragefairy2024:plastic_tree_sap_block": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
   "miragefairy2024:plastic_tree_sap_kohakuto": {
     "class": "miragefairy2024.mod.materials.contents.FoodItem",
     "components": {
@@ -9220,7 +9250,7 @@
       "minecraft:repair_cost": 0
     }
   },
-  "miragefairy2024:resin_cemented_dirt": {
+  "miragefairy2024:resin_cement": {
     "class": "net.minecraft.world.item.BlockItem",
     "components": {
       "minecraft:attribute_modifiers": {
@@ -9235,7 +9265,7 @@
       "minecraft:repair_cost": 0
     }
   },
-  "miragefairy2024:resin_cemented_dirt_bricks": {
+  "miragefairy2024:resin_cement_bricks": {
     "class": "net.minecraft.world.item.BlockItem",
     "components": {
       "minecraft:attribute_modifiers": {
@@ -9250,7 +9280,7 @@
       "minecraft:repair_cost": 0
     }
   },
-  "miragefairy2024:resin_cemented_dirt_bricks_slab": {
+  "miragefairy2024:resin_cement_bricks_slab": {
     "class": "net.minecraft.world.item.BlockItem",
     "components": {
       "minecraft:attribute_modifiers": {
@@ -9265,7 +9295,7 @@
       "minecraft:repair_cost": 0
     }
   },
-  "miragefairy2024:resin_cemented_dirt_bricks_stairs": {
+  "miragefairy2024:resin_cement_bricks_stairs": {
     "class": "net.minecraft.world.item.BlockItem",
     "components": {
       "minecraft:attribute_modifiers": {
@@ -9280,7 +9310,7 @@
       "minecraft:repair_cost": 0
     }
   },
-  "miragefairy2024:resin_cemented_dirt_copal_ore": {
+  "miragefairy2024:resin_cement_copal_ore": {
     "class": "net.minecraft.world.item.BlockItem",
     "components": {
       "minecraft:attribute_modifiers": {
@@ -9295,7 +9325,7 @@
       "minecraft:repair_cost": 0
     }
   },
-  "miragefairy2024:resin_cemented_dirt_fairy_plastic_ore": {
+  "miragefairy2024:resin_cement_fairy_plastic_ore": {
     "class": "net.minecraft.world.item.BlockItem",
     "components": {
       "minecraft:attribute_modifiers": {
@@ -9310,7 +9340,7 @@
       "minecraft:repair_cost": 0
     }
   },
-  "miragefairy2024:resin_cemented_dirt_retinite_ore": {
+  "miragefairy2024:resin_cement_retinite_ore": {
     "class": "net.minecraft.world.item.BlockItem",
     "components": {
       "minecraft:attribute_modifiers": {

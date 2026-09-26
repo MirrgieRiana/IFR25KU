@@ -1,0 +1,13 @@
+{% assign locale = include.locale | default: site.locale %}
+{% if page.tags[0] %}
+  {% assign tags_sorted = page.tags | sort_natural %}
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> {{ site.data.ui-text[locale].tags_label | default: "Tags:" }} </strong>
+    <span itemprop="keywords">
+    {% for tag_word in tags_sorted %}
+      {% assign tagged_posts = site.posts | where_exp: "post", "post.tags contains tag_word" %}
+      <a href="{{ '/tag/' | append: tag_word | append: '.html' | relative_url }}" class="page__taxonomy-item p-category">{{ tag_word }} ({{ tagged_posts.size }})</a>{% unless forloop.last %}<span class="sep">, </span>{% endunless %}
+    {% endfor %}
+    </span>
+  </p>
+{% endif %}
