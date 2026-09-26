@@ -24,5 +24,5 @@ class NectarflowerBlock(settings: Properties) : BushBlock(settings) {
 
     override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = SHAPE
 
-    override fun mayPlaceOn(state: BlockState, level: BlockGetter, pos: BlockPos) = super.mayPlaceOn(state, level, pos) || state isIn BlockMaterialCard.RESIN_CEMENTED_DIRT.block()
+    override fun mayPlaceOn(state: BlockState, level: BlockGetter, pos: BlockPos) = super.mayPlaceOn(state, level, pos) || state isIn BlockMaterialCard.RESIN_CEMENT.block()
 }
