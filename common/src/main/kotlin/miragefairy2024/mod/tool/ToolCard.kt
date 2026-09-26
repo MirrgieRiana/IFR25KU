@@ -496,7 +496,7 @@ class ToolCard(
         ) { registerAxeRecipeGeneration(item, MaterialCard.HAIMEVISKA_ROSIN.ore!!.tag) }
         val HAIMEVISKA_ROSIN_SHOVEL = !ToolCard(
             "haimeviska_rosin_shovel", EnJa("Resin Shovel", "涙のシャベル"),
-            PoemList(2).poem(EnJa("The story of the lonely tree", "琥珀のしずくが刻む道。")),
+            PoemList(2).poem(EnJa("The story of the lonely tree", "真珠のしずくが刻む道。")),
             FairyShovelConfiguration(ToolMaterialCard.HAIMEVISKA_ROSIN).areaMining(1, 0, 0).enchantment(EnchantmentCard.AREA_MINING_ACCELERATION.key, 3).enchantment(EnchantmentCard.STICKY_MINING.key).enchantment(Enchantments.UNBREAKING, 2),
         ) { registerShovelRecipeGeneration(item, MaterialCard.HAIMEVISKA_ROSIN.ore!!.tag) }
         val HAIMEVISKA_ROSIN_HOE = !ToolCard(
