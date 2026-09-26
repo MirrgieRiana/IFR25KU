@@ -994,8 +994,10 @@ img[src$=".png" i] {
 
 // 論文の段組み（paper_columnsタグ）
 .paper__columns {
-  display: flex;
-  gap: 2em;
+  @include breakpoint($x-large) {
+    display: flex;
+    gap: 2em;
+  }
 }
 
 // 論文の段組みの中の1個の段（paper_columnタグ）
@@ -1112,8 +1114,10 @@ img[src$=".png" i] {
 
 // ニュース記事の段組み（news_columnsタグ）
 .news__columns {
-  display: flex;
-  gap: 2em;
+  @include breakpoint($x-large) {
+    display: flex;
+    gap: 2em;
+  }
 }
 
 // ニュース記事の段組みの中の1個の段（news_columnタグ）

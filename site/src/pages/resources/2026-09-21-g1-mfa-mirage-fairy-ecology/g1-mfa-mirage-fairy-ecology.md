@@ -13,8 +13,8 @@ tags:
   - 生態
 ---
 
-<div style="display: flex; gap: 1em;" markdown="1">
-<div style="flex: 1;" markdown="1">
+<div style="display: flex; flex-wrap: wrap; gap: 1em;" markdown="1">
+<div style="flex: 1 1 calc((1280px - 100vw) * 999);" markdown="1">
 
 蝶のような翅の生えた手のひら大の少女の姿をした妖精。非常に憶病で、滅多に人前に姿を現さない。捕まえようとしても人魂（ウィスプ）のような姿に化けて逃げ、いくら追いかけても捕まえることができないさまから、ミラージュ（蜃気楼）の名で知られている。
 
@@ -27,7 +27,7 @@ tags:
 {: style="display: table; width: 100%;"}
 
 </div>
-<div style="flex: 1;" markdown="1">
+<div style="flex: 1 1 calc((1280px - 100vw) * 999);" markdown="1">
 
 ![赤紫色の彩釉テラコッタのミラージュ妖精](mirage-fairy.webp)
 
