@@ -73,7 +73,6 @@ Original assets from [MirageFairy2019](https://github.com/MirageFairy/MirageFair
 - `common/src/main/resources/assets/miragefairy2024/textures/block/sulfur_block.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/block/sulfur_ore.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/bottle3.pdn`
-- `common/src/main/resources/assets/miragefairy2024/textures/item/bottle4.pdn`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/cidre.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/fairy_pot.pdn`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/fairy_pot.png`
@@ -92,6 +91,7 @@ Derivative works based on [MirageFairy2019](https://github.com/MirageFairy/Mirag
 
 - `common/src/main/resources/assets/miragefairy2024/textures/block/salpeter_ore.png`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/apple_brandy.png`
+- `common/src/main/resources/assets/miragefairy2024/textures/item/bottle4.pdn`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/fairy_liqueur.png`
 
 ## Codes (Programs, Data Packs)
