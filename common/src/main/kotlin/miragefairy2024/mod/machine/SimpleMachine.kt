@@ -63,7 +63,7 @@ abstract class SimpleMachineCard<B : SimpleMachineBlock, E : SimpleMachineBlockE
 
     abstract val recipeType: RecipeType<R>
 
-    fun match(world: Level, inventory: SimpleMachineRecipeInput) = world.recipeManager.getRecipeFor(recipeType, inventory, world).getOrNull()
+    fun match(level: Level, inventory: SimpleMachineRecipeInput) = level.recipeManager.getRecipeFor(recipeType, inventory, level).getOrNull()
 
     context(ModContext)
     override fun init() {
@@ -144,18 +144,18 @@ abstract class SimpleMachineBlockEntity<E : SimpleMachineBlockEntity<E>>(private
     var progressMax = 0
     var progress = 0
 
-    fun checkRecipe(world: Level): (() -> Unit)? {
+    fun checkRecipe(level: Level): (() -> Unit)? {
         if (!shouldUpdateRecipe) return null
         shouldUpdateRecipe = false
 
         val inventory = SimpleMachineRecipeInput(card.inputSlots.map { this[card.inventorySlotIndexTable[it]!!] })
 
-        val recipeHolder = card.match(world, inventory) ?: return null
+        val recipeHolder = card.match(level, inventory) ?: return null
         val recipe = recipeHolder.value()
         val matchResult = recipe.match(inventory) ?: return null
 
         return {
-            val craftResult = matchResult.craft(world.random, false)
+            val craftResult = matchResult.craft(level.random, false)
             craftingInventory += craftResult.extractedItemStacks
             recipe.outputs.forEach {
                 waitingInventory += it.copy()
@@ -166,26 +166,26 @@ abstract class SimpleMachineBlockEntity<E : SimpleMachineBlockEntity<E>>(private
         }
     }
 
-    open fun onRecipeCheck(world: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
-        listeners += checkRecipe(world) ?: return false
+    open fun onRecipeCheck(level: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
+        listeners += checkRecipe(level) ?: return false
         return true
     }
 
-    open fun onCraftingTick(world: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
+    open fun onCraftingTick(level: Level, pos: BlockPos, state: BlockState, listeners: MutableList<() -> Unit>): Boolean {
         return true
     }
 
-    open fun onPostServerTick(world: Level, pos: BlockPos, state: BlockState) {
+    open fun onPostServerTick(level: Level, pos: BlockPos, state: BlockState) {
 
     }
 
-    override fun serverTick(world: Level, pos: BlockPos, state: BlockState) {
-        super.serverTick(world, pos, state)
+    override fun serverTick(level: Level, pos: BlockPos, state: BlockState) {
+        super.serverTick(level, pos, state)
 
         // クラフトが開始されていなければ、開始を試みる
         if (progressMax == 0) run {
             val listeners = mutableListOf<() -> Unit>()
-            if (!onRecipeCheck(world, pos, state, listeners)) return@run
+            if (!onRecipeCheck(level, pos, state, listeners)) return@run
             listeners.forEach {
                 it()
             }
@@ -198,7 +198,7 @@ abstract class SimpleMachineBlockEntity<E : SimpleMachineBlockEntity<E>>(private
             if (progress < progressMax) run success@{
                 run fail@{
                     val listeners = mutableListOf<() -> Unit>()
-                    if (!onCraftingTick(world, pos, state, listeners)) return@fail
+                    if (!onCraftingTick(level, pos, state, listeners)) return@fail
                     listeners.forEach {
                         it()
                     }
@@ -235,7 +235,7 @@ abstract class SimpleMachineBlockEntity<E : SimpleMachineBlockEntity<E>>(private
 
         }
 
-        onPostServerTick(world, pos, state)
+        onPostServerTick(level, pos, state)
 
     }
 }

@@ -47,15 +47,15 @@ interface FairyToolItem {
 }
 
 
-fun <I> I.postMineImpl(stack: ItemStack, world: Level, state: BlockState, pos: BlockPos, miner: LivingEntity) where I : Item, I : FairyToolItem {
+fun <I> I.postMineImpl(stack: ItemStack, level: Level, state: BlockState, pos: BlockPos, miner: LivingEntity) where I : Item, I : FairyToolItem {
     configuration.onPostMineListeners.forEach {
-        it(this, stack, world, state, pos, miner)
+        it(this, stack, level, state, pos, miner)
     }
 }
 
-fun <I> I.onAfterBreakBlock(world: Level, player: Player, pos: BlockPos, state: BlockState, blockEntity: BlockEntity?, tool: ItemStack) where I : Item, I : FairyToolItem {
+fun <I> I.onAfterBreakBlock(level: Level, player: Player, pos: BlockPos, state: BlockState, blockEntity: BlockEntity?, tool: ItemStack) where I : Item, I : FairyToolItem {
     configuration.onAfterBreakBlockListeners.forEach {
-        it(this, world, player, pos, state, blockEntity, tool)
+        it(this, level, player, pos, state, blockEntity, tool)
     }
 }
 
@@ -69,9 +69,9 @@ fun <I> I.onKilled(entity: LivingEntity, attacker: LivingEntity, damageSource: D
     }
 }
 
-fun <I> I.inventoryTickImpl(stack: ItemStack, world: Level, entity: Entity, slot: Int, selected: Boolean) where I : Item, I : FairyToolItem {
+fun <I> I.inventoryTickImpl(stack: ItemStack, level: Level, entity: Entity, slot: Int, selected: Boolean) where I : Item, I : FairyToolItem {
     configuration.onInventoryTickListeners.forEach {
-        it(this, stack, world, entity, slot, selected)
+        it(this, stack, level, entity, slot, selected)
     }
 }
 

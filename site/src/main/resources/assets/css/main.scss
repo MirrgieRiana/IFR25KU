@@ -46,6 +46,14 @@ $navicon-link-color-hover: #a83dba;
     order: 0;
     float: none;
     flex-shrink: 0;
+
+    // テーマは幅から1emを引くことで中央ペインとの間隔を作っているが、flexでは要素同士が隣接するため間隔にならない
+    width: $right-sidebar-width-narrow;
+    padding-inline-end: 1em;
+  }
+
+  @include breakpoint($x-large) {
+    width: $right-sidebar-width;
   }
 }
 
@@ -909,8 +917,8 @@ img[src$=".png" i] {
   padding: 0;
 }
 
-// 劇場レイアウトのおすすめサイドバー
-.theater__sidebar {
+// 関連記事の右ペイン
+.recommendations__sidebar {
   display: flex;
   flex-direction: column;
   gap: 1em;
@@ -920,7 +928,7 @@ img[src$=".png" i] {
   }
 }
 
-.theater-recommendations {
+.recommendations__list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1em;

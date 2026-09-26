@@ -110,12 +110,12 @@ fun initVanillaModule() {
     CustomizedRemainderRegistry.register(Items.POTION) { Items.GLASS_BOTTLE.createItemStack() }
 
 
-    registerClientDebugItem("dump_biome_tags", Items.STRING.toTextureSource(), 0xFF00FF00.toInt()) { world, player, _, _ ->
-        val tags = world.registryAccess().registryOrThrow(Registries.BIOME).tagNames.toList()
+    registerClientDebugItem("dump_biome_tags", Items.STRING.toTextureSource(), 0xFF00FF00.toInt()) { level, player, _, _ ->
+        val tags = level.registryAccess().registryOrThrow(Registries.BIOME).tagNames.toList()
         val sb = StringBuilder()
         tags.sortedBy { it.location() }.forEach { tag ->
             sb.append("${tag.location()}\n")
-            val biomes = world.registryAccess().registryOrThrow(Registries.BIOME)[tag].toList()
+            val biomes = level.registryAccess().registryOrThrow(Registries.BIOME)[tag].toList()
             biomes.sortedBy { it.unwrapKey().get().location() }.forEach { biome ->
                 sb.append("  ${biome.unwrapKey().get().location().string}\n")
             }

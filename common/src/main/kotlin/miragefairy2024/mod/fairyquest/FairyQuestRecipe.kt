@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.PlacedItemFeature
+import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
@@ -25,16 +26,19 @@ import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.noBackground
+import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.util.Chance
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.Registration
 import miragefairy2024.util.Translation
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
+import miragefairy2024.util.fire
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
 import miragefairy2024.util.gray
@@ -354,7 +358,7 @@ enum class FairyQuestRecipeCard(
                 Mizna: "Haah... You've got me there, Herirmina. Rights for Miragium... I'd never even considered that..."
                 Herirmina: "Hehe, you've changed, Mizna--"
                 (Footsteps)
-            """.formatFairyQuest(),
+            """.formatFairyQuest().replace("\n", "\n\n"),
         """
                 （足音）
                 ミズナ「――しかしヘリルミーナ？　これまで人類は植物に人権を与えた歴史なんて無いんだよ？」
@@ -366,10 +370,10 @@ enum class FairyQuestRecipeCard(
                 ミズナ「はぁ……　ヘリルミーナには参ったよ。　ミラジウムに人権があるだなんて、そんなこと考えたこともなかったなあ……」
                 ヘリルミーナ「ふふっ、ミズナも変わったわね――」
                 （足音）
-            """.formatFairyQuest(),
+            """.formatFairyQuest().replace("\n", "\n\n"),
         "The Institute of Fairy Research\nCreation Department\nKretroknofe Mizna", "妖精研究所\n創製部\nクレトロクノフェ・ミズナ",
         listOf { MaterialCard.MIRAGIUM_INGOT.item().toIngredientStack(5) },
-        listOf { Items.EMERALD.createItemStack() },
+        listOf { Items.EMERALD.createItemStack(2) },
         duration = 10,
         icon = { MaterialCard.MIRAGIUM_INGOT.item().createItemStack() },
     ),
@@ -512,6 +516,8 @@ class SetFairyQuestRecipeLootFunction(conditions: List<LootItemCondition>, priva
     }
 }
 
+val onOpenFairyQuestMessageScreen = EventRegistry<(FairyQuestRecipe) -> Boolean>()
+
 object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<FairyQuestRecipe>() {
     override fun getId() = MirageFairy2024.identifier("fairy_quest_recipe")
     override fun getName() = EnJa("Fairy Quest", "フェアリークエスト")
@@ -549,7 +555,12 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
                     view.color = ColorPair.DARK_GRAY
                     view.shadow = false
                     view.scroll = true
-                }.tooltip(recipeEntry.recipe.title)
+                }.onClick {
+                    onOpenFairyQuestMessageScreen.fire {
+                        if (it(recipeEntry.recipe)) return@onClick true
+                    }
+                    true
+                }.tooltip(listOf(recipeEntry.recipe.title, text { guiFullScreenTranslation() }))
             }
 
             view += YSpaceView(2)

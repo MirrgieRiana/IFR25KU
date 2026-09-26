@@ -54,9 +54,11 @@
   <meta property="og:description" content="{{ seo_description }}">
 {% endif %}
 
-<meta property="og:image" content="{{ og_image_url }}">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="{{ og_image_url }}">
+{% if page.og_image != false %}
+  <meta property="og:image" content="{{ og_image_url }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{{ og_image_url }}">
+{% endif %}
 
 {% if page.date %}
   <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">

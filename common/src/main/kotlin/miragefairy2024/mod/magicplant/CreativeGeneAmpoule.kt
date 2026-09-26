@@ -28,6 +28,7 @@ import miragefairy2024.util.string
 import miragefairy2024.util.style
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.or
+import mirrg.kotlin.hydrogen.argbOf
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.world.InteractionHand
@@ -62,7 +63,7 @@ fun initCreativeGeneAmpoule() {
         card.item.registerModelGeneration(createCreativeGeneAmpouleModel())
         card.item.registerColorProvider { itemStack, tintIndex ->
             if (tintIndex == 1) {
-                itemStack.getTraitStacks().or { return@registerColorProvider 0xFFFFFFFF.toInt() }.traitStackList.firstOrNull().or { return@registerColorProvider 0xFFFFFFFF.toInt() }.trait.primaryEffect.color or 0xFF000000.toInt()
+                argbOf(0xFF, itemStack.getTraitStacks().or { return@registerColorProvider 0xFFFFFFFF.toInt() }.traitStackList.firstOrNull().or { return@registerColorProvider 0xFFFFFFFF.toInt() }.trait.primaryEffect.color)
             } else {
                 0xFFFFFFFF.toInt()
             }
@@ -105,9 +106,9 @@ class CreativeGeneAmpouleItem(settings: Properties) : Item(settings) {
         return InteractionResult.CONSUME
     }
 
-    override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
         val itemStack = user.getItemInHand(hand)
-        if (world.isClientSide) return InteractionResultHolder.success(itemStack)
+        if (level.isClientSide) return InteractionResultHolder.success(itemStack)
         val traitStacks = itemStack.getTraitStacks() ?: TraitStacks.EMPTY
         if (!user.isShiftKeyDown) {
             itemStack.setTraitStacks(TraitStacks.of(traitStacks.traitStackMap.mapValues { (it.value shl 1).let { level -> if (level <= 0) 1 else level } }))

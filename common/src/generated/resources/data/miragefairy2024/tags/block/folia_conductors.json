@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "#miragefairy2024:fairy_building",
+      "required": false
+    },
+    {
+      "id": "#miragefairy2024:haimeviska_logs",
+      "required": false
+    }
+  ]
+}

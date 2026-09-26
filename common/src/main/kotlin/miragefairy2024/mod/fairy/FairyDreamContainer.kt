@@ -51,11 +51,11 @@ fun initFairyDreamContainer() {
 
     FAIRY_DREAM_CONTAINER_ATTACHMENT_TYPE.register()
 
-    registerServerDebugItem("debug_clear_fairy_dream", Items.STRING.toTextureSource(), 0xFF0000DD.toInt()) { world, player, _, _ ->
+    registerServerDebugItem("debug_clear_fairy_dream", Items.STRING.toTextureSource(), 0xFF0000DD.toInt()) { level, player, _, _ ->
         player.fairyDreamContainer.mutate { it.clear() }
         player.displayClientMessage(text { "Cleared fairy dream"() }, true)
     }
-    registerServerDebugItem("debug_gain_fairy_dream", Items.STRING.toTextureSource(), 0xFF0000BB.toInt()) { world, player, hand, _ ->
+    registerServerDebugItem("debug_gain_fairy_dream", Items.STRING.toTextureSource(), 0xFF0000BB.toInt()) { level, player, hand, _ ->
         val fairyItemStack = player.getItemInHand(hand.opposite)
         if (fairyItemStack isNotIn FairyCard.item()) return@registerServerDebugItem
         val motif = fairyItemStack.getFairyMotif() ?: return@registerServerDebugItem
