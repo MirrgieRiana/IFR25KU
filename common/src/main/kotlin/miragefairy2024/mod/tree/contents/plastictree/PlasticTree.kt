@@ -98,7 +98,7 @@ fun initPlasticTree() {
                 BlockStateProvider.simple(TreeBlockCard.PLASTIC_TREE_LEAVES.block()),
                 SmallPlasticTreeFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
                 TwoLayersFeatureSize(1, 0, 1),
-            ).dirt(BlockStateProvider.simple(BlockMaterialCard.RESIN_CEMENTED_DIRT.block())).ignoreVines().decorators(listOf(createTreeDecorator())).build()
+            ).ignoreVines().decorators(listOf(createTreeDecorator())).build()
         }.generator {
             registerPlacedFeature(SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { count(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCementedDirt }
         }
@@ -111,7 +111,7 @@ fun initPlasticTree() {
                 BlockStateProvider.simple(TreeBlockCard.PLASTIC_TREE_LEAVES.block()),
                 GiantPlasticTreeFoliagePlacer,
                 TwoLayersFeatureSize(1, 1, 2),
-            ).dirt(BlockStateProvider.simple(BlockMaterialCard.RESIN_CEMENTED_DIRT.block())).ignoreVines().decorators(listOf(createTreeDecorator())).build()
+            ).ignoreVines().decorators(listOf(createTreeDecorator())).build()
         }.generator {
             registerPlacedFeature(GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { per(1) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCementedDirt }
         }
