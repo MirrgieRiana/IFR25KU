@@ -40,6 +40,7 @@ import miragefairy2024.mod.tree.contents.plastictree.IncisedPlasticTreeLogBlock
 import miragefairy2024.mod.tree.contents.plastictree.PLASTIC_TREE_CARD
 import miragefairy2024.mod.tree.contents.plastictree.PlasticTreeLeavesBlock
 import miragefairy2024.mod.tree.contents.plastictree.PlasticTreeLogBlock
+import miragefairy2024.mod.tree.contents.plastictreefamily.PlasticTreeFamilySaplingBlock
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
@@ -66,7 +67,6 @@ import net.minecraft.world.level.block.FenceBlock
 import net.minecraft.world.level.block.FenceGateBlock
 import net.minecraft.world.level.block.PressurePlateBlock
 import net.minecraft.world.level.block.RotatedPillarBlock
-import net.minecraft.world.level.block.SaplingBlock
 import net.minecraft.world.level.block.SlabBlock
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.StairBlock
@@ -237,7 +237,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             PoemList(1)
                 .poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。"))
                 .poem("classification", EnJa("Order Araucariales, family Plasticaceae", "ナンヨウスギ目プラノキ科")),
-        ).block { { SaplingBlock(HAIMEVISKA_CARD.createTreeGrower(), it) } }.sapling()
+        ).block { { PlasticTreeFamilySaplingBlock(HAIMEVISKA_CARD.createTreeGrower(), it) } }.sapling()
 
         val PLASTIC_TREE_LEAVES = !TreeBlockConfiguration(
             PLASTIC_TREE_CARD, "plastic_tree_leaves", EnJa("Plastic Tree Leaves", "プラノキの葉"),
@@ -266,7 +266,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
             PoemList(1)
                 .poem(EnJa("Etherify sugars with astral radiation.", "天空のフォリオニクス。"))
                 .poem("classification", EnJa("Order Araucariales, family Plasticaceae", "ナンヨウスギ目プラノキ科")),
-        ).block { { SaplingBlock(PLASTIC_TREE_CARD.createTreeGrower(), it) } }.sapling()
+        ).block { { PlasticTreeFamilySaplingBlock(PLASTIC_TREE_CARD.createTreeGrower(), it) } }.sapling()
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)
