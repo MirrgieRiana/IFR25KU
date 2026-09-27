@@ -279,7 +279,7 @@ class Decoder:
 
     def items(self, length):
         if length < 0:
-            raise PdnError(f"配列の長さが {length} なのだ")
+            raise PdnError(f"配列の長さが負の {length} なのだ")
         items = []
         covered = 0
         while covered < length:
@@ -359,7 +359,7 @@ class Decoder:
             object_id = self.source.int32()
             length = self.source.int32()
             if length < 0:
-                raise PdnError(f"{object_id} 番の配列の長さが {length} なのだ")
+                raise PdnError(f"{object_id} 番の配列の長さが負の {length} なのだ")
             primitive_type = self.primitive_type()
             return {"$record": record_type, "objectId": object_id, "primitiveType": primitive_type, **self.primitive_array(primitive_type, length)}
         if record_type in ("ArraySingleObject", "ArraySingleString"):
@@ -415,6 +415,8 @@ def decode(data):
     memory_blocks = []
     for object_id, members in decoder.memory_blocks:
         length = int(members["length64"])
+        if length < 0:
+            raise PdnError(f"{object_id} 番の MemoryBlock の length64 が負の {length} なのだ")
         format_version = source.unpack(">B")
         chunk_size = source.unpack(">I")
         if chunk_size == 0:

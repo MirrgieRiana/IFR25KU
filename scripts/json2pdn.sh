@@ -25,8 +25,9 @@
 # JSON の形と、.pdn の構造は、scripts/pdn2json.sh の冒頭に書いてあるのだ～🌱
 #
 # JSON を書き換えてから戻すときは、中身の整合を取るのは書き換えた側の役目なのだ～🌱
-# このスクリプトが確かめるのは、次のものだけなのだ～🌱
-#   - JSON の一番外側と、その直下の値の型なのだ～🌱
+# このスクリプトが確かめるのは、主に次のものなのだ～🌱
+#   - JSON の一番外側と、その直下の値の型と、format の値なのだ～🌱
+#   - separator の長さと、records の最後のレコードなのだ～🌱
 #   - クラスのレコードのメンバーと、その型と値の対応なのだ～🌱
 #   - MemoryBlock のレコードと、画素のセクションの対応なのだ～🌱
 #   - 書き込む数値が、それぞれのバイト数に収まることなのだ～🌱
@@ -164,7 +165,11 @@ class Encoder:
                 raise PdnError(f"{primitive_type} は 10 進数の文字列のはずなのに {value!r} なのだ")
             self.pack(FIXED_FORMATS[primitive_type], int(value))
         elif primitive_type in FLOAT_BITS_FORMATS and isinstance(value, str):
-            self.pack(FLOAT_BITS_FORMATS[primitive_type], int(value, 16))
+            bits = int(value, 16)
+            size = struct.calcsize(FIXED_FORMATS[primitive_type])
+            if bits >= 1 << size * 8 or math.isfinite(struct.unpack(FIXED_FORMATS[primitive_type], bits.to_bytes(size, "little"))[0]):
+                raise PdnError(f"{primitive_type} の、有限でない値のビット列のはずの文字列が {value!r} なのだ")
+            self.pack(FLOAT_BITS_FORMATS[primitive_type], bits)
         elif primitive_type in FIXED_FORMATS:
             if isinstance(value, bool) or not isinstance(value, (int, float)):
                 raise PdnError(f"{primitive_type} のはずの値が {value!r} なのだ")
@@ -346,6 +351,8 @@ def encode(document):
     check_type(document, "separator", str, "文字列")
     check_type(document, "records", list, "配列")
     check_type(document, "memoryBlocks", list, "配列")
+    if len(document["separator"]) != 4:
+        raise PdnError("separator が、2 バイトの 16 進数の文字列ではないのだ")
     if not all(isinstance(record, dict) for record in document["records"]):
         raise PdnError("records に、オブジェクトでない要素があるのだ")
     if not all(isinstance(memory_block, dict) for memory_block in document["memoryBlocks"]):
@@ -375,6 +382,8 @@ def encode(document):
     for memory_block, (object_id, length) in zip(memory_blocks, encoder.memory_blocks):
         chunk_size = memory_block["chunkSize"]
         chunks = memory_block["chunks"]
+        if length < 0:
+            raise PdnError(f"{object_id} 番の MemoryBlock の length64 が負の {length} なのだ")
         if chunk_size <= 0 or len(chunks) != -(-length // chunk_size):
             raise PdnError(f"{object_id} 番の MemoryBlock のチャンクの数が、length64 と chunkSize から決まる数と合わないのだ")
         sections.pack(">B", memory_block["formatVersion"])
