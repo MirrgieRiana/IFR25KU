@@ -1,6 +1,6 @@
 ---
 title: "G2-MFA　並行宇宙ルール"
-layout: single
+layout: three-column
 header:
   teaser: /assets/images/g2-mfa-parallel-universe-rule/parallel-universe-branching.webp
   teaser_banner: false

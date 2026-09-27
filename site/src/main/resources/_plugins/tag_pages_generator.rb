@@ -26,7 +26,7 @@ module TagPages
       super(site, site.source, "tag", "#{tag}.html")
       data["title"] = "タグ: #{tag}"
       data["description"] = "「#{tag}」のタグが付いた記事の一覧"
-      data["layout"] = "splash"
+      data["layout"] = "one-column"
       data["sidebar"] = false
       data["toc"] = false
       data["tag"] = tag

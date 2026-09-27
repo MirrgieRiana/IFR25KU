@@ -16,8 +16,8 @@
 
 | 知りたいこと | 見るべき一次情報 |
 | --- | --- |
-| 個々の劇場記事の本文・元ネタ | `site/src/pages/resources/YYYY-MM-DD-<slug>/<slug>.md` — フロントマターが `layout: theater` の記事たちなのだ～🌱 |
-| 関連記事の抽選やレイアウトの仕組み | `site/src/main/resources/_layouts/theater.html` 末尾のインラインJSなのだ～🌱 |
+| 個々の劇場記事の本文・元ネタ | `site/src/pages/resources/YYYY-MM-DD-<slug>/<slug>.md` — フロントマターのタグに `IFR劇場` を持つ記事たちなのだ～🌱 |
+| 関連記事の抽選やレイアウトの仕組み | `site/src/main/resources/_includes/recommendations.html` のインラインJSなのだ～🌱 |
 | ゲーム本体のポエム・分類・特性・死亡メッセージの原文 | `common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json` なのだ～🌱 |
 | 劇場の制作ルール・目的・翻訳思想 | `.claude/skills/theater-creator/SKILL.md` なのだ～🌱 |
 | つむぎ・ずんだもんのペルソナ | `MirrgieRiana/MirrgieRiana.github.io` の `.claude/skills/` 下の `kasukabe-tsumugi-persona`・`zundamon-persona` なのだ～🌱 |

@@ -1,9 +1,10 @@
 ---
 title: "G2-MFA　奇形生物"
-layout: paper
+layout: three-column
 header:
   teaser: /2026/09/27/warehouse-outbreak.webp
   teaser_banner: false
+toc: false
 recommendations: true
 tags:
   - MFA

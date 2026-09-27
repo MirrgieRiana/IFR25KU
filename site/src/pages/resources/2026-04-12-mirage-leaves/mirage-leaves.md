@@ -1,10 +1,15 @@
 ---
 title: "【ミラージュの葉】気を付けねばなのだ。【つむぎ×ずんだもん】"
 description: ずんだもんと春日部つむぎがミラージュの葉でカバンを作る話
-layout: theater
+layout: three-column
 header:
   teaser: /2026/04/12/mirage-leaves.teaser.png
+  teaser_banner: false
 tags: [ IFR劇場, ミラージュの葉, カバン ]
+toc: false
+recommendations: true
+recommendations_icon: film
+share: true
 ---
 
 {% say tsumugi3 %}センパーイ、何してんのっ？（ぽんっ{% endsay %}

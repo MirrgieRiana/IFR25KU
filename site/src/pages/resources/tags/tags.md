@@ -1,7 +1,7 @@
 ---
 title: タグ一覧
 description: 記事に付いているタグの一覧
-layout: splash
+layout: one-column
 sidebar: false
 toc: false
 ---

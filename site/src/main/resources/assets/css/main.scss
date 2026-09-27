@@ -276,8 +276,8 @@ a.site-title {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-// splashレイアウトのフルワイド化
-body.layout--splash #main {
+// one-columnレイアウトのフルワイド化
+body.layout--one-column #main {
   max-width: none;
   padding-inline: 0;
 }

@@ -1,10 +1,15 @@
 ---
 title: "【ビルダーズロッド】そこを囲むように並べてほしいのだ。【つむぎ×ずんだもん】"
 description: 春日部つむぎがビルダーズロッドを試してみる話
-layout: theater
+layout: three-column
 header:
   teaser: /2026/04/11/builders-rod.teaser.webp
+  teaser_banner: false
 tags: [ IFR劇場, ビルダーズロッド, 建築, 迷路, 丸石 ]
+toc: false
+recommendations: true
+recommendations_icon: film
+share: true
 ---
 
 ![青緑色の草地が斜面をなす妖精の樹海の中で、手前と奥の平らな場所に丸石が合わせて2個置かれている様子](builders-rod.teaser.webp)

@@ -1,9 +1,10 @@
 ---
 title: "G2-MFA　アストラル線バースト"
-layout: paper
+layout: three-column
 header:
   teaser: /2026/09/28/elytra-fourth-star.webp
   teaser_banner: false
+toc: false
 recommendations: true
 tags:
   - MFA

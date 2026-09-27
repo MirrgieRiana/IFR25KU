@@ -1,10 +1,15 @@
 ---
 title: "【生命の水】生命の水と、妖精と、土と。全部入れるのだ。【つむぎ×ずんだもん】"
 description: 春日部つむぎとずんだもんが生命の水をアタノールに注ぐ話
-layout: theater
+layout: three-column
 header:
   teaser: /2026/04/09/aqua-vitae.teaser.png
+  teaser_banner: false
 tags: [ IFR劇場, 生命の水, アタノール, 豚肉, 肉, 土, 妖精 ]
+toc: false
+recommendations: true
+recommendations_icon: film
+share: true
 ---
 
 {% say tsumugi3 %}やっほ～！センパーイ、何してんの？{% endsay %}

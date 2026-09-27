@@ -1,10 +1,15 @@
 ---
 title: "【ゴールドプロミナリアの実】ぜんぜん金、出ないんだけど……【つむぎ×ずんだもん】"
 description: 春日部つむぎがゴールドプロミナリアの実から金を取り出そうとする話
-layout: theater
+layout: three-column
 header:
   teaser: /2026/04/28/gold-prominaria-berry.teaser.webp
+  teaser_banner: false
 tags: [ IFR劇場, ゴールドプロミナリアの実, ゴールドプロミナリア, プロミナリアの実, プロミナリア, ネザー ]
+toc: false
+recommendations: true
+recommendations_icon: film
+share: true
 ---
 
 ![一面に溶岩が広がり、赤褐色のネザーラックの壁に金鉱石が露出しているネザーの様子](gold-prominaria-berry.teaser.webp)
