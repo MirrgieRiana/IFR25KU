@@ -30,6 +30,8 @@ main:
       - title: Discord
         url: https://discord.gg/bppQyAZtkA
         icon: /assets/images/discord.svg
+  - title: SEARCH
+    url: /search.html
 
 sidebar:
   - title: ページ一覧

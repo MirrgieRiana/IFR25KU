@@ -1,0 +1,16 @@
+---
+title: 検索
+description: IFR25KUの公式サイトのページの全文検索
+layout: one-column
+sidebar: false
+toc: false
+---
+
+<link href="{{ '/pagefind/pagefind-component-ui.css' | relative_url }}" rel="stylesheet">
+<script src="{{ '/pagefind/pagefind-component-ui.js' | relative_url }}" type="module"></script>
+
+<div class="content-wrap">
+  <pagefind-input></pagefind-input>
+  <pagefind-summary></pagefind-summary>
+  <pagefind-results></pagefind-results>
+</div>
