@@ -1,11 +1,8 @@
 ---
 title: "G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ"
-layout: three-column
+layout: news
 header:
   teaser: /2026/09/24/message-reception-diagram.webp
-  teaser_banner: full_width
-toc: false
-recommendations: true
 tags:
   - MFA
   - 外命研

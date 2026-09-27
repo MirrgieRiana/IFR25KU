@@ -1,15 +1,10 @@
 ---
 title: "【磁鉄鉱のツルハシ】溶岩の上でも関係ないもんね！【つむぎ×ずんだもん】"
 description: 春日部つむぎが磁鉄鉱のツルハシを気に入る話
-layout: three-column
+layout: theater
 header:
   teaser: /2026/04/13/magnetite-pickaxe.teaser.webp
-  teaser_banner: false
 tags: [ IFR劇場, 磁鉄鉱のツルハシ, 磁鉄鉱, 採掘, ツルハシ, 鉄鉱石, ダイヤモンド鉱石 ]
-toc: false
-recommendations: true
-recommendations_icon: film
-share: true
 ---
 
 ![薄暗い洞窟の行き止まりに積もった砂利の奥の壁面に、鉄鉱石が1個だけ露出している様子](magnetite-pickaxe.teaser.webp)

@@ -30,7 +30,6 @@ defaults:
       path: ""
     values:
       layout: three-column
-      toc: true
       sidebar:
         nav: sidebar
 

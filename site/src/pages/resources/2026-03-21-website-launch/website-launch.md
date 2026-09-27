@@ -1,15 +1,10 @@
 ---
 title: "【公式サイト】IFR25KU Official Websiteを公開しました【つむぎ×ずんだもん】"
 description: IFR25KUの公式サイトを公開した話
-layout: three-column
+layout: theater
 header:
   teaser: /2026/03/21/website-launch.teaser.webp
-  teaser_banner: false
 tags: [ IFR劇場, アップデート, IFR25KU, 公式サイト, ブログ ]
-toc: false
-recommendations: true
-recommendations_icon: film
-share: true
 ---
 
 ![磨かれた花崗岩で組まれた遺跡内に混沌のキューブがあり、その付近に4個のシャルピエ・ルミナーラが生えている様子](website-launch.teaser.webp)

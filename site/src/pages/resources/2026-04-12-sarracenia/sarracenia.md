@@ -1,15 +1,10 @@
 ---
 title: "【サラセニア】あーしのサラセニア大人気じゃん！！【つむぎ×ずんだもん】"
 description: 春日部つむぎのサラセニアに妖精が訪れる話
-layout: three-column
+layout: theater
 header:
   teaser: /2026/04/12/sarracenia.teaser.webp
-  teaser_banner: false
 tags: [ IFR劇場, サラセニア, 食虫植物, 砂糖, 妖精 ]
-toc: false
-recommendations: true
-recommendations_icon: film
-share: true
 ---
 
 ![薄暗い沼地バイオームに1株だけ生えた、赤みを帯びた黄緑色の葉とピンクの花びらを持つサラセニア](sarracenia.teaser.webp)

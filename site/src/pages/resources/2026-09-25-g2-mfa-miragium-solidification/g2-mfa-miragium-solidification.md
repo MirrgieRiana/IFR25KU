@@ -1,11 +1,8 @@
 ---
 title: "G2-MFA　火炎のエルグを用いた金属ミラジウム粉末の固形化手法"
-layout: three-column
+layout: paper
 header:
   teaser: /2026/09/25/solidification-process.webp
-  teaser_banner: false
-toc: false
-recommendations: true
 tags:
   - MFA
   - ミラジウム
