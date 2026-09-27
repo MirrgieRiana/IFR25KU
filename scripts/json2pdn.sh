@@ -214,7 +214,7 @@ class Encoder:
     def members(self, class_name, names, types, values):
         unknown = set(values) - set(names)
         if unknown:
-            raise PdnError(f"class {class_name} has no members named {sorted(unknown)}")
+            raise PdnError(f"class {class_name} has no members named {', '.join(sorted(unknown))}")
         skip = 0
         for name, member_type in zip(names, types):
             if skip > 0:

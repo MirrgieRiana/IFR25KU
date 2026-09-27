@@ -55,7 +55,7 @@
 #     "trailing": 画素のデータの後ろに残ったバイト列の Base64 で、残っていたときだけ現れるのだ～🌱
 #   }
 #
-#   データは、展開も圧縮し直しもせずに、ファイルの中のバイト列のまま Base64 にするのだ～🌱
+#   データは、展開も圧縮し直しもせずに、ファイルの中の gzip のまま Base64 にするのだ～🌱
 #   シリアル化データのレコードは、"$record" に [MS-NRBF] のレコードの名前を持つオブジェクトなのだ～🌱
 #   クラスのレコードは、"memberTypes" と "members" を持つのだ～🌱
 #   "memberTypes" は、"key" にメンバーの名前を、"type" に型を持つエントリーの配列なのだ～🌱
@@ -185,7 +185,7 @@ class Input:
             if byte & 0x80 == 0:
                 break
         else:
-            raise PdnError(f"string length at offset {self.position} is longer than 5 bytes")
+            raise PdnError(f"string length at offset {self.position} does not end within 5 bytes")
         return self.take(length).decode("utf-8")
 
 
