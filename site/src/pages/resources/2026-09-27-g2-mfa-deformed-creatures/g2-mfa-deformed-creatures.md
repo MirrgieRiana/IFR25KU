@@ -90,7 +90,7 @@ tags:
 {% endpaper_column %}
 {% paper_column %}
 
-{% paper_figure "warehouse-outbreak.webp" "図２　奇形生物の発生した倉庫" alt="丸石の道に面した木造の倉庫の扉で、扉の窓越しに、水色と青と緑の人型の姿が見える" %}
+{% paper_figure "warehouse-outbreak.webp" "図２　奇形生物の発生した倉庫" alt="丸石の道に面した木造の倉庫の扉で、扉の窓越しに、水色と青と緑の色が見える" %}
 
 ## 3. 対策
 
