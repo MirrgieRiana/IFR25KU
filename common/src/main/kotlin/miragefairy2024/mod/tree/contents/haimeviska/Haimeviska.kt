@@ -5,8 +5,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeCard
-import miragefairy2024.mod.tree.contents.PlasticTreeFamilyTreeDecorator
-import miragefairy2024.mod.tree.contents.PlasticTreeFamilyTreeDecoratorCard
+import miragefairy2024.mod.tree.contents.plastictreefamily.PlasticTreeFamilyTreeDecorator
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -98,7 +97,6 @@ fun initHaimeviska() {
     Registration(BuiltInRegistries.TRUNK_PLACER_TYPE, SmallHaimeviskaTrunkPlacerCard.identifier) { SmallHaimeviskaTrunkPlacerCard.type }.register()
     Registration(BuiltInRegistries.FOLIAGE_PLACER_TYPE, GiantHaimeviskaFoliagePlacerCard.identifier) { GiantHaimeviskaFoliagePlacerCard.type }.register()
     Registration(BuiltInRegistries.FOLIAGE_PLACER_TYPE, SmallHaimeviskaFoliagePlacerCard.identifier) { SmallHaimeviskaFoliagePlacerCard.type }.register()
-    Registration(BuiltInRegistries.TREE_DECORATOR_TYPE, PlasticTreeFamilyTreeDecoratorCard.identifier) { PlasticTreeFamilyTreeDecoratorCard.type }.register()
 
     // WoodType
     HAIMEVISKA_BLOCK_SET_TYPE = BlockSetTypeBuilder().register(MirageFairy2024.identifier("haimeviska"))
