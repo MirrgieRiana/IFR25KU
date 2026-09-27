@@ -13,8 +13,8 @@
 #
 # 終了コード:
 #   0 は、変換できたときなのだ～🌱
-#   1 は、JSON がこのスクリプトの確かめに通らなかったときなのだ～🌱
-#   このときは、理由を標準エラー出力へ書くのだ～🌱
+#   1 は、読むファイルが無いときと、JSON がこのスクリプトの確かめに通らなかったときなのだ～🌱
+#   このときは、理由を英文で標準エラー出力へ書くのだ～🌱
 #   それ以外の失敗では、Python のトレースバックがそのまま出て、終了コードも 1 になるのだ～🌱
 #   2 は、引数が 2 個以上あるときと、-h と --help のときで、使い方を標準エラー出力へ書くのだ～🌱
 #
@@ -30,7 +30,7 @@
 #   - separator の長さと、records の最後のレコードなのだ～🌱
 #   - クラスのレコードのメンバーと、その型と値の対応なのだ～🌱
 #   - MemoryBlock のレコードと、画素のセクションの対応なのだ～🌱
-#   - 書き込む数値が、それぞれのバイト数に収まることなのだ～🌱
+#   - 書き込む数値が、真偽値ではなく、それぞれのバイト数に収まることなのだ～🌱
 #
 # この説明は、次のスキルに従って書いてあるのだ～🌱
 #   https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/markdown-max-line-length/SKILL.md
@@ -42,6 +42,8 @@ program=$(cat <<'EOF'
 import base64
 import json
 import math
+import os
+import re
 import struct
 import sys
 
@@ -110,8 +112,12 @@ class PdnError(Exception):
 
 def lookup(table, key, what):
     if key not in table:
-        raise PdnError(f"未知の{what} {key!r} なのだ")
+        raise PdnError(f"unsupported {what} {key!r}")
     return table[key]
+
+
+def is_member_type_entry(entry):
+    return isinstance(entry, dict) and set(entry) == {"key", "type"}
 
 
 class Encoder:
@@ -121,10 +127,13 @@ class Encoder:
         self.memory_blocks = []
 
     def pack(self, struct_format, value):
+        # 真偽値は Python では整数としても書けてしまうから、先に弾くのだ～🌱
+        if isinstance(value, bool):
+            raise PdnError(f"expected a number, but got {value!r}")
         try:
             self.output += struct.pack(struct_format, value)
         except struct.error as e:
-            raise PdnError(f"値 {value!r} を書けないのだ: {e}")
+            raise PdnError(f"cannot write value {value!r}: {e}")
 
     def byte(self, value):
         self.pack("<B", value)
@@ -134,7 +143,7 @@ class Encoder:
 
     def length_prefixed_string(self, value):
         if not isinstance(value, str):
-            raise PdnError(f"文字列のはずの値が {value!r} なのだ")
+            raise PdnError(f"expected a string, but got {value!r}")
         data = value.encode("utf-8")
         # 長さは、下位から 7 ビットずつ書いて、続きがあるバイトは最上位のビットを立てるのだ～🌱
         length = len(data)
@@ -149,33 +158,35 @@ class Encoder:
     def primitive(self, primitive_type, value):
         if primitive_type == "Boolean":
             if not isinstance(value, bool):
-                raise PdnError(f"Boolean のはずの値が {value!r} なのだ")
+                raise PdnError(f"expected a Boolean value, but got {value!r}")
             self.byte(1 if value else 0)
         elif primitive_type == "Char":
             if not isinstance(value, str) or len(value) != 1:
-                raise PdnError(f"Char のはずの値が {value!r} なのだ")
+                raise PdnError(f"expected a string of a single Char, but got {value!r}")
             self.output += value.encode("utf-8")
         elif primitive_type in ("Decimal", "String"):
             self.length_prefixed_string(value)
         elif primitive_type == "Null":
             if value is not None:
-                raise PdnError(f"Null のはずの値が {value!r} なのだ")
+                raise PdnError(f"expected null for Null, but got {value!r}")
         elif primitive_type in STRING_INTEGER_TYPES:
             if not isinstance(value, str):
-                raise PdnError(f"{primitive_type} は 10 進数の文字列のはずなのに {value!r} なのだ")
+                raise PdnError(f"expected a decimal string for {primitive_type}, but got {value!r}")
             self.pack(FIXED_FORMATS[primitive_type], int(value))
         elif primitive_type in FLOAT_BITS_FORMATS and isinstance(value, str):
+            if not re.fullmatch(r"0x[0-9a-fA-F]+", value):
+                raise PdnError(f"expected a number or a 0x-prefixed hexadecimal string for {primitive_type}, but got {value!r}")
             bits = int(value, 16)
             size = struct.calcsize(FIXED_FORMATS[primitive_type])
             if bits >= 1 << size * 8 or math.isfinite(struct.unpack(FIXED_FORMATS[primitive_type], bits.to_bytes(size, "little"))[0]):
-                raise PdnError(f"{primitive_type} の、有限でない値のビット列のはずの文字列が {value!r} なのだ")
+                raise PdnError(f"expected the bit pattern of a non-finite {primitive_type}, but got {value!r}")
             self.pack(FLOAT_BITS_FORMATS[primitive_type], bits)
         elif primitive_type in FIXED_FORMATS:
             if isinstance(value, bool) or not isinstance(value, (int, float)):
-                raise PdnError(f"{primitive_type} のはずの値が {value!r} なのだ")
+                raise PdnError(f"expected a number for {primitive_type}, but got {value!r}")
             self.pack(FIXED_FORMATS[primitive_type], value)
         else:
-            raise PdnError(f"未知のプリミティブ型 {primitive_type!r} なのだ")
+            raise PdnError(f"unsupported primitive type {primitive_type!r}")
 
     def primitive_array(self, primitive_type, record):
         if primitive_type == "Byte":
@@ -190,7 +201,7 @@ class Encoder:
     def additional_info(self, member_type):
         binary_type = member_type["binaryType"]
         if binary_type in ("Primitive", "PrimitiveArray"):
-            self.byte(lookup(PRIMITIVE_TYPE_CODES, member_type["primitiveType"], "プリミティブ型"))
+            self.byte(lookup(PRIMITIVE_TYPE_CODES, member_type["primitiveType"], "primitive type"))
         elif binary_type == "SystemClass":
             self.length_prefixed_string(member_type["className"])
         elif binary_type == "Class":
@@ -207,27 +218,27 @@ class Encoder:
     def members(self, class_name, names, types, values):
         unknown = set(values) - set(names)
         if unknown:
-            raise PdnError(f"クラス {class_name} に無いメンバー {sorted(unknown)} があるのだ")
+            raise PdnError(f"class {class_name} has no members named {sorted(unknown)}")
         skip = 0
         for name, member_type in zip(names, types):
             if skip > 0:
                 if name in values:
-                    raise PdnError(f"クラス {class_name} のメンバー {name} は、前の ObjectNullMultiple が埋めているはずなのだ")
+                    raise PdnError(f"member {name} of class {class_name} must be absent because the preceding ObjectNullMultiple covers it")
                 skip -= 1
                 continue
             if name not in values:
-                raise PdnError(f"クラス {class_name} のメンバー {name} が無いのだ")
+                raise PdnError(f"member {name} of class {class_name} is missing")
             value = values[name]
             if member_type["binaryType"] == "Primitive":
                 self.primitive(member_type["primitiveType"], value)
                 continue
             if not isinstance(value, dict):
-                raise PdnError(f"クラス {class_name} のメンバー {name} は、レコードのはずなのに {value!r} なのだ")
+                raise PdnError(f"expected a record for member {name} of class {class_name}, but got {value!r}")
             self.record_with_libraries(value)
             if value["$record"] in NULL_MULTIPLE_RECORDS:
                 skip = value["count"] - 1
         if skip > 0:
-            raise PdnError(f"クラス {class_name} の ObjectNullMultiple のレコードが、メンバーの数を {skip} 個超えているのだ")
+            raise PdnError(f"ObjectNullMultiple record in class {class_name} covers {skip} more members than remain")
 
     def items(self, length, items):
         covered = 0
@@ -235,7 +246,7 @@ class Encoder:
             self.record_with_libraries(item)
             covered += item["count"] if item["$record"] in NULL_MULTIPLE_RECORDS else 1
         if covered != length:
-            raise PdnError(f"配列の要素が {covered} 個分あって、長さの {length} と合わないのだ")
+            raise PdnError(f"array items cover {covered} elements, which does not match the length {length}")
 
     def object_members(self, object_id, class_name, names, types, values):
         self.members(class_name, names, types, values)
@@ -244,7 +255,7 @@ class Encoder:
 
     def record(self, record):
         record_type = record["$record"]
-        self.byte(lookup(RECORD_CODES, record_type, "レコードの種類"))
+        self.byte(lookup(RECORD_CODES, record_type, "record type"))
         if record_type == "SerializedStreamHeader":
             self.int32(record["rootId"])
             self.int32(record["headerId"])
@@ -254,24 +265,24 @@ class Encoder:
             self.int32(record["objectId"])
             self.int32(record["metadataId"])
             if record["metadataId"] not in self.classes:
-                raise PdnError(f"ClassWithId のレコードが、まだ現れていない {record['metadataId']} 番のレコードを指しているのだ")
+                raise PdnError(f"ClassWithId record refers to record {record['metadataId']}, which has not appeared yet")
             class_name, names, types = self.classes[record["metadataId"]]
             self.object_members(record["objectId"], class_name, names, types, record["members"])
         elif record_type in ("SystemClassWithMembersAndTypes", "ClassWithMembersAndTypes"):
             entries = record["memberTypes"]
-            if not isinstance(entries, list) or not all(isinstance(entry, dict) and set(entry) == {"key", "value"} for entry in entries):
-                raise PdnError(f"{record['objectId']} 番のレコードの memberTypes が、key と value を持つエントリーの配列ではないのだ")
+            if not isinstance(entries, list) or not all(is_member_type_entry(entry) for entry in entries):
+                raise PdnError(f"memberTypes of record {record['objectId']} must be an array of objects with key and type")
             names = [entry["key"] for entry in entries]
-            types = [entry["value"] for entry in entries]
+            types = [entry["type"] for entry in entries]
             if len(set(names)) != len(names):
-                raise PdnError(f"{record['objectId']} 番のレコードの memberTypes に、同じ名前のメンバーがあるのだ")
+                raise PdnError(f"memberTypes of record {record['objectId']} has duplicate member names")
             self.int32(record["objectId"])
             self.length_prefixed_string(record["className"])
             self.int32(len(names))
             for name in names:
                 self.length_prefixed_string(name)
             for member_type in types:
-                self.byte(lookup(BINARY_TYPE_CODES, member_type["binaryType"], "型の種類"))
+                self.byte(lookup(BINARY_TYPE_CODES, member_type["binaryType"], "binary type"))
             for member_type in types:
                 self.additional_info(member_type)
             if record_type == "ClassWithMembersAndTypes":
@@ -282,7 +293,7 @@ class Encoder:
             self.int32(record["objectId"])
             self.length_prefixed_string(record["value"])
         elif record_type == "MemberPrimitiveTyped":
-            self.byte(lookup(PRIMITIVE_TYPE_CODES, record["primitiveType"], "プリミティブ型"))
+            self.byte(lookup(PRIMITIVE_TYPE_CODES, record["primitiveType"], "primitive type"))
             self.primitive(record["primitiveType"], record["value"])
         elif record_type == "MemberReference":
             self.int32(record["idRef"])
@@ -293,7 +304,7 @@ class Encoder:
             self.length_prefixed_string(record["libraryName"])
         elif record_type in NULL_MULTIPLE_RECORDS:
             if record["count"] < 1:
-                raise PdnError(f"{record_type} のレコードが埋める個数が {record['count']} なのだ")
+                raise PdnError(f"{record_type} record must cover at least 1 member, but got {record['count']}")
             if record_type == "ObjectNullMultiple256":
                 self.byte(record["count"])
             else:
@@ -302,7 +313,7 @@ class Encoder:
             self.int32(record["objectId"])
             length_position = len(self.output)
             self.int32(0)
-            self.byte(lookup(PRIMITIVE_TYPE_CODES, record["primitiveType"], "プリミティブ型"))
+            self.byte(lookup(PRIMITIVE_TYPE_CODES, record["primitiveType"], "primitive type"))
             length = self.primitive_array(record["primitiveType"], record)
             self.output[length_position:length_position + 4] = struct.pack("<i", length)
         elif record_type in ("ArraySingleObject", "ArraySingleString"):
@@ -316,51 +327,51 @@ class Encoder:
         array_type = record["binaryArrayType"]
         lengths = record["lengths"]
         self.int32(record["objectId"])
-        self.byte(lookup(BINARY_ARRAY_TYPE_CODES, array_type, "配列の種類"))
+        self.byte(lookup(BINARY_ARRAY_TYPE_CODES, array_type, "binary array type"))
         self.int32(len(lengths))
         for length in lengths:
             self.int32(length)
         if array_type.endswith("Offset"):
             lower_bounds = record["lowerBounds"]
             if len(lower_bounds) != len(lengths):
-                raise PdnError(f"{record['objectId']} 番の配列の lowerBounds の数が、次元の数と合わないのだ")
+                raise PdnError(f"number of lowerBounds of array {record['objectId']} does not match its rank")
             for lower_bound in lower_bounds:
                 self.int32(lower_bound)
         item_type = record["itemType"]
-        self.byte(lookup(BINARY_TYPE_CODES, item_type["binaryType"], "型の種類"))
+        self.byte(lookup(BINARY_TYPE_CODES, item_type["binaryType"], "binary type"))
         self.additional_info(item_type)
         length = math.prod(lengths)
         if item_type["binaryType"] == "Primitive":
             if self.primitive_array(item_type["primitiveType"], record) != length:
-                raise PdnError(f"{record['objectId']} 番の配列の値の数が、長さの {length} と合わないのだ")
+                raise PdnError(f"number of values of array {record['objectId']} does not match the length {length}")
         else:
             self.items(length, record["items"])
 
 
 def check_type(document, key, value_type, what):
     if not isinstance(document.get(key), value_type):
-        raise PdnError(f"{key} が{what}ではないのだ")
+        raise PdnError(f"{key} must be {what}")
 
 
 def encode(document):
     if not isinstance(document, dict):
-        raise PdnError("JSON の一番外側が、オブジェクトではないのだ")
+        raise PdnError("the top level of the JSON must be an object")
     if document.get("format") != "pdn2json/1":
-        raise PdnError("format が pdn2json/1 ではないから、pdn2json.sh の JSON ではないのだ")
-    check_type(document, "pdnHeader", str, "文字列")
-    check_type(document, "separator", str, "文字列")
-    check_type(document, "records", list, "配列")
-    check_type(document, "memoryBlocks", list, "配列")
+        raise PdnError("not a JSON written by pdn2json.sh: format must be pdn2json/1")
+    check_type(document, "pdnHeader", str, "a string")
+    check_type(document, "separator", str, "a string")
+    check_type(document, "records", list, "an array")
+    check_type(document, "memoryBlocks", list, "an array")
     if len(document["separator"]) != 4:
-        raise PdnError("separator が、2 バイトの 16 進数の文字列ではないのだ")
+        raise PdnError("separator must be a hexadecimal string of 2 bytes")
     if not all(isinstance(record, dict) for record in document["records"]):
-        raise PdnError("records に、オブジェクトでない要素があるのだ")
+        raise PdnError("records must contain only objects")
     if not all(isinstance(memory_block, dict) for memory_block in document["memoryBlocks"]):
-        raise PdnError("memoryBlocks に、オブジェクトでない要素があるのだ")
+        raise PdnError("memoryBlocks must contain only objects")
     output = bytearray(b"PDN3")
     header = document["pdnHeader"].encode("utf-8")
     if len(header) >= 1 << 24:
-        raise PdnError("ヘッダーの XML が、3 バイトで表せる長さを超えているのだ")
+        raise PdnError("pdnHeader is too long for a 3-byte length")
     output += len(header).to_bytes(3, "little")
     output += header
     output += bytes.fromhex(document["separator"])
@@ -368,7 +379,7 @@ def encode(document):
     encoder = Encoder()
     records = document["records"]
     if not records or records[-1].get("$record") != "MessageEnd":
-        raise PdnError("records の最後が MessageEnd のレコードではないのだ")
+        raise PdnError("the last record must be MessageEnd")
     for record in records:
         encoder.record_with_libraries(record)
     output += encoder.output
@@ -377,15 +388,15 @@ def encode(document):
     expected_ids = [object_id for object_id, _ in encoder.memory_blocks]
     actual_ids = [memory_block["objectId"] for memory_block in memory_blocks]
     if actual_ids != expected_ids:
-        raise PdnError(f"memoryBlocks の objectId の順序 {actual_ids} が、レコードの中の MemoryBlock の順序 {expected_ids} と合わないのだ")
+        raise PdnError(f"objectId order of memoryBlocks {actual_ids} does not match the order of MemoryBlock records {expected_ids}")
     sections = Encoder()
     for memory_block, (object_id, length) in zip(memory_blocks, encoder.memory_blocks):
         chunk_size = memory_block["chunkSize"]
         chunks = memory_block["chunks"]
         if length < 0:
-            raise PdnError(f"{object_id} 番の MemoryBlock の length64 が負の {length} なのだ")
+            raise PdnError(f"length64 of MemoryBlock {object_id} is negative: {length}")
         if chunk_size <= 0 or len(chunks) != -(-length // chunk_size):
-            raise PdnError(f"{object_id} 番の MemoryBlock のチャンクの数が、length64 と chunkSize から決まる数と合わないのだ")
+            raise PdnError(f"number of chunks of MemoryBlock {object_id} does not match the number determined by length64 and chunkSize")
         sections.pack(">B", memory_block["formatVersion"])
         sections.pack(">I", chunk_size)
         for chunk in chunks:
@@ -400,12 +411,22 @@ def encode(document):
     return bytes(output)
 
 
+def check_file(path):
+    if path == "-":
+        return
+    if not os.path.exists(path):
+        raise PdnError(f"file not found: {path}")
+    if not os.path.isfile(path):
+        raise PdnError(f"not a regular file: {path}")
+
+
 def main(script_name, args):
-    if len(args) > 1 or args[:1] in (["-h"], ["--help"]):
-        print(f"使い方: {script_name} [ファイル]", file=sys.stderr)
+    if len(args) > 1 or (args and args[0] in ("-h", "--help")):
+        print(f"usage: {script_name} [FILE]", file=sys.stderr)
         return 2
     path = args[0] if args else "-"
     try:
+        check_file(path)
         if path == "-":
             document = json.load(sys.stdin)
         else:

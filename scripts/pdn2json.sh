@@ -14,8 +14,8 @@
 #
 # 終了コード:
 #   0 は、変換できたときなのだ～🌱
-#   1 は、読んだデータがこのスクリプトの確かめに通らなかったときなのだ～🌱
-#   このときは、理由を標準エラー出力へ書くのだ～🌱
+#   1 は、読むファイルが無いときと、読んだデータがこのスクリプトの確かめに通らなかったときなのだ～🌱
+#   このときは、理由を英文で標準エラー出力へ書くのだ～🌱
 #   それ以外の失敗では、Python のトレースバックがそのまま出て、終了コードも 1 になるのだ～🌱
 #   2 は、引数が 2 個以上あるときと、-h と --help のときで、使い方を標準エラー出力へ書くのだ～🌱
 #
@@ -58,7 +58,7 @@
 #   データは、展開も圧縮し直しもせずに、ファイルの中のバイト列のまま Base64 にするのだ～🌱
 #   シリアル化データのレコードは、"$record" に [MS-NRBF] のレコードの名前を持つオブジェクトなのだ～🌱
 #   クラスのレコードは、"memberTypes" と "members" を持つのだ～🌱
-#   "memberTypes" は、"key" にメンバーの名前を、"value" に型を持つエントリーの配列なのだ～🌱
+#   "memberTypes" は、"key" にメンバーの名前を、"type" に型を持つエントリーの配列なのだ～🌱
 #   その並びが、.pdn の中のメンバーの並びなのだ～🌱
 #   "members" は、メンバーの名前ごとの値を持つオブジェクトなのだ～🌱
 #   ClassWithId のレコードは、型を持たずに、"metadataId" が指すレコードの型を使うのだ～🌱
@@ -66,12 +66,13 @@
 #   Char と Decimal と String は、文字列になるのだ～🌱
 #   Decimal は、.pdn の中でも 10 進数の文字列だからなのだ～🌱
 #   64 ビットの整数と DateTime と TimeSpan は、10 進数の文字列にするのだ～🌱
-#   Single と Double のうち、有限でない値は、ビット列の 16 進数の文字列にするのだ～🌱
+#   Single と Double のうち、有限でない値は、`0x` で始まるビット列の 16 進数の文字列にするのだ～🌱
 #   Byte の配列は、値の配列の代わりに "base64" を持つのだ～🌱
 #   値の前に置かれた BinaryLibrary のレコードは、その値のレコードの "$libraries" へ入れるのだ～🌱
 #   ObjectNullMultiple のレコードが複数のメンバーを埋めるときは、最初のメンバーだけがそのレコードを持つのだ～🌱
 #   残りのメンバーは、"members" に現れないのだ～🌱
-#   型を持たないクラスのレコードと、MethodCall と MethodReturn のレコードには、対応していないのだ～🌱
+#   型を持たないクラスのレコードの SystemClassWithMembers と ClassWithMembers には、対応していないのだ～🌱
+#   MethodCall と MethodReturn のレコードにも、対応していないのだ～🌱
 #
 # この説明は、次のスキルに従って書いてあるのだ～🌱
 #   https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/markdown-max-line-length/SKILL.md
@@ -83,6 +84,7 @@ program=$(cat <<'EOF'
 import base64
 import json
 import math
+import os
 import struct
 import sys
 
@@ -160,7 +162,7 @@ class Input:
 
     def take(self, size):
         if self.position + size > len(self.data):
-            raise PdnError(f"{self.position} バイト目から {size} バイトを読もうとしたところで、データが終わっているのだ")
+            raise PdnError(f"unexpected end of data: needed {size} bytes at offset {self.position}")
         chunk = self.data[self.position:self.position + size]
         self.position += size
         return chunk
@@ -183,7 +185,7 @@ class Input:
             if byte & 0x80 == 0:
                 break
         else:
-            raise PdnError(f"{self.position} バイト目の文字列の長さが 5 バイトを超えているのだ")
+            raise PdnError(f"string length at offset {self.position} is longer than 5 bytes")
         return self.take(length).decode("utf-8")
 
 
@@ -197,7 +199,7 @@ class Decoder:
         if primitive_type == "Boolean":
             byte = self.source.byte()
             if byte not in (0, 1):
-                raise PdnError(f"Boolean の値が {byte} なのだ")
+                raise PdnError(f"Boolean value must be 0 or 1, but got {byte}")
             return byte == 1
         if primitive_type == "Char":
             # Char は UTF-8 の 1 文字で、先頭のバイトから長さが決まるのだ～🌱
@@ -220,7 +222,7 @@ class Decoder:
     def primitive_type(self):
         code = self.source.byte()
         if code not in PRIMITIVE_TYPES:
-            raise PdnError(f"未知のプリミティブ型 {code} なのだ")
+            raise PdnError(f"unknown primitive type code {code}")
         return PRIMITIVE_TYPES[code]
 
     def primitive_array(self, primitive_type, length):
@@ -233,7 +235,7 @@ class Decoder:
         types = []
         for code in codes:
             if code >= len(BINARY_TYPES):
-                raise PdnError(f"未知の型の種類 {code} なのだ")
+                raise PdnError(f"unknown binary type code {code}")
             types.append(self.additional_info(BINARY_TYPES[code]))
         return types
 
@@ -274,12 +276,12 @@ class Decoder:
             if record["$record"] in NULL_MULTIPLE_RECORDS:
                 skip = record["count"] - 1
         if skip > 0:
-            raise PdnError(f"ObjectNullMultiple のレコードが、メンバーの数を {skip} 個超えているのだ")
+            raise PdnError(f"ObjectNullMultiple record covers {skip} more members than remain")
         return values
 
     def items(self, length):
         if length < 0:
-            raise PdnError(f"配列の長さが負の {length} なのだ")
+            raise PdnError(f"array length is negative: {length}")
         items = []
         covered = 0
         while covered < length:
@@ -287,7 +289,7 @@ class Decoder:
             items.append(record)
             covered += record["count"] if record["$record"] in NULL_MULTIPLE_RECORDS else 1
         if covered != length:
-            raise PdnError(f"配列の要素が、長さの {length} を {covered - length} 個超えているのだ")
+            raise PdnError(f"array items exceed the length {length} by {covered - length}")
         return items
 
     def class_record(self, record_type, has_library):
@@ -295,16 +297,16 @@ class Decoder:
         class_name = self.source.length_prefixed_string()
         count = self.source.int32()
         if count < 0:
-            raise PdnError(f"クラス {class_name} のメンバーの数が {count} なのだ")
+            raise PdnError(f"member count of class {class_name} is negative: {count}")
         names = [self.source.length_prefixed_string() for _ in range(count)]
         if len(set(names)) != len(names):
-            raise PdnError(f"クラス {class_name} に、同じ名前のメンバーがあるのだ")
+            raise PdnError(f"class {class_name} has duplicate member names")
         types = self.member_types(count)
         record = {"$record": record_type, "objectId": object_id, "className": class_name}
         if has_library:
             record["libraryId"] = self.source.int32()
         self.classes[object_id] = (class_name, names, types)
-        record["memberTypes"] = [{"key": name, "value": member_type} for name, member_type in zip(names, types)]
+        record["memberTypes"] = [{"key": name, "type": member_type} for name, member_type in zip(names, types)]
         record["members"] = self.object_members(object_id, class_name, names, types)
         return record
 
@@ -317,7 +319,7 @@ class Decoder:
     def record(self):
         code = self.source.byte()
         if code not in RECORD_TYPES:
-            raise PdnError(f"{self.source.position - 1} バイト目に、未知のレコードの種類 {code} があるのだ")
+            raise PdnError(f"unknown record type code {code} at offset {self.source.position - 1}")
         record_type = RECORD_TYPES[code]
         if record_type == "SerializedStreamHeader":
             return {
@@ -331,7 +333,7 @@ class Decoder:
             object_id = self.source.int32()
             metadata_id = self.source.int32()
             if metadata_id not in self.classes:
-                raise PdnError(f"ClassWithId のレコードが、まだ現れていない {metadata_id} 番のレコードを指しているのだ")
+                raise PdnError(f"ClassWithId record refers to record {metadata_id}, which has not appeared yet")
             class_name, names, types = self.classes[metadata_id]
             members = self.object_members(object_id, class_name, names, types)
             return {"$record": record_type, "objectId": object_id, "metadataId": metadata_id, "members": members}
@@ -353,13 +355,13 @@ class Decoder:
         if record_type in NULL_MULTIPLE_RECORDS:
             count = self.source.byte() if record_type == "ObjectNullMultiple256" else self.source.int32()
             if count < 1:
-                raise PdnError(f"{record_type} のレコードが埋める個数が {count} なのだ")
+                raise PdnError(f"{record_type} record must cover at least 1 member, but got {count}")
             return {"$record": record_type, "count": count}
         if record_type == "ArraySinglePrimitive":
             object_id = self.source.int32()
             length = self.source.int32()
             if length < 0:
-                raise PdnError(f"{object_id} 番の配列の長さが負の {length} なのだ")
+                raise PdnError(f"length of array {object_id} is negative: {length}")
             primitive_type = self.primitive_type()
             return {"$record": record_type, "objectId": object_id, "primitiveType": primitive_type, **self.primitive_array(primitive_type, length)}
         if record_type in ("ArraySingleObject", "ArraySingleString"):
@@ -368,24 +370,24 @@ class Decoder:
             return {"$record": record_type, "objectId": object_id, "length": length, "items": self.items(length)}
         if record_type == "BinaryArray":
             return self.binary_array()
-        raise PdnError(f"レコードの種類 {record_type} には、対応していないのだ")
+        raise PdnError(f"unsupported record type {record_type}")
 
     def binary_array(self):
         object_id = self.source.int32()
         code = self.source.byte()
         if code >= len(BINARY_ARRAY_TYPES):
-            raise PdnError(f"未知の配列の種類 {code} なのだ")
+            raise PdnError(f"unknown binary array type code {code}")
         array_type = BINARY_ARRAY_TYPES[code]
         rank = self.source.int32()
         lengths = [self.source.int32() for _ in range(rank)]
         if any(length < 0 for length in lengths):
-            raise PdnError(f"{object_id} 番の配列の長さ {lengths} に、負の値があるのだ")
+            raise PdnError(f"lengths of array {object_id} contain a negative value: {lengths}")
         record = {"$record": "BinaryArray", "objectId": object_id, "binaryArrayType": array_type, "lengths": lengths}
         if array_type.endswith("Offset"):
             record["lowerBounds"] = [self.source.int32() for _ in range(rank)]
         code = self.source.byte()
         if code >= len(BINARY_TYPES):
-            raise PdnError(f"未知の型の種類 {code} なのだ")
+            raise PdnError(f"unknown binary type code {code}")
         item_type = self.additional_info(BINARY_TYPES[code])
         record["itemType"] = item_type
         length = math.prod(lengths)
@@ -399,7 +401,7 @@ class Decoder:
 def decode(data):
     source = Input(data)
     if source.take(4) != b"PDN3":
-        raise PdnError("先頭が PDN3 ではないから、.pdn ファイルではないのだ")
+        raise PdnError("not a .pdn file: it does not start with PDN3")
     header_size = int.from_bytes(source.take(3), "little")
     document = {"format": "pdn2json/1", "pdnHeader": source.take(header_size).decode("utf-8"), "separator": source.take(2).hex()}
 
@@ -416,11 +418,11 @@ def decode(data):
     for object_id, members in decoder.memory_blocks:
         length = int(members["length64"])
         if length < 0:
-            raise PdnError(f"{object_id} 番の MemoryBlock の length64 が負の {length} なのだ")
+            raise PdnError(f"length64 of MemoryBlock {object_id} is negative: {length}")
         format_version = source.unpack(">B")
         chunk_size = source.unpack(">I")
         if chunk_size == 0:
-            raise PdnError(f"{object_id} 番の MemoryBlock のチャンクの大きさが 0 なのだ")
+            raise PdnError(f"chunk size of MemoryBlock {object_id} is 0")
         chunks = []
         for _ in range(-(-length // chunk_size)):
             number = source.unpack(">I")
@@ -434,12 +436,22 @@ def decode(data):
     return document
 
 
+def check_file(path):
+    if path == "-":
+        return
+    if not os.path.exists(path):
+        raise PdnError(f"file not found: {path}")
+    if not os.path.isfile(path):
+        raise PdnError(f"not a regular file: {path}")
+
+
 def main(script_name, args):
-    if len(args) > 1 or args[:1] in (["-h"], ["--help"]):
-        print(f"使い方: {script_name} [ファイル]", file=sys.stderr)
+    if len(args) > 1 or (args and args[0] in ("-h", "--help")):
+        print(f"usage: {script_name} [FILE]", file=sys.stderr)
         return 2
     path = args[0] if args else "-"
     try:
+        check_file(path)
         if path == "-":
             data = sys.stdin.buffer.read()
         else:
