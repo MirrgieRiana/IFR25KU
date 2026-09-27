@@ -42,8 +42,6 @@ object SmallHaimeviskaTrunkPlacer : TrunkPlacer(8, 4, 0) {
         config: TreeConfiguration,
     ): List<FoliagePlacer.FoliageAttachment> {
 
-        setDirtAt(level, blockSetter, random, pos.below(), config)
-
         (0..<freeTreeHeight).forEach { y ->
             placeLog(level, blockSetter, random, pos.above(y), config)
         }
