@@ -2,10 +2,6 @@
   "feature": "miragefairy2024:resin_cement_sap",
   "placement": [
     {
-      "type": "minecraft:rarity_filter",
-      "chance": 4
-    },
-    {
       "type": "minecraft:random_offset",
       "xz_spread": 8,
       "y_spread": 0

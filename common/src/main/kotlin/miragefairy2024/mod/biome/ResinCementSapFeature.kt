@@ -9,7 +9,6 @@ import miragefairy2024.util.Registration
 import miragefairy2024.util.center
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
-import miragefairy2024.util.per
 import miragefairy2024.util.register
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
@@ -33,7 +32,7 @@ object ResinCementSapFeatureCard {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature(placedFeatureKey) { per(4) + flower(center, surface) + onResinCement }
+                registerPlacedFeature(placedFeatureKey) { flower(center, surface) + onResinCement }
             }
         }
     }
