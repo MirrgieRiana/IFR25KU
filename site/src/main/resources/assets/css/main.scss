@@ -978,16 +978,18 @@ img[src$=".png" i] {
   text-align: center;
 }
 
-// 論文のセクションの下位の見出し（paper_subsectionタグ）
-.paper__subsection {
+// 論文のセクションの下位の見出し（Markdownの###）
+.paper h3 {
   margin: 1.5em 0 0.5em;
   font-size: 1.05em;
   font-weight: bold;
 }
 
-// 論文のセクション見出し（paper_sectionタグ）
-.paper__section {
+// 論文のセクション見出し（Markdownの##）
+.paper h2 {
   margin: 1.5em 0 0.5em;
+  padding-bottom: 0;
+  border-bottom: none;
   font-size: 1.15em;
   font-weight: bold;
 }
