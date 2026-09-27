@@ -9,9 +9,30 @@ import miragefairy2024.mod.tree.contents.IncisableLogBlock
 import miragefairy2024.mod.tree.contents.IncisedLogBlock
 import miragefairy2024.mod.tree.contents.spawnDrippingSapParticle
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
+import net.minecraft.util.ParticleUtils
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.LeavesBlock
 import net.minecraft.world.level.block.state.BlockState
+
+class PlasticTreeLeavesBlock(settings: Properties) : LeavesBlock(settings) {
+    companion object {
+        val CODEC: MapCodec<PlasticTreeLeavesBlock> = simpleCodec(::PlasticTreeLeavesBlock)
+    }
+
+    override fun codec() = CODEC
+
+    override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
+        super.animateTick(state, level, pos, random)
+        if (random.nextInt(20) == 0) {
+            val blockPos = pos.below()
+            if (!isFaceFull(level.getBlockState(blockPos).getCollisionShape(level, blockPos), Direction.UP)) {
+                ParticleUtils.spawnParticleBelow(level, pos, random, ParticleTypeCard.DRIPPING_PLASTIC_TREE_SAP.particleType)
+            }
+        }
+    }
+}
 
 class PlasticTreeLogBlock(settings: Properties) : IncisableLogBlock(settings) {
     companion object {
