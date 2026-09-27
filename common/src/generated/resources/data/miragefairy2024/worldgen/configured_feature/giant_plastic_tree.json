@@ -3,7 +3,7 @@
   "config": {
     "decorators": [
       {
-        "type": "miragefairy2024:haimeviska",
+        "type": "miragefairy2024:plastic_tree_family",
         "dripping_log_replacement": {
           "block": "miragefairy2024:dripping_plastic_tree_log",
           "percentage": 25
