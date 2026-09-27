@@ -92,6 +92,8 @@ interface TreeCard {
     fun getSmallTree(): ResourceKey<ConfiguredFeature<*, *>>
 }
 
+private fun TreeCard.createTreeGrower() = TreeGrower(this.getTreeGrowerName().string, Optional.of(this.getGiantTree()), Optional.of(this.getSmallTree()), Optional.empty())
+
 class TreeBlockConfiguration(
     val tree: TreeCard,
     val path: String,
@@ -137,8 +139,6 @@ private fun TreeBlockConfiguration.pressurePlate(parent: () -> TreeBlockCard) = 
 private fun TreeBlockConfiguration.door(parent: () -> TreeBlockCard) = this.tag(BlockTags.WOODEN_DOORS, ItemTags.WOODEN_DOORS).block { { DoorBlock(this.tree.getBlockSetType(), it) } }.let { TreeDoorBlockCard(it) { parent().block() } }
 private fun TreeBlockConfiguration.trapdoor(parent: () -> TreeBlockCard) = this.tag(BlockTags.WOODEN_TRAPDOORS, ItemTags.WOODEN_TRAPDOORS).block { { TrapDoorBlock(this.tree.getBlockSetType(), it) } }.let { TreeTrapdoorBlockCard(it) { parent().block() } }
 private fun TreeBlockConfiguration.bricks(input: () -> TreeBlockCard) = this.tag(BlockTags.PLANKS, ItemTags.PLANKS).block { { Block(it) } }.let { TreeBricksBlockCard(it) { input().item() } }
-private fun TreeCard.createTreeGrower() = TreeGrower(this.getTreeGrowerName().string, Optional.of(this.getGiantTree()), Optional.of(this.getSmallTree()), Optional.empty())
-
 private fun TreeBlockConfiguration.sapling() = this.tag(BlockTags.SAPLINGS, ItemTags.SAPLINGS).let { TreeSaplingBlockCard(it) }
 
 abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
