@@ -8,6 +8,12 @@ require "json"
 #
 # 全記事のメタデータを JSON ファイルとしてビルド成果物に書き出す Jekyll フック。
 #
+# ## 収録の対象
+#
+# 日付付きのディレクトリに置かれた記事はすべて収録する。
+# 日付を持たない固定ページは、front matter に recommendations を持つものだけを収録する。
+# これは、関連記事を表示するページを、関連記事として表示される側にも加えるためである。
+#
 # ## 出力先
 #
 #   <dest>/posts.json
@@ -29,13 +35,15 @@ require "json"
 Jekyll::Hooks.register :site, :post_write do |site|
   baseurl = site.config["baseurl"].to_s
 
-  posts = site.posts.docs.map do |post|
-    teaser = post.data.dig("header", "teaser")
+  documents = site.posts.docs + site.pages.select { |page| page.data["recommendations"] }
+
+  posts = documents.map do |document|
+    teaser = document.data.dig("header", "teaser")
     {
-      "title"  => post.data["title"],
-      "url"    => baseurl + post.url,
+      "title"  => document.data["title"],
+      "url"    => baseurl + document.url,
       "teaser" => teaser ? baseurl + teaser : nil,
-      "tags"   => post.data["tags"] || [],
+      "tags"   => document.data["tags"] || [],
     }
   end
 
