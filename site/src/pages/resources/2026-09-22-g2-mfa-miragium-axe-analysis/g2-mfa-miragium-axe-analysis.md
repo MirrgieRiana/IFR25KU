@@ -41,12 +41,12 @@ tags:
 
 斧ヘッドを頑丈な木製の棒材の先端に紐等でしっかりと固定してください。
 
-{% paper_figure "miragium-axe-structure.webp" "図２　ミラジウムの斧の構造" %}
+{% paper_figure "miragium-axe-structure.webp" "図２　ミラジウムの斧の構造" alt="上に波線の模様の刃を持つ斧ヘッド、下に細長い棒材を描き、各部に寸法線と記号を書き込んだ手描きの図" %}
 
 {% endpaper_column %}
 {% paper_column %}
 
-{% paper_figure "miragium-axe.webp" "図１　ミラジウムの斧" %}
+{% paper_figure "miragium-axe.webp" "図１　ミラジウムの斧" alt="草の地面に置かれた、水色の刃と木の柄のミラジウムの斧" %}
 
 ## 3. 利用
 
@@ -58,7 +58,7 @@ tags:
 
 現在、この魔法はいくつかの種類の凹凸のない原木に対してのみ安全性が確認されています。エルグの流出により意図しない物体への作用が想定されるため、板材やカボチャといった原木以外のブロックへの行使は推奨されません。≪収穫≫のエルグにより、切断効果は植物体にのみ作用します。
 
-{% paper_figure "miragium-axe-in-use.webp" "図３　使用イメージ" %}
+{% paper_figure "miragium-axe-in-use.webp" "図３　使用イメージ" alt="ゲームの画面で、斧を持って木の幹の前に立ち、幹の周りに白い粒が舞い、足もとの草の上に茶色いブロックのアイテムが散らばっている様子" %}
 
 ### 3.2 通常の斧としての利用
 
