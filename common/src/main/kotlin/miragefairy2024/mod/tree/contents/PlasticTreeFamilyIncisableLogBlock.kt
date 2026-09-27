@@ -23,7 +23,7 @@ import net.minecraft.world.level.gameevent.GameEvent
 import net.minecraft.world.phys.BlockHitResult
 
 @Suppress("OVERRIDE_DEPRECATION")
-abstract class IncisableLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
+abstract class PlasticTreeFamilyIncisableLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
     protected abstract fun getIncisedLogBlock(): Block
 
     override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {

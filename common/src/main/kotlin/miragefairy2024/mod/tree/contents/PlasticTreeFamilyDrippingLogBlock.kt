@@ -26,7 +26,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
 
 @Suppress("OVERRIDE_DEPRECATION")
-abstract class DrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
+abstract class PlasticTreeFamilyDrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBlock(settings) {
     protected abstract fun getIncisedLogBlock(): Block
     protected abstract fun getSapItem(): Item
     protected abstract fun getRosinItem(): Item
