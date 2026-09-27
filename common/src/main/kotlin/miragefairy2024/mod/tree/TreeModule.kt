@@ -5,6 +5,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.tree.contents.PlasticTreeFamilySaplingBlock
 import miragefairy2024.mod.tree.contents.haimeviska.initHaimeviska
 import miragefairy2024.mod.tree.contents.plastictree.initPlasticTree
+import miragefairy2024.mod.tree.contents.plastictreefamily.initPlasticTreeFamily
 import miragefairy2024.util.Registration
 import miragefairy2024.util.register
 import net.minecraft.core.registries.BuiltInRegistries
@@ -16,6 +17,7 @@ fun initTreeModule() {
 
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("plastic_tree_family_sapling")) { PlasticTreeFamilySaplingBlock.CODEC }.register()
 
+    initPlasticTreeFamily()
     initHaimeviska()
     initPlasticTree()
 

@@ -5,7 +5,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeCard
-import miragefairy2024.mod.tree.contents.PlasticTreeFamilyTreeDecorator
+import miragefairy2024.mod.tree.contents.plastictreefamily.PlasticTreeFamilyTreeDecorator
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.count
