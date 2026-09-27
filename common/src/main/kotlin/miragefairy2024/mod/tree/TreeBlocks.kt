@@ -38,6 +38,7 @@ import miragefairy2024.mod.tree.contents.haimeviska.IncisedHaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.plastictree.DrippingPlasticTreeLogBlock
 import miragefairy2024.mod.tree.contents.plastictree.IncisedPlasticTreeLogBlock
 import miragefairy2024.mod.tree.contents.plastictree.PLASTIC_TREE_CARD
+import miragefairy2024.mod.tree.contents.plastictree.PlasticTreeLeavesBlock
 import miragefairy2024.mod.tree.contents.plastictree.PlasticTreeLogBlock
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
@@ -63,7 +64,6 @@ import net.minecraft.world.level.block.ButtonBlock
 import net.minecraft.world.level.block.DoorBlock
 import net.minecraft.world.level.block.FenceBlock
 import net.minecraft.world.level.block.FenceGateBlock
-import net.minecraft.world.level.block.LeavesBlock
 import net.minecraft.world.level.block.PressurePlateBlock
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.SaplingBlock
@@ -92,6 +92,8 @@ interface TreeCard {
     fun getSmallTree(): ResourceKey<ConfiguredFeature<*, *>>
 }
 
+private fun TreeCard.createTreeGrower() = TreeGrower(this.getTreeGrowerName().string, Optional.of(this.getGiantTree()), Optional.of(this.getSmallTree()), Optional.empty())
+
 class TreeBlockConfiguration(
     val tree: TreeCard,
     val path: String,
@@ -118,7 +120,7 @@ private fun TreeBlockConfiguration.leavesBase() = this.tag(BlockTags.LEAVES, Ite
 private fun TreeBlockConfiguration.logBase() = this.tag(this.tree.getBlockTag(), this.tree.getItemTag()).tag(BlockTags.OVERWORLD_NATURAL_LOGS)
 private fun TreeBlockConfiguration.woodBase() = this.tag(this.tree.getBlockTag(), this.tree.getItemTag())
 
-private fun TreeBlockConfiguration.leaves(sapling: () -> TreeBlockCard, extraDrop: (() -> Item)?) = this.leavesBase().block { { LeavesBlock(it) } }.let { TreeLeavesBlockCard(it, sapling, extraDrop) }
+private fun TreeBlockConfiguration.leaves(sapling: () -> TreeBlockCard, extraDrop: (() -> Item)?) = this.leavesBase().let { TreeLeavesBlockCard(it, sapling, extraDrop) }
 private fun TreeBlockConfiguration.chargeableLeaves(sapling: () -> TreeBlockCard, extraDrop: (() -> Item)?) = this.leavesBase().let { TreeChargeableLeavesBlockCard(it, sapling, extraDrop) }
 private fun TreeBlockConfiguration.log() = this.logBase().let { TreeIncisableLogBlockCard(it) }
 private fun TreeBlockConfiguration.wood(log: () -> TreeBlockCard) = this.woodBase().block { { RotatedPillarBlock(it) } }.let { TreeWoodBlockCard(it, log) }
@@ -137,7 +139,7 @@ private fun TreeBlockConfiguration.pressurePlate(parent: () -> TreeBlockCard) = 
 private fun TreeBlockConfiguration.door(parent: () -> TreeBlockCard) = this.tag(BlockTags.WOODEN_DOORS, ItemTags.WOODEN_DOORS).block { { DoorBlock(this.tree.getBlockSetType(), it) } }.let { TreeDoorBlockCard(it) { parent().block() } }
 private fun TreeBlockConfiguration.trapdoor(parent: () -> TreeBlockCard) = this.tag(BlockTags.WOODEN_TRAPDOORS, ItemTags.WOODEN_TRAPDOORS).block { { TrapDoorBlock(this.tree.getBlockSetType(), it) } }.let { TreeTrapdoorBlockCard(it) { parent().block() } }
 private fun TreeBlockConfiguration.bricks(input: () -> TreeBlockCard) = this.tag(BlockTags.PLANKS, ItemTags.PLANKS).block { { Block(it) } }.let { TreeBricksBlockCard(it) { input().item() } }
-private fun TreeBlockConfiguration.sapling() = this.tag(BlockTags.SAPLINGS, ItemTags.SAPLINGS).block { { SaplingBlock(TreeGrower(this.tree.getTreeGrowerName().string, Optional.of(this.tree.getGiantTree()), Optional.of(this.tree.getSmallTree()), Optional.empty()), it) } }.let { TreeSaplingBlockCard(it) }
+private fun TreeBlockConfiguration.sapling() = this.tag(BlockTags.SAPLINGS, ItemTags.SAPLINGS).let { TreeSaplingBlockCard(it) }
 
 abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
     companion object {
@@ -232,13 +234,15 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         ).stairs { BRICKS }
         val SAPLING = !TreeBlockConfiguration(
             HAIMEVISKA_CARD, "haimeviska_sapling", EnJa("Haimeviska Sapling", "ハイメヴィスカの苗木"),
-            PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
-        ).sapling()
+            PoemList(1)
+                .poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。"))
+                .poem("classification", EnJa("Order Araucariales, family Plasticaceae", "ナンヨウスギ目プラノキ科")),
+        ).block { { SaplingBlock(HAIMEVISKA_CARD.createTreeGrower(), it) } }.sapling()
 
         val PLASTIC_TREE_LEAVES = !TreeBlockConfiguration(
             PLASTIC_TREE_CARD, "plastic_tree_leaves", EnJa("Plastic Tree Leaves", "プラノキの葉"),
             PoemList(1).poem(EnJa("Abnormal extrafloral nectar expression.", "草魂捕食性ウィスプの護法。")),
-        ).leaves({ PLASTIC_TREE_SAPLING }, { MaterialCard.PLASTIC_TREE_SAP.item() })
+        ).block { { PlasticTreeLeavesBlock(it) } }.leaves({ PLASTIC_TREE_SAPLING }, { MaterialCard.PLASTIC_TREE_SAP.item() })
         val PLASTIC_TREE_LOG = !TreeBlockConfiguration(
             PLASTIC_TREE_CARD, "plastic_tree_log", EnJa("Plastic Tree Log", "プラノキの原木"),
             PoemList(1)
@@ -259,8 +263,10 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         ).block { { DrippingPlasticTreeLogBlock(it) } }.drippingLog({ PLASTIC_TREE_LOG }, { MaterialCard.PLASTIC_TREE_SAP.item() }, { MaterialCard.PLASTIC_TREE_SAP.item() }) // TODO レアドロップを追加するのだ～🌱
         val PLASTIC_TREE_SAPLING = !TreeBlockConfiguration(
             PLASTIC_TREE_CARD, "plastic_tree_sapling", EnJa("Plastic Tree Sapling", "プラノキの苗木"),
-            PoemList(1).poem(EnJa("Etherify sugars with astral radiation.", "天空のフォリオニクス。")),
-        ).sapling()
+            PoemList(1)
+                .poem(EnJa("Etherify sugars with astral radiation.", "天空のフォリオニクス。"))
+                .poem("classification", EnJa("Order Araucariales, family Plasticaceae", "ナンヨウスギ目プラノキ科")),
+        ).block { { SaplingBlock(PLASTIC_TREE_CARD.createTreeGrower(), it) } }.sapling()
     }
 
     val identifier = MirageFairy2024.identifier(configuration.path)

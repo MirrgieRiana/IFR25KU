@@ -38,6 +38,13 @@ layout: default
         </aside>
       {% endif %}
 
+      {% if page.recommendations %}
+        <aside class="sidebar__right recommendations__sidebar">
+          <header><h4 class="nav__title"><i class="fas fa-newspaper"></i> 関連記事</h4></header>
+          <div class="recommendations__list"></div>
+        </aside>
+      {% endif %}
+
       {% unless page.header.overlay_color or page.header.overlay_image %}
         <header{% unless page.header.image %} class="page__header--plain"{% endunless %}>
           {% if page.title -%}
@@ -49,7 +56,8 @@ layout: default
         </header>
       {% endunless %}
 
-      {% if page.header.teaser and page.header.image == nil and page.header.overlay_image == nil %}
+      {% comment %}本文中に同じ画像を掲げる記事は、header.teaser_banner を false にして、このバナーを省くのだ～🌱{% endcomment %}
+      {% if page.header.teaser and page.header.teaser_banner != false and page.header.image == nil and page.header.overlay_image == nil %}
         <img src="{{ page.header.teaser | relative_url }}" alt="{{ page.title | escape }}" class="page__teaser-banner">
       {% endif %}
 
@@ -65,6 +73,13 @@ layout: default
         {% include page__tags.html locale=locale %}
         {% include page__date.html locale=locale %}
       </footer>
+
+      {% if page.recommendations %}
+        <section class="page__recommend">
+          <h3 class="page__recommend-title"><i class="fas fa-newspaper"></i> 他の記事を読む</h3>
+          <div class="page__recommend-grid"></div>
+        </section>
+      {% endif %}
 
       {% if page.share %}{% include social-share.html locale=locale %}{% endif %}
 
@@ -91,3 +106,7 @@ layout: default
     {% include page__related.html locale=locale posts=site.posts %}
   {% endif %}
 </div>
+
+{% if page.recommendations %}
+  {% include recommendations.html %}
+{% endif %}

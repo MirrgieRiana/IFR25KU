@@ -13,6 +13,8 @@ main:
         url: /posts.html
       - title: タグ一覧
         url: /tags.html
+      - title: 並行宇宙ルール
+        url: /g2-mfa-parallel-universe-rule.html
   - title: INFO
     children:
       - title: CHANGELOG
@@ -34,6 +36,8 @@ sidebar:
     children:
       - title: Home
         url: /
+      - title: 並行宇宙ルール
+        url: /g2-mfa-parallel-universe-rule.html
       - title: CHANGELOG
         url: /CHANGELOG.html
       - title: Lang Table
