@@ -17,19 +17,21 @@
 #   {% paper_figure "miragium-axe.webp" "図１　ミラジウムの斧" %}
 #   {% paper_figure "deep-space-field.webp" %}
 #   {% paper_figure actual_size "dictionary-entry.png" "「辞書」の項目の一例" %}
+#   {% paper_figure "night-sky.webp" "図３　夜空<br>第4恒星の近傍" alt="図３　夜空　第4恒星の近傍" %}
 #
 # ## markup構文
 #
-#   {% paper_figure [actual_size] "<画像のパス>" ["<キャプション>"] %}
+#   {% paper_figure [actual_size] "<画像のパス>" ["<キャプション>"] [alt="<代替テキスト>"] %}
 #
 #   - actual_size:  添えると、幅に合わせず、画像自身が持つ寸法で掲げる
 #   - 画像のパス:   記事のディレクトリからの相対パス（必須）
 #   - キャプション: 画像の下に置かれる説明。省略した場合はキャプションを出力しない
+#   - 代替テキスト: img の alt に入る文字列なのだ～🌱 省略すると、キャプションがそのまま入るのだ～🌱
 #
 # ## HTML出力構造
 #
 #   <figure class="paper__figure">
-#   <img src="（画像のパス）" alt="（キャプション）">
+#   <img src="（画像のパス）" alt="（代替テキスト、無ければキャプション）">
 #   <figcaption class="paper__caption" markdown="span">（キャプション）</figcaption>
 #   </figure>
 #
@@ -46,15 +48,16 @@ module Paper
       super
       @source, @caption = TagArguments.parse(markup)
       @actual_size = TagArguments.flag?(markup, "actual_size")
+      @alt = TagArguments.named(markup, "alt") || @caption
     end
 
     def render(context)
-      # キャプションは代替テキストを兼ねる。省略された場合、画像は装飾として扱う。
+      # 代替テキストもキャプションも無い画像は、装飾として扱うのだ～🌱
       caption_html = @caption ? %(<figcaption class="paper__caption" markdown="span">#{@caption}</figcaption>\n) : ""
       class_names = @actual_size ? "paper__figure paper__figure--actual-size" : "paper__figure"
       <<~HTML
         <figure class="#{class_names}">
-        <img src="#{@source}" alt="#{@caption}">
+        <img src="#{@source}" alt="#{@alt}">
         #{caption_html}</figure>
       HTML
     end
