@@ -18,17 +18,32 @@
 #
 module TagArguments
 
+  # 名前="値" の形の名前付き引数に一致する正規表現なのだ～🌱
+  NAMED_PATTERN = /(\w+)="([^"]*)"/
+
   # Liquid タグの markup 文字列から、ダブルクォートで囲まれた引数を順に取り出す。
   #
   # markup の形式: '"引数1" "引数2" ...'
   #   - ダブルクォートで囲まれた部分のみを引数として認識する
+  #   - 名前="値" の形の名前付き引数は、ここでは数えないのだ～🌱
   #   - 引数の個数は問わず、出現順の配列として返す
   #   - 引数が 1 個も無い場合は空の配列を返す
   #
   # 使用例:
   #   TagArguments.parse('"レター" "妖精研究誌"') # => ["レター", "妖精研究誌"]
   def self.parse(markup)
-    markup.scan(/"([^"]*)"/).flatten
+    markup.gsub(NAMED_PATTERN, " ").scan(/"([^"]*)"/).flatten
+  end
+
+  # Liquid タグの markup 文字列から、名前="値" の形の名前付き引数の値を取り出すのだ～🌱
+  #
+  # markup の形式: '"引数1" 名前="値" ...'
+  #   - 指定した名前の引数が無い場合は nil を返すのだ～🌱
+  #
+  # 使用例:
+  #   TagArguments.named('"incident-map.webp" alt="事案１の地図"', "alt") # => "事案１の地図"
+  def self.named(markup, name)
+    markup.scan(NAMED_PATTERN).find { |key, _| key == name }&.last
   end
 
   # Liquid タグの markup 文字列に、指定したフラグが単独の語として現れるかを判定する。
@@ -41,7 +56,7 @@ module TagArguments
   #   TagArguments.flag?('actual_size "incident-map.webp"', "actual_size") # => true
   #   TagArguments.flag?('"actual_size という語"', "actual_size")          # => false
   def self.flag?(markup, flag)
-    markup.gsub(/"[^"]*"/, " ").split.include?(flag)
+    markup.gsub(NAMED_PATTERN, " ").gsub(/"[^"]*"/, " ").split.include?(flag)
   end
 end
 
