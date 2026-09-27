@@ -15,6 +15,7 @@ import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.surface
 import miragefairy2024.util.with
+import mirrg.kotlin.helium.min
 import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -61,7 +62,9 @@ class ResinCementSapFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<No
             if (!isSupported(blockPos)) return false
             val blockPosList = (0 until height).map { blockPos.above(it) }
             if (!blockPosList.all { canPlaceSap(it) }) return false
-            blockPosList.forEach { level.setBlock(it, blockState, 2) }
+            blockPosList.forEach {
+                level.setBlock(it, blockState, 2)
+            }
             return true
         }
 
@@ -69,17 +72,28 @@ class ResinCementSapFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<No
         if (!placePillar(originBlockPos, originHeight)) return false
 
         // 辺で接する4マス
-        listOf(Pair(-1, 0), Pair(1, 0), Pair(0, -1), Pair(0, 1)).forEach { (dx, dz) ->
+        listOf(
+            Pair(-1, 0),
+            Pair(1, 0),
+            Pair(0, -1),
+            Pair(0, 1),
+        ).forEach { (dx, dz) ->
             if (random.nextFloat() < 0.5F) {
-                placePillar(originBlockPos.offset(dx, 0, dz), random.nextIntBetweenInclusive(1, originHeight))
+                val height = random.nextIntBetweenInclusive(1, originHeight)
+                placePillar(originBlockPos.offset(dx, 0, dz), height)
             }
         }
 
         // 角で接する4マス
         // 乱数2個の最小値を採ることで、辺で接するマスよりも低い柱が出やすくなって、裾が外側へ向かって下がるのだ～🌱
-        listOf(Pair(-1, -1), Pair(-1, 1), Pair(1, -1), Pair(1, 1)).forEach { (dx, dz) ->
+        listOf(
+            Pair(-1, -1),
+            Pair(-1, 1),
+            Pair(1, -1),
+            Pair(1, 1),
+        ).forEach { (dx, dz) ->
             if (random.nextFloat() < 0.25F) {
-                val height = minOf(random.nextIntBetweenInclusive(1, originHeight), random.nextIntBetweenInclusive(1, originHeight))
+                val height = random.nextIntBetweenInclusive(1, originHeight) min random.nextIntBetweenInclusive(1, originHeight)
                 placePillar(originBlockPos.offset(dx, 0, dz), height)
             }
         }
