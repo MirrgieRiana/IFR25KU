@@ -533,6 +533,24 @@ body.layout--one-column #main {
   }
 }
 
+// mastheadのドロップダウンを持たない項目
+.greedy-nav .visible-links .masthead__menu-item:not(.masthead__menu-item--dropdown) {
+  display: flex;
+  align-items: stretch;
+
+  > a {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0 1rem;
+    font-size: 1.2em;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
 .inline-icon {
   display: inline-block;
   width: 1em;
