@@ -4,11 +4,20 @@
 #
 # 使い方:
 #   scripts/pdn2json.sh [ファイル]
+#   scripts/pdn2json.sh -h
+#   scripts/pdn2json.sh --help
 #
 #   第 1 引数があれば、それを .pdn ファイルとして読むのだ～🌱
 #   引数を省くか、`-` を渡すと、標準入力から読むのだ～🌱
 #   JSON は、常に標準出力へ書くのだ～🌱
 #   scripts/json2pdn.sh で、1 バイトも違わない .pdn へ戻せるのだ～🌱
+#
+# 終了コード:
+#   0 は、変換できたときなのだ～🌱
+#   1 は、読んだデータがこのスクリプトの確かめに通らなかったときなのだ～🌱
+#   このときは、理由を標準エラー出力へ書くのだ～🌱
+#   それ以外の失敗では、Python のトレースバックがそのまま出て、終了コードも 1 になるのだ～🌱
+#   2 は、引数が 2 個以上あるときと、-h と --help のときで、使い方を標準エラー出力へ書くのだ～🌱
 #
 # 前提:
 #   python3 が必要なのだ～🌱
@@ -23,7 +32,7 @@
 #   5. .NET の BinaryFormatter のシリアル化データで、形式は Microsoft の [MS-NRBF] なのだ～🌱
 #      https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-nrbf/75b9fe09-be15-475f-85b8-ae7b7558cfe5
 #   6. 画素のデータで、5 の中の、deferred が真の PaintDotNet.MemoryBlock ごとに、出現の順に 1 セクションずつ並ぶのだ～🌱
-#      セクションの頭は、形式の 1 バイトと、チャンクの大きさの 4 バイトなのだ～🌱
+#      セクションの頭は、形式のバージョンの 1 バイトと、チャンクの大きさの 4 バイトなのだ～🌱
 #      その後に、チャンクの番号の 4 バイトと、データの長さの 4 バイトと、データの組が続くのだ～🌱
 #      セクションの中の数値は、ビッグエンディアンなのだ～🌱
 #      チャンクの個数は、MemoryBlock の length64 をチャンクの大きさで割って、切り上げたものなのだ～🌱
@@ -37,7 +46,7 @@
 #     "memoryBlocks": [
 #       {
 #         "objectId": 対応する PaintDotNet.MemoryBlock のレコードの objectId,
-#         "formatVersion": 形式の 1 バイト,
+#         "formatVersion": 形式のバージョンの 1 バイト,
 #         "chunkSize": チャンクの大きさ,
 #         "chunks": [ { "number": チャンクの番号, "data": データの Base64 }, ... ]
 #       },
@@ -48,10 +57,15 @@
 #
 #   データは、展開も圧縮し直しもせずに、ファイルの中のバイト列のまま Base64 にするのだ～🌱
 #   シリアル化データのレコードは、"$record" に [MS-NRBF] のレコードの名前を持つオブジェクトなのだ～🌱
-#   クラスのレコードは、"memberTypes" にメンバーの名前ごとの型を、"members" にメンバーの名前ごとの値を持つのだ～🌱
+#   クラスのレコードは、"memberTypes" と "members" を持つのだ～🌱
+#   "memberTypes" は、"key" にメンバーの名前を、"value" に型を持つエントリーの配列なのだ～🌱
+#   その並びが、.pdn の中のメンバーの並びなのだ～🌱
+#   "members" は、メンバーの名前ごとの値を持つオブジェクトなのだ～🌱
 #   ClassWithId のレコードは、型を持たずに、"metadataId" が指すレコードの型を使うのだ～🌱
 #   プリミティブの値は、JSON の値でそのまま表すのだ～🌱
-#   ただし、64 ビットの整数と DateTime と TimeSpan は、10 進数の文字列にするのだ～🌱
+#   Char と Decimal と String は、文字列になるのだ～🌱
+#   Decimal は、.pdn の中でも 10 進数の文字列だからなのだ～🌱
+#   64 ビットの整数と DateTime と TimeSpan は、10 進数の文字列にするのだ～🌱
 #   Single と Double のうち、有限でない値は、ビット列の 16 進数の文字列にするのだ～🌱
 #   Byte の配列は、値の配列の代わりに "base64" を持つのだ～🌱
 #   値の前に置かれた BinaryLibrary のレコードは、その値のレコードの "$libraries" へ入れるのだ～🌱
@@ -264,6 +278,8 @@ class Decoder:
         return values
 
     def items(self, length):
+        if length < 0:
+            raise PdnError(f"配列の長さが {length} なのだ")
         items = []
         covered = 0
         while covered < length:
@@ -288,7 +304,7 @@ class Decoder:
         if has_library:
             record["libraryId"] = self.source.int32()
         self.classes[object_id] = (class_name, names, types)
-        record["memberTypes"] = dict(zip(names, types))
+        record["memberTypes"] = [{"key": name, "value": member_type} for name, member_type in zip(names, types)]
         record["members"] = self.object_members(object_id, class_name, names, types)
         return record
 
@@ -342,6 +358,8 @@ class Decoder:
         if record_type == "ArraySinglePrimitive":
             object_id = self.source.int32()
             length = self.source.int32()
+            if length < 0:
+                raise PdnError(f"{object_id} 番の配列の長さが {length} なのだ")
             primitive_type = self.primitive_type()
             return {"$record": record_type, "objectId": object_id, "primitiveType": primitive_type, **self.primitive_array(primitive_type, length)}
         if record_type in ("ArraySingleObject", "ArraySingleString"):
@@ -360,6 +378,8 @@ class Decoder:
         array_type = BINARY_ARRAY_TYPES[code]
         rank = self.source.int32()
         lengths = [self.source.int32() for _ in range(rank)]
+        if any(length < 0 for length in lengths):
+            raise PdnError(f"{object_id} 番の配列の長さ {lengths} に、負の値があるのだ")
         record = {"$record": "BinaryArray", "objectId": object_id, "binaryArrayType": array_type, "lengths": lengths}
         if array_type.endswith("Offset"):
             record["lowerBounds"] = [self.source.int32() for _ in range(rank)]
@@ -424,7 +444,7 @@ def main(script_name, args):
             with open(path, "rb") as file:
                 data = file.read()
         document = decode(data)
-    except (OSError, PdnError, UnicodeDecodeError) as e:
+    except PdnError as e:
         print(f"{script_name}: {e}", file=sys.stderr)
         return 1
     json.dump(document, sys.stdout, ensure_ascii=False, indent=2)

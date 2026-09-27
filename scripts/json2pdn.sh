@@ -4,10 +4,19 @@
 #
 # 使い方:
 #   scripts/json2pdn.sh [ファイル]
+#   scripts/json2pdn.sh -h
+#   scripts/json2pdn.sh --help
 #
 #   第 1 引数があれば、それを JSON ファイルとして読むのだ～🌱
 #   引数を省くか、`-` を渡すと、標準入力から読むのだ～🌱
 #   .pdn は、常に標準出力へ書くのだ～🌱
+#
+# 終了コード:
+#   0 は、変換できたときなのだ～🌱
+#   1 は、JSON がこのスクリプトの確かめに通らなかったときなのだ～🌱
+#   このときは、理由を標準エラー出力へ書くのだ～🌱
+#   それ以外の失敗では、Python のトレースバックがそのまま出て、終了コードも 1 になるのだ～🌱
+#   2 は、引数が 2 個以上あるときと、-h と --help のときで、使い方を標準エラー出力へ書くのだ～🌱
 #
 # 前提:
 #   python3 が必要なのだ～🌱
@@ -16,7 +25,11 @@
 # JSON の形と、.pdn の構造は、scripts/pdn2json.sh の冒頭に書いてあるのだ～🌱
 #
 # JSON を書き換えてから戻すときは、中身の整合を取るのは書き換えた側の役目なのだ～🌱
-# このスクリプトは、JSON の形と、MemoryBlock のレコードと画素のセクションの対応だけを確かめるのだ～🌱
+# このスクリプトが確かめるのは、次のものだけなのだ～🌱
+#   - JSON の一番外側と、その直下の値の型なのだ～🌱
+#   - クラスのレコードのメンバーと、その型と値の対応なのだ～🌱
+#   - MemoryBlock のレコードと、画素のセクションの対応なのだ～🌱
+#   - 書き込む数値が、それぞれのバイト数に収まることなのだ～🌱
 #
 # この説明は、次のスキルに従って書いてあるのだ～🌱
 #   https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/markdown-max-line-length/SKILL.md
@@ -122,6 +135,7 @@ class Encoder:
         if not isinstance(value, str):
             raise PdnError(f"文字列のはずの値が {value!r} なのだ")
         data = value.encode("utf-8")
+        # 長さは、下位から 7 ビットずつ書いて、続きがあるバイトは最上位のビットを立てるのだ～🌱
         length = len(data)
         while True:
             if length < 0x80:
@@ -239,8 +253,13 @@ class Encoder:
             class_name, names, types = self.classes[record["metadataId"]]
             self.object_members(record["objectId"], class_name, names, types, record["members"])
         elif record_type in ("SystemClassWithMembersAndTypes", "ClassWithMembersAndTypes"):
-            names = list(record["memberTypes"])
-            types = list(record["memberTypes"].values())
+            entries = record["memberTypes"]
+            if not isinstance(entries, list) or not all(isinstance(entry, dict) and set(entry) == {"key", "value"} for entry in entries):
+                raise PdnError(f"{record['objectId']} 番のレコードの memberTypes が、key と value を持つエントリーの配列ではないのだ")
+            names = [entry["key"] for entry in entries]
+            types = [entry["value"] for entry in entries]
+            if len(set(names)) != len(names):
+                raise PdnError(f"{record['objectId']} 番のレコードの memberTypes に、同じ名前のメンバーがあるのだ")
             self.int32(record["objectId"])
             self.length_prefixed_string(record["className"])
             self.int32(len(names))
@@ -313,9 +332,24 @@ class Encoder:
             self.items(length, record["items"])
 
 
+def check_type(document, key, value_type, what):
+    if not isinstance(document.get(key), value_type):
+        raise PdnError(f"{key} が{what}ではないのだ")
+
+
 def encode(document):
+    if not isinstance(document, dict):
+        raise PdnError("JSON の一番外側が、オブジェクトではないのだ")
     if document.get("format") != "pdn2json/1":
         raise PdnError("format が pdn2json/1 ではないから、pdn2json.sh の JSON ではないのだ")
+    check_type(document, "pdnHeader", str, "文字列")
+    check_type(document, "separator", str, "文字列")
+    check_type(document, "records", list, "配列")
+    check_type(document, "memoryBlocks", list, "配列")
+    if not all(isinstance(record, dict) for record in document["records"]):
+        raise PdnError("records に、オブジェクトでない要素があるのだ")
+    if not all(isinstance(memory_block, dict) for memory_block in document["memoryBlocks"]):
+        raise PdnError("memoryBlocks に、オブジェクトでない要素があるのだ")
     output = bytearray(b"PDN3")
     header = document["pdnHeader"].encode("utf-8")
     if len(header) >= 1 << 24:
@@ -326,7 +360,7 @@ def encode(document):
 
     encoder = Encoder()
     records = document["records"]
-    if not records or records[-1]["$record"] != "MessageEnd":
+    if not records or records[-1].get("$record") != "MessageEnd":
         raise PdnError("records の最後が MessageEnd のレコードではないのだ")
     for record in records:
         encoder.record_with_libraries(record)
@@ -337,18 +371,20 @@ def encode(document):
     actual_ids = [memory_block["objectId"] for memory_block in memory_blocks]
     if actual_ids != expected_ids:
         raise PdnError(f"memoryBlocks の objectId の順序 {actual_ids} が、レコードの中の MemoryBlock の順序 {expected_ids} と合わないのだ")
+    sections = Encoder()
     for memory_block, (object_id, length) in zip(memory_blocks, encoder.memory_blocks):
         chunk_size = memory_block["chunkSize"]
         chunks = memory_block["chunks"]
         if chunk_size <= 0 or len(chunks) != -(-length // chunk_size):
             raise PdnError(f"{object_id} 番の MemoryBlock のチャンクの数が、length64 と chunkSize から決まる数と合わないのだ")
-        output += struct.pack(">B", memory_block["formatVersion"])
-        output += struct.pack(">I", chunk_size)
+        sections.pack(">B", memory_block["formatVersion"])
+        sections.pack(">I", chunk_size)
         for chunk in chunks:
             data = base64.b64decode(chunk["data"], validate=True)
-            output += struct.pack(">I", chunk["number"])
-            output += struct.pack(">I", len(data))
-            output += data
+            sections.pack(">I", chunk["number"])
+            sections.pack(">I", len(data))
+            sections.output += data
+    output += sections.output
 
     if "trailing" in document:
         output += base64.b64decode(document["trailing"], validate=True)
@@ -367,10 +403,7 @@ def main(script_name, args):
             with open(path, encoding="utf-8") as file:
                 document = json.load(file)
         data = encode(document)
-    except KeyError as e:
-        print(f"{script_name}: JSON に {e} が無いのだ", file=sys.stderr)
-        return 1
-    except (OSError, ValueError, TypeError, PdnError) as e:
+    except PdnError as e:
         print(f"{script_name}: {e}", file=sys.stderr)
         return 1
     sys.stdout.buffer.write(data)
