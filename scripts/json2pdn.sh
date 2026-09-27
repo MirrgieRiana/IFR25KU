@@ -13,8 +13,8 @@
 #
 # 終了コード:
 #   0 は、変換できたときなのだ～🌱
-#   1 は、読むファイルが無いときと、JSON がこのスクリプトの確かめに通らなかったときなのだ～🌱
-#   このときは、理由を英文で標準エラー出力へ書くのだ～🌱
+#   1 は、読むファイルが無いときと、JSON がこのスクリプトの検証に通らなかったときなのだ～🌱
+#   このときは、理由を標準エラー出力へ書くのだ～🌱
 #   それ以外の失敗では、Python のトレースバックがそのまま出て、終了コードも 1 になるのだ～🌱
 #   2 は、引数が 2 個以上あるときと、-h と --help のときで、使い方を標準エラー出力へ書くのだ～🌱
 #
@@ -25,7 +25,7 @@
 # JSON の形と、.pdn の構造は、scripts/pdn2json.sh の冒頭に書いてあるのだ～🌱
 #
 # JSON を書き換えてから戻すときは、中身の整合を取るのは書き換えた側の役目なのだ～🌱
-# このスクリプトが確かめるのは、主に次のものなのだ～🌱
+# このスクリプトが検証するのは、主に次のものなのだ～🌱
 #   - JSON の一番外側と、その直下の値の型と、format の値なのだ～🌱
 #   - separator の長さと、records の最後のレコードなのだ～🌱
 #   - クラスのレコードのメンバーと、その型と値の対応なのだ～🌱
@@ -114,10 +114,6 @@ def lookup(table, key, what):
     if key not in table:
         raise PdnError(f"unsupported {what} {key!r}")
     return table[key]
-
-
-def is_member_type_entry(entry):
-    return isinstance(entry, dict) and set(entry) == {"key", "type"}
 
 
 class Encoder:
@@ -270,8 +266,6 @@ class Encoder:
             self.object_members(record["objectId"], class_name, names, types, record["members"])
         elif record_type in ("SystemClassWithMembersAndTypes", "ClassWithMembersAndTypes"):
             entries = record["memberTypes"]
-            if not isinstance(entries, list) or not all(is_member_type_entry(entry) for entry in entries):
-                raise PdnError(f"memberTypes of record {record['objectId']} must be an array of objects with key and type")
             names = [entry["key"] for entry in entries]
             types = [entry["type"] for entry in entries]
             if len(set(names)) != len(names):
