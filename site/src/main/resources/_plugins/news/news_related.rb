@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "cgi"
+
 # =============================================================================
 # news_related.rb — News Related Articles Tag for Jekyll
 # =============================================================================
@@ -65,7 +67,7 @@ module News
       <<~HTML
         <a href="#{site.baseurl}#{post.url}" class="recent-posts__card">
         <div class="recent-posts__teaser">#{image_html}</div>
-        <div class="recent-posts__body"><h3 class="recent-posts__title">#{post.data["title"]}</h3></div>
+        <div class="recent-posts__body"><h3 class="recent-posts__title">#{CGI.escapeHTML(post.data["title"].to_s)}</h3></div>
         </a>
       HTML
     end
