@@ -9,7 +9,6 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
-import miragefairy2024.mod.tree.contents.PlasticTreeFamilySaplingBlock
 import miragefairy2024.mod.tree.contents.blockcards.TreeBricksBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeChargeableLeavesBlockCard
 import miragefairy2024.mod.tree.contents.blockcards.TreeDoorBlockCard
@@ -41,6 +40,7 @@ import miragefairy2024.mod.tree.contents.plastictree.IncisedPlasticTreeLogBlock
 import miragefairy2024.mod.tree.contents.plastictree.PLASTIC_TREE_CARD
 import miragefairy2024.mod.tree.contents.plastictree.PlasticTreeLeavesBlock
 import miragefairy2024.mod.tree.contents.plastictree.PlasticTreeLogBlock
+import miragefairy2024.mod.tree.contents.plastictreefamily.PlasticTreeFamilySaplingBlock
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
