@@ -219,7 +219,7 @@ minimal-mistakesテーマのfloatベースのレイアウトを `main.scss` で�
 
 ### 関連記事抽選とタグ設計なのだ～🌱
 
-劇場レイアウト (`_layouts/theater.html` 末尾のインラインJS) は、タグ一致数と訪問履歴 (`ifr25ku:visits:pages`、`_includes/visit-tracker.html` が記録) で重み付けした非復元ランダムサンプリングで関連記事を抽選するのだ～🌱♪
+関連記事のスクリプト (`_includes/recommendations.html` のインラインJS) は、タグ一致数と訪問履歴 (`ifr25ku:visits:pages`、`_includes/visit-tracker.html` が記録) で重み付けした非復元ランダムサンプリングで関連記事を抽選するのだ～🌱♪
 サイドバーと本文下部は、それぞれ独立に抽選するのだぁ✨
 タグの付け方が関連記事の質に直結するのだ～🌱
 

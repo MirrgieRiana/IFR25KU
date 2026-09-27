@@ -29,8 +29,7 @@ defaults:
   - scope:
       path: ""
     values:
-      layout: single
-      toc: true
+      layout: three-column
       sidebar:
         nav: sidebar
 
