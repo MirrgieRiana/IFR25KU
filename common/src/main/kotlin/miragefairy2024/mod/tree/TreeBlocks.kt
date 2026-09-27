@@ -232,7 +232,9 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         ).stairs { BRICKS }
         val SAPLING = !TreeBlockConfiguration(
             HAIMEVISKA_CARD, "haimeviska_sapling", EnJa("Haimeviska Sapling", "ハイメヴィスカの苗木"),
-            PoemList(1).poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。")),
+            PoemList(1)
+                .poem(EnJa("Assembling molecules with Ergs", "第二の葉緑体。"))
+                .poem("classification", EnJa("Order Araucariales, family Plasticaceae", "ナンヨウスギ目プラノキ科")),
         ).sapling()
 
         val PLASTIC_TREE_LEAVES = !TreeBlockConfiguration(
@@ -259,7 +261,9 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         ).block { { DrippingPlasticTreeLogBlock(it) } }.drippingLog({ PLASTIC_TREE_LOG }, { MaterialCard.PLASTIC_TREE_SAP.item() }, { MaterialCard.PLASTIC_TREE_SAP.item() }) // TODO レアドロップを追加するのだ～🌱
         val PLASTIC_TREE_SAPLING = !TreeBlockConfiguration(
             PLASTIC_TREE_CARD, "plastic_tree_sapling", EnJa("Plastic Tree Sapling", "プラノキの苗木"),
-            PoemList(1).poem(EnJa("Etherify sugars with astral radiation.", "天空のフォリオニクス。")),
+            PoemList(1)
+                .poem(EnJa("Etherify sugars with astral radiation.", "天空のフォリオニクス。"))
+                .poem("classification", EnJa("Order Araucariales, family Plasticaceae", "ナンヨウスギ目プラノキ科")),
         ).sapling()
     }
 
