@@ -5,7 +5,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeCard
-import miragefairy2024.mod.tree.contents.HaimeviskaTreeDecorator
+import miragefairy2024.mod.tree.contents.PlasticTreeFamilyTreeDecorator
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.count
@@ -62,6 +62,7 @@ context(ModContext)
 fun initPlasticTree() {
 
     // BlockType
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("plastic_tree_leaves")) { PlasticTreeLeavesBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("plastic_tree_log")) { PlasticTreeLogBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("incised_plastic_tree_log")) { IncisedPlasticTreeLogBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("dripping_plastic_tree_log")) { DrippingPlasticTreeLogBlock.CODEC }.register()
@@ -82,10 +83,10 @@ fun initPlasticTree() {
 
 
     // 地形生成
-    fun createTreeDecorator(): HaimeviskaTreeDecorator {
-        return HaimeviskaTreeDecorator(
+    fun createTreeDecorator(): PlasticTreeFamilyTreeDecorator {
+        return PlasticTreeFamilyTreeDecorator(
             TreeBlockCard.PLASTIC_TREE_LOG.block(),
-            HaimeviskaTreeDecorator.Replacement(TreeBlockCard.DRIPPING_PLASTIC_TREE_LOG.block(), 25),
+            PlasticTreeFamilyTreeDecorator.Replacement(TreeBlockCard.DRIPPING_PLASTIC_TREE_LOG.block(), 25),
             null,
         )
     }
