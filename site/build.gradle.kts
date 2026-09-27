@@ -415,6 +415,13 @@ val buildSite = tasks.register<Sync>("buildSite") {
         }
     }
     into(layout.buildDirectory.dir("site"))
+
+    // Pagefind の検索の索引
+    doLast {
+        project.exec {
+            commandLine("bash", "scripts/build-search-index.sh")
+        }
+    }
 }
 build.configure { dependsOn(buildSite) }
 
