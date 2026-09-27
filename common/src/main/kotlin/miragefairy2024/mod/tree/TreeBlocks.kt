@@ -38,6 +38,7 @@ import miragefairy2024.mod.tree.contents.haimeviska.IncisedHaimeviskaLogBlock
 import miragefairy2024.mod.tree.contents.plastictree.DrippingPlasticTreeLogBlock
 import miragefairy2024.mod.tree.contents.plastictree.IncisedPlasticTreeLogBlock
 import miragefairy2024.mod.tree.contents.plastictree.PLASTIC_TREE_CARD
+import miragefairy2024.mod.tree.contents.plastictree.PlasticTreeLeavesBlock
 import miragefairy2024.mod.tree.contents.plastictree.PlasticTreeLogBlock
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
@@ -63,7 +64,6 @@ import net.minecraft.world.level.block.ButtonBlock
 import net.minecraft.world.level.block.DoorBlock
 import net.minecraft.world.level.block.FenceBlock
 import net.minecraft.world.level.block.FenceGateBlock
-import net.minecraft.world.level.block.LeavesBlock
 import net.minecraft.world.level.block.PressurePlateBlock
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.SaplingBlock
@@ -118,7 +118,7 @@ private fun TreeBlockConfiguration.leavesBase() = this.tag(BlockTags.LEAVES, Ite
 private fun TreeBlockConfiguration.logBase() = this.tag(this.tree.getBlockTag(), this.tree.getItemTag()).tag(BlockTags.OVERWORLD_NATURAL_LOGS)
 private fun TreeBlockConfiguration.woodBase() = this.tag(this.tree.getBlockTag(), this.tree.getItemTag())
 
-private fun TreeBlockConfiguration.leaves(sapling: () -> TreeBlockCard, extraDrop: (() -> Item)?) = this.leavesBase().block { { LeavesBlock(it) } }.let { TreeLeavesBlockCard(it, sapling, extraDrop) }
+private fun TreeBlockConfiguration.leaves(sapling: () -> TreeBlockCard, extraDrop: (() -> Item)?) = this.leavesBase().let { TreeLeavesBlockCard(it, sapling, extraDrop) }
 private fun TreeBlockConfiguration.chargeableLeaves(sapling: () -> TreeBlockCard, extraDrop: (() -> Item)?) = this.leavesBase().let { TreeChargeableLeavesBlockCard(it, sapling, extraDrop) }
 private fun TreeBlockConfiguration.log() = this.logBase().let { TreeIncisableLogBlockCard(it) }
 private fun TreeBlockConfiguration.wood(log: () -> TreeBlockCard) = this.woodBase().block { { RotatedPillarBlock(it) } }.let { TreeWoodBlockCard(it, log) }
@@ -238,7 +238,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
         val PLASTIC_TREE_LEAVES = !TreeBlockConfiguration(
             PLASTIC_TREE_CARD, "plastic_tree_leaves", EnJa("Plastic Tree Leaves", "プラノキの葉"),
             PoemList(1).poem(EnJa("Abnormal extrafloral nectar expression.", "草魂捕食性ウィスプの護法。")),
-        ).leaves({ PLASTIC_TREE_SAPLING }, { MaterialCard.PLASTIC_TREE_SAP.item() })
+        ).block { { PlasticTreeLeavesBlock(it) } }.leaves({ PLASTIC_TREE_SAPLING }, { MaterialCard.PLASTIC_TREE_SAP.item() })
         val PLASTIC_TREE_LOG = !TreeBlockConfiguration(
             PLASTIC_TREE_CARD, "plastic_tree_log", EnJa("Plastic Tree Log", "プラノキの原木"),
             PoemList(1)

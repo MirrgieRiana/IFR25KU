@@ -29,21 +29,12 @@ layout: default
     {% if page.last_modified_at %}<meta itemprop="dateModified" content="{{ page.last_modified_at | date_to_xmlschema }}">{% endif %}
 
     <div class="page__inner-wrap">
-      {% if page.toc %}
-        <aside class="sidebar__right">
-          <nav class="toc" aria-label="Table of contents">
-            <header><h4 class="nav__title"><i class="fas fa-{{ page.toc_icon | default: 'file-alt' }}"></i> {{ page.toc_label | default: site.data.ui-text[locale].toc_label | default: "On this page" }}</h4></header>
-            {% include toc.html sanitize=true html=content h_min=1 h_max=6 class="toc__menu" skip_no_ids=true %}
-          </nav>
-        </aside>
-      {% endif %}
-
-      {% if page.recommendations %}
-        <aside class="sidebar__right recommendations__sidebar">
-          <header><h4 class="nav__title"><i class="fas fa-newspaper"></i> 関連記事</h4></header>
-          <div class="recommendations__list"></div>
-        </aside>
-      {% endif %}
+      <aside class="sidebar__right">
+        <nav class="toc" aria-label="Table of contents">
+          <header><h4 class="nav__title"><i class="fas fa-{{ page.toc_icon | default: 'file-alt' }}"></i> {{ page.toc_label | default: site.data.ui-text[locale].toc_label | default: "On this page" }}</h4></header>
+          {% include toc.html sanitize=true html=content h_min=1 h_max=6 class="toc__menu" skip_no_ids=true %}
+        </nav>
+      </aside>
 
       {% unless page.header.overlay_color or page.header.overlay_image %}
         <header{% unless page.header.image %} class="page__header--plain"{% endunless %}>

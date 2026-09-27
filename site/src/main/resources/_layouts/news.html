@@ -3,8 +3,11 @@ layout: default
 ---
 {%- assign locale = page.locale | default: layout.locale | default: site.locale %}
 
-{% if page.header.overlay_color or page.header.overlay_image or page.header.image %}
-  {% include page__hero.html locale=locale %}
+{% comment %}ヘッダー画像は、画面の幅いっぱいに掲げるため、#main の外へ出すのだ～🌱{% endcomment %}
+{% if page.header.teaser %}
+  <div class="news__banner">
+    <img src="{{ page.header.teaser | relative_url }}" alt="{{ page.title | escape }}">
+  </div>
 {% endif %}
 
 {% assign breadcrumbs_enabled = site.breadcrumbs %}
@@ -27,21 +30,21 @@ layout: default
     {% if page.last_modified_at %}<meta itemprop="dateModified" content="{{ page.last_modified_at | date_to_xmlschema }}">{% endif %}
 
     <div class="page__inner-wrap">
-      <aside class="sidebar__right recommendations__sidebar">
-        <header><h4 class="nav__title"><i class="fas fa-film"></i> 関連記事</h4></header>
-        <div class="recommendations__list"></div>
-      </aside>
+      {% if page.recommendations %}
+        <aside class="sidebar__right recommendations__sidebar">
+          <header><h4 class="nav__title"><i class="fas fa-newspaper"></i> 関連記事</h4></header>
+          <div class="recommendations__list"></div>
+        </aside>
+      {% endif %}
 
-      {% unless page.header.overlay_color or page.header.overlay_image %}
-        <header{% unless page.header.image %} class="page__header--plain"{% endunless %}>
-          {% if page.title -%}
-          <h1 id="page-title" class="page__title p-name" itemprop="headline">
-            {{ page.title | markdownify | remove: "<p>" | remove: "</p>" }}
-          </h1>
-          {%- endif %}
-          {% include page__meta.html locale=locale %}
-        </header>
-      {% endunless %}
+      <header class="page__header--plain">
+        {% if page.title -%}
+        <h1 id="page-title" class="page__title p-name" itemprop="headline">
+          {{ page.title | markdownify | remove: "<p>" | remove: "</p>" }}
+        </h1>
+        {%- endif %}
+        {% include page__meta.html locale=locale %}
+      </header>
 
       <section class="page__content e-content" itemprop="text">
         {{ content }}
@@ -55,16 +58,18 @@ layout: default
         {% include page__date.html locale=locale %}
       </footer>
 
-      <section class="page__recommend">
-        <h3 class="page__recommend-title"><i class="fas fa-film"></i> 他の記事を読む</h3>
-        <div class="page__recommend-grid"></div>
-      </section>
-
-      {% include social-share.html locale=locale %}
+      {% if page.recommendations %}
+        <section class="page__recommend">
+          <h3 class="page__recommend-title"><i class="fas fa-newspaper"></i> 他の記事を読む</h3>
+          <div class="page__recommend-grid"></div>
+        </section>
+      {% endif %}
 
       {% include post_pagination.html locale=locale %}
     </div>
   </article>
 </div>
 
-{% include recommendations.html %}
+{% if page.recommendations %}
+  {% include recommendations.html %}
+{% endif %}
