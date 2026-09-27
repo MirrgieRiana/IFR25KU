@@ -50,9 +50,9 @@ tags:
 {% endpaper_column %}
 {% paper_column %}
 
-{% paper_figure "miragium-powder-and-fairy.webp" "図１　ミラジウムの粉末と妖精" alt="砂岩の部屋で、赤褐色のブロックの上に浮かぶ、水色の粉末のアイテムと橙色の妖精のアイテム" %}
+{% paper_figure "miragium-powder-and-fairy.webp" "図１　ミラジウムの粉末と妖精" alt="砂岩の部屋で、テラコッタの上に並ぶ、ミラジウムの水色の粉末と橙色の火精フィーリャのアイテム" %}
 
-{% paper_figure "solidification-process.webp" "図２　固形化処理の様子" alt="先に星の付いたステッキが空中に保持した粉末の塊に、翅のある妖精が片手で触れている手描きの図" %}
+{% paper_figure "solidification-process.webp" "図２　固形化処理の様子" alt="先端に星の付いたステッキが空中で保持している粉末の塊に、翅のある妖精が片手で触れている手描きの図" %}
 
 ## 3. 利用
 

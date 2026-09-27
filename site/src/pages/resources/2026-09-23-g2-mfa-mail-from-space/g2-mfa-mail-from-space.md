@@ -23,7 +23,7 @@ tags:
 
 {% news_figure "reception-timeline.webp" "電波の受信タイムライン" alt="9月3日の10時8分から9月10日の14時32分まで、日ごとの行に水色の送信単位の四角が隙間なく並ぶ、電波の受信のタイムライン" %}
 
-{% news_figure actual_size "dictionary-entry.png" "「辞書」の項目の一例" alt="上に記号の列、左に放射状の線を出す小さな円、右に大きな灰色の天体を描き、それらを線でつないだ白黒の画像" %}
+{% news_figure actual_size "dictionary-entry.png" "「辞書」の項目の一例" alt="画像上部と恒星の下に記号の列、左に放射状に光を出す小さな恒星、右に大きな灰色の天体を描いた白黒の画像" %}
 
 {% news_section %}惑星開拓の様子を伝える「メッセージ」本文{% endnews_section %}
 
