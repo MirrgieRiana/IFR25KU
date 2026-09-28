@@ -51,7 +51,7 @@ const normalizeJson = v => Array.isArray(v) ? `[${v.map(normalizeJson).join(',')
       fs.copyFileSync(prevFile, file);
     } else {
       await page.evaluate((cfg) => { window.applyFrame(cfg); }, frames[i]);
-      // レイアウトの確定を待ってから撮るのだ～🌱
+      // レイアウトの確定を待ってから、スクリーンショットを撮るのだ～🌱
       await new Promise(r => setTimeout(r, 8));
       await page.screenshot({ path: file });
       shots++; prevKey = key; prevFile = file;
