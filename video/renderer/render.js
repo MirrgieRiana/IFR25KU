@@ -14,7 +14,7 @@ if (!templatePath || !framesPath || !outDir) {
 const W = parseInt(process.env.VIDEO_WIDTH || '1280', 10);
 const H = parseInt(process.env.VIDEO_HEIGHT || '720', 10);
 
-// 構成 jsonl を、1 行を 1 フレームとして読み込むのだ～🌱
+// 構成 jsonl の 1 行を、1 フレームとして読み込むのだ～🌱
 const frames = fs.readFileSync(framesPath, 'utf-8').split('\n')
   .map(s => s.trim()).filter(s => s.length > 0).map(s => JSON.parse(s));
 
