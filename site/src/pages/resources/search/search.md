@@ -14,3 +14,20 @@ toc: false
   <pagefind-summary></pagefind-summary>
   <pagefind-results></pagefind-results>
 </div>
+
+<script type="module">
+  const instance = window.PagefindComponents.getInstanceManager().getInstance("default");
+  instance.on("search", (term) => {
+    const url = new URL(location.href);
+    if (term) {
+      url.searchParams.set("q", term);
+    } else {
+      url.searchParams.delete("q");
+    }
+    history.replaceState(history.state, "", url);
+  });
+  const query = new URLSearchParams(location.search).get("q");
+  if (query) {
+    instance.triggerSearch(query);
+  }
+</script>
