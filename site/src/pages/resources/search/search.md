@@ -30,4 +30,6 @@ toc: false
   if (query) {
     instance.triggerSearch(query);
   }
+  // Pagefind 1.5.2 の pagefind-input は、コンストラクターが autofocus プロパティへ false を入れて autofocus 属性を消しちゃうから、ここでフォーカスするのだ～🌱
+  document.querySelector("pagefind-input").focus();
 </script>
