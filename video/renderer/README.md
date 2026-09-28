@@ -1,51 +1,82 @@
-# renderer — 汎用フレームレンダラーなのだぁ🌱
+# renderer なのだ～🌱
 
-構成jsonl（1 行 = 1 フレーム）と HTML テンプレートを受け取って、ひたすら対応する画像を撮るだけの、
-**動画の中身を知らない**カプセル化されたレンダラーです。単体で完結していて、他のパートに依存しません。
+構成 jsonl と HTML のテンプレートから、連番のフレーム画像を撮る、汎用のレンダラーなのだ～🌱
+動画の中身は何も知らなくて、このディレクトリだけで完結していて、ほかのパートに依存しないのだ～🌱
 
-## 使い方
+## 使い方なのだ～🌱
 
 ```sh
 bash render.sh <template.html> <frames.jsonl> <outDir>
 ```
 
-`render.sh` は、`node_modules` が無ければ `npm install` を、`CHROMIUM_PATH` の指定が無く `/tmp/chromium` も無ければ `setup_chromium.js` を実行してから、`render.js` を呼びます。
-依存と Chromium が揃っていれば、`node render.js <template.html> <frames.jsonl> <outDir>` と直接呼んでも同じです。
+`render.sh` は、依存と Chromium を用意してから、`render.js` を呼ぶのだ～🌱
+引数のパスは、呼び出し元のカレントディレクトリを基準にするのだ～🌱
 
-- `template.html` … レンダリング対象の HTML テンプレート。相対参照（`assets.js` など）は、この HTML の場所を基準に解決されます。
-- `frames.jsonl` … 1 行 = 1 フレームの構成（JSON オブジェクト）を並べたファイル。
-- `outDir` … 連番画像 `f_00000.png …` を書き出す先（丸ごと作り直します）。
+- `template.html` は、描画する HTML のテンプレートなのだ～🌱
+- `frames.jsonl` は、1 行が 1 フレームの構成の JSON オブジェクトを並べたファイルなのだ～🌱
+- `outDir` は、`f_00000.png` からの連番の画像を書き出す先なのだ～🌱
 
-## テンプレートに求める 2 つの約束
+テンプレートの中の `assets.js` のような相対参照は、テンプレートの場所を基準に解決されるのだ～🌱
+構成 jsonl の空行は、読み飛ばすのだ～🌱
+`outDir` は、撮る前に丸ごと消して作り直すのだ～🌱
+引数が 3 個でないときは、使い方を出して、終了コード 1 で終わるのだ～🌱
 
-レンダラーがテンプレートに期待するのは、次の 2 点だけです。
+`render.sh` は、足りないものを次のように用意するのだ～🌱
 
-1. 読み込みが終わったら `window.__ready` を `true` にすること。
-2. `window.applyFrame(cfg)` を持つこと。
-   - `cfg` は構成jsonl の 1 行（＝1 フレーム分の設定オブジェクト）です。
-   - `applyFrame(cfg)` は、その設定どおりに画面を組み立てて、**「この画面の見た目を一意に表す文字列（再利用キー）」を返します**。
+- `node_modules` が無ければ、このディレクトリで `npm install` するのだ～🌱
+- `CHROMIUM_PATH` の指定が無くて `/tmp/chromium` も無ければ、`setup_chromium.js` を実行するのだ～🌱
 
-レンダラーは構成jsonl を頭から 1 行ずつ `applyFrame` に渡し、1 行につき 1 枚の画像を撮ります。
-連続する行の再利用キーが同じなら、撮り直さず前のコマを使い回します（変化の少ない場面が速くなります）。
+依存と Chromium が揃っていれば、`render.js` を直接呼んでも同じなのだ～🌱
 
-## 環境変数
+```sh
+node render.js <template.html> <frames.jsonl> <outDir>
+```
 
-| 変数 | 既定 | 説明 |
-| --- | --- | --- |
-| `CHROMIUM_PATH` | `/tmp/chromium` | Chrome/Chromium 実行ファイル。手元の Chrome を使うならそのパスを指定 |
-| `CHROMIUM_LD_PATH` | （なし） | `render.sh` が `render.js` を走らせるときに `LD_LIBRARY_PATH` へ前置するパス。共有ライブラリを補う必要のある環境向け |
-| `VIDEO_WIDTH` | `1280` | 画面幅 |
-| `VIDEO_HEIGHT` | `720` | 画面高さ |
+## テンプレートに求める約束なのだ～🌱
 
-## Chromium の用意
+レンダラーがテンプレートに求めるのは、次の 2 個だけなのだ～🌱
 
-Chrome が無い環境では、`node setup_chromium.js` で同梱 Chromium（`@sparticuz/chromium`）を `/tmp/chromium` に展開できます。
+1. 読み込みが終わったら、`window.__ready` を `true` にするのだ～🌱
+2. `window.applyFrame(cfg)` を持つのだ～🌱
 
-ごく限られた環境（root 権限が無く、NSS 系の共有ライブラリが OS に無いなど）では、この Chromium が
-`libnss3.so` などを見つけられず起動に失敗することがあります。その NSS 一式は、`@sparticuz/chromium` パッケージが
-同梱している `bin/al2023.tar.br`（Brotli 圧縮された tar）を展開すると得られます。取り出した `.so` を 1 つのディレクトリに
-集め、`CHROMIUM_LD_PATH` にそのパスを指定してください（`render.sh` が `LD_LIBRARY_PATH` へ前置します）。
+`cfg` は、構成 jsonl の 1 行で、1 フレーム分の設定のオブジェクトなのだ～🌱
+`applyFrame(cfg)` は、その設定のとおりに画面を組み立てて、再利用キーを返すのだ～🌱
+再利用キーは、その画面の見た目を一意に表す文字列なのだ～🌱
 
-## 依存
+## 撮り方なのだ～🌱
 
-`npm install` で `puppeteer-core` と `@sparticuz/chromium` が入ります。
+レンダラーは、構成 jsonl を頭から 1 行ずつ `applyFrame` に渡して、1 行につき 1 枚を撮るのだ～🌱
+連続する行の再利用キーが同じなら、撮り直さずに、前のコマの画像をコピーするのだ～🌱
+だから、変化の少ない場面ほど、速く撮れるのだ～🌱
+
+## 環境変数なのだ～🌱
+
+| 変数 | 既定 | 読むもの | 説明 |
+| --- | --- | --- | --- |
+| `CHROMIUM_PATH` | `/tmp/chromium` | `render.sh` と `render.js` | Chrome か Chromium の実行ファイルなのだ～🌱 |
+| `CHROMIUM_LD_PATH` | なし | `render.sh` | `render.js` を走らせるときに、`LD_LIBRARY_PATH` へ前置するパスなのだ～🌱 |
+| `VIDEO_WIDTH` | `1280` | `render.js` | 画面の幅なのだ～🌱 |
+| `VIDEO_HEIGHT` | `720` | `render.js` | 画面の高さなのだ～🌱 |
+
+手元の Chrome を使うときは、そのパスを `CHROMIUM_PATH` に指定するのだ～🌱
+
+## Chromium の用意なのだ～🌱
+
+Chrome が無い環境では、`node setup_chromium.js` で、同梱の Chromium を `/tmp/chromium` に展開できるのだ～🌱
+同梱の Chromium は、`@sparticuz/chromium` のパッケージに入っているものなのだ～🌱
+
+root 権限が無くて、NSS 系の共有ライブラリが OS に無い環境では、この Chromium が起動に失敗することがあるのだ～🌱
+`libnss3.so` のような共有ライブラリを、見つけられないからなのだ～🌱
+その NSS 一式は、`@sparticuz/chromium` が同梱している `bin/al2023.tar.br` を展開すると得られるのだ～🌱
+`bin/al2023.tar.br` は、Brotli で圧縮された tar なのだ～🌱
+取り出した `.so` を 1 個のディレクトリに集めて、そのパスを `CHROMIUM_LD_PATH` に指定するのだ～🌱
+
+## 依存なのだ～🌱
+
+`npm install` で、`puppeteer-core` と `@sparticuz/chromium` が入るのだ～🌱
+
+## このファイル自体の編集ルールなのだ～🌱
+
+このファイルは、1 行を全角 70 文字までにして、次のスキルを厳守して書くのだ～🌱
+
+- [markdown-max-line-length](https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/markdown-max-line-length/SKILL.md)

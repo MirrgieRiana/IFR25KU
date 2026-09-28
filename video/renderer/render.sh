@@ -1,17 +1,6 @@
 #!/usr/bin/env bash
-# =============================================================================
-# render.sh — Node の依存と Chromium を用意してから、render.js で連番フレーム画像を撮るのだ～🌱
-# -----------------------------------------------------------------------------
-# 使い方：
-#   bash render.sh <template.html> <frames.jsonl> <outDir>
-#     引数の意味は render.js と同じなのだ～🌱
-#
-# 環境変数：
-#   CHROMIUM_PATH    … Chrome/Chromium 実行ファイルなのだ～🌱
-#                      指定が無くて /tmp/chromium も無いときは、setup_chromium.js で /tmp/chromium に展開するのだ～🌱
-#   CHROMIUM_LD_PATH … render.js を走らせるときに LD_LIBRARY_PATH へ前置するパスなのだ～🌱
-#   VIDEO_WIDTH / VIDEO_HEIGHT … そのまま render.js が読むのだ～🌱
-# =============================================================================
+# Node の依存と Chromium を用意してから、render.js で連番のフレーム画像を撮るのだ～🌱
+# 使い方と環境変数は、README.md に書いてあるのだ～🌱
 set -euo pipefail
 
 if [ "$#" -ne 3 ]; then
