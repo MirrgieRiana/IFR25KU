@@ -2,7 +2,7 @@
   "name": "video-renderer",
   "private": true,
   "version": "1.0.0",
-  "description": "構成 jsonl と HTML のテンプレートから、連番のフレーム画像を撮る、動画に依存しない汎用のレンダラーなのだ～🌱",
+  "description": "構成 jsonl と HTML のテンプレートから、連番のフレーム画像をレンダリングする、動画に依存しない汎用のレンダラーなのだ～🌱",
   "dependencies": {
     "@sparticuz/chromium": "^131.0.1",
     "puppeteer-core": "^23.11.1"

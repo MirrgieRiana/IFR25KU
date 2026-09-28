@@ -1,8 +1,9 @@
-// 構成 jsonl と HTML のテンプレートから、連番のフレーム画像を撮る汎用のレンダラーなのだ～🌱
-// 使い方と、テンプレートに求める約束と、環境変数は、README.md に書いてあるのだ～🌱
+// 構成 jsonl と HTML のテンプレートから、連番のフレーム画像をレンダリングする汎用のレンダラーなのだ～🌱
+// 使い方と、テンプレートが満たすべき要件と、環境変数は、README.md に書いてあるのだ～🌱
 const puppeteer = require('puppeteer-core');
 const fs = require('fs');
 const path = require('path');
+const { pathToFileURL } = require('url');
 
 const templatePath = process.argv[2];
 const framesPath = process.argv[3];
@@ -38,7 +39,7 @@ const normalizeJson = v => Array.isArray(v) ? `[${v.map(normalizeJson).join(',')
   });
   const page = await browser.newPage();
   await page.setViewport({ width: W, height: H, deviceScaleFactor: 1 });
-  await page.goto('file://' + path.resolve(templatePath), { waitUntil: 'load' });
+  await page.goto(pathToFileURL(path.resolve(templatePath)).href, { waitUntil: 'load' });
   await page.evaluate(async () => { await document.fonts.ready; });
   await page.waitForFunction('window.__ready===true', { timeout: 20000 });
 
