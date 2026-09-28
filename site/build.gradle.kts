@@ -396,7 +396,7 @@ val build = tasks.register("build") {
     group = "build"
 }
 
-val buildSite = tasks.register<Sync>("buildSite") {
+val buildSiteWithoutSearchIndex = tasks.register<Sync>("buildSiteWithoutSearchIndex") {
     group = "build"
     from(jekyllBuild)
     from(makeLangTable)
@@ -414,14 +414,23 @@ val buildSite = tasks.register<Sync>("buildSite") {
             }
         }
     }
-    into(layout.buildDirectory.dir("site"))
+    into(layout.buildDirectory.dir("siteWithoutSearchIndex"))
+}
 
-    // Pagefind の検索の索引
-    doLast {
-        project.exec {
-            commandLine("bash", "scripts/build-search-index.sh")
-        }
-    }
+val buildSearchIndex = tasks.register<Exec>("buildSearchIndex") {
+    group = "build"
+    dependsOn(buildSiteWithoutSearchIndex)
+    inputs.files(buildSiteWithoutSearchIndex.map { task -> fileTree(task.destinationDir) { include("**/*.html") } })
+    inputs.file("scripts/build-search-index.sh")
+    outputs.dir(layout.buildDirectory.dir("searchIndex"))
+    commandLine("bash", "scripts/build-search-index.sh")
+}
+
+val buildSite = tasks.register<Sync>("buildSite") {
+    group = "build"
+    from(buildSiteWithoutSearchIndex)
+    from(buildSearchIndex)
+    into(layout.buildDirectory.dir("site"))
 }
 build.configure { dependsOn(buildSite) }
 

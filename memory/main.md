@@ -181,7 +181,7 @@ CSSのカスタマイズは `assets/css/main.scss` の `@import "minimal-mistake
 
 ### 特殊なビルドパイプラインを持つファイルなのだ～🌱
 
-- **CHANGELOG** (`src/pages/resources/CHANGELOG/CHANGELOG.md`): JekyllがHTMLに変換して、`buildSite` が `.md` も別途コピーしてmd版も配信するのだ～🌱
+- **CHANGELOG** (`src/pages/resources/CHANGELOG/CHANGELOG.md`): JekyllがHTMLに変換して、`buildSiteWithoutSearchIndex` が `.md` も別途コピーしてmd版も配信するのだ～🌱
 - **Lang Table**: `src/langTable/html/lang_table.html` を `makeLangTable` タスクで展開するのだぁ✨
   `src/pages/resources/lang-table-index/lang-table-index.md` はテーマレイアウトを使った特設ページなのだ～🌱
 - **posts.json**: `_plugins/posts_generator.rb` がJekyllビルド時に全記事メタを書き出すのだ～🌱
