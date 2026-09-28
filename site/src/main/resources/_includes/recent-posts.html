@@ -1,4 +1,4 @@
-<section class="recent-posts">
+<section class="recent-posts" data-pagefind-ignore>
   {% assign filter_tag = include.tag %}
   {% if filter_tag %}
   {% assign shown_posts = site.posts | where_exp: "post", "post.tags contains filter_tag" %}
