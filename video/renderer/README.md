@@ -6,8 +6,11 @@
 ## 使い方
 
 ```sh
-node render.js <template.html> <frames.jsonl> <outDir>
+bash render.sh <template.html> <frames.jsonl> <outDir>
 ```
+
+`render.sh` は、`node_modules` が無ければ `npm install` を、`CHROMIUM_PATH` の指定が無く `/tmp/chromium` も無ければ `setup_chromium.js` を実行してから、`render.js` を呼びます。
+依存と Chromium が揃っていれば、`node render.js <template.html> <frames.jsonl> <outDir>` と直接呼んでも同じです。
 
 - `template.html` … レンダリング対象の HTML テンプレート。相対参照（`assets.js` など）は、この HTML の場所を基準に解決されます。
 - `frames.jsonl` … 1 行 = 1 フレームの構成（JSON オブジェクト）を並べたファイル。
@@ -30,13 +33,18 @@ node render.js <template.html> <frames.jsonl> <outDir>
 | 変数 | 既定 | 説明 |
 | --- | --- | --- |
 | `CHROMIUM_PATH` | `/tmp/chromium` | Chrome/Chromium 実行ファイル。手元の Chrome を使うならそのパスを指定 |
+| `CHROMIUM_LD_PATH` | （なし） | `render.sh` が `render.js` を走らせるときに `LD_LIBRARY_PATH` へ前置するパス。共有ライブラリを補う必要のある環境向け |
 | `VIDEO_WIDTH` | `1280` | 画面幅 |
 | `VIDEO_HEIGHT` | `720` | 画面高さ |
 
 ## Chromium の用意
 
 Chrome が無い環境では、`node setup_chromium.js` で同梱 Chromium（`@sparticuz/chromium`）を `/tmp/chromium` に展開できます。
-共有ライブラリが足りない特殊な環境向けの補足は、親ディレクトリの [`../README.md`](../README.md) の「8. 補足」にあります。
+
+ごく限られた環境（root 権限が無く、NSS 系の共有ライブラリが OS に無いなど）では、この Chromium が
+`libnss3.so` などを見つけられず起動に失敗することがあります。その NSS 一式は、`@sparticuz/chromium` パッケージが
+同梱している `bin/al2023.tar.br`（Brotli 圧縮された tar）を展開すると得られます。取り出した `.so` を 1 つのディレクトリに
+集め、`CHROMIUM_LD_PATH` にそのパスを指定してください（`render.sh` が `LD_LIBRARY_PATH` へ前置します）。
 
 ## 依存
 
