@@ -22,6 +22,9 @@ fs.rmSync(outDir, { recursive: true, force: true });
 fs.mkdirSync(outDir, { recursive: true });
 
 const pad = n => String(n).padStart(5, '0');
+const normalizeJson = v => Array.isArray(v) ? `[${v.map(normalizeJson).join(',')}]`
+  : v !== null && typeof v === 'object' ? `{${Object.keys(v).sort().map(k => `${JSON.stringify(k)}:${normalizeJson(v[k])}`).join(',')}}`
+  : JSON.stringify(v);
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -38,12 +41,12 @@ const pad = n => String(n).padStart(5, '0');
 
   let prevKey = null, prevFile = null, shots = 0;
   for (let i = 0; i < frames.length; i++) {
-    // 1 フレーム分の構成を画面に反映して、その見た目を一意に表す再利用キーを受け取るのだ～🌱
-    const key = await page.evaluate((cfg) => String(window.applyFrame(cfg)), frames[i]);
+    const key = normalizeJson(frames[i]);
     const file = path.join(outDir, `f_${pad(i)}.png`);
     if (key === prevKey && prevFile) {
       fs.copyFileSync(prevFile, file);
     } else {
+      await page.evaluate((cfg) => { window.applyFrame(cfg); }, frames[i]);
       // レイアウトの確定を待ってから撮るのだ～🌱
       await new Promise(r => setTimeout(r, 8));
       await page.screenshot({ path: file });
