@@ -5,6 +5,7 @@ layout: one-column
 sidebar: false
 toc: false
 post_count_in_title: true
+search: false
 ---
 
 <div class="content-wrap" markdown="1">

@@ -81,7 +81,7 @@ toc: true
         <img src="{{ page.header.teaser | relative_url }}" alt="{{ page.title | escape }}" class="page__teaser-banner">
       {% endif %}
 
-      <section class="page__content e-content" itemprop="text">
+      <section class="page__content e-content" itemprop="text"{% unless page.search == false %} data-pagefind-body{% endunless %}>
         {{ content }}
         {% if page.link %}<div><a href="{{ page.link }}" class="btn btn--primary">{{ site.data.ui-text[locale].ext_link_label | default: "Direct Link" }}</a></div>{% endif %}
       </section>
