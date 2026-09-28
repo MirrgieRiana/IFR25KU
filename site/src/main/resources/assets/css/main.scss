@@ -1326,7 +1326,7 @@ img[src$=".png" i] {
 }
 
 // 検索ページの件数の行（pagefind-summary）
-// Pagefind の CSS が、同じ詳細度の要素セレクターで部品のマージンを消して、この CSS より後に読まれるから、クラスを 1 個挟んで詳細度を上げているのだ～🌱
+// Pagefind の CSS が、要素セレクターだけの規則でコンポーネントのマージンを消して、この CSS より後に読まれるから、クラスを 1 個挟んで詳細度を上げているのだ～🌱
 .page__content pagefind-summary {
   margin: 2px 0;
 }
