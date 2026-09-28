@@ -44,7 +44,7 @@ tags:
 
 ---
 
-{% news_section %}関連記事{% endnews_section %}
+{% news_section no_search %}関連記事{% endnews_section %}
 
 {% news_related "g2-mfa-observation-satellite" %}
 

@@ -24,7 +24,7 @@ require "cgi"
 #
 # ## HTML出力構造
 #
-#   <div class="page__recommend-grid">
+#   <div class="page__recommend-grid" data-pagefind-ignore>
 #   <a href="（記事のURL）" class="recent-posts__card">
 #   <div class="recent-posts__teaser"><img src="（サムネイル）" alt=""></div>
 #   <div class="recent-posts__body"><h3 class="recent-posts__title">（タイトル）</h3></div>
@@ -52,7 +52,7 @@ module News
         render_card(site, post)
       end
       <<~HTML
-        <div class="page__recommend-grid">
+        <div class="page__recommend-grid" data-pagefind-ignore>
         #{cards.join}</div>
       HTML
     end
