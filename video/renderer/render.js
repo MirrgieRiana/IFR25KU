@@ -18,7 +18,10 @@ const H = parseInt(process.env.VIDEO_HEIGHT || '720', 10);
 const frames = fs.readFileSync(framesPath, 'utf-8').split('\n')
   .map(s => s.trim()).filter(s => s.length > 0).map(s => JSON.parse(s));
 
-fs.rmSync(outDir, { recursive: true, force: true });
+if (fs.existsSync(outDir) && !(fs.statSync(outDir).isDirectory() && fs.readdirSync(outDir).length === 0)) {
+  console.error(`error: outDir must be an empty directory or must not exist: ${outDir}`);
+  process.exit(1);
+}
 fs.mkdirSync(outDir, { recursive: true });
 
 const pad = n => String(n).padStart(5, '0');
