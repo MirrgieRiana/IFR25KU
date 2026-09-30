@@ -10,6 +10,7 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ChildrenGenerator
+import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.Sizing
@@ -154,7 +155,7 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                     position.weight = 1.0
                     recipeEntry.recipe.getParagraphs().forEachIndexed { index, paragraph ->
                         if (index > 0) view += PARAGRAPH_SPACE_CHILDREN_GENERATOR
-                        view += MultiLineTextChildrenGenerator(paragraph) { Alignment.START }
+                        view += MultiLineTextChildrenGenerator(paragraph, ColorPair.DEFAULT, true) { Alignment.START }
                     }
 
                     view.pageCount.register { _, it ->
