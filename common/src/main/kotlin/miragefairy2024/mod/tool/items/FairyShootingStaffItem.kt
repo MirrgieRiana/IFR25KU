@@ -9,17 +9,25 @@ import miragefairy2024.mod.entity.AntimatterBoltCard
 import miragefairy2024.mod.entity.AntimatterBoltEntity
 import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
+import miragefairy2024.util.Model
+import miragefairy2024.util.ModelData
+import miragefairy2024.util.ModelDisplayData
+import miragefairy2024.util.ModelDisplayEntryData
+import miragefairy2024.util.ModelTexturesData
+import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.Translation
 import miragefairy2024.util.get
 import miragefairy2024.util.getLevel
 import miragefairy2024.util.getRate
 import miragefairy2024.util.invoke
 import miragefairy2024.util.randomInt
+import miragefairy2024.util.string
 import miragefairy2024.util.text
 import miragefairy2024.util.yellow
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.Registries
+import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.network.chat.Component
 import net.minecraft.sounds.SoundSource
 import net.minecraft.stats.Stats
@@ -51,6 +59,7 @@ open class FairyShootingStaffConfiguration(
         this.tags += MAGIC_WEAPON_ITEM_TAG
         this.tags += ItemTags.DURABILITY_ENCHANTABLE
         this.miningDamage = 2
+        this.modelTemplateOverride = SHOOTING_STAFF_MODEL_TEMPLATE
     }
 }
 
@@ -142,4 +151,25 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
     override fun postHurtEnemy(stack: ItemStack, target: LivingEntity, attacker: LivingEntity) {
         stack.hurtAndBreak(2, attacker, EquipmentSlot.MAINHAND)
     }
+}
+
+/**
+ * 杖を立てて構えた姿勢で持つためのアイテムモデルなのだ～🌱
+ *
+ * 柄が鉛直から 17.2 度だけ前に倒れて、全長が 1.5 ブロックになり、柄の下端から 3 分の 1 の点が手に来る値なのだ～🌱
+ * 左手用の値は、[net.minecraft.client.renderer.block.model.ItemTransform] が左手のときだけ [net.minecraft.client.renderer.block.model.ItemTransform.rotation] の Y と Z を反転するから、それを打ち消してあるのだ～🌱
+ */
+private val SHOOTING_STAFF_MODEL_TEMPLATE = Model { textureMapping ->
+    ModelData(
+        parent = ResourceLocation("item/handheld"),
+        textures = ModelTexturesData(
+            TextureSlot.LAYER0.id to textureMapping.get(TextureSlot.LAYER0).string,
+        ),
+        display = ModelDisplayData(
+            thirdPersonRightHand = ModelDisplayEntryData(rotation = listOf(0, -90, -30), translation = listOf(0, 1, 4), scale = listOf(1.2F, 1.2F, 1.2F)),
+            thirdPersonLeftHand = ModelDisplayEntryData(rotation = listOf(0, 90, 30), translation = listOf(0, 1, 4), scale = listOf(1.2F, 1.2F, 1.2F)),
+            firstPersonRightHand = ModelDisplayEntryData(rotation = listOf(0, -90, 60), translation = listOf(1.5F, 4.33F, -1.2F), scale = listOf(0.9F, 0.9F, 0.9F)),
+            firstPersonLeftHand = ModelDisplayEntryData(rotation = listOf(0, 90, -60), translation = listOf(1.5F, 4.33F, -1.2F), scale = listOf(0.9F, 0.9F, 0.9F)),
+        ),
+    )
 }
