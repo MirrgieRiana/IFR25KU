@@ -21,6 +21,11 @@ bash render.sh <template.html> <frames.jsonl> <outDir>
 テンプレートの中の `assets.js` のような相対パスは、テンプレートのあるディレクトリを基準に解決されるのだ～🌱
 構成 jsonl の空行は、無視するのだ～🌱
 
+`render.sh` は、不足しているものを、次のように準備するのだ～🌱
+
+- `node_modules` が無ければ、このディレクトリで `npm install` を実行するのだ～🌱
+- `CHROMIUM_PATH` が指定されていなくて、実行できる `/tmp/chromium` も無ければ、依存のパッケージに含まれる Chromium を `/tmp/chromium` に展開するのだ～🌱
+
 ## テンプレートが満たすべき要件なのだ～🌱
 
 レンダラーがテンプレートに求めるのは、次の 2 個だけなのだ～🌱
