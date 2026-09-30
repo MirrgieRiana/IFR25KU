@@ -1,19 +1,35 @@
 package miragefairy2024.mod.biome
 
+import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.contents.plastictree.GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
+import miragefairy2024.mod.tree.contents.plastictree.SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_COARSE_DIRT_PLACED_FEATURE_KEY
 import miragefairy2024.mod.tree.contents.plastictree.SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
+import miragefairy2024.util.count
 import miragefairy2024.util.createItemStack
+import miragefairy2024.util.flower
+import miragefairy2024.util.generator
 import miragefairy2024.util.getSurfaceNoiseThreshold
+import miragefairy2024.util.per
+import miragefairy2024.util.registerConfiguredFeature
+import miragefairy2024.util.registerPlacedFeature
+import miragefairy2024.util.square
+import miragefairy2024.util.surface
+import miragefairy2024.util.tree
+import miragefairy2024.util.with
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
+import net.minecraft.core.Direction
 import net.minecraft.core.HolderGetter
+import net.minecraft.core.registries.Registries
 import net.minecraft.data.worldgen.BiomeDefaultFeatures
-import net.minecraft.data.worldgen.placement.VegetationPlacements
+import net.minecraft.data.worldgen.features.FeatureUtils
+import net.minecraft.data.worldgen.features.TreeFeatures
+import net.minecraft.data.worldgen.placement.PlacementUtils
 import net.minecraft.tags.BiomeTags
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.MobCategory
@@ -26,8 +42,15 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.Noises
 import net.minecraft.world.level.levelgen.SurfaceRules
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
+import net.minecraft.world.level.levelgen.feature.Feature
+import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
+import net.minecraft.world.level.levelgen.placement.BiomeFilter
+import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter
 import net.minecraft.world.level.levelgen.placement.CaveSurface
+import net.minecraft.world.level.levelgen.placement.InSquarePlacement
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
 object OldGrowthAmberForestBiomeCard : BiomeCard(
@@ -45,6 +68,11 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
     },
     BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST, BiomeTags.INCREASED_FIRE_BURNOUT, ConventionalBiomeTags.IS_WET_OVERWORLD,
 ) {
+    private val smallOakPlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_oak_old_growth_amber_forest")
+    private val smallJunglePlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_jungle_tree_old_growth_amber_forest")
+    private val tallGrassPlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("tall_grass_old_growth_amber_forest")
+    private val deadBushPlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("dead_bush_old_growth_amber_forest")
+
     override fun createBiome(placedFeatureLookup: HolderGetter<PlacedFeature>, configuredCarverLookup: HolderGetter<ConfiguredWorldCarver<*>>): Biome {
         return Biome.BiomeBuilder()
             .hasPrecipitation(true)
@@ -88,10 +116,14 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, FallenPlasticTreeLogFeatureCard.placedFeatureKey)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_COARSE_DIRT_PLACED_FEATURE_KEY)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, smallOakPlacedFeatureKey)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, smallJunglePlacedFeatureKey)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ResinCementSapFeatureCard.placedFeatureKey)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
                 BiomeDefaultFeatures.addDefaultGrass(lookupBackedBuilder)
-                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, tallGrassPlacedFeatureKey)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, deadBushPlacedFeatureKey)
                 BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
 
             }.build()).build()
@@ -100,6 +132,29 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
     context(ModContext)
     override fun init() {
         super.init()
+
+        // 地形生成
+        val onGrassBlock = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, Blocks.GRASS_BLOCK)))
+        Feature.TREE.generator(MirageFairy2024.identifier("small_oak_old_growth_amber_forest")) {
+            TreeFeatures.OAK.generator {
+                registerPlacedFeature(smallOakPlacedFeatureKey) { per(2) + tree(Blocks.OAK_SAPLING) }
+            }
+        }
+        Feature.TREE.generator(MirageFairy2024.identifier("small_jungle_tree_old_growth_amber_forest")) {
+            TreeFeatures.JUNGLE_TREE_NO_VINE.generator {
+                registerPlacedFeature(smallJunglePlacedFeatureKey) { per(2) + tree(Blocks.JUNGLE_SAPLING) + onGrassBlock }
+            }
+        }
+        Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("tall_grass_old_growth_amber_forest")) {
+            registerConfiguredFeature { FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.TALL_GRASS)), listOf(Blocks.GRASS_BLOCK)) }.generator {
+                registerPlacedFeature(tallGrassPlacedFeatureKey) { count(1) + flower(square, surface) }
+            }
+        }
+        Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("dead_bush_old_growth_amber_forest")) {
+            registerConfiguredFeature { FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.DEAD_BUSH)), listOf(Blocks.COARSE_DIRT), 4) }.generator {
+                registerPlacedFeature(deadBushPlacedFeatureKey) { count(2) + listOf(InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()) }
+            }
+        }
 
         registerOverworldSurfaceRules {
             SurfaceRules.ifTrue(

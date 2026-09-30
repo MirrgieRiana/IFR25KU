@@ -26,6 +26,7 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.util.valueproviders.ConstantInt
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration
@@ -51,11 +52,12 @@ val PLASTIC_TREE_LOGS_ITEM_TAG = MirageFairy2024.identifier("plastic_tree_logs")
 
 val SMALL_PLASTIC_TREE_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("small_plastic_tree")
 val SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_plastic_tree_old_growth_amber_forest")
+val SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_COARSE_DIRT_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_plastic_tree_old_growth_amber_forest_coarse_dirt")
 
 val GIANT_PLASTIC_TREE_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("giant_plastic_tree")
 val GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_plastic_tree_old_growth_amber_forest")
 
-/** プラノキは石化した樹脂からしか生えないから、真下がそのブロックである位置に限るのだ～🌱 */
+/** 真下が石化した樹脂である位置に限るのだ～🌱 */
 val onResinCement get() = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, BlockMaterialCard.RESIN_CEMENT.block())))
 
 context(ModContext)
@@ -101,6 +103,7 @@ fun initPlasticTree() {
             ).ignoreVines().decorators(listOf(createTreeDecorator())).build()
         }.generator {
             registerPlacedFeature(SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { count(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCement }
+            registerPlacedFeature(SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_COARSE_DIRT_PLACED_FEATURE_KEY) { count(1) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, Blocks.COARSE_DIRT))) }
         }
     }
     Feature.TREE.generator(MirageFairy2024.identifier("giant_plastic_tree")) {
