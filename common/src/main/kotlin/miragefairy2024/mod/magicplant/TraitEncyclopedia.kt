@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.Emoji
+import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.invoke
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
@@ -88,7 +89,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
             view.sizingY = Sizing.FILL
 
             // 背景
-            view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/trait_background.png"), 22, 22, 22, 22, 22, 22)
+            view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 22, 22, 22, 22, 22, 22)
 
             view += YListView().configure {
                 view.sizingX = Sizing.FILL
