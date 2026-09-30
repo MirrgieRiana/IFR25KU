@@ -51,6 +51,15 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
                 surface(NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.surface)
                 padding(Insets.of(5))
 
+                // タイトルなのだ～🌱
+                child(Components.label(text { card.titleTranslation() }).apply {
+                    sizing(Sizing.fill(), Sizing.content())
+                    horizontalTextAlignment(HorizontalAlignment.CENTER)
+                    color(Color.ofRgb(0x493208))
+                })
+
+                child(verticalSpace(5))
+
                 // 掲げられたアイテム
                 child(Containers.stack(Sizing.fill(), Sizing.content()).apply {
                     horizontalAlignment(HorizontalAlignment.CENTER)
