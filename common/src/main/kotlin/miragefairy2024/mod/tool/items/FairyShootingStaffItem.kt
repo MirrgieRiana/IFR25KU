@@ -63,27 +63,6 @@ open class FairyShootingStaffConfiguration(
     }
 }
 
-/**
- * 杖を立てて構えた姿勢で持つためのアイテムモデルなのだ～🌱
- *
- * 柄が鉛直から 17.2 度だけ前に倒れて、全長が 1.5 ブロックになり、柄の下端から 3 分の 1 の点が手に来る値なのだ～🌱
- * 左手用の値は、[net.minecraft.client.renderer.block.model.ItemTransform] が左手のときだけ [net.minecraft.client.renderer.block.model.ItemTransform.rotation] の Y と Z を反転するから、それを打ち消してあるのだ～🌱
- */
-private val SHOOTING_STAFF_MODEL_TEMPLATE = Model { textureMapping ->
-    ModelData(
-        parent = ResourceLocation("item/handheld"),
-        textures = ModelTexturesData(
-            TextureSlot.LAYER0.id to textureMapping.get(TextureSlot.LAYER0).string,
-        ),
-        display = ModelDisplayData(
-            thirdPersonRightHand = ModelDisplayEntryData(rotation = listOf(0, -90, -30), translation = listOf(0, 1, 4), scale = listOf(1.2F, 1.2F, 1.2F)),
-            thirdPersonLeftHand = ModelDisplayEntryData(rotation = listOf(0, 90, 30), translation = listOf(0, 1, 4), scale = listOf(1.2F, 1.2F, 1.2F)),
-            firstPersonRightHand = ModelDisplayEntryData(rotation = listOf(0, -90, 60), translation = listOf(1.5F, 4.33F, -1.2F), scale = listOf(0.9F, 0.9F, 0.9F)),
-            firstPersonLeftHand = ModelDisplayEntryData(rotation = listOf(0, 90, -60), translation = listOf(1.5F, 4.33F, -1.2F), scale = listOf(0.9F, 0.9F, 0.9F)),
-        ),
-    )
-}
-
 class FairyShootingStaffItem(override val configuration: FairyShootingStaffConfiguration, settings: Properties) :
     ShootingStaffItem(configuration.toolMaterialCard.toolMaterial, configuration.basePower, configuration.baseMaxDistance, settings),
     FairyToolItem,
@@ -172,4 +151,25 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
     override fun postHurtEnemy(stack: ItemStack, target: LivingEntity, attacker: LivingEntity) {
         stack.hurtAndBreak(2, attacker, EquipmentSlot.MAINHAND)
     }
+}
+
+/**
+ * 杖を立てて構えた姿勢で持つためのアイテムモデルなのだ～🌱
+ *
+ * 柄が鉛直から 17.2 度だけ前に倒れて、全長が 1.5 ブロックになり、柄の下端から 3 分の 1 の点が手に来る値なのだ～🌱
+ * 左手用の値は、[net.minecraft.client.renderer.block.model.ItemTransform] が左手のときだけ [net.minecraft.client.renderer.block.model.ItemTransform.rotation] の Y と Z を反転するから、それを打ち消してあるのだ～🌱
+ */
+private val SHOOTING_STAFF_MODEL_TEMPLATE = Model { textureMapping ->
+    ModelData(
+        parent = ResourceLocation("item/handheld"),
+        textures = ModelTexturesData(
+            TextureSlot.LAYER0.id to textureMapping.get(TextureSlot.LAYER0).string,
+        ),
+        display = ModelDisplayData(
+            thirdPersonRightHand = ModelDisplayEntryData(rotation = listOf(0, -90, -30), translation = listOf(0, 1, 4), scale = listOf(1.2F, 1.2F, 1.2F)),
+            thirdPersonLeftHand = ModelDisplayEntryData(rotation = listOf(0, 90, 30), translation = listOf(0, 1, 4), scale = listOf(1.2F, 1.2F, 1.2F)),
+            firstPersonRightHand = ModelDisplayEntryData(rotation = listOf(0, -90, 60), translation = listOf(1.5F, 4.33F, -1.2F), scale = listOf(0.9F, 0.9F, 0.9F)),
+            firstPersonLeftHand = ModelDisplayEntryData(rotation = listOf(0, 90, -60), translation = listOf(1.5F, 4.33F, -1.2F), scale = listOf(0.9F, 0.9F, 0.9F)),
+        ),
+    )
 }
