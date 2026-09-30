@@ -49,7 +49,7 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
 
             child(Containers.verticalFlow(Sizing.fixed(200), Sizing.expand()).apply { // カード外枠
                 surface(NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.surface)
-                padding(Insets.of(5))
+                padding(Insets.of(10, 5, 5, 5))
 
                 // タイトルなのだ～🌱
                 child(Components.label(text { card.titleTranslation() }).apply {
