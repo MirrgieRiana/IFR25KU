@@ -1809,6 +1809,21 @@
       "minecraft:repair_cost": 0
     }
   },
+  "miragefairy2024:dayflower": {
+    "class": "net.minecraft.world.item.BlockItem",
+    "components": {
+      "minecraft:attribute_modifiers": {
+        "modifiers": []
+      },
+      "minecraft:enchantments": {
+        "levels": {}
+      },
+      "minecraft:lore": [],
+      "minecraft:max_stack_size": 64,
+      "minecraft:rarity": "common",
+      "minecraft:repair_cost": 0
+    }
+  },
   "miragefairy2024:debug_clear_fairy_dream": {
     "class": "miragefairy2024.util.DebugItemKt$registerDebugItem$item$1$1",
     "components": {

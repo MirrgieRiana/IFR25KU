@@ -1813,6 +1813,17 @@
       }
     ]
   },
+  "miragefairy2024:dayflower": {
+    "definition": {
+      "type": "miragefairy2024:dayflower",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
   "miragefairy2024:deepslate_fluorite_ore": {
     "definition": {
       "type": "miragefairy2024:ore",

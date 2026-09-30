@@ -13,6 +13,7 @@ import miragefairy2024.mod.machine.AthanorRecipeCard
 import miragefairy2024.mod.machine.AuraReflectorFurnaceRecipeCard
 import miragefairy2024.mod.machine.SimpleMachineRecipe
 import miragefairy2024.mod.machine.registerSimpleMachineRecipeGeneration
+import miragefairy2024.mod.materials.contents.DayflowerBlock
 import miragefairy2024.mod.materials.contents.EggBlock
 import miragefairy2024.mod.materials.contents.FairyCrystalGlassBlock
 import miragefairy2024.mod.materials.contents.LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG
@@ -913,6 +914,39 @@ open class BlockMaterialCard(
             item.registerBlockGeneratedModelGeneration(block)
             block.registerFlammable(60, 100)
         }
+        val DAYFLOWER: BlockMaterialCard = !object : BlockMaterialCard(
+            "dayflower", EnJa("Dayflower", "ツユクサ"),
+            PoemList(null),
+            MapColor.PLANT, 0.0F, 0.0F,
+        ) {
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
+                .replaceable()
+                .noCollission()
+                .offsetType(BlockBehaviour.OffsetType.XYZ)
+                .ignitedByLava()
+                .pushReaction(PushReaction.DESTROY)
+
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = DayflowerBlock(properties)
+
+            context(ModContext)
+            override fun initModelGeneration() {
+                block.registerModelGeneration {
+                    ModelTemplates.CROSS.with(
+                        TextureSlot.CROSS to "block/" * block().getIdentifier(),
+                    )
+                }
+            }
+
+            context(ModContext)
+            override fun initLootTableGeneration() {
+                block.registerLootTableGeneration { it, _ ->
+                    it.createGrassDrops(block())
+                }
+            }
+        }.cutout().sound(SoundType.GRASS).tag(BlockTags.MINEABLE_WITH_AXE, BlockTags.SWORD_EFFICIENT, BlockTags.REPLACEABLE, BlockTags.REPLACEABLE_BY_TREES).init {
+            item.registerBlockGeneratedModelGeneration(block)
+            block.registerFlammable(60, 100)
+        }
     }
 
     val identifier = MirageFairy2024.identifier(path)
@@ -1003,6 +1037,7 @@ fun initBlockMaterialsModule() {
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("mirage_leaves_block")) { MirageLeavesBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("egg_block")) { EggBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("nectarflower")) { NectarflowerBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("dayflower")) { DayflowerBlock.CODEC }.register()
 
     LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.enJa(EnJa("Local Vacuum Decay Resistant", "局所真空崩壊耐性"))
 
