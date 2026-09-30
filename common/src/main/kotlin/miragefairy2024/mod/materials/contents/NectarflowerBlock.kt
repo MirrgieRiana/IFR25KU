@@ -17,12 +17,12 @@ class NectarflowerBlock(settings: Properties) : BushBlock(settings) {
         val CODEC: MapCodec<NectarflowerBlock> = simpleCodec(::NectarflowerBlock)
 
         // バニラのシダと同じ大きさなのだ～🌱
-        private val SHAPE: VoxelShape = box(2.0, 0.0, 2.0, 14.0, 13.0, 14.0)
+        val SHAPE: VoxelShape = box(2.0, 0.0, 2.0, 14.0, 13.0, 14.0)
     }
 
     override fun codec() = CODEC
 
     override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = SHAPE
 
-    override fun mayPlaceOn(state: BlockState, level: BlockGetter, pos: BlockPos) = super.mayPlaceOn(state, level, pos) || state isIn BlockMaterialCard.RESIN_CEMENT.block()
+    override fun mayPlaceOn(state: BlockState, level: BlockGetter, pos: BlockPos) = state isIn BlockMaterialCard.RESIN_CEMENT.block()
 }
