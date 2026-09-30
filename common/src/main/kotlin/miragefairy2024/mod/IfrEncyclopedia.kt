@@ -4,9 +4,9 @@ import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.common.guiFullScreenTranslation
-import miragefairy2024.mod.fairy.MotifCard
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.motifRegistry
+import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ChildrenGenerator
@@ -37,6 +37,7 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Translation
+import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
@@ -111,7 +112,7 @@ val onOpenIfrEncyclopediaPageScreen = EventRegistry<(IfrEncyclopediaEntryCard) -
 object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEncyclopediaEntryCard>() {
     override fun getId() = MirageFairy2024.identifier("ifr_encyclopedia")
     override fun getName() = EnJa("IFR Encyclopedia", "IFR図鑑")
-    override fun getIcon() = MotifCard.MIRAGE.createFairyItemStack()
+    override fun getIcon() = MaterialCard.FAIRY_PLASTIC.item().createItemStack()
 
     override fun getRecipeCodec(registryAccess: RegistryAccess): Codec<IfrEncyclopediaEntryCard> = ResourceLocation.CODEC.xmap(
         { identifier -> IfrEncyclopediaEntryCard.entries.first { it.identifier == identifier } },

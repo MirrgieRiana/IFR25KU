@@ -67,11 +67,11 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
 
                 // 本文
                 child(verticalScroll(Sizing.fill(), Sizing.expand(), 5, overlapped = true).apply {
-                    scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
+                    scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0000000.toInt())))
                     child().child(Components.label(text { card.textTranslation() }).apply {
                         sizing(Sizing.fill(), Sizing.content())
                         horizontalTextAlignment(HorizontalAlignment.LEFT)
-                        color(Color.ofRgb(0x6B472E))
+                        color(Color.ofRgb(0x493208))
                     })
                 })
 
