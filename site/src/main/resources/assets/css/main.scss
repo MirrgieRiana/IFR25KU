@@ -944,6 +944,11 @@ img[src$=".png" i] {
   height: 4em;
 }
 
+// 論文のページのタイトル（paperレイアウト）
+body.layout--paper .page__title {
+  font-family: serif;
+}
+
 // 論文ブロック（paperタグ）
 .paper {
   margin: 2em auto;
