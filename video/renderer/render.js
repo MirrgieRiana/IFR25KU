@@ -16,8 +16,21 @@ const W = parseInt(process.env.VIDEO_WIDTH || '1280', 10);
 const H = parseInt(process.env.VIDEO_HEIGHT || '720', 10);
 
 // 構成 jsonl の 1 行を、1 フレームとして読み込むのだ～🌱
-const frames = fs.readFileSync(framesPath, 'utf-8').split('\n')
-  .map(s => s.trim()).filter(s => s.length > 0).map(s => JSON.parse(s));
+let frames;
+try {
+  frames = fs.readFileSync(framesPath, 'utf-8').split('\n')
+    .map((s, i) => ({ s: s.trim(), lineNumber: i + 1 })).filter(({ s }) => s.length > 0)
+    .map(({ s, lineNumber }) => {
+      try {
+        return JSON.parse(s);
+      } catch (e) {
+        throw new Error(`invalid JSON at line ${lineNumber}: ${e.message}`);
+      }
+    });
+} catch (e) {
+  console.error(`error: cannot read frames: ${framesPath}: ${e.message}`);
+  process.exit(1);
+}
 
 if (fs.existsSync(outDir) && !(fs.statSync(outDir).isDirectory() && fs.readdirSync(outDir).length === 0)) {
   console.error(`error: outDir must be an empty directory or must not exist: ${outDir}`);
@@ -56,10 +69,12 @@ const normalizeJson = v => Array.isArray(v) ? `[${v.map(normalizeJson).join(',')
         await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
       }, frames[i]);
       await page.screenshot({ path: file });
-      shots++; prevKey = key; prevFile = file;
+      shots++;
+      prevKey = key;
+      prevFile = file;
     }
     if (i % 150 === 0) process.stdout.write(`\r frame ${i}/${frames.length} shots=${shots}   `);
   }
   await browser.close();
   console.log(`\n done: ${frames.length} frames, ${shots} unique screenshots`);
-})().catch(e => { console.error('ERR', (e.stack || e.message)); process.exit(1); });
+})().catch(e => { console.error('error:', (e.stack || e.message)); process.exit(1); });
