@@ -60,18 +60,20 @@ class IfrEncyclopediaEntryCard(
             "mirage",
             { motifRegistry.sortedEntrySet.map { it.value.createFairyItemStack() } },
             listOf(
-                "Monocots, order Miragales, family Miragaceae: Mirage",
+                "Monocots, order Miragales, family Miragaceae",
+                "Mirage",
                 "",
-                "A fairy in the form of a palm-sized girl with butterfly-like wings. It is extremely timid and rarely appears before people. When one tries to catch it, it takes on a wisp-like shape and escapes, and no pursuit ever succeeds. This is the origin of the name Mirage.",
+                "A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”",
                 "",
-                "It was long regarded as a kind of divine spirit, but recent research has revealed it to be the pollen of Mirage plants that has acquired an autonomous structure.",
+                "Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.",
             ),
             listOf(
-                "単子葉類妖花目ミラージュ科　ミラージュ",
+                "単子葉類妖花目ミラージュ科",
+                "ミラージュ",
                 "",
-                "　蝶のような翅の生えた手のひら大の少女の姿をした妖精。非常に憶病で、滅多に人前に姿を現さない。捕まえようとしても人魂（ウィスプ）のような姿に化けて逃げ、いくら追いかけても捕まえることができないさまから、ミラージュ（蜃気楼）の名で知られている。",
+                "蝶のような翅の生えた手のひら大の少女の姿をした妖精。非常に憶病で、滅多に人前に姿を現さない。捕まえようとしても人魂（ウィスプ）のような姿に化けて逃げ、いくら追いかけても捕まえることができないさまから、ミラージュ（蜃気楼）の名で知られている。",
                 "",
-                "　古くは神霊の一種と考えられていたが、近年の研究により、ミラージュ植物の花粉が自律構造を持ったものであると解明された。",
+                "古くは神霊の一種と考えられていたが、近年の研究により、ミラージュ植物の花粉が自律構造を持ったものであると解明された。",
             ),
         )
 
