@@ -26,7 +26,7 @@ fi
 # --- レンダリング ---
 echo "== render frames =="
 if [ -n "${CHROMIUM_LD_PATH:-}" ]; then
-  LD_LIBRARY_PATH="${CHROMIUM_LD_PATH}:${LD_LIBRARY_PATH:-}" node "$RENDERER_DIR/render.js" "$1" "$2" "$3"
+  LD_LIBRARY_PATH="${CHROMIUM_LD_PATH}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" node "$RENDERER_DIR/render.js" "$1" "$2" "$3"
 else
   node "$RENDERER_DIR/render.js" "$1" "$2" "$3"
 fi

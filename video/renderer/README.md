@@ -24,7 +24,7 @@ bash render.sh <template.html> <frames.jsonl> <outDir>
 `render.sh` は、不足しているものを、次のように準備するのだ～🌱
 
 - `node_modules` が無ければ、このディレクトリで `npm install` を実行するのだ～🌱
-- `CHROMIUM_PATH` が指定されていなくて、実行できる `/tmp/chromium` も無ければ、`setup_chromium.js` を実行するのだ～🌱
+- `CHROMIUM_PATH` が指定されていなくて、実行できる `/tmp/chromium` も無ければ、依存のパッケージに含まれる Chromium を `/tmp/chromium` に展開するのだ～🌱
 
 ## テンプレートが満たすべき要件なのだ～🌱
 
@@ -35,6 +35,7 @@ bash render.sh <template.html> <frames.jsonl> <outDir>
 
 `cfg` は、構成 jsonl の 1 行を解析した、1 フレーム分の構成のオブジェクトなのだ～🌱
 `applyFrame(cfg)` は、その構成のとおりに、ページの DOM とスタイルを書き換えるのだ～🌱
+`applyFrame(cfg)` が Promise を返したときは、その完了を待ってから、スクリーンショットを撮るのだ～🌱
 同じ `cfg` を渡したときは、ページが同じ見た目にならなきゃだめなのだ～🌱
 
 ## レンダリングの流れなのだ～🌱
@@ -55,20 +56,13 @@ bash render.sh <template.html> <frames.jsonl> <outDir>
 
 インストール済みの Chrome を使うときは、その実行ファイルのパスを `CHROMIUM_PATH` に指定するのだ～🌱
 
-## Chromium の準備なのだ～🌱
+## Chromium の起動が失敗するときなのだ～🌱
 
-Chrome が無い環境では、`node setup_chromium.js` で、Chromium を `/tmp/chromium` に展開できるのだ～🌱
-展開する Chromium は、`npm install` でインストールされる `@sparticuz/chromium` のパッケージに含まれているものなのだ～🌱
-
-root 権限が無くて、NSS 系の共有ライブラリが OS に無い環境では、この Chromium の起動が失敗することがあるのだ～🌱
+root 権限が無くて、NSS 系の共有ライブラリが OS に無い環境では、`render.sh` が準備した Chromium の起動が失敗することがあるのだ～🌱
 `libnss3.so` のような共有ライブラリが、見つからないからなのだ～🌱
-NSS 系の共有ライブラリは、`@sparticuz/chromium` のパッケージに含まれる `bin/al2023.tar.br` を展開すると得られるのだ～🌱
-`bin/al2023.tar.br` は、Brotli で圧縮された tar アーカイブなのだ～🌱
+NSS 系の共有ライブラリは、このディレクトリの `node_modules/@sparticuz/chromium/bin/al2023.tar.br` を展開すると得られるのだ～🌱
+`al2023.tar.br` は、Brotli で圧縮された tar アーカイブなのだ～🌱
 展開した `.so` ファイルを 1 個のディレクトリに集めて、そのパスを `CHROMIUM_LD_PATH` に指定するのだ～🌱
-
-## 依存なのだ～🌱
-
-`npm install` で、`puppeteer-core` と `@sparticuz/chromium` がインストールされるのだ～🌱
 
 ## このファイル自体の編集ルールなのだ～🌱
 
