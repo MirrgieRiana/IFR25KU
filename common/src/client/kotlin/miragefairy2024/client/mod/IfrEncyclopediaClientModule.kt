@@ -19,7 +19,6 @@ import miragefairy2024.client.util.slotContainer
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.IfrEncyclopediaEntryCard
-import miragefairy2024.mod.IfrEncyclopediaRecipeViewerCategoryCard
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.mod.onOpenIfrEncyclopediaPageScreen
@@ -38,7 +37,7 @@ fun initIfrEncyclopediaClientModule() {
     }
 }
 
-class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: IfrEncyclopediaEntryCard) : BaseOwoScreen<FlowLayout>(text { IfrEncyclopediaRecipeViewerCategoryCard.translation() }) {
+class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: IfrEncyclopediaEntryCard) : BaseOwoScreen<FlowLayout>(text { card.titleTranslation() }) {
     override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
 
     override fun build(rootComponent: FlowLayout) {

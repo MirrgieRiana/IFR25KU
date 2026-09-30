@@ -53,6 +53,7 @@ import net.minecraft.world.item.ItemStack
 
 class IfrEncyclopediaEntryCard(
     path: String,
+    title: EnJa,
     val itemStacksGetter: () -> List<ItemStack>,
     en: List<String>,
     ja: List<String>,
@@ -60,6 +61,7 @@ class IfrEncyclopediaEntryCard(
     companion object {
         val MIRAGE_FAIRY = IfrEncyclopediaEntryCard(
             "mirage_fairy",
+            EnJa("Mirage Fairy", "妖精"),
             { motifRegistry.sortedEntrySet.map { it.value.createFairyItemStack() } },
             listOf(
                 "Monocots, order Miragales, family Miragaceae",
@@ -83,6 +85,7 @@ class IfrEncyclopediaEntryCard(
     }
 
     val identifier = MirageFairy2024.identifier(path)
+    val titleTranslation = Translation({ identifier.toLanguageKey("ifr_encyclopedia", "title") }, title)
     val textTranslation = Translation({ identifier.toLanguageKey("ifr_encyclopedia", "text") }, EnJa(en.joinToString("\n"), ja.joinToString("\n")))
 
     /** 本文を、空行を区切りとする段落に分けるのだ～🌱 */
@@ -95,7 +98,7 @@ class IfrEncyclopediaEntryCard(
 }
 
 /**
- * 本文の文字色なのだ～🌱
+ * タイトルと本文の文字色なのだ～🌱
  * 背景のテクスチャはダークモードでも替わらないから、暗い側も同じ色にするのだ～🌱
  */
 private val TEXT_COLOR = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
@@ -108,6 +111,7 @@ private val PARAGRAPH_SPACE_CHILDREN_GENERATOR = ChildrenGenerator { _, _ ->
 context(ModContext)
 fun initIfrEncyclopedia() {
     IfrEncyclopediaEntryCard.entries.forEach { card ->
+        card.titleTranslation.enJa()
         card.textTranslation.enJa()
     }
 
@@ -148,6 +152,18 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
             view += YListView().configure {
                 view.sizingX = Sizing.FILL
                 view.sizingY = Sizing.FILL
+
+                // タイトルなのだ～🌱
+                view += TextView(text { recipeEntry.recipe.titleTranslation() }).configure {
+                    view.sizingX = Sizing.FILL
+                    view.alignmentX = Alignment.CENTER
+                    view.color = TEXT_COLOR
+                    view.shadow = false
+                    view.scroll = true
+                    view.tooltip = listOf(text { recipeEntry.recipe.titleTranslation() })
+                }
+
+                view += YSpaceView(5)
 
                 // 掲げられたスロットなのだ～🌱
                 view += CatalystSlotView(recipeEntry.recipe.itemStacksGetter().toIngredientStack()).configure {
