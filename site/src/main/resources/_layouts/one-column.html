@@ -30,7 +30,7 @@ layout: default
       {% endif %}
     {% endunless %}
 
-    <section class="page__content" itemprop="text">
+    <section class="page__content" itemprop="text"{% unless page.search == false %} data-pagefind-body{% endunless %}>
       {{ content }}
     </section>
   </article>

@@ -345,11 +345,10 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     from("src/pages/resources") {
         includeEmptyDirs = false
         val seenImagePaths = mutableMapOf<String, String>()
-        val pagesSourceDirPath = "${projectDir.relativeTo(rootDir).invariantSeparatorsPath}/src/pages/resources"
         eachFile {
             // 下で配置先が平らになって元のディレクトリ名が失われるから、footer の source のリンクのために、元のパスを front matter へ書き足すのだ～🌱
             if (name.endsWith(".md")) {
-                val sourcePath = "$pagesSourceDirPath/${relativePath.pathString}"
+                val sourcePath = file.relativeTo(rootDir).invariantSeparatorsPath
                 var isFirstLine = true
                 filter { line ->
                     val result = if (isFirstLine && line == "---") "$line\nsource_path: $sourcePath" else line
@@ -397,7 +396,7 @@ val build = tasks.register("build") {
     group = "build"
 }
 
-val buildSite = tasks.register<Sync>("buildSite") {
+val buildSiteWithoutSearchIndex = tasks.register<Sync>("buildSiteWithoutSearchIndex") {
     group = "build"
     from(jekyllBuild)
     from(makeLangTable)
@@ -415,6 +414,22 @@ val buildSite = tasks.register<Sync>("buildSite") {
             }
         }
     }
+    into(layout.buildDirectory.dir("siteWithoutSearchIndex"))
+}
+
+val buildSearchIndex = tasks.register<Exec>("buildSearchIndex") {
+    group = "build"
+    dependsOn(buildSiteWithoutSearchIndex)
+    inputs.files(buildSiteWithoutSearchIndex.map { task -> fileTree(task.destinationDir) { include("**/*.html") } })
+    inputs.file("scripts/build-search-index.sh")
+    outputs.dir(layout.buildDirectory.dir("searchIndex"))
+    commandLine("bash", "scripts/build-search-index.sh")
+}
+
+val buildSite = tasks.register<Sync>("buildSite") {
+    group = "build"
+    from(buildSiteWithoutSearchIndex)
+    from(buildSearchIndex)
     into(layout.buildDirectory.dir("site"))
 }
 build.configure { dependsOn(buildSite) }

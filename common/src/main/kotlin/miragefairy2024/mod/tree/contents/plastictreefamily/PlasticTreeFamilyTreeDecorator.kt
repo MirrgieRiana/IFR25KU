@@ -1,4 +1,4 @@
-package miragefairy2024.mod.tree.contents
+package miragefairy2024.mod.tree.contents.plastictreefamily
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
@@ -16,12 +16,12 @@ import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType
 import java.util.Optional
 
-object HaimeviskaTreeDecoratorCard {
-    val identifier = MirageFairy2024.identifier("haimeviska")
-    val type: TreeDecoratorType<HaimeviskaTreeDecorator> = TreeDecoratorType(HaimeviskaTreeDecorator.CODEC)
+object PlasticTreeFamilyTreeDecoratorCard {
+    val identifier = MirageFairy2024.identifier("plastic_tree_family")
+    val type: TreeDecoratorType<PlasticTreeFamilyTreeDecorator> = TreeDecoratorType(PlasticTreeFamilyTreeDecorator.CODEC)
 }
 
-class HaimeviskaTreeDecorator(
+class PlasticTreeFamilyTreeDecorator(
     private val log: Block,
     private val drippingLogReplacement: Replacement?,
     private val hollowLogReplacement: Replacement?,
@@ -29,12 +29,12 @@ class HaimeviskaTreeDecorator(
     private constructor(log: Block, drippingLogReplacement: Optional<Replacement>, hollowLogReplacement: Optional<Replacement>) : this(log, drippingLogReplacement.orNull, hollowLogReplacement.orNull)
 
     companion object {
-        val CODEC: MapCodec<HaimeviskaTreeDecorator> = RecordCodecBuilder.mapCodec { instance ->
+        val CODEC: MapCodec<PlasticTreeFamilyTreeDecorator> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 BuiltInRegistries.BLOCK.byNameCodec().fieldOf("log").forGetter { it.log },
                 Replacement.CODEC.optionalFieldOf("dripping_log_replacement").forGetter { it.drippingLogReplacement.toOptional() },
                 Replacement.CODEC.optionalFieldOf("hollow_log_replacement").forGetter { it.hollowLogReplacement.toOptional() },
-            ).apply(instance, ::HaimeviskaTreeDecorator)
+            ).apply(instance, ::PlasticTreeFamilyTreeDecorator)
         }
     }
 
@@ -49,7 +49,7 @@ class HaimeviskaTreeDecorator(
         }
     }
 
-    override fun type() = HaimeviskaTreeDecoratorCard.type
+    override fun type() = PlasticTreeFamilyTreeDecoratorCard.type
 
     override fun place(generator: Context) {
         generator.logs().forEach { blockPos ->

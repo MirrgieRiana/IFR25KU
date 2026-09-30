@@ -17,7 +17,7 @@ IFR25KUの `CHANGELOG` の書き方を、実物を熟読して分析したもの
 置き場所は `site/src/pages/resources/CHANGELOG/CHANGELOG.md` なのだ～🌱
 リポジトリのルートには、無いのだ～🌱
 もしかしたら実際のパスは変わっているかもしれないから、検索して確かめるのがいいのだ～🌱
-Jekyllで.html化しつつ、`buildSite` が.mdも別途コピーして両方を配信するのだぁ✨
+Jekyllで.html化しつつ、`buildSiteWithoutSearchIndex` が.mdも別途コピーして両方を配信するのだぁ✨
 くわしいビルドの仕組みは [リポジトリの俯瞰と暗黙知](main.md) にあるのだ～🌱
 その「特殊なビルドパイプラインを持つファイル」の節を見るのだぁ✨
 

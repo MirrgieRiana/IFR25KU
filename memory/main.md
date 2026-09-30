@@ -181,7 +181,7 @@ CSSのカスタマイズは `assets/css/main.scss` の `@import "minimal-mistake
 
 ### 特殊なビルドパイプラインを持つファイルなのだ～🌱
 
-- **CHANGELOG** (`src/pages/resources/CHANGELOG/CHANGELOG.md`): JekyllがHTMLに変換して、`buildSite` が `.md` も別途コピーしてmd版も配信するのだ～🌱
+- **CHANGELOG** (`src/pages/resources/CHANGELOG/CHANGELOG.md`): JekyllがHTMLに変換して、`buildSiteWithoutSearchIndex` が `.md` も別途コピーしてmd版も配信するのだ～🌱
 - **Lang Table**: `src/langTable/html/lang_table.html` を `makeLangTable` タスクで展開するのだぁ✨
   `src/pages/resources/lang-table-index/lang-table-index.md` はテーマレイアウトを使った特設ページなのだ～🌱
 - **posts.json**: `_plugins/posts_generator.rb` がJekyllビルド時に全記事メタを書き出すのだ～🌱
@@ -219,7 +219,7 @@ minimal-mistakesテーマのfloatベースのレイアウトを `main.scss` で�
 
 ### 関連記事抽選とタグ設計なのだ～🌱
 
-劇場レイアウト (`_layouts/theater.html` 末尾のインラインJS) は、タグ一致数と訪問履歴 (`ifr25ku:visits:pages`、`_includes/visit-tracker.html` が記録) で重み付けした非復元ランダムサンプリングで関連記事を抽選するのだ～🌱♪
+関連記事のスクリプト (`_includes/recommendations.html` のインラインJS) は、タグ一致数と訪問履歴 (`ifr25ku:visits:pages`、`_includes/visit-tracker.html` が記録) で重み付けした非復元ランダムサンプリングで関連記事を抽選するのだ～🌱♪
 サイドバーと本文下部は、それぞれ独立に抽選するのだぁ✨
 タグの付け方が関連記事の質に直結するのだ～🌱
 

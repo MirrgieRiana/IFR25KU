@@ -1,9 +1,27 @@
 ---
 layout: default
+toc: true
 ---
 {%- assign locale = page.locale | default: layout.locale | default: site.locale %}
 
-{% if page.header.overlay_color or page.header.overlay_image or page.header.image %}
+{% comment %}論文や劇場のような中間層のレイアウトが front matter に持つ値は layout に入るから、記事の front matter に同じ値が無いときは、そちらを読むのだ～🌱{% endcomment %}
+{% assign teaser_banner = page.header.teaser_banner %}
+{% if teaser_banner == nil %}{% assign teaser_banner = layout.header.teaser_banner %}{% endif %}
+{% assign toc_enabled = page.toc %}
+{% if toc_enabled == nil %}{% assign toc_enabled = layout.toc %}{% endif %}
+{% assign recommendations_enabled = page.recommendations %}
+{% if recommendations_enabled == nil %}{% assign recommendations_enabled = layout.recommendations %}{% endif %}
+{% assign recommendations_sidebar = page.recommendations_sidebar %}
+{% if recommendations_sidebar == nil %}{% assign recommendations_sidebar = layout.recommendations_sidebar %}{% endif %}
+{% assign share_enabled = page.share %}
+{% if share_enabled == nil %}{% assign share_enabled = layout.share %}{% endif %}
+
+{% comment %}header.teaser_banner を full_width にした記事は、ヘッダー画像を画面の幅いっぱいに掲げるため、#main の外へ出すのだ～🌱{% endcomment %}
+{% if page.header.teaser and teaser_banner == "full_width" %}
+  <div class="news__banner">
+    <img src="{{ page.header.teaser | relative_url }}" alt="{{ page.title | escape }}">
+  </div>
+{% elsif page.header.overlay_color or page.header.overlay_image or page.header.image %}
   {% include page__hero.html locale=locale %}
 {% elsif page.header.video.id and page.header.video.provider %}
   {% include page__hero_video.html %}
@@ -19,6 +37,8 @@ layout: default
   {% endunless %}
 {% endif %}
 
+{% assign recommendations_icon = page.recommendations_icon | default: layout.recommendations_icon | default: "newspaper" %}
+
 <div id="main" role="main">
   {% include sidebar.html locale=locale %}
 
@@ -29,12 +49,19 @@ layout: default
     {% if page.last_modified_at %}<meta itemprop="dateModified" content="{{ page.last_modified_at | date_to_xmlschema }}">{% endif %}
 
     <div class="page__inner-wrap">
-      {% if page.toc %}
+      {% if toc_enabled %}
         <aside class="sidebar__right">
           <nav class="toc" aria-label="Table of contents">
             <header><h4 class="nav__title"><i class="fas fa-{{ page.toc_icon | default: 'file-alt' }}"></i> {{ page.toc_label | default: site.data.ui-text[locale].toc_label | default: "On this page" }}</h4></header>
             {% include toc.html sanitize=true html=content h_min=1 h_max=6 class="toc__menu" skip_no_ids=true %}
           </nav>
+        </aside>
+      {% endif %}
+
+      {% if recommendations_enabled and recommendations_sidebar != false %}
+        <aside class="sidebar__right recommendations__sidebar">
+          <header><h4 class="nav__title"><i class="fas fa-{{ recommendations_icon }}"></i> 関連記事</h4></header>
+          <div class="recommendations__list"></div>
         </aside>
       {% endif %}
 
@@ -49,11 +76,12 @@ layout: default
         </header>
       {% endunless %}
 
-      {% if page.header.teaser and page.header.image == nil and page.header.overlay_image == nil %}
+      {% comment %}本文中に同じ画像を掲げる記事は、header.teaser_banner を false にして、このバナーを省くのだ～🌱{% endcomment %}
+      {% if page.header.teaser and teaser_banner != false and teaser_banner != "full_width" and page.header.image == nil and page.header.overlay_image == nil %}
         <img src="{{ page.header.teaser | relative_url }}" alt="{{ page.title | escape }}" class="page__teaser-banner">
       {% endif %}
 
-      <section class="page__content e-content" itemprop="text">
+      <section class="page__content e-content" itemprop="text"{% unless page.search == false %} data-pagefind-body{% endunless %}>
         {{ content }}
         {% if page.link %}<div><a href="{{ page.link }}" class="btn btn--primary">{{ site.data.ui-text[locale].ext_link_label | default: "Direct Link" }}</a></div>{% endif %}
       </section>
@@ -66,7 +94,14 @@ layout: default
         {% include page__date.html locale=locale %}
       </footer>
 
-      {% if page.share %}{% include social-share.html locale=locale %}{% endif %}
+      {% if recommendations_enabled %}
+        <section class="page__recommend">
+          <h3 class="page__recommend-title"><i class="fas fa-{{ recommendations_icon }}"></i> 他の記事を読む</h3>
+          <div class="page__recommend-grid"></div>
+        </section>
+      {% endif %}
+
+      {% if share_enabled %}{% include social-share.html locale=locale %}{% endif %}
 
       {% include post_pagination.html locale=locale %}
     </div>
@@ -91,3 +126,7 @@ layout: default
     {% include page__related.html locale=locale posts=site.posts %}
   {% endif %}
 </div>
+
+{% if recommendations_enabled %}
+  {% include recommendations.html %}
+{% endif %}

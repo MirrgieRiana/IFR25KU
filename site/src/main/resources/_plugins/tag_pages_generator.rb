@@ -12,7 +12,7 @@
 #
 # ## 生成されるページなのだ～🌱
 #
-#   レイアウトは記事一覧ページと同じ splash で、本文は recent-posts.html の
+#   レイアウトは記事一覧ページと同じ one-column で、本文は recent-posts.html の
 #   タグ絞り込みの呼び出し1行のみなのだ～🌱
 #
 # =============================================================================
@@ -26,13 +26,14 @@ module TagPages
       super(site, site.source, "tag", "#{tag}.html")
       data["title"] = "タグ: #{tag}"
       data["description"] = "「#{tag}」のタグが付いた記事の一覧"
-      data["layout"] = "splash"
+      data["layout"] = "one-column"
       data["sidebar"] = false
       data["toc"] = false
       data["tag"] = tag
       data["post_count_in_title"] = true
       # OG画像の生成はソースの .md ファイルだけを走査して、このページの分は作られないから、画像のメタタグを出さないのだ～🌱
       data["og_image"] = false
+      data["search"] = false
       self.content = <<~CONTENT
         <div class="content-wrap" markdown="1">
 

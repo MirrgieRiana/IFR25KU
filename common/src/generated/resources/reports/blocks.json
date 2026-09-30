@@ -8306,7 +8306,7 @@
   },
   "miragefairy2024:haimeviska_sapling": {
     "definition": {
-      "type": "minecraft:sapling",
+      "type": "miragefairy2024:plastic_tree_family_sapling",
       "properties": {},
       "tree": "miragefairy2024:haimeviska"
     },
@@ -14218,7 +14218,7 @@
   },
   "miragefairy2024:plastic_tree_leaves": {
     "definition": {
-      "type": "minecraft:leaves",
+      "type": "miragefairy2024:plastic_tree_leaves",
       "properties": {}
     },
     "properties": {
@@ -14495,7 +14495,7 @@
   },
   "miragefairy2024:plastic_tree_sapling": {
     "definition": {
-      "type": "minecraft:sapling",
+      "type": "miragefairy2024:plastic_tree_family_sapling",
       "properties": {},
       "tree": "miragefairy2024:plastic_tree"
     },
