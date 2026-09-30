@@ -11,7 +11,6 @@ import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.magicplant.contents.magicplants.MirageFlowerCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
-import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.Sizing
@@ -150,7 +149,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                 // 特性ポエム
                 view += PagingView().configure {
                     position.weight = 1.0
-                    view += MultiLineTextChildrenGenerator(recipeEntry.recipe.poem, ColorPair.DEFAULT, true) { Alignment.START }
+                    view += MultiLineTextChildrenGenerator(recipeEntry.recipe.poem) { Alignment.START }
 
                     view.pageCount.register { _, it ->
                         pageCount.value = it
