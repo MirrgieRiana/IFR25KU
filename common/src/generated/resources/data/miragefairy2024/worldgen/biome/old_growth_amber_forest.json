@@ -8,12 +8,12 @@
   },
   "downfall": 0.9,
   "effects": {
-    "fog_color": 14729352,
-    "foliage_color": 16754198,
-    "grass_color": 16762398,
+    "fog_color": 16765362,
+    "foliage_color": 3575333,
+    "grass_color": 5485075,
     "sky_color": 7379199,
-    "water_color": 16767001,
-    "water_fog_color": 16767001
+    "water_color": 16757101,
+    "water_fog_color": 16757101
   },
   "features": [
     [],
