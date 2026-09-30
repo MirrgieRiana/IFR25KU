@@ -14,7 +14,7 @@
 #
 # ## HTML出力構造
 #
-#   <div class="mfa-footer">
+#   <div class="mfa-footer" data-pagefind-ignore>
 #   <p>この記事の内容は、<a href="...">並行宇宙ルール</a>に基づいています。</p>
 #   </div>
 #
@@ -31,7 +31,7 @@ module MfaFooter
     def render(context)
       site = context.registers[:site]
       <<~HTML
-        <div class="mfa-footer">
+        <div class="mfa-footer" data-pagefind-ignore>
         <p>この記事の内容は、<a href="#{site.baseurl}#{MfaFooter::PARALLEL_UNIVERSE_RULE_URL}">並行宇宙ルール</a>に基づいています。</p>
         </div>
       HTML

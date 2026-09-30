@@ -952,8 +952,8 @@ img[src$=".png" i] {
   background: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
-  // サイト全体の本文の書体と文字色を継承しないように、紙面の内側に改めて指定する
-  &, p, li, td, th {
+  // サイト全体の本文と見出しの書体と文字色を継承しないように、紙面の内側に改めて指定する
+  &, h2, h3, p, li, td, th {
     font-family: serif;
     color: #000000;
   }
