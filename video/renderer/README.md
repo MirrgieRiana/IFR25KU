@@ -35,6 +35,7 @@ bash render.sh <template.html> <frames.jsonl> <outDir>
 
 `cfg` は、構成 jsonl の 1 行を解析した、1 フレーム分の構成のオブジェクトなのだ～🌱
 `applyFrame(cfg)` は、その構成のとおりに、ページの DOM とスタイルを書き換えるのだ～🌱
+`applyFrame(cfg)` が Promise を返したときは、その完了を待ってから、スクリーンショットを撮るのだ～🌱
 同じ `cfg` を渡したときは、ページが同じ見た目にならなきゃだめなのだ～🌱
 
 ## レンダリングの流れなのだ～🌱

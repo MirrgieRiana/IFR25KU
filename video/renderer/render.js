@@ -50,9 +50,11 @@ const normalizeJson = v => Array.isArray(v) ? `[${v.map(normalizeJson).join(',')
     if (key === prevKey && prevFile) {
       fs.copyFileSync(prevFile, file);
     } else {
-      await page.evaluate((cfg) => { window.applyFrame(cfg); }, frames[i]);
-      // レイアウトの確定を待ってから、スクリーンショットを撮るのだ～🌱
-      await new Promise(r => setTimeout(r, 8));
+      await page.evaluate(async (cfg) => {
+        await window.applyFrame(cfg);
+        // 書き換えた DOM が描画されてから、スクリーンショットを撮るのだ～🌱
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      }, frames[i]);
       await page.screenshot({ path: file });
       shots++; prevKey = key; prevFile = file;
     }
