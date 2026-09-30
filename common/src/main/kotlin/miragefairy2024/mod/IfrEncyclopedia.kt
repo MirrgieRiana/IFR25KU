@@ -58,8 +58,8 @@ class IfrEncyclopediaEntryCard(
     ja: List<String>,
 ) {
     companion object {
-        val MIRAGE = IfrEncyclopediaEntryCard(
-            "mirage",
+        val MIRAGE_FAIRY = IfrEncyclopediaEntryCard(
+            "mirage_fairy",
             { motifRegistry.sortedEntrySet.map { it.value.createFairyItemStack() } },
             listOf(
                 "Monocots, order Miragales, family Miragaceae",
@@ -79,7 +79,7 @@ class IfrEncyclopediaEntryCard(
             ),
         )
 
-        val entries = listOf(MIRAGE)
+        val entries = listOf(MIRAGE_FAIRY)
     }
 
     val identifier = MirageFairy2024.identifier(path)
