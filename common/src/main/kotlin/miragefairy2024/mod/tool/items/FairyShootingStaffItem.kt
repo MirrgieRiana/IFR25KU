@@ -156,7 +156,7 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
 /**
  * 杖を立てて構えた姿勢で持つためのアイテムモデルなのだ～🌱
  *
- * 柄が鉛直から 17.2 度だけ前に倒れて、全長が 1.5 ブロックになり、柄の下端から 3 分の 1 の点が手に来る値なのだ～🌱
+ * 柄が鉛直から 17.2 度だけ前に倒れて、第三者視点では全長が 1.5 ブロックになり、柄の下端から 3 分の 1 の点が手に来る値なのだ～🌱
  * 左手用の値は、[net.minecraft.client.renderer.block.model.ItemTransform] が左手のときだけ [net.minecraft.client.renderer.block.model.ItemTransform.rotation] の Y と Z を反転するから、それを打ち消してあるのだ～🌱
  */
 private val SHOOTING_STAFF_MODEL_TEMPLATE = Model { textureMapping ->
