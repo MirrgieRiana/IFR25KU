@@ -92,20 +92,18 @@ class IfrEncyclopediaEntryCard(
     }
 }
 
-/**
- * 段落の間に挟む縦の隙間なのだ～🌱
- */
-private val PARAGRAPH_SPACE_CHILDREN_GENERATOR = ChildrenGenerator<Alignment> { _, _ ->
+/** 段落の間に挟む縦の隙間なのだ～🌱 */
+private val PARAGRAPH_SPACE_CHILDREN_GENERATOR = ChildrenGenerator { _, _ ->
     listOf(Child(Alignment.START, YSpaceView(4)))
 }
 
 context(ModContext)
 fun initIfrEncyclopedia() {
-    IfrEncyclopediaRecipeViewerCategoryCard.init()
-
     IfrEncyclopediaEntryCard.entries.forEach { card ->
         card.textTranslation.enJa()
     }
+
+    IfrEncyclopediaRecipeViewerCategoryCard.init()
 }
 
 val onOpenIfrEncyclopediaPageScreen = EventRegistry<(IfrEncyclopediaEntryCard) -> Boolean>()
