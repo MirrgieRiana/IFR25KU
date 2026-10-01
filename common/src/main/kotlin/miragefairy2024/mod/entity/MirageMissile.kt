@@ -54,9 +54,10 @@ object MirageMissileCard {
     }
     val poemList = PoemList(1).poem("TODO", "TODO") // TODO ミラージュミサイルの日英のポエムが入るのだ～🌱
 
-    const val SEARCH_INTERVAL = 10
     const val SEARCH_RADIUS = 16.0
-    const val TURN_RATE = 0.2
+
+    // 弓をいっぱいに引いた矢は毎 tick 3 ブロック進むから、探す間隔を置くと見つける前に通り過ぎて、寄せる割合が小さいと曲がりきらないのだ～🌱
+    const val TURN_RATE = 0.5
 
     context(ModContext)
     fun init() {
@@ -112,7 +113,7 @@ class MirageMissileEntity : AbstractArrow {
 
         // 追尾先
         var target = targetUuid?.let { level.getEntity(it) as? LivingEntity }?.takeIf { it.isAlive }
-        if (target == null && tickCount % MirageMissileCard.SEARCH_INTERVAL == 0) {
+        if (target == null) {
             target = level.getEntitiesOfClass(LivingEntity::class.java, boundingBox.inflate(MirageMissileCard.SEARCH_RADIUS)) { it is Enemy && it.isAlive && it != owner }
                 .minByOrNull { it.distanceToSqr(this) }
             targetUuid = target?.uuid
