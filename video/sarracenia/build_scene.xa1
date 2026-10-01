@@ -30,18 +30,23 @@ FPS := 30
 ZUNDA_IDS := "1,4-2,8-5,8-2,8-3,7-14-3,7-14-4-9,7-6,5-8,5-2,5-1,6-6,9-2,4-4-8,4-4-3,4-4-6,4-4-5,4-3-8,4-3-3,10-3"
 TSUMUGI_IDS := "2,3,4,12,13-3,13-4,9-4,9-1,9-2,9-3,8-6-2,8-6-3-6,8-4,10-14,10-8,10-10,7-2,6-3,5-5,5-1,5-3,13-2"
 
-# 外部コマンドを実行して、その出力を流して、終了コードが 0 でなければ止めるのだぁ🌱
+# 外部コマンドを実行して、その出力の行の配列を返して、終了コードが 0 でなければ止めるのだぁ🌱
 # 同梱の xarpite の EXECL は、終了コードが 0 でないと、子の標準出力も標準エラーも捨てちゃうのだぁ。
 # だから、bash に包んで、標準エラーを標準出力へ合わせて、終了コードを最後の行で受け取るのだぁ。
-run := command -> (
+capture := command -> (
   lines := [EXECL("bash", "-c", %>"$@" 2>&1; echo "$?"<%, "run", command)]
   exitCode := lines.($#lines - 1)
-  OUT << 0 ~ ($#lines - 1) | i => lines.(i)
+  output := lines[0 ~ ($#lines - 1)]
   exitCode == "0" || (
+    OUT << output()
     ERR("ERROR: command failed with exit code $exitCode: $(command >> JOIN[" "])")
     EXIT(1)
   )
+  output
 )
+
+# 外部コマンドを実行して、その出力を流して、終了コードが 0 でなければ止めるのだぁ🌱
+run := command -> OUT << capture(command)()
 
 # --- 外部取得リソース（このシーンの立ち絵・フォント・絵文字）の存在を確認するのだぁ ---
 # FILE_NAMES のストリームのままだと、@ が部分文字列で探して、隣の *.md5 のファイル名に当たっちゃうのだぁ。
@@ -65,8 +70,34 @@ need("resources/emoji"; "seedling.svg")
 )
 
 # --- 1. scene.html が読む assets.js を焼くのだぁ（フォント・絵文字・テクスチャ・タイムライン） ---
+# レンダリングは Chromium に file://.../scene.html を開かせて 1 フレームずつ撮る方式なのだぁ。
+# file:// で開いた HTML は、セキュリティ上、外部ファイルを fetch() で読めないのだぁ。
+# そこで、ぜんぶ 1 個の JS ファイル（assets.js）に「焼き込んで」おいて、scene.html から <script> で読み込むのだぁ。
 OUT << "== bake assets.js =="
-run("python3", "bake_assets.py", timelinePath)
+
+# IFR25KU リポジトリ内のテクスチャ（＝コミット済みの素材なので、リポジトリから直接読むのだぁ）
+TEX := "../../common/src/main/resources/assets/miragefairy2024"
+
+# ファイルを base64 の data-URL にするのだぁ🌱
+# 同梱の xarpite の BASE64 は、文字列を UTF-8 にしてから符号化するから、バイナリのファイルには使えないのだぁ。
+# だから、外の base64 コマンドで符号化して、76 文字ごとの改行をつなぎ直すのだぁ。
+dataUrl := mime, path -> "data:$mime;base64,$(capture("base64", path)() >> JOIN[""])"
+
+assets := {
+  plant: dataUrl("image/png"; "$TEX/textures/block/magic_plant/sarracenia_age3.png")
+  leaf: dataUrl("image/png"; "$TEX/textures/item/sarracenia_leaf.png")
+  logo: dataUrl("image/png"; "$TEX/icon.png")
+  bg: dataUrl("image/png"; "$TEX/textures/block/haimeviska_log.png")
+  # seedling は data-URL ではなく「生の SVG 文字列」なのだぁ。scene.html が innerHTML に直接差し込むのだぁ。
+  seedling: READ("resources/emoji/seedling.svg")::replace(/^\s+|\s+$/g; "")
+  fontBlack: dataUrl("font/ttf"; "resources/font/ZenMaruGothic-Black.ttf")
+  fontBold: dataUrl("font/ttf"; "resources/font/ZenMaruGothic-Bold.ttf")
+}
+timeline := $*READ(timelinePath)
+
+WRITE("assets.js"; "window.ASSETS=$(assets >> JSON[indent: NULL]);\nwindow.TIMELINE=$(timeline >> JSON[indent: NULL]);\n")
+OUT << "baked assets.js: $(assets() | _.0 >> JOIN[", "])"
+OUT << "  timeline: total= $(timeline.total) lines= $($#timeline.lines)"
 
 # --- 2. 立ち絵 PSD から必要なレイヤーを PNG に切り出すのだぁ（→ tachie/<char>/<id>.png） -----
 OUT << "== extract tachie =="
@@ -77,7 +108,7 @@ run("node", "extract_tachie.js", "tsumugi", "resources/psd/tsumugi3.psd", TSUMUG
 # 今のこの動画では、フレームの見た目は時刻 t だけで決まるのだぁ（scene.html の seek(t) がタイムラインを見て全要素を組み立てるのだぁ）。
 # だから、各行は template と t だけで、構成は 30fps 刻みの時刻列そのものなのだぁ🌱
 OUT << "== compose frames.jsonl =="
-total := ($*READ(timelinePath)).total
+total := timeline.total
 frameCount := -FLOOR(-(total * FPS))
 WRITE["frames.jsonl"] << 0 ~ frameCount | i => {template: template; t: i / FPS} >> JSONL >> LINESD
 OUT << "composed frames.jsonl: $frameCount frames (total=$(total)s @ $(FPS)fps)"

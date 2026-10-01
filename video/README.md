@@ -35,7 +35,7 @@ sarracenia/script.json（台本）
    │                                                                                   │ (video/ 直下)
    └─(assemble.py)────────→ full.wav（ナレーション全体）, timeline.json（尺・区間） ┘
 
-timeline.json ─┬─(sarracenia/bake_assets.py)──→ sarracenia/assets.js   ┐
+timeline.json ─┬─(sarracenia/build_scene.xa1)─→ sarracenia/assets.js   ┐
                │        ↑ IFR25KU テクスチャ / resources/font,emoji     │ sarracenia
  resources/psd/*.psd ─(sarracenia/extract_tachie.js)→ sarracenia/tachie/│ （構成を作る）
                └─(sarracenia/build_scene.xa1)→ sarracenia/frames.jsonl  ┘
@@ -77,10 +77,9 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 | ファイル | 役割 |
 | --- | --- |
 | `build_scene.sh` | タイムラインを受け取り、`assets.js`・`tachie/`・`frames.jsonl` を作る、このパートの入口です。このディレクトリへ cd して `build_scene.xa1` を呼ぶだけです。 |
-| `build_scene.xa1` | 処理の本体。リソース確認・`npm install`・`bake_assets.py` と `extract_tachie.js` の実行と、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成を行います。 |
+| `build_scene.xa1` | 処理の本体。リソース確認・`npm install`・`assets.js` の焼き込み・`extract_tachie.js` の実行と、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成を行います。 |
 | `script.json` | 台本。台詞・話者・読み（カナ原稿）・字幕・シーン・登場アイテムを定義します。 |
 | `scene.html` | 画面の見た目と `window.applyFrame(cfg)`（構成→画面）の本体。字幕・立ち絵・背景・クレジット・サムネを組み立てます。 |
-| `bake_assets.py` | `scene.html` が読む `assets.js`（フォント・絵文字・テクスチャ・タイムラインの束）を生成します。 |
 | `extract_tachie.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出します。 |
 | `package.json` / `package-lock.json` | Node の依存関係（`ag-psd` / `pngjs`）。 |
 | `resources/**/*.md5` | 外部取得リソースの md5。**「そこに、どの名前で、何を置けばよいか」を保証するための目印**です。 |
@@ -116,7 +115,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 
 ### IFR25KU リポジトリ由来のテクスチャ（配置不要）
 
-次の 4 枚は IFR25KU リポジトリにコミット済みなので、`sarracenia/bake_assets.py` がリポジトリから直接読みます（自分で置く必要はありません）。
+次の 4 枚は IFR25KU リポジトリにコミット済みなので、`sarracenia/build_scene.xa1` がリポジトリから直接読みます（自分で置く必要はありません）。
 
 | 用途 | ファイル |
 | --- | --- |
@@ -132,6 +131,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 - **Node.js**（18 以降を想定）と **npm**
 - **Python 3**（標準ライブラリのみ使用。追加パッケージ不要）
 - **ffmpeg**
+- **base64**（coreutils。画像とフォントの符号化に使います）
 - **VOICEVOX ENGINE**（音声合成サーバー。起動しておく）
 - **Chrome / Chromium**（無ければ `renderer/setup_chromium.js` が同梱版を展開）
 
@@ -180,11 +180,11 @@ bash build.sh
 ### assemble.py（結合・タイムライン）
 台詞 wav を「タイトル保持 → 本編（台詞のあいだに無音の“間”）→ クレジット保持」の順に結合し、
 `full.wav` と `timeline.json` を作ります。`timeline.json` には、各台詞の開始・終了時刻、シーン区間、
-アイテムの表示区間などが入り、`sarracenia/`（`bake_assets.py`・`build_scene.xa1`）と `build_video.py` がこれを読みます。
+アイテムの表示区間などが入り、`sarracenia/`（`build_scene.xa1`）と `build_video.py` がこれを読みます。
 
-### bake_assets.py（アセットの焼き込み）
+### sarracenia/build_scene.xa1（アセットの焼き込み）
 `file://` で開いた HTML は外部ファイルを `fetch()` できないため、フォント・絵文字・テクスチャ・タイムラインを
-`assets.js` に埋め込みます。画像・フォントは base64 の data-URL に、絵文字 SVG は生の文字列として入ります。
+`assets.js` に埋め込みます。画像・フォントは base64 の data-URL に、絵文字 SVG は生の文字列として入ります。base64 への符号化には `base64` コマンドを使います。
 
 ### extract_tachie.js（立ち絵の切り出し）
 `ag-psd` で PSD を読み、指定 ID のレイヤーを「全身キャンバスと同じサイズの透過 PNG」として書き出します。

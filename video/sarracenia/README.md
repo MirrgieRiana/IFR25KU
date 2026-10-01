@@ -20,10 +20,9 @@ bash build_scene.sh [timeline.json]
 | ファイル | 役割 |
 | --- | --- |
 | `build_scene.sh` | このパートの入口。このディレクトリへ cd して、`build_scene.xa1` を呼ぶだけです。 |
-| `build_scene.xa1` | 処理の本体。リソース確認・`npm install`・下記スクリプトの実行と、構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）の生成をまとめます。 |
+| `build_scene.xa1` | 処理の本体。リソース確認・`npm install`・`assets.js`（フォント・絵文字・テクスチャ・タイムラインの束）の焼き込み・下記スクリプトの実行と、構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）の生成をまとめます。 |
 | `script.json` | 台本。台詞・話者・読み（カナ原稿）・字幕・シーン・登場アイテムを定義します。 |
 | `scene.html` | 画面の見た目と `window.applyFrame(cfg)`（構成→画面）の本体。 |
-| `bake_assets.py` | `scene.html` が読む `assets.js`（フォント・絵文字・テクスチャ・タイムラインの束）を生成します。 |
 | `extract_tachie.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出します。 |
 | `resources/**/*.md5` | 外部取得リソースの md5（置き場所と中身の目印）。実体は著作権上コミットしません。 |
 
@@ -41,4 +40,4 @@ bash build_scene.sh [timeline.json]
 
 ## 依存
 
-`npm install` で `ag-psd` と `pngjs`（立ち絵切り出し用）が入ります。`bake_assets.py` は Python 標準ライブラリのみです。`build_scene.xa1` は、リポジトリ同梱の xarpite（`../../xarpite/`）で動きます。
+`npm install` で `ag-psd` と `pngjs`（立ち絵切り出し用）が入ります。`build_scene.xa1` は、リポジトリ同梱の xarpite（`../../xarpite/`）で動き、画像とフォントの符号化に `base64` コマンドを使います。
