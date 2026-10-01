@@ -8,7 +8,7 @@
 #   3. video/ 直下 … 音声合成・動画合成などの「雑多な部分」。この build.sh が 1 と 2 を呼び出すのだぁ。
 #
 # この build.sh（＝3 の一部）が、全体を次の順で配線するのだぁ：
-#   synth.py → assemble.xa1（音声・タイムライン）
+#   synth.xa1 → assemble.xa1（音声・タイムライン）
 #     → sarracenia/build_scene.sh（timeline → assets.js, tachie/, frames.jsonl）
 #     → renderer/render.js（scene.html + frames.jsonl → sarracenia/frames/）
 #     → build_video.py（フレーム＋音声＋BGM → mp4）
@@ -22,10 +22,10 @@
 #        sarracenia/resources/emoji/seedling.svg
 #        sarracenia/resources/bgm/chopin_op10-4.flac
 #   2. VOICEVOX ENGINE を起動しておくこと（既定は http://127.0.0.1:50021）。
-#   3. Node.js / Python3 / ffmpeg が使えること。
+#   3. Node.js / Python3 / ffmpeg / curl / base64 が使えること。
 #
 # 差し替え可能な環境変数（無指定なら既定値）：
-#   VOICEVOX_HOST  … VOICEVOX ENGINE の URL（既定 http://127.0.0.1:50021）※synth.py が参照
+#   VOICEVOX_HOST  … VOICEVOX ENGINE の URL（既定 http://127.0.0.1:50021）※synth.xa1 が参照
 #   CHROMIUM_PATH  … Chrome/Chromium 実行ファイル（既定 /tmp/chromium＝renderer/setup_chromium.js の展開先）
 #   CHROMIUM_LD_PATH … render 時に LD_LIBRARY_PATH へ前置するパス（サンドボックス環境で NSS 等を補うとき用）
 #   FFMPEG         … ffmpeg 実行ファイル（既定 PATH 上の ffmpeg）
@@ -49,7 +49,7 @@ need sarracenia/resources/bgm/chopin_op10-4.flac
 
 # --- 1. VOICEVOX で音声を合成するのだぁ（sarracenia/script.json → audio/*.wav, moras.json） ---
 echo "== synth (VOICEVOX) =="
-python3 synth.py
+../xarpite/xarpite -A 5 -q -f synth.xa1
 
 # --- 2. 各 wav を結合してタイムラインを作るのだぁ（→ full.wav, timeline.json） -----------
 echo "== assemble =="

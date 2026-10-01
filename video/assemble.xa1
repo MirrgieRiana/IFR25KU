@@ -2,6 +2,7 @@
 # build.sh が、このディレクトリ（video/）へ cd してから呼ぶのだぁ。
 
 API(5)
+@USE("./common")
 
 # 台本は動画タイトルのディレクトリ（sarracenia/）から読み、音声・タイムラインはこの雑多パート（video/直下）に置くのだぁ。
 script := $*READ("sarracenia/script.json")
@@ -17,48 +18,11 @@ SUB_TAIL := 0.14       # 字幕を音声より少しだけ長く残す余韻
 PRE_CREDIT := 1.3      # 最後の台詞からクレジットまでの間
 CREDIT_HOLD := 5.5     # クレジット画面を見せる時間
 
-# Python の round(x, 4) と同じく、x の正確な値を、小数第 4 位へ偶数丸めするのだぁ🌱
-# x * 10000 がちょうど n + 0.5 になったときは、掛け算の丸めで、正確な値がどちら側にあったかが分からなくなるのだぁ。
-# そのときだけ、x * 32 を上と下の桁に分けて、誤差の出ない掛け算で (2n + 1) / 20000 と比べるのだぁ。
-round4 := x -> (
-  r := x * 10000
-  n := FLOOR(r)
-  r - n != 0.5 ? FLOOR(r + 0.5) / 10000 : (
-    y := x * 32
-    yh := FLOOR(y * 262144) / 262144
-    s := (yh * 625 - (2 * n + 1)) + (y - yh) * 625
-    (s > 0 || s >= 0 && n % 2 == 1 ? n + 1 : n) / 10000
-  )
-)
-
-# リトルエンディアンの整数を読み書きするのだぁ🌱
-u16 := a, i -> a.(i) + a.(i + 1) * 256
-u32 := a, i -> u16(a; i) + u16(a; i + 2) * 65536
-le16 := v -> [v % 256; FLOOR(v / 256) % 256]
-le32 := v -> le16(v % 65536) + le16(FLOOR(v / 65536))
-
-fail := message -> (
-  ERR("ERROR: $message")
-  EXIT(1)
-)
-
 # wav の data チャンクのバイト列を、配列で返すのだぁ🌱
 readPcm := path -> (
-  a := BLOB.of(READB(path))::toArray()
-  tag := i -> CHAR_CODESD(a[i ~ (i + 4)]())
-  tag(0) == "RIFF" && tag(8) == "WAVE" || fail("not a wav file: $path")
-  data := NULL
-  pos := 12
-  WHILE [ => data == NULL ] ( =>
-    pos + 8 <= $#a || fail("no data chunk: $path")
-    size := u32(a; pos + 4)
-    tag(pos) == "fmt " && (
-      u16(a; pos + 8) == 1 && u16(a; pos + 10) == 1 && u32(a; pos + 12) == SR && u16(a; pos + 22) == 16 || fail("not $SR Hz mono 16 bit PCM: $path")
-    )
-    tag(pos) == "data" && (data = a[(pos + 8) ~ (pos + 8 + size)])
-    pos = pos + 8 + size + size % 2
-  )
-  data
+  wav := readWav(path)
+  wav.format == 1 && wav.channels == 1 && wav.sampleRate == SR && wav.bitsPerSample == 16 || fail("not $SR Hz mono 16 bit PCM: $path")
+  wav.data
 )
 
 sil := sec -> [0] * (2 * FLOOR(sec * SR + 0.5))

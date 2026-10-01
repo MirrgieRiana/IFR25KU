@@ -31,7 +31,7 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 ```
 sarracenia/script.json（台本）
    │
-   ├─(synth.py + VOICEVOX)→ audio/line*.wav, moras.json, kana.json, durations.json   ┐ 雑多パート
+   ├─(synth.xa1 + VOICEVOX)→ audio/line*.wav, moras.json, kana.json, durations.json  ┐ 雑多パート
    │                                                                                   │ (video/ 直下)
    └─(assemble.xa1)───────→ full.wav（ナレーション全体）, timeline.json（尺・区間） ┘
 
@@ -60,9 +60,10 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 | ファイル | 役割 |
 | --- | --- |
 | `build.sh` | 下記すべてを順に呼び出すオーケストレーター。**通常はこれを実行するだけ**です。 |
-| `synth.py` | VOICEVOX で台詞ごとの音声を合成し、口パク用のモーラ区間も書き出します。 |
+| `synth.xa1` | VOICEVOX で台詞ごとの音声を合成し、口パク用のモーラ区間も書き出します。 |
 | `assemble.xa1` | 台詞 wav を「タイトル→本編（行間の無音）→クレジット」の順に結合し、タイムラインを算出します。 |
 | `build_video.py` | 連番フレーム＋ナレーション＋BGM を ffmpeg で合成して mp4 にします。 |
+| `common.xa1` | `synth.xa1` と `assemble.xa1` が共有する関数（外部コマンドの実行・丸め・wav の読み出し）です。 |
 
 **`renderer/`（汎用レンダラー・自己完結）**
 
@@ -132,6 +133,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 - **Python 3**（標準ライブラリのみ使用。追加パッケージ不要）
 - **ffmpeg**
 - **base64**（coreutils。画像とフォントの符号化に使います）
+- **curl**（`synth.xa1` が VOICEVOX ENGINE と通信するのに使います）
 - **VOICEVOX ENGINE**（音声合成サーバー。起動しておく）
 - **Chrome / Chromium**（無ければ `renderer/setup_chromium.js` が同梱版を展開）
 
@@ -169,7 +171,7 @@ bash build.sh
 
 ## 6. 各ステップの詳細
 
-### synth.py（音声合成）
+### synth.xa1（音声合成）
 台本の各台詞について、VOICEVOX の **カタカナ原稿（`is_kana`）記法** を使って読みを厳密に指定して合成します。
 `script.json` の各行に `kana`（カナ原稿）があればそれを使い、無ければ `text` から自動生成した読みを使います。
 口パク用に、各モーラ（音の粒）が wav のどこに位置するか（`moras.json`）も書き出します。

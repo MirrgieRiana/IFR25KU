@@ -1,0 +1,72 @@
+# AI: 読み上げは VOICEVOX の「カタカナ原稿（is_kana）」記法を経由するのだぁ🌱（xarpite / API5）
+# 手順: text から audio_query → accent_phrases をカナ原稿にシリアライズ → 誤読だけ手直し
+#       → is_kana=true で読み直して差し込み → 合成。使ったカナ原稿は kana.json に保存するのだぁ。
+# build.sh が、このディレクトリ（video/）へ cd してから呼ぶのだぁ。
+
+API(5)
+@USE("./common")
+
+HOST := ENV.VOICEVOX_HOST ?: "http://127.0.0.1:50021"   # VOICEVOX ENGINE の URL（環境変数で差し替え可）
+# 台本は動画タイトルのディレクトリ（sarracenia/）にあるのだぁ。音声の中間生成物は、この雑多パート（video/直下）に置くのだぁ。
+script := $*READ("sarracenia/script.json")
+
+# VOICEVOX ENGINE へ POST して、返ってきた JSON を値にするのだぁ🌱
+postJson := path -> $*(capture("curl", "-sS", "-f", "--max-time", "60", "-X", "POST", "$HOST$path")() >> JOIN["\n"])
+
+# accent_phrases を、スキル(voicevox-kana)の標準記法のカナ原稿にシリアライズするのだぁ
+#   アクセント核 '（下降位置。平板は単位末尾）／ アクセント区切り / ／ 小休止 、 ／ 語尾上げ ？
+serializeKana := aps -> 0 ~ $#aps | pi => (
+  ap := aps.(pi)
+  s := 0 ~ $#ap.moras | mi => ap.moras.(mi).text + (mi == ap.accent - 1 ? "'" : "") >> JOIN[""]
+  s + (ap.is_interrogative == TRUE ? "？" : "") + (pi < $#aps - 1 ? (ap.pause_mora != NULL ? "、" : "/") : "")
+) >> JOIN[""]
+
+# 口パク(AV)用に、合成に使う最終クエリからモーラ区間を割り出すのだぁ🌱
+# 返すのは [cs, vs, ve, vowel]（wav先頭からの秒。speedScaleで割り済み）。
+#   cs=モーラ開始（子音頭）, vs=母音開始, ve=母音終わり。子音区間は閉口、母音区間は母音で開き具合を決めるのだぁ。
+moraSegments := q -> (
+  speed := q.speedScale
+  cur := q.prePhonemeLength
+  segs := []
+  q.accent_phrases() | ap => (
+    ap.moras() | m => (
+      cs := cur
+      cl := m.consonant_length ?: 0.0
+      vl := m.vowel_length
+      vs := cs + cl
+      ve := vs + vl
+      segs += [round4(cs / speed); round4(vs / speed); round4(ve / speed); m.vowel]
+      cur = ve
+    ) >> TO_ARRAY
+    ap.pause_mora != NULL && (cur = cur + ap.pause_mora.vowel_length)
+  ) >> TO_ARRAY
+  segs
+)
+
+run("mkdir", "-p", "audio")
+results := []
+kanaOut := []
+morasOut := []
+0 ~ $#script.lines | i => (
+  line := script.lines.(i)
+  sid := line.sid
+  q := postJson("/audio_query?$({speaker: sid; text: line.text}() | e => "$(e.0)=$(e.1 >> URL)" >> JOIN["&"])")
+  kana := (line.kana ?: "") != "" ? line.kana : serializeKana(q.accent_phrases)
+  q.accent_phrases = postJson("/accent_phrases?$({speaker: sid; text: kana; is_kana: "true"}() | e => "$(e.0)=$(e.1 >> URL)" >> JOIN["&"])")
+  q.speedScale = line.speed
+  q.prePhonemeLength = 0.08
+  q.postPhonemeLength = 0.08
+  out := "audio/line$%02d(i).wav"
+  capture("curl", "-sS", "-f", "--max-time", "60", "-X", "POST", "-H", "Content-Type: application/json", "--data-binary", (q >> JSON[indent: NULL]), "-o", out, "$HOST/synthesis?speaker=$sid")
+  wav := readWav(out)
+  d := FLOOR($#wav.data / (wav.channels * wav.bitsPerSample / 8)) / wav.sampleRate
+  results += {i: i; dur: round4(d)}
+  kanaOut += {i: i; speaker: line.speaker; kana: kana}
+  morasOut += {i: i; moras: moraSegments(q)}
+  OUT << "line$%02d(i) sid=$sid dur=$%.3f(d) kana=$kana"
+) >> TO_ARRAY
+
+WRITE("durations.json"; results >> JSON[indent: 1])
+WRITE("kana.json"; kanaOut >> JSON[indent: 1])
+WRITE("moras.json"; morasOut >> JSON[indent: 1])
+OUT << "total speech: $(FLOOR((results() | _.dur >> SUM) * 100 + 0.5) / 100) sec"
