@@ -36,19 +36,19 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.DispenserBlock
 import java.util.UUID
 
-object MirageArrowCard {
-    val identifier = MirageFairy2024.identifier("mirage_arrow")
-    val name = EnJa("Mirage Arrow", "ミラージュの矢")
-    val item = Registration(BuiltInRegistries.ITEM, identifier) { MirageArrowItem(Item.Properties()) }
+object MirageMissileCard {
+    val identifier = MirageFairy2024.identifier("mirage_missile")
+    val name = EnJa("Mirage Missile", "ミラージュミサイル")
+    val item = Registration(BuiltInRegistries.ITEM, identifier) { MirageMissileItem(Item.Properties()) }
     val entityType = Registration(BuiltInRegistries.ENTITY_TYPE, identifier) {
-        EntityType.Builder.of({ entityType, level -> MirageArrowEntity(entityType, level) }, MobCategory.MISC)
+        EntityType.Builder.of({ entityType, level -> MirageMissileEntity(entityType, level) }, MobCategory.MISC)
             .sized(0.5F, 0.5F)
             .eyeHeight(0.13F)
             .clientTrackingRange(4)
             .updateInterval(2)
             .build()
     }
-    val poemList = PoemList(1).poem("TODO", "TODO") // TODO ミラージュの矢の日英のポエムが入るのだ～🌱
+    val poemList = PoemList(1).poem("TODO", "TODO") // TODO ミラージュミサイルの日英のポエムが入るのだ～🌱
 
     const val SEARCH_INTERVAL = 10
     const val SEARCH_RADIUS = 16.0
@@ -73,22 +73,22 @@ object MirageArrowCard {
     }
 }
 
-class MirageArrowItem(properties: Properties) : ArrowItem(properties) {
+class MirageMissileItem(properties: Properties) : ArrowItem(properties) {
     override fun createArrow(level: Level, ammo: ItemStack, shooter: LivingEntity, weapon: ItemStack?): AbstractArrow {
-        return MirageArrowEntity(level, shooter, ammo.copyWithCount(1), weapon)
+        return MirageMissileEntity(level, shooter, ammo.copyWithCount(1), weapon)
     }
 
     override fun asProjectile(level: Level, pos: Position, stack: ItemStack, direction: Direction): Projectile {
-        val entity = MirageArrowEntity(level, pos.x(), pos.y(), pos.z(), stack.copyWithCount(1), null)
+        val entity = MirageMissileEntity(level, pos.x(), pos.y(), pos.z(), stack.copyWithCount(1), null)
         entity.pickup = AbstractArrow.Pickup.ALLOWED
         return entity
     }
 }
 
-class MirageArrowEntity : AbstractArrow {
-    constructor(entityType: EntityType<out MirageArrowEntity>, level: Level) : super(entityType, level)
-    constructor(level: Level, owner: LivingEntity, pickupItemStack: ItemStack, firedFromWeapon: ItemStack?) : super(MirageArrowCard.entityType(), owner, level, pickupItemStack, firedFromWeapon)
-    constructor(level: Level, x: Double, y: Double, z: Double, pickupItemStack: ItemStack, firedFromWeapon: ItemStack?) : super(MirageArrowCard.entityType(), x, y, z, level, pickupItemStack, firedFromWeapon)
+class MirageMissileEntity : AbstractArrow {
+    constructor(entityType: EntityType<out MirageMissileEntity>, level: Level) : super(entityType, level)
+    constructor(level: Level, owner: LivingEntity, pickupItemStack: ItemStack, firedFromWeapon: ItemStack?) : super(MirageMissileCard.entityType(), owner, level, pickupItemStack, firedFromWeapon)
+    constructor(level: Level, x: Double, y: Double, z: Double, pickupItemStack: ItemStack, firedFromWeapon: ItemStack?) : super(MirageMissileCard.entityType(), x, y, z, level, pickupItemStack, firedFromWeapon)
 
     private var targetUuid: UUID? = null
 
@@ -100,8 +100,8 @@ class MirageArrowEntity : AbstractArrow {
 
         // 追尾先
         var target = targetUuid?.let { level.getEntity(it) as? LivingEntity }?.takeIf { it.isAlive }
-        if (target == null && tickCount % MirageArrowCard.SEARCH_INTERVAL == 0) {
-            target = level.getEntitiesOfClass(LivingEntity::class.java, boundingBox.inflate(MirageArrowCard.SEARCH_RADIUS)) { it is Enemy && it.isAlive && it != owner }
+        if (target == null && tickCount % MirageMissileCard.SEARCH_INTERVAL == 0) {
+            target = level.getEntitiesOfClass(LivingEntity::class.java, boundingBox.inflate(MirageMissileCard.SEARCH_RADIUS)) { it is Enemy && it.isAlive && it != owner }
                 .minByOrNull { it.distanceToSqr(this) }
             targetUuid = target?.uuid
         }
@@ -112,7 +112,7 @@ class MirageArrowEntity : AbstractArrow {
         if (speed < 0.001) return
         val direction = deltaMovement.normalize()
         val targetDirection = target.boundingBox.center.subtract(position()).normalize()
-        deltaMovement = direction.add(targetDirection.subtract(direction).scale(MirageArrowCard.TURN_RATE)).normalize().scale(speed)
+        deltaMovement = direction.add(targetDirection.subtract(direction).scale(MirageMissileCard.TURN_RATE)).normalize().scale(speed)
         hasImpulse = true
     }
 
@@ -126,5 +126,5 @@ class MirageArrowEntity : AbstractArrow {
         targetUuid = if (compound.hasUUID("Target")) compound.getUUID("Target") else null
     }
 
-    override fun getDefaultPickupItem() = ItemStack(MirageArrowCard.item())
+    override fun getDefaultPickupItem() = ItemStack(MirageMissileCard.item())
 }
