@@ -4,9 +4,8 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.tree.TreeBlockCard
-import miragefairy2024.mod.tree.contents.plastictree.GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
-import miragefairy2024.mod.tree.contents.plastictree.SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_COARSE_DIRT_PLACED_FEATURE_KEY
-import miragefairy2024.mod.tree.contents.plastictree.SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY
+import miragefairy2024.mod.tree.contents.plastictree.GIANT_PLASTIC_TREE_CONFIGURED_FEATURE_KEY
+import miragefairy2024.mod.tree.contents.plastictree.SMALL_PLASTIC_TREE_CONFIGURED_FEATURE_KEY
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
@@ -53,6 +52,9 @@ import net.minecraft.world.level.levelgen.placement.CaveSurface
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
+/** 真下が石化した樹脂である位置に限るのだ～🌱 */
+val onResinCement get() = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, BlockMaterialCard.RESIN_CEMENT.block())))
+
 object OldGrowthAmberForestBiomeCard : BiomeCard(
     "old_growth_amber_forest", EnJa("Old Growth Amber Forest", "琥珀色の原生林"),
     advancementCreator = {
@@ -66,10 +68,14 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
             type = AdvancementCardType.TOAST_ONLY,
         )
     },
-    BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST, BiomeTags.INCREASED_FIRE_BURNOUT, ConventionalBiomeTags.IS_WET_OVERWORLD,
+    BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST, BiomeTags.INCREASED_FIRE_BURNOUT, ConventionalBiomeTags.IS_HOT_OVERWORLD, ConventionalBiomeTags.IS_WET_OVERWORLD,
 ) {
+    private val giantPlasticTreePlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_plastic_tree_old_growth_amber_forest")
+    private val smallPlasticTreePlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_plastic_tree_old_growth_amber_forest")
+    private val smallPlasticTreeCoarseDirtPlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_plastic_tree_old_growth_amber_forest_coarse_dirt")
     private val smallOakPlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_oak_old_growth_amber_forest")
     private val smallJunglePlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_jungle_tree_old_growth_amber_forest")
+    private val megaJunglePlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("mega_jungle_tree_old_growth_amber_forest")
     private val tallGrassPlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("tall_grass_old_growth_amber_forest")
     private val deadBushPlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("dead_bush_old_growth_amber_forest")
 
@@ -114,9 +120,10 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
 
                 // 原生林の証である倒木は、後から生える木がこれを避けるように、木よりも先に配置するのだ～🌱
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, FallenPlasticTreeLogFeatureCard.placedFeatureKey)
-                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
-                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY)
-                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_COARSE_DIRT_PLACED_FEATURE_KEY)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, giantPlasticTreePlacedFeatureKey)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, smallPlasticTreePlacedFeatureKey)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, smallPlasticTreeCoarseDirtPlacedFeatureKey)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, megaJunglePlacedFeatureKey)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, smallOakPlacedFeatureKey)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, smallJunglePlacedFeatureKey)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ResinCementSapFeatureCard.placedFeatureKey)
@@ -135,24 +142,41 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
 
         // 地形生成
         val onGrassBlock = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, Blocks.GRASS_BLOCK)))
+        val onCoarseDirt = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, Blocks.COARSE_DIRT)))
+        Feature.TREE.generator(MirageFairy2024.identifier("giant_plastic_tree_old_growth_amber_forest")) {
+            GIANT_PLASTIC_TREE_CONFIGURED_FEATURE_KEY.generator {
+                registerPlacedFeature(giantPlasticTreePlacedFeatureKey) { tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCement }
+            }
+        }
+        Feature.TREE.generator(MirageFairy2024.identifier("small_plastic_tree_old_growth_amber_forest")) {
+            SMALL_PLASTIC_TREE_CONFIGURED_FEATURE_KEY.generator {
+                registerPlacedFeature(smallPlasticTreePlacedFeatureKey) { count(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCement }
+                registerPlacedFeature(smallPlasticTreeCoarseDirtPlacedFeatureKey) { tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onCoarseDirt }
+            }
+        }
         Feature.TREE.generator(MirageFairy2024.identifier("small_oak_old_growth_amber_forest")) {
             TreeFeatures.OAK.generator {
                 registerPlacedFeature(smallOakPlacedFeatureKey) { per(2) + tree(Blocks.OAK_SAPLING) }
             }
         }
         Feature.TREE.generator(MirageFairy2024.identifier("small_jungle_tree_old_growth_amber_forest")) {
-            TreeFeatures.JUNGLE_TREE_NO_VINE.generator {
+            TreeFeatures.JUNGLE_TREE.generator {
                 registerPlacedFeature(smallJunglePlacedFeatureKey) { per(2) + tree(Blocks.JUNGLE_SAPLING) + onGrassBlock }
+            }
+        }
+        Feature.TREE.generator(MirageFairy2024.identifier("mega_jungle_tree_old_growth_amber_forest")) {
+            TreeFeatures.MEGA_JUNGLE_TREE.generator {
+                registerPlacedFeature(megaJunglePlacedFeatureKey) { per(8) + tree(Blocks.JUNGLE_SAPLING) + onGrassBlock }
             }
         }
         Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("tall_grass_old_growth_amber_forest")) {
             registerConfiguredFeature { FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.TALL_GRASS)), listOf(Blocks.GRASS_BLOCK)) }.generator {
-                registerPlacedFeature(tallGrassPlacedFeatureKey) { count(1) + flower(square, surface) }
+                registerPlacedFeature(tallGrassPlacedFeatureKey) { count(2) + flower(square, surface) }
             }
         }
         Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("dead_bush_old_growth_amber_forest")) {
             registerConfiguredFeature { FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.DEAD_BUSH)), listOf(Blocks.COARSE_DIRT), 4) }.generator {
-                registerPlacedFeature(deadBushPlacedFeatureKey) { count(2) + listOf(InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()) }
+                registerPlacedFeature(deadBushPlacedFeatureKey) { count(4) + listOf(InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()) }
             }
         }
 

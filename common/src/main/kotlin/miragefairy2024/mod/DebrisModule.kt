@@ -6,7 +6,9 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.PlacedItemFeature
 import miragefairy2024.mod.biome.FAIRY_BIOME_TAG
+import miragefairy2024.mod.biome.OldGrowthAmberForestBiomeCard
 import miragefairy2024.mod.biome.RetrospectiveCityBiomeCard
+import miragefairy2024.mod.biome.onResinCement
 import miragefairy2024.mod.biome.retrospectiveCityFloorPlacementModifiers
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
@@ -82,6 +84,11 @@ enum class DebrisCard(
     RETROSPECTIVE_CITY_MIRAGIDIAN_SHARD("retrospective_city/miragidian_shard", 8, 1..4, { MaterialCard.MIRAGIDIAN_SHARD.item().createItemStack() }, BiomeCondition.BiomeKey(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
     RETROSPECTIVE_CITY_COBBLED_AURA_RESISTANT_CERAMIC("retrospective_city/cobbled_aura_resistant_ceramic", 1, 8..24, { BlockMaterialCard.COBBLED_AURA_RESISTANT_CERAMIC.item().createItemStack() }, BiomeCondition.BiomeKey(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
     RETROSPECTIVE_CITY_AURA_RESISTANT_CERAMIC_BRICKS("retrospective_city/aura_resistant_ceramic_bricks", 2, 4..12, { BlockMaterialCard.AURA_RESISTANT_CERAMIC_BRICKS.item().createItemStack() }, BiomeCondition.BiomeKey(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
+
+    OLD_GROWTH_AMBER_FOREST_COPAL("old_growth_amber_forest/copal", 128, 2..6, { MaterialCard.COPAL.item().createItemStack() }, BiomeCondition.BiomeKey(OldGrowthAmberForestBiomeCard.key), extraPlacementModifier = { onResinCement }),
+    OLD_GROWTH_AMBER_FOREST_RETINITE("old_growth_amber_forest/retinite", 128, 2..6, { MaterialCard.RETINITE.item().createItemStack() }, BiomeCondition.BiomeKey(OldGrowthAmberForestBiomeCard.key), extraPlacementModifier = { onResinCement }),
+    OLD_GROWTH_AMBER_FOREST_STICK("old_growth_amber_forest/stick", 32 / 4, 2..6, { Items.STICK.createItemStack() }, BiomeCondition.BiomeKey(OldGrowthAmberForestBiomeCard.key), extraPlacementModifier = { onResinCement }),
+    OLD_GROWTH_AMBER_FOREST_PLASTIC_TREE_SAP("old_growth_amber_forest/plastic_tree_sap", 128 / 4, 2..6, { MaterialCard.PLASTIC_TREE_SAP.item().createItemStack() }, BiomeCondition.BiomeKey(OldGrowthAmberForestBiomeCard.key), extraPlacementModifier = { onResinCement }),
     ;
 
     val identifier = MirageFairy2024.identifier("${path}_debris")
