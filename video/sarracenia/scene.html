@@ -38,10 +38,10 @@
   /* 立ち絵（全身）。顔トリミングをやめて全身素材を使い、つむぎ左・ずんだもん右なのだぁ🌱
      AZ：位置が上すぎたので、画面高さ720pxの約10%（72px）ぶん下方向に下げたのだぁ。
      BA：つむぎは元が左向きの素材なので、scaleX(-1) で左右反転して右（中央）を向かせる苦肉の策なのだぁ */
-  .tachie{position:absolute;z-index:5;opacity:0;filter:drop-shadow(0 6px 14px rgba(0,0,0,.4));}
-  .tachie img{position:absolute;left:0;top:0;width:100%;height:auto;}
-  #tachieTsumugi{width:560px;left:-84px;top:92px;transform:scaleX(-1);}
-  #tachieZundamon{width:560px;right:-56px;top:66px;}
+  .portrait{position:absolute;z-index:5;opacity:0;filter:drop-shadow(0 6px 14px rgba(0,0,0,.4));}
+  .portrait img{position:absolute;left:0;top:0;width:100%;height:auto;}
+  #portraitTsumugi{width:560px;left:-84px;top:92px;transform:scaleX(-1);}
+  #portraitZundamon{width:560px;right:-56px;top:66px;}
 
   /* 字幕の読みやすさのための下部スクリム（箱ではなく、そっと暗くするだけ）なのだぁ */
   .scrim{position:absolute;z-index:3;left:0;right:0;bottom:0;height:300px;pointer-events:none;opacity:0;
@@ -121,8 +121,8 @@
 
   <div class="scrim" id="scrim"></div>
 
-  <div class="tachie" id="tachieTsumugi"></div>
-  <div class="tachie" id="tachieZundamon"></div>
+  <div class="portrait" id="portraitTsumugi"></div>
+  <div class="portrait" id="portraitZundamon"></div>
 
   <div class="band" id="band"></div>
 
@@ -166,7 +166,7 @@ document.querySelector('#thumbLogo').src = A.logo;
 // BF：眉(brow)・腕(armR/armL)は排他グループ(radio)、汗(sweat)は独立トグル(checkbox)なのだぁ🌱
 //   衝突判定は private の voicevox/extractor/build.gradle.kts に準拠（radio=同時1つ／checkbox=独立）。
 //   pg:'グループ名', key:'名前' で切り替え候補を積んでおいて、seek() が台詞ごとに1つだけ表示するのだぁ。
-const TACHIE = {
+const PORTRAIT = {
   zundamon: { ch:'zundamon', layers:[
     {id:'1'},{id:'4-2'},
     {pg:'brow',key:'normal',id:'8-5'},{pg:'brow',key:'sad',id:'8-2'},{pg:'brow',key:'up',id:'8-3'},
@@ -188,14 +188,14 @@ const TACHIE = {
     {sym:'sweat',id:'13-2'},
   ]},
 };
-function buildTachie(el, character){
+function buildPortrait(el, character){
   let html='';
   character.layers.forEach(L=>{
-    if(L.eye){ (L.ids||[L.id]).forEach(id=>{ html+=`<img class="eye-${L.eye}" src="tachie/${character.ch}/${id}.png">`; }); }
-    else if(L.mouth){ html+=`<img class="mouth-${L.mouth}" src="tachie/${character.ch}/${L.id}.png">`; }
-    else if(L.pg){ html+=`<img class="pg-${L.pg} pg-${L.pg}-${L.key}" src="tachie/${character.ch}/${L.id}.png">`; }
-    else if(L.sym){ html+=`<img class="sym-${L.sym}" style="display:none" src="tachie/${character.ch}/${L.id}.png">`; }
-    else { html+=`<img src="tachie/${character.ch}/${L.id}.png">`; }
+    if(L.eye){ (L.ids||[L.id]).forEach(id=>{ html+=`<img class="eye-${L.eye}" src="portrait/${character.ch}/${id}.png">`; }); }
+    else if(L.mouth){ html+=`<img class="mouth-${L.mouth}" src="portrait/${character.ch}/${L.id}.png">`; }
+    else if(L.pg){ html+=`<img class="pg-${L.pg} pg-${L.pg}-${L.key}" src="portrait/${character.ch}/${L.id}.png">`; }
+    else if(L.sym){ html+=`<img class="sym-${L.sym}" style="display:none" src="portrait/${character.ch}/${L.id}.png">`; }
+    else { html+=`<img src="portrait/${character.ch}/${L.id}.png">`; }
   });
   el.innerHTML=html;
 }
@@ -226,9 +226,9 @@ function setPose(el, p){
   });
   el.querySelectorAll('.sym-sweat').forEach(e=>e.style.display = p.sweat?'':'none');
 }
-const elZ=document.querySelector('#tachieZundamon'), elT=document.querySelector('#tachieTsumugi');
-buildTachie(elZ, TACHIE.zundamon);
-buildTachie(elT, TACHIE.tsumugi);
+const elZ=document.querySelector('#portraitZundamon'), elT=document.querySelector('#portraitTsumugi');
+buildPortrait(elZ, PORTRAIT.zundamon);
+buildPortrait(elT, PORTRAIT.tsumugi);
 function setFace(el, mouth, blink){
   ['closed','half','open'].forEach(m=>el.querySelectorAll('.mouth-'+m).forEach(e=>e.style.display=(m===mouth?'':'none')));
   el.querySelectorAll('.eye-open').forEach(e=>e.style.display=blink?'none':'');
@@ -366,8 +366,8 @@ window.applyFrame = function(frame){
   ['#thumbBandTop','#thumbBandBot','.thumb-frame','#thumbTop','#thumbBot','#thumbLogo']
     .forEach(s=>document.querySelector(s).style.opacity=frame.openOp);
   document.querySelector('#credit').style.opacity = frame.creditOp;
-  document.querySelector('#tachieTsumugi').style.opacity = frame.tachieOp;
-  document.querySelector('#tachieZundamon').style.opacity = frame.tachieOp;
+  document.querySelector('#portraitTsumugi').style.opacity = frame.portraitOp;
+  document.querySelector('#portraitZundamon').style.opacity = frame.portraitOp;
   document.querySelector('#band').style.opacity = frame.bandOp;
   document.querySelector('#subwrap').style.opacity = frame.subOp;
   document.querySelector('#name').style.opacity = frame.subOp;

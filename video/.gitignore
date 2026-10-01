@@ -29,7 +29,7 @@ durations.json
 
 # --- scene の中間生成物（動画タイトルのディレクトリ＝sarracenia/。build_scene.sh が作り直すのだぁ） ---
 sarracenia/assets.js
-sarracenia/tachie/
+sarracenia/portrait/
 sarracenia/frames.jsonl
 
 # --- レンダラーの出力（連番フレーム） ---

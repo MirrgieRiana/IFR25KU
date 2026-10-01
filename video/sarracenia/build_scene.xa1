@@ -5,11 +5,11 @@
 # タイムラインを受け取って、レンダラーに渡す材料を、ぜんぶ作るのだぁ🌱
 #
 # 引数：
-#   ARGS.0 … timeline.json のパス（省略時は ../timeline.json）なのだぁ。
+#   ARGS.0       … timeline.json のパス（省略時は ../timeline.json）なのだぁ。
 # 出力（このディレクトリ配下）：
-#   assets.js     … scene.html が読む、フォント・絵文字・テクスチャ・タイムラインの束
-#   tachie/       … 立ち絵 PSD から切り出したレイヤー PNG
-#   frames.jsonl  … 1 行 = 1 フレームの構成jsonl（レンダラーへの入力）
+#   assets.js    … scene.html が読む、フォント・絵文字・テクスチャ・タイムラインの束
+#   portrait/    … 立ち絵 PSD から切り出したレイヤー PNG
+#   frames.jsonl … 1 行 = 1 フレームの構成jsonl（レンダラーへの入力）
 # =============================================================================
 
 API(5)
@@ -24,7 +24,7 @@ template := "scene.html"
 FPS := 30
 
 # --- 立ち絵 PSD から切り出すレイヤー ID の一覧なのだぁ -------------------------
-# この並びは scene.html の TACHIE 定義と一致していなければならないのだぁ。
+# この並びは scene.html の PORTRAIT 定義と一致していなければならないのだぁ。
 # ID 体系は劇場の layers.json と同じで、兄弟レイヤーの 1 始まりインデックスを "-" で連結したものなのだぁ
 # （グループもインデックスを 1 個消費するのだぁ）。
 ZUNDA_IDS := "1,4-2,8-5,8-2,8-3,7-14-3,7-14-4-9,7-6,5-8,5-2,5-1,6-6,9-2,4-4-8,4-4-3,4-4-6,4-4-5,4-3-8,4-3-3,10-3"
@@ -99,10 +99,10 @@ WRITE("assets.js"; "window.ASSETS=$(assets >> JSON[indent: NULL]);\nwindow.TIMEL
 OUT << "baked assets.js: $(assets() | _.0 >> JOIN[", "])"
 OUT << "  timeline: total= $(timeline.total) lines= $($#timeline.lines)"
 
-# --- 2. 立ち絵 PSD から必要なレイヤーを PNG に切り出すのだぁ（→ tachie/<char>/<id>.png） -----
-OUT << "== extract tachie =="
-run("node", "extract_tachie.js", "zundamon", "resources/psd/zundamon23.psd", ZUNDA_IDS, "tachie/zundamon")
-run("node", "extract_tachie.js", "tsumugi", "resources/psd/tsumugi3.psd", TSUMUGI_IDS, "tachie/tsumugi")
+# --- 2. 立ち絵 PSD から必要なレイヤーを PNG に切り出すのだぁ（→ portrait/<char>/<id>.png） -----
+OUT << "== extract portrait =="
+run("node", "extract_portrait.js", "zundamon", "resources/psd/zundamon23.psd", ZUNDA_IDS, "portrait/zundamon")
+run("node", "extract_portrait.js", "tsumugi", "resources/psd/tsumugi3.psd", TSUMUGI_IDS, "portrait/tsumugi")
 
 # --- 3. 構成jsonl を組み立てるのだぁ（→ frames.jsonl） -------------------------
 # 各行は、そのフレームの見た目を決めるパラメータなのだぁ🌱
@@ -145,10 +145,10 @@ WRITE["frames.jsonl"] << 0 ~ frameCount | i => (
   {
     template: template; t: t
     bogOp: bogOp(t); swampOp: 1; plantOp: itemOp(t; "plant"); leafOp: itemOp(t; "leaf")
-    openOp: openOp(t); creditOp: creditOp(t); tachieOp: creditGate(t); bandOp: (1 - openOp(t)) * creditGate(t)
+    openOp: openOp(t); creditOp: creditOp(t); portraitOp: creditGate(t); bandOp: (1 - openOp(t)) * creditGate(t)
     subOp: so; scrimOp: so * 0.85
   }
 ) >> JSONL >> LINESD
 OUT << "composed frames.jsonl: $frameCount frames (total=$(total)s @ $(FPS)fps)"
 
-OUT << "== scene ready: assets.js, tachie/, frames.jsonl =="
+OUT << "== scene ready: assets.js, portrait/, frames.jsonl =="

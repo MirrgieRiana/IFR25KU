@@ -24,6 +24,6 @@ OUT << "== assemble =="
 USE("./assemble")
 
 # --- 3. sarracenia（動画タイトルのディレクトリ）で scene を作るのだぁ ------------
-#        timeline.json を渡すと assets.js・tachie/・frames.jsonl を作るのだぁ。
+#        timeline.json を渡すと assets.js・portrait/・frames.jsonl を作るのだぁ。
 OUT << "== build scene (sarracenia) =="
 run("bash", "sarracenia/build_scene.sh", "$PWD/timeline.json")

@@ -3,7 +3,7 @@
 この動画（サラセニア寸劇）の台本・シーン・**構成jsonl** を作る、動画タイトルを冠したディレクトリです。
 単体で完結していて、汎用レンダラー（`../renderer/`）にも、雑多パート（`../`）にも依存しません。
 
-役割は「タイムラインを受け取って、レンダラーに渡す材料（`assets.js`・立ち絵 `tachie/`・構成jsonl `frames.jsonl`）を作る」ことです。
+役割は「タイムラインを受け取って、レンダラーに渡す材料（`assets.js`・立ち絵 `portrait/`・構成jsonl `frames.jsonl`）を作る」ことです。
 
 ## 使い方
 
@@ -13,7 +13,7 @@ bash build_scene.sh [timeline.json]
 
 - 引数はタイムラインのパス（省略時は `../timeline.json`）。尺・台詞区間・シーン・アイテムが入っています。
 - タイムラインの作り手（音声合成・結合）は雑多パートの担当で、ここはその結果を受け取るだけです。
-- 出力（このディレクトリ配下）：`assets.js` ／ `tachie/` ／ `frames.jsonl`。
+- 出力（このディレクトリ配下）：`assets.js` ／ `portrait/` ／ `frames.jsonl`。
 
 ## ファイル
 
@@ -23,7 +23,7 @@ bash build_scene.sh [timeline.json]
 | `build_scene.xa1` | 処理の本体。リソース確認・`npm install`・`assets.js`（フォント・絵文字・テクスチャ・タイムラインの束）の焼き込み・下記スクリプトの実行と、構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）の生成をまとめます。 |
 | `script.json` | 台本。台詞・話者・読み（カナ原稿）・字幕・シーン・登場アイテムを定義します。 |
 | `scene.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体。 |
-| `extract_tachie.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出します。 |
+| `extract_portrait.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出します。 |
 | `resources/**/*.md5` | 外部取得リソースの md5（置き場所と中身の目印）。実体は著作権上コミットしません。 |
 
 ## 構成jsonl（`frames.jsonl`）について
@@ -35,7 +35,7 @@ bash build_scene.sh [timeline.json]
 `template` に入れるテンプレートは、`build_scene.xa1` の冒頭で決めています。
 不透明度は `build_scene.xa1` がタイムラインから計算し、`scene.html` の `applyFrame` がそのまま当てます。
 内訳は、背景の `bogOp`・`swampOp`、アイテム枠の `plantOp`・`leafOp`、開幕のサムネの `openOp`、
-クレジットの `creditOp`、立ち絵の `tachieOp`、字幕の横帯の `bandOp`、字幕とキャラ名の `subOp`、
+クレジットの `creditOp`、立ち絵の `portraitOp`、字幕の横帯の `bandOp`、字幕とキャラ名の `subOp`、
 字幕の下敷きの `scrimOp` です。
 ポーズと口パクとまばたきと字幕の中身は、まだ `scene.html` の `seek(t)` が組み立てるので、時刻 `t` も渡します。
 これから（Issue #179 トピック BP の構想）、各行に「どの要素へどんな CSS・属性・テキストを入れるか」をフラットに

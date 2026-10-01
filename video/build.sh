@@ -9,7 +9,7 @@
 #
 # この build.sh（＝3 の一部）が、全体を次の順で配線するのだぁ：
 #   build.xa1 … synth.xa1 → assemble.xa1（音声・タイムライン）
-#               → sarracenia/build_scene.sh（timeline → assets.js, tachie/, frames.jsonl）
+#               → sarracenia/build_scene.sh（timeline → assets.js, portrait/, frames.jsonl）
 #     → renderer/render.js（scene.html + frames.jsonl → sarracenia/frames/）
 #     → build_video.py（フレーム＋音声＋BGM → mp4）
 #

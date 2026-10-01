@@ -36,12 +36,12 @@ sarracenia/script.json（台本）
    │                                                                                   │ (video/ 直下)
    └─(assemble.xa1)───────→ full.wav（ナレーション全体）, timeline.json（尺・区間） ┘
 
-timeline.json ─┬─(sarracenia/build_scene.xa1)─→ sarracenia/assets.js   ┐
-               │        ↑ IFR25KU テクスチャ / resources/font,emoji     │ sarracenia
- resources/psd/*.psd ─(sarracenia/extract_tachie.js)→ sarracenia/tachie/│ （構成を作る）
-               └─(sarracenia/build_scene.xa1)→ sarracenia/frames.jsonl  ┘
+timeline.json ─┬─(sarracenia/build_scene.xa1)─→ sarracenia/assets.js        ┐
+               │        ↑ IFR25KU テクスチャ / resources/font,emoji         │ sarracenia
+ resources/psd/*.psd ─(sarracenia/extract_portrait.js)→ sarracenia/portrait/│ （構成を作る）
+               └─(sarracenia/build_scene.xa1)→ sarracenia/frames.jsonl      ┘
 
-sarracenia/scene.html + assets.js + tachie/ + frames.jsonl
+sarracenia/scene.html + assets.js + portrait/ + frames.jsonl
    └─(renderer/render.js + Chromium)→ sarracenia/frames/f_%05d.png   … 汎用レンダラー
 
 sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
@@ -82,11 +82,11 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 
 | ファイル | 役割 |
 | --- | --- |
-| `build_scene.sh` | タイムラインを受け取って、`assets.js` と `tachie/` と `frames.jsonl` を作る、このパートの入口なのだ～🌱 このディレクトリへ cd して `build_scene.xa1` を呼ぶだけなのだ～🌱 |
-| `build_scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `npm install` と `assets.js` の焼き込みと `extract_tachie.js` の実行と、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
+| `build_scene.sh` | タイムラインを受け取って、`assets.js` と `portrait/` と `frames.jsonl` を作る、このパートの入口なのだ～🌱 このディレクトリへ cd して `build_scene.xa1` を呼ぶだけなのだ～🌱 |
+| `build_scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `npm install` と `assets.js` の焼き込みと `extract_portrait.js` の実行と、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
 | `script.json` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義するのだ～🌱 |
 | `scene.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 |
-| `extract_tachie.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出すのだ～🌱 |
+| `extract_portrait.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出すのだ～🌱 |
 | `package.json` / `package-lock.json` | Node の依存関係（`ag-psd` / `pngjs`）なのだ～🌱 |
 | `resources/**/*.md5` | 外部取得リソースの md5 なのだ～🌱 **そこに、どの名前で、何を置けばよいかを保証するための目印**なのだ～🌱 |
 
@@ -95,7 +95,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 - **外部取得リソースの実体**（`sarracenia/resources/psd/*.psd`, `.../font/*.ttf`, `.../emoji/*.svg`, `.../bgm/*.flac`）
   … 著作権の都合でコミットしないのだ～🌱 各 `.md5` を頼りに自分で配置するのだ～🌱（→ [3.](#3-用意する外部取得リソースなのだ)）
 - **音声の中間生成物**（`video/` 直下の `audio/`, `full.wav`, `timeline.json`, `kana.json`, `moras.json`, `durations.json`）
-- **scene の中間生成物**（`sarracenia/assets.js`, `sarracenia/tachie/`, `sarracenia/frames.jsonl`）
+- **scene の中間生成物**（`sarracenia/assets.js`, `sarracenia/portrait/`, `sarracenia/frames.jsonl`）
 - **出力**（`sarracenia/frames/`, `*.mp4`, `*.png`）
 - **依存**（各パート配下の `node_modules/`）
 
@@ -117,10 +117,10 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 | `sarracenia/resources/bgm/chopin_op10-4.flac` | ショパン 練習曲 作品10-4「Torrent（激流）」（Edward Neeman 演奏） | Wikimedia Commons / Musopen "Set Chopin Free" | パブリックドメイン |
 
 立ち絵 PSD の ID 体系なのだ～🌱
-`sarracenia/extract_tachie.js` が切り出すレイヤーは、兄弟レイヤーの 1 始まりインデックスを `-` で連結した ID で指定するのだ～🌱
+`sarracenia/extract_portrait.js` が切り出すレイヤーは、兄弟レイヤーの 1 始まりインデックスを `-` で連結した ID で指定するのだ～🌱
 グループも、インデックスを 1 個消費するのだ～🌱
 切り出す ID の一覧は `sarracenia/build_scene.xa1` の `ZUNDA_IDS` と `TSUMUGI_IDS` にあるのだ～🌱
-これは、`scene.html` の `TACHIE` 定義と一致している必要があるのだ～🌱
+これは、`scene.html` の `PORTRAIT` 定義と一致している必要があるのだ～🌱
 
 ### IFR25KU リポジトリ由来のテクスチャ（配置不要）なのだ～🌱
 
@@ -205,7 +205,7 @@ bash build.sh
 画像とフォントは base64 の data-URL に、絵文字 SVG は生の文字列として入るのだ～🌱
 base64 への符号化には、`base64` コマンドを使うのだ～🌱
 
-### extract_tachie.js（立ち絵の切り出し）なのだ～🌱
+### extract_portrait.js（立ち絵の切り出し）なのだ～🌱
 
 `ag-psd` で PSD を読んで、指定 ID のレイヤーを、全身キャンバスと同じサイズの透過 PNG として書き出すのだ～🌱
 `node-canvas` を入れずに済むように、`createImageData` だけをシムして動かしているのだ～🌱
