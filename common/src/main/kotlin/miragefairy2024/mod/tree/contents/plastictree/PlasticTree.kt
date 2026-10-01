@@ -2,13 +2,17 @@ package miragefairy2024.mod.tree.contents.plastictree
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeCard
 import miragefairy2024.mod.tree.contents.plastictreefamily.PlasticTreeFamilyTreeDecorator
+import miragefairy2024.util.AdvancementCard
+import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.count
+import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.per
@@ -54,6 +58,16 @@ val SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY = Registries.P
 
 val GIANT_PLASTIC_TREE_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("giant_plastic_tree")
 val GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_plastic_tree_old_growth_amber_forest")
+
+val plasticTreeAdvancement = AdvancementCard(
+    identifier = MirageFairy2024.identifier("plastic_tree"),
+    context = AdvancementCard.Sub { rootAdvancement.await() },
+    icon = { TreeBlockCard.DRIPPING_PLASTIC_TREE_LOG.item().createItemStack() },
+    name = EnJa("Encroaching Old Growth", "侵蝕する原生林"),
+    description = EnJa("Explore the overworld to find the Plastic Tree", "地上を探検してプラノキを探す"),
+    criterion = AdvancementCard.hasItem { TreeBlockCard.PLASTIC_TREE_LOG.item() },
+    type = AdvancementCardType.TOAST_AND_JEWELS,
+)
 
 /** プラノキは石化した樹脂からしか生えないから、真下がそのブロックである位置に限るのだ～🌱 */
 val onResinCement get() = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, BlockMaterialCard.RESIN_CEMENT.block())))
@@ -116,5 +130,9 @@ fun initPlasticTree() {
             registerPlacedFeature(GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { per(1) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCement }
         }
     }
+
+
+    // 進捗
+    plasticTreeAdvancement.init()
 
 }
