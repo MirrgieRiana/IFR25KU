@@ -1,5 +1,5 @@
 // PSD から、指定した ID のレイヤーを「全身キャンバスサイズ」の透過PNGとして書き出すのだ～🌱
-// ID体系は劇場の layers.json と同じ（兄弟の1始まりインデックスを - で連結、グループもインデックスを消費）。
+// ID体系は劇場の layers.json と同じ（兄弟の1始まりインデックスを - で連結、グループもインデックスを消費）なのだ～🌱
 const fs = require('fs');
 const path = require('path');
 const { readPsd, initializeCanvas } = require('ag-psd');

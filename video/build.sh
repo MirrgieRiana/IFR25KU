@@ -5,7 +5,7 @@
 # video/ は 3 つのパートに分かれているのだ～🌱：
 #   1. renderer/   … 構成jsonl と HTML テンプレートから画像を撮る「汎用レンダラー」（動画に依存しないのだ～🌱）
 #   2. sarracenia/ … この動画の台本・シーン・構成jsonl を作る「動画タイトルのディレクトリ」（自己完結なのだ～🌱）
-#   3. video/ 直下 … 音声合成・動画合成などの「雑多な部分」。この build.sh が 1 と 2 を呼び出すのだ～🌱
+#   3. video/ 直下 … 音声合成・動画合成などの「雑多な部分」で、この build.sh が 1 と 2 を呼び出すのだ～🌱
 #
 # この build.sh（＝3 の一部）が、全体を次の順で配線するのだ～🌱：
 #   build.xa1 … synth.xa1 → assemble.xa1（音声・タイムライン）
@@ -13,16 +13,16 @@
 #     → renderer/render.js（scene.html + frames.jsonl → sarracenia/frames/）
 #     → build_video.py（フレーム＋音声＋BGM → mp4）
 #
-# 前提（先に済ませておくこと。詳しくは README.md を読むのだ～🌱）：
-#   1. 外部取得リソースを sarracenia/resources/ 以下の所定パスに置くこと（*.md5 がその置き場所と中身を示すのだ～🌱）。
+# 前提（先に済ませておくのだ～🌱 詳しくは README.md を読むのだ～🌱）：
+#   1. 外部取得リソースを sarracenia/resources/ 以下の所定パスに置くのだ～🌱（*.md5 がその置き場所と中身を示すのだ～🌱）
 #        sarracenia/resources/psd/zundamon23.psd
 #        sarracenia/resources/psd/tsumugi3.psd
 #        sarracenia/resources/font/ZenMaruGothic-Black.ttf
 #        sarracenia/resources/font/ZenMaruGothic-Bold.ttf
 #        sarracenia/resources/emoji/seedling.svg
 #        sarracenia/resources/bgm/chopin_op10-4.flac
-#   2. VOICEVOX ENGINE を起動しておくこと（既定は http://127.0.0.1:50021）。
-#   3. Node.js / Python3 / ffmpeg / curl / base64 が使えること。
+#   2. VOICEVOX ENGINE を起動しておくのだ～🌱（既定は http://127.0.0.1:50021）
+#   3. Node.js / Python3 / ffmpeg / curl / base64 を使える状態にしておくのだ～🌱
 #
 # 差し替え可能な環境変数（無指定なら既定値）：
 #   VOICEVOX_HOST  … VOICEVOX ENGINE の URL（既定 http://127.0.0.1:50021）※synth.xa1 が参照

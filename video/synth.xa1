@@ -1,6 +1,6 @@
 # AI: 読み上げは VOICEVOX の「カタカナ原稿（is_kana）」記法を経由するのだ～🌱（xarpite / API5）
 # 手順: text から audio_query → accent_phrases をカナ原稿にシリアライズ → 誤読だけ手直し
-#       → is_kana=true で読み直して差し込み → 合成。使ったカナ原稿は kana.json に保存するのだ～🌱
+#       → is_kana=true で読み直して差し込み → 合成なのだ～🌱 使ったカナ原稿は kana.json に保存するのだ～🌱
 # build.xa1 が USE で呼ぶのだ～🌱
 # カレントディレクトリは video/ なのだ～🌱
 
@@ -14,7 +14,7 @@ script := $*READ("sarracenia/script.json")
 postJson := path -> $*(capture("curl", "-sS", "-f", "--max-time", "60", "-X", "POST", "$HOST$path")() >> JOIN["\n"])
 
 # accent_phrases を、スキル(voicevox-kana)の標準記法のカナ原稿にシリアライズするのだ～🌱
-#   アクセント核 '（下降位置。平板は単位末尾）／ アクセント区切り / ／ 小休止 、 ／ 語尾上げ ？
+#   アクセント核 '（下降位置で、平板は単位末尾）／ アクセント区切り / ／ 小休止 、 ／ 語尾上げ ？
 serializeKana := aps -> 0 ~ $#aps | pi => (
   ap := aps.(pi)
   s := 0 ~ $#ap.moras | mi => ap.moras.(mi).text + (mi == ap.accent - 1 ? "'" : "") >> JOIN[""]
@@ -22,8 +22,8 @@ serializeKana := aps -> 0 ~ $#aps | pi => (
 ) >> JOIN[""]
 
 # 口パク(AV)用に、合成に使う最終クエリからモーラ区間を割り出すのだ～🌱
-# 返すのは [cs, vs, ve, vowel]（wav先頭からの秒。speedScaleで割り済み）。
-#   cs=モーラ開始（子音頭）, vs=母音開始, ve=母音終わり。子音区間は閉口、母音区間は母音で開き具合を決めるのだ～🌱
+# 返すのは [cs, vs, ve, vowel]（wav先頭からの秒で、speedScaleで割り済み）なのだ～🌱
+#   cs=モーラ開始（子音頭）, vs=母音開始, ve=母音終わりなのだ～🌱 子音区間は閉口で、母音区間は母音で開き具合を決めるのだ～🌱
 moraSegments := q -> (
   speed := q.speedScale
   cur := q.prePhonemeLength

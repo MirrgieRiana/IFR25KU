@@ -53,7 +53,7 @@ linesTl := [0 ~ lineCount | i => (
     subEnd: round4(end + SUB_TAIL)
     speaker: line.speaker; sub: line.sub; big: line.big
     scene: line.scene; item: line.item
-    moras: (moraList() >> FILTER[m => m.i == i] >> SINGLE).moras   # 口パク用（wav先頭からの秒。scene.html で start を足して絶対時刻にするのだ～🌱）
+    moras: (moraList() >> FILTER[m => m.i == i] >> SINGLE).moras   # 口パク用（wav先頭からの秒で、scene.html で start を足して絶対時刻にするのだ～🌱）
   }
 )]
 
@@ -62,7 +62,7 @@ creditStart := t + PRE_CREDIT
 pcm += sil(PRE_CREDIT + CREDIT_HOLD)
 total := creditStart + CREDIT_HOLD
 
-# シーン区間（連続する同一シーンをまとめる。本編開始leadから）
+# シーン区間（連続する同一シーンをまとめる、本編開始leadから）
 scenes := []
 linesTl() | ln => (
   $#scenes > 0 && scenes(-1).scene == ln.scene

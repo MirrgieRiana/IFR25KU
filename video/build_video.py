@@ -10,14 +10,14 @@
 #   - sarracenia/frames/f_%05d.png … 汎用レンダラー（renderer/render.js）が書き出したフレーム画像（中間生成物）
 #   - full.wav                     … assemble.xa1 が作ったナレーション（中間生成物・video/直下）
 #   - timeline.json                … assemble.xa1 が作ったタイムライン（尺・区切り時刻・video/直下）
-#   - sarracenia/resources/bgm/chopin_op10-4.flac … BGM（外部取得リソース。ここに置いてもらうのだ～🌱）
+#   - sarracenia/resources/bgm/chopin_op10-4.flac … BGM（外部取得リソースで、ここに置いてもらうのだ～🌱）
 #
 # 出力：
 #   - sarracenia.mp4     … 完成した動画
 #
 # 実行：
 #   python3 build_video.py [BGMの基準音量(0〜1)]
-#   ffmpeg のパスは環境変数 FFMPEG で上書きできるのだ～🌱（既定は PATH 上の "ffmpeg"）。
+#   ffmpeg のパスは環境変数 FFMPEG で上書きできるのだ～🌱 既定は PATH 上の "ffmpeg" なのだ～🌱
 # =============================================================================
 import json, os, subprocess, sys
 

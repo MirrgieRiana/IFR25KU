@@ -5,7 +5,7 @@
 # 「外部取得リソースの *.md5」だけなのだ～🌱
 # =============================================================================
 
-# --- 外部取得リソースの実体（著作権上コミットしない。中身と置き場所は *.md5 が示すのだ～🌱） ---
+# --- 外部取得リソースの実体（著作権の都合でコミットしないのだ～🌱 中身と置き場所は *.md5 が示すのだ～🌱） ---
 sarracenia/resources/psd/*.psd
 sarracenia/resources/font/*.ttf
 sarracenia/resources/font/*.otf
@@ -19,7 +19,7 @@ sarracenia/resources/bgm/*.wav
 node_modules/
 /libs
 
-# --- 音声の中間生成物（雑多パート＝video/ 直下。build.sh が作り直すのだ～🌱） ---
+# --- 音声の中間生成物（雑多パート＝video/ 直下で、build.sh が作り直すのだ～🌱） ---
 audio/
 full.wav
 timeline.json
@@ -27,7 +27,7 @@ kana.json
 moras.json
 durations.json
 
-# --- scene の中間生成物（動画タイトルのディレクトリ＝sarracenia/。build_scene.sh が作り直すのだ～🌱） ---
+# --- scene の中間生成物（動画タイトルのディレクトリ＝sarracenia/ で、build_scene.sh が作り直すのだ～🌱） ---
 sarracenia/assets.js
 sarracenia/portrait/
 sarracenia/frames.jsonl
