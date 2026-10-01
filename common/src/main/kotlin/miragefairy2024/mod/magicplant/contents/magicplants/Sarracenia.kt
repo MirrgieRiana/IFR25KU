@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant.contents.magicplants
 import com.mojang.serialization.MapCodec
 import miragefairy2024.ModContext
 import miragefairy2024.mod.HarvestNotation
+import miragefairy2024.mod.biome.OldGrowthAmberForestBiomeCard
 import miragefairy2024.mod.magicplant.contents.TraitCard
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.materials.MaterialCard
@@ -97,6 +98,9 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
         Feature.FLOWER.generator(blockIdentifier) {
             registerConfiguredFeature("cluster") { RandomPatchConfiguration(20, 8, 3, placer) }.generator {
                 registerPlacedFeature("cluster") { per(8) + flower(center, surface) }.placeWhenVegetalDecoration { (+ConventionalBiomeTags.IS_SWAMP + +ConventionalBiomeTags.IS_JUNGLE + +Biomes.MANGROVE_SWAMP) * defaultTraits }
+            }
+            registerConfiguredFeature("cluster_on_grass") { RandomPatchConfiguration(20, 8, 3, placerOnGrass) }.generator {
+                registerPlacedFeature("cluster_on_grass") { per(8) + flower(center, surface) }.placeWhenVegetalDecoration { +OldGrowthAmberForestBiomeCard.key }
             }
         }
     }

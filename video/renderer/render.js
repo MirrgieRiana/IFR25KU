@@ -57,14 +57,22 @@ const normalizeJson = v => Array.isArray(v) ? `[${v.map(normalizeJson).join(',')
   const page = await browser.newPage();
   await page.setViewport({ width: W, height: H, deviceScaleFactor: 1 });
 
+  // テンプレートの読み込み直しと、applyFrame が書き換える DOM が少なくなるように、テンプレート、正規化した JSON の順に並べ替えてから撮るのだ～🌱
+  const jobs = frames.map((frame, i) => ({
+    i,
+    templateUrl: pathToFileURL(path.resolve(path.dirname(framesPath), frame.template)).href,
+    key: normalizeJson(frame),
+  }));
+  const compare = (a, b) => a < b ? -1 : a > b ? 1 : 0;
+  jobs.sort((a, b) => compare(a.templateUrl, b.templateUrl) || compare(a.key, b.key));
+
   let loadedTemplateUrl = null, prevKey = null, prevFile = null, shots = 0;
-  for (let i = 0; i < frames.length; i++) {
-    const key = normalizeJson(frames[i]);
+  for (let n = 0; n < jobs.length; n++) {
+    const { i, templateUrl, key } = jobs[n];
     const file = path.join(outDir, `f_${pad(i)}.png`);
     if (key === prevKey && prevFile) {
       fs.copyFileSync(prevFile, file);
     } else {
-      const templateUrl = pathToFileURL(path.resolve(path.dirname(framesPath), frames[i].template)).href;
       if (templateUrl !== loadedTemplateUrl) {
         await page.goto(templateUrl, { waitUntil: 'load' });
         await page.evaluate(async () => { await document.fonts.ready; });
@@ -81,7 +89,7 @@ const normalizeJson = v => Array.isArray(v) ? `[${v.map(normalizeJson).join(',')
       prevKey = key;
       prevFile = file;
     }
-    if (i % 150 === 0) process.stdout.write(`\r frame ${i}/${frames.length} shots=${shots}   `);
+    if (n % 150 === 0) process.stdout.write(`\r frame ${n}/${frames.length} shots=${shots}   `);
   }
   await browser.close();
   console.log(`\n done: ${frames.length} frames, ${shots} unique screenshots`);
