@@ -1,5 +1,5 @@
 {
-  "feature": "minecraft:jungle_tree_no_vine",
+  "feature": "minecraft:jungle_tree",
   "placement": [
     {
       "type": "minecraft:rarity_filter",

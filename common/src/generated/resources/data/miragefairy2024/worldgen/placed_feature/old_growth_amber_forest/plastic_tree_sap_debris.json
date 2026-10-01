@@ -1,6 +1,10 @@
 {
-  "feature": "miragefairy2024:retrospective_city/cobbled_aura_resistant_ceramic_debris",
+  "feature": "miragefairy2024:old_growth_amber_forest/plastic_tree_sap_debris",
   "placement": [
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 32
+    },
     {
       "type": "minecraft:in_square"
     },
@@ -14,13 +18,13 @@
     {
       "type": "minecraft:block_predicate_filter",
       "predicate": {
-        "type": "minecraft:matching_block_tag",
+        "type": "minecraft:matching_blocks",
+        "blocks": "miragefairy2024:resin_cement",
         "offset": [
           0,
           -1,
           0
-        ],
-        "tag": "miragefairy2024:retrospective_city_floor"
+        ]
       }
     }
   ]

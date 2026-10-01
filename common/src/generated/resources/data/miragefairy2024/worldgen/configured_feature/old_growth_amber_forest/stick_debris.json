@@ -1,0 +1,14 @@
+{
+  "type": "miragefairy2024:debris",
+  "config": {
+    "count": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 6,
+      "min_inclusive": 2
+    },
+    "item": {
+      "count": 1,
+      "id": "minecraft:stick"
+    }
+  }
+}
