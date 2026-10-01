@@ -6,14 +6,19 @@ import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.block.BushBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.shapes.CollisionContext
+import net.minecraft.world.phys.shapes.VoxelShape
 
-// ミツクサと同じく、シダと同じ姿かたちを持つ草なのだ～🌱
+// シダの TallGrassBlock は、シダ以外だと骨粉で背の高い草に化けてしまううえ、codec の型が固定されていて継承できないのだ～🌱
+// だから、シダと同じ姿かたちを持つ草を、親クラスの BushBlock から組み立てるのだ～🌱
 class DayflowerBlock(settings: Properties) : BushBlock(settings) {
     companion object {
         val CODEC: MapCodec<DayflowerBlock> = simpleCodec(::DayflowerBlock)
+
+        // バニラのシダと同じ大きさなのだ～🌱
+        val SHAPE: VoxelShape = box(2.0, 0.0, 2.0, 14.0, 13.0, 14.0)
     }
 
     override fun codec() = CODEC
 
-    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = NectarflowerBlock.SHAPE
+    override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = SHAPE
 }
