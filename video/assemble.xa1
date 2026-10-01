@@ -1,16 +1,16 @@
-# 各行wavを、タイトル保持→本編（行間の無音）→クレジット保持、の順に結合するのだぁ🌱（xarpite / API5）
+# 各行wavを、タイトル保持→本編（行間の無音）→クレジット保持、の順に結合するのだ～🌱（xarpite / API5）
 # build.xa1 が USE で呼ぶのだ～🌱
 # カレントディレクトリは video/ なのだ～🌱
 
 API(5)
 @USE("./common")
 
-# 台本は動画タイトルのディレクトリ（sarracenia/）から読み、音声・タイムラインはこの雑多パート（video/直下）に置くのだぁ。
+# 台本は動画タイトルのディレクトリ（sarracenia/）から読み、音声・タイムラインはこの雑多パート（video/直下）に置くのだ～🌱
 script := $*READ("sarracenia/script.json")
 moraList := $*READ("moras.json")
 SR := 24000
 
-# 尺の設計なのだぁ
+# 尺の設計なのだ～🌱
 TITLE_HOLD := 1.6      # タイトル画面を見せる時間
 TITLE_FADE := 0.6      # タイトル→本編のクロスフェード
 PRE_SPEAK := 0.5       # 本編に入ってから喋りだすまでの間
@@ -53,7 +53,7 @@ linesTl := [0 ~ lineCount | i => (
     subEnd: round4(end + SUB_TAIL)
     speaker: line.speaker; sub: line.sub; big: line.big
     scene: line.scene; item: line.item
-    moras: (moraList() >> FILTER[m => m.i == i] >> SINGLE).moras   # 口パク用（wav先頭からの秒。scene.html で start を足して絶対時刻にするのだぁ）
+    moras: (moraList() >> FILTER[m => m.i == i] >> SINGLE).moras   # 口パク用（wav先頭からの秒。scene.html で start を足して絶対時刻にするのだ～🌱）
   }
 )]
 
@@ -82,7 +82,7 @@ linesTl() | ln => (
       : (items += {item: ln.item; start: ln.start; end: ln.end})
   )
 ) >> TO_ARRAY
-# 葉は寸劇の最後まで出しっぱなしにするのだぁ
+# 葉は寸劇の最後まで出しっぱなしにするのだ～🌱
 items() | it => (it.item == "leaf" && (it.end = skitEnd)) >> TO_ARRAY
 
 pcmLength := pcm() | _ => $#_ >> SUM

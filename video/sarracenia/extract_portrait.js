@@ -1,11 +1,11 @@
-// PSD から、指定した ID のレイヤーを「全身キャンバスサイズ」の透過PNGとして書き出すのだぁ🌱
+// PSD から、指定した ID のレイヤーを「全身キャンバスサイズ」の透過PNGとして書き出すのだ～🌱
 // ID体系は劇場の layers.json と同じ（兄弟の1始まりインデックスを - で連結、グループもインデックスを消費）。
 const fs = require('fs');
 const path = require('path');
 const { readPsd, initializeCanvas } = require('ag-psd');
 const { PNG } = require('pngjs');
 
-// node-canvas を入れずに useImageData を使うため、createImageData だけをシムで供給するのだぁ🌱
+// node-canvas を入れずに useImageData を使うため、createImageData だけをシムで供給するのだ～🌱
 initializeCanvas(
   (w, h) => { throw new Error('createCanvas should not be called in imageData mode'); },
   (w, h) => ({ width: w, height: h, data: new Uint8ClampedArray(w * h * 4) })
@@ -21,7 +21,7 @@ const psd = readPsd(buf, { useImageData: true, skipCompositeImageData: true, ski
 const W = psd.width, H = psd.height;
 console.log(`${target}: canvas ${W}x${H}`);
 
-// id -> layer のマップを作るのだぁ
+// id -> layer のマップを作るのだ～🌱
 const map = {};
 function walk(children, prefix) {
   children.forEach((node, i) => {

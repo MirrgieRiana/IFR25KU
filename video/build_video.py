@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 # =============================================================================
-# build_video.py — 連番フレーム画像＋ナレーション＋BGM を 1 本の mp4 に合成するのだぁ🌱
+# build_video.py — 連番フレーム画像＋ナレーション＋BGM を 1 本の mp4 に合成するのだ～🌱
 # -----------------------------------------------------------------------------
 # このスクリプトの役割：
 #   render.js が書き出した frames/f_00000.png … を 30fps の映像トラックにして、
-#   ナレーション音声 full.wav と、BGM を重ねて、最終的な mp4 を作るのだぁ。
+#   ナレーション音声 full.wav と、BGM を重ねて、最終的な mp4 を作るのだ～🌱
 #
 # 入力：
 #   - sarracenia/frames/f_%05d.png … 汎用レンダラー（renderer/render.js）が書き出したフレーム画像（中間生成物）
 #   - full.wav                     … assemble.xa1 が作ったナレーション（中間生成物・video/直下）
 #   - timeline.json                … assemble.xa1 が作ったタイムライン（尺・区切り時刻・video/直下）
-#   - sarracenia/resources/bgm/chopin_op10-4.flac … BGM（外部取得リソース。ここに置いてもらうのだぁ）
+#   - sarracenia/resources/bgm/chopin_op10-4.flac … BGM（外部取得リソース。ここに置いてもらうのだ～🌱）
 #
 # 出力：
 #   - sarracenia.mp4     … 完成した動画
 #
 # 実行：
 #   python3 build_video.py [BGMの基準音量(0〜1)]
-#   ffmpeg のパスは環境変数 FFMPEG で上書きできるのだぁ（既定は PATH 上の "ffmpeg"）。
+#   ffmpeg のパスは環境変数 FFMPEG で上書きできるのだ～🌱（既定は PATH 上の "ffmpeg"）。
 # =============================================================================
 import json, os, subprocess, sys
 
@@ -28,20 +28,20 @@ total = tl["total"]
 T0 = tl["lead"]                                        # 開幕（タイトル）から寸劇（初回発話）へ切り替わる時刻
 CS = tl["creditStart"]                                 # クレジット開始時刻
 
-# frames は汎用レンダラーの出力、BGM は動画タイトルのディレクトリ（sarracenia/）配下なのだぁ。
-# 既定値のほか、build.sh から環境変数 FRAMES_DIR / BGM_PATH / OUT_PATH で差し替えできるのだぁ。
+# frames は汎用レンダラーの出力、BGM は動画タイトルのディレクトリ（sarracenia/）配下なのだ～🌱
+# 既定値のほか、build.sh から環境変数 FRAMES_DIR / BGM_PATH / OUT_PATH で差し替えできるのだ～🌱
 FRAMES_DIR = os.environ.get("FRAMES_DIR", os.path.join(B, "sarracenia", "frames"))
 BGM = os.environ.get("BGM_PATH", os.path.join(B, "sarracenia", "resources", "bgm", "chopin_op10-4.flac"))
 BASE = float(sys.argv[1]) if len(sys.argv) > 1 else 0.45   # BGM の基準音量
 OUT = os.environ.get("OUT_PATH", os.path.join(B, "sarracenia.mp4"))
 
 # -----------------------------------------------------------------------------
-# BGM の音量は「2 ステートの線形補間」なのだぁ🌱
-#   冒頭（タイトル）＝A（やや強め） → 寸劇＝B（弱め） → クレジット＝A（冒頭と同じ）へ戻すのだぁ。
-#   T0（初回発話）の前後 0.5 秒で A→B へ落とし、CS（クレジット開始）の手前 0.5 秒で B→A へ戻すのだぁ。
-#   お尻だけ 2 秒フェードアウトするのだぁ。
+# BGM の音量は「2 ステートの線形補間」なのだ～🌱
+#   冒頭（タイトル）＝A（やや強め） → 寸劇＝B（弱め） → クレジット＝A（冒頭と同じ）へ戻すのだ～🌱
+#   T0（初回発話）の前後 0.5 秒で A→B へ落とし、CS（クレジット開始）の手前 0.5 秒で B→A へ戻すのだ～🌱
+#   お尻だけ 2 秒フェードアウトするのだ～🌱
 #   BGM はショパン 練習曲 作品10-4「Torrent（激流）」（Edward Neeman 演奏, パブリックドメイン）で、
-#   冒頭から旋律が鳴る曲なので、頭のフェードインは無しなのだぁ。
+#   冒頭から旋律が鳴る曲なので、頭のフェードインは無しなのだ～🌱
 # -----------------------------------------------------------------------------
 A_VOL = BASE * 0.60          # 冒頭＝クレジット（強）
 B_VOL = BASE * 0.40 * 0.70   # 寸劇（弱）
@@ -53,9 +53,9 @@ volexpr = (
     f"if(lt(t,{CS:.3f}),{B_VOL:.4f}+({A_VOL:.4f}-{B_VOL:.4f})*(t-{CS-RAMP:.3f})/{RAMP:.3f},"
     f"{A_VOL:.4f}))))"
 )
-# フィルタグラフ：ナレーション[1:a]と、音量エンベロープを掛けた BGM[2:a]を足し合わせるのだぁ。
-#   BGM は曲が動画尺より短い場合に備えて -stream_loop -1 でループ入力にしているのだぁ。
-#   amix の normalize=0 は「単純な足し算」で、勝手に音量を正規化させないためなのだぁ。
+# フィルタグラフ：ナレーション[1:a]と、音量エンベロープを掛けた BGM[2:a]を足し合わせるのだ～🌱
+#   BGM は曲が動画尺より短い場合に備えて -stream_loop -1 でループ入力にしているのだ～🌱
+#   amix の normalize=0 は「単純な足し算」で、勝手に音量を正規化させないためなのだ～🌱
 fc = (
     f"[1:a]aresample=48000[nar];"
     f"[2:a]aresample=48000,atrim=0:{total:.3f},"

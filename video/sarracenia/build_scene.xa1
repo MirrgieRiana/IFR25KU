@@ -1,11 +1,11 @@
 # =============================================================================
-# build_scene.xa1 — サラセニア寸劇の「構成」を作る処理の本体なのだぁ🌱（xarpite / API5）
+# build_scene.xa1 — サラセニア寸劇の「構成」を作る処理の本体なのだ～🌱（xarpite / API5）
 # -----------------------------------------------------------------------------
-# build_scene.sh が、このディレクトリ（sarracenia/）へ cd してから呼ぶのだぁ。
-# タイムラインを受け取って、レンダラーに渡す材料を、ぜんぶ作るのだぁ🌱
+# build_scene.sh が、このディレクトリ（sarracenia/）へ cd してから呼ぶのだ～🌱
+# タイムラインを受け取って、レンダラーに渡す材料を、ぜんぶ作るのだ～🌱
 #
 # 引数：
-#   ARGS.0       … timeline.json のパス（省略時は ../timeline.json）なのだぁ。
+#   ARGS.0       … timeline.json のパス（省略時は ../timeline.json）なのだ～🌱
 # 出力（このディレクトリ配下）：
 #   assets.js    … scene.html が読む、フォント・絵文字・テクスチャ・タイムラインの束
 #   portrait/    … 立ち絵 PSD から切り出したレイヤー PNG
@@ -16,23 +16,23 @@ API(5)
 
 timelinePath := ARGS.0 ?: "../timeline.json"
 
-# 構成jsonl の各行の template に入れる、この動画のテンプレートなのだぁ🌱
-# レンダラーは、frames.jsonl のあるディレクトリ（ここ）を基準に解決するのだぁ。
+# 構成jsonl の各行の template に入れる、この動画のテンプレートなのだ～🌱
+# レンダラーは、frames.jsonl のあるディレクトリ（ここ）を基準に解決するのだ～🌱
 template := "scene.html"
 
-# build_video.py の -framerate と一致させるのだぁ🌱
+# build_video.py の -framerate と一致させるのだ～🌱
 FPS := 30
 
-# --- 立ち絵 PSD から切り出すレイヤー ID の一覧なのだぁ -------------------------
-# この並びは scene.html の PORTRAIT 定義と一致していなければならないのだぁ。
-# ID 体系は劇場の layers.json と同じで、兄弟レイヤーの 1 始まりインデックスを "-" で連結したものなのだぁ
-# （グループもインデックスを 1 個消費するのだぁ）。
+# --- 立ち絵 PSD から切り出すレイヤー ID の一覧なのだ～🌱 -------------------------
+# この並びは scene.html の PORTRAIT 定義と一致していなければならないのだ～🌱
+# ID 体系は劇場の layers.json と同じで、兄弟レイヤーの 1 始まりインデックスを "-" で連結したものなのだ～🌱
+# （グループもインデックスを 1 個消費するのだ～🌱）。
 ZUNDA_IDS := "1,4-2,8-5,8-2,8-3,7-14-3,7-14-4-9,7-6,5-8,5-2,5-1,6-6,9-2,4-4-8,4-4-3,4-4-6,4-4-5,4-3-8,4-3-3,10-3"
 TSUMUGI_IDS := "2,3,4,12,13-3,13-4,9-4,9-1,9-2,9-3,8-6-2,8-6-3-6,8-4,10-14,10-8,10-10,7-2,6-3,5-5,5-1,5-3,13-2"
 
 # 外部コマンドを実行して、その出力の行の配列を返して、終了コードが 0 でなければ止めるのだ～🌱
-# 同梱の xarpite の EXECL は、終了コードが 0 でないと、子の標準出力も標準エラーも捨てちゃうのだぁ。
-# だから、bash に包んで、標準エラーを標準出力へ合わせて、終了コードを最後の行で受け取るのだぁ。
+# 同梱の xarpite の EXECL は、終了コードが 0 でないと、子の標準出力も標準エラーも捨てちゃうのだ～🌱
+# だから、bash に包んで、標準エラーを標準出力へ合わせて、終了コードを最後の行で受け取るのだ～🌱
 # 出力が改行で終わらないときも終了コードが別の行になるように、出力の末尾の改行を 1 個にそろえてから流すのだ～🌱
 capture := command -> (
   lines := [EXECL("bash", "-c", %>out=$("$@" 2>&1); code=$?; [ -n "$out" ] && printf '%s\n' "$out"; echo "$code"<%, "run", command)]
@@ -48,9 +48,9 @@ capture := command -> (
 
 run := command -> OUT << capture(command)()
 
-# --- 外部取得リソース（このシーンの立ち絵・フォント・絵文字）の存在を確認するのだぁ ---
-# FILE_NAMES のストリームのままだと、@ が部分文字列で探して、隣の *.md5 のファイル名に当たっちゃうのだぁ。
-# だから、配列にしてから、要素として探すのだぁ🌱
+# --- 外部取得リソース（このシーンの立ち絵・フォント・絵文字）の存在を確認するのだ～🌱 ---
+# FILE_NAMES のストリームのままだと、@ が部分文字列で探して、隣の *.md5 のファイル名に当たっちゃうのだ～🌱
+# だから、配列にしてから、要素として探すのだ～🌱
 need := dir, name -> (
   name @ [FILE_NAMES(dir)] || (
     ERR("ERROR: resource not found: $dir/$name (place it as described in README.md)")
@@ -63,19 +63,19 @@ need("resources/font"; "ZenMaruGothic-Black.ttf")
 need("resources/font"; "ZenMaruGothic-Bold.ttf")
 need("resources/emoji"; "seedling.svg")
 
-# --- Node 依存（ag-psd / pngjs）をそろえるのだぁ ------------------------------
+# --- Node 依存（ag-psd / pngjs）をそろえるのだ～🌱 ------------------------------
 "node_modules" @ [FILE_NAMES(".")] || (
   OUT << "== npm install (sarracenia) =="
   run("npm", "install")
 )
 
-# --- 1. scene.html が読む assets.js を焼くのだぁ（フォント・絵文字・テクスチャ・タイムライン） ---
-# レンダリングは Chromium に file://.../scene.html を開かせて 1 フレームずつ撮る方式なのだぁ。
-# file:// で開いた HTML は、セキュリティ上、外部ファイルを fetch() で読めないのだぁ。
-# そこで、ぜんぶ 1 個の JS ファイル（assets.js）に「焼き込んで」おいて、scene.html から <script> で読み込むのだぁ。
+# --- 1. scene.html が読む assets.js を焼くのだ～🌱（フォント・絵文字・テクスチャ・タイムライン） ---
+# レンダリングは Chromium に file://.../scene.html を開かせて 1 フレームずつ撮る方式なのだ～🌱
+# file:// で開いた HTML は、セキュリティ上、外部ファイルを fetch() で読めないのだ～🌱
+# そこで、ぜんぶ 1 個の JS ファイル（assets.js）に「焼き込んで」おいて、scene.html から <script> で読み込むのだ～🌱
 OUT << "== bake assets.js =="
 
-# IFR25KU リポジトリ内のテクスチャ（＝コミット済みの素材なので、リポジトリから直接読むのだぁ）
+# IFR25KU リポジトリ内のテクスチャ（＝コミット済みの素材なので、リポジトリから直接読むのだ～🌱）
 TEX := "../../common/src/main/resources/assets/miragefairy2024"
 
 # ファイルを base64 の data-URL にするのだ～🌱
@@ -88,7 +88,7 @@ assets := {
   leaf: dataUrl("image/png"; "$TEX/textures/item/sarracenia_leaf.png")
   logo: dataUrl("image/png"; "$TEX/icon.png")
   bg: dataUrl("image/png"; "$TEX/textures/block/haimeviska_log.png")
-  # seedling は data-URL ではなく「生の SVG 文字列」なのだぁ。scene.html が innerHTML に直接差し込むのだぁ。
+  # seedling は data-URL ではなく「生の SVG 文字列」なのだ～🌱scene.html が innerHTML に直接差し込むのだ～🌱
   seedling: READ("resources/emoji/seedling.svg")::replace(/^\s+|\s+$/g; "")
   fontBlack: dataUrl("font/ttf"; "resources/font/ZenMaruGothic-Black.ttf")
   fontBold: dataUrl("font/ttf"; "resources/font/ZenMaruGothic-Bold.ttf")
@@ -99,13 +99,13 @@ WRITE("assets.js"; "window.ASSETS=$(assets >> JSON[indent: NULL]);\nwindow.TIMEL
 OUT << "baked assets.js: $(assets() | _.0 >> JOIN[", "])"
 OUT << "  timeline: total= $(timeline.total) lines= $($#timeline.lines)"
 
-# --- 2. 立ち絵 PSD から必要なレイヤーを PNG に切り出すのだぁ（→ portrait/<char>/<id>.png） -----
+# --- 2. 立ち絵 PSD から必要なレイヤーを PNG に切り出すのだ～🌱（→ portrait/<char>/<id>.png） -----
 OUT << "== extract portrait =="
 run("node", "extract_portrait.js", "zundamon", "resources/psd/zundamon23.psd", ZUNDA_IDS, "portrait/zundamon")
 run("node", "extract_portrait.js", "tsumugi", "resources/psd/tsumugi3.psd", TSUMUGI_IDS, "portrait/tsumugi")
 
-# --- 3. 構成jsonl を組み立てるのだぁ（→ frames.jsonl） -------------------------
-# 各行は、そのフレームの見た目を決めるパラメータなのだぁ🌱
+# --- 3. 構成jsonl を組み立てるのだ～🌱（→ frames.jsonl） -------------------------
+# 各行は、そのフレームの見た目を決めるパラメータなのだ～🌱
 # 背景とアイテム枠の不透明度は、ここで計算して渡すのだ～🌱
 # 残りの要素は、まだ scene.html の seek(t) がタイムラインを見て組み立てるから、時刻 t も渡すのだ～🌱
 OUT << "== compose frames.jsonl =="

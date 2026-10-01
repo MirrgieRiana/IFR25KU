@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 # =============================================================================
-# build.sh — サラセニア寸劇動画を最初から最後まで組み立てるオーケストレーターなのだぁ🌱
+# build.sh — サラセニア寸劇動画を最初から最後まで組み立てるオーケストレーターなのだ～🌱
 # -----------------------------------------------------------------------------
-# video/ は 3 つのパートに分かれているのだぁ：
-#   1. renderer/   … 構成jsonl と HTML テンプレートから画像を撮る「汎用レンダラー」（動画に依存しないのだぁ）
-#   2. sarracenia/ … この動画の台本・シーン・構成jsonl を作る「動画タイトルのディレクトリ」（自己完結なのだぁ）
-#   3. video/ 直下 … 音声合成・動画合成などの「雑多な部分」。この build.sh が 1 と 2 を呼び出すのだぁ。
+# video/ は 3 つのパートに分かれているのだ～🌱：
+#   1. renderer/   … 構成jsonl と HTML テンプレートから画像を撮る「汎用レンダラー」（動画に依存しないのだ～🌱）
+#   2. sarracenia/ … この動画の台本・シーン・構成jsonl を作る「動画タイトルのディレクトリ」（自己完結なのだ～🌱）
+#   3. video/ 直下 … 音声合成・動画合成などの「雑多な部分」。この build.sh が 1 と 2 を呼び出すのだ～🌱
 #
-# この build.sh（＝3 の一部）が、全体を次の順で配線するのだぁ：
+# この build.sh（＝3 の一部）が、全体を次の順で配線するのだ～🌱：
 #   build.xa1 … synth.xa1 → assemble.xa1（音声・タイムライン）
 #               → sarracenia/build_scene.sh（timeline → assets.js, portrait/, frames.jsonl）
 #     → renderer/render.js（scene.html + frames.jsonl → sarracenia/frames/）
 #     → build_video.py（フレーム＋音声＋BGM → mp4）
 #
-# 前提（先に済ませておくこと。詳しくは README.md を読むのだぁ）：
-#   1. 外部取得リソースを sarracenia/resources/ 以下の所定パスに置くこと（*.md5 がその置き場所と中身を示すのだぁ）。
+# 前提（先に済ませておくこと。詳しくは README.md を読むのだ～🌱）：
+#   1. 外部取得リソースを sarracenia/resources/ 以下の所定パスに置くこと（*.md5 がその置き場所と中身を示すのだ～🌱）。
 #        sarracenia/resources/psd/zundamon23.psd
 #        sarracenia/resources/psd/tsumugi3.psd
 #        sarracenia/resources/font/ZenMaruGothic-Black.ttf
@@ -34,7 +34,7 @@
 # 出力：
 #   sarracenia.mp4 … 完成動画（video/ 直下）
 #   （その他 full.wav / timeline.json / sarracenia/assets.js / sarracenia/frames.jsonl /
-#     sarracenia/frames/ などは中間生成物なのだぁ）
+#     sarracenia/frames/ などは中間生成物なのだ～🌱）
 # =============================================================================
 set -euo pipefail
 cd "$(dirname "$0")"   # video/
@@ -42,11 +42,11 @@ cd "$(dirname "$0")"   # video/
 FFMPEG="${FFMPEG:-ffmpeg}"
 BGM_VOL="${BGM_VOL:-0.45}"
 
-# --- 0～3. 構成jsonl ができるまでの段（BGM の確認・音声合成・結合・scene）なのだぁ ---
+# --- 0～3. 構成jsonl ができるまでの段（BGM の確認・音声合成・結合・scene）なのだ～🌱 ---
 #        リポジトリ同梱の xarpite（相対パス）で build.xa1 を実行するのだ～🌱
 ../xarpite/xarpite -A 5 -q -f build.xa1
 
-# --- 4. 汎用レンダラーの準備（Node 依存と Chromium）なのだぁ ---------------------
+# --- 4. 汎用レンダラーの準備（Node 依存と Chromium）なのだ～🌱 ---------------------
 if [ ! -d renderer/node_modules ]; then
   echo "== npm install (renderer) =="
   (cd renderer && npm install)
@@ -56,7 +56,7 @@ if [ -z "${CHROMIUM_PATH:-}" ] && [ ! -x /tmp/chromium ]; then
   node renderer/setup_chromium.js
 fi
 
-# --- 5. レンダラーで 1 フレームずつ撮って sarracenia/frames/ に書き出すのだぁ -----
+# --- 5. レンダラーで 1 フレームずつ撮って sarracenia/frames/ に書き出すのだ～🌱 -----
 echo "== render frames =="
 rm -rf sarracenia/frames
 if [ -n "${CHROMIUM_LD_PATH:-}" ]; then
@@ -65,7 +65,7 @@ else
   node renderer/render.js sarracenia/frames.jsonl sarracenia/frames
 fi
 
-# --- 6. フレーム＋ナレーション＋BGM を合成して mp4 にするのだぁ -----------------
+# --- 6. フレーム＋ナレーション＋BGM を合成して mp4 にするのだ～🌱 -----------------
 echo "== build video =="
 FFMPEG="$FFMPEG" python3 build_video.py "$BGM_VOL"
 
