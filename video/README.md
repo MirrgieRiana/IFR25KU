@@ -33,7 +33,7 @@ sarracenia/script.json（台本）
    │
    ├─(synth.py + VOICEVOX)→ audio/line*.wav, moras.json, kana.json, durations.json   ┐ 雑多パート
    │                                                                                   │ (video/ 直下)
-   └─(assemble.py)────────→ full.wav（ナレーション全体）, timeline.json（尺・区間） ┘
+   └─(assemble.xa1)───────→ full.wav（ナレーション全体）, timeline.json（尺・区間） ┘
 
 timeline.json ─┬─(sarracenia/build_scene.xa1)─→ sarracenia/assets.js   ┐
                │        ↑ IFR25KU テクスチャ / resources/font,emoji     │ sarracenia
@@ -61,7 +61,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 | --- | --- |
 | `build.sh` | 下記すべてを順に呼び出すオーケストレーター。**通常はこれを実行するだけ**です。 |
 | `synth.py` | VOICEVOX で台詞ごとの音声を合成し、口パク用のモーラ区間も書き出します。 |
-| `assemble.py` | 台詞 wav を「タイトル→本編（行間の無音）→クレジット」の順に結合し、タイムラインを算出します。 |
+| `assemble.xa1` | 台詞 wav を「タイトル→本編（行間の無音）→クレジット」の順に結合し、タイムラインを算出します。 |
 | `build_video.py` | 連番フレーム＋ナレーション＋BGM を ffmpeg で合成して mp4 にします。 |
 
 **`renderer/`（汎用レンダラー・自己完結）**
@@ -177,7 +177,7 @@ bash build.sh
 - カナ原稿の記法（VOICEVOX 標準）：アクセント核 `'`／アクセント句区切り `/`／小休止 `、`／語尾上げ `？`。
   長音は母音を重ねて書きます（例：サトウ→`サトオ`）。平板型は「核をアクセント単位の末尾に置く」ことで表します。
 
-### assemble.py（結合・タイムライン）
+### assemble.xa1（結合・タイムライン）
 台詞 wav を「タイトル保持 → 本編（台詞のあいだに無音の“間”）→ クレジット保持」の順に結合し、
 `full.wav` と `timeline.json` を作ります。`timeline.json` には、各台詞の開始・終了時刻、シーン区間、
 アイテムの表示区間などが入り、`sarracenia/`（`build_scene.xa1`）と `build_video.py` がこれを読みます。

@@ -8,8 +8,8 @@
 #
 # 入力：
 #   - sarracenia/frames/f_%05d.png … 汎用レンダラー（renderer/render.js）が書き出したフレーム画像（中間生成物）
-#   - full.wav                     … assemble.py が作ったナレーション（中間生成物・video/直下）
-#   - timeline.json                … assemble.py が作ったタイムライン（尺・区切り時刻・video/直下）
+#   - full.wav                     … assemble.xa1 が作ったナレーション（中間生成物・video/直下）
+#   - timeline.json                … assemble.xa1 が作ったタイムライン（尺・区切り時刻・video/直下）
 #   - sarracenia/resources/bgm/chopin_op10-4.flac … BGM（外部取得リソース。ここに置いてもらうのだぁ）
 #
 # 出力：

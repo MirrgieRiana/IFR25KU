@@ -8,7 +8,7 @@
 #   3. video/ 直下 … 音声合成・動画合成などの「雑多な部分」。この build.sh が 1 と 2 を呼び出すのだぁ。
 #
 # この build.sh（＝3 の一部）が、全体を次の順で配線するのだぁ：
-#   synth.py → assemble.py（音声・タイムライン）
+#   synth.py → assemble.xa1（音声・タイムライン）
 #     → sarracenia/build_scene.sh（timeline → assets.js, tachie/, frames.jsonl）
 #     → renderer/render.js（scene.html + frames.jsonl → sarracenia/frames/）
 #     → build_video.py（フレーム＋音声＋BGM → mp4）
@@ -53,7 +53,7 @@ python3 synth.py
 
 # --- 2. 各 wav を結合してタイムラインを作るのだぁ（→ full.wav, timeline.json） -----------
 echo "== assemble =="
-python3 assemble.py
+../xarpite/xarpite -A 5 -q -f assemble.xa1
 
 # --- 3. sarracenia（動画タイトルのディレクトリ）で scene を作るのだぁ ------------
 #        timeline.json を渡すと assets.js・tachie/・frames.jsonl を作るのだぁ。
