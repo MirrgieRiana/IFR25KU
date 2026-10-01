@@ -5,6 +5,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
+import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.poem
 import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
@@ -12,10 +13,12 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
+import miragefairy2024.util.on
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerGeneratedModelGeneration
 import miragefairy2024.util.registerItemGroup
+import miragefairy2024.util.registerShapedRecipeGeneration
 import net.minecraft.core.Direction
 import net.minecraft.core.Position
 import net.minecraft.core.registries.BuiltInRegistries
@@ -32,6 +35,7 @@ import net.minecraft.world.entity.projectile.Projectile
 import net.minecraft.world.item.ArrowItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.DispenserBlock
 import java.util.UUID
@@ -67,6 +71,14 @@ object MirageMissileCard {
         item.registerPoem(poemList)
         item.registerPoemGeneration(poemList)
         ItemTags.ARROWS.generator.registerChild(item)
+        registerShapedRecipeGeneration(item, 4) {
+            pattern("  F")
+            pattern(" S ")
+            pattern("L  ")
+            define('F', Items.FLINT)
+            define('S', MaterialCard.MIRAGE_STEM.item())
+            define('L', MaterialCard.MIRAGE_LEAVES.item())
+        } on MaterialCard.MIRAGE_STEM.item
         ModEvents.onInitialize {
             DispenserBlock.registerProjectileBehavior(item())
         }

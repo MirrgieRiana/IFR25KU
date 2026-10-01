@@ -54,6 +54,9 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
   - クラフトで入手可能。
 - 追加: 装飾ブロック「石膏ボードの階段」を追加。
   - クラフトで入手可能。
+- 追加: 矢アイテム「ミラージュミサイル」を追加。
+  - クラフトで入手可能。
+  - 飛んでいる間、近くの敵を探し、見つけた敵へ向かって進む向きを曲げる。
 
 硫黄
 
@@ -331,8 +334,6 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 - 追加: デバッグアイテム「Debug Surface Noise Statistics」を追加。
 - 追加: ステータス効果「粘着採掘」を追加。
   - 効果を受けている間は、所持ツールによらず粘着採掘が発動する。
-- 追加: アイテム「ミラージュミサイル」を追加。
-  - 飛んでいる間、近くの敵を探し、見つけた敵へ向かって進む向きを曲げる。
 - 表示: アカーシャによる生命設計の針の説明文を、使用対象ごとの挙動が分かるように変更。
 
 ## 31.31.2
