@@ -9,7 +9,7 @@ import miragefairy2024.mod.biome.FAIRY_BIOME_TAG
 import miragefairy2024.mod.biome.OldGrowthAmberForestBiomeCard
 import miragefairy2024.mod.biome.RetrospectiveCityBiomeCard
 import miragefairy2024.mod.biome.onResinCement
-import miragefairy2024.mod.biome.retrospectiveCityFloorPlacementModifiers
+import miragefairy2024.mod.biome.onRetrospectiveCityFloor
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
@@ -79,11 +79,11 @@ enum class DebrisCard(
     FAIRY_SCALES("fairy_scales", 128, 2..6, { MaterialCard.FAIRY_SCALES.item().createItemStack() }, BiomeCondition.BiomeTag(BiomeTags.IS_OVERWORLD)),
     FAIRY_SCALES_DENSE("fairy_scales_dense", 128 / 2, 8..24, { MaterialCard.FAIRY_SCALES.item().createItemStack() }, BiomeCondition.BiomeTag(FAIRY_BIOME_TAG)),
 
-    RETROSPECTIVE_CITY_XARPITE("retrospective_city/xarpite", 8, 1..2, { MaterialCard.XARPITE.item().createItemStack() }, BiomeCondition.BiomeKey(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
-    RETROSPECTIVE_CITY_CHAOS_STONE("retrospective_city/chaos_stone", 8, 1..1, { MaterialCard.CHAOS_STONE.item().createItemStack() }, BiomeCondition.BiomeKey(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
-    RETROSPECTIVE_CITY_MIRAGIDIAN_SHARD("retrospective_city/miragidian_shard", 8, 1..4, { MaterialCard.MIRAGIDIAN_SHARD.item().createItemStack() }, BiomeCondition.BiomeKey(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
-    RETROSPECTIVE_CITY_COBBLED_AURA_RESISTANT_CERAMIC("retrospective_city/cobbled_aura_resistant_ceramic", 1, 8..24, { BlockMaterialCard.COBBLED_AURA_RESISTANT_CERAMIC.item().createItemStack() }, BiomeCondition.BiomeKey(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
-    RETROSPECTIVE_CITY_AURA_RESISTANT_CERAMIC_BRICKS("retrospective_city/aura_resistant_ceramic_bricks", 2, 4..12, { BlockMaterialCard.AURA_RESISTANT_CERAMIC_BRICKS.item().createItemStack() }, BiomeCondition.BiomeKey(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { retrospectiveCityFloorPlacementModifiers }),
+    RETROSPECTIVE_CITY_XARPITE("retrospective_city/xarpite", 8, 1..2, { MaterialCard.XARPITE.item().createItemStack() }, BiomeCondition.BiomeKey(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { onRetrospectiveCityFloor }),
+    RETROSPECTIVE_CITY_CHAOS_STONE("retrospective_city/chaos_stone", 8, 1..1, { MaterialCard.CHAOS_STONE.item().createItemStack() }, BiomeCondition.BiomeKey(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { onRetrospectiveCityFloor }),
+    RETROSPECTIVE_CITY_MIRAGIDIAN_SHARD("retrospective_city/miragidian_shard", 8, 1..4, { MaterialCard.MIRAGIDIAN_SHARD.item().createItemStack() }, BiomeCondition.BiomeKey(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { onRetrospectiveCityFloor }),
+    RETROSPECTIVE_CITY_COBBLED_AURA_RESISTANT_CERAMIC("retrospective_city/cobbled_aura_resistant_ceramic", 1, 8..24, { BlockMaterialCard.COBBLED_AURA_RESISTANT_CERAMIC.item().createItemStack() }, BiomeCondition.BiomeKey(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { onRetrospectiveCityFloor }),
+    RETROSPECTIVE_CITY_AURA_RESISTANT_CERAMIC_BRICKS("retrospective_city/aura_resistant_ceramic_bricks", 2, 4..12, { BlockMaterialCard.AURA_RESISTANT_CERAMIC_BRICKS.item().createItemStack() }, BiomeCondition.BiomeKey(RetrospectiveCityBiomeCard.key), extraPlacementModifier = { onRetrospectiveCityFloor }),
 
     OLD_GROWTH_AMBER_FOREST_COPAL("old_growth_amber_forest/copal", 128, 2..6, { MaterialCard.COPAL.item().createItemStack() }, BiomeCondition.BiomeKey(OldGrowthAmberForestBiomeCard.key), extraPlacementModifier = { onResinCement }),
     OLD_GROWTH_AMBER_FOREST_RETINITE("old_growth_amber_forest/retinite", 128, 2..6, { MaterialCard.RETINITE.item().createItemStack() }, BiomeCondition.BiomeKey(OldGrowthAmberForestBiomeCard.key), extraPlacementModifier = { onResinCement }),
