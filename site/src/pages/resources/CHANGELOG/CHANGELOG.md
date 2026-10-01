@@ -337,7 +337,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 
 - 追加: ブロック「ミツクサ」を追加。
   - シダと同様の草ブロック。
-  - 石化した樹脂の上にのみ設置可能。
+  - 草と同じ地面に加えて、石化した樹脂の上にも設置可能。
   - 現時点では地形生成されない。
 - 追加: ブロック「ツユクサ」を追加。
   - シダと同様の草ブロック。
