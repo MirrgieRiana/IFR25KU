@@ -18,7 +18,7 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 
 この動画は、動画編集ソフトの GUI で作るのではなくて、**「決定論的フレームレンダリング」** という方式で作るのだ～🌱
 
-1. `sarracenia/scene.html` が、1 フレーム分の構成 `cfg` を渡すとその画面を組み立てる関数 `window.applyFrame(cfg)` を持つのだ～🌱 今のこの動画では `cfg` の `t` が秒で、内部の `seek(t)` が時刻から全要素を組み立てるのだ～🌱
+1. `sarracenia/scene.html` が、1 フレーム分の構成 `cfg` を渡すとその画面を組み立てる関数 `window.applyFrame(cfg)` を持つのだ～🌱 今のこの動画では、背景とアイテム枠の不透明度が `cfg` に入っていて、残りは `cfg` の `t`（秒）から内部の `seek(t)` が組み立てるのだ～🌱
 2. `sarracenia/build_scene.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
 3. `renderer/render.js` がヘッドレス Chromium に `scene.html` を開かせて、`frames.jsonl` を頭から 1 行ずつ `applyFrame(cfg)` に渡して、1 行につき 1 コマ撮るのだ～🌱
 4. 撮れた連番画像の `sarracenia/frames/f_00000.png …` を ffmpeg で映像にして、ナレーション音声と BGM を重ねて mp4 にするのだ～🌱
@@ -213,16 +213,16 @@ base64 への符号化には、`base64` コマンドを使うのだ～🌱
 ### sarracenia/build_scene.xa1（構成jsonl の組み立て）なのだ～🌱
 
 `timeline.json` から総尺を読んで、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
-今のこの動画では、フレームは時刻だけで決まるから、各行は `{"template": "scene.html", "t": 秒}` なのだ～🌱
+各行は `template` と `t` と、背景とアイテム枠の不透明度の 4 個のキーを持つのだ～🌱
 `template` に入れるテンプレートは、`build_scene.xa1` の冒頭で決めているのだ～🌱
-将来は、この各行に、どの要素へどんな CSS と属性とテキストを入れるかを、フラットに書き込めるのだ～🌱
-そうすれば、`seek` の計算そのものを、構成jsonl 側へ追い出すこともできるのだ～🌱
+残りの要素は、まだ `scene.html` の `seek(t)` がタイムラインから組み立てるから、時刻 `t` も渡すのだ～🌱
+これから、どの要素へどんな CSS と属性とテキストを入れるかも、段階的に構成jsonl 側へ移していくのだ～🌱
 そのとき、レンダラー側は変えなくてよい設計なのだ～🌱
 
 ### sarracenia/scene.html（画面と applyFrame）なのだ～🌱
 
 画面の見た目のすべてと、構成 `cfg` から画面を決める `window.applyFrame(cfg)` が入っているのだ～🌱
-`applyFrame({t})` は、内部の `window.seek(t)`（時刻→画面）を呼ぶのだ～🌱
+`applyFrame` は、背景とアイテム枠の不透明度を `cfg` の値から当てて、残りを `window.seek(cfg.t)`（時刻→画面）に任せるのだ～🌱
 背景のシーン切り替え（沼地と泥沼のクロスフェード）と、アイテム枠と、立ち絵（口パク・まばたき・眉と腕と汗のポーズ）を組み立てるのだ～🌱
 それと、字幕（話者色の縁取り）と、キャラ名と、クレジットと、開幕フレーム（＝サムネイル）のデカ字も組み立てるのだ～🌱
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- 時刻 t だけで絵が決まる副作用純粋な window.seek(t) を持つ、決定論的フレームレンダラーなのだぁ🌱 -->
+<!-- 構成jsonl の 1 行から絵を組み立てる window.applyFrame(cfg) を持つ、決定論的フレームレンダラーなのだぁ🌱 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -307,9 +307,8 @@ function setSub(line){
   fitSub(line.big);
 }
 
-// 時刻tだけで全要素の状態を決めるのだぁ（副作用純粋）🌱
+// 時刻 t だけで、まだ構成の各行へ移していない要素の状態を決めるのだ～🌱
 window.seek = function(t){
-  const F = TL.sceneFade;
   // BG(v10)：開幕（フレーム0）＝デカ字サムネなのだぁ🌱 開幕は openOp=1 で出して、開幕明けにフェードアウト。
   //   デカ字のフィットは、フォントが載ってから測る必要があるので、最初の seek のときに一度だけ実行するのだぁ
   //   （render.js は document.fonts.ready を待ってから seek するので、初回 seek 時点でフォントは載っているのだぁ）。
@@ -317,21 +316,6 @@ window.seek = function(t){
   const openOp = t<TL.titleFadeStart ? 1 : fadeOut(t,TL.titleFadeStart,TL.titleEnd-TL.titleFadeStart);
   ['#thumbBandTop','#thumbBandBot','.thumb-frame','#thumbTop','#thumbBot','#thumbLogo']
     .forEach(s=>document.querySelector(s).style.opacity=openOp);
-  // シーン背景のクロスフェード
-  let bogOp = 0;
-  const bogScene = TL.scenes.find(s=>s.scene==='bog');
-  if(bogScene){ bogOp = fadeIn(t, bogScene.start, F); }
-  document.querySelector('#bgBog').style.opacity = bogOp;
-  document.querySelector('#bgSwamp').style.opacity = 1; // 下敷き
-  // アイテム枠
-  let plantOp=0, leafOp=0;
-  for(const it of TL.items){
-    const op = clamp(Math.min((t-it.start)/0.22, (it.end+0.18-t)/0.22),0,1);
-    if(it.item==='plant') plantOp=Math.max(plantOp,op);
-    if(it.item==='leaf')  leafOp=Math.max(leafOp,op);
-  }
-  document.querySelector('#itemPlant').style.opacity = plantOp;
-  document.querySelector('#itemLeaf').style.opacity = leafOp;
   // クレジット（最後にふわっと出すのだぁ）
   const creditOp = fadeIn(t, TL.creditStart-0.35, 0.5);
   document.querySelector('#credit').style.opacity = creditOp;
@@ -391,7 +375,13 @@ function fitThumb(sel, maxW, maxH){
 
 // 汎用レンダラー（../renderer/render.js）向けの入口なのだぁ🌱
 // レンダラーは、このシーンの中身を何も知らずに、構成jsonl の 1 行（cfg）を applyFrame に渡すだけなのだぁ。
+// 背景とアイテム枠の不透明度は、build_scene.xa1 が構成の各行に書いた値を、そのまま当てるのだ～🌱
+// 残りの要素は、まだ seek(t) がタイムラインから組み立てるのだ～🌱
 window.applyFrame = function(cfg){
+  document.querySelector('#bgSwamp').style.opacity = cfg.swampOp;
+  document.querySelector('#bgBog').style.opacity = cfg.bogOp;
+  document.querySelector('#itemPlant').style.opacity = cfg.plantOp;
+  document.querySelector('#itemLeaf').style.opacity = cfg.leafOp;
   window.seek(cfg.t);
 };
 window.__ready = true;

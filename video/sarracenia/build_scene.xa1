@@ -105,12 +105,30 @@ run("node", "extract_tachie.js", "zundamon", "resources/psd/zundamon23.psd", ZUN
 run("node", "extract_tachie.js", "tsumugi", "resources/psd/tsumugi3.psd", TSUMUGI_IDS, "tachie/tsumugi")
 
 # --- 3. 構成jsonl を組み立てるのだぁ（→ frames.jsonl） -------------------------
-# 今のこの動画では、フレームの見た目は時刻 t だけで決まるのだぁ（scene.html の seek(t) がタイムラインを見て全要素を組み立てるのだぁ）。
-# だから、各行は template と t だけで、構成は 30fps 刻みの時刻列そのものなのだぁ🌱
+# 各行は、そのフレームの見た目を決めるパラメータなのだぁ🌱
+# 背景とアイテム枠の不透明度は、ここで計算して渡すのだ～🌱
+# 残りの要素は、まだ scene.html の seek(t) がタイムラインを見て組み立てるから、時刻 t も渡すのだ～🌱
 OUT << "== compose frames.jsonl =="
 total := timeline.total
 frameCount := -FLOOR(-(total * FPS))
-WRITE["frames.jsonl"] << 0 ~ frameCount | i => {template: template; t: i / FPS} >> JSONL >> LINESD
+
+# scene.html の clamp・fadeIn と、式も演算の順序もそろえてあるのだ～🌱
+# JS も xarpite も IEEE 754 の倍精度だから、そろえておけば、同じ時刻に同じ値が出るのだ～🌱
+clamp := (x; a; b) -> MAX(a; MIN(b; x))
+fadeIn := (t; start; dur) -> clamp((t - start) / dur; 0; 1)
+
+bogScenes := [timeline.scenes() >> FILTER[s => s.scene == "bog"]]
+bogOp := t -> $#bogScenes > 0 ? fadeIn(t; bogScenes.0.start; timeline.sceneFade) : 0
+itemOp := (t; name) -> (
+  ops := [timeline.items() >> FILTER[it => it.item == name] | it => clamp(MIN((t - it.start) / 0.22; (it.end + 0.18 - t) / 0.22); 0; 1)]
+  $#ops > 0 ? MAX(ops()) : 0
+)
+
+# 沼地の背景は、泥沼のクロスフェードの下敷きだから、swampOp はずっと 1 なのだ～🌱
+WRITE["frames.jsonl"] << 0 ~ frameCount | i => (
+  t := i / FPS
+  {template: template; t: t; bogOp: bogOp(t); swampOp: 1; plantOp: itemOp(t; "plant"); leafOp: itemOp(t; "leaf")}
+) >> JSONL >> LINESD
 OUT << "composed frames.jsonl: $frameCount frames (total=$(total)s @ $(FPS)fps)"
 
 OUT << "== scene ready: assets.js, tachie/, frames.jsonl =="
