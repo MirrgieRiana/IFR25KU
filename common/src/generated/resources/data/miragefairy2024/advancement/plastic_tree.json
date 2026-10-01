@@ -1,0 +1,39 @@
+{
+  "parent": "miragefairy2024:root",
+  "criteria": {
+    "has_plastic_tree_log": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:plastic_tree_log"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.miragefairy2024.plastic_tree.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "miragefairy2024:dripping_plastic_tree_log"
+    },
+    "title": {
+      "translate": "advancements.miragefairy2024.plastic_tree.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_plastic_tree_log"
+    ]
+  ],
+  "rewards": {
+    "loot": [
+      "miragefairy2024:jewels_50"
+    ]
+  },
+  "sends_telemetry_event": true
+}
