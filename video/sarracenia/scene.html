@@ -391,7 +391,6 @@ function fitThumb(sel, maxW, maxH){
 
 // 汎用レンダラー（../renderer/render.js）向けの入口なのだぁ🌱
 // レンダラーは、このシーンの中身を何も知らずに、構成jsonl の 1 行（cfg）を applyFrame に渡すだけなのだぁ。
-// cfg の t の時刻の画面を、seek() で組み立てるのだぁ。
 window.applyFrame = function(cfg){
   window.seek(cfg.t);
 };
