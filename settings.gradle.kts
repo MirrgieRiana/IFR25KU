@@ -17,3 +17,5 @@ include("common")
 include("fabric")
 include("neoforge")
 include("site")
+
+include("wave-maker")
