@@ -127,6 +127,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
   - 琥珀色の原生林の石化した樹脂の上に、盛り上がった形で生成される。
   - 上を移動する際の移動速度と跳躍力が下がる。
   - 側面を滑り降りる際の落下速度が抑えられ、落下ダメージが軽減される。
+- 追加: プラノキの原木を入手したときの進捗を追加。
 
 琥珀糖
 
