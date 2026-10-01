@@ -48,7 +48,7 @@ object MirageArrowCard {
             .updateInterval(2)
             .build()
     }
-    val poemList = PoemList(1).poem("TODO", "TODO") // TODO ミラージュの矢のポエムは、まだ書かれていないのだ～🌱
+    val poemList = PoemList(1).poem("TODO", "TODO") // TODO ミラージュの矢の日英のポエムが入るのだ～🌱
 
     const val SEARCH_INTERVAL = 10
     const val SEARCH_RADIUS = 16.0
