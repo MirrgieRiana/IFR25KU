@@ -10,7 +10,6 @@ HOST := ENV.VOICEVOX_HOST ?: "http://127.0.0.1:50021"   # VOICEVOX ENGINE の UR
 # 台本は動画タイトルのディレクトリ（sarracenia/）にあるのだぁ。音声の中間生成物は、この雑多パート（video/直下）に置くのだぁ。
 script := $*READ("sarracenia/script.json")
 
-# VOICEVOX ENGINE へ POST して、返ってきた JSON を値にするのだぁ🌱
 postJson := path -> $*(capture("curl", "-sS", "-f", "--max-time", "60", "-X", "POST", "$HOST$path")() >> JOIN["\n"])
 
 # accent_phrases を、スキル(voicevox-kana)の標準記法のカナ原稿にシリアライズするのだぁ

@@ -2,7 +2,6 @@
 
 API(5)
 
-# メッセージを標準エラーに出して止めるのだぁ🌱
 fail := message -> (
   ERR("ERROR: $message")
   EXIT(1)
@@ -24,7 +23,6 @@ capture := command -> (
   output
 )
 
-# 外部コマンドを実行して、その出力を流して、終了コードが 0 でなければ止めるのだぁ🌱
 run := command -> OUT << capture(command)()
 
 # Python の round(x, 4) と同じく、x の正確な値を、小数第 4 位へ偶数丸めするのだぁ🌱
@@ -47,7 +45,6 @@ u32 := a, i -> u16(a; i) + u16(a; i + 2) * 65536
 le16 := v -> [v % 256; FLOOR(v / 256) % 256]
 le32 := v -> le16(v % 65536) + le16(FLOOR(v / 65536))
 
-# wav を読んで、fmt チャンクの値と、data チャンクのバイト列の配列を返すのだぁ🌱
 readWav := path -> (
   a := BLOB.of(READB(path))::toArray()
   tag := i -> CHAR_CODESD(a[i ~ (i + 4)]())

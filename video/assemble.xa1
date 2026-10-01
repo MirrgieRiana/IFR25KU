@@ -18,7 +18,6 @@ SUB_TAIL := 0.14       # 字幕を音声より少しだけ長く残す余韻
 PRE_CREDIT := 1.3      # 最後の台詞からクレジットまでの間
 CREDIT_HOLD := 5.5     # クレジット画面を見せる時間
 
-# wav の data チャンクのバイト列を、配列で返すのだぁ🌱
 readPcm := path -> (
   wav := readWav(path)
   wav.format == 1 && wav.channels == 1 && wav.sampleRate == SR && wav.bitsPerSample == 16 || fail("not $SR Hz mono 16 bit PCM: $path")
