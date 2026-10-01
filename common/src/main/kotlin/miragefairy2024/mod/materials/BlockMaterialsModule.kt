@@ -883,7 +883,7 @@ open class BlockMaterialCard(
         }
         val NECTARFLOWER: BlockMaterialCard = !object : BlockMaterialCard(
             "nectarflower", EnJa("Nectarflower", "ミツクサ"),
-            PoemList(1).poem(EnJa("TODO", "TODO")),
+            PoemList(1).poem(EnJa("Hydrophilic syrup for toxin resistance.", "捕食耐性のための甘美な糖衣。")),
             MapColor.PLANT, 0.0F, 0.0F,
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
