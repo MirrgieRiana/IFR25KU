@@ -20,7 +20,7 @@ bash build_scene.sh [timeline.json]
 | ファイル | 役割 |
 | --- | --- |
 | `build_scene.sh` | このパートの入口。このディレクトリへ cd して、`build_scene.xa1` を呼ぶだけです。 |
-| `build_scene.xa1` | 組み立ての本体。リソース確認・`npm install`・下記スクリプトの実行と、構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）の組み立てをまとめます。 |
+| `build_scene.xa1` | 処理の本体。リソース確認・`npm install`・下記スクリプトの実行と、構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）の生成をまとめます。 |
 | `script.json` | 台本。台詞・話者・読み（カナ原稿）・字幕・シーン・登場アイテムを定義します。 |
 | `scene.html` | 画面の見た目と `window.applyFrame(cfg)`（構成→画面）の本体。 |
 | `bake_assets.py` | `scene.html` が読む `assets.js`（フォント・絵文字・テクスチャ・タイムラインの束）を生成します。 |

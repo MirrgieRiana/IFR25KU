@@ -7,7 +7,7 @@
 # （assets.js・立ち絵 tachie/・構成jsonl frames.jsonl）をぜんぶ作る」ことなのだぁ🌱
 #
 # このスクリプトは、このディレクトリへ cd してから、同じディレクトリの build_scene.xa1 を呼ぶだけなのだぁ。
-# 組み立ての中身と、出力の一覧は、build_scene.xa1 にあるのだぁ。
+# 処理の中身と、出力の一覧は、build_scene.xa1 にあるのだぁ。
 #
 # 入力：
 #   $1 … timeline.json のパス（省略時は ../timeline.json）。尺・台詞区間・シーン・アイテムが入っているのだぁ。

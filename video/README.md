@@ -77,7 +77,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 | ファイル | 役割 |
 | --- | --- |
 | `build_scene.sh` | タイムラインを受け取り、`assets.js`・`tachie/`・`frames.jsonl` を作る、このパートの入口です。このディレクトリへ cd して `build_scene.xa1` を呼ぶだけです。 |
-| `build_scene.xa1` | 組み立ての本体。リソース確認・`npm install`・`bake_assets.py` と `extract_tachie.js` の実行と、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の組み立てを行います。 |
+| `build_scene.xa1` | 処理の本体。リソース確認・`npm install`・`bake_assets.py` と `extract_tachie.js` の実行と、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成を行います。 |
 | `script.json` | 台本。台詞・話者・読み（カナ原稿）・字幕・シーン・登場アイテムを定義します。 |
 | `scene.html` | 画面の見た目と `window.applyFrame(cfg)`（構成→画面）の本体。字幕・立ち絵・背景・クレジット・サムネを組み立てます。 |
 | `bake_assets.py` | `scene.html` が読む `assets.js`（フォント・絵文字・テクスチャ・タイムラインの束）を生成します。 |
