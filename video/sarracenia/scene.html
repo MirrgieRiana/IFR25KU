@@ -294,7 +294,6 @@ function fitSub(bigFlag){
 let lastSubKey='';
 function setSub(line){
   const key = line? (line.i+'|'+line.sub+'|'+line.big) : '';
-  window.__lastSubKey=key;
   if(key===lastSubKey) return;
   lastSubKey=key;
   const sub=document.querySelector('#sub'), name=document.querySelector('#name');
@@ -348,7 +347,6 @@ window.seek = function(t){
   for(let k=0;k<TL.lines.length;k++){ if(t>=TL.lines[k].start) poseIdx=k; else break; }
   const pose = poseIdx>=0 ? POSES[poseIdx] : POSE_DEFAULT;
   setPose(elT, pose.t); setPose(elZ, pose.z);
-  window.__poseKey = String(poseIdx);
   // BC：字幕を覆う横帯は、字幕とは連動させず本編のあいだ表示するのだぁ🌱 タイトル中は出さない
   // （立ち絵と違い、サムネに空の帯が出ると不自然なので、従来どおりタイトル明けゲートを保つのだぁ）
   document.querySelector('#band').style.opacity = (1-openOp) * creditGate;
@@ -366,7 +364,6 @@ window.seek = function(t){
   const zBlink = blinkAt(t, 3.4, 1.5, 0.12), tBlink = blinkAt(t, 4.1, 1.7, 0.12);
   setFace(elZ, zMouth, zBlink);
   setFace(elT, tMouth, tBlink);
-  window.__tachieKey = zMouth[0]+tMouth[0]+(zBlink?'Z':'z')+(tBlink?'T':'t');
   const subOp = active ? clamp(Math.min((t-active.start)/0.12,(active.subEnd+0.05-t)/0.15),0,1) : 0;
   const gate = (1-clamp(creditOp*3,0,1));
   const so = (openOp>0.5?0:subOp)*gate;
@@ -394,13 +391,9 @@ function fitThumb(sel, maxW, maxH){
 
 // 汎用レンダラー（../renderer/render.js）向けの入口なのだぁ🌱
 // レンダラーは、このシーンの中身を何も知らずに、構成jsonl の 1 行（cfg）を applyFrame に渡すだけなのだぁ。
-// cfg = {t: 秒} で、その時刻の画面を seek() で組み立て、見た目を一意に表す再利用キーを返すのだぁ
-// （キーが前フレームと同じならレンダラーは撮り直さず前のコマを使い回すのだぁ）。
+// cfg の t の時刻の画面を、seek() で組み立てるのだぁ。
 window.applyFrame = function(cfg){
   window.seek(cfg.t);
-  const op = s => (+getComputedStyle(document.querySelector(s)).opacity).toFixed(2);
-  return [op('#thumbTop'),op('#bgBog'),op('#itemPlant'),op('#itemLeaf'),
-          op('#subwrap'),op('#credit'),op('#band'),window.__lastSubKey||'',window.__tachieKey||'',window.__poseKey||''].join(',');
 };
 window.__ready = true;
 </script>
