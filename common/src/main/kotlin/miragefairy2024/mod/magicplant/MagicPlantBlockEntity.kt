@@ -60,10 +60,10 @@ class MagicPlantBlockEntity(private val card: MagicPlantCard<*>, pos: BlockPos, 
     fun getRandomTraitChances() = card.randomTraitChances
 
 
-    override fun setLevel(world: Level) {
-        super.setLevel(world)
+    override fun setLevel(level: Level) {
+        super.setLevel(level)
         if (traitStacks == null) {
-            val (bits, rare) = applyMutation(card.defaultTraitBits, card.randomTraitChances, world.random)
+            val (bits, rare) = applyMutation(card.defaultTraitBits, card.randomTraitChances, level.random)
             setTraitStacks(TraitStacks.of(bits))
             setRare(rare)
             setNatural(true)

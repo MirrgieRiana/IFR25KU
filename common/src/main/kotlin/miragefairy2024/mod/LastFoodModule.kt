@@ -28,8 +28,8 @@ import java.util.Optional
 context(ModContext)
 fun initLastFoodModule() {
     LAST_FOOD_ATTACHMENT_TYPE.register()
-    EatFoodCallback.EVENT.register { entity, world, stack, foodProperties ->
-        if (world.isClientSide) return@register
+    EatFoodCallback.EVENT.register { entity, level, stack, foodProperties ->
+        if (level.isClientSide) return@register
         if (entity !is Player) return@register
         entity as ServerPlayer
         entity.lastFood.set(LastFood(stack.copy(), Instant.now()))

@@ -5,6 +5,9 @@ import miragefairy2024.client.util.registerClientPacketReceiver
 import miragefairy2024.mod.particle.MagicSquareParticleChannel
 import miragefairy2024.mod.particle.MagicSquareParticleEffect
 import mirrg.kotlin.helium.max
+import mirrg.kotlin.hydrogen.blueOfRgb
+import mirrg.kotlin.hydrogen.greenOfRgb
+import mirrg.kotlin.hydrogen.redOfRgb
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider
 import net.minecraft.client.Camera
 import net.minecraft.client.Minecraft
@@ -37,8 +40,8 @@ fun initMagicSquareParticle() {
 }
 
 fun createMagicSquareParticleFactory() = { spriteProvider: SpriteSet ->
-    ParticleProvider<MagicSquareParticleEffect> { parameters, world, x, y, z, _, _, _ ->
-        MagicSquareParticle(world, x, y, z, parameters.layer, parameters.targetPosition, spriteProvider).also {
+    ParticleProvider<MagicSquareParticleEffect> { parameters, level, x, y, z, _, _, _ ->
+        MagicSquareParticle(level, x, y, z, parameters.layer, parameters.targetPosition, spriteProvider).also {
             it.alphaTicks[0] = parameters.delay
             it.alphaTicks[1] = parameters.delay + 20F
             it.lightTicks[0] = parameters.delay
@@ -47,7 +50,7 @@ fun createMagicSquareParticleFactory() = { spriteProvider: SpriteSet ->
     }
 }
 
-class MagicSquareParticle(world: ClientLevel, x: Double, y: Double, z: Double, layer: Int, private val targetPosition: Vec3, spriteProvider: SpriteSet) : TextureSheetParticle(world, x, y, z) {
+class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, layer: Int, private val targetPosition: Vec3, spriteProvider: SpriteSet) : TextureSheetParticle(level, x, y, z) {
 
     var delay = 0
     var color1 = 0xFFF4D3
@@ -80,21 +83,21 @@ class MagicSquareParticle(world: ClientLevel, x: Double, y: Double, z: Double, l
     }
 
     private fun setColor(color1: Int, color2: Int, delta: Float) {
-        val r1 = ((color1 shr 16) and 0xFF).toFloat() / 255F
-        val g1 = ((color1 shr 8) and 0xFF).toFloat() / 255F
-        val b1 = (color1 and 0xFF).toFloat() / 255F
-        val r2 = ((color2 shr 16) and 0xFF).toFloat() / 255F
-        val g2 = ((color2 shr 8) and 0xFF).toFloat() / 255F
-        val b2 = (color2 and 0xFF).toFloat() / 255F
+        val r1 = color1.redOfRgb.toFloat() / 255F
+        val g1 = color1.greenOfRgb.toFloat() / 255F
+        val b1 = color1.blueOfRgb.toFloat() / 255F
+        val r2 = color2.redOfRgb.toFloat() / 255F
+        val g2 = color2.greenOfRgb.toFloat() / 255F
+        val b2 = color2.blueOfRgb.toFloat() / 255F
         rCol = r1 + (r2 - r1) * delta
         gCol = g1 + (g2 - g1) * delta
         bCol = b1 + (b2 - b1) * delta
     }
 
     private fun setColor(color: Int) {
-        rCol = ((color shr 16) and 0xFF).toFloat() / 255F
-        gCol = ((color shr 8) and 0xFF).toFloat() / 255F
-        bCol = (color and 0xFF).toFloat() / 255F
+        rCol = color.redOfRgb.toFloat() / 255F
+        gCol = color.greenOfRgb.toFloat() / 255F
+        bCol = color.blueOfRgb.toFloat() / 255F
     }
 
     override fun render(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float) {

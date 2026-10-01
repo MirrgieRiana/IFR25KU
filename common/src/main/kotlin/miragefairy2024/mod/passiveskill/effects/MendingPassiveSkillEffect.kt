@@ -66,7 +66,7 @@ object MendingPassiveSkillEffect : AbstractPassiveSkillEffect<MendingPassiveSkil
             if (value <= 0.0) return@forEach
             fun f(itemStack: ItemStack) {
                 if (itemStack isIn tag) {
-                    itemStack.repair(context.world.random.randomInt(value))
+                    itemStack.repair(context.level.random.randomInt(value))
                 }
             }
             f(context.player.mainHandItem)

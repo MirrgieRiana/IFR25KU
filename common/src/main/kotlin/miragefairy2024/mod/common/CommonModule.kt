@@ -63,9 +63,10 @@ val rootAdvancement = AdvancementCard(
 val guiAlwaysTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.always" }, "Always", "常時")
 val guiFullScreenTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.full_screen" }, "Click to full screen", "クリックで全画面表示")
 val guiBackToGameTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.back_to_game" }, "Back to game", "ゲームに戻る")
-val guiDeadPlayer = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.dead_player" }, "Player %s is dead", "プレイヤー%sは死亡しています")
+val guiDeadPlayerTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.dead_player" }, "Player %s is dead", "プレイヤー%sは死亡しています")
+val guiRareDropTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.rare_drop" }, "Rare Drop", "レアドロップ")
 
-val deadPlayerCommandExceptionType = DynamicCommandExceptionType { text { guiDeadPlayer(it) } }
+val deadPlayerCommandExceptionType = DynamicCommandExceptionType { text { guiDeadPlayerTranslation(it) } }
 
 context(ModContext)
 fun initCommonModule() {
@@ -80,9 +81,9 @@ fun initCommonModule() {
         item.modifyItemEnchantments(itemStack, mutableItemEnchantments, enchantmentLookup)
     }
 
-    registerClientDebugItem("dump_biome_attributes", Blocks.OAK_SAPLING.toTextureSource(), 0xFFFF00FF.toInt()) { world, player, _, _ ->
+    registerClientDebugItem("dump_biome_attributes", Blocks.OAK_SAPLING.toTextureSource(), 0xFFFF00FF.toInt()) { level, player, _, _ ->
         val lines = mutableListOf<List<String>>()
-        world.registryAccess()[Registries.BIOME].listElements().forEach { biome ->
+        level.registryAccess()[Registries.BIOME].listElements().forEach { biome ->
             lines += listOf(
                 text { translate(biome.key().location().toLanguageKey("biome")) }.string,
                 "${biome.humidityCategory}",
@@ -95,13 +96,13 @@ fun initCommonModule() {
         )
         writeAction(player, "dump_biome_attributes.csv", table.map { line -> line.join(",") + "\n" }.join(""))
     }
-    registerServerDebugItem("dump_biome_features", Blocks.SPRUCE_SAPLING.toTextureSource(), 0xFFFF00FF.toInt()) { world, player, _, _ ->
+    registerServerDebugItem("dump_biome_features", Blocks.SPRUCE_SAPLING.toTextureSource(), 0xFFFF00FF.toInt()) { level, player, _, _ ->
         fun Level.getBiomes() = this.registryAccess()[Registries.BIOME].listElements().toList()
         fun Holder<*>.getId() = this.unwrapKey().getOrNull()?.location()?.string
         fun Holder<Biome>.getPlacedFeatureSets() = this.value().generationSettings.features()
 
         // PlacedFeatureの単純リスト
-        world.getBiomes().map { biome ->
+        level.getBiomes().map { biome ->
             jsonObject(
                 "biome" to biome.getId().jsonElementOrJsonNull,
                 "placedFeatures" to biome.getPlacedFeatureSets().map { placedFeatureSet ->
@@ -115,7 +116,7 @@ fun initCommonModule() {
         // 順序表
         GenerationStep.Decoration.entries.map { step ->
 
-            val allPlacedFeatures = world.getBiomes().flatMap { biome ->
+            val allPlacedFeatures = level.getBiomes().flatMap { biome ->
                 biome.getPlacedFeatureSets().getOrNull(step.ordinal)?.toList()?.map { it.getId() } ?: emptyList()
             }.distinct().sortedBy { it }
 
@@ -124,7 +125,7 @@ fun initCommonModule() {
             infix fun String?.notWin(other: String?) = !(this win other)
 
             // まずバイオームによる初期順序関係を収集
-            world.getBiomes().forEach { biome ->
+            level.getBiomes().forEach { biome ->
                 val placedFeatureList = biome.getPlacedFeatureSets().getOrNull(step.ordinal)?.toList()?.map { it.getId() } ?: emptyList()
                 (0 until placedFeatureList.size).forEach { a ->
                     (a + 1 until placedFeatureList.size).forEach { b ->
@@ -262,6 +263,7 @@ fun initCommonModule() {
     guiAlwaysTranslation.enJa()
     guiFullScreenTranslation.enJa()
     guiBackToGameTranslation.enJa()
-    guiDeadPlayer.enJa()
+    guiDeadPlayerTranslation.enJa()
+    guiRareDropTranslation.enJa()
 
 }

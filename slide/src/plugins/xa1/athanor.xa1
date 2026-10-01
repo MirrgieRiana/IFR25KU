@@ -1,4 +1,4 @@
-# athanor: アタノール窯（レンガ色）なのだぁ🌱 火の部分は🔥をimgで重ねるのだぁ～。形状は固定なのでそのまま書くのだぁ🌱
+# athanor: アタノール窯（レンガ色）なのだ～🌱 火の部分は🔥をimgで重ねるのだ～🌱 形状は固定なのでそのまま書くのだ～🌱
 @USE("global")
 
 templates.athanor = () -> %>
@@ -21,7 +21,7 @@ templates.athanor = () -> %>
 <%
 
 cssLines::push << %>
-  /* アタノール窯なのだぁ🌱 レンガ本体＋🔥を窯口に重ねるのだぁ～ */
+  /* アタノール窯なのだ～🌱 レンガ本体＋🔥を窯口に重ねるのだ～🌱 */
   .athanor {
     position: relative;
     display: inline-block;

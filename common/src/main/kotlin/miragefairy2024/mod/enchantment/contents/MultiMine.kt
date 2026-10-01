@@ -3,6 +3,7 @@ package miragefairy2024.mod.enchantment.contents
 import miragefairy2024.ModContext
 import miragefairy2024.mixins.api.BlockCallback
 import miragefairy2024.mixins.api.LevelEvent
+import miragefairy2024.mod.common.BlockPosesOutline
 import miragefairy2024.mod.common.CommonRenderingEvents
 import miragefairy2024.mod.enchantment.contents.multiminehandlers.AreaMiningMultiMineHandler
 import miragefairy2024.mod.enchantment.contents.multiminehandlers.CutAllMultiMineHandler
@@ -45,9 +46,10 @@ fun initMultiMine() {
             miningArea
         } ?: return@add null // 範囲採掘が発動しなかった
 
-        Pair(
+        BlockPosesOutline(
             hitResult.blockPos.relative(hitResult.direction),
             miningArea.visitedBlockEntry.map { it.blockPos }.toSet() + setOf(miningArea.multiMine.blockPos),
+            0xFFFFFF,
         )
     }
 
@@ -76,18 +78,18 @@ fun initMultiMine() {
     }
 
     // サーバーサイドにおいて、ブロック破壊後に範囲採掘の効果
-    BlockCallback.AFTER_BREAK.register { world, player, pos, state, _, _ ->
-        val serverSide = world.serverSideOrNull ?: return@register
+    BlockCallback.AFTER_BREAK.register { level, player, pos, state, _, _ ->
+        val serverSide = level.serverSideOrNull ?: return@register
         if (isInMagicMining.get()) return@register
 
         val miningDirectionCache = latestPlayerMiningDirectionCache[player.id] ?: return@register // なぜか向きが記録されていない
-        if (miningDirectionCache.first != world.gameTime) return@register // なぜか向きが記録されていない
+        if (miningDirectionCache.first != level.gameTime) return@register // なぜか向きが記録されていない
         val miningArea = run {
             val multiMine = run {
                 MultiMineHandler.REGISTRY.firstNotNullOfOrNull {
                     it.create(
                         miningDirectionCache.second,
-                        world, pos, state,
+                        level, pos, state,
                         player, player.mainHandItem.item, player.mainHandItem,
                     )
                 }

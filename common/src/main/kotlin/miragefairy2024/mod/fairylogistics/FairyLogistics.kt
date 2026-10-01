@@ -125,8 +125,8 @@ abstract class FairyLogisticsBlockEntity<E : FairyLogisticsBlockEntity<E>>(card:
 
     fun getTarget(): Pair<Container, Direction>? {
         fun f(blockPos: BlockPos, side: Direction): Pair<Container, Direction>? {
-            val world = level ?: return null
-            val blockEntity = world.getBlockEntity(blockPos) ?: return null
+            val level = level ?: return null
+            val blockEntity = level.getBlockEntity(blockPos) ?: return null
             if (blockEntity !is Container) return null
             return Pair(blockEntity, side)
         }

@@ -1,6 +1,9 @@
 package miragefairy2024
 
 import mirrg.kotlin.helium.join
+import mirrg.kotlin.hydrogen.blueOfRgb
+import mirrg.kotlin.hydrogen.greenOfRgb
+import mirrg.kotlin.hydrogen.redOfRgb
 import java.io.File
 
 object MapColorViewerGeneratorMain {
@@ -160,7 +163,7 @@ object MapColorViewerGeneratorMain {
                                     "td"(
                                         "style" to inlineCss {
                                             "background-color" to "#" + String.format("%06X", rgb)
-                                            if ((rgb and 0xFF) + (rgb shr 8 and 0xFF) + (rgb shr 16 and 0xFF) < 128 * 3) "color" to "#FFFFFF"
+                                            if (rgb.blueOfRgb + rgb.greenOfRgb + rgb.redOfRgb < 128 * 3) "color" to "#FFFFFF"
                                             "word-break" to "break-all"
                                             "width" to "100px"
                                             "height" to "100px"

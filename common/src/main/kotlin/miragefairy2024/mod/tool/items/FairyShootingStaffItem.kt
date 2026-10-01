@@ -29,7 +29,6 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.sounds.SoundSource
 import net.minecraft.stats.Stats
 import net.minecraft.tags.ItemTags
@@ -67,35 +66,14 @@ open class FairyShootingStaffConfiguration(
     }
 }
 
-/**
- * 杖を立てて構えた姿勢で持つためのアイテムモデルなのだ～🌱
- *
- * 柄が鉛直から 17.2 度だけ前に倒れて、全長が 1.5 ブロックになり、柄の下端から 3 分の 1 の点が手に来る値なのだ～🌱
- * 左手用の値は、`ItemTransform` が左手のときだけ `rotation` の Y と Z を反転するから、それを打ち消してあるのだ～🌱
- */
-private val SHOOTING_STAFF_MODEL_TEMPLATE = Model { textureMapping ->
-    ModelData(
-        parent = ResourceLocation("item/handheld"),
-        textures = ModelTexturesData(
-            TextureSlot.LAYER0.id to textureMapping.get(TextureSlot.LAYER0).string,
-        ),
-        display = ModelDisplayData(
-            thirdPersonRightHand = ModelDisplayEntryData(rotation = listOf(0, -90, -30), translation = listOf(0, 1, 4), scale = listOf(1.2F, 1.2F, 1.2F)),
-            thirdPersonLeftHand = ModelDisplayEntryData(rotation = listOf(0, 90, 30), translation = listOf(0, 1, 4), scale = listOf(1.2F, 1.2F, 1.2F)),
-            firstPersonRightHand = ModelDisplayEntryData(rotation = listOf(0, -90, 60), translation = listOf(1.5F, 4.33F, -1.2F), scale = listOf(0.9F, 0.9F, 0.9F)),
-            firstPersonLeftHand = ModelDisplayEntryData(rotation = listOf(0, 90, -60), translation = listOf(1.5F, 4.33F, -1.2F), scale = listOf(0.9F, 0.9F, 0.9F)),
-        ),
-    )
-}
-
 class FairyShootingStaffItem(override val configuration: FairyShootingStaffConfiguration, settings: Properties) :
     ShootingStaffItem(configuration.toolMaterialCard.toolMaterial, configuration.basePower, configuration.baseMaxDistance, settings),
     FairyToolItem,
     ModifyItemEnchantmentsHandler {
 
-    override fun mineBlock(stack: ItemStack, world: Level, state: BlockState, pos: BlockPos, miner: LivingEntity): Boolean {
-        super.mineBlock(stack, world, state, pos, miner)
-        postMineImpl(stack, world, state, pos, miner)
+    override fun mineBlock(stack: ItemStack, level: Level, state: BlockState, pos: BlockPos, miner: LivingEntity): Boolean {
+        super.mineBlock(stack, level, state, pos, miner)
+        postMineImpl(stack, level, state, pos, miner)
         return true
     }
 
@@ -105,9 +83,9 @@ class FairyShootingStaffItem(override val configuration: FairyShootingStaffConfi
         return true
     }
 
-    override fun inventoryTick(stack: ItemStack, world: Level, entity: Entity, slot: Int, selected: Boolean) {
-        super.inventoryTick(stack, world, entity, slot, selected)
-        inventoryTickImpl(stack, world, entity, slot, selected)
+    override fun inventoryTick(stack: ItemStack, level: Level, entity: Entity, slot: Int, selected: Boolean) {
+        super.inventoryTick(stack, level, entity, slot, selected)
+        inventoryTickImpl(stack, level, entity, slot, selected)
     }
 
     override fun modifyItemEnchantments(itemStack: ItemStack, mutableItemEnchantments: ItemEnchantments.Mutable, enchantmentLookup: HolderLookup.RegistryLookup<Enchantment>) = modifyItemEnchantmentsImpl(itemStack, mutableItemEnchantments, enchantmentLookup)
@@ -140,8 +118,8 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
      *
      * 素材を通して魔力を汲み出す速さが、岩を掘り崩す速さと同じ性質だとみなして、採掘速度に反比例させているのだ～🌱
      */
-    private fun getChargeTicks(world: Level, itemStack: ItemStack): Int {
-        val acceleration = 1.0 + world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_ACCELERATION.key].getRate(itemStack)
+    private fun getChargeTicks(level: Level, itemStack: ItemStack): Int {
+        val acceleration = 1.0 + level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_ACCELERATION.key].getRate(itemStack)
         return ceil(BASE_CHARGE_TICKS * BASE_TIER.speed / tier.speed / acceleration).toInt()
     }
 
@@ -150,12 +128,12 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
      *
      * 剣の攻撃力が武器種の補正と素材の補正の和であるのと同じ構造で、素材の補正が、攻撃力ではなくエンチャント適性を参照するのだ～🌱
      */
-    private fun getDamage(world: Level, itemStack: ItemStack): Float {
+    private fun getDamage(level: Level, itemStack: ItemStack): Float {
         val materialPower = ENCHANTMENT_VALUE_POWER_FACTOR * (tier.enchantmentValue - BASE_TIER.enchantmentValue)
-        return basePower + materialPower + 0.5F * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack).toFloat()
+        return basePower + materialPower + 0.5F * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack).toFloat()
     }
 
-    private fun getExperienceCost(world: Level, itemStack: ItemStack) = BASE_EXPERIENCE_COST + 1 * world.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack)
+    private fun getExperienceCost(level: Level, itemStack: ItemStack) = BASE_EXPERIENCE_COST + 1 * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack)
 
     override fun appendHoverText(stack: ItemStack, context: TooltipContext, tooltipComponents: MutableList<Component>, tooltipFlag: TooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
@@ -166,12 +144,12 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
 
     override fun getUseAnimation(stack: ItemStack) = UseAnim.NONE
 
-    override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
         val itemStack = user.getItemInHand(hand)
 
         if (!user.isCreative) {
-            if (user.totalExperience < getExperienceCost(world, itemStack)) {
-                if (!world.isClientSide) user.displayClientMessage(text { NOT_ENOUGH_EXPERIENCE_TRANSLATION() }, true)
+            if (user.totalExperience < getExperienceCost(level, itemStack)) {
+                if (!level.isClientSide) user.displayClientMessage(text { NOT_ENOUGH_EXPERIENCE_TRANSLATION() }, true)
                 return InteractionResultHolder.fail(itemStack)
             }
         }
@@ -230,4 +208,25 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
     override fun postHurtEnemy(stack: ItemStack, target: LivingEntity, attacker: LivingEntity) {
         stack.hurtAndBreak(2, attacker, EquipmentSlot.MAINHAND)
     }
+}
+
+/**
+ * 杖を立てて構えた姿勢で持つためのアイテムモデルなのだ～🌱
+ *
+ * 柄が鉛直から 17.2 度だけ前に倒れて、全長が 1.5 ブロックになり、柄の下端から 3 分の 1 の点が手に来る値なのだ～🌱
+ * 左手用の値は、[net.minecraft.client.renderer.block.model.ItemTransform] が左手のときだけ [net.minecraft.client.renderer.block.model.ItemTransform.rotation] の Y と Z を反転するから、それを打ち消してあるのだ～🌱
+ */
+private val SHOOTING_STAFF_MODEL_TEMPLATE = Model { textureMapping ->
+    ModelData(
+        parent = ResourceLocation("item/handheld"),
+        textures = ModelTexturesData(
+            TextureSlot.LAYER0.id to textureMapping.get(TextureSlot.LAYER0).string,
+        ),
+        display = ModelDisplayData(
+            thirdPersonRightHand = ModelDisplayEntryData(rotation = listOf(0, -90, -30), translation = listOf(0, 1, 4), scale = listOf(1.2F, 1.2F, 1.2F)),
+            thirdPersonLeftHand = ModelDisplayEntryData(rotation = listOf(0, 90, 30), translation = listOf(0, 1, 4), scale = listOf(1.2F, 1.2F, 1.2F)),
+            firstPersonRightHand = ModelDisplayEntryData(rotation = listOf(0, -90, 60), translation = listOf(1.5F, 4.33F, -1.2F), scale = listOf(0.9F, 0.9F, 0.9F)),
+            firstPersonLeftHand = ModelDisplayEntryData(rotation = listOf(0, 90, -60), translation = listOf(1.5F, 4.33F, -1.2F), scale = listOf(0.9F, 0.9F, 0.9F)),
+        ),
+    )
 }

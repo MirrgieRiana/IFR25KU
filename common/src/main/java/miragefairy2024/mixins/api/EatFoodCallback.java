@@ -8,11 +8,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public interface EatFoodCallback {
-    Event<EatFoodCallback> EVENT = EventFactory.createArrayBacked(EatFoodCallback.class, callbacks -> (entity, world, stack, foodProperties) -> {
+    Event<EatFoodCallback> EVENT = EventFactory.createArrayBacked(EatFoodCallback.class, callbacks -> (entity, level, stack, foodProperties) -> {
         for (EatFoodCallback callback : callbacks) {
-            callback.eatFood(entity, world, stack, foodProperties);
+            callback.eatFood(entity, level, stack, foodProperties);
         }
     });
 
-    void eatFood(LivingEntity entity, Level world, ItemStack stack, FoodProperties foodProperties);
+    void eatFood(LivingEntity entity, Level level, ItemStack stack, FoodProperties foodProperties);
 }

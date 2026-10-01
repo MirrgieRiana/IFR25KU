@@ -32,6 +32,7 @@ import miragefairy2024.util.sortedEntrySet
 import miragefairy2024.util.string
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.unit
+import mirrg.kotlin.hydrogen.argbOf
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
@@ -86,7 +87,7 @@ fun initFairyQuestCardItem() {
         card.item.registerModelGeneration(createFairyQuestCardModel())
         card.item.registerColorProvider { itemStack, tintIndex ->
             if (tintIndex == 0) {
-                itemStack.getFairyQuestRecipe()?.color?.let { it or 0xFF000000.toInt() } ?: 0xFFFF00FF.toInt()
+                itemStack.getFairyQuestRecipe()?.color?.let { argbOf(0xFF, it) } ?: 0xFFFF00FF.toInt()
             } else {
                 0xFFFFFFFF.toInt()
             }
@@ -127,13 +128,13 @@ class FairyQuestCardItem(settings: Properties) : Item(settings) {
         }
     }
 
-    override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
         val itemStack = user.getItemInHand(hand)
         val recipe = itemStack.getFairyQuestRecipe() ?: return InteractionResultHolder.fail(itemStack)
-        if (world.isClientSide) return InteractionResultHolder.success(itemStack)
+        if (level.isClientSide) return InteractionResultHolder.success(itemStack)
         user.openMenu(object : ExtendedScreenHandlerFactory<ResourceLocation> {
             override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
-                return FairyQuestCardScreenHandler(syncId, playerInventory, recipe, ContainerLevelAccess.create(world, player.blockPosition()))
+                return FairyQuestCardScreenHandler(syncId, playerInventory, recipe, ContainerLevelAccess.create(level, player.blockPosition()))
             }
 
             override fun getDisplayName() = recipe.title

@@ -24,12 +24,20 @@ fun resolveContentType(file: File): ContentType =
         ?: extraMimeTypes[file.extension.lowercase()]
         ?: ContentType.Application.OctetStream
 
+val portOptionIndex = args.indexOf("-p")
+val port = if (portOptionIndex >= 0) {
+    val value = args.getOrNull(portOptionIndex + 1) ?: error("Missing port number after -p")
+    value.toIntOrNull() ?: error("Invalid port number: $value")
+} else {
+    4000
+}
+
 val siteDir = File("build/site")
 require(siteDir.isDirectory) { "Site directory not found: ${siteDir.canonicalPath}" }
 
-println("Serving ${siteDir.canonicalPath} at http://localhost:4000/")
+println("Serving ${siteDir.canonicalPath} at http://localhost:$port/")
 
-embeddedServer(Netty, host = "0.0.0.0", port = 4000) {
+embeddedServer(Netty, host = "0.0.0.0", port = port) {
     routing {
         get("/") {
             val file = siteDir.resolve("index.html")

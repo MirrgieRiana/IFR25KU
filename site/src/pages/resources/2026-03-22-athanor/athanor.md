@@ -4,9 +4,10 @@ description: 春日部つむぎとずんだもんがアタノールを使って�
 layout: theater
 header:
   teaser: /2026/03/22/athanor.teaser.webp
-tags: [ ミラージュフェアリー劇場, アタノール, パン, 固形燃料, 砂糖, ハイメヴィスカの樹液, ヴェロペデリコラ ]
+tags: [ IFR劇場, アタノール, パン, 固形燃料, 砂糖, ハイメヴィスカの樹液, ヴェロペデリコラ ]
 ---
 
+![青空の下の草原に据えられ、正面に焚口が開き、上へ煙突が伸びた赤褐色のレンガ造りのアタノール](athanor.teaser.webp)
 {% say tsumugi3 %}センパーイ！あーしもアタノール使ってんだけどさ！{% endsay %}
 {% say zundamon23 %}お、やってるのだ。何作ってるのだ？{% endsay %}
 {% say tsumugi3:口=わあーい %}パン！ちゃんとパンになったよ！{% endsay %}

@@ -46,28 +46,30 @@ fun initCommonClientModule() {
             if (!player.isValid) return@register
             if (!context.blockOutlines()) return@register
 
-            val (baseBlockPos, blockPoses) = listener.getBlockPoses(object : RenderBlockPosesOutlineContext {
+            val blockPosesOutline = listener.getBlockPoses(object : RenderBlockPosesOutlineContext {
                 override val level get() = level
                 override val player get() = player
                 override val hitResult get() = minecraft.hitResult
             }) ?: return@register
-            if (blockPoses.isEmpty()) return@register
+            if (blockPosesOutline.blockPoses.isEmpty()) return@register
 
             val poseStack = context.matrixStack()!!
             val cameraPosition = context.camera().position
 
             val vertexConsumer = context.consumers()!!.getBuffer(LINES_NO_DEPTH)
             val pose = poseStack.last().pose()
-            val packedLight = LevelRenderer.getLightColor(level, baseBlockPos)
+            val packedLight = LevelRenderer.getLightColor(level, blockPosesOutline.baseBlockPos)
             val skyLightLevel = (packedLight ushr 20) and 0xF
             val blockLightLevel = (packedLight ushr 4) and 0xF
             val skyFactor = 0.15 + 0.85 * (skyLightLevel.toDouble() / 15.0)
             val blockFactor = 0.15 + 0.85 * (blockLightLevel.toDouble() / 15.0)
             val lightFactor = skyFactor max blockFactor
-            val brightness = (255.0 * lightFactor).roundToInt().coerceIn(0, 255)
+            val red = (((blockPosesOutline.rgb shr 16) and 0xFF) * lightFactor).roundToInt().coerceIn(0, 255)
+            val green = (((blockPosesOutline.rgb shr 8) and 0xFF) * lightFactor).roundToInt().coerceIn(0, 255)
+            val blue = ((blockPosesOutline.rgb and 0xFF) * lightFactor).roundToInt().coerceIn(0, 255)
             val theta = (System.nanoTime() % 2_000_000_000L).toDouble() / 1_000_000_000.0 * 2.0 * Math.PI
             val alpha = (255.0 * (0.5 + 0.25 * sin(theta))).roundToInt()
-            collectEdges(blockPoses) { x0, y0, z0, x1, y1, z1 ->
+            collectEdges(blockPosesOutline.blockPoses) { x0, y0, z0, x1, y1, z1 ->
                 // ワールド座標のままFloatにすると、原点から遠い場所では刻みが粗くなって線が震えてしまうから、Doubleでカメラからの相対位置にしてからFloatにするのだ～🌱
                 val relativeX0 = (x0 - cameraPosition.x).toFloat()
                 val relativeY0 = (y0 - cameraPosition.y).toFloat()
@@ -77,11 +79,11 @@ fun initCommonClientModule() {
                 val relativeZ1 = (z1 - cameraPosition.z).toFloat()
                 vertexConsumer
                     .addVertex(pose, relativeX0, relativeY0, relativeZ0)
-                    .setColor(brightness, brightness, brightness, alpha)
+                    .setColor(red, green, blue, alpha)
                     .setNormal(relativeX1 - relativeX0, relativeY1 - relativeY0, relativeZ1 - relativeZ0)
                 vertexConsumer
                     .addVertex(pose, relativeX1, relativeY1, relativeZ1)
-                    .setColor(brightness, brightness, brightness, alpha)
+                    .setColor(red, green, blue, alpha)
                     .setNormal(relativeX1 - relativeX0, relativeY1 - relativeY0, relativeZ1 - relativeZ0)
             }
         }

@@ -4,9 +4,10 @@ description: 春日部つむぎがビルダーズロッドを試してみる話
 layout: theater
 header:
   teaser: /2026/04/11/builders-rod.teaser.webp
-tags: [ ミラージュフェアリー劇場, ビルダーズロッド, 建築, 迷路, 丸石 ]
+tags: [ IFR劇場, ビルダーズロッド, 建築, 迷路, 丸石 ]
 ---
 
+![青緑色の草地が斜面をなす妖精の樹海の中で、手前と奥の平らな場所に丸石が合わせて2個置かれている様子](builders-rod.teaser.webp)
 {% say zundamon23 %}よし、ここはこの辺まで……あっち側は……{% endsay %}
 {% say tsumugi3 %}セ～ンパイ！おっはよ！何してるの？{% endsay %}
 {% say zundamon23 %}おはようなのだ。新しい作業場の基礎を作っているのだ。{% endsay %}
@@ -55,7 +56,7 @@ tags: [ ミラージュフェアリー劇場, ビルダーズロッド, 建築, 
 {% space %}
 
 {% say tsumugi3 %}こっちも……行き止まりじゃん……？？？{% endsay %}
-{% say tsumugi3 %}……あれ？あーしつるはし持って来てなかったっけ……？あれあれ？？{% endsay %}
+{% say tsumugi3 %}……あれ？あーしツルハシ持って来てなかったっけ……？あれあれ？？{% endsay %}
 {% say tsumugi3 %}……{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}センパーイ！！出られないんだけど！！{% endsay %}
 {% say zundamon23 %}どうしたのだ？{% endsay %}

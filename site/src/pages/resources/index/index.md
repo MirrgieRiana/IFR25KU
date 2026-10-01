@@ -2,7 +2,7 @@
 title: "IFR25KU: The Institute of Fairy Research 2025 Kakera Unofficial"
 tagline: "MirageFairyの世界観に基づいた、可能な世界の一つを表現するMinecraft MOD。"
 description: "MirageFairyの世界観に基づいた、可能な世界の一つを表現するMinecraft MOD。"
-layout: splash
+layout: one-column
 header:
   og_background: /assets/images/index/banner1.webp
   overlay_color: "#1a1a2e"
@@ -44,7 +44,7 @@ toc: false
       </div>
       <div class="encyclopedia-card__body">
         <h3 class="encyclopedia-card__title">単子葉類妖花目ミラージュ科　ミラージュ</h3>
-        <p class="encyclopedia-card__text">　蝶のような翅の生えた手のひら大の少女の姿をした妖精。非常に憶病で、滅多に人前に姿を現さない。捕まえようとしても人魂（ウィスプ）のような姿に化けて逃げ、いくら追いかけても捕まえることができないさまから、ミラージュ（蜃気楼）の名で知られている。</p>
+        <p class="encyclopedia-card__text">　蝶のような翅の生えた手のひら大の少女の姿をした妖精。非常に臆病で、滅多に人前に姿を現さない。捕まえようとしても人魂（ウィスプ）のような姿に化けて逃げ、いくら追いかけても捕まえることができないさまから、ミラージュ（蜃気楼）の名で知られている。</p>
         <p class="encyclopedia-card__text">　古くは神霊の一種と考えられていたが、近年の研究により、ミラージュ植物の花粉が自律構造を持ったものであると解明された。</p>
       </div>
     </div>

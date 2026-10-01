@@ -2,6 +2,9 @@ package miragefairy2024.misc
 
 import mirrg.kotlin.helium.join
 import mirrg.kotlin.helium.max
+import mirrg.kotlin.hydrogen.blueOfRgb
+import mirrg.kotlin.hydrogen.greenOfRgb
+import mirrg.kotlin.hydrogen.redOfRgb
 import java.awt.Color
 import java.io.File
 import javax.imageio.ImageIO
@@ -35,12 +38,12 @@ object ImageMain1 {
             (0 until 16).forEach { y ->
                 val rgb1 = image1.getRGB(x, y)
                 val rgb2 = image2.getRGB(x, y)
-                val r1 = rgb1 shr 16 and 0xFF
-                val g1 = rgb1 shr 8 and 0xFF
-                val b1 = rgb1 and 0xFF
-                val r2 = rgb2 shr 16 and 0xFF
-                val g2 = rgb2 shr 8 and 0xFF
-                val b2 = rgb2 and 0xFF
+                val r1 = rgb1.redOfRgb
+                val g1 = rgb1.greenOfRgb
+                val b1 = rgb1.blueOfRgb
+                val r2 = rgb2.redOfRgb
+                val g2 = rgb2.greenOfRgb
+                val b2 = rgb2.blueOfRgb
                 println(
                     listOf(
                         x.toString(),

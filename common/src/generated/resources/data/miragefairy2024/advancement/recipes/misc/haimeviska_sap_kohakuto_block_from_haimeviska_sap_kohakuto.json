@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_haimeviska_sap_kohakuto": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:haimeviska_sap_kohakuto"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:haimeviska_sap_kohakuto_block_from_haimeviska_sap_kohakuto"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_haimeviska_sap_kohakuto"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:haimeviska_sap_kohakuto_block_from_haimeviska_sap_kohakuto"
+    ]
+  }
+}

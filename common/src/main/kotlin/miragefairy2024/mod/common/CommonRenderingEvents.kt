@@ -12,12 +12,19 @@ object CommonRenderingEvents {
 }
 
 fun interface RenderBlockPosesOutlineListener {
-    fun getBlockPoses(context: RenderBlockPosesOutlineContext): Pair<BlockPos, Set<BlockPos>>?
+    fun getBlockPoses(context: RenderBlockPosesOutlineContext): BlockPosesOutline?
 }
 
 fun interface RenderBlockPosesOutlineListenerItem {
-    fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): Pair<BlockPos, Set<BlockPos>>?
+    fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): BlockPosesOutline?
 }
+
+/**
+ * @param baseBlockPos 枠全体の明るさを決めるために参照する位置なのだ～🌱
+ * @param rgb 枠の色なのだ～🌱
+ * 実際に描かれる色は、これに明るさを掛けたものになるのだ～🌱
+ */
+class BlockPosesOutline(val baseBlockPos: BlockPos, val blockPoses: Set<BlockPos>, val rgb: Int)
 
 interface RenderBlockPosesOutlineContext {
     val level: Level

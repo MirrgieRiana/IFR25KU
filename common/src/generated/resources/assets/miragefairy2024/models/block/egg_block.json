@@ -1,5 +1,6 @@
 {
   "parent": "minecraft:block/dragon_egg",
+  "ambientocclusion": false,
   "textures": {
     "all": "miragefairy2024:block/egg_block",
     "particle": "miragefairy2024:block/egg_block"

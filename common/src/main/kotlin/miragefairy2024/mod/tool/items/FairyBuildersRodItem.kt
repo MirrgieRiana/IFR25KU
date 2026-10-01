@@ -2,6 +2,7 @@ package miragefairy2024.mod.tool.items
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
+import miragefairy2024.mod.common.BlockPosesOutline
 import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
 import miragefairy2024.mod.common.RenderBlockPosesOutlineListenerItem
 import miragefairy2024.mod.enchantment.BUILDERS_ROD_ITEM_TAG
@@ -68,9 +69,9 @@ class FairyBuildersRodItem(override val configuration: FairyBuildersRodConfigura
     FairyToolItem,
     ModifyItemEnchantmentsHandler {
 
-    override fun mineBlock(stack: ItemStack, world: Level, state: BlockState, pos: BlockPos, miner: LivingEntity): Boolean {
-        super.mineBlock(stack, world, state, pos, miner)
-        postMineImpl(stack, world, state, pos, miner)
+    override fun mineBlock(stack: ItemStack, level: Level, state: BlockState, pos: BlockPos, miner: LivingEntity): Boolean {
+        super.mineBlock(stack, level, state, pos, miner)
+        postMineImpl(stack, level, state, pos, miner)
         return true
     }
 
@@ -80,9 +81,9 @@ class FairyBuildersRodItem(override val configuration: FairyBuildersRodConfigura
         return true
     }
 
-    override fun inventoryTick(stack: ItemStack, world: Level, entity: Entity, slot: Int, selected: Boolean) {
-        super.inventoryTick(stack, world, entity, slot, selected)
-        inventoryTickImpl(stack, world, entity, slot, selected)
+    override fun inventoryTick(stack: ItemStack, level: Level, entity: Entity, slot: Int, selected: Boolean) {
+        super.inventoryTick(stack, level, entity, slot, selected)
+        inventoryTickImpl(stack, level, entity, slot, selected)
     }
 
     override fun modifyItemEnchantments(itemStack: ItemStack, mutableItemEnchantments: ItemEnchantments.Mutable, enchantmentLookup: HolderLookup.RegistryLookup<Enchantment>) = modifyItemEnchantmentsImpl(itemStack, mutableItemEnchantments, enchantmentLookup)
@@ -143,7 +144,7 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
         }.map { it.second }
     }
 
-    override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): Pair<BlockPos, Set<BlockPos>>? {
+    override fun getBlockPoses(hand: InteractionHand, context: RenderBlockPosesOutlineContext): BlockPosesOutline? {
 
         val toolItemStack = context.player.getItemInHand(hand)
 
@@ -158,9 +159,10 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
 
         val sequence = getDestinationBlockPoses(context.level, context.player, hand, toolItemStack, blockItemStack, blockHitResult, count)
 
-        return Pair(
+        return BlockPosesOutline(
             blockHitResult.blockPos.relative(blockHitResult.direction),
             sequence.toSet(),
+            0xFFFFFF,
         )
     }
 
