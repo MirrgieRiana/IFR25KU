@@ -140,43 +140,60 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
         super.init()
 
         // 地形生成
-        val onGrassBlock = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, Blocks.GRASS_BLOCK)))
-        val onCoarseDirt = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, Blocks.COARSE_DIRT)))
-        Feature.TREE.generator(MirageFairy2024.identifier("giant_plastic_tree_old_growth_amber_forest")) {
-            GIANT_PLASTIC_TREE_CONFIGURED_FEATURE_KEY.generator {
-                registerPlacedFeature(giantPlasticTreePlacedFeatureKey) { tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCement }
+        run {
+            val onGrassBlock = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, Blocks.GRASS_BLOCK)))
+            val onCoarseDirt = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, Blocks.COARSE_DIRT)))
+
+            // プラノキの巨木
+            Feature.TREE.generator(MirageFairy2024.identifier("giant_plastic_tree_old_growth_amber_forest")) {
+                GIANT_PLASTIC_TREE_CONFIGURED_FEATURE_KEY.generator {
+                    registerPlacedFeature(giantPlasticTreePlacedFeatureKey) { tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCement }
+                }
             }
-        }
-        Feature.TREE.generator(MirageFairy2024.identifier("small_plastic_tree_old_growth_amber_forest")) {
-            SMALL_PLASTIC_TREE_CONFIGURED_FEATURE_KEY.generator {
-                registerPlacedFeature(smallPlasticTreePlacedFeatureKey) { count(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCement }
-                registerPlacedFeature(smallPlasticTreeCoarseDirtPlacedFeatureKey) { tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onCoarseDirt }
+
+            // 小さいプラノキ
+            Feature.TREE.generator(MirageFairy2024.identifier("small_plastic_tree_old_growth_amber_forest")) {
+                SMALL_PLASTIC_TREE_CONFIGURED_FEATURE_KEY.generator {
+                    registerPlacedFeature(smallPlasticTreePlacedFeatureKey) { count(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCement }
+                    registerPlacedFeature(smallPlasticTreeCoarseDirtPlacedFeatureKey) { tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onCoarseDirt }
+                }
             }
-        }
-        Feature.TREE.generator(MirageFairy2024.identifier("small_oak_old_growth_amber_forest")) {
-            TreeFeatures.OAK.generator {
-                registerPlacedFeature(smallOakPlacedFeatureKey) { per(2) + tree(Blocks.OAK_SAPLING) }
+
+            // 小さいオーク
+            Feature.TREE.generator(MirageFairy2024.identifier("small_oak_old_growth_amber_forest")) {
+                TreeFeatures.OAK.generator {
+                    registerPlacedFeature(smallOakPlacedFeatureKey) { per(2) + tree(Blocks.OAK_SAPLING) }
+                }
             }
-        }
-        Feature.TREE.generator(MirageFairy2024.identifier("small_jungle_tree_old_growth_amber_forest")) {
-            TreeFeatures.JUNGLE_TREE.generator {
-                registerPlacedFeature(smallJunglePlacedFeatureKey) { per(2) + tree(Blocks.JUNGLE_SAPLING) + onGrassBlock }
+
+            // 小さいジャングルの木
+            Feature.TREE.generator(MirageFairy2024.identifier("small_jungle_tree_old_growth_amber_forest")) {
+                TreeFeatures.JUNGLE_TREE.generator {
+                    registerPlacedFeature(smallJunglePlacedFeatureKey) { per(2) + tree(Blocks.JUNGLE_SAPLING) + onGrassBlock }
+                }
             }
-        }
-        Feature.TREE.generator(MirageFairy2024.identifier("mega_jungle_tree_old_growth_amber_forest")) {
-            TreeFeatures.MEGA_JUNGLE_TREE.generator {
-                registerPlacedFeature(megaJunglePlacedFeatureKey) { per(8) + tree(Blocks.JUNGLE_SAPLING) + onGrassBlock }
+
+            // ジャングルの巨木
+            Feature.TREE.generator(MirageFairy2024.identifier("mega_jungle_tree_old_growth_amber_forest")) {
+                TreeFeatures.MEGA_JUNGLE_TREE.generator {
+                    registerPlacedFeature(megaJunglePlacedFeatureKey) { per(8) + tree(Blocks.JUNGLE_SAPLING) + onGrassBlock }
+                }
             }
-        }
-        Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("tall_grass_old_growth_amber_forest")) {
-            registerConfiguredFeature { FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.TALL_GRASS)), listOf(Blocks.GRASS_BLOCK)) }.generator {
-                registerPlacedFeature(tallGrassPlacedFeatureKey) { count(2) + flower(square, surface) }
+
+            // 背の高い草
+            Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("tall_grass_old_growth_amber_forest")) {
+                registerConfiguredFeature { FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.TALL_GRASS)), listOf(Blocks.GRASS_BLOCK)) }.generator {
+                    registerPlacedFeature(tallGrassPlacedFeatureKey) { count(2) + flower(square, surface) }
+                }
             }
-        }
-        Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("dead_bush_old_growth_amber_forest")) {
-            registerConfiguredFeature { FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.DEAD_BUSH)), listOf(Blocks.COARSE_DIRT), 4) }.generator {
-                registerPlacedFeature(deadBushPlacedFeatureKey) { count(4) + listOf(InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()) }
+
+            // 枯れ木
+            Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("dead_bush_old_growth_amber_forest")) {
+                registerConfiguredFeature { FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.DEAD_BUSH)), listOf(Blocks.COARSE_DIRT), 4) }.generator {
+                    registerPlacedFeature(deadBushPlacedFeatureKey) { count(4) + listOf(InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()) }
+                }
             }
+
         }
 
         registerOverworldSurfaceRules {
