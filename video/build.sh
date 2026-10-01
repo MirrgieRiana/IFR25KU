@@ -42,7 +42,7 @@ cd "$(dirname "$0")"   # video/
 FFMPEG="${FFMPEG:-ffmpeg}"
 BGM_VOL="${BGM_VOL:-0.45}"
 
-# --- 0〜3. 構成jsonl ができるまでの段（BGM の確認・音声合成・結合・scene）なのだぁ ---
+# --- 0～3. 構成jsonl ができるまでの段（BGM の確認・音声合成・結合・scene）なのだぁ ---
 #        リポジトリ同梱の xarpite（相対パス）で build.xa1 を実行するのだぁ。
 ../xarpite/xarpite -A 5 -q -f build.xa1
 

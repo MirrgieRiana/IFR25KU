@@ -1,7 +1,8 @@
 # AI: 読み上げは VOICEVOX の「カタカナ原稿（is_kana）」記法を経由するのだぁ🌱（xarpite / API5）
 # 手順: text から audio_query → accent_phrases をカナ原稿にシリアライズ → 誤読だけ手直し
 #       → is_kana=true で読み直して差し込み → 合成。使ったカナ原稿は kana.json に保存するのだぁ。
-# build.xa1 が USE で呼ぶのだぁ。カレントディレクトリは video/ なのだぁ。
+# build.xa1 が USE で呼ぶのだぁ。
+# カレントディレクトリは video/ なのだぁ。
 
 API(5)
 @USE("./common")

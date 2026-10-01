@@ -1,5 +1,6 @@
 # 各行wavを、タイトル保持→本編（行間の無音）→クレジット保持、の順に結合するのだぁ🌱（xarpite / API5）
-# build.xa1 が USE で呼ぶのだぁ。カレントディレクトリは video/ なのだぁ。
+# build.xa1 が USE で呼ぶのだぁ。
+# カレントディレクトリは video/ なのだぁ。
 
 API(5)
 @USE("./common")
