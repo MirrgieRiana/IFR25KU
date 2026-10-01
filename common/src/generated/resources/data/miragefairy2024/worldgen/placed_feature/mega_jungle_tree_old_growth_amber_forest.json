@@ -2,8 +2,8 @@
   "feature": "minecraft:mega_jungle_tree",
   "placement": [
     {
-      "type": "minecraft:rarity_filter",
-      "chance": 8
+      "type": "minecraft:count",
+      "count": 2
     },
     {
       "type": "minecraft:in_square"

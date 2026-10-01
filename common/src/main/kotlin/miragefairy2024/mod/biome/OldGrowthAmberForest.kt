@@ -14,7 +14,6 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
 import miragefairy2024.util.getSurfaceNoiseThreshold
-import miragefairy2024.util.per
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.square
@@ -147,14 +146,14 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
             // プラノキの巨木
             Feature.TREE.generator(MirageFairy2024.identifier("giant_plastic_tree_old_growth_amber_forest")) {
                 GIANT_PLASTIC_TREE_CONFIGURED_FEATURE_KEY.generator {
-                    registerPlacedFeature(giantPlasticTreePlacedFeatureKey) { tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCement }
+                    registerPlacedFeature(giantPlasticTreePlacedFeatureKey) { count(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCement }
                 }
             }
 
             // 小さいプラノキ
             Feature.TREE.generator(MirageFairy2024.identifier("small_plastic_tree_old_growth_amber_forest")) {
                 SMALL_PLASTIC_TREE_CONFIGURED_FEATURE_KEY.generator {
-                    registerPlacedFeature(smallPlasticTreePlacedFeatureKey) { count(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCement }
+                    registerPlacedFeature(smallPlasticTreePlacedFeatureKey) { count(4) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCement }
                     registerPlacedFeature(smallPlasticTreeCoarseDirtPlacedFeatureKey) { tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onCoarseDirt }
                 }
             }
@@ -162,35 +161,35 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
             // 小さいオーク
             Feature.TREE.generator(MirageFairy2024.identifier("small_oak_old_growth_amber_forest")) {
                 TreeFeatures.OAK.generator {
-                    registerPlacedFeature(smallOakPlacedFeatureKey) { per(2) + tree(Blocks.OAK_SAPLING) }
+                    registerPlacedFeature(smallOakPlacedFeatureKey) { count(2) + tree(Blocks.OAK_SAPLING) }
                 }
             }
 
             // 小さいジャングルの木
             Feature.TREE.generator(MirageFairy2024.identifier("small_jungle_tree_old_growth_amber_forest")) {
                 TreeFeatures.JUNGLE_TREE.generator {
-                    registerPlacedFeature(smallJunglePlacedFeatureKey) { per(2) + tree(Blocks.JUNGLE_SAPLING) + onGrassBlock }
+                    registerPlacedFeature(smallJunglePlacedFeatureKey) { count(2) + tree(Blocks.JUNGLE_SAPLING) + onGrassBlock }
                 }
             }
 
             // ジャングルの巨木
             Feature.TREE.generator(MirageFairy2024.identifier("mega_jungle_tree_old_growth_amber_forest")) {
                 TreeFeatures.MEGA_JUNGLE_TREE.generator {
-                    registerPlacedFeature(megaJunglePlacedFeatureKey) { per(8) + tree(Blocks.JUNGLE_SAPLING) + onGrassBlock }
+                    registerPlacedFeature(megaJunglePlacedFeatureKey) { count(2) + tree(Blocks.JUNGLE_SAPLING) + onGrassBlock }
                 }
             }
 
             // 背の高い草
             Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("tall_grass_old_growth_amber_forest")) {
                 registerConfiguredFeature { FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.TALL_GRASS)), listOf(Blocks.GRASS_BLOCK)) }.generator {
-                    registerPlacedFeature(tallGrassPlacedFeatureKey) { count(2) + flower(square, surface) }
+                    registerPlacedFeature(tallGrassPlacedFeatureKey) { count(8) + flower(square, surface) }
                 }
             }
 
             // 枯れ木
             Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("dead_bush_old_growth_amber_forest")) {
                 registerConfiguredFeature { FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.DEAD_BUSH)), listOf(Blocks.COARSE_DIRT), 4) }.generator {
-                    registerPlacedFeature(deadBushPlacedFeatureKey) { count(4) + listOf(InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()) }
+                    registerPlacedFeature(deadBushPlacedFeatureKey) { count(8) + listOf(InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()) }
                 }
             }
 
