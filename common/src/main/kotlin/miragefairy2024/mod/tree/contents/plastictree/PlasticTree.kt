@@ -64,7 +64,7 @@ val plasticTreeAdvancement = AdvancementCard(
     context = AdvancementCard.Sub { rootAdvancement.await() },
     icon = { TreeBlockCard.DRIPPING_PLASTIC_TREE_LOG.item().createItemStack() },
     name = EnJa("Encroaching Old Growth", "侵蝕する原生林"),
-    description = EnJa("Explore the overworld to find the Plastic Tree", "地上を探検してプラノキを探す"),
+    description = EnJa("Explore the Old Growth Amber Forest to find the Plastic Tree", "琥珀色の原生林を探検してプラノキを探す"),
     criterion = AdvancementCard.hasItem { TreeBlockCard.PLASTIC_TREE_LOG.item() },
     type = AdvancementCardType.TOAST_AND_JEWELS,
 )
