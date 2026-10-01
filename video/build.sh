@@ -8,8 +8,8 @@
 #   3. video/ 直下 … 音声合成・動画合成などの「雑多な部分」。この build.sh が 1 と 2 を呼び出すのだぁ。
 #
 # この build.sh（＝3 の一部）が、全体を次の順で配線するのだぁ：
-#   synth.xa1 → assemble.xa1（音声・タイムライン）
-#     → sarracenia/build_scene.sh（timeline → assets.js, tachie/, frames.jsonl）
+#   build.xa1 … synth.xa1 → assemble.xa1（音声・タイムライン）
+#               → sarracenia/build_scene.sh（timeline → assets.js, tachie/, frames.jsonl）
 #     → renderer/render.js（scene.html + frames.jsonl → sarracenia/frames/）
 #     → build_video.py（フレーム＋音声＋BGM → mp4）
 #
@@ -42,23 +42,9 @@ cd "$(dirname "$0")"   # video/
 FFMPEG="${FFMPEG:-ffmpeg}"
 BGM_VOL="${BGM_VOL:-0.45}"
 
-# --- 0. 雑多パートが使う外部リソース（BGM）の存在を確認するのだぁ ---------------
-#     立ち絵 PSD・フォント・絵文字は sarracenia 側（build_scene.sh）が確認するのだぁ。
-need() { [ -f "$1" ] || { echo "ERROR: リソースが見つからないのだぁ: $1 (README.md の指示どおり置いてほしいのだぁ)"; exit 1; }; }
-need sarracenia/resources/bgm/chopin_op10-4.flac
-
-# --- 1. VOICEVOX で音声を合成するのだぁ（sarracenia/script.json → audio/*.wav, moras.json） ---
-echo "== synth (VOICEVOX) =="
-../xarpite/xarpite -A 5 -q -f synth.xa1
-
-# --- 2. 各 wav を結合してタイムラインを作るのだぁ（→ full.wav, timeline.json） -----------
-echo "== assemble =="
-../xarpite/xarpite -A 5 -q -f assemble.xa1
-
-# --- 3. sarracenia（動画タイトルのディレクトリ）で scene を作るのだぁ ------------
-#        timeline.json を渡すと assets.js・tachie/・frames.jsonl を作るのだぁ。
-echo "== build scene (sarracenia) =="
-bash sarracenia/build_scene.sh "$(pwd)/timeline.json"
+# --- 0〜3. 構成jsonl ができるまでの段（BGM の確認・音声合成・結合・scene）なのだぁ ---
+#        リポジトリ同梱の xarpite（相対パス）で build.xa1 を実行するのだぁ。
+../xarpite/xarpite -A 5 -q -f build.xa1
 
 # --- 4. 汎用レンダラーの準備（Node 依存と Chromium）なのだぁ ---------------------
 if [ ! -d renderer/node_modules ]; then

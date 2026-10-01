@@ -60,6 +60,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 | ファイル | 役割 |
 | --- | --- |
 | `build.sh` | 下記すべてを順に呼び出すオーケストレーター。**通常はこれを実行するだけ**です。 |
+| `build.xa1` | `build.sh` が最初に呼ぶ、構成jsonl ができるまでの段（BGM の確認・`synth.xa1`・`assemble.xa1`・`sarracenia/build_scene.sh`）の本体です。 |
 | `synth.xa1` | VOICEVOX で台詞ごとの音声を合成し、口パク用のモーラ区間も書き出します。 |
 | `assemble.xa1` | 台詞 wav を「タイトル→本編（行間の無音）→クレジット」の順に結合し、タイムラインを算出します。 |
 | `build_video.py` | 連番フレーム＋ナレーション＋BGM を ffmpeg で合成して mp4 にします。 |
