@@ -2,7 +2,7 @@
 title: "G1-MFA　ミラージュ妖精の生態"
 layout: encyclopedia
 header:
-  teaser: /2026/09/21/mirage-fairy.webp
+  teaser: /2019/07/15/mirage-fairy.webp
 tags:
   - MFA
   - ミラージュ
