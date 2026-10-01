@@ -18,9 +18,9 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 
 この動画は、動画編集ソフトの GUI で作るのではなくて、**「決定論的フレームレンダリング」** という方式で作るのだ～🌱
 
-1. `sarracenia/scene.html` が、1 フレーム分の構成 `cfg` を渡すとその画面を組み立てる関数 `window.applyFrame(cfg)` を持つのだ～🌱 今のこの動画では、各要素の不透明度が `cfg` に入っていて、残りは `cfg` の `t`（秒）から内部の `seek(t)` が組み立てるのだ～🌱
+1. `sarracenia/scene.html` が、1 フレーム分の構成 `frame` を渡すとその画面を組み立てる関数 `window.applyFrame(frame)` を持つのだ～🌱 今のこの動画では、各要素の不透明度が `frame` に入っていて、残りは `frame` の `t`（秒）から内部の `seek(t)` が組み立てるのだ～🌱
 2. `sarracenia/build_scene.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
-3. `renderer/render.js` がヘッドレス Chromium に `scene.html` を開かせて、`frames.jsonl` を頭から 1 行ずつ `applyFrame(cfg)` に渡して、1 行につき 1 コマ撮るのだ～🌱
+3. `renderer/render.js` がヘッドレス Chromium に `scene.html` を開かせて、`frames.jsonl` を頭から 1 行ずつ `applyFrame(frame)` に渡して、1 行につき 1 コマ撮るのだ～🌱
 4. 撮れた連番画像の `sarracenia/frames/f_00000.png …` を ffmpeg で映像にして、ナレーション音声と BGM を重ねて mp4 にするのだ～🌱
 
 絵は構成jsonl だけで決まるから、マシンの速さに関係なく尺が正確で、何度ビルドしても同じ結果になるのだ～🌱
@@ -85,7 +85,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 | `build_scene.sh` | タイムラインを受け取って、`assets.js` と `tachie/` と `frames.jsonl` を作る、このパートの入口なのだ～🌱 このディレクトリへ cd して `build_scene.xa1` を呼ぶだけなのだ～🌱 |
 | `build_scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `npm install` と `assets.js` の焼き込みと `extract_tachie.js` の実行と、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
 | `script.json` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義するのだ～🌱 |
-| `scene.html` | 画面の見た目と `window.applyFrame(cfg)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 |
+| `scene.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 |
 | `extract_tachie.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出すのだ～🌱 |
 | `package.json` / `package-lock.json` | Node の依存関係（`ag-psd` / `pngjs`）なのだ～🌱 |
 | `resources/**/*.md5` | 外部取得リソースの md5 なのだ～🌱 **そこに、どの名前で、何を置けばよいかを保証するための目印**なのだ～🌱 |
@@ -221,15 +221,15 @@ base64 への符号化には、`base64` コマンドを使うのだ～🌱
 
 ### sarracenia/scene.html（画面と applyFrame）なのだ～🌱
 
-画面の見た目のすべてと、構成 `cfg` から画面を決める `window.applyFrame(cfg)` が入っているのだ～🌱
-`applyFrame` は、まず `window.seek(cfg.t)`（時刻→画面）を呼んで、それから各要素の不透明度を `cfg` の値から当てるのだ～🌱
+画面の見た目のすべてと、構成 `frame` から画面を決める `window.applyFrame(frame)` が入っているのだ～🌱
+`applyFrame` は、まず `window.seek(frame.t)`（時刻→画面）を呼んで、それから各要素の不透明度を `frame` の値から当てるのだ～🌱
 背景のシーン切り替え（沼地と泥沼のクロスフェード）と、アイテム枠と、立ち絵（口パク・まばたき・眉と腕と汗のポーズ）を組み立てるのだ～🌱
 それと、字幕（話者色の縁取り）と、キャラ名と、クレジットと、開幕フレーム（＝サムネイル）のデカ字も組み立てるのだ～🌱
 
 ### renderer/render.js（フレーム撮影）なのだ～🌱
 
 ヘッドレス Chromium でテンプレートの `scene.html` を開いて、フォント読み込み完了を待つのだ～🌱
-それから、構成jsonl を 1 行ずつ `applyFrame(cfg)` に渡して、1 行につき 1 コマ撮るのだ～🌱
+それから、構成jsonl を 1 行ずつ `applyFrame(frame)` に渡して、1 行につき 1 コマ撮るのだ～🌱
 連続する行の構成を正規化した JSON が同じなら、撮り直さずに前のコマを使い回すのだ～🌱
 動画の中身を知らない、汎用レンダラーなのだ～🌱
 

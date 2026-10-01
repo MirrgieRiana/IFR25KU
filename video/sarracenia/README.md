@@ -22,14 +22,14 @@ bash build_scene.sh [timeline.json]
 | `build_scene.sh` | このパートの入口。このディレクトリへ cd して、`build_scene.xa1` を呼ぶだけです。 |
 | `build_scene.xa1` | 処理の本体。リソース確認・`npm install`・`assets.js`（フォント・絵文字・テクスチャ・タイムラインの束）の焼き込み・下記スクリプトの実行と、構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）の生成をまとめます。 |
 | `script.json` | 台本。台詞・話者・読み（カナ原稿）・字幕・シーン・登場アイテムを定義します。 |
-| `scene.html` | 画面の見た目と `window.applyFrame(cfg)`（構成→画面）の本体。 |
+| `scene.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体。 |
 | `extract_tachie.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出します。 |
 | `resources/**/*.md5` | 外部取得リソースの md5（置き場所と中身の目印）。実体は著作権上コミットしません。 |
 
 ## 構成jsonl（`frames.jsonl`）について
 
 1 行 = 1 フレームの構成オブジェクトを並べたものです。汎用レンダラーが、これを 1 行ずつ `scene.html` の
-`window.applyFrame(cfg)` に渡します。
+`window.applyFrame(frame)` に渡します。
 
 各行は、`template` と、時刻 `t` と、画面の各要素の不透明度を持ちます。
 `template` に入れるテンプレートは、`build_scene.xa1` の冒頭で決めています。

@@ -79,8 +79,8 @@ const normalizeJson = v => Array.isArray(v) ? `[${v.map(normalizeJson).join(',')
         await page.waitForFunction('window.__ready===true', { timeout: 20000 });
         loadedTemplateUrl = templateUrl;
       }
-      await page.evaluate(async (cfg) => {
-        await window.applyFrame(cfg);
+      await page.evaluate(async (frame) => {
+        await window.applyFrame(frame);
         // 書き換えた DOM が描画されてから、スクリーンショットを撮るのだ～🌱
         await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
       }, frames[i]);

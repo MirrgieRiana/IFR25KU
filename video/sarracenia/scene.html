@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- 構成jsonl の 1 行から絵を組み立てる window.applyFrame(cfg) を持つ、決定論的フレームレンダラーなのだぁ🌱 -->
+<!-- 構成jsonl の 1 行から絵を組み立てる window.applyFrame(frame) を持つ、決定論的フレームレンダラーなのだぁ🌱 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -188,14 +188,14 @@ const TACHIE = {
     {sym:'sweat',id:'13-2'},
   ]},
 };
-function buildTachie(el, cfg){
+function buildTachie(el, character){
   let html='';
-  cfg.layers.forEach(L=>{
-    if(L.eye){ (L.ids||[L.id]).forEach(id=>{ html+=`<img class="eye-${L.eye}" src="tachie/${cfg.ch}/${id}.png">`; }); }
-    else if(L.mouth){ html+=`<img class="mouth-${L.mouth}" src="tachie/${cfg.ch}/${L.id}.png">`; }
-    else if(L.pg){ html+=`<img class="pg-${L.pg} pg-${L.pg}-${L.key}" src="tachie/${cfg.ch}/${L.id}.png">`; }
-    else if(L.sym){ html+=`<img class="sym-${L.sym}" style="display:none" src="tachie/${cfg.ch}/${L.id}.png">`; }
-    else { html+=`<img src="tachie/${cfg.ch}/${L.id}.png">`; }
+  character.layers.forEach(L=>{
+    if(L.eye){ (L.ids||[L.id]).forEach(id=>{ html+=`<img class="eye-${L.eye}" src="tachie/${character.ch}/${id}.png">`; }); }
+    else if(L.mouth){ html+=`<img class="mouth-${L.mouth}" src="tachie/${character.ch}/${L.id}.png">`; }
+    else if(L.pg){ html+=`<img class="pg-${L.pg} pg-${L.pg}-${L.key}" src="tachie/${character.ch}/${L.id}.png">`; }
+    else if(L.sym){ html+=`<img class="sym-${L.sym}" style="display:none" src="tachie/${character.ch}/${L.id}.png">`; }
+    else { html+=`<img src="tachie/${character.ch}/${L.id}.png">`; }
   });
   el.innerHTML=html;
 }
@@ -349,29 +349,29 @@ function fitThumb(sel, maxW, maxH){
 }
 
 // 汎用レンダラー（../renderer/render.js）向けの入口なのだぁ🌱
-// レンダラーは、このシーンの中身を何も知らずに、構成jsonl の 1 行（cfg）を applyFrame に渡すだけなのだぁ。
+// レンダラーは、このシーンの中身を何も知らずに、構成jsonl の 1 行（frame）を applyFrame に渡すだけなのだぁ。
 // 不透明度は、build_scene.xa1 が構成の各行に書いた値を、そのまま当てるのだ～🌱
 // BE で、立ち絵は最初のフレームからクレジット手前まで固定表示にしたから、サムネにも立ち絵が出るのだ～🌱
 // BC で、字幕を覆う横帯は、字幕と連動させずに本編のあいだ出すようにしたから、タイトル中は出ないのだ～🌱
 // ポーズと口パクとまばたきと字幕の中身は、まだ seek(t) がタイムラインから組み立てるのだ～🌱
 // その seek は、不透明度を当てる前に呼ぶのだ～🌱
-window.applyFrame = function(cfg){
+window.applyFrame = function(frame){
   // seek を先に呼ぶのだ～🌱 初回の seek が走らせる fitThumb が font-size を先に置くから、
   // こうしておくと、style 属性の中のプロパティの並びが、移す前とそろうのだ～🌱
-  window.seek(cfg.t);
-  document.querySelector('#bgSwamp').style.opacity = cfg.swampOp;
-  document.querySelector('#bgBog').style.opacity = cfg.bogOp;
-  document.querySelector('#itemPlant').style.opacity = cfg.plantOp;
-  document.querySelector('#itemLeaf').style.opacity = cfg.leafOp;
+  window.seek(frame.t);
+  document.querySelector('#bgSwamp').style.opacity = frame.swampOp;
+  document.querySelector('#bgBog').style.opacity = frame.bogOp;
+  document.querySelector('#itemPlant').style.opacity = frame.plantOp;
+  document.querySelector('#itemLeaf').style.opacity = frame.leafOp;
   ['#thumbBandTop','#thumbBandBot','.thumb-frame','#thumbTop','#thumbBot','#thumbLogo']
-    .forEach(s=>document.querySelector(s).style.opacity=cfg.openOp);
-  document.querySelector('#credit').style.opacity = cfg.creditOp;
-  document.querySelector('#tachieTsumugi').style.opacity = cfg.tachieOp;
-  document.querySelector('#tachieZundamon').style.opacity = cfg.tachieOp;
-  document.querySelector('#band').style.opacity = cfg.bandOp;
-  document.querySelector('#subwrap').style.opacity = cfg.subOp;
-  document.querySelector('#name').style.opacity = cfg.subOp;
-  document.querySelector('#scrim').style.opacity = cfg.scrimOp;
+    .forEach(s=>document.querySelector(s).style.opacity=frame.openOp);
+  document.querySelector('#credit').style.opacity = frame.creditOp;
+  document.querySelector('#tachieTsumugi').style.opacity = frame.tachieOp;
+  document.querySelector('#tachieZundamon').style.opacity = frame.tachieOp;
+  document.querySelector('#band').style.opacity = frame.bandOp;
+  document.querySelector('#subwrap').style.opacity = frame.subOp;
+  document.querySelector('#name').style.opacity = frame.subOp;
+  document.querySelector('#scrim').style.opacity = frame.scrimOp;
 };
 window.__ready = true;
 </script>
