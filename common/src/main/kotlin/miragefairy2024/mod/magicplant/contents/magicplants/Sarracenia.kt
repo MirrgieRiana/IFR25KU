@@ -24,20 +24,14 @@ import miragefairy2024.util.surface
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
-import net.minecraft.core.Direction
-import net.minecraft.data.worldgen.placement.PlacementUtils
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.biome.Biomes
-import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
-import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
-import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
-import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
 import net.minecraft.world.level.material.MapColor
 
 object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
@@ -105,7 +99,7 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
             registerConfiguredFeature("cluster") { RandomPatchConfiguration(20, 8, 3, placer) }.generator {
                 registerPlacedFeature("cluster") { per(8) + flower(center, surface) }.placeWhenVegetalDecoration { (+ConventionalBiomeTags.IS_SWAMP + +ConventionalBiomeTags.IS_JUNGLE + +Biomes.MANGROVE_SWAMP) * defaultTraits }
             }
-            registerConfiguredFeature("cluster_on_grass") { RandomPatchConfiguration(20, 8, 3, PlacementUtils.filtered(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(maxAgedBlockState)), BlockPredicate.allOf(BlockPredicate.ONLY_IN_AIR_PREDICATE, BlockPredicate.matchesBlocks(Direction.DOWN.normal, Blocks.GRASS_BLOCK)))) }.generator {
+            registerConfiguredFeature("cluster_on_grass") { RandomPatchConfiguration(20, 8, 3, placerOnGrass) }.generator {
                 registerPlacedFeature("cluster_on_grass") { per(8) + flower(center, surface) }.placeWhenVegetalDecoration { +OldGrowthAmberForestBiomeCard.key }
             }
         }
