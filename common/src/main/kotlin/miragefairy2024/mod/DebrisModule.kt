@@ -88,7 +88,7 @@ enum class DebrisCard(
     OLD_GROWTH_AMBER_FOREST_COPAL("old_growth_amber_forest/copal", 128, 2..6, { MaterialCard.COPAL.item().createItemStack() }, BiomeCondition.BiomeKey(OldGrowthAmberForestBiomeCard.key), extraPlacementModifier = { onResinCement }),
     OLD_GROWTH_AMBER_FOREST_RETINITE("old_growth_amber_forest/retinite", 128, 2..6, { MaterialCard.RETINITE.item().createItemStack() }, BiomeCondition.BiomeKey(OldGrowthAmberForestBiomeCard.key), extraPlacementModifier = { onResinCement }),
     OLD_GROWTH_AMBER_FOREST_STICK("old_growth_amber_forest/stick", 32 / 4, 2..6, { Items.STICK.createItemStack() }, BiomeCondition.BiomeKey(OldGrowthAmberForestBiomeCard.key), extraPlacementModifier = { onResinCement }),
-    OLD_GROWTH_AMBER_FOREST_PLASTIC_TREE_SAP("old_growth_amber_forest/plastic_tree_sap", 128 / 4, 2..6, { MaterialCard.PLASTIC_TREE_SAP.item().createItemStack() }, BiomeCondition.BiomeKey(OldGrowthAmberForestBiomeCard.key), extraPlacementModifier = { onResinCement }),
+    OLD_GROWTH_AMBER_FOREST_PLASTIC_TREE_SAP("old_growth_amber_forest/plastic_tree_sap", 32 / 4, 2..6, { MaterialCard.PLASTIC_TREE_SAP.item().createItemStack() }, BiomeCondition.BiomeKey(OldGrowthAmberForestBiomeCard.key), extraPlacementModifier = { onResinCement }),
     ;
 
     val identifier = MirageFairy2024.identifier("${path}_debris")
