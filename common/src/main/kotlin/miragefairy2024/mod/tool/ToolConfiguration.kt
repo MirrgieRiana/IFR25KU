@@ -13,6 +13,7 @@ import miragefairy2024.util.generator
 import miragefairy2024.util.registerChild
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.minecraft.core.BlockPos
+import net.minecraft.data.models.model.ModelTemplate
 import net.minecraft.tags.TagKey
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.entity.Entity
@@ -77,6 +78,7 @@ abstract class ToolConfiguration {
 
     abstract val toolMaterialCard: ToolMaterialCard
     val tags = mutableListOf<TagKey<Item>>()
+    var modelTemplateOverride: ModelTemplate? = null
     var miningSpeedMultiplierOverride: Float? = null
     val superEffectiveBlocks = mutableListOf<Block>()
     val effectiveBlocks = mutableListOf<Block>()

@@ -1,0 +1,10 @@
+{
+  "patch_size": {
+    "height": 22,
+    "width": 22
+  },
+  "repeat": true,
+  "texture": "miragefairy2024:textures/gui/ifr_encyclopedia_background.png",
+  "texture_height": 66,
+  "texture_width": 66
+}

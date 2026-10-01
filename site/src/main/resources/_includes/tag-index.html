@@ -1,0 +1,14 @@
+<section class="tag-index">
+  {% assign tag_entries = site.tags | sort %}
+  {% if tag_entries.size > 0 %}
+  <ul class="tag-index__items">
+    {% for tag_entry in tag_entries %}
+    <li class="tag-index__item">
+      <a href="{{ '/tag/' | append: tag_entry[0] | append: '.html' | relative_url }}">{{ tag_entry[0] }} ({{ tag_entry[1].size }})</a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>まだタグがありません。</p>
+  {% endif %}
+</section>

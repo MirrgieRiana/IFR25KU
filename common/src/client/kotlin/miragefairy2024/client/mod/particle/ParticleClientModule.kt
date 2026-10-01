@@ -9,8 +9,8 @@ import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.SuspendedTownParticle
 
 // 滴る原木のテクスチャに描かれた、垂れている樹液の主要色に合わせてあるのだ～🌱
-private const val HAIMEVISKA_SAP_RGB = 0xFF9F32
-private const val PLASTIC_TREE_SAP_RGB = 0xFFF432
+private const val PLASTIC_TREE_SAP_RGB = 0xFF9F32
+private const val HAIMEVISKA_SAP_RGB = 0x80C8EE
 
 context(ModContext)
 fun initParticleClientModule() {

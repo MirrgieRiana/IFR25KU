@@ -2,9 +2,8 @@
 title: Lang Table
 description: MOD内テキストの翻訳対応表
 header:
-  image: /assets/images/lang-table-index/lang-table-index.teaser.svg
   teaser: /assets/images/lang-table-index/lang-table-index.teaser.svg
-  height: 200px
+  teaser_banner: false
 ---
 
 MOD内で使用されているすべてのテキストの翻訳対応表です。

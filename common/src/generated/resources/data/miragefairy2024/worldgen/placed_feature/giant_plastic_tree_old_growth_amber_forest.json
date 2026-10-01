@@ -3,7 +3,7 @@
   "placement": [
     {
       "type": "minecraft:rarity_filter",
-      "chance": 2
+      "chance": 1
     },
     {
       "type": "minecraft:in_square"
@@ -35,7 +35,7 @@
       "type": "minecraft:block_predicate_filter",
       "predicate": {
         "type": "minecraft:matching_blocks",
-        "blocks": "miragefairy2024:resin_cemented_dirt",
+        "blocks": "miragefairy2024:resin_cement",
         "offset": [
           0,
           -1,

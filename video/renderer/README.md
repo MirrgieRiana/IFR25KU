@@ -1,43 +1,71 @@
-# renderer — 汎用フレームレンダラーなのだぁ🌱
+# renderer なのだ～🌱
 
-構成jsonl（1 行 = 1 フレーム）と HTML テンプレートを受け取って、ひたすら対応する画像を撮るだけの、
-**動画の中身を知らない**カプセル化されたレンダラーです。単体で完結していて、他のパートに依存しません。
+構成 jsonl と HTML のテンプレートから、連番のフレーム画像をレンダリングする、汎用のレンダラーなのだ～🌱
+特定の動画の内容には依存しなくて、コードと依存は、このディレクトリの中で完結しているのだ～🌱
 
-## 使い方
+## 使い方なのだ～🌱
 
 ```sh
-node render.js <template.html> <frames.jsonl> <outDir>
+bash render.sh <template.html> <frames.jsonl> <outDir>
 ```
 
-- `template.html` … レンダリング対象の HTML テンプレート。相対参照（`assets.js` など）は、この HTML の場所を基準に解決されます。
-- `frames.jsonl` … 1 行 = 1 フレームの構成（JSON オブジェクト）を並べたファイル。
-- `outDir` … 連番画像 `f_00000.png …` を書き出す先（丸ごと作り直します）。
+`render.sh` は、不足している依存と Chromium を準備してから、フレーム画像をレンダリングするのだ～🌱
+引数のパスは、呼び出し元のカレントディレクトリを基準に解決するのだ～🌱
 
-## テンプレートに求める 2 つの約束
+- `template.html` は、レンダリングする HTML のテンプレートなのだ～🌱
+- `frames.jsonl` は、1 フレーム分の構成の JSON オブジェクトを、1 行に 1 個ずつ並べたファイルなのだ～🌱
+- `outDir` は、`f_00000.png` から始まる連番の PNG 画像の出力先のディレクトリなのだ～🌱
 
-レンダラーがテンプレートに期待するのは、次の 2 点だけです。
+引数が 3 個でないときは、使い方を出して、終了コード 1 で終わるのだ～🌱
+`outDir` が、空のディレクトリでも、存在しないパスでもないときは、エラーを出して、終了コード 1 で終わるのだ～🌱
+テンプレートの中の `assets.js` のような相対パスは、テンプレートのあるディレクトリを基準に解決されるのだ～🌱
+構成 jsonl の空行は、無視するのだ～🌱
 
-1. 読み込みが終わったら `window.__ready` を `true` にすること。
-2. `window.applyFrame(cfg)` を持つこと。
-   - `cfg` は構成jsonl の 1 行（＝1 フレーム分の設定オブジェクト）です。
-   - `applyFrame(cfg)` は、その設定どおりに画面を組み立てて、**「この画面の見た目を一意に表す文字列（再利用キー）」を返します**。
+`render.sh` は、不足しているものを、次のように準備するのだ～🌱
 
-レンダラーは構成jsonl を頭から 1 行ずつ `applyFrame` に渡し、1 行につき 1 枚の画像を撮ります。
-連続する行の再利用キーが同じなら、撮り直さず前のコマを使い回します（変化の少ない場面が速くなります）。
+- `node_modules` が無ければ、このディレクトリで `npm install` を実行するのだ～🌱
+- `CHROMIUM_PATH` が指定されていなくて、実行できる `/tmp/chromium` も無ければ、依存のパッケージに含まれる Chromium を `/tmp/chromium` に展開するのだ～🌱
 
-## 環境変数
+## テンプレートが満たすべき要件なのだ～🌱
+
+レンダラーがテンプレートに求めるのは、次の 2 個だけなのだ～🌱
+
+1. 読み込みが終わったら、`window.__ready` を `true` にするのだ～🌱
+2. `window.applyFrame(cfg)` という関数を持つのだ～🌱
+
+`cfg` は、構成 jsonl の 1 行を解析した、1 フレーム分の構成のオブジェクトなのだ～🌱
+`applyFrame(cfg)` は、その構成のとおりに、ページの DOM とスタイルを書き換えるのだ～🌱
+`applyFrame(cfg)` が Promise を返したときは、その完了を待ってから、スクリーンショットを撮るのだ～🌱
+同じ `cfg` を渡したときは、ページが同じ見た目にならなきゃだめなのだ～🌱
+
+## レンダリングの流れなのだ～🌱
+
+レンダラーは、構成 jsonl を先頭から 1 行ずつ `applyFrame` に渡して、1 行につき 1 枚のスクリーンショットを撮るのだ～🌱
+連続する行の構成を正規化した JSON が同じなら、スクリーンショットを撮らずに、前のフレームの画像をコピーするのだ～🌱
+正規化では、オブジェクトのキーを辞書順に並べるから、キーの順番だけが違う構成も同じとみなすのだ～🌱
+だから、変化の少ない場面ほど、レンダリングが速く終わるのだ～🌱
+
+## 環境変数なのだ～🌱
 
 | 変数 | 既定 | 説明 |
 | --- | --- | --- |
-| `CHROMIUM_PATH` | `/tmp/chromium` | Chrome/Chromium 実行ファイル。手元の Chrome を使うならそのパスを指定 |
-| `VIDEO_WIDTH` | `1280` | 画面幅 |
-| `VIDEO_HEIGHT` | `720` | 画面高さ |
+| `CHROMIUM_PATH` | `/tmp/chromium` | Chrome か Chromium の実行ファイルのパスなのだ～🌱 |
+| `CHROMIUM_LD_PATH` | なし | Chromium を起動するときに、`LD_LIBRARY_PATH` の先頭に加えるパスなのだ～🌱 |
+| `VIDEO_WIDTH` | `1280` | ビューポートの幅のピクセル数なのだ～🌱 |
+| `VIDEO_HEIGHT` | `720` | ビューポートの高さのピクセル数なのだ～🌱 |
 
-## Chromium の用意
+インストール済みの Chrome を使うときは、その実行ファイルのパスを `CHROMIUM_PATH` に指定するのだ～🌱
 
-Chrome が無い環境では、`node setup_chromium.js` で同梱 Chromium（`@sparticuz/chromium`）を `/tmp/chromium` に展開できます。
-共有ライブラリが足りない特殊な環境向けの補足は、親ディレクトリの [`../README.md`](../README.md) の「8. 補足」にあります。
+## Chromium の起動が失敗するときなのだ～🌱
 
-## 依存
+root 権限が無くて、NSS 系の共有ライブラリが OS に無い環境では、`render.sh` が準備した Chromium の起動が失敗することがあるのだ～🌱
+`libnss3.so` のような共有ライブラリが、見つからないからなのだ～🌱
+NSS 系の共有ライブラリは、このディレクトリの `node_modules/@sparticuz/chromium/bin/al2023.tar.br` を展開すると得られるのだ～🌱
+`al2023.tar.br` は、Brotli で圧縮された tar アーカイブなのだ～🌱
+展開した `.so` ファイルを 1 個のディレクトリに集めて、そのパスを `CHROMIUM_LD_PATH` に指定するのだ～🌱
 
-`npm install` で `puppeteer-core` と `@sparticuz/chromium` が入ります。
+## このファイル自体の編集ルールなのだ～🌱
+
+このファイルは、1 行を全角 70 文字までにして、次のスキルを厳守して書くのだ～🌱
+
+- [markdown-max-line-length](https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/markdown-max-line-length/SKILL.md)

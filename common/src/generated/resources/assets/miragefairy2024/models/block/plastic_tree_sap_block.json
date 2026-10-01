@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/honey_block",
+  "textures": {
+    "down": "miragefairy2024:block/plastic_tree_sap_block",
+    "particle": "miragefairy2024:block/plastic_tree_sap_block",
+    "side": "miragefairy2024:block/plastic_tree_sap_block",
+    "up": "miragefairy2024:block/plastic_tree_sap_block"
+  }
+}

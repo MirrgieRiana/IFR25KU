@@ -180,7 +180,10 @@ class OgImageRenderer : AutoCloseable {
     private fun ensureInitialized() {
         if (playwright == null) {
             ImageIO.scanForPlugins()
-            playwright = Playwright.create()
+            // ブラウザの調達は installPlaywrightBrowsers に任せるのだ～🌱
+            // これを抑止しないと、既にヘッドレスシェルがあっても、FirefoxやWebKitまで含めた全部が降ってきちゃうのだぁ…🌧️
+            val env = mapOf("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD" to "1")
+            playwright = Playwright.create(Playwright.CreateOptions().setEnv(env))
             browser = playwright!!.chromium().launch()
             page = browser!!.newPage().apply { setViewportSize(1200, 630) }
         }
@@ -224,11 +227,22 @@ class OgImageRenderer : AutoCloseable {
     }
 }
 
+val installPlaywrightBrowsers = tasks.register<JavaExec>("installPlaywrightBrowsers") {
+    group = "other"
+
+    classpath = buildscript.configurations.getByName("classpath")
+    mainClass = "com.microsoft.playwright.CLI"
+    // OG画像の描画に使うのはヘッドレスシェルだけなのだ～🌱
+    // ブラウザの種類を指定しないと、Chromium本体・Firefox・WebKitまで降ってきて、1.2GBになっちゃうのだぁ…🌧️
+    args("install", "chromium-headless-shell")
+}
+
 val generateOgImages = tasks.register("generateOgImages") {
     group = "generate"
 
+    dependsOn(installPlaywrightBrowsers)
+
     val pagesDir = file("src/pages/resources")
-    val resourcesDir = file("src/main/resources")
     val ogImagesDir = layout.buildDirectory.dir("ogImages").get().asFile
     val outputDir = ogImagesDir.resolve("assets/images")
     val regenerate = project.hasProperty("regenerate")
@@ -332,6 +346,16 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
         includeEmptyDirs = false
         val seenImagePaths = mutableMapOf<String, String>()
         eachFile {
+            // 下で配置先が平らになって元のディレクトリ名が失われるから、footer の source のリンクのために、元のパスを front matter へ書き足すのだ～🌱
+            if (name.endsWith(".md")) {
+                val sourcePath = file.relativeTo(rootDir).invariantSeparatorsPath
+                var isFirstLine = true
+                filter { line ->
+                    val result = if (isFirstLine && line == "---") "$line\nsource_path: $sourcePath" else line
+                    isFirstLine = false
+                    result
+                }
+            }
             val dirName = relativePath.pathString.substringBefore("/")
             val postMatch = """(\d{4})-(\d{2})-(\d{2})-(.+)""".toRegex().matchEntire(dirName)
             if (postMatch != null) {
@@ -372,7 +396,7 @@ val build = tasks.register("build") {
     group = "build"
 }
 
-val buildSite = tasks.register<Sync>("buildSite") {
+val buildSiteWithoutSearchIndex = tasks.register<Sync>("buildSiteWithoutSearchIndex") {
     group = "build"
     from(jekyllBuild)
     from(makeLangTable)
@@ -390,6 +414,22 @@ val buildSite = tasks.register<Sync>("buildSite") {
             }
         }
     }
+    into(layout.buildDirectory.dir("siteWithoutSearchIndex"))
+}
+
+val buildSearchIndex = tasks.register<Exec>("buildSearchIndex") {
+    group = "build"
+    dependsOn(buildSiteWithoutSearchIndex)
+    inputs.files(buildSiteWithoutSearchIndex.map { task -> fileTree(task.destinationDir) { include("**/*.html") } })
+    inputs.file("scripts/build-search-index.sh")
+    outputs.dir(layout.buildDirectory.dir("searchIndex"))
+    commandLine("bash", "scripts/build-search-index.sh")
+}
+
+val buildSite = tasks.register<Sync>("buildSite") {
+    group = "build"
+    from(buildSiteWithoutSearchIndex)
+    from(buildSearchIndex)
     into(layout.buildDirectory.dir("site"))
 }
 build.configure { dependsOn(buildSite) }

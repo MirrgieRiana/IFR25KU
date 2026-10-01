@@ -8,12 +8,12 @@
   },
   "downfall": 0.9,
   "effects": {
-    "fog_color": 14729352,
-    "foliage_color": 13209372,
-    "grass_color": 14722600,
-    "sky_color": 9676518,
-    "water_color": 5974666,
-    "water_fog_color": 3610458
+    "fog_color": 16765362,
+    "foliage_color": 3575333,
+    "grass_color": 5485075,
+    "sky_color": 7379199,
+    "water_color": 16757101,
+    "water_fog_color": 16757101
   },
   "features": [
     [],
@@ -22,16 +22,13 @@
       "minecraft:lake_lava_surface"
     ],
     [
-      "minecraft:amethyst_geode",
-      "minecraft:forest_rock"
+      "minecraft:amethyst_geode"
     ],
     [
       "minecraft:monster_room",
       "minecraft:monster_room_deep"
     ],
-    [
-      "miragefairy2024:elevated_spawner"
-    ],
+    [],
     [],
     [
       "minecraft:ore_dirt",
@@ -72,8 +69,10 @@
     [
       "minecraft:glow_lichen",
       "minecraft:forest_flowers",
+      "miragefairy2024:fallen_plastic_tree_log",
       "miragefairy2024:giant_plastic_tree_old_growth_amber_forest",
       "miragefairy2024:small_plastic_tree_old_growth_amber_forest",
+      "miragefairy2024:resin_cement_sap",
       "minecraft:flower_default",
       "minecraft:patch_grass_badlands",
       "minecraft:patch_dead_bush",

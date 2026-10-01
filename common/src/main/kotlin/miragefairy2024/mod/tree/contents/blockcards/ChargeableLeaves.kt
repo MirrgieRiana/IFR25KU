@@ -10,15 +10,20 @@ import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.Model
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.propertiesOf
+import miragefairy2024.util.registerFoliageColorProvider
 import miragefairy2024.util.registerModelGeneration
+import miragefairy2024.util.registerRedirectColorProvider
 import miragefairy2024.util.registerVariantsBlockStateGeneration
 import miragefairy2024.util.times
 import miragefairy2024.util.with
+import net.minecraft.world.item.Item
 
-class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration, sapling: () -> TreeBlockCard) : AbstractTreeLeavesBlockCard(configuration, sapling) {
+class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration, sapling: () -> TreeBlockCard, extraDrop: (() -> Item)?) : AbstractTreeLeavesBlockCard(configuration, sapling, extraDrop) {
     context(ModContext)
     override fun init() {
         super.init()
+        block.registerFoliageColorProvider()
+        item.registerRedirectColorProvider()
         block.registerVariantsBlockStateGeneration {
             val normal = BlockStateVariant(model = "block/" * block().getIdentifier())
             listOf(
