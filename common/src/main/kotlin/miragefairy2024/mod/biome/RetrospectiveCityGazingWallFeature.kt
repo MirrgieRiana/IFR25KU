@@ -37,7 +37,7 @@ object RetrospectiveCityGazingWallFeatureCard {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature(placedFeatureKey) { count(2) + flower(square, surface) + retrospectiveCityFloorPlacementModifiers }
+                registerPlacedFeature(placedFeatureKey) { count(2) + flower(square, surface) + onRetrospectiveCityFloor }
             }
         }
     }
