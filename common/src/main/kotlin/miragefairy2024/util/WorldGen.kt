@@ -197,10 +197,10 @@ fun randomIntCount(count: Double): List<PlacementModifier> {
 }
 
 context(PlacementModifiersScope)
-fun count(count: Int): List<PlacementModifier> = listOf(CountPlacement.of(count))
+fun count(count: Int): List<PlacementModifier> = if (count == 1) listOf() else listOf(CountPlacement.of(count))
 
 context(PlacementModifiersScope)
-fun per(chance: Int): List<PlacementModifier> = listOf(RarityFilter.onAverageOnceEvery(chance))
+fun per(chance: Int): List<PlacementModifier> = if (chance == 1) listOf() else listOf(RarityFilter.onAverageOnceEvery(chance))
 
 context(PlacementModifiersScope)
 fun tree(saplingBlock: Block): List<PlacementModifier> = listOf(
