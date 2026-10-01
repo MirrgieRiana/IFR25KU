@@ -1,11 +1,10 @@
 package miragefairy2024.colormaker
 
-import miragefairy2024.MirageFairy2024
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 
-fun loadImage(name: String): BufferedImage = ImageIO.read(File("src/main/resources/assets/${MirageFairy2024.MOD_ID}/textures/item/$name.png"))
+fun loadImage(name: String): BufferedImage = ImageIO.read(File("src/main/resources/assets/miragefairy2024/textures/item/$name.png"))
 
 object MainColorMaker {
     @JvmStatic
