@@ -52,7 +52,6 @@ import net.minecraft.world.level.levelgen.placement.CaveSurface
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
-/** 真下が石化した樹脂である位置に限るのだ～🌱 */
 val onResinCement get() = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, BlockMaterialCard.RESIN_CEMENT.block())))
 
 object OldGrowthAmberForestBiomeCard : BiomeCard(
