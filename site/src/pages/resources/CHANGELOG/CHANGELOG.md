@@ -54,6 +54,8 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
   - クラフトで入手可能。
 - 追加: 装飾ブロック「石膏ボードの階段」を追加。
   - クラフトで入手可能。
+- 追加: アイテム「ミラージュの矢」を追加。
+  - 飛んでいる間、近くの敵を探し、見つけた敵へ向かって進む向きを曲げる。
 
 硫黄
 

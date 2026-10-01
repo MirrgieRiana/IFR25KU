@@ -6,6 +6,7 @@ import miragefairy2024.client.util.registerEntityRenderer
 import miragefairy2024.mod.entity.AntimatterBoltCard
 import miragefairy2024.mod.entity.ChaosCubeCard
 import miragefairy2024.mod.entity.EtheroballisticBoltCard
+import miragefairy2024.mod.entity.MirageArrowCard
 import net.minecraft.client.model.geom.ModelLayerLocation
 import net.minecraft.client.model.geom.builders.LayerDefinition
 import net.minecraft.client.model.geom.builders.MeshDefinition
@@ -21,6 +22,7 @@ fun initEntityClientModule() {
     ChaosCubeCard.entityType.registerEntityRenderer(::ChaosCubeEntityRenderer)
     EntityModelLayerRegistry.register(EtheroballisticBoltEntityRenderer.MAIN.entityModelLayer, EtheroballisticBoltEntityRenderer.MAIN.provider)
     EtheroballisticBoltCard.entityType.registerEntityRenderer(::EtheroballisticBoltEntityRenderer)
+    MirageArrowCard.entityType.registerEntityRenderer(::MirageArrowEntityRenderer)
 }
 
 class EntityModelLayerCard(
