@@ -1,0 +1,85 @@
+# =============================================================================
+# build_scene.xa1 — サラセニア寸劇の「構成」を組み立てる本体なのだぁ🌱（xarpite / API5）
+# -----------------------------------------------------------------------------
+# build_scene.sh が、このディレクトリ（sarracenia/）へ cd してから呼ぶのだぁ。
+# タイムラインを受け取って、レンダラーに渡す材料を、ぜんぶ作るのだぁ🌱
+#
+# 引数：
+#   ARGS.0 … timeline.json のパス（省略時は ../timeline.json）なのだぁ。
+# 出力（このディレクトリ配下）：
+#   assets.js     … scene.html が読む、フォント・絵文字・テクスチャ・タイムラインの束
+#   tachie/       … 立ち絵 PSD から切り出したレイヤー PNG
+#   frames.jsonl  … 1 行 = 1 フレームの構成jsonl（レンダラーへの入力）
+# =============================================================================
+
+API(5)
+
+timelinePath := ARGS.0 ?: "../timeline.json"
+
+# 構成jsonl の各行の template に入れる、この動画のテンプレートなのだぁ🌱
+# レンダラーは、frames.jsonl のあるディレクトリ（ここ）を基準に解決するのだぁ。
+template := "scene.html"
+
+# build_video.py の -framerate と一致させるのだぁ🌱
+FPS := 30
+
+# --- 立ち絵 PSD から切り出すレイヤー ID の一覧なのだぁ -------------------------
+# この並びは scene.html の TACHIE 定義と一致していなければならないのだぁ。
+# ID 体系は劇場の layers.json と同じで、兄弟レイヤーの 1 始まりインデックスを "-" で連結したものなのだぁ
+# （グループもインデックスを 1 個消費するのだぁ）。
+ZUNDA_IDS := "1,4-2,8-5,8-2,8-3,7-14-3,7-14-4-9,7-6,5-8,5-2,5-1,6-6,9-2,4-4-8,4-4-3,4-4-6,4-4-5,4-3-8,4-3-3,10-3"
+TSUMUGI_IDS := "2,3,4,12,13-3,13-4,9-4,9-1,9-2,9-3,8-6-2,8-6-3-6,8-4,10-14,10-8,10-10,7-2,6-3,5-5,5-1,5-3,13-2"
+
+# 外部コマンドを実行して、その出力を流して、終了コードが 0 でなければ止めるのだぁ🌱
+# 同梱の xarpite の EXECL は、終了コードが 0 でないと、子の標準出力も標準エラーも捨てちゃうのだぁ。
+# だから、bash に包んで、標準エラーを標準出力へ合わせて、終了コードを最後の行で受け取るのだぁ。
+run := command -> (
+  lines := [EXECL("bash", "-c", %>"$@" 2>&1; echo "$?"<%, "run", command)]
+  exitCode := lines.($#lines - 1)
+  OUT << 0 ~ ($#lines - 1) | i => lines.(i)
+  exitCode == "0" || (
+    ERR("ERROR: command failed with exit code $exitCode: $(command >> JOIN[" "])")
+    EXIT(1)
+  )
+)
+
+# --- 外部取得リソース（このシーンの立ち絵・フォント・絵文字）の存在を確認するのだぁ ---
+# FILE_NAMES のストリームのままだと、@ が部分文字列で探して、隣の *.md5 のファイル名に当たっちゃうのだぁ。
+# だから、配列にしてから、要素として探すのだぁ🌱
+need := dir, name -> (
+  name @ [FILE_NAMES(dir)] || (
+    ERR("ERROR: resource not found: $dir/$name (place it as described in README.md)")
+    EXIT(1)
+  )
+)
+need("resources/psd"; "zundamon23.psd")
+need("resources/psd"; "tsumugi3.psd")
+need("resources/font"; "ZenMaruGothic-Black.ttf")
+need("resources/font"; "ZenMaruGothic-Bold.ttf")
+need("resources/emoji"; "seedling.svg")
+
+# --- Node 依存（ag-psd / pngjs）をそろえるのだぁ ------------------------------
+"node_modules" @ [FILE_NAMES(".")] || (
+  OUT << "== npm install (sarracenia) =="
+  run("npm", "install")
+)
+
+# --- 1. scene.html が読む assets.js を焼くのだぁ（フォント・絵文字・テクスチャ・タイムライン） ---
+OUT << "== bake assets.js =="
+run("python3", "bake_assets.py", timelinePath)
+
+# --- 2. 立ち絵 PSD から必要なレイヤーを PNG に切り出すのだぁ（→ tachie/<char>/<id>.png） -----
+OUT << "== extract tachie =="
+run("node", "extract_tachie.js", "zundamon", "resources/psd/zundamon23.psd", ZUNDA_IDS, "tachie/zundamon")
+run("node", "extract_tachie.js", "tsumugi", "resources/psd/tsumugi3.psd", TSUMUGI_IDS, "tachie/tsumugi")
+
+# --- 3. 構成jsonl を組み立てるのだぁ（→ frames.jsonl） -------------------------
+# 今のこの動画では、フレームの見た目は時刻 t だけで決まるのだぁ（scene.html の seek(t) がタイムラインを見て全要素を組み立てるのだぁ）。
+# だから、各行は template と t だけで、構成は 30fps 刻みの時刻列そのものなのだぁ🌱
+OUT << "== compose frames.jsonl =="
+total := ($*READ(timelinePath)).total
+frameCount := -FLOOR(-(total * FPS))
+WRITE["frames.jsonl"] << 0 ~ frameCount | i => {template: template; t: i / FPS} >> JSONL >> LINESD
+OUT << "composed frames.jsonl: $frameCount frames (total=$(total)s @ $(FPS)fps)"
+
+OUT << "== scene ready: assets.js, tachie/, frames.jsonl =="

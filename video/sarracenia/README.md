@@ -19,10 +19,10 @@ bash build_scene.sh [timeline.json]
 
 | ファイル | 役割 |
 | --- | --- |
-| `build_scene.sh` | このパートの入口。リソース確認・`npm install`・下記スクリプトの実行をまとめます。 |
+| `build_scene.sh` | このパートの入口。このディレクトリへ cd して、`build_scene.xa1` を呼ぶだけです。 |
+| `build_scene.xa1` | 組み立ての本体。リソース確認・`npm install`・下記スクリプトの実行と、構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）の組み立てをまとめます。 |
 | `script.json` | 台本。台詞・話者・読み（カナ原稿）・字幕・シーン・登場アイテムを定義します。 |
 | `scene.html` | 画面の見た目と `window.applyFrame(cfg)`（構成→画面）の本体。 |
-| `compose.py` | タイムラインから構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作ります。 |
 | `bake_assets.py` | `scene.html` が読む `assets.js`（フォント・絵文字・テクスチャ・タイムラインの束）を生成します。 |
 | `extract_tachie.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出します。 |
 | `resources/**/*.md5` | 外部取得リソースの md5（置き場所と中身の目印）。実体は著作権上コミットしません。 |
@@ -33,7 +33,7 @@ bash build_scene.sh [timeline.json]
 `window.applyFrame(cfg)` に渡します。
 
 今のこの動画では、フレームの見た目は「時刻 `t`」だけで決まる（`scene.html` の `seek(t)` がタイムラインを
-見て全要素を組み立てる）ので、各行は `{"template": scene.html へのパス, "t": 秒}` だけです。将来（Issue #179 トピック BP の構想）は、各行に
+見て全要素を組み立てる）ので、各行は `{"template": "scene.html", "t": 秒}` だけです。`template` に入れるテンプレートは、`build_scene.xa1` の冒頭で決めています。将来（Issue #179 トピック BP の構想）は、各行に
 「どの要素へどんな CSS・属性・テキストを入れるか」をフラットに書き込んで、`seek` の計算そのものを構成jsonl 側へ
 追い出すこともできます。そのとき、レンダラー側（`applyFrame` の契約）は一切変えなくてよい設計です。
 
@@ -41,4 +41,4 @@ bash build_scene.sh [timeline.json]
 
 ## 依存
 
-`npm install` で `ag-psd` と `pngjs`（立ち絵切り出し用）が入ります。`bake_assets.py` / `compose.py` は Python 標準ライブラリのみです。
+`npm install` で `ag-psd` と `pngjs`（立ち絵切り出し用）が入ります。`bake_assets.py` は Python 標準ライブラリのみです。`build_scene.xa1` は、リポジトリ同梱の xarpite（`../../xarpite/`）で動きます。

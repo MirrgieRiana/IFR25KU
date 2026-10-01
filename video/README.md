@@ -19,7 +19,7 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 この動画は、動画編集ソフトの GUI で作るのではなく、**「決定論的フレームレンダリング」** という方式で作ります。
 
 1. `sarracenia/scene.html` が「1 フレーム分の構成 `cfg` を渡すと、その画面を組み立てる」関数 `window.applyFrame(cfg)` を持ちます。今のこの動画では `cfg` の `t` が秒で、内部の `seek(t)` が時刻から全要素を組み立てます。
-2. `sarracenia/compose.py` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作ります。
+2. `sarracenia/build_scene.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作ります。
 3. `renderer/render.js` がヘッドレス Chromium に `scene.html` を開かせ、`frames.jsonl` を頭から 1 行ずつ `applyFrame(cfg)` に渡し、1 行につき 1 コマ撮ります。
 4. 撮れた連番画像（`sarracenia/frames/f_00000.png …`）を ffmpeg で映像にし、ナレーション音声と BGM を重ねて mp4 にします。
 
@@ -38,7 +38,7 @@ sarracenia/script.json（台本）
 timeline.json ─┬─(sarracenia/bake_assets.py)──→ sarracenia/assets.js   ┐
                │        ↑ IFR25KU テクスチャ / resources/font,emoji     │ sarracenia
  resources/psd/*.psd ─(sarracenia/extract_tachie.js)→ sarracenia/tachie/│ （構成を作る）
-               └─(sarracenia/compose.py)─────→ sarracenia/frames.jsonl  ┘
+               └─(sarracenia/build_scene.xa1)→ sarracenia/frames.jsonl  ┘
 
 sarracenia/scene.html + assets.js + tachie/ + frames.jsonl
    └─(renderer/render.js + Chromium)→ sarracenia/frames/f_%05d.png   … 汎用レンダラー
@@ -76,10 +76,10 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 
 | ファイル | 役割 |
 | --- | --- |
-| `build_scene.sh` | タイムラインを受け取り、`assets.js`・`tachie/`・`frames.jsonl` を作る、このパートの入口です。 |
+| `build_scene.sh` | タイムラインを受け取り、`assets.js`・`tachie/`・`frames.jsonl` を作る、このパートの入口です。このディレクトリへ cd して `build_scene.xa1` を呼ぶだけです。 |
+| `build_scene.xa1` | 組み立ての本体。リソース確認・`npm install`・`bake_assets.py` と `extract_tachie.js` の実行と、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の組み立てを行います。 |
 | `script.json` | 台本。台詞・話者・読み（カナ原稿）・字幕・シーン・登場アイテムを定義します。 |
 | `scene.html` | 画面の見た目と `window.applyFrame(cfg)`（構成→画面）の本体。字幕・立ち絵・背景・クレジット・サムネを組み立てます。 |
-| `compose.py` | タイムラインから、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）を作ります。 |
 | `bake_assets.py` | `scene.html` が読む `assets.js`（フォント・絵文字・テクスチャ・タイムラインの束）を生成します。 |
 | `extract_tachie.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出します。 |
 | `package.json` / `package-lock.json` | Node の依存関係（`ag-psd` / `pngjs`）。 |
@@ -111,7 +111,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 | `sarracenia/resources/bgm/chopin_op10-4.flac` | ショパン 練習曲 作品10-4「Torrent（激流）」（Edward Neeman 演奏） | Wikimedia Commons / Musopen "Set Chopin Free" | パブリックドメイン |
 
 > 立ち絵 PSD の ID 体系について：`sarracenia/extract_tachie.js` が切り出すレイヤーは、兄弟レイヤーの 1 始まりインデックスを
-> `-` で連結した ID で指定します（グループもインデックスを 1 個消費します）。切り出す ID の一覧は `sarracenia/build_scene.sh` の
+> `-` で連結した ID で指定します（グループもインデックスを 1 個消費します）。切り出す ID の一覧は `sarracenia/build_scene.xa1` の
 > `ZUNDA_IDS` / `TSUMUGI_IDS` にあり、これは `scene.html` の `TACHIE` 定義と一致している必要があります。
 
 ### IFR25KU リポジトリ由来のテクスチャ（配置不要）
@@ -180,7 +180,7 @@ bash build.sh
 ### assemble.py（結合・タイムライン）
 台詞 wav を「タイトル保持 → 本編（台詞のあいだに無音の“間”）→ クレジット保持」の順に結合し、
 `full.wav` と `timeline.json` を作ります。`timeline.json` には、各台詞の開始・終了時刻、シーン区間、
-アイテムの表示区間などが入り、`sarracenia/`（`bake_assets.py`・`compose.py`）と `build_video.py` がこれを読みます。
+アイテムの表示区間などが入り、`sarracenia/`（`bake_assets.py`・`build_scene.xa1`）と `build_video.py` がこれを読みます。
 
 ### bake_assets.py（アセットの焼き込み）
 `file://` で開いた HTML は外部ファイルを `fetch()` できないため、フォント・絵文字・テクスチャ・タイムラインを
@@ -190,9 +190,9 @@ bash build.sh
 `ag-psd` で PSD を読み、指定 ID のレイヤーを「全身キャンバスと同じサイズの透過 PNG」として書き出します。
 `node-canvas` を入れずに済むよう、`createImageData` だけをシムして動かしています。
 
-### sarracenia/compose.py（構成jsonl の組み立て）
+### sarracenia/build_scene.xa1（構成jsonl の組み立て）
 `timeline.json` から総尺を読み、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作ります。
-今のこの動画では、フレームは時刻だけで決まるので各行は `{"template": scene.html へのパス, "t": 秒}` です。将来は、この各行に「どの要素へ
+今のこの動画では、フレームは時刻だけで決まるので各行は `{"template": "scene.html", "t": 秒}` です。`template` に入れるテンプレートは、`build_scene.xa1` の冒頭で決めています。将来は、この各行に「どの要素へ
 どんな CSS・属性・テキストを入れるか」をフラットに書き込んで、`seek` の計算そのものを構成jsonl 側へ
 追い出すこともできます（そのときレンダラー側は変えなくてよい設計です）。
 
