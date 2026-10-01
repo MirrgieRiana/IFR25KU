@@ -8,7 +8,7 @@
 #   window.applyFrame(cfg) に渡して、1 行につき 1 枚の画像を撮るのだぁ。
 #
 #   今のこの動画では、フレームの見た目は「時刻 t」だけで決まる（scene.html の seek(t) が
-#   タイムラインを見て全要素を組み立てる）ので、各行は {"t": 秒} だけなのだぁ。
+#   タイムラインを見て全要素を組み立てる）ので、各行は {"template": scene.html へのパス, "t": 秒} だけなのだぁ。
 #   ＝この動画の「構成」は、いまは 30fps 刻みの時刻列そのものなのだぁ🌱
 #
 #   ゆくゆくは（Issue #179 トピック BP の構想）、各行に「どの要素へどんな CSS・属性・
@@ -33,6 +33,9 @@ B = os.path.dirname(os.path.abspath(__file__))
 timeline_path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(B, "..", "timeline.json")
 out_path = sys.argv[2] if len(sys.argv) > 2 else os.path.join(B, "frames.jsonl")
 
+# レンダラーは template を構成 jsonl のあるディレクトリから解決するのだ～🌱
+template = os.path.relpath(os.path.join(B, "scene.html"), os.path.dirname(os.path.abspath(out_path)))
+
 tl = json.load(open(timeline_path, encoding="utf-8"))
 total = tl["total"]
 frames = math.ceil(total * FPS)   # 総フレーム数（旧 render.js の Math.ceil(TOTAL*FPS) と同じ）
@@ -40,6 +43,6 @@ frames = math.ceil(total * FPS)   # 総フレーム数（旧 render.js の Math.
 with open(out_path, "w", encoding="utf-8") as f:
     for i in range(frames):
         # 時刻は i/FPS（旧 render.js の t=i/FPS と同じ値）。seek(t) がこの時刻の画面を決めるのだぁ。
-        f.write(json.dumps({"t": i / FPS}, ensure_ascii=False) + "\n")
+        f.write(json.dumps({"template": template, "t": i / FPS}, ensure_ascii=False) + "\n")
 
 print(f"composed {out_path}: {frames} frames (total={total}s @ {FPS}fps)")

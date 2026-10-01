@@ -74,9 +74,9 @@ fi
 echo "== render frames =="
 rm -rf sarracenia/frames
 if [ -n "${CHROMIUM_LD_PATH:-}" ]; then
-  LD_LIBRARY_PATH="${CHROMIUM_LD_PATH}:${LD_LIBRARY_PATH:-}" node renderer/render.js sarracenia/scene.html sarracenia/frames.jsonl sarracenia/frames
+  LD_LIBRARY_PATH="${CHROMIUM_LD_PATH}:${LD_LIBRARY_PATH:-}" node renderer/render.js sarracenia/frames.jsonl sarracenia/frames
 else
-  node renderer/render.js sarracenia/scene.html sarracenia/frames.jsonl sarracenia/frames
+  node renderer/render.js sarracenia/frames.jsonl sarracenia/frames
 fi
 
 # --- 6. フレーム＋ナレーション＋BGM を合成して mp4 にするのだぁ -----------------
