@@ -72,6 +72,7 @@ fi
 
 # --- 5. レンダラーで 1 フレームずつ撮って sarracenia/frames/ に書き出すのだぁ -----
 echo "== render frames =="
+rm -rf sarracenia/frames
 if [ -n "${CHROMIUM_LD_PATH:-}" ]; then
   LD_LIBRARY_PATH="${CHROMIUM_LD_PATH}:${LD_LIBRARY_PATH:-}" node renderer/render.js sarracenia/scene.html sarracenia/frames.jsonl sarracenia/frames
 else
