@@ -1,6 +1,10 @@
 {
-  "feature": "miragefairy2024:giant_plastic_tree",
+  "feature": "minecraft:oak",
   "placement": [
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 2
+    },
     {
       "type": "minecraft:in_square"
     },
@@ -20,23 +24,11 @@
       "predicate": {
         "type": "minecraft:would_survive",
         "state": {
-          "Name": "miragefairy2024:plastic_tree_sapling",
+          "Name": "minecraft:oak_sapling",
           "Properties": {
             "stage": "0"
           }
         }
-      }
-    },
-    {
-      "type": "minecraft:block_predicate_filter",
-      "predicate": {
-        "type": "minecraft:matching_blocks",
-        "blocks": "miragefairy2024:resin_cement",
-        "offset": [
-          0,
-          -1,
-          0
-        ]
       }
     }
   ]

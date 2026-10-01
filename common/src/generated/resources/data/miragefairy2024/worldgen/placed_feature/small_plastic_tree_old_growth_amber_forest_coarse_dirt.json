@@ -1,5 +1,5 @@
 {
-  "feature": "miragefairy2024:giant_plastic_tree",
+  "feature": "miragefairy2024:small_plastic_tree",
   "placement": [
     {
       "type": "minecraft:in_square"
@@ -31,7 +31,7 @@
       "type": "minecraft:block_predicate_filter",
       "predicate": {
         "type": "minecraft:matching_blocks",
-        "blocks": "miragefairy2024:resin_cement",
+        "blocks": "minecraft:coarse_dirt",
         "offset": [
           0,
           -1,

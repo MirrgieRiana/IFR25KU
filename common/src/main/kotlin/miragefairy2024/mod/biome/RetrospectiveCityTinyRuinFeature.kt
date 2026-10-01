@@ -35,7 +35,7 @@ object RetrospectiveCityTinyRuinFeatureCard {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {
             registerConfiguredFeature { NoneFeatureConfiguration.INSTANCE }.generator {
-                registerPlacedFeature(placedFeatureKey) { count(8) + flower(square, surface) + retrospectiveCityFloorPlacementModifiers }
+                registerPlacedFeature(placedFeatureKey) { count(8) + flower(square, surface) + onRetrospectiveCityFloor }
             }
         }
     }
