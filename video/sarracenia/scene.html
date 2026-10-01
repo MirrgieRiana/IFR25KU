@@ -10,7 +10,7 @@
   html,body{width:1280px;height:720px;overflow:hidden;background:#000;}
   #stage{position:relative;width:1280px;height:720px;overflow:hidden;font-family:ZMG-Bold,sans-serif;}
 
-  /* 背景（ブロックテクスチャのタイル＋色調＋ビネット）。タイルは haimeviska_log.png（茶色い木肌）なのだ～🌱
+  /* 背景（ブロックテクスチャのタイル＋色調＋ビネット）なのだ～🌱 タイルは haimeviska_log.png（茶色い木肌）なのだ～🌱
      BJ(v10)：背景がほぼ一色だったので、タイルを 64px→160px に拡大して木目の模様が見えるようにして、
      さらに色オーバーレイ(.tone)の不透明度を「今の60%」に下げてテクスチャを透けさせるのだ～🌱 */
   .bg{position:absolute;inset:0;z-index:0;}
@@ -20,8 +20,8 @@
   .bg.swamp .tone{background:linear-gradient(160deg,rgba(22,66,55,.49),rgba(8,28,22,.56));}
   /* BJ(v11)：bog の紫オーバーレイは、茶色い haimeviska(平均rgb 105,68,22) の上に source-over 合成されると
      赤茶けてしまうのだ～🌱透明度(.44/.55)は固定したまま、「合成後に紫になる」ように overlay 色を逆算したのだ～🌱
-     逆算式 overlay = (目標合成色 − base×(1−α)) ÷ α。
-     目標合成色 top=(78,54,104) bot=(52,36,86)（どちらも青>赤>緑で紫）→ overlay 下記。実測で紫になるのを確認済み。 */
+     逆算式 overlay = (目標合成色 − base×(1−α)) ÷ α なのだ～🌱
+     目標合成色 top=(78,54,104) bot=(52,36,86)（どちらも青>赤>緑で紫）→ overlay 下記なのだ～🌱 実測で紫になるのを確かめてあるのだ～🌱 */
   .bg.bog   .tone{background:linear-gradient(160deg,rgba(43,36,208,.44),rgba(8,10,138,.55));}
 
   /* 上部のアイテム枠（order_and_chaos と同等の大きめサイズなのだ～🌱） */
@@ -35,7 +35,7 @@
   .itempanel .lbl{font-family:ZMG-Black;font-size:34px;color:#fff;text-align:center;line-height:1.15;
     -webkit-text-stroke:6px #1c3a26;paint-order:stroke fill;text-shadow:0 2px 6px rgba(0,0,0,.55);}
 
-  /* 立ち絵（全身）。顔トリミングをやめて全身素材を使い、つむぎ左・ずんだもん右なのだ～🌱
+  /* 立ち絵（全身）なのだ～🌱 顔トリミングをやめて全身素材を使って、つむぎ左・ずんだもん右なのだ～🌱
      AZ：位置が上すぎたので、画面高さ720pxの約10%（72px）ぶん下方向に下げたのだ～🌱
      BA：つむぎは元が左向きの素材なので、scaleX(-1) で左右反転して右（中央）を向かせる苦肉の策なのだ～🌱 */
   .portrait{position:absolute;z-index:5;opacity:0;filter:drop-shadow(0 6px 14px rgba(0,0,0,.4));}
@@ -43,21 +43,21 @@
   #portraitTsumugi{width:560px;left:-84px;top:92px;transform:scaleX(-1);}
   #portraitZundamon{width:560px;right:-56px;top:66px;}
 
-  /* 字幕の読みやすさのための下部スクリム（箱ではなく、そっと暗くするだけ）なのだ～🌱 */
+  /* 字幕の読みやすさのための下部スクリム（箱ではなく、控えめに暗くするだけ）なのだ～🌱 */
   .scrim{position:absolute;z-index:3;left:0;right:0;bottom:0;height:300px;pointer-events:none;opacity:0;
     background:linear-gradient(to top,rgba(0,0,0,.62),rgba(0,0,0,.22) 45%,rgba(0,0,0,0));}
 
   /* BC：字幕表示領域を覆う黒半透明の横帯なのだ～🌱 画面幅いっぱいで、上端がキャラ名(top:466)を、
-     下端が字幕の下端(720-66=654)を覆う範囲。濃さはさりげなく、上下だけそっとぼかしてなじませるのだ～🌱
-     字幕とは連動せず、本編のあいだ出しっぱなし（seek で opacity をフェード管理）。
+     下端が字幕の下端(720-66=654)を覆う範囲なのだ～🌱 濃さはさりげなく、上下だけぼかしてなじませるのだ～🌱
+     字幕とは連動せず、本編のあいだ出しっぱなしなのだ～🌱（seek で opacity をフェード管理するのだ～🌱）
      Zオーダーは 文字類＞この帯＞キャラ で、DOM上でキャラの後・名前/字幕の前に置くのだ～🌱 */
   /* BC：上下をあと少し広げたいとのことで、キャラ名フォント高さ(32px)の半分＝16pxずつ上下へ拡張したのだ～🌱
-     （top 450→434, height 222→254）。ぼかしの割合は見た目が変わらないよう帯高に合わせて微調整なのだ～🌱 */
+     （top 450→434, height 222→254）なのだ～🌱 ぼかしの割合は見た目が変わらないよう帯高に合わせて微調整なのだ～🌱 */
   .band{position:absolute;z-index:6;left:0;right:0;top:434px;height:254px;pointer-events:none;opacity:0;
     background:linear-gradient(to bottom,rgba(0,0,0,0),rgba(0,0,0,.58) 12%,rgba(0,0,0,.58) 88%,rgba(0,0,0,0));}
 
-  /* キャラ名ラベル。Y は固定（台詞の行数やデカ字で動かさない＝過去を見つめる都市式）なのだ～🌱
-     字幕の左上あたりで左揃え。BB：つむぎに近すぎたので少しだけ右へずらしたのだ～🌱 */
+  /* キャラ名ラベルなのだ～🌱 Y は固定（台詞の行数やデカ字で動かさない＝過去を見つめる都市式）なのだ～🌱
+     字幕の左上あたりで左揃えなのだ～🌱 BB：つむぎに近すぎたので少しだけ右へずらしたのだ～🌱 */
   .name{position:absolute;z-index:7;left:440px;top:466px;white-space:nowrap;
     font-family:ZMG-Black;font-size:32px;
     paint-order:stroke fill;text-shadow:0 2px 6px rgba(0,0,0,.55);opacity:0;}
@@ -89,7 +89,7 @@
   /* BG(v10)：デカ字サムネ＝動画の開幕（フレーム0）そのものなのだ～🌱 各要素は seek(t) が開幕だけ表示して、
      開幕明けにフェードアウトするのだ～🌱Zオーダーは 左上ロゴ・デカ字・中央アイテムフレーム(z8)
      ＞ 黒帯(z6) ＞ キャラ(z5) で、文字はキャラと被ってよく、黒帯で下地を暗くして読ませるのだ～🌱
-     #thumb 自体には opacity/z を付けないのだ～🌱（付けると子の z8/z6 が閉じ込められてキャラ(z5)の下に沈むのだ～🌱）。 */
+     #thumb 自体には opacity/z を付けないのだ～🌱（付けると子の z8/z6 が閉じ込められてキャラ(z5)の下に沈むのだ～🌱） */
   .thumb-band{position:absolute;z-index:6;left:0;right:0;pointer-events:none;}
   #thumbBandTop{top:0;height:214px;
     background:linear-gradient(to bottom,rgba(0,0,0,.86),rgba(0,0,0,.82) 62%,rgba(0,0,0,0));}
@@ -158,13 +158,13 @@ document.querySelector('#thumbFrame').src = A.plant;
 document.querySelector('#thumbLogo').src = A.logo;
 
 // 全身立ち絵を、劇場の provider と同じ重ね順で積むのだ～🌱（下→上）
-// 口は3段（閉/半/開）、目は通常＋閉じ を重ねておいて、seek() が時刻で表示を切り替えるのだ～🌱（AV/AW）。
+// 口は3段（閉/半/開）、目は通常＋閉じ を重ねておいて、seek() が時刻で表示を切り替えるのだ～🌱（AV/AW）
 //   口の開き具合はレイヤーbounds高さの意味論で選定（AV）：
 //     ずんだ 開=ほあー(h61) 半=ほあ(h44) 閉=んー(h15)／つむぎ 開=ほあー(h57) 半=お(h40) 閉=ほほえみ(h26)
 //     いー・にしー等の横広で縦に開かない特殊口や、ゆ・△等の記号的な口は発声の口パクに使わないのだ～🌱
-//   閉じ目（AW）：つむぎ=閉じ 8-4／ずんだは純粋な閉じ目が無いので にっこり 7-6（縦h33の平たい弧）を採用。
+//   閉じ目（AW）：つむぎ=閉じ 8-4／ずんだは純粋な閉じ目が無いので にっこり 7-6（縦h33の平たい弧）を採用したのだ～🌱
 // BF：眉(brow)・腕(armR/armL)は排他グループ(radio)、汗(sweat)は独立トグル(checkbox)なのだ～🌱
-//   衝突判定は private の voicevox/extractor/build.gradle.kts に準拠（radio=同時1つ／checkbox=独立）。
+//   衝突判定は private の voicevox/extractor/build.gradle.kts に準拠するのだ～🌱（radio=同時1つ／checkbox=独立なのだ～🌱）
 //   pg:'グループ名', key:'名前' で切り替え候補を積んでおいて、seek() が台詞ごとに1つだけ表示するのだ～🌱
 const PORTRAIT = {
   zundamon: { ch:'zundamon', layers:[
@@ -199,10 +199,10 @@ function buildPortrait(el, character){
   });
   el.innerHTML=html;
 }
-// 台詞ごとのポーズ（眉・腕・汗）。喋る側もきく側も、その場面の感情に合わせて姿勢を変えるのだ～🌱
-// index は TL.lines と対応。値は上の pg key。sweat:1 で汗を出すのだ～🌱
+// 台詞ごとのポーズ（眉・腕・汗）なのだ～🌱 喋る側もきく側も、その場面の感情に合わせて姿勢を変えるのだ～🌱
+// index は TL.lines と対応して、値は上の pg key なのだ～🌱 sweat:1 で汗を出すのだ～🌱
 // BG(v10)：導入部（開幕＝デカ字サムネ〜初回発話まで）は、サムネのキメ姿勢なのだ～🌱
-//   つむぎ＝得意げに指差し／ずんだ＝やれやれの困り眉。フレーム0がこの姿でXのサムネになるのだ～🌱
+//   つむぎ＝得意げに指差し／ずんだ＝やれやれの困り眉なのだ～🌱 フレーム0がこの姿でXのサムネになるのだ～🌱
 const POSE_DEFAULT = {t:{brow:'cheer',armR:'point',armL:'base'}, z:{brow:'sad',armR:'base',armL:'base'}};
 const POSES = [
   {t:{brow:'cheer',armR:'mouth',armL:'base'}, z:{brow:'normal',armR:'base',armL:'base'}},
@@ -234,7 +234,7 @@ function setFace(el, mouth, blink){
   el.querySelectorAll('.eye-open').forEach(e=>e.style.display=blink?'none':'');
   el.querySelectorAll('.eye-blink').forEach(e=>e.style.display=blink?'':'none');
 }
-// 母音→口の開き（AV）。縦の開きで3段。N/pau/っ 等の無声・休止は閉口なのだ～🌱
+// 母音→口の開き（AV）なのだ～🌱 縦の開きで3段で、N/pau/っ 等の無声・休止は閉口なのだ～🌱
 function vowelMouth(v){ if(v==='a')return 'open'; if(v==='i'||v==='u'||v==='e'||v==='o')return 'half'; return 'closed'; }
 function mouthAt(line, t){
   if(!line || !line.moras) return 'closed';
@@ -242,16 +242,16 @@ function mouthAt(line, t){
   for(const m of line.moras){ if(tl>=m[0] && tl<m[2]){ return tl<m[1] ? 'closed' : vowelMouth(m[3]); } }
   return 'closed';
 }
-// まばたき（AW）。決定的スケジュールで、閉眼は一瞬（半目は介さず閉↔開）なのだ～🌱
+// まばたき（AW）なのだ～🌱 決定的スケジュールで、閉眼は一瞬（半目は介さず閉↔開）なのだ～🌱
 function blinkAt(t, period, phase, dur){ const p=(((t+phase)%period)+period)%period; return p<dur; }
 
 // クレジット（🌱は fluentui-emoji の seedling を inline SVG で描くのだ～🌱）
 // クレジットは項目ごとに体裁がまちまちだったので、統一体裁にしたのだ～🌱
-//   体裁：「項目　名称（作者・権利者）　ライセンス」。作者は（）、ライセンスは末尾の全角スペース区切り。
+//   体裁：「項目　名称（作者・権利者）　ライセンス」なのだ～🌱 作者は（）で囲んで、ライセンスは末尾の全角スペース区切りなのだ～🌱
 //   複数のときは ／ でつなぐのだ～🌱ライセンスが該当しない項目（声＝VOICEVOX規約表記そのもの／
 //   立ち絵＝クレジット任意／世界観＝表現物利用なし）は、ライセンス欄を書かないのだ～🌱
 // BL(v11)：末尾のタイトルは、サムネのデカ字（＝動画タイトル兼用）に差し替えたのだ～🌱
-// BM(v11)：「世界観」項目を追加したのだ～🌱（表現物の利用は無いのでライセンスは該当なし）。
+// BM(v11)：「世界観」項目を追加したのだ～🌱（表現物の利用は無いので、ライセンスは該当なしなのだ～🌱）
 // 制作ツールに Claude Fairy の左へ Claude Code を追加したのだ～🌱
 document.querySelector('#credit').innerHTML =
   `<h2>砂糖の原料<br>虫は見なかったことに</h2>`+
@@ -281,7 +281,7 @@ function fitSub(bigFlag){
   lines.forEach(l=>{
     l.style.fontSize=best+'px';
     // 縁取りはフォントサイズ比例（お手本 fontSize*0.16 相当、最小6px）なのだ～🌱
-    // 幅だけの個別プロパティを使うのがキモ（AM）。短縮形 webkitTextStroke だと色が currentColor=白 に
+    // 幅だけの個別プロパティを使うのがキモ（AM）なのだ～🌱 短縮形 webkitTextStroke だと色が currentColor=白 に
     // リセットされて、CSSクラスの話者色縁取りが消えて「ただの白」になっちゃうのだ～🌱
     l.style.webkitTextStrokeWidth = Math.max(6, best*0.15).toFixed(1)+'px';
   });
@@ -305,12 +305,12 @@ function setSub(line){
 
 // 時刻 t だけで、まだ構成の各行へ移していない要素の状態を決めるのだ～🌱
 window.seek = function(t){
-  // BG(v10)：開幕（フレーム0）＝デカ字サムネなのだ～🌱 開幕は openOp=1 で出して、開幕明けにフェードアウト。
+  // BG(v10)：開幕（フレーム0）＝デカ字サムネなのだ～🌱 開幕は openOp=1 で出して、開幕明けにフェードアウトするのだ～🌱
   //   デカ字のフィットは、フォントが載ってから測る必要があるので、最初の seek のときに一度だけ実行するのだ～🌱
-  //   （render.js は document.fonts.ready を待ってから seek するので、初回 seek 時点でフォントは載っているのだ～🌱）。
+  //   （render.js は document.fonts.ready を待ってから seek するので、初回 seek 時点でフォントは載っているのだ～🌱）
   if(!window.__thumbFit){ fitThumb('#thumbTop',980,150); fitThumb('#thumbBot',1180,150); window.__thumbFit=true; }
   // BF：台詞ごとに眉・腕・汗を切り替えるのだ～🌱ポーズは「その時点で始まっている最後の台詞」で決めて、
-  // 台詞の合間もそのまま保つのだ～🌱（poseIdx<0 の導入部は POSE_DEFAULT の落ち着いた立ち姿）。
+  // 台詞の合間もそのまま保つのだ～🌱（poseIdx<0 の導入部は POSE_DEFAULT の落ち着いた立ち姿なのだ～🌱）
   let poseIdx=-1;
   for(let k=0;k<TL.lines.length;k++){ if(t>=TL.lines[k].start) poseIdx=k; else break; }
   const pose = poseIdx>=0 ? POSES[poseIdx] : POSE_DEFAULT;
@@ -319,7 +319,7 @@ window.seek = function(t){
   let active=null;
   for(const ln of TL.lines){ if(t>=ln.start && t<ln.subEnd){ active=ln; break; } }
   setSub(active);
-  // 立ち絵の口パク（AV）・まばたき（AW）。喋っている側だけ口が動き、両者はそれぞれの周期で瞬きするのだ～🌱
+  // 立ち絵の口パク（AV）・まばたき（AW）なのだ～🌱 喋っている側だけ口が動いて、両者はそれぞれの周期で瞬きするのだ～🌱
   // 字幕は音声より SUB_TAIL 長く残るので、口パクは実発話区間（active.end）だけに限るのだ～🌱
   const speaking = active && t < active.end ? active : null;
   const spk = speaking ? (speaking.speaker==='ずんだもん'?'z':'t') : null;
@@ -333,7 +333,7 @@ window.seek = function(t){
 };
 
 // BG(v10)：開幕（フレーム0）のデカ字を、画面外・左上ロゴと衝突しない範囲で最大化フィットするのだ～🌱
-//   上段は左上ロゴを避けるため控えめの最大幅、下段は画面幅いっぱい近くまで大きくするのだ～🌱（seek で初回に呼ぶ）。
+//   上段は左上ロゴを避けるため控えめの最大幅、下段は画面幅いっぱい近くまで大きくするのだ～🌱（seek で初回に呼ぶのだ～🌱）
 function fitThumb(sel, maxW, maxH){
   const el=document.querySelector(sel);
   let hi=170, lo=30, best=lo;
