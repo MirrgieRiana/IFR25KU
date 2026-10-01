@@ -31,10 +31,13 @@ bash build_scene.sh [timeline.json]
 1 行 = 1 フレームの構成オブジェクトを並べたものです。汎用レンダラーが、これを 1 行ずつ `scene.html` の
 `window.applyFrame(cfg)` に渡します。
 
-各行は、`template` と、時刻 `t` と、背景とアイテム枠の不透明度の `bogOp`・`swampOp`・`plantOp`・`leafOp` を持ちます。
+各行は、`template` と、時刻 `t` と、画面の各要素の不透明度を持ちます。
 `template` に入れるテンプレートは、`build_scene.xa1` の冒頭で決めています。
-不透明度の 4 個は `build_scene.xa1` がタイムラインから計算し、`scene.html` の `applyFrame` がそのまま当てます。
-残りの要素は、まだ `scene.html` の `seek(t)` がタイムラインを見て組み立てるので、時刻 `t` も渡します。
+不透明度は `build_scene.xa1` がタイムラインから計算し、`scene.html` の `applyFrame` がそのまま当てます。
+内訳は、背景の `bogOp`・`swampOp`、アイテム枠の `plantOp`・`leafOp`、開幕のサムネの `openOp`、
+クレジットの `creditOp`、立ち絵の `tachieOp`、字幕の横帯の `bandOp`、字幕とキャラ名の `subOp`、
+字幕の下敷きの `scrimOp` です。
+ポーズと口パクとまばたきと字幕の中身は、まだ `scene.html` の `seek(t)` が組み立てるので、時刻 `t` も渡します。
 これから（Issue #179 トピック BP の構想）、各行に「どの要素へどんな CSS・属性・テキストを入れるか」をフラットに
 書き込んで、`seek` の計算そのものを構成jsonl 側へ段階的に移していきます。そのとき、レンダラー側（`applyFrame` の
 契約）は一切変えなくてよい設計です。

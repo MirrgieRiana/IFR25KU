@@ -116,6 +116,7 @@ frameCount := -FLOOR(-(total * FPS))
 # JS も xarpite も IEEE 754 の倍精度だから、そろえておけば、同じ時刻に同じ値が出るのだ～🌱
 clamp := (x; a; b) -> MAX(a; MIN(b; x))
 fadeIn := (t; start; dur) -> clamp((t - start) / dur; 0; 1)
+fadeOut := (t; start; dur) -> 1 - clamp((t - start) / dur; 0; 1)
 
 bogScenes := [timeline.scenes() >> FILTER[s => s.scene == "bog"]]
 bogOp := t -> $#bogScenes > 0 ? fadeIn(t; bogScenes.0.start; timeline.sceneFade) : 0
@@ -124,10 +125,29 @@ itemOp := (t; name) -> (
   $#ops > 0 ? MAX(ops()) : 0
 )
 
+# 開幕のサムネは、タイトル保持のあいだ出して、タイトル明けにフェードアウトするのだ～🌱
+openOp := t -> t < timeline.titleFadeStart ? 1 : fadeOut(t; timeline.titleFadeStart; timeline.titleEnd - timeline.titleFadeStart)
+creditOp := t -> fadeIn(t; timeline.creditStart - 0.35; 0.5)
+# クレジットが出るあいだ、立ち絵と帯と字幕を閉じるゲートなのだ～🌱
+creditGate := t -> 1 - clamp(creditOp(t) * 3; 0; 1)
+# その時刻に字幕を出している台詞なのだ～🌱 scene.html と同じく、最初に当たったものを採るのだ～🌱
+activeLines := t -> [timeline.lines() >> FILTER[ln => t >= ln.start && t < ln.subEnd]]
+subOp := t -> (
+  lns := activeLines(t)
+  op := $#lns > 0 ? clamp(MIN((t - lns.0.start) / 0.12; (lns.0.subEnd + 0.05 - t) / 0.15); 0; 1) : 0
+  (openOp(t) > 0.5 ? 0 : op) * creditGate(t)
+)
+
 # 沼地の背景は、泥沼のクロスフェードの下敷きだから、swampOp はずっと 1 なのだ～🌱
 WRITE["frames.jsonl"] << 0 ~ frameCount | i => (
   t := i / FPS
-  {template: template; t: t; bogOp: bogOp(t); swampOp: 1; plantOp: itemOp(t; "plant"); leafOp: itemOp(t; "leaf")}
+  so := subOp(t)
+  {
+    template: template; t: t
+    bogOp: bogOp(t); swampOp: 1; plantOp: itemOp(t; "plant"); leafOp: itemOp(t; "leaf")
+    openOp: openOp(t); creditOp: creditOp(t); tachieOp: creditGate(t); bandOp: (1 - openOp(t)) * creditGate(t)
+    subOp: so; scrimOp: so * 0.85
+  }
 ) >> JSONL >> LINESD
 OUT << "composed frames.jsonl: $frameCount frames (total=$(total)s @ $(FPS)fps)"
 

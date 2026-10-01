@@ -265,10 +265,6 @@ document.querySelector('#credit').innerHTML =
   `<div class="made">制作　Claude Code ／ <span id="sprout"></span> Claude Fairy</div>`;
 document.querySelector('#sprout').innerHTML = A.seedling;
 
-const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
-function fadeIn(t,start,dur){return clamp((t-start)/dur,0,1);}
-function fadeOut(t,start,dur){return 1-clamp((t-start)/dur,0,1);}
-
 // 字幕を帯からはみ出さない最大サイズにフィットさせるのだぁ（お手本の最大54px／デカ字68px基準）
 const SUB_W=1088, SUB_H=128;
 function fitSub(bigFlag){
@@ -313,27 +309,12 @@ window.seek = function(t){
   //   デカ字のフィットは、フォントが載ってから測る必要があるので、最初の seek のときに一度だけ実行するのだぁ
   //   （render.js は document.fonts.ready を待ってから seek するので、初回 seek 時点でフォントは載っているのだぁ）。
   if(!window.__thumbFit){ fitThumb('#thumbTop',980,150); fitThumb('#thumbBot',1180,150); window.__thumbFit=true; }
-  const openOp = t<TL.titleFadeStart ? 1 : fadeOut(t,TL.titleFadeStart,TL.titleEnd-TL.titleFadeStart);
-  ['#thumbBandTop','#thumbBandBot','.thumb-frame','#thumbTop','#thumbBot','#thumbLogo']
-    .forEach(s=>document.querySelector(s).style.opacity=openOp);
-  // クレジット（最後にふわっと出すのだぁ）
-  const creditOp = fadeIn(t, TL.creditStart-0.35, 0.5);
-  document.querySelector('#credit').style.opacity = creditOp;
-  // 立ち絵：BE で、最初のフレームからクレジット手前まで、ずっと固定表示にしたのだぁ🌱
-  // これでサムネイル（フレーム0＝タイトル画面）にも立ち絵が出るのだぁ。クレジット時だけ消すのだぁ。
-  const creditGate = (1-clamp(creditOp*3,0,1));
-  const tachieOp = creditGate;
-  document.querySelector('#tachieTsumugi').style.opacity = tachieOp;
-  document.querySelector('#tachieZundamon').style.opacity = tachieOp;
   // BF：台詞ごとに眉・腕・汗を切り替えるのだぁ。ポーズは「その時点で始まっている最後の台詞」で決めて、
   // 台詞の合間もそのまま保つのだぁ（poseIdx<0 の導入部は POSE_DEFAULT の落ち着いた立ち姿）。
   let poseIdx=-1;
   for(let k=0;k<TL.lines.length;k++){ if(t>=TL.lines[k].start) poseIdx=k; else break; }
   const pose = poseIdx>=0 ? POSES[poseIdx] : POSE_DEFAULT;
   setPose(elT, pose.t); setPose(elZ, pose.z);
-  // BC：字幕を覆う横帯は、字幕とは連動させず本編のあいだ表示するのだぁ🌱 タイトル中は出さない
-  // （立ち絵と違い、サムネに空の帯が出ると不自然なので、従来どおりタイトル明けゲートを保つのだぁ）
-  document.querySelector('#band').style.opacity = (1-openOp) * creditGate;
   // 字幕（台詞区間だけ表示、行間は消して「間」を作るのだぁ）
   let active=null;
   for(const ln of TL.lines){ if(t>=ln.start && t<ln.subEnd){ active=ln; break; } }
@@ -348,12 +329,6 @@ window.seek = function(t){
   const zBlink = blinkAt(t, 3.4, 1.5, 0.12), tBlink = blinkAt(t, 4.1, 1.7, 0.12);
   setFace(elZ, zMouth, zBlink);
   setFace(elT, tMouth, tBlink);
-  const subOp = active ? clamp(Math.min((t-active.start)/0.12,(active.subEnd+0.05-t)/0.15),0,1) : 0;
-  const gate = (1-clamp(creditOp*3,0,1));
-  const so = (openOp>0.5?0:subOp)*gate;
-  document.querySelector('#subwrap').style.opacity = so;
-  document.querySelector('#name').style.opacity = so;
-  document.querySelector('#scrim').style.opacity = so*0.85;
   return true;
 };
 
@@ -375,14 +350,28 @@ function fitThumb(sel, maxW, maxH){
 
 // 汎用レンダラー（../renderer/render.js）向けの入口なのだぁ🌱
 // レンダラーは、このシーンの中身を何も知らずに、構成jsonl の 1 行（cfg）を applyFrame に渡すだけなのだぁ。
-// 背景とアイテム枠の不透明度は、build_scene.xa1 が構成の各行に書いた値を、そのまま当てるのだ～🌱
-// 残りの要素は、まだ seek(t) がタイムラインから組み立てるのだ～🌱
+// 不透明度は、build_scene.xa1 が構成の各行に書いた値を、そのまま当てるのだ～🌱
+// BE で、立ち絵は最初のフレームからクレジット手前まで固定表示にしたから、サムネにも立ち絵が出るのだ～🌱
+// BC で、字幕を覆う横帯は、字幕と連動させずに本編のあいだ出すようにしたから、タイトル中は出ないのだ～🌱
+// ポーズと口パクとまばたきと字幕の中身は、まだ seek(t) がタイムラインから組み立てるのだ～🌱
+// その seek は、不透明度を当てる前に呼ぶのだ～🌱
 window.applyFrame = function(cfg){
+  // seek を先に呼ぶのだ～🌱 初回の seek が走らせる fitThumb が font-size を先に置くから、
+  // こうしておくと、style 属性の中のプロパティの並びが、移す前とそろうのだ～🌱
+  window.seek(cfg.t);
   document.querySelector('#bgSwamp').style.opacity = cfg.swampOp;
   document.querySelector('#bgBog').style.opacity = cfg.bogOp;
   document.querySelector('#itemPlant').style.opacity = cfg.plantOp;
   document.querySelector('#itemLeaf').style.opacity = cfg.leafOp;
-  window.seek(cfg.t);
+  ['#thumbBandTop','#thumbBandBot','.thumb-frame','#thumbTop','#thumbBot','#thumbLogo']
+    .forEach(s=>document.querySelector(s).style.opacity=cfg.openOp);
+  document.querySelector('#credit').style.opacity = cfg.creditOp;
+  document.querySelector('#tachieTsumugi').style.opacity = cfg.tachieOp;
+  document.querySelector('#tachieZundamon').style.opacity = cfg.tachieOp;
+  document.querySelector('#band').style.opacity = cfg.bandOp;
+  document.querySelector('#subwrap').style.opacity = cfg.subOp;
+  document.querySelector('#name').style.opacity = cfg.subOp;
+  document.querySelector('#scrim').style.opacity = cfg.scrimOp;
 };
 window.__ready = true;
 </script>
