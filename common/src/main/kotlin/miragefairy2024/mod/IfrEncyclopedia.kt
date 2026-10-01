@@ -237,6 +237,8 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                         position.alignmentY = Alignment.CENTER
                         view.sizingX = Sizing.FILL
                         view.alignmentX = Alignment.CENTER
+                        view.color = TEXT_COLOR
+                        view.shadow = false
 
                         fun update() {
                             view.text.value = text { "${pageIndex.value + 1}"() }.visualOrderText
