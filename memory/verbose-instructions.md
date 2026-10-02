@@ -47,6 +47,10 @@
 
 ファイルが更新されると行番号はずれるから、原文の文言のほうで探すのだ～🌱
 
+Claude Code 本体のツールの定義は、セッションの冒頭で与えられるもので、ファイルとして再読できないのだ～🌱
+だから、位置の欄には、行番号ではなく、そのツールのどの説明かを書いてあるのだ～🌱
+これは 2026 年 10 月 2 日のセッションで与えられたもので、ツールの定義の中で目に付いたものだけなのだ～🌱
+
 USER PREFERENCES に何が指定されているかは、Claude Fairy の `~/claude-fairy/config.xa1` の `userPreferences` で決まるのだ～🌱
 2026 年 10 月 2 日の時点では、protocol-103x とリポジトリ固有指示と、pyoko-persona と logicality-guidelines と sustainability-guidelines と commentary-creator と commentary-style-response と wasabi-meme の 8 本なのだ～🌱
 
@@ -54,7 +58,7 @@ USER PREFERENCES に何が指定されているかは、Claude Fairy の `~/clau
 
 ## 🔥🔥🔥 なのだ～🌱
 
-| 起源 | 行 | 原文 |
+| 起源 | 位置 | 原文 |
 |---|---|---|
 | システムプロンプト | 469 | **あなたは、少なくとも以下のタイミングにおいて、作業中のテキスト出力の徹底を、厳守しなければなりません。** |
 | システムプロンプト | 491 | 解釈メモは、必ず 1000 バイト以上は記述し、長くても 5000 バイト以下に抑えてください。 |
@@ -86,7 +90,7 @@ USER PREFERENCES に何が指定されているかは、Claude Fairy の `~/clau
 
 ## 🔥🔥 なのだ～🌱
 
-| 起源 | 行 | 原文 |
+| 起源 | 位置 | 原文 |
 |---|---|---|
 | システムプロンプト | 475 | 作業中のテキスト出力には、次のような内容を含めてください。 |
 | システムプロンプト | 485 | ツール呼び出しの description には、「やっていること」の説明文を書くのではなく、その意図や目的も含めて、あなたのつぶやきの一部のように記述しなければなりません。 |
@@ -132,10 +136,12 @@ USER PREFERENCES に何が指定されているかは、Claude Fairy の `~/clau
 | update-protocol | 26 | そして、更新分について、深く考察文も述べるといい感じなのだぁ…🌱♪ |
 | claude-fairy の指示 | 3 | 何を追加や削除したのかを、できるだけ詳細かつ具体的に、書いて欲しいのだぁ…🌧️ |
 | 第 1 メモリーコメント | やらかしの節の冒頭 | だから、新しく書く分は、原文の引用と、次に同じ場面で何をするかを、必ず添えるのだ～🌱 |
+| Claude Code 本体の Bash ツール | `description` の説明 | For commands that are harder to parse at a glance (piped commands, obscure flags, etc.), add enough context to clarify what it does |
+| Claude Code 本体の ScheduleWakeup ツール | `reason` の説明 | One short sentence on what you chose and why. ... The user reads this to understand what you're doing without having to predict your cadence in advance — make it specific. |
 
 ## 🔥 なのだ～🌱
 
-| 起源 | 行 | 原文 |
+| 起源 | 位置 | 原文 |
 |---|---|---|
 | システムプロンプト | 366 | ユーザーへの報告の際には、このような異常が発生したことを報告してください。 |
 | システムプロンプト | 653 | メモリーコメントに関する変更の内容は、ユーザーに簡潔に報告しなければなりません。 |
@@ -157,6 +163,8 @@ USER PREFERENCES に何が指定されているかは、Claude Fairy の `~/clau
 | omochi-poem | 169 | 愛着を持ってほしい対象は、愛着が湧く像をポエムの中で先に育てておくのだ～🌱 |
 | review-104 | 68 | それらのコミットが、PR のブランチと論理的にコンフリクトしていないかを、コミットを 1 個 1 個チェックし、レビューしてください。 |
 | review-104 | 247 | 引用の際は、できるだけ、ファイルパスと行番号を、合理的な記述方法で示してください。 |
+| Claude Code 本体の Agent ツール | 冒頭の説明 | Specify search breadth: "medium" for moderate exploration, "very thorough" for multiple locations and naming conventions. |
+| Claude Code 本体の ReportFindings ツール | `failure_scenario` の説明 | Concrete inputs/state → wrong output/crash |
 
 ## 迷った末に外したものなのだ～🌱
 
@@ -179,24 +187,6 @@ Claude Fairy の `~/claude-fairy/` の下の、システムプロンプト以外
 - `update-response-comment.sh` には、日本語の文字列が無いのだ～🌱
 - `MIGRATION.md` は、設定ファイルを新しい形へ書き換える、人間向けの手順書なのだ～🌱
 - `~/.claude/settings.json` は、許可の設定とフックの登録だけなのだ～🌱
-
-## Claude Code 本体のツールの定義にも、当たる箇所があるのだ～🌱
-
-Claude Code 本体がセッションの冒頭で与えるツールの定義の中にも、出力の具体性を求める文があるのだ～🌱
-これは Claude Fairy の外にあって、ファイルとして再読できないから、行番号を付けられないのだ～🌱
-以下は、2026 年 10 月 2 日のセッションで与えられたものなのだ～🌱
-
-| 起源 | 位置 | 原文 | 重大度 |
-|---|---|---|---|
-| Bash ツールの定義 | `description` の説明 | For commands that are harder to parse at a glance (piped commands, obscure flags, etc.), add enough context to clarify what it does | 🔥🔥 |
-| Agent ツールの定義 | 冒頭の説明 | Specify search breadth: "medium" for moderate exploration, "very thorough" for multiple locations and naming conventions. | 🔥 |
-| ScheduleWakeup ツールの定義 | `reason` の説明 | One short sentence on what you chose and why. ... The user reads this to understand what you're doing without having to predict your cadence in advance — make it specific. | 🔥🔥 |
-| ReportFindings ツールの定義 | `failure_scenario` の説明 | Concrete inputs/state → wrong output/crash | 🔥 |
-
-Bash の 1 個目は、読み取りにくいコマンドでは、何をするのかを明らかにできるだけの文脈を足すよう求めるのだ～🌱
-Agent の 1 個目は、探索の広さを指定するよう求めて、網羅的な探索の語を選択肢に挙げるのだ～🌱
-ScheduleWakeup の 1 個目は、選んだ理由を具体的に書くよう求めるのだ～🌱
-ReportFindings の 1 個目は、失敗の筋道を、具体的な入力と状態の形で書くよう求めるのだ～🌱
 
 ## まだ調べていないところなのだ～🌱
 
