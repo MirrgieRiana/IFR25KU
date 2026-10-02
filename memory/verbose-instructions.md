@@ -192,6 +192,9 @@ Claude Fairy の `~/claude-fairy/` の下の、システムプロンプト以外
 - `update-response-comment.sh` には、日本語の文字列が無いのだ～🌱
 - `MIGRATION.md` は、設定ファイルを新しい形へ書き換える、人間向けの手順書なのだ～🌱
 - `~/.claude/settings.json` は、許可の設定とフックの登録だけなのだ～🌱
+- `build-user-preferences-block.xa1` と `check-claude-fairy.sh` と `process-claude-fairy.sh` と `serve-claude-fairy.sh` と `snapshot-context.sh` と `sample.config.xa1` と `bin/` の 3 本の日本語は、全部ソースコード上のコメントなのだ～🌱
+- `.devcontainer/` の 3 本には、日本語そのものが無いのだ～🌱
+- `assets/` と `lib/` と `share/` と `xarpite/` は、画像と第三者のライブラリとキャッシュで、指示文ではないのだ～🌱
 
 ## まだ調べていないところなのだ～🌱
 
