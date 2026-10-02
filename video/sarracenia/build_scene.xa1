@@ -7,7 +7,7 @@
 # 引数：
 #   ARGS.0       … timeline.json のパス（省略時は ../timeline.json）なのだ～🌱
 # 出力（このディレクトリ配下）：
-#   assets.js    … scene.html が読む、フォント・絵文字・テクスチャ・タイムラインの束
+#   assets.js    … scene.html が読む、絵文字・テクスチャのパス・タイムラインの束
 #   portrait/    … 立ち絵 PSD から切り出したレイヤー PNG
 #   frames.jsonl … 1 行 = 1 フレームの構成jsonl（レンダラーへの入力）
 # =============================================================================
@@ -86,7 +86,8 @@ assets := {
   leaf: "$TEX/textures/item/sarracenia_leaf.png"
   logo: "$TEX/icon.png"
   bg: "$TEX/textures/block/haimeviska_log.png"
-  # seedling はパスではなく「生の SVG 文字列」なのだ～🌱scene.html が innerHTML に直接差し込むのだ～🌱
+  # seedling はパスではなく「生の SVG 文字列」なのだ～🌱
+  # scene.html が innerHTML に直接差し込むのだ～🌱
   seedling: READ("resources/emoji/seedling.svg")::replace(/^\s+|\s+$/g; "")
 }
 timeline := $*READ(timelinePath)
@@ -134,18 +135,22 @@ subOp := t -> (
   (openOp(t) > 0.5 ? 0 : op) * creditGate(t)
 )
 
-# 母音から口の開きを決めるのだ～🌱 縦の開きで 3 段で、N や pau や っ といった無声と休止は閉口なのだ～🌱
+# 母音から口の開きを決めるのだ～🌱
+# 縦の開きで 3 段で、N や pau や っ といった無声と休止は閉口なのだ～🌱
 vowelMouth := v -> v == "a" ? "open" : (v == "i" || v == "u" || v == "e" || v == "o" ? "half" : "closed")
-# モーラの区間を順に見て、最初に当たったものを採るのだ～🌱 モーラの秒は wav の先頭からだから、start を引くのだ～🌱
+# モーラの区間を順に見て、最初に当たったものを採るのだ～🌱
+# モーラの秒は wav の先頭からだから、start を引くのだ～🌱
 mouthAt := (line; t) -> (
   tl := t - line.start
   hits := [line.moras() >> FILTER[m => tl >= m.0 && tl < m.2]]
   $#hits > 0 ? (tl < hits.0.1 ? "closed" : vowelMouth(hits.0.3)) : "closed"
 )
-# まばたきなのだ～🌱 閉眼は一瞬で、半目は介さずに閉と開を行き来するのだ～🌱
+# まばたきなのだ～🌱
+# 閉眼は一瞬で、半目は介さずに閉と開を行き来するのだ～🌱
 # 位相は、最初のフレームで両者とも目を開けているように選んであるのだ～🌱
 blinkAt := (t; period; phase; dur) -> (((t + phase) % period) + period) % period < dur
-# 口パクする台詞なのだ～🌱 字幕は音声より長く残るから、字幕の区間ではなく実発話区間で切るのだ～🌱
+# 口パクする台詞なのだ～🌱
+# 字幕は音声より長く残るから、字幕の区間ではなく実発話区間で切るのだ～🌱
 speakingLine := t -> (
   lns := activeLines(t)
   $#lns > 0 && t < lns.0.end ? lns.0 : NULL
