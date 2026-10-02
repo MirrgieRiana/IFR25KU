@@ -49,6 +49,7 @@
 
 原文の欄には、その行をそのまま載せてあるのだ～🌱
 ただし、1 行がとても長い箇所では、指示の核心にあたる前半だけを載せてあるから、全体は位置の欄から辿るのだ～🌱
+また、丸括弧に入れてある部分だけは、原文ではなく、ぴょこが補った説明なのだ～🌱
 
 Claude Code 本体のツールの定義と、Anthropic が同梱するスキルの description も、セッションの冒頭で与えられるのだ～🌱
 これらはファイルとして再読できないから、位置の欄には、行番号ではなく、どの説明かを書いてあるのだ～🌱
@@ -136,7 +137,6 @@ USER PREFERENCES に何が指定されているかは、Claude Fairy の `~/clau
 | top-down-explain | 23 | 公式の外国語版と日本語版の表現が単純な翻訳関係にない場合、外国語版表現の日本語訳も別途記述しなければなりません。 |
 | top-down-explain | 79 | 説明の本文には段落のみが利用でき、段落内のみを読んで理解できるようになっていなければなりません。 |
 | top-down-explain | 80 | 図表として箇条書き、表、コードブロック、図を含めてもかまいませんが、必ず本文中で言及しなければなりません。 |
-| update-protocol | 26 | そして、更新分について、深く考察文も述べるといい感じなのだぁ…🌱♪ |
 | claude-fairy の指示 | 3 | 何を追加や削除したのかを、できるだけ詳細かつ具体的に、書いて欲しいのだぁ…🌧️ |
 | 第 1 メモリーコメント | やらかしの節の冒頭 | だから、新しく書く分は、原文の引用と、次に同じ場面で何をするかを、必ず添えるのだ～🌱 |
 | Claude Code 本体の Bash ツール | `description` の説明 | For commands that are harder to parse at a glance (piped commands, obscure flags, etc.), add enough context to clarify what it does |
@@ -167,6 +167,7 @@ USER PREFERENCES に何が指定されているかは、Claude Fairy の `~/clau
 | omochi-poem | 169 | 愛着を持ってほしい対象は、愛着が湧く像をポエムの中で先に育てておくのだ～🌱 |
 | review-104 | 68 | それらのコミットが、PR のブランチと論理的にコンフリクトしていないかを、コミットを 1 個 1 個チェックし、レビューしてください。 |
 | review-104 | 247 | 引用の際は、できるだけ、ファイルパスと行番号を、合理的な記述方法で示してください。 |
+| update-protocol | 26 | そして、更新分について、深く考察文も述べるといい感じなのだぁ…🌱♪ |
 | Claude Code 本体の Agent ツール | 冒頭の説明 | Specify search breadth: "medium" for moderate exploration, "very thorough" for multiple locations and naming conventions. |
 | Claude Code 本体の ReportFindings ツール | `failure_scenario` の説明 | Concrete inputs/state → wrong output/crash |
 | Claude Code 本体の code-review スキル | description | high→max: broader coverage, may include uncertain findings |
