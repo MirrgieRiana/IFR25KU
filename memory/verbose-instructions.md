@@ -47,9 +47,9 @@
 
 ファイルが更新されると行番号はずれるから、原文の文言のほうで探すのだ～🌱
 
-Claude Code 本体のツールの定義は、セッションの冒頭で与えられるもので、ファイルとして再読できないのだ～🌱
-だから、位置の欄には、行番号ではなく、そのツールのどの説明かを書いてあるのだ～🌱
-これは 2026 年 10 月 2 日のセッションで与えられたもので、ツールの定義の中で目に付いたものだけなのだ～🌱
+Claude Code 本体のツールの定義と、Anthropic が同梱するスキルの description も、セッションの冒頭で与えられるのだ～🌱
+これらはファイルとして再読できないから、位置の欄には、行番号ではなく、どの説明かを書いてあるのだ～🌱
+2026 年 10 月 2 日のセッションで与えられたもので、その中で目に付いたものだけなのだ～🌱
 
 USER PREFERENCES に何が指定されているかは、Claude Fairy の `~/claude-fairy/config.xa1` の `userPreferences` で決まるのだ～🌱
 2026 年 10 月 2 日の時点では、protocol-103x とリポジトリ固有指示と、pyoko-persona と logicality-guidelines と sustainability-guidelines と commentary-creator と commentary-style-response と wasabi-meme の 8 本なのだ～🌱
@@ -138,6 +138,7 @@ USER PREFERENCES に何が指定されているかは、Claude Fairy の `~/clau
 | 第 1 メモリーコメント | やらかしの節の冒頭 | だから、新しく書く分は、原文の引用と、次に同じ場面で何をするかを、必ず添えるのだ～🌱 |
 | Claude Code 本体の Bash ツール | `description` の説明 | For commands that are harder to parse at a glance (piped commands, obscure flags, etc.), add enough context to clarify what it does |
 | Claude Code 本体の ScheduleWakeup ツール | `reason` の説明 | One short sentence on what you chose and why. ... The user reads this to understand what you're doing without having to predict your cadence in advance — make it specific. |
+| Claude Code 本体の deep-research スキル | description | synthesizing that research into a comprehensive, narrative report |
 
 ## 🔥 なのだ～🌱
 
@@ -165,6 +166,7 @@ USER PREFERENCES に何が指定されているかは、Claude Fairy の `~/clau
 | review-104 | 247 | 引用の際は、できるだけ、ファイルパスと行番号を、合理的な記述方法で示してください。 |
 | Claude Code 本体の Agent ツール | 冒頭の説明 | Specify search breadth: "medium" for moderate exploration, "very thorough" for multiple locations and naming conventions. |
 | Claude Code 本体の ReportFindings ツール | `failure_scenario` の説明 | Concrete inputs/state → wrong output/crash |
+| Claude Code 本体の code-review スキル | description | high→max: broader coverage, may include uncertain findings |
 
 ## 迷った末に外したものなのだ～🌱
 
@@ -192,7 +194,7 @@ Claude Fairy の `~/claude-fairy/` の下の、システムプロンプト以外
 
 - Claude Code 本体のシステムプロンプトの本体と、そのシステムリマインドは、ファイルとして再読できないのだ～🌱
   表に入れたのは、ツールの定義の中で目に付いたものだけで、網羅できていないのだ～🌱
-- Anthropic が同梱するスキルの description も、全部は拾っていないのだ～🌱
-  例えば deep-research のものは、調査を包括的な物語形式のレポートへ統合する、と述べているのだ～🌱
-  これらは Claude Fairy の側から文言を変えられないけれど、入力としては届いているのだ～🌱
+- Anthropic が同梱するスキルは、description だけが冒頭で与えられて、本体はそのスキルを使うときに読み込まれるのだ～🌱
+  だから、本体のほうは、まだ見ていないのだ～🌱
+  Claude Fairy の側から文言を変えられない対象だけど、入力としては届いているのだ～🌱
 - IFR25KU を含む MirageFairy/IFR 関連リポジトリにコミットされているファイルは、調査の対象から外してあるのだ～🌱
