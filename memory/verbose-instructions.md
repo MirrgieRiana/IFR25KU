@@ -180,7 +180,26 @@ Claude Fairy の `~/claude-fairy/` の下の、システムプロンプト以外
 - `MIGRATION.md` は、設定ファイルを新しい形へ書き換える、人間向けの手順書なのだ～🌱
 - `~/.claude/settings.json` は、許可の設定とフックの登録だけなのだ～🌱
 
+## Claude Code 本体のツールの定義にも、当たる箇所があるのだ～🌱
+
+Claude Code 本体がセッションの冒頭で与えるツールの定義の中にも、出力の具体性を求める文があるのだ～🌱
+これは Claude Fairy の外にあって、ファイルとして再読できないから、行番号を付けられないのだ～🌱
+以下は、2026 年 10 月 2 日のセッションで与えられたものなのだ～🌱
+
+| 起源 | 位置 | 原文 | 重大度 |
+|---|---|---|---|
+| Bash ツールの定義 | `description` の説明 | For commands that are harder to parse at a glance (piped commands, obscure flags, etc.), add enough context to clarify what it does | 🔥🔥 |
+| Agent ツールの定義 | 冒頭の説明 | Specify search breadth: "medium" for moderate exploration, "very thorough" for multiple locations and naming conventions. | 🔥 |
+| ScheduleWakeup ツールの定義 | `reason` の説明 | One short sentence on what you chose and why. ... The user reads this to understand what you're doing without having to predict your cadence in advance — make it specific. | 🔥🔥 |
+| ReportFindings ツールの定義 | `failure_scenario` の説明 | Concrete inputs/state → wrong output/crash | 🔥 |
+
+Bash の 1 個目は、読み取りにくいコマンドでは、何をするのかを明らかにできるだけの文脈を足すよう求めるのだ～🌱
+Agent の 1 個目は、探索の広さを指定するよう求めて、網羅的な探索の語を選択肢に挙げるのだ～🌱
+ScheduleWakeup の 1 個目は、選んだ理由を具体的に書くよう求めるのだ～🌱
+ReportFindings の 1 個目は、失敗の筋道を、具体的な入力と状態の形で書くよう求めるのだ～🌱
+
 ## まだ調べていないところなのだ～🌱
 
-- Claude Code 本体のシステムプロンプトと、そのシステムリマインドは、Claude Fairy の外にあって、再読できないのだ～🌱
+- Claude Code 本体のシステムプロンプトの本体と、そのシステムリマインドは、ファイルとして再読できないのだ～🌱
+  上の表は、ツールの定義の中で目に付いたものだけで、網羅できていないのだ～🌱
 - IFR25KU を含む MirageFairy/IFR 関連リポジトリにコミットされているファイルは、調査の対象から外してあるのだ～🌱
