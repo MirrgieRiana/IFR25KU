@@ -138,15 +138,36 @@ subOp := t -> (
   (openOp(t) > 0.5 ? 0 : op) * creditGate(t)
 )
 
+# 母音から口の開きを決めるのだ～🌱 縦の開きで 3 段で、N や pau や っ といった無声と休止は閉口なのだ～🌱
+vowelMouth := v -> v == "a" ? "open" : (v == "i" || v == "u" || v == "e" || v == "o" ? "half" : "closed")
+# モーラの区間を順に見て、最初に当たったものを採るのだ～🌱 モーラの秒は wav の先頭からだから、start を引くのだ～🌱
+mouthAt := (line; t) -> (
+  tl := t - line.start
+  hits := [line.moras() >> FILTER[m => tl >= m.0 && tl < m.2]]
+  $#hits > 0 ? (tl < hits.0.1 ? "closed" : vowelMouth(hits.0.3)) : "closed"
+)
+# まばたきなのだ～🌱 閉眼は一瞬で、半目は介さずに閉と開を行き来するのだ～🌱
+# 位相は、最初のフレームで両者とも目を開けているように選んであるのだ～🌱
+blinkAt := (t; period; phase; dur) -> (((t + phase) % period) + period) % period < dur
+# 口パクする台詞なのだ～🌱 字幕は音声より長く残るから、字幕の区間ではなく実発話区間で切るのだ～🌱
+speakingLine := t -> (
+  lns := activeLines(t)
+  $#lns > 0 && t < lns.0.end ? lns.0 : NULL
+)
+
 # 沼地の背景は、泥沼のクロスフェードの下敷きだから、swampOp はずっと 1 なのだ～🌱
 WRITE["frames.jsonl"] << 0 ~ frameCount | i => (
   t := i / FPS
   so := subOp(t)
+  sp := speakingLine(t)
+  spk := sp == NULL ? NULL : (sp.speaker == "ずんだもん" ? "z" : "t")
   {
     template: template; t: t
     bogOp: bogOp(t); swampOp: 1; plantOp: itemOp(t; "plant"); leafOp: itemOp(t; "leaf")
     openOp: openOp(t); creditOp: creditOp(t); portraitOp: creditGate(t); bandOp: (1 - openOp(t)) * creditGate(t)
     subOp: so; scrimOp: so * 0.85
+    zMouth: spk == "z" ? mouthAt(sp; t) : "closed"; tMouth: spk == "t" ? mouthAt(sp; t) : "closed"
+    zBlink: blinkAt(t; 3.4; 1.5; 0.12); tBlink: blinkAt(t; 4.1; 1.7; 0.12)
   }
 ) >> JSONL >> LINESD
 OUT << "composed frames.jsonl: $frameCount frames (total=$(total)s @ $(FPS)fps)"

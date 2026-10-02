@@ -234,17 +234,6 @@ function setFace(el, mouth, blink){
   el.querySelectorAll('.eye-open').forEach(e=>e.style.display=blink?'none':'');
   el.querySelectorAll('.eye-blink').forEach(e=>e.style.display=blink?'':'none');
 }
-// 母音→口の開き（AV）なのだ～🌱 縦の開きで3段で、N/pau/っ 等の無声・休止は閉口なのだ～🌱
-function vowelMouth(v){ if(v==='a')return 'open'; if(v==='i'||v==='u'||v==='e'||v==='o')return 'half'; return 'closed'; }
-function mouthAt(line, t){
-  if(!line || !line.moras) return 'closed';
-  const tl = t - line.start;
-  for(const m of line.moras){ if(tl>=m[0] && tl<m[2]){ return tl<m[1] ? 'closed' : vowelMouth(m[3]); } }
-  return 'closed';
-}
-// まばたき（AW）なのだ～🌱 決定的スケジュールで、閉眼は一瞬（半目は介さず閉↔開）なのだ～🌱
-function blinkAt(t, period, phase, dur){ const p=(((t+phase)%period)+period)%period; return p<dur; }
-
 // クレジット（🌱は fluentui-emoji の seedling を inline SVG で描くのだ～🌱）
 // クレジットは項目ごとに体裁がまちまちだったので、統一体裁にしたのだ～🌱
 //   体裁：「項目　名称（作者・権利者）　ライセンス」なのだ～🌱 作者は（）で囲んで、ライセンスは末尾の全角スペース区切りなのだ～🌱
@@ -319,16 +308,6 @@ window.seek = function(t){
   let active=null;
   for(const ln of TL.lines){ if(t>=ln.start && t<ln.subEnd){ active=ln; break; } }
   setSub(active);
-  // 立ち絵の口パク（AV）・まばたき（AW）なのだ～🌱 喋っている側だけ口が動いて、両者はそれぞれの周期で瞬きするのだ～🌱
-  // 字幕は音声より SUB_TAIL 長く残るので、口パクは実発話区間（active.end）だけに限るのだ～🌱
-  const speaking = active && t < active.end ? active : null;
-  const spk = speaking ? (speaking.speaker==='ずんだもん'?'z':'t') : null;
-  const zMouth = spk==='z' ? mouthAt(speaking,t) : 'closed';
-  const tMouth = spk==='t' ? mouthAt(speaking,t) : 'closed';
-  // 位相は、最初のフレーム(t=0)で両者とも目を開けているように選ぶのだ～🌱（サムネで閉眼にしない・BE）
-  const zBlink = blinkAt(t, 3.4, 1.5, 0.12), tBlink = blinkAt(t, 4.1, 1.7, 0.12);
-  setFace(elZ, zMouth, zBlink);
-  setFace(elT, tMouth, tBlink);
   return true;
 };
 
@@ -353,12 +332,15 @@ function fitThumb(sel, maxW, maxH){
 // 不透明度は、build_scene.xa1 が構成の各行に書いた値を、そのまま当てるのだ～🌱
 // BE で、立ち絵は最初のフレームからクレジット手前まで固定表示にしたから、サムネにも立ち絵が出るのだ～🌱
 // BC で、字幕を覆う横帯は、字幕と連動させずに本編のあいだ出すようにしたから、タイトル中は出ないのだ～🌱
-// ポーズと口パクとまばたきと字幕の中身は、まだ seek(t) がタイムラインから組み立てるのだ～🌱
-// その seek は、不透明度を当てる前に呼ぶのだ～🌱
+// ポーズと字幕の中身は、まだ seek(t) がタイムラインから組み立てるのだ～🌱
+// その seek は、構成の各行の値を当てる前に呼ぶのだ～🌱
 window.applyFrame = function(frame){
   // seek を先に呼ぶのだ～🌱 初回の seek が走らせる fitThumb が font-size を先に置くから、
   // こうしておくと、style 属性の中のプロパティの並びが、移す前とそろうのだ～🌱
   window.seek(frame.t);
+  // 喋っている側だけ口が動いて、両者はそれぞれの周期で瞬きするのだ～🌱
+  setFace(elZ, frame.zMouth, frame.zBlink);
+  setFace(elT, frame.tMouth, frame.tBlink);
   document.querySelector('#bgSwamp').style.opacity = frame.swampOp;
   document.querySelector('#bgBog').style.opacity = frame.bogOp;
   document.querySelector('#itemPlant').style.opacity = frame.plantOp;
