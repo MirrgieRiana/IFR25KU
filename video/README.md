@@ -141,7 +141,6 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 - **Node.js**（18 以降を想定）と **npm**
 - **Python 3**（標準ライブラリのみ使用で、追加パッケージは要らないのだ～🌱）
 - **ffmpeg**
-- **base64**（coreutils なのだ～🌱 画像とフォントの符号化に使うのだ～🌱）
 - **curl**（`synth.xa1` が VOICEVOX ENGINE と通信するのに使うのだ～🌱）
 - **VOICEVOX ENGINE**（音声合成サーバーなのだ～🌱 起動しておくのだ～🌱）
 - **Chrome / Chromium**（無ければ `renderer/setup_chromium.js` が同梱版を展開するのだ～🌱）
@@ -201,9 +200,9 @@ bash build.sh
 
 ### sarracenia/build_scene.xa1（アセットの焼き込み）なのだ～🌱
 
-`file://` で開いた HTML は外部ファイルを `fetch()` できないから、フォントと絵文字とテクスチャとタイムラインを `assets.js` に埋め込むのだ～🌱
-画像とフォントは base64 の data-URL に、絵文字 SVG は生の文字列として入るのだ～🌱
-base64 への符号化には、`base64` コマンドを使うのだ～🌱
+`file://` で開いた HTML は外部ファイルを `fetch()` できないから、絵文字とテクスチャのパスとタイムラインを `assets.js` に埋め込むのだ～🌱
+テクスチャは `scene.html` から見た相対パスの文字列で、絵文字 SVG は生の文字列として入るのだ～🌱
+`img` の `src` と CSS の `url()` は `fetch()` を通らないから、テクスチャもフォントも、相対パスのまま `file://` で読めるのだ～🌱
 
 ### extract_portrait.js（立ち絵の切り出し）なのだ～🌱
 

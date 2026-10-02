@@ -69,29 +69,25 @@ need("resources/emoji"; "seedling.svg")
   run("npm", "install")
 )
 
-# --- 1. scene.html が読む assets.js を焼くのだ～🌱（フォント・絵文字・テクスチャ・タイムライン） ---
+# --- 1. scene.html が読む assets.js を焼くのだ～🌱（絵文字・テクスチャのパス・タイムライン） ---
 # レンダリングは Chromium に file://.../scene.html を開かせて 1 フレームずつ撮る方式なのだ～🌱
 # file:// で開いた HTML は、セキュリティ上、外部ファイルを fetch() で読めないのだ～🌱
-# そこで、ぜんぶ 1 個の JS ファイル（assets.js）に「焼き込んで」おいて、scene.html から <script> で読み込むのだ～🌱
+# そこで、JS が値として要るものは 1 個のファイル（assets.js）に「焼き込んで」おいて、scene.html から <script> で読み込むのだ～🌱
+# 一方、img の src と CSS の url() は fetch() を通らないから、file:// でも相対パスのまま読めるのだ～🌱
+# だから、テクスチャとフォントは、焼き込まずに、パスのまま渡すのだ～🌱
 OUT << "== bake assets.js =="
 
 # IFR25KU リポジトリ内のテクスチャ（＝コミット済みの素材なので、リポジトリから直接読むのだ～🌱）
+# このパスは、scene.html の置き場所を基準に解決されるのだ～🌱
 TEX := "../../common/src/main/resources/assets/miragefairy2024"
 
-# ファイルを base64 の data-URL にするのだ～🌱
-# 同梱の xarpite の BASE64 は、文字列を UTF-8 にしてから符号化するから、バイナリのファイルには使えないのだ～🌱
-# だから、外の base64 コマンドで符号化して、76 文字ごとの改行をつなぎ直すのだ～🌱
-dataUrl := mime, path -> "data:$mime;base64,$(capture("base64", path)() >> JOIN[""])"
-
 assets := {
-  plant: dataUrl("image/png"; "$TEX/textures/block/magic_plant/sarracenia_age3.png")
-  leaf: dataUrl("image/png"; "$TEX/textures/item/sarracenia_leaf.png")
-  logo: dataUrl("image/png"; "$TEX/icon.png")
-  bg: dataUrl("image/png"; "$TEX/textures/block/haimeviska_log.png")
-  # seedling は data-URL ではなく「生の SVG 文字列」なのだ～🌱scene.html が innerHTML に直接差し込むのだ～🌱
+  plant: "$TEX/textures/block/magic_plant/sarracenia_age3.png"
+  leaf: "$TEX/textures/item/sarracenia_leaf.png"
+  logo: "$TEX/icon.png"
+  bg: "$TEX/textures/block/haimeviska_log.png"
+  # seedling はパスではなく「生の SVG 文字列」なのだ～🌱scene.html が innerHTML に直接差し込むのだ～🌱
   seedling: READ("resources/emoji/seedling.svg")::replace(/^\s+|\s+$/g; "")
-  fontBlack: dataUrl("font/ttf"; "resources/font/ZenMaruGothic-Black.ttf")
-  fontBold: dataUrl("font/ttf"; "resources/font/ZenMaruGothic-Bold.ttf")
 }
 timeline := $*READ(timelinePath)
 
