@@ -15596,6 +15596,17 @@
       }
     ]
   },
+  "miragefairy2024:tmp20261003": {
+    "definition": {
+      "type": "miragefairy2024:tmp20261003",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
   "miragefairy2024:topaz_luminaria": {
     "definition": {
       "type": "miragefairy2024:topaz_luminaria",
