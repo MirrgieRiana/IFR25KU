@@ -14,7 +14,7 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 
 1. **`renderer/`（汎用レンダラー）** … 構成jsonl（1 行 = 1 フレーム）と HTML テンプレートを受け取って、ひたすら対応する画像を撮るだけの、**動画の中身を知らない**カプセル化されたレンダラーなのだ～🌱 単体で完結していて、他のパートに依存しないのだ～🌱
 2. **`sarracenia/`（動画タイトルのディレクトリ）** … この寸劇動画の台本とシーンを持って、**構成jsonl を作る**パートなのだ～🌱 単体で完結していて、他のパートに依存しないのだ～🌱
-3. **`video/` 直下（雑多な部分）** … 音声合成と動画合成をして、**1 と 2 を呼び出して**動画を完成させるのだ～🌱 `build.sh` が、その配線役なのだ～🌱
+3. **`video/` 直下（雑多な部分）** … 音声合成と動画合成をして、**1 と 2 を呼び出して**動画を完成させるのだ～🌱 `Makefile` が、その配線役なのだ～🌱
 
 この動画は、動画編集ソフトの GUI で作るのではなくて、**「決定論的フレームレンダリング」** という方式で作るのだ～🌱
 
@@ -63,7 +63,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 
 | ファイル | 役割 |
 | --- | --- |
-| `build.sh` | 下記すべてを順に呼び出すオーケストレーターなのだ～🌱 **ふつうはこれを実行するだけ**なのだ～🌱 |
+| `Makefile` | 下記すべてを順に呼び出す段を並べたものなのだ～🌱 **ふつうは `make` を実行するだけ**なのだ～🌱 |
 | `main.xa1` | シェルスクリプトや Makefile から呼ぶ関数を返す入口なのだ～🌱 冒頭で `src/main/xa1/` を `INC` へ登録するのだ～🌱 |
 | `src/main/xa1/build.xa1` | `main.xa1` の `build` が呼ぶ、構成jsonl ができるまでの段（BGM の確認・`synth.xa1`・`assemble.xa1`・`sarracenia/build_scene.sh`）の本体なのだ～🌱 |
 | `src/main/xa1/synth.xa1` | VOICEVOX で台詞ごとの音声を合成して、口パク用のモーラ区間も書き出すのだ～🌱 |
@@ -156,19 +156,29 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 
 # 2) 外部取得リソースを sarracenia/resources/ に配置するのだ～🌱（→ 3.）
 
-# 3) ビルドなのだ～🌱（Node 依存は build.sh が各パートで自動 npm install するのだ～🌱）
-bash build.sh
+# 3) ビルドなのだ～🌱（Node 依存は各パートで自動 npm install するのだ～🌱）
+make
 ```
 
 完成すると `video/sarracenia.mp4` ができるのだ～🌱
 中間生成物と連番フレームも `video/` 内に残るけど、全部 `.gitignore` 済みなのだ～🌱
 
-`renderer/` と `sarracenia/` は Node 依存が別々だから、`build.sh` はそれぞれのディレクトリで必要なときだけ `npm install` するのだ～🌱
+`make` の引数で、途中の段だけを走らせることもできるのだ～🌱
+
+| 段 | やること |
+| --- | --- |
+| `make scene` | BGM の確認と音声合成と結合をして、`sarracenia/` の構成（`assets.js`・`portrait/`・`frames.jsonl`）を作るのだ～🌱 |
+| `make frames` | `scene` の後に、連番のフレーム画像を `sarracenia/frames/` へ撮るのだ～🌱 |
+| `make movie` | `frames` の後に、フレームとナレーションと BGM を合成して mp4 にするのだ～🌱 引数なしの `make` と同じなのだ～🌱 |
+
+後ろの段は前の段に依存しているから、`make movie` だけで最初から通るのだ～🌱
+
+`renderer/` と `sarracenia/` は Node 依存が別々だから、それぞれのディレクトリで必要なときだけ `npm install` するのだ～🌱
 手動で入れるなら、各ディレクトリで `npm install` するのだ～🌱
 
 ### 環境変数で差し替えられる設定なのだ～🌱
 
-`build.sh` は次の環境変数を見るのだ～🌱
+`make` は次の環境変数を見るのだ～🌱
 無指定なら、既定値なのだ～🌱
 
 | 変数 | 既定 | 説明 |
@@ -275,7 +285,7 @@ Chrome を入れられない環境では、`renderer/package.json` に含まれ�
 root 権限が無くて、NSS 系の共有ライブラリが OS に無い環境などなのだ～🌱
 その NSS 一式は、`@sparticuz/chromium` パッケージが同梱している `bin/al2023.tar.br`（Brotli 圧縮された tar）を展開すると得られるのだ～🌱
 取り出した `.so` を 1 個のディレクトリに集めて、`CHROMIUM_LD_PATH` にそのパスを指定するのだ～🌱
-`build.sh` が、render 時に `LD_LIBRARY_PATH` へ前置するのだ～🌱
+`renderer/render.sh` が、render 時に `LD_LIBRARY_PATH` へ前置するのだ～🌱
 なお、この共有ライブラリの補完は、上記のような特殊な環境でだけ必要で、Chrome のある環境では `CHROMIUM_PATH` を指すだけで済むのだ～🌱
 
 ---
