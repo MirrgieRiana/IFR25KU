@@ -10,10 +10,9 @@ import net.minecraft.world.level.block.BushBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.shapes.CollisionContext
 
-// TODO 妖精の森の雑草の名前と設定が決まっていないため、仮の識別子なのだ～🌱
-class Tmp20261003Block(settings: Properties) : BushBlock(settings) {
+class MiranberiaBlock(settings: Properties) : BushBlock(settings) {
     companion object {
-        val CODEC: MapCodec<Tmp20261003Block> = simpleCodec(::Tmp20261003Block)
+        val CODEC: MapCodec<MiranberiaBlock> = simpleCodec(::MiranberiaBlock)
 
         /** バニラの [net.minecraft.world.level.block.CherryLeavesBlock.animateTick] の、花びらを散らす確率と同じ値なのだ～🌱 */
         private const val PARTICLE_CHANCE = 10

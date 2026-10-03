@@ -21,9 +21,9 @@ import miragefairy2024.mod.materials.contents.LOCAL_VACUUM_DECAY_RESISTANT_BLOCK
 import miragefairy2024.mod.materials.contents.LocalVacuumDecayBlock
 import miragefairy2024.mod.materials.contents.MirageLeavesBlock
 import miragefairy2024.mod.materials.contents.MiragidianLampBlock
+import miragefairy2024.mod.materials.contents.MiranberiaBlock
 import miragefairy2024.mod.materials.contents.NectarflowerBlock
 import miragefairy2024.mod.materials.contents.SemiOpaqueTransparentBlock
-import miragefairy2024.mod.materials.contents.Tmp20261003Block
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassBlockModel
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassFrameBlockModel
 import miragefairy2024.mod.materials.contents.localVacuumDecayTexturedModelFactory
@@ -974,9 +974,8 @@ open class BlockMaterialCard(
             item.registerBlockGeneratedModelGeneration(block)
             block.registerFlammable(60, 100)
         }
-        // TODO 妖精の森の雑草の名前と設定が決まっていないため、仮の識別子と仮の表示名なのだ～🌱
-        val TMP_20261003: BlockMaterialCard = !object : BlockMaterialCard(
-            "tmp20261003", EnJa("Tmp20261003", "Tmp20261003"),
+        val MIRANBERIA: BlockMaterialCard = !object : BlockMaterialCard(
+            "miranberia", EnJa("Miranberia", "ミランベリア"),
             PoemList(null),
             MapColor.COLOR_PURPLE, 0.0F, 0.0F,
         ) {
@@ -989,7 +988,7 @@ open class BlockMaterialCard(
                 .lightLevel { 10 }
                 .emissiveRendering { _, _, _ -> true }
 
-            override suspend fun createBlock(properties: BlockBehaviour.Properties) = Tmp20261003Block(properties)
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = MiranberiaBlock(properties)
 
             context(ModContext)
             override fun initModelGeneration() {
@@ -1112,7 +1111,7 @@ fun initBlockMaterialsModule() {
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("egg_block")) { EggBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("nectarflower")) { NectarflowerBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("dayflower")) { DayflowerBlock.CODEC }.register()
-    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("tmp20261003")) { Tmp20261003Block.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("miranberia")) { MiranberiaBlock.CODEC }.register()
 
     LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.enJa(EnJa("Local Vacuum Decay Resistant", "局所真空崩壊耐性"))
 

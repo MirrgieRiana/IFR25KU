@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "miragefairy2024:block/tmp20261003"
+    "layer0": "miragefairy2024:block/miranberia"
   }
 }
