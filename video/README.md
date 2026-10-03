@@ -64,7 +64,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 | ファイル | 役割 |
 | --- | --- |
 | `Makefile` | 下記すべてを順に呼び出す段を並べたものなのだ～🌱 **ふつうは `make` を実行するだけ**なのだ～🌱 |
-| `main.xa1` | シェルスクリプトや Makefile から呼ぶ関数を返す入口なのだ～🌱 冒頭で `src/main/xa1/` を `INC` へ登録するのだ～🌱 |
+| `main.xa1` | `Makefile` から呼ぶ関数を返す入口なのだ～🌱 第 1 引数で受け取った `video/` の絶対パスを基準に、`INC` と読み書きのパスを組むのだ～🌱 |
 | `src/main/xa1/build.xa1` | `main.xa1` の `build` が呼ぶ、構成jsonl ができるまでの段（BGM の確認・`synth.xa1`・`assemble.xa1`・`sarracenia/build_scene.sh`）の本体なのだ～🌱 |
 | `src/main/xa1/synth.xa1` | VOICEVOX で台詞ごとの音声を合成して、口パク用のモーラ区間も書き出すのだ～🌱 |
 | `src/main/xa1/assemble.xa1` | 台詞 wav を、タイトル、本編（行間の無音）、クレジットの順に結合して、タイムラインを算出するのだ～🌱 |

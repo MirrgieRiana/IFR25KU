@@ -2,6 +2,7 @@
 # build.xa1 — サラセニア寸劇動画の、構成jsonl ができるまでの段の本体なのだ～🌱（xarpite / API5）
 # -----------------------------------------------------------------------------
 # video/main.xa1 の build が USE で読むのだ～🌱
+# 読み書きするパスは、common の base（video/ の絶対パス）を基準に組むのだ～🌱
 # 音声合成・結合（雑多パート）と、sarracenia の構成づくりを、順に呼ぶのだ～🌱
 # 構成jsonl から先（レンダラーと mp4 の合成）は、build.sh の側でやるのだ～🌱
 # =============================================================================
@@ -13,7 +14,7 @@ API(5)
 #     立ち絵 PSD・フォント・絵文字は sarracenia 側（build_scene.xa1）が確認するのだ～🌱
 # FILE_NAMES のストリームのままだと、@ が部分文字列で探して、隣の *.md5 のファイル名に当たっちゃうのだ～🌱
 # だから、配列にしてから、要素として探すのだ～🌱
-"chopin_op10-4.flac" @ [FILE_NAMES("sarracenia/resources/bgm")] || fail("resource not found: sarracenia/resources/bgm/chopin_op10-4.flac (place it as described in README.md)")
+"chopin_op10-4.flac" @ [FILE_NAMES("$base/sarracenia/resources/bgm")] || fail("resource not found: sarracenia/resources/bgm/chopin_op10-4.flac (place it as described in README.md)")
 
 # --- 1. VOICEVOX で音声を合成するのだ～🌱（sarracenia/script.json → audio/*.wav, moras.json） ---
 OUT << "== synth (VOICEVOX) =="
@@ -26,4 +27,4 @@ USE("assemble")
 # --- 3. sarracenia（動画タイトルのディレクトリ）で scene を作るのだ～🌱 ------------
 #        timeline.json を渡すと assets.js・portrait/・frames.jsonl を作るのだ～🌱
 OUT << "== build scene (sarracenia) =="
-run("bash", "sarracenia/build_scene.sh", "$PWD/timeline.json")
+run("bash", "$base/sarracenia/build_scene.sh", "$base/timeline.json")

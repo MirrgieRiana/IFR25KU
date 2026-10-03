@@ -2,6 +2,12 @@
 
 API(5)
 
+# video/ の絶対パスなのだ～🌱
+# main.xa1 が呼び出し元から第 1 引数で受け取るものと同じ値なのだ～🌱
+# このパートの xa1 が読み書きするパスは、全部これを基準に組むのだ～🌱
+# そうしないと、呼び出し元のカレントディレクトリによって、読み書きする場所が変わっちゃうのだ～🌱
+base := ARGS.0 ?: PWD
+
 fail := message -> (
   ERR("ERROR: $message")
   EXIT(1)
@@ -68,6 +74,7 @@ readWav := path -> (
 )
 
 {
+  base: base
   fail: fail
   capture: capture
   run: run

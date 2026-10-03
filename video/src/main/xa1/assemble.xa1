@@ -1,13 +1,13 @@
 # 各行wavを、タイトル保持→本編（行間の無音）→クレジット保持、の順に結合するのだ～🌱（xarpite / API5）
 # build.xa1 が USE で呼ぶのだ～🌱
-# カレントディレクトリは video/ なのだ～🌱
+# 読み書きするパスは、common の base（video/ の絶対パス）を基準に組むのだ～🌱
 
 API(5)
 @USE("common")
 
 # 台本は動画タイトルのディレクトリ（sarracenia/）から読み、音声・タイムラインはこの雑多パート（video/直下）に置くのだ～🌱
-script := $*READ("sarracenia/script.json")
-moraList := $*READ("moras.json")
+script := $*READ("$base/sarracenia/script.json")
+moraList := $*READ("$base/moras.json")
 SR := 24000
 
 # 尺の設計なのだ～🌱
@@ -38,7 +38,7 @@ titleEnd := TITLE_HOLD + TITLE_FADE
 lineCount := $#script.lines
 linesTl := [0 ~ lineCount | i => (
   line := script.lines.(i)
-  data := readPcm("audio/line$%02d(i).wav")
+  data := readPcm("$base/audio/line$%02d(i).wav")
   dur := FLOOR($#data / 2) / SR
   start := t
   end := t + dur
@@ -86,7 +86,7 @@ linesTl() | ln => (
 items() | it => (it.item == "leaf" && (it.end = skitEnd)) >> TO_ARRAY
 
 pcmLength := pcm() | _ => $#_ >> SUM
-WRITEB("full.wav"; UTF8("RIFF"), le32(36 + pcmLength), UTF8("WAVEfmt "), le32(16), le16(1), le16(1), le32(SR), le32(SR * 2), le16(2), le16(16), UTF8("data"), le32(pcmLength), pcm)
+WRITEB("$base/full.wav"; UTF8("RIFF"), le32(36 + pcmLength), UTF8("WAVEfmt "), le32(16), le16(1), le16(1), le32(SR), le32(SR * 2), le16(2), le16(16), UTF8("data"), le32(pcmLength), pcm)
 
 tl := {
   total: round4(total); lead: round4(lead)
@@ -96,7 +96,7 @@ tl := {
   lines: linesTl; scenes: scenes; items: items
   sceneFade: 0.6
 }
-WRITE("timeline.json"; tl >> JSON[indent: 1])
+WRITE("$base/timeline.json"; tl >> JSON[indent: 1])
 OUT << "total: $(FLOOR(total * 100 + 0.5) / 100) skitEnd: $(FLOOR(skitEnd * 100 + 0.5) / 100) creditStart: $(FLOOR(creditStart * 100 + 0.5) / 100)"
 OUT << "scenes: $(scenes() | s => "($(s.scene), $(FLOOR(s.start * 10 + 0.5) / 10), $(FLOOR(s.end * 10 + 0.5) / 10))" >> JOIN[", "])"
 OUT << "items: $(items() | x => "($(x.item), $(FLOOR(x.start * 10 + 0.5) / 10), $(FLOOR(x.end * 10 + 0.5) / 10))" >> JOIN[", "])"

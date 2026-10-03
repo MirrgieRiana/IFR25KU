@@ -2,14 +2,14 @@
 # 手順: text から audio_query → accent_phrases をカナ原稿にシリアライズ → 誤読だけ手直し
 #       → is_kana=true で読み直して差し込み → 合成なのだ～🌱 使ったカナ原稿は kana.json に保存するのだ～🌱
 # build.xa1 が USE で呼ぶのだ～🌱
-# カレントディレクトリは video/ なのだ～🌱
+# 読み書きするパスは、common の base（video/ の絶対パス）を基準に組むのだ～🌱
 
 API(5)
 @USE("common")
 
 HOST := ENV.VOICEVOX_HOST ?: "http://127.0.0.1:50021"   # VOICEVOX ENGINE の URL（環境変数で差し替え可）
 # 台本は動画タイトルのディレクトリ（sarracenia/）にあるのだ～🌱音声の中間生成物は、この雑多パート（video/直下）に置くのだ～🌱
-script := $*READ("sarracenia/script.json")
+script := $*READ("$base/sarracenia/script.json")
 
 postJson := path -> $*(capture("curl", "-sS", "-f", "--max-time", "60", "-X", "POST", "$HOST$path")() >> JOIN["\n"])
 
@@ -43,7 +43,7 @@ moraSegments := q -> (
   segs
 )
 
-run("mkdir", "-p", "audio")
+run("mkdir", "-p", "$base/audio")
 results := []
 kanaOut := []
 morasOut := []
@@ -56,7 +56,7 @@ morasOut := []
   q.speedScale = line.speed
   q.prePhonemeLength = 0.08
   q.postPhonemeLength = 0.08
-  out := "audio/line$%02d(i).wav"
+  out := "$base/audio/line$%02d(i).wav"
   capture("curl", "-sS", "-f", "--max-time", "60", "-X", "POST", "-H", "Content-Type: application/json", "--data-binary", (q >> JSON[indent: NULL]), "-o", out, "$HOST/synthesis?speaker=$sid")
   wav := readWav(out)
   d := FLOOR($#wav.data / (wav.channels * wav.bitsPerSample / 8)) / wav.sampleRate
@@ -66,7 +66,7 @@ morasOut := []
   OUT << "line$%02d(i) sid=$sid dur=$%.3f(d) kana=$kana"
 ) >> TO_ARRAY
 
-WRITE("durations.json"; results >> JSON[indent: 1])
-WRITE("kana.json"; kanaOut >> JSON[indent: 1])
-WRITE("moras.json"; morasOut >> JSON[indent: 1])
+WRITE("$base/durations.json"; results >> JSON[indent: 1])
+WRITE("$base/kana.json"; kanaOut >> JSON[indent: 1])
+WRITE("$base/moras.json"; morasOut >> JSON[indent: 1])
 OUT << "total speech: $(FLOOR((results() | _.dur >> SUM) * 100 + 0.5) / 100) sec"
