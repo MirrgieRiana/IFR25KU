@@ -335,6 +335,9 @@ val installJekyllBundle = tasks.register<Exec>("installJekyllBundle") {
     commandLine("bash", "scripts/bundle-install.sh")
 }
 
+// front matter で画像を指すキーのうち、値を . から始めたものの、キーの側と、パスの側を捕まえるのだ～🌱
+val frontMatterImagePathRegex = """^(\s*(?:teaser|image|overlay_image|og_background):\s*"?)(\.[^"\s]*)""".toRegex()
+
 val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     group = "other"
     from("src/main/resources")
@@ -346,18 +349,31 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
         includeEmptyDirs = false
         val seenImagePaths = mutableMapOf<String, String>()
         eachFile {
-            // 下で配置先が平らになって元のディレクトリ名が失われるから、footer の source のリンクのために、元のパスを front matter へ書き足すのだ～🌱
-            if (name.endsWith(".md")) {
-                val sourcePath = file.relativeTo(rootDir).invariantSeparatorsPath
-                var isFirstLine = true
-                filter { line ->
-                    val result = if (isFirstLine && line == "---") "$line\nsource_path: $sourcePath" else line
-                    isFirstLine = false
-                    result
-                }
-            }
             val dirName = relativePath.pathString.substringBefore("/")
             val postMatch = """(\d{4})-(\d{2})-(\d{2})-(.+)""".toRegex().matchEntire(dirName)
+            if (name.endsWith(".md")) {
+                val sourcePath = file.relativeTo(rootDir).invariantSeparatorsPath
+                // front matter のパスを . から始めたときの基準になる、同じディレクトリに並ぶ画像の配置先なのだ～🌱
+                val imageDir = if (postMatch != null) {
+                    val (year, month, day, _) = postMatch.destructured
+                    "/$year/$month/$day"
+                } else {
+                    "/assets/images/$dirName"
+                }
+                var lineNumber = 0
+                var frontMatterDelimiterCount = 0
+                filter { line ->
+                    lineNumber++
+                    if (line == "---") frontMatterDelimiterCount++
+                    when {
+                        // 下で配置先が平らになって元のディレクトリ名が失われるから、footer の source のリンクのために、元のパスを front matter へ書き足すのだ～🌱
+                        lineNumber == 1 && line == "---" -> "$line\nsource_path: $sourcePath"
+                        // front matter を抜けた本文側は、同じ形の行があっても書き換えないのだ～🌱
+                        frontMatterDelimiterCount != 1 -> line
+                        else -> frontMatterImagePathRegex.replace(line) { "${it.groupValues[1]}${File(imageDir, it.groupValues[2]).normalize().invariantSeparatorsPath}" }
+                    }
+                }
+            }
             if (postMatch != null) {
                 val (year, month, day, _) = postMatch.destructured
                 if (name.endsWith(".md")) {
