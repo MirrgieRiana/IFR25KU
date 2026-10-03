@@ -1,7 +1,7 @@
 # =============================================================================
 # 動画ビルドで生成・取得されるファイルは、すべてここで ignore するのだ～🌱
 # コミットするのは各パートの「スクリプト類」「script.json（台本）」「scene.html」
-# 「README」「build.sh / build_scene.sh」「package.json / package-lock.json」
+# 「README」「Makefile / build_scene.sh」「package.json / package-lock.json」
 # 「外部取得リソースの *.md5」だけなのだ～🌱
 # =============================================================================
 
@@ -19,7 +19,7 @@ sarracenia/resources/bgm/*.wav
 node_modules/
 /libs
 
-# --- 音声の中間生成物（雑多パート＝video/ 直下で、build.sh が作り直すのだ～🌱） ---
+# --- 音声の中間生成物（雑多パート＝video/ 直下で、make が作り直すのだ～🌱） ---
 audio/
 full.wav
 timeline.json
