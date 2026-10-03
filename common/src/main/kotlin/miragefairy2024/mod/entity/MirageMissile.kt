@@ -29,7 +29,7 @@ import net.minecraft.tags.ItemTags
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.MobCategory
-import net.minecraft.world.entity.monster.Enemy
+import net.minecraft.world.entity.ai.targeting.TargetingConditions
 import net.minecraft.world.entity.projectile.AbstractArrow
 import net.minecraft.world.entity.projectile.Projectile
 import net.minecraft.world.item.ArrowItem
@@ -38,7 +38,10 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.DispenserBlock
+import net.minecraft.world.phys.AABB
+import net.minecraft.world.phys.Vec3
 import java.util.UUID
+import kotlin.math.acos
 
 object MirageMissileCard {
     val identifier = MirageFairy2024.identifier("mirage_missile")
@@ -54,10 +57,18 @@ object MirageMissileCard {
     }
     val poemList = PoemList(1).poem("TODO", "TODO") // TODO ミラージュミサイルの日英のポエムが入るのだ～🌱
 
-    const val SEARCH_RADIUS = 16.0
+    const val SEARCH_RADIUS = 64.0
+    const val SEARCH_ANGLE = 45.0
 
-    // 弓をいっぱいに引いた矢は毎 tick 3 ブロック進むから、探す間隔を置くと見つける前に通り過ぎて、寄せる割合が小さいと曲がりきらないのだ～🌱
+    // 弓をいっぱいに引いた矢は毎 tick 3 ブロック進むから、寄せる割合が小さいと曲がりきらないのだ～🌱
     const val TURN_RATE = 0.5
+
+    // 真上へ撃った矢は最高点が反応距離を超えるから、弾道の追跡が終わらない場合の打ち切りなのだ～🌱
+    const val MAX_TRAJECTORY_TICKS = 200
+
+    // AbstractArrow が水の外で毎 tick 速度に掛ける値と、既定の重力なのだ～🌱
+    const val AIR_INERTIA = 0.99
+    const val GRAVITY = 0.05
 
     context(ModContext)
     fun init() {
@@ -104,21 +115,24 @@ class MirageMissileEntity : AbstractArrow {
     constructor(level: Level, x: Double, y: Double, z: Double, pickupItemStack: ItemStack, firedFromWeapon: ItemStack?) : super(MirageMissileCard.entityType(), x, y, z, level, pickupItemStack, firedFromWeapon)
 
     private var targetUuid: UUID? = null
+    private var searched = false
 
     override fun tick() {
-        super.tick()
         val level = level()
+
+        // 追尾先の判定は射出した瞬間にのみ行うから、速度が減衰する前の最初の tick で済ませるのだ～🌱
+        if (level is ServerLevel && !searched) {
+            searched = true
+            targetUuid = searchTarget(level)?.uuid
+        }
+
+        super.tick()
+
         if (level !is ServerLevel) return
         if (inGround) return
 
-        // 追尾先
-        var target = targetUuid?.let { level.getEntity(it) as? LivingEntity }?.takeIf { it.isAlive }
-        if (target == null) {
-            target = level.getEntitiesOfClass(LivingEntity::class.java, boundingBox.inflate(MirageMissileCard.SEARCH_RADIUS)) { it is Enemy && it.isAlive && it != owner }
-                .minByOrNull { it.distanceToSqr(this) }
-            targetUuid = target?.uuid
-        }
-        if (target == null) return
+        // 追尾先が見つからなかったか、消えた場合は、もう向きを変えないのだ～🌱
+        val target = targetUuid?.let { level.getEntity(it) as? LivingEntity }?.takeIf { it.isAlive } ?: return
 
         // 向き変更
         val speed = deltaMovement.length()
@@ -129,15 +143,56 @@ class MirageMissileEntity : AbstractArrow {
         hasImpulse = true
     }
 
+    /** 追尾しなかった場合の弾道を先に辿って、その道のりのどこかで最も角度が近くなる敵を選ぶのだ～🌱 */
+    private fun searchTarget(level: ServerLevel): LivingEntity? {
+        val owner = owner as? LivingEntity ?: return null
+        val initialVelocity = deltaMovement
+        if (initialVelocity.length() < 0.001) return null
+        val origin = position()
+        val shotDirection = initialVelocity.normalize()
+        val searchRadiusSqr = MirageMissileCard.SEARCH_RADIUS * MirageMissileCard.SEARCH_RADIUS
+
+        // 追尾しなかった場合に矢が通る各時点の、位置と進む向きなのだ～🌱
+        val trajectory = mutableListOf<Pair<Vec3, Vec3>>()
+        var position = origin
+        var velocity = initialVelocity
+        while (trajectory.size < MirageMissileCard.MAX_TRAJECTORY_TICKS && position.distanceToSqr(origin) <= searchRadiusSqr) {
+            trajectory += Pair(position, velocity.normalize())
+            // AbstractArrow は旧速度で位置を進めた後に、空気の慣性を掛けて重力を引くのだ～🌱
+            position = position.add(velocity)
+            velocity = velocity.scale(MirageMissileCard.AIR_INERTIA).subtract(0.0, MirageMissileCard.GRAVITY, 0.0)
+        }
+        if (trajectory.isEmpty()) return null
+
+        return level.getEntitiesOfClass(LivingEntity::class.java, AABB(origin, origin).inflate(MirageMissileCard.SEARCH_RADIUS)) { TargetingConditions.DEFAULT.test(owner, it) }
+            .mapNotNull { entity ->
+                val center = entity.boundingBox.center
+                if (center.distanceToSqr(origin) > searchRadiusSqr) return@mapNotNull null
+                if (angleDegrees(shotDirection, center.subtract(origin)) > MirageMissileCard.SEARCH_ANGLE) return@mapNotNull null
+                Pair(entity, trajectory.minOf { (trajectoryPosition, trajectoryDirection) -> angleDegrees(trajectoryDirection, center.subtract(trajectoryPosition)) })
+            }
+            .minByOrNull { it.second }
+            ?.first
+    }
+
     override fun addAdditionalSaveData(compound: CompoundTag) {
         super.addAdditionalSaveData(compound)
         targetUuid?.let { compound.putUUID("Target", it) }
+        compound.putBoolean("Searched", searched)
     }
 
     override fun readAdditionalSaveData(compound: CompoundTag) {
         super.readAdditionalSaveData(compound)
         targetUuid = if (compound.hasUUID("Target")) compound.getUUID("Target") else null
+        searched = compound.getBoolean("Searched")
     }
 
     override fun getDefaultPickupItem() = ItemStack(MirageMissileCard.item())
+}
+
+/** 単位ベクトル [direction] と、長さを問わない [offset] のなす角を、度数で返すのだ～🌱 */
+private fun angleDegrees(direction: Vec3, offset: Vec3): Double {
+    val length = offset.length()
+    if (length < 1.0e-6) return 0.0
+    return Math.toDegrees(acos((direction.dot(offset) / length).coerceIn(-1.0, 1.0)))
 }
