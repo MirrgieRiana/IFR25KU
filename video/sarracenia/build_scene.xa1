@@ -63,12 +63,6 @@ need("resources/font"; "ZenMaruGothic-Black.ttf")
 need("resources/font"; "ZenMaruGothic-Bold.ttf")
 need("resources/emoji"; "seedling.svg")
 
-# --- Node 依存（ag-psd / pngjs）をそろえるのだ～🌱 ------------------------------
-"node_modules" @ [FILE_NAMES(".")] || (
-  OUT << "== npm install (sarracenia) =="
-  run("npm", "install")
-)
-
 # --- 1. scene.html が読む assets.js を焼くのだ～🌱（絵文字・テクスチャのパス・タイムライン） ---
 # レンダリングは Chromium に file://.../scene.html を開かせて 1 フレームずつ撮る方式なのだ～🌱
 # file:// で開いた HTML は、セキュリティ上、外部ファイルを fetch() で読めないのだ～🌱
@@ -98,8 +92,9 @@ OUT << "  timeline: total= $(timeline.total) lines= $($#timeline.lines)"
 
 # --- 2. 立ち絵 PSD から必要なレイヤーを PNG に切り出すのだ～🌱（→ portrait/<char>/<id>.png） -----
 OUT << "== extract portrait =="
-run("node", "extract_portrait.js", "zundamon", "resources/psd/zundamon23.psd", ZUNDA_IDS, "portrait/zundamon")
-run("node", "extract_portrait.js", "tsumugi", "resources/psd/tsumugi3.psd", TSUMUGI_IDS, "portrait/tsumugi")
+# 切り出しのツールは、レンダラーと同じく video/ 直下の兄弟で、Node 依存も自分で面倒を見るのだ～🌱
+run("bash", "../extract-portrait/extract-portrait.sh", "zundamon", "resources/psd/zundamon23.psd", ZUNDA_IDS, "portrait/zundamon")
+run("bash", "../extract-portrait/extract-portrait.sh", "tsumugi", "resources/psd/tsumugi3.psd", TSUMUGI_IDS, "portrait/tsumugi")
 
 # --- 3. 構成jsonl を組み立てるのだ～🌱（→ frames.jsonl） -------------------------
 # 各行は、そのフレームの見た目を決めるパラメータなのだ～🌱

@@ -38,7 +38,7 @@ sarracenia/script.json（台本）
 
 timeline.json ─┬─(sarracenia/build_scene.xa1)─→ sarracenia/assets.js        ┐
                │        ↑ IFR25KU テクスチャ / resources/font,emoji         │ sarracenia
- resources/psd/*.psd ─(sarracenia/extract_portrait.js)→ sarracenia/portrait/│ （構成を作る）
+ resources/psd/*.psd ─(extract-portrait/extract-portrait.sh)→ sarracenia/portrait/│（構成を作る）
                └─(sarracenia/build_scene.xa1)→ sarracenia/frames.jsonl      ┘
 
 sarracenia/scene.html + assets.js + portrait/ + frames.jsonl
@@ -51,6 +51,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 各パートの詳しい説明は、それぞれの README にもあるのだ～🌱
 
 - [`renderer/README.md`](renderer/README.md)
+- [`extract-portrait/README.md`](extract-portrait/README.md)
 - [`sarracenia/README.md`](sarracenia/README.md)
 
 ---
@@ -79,16 +80,22 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 | `setup_chromium.js` | `@sparticuz/chromium`（同梱 Chromium）を `/tmp/chromium` に展開するのだ～🌱 Chrome が無い環境向けなのだ～🌱 |
 | `package.json` / `package-lock.json` | Node の依存関係（`puppeteer-core` / `@sparticuz/chromium`）なのだ～🌱 |
 
+**`extract-portrait/`（立ち絵の切り出し・自己完結）**
+
+| ファイル | 役割 |
+| --- | --- |
+| `extract-portrait.sh` | Node の依存を用意してから、レイヤーを切り出すのだ～🌱 このツールの入口なのだ～🌱 |
+| `extract_portrait.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出すのだ～🌱 |
+| `package.json` / `package-lock.json` | Node の依存関係（`ag-psd` / `pngjs`）なのだ～🌱 |
+
 **`sarracenia/`（動画タイトルのディレクトリ・構成jsonl を作るパート・自己完結）**
 
 | ファイル | 役割 |
 | --- | --- |
 | `build_scene.sh` | タイムラインを受け取って、`assets.js` と `portrait/` と `frames.jsonl` を作る、このパートの入口なのだ～🌱 このディレクトリへ cd して `build_scene.xa1` を呼ぶだけなのだ～🌱 |
-| `build_scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `npm install` と `assets.js` の焼き込みと `extract_portrait.js` の実行と、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
+| `build_scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
 | `script.json` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義するのだ～🌱 |
 | `scene.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 |
-| `extract_portrait.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出すのだ～🌱 |
-| `package.json` / `package-lock.json` | Node の依存関係（`ag-psd` / `pngjs`）なのだ～🌱 |
 | `resources/**/*.md5` | 外部取得リソースの md5 なのだ～🌱 **そこに、どの名前で、何を置けばよいかを保証するための目印**なのだ～🌱 |
 
 ### コミットされていないもの（`.gitignore` 対象）なのだ～🌱
@@ -118,7 +125,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 | `sarracenia/resources/bgm/chopin_op10-4.flac` | ショパン 練習曲 作品10-4「Torrent（激流）」（Edward Neeman 演奏） | Wikimedia Commons / Musopen "Set Chopin Free" | パブリックドメイン |
 
 立ち絵 PSD の ID 体系なのだ～🌱
-`sarracenia/extract_portrait.js` が切り出すレイヤーは、兄弟レイヤーの 1 始まりインデックスを `-` で連結した ID で指定するのだ～🌱
+`extract-portrait/` が切り出すレイヤーは、兄弟レイヤーの 1 始まりインデックスを `-` で連結した ID で指定するのだ～🌱
 グループも、インデックスを 1 個消費するのだ～🌱
 切り出す ID の一覧は `sarracenia/build_scene.xa1` の `ZUNDA_IDS` と `TSUMUGI_IDS` にあるのだ～🌱
 これは、`scene.html` の `PORTRAIT` 定義と一致している必要があるのだ～🌱
@@ -215,7 +222,7 @@ make
 テクスチャは `scene.html` から見た相対パスの文字列で、絵文字 SVG は生の文字列として入るのだ～🌱
 `img` の `src` と CSS の `url()` は `fetch()` を通らないから、テクスチャもフォントも、相対パスのまま `file://` で読めるのだ～🌱
 
-### extract_portrait.js（立ち絵の切り出し）なのだ～🌱
+### extract-portrait（立ち絵の切り出し）なのだ～🌱
 
 `ag-psd` で PSD を読んで、指定 ID のレイヤーを、全身キャンバスと同じサイズの透過 PNG として書き出すのだ～🌱
 `node-canvas` を入れずに済むように、`createImageData` だけをシムして動かしているのだ～🌱
