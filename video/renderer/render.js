@@ -5,11 +5,10 @@ const fs = require('fs');
 const path = require('path');
 const { pathToFileURL } = require('url');
 
-const templatePath = process.argv[2];
-const framesPath = process.argv[3];
-const outDir = process.argv[4];
-if (!templatePath || !framesPath || !outDir) {
-  console.error('usage: node render.js <template.html> <frames.jsonl> <outDir>');
+const framesPath = process.argv[2];
+const outDir = process.argv[3];
+if (!framesPath || !outDir) {
+  console.error('usage: node render.js <frames.jsonl> <outDir>');
   process.exit(1);
 }
 const W = parseInt(process.env.VIDEO_WIDTH || '1280', 10);
@@ -21,11 +20,16 @@ try {
   frames = fs.readFileSync(framesPath, 'utf-8').split('\n')
     .map((s, i) => ({ s: s.trim(), lineNumber: i + 1 })).filter(({ s }) => s.length > 0)
     .map(({ s, lineNumber }) => {
+      let frame;
       try {
-        return JSON.parse(s);
+        frame = JSON.parse(s);
       } catch (e) {
         throw new Error(`invalid JSON at line ${lineNumber}: ${e.message}`);
       }
+      if (frame === null || typeof frame !== 'object' || Array.isArray(frame) || typeof frame.template !== 'string') {
+        throw new Error(`template must be a string in the root object at line ${lineNumber}`);
+      }
+      return frame;
     });
 } catch (e) {
   console.error(`error: cannot read frames: ${framesPath}: ${e.message}`);
@@ -52,17 +56,29 @@ const normalizeJson = v => Array.isArray(v) ? `[${v.map(normalizeJson).join(',')
   });
   const page = await browser.newPage();
   await page.setViewport({ width: W, height: H, deviceScaleFactor: 1 });
-  await page.goto(pathToFileURL(path.resolve(templatePath)).href, { waitUntil: 'load' });
-  await page.evaluate(async () => { await document.fonts.ready; });
-  await page.waitForFunction('window.__ready===true', { timeout: 20000 });
 
-  let prevKey = null, prevFile = null, shots = 0;
-  for (let i = 0; i < frames.length; i++) {
-    const key = normalizeJson(frames[i]);
+  // テンプレートの読み込み直しと、applyFrame が書き換える DOM が少なくなるように、テンプレート、正規化した JSON の順に並べ替えてから撮るのだ～🌱
+  const jobs = frames.map((frame, i) => ({
+    i,
+    templateUrl: pathToFileURL(path.resolve(path.dirname(framesPath), frame.template)).href,
+    key: normalizeJson(frame),
+  }));
+  const compare = (a, b) => a < b ? -1 : a > b ? 1 : 0;
+  jobs.sort((a, b) => compare(a.templateUrl, b.templateUrl) || compare(a.key, b.key));
+
+  let loadedTemplateUrl = null, prevKey = null, prevFile = null, shots = 0;
+  for (let n = 0; n < jobs.length; n++) {
+    const { i, templateUrl, key } = jobs[n];
     const file = path.join(outDir, `f_${pad(i)}.png`);
     if (key === prevKey && prevFile) {
       fs.copyFileSync(prevFile, file);
     } else {
+      if (templateUrl !== loadedTemplateUrl) {
+        await page.goto(templateUrl, { waitUntil: 'load' });
+        await page.evaluate(async () => { await document.fonts.ready; });
+        await page.waitForFunction('window.__ready===true', { timeout: 20000 });
+        loadedTemplateUrl = templateUrl;
+      }
       await page.evaluate(async (cfg) => {
         await window.applyFrame(cfg);
         // 書き換えた DOM が描画されてから、スクリーンショットを撮るのだ～🌱
@@ -73,7 +89,7 @@ const normalizeJson = v => Array.isArray(v) ? `[${v.map(normalizeJson).join(',')
       prevKey = key;
       prevFile = file;
     }
-    if (i % 150 === 0) process.stdout.write(`\r frame ${i}/${frames.length} shots=${shots}   `);
+    if (n % 150 === 0) process.stdout.write(`\r frame ${n}/${frames.length} shots=${shots}   `);
   }
   await browser.close();
   console.log(`\n done: ${frames.length} frames, ${shots} unique screenshots`);

@@ -136,7 +136,7 @@ object RetrospectiveCityBiomeCard : BiomeCard(
     }
 }
 
-val retrospectiveCityFloorPlacementModifiers get() = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesTag(Direction.DOWN.normal, RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG)))
+val onRetrospectiveCityFloor get() = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesTag(Direction.DOWN.normal, RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG)))
 
 fun checkConflict(level: WorldGenLevel, blockPos: BlockPos, height: Int): Pair<Int, Int>? {
 

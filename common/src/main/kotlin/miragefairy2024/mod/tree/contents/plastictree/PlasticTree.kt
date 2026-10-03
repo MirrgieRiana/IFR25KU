@@ -2,36 +2,32 @@ package miragefairy2024.mod.tree.contents.plastictree
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.mod.materials.BlockMaterialCard
+import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeCard
 import miragefairy2024.mod.tree.contents.plastictreefamily.PlasticTreeFamilyTreeDecorator
+import miragefairy2024.util.AdvancementCard
+import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
-import miragefairy2024.util.count
+import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
-import miragefairy2024.util.per
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerConfiguredFeature
-import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.toItemTag
-import miragefairy2024.util.tree
 import miragefairy2024.util.with
-import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.util.valueproviders.ConstantInt
-import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
-import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter
 import net.minecraft.world.level.material.MapColor
 
 val PLASTIC_TREE_CARD = object : TreeCard {
@@ -50,13 +46,18 @@ val PLASTIC_TREE_LOGS_BLOCK_TAG = MirageFairy2024.identifier("plastic_tree_logs"
 val PLASTIC_TREE_LOGS_ITEM_TAG = MirageFairy2024.identifier("plastic_tree_logs").toItemTag()
 
 val SMALL_PLASTIC_TREE_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("small_plastic_tree")
-val SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("small_plastic_tree_old_growth_amber_forest")
 
 val GIANT_PLASTIC_TREE_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("giant_plastic_tree")
-val GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_plastic_tree_old_growth_amber_forest")
 
-/** プラノキは石化した樹脂からしか生えないから、真下がそのブロックである位置に限るのだ～🌱 */
-val onResinCement get() = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, BlockMaterialCard.RESIN_CEMENT.block())))
+val plasticTreeAdvancement = AdvancementCard(
+    identifier = MirageFairy2024.identifier("plastic_tree"),
+    context = AdvancementCard.Sub { rootAdvancement.await() },
+    icon = { TreeBlockCard.DRIPPING_PLASTIC_TREE_LOG.item().createItemStack() },
+    name = EnJa("Encroaching Old Growth", "侵蝕する原生林"),
+    description = EnJa("Explore the Old Growth Amber Forest to find the Plastic Tree", "琥珀色の原生林を探検してプラノキを探す"),
+    criterion = AdvancementCard.hasItem { TreeBlockCard.PLASTIC_TREE_LOG.item() },
+    type = AdvancementCardType.TOAST_AND_JEWELS,
+)
 
 context(ModContext)
 fun initPlasticTree() {
@@ -99,8 +100,6 @@ fun initPlasticTree() {
                 SmallPlasticTreeFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
                 TwoLayersFeatureSize(1, 0, 1),
             ).ignoreVines().decorators(listOf(createTreeDecorator())).build()
-        }.generator {
-            registerPlacedFeature(SMALL_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { count(2) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCement }
         }
     }
     Feature.TREE.generator(MirageFairy2024.identifier("giant_plastic_tree")) {
@@ -112,9 +111,10 @@ fun initPlasticTree() {
                 GiantPlasticTreeFoliagePlacer,
                 TwoLayersFeatureSize(1, 1, 2),
             ).ignoreVines().decorators(listOf(createTreeDecorator())).build()
-        }.generator {
-            registerPlacedFeature(GIANT_PLASTIC_TREE_OLD_GROWTH_AMBER_FOREST_PLACED_FEATURE_KEY) { per(1) + tree(TreeBlockCard.PLASTIC_TREE_SAPLING.block()) + onResinCement }
         }
     }
+
+    // 進捗
+    plasticTreeAdvancement.init()
 
 }
