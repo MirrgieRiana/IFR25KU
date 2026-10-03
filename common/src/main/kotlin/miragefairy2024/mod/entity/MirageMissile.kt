@@ -117,7 +117,10 @@ class MirageMissileEntity : AbstractArrow {
     private var targetUuid: UUID? = null
     private var searched = false
 
-    /** 毎 tick エンティティのテーブルを引かないように、追尾先の参照を持っておくのだ～🌱 */
+    /**
+     * 毎 tick エンティティのテーブルを引かないための、[miragefairy2024.mod.entity.MirageMissileEntity.targetUuid] のキャッシュなのだ～🌱
+     * 追尾先として正規なのは UUID の方で、こちらは、いつ捨てても挙動が変わらないのだ～🌱
+     */
     private var target: LivingEntity? = null
 
     override fun tick() {
@@ -126,8 +129,9 @@ class MirageMissileEntity : AbstractArrow {
         // 追尾先の判定は射出した瞬間にのみ行うから、速度が減衰する前の最初の tick で済ませるのだ～🌱
         if (level is ServerLevel && !searched) {
             searched = true
-            target = searchTarget(level)
-            targetUuid = target?.uuid
+            val entity = searchTarget(level)
+            targetUuid = entity?.uuid
+            target = entity
         }
 
         super.tick()
@@ -149,16 +153,30 @@ class MirageMissileEntity : AbstractArrow {
 
     /**
      * 追尾先のエンティティを返すのだ～🌱
-     * セーブデータから復元した直後の 1 回だけ、UUID からエンティティのテーブルを引くのだ～🌱
+     * キャッシュが空のときだけ、正規の UUID からエンティティのテーブルを引くのだ～🌱
+     * 狙う相手として不適格になった時点で UUID を捨てるから、毎 tick 引き直すことはないのだ～🌱
      */
     private fun resolveTarget(level: ServerLevel): LivingEntity? {
-        target?.let { return it.takeIf { it.isTargetable } }
+        val cached = target
+        if (cached != null) {
+            // キャッシュが生きている場合なのだ～🌱
+            if (cached.isTargetable) return cached
+            // 追尾先が不適格になった場合なのだ～🌱
+            targetUuid = null
+            target = null
+            return null
+        }
+        // キャッシュが空の場合なのだ～🌱 セーブデータから復元した直後か、相手を見つけられなかった場合なのだ～🌱
         val uuid = targetUuid ?: return null
-        // 引けなかった場合に毎 tick 探し直さないように、UUID の方は捨てるのだ～🌱
+        val entity = level.getEntity(uuid) as? LivingEntity
+        if (entity != null && entity.isTargetable) {
+            // 引けた場合なのだ～🌱
+            target = entity
+            return entity
+        }
+        // 引けなかった場合か、引けたけれど不適格だった場合なのだ～🌱
         targetUuid = null
-        val entity = level.getEntity(uuid) as? LivingEntity ?: return null
-        target = entity
-        return entity.takeIf { it.isTargetable }
+        return null
     }
 
     /** 追尾しなかった場合の弾道のうち、相手と水平距離が一致する時点の座標が、最も相手に近い相手を選ぶのだ～🌱 */
@@ -191,13 +209,14 @@ class MirageMissileEntity : AbstractArrow {
 
     override fun addAdditionalSaveData(compound: CompoundTag) {
         super.addAdditionalSaveData(compound)
-        (target?.uuid ?: targetUuid)?.let { compound.putUUID("Target", it) }
+        targetUuid?.let { compound.putUUID("Target", it) }
         compound.putBoolean("Searched", searched)
     }
 
     override fun readAdditionalSaveData(compound: CompoundTag) {
         super.readAdditionalSaveData(compound)
         targetUuid = if (compound.hasUUID("Target")) compound.getUUID("Target") else null
+        target = null
         searched = compound.getBoolean("Searched")
     }
 
