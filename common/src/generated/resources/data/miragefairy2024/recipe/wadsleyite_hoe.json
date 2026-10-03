@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "miragefairy2024:wadsleyite_hoe",
+  "key": {
+    "#": {
+      "tag": "miragefairy2024:wadsleyites"
+    },
+    "R": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    "##",
+    " R",
+    " R"
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:wadsleyite_hoe"
+  }
+}

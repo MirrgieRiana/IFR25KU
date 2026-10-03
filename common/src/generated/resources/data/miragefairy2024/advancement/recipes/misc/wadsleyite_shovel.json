@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:wadsleyite_shovel"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_wadsleyites": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#miragefairy2024:wadsleyites"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_wadsleyites"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:wadsleyite_shovel"
+    ]
+  }
+}

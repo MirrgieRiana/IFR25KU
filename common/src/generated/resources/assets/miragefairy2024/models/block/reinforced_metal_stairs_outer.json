@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "miragefairy2024:block/reinforced_metal_block",
+    "side": "miragefairy2024:block/reinforced_metal_block",
+    "top": "miragefairy2024:block/reinforced_metal_block"
+  }
+}
