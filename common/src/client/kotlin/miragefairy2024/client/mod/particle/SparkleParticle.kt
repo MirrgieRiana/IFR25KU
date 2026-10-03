@@ -36,7 +36,7 @@ fun createSparkleParticleFactory() = { spriteProvider: SpriteSet ->
             }
 
             /**
-             * [net.minecraft.client.particle.ParticleEngine] は固定の一覧のみを描画するから、独自のものを足しても描かれないのだ～🌱
+             * Fabric 側の [net.minecraft.client.particle.ParticleEngine] は固定の一覧のみを描画するから、独自のものを足しても描かれないのだ～🌱
              * [net.minecraft.client.particle.ParticleRenderType.CUSTOM] は描画の設定を各パーティクルへ委ねるものだから、そちらを選ぶのだ～🌱
              */
             override fun getRenderType(): ParticleRenderType = ParticleRenderType.CUSTOM
