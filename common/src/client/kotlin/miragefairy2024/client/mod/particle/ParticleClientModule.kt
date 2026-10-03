@@ -1,8 +1,10 @@
 package miragefairy2024.client.mod.particle
 
+import com.mojang.blaze3d.systems.RenderSystem
 import miragefairy2024.ModContext
 import miragefairy2024.mod.particle.ParticleTypeCard
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.particle.EndRodParticle
 import net.minecraft.client.particle.FlyTowardsPositionParticle
 import net.minecraft.client.particle.ParticleProvider
@@ -38,6 +40,12 @@ fun initParticleClientModule() {
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.MAGIC_SQUARE.particleType, createMagicSquareParticleFactory())
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.SULFUR_SMOKE.particleType, createSulfurSmokeParticleFactory())
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.SPARKLE.particleType, createSparkleParticleFactory())
+
+    // [net.minecraft.client.particle.ParticleEngine.render] は合成を無効化するだけで、合成関数そのものは既定値へ戻さないのだ～🌱
+    // 水中や炎の画面効果は合成関数を設定せずに合成を有効化するから、戻さないとそれらが加算合成で描かれてしまうのだ～🌱
+    WorldRenderEvents.AFTER_TRANSLUCENT.register {
+        RenderSystem.defaultBlendFunc()
+    }
 
     initMagicSquareParticle()
 }
