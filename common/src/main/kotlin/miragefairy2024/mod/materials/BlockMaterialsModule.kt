@@ -1002,8 +1002,13 @@ open class BlockMaterialCard(
 
             context(ModContext)
             override fun initLootTableGeneration() {
-                block.registerLootTableGeneration { it, _ ->
-                    it.createGrassDrops(block())
+                block.registerLootTableGeneration { it, registries ->
+                    // 草のドロップの形のまま、落ちるものだけを妖精の鱗粉へ差し替えたものなのだ～🌱
+                    it.createShearsDispatchTable(block(), ItemLootPoolEntry(MaterialCard.FAIRY_SCALES.item()) {
+                        `when`(LootItemRandomChanceCondition.randomChance(0.125F))
+                        apply(ApplyBonusCount.addUniformBonusCount(registries[Registries.ENCHANTMENT, Enchantments.FORTUNE], 2))
+                        apply(ApplyExplosionDecay.explosionDecay())
+                    })
                 }
             }
         }.cutout().sound(SoundType.GRASS).tag(BlockTags.MINEABLE_WITH_AXE, BlockTags.SWORD_EFFICIENT, BlockTags.REPLACEABLE, BlockTags.REPLACEABLE_BY_TREES).init {
