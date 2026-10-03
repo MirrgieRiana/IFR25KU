@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # =============================================================================
-# build_video.py — 連番フレーム画像＋ナレーション＋BGM を 1 本の mp4 に合成するのだ～🌱
+# scripts/build_video.py — 連番フレーム画像＋ナレーション＋BGM を 1 本の mp4 に合成するのだ～🌱
 # -----------------------------------------------------------------------------
 # このスクリプトの役割：
 #   render.js が書き出した frames/f_00000.png … を 30fps の映像トラックにして、
@@ -16,12 +16,12 @@
 #   - sarracenia.mp4     … 完成した動画
 #
 # 実行：
-#   python3 build_video.py [BGMの基準音量(0〜1)]
+#   python3 scripts/build_video.py [BGMの基準音量(0〜1)]
 #   ffmpeg のパスは環境変数 FFMPEG で上書きできるのだ～🌱 既定は PATH 上の "ffmpeg" なのだ～🌱
 # =============================================================================
 import json, os, subprocess, sys
 
-B = os.path.dirname(os.path.abspath(__file__))
+B = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # video/（このスクリプトは video/scripts/ に居るのだ～🌱）
 FF = os.environ.get("FFMPEG", "ffmpeg")               # ffmpeg 実行ファイル（環境変数で差し替え可）
 tl = json.load(open(os.path.join(B, "timeline.json")))
 total = tl["total"]

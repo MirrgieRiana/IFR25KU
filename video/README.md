@@ -45,7 +45,7 @@ sarracenia/scene.html + assets.js + portrait/ + frames.jsonl
    └─(renderer/render.js + Chromium)→ sarracenia/frames/f_%05d.png   … 汎用レンダラー
 
 sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
-   └─(build_video.py + ffmpeg)→ sarracenia.mp4（完成品）              … 雑多パート
+   └─(scripts/build_video.py + ffmpeg)→ sarracenia.mp4（完成品）      … 雑多パート
 ```
 
 各パートの詳しい説明は、それぞれの README にもあるのだ～🌱
@@ -64,11 +64,12 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 | ファイル | 役割 |
 | --- | --- |
 | `build.sh` | 下記すべてを順に呼び出すオーケストレーターなのだ～🌱 **ふつうはこれを実行するだけ**なのだ～🌱 |
-| `build.xa1` | `build.sh` が最初に呼ぶ、構成jsonl ができるまでの段（BGM の確認・`synth.xa1`・`assemble.xa1`・`sarracenia/build_scene.sh`）の本体なのだ～🌱 |
-| `synth.xa1` | VOICEVOX で台詞ごとの音声を合成して、口パク用のモーラ区間も書き出すのだ～🌱 |
-| `assemble.xa1` | 台詞 wav を、タイトル、本編（行間の無音）、クレジットの順に結合して、タイムラインを算出するのだ～🌱 |
-| `build_video.py` | 連番フレームとナレーションと BGM を ffmpeg で合成して mp4 にするのだ～🌱 |
-| `common.xa1` | `synth.xa1` と `assemble.xa1` が共有する関数（外部コマンドの実行・丸め・wav の読み出し）なのだ～🌱 |
+| `main.xa1` | シェルスクリプトや Makefile から呼ぶ関数を返す入口なのだ～🌱 冒頭で `src/main/xa1/` を `INC` へ登録するのだ～🌱 |
+| `src/main/xa1/build.xa1` | `main.xa1` の `build` が呼ぶ、構成jsonl ができるまでの段（BGM の確認・`synth.xa1`・`assemble.xa1`・`sarracenia/build_scene.sh`）の本体なのだ～🌱 |
+| `src/main/xa1/synth.xa1` | VOICEVOX で台詞ごとの音声を合成して、口パク用のモーラ区間も書き出すのだ～🌱 |
+| `src/main/xa1/assemble.xa1` | 台詞 wav を、タイトル、本編（行間の無音）、クレジットの順に結合して、タイムラインを算出するのだ～🌱 |
+| `src/main/xa1/common.xa1` | `synth.xa1` と `assemble.xa1` が共有する関数（外部コマンドの実行・丸め・wav の読み出し）なのだ～🌱 |
+| `scripts/build_video.py` | 連番フレームとナレーションと BGM を ffmpeg で合成して mp4 にするのだ～🌱 |
 
 **`renderer/`（汎用レンダラー・自己完結）**
 
@@ -196,7 +197,7 @@ bash build.sh
 
 台詞 wav を、タイトル保持、本編（台詞のあいだに無音の間）、クレジット保持の順に結合して、`full.wav` と `timeline.json` を作るのだ～🌱
 `timeline.json` には、各台詞の開始と終了の時刻と、シーン区間と、アイテムの表示区間などが入るのだ～🌱
-それを、`sarracenia/` の `build_scene.xa1` と `build_video.py` が読むのだ～🌱
+それを、`sarracenia/` の `build_scene.xa1` と `scripts/build_video.py` が読むのだ～🌱
 
 ### sarracenia/build_scene.xa1（アセットの焼き込み）なのだ～🌱
 
@@ -232,7 +233,7 @@ bash build.sh
 連続する行の構成を正規化した JSON が同じなら、撮り直さずに前のコマを使い回すのだ～🌱
 動画の中身を知らない、汎用レンダラーなのだ～🌱
 
-### build_video.py（映像・音声の合成）なのだ～🌱
+### scripts/build_video.py（映像・音声の合成）なのだ～🌱
 
 連番フレームを 30fps の映像にして、`full.wav`（ナレーション）と BGM を重ねるのだ～🌱
 BGM は、冒頭がやや強め、本編が弱め、クレジットが冒頭と同じ、と音量が線形補間で変化するのだ～🌱

@@ -11,7 +11,7 @@
 #   build.xa1 … synth.xa1 → assemble.xa1（音声・タイムライン）
 #               → sarracenia/build_scene.sh（timeline → assets.js, portrait/, frames.jsonl）
 #     → renderer/render.js（scene.html + frames.jsonl → sarracenia/frames/）
-#     → build_video.py（フレーム＋音声＋BGM → mp4）
+#     → scripts/build_video.py（フレーム＋音声＋BGM → mp4）
 #
 # 前提（先に済ませておくのだ～🌱 詳しくは README.md を読むのだ～🌱）：
 #   1. 外部取得リソースを sarracenia/resources/ 以下の所定パスに置くのだ～🌱（*.md5 がその置き場所と中身を示すのだ～🌱）
@@ -69,6 +69,6 @@ fi
 
 # --- 6. フレーム＋ナレーション＋BGM を合成して mp4 にするのだ～🌱 -----------------
 echo "== build video =="
-FFMPEG="$FFMPEG" python3 build_video.py "$BGM_VOL"
+FFMPEG="$FFMPEG" python3 scripts/build_video.py "$BGM_VOL"
 
 echo "== done: $(pwd)/sarracenia.mp4 =="
