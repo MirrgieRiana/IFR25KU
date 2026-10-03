@@ -3,7 +3,7 @@
 # カレントディレクトリは video/ なのだ～🌱
 
 API(5)
-@USE("./common")
+@USE("common")
 
 # 台本は動画タイトルのディレクトリ（sarracenia/）から読み、音声・タイムラインはこの雑多パート（video/直下）に置くのだ～🌱
 script := $*READ("sarracenia/script.json")

@@ -43,8 +43,10 @@ FFMPEG="${FFMPEG:-ffmpeg}"
 BGM_VOL="${BGM_VOL:-0.45}"
 
 # --- 0～3. 構成jsonl ができるまでの段（BGM の確認・音声合成・結合・scene）なのだ～🌱 ---
-#        リポジトリ同梱の xarpite（相対パス）で build.xa1 を実行するのだ～🌱
-../xarpite/xarpite -A 5 -q -f build.xa1
+#        リポジトリ同梱の xarpite（相対パス）で、main.xa1 の build を呼ぶのだ～🌱
+#        main.xa1 は、第 1 引数の絶対パスを基準に INC を解決するのだ～🌱
+VIDEO_DIR="$(pwd)"
+../xarpite/xarpite -A 5 -q -e "USE(\"$VIDEO_DIR/main\").build()" "$VIDEO_DIR"
 
 # --- 4. 汎用レンダラーの準備（Node 依存と Chromium）なのだ～🌱 ---------------------
 if [ ! -d renderer/node_modules ]; then

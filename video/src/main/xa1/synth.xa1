@@ -5,7 +5,7 @@
 # カレントディレクトリは video/ なのだ～🌱
 
 API(5)
-@USE("./common")
+@USE("common")
 
 HOST := ENV.VOICEVOX_HOST ?: "http://127.0.0.1:50021"   # VOICEVOX ENGINE の URL（環境変数で差し替え可）
 # 台本は動画タイトルのディレクトリ（sarracenia/）にあるのだ～🌱音声の中間生成物は、この雑多パート（video/直下）に置くのだ～🌱
