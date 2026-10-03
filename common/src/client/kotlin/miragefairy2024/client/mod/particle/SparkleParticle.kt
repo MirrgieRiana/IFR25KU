@@ -2,18 +2,15 @@ package miragefairy2024.client.mod.particle
 
 import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.vertex.BufferBuilder
-import com.mojang.blaze3d.vertex.DefaultVertexFormat
-import com.mojang.blaze3d.vertex.Tesselator
-import com.mojang.blaze3d.vertex.VertexFormat
+import com.mojang.blaze3d.vertex.VertexConsumer
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.atMost
+import net.minecraft.client.Camera
 import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.ParticleRenderType
 import net.minecraft.client.particle.SpriteSet
 import net.minecraft.client.particle.TextureSheetParticle
 import net.minecraft.client.renderer.texture.TextureAtlas
-import net.minecraft.client.renderer.texture.TextureManager
 import net.minecraft.core.particles.SimpleParticleType
 
 private const val LIFETIME_TICKS = 120
@@ -28,22 +25,6 @@ private const val FADE_START_RATE = 0.7F
 
 private const val TWINKLE_INTERVAL_TICKS = 3
 
-/**
- * [net.minecraft.client.particle.ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT] の合成を、加算合成へ置き換えたものなのだ～🌱
- * バニラの [net.minecraft.client.particle.ParticleRenderType] には、加算合成をするものが 1 個も無いのだ～🌱
- */
-private val ADDITIVE_PARTICLE_SHEET = object : ParticleRenderType {
-    override fun begin(tesselator: Tesselator, textureManager: TextureManager): BufferBuilder {
-        RenderSystem.depthMask(true)
-        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES)
-        RenderSystem.enableBlend()
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE)
-        return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE)
-    }
-
-    override fun toString() = "MIRAGEFAIRY2024_ADDITIVE_PARTICLE_SHEET"
-}
-
 fun createSparkleParticleFactory() = { spriteProvider: SpriteSet ->
     ParticleProvider<SimpleParticleType> { _, level, x, y, z, _, _, _ ->
         object : TextureSheetParticle(level, x, y, z) {
@@ -54,7 +35,22 @@ fun createSparkleParticleFactory() = { spriteProvider: SpriteSet ->
                 setSprite(spriteProvider.get(0, 7))
             }
 
-            override fun getRenderType(): ParticleRenderType = ADDITIVE_PARTICLE_SHEET
+            /**
+             * Fabric 側の [net.minecraft.client.particle.ParticleEngine] は固定の一覧のみを描画するから、独自のものを足しても描かれないのだ～🌱
+             * [net.minecraft.client.particle.ParticleRenderType.CUSTOM] は描画の設定を各パーティクルへ委ねるものだから、そちらを選ぶのだ～🌱
+             */
+            override fun getRenderType(): ParticleRenderType = ParticleRenderType.CUSTOM
+
+            /**
+             * [net.minecraft.client.particle.ParticleRenderType.CUSTOM] は、シェーダーとテクスチャと合成の設定を 1 個も行わないのだ～🌱
+             * 描画の呼び出しは同じ一覧の全頂点を積み終えた後に 1 回だけ行われるから、ここで設定した状態がそのまま効くのだ～🌱
+             */
+            override fun render(buffer: VertexConsumer, camera: Camera, partialTick: Float) {
+                RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES)
+                RenderSystem.enableBlend()
+                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE)
+                super.render(buffer, camera, partialTick)
+            }
 
             /**
              * [net.minecraft.client.particle.GlowParticle.getLightColor] と同じく、周りの明るさに関わらず自分で光るのだ～🌱
