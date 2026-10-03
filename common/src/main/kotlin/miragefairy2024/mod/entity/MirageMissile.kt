@@ -57,14 +57,12 @@ object MirageMissileCard {
     }
     val poemList = PoemList(1).poem("TODO", "TODO") // TODO ミラージュミサイルの日英のポエムが入るのだ～🌱
 
+    const val SEARCH_MIN_DISTANCE = 4.0
     const val SEARCH_RADIUS = 64.0
     const val SEARCH_ANGLE = 45.0
 
     // 弓をいっぱいに引いた矢は毎 tick 3 ブロック進むから、寄せる割合が小さいと曲がりきらないのだ～🌱
     const val TURN_RATE = 0.5
-
-    // 真上へ撃った矢は最高点が反応距離を超えるから、弾道の追跡が終わらない場合の打ち切りなのだ～🌱
-    const val MAX_TRAJECTORY_TICKS = 200
 
     // AbstractArrow が水の外で毎 tick 速度に掛ける値と、既定の重力なのだ～🌱
     const val AIR_INERTIA = 0.99
@@ -117,13 +115,17 @@ class MirageMissileEntity : AbstractArrow {
     private var targetUuid: UUID? = null
     private var searched = false
 
+    /** 毎 tick エンティティのテーブルを引かないように、追尾先の参照を持っておくのだ～🌱 */
+    private var target: LivingEntity? = null
+
     override fun tick() {
         val level = level()
 
         // 追尾先の判定は射出した瞬間にのみ行うから、速度が減衰する前の最初の tick で済ませるのだ～🌱
         if (level is ServerLevel && !searched) {
             searched = true
-            targetUuid = searchTarget(level)?.uuid
+            target = searchTarget(level)
+            targetUuid = target?.uuid
         }
 
         super.tick()
@@ -132,7 +134,7 @@ class MirageMissileEntity : AbstractArrow {
         if (inGround) return
 
         // 追尾先が見つからなかったか、消えた場合は、もう向きを変えないのだ～🌱
-        val target = targetUuid?.let { level.getEntity(it) as? LivingEntity }?.takeIf { it.isAlive } ?: return
+        val target = resolveTarget(level) ?: return
 
         // 向き変更
         val speed = deltaMovement.length()
@@ -143,33 +145,43 @@ class MirageMissileEntity : AbstractArrow {
         hasImpulse = true
     }
 
-    /** 追尾しなかった場合の弾道を先に辿って、その道のりのどこかで最も角度が近くなる敵を選ぶのだ～🌱 */
+    /**
+     * 追尾先のエンティティを返すのだ～🌱
+     * セーブデータから復元した直後の 1 回だけ、UUID からエンティティのテーブルを引くのだ～🌱
+     */
+    private fun resolveTarget(level: ServerLevel): LivingEntity? {
+        target?.let { return it.takeIf { it.isTargetable } }
+        val uuid = targetUuid ?: return null
+        // 引けなかった場合に毎 tick 探し直さないように、UUID の方は捨てるのだ～🌱
+        targetUuid = null
+        val entity = level.getEntity(uuid) as? LivingEntity ?: return null
+        target = entity
+        return entity.takeIf { it.isTargetable }
+    }
+
+    /** 追尾しなかった場合の弾道のうち、相手と水平距離が一致する時点の座標が、最も相手に近い相手を選ぶのだ～🌱 */
     private fun searchTarget(level: ServerLevel): LivingEntity? {
-        val owner = owner as? LivingEntity ?: return null
         val initialVelocity = deltaMovement
         if (initialVelocity.length() < 0.001) return null
         val origin = position()
         val shotDirection = initialVelocity.normalize()
+        val minDistanceSqr = MirageMissileCard.SEARCH_MIN_DISTANCE * MirageMissileCard.SEARCH_MIN_DISTANCE
         val searchRadiusSqr = MirageMissileCard.SEARCH_RADIUS * MirageMissileCard.SEARCH_RADIUS
 
-        // 追尾しなかった場合に矢が通る各時点の、位置と進む向きなのだ～🌱
-        val trajectory = mutableListOf<Pair<Vec3, Vec3>>()
-        var position = origin
-        var velocity = initialVelocity
-        while (trajectory.size < MirageMissileCard.MAX_TRAJECTORY_TICKS && position.distanceToSqr(origin) <= searchRadiusSqr) {
-            trajectory += Pair(position, velocity.normalize())
-            // AbstractArrow は旧速度で位置を進めた後に、空気の慣性を掛けて重力を引くのだ～🌱
-            position = position.add(velocity)
-            velocity = velocity.scale(MirageMissileCard.AIR_INERTIA).subtract(0.0, MirageMissileCard.GRAVITY, 0.0)
-        }
-        if (trajectory.isEmpty()) return null
+        // ディスペンサーから撃った場合は撃った本人が居ないから、敵味方の判定を伴わない方の分岐が選ばれるのだ～🌱
+        val owner = owner as? LivingEntity
 
         return level.getEntitiesOfClass(LivingEntity::class.java, AABB(origin, origin).inflate(MirageMissileCard.SEARCH_RADIUS)) { TargetingConditions.DEFAULT.test(owner, it) }
             .mapNotNull { entity ->
+                if (!entity.isTargetable) return@mapNotNull null
                 val center = entity.boundingBox.center
-                if (center.distanceToSqr(origin) > searchRadiusSqr) return@mapNotNull null
+                val distanceSqr = center.distanceToSqr(origin)
+                if (distanceSqr < minDistanceSqr) return@mapNotNull null
+                if (distanceSqr > searchRadiusSqr) return@mapNotNull null
                 if (angleDegrees(shotDirection, center.subtract(origin)) > MirageMissileCard.SEARCH_ANGLE) return@mapNotNull null
-                Pair(entity, trajectory.minOf { (trajectoryPosition, trajectoryDirection) -> angleDegrees(trajectoryDirection, center.subtract(trajectoryPosition)) })
+                val offset = center.subtract(origin)
+                val trajectoryOffset = getTrajectoryOffset(initialVelocity, Math.sqrt(offset.x * offset.x + offset.z * offset.z)) ?: return@mapNotNull null
+                Pair(entity, offset.distanceToSqr(trajectoryOffset))
             }
             .minByOrNull { it.second }
             ?.first
@@ -177,7 +189,7 @@ class MirageMissileEntity : AbstractArrow {
 
     override fun addAdditionalSaveData(compound: CompoundTag) {
         super.addAdditionalSaveData(compound)
-        targetUuid?.let { compound.putUUID("Target", it) }
+        (target?.uuid ?: targetUuid)?.let { compound.putUUID("Target", it) }
         compound.putBoolean("Searched", searched)
     }
 
@@ -188,6 +200,31 @@ class MirageMissileEntity : AbstractArrow {
     }
 
     override fun getDefaultPickupItem() = ItemStack(MirageMissileCard.item())
+}
+
+/** 死んだ相手と、透明で光ってもいない相手は、狙う相手として不適格なのだ～🌱 */
+private val LivingEntity.isTargetable get() = isAlive && !(isInvisible && !isCurrentlyGlowing)
+
+/**
+ * 初速 [initialVelocity] で撃たれた矢が、射出位置からの水平距離が [horizontalDistance] になった時点で居る、射出位置からの相対位置なのだ～🌱
+ * 矢がその水平距離まで届かない場合と、真上や真下に近い向きで撃たれて水平方向にほとんど進まない場合は、null を返すのだ～🌱
+ *
+ * [net.minecraft.world.entity.projectile.AbstractArrow.tick] は、旧速度で位置を進めてから、速度に慣性を掛けて重力を引くのだ～🌱
+ * すると各軸の速度が等比数列になるから、その和として、n tick 後の位置を閉じた式で書けるのだ～🌱
+ * 慣性を無視した初速と重力加速度だけの放物線は、20 tick の時点で既に 5 ブロック以上ずれるから、慣性を含めた式でなければならないのだ～🌱
+ */
+private fun getTrajectoryOffset(initialVelocity: Vec3, horizontalDistance: Double): Vec3? {
+    val horizontalSpeed = Math.sqrt(initialVelocity.x * initialVelocity.x + initialVelocity.z * initialVelocity.z)
+    if (horizontalSpeed < 1.0e-6) return null
+
+    // 慣性の累乗 k^n は、水平距離が等比数列の和であることから逆算できるのだ～🌱
+    val inertiaPower = 1.0 - horizontalDistance * (1.0 - MirageMissileCard.AIR_INERTIA) / horizontalSpeed
+    if (inertiaPower <= 0.0) return null // 水平方向の到達距離には上限があって、そこへ届かない場合なのだ～🌱
+    val ticks = Math.log(inertiaPower) / Math.log(MirageMissileCard.AIR_INERTIA)
+
+    val velocitySum = horizontalDistance / horizontalSpeed // = (1 - k^n) / (1 - k)
+    val y = initialVelocity.y * velocitySum - MirageMissileCard.GRAVITY / (1.0 - MirageMissileCard.AIR_INERTIA) * (ticks - velocitySum)
+    return Vec3(initialVelocity.x / horizontalSpeed * horizontalDistance, y, initialVelocity.z / horizontalSpeed * horizontalDistance)
 }
 
 /** 単位ベクトル [direction] と、長さを問わない [offset] のなす角を、度数で返すのだ～🌱 */
