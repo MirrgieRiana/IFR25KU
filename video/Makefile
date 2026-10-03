@@ -3,16 +3,16 @@
 # -----------------------------------------------------------------------------
 # video/ は 3 つのパートに分かれているのだ～🌱：
 #   1. renderer/   … 構成jsonl と HTML テンプレートから画像を撮る「汎用レンダラー」（動画に依存しないのだ～🌱）
-#   2. sarracenia/ … この動画の台本・シーン・構成jsonl を作る「動画タイトルのディレクトリ」（自己完結なのだ～🌱）
+#   2. projects/   … 動画ごとの台本・シーン・構成jsonl を作る「動画プロジェクト」（自己完結なのだ～🌱）
 #   3. video/ 直下 … 音声合成・動画合成などの「雑多な部分」で、この Makefile が 1 と 2 を呼び出すのだ～🌱
 #
 # 段の並びなのだ～🌱：
-#   scene  … main.xa1 の build（BGM の確認 → 音声合成 → 結合 → sarracenia の構成づくり）
-#   frames … renderer/render.sh（scene.html + frames.jsonl → sarracenia/frames/）
+#   scene  … main.xa1 の build（BGM の確認 → 音声合成 → 結合 → プロジェクトの構成づくり）
+#   frames … renderer/render.sh（scene.html + frames.jsonl → プロジェクトの frames/）
 #   movie  … scripts/build_video.py（フレーム＋音声＋BGM → sarracenia.mp4）
 #
 # 前提（先に済ませておくのだ～🌱 詳しくは README.md を読むのだ～🌱）：
-#   1. 外部取得リソースを sarracenia/resources/ 以下の所定パスに置くのだ～🌱（*.md5 がその置き場所と中身を示すのだ～🌱）
+#   1. 外部取得リソースを projects/2026-04-12-sarracenia/resources/ 以下の所定パスに置くのだ～🌱（*.md5 がその置き場所と中身を示すのだ～🌱）
 #   2. VOICEVOX ENGINE を起動しておくのだ～🌱（既定は http://127.0.0.1:50021）
 #   3. Node.js / Python3 / ffmpeg / curl を使える状態にしておくのだ～🌱
 #
@@ -42,8 +42,8 @@ scene:
 # --- 汎用レンダラーで 1 フレームずつ撮る段なのだ～🌱 -----------------------------
 # render.sh が、Node の依存と Chromium の用意も面倒を見るのだ～🌱
 frames: scene
-	rm -rf $(VIDEO)/sarracenia/frames
-	bash $(VIDEO)/renderer/render.sh $(VIDEO)/sarracenia/frames.jsonl $(VIDEO)/sarracenia/frames
+	rm -rf $(VIDEO)/projects/2026-04-12-sarracenia/frames
+	bash $(VIDEO)/renderer/render.sh $(VIDEO)/projects/2026-04-12-sarracenia/frames.jsonl $(VIDEO)/projects/2026-04-12-sarracenia/frames
 
 # --- フレームとナレーションと BGM を合成して mp4 にする段なのだ～🌱 --------------
 movie: frames

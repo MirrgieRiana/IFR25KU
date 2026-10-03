@@ -1,11 +1,11 @@
 # =============================================================================
 # build_scene.xa1 — サラセニア寸劇の「構成」を作る処理の本体なのだ～🌱（xarpite / API5）
 # -----------------------------------------------------------------------------
-# build_scene.sh が、このディレクトリ（sarracenia/）へ cd してから呼ぶのだ～🌱
+# build_scene.sh が、このディレクトリ（projects/2026-04-12-sarracenia/）へ cd してから呼ぶのだ～🌱
 # タイムラインを受け取って、レンダラーに渡す材料を、ぜんぶ作るのだ～🌱
 #
 # 引数：
-#   ARGS.0       … timeline.json のパス（省略時は ../timeline.json）なのだ～🌱
+#   ARGS.0       … timeline.json のパス（省略時は ../../timeline.json）なのだ～🌱
 # 出力（このディレクトリ配下）：
 #   assets.js    … scene.html が読む、絵文字・テクスチャのパス・タイムラインの束
 #   portrait/    … 立ち絵 PSD から切り出したレイヤー PNG
@@ -14,7 +14,7 @@
 
 API(5)
 
-timelinePath := ARGS.0 ?: "../timeline.json"
+timelinePath := ARGS.0 ?: "../../timeline.json"
 
 # 構成jsonl の各行の template に入れる、この動画のテンプレートなのだ～🌱
 # レンダラーは、frames.jsonl のあるディレクトリ（ここ）を基準に解決するのだ～🌱
@@ -73,7 +73,7 @@ OUT << "== bake assets.js =="
 
 # IFR25KU リポジトリ内のテクスチャ（＝コミット済みの素材なので、リポジトリから直接読むのだ～🌱）
 # このパスは、scene.html の置き場所を基準に解決されるのだ～🌱
-TEX := "../../common/src/main/resources/assets/miragefairy2024"
+TEX := "../../../common/src/main/resources/assets/miragefairy2024"
 
 assets := {
   plant: "$TEX/textures/block/magic_plant/sarracenia_age3.png"
@@ -93,8 +93,8 @@ OUT << "  timeline: total= $(timeline.total) lines= $($#timeline.lines)"
 # --- 2. 立ち絵 PSD から必要なレイヤーを PNG に切り出すのだ～🌱（→ portrait/<char>/<id>.png） -----
 OUT << "== extract portrait =="
 # 切り出しのツールは、レンダラーと同じく video/ 直下の兄弟で、Node 依存も自分で面倒を見るのだ～🌱
-run("bash", "../extract-portrait/extract-portrait.sh", "zundamon", "resources/psd/zundamon23.psd", ZUNDA_IDS, "portrait/zundamon")
-run("bash", "../extract-portrait/extract-portrait.sh", "tsumugi", "resources/psd/tsumugi3.psd", TSUMUGI_IDS, "portrait/tsumugi")
+run("bash", "../../extract-portrait/extract-portrait.sh", "zundamon", "resources/psd/zundamon23.psd", ZUNDA_IDS, "portrait/zundamon")
+run("bash", "../../extract-portrait/extract-portrait.sh", "tsumugi", "resources/psd/tsumugi3.psd", TSUMUGI_IDS, "portrait/tsumugi")
 
 # --- 3. 構成jsonl を組み立てるのだ～🌱（→ frames.jsonl） -------------------------
 # 各行は、そのフレームの見た目を決めるパラメータなのだ～🌱

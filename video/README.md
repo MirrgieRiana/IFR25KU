@@ -13,15 +13,15 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 `video/` は、役割ごとに 3 つのパートに分かれているのだ～🌱
 
 1. **`renderer/`（汎用レンダラー）** … 構成jsonl（1 行 = 1 フレーム）と HTML テンプレートを受け取って、ひたすら対応する画像を撮るだけの、**動画の中身を知らない**カプセル化されたレンダラーなのだ～🌱 単体で完結していて、他のパートに依存しないのだ～🌱
-2. **`sarracenia/`（動画タイトルのディレクトリ）** … この寸劇動画の台本とシーンを持って、**構成jsonl を作る**パートなのだ～🌱 単体で完結していて、他のパートに依存しないのだ～🌱
+2. **`projects/<yyyy-MM-dd-タイトル>/`（動画プロジェクト）** … その動画の台本とシーンを持って、**構成jsonl を作る**パートなのだ～🌱 単体で完結していて、他のパートに依存しないのだ～🌱 今あるのは `projects/2026-04-12-sarracenia/` の 1 個なのだ～🌱
 3. **`video/` 直下（雑多な部分）** … 音声合成と動画合成をして、**1 と 2 を呼び出して**動画を完成させるのだ～🌱 `Makefile` が、その配線役なのだ～🌱
 
 この動画は、動画編集ソフトの GUI で作るのではなくて、**「決定論的フレームレンダリング」** という方式で作るのだ～🌱
 
-1. `sarracenia/scene.html` が、1 フレーム分の構成 `frame` を渡すとその画面を組み立てる関数 `window.applyFrame(frame)` を持つのだ～🌱 今のこの動画では、各要素の不透明度が `frame` に入っていて、残りは `frame` の `t`（秒）から内部の `seek(t)` が組み立てるのだ～🌱
-2. `sarracenia/build_scene.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
+1. `projects/2026-04-12-sarracenia/scene.html` が、1 フレーム分の構成 `frame` を渡すとその画面を組み立てる関数 `window.applyFrame(frame)` を持つのだ～🌱 今のこの動画では、各要素の不透明度が `frame` に入っていて、残りは `frame` の `t`（秒）から内部の `seek(t)` が組み立てるのだ～🌱
+2. `projects/2026-04-12-sarracenia/build_scene.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
 3. `renderer/render.js` がヘッドレス Chromium に `scene.html` を開かせて、`frames.jsonl` を頭から 1 行ずつ `applyFrame(frame)` に渡して、1 行につき 1 コマ撮るのだ～🌱
-4. 撮れた連番画像の `sarracenia/frames/f_00000.png …` を ffmpeg で映像にして、ナレーション音声と BGM を重ねて mp4 にするのだ～🌱
+4. 撮れた連番画像の `projects/2026-04-12-sarracenia/frames/f_00000.png …` を ffmpeg で映像にして、ナレーション音声と BGM を重ねて mp4 にするのだ～🌱
 
 絵は構成jsonl だけで決まるから、マシンの速さに関係なく尺が正確で、何度ビルドしても同じ結果になるのだ～🌱
 連続する行の構成が同じなら、撮り直さずに前のコマを使い回すのだ～🌱
@@ -29,30 +29,32 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 
 ### データの流れなのだ～🌱
 
+図の中では、動画プロジェクトの `projects/2026-04-12-sarracenia/` を `<proj>/` と書くのだ～🌱
+
 ```
-sarracenia/script.json（台本）
+<proj>/script.json（台本）
    │
    ├─(synth.xa1 + VOICEVOX)→ audio/line*.wav, moras.json, kana.json, durations.json  ┐ 雑多パート
    │                                                                                   │ (video/ 直下)
    └─(assemble.xa1)───────→ full.wav（ナレーション全体）, timeline.json（尺・区間） ┘
 
-timeline.json ─┬─(sarracenia/build_scene.xa1)─→ sarracenia/assets.js        ┐
-               │        ↑ IFR25KU テクスチャ / resources/font,emoji         │ sarracenia
- resources/psd/*.psd ─(extract-portrait/extract-portrait.sh)→ sarracenia/portrait/│（構成を作る）
-               └─(sarracenia/build_scene.xa1)→ sarracenia/frames.jsonl      ┘
+timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.js          ┐
+               │        ↑ IFR25KU テクスチャ / resources/font,emoji       │ 動画プロジェクト
+ resources/psd/*.psd ─(extract-portrait/extract-portrait.sh)→ <proj>/portrait/│（構成を作る）
+               └─(<proj>/build_scene.xa1)────→ <proj>/frames.jsonl        ┘
 
-sarracenia/scene.html + assets.js + portrait/ + frames.jsonl
-   └─(renderer/render.js + Chromium)→ sarracenia/frames/f_%05d.png   … 汎用レンダラー
+<proj>/scene.html + assets.js + portrait/ + frames.jsonl
+   └─(renderer/render.js + Chromium)→ <proj>/frames/f_%05d.png   … 汎用レンダラー
 
-sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
-   └─(scripts/build_video.py + ffmpeg)→ sarracenia.mp4（完成品）      … 雑多パート
+<proj>/frames/ + full.wav + <proj>/resources/bgm/*.flac
+   └─(scripts/build_video.py + ffmpeg)→ sarracenia.mp4（完成品）  … 雑多パート
 ```
 
 各パートの詳しい説明は、それぞれの README にもあるのだ～🌱
 
 - [`renderer/README.md`](renderer/README.md)
 - [`extract-portrait/README.md`](extract-portrait/README.md)
-- [`sarracenia/README.md`](sarracenia/README.md)
+- [`projects/2026-04-12-sarracenia/README.md`](projects/2026-04-12-sarracenia/README.md)
 
 ---
 
@@ -66,7 +68,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 | --- | --- |
 | `Makefile` | 下記すべてを順に呼び出す段を並べたものなのだ～🌱 **ふつうは `make` を実行するだけ**なのだ～🌱 |
 | `main.xa1` | `Makefile` から呼ぶ関数を返す入口なのだ～🌱 第 1 引数で受け取った `video/` の絶対パスを基準に、`INC` と読み書きのパスを組むのだ～🌱 |
-| `src/main/xa1/build.xa1` | `main.xa1` の `build` が呼ぶ、構成jsonl ができるまでの段（BGM の確認・`synth.xa1`・`assemble.xa1`・`sarracenia/build_scene.sh`）の本体なのだ～🌱 |
+| `src/main/xa1/build.xa1` | `main.xa1` の `build` が呼ぶ、構成jsonl ができるまでの段（BGM の確認・`synth.xa1`・`assemble.xa1`・プロジェクトの `build_scene.sh`）の本体なのだ～🌱 |
 | `src/main/xa1/synth.xa1` | VOICEVOX で台詞ごとの音声を合成して、口パク用のモーラ区間も書き出すのだ～🌱 |
 | `src/main/xa1/assemble.xa1` | 台詞 wav を、タイトル、本編（行間の無音）、クレジットの順に結合して、タイムラインを算出するのだ～🌱 |
 | `src/main/xa1/common.xa1` | `synth.xa1` と `assemble.xa1` が共有する関数（外部コマンドの実行・丸め・wav の読み出し）なのだ～🌱 |
@@ -88,7 +90,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 | `extract_portrait.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出すのだ～🌱 |
 | `package.json` / `package-lock.json` | Node の依存関係（`ag-psd` / `pngjs`）なのだ～🌱 |
 
-**`sarracenia/`（動画タイトルのディレクトリ・構成jsonl を作るパート・自己完結）**
+**`projects/2026-04-12-sarracenia/`（動画プロジェクト・構成jsonl を作るパート・自己完結）**
 
 | ファイル | 役割 |
 | --- | --- |
@@ -100,39 +102,39 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 
 ### コミットされていないもの（`.gitignore` 対象）なのだ～🌱
 
-- **外部取得リソースの実体**（`sarracenia/resources/psd/*.psd`, `.../font/*.ttf`, `.../emoji/*.svg`, `.../bgm/*.flac`）
+- **外部取得リソースの実体**（`projects/*/resources/psd/*.psd`, `.../font/*.ttf`, `.../emoji/*.svg`, `.../bgm/*.flac`）
   … 著作権の都合でコミットしないのだ～🌱 各 `.md5` を頼りに自分で配置するのだ～🌱（→ [3.](#3-用意する外部取得リソースなのだ)）
 - **音声の中間生成物**（`video/` 直下の `audio/`, `full.wav`, `timeline.json`, `kana.json`, `moras.json`, `durations.json`）
-- **scene の中間生成物**（`sarracenia/assets.js`, `sarracenia/portrait/`, `sarracenia/frames.jsonl`）
-- **出力**（`sarracenia/frames/`, `*.mp4`, `*.png`）
+- **scene の中間生成物**（`projects/*/assets.js`, `projects/*/portrait/`, `projects/*/frames.jsonl`）
+- **出力**（`projects/*/frames/`, `*.mp4`, `*.png`）
 - **依存**（各パート配下の `node_modules/`）
 
 ---
 
 ## 3. 用意する外部取得リソースなのだ～🌱
 
-以下を `sarracenia/resources/` の所定パスに置くのだ～🌱
+以下を `projects/2026-04-12-sarracenia/resources/` の所定パスに置くのだ～🌱
 ファイル名と中身は、同じ場所にある `*.md5` と一致している必要があるのだ～🌱
-`cd sarracenia/resources/<dir> && md5sum -c <name>.md5` で照合できるのだ～🌱
+`cd projects/2026-04-12-sarracenia/resources/<dir> && md5sum -c <name>.md5` で照合できるのだ～🌱
 
 | 置き場所 | 中身 | 入手先 | ライセンス |
 | --- | --- | --- | --- |
-| `sarracenia/resources/psd/zundamon23.psd` | ずんだもん立ち絵素材 2.3（PSD） | 坂本アヒル 氏配布の立ち絵素材 | 良識の範囲で利用可・改変可（同梱 readme 参照） |
-| `sarracenia/resources/psd/tsumugi3.psd` | 春日部つむぎ立ち絵素材 3.0（PSD） | 坂本アヒル 氏配布の立ち絵素材 | 同上（`tsumugi-official.studio.site/rule` の規約に準拠） |
-| `sarracenia/resources/font/ZenMaruGothic-Black.ttf` | Zen Maru Gothic Black | Google Fonts「Zen Maru Gothic」 | SIL Open Font License 1.1 |
-| `sarracenia/resources/font/ZenMaruGothic-Bold.ttf` | Zen Maru Gothic Bold | 同上 | SIL Open Font License 1.1 |
-| `sarracenia/resources/emoji/seedling.svg` | 🌱（seedling）のカラー SVG | Microsoft「Fluent Emoji」 | MIT License |
-| `sarracenia/resources/bgm/chopin_op10-4.flac` | ショパン 練習曲 作品10-4「Torrent（激流）」（Edward Neeman 演奏） | Wikimedia Commons / Musopen "Set Chopin Free" | パブリックドメイン |
+| `projects/2026-04-12-sarracenia/resources/psd/zundamon23.psd` | ずんだもん立ち絵素材 2.3（PSD） | 坂本アヒル 氏配布の立ち絵素材 | 良識の範囲で利用可・改変可（同梱 readme 参照） |
+| `projects/2026-04-12-sarracenia/resources/psd/tsumugi3.psd` | 春日部つむぎ立ち絵素材 3.0（PSD） | 坂本アヒル 氏配布の立ち絵素材 | 同上（`tsumugi-official.studio.site/rule` の規約に準拠） |
+| `projects/2026-04-12-sarracenia/resources/font/ZenMaruGothic-Black.ttf` | Zen Maru Gothic Black | Google Fonts「Zen Maru Gothic」 | SIL Open Font License 1.1 |
+| `projects/2026-04-12-sarracenia/resources/font/ZenMaruGothic-Bold.ttf` | Zen Maru Gothic Bold | 同上 | SIL Open Font License 1.1 |
+| `projects/2026-04-12-sarracenia/resources/emoji/seedling.svg` | 🌱（seedling）のカラー SVG | Microsoft「Fluent Emoji」 | MIT License |
+| `projects/2026-04-12-sarracenia/resources/bgm/chopin_op10-4.flac` | ショパン 練習曲 作品10-4「Torrent（激流）」（Edward Neeman 演奏） | Wikimedia Commons / Musopen "Set Chopin Free" | パブリックドメイン |
 
 立ち絵 PSD の ID 体系なのだ～🌱
 `extract-portrait/` が切り出すレイヤーは、兄弟レイヤーの 1 始まりインデックスを `-` で連結した ID で指定するのだ～🌱
 グループも、インデックスを 1 個消費するのだ～🌱
-切り出す ID の一覧は `sarracenia/build_scene.xa1` の `ZUNDA_IDS` と `TSUMUGI_IDS` にあるのだ～🌱
+切り出す ID の一覧は `projects/2026-04-12-sarracenia/build_scene.xa1` の `ZUNDA_IDS` と `TSUMUGI_IDS` にあるのだ～🌱
 これは、`scene.html` の `PORTRAIT` 定義と一致している必要があるのだ～🌱
 
 ### IFR25KU リポジトリ由来のテクスチャ（配置不要）なのだ～🌱
 
-次の 4 枚は IFR25KU リポジトリにコミット済みだから、`sarracenia/build_scene.xa1` がリポジトリから直接読むのだ～🌱
+次の 4 枚は IFR25KU リポジトリにコミット済みだから、`projects/2026-04-12-sarracenia/build_scene.xa1` がリポジトリから直接読むのだ～🌱
 自分で置く必要は無いのだ～🌱
 
 | 用途 | ファイル |
@@ -161,7 +163,7 @@ sarracenia/frames/ + full.wav + sarracenia/resources/bgm/*.flac
 # 1) VOICEVOX ENGINE を起動しておくのだ～🌱（別ターミナルなど）
 #    既定では http://127.0.0.1:50021 を使うのだ～🌱
 
-# 2) 外部取得リソースを sarracenia/resources/ に配置するのだ～🌱（→ 3.）
+# 2) 外部取得リソースを projects/2026-04-12-sarracenia/resources/ に配置するのだ～🌱（→ 3.）
 
 # 3) ビルドなのだ～🌱（Node 依存は各パートで自動 npm install するのだ～🌱）
 make
@@ -174,13 +176,13 @@ make
 
 | 段 | やること |
 | --- | --- |
-| `make scene` | BGM の確認と音声合成と結合をして、`sarracenia/` の構成（`assets.js`・`portrait/`・`frames.jsonl`）を作るのだ～🌱 |
-| `make frames` | `scene` の後に、連番のフレーム画像を `sarracenia/frames/` へ撮るのだ～🌱 |
+| `make scene` | BGM の確認と音声合成と結合をして、動画プロジェクトの構成（`assets.js`・`portrait/`・`frames.jsonl`）を作るのだ～🌱 |
+| `make frames` | `scene` の後に、連番のフレーム画像を動画プロジェクトの `frames/` へ撮るのだ～🌱 |
 | `make movie` | `frames` の後に、フレームとナレーションと BGM を合成して mp4 にするのだ～🌱 引数なしの `make` と同じなのだ～🌱 |
 
 後ろの段は前の段に依存しているから、`make movie` だけで最初から通るのだ～🌱
 
-`renderer/` と `sarracenia/` は Node 依存が別々だから、それぞれのディレクトリで必要なときだけ `npm install` するのだ～🌱
+`renderer/` と `extract-portrait/` は Node 依存が別々だから、それぞれのディレクトリで必要なときだけ `npm install` するのだ～🌱
 手動で入れるなら、各ディレクトリで `npm install` するのだ～🌱
 
 ### 環境変数で差し替えられる設定なのだ～🌱
@@ -214,9 +216,9 @@ make
 
 台詞 wav を、タイトル保持、本編（台詞のあいだに無音の間）、クレジット保持の順に結合して、`full.wav` と `timeline.json` を作るのだ～🌱
 `timeline.json` には、各台詞の開始と終了の時刻と、シーン区間と、アイテムの表示区間などが入るのだ～🌱
-それを、`sarracenia/` の `build_scene.xa1` と `scripts/build_video.py` が読むのだ～🌱
+それを、動画プロジェクトの `build_scene.xa1` と `scripts/build_video.py` が読むのだ～🌱
 
-### sarracenia/build_scene.xa1（アセットの焼き込み）なのだ～🌱
+### build_scene.xa1（アセットの焼き込み）なのだ～🌱
 
 `file://` で開いた HTML は外部ファイルを `fetch()` できないから、絵文字とテクスチャのパスとタイムラインを `assets.js` に埋め込むのだ～🌱
 テクスチャは `scene.html` から見た相対パスの文字列で、絵文字 SVG は生の文字列として入るのだ～🌱
@@ -227,7 +229,7 @@ make
 `ag-psd` で PSD を読んで、指定 ID のレイヤーを、全身キャンバスと同じサイズの透過 PNG として書き出すのだ～🌱
 `node-canvas` を入れずに済むように、`createImageData` だけをシムして動かしているのだ～🌱
 
-### sarracenia/build_scene.xa1（構成jsonl の組み立て）なのだ～🌱
+### build_scene.xa1（構成jsonl の組み立て）なのだ～🌱
 
 `timeline.json` から総尺を読んで、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
 各行は `template` と `t` と、画面の各要素の不透明度のキーを持つのだ～🌱
@@ -236,7 +238,7 @@ make
 これから、その残りも、段階的に構成jsonl 側へ移していくのだ～🌱
 そのとき、レンダラー側は変えなくてよい設計なのだ～🌱
 
-### sarracenia/scene.html（画面と applyFrame）なのだ～🌱
+### scene.html（画面と applyFrame）なのだ～🌱
 
 画面の見た目のすべてと、構成 `frame` から画面を決める `window.applyFrame(frame)` が入っているのだ～🌱
 `applyFrame` は、まず `window.seek(frame.t)`（時刻→画面）を呼んで、それから各要素の不透明度を `frame` の値から当てるのだ～🌱

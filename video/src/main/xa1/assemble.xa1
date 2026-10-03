@@ -5,8 +5,8 @@
 API(5)
 @USE("common")
 
-# 台本は動画タイトルのディレクトリ（sarracenia/）から読み、音声・タイムラインはこの雑多パート（video/直下）に置くのだ～🌱
-script := $*READ("$base/sarracenia/script.json")
+# 台本は動画プロジェクトから読み、音声・タイムラインはこの雑多パート（video/直下）に置くのだ～🌱
+script := $*READ("$base/projects/2026-04-12-sarracenia/script.json")
 moraList := $*READ("$base/moras.json")
 SR := 24000
 
