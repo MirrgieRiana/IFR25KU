@@ -15,7 +15,7 @@
 # ## HTML出力構造
 #
 #   <div class="mfa-footer" data-pagefind-ignore>
-#   <p>この MFA の本文は、<a href="...">MirageFairy2019</a> の <code>miragefairy2019.mfa.*</code> の翻訳を、そのまま転載したものです。</p>
+#   <p>この MFA の本文は、<a href="...">MirageFairy2019</a> の <code>miragefairy2019.mfa.*</code> の翻訳エントリーを、細部の調整を除き、そのまま転載したものです。</p>
 #   <p>この本文は、© 2019 MirageFairy Server の著作物で、<a href="...">CC BY-SA 3.0</a> で提供されています。</p>
 #   </div>
 #
@@ -35,7 +35,7 @@ module JeiMfa
     def render(context)
       <<~HTML
         <div class="mfa-footer" data-pagefind-ignore>
-        <p>この MFA の本文は、<a href="#{JeiMfa::SOURCE_REPOSITORY_URL}">MirageFairy2019</a> の <code>miragefairy2019.mfa.*</code> の翻訳を、そのまま転載したものです。</p>
+        <p>この MFA の本文は、<a href="#{JeiMfa::SOURCE_REPOSITORY_URL}">MirageFairy2019</a> の <code>miragefairy2019.mfa.*</code> の翻訳エントリーを、細部の調整を除き、そのまま転載したものです。</p>
         <p>この本文は、© 2019 MirageFairy Server の著作物で、<a href="#{JeiMfa::LICENSE_URL}">CC BY-SA 3.0</a> で提供されています。</p>
         </div>
       HTML
