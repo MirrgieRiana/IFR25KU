@@ -11,8 +11,10 @@ import miragefairy2024.mod.registerPoem
 import miragefairy2024.mod.registerPoemGeneration
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
+import miragefairy2024.util.Trajectory
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
+import miragefairy2024.util.getPointAtHorizontalDistance
 import miragefairy2024.util.on
 import miragefairy2024.util.register
 import miragefairy2024.util.registerChild
@@ -42,7 +44,6 @@ import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
 import java.util.UUID
 import kotlin.math.acos
-import kotlin.math.ln
 import kotlin.math.sqrt
 
 object MirageMissileCard {
@@ -62,6 +63,9 @@ object MirageMissileCard {
     const val SEARCH_MIN_DISTANCE = 4.0
     const val SEARCH_RADIUS = 64.0
     const val SEARCH_ANGLE = 45.0
+
+    /** 追尾しなかった場合の弾道で、そこへ到達するまでにこの tick 数を超える相手は、狙わないのだ～🌱 */
+    const val SEARCH_MAX_TICKS = 200.0
 
     // 弓をいっぱいに引いた矢は毎 tick 3 ブロック進むから、寄せる割合が小さいと曲がりきらないのだ～🌱
     const val TURN_RATE = 0.5
@@ -185,6 +189,7 @@ class MirageMissileEntity : AbstractArrow {
         if (initialVelocity.length() < 0.001) return null
         val origin = position()
         val shotDirection = initialVelocity.normalize()
+        val trajectory = Trajectory(initialVelocity, MirageMissileCard.AIR_INERTIA, MirageMissileCard.GRAVITY)
         val minDistanceSqr = MirageMissileCard.SEARCH_MIN_DISTANCE * MirageMissileCard.SEARCH_MIN_DISTANCE
         val searchRadiusSqr = MirageMissileCard.SEARCH_RADIUS * MirageMissileCard.SEARCH_RADIUS
 
@@ -200,8 +205,9 @@ class MirageMissileEntity : AbstractArrow {
                 if (distanceSqr > searchRadiusSqr) return@mapNotNull null
                 if (angleDegrees(shotDirection, center.subtract(origin)) > MirageMissileCard.SEARCH_ANGLE) return@mapNotNull null
                 val offset = center.subtract(origin)
-                val trajectoryOffset = getTrajectoryOffset(initialVelocity, sqrt(offset.x * offset.x + offset.z * offset.z)) ?: return@mapNotNull null
-                Pair(entity, offset.distanceToSqr(trajectoryOffset))
+                val trajectoryPoint = trajectory.getPointAtHorizontalDistance(sqrt(offset.x * offset.x + offset.z * offset.z)) ?: return@mapNotNull null
+                if (trajectoryPoint.ticks > MirageMissileCard.SEARCH_MAX_TICKS) return@mapNotNull null
+                Pair(entity, offset.distanceToSqr(trajectoryPoint.offset))
             }
             .minByOrNull { it.second }
             ?.first
@@ -225,28 +231,6 @@ class MirageMissileEntity : AbstractArrow {
 
 /** 死んだ相手と、透明で光ってもいない相手は、狙う相手として不適格なのだ～🌱 */
 private val LivingEntity.isTargetable get() = isAlive && !(isInvisible && !isCurrentlyGlowing)
-
-/**
- * 初速 [initialVelocity] で撃たれた矢が、射出位置からの水平距離が [horizontalDistance] になった時点で居る、射出位置からの相対位置なのだ～🌱
- * 矢がその水平距離まで届かない場合と、真上や真下に近い向きで撃たれて水平方向にほとんど進まない場合は、null を返すのだ～🌱
- *
- * [net.minecraft.world.entity.projectile.AbstractArrow.tick] は、旧速度で位置を進めてから、速度に慣性を掛けて重力を引くのだ～🌱
- * すると各軸の速度が等比数列になるから、その和として、n tick 後の位置を閉じた式で書けるのだ～🌱
- * 慣性を無視した初速と重力加速度だけの放物線は、20 tick の時点で既に 5 ブロック以上ずれるから、慣性を含めた式でなければならないのだ～🌱
- */
-private fun getTrajectoryOffset(initialVelocity: Vec3, horizontalDistance: Double): Vec3? {
-    val horizontalSpeed = sqrt(initialVelocity.x * initialVelocity.x + initialVelocity.z * initialVelocity.z)
-    if (horizontalSpeed < 1.0e-6) return null
-
-    // 慣性の累乗 k^n は、水平距離が等比数列の和であることから逆算できるのだ～🌱
-    val inertiaPower = 1.0 - horizontalDistance * (1.0 - MirageMissileCard.AIR_INERTIA) / horizontalSpeed
-    if (inertiaPower <= 0.0) return null // 水平方向の到達距離には上限があって、そこへ届かない場合なのだ～🌱
-    val ticks = ln(inertiaPower) / ln(MirageMissileCard.AIR_INERTIA)
-
-    val velocitySum = horizontalDistance / horizontalSpeed // = (1 - k^n) / (1 - k)
-    val y = initialVelocity.y * velocitySum - MirageMissileCard.GRAVITY / (1.0 - MirageMissileCard.AIR_INERTIA) * (ticks - velocitySum)
-    return Vec3(initialVelocity.x / horizontalSpeed * horizontalDistance, y, initialVelocity.z / horizontalSpeed * horizontalDistance)
-}
 
 /** 単位ベクトル [direction] と、長さを問わない [offset] のなす角を、度数で返すのだ～🌱 */
 private fun angleDegrees(direction: Vec3, offset: Vec3): Double {
