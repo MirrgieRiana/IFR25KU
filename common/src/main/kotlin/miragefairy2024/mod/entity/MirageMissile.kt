@@ -42,6 +42,8 @@ import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
 import java.util.UUID
 import kotlin.math.acos
+import kotlin.math.ln
+import kotlin.math.sqrt
 
 object MirageMissileCard {
     val identifier = MirageFairy2024.identifier("mirage_missile")
@@ -180,7 +182,7 @@ class MirageMissileEntity : AbstractArrow {
                 if (distanceSqr > searchRadiusSqr) return@mapNotNull null
                 if (angleDegrees(shotDirection, center.subtract(origin)) > MirageMissileCard.SEARCH_ANGLE) return@mapNotNull null
                 val offset = center.subtract(origin)
-                val trajectoryOffset = getTrajectoryOffset(initialVelocity, Math.sqrt(offset.x * offset.x + offset.z * offset.z)) ?: return@mapNotNull null
+                val trajectoryOffset = getTrajectoryOffset(initialVelocity, sqrt(offset.x * offset.x + offset.z * offset.z)) ?: return@mapNotNull null
                 Pair(entity, offset.distanceToSqr(trajectoryOffset))
             }
             .minByOrNull { it.second }
@@ -214,13 +216,13 @@ private val LivingEntity.isTargetable get() = isAlive && !(isInvisible && !isCur
  * 慣性を無視した初速と重力加速度だけの放物線は、20 tick の時点で既に 5 ブロック以上ずれるから、慣性を含めた式でなければならないのだ～🌱
  */
 private fun getTrajectoryOffset(initialVelocity: Vec3, horizontalDistance: Double): Vec3? {
-    val horizontalSpeed = Math.sqrt(initialVelocity.x * initialVelocity.x + initialVelocity.z * initialVelocity.z)
+    val horizontalSpeed = sqrt(initialVelocity.x * initialVelocity.x + initialVelocity.z * initialVelocity.z)
     if (horizontalSpeed < 1.0e-6) return null
 
     // 慣性の累乗 k^n は、水平距離が等比数列の和であることから逆算できるのだ～🌱
     val inertiaPower = 1.0 - horizontalDistance * (1.0 - MirageMissileCard.AIR_INERTIA) / horizontalSpeed
     if (inertiaPower <= 0.0) return null // 水平方向の到達距離には上限があって、そこへ届かない場合なのだ～🌱
-    val ticks = Math.log(inertiaPower) / Math.log(MirageMissileCard.AIR_INERTIA)
+    val ticks = ln(inertiaPower) / ln(MirageMissileCard.AIR_INERTIA)
 
     val velocitySum = horizontalDistance / horizontalSpeed // = (1 - k^n) / (1 - k)
     val y = initialVelocity.y * velocitySum - MirageMissileCard.GRAVITY / (1.0 - MirageMissileCard.AIR_INERTIA) * (ticks - velocitySum)
