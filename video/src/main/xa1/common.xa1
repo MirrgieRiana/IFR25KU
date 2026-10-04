@@ -35,10 +35,13 @@ run := command -> OUT << capture(command)()
 # 生成物は、すべてこの下に作って、ignore も clean も、この 1 個のディレクトリでまとめて扱うのだ～🌱
 buildBase := "$base/build"
 
-# この雑多パートが相手にする動画プロジェクトなのだ～🌱
-# 複数のプロジェクトを扱えるようにするまでの間、どのプロジェクトを指すかを、ここ 1 個所に集めておくのだ～🌱
-project := "2026-04-12-sarracenia"
-projectBase := "$base/projects/$project"
+# 動画プロジェクトのディレクトリのパスから、各段が使う情報を組むのだ～🌱
+# この雑多パートは、どのプロジェクトを相手にするかを持たず、呼び出し側から受け取るのだ～🌱
+projectOf := projectBase -> {
+  base: projectBase
+  name: projectBase::replace(/^.*\//; "")
+  buildBase: "$projectBase/build"
+}
 
 # ディレクトリがあるかを見るのだ～🌱
 # FILE_NAMES は、存在しないディレクトリでは例外を投げちゃうから、判定には使えないのだ～🌱
@@ -101,8 +104,7 @@ readWav := path -> (
 {
   base: base
   buildBase: buildBase
-  project: project
-  projectBase: projectBase
+  projectOf: projectOf
   fail: fail
   capture: capture
   run: run

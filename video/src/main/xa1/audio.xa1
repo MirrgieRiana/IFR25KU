@@ -7,7 +7,7 @@ API(5)
 
 scriptModule := USE("script")
 
-dir := "$buildBase/audio"
+dirOf := project -> "$buildBase/audio/$(project.name)"
 
 # 口パク(AV)用に、合成に使う最終クエリからモーラ区間を割り出すのだ～🌱
 # 返すのは [cs, vs, ve, vowel]（wav先頭からの秒で、speedScaleで割り済み）なのだ～🌱
@@ -32,13 +32,12 @@ moraSegments := q -> (
 )
 
 {
-  dir: dir
-  wavPath: i -> "$dir/wav/$%05d(i).wav"
-  morasPath: "$dir/moras.json"
-  generate: () -> (
-    scriptModule.generate()
-    generate("audio (VOICEVOX)"; dir; work -> (
-      script := $*READ(scriptModule.path)
+  wavPath: (project; i) -> "$(dirOf(project))/wav/$%05d(i).wav"
+  morasPath: project -> "$(dirOf(project))/moras.json"
+  generate: project -> (
+    scriptModule.generate(project)
+    generate("audio ($(project.name))"; dirOf(project); work -> (
+      script := $*READ(scriptModule.path(project))
 
       # --- 合成のリクエストを並べた jsonl を組むのだ～🌱 -------------------------------
       # 読みのカナは台本の kana で、その行で指定が無ければ、ラッパーが text から推定したものになるのだ～🌱

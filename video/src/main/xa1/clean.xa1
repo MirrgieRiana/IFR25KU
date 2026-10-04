@@ -17,8 +17,8 @@ removeBuildDir := dir -> (
 )
 
 {
-  run: () -> (
+  run: project -> (
     removeBuildDir(buildBase)
-    removeBuildDir("$projectBase/build")
+    removeBuildDir(project.buildBase)
   )
 }

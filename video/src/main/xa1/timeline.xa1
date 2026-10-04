@@ -6,7 +6,7 @@ API(5)
 scriptModule := USE("script")
 audioModule := USE("audio")
 
-dir := "$buildBase/timeline"
+dirOf := project -> "$buildBase/timeline/$(project.name)"
 SR := 24000
 
 # 尺の設計なのだ～🌱
@@ -27,14 +27,13 @@ readPcm := path -> (
 sil := sec -> [0] * (2 * FLOOR(sec * SR + 0.5))
 
 {
-  dir: dir
-  wavPath: "$dir/full.wav"
-  jsonPath: "$dir/timeline.json"
-  generate: () -> (
-    audioModule.generate()
-    generate("timeline"; dir; work -> (
-      script := $*READ(scriptModule.path)
-      moraList := $*READ(audioModule.morasPath)
+  wavPath: project -> "$(dirOf(project))/full.wav"
+  jsonPath: project -> "$(dirOf(project))/timeline.json"
+  generate: project -> (
+    audioModule.generate(project)
+    generate("timeline ($(project.name))"; dirOf(project); work -> (
+      script := $*READ(scriptModule.path(project))
+      moraList := $*READ(audioModule.morasPath(project))
 
       pcm := []
       pcm += sil(TITLE_HOLD + TITLE_FADE + PRE_SPEAK)   # タイトル区間の無音
@@ -47,7 +46,7 @@ sil := sec -> [0] * (2 * FLOOR(sec * SR + 0.5))
       lineCount := $#script.lines
       linesTl := [0 ~ lineCount | i => (
         line := script.lines.(i)
-        data := readPcm(audioModule.wavPath(i))
+        data := readPcm(audioModule.wavPath(project; i))
         dur := FLOOR($#data / 2) / SR
         start := t
         end := t + dur

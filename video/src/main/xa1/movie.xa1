@@ -7,7 +7,7 @@
 #   - projects/common/resources/bgm/chopin_op10-4.flac … BGM（外部取得リソースで、ここに置いてもらうのだ～🌱）
 #
 # 出力：
-#   - build/movie/sarracenia.mp4 … 完成した動画
+#   - build/movie/<プロジェクト>/<プロジェクト>.mp4 … 完成した動画
 #
 # 第1引数は BGM の基準音量（0〜1）で、省略すると 0.45 なのだ～🌱
 # ffmpeg のパスは環境変数 FFMPEG で上書きできるのだ～🌱
@@ -20,21 +20,20 @@ API(5)
 timelineModule := USE("timeline")
 framesModule := USE("frames")
 
-dir := "$buildBase/movie"
+dirOf := project -> "$buildBase/movie/$(project.name)"
 bgmDir := "$base/projects/common/resources/bgm"
 
 {
-  dir: dir
-  path: "$dir/sarracenia.mp4"
-  generate: () -> (
+  path: project -> "$(dirOf(project))/$(project.name).mp4"
+  generate: project -> (
     # BGM は外部取得リソースだから、長い合成に入る前に、置かれていることを確かめるのだ～🌱
     # FILE_NAMES のストリームのままだと、@ が部分文字列で探して、隣の *.md5 のファイル名に当たっちゃうのだ～🌱
     # だから、配列にしてから、要素として探すのだ～🌱
     "chopin_op10-4.flac" @ [FILE_NAMES(bgmDir)] || fail("resource not found: projects/common/resources/bgm/chopin_op10-4.flac (place it as described in README.md)")
 
-    framesModule.generate()
-    generate("movie ($project)"; dir; work -> (
-      tl := $*READ(timelineModule.jsonPath)
+    framesModule.generate(project)
+    generate("movie ($(project.name))"; dirOf(project); work -> (
+      tl := $*READ(timelineModule.jsonPath(project))
       total := tl.total
       T0 := tl.lead          # 開幕（タイトル）から寸劇（初回発話）へ切り替わる時刻
       CS := tl.creditStart   # クレジット開始時刻
@@ -67,19 +66,19 @@ bgmDir := "$base/projects/common/resources/bgm"
 
       cmd := [
         ffmpeg; "-y"; "-hide_banner"
-        "-framerate"; "30"; "-i"; framesModule.pngPattern
-        "-i"; timelineModule.wavPath
+        "-framerate"; "30"; "-i"; framesModule.pngPattern(project)
+        "-i"; timelineModule.wavPath(project)
         "-stream_loop"; "-1"; "-i"; "$bgmDir/chopin_op10-4.flac"
         "-filter_complex"; fc
         "-map"; "0:v"; "-map"; "[aout]"
         "-c:v"; "libx264"; "-pix_fmt"; "yuv420p"; "-crf"; "20"
         "-c:a"; "aac"; "-b:a"; "192k"; "-shortest"
-        "$work/sarracenia.mp4"
+        "$work/$(project.name).mp4"
       ]
 
       # ffmpeg は進捗を大量に吐くから、成功したときの出力は捨てて、失敗したときだけ見せるのだ～🌱
       capture(cmd())
     ))
-    OUT << "built: $dir/sarracenia.mp4"
+    OUT << "built: $(dirOf(project))/$(project.name).mp4"
   )
 }

@@ -5,16 +5,15 @@ API(5)
 
 sceneModule := USE("scene")
 
-dir := "$projectBase/build/frames"
+dirOf := project -> "$(project.buildBase)/frames"
 
 {
-  dir: dir
-  generate: () -> (
-    sceneModule.generate()
-    generate("frames ($project)"; dir; work -> (
+  pngPattern: project -> "$(dirOf(project))/png/f_%05d.png"
+  generate: project -> (
+    sceneModule.generate(project)
+    generate("frames ($(project.name))"; dirOf(project); work -> (
       # レンダラーは、出力先が空のディレクトリでも存在しないパスでもないと止まるから、中へもう 1 段掘って渡すのだ～🌱
-      run("bash", "$base/renderer/render.sh", sceneModule.framesJsonlPath, "$work/png")
+      run("bash", "$base/renderer/render.sh", sceneModule.framesJsonlPath(project), "$work/png")
     ))
   )
-  pngPattern: "$dir/png/f_%05d.png"
 }

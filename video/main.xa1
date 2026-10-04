@@ -1,15 +1,13 @@
 # =============================================================================
 # main.xa1 — video/ の雑多パートの入口なのだ～🌱（xarpite / API5）
 # -----------------------------------------------------------------------------
-# Makefile やシェルスクリプトは、ここが返すオブジェクトの関数を呼ぶのだ～🌱
+# 動画プロジェクトの main.xa1 が、ここを USE して、返ってくる公開 API を使うのだ～🌱
 # 処理の本体は src/main/xa1/ の中にあって、ここから INC 経由で USE するのだ～🌱
 #
 # generate で始まる関数は、gradlew のタスクのように、それぞれが 1 個の生成物を受け持つのだ～🌱
+# どれも、projectOf で組んだ動画プロジェクトの情報を、引数に取るのだ～🌱
 # 前の段の生成物は、その段の関数が面倒を見るから、どこから呼んでも、足りないものだけが作られるのだ～🌱
 # 生成物が既にあるときは、その段を飛ばすのだ～🌱 作り直したいときは、clean で捨てるのだ～🌱
-#
-# 呼び出しの例：
-#   xarpite -A 5 -q -e 'USE("/abs/video/main").generateMovie()'
 # =============================================================================
 
 API(5)
@@ -18,7 +16,10 @@ API(5)
 # LOCATION はこのファイル自身のパスだから、その親を取れば、呼び出し元の居場所に関わらず video/ が得られるのだ～🌱
 INC += RESOLVE(LOCATION; "../src/main/xa1")
 
+@USE("common")
+
 {
+  projectOf: projectOf
   generateScript: USE("script").generate
   generateAudio: USE("audio").generate
   generateTimeline: USE("timeline").generate

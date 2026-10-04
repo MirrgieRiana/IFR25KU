@@ -6,15 +6,15 @@ API(5)
 
 timelineModule := USE("timeline")
 
-dir := "$projectBase/build/scene"
+dirOf := project -> "$(project.buildBase)/scene"
 
 {
-  dir: dir
-  framesJsonlPath: "$dir/frames.jsonl"
-  generate: () -> (
-    timelineModule.generate()
-    generate("scene ($project)"; dir; work -> (
-      run("$base/../xarpite/xarpite", "-A", "5", "-q", "-e", "USE(\"$projectBase/main\").buildScene()", timelineModule.jsonPath, work)
+  dir: dirOf
+  framesJsonlPath: project -> "$(dirOf(project))/frames.jsonl"
+  generate: project -> (
+    timelineModule.generate(project)
+    generate("scene ($(project.name))"; dirOf(project); work -> (
+      run("$base/../xarpite/xarpite", "-A", "5", "-q", "-e", "USE(\"$(project.base)/main\").buildScene()", timelineModule.jsonPath(project), work)
     ))
   )
 }

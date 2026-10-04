@@ -4,11 +4,11 @@
 API(5)
 @USE("common")
 
-dir := "$buildBase/script"
+dirOf := project -> "$buildBase/script/$(project.name)"
 
 {
-  path: "$dir/script.json"
-  generate: () -> generate("script ($project)"; dir; work -> (
-    WRITE("$work/script.json"; USE("$projectBase/script") >> JSON[indent: 1])
+  path: project -> "$(dirOf(project))/script.json"
+  generate: project -> generate("script ($(project.name))"; dirOf(project); work -> (
+    WRITE("$work/script.json"; USE("$(project.base)/script") >> JSON[indent: 1])
   ))
 }

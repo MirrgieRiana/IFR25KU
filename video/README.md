@@ -32,11 +32,11 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 図の中では、動画プロジェクトの `projects/2026-04-12-sarracenia/` を `<proj>/` と書くのだ～🌱
 
 ```
-<proj>/script.xa1（台本）─(script.xa1)→ build/script/script.json
+<proj>/script.xa1（台本）─(script.xa1)→ build/script/<proj>/script.json
    │
-   ├─(audio.xa1 + VOICEVOX)→ build/audio/wav/*.wav, moras.json, kana.json, durations.json  ┐ 雑多パート
+   ├─(audio.xa1 + VOICEVOX)→ build/audio/<proj>/wav/*.wav, moras.json, kana.json, durations.json  ┐ 雑多パート
    │                                                                                   │ (video/ 直下)
-   └─(timeline.xa1)───────→ build/timeline/full.wav（ナレーション全体）, timeline.json（尺・区間） ┘
+   └─(timeline.xa1)───────→ build/timeline/<proj>/full.wav（ナレーション全体）, timeline.json（尺・区間） ┘
 
 timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/scene/assets.js   ┐
                │        ↑ IFR25KU テクスチャ / common のフォントと絵文字  │ 動画プロジェクト
@@ -47,7 +47,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
    └─(renderer/render.js + Chromium)→ <proj>/build/frames/png/f_%05d.png   … 汎用レンダラー
 
 <proj>/build/frames/ + full.wav + projects/common/resources/bgm/*.flac
-   └─(movie.xa1 + ffmpeg)→ build/movie/sarracenia.mp4（完成品）  … 雑多パート
+   └─(movie.xa1 + ffmpeg)→ build/movie/<proj>/<proj>.mp4（完成品）  … 雑多パート
 ```
 
 各パートの詳しい説明は、それぞれの README にもあるのだ～🌱
@@ -66,8 +66,8 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 
 | ファイル | 役割 |
 | --- | --- |
-| `Makefile` | `main.xa1` の段を 1 個ずつ叩けるように並べたものなのだ～🌱 **ふつうは `make` を実行するだけ**なのだ～🌱 |
-| `main.xa1` | `Makefile` から呼ぶ、生成物ごとの `generate～` と `clean` を返す入口なのだ～🌱 自分の置き場所から `video/` を解決して、`INC` と読み書きのパスを組むのだ～🌱 |
+| `Makefile` | `main.xa1` の段を 1 個ずつ叩けるように並べたものなのだ～🌱 動画プロジェクトの `Makefile` から include されるのだ～🌱 |
+| `main.xa1` | 生成物ごとの `generate～` と `clean` を返す入口なのだ～🌱 どの関数も、相手にする動画プロジェクトを引数に取るのだ～🌱 自分の置き場所から `video/` を解決して、`INC` と読み書きのパスを組むのだ～🌱 |
 | `src/main/xa1/script.xa1` | 動画プロジェクトの台本を `script.json` へ焼くのだ～🌱 |
 | `src/main/xa1/audio.xa1` | VOICEVOX で台詞ごとの音声を合成して、口パク用のモーラ区間も書き出すのだ～🌱 |
 | `src/main/xa1/timeline.xa1` | 台詞 wav を、タイトル、本編（行間の無音）、クレジットの順に結合して、タイムラインを算出するのだ～🌱 |
@@ -97,7 +97,8 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 
 | ファイル | 役割 |
 | --- | --- |
-| `main.xa1` | タイムラインと書き出し先を受け取って、シーンの材料を作る、このパートの入口なのだ～🌱`build-scene.xa1` を呼ぶ関数を返すだけなのだ～🌱 |
+| `Makefile` | この動画を組み立てる入口なのだ～🌱 自分の置き場所を渡して、`video/Makefile` を include するのだ～🌱 **ふつうはここで `make` を実行するだけ**なのだ～🌱 |
+| `main.xa1` | この動画の入口なのだ～🌱 `video/main.xa1` へ自分の居場所を渡した `generate～` と `clean` と、シーンを組む `buildScene` を返すのだ～🌱 |
 | `build-scene.xa1` | 処理の本体なのだ～🌱 リソース確認とテンプレートの写しと `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
 | `script.xa1` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義して、`script.json` として焼かれるのだ～🌱 |
 | `../common/skit-v1.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 寸劇のプロジェクトで共有するのだ～🌱 |
@@ -176,7 +177,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 make
 ```
 
-完成すると `video/build/movie/sarracenia.mp4` ができるのだ～🌱
+完成すると `video/build/movie/2026-04-12-sarracenia/2026-04-12-sarracenia.mp4` ができるのだ～🌱
 中間生成物と連番フレームも `video/` 内に残るけど、全部 `.gitignore` 済みなのだ～🌱
 
 `make` の引数で、途中の段だけを走らせることもできるのだ～🌱
@@ -191,6 +192,7 @@ make
 | `make movie` | フレームとナレーションと BGM を合成して mp4 にするのだ～🌱 引数なしの `make` と同じなのだ～🌱 |
 | `make clean` | 生成物の `build` ディレクトリを、まとめて捨てるのだ～🌱 |
 
+`make` は、動画プロジェクトのディレクトリで叩くのだ～🌱 そこの `Makefile` が、`video/Makefile` から段の定義を受け取るのだ～🌱
 どの段も、前の段を自分で呼ぶから、`make movie` だけで最初から通るのだ～🌱
 そして、生成物が既にある段は、飛ばすのだ～🌱 作り直したいときは、その段のディレクトリを消すか、`make clean` で全部捨てるのだ～🌱
 
