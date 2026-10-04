@@ -95,7 +95,7 @@ class IfrEncyclopediaEntryCard(
                 "",
                 "Why it draws fairies remained unclear for many years. It has since been confirmed that the plant discharges surplus aura, and that fairies visit in order to feed on it. The glow of the leaves is a by-product of that discharge, and serves no purpose for the plant itself.",
                 "",
-                "The scales shed when a fairy beats its wings are absorbed by the roots without delay. Neither party intends the arrangement, yet it balances all the same.",
+                "The scales shed when a fairy beats its wings are spent catalysts that once converted mana into erg within its body. The roots of this plant absorb them without delay and break them down for nourishment. Neither party intends the arrangement, yet it balances all the same.",
             ),
             listOf(
                 "単子葉類妖花目ミランベリア科",
@@ -105,7 +105,7 @@ class IfrEncyclopediaEntryCard(
                 "",
                 "妖精を引き寄せる仕組みは長らく不明であったが、この草が余剰のオーラを放出していることが確認され、妖精がそれを摂取しに訪れるものと判明した。葉の発光はオーラの放出に伴う副産物であり、この草自身にとって何の用途もない。",
                 "",
-                "妖精が羽を払う際に落とす鱗粉は、この草の根が速やかに吸収する。どちらの側も意図しないまま、この関係は釣り合っている。",
+                "妖精が羽を払う際に落とす鱗粉は、その体内でマナをエルグへ変えていた触媒が、古くなったものである。この草の根はこれを速やかに吸収し、分解して栄養とする。どちらの側も意図しないまま、この関係は釣り合っている。",
             ),
         )
 
