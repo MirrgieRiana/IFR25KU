@@ -133,7 +133,7 @@ class MirageMissileEntity : AbstractArrow {
         // 追尾先の判定は射出した瞬間にのみ行うから、速度が減衰する前の最初の tick で済ませるのだ～🌱
         if (level is ServerLevel && !searched) {
             searched = true
-            val entity = searchTarget(level)
+            val entity = searchMirageMissileTarget(level, position(), deltaMovement, owner as? LivingEntity)
             targetUuid = entity?.uuid
             target = entity
         }
@@ -183,36 +183,6 @@ class MirageMissileEntity : AbstractArrow {
         return null
     }
 
-    /** 追尾しなかった場合の弾道のうち、相手と水平距離が一致する時点の座標が、最も相手に近い相手を選ぶのだ～🌱 */
-    private fun searchTarget(level: ServerLevel): LivingEntity? {
-        val initialVelocity = deltaMovement
-        if (initialVelocity.length() < 0.001) return null
-        val origin = position()
-        val shotDirection = initialVelocity.normalize()
-        val trajectory = Trajectory(initialVelocity, MirageMissileCard.AIR_INERTIA, MirageMissileCard.GRAVITY)
-        val minDistanceSqr = MirageMissileCard.SEARCH_MIN_DISTANCE * MirageMissileCard.SEARCH_MIN_DISTANCE
-        val searchRadiusSqr = MirageMissileCard.SEARCH_RADIUS * MirageMissileCard.SEARCH_RADIUS
-
-        // ディスペンサーから撃った場合は撃った本人が居ないから、敵味方の判定を伴わない方の分岐が選ばれるのだ～🌱
-        val owner = owner as? LivingEntity
-
-        return level.getEntitiesOfClass(LivingEntity::class.java, AABB(origin, origin).inflate(MirageMissileCard.SEARCH_RADIUS)) { TargetingConditions.DEFAULT.test(owner, it) }
-            .mapNotNull { entity ->
-                if (!entity.isTargetable) return@mapNotNull null
-                val center = entity.boundingBox.center
-                val distanceSqr = center.distanceToSqr(origin)
-                if (distanceSqr < minDistanceSqr) return@mapNotNull null
-                if (distanceSqr > searchRadiusSqr) return@mapNotNull null
-                if (angleDegrees(shotDirection, center.subtract(origin)) > MirageMissileCard.SEARCH_ANGLE) return@mapNotNull null
-                val offset = center.subtract(origin)
-                val trajectoryPoint = trajectory.getPointAtHorizontalDistance(sqrt(offset.x * offset.x + offset.z * offset.z)) ?: return@mapNotNull null
-                if (trajectoryPoint.ticks > MirageMissileCard.SEARCH_MAX_TICKS) return@mapNotNull null
-                Pair(entity, offset.distanceToSqr(trajectoryPoint.offset))
-            }
-            .minByOrNull { it.second }
-            ?.first
-    }
-
     override fun addAdditionalSaveData(compound: CompoundTag) {
         super.addAdditionalSaveData(compound)
         targetUuid?.let { compound.putUUID("Target", it) }
@@ -227,6 +197,35 @@ class MirageMissileEntity : AbstractArrow {
     }
 
     override fun getDefaultPickupItem() = ItemStack(MirageMissileCard.item())
+}
+
+/**
+ * 追尾しなかった場合の弾道のうち、相手と水平距離が一致する時点の座標が、最も相手に近い相手を返すのだ～🌱
+ * [origin] が射出位置で、[initialVelocity] がその時点の速度で、[owner] が撃った本人なのだ～🌱
+ * ディスペンサーから撃った場合は撃った本人が居ないから、[owner] が null で、[net.minecraft.world.entity.ai.targeting.TargetingConditions.test] の敵味方の判定を伴わない方の分岐が選ばれるのだ～🌱
+ */
+fun searchMirageMissileTarget(level: Level, origin: Vec3, initialVelocity: Vec3, owner: LivingEntity?): LivingEntity? {
+    if (initialVelocity.length() < 0.001) return null
+    val shotDirection = initialVelocity.normalize()
+    val trajectory = Trajectory(initialVelocity, MirageMissileCard.AIR_INERTIA, MirageMissileCard.GRAVITY)
+    val minDistanceSqr = MirageMissileCard.SEARCH_MIN_DISTANCE * MirageMissileCard.SEARCH_MIN_DISTANCE
+    val searchRadiusSqr = MirageMissileCard.SEARCH_RADIUS * MirageMissileCard.SEARCH_RADIUS
+
+    return level.getEntitiesOfClass(LivingEntity::class.java, AABB(origin, origin).inflate(MirageMissileCard.SEARCH_RADIUS)) { TargetingConditions.DEFAULT.test(owner, it) }
+        .mapNotNull { entity ->
+            if (!entity.isTargetable) return@mapNotNull null
+            val center = entity.boundingBox.center
+            val distanceSqr = center.distanceToSqr(origin)
+            if (distanceSqr < minDistanceSqr) return@mapNotNull null
+            if (distanceSqr > searchRadiusSqr) return@mapNotNull null
+            if (angleDegrees(shotDirection, center.subtract(origin)) > MirageMissileCard.SEARCH_ANGLE) return@mapNotNull null
+            val offset = center.subtract(origin)
+            val trajectoryPoint = trajectory.getPointAtHorizontalDistance(sqrt(offset.x * offset.x + offset.z * offset.z)) ?: return@mapNotNull null
+            if (trajectoryPoint.ticks > MirageMissileCard.SEARCH_MAX_TICKS) return@mapNotNull null
+            Pair(entity, offset.distanceToSqr(trajectoryPoint.offset))
+        }
+        .minByOrNull { it.second }
+        ?.first
 }
 
 /** 死んだ相手と、透明で光ってもいない相手は、狙う相手として不適格なのだ～🌱 */

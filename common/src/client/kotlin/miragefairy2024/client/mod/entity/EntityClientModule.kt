@@ -23,6 +23,7 @@ fun initEntityClientModule() {
     EntityModelLayerRegistry.register(EtheroballisticBoltEntityRenderer.MAIN.entityModelLayer, EtheroballisticBoltEntityRenderer.MAIN.provider)
     EtheroballisticBoltCard.entityType.registerEntityRenderer(::EtheroballisticBoltEntityRenderer)
     MirageMissileCard.entityType.registerEntityRenderer(::MirageMissileEntityRenderer)
+    registerMirageMissileTargetPreview()
 }
 
 class EntityModelLayerCard(
