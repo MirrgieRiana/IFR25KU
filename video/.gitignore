@@ -19,6 +19,9 @@ projects/common/resources/bgm/*.wav
 node_modules/
 /libs
 
+# --- 台本の中間生成物（動画プロジェクトの script.xa1 から、make が作り直すのだ～🌱） ---
+projects/*/script.json
+
 # --- 音声の中間生成物（雑多パート＝video/ 直下で、make が作り直すのだ～🌱） ---
 audio/
 full.wav

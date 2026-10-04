@@ -4,7 +4,7 @@ VOICEVOX の立ち絵のずんだもんと春日部つむぎが、口パクと�
 IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで組み立てる**ためのビルドシステムなのだ～🌱
 
 今の題材はサラセニアという食虫植物の寸劇で、長さは 1 分ちょっとなのだ～🌱
-台本の `script.json` とシーン定義の `scene.html` を差し替えれば、別の寸劇にも使えるのだ～🌱
+台本の `script.xa1` とシーン定義の `scene.html` を差し替えれば、別の寸劇にも使えるのだ～🌱
 
 ---
 
@@ -32,7 +32,7 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 図の中では、動画プロジェクトの `projects/2026-04-12-sarracenia/` を `<proj>/` と書くのだ～🌱
 
 ```
-<proj>/script.json（台本）
+<proj>/script.xa1（台本）─(build.xa1)→ <proj>/script.json
    │
    ├─(synth.xa1 + VOICEVOX)→ audio/line*.wav, moras.json, kana.json, durations.json  ┐ 雑多パート
    │                                                                                   │ (video/ 直下)
@@ -96,7 +96,7 @@ timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.
 | --- | --- |
 | `build_scene.sh` | タイムラインを受け取って、`assets.js` と `portrait/` と `frames.jsonl` を作る、このパートの入口なのだ～🌱 このディレクトリへ cd して `build_scene.xa1` を呼ぶだけなのだ～🌱 |
 | `build_scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
-| `script.json` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義するのだ～🌱 |
+| `script.xa1` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義して、`script.json` として焼かれるのだ～🌱 |
 | `scene.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 |
 
 **`projects/common/`（動画プロジェクトが共有するリソース）**
@@ -109,6 +109,7 @@ timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.
 
 - **外部取得リソースの実体**（`projects/common/resources/psd/*.psd`, `.../font/*.ttf`, `.../emoji/*.svg`, `.../bgm/*.flac`）
   … 著作権の都合でコミットしないのだ～🌱 各 `.md5` を頼りに自分で配置するのだ～🌱（→ [3.](#3-用意する外部取得リソースなのだ)）
+- **台本の中間生成物**（`projects/*/script.json`）
 - **音声の中間生成物**（`video/` 直下の `audio/`, `full.wav`, `timeline.json`, `kana.json`, `moras.json`, `durations.json`）
 - **scene の中間生成物**（`projects/*/assets.js`, `projects/*/portrait/`, `projects/*/frames.jsonl`）
 - **出力**（`projects/*/frames/`, `*.mp4`, `*.png`）

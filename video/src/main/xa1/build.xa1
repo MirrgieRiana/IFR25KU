@@ -16,15 +16,20 @@ API(5)
 # だから、配列にしてから、要素として探すのだ～🌱
 "chopin_op10-4.flac" @ [FILE_NAMES("$base/projects/common/resources/bgm")] || fail("resource not found: projects/common/resources/bgm/chopin_op10-4.flac (place it as described in README.md)")
 
-# --- 1. VOICEVOX で音声を合成するのだ～🌱（プロジェクトの script.json → audio/*.wav, moras.json） ---
+# --- 1. プロジェクトの台本から script.json を焼くのだ～🌱（script.xa1 → script.json） -----
+# 台本そのものは xa1 の側がコミットされていて、JSON はこの段で作り直すのだ～🌱
+OUT << "== script (2026-04-12-sarracenia) =="
+WRITE("$base/projects/2026-04-12-sarracenia/script.json"; USE("$base/projects/2026-04-12-sarracenia/script") >> JSON[indent: 1])
+
+# --- 2. VOICEVOX で音声を合成するのだ～🌱（プロジェクトの script.json → audio/*.wav, moras.json） ---
 OUT << "== synth (VOICEVOX) =="
 USE("synth")
 
-# --- 2. 各 wav を結合してタイムラインを作るのだ～🌱（→ full.wav, timeline.json） -----------
+# --- 3. 各 wav を結合してタイムラインを作るのだ～🌱（→ full.wav, timeline.json） -----------
 OUT << "== assemble =="
 USE("assemble")
 
-# --- 3. 動画プロジェクトで scene を作るのだ～🌱 ------------------------------------
+# --- 4. 動画プロジェクトで scene を作るのだ～🌱 ------------------------------------
 #        timeline.json を渡すと assets.js・portrait/・frames.jsonl を作るのだ～🌱
 OUT << "== build scene (2026-04-12-sarracenia) =="
 run("bash", "$base/projects/2026-04-12-sarracenia/build_scene.sh", "$base/timeline.json")
