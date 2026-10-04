@@ -49,10 +49,14 @@ private fun resolveFrontMatterImagePaths(value: Any?, imageDir: String): Any? = 
 fun rewriteFrontMatter(content: String, sourcePath: String, imageDir: String): String {
     val match = frontMatterRegex.find(content) ?: return content
 
-    @Suppress("UNCHECKED_CAST")
     // --- が 2 行並んだだけの front matter は、YAML として妥当で、snakeyaml は null を返すのだ～🌱
     // そのまま返すと source_path が落ちて、footer の source のリンクが壊れるのだ～🌱
-    val frontMatter = Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any> ?: emptyMap()
+    @Suppress("UNCHECKED_CAST")
+    val frontMatter = when (val loaded = Yaml().load<Any?>(match.groupValues[1])) {
+        null -> emptyMap()
+        is Map<*, *> -> loaded as Map<String, Any>
+        else -> return content
+    }
 
     @Suppress("UNCHECKED_CAST")
     val resolved = resolveFrontMatterImagePaths(frontMatter, imageDir) as Map<String, Any?>
