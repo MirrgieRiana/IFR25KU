@@ -12,6 +12,7 @@ import net.minecraft.client.particle.SpriteSet
 import net.minecraft.client.particle.TextureSheetParticle
 import net.minecraft.client.renderer.texture.TextureAtlas
 import net.minecraft.core.particles.SimpleParticleType
+import net.minecraft.util.Mth
 
 private const val LIFETIME_TICKS = 120
 
@@ -23,7 +24,11 @@ private const val GROW_END_RATE = 0.05F
 /** 寿命のうち、この割合を過ぎてから薄くなり始めるのだ～🌱 */
 private const val FADE_START_RATE = 0.7F
 
-private const val TWINKLE_INTERVAL_TICKS = 3
+/** 瞬きが 1 往復するのにかかる tick 数なのだ～🌱 */
+private const val TWINKLE_PERIOD_TICKS = 42
+
+/** 瞬きで縮んだときの、表示サイズの倍率なのだ～🌱 */
+private const val TWINKLE_MIN_SCALE = 0.55F
 
 fun createSparkleParticleFactory() = { spriteProvider: SpriteSet ->
     ParticleProvider<SimpleParticleType> { _, level, x, y, z, _, _, _ ->
@@ -32,7 +37,7 @@ fun createSparkleParticleFactory() = { spriteProvider: SpriteSet ->
             init {
                 quadSize *= 0.4F + Math.random().toFloat() * 0.2F
                 lifetime = LIFETIME_TICKS
-                setSprite(spriteProvider.get(0, 7))
+                setSprite(spriteProvider.get(0, 0))
             }
 
             /**
@@ -59,7 +64,10 @@ fun createSparkleParticleFactory() = { spriteProvider: SpriteSet ->
 
             override fun getQuadSize(scaleFactor: Float): Float {
                 val lifeRate = (age.toFloat() + scaleFactor) / lifetime.toFloat()
-                return super.getQuadSize(scaleFactor) * (lifeRate / GROW_END_RATE atMost 1.0F)
+                // 瞬きは、1 枚のテクスチャの表示サイズを正弦で伸び縮みさせることで表すのだ～🌱
+                val twinkleRate = Mth.sin((age.toFloat() + scaleFactor) / TWINKLE_PERIOD_TICKS * Mth.TWO_PI)
+                val twinkleScale = Mth.lerp((twinkleRate + 1.0F) / 2.0F, TWINKLE_MIN_SCALE, 1.0F)
+                return super.getQuadSize(scaleFactor) * (lifeRate / GROW_END_RATE atMost 1.0F) * twinkleScale
             }
 
             override fun tick() {
@@ -72,10 +80,6 @@ fun createSparkleParticleFactory() = { spriteProvider: SpriteSet ->
                     remove()
                     return
                 }
-
-                // 瞬きは、8 枚のテクスチャを往復させることで、光条が伸びては縮む様子を繰り返すのだ～🌱
-                val phase = age / TWINKLE_INTERVAL_TICKS % 14
-                setSprite(spriteProvider.get(if (phase < 8) phase else 14 - phase, 7))
 
                 yd += RISE_ACCELERATION
                 move(xd, yd, zd)
