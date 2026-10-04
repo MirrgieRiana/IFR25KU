@@ -3,7 +3,7 @@ title: "【ビルダーズロッド】そこを囲むように並べてほしい
 description: 春日部つむぎがビルダーズロッドを試してみる話
 layout: theater
 header:
-  teaser: /2026/04/11/builders-rod.teaser.webp
+  teaser: ./builders-rod.teaser.webp
 tags: [ IFR劇場, ビルダーズロッド, 建築, 迷路, 丸石 ]
 ---
 

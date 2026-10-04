@@ -336,7 +336,8 @@ val installJekyllBundle = tasks.register<Exec>("installJekyllBundle") {
 }
 
 // front matter で画像を指すキーのうち、値を . から始めたものの、キーの側と、パスの側を捕まえるのだ～🌱
-val frontMatterImagePathRegex = """^(\s*(?:teaser|image|overlay_image|og_background):\s*"?)(\.[^"\s]*)""".toRegex()
+// carousel の下のように、キーが YAML のシーケンスの要素になっている形にも当たるのだ～🌱
+val frontMatterImagePathRegex = """^(\s*(?:-\s+)?(?:teaser|image|overlay_image|og_background):\s*"?)(\.[^"\s]*)""".toRegex()
 
 val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     group = "other"

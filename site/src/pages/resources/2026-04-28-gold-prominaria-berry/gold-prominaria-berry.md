@@ -3,7 +3,7 @@ title: "【ゴールドプロミナリアの実】ぜんぜん金、出ないん
 description: 春日部つむぎがゴールドプロミナリアの実から金を取り出そうとする話
 layout: theater
 header:
-  teaser: /2026/04/28/gold-prominaria-berry.teaser.webp
+  teaser: ./gold-prominaria-berry.teaser.webp
 tags: [ IFR劇場, ゴールドプロミナリアの実, ゴールドプロミナリア, プロミナリアの実, プロミナリア, ネザー ]
 ---
 

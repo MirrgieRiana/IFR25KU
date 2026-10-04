@@ -2,7 +2,7 @@
 title: "単子葉類妖花目ミラージュ科　ミラージュ"
 layout: encyclopedia
 header:
-  teaser: /2023/10/06/mirage-fairy.webp
+  teaser: ./mirage-fairy.webp
 tags:
   - ミラージュ
   - 妖精
