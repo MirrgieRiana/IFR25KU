@@ -6,8 +6,9 @@ import com.luciad.imageio.webp.WebPWriteParam
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
-import org.yaml.snakeyaml.Yaml
+import tools.FrontMatterFilterReader
 import tools.normalizeJson
+import tools.parseFrontMatter
 import tools.sha256
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -21,7 +22,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.yaml:snakeyaml:2.2")
         classpath("com.microsoft.playwright:playwright:1.58.0")
         classpath("org.sejda.imageio:webp-imageio:0.1.6")
     }
@@ -163,13 +163,6 @@ private fun buildOgHtml(title: String, backgroundUrl: String, pixelated: Boolean
     </body>
     </html>
 """.trimIndent()
-}
-
-private fun parseFrontMatter(file: File): Map<String, Any>? {
-    val content = file.readText()
-    val match = Regex("\\A---\\r?\\n(.*?)\\r?\\n---(?:\\r?\\n|\\Z)", RegexOption.DOT_MATCHES_ALL).find(content) ?: return null
-    @Suppress("UNCHECKED_CAST")
-    return Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any>
 }
 
 class OgImageRenderer : AutoCloseable {
@@ -335,14 +328,6 @@ val installJekyllBundle = tasks.register<Exec>("installJekyllBundle") {
     commandLine("bash", "scripts/bundle-install.sh")
 }
 
-// front matter で画像を指すキーのうち、値を . から始めたものの、キーの側と、パスの側を捕まえるのだ～🌱
-// carousel の下のように、キーが YAML のシーケンスの要素になっている形にも当たるのだ～🌱
-val frontMatterImagePathRegex = """^(\s*(?:-\s+)?(?:teaser|image|overlay_image|og_background):\s*"?)(\.[^"\s]*)""".toRegex()
-
-// 本文で記事のディレクトリの中を指すパスのうち、. から始めたものを捕まえるのだ～🌱
-// Markdown のリンクの行き先と、Liquid のタグの引数や HTML の属性の値の、2 つの形に当たるのだ～🌱
-val bodyImagePathRegex = """(?<=]\(|")(\.[^)"\s]*)""".toRegex()
-
 val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     group = "other"
     from("src/main/resources")
@@ -366,18 +351,7 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
             }
             if (name.endsWith(".md")) {
                 val sourcePath = file.relativeTo(rootDir).invariantSeparatorsPath
-                var lineNumber = 0
-                var frontMatterDelimiterCount = 0
-                filter { line ->
-                    lineNumber++
-                    if (line == "---") frontMatterDelimiterCount++
-                    when {
-                        // 下で .md の配置先が元のディレクトリから離れるから、footer の source のリンクのために、元のパスを front matter へ書き足すのだ～🌱
-                        lineNumber == 1 && line == "---" -> "$line\nsource_path: $sourcePath"
-                        frontMatterDelimiterCount == 1 -> frontMatterImagePathRegex.replace(line) { "${it.groupValues[1]}${File("/$imageDir", it.groupValues[2]).normalize().invariantSeparatorsPath}" }
-                        else -> bodyImagePathRegex.replace(line) { File("/$imageDir", it.value).normalize().invariantSeparatorsPath }
-                    }
-                }
+                filter(mapOf("sourcePath" to sourcePath, "imageDir" to "/$imageDir"), FrontMatterFilterReader::class.java)
             }
             relativePath = if (name.endsWith(".md")) {
                 if (postMatch != null) RelativePath(true, "_posts", "$dirName.md") else RelativePath(true, name)
