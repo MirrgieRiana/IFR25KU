@@ -15,8 +15,8 @@ projects/common/resources/bgm/*.mp3
 projects/common/resources/bgm/*.ogg
 projects/common/resources/bgm/*.wav
 
-# --- Node の依存関係とツール（各パート配下・実体/シンボリックリンクとも） ---
-node_modules/
+# --- Node のツール（実体/シンボリックリンクとも） ---
+# node_modules は、それを使う renderer/ と extract-portrait/ の側で ignore するのだ～🌱
 /libs
 
 # --- 台本の中間生成物（動画プロジェクトの script.xa1 から、make が作り直すのだ～🌱） ---
