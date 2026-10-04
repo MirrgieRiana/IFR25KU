@@ -6,14 +6,14 @@
 # =============================================================================
 
 # --- 外部取得リソースの実体（著作権の都合でコミットしないのだ～🌱 中身と置き場所は *.md5 が示すのだ～🌱） ---
-projects/*/resources/psd/*.psd
-projects/*/resources/font/*.ttf
-projects/*/resources/font/*.otf
-projects/*/resources/emoji/*.svg
-projects/*/resources/bgm/*.flac
-projects/*/resources/bgm/*.mp3
-projects/*/resources/bgm/*.ogg
-projects/*/resources/bgm/*.wav
+projects/common/resources/psd/*.psd
+projects/common/resources/font/*.ttf
+projects/common/resources/font/*.otf
+projects/common/resources/emoji/*.svg
+projects/common/resources/bgm/*.flac
+projects/common/resources/bgm/*.mp3
+projects/common/resources/bgm/*.ogg
+projects/common/resources/bgm/*.wav
 
 # --- Node の依存関係とツール（各パート配下・実体/シンボリックリンクとも） ---
 node_modules/

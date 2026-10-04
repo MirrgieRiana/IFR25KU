@@ -24,7 +24,6 @@ bash build_scene.sh [timeline.json]
 | `build_scene.xa1` | 処理の本体なのだ～🌱 リソースの確認と、絵文字とテクスチャのパスとタイムラインを束ねた `assets.js` の焼き込みと、`extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をまとめるのだ～🌱 |
 | `script.json` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義するのだ～🌱 |
 | `scene.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 |
-| `resources/**/*.md5` | 外部取得リソースの md5 で、置き場所と中身の目印なのだ～🌱 実体は著作権の都合でコミットしないのだ～🌱 |
 
 ## 構成jsonl（`frames.jsonl`）のことなのだ～🌱
 

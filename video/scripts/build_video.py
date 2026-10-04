@@ -10,7 +10,7 @@
 #   - projects/<プロジェクト>/frames/f_%05d.png … 汎用レンダラー（renderer/render.js）が書き出したフレーム画像（中間生成物）
 #   - full.wav                     … assemble.xa1 が作ったナレーション（中間生成物・video/直下）
 #   - timeline.json                … assemble.xa1 が作ったタイムライン（尺・区切り時刻・video/直下）
-#   - projects/<プロジェクト>/resources/bgm/chopin_op10-4.flac … BGM（外部取得リソースで、ここに置いてもらうのだ～🌱）
+#   - projects/common/resources/bgm/chopin_op10-4.flac … BGM（外部取得リソースで、ここに置いてもらうのだ～🌱）
 #
 # 出力：
 #   - sarracenia.mp4     … 完成した動画
@@ -28,10 +28,10 @@ total = tl["total"]
 T0 = tl["lead"]                                        # 開幕（タイトル）から寸劇（初回発話）へ切り替わる時刻
 CS = tl["creditStart"]                                 # クレジット開始時刻
 
-# frames は汎用レンダラーの出力、BGM は動画プロジェクトの配下なのだ～🌱
+# frames は汎用レンダラーの出力、BGM は動画プロジェクトが共有するリソースなのだ～🌱
 # 既定値のほか、build.sh から環境変数 FRAMES_DIR / BGM_PATH / OUT_PATH で差し替えできるのだ～🌱
 FRAMES_DIR = os.environ.get("FRAMES_DIR", os.path.join(B, "projects", "2026-04-12-sarracenia", "frames"))
-BGM = os.environ.get("BGM_PATH", os.path.join(B, "projects", "2026-04-12-sarracenia", "resources", "bgm", "chopin_op10-4.flac"))
+BGM = os.environ.get("BGM_PATH", os.path.join(B, "projects", "common", "resources", "bgm", "chopin_op10-4.flac"))
 BASE = float(sys.argv[1]) if len(sys.argv) > 1 else 0.45   # BGM の基準音量
 OUT = os.environ.get("OUT_PATH", os.path.join(B, "sarracenia.mp4"))
 

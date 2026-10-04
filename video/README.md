@@ -39,14 +39,14 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
    └─(assemble.xa1)───────→ full.wav（ナレーション全体）, timeline.json（尺・区間） ┘
 
 timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.js          ┐
-               │        ↑ IFR25KU テクスチャ / resources/font,emoji       │ 動画プロジェクト
- resources/psd/*.psd ─(extract-portrait/extract-portrait.sh)→ <proj>/portrait/│（構成を作る）
+               │        ↑ IFR25KU テクスチャ / common のフォントと絵文字  │ 動画プロジェクト
+ common の psd ─(extract-portrait/extract-portrait.sh)→ <proj>/portrait/      │（構成を作る）
                └─(<proj>/build_scene.xa1)────→ <proj>/frames.jsonl        ┘
 
 <proj>/scene.html + assets.js + portrait/ + frames.jsonl
    └─(renderer/render.js + Chromium)→ <proj>/frames/f_%05d.png   … 汎用レンダラー
 
-<proj>/frames/ + full.wav + <proj>/resources/bgm/*.flac
+<proj>/frames/ + full.wav + projects/common/resources/bgm/*.flac
    └─(scripts/build_video.py + ffmpeg)→ sarracenia.mp4（完成品）  … 雑多パート
 ```
 
@@ -98,11 +98,16 @@ timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.
 | `build_scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
 | `script.json` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義するのだ～🌱 |
 | `scene.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 |
+
+**`projects/common/`（動画プロジェクトが共有するリソース）**
+
+| ファイル | 役割 |
+| --- | --- |
 | `resources/**/*.md5` | 外部取得リソースの md5 なのだ～🌱 **そこに、どの名前で、何を置けばよいかを保証するための目印**なのだ～🌱 |
 
 ### コミットされていないもの（`.gitignore` 対象）なのだ～🌱
 
-- **外部取得リソースの実体**（`projects/*/resources/psd/*.psd`, `.../font/*.ttf`, `.../emoji/*.svg`, `.../bgm/*.flac`）
+- **外部取得リソースの実体**（`projects/common/resources/psd/*.psd`, `.../font/*.ttf`, `.../emoji/*.svg`, `.../bgm/*.flac`）
   … 著作権の都合でコミットしないのだ～🌱 各 `.md5` を頼りに自分で配置するのだ～🌱（→ [3.](#3-用意する外部取得リソースなのだ)）
 - **音声の中間生成物**（`video/` 直下の `audio/`, `full.wav`, `timeline.json`, `kana.json`, `moras.json`, `durations.json`）
 - **scene の中間生成物**（`projects/*/assets.js`, `projects/*/portrait/`, `projects/*/frames.jsonl`）
@@ -113,18 +118,18 @@ timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.
 
 ## 3. 用意する外部取得リソースなのだ～🌱
 
-以下を `projects/2026-04-12-sarracenia/resources/` の所定パスに置くのだ～🌱
+以下を `projects/common/resources/` の所定パスに置くのだ～🌱
 ファイル名と中身は、同じ場所にある `*.md5` と一致している必要があるのだ～🌱
-`cd projects/2026-04-12-sarracenia/resources/<dir> && md5sum -c <name>.md5` で照合できるのだ～🌱
+`cd projects/common/resources/<dir> && md5sum -c <name>.md5` で照合できるのだ～🌱
 
 | 置き場所 | 中身 | 入手先 | ライセンス |
 | --- | --- | --- | --- |
-| `projects/2026-04-12-sarracenia/resources/psd/zundamon23.psd` | ずんだもん立ち絵素材 2.3（PSD） | 坂本アヒル 氏配布の立ち絵素材 | 良識の範囲で利用可・改変可（同梱 readme 参照） |
-| `projects/2026-04-12-sarracenia/resources/psd/tsumugi3.psd` | 春日部つむぎ立ち絵素材 3.0（PSD） | 坂本アヒル 氏配布の立ち絵素材 | 同上（`tsumugi-official.studio.site/rule` の規約に準拠） |
-| `projects/2026-04-12-sarracenia/resources/font/ZenMaruGothic-Black.ttf` | Zen Maru Gothic Black | Google Fonts「Zen Maru Gothic」 | SIL Open Font License 1.1 |
-| `projects/2026-04-12-sarracenia/resources/font/ZenMaruGothic-Bold.ttf` | Zen Maru Gothic Bold | 同上 | SIL Open Font License 1.1 |
-| `projects/2026-04-12-sarracenia/resources/emoji/seedling.svg` | 🌱（seedling）のカラー SVG | Microsoft「Fluent Emoji」 | MIT License |
-| `projects/2026-04-12-sarracenia/resources/bgm/chopin_op10-4.flac` | ショパン 練習曲 作品10-4「Torrent（激流）」（Edward Neeman 演奏） | Wikimedia Commons / Musopen "Set Chopin Free" | パブリックドメイン |
+| `projects/common/resources/psd/zundamon23.psd` | ずんだもん立ち絵素材 2.3（PSD） | 坂本アヒル 氏配布の立ち絵素材 | 良識の範囲で利用可・改変可（同梱 readme 参照） |
+| `projects/common/resources/psd/tsumugi3.psd` | 春日部つむぎ立ち絵素材 3.0（PSD） | 坂本アヒル 氏配布の立ち絵素材 | 同上（`tsumugi-official.studio.site/rule` の規約に準拠） |
+| `projects/common/resources/font/ZenMaruGothic-Black.ttf` | Zen Maru Gothic Black | Google Fonts「Zen Maru Gothic」 | SIL Open Font License 1.1 |
+| `projects/common/resources/font/ZenMaruGothic-Bold.ttf` | Zen Maru Gothic Bold | 同上 | SIL Open Font License 1.1 |
+| `projects/common/resources/emoji/seedling.svg` | 🌱（seedling）のカラー SVG | Microsoft「Fluent Emoji」 | MIT License |
+| `projects/common/resources/bgm/chopin_op10-4.flac` | ショパン 練習曲 作品10-4「Torrent（激流）」（Edward Neeman 演奏） | Wikimedia Commons / Musopen "Set Chopin Free" | パブリックドメイン |
 
 立ち絵 PSD の ID 体系なのだ～🌱
 `extract-portrait/` が切り出すレイヤーは、兄弟レイヤーの 1 始まりインデックスを `-` で連結した ID で指定するのだ～🌱
@@ -163,7 +168,7 @@ timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.
 # 1) VOICEVOX ENGINE を起動しておくのだ～🌱（別ターミナルなど）
 #    既定では http://127.0.0.1:50021 を使うのだ～🌱
 
-# 2) 外部取得リソースを projects/2026-04-12-sarracenia/resources/ に配置するのだ～🌱（→ 3.）
+# 2) 外部取得リソースを projects/common/resources/ に配置するのだ～🌱（→ 3.）
 
 # 3) ビルドなのだ～🌱（Node 依存は各パートで自動 npm install するのだ～🌱）
 make

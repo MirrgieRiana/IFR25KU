@@ -12,7 +12,7 @@
 #   movie  … scripts/build_video.py（フレーム＋音声＋BGM → sarracenia.mp4）
 #
 # 前提（先に済ませておくのだ～🌱 詳しくは README.md を読むのだ～🌱）：
-#   1. 外部取得リソースを projects/2026-04-12-sarracenia/resources/ 以下の所定パスに置くのだ～🌱（*.md5 がその置き場所と中身を示すのだ～🌱）
+#   1. 外部取得リソースを projects/common/resources/ 以下の所定パスに置くのだ～🌱（*.md5 がその置き場所と中身を示すのだ～🌱）
 #   2. VOICEVOX ENGINE を起動しておくのだ～🌱（既定は http://127.0.0.1:50021）
 #   3. Node.js / Python3 / ffmpeg / curl を使える状態にしておくのだ～🌱
 #
