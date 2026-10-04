@@ -2,7 +2,7 @@
 title: "G2-MFA　ミラジウムの斧の構造分析"
 layout: paper
 header:
-  teaser: /2020/10/12/miragium-axe.webp
+  teaser: ./miragium-axe.webp
 tags:
   - MFA
   - ミラジウム

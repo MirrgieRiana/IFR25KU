@@ -3,7 +3,7 @@ title: "【紅天石の斧】この木で試してみよーっ！【つむぎ×�
 description: 春日部つむぎが紅天石の斧で木を切る話
 layout: theater
 header:
-  teaser: /2026/04/15/xarpite-axe.teaser.png
+  teaser: ./xarpite-axe.teaser.png
 tags: [ IFR劇場, 紅天石の斧, 紅天石, 伐採, 一括伐採 ]
 ---
 

@@ -2,7 +2,7 @@
 title: CHANGELOG
 description: バージョンごとの変更履歴
 header:
-  teaser: /assets/images/CHANGELOG/CHANGELOG.teaser.svg
+  teaser: ./CHANGELOG.teaser.svg
   teaser_banner: false
 ---
 

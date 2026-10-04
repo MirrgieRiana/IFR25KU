@@ -3,7 +3,7 @@ title: "【火薬】あーし石炭の火薬がいい！！【つむぎ×ずん�
 description: 春日部つむぎとずんだもんが火薬を作る話
 layout: theater
 header:
-  teaser: /2026/04/13/gunpowder.teaser.webp
+  teaser: ./gunpowder.teaser.webp
 tags: [ IFR劇場, 火薬, TNT, 石炭, 木炭, ハイメヴィスカ, 固形燃料, 松明 ]
 ---
 
