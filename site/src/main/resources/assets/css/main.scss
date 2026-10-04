@@ -1216,6 +1216,21 @@ img[src$=".png" i] {
   }
 }
 
+// JEI-MFAのカードの冒頭に出す、元のJEI MFAのレシピの入力アイテムの名前（jei_mfaタグの引数）
+.jei-mfa__ingredients {
+  // 本文との間は、名前どうしの間より広く開ける
+  margin: 0 0 2em;
+}
+
+.jei-mfa__ingredient {
+  margin: 0;
+}
+
+// レシピの主材料と副材料の境目は、副材料どうしの間より広く開ける
+.jei-mfa__ingredient--main {
+  margin-bottom: 0.8em;
+}
+
 // MFAの記事の末尾の注意書き（mfa_footerタグ、jei_mfa_footerタグ）
 .mfa-footer {
   margin: 1em 0;
