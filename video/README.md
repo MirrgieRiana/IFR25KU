@@ -19,7 +19,7 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 この動画は、動画編集ソフトの GUI で作るのではなくて、**「決定論的フレームレンダリング」** という方式で作るのだ～🌱
 
 1. `projects/2026-04-12-sarracenia/scene.html` が、1 フレーム分の構成 `frame` を渡すとその画面を組み立てる関数 `window.applyFrame(frame)` を持つのだ～🌱 画面の見た目を決める値は、全部 `frame` に入っているのだ～🌱
-2. `projects/2026-04-12-sarracenia/build_scene.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
+2. `projects/2026-04-12-sarracenia/build-scene.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
 3. `renderer/render.js` がヘッドレス Chromium に `scene.html` を開かせて、`frames.jsonl` を頭から 1 行ずつ `applyFrame(frame)` に渡して、1 行につき 1 コマ撮るのだ～🌱
 4. 撮れた連番画像の `projects/2026-04-12-sarracenia/frames/f_00000.png …` を ffmpeg で映像にして、ナレーション音声と BGM を重ねて mp4 にするのだ～🌱
 
@@ -38,10 +38,10 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
    │                                                                                   │ (video/ 直下)
    └─(assemble.xa1)───────→ full.wav（ナレーション全体）, timeline.json（尺・区間） ┘
 
-timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.js          ┐
+timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/assets.js          ┐
                │        ↑ IFR25KU テクスチャ / common のフォントと絵文字  │ 動画プロジェクト
  common の psd ─(extract-portrait/extract-portrait.sh)→ <proj>/portrait/      │（構成を作る）
-               └─(<proj>/build_scene.xa1)────→ <proj>/frames.jsonl        ┘
+               └─(<proj>/build-scene.xa1)────→ <proj>/frames.jsonl        ┘
 
 <proj>/scene.html + assets.js + portrait/ + frames.jsonl
    └─(renderer/render.js + Chromium)→ <proj>/frames/f_%05d.png   … 汎用レンダラー
@@ -94,8 +94,8 @@ timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.
 
 | ファイル | 役割 |
 | --- | --- |
-| `main.xa1` | タイムラインを受け取って、`assets.js` と `portrait/` と `frames.jsonl` を作る、このパートの入口なのだ～🌱`build_scene.xa1` を呼ぶ関数を返すだけなのだ～🌱 |
-| `build_scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
+| `main.xa1` | タイムラインを受け取って、`assets.js` と `portrait/` と `frames.jsonl` を作る、このパートの入口なのだ～🌱`build-scene.xa1` を呼ぶ関数を返すだけなのだ～🌱 |
+| `build-scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
 | `script.xa1` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義して、`script.json` として焼かれるのだ～🌱 |
 | `scene.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 |
 
@@ -135,12 +135,12 @@ timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.
 立ち絵 PSD の ID 体系なのだ～🌱
 `extract-portrait/` が切り出すレイヤーは、兄弟レイヤーの 1 始まりインデックスを `-` で連結した ID で指定するのだ～🌱
 グループも、インデックスを 1 個消費するのだ～🌱
-切り出す ID の一覧は `projects/2026-04-12-sarracenia/build_scene.xa1` の `ZUNDA_IDS` と `TSUMUGI_IDS` にあるのだ～🌱
+切り出す ID の一覧は `projects/2026-04-12-sarracenia/build-scene.xa1` の `ZUNDA_IDS` と `TSUMUGI_IDS` にあるのだ～🌱
 これは、`scene.html` の `PORTRAIT` 定義と一致している必要があるのだ～🌱
 
 ### IFR25KU リポジトリ由来のテクスチャ（配置不要）なのだ～🌱
 
-次の 4 枚は IFR25KU リポジトリにコミット済みだから、`projects/2026-04-12-sarracenia/build_scene.xa1` がリポジトリから直接読むのだ～🌱
+次の 4 枚は IFR25KU リポジトリにコミット済みだから、`projects/2026-04-12-sarracenia/build-scene.xa1` がリポジトリから直接読むのだ～🌱
 自分で置く必要は無いのだ～🌱
 
 | 用途 | ファイル |
@@ -221,9 +221,9 @@ make
 
 台詞 wav を、タイトル保持、本編（台詞のあいだに無音の間）、クレジット保持の順に結合して、`full.wav` と `timeline.json` を作るのだ～🌱
 `timeline.json` には、各台詞の開始と終了の時刻と、シーン区間と、アイテムの表示区間などが入るのだ～🌱
-それを、動画プロジェクトの `build_scene.xa1` と `movie.xa1` が読むのだ～🌱
+それを、動画プロジェクトの `build-scene.xa1` と `movie.xa1` が読むのだ～🌱
 
-### build_scene.xa1（アセットの焼き込み）なのだ～🌱
+### build-scene.xa1（アセットの焼き込み）なのだ～🌱
 
 `file://` で開いた HTML は外部ファイルを `fetch()` できないから、絵文字とテクスチャのパスとタイムラインを `assets.js` に埋め込むのだ～🌱
 テクスチャは `scene.html` から見た相対パスの文字列で、絵文字 SVG は生の文字列として入るのだ～🌱
@@ -234,11 +234,11 @@ make
 `ag-psd` で PSD を読んで、指定 ID のレイヤーを、全身キャンバスと同じサイズの透過 PNG として書き出すのだ～🌱
 `node-canvas` を入れずに済むように、`createImageData` だけをシムして動かしているのだ～🌱
 
-### build_scene.xa1（構成jsonl の組み立て）なのだ～🌱
+### build-scene.xa1（構成jsonl の組み立て）なのだ～🌱
 
 `timeline.json` から総尺を読んで、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
 各行は `template` と `t` と、画面の各要素の不透明度のキーと、ポーズと口パクとまばたきと字幕の中身を持つのだ～🌱
-`template` に入れるテンプレートは、`build_scene.xa1` の冒頭で決めているのだ～🌱
+`template` に入れるテンプレートは、`build-scene.xa1` の冒頭で決めているのだ～🌱
 画面の見た目を決める値は、全部ここで計算して渡すから、`scene.html` の側はタイムラインを見ないのだ～🌱
 レンダラー側は、この構成の中身が増えても変えなくてよい設計なのだ～🌱
 

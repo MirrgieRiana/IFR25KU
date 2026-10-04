@@ -2,7 +2,7 @@
 # main.xa1 — この動画プロジェクトの入口なのだ～🌱（xarpite / API5）
 # -----------------------------------------------------------------------------
 # Makefile や、雑多パートの xa1 は、ここが返すオブジェクトの関数を呼ぶのだ～🌱
-# 処理の本体は、同じディレクトリの build_scene.xa1 にあるのだ～🌱
+# 処理の本体は、同じディレクトリの build-scene.xa1 にあるのだ～🌱
 #
 # 引数：
 #   ARGS.0 … timeline.json のパス（省略時は video/timeline.json）なのだ～🌱
@@ -17,5 +17,5 @@ API(5)
 INC += RESOLVE(LOCATION; "..")
 
 {
-  buildScene: () -> USE("build_scene")
+  buildScene: () -> USE("build-scene")
 }

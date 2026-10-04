@@ -31,7 +31,7 @@ kana.json
 moras.json
 durations.json
 
-# --- scene の中間生成物（動画プロジェクトの中で、build_scene.xa1 が作り直すのだ～🌱） ---
+# --- scene の中間生成物（動画プロジェクトの中で、build-scene.xa1 が作り直すのだ～🌱） ---
 projects/*/assets.js
 projects/*/portrait/
 projects/*/frames.jsonl
