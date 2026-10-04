@@ -1,0 +1,20 @@
+# 動画プロジェクトにシーンを組ませる段なのだ～🌱（xarpite / API5）
+# プロジェクトは自己完結したパートだから、その入口の main.xa1 を、別の xarpite の呼び出しとして叩くのだ～🌱
+
+API(5)
+@USE("common")
+
+timelineModule := USE("timeline")
+
+dir := "$projectBase/build/scene"
+
+{
+  dir: dir
+  framesJsonlPath: "$dir/frames.jsonl"
+  generate: () -> (
+    timelineModule.generate()
+    generate("scene ($project)"; dir; work -> (
+      run("$base/../xarpite/xarpite", "-A", "5", "-q", "-e", "USE(\"$projectBase/main\").buildScene()", timelineModule.jsonPath, work)
+    ))
+  )
+}

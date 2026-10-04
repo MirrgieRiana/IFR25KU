@@ -5,10 +5,11 @@
 # 処理の本体は、同じディレクトリの build-scene.xa1 にあるのだ～🌱
 #
 # 引数：
-#   ARGS.0 … timeline.json のパス（省略時は video/timeline.json）なのだ～🌱
+#   ARGS.0 … timeline.json のパスなのだ～🌱
+#   ARGS.1 … 生成物を書き出す先のディレクトリなのだ～🌱
 #
 # 呼び出しの例：
-#   xarpite -A 5 -q -e 'USE("/abs/video/projects/2026-04-12-sarracenia/main").buildScene()' /abs/video/timeline.json
+#   xarpite -A 5 -q -e 'USE("/abs/video/projects/2026-04-12-sarracenia/main").buildScene()' /abs/timeline.json /abs/out
 # =============================================================================
 
 API(5)

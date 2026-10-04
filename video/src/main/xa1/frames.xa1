@@ -1,0 +1,20 @@
+# 汎用レンダラーで、構成jsonl から連番のフレーム画像を撮る段なのだ～🌱（xarpite / API5）
+
+API(5)
+@USE("common")
+
+sceneModule := USE("scene")
+
+dir := "$projectBase/build/frames"
+
+{
+  dir: dir
+  generate: () -> (
+    sceneModule.generate()
+    generate("frames ($project)"; dir; work -> (
+      # レンダラーは、出力先が空のディレクトリでも存在しないパスでもないと止まるから、中へもう 1 段掘って渡すのだ～🌱
+      run("bash", "$base/renderer/render.sh", sceneModule.framesJsonlPath, "$work/png")
+    ))
+  )
+  pngPattern: "$dir/png/f_%05d.png"
+}

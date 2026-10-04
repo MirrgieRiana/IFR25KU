@@ -1,0 +1,14 @@
+# 動画プロジェクトの台本を JSON へ焼く段なのだ～🌱（xarpite / API5）
+# 台本そのものは xa1 の側がコミットされていて、JSON はこの段で作り直すのだ～🌱
+
+API(5)
+@USE("common")
+
+dir := "$buildBase/script"
+
+{
+  path: "$dir/script.json"
+  generate: () -> generate("script ($project)"; dir; work -> (
+    WRITE("$work/script.json"; USE("$projectBase/script") >> JSON[indent: 1])
+  ))
+}

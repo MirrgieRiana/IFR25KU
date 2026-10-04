@@ -5,9 +5,11 @@
 # タイムラインを受け取って、レンダラーに渡す材料を、ぜんぶ作るのだ～🌱
 #
 # 引数：
-#   ARGS.0       … timeline.json のパス（省略時は ../../timeline.json）なのだ～🌱
-# 出力（このディレクトリ配下）：
-#   assets.js    … scene.html が読む、絵文字・テクスチャのパス・タイムラインの束
+#   ARGS.0       … timeline.json のパスなのだ～🌱
+#   ARGS.1       … 生成物を書き出す先のディレクトリなのだ～🌱
+# 出力（書き出し先の配下）：
+#   skit-v1.html … 共有のテンプレートの写しで、下の 3 個と同じ場所に無いと、相対パスが外れちゃうのだ～🌱
+#   assets.js    … テンプレートが読む、絵文字・テクスチャのパス・タイムラインの束
 #   portrait/    … 立ち絵 PSD から切り出したレイヤー PNG
 #   frames.jsonl … 1 行 = 1 フレームの構成jsonl（レンダラーへの入力）
 # =============================================================================
@@ -16,20 +18,25 @@ API(5)
 
 # このプロジェクトのディレクトリの絶対パスなのだ～🌱
 # RESOLVE は第 1 引数をディレクトリとして扱うから、LOCATION のファイル名の分も 1 階層として数えるのだ～🌱
-# 読み書きするパスは、全部これを基準に組むから、どのディレクトリから呼んでも同じ場所を触るのだ～🌱
+# 読み込むパスは、全部これを基準に組むから、どのディレクトリから呼んでも同じ場所を触るのだ～🌱
 base := RESOLVE(LOCATION; "..")
 
-timelinePath := ARGS.0 ?: "$base/../../timeline.json"
+timelinePath := ARGS.0
+outDir := ARGS.1
 
 # 構成jsonl の各行の template に入れる、この動画のテンプレートなのだ～🌱
-# レンダラーは、frames.jsonl のあるディレクトリ（ここ）を基準に解決するのだ～🌱
-template := "scene.html"
+# レンダラーは、frames.jsonl のあるディレクトリ（書き出し先）を基準に解決するのだ～🌱
+template := "skit-v1.html"
+
+# 共有のテンプレートの置き場所なのだ～🌱
+# 中の相対パスは、テンプレート自身の置き場所、つまり書き出し先からの深さで書いてあるのだ～🌱
+templateSource := "$base/../common/$template"
 
 # build_video.py の -framerate と一致させるのだ～🌱
 FPS := 30
 
 # --- 立ち絵 PSD から切り出すレイヤー ID の一覧なのだ～🌱 -------------------------
-# この並びは scene.html の PORTRAIT 定義と一致していなければならないのだ～🌱
+# この並びはテンプレートの PORTRAIT 定義と一致していなければならないのだ～🌱
 # ID 体系は劇場の layers.json と同じで、兄弟レイヤーの 1 始まりインデックスを "-" で連結したものなのだ～🌱
 # （グループもインデックスを 1 個消費するのだ～🌱）
 ZUNDA_IDS := "1,4-2,8-5,8-2,8-3,7-14-3,7-14-4-9,7-6,5-8,5-2,5-1,6-6,9-2,4-4-8,4-4-3,4-4-6,4-4-5,4-3-8,4-3-3,10-3"
@@ -68,17 +75,20 @@ need("$base/../common/resources/font"; "ZenMaruGothic-Black.ttf")
 need("$base/../common/resources/font"; "ZenMaruGothic-Bold.ttf")
 need("$base/../common/resources/emoji"; "seedling.svg")
 
-# --- 1. scene.html が読む assets.js を焼くのだ～🌱（絵文字・テクスチャのパス・タイムライン） ---
-# レンダリングは Chromium に file://.../scene.html を開かせて 1 フレームずつ撮る方式なのだ～🌱
+# --- 1. テンプレートと、それが読む assets.js を書き出し先へ置くのだ～🌱（絵文字・テクスチャのパス・タイムライン） ---
+# レンダリングは Chromium に file://.../skit-v1.html を開かせて 1 フレームずつ撮る方式なのだ～🌱
 # file:// で開いた HTML は、セキュリティ上、外部ファイルを fetch() で読めないのだ～🌱
-# そこで、JS が値として要るものは 1 個のファイル（assets.js）に「焼き込んで」おいて、scene.html から <script> で読み込むのだ～🌱
+# そこで、JS が値として要るものは 1 個のファイル（assets.js）に「焼き込んで」おいて、テンプレートから <script> で読み込むのだ～🌱
 # 一方、img の src と CSS の url() は fetch() を通らないから、file:// でも相対パスのまま読めるのだ～🌱
 # だから、テクスチャとフォントは、焼き込まずに、パスのまま渡すのだ～🌱
+OUT << "== copy template =="
+run("cp", templateSource, "$outDir/$template")
+
 OUT << "== bake assets.js =="
 
 # IFR25KU リポジトリ内のテクスチャ（＝コミット済みの素材なので、リポジトリから直接読むのだ～🌱）
-# このパスは、scene.html の置き場所を基準に解決されるのだ～🌱
-TEX := "../../../common/src/main/resources/assets/miragefairy2024"
+# このパスは、テンプレートの置き場所、つまり書き出し先を基準に解決されるのだ～🌱
+TEX := "../../../../../common/src/main/resources/assets/miragefairy2024"
 
 assets := {
   plant: "$TEX/textures/block/magic_plant/sarracenia_age3.png"
@@ -86,20 +96,20 @@ assets := {
   logo: "$TEX/icon.png"
   bg: "$TEX/textures/block/haimeviska_log.png"
   # seedling はパスではなく「生の SVG 文字列」なのだ～🌱
-  # scene.html が innerHTML に直接差し込むのだ～🌱
+  # テンプレートが innerHTML に直接差し込むのだ～🌱
   seedling: READ("$base/../common/resources/emoji/seedling.svg")::replace(/^\s+|\s+$/g; "")
 }
 timeline := $*READ(timelinePath)
 
-WRITE("$base/assets.js"; "window.ASSETS=$(assets >> JSON[indent: NULL]);\nwindow.TIMELINE=$(timeline >> JSON[indent: NULL]);\n")
+WRITE("$outDir/assets.js"; "window.ASSETS=$(assets >> JSON[indent: NULL]);\nwindow.TIMELINE=$(timeline >> JSON[indent: NULL]);\n")
 OUT << "baked assets.js: $(assets() | _.0 >> JOIN[", "])"
 OUT << "  timeline: total= $(timeline.total) lines= $($#timeline.lines)"
 
 # --- 2. 立ち絵 PSD から必要なレイヤーを PNG に切り出すのだ～🌱（→ portrait/<char>/<id>.png） -----
 OUT << "== extract portrait =="
 # 切り出しのツールは、レンダラーと同じく video/ 直下の兄弟で、Node 依存も自分で面倒を見るのだ～🌱
-run("bash", "$base/../../extract-portrait/extract-portrait.sh", "zundamon", "$base/../common/resources/psd/zundamon23.psd", ZUNDA_IDS, "$base/portrait/zundamon")
-run("bash", "$base/../../extract-portrait/extract-portrait.sh", "tsumugi", "$base/../common/resources/psd/tsumugi3.psd", TSUMUGI_IDS, "$base/portrait/tsumugi")
+run("bash", "$base/../../extract-portrait/extract-portrait.sh", "zundamon", "$base/../common/resources/psd/zundamon23.psd", ZUNDA_IDS, "$outDir/portrait/zundamon")
+run("bash", "$base/../../extract-portrait/extract-portrait.sh", "tsumugi", "$base/../common/resources/psd/tsumugi3.psd", TSUMUGI_IDS, "$outDir/portrait/tsumugi")
 
 # --- 3. 構成jsonl を組み立てるのだ～🌱（→ frames.jsonl） -------------------------
 # 各行は、そのフレームの見た目を決めるパラメータなのだ～🌱
@@ -110,7 +120,7 @@ OUT << "== compose frames.jsonl =="
 total := timeline.total
 frameCount := -FLOOR(-(total * FPS))
 
-# scene.html の clamp・fadeIn と、式も演算の順序もそろえてあるのだ～🌱
+# テンプレートの clamp・fadeIn と、式も演算の順序もそろえてあるのだ～🌱
 # JS も xarpite も IEEE 754 の倍精度だから、そろえておけば、同じ時刻に同じ値が出るのだ～🌱
 clamp := (x; a; b) -> MAX(a; MIN(b; x))
 fadeIn := (t; start; dur) -> clamp((t - start) / dur; 0; 1)
@@ -128,7 +138,7 @@ openOp := t -> t < timeline.titleFadeStart ? 1 : fadeOut(t; timeline.titleFadeSt
 creditOp := t -> fadeIn(t; timeline.creditStart - 0.35; 0.5)
 # クレジットが出るあいだ、立ち絵と帯と字幕を閉じるゲートなのだ～🌱
 creditGate := t -> 1 - clamp(creditOp(t) * 3; 0; 1)
-# その時刻に字幕を出している台詞なのだ～🌱 scene.html と同じく、最初に当たったものを採るのだ～🌱
+# その時刻に字幕を出している台詞なのだ～🌱 テンプレートと同じく、最初に当たったものを採るのだ～🌱
 activeLines := t -> [timeline.lines() >> FILTER[ln => t >= ln.start && t < ln.subEnd]]
 subOp := t -> (
   lns := activeLines(t)
@@ -137,7 +147,7 @@ subOp := t -> (
 )
 
 # 台詞ごとのポーズ（眉・腕・汗）なのだ～🌱
-# 並びは timeline.lines と対応して、値は scene.html の pg キーなのだ～🌱
+# 並びは timeline.lines と対応して、値はテンプレートの pg キーなのだ～🌱
 # sweat のキーを持つものだけ、汗を出すのだ～🌱
 # 導入部（開幕のデカ字サムネから初回発話まで）は、サムネのキメ姿勢なのだ～🌱
 POSE_DEFAULT := {t: {brow: "cheer"; armR: "point"; armL: "base"}; z: {brow: "sad"; armR: "base"; armL: "base"}}
@@ -162,7 +172,7 @@ poseAt := t -> (
 )
 
 # その時刻に字幕を出している台詞の中身なのだ～🌱
-# scene.html の setSub は、i と sub と big と speaker だけを見るのだ～🌱
+# テンプレートの setSub は、i と sub と big と speaker だけを見るのだ～🌱
 # 出す台詞が無いときは NULL で、JS 側の「字幕を消す」の分岐へ落ちるのだ～🌱
 subLineAt := t -> (
   lns := activeLines(t)
@@ -191,7 +201,7 @@ speakingLine := t -> (
 )
 
 # 沼地の背景は、泥沼のクロスフェードの下敷きだから、swampOp はずっと 1 なのだ～🌱
-WRITE["$base/frames.jsonl"] << 0 ~ frameCount | i => (
+WRITE["$outDir/frames.jsonl"] << 0 ~ frameCount | i => (
   t := i / FPS
   so := subOp(t)
   sp := speakingLine(t)
@@ -209,4 +219,4 @@ WRITE["$base/frames.jsonl"] << 0 ~ frameCount | i => (
 ) >> JSONL >> LINESD
 OUT << "composed frames.jsonl: $frameCount frames (total=$(total)s @ $(FPS)fps)"
 
-OUT << "== scene ready: assets.js, portrait/, frames.jsonl =="
+OUT << "== scene ready: $template, assets.js, portrait/, frames.jsonl =="

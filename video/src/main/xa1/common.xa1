@@ -31,6 +31,31 @@ capture := command -> (
 
 run := command -> OUT << capture(command)()
 
+# 生成物の置き場所なのだ～🌱
+# 生成物は、すべてこの下に作って、ignore も clean も、この 1 個のディレクトリでまとめて扱うのだ～🌱
+buildBase := "$base/build"
+
+# この雑多パートが相手にする動画プロジェクトなのだ～🌱
+# 複数のプロジェクトを扱えるようにするまでの間、どのプロジェクトを指すかを、ここ 1 個所に集めておくのだ～🌱
+project := "2026-04-12-sarracenia"
+projectBase := "$base/projects/$project"
+
+# ディレクトリがあるかを見るのだ～🌱
+# FILE_NAMES は、存在しないディレクトリでは例外を投げちゃうから、判定には使えないのだ～🌱
+dirExists := path -> [EXECL("bash", "-c", %>[ -d "$1" ] && echo yes || echo no<%, "run", path)].0 == "yes"
+
+# 生成物のディレクトリが無いときだけ、body へ作業用のパスを渡して、生成物を作らせるのだ～🌱
+# body を作業用のパスへ向けてから最後に改名するから、途中で落ちたときに、中途半端なものが生成物の名前を名乗ることは無いのだ～🌱
+# 不完全なものや古いものが残っているときは、そのディレクトリを消せば作り直されるのだ～🌱
+generate := name, dir, body -> dirExists(dir) ? (OUT << "== $name (up to date) ==") : (
+  OUT << "== $name =="
+  work := "$dir.work"
+  run("rm", "-rf", work)
+  run("mkdir", "-p", work)
+  body(work)
+  run("mv", work, dir)
+)
+
 # Python の round(x, 4) と同じく、x の正確な値を、小数第 4 位へ偶数丸めするのだ～🌱
 # x * 10000 がちょうど n + 0.5 になったときは、掛け算の丸めで、正確な値がどちら側にあったかが分からなくなるのだ～🌱
 # そのときだけ、x * 32 を上と下の桁に分けて、誤差の出ない掛け算で (2n + 1) / 20000 と比べるのだ～🌱
@@ -75,9 +100,14 @@ readWav := path -> (
 
 {
   base: base
+  buildBase: buildBase
+  project: project
+  projectBase: projectBase
   fail: fail
   capture: capture
   run: run
+  dirExists: dirExists
+  generate: generate
   round4: round4
   u16: u16
   u32: u32

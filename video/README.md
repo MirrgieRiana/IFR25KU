@@ -4,7 +4,7 @@ VOICEVOX の立ち絵のずんだもんと春日部つむぎが、口パクと�
 IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで組み立てる**ためのビルドシステムなのだ～🌱
 
 今の題材はサラセニアという食虫植物の寸劇で、長さは 1 分ちょっとなのだ～🌱
-台本の `script.xa1` とシーン定義の `scene.html` を差し替えれば、別の寸劇にも使えるのだ～🌱
+台本の `script.xa1` とテンプレートの `skit-v1.html` を差し替えれば、別の寸劇にも使えるのだ～🌱
 
 ---
 
@@ -18,10 +18,10 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 
 この動画は、動画編集ソフトの GUI で作るのではなくて、**「決定論的フレームレンダリング」** という方式で作るのだ～🌱
 
-1. `projects/2026-04-12-sarracenia/scene.html` が、1 フレーム分の構成 `frame` を渡すとその画面を組み立てる関数 `window.applyFrame(frame)` を持つのだ～🌱 画面の見た目を決める値は、全部 `frame` に入っているのだ～🌱
+1. `projects/common/skit-v1.html` が、1 フレーム分の構成 `frame` を渡すとその画面を組み立てる関数 `window.applyFrame(frame)` を持つのだ～🌱 画面の見た目を決める値は、全部 `frame` に入っているのだ～🌱
 2. `projects/2026-04-12-sarracenia/build-scene.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
-3. `renderer/render.js` がヘッドレス Chromium に `scene.html` を開かせて、`frames.jsonl` を頭から 1 行ずつ `applyFrame(frame)` に渡して、1 行につき 1 コマ撮るのだ～🌱
-4. 撮れた連番画像の `projects/2026-04-12-sarracenia/frames/f_00000.png …` を ffmpeg で映像にして、ナレーション音声と BGM を重ねて mp4 にするのだ～🌱
+3. `renderer/render.js` がヘッドレス Chromium にテンプレートを開かせて、`frames.jsonl` を頭から 1 行ずつ `applyFrame(frame)` に渡して、1 行につき 1 コマ撮るのだ～🌱
+4. 撮れた連番画像の `projects/2026-04-12-sarracenia/build/frames/png/f_00000.png …` を ffmpeg で映像にして、ナレーション音声と BGM を重ねて mp4 にするのだ～🌱
 
 絵は構成jsonl だけで決まるから、マシンの速さに関係なく尺が正確で、何度ビルドしても同じ結果になるのだ～🌱
 連続する行の構成が同じなら、撮り直さずに前のコマを使い回すのだ～🌱
@@ -32,22 +32,22 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 図の中では、動画プロジェクトの `projects/2026-04-12-sarracenia/` を `<proj>/` と書くのだ～🌱
 
 ```
-<proj>/script.xa1（台本）─(build.xa1)→ <proj>/script.json
+<proj>/script.xa1（台本）─(script.xa1)→ build/script/script.json
    │
-   ├─(synth.xa1 + VOICEVOX)→ audio/line*.wav, moras.json, kana.json, durations.json  ┐ 雑多パート
+   ├─(audio.xa1 + VOICEVOX)→ build/audio/wav/*.wav, moras.json, kana.json, durations.json  ┐ 雑多パート
    │                                                                                   │ (video/ 直下)
-   └─(assemble.xa1)───────→ full.wav（ナレーション全体）, timeline.json（尺・区間） ┘
+   └─(timeline.xa1)───────→ build/timeline/full.wav（ナレーション全体）, timeline.json（尺・区間） ┘
 
-timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/assets.js          ┐
+timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/scene/assets.js   ┐
                │        ↑ IFR25KU テクスチャ / common のフォントと絵文字  │ 動画プロジェクト
  common の psd ─(extract-portrait/extract-portrait.sh)→ <proj>/portrait/      │（構成を作る）
-               └─(<proj>/build-scene.xa1)────→ <proj>/frames.jsonl        ┘
+               └─(<proj>/build-scene.xa1)────→ <proj>/build/scene/frames.jsonl ┘
 
-<proj>/scene.html + assets.js + portrait/ + frames.jsonl
-   └─(renderer/render.js + Chromium)→ <proj>/frames/f_%05d.png   … 汎用レンダラー
+<proj>/build/scene/ の skit-v1.html + assets.js + portrait/ + frames.jsonl
+   └─(renderer/render.js + Chromium)→ <proj>/build/frames/png/f_%05d.png   … 汎用レンダラー
 
-<proj>/frames/ + full.wav + projects/common/resources/bgm/*.flac
-   └─(main.xa1 の movie + ffmpeg)→ sarracenia.mp4（完成品）  … 雑多パート
+<proj>/build/frames/ + full.wav + projects/common/resources/bgm/*.flac
+   └─(movie.xa1 + ffmpeg)→ build/movie/sarracenia.mp4（完成品）  … 雑多パート
 ```
 
 各パートの詳しい説明は、それぞれの README にもあるのだ～🌱
@@ -66,12 +66,15 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/assets.
 
 | ファイル | 役割 |
 | --- | --- |
-| `Makefile` | 下記すべてを順に呼び出す段を並べたものなのだ～🌱 **ふつうは `make` を実行するだけ**なのだ～🌱 |
-| `main.xa1` | `Makefile` から呼ぶ関数を返す入口なのだ～🌱 第 1 引数で受け取った `video/` の絶対パスを基準に、`INC` と読み書きのパスを組むのだ～🌱 |
-| `src/main/xa1/build.xa1` | `main.xa1` の `build` が呼ぶ、構成jsonl ができるまでの段（BGM の確認・台本の焼き込み・`synth.xa1`・`assemble.xa1`・プロジェクトの `main.xa1`）の本体なのだ～🌱 |
-| `src/main/xa1/synth.xa1` | VOICEVOX で台詞ごとの音声を合成して、口パク用のモーラ区間も書き出すのだ～🌱 |
-| `src/main/xa1/assemble.xa1` | 台詞 wav を、タイトル、本編（行間の無音）、クレジットの順に結合して、タイムラインを算出するのだ～🌱 |
-| `src/main/xa1/common.xa1` | `synth.xa1` と `assemble.xa1` が共有する関数（外部コマンドの実行・丸め・wav の読み出し）なのだ～🌱 |
+| `Makefile` | `main.xa1` の段を 1 個ずつ叩けるように並べたものなのだ～🌱 **ふつうは `make` を実行するだけ**なのだ～🌱 |
+| `main.xa1` | `Makefile` から呼ぶ、生成物ごとの `generate～` と `clean` を返す入口なのだ～🌱 自分の置き場所から `video/` を解決して、`INC` と読み書きのパスを組むのだ～🌱 |
+| `src/main/xa1/script.xa1` | 動画プロジェクトの台本を `script.json` へ焼くのだ～🌱 |
+| `src/main/xa1/audio.xa1` | VOICEVOX で台詞ごとの音声を合成して、口パク用のモーラ区間も書き出すのだ～🌱 |
+| `src/main/xa1/timeline.xa1` | 台詞 wav を、タイトル、本編（行間の無音）、クレジットの順に結合して、タイムラインを算出するのだ～🌱 |
+| `src/main/xa1/scene.xa1` | 動画プロジェクトの入口を叩いて、テンプレートと構成jsonl を組ませるのだ～🌱 |
+| `src/main/xa1/frames.xa1` | 汎用レンダラーを呼んで、連番のフレーム画像を撮らせるのだ～🌱 |
+| `src/main/xa1/clean.xa1` | 生成物の `build` ディレクトリを、まとめて捨てるのだ～🌱 |
+| `src/main/xa1/common.xa1` | 各段が共有する値と関数（置き場所・外部コマンドの実行・生成の枠組み・丸め・wav の読み出し）なのだ～🌱 |
 | `src/main/xa1/movie.xa1` | `main.xa1` の `movie` が呼ぶ、連番フレームとナレーションと BGM を ffmpeg で合成して mp4 にする段の本体なのだ～🌱 |
 
 **`renderer/`（汎用レンダラー・自己完結）**
@@ -94,25 +97,24 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/assets.
 
 | ファイル | 役割 |
 | --- | --- |
-| `main.xa1` | タイムラインを受け取って、`assets.js` と `portrait/` と `frames.jsonl` を作る、このパートの入口なのだ～🌱`build-scene.xa1` を呼ぶ関数を返すだけなのだ～🌱 |
-| `build-scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
+| `main.xa1` | タイムラインと書き出し先を受け取って、シーンの材料を作る、このパートの入口なのだ～🌱`build-scene.xa1` を呼ぶ関数を返すだけなのだ～🌱 |
+| `build-scene.xa1` | 処理の本体なのだ～🌱 リソース確認とテンプレートの写しと `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
 | `script.xa1` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義して、`script.json` として焼かれるのだ～🌱 |
-| `scene.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 |
+| `../common/skit-v1.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 寸劇のプロジェクトで共有するのだ～🌱 |
 
 **`projects/common/`（動画プロジェクトが共有するリソース）**
 
 | ファイル | 役割 |
 | --- | --- |
+| `skit-v1.html` | 寸劇のテンプレートなのだ～🌱 画面の見た目と `window.applyFrame(frame)` を持つのだ～🌱 |
 | `resources/**/*.md5` | 外部取得リソースの md5 なのだ～🌱 **そこに、どの名前で、何を置けばよいかを保証するための目印**なのだ～🌱 |
 
 ### コミットされていないもの（`.gitignore` 対象）なのだ～🌱
 
 - **外部取得リソースの実体**（`projects/common/resources/psd/*.psd`, `.../font/*.ttf`, `.../emoji/*.svg`, `.../bgm/*.flac`）
   … 著作権の都合でコミットしないのだ～🌱 各 `.md5` を頼りに自分で配置するのだ～🌱（→ [3.](#3-用意する外部取得リソースなのだ)）
-- **台本の中間生成物**（`projects/*/script.json`）
-- **音声の中間生成物**（`video/` 直下の `audio/`, `full.wav`, `timeline.json`, `kana.json`, `moras.json`, `durations.json`）
-- **scene の中間生成物**（`projects/*/assets.js`, `projects/*/portrait/`, `projects/*/frames.jsonl`）
-- **出力**（`projects/*/frames/`, `*.mp4`, `*.png`）
+- **雑多パートの生成物**（`video/build/` の下の、台本と音声とタイムラインと完成品）
+- **動画プロジェクトの生成物**（`projects/*/build/` の下の、シーンの材料とフレーム画像）
 - **依存**（各パート配下の `node_modules/`）
 
 ---
@@ -136,7 +138,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/assets.
 `extract-portrait/` が切り出すレイヤーは、兄弟レイヤーの 1 始まりインデックスを `-` で連結した ID で指定するのだ～🌱
 グループも、インデックスを 1 個消費するのだ～🌱
 切り出す ID の一覧は `projects/2026-04-12-sarracenia/build-scene.xa1` の `ZUNDA_IDS` と `TSUMUGI_IDS` にあるのだ～🌱
-これは、`scene.html` の `PORTRAIT` 定義と一致している必要があるのだ～🌱
+これは、テンプレートの `PORTRAIT` 定義と一致している必要があるのだ～🌱
 
 ### IFR25KU リポジトリ由来のテクスチャ（配置不要）なのだ～🌱
 
@@ -156,7 +158,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/assets.
 
 - **Node.js**（18 以降を想定）と **npm**
 - **ffmpeg**
-- **curl**（`synth.xa1` が VOICEVOX ENGINE と通信するのに使うのだ～🌱）
+- **curl**（`audio.xa1` が VOICEVOX ENGINE と通信するのに使うのだ～🌱）
 - **VOICEVOX ENGINE**（音声合成サーバーなのだ～🌱 起動しておくのだ～🌱）
 - **Chrome / Chromium**（無ければ `renderer/setup_chromium.js` が同梱版を展開するのだ～🌱）
 
@@ -174,18 +176,23 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/assets.
 make
 ```
 
-完成すると `video/sarracenia.mp4` ができるのだ～🌱
+完成すると `video/build/movie/sarracenia.mp4` ができるのだ～🌱
 中間生成物と連番フレームも `video/` 内に残るけど、全部 `.gitignore` 済みなのだ～🌱
 
 `make` の引数で、途中の段だけを走らせることもできるのだ～🌱
 
 | 段 | やること |
 | --- | --- |
-| `make scene` | BGM の確認と音声合成と結合をして、動画プロジェクトの構成（`assets.js`・`portrait/`・`frames.jsonl`）を作るのだ～🌱 |
-| `make frames` | `scene` の後に、連番のフレーム画像を動画プロジェクトの `frames/` へ撮るのだ～🌱 |
-| `make movie` | `frames` の後に、フレームとナレーションと BGM を合成して mp4 にするのだ～🌱 引数なしの `make` と同じなのだ～🌱 |
+| `make script` | 台本を `script.json` へ焼くのだ～🌱 |
+| `make audio` | 台詞ごとの音声を合成するのだ～🌱 |
+| `make timeline` | 音声を結合して、タイムラインを算出するのだ～🌱 |
+| `make scene` | 動画プロジェクトの構成（テンプレート・`assets.js`・`portrait/`・`frames.jsonl`）を作るのだ～🌱 |
+| `make frames` | 連番のフレーム画像を撮るのだ～🌱 |
+| `make movie` | フレームとナレーションと BGM を合成して mp4 にするのだ～🌱 引数なしの `make` と同じなのだ～🌱 |
+| `make clean` | 生成物の `build` ディレクトリを、まとめて捨てるのだ～🌱 |
 
-後ろの段は前の段に依存しているから、`make movie` だけで最初から通るのだ～🌱
+どの段も、前の段を自分で呼ぶから、`make movie` だけで最初から通るのだ～🌱
+そして、生成物が既にある段は、飛ばすのだ～🌱 作り直したいときは、その段のディレクトリを消すか、`make clean` で全部捨てるのだ～🌱
 
 `renderer/` と `extract-portrait/` は Node 依存が別々だから、それぞれのディレクトリで必要なときだけ `npm install` するのだ～🌱
 手動で入れるなら、各ディレクトリで `npm install` するのだ～🌱
@@ -207,7 +214,7 @@ make
 
 ## 6. 各ステップの詳細なのだ～🌱
 
-### synth.xa1（音声合成）なのだ～🌱
+### audio.xa1（音声合成）なのだ～🌱
 
 台本の各台詞について、VOICEVOX の **カタカナ原稿（`is_kana`）記法** を使って、読みを厳密に指定して合成するのだ～🌱
 `script.json` の各行に `kana`（カナ原稿）があればそれを使って、無ければ `text` から自動生成した読みを使うのだ～🌱
@@ -217,7 +224,7 @@ make
 長音は、母音を重ねて書くのだ～🌱（例：サトウ→`サトオ`）
 平板型は、核をアクセント単位の末尾に置くことで表すのだ～🌱
 
-### assemble.xa1（結合・タイムライン）なのだ～🌱
+### timeline.xa1（結合・タイムライン）なのだ～🌱
 
 台詞 wav を、タイトル保持、本編（台詞のあいだに無音の間）、クレジット保持の順に結合して、`full.wav` と `timeline.json` を作るのだ～🌱
 `timeline.json` には、各台詞の開始と終了の時刻と、シーン区間と、アイテムの表示区間などが入るのだ～🌱
@@ -226,7 +233,7 @@ make
 ### build-scene.xa1（アセットの焼き込み）なのだ～🌱
 
 `file://` で開いた HTML は外部ファイルを `fetch()` できないから、絵文字とテクスチャのパスとタイムラインを `assets.js` に埋め込むのだ～🌱
-テクスチャは `scene.html` から見た相対パスの文字列で、絵文字 SVG は生の文字列として入るのだ～🌱
+テクスチャはテンプレートから見た相対パスの文字列で、絵文字 SVG は生の文字列として入るのだ～🌱
 `img` の `src` と CSS の `url()` は `fetch()` を通らないから、テクスチャもフォントも、相対パスのまま `file://` で読めるのだ～🌱
 
 ### extract-portrait（立ち絵の切り出し）なのだ～🌱
@@ -239,10 +246,10 @@ make
 `timeline.json` から総尺を読んで、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
 各行は `template` と `t` と、画面の各要素の不透明度のキーと、ポーズと口パクとまばたきと字幕の中身を持つのだ～🌱
 `template` に入れるテンプレートは、`build-scene.xa1` の冒頭で決めているのだ～🌱
-画面の見た目を決める値は、全部ここで計算して渡すから、`scene.html` の側はタイムラインを見ないのだ～🌱
+画面の見た目を決める値は、全部ここで計算して渡すから、テンプレートの側はタイムラインを見ないのだ～🌱
 レンダラー側は、この構成の中身が増えても変えなくてよい設計なのだ～🌱
 
-### scene.html（画面と applyFrame）なのだ～🌱
+### skit-v1.html（画面と applyFrame）なのだ～🌱
 
 画面の見た目のすべてと、構成 `frame` から画面を決める `window.applyFrame(frame)` が入っているのだ～🌱
 `applyFrame` は、構成の各行の値を、そのまま画面の各要素へ当てるのだ～🌱
@@ -251,7 +258,7 @@ make
 
 ### renderer/render.js（フレーム撮影）なのだ～🌱
 
-ヘッドレス Chromium でテンプレートの `scene.html` を開いて、フォント読み込み完了を待つのだ～🌱
+ヘッドレス Chromium でテンプレートを開いて、フォント読み込み完了を待つのだ～🌱
 それから、構成jsonl を 1 行ずつ `applyFrame(frame)` に渡して、1 行につき 1 コマ撮るのだ～🌱
 連続する行の構成を正規化した JSON が同じなら、撮り直さずに前のコマを使い回すのだ～🌱
 動画の中身を知らない、汎用レンダラーなのだ～🌱

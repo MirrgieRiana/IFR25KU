@@ -4,8 +4,12 @@
 # Makefile やシェルスクリプトは、ここが返すオブジェクトの関数を呼ぶのだ～🌱
 # 処理の本体は src/main/xa1/ の中にあって、ここから INC 経由で USE するのだ～🌱
 #
+# generate で始まる関数は、gradlew のタスクのように、それぞれが 1 個の生成物を受け持つのだ～🌱
+# 前の段の生成物は、その段の関数が面倒を見るから、どこから呼んでも、足りないものだけが作られるのだ～🌱
+# 生成物が既にあるときは、その段を飛ばすのだ～🌱 作り直したいときは、clean で捨てるのだ～🌱
+#
 # 呼び出しの例：
-#   xarpite -A 5 -q -e 'USE("/abs/video/main").build()'
+#   xarpite -A 5 -q -e 'USE("/abs/video/main").generateMovie()'
 # =============================================================================
 
 API(5)
@@ -15,6 +19,11 @@ API(5)
 INC += RESOLVE(LOCATION; "../src/main/xa1")
 
 {
-  build: () -> USE("build")
-  movie: () -> USE("movie")
+  generateScript: USE("script").generate
+  generateAudio: USE("audio").generate
+  generateTimeline: USE("timeline").generate
+  generateScene: USE("scene").generate
+  generateFrames: USE("frames").generate
+  generateMovie: USE("movie").generate
+  clean: USE("clean").run
 }

@@ -1,6 +1,6 @@
 # =============================================================================
 # 動画ビルドで生成・取得されるファイルは、すべてここで ignore するのだ～🌱
-# コミットするのは各パートの「スクリプト類」「script.json（台本）」「scene.html」
+# コミットするのは各パートの「スクリプト類」「台本の xa1」「テンプレート」
 # 「README」「Makefile」「package.json / package-lock.json」
 # 「外部取得リソースの *.md5」だけなのだ～🌱
 # =============================================================================
@@ -19,30 +19,6 @@ projects/common/resources/bgm/*.wav
 # node_modules は、それを使う renderer/ と extract-portrait/ の側で ignore するのだ～🌱
 /libs
 
-# --- 台本の中間生成物（動画プロジェクトの script.xa1 から、make が作り直すのだ～🌱） ---
-projects/*/script.json
-
-# --- 音声の中間生成物（雑多パート＝video/ 直下で、make が作り直すのだ～🌱） ---
-audio/
-requests.jsonl
-full.wav
-timeline.json
-kana.json
-moras.json
-durations.json
-
-# --- scene の中間生成物（動画プロジェクトの中で、build-scene.xa1 が作り直すのだ～🌱） ---
-projects/*/assets.js
-projects/*/portrait/
-projects/*/frames.jsonl
-
-# --- レンダラーの出力（連番フレーム） ---
-projects/*/frames/
-
-# --- Python バイトコード ---
-__pycache__/
-*.pyc
-
-# --- 完成物 ---
-*.mp4
-*.png
+# --- このパートの生成物（generate～ の各段が作って、clean が捨てるのだ～🌱） ---
+# 作りかけのまま落ちたときの .work も、同じ 1 行で拾えるのだ～🌱
+/build*
