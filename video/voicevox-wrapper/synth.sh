@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# synth.js で、合成の依頼を並べた jsonl から、VOICEVOX ENGINE で行ごとの音声を合成するのだ～🌱
+# synth.js で、合成のリクエストを並べた jsonl から、VOICEVOX ENGINE で行ごとの音声を合成するのだ～🌱
 # 使い方と環境変数は、README.md に書いてあるのだ～🌱
 set -euo pipefail
 
