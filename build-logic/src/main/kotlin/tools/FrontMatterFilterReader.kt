@@ -50,7 +50,9 @@ fun rewriteFrontMatter(content: String, sourcePath: String, imageDir: String): S
     val match = frontMatterRegex.find(content) ?: return content
 
     @Suppress("UNCHECKED_CAST")
-    val frontMatter = Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any> ?: return content
+    // --- が 2 行並んだだけの front matter は、YAML として妥当で、snakeyaml は null を返すのだ～🌱
+    // そのまま返すと source_path が落ちて、footer の source のリンクが壊れるのだ～🌱
+    val frontMatter = Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any> ?: emptyMap()
 
     @Suppress("UNCHECKED_CAST")
     val resolved = resolveFrontMatterImagePaths(frontMatter, imageDir) as Map<String, Any?>
@@ -71,7 +73,9 @@ class FrontMatterFilterReader(input: Reader) : FilterReader(input) {
     private fun rewriteOnce() {
         if (rewritten) return
         rewritten = true
-        `in` = StringReader(rewriteFrontMatter(`in`.readText(), sourcePath, imageDir))
+        // in を差し替えると、ここで元の Reader への参照が失われて、FilterReader の close が届かなくなるのだ～🌱
+        val content = `in`.use { it.readText() }
+        `in` = StringReader(rewriteFrontMatter(content, sourcePath, imageDir))
     }
 
     override fun read(): Int {
