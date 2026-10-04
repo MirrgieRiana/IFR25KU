@@ -32,7 +32,7 @@ function walk(children, prefix) {
 }
 walk(psd.children, '');
 
-// 一部だけ書けた出力を呼び出し元が揃っていると誤解しないように、1 枚も書く前に全部の ID を確かめるのだ～🌱
+// 一部だけ書けた出力を呼び出し元が揃っていると誤解しないように、1 枚も書く前に全部の ID を確認するのだ～🌱
 const missingIds = ids.filter(id => !map[id]);
 if (missingIds.length > 0) throw new Error(`layers not found in ${psdPath}: ${missingIds.join(', ')}`);
 
