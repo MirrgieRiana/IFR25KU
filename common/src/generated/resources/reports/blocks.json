@@ -14076,17 +14076,6 @@
       }
     ]
   },
-  "miragefairy2024:miranberia": {
-    "definition": {
-      "type": "miragefairy2024:miranberia",
-      "properties": {}
-    },
-    "states": [
-      {
-        "default": true
-      }
-    ]
-  },
   "miragefairy2024:nectarflower": {
     "definition": {
       "type": "miragefairy2024:nectarflower",

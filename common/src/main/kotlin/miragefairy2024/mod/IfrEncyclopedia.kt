@@ -6,7 +6,6 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.motifRegistry
-import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
@@ -83,33 +82,8 @@ class IfrEncyclopediaEntryCard(
             ),
         )
 
-        val MIRANBERIA = IfrEncyclopediaEntryCard(
-            "miranberia",
-            EnJa("Miranberia", "ミランベリア"),
-            { listOf(BlockMaterialCard.MIRANBERIA.item().createItemStack()) },
-            listOf(
-                "Monocots, order Miragales, family Miranberiaceae",
-                "Miranberia",
-                "",
-                "A weed scattered across the floor of the fairy forest. Its leaves glow faintly after nightfall, and fairies gather above them. It has long served as a landmark for locating sites where fairies can be observed.",
-                "",
-                "Why it draws fairies remained unclear for many years. It has since been confirmed that the plant discharges surplus aura, and that fairies visit in order to feed on it. The glow of the leaves is a by-product of that discharge, and serves no purpose for the plant itself.",
-                "",
-                "The scales shed when a fairy beats its wings are absorbed by the roots without delay. Neither party intends the arrangement, yet it balances all the same.",
-            ),
-            listOf(
-                "単子葉類妖花目ミランベリア科",
-                "ミランベリア",
-                "",
-                "妖精の森の地表に点々と生える雑草。日が落ちると葉が淡く発光し、その上に妖精が集まる。妖精の観測地点を探す際の目印として、古くから利用されてきた。",
-                "",
-                "妖精を引き寄せる仕組みは長らく不明であったが、この草が余剰のオーラを放出していることが確認され、妖精がそれを摂取しに訪れるものと判明した。葉の発光はオーラの放出に伴う副産物であり、この草自身にとって何の用途もない。",
-                "",
-                "妖精が羽を払う際に落とす鱗粉は、この草の根が速やかに吸収する。どちらの側も意図しないまま、この関係は釣り合っている。",
-            ),
-        )
 
-        val entries = listOf(MIRAGE_FAIRY, MIRANBERIA)
+        val entries = listOf(MIRAGE_FAIRY)
     }
 
     val identifier = MirageFairy2024.identifier(path)

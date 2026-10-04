@@ -806,6 +806,7 @@ class MaterialCard(
             PoemList(1)
                 .poem("A catalyst that converts mana into erg", "湧き上がる、エルグの誘い。"),
             soulStreamContainable = true,
+            // TODO レシピ 妖精の森バイオームの雑草
             // TODO 妖精からクラフト
             // TODO 用途
         ) {
