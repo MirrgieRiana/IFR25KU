@@ -24,6 +24,7 @@ projects/*/script.json
 
 # --- 音声の中間生成物（雑多パート＝video/ 直下で、make が作り直すのだ～🌱） ---
 audio/
+requests.jsonl
 full.wav
 timeline.json
 kana.json

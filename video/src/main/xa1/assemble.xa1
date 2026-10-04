@@ -38,7 +38,7 @@ titleEnd := TITLE_HOLD + TITLE_FADE
 lineCount := $#script.lines
 linesTl := [0 ~ lineCount | i => (
   line := script.lines.(i)
-  data := readPcm("$base/audio/line$%02d(i).wav")
+  data := readPcm("$base/audio/$%05d(i).wav")
   dur := FLOOR($#data / 2) / SR
   start := t
   end := t + dur
