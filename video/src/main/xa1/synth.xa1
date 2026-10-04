@@ -1,0 +1,75 @@
+# AI: 読み上げは VOICEVOX の「カタカナ原稿（is_kana）」記法を経由するのだ～🌱（xarpite / API5）
+# 手順: 台本から合成のリクエストの jsonl を組んで、voicevox-wrapper へ渡して、その出力から口パクの区間を割り出すのだ～🌱
+# VOICEVOX ENGINE とのやりとりそのものは、汎用のラッパーが受け持つのだ～🌱
+# build.xa1 が USE で呼ぶのだ～🌱
+# 読み書きするパスは、common の base（video/ の絶対パス）を基準に組むのだ～🌱
+
+API(5)
+@USE("common")
+
+# 台本は動画プロジェクトの中にあるのだ～🌱音声の中間生成物は、この雑多パート（video/直下）に置くのだ～🌱
+script := $*READ("$base/projects/2026-04-12-sarracenia/script.json")
+
+# 口パク(AV)用に、合成に使う最終クエリからモーラ区間を割り出すのだ～🌱
+# 返すのは [cs, vs, ve, vowel]（wav先頭からの秒で、speedScaleで割り済み）なのだ～🌱
+#   cs=モーラ開始（子音頭）, vs=母音開始, ve=母音終わりなのだ～🌱 子音区間は閉口で、母音区間は母音で開き具合を決めるのだ～🌱
+moraSegments := q -> (
+  speed := q.speedScale
+  cur := q.prePhonemeLength
+  segs := []
+  q.accent_phrases() | ap => (
+    ap.moras() | m => (
+      cs := cur
+      cl := m.consonant_length ?: 0.0
+      vl := m.vowel_length
+      vs := cs + cl
+      ve := vs + vl
+      segs += [round4(cs / speed); round4(vs / speed); round4(ve / speed); m.vowel]
+      cur = ve
+    ) >> TO_ARRAY
+    ap.pause_mora != NULL && (cur = cur + ap.pause_mora.vowel_length)
+  ) >> TO_ARRAY
+  segs
+)
+
+# --- 合成のリクエストを並べた jsonl を組むのだ～🌱 -------------------------------
+# 読みのカナは台本の kana で、その行で指定が無ければ、ラッパーが text から推定したものになるのだ～🌱
+# 発話の前後の無音は、結合の側で詰めるから、ここでは短く固定するのだ～🌱
+WRITE["$base/requests.jsonl"] << 0 ~ $#script.lines | i => (
+  line := script.lines.(i)
+  {
+    speaker: line.sid
+    text: line.text
+    kana: line.kana
+    query: {
+      speedScale: line.speed
+      prePhonemeLength: 0.08
+      postPhonemeLength: 0.08
+    }
+  }
+) >> JSONL >> LINESD
+
+# --- ラッパーへ渡して合成するのだ～🌱（→ audio/00000.wav, audio/00000.json） -------
+# ラッパーは出力先が空でないと止まるから、作り直しのために先に消すのだ～🌱
+run("rm", "-rf", "$base/audio")
+run("bash", "$base/voicevox-wrapper/synth.sh", "$base/requests.jsonl", "$base/audio")
+
+# --- ラッパーの出力から、尺とカナと口パクの区間を割り出すのだ～🌱 ------------------
+results := []
+kanaOut := []
+morasOut := []
+0 ~ $#script.lines | i => (
+  line := script.lines.(i)
+  q := $*READ("$base/audio/$%05d(i).json")
+  wav := readWav("$base/audio/$%05d(i).wav")
+  d := FLOOR($#wav.data / (wav.channels * wav.bitsPerSample / 8)) / wav.sampleRate
+  results += {i: i; dur: round4(d)}
+  kanaOut += {i: i; speaker: line.speaker; kana: q.kana}
+  morasOut += {i: i; moras: moraSegments(q)}
+  OUT << "$%05d(i) sid=$(line.sid) dur=$%.3f(d) kana=$(q.kana)"
+) >> TO_ARRAY
+
+WRITE("$base/durations.json"; results >> JSON[indent: 1])
+WRITE("$base/kana.json"; kanaOut >> JSON[indent: 1])
+WRITE("$base/moras.json"; morasOut >> JSON[indent: 1])
+OUT << "total speech: $(FLOOR((results() | _.dur >> SUM) * 100 + 0.5) / 100) sec"

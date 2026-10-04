@@ -1,0 +1,87 @@
+# 雑多パートの xa1 が、@USE("common") で読み込んで共有する関数なのだ～🌱（xarpite / API5）
+
+API(5)
+
+# video/ の絶対パスなのだ～🌱
+# RESOLVE は第 1 引数をディレクトリとして扱うから、LOCATION のファイル名の分も 1 階層として数えるのだ～🌱
+# このパートの xa1 が読み書きするパスは、全部これを基準に組むのだ～🌱
+# そうしないと、呼び出し元のカレントディレクトリによって、読み書きする場所が変わっちゃうのだ～🌱
+base := RESOLVE(LOCATION; "../../../..")
+
+fail := message -> (
+  ERR("ERROR: $message")
+  EXIT(1)
+)
+
+# 外部コマンドを実行して、その出力の行の配列を返して、終了コードが 0 でなければ止めるのだ～🌱
+# 同梱の xarpite の EXECL は、終了コードが 0 でないと、子の標準出力も標準エラーも捨てちゃうのだ～🌱
+# だから、bash に包んで、標準エラーを標準出力へ合わせて、終了コードを最後の行で受け取るのだ～🌱
+# 出力が改行で終わらないときも終了コードが別の行になるように、出力の末尾の改行を 1 個にそろえてから流すのだ～🌱
+capture := command -> (
+  lines := [EXECL("bash", "-c", %>out=$("$@" 2>&1); code=$?; [ -n "$out" ] && printf '%s\n' "$out"; echo "$code"<%, "run", command)]
+  exitCode := lines.($#lines - 1)
+  output := lines[0 ~ ($#lines - 1)]
+  exitCode == "0" || (
+    OUT << output()
+    ERR("ERROR: command failed with exit code $exitCode: $(command >> JOIN[" "])")
+    EXIT(1)
+  )
+  output
+)
+
+run := command -> OUT << capture(command)()
+
+# Python の round(x, 4) と同じく、x の正確な値を、小数第 4 位へ偶数丸めするのだ～🌱
+# x * 10000 がちょうど n + 0.5 になったときは、掛け算の丸めで、正確な値がどちら側にあったかが分からなくなるのだ～🌱
+# そのときだけ、x * 32 を上と下の桁に分けて、誤差の出ない掛け算で (2n + 1) / 20000 と比べるのだ～🌱
+round4 := x -> (
+  r := x * 10000
+  n := FLOOR(r)
+  r - n != 0.5 ? FLOOR(r + 0.5) / 10000 : (
+    y := x * 32
+    yh := FLOOR(y * 262144) / 262144
+    s := (yh * 625 - (2 * n + 1)) + (y - yh) * 625
+    (s > 0 || s >= 0 && n % 2 == 1 ? n + 1 : n) / 10000
+  )
+)
+
+# リトルエンディアンの整数を読み書きするのだ～🌱
+u16 := a, i -> a.(i) + a.(i + 1) * 256
+u32 := a, i -> u16(a; i) + u16(a; i + 2) * 65536
+le16 := v -> [v % 256; FLOOR(v / 256) % 256]
+le32 := v -> le16(v % 65536) + le16(FLOOR(v / 65536))
+
+readWav := path -> (
+  a := BLOB.of(READB(path))::toArray()
+  tag := i -> CHAR_CODESD(a[i ~ (i + 4)]())
+  tag(0) == "RIFF" && tag(8) == "WAVE" || fail("not a wav file: $path")
+  wav := {format: NULL; channels: NULL; sampleRate: NULL; bitsPerSample: NULL; data: NULL}
+  pos := 12
+  WHILE [ => wav.data == NULL ] ( =>
+    pos + 8 <= $#a || fail("no data chunk: $path")
+    size := u32(a; pos + 4)
+    tag(pos) == "fmt " && (
+      wav.format = u16(a; pos + 8)
+      wav.channels = u16(a; pos + 10)
+      wav.sampleRate = u32(a; pos + 12)
+      wav.bitsPerSample = u16(a; pos + 22)
+    )
+    tag(pos) == "data" && (wav.data = a[(pos + 8) ~ (pos + 8 + size)])
+    pos = pos + 8 + size + size % 2
+  )
+  wav.sampleRate != NULL || fail("no fmt chunk: $path")
+  wav
+)
+
+{
+  base: base
+  fail: fail
+  capture: capture
+  run: run
+  round4: round4
+  u16: u16
+  u32: u32
+  le16: le16
+  le32: le32
+  readWav: readWav
+}

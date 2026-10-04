@@ -1,0 +1,36 @@
+# =============================================================================
+# build.xa1 — サラセニア寸劇動画の、構成jsonl ができるまでの段の本体なのだ～🌱（xarpite / API5）
+# -----------------------------------------------------------------------------
+# video/main.xa1 の build が USE で読むのだ～🌱
+# 読み書きするパスは、common の base（video/ の絶対パス）を基準に組むのだ～🌱
+# 音声合成・結合（雑多パート）と、動画プロジェクトの構成づくりを、順に呼ぶのだ～🌱
+# 構成jsonl から先（レンダラーと mp4 の合成）は、build.sh の側でやるのだ～🌱
+# =============================================================================
+
+API(5)
+@USE("common")
+
+# --- 0. 雑多パートが使う外部リソース（BGM）の存在を確認するのだ～🌱 ---------------
+#     立ち絵 PSD・フォント・絵文字はプロジェクト側（build_scene.xa1）が確認するのだ～🌱
+# FILE_NAMES のストリームのままだと、@ が部分文字列で探して、隣の *.md5 のファイル名に当たっちゃうのだ～🌱
+# だから、配列にしてから、要素として探すのだ～🌱
+"chopin_op10-4.flac" @ [FILE_NAMES("$base/projects/common/resources/bgm")] || fail("resource not found: projects/common/resources/bgm/chopin_op10-4.flac (place it as described in README.md)")
+
+# --- 1. プロジェクトの台本から script.json を焼くのだ～🌱（script.xa1 → script.json） -----
+# 台本そのものは xa1 の側がコミットされていて、JSON はこの段で作り直すのだ～🌱
+OUT << "== script (2026-04-12-sarracenia) =="
+WRITE("$base/projects/2026-04-12-sarracenia/script.json"; USE("$base/projects/2026-04-12-sarracenia/script") >> JSON[indent: 1])
+
+# --- 2. VOICEVOX で音声を合成するのだ～🌱（プロジェクトの script.json → audio/*.wav, moras.json） ---
+OUT << "== synth (VOICEVOX) =="
+USE("synth")
+
+# --- 3. 各 wav を結合してタイムラインを作るのだ～🌱（→ full.wav, timeline.json） -----------
+OUT << "== assemble =="
+USE("assemble")
+
+# --- 4. 動画プロジェクトで scene を作るのだ～🌱 ------------------------------------
+#        timeline.json を渡すと assets.js・portrait/・frames.jsonl を作るのだ～🌱
+# プロジェクトは自己完結したパートだから、その入口の main.xa1 を、別の xarpite の呼び出しとして叩くのだ～🌱
+OUT << "== build scene (2026-04-12-sarracenia) =="
+run("$base/../xarpite/xarpite", "-A", "5", "-q", "-e", "USE(\"$base/projects/2026-04-12-sarracenia/main\").buildScene()", "$base/timeline.json")

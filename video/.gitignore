@@ -1,0 +1,48 @@
+# =============================================================================
+# 動画ビルドで生成・取得されるファイルは、すべてここで ignore するのだ～🌱
+# コミットするのは各パートの「スクリプト類」「script.json（台本）」「scene.html」
+# 「README」「Makefile」「package.json / package-lock.json」
+# 「外部取得リソースの *.md5」だけなのだ～🌱
+# =============================================================================
+
+# --- 外部取得リソースの実体（著作権の都合でコミットしないのだ～🌱 中身と置き場所は *.md5 が示すのだ～🌱） ---
+projects/common/resources/psd/*.psd
+projects/common/resources/font/*.ttf
+projects/common/resources/font/*.otf
+projects/common/resources/emoji/*.svg
+projects/common/resources/bgm/*.flac
+projects/common/resources/bgm/*.mp3
+projects/common/resources/bgm/*.ogg
+projects/common/resources/bgm/*.wav
+
+# --- Node の依存関係とツール（各パート配下・実体/シンボリックリンクとも） ---
+node_modules/
+/libs
+
+# --- 台本の中間生成物（動画プロジェクトの script.xa1 から、make が作り直すのだ～🌱） ---
+projects/*/script.json
+
+# --- 音声の中間生成物（雑多パート＝video/ 直下で、make が作り直すのだ～🌱） ---
+audio/
+requests.jsonl
+full.wav
+timeline.json
+kana.json
+moras.json
+durations.json
+
+# --- scene の中間生成物（動画プロジェクトの中で、build_scene.xa1 が作り直すのだ～🌱） ---
+projects/*/assets.js
+projects/*/portrait/
+projects/*/frames.jsonl
+
+# --- レンダラーの出力（連番フレーム） ---
+projects/*/frames/
+
+# --- Python バイトコード ---
+__pycache__/
+*.pyc
+
+# --- 完成物 ---
+*.mp4
+*.png
