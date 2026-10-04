@@ -7,7 +7,7 @@ header:
 tags: [ IFR劇場, 磁鉄鉱のツルハシ, 磁鉄鉱, 採掘, ツルハシ, 鉄鉱石, ダイヤモンド鉱石 ]
 ---
 
-![薄暗い洞窟の行き止まりに積もった砂利の奥の壁面に、鉄鉱石が1個だけ露出している様子](magnetite-pickaxe.teaser.webp)
+{% image "magnetite-pickaxe.teaser.webp" alt="薄暗い洞窟の行き止まりに積もった砂利の奥の壁面に、鉄鉱石が1個だけ露出している様子" %}
 {% say tsumugi3:まゆ=困り眉 %}あっ……鉄鉱石が……{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}シャベル……ない！{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}……よし、這って進めば……行けるっ！{% endsay %}
@@ -15,12 +15,12 @@ tags: [ IFR劇場, 磁鉄鉱のツルハシ, 磁鉄鉱, 採掘, ツルハシ, �
 {% space %}
 
 {% say tsumugi3:まゆ=困り眉 %}ぶはっ！！{% endsay %}
-![鉄の原石7個](iron-ore.png)
+{% image "iron-ore.png" alt="鉄の原石7個" %}
 {% say tsumugi3:まゆ=困り眉 %}最悪……口の中までじゃりじゃりする……{% endsay %}
 
 {% space %}
 
-![地面を掘削中の深層岩の大空洞の一角の様子](cave-entrance.webp)
+{% image "cave-entrance.webp" alt="地面を掘削中の深層岩の大空洞の一角の様子" %}
 {% say null %}コツ コツ コツ コツ（採掘の音）{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}ただいまー……{% endsay %}
 {% say zundamon23 %}つむぎ？すごい顔になってるのだ。{% endsay %}
@@ -29,7 +29,7 @@ tags: [ IFR劇場, 磁鉄鉱のツルハシ, 磁鉄鉱, 採掘, ツルハシ, �
 {% say null %}コツ コツ コツ コツ（採掘の音）{% endsay %}
 {% say tsumugi3:口=わあ %}……ん？ねえ、センパイが掘ったやつ、勝手にそっちに飛んでってない？{% endsay %}
 {% say zundamon23 %}磁鉄鉱のツルハシなのだ。{% endsay %}
-![木の柄の先に光沢のある黒色のヘッドが付いた磁鉄鉱のツルハシ](magnetite-pickaxe.png)
+{% image "magnetite-pickaxe.png" alt="木の柄の先に光沢のある黒色のヘッドが付いた磁鉄鉱のツルハシ" %}
 {% say zundamon23 %}これで掘ると、掘ったものがすぐ手元に来るのだ。{% endsay %}
 {% say tsumugi3:口=わあーい %}えっ！？いちいち拾いに行かなくていいの！？見せて！！！！！！{% endsay %}
 {% say zundamon23 %}え、ちょ——{% endsay %}
@@ -38,7 +38,7 @@ tags: [ IFR劇場, 磁鉄鉱のツルハシ, 磁鉄鉱, 採掘, ツルハシ, �
 
 {% say tsumugi3:口=わあーい %}えいっ！{% endsay %}
 {% say tsumugi3:口=わあーい %}……わっ、ほんとに来た！{% endsay %}
-![水流の下に1マスの穴がある、松明で照らされた薄暗い深層岩の大空洞内の様子](dark-cave-torches.webp)
+{% image "dark-cave-torches.webp" alt="水流の下に1マスの穴がある、松明で照らされた薄暗い深層岩の大空洞内の様子" %}
 {% say tsumugi3:口=わあーい %}遠いとこのやつも来る！！{% endsay %}
 {% say tsumugi3:口=わあーい %}上も下も水中のもちゃんと手元に来る！超便利じゃん！！これ！！{% endsay %}
 {% say zundamon23 %}……もう、つむぎにあげるのだ……{% endsay %}
@@ -47,7 +47,7 @@ tags: [ IFR劇場, 磁鉄鉱のツルハシ, 磁鉄鉱, 採掘, ツルハシ, �
 
 {% say null %}コツ コツ コツ コツ（採掘の音）{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}ただいまー！！{% endsay %}
-![磁鉄鉱のツルハシ](magnetite-pickaxe.png)
+{% image "magnetite-pickaxe.png" alt="磁鉄鉱のツルハシ" %}
 {% say tsumugi3 %}――あれ？センパイそのツルハシ2本目？{% endsay %}
 {% say zundamon23 %}2本目なのだ。つむぎが取ると思ったから多めに磁鉄鉱を持って来ておいたのだ。{% endsay %}
 {% say tsumugi3 %}あはは！バレてた！{% endsay %}
@@ -58,11 +58,11 @@ tags: [ IFR劇場, 磁鉄鉱のツルハシ, 磁鉄鉱, 採掘, ツルハシ, �
 {% space %}
 
 {% say tsumugi3:口=わあーい %}センパーイ！見て！！洞窟ぐるっと回っちゃった！めっちゃサクサク取れた！{% endsay %}
-![石炭23個、銅の原石45個、鉄の原石13個、金の原石3個、レッドストーンダスト23個](mining-loot.png)
+{% image "mining-loot.png" alt="石炭23個、銅の原石45個、鉄の原石13個、金の原石3個、レッドストーンダスト23個" %}
 {% say zundamon23 %}洞窟も明るくなったのだ。{% endsay %}
 {% say tsumugi3:口=わあ %}ほんと、さっきまであんなに薄暗かったのに。{% endsay %}
 {% say tsumugi3:口=わあ %}――あっ！センパイ！見て、あそこ！溶岩の上！！{% endsay %}
-![洞窟の奥の溶岩で水没した部分の天井に埋まるダイヤモンド鉱石の様子](lava-pool.webp)
+{% image "lava-pool.webp" alt="洞窟の奥の溶岩で水没した部分の天井に埋まるダイヤモンド鉱石の様子" %}
 {% say zundamon23 %}……ダイヤモンド鉱石なのだ。{% endsay %}
 {% say tsumugi3:口=わあーい %}ちょっと掘ってくる！！{% endsay %}
 {% say zundamon23 %}つむぎ、待つのだ——{% endsay %}

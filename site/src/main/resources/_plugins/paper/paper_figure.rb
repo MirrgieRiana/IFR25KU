@@ -33,6 +33,8 @@
 #
 #   <figure class="paper__figure">
 #   <img src="（画像のパス）" alt="（代替テキスト、無ければキャプション）">
+#
+#   img 要素の組み立ては image.rb の Images.render_img へ委譲する。
 #   <figcaption class="paper__caption" markdown="span">（キャプション）</figcaption>
 #   </figure>
 #
@@ -58,7 +60,7 @@ module Paper
       class_names = @actual_size ? "paper__figure paper__figure--actual-size" : "paper__figure"
       <<~HTML
         <figure class="#{class_names}">
-        <img src="#{@source}" alt="#{@alt}">
+        #{Images.render_img(context, @source, alt: @alt)}
         #{caption_html}</figure>
       HTML
     end

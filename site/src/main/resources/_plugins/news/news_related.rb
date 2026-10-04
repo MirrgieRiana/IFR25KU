@@ -63,7 +63,7 @@ module News
     # サムネイルを持たない記事でも、カードの高さを揃えるために枠だけは置く。
     def render_card(site, post)
       teaser = post.data.dig("header", "teaser")
-      image_html = teaser ? %(<img src="#{site.baseurl}#{teaser}" alt="">) : ""
+      image_html = teaser ? Images.render_img_with_baseurl(site.baseurl, teaser) : ""
       <<~HTML
         <a href="#{site.baseurl}#{post.url}" class="recent-posts__card">
         <div class="recent-posts__teaser">#{image_html}</div>

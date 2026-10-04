@@ -12,7 +12,7 @@
     <a href="{{ post.url | relative_url }}" class="recent-posts__card">
       <div class="recent-posts__teaser">
         {% if post.header.teaser %}
-        <img src="{{ post.header.teaser | relative_url }}" alt="{{ post.title | escape }}">
+        {% image post.header.teaser alt="{{ post.title }}" %}
         {% endif %}
       </div>
       <div class="recent-posts__body">
