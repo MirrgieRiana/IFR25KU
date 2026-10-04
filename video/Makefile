@@ -35,9 +35,9 @@ BGM_VOL ?= 0.45
 all: movie
 
 # --- 構成jsonl ができるまでの段なのだ～🌱 ----------------------------------------
-# main.xa1 は、第 1 引数の絶対パスを基準に INC を解決して、読み書きのパスもそこから組むのだ～🌱
+# main.xa1 は、自分の居場所から video/ を解決して、INC と読み書きのパスをそこから組むのだ～🌱
 scene:
-	$(XARPITE) -A 5 -q -e 'USE("$(VIDEO)/main").build()' $(VIDEO)
+	$(XARPITE) -A 5 -q -e 'USE("$(VIDEO)/main").build()'
 
 # --- 汎用レンダラーで 1 フレームずつ撮る段なのだ～🌱 -----------------------------
 # render.sh が、Node の依存と Chromium の用意も面倒を見るのだ～🌱

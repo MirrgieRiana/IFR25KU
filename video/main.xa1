@@ -4,19 +4,15 @@
 # Makefile やシェルスクリプトは、ここが返すオブジェクトの関数を呼ぶのだ～🌱
 # 処理の本体は src/main/xa1/ の中にあって、ここから INC 経由で USE するのだ～🌱
 #
-# 引数：
-#   ARGS.0 … video/ の絶対パス（省略時はカレントディレクトリ）なのだ～🌱
-#
 # 呼び出しの例：
-#   xarpite -A 5 -q -e 'USE("/abs/video/main").build()' /abs/video
+#   xarpite -A 5 -q -e 'USE("/abs/video/main").build()'
 # =============================================================================
 
 API(5)
 
 # INC の相対パスはカレントディレクトリを基準に解決されるから、絶対パスへ直してから登録するのだ～🌱
-# これで、src/main/xa1/ の中の xa1 は、呼び出し元の居場所に関わらず USE("名前") で届くのだ～🌱
-base := ARGS.0 ?: PWD
-INC += "$base/src/main/xa1"
+# LOCATION はこのファイル自身のパスだから、その親を取れば、呼び出し元の居場所に関わらず video/ が得られるのだ～🌱
+INC += RESOLVE(LOCATION; "../src/main/xa1")
 
 {
   build: () -> USE("build")
