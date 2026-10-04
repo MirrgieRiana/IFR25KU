@@ -1,7 +1,7 @@
 # =============================================================================
 # build_scene.xa1 — サラセニア寸劇の「構成」を作る処理の本体なのだ～🌱（xarpite / API5）
 # -----------------------------------------------------------------------------
-# build_scene.sh が、このディレクトリ（projects/2026-04-12-sarracenia/）へ cd してから呼ぶのだ～🌱
+# このディレクトリの main.xa1 の buildScene が、INC 経由で USE で読むのだ～🌱
 # タイムラインを受け取って、レンダラーに渡す材料を、ぜんぶ作るのだ～🌱
 #
 # 引数：
@@ -14,7 +14,12 @@
 
 API(5)
 
-timelinePath := ARGS.0 ?: "../../timeline.json"
+# このプロジェクトのディレクトリの絶対パスなのだ～🌱
+# RESOLVE は第 1 引数をディレクトリとして扱うから、LOCATION のファイル名の分も 1 階層として数えるのだ～🌱
+# 読み書きするパスは、全部これを基準に組むから、どのディレクトリから呼んでも同じ場所を触るのだ～🌱
+base := RESOLVE(LOCATION; "..")
+
+timelinePath := ARGS.0 ?: "$base/../../timeline.json"
 
 # 構成jsonl の各行の template に入れる、この動画のテンプレートなのだ～🌱
 # レンダラーは、frames.jsonl のあるディレクトリ（ここ）を基準に解決するのだ～🌱
@@ -57,11 +62,11 @@ need := dir, name -> (
     EXIT(1)
   )
 )
-need("../common/resources/psd"; "zundamon23.psd")
-need("../common/resources/psd"; "tsumugi3.psd")
-need("../common/resources/font"; "ZenMaruGothic-Black.ttf")
-need("../common/resources/font"; "ZenMaruGothic-Bold.ttf")
-need("../common/resources/emoji"; "seedling.svg")
+need("$base/../common/resources/psd"; "zundamon23.psd")
+need("$base/../common/resources/psd"; "tsumugi3.psd")
+need("$base/../common/resources/font"; "ZenMaruGothic-Black.ttf")
+need("$base/../common/resources/font"; "ZenMaruGothic-Bold.ttf")
+need("$base/../common/resources/emoji"; "seedling.svg")
 
 # --- 1. scene.html が読む assets.js を焼くのだ～🌱（絵文字・テクスチャのパス・タイムライン） ---
 # レンダリングは Chromium に file://.../scene.html を開かせて 1 フレームずつ撮る方式なのだ～🌱
@@ -82,19 +87,19 @@ assets := {
   bg: "$TEX/textures/block/haimeviska_log.png"
   # seedling はパスではなく「生の SVG 文字列」なのだ～🌱
   # scene.html が innerHTML に直接差し込むのだ～🌱
-  seedling: READ("../common/resources/emoji/seedling.svg")::replace(/^\s+|\s+$/g; "")
+  seedling: READ("$base/../common/resources/emoji/seedling.svg")::replace(/^\s+|\s+$/g; "")
 }
 timeline := $*READ(timelinePath)
 
-WRITE("assets.js"; "window.ASSETS=$(assets >> JSON[indent: NULL]);\nwindow.TIMELINE=$(timeline >> JSON[indent: NULL]);\n")
+WRITE("$base/assets.js"; "window.ASSETS=$(assets >> JSON[indent: NULL]);\nwindow.TIMELINE=$(timeline >> JSON[indent: NULL]);\n")
 OUT << "baked assets.js: $(assets() | _.0 >> JOIN[", "])"
 OUT << "  timeline: total= $(timeline.total) lines= $($#timeline.lines)"
 
 # --- 2. 立ち絵 PSD から必要なレイヤーを PNG に切り出すのだ～🌱（→ portrait/<char>/<id>.png） -----
 OUT << "== extract portrait =="
 # 切り出しのツールは、レンダラーと同じく video/ 直下の兄弟で、Node 依存も自分で面倒を見るのだ～🌱
-run("bash", "../../extract-portrait/extract-portrait.sh", "zundamon", "../common/resources/psd/zundamon23.psd", ZUNDA_IDS, "portrait/zundamon")
-run("bash", "../../extract-portrait/extract-portrait.sh", "tsumugi", "../common/resources/psd/tsumugi3.psd", TSUMUGI_IDS, "portrait/tsumugi")
+run("bash", "$base/../../extract-portrait/extract-portrait.sh", "zundamon", "$base/../common/resources/psd/zundamon23.psd", ZUNDA_IDS, "$base/portrait/zundamon")
+run("bash", "$base/../../extract-portrait/extract-portrait.sh", "tsumugi", "$base/../common/resources/psd/tsumugi3.psd", TSUMUGI_IDS, "$base/portrait/tsumugi")
 
 # --- 3. 構成jsonl を組み立てるのだ～🌱（→ frames.jsonl） -------------------------
 # 各行は、そのフレームの見た目を決めるパラメータなのだ～🌱
@@ -152,7 +157,7 @@ speakingLine := t -> (
 )
 
 # 沼地の背景は、泥沼のクロスフェードの下敷きだから、swampOp はずっと 1 なのだ～🌱
-WRITE["frames.jsonl"] << 0 ~ frameCount | i => (
+WRITE["$base/frames.jsonl"] << 0 ~ frameCount | i => (
   t := i / FPS
   so := subOp(t)
   sp := speakingLine(t)

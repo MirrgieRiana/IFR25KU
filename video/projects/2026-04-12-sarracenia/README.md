@@ -9,7 +9,7 @@
 ## 使い方なのだ～🌱
 
 ```sh
-bash build_scene.sh [timeline.json]
+../../../xarpite/xarpite -A 5 -q -e 'USE("$PWD/main").buildScene()' [timeline.json]
 ```
 
 - 引数はタイムラインのパスで、省略すると `../../timeline.json` を見るのだ～🌱 中には、尺と台詞の区間とシーンとアイテムが入っているのだ～🌱
@@ -20,7 +20,7 @@ bash build_scene.sh [timeline.json]
 
 | ファイル | 役割 |
 | --- | --- |
-| `build_scene.sh` | このパートの入口なのだ～🌱 このディレクトリへ cd して、`build_scene.xa1` を呼ぶだけなのだ～🌱 |
+| `main.xa1` | このパートの入口なのだ～🌱`build_scene.xa1` を呼ぶ関数を返すだけなのだ～🌱 |
 | `build_scene.xa1` | 処理の本体なのだ～🌱 リソースの確認と、絵文字とテクスチャのパスとタイムラインを束ねた `assets.js` の焼き込みと、`extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をまとめるのだ～🌱 |
 | `script.xa1` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義して、`script.json` として焼かれるのだ～🌱 |
 | `scene.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 |
@@ -47,3 +47,4 @@ bash build_scene.sh [timeline.json]
 
 `npm install` で、立ち絵の切り出しに使う `ag-psd` と `pngjs` が入るのだ～🌱
 `build_scene.xa1` は、リポジトリ同梱の xarpite（`../../../xarpite/`）で動くのだ～🌱
+読み書きするパスは、`main.xa1` と同じく、自分の `LOCATION` から解決した絶対パスを基準にするから、どのディレクトリから呼んでもいいのだ～🌱

@@ -31,5 +31,6 @@ USE("assemble")
 
 # --- 4. 動画プロジェクトで scene を作るのだ～🌱 ------------------------------------
 #        timeline.json を渡すと assets.js・portrait/・frames.jsonl を作るのだ～🌱
+# プロジェクトは自己完結したパートだから、その入口の main.xa1 を、別の xarpite の呼び出しとして叩くのだ～🌱
 OUT << "== build scene (2026-04-12-sarracenia) =="
-run("bash", "$base/projects/2026-04-12-sarracenia/build_scene.sh", "$base/timeline.json")
+run("$base/../xarpite/xarpite", "-A", "5", "-q", "-e", "USE(\"$base/projects/2026-04-12-sarracenia/main\").buildScene()", "$base/timeline.json")

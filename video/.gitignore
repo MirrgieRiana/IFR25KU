@@ -1,7 +1,7 @@
 # =============================================================================
 # 動画ビルドで生成・取得されるファイルは、すべてここで ignore するのだ～🌱
 # コミットするのは各パートの「スクリプト類」「script.json（台本）」「scene.html」
-# 「README」「Makefile / build_scene.sh」「package.json / package-lock.json」
+# 「README」「Makefile」「package.json / package-lock.json」
 # 「外部取得リソースの *.md5」だけなのだ～🌱
 # =============================================================================
 
@@ -30,7 +30,7 @@ kana.json
 moras.json
 durations.json
 
-# --- scene の中間生成物（動画プロジェクトの中で、build_scene.sh が作り直すのだ～🌱） ---
+# --- scene の中間生成物（動画プロジェクトの中で、build_scene.xa1 が作り直すのだ～🌱） ---
 projects/*/assets.js
 projects/*/portrait/
 projects/*/frames.jsonl

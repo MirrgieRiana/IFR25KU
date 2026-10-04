@@ -68,7 +68,7 @@ timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.
 | --- | --- |
 | `Makefile` | 下記すべてを順に呼び出す段を並べたものなのだ～🌱 **ふつうは `make` を実行するだけ**なのだ～🌱 |
 | `main.xa1` | `Makefile` から呼ぶ関数を返す入口なのだ～🌱 第 1 引数で受け取った `video/` の絶対パスを基準に、`INC` と読み書きのパスを組むのだ～🌱 |
-| `src/main/xa1/build.xa1` | `main.xa1` の `build` が呼ぶ、構成jsonl ができるまでの段（BGM の確認・`synth.xa1`・`assemble.xa1`・プロジェクトの `build_scene.sh`）の本体なのだ～🌱 |
+| `src/main/xa1/build.xa1` | `main.xa1` の `build` が呼ぶ、構成jsonl ができるまでの段（BGM の確認・台本の焼き込み・`synth.xa1`・`assemble.xa1`・プロジェクトの `main.xa1`）の本体なのだ～🌱 |
 | `src/main/xa1/synth.xa1` | VOICEVOX で台詞ごとの音声を合成して、口パク用のモーラ区間も書き出すのだ～🌱 |
 | `src/main/xa1/assemble.xa1` | 台詞 wav を、タイトル、本編（行間の無音）、クレジットの順に結合して、タイムラインを算出するのだ～🌱 |
 | `src/main/xa1/common.xa1` | `synth.xa1` と `assemble.xa1` が共有する関数（外部コマンドの実行・丸め・wav の読み出し）なのだ～🌱 |
@@ -94,7 +94,7 @@ timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.
 
 | ファイル | 役割 |
 | --- | --- |
-| `build_scene.sh` | タイムラインを受け取って、`assets.js` と `portrait/` と `frames.jsonl` を作る、このパートの入口なのだ～🌱 このディレクトリへ cd して `build_scene.xa1` を呼ぶだけなのだ～🌱 |
+| `main.xa1` | タイムラインを受け取って、`assets.js` と `portrait/` と `frames.jsonl` を作る、このパートの入口なのだ～🌱`build_scene.xa1` を呼ぶ関数を返すだけなのだ～🌱 |
 | `build_scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
 | `script.xa1` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義して、`script.json` として焼かれるのだ～🌱 |
 | `scene.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 |
