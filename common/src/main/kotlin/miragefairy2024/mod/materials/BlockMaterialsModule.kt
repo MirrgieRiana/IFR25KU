@@ -1014,8 +1014,7 @@ open class BlockMaterialCard(
             item.registerBlockGeneratedModelGeneration(block)
             block.registerFlammable(60, 100)
             Feature.FLOWER.generator(identifier) {
-                // 妖精の森の夜を一面ほんのり照らすために、幻花ファントムの塊よりも多くの株を含む塊を、1 チャンクに 3 回配置するのだ～🌱
-                registerConfiguredFeature("cluster") { RandomPatchConfiguration(24, 7, 3, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(block())))) }.generator {
+                registerConfiguredFeature("cluster") { RandomPatchConfiguration(4, 7, 3, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(block())))) }.generator {
                     registerPlacedFeature("cluster") { count(3) + flower(square, surface) }.placeWhenVegetalDecoration { +FairyForestBiomeCard.key }
                 }
             }
