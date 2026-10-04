@@ -104,7 +104,8 @@ run("bash", "$base/../../extract-portrait/extract-portrait.sh", "tsumugi", "$bas
 # --- 3. 構成jsonl を組み立てるのだ～🌱（→ frames.jsonl） -------------------------
 # 各行は、そのフレームの見た目を決めるパラメータなのだ～🌱
 # 背景とアイテム枠の不透明度は、ここで計算して渡すのだ～🌱
-# 残りの要素は、まだ scene.html の seek(t) がタイムラインを見て組み立てるから、時刻 t も渡すのだ～🌱
+# 台詞ごとのポーズも、ここで決めて渡すのだ～🌱
+# 字幕の中身は、まだ scene.html の seek(t) がタイムラインを見て組み立てるから、時刻 t も渡すのだ～🌱
 OUT << "== compose frames.jsonl =="
 total := timeline.total
 frameCount := -FLOOR(-(total * FPS))
@@ -133,6 +134,31 @@ subOp := t -> (
   lns := activeLines(t)
   op := $#lns > 0 ? clamp(MIN((t - lns.0.start) / 0.12; (lns.0.subEnd + 0.05 - t) / 0.15); 0; 1) : 0
   (openOp(t) > 0.5 ? 0 : op) * creditGate(t)
+)
+
+# 台詞ごとのポーズ（眉・腕・汗）なのだ～🌱
+# 並びは timeline.lines と対応して、値は scene.html の pg キーなのだ～🌱
+# sweat のキーを持つものだけ、汗を出すのだ～🌱
+# 導入部（開幕のデカ字サムネから初回発話まで）は、サムネのキメ姿勢なのだ～🌱
+POSE_DEFAULT := {t: {brow: "cheer"; armR: "point"; armL: "base"}; z: {brow: "sad"; armR: "base"; armL: "base"}}
+POSES := [
+  {t: {brow: "cheer"; armR: "mouth"; armL: "base"}; z: {brow: "normal"; armR: "base"; armL: "base"}}
+  {t: {brow: "cheer"; armR: "base"; armL: "base"}; z: {brow: "normal"; armR: "point"; armL: "base"}}
+  {t: {brow: "cheer"; armR: "point"; armL: "base"}; z: {brow: "normal"; armR: "base"; armL: "base"}}
+  {t: {brow: "sad"; armR: "mouth"; armL: "base"}; z: {brow: "normal"; armR: "base"; armL: "base"}}
+  {t: {brow: "sad"; armR: "mouth"; armL: "base"}; z: {brow: "up"; armR: "raise"; armL: "base"}}
+  {t: {brow: "sad"; armR: "base"; armL: "base"; sweat: 1}; z: {brow: "normal"; armR: "base"; armL: "base"}}
+  {t: {brow: "sad"; armR: "base"; armL: "base"}; z: {brow: "normal"; armR: "base"; armL: "think"}}
+  {t: {brow: "angry"; armR: "mouth"; armL: "base"; sweat: 1}; z: {brow: "normal"; armR: "base"; armL: "base"}}
+  {t: {brow: "sad"; armR: "base"; armL: "base"}; z: {brow: "normal"; armR: "mouth"; armL: "base"}}
+  {t: {brow: "cheer"; armR: "mouth"; armL: "base"}; z: {brow: "normal"; armR: "base"; armL: "base"}}
+  {t: {brow: "cheer"; armR: "point"; armL: "base"}; z: {brow: "sad"; armR: "base"; armL: "base"}}
+  {t: {brow: "cheer"; armR: "point"; armL: "base"}; z: {brow: "sad"; armR: "base"; armL: "base"}}
+]
+# ポーズは「その時点で始まっている最後の台詞」で決めて、台詞の合間もそのまま保つのだ～🌱
+poseAt := t -> (
+  hits := [0 ~ $#timeline.lines >> FILTER[k => t >= timeline.lines.(k).start]]
+  $#hits > 0 ? POSES.(hits(-1)) : POSE_DEFAULT
 )
 
 # 母音から口の開きを決めるのだ～🌱
@@ -169,6 +195,7 @@ WRITE["$base/frames.jsonl"] << 0 ~ frameCount | i => (
     subOp: so; scrimOp: so * 0.85
     zMouth: spk == "z" ? mouthAt(sp; t) : "closed"; tMouth: spk == "t" ? mouthAt(sp; t) : "closed"
     zBlink: blinkAt(t; 3.4; 1.5; 0.12); tBlink: blinkAt(t; 4.1; 1.7; 0.12)
+    tPose: poseAt(t).t; zPose: poseAt(t).z
   }
 ) >> JSONL >> LINESD
 OUT << "composed frames.jsonl: $frameCount frames (total=$(total)s @ $(FPS)fps)"

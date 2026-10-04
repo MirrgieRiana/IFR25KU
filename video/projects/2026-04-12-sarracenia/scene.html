@@ -197,25 +197,6 @@ function buildPortrait(el, character){
   });
   el.innerHTML=html;
 }
-// 台詞ごとのポーズ（眉・腕・汗）なのだ～🌱 喋る側もきく側も、その場面の感情に合わせて姿勢を変えるのだ～🌱
-// index は TL.lines と対応して、値は上の pg key なのだ～🌱 sweat:1 で汗を出すのだ～🌱
-// BG(v10)：導入部（開幕＝デカ字サムネ〜初回発話まで）は、サムネのキメ姿勢なのだ～🌱
-//   つむぎ＝得意げに指差し／ずんだ＝やれやれの困り眉なのだ～🌱 フレーム0がこの姿でXのサムネになるのだ～🌱
-const POSE_DEFAULT = {t:{brow:'cheer',armR:'point',armL:'base'}, z:{brow:'sad',armR:'base',armL:'base'}};
-const POSES = [
-  {t:{brow:'cheer',armR:'mouth',armL:'base'}, z:{brow:'normal',armR:'base',armL:'base'}},
-  {t:{brow:'cheer',armR:'base',armL:'base'},  z:{brow:'normal',armR:'point',armL:'base'}},
-  {t:{brow:'cheer',armR:'point',armL:'base'}, z:{brow:'normal',armR:'base',armL:'base'}},
-  {t:{brow:'sad',armR:'mouth',armL:'base'},   z:{brow:'normal',armR:'base',armL:'base'}},
-  {t:{brow:'sad',armR:'mouth',armL:'base'},   z:{brow:'up',armR:'raise',armL:'base'}},
-  {t:{brow:'sad',armR:'base',armL:'base',sweat:1}, z:{brow:'normal',armR:'base',armL:'base'}},
-  {t:{brow:'sad',armR:'base',armL:'base'},    z:{brow:'normal',armR:'base',armL:'think'}},
-  {t:{brow:'angry',armR:'mouth',armL:'base',sweat:1}, z:{brow:'normal',armR:'base',armL:'base'}},
-  {t:{brow:'sad',armR:'base',armL:'base'},    z:{brow:'normal',armR:'mouth',armL:'base'}},
-  {t:{brow:'cheer',armR:'mouth',armL:'base'}, z:{brow:'normal',armR:'base',armL:'base'}},
-  {t:{brow:'cheer',armR:'point',armL:'base'}, z:{brow:'sad',armR:'base',armL:'base'}},
-  {t:{brow:'cheer',armR:'point',armL:'base'}, z:{brow:'sad',armR:'base',armL:'base'}},
-];
 function setPose(el, p){
   ['brow','armR','armL'].forEach(g=>{
     el.querySelectorAll('.pg-'+g).forEach(e=>e.style.display='none');
@@ -296,12 +277,6 @@ window.seek = function(t){
   //   デカ字のフィットは、フォントが載ってから測る必要があるので、最初の seek のときに一度だけ実行するのだ～🌱
   //   （render.js は document.fonts.ready を待ってから seek するので、初回 seek 時点でフォントは載っているのだ～🌱）
   if(!window.__thumbFit){ fitThumb('#thumbTop',980,150); fitThumb('#thumbBot',1180,150); window.__thumbFit=true; }
-  // BF：台詞ごとに眉・腕・汗を切り替えるのだ～🌱ポーズは「その時点で始まっている最後の台詞」で決めて、
-  // 台詞の合間もそのまま保つのだ～🌱（poseIdx<0 の導入部は POSE_DEFAULT の落ち着いた立ち姿なのだ～🌱）
-  let poseIdx=-1;
-  for(let k=0;k<TL.lines.length;k++){ if(t>=TL.lines[k].start) poseIdx=k; else break; }
-  const pose = poseIdx>=0 ? POSES[poseIdx] : POSE_DEFAULT;
-  setPose(elT, pose.t); setPose(elZ, pose.z);
   // 字幕（台詞区間だけ表示、行間は消して「間」を作るのだ～🌱）
   let active=null;
   for(const ln of TL.lines){ if(t>=ln.start && t<ln.subEnd){ active=ln; break; } }
@@ -330,12 +305,15 @@ function fitThumb(sel, maxW, maxH){
 // 不透明度は、build_scene.xa1 が構成の各行に書いた値を、そのまま当てるのだ～🌱
 // BE で、立ち絵は最初のフレームからクレジット手前まで固定表示にしたから、サムネにも立ち絵が出るのだ～🌱
 // BC で、字幕を覆う横帯は、字幕と連動させずに本編のあいだ出すようにしたから、タイトル中は出ないのだ～🌱
-// ポーズと字幕の中身は、まだ seek(t) がタイムラインから組み立てるのだ～🌱
+// 字幕の中身は、まだ seek(t) がタイムラインから組み立てるのだ～🌱
 // その seek は、構成の各行の値を当てる前に呼ぶのだ～🌱
 window.applyFrame = function(frame){
   // seek を先に呼ぶのだ～🌱 初回の seek が走らせる fitThumb が font-size を先に置くから、
   // こうしておくと、style 属性の中のプロパティの並びが、移す前とそろうのだ～🌱
   window.seek(frame.t);
+  // 眉と腕と汗は、台詞ごとのポーズなのだ～🌱
+  setPose(elT, frame.tPose);
+  setPose(elZ, frame.zPose);
   // 喋っている側だけ口が動いて、両者はそれぞれの周期で瞬きするのだ～🌱
   setFace(elZ, frame.zMouth, frame.zBlink);
   setFace(elT, frame.tMouth, frame.tBlink);
