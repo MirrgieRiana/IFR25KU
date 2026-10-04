@@ -46,10 +46,6 @@ private fun resolveFrontMatterImagePaths(value: Any?, imageDir: String): Any? = 
     else -> value
 }
 
-// 本文で記事のディレクトリの中を指すパスのうち、. から始めたものを捕まえるのだ～🌱
-// Markdown のリンクの行き先と、Liquid のタグの引数や HTML の属性の値の、2 つの形に当たるのだ～🌱
-private val bodyImagePathRegex = Regex("""(?<=]\(|")(\.[^)"\s]*)""")
-
 fun rewriteFrontMatter(content: String, sourcePath: String, imageDir: String): String {
     val match = frontMatterRegex.find(content) ?: return content
 
@@ -59,9 +55,9 @@ fun rewriteFrontMatter(content: String, sourcePath: String, imageDir: String): S
     @Suppress("UNCHECKED_CAST")
     val resolved = resolveFrontMatterImagePaths(frontMatter, imageDir) as Map<String, Any?>
     // 配置先が平らになって元のディレクトリ名が失われるから、footer の source のリンクのために、元のパスを front matter へ書き足すのだ～🌱
-    val rewritten = resolved + ("source_path" to sourcePath)
-    val body = bodyImagePathRegex.replace(content.substring(match.range.last + 1)) { File(imageDir, it.value).normalize().invariantSeparatorsPath }
-    return "---\n${Yaml(frontMatterDumperOptions).dump(rewritten)}---\n$body"
+    // 本文の画像のパスは Liquid のプラグインが解決するから、その基準になる配置先も書き足すのだ～🌱
+    val rewritten = resolved + ("source_path" to sourcePath) + ("image_dir" to imageDir)
+    return "---\n${Yaml(frontMatterDumperOptions).dump(rewritten)}---\n${content.substring(match.range.last + 1)}"
 }
 
 // front matter を YAML として読み直して書き戻すのだ～🌱

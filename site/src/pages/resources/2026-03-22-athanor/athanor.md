@@ -7,15 +7,15 @@ header:
 tags: [ IFR劇場, アタノール, パン, 固形燃料, 砂糖, ハイメヴィスカの樹液, ヴェロペデリコラ ]
 ---
 
-![青空の下の草原に据えられ、正面に焚口が開き、上へ煙突が伸びた赤褐色のレンガ造りのアタノール](./athanor.teaser.webp)
+{% image "./athanor.teaser.webp" alt="青空の下の草原に据えられ、正面に焚口が開き、上へ煙突が伸びた赤褐色のレンガ造りのアタノール" %}
 {% say tsumugi3 %}センパーイ！あーしもアタノール使ってんだけどさ！{% endsay %}
 {% say zundamon23 %}お、やってるのだ。何作ってるのだ？{% endsay %}
 {% say tsumugi3:口=わあーい %}パン！ちゃんとパンになったよ！{% endsay %}
-![小麦と水入り瓶から10秒でパンを2個作るアタノールのレシピ](./recipe-bread.png)
+{% image "./recipe-bread.png" alt="小麦と水入り瓶から10秒でパンを2個作るアタノールのレシピ" %}
 {% say zundamon23:口=ほほえみ %}パンは基本なのだ。{% endsay %}
 {% say tsumugi3 %}……ん？ねえセンパイ、なんか甘い匂いしない？{% endsay %}
 {% say zundamon23 %}ああ、ボクの方なのだ。ちょっと別のものを作ってるのだ。{% endsay %}
-![砂糖8個とハイメヴィスカの樹液4個とヴェロペデリコラから60秒で固形燃料を8個作るアタノールのレシピ](./recipe-solid-fuel.png)
+{% image "./recipe-solid-fuel.png" alt="砂糖8個とハイメヴィスカの樹液4個とヴェロペデリコラから60秒で固形燃料を8個作るアタノールのレシピ" %}
 {% say tsumugi3:口=わあ %}すっごいキャラメルみたいな匂い！何それ！？{% endsay %}
 {% say zundamon23 %}砂糖と樹液を煮詰めたものにヴェロペダ酒を混ぜてるのだ。{% endsay %}
 {% say tsumugi3 %}お砂糖……メープルシロップ……？{% endsay %}
@@ -33,7 +33,7 @@ tags: [ IFR劇場, アタノール, パン, 固形燃料, 砂糖, ハイメヴ�
 
 {% space %}
 
-![砂糖56個、ハイメヴィスカの樹液60個、ヴェロペデリコラ63個を加工中のアタノールのGUI](./athanor-processing.png)
+{% image "./athanor-processing.png" alt="砂糖56個、ハイメヴィスカの樹液60個、ヴェロペデリコラ63個を加工中のアタノールのGUI" %}
 {% say tsumugi3 %}……あとは炉に全部任せればいいんだよね？{% endsay %}
 {% say zundamon23 %}……そうなのだ。{% endsay %}
 {% say tsumugi3:口=にしー %}パンに塗ったら最高だろうな～！{% endsay %}
@@ -42,7 +42,7 @@ tags: [ IFR劇場, アタノール, パン, 固形燃料, 砂糖, ハイメヴ�
 {% space %}
 
 {% say tsumugi3:口=わあ %}あっ、できた！すっごいキャラメル色！{% endsay %}
-![キャラメルのようなオレンジ色の立方体状をした固形燃料](./solid-fuel.png)
+{% image "./solid-fuel.png" alt="キャラメルのようなオレンジ色の立方体状をした固形燃料" %}
 {% say tsumugi3 %}匂いもやばい。絶対おいしいやつだよ、これ！{% endsay %}
 {% say tsumugi3:口=わあーい %}焼きたてのパンに乗っけてー……いっただっきまーす♪{% endsay %}
 {% say tsumugi3 %}…………{% endsay %}
