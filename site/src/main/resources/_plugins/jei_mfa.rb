@@ -53,8 +53,8 @@ module JeiMfa
 
     private
 
-    # 入力アイテムの名前を、縦に並べた段落として出力する。
-    # markdown="1" の中では空行が段落の区切りになってしまうから、HTMLを直接組んで、間に空行を挟まない。
+    # 入力アイテムの名前を、縦に並べた段落として出力するのだ～🌱
+    # markdown="1" の中では空行が段落の区切りになってしまうから、HTMLを直接書いて、間に空行を挟まないのだ～🌱
     def render_ingredients
       return "" if @ingredients.empty?
 
