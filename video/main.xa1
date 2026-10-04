@@ -16,4 +16,5 @@ INC += RESOLVE(LOCATION; "../src/main/xa1")
 
 {
   build: () -> USE("build")
+  movie: () -> USE("movie")
 }

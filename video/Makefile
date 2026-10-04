@@ -9,12 +9,12 @@
 # 段の並びなのだ～🌱：
 #   scene  … main.xa1 の build（BGM の確認 → 音声合成 → 結合 → プロジェクトの構成づくり）
 #   frames … renderer/render.sh（scene.html + frames.jsonl → プロジェクトの frames/）
-#   movie  … scripts/build_video.py（フレーム＋音声＋BGM → sarracenia.mp4）
+#   movie  … main.xa1 の movie（フレーム＋音声＋BGM → sarracenia.mp4）
 #
 # 前提（先に済ませておくのだ～🌱 詳しくは README.md を読むのだ～🌱）：
 #   1. 外部取得リソースを projects/common/resources/ 以下の所定パスに置くのだ～🌱（*.md5 がその置き場所と中身を示すのだ～🌱）
 #   2. VOICEVOX ENGINE を起動しておくのだ～🌱（既定は http://127.0.0.1:50021）
-#   3. Node.js / Python3 / ffmpeg / curl を使える状態にしておくのだ～🌱
+#   3. Node.js / ffmpeg / curl を使える状態にしておくのだ～🌱
 #
 # 出力：
 #   sarracenia.mp4 … 完成動画（video/ 直下）
@@ -47,5 +47,5 @@ frames: scene
 
 # --- フレームとナレーションと BGM を合成して mp4 にする段なのだ～🌱 --------------
 movie: frames
-	FFMPEG=$(FFMPEG) python3 $(VIDEO)/scripts/build_video.py $(BGM_VOL)
+	FFMPEG=$(FFMPEG) $(XARPITE) -A 5 -q -e 'USE("$(VIDEO)/main").movie()' $(BGM_VOL)
 	@echo "== done: $(VIDEO)/sarracenia.mp4 =="

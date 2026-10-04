@@ -47,7 +47,7 @@ timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.
    └─(renderer/render.js + Chromium)→ <proj>/frames/f_%05d.png   … 汎用レンダラー
 
 <proj>/frames/ + full.wav + projects/common/resources/bgm/*.flac
-   └─(scripts/build_video.py + ffmpeg)→ sarracenia.mp4（完成品）  … 雑多パート
+   └─(main.xa1 の movie + ffmpeg)→ sarracenia.mp4（完成品）  … 雑多パート
 ```
 
 各パートの詳しい説明は、それぞれの README にもあるのだ～🌱
@@ -72,7 +72,7 @@ timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.
 | `src/main/xa1/synth.xa1` | VOICEVOX で台詞ごとの音声を合成して、口パク用のモーラ区間も書き出すのだ～🌱 |
 | `src/main/xa1/assemble.xa1` | 台詞 wav を、タイトル、本編（行間の無音）、クレジットの順に結合して、タイムラインを算出するのだ～🌱 |
 | `src/main/xa1/common.xa1` | `synth.xa1` と `assemble.xa1` が共有する関数（外部コマンドの実行・丸め・wav の読み出し）なのだ～🌱 |
-| `scripts/build_video.py` | 連番フレームとナレーションと BGM を ffmpeg で合成して mp4 にするのだ～🌱 |
+| `src/main/xa1/movie.xa1` | `main.xa1` の `movie` が呼ぶ、連番フレームとナレーションと BGM を ffmpeg で合成して mp4 にする段の本体なのだ～🌱 |
 
 **`renderer/`（汎用レンダラー・自己完結）**
 
@@ -155,7 +155,6 @@ timeline.json ─┬─(<proj>/build_scene.xa1)─────→ <proj>/assets.
 ## 4. 前提ツールなのだ～🌱
 
 - **Node.js**（18 以降を想定）と **npm**
-- **Python 3**（標準ライブラリのみ使用で、追加パッケージは要らないのだ～🌱）
 - **ffmpeg**
 - **curl**（`synth.xa1` が VOICEVOX ENGINE と通信するのに使うのだ～🌱）
 - **VOICEVOX ENGINE**（音声合成サーバーなのだ～🌱 起動しておくのだ～🌱）
@@ -222,7 +221,7 @@ make
 
 台詞 wav を、タイトル保持、本編（台詞のあいだに無音の間）、クレジット保持の順に結合して、`full.wav` と `timeline.json` を作るのだ～🌱
 `timeline.json` には、各台詞の開始と終了の時刻と、シーン区間と、アイテムの表示区間などが入るのだ～🌱
-それを、動画プロジェクトの `build_scene.xa1` と `scripts/build_video.py` が読むのだ～🌱
+それを、動画プロジェクトの `build_scene.xa1` と `movie.xa1` が読むのだ～🌱
 
 ### build_scene.xa1（アセットの焼き込み）なのだ～🌱
 
@@ -258,7 +257,7 @@ make
 連続する行の構成を正規化した JSON が同じなら、撮り直さずに前のコマを使い回すのだ～🌱
 動画の中身を知らない、汎用レンダラーなのだ～🌱
 
-### scripts/build_video.py（映像・音声の合成）なのだ～🌱
+### movie.xa1（映像・音声の合成）なのだ～🌱
 
 連番フレームを 30fps の映像にして、`full.wav`（ナレーション）と BGM を重ねるのだ～🌱
 BGM は、冒頭がやや強め、本編が弱め、クレジットが冒頭と同じ、と音量が線形補間で変化するのだ～🌱
