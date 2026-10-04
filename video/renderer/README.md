@@ -1,7 +1,6 @@
 # renderer なのだ～🌱
 
 構成 jsonl と HTML のテンプレートから、連番のフレーム画像をレンダリングする、汎用のレンダラーなのだ～🌱
-特定の動画の内容には依存しなくて、コードと依存は、このディレクトリの中で完結しているのだ～🌱
 
 ## 使い方なのだ～🌱
 
@@ -19,10 +18,7 @@ bash render.sh <frames.jsonl> <outDir>
 `outDir` が、空のディレクトリでも、存在しないパスでもないときは、エラーを出して、終了コード 1 で終わるのだ～🌱
 構成 jsonl の空行は、無視するのだ～🌱
 
-`render.sh` は、不足しているものを、次のように準備するのだ～🌱
-
-- `node_modules` が無ければ、このディレクトリで `npm install` を実行するのだ～🌱
-- `CHROMIUM_PATH` が指定されていなくて、実行できる `/tmp/chromium` も無ければ、依存のパッケージに含まれる Chromium を `/tmp/chromium` に展開するのだ～🌱
+`CHROMIUM_PATH` が指定されていなくて、実行できる `/tmp/chromium` も無いときは、`/tmp/chromium` へ Chromium を用意するのだ～🌱
 
 ## テンプレートの指定なのだ～🌱
 
