@@ -49,7 +49,7 @@
 
   /* BC：字幕表示領域を覆う黒半透明の横帯なのだ～🌱 画面幅いっぱいで、上端がキャラ名(top:466)を、
      下端が字幕の下端(720-66=654)を覆う範囲なのだ～🌱 濃さはさりげなく、上下だけぼかしてなじませるのだ～🌱
-     字幕とは連動せず、本編のあいだ出しっぱなしなのだ～🌱（seek で opacity をフェード管理するのだ～🌱）
+     字幕とは連動せず、本編のあいだ出しっぱなしなのだ～🌱（opacity は構成jsonl の bandOp が決めるのだ～🌱）
      Zオーダーは 文字類＞この帯＞キャラ で、DOM上でキャラの後・名前/字幕の前に置くのだ～🌱 */
   /* BC：上下をあと少し広げたいとのことで、キャラ名フォント高さ(32px)の半分＝16pxずつ上下へ拡張したのだ～🌱
      （top 450→434, height 222→254）なのだ～🌱 ぼかしの割合は見た目が変わらないよう帯高に合わせて微調整なのだ～🌱 */
@@ -86,7 +86,7 @@
   .credit .made svg{width:30px;height:30px;}
   .credit .small{font-size:16px;color:#9db8a6;margin-top:6px;}
 
-  /* BG(v10)：デカ字サムネ＝動画の開幕（フレーム0）そのものなのだ～🌱 各要素は seek(t) が開幕だけ表示して、
+  /* BG(v10)：デカ字サムネ＝動画の開幕（フレーム0）そのものなのだ～🌱 各要素は構成jsonl の openOp が開幕だけ表示して、
      開幕明けにフェードアウトするのだ～🌱Zオーダーは 左上ロゴ・デカ字・中央アイテムフレーム(z8)
      ＞ 黒帯(z6) ＞ キャラ(z5) で、文字はキャラと被ってよく、黒帯で下地を暗くして読ませるのだ～🌱
      #thumb 自体には opacity/z を付けないのだ～🌱（付けると子の z8/z6 が閉じ込められてキャラ(z5)の下に沈むのだ～🌱） */
@@ -129,7 +129,7 @@
   <div class="name" id="name"></div>
   <div class="subwrap" id="subwrap"><div class="sub" id="sub"></div></div>
 
-  <!-- BG(v10)：デカ字サムネ＝動画の開幕（フレーム0）そのものなのだ～🌱 seek(t) が開幕だけ表示するのだ～🌱 -->
+  <!-- BG(v10)：デカ字サムネ＝動画の開幕（フレーム0）そのものなのだ～🌱 構成jsonl の openOp が開幕だけ表示するのだ～🌱 -->
   <div id="thumb">
     <div class="thumb-band" id="thumbBandTop"></div>
     <div class="thumb-band" id="thumbBandBot"></div>
@@ -143,7 +143,7 @@
 </div>
 <script src="assets.js"></script>
 <script>
-const A = window.ASSETS, TL = window.TIMELINE;
+const A = window.ASSETS;
 
 // テクスチャの割り当て
 document.querySelectorAll('.bg .tile').forEach(e=>e.style.backgroundImage=`url(${A.bg})`);
@@ -156,14 +156,14 @@ document.querySelector('#thumbFrame').src = A.plant;
 document.querySelector('#thumbLogo').src = A.logo;
 
 // 全身立ち絵を、劇場の provider と同じ重ね順で積むのだ～🌱（下→上）
-// 口は3段（閉/半/開）、目は通常＋閉じ を重ねておいて、seek() が時刻で表示を切り替えるのだ～🌱（AV/AW）
+// 口は3段（閉/半/開）、目は通常＋閉じ を重ねておいて、構成jsonl の zMouth と zBlink が表示を切り替えるのだ～🌱（AV/AW）
 //   口の開き具合はレイヤーbounds高さの意味論で選定（AV）：
 //     ずんだ 開=ほあー(h61) 半=ほあ(h44) 閉=んー(h15)／つむぎ 開=ほあー(h57) 半=お(h40) 閉=ほほえみ(h26)
 //     いー・にしー等の横広で縦に開かない特殊口や、ゆ・△等の記号的な口は発声の口パクに使わないのだ～🌱
 //   閉じ目（AW）：つむぎ=閉じ 8-4／ずんだは純粋な閉じ目が無いので にっこり 7-6（縦h33の平たい弧）を採用したのだ～🌱
 // BF：眉(brow)・腕(armR/armL)は排他グループ(radio)、汗(sweat)は独立トグル(checkbox)なのだ～🌱
 //   衝突判定は private の voicevox/extractor/build.gradle.kts に準拠するのだ～🌱（radio=同時1つ／checkbox=独立なのだ～🌱）
-//   pg:'グループ名', key:'名前' で切り替え候補を積んでおいて、seek() が台詞ごとに1つだけ表示するのだ～🌱
+//   pg:'グループ名', key:'名前' で切り替え候補を積んでおいて、構成jsonl の tPose と zPose が1つだけ表示するのだ～🌱
 const PORTRAIT = {
   zundamon: { ch:'zundamon', layers:[
     {id:'1'},{id:'4-2'},
@@ -271,21 +271,18 @@ function setSub(line){
   fitSub(line.big);
 }
 
-// 時刻 t だけで、まだ構成の各行へ移していない要素の状態を決めるのだ～🌱
-window.seek = function(t){
-  // BG(v10)：開幕（フレーム0）＝デカ字サムネなのだ～🌱 開幕は openOp=1 で出して、開幕明けにフェードアウトするのだ～🌱
-  //   デカ字のフィットは、フォントが載ってから測る必要があるので、最初の seek のときに一度だけ実行するのだ～🌱
-  //   （render.js は document.fonts.ready を待ってから seek するので、初回 seek 時点でフォントは載っているのだ～🌱）
-  if(!window.__thumbFit){ fitThumb('#thumbTop',980,150); fitThumb('#thumbBot',1180,150); window.__thumbFit=true; }
-  // 字幕（台詞区間だけ表示、行間は消して「間」を作るのだ～🌱）
-  let active=null;
-  for(const ln of TL.lines){ if(t>=ln.start && t<ln.subEnd){ active=ln; break; } }
-  setSub(active);
-  return true;
-};
+// 開幕（フレーム0）＝デカ字サムネなのだ～🌱 開幕は openOp=1 で出して、開幕明けにフェードアウトするのだ～🌱
+// デカ字のフィットは、フォントが載ってから測る必要があるので、最初のフレームのときに一度だけ実行するのだ～🌱
+// （render.js は document.fonts.ready を待ってから applyFrame を呼ぶので、その時点でフォントは載っているのだ～🌱）
+function fitThumbOnce(){
+  if(window.__thumbFit) return;
+  fitThumb('#thumbTop',980,150);
+  fitThumb('#thumbBot',1180,150);
+  window.__thumbFit=true;
+}
 
 // BG(v10)：開幕（フレーム0）のデカ字を、画面外・左上ロゴと衝突しない範囲で最大化フィットするのだ～🌱
-//   上段は左上ロゴを避けるため控えめの最大幅、下段は画面幅いっぱい近くまで大きくするのだ～🌱（seek で初回に呼ぶのだ～🌱）
+//   上段は左上ロゴを避けるため控えめの最大幅、下段は画面幅いっぱい近くまで大きくするのだ～🌱（最初のフレームで一度だけ呼ぶのだ～🌱）
 function fitThumb(sel, maxW, maxH){
   const el=document.querySelector(sel);
   let hi=170, lo=30, best=lo;
@@ -305,15 +302,17 @@ function fitThumb(sel, maxW, maxH){
 // 不透明度は、build_scene.xa1 が構成の各行に書いた値を、そのまま当てるのだ～🌱
 // BE で、立ち絵は最初のフレームからクレジット手前まで固定表示にしたから、サムネにも立ち絵が出るのだ～🌱
 // BC で、字幕を覆う横帯は、字幕と連動させずに本編のあいだ出すようにしたから、タイトル中は出ないのだ～🌱
-// 字幕の中身は、まだ seek(t) がタイムラインから組み立てるのだ～🌱
-// その seek は、構成の各行の値を当てる前に呼ぶのだ～🌱
+// 画面のすべてを、構成jsonl の 1 行（frame）から決めるのだ～🌱
+// タイムラインを見て時刻から逆算する処理は、もう残っていないのだ～🌱
 window.applyFrame = function(frame){
-  // seek を先に呼ぶのだ～🌱 初回の seek が走らせる fitThumb が font-size を先に置くから、
+  // デカ字のフィットを先に済ませるのだ～🌱 これが font-size を先に置くから、
   // こうしておくと、style 属性の中のプロパティの並びが、移す前とそろうのだ～🌱
-  window.seek(frame.t);
+  fitThumbOnce();
   // 眉と腕と汗は、台詞ごとのポーズなのだ～🌱
   setPose(elT, frame.tPose);
   setPose(elZ, frame.zPose);
+  // 字幕は、台詞の区間だけ中身が入って、行間は消して「間」を作るのだ～🌱
+  setSub(frame.subLine);
   // 喋っている側だけ口が動いて、両者はそれぞれの周期で瞬きするのだ～🌱
   setFace(elZ, frame.zMouth, frame.zBlink);
   setFace(elT, frame.tMouth, frame.tBlink);

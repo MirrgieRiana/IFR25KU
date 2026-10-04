@@ -104,8 +104,8 @@ run("bash", "$base/../../extract-portrait/extract-portrait.sh", "tsumugi", "$bas
 # --- 3. 構成jsonl を組み立てるのだ～🌱（→ frames.jsonl） -------------------------
 # 各行は、そのフレームの見た目を決めるパラメータなのだ～🌱
 # 背景とアイテム枠の不透明度は、ここで計算して渡すのだ～🌱
-# 台詞ごとのポーズも、ここで決めて渡すのだ～🌱
-# 字幕の中身は、まだ scene.html の seek(t) がタイムラインを見て組み立てるから、時刻 t も渡すのだ～🌱
+# 台詞ごとのポーズと、字幕の中身も、ここで決めて渡すのだ～🌱
+# 残るのは、開幕のデカ字のフィットだけで、それは時刻に依らないのだ～🌱
 OUT << "== compose frames.jsonl =="
 total := timeline.total
 frameCount := -FLOOR(-(total * FPS))
@@ -161,6 +161,14 @@ poseAt := t -> (
   $#hits > 0 ? POSES.(hits(-1)) : POSE_DEFAULT
 )
 
+# その時刻に字幕を出している台詞の中身なのだ～🌱
+# scene.html の setSub は、i と sub と big と speaker だけを見るのだ～🌱
+# 出す台詞が無いときは NULL で、JS 側の「字幕を消す」の分岐へ落ちるのだ～🌱
+subLineAt := t -> (
+  lns := activeLines(t)
+  $#lns > 0 ? {i: lns.0.i; sub: lns.0.sub; big: lns.0.big; speaker: lns.0.speaker} : NULL
+)
+
 # 母音から口の開きを決めるのだ～🌱
 # 縦の開きで 3 段で、N や pau や っ といった無声と休止は閉口なのだ～🌱
 vowelMouth := v -> v == "a" ? "open" : (v == "i" || v == "u" || v == "e" || v == "o" ? "half" : "closed")
@@ -196,6 +204,7 @@ WRITE["$base/frames.jsonl"] << 0 ~ frameCount | i => (
     zMouth: spk == "z" ? mouthAt(sp; t) : "closed"; tMouth: spk == "t" ? mouthAt(sp; t) : "closed"
     zBlink: blinkAt(t; 3.4; 1.5; 0.12); tBlink: blinkAt(t; 4.1; 1.7; 0.12)
     tPose: poseAt(t).t; zPose: poseAt(t).z
+    subLine: subLineAt(t)
   }
 ) >> JSONL >> LINESD
 OUT << "composed frames.jsonl: $frameCount frames (total=$(total)s @ $(FPS)fps)"

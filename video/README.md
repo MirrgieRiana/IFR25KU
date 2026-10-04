@@ -18,7 +18,7 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 
 この動画は、動画編集ソフトの GUI で作るのではなくて、**「決定論的フレームレンダリング」** という方式で作るのだ～🌱
 
-1. `projects/2026-04-12-sarracenia/scene.html` が、1 フレーム分の構成 `frame` を渡すとその画面を組み立てる関数 `window.applyFrame(frame)` を持つのだ～🌱 今のこの動画では、各要素の不透明度が `frame` に入っていて、残りは `frame` の `t`（秒）から内部の `seek(t)` が組み立てるのだ～🌱
+1. `projects/2026-04-12-sarracenia/scene.html` が、1 フレーム分の構成 `frame` を渡すとその画面を組み立てる関数 `window.applyFrame(frame)` を持つのだ～🌱 画面の見た目を決める値は、全部 `frame` に入っているのだ～🌱
 2. `projects/2026-04-12-sarracenia/build_scene.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
 3. `renderer/render.js` がヘッドレス Chromium に `scene.html` を開かせて、`frames.jsonl` を頭から 1 行ずつ `applyFrame(frame)` に渡して、1 行につき 1 コマ撮るのだ～🌱
 4. 撮れた連番画像の `projects/2026-04-12-sarracenia/frames/f_00000.png …` を ffmpeg で映像にして、ナレーション音声と BGM を重ねて mp4 にするのだ～🌱
@@ -237,16 +237,15 @@ make
 ### build_scene.xa1（構成jsonl の組み立て）なのだ～🌱
 
 `timeline.json` から総尺を読んで、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
-各行は `template` と `t` と、画面の各要素の不透明度のキーを持つのだ～🌱
+各行は `template` と `t` と、画面の各要素の不透明度のキーと、ポーズと口パクとまばたきと字幕の中身を持つのだ～🌱
 `template` に入れるテンプレートは、`build_scene.xa1` の冒頭で決めているのだ～🌱
-ポーズと口パクとまばたきと字幕の中身は、まだ `scene.html` の `seek(t)` が組み立てるから、時刻 `t` も渡すのだ～🌱
-これから、その残りも、段階的に構成jsonl 側へ移していくのだ～🌱
-そのとき、レンダラー側は変えなくてよい設計なのだ～🌱
+画面の見た目を決める値は、全部ここで計算して渡すから、`scene.html` の側はタイムラインを見ないのだ～🌱
+レンダラー側は、この構成の中身が増えても変えなくてよい設計なのだ～🌱
 
 ### scene.html（画面と applyFrame）なのだ～🌱
 
 画面の見た目のすべてと、構成 `frame` から画面を決める `window.applyFrame(frame)` が入っているのだ～🌱
-`applyFrame` は、まず `window.seek(frame.t)`（時刻→画面）を呼んで、それから各要素の不透明度を `frame` の値から当てるのだ～🌱
+`applyFrame` は、構成の各行の値を、そのまま画面の各要素へ当てるのだ～🌱
 背景のシーン切り替え（沼地と泥沼のクロスフェード）と、アイテム枠と、立ち絵（口パク・まばたき・眉と腕と汗のポーズ）を組み立てるのだ～🌱
 それと、字幕（話者色の縁取り）と、キャラ名と、クレジットと、開幕フレーム（＝サムネイル）のデカ字も組み立てるのだ～🌱
 

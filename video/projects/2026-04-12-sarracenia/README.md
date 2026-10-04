@@ -30,16 +30,16 @@
 1 行 = 1 フレームの構成オブジェクトを並べたものなのだ～🌱
 汎用レンダラーが、これを 1 行ずつ `scene.html` の `window.applyFrame(frame)` へ渡すのだ～🌱
 
-各行は、`template` と、時刻の `t` と、画面の各要素の不透明度を持つのだ～🌱
+各行は、`template` と、時刻の `t` と、画面の各要素の不透明度と、ポーズと口パクとまばたきと字幕の中身を持つのだ～🌱
 `template` に入れるテンプレートは、`build_scene.xa1` の冒頭で決めているのだ～🌱
 不透明度は `build_scene.xa1` がタイムラインから計算して、`scene.html` の `applyFrame` がそのまま当てるのだ～🌱
 内訳は、背景の `bogOp` と `swampOp`、アイテム枠の `plantOp` と `leafOp`、開幕のサムネの `openOp`、
 クレジットの `creditOp`、立ち絵の `portraitOp`、字幕の横帯の `bandOp`、字幕とキャラ名の `subOp`、
 字幕の下敷きの `scrimOp` なのだ～🌱
-ポーズと口パクとまばたきと字幕の中身は、まだ `scene.html` の `seek(t)` が組み立てるから、時刻の `t` も渡すのだ～🌱
-これから（Issue #179 のトピック BP の構想）、各行に、どの要素へどんな CSS と属性とテキストを入れるかを平らに
-書き込んで、`seek` の計算そのものを構成jsonl の側へ段階的に移していくのだ～🌱
-そのとき、レンダラーの側の `applyFrame` の約束は、一切変えなくていい作りなのだ～🌱
+ポーズは `tPose` と `zPose`、口パクは `zMouth` と `tMouth`、まばたきは `zBlink` と `tBlink`、
+字幕の中身は `subLine` なのだ～🌱
+どれも `build_scene.xa1` がタイムラインから決めるから、`scene.html` の側はタイムラインを見ないのだ～🌱
+レンダラーの側の `applyFrame` の約束は、この構成の中身が増えても一切変えなくていい作りなのだ～🌱
 
 外部取得リソースの入手と配置と、立ち絵の ID 体系は、雑多パートの [`../../README.md`](../../README.md) にあるのだ～🌱
 
