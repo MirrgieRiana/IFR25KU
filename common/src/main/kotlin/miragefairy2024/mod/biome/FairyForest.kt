@@ -3,6 +3,7 @@ package miragefairy2024.mod.biome
 import miragefairy2024.ModContext
 import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.magicplant.contents.magicplants.PhantomFlowerCard
+import miragefairy2024.mod.materials.MIRANBERIA_CLUSTER_PLACED_FEATURE_KEY
 import miragefairy2024.mod.tree.contents.haimeviska.GIANT_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.mod.tree.contents.haimeviska.SMALL_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY
 import miragefairy2024.util.AdvancementCard
@@ -88,6 +89,8 @@ object FairyForestBiomeCard : BiomeCard(
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, SMALL_HAIMEVISKA_FAIRY_FOREST_PLACED_FEATURE_KEY)
                 BiomeDefaultFeatures.addOtherBirchTrees(lookupBackedBuilder)
 
+                // 骨粉はこのバイオームの最初の花のフィーチャーだけを湧かせるから、ミランベリアをバニラの花より前に置くのだ～🌱
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MIRANBERIA_CLUSTER_PLACED_FEATURE_KEY)
                 BiomeDefaultFeatures.addDefaultFlowers(lookupBackedBuilder)
                 BiomeDefaultFeatures.addMeadowVegetation(lookupBackedBuilder)
                 BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)

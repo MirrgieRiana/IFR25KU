@@ -3,7 +3,6 @@ package miragefairy2024.mod.materials
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemList
-import miragefairy2024.mod.biome.FairyForestBiomeCard
 import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG
 import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG
 import miragefairy2024.mod.biome.RetrospectiveCityBiomeCard
@@ -53,7 +52,6 @@ import miragefairy2024.util.get
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.modId
 import miragefairy2024.util.on
-import miragefairy2024.util.placeWhenVegetalDecoration
 import miragefairy2024.util.plus
 import miragefairy2024.util.propertiesOf
 import miragefairy2024.util.register
@@ -131,6 +129,8 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCon
 val AURA_RESISTANT_CERAMICS_TAG = MirageFairy2024.identifier("aura_resistant_ceramics").toItemTag()
 val AURA_RESISTANT_CERAMIC_SLABS_TAG = MirageFairy2024.identifier("aura_resistant_ceramic_slabs").toItemTag()
 val AURA_RESISTANT_CERAMIC_STAIRS_TAG = MirageFairy2024.identifier("aura_resistant_ceramic_stairs").toItemTag()
+
+val MIRANBERIA_CLUSTER_PLACED_FEATURE_KEY = Registries.PLACED_FEATURE with MirageFairy2024.identifier("miranberia_cluster")
 
 open class BlockMaterialCard(
     path: String,
@@ -1016,7 +1016,8 @@ open class BlockMaterialCard(
             Feature.FLOWER.generator(identifier) {
                 // 妖精の森の夜を一面ほんのり照らすために、幻花ファントムの塊よりも多くの株を含む塊を、1 チャンクに 3 回配置するのだ～🌱
                 registerConfiguredFeature("cluster") { RandomPatchConfiguration(24, 7, 3, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(block())))) }.generator {
-                    registerPlacedFeature("cluster") { count(3) + flower(square, surface) }.placeWhenVegetalDecoration { +FairyForestBiomeCard.key }
+                    // 骨粉で湧く花はバイオームの最初の花のフィーチャーだけだから、バイオーム定義の側で、バニラの花より前に配置するのだ～🌱
+                    registerPlacedFeature(MIRANBERIA_CLUSTER_PLACED_FEATURE_KEY) { count(3) + flower(square, surface) }
                 }
             }
         }
