@@ -339,6 +339,10 @@ val installJekyllBundle = tasks.register<Exec>("installJekyllBundle") {
 // carousel の下のように、キーが YAML のシーケンスの要素になっている形にも当たるのだ～🌱
 val frontMatterImagePathRegex = """^(\s*(?:-\s+)?(?:teaser|image|overlay_image|og_background):\s*"?)(\.[^"\s]*)""".toRegex()
 
+// 本文で記事のディレクトリの中を指すパスのうち、. から始めたものを捕まえるのだ～🌱
+// Markdown のリンクの行き先と、Liquid のタグの引数や HTML の属性の値の、2 つの形に当たるのだ～🌱
+val bodyImagePathRegex = """(?<=]\(|")(\.[^)"\s]*)""".toRegex()
+
 val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     group = "other"
     from("src/main/resources")
@@ -348,52 +352,37 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     from("src/external/resources")
     from("src/pages/resources") {
         includeEmptyDirs = false
-        val seenImagePaths = mutableMapOf<String, String>()
         eachFile {
             val dirName = relativePath.pathString.substringBefore("/")
             val postMatch = """(\d{4})-(\d{2})-(\d{2})-(.+)""".toRegex().matchEntire(dirName)
+            // 同じディレクトリに並ぶ画像の配置先なのだ～🌱
+            // 記事のディレクトリ名が、そのままここへ残るのだ～🌱
+            // front matter と本文のパスを . から始めたときは、ここが基準になるのだ～🌱
+            val imageDir = if (postMatch != null) {
+                val (year, month, day, slug) = postMatch.destructured
+                "assets/images/$year/$month/$day/$slug"
+            } else {
+                "assets/images/$dirName"
+            }
             if (name.endsWith(".md")) {
                 val sourcePath = file.relativeTo(rootDir).invariantSeparatorsPath
-                // front matter のパスを . から始めたときの基準になる、同じディレクトリに並ぶ画像の配置先なのだ～🌱
-                val imageDir = if (postMatch != null) {
-                    val (year, month, day, _) = postMatch.destructured
-                    "/$year/$month/$day"
-                } else {
-                    "/assets/images/$dirName"
-                }
                 var lineNumber = 0
                 var frontMatterDelimiterCount = 0
                 filter { line ->
                     lineNumber++
                     if (line == "---") frontMatterDelimiterCount++
                     when {
-                        // 下で配置先が平らになって元のディレクトリ名が失われるから、footer の source のリンクのために、元のパスを front matter へ書き足すのだ～🌱
+                        // 下で .md の配置先が元のディレクトリから離れるから、footer の source のリンクのために、元のパスを front matter へ書き足すのだ～🌱
                         lineNumber == 1 && line == "---" -> "$line\nsource_path: $sourcePath"
-                        // front matter を抜けた本文側は、同じ形の行があっても書き換えないのだ～🌱
-                        frontMatterDelimiterCount != 1 -> line
-                        else -> frontMatterImagePathRegex.replace(line) { "${it.groupValues[1]}${File(imageDir, it.groupValues[2]).normalize().invariantSeparatorsPath}" }
+                        frontMatterDelimiterCount == 1 -> frontMatterImagePathRegex.replace(line) { "${it.groupValues[1]}${File("/$imageDir", it.groupValues[2]).normalize().invariantSeparatorsPath}" }
+                        else -> bodyImagePathRegex.replace(line) { File("/$imageDir", it.value).normalize().invariantSeparatorsPath }
                     }
                 }
             }
-            if (postMatch != null) {
-                val (year, month, day, _) = postMatch.destructured
-                if (name.endsWith(".md")) {
-                    relativePath = RelativePath(true, "_posts", "$dirName.md")
-                } else {
-                    val sourcePath = relativePath.pathString
-                    relativePath = RelativePath(true, year, month, day, name)
-                    val outputKey = relativePath.pathString
-                    seenImagePaths[outputKey]?.let { existingSource ->
-                        error("Image filename collision at '$outputKey': '$existingSource' and '$sourcePath'")
-                    }
-                    seenImagePaths[outputKey] = sourcePath
-                }
+            relativePath = if (name.endsWith(".md")) {
+                if (postMatch != null) RelativePath(true, "_posts", "$dirName.md") else RelativePath(true, name)
             } else {
-                if (name.endsWith(".md")) {
-                    relativePath = RelativePath(true, name)
-                } else {
-                    relativePath = RelativePath(true, "assets", "images", dirName, name)
-                }
+                RelativePath(true, *imageDir.split("/").toTypedArray(), name)
             }
         }
     }

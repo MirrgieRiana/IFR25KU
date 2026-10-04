@@ -26,7 +26,7 @@ tags:
 </div>
 <div style="flex: 1 1 calc((1280px - 100vw) * 999);" markdown="1">
 
-![赤紫色の彩釉テラコッタのミラージュ妖精](mirage-fairy.webp)
+![赤紫色の彩釉テラコッタのミラージュ妖精](./mirage-fairy.webp)
 
 赤紫色の彩釉テラコッタのミラージュ妖精
 
