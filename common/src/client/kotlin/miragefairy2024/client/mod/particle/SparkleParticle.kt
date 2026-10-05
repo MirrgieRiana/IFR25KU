@@ -1,16 +1,11 @@
 package miragefairy2024.client.mod.particle
 
-import com.mojang.blaze3d.platform.GlStateManager
-import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.vertex.VertexConsumer
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.atMost
-import net.minecraft.client.Camera
 import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.ParticleRenderType
 import net.minecraft.client.particle.SpriteSet
 import net.minecraft.client.particle.TextureSheetParticle
-import net.minecraft.client.renderer.texture.TextureAtlas
 import net.minecraft.core.particles.SimpleParticleType
 import net.minecraft.util.Mth
 
@@ -40,22 +35,7 @@ fun createSparkleParticleFactory() = { spriteProvider: SpriteSet ->
                 setSprite(spriteProvider.get(0, 0))
             }
 
-            /**
-             * Fabric 側の [net.minecraft.client.particle.ParticleEngine] は固定の一覧のみを描画するから、独自のものを足しても描かれないのだ～🌱
-             * [net.minecraft.client.particle.ParticleRenderType.CUSTOM] は描画の設定を各パーティクルへ委ねるものだから、そちらを選ぶのだ～🌱
-             */
-            override fun getRenderType(): ParticleRenderType = ParticleRenderType.CUSTOM
-
-            /**
-             * [net.minecraft.client.particle.ParticleRenderType.CUSTOM] は、シェーダーとテクスチャと合成の設定を 1 個も行わないのだ～🌱
-             * 描画の呼び出しは同じ一覧の全頂点を積み終えた後に 1 回だけ行われるから、ここで設定した状態がそのまま効くのだ～🌱
-             */
-            override fun render(buffer: VertexConsumer, camera: Camera, partialTick: Float) {
-                RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES)
-                RenderSystem.enableBlend()
-                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE)
-                super.render(buffer, camera, partialTick)
-            }
+            override fun getRenderType(): ParticleRenderType = AdditiveParticleRenderType
 
             /**
              * [net.minecraft.client.particle.GlowParticle.getLightColor] と同じく、周りの明るさに関わらず自分で光るのだ～🌱
