@@ -398,6 +398,18 @@ val buildSiteWithoutSearchIndex = tasks.register<Sync>("buildSiteWithoutSearchIn
     from("src/pages/resources") {
         include("**/*.md")
         includeEmptyDirs = false
+        // 画像の呼び出しタグを、Markdown のリンク構文か img 要素へ展開するのだ～🌱
+        // この .md は Jekyll を通らずにそのまま配られるから、Liquid の構文が素のまま読者へ出ちゃうのだ～🌧️
+        // 行頭が空白の行は生の HTML の内側で、そこへ Markdown のリンク構文を置いても画像にならないから、img 要素にするのだ～🌱
+        val imageTagRegex = """\{%\s*image\s+"([^"]*)"\s+alt="([^"]*)"\s*%}""".toRegex()
+        filter { line ->
+            val inHtml = line.startsWith(" ") || line.startsWith("\t")
+            imageTagRegex.replace(line) {
+                val source = it.groupValues[1]
+                val alt = it.groupValues[2]
+                if (inHtml) """<img src="$source" alt="$alt">""" else "![$alt]($source)"
+            }
+        }
         eachFile {
             val dirName = relativePath.pathString.substringBefore("/")
             val postMatch = """(\d{4})-(\d{2})-(\d{2})-(.+)""".toRegex().matchEntire(dirName)
