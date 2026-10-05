@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.texture.TextureManager
  * 加算合成でパーティクルを描画するのだ～🌱
  * バニラの [net.minecraft.client.particle.ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT] から、合成関数だけを加算へ替えたものなのだ～🌱
  *
- * [net.minecraft.client.particle.ParticleEngine.render] は、この種別ごとに [begin] を 1 回だけ呼んで、そのキューの全頂点をまとめて描画するのだ～🌱
+ * [net.minecraft.client.particle.ParticleEngine.render] は、この種別ごとに [miragefairy2024.client.mod.particle.AdditiveParticleRenderType.begin] を 1 回だけ呼んで、そのキューの全頂点をまとめて描画するのだ～🌱
  * だから、専用の種別を持つことで、他の MOD のパーティクルを巻き込まずに合成関数を選べるのだ～🌱
  */
 object AdditiveParticleRenderType : ParticleRenderType {
