@@ -12,8 +12,10 @@ dirOf := project -> project.buildBase RESOLVE "scene"
   dir: dirOf
   framesJsonlPath: project -> dirOf(project) RESOLVE "frames.jsonl"
   generate: project -> (
-    generate("scene ($(project.name))"; dirOf(project); work -> (
-      project.buildScene(timelineModule.jsonPath(project); work)
+    dir := dirOf(project)
+    generate("scene ($(project.name))"; dir; work -> (
+      # 構成jsonl へ書く相対パスは、改名した後の場所から辿るものでなければならないから、両方渡すのだ～🌱
+      project.buildScene(timelineModule.jsonPath(project); work; dir)
     ))
   )
 }

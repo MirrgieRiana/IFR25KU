@@ -4,8 +4,8 @@
 <head>
 <meta charset="utf-8">
 <style>
-  @font-face{font-family:ZMG-Black;src:url(../../../common/resources/font/ZenMaruGothic-Black.ttf) format('truetype');}
-  @font-face{font-family:ZMG-Bold;src:url(../../../common/resources/font/ZenMaruGothic-Bold.ttf) format('truetype');}
+  @font-face{font-family:ZMG-Black;src:url(resources/font/ZenMaruGothic-Black.ttf) format('truetype');}
+  @font-face{font-family:ZMG-Bold;src:url(resources/font/ZenMaruGothic-Bold.ttf) format('truetype');}
   *{margin:0;padding:0;box-sizing:border-box;}
   html,body{width:1280px;height:720px;overflow:hidden;background:#000;}
   #stage{position:relative;width:1280px;height:720px;overflow:hidden;font-family:ZMG-Bold,sans-serif;}
@@ -141,19 +141,24 @@
 
   <div class="credit" id="credit"></div>
 </div>
-<script src="assets.js"></script>
 <script>
-const A = window.ASSETS;
-
-// テクスチャの割り当て
-document.querySelectorAll('.bg .tile').forEach(e=>e.style.backgroundImage=`url(${A.bg})`);
-document.querySelector('#itemPlant img').src = A.plant;
-document.querySelector('#itemLeaf img').src = A.leaf;
-document.querySelector('#itemPlant .lbl').textContent = 'サラセニア';
-document.querySelector('#itemLeaf .lbl').textContent = 'サラセニアの葉';
-// BG(v10)：開幕（フレーム0）＝デカ字サムネのアセット（大きめサラセニア＋左上ロゴ）なのだ～🌱
-document.querySelector('#thumbFrame').src = A.plant;
-document.querySelector('#thumbLogo').src = A.logo;
+// 素材の置き場所は、このテンプレートの側ではなく、構成jsonl の 1 行が持つのだ～🌱
+// このテンプレートは共有の場所に置いたまま開かれるから、動画ごとに変わる置き場所を書けないのだ～🌱
+// だから、素材に触る初期化は、最初のフレームが届いてから走らせるのだ～🌱
+function applyAssets(A, portraitBase){
+  // テクスチャの割り当て
+  document.querySelectorAll('.bg .tile').forEach(e=>e.style.backgroundImage=`url(${A.bg})`);
+  document.querySelector('#itemPlant img').src = A.plant;
+  document.querySelector('#itemLeaf img').src = A.leaf;
+  document.querySelector('#itemPlant .lbl').textContent = 'サラセニア';
+  document.querySelector('#itemLeaf .lbl').textContent = 'サラセニアの葉';
+  // BG(v10)：開幕（フレーム0）＝デカ字サムネのアセット（大きめサラセニア＋左上ロゴ）なのだ～🌱
+  document.querySelector('#thumbFrame').src = A.plant;
+  document.querySelector('#thumbLogo').src = A.logo;
+  document.querySelector('#sprout').innerHTML = A.seedling;
+  buildPortrait(elZ, PORTRAIT.zundamon, portraitBase);
+  buildPortrait(elT, PORTRAIT.tsumugi, portraitBase);
+}
 
 // 全身立ち絵を、劇場の provider と同じ重ね順で積むのだ～🌱（下→上）
 // 口は3段（閉/半/開）、目は通常＋閉じ を重ねておいて、構成jsonl の zMouth と zBlink が表示を切り替えるのだ～🌱（AV/AW）
@@ -186,14 +191,15 @@ const PORTRAIT = {
     {sym:'sweat',id:'13-2'},
   ]},
 };
-function buildPortrait(el, character){
+function buildPortrait(el, character, portraitBase){
+  const dir = `${portraitBase}/${character.ch}`;
   let html='';
   character.layers.forEach(L=>{
-    if(L.eye){ (L.ids||[L.id]).forEach(id=>{ html+=`<img class="eye-${L.eye}" src="portrait/${character.ch}/${id}.png">`; }); }
-    else if(L.mouth){ html+=`<img class="mouth-${L.mouth}" src="portrait/${character.ch}/${L.id}.png">`; }
-    else if(L.pg){ html+=`<img class="pg-${L.pg} pg-${L.pg}-${L.key}" src="portrait/${character.ch}/${L.id}.png">`; }
-    else if(L.sym){ html+=`<img class="sym-${L.sym}" style="display:none" src="portrait/${character.ch}/${L.id}.png">`; }
-    else { html+=`<img src="portrait/${character.ch}/${L.id}.png">`; }
+    if(L.eye){ (L.ids||[L.id]).forEach(id=>{ html+=`<img class="eye-${L.eye}" src="${dir}/${id}.png">`; }); }
+    else if(L.mouth){ html+=`<img class="mouth-${L.mouth}" src="${dir}/${L.id}.png">`; }
+    else if(L.pg){ html+=`<img class="pg-${L.pg} pg-${L.pg}-${L.key}" src="${dir}/${L.id}.png">`; }
+    else if(L.sym){ html+=`<img class="sym-${L.sym}" style="display:none" src="${dir}/${L.id}.png">`; }
+    else { html+=`<img src="${dir}/${L.id}.png">`; }
   });
   el.innerHTML=html;
 }
@@ -206,8 +212,6 @@ function setPose(el, p){
   el.querySelectorAll('.sym-sweat').forEach(e=>e.style.display = p.sweat?'':'none');
 }
 const elZ=document.querySelector('#portraitZundamon'), elT=document.querySelector('#portraitTsumugi');
-buildPortrait(elZ, PORTRAIT.zundamon);
-buildPortrait(elT, PORTRAIT.tsumugi);
 function setFace(el, mouth, blink){
   ['closed','half','open'].forEach(m=>el.querySelectorAll('.mouth-'+m).forEach(e=>e.style.display=(m===mouth?'':'none')));
   el.querySelectorAll('.eye-open').forEach(e=>e.style.display=blink?'none':'');
@@ -231,7 +235,6 @@ document.querySelector('#credit').innerHTML =
   `<div class="row">フォント　Zen Maru Gothic（The Zen Maru Gothic Project Authors）　SIL OFL</div>`+
   `<div class="row">世界観　MirageFairy（MirageFairy Server運営） ／ IFRKU（夜のかけら）</div>`+
   `<div class="made">制作　Claude Code ／ <span id="sprout"></span> Claude Fairy</div>`;
-document.querySelector('#sprout').innerHTML = A.seedling;
 
 // 字幕を帯からはみ出さない最大サイズにフィットさせるのだ～🌱（お手本の最大54px／デカ字68px基準）
 const SUB_W=1088, SUB_H=128;
@@ -304,7 +307,23 @@ function fitThumb(sel, maxW, maxH){
 // BC で、字幕を覆う横帯は、字幕と連動させずに本編のあいだ出すようにしたから、タイトル中は出ないのだ～🌱
 // 画面のすべてを、構成jsonl の 1 行（frame）から決めるのだ～🌱
 // タイムラインを見て時刻から逆算する処理は、もう残っていないのだ～🌱
-window.applyFrame = function(frame){
+// 素材の読み込みは 1 回だけで済ませるのだ～🌱
+// フレームは数千枚あるから、毎回読み直すと、その回数だけ待つことになっちゃうのだ～🌱
+let assetsLoaded = null;
+function loadAssets(frame){
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    // file:// では fetch() が使えないから、script 要素として読み込むのだ～🌱
+    script.src = frame.assets;
+    script.onload = () => { applyAssets(window.ASSETS, frame.portraitBase); resolve(); };
+    script.onerror = () => reject(new Error(`cannot load assets: ${frame.assets}`));
+    document.head.appendChild(script);
+  });
+}
+
+window.applyFrame = async function(frame){
+  if(assetsLoaded === null) assetsLoaded = loadAssets(frame);
+  await assetsLoaded;
   // デカ字のフィットを先に済ませるのだ～🌱 これが font-size を先に置くから、
   // こうしておくと、style 属性の中のプロパティの並びが、移す前とそろうのだ～🌱
   fitThumbOnce();

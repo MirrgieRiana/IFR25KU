@@ -19,5 +19,5 @@ INC += LOCATION RESOLVE "../../.." RESOLVE "src/main/xa1"
 
 buildSceneModule := USE("build-scene")
 
-# 引数は、timeline.json のパスと、生成物を書き出す先のディレクトリなのだ～🌱
-videoProjectOf(LOCATION RESOLVE ".."; (timelinePath; outDir) -> buildSceneModule.build(timelinePath; outDir))
+# 引数は、timeline.json のパスと、生成物を書き出す先と、それが最後に置かれる場所なのだ～🌱
+videoProjectOf(LOCATION RESOLVE ".."; (timelinePath; outDir; sceneDir) -> buildSceneModule.build(timelinePath; outDir; sceneDir))

@@ -7,8 +7,8 @@
 # build の引数：
 #   timelinePath … timeline.json のパスなのだ～🌱
 #   outDir       … 生成物を書き出す先のディレクトリなのだ～🌱
+#   sceneDir     … 生成物が最後に置かれるディレクトリなのだ～🌱
 # 出力（書き出し先の配下）：
-#   skit-v1.html … 共有のテンプレートの写しで、下の 3 個と同じ場所に無いと、相対パスが外れちゃうのだ～🌱
 #   assets.js    … テンプレートが読む、絵文字・テクスチャのパス・タイムラインの束
 #   portrait/    … 立ち絵 PSD から切り出したレイヤー PNG
 #   frames.jsonl … 1 行 = 1 フレームの構成jsonl（レンダラーへの入力）
@@ -22,15 +22,11 @@ API(5)
 base := LOCATION RESOLVE ".."
 
 {
-  # timeline.json のパスと、生成物を書き出す先のディレクトリを受け取るのだ～🌱
-  build: (timelinePath; outDir) -> (
-    # 構成jsonl の各行の template に入れる、この動画のテンプレートなのだ～🌱
-    # レンダラーは、frames.jsonl のあるディレクトリ（書き出し先）を基準に解決するのだ～🌱
-    template := "skit-v1.html"
-
+  # timeline.json のパスと、生成物を書き出す先と、それが最後に置かれる場所を受け取るのだ～🌱
+  build: (timelinePath; outDir; sceneDir) -> (
     # 共有のテンプレートの置き場所なのだ～🌱
-    # 中の相対パスは、テンプレート自身の置き場所、つまり書き出し先からの深さで書いてあるのだ～🌱
-    templateSource := base RESOLVE "../common" RESOLVE template
+    # テンプレートは写さずにこの場所のまま開かせるから、その中の相対パスは、ここを基準に解決されるのだ～🌱
+    templateDir := base RESOLVE "../common"
 
     # build_video.py の -framerate と一致させるのだ～🌱
     FPS := 30
@@ -60,6 +56,19 @@ base := LOCATION RESOLVE ".."
 
     run := command -> OUT << capture(command)()
 
+    # from のディレクトリから to へ辿る相対パスを組むのだ～🌱
+    # 書き出し先はまだ無いことがあるから、実体を見ずに組ませる -m を付けるのだ～🌱
+    relativeTo := from, to -> capture(["realpath", "-m", "--relative-to", from, to]).0
+
+    # 構成jsonl の各行の template に入れる、この動画のテンプレートなのだ～🌱
+    # レンダラーは、frames.jsonl のあるディレクトリを基準に解決するのだ～🌱
+    template := relativeTo(sceneDir; templateDir RESOLVE "skit-v1.html")
+
+    # テンプレートが読む素材の置き場所なのだ～🌱
+    # テンプレートは共有の場所で開かれるから、そこから書き出し先へ辿る相対パスを渡すのだ～🌱
+    assetsPath := relativeTo(templateDir; sceneDir RESOLVE "assets.js")
+    portraitBase := relativeTo(templateDir; sceneDir RESOLVE "portrait")
+
     # --- 外部取得リソース（このシーンの立ち絵・フォント・絵文字）の存在を確認するのだ～🌱 ---
     # FILE_NAMES のストリームのままだと、@ が部分文字列で探して、隣の *.md5 のファイル名に当たっちゃうのだ～🌱
     # だから、配列にしてから、要素として探すのだ～🌱
@@ -75,20 +84,17 @@ base := LOCATION RESOLVE ".."
     need(base RESOLVE "../common/resources/font"; "ZenMaruGothic-Bold.ttf")
     need(base RESOLVE "../common/resources/emoji"; "seedling.svg")
 
-    # --- 1. テンプレートと、それが読む assets.js を書き出し先へ置くのだ～🌱（絵文字・テクスチャのパス・タイムライン） ---
+    # --- 1. テンプレートが読む assets.js を書き出し先へ置くのだ～🌱（絵文字・テクスチャのパス・タイムライン） ---
     # レンダリングは Chromium に file://.../skit-v1.html を開かせて 1 フレームずつ撮る方式なのだ～🌱
     # file:// で開いた HTML は、セキュリティ上、外部ファイルを fetch() で読めないのだ～🌱
     # そこで、JS が値として要るものは 1 個のファイル（assets.js）に「焼き込んで」おいて、テンプレートから <script> で読み込むのだ～🌱
     # 一方、img の src と CSS の url() は fetch() を通らないから、file:// でも相対パスのまま読めるのだ～🌱
     # だから、テクスチャとフォントは、焼き込まずに、パスのまま渡すのだ～🌱
-    OUT << "== copy template =="
-    run("cp", templateSource, outDir RESOLVE template)
-
     OUT << "== bake assets.js =="
 
     # IFR25KU リポジトリ内のテクスチャ（＝コミット済みの素材なので、リポジトリから直接読むのだ～🌱）
-    # このパスは、テンプレートの置き場所、つまり書き出し先を基準に解決されるのだ～🌱
-    TEX := "../../../../../common/src/main/resources/assets/miragefairy2024"
+    # このパスは、テンプレートの置き場所を基準に解決されるのだ～🌱
+    TEX := relativeTo(templateDir; base RESOLVE "../../../common/src/main/resources/assets/miragefairy2024")
 
     assets := {
       plant: TEX RESOLVE "textures/block/magic_plant/sarracenia_age3.png"
@@ -209,7 +215,7 @@ base := LOCATION RESOLVE ".."
       sp := speakingLine(t)
       spk := sp == NULL ? NULL : (sp.speaker == "ずんだもん" ? "z" : "t")
       {
-        template: template; t: t
+        template: template; assets: assetsPath; portraitBase: portraitBase; t: t
         bogOp: bogOp(t); swampOp: 1; plantOp: itemOp(t; "plant"); leafOp: itemOp(t; "leaf")
         openOp: openOp(t); creditOp: creditOp(t); portraitOp: creditGate(t); bandOp: (1 - openOp(t)) * creditGate(t)
         subOp: so; scrimOp: so * 0.85
@@ -221,6 +227,6 @@ base := LOCATION RESOLVE ".."
     ) >> JSONL >> LINESD
     OUT << "composed frames.jsonl: $frameCount frames (total=$(total)s @ $(FPS)fps)"
 
-    OUT << "== scene ready: $template, assets.js, portrait/, frames.jsonl =="
+    OUT << "== scene ready: assets.js, portrait/, frames.jsonl =="
   )
 }
