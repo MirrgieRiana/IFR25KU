@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * Fabric 側の {@link ParticleEngine#render} は固定の一覧を回るだけだから、独自の種別を足してもそのままでは描かれないのだ～🌱
- * NeoForge 側は一覧外の種別も並べる比較器を持つから、こちらのミックスインは Fabric 側にのみ置くのだ～🌱
+ * NeoForge 側は一覧外の種別も並べる比較器を持つから、こちらの Mixin は Fabric 側にのみ置くのだ～🌱
  */
 @Mixin(ParticleEngine.class)
 public class ParticleEngineMixin {
