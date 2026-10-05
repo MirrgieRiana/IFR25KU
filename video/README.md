@@ -14,7 +14,7 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 
 1. **`renderer/`（汎用レンダラー）** … 構成jsonl（1 行 = 1 フレーム）と HTML テンプレートを受け取って、ひたすら対応する画像を撮るだけの、**動画の中身を知らない**カプセル化されたレンダラーなのだ～🌱 単体で完結していて、他のパートに依存しないのだ～🌱
 2. **`projects/<yyyy-MM-dd-タイトル>/`（動画プロジェクト）** … その動画の台本とシーンを持って、**構成jsonl を作る**パートなのだ～🌱 単体で完結していて、他のパートに依存しないのだ～🌱 今あるのは `projects/2026-04-12-sarracenia/` の 1 個なのだ～🌱
-3. **`video/` 直下（雑多な部分）** … 音声合成と動画合成をして、**1 と 2 を呼び出して**動画を完成させるのだ～🌱 `Makefile` が、その配線役なのだ～🌱
+3. **`video/` 直下（雑多な部分）** … 音声合成と動画合成をして、**1 と 2 を呼び出して**動画を完成させるのだ～🌱 `src/main/xa1/video-plugin.xa1` が、その配線役なのだ～🌱
 
 この動画は、動画編集ソフトの GUI で作るのではなくて、**「決定論的フレームレンダリング」** という方式で作るのだ～🌱
 
@@ -66,7 +66,6 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 
 | ファイル | 役割 |
 | --- | --- |
-| `Makefile` | タスクを 1 個ずつ叩けるように並べたものなのだ～🌱 動画プロジェクトの `Makefile` から include されるのだ～🌱 |
 | `src/main/xa1/athanor.xa1` | タスクを並べてビルドを組むための仕組みなのだ～🌱 タスクを走らせると、`dependsOn` を先にたどってから、自分の動作を呼ぶのだ～🌱 |
 | `src/main/xa1/video-plugin.xa1` | 動画プロジェクトに要るタスクを、依存の順に並べて渡すのだ～🌱 段と段の順序を、1 か所で持つのだ～🌱 |
 | `src/main/xa1/script.xa1` | 動画プロジェクトの台本を `script.json` へ焼くのだ～🌱 |
@@ -98,9 +97,9 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 
 | ファイル | 役割 |
 | --- | --- |
-| `Makefile` | この動画を組み立てる入口なのだ～🌱 自分の置き場所を渡して、`video/Makefile` を include するのだ～🌱 **ふつうはここで `make` を実行するだけ**なのだ～🌱 |
+| `athanorw` | この動画を組み立てる入口なのだ～🌱 タスクの名前を受け取って、`main.xa1` のその名前を呼ぶのだ～🌱 **ふつうはここで `./athanorw` を実行するだけ**なのだ～🌱 |
 | `main.xa1` | この動画の入口なのだ～🌱 `video-plugin` へ自分の居場所を渡して組んだプロジェクトに、シーンを組む `buildScene` を足して返すのだ～🌱 |
-| `build-scene.xa1` | 処理の本体なのだ～🌱 リソース確認とテンプレートの写しと `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
+| `build-scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
 | `script.xa1` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義して、`script.json` として焼かれるのだ～🌱 |
 | `../common/skit-v1.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 寸劇のプロジェクトで共有するのだ～🌱 |
 
@@ -175,34 +174,35 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 # 2) 外部取得リソースを projects/common/resources/ に配置するのだ～🌱（→ 3.）
 
 # 3) ビルドなのだ～🌱（Node 依存は各パートで自動 npm install するのだ～🌱）
-make
+./athanorw
 ```
 
 完成すると `video/build/movie/2026-04-12-sarracenia/2026-04-12-sarracenia.mp4` ができるのだ～🌱
 中間生成物と連番フレームも `video/` 内に残るけど、全部 `.gitignore` 済みなのだ～🌱
 
-`make` の引数で、途中の段だけを走らせることもできるのだ～🌱
+`./athanorw` の引数で、途中の段だけを走らせることもできるのだ～🌱
 
 | 段 | やること |
 | --- | --- |
-| `make script` | 台本を `script.json` へ焼くのだ～🌱 |
-| `make audio` | 台詞ごとの音声を合成するのだ～🌱 |
-| `make timeline` | 音声を結合して、タイムラインを算出するのだ～🌱 |
-| `make scene` | 動画プロジェクトの構成（テンプレート・`assets.js`・`portrait/`・`frames.jsonl`）を作るのだ～🌱 |
-| `make frames` | 連番のフレーム画像を撮るのだ～🌱 |
-| `make movie` | フレームとナレーションと BGM を合成して mp4 にするのだ～🌱 引数なしの `make` と同じなのだ～🌱 |
-| `make clean` | 生成物の `build` ディレクトリを、まとめて捨てるのだ～🌱 |
+| `./athanorw generateScript` | 台本を `script.json` へ焼くのだ～🌱 |
+| `./athanorw generateAudio` | 台詞ごとの音声を合成するのだ～🌱 |
+| `./athanorw generateTimeline` | 音声を結合して、タイムラインを算出するのだ～🌱 |
+| `./athanorw generateScene` | 動画プロジェクトの構成（`assets.js`・`portrait/`・`frames.jsonl`）を作るのだ～🌱 |
+| `./athanorw generateFrames` | 連番のフレーム画像を撮るのだ～🌱 |
+| `./athanorw generateMovie` | フレームとナレーションと BGM を合成して mp4 にするのだ～🌱 |
+| `./athanorw build` | 主要なものを組み立てるのだ～🌱 引数なしの `./athanorw` と同じなのだ～🌱 |
+| `./athanorw clean` | 生成物の `build` ディレクトリを、まとめて捨てるのだ～🌱 |
 
-`make` は、動画プロジェクトのディレクトリで叩くのだ～🌱 そこの `Makefile` が、`video/Makefile` から段の定義を受け取るのだ～🌱
-どの段も、前の段を自分で呼ぶから、`make movie` だけで最初から通るのだ～🌱
-そして、生成物が既にある段は、飛ばすのだ～🌱 作り直したいときは、その段のディレクトリを消すか、`make clean` で全部捨てるのだ～🌱
+`./athanorw` は、動画プロジェクトのディレクトリにあるのだ～🌱 段の定義は、`video/src/main/xa1/video-plugin.xa1` が持つのだ～🌱
+どの段も、前の段を自分で呼ぶから、`./athanorw build` だけで最初から通るのだ～🌱
+そして、生成物が既にある段は、飛ばすのだ～🌱 作り直したいときは、その段のディレクトリを消すか、`./athanorw clean` で全部捨てるのだ～🌱
 
 `renderer/` と `extract-portrait/` は Node 依存が別々だから、それぞれのディレクトリで必要なときだけ `npm install` するのだ～🌱
 手動で入れるなら、各ディレクトリで `npm install` するのだ～🌱
 
 ### 環境変数で差し替えられる設定なのだ～🌱
 
-`make` は次の環境変数を見るのだ～🌱
+`./athanorw` は次の環境変数を見るのだ～🌱
 無指定なら、既定値なのだ～🌱
 
 | 変数 | 既定 | 説明 |

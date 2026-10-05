@@ -39,9 +39,9 @@ bgmDir := base RESOLVE "projects/common/resources/bgm"
 
       ffmpeg := ENV.FFMPEG ?: "ffmpeg"
 
-      # ARGS の要素は文字列だから、掛け算の前に TO_NUMBER で数値へ直すのだ～🌱
+      # ARGS と ENV の要素は文字列だから、掛け算の前に TO_NUMBER で数値へ直すのだ～🌱
       # そうしないと、文字列の繰り返しとして解釈されて、繰り返し回数の変換で落ちるのだ～🌱
-      baseVol := $#ARGS > 0 ? TO_NUMBER(ARGS.0) : 0.45
+      baseVol := $#ARGS > 0 ? TO_NUMBER(ARGS.0) : TO_NUMBER(ENV.BGM_VOL ?: "0.45")
 
       # -----------------------------------------------------------------------------
       # BGM の音量は「2 ステートの線形補間」なのだ～🌱

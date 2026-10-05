@@ -44,7 +44,6 @@ AthanorProject := {
   }
 
   # 名前からタスクを引いて走らせるのだ～🌱
-  # Makefile のような外からの呼び出しは、この入口を通るのだ～🌱
   run: (this; name) -> (
     task := this.tasks.(name)
     task == NULL ? (
@@ -52,6 +51,11 @@ AthanorProject := {
       EXIT(1)
     ) : task::run()
   )
+
+  # タスクを、プロジェクトの直下から同じ名前で呼べるようにするのだ～🌱
+  # athanorw のような外からの呼び出しは、この関数を通るのだ～🌱
+  # タスクを並べ終えてから呼ぶのだ～🌱 後から足したタスクは、並ばないのだ～🌱
+  exportTasks: this -> this.tasks() | entry => this.(entry.0) = () -> entry.1::run()
 }
 
 {

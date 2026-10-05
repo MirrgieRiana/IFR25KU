@@ -1,0 +1,41 @@
+#!/bin/bash
+# =============================================================================
+# athanorw — この動画プロジェクトのタスクを走らせる入口なのだ～🌱
+# -----------------------------------------------------------------------------
+# 使い方なのだ～🌱：
+#   ./athanorw                … build と同じなのだ～🌱
+#   ./athanorw build          … 主要なものを組み立てるのだ～🌱
+#   ./athanorw clean          … 生成物をまとめて捨てるのだ～🌱
+#   ./athanorw generateScene  … 段を 1 個だけ叩くのだ～🌱 前の段は自分で呼ばれるのだ～🌱
+#   ./athanorw 'generateMovie()' 0.3  … 2 個目からの引数は、そのまま xarpite の ARGS へ渡るのだ～🌱
+#
+# 叩ける名前は、main.xa1 が返すものの直下にあるものなのだ～🌱
+#
+# 前提（先に済ませておくのだ～🌱 詳しくは video/README.md を読むのだ～🌱）：
+#   1. 外部取得リソースを projects/common/resources/ 以下の所定パスに置くのだ～🌱（*.md5 がその置き場所と中身を示すのだ～🌱）
+#   2. VOICEVOX ENGINE を起動しておくのだ～🌱（既定は http://127.0.0.1:50021）
+#   3. Node.js / ffmpeg / curl を使える状態にしておくのだ～🌱
+#
+# 差し替え可能な設定は、環境変数のまま xa1 と render.sh へ渡るのだ～🌱
+#   FFMPEG / VOICEVOX_HOST / CHROMIUM_PATH / CHROMIUM_LD_PATH
+# =============================================================================
+set -eu
+
+# このスクリプトの置き場所なのだ～🌱
+# どのディレクトリから呼んでも、同じ main.xa1 と xarpite を指すのだ～🌱
+here=$(cd "$(dirname "$0")" && pwd)
+
+task=${1:-build}
+# 2 個目からの引数は、xarpite の ARGS へ素通しするのだ～🌱
+[ $# -gt 0 ] && shift
+
+# 括弧が無いときは、引数の無い呼び出しとして補うのだ～🌱
+case "$task" in
+  *'('*) call=$task ;;
+  *) call="$task()" ;;
+esac
+
+"$here/../../../xarpite/xarpite" -A 5 -q -f - "$@" <<EOF
+API(5)
+USE("$here/main").$call
+EOF

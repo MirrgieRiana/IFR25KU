@@ -41,7 +41,10 @@ cleanModule := USE("clean")
     project.tasks.generateFrames = task("frames"; [project.tasks.generateScene]; () -> framesModule.generate(video))
     project.tasks.generateMovie = task("movie"; [project.tasks.generateTimeline, project.tasks.generateFrames]; () -> movieModule.generate(video))
     project.tasks.clean = task("clean"; []; () -> cleanModule.run(video))
+    # 主要なものを組み立てる入口なのだ～🌱 中身を持たず、動画を作る段へ依存するだけなのだ～🌱
+    project.tasks.build = task("build"; [project.tasks.generateMovie]; NULL)
 
+    project::exportTasks()
     project
   )
 }
