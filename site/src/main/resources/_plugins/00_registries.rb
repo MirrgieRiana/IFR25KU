@@ -63,11 +63,11 @@ module TagArguments
   # rest がフラグを変数名と取り違えないように、ここへ集めてあるのだ～🌱
   FLAGS = ["actual_size", "aria_hidden"].freeze
 
-  # Liquid タグの markup 文字列から、引用符で囲まれた引数も名前付き引数もフラグも除いた、最初の語を取り出す。
+  # Liquid タグの markup 文字列から、引用符で囲まれた引数も名前付き引数もフラグも除いた、最初の語を取り出すのだ～🌱
   #
   # markup の形式: '<変数名> 名前="値" ...'
-  #   - 引用符で囲まれていない引数は、Liquid の変数名として扱う
-  #   - 残りが 1 語も無い場合は nil を返す
+  #   - 引用符で囲まれていない引数は、Liquid の変数名として扱うのだ～🌱
+  #   - 残りが 1 語も無いときは nil を返すのだ～🌱
   #
   # 使用例:
   #   TagArguments.rest('page.header.teaser alt="表題"') # => "page.header.teaser"

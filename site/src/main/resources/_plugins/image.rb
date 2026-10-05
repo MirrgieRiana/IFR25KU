@@ -4,34 +4,34 @@
 # image.rb — Image Tag for Jekyll
 # =============================================================================
 #
-# 画像を img 要素として掲げるLiquidカスタムインラインタグ。
+# 画像を img 要素として掲げる、Liquid のカスタムインラインタグなのだ～🌱
 #
-# site の中で画像を掲げる手段は、このタグに統一されている。
-# Markdownのリンク構文や生のimg要素を使うと、img要素の組み立て方が複数の場所に散り、
-# 属性の追加や配置先の規則の変更が、その全部へ波及する。
+# site の中で画像を掲げる手段は、このタグに統一されているのだ～🌱
+# Markdown のリンク構文や生の img 要素を使うと、img 要素の組み立て方が複数の場所に散って、
+# 属性の追加や配置先の規則の変更が、その全部へ波及しちゃうのだ～🌧️
 #
-# 画像のパスを引数へ直接書くほか、Liquidの変数を渡すこともできる。
-# 変数を渡す形は、front matter から画像を受け取るレイアウトやインクルードで使う。
+# 画像のパスを引数へ直接書くほか、Liquid の変数を渡すこともできるのだ～🌱
+# 変数を渡す形は、front matter から画像を受け取るレイアウトやインクルードで使うのだ～🌱
 #
-# ## 基本的な使い方
+# ## 基本的な使い方なのだ～🌱
 #
 #   {% image "miragium-axe.webp" %}
 #   {% image "miragium-axe.webp" alt="ミラジウムの斧" %}
 #   {% image "miragium-axe.webp" class="encyclopedia-card__picture" %}
 #   {% image page.header.teaser alt="{{ page.title }}" %}
 #
-# ## markup構文
+# ## markup 構文なのだ～🌱
 #
 #   {% image "<画像のパス>"|<変数名> [alt="<代替テキスト>"] [class="<クラス名>"] [aria_hidden] %}
 #
-#   - 画像のパス:   引用符で囲んだパス、または引用符で囲まないLiquidの変数名（必須）
-#   - 代替テキスト: img の alt に入る文字列。省略すると空文字列になる
-#   - クラス名:     img に付く class 属性。省略すると class 属性を出力しない
-#   - aria_hidden:  添えると aria-hidden="true" を出力する
+#   - 画像のパス:   引用符で囲んだパスか、引用符で囲まない Liquid の変数名で、これは省略できないのだ～🌱
+#   - 代替テキスト: img の alt に入る文字列で、省略すると空文字列になるのだ～🌱
+#   - クラス名:     img に付く class 属性で、省略すると class 属性そのものを出力しないのだ～🌱
+#   - aria_hidden:  添えると aria-hidden="true" を出力するのだ～🌱
 #
-#   代替テキストとクラス名の中では、{{ ... }} の形でLiquidの変数を参照できる。
+#   代替テキストとクラス名の中では、{{ ... }} の形で Liquid の変数を参照できるのだ～🌱
 #
-# ## HTML出力構造
+# ## HTML の出力構造なのだ～🌱
 #
 #   <img src="（解決された画像のパス）" alt="（代替テキスト）">
 #
@@ -79,13 +79,13 @@ module Images
     "<img#{attributes}>"
   end
 
-  # {% image ... %} インラインタグの実装。
-  # 画像を img 要素として掲げる。
+  # {% image ... %} インラインタグの実装なのだ～🌱
+  # 画像を img 要素として掲げるのだ～🌱
   class ImageTag < Liquid::Tag
     def initialize(tag_name, markup, options)
       super
       @source = TagArguments.parse(markup).first
-      # 引用符で囲まれた引数が無いときは、残りをLiquidの変数名として扱うのだ～🌱
+      # 引用符で囲まれた引数が無いときは、残りを Liquid の変数名として扱うのだ～🌱
       @source_variable = @source ? nil : TagArguments.rest(markup)
       @alt = TagArguments.named(markup, "alt") || ""
       @class_name = TagArguments.named(markup, "class")
@@ -105,5 +105,5 @@ module Images
   end
 end
 
-# タグ "image" を Liquid に登録する
+# タグ "image" を Liquid へ登録するのだ～🌱
 Liquid::Template.register_tag("image", Images::ImageTag)

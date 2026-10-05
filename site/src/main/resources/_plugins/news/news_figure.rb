@@ -34,7 +34,7 @@
 #   <figure class="news__figure">
 #   <img src="（画像のパス）" alt="（代替テキスト、無ければキャプション）">
 #
-#   img 要素の組み立ては image.rb の Images.render_img へ委譲する。
+#   img 要素の組み立ては image.rb の Images.render_img へ委ねるのだ～🌱
 #   <figcaption class="news__caption" markdown="span">（キャプション）</figcaption>
 #   </figure>
 #
