@@ -93,9 +93,11 @@ class IfrEncyclopediaEntryCard(
                 "",
                 "A weed scattered across the floor of the fairy forest. Its leaves glow faintly after nightfall, and fairies gather above them. It has long served as a landmark for locating sites where fairies can be observed.",
                 "",
-                "Why it draws fairies remained unclear for many years. It has since been confirmed that the plant discharges surplus aura, and that fairies visit in order to feed on it. The glow of the leaves is a by-product of that discharge, and serves no purpose for the plant itself.",
+                "Why it draws fairies remained unclear for many years. It has since been confirmed that the plant discharges surplus aura, and that fairies visit in order to feed on it. The glow of the leaves accompanies the disposal of erg that the plant could not put to use.",
                 "",
-                "The scales shed when a fairy beats its wings are spent catalysts that once converted mana into erg within its body. The roots of this plant absorb them without delay and break them down for nourishment. Neither party intends the arrangement, yet it balances all the same.",
+                "The scales shed when a fairy beats its wings are spent catalysts that once converted mana into erg within its body. Fairies produce them without pause, so the ones that settle here are shed in abundance. The roots of this plant absorb them without delay, converting mana into erg for a while before breaking them down for nourishment.",
+                "",
+                "The aura it offers is therefore paid out of what last night's visitors left behind. Discharging surplus at the very spot where fairies are drawn is held to be an adaptation that keeps this cycle turning, and neither party need intend it for the arrangement to balance.",
             ),
             listOf(
                 "単子葉類妖花目ミランベリア科",
@@ -103,9 +105,11 @@ class IfrEncyclopediaEntryCard(
                 "",
                 "妖精の森の地表に点々と生える雑草。日が落ちると葉が淡く発光し、その上に妖精が集まる。妖精の観測地点を探す際の目印として、古くから利用されてきた。",
                 "",
-                "妖精を引き寄せる仕組みは長らく不明であったが、この草が余剰のオーラを放出していることが確認され、妖精がそれを摂取しに訪れるものと判明した。葉の発光はオーラの放出に伴う副産物であり、この草自身にとって何の用途もない。",
+                "妖精を引き寄せる仕組みは長らく不明であったが、この草が余剰のオーラを放出していることが確認され、妖精がそれを摂取しに訪れるものと判明した。葉の発光は、この草が用途を見いだせなかったエルグを捨てる際に伴うものである。",
                 "",
-                "妖精が羽を払う際に落とす鱗粉は、その体内でマナをエルグへ変えていた触媒が、古くなったものである。この草の根はこれを速やかに吸収し、分解して栄養とする。どちらの側も意図しないまま、この関係は釣り合っている。",
+                "妖精が羽を払う際に落とす鱗粉は、その体内でマナをエルグへ変えていた触媒が、古くなったものである。妖精は鱗粉を絶えず生成しているため、ここに降りた個体は、これを大量に落としていく。この草の根はこれを速やかに吸収し、しばらくマナをエルグへ変えさせた後、分解して栄養とする。",
+                "",
+                "したがって、この草が差し出すオーラは、前夜の客が置いていったものを元手としている。妖精の集まる場所でこそ余剰を捨てるという振る舞いは、この循環を回し続けるための適応と見られており、どちらの側も意図せずとも、この関係は釣り合う。",
             ),
         )
 
