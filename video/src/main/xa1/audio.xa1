@@ -35,7 +35,6 @@ moraSegments := q -> (
   wavPath: (project; i) -> dirOf(project) RESOLVE "wav" RESOLVE "$%05d(i).wav"
   morasPath: project -> dirOf(project) RESOLVE "moras.json"
   generate: project -> (
-    scriptModule.generate(project)
     generate("audio ($(project.name))"; dirOf(project); work -> (
       script := $*READ(scriptModule.path(project))
 

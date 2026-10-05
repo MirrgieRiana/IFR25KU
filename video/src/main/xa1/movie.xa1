@@ -31,7 +31,6 @@ bgmDir := base RESOLVE "projects/common/resources/bgm"
     # だから、配列にしてから、要素として探すのだ～🌱
     "chopin_op10-4.flac" @ [FILE_NAMES(bgmDir)] || fail("resource not found: projects/common/resources/bgm/chopin_op10-4.flac (place it as described in README.md)")
 
-    framesModule.generate(project)
     generate("movie ($(project.name))"; dirOf(project); work -> (
       tl := $*READ(timelineModule.jsonPath(project))
       total := tl.total

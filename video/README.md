@@ -66,8 +66,9 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 
 | ファイル | 役割 |
 | --- | --- |
-| `Makefile` | `main.xa1` の段を 1 個ずつ叩けるように並べたものなのだ～🌱 動画プロジェクトの `Makefile` から include されるのだ～🌱 |
-| `main.xa1` | 生成物ごとの `generate～` と `clean` を返す入口なのだ～🌱 どの関数も、相手にする動画プロジェクトを引数に取るのだ～🌱 自分の置き場所から `video/` を解決して、`INC` と読み書きのパスを組むのだ～🌱 |
+| `Makefile` | タスクを 1 個ずつ叩けるように並べたものなのだ～🌱 動画プロジェクトの `Makefile` から include されるのだ～🌱 |
+| `src/main/xa1/athanor.xa1` | タスクを並べてビルドを組むための仕組みなのだ～🌱 タスクを走らせると、`dependsOn` を先にたどってから、自分の動作を呼ぶのだ～🌱 |
+| `src/main/xa1/video-plugin.xa1` | 動画プロジェクトに要るタスクを、依存の順に並べて渡すのだ～🌱 段と段の順序を、1 か所で持つのだ～🌱 |
 | `src/main/xa1/script.xa1` | 動画プロジェクトの台本を `script.json` へ焼くのだ～🌱 |
 | `src/main/xa1/audio.xa1` | VOICEVOX で台詞ごとの音声を合成して、口パク用のモーラ区間も書き出すのだ～🌱 |
 | `src/main/xa1/timeline.xa1` | 台詞 wav を、タイトル、本編（行間の無音）、クレジットの順に結合して、タイムラインを算出するのだ～🌱 |
@@ -75,7 +76,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 | `src/main/xa1/frames.xa1` | 汎用レンダラーを呼んで、連番のフレーム画像を撮らせるのだ～🌱 |
 | `src/main/xa1/clean.xa1` | 生成物の `build` ディレクトリを、まとめて捨てるのだ～🌱 |
 | `src/main/xa1/common.xa1` | 各段が共有する値と関数（置き場所・外部コマンドの実行・生成の枠組み・丸め・wav の読み出し）なのだ～🌱 |
-| `src/main/xa1/movie.xa1` | `main.xa1` の `movie` が呼ぶ、連番フレームとナレーションと BGM を ffmpeg で合成して mp4 にする段の本体なのだ～🌱 |
+| `src/main/xa1/movie.xa1` | 連番フレームとナレーションと BGM を ffmpeg で合成して mp4 にするのだ～🌱 |
 
 **`renderer/`（汎用レンダラー・自己完結）**
 
@@ -98,7 +99,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 | ファイル | 役割 |
 | --- | --- |
 | `Makefile` | この動画を組み立てる入口なのだ～🌱 自分の置き場所を渡して、`video/Makefile` を include するのだ～🌱 **ふつうはここで `make` を実行するだけ**なのだ～🌱 |
-| `main.xa1` | この動画の入口なのだ～🌱 `video/main.xa1` へ自分の居場所を渡した `generate～` と `clean` と、シーンを組む `buildScene` を返すのだ～🌱 |
+| `main.xa1` | この動画の入口なのだ～🌱 `video-plugin` へ自分の居場所を渡して組んだプロジェクトに、シーンを組む `buildScene` を足して返すのだ～🌱 |
 | `build-scene.xa1` | 処理の本体なのだ～🌱 リソース確認とテンプレートの写しと `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
 | `script.xa1` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義して、`script.json` として焼かれるのだ～🌱 |
 | `../common/skit-v1.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 寸劇のプロジェクトで共有するのだ～🌱 |

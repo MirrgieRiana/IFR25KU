@@ -1,0 +1,45 @@
+# =============================================================================
+# video-plugin.xa1 — 動画プロジェクトに要るタスクを並べて渡すのだ～🌱（xarpite / API5）
+# -----------------------------------------------------------------------------
+# 動画プロジェクトの main.xa1 が、これを USE して、videoProjectOf へ自分の居場所を渡すのだ～🌱
+# 返ってくるのは、段ごとのタスクが依存の順に並んだ AthanorProject なのだ～🌱
+#
+# 段の中身そのものは src/main/xa1/ の各モジュールが持っていて、ここはそれをタスクへ包むだけなのだ～🌱
+# 段と段の順序は、ここの dependsOn が 1 か所で持つのだ～🌱
+# =============================================================================
+
+API(5)
+
+@USE("athanor")
+@USE("common")
+
+scriptModule := USE("script")
+audioModule := USE("audio")
+timelineModule := USE("timeline")
+sceneModule := USE("scene")
+framesModule := USE("frames")
+movieModule := USE("movie")
+cleanModule := USE("clean")
+
+{
+  videoProjectOf: projectBase -> (
+    video := projectOf(projectBase)
+    project := AthanorProject.new()
+
+    task := (name; dependsOn; action) -> AthanorTask.new()::ALSO ( task =>
+      task.name = name
+      task.dependsOn = dependsOn
+      task.action = action
+    )
+
+    project.tasks.generateScript = task("script"; []; () -> scriptModule.generate(video))
+    project.tasks.generateAudio = task("audio"; [project.tasks.generateScript]; () -> audioModule.generate(video))
+    project.tasks.generateTimeline = task("timeline"; [project.tasks.generateAudio]; () -> timelineModule.generate(video))
+    project.tasks.generateScene = task("scene"; [project.tasks.generateTimeline]; () -> sceneModule.generate(video))
+    project.tasks.generateFrames = task("frames"; [project.tasks.generateScene]; () -> framesModule.generate(video))
+    project.tasks.generateMovie = task("movie"; [project.tasks.generateTimeline, project.tasks.generateFrames]; () -> movieModule.generate(video))
+    project.tasks.clean = task("clean"; []; () -> cleanModule.run(video))
+
+    project
+  )
+}

@@ -1,32 +1,24 @@
 # =============================================================================
 # main.xa1 — この動画プロジェクトの入口なのだ～🌱（xarpite / API5）
 # -----------------------------------------------------------------------------
-# この動画の Makefile は、ここが返すオブジェクトの関数を呼ぶのだ～🌱
-# 段の中身は video/ 直下の雑多パートが持っていて、ここはそれへ自分の居場所を渡すだけなのだ～🌱
+# この動画の Makefile は、ここが返すプロジェクトの run へ、タスクの名前を渡すのだ～🌱
+# 段の中身と、段と段の順序は、video/ 直下の雑多パートの video-plugin が持つのだ～🌱
 # シーンを組む処理だけは、この動画に固有だから、同じディレクトリの build-scene.xa1 にあるのだ～🌱
 #
 # 呼び出しの例：
-#   xarpite -A 5 -q -e 'USE("/abs/video/projects/2026-04-12-sarracenia/main").generateMovie()'
+#   xarpite -A 5 -q -e 'USE("/abs/video/projects/2026-04-12-sarracenia/main")::run("generateMovie")'
 # =============================================================================
 
 API(5)
 
 # LOCATION はこのファイル自身のパスだから、その親を取れば、呼び出し元の居場所に関わらずこのディレクトリが得られるのだ～🌱
 INC += RESOLVE(LOCATION; "..")
+INC += RESOLVE(LOCATION; "../../..") RESOLVE "src/main/xa1"
 
-video := USE(RESOLVE(LOCATION; "../../..") RESOLVE "main")
-project := video.projectOf(RESOLVE(LOCATION; ".."))
+@USE("video-plugin")
 
-{
-  generateScript: () -> video.generateScript(project)
-  generateAudio: () -> video.generateAudio(project)
-  generateTimeline: () -> video.generateTimeline(project)
-  generateScene: () -> video.generateScene(project)
-  generateFrames: () -> video.generateFrames(project)
-  generateMovie: () -> video.generateMovie(project)
-  clean: () -> video.clean(project)
-
+videoProjectOf(RESOLVE(LOCATION; ".."))::ALSO ( project =>
   # 雑多パートの scene の段が、別の xarpite の呼び出しとして叩く入口なのだ～🌱
   # 引数は、timeline.json のパスと、生成物を書き出す先のディレクトリなのだ～🌱
-  buildScene: () -> USE("build-scene")
-}
+  project.buildScene = () -> USE("build-scene")
+)

@@ -30,7 +30,6 @@ sil := sec -> [0] * (2 * FLOOR(sec * SR + 0.5))
   wavPath: project -> dirOf(project) RESOLVE "full.wav"
   jsonPath: project -> dirOf(project) RESOLVE "timeline.json"
   generate: project -> (
-    audioModule.generate(project)
     generate("timeline ($(project.name))"; dirOf(project); work -> (
       script := $*READ(scriptModule.path(project))
       moraList := $*READ(audioModule.morasPath(project))

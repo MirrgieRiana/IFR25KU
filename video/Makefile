@@ -27,7 +27,7 @@ BGM_VOL ?= 0.45
 
 # 段の中身は、動画プロジェクトの main.xa1 が返す関数なのだ～🌱
 # PROJECT は、include する側の Makefile が、自分の置き場所を入れるのだ～🌱
-XA = $(XARPITE) -A 5 -q -e 'USE("$(PROJECT)/main").$(1)()'
+XA = $(XARPITE) -A 5 -q -e 'USE("$(PROJECT)/main")::run("$(1)")'
 
 .PHONY: all script audio timeline scene frames movie clean
 
@@ -51,7 +51,7 @@ frames:
 
 # --- フレームとナレーションと BGM を合成して mp4 にする段なのだ～🌱 --------------
 movie:
-	FFMPEG=$(FFMPEG) $(XARPITE) -A 5 -q -e 'USE("$(PROJECT)/main").generateMovie()' $(BGM_VOL)
+	FFMPEG=$(FFMPEG) $(XARPITE) -A 5 -q -e 'USE("$(PROJECT)/main")::run("generateMovie")' $(BGM_VOL)
 
 # --- 生成物をまとめて捨てる段なのだ～🌱 -------------------------------------------
 clean:

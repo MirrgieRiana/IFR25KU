@@ -12,7 +12,6 @@ dirOf := project -> project.buildBase RESOLVE "scene"
   dir: dirOf
   framesJsonlPath: project -> dirOf(project) RESOLVE "frames.jsonl"
   generate: project -> (
-    timelineModule.generate(project)
     generate("scene ($(project.name))"; dirOf(project); work -> (
       mainPath := project.base RESOLVE "main"
       run(base RESOLVE "../xarpite/xarpite", "-A", "5", "-q", "-e", "USE(\"$mainPath\").buildScene()", timelineModule.jsonPath(project), work)
