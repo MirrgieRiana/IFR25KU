@@ -25,7 +25,7 @@ base := LOCATION RESOLVE ".."
   # timeline.json のパスと、生成物を書き出す先と、それが最後に置かれる場所を受け取るのだ～🌱
   build: (timelinePath; outDir; sceneDir) -> (
     # 共有のテンプレートの置き場所なのだ～🌱
-    # テンプレートは写さずにこの場所のまま開かせるから、その中の相対パスは、ここを基準に解決されるのだ～🌱
+    # テンプレートはコピーせずにこの場所のまま開かせるから、その中の相対パスは、ここを基準に解決されるのだ～🌱
     templateDir := base RESOLVE "../common"
 
     # build_video.py の -framerate と一致させるのだ～🌱

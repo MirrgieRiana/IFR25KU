@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 # 使い方なのだ～🌱：
 #   ./athanorw                … build と同じなのだ～🌱
-#   ./athanorw build          … 主要なものを組み立てるのだ～🌱
+#   ./athanorw build          … 主要なものをビルドするのだ～🌱
 #   ./athanorw clean          … 生成物をまとめて捨てるのだ～🌱
 #   ./athanorw generateScene  … 段を 1 個だけ叩くのだ～🌱 前の段は自分で呼ばれるのだ～🌱
 #   ./athanorw 'generateMovie()' 0.3  … 2 個目からの引数は、そのまま xarpite の ARGS へ渡るのだ～🌱

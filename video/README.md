@@ -97,7 +97,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 
 | ファイル | 役割 |
 | --- | --- |
-| `athanorw` | この動画を組み立てる入口なのだ～🌱 タスクの名前を受け取って、`main.xa1` のその名前を呼ぶのだ～🌱 **ふつうはここで `./athanorw` を実行するだけ**なのだ～🌱 |
+| `athanorw` | この動画をビルドする入口なのだ～🌱 タスクの名前を受け取って、`main.xa1` のその名前を呼ぶのだ～🌱 **ふつうはここで `./athanorw` を実行するだけ**なのだ～🌱 |
 | `main.xa1` | この動画の入口なのだ～🌱 `video-plugin` へ自分の居場所を渡して組んだプロジェクトに、シーンを組む `buildScene` を足して返すのだ～🌱 |
 | `build-scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
 | `script.xa1` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義して、`script.json` として焼かれるのだ～🌱 |
@@ -190,7 +190,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 | `./athanorw generateScene` | 動画プロジェクトの構成（`assets.js`・`portrait/`・`frames.jsonl`）を作るのだ～🌱 |
 | `./athanorw generateFrames` | 連番のフレーム画像を撮るのだ～🌱 |
 | `./athanorw generateMovie` | フレームとナレーションと BGM を合成して mp4 にするのだ～🌱 |
-| `./athanorw build` | 主要なものを組み立てるのだ～🌱 引数なしの `./athanorw` と同じなのだ～🌱 |
+| `./athanorw build` | 主要なものをビルドするのだ～🌱 引数なしの `./athanorw` と同じなのだ～🌱 |
 | `./athanorw clean` | 生成物の `build` ディレクトリを、まとめて捨てるのだ～🌱 |
 
 `./athanorw` は、動画プロジェクトのディレクトリにあるのだ～🌱 段の定義は、`video/src/main/xa1/video-plugin.xa1` が持つのだ～🌱
