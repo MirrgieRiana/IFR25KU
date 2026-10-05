@@ -8,7 +8,7 @@
 #   ARGS.0       … timeline.json のパスなのだ～🌱
 #   ARGS.1       … 生成物を書き出す先のディレクトリなのだ～🌱
 # 出力（書き出し先の配下）：
-#   skit-v1.html … 共有のテンプレートの写しで、下の 3 個と同じ場所に無いと、相対パスが外れちゃうのだ～🌱
+#   skit-v1.html … 共有のテンプレートへのシンボリックリンクで、下の 3 個と同じ場所に無いと、相対パスが外れちゃうのだ～🌱
 #   assets.js    … テンプレートが読む、絵文字・テクスチャのパス・タイムラインの束
 #   portrait/    … 立ち絵 PSD から切り出したレイヤー PNG
 #   frames.jsonl … 1 行 = 1 フレームの構成jsonl（レンダラーへの入力）
@@ -28,9 +28,10 @@ outDir := ARGS.1
 # レンダラーは、frames.jsonl のあるディレクトリ（書き出し先）を基準に解決するのだ～🌱
 template := "skit-v1.html"
 
-# 共有のテンプレートの置き場所なのだ～🌱
-# 中の相対パスは、テンプレート自身の置き場所、つまり書き出し先からの深さで書いてあるのだ～🌱
-templateSource := base RESOLVE "../common" RESOLVE template
+# 書き出し先から共有のテンプレートへ辿る相対パスなのだ～🌱
+# シンボリックリンクの行き先として渡すから、絶対パスではなく相対パスで組むのだ～🌱
+# 書き出し先が projects/<名前>/build/scene だから、projects/common へは 3 階層上がるのだ～🌱
+templateSource := "../../../common" RESOLVE template
 
 # build_video.py の -framerate と一致させるのだ～🌱
 FPS := 30
@@ -81,8 +82,11 @@ need(base RESOLVE "../common/resources/emoji"; "seedling.svg")
 # そこで、JS が値として要るものは 1 個のファイル（assets.js）に「焼き込んで」おいて、テンプレートから <script> で読み込むのだ～🌱
 # 一方、img の src と CSS の url() は fetch() を通らないから、file:// でも相対パスのまま読めるのだ～🌱
 # だから、テクスチャとフォントは、焼き込まずに、パスのまま渡すのだ～🌱
-OUT << "== copy template =="
-run("cp", templateSource, outDir RESOLVE template)
+# 写すのではなく、シンボリックリンクを張るのだ～🌱
+# Chromium は file:// でリンクを開いても、リンク自身の置き場所を基準に相対パスを解決するから、
+# テンプレートの中の assets.js と portrait/ は、書き出し先の側を指すのだ～🌱
+OUT << "== link template =="
+run("ln", "-sfn", templateSource, outDir RESOLVE template)
 
 OUT << "== bake assets.js =="
 
