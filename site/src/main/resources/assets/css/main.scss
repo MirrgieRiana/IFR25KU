@@ -1222,7 +1222,7 @@ img[src$=".png" i] {
   margin: 0 0 2em;
 }
 
-// テーマは .page__content p で段落の下に余白を置くので、同じ詳細度にしないと、ここの指定が効かない
+// テーマは .page__content p で段落の下に余白を置くから、同じ詳細度にしないと、ここの指定が効かないのだ～🌱
 p.jei-mfa__ingredient {
   margin: 0;
 }
