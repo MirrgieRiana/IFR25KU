@@ -1,5 +1,5 @@
 # =============================================================================
-# 動画ビルドで生成・取得されるファイルは、すべてここで ignore するのだ～🌱
+# 動画ビルドで生成・取得されるファイルを ignore するのだ～🌱
 # コミットするのは各パートの「スクリプト類」「台本の xa1」「テンプレート」
 # 「README」「Makefile」「package.json / package-lock.json」
 # 「外部取得リソースの *.md5」だけなのだ～🌱
@@ -16,9 +16,8 @@ projects/common/resources/bgm/*.ogg
 projects/common/resources/bgm/*.wav
 
 # --- Node のツール（実体/シンボリックリンクとも） ---
-# node_modules は、それを使う renderer/ と extract-portrait/ の側で ignore するのだ～🌱
 /libs
 
-# --- このパートの生成物（generate～ の各段が作って、clean が捨てるのだ～🌱） ---
-# 作りかけのまま落ちたときの .work も、同じ 1 行で拾えるのだ～🌱
-/build*
+# --- 生成物（generate～ の各段が作って、clean が捨てるのだ～🌱） ---
+/build/
+projects/*/build/
