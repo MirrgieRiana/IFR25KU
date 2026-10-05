@@ -7,7 +7,7 @@ API(5)
 # rm -rf へ渡す前に、末尾が build であることと、親が実在することを確かめるのだ～🌱
 # base の解決が壊れたときに、"/build" や "build" のような、思わぬ場所を指したまま消しに行かないようにするためなのだ～🌱
 removeBuildDir := dir -> (
-  parent := RESOLVE(dir; "..")
+  parent := dir RESOLVE ".."
   dir == parent RESOLVE "build" || fail("not a build directory: $dir")
   dirExists(parent) || fail("parent directory not found: $parent")
   dirExists(dir) ? (

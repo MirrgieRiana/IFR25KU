@@ -12,12 +12,12 @@
 API(5)
 
 # LOCATION はこのファイル自身のパスだから、その親を取れば、呼び出し元の居場所に関わらずこのディレクトリが得られるのだ～🌱
-INC += RESOLVE(LOCATION; "..")
-INC += RESOLVE(LOCATION; "../../..") RESOLVE "src/main/xa1"
+INC += LOCATION RESOLVE ".."
+INC += LOCATION RESOLVE "../../.." RESOLVE "src/main/xa1"
 
 @USE("video-plugin")
 
-videoProjectOf(RESOLVE(LOCATION; ".."))::ALSO ( project =>
+videoProjectOf(LOCATION RESOLVE "..")::ALSO ( project =>
   # 雑多パートの scene の段が、別の xarpite の呼び出しとして叩く入口なのだ～🌱
   # 引数は、timeline.json のパスと、生成物を書き出す先のディレクトリなのだ～🌱
   project.buildScene = () -> USE("build-scene")
