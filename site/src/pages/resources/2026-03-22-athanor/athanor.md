@@ -3,7 +3,7 @@ title: "【アタノール】すっごいキャラメルみたいな匂い！【
 description: 春日部つむぎとずんだもんがアタノールを使っていろいろなものを作る話
 layout: theater
 header:
-  teaser: /2026/03/22/athanor.teaser.webp
+  teaser: ./athanor.teaser.webp
 tags: [ IFR劇場, アタノール, パン, 固形燃料, 砂糖, ハイメヴィスカの樹液, ヴェロペデリコラ ]
 ---
 

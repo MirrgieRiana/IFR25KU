@@ -2,11 +2,15 @@ package miragefairy2024.mod.tree.contents.plastictree
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.common.rootAdvancement
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeCard
 import miragefairy2024.mod.tree.contents.plastictreefamily.PlasticTreeFamilyTreeDecorator
+import miragefairy2024.util.AdvancementCard
+import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.Registration
+import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.register
@@ -44,6 +48,16 @@ val PLASTIC_TREE_LOGS_ITEM_TAG = MirageFairy2024.identifier("plastic_tree_logs")
 val SMALL_PLASTIC_TREE_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("small_plastic_tree")
 
 val GIANT_PLASTIC_TREE_CONFIGURED_FEATURE_KEY = Registries.CONFIGURED_FEATURE with MirageFairy2024.identifier("giant_plastic_tree")
+
+val plasticTreeAdvancement = AdvancementCard(
+    identifier = MirageFairy2024.identifier("plastic_tree"),
+    context = AdvancementCard.Sub { rootAdvancement.await() },
+    icon = { TreeBlockCard.DRIPPING_PLASTIC_TREE_LOG.item().createItemStack() },
+    name = EnJa("Encroaching Old Growth", "侵蝕する原生林"),
+    description = EnJa("Explore the Old Growth Amber Forest to find the Plastic Tree", "琥珀色の原生林を探検してプラノキを探す"),
+    criterion = AdvancementCard.hasItem { TreeBlockCard.PLASTIC_TREE_LOG.item() },
+    type = AdvancementCardType.TOAST_AND_JEWELS,
+)
 
 context(ModContext)
 fun initPlasticTree() {
@@ -99,5 +113,8 @@ fun initPlasticTree() {
             ).ignoreVines().decorators(listOf(createTreeDecorator())).build()
         }
     }
+
+    // 進捗
+    plasticTreeAdvancement.init()
 
 }

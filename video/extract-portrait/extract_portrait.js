@@ -32,10 +32,13 @@ function walk(children, prefix) {
 }
 walk(psd.children, '');
 
+// 一部だけ書けた出力を呼び出し元が揃っていると誤解しないように、1 枚も書く前に全部の ID を確認するのだ～🌱
+const missingIds = ids.filter(id => !map[id]);
+if (missingIds.length > 0) throw new Error(`layers not found in ${psdPath}: ${missingIds.join(', ')}`);
+
 fs.mkdirSync(outDir, { recursive: true });
 for (const id of ids) {
   const ly = map[id];
-  if (!ly) { console.log(`  MISSING id=${id}`); continue; }
   const png = new PNG({ width: W, height: H });
   png.data.fill(0);
   const idata = ly.imageData;

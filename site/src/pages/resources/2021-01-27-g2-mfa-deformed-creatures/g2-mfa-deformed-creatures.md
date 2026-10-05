@@ -2,7 +2,7 @@
 title: "G2-MFA　奇形生物"
 layout: paper
 header:
-  teaser: /2021/01/27/warehouse-outbreak.webp
+  teaser: ./warehouse-outbreak.webp
 tags:
   - MFA
   - 奇形生物

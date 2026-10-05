@@ -6,8 +6,9 @@ import com.luciad.imageio.webp.WebPWriteParam
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
-import org.yaml.snakeyaml.Yaml
+import tools.FrontMatterFilterReader
 import tools.normalizeJson
+import tools.parseFrontMatter
 import tools.sha256
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -21,7 +22,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.yaml:snakeyaml:2.2")
         classpath("com.microsoft.playwright:playwright:1.58.0")
         classpath("org.sejda.imageio:webp-imageio:0.1.6")
     }
@@ -163,13 +163,6 @@ private fun buildOgHtml(title: String, backgroundUrl: String, pixelated: Boolean
     </body>
     </html>
 """.trimIndent()
-}
-
-private fun parseFrontMatter(file: File): Map<String, Any>? {
-    val content = file.readText()
-    val match = Regex("\\A---\\r?\\n(.*?)\\r?\\n---(?:\\r?\\n|\\Z)", RegexOption.DOT_MATCHES_ALL).find(content) ?: return null
-    @Suppress("UNCHECKED_CAST")
-    return Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any>
 }
 
 class OgImageRenderer : AutoCloseable {
@@ -346,18 +339,19 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
         includeEmptyDirs = false
         val seenImagePaths = mutableMapOf<String, String>()
         eachFile {
-            // 下で配置先が平らになって元のディレクトリ名が失われるから、footer の source のリンクのために、元のパスを front matter へ書き足すのだ～🌱
-            if (name.endsWith(".md")) {
-                val sourcePath = file.relativeTo(rootDir).invariantSeparatorsPath
-                var isFirstLine = true
-                filter { line ->
-                    val result = if (isFirstLine && line == "---") "$line\nsource_path: $sourcePath" else line
-                    isFirstLine = false
-                    result
-                }
-            }
             val dirName = relativePath.pathString.substringBefore("/")
             val postMatch = """(\d{4})-(\d{2})-(\d{2})-(.+)""".toRegex().matchEntire(dirName)
+            if (name.endsWith(".md")) {
+                val sourcePath = file.relativeTo(rootDir).invariantSeparatorsPath
+                // front matter のパスを . から始めたときの基準になる、同じディレクトリに並ぶ画像の配置先なのだ～🌱
+                val imageDir = if (postMatch != null) {
+                    val (year, month, day, _) = postMatch.destructured
+                    "/$year/$month/$day"
+                } else {
+                    "/assets/images/$dirName"
+                }
+                filter(mapOf("sourcePath" to sourcePath, "imageDir" to imageDir), FrontMatterFilterReader::class.java)
+            }
             if (postMatch != null) {
                 val (year, month, day, _) = postMatch.destructured
                 if (name.endsWith(".md")) {

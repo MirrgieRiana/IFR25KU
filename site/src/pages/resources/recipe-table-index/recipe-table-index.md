@@ -2,7 +2,7 @@
 title: Recipe Table
 description: MODのレシピデータ
 header:
-  teaser: /assets/images/recipe-table-index/recipe-table-index.teaser.svg
+  teaser: ./recipe-table-index.teaser.svg
   teaser_banner: false
 ---
 
