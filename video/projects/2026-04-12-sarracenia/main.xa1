@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 # この動画の Makefile は、ここが返すプロジェクトの run へ、タスクの名前を渡すのだ～🌱
 # 段の中身と、段と段の順序は、video/ 直下の雑多パートの video-plugin が持つのだ～🌱
-# シーンを組む処理だけは、この動画に固有だから、同じディレクトリの build-scene.xa1 にあるのだ～🌱
+# シーンを組む処理だけは、この動画に固有だから、同じディレクトリの build-scene.xa1 にあって、ここから渡すのだ～🌱
 #
 # 呼び出しの例：
 #   xarpite -A 5 -q -e 'USE("/abs/video/projects/2026-04-12-sarracenia/main")::run("generateMovie")'
@@ -17,8 +17,7 @@ INC += LOCATION RESOLVE "../../.." RESOLVE "src/main/xa1"
 
 @USE("video-plugin")
 
-videoProjectOf(LOCATION RESOLVE "..")::ALSO ( project =>
-  # 雑多パートの scene の段が、別の xarpite の呼び出しとして叩く入口なのだ～🌱
-  # 引数は、timeline.json のパスと、生成物を書き出す先のディレクトリなのだ～🌱
-  project.buildScene = () -> USE("build-scene")
-)
+buildSceneModule := USE("build-scene")
+
+# 引数は、timeline.json のパスと、生成物を書き出す先のディレクトリなのだ～🌱
+videoProjectOf(LOCATION RESOLVE ".."; (timelinePath; outDir) -> buildSceneModule.build(timelinePath; outDir))

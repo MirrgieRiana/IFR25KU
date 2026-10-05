@@ -1,5 +1,5 @@
 # 動画プロジェクトにシーンを組ませる段なのだ～🌱（xarpite / API5）
-# プロジェクトは自己完結したパートだから、その入口の main.xa1 を、別の xarpite の呼び出しとして叩くのだ～🌱
+# シーンの中身は動画ごとに違うから、プロジェクトが渡してきた buildScene に任せるのだ～🌱
 
 API(5)
 @USE("common")
@@ -13,8 +13,7 @@ dirOf := project -> project.buildBase RESOLVE "scene"
   framesJsonlPath: project -> dirOf(project) RESOLVE "frames.jsonl"
   generate: project -> (
     generate("scene ($(project.name))"; dirOf(project); work -> (
-      mainPath := project.base RESOLVE "main"
-      run(base RESOLVE "../xarpite/xarpite", "-A", "5", "-q", "-e", "USE(\"$mainPath\").buildScene()", timelineModule.jsonPath(project), work)
+      project.buildScene(timelineModule.jsonPath(project); work)
     ))
   )
 }
