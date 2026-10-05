@@ -14,7 +14,7 @@ API(5)
 # LOCATION はこのファイル自身のパスだから、その親を取れば、呼び出し元の居場所に関わらずこのディレクトリが得られるのだ～🌱
 INC += RESOLVE(LOCATION; "..")
 
-video := USE(RESOLVE(LOCATION; "../../..") + "/main")
+video := USE(RESOLVE(LOCATION; "../../..") RESOLVE "main")
 project := video.projectOf(RESOLVE(LOCATION; ".."))
 
 {

@@ -7,7 +7,7 @@ API(5)
 
 scriptModule := USE("script")
 
-dirOf := project -> "$buildBase/audio/$(project.name)"
+dirOf := project -> buildBase RESOLVE "audio" RESOLVE project.name
 
 # 口パク(AV)用に、合成に使う最終クエリからモーラ区間を割り出すのだ～🌱
 # 返すのは [cs, vs, ve, vowel]（wav先頭からの秒で、speedScaleで割り済み）なのだ～🌱
@@ -32,8 +32,8 @@ moraSegments := q -> (
 )
 
 {
-  wavPath: (project; i) -> "$(dirOf(project))/wav/$%05d(i).wav"
-  morasPath: project -> "$(dirOf(project))/moras.json"
+  wavPath: (project; i) -> dirOf(project) RESOLVE "wav" RESOLVE "$%05d(i).wav"
+  morasPath: project -> dirOf(project) RESOLVE "moras.json"
   generate: project -> (
     scriptModule.generate(project)
     generate("audio ($(project.name))"; dirOf(project); work -> (
@@ -42,7 +42,7 @@ moraSegments := q -> (
       # --- 合成のリクエストを並べた jsonl を組むのだ～🌱 -------------------------------
       # 読みのカナは台本の kana で、その行で指定が無ければ、ラッパーが text から推定したものになるのだ～🌱
       # 発話の前後の無音は、結合の側で詰めるから、ここでは短く固定するのだ～🌱
-      WRITE["$work/requests.jsonl"] << 0 ~ $#script.lines | i => (
+      WRITE[work RESOLVE "requests.jsonl"] << 0 ~ $#script.lines | i => (
         line := script.lines.(i)
         {
           speaker: line.sid
@@ -58,7 +58,7 @@ moraSegments := q -> (
 
       # --- ラッパーへ渡して合成するのだ～🌱（→ wav/00000.wav, wav/00000.json） -------
       # ラッパーは、出力先が空のディレクトリでも存在しないパスでもないと止まるのだ～🌱
-      run("bash", "$base/voicevox-wrapper/synth.sh", "$work/requests.jsonl", "$work/wav")
+      run("bash", base RESOLVE "voicevox-wrapper/synth.sh", work RESOLVE "requests.jsonl", work RESOLVE "wav")
 
       # --- ラッパーの出力から、尺とカナと口パクの区間を割り出すのだ～🌱 ------------------
       results := []
@@ -66,8 +66,8 @@ moraSegments := q -> (
       morasOut := []
       0 ~ $#script.lines | i => (
         line := script.lines.(i)
-        q := $*READ("$work/wav/$%05d(i).json")
-        wav := readWav("$work/wav/$%05d(i).wav")
+        q := $*READ(work RESOLVE "wav" RESOLVE "$%05d(i).json")
+        wav := readWav(work RESOLVE "wav" RESOLVE "$%05d(i).wav")
         d := FLOOR($#wav.data / (wav.channels * wav.bitsPerSample / 8)) / wav.sampleRate
         results += {i: i; dur: round4(d)}
         kanaOut += {i: i; speaker: line.speaker; kana: q.kana}
@@ -75,9 +75,9 @@ moraSegments := q -> (
         OUT << "$%05d(i) sid=$(line.sid) dur=$%.3f(d) kana=$(q.kana)"
       ) >> TO_ARRAY
 
-      WRITE("$work/durations.json"; results >> JSON[indent: 1])
-      WRITE("$work/kana.json"; kanaOut >> JSON[indent: 1])
-      WRITE("$work/moras.json"; morasOut >> JSON[indent: 1])
+      WRITE(work RESOLVE "durations.json"; results >> JSON[indent: 1])
+      WRITE(work RESOLVE "kana.json"; kanaOut >> JSON[indent: 1])
+      WRITE(work RESOLVE "moras.json"; morasOut >> JSON[indent: 1])
       OUT << "total speech: $(FLOOR((results() | _.dur >> SUM) * 100 + 0.5) / 100) sec"
     ))
   )

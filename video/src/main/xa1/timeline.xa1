@@ -6,7 +6,7 @@ API(5)
 scriptModule := USE("script")
 audioModule := USE("audio")
 
-dirOf := project -> "$buildBase/timeline/$(project.name)"
+dirOf := project -> buildBase RESOLVE "timeline" RESOLVE project.name
 SR := 24000
 
 # 尺の設計なのだ～🌱
@@ -27,8 +27,8 @@ readPcm := path -> (
 sil := sec -> [0] * (2 * FLOOR(sec * SR + 0.5))
 
 {
-  wavPath: project -> "$(dirOf(project))/full.wav"
-  jsonPath: project -> "$(dirOf(project))/timeline.json"
+  wavPath: project -> dirOf(project) RESOLVE "full.wav"
+  jsonPath: project -> dirOf(project) RESOLVE "timeline.json"
   generate: project -> (
     audioModule.generate(project)
     generate("timeline ($(project.name))"; dirOf(project); work -> (
@@ -94,7 +94,7 @@ sil := sec -> [0] * (2 * FLOOR(sec * SR + 0.5))
       items() | it => (it.item == "leaf" && (it.end = skitEnd)) >> TO_ARRAY
 
       pcmLength := pcm() | _ => $#_ >> SUM
-      WRITEB("$work/full.wav"; UTF8("RIFF"), le32(36 + pcmLength), UTF8("WAVEfmt "), le32(16), le16(1), le16(1), le32(SR), le32(SR * 2), le16(2), le16(16), UTF8("data"), le32(pcmLength), pcm)
+      WRITEB(work RESOLVE "full.wav"; UTF8("RIFF"), le32(36 + pcmLength), UTF8("WAVEfmt "), le32(16), le16(1), le16(1), le32(SR), le32(SR * 2), le16(2), le16(16), UTF8("data"), le32(pcmLength), pcm)
 
       tl := {
         total: round4(total); lead: round4(lead)
@@ -104,7 +104,7 @@ sil := sec -> [0] * (2 * FLOOR(sec * SR + 0.5))
         lines: linesTl; scenes: scenes; items: items
         sceneFade: 0.6
       }
-      WRITE("$work/timeline.json"; tl >> JSON[indent: 1])
+      WRITE(work RESOLVE "timeline.json"; tl >> JSON[indent: 1])
       OUT << "total: $(FLOOR(total * 100 + 0.5) / 100) skitEnd: $(FLOOR(skitEnd * 100 + 0.5) / 100) creditStart: $(FLOOR(creditStart * 100 + 0.5) / 100)"
       OUT << "scenes: $(scenes() | s => "($(s.scene), $(FLOOR(s.start * 10 + 0.5) / 10), $(FLOOR(s.end * 10 + 0.5) / 10))" >> JOIN[", "])"
       OUT << "items: $(items() | x => "($(x.item), $(FLOOR(x.start * 10 + 0.5) / 10), $(FLOOR(x.end * 10 + 0.5) / 10))" >> JOIN[", "])"

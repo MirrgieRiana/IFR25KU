@@ -4,11 +4,11 @@
 API(5)
 @USE("common")
 
-dirOf := project -> "$buildBase/script/$(project.name)"
+dirOf := project -> buildBase RESOLVE "script" RESOLVE project.name
 
 {
-  path: project -> "$(dirOf(project))/script.json"
+  path: project -> dirOf(project) RESOLVE "script.json"
   generate: project -> generate("script ($(project.name))"; dirOf(project); work -> (
-    WRITE("$work/script.json"; USE("$(project.base)/script") >> JSON[indent: 1])
+    WRITE(work RESOLVE "script.json"; USE(project.base RESOLVE "script") >> JSON[indent: 1])
   ))
 }

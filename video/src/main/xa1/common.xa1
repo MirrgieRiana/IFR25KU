@@ -33,14 +33,14 @@ run := command -> OUT << capture(command)()
 
 # 生成物の置き場所なのだ～🌱
 # 生成物は、すべてこの下に作って、ignore も clean も、この 1 個のディレクトリでまとめて扱うのだ～🌱
-buildBase := "$base/build"
+buildBase := base RESOLVE "build"
 
 # 動画プロジェクトのディレクトリのパスから、各段が使う情報を組むのだ～🌱
 # この雑多パートは、どのプロジェクトを相手にするかを持たず、呼び出し側から受け取るのだ～🌱
 projectOf := projectBase -> {
   base: projectBase
   name: projectBase::replace(/^.*\//; "")
-  buildBase: "$projectBase/build"
+  buildBase: projectBase RESOLVE "build"
 }
 
 # ディレクトリがあるかを見るのだ～🌱

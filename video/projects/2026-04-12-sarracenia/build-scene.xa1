@@ -30,7 +30,7 @@ template := "skit-v1.html"
 
 # 共有のテンプレートの置き場所なのだ～🌱
 # 中の相対パスは、テンプレート自身の置き場所、つまり書き出し先からの深さで書いてあるのだ～🌱
-templateSource := "$base/../common/$template"
+templateSource := base RESOLVE "../common" RESOLVE template
 
 # build_video.py の -framerate と一致させるのだ～🌱
 FPS := 30
@@ -69,11 +69,11 @@ need := dir, name -> (
     EXIT(1)
   )
 )
-need("$base/../common/resources/psd"; "zundamon23.psd")
-need("$base/../common/resources/psd"; "tsumugi3.psd")
-need("$base/../common/resources/font"; "ZenMaruGothic-Black.ttf")
-need("$base/../common/resources/font"; "ZenMaruGothic-Bold.ttf")
-need("$base/../common/resources/emoji"; "seedling.svg")
+need(base RESOLVE "../common/resources/psd"; "zundamon23.psd")
+need(base RESOLVE "../common/resources/psd"; "tsumugi3.psd")
+need(base RESOLVE "../common/resources/font"; "ZenMaruGothic-Black.ttf")
+need(base RESOLVE "../common/resources/font"; "ZenMaruGothic-Bold.ttf")
+need(base RESOLVE "../common/resources/emoji"; "seedling.svg")
 
 # --- 1. テンプレートと、それが読む assets.js を書き出し先へ置くのだ～🌱（絵文字・テクスチャのパス・タイムライン） ---
 # レンダリングは Chromium に file://.../skit-v1.html を開かせて 1 フレームずつ撮る方式なのだ～🌱
@@ -82,7 +82,7 @@ need("$base/../common/resources/emoji"; "seedling.svg")
 # 一方、img の src と CSS の url() は fetch() を通らないから、file:// でも相対パスのまま読めるのだ～🌱
 # だから、テクスチャとフォントは、焼き込まずに、パスのまま渡すのだ～🌱
 OUT << "== copy template =="
-run("cp", templateSource, "$outDir/$template")
+run("cp", templateSource, outDir RESOLVE template)
 
 OUT << "== bake assets.js =="
 
@@ -91,25 +91,27 @@ OUT << "== bake assets.js =="
 TEX := "../../../../../common/src/main/resources/assets/miragefairy2024"
 
 assets := {
-  plant: "$TEX/textures/block/magic_plant/sarracenia_age3.png"
-  leaf: "$TEX/textures/item/sarracenia_leaf.png"
-  logo: "$TEX/icon.png"
-  bg: "$TEX/textures/block/haimeviska_log.png"
+  plant: TEX RESOLVE "textures/block/magic_plant/sarracenia_age3.png"
+  leaf: TEX RESOLVE "textures/item/sarracenia_leaf.png"
+  logo: TEX RESOLVE "icon.png"
+  bg: TEX RESOLVE "textures/block/haimeviska_log.png"
   # seedling はパスではなく「生の SVG 文字列」なのだ～🌱
   # テンプレートが innerHTML に直接差し込むのだ～🌱
-  seedling: READ("$base/../common/resources/emoji/seedling.svg")::replace(/^\s+|\s+$/g; "")
+  seedling: READ(base RESOLVE "../common/resources/emoji/seedling.svg")::replace(/^\s+|\s+$/g; "")
 }
 timeline := $*READ(timelinePath)
 
-WRITE("$outDir/assets.js"; "window.ASSETS=$(assets >> JSON[indent: NULL]);\nwindow.TIMELINE=$(timeline >> JSON[indent: NULL]);\n")
+WRITE(outDir RESOLVE "assets.js"; "window.ASSETS=$(assets >> JSON[indent: NULL]);\nwindow.TIMELINE=$(timeline >> JSON[indent: NULL]);\n")
 OUT << "baked assets.js: $(assets() | _.0 >> JOIN[", "])"
 OUT << "  timeline: total= $(timeline.total) lines= $($#timeline.lines)"
 
 # --- 2. 立ち絵 PSD から必要なレイヤーを PNG に切り出すのだ～🌱（→ portrait/<char>/<id>.png） -----
 OUT << "== extract portrait =="
 # 切り出しのツールは、レンダラーと同じく video/ 直下の兄弟で、Node 依存も自分で面倒を見るのだ～🌱
-run("bash", "$base/../../extract-portrait/extract-portrait.sh", "zundamon", "$base/../common/resources/psd/zundamon23.psd", ZUNDA_IDS, "$outDir/portrait/zundamon")
-run("bash", "$base/../../extract-portrait/extract-portrait.sh", "tsumugi", "$base/../common/resources/psd/tsumugi3.psd", TSUMUGI_IDS, "$outDir/portrait/tsumugi")
+extractPortrait := base RESOLVE "../../extract-portrait/extract-portrait.sh"
+psdDir := base RESOLVE "../common/resources/psd"
+run("bash", extractPortrait, "zundamon", psdDir RESOLVE "zundamon23.psd", ZUNDA_IDS, outDir RESOLVE "portrait/zundamon")
+run("bash", extractPortrait, "tsumugi", psdDir RESOLVE "tsumugi3.psd", TSUMUGI_IDS, outDir RESOLVE "portrait/tsumugi")
 
 # --- 3. 構成jsonl を組み立てるのだ～🌱（→ frames.jsonl） -------------------------
 # 各行は、そのフレームの見た目を決めるパラメータなのだ～🌱
@@ -201,7 +203,7 @@ speakingLine := t -> (
 )
 
 # 沼地の背景は、泥沼のクロスフェードの下敷きだから、swampOp はずっと 1 なのだ～🌱
-WRITE["$outDir/frames.jsonl"] << 0 ~ frameCount | i => (
+WRITE[outDir RESOLVE "frames.jsonl"] << 0 ~ frameCount | i => (
   t := i / FPS
   so := subOp(t)
   sp := speakingLine(t)

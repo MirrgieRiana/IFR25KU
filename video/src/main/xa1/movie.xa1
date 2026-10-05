@@ -20,11 +20,11 @@ API(5)
 timelineModule := USE("timeline")
 framesModule := USE("frames")
 
-dirOf := project -> "$buildBase/movie/$(project.name)"
-bgmDir := "$base/projects/common/resources/bgm"
+dirOf := project -> buildBase RESOLVE "movie" RESOLVE project.name
+bgmDir := base RESOLVE "projects/common/resources/bgm"
 
 {
-  path: project -> "$(dirOf(project))/$(project.name).mp4"
+  path: project -> dirOf(project) RESOLVE "$(project.name).mp4"
   generate: project -> (
     # BGM は外部取得リソースだから、長い合成に入る前に、置かれていることを確かめるのだ～🌱
     # FILE_NAMES のストリームのままだと、@ が部分文字列で探して、隣の *.md5 のファイル名に当たっちゃうのだ～🌱
@@ -68,12 +68,12 @@ bgmDir := "$base/projects/common/resources/bgm"
         ffmpeg; "-y"; "-hide_banner"
         "-framerate"; "30"; "-i"; framesModule.pngPattern(project)
         "-i"; timelineModule.wavPath(project)
-        "-stream_loop"; "-1"; "-i"; "$bgmDir/chopin_op10-4.flac"
+        "-stream_loop"; "-1"; "-i"; bgmDir RESOLVE "chopin_op10-4.flac"
         "-filter_complex"; fc
         "-map"; "0:v"; "-map"; "[aout]"
         "-c:v"; "libx264"; "-pix_fmt"; "yuv420p"; "-crf"; "20"
         "-c:a"; "aac"; "-b:a"; "192k"; "-shortest"
-        "$work/$(project.name).mp4"
+        work RESOLVE "$(project.name).mp4"
       ]
 
       # ffmpeg は進捗を大量に吐くから、成功したときの出力は捨てて、失敗したときだけ見せるのだ～🌱
