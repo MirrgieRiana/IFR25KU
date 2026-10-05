@@ -22,7 +22,6 @@ const W = psd.width, H = psd.height;
 console.log(`${target}: canvas ${W}x${H}`);
 
 // id -> layer のマップを作るのだ～🌱
-// Object.prototype を継承しない形で作るのだ～🌱
 // 普通のオブジェクトだと、constructor や toString も真を返して、下の存在確認を通り抜けちゃうのだ～🌱
 const map = Object.create(null);
 function walk(children, prefix) {
