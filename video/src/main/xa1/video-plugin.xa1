@@ -1,7 +1,7 @@
 # =============================================================================
 # video-plugin.xa1 — 動画プロジェクトに要るタスクを並べて渡すのだ～🌱（xarpite / API5）
 # -----------------------------------------------------------------------------
-# 動画プロジェクトの main.xa1 が、これを USE して、videoProjectOf へ自分の居場所とシーンを組む関数を渡すのだ～🌱
+# サブプロジェクトの xa1 が、これを USE して、videoProjectOf へ自分の居場所と台本とシーンを組む関数を渡すのだ～🌱
 # 返ってくるのは、段ごとのタスクが依存の順に並んだ AthanorProject なのだ～🌱
 #
 # 段の中身そのものは src/main/xa1/ の各モジュールが持っていて、ここはそれをタスクへ包むだけなのだ～🌱
@@ -22,8 +22,10 @@ movieModule := USE("movie")
 cleanModule := USE("clean")
 
 {
-  videoProjectOf: (projectBase; buildScene) -> (
+  videoProjectOf: (projectBase; script; buildScene) -> (
     video := projectOf(projectBase)
+    # 台本は動画ごとに違うから、script の段がここを通して受け取るのだ～🌱
+    video.script = script
     # シーンを組む処理は動画ごとに違うから、scene の段がここを通して呼ぶのだ～🌱
     video.buildScene = buildScene
     project := AthanorProject.new()

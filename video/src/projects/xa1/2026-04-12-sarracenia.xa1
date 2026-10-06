@@ -1,10 +1,14 @@
 # =============================================================================
-# script.xa1 — サラセニア寸劇の台本なのだ～🌱（xarpite / API5）
+# 2026-04-12-sarracenia.xa1 — サラセニア寸劇の台本とビルドの定義なのだ～🌱（xarpite / API5）
 # -----------------------------------------------------------------------------
-# この動画の台詞と、話者と、読みのカナ原稿と、字幕と、シーンと、登場アイテムを並べたものなのだ～🌱
-# 雑多パートの script.xa1 が、これを走らせて script.json を生成するのだ～🌱
+# 1 個の動画は、台本と、その動画に固有のビルドの定義だけで決まるのだ～🌱
+# だから、その 2 個を、動画の名前を冠したこの 1 個のファイルへ同居させるのだ～🌱
+# video/ 直下の athanorw が、video/main.xa1 を通してこのモジュールを読んで、返ってきたもののタスクを呼ぶのだ～🌱
 #
-# 1 行ぶんの項目なのだ～🌱：
+# 段の中身と、段と段の順序は、video/src/main/xa1/video-plugin.xa1 が持つのだ～🌱
+# シーンを組む処理だけは、この動画に固有だから、動画プロジェクトのディレクトリの build-scene.xa1 にあって、ここから渡すのだ～🌱
+#
+# 台本の 1 行ぶんの項目なのだ～🌱：
 #   speaker … 話者の名前なのだ～🌱
 #   sid     … VOICEVOX の話者 ID なのだ～🌱
 #   speed   … 読み上げの速さの倍率なのだ～🌱
@@ -18,7 +22,21 @@
 
 API(5)
 
-{
+# LOCATION はこのファイル自身のパスだから、4 階層さかのぼれば、呼び出し元の居場所に関わらず video/ が得られるのだ～🌱
+videoBase := LOCATION RESOLVE "../../../.."
+
+INC += videoBase RESOLVE "src/main/xa1"
+
+@USE("video-plugin")
+
+# この動画の、台本とシーンを持つディレクトリなのだ～🌱
+projectBase := videoBase RESOLVE "projects/2026-04-12-sarracenia"
+
+buildSceneModule := USE(projectBase RESOLVE "build-scene")
+
+# 台本なのだ～🌱
+# このファイルの中でだけ使うから、モジュールの外へ出さないのだ～🌱
+script := {
   title: "あまい罠は、沼で咲く"
   subtitle: "ずんだもん と 春日部つむぎ"
   lines: [
@@ -156,3 +174,6 @@ API(5)
     }
   ]
 }
+
+# buildScene の引数は、timeline.json のパスと、生成物を書き出す先と、それが最後に置かれる場所なのだ～🌱
+videoProjectOf(projectBase; script; (timelinePath; outDir; sceneDir) -> buildSceneModule.build(timelinePath; outDir; sceneDir))

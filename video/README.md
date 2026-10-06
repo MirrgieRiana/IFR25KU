@@ -4,7 +4,7 @@ VOICEVOX の立ち絵のずんだもんと春日部つむぎが、口パクと�
 IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで組み立てる**ためのビルドシステムなのだ～🌱
 
 今の題材はサラセニアという食虫植物の寸劇で、長さは 1 分ちょっとなのだ～🌱
-台本の `script.xa1` とテンプレートの `skit-v1.html` を差し替えれば、別の寸劇にも使えるのだ～🌱
+台本の xa1 とテンプレートの `skit-v1.html` を差し替えれば、別の寸劇にも使えるのだ～🌱
 
 ---
 
@@ -13,7 +13,7 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 `video/` は、役割ごとに 3 つのパートに分かれているのだ～🌱
 
 1. **`renderer/`（汎用レンダラー）** … 構成jsonl（1 行 = 1 フレーム）と HTML テンプレートを受け取って、ひたすら対応する画像を撮るだけの、**動画の中身を知らない**カプセル化されたレンダラーなのだ～🌱 単体で完結していて、他のパートに依存しないのだ～🌱
-2. **`projects/<yyyy-MM-dd-タイトル>/`（動画プロジェクト）** … その動画の台本とシーンを持って、**構成jsonl を作る**パートなのだ～🌱 単体で完結していて、他のパートに依存しないのだ～🌱 今あるのは `projects/2026-04-12-sarracenia/` の 1 個なのだ～🌱
+2. **`projects/<yyyy-MM-dd-タイトル>/`（動画プロジェクト）** … その動画のシーンを持って、**構成jsonl を作る**パートなのだ～🌱 単体で完結していて、他のパートに依存しないのだ～🌱 今あるのは `projects/2026-04-12-sarracenia/` の 1 個なのだ～🌱
 3. **`video/` 直下（雑多な部分）** … 音声合成と動画合成をして、**1 と 2 を呼び出して**動画を完成させるのだ～🌱 `src/main/xa1/video-plugin.xa1` が、その配線役なのだ～🌱
 
 この動画は、動画編集ソフトの GUI で作るのではなくて、**「決定論的フレームレンダリング」** という方式で作るのだ～🌱
@@ -32,7 +32,7 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 図の中では、動画プロジェクトの `projects/2026-04-12-sarracenia/` を `<proj>/` と書くのだ～🌱
 
 ```
-<proj>/script.xa1（台本）─(script.xa1)→ build/script/<proj>/script.json
+src/projects/xa1/<proj>.xa1（台本）─(script.xa1)→ build/script/<proj>/script.json
    │
    ├─(audio.xa1 + VOICEVOX)→ build/audio/<proj>/wav/*.wav, moras.json, kana.json, durations.json  ┐ 雑多パート
    │                                                                                   │ (video/ 直下)
@@ -66,8 +66,11 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 
 | ファイル | 役割 |
 | --- | --- |
+| `athanorw` | ビルドする入口なのだ～🌱 `<サブプロジェクト名>:<タスク名>` を受け取って、そのタスクを呼ぶのだ～🌱 **ふつうはここで `./athanorw 2026-04-12-sarracenia:build` を実行するだけ**なのだ～🌱 |
+| `main.xa1` | `video/` の入口なのだ～🌱 サブプロジェクト名を受け取って、`src/projects/xa1/` のそのモジュールを読むのだ～🌱 |
+| `src/projects/xa1/2026-04-12-sarracenia.xa1` | 1 個の動画の、台本とビルドの定義なのだ～🌱 `video-plugin` へ自分の居場所と台本とシーンを組む関数を渡して、組んだプロジェクトを返すのだ～🌱 |
 | `src/main/xa1/athanor.xa1` | タスクを並べてビルドを組むための仕組みなのだ～🌱 タスクを走らせると、`dependsOn` を先にたどってから、自分の動作を呼ぶのだ～🌱 |
-| `src/main/xa1/video-plugin.xa1` | 動画プロジェクトに要るタスクを、依存の順に並べて渡すのだ～🌱 段と段の順序を、1 か所で持つのだ～🌱 |
+| `src/main/xa1/video-plugin.xa1` | サブプロジェクトに要るタスクを、依存の順に並べて渡すのだ～🌱 段と段の順序を、1 か所で持つのだ～🌱 |
 | `src/main/xa1/script.xa1` | 動画プロジェクトの台本を `script.json` へ焼くのだ～🌱 |
 | `src/main/xa1/audio.xa1` | VOICEVOX で台詞ごとの音声を合成して、口パク用のモーラ区間も書き出すのだ～🌱 |
 | `src/main/xa1/timeline.xa1` | 台詞 wav を、タイトル、本編（行間の無音）、クレジットの順に結合して、タイムラインを算出するのだ～🌱 |
@@ -97,10 +100,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 
 | ファイル | 役割 |
 | --- | --- |
-| `athanorw` | この動画をビルドする入口なのだ～🌱 タスクの名前を受け取って、`main.xa1` のその名前を呼ぶのだ～🌱 **ふつうはここで `./athanorw` を実行するだけ**なのだ～🌱 |
-| `main.xa1` | この動画の入口なのだ～🌱 `video-plugin` へ自分の居場所を渡して組んだプロジェクトに、シーンを組む `buildScene` を足して返すのだ～🌱 |
 | `build-scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
-| `script.xa1` | 台本なのだ～🌱 台詞と話者と読み（カナ原稿）と字幕とシーンと登場アイテムを定義して、`script.json` として焼かれるのだ～🌱 |
 | `../common/skit-v1.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 寸劇のプロジェクトで共有するのだ～🌱 |
 
 **`projects/common/`（動画プロジェクトが共有するリソース）**
@@ -174,7 +174,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 # 2) 外部取得リソースを projects/common/resources/ に配置するのだ～🌱（→ 3.）
 
 # 3) ビルドなのだ～🌱（Node 依存は各パートで自動 npm install するのだ～🌱）
-./athanorw
+./athanorw 2026-04-12-sarracenia:build
 ```
 
 完成すると `video/build/movie/2026-04-12-sarracenia/2026-04-12-sarracenia.mp4` ができるのだ～🌱
@@ -182,20 +182,23 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 
 `./athanorw` の引数で、途中の段だけを走らせることもできるのだ～🌱
 
+タスクの名前は `:` で区切るのだ～🌱 左辺がサブプロジェクト名で、右辺が段の名前なのだ～🌱
+以下の表では、左辺を省いて書くのだ～🌱
+
 | 段 | やること |
 | --- | --- |
-| `./athanorw generateScript` | 台本を `script.json` へ焼くのだ～🌱 |
-| `./athanorw generateAudio` | 台詞ごとの音声を合成するのだ～🌱 |
-| `./athanorw generateTimeline` | 音声を結合して、タイムラインを算出するのだ～🌱 |
-| `./athanorw generateScene` | 動画プロジェクトの構成（`assets.js`・`portrait/`・`frames.jsonl`）を作るのだ～🌱 |
-| `./athanorw generateFrames` | 連番のフレーム画像を撮るのだ～🌱 |
-| `./athanorw generateMovie` | フレームとナレーションと BGM を合成して mp4 にするのだ～🌱 |
-| `./athanorw build` | 主要なものをビルドするのだ～🌱 引数なしの `./athanorw` と同じなのだ～🌱 |
-| `./athanorw clean` | 生成物の `build` ディレクトリを、まとめて捨てるのだ～🌱 |
+| `generateScript` | 台本を `script.json` へ焼くのだ～🌱 |
+| `generateAudio` | 台詞ごとの音声を合成するのだ～🌱 |
+| `generateTimeline` | 音声を結合して、タイムラインを算出するのだ～🌱 |
+| `generateScene` | 動画プロジェクトの構成（`assets.js`・`portrait/`・`frames.jsonl`）を作るのだ～🌱 |
+| `generateFrames` | 連番のフレーム画像を撮るのだ～🌱 |
+| `generateMovie` | フレームとナレーションと BGM を合成して mp4 にするのだ～🌱 |
+| `build` | 主要なものをビルドするのだ～🌱 |
+| `clean` | 生成物の `build` ディレクトリを、まとめて捨てるのだ～🌱 |
 
-`./athanorw` は、動画プロジェクトのディレクトリにあるのだ～🌱 段の定義は、`video/src/main/xa1/video-plugin.xa1` が持つのだ～🌱
-どの段も、前の段を自分で呼ぶから、`./athanorw build` だけで最初から通るのだ～🌱
-そして、生成物が既にある段は、飛ばすのだ～🌱 作り直したいときは、その段のディレクトリを消すか、`./athanorw clean` で全部捨てるのだ～🌱
+`./athanorw` は、`video/` 直下にあるのだ～🌱 段の定義は、`video/src/main/xa1/video-plugin.xa1` が持つのだ～🌱
+どの段も、前の段を自分で呼ぶから、`build` だけで最初から通るのだ～🌱
+そして、生成物が既にある段は、飛ばすのだ～🌱 作り直したいときは、その段のディレクトリを消すか、`clean` で全部捨てるのだ～🌱
 
 `renderer/` と `extract-portrait/` は Node 依存が別々だから、それぞれのディレクトリで必要なときだけ `npm install` するのだ～🌱
 手動で入れるなら、各ディレクトリで `npm install` するのだ～🌱

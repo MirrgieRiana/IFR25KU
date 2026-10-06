@@ -1,5 +1,5 @@
 # 動画プロジェクトの台本を JSON へ焼く段なのだ～🌱（xarpite / API5）
-# 台本そのものは xa1 の側がコミットされていて、JSON はこの段で作り直すのだ～🌱
+# 台本そのものはサブプロジェクトの xa1 の中にあって、JSON はこの段で作り直すのだ～🌱
 
 API(5)
 @USE("common")
@@ -9,6 +9,6 @@ dirOf := project -> buildBase RESOLVE "script" RESOLVE project.name
 {
   path: project -> dirOf(project) RESOLVE "script.json"
   generate: project -> generate("script ($(project.name))"; dirOf(project); work -> (
-    WRITE(work RESOLVE "script.json"; USE(project.base RESOLVE "script") >> JSON[indent: 1])
+    WRITE(work RESOLVE "script.json"; project.script >> JSON[indent: 1])
   ))
 }
