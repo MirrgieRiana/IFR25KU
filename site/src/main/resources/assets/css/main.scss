@@ -1222,12 +1222,13 @@ img[src$=".png" i] {
   margin: 0 0 2em;
 }
 
-.jei-mfa__ingredient {
+// テーマは .page__content p で段落の下に余白を置くから、同じ詳細度にしないと、ここの指定が効かないのだ～🌱
+p.jei-mfa__ingredient {
   margin: 0;
 }
 
 // レシピの主材料と副材料の境目は、副材料どうしの間より広く開ける
-.jei-mfa__ingredient--main {
+p.jei-mfa__ingredient--main {
   margin-bottom: 0.8em;
 }
 
