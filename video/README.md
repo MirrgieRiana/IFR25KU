@@ -19,7 +19,7 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 この動画は、動画編集ソフトの GUI で作るのではなくて、**「決定論的フレームレンダリング」** という方式で作るのだ～🌱
 
 1. `projects/common/skit-v1.html` が、1 フレーム分の構成 `frame` を渡すとその画面を組み立てる関数 `window.applyFrame(frame)` を持つのだ～🌱 画面の見た目を決める値は、全部 `frame` に入っているのだ～🌱
-2. `projects/2026-04-12-sarracenia/build-scene.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
+2. `projects/common/skit/skit-v1.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱 その寸劇に固有の値は、`projects/2026-04-12-sarracenia/build-scene.xa1` が渡すのだ～🌱
 3. `renderer/render.js` がヘッドレス Chromium にテンプレートを開かせて、`frames.jsonl` を頭から 1 行ずつ `applyFrame(frame)` に渡して、1 行につき 1 コマ撮るのだ～🌱
 4. 撮れた連番画像の `projects/2026-04-12-sarracenia/build/frames/png/f_00000.png …` を ffmpeg で映像にして、ナレーション音声と BGM を重ねて mp4 にするのだ～🌱
 
@@ -100,7 +100,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 
 | ファイル | 役割 |
 | --- | --- |
-| `build-scene.xa1` | 処理の本体なのだ～🌱 リソース確認と `assets.js` の焼き込みと `extract-portrait/` の呼び出しと、1 行 = 1 フレームの構成jsonl（`frames.jsonl`）の生成をするのだ～🌱 |
+| `build-scene.xa1` | この寸劇に固有の、構成の材料なのだ～🌱 立ち絵のキャラとテクスチャとポーズの配列と、シーンとアイテムの不透明度の決め方を、共通の `skit/skit-v1.xa1` へ渡すのだ～🌱 |
 | `../common/skit-v1.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 寸劇のプロジェクトで共有するのだ～🌱 |
 
 **`projects/common/`（動画プロジェクトが共有するリソース）**
@@ -108,6 +108,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 | ファイル | 役割 |
 | --- | --- |
 | `skit-v1.html` | 寸劇のテンプレートなのだ～🌱 画面の見た目と `window.applyFrame(frame)` を持つのだ～🌱 |
+| `skit/skit-v1.xa1` | 台本から寸劇の構成を組み上げるシステムなのだ～🌱 `assets.js` と立ち絵の切り出しと構成jsonl を作るのだ～🌱 寸劇の動画プロジェクトが、自分に固有の値を渡して呼ぶのだ～🌱 |
 | `resources/**/*.md5` | 外部取得リソースの md5 なのだ～🌱 **そこに、どの名前で、何を置けばよいかを保証するための目印**なのだ～🌱 |
 
 ### コミットされていないもの（`.gitignore` 対象）なのだ～🌱

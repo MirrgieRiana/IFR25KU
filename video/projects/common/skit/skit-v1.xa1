@@ -1,0 +1,217 @@
+# =============================================================================
+# skit-v1.xa1 — 台本から寸劇の「構成」を組み上げるシステムなのだ～🌱（xarpite / API5）
+# -----------------------------------------------------------------------------
+# 同じ階層の skit-v1.html が読む材料を、まとめて作るのだ～🌱
+# 動画プロジェクトごとに同じ処理が複製されないように、寸劇という形式に共通な部分だけをここへ置くのだ～🌱
+# 動画ごとに違う値は、呼び出す側が spec で渡すのだ～🌱
+#
+# 作るものなのだ～🌱：
+#   assets.js    … テンプレートが読む、絵文字・テクスチャのパス・タイムラインの束
+#   portrait/    … 立ち絵 PSD から切り出したレイヤー PNG
+#   frames.jsonl … 1 行 = 1 フレームの構成jsonl（レンダラーへの入力）
+#
+# build の引数なのだ～🌱：
+#   spec         … この寸劇に固有の値なのだ～🌱 下のキーを持つのだ～🌱
+#   timelinePath … timeline.json のパスなのだ～🌱
+#   outDir       … 生成物を書き出す先のディレクトリなのだ～🌱
+#   sceneDir     … 生成物が最後に置かれるディレクトリなのだ～🌱
+#
+# spec のキーなのだ～🌱：
+#   base         … 動画プロジェクトのディレクトリの絶対パスなのだ～🌱
+#   characters   … 立ち絵のキャラの配列なのだ～🌱 name と psd と ids と speaker を持つのだ～🌱
+#   fonts        … 要るフォントのファイル名の配列なのだ～🌱
+#   emojis       … 要る絵文字のファイル名の配列なのだ～🌱
+#   assetsOf     … テクスチャの相対パスの基準とリソースの置き場所を受け取って、assets.js へ焼く束を返す関数なのだ～🌱
+#   poseDefault  … 初回発話より前のポーズなのだ～🌱
+#   poses        … 台詞ごとのポーズの配列なのだ～🌱 timeline.lines と対応するのだ～🌱
+#   framePartOf  … その時刻の、この寸劇に固有な構成の部分を返す関数なのだ～🌱
+#                  引数は、時刻と、タイムラインと、不透明度を計算する関数の束なのだ～🌱
+# =============================================================================
+
+API(5)
+
+{
+  build: (spec; timelinePath; outDir; sceneDir) -> (
+    base := spec.base
+
+    # 共有のテンプレートの置き場所なのだ～🌱
+    # テンプレートはコピーせずにこの場所のまま開かせるから、その中の相対パスは、ここを基準に解決されるのだ～🌱
+    # RESOLVE は左辺をディレクトリとして扱うから、LOCATION のファイル名の分も 1 階層として数えるのだ～🌱
+    templateDir := LOCATION RESOLVE "../.."
+
+    # build_video.py の -framerate と一致させるのだ～🌱
+    FPS := 30
+
+    # 外部コマンドを実行して、その出力の行の配列を返して、終了コードが 0 でなければ止めるのだ～🌱
+    # 同梱の xarpite の EXECL は、終了コードが 0 でないと、子の標準出力も標準エラーも捨てちゃうのだ～🌱
+    # だから、bash に包んで、標準エラーを標準出力へ合わせて、終了コードを最後の行で受け取るのだ～🌱
+    # 出力が改行で終わらないときも終了コードが別の行になるように、出力の末尾の改行を 1 個にそろえてから流すのだ～🌱
+    capture := command -> (
+      lines := [EXECL("bash", "-c", %>out=$("$@" 2>&1); code=$?; [ -n "$out" ] && printf '%s\n' "$out"; echo "$code"<%, "run", command)]
+      exitCode := lines.($#lines - 1)
+      output := lines[0 ~ ($#lines - 1)]
+      exitCode == "0" || (
+        OUT << output()
+        ERR("ERROR: command failed with exit code $exitCode: $(command >> JOIN[" "])")
+        EXIT(1)
+      )
+      output
+    )
+
+    run := command -> OUT << capture(command)()
+
+    # from のディレクトリから to へ辿る相対パスを組むのだ～🌱
+    # 書き出し先はまだ無いことがあるから、実体を見ずに組ませる -m を付けるのだ～🌱
+    relativeTo := from, to -> capture(["realpath", "-m", "--relative-to", from, to]).0
+
+    # 構成jsonl の各行の template に入れる、この動画のテンプレートなのだ～🌱
+    # レンダラーは、frames.jsonl のあるディレクトリを基準に解決するのだ～🌱
+    template := relativeTo(sceneDir; templateDir RESOLVE "skit-v1.html")
+
+    # テンプレートが読む素材の置き場所なのだ～🌱
+    # テンプレートは共有の場所で開かれるから、そこから書き出し先へ辿る相対パスを渡すのだ～🌱
+    assetsPath := relativeTo(templateDir; sceneDir RESOLVE "assets.js")
+    portraitBase := relativeTo(templateDir; sceneDir RESOLVE "portrait")
+
+    # --- 外部取得リソース（このシーンの立ち絵・フォント・絵文字）の存在を確認するのだ～🌱 ---
+    # FILE_NAMES のストリームのままだと、@ が部分文字列で探して、隣の *.md5 のファイル名に当たっちゃうのだ～🌱
+    # だから、配列にしてから、要素として探すのだ～🌱
+    need := dir, name -> (
+      name @ [FILE_NAMES(dir)] || (
+        ERR("ERROR: resource not found: $dir/$name (place it as described in README.md)")
+        EXIT(1)
+      )
+    )
+    spec.characters() | character => need(base RESOLVE "../common/resources/psd"; character.psd)
+    spec.fonts() | font => need(base RESOLVE "../common/resources/font"; font)
+    spec.emojis() | emoji => need(base RESOLVE "../common/resources/emoji"; emoji)
+
+    # --- 1. テンプレートが読む assets.js を書き出し先へ置くのだ～🌱（絵文字・テクスチャのパス・タイムライン） ---
+    # レンダリングは Chromium に file://.../skit-v1.html を開かせて 1 フレームずつ撮る方式なのだ～🌱
+    # file:// で開いた HTML は、セキュリティ上、外部ファイルを fetch() で読めないのだ～🌱
+    # そこで、JS が値として要るものは 1 個のファイル（assets.js）に「焼き込んで」おいて、テンプレートから <script> で読み込むのだ～🌱
+    # 一方、img の src と CSS の url() は fetch() を通らないから、file:// でも相対パスのまま読めるのだ～🌱
+    # だから、テクスチャとフォントは、焼き込まずに、パスのまま渡すのだ～🌱
+    OUT << "== bake assets.js =="
+
+    # IFR25KU リポジトリ内のテクスチャ（＝コミット済みの素材なので、リポジトリから直接読むのだ～🌱）
+    # このパスは、テンプレートの置き場所を基準に解決されるのだ～🌱
+    TEX := relativeTo(templateDir; base RESOLVE "../../../common/src/main/resources/assets/miragefairy2024")
+
+    assets := spec.assetsOf(TEX; base RESOLVE "../common/resources")
+    timeline := $*READ(timelinePath)
+
+    WRITE(outDir RESOLVE "assets.js"; "window.ASSETS=$(assets >> JSON[indent: NULL]);\nwindow.TIMELINE=$(timeline >> JSON[indent: NULL]);\n")
+    OUT << "baked assets.js: $(assets() | _.0 >> JOIN[", "])"
+    OUT << "  timeline: total= $(timeline.total) lines= $($#timeline.lines)"
+
+    # --- 2. 立ち絵 PSD から必要なレイヤーを PNG に切り出すのだ～🌱（→ portrait/<char>/<id>.png） -----
+    OUT << "== extract portrait =="
+    # 切り出しのツールは、レンダラーと同じく video/ 直下の兄弟で、Node 依存も自分で面倒を見るのだ～🌱
+    extractPortrait := base RESOLVE "../../extract-portrait/extract-portrait.sh"
+    psdDir := base RESOLVE "../common/resources/psd"
+    spec.characters() | character => run("bash", extractPortrait, character.name, psdDir RESOLVE character.psd, character.ids, outDir RESOLVE "portrait/$(character.name)")
+
+    # 各行は、そのフレームの見た目を決めるパラメータなのだ～🌱
+    # 背景とアイテム枠の不透明度は、ここで計算して渡すのだ～🌱
+    # 台詞ごとのポーズと、字幕の中身も、ここで決めて渡すのだ～🌱
+    # 残るのは、開幕のデカ字のフィットだけで、それは時刻に依らないのだ～🌱
+    OUT << "== compose frames.jsonl =="
+    total := timeline.total
+    frameCount := -FLOOR(-(total * FPS))
+
+    # テンプレートの clamp・fadeIn と、式も演算の順序もそろえてあるのだ～🌱
+    # JS も xarpite も IEEE 754 の倍精度だから、そろえておけば、同じ時刻に同じ値が出るのだ～🌱
+    clamp := (x; a; b) -> MAX(a; MIN(b; x))
+    fadeIn := (t; start; dur) -> clamp((t - start) / dur; 0; 1)
+    fadeOut := (t; start; dur) -> 1 - clamp((t - start) / dur; 0; 1)
+
+
+    itemOp := (t; name) -> (
+      ops := [timeline.items() >> FILTER[it => it.item == name] | it => clamp(MIN((t - it.start) / 0.22; (it.end + 0.18 - t) / 0.22); 0; 1)]
+      $#ops > 0 ? MAX(ops()) : 0
+    )
+
+
+    # 開幕のサムネは、タイトル保持のあいだ出して、タイトル明けにフェードアウトするのだ～🌱
+    openOp := t -> t < timeline.titleFadeStart ? 1 : fadeOut(t; timeline.titleFadeStart; timeline.titleEnd - timeline.titleFadeStart)
+    creditOp := t -> fadeIn(t; timeline.creditStart - 0.35; 0.5)
+    # クレジットが出るあいだ、立ち絵と帯と字幕を閉じるゲートなのだ～🌱
+    creditGate := t -> 1 - clamp(creditOp(t) * 3; 0; 1)
+    # その時刻に字幕を出している台詞なのだ～🌱 テンプレートと同じく、最初に当たったものを採るのだ～🌱
+    activeLines := t -> [timeline.lines() >> FILTER[ln => t >= ln.start && t < ln.subEnd]]
+    subOp := t -> (
+      lns := activeLines(t)
+      op := $#lns > 0 ? clamp(MIN((t - lns.0.start) / 0.12; (lns.0.subEnd + 0.05 - t) / 0.15); 0; 1) : 0
+      (openOp(t) > 0.5 ? 0 : op) * creditGate(t)
+    )
+
+    # 台詞ごとのポーズ（眉・腕・汗）なのだ～🌱
+    # 並びは timeline.lines と対応して、値はテンプレートの pg キーなのだ～🌱
+    # sweat のキーを持つものだけ、汗を出すのだ～🌱
+    # 導入部（開幕のデカ字サムネから初回発話まで）は、サムネのキメ姿勢なのだ～🌱
+
+    # 台詞ごとのポーズは、呼び出す側が渡すのだ～🌱
+    POSE_DEFAULT := spec.poseDefault
+    POSES := spec.poses
+
+    poseAt := t -> (
+      hits := [0 ~ $#timeline.lines >> FILTER[k => t >= timeline.lines.(k).start]]
+      $#hits > 0 ? POSES.(hits(-1)) : POSE_DEFAULT
+    )
+
+    # その時刻に字幕を出している台詞の中身なのだ～🌱
+    # テンプレートの setSub は、i と sub と big と speaker だけを見るのだ～🌱
+    # 出す台詞が無いときは NULL で、JS 側の「字幕を消す」の分岐へ落ちるのだ～🌱
+    subLineAt := t -> (
+      lns := activeLines(t)
+      $#lns > 0 ? {i: lns.0.i; sub: lns.0.sub; big: lns.0.big; speaker: lns.0.speaker} : NULL
+    )
+
+    # 母音から口の開きを決めるのだ～🌱
+    # 縦の開きで 3 段で、N や pau や っ といった無声と休止は閉口なのだ～🌱
+    vowelMouth := v -> v == "a" ? "open" : (v == "i" || v == "u" || v == "e" || v == "o" ? "half" : "closed")
+    # モーラの区間を順に見て、最初に当たったものを採るのだ～🌱
+    # モーラの秒は wav の先頭からだから、start を引くのだ～🌱
+    mouthAt := (line; t) -> (
+      tl := t - line.start
+      hits := [line.moras() >> FILTER[m => tl >= m.0 && tl < m.2]]
+      $#hits > 0 ? (tl < hits.0.1 ? "closed" : vowelMouth(hits.0.3)) : "closed"
+    )
+    # まばたきなのだ～🌱
+    # 閉眼は一瞬で、半目は介さずに閉と開を行き来するのだ～🌱
+    # 位相は、最初のフレームで両者とも目を開けているように選んであるのだ～🌱
+    blinkAt := (t; period; phase; dur) -> (((t + phase) % period) + period) % period < dur
+    # 口パクする台詞なのだ～🌱
+    # 字幕は音声より長く残るから、字幕の区間ではなく実発話区間で切るのだ～🌱
+    speakingLine := t -> (
+      lns := activeLines(t)
+      $#lns > 0 && t < lns.0.end ? lns.0 : NULL
+    )
+
+    # 沼地の背景は、泥沼のクロスフェードの下敷きだから、swampOp はずっと 1 なのだ～🌱
+
+    # 沼地の背景のように、シーンとアイテムの不透明度は寸劇ごとに違うから、framePartOf が決めるのだ～🌱
+    # その値を、共通の部分で組んだ構成へ、キーごとに足すのだ～🌱
+    WRITE[outDir RESOLVE "frames.jsonl"] << 0 ~ frameCount | i => (
+      t := i / FPS
+      so := subOp(t)
+      sp := speakingLine(t)
+      spk := sp == NULL ? NULL : (sp.speaker == "ずんだもん" ? "z" : "t")
+      frame := {
+        template: template; assets: assetsPath; portraitBase: portraitBase; t: t
+        openOp: openOp(t); creditOp: creditOp(t); portraitOp: creditGate(t); bandOp: (1 - openOp(t)) * creditGate(t)
+        subOp: so; scrimOp: so * 0.85
+        zMouth: spk == "z" ? mouthAt(sp; t) : "closed"; tMouth: spk == "t" ? mouthAt(sp; t) : "closed"
+        zBlink: blinkAt(t; 3.4; 1.5; 0.12); tBlink: blinkAt(t; 4.1; 1.7; 0.12)
+        tPose: poseAt(t).t; zPose: poseAt(t).z
+        subLine: subLineAt(t)
+      }
+      spec.framePartOf(t; timeline; {clamp: clamp; fadeIn: fadeIn; fadeOut: fadeOut; itemOp: itemOp})() | entry => frame.(entry.0) = entry.1
+      frame
+    ) >> JSONL >> LINESD
+    OUT << "composed frames.jsonl: $frameCount frames (total=$(total)s @ $(FPS)fps)"
+
+    OUT << "== scene ready: assets.js, portrait/, frames.jsonl =="
+  )
+}
