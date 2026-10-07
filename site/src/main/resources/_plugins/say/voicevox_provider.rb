@@ -65,7 +65,7 @@ module Say
       layer_ids = collect_layer_ids(params)
       border_color = params["color"] || @color
 
-      imgs = layer_ids.map { |id| %(<img src="#{face_base}/#{id}.png" alt="" />) }
+      imgs = layer_ids.map { |id| Images.render_img_with_baseurl("", "#{face_base}/#{id}.png") }
       border_svg = %(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="none" stroke="#{border_color}" stroke-width="6"/></svg>)
       %(<div class="say-voicevox">#{imgs.join}#{border_svg}</div>)
     end

@@ -25,7 +25,6 @@
 #
 #   - actual_size:  添えると、幅に合わせず、画像自身が持つ寸法で掲げる
 #   - 画像のパス:   記事のディレクトリからの相対パス（必須）
-#     配置先への解決は、Images.resolve が front matter の image_dir を基準に行うのだ～🌱
 #   - キャプション: 画像の下に置かれる説明。省略した場合はキャプションを出力しない
 #   - 代替テキスト: img の alt に入る文字列なのだ～🌱
 #     省略すると、キャプションがそのまま入るのだ～🌱
@@ -34,6 +33,8 @@
 #
 #   <figure class="news__figure">
 #   <img src="（画像のパス）" alt="（代替テキスト、無ければキャプション）">
+#
+#   img 要素の組み立ては image.rb の Images.render_img へ委ねるのだ～🌱
 #   <figcaption class="news__caption" markdown="span">（キャプション）</figcaption>
 #   </figure>
 #
@@ -59,7 +60,7 @@ module News
       class_names = @actual_size ? "news__figure news__figure--actual-size" : "news__figure"
       <<~HTML
         <figure class="#{class_names}">
-        <img src="#{Images.resolve(context, @source)}" alt="#{@alt}">
+        #{Images.render_img(context, @source, alt: @alt)}
         #{caption_html}</figure>
       HTML
     end

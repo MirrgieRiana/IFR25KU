@@ -42,7 +42,7 @@ Jekyll::Hooks.register :site, :post_write do |site|
     {
       "title"  => document.data["title"],
       "url"    => baseurl + document.url,
-      "teaser" => teaser ? baseurl + teaser : nil,
+      "teaser" => teaser ? Images.resolve_with_baseurl(baseurl, teaser) : nil,
       "tags"   => document.data["tags"] || [],
     }
   end

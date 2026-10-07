@@ -58,6 +58,33 @@ module TagArguments
   def self.flag?(markup, flag)
     markup.gsub(NAMED_PATTERN, " ").gsub(/"[^"]*"/, " ").split.include?(flag)
   end
+
+  # タグが受け付けるフラグの一覧なのだ～🌱
+  # rest がフラグを変数名と取り違えないように、ここへ集めてあるのだ～🌱
+  FLAGS = ["actual_size", "aria_hidden"].freeze
+
+  # Liquid タグの markup 文字列から、引用符で囲まれた引数も名前付き引数もフラグも除いた、最初の語を取り出すのだ～🌱
+  #
+  # markup の形式: '<変数名> 名前="値" ...'
+  #   - 引用符で囲まれていない引数は、Liquid の変数名として扱うのだ～🌱
+  #   - 残りが 1 語も無いときは nil を返すのだ～🌱
+  #
+  # 使用例:
+  #   TagArguments.rest('page.header.teaser alt="表題"') # => "page.header.teaser"
+  def self.rest(markup)
+    markup.gsub(NAMED_PATTERN, " ").gsub(/"[^"]*"/, " ").split.reject { |word| FLAGS.include?(word) }.first
+  end
+
+  # 引数の値を、Liquid のテンプレートとして解釈するのだ～🌱
+  #
+  #   - 名前付き引数の値は、Liquid に解釈される前の文字列としてタグへ届くから、ここで解釈するのだ～🌱
+  #   - 自前で変数を引くのではなく Liquid へ渡すことで、escape のようなフィルターもそのまま使えるのだ～🌱
+  #
+  # 使用例:
+  #   TagArguments.interpolate('{{ page.title | escape }} の図', context) # => "サラセニア の図"
+  def self.interpolate(value, context)
+    Liquid::Template.parse(value).render(context)
+  end
 end
 
 # =============================================================================
