@@ -241,7 +241,7 @@ val generateOgImages = tasks.register("generateOgImages") {
     val regenerate = project.hasProperty("regenerate")
 
     inputs.dir(pagesDir)
-    inputs.file(file("src/ogImages/assets/default-background.svg"))
+    inputs.file(file("src/ogImages/resources/assets/default-background.svg"))
     inputs.property("regenerate", regenerate)
     outputs.dir(ogImagesDir)
 
@@ -258,7 +258,7 @@ val generateOgImages = tasks.register("generateOgImages") {
                 mdFilesInDir.single()
             }
 
-        val defaultBg = file("src/ogImages/assets/default-background.svg")
+        val defaultBg = file("src/ogImages/resources/assets/default-background.svg")
         OgImageRenderer().use { renderer ->
             mdFiles.forEach { mdFile ->
                 val frontMatter = parseFrontMatter(mdFile) ?: return@forEach
@@ -336,7 +336,7 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     }
     // OG画像の生成が、front matterに画像の指定が無いページで敷く背景なのだ～🌱
     // 記事カードのサムネイルが指定されていないときも、同じものを出すから、サイトの側からも参照できる場所へ置くのだ～🌱
-    from("src/ogImages/assets") {
+    from("src/ogImages/resources/assets") {
         include("default-background.svg")
         into("assets/images")
     }
