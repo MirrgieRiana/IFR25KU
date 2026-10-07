@@ -13,7 +13,12 @@
           {%- for link in site.data.navigation.main -%}
             {% if link.children %}
               <li class="masthead__menu-item masthead__menu-item--dropdown">
-                <button type="button" class="masthead__menu-item-trigger">{{ link.title }}</button>
+                {% comment %}下の項目を開く見出し自身が行き先を持つときは、リンクにして、そこへも飛べるようにするのだ～🌱{% endcomment %}
+                {% if link.url %}
+                  <a class="masthead__menu-item-trigger" href="{{ link.url | relative_url }}">{{ link.title }}</a>
+                {% else %}
+                  <button type="button" class="masthead__menu-item-trigger">{{ link.title }}</button>
+                {% endif %}
                 <ul class="masthead__dropdown">
                   {% for child in link.children %}
                     <li>

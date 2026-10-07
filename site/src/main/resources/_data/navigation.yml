@@ -8,6 +8,7 @@ main:
         url: https://www.curseforge.com/minecraft/mc-mods/ifr25ku
         icon: /assets/images/curseforge.svg
   - title: ARTICLES
+    url: /posts.html
     children:
       - title: 記事一覧
         url: /posts.html
