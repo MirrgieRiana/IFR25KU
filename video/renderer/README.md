@@ -5,7 +5,7 @@
 ## 使い方なのだ～🌱
 
 ```sh
-bash render.sh <frames.jsonl> <outDir>
+bash render.sh <frames.jsonl> <outDir> [--config <config.json>]
 ```
 
 `render.sh` は、不足している依存と Chromium を準備してから、フレーム画像をレンダリングするのだ～🌱
@@ -13,8 +13,10 @@ bash render.sh <frames.jsonl> <outDir>
 
 - `frames.jsonl` は、1 フレーム分の構成の JSON オブジェクトを、1 行に 1 個ずつ並べたファイルなのだ～🌱
 - `outDir` は、`f_00000.png` から始まる連番の PNG 画像の出力先のディレクトリなのだ～🌱
+- `--config` は、テンプレートへ渡す設定の JSON のパスで、省略できるのだ～🌱
 
-引数が 2 個でないときは、使い方を出して、終了コード 1 で終わるのだ～🌱
+名前付きでない引数が 2 個でないときは、使い方を出して、終了コード 1 で終わるのだ～🌱
+`--config` にパスが続かないときも、エラーを出して、終了コード 1 で終わるのだ～🌱
 `outDir` が、空のディレクトリでも、存在しないパスでもないときは、エラーを出して、終了コード 1 で終わるのだ～🌱
 構成 jsonl の空行は、無視するのだ～🌱
 
@@ -33,6 +35,8 @@ bash render.sh <frames.jsonl> <outDir>
 
 1. 読み込みが終わったら、`window.__ready` を `true` にするのだ～🌱
 2. `window.applyFrame(frame)` という関数を持つのだ～🌱
+
+`--config` を指定したときは、更に `window.initialize(config)` という関数も要るのだ～🌱
 
 `frame` は、構成 jsonl の 1 行を解析した、1 フレーム分の構成のオブジェクトなのだ～🌱
 `applyFrame(frame)` は、その構成のとおりに、ページの DOM とスタイルを書き換えるのだ～🌱
@@ -55,6 +59,9 @@ bash render.sh <frames.jsonl> <outDir>
 だから、同じ構成が離れた場所で繰り返されても、撮るのは 1 回だけなのだ～🌱
 画像をコピーしない行では、その構成を `applyFrame` に渡して、スクリーンショットを撮るのだ～🌱
 前に読み込んだテンプレートと `template` の解決したパスが違う行では、`applyFrame` を呼ぶ前に、そのテンプレートを読み込み直すのだ～🌱
+`--config` を指定したときは、読み込み直すごとに 1 回、`window.__ready` を待った後で `initialize(config)` を呼ぶのだ～🌱
+`initialize(config)` が Promise を返したときは、その完了を待つのだ～🌱
+設定を受けてから素材を読むテンプレートもあるから、フォントの準備を待つのは、`initialize(config)` の後なのだ～🌱
 
 ## 環境変数なのだ～🌱
 
