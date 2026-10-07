@@ -2,7 +2,7 @@
 title: "G2-MFA　並行宇宙ルール"
 layout: three-column
 header:
-  teaser: /assets/images/g2-mfa-parallel-universe-rule/parallel-universe-branching.webp
+  teaser: ./parallel-universe-branching.webp
   teaser_banner: false
 tags:
   - MFA
@@ -12,8 +12,8 @@ tags:
 
 並行宇宙ルールの経緯は、次の2枚の「地球」で書かれた記事によって導入されます。
 
-- [G2-MFA　宇宙からのメール解読される 外命研が発表](/2026/09/23/g2-mfa-mail-from-space.html)
-- [G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ](/2026/09/24/g2-mfa-observation-satellite.html)
+- [G2-MFA　宇宙からのメール解読される 外命研が発表](/2020/10/24/g2-mfa-mail-from-space.html)
+- [G2-MFA　外命研 文献探しに並行世界に 観測衛星打ち上げ](/2020/10/24/g2-mfa-observation-satellite.html)
 
 かいつまんで説明すると、
 
@@ -23,7 +23,7 @@ tags:
 
 といったイメージです。
 
-![左の「送信元惑星」から右の「地球」へ3色の矢印が伸び、緑の矢印は「送信時点で分岐した平行宇宙」と書かれ、黄色の矢印は「送信後に分岐した平行宇宙」と書かれて枝分かれし、橙色の矢印は地球に届く手前で途切れ、下に「約17億年前」から「現代」への白い矢印がある図](/assets/images/g2-mfa-parallel-universe-rule/parallel-universe-branching.webp)
+{% image "./parallel-universe-branching.webp" alt="左の「送信元惑星」から右の「地球」へ3色の矢印が伸び、緑の矢印は「送信時点で分岐した平行宇宙」と書かれ、黄色の矢印は「送信後に分岐した平行宇宙」と書かれて枝分かれし、橙色の矢印は地球に届く手前で途切れ、下に「約17億年前」から「現代」への白い矢印がある図" %}
 
 この設定により、次のようなことが起こります。
 
@@ -31,7 +31,7 @@ tags:
 - 執筆者それぞれが自分の並行宇宙を持って創作できる。
 - 注目したい文献以外の文献で追加された設定をすべて無視できる。
 
-![MirageFairy惑星の上に参照関係の矢印で複雑に繋がった「研究文書」のG2-MFA-1から7があり、そこから地球に矢印が流れ、地球の上に片方が片方を参照する「ニュース記事」のG2-Article-1と2がある図](/assets/images/g2-mfa-parallel-universe-rule/document-reference-graph.webp)
+{% image "./document-reference-graph.webp" alt="MirageFairy惑星の上に参照関係の矢印で複雑に繋がった「研究文書」のG2-MFA-1から7があり、そこから地球に矢印が流れ、地球の上に片方が片方を参照する「ニュース記事」のG2-Article-1と2がある図" %}
 
 並行宇宙ルールは、MirageFairy Server公式以外の、ファンの手による二次創作的な作品が簡単に作れることを目指して作られました。
 

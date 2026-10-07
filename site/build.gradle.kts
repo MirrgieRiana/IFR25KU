@@ -6,8 +6,9 @@ import com.luciad.imageio.webp.WebPWriteParam
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
-import org.yaml.snakeyaml.Yaml
+import tools.FrontMatterFilterReader
 import tools.normalizeJson
+import tools.parseFrontMatter
 import tools.sha256
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -21,7 +22,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.yaml:snakeyaml:2.2")
         classpath("com.microsoft.playwright:playwright:1.58.0")
         classpath("org.sejda.imageio:webp-imageio:0.1.6")
     }
@@ -165,13 +165,6 @@ private fun buildOgHtml(title: String, backgroundUrl: String, pixelated: Boolean
 """.trimIndent()
 }
 
-private fun parseFrontMatter(file: File): Map<String, Any>? {
-    val content = file.readText()
-    val match = Regex("\\A---\\r?\\n(.*?)\\r?\\n---(?:\\r?\\n|\\Z)", RegexOption.DOT_MATCHES_ALL).find(content) ?: return null
-    @Suppress("UNCHECKED_CAST")
-    return Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any>
-}
-
 class OgImageRenderer : AutoCloseable {
     private var playwright: Playwright? = null
     private var browser: Browser? = null
@@ -248,7 +241,7 @@ val generateOgImages = tasks.register("generateOgImages") {
     val regenerate = project.hasProperty("regenerate")
 
     inputs.dir(pagesDir)
-    inputs.file(file("src/ogImages/assets/default-background.svg"))
+    inputs.file(file("src/ogImages/resources/assets/default-background.svg"))
     inputs.property("regenerate", regenerate)
     outputs.dir(ogImagesDir)
 
@@ -265,7 +258,7 @@ val generateOgImages = tasks.register("generateOgImages") {
                 mdFilesInDir.single()
             }
 
-        val defaultBg = file("src/ogImages/assets/default-background.svg")
+        val defaultBg = file("src/ogImages/resources/assets/default-background.svg")
         OgImageRenderer().use { renderer ->
             mdFiles.forEach { mdFile ->
                 val frontMatter = parseFrontMatter(mdFile) ?: return@forEach
@@ -341,42 +334,39 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     from(generateOgImages) {
         include("**/*.webp")
     }
+    // OG画像の生成が、front matterに画像の指定が無いページで敷く背景なのだ～🌱
+    // 記事カードのサムネイルが指定されていないときも、同じものを出すから、サイトの側からも参照できる場所へ置くのだ～🌱
+    from("src/ogImages/resources/assets") {
+        include("default-background.svg")
+        into("assets/images")
+    }
     from("src/external/resources")
     from("src/pages/resources") {
         includeEmptyDirs = false
-        val seenImagePaths = mutableMapOf<String, String>()
         eachFile {
-            // 下で配置先が平らになって元のディレクトリ名が失われるから、footer の source のリンクのために、元のパスを front matter へ書き足すのだ～🌱
-            if (name.endsWith(".md")) {
-                val sourcePath = file.relativeTo(rootDir).invariantSeparatorsPath
-                var isFirstLine = true
-                filter { line ->
-                    val result = if (isFirstLine && line == "---") "$line\nsource_path: $sourcePath" else line
-                    isFirstLine = false
-                    result
-                }
-            }
             val dirName = relativePath.pathString.substringBefore("/")
             val postMatch = """(\d{4})-(\d{2})-(\d{2})-(.+)""".toRegex().matchEntire(dirName)
-            if (postMatch != null) {
-                val (year, month, day, _) = postMatch.destructured
-                if (name.endsWith(".md")) {
-                    relativePath = RelativePath(true, "_posts", "$dirName.md")
+            // 同じディレクトリに並ぶ画像の配置先なのだ～🌱
+            // 記事のディレクトリ名が、そのままここへ残るのだ～🌱
+            // front matter と本文のパスを . から始めたときは、ここが基準になるのだ～🌱
+            val imageDir = if (postMatch != null) {
+                val (year, month, day, slug) = postMatch.destructured
+                "assets/images/$year/$month/$day/$slug"
+            } else {
+                "assets/images/$dirName"
+            }
+            if (name.endsWith(".md")) {
+                val sourcePath = file.relativeTo(rootDir).invariantSeparatorsPath
+                filter(mapOf("sourcePath" to sourcePath, "imageDir" to "/$imageDir"), FrontMatterFilterReader::class.java)
+            }
+            relativePath = if (name.endsWith(".md")) {
+                if (postMatch != null) {
+                    RelativePath(true, "_posts", "$dirName.md")
                 } else {
-                    val sourcePath = relativePath.pathString
-                    relativePath = RelativePath(true, year, month, day, name)
-                    val outputKey = relativePath.pathString
-                    seenImagePaths[outputKey]?.let { existingSource ->
-                        error("Image filename collision at '$outputKey': '$existingSource' and '$sourcePath'")
-                    }
-                    seenImagePaths[outputKey] = sourcePath
+                    RelativePath(true, name)
                 }
             } else {
-                if (name.endsWith(".md")) {
-                    relativePath = RelativePath(true, name)
-                } else {
-                    relativePath = RelativePath(true, "assets", "images", dirName, name)
-                }
+                RelativePath(true, *imageDir.split("/").toTypedArray(), name)
             }
         }
     }

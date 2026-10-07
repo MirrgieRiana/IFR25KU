@@ -1,0 +1,10 @@
+{
+  "name": "extract-portrait",
+  "private": true,
+  "version": "1.0.0",
+  "description": "立ち絵の PSD からレイヤーを切り出すツールの Node 依存なのだ～🌱",
+  "dependencies": {
+    "ag-psd": "^31.0.2",
+    "pngjs": "^7.0.0"
+  }
+}

@@ -15,7 +15,7 @@
   //  構造:
   //    <a class="recent-posts__card" href="...">
   //      <div class="recent-posts__teaser">
-  //        <img ...>  ← teaserがある場合のみ
+  //        <img ...>  ← teaserが無いときは既定の背景を出す
   //      </div>
   //      <div class="recent-posts__body">
   //        <h3 class="recent-posts__title">...</h3>
@@ -32,12 +32,10 @@
 
     const teaser = document.createElement('div');
     teaser.className = 'recent-posts__teaser';
-    if (post.teaser) {
-      const img = document.createElement('img');
-      img.src = post.teaser;
-      img.alt = '';
-      teaser.appendChild(img);
-    }
+    const img = document.createElement('img');
+    img.src = post.teaser || '{{ "/assets/images/default-background.svg" | relative_url }}';
+    img.alt = '';
+    teaser.appendChild(img);
     card.appendChild(teaser);
 
     const body = document.createElement('div');
