@@ -4,8 +4,6 @@
 <head>
 <meta charset="utf-8">
 <style>
-  @font-face{font-family:ZMG-Black;src:url(resources/font/ZenMaruGothic-Black.ttf) format('truetype');}
-  @font-face{font-family:ZMG-Bold;src:url(resources/font/ZenMaruGothic-Bold.ttf) format('truetype');}
   *{margin:0;padding:0;box-sizing:border-box;}
   html,body{width:1280px;height:720px;overflow:hidden;background:#000;}
   #stage{position:relative;width:1280px;height:720px;overflow:hidden;font-family:ZMG-Bold,sans-serif;}
@@ -309,6 +307,19 @@ function fitThumb(sel, maxW, maxH){
 // タイムラインを見て時刻から逆算する処理は、もう残っていないのだ～🌱
 // 素材の読み込みは 1 回だけで済ませるのだ～🌱
 // フレームは数千枚あるから、毎回読み直すと、その回数だけ待つことになっちゃうのだ～🌱
+// フォントは、構成jsonl の fontBase から読んで、字が描かれる前に読み込みを終えておくのだ～🌱
+// CSS の @font-face だと、その書体が最初に使われるまで読み込まれないから、1 枚目の字が代替の書体で撮れちゃうのだ～🌱
+const FONTS = [
+  ['ZMG-Black', 'ZenMaruGothic-Black.ttf'],
+  ['ZMG-Bold', 'ZenMaruGothic-Bold.ttf'],
+];
+function loadFonts(frame){
+  return Promise.all(FONTS.map(([family, file]) => {
+    const font = new FontFace(family, `url(${frame.fontBase}/${file}) format('truetype')`);
+    return font.load().then(loaded => { document.fonts.add(loaded); });
+  }));
+}
+
 let assetsLoaded = null;
 function loadAssets(frame){
   return new Promise((resolve, reject) => {
@@ -322,7 +333,7 @@ function loadAssets(frame){
 }
 
 window.applyFrame = async function(frame){
-  if(assetsLoaded === null) assetsLoaded = loadAssets(frame);
+  if(assetsLoaded === null) assetsLoaded = Promise.all([loadAssets(frame), loadFonts(frame)]);
   await assetsLoaded;
   // デカ字のフィットを先に済ませるのだ～🌱 これが font-size を先に置くから、
   // こうしておくと、style 属性の中のプロパティの並びが、移す前とそろうのだ～🌱

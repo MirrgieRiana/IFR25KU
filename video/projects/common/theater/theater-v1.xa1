@@ -73,6 +73,7 @@ API(5)
     # テンプレートは共有の場所で開かれるから、そこから書き出し先へ辿る相対パスを渡すのだ～🌱
     assetsPath := relativeTo(templateDir; sceneDir RESOLVE "assets.js")
     portraitBase := relativeTo(templateDir; sceneDir RESOLVE "portrait")
+    fontBase := relativeTo(templateDir; resourceDir RESOLVE "font")
 
     # --- 外部取得リソース（このシーンの立ち絵・フォント・絵文字）の存在を確認するのだ～🌱 ---
     # FILE_NAMES のストリームのままだと、@ が部分文字列で探して、隣の *.md5 のファイル名に当たっちゃうのだ～🌱
@@ -92,7 +93,7 @@ API(5)
     # file:// で開いた HTML は、セキュリティ上、外部ファイルを fetch() で読めないのだ～🌱
     # そこで、JS が値として要るものは 1 個のファイル（assets.js）に「焼き込んで」おいて、テンプレートから <script> で読み込むのだ～🌱
     # 一方、img の src と CSS の url() は fetch() を通らないから、file:// でも相対パスのまま読めるのだ～🌱
-    # だから、テクスチャとフォントは、焼き込まずに、パスのまま渡すのだ～🌱
+    # だから、テクスチャは焼き込まずにパスのまま渡して、フォントは構成jsonl の各行で渡すのだ～🌱
     OUT << "== bake assets.js =="
 
     # IFR25KU リポジトリ内のテクスチャ（＝コミット済みの素材なので、リポジトリから直接読むのだ～🌱）
@@ -200,7 +201,7 @@ API(5)
       sp := speakingLine(t)
       spk := sp == NULL ? NULL : (sp.speaker == "ずんだもん" ? "z" : "t")
       frame := {
-        template: template; assets: assetsPath; portraitBase: portraitBase; t: t
+        template: template; assets: assetsPath; portraitBase: portraitBase; fontBase: fontBase; t: t
         openOp: openOp(t); creditOp: creditOp(t); portraitOp: creditGate(t); bandOp: (1 - openOp(t)) * creditGate(t)
         subOp: so; scrimOp: so * 0.85
         zMouth: spk == "z" ? mouthAt(sp; t) : "closed"; tMouth: spk == "t" ? mouthAt(sp; t) : "closed"
