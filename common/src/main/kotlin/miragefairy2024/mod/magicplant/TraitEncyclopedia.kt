@@ -149,7 +149,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                 // 特性ポエム
                 view += PagingView().configure {
                     position.weight = 1.0
-                    view += MultiLineTextChildrenGenerator(recipeEntry.recipe.poem) { Alignment.START }
+                    view += MultiLineTextChildrenGenerator(recipeEntry.recipe.text) { Alignment.START }
 
                     view.pageCount.register { _, it ->
                         pageCount.value = it
