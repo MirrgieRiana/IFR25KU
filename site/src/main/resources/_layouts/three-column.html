@@ -37,8 +37,6 @@ toc: true
   {% endunless %}
 {% endif %}
 
-{% assign recommendations_icon = page.recommendations_icon | default: layout.recommendations_icon | default: "newspaper" %}
-
 <div id="main" role="main">
   {% include sidebar.html locale=locale %}
 
@@ -60,7 +58,7 @@ toc: true
 
       {% if recommendations_enabled and recommendations_sidebar != false %}
         <aside class="sidebar__right recommendations__sidebar">
-          <header><h4 class="nav__title"><i class="fas fa-{{ recommendations_icon }}"></i> 関連記事</h4></header>
+          <header><h4 class="nav__title"><i class="fas fa-newspaper"></i> 関連記事</h4></header>
           <div class="recommendations__list"></div>
         </aside>
       {% endif %}
@@ -96,7 +94,7 @@ toc: true
 
       {% if recommendations_enabled %}
         <section class="page__recommend">
-          <h3 class="page__recommend-title"><i class="fas fa-{{ recommendations_icon }}"></i> 他の記事を読む</h3>
+          <h3 class="page__recommend-title"><i class="fas fa-newspaper"></i> 他の記事を読む</h3>
           <div class="page__recommend-grid"></div>
         </section>
       {% endif %}
