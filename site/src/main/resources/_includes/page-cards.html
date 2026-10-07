@@ -8,6 +8,8 @@
         <div class="recent-posts__teaser">
           {% if target_page.header.teaser %}
           {% image target_page.header.teaser alt="{{ target_page.title }}" %}
+          {% else %}
+          {% image "/assets/images/default-background.svg" alt="{{ target_page.title }}" %}
           {% endif %}
         </div>
         <div class="recent-posts__body">

@@ -46,7 +46,7 @@ tags:
 {% endpaper_column %}
 {% paper_column %}
 
-{% paper_figure "mirage-above-canopy.webp" "図１　樹冠上のミラージュ" alt="青空の下の松林で、樹冠の上に水色の花を付けたミラージュが3株生えている" %}
+{% paper_figure "./mirage-above-canopy.webp" "図１　樹冠上のミラージュ" alt="青空の下の松林で、樹冠の上に水色の花を付けたミラージュが3株生えている" %}
 
 {% paper_table "表２　ミラージュの成分" %}
 | 成分 | 質量％ |
