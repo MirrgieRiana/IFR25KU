@@ -138,5 +138,5 @@ module Images
   end
 end
 
-# タグ "image" を Liquid へ登録するのだ～🌱
+# タグ "image" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("image", Images::ImageTag)
