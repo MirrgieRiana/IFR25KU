@@ -497,6 +497,12 @@ body.layout--one-column #main {
     font-size: 1.2em;
   }
 
+  // a 要素として出すと .greedy-nav .visible-links a の左右のマージンが当たって、button のときより幅が広がるのだ～🌱
+  // 同じ詳細度にするために、ここでも要素セレクターを添えるのだ～🌱
+  a.masthead__menu-item-trigger {
+    margin: 0;
+  }
+
   .masthead__dropdown {
     display: none;
     position: absolute;
