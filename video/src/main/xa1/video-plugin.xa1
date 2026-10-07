@@ -23,7 +23,9 @@ cleanModule := USE("clean")
 
 {
   videoProjectOf: (name; script; buildScene) -> (
-    video := projectOf(name)
+    # 各段へ渡す、この動画ぶんの情報なのだ～🌱
+    # 各段のモジュールは、どの動画を相手にするかを持たず、これを引数で受け取るのだ～🌱
+    video := {name: name}
     # 台本は動画ごとに違うから、script の段がここを通して受け取るのだ～🌱
     video.script = script
     # シーンを組む処理は動画ごとに違うから、scene の段がここを通して呼ぶのだ～🌱

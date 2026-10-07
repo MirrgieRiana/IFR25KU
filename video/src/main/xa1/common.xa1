@@ -1,4 +1,4 @@
-# 雑多パートの xa1 が、@USE("common") で読み込んで共有する関数なのだ～🌱（xarpite / API5）
+# video/ の xa1 が、@USE("common") で読み込んで共有する関数なのだ～🌱（xarpite / API5）
 
 API(5)
 
@@ -35,11 +35,9 @@ run := command -> OUT << capture(command)()
 # 生成物は、すべてこの下に作って、ignore も clean も、この 1 個のディレクトリでまとめて扱うのだ～🌱
 buildBase := base RESOLVE "build"
 
-# 動画プロジェクトの名前から、各段が使う情報を組むのだ～🌱
-# この雑多パートは、どのプロジェクトを相手にするかを持たず、呼び出し側から受け取るのだ～🌱
-projectOf := name -> {
-  name: name
-}
+# 動画プロジェクトの名前から、そのプロジェクトを読むのだ～🌱
+# 動画プロジェクトは、名前を冠した 1 個の xa1 として src/projects/xa1/ の下に並ぶのだ～🌱
+projectOf := name -> USE(base RESOLVE "src/projects/xa1" RESOLVE name)
 
 # ディレクトリがあるかを見るのだ～🌱
 # FILE_NAMES は、存在しないディレクトリでは例外を投げちゃうから、判定には使えないのだ～🌱

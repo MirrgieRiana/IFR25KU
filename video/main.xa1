@@ -11,10 +11,10 @@
 API(5)
 
 # LOCATION はこのファイル自身のパスだから、その親を取れば、呼び出し元の居場所に関わらず video/ が得られるのだ～🌱
-base := LOCATION RESOLVE ".."
+INC += LOCATION RESOLVE ".." RESOLVE "src/main/xa1"
+
+@USE("common")
 
 {
-  # サブプロジェクト名から、そのモジュールを読むのだ～🌱
-  # サブプロジェクトは、名前を冠した 1 個の xa1 として src/projects/xa1/ の下に並ぶのだ～🌱
-  projectOf: name -> USE(base RESOLVE "src/projects/xa1" RESOLVE name)
+  projectOf: projectOf
 }
