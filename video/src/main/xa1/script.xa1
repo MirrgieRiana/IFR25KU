@@ -4,7 +4,7 @@
 API(5)
 @USE("common")
 
-dirOf := project -> buildBase RESOLVE "script" RESOLVE project.name
+dirOf := project -> buildBase RESOLVE project.name RESOLVE "script"
 
 {
   path: project -> dirOf(project) RESOLVE "script.json"

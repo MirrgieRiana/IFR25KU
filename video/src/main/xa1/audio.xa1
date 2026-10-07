@@ -7,7 +7,7 @@ API(5)
 
 scriptModule := USE("script")
 
-dirOf := project -> buildBase RESOLVE "audio" RESOLVE project.name
+dirOf := project -> buildBase RESOLVE project.name RESOLVE "audio"
 
 # 口パク(AV)用に、合成に使う最終クエリからモーラ区間を割り出すのだ～🌱
 # 返すのは [cs, vs, ve, vowel]（wav先頭からの秒で、speedScaleで割り済み）なのだ～🌱

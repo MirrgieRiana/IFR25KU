@@ -6,7 +6,7 @@ API(5)
 
 timelineModule := USE("timeline")
 
-dirOf := project -> buildBase RESOLVE "scene" RESOLVE project.name
+dirOf := project -> buildBase RESOLVE project.name RESOLVE "scene"
 
 {
   dir: dirOf

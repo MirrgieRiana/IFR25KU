@@ -6,7 +6,7 @@ API(5)
 scriptModule := USE("script")
 audioModule := USE("audio")
 
-dirOf := project -> buildBase RESOLVE "timeline" RESOLVE project.name
+dirOf := project -> buildBase RESOLVE project.name RESOLVE "timeline"
 SR := 24000
 
 # 尺の設計なのだ～🌱

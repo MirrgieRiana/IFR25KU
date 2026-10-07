@@ -20,7 +20,7 @@ API(5)
 timelineModule := USE("timeline")
 framesModule := USE("frames")
 
-dirOf := project -> buildBase RESOLVE "movie" RESOLVE project.name
+dirOf := project -> buildBase RESOLVE project.name RESOLVE "movie"
 bgmDir := base RESOLVE "projects/common/resources/bgm"
 
 {
