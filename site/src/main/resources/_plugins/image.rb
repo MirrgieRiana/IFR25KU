@@ -95,7 +95,7 @@ module Images
   def self.render_img(context, source, alt: "", class_name: nil, aria_hidden: false)
     render_img_with_baseurl(
       context.registers[:site]&.config&.fetch("baseurl", nil),
-      source,
+      expand_article_relative(context, source),
       alt: alt,
       class_name: class_name,
       aria_hidden: aria_hidden,
