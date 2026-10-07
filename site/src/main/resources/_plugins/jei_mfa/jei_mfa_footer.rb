@@ -4,7 +4,7 @@
 # jei_mfa_footer.rb — JEI-MFA Footer Tag for Jekyll
 # =============================================================================
 #
-# JEI-MFAの記事の末尾に置く、転載元と著作権の説明を表示するためのLiquidカスタムインラインタグ。
+# JEI-MFAの記事の末尾に置く、転載元と著作権の説明を表示するためのLiquidカスタムインラインタグなのだ～🌱
 #
 # 説明の内容はどのJEI-MFAの記事でも同一だから、記事ごとに書き写さず、1個のタグで受け持つのだ～🌱
 #
@@ -30,7 +30,7 @@ module JeiMfa
   LICENSE_URL = "https://creativecommons.org/licenses/by-sa/3.0/"
 
   # {% jei_mfa_footer %} インラインタグの実装。
-  # 記事の末尾に置く、JEI-MFAの記事に共通する転載元と著作権の説明を出力する。
+  # 記事の末尾に置く、JEI-MFAの記事に共通する転載元と著作権の説明を出力するのだ～🌱
   class JeiMfaFooterTag < Liquid::Tag
     def render(context)
       <<~HTML
@@ -43,5 +43,5 @@ module JeiMfa
   end
 end
 
-# タグ "jei_mfa_footer" を Liquid に登録する
+# タグ "jei_mfa_footer" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("jei_mfa_footer", JeiMfa::JeiMfaFooterTag)

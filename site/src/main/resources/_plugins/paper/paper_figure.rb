@@ -4,13 +4,13 @@
 # paper_figure.rb — Paper Figure Tag for Jekyll
 # =============================================================================
 #
-# 論文中の、キャプション付きの画像を表示するためのLiquidカスタムインラインタグ。
+# 論文中の、キャプション付きの画像を表示するためのLiquidカスタムインラインタグなのだ～🌱
 #
-# 画像は、既定では紙面や段の幅いっぱいに掲げる。
-# actual_size を添えると、代わりに画像自身が持つ寸法で掲げる。
+# 画像は、既定では紙面や段の幅いっぱいに掲げるのだ～🌱
+# actual_size を添えると、代わりに画像自身が持つ寸法で掲げるのだ～🌱
 #
-# 拡大したときに画素を補間するか否かは、掲げ方ではなく画像の形式が決める。
-# pngは画素を保ったまま拡大され、webpは補間される。
+# 拡大したときに画素を補間するか否かは、掲げ方ではなく画像の形式が決めるのだ～🌱
+# pngは画素を保ったまま拡大されて、webpは補間されるのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -23,10 +23,11 @@
 #
 #   {% paper_figure [actual_size] "<画像のパス>" ["<キャプション>"] [alt="<代替テキスト>"] %}
 #
-#   - actual_size:  添えると、幅に合わせず、画像自身が持つ寸法で掲げる
+#   - actual_size:  添えると、幅に合わせず、画像自身が持つ寸法で掲げるのだ～🌱
 #   - 画像のパス:   記事のディレクトリからの相対パス（必須）
 #     配置先への解決は、Images.resolve が front matter の image_dir を基準に行うのだ～🌱
-#   - キャプション: 画像の下に置かれる説明。省略した場合はキャプションを出力しない
+#   - キャプション: 画像の下に置かれる説明なのだ～🌱
+#                 省略するとキャプションを出力しないのだ～🌱
 #   - 代替テキスト: img の alt に入る文字列なのだ～🌱
 #     省略すると、キャプションがそのまま入るのだ～🌱
 #
@@ -37,14 +38,14 @@
 #   <figcaption class="paper__caption" markdown="span">（キャプション）</figcaption>
 #   </figure>
 #
-#   actual_size を添えた場合、figure に paper__figure--actual-size が加わる。
+#   actual_size を添えると、figure に paper__figure--actual-size が加わるのだ～🌱
 #
 # =============================================================================
 
 module Paper
 
   # {% paper_figure ... %} インラインタグの実装。
-  # 画像と、その下に置くキャプションを組み立てる。
+  # 画像と、その下に置くキャプションを構成するのだ～🌱
   class PaperFigureTag < Liquid::Tag
     def initialize(tag_name, markup, options)
       super
@@ -66,5 +67,5 @@ module Paper
   end
 end
 
-# タグ "paper_figure" を Liquid に登録する
+# タグ "paper_figure" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("paper_figure", Paper::PaperFigureTag)
