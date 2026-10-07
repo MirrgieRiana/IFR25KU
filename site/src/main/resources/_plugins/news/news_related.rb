@@ -38,6 +38,10 @@ module News
   # {% news_related ... %} インラインタグの実装。
   # 名指しされた記事を site.posts から引いて、カードとして並べる。
   class NewsRelatedTag < Liquid::Tag
+
+    # サムネイルを持たない記事のカードに敷く、OG 画像の生成が使うのと同じ背景なのだ～🌱
+    DEFAULT_TEASER = "/assets/images/default-background.svg"
+
     def initialize(tag_name, markup, options)
       super
       @slugs = TagArguments.parse(markup)
@@ -59,11 +63,11 @@ module News
 
     private
 
-    # 記事1件分のカードを組み立てる。
-    # サムネイルを持たない記事でも、カードの高さを揃えるために枠だけは置く。
+    # 記事1件分のカードを組み立てるのだ～🌱
+    # サムネイルを持たない記事には、OG 画像の生成が敷くのと同じ背景を出すのだ～🌱
     def render_card(site, post)
-      teaser = post.data.dig("header", "teaser")
-      image_html = teaser ? %(<img src="#{site.baseurl}#{teaser}" alt="">) : ""
+      teaser = post.data.dig("header", "teaser") || DEFAULT_TEASER
+      image_html = %(<img src="#{site.baseurl}#{teaser}" alt="">)
       <<~HTML
         <a href="#{site.baseurl}#{post.url}" class="recent-posts__card">
         <div class="recent-posts__teaser">#{image_html}</div>
