@@ -334,6 +334,12 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     from(generateOgImages) {
         include("**/*.webp")
     }
+    // OG画像の生成が、front matterに画像の指定が無いページで敷く背景なのだ～🌱
+    // 記事カードのサムネイルが指定されていないときも、同じものを出すから、サイトの側からも参照できる場所へ置くのだ～🌱
+    from("src/ogImages/assets") {
+        include("default-background.svg")
+        into("assets/images")
+    }
     from("src/external/resources")
     from("src/pages/resources") {
         includeEmptyDirs = false
