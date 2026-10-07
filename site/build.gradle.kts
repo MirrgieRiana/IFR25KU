@@ -354,7 +354,11 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
                 filter(mapOf("sourcePath" to sourcePath, "imageDir" to "/$imageDir"), FrontMatterFilterReader::class.java)
             }
             relativePath = if (name.endsWith(".md")) {
-                if (postMatch != null) RelativePath(true, "_posts", "$dirName.md") else RelativePath(true, name)
+                if (postMatch != null) {
+                    RelativePath(true, "_posts", "$dirName.md")
+                } else {
+                    RelativePath(true, name)
+                }
             } else {
                 RelativePath(true, *imageDir.split("/").toTypedArray(), name)
             }
