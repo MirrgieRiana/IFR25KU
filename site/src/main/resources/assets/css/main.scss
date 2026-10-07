@@ -1218,8 +1218,10 @@ img[src$=".png" i] {
 
 // JEI-MFAのカードの冒頭に出す、元のJEI MFAのレシピの入力アイテムの名前（jei_mfaタグの引数）
 .jei-mfa__ingredients {
-  // 本文との間は、名前どうしの間より広く開ける
-  margin: 0 0 2em;
+  // 本文との間は、名前どうしの間より広く開けて、その真ん中へ境目の線を引くのだ～🌱
+  padding-bottom: 1em;
+  border-bottom: 1px solid #cccccc;
+  margin: 0 0 1em;
 }
 
 // テーマは .page__content p で段落の下に余白を置くから、同じ詳細度にしないと、ここの指定が効かないのだ～🌱
