@@ -4,9 +4,9 @@
 # paper_callout.rb — Paper Callout Tag for Jekyll
 # =============================================================================
 #
-# 論文中の囲み記事を表示するためのLiquidカスタムブロックタグ。
+# 論文中の囲み記事を表示するためのLiquidカスタムブロックタグなのだ～🌱
 #
-# 本文の流れから独立した内容を、枠で囲って示す。
+# 本文の流れから独立した内容を、枠で囲って示すのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -25,7 +25,7 @@
 module Paper
 
   # {% paper_callout %}...{% endpaper_callout %} ブロックタグの実装。
-  # ブロック内容を、本文から独立した囲み記事として出力する。
+  # ブロック内容を、本文から独立した囲み記事として出力するのだ～🌱
   class PaperCalloutTag < Liquid::Block
     def render(context)
       content = super.strip
@@ -39,5 +39,5 @@ module Paper
   end
 end
 
-# タグ "paper_callout" を Liquid に登録する
+# タグ "paper_callout" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("paper_callout", Paper::PaperCalloutTag)

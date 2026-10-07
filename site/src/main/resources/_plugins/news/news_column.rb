@@ -4,9 +4,9 @@
 # news_column.rb — News Column Tag for Jekyll
 # =============================================================================
 #
-# ニュース記事の段組みの、1個の段を表すLiquidカスタムブロックタグ。
+# ニュース記事の段組みの、1個の段を表すLiquidカスタムブロックタグなのだ～🌱
 #
-# news_columns の直下に、段の個数だけ並べて使用する。
+# news_columns の直下に、段の個数だけ並べて使うのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -30,9 +30,9 @@
 module News
 
   # {% news_column %}...{% endnews_column %} ブロックタグの実装。
-  # ブロック内容を、段組みの中の1個の段として出力する。
+  # ブロック内容を、段組みの中の1個の段として出力するのだ～🌱
   class NewsColumnTag < Liquid::Block
-    # Liquidは内容が空白のみのブロックの描画自体を省くため、中身を持たない段が消える
+    # Liquidは内容が空白のみのブロックの描画自体を省くから、中身を持たない段が消えちゃうのだぁ…🌧️
     def blank?
       false
     end
@@ -49,5 +49,5 @@ module News
   end
 end
 
-# タグ "news_column" を Liquid に登録する
+# タグ "news_column" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("news_column", News::NewsColumnTag)

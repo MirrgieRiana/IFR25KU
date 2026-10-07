@@ -4,7 +4,7 @@
 # say.rb — Character Balloon (Speech Bubble) Plugin for Jekyll
 # =============================================================================
 #
-# Markdown上でキャラクターの顔付き吹き出しを表示するためのLiquidカスタムブロックタグ。
+# Markdown上でキャラクターの顔付き吹き出しを表示するためのLiquidカスタムブロックタグなのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -20,8 +20,8 @@
 #
 #   - キャラ名:   Say.register_character で登録されたキャラクターの識別名（必須）
 #   - プリセット: キャラクターが定義するパラメータのプリセット名（複数指定可能）
-#   - key=value:  個別パラメータの直接指定（プリセットを上書きする）
-#                 値には ":" 以外の任意の文字が使用可能
+#   - key=value:  個別パラメータの直接指定で、プリセットを上書きするのだ～🌱
+#                 値には ":" 以外の任意の文字が使えるのだ～🌱
 #
 # ## markup構文の例
 #
@@ -35,22 +35,22 @@
 #   1. 空のハッシュから開始
 #   2. 指定されたプリセットを左から順にマージ
 #   3. key=value の直接指定で上書き
-#   4. 解決済みパラメータをキャラクターの resolve メソッドに渡す
+#   4. 解決済みパラメータをキャラクターの resolve メソッドへ渡すのだ～🌱
 #
 # ## キャラクターの追加方法
 #
-#   1. 別ファイルに Provider クラスを作成し、presets・color・tail?・resolve を実装する
-#   2. Say.register_character でキャラ名とインスタンスを登録する
-#      （_plugins/ 内の .rb ファイルは Jekyll が自動的に読み込む）
+#   1. 別ファイルに Provider クラスを作って、presets・color・tail?・resolve を実装するのだ～🌱
+#   2. Say.register_character でキャラ名とインスタンスを登録するのだ～🌱
+#      _plugins/ 内の .rb ファイルは、Jekyll が自動で読み込んでくれるのだ～🌱
 #
 # ## Provider インターフェース
 #
-#   presets  — プリセット名からパラメータハッシュへのマッピングを返す
-#   color(params) — 吹き出し枠線に使うキャラクター色を返す
-#   tail?    — 吹き出しのトゲを表示するか否かを boolean で返す
-#   resolve(params, context) — 解決済みパラメータとLiquidコンテキストを受け取り、
-#                              .say__face の内側に入るHTML文字列を返す。
-#                              アイコンを持たない場合は空文字列を返す。
+#   presets  — プリセット名からパラメータハッシュへのマッピングを返すのだ～🌱
+#   color(params) — 吹き出し枠線に使うキャラクター色を返すのだ～🌱
+#   tail?    — 吹き出しのトゲを表示するか否かを boolean で返すのだ～🌱
+#   resolve(params, context) — 解決済みパラメータとLiquidコンテキストを受け取って、
+#                              .say__face の内側に入るHTML文字列を返すのだ～🌱
+#                              アイコンを持たないときは空文字列を返すのだ～🌱
 #
 # ## HTML出力構造
 #
@@ -63,7 +63,7 @@
 #     </div>
 #   </div>
 #
-#   `say--has-tail` クラスはプロバイダーの tail? が true のときに付与される。
+#   `say--has-tail` クラスは、プロバイダーの tail? が true のときに付くのだ～🌱
 #
 # =============================================================================
 
@@ -73,12 +73,12 @@ module Say
   # markup パーサー
   # ===========================================================================
 
-  # Liquid タグの markup 文字列をパースし、キャラ名・プリセット・直接指定に分解する。
+  # Liquid タグの markup 文字列をパースして、キャラ名とプリセットと直接指定へ分解するのだ～🌱
   #
   # markup の形式: "<キャラ名>[:<プリセット>...][:<key>=<value>...]"
-  #   - ":" で区切られた各セグメントのうち、先頭はキャラ名として扱う
-  #   - "=" を含むセグメントは key=value の直接指定として扱う
-  #   - "=" を含まないセグメントはプリセット名として扱う
+  #   - ":" で区切られた各セグメントのうち、先頭はキャラ名として扱うのだ～🌱
+  #   - "=" を含むセグメントは key=value の直接指定として扱うのだ～🌱
+  #   - "=" を含まないセグメントはプリセット名として扱うのだ～🌱
   #
   # 戻り値: [character_name, presets, overrides]
   #   - character_name: String — キャラクターの識別名
@@ -93,11 +93,11 @@ module Say
 
     parts.each do |part|
       if part.include?("=")
-        # "key=value" 形式 → 直接指定として記録
+        # "key=value" の形のものは、直接指定として記録するのだ～🌱
         key, value = part.split("=", 2)
         overrides[key] = value
       else
-        # プリセット名として記録
+        # そうでないものは、プリセット名として記録するのだ～🌱
         presets << part
       end
     end
@@ -111,12 +111,12 @@ module Say
 
   # {% say ... %}...{% endsay %} ブロックタグの実装。
   #
-  # 初期化時に markup をパースし、レンダリング時に以下の処理を行う:
-  #   1. キャラ名から Provider を引く
-  #   2. プリセットと直接指定からパラメータを解決する
-  #   3. Provider#resolve で顔部分の HTML（.say__face の内側）を取得する
-  #   4. Provider#tail? でトゲの有無を判定してクラスを組み立てる
-  #   5. ブロック内容と合わせて吹き出しの HTML を組み立てる
+  # 初期化のときに markup をパースして、レンダリングのときに次のことをするのだ～🌱
+  #   1. キャラ名から Provider を引くのだ～🌱
+  #   2. プリセットと直接指定からパラメータを解決するのだ～🌱
+  #   3. Provider#resolve で顔部分の HTML（.say__face の内側）を取得するのだ～🌱
+  #   4. Provider#tail? でトゲの有無を判定して、クラスを構成するのだ～🌱
+  #   5. ブロック内容と合わせて、吹き出しの HTML を構成するのだ～🌱
   class SayTag < Liquid::Block
     def initialize(tag_name, markup, tokens)
       super
@@ -141,20 +141,20 @@ module Say
       # 顔部分の HTML（.say__face の内側）を生成
       face_html = provider.resolve(params, context)
 
-      # キャラクター色を取得し、CSS カスタムプロパティとして .say に付与する
+      # キャラクター色を取得して、CSS カスタムプロパティとして .say へ付けるのだ～🌱
       character_color = provider.color(params)
       style = character_color ? %( style="--say-color: #{character_color}") : ""
 
-      # トゲの有無に応じてクラスを組み立てる
+      # トゲの有無に応じて、クラスを構成するのだ～🌱
       classes = ["say"]
       classes << "say--has-tail" if provider.tail?
 
       # ブロック内容を取得（Liquid の処理済み、Markdown は未処理）
       content = super
 
-      # 吹き出しの HTML を組み立てる
-      # say__balloon に markdown="1" を付けることで、
-      # kramdown がブロック内容を Markdown として処理する
+      # 吹き出しの HTML を構成するのだ～🌱
+      # say__balloon に markdown="1" を付けると、
+      # kramdown がブロック内容を Markdown として処理してくれるのだ～🌱
       <<~HTML
         <div class="#{classes.join(' ')}"#{style}>
           <div class="say__face">
@@ -169,5 +169,5 @@ module Say
   end
 end
 
-# タグ "say" を Liquid に登録する
+# タグ "say" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("say", Say::SayTag)

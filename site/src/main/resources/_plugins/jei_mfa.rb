@@ -4,7 +4,7 @@
 # jei_mfa.rb — JEI-MFA Block Tag for Jekyll
 # =============================================================================
 #
-# JEI-MFAの作品本体を表示するためのLiquidカスタムブロックタグ。
+# JEI-MFAの作品本体を表示するためのLiquidカスタムブロックタグなのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -32,8 +32,8 @@
 module JeiMfa
 
   # {% jei_mfa %}...{% endjei_mfa %} ブロックタグの実装。
-  # ブロック内容を <div class="jei-mfa" markdown="1"> で包んで出力する。
-  # markdown="1" を付けることで、kramdownがブロック内容をMarkdownとして処理する。
+  # ブロック内容を <div class="jei-mfa" markdown="1"> で包んで出力するのだ～🌱
+  # markdown="1" を付けると、kramdownがブロック内容をMarkdownとして処理してくれるのだ～🌱
   class JeiMfaTag < Liquid::Block
     def initialize(tag_name, markup, options)
       super
@@ -68,5 +68,5 @@ module JeiMfa
   end
 end
 
-# タグ "jei_mfa" を Liquid に登録する
+# タグ "jei_mfa" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("jei_mfa", JeiMfa::JeiMfaTag)
