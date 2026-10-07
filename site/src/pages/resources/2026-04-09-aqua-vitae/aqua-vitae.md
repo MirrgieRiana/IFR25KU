@@ -9,17 +9,17 @@ tags: [ IFR劇場, 生命の水, アタノール, 豚肉, 肉, 土, 妖精 ]
 
 {% say tsumugi3 %}やっほ～！センパーイ、何してんの？{% endsay %}
 {% say zundamon23 %}お、来たのだ。ちょうどいいタイミングなのだ。{% endsay %}
-![両脇と背面と上面にホッパーでチェストが接続され、炉内に火が付いており、草原に設置されたアタノールの様子](2026-03-20_00.44.19.webp)
+{% image "./2026-03-20_00.44.19.webp" alt="両脇と背面と上面にホッパーでチェストが接続され、炉内に火が付いており、草原に設置されたアタノールの様子" %}
 {% say tsumugi3:口=わあ %}えっ、何これ！？めっちゃデカっ！{% endsay %}
 {% say zundamon23 %}これがアタノールなのだ。素材をゆっくり時間をかけて加工できる機械なのだ。{% endsay %}
 {% say tsumugi3:口=にしー %}へーー！今日は何作るの？{% endsay %}
 {% say zundamon23 %}今からやるのだ。{% endsay %}
-![緑色に濁った液体が入った小瓶の見た目をした生命の水](aqua-vitae.png)
+{% image "./aqua-vitae.png" alt="緑色に濁った液体が入った小瓶の見た目をした生命の水" %}
 {% say tsumugi3 %}何その瓶？{% endsay %}
 {% say zundamon23 %}生命の水なのだ。{% endsay %}
 {% say tsumugi3:口=にしー %}生命の水！？なんか、すごそうな名前じゃん！飲めるの？{% endsay %}
 {% say zundamon23 %}飲めなくもないのだが、今日は土に注ぐのだ。{% endsay %}
-![緑の背景のスロットに置かれた豚の妖精と生命の水と土から300秒で何かを作っているアタノールのGUI](recipe.png)
+{% image "./recipe.png" alt="緑の背景のスロットに置かれた豚の妖精と生命の水と土から300秒で何かを作っているアタノールのGUI" %}
 {% say zundamon23 %}妖精の力と合わせると、物質の性質を変えられるのだ。{% endsay %}
 {% say tsumugi3:口=わあ %}土が！？{% endsay %}
 {% say zundamon23 %}そうなのだ。生命の水と、妖精と、土と。全部入れるのだ。{% endsay %}
@@ -35,7 +35,7 @@ tags: [ IFR劇場, 生命の水, アタノール, 豚肉, 肉, 土, 妖精 ]
 {% say tsumugi3 %}……もうそろそろ？{% endsay %}
 {% say zundamon23 %}もうそろそろいいかもなのだ。{% endsay %}
 {% say tsumugi3 %}え！？できた！？金出た！？{% endsay %}
-![生の豚肉](pork.png)
+{% image "./pork.png" alt="生の豚肉" %}
 {% say tsumugi3:口=わあ %}……えっ！？{% endsay %}
 {% say tsumugi3:口=わあ %}ちょっ、何これ！？{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}肉！？肉じゃんこれ！？{% endsay %}
