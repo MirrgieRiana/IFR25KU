@@ -9,17 +9,13 @@
 <script>
 (async () => {
 
-  // サムネイルを持たない記事のカードへ出す、既定の背景なのだ～🌱
-  // 記事カードを Liquid で生成する側と同じものを指すのだ～🌱
-  const DEFAULT_TEASER = '{{ "/assets/images/default-background.svg" | relative_url }}';
-
   // ============================================================
   // createCard: 記事1件分のカードDOM要素を生成して返す
   //
   //  構造:
   //    <a class="recent-posts__card" href="...">
   //      <div class="recent-posts__teaser">
-  //        <img ...>  ← teaserが無い記事には、既定の背景を出す
+  //        <img ...>  ← teaserが無いときは既定の背景を出す
   //      </div>
   //      <div class="recent-posts__body">
   //        <h3 class="recent-posts__title">...</h3>
@@ -37,7 +33,7 @@
     const teaser = document.createElement('div');
     teaser.className = 'recent-posts__teaser';
     const img = document.createElement('img');
-    img.src = post.teaser || DEFAULT_TEASER;
+    img.src = post.teaser || '{{ "/assets/images/default-background.svg" | relative_url }}';
     img.alt = '';
     teaser.appendChild(img);
     card.appendChild(teaser);
