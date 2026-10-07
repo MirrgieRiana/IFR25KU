@@ -17,7 +17,6 @@
 #   sceneDir     … 生成物が最後に置かれるディレクトリなのだ～🌱
 #
 # spec のキーなのだ～🌱：
-#   base         … 動画プロジェクトのディレクトリの絶対パスなのだ～🌱
 #   characters   … 立ち絵のキャラの配列なのだ～🌱 name と psd と ids と speaker を持つのだ～🌱
 #   fonts        … 要るフォントのファイル名の配列なのだ～🌱
 #   emojis       … 要る絵文字のファイル名の配列なのだ～🌱
@@ -32,12 +31,14 @@ API(5)
 
 {
   build: (spec; timelinePath; outDir; sceneDir) -> (
-    base := spec.base
-
     # 共有のテンプレートの置き場所なのだ～🌱
     # テンプレートはコピーせずにこの場所のまま開かせるから、その中の相対パスは、ここを基準に解決されるのだ～🌱
     # RESOLVE は左辺をディレクトリとして扱うから、LOCATION のファイル名の分も 1 階層として数えるのだ～🌱
     templateDir := LOCATION RESOLVE "../.."
+
+    # 外部取得リソースの置き場所なのだ～🌱
+    # 立ち絵とフォントと絵文字と BGM は、動画プロジェクトごとに持つのではなく、ここへまとめて置くのだ～🌱
+    resourceDir := templateDir RESOLVE "resources"
 
     # build_video.py の -framerate と一致させるのだ～🌱
     FPS := 30
@@ -62,7 +63,7 @@ API(5)
 
     # from のディレクトリから to へ辿る相対パスを組むのだ～🌱
     # 書き出し先はまだ無いことがあるから、実体を見ずに組ませる -m を付けるのだ～🌱
-    relativeTo := from, to -> capture(["realpath", "-m", "--relative-to", from, to]).0
+    relativeTo := from, to -> capture("realpath", "-m", "--relative-to", from, to).0
 
     # 構成jsonl の各行の template に入れる、この動画のテンプレートなのだ～🌱
     # レンダラーは、frames.jsonl のあるディレクトリを基準に解決するのだ～🌱
@@ -82,9 +83,9 @@ API(5)
         EXIT(1)
       )
     )
-    spec.characters() | character => need(base RESOLVE "../common/resources/psd"; character.psd)
-    spec.fonts() | font => need(base RESOLVE "../common/resources/font"; font)
-    spec.emojis() | emoji => need(base RESOLVE "../common/resources/emoji"; emoji)
+    spec.characters() | character => need(resourceDir RESOLVE "psd"; character.psd)
+    spec.fonts() | font => need(resourceDir RESOLVE "font"; font)
+    spec.emojis() | emoji => need(resourceDir RESOLVE "emoji"; emoji)
 
     # --- 1. テンプレートが読む assets.js を書き出し先へ置くのだ～🌱（絵文字・テクスチャのパス・タイムライン） ---
     # レンダリングは Chromium に file://.../skit-v1.html を開かせて 1 フレームずつ撮る方式なのだ～🌱
@@ -96,9 +97,9 @@ API(5)
 
     # IFR25KU リポジトリ内のテクスチャ（＝コミット済みの素材なので、リポジトリから直接読むのだ～🌱）
     # このパスは、テンプレートの置き場所を基準に解決されるのだ～🌱
-    TEX := relativeTo(templateDir; base RESOLVE "../../../common/src/main/resources/assets/miragefairy2024")
+    TEX := relativeTo(templateDir; templateDir RESOLVE "../../../common/src/main/resources/assets/miragefairy2024")
 
-    assets := spec.assetsOf(TEX; base RESOLVE "../common/resources")
+    assets := spec.assetsOf(TEX; resourceDir)
     timeline := $*READ(timelinePath)
 
     WRITE(outDir RESOLVE "assets.js"; "window.ASSETS=$(assets >> JSON[indent: NULL]);\nwindow.TIMELINE=$(timeline >> JSON[indent: NULL]);\n")
@@ -108,8 +109,8 @@ API(5)
     # --- 2. 立ち絵 PSD から必要なレイヤーを PNG に切り出すのだ～🌱（→ portrait/<char>/<id>.png） -----
     OUT << "== extract portrait =="
     # 切り出しのツールは、レンダラーと同じく video/ 直下の兄弟で、Node 依存も自分で面倒を見るのだ～🌱
-    extractPortrait := base RESOLVE "../../extract-portrait/extract-portrait.sh"
-    psdDir := base RESOLVE "../common/resources/psd"
+    extractPortrait := templateDir RESOLVE "../../extract-portrait/extract-portrait.sh"
+    psdDir := resourceDir RESOLVE "psd"
     spec.characters() | character => run("bash", extractPortrait, character.name, psdDir RESOLVE character.psd, character.ids, outDir RESOLVE "portrait/$(character.name)")
 
     # 各行は、そのフレームの見た目を決めるパラメータなのだ～🌱

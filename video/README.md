@@ -13,15 +13,19 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 `video/` は、役割ごとに 3 つのパートに分かれているのだ～🌱
 
 1. **`renderer/`（汎用レンダラー）** … 構成jsonl（1 行 = 1 フレーム）と HTML テンプレートを受け取って、ひたすら対応する画像を撮るだけの、**動画の中身を知らない**カプセル化されたレンダラーなのだ～🌱 単体で完結していて、他のパートに依存しないのだ～🌱
-2. **`projects/<yyyy-MM-dd-タイトル>/`（動画プロジェクト）** … その動画のシーンを持って、**構成jsonl を作る**パートなのだ～🌱 単体で完結していて、他のパートに依存しないのだ～🌱 今あるのは `projects/2026-04-12-sarracenia/` の 1 個なのだ～🌱
+2. **`projects/common/`（寸劇の形式）** … 寸劇という形式に共通な、テンプレートと、**構成jsonl を作る**処理と、共有のリソースを持つパートなのだ～🌱 動画ごとに違う値は、動画プロジェクトから受け取るのだ～🌱
 3. **`video/` 直下（雑多な部分）** … 音声合成と動画合成をして、**1 と 2 を呼び出して**動画を完成させるのだ～🌱 `src/main/xa1/video-plugin.xa1` が、その配線役なのだ～🌱
+
+1 個の動画は、`src/projects/xa1/<yyyy-MM-dd-タイトル>.xa1` の 1 個のファイルへ閉じるのだ～🌱
+台本と、その動画に固有のビルドの定義だけを持って、それ以外は全部 1 と 2 と 3 へ任せるのだ～🌱
+今あるのは `src/projects/xa1/2026-04-12-sarracenia.xa1` の 1 個なのだ～🌱
 
 この動画は、動画編集ソフトの GUI で作るのではなくて、**「決定論的フレームレンダリング」** という方式で作るのだ～🌱
 
 1. `projects/common/skit-v1.html` が、1 フレーム分の構成 `frame` を渡すとその画面を組み立てる関数 `window.applyFrame(frame)` を持つのだ～🌱 画面の見た目を決める値は、全部 `frame` に入っているのだ～🌱
-2. `projects/common/skit/skit-v1.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱 その寸劇に固有の値は、`projects/2026-04-12-sarracenia/build-scene.xa1` が渡すのだ～🌱
+2. `projects/common/skit/skit-v1.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱 その寸劇に固有の値は、`src/projects/xa1/2026-04-12-sarracenia.xa1` が渡すのだ～🌱
 3. `renderer/render.js` がヘッドレス Chromium にテンプレートを開かせて、`frames.jsonl` を頭から 1 行ずつ `applyFrame(frame)` に渡して、1 行につき 1 コマ撮るのだ～🌱
-4. 撮れた連番画像の `projects/2026-04-12-sarracenia/build/frames/png/f_00000.png …` を ffmpeg で映像にして、ナレーション音声と BGM を重ねて mp4 にするのだ～🌱
+4. 撮れた連番画像の `build/frames/2026-04-12-sarracenia/png/f_00000.png …` を ffmpeg で映像にして、ナレーション音声と BGM を重ねて mp4 にするのだ～🌱
 
 絵は構成jsonl だけで決まるから、マシンの速さに関係なく尺が正確で、何度ビルドしても同じ結果になるのだ～🌱
 連続する行の構成が同じなら、撮り直さずに前のコマを使い回すのだ～🌱
@@ -29,7 +33,7 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 
 ### データの流れなのだ～🌱
 
-図の中では、動画プロジェクトの `projects/2026-04-12-sarracenia/` を `<proj>/` と書くのだ～🌱
+図の中では、動画プロジェクトの名前の `2026-04-12-sarracenia` を `<proj>` と書くのだ～🌱
 
 ```
 src/projects/xa1/<proj>.xa1（台本）─(script.xa1)→ build/script/<proj>/script.json
@@ -38,15 +42,15 @@ src/projects/xa1/<proj>.xa1（台本）─(script.xa1)→ build/script/<proj>/sc
    │                                                                                   │ (video/ 直下)
    └─(timeline.xa1)───────→ build/timeline/<proj>/full.wav（ナレーション全体）, timeline.json（尺・区間） ┘
 
-timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/scene/assets.js   ┐
-               │        ↑ IFR25KU テクスチャ / common のフォントと絵文字  │ 動画プロジェクト
- common の psd ─(extract-portrait/extract-portrait.sh)→ <proj>/portrait/      │（構成を作る）
-               └─(<proj>/build-scene.xa1)────→ <proj>/build/scene/frames.jsonl ┘
+timeline.json ─┬─(skit-v1.xa1)──────────→ build/scene/<proj>/assets.js      ┐
+               │        ↑ IFR25KU テクスチャ / common のフォントと絵文字  │ 寸劇の形式
+ common の psd ─(extract-portrait/extract-portrait.sh)→ build/scene/<proj>/portrait/ │（構成を作る）
+               └─(skit-v1.xa1)──────────→ build/scene/<proj>/frames.jsonl ┘
 
-<proj>/build/scene/ の skit-v1.html + assets.js + portrait/ + frames.jsonl
-   └─(renderer/render.js + Chromium)→ <proj>/build/frames/png/f_%05d.png   … 汎用レンダラー
+projects/common/skit-v1.html + build/scene/<proj>/ の assets.js + portrait/ + frames.jsonl
+   └─(renderer/render.js + Chromium)→ build/frames/<proj>/png/f_%05d.png   … 汎用レンダラー
 
-<proj>/build/frames/ + full.wav + projects/common/resources/bgm/*.flac
+build/frames/<proj>/ + full.wav + projects/common/resources/bgm/*.flac
    └─(movie.xa1 + ffmpeg)→ build/movie/<proj>/<proj>.mp4（完成品）  … 雑多パート
 ```
 
@@ -54,7 +58,6 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 
 - [`renderer/README.md`](renderer/README.md)
 - [`extract-portrait/README.md`](extract-portrait/README.md)
-- [`projects/2026-04-12-sarracenia/README.md`](projects/2026-04-12-sarracenia/README.md)
 
 ---
 
@@ -68,7 +71,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 | --- | --- |
 | `athanorw` | ビルドする入口なのだ～🌱 `<サブプロジェクト名>:<タスク名>` を受け取って、そのタスクを呼ぶのだ～🌱 **ふつうはここで `./athanorw 2026-04-12-sarracenia:build` を実行するだけ**なのだ～🌱 |
 | `main.xa1` | `video/` の入口なのだ～🌱 サブプロジェクト名を受け取って、`src/projects/xa1/` のそのモジュールを読むのだ～🌱 |
-| `src/projects/xa1/2026-04-12-sarracenia.xa1` | 1 個の動画の、台本とビルドの定義なのだ～🌱 `video-plugin` へ自分の居場所と台本とシーンを組む関数を渡して、組んだプロジェクトを返すのだ～🌱 |
+| `src/projects/xa1/2026-04-12-sarracenia.xa1` | 1 個の動画の、台本とビルドの定義なのだ～🌱 `video-plugin` へ自分の名前と台本とシーンを組む関数を渡して、組んだプロジェクトを返すのだ～🌱 この寸劇に固有の、立ち絵のキャラとテクスチャとポーズの配列と、シーンとアイテムの不透明度の決め方も、ここが `skit/skit-v1.xa1` へ渡すのだ～🌱 |
 | `src/main/xa1/athanor.xa1` | タスクを並べてビルドを組むための仕組みなのだ～🌱 タスクを走らせると、`dependsOn` を先にたどってから、自分の動作を呼ぶのだ～🌱 |
 | `src/main/xa1/video-plugin.xa1` | サブプロジェクトに要るタスクを、依存の順に並べて渡すのだ～🌱 段と段の順序を、1 か所で持つのだ～🌱 |
 | `src/main/xa1/script.xa1` | 動画プロジェクトの台本を `script.json` へ焼くのだ～🌱 |
@@ -96,14 +99,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 | `extract_portrait.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出すのだ～🌱 |
 | `package.json` / `package-lock.json` | Node の依存関係（`ag-psd` / `pngjs`）なのだ～🌱 |
 
-**`projects/2026-04-12-sarracenia/`（動画プロジェクト・構成jsonl を作るパート・自己完結）**
-
-| ファイル | 役割 |
-| --- | --- |
-| `build-scene.xa1` | この寸劇に固有の、構成の材料なのだ～🌱 立ち絵のキャラとテクスチャとポーズの配列と、シーンとアイテムの不透明度の決め方を、共通の `skit/skit-v1.xa1` へ渡すのだ～🌱 |
-| `../common/skit-v1.html` | 画面の見た目と `window.applyFrame(frame)`（構成→画面）の本体なのだ～🌱 字幕と立ち絵と背景とクレジットとサムネを組み立てるのだ～🌱 寸劇のプロジェクトで共有するのだ～🌱 |
-
-**`projects/common/`（動画プロジェクトが共有するリソース）**
+**`projects/common/`（寸劇の形式・動画プロジェクトが共有するもの）**
 
 | ファイル | 役割 |
 | --- | --- |
@@ -115,8 +111,7 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 
 - **外部取得リソースの実体**（`projects/common/resources/psd/*.psd`, `.../font/*.ttf`, `.../emoji/*.svg`, `.../bgm/*.flac`）
   … 著作権の都合でコミットしないのだ～🌱 各 `.md5` を頼りに自分で配置するのだ～🌱（→ [3.](#3-用意する外部取得リソースなのだ)）
-- **雑多パートの生成物**（`video/build/` の下の、台本と音声とタイムラインと完成品）
-- **動画プロジェクトの生成物**（`projects/*/build/` の下の、シーンの材料とフレーム画像）
+- **生成物**（`video/build/` の下の、台本と音声とタイムラインと、シーンの材料とフレーム画像と完成品）
 - **依存**（各パート配下の `node_modules/`）
 
 ---
@@ -139,12 +134,12 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 立ち絵 PSD の ID 体系なのだ～🌱
 `extract-portrait/` が切り出すレイヤーは、兄弟レイヤーの 1 始まりインデックスを `-` で連結した ID で指定するのだ～🌱
 グループも、インデックスを 1 個消費するのだ～🌱
-切り出す ID の一覧は `projects/2026-04-12-sarracenia/build-scene.xa1` の `ZUNDA_IDS` と `TSUMUGI_IDS` にあるのだ～🌱
+切り出す ID の一覧は `src/projects/xa1/2026-04-12-sarracenia.xa1` の `ZUNDA_IDS` と `TSUMUGI_IDS` にあるのだ～🌱
 これは、テンプレートの `PORTRAIT` 定義と一致している必要があるのだ～🌱
 
 ### IFR25KU リポジトリ由来のテクスチャ（配置不要）なのだ～🌱
 
-次の 4 枚は IFR25KU リポジトリにコミット済みだから、`projects/2026-04-12-sarracenia/build-scene.xa1` がリポジトリから直接読むのだ～🌱
+次の 4 枚は IFR25KU リポジトリにコミット済みだから、`src/projects/xa1/2026-04-12-sarracenia.xa1` がリポジトリから直接読むのだ～🌱
 自分で置く必要は無いのだ～🌱
 
 | 用途 | ファイル |
@@ -235,9 +230,9 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 
 台詞 wav を、タイトル保持、本編（台詞のあいだに無音の間）、クレジット保持の順に結合して、`full.wav` と `timeline.json` を作るのだ～🌱
 `timeline.json` には、各台詞の開始と終了の時刻と、シーン区間と、アイテムの表示区間などが入るのだ～🌱
-それを、動画プロジェクトの `build-scene.xa1` と `movie.xa1` が読むのだ～🌱
+それを、`skit-v1.xa1` と `movie.xa1` が読むのだ～🌱
 
-### build-scene.xa1（アセットの焼き込み）なのだ～🌱
+### skit-v1.xa1（アセットの焼き込み）なのだ～🌱
 
 `file://` で開いた HTML は外部ファイルを `fetch()` できないから、絵文字とテクスチャのパスとタイムラインを `assets.js` に埋め込むのだ～🌱
 テクスチャはテンプレートから見た相対パスの文字列で、絵文字 SVG は生の文字列として入るのだ～🌱
@@ -248,11 +243,11 @@ timeline.json ─┬─(<proj>/build-scene.xa1)─────→ <proj>/build/s
 `ag-psd` で PSD を読んで、指定 ID のレイヤーを、全身キャンバスと同じサイズの透過 PNG として書き出すのだ～🌱
 `node-canvas` を入れずに済むように、`createImageData` だけをシムして動かしているのだ～🌱
 
-### build-scene.xa1（構成jsonl の組み立て）なのだ～🌱
+### skit-v1.xa1（構成jsonl の組み立て）なのだ～🌱
 
 `timeline.json` から総尺を読んで、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
 各行は `template` と `t` と、画面の各要素の不透明度のキーと、ポーズと口パクとまばたきと字幕の中身を持つのだ～🌱
-`template` に入れるテンプレートは、`build-scene.xa1` の冒頭で決めているのだ～🌱
+`template` に入れるテンプレートは、`skit-v1.xa1` の冒頭で決めているのだ～🌱
 画面の見た目を決める値は、全部ここで計算して渡すから、テンプレートの側はタイムラインを見ないのだ～🌱
 レンダラー側は、この構成の中身が増えても変えなくてよい設計なのだ～🌱
 

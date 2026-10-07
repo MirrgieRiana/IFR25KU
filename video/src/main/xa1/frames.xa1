@@ -5,7 +5,7 @@ API(5)
 
 sceneModule := USE("scene")
 
-dirOf := project -> project.buildBase RESOLVE "frames"
+dirOf := project -> buildBase RESOLVE "frames" RESOLVE project.name
 
 {
   pngPattern: project -> dirOf(project) RESOLVE "png/f_%05d.png"

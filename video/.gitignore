@@ -17,4 +17,3 @@ projects/common/resources/bgm/*.wav
 
 # --- 生成物（generate～ の各段が作って、clean が捨てるのだ～🌱） ---
 /build/
-projects/*/build/
