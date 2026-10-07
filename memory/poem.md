@@ -12,6 +12,7 @@ IFR25KU には、アイテムやブロックのポエム、特性図鑑のポエ
 
 - https://ifr25ku.mirrgieriana.net/lang_table.jsonl の全部 - 既存のポエムが全部入っているのだ～🌱
 - [IFR25KU の世界観まとめ](worldview.md) - 世界観の一次情報の所在と、そこから読めることなのだ～🌱
+- [naming スキル](../.claude/skills/naming/SKILL.md) - 案の個数や出力形式といった、提案の仕方を定めているのだ～🌱
 
 これらを全部読み終えていない状態で、いかなるテキストを提案する資格も、一切ないのだ～🌱
 
