@@ -34,7 +34,7 @@ bgmDir := base RESOLVE "projects/common/resources/bgm"
     generate("movie ($(project.name))"; dirOf(project); work -> (
       tl := $*READ(timelineModule.jsonPath(project))
       total := tl.total
-      T0 := tl.lead          # 開幕（タイトル）から寸劇（初回発話）へ切り替わる時刻
+      T0 := tl.lead          # 開幕（タイトル）から劇場（初回発話）へ切り替わる時刻
       CS := tl.creditStart   # クレジット開始時刻
 
       ffmpeg := ENV.FFMPEG ?: "ffmpeg"
@@ -45,14 +45,14 @@ bgmDir := base RESOLVE "projects/common/resources/bgm"
 
       # -----------------------------------------------------------------------------
       # BGM の音量は「2 ステートの線形補間」なのだ～🌱
-      #   冒頭（タイトル）＝A（やや強め） → 寸劇＝B（弱め） → クレジット＝A（冒頭と同じ）へ戻すのだ～🌱
+      #   冒頭（タイトル）＝A（やや強め） → 劇場＝B（弱め） → クレジット＝A（冒頭と同じ）へ戻すのだ～🌱
       #   T0（初回発話）の前後 0.5 秒で A→B へ落とし、CS（クレジット開始）の手前 0.5 秒で B→A へ戻すのだ～🌱
       #   お尻だけ 2 秒フェードアウトするのだ～🌱
       #   BGM はショパン 練習曲 作品10-4「Torrent（激流）」（Edward Neeman 演奏, パブリックドメイン）で、
       #   冒頭から旋律が鳴る曲なので、頭のフェードインは無しなのだ～🌱
       # -----------------------------------------------------------------------------
       aVol := baseVol * 0.60          # 冒頭＝クレジット（強）
-      bVol := baseVol * 0.40 * 0.70   # 寸劇（弱）
+      bVol := baseVol * 0.40 * 0.70   # 劇場（弱）
       RAMP := 0.5
       volexpr := "if(lt(t,$%.3f(T0)),$%.4f(aVol),if(lt(t,$%.3f(T0 + RAMP)),$%.4f(aVol)+($%.4f(bVol)-$%.4f(aVol))*(t-$%.3f(T0))/$%.3f(RAMP),if(lt(t,$%.3f(CS - RAMP)),$%.4f(bVol),if(lt(t,$%.3f(CS)),$%.4f(bVol)+($%.4f(aVol)-$%.4f(bVol))*(t-$%.3f(CS - RAMP))/$%.3f(RAMP),$%.4f(aVol)))))"
 
@@ -61,7 +61,7 @@ bgmDir := base RESOLVE "projects/common/resources/bgm"
       #   amix の normalize=0 は「単純な足し算」で、勝手に音量を正規化させないためなのだ～🌱
       fc := "[1:a]aresample=48000[nar];[2:a]aresample=48000,atrim=0:$%.3f(total),volume=eval=frame:volume='$volexpr',afade=t=out:st=$%.3f(total - 2.2):d=2.0[bgm];[nar][bgm]amix=inputs=2:duration=first:normalize=0[aout]"
 
-      OUT << "BGM base=$baseVol A(open/credit)=$%.3f(aVol) B(skit)=$%.3f(bVol) T0=$T0 CS=$CS"
+      OUT << "BGM base=$baseVol A(open/credit)=$%.3f(aVol) B(theater)=$%.3f(bVol) T0=$T0 CS=$CS"
 
       cmd := [
         ffmpeg; "-y"; "-hide_banner"

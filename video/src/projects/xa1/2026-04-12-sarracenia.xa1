@@ -1,13 +1,13 @@
 # =============================================================================
-# 2026-04-12-sarracenia.xa1 — サラセニア寸劇の台本とビルドの定義なのだ～🌱（xarpite / API5）
+# 2026-04-12-sarracenia.xa1 — サラセニア劇場の台本とビルドの定義なのだ～🌱（xarpite / API5）
 # -----------------------------------------------------------------------------
 # 1 個の動画は、台本と、その動画に固有のビルドの定義だけで決まるのだ～🌱
 # だから、その 2 個を、動画の名前を冠したこの 1 個のファイルへ同居させるのだ～🌱
 # video/ 直下の athanorw が、video/main.xa1 を通してこのモジュールを読んで、返ってきたもののタスクを呼ぶのだ～🌱
 #
 # 段の中身と、段と段の順序は、video/src/main/xa1/video-plugin.xa1 が持つのだ～🌱
-# 構成を組み上げる処理は、寸劇という形式に共通だから、video/projects/common/skit/skit-v1.xa1 が持つのだ～🌱
-# ここが渡すのは、この寸劇に固有の値だけなのだ～🌱
+# 構成を組み上げる処理は、劇場という形式に共通だから、video/projects/common/theater/theater-v1.xa1 が持つのだ～🌱
+# ここが渡すのは、この劇場に固有の値だけなのだ～🌱
 #
 # 台本の 1 行ぶんの項目なのだ～🌱：
 #   speaker … 話者の名前なのだ～🌱
@@ -30,7 +30,7 @@ INC += videoBase RESOLVE "src/main/xa1"
 
 @USE("video-plugin")
 
-skitModule := USE(videoBase RESOLVE "projects/common/skit/skit-v1")
+theaterModule := USE(videoBase RESOLVE "projects/common/theater/theater-v1")
 
 # この動画の名前なのだ～🌱
 # main.xa1 が名前からこのファイルを読むから、名前はこのファイル自身のファイル名そのものなのだ～🌱
@@ -212,7 +212,7 @@ script := {
 }
 
 # buildScene の引数は、timeline.json のパスと、生成物を書き出す先と、それが最後に置かれる場所なのだ～🌱
-videoProjectOf(name; script; (timelinePath; outDir; sceneDir) -> skitModule.build(
+videoProjectOf(name; script; (timelinePath; outDir; sceneDir) -> theaterModule.build(
   {
     characters: CHARACTERS
     fonts: ["ZenMaruGothic-Black.ttf", "ZenMaruGothic-Bold.ttf"]
@@ -233,7 +233,7 @@ videoProjectOf(name; script; (timelinePath; outDir; sceneDir) -> skitModule.buil
     poseDefault: POSE_DEFAULT
     poses: POSES
 
-    # この寸劇のシーンとアイテムの不透明度なのだ～🌱
+    # この劇場のシーンとアイテムの不透明度なのだ～🌱
     # 沼地の背景は、泥沼のクロスフェードの下敷きだから、swampOp はずっと 1 なのだ～🌱
     framePartOf: (t; timeline; ops) -> (
       bogScenes := [timeline.scenes() >> FILTER[s => s.scene == "bog"]]

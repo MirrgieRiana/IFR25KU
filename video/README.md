@@ -1,10 +1,10 @@
 # IFR25KU 動画ビルドシステムなのだ～🌱
 
 VOICEVOX の立ち絵のずんだもんと春日部つむぎが、口パクとまばたきとポーズ変化をしながら会話する、
-IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで組み立てる**ためのビルドシステムなのだ～🌱
+IFR25KU の解説の劇場動画を、**台本テキストから 1 コマンドで組み立てる**ためのビルドシステムなのだ～🌱
 
-今の題材はサラセニアという食虫植物の寸劇で、長さは 1 分ちょっとなのだ～🌱
-台本の xa1 とテンプレートの `skit-v1.html` を差し替えれば、別の寸劇にも使えるのだ～🌱
+今の題材はサラセニアという食虫植物の劇場で、長さは 1 分ちょっとなのだ～🌱
+台本の xa1 とテンプレートの `theater-v1.html` を差し替えれば、別の劇場にも使えるのだ～🌱
 
 ---
 
@@ -13,7 +13,7 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 `video/` は、役割ごとに 3 つのパートに分かれているのだ～🌱
 
 1. **`renderer/`（汎用レンダラー）** … 構成jsonl（1 行 = 1 フレーム）と HTML テンプレートを受け取って、ひたすら対応する画像を撮るだけの、**動画の中身を知らない**カプセル化されたレンダラーなのだ～🌱 単体で完結していて、他のパートに依存しないのだ～🌱
-2. **`projects/common/`（寸劇の形式）** … 寸劇という形式に共通な、テンプレートと、**構成jsonl を作る**処理と、共有のリソースを持つパートなのだ～🌱 動画ごとに違う値は、動画プロジェクトから受け取るのだ～🌱
+2. **`projects/common/`（劇場の形式）** … 劇場という形式に共通な、テンプレートと、**構成jsonl を作る**処理と、共有のリソースを持つパートなのだ～🌱 動画ごとに違う値は、動画プロジェクトから受け取るのだ～🌱
 3. **`video/` 直下（雑多な部分）** … 音声合成と動画合成をして、**1 と 2 を呼び出して**動画を完成させるのだ～🌱 `src/main/xa1/video-plugin.xa1` が、その配線役なのだ～🌱
 
 1 個の動画は、`src/projects/xa1/<yyyy-MM-dd-タイトル>.xa1` の 1 個のファイルへ閉じるのだ～🌱
@@ -22,8 +22,8 @@ IFR25KU の解説寸劇動画を、**台本テキストから 1 コマンドで�
 
 この動画は、動画編集ソフトの GUI で作るのではなくて、**「決定論的フレームレンダリング」** という方式で作るのだ～🌱
 
-1. `projects/common/skit-v1.html` が、1 フレーム分の構成 `frame` を渡すとその画面を組み立てる関数 `window.applyFrame(frame)` を持つのだ～🌱 画面の見た目を決める値は、全部 `frame` に入っているのだ～🌱
-2. `projects/common/skit/skit-v1.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱 その寸劇に固有の値は、`src/projects/xa1/2026-04-12-sarracenia.xa1` が渡すのだ～🌱
+1. `projects/common/theater-v1.html` が、1 フレーム分の構成 `frame` を渡すとその画面を組み立てる関数 `window.applyFrame(frame)` を持つのだ～🌱 画面の見た目を決める値は、全部 `frame` に入っているのだ～🌱
+2. `projects/common/theater/theater-v1.xa1` が、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱 その劇場に固有の値は、`src/projects/xa1/2026-04-12-sarracenia.xa1` が渡すのだ～🌱
 3. `renderer/render.js` がヘッドレス Chromium にテンプレートを開かせて、`frames.jsonl` を頭から 1 行ずつ `applyFrame(frame)` に渡して、1 行につき 1 コマ撮るのだ～🌱
 4. 撮れた連番画像の `build/frames/2026-04-12-sarracenia/png/f_00000.png …` を ffmpeg で映像にして、ナレーション音声と BGM を重ねて mp4 にするのだ～🌱
 
@@ -42,12 +42,12 @@ src/projects/xa1/<proj>.xa1（台本）─(script.xa1)→ build/script/<proj>/sc
    │                                                                                   │ (video/ 直下)
    └─(timeline.xa1)───────→ build/timeline/<proj>/full.wav（ナレーション全体）, timeline.json（尺・区間） ┘
 
-timeline.json ─┬─(skit-v1.xa1)──────────→ build/scene/<proj>/assets.js      ┐
-               │        ↑ IFR25KU テクスチャ / common のフォントと絵文字  │ 寸劇の形式
+timeline.json ─┬─(theater-v1.xa1)──────────→ build/scene/<proj>/assets.js      ┐
+               │        ↑ IFR25KU テクスチャ / common のフォントと絵文字  │ 劇場の形式
  common の psd ─(extract-portrait/extract-portrait.sh)→ build/scene/<proj>/portrait/ │（構成を作る）
-               └─(skit-v1.xa1)──────────→ build/scene/<proj>/frames.jsonl ┘
+               └─(theater-v1.xa1)──────────→ build/scene/<proj>/frames.jsonl ┘
 
-projects/common/skit-v1.html + build/scene/<proj>/ の assets.js + portrait/ + frames.jsonl
+projects/common/theater-v1.html + build/scene/<proj>/ の assets.js + portrait/ + frames.jsonl
    └─(renderer/render.js + Chromium)→ build/frames/<proj>/png/f_%05d.png   … 汎用レンダラー
 
 build/frames/<proj>/ + full.wav + projects/common/resources/bgm/*.flac
@@ -71,7 +71,7 @@ build/frames/<proj>/ + full.wav + projects/common/resources/bgm/*.flac
 | --- | --- |
 | `athanorw` | ビルドする入口なのだ～🌱 `<サブプロジェクト名>:<タスク名>` を受け取って、そのタスクを呼ぶのだ～🌱 **ふつうはここで `./athanorw 2026-04-12-sarracenia:build` を実行するだけ**なのだ～🌱 |
 | `main.xa1` | `video/` の入口なのだ～🌱 サブプロジェクト名を受け取って、`src/projects/xa1/` のそのモジュールを読むのだ～🌱 |
-| `src/projects/xa1/2026-04-12-sarracenia.xa1` | 1 個の動画の、台本とビルドの定義なのだ～🌱 `video-plugin` へ自分の名前と台本とシーンを組む関数を渡して、組んだプロジェクトを返すのだ～🌱 この寸劇に固有の、立ち絵のキャラとテクスチャとポーズの配列と、シーンとアイテムの不透明度の決め方も、ここが `skit/skit-v1.xa1` へ渡すのだ～🌱 |
+| `src/projects/xa1/2026-04-12-sarracenia.xa1` | 1 個の動画の、台本とビルドの定義なのだ～🌱 `video-plugin` へ自分の名前と台本とシーンを組む関数を渡して、組んだプロジェクトを返すのだ～🌱 この劇場に固有の、立ち絵のキャラとテクスチャとポーズの配列と、シーンとアイテムの不透明度の決め方も、ここが `theater/theater-v1.xa1` へ渡すのだ～🌱 |
 | `src/main/xa1/athanor.xa1` | タスクを並べてビルドを組むための仕組みなのだ～🌱 タスクを走らせると、`dependsOn` を先にたどってから、自分の動作を呼ぶのだ～🌱 |
 | `src/main/xa1/video-plugin.xa1` | サブプロジェクトに要るタスクを、依存の順に並べて渡すのだ～🌱 段と段の順序を、1 か所で持つのだ～🌱 |
 | `src/main/xa1/script.xa1` | 動画プロジェクトの台本を `script.json` へ焼くのだ～🌱 |
@@ -99,12 +99,12 @@ build/frames/<proj>/ + full.wav + projects/common/resources/bgm/*.flac
 | `extract_portrait.js` | 立ち絵 PSD から、必要なレイヤーだけを透過 PNG として切り出すのだ～🌱 |
 | `package.json` / `package-lock.json` | Node の依存関係（`ag-psd` / `pngjs`）なのだ～🌱 |
 
-**`projects/common/`（寸劇の形式・動画プロジェクトが共有するもの）**
+**`projects/common/`（劇場の形式・動画プロジェクトが共有するもの）**
 
 | ファイル | 役割 |
 | --- | --- |
-| `skit-v1.html` | 寸劇のテンプレートなのだ～🌱 画面の見た目と `window.applyFrame(frame)` を持つのだ～🌱 |
-| `skit/skit-v1.xa1` | 台本から寸劇の構成を組み上げるシステムなのだ～🌱 `assets.js` と立ち絵の切り出しと構成jsonl を作るのだ～🌱 寸劇の動画プロジェクトが、自分に固有の値を渡して呼ぶのだ～🌱 |
+| `theater-v1.html` | 劇場のテンプレートなのだ～🌱 画面の見た目と `window.applyFrame(frame)` を持つのだ～🌱 |
+| `theater/theater-v1.xa1` | 台本から劇場の構成を組み上げるシステムなのだ～🌱 `assets.js` と立ち絵の切り出しと構成jsonl を作るのだ～🌱 劇場の動画プロジェクトが、自分に固有の値を渡して呼ぶのだ～🌱 |
 | `resources/**/*.md5` | 外部取得リソースの md5 なのだ～🌱 **そこに、どの名前で、何を置けばよいかを保証するための目印**なのだ～🌱 |
 
 ### コミットされていないもの（`.gitignore` 対象）なのだ～🌱
@@ -230,9 +230,9 @@ build/frames/<proj>/ + full.wav + projects/common/resources/bgm/*.flac
 
 台詞 wav を、タイトル保持、本編（台詞のあいだに無音の間）、クレジット保持の順に結合して、`full.wav` と `timeline.json` を作るのだ～🌱
 `timeline.json` には、各台詞の開始と終了の時刻と、シーン区間と、アイテムの表示区間などが入るのだ～🌱
-それを、`skit-v1.xa1` と `movie.xa1` が読むのだ～🌱
+それを、`theater-v1.xa1` と `movie.xa1` が読むのだ～🌱
 
-### skit-v1.xa1（アセットの焼き込み）なのだ～🌱
+### theater-v1.xa1（アセットの焼き込み）なのだ～🌱
 
 `file://` で開いた HTML は外部ファイルを `fetch()` できないから、絵文字とテクスチャのパスとタイムラインを `assets.js` に埋め込むのだ～🌱
 テクスチャはテンプレートから見た相対パスの文字列で、絵文字 SVG は生の文字列として入るのだ～🌱
@@ -243,15 +243,15 @@ build/frames/<proj>/ + full.wav + projects/common/resources/bgm/*.flac
 `ag-psd` で PSD を読んで、指定 ID のレイヤーを、全身キャンバスと同じサイズの透過 PNG として書き出すのだ～🌱
 `node-canvas` を入れずに済むように、`createImageData` だけをシムして動かしているのだ～🌱
 
-### skit-v1.xa1（構成jsonl の組み立て）なのだ～🌱
+### theater-v1.xa1（構成jsonl の組み立て）なのだ～🌱
 
 `timeline.json` から総尺を読んで、30fps 刻みの構成jsonl（`frames.jsonl`、1 行 = 1 フレーム）を作るのだ～🌱
 各行は `template` と `t` と、画面の各要素の不透明度のキーと、ポーズと口パクとまばたきと字幕の中身を持つのだ～🌱
-`template` に入れるテンプレートは、`skit-v1.xa1` の冒頭で決めているのだ～🌱
+`template` に入れるテンプレートは、`theater-v1.xa1` の冒頭で決めているのだ～🌱
 画面の見た目を決める値は、全部ここで計算して渡すから、テンプレートの側はタイムラインを見ないのだ～🌱
 レンダラー側は、この構成の中身が増えても変えなくてよい設計なのだ～🌱
 
-### skit-v1.html（画面と applyFrame）なのだ～🌱
+### theater-v1.html（画面と applyFrame）なのだ～🌱
 
 画面の見た目のすべてと、構成 `frame` から画面を決める `window.applyFrame(frame)` が入っているのだ～🌱
 `applyFrame` は、構成の各行の値を、そのまま画面の各要素へ当てるのだ～🌱
