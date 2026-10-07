@@ -176,7 +176,7 @@ CSSのカスタマイズは `assets/css/main.scss` の `@import "minimal-mistake
 
 `generateOgImages` と `seo.html` が参照する front matter のフィールドなのだ～🌱
 
-`header.og_background` > `header.overlay_image` > `header.image` > `header.teaser` > `src/ogImages/assets/default-background.svg`
+`header.og_background` > `header.overlay_image` > `header.image` > `header.teaser` > `src/ogImages/resources/assets/default-background.svg`
 
 各画像パスからファイル名を抽出して、.mdファイルと同じディレクトリの中のローカルファイルを参照するのだ～🌱
 出力パスは `page.url` から `/assets/images/` + url + `.og.webp` として導き出されるのだぁ✨
