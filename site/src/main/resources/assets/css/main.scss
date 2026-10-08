@@ -532,10 +532,23 @@ body.layout--one-column #main {
     }
   }
 
-  .visible-links &:hover {
+  // ホバーで開く形は、ホバーが使える環境だけに限るのだ～🌱
+  // ホバーを持たない端末では、1回のタップがホバーとクリックの両方になって、下の項目を出した途端に遷移しちゃうのだぁ…🌧️
+  @media (hover: hover) {
+    .visible-links &:hover {
+      background: rgba(255, 255, 255, 0.1);
+
+      .masthead__dropdown {
+        display: block;
+      }
+    }
+  }
+
+  // ホバーを持たない端末では、見出しの aria-expanded が開閉の状態を持つのだ～🌱
+  .visible-links & [aria-expanded="true"] {
     background: rgba(255, 255, 255, 0.1);
 
-    .masthead__dropdown {
+    & ~ .masthead__dropdown {
       display: block;
     }
   }
