@@ -104,15 +104,24 @@ module Images
     )
   end
 
+  # 属性の値を、HTML としてエスケープするのだ～🌱
+  #
+  # 既に実体参照になっている部分は、二度目のエスケープをしないのだ～🌱
+  # markdownify を通した文字列には実体参照が残るから、そのまま CGI.escapeHTML へ渡すと &amp;amp; へ化けるのだ～🌧️
+  # これは Liquid の escape_once フィルターと同じ振る舞いなのだ～🌱
+  def self.escape_attribute(value)
+    CGI.escapeHTML(value.to_s).gsub(/&amp;([a-zA-Z]+|#\d+);/, '&\1;')
+  end
+
   # render_img と同じことを、Liquid の context を持たない呼び出し元のために、baseurl を直接受け取る形で行うのだ～🌱
   #
   # 属性の値は、ここで HTML としてエスケープするのだ～🌱
   # 代替テキストに引用符が入ると属性が途中で閉じてしまうし、呼び出し元ごとにエスケープを書くと、書き忘れた所だけが壊れるのだ～🌧️
   def self.render_img_with_baseurl(baseurl, source, alt: "", class_name: nil, aria_hidden: false)
     attributes = +""
-    attributes << %( class="#{CGI.escapeHTML(class_name.to_s)}") if class_name
-    attributes << %( src="#{CGI.escapeHTML(resolve_with_baseurl(baseurl, source).to_s)}")
-    attributes << %( alt="#{CGI.escapeHTML(alt.to_s)}")
+    attributes << %( class="#{escape_attribute(class_name)}") if class_name
+    attributes << %( src="#{escape_attribute(resolve_with_baseurl(baseurl, source))}")
+    attributes << %( alt="#{escape_attribute(alt)}")
     attributes << %( aria-hidden="true") if aria_hidden
     "<img#{attributes}>"
   end
