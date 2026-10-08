@@ -12,14 +12,19 @@
         <ul class="visible-links">
           {%- for link in site.data.navigation.main -%}
             {% if link.children %}
+              {%- assign dropdown_id = "masthead-dropdown-" | append: forloop.index -%}
               <li class="masthead__menu-item masthead__menu-item--dropdown">
-                {% comment %}下の項目を開く見出し自身が行き先を持つときは、リンクにして、そこへも飛べるようにするのだ～🌱{% endcomment %}
+                {% comment %}行き先を持つ見出しは、リンクと開閉のボタンに分けるのだ～🌱 1 個の要素に両方を持たせると、触ったときにどちらが起こるかを選べなくなるのだぁ…🌧️{% endcomment %}
                 {% if link.url %}
                   <a class="masthead__menu-item-trigger" href="{{ link.url | relative_url }}">{{ link.title }}</a>
+                  <button type="button" class="masthead__menu-item-toggle" aria-expanded="false" aria-controls="{{ dropdown_id }}">
+                    <span class="visually-hidden">{{ link.title }}の下の項目</span>
+                    <i class="fas fa-chevron-down fa-xs" aria-hidden="true"></i>
+                  </button>
                 {% else %}
-                  <button type="button" class="masthead__menu-item-trigger">{{ link.title }}</button>
+                  <button type="button" class="masthead__menu-item-trigger" aria-expanded="false" aria-controls="{{ dropdown_id }}">{{ link.title }}</button>
                 {% endif %}
-                <ul class="masthead__dropdown">
+                <ul class="masthead__dropdown" id="{{ dropdown_id }}">
                   {% for child in link.children %}
                     <li>
                       <a

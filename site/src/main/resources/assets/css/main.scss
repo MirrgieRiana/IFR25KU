@@ -397,7 +397,8 @@ body.layout--one-column #main {
 
 .greedy-nav .visible-links a,
 .greedy-nav .hidden-links a,
-.greedy-nav .masthead__menu-item-trigger {
+.greedy-nav .masthead__menu-item-trigger,
+.greedy-nav .masthead__menu-item-toggle {
   color: #ffffff;
 
   &:hover {
@@ -436,6 +437,11 @@ body.layout--one-column #main {
       color: rgba(#ffffff, 0.5);
       cursor: default;
       pointer-events: none;
+    }
+
+    // 折り畳んだ側では下の項目が常に開いているから、それを開くボタンは要らないのだ～🌱
+    .masthead__menu-item-toggle {
+      display: none;
     }
 
     .masthead__dropdown {
@@ -505,6 +511,24 @@ body.layout--one-column #main {
     margin: 0;
   }
 
+  // 行き先を持つ見出しに添える、下の項目を開くボタンなのだ～🌱
+  .masthead__menu-item-toggle {
+    background: none;
+    border: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem 0 0.4rem;
+  }
+
+  // 行き先を持つ見出しは、必ず開くボタンを隣に連れているのだ～🌱
+  // 右の余白をリンクが持ったままだと、その分がボタンに重なって、ボタンを触れなくなるのだぁ…🌧️
+  a.masthead__menu-item-trigger {
+    padding-right: 0;
+  }
+
   .masthead__dropdown {
     display: none;
     position: absolute;
@@ -532,12 +556,27 @@ body.layout--one-column #main {
     }
   }
 
-  .visible-links &:hover {
-    background: rgba(255, 255, 255, 0.1);
+  // ホバーで開く形は、ホバーが使える環境だけに限るのだ～🌱
+  // タッチの端末では、長押しで疑似的に再現されるだけで、触っても何も起こらないように見えちゃうのだぁ…🌧️
+  @media (hover: hover) {
+    .visible-links &:hover {
+      background: rgba(255, 255, 255, 0.1);
 
-    .masthead__dropdown {
+      .masthead__dropdown {
+        display: block;
+      }
+    }
+  }
+
+  // 開閉の状態は開くボタンの aria-expanded が持つから、スタイルシートはそれを見て表示を切り替えるのだ～🌱
+  .visible-links & [aria-expanded="true"] {
+    & ~ .masthead__dropdown {
       display: block;
     }
+  }
+
+  .visible-links &:focus-within {
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 

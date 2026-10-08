@@ -16,6 +16,47 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <script>
+// mastheadのドロップダウンを、クリックとキーボードで開閉するのだ～🌱
+// 開閉の状態は aria-expanded が持って、スタイルシートがそれを見て表示を切り替えるのだ～🌱
+document.addEventListener("DOMContentLoaded", function() {
+  var toggles = Array.prototype.slice.call(document.querySelectorAll(".masthead__menu-item--dropdown [aria-controls]"));
+  if (!toggles.length) return;
+
+  function close(toggles) {
+    toggles.forEach(function(toggle) { toggle.setAttribute("aria-expanded", "false"); });
+  }
+
+  toggles.forEach(function(toggle) {
+    toggle.addEventListener("click", function() {
+      var expanded = toggle.getAttribute("aria-expanded") === "true";
+      // 同時に開くのは1個だけにするのだ～🌱
+      close(toggles);
+      toggle.setAttribute("aria-expanded", expanded ? "false" : "true");
+    });
+  });
+
+  document.addEventListener("keydown", function(event) {
+    if (event.key !== "Escape") return;
+    var opened = toggles.filter(function(toggle) { return toggle.getAttribute("aria-expanded") === "true"; });
+    if (!opened.length) return;
+    close(opened);
+    // 開いた項目の中からEscapeを押しても、行き先を見失わないように、開くボタンへ戻すのだ～🌱
+    opened[0].focus();
+  });
+
+  document.addEventListener("click", function(event) {
+    if (event.target.closest(".masthead__menu-item--dropdown")) return;
+    close(toggles);
+  });
+
+  document.addEventListener("focusin", function(event) {
+    if (event.target.closest(".masthead__menu-item--dropdown")) return;
+    close(toggles);
+  });
+});
+</script>
+
+<script>
 // scrollTocToContentによるスクロール妨害を無効化
 document.addEventListener("gumshoeActivate", function(e) {
   e.stopImmediatePropagation();
