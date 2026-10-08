@@ -4,9 +4,9 @@
 # news_title.rb — News Title Tag for Jekyll
 # =============================================================================
 #
-# ニュース記事のタイトルを表示するためのLiquidカスタムブロックタグ。
+# ニュース記事のタイトルを表示するためのLiquidカスタムブロックタグなのだ～🌱
 #
-# 目次の生成対象にしないために、見出し要素ではなくdivとして出力する。
+# 目次の生成対象にしないために、見出し要素ではなくdivとして出力するのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -25,7 +25,7 @@
 module News
 
   # {% news_title %}...{% endnews_title %} ブロックタグの実装。
-  # ブロック内容を、中央揃えのタイトルとして出力する。
+  # ブロック内容を、中央揃えのタイトルとして出力するのだ～🌱
   class NewsTitleTag < Liquid::Block
     def render(context)
       content = super.strip
@@ -36,5 +36,5 @@ module News
   end
 end
 
-# タグ "news_title" を Liquid に登録する
+# タグ "news_title" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("news_title", News::NewsTitleTag)

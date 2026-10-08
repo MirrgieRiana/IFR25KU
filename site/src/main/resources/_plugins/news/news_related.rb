@@ -6,10 +6,11 @@ require "cgi"
 # news_related.rb — News Related Articles Tag for Jekyll
 # =============================================================================
 #
-# 名指しした記事を、関連記事のカードとして並べるためのLiquidカスタムインラインタグ。
+# 名指しした記事を、関連記事のカードとして並べるためのLiquidカスタムインラインタグなのだ～🌱
 #
-# 記事の抽選によって関連記事を出す recommendations.html と違い、こちらは
-# 紹介する記事を書き手が選ぶ。カードの見た目は両者で共通である。
+# 記事の抽選で関連記事を出す recommendations.html と違って、こちらは
+# 紹介する記事を書き手が選ぶのだ～🌱
+# カードの見た目は、両者で共通なのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -36,7 +37,7 @@ require "cgi"
 module News
 
   # {% news_related ... %} インラインタグの実装。
-  # 名指しされた記事を site.posts から引いて、カードとして並べる。
+  # 名指しされた記事を site.posts から引いて、カードとして並べるのだ～🌱
   class NewsRelatedTag < Liquid::Tag
 
     # サムネイルを持たない記事のカードに敷く、OG 画像の生成が使うのと同じ背景なのだ～🌱
@@ -51,7 +52,7 @@ module News
       site = context.registers[:site]
       cards = @slugs.map do |slug|
         post = site.posts.docs.find { |doc| File.basename(doc.url, ".html") == slug }
-        # 名指しした記事が見つからないまま静かに空の枠を出すと、綴りの誤りに気付けない
+        # 名指しした記事が見つからないまま静かに空の枠を出すと、綴りの誤りに気付けないのだぁ…🌧️
         raise ArgumentError, "news_related: 記事が見つからないのだ～🌧️ スラッグ: #{slug}" if post.nil?
         render_card(site, post)
       end
@@ -67,7 +68,7 @@ module News
     # サムネイルを持たない記事には、OG 画像の生成が敷くのと同じ背景を出すのだ～🌱
     def render_card(site, post)
       teaser = post.data.dig("header", "teaser") || DEFAULT_TEASER
-      image_html = %(<img src="#{site.baseurl}#{teaser}" alt="">)
+      image_html = Images.render_img_with_baseurl(site.baseurl, teaser)
       <<~HTML
         <a href="#{site.baseurl}#{post.url}" class="recent-posts__card">
         <div class="recent-posts__teaser">#{image_html}</div>
@@ -78,5 +79,5 @@ module News
   end
 end
 
-# タグ "news_related" を Liquid に登録する
+# タグ "news_related" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("news_related", News::NewsRelatedTag)

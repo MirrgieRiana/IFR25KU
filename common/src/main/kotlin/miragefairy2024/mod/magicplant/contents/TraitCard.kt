@@ -25,8 +25,8 @@ class TraitCard(
     path: String,
     val enName: String,
     val jaName: String,
-    enPoem: String,
-    jaPoem: String,
+    enText: String,
+    jaText: String,
     private val traitConditionCards: List<TraitConditionCard>,
     private val traitEffectKeyEntries: List<TraitEffectKeyEntry>,
 ) {
@@ -309,8 +309,8 @@ class TraitCard(
     }
 
     val identifier = MirageFairy2024.identifier(path)
-    val poemTranslation = Translation({ identifier.toLanguageKey("${MirageFairy2024.MOD_ID}.trait", "poem") }, enPoem, jaPoem)
-    val trait: Trait = object : Trait(traitEffectKeyEntries.first().traitEffectKey.style, text { poemTranslation() }) {
+    val textTranslation = Translation({ identifier.toLanguageKey("${MirageFairy2024.MOD_ID}.trait", "text") }, enText, jaText)
+    val trait: Trait = object : Trait(traitEffectKeyEntries.first().traitEffectKey.style, text { textTranslation() }) {
         override val conditions = traitConditionCards.map { it.traitCondition }
         override val primaryEffect = this@TraitCard.traitEffectKeyEntries.first().traitEffectKey
         override val traitEffectKeyEntries = this@TraitCard.traitEffectKeyEntries
@@ -357,7 +357,7 @@ fun getTraitPower(level: Int): Int {
 context(ModContext)
 fun initTraitCard() {
     TraitCard.entries.forEach { card ->
-        card.poemTranslation.enJa()
+        card.textTranslation.enJa()
         Registration(traitRegistry, card.identifier) { card.trait }.register()
         card.trait.enJa(card.enName, card.jaName)
     }

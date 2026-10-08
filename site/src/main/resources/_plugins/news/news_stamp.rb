@@ -4,7 +4,7 @@
 # news_stamp.rb — News Production Stamp Tag for Jekyll
 # =============================================================================
 #
-# 記事の末尾に置かれる、制作日と制作者の行を表示するためのLiquidカスタムブロックタグ。
+# 記事の末尾に置かれる、制作日と制作者の行を表示するためのLiquidカスタムブロックタグなのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -21,7 +21,7 @@
 module News
 
   # {% news_stamp %}...{% endnews_stamp %} ブロックタグの実装。
-  # ブロック内容を、記事末尾の制作日スタンプとして出力する。
+  # ブロック内容を、記事末尾の制作日スタンプとして出力するのだ～🌱
   class NewsStampTag < Liquid::Block
     def render(context)
       content = super.strip
@@ -32,5 +32,5 @@ module News
   end
 end
 
-# タグ "news_stamp" を Liquid に登録する
+# タグ "news_stamp" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("news_stamp", News::NewsStampTag)

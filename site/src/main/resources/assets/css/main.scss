@@ -497,6 +497,14 @@ body.layout--one-column #main {
     font-size: 1.2em;
   }
 
+  // .greedy-nav .visible-links a は要素セレクターの分だけ詳細度が高いから、a 要素のときだけ display と margin がそちらに奪われるのだ～🌱
+  // 同じ詳細度にするために、ここでも要素セレクターを添えるのだ～🌱
+  a.masthead__menu-item-trigger {
+    display: flex;
+    align-items: center;
+    margin: 0;
+  }
+
   .masthead__dropdown {
     display: none;
     position: absolute;
