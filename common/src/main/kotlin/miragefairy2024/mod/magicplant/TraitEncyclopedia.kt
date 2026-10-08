@@ -146,7 +146,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
 
                 view += YSpaceView(5)
 
-                // 特性ポエム
+                // 特性の説明文
                 view += PagingView().configure {
                     position.weight = 1.0
                     view += MultiLineTextChildrenGenerator(recipeEntry.recipe.text) { Alignment.START }
