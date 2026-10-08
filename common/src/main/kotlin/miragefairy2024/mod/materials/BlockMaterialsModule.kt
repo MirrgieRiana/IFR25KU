@@ -901,7 +901,7 @@ open class BlockMaterialCard(
         }
         val MIRANERA: BlockMaterialCard = !object : BlockMaterialCard(
             "miranera", EnJa("Miranera", "ミラネラ"),
-            PoemList(1).poem(EnJa("Exaptation of metabolic photon waste.", "TODO")), // TODO 日本語版は、妖精が夜にこの草を見つけてオーラを吸って休む情景を、台詞の形で述べる文なのだ～🌱
+            PoemList(1).poem(EnJa("Exaptation of metabolic photon waste.", "ここー…あかるいのー…さわやかなのー……")),
             MapColor.COLOR_PURPLE, 0.0F, 0.0F,
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
