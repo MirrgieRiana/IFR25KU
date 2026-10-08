@@ -1,0 +1,27 @@
+# =============================================================================
+# build.athanor.xa1 — video/ のビルドの定義なのだ～🌱（xarpite / API5）
+# -----------------------------------------------------------------------------
+# athanorw が、呼ばれたプロジェクトの名前を projectOf へ渡すのだ～🌱
+# 返ってくるのは athanor のプロジェクトで、タスクはその直下から名前で呼べるのだ～🌱
+#
+# 呼び出しの例：
+#   xarpite -A 5 -q -e 'USE("/abs/video/build.athanor").projectOf("").tasks()'
+# =============================================================================
+
+API(5)
+
+# LOCATION はこのファイル自身のパスだから、その親を取れば、呼び出し元の居場所に関わらず video/ が得られるのだ～🌱
+INC += LOCATION RESOLVE ".." RESOLVE "athanor"
+
+@USE("athanor")
+
+{
+  # ルートプロジェクトは、タスクを 1 個も持たないのだ～🌱
+  # それでも、athanor がどのプロジェクトにも足す tasks は呼べるのだ～🌱
+  projectOf: name -> name != "" ? (
+    ERR("ERROR: project not found: $name")
+    EXIT(1)
+  ) : AthanorProject.new()::ALSO ( project =>
+    project::exportTasks()
+  )
+}

@@ -1,0 +1,53 @@
+#!/bin/bash
+# =============================================================================
+# athanorw — video/ のタスクを走らせる入口なのだ～🌱
+# -----------------------------------------------------------------------------
+# 使い方なのだ～🌱：
+#   ./athanorw tasks              … ルートプロジェクトのタスクの一覧を出すのだ～🌱
+#   ./athanorw foo:build          … foo というプロジェクトの build を走らせるのだ～🌱
+#   ./athanorw 'foo:build()' 0.3  … 2 個目からの引数は、そのまま xarpite の ARGS へ渡るのだ～🌱
+#
+# タスクの名前は `:` で区切るのだ～🌱 左辺がプロジェクト名で、右辺がタスク名なのだ～🌱
+# `:` が無いときは、ルートプロジェクトのタスクとして扱うのだ～🌱
+# 叩ける右辺は、そのプロジェクトが返すものの直下にあるものなのだ～🌱
+#
+# ビルドの定義は build.athanor.xa1 に書くのだ～🌱
+# athanor そのものの仕組みは athanor/ の下にあるのだ～🌱
+# =============================================================================
+set -eu
+
+# このスクリプトの置き場所なのだ～🌱
+# どのディレクトリから呼んでも、同じ build.athanor.xa1 と xarpite を指すのだ～🌱
+here=$(cd "$(dirname "$0")" && pwd)
+
+if [ $# -eq 0 ]; then
+  echo "ERROR: task name required (e.g. tasks)" >&2
+  exit 1
+fi
+
+target=$1
+shift
+
+# `:` の左辺がプロジェクト名で、右辺がタスク名なのだ～🌱
+# 区切りが無いときは、ルートプロジェクトのタスクなのだ～🌱
+case "$target" in
+  *:*)
+    project=${target%%:*}
+    task=${target#*:}
+    ;;
+  *)
+    project=""
+    task=$target
+    ;;
+esac
+
+# 括弧が無いときは、引数の無い呼び出しとして補うのだ～🌱
+case "$task" in
+  *'('*) call=$task ;;
+  *) call="$task()" ;;
+esac
+
+"$here/../xarpite/xarpite" -A 5 -q -f - "$@" <<EOF
+API(5)
+USE("$here/build.athanor").projectOf("$project").$call
+EOF
