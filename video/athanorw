@@ -53,5 +53,6 @@ esac
 
 "$here/../xarpite/xarpite" -A 5 -q -f - "$@" <<EOF
 API(5)
-USE("$here/main").projectOf("$subproject").$call
+INC += "$here/athanor"
+USE("$here/build.athanor").projectOf("$subproject").$call
 EOF

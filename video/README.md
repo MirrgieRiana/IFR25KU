@@ -72,7 +72,7 @@ build/frames/<proj>/ + full.wav + projects/common/resources/bgm/*.flac
 | `athanorw` | ビルドする入口なのだ～🌱 `<サブプロジェクト名>:<タスク名>` を受け取って、そのタスクを呼ぶのだ～🌱 **ふつうはここで `./athanorw 2026-04-12-sarracenia:build` を実行するだけ**なのだ～🌱 |
 | `main.xa1` | `video/` の入口なのだ～🌱 サブプロジェクト名を受け取って、`src/projects/xa1/` のそのモジュールを読むのだ～🌱 |
 | `src/projects/xa1/2026-04-12-sarracenia.xa1` | 1 個の動画の、台本とビルドの定義なのだ～🌱 `video-plugin` へ自分の名前と台本とシーンを組む関数を渡して、組んだプロジェクトを返すのだ～🌱 この劇場に固有の、立ち絵のキャラとテクスチャとポーズの配列と、シーンとアイテムの不透明度の決め方も、ここが `theater/theater-v1.xa1` へ渡すのだ～🌱 |
-| `src/main/xa1/athanor.xa1` | タスクを並べてビルドを組むための仕組みなのだ～🌱 タスクを走らせると、`dependsOn` を先にたどってから、自分の動作を呼ぶのだ～🌱 |
+| `athanor/athanor.xa1` | タスクを並べてビルドを組むための仕組みなのだ～🌱 タスクを走らせると、`dependsOn` を先にたどってから、自分の動作を呼ぶのだ～🌱 |
 | `src/main/xa1/video-plugin.xa1` | サブプロジェクトに要るタスクを、依存の順に並べて渡すのだ～🌱 段と段の順序を、1 か所で持つのだ～🌱 |
 | `src/main/xa1/script.xa1` | 動画プロジェクトの台本を `script.json` へ焼くのだ～🌱 |
 | `src/main/xa1/audio.xa1` | VOICEVOX で台詞ごとの音声を合成して、口パク用のモーラ区間も書き出すのだ～🌱 |
