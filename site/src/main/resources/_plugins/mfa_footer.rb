@@ -4,7 +4,7 @@
 # mfa_footer.rb — MFA Footer Tag for Jekyll
 # =============================================================================
 #
-# 旧公式サイトから移植した記事の末尾に置く、注意書きを表示するためのLiquidカスタムインラインタグ。
+# 旧公式サイトから移植した記事の末尾に置く、注意書きを表示するためのLiquidカスタムインラインタグなのだ～🌱
 #
 # 注意書きの内容は、並行宇宙ルールに基づく記事に共通するから、紙面の体裁ごとに分けず、1個のタグで受け持つのだ～🌱
 #
@@ -26,7 +26,7 @@ module MfaFooter
   PARALLEL_UNIVERSE_RULE_URL = "/g2-mfa-parallel-universe-rule.html"
 
   # {% mfa_footer %} インラインタグの実装。
-  # 記事の末尾に置く、MFAの記事に共通する注意書きを出力する。
+  # 記事の末尾に置く、MFAの記事に共通する注意書きを出力するのだ～🌱
   class MfaFooterTag < Liquid::Tag
     def render(context)
       site = context.registers[:site]
@@ -39,5 +39,5 @@ module MfaFooter
   end
 end
 
-# タグ "mfa_footer" を Liquid に登録する
+# タグ "mfa_footer" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("mfa_footer", MfaFooter::MfaFooterTag)

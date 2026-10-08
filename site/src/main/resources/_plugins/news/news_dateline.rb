@@ -4,7 +4,7 @@
 # news_dateline.rb — News Dateline Tag for Jekyll
 # =============================================================================
 #
-# ニュース記事の、日付と分野の行を表示するためのLiquidカスタムインラインタグ。
+# ニュース記事の、日付と分野の行を表示するためのLiquidカスタムインラインタグなのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -29,7 +29,7 @@
 module News
 
   # {% news_dateline ... %} インラインタグの実装。
-  # 記事の日付と分野を、本文に先立つ行として出力する。
+  # 記事の日付と分野を、本文に先立つ行として出力するのだ～🌱
   class NewsDatelineTag < Liquid::Tag
     def initialize(tag_name, markup, options)
       super
@@ -47,5 +47,5 @@ module News
   end
 end
 
-# タグ "news_dateline" を Liquid に登録する
+# タグ "news_dateline" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("news_dateline", News::NewsDatelineTag)

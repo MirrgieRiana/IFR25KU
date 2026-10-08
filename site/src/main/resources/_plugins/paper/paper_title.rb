@@ -4,9 +4,9 @@
 # paper_title.rb — Paper Title Tag for Jekyll
 # =============================================================================
 #
-# 論文のタイトルを表示するためのLiquidカスタムブロックタグ。
+# 論文のタイトルを表示するためのLiquidカスタムブロックタグなのだ～🌱
 #
-# 目次の生成対象にしないために、見出し要素ではなくdivとして出力する。
+# 目次の生成対象にしないために、見出し要素ではなくdivとして出力するのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -25,7 +25,7 @@
 module Paper
 
   # {% paper_title %}...{% endpaper_title %} ブロックタグの実装。
-  # ブロック内容を、中央揃えのタイトルとして出力する。
+  # ブロック内容を、中央揃えのタイトルとして出力するのだ～🌱
   class PaperTitleTag < Liquid::Block
     def render(context)
       content = super.strip
@@ -36,5 +36,5 @@ module Paper
   end
 end
 
-# タグ "paper_title" を Liquid に登録する
+# タグ "paper_title" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("paper_title", Paper::PaperTitleTag)

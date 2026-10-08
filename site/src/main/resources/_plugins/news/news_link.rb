@@ -4,7 +4,7 @@
 # news_link.rb — News Page Link Tag for Jekyll
 # =============================================================================
 #
-# 他の記事へ誘導するページリンクを表示するためのLiquidカスタムインラインタグ。
+# 他の記事へ誘導するページリンクを表示するためのLiquidカスタムインラインタグなのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -28,7 +28,7 @@
 module News
 
   # {% news_link ... %} インラインタグの実装。
-  # 他の記事へのリンクを、独立した1行として出力する。
+  # 他の記事へのリンクを、独立した1行として出力するのだ～🌱
   class NewsLinkTag < Liquid::Tag
     def initialize(tag_name, markup, options)
       super
@@ -45,5 +45,5 @@ module News
   end
 end
 
-# タグ "news_link" を Liquid に登録する
+# タグ "news_link" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("news_link", News::NewsLinkTag)
