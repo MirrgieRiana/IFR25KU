@@ -18,7 +18,7 @@
 
 module Space
 
-  # {% space %} インラインタグの実装。
+  # {% space %} インラインタグの実装なのだ～🌱
   # パラメータは無くて、呼び出すだけで場面転換の区切りHTMLを挿入するのだ～🌱
   class SpaceTag < Liquid::Tag
     def render(context)
