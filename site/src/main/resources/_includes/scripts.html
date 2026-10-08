@@ -23,19 +23,23 @@ document.addEventListener("DOMContentLoaded", function() {
   var triggers = Array.prototype.slice.call(document.querySelectorAll(".masthead__menu-item--dropdown .masthead__menu-item-trigger[aria-controls]"));
   if (!triggers.length) return;
 
+  // ホバーが使える環境では、ポインタの出入りもaria-expandedへ反映して、開閉の状態をそれ1本にまとめるのだ～🌱
+  // CSSの:hoverによる表示と二本立てにすると、クリックで閉じてもポインタが乗っている限り開いたままになるのだぁ…🌧️
+  var canHover = matchMedia("(hover: hover)").matches;
+
   function closeAll() {
     triggers.forEach(function(trigger) {
       trigger.setAttribute("aria-expanded", "false");
     });
   }
 
-  // ホバーで開いた分も数えたいから、aria-expandedではなく、実際に表示されているかを見るのだ～🌱
   function isOpen(trigger) {
-    var dropdown = document.getElementById(trigger.getAttribute("aria-controls"));
-    return dropdown !== null && getComputedStyle(dropdown).display !== "none";
+    return trigger.getAttribute("aria-expanded") === "true";
   }
 
   triggers.forEach(function(trigger) {
+    var item = trigger.closest(".masthead__menu-item--dropdown");
+
     trigger.addEventListener("click", function(event) {
       if (isOpen(trigger)) {
         // 既に開いているなら、リンクはそのまま遷移して、ボタンは閉じるのだ～🌱
@@ -47,6 +51,20 @@ document.addEventListener("DOMContentLoaded", function() {
       closeAll();
       trigger.setAttribute("aria-expanded", "true");
     });
+
+    if (canHover) {
+      // CSSの:hoverによる表示はJSが動かないときのフォールバックだから、JSが動く間はクラスを付けて止めるのだ～🌱
+      item.classList.add("masthead__menu-item--js-hover");
+
+      item.addEventListener("mouseenter", function() {
+        closeAll();
+        trigger.setAttribute("aria-expanded", "true");
+      });
+
+      item.addEventListener("mouseleave", function() {
+        trigger.setAttribute("aria-expanded", "false");
+      });
+    }
   });
 
   document.addEventListener("keydown", function(event) {
