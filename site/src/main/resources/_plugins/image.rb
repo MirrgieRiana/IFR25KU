@@ -107,7 +107,7 @@ module Images
   # 属性の値を、HTML としてエスケープするのだ～🌱
   #
   # 既に実体参照になっている部分は、二度目のエスケープをしないのだ～🌱
-  # markdownify を通した文字列には実体参照が残るから、そのまま CGI.escapeHTML へ渡すと &amp;amp; へ化けるのだ～🌧️
+  # markdownify を通した文字列には実体参照が残るから、そのまま CGI.escapeHTML へ渡すと &amp;amp; へ化けるのだぁ…🌧️
   # これは Liquid の escape_once フィルターと同じ振る舞いなのだ～🌱
   def self.escape_attribute(value)
     CGI.escapeHTML(value.to_s).gsub(/&amp;([a-zA-Z]+|#\d+);/, '&\1;')
