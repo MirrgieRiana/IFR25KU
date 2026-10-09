@@ -4,9 +4,9 @@
 # paper_subtitle.rb — Paper Subtitle Tag for Jekyll
 # =============================================================================
 #
-# 論文のサブタイトルを表示するためのLiquidカスタムブロックタグ。
+# 論文のサブタイトルを表示するためのLiquidカスタムブロックタグなのだ～🌱
 #
-# 目次の生成対象にしないために、見出し要素ではなくdivとして出力する。
+# 目次の生成対象にしないために、見出し要素ではなくdivとして出力するのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -25,7 +25,7 @@
 module Paper
 
   # {% paper_subtitle %}...{% endpaper_subtitle %} ブロックタグの実装。
-  # ブロック内容を、タイトルの下に置く中央揃えのサブタイトルとして出力する。
+  # ブロック内容を、タイトルの下に置く中央揃えのサブタイトルとして出力するのだ～🌱
   class PaperSubtitleTag < Liquid::Block
     def render(context)
       content = super.strip
@@ -36,5 +36,5 @@ module Paper
   end
 end
 
-# タグ "paper_subtitle" を Liquid に登録する
+# タグ "paper_subtitle" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("paper_subtitle", Paper::PaperSubtitleTag)

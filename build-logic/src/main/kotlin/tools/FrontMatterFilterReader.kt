@@ -49,13 +49,20 @@ private fun resolveFrontMatterImagePaths(value: Any?, imageDir: String): Any? = 
 fun rewriteFrontMatter(content: String, sourcePath: String, imageDir: String): String {
     val match = frontMatterRegex.find(content) ?: return content
 
+    // --- が 2 行並んだだけの front matter は、YAML として妥当で、snakeyaml は null を返すのだ～🌱
+    // そのまま返すと source_path が落ちて、footer の source のリンクが壊れるのだ～🌱
     @Suppress("UNCHECKED_CAST")
-    val frontMatter = Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any> ?: return content
+    val frontMatter = when (val loaded = Yaml().load<Any?>(match.groupValues[1])) {
+        null -> emptyMap()
+        is Map<*, *> -> loaded as Map<String, Any>
+        else -> return content
+    }
 
     @Suppress("UNCHECKED_CAST")
     val resolved = resolveFrontMatterImagePaths(frontMatter, imageDir) as Map<String, Any?>
     // 配置先が平らになって元のディレクトリ名が失われるから、footer の source のリンクのために、元のパスを front matter へ書き足すのだ～🌱
-    val rewritten = resolved + ("source_path" to sourcePath)
+    // 本文の画像のパスは Liquid のプラグインが解決するから、その基準になる配置先も書き足すのだ～🌱
+    val rewritten = resolved + ("source_path" to sourcePath) + ("image_dir" to imageDir)
     return "---\n${Yaml(frontMatterDumperOptions).dump(rewritten)}---\n${content.substring(match.range.last + 1)}"
 }
 
@@ -71,7 +78,9 @@ class FrontMatterFilterReader(input: Reader) : FilterReader(input) {
     private fun rewriteOnce() {
         if (rewritten) return
         rewritten = true
-        `in` = StringReader(rewriteFrontMatter(`in`.readText(), sourcePath, imageDir))
+        // in を差し替えると、ここで元の Reader への参照が失われて、FilterReader の close が届かなくなるのだ～🌱
+        val content = `in`.use { it.readText() }
+        `in` = StringReader(rewriteFrontMatter(content, sourcePath, imageDir))
     }
 
     override fun read(): Int {

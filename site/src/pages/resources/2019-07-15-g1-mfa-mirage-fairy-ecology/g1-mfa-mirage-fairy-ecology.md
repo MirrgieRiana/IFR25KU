@@ -2,7 +2,7 @@
 title: "G1-MFA　ミラージュ妖精の生態"
 layout: encyclopedia
 header:
-  teaser: /2019/07/15/mirage-fairy.webp
+  teaser: ./mirage-fairy.webp
 tags:
   - MFA
   - ミラージュ
@@ -26,7 +26,7 @@ tags:
 </div>
 <div style="flex: 1 1 calc((1280px - 100vw) * 999);" markdown="1">
 
-![赤紫色の彩釉テラコッタのミラージュ妖精](mirage-fairy.webp)
+{% image "./mirage-fairy.webp" alt="赤紫色の彩釉テラコッタのミラージュ妖精" %}
 
 赤紫色の彩釉テラコッタのミラージュ妖精
 

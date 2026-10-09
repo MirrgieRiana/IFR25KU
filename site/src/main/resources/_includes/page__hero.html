@@ -40,7 +40,7 @@
       {% include page__hero_actions.html locale=locale %}
     </div>
   {% else %}
-    <img src="{{ page.header.image | relative_url }}" alt="{{ image_description }}" class="page__hero-image">
+    {% image page.header.image alt="{{ image_description }}" class="page__hero-image" %}
   {% endif %}
   {% if page.header.caption %}
     <span class="page__hero-caption">{{ page.header.caption | markdownify | remove: "<p>" | remove: "</p>" }}</span>

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# 非対話シェルでは .bashrc が読まれないため、rbenv があれば手動で初期化する
+# 非対話シェルでは .bashrc が読まれないから、rbenv があれば手動で初期化するのだ～🌱
 if [ -d "$HOME/.rbenv" ]; then
     eval "$("$HOME/.rbenv/bin/rbenv" init - bash)"
 fi

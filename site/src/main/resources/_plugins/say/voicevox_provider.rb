@@ -4,9 +4,9 @@
 # say/voicevox_provider.rb — VOICEVOX キャラクター Provider
 # =============================================================================
 #
-# VOICEVOX キャラクターの立ち絵レイヤー PNG を重ね合わせて顔画像を生成する。
-# extracted/ 内の presets.json と layers.json を読み込み、パーツ単位で
-# レイヤーの選択・合成を行う。
+# VOICEVOX キャラクターの立ち絵レイヤー PNG を重ね合わせて、顔画像を生成するのだ～🌱
+# extracted/ 内の presets.json と layers.json を読み込んで、パーツ単位で
+# レイヤーを選んで合成するのだ～🌱
 #
 # ## 使用例
 #
@@ -16,11 +16,11 @@
 #
 # ## パラメータ
 #
-#   パーツ名（"眉"、"目"、"口" 等）をキー、選択肢のラベルを値として指定する。
-#   radio パーツ: 未指定時は "default": true の要素が使用される。
-#   checkbox パーツ: 未指定時は何も選択されない。カンマ区切りで複数指定可能。
-#   "color": 枠線色の上書き（16進数カラーコード）。
-#            未指定時は _data/voicevox.yml で定義されたデフォルト色を使用する。
+#   パーツ名（"眉"、"目"、"口" 等）をキーにして、選択肢のラベルを値として指定するのだ～🌱
+#   radio パーツは、指定しないと "default": true の要素が使われるのだ～🌱
+#   checkbox パーツは、指定しないと何も選ばれなくて、カンマ区切りで複数指定できるのだ～🌱
+#   "color" は、枠線色の上書きなのだ～🌱（16進数カラーコード）
+#            指定しないと、_data/voicevox.yml で定義された既定の色を使うのだ～🌱
 #
 # =============================================================================
 
@@ -29,8 +29,8 @@ require "yaml"
 
 module Say
   class VoicevoxProvider
-    # extracted/ ディレクトリのパスとスラグを受け取り、
-    # presets.json と layers.json を読み込んで初期化する。
+    # extracted/ ディレクトリのパスとスラグを受け取って、
+    # presets.json と layers.json を読み込んで初期化するのだ～🌱
     def initialize(slug, data_dir, color)
       @slug = slug
       @color = color
@@ -40,24 +40,24 @@ module Say
       @preset = presets_data.first
     end
 
-    # プリセット名からパラメータハッシュへのマッピングを返す。
-    # VOICEVOX Provider ではプリセットを使用しないため、空のハッシュを返す。
+    # プリセット名からパラメータハッシュへのマッピングを返すのだ～🌱
+    # VOICEVOX Provider ではプリセットを使わないから、空のハッシュを返すのだ～🌱
     def presets
       {}
     end
 
-    # 吹き出し枠線に使うキャラクター色を返す。
+    # 吹き出し枠線に使うキャラクター色を返すのだ～🌱
     def color(params)
       params["color"] || @color
     end
 
-    # 吹き出しのトゲを表示するか否かを返す。
+    # 吹き出しのトゲを表示するか否かを返すのだ～🌱
     def tail?
       true
     end
 
-    # 解決済みパラメータから、顔部分の HTML を生成して返す。
-    # 各パーツのレイヤー PNG を absolute 配置で重ね合わせる。
+    # 解決済みパラメータから、顔部分の HTML を生成して返すのだ～🌱
+    # 各パーツのレイヤー PNG を、absolute 配置で重ね合わせるのだ～🌱
     def resolve(params, context = nil)
       baseurl = context ? (context.registers[:site].config["baseurl"] || "") : ""
       face_base = "#{baseurl}/assets/images/voicevox/extracted/#{@slug}/face"
@@ -65,14 +65,14 @@ module Say
       layer_ids = collect_layer_ids(params)
       border_color = params["color"] || @color
 
-      imgs = layer_ids.map { |id| %(<img src="#{face_base}/#{id}.png" alt="" />) }
+      imgs = layer_ids.map { |id| Images.render_img_with_baseurl("", "#{face_base}/#{id}.png") }
       border_svg = %(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="none" stroke="#{border_color}" stroke-width="6"/></svg>)
       %(<div class="say-voicevox">#{imgs.join}#{border_svg}</div>)
     end
 
     private
 
-    # パラメータに基づいて有効なレイヤー ID のリストを収集する。
+    # パラメータに基づいて、有効なレイヤー ID のリストを集めるのだ～🌱
     def collect_layer_ids(params)
       ids = []
 
@@ -90,7 +90,7 @@ module Say
       ids
     end
 
-    # 1 つのパーツについて、有効なレイヤー ID を収集する。
+    # 1 つのパーツについて、有効なレイヤー ID を集めるのだ～🌱
     def collect_part_layer_ids(part, selection)
       ids = []
 
@@ -109,20 +109,20 @@ module Say
       ids
     end
 
-    # elements 配列からラベルが一致する要素を探す。
+    # elements 配列から、ラベルが一致する要素を探すのだ～🌱
     def find_element(part, label)
       return nil unless label
       part["elements"].find { |e| e.is_a?(Hash) && e["label"] == label }
     end
 
-    # elements 配列から "default": true の要素を探す。
-    # 見つからない場合は先頭のハッシュ要素を返す。
+    # elements 配列から "default": true の要素を探すのだ～🌱
+    # 見つからないときは、先頭のハッシュ要素を返すのだ～🌱
     def default_element(part)
       part["elements"].find { |e| e.is_a?(Hash) && e["default"] } ||
         part["elements"].find { |e| e.is_a?(Hash) }
     end
 
-    # element の layers パスを解決して ID リストに追加する。
+    # element の layers パスを解決して、ID リストへ足すのだ～🌱
     def resolve_element_layers(element, ids)
       element["layers"].each do |path|
         id = resolve_layer_path(path)
@@ -130,8 +130,9 @@ module Say
       end
     end
 
-    # レイヤーパス（例: "!口/*ほあー"）を layers.json のツリーから辿り、
-    # 対応するリーフの ID を返す。見つからない場合は nil。
+    # レイヤーパス（例: "!口/*ほあー"）を layers.json のツリーから辿って、
+    # 対応するリーフの ID を返すのだ～🌱
+    # 見つからないときは nil なのだ～🌱
     def resolve_layer_path(path)
       segments = path.split("/")
       current_children = @layers_tree
@@ -149,7 +150,7 @@ module Say
   end
 end
 
-# _data/voicevox.yml に定義されたキャラクターを登録する
+# _data/voicevox.yml に定義されたキャラクターを登録するのだ～🌱
 # _plugins/say/ の 2 階層上が Jekyll ソースルート
 source_root = File.expand_path("../..", __dir__)
 voicevox_yml = File.join(source_root, "_data/voicevox.yml")

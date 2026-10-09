@@ -58,13 +58,13 @@ const normalizeJson = v => Array.isArray(v) ? `[${v.map(normalizeJson).join(',')
   await page.setViewport({ width: W, height: H, deviceScaleFactor: 1 });
 
   // テンプレートの読み込み直しと、applyFrame が書き換える DOM が少なくなるように、テンプレート、正規化した JSON の順に並べ替えてから撮るのだ～🌱
-  const jobs = frames.map((frame, i) => ({
-    i,
-    templateUrl: pathToFileURL(path.resolve(path.dirname(framesPath), frame.template)).href,
-    key: normalizeJson(frame),
-  }));
+  const jobs = frames.map((frame, i) => {
+    // URL では空白が %20 になるから、解決したパスの辞書順で並べるには、パスそのもので比べる必要があるのだ～🌱
+    const templatePath = path.resolve(path.dirname(framesPath), frame.template);
+    return { i, templatePath, templateUrl: pathToFileURL(templatePath).href, key: normalizeJson(frame) };
+  });
   const compare = (a, b) => a < b ? -1 : a > b ? 1 : 0;
-  jobs.sort((a, b) => compare(a.templateUrl, b.templateUrl) || compare(a.key, b.key));
+  jobs.sort((a, b) => compare(a.templatePath, b.templatePath) || compare(a.key, b.key));
 
   let loadedTemplateUrl = null, prevKey = null, prevFile = null, shots = 0;
   for (let n = 0; n < jobs.length; n++) {
@@ -79,8 +79,8 @@ const normalizeJson = v => Array.isArray(v) ? `[${v.map(normalizeJson).join(',')
         await page.waitForFunction('window.__ready===true', { timeout: 20000 });
         loadedTemplateUrl = templateUrl;
       }
-      await page.evaluate(async (cfg) => {
-        await window.applyFrame(cfg);
+      await page.evaluate(async (frame) => {
+        await window.applyFrame(frame);
         // 書き換えた DOM が描画されてから、スクリーンショットを撮るのだ～🌱
         await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
       }, frames[i]);

@@ -4,9 +4,9 @@
 # news_section.rb — News Section Heading Tag for Jekyll
 # =============================================================================
 #
-# ニュース記事のセクション見出しを表示するためのLiquidカスタムブロックタグ。
+# ニュース記事のセクション見出しを表示するためのLiquidカスタムブロックタグなのだ～🌱
 #
-# 目次の生成対象にしないために、見出し要素ではなくdivとして出力する。
+# 目次の生成対象にしないために、見出し要素ではなくdivとして出力するのだ～🌱
 # no_search を添えると、その見出しを検索の索引から外すのだ～🌱
 #
 # ## 基本的な使い方
@@ -35,7 +35,7 @@
 module News
 
   # {% news_section %}...{% endnews_section %} ブロックタグの実装。
-  # ブロック内容を、本文中のセクション見出しとして出力する。
+  # ブロック内容を、本文中のセクション見出しとして出力するのだ～🌱
   class NewsSectionTag < Liquid::Block
     def initialize(tag_name, markup, options)
       super
@@ -52,5 +52,5 @@ module News
   end
 end
 
-# タグ "news_section" を Liquid に登録する
+# タグ "news_section" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("news_section", News::NewsSectionTag)

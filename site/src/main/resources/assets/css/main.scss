@@ -47,7 +47,7 @@ $navicon-link-color-hover: #a83dba;
     float: none;
     flex-shrink: 0;
 
-    // テーマは幅から1emを引くことで中央ペインとの間隔を作っているが、flexでは要素同士が隣接するため間隔にならない
+    // テーマは幅から1emを引くことで中央ペインとの間隔を作っているけど、flexでは要素同士が隣接するから、間隔にならないのだぁ…🌧️
     width: $right-sidebar-width-narrow;
     padding-inline-end: 1em;
   }
@@ -143,7 +143,7 @@ $navicon-link-color-hover: #a83dba;
   float: none;
 }
 
-// minimal-mistakesのデフォルトフォントサイズ(16/18/20/22px)を上書きするため、全ブレークポイントの指定が必要
+// minimal-mistakesのデフォルトフォントサイズ(16/18/20/22px)を上書きするために、全ブレークポイントの指定が要るのだ～🌱
 html {
   font-size: 14px;
   @include breakpoint($medium) { font-size: 14px; }
@@ -151,12 +151,12 @@ html {
   @include breakpoint($x-large) { font-size: 16px; }
 }
 
-// テーマの .page__content a:not(.btn):hover の text-decoration をカードに適用させない
+// テーマの .page__content a:not(.btn):hover の text-decoration を、カードには適用させないのだ～🌱
 .page__content a.recent-posts__card:hover {
   text-decoration: none;
 }
 
-// テーマの .greedy-nav a の広すぎるセレクタを狭める
+// テーマの .greedy-nav a のセレクタが広すぎるから、狭めるのだ～🌱
 .greedy-nav a {
   display: revert;
   margin: revert;
@@ -473,7 +473,8 @@ body.layout--one-column #main {
   opacity: 0.5;
 }
 
-// ドロップダウンのためにメニュー項目の高さを拡張（overflowの解除はJS側で行う）
+// ドロップダウンのために、メニュー項目の高さを拡張するのだ～🌱
+// overflowの解除は、JS側でやるのだ～🌱
 .greedy-nav .visible-links {
   align-self: stretch;
   align-items: stretch;
@@ -495,6 +496,14 @@ body.layout--one-column #main {
     align-items: center;
     padding: 0 1rem;
     font-size: 1.2em;
+  }
+
+  // .greedy-nav .visible-links a は要素セレクターの分だけ詳細度が高いから、a 要素のときだけ display と margin がそちらに奪われるのだ～🌱
+  // 同じ詳細度にするために、ここでも要素セレクターを添えるのだ～🌱
+  a.masthead__menu-item-trigger {
+    display: flex;
+    align-items: center;
+    margin: 0;
   }
 
   .masthead__dropdown {
@@ -738,7 +747,7 @@ body {
   margin-bottom: 1.5em;
 }
 
-// pngは原則ピクセル化（VOICEVOX立ち絵は.say-voicevox imgで例外指定）
+// pngは原則としてピクセル化するのだ～🌱 VOICEVOXの立ち絵は、.say-voicevox img で例外として指定するのだ～🌱
 img[src$=".png" i] {
   image-rendering: pixelated;
 }
@@ -952,13 +961,13 @@ img[src$=".png" i] {
   background: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
-  // サイト全体の本文と見出しの書体と文字色を継承しないように、紙面の内側に改めて指定する
+  // サイト全体の本文と見出しの書体と文字色を継承しないように、紙面の内側で改めて指定するのだ～🌱
   &, h2, h3, p, li, td, th {
     font-family: serif;
     color: #000000;
   }
 
-  // テーマは箇条書きを字下げしてマーカーを行の外に置く
+  // テーマは箇条書きを字下げして、マーカーを行の外に置くのだ～🌱
   ul, ol {
     padding-inline-start: 0;
     list-style-position: inside;
@@ -1024,16 +1033,16 @@ img[src$=".png" i] {
 .paper__column {
   flex: 1;
 
-  // flexの項目は既定で中身の最小幅より狭くならないため、これが無いと幅の広い図表を持つ段だけが広がる
+  // flexの項目は既定で中身の最小幅より狭くならないから、これが無いと幅の広い図表を持つ段だけが広がっちゃうのだぁ…🌧️
   min-width: 0;
 
-  // 1段に収まらない幅のものが段をはみ出さないようにする
+  // 1段に収まらない幅のものが、段をはみ出さないようにするのだ～🌱
   img,
   table {
     max-width: 100%;
   }
 
-  // 段の先頭に来た要素の上の余白が、段の高さをずらすのを防ぐ
+  // 段の先頭に来た要素の上の余白が、段の高さをずらすのを防ぐのだ～🌱
   > :first-child {
     margin-top: 0;
   }
@@ -1041,13 +1050,13 @@ img[src$=".png" i] {
 
 // 論文中のキャプション付きの画像（paper_figureタグ）
 .paper__figure {
-  // テーマはfigureをflexにするため、ブロックに戻さないと中身が内容の幅に縮んで左に寄る
+  // テーマはfigureをflexにするから、ブロックに戻さないと、中身が内容の幅に縮んで左に寄っちゃうのだぁ…🌧️
   display: block;
   margin: 1.5em 0;
   text-align: center;
 
   img {
-    // テーマはfigureの中の画像の角を丸める
+    // テーマはfigureの中の画像の角を丸めるのだ～🌱
     max-width: 100%;
     border-radius: 0;
     width: 100%;
@@ -1076,7 +1085,7 @@ img[src$=".png" i] {
   margin: 0.5em 0;
   font-size: 0.9em;
   text-align: center;
-  // テーマはfigcaptionを薄い紫にする
+  // テーマはfigcaptionを薄い紫にするのだ～🌱
   color: #000000;
 }
 
@@ -1112,7 +1121,7 @@ img[src$=".png" i] {
 
 // ニュース記事の日付（news_datelineタグ）
 .news__dateline-date {
-  // 元のNotionが灰色の文字色を当てている
+  // 元のNotionが灰色の文字色を当てているのだ～🌱
   color: #73726e;
 }
 
@@ -1144,16 +1153,16 @@ img[src$=".png" i] {
 .news__column {
   flex: 1;
 
-  // flexの項目は既定で中身の最小幅より狭くならないため、これが無いと幅の広い図表を持つ段だけが広がる
+  // flexの項目は既定で中身の最小幅より狭くならないから、これが無いと幅の広い図表を持つ段だけが広がっちゃうのだぁ…🌧️
   min-width: 0;
 
-  // 1段に収まらない幅のものが段をはみ出さないようにする
+  // 1段に収まらない幅のものが、段をはみ出さないようにするのだ～🌱
   img,
   table {
     max-width: 100%;
   }
 
-  // 段の先頭に来た要素の上の余白が、段の高さをずらすのを防ぐ
+  // 段の先頭に来た要素の上の余白が、段の高さをずらすのを防ぐのだ～🌱
   > :first-child {
     margin-top: 0;
   }
@@ -1161,13 +1170,13 @@ img[src$=".png" i] {
 
 // ニュース記事中のキャプション付きの画像（news_figureタグ）
 .news__figure {
-  // テーマはfigureをflexにするため、ブロックに戻さないと中身が内容の幅に縮んで左に寄る
+  // テーマはfigureをflexにするから、ブロックに戻さないと、中身が内容の幅に縮んで左に寄っちゃうのだぁ…🌧️
   display: block;
   margin: 1.5em 0;
   text-align: center;
 
   img {
-    // テーマはfigureの中の画像の角を丸める
+    // テーマはfigureの中の画像の角を丸めるのだ～🌱
     max-width: 100%;
     border-radius: 0;
     width: 100%;
@@ -1185,7 +1194,7 @@ img[src$=".png" i] {
   margin: 0.5em 0;
   font-size: 0.9em;
   text-align: center;
-  // テーマはfigcaptionを薄い紫にする
+  // テーマはfigcaptionを薄い紫にするのだ～🌱
   color: #000000;
 }
 
@@ -1209,7 +1218,7 @@ img[src$=".png" i] {
   background: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
-  // サイト全体の本文の書体と文字色を継承しないように、カードの内側に改めて指定する
+  // サイト全体の本文の書体と文字色を継承しないように、カードの内側で改めて指定するのだ～🌱
   &, p {
     font-family: serif;
     color: #000000;
@@ -1218,16 +1227,19 @@ img[src$=".png" i] {
 
 // JEI-MFAのカードの冒頭に出す、元のJEI MFAのレシピの入力アイテムの名前（jei_mfaタグの引数）
 .jei-mfa__ingredients {
-  // 本文との間は、名前どうしの間より広く開ける
-  margin: 0 0 2em;
+  // 本文との間は、名前どうしの間より広く開けて、その真ん中へ境目の線を引くのだ～🌱
+  padding-bottom: 1em;
+  border-bottom: 1px solid #cccccc;
+  margin: 0 0 1em;
 }
 
-.jei-mfa__ingredient {
+// テーマは .page__content p で段落の下に余白を置くから、同じ詳細度にしないと、ここの指定が効かないのだ～🌱
+p.jei-mfa__ingredient {
   margin: 0;
 }
 
-// レシピの主材料と副材料の境目は、副材料どうしの間より広く開ける
-.jei-mfa__ingredient--main {
+// レシピの主材料と副材料の境目は、副材料どうしの間より広く開けるのだ～🌱
+p.jei-mfa__ingredient--main {
   margin-bottom: 0.8em;
 }
 

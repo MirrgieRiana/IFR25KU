@@ -3,11 +3,11 @@ title: "【ゴールドプロミナリアの実】ぜんぜん金、出ないん
 description: 春日部つむぎがゴールドプロミナリアの実から金を取り出そうとする話
 layout: theater
 header:
-  teaser: /2026/09/22/gold-prominaria-berry.teaser.webp
+  teaser: ./gold-prominaria-berry.teaser.webp
 tags: [ IFR劇場, ゴールドプロミナリアの実, ゴールドプロミナリア, プロミナリアの実, プロミナリア, ネザー ]
 ---
 
-![一面に溶岩が広がり、赤褐色のネザーラックの壁に金鉱石が露出しているネザーの様子](gold-prominaria-berry.teaser.webp)
+{% image "./gold-prominaria-berry.teaser.webp" alt="一面に溶岩が広がり、赤褐色のネザーラックの壁に金鉱石が露出しているネザーの様子" %}
 {% say tsumugi3:まゆ=困り眉 %}――あっつい！！！！！{% endsay %}
 
 {% space %}
@@ -17,9 +17,9 @@ tags: [ IFR劇場, ゴールドプロミナリアの実, ゴールドプロミ�
 {% say zundamon23 %}つむぎー、こんなところで何してるのだ？{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}センパーイ……ちょっと溶岩で手怪我しちゃって……{% endsay %}
 {% say zundamon23 %}これ、食べるといいのだ。気休め程度に火に強くなるのだ。{% endsay %}
-![細長く先の尖った赤い果実であるプロミナリアの実](prominaria-berry.png)
+{% image "./prominaria-berry.png" alt="細長く先の尖った赤い果実であるプロミナリアの実" %}
 {% say tsumugi3:口=わあーい %}へー。（ぱくっ{% endsay %}
-![残り時間が3秒と表示された火炎耐性のステータス効果の表示](fire-resistance.png)
+{% image "./fire-resistance.png" alt="残り時間が3秒と表示された火炎耐性のステータス効果の表示" %}
 {% say tsumugi3:口=わあーい %}――！！暑さが消えた！すごっ！！{% endsay %}
 {% say tsumugi3:口=わあーい %}今なら何でもできそうっ！！！！！！{% endsay %}
 {% say tsumugi3:口=わあーい %}あ、戻った。{% endsay %}
@@ -30,29 +30,29 @@ tags: [ IFR劇場, ゴールドプロミナリアの実, ゴールドプロミ�
 
 {% space %}
 
-![溶岩の海の上にせり出した崖の縁に金鉱石があるネザー最下層の様子](nether-lava-sea.webp)
+{% image "./nether-lava-sea.webp" alt="溶岩の海の上にせり出した崖の縁に金鉱石があるネザー最下層の様子" %}
 {% say tsumugi3:口=わあーい %}またあった！（ぱくっ{% endsay %}
 {% say tsumugi3:口=わあーい %}一丁あがり！あっ、あんなところにも！{% endsay %}
-![グロウストーンの塊が張り出したネザーの崖の高い位置にある金鉱石を見上げた様子](gold-ore-on-cliff.webp)
+{% image "./gold-ore-on-cliff.webp" alt="グロウストーンの塊が張り出したネザーの崖の高い位置にある金鉱石を見上げた様子" %}
 {% say null %}ドンッ！{% endsay %}
 {% say tsumugi3:口=わあーい %}あいたーっ！{% endsay %}
 {% say zundamon23 %}つむぎー、こんなところで何してるのだ？{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}センパーイ……ちょっと段差で足怪我しちゃって……{% endsay %}
 {% say zundamon23 %}これ、食べるといいのだ。気休め程度に衝撃に強くなるのだ。{% endsay %}
-![細長く先の尖った金色の果実であるゴールドプロミナリアの実](gold-prominaria-berry.png)
+{% image "./gold-prominaria-berry.png" alt="細長く先の尖った金色の果実であるゴールドプロミナリアの実" %}
 {% say tsumugi3:口=わあーい %}何これすごっ！！金ピカで金みたいじゃん！{% endsay %}
 {% say zundamon23 %}実際に金の抽出に使う人もいるのだ。{% endsay %}
 {% say tsumugi3:口=わあーい %}それ超超やばいんだけど！！あーしも植えたい！！{% endsay %}
 {% say zundamon23 %}プロミナリアの株に金を塗りつけると、金色の実がなるようになるのだ。{% endsay %}
-![ネザーラックの上に金色の実が実った金炎草ゴールドプロミナリアが1株だけ生えている様子](gold-prominaria-plant.webp)
+{% image "./gold-prominaria-plant.webp" alt="ネザーラックの上に金色の実が実った金炎草ゴールドプロミナリアが1株だけ生えている様子" %}
 {% say tsumugi3:口=わあーい %}ありがとう！！やってみる！！{% endsay %}
 
 {% space %}
 
-![ネザーラックの中の小部屋の地面の一面に整然と植えられ、金色の実が実った大量の金炎草ゴールドプロミナリアの様子](prominaria-garden.webp)
+{% image "./prominaria-garden.webp" alt="ネザーラックの中の小部屋の地面の一面に整然と植えられ、金色の実が実った大量の金炎草ゴールドプロミナリアの様子" %}
 {% say tsumugi3:口=わあーい %}圧巻！！！何日も待った甲斐があったーーー！！{% endsay %}
 {% say tsumugi3:口=わあーい %}では早速、いっただっきまーす♪{% endsay %}
-![ゴールドプロミナリアの実が64個ずつ4スロット分並んだインベントリ](inventory-gold-prominaria-berries.png)
+{% image "./inventory-gold-prominaria-berries.png" alt="ゴールドプロミナリアの実が64個ずつ4スロット分並んだインベントリ" %}
 {% say tsumugi3:口=わあーい %}――ん～！おいしー♪力が湧いてくる…！気がする！{% endsay %}
 {% say tsumugi3:口=わあーい %}……？そういえばこれ、種が金で出来てるんだっけ？？{% endsay %}
 {% say tsumugi3:口=わあーい %}あれ？こっちも種なしだ。{% endsay %}
@@ -62,8 +62,8 @@ tags: [ IFR劇場, ゴールドプロミナリアの実, ゴールドプロミ�
 {% say zundamon23 %}つむぎー、金の抽出はできたのだ？{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}センパーイ……ぜんぜん金、出ないんだけど……{% endsay %}
 {% say tsumugi3:まゆ=困り眉 %}最後の1個、センパイにあげる……{% endsay %}
-![細長く先の尖った金色の果実であるゴールドプロミナリアの実](gold-prominaria-berry.png)
+{% image "./gold-prominaria-berry.png" alt="細長く先の尖った金色の果実であるゴールドプロミナリアの実" %}
 {% say zundamon23 %}それは妙なのだ。ボクもやってみるのだ。{% endsay %}
 {% say null %}ぽいっ{% endsay %}
-![ゴールドプロミナリアの実1個をかまどで焼いて金塊を作るレシピ](recipe-gold-nugget.png)
+{% image "./recipe-gold-nugget.png" alt="ゴールドプロミナリアの実1個をかまどで焼いて金塊を作るレシピ" %}
 {% say tsumugi3:口=わあ %}か、かまどで焼くのかーーーっ！！！{% endsay %}

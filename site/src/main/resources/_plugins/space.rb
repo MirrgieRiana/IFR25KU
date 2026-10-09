@@ -4,7 +4,7 @@
 # space.rb — Scene Break Tag for Jekyll
 # =============================================================================
 #
-# Markdown上で場面転換を示す区切りを挿入するためのLiquidカスタムインラインタグ。
+# Markdown上で場面転換を示す区切りを挿入するためのLiquidカスタムインラインタグなのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -18,8 +18,8 @@
 
 module Space
 
-  # {% space %} インラインタグの実装。
-  # パラメータなし。呼び出すだけで場面転換の区切りHTMLを挿入する。
+  # {% space %} インラインタグの実装なのだ～🌱
+  # パラメータは無くて、呼び出すだけで場面転換の区切りHTMLを挿入するのだ～🌱
   class SpaceTag < Liquid::Tag
     def render(context)
       '<div class="space"></div>'
@@ -27,5 +27,5 @@ module Space
   end
 end
 
-# タグ "space" を Liquid に登録する
+# タグ "space" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("space", Space::SpaceTag)
