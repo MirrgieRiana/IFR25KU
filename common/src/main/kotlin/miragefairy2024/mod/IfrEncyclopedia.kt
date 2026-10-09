@@ -82,7 +82,6 @@ class IfrEncyclopediaEntryCard(
             ),
         )
 
-        // ミラメラの図鑑エントリ
         // TODO ミラメラが main へ入った後は、以下のコメントを外して、entries へ MIRAMERA を加え、BlockMaterialCard を import した状態が、本来あるべき形なのだ～🌱
         // val MIRAMERA = IfrEncyclopediaEntryCard(
         //     "miramera",
