@@ -17,8 +17,8 @@
   {% assign image_description = page.title %}
 {% endif %}
 
-{% comment %}属性の値としてのエスケープは image タグの側が一手に行うから、ここでは掛けないのだ～🌱{% endcomment %}
-{% assign image_description = image_description | markdownify | strip_html | strip_newlines %}
+{% comment %}image タグは素のテキストを受け取って自分でエスケープするから、markdownify が作った実体参照は戻しておくのだ～🌱{% endcomment %}
+{% assign image_description = image_description | markdownify | strip_html | strip_newlines | unescape_html %}
 
 <div class="page__hero{% if page.header.overlay_color or page.header.overlay_image %}--overlay{% endif %}"
   style="{% if page.header.overlay_color %}background-color: {{ page.header.overlay_color | default: 'transparent' }};{% endif %} {% if page.header.overlay_image %}background-image: {% if overlay_filter %}{{ overlay_filter }}, {% endif %}url('{{ overlay_img_path }}');{% endif %}"
