@@ -266,7 +266,8 @@ val generateOgImages = tasks.register("generateOgImages") {
                 // titleを取得
                 val title = frontMatter["title"] as? String ?: return@forEach
 
-                // header画像パスを取得するのだ～🌱 優先順位は og_background > overlay_image > image > teaser なのだ～🌱
+                // header画像パスを取得するのだ～🌱
+                // 優先順位は og_background > overlay_image > image > teaser なのだ～🌱
                 @Suppress("UNCHECKED_CAST")
                 val header = frontMatter["header"] as? Map<String, Any>
                 val imagePath = (header?.get("og_background") ?: header?.get("overlay_image") ?: header?.get("image") ?: header?.get("teaser")) as? String
