@@ -473,7 +473,8 @@ body.layout--one-column #main {
   opacity: 0.5;
 }
 
-// ドロップダウンのために、メニュー項目の高さを拡張するのだ～🌱 overflowの解除は、JS側でやるのだ～🌱
+// ドロップダウンのために、メニュー項目の高さを拡張するのだ～🌱
+// overflowの解除は、JS側でやるのだ～🌱
 .greedy-nav .visible-links {
   align-self: stretch;
   align-items: stretch;
