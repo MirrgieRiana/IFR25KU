@@ -108,7 +108,6 @@ module Images
   #
   # 属性の値は、素のテキストとして受け取って、ここで HTML としてエスケープするのだ～🌱
   # 代替テキストに引用符が入ると属性が途中で閉じてしまうし、呼び出し元ごとにエスケープを書くと、書き忘れた所だけが壊れるのだぁ…🌧️
-  # エスケープ済みの文字列を渡すと二重に掛かるから、実体参照を含む値は unescape_html フィルターで戻してから渡すのだ～🌱
   def self.render_img_with_baseurl(baseurl, source, alt: "", class_name: nil, aria_hidden: false)
     attributes = +""
     attributes << %( class="#{CGI.escapeHTML(class_name.to_s)}") if class_name
