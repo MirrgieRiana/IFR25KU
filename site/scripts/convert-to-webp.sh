@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# 画像をwebp形式に変換し、site/build/convertedWebp/ 以下に出力する。
+# 画像をwebp形式に変換して、site/build/convertedWebp/ 以下に出力するのだ～🌱
 #
 # 使い方:
 #   site/scripts/convert-to-webp.sh <input-file> [slug]
@@ -8,7 +8,7 @@
 # 引数:
 #   input-file  変換元の画像ファイルパス
 #   slug        出力ファイル名（拡張子なし、[a-zA-Z0-9_.-]+ のみ）
-#               省略時は入力ファイルの拡張子を除いた名前を使用
+#               省略すると、入力ファイルの拡張子を除いた名前を使うのだ～🌱
 #
 # 出力:
 #   site/build/convertedWebp/<slug>.webp
