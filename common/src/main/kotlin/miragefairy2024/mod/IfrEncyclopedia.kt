@@ -6,6 +6,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.motifRegistry
+import miragefairy2024.mod.magicplant.contents.magicplants.VeropedaCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
@@ -82,7 +83,53 @@ class IfrEncyclopediaEntryCard(
             ),
         )
 
-        val entries = listOf(MIRAGE_FAIRY)
+        val VEROPEDA = IfrEncyclopediaEntryCard(
+            "veropeda",
+            EnJa("Veropeda", "呪草ヴェロペダ"),
+            { listOf(VeropedaCard.item().createItemStack()) },
+            listOf(
+                "Monocots, order Miragales, family Veropedaceae",
+                "Veropeda",
+                "",
+                "This magical plant, synthesized from the carnivorous plant Sarracenia and curse magic, has long been identified by the alchemists of old with Veropeda, the demon that lives by devouring fairies. The existence of such a demon has never been confirmed, yet the fibers of this plant do carry a genuine curse. When the Institute of Fairy Research analyzed the genes of this plant, they proved, astonishingly, to be a perfect match for those of the Mirage.",
+                "",
+                "The Institute of Fairy Research",
+            ),
+            listOf(
+                "単子葉類妖花目ヴェロペダ科",
+                "ヴェロペダ",
+                "",
+                "サラセニアという食虫植物と呪いの魔法を合成して作られたこの魔法植物は、いにしえの錬金術師の間で、妖精を喰らって生きる悪魔ヴェロペーダと同一視されてきました。そのような悪魔の実在は確認されていませんが、この植物の繊維には実際に呪いの効果があります。妖精研究所がこの植物の遺伝子を解析したところ、驚くべきことにミラージュの遺伝子と完全に一致しました。",
+                "",
+                "妖精研究所",
+            ),
+        )
+
+        val FAIRY_RUBBER = IfrEncyclopediaEntryCard(
+            "fairy_rubber",
+            EnJa("Fairy Rubber", "夜のかけら"),
+            { listOf(MaterialCard.FAIRY_RUBBER.item().createItemStack()) },
+            listOf(
+                "The night ends. When morning comes, the darkness that gave our bodies their shape returns to the sky, every last thread of it. The hour when the night grows thin is the hour we fear most.",
+                "",
+                "One night, a scrap of darkness small enough to fit in a palm came falling down. Held tight, that one spot stayed night. It was soft, it was warm, and when morning came, it did not return to the sky.",
+                "",
+                "So long as we hold it, we lose nothing.",
+                "",
+                "Nightia",
+            ),
+            listOf(
+                "夜は明ける。朝が来れば、わたしたちの体をかたちづくっていた闇は、残らず空へ返っていく。夜が薄くなっていく時間が、いちばん、こわい。",
+                "",
+                "ある夜、手のひらに収まるくらいの闇が、ひとつ、落ちてきた。握ると、そこだけが、ずっと夜のままだった。やわらかくて、あたたかくて、朝が来ても、空へ返らなかった。",
+                "",
+                "これを握っている間、わたしたちは、何も失くさない。",
+                "",
+                "夜精ニグチャ",
+            ),
+        )
+
+        val entries = listOf(MIRAGE_FAIRY, VEROPEDA, FAIRY_RUBBER)
     }
 
     val identifier = MirageFairy2024.identifier(path)
