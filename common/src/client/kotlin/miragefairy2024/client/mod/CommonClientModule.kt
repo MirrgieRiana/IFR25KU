@@ -10,6 +10,7 @@ import mirrg.kotlin.helium.max
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.LevelRenderer
+import net.minecraft.client.renderer.LightTexture
 import net.minecraft.client.renderer.RenderStateShard
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.core.BlockPos
@@ -59,8 +60,8 @@ fun initCommonClientModule() {
             val vertexConsumer = context.consumers()!!.getBuffer(LINES_NO_DEPTH)
             val pose = poseStack.last().pose()
             val packedLight = LevelRenderer.getLightColor(level, blockPosesOutline.baseBlockPos)
-            val skyLightLevel = (packedLight ushr 20) and 0xF
-            val blockLightLevel = (packedLight ushr 4) and 0xF
+            val skyLightLevel = LightTexture.sky(packedLight)
+            val blockLightLevel = LightTexture.block(packedLight)
             val skyFactor = 0.15 + 0.85 * (skyLightLevel.toDouble() / 15.0)
             val blockFactor = 0.15 + 0.85 * (blockLightLevel.toDouble() / 15.0)
             val lightFactor = skyFactor max blockFactor
