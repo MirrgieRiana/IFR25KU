@@ -20,7 +20,7 @@ import miragefairy2024.mod.materials.contents.LOCAL_VACUUM_DECAY_RESISTANT_BLOCK
 import miragefairy2024.mod.materials.contents.LocalVacuumDecayBlock
 import miragefairy2024.mod.materials.contents.MirageLeavesBlock
 import miragefairy2024.mod.materials.contents.MiragidianLampBlock
-import miragefairy2024.mod.materials.contents.MiraneraBlock
+import miragefairy2024.mod.materials.contents.MirameraBlock
 import miragefairy2024.mod.materials.contents.SemiOpaqueTransparentBlock
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassBlockModel
 import miragefairy2024.mod.materials.contents.fairyCrystalGlassFrameBlockModel
@@ -899,8 +899,8 @@ open class BlockMaterialCard(
         ).needTool(ToolType.PICKAXE, ToolLevel.STONE).beaconBase().init {
             registerCompressionRecipeGeneration(MaterialCard.COPAL.item, { MaterialCard.COPAL.ore!!.ingredient }, item, { ore!!.ingredient })
         }
-        val MIRANERA: BlockMaterialCard = !object : BlockMaterialCard(
-            "miranera", EnJa("Miranera", "ミラネラ"),
+        val MIRAMERA: BlockMaterialCard = !object : BlockMaterialCard(
+            "miramera", EnJa("Miramera", "ミラメラ"),
             PoemList(1).poem(EnJa("Exaptation of metabolic photon waste.", "ここー…あかるいのー…さわやかなのー……")),
             MapColor.COLOR_PURPLE, 0.0F, 0.0F,
         ) {
@@ -913,7 +913,7 @@ open class BlockMaterialCard(
                 .lightLevel { 10 }
                 .emissiveRendering { _, _, _ -> true }
 
-            override suspend fun createBlock(properties: BlockBehaviour.Properties) = MiraneraBlock(properties)
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = MirameraBlock(properties)
 
             context(ModContext)
             override fun initModelGeneration() {
@@ -1033,7 +1033,7 @@ fun initBlockMaterialsModule() {
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("fairy_crystal_glass")) { FairyCrystalGlassBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("mirage_leaves_block")) { MirageLeavesBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("egg_block")) { EggBlock.CODEC }.register()
-    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("miranera")) { MiraneraBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("miramera")) { MirameraBlock.CODEC }.register()
 
     LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.enJa(EnJa("Local Vacuum Decay Resistant", "局所真空崩壊耐性"))
 

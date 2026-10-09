@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cross",
   "textures": {
-    "cross": "miragefairy2024:block/miranera"
+    "cross": "miragefairy2024:block/miramera"
   }
 }

@@ -83,13 +83,13 @@ class IfrEncyclopediaEntryCard(
             ),
         )
 
-        val MIRANERA = IfrEncyclopediaEntryCard(
-            "miranera",
-            EnJa("Miranera", "ミラネラ"),
-            { listOf(BlockMaterialCard.MIRANERA.item().createItemStack()) },
+        val MIRAMERA = IfrEncyclopediaEntryCard(
+            "miramera",
+            EnJa("Miramera", "ミラメラ"),
+            { listOf(BlockMaterialCard.MIRAMERA.item().createItemStack()) },
             listOf(
-                "Monocots, order Miragales, family Miraneraceae",
-                "Miranera",
+                "Monocots, order Miragales, family Mirameraceae",
+                "Miramera",
                 "",
                 "A weed scattered across the floor of the fairy forest. Its leaves glow faintly after nightfall, and fairies gather above them. It has long served as a landmark for locating sites where fairies can be observed.",
                 "",
@@ -100,8 +100,8 @@ class IfrEncyclopediaEntryCard(
                 "The aura it offers is therefore paid out of what last night's visitors left behind. Discharging surplus at the very spot where fairies are drawn is held to be an adaptation that keeps this cycle turning, and neither party need intend it for the arrangement to balance.",
             ),
             listOf(
-                "単子葉類妖花目ミラネラ科",
-                "ミラネラ",
+                "単子葉類妖花目ミラメラ科",
+                "ミラメラ",
                 "",
                 "妖精の森の地表に点々と生える雑草。日が落ちると葉が淡く発光し、その上に妖精が集まる。妖精の観測地点を探す際の目印として、古くから利用されてきた。",
                 "",
@@ -113,7 +113,7 @@ class IfrEncyclopediaEntryCard(
             ),
         )
 
-        val entries = listOf(MIRAGE_FAIRY, MIRANERA)
+        val entries = listOf(MIRAGE_FAIRY, MIRAMERA)
     }
 
     val identifier = MirageFairy2024.identifier(path)

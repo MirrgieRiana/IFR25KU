@@ -17,7 +17,7 @@
                   }
                 }
               ],
-              "name": "miragefairy2024:miranera"
+              "name": "miragefairy2024:miramera"
             },
             {
               "type": "minecraft:item",
@@ -48,5 +48,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "miragefairy2024:blocks/miranera"
+  "random_sequence": "miragefairy2024:blocks/miramera"
 }

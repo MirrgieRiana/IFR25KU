@@ -7313,7 +7313,7 @@
       "minecraft:repair_cost": 0
     }
   },
-  "miragefairy2024:miranera": {
+  "miragefairy2024:miramera": {
     "class": "net.minecraft.world.item.BlockItem",
     "components": {
       "minecraft:attribute_modifiers": {
