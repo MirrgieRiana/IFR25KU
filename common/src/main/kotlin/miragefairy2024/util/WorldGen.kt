@@ -29,6 +29,7 @@ import net.minecraft.world.entity.MobCategory
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.dimension.LevelStem
 import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.VerticalAnchor
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
@@ -87,6 +88,25 @@ fun <T : Any> registerDynamicGeneration(key: ResourceKey<T>, creator: context(Bo
     }
     DataGenerationEvents.onInitializeDataGenerator {
         DataGenerationEvents.dynamicGenerationRegistries += registryKey
+    }
+}
+
+/**
+ * ディメンションを登録するのだ～🌱
+ *
+ * ディメンションのレジストリは、[net.minecraft.resources.RegistryDataLoader.WORLDGEN_REGISTRIES] に含まれないから、
+ * [registerDynamicGeneration] の仕組みには乗せられないのだ～🌱
+ * だから、[DataGenerationEvents.dimensionKeys] に積んで、専用のデータプロバイダーに書き出してもらうのだ～🌱
+ */
+context(ModContext)
+fun registerDimensionGeneration(key: ResourceKey<LevelStem>, creator: context(BootstrapContext<LevelStem>) () -> LevelStem) {
+    DataGenerationEvents.onBuildRegistry {
+        it.add(Registries.LEVEL_STEM) { context ->
+            context.register(key, creator(context))
+        }
+    }
+    DataGenerationEvents.onInitializeDataGenerator {
+        DataGenerationEvents.dimensionKeys += key
     }
 }
 

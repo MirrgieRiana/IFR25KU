@@ -1,0 +1,21 @@
+{
+  "values": [
+    {
+      "id": "#miragefairy2024:needs_tier4_tool",
+      "required": false
+    },
+    "miragefairy2024:chiseled_reinforced_metal",
+    "miragefairy2024:fairy_quest_gate",
+    "miragefairy2024:fairy_quest_gate_portal",
+    "miragefairy2024:institute_floor",
+    "miragefairy2024:institute_floor_slab",
+    "miragefairy2024:institute_floor_stairs",
+    "miragefairy2024:reinforced_metal_block",
+    "miragefairy2024:reinforced_metal_slab",
+    "miragefairy2024:reinforced_metal_stairs",
+    "miragefairy2024:reinforced_metal_tile_slab",
+    "miragefairy2024:reinforced_metal_tile_stairs",
+    "miragefairy2024:reinforced_metal_tiles",
+    "miragefairy2024:ringwoodite_ore"
+  ]
+}
