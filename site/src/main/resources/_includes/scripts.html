@@ -16,6 +16,80 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <script>
+// mastheadのドロップダウンを、閉じているときの1回目の操作で開く形にするのだ～🌱
+// 行き先を持つ見出しは、開いていないうちは遷移せずに下の項目を出して、開いてからもう1回触ると遷移するのだ～🌱
+// これが無いと、ホバーを持たない端末では、1回の操作が遷移に化けて、下の項目へ辿り着けないのだぁ…🌧️
+document.addEventListener("DOMContentLoaded", function() {
+  var triggers = Array.prototype.slice.call(document.querySelectorAll(".masthead__menu-item--dropdown .masthead__menu-item-trigger[aria-controls]"));
+  if (!triggers.length) return;
+
+  // ホバーが使える環境では、ポインタの出入りもaria-expandedへ反映して、開閉の状態をそれ1本にまとめるのだ～🌱
+  // CSSの:hoverによる表示と二本立てにすると、クリックで閉じてもポインタが乗っている限り開いたままになるのだぁ…🌧️
+  var canHover = matchMedia("(hover: hover)").matches;
+
+  function closeAll() {
+    triggers.forEach(function(trigger) {
+      trigger.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  function isOpen(trigger) {
+    return trigger.getAttribute("aria-expanded") === "true";
+  }
+
+  triggers.forEach(function(trigger) {
+    var item = trigger.closest(".masthead__menu-item--dropdown");
+
+    trigger.addEventListener("click", function(event) {
+      if (isOpen(trigger)) {
+        // 既に開いているなら、リンクはそのまま遷移して、ボタンは閉じるのだ～🌱
+        if (trigger.tagName !== "A") trigger.setAttribute("aria-expanded", "false");
+        return;
+      }
+      event.preventDefault();
+      // 同時に開くのは1個だけにするのだ～🌱
+      closeAll();
+      trigger.setAttribute("aria-expanded", "true");
+    });
+
+    if (canHover) {
+      // CSSの:hoverによる表示はJSが動かないときのフォールバックだから、JSが動く間はクラスを付けて止めるのだ～🌱
+      item.classList.add("masthead__menu-item--js-hover");
+
+      item.addEventListener("mouseenter", function() {
+        closeAll();
+        trigger.setAttribute("aria-expanded", "true");
+      });
+
+      item.addEventListener("mouseleave", function() {
+        trigger.setAttribute("aria-expanded", "false");
+      });
+    }
+  });
+
+  document.addEventListener("keydown", function(event) {
+    if (event.key !== "Escape") return;
+    var opened = triggers.filter(function(trigger) {
+      return trigger.getAttribute("aria-expanded") === "true";
+    });
+    if (!opened.length) return;
+    // 開いた項目の中からEscapeを押しても、行き先を見失わないように、見出しへフォーカスを戻すのだ～🌱
+    // 閉じると中の項目からフォーカスが外れるから、閉じる前に見るのだ～🌱
+    var focusedTrigger = opened.filter(function(trigger) {
+      return trigger.closest(".masthead__menu-item--dropdown").contains(document.activeElement);
+    })[0];
+    closeAll();
+    if (focusedTrigger) focusedTrigger.focus();
+  });
+
+  document.addEventListener("click", function(event) {
+    if (event.target.closest(".masthead__menu-item--dropdown")) return;
+    closeAll();
+  });
+});
+</script>
+
+<script>
 // scrollTocToContentがスクロールを妨害するから、それを無効化するのだ～🌱
 document.addEventListener("gumshoeActivate", function(e) {
   e.stopImmediatePropagation();
