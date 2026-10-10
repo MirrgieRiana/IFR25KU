@@ -66,6 +66,7 @@ module News
 
     # 記事1件分のカードを組み立てるのだ～🌱
     # サムネイルを持たない記事には、OG 画像の生成が敷くのと同じ背景を出すのだ～🌱
+    # カードはこのリンクの中に見出しも持つから、画像の代替テキストに記事のタイトルを入れると、同じ文字列が2回読み上げられちゃうのだぁ…🌧️
     def render_card(site, post)
       teaser = post.data.dig("header", "teaser") || DEFAULT_TEASER
       image_html = Images.render_img_with_baseurl(site.baseurl, teaser)

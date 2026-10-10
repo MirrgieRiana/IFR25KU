@@ -35,6 +35,7 @@
     teaser.className = 'recent-posts__teaser';
     const img = document.createElement('img');
     img.src = post.teaser || '{{ "/assets/images/default-background.svg" | relative_url }}';
+    // カードはこのリンクの中に見出しも持つから、代替テキストに記事のタイトルを入れると、同じ文字列が2回読み上げられちゃうのだぁ…🌧️
     img.alt = '';
     teaser.appendChild(img);
     card.appendChild(teaser);
