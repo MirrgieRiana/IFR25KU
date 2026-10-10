@@ -907,7 +907,7 @@ open class BlockMaterialCard(
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
                 .replaceable()
                 .noCollission()
-                .offsetType(BlockBehaviour.OffsetType.XYZ)
+                .offsetType(BlockBehaviour.OffsetType.XZ)
                 .ignitedByLava()
                 .pushReaction(PushReaction.DESTROY)
                 .lightLevel { 10 }
