@@ -1,0 +1,89 @@
+# =============================================================================
+# athanor.xa1 — タスクを並べてビルドを組むための、小さな仕組みなのだ～🌱（xarpite / API5）
+# -----------------------------------------------------------------------------
+# 使う側は、プロジェクトを 1 個作って、その tasks へタスクを並べるのだ～🌱
+# タスクは、自分より前に済んでいなければならないタスクを dependsOn に持つのだ～🌱
+# タスクを走らせると、dependsOn を先にたどってから、自分の action を呼ぶのだ～🌱
+#
+#   @USE("athanor")
+#
+#   project := AthanorProject.new()
+#   project.tasks.generateFoo = AthanorTask.new()::ALSO ( task =>
+#     task.name = "foo"
+#     task.action = () -> ...
+#   )
+#   project.tasks.generateBar = AthanorTask.new()::ALSO ( task =>
+#     task.name = "bar"
+#     task.dependsOn = [project.tasks.generateFoo]
+#     task.action = () -> ...
+#   )
+# =============================================================================
+
+API(5)
+
+AthanorTask := {
+  new: () -> AthanorTask{
+    name: NULL
+    dependsOn: []
+    action: NULL
+  }
+
+  # 同じタスクが複数のタスクから依存されていても、action は 1 回しか走らないのだ～🌱
+  # そうしないと、生成の段がひとつ下から何度も呼ばれて、無駄に走ってしまうのだ～🌱
+  run: this -> this.done == TRUE ? NULL : (
+    this.done = TRUE
+    # 配列のままでは要素ごとに回らないから、呼び出してストリームへ開くのだ～🌱
+    this.dependsOn() | task => task::run()
+    this.action == NULL ? NULL : this.action()
+  )
+}
+
+AthanorProject := {
+  new: () -> (
+    project := AthanorProject{
+      tasks: {}
+    }
+
+    # どのプロジェクトにも、並んでいるタスクを見る手段を持たせるのだ～🌱
+    # ここで足しておかないと、タスクを 1 個も並べていないプロジェクトを、外から覗けないのだ～🌱
+    project.tasks.tasks = AthanorTask.new()::ALSO ( task =>
+      task.name = "tasks"
+      task.action = () -> project.tasks() | entry => OUT(entry.0)
+    )
+
+    project
+  )
+}
+
+# athanorw から呼ばれる入口なのだ～🌱
+# buildFile はビルドの定義のモジュールのパスで、target は叩く対象の名前なのだ～🌱
+# target は `<プロジェクト名>:<タスク名><引数スクリプト>` の形で、プロジェクト名も引数スクリプトも省略できるのだ～🌱
+main := (buildFile; target) -> (
+  parsed := target =~ /^(?:([^:]*):)?([^(]*)(\(.*\))?$/ ?: (
+    ERR("ERROR: invalid target: $target")
+    EXIT(1)
+  )
+  # プロジェクト名を省略すると、ルートプロジェクトのタスクになるのだ～🌱
+  projectName := parsed.1 ?: ""
+  taskName := parsed.2
+  # 引数スクリプトを省略すると、引数の無い呼び出しになるのだ～🌱
+  argumentScript := parsed.3 ?: "()"
+
+  project := USE(buildFile).projectOf(projectName) ?: (
+    ERR("ERROR: project not found: $projectName")
+    EXIT(1)
+  )
+  task := project.tasks.(taskName) ?: (
+    ERR("ERROR: task not found: $taskName")
+    EXIT(1)
+  )
+
+  # 引数スクリプトはソースコードの断片だから、タスクを受け取る関数の本体として組み立てて評価するのだ～🌱
+  XA("task -> task::run$argumentScript")(task)
+)
+
+{
+  AthanorTask: AthanorTask
+  AthanorProject: AthanorProject
+  main: main
+}

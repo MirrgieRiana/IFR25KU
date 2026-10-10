@@ -1,0 +1,34 @@
+#!/bin/bash
+# =============================================================================
+# athanorw — video/ のタスクを走らせる入口なのだ～🌱
+# -----------------------------------------------------------------------------
+# 使い方なのだ～🌱：
+#   ./athanorw tasks              … ルートプロジェクトのタスクの一覧を出すのだ～🌱
+#   ./athanorw foo:build          … foo というプロジェクトの build を走らせるのだ～🌱
+#   ./athanorw 'foo:build()' 0.3  … 2 個目からの引数は、そのまま xarpite の ARGS へ渡るのだ～🌱
+#
+# タスクの名前は `:` で区切るのだ～🌱 左辺がプロジェクト名で、右辺がタスク名なのだ～🌱
+# `:` が無いときは、ルートプロジェクトのタスクとして扱うのだ～🌱
+# 叩ける右辺は、そのプロジェクトの tasks に並んでいるものなのだ～🌱
+#
+# ビルドの定義は build.athanor.xa1 に書くのだ～🌱
+# athanor そのものの実装は athanor/ の下にあるのだ～🌱
+# =============================================================================
+set -eu
+
+# このスクリプトの置き場所なのだ～🌱
+# どのディレクトリから呼んでも、同じ build.athanor.xa1 と xarpite を指すのだ～🌱
+here=$(cd "$(dirname "$0")" && pwd)
+
+if [ $# -eq 0 ]; then
+  echo "ERROR: target required (e.g. tasks)" >&2
+  exit 1
+fi
+
+target=$1
+shift
+
+"$here/../xarpite/xarpite" -A 5 -q -f - "$@" <<EOF
+API(5)
+USE("$here/athanor/athanor").main("$here/build.athanor"; "$target")
+EOF
