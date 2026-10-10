@@ -946,6 +946,39 @@ open class BlockMaterialCard(
                 }
             }
         }
+        val DAYFLOWER: BlockMaterialCard = !object : BlockMaterialCard(
+            "dayflower", EnJa("Dayflower", "ツユクサ"),
+            PoemList(null),
+            MapColor.PLANT, 0.0F, 0.0F,
+        ) {
+            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
+                .replaceable()
+                .noCollission()
+                .offsetType(BlockBehaviour.OffsetType.XZ)
+                .ignitedByLava()
+                .pushReaction(PushReaction.DESTROY)
+
+            override suspend fun createBlock(properties: BlockBehaviour.Properties) = DayflowerBlock(properties)
+
+            context(ModContext)
+            override fun initModelGeneration() {
+                block.registerModelGeneration {
+                    ModelTemplates.CROSS.with(
+                        TextureSlot.CROSS to "block/" * block().getIdentifier(),
+                    )
+                }
+            }
+
+            context(ModContext)
+            override fun initLootTableGeneration() {
+                block.registerLootTableGeneration { it, _ ->
+                    it.createGrassDrops(block())
+                }
+            }
+        }.cutout().sound(SoundType.GRASS).tag(BlockTags.MINEABLE_WITH_AXE, BlockTags.SWORD_EFFICIENT, BlockTags.REPLACEABLE, BlockTags.REPLACEABLE_BY_TREES).init {
+            item.registerBlockGeneratedModelGeneration(block)
+            block.registerFlammable(60, 100)
+        }
         val NECTARFLOWER: BlockMaterialCard = !object : BlockMaterialCard(
             "nectarflower", EnJa("Nectarflower", "ミツクサ"),
             PoemList(1).poem(EnJa("Hydrophilic syrup for toxin resistance.", "捕食耐性のための親霊性糖衣。")),
@@ -954,7 +987,7 @@ open class BlockMaterialCard(
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
                 .replaceable()
                 .noCollission()
-                .offsetType(BlockBehaviour.OffsetType.XYZ)
+                .offsetType(BlockBehaviour.OffsetType.XZ)
                 .ignitedByLava()
                 .pushReaction(PushReaction.DESTROY)
 
@@ -978,39 +1011,6 @@ open class BlockMaterialCard(
                         apply(ApplyBonusCount.addUniformBonusCount(registries[Registries.ENCHANTMENT, Enchantments.FORTUNE], 2))
                         apply(ApplyExplosionDecay.explosionDecay())
                     })
-                }
-            }
-        }.cutout().sound(SoundType.GRASS).tag(BlockTags.MINEABLE_WITH_AXE, BlockTags.SWORD_EFFICIENT, BlockTags.REPLACEABLE, BlockTags.REPLACEABLE_BY_TREES).init {
-            item.registerBlockGeneratedModelGeneration(block)
-            block.registerFlammable(60, 100)
-        }
-        val DAYFLOWER: BlockMaterialCard = !object : BlockMaterialCard(
-            "dayflower", EnJa("Dayflower", "ツユクサ"),
-            PoemList(null),
-            MapColor.PLANT, 0.0F, 0.0F,
-        ) {
-            override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
-                .replaceable()
-                .noCollission()
-                .offsetType(BlockBehaviour.OffsetType.XYZ)
-                .ignitedByLava()
-                .pushReaction(PushReaction.DESTROY)
-
-            override suspend fun createBlock(properties: BlockBehaviour.Properties) = DayflowerBlock(properties)
-
-            context(ModContext)
-            override fun initModelGeneration() {
-                block.registerModelGeneration {
-                    ModelTemplates.CROSS.with(
-                        TextureSlot.CROSS to "block/" * block().getIdentifier(),
-                    )
-                }
-            }
-
-            context(ModContext)
-            override fun initLootTableGeneration() {
-                block.registerLootTableGeneration { it, _ ->
-                    it.createGrassDrops(block())
                 }
             }
         }.cutout().sound(SoundType.GRASS).tag(BlockTags.MINEABLE_WITH_AXE, BlockTags.SWORD_EFFICIENT, BlockTags.REPLACEABLE, BlockTags.REPLACEABLE_BY_TREES).init {
@@ -1107,8 +1107,8 @@ fun initBlockMaterialsModule() {
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("mirage_leaves_block")) { MirageLeavesBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("egg_block")) { EggBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("miramera")) { MirameraBlock.CODEC }.register()
-    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("nectarflower")) { NectarflowerBlock.CODEC }.register()
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("dayflower")) { DayflowerBlock.CODEC }.register()
+    Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("nectarflower")) { NectarflowerBlock.CODEC }.register()
 
     LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.enJa(EnJa("Local Vacuum Decay Resistant", "局所真空崩壊耐性"))
 
