@@ -945,6 +945,11 @@ open class BlockMaterialCard(
                     registerPlacedFeature("cluster") { count(3) + flower(square, surface) }.placeWhenVegetalDecoration { +FairyForestBiomeCard.key }
                 }
             }
+            registerShapelessRecipeGeneration(MaterialCard.FAIRY_SCALES.item) {
+                repeat(4) {
+                    requires(item())
+                }
+            } on item from item
         }
         val DAYFLOWER: BlockMaterialCard = !object : BlockMaterialCard(
             "dayflower", EnJa("Dayflower", "ツユクサ"),
