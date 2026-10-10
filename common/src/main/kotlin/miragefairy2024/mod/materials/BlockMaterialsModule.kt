@@ -944,7 +944,6 @@ open class BlockMaterialCard(
                 registerConfiguredFeature("cluster") { RandomPatchConfiguration(4, 7, 3, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(block())))) }.generator {
                     registerPlacedFeature("cluster") { count(3) + flower(square, surface) }.placeWhenVegetalDecoration { +FairyForestBiomeCard.key }
                 }
-                // 試行を 1 回、広がりを 0 にすると、1 回の生成で 1 株だけが立つのだ～🌱
                 registerConfiguredFeature("single") { RandomPatchConfiguration(1, 0, 0, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(block())))) }.generator {
                     registerPlacedFeature("single") { per(4) + flower(square, surface) }.placeWhenVegetalDecoration { +DeepFairyForestBiomeCard.key }
                 }
