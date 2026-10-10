@@ -5,14 +5,12 @@
 # 返ってくるのは athanor のプロジェクトで、タスクはその直下から名前で呼べるのだ～🌱
 #
 # 呼び出しの例：
-#   xarpite -A 5 -q -e 'USE("/abs/video/build.athanor").projectOf("").tasks()'
+#   ./athanorw tasks
 # =============================================================================
 
 API(5)
 
-# LOCATION はこのファイル自身のパスだから、その親を取れば、呼び出し元の居場所に関わらず video/ が得られるのだ～🌱
-INC += LOCATION RESOLVE ".." RESOLVE "athanor"
-
+# athanor そのものの置き場所は、athanorw が INC へ足すのだ～🌱
 @USE("athanor")
 
 {
