@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "cgi"
+
 # =============================================================================
 # image.rb — Image Tag for Jekyll
 # =============================================================================
@@ -103,11 +105,14 @@ module Images
   end
 
   # render_img と同じことを、Liquid の context を持たない呼び出し元のために、baseurl を直接受け取る形で行うのだ～🌱
+  #
+  # 属性の値は、素のテキストとして受け取って、ここで HTML としてエスケープするのだ～🌱
+  # 代替テキストに引用符が入ると属性が途中で閉じてしまうし、呼び出し元ごとにエスケープを書くと、書き忘れた所だけが壊れるのだぁ…🌧️
   def self.render_img_with_baseurl(baseurl, source, alt: "", class_name: nil, aria_hidden: false)
     attributes = +""
-    attributes << %( class="#{class_name}") if class_name
-    attributes << %( src="#{resolve_with_baseurl(baseurl, source)}")
-    attributes << %( alt="#{alt}")
+    attributes << %( class="#{CGI.escapeHTML(class_name.to_s)}") if class_name
+    attributes << %( src="#{CGI.escapeHTML(resolve_with_baseurl(baseurl, source).to_s)}")
+    attributes << %( alt="#{CGI.escapeHTML(alt.to_s)}")
     attributes << %( aria-hidden="true") if aria_hidden
     "<img#{attributes}>"
   end
