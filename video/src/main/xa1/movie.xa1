@@ -1,0 +1,83 @@
+# =============================================================================
+# movie.xa1 — 連番フレーム画像とナレーションとBGMを1本のmp4に合成するのだ～🌱（xarpite / API5）
+# -----------------------------------------------------------------------------
+# 入力：
+#   - frames の段が書き出した連番のフレーム画像
+#   - timeline の段が作ったナレーションとタイムライン（尺・区切り時刻）
+#   - projects/common/resources/bgm/chopin_op10-4.flac … BGM（外部取得リソースで、ここに置いてもらうのだ～🌱）
+#
+# 出力：
+#   - build/movie/<プロジェクト>/<プロジェクト>.mp4 … 完成した動画
+#
+# 第1引数は BGM の基準音量（0〜1）で、省略すると 0.45 なのだ～🌱
+# ffmpeg のパスは環境変数 FFMPEG で上書きできるのだ～🌱
+# 既定は PATH 上の "ffmpeg" なのだ～🌱
+# =============================================================================
+
+API(5)
+@USE("common")
+
+timelineModule := USE("timeline")
+framesModule := USE("frames")
+
+dirOf := project -> buildBase RESOLVE project.name RESOLVE "movie"
+bgmDir := base RESOLVE "projects/common/resources/bgm"
+
+{
+  path: project -> dirOf(project) RESOLVE "$(project.name).mp4"
+  generate: project -> (
+    # BGM は外部取得リソースだから、長い合成に入る前に、置かれていることを確かめるのだ～🌱
+    # FILE_NAMES のストリームのままだと、@ が部分文字列で探して、隣の *.md5 のファイル名に当たっちゃうのだ～🌱
+    # だから、配列にしてから、要素として探すのだ～🌱
+    "chopin_op10-4.flac" @ [FILE_NAMES(bgmDir)] || fail("resource not found: projects/common/resources/bgm/chopin_op10-4.flac (place it as described in README.md)")
+
+    generate("movie ($(project.name))"; dirOf(project); work -> (
+      tl := $*READ(timelineModule.jsonPath(project))
+      total := tl.total
+      T0 := tl.lead          # 開幕（タイトル）から劇場（初回発話）へ切り替わる時刻
+      CS := tl.creditStart   # クレジット開始時刻
+
+      ffmpeg := ENV.FFMPEG ?: "ffmpeg"
+
+      # ARGS と ENV の要素は文字列だから、掛け算の前に TO_NUMBER で数値へ直すのだ～🌱
+      # そうしないと、文字列の繰り返しとして解釈されて、繰り返し回数の変換で落ちるのだ～🌱
+      baseVol := $#ARGS > 0 ? TO_NUMBER(ARGS.0) : TO_NUMBER(ENV.BGM_VOL ?: "0.45")
+
+      # -----------------------------------------------------------------------------
+      # BGM の音量は「2 ステートの線形補間」なのだ～🌱
+      #   冒頭（タイトル）＝A（やや強め） → 劇場＝B（弱め） → クレジット＝A（冒頭と同じ）へ戻すのだ～🌱
+      #   T0（初回発話）の前後 0.5 秒で A→B へ落とし、CS（クレジット開始）の手前 0.5 秒で B→A へ戻すのだ～🌱
+      #   お尻だけ 2 秒フェードアウトするのだ～🌱
+      #   BGM はショパン 練習曲 作品10-4「Torrent（激流）」（Edward Neeman 演奏, パブリックドメイン）で、
+      #   冒頭から旋律が鳴る曲なので、頭のフェードインは無しなのだ～🌱
+      # -----------------------------------------------------------------------------
+      aVol := baseVol * 0.60          # 冒頭＝クレジット（強）
+      bVol := baseVol * 0.40 * 0.70   # 劇場（弱）
+      RAMP := 0.5
+      volexpr := "if(lt(t,$%.3f(T0)),$%.4f(aVol),if(lt(t,$%.3f(T0 + RAMP)),$%.4f(aVol)+($%.4f(bVol)-$%.4f(aVol))*(t-$%.3f(T0))/$%.3f(RAMP),if(lt(t,$%.3f(CS - RAMP)),$%.4f(bVol),if(lt(t,$%.3f(CS)),$%.4f(bVol)+($%.4f(aVol)-$%.4f(bVol))*(t-$%.3f(CS - RAMP))/$%.3f(RAMP),$%.4f(aVol)))))"
+
+      # フィルタグラフ：ナレーション[1:a]と、音量エンベロープを掛けた BGM[2:a]を足し合わせるのだ～🌱
+      #   BGM は曲が動画尺より短い場合に備えて -stream_loop -1 でループ入力にしているのだ～🌱
+      #   amix の normalize=0 は「単純な足し算」で、勝手に音量を正規化させないためなのだ～🌱
+      fc := "[1:a]aresample=48000[nar];[2:a]aresample=48000,atrim=0:$%.3f(total),volume=eval=frame:volume='$volexpr',afade=t=out:st=$%.3f(total - 2.2):d=2.0[bgm];[nar][bgm]amix=inputs=2:duration=first:normalize=0[aout]"
+
+      OUT << "BGM base=$baseVol A(open/credit)=$%.3f(aVol) B(theater)=$%.3f(bVol) T0=$T0 CS=$CS"
+
+      cmd := [
+        ffmpeg; "-y"; "-hide_banner"
+        "-framerate"; "30"; "-i"; framesModule.pngPattern(project)
+        "-i"; timelineModule.wavPath(project)
+        "-stream_loop"; "-1"; "-i"; bgmDir RESOLVE "chopin_op10-4.flac"
+        "-filter_complex"; fc
+        "-map"; "0:v"; "-map"; "[aout]"
+        "-c:v"; "libx264"; "-pix_fmt"; "yuv420p"; "-crf"; "20"
+        "-c:a"; "aac"; "-b:a"; "192k"; "-shortest"
+        work RESOLVE "$(project.name).mp4"
+      ]
+
+      # ffmpeg は進捗を大量に吐くから、成功したときの出力は捨てて、失敗したときだけ見せるのだ～🌱
+      capture(cmd())
+    ))
+    OUT << "built: $(dirOf(project))/$(project.name).mp4"
+  )
+}

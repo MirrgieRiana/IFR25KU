@@ -1,0 +1,21 @@
+# 生成物をまとめて捨てる段なのだ～🌱（xarpite / API5）
+
+API(5)
+@USE("common")
+
+# 消す先は、video/ の build ディレクトリなのだ～🌱
+# rm -rf へ渡す前に、末尾が build であることと、親が実在することを確かめるのだ～🌱
+# base の解決が壊れたときに、"/build" や "build" のような、思わぬ場所を指したまま消しに行かないようにするためなのだ～🌱
+removeBuildDir := dir -> (
+  parent := dir RESOLVE ".."
+  dir == parent RESOLVE "build" || fail("not a build directory: $dir")
+  dirExists(parent) || fail("parent directory not found: $parent")
+  dirExists(dir) ? (
+    OUT << "removing $dir"
+    run("rm", "-rf", dir)
+  ) : (OUT << "nothing to remove: $dir")
+)
+
+{
+  run: project -> removeBuildDir(buildBase)
+}

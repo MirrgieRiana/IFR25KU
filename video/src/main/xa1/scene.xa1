@@ -1,0 +1,21 @@
+# 動画プロジェクトにシーンを組ませる段なのだ～🌱（xarpite / API5）
+# シーンの中身は動画ごとに違うから、プロジェクトが渡してきた buildScene に任せるのだ～🌱
+
+API(5)
+@USE("common")
+
+timelineModule := USE("timeline")
+
+dirOf := project -> buildBase RESOLVE project.name RESOLVE "scene"
+
+{
+  dir: dirOf
+  framesJsonlPath: project -> dirOf(project) RESOLVE "frames.jsonl"
+  generate: project -> (
+    dir := dirOf(project)
+    generate("scene ($(project.name))"; dir; work -> (
+      # 構成jsonl へ書く相対パスは、改名した後の場所から辿るものでなければならないから、両方渡すのだ～🌱
+      project.buildScene(timelineModule.jsonPath(project); work; dir)
+    ))
+  )
+}

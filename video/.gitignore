@@ -1,0 +1,20 @@
+# =============================================================================
+# ここが外すのは、複数のパートから見える場所に現れるものなのだ～🌱
+# 1 個のパートの中だけで閉じるものは、そのディレクトリの .gitignore が外すのだ～🌱
+# =============================================================================
+
+# --- 外部取得リソースの実体（著作権の都合でコミットしないのだ～🌱 中身と置き場所は *.md5 が示すのだ～🌱） ---
+projects/common/resources/psd/*.psd
+projects/common/resources/font/*.ttf
+projects/common/resources/font/*.otf
+projects/common/resources/emoji/*.svg
+projects/common/resources/bgm/*.flac
+projects/common/resources/bgm/*.mp3
+projects/common/resources/bgm/*.ogg
+projects/common/resources/bgm/*.wav
+
+# --- Node のツール（実体/シンボリックリンクとも） ---
+/libs
+
+# --- 生成物（generate～ の各段が作って、clean が捨てるのだ～🌱） ---
+/build/

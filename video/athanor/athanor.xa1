@@ -1,0 +1,64 @@
+# =============================================================================
+# athanor.xa1 — タスクを並べてビルドを組むための、小さな仕組みなのだ～🌱（xarpite / API5）
+# -----------------------------------------------------------------------------
+# 使う側は、プロジェクトを 1 個作って、その tasks へタスクを並べるのだ～🌱
+# タスクは、自分より前に済んでいなければならないタスクを dependsOn に持つのだ～🌱
+# タスクを走らせると、dependsOn を先にたどってから、自分の action を呼ぶのだ～🌱
+#
+#   @USE("athanor")
+#
+#   project := AthanorProject.new()
+#   project.tasks.generateFoo = AthanorTask.new()::ALSO ( task =>
+#     task.name = "foo"
+#     task.action = () -> ...
+#   )
+#   project.tasks.generateBar = AthanorTask.new()::ALSO ( task =>
+#     task.name = "bar"
+#     task.dependsOn = [project.tasks.generateFoo]
+#     task.action = () -> ...
+#   )
+# =============================================================================
+
+API(5)
+
+AthanorTask := {
+  new: () -> AthanorTask{
+    name: NULL
+    dependsOn: []
+    action: NULL
+  }
+
+  # 同じタスクが複数のタスクから依存されていても、action は 1 回しか走らないのだ～🌱
+  # そうしないと、生成の段がひとつ下から何度も呼ばれて、無駄に走ってしまうのだ～🌱
+  run: this -> this.done == TRUE ? NULL : (
+    this.done = TRUE
+    # 配列のままでは要素ごとに回らないから、呼び出してストリームへ開くのだ～🌱
+    this.dependsOn() | task => task::run()
+    this.action == NULL ? NULL : this.action()
+  )
+}
+
+AthanorProject := {
+  new: () -> AthanorProject{
+    tasks: {}
+  }
+
+  # 名前からタスクを引いて走らせるのだ～🌱
+  run: (this; name) -> (
+    task := this.tasks.(name)
+    task == NULL ? (
+      ERR("ERROR: task not found: $name")
+      EXIT(1)
+    ) : task::run()
+  )
+
+  # タスクを、プロジェクトの直下から同じ名前で呼べるようにするのだ～🌱
+  # athanorw のような外からの呼び出しは、この関数を通るのだ～🌱
+  # タスクを並べ終えてから呼ぶのだ～🌱 後から足したタスクは、並ばないのだ～🌱
+  exportTasks: this -> this.tasks() | entry => this.(entry.0) = () -> entry.1::run()
+}
+
+{
+  AthanorTask: AthanorTask
+  AthanorProject: AthanorProject
+}
