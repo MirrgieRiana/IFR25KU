@@ -37,6 +37,7 @@ fun initParticleClientModule() {
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.LANDING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Landing(level, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB) } }
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.MAGIC_SQUARE.particleType, createMagicSquareParticleFactory())
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.SULFUR_SMOKE.particleType, createSulfurSmokeParticleFactory())
+    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.SPARKLE.particleType, createSparkleParticleFactory())
 
     initMagicSquareParticle()
 }

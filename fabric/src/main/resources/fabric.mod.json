@@ -59,6 +59,10 @@
     {
       "config": "miragefairy2024.client.mixins.json",
       "environment": "client"
+    },
+    {
+      "config": "miragefairy2024.fabric.client.mixins.json",
+      "environment": "client"
     }
   ],
   "accessWidener": "miragefairy2024.accesswidener",

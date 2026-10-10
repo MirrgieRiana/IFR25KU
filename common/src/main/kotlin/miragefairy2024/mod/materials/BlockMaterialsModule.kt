@@ -3,6 +3,7 @@ package miragefairy2024.mod.materials
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.PoemList
+import miragefairy2024.mod.biome.DeepFairyForestBiomeCard
 import miragefairy2024.mod.biome.FairyForestBiomeCard
 import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG
 import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG
@@ -51,6 +52,7 @@ import miragefairy2024.util.get
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.modId
 import miragefairy2024.util.on
+import miragefairy2024.util.per
 import miragefairy2024.util.placeWhenVegetalDecoration
 import miragefairy2024.util.plus
 import miragefairy2024.util.propertiesOf
@@ -941,6 +943,10 @@ open class BlockMaterialCard(
             Feature.FLOWER.generator(identifier) {
                 registerConfiguredFeature("cluster") { RandomPatchConfiguration(4, 7, 3, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(block())))) }.generator {
                     registerPlacedFeature("cluster") { count(3) + flower(square, surface) }.placeWhenVegetalDecoration { +FairyForestBiomeCard.key }
+                }
+                // 試行を 1 回、広がりを 0 にすると、1 回の生成で 1 株だけが立つのだ～🌱
+                registerConfiguredFeature("single") { RandomPatchConfiguration(1, 0, 0, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(block())))) }.generator {
+                    registerPlacedFeature("single") { per(4) + flower(square, surface) }.placeWhenVegetalDecoration { +DeepFairyForestBiomeCard.key }
                 }
             }
         }
