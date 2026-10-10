@@ -17,9 +17,6 @@
   {% assign image_description = page.title %}
 {% endif %}
 
-{% comment %}代替テキストは、Markdown ではなく素のテキストとして扱うのだ～🌱{% endcomment %}
-{% assign image_description = image_description | strip_newlines %}
-
 <div class="page__hero{% if page.header.overlay_color or page.header.overlay_image %}--overlay{% endif %}"
   style="{% if page.header.overlay_color %}background-color: {{ page.header.overlay_color | default: 'transparent' }};{% endif %} {% if page.header.overlay_image %}background-image: {% if overlay_filter %}{{ overlay_filter }}, {% endif %}url('{{ overlay_img_path }}');{% endif %}"
 >
