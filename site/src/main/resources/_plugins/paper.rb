@@ -22,7 +22,7 @@
 
 module Paper
 
-  # {% paper %}...{% endpaper %} ブロックタグの実装。
+  # {% paper %}...{% endpaper %} ブロックタグの実装なのだ～🌱
   # ブロック内容を <div class="paper" markdown="1"> で包んで出力するのだ～🌱
   # markdown="1" を付けると、kramdownがブロック内容をMarkdownとして処理してくれるのだ～🌱
   class PaperTag < Liquid::Block

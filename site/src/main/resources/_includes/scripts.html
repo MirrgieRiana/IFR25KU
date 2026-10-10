@@ -8,7 +8,7 @@
 {% endif %}
 
 <script>
-// greedy-nav初期化後にvisible-linksのoverflowを解除してドロップダウンを表示可能にする
+// greedy-navの初期化の後にvisible-linksのoverflowを解除して、ドロップダウンを表示できるようにするのだ～🌱
 document.addEventListener("DOMContentLoaded", function() {
   var vl = document.querySelector(".greedy-nav .visible-links");
   if (vl) vl.style.overflow = "visible";
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <script>
-// scrollTocToContentによるスクロール妨害を無効化
+// scrollTocToContentがスクロールを妨害するから、それを無効化するのだ～🌱
 document.addEventListener("gumshoeActivate", function(e) {
   e.stopImmediatePropagation();
 }, true);
@@ -129,7 +129,7 @@ document.addEventListener("gumshoeActivate", function(e) {
   var clearProgress = function() {
     if (!progressEl) return;
     progressEl.style.animation = 'none';
-    // リフローを強制してanimationの再開を可能にする
+    // リフローを強制して、animationを再開できるようにするのだ～🌱
     progressEl.offsetHeight;
   };
   var startProgress = function() {
@@ -139,7 +139,7 @@ document.addEventListener("gumshoeActivate", function(e) {
   var previousSnap = embla.selectedScrollSnap();
   embla.on('select', function() {
     clearProgress();
-    // 旧スライドのパンをキャンセルしてCSS既定に戻す
+    // 旧スライドのパンをキャンセルして、CSSの既定へ戻すのだ～🌱
     if (panAnimations[previousSnap]) {
       panAnimations[previousSnap].cancel();
       panAnimations[previousSnap] = null;
@@ -149,7 +149,7 @@ document.addEventListener("gumshoeActivate", function(e) {
     prevEl.style.height = '';
     prevEl.style.top = '';
     prevEl.style.left = '';
-    // 新スライドのパンを遷移中に開始
+    // 新スライドのパンは、遷移の最中に開始するのだ～🌱
     startPan(embla.selectedScrollSnap());
     previousSnap = embla.selectedScrollSnap();
   });
@@ -193,7 +193,7 @@ document.addEventListener("gumshoeActivate", function(e) {
     panAnimations[index] = setupPan(index);
   }
 
-  // settleでプログレスとautoplayを同期リセット
+  // settleのときに、プログレスとautoplayを揃えてリセットするのだ～🌱
   embla.on('settle', function() {
     embla.plugins().autoplay.play();
     clearProgress();

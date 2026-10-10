@@ -29,7 +29,7 @@ buildscript {
 
 val makeLangTable = tasks.register("makeLangTable") {
     group = "generate"
-    //dependsOn(project("fabric").tasks.named("runDatagen")) // CI上でrunDatagenが実行済みであることを強制しているので実行しないことにする
+    //dependsOn(project("fabric").tasks.named("runDatagen")) // CI上でrunDatagenが実行済みであることを強制しているから、ここでは実行しないのだ～🌱
 
     val enFile = rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json")
     val jaFile = rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json")
@@ -266,7 +266,8 @@ val generateOgImages = tasks.register("generateOgImages") {
                 // titleを取得
                 val title = frontMatter["title"] as? String ?: return@forEach
 
-                // header画像パスを取得（優先順位: og_background > overlay_image > image > teaser）
+                // header画像パスを取得するのだ～🌱
+                // 優先順位は og_background > overlay_image > image > teaser なのだ～🌱
                 @Suppress("UNCHECKED_CAST")
                 val header = frontMatter["header"] as? Map<String, Any>
                 val imagePath = (header?.get("og_background") ?: header?.get("overlay_image") ?: header?.get("image") ?: header?.get("teaser")) as? String
@@ -301,7 +302,7 @@ val generateOgImages = tasks.register("generateOgImages") {
                     }.normalizeJson()
                 )
 
-                // 入力に変化がない場合はスキップ（-Pregenerateで強制再生成）
+                // 入力に変化が無いときはスキップするのだ～🌱 -Pregenerateを付けると強制的に再生成するのだ～🌱
                 if (!regenerate && outputFile.exists() && inputsFile.exists() && inputsFile.readText() == inputsJson) {
                     logger.lifecycle("OG image is up-to-date, skipping: ${outputFile.absolutePath}")
                     return@forEach
@@ -373,7 +374,7 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
 
 val jekyllBuild = tasks.register<Exec>("jekyllBuild") {
     group = "build"
-    dependsOn(installJekyllBundle) // UP-TO-DATE の判定にかかるコストの削減のために敢えて inputs にしない
+    dependsOn(installJekyllBundle) // UP-TO-DATE の判定にかかるコストを削るために、敢えて inputs にしないのだ～🌱
     inputs.files(syncJekyllSource)
     outputs.dir(layout.buildDirectory.dir("jekyllBuild"))
     commandLine("bash", "scripts/build-site.sh")
