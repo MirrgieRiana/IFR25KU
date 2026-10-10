@@ -1006,12 +1006,11 @@ fun initBlockMaterialsModule() {
     ) on AURA_RESISTANT_CERAMIC_STAIRS_TAG modId MirageFairy2024.MOD_ID from AURA_RESISTANT_CERAMIC_STAIRS_TAG
 
     // ミラメラを妖精の鱗粉へ束ね直すレシピ
-    // TODO ミラメラが main へ入った後は、以下のコメントを外した状態が、本来あるべき形なのだ～🌱
-    // registerShapelessRecipeGeneration(MaterialCard.FAIRY_SCALES.item) {
-    //     repeat(4) {
-    //         requires(BlockMaterialCard.MIRAMERA.item())
-    //     }
-    // } on BlockMaterialCard.MIRAMERA.item from BlockMaterialCard.MIRAMERA.item
+    registerShapelessRecipeGeneration(MaterialCard.FAIRY_SCALES.item) {
+        repeat(4) {
+            requires(BlockMaterialCard.MIRAMERA.item())
+        }
+    } on BlockMaterialCard.MIRAMERA.item from BlockMaterialCard.MIRAMERA.item
 
 }
 
