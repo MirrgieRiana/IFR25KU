@@ -1074,6 +1074,13 @@ fun initBlockMaterialsModule() {
         duration = 20 * 60,
     ) on AURA_RESISTANT_CERAMIC_STAIRS_TAG modId MirageFairy2024.MOD_ID from AURA_RESISTANT_CERAMIC_STAIRS_TAG
 
+    // ミラメラの加工レシピ
+    registerShapelessRecipeGeneration(MaterialCard.FAIRY_SCALES.item) {
+        repeat(4) {
+            requires(BlockMaterialCard.MIRAMERA.item())
+        }
+    } on BlockMaterialCard.MIRAMERA.item from BlockMaterialCard.MIRAMERA.item
+
 }
 
 
