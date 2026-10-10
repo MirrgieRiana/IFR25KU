@@ -6,6 +6,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.motifRegistry
+import miragefairy2024.mod.magicplant.contents.magicplants.VeropedaCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
@@ -82,7 +83,45 @@ class IfrEncyclopediaEntryCard(
             ),
         )
 
-        val entries = listOf(MIRAGE_FAIRY)
+        val VEROPEDA = IfrEncyclopediaEntryCard(
+            "veropeda",
+            EnJa("Veropeda", "呪草ヴェロペダ"),
+            { listOf(VeropedaCard.item().createItemStack()) },
+            listOf(
+                "Monocots, order Miragales, family Veropedaceae",
+                "Veropeda",
+                "",
+                "This magical plant was created by combining the carnivorous plant Sarracenia with curse magic. Ancient alchemists identified it with Veropeda, a demon that lives by devouring fairies. The existence of such a demon has not been confirmed, but the fibers of this plant do have a real curse effect. The Institute of Fairy Research analyzed the genes of this plant, and surprisingly, they matched the genes of the Mirage perfectly.",
+                "",
+                "The Institute of Fairy Research",
+            ),
+            listOf(
+                "単子葉類妖花目ヴェロペダ科",
+                "ヴェロペダ",
+                "",
+                "サラセニアという食虫植物と呪いの魔法を合成して作られたこの魔法植物は、いにしえの錬金術師の間で、妖精を喰らって生きる悪魔ヴェロペーダと同一視されてきました。そのような悪魔の実在は確認されていませんが、この植物の繊維には実際に呪いの効果があります。妖精研究所がこの植物の遺伝子を解析したところ、驚くべきことにミラージュの遺伝子と完全に一致しました。",
+                "",
+                "妖精研究所",
+            ),
+        )
+
+        val FAIRY_RUBBER = IfrEncyclopediaEntryCard(
+            "fairy_rubber",
+            EnJa("Fairy Rubber", "夜のかけら"),
+            { listOf(MaterialCard.FAIRY_RUBBER.item().createItemStack()) },
+            listOf(
+                "The night's going awaaay... I was scared... I was cryiiing... And then... the sky gave me thiiis... This one... It's so waaarm... It's warm and it feels gooood... Always... I hold thiiis... and sleep...",
+                "",
+                "Nightia",
+            ),
+            listOf(
+                "よるがきえちゃうのー………　こわくて…ないてたー………　そしたらねー…………おそらがくれたのー……　これー……　とってもあったかいのー………　あたたかくてきもちいーのー……　いつもー……　これもってー…ねてるのー………",
+                "",
+                "夜精ニグチャ",
+            ),
+        )
+
+        val entries = listOf(MIRAGE_FAIRY, VEROPEDA, FAIRY_RUBBER)
     }
 
     val identifier = MirageFairy2024.identifier(path)
