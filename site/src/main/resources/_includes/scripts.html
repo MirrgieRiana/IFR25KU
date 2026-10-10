@@ -73,9 +73,13 @@ document.addEventListener("DOMContentLoaded", function() {
       return trigger.getAttribute("aria-expanded") === "true";
     });
     if (!opened.length) return;
-    closeAll();
     // 開いた項目の中からEscapeを押しても、行き先を見失わないように、見出しへフォーカスを戻すのだ～🌱
-    opened[0].focus();
+    // 閉じると中の項目からフォーカスが外れるから、閉じる前に見るのだ～🌱
+    var focusedTrigger = opened.filter(function(trigger) {
+      return trigger.closest(".masthead__menu-item--dropdown").contains(document.activeElement);
+    })[0];
+    closeAll();
+    if (focusedTrigger) focusedTrigger.focus();
   });
 
   document.addEventListener("click", function(event) {
