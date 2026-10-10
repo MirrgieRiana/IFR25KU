@@ -937,17 +937,17 @@ open class BlockMaterialCard(
             }
         }.cutout().sound(SoundType.GRASS).tag(BlockTags.MINEABLE_WITH_AXE, BlockTags.SWORD_EFFICIENT, BlockTags.REPLACEABLE, BlockTags.REPLACEABLE_BY_TREES).init {
             item.registerBlockGeneratedModelGeneration(block)
-            registerShapelessRecipeGeneration(MaterialCard.FAIRY_SCALES.item) {
-                repeat(4) {
-                    requires(item())
-                }
-            } on item from item
             block.registerFlammable(60, 100)
             Feature.FLOWER.generator(identifier) {
                 registerConfiguredFeature("cluster") { RandomPatchConfiguration(4, 7, 3, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(block())))) }.generator {
                     registerPlacedFeature("cluster") { count(3) + flower(square, surface) }.placeWhenVegetalDecoration { +FairyForestBiomeCard.key }
                 }
             }
+            registerShapelessRecipeGeneration(MaterialCard.FAIRY_SCALES.item) {
+                repeat(4) {
+                    requires(item())
+                }
+            } on item from item
         }
     }
 
