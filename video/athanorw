@@ -9,7 +9,7 @@
 #
 # タスクの名前は `:` で区切るのだ～🌱 左辺がプロジェクト名で、右辺がタスク名なのだ～🌱
 # `:` が無いときは、ルートプロジェクトのタスクとして扱うのだ～🌱
-# 叩ける右辺は、そのプロジェクトが返すものの直下にあるものなのだ～🌱
+# 叩ける右辺は、そのプロジェクトの tasks に並んでいるものなのだ～🌱
 #
 # ビルドの定義は build.athanor.xa1 に書くのだ～🌱
 # athanor そのものの実装は athanor/ の下にあるのだ～🌱
@@ -21,33 +21,14 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 
 if [ $# -eq 0 ]; then
-  echo "ERROR: task name required (e.g. tasks)" >&2
+  echo "ERROR: target required (e.g. tasks)" >&2
   exit 1
 fi
 
 target=$1
 shift
 
-# `:` の左辺がプロジェクト名で、右辺がタスク名なのだ～🌱
-# 区切りが無いときは、ルートプロジェクトのタスクなのだ～🌱
-case "$target" in
-  *:*)
-    project=${target%%:*}
-    task=${target#*:}
-    ;;
-  *)
-    project=""
-    task=$target
-    ;;
-esac
-
-# 括弧が無いときは、引数の無い呼び出しとして補うのだ～🌱
-case "$task" in
-  *'('*) call=$task ;;
-  *) call="$task()" ;;
-esac
-
 "$here/../xarpite/xarpite" -A 5 -q -f - "$@" <<EOF
 API(5)
-USE("$here/build.athanor").projectOf("$project").$call
+USE("$here/athanor/athanor").main("$here/build.athanor"; "$target")
 EOF

@@ -46,36 +46,44 @@ AthanorProject := {
 
     # どのプロジェクトにも、並んでいるタスクを見る手段を持たせるのだ～🌱
     # ここで足しておかないと、タスクを 1 個も並べていないプロジェクトを、外から覗けないのだ～🌱
-    # action は、tasks を今ここで閉じ込めて見るのだ～🌱 exportTasks がプロジェクトの直下の tasks を関数で覆うからなのだ～🌱
-    tasks := project.tasks
     project.tasks.tasks = AthanorTask.new()::ALSO ( task =>
       task.name = "tasks"
-      task.action = () -> tasks() | entry => OUT(entry.0)
+      task.action = () -> project.tasks() | entry => OUT(entry.0)
     )
 
     project
   )
-
-  # 名前からタスクを引いて走らせるのだ～🌱
-  run: (this; name) -> (
-    task := this.tasks.(name)
-    task == NULL ? (
-      ERR("ERROR: task not found: $name")
-      EXIT(1)
-    ) : task::run()
-  )
-
-  # タスクを、プロジェクトの直下から同じ名前で呼べるようにするのだ～🌱
-  # athanorw のような外からの呼び出しは、この関数を通るのだ～🌱
-  # タスクを並べ終えてから呼ぶのだ～🌱 後から足したタスクは、並ばないのだ～🌱
-  exportTasks: this -> (
-    # 回している途中で this.tasks を関数で覆うから、先に配列へ固めるのだ～🌱
-    entries := [this.tasks()]
-    entries() | entry => this.(entry.0) = () -> entry.1::run()
-  )
 }
+
+# athanorw から呼ばれる入口なのだ～🌱
+# buildFile はビルドの定義のモジュールのパスで、target は叩く対象の名前なのだ～🌱
+# target は `<プロジェクト名>:<タスク名><引数スクリプト>` の形で、プロジェクト名も引数スクリプトも省略できるのだ～🌱
+main := (buildFile; target) -> (
+  parsed := target =~ /^(?:([^:]*):)?([^(]*)(\(.*\))?$/ ?: (
+    ERR("ERROR: invalid target: $target")
+    EXIT(1)
+  )
+  # プロジェクト名を省略すると、ルートプロジェクトのタスクになるのだ～🌱
+  projectName := parsed.1 ?: ""
+  taskName := parsed.2
+  # 引数スクリプトを省略すると、引数の無い呼び出しになるのだ～🌱
+  argumentScript := parsed.3 ?: "()"
+
+  project := USE(buildFile).projectOf(projectName) ?: (
+    ERR("ERROR: project not found: $projectName")
+    EXIT(1)
+  )
+  task := project.tasks.(taskName) ?: (
+    ERR("ERROR: task not found: $taskName")
+    EXIT(1)
+  )
+
+  # 引数スクリプトはソースコードの断片だから、タスクを受け取る関数の本体として組み立てて評価するのだ～🌱
+  XA("task -> task::run$argumentScript")(task)
+)
 
 {
   AthanorTask: AthanorTask
   AthanorProject: AthanorProject
+  main: main
 }

@@ -18,10 +18,9 @@ INC += LOCATION RESOLVE ".." RESOLVE "athanor"
 {
   # ルートプロジェクトは、タスクを 1 個も持たないのだ～🌱
   # それでも、athanor がどのプロジェクトにも足す tasks は呼べるのだ～🌱
-  projectOf: name -> name != "" ? (
-    ERR("ERROR: project not found: $name")
-    EXIT(1)
-  ) : AthanorProject.new()::ALSO ( project =>
-    project::exportTasks()
-  )
+  # 名前の合うプロジェクトが無ければ NULL を返して、呼び出し元がそれを伝えるのだ～🌱
+  projectOf: name ->
+    : name == "" ? :
+      AthanorProject.new()
+    : NULL
 }
