@@ -4,7 +4,7 @@ tagline: "MirageFairyの世界観に基づいた、可能な世界の一つを�
 description: "MirageFairyの世界観に基づいた、可能な世界の一つを表現するMinecraft MOD。"
 layout: one-column
 header:
-  og_background: /assets/images/index/banner1.webp
+  og_background: ./banner1.webp
   overlay_color: "#1a1a2e"
   overlay_filter: "linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.40) 50%, rgba(0, 0, 0, 0.40) 100%)"
   actions:
@@ -18,10 +18,10 @@ header:
       url: "https://discord.gg/bppQyAZtkA"
       icon: "/assets/images/discord.svg"
 carousel:
-  - overlay_image: /assets/images/index/banner1.webp
-  - overlay_image: /assets/images/index/banner2.webp
-  - overlay_image: /assets/images/index/banner3.webp
-  - overlay_image: /assets/images/index/banner4.webp
+  - overlay_image: ./banner1.webp
+  - overlay_image: ./banner2.webp
+  - overlay_image: ./banner3.webp
+  - overlay_image: ./banner4.webp
 sidebar: false
 toc: false
 ---
@@ -40,7 +40,7 @@ toc: false
   <div class="encyclopedia-frame">
     <div class="encyclopedia-card">
       <div class="encyclopedia-card__image">
-        <img src="https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/00fd8432abd76e76bf952bc13ae0490a0d265468_0.webp" alt="Mirage">
+        {% image "./mirage-fairy.webp" alt="Mirage" %}
       </div>
       <div class="encyclopedia-card__body">
         <h3 class="encyclopedia-card__title">単子葉類妖花目ミラージュ科　ミラージュ</h3>

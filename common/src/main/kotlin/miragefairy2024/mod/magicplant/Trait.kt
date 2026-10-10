@@ -27,7 +27,7 @@ import net.minecraft.world.level.Level
 val traitRegistryKey: ResourceKey<Registry<Trait>> = ResourceKey.createRegistryKey(MirageFairy2024.identifier("trait"))
 val traitRegistry: Registry<Trait> = FabricRegistryBuilder.createSimple(traitRegistryKey).attribute(RegistryAttribute.SYNCED).buildAndRegister()
 
-abstract class Trait(val style: Style, val poem: Component) : Comparable<Trait> {
+abstract class Trait(val style: Style, val text: Component) : Comparable<Trait> {
     companion object {
         val CODEC: Codec<Trait> = traitRegistry.byNameCodec()
         val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, Trait> = ByteBufCodecs.registry(traitRegistryKey)

@@ -4,9 +4,9 @@
 # paper_column.rb — Paper Column Tag for Jekyll
 # =============================================================================
 #
-# 論文の段組みの、1個の段を表すLiquidカスタムブロックタグ。
+# 論文の段組みの、1個の段を表すLiquidカスタムブロックタグなのだ～🌱
 #
-# paper_columns の直下に、段の個数だけ並べて使用する。
+# paper_columns の直下に、段の個数だけ並べて使うのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -30,9 +30,9 @@
 module Paper
 
   # {% paper_column %}...{% endpaper_column %} ブロックタグの実装。
-  # ブロック内容を、段組みの中の1個の段として出力する。
+  # ブロック内容を、段組みの中の1個の段として出力するのだ～🌱
   class PaperColumnTag < Liquid::Block
-    # Liquidは内容が空白のみのブロックの描画自体を省くため、中身を持たない段が消える
+    # Liquidは内容が空白のみのブロックの描画自体を省くから、中身を持たない段が消えちゃうのだぁ…🌧️
     def blank?
       false
     end
@@ -49,5 +49,5 @@ module Paper
   end
 end
 
-# タグ "paper_column" を Liquid に登録する
+# タグ "paper_column" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("paper_column", Paper::PaperColumnTag)

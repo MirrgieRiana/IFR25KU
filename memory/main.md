@@ -166,6 +166,8 @@ CSSのカスタマイズは `assets/css/main.scss` の `@import "minimal-mistake
 | `src/pages/resources/YYYY-MM-DD-slug/` の画像 | `YYYY/MM/DD/ファイル名`（slug階層なし、`assets/images/` プレフィックスなし、ファイル名衝突チェックあり） |
 
 ブログ記事の `header.teaser` パスは `/YYYY/MM/DD/ファイル名` の形で書くのだ～🌱
+`./ファイル名` のように `.` から始めると、`syncJekyllSource` が上の表の出力配置を前に付けて、絶対パスへ直してくれるのだ～🌱
+これが効くのは front matter の中の `teaser` と `image` と `overlay_image` と `og_background` で、記事の移動や改名で書き換えが要らなくなるのだ～🌱
 拡張子は `.webp` が多いけど、`.png` の teaser も混じっているのだぁ✨
 インライン画像は相対パス `![](ファイル名)` で参照するのだ～🌱（`.webp` も `.png` もあるのだ～🌱）
 記事本体と同じ階層に出力されるから、`relative_url` フィルタは要らないのだ～🌱

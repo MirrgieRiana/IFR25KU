@@ -2,7 +2,7 @@
 title: Lang Table
 description: MOD内テキストの翻訳対応表
 header:
-  teaser: /assets/images/lang-table-index/lang-table-index.teaser.svg
+  teaser: ./lang-table-index.teaser.svg
   teaser_banner: false
 ---
 

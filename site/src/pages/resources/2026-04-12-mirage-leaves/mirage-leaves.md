@@ -3,7 +3,7 @@ title: "【ミラージュの葉】気を付けねばなのだ。【つむぎ×�
 description: ずんだもんと春日部つむぎがミラージュの葉でカバンを作る話
 layout: theater
 header:
-  teaser: /2026/04/12/mirage-leaves.teaser.png
+  teaser: ./mirage-leaves.teaser.png
 tags: [ IFR劇場, ミラージュの葉, カバン ]
 ---
 
@@ -14,14 +14,14 @@ tags: [ IFR劇場, ミラージュの葉, カバン ]
 
 {% space %}
 
-![ミラージュの葉からミラージュの茎を作るレシピ](recipe-stem.png)
+{% image "./recipe-stem.png" alt="ミラージュの葉からミラージュの茎を作るレシピ" %}
 {% say tsumugi3 %}これを茎だけにすればいいんだよね！{% endsay %}
 {% say zundamon23 %}ちょっと待つのだ、それは——{% endsay %}
 {% say tsumugi3 %}～♪えいっ！！……あっ{% endsay %}
 {% say tsumugi3 %}いったーーーい！！！{% endsay %}
 {% say zundamon23 %}大丈夫かなのだ。{% endsay %}
 {% say tsumugi3 %}……血は出てないみたい……{% endsay %}
-![青緑色の葉の形をしたミラージュの葉](mirage-leaves.png)
+{% image "./mirage-leaves.png" alt="青緑色の葉の形をしたミラージュの葉" %}
 {% say zundamon23 %}これはミラージュの葉なのだ。気を付けて触らないと怪我するのだ。{% endsay %}
 {% say tsumugi3 %}むぇー……{% endsay %}
 {% say tsumugi3 %}！？――ていうか、そんなのでカバンなんか作って大丈夫なの！？{% endsay %}
@@ -36,16 +36,16 @@ tags: [ IFR劇場, ミラージュの葉, カバン ]
 {% say zundamon23 %}不揃いだけど、カバンとしては十分なのだ。{% endsay %}
 {% say tsumugi3 %}あーし、他に何か手伝えること、ある？{% endsay %}
 {% say zundamon23 %}持ち手の部分に茎を通してほしいのだ。{% endsay %}
-![ミラージュの茎1個とミラージュの葉5枚から植物カバンを作るレシピ](recipe-plant-bag.png)
+{% image "./recipe-plant-bag.png" alt="ミラージュの茎1個とミラージュの葉5枚から植物カバンを作るレシピ" %}
 {% say tsumugi3 %}こう……？あ、なるほどね。こうなってるんだ。{% endsay %}
 {% say zundamon23 %}完成なのだ。{% endsay %}
-![青緑色のショルダーバッグの形をした植物カバン](plant-bag-item.png)
+{% image "./plant-bag-item.png" alt="青緑色のショルダーバッグの形をした植物カバン" %}
 {% say tsumugi3 %}わっ、ちゃんとカバンだ！{% endsay %}
 
 {% space %}
 
 {% say tsumugi3 %}ねえ、これ何入れるの？{% endsay %}
 {% say zundamon23 %}ミラージュの球根なのだ。{% endsay %}
-![ミラージュの球根15スタックで埋め尽くされた植物カバンのGUI](plant-bag-contents.png)
+{% image "./plant-bag-contents.png" alt="ミラージュの球根15スタックで埋め尽くされた植物カバンのGUI" %}
 {% say tsumugi3 %}……また指切るじゃん。{% endsay %}
 {% say zundamon23 %}気を付けねばなのだ。{% endsay %}

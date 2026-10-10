@@ -4,7 +4,7 @@
 # paper_stamp.rb — Paper Production Stamp Tag for Jekyll
 # =============================================================================
 #
-# 紙面の末尾に置かれる、制作日と制作者の行を表示するためのLiquidカスタムブロックタグ。
+# 紙面の末尾に置かれる、制作日と制作者の行を表示するためのLiquidカスタムブロックタグなのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -21,7 +21,7 @@
 module Paper
 
   # {% paper_stamp %}...{% endpaper_stamp %} ブロックタグの実装。
-  # ブロック内容を、紙面末尾の制作日スタンプとして出力する。
+  # ブロック内容を、紙面末尾の制作日スタンプとして出力するのだ～🌱
   class PaperStampTag < Liquid::Block
     def render(context)
       content = super.strip
@@ -32,5 +32,5 @@ module Paper
   end
 end
 
-# タグ "paper_stamp" を Liquid に登録する
+# タグ "paper_stamp" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("paper_stamp", Paper::PaperStampTag)

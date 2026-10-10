@@ -6,8 +6,9 @@ import com.luciad.imageio.webp.WebPWriteParam
 import com.microsoft.playwright.Browser
 import com.microsoft.playwright.Page
 import com.microsoft.playwright.Playwright
-import org.yaml.snakeyaml.Yaml
+import tools.FrontMatterFilterReader
 import tools.normalizeJson
+import tools.parseFrontMatter
 import tools.sha256
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -21,7 +22,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.yaml:snakeyaml:2.2")
         classpath("com.microsoft.playwright:playwright:1.58.0")
         classpath("org.sejda.imageio:webp-imageio:0.1.6")
     }
@@ -29,7 +29,7 @@ buildscript {
 
 val makeLangTable = tasks.register("makeLangTable") {
     group = "generate"
-    //dependsOn(project("fabric").tasks.named("runDatagen")) // CI上でrunDatagenが実行済みであることを強制しているので実行しないことにする
+    //dependsOn(project("fabric").tasks.named("runDatagen")) // CI上でrunDatagenが実行済みであることを強制しているから、ここでは実行しないのだ～🌱
 
     val enFile = rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/en_us.json")
     val jaFile = rootProject.file("common/src/generated/resources/assets/miragefairy2024/lang/ja_jp.json")
@@ -165,13 +165,6 @@ private fun buildOgHtml(title: String, backgroundUrl: String, pixelated: Boolean
 """.trimIndent()
 }
 
-private fun parseFrontMatter(file: File): Map<String, Any>? {
-    val content = file.readText()
-    val match = Regex("\\A---\\r?\\n(.*?)\\r?\\n---(?:\\r?\\n|\\Z)", RegexOption.DOT_MATCHES_ALL).find(content) ?: return null
-    @Suppress("UNCHECKED_CAST")
-    return Yaml().load<Map<String, Any>>(match.groupValues[1]) as? Map<String, Any>
-}
-
 class OgImageRenderer : AutoCloseable {
     private var playwright: Playwright? = null
     private var browser: Browser? = null
@@ -248,7 +241,7 @@ val generateOgImages = tasks.register("generateOgImages") {
     val regenerate = project.hasProperty("regenerate")
 
     inputs.dir(pagesDir)
-    inputs.file(file("src/ogImages/assets/default-background.svg"))
+    inputs.file(file("src/ogImages/resources/assets/images/default-background.svg"))
     inputs.property("regenerate", regenerate)
     outputs.dir(ogImagesDir)
 
@@ -265,7 +258,7 @@ val generateOgImages = tasks.register("generateOgImages") {
                 mdFilesInDir.single()
             }
 
-        val defaultBg = file("src/ogImages/assets/default-background.svg")
+        val defaultBg = file("src/ogImages/resources/assets/images/default-background.svg")
         OgImageRenderer().use { renderer ->
             mdFiles.forEach { mdFile ->
                 val frontMatter = parseFrontMatter(mdFile) ?: return@forEach
@@ -273,7 +266,8 @@ val generateOgImages = tasks.register("generateOgImages") {
                 // titleを取得
                 val title = frontMatter["title"] as? String ?: return@forEach
 
-                // header画像パスを取得（優先順位: og_background > overlay_image > image > teaser）
+                // header画像パスを取得するのだ～🌱
+                // 優先順位は og_background > overlay_image > image > teaser なのだ～🌱
                 @Suppress("UNCHECKED_CAST")
                 val header = frontMatter["header"] as? Map<String, Any>
                 val imagePath = (header?.get("og_background") ?: header?.get("overlay_image") ?: header?.get("image") ?: header?.get("teaser")) as? String
@@ -308,7 +302,7 @@ val generateOgImages = tasks.register("generateOgImages") {
                     }.normalizeJson()
                 )
 
-                // 入力に変化がない場合はスキップ（-Pregenerateで強制再生成）
+                // 入力に変化が無いときはスキップするのだ～🌱 -Pregenerateを付けると強制的に再生成するのだ～🌱
                 if (!regenerate && outputFile.exists() && inputsFile.exists() && inputsFile.readText() == inputsJson) {
                     logger.lifecycle("OG image is up-to-date, skipping: ${outputFile.absolutePath}")
                     return@forEach
@@ -341,42 +335,36 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
     from(generateOgImages) {
         include("**/*.webp")
     }
+    // OG画像の生成が、front matterに画像の指定が無いページで敷く背景なのだ～🌱
+    // 記事カードのサムネイルが指定されていないときも、同じものを出すから、サイトの側からも参照できる場所へ置くのだ～🌱
+    from("src/ogImages/resources")
     from("src/external/resources")
     from("src/pages/resources") {
         includeEmptyDirs = false
-        val seenImagePaths = mutableMapOf<String, String>()
         eachFile {
-            // 下で配置先が平らになって元のディレクトリ名が失われるから、footer の source のリンクのために、元のパスを front matter へ書き足すのだ～🌱
-            if (name.endsWith(".md")) {
-                val sourcePath = file.relativeTo(rootDir).invariantSeparatorsPath
-                var isFirstLine = true
-                filter { line ->
-                    val result = if (isFirstLine && line == "---") "$line\nsource_path: $sourcePath" else line
-                    isFirstLine = false
-                    result
-                }
-            }
             val dirName = relativePath.pathString.substringBefore("/")
             val postMatch = """(\d{4})-(\d{2})-(\d{2})-(.+)""".toRegex().matchEntire(dirName)
-            if (postMatch != null) {
-                val (year, month, day, _) = postMatch.destructured
-                if (name.endsWith(".md")) {
-                    relativePath = RelativePath(true, "_posts", "$dirName.md")
+            // 同じディレクトリに並ぶ画像の配置先なのだ～🌱
+            // 記事のディレクトリ名が、そのままここへ残るのだ～🌱
+            // front matter と本文のパスを . から始めたときは、ここが基準になるのだ～🌱
+            val imageDir = if (postMatch != null) {
+                val (year, month, day, slug) = postMatch.destructured
+                "assets/images/$year/$month/$day/$slug"
+            } else {
+                "assets/images/$dirName"
+            }
+            if (name.endsWith(".md")) {
+                val sourcePath = file.relativeTo(rootDir).invariantSeparatorsPath
+                filter(mapOf("sourcePath" to sourcePath, "imageDir" to "/$imageDir"), FrontMatterFilterReader::class.java)
+            }
+            relativePath = if (name.endsWith(".md")) {
+                if (postMatch != null) {
+                    RelativePath(true, "_posts", "$dirName.md")
                 } else {
-                    val sourcePath = relativePath.pathString
-                    relativePath = RelativePath(true, year, month, day, name)
-                    val outputKey = relativePath.pathString
-                    seenImagePaths[outputKey]?.let { existingSource ->
-                        error("Image filename collision at '$outputKey': '$existingSource' and '$sourcePath'")
-                    }
-                    seenImagePaths[outputKey] = sourcePath
+                    RelativePath(true, name)
                 }
             } else {
-                if (name.endsWith(".md")) {
-                    relativePath = RelativePath(true, name)
-                } else {
-                    relativePath = RelativePath(true, "assets", "images", dirName, name)
-                }
+                RelativePath(true, *imageDir.split("/").toTypedArray(), name)
             }
         }
     }
@@ -386,7 +374,7 @@ val syncJekyllSource = tasks.register<Sync>("syncJekyllSource") {
 
 val jekyllBuild = tasks.register<Exec>("jekyllBuild") {
     group = "build"
-    dependsOn(installJekyllBundle) // UP-TO-DATE の判定にかかるコストの削減のために敢えて inputs にしない
+    dependsOn(installJekyllBundle) // UP-TO-DATE の判定にかかるコストを削るために、敢えて inputs にしないのだ～🌱
     inputs.files(syncJekyllSource)
     outputs.dir(layout.buildDirectory.dir("jekyllBuild"))
     commandLine("bash", "scripts/build-site.sh")

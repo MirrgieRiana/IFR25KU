@@ -4,7 +4,7 @@
 # paper_label.rb — Paper Label Tag for Jekyll
 # =============================================================================
 #
-# 論文タイトルの上に置かれる、紙面のラベルを表示するためのLiquidカスタムインラインタグ。
+# 論文タイトルの上に置かれる、紙面のラベルを表示するためのLiquidカスタムインラインタグなのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -14,8 +14,8 @@
 #
 #   {% paper_label "<紙面の種別>" "<掲載誌名>" %}
 #
-#   - 紙面の種別: 行の左端に配置される（必須）
-#   - 掲載誌名:   行の右端に配置される（必須）
+#   - 紙面の種別: 行の左端に配置されるのだ～🌱（必須）
+#   - 掲載誌名:   行の右端に配置されるのだ～🌱（必須）
 #
 # ## HTML出力構造
 #
@@ -29,7 +29,7 @@
 module Paper
 
   # {% paper_label ... %} インラインタグの実装。
-  # 2個の引数を、それぞれ行の左端と右端に配置する。
+  # 2個の引数を、それぞれ行の左端と右端に配置するのだ～🌱
   class PaperLabelTag < Liquid::Tag
     def initialize(tag_name, markup, options)
       super
@@ -47,5 +47,5 @@ module Paper
   end
 end
 
-# タグ "paper_label" を Liquid に登録する
+# タグ "paper_label" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("paper_label", Paper::PaperLabelTag)

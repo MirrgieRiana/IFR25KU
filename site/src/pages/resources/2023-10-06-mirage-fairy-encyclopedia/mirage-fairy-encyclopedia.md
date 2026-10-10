@@ -2,7 +2,7 @@
 title: "単子葉類妖花目ミラージュ科　ミラージュ"
 layout: encyclopedia
 header:
-  teaser: /2023/10/06/mirage-fairy.webp
+  teaser: ./mirage-fairy.webp
 tags:
   - ミラージュ
   - 妖精
@@ -11,7 +11,7 @@ tags:
 <div class="encyclopedia-frame">
   <div class="encyclopedia-card">
     <div class="encyclopedia-card__image">
-      <img src="mirage-fairy.webp" alt="Mirage">
+      {% image "./mirage-fairy.webp" alt="Mirage" %}
     </div>
     <div class="encyclopedia-card__body">
       <h3 class="encyclopedia-card__title">単子葉類妖花目ミラージュ科　ミラージュ</h3>

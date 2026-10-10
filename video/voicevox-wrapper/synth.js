@@ -1,5 +1,5 @@
-// 合成の依頼を並べた jsonl から、VOICEVOX ENGINE で 1 行ずつ音声を合成する、動画に依存しない汎用のラッパーなのだ～🌱
-// 使い方と、依頼の行の形と、環境変数は、README.md に書いてあるのだ～🌱
+// 合成のリクエストを並べた jsonl から、VOICEVOX ENGINE で 1 行ずつ音声を合成する、動画に依存しない汎用のラッパーなのだ～🌱
+// 使い方と、リクエストの行の形と、環境変数は、README.md に書いてあるのだ～🌱
 const fs = require('fs');
 const path = require('path');
 
@@ -13,7 +13,7 @@ const host = process.env.VOICEVOX_HOST || 'http://127.0.0.1:50021';
 
 const isObject = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 
-// 依頼の jsonl の 1 行を、1 個の音声の依頼として読み込むのだ～🌱
+// リクエストの jsonl の 1 行を、1 個の音声のリクエストとして読み込むのだ～🌱
 let requests;
 try {
   requests = fs.readFileSync(requestsPath, 'utf-8').split('\n')

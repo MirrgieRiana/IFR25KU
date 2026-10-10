@@ -4,66 +4,70 @@
 # paper_figure.rb — Paper Figure Tag for Jekyll
 # =============================================================================
 #
-# 論文中の、キャプション付きの画像を表示するためのLiquidカスタムインラインタグ。
+# 論文中の、キャプション付きの画像を表示するためのLiquidカスタムブロックタグなのだ～🌱
 #
-# 画像は、既定では紙面や段の幅いっぱいに掲げる。
-# actual_size を添えると、代わりに画像自身が持つ寸法で掲げる。
+# 画像そのものは、ブロックの中で {% image %} タグを呼んで掲げるのだ～🌱
+# 画像の掲げ方は image.rb が 1 か所で持って、このタグはその周りの figure とキャプションだけを組むのだ～🌱
 #
-# 拡大したときに画素を補間するか否かは、掲げ方ではなく画像の形式が決める。
-# pngは画素を保ったまま拡大され、webpは補間される。
+# 画像は、既定では紙面や段の幅いっぱいに掲げるのだ～🌱
+# actual_size を添えると、代わりに画像自身が持つ寸法で掲げるのだ～🌱
+#
+# 拡大したときに画素を補間するか否かは、掲げ方ではなく画像の形式が決めるのだ～🌱
+# pngは画素を保ったまま拡大されて、webpは補間されるのだ～🌱
 #
 # ## 基本的な使い方
 #
-#   {% paper_figure "miragium-axe.webp" "図１　ミラジウムの斧" %}
-#   {% paper_figure "deep-space-field.webp" %}
-#   {% paper_figure actual_size "dictionary-entry.png" "「辞書」の項目の一例" %}
-#   {% paper_figure "night-sky.webp" "図３　夜空<br>第4恒星の近傍" alt="図３　夜空　第4恒星の近傍" %}
+#   {% paper_figure "図１　ミラジウムの斧" %}{% image "./miragium-axe.webp" alt="ミラジウムの斧" %}{% endpaper_figure %}
+#   {% paper_figure %}{% image "./deep-space-field.webp" %}{% endpaper_figure %}
+#   {% paper_figure actual_size "「辞書」の項目の一例" %}{% image "./dictionary-entry.png" alt="「辞書」の項目の一例" %}{% endpaper_figure %}
 #
 # ## markup構文
 #
-#   {% paper_figure [actual_size] "<画像のパス>" ["<キャプション>"] [alt="<代替テキスト>"] %}
+#   {% paper_figure [actual_size] ["<キャプション>"] %}<画像を掲げる中身>{% endpaper_figure %}
 #
-#   - actual_size:  添えると、幅に合わせず、画像自身が持つ寸法で掲げる
-#   - 画像のパス:   記事のディレクトリからの相対パス（必須）
-#   - キャプション: 画像の下に置かれる説明。省略した場合はキャプションを出力しない
-#   - 代替テキスト: img の alt に入る文字列なのだ～🌱
-#     省略すると、キャプションがそのまま入るのだ～🌱
+#   - actual_size:  添えると、幅に合わせず、画像自身が持つ寸法で掲げるのだ～🌱
+#   - キャプション: 画像の下に置かれる説明なのだ～🌱
+#                 省略するとキャプションを出力しないのだ～🌱
+#   - 中身:         figure の中へそのまま置かれるのだ～🌱 {% image %} タグを呼ぶのだ～🌱
 #
 # ## HTML出力構造
 #
 #   <figure class="paper__figure">
-#   <img src="（画像のパス）" alt="（代替テキスト、無ければキャプション）">
+#   （ブロックの中身）
 #   <figcaption class="paper__caption" markdown="span">（キャプション）</figcaption>
 #   </figure>
 #
-#   actual_size を添えた場合、figure に paper__figure--actual-size が加わる。
+#   actual_size を添えると、figure に paper__figure--actual-size が加わるのだ～🌱
 #
 # =============================================================================
 
 module Paper
 
-  # {% paper_figure ... %} インラインタグの実装。
-  # 画像と、その下に置くキャプションを組み立てる。
-  class PaperFigureTag < Liquid::Tag
+  # {% paper_figure %}...{% endpaper_figure %} ブロックタグの実装。
+  # ブロックの中身の画像と、その下に置くキャプションを構成するのだ～🌱
+  class PaperFigureTag < Liquid::Block
+    # Liquidは内容が空白のみのブロックの描画自体を省くから、中身を持たない図が消えちゃうのだぁ…🌧️
+    def blank?
+      false
+    end
+
     def initialize(tag_name, markup, options)
       super
-      @source, @caption = TagArguments.parse(markup)
+      @caption = TagArguments.parse(markup).first
       @actual_size = TagArguments.flag?(markup, "actual_size")
-      @alt = TagArguments.named(markup, "alt") || @caption
     end
 
     def render(context)
-      # 代替テキストもキャプションも無い画像は、装飾として扱うのだ～🌱
       caption_html = @caption ? %(<figcaption class="paper__caption" markdown="span">#{@caption}</figcaption>\n) : ""
       class_names = @actual_size ? "paper__figure paper__figure--actual-size" : "paper__figure"
       <<~HTML
         <figure class="#{class_names}">
-        <img src="#{@source}" alt="#{@alt}">
+        #{super.strip}
         #{caption_html}</figure>
       HTML
     end
   end
 end
 
-# タグ "paper_figure" を Liquid に登録する
+# タグ "paper_figure" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("paper_figure", Paper::PaperFigureTag)
