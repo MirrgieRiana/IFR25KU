@@ -36,6 +36,7 @@ import net.minecraft.world.level.biome.BiomeGenerationSettings
 import net.minecraft.world.level.biome.BiomeSpecialEffects
 import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.biome.MobSpawnSettings
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.levelgen.GenerationStep
 import net.minecraft.world.level.levelgen.Noises
@@ -43,6 +44,7 @@ import net.minecraft.world.level.levelgen.SurfaceRules
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
 import net.minecraft.world.level.levelgen.feature.Feature
+import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
 import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
 import net.minecraft.world.level.levelgen.placement.BiomeFilter
@@ -76,6 +78,8 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
     private val megaJunglePlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("mega_jungle_tree_old_growth_amber_forest")
     private val tallGrassPlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("tall_grass_old_growth_amber_forest")
     private val deadBushPlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("dead_bush_old_growth_amber_forest")
+    private val dayflowerPlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("dayflower_old_growth_amber_forest")
+    private val nectarflowerPlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("nectarflower_old_growth_amber_forest")
 
     override fun createBiome(placedFeatureLookup: HolderGetter<PlacedFeature>, configuredCarverLookup: HolderGetter<ConfiguredWorldCarver<*>>): Biome {
         return Biome.BiomeBuilder()
@@ -129,6 +133,8 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                 BiomeDefaultFeatures.addDefaultGrass(lookupBackedBuilder)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, tallGrassPlacedFeatureKey)
                 lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, deadBushPlacedFeatureKey)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, dayflowerPlacedFeatureKey)
+                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, nectarflowerPlacedFeatureKey)
                 BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
 
             }.build()).build()
@@ -142,6 +148,8 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
         run {
             val onGrassBlock = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, Blocks.GRASS_BLOCK)))
             val onCoarseDirt = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, Blocks.COARSE_DIRT)))
+
+            fun placerOn(groundBlock: Block, block: Block) = PlacementUtils.filtered(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(block)), BlockPredicate.allOf(BlockPredicate.ONLY_IN_AIR_PREDICATE, BlockPredicate.matchesBlocks(Direction.DOWN.normal, groundBlock)))
 
             // プラノキの巨木
             Feature.TREE.generator(MirageFairy2024.identifier("giant_plastic_tree_old_growth_amber_forest")) {
@@ -190,6 +198,20 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
             Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("dead_bush_old_growth_amber_forest")) {
                 registerConfiguredFeature { FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.DEAD_BUSH)), listOf(Blocks.COARSE_DIRT), 4) }.generator {
                     registerPlacedFeature(deadBushPlacedFeatureKey) { count(8) + listOf(InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()) }
+                }
+            }
+
+            // ツユクサ
+            Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("dayflower_old_growth_amber_forest")) {
+                registerConfiguredFeature { RandomPatchConfiguration(1, 0, 0, placerOn(Blocks.GRASS_BLOCK, BlockMaterialCard.DAYFLOWER.block())) }.generator {
+                    registerPlacedFeature(dayflowerPlacedFeatureKey) { count(2) + flower(square, surface) }
+                }
+            }
+
+            // ミツクサ
+            Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("nectarflower_old_growth_amber_forest")) {
+                registerConfiguredFeature { RandomPatchConfiguration(1, 0, 0, placerOn(BlockMaterialCard.RESIN_CEMENT.block(), BlockMaterialCard.NECTARFLOWER.block())) }.generator {
+                    registerPlacedFeature(nectarflowerPlacedFeatureKey) { count(8) + flower(square, surface) }
                 }
             }
 

@@ -1,0 +1,44 @@
+{
+  "type": "minecraft:random_patch",
+  "config": {
+    "feature": {
+      "feature": {
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "type": "minecraft:simple_state_provider",
+            "state": {
+              "Name": "miragefairy2024:nectarflower"
+            }
+          }
+        }
+      },
+      "placement": [
+        {
+          "type": "minecraft:block_predicate_filter",
+          "predicate": {
+            "type": "minecraft:all_of",
+            "predicates": [
+              {
+                "type": "minecraft:matching_blocks",
+                "blocks": "minecraft:air"
+              },
+              {
+                "type": "minecraft:matching_blocks",
+                "blocks": "miragefairy2024:resin_cement",
+                "offset": [
+                  0,
+                  -1,
+                  0
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "tries": 1,
+    "xz_spread": 0,
+    "y_spread": 0
+  }
+}
