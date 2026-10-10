@@ -82,7 +82,6 @@ class IfrEncyclopediaEntryCard(
             ),
         )
 
-
         val entries = listOf(MIRAGE_FAIRY)
     }
 
