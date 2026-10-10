@@ -10017,6 +10017,17 @@
       }
     ]
   },
+  "miragefairy2024:miramera": {
+    "definition": {
+      "type": "miragefairy2024:miramera",
+      "properties": {}
+    },
+    "states": [
+      {
+        "default": true
+      }
+    ]
+  },
   "miragefairy2024:miranagite_block": {
     "definition": {
       "type": "minecraft:block",
