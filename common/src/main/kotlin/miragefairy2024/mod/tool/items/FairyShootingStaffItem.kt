@@ -2,6 +2,7 @@ package miragefairy2024.mod.tool.items
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModifyItemEnchantmentsHandler
+import miragefairy2024.mixins.api.NoSlowdownWhileUsingItem
 import miragefairy2024.mod.SoundEventCard
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.MAGIC_WEAPON_ITEM_TAG
@@ -20,7 +21,6 @@ import miragefairy2024.util.get
 import miragefairy2024.util.getLevel
 import miragefairy2024.util.getRate
 import miragefairy2024.util.invoke
-import miragefairy2024.util.randomInt
 import miragefairy2024.util.string
 import miragefairy2024.util.text
 import miragefairy2024.util.yellow
@@ -42,11 +42,14 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Tier
 import net.minecraft.world.item.TieredItem
+import net.minecraft.world.item.Tiers
 import net.minecraft.world.item.TooltipFlag
+import net.minecraft.world.item.UseAnim
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.ItemEnchantments
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
+import kotlin.math.ceil
 
 open class FairyShootingStaffConfiguration(
     override val toolMaterialCard: ToolMaterialCard,
@@ -91,32 +94,90 @@ class FairyShootingStaffItem(override val configuration: FairyShootingStaffConfi
 
 }
 
-open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, private val baseMaxDistance: Float, settings: Properties) : TieredItem(toolMaterial, settings) {
+open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, private val baseMaxDistance: Float, settings: Properties) : TieredItem(toolMaterial, settings), NoSlowdownWhileUsingItem {
     companion object {
         val NOT_ENOUGH_EXPERIENCE_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("fairy_tool_item").toLanguageKey()}.not_enough_experience" }, "Not enough experience", "経験値が足りません")
-        val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("shooting_staff").toLanguageKey()}.description" }, "Perform a ranged attack when used", "使用時、射撃攻撃")
+        val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("shooting_staff").toLanguageKey()}.description" }, "Charge while held, then perform a ranged attack when released", "使用中、チャージし、解除時に射撃攻撃")
         const val BASE_EXPERIENCE_COST = 2
+
+        /** チャージ時間とダメージの基準として、並とみなす素材なのだ～🌱 */
+        private val BASE_TIER = Tiers.IRON
+
+        /** [BASE_TIER]の採掘速度におけるチャージ時間なのだ～🌱 */
+        private const val BASE_CHARGE_TICKS = 2 * 20
+
+        /** エンチャント適性が[BASE_TIER]から 1 離れるごとに変わる基本攻撃力なのだ～🌱 */
+        private const val ENCHANTMENT_VALUE_POWER_FACTOR = 0.25F
+
+        /** 使用を継続できる上限のティック数なのだ～🌱 弓と同じく、事実上の無制限なのだ～🌱 */
+        private const val MAX_USE_TICKS = 72000
     }
+
+    /**
+     * チャージに要するティック数なのだ～🌱
+     *
+     * 素材を通して魔力を汲み出す速さが、岩を掘り崩す速さと同じ性質だとみなして、採掘速度に反比例させているのだ～🌱
+     */
+    private fun getChargeTicks(level: Level, itemStack: ItemStack): Int {
+        val acceleration = 1.0 + level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_ACCELERATION.key].getRate(itemStack)
+        return ceil(BASE_CHARGE_TICKS * BASE_TIER.speed / tier.speed / acceleration).toInt()
+    }
+
+    /**
+     * 魔法射撃攻撃のダメージなのだ～🌱
+     *
+     * 剣の攻撃力が武器種の補正と素材の補正の和であるのと同じ構造で、素材の補正が、攻撃力ではなくエンチャント適性を参照するのだ～🌱
+     */
+    private fun getDamage(level: Level, itemStack: ItemStack): Float {
+        val materialPower = ENCHANTMENT_VALUE_POWER_FACTOR * (tier.enchantmentValue - BASE_TIER.enchantmentValue)
+        return basePower + materialPower + 0.5F * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack).toFloat()
+    }
+
+    private fun getExperienceCost(level: Level, itemStack: ItemStack) = BASE_EXPERIENCE_COST + 1 * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack)
 
     override fun appendHoverText(stack: ItemStack, context: TooltipContext, tooltipComponents: MutableList<Component>, tooltipFlag: TooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
         tooltipComponents += text { DESCRIPTION_TRANSLATION().yellow }
     }
 
+    override fun getUseDuration(stack: ItemStack, entity: LivingEntity) = MAX_USE_TICKS
+
+    override fun getUseAnimation(stack: ItemStack) = UseAnim.NONE
+
     override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
         val itemStack = user.getItemInHand(hand)
-        if (level.isClientSide) return InteractionResultHolder.success(itemStack)
 
-        val damage = basePower + 0.5F * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack).toFloat()
-        val maxDistance = baseMaxDistance + 3F * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_REACH.key].getLevel(itemStack)
-        val speed = 2.0F + 2.0F * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_REACH.key].getRate(itemStack).toFloat()
-        val frequency = 0.5 + 0.5 * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_ACCELERATION.key].getRate(itemStack)
-        val experienceCost = BASE_EXPERIENCE_COST + 1 * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack)
+        if (!user.isCreative) {
+            if (user.totalExperience < getExperienceCost(level, itemStack)) {
+                if (!level.isClientSide) user.displayClientMessage(text { NOT_ENOUGH_EXPERIENCE_TRANSLATION() }, true)
+                return InteractionResultHolder.fail(itemStack)
+            }
+        }
+
+        user.startUsingItem(hand)
+        return InteractionResultHolder.consume(itemStack)
+    }
+
+    override fun onUseTick(level: Level, livingEntity: LivingEntity, stack: ItemStack, remainingUseDuration: Int) {
+        if (level.isClientSide) return
+        if (MAX_USE_TICKS - remainingUseDuration != getChargeTicks(level, stack)) return // チャージが満ちた瞬間だけ知らせるのだ～🌱
+        level.playSound(null, livingEntity.x, livingEntity.y, livingEntity.z, SoundEventCard.MAGIC2.soundEvent, SoundSource.PLAYERS, 0.3F, 1.6F)
+    }
+
+    override fun releaseUsing(stack: ItemStack, level: Level, livingEntity: LivingEntity, timeCharged: Int) {
+        if (level.isClientSide) return
+        val user = livingEntity as? Player ?: return
+        if (MAX_USE_TICKS - timeCharged < getChargeTicks(level, stack)) return // チャージが満ちる前に離したら不発なのだ～🌱
+
+        val damage = getDamage(level, stack)
+        val maxDistance = baseMaxDistance + 3F * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_REACH.key].getLevel(stack)
+        val speed = 2.0F + 2.0F * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_REACH.key].getRate(stack).toFloat()
+        val experienceCost = getExperienceCost(level, stack)
 
         if (!user.isCreative) {
             if (user.totalExperience < experienceCost) {
                 user.displayClientMessage(text { NOT_ENOUGH_EXPERIENCE_TRANSLATION() }, true)
-                return InteractionResultHolder.consume(itemStack)
+                return
             }
         }
 
@@ -130,18 +191,14 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
         level.addFreshEntity(entity)
 
         // 消費
-        itemStack.hurtAndBreak(1, user, LivingEntity.getSlotForHand(hand))
+        stack.hurtAndBreak(1, user, LivingEntity.getSlotForHand(user.usedItemHand))
         if (!user.isCreative) user.giveExperiencePoints(-experienceCost)
-
-        user.cooldowns.addCooldown(this, level.random.randomInt(10.0 / frequency))
 
         // 統計
         user.awardStat(Stats.ITEM_USED.get(this))
 
         // エフェクト
         level.playSound(null, user.x, user.y, user.z, SoundEventCard.MAGIC2.soundEvent, SoundSource.PLAYERS, 0.6F, 0.90F + (level.random.nextFloat() - 0.5F) * 0.3F)
-
-        return InteractionResultHolder.consume(itemStack)
     }
 
     override fun hurtEnemy(stack: ItemStack, target: LivingEntity, attacker: LivingEntity): Boolean {

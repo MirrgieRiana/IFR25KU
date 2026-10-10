@@ -6,6 +6,7 @@
     "ClientLevelMixin",
     "GuiGraphicsMixin",
     "ItemRendererMixin",
+    "LocalPlayerMixin",
     "MinecraftClientMixin",
     "MultiPlayerGameModeMixin"
   ],
