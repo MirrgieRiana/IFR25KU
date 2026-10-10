@@ -10,7 +10,6 @@
 
 API(5)
 
-# athanor そのものの置き場所は、athanorw が INC へ足すのだ～🌱
 @USE("athanor")
 
 {
