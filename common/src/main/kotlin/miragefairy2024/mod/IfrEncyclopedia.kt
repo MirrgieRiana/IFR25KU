@@ -110,7 +110,7 @@ class IfrEncyclopediaEntryCard(
             EnJa("Fairy Rubber", "夜のかけら"),
             { listOf(MaterialCard.FAIRY_RUBBER.item().createItemStack()) },
             listOf(
-                "The night is going away... I was scared... I was crying... And then... the sky gave me this... This one... It is very warm... It is warm and it feels good... I always... sleep with this...",
+                "The night's going awaaay... I was scared... I was cryiiing... And then... the sky gave me thiiis... This one... It's so waaarm... It's warm and it feels gooood... Always... I hold thiiis... and sleep...",
                 "",
                 "Nightia",
             ),
