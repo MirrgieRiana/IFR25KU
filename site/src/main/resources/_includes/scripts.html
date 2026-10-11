@@ -27,9 +27,15 @@ document.addEventListener("DOMContentLoaded", function() {
   // CSSの:hoverによる表示と二本立てにすると、クリックで閉じてもポインタが乗っている限り開いたままになるのだぁ…🌧️
   var canHover = matchMedia("(hover: hover)").matches;
 
+  // レスポンシブでhidden-links側へ移った見出しは、CSSで操作不能になって、下の項目が常に並ぶのだ～🌱
+  // そちら側に居る間は、折り畳める状態ではないから、閉じた状態へは揃えないのだ～🌱
+  function isAlwaysOpen(trigger) {
+    return !!trigger.closest(".hidden-links");
+  }
+
   function closeAll() {
     triggers.forEach(function(trigger) {
-      trigger.setAttribute("aria-expanded", "false");
+      trigger.setAttribute("aria-expanded", isAlwaysOpen(trigger) ? "true" : "false");
     });
   }
 
@@ -56,12 +62,16 @@ document.addEventListener("DOMContentLoaded", function() {
       // CSSの:hoverによる表示はJSが動かないときのフォールバックだから、JSが動く間はクラスを付けて止めるのだ～🌱
       item.classList.add("masthead__menu-item--js-hover");
 
-      item.addEventListener("mouseenter", function() {
+      // タッチのタップは、互換のためのマウスのイベントを合成して、クリックより先に届けるのだ～🌱
+      // それをホバーとして扱うと、1回目のタップで開いた状態になって、そのまま遷移しちゃうのだぁ…🌧️
+      item.addEventListener("pointerenter", function(event) {
+        if (event.pointerType !== "mouse") return;
         closeAll();
         trigger.setAttribute("aria-expanded", "true");
       });
 
-      item.addEventListener("mouseleave", function() {
+      item.addEventListener("pointerleave", function(event) {
+        if (event.pointerType !== "mouse") return;
         trigger.setAttribute("aria-expanded", "false");
       });
     }
@@ -86,6 +96,11 @@ document.addEventListener("DOMContentLoaded", function() {
     if (event.target.closest(".masthead__menu-item--dropdown")) return;
     closeAll();
   });
+
+  // greedy-navが項目をvisible-linksとhidden-linksの間で動かすから、そのたびに揃え直すのだ～🌱
+  var nav = document.querySelector(".greedy-nav");
+  if (nav) new MutationObserver(closeAll).observe(nav, { childList: true, subtree: true });
+  closeAll();
 });
 </script>
 
