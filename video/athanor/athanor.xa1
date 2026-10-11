@@ -48,16 +48,18 @@ API(5)
      * 実行中の状態を持つことで、依存の辺が循環していても、無限に潜る代わりに原因を伝えて終われるのだ～🌱
      */
     run: this -> :
-      : this._state == doneState ? :
-        NULL
-      : this._state == runningState ? :
-        fail << "circular dependency: $(this.name)"
-      : :
+      : this._state == idleState ? :
         this._state = runningState
         this.dependsOn() | task => task::run()
         # action がストリームを返す場合、ここで解決しないと、呼び出し元の文脈によっては副作用が起こらないのだ～🌱
         this.action == NULL ? NULL : VOID(this.action())
         this._state = doneState
+      : this._state == runningState ? :
+        fail << "circular dependency: $(this.name)"
+      : this._state == doneState ? :
+        NULL
+      : :
+        !! "unknown task state: $(this._state)"
   }
 
   AthanorProject := {
