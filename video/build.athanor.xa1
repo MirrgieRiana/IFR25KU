@@ -19,7 +19,6 @@ API(5)
       AthanorProject.new()::ALSO ( project =>
         project.tasks.check = AthanorTask.new()::ALSO ( task =>
           task.name = "check"
-          # 確認する対象を 1 個も持たないから、通ったことを伝える 1 行を出すだけなのだ～🌱
           task.action = () -> OUT << "CHECK SUCCESSFUL"
         )
       )

@@ -1,4 +1,4 @@
-name: athanor
+name: check-video
 on:
   push:
     branches:
@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: athanor-${{ github.ref }}
+  group: check-video-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -23,7 +23,6 @@ jobs:
       # セットアップ
       - uses: actions/checkout@v6
 
-      # check
-      # 同梱のxarpiteはnativeのバイナリを既定のエンジンにするから、Javaのセットアップはいらないのだ～🌱
-      - name: check
+      # 検査
+      - name: 検査
         run: video/athanorw check
