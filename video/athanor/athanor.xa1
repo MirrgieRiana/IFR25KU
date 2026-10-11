@@ -1,5 +1,5 @@
 /**
- * athanor.xa1 — タスクを並べてビルドを組むための、小さな仕組みなのだ～🌱（xarpite / API5）
+ * athanor.xa1 — タスクを並べてビルドを組むための、小さなビルドシステムなのだ～🌱（xarpite / API5）
  *
  * 使う側は、プロジェクトを 1 個作って、その tasks へタスクを並べるのだ～🌱
  * タスクは、自分より前に済んでいなければならないタスクを dependsOn に持つのだ～🌱
@@ -32,12 +32,13 @@ API(5)
 
     /**
      * 同じタスクが複数のタスクから依存されていても、action は 1 回しか走らないのだ～🌱
-     * そうしないと、生成の段がひとつ下から何度も呼ばれて、無駄に走ってしまうのだ～🌱
+     * そうしないと、共通の依存が何度も呼ばれて、無駄に走ってしまうのだ～🌱
      */
     run: this -> this.done ? NULL : (
       this.done = TRUE
       this.dependsOn() | task => task::run()
-      this.action == NULL ? NULL : this.action()
+      # action がストリームを返す場合、ここで解決しないと、呼び出し元の文脈によっては副作用が起こらないのだ～🌱
+      this.action == NULL ? NULL : VOID(this.action())
     )
   }
 
@@ -48,7 +49,7 @@ API(5)
       }
 
       # どのプロジェクトにも、並んでいるタスクを見る手段を持たせるのだ～🌱
-      # ここで足しておかないと、タスクを 1 個も並べていないプロジェクトを、外から覗けないのだ～🌱
+      # ここで足しておかないと、タスクを 1 個も並べていないプロジェクトでは、athanorw から叩ける名前が 1 個も無くなるのだ～🌱
       project.tasks.tasks = AthanorTask.new()::ALSO ( task =>
         task.name = "tasks"
         task.action = () -> project.tasks() | entry => OUT << entry.0
