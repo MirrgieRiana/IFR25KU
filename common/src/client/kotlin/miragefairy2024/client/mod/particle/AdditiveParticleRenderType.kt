@@ -7,7 +7,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.Tesselator
 import com.mojang.blaze3d.vertex.VertexFormat
 import miragefairy2024.MirageFairy2024
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.particle.ParticleRenderType
 import net.minecraft.client.renderer.texture.TextureAtlas
 import net.minecraft.client.renderer.texture.TextureManager
@@ -30,12 +29,4 @@ object AdditiveParticleRenderType : ParticleRenderType {
 
     // バニラの種別と同じく、クラッシュレポートに出る名前を与えるのだ～🌱
     override fun toString() = "${MirageFairy2024.MOD_ID}:additive"
-}
-
-// パーティクルの描画は、終わりに合成を無効化するだけで、合成関数の設定自体は既定値へ戻さないのだ～🌱
-// 水中や炎の画面効果は合成関数を設定せずに合成を有効化するから、戻さないとそれらが加算合成で描かれてしまうのだぁ…🌧️
-fun initAdditiveParticleRenderType() {
-    WorldRenderEvents.AFTER_TRANSLUCENT.register {
-        RenderSystem.defaultBlendFunc()
-    }
 }
