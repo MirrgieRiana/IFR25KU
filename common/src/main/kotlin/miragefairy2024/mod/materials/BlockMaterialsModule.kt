@@ -932,6 +932,7 @@ open class BlockMaterialCard(
                     requires(item())
                 }
             } on item from item
+            item.registerComposterInput(0.3F)
         }
         val DAYFLOWER: BlockMaterialCard = !object : BlockMaterialCard(
             "dayflower", EnJa("Dayflower", "ツユクサ"),
@@ -965,6 +966,7 @@ open class BlockMaterialCard(
         }.cutout().sound(SoundType.GRASS).tag(BlockTags.MINEABLE_WITH_AXE, BlockTags.SWORD_EFFICIENT, BlockTags.REPLACEABLE, BlockTags.REPLACEABLE_BY_TREES).init {
             item.registerBlockGeneratedModelGeneration(block)
             block.registerFlammable(60, 100)
+            item.registerComposterInput(0.3F)
         }
         val NECTARFLOWER: BlockMaterialCard = !object : BlockMaterialCard(
             "nectarflower", EnJa("Nectarflower", "ミツクサ"),
