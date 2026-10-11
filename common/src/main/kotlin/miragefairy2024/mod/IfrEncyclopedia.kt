@@ -48,6 +48,7 @@ import miragefairy2024.util.register
 import miragefairy2024.util.sortedEntrySet
 import miragefairy2024.util.text
 import miragefairy2024.util.toIngredientStack
+import mirrg.kotlin.helium.join
 import net.minecraft.core.RegistryAccess
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -82,7 +83,6 @@ class IfrEncyclopediaEntryCard(
                 "古くは神霊の一種と考えられていたが、近年の研究により、ミラージュ植物の花粉が自律構造を持ったものであると解明された。",
             ),
         )
-
         val VEROPEDA = IfrEncyclopediaEntryCard(
             "veropeda",
             EnJa("Veropeda", "呪草ヴェロペダ"),
@@ -91,7 +91,11 @@ class IfrEncyclopediaEntryCard(
                 "Monocots, order Miragales, family Veropedaceae",
                 "Veropeda",
                 "",
-                "This magical plant was created by combining the carnivorous plant Sarracenia with curse magic. Ancient alchemists identified it with Veropeda, a demon that lives by devouring fairies. The existence of such a demon has not been confirmed, but the fibers of this plant do have a real curse effect. The Institute of Fairy Research analyzed the genes of this plant, and surprisingly, they matched the genes of the Mirage perfectly.",
+                listOf(
+                    "This magical plant, created by fusing the carnivorous plant Sarracenia with curse magic, was equated by ancient alchemists with Veropeda, a demon said to sustain itself by devouring fairies.",
+                    "Although the existence of such a demon has not been confirmed, the fibers of this plant do exhibit genuine curse effects.",
+                    "When we at the Institute of Fairy Research analyzed this plant's genes, we found that, remarkably, they were identical to those of the Mirage.",
+                ).join(" "),
                 "",
                 "The Institute of Fairy Research",
             ),
@@ -99,23 +103,44 @@ class IfrEncyclopediaEntryCard(
                 "単子葉類妖花目ヴェロペダ科",
                 "ヴェロペダ",
                 "",
-                "サラセニアという食虫植物と呪いの魔法を合成して作られたこの魔法植物は、いにしえの錬金術師の間で、妖精を喰らって生きる悪魔ヴェロペーダと同一視されてきました。そのような悪魔の実在は確認されていませんが、この植物の繊維には実際に呪いの効果があります。妖精研究所がこの植物の遺伝子を解析したところ、驚くべきことにミラージュの遺伝子と完全に一致しました。",
+                listOf(
+                    "サラセニアという食虫植物と呪いの魔法を合成して作られたこの魔法植物は、いにしえの錬金術師の間で、妖精を喰らって生きる悪魔ヴェロペーダと同一視されてきました。",
+                    "そのような悪魔の実在は確認されていませんが、この植物の繊維には実際に呪いの効果があります。",
+                    "妖精研究所がこの植物の遺伝子を解析したところ、驚くべきことにミラージュの遺伝子と完全に一致しました。",
+                ).join(""),
                 "",
                 "妖精研究所",
             ),
         )
-
         val FAIRY_RUBBER = IfrEncyclopediaEntryCard(
             "fairy_rubber",
             EnJa("Fairy Rubber", "夜のかけら"),
             { listOf(MaterialCard.FAIRY_RUBBER.item().createItemStack()) },
             listOf(
-                "The night's going awaaay... I was scared... I was cryiiing... And then... the sky gave me thiiis... This one... It's so waaarm... It's warm and it feels gooood... Always... I hold thiiis... and sleep...",
+                listOf(
+                    "The night's going awaaay...",
+                    "I was scaaared... and cryiiing...",
+                    "And then... the sky gave me thiiis...",
+                    "This one...",
+                    "It's so waaarm...",
+                    "It's warm and it feels gooood...",
+                    "Always...",
+                    "I hold thiiis... and sleep...",
+                ).join(" "),
                 "",
-                "Nightia",
+                "Nightia the fairy of night",
             ),
             listOf(
-                "よるがきえちゃうのー………　こわくて…ないてたー………　そしたらねー…………おそらがくれたのー……　これー……　とってもあったかいのー………　あたたかくてきもちいーのー……　いつもー……　これもってー…ねてるのー………",
+                listOf(
+                    "よるがきえちゃうのー………",
+                    "こわくて…ないてたー………",
+                    "そしたらねー…………おそらがくれたのー……",
+                    "これー……",
+                    "とってもあったかいのー………",
+                    "あたたかくてきもちいーのー……",
+                    "いつもー……",
+                    "これもってー…ねてるのー………",
+                ).join(" "),
                 "",
                 "夜精ニグチャ",
             ),
