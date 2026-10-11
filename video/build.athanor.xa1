@@ -21,9 +21,12 @@ common := USE("common")
 {
   /** 名前の合うプロジェクトが無ければ NULL を返して、呼び出し元がそれを伝えるのだ～🌱 */
   projectOf: name ->
-    # ルートプロジェクトは、タスクを 1 個も持たないのだ～🌱
-    # それでも、athanor がどのプロジェクトにも足す tasks は呼べるのだ～🌱
     : name == "" ? :
-      AthanorProject::NEW()
+      AthanorProject::NEW()::ALSO ( project =>
+        project.tasks.check = AthanorTask::NEW()::ALSO ( task =>
+          task.name = "check"
+          task.action = () -> OUT << "CHECK SUCCESSFUL"
+        )
+      )
     : common.projectOf(name)
 }

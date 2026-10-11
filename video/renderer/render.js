@@ -102,7 +102,8 @@ const normalizeJson = v => Array.isArray(v) ? `[${v.map(normalizeJson).join(',')
         await page.goto(templateUrl, { waitUntil: 'load' });
         await page.waitForFunction('window.__ready===true', { timeout: 20000 });
         // 設定を受けてから素材を読むテンプレートもあるから、フォントの準備を待つ前に渡すのだ～🌱
-        if (config !== null) await page.evaluate(async config => { await window.initialize(config); }, config);
+        // 設定の中身が JSON の null でも呼ぶために、解析の結果ではなく、--config の指定の有無で判定するのだ～🌱
+        if (configPath !== null) await page.evaluate(async config => { await window.initialize(config); }, config);
         await page.evaluate(async () => { await document.fonts.ready; });
         loadedTemplateUrl = templateUrl;
       }
