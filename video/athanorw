@@ -18,7 +18,9 @@ set -euo pipefail
 baseDirectory=$(cd -- "$(dirname -- "$0")" && pwd)
 
 # パスを xa1 のソースへ直接埋め込むと、`"` や `$(` を含むパスで、それが文字列の終端や埋め込みとして解釈されるのだ～🌱
-ATHANOR_BASE_DIRECTORY="$baseDirectory" "$baseDirectory/../xarpite/xarpite" -A 5 -q -f - -- "$@" <<'EOF'
-INC::push << ENV.ATHANOR_BASE_DIRECTORY & "/athanor"
-USE("athanor").main(ENV.ATHANOR_BASE_DIRECTORY)
-EOF
+ATHANOR_BASE_DIRECTORY="$baseDirectory" \
+ATHANOR_MAIN_SCRIPT='
+  INC::push << ENV.ATHANOR_BASE_DIRECTORY & "/athanor"
+  USE("athanor").main(ENV.ATHANOR_BASE_DIRECTORY)
+' \
+"$baseDirectory/../xarpite/xarpite" -A 5 -q -e 'XA(ENV.ATHANOR_MAIN_SCRIPT)' -- "$@"
