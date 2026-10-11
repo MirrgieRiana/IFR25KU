@@ -1,0 +1,29 @@
+name: athanor
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: athanor-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  check:
+    runs-on: ubuntu-latest
+    steps:
+
+      # セットアップ
+      - uses: actions/checkout@v6
+
+      # check
+      # 同梱のxarpiteはnativeのバイナリを既定のエンジンにするから、Javaのセットアップはいらないのだぁ…🌧️
+      - name: check
+        run: video/athanorw check
