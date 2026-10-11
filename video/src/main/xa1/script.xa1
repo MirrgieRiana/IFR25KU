@@ -2,13 +2,14 @@
 # 台本そのものはサブプロジェクトの xa1 の中にあって、JSON はこの段で作り直すのだ～🌱
 
 API(5)
-@USE("common")
 
-dirOf := project -> buildBase RESOLVE project.name RESOLVE "script"
+common := USE("common")
+
+dirOf := project -> common.buildBase RESOLVE project.name RESOLVE "script"
 
 {
   path: project -> dirOf(project) RESOLVE "script.json"
-  generate: project -> generate("script ($(project.name))"; dirOf(project); work -> (
+  generate: project -> common.generate("script ($(project.name))"; dirOf(project); work -> (
     WRITE(work RESOLVE "script.json"; project.script >> JSON[indent: 1])
   ))
 }

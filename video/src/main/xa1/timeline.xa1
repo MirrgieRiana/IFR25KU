@@ -1,12 +1,12 @@
 # 各行wavを、タイトル保持→本編（行間の無音）→クレジット保持、の順に結合するのだ～🌱（xarpite / API5）
 
 API(5)
-@USE("common")
 
+common := USE("common")
 scriptModule := USE("script")
 audioModule := USE("audio")
 
-dirOf := project -> buildBase RESOLVE project.name RESOLVE "timeline"
+dirOf := project -> common.buildBase RESOLVE project.name RESOLVE "timeline"
 SR := 24000
 
 # 尺の設計なのだ～🌱
@@ -19,8 +19,8 @@ PRE_CREDIT := 1.3      # 最後の台詞からクレジットまでの間
 CREDIT_HOLD := 5.5     # クレジット画面を見せる時間
 
 readPcm := path -> (
-  wav := readWav(path)
-  wav.format == 1 && wav.channels == 1 && wav.sampleRate == SR && wav.bitsPerSample == 16 || fail("not $SR Hz mono 16 bit PCM: $path")
+  wav := common.readWav(path)
+  wav.format == 1 && wav.channels == 1 && wav.sampleRate == SR && wav.bitsPerSample == 16 || common.fail("not $SR Hz mono 16 bit PCM: $path")
   wav.data
 )
 
@@ -30,7 +30,7 @@ sil := sec -> [0] * (2 * FLOOR(sec * SR + 0.5))
   wavPath: project -> dirOf(project) RESOLVE "full.wav"
   jsonPath: project -> dirOf(project) RESOLVE "timeline.json"
   generate: project -> (
-    generate("timeline ($(project.name))"; dirOf(project); work -> (
+    common.generate("timeline ($(project.name))"; dirOf(project); work -> (
       script := $*READ(scriptModule.path(project))
       moraList := $*READ(audioModule.morasPath(project))
 
@@ -56,8 +56,8 @@ sil := sec -> [0] * (2 * FLOOR(sec * SR + 0.5))
           t = t + GAP
         )
         {
-          i: i; start: round4(start); end: round4(end)
-          subEnd: round4(end + SUB_TAIL)
+          i: i; start: common.round4(start); end: common.round4(end)
+          subEnd: common.round4(end + SUB_TAIL)
           speaker: line.speaker; sub: line.sub; big: line.big
           scene: line.scene; item: line.item
           moras: (moraList() >> FILTER[m => m.i == i] >> SINGLE).moras   # 口パク用（wav先頭からの秒で、シーンのテンプレートで start を足して絶対時刻にするのだ～🌱）
@@ -93,12 +93,12 @@ sil := sec -> [0] * (2 * FLOOR(sec * SR + 0.5))
       items() | it => (it.item == "leaf" && (it.end = theaterEnd)) >> TO_ARRAY
 
       pcmLength := pcm() | _ => $#_ >> SUM
-      WRITEB(work RESOLVE "full.wav"; UTF8("RIFF"), le32(36 + pcmLength), UTF8("WAVEfmt "), le32(16), le16(1), le16(1), le32(SR), le32(SR * 2), le16(2), le16(16), UTF8("data"), le32(pcmLength), pcm)
+      WRITEB(work RESOLVE "full.wav"; UTF8("RIFF"), common.le32(36 + pcmLength), UTF8("WAVEfmt "), common.le32(16), common.le16(1), common.le16(1), common.le32(SR), common.le32(SR * 2), common.le16(2), common.le16(16), UTF8("data"), common.le32(pcmLength), pcm)
 
       tl := {
-        total: round4(total); lead: round4(lead)
-        titleFadeStart: round4(titleFadeStart); titleEnd: round4(titleEnd)
-        theaterEnd: round4(theaterEnd); creditStart: round4(creditStart)
+        total: common.round4(total); lead: common.round4(lead)
+        titleFadeStart: common.round4(titleFadeStart); titleEnd: common.round4(titleEnd)
+        theaterEnd: common.round4(theaterEnd); creditStart: common.round4(creditStart)
         title: script.title; subtitle: script.subtitle
         lines: linesTl; scenes: scenes; items: items
         sceneFade: 0.6

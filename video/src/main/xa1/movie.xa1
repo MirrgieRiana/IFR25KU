@@ -15,13 +15,13 @@
 # =============================================================================
 
 API(5)
-@USE("common")
 
+common := USE("common")
 timelineModule := USE("timeline")
 framesModule := USE("frames")
 
-dirOf := project -> buildBase RESOLVE project.name RESOLVE "movie"
-bgmDir := base RESOLVE "projects/common/resources/bgm"
+dirOf := project -> common.buildBase RESOLVE project.name RESOLVE "movie"
+bgmDir := common.base RESOLVE "projects/common/resources/bgm"
 
 {
   path: project -> dirOf(project) RESOLVE "$(project.name).mp4"
@@ -29,9 +29,9 @@ bgmDir := base RESOLVE "projects/common/resources/bgm"
     # BGM は外部取得リソースだから、長い合成に入る前に、置かれていることを確かめるのだ～🌱
     # FILE_NAMES のストリームのままだと、@ が部分文字列で探して、隣の *.md5 のファイル名に当たっちゃうのだ～🌱
     # だから、配列にしてから、要素として探すのだ～🌱
-    "chopin_op10-4.flac" @ [FILE_NAMES(bgmDir)] || fail("resource not found: projects/common/resources/bgm/chopin_op10-4.flac (place it as described in README.md)")
+    "chopin_op10-4.flac" @ [FILE_NAMES(bgmDir)] || common.fail("resource not found: projects/common/resources/bgm/chopin_op10-4.flac (place it as described in README.md)")
 
-    generate("movie ($(project.name))"; dirOf(project); work -> (
+    common.generate("movie ($(project.name))"; dirOf(project); work -> (
       tl := $*READ(timelineModule.jsonPath(project))
       total := tl.total
       T0 := tl.lead          # 開幕（タイトル）から劇場（初回発話）へ切り替わる時刻
@@ -76,7 +76,7 @@ bgmDir := base RESOLVE "projects/common/resources/bgm"
       ]
 
       # ffmpeg は進捗を大量に吐くから、成功したときの出力は捨てて、失敗したときだけ見せるのだ～🌱
-      capture(cmd())
+      common.capture(cmd())
     ))
     OUT << "built: $(dirOf(project))/$(project.name).mp4"
   )
