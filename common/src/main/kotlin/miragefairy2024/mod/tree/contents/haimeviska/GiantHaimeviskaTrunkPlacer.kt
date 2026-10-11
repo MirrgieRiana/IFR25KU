@@ -42,6 +42,7 @@ object GiantHaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
         config: TreeConfiguration,
     ): List<FoliagePlacer.FoliageAttachment> {
 
+        // 根元の地面に適切な地面ブロックを配置するのだ～🌱
         run {
             val blockPos = BlockPos.MutableBlockPos()
             listOf(0 to 0, 1 to 0, 1 to 1, 0 to 1).forEach { (x, z) ->
