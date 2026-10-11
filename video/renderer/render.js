@@ -5,11 +5,36 @@ const fs = require('fs');
 const path = require('path');
 const { pathToFileURL } = require('url');
 
-const framesPath = process.argv[2];
-const outDir = process.argv[3];
-if (!framesPath || !outDir) {
-  console.error('usage: node render.js <frames.jsonl> <outDir>');
+// --config は、テンプレートが素材を読むための設定を渡す、省略できる名前付きオプションなのだ～🌱
+const argv = process.argv.slice(2);
+const operands = [];
+let configPath = null;
+for (let i = 0; i < argv.length; i++) {
+  if (argv[i] === '--config') {
+    configPath = argv[++i];
+    if (configPath === undefined) {
+      console.error('error: --config requires a path');
+      process.exit(1);
+    }
+  } else {
+    operands.push(argv[i]);
+  }
+}
+const [framesPath, outDir] = operands;
+if (!framesPath || !outDir || operands.length > 2) {
+  console.error('usage: node render.js <frames.jsonl> <outDir> [--config <config.json>]');
   process.exit(1);
+}
+
+// 設定は、テンプレートの読み込みごとに 1 回だけ渡すから、ここで 1 回だけ読むのだ～🌱
+let config = null;
+if (configPath !== null) {
+  try {
+    config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+  } catch (e) {
+    console.error(`error: cannot read config: ${configPath}: ${e.message}`);
+    process.exit(1);
+  }
 }
 const W = parseInt(process.env.VIDEO_WIDTH || '1280', 10);
 const H = parseInt(process.env.VIDEO_HEIGHT || '720', 10);
@@ -75,8 +100,10 @@ const normalizeJson = v => Array.isArray(v) ? `[${v.map(normalizeJson).join(',')
     } else {
       if (templateUrl !== loadedTemplateUrl) {
         await page.goto(templateUrl, { waitUntil: 'load' });
-        await page.evaluate(async () => { await document.fonts.ready; });
         await page.waitForFunction('window.__ready===true', { timeout: 20000 });
+        // 設定を受けてから素材を読むテンプレートもあるから、フォントの準備を待つ前に渡すのだ～🌱
+        if (config !== null) await page.evaluate(async config => { await window.initialize(config); }, config);
+        await page.evaluate(async () => { await document.fonts.ready; });
         loadedTemplateUrl = templateUrl;
       }
       await page.evaluate(async (frame) => {
