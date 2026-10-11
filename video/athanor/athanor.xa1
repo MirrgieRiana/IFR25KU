@@ -22,24 +22,42 @@
 API(5)
 
 {
+  /** 原因を伝えて、終了コード 1 で終わるのだ～🌱 */
+  fail := message -> (
+    ERR(message)
+    EXIT(1)
+  )
+
+  # 列挙型が無いから、列挙定数の実体は数値なのだ～🌱
+  notRunState := 0
+  runningState := 1
+  doneState := 2
+
   AthanorTask := {
     new: () -> AthanorTask{
       name: NULL
       dependsOn: []
       action: NULL
-      done: FALSE
+      _state: notRunState
     }
 
     /**
      * 同じタスクが複数のタスクから依存されていても、action は 1 回しか走らないのだ～🌱
      * そうしないと、共通の依存が何度も呼ばれて、無駄に走ってしまうのだ～🌱
+     *
+     * 実行中の状態を持つことで、依存の辺が循環していても、無限に潜る代わりに原因を伝えて終われるのだ～🌱
      */
-    run: this -> this.done ? NULL : (
-      this.done = TRUE
-      this.dependsOn() | task => task::run()
-      # action がストリームを返す場合、ここで解決しないと、呼び出し元の文脈によっては副作用が起こらないのだ～🌱
-      this.action == NULL ? NULL : VOID(this.action())
-    )
+    run: this -> :
+      : this._state == doneState ? :
+        NULL
+      : this._state == runningState ? :
+        fail("ERROR: circular dependency: $(this.name)")
+      : :
+        this._state = runningState
+        this.dependsOn() | task => task::run()
+        # action がストリームを返す場合、ここで解決しないと、呼び出し元の文脈によっては副作用が起こらないのだ～🌱
+        this.action == NULL ? NULL : VOID(this.action())
+        this._state = doneState
   }
 
   AthanorProject := {
@@ -68,30 +86,21 @@ API(5)
   main := baseDirectory -> (
     build := USE(baseDirectory RESOLVE "build.athanor.xa1")
 
-    # 対象ごとにプロジェクトを作り直すと、済みの印が引き継がれず、共通の依存が何度も走ってしまうのだ～🌱
+    # 対象ごとにプロジェクトを作り直すと、タスクの状態が引き継がれず、共通の依存が何度も走ってしまうのだ～🌱
     projects := {}
     projectOf := projectName -> projects.(projectName) ?: (
-      projects.(projectName) = build.projectOf(projectName) ?: (
-        ERR("ERROR: project not found: $projectName")
-        EXIT(1)
-      )
+      projects.(projectName) = build.projectOf(projectName) ?: fail("ERROR: project not found: $projectName")
     )
 
     VOID(ARGS() | target => (
-      parseResult := target =~ /^(?:([^:]*):)?([^:(]+)(\(.*\))?$/ ?: (
-        ERR("ERROR: invalid target: $target")
-        EXIT(1)
-      )
+      parseResult := target =~ /^(?:([^:]*):)?([^:(]+)(\(.*\))?$/ ?: fail("ERROR: invalid target: $target")
       # プロジェクト名を省略すると、ルートプロジェクトのタスクになるのだ～🌱
       projectName := parseResult.1 ?: ""
       taskName := parseResult.2
       # 引数スクリプトを省略すると、引数の無い呼び出しになるのだ～🌱
       argumentScript := parseResult.3 ?: "()"
 
-      task := projectOf(projectName).tasks.(taskName) ?: (
-        ERR("ERROR: task not found: $taskName")
-        EXIT(1)
-      )
+      task := projectOf(projectName).tasks.(taskName) ?: fail("ERROR: task not found: $taskName")
 
       # 引数スクリプトはソースコードの断片だから、タスクを受け取る関数の本体として組み立てて評価するのだ～🌱
       XA("task -> task::run$argumentScript")(task)
