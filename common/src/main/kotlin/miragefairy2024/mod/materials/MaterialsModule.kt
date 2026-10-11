@@ -1530,7 +1530,7 @@ class MaterialCard(
         )
         val HAIMEVISKA_SAP_KOHAKUTO = createKohakuto(
             "haimeviska_sap_kohakuto", "Haimeviska Sap Kohakuto", "ハイメヴィスカの樹液の琥珀糖",
-            PoemList(1).poem("Steganographic agarose tablet.", "真珠の中のデジャヴュー。"),
+            PoemList(1).poem("Steganographic agarose tablet.", "琥珀の中のデジャヴュー。"),
             HAIMEVISKA_SAP.item,
             { it.effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 20 * 8), 1.0F) },
         )
