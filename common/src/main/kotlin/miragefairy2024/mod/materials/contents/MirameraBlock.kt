@@ -30,9 +30,9 @@ class MirameraBlock(settings: Properties) : BushBlock(settings) {
         if (random.nextInt(10) != 0) return
         level.addParticle(
             ParticleTypeCard.SPARKLE.particleType,
-            pos.x + 6.0 / 16.0 + random.nextDouble() * 4.0 / 16.0,
+            pos.x + 3.0 / 16.0 + random.nextDouble() * 10.0 / 16.0,
             pos.y + 10.0 / 16.0 + random.nextDouble() * 3.0 / 16.0,
-            pos.z + 6.0 / 16.0 + random.nextDouble() * 4.0 / 16.0,
+            pos.z + 3.0 / 16.0 + random.nextDouble() * 10.0 / 16.0,
             0.0, 0.0, 0.0,
         )
     }
