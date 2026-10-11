@@ -24,6 +24,6 @@ jobs:
       - uses: actions/checkout@v6
 
       # check
-      # 同梱のxarpiteはnativeのバイナリを既定のエンジンにするから、Javaのセットアップはいらないのだぁ…🌧️
+      # 同梱のxarpiteはnativeのバイナリを既定のエンジンにするから、Javaのセットアップはいらないのだ～🌱
       - name: check
         run: video/athanorw check
