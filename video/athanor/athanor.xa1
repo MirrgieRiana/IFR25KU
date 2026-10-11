@@ -78,7 +78,7 @@ API(5)
     )
 
     VOID(ARGS() | target => (
-      parseResult := target =~ /^(?:([^:]*):)?([^(]*)(\(.*\))?$/ ?: (
+      parseResult := target =~ /^(?:([^:]*):)?([^:(]+)(\(.*\))?$/ ?: (
         ERR("ERROR: invalid target: $target")
         EXIT(1)
       )
