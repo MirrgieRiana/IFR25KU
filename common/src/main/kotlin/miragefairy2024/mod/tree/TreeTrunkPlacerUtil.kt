@@ -12,7 +12,7 @@ import java.util.function.BiConsumer
 // バニラの TrunkPlacer.setDirtAt は、土でない地面を常に土へ置き換えるから、石化した樹脂のような地面を壊してしまうのだ～🌱
 // 代わりに、置換可能なブロックだけを対象にすることで、幹が空中から始まる場合だけを埋めるのだ～🌱
 fun setGroundAt(level: LevelSimulatedReader, blockSetter: BiConsumer<BlockPos, BlockState>, random: RandomSource, pos: BlockPos, config: TreeConfiguration) {
-    if (level.isStateAtPosition(pos) { it.isAir || it isIn BlockTags.REPLACEABLE }) {
+    if (level.isStateAtPosition(pos) { it isIn BlockTags.REPLACEABLE }) {
         blockSetter.accept(pos, config.dirtProvider.getState(random, pos))
     }
 }
