@@ -3,6 +3,10 @@ package miragefairy2024.mod.tool
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.ItemTagCard
+import miragefairy2024.mod.mantle.INCORRECT_FOR_TIER5_TOOL_BLOCK_TAG
+import miragefairy2024.mod.mantle.INCORRECT_FOR_TIER6_TOOL_BLOCK_TAG
+import miragefairy2024.mod.mantle.MantleBlockCard
+import miragefairy2024.mod.mantle.MantleMaterialCard
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.materials.Shape
@@ -30,6 +34,8 @@ enum class FairyToolMaterials(
     val axeAttackDamage: Float,
     private val enchantability: Int,
     private val repairIngredient: () -> Ingredient,
+    /** ドロップを生じさせないブロックのタグなのだ～🌱 バニラのティアの序列から外れる場合に指定するのだ～🌱 */
+    private val incorrectBlocksForDrops: TagKey<Block>? = null,
 ) : Tier {
     COPPER(Tiers.IRON, 196, 5.0F, 1.0F, 2.0F, 18, { ingredientOf(Shape.INGOT, Material.COPPER) }),
     GLASS(Tiers.STONE, 8, 6.0F, 4.0F, 3.5F, 14, { ConventionalItemTags.GLASS_BLOCKS.toIngredient() }),
@@ -65,13 +71,17 @@ enum class FairyToolMaterials(
     COPAL(Tiers.IRON, 182, 5.0F, 1.5F, 1.5F, 19, { ingredientOf(Shape.GEM, Material.COPAL) }),
     FAIRY_PLASTIC(Tiers.IRON, 966, 3.0F, 2.0F, 0.0F, 24, { ingredientOf(Shape.GEM, Material.FAIRY_PLASTIC) }),
 
+    BRIDGMANITE(Tiers.NETHERITE, 1800, 8.5F, 3.0F, 2.5F, 14, { MantleBlockCard.BRIDGMANITE.item().toIngredient() }, INCORRECT_FOR_TIER5_TOOL_BLOCK_TAG),
+    WADSLEYITE(Tiers.NETHERITE, 2200, 9.5F, 2.5F, 2.5F, 18, { MantleMaterialCard.WADSLEYITE.item().toIngredient() }, INCORRECT_FOR_TIER5_TOOL_BLOCK_TAG),
+    RINGWOODITE(Tiers.NETHERITE, 3200, 11.0F, 5.0F, 4.0F, 20, { MantleMaterialCard.RINGWOODITE.item().toIngredient() }, INCORRECT_FOR_TIER6_TOOL_BLOCK_TAG),
+
     NEUTRONIUM(Tiers.NETHERITE, Int.MAX_VALUE - 100, 8.0F, 3.0F, 3.0F, 10, { Items.BEDROCK.toIngredient() }),
     ;
 
     override fun getUses() = durability
     override fun getSpeed() = miningSpeedMultiplier
     override fun getAttackDamageBonus() = attackDamage
-    override fun getIncorrectBlocksForDrops(): TagKey<Block> = miningLevel.incorrectBlocksForDrops
+    override fun getIncorrectBlocksForDrops(): TagKey<Block> = incorrectBlocksForDrops ?: miningLevel.incorrectBlocksForDrops
     override fun getEnchantmentValue() = enchantability
     override fun getRepairIngredient() = repairIngredient()
 }
@@ -126,6 +136,9 @@ enum class ToolMaterialCard(val toolMaterial: Tier, path: String, val title: EnJ
     CHAOS_STONE(FairyToolMaterials.CHAOS_STONE, "chaos_tool", EnJa("Chaos Tool", "混沌ツール")),
     CALCULITE(FairyToolMaterials.CALCULITE, "calculite_tool", EnJa("Calculite Tool", "理天石ツール")),
     NOISE(FairyToolMaterials.NOISE, "noise_tool", EnJa("Noise Tool", "ノイズツール")),
+    BRIDGMANITE(FairyToolMaterials.BRIDGMANITE, "bridgmanite_tool", EnJa("Bridgmanite Tool", "ブリッジマナイトツール")),
+    WADSLEYITE(FairyToolMaterials.WADSLEYITE, "wadsleyite_tool", EnJa("Wadsleyite Tool", "ワズレアイトツール")),
+    RINGWOODITE(FairyToolMaterials.RINGWOODITE, "ringwoodite_tool", EnJa("Ringwoodite Tool", "リングウッダイトツール")),
     HAIMEVISKA_ROSIN(FairyToolMaterials.HAIMEVISKA_ROSIN, "haimeviska_rosin_tool", EnJa("Resin Tool", "涙ツール")),
     COPAL(FairyToolMaterials.COPAL, "copal_tool", EnJa("Copal Tool", "コーパルツール")),
     FAIRY_PLASTIC(FairyToolMaterials.FAIRY_PLASTIC, "fairy_plastic_tool", EnJa("Fairy Plastic Tool", "妖精のプラスチックツール")),

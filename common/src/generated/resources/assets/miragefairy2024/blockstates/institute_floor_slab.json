@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "miragefairy2024:block/institute_floor_slab"
+    },
+    "type=double": {
+      "model": "miragefairy2024:block/institute_floor"
+    },
+    "type=top": {
+      "model": "miragefairy2024:block/institute_floor_slab_top"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "miragefairy2024:mantle",
+  "generator": {
+    "type": "minecraft:noise",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "miragefairy2024:mantle"
+    },
+    "settings": "miragefairy2024:mantle"
+  }
+}
