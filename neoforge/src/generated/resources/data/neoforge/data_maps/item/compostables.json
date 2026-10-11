@@ -1,5 +1,8 @@
 {
   "values": {
+    "miragefairy2024:dayflower": {
+      "chance": 0.3
+    },
     "miragefairy2024:diamond_luminaria_bulb": {
       "chance": 0.3
     },
@@ -32,6 +35,9 @@
     },
     "miragefairy2024:mirage_stem": {
       "chance": 0.5
+    },
+    "miragefairy2024:miramera": {
+      "chance": 0.3
     },
     "miragefairy2024:phantom_bulb": {
       "chance": 0.3
