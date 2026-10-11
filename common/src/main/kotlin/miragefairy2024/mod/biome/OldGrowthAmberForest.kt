@@ -204,14 +204,14 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
             // ツユクサ
             Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("dayflower_old_growth_amber_forest")) {
                 registerConfiguredFeature { RandomPatchConfiguration(6, 6, 2, placerOn(Blocks.GRASS_BLOCK, BlockMaterialCard.DAYFLOWER.block())) }.generator {
-                    registerPlacedFeature(dayflowerPlacedFeatureKey) { count(1) + flower(square, surface) }
+                    registerPlacedFeature(dayflowerPlacedFeatureKey) { count(4) + flower(square, surface) }
                 }
             }
 
             // ミツクサ
             Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("nectarflower_old_growth_amber_forest")) {
                 registerConfiguredFeature { RandomPatchConfiguration(12, 7, 3, placerOn(BlockMaterialCard.RESIN_CEMENT.block(), BlockMaterialCard.NECTARFLOWER.block())) }.generator {
-                    registerPlacedFeature(nectarflowerPlacedFeatureKey) { count(2) + flower(square, surface) }
+                    registerPlacedFeature(nectarflowerPlacedFeatureKey) { count(8) + flower(square, surface) }
                 }
             }
 
