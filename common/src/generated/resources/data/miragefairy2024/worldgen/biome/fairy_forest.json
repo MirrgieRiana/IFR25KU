@@ -84,7 +84,8 @@
       "minecraft:patch_sugar_cane",
       "minecraft:patch_pumpkin",
       "minecraft:patch_berry_common",
-      "minecraft:seagrass_river"
+      "minecraft:seagrass_river",
+      "miragefairy2024:miramera_fairy_forest"
     ],
     [
       "minecraft:freeze_top_layer"

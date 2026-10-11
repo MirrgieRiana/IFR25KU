@@ -1,9 +1,9 @@
 {
-  "feature": "miragefairy2024:miramera_single",
+  "feature": "miragefairy2024:miramera_fairy_forest",
   "placement": [
     {
-      "type": "minecraft:rarity_filter",
-      "chance": 4
+      "type": "minecraft:count",
+      "count": 3
     },
     {
       "type": "minecraft:in_square"
