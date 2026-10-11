@@ -1,20 +1,28 @@
-# =============================================================================
-# build.athanor.xa1 — video/ のビルドの定義なのだ～🌱（xarpite / API5）
-# -----------------------------------------------------------------------------
-# athanorw が `<サブプロジェクト名>:<タスク名>` を受け取って、ここの projectOf へ左辺を渡すのだ～🌱
-# 返ってくるのは、そのサブプロジェクトのモジュールの戻り値で、タスクはその直下から名前で呼べるのだ～🌱
-#
-# 呼び出しの例：
-#   xarpite -A 5 -q -e 'USE("/abs/video/build.athanor").projectOf("2026-04-12-sarracenia").build()'
-# =============================================================================
+/*
+ * build.athanor.xa1 — video/ のビルドの定義なのだ～🌱（xarpite / API5）
+ *
+ * athanor の main が、叩く対象の指定から取ったプロジェクト名を projectOf へ渡すのだ～🌱
+ * 返ってくるのは athanor のプロジェクトで、タスクはその直下から名前で呼べるのだ～🌱
+ *
+ * 呼び出しの例：
+ *   ./athanorw 2026-04-12-sarracenia:build
+ **/
 
 API(5)
 
 # LOCATION はこのファイル自身のパスだから、その親を取れば、呼び出し元の居場所に関わらず video/ が得られるのだ～🌱
 INC += LOCATION RESOLVE ".." RESOLVE "src/main/xa1"
 
-@USE("common")
+@USE("athanor")
+
+common := USE("common")
 
 {
-  projectOf: projectOf
+  /** 名前の合うプロジェクトが無ければ NULL を返して、呼び出し元がそれを伝えるのだ～🌱 */
+  projectOf: name ->
+    # ルートプロジェクトは、タスクを 1 個も持たないのだ～🌱
+    # それでも、athanor がどのプロジェクトにも足す tasks は呼べるのだ～🌱
+    : name == "" ? :
+      AthanorProject.new()
+    : common.projectOf(name)
 }

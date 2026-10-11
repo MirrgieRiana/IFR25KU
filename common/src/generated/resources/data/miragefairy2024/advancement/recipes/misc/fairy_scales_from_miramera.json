@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_miramera": {
+      "conditions": {
+        "items": [
+          {
+            "items": "miragefairy2024:miramera"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "miragefairy2024:fairy_scales_from_miramera"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_miramera"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "miragefairy2024:fairy_scales_from_miramera"
+    ]
+  }
+}

@@ -4,7 +4,7 @@
 # paper_authors.rb — Paper Authors Tag for Jekyll
 # =============================================================================
 #
-# 論文の著者欄を表示するためのLiquidカスタムブロックタグ。
+# 論文の著者欄を表示するためのLiquidカスタムブロックタグなのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -23,7 +23,7 @@
 module Paper
 
   # {% paper_authors %}...{% endpaper_authors %} ブロックタグの実装。
-  # ブロック内容を、タイトルの下に置く中央揃えの著者欄として出力する。
+  # ブロック内容を、タイトルの下に置く中央揃えの著者欄として出力するのだ～🌱
   class PaperAuthorsTag < Liquid::Block
     def render(context)
       content = super.strip
@@ -34,5 +34,5 @@ module Paper
   end
 end
 
-# タグ "paper_authors" を Liquid に登録する
+# タグ "paper_authors" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("paper_authors", Paper::PaperAuthorsTag)

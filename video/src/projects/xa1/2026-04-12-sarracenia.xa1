@@ -33,7 +33,7 @@ INC += videoBase RESOLVE "src/main/xa1"
 theaterModule := USE(videoBase RESOLVE "projects/common/theater/theater-v1")
 
 # この動画の名前なのだ～🌱
-# main.xa1 が名前からこのファイルを読むから、名前はこのファイル自身のファイル名そのものなのだ～🌱
+# build.athanor.xa1 が名前からこのファイルを読むから、名前はこのファイル自身のファイル名そのものなのだ～🌱
 name := LOCATION::replace(/^.*\//; "")::replace(/\.xa1$/; "")
 
 # --- 立ち絵 PSD から切り出すレイヤー ID の一覧なのだ～🌱 -------------------------

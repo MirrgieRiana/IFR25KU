@@ -4,10 +4,10 @@
 # paper_columns.rb — Paper Multi-Column Tag for Jekyll
 # =============================================================================
 #
-# 論文の段組みを表示するためのLiquidカスタムブロックタグ。
+# 論文の段組みを表示するためのLiquidカスタムブロックタグなのだ～🌱
 #
-# 個々の段は paper_column タグで表し、このタグはそれらを横に並べる役割を持つ。
-# 段の個数は、中に置かれた paper_column の個数によって決まる。
+# 個々の段は paper_column タグで表して、このタグはそれらを横に並べる役割を持つのだ～🌱
+# 段の個数は、中に置かれた paper_column の個数で決まるのだ～🌱
 #
 # ## 基本的な使い方
 #
@@ -31,7 +31,7 @@
 module Paper
 
   # {% paper_columns %}...{% endpaper_columns %} ブロックタグの実装。
-  # 中に置かれた段を、横に並べる。
+  # 中に置かれた段を、横に並べるのだ～🌱
   class PaperColumnsTag < Liquid::Block
     def render(context)
       content = super.strip
@@ -45,5 +45,5 @@ module Paper
   end
 end
 
-# タグ "paper_columns" を Liquid に登録する
+# タグ "paper_columns" を Liquid に登録するのだ～🌱
 Liquid::Template.register_tag("paper_columns", Paper::PaperColumnsTag)

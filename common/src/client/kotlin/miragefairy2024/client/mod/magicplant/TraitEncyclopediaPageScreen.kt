@@ -64,7 +64,7 @@ class TraitEncyclopediaPageScreen(private val parent: Screen?, private val trait
                 // 特性ポエム
                 child(verticalScroll(Sizing.fill(), Sizing.expand(), 5, overlapped = true).apply {
                     scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
-                    child().child(Components.label(text { trait.poem }).apply {
+                    child().child(Components.label(text { trait.text }).apply {
                         sizing(Sizing.fill(), Sizing.content())
                         horizontalTextAlignment(HorizontalAlignment.LEFT)
                     })
