@@ -1,4 +1,4 @@
-/**
+/*
  * build.athanor.xa1 — video/ のビルドの定義なのだ～🌱（xarpite / API5）
  *
  * athanor の main が、叩く対象の指定から取ったプロジェクト名を projectOf へ渡すのだ～🌱
@@ -6,7 +6,7 @@
  *
  * 呼び出しの例：
  *   ./athanorw tasks
- */
+ **/
 
 API(5)
 
