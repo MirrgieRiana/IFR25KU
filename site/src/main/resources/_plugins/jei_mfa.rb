@@ -31,7 +31,7 @@
 
 module JeiMfa
 
-  # {% jei_mfa %}...{% endjei_mfa %} ブロックタグの実装。
+  # {% jei_mfa %}...{% endjei_mfa %} ブロックタグの実装なのだ～🌱
   # ブロック内容を <div class="jei-mfa" markdown="1"> で包んで出力するのだ～🌱
   # markdown="1" を付けると、kramdownがブロック内容をMarkdownとして処理してくれるのだ～🌱
   class JeiMfaTag < Liquid::Block

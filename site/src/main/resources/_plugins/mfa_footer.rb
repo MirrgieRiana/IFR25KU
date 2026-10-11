@@ -25,7 +25,7 @@ module MfaFooter
   # 並行宇宙ルールの記事の、site.baseurl より後ろのURLなのだ～🌱
   PARALLEL_UNIVERSE_RULE_URL = "/g2-mfa-parallel-universe-rule.html"
 
-  # {% mfa_footer %} インラインタグの実装。
+  # {% mfa_footer %} インラインタグの実装なのだ～🌱
   # 記事の末尾に置く、MFAの記事に共通する注意書きを出力するのだ～🌱
   class MfaFooterTag < Liquid::Tag
     def render(context)

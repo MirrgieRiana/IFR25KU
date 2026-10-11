@@ -78,10 +78,10 @@ module TagArguments
   # 引数の値を、Liquid のテンプレートとして解釈するのだ～🌱
   #
   #   - 名前付き引数の値は、Liquid に解釈される前の文字列としてタグへ届くから、ここで解釈するのだ～🌱
-  #   - 自前で変数を引くのではなく Liquid へ渡すことで、escape のようなフィルターもそのまま使えるのだ～🌱
+  #   - 自前で変数を引くのではなく Liquid へ渡すことで、default のようなフィルターもそのまま使えるのだ～🌱
   #
   # 使用例:
-  #   TagArguments.interpolate('{{ page.title | escape }} の図', context) # => "サラセニア の図"
+  #   TagArguments.interpolate('{{ page.title | default: "無題" }} の図', context) # => "サラセニア の図"
   def self.interpolate(value, context)
     Liquid::Template.parse(value).render(context)
   end

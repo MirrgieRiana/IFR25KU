@@ -16,6 +16,7 @@ import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.ParticleRenderType
 import net.minecraft.client.particle.SpriteSet
 import net.minecraft.client.particle.TextureSheetParticle
+import net.minecraft.client.renderer.LightTexture
 import net.minecraft.util.Mth
 import net.minecraft.world.phys.Vec3
 import org.joml.Quaternionf
@@ -179,11 +180,11 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, l
 
     override fun getLightColor(tint: Float): Int {
         val brightness = super.getLightColor(tint)
-        val oldSkyLight = (brightness shr 20) and 0xF
-        val oldBlockLight = (brightness shr 4) and 0xF
+        val oldSkyLight = LightTexture.sky(brightness)
+        val oldBlockLight = LightTexture.block(brightness)
         val skyLight = oldSkyLight
         val blockLight = oldBlockLight max (15F * getValue(tint, lightTicks)).roundToInt()
-        return (skyLight shl 20) or (blockLight shl 4)
+        return LightTexture.pack(blockLight, skyLight)
     }
 
     override fun getRenderType(): ParticleRenderType = ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT
