@@ -1,7 +1,10 @@
 package miragefairy2024.client.fabric.mixins.mixin;
 
 import com.google.common.collect.ImmutableList;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.MeshData;
 import miragefairy2024.client.mod.particle.AdditiveParticleRenderType;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleRenderType;
@@ -32,11 +35,16 @@ public class ParticleEngineMixin {
 
     // 加算合成のパーティクルがブレンディング関数を書き換えるのに、描画の終わりにブレンドを無効化するだけではリセットされないのだ～🌱
     // 水中や炎の画面効果はブレンディング関数を設定せずにブレンドを有効化するから、リセットしないとそれらが加算合成で描かれてしまうのだ～🌱
-    @Inject(
+    // メソッド全体の末尾ではなく種別ごとの描画の呼び出しを包むことで、後続の種別がブレンディング関数を設定しない場合にも汚染されないのだ～🌱
+    @WrapOperation(
             method = "render(Lnet/minecraft/client/renderer/LightTexture;Lnet/minecraft/client/Camera;F)V",
-            at = @At(value = "TAIL")
+            at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/BufferUploader;drawWithShader(Lcom/mojang/blaze3d/vertex/MeshData;)V")
     )
-    private void render(CallbackInfo ci) {
-        RenderSystem.defaultBlendFunc();
+    private void resetBlendFunc(MeshData meshData, Operation<Void> original) {
+        try {
+            original.call(meshData);
+        } finally {
+            RenderSystem.defaultBlendFunc();
+        }
     }
 }
