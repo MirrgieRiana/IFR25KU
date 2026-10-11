@@ -1,4 +1,4 @@
-/**
+/*
  * athanor.xa1 — タスクを並べてビルドを組むための、小さなビルドシステムなのだ～🌱（xarpite / API5）
  *
  * 使う側は、プロジェクトを 1 個作って、その tasks へタスクを並べるのだ～🌱
@@ -17,7 +17,7 @@
  *     task.dependsOn = [project.tasks.generateFoo]
  *     task.action = () -> ...
  *   )
- */
+ **/
 
 API(5)
 
