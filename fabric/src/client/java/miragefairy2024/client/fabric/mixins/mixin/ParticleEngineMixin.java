@@ -14,23 +14,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-/**
- * Fabric 側の {@link ParticleEngine#render} は固定の一覧を回るだけだから、独自の種別を足してもそのままでは描かれないのだ～🌱
- * NeoForge 側は一覧外の種別も並べる比較器を持つから、こちらの Mixin は Fabric 側にのみ置くのだ～🌱
- */
+// Fabricのパーティクル描画は、この定数に並んだ種別だけを順に回るのだ～🌱
+// NeoForgeの側は本体のパッチでこの定数に依らない形になっているから、この問題はFabric側だけに存在するのだ～🌱
 @Mixin(ParticleEngine.class)
 public class ParticleEngineMixin {
-    @Mutable
     @Shadow
     @Final
+    @Mutable
     private static List<ParticleRenderType> RENDER_ORDER;
 
-    // 丸ごと置き換えるのではなく、その時点の値の末尾へ足すことで、同じ場所を触る他の MOD と共存できるのだ～🌱
     @Inject(method = "<clinit>", at = @At("TAIL"))
-    private static void clinitTail(CallbackInfo ci) {
-        RENDER_ORDER = ImmutableList.<ParticleRenderType>builder()
-            .addAll(RENDER_ORDER)
-            .add(AdditiveParticleRenderType.INSTANCE)
-            .build();
+    private static void addAdditiveParticleRenderType(CallbackInfo ci) {
+        // 定数を丸ごと組み直すのではなく現在の値を元に末尾へ1個加えるから、他のMODが足した種別とも共存できるのだ～🌱
+        RENDER_ORDER = ImmutableList.<ParticleRenderType>builder().addAll(RENDER_ORDER).add(AdditiveParticleRenderType.INSTANCE).build();
     }
 }

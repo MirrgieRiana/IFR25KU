@@ -40,4 +40,5 @@ fun initParticleClientModule() {
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.SPARKLE.particleType, createSparkleParticleFactory())
 
     initMagicSquareParticle()
+    initAdditiveParticleRenderType()
 }
