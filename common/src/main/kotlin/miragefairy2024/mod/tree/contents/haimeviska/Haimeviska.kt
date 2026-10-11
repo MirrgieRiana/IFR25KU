@@ -34,6 +34,7 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.util.valueproviders.ConstantInt
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.properties.BlockSetType
 import net.minecraft.world.level.block.state.properties.WoodType
 import net.minecraft.world.level.levelgen.feature.Feature
@@ -126,7 +127,7 @@ fun initHaimeviska() {
                 BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
                 SmallHaimeviskaFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
                 TwoLayersFeatureSize(1, 0, 1),
-            ).ignoreVines().decorators(listOf(createTreeDecorator(), TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
+            ).dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK)).ignoreVines().decorators(listOf(createTreeDecorator(), TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
         }.generator {
 
             // まばら
@@ -145,7 +146,7 @@ fun initHaimeviska() {
                 BlockStateProvider.simple(TreeBlockCard.LEAVES.block()),
                 GiantHaimeviskaFoliagePlacer,
                 TwoLayersFeatureSize(1, 1, 2),
-            ).ignoreVines().decorators(listOf(createTreeDecorator(), TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
+            ).dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK)).ignoreVines().decorators(listOf(createTreeDecorator(), TrunkVineDecorator.INSTANCE, LeaveVineDecorator(0.05F))).build()
         }.generator {
 
             // まばら

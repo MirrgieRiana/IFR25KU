@@ -2,6 +2,7 @@ package miragefairy2024.mod.tree.contents.haimeviska
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.mod.tree.setGroundAt
 import miragefairy2024.util.with
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.floorToInt
@@ -40,6 +41,14 @@ object GiantHaimeviskaTrunkPlacer : TrunkPlacer(22, 10, 0) {
         pos: BlockPos,
         config: TreeConfiguration,
     ): List<FoliagePlacer.FoliageAttachment> {
+
+        run {
+            val blockPos = BlockPos.MutableBlockPos()
+            listOf(0 to 0, 1 to 0, 1 to 1, 0 to 1).forEach { (x, z) ->
+                blockPos.setWithOffset(pos, x, -1, z)
+                setGroundAt(level, blockSetter, random, blockPos.immutable(), config)
+            }
+        }
 
         // 2x2の主幹を、頂上まで太さを保ったまま積むのだ～🌱
         run {
