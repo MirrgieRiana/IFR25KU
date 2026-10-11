@@ -19,9 +19,6 @@ class MirameraBlock(settings: Properties) : BushBlock(settings) {
 
         // バニラのシダと同じ大きさなのだ～🌱
         val SHAPE: VoxelShape = box(2.0, 0.0, 2.0, 14.0, 13.0, 14.0)
-
-        /** バニラの [net.minecraft.world.level.block.CherryLeavesBlock.animateTick] の、花びらを散らす確率と同じ値なのだ～🌱 */
-        private const val PARTICLE_CHANCE = 10
     }
 
     override fun codec() = CODEC
@@ -29,13 +26,13 @@ class MirameraBlock(settings: Properties) : BushBlock(settings) {
     override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = SHAPE
 
     override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
-        if (random.nextInt(PARTICLE_CHANCE) != 0) return
-        // 株の根元ではなく、葉の高さのあたりから湧かせるのだ～🌱
+        super.animateTick(state, level, pos, random)
+        if (random.nextInt(10) != 0) return
         level.addParticle(
             ParticleTypeCard.SPARKLE.particleType,
-            pos.x + 0.2 + random.nextDouble() * 0.6,
-            pos.y + 0.2 + random.nextDouble() * 0.5,
-            pos.z + 0.2 + random.nextDouble() * 0.6,
+            pos.x + 6.0 / 16.0 + random.nextDouble() * 4.0 / 16.0,
+            pos.y + 10.0 / 16.0 + random.nextDouble() * 3.0 / 16.0,
+            pos.z + 6.0 / 16.0 + random.nextDouble() * 4.0 / 16.0,
             0.0, 0.0, 0.0,
         )
     }
