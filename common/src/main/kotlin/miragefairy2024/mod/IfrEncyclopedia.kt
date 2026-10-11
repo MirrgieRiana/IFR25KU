@@ -6,8 +6,8 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.motifRegistry
-import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.magicplant.contents.magicplants.VeropedaCard
+import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
@@ -71,17 +71,29 @@ class IfrEncyclopediaEntryCard(
                 "Monocots, order Miragales, family Miragaceae",
                 "Mirage",
                 "",
-                "A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”",
+                listOf(
+                    "A palm-sized fairy in the form of a little girl with butterfly-like wings.",
+                    "Extremely timid, it rarely shows itself to people.",
+                    "When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”",
+                ).join(" "),
                 "",
-                "Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.",
+                listOf(
+                    "Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.",
+                ).join(" "),
             ),
             listOf(
                 "単子葉類妖花目ミラージュ科",
                 "ミラージュ",
                 "",
-                "蝶のような翅の生えた手のひら大の少女の姿をした妖精。非常に憶病で、滅多に人前に姿を現さない。捕まえようとしても人魂（ウィスプ）のような姿に化けて逃げ、いくら追いかけても捕まえることができないさまから、ミラージュ（蜃気楼）の名で知られている。",
+                listOf(
+                    "蝶のような翅の生えた手のひら大の少女の姿をした妖精。",
+                    "非常に憶病で、滅多に人前に姿を現さない。",
+                    "捕まえようとしても人魂（ウィスプ）のような姿に化けて逃げ、いくら追いかけても捕まえることができないさまから、ミラージュ（蜃気楼）の名で知られている。",
+                ).join(""),
                 "",
-                "古くは神霊の一種と考えられていたが、近年の研究により、ミラージュ植物の花粉が自律構造を持ったものであると解明された。",
+                listOf(
+                    "古くは神霊の一種と考えられていたが、近年の研究により、ミラージュ植物の花粉が自律構造を持ったものであると解明された。",
+                ).join(""),
             ),
         )
         val VEROPEDA = IfrEncyclopediaEntryCard(
@@ -155,25 +167,19 @@ class IfrEncyclopediaEntryCard(
                 "Monocots, order Miragales, family Mirameraceae",
                 "Miramera",
                 "",
-                "A weed scattered across the floor of the fairy forest. Its leaves glow faintly after nightfall, and fairies gather above them. It has long served as a landmark for locating sites where fairies can be observed.",
-                "",
-                "Why it draws fairies remained unclear for many years. It has since been confirmed that the plant discharges surplus aura, and that fairies visit in order to feed on it. The glow of the leaves accompanies the disposal of erg that the plant could not put to use.",
-                "",
-                "The scales shed when a fairy beats its wings are spent catalysts that once converted mana into erg within its body. Fairies produce them without pause, so the ones that settle here are shed in abundance. The roots of this plant absorb them without delay, converting mana into erg for a while before breaking them down for nourishment.",
-                "",
-                "The aura it offers is therefore paid out of what last night's visitors left behind. Discharging surplus at the very spot where fairies are drawn is held to be an adaptation that keeps this cycle turning, and neither party need intend it for the arrangement to balance.",
+                listOf(
+                    "TODO",
+                ).join(" "),
             ),
             listOf(
                 "単子葉類妖花目ミラメラ科",
                 "ミラメラ",
                 "",
-                "妖精の森の地表に点々と生える雑草。日が落ちると葉が淡く発光し、その上に妖精が集まる。妖精の観測地点を探す際の目印として、古くから利用されてきた。",
-                "",
-                "妖精を引き寄せる仕組みは長らく不明であったが、この草が余剰のオーラを放出していることが確認され、妖精がそれを摂取しに訪れるものと判明した。葉の発光は、この草が用途を見いだせなかったエルグを捨てる際に伴うものである。",
-                "",
-                "妖精が羽を払う際に落とす鱗粉は、その体内でマナをエルグへ変えていた触媒が、古くなったものである。妖精は鱗粉を絶えず生成しているため、ここに降りた個体は、これを大量に落としていく。この草の根はこれを速やかに吸収し、しばらくマナをエルグへ変えさせた後、分解して栄養とする。",
-                "",
-                "したがって、この草が差し出すオーラは、前夜の客が置いていったものを元手としている。妖精の集まる場所でこそ余剰を捨てるという振る舞いは、この循環を回し続けるための適応と見られており、どちらの側も意図せずとも、この関係は釣り合う。",
+                listOf(
+                    "妖精の森を妖しく照らす草本植物。",
+                    "妖精の森近辺での高オーラ環境に依存しており、光合成能力の大部分を欠いている。",
+                    "ミラージュ妖精とは共生関係を持ち、代謝の副産物である光のオーラを提供する代わりに、その死骸から植生のエルグを生産するキューティクルを獲得している。",
+                ).join(""),
             ),
         )
 
