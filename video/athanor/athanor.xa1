@@ -68,7 +68,7 @@ API(5)
   main := baseDirectory -> (
     build := USE(baseDirectory RESOLVE "build.athanor.xa1")
 
-    # 対象ごとにプロジェクトを作り直すと、済みの印が引き継がれず、共通の依存が何度も走ってしまうのだ～🌱
+    # 対象ごとにプロジェクトを作り直すと、完了フラグが引き継がれず、共通の依存が何度も走ってしまうのだ～🌱
     projects := {}
     projectOf := projectName -> projects.(projectName) ?: (
       projects.(projectName) = build.projectOf(projectName) ?: (
