@@ -3,6 +3,7 @@ package miragefairy2024.mod.tree.contents.plastictree
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.common.rootAdvancement
+import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeCard
 import miragefairy2024.mod.tree.contents.plastictreefamily.PlasticTreeFamilyTreeDecorator
@@ -99,7 +100,7 @@ fun initPlasticTree() {
                 BlockStateProvider.simple(TreeBlockCard.PLASTIC_TREE_LEAVES.block()),
                 SmallPlasticTreeFoliagePlacer(ConstantInt.of(1), ConstantInt.of(0), 0),
                 TwoLayersFeatureSize(1, 0, 1),
-            ).ignoreVines().decorators(listOf(createTreeDecorator())).build()
+            ).dirt(BlockStateProvider.simple(BlockMaterialCard.RESIN_CEMENT.block())).ignoreVines().decorators(listOf(createTreeDecorator())).build()
         }
     }
     Feature.TREE.generator(MirageFairy2024.identifier("giant_plastic_tree")) {
@@ -110,7 +111,7 @@ fun initPlasticTree() {
                 BlockStateProvider.simple(TreeBlockCard.PLASTIC_TREE_LEAVES.block()),
                 GiantPlasticTreeFoliagePlacer,
                 TwoLayersFeatureSize(1, 1, 2),
-            ).ignoreVines().decorators(listOf(createTreeDecorator())).build()
+            ).dirt(BlockStateProvider.simple(BlockMaterialCard.RESIN_CEMENT.block())).ignoreVines().decorators(listOf(createTreeDecorator())).build()
         }
     }
 
