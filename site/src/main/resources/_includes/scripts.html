@@ -23,9 +23,9 @@ document.addEventListener("DOMContentLoaded", function() {
   var triggers = Array.prototype.slice.call(document.querySelectorAll(".masthead__menu-item--dropdown .masthead__menu-item-trigger[aria-controls]"));
   if (!triggers.length) return;
 
-  // ホバーが使える環境では、ポインタの出入りもaria-expandedへ反映して、開閉の状態をそれ1本にまとめるのだ～🌱
+  // ポインタの出入りもaria-expandedへ反映して、開閉の状態をそれ1本にまとめるのだ～🌱
   // CSSの:hoverによる表示と二本立てにすると、クリックで閉じてもポインタが乗っている限り開いたままになるのだぁ…🌧️
-  var canHover = matchMedia("(hover: hover)").matches;
+  // ホバーが使えるかの判定は読み込みの時点の値で固定されるから、後からマウスが繋がれた場合に備えて、判定せずに常に登録するのだ～🌱
 
   // レスポンシブでhidden-links側へ移った見出しは、CSSで操作不能になって、下の項目が常に並ぶのだ～🌱
   // そちら側に居る間は、折り畳める状態ではないから、閉じた状態へは揃えないのだ～🌱
@@ -59,23 +59,22 @@ document.addEventListener("DOMContentLoaded", function() {
       trigger.setAttribute("aria-expanded", "true");
     });
 
-    if (canHover) {
-      // CSSの:hoverによる表示はJSが動かないときのフォールバックだから、JSが動く間はクラスを付けて止めるのだ～🌱
-      item.classList.add("masthead__menu-item--js-hover");
+    // CSSの:hoverによる表示はJSが動かないときのフォールバックだから、JSが動く間はクラスを付けて止めるのだ～🌱
+    item.classList.add("masthead__menu-item--js-hover");
 
-      // タッチのタップは、互換のためのマウスのイベントを合成して、クリックより先に届けるのだ～🌱
-      // それをホバーとして扱うと、1回目のタップで開いた状態になって、そのまま遷移しちゃうのだぁ…🌧️
-      item.addEventListener("pointerenter", function(event) {
-        if (event.pointerType !== "mouse") return;
-        closeAll();
-        trigger.setAttribute("aria-expanded", "true");
-      });
+    // タッチのタップは、互換のためのマウスのイベントを合成して、クリックより先に届けるのだ～🌱
+    // それをホバーとして扱うと、1回目のタップで開いた状態になって、そのまま遷移しちゃうのだぁ…🌧️
+    item.addEventListener("pointerenter", function(event) {
+      if (event.pointerType !== "mouse") return;
+      closeAll();
+      trigger.setAttribute("aria-expanded", "true");
+    });
 
-      item.addEventListener("pointerleave", function(event) {
-        if (event.pointerType !== "mouse") return;
-        trigger.setAttribute("aria-expanded", "false");
-      });
-    }
+    item.addEventListener("pointerleave", function(event) {
+      if (event.pointerType !== "mouse") return;
+      if (isAlwaysOpen(trigger)) return;
+      trigger.setAttribute("aria-expanded", "false");
+    });
   });
 
   document.addEventListener("keydown", function(event) {
