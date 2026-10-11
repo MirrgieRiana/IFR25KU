@@ -12,7 +12,6 @@ import miragefairy2024.util.createItemStack
 import miragefairy2024.util.flower
 import miragefairy2024.util.generator
 import miragefairy2024.util.getSurfaceNoiseThreshold
-import miragefairy2024.util.per
 import miragefairy2024.util.registerConfiguredFeature
 import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.square
@@ -128,7 +127,7 @@ object DeepFairyForestBiomeCard : BiomeCard(
         // ミラメラ
         Feature.FLOWER.generator(MirageFairy2024.identifier("miramera_deep_fairy_forest")) {
             registerConfiguredFeature { RandomPatchConfiguration(1, 0, 0, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(BlockMaterialCard.MIRAMERA.block())))) }.generator {
-                registerPlacedFeature(mirameraPlacedFeatureKey) { per(4) + flower(square, surface) }
+                registerPlacedFeature(mirameraPlacedFeatureKey) { flower(square, surface) }
             }
         }
 
