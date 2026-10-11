@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "miragefairy2024:fairy_scales",
+  "ingredients": [
+    {
+      "item": "miragefairy2024:miramera"
+    },
+    {
+      "item": "miragefairy2024:miramera"
+    },
+    {
+      "item": "miragefairy2024:miramera"
+    },
+    {
+      "item": "miragefairy2024:miramera"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "miragefairy2024:fairy_scales"
+  }
+}

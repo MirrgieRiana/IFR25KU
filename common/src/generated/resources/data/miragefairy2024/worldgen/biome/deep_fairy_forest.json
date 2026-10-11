@@ -80,7 +80,8 @@
       "minecraft:patch_dead_bush",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
-      "minecraft:seagrass_river"
+      "minecraft:seagrass_river",
+      "miragefairy2024:miramera_deep_fairy_forest"
     ],
     [
       "minecraft:freeze_top_layer"
