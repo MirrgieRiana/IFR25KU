@@ -29,7 +29,7 @@ API(5)
   )
 
   # 列挙型が無いから、列挙定数の実体は数値なのだ～🌱
-  notRunState := 0
+  idleState := 0
   runningState := 1
   doneState := 2
 
@@ -38,7 +38,7 @@ API(5)
       name: NULL
       dependsOn: []
       action: NULL
-      _state: notRunState
+      _state: idleState
     }
 
     /**
