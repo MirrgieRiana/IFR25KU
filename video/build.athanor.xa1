@@ -1,0 +1,23 @@
+/*
+ * build.athanor.xa1 — video/ のビルドの定義なのだ～🌱（xarpite / API5）
+ *
+ * athanor の main が、叩く対象の指定から取ったプロジェクト名を projectOf へ渡すのだ～🌱
+ * 返ってくるのは athanor のプロジェクトで、タスクはその直下から名前で呼べるのだ～🌱
+ *
+ * 呼び出しの例：
+ *   ./athanorw tasks
+ **/
+
+API(5)
+
+@USE("athanor")
+
+{
+  /** 名前の合うプロジェクトが無ければ NULL を返して、呼び出し元がそれを伝えるのだ～🌱 */
+  projectOf: name ->
+    # ルートプロジェクトは、タスクを 1 個も持たないのだ～🌱
+    # それでも、athanor がどのプロジェクトにも足す tasks は呼べるのだ～🌱
+    : name == "" ? :
+      AthanorProject.new()
+    : NULL
+}

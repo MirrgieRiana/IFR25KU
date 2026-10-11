@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# ============================================================
+#   video/ のタスクを走らせる入口なのだ～🌱
+#   使い方なのだ～🌱：
+#     ./athanorw tasks              … ルートプロジェクトのタスクの一覧を出すのだ～🌱
+#     ./athanorw foo:build          … foo というプロジェクトの build を走らせるのだ～🌱
+#     ./athanorw clean build        … 並べた順に、ぜんぶ走らせるのだ～🌱
+#   対象の名前は `:` で区切るのだ～🌱
+#   左辺がプロジェクト名で、右辺がタスク名なのだ～🌱
+#   `:` が無いときは、ルートプロジェクトのタスクとして扱うのだ～🌱
+#   叩ける右辺は、そのプロジェクトの tasks に並んでいるものなのだ～🌱
+#   ビルドの定義は build.athanor.xa1 に書くのだ～🌱
+#   athanor そのものの実装は athanor/ の下にあるのだ～🌱
+# ============================================================
+set -euo pipefail
+
+# このスクリプトの場所を、ビルドの定義と xarpite を探す基準にするのだ～🌱
+# 先頭が - のパスでも壊れないように、cd と dirname の両方に -- を付けるのだ～🌱
+baseDirectory=$(cd -- "$(dirname -- "$0")" && pwd)
+
+# パスを xa1 のソースへ直接埋め込むと、`"` や `$(` を含むパスで、それが文字列の終端や埋め込みとして解釈されるのだ～🌱
+ATHANOR_BASE_DIRECTORY="$baseDirectory" \
+ATHANOR_MAIN_SCRIPT='
+  INC::push << ENV.ATHANOR_BASE_DIRECTORY & "/athanor"
+  USE("athanor").main(ENV.ATHANOR_BASE_DIRECTORY)
+' \
+"$baseDirectory/../xarpite/xarpite" -A 5 -q -e 'XA(ENV.ATHANOR_MAIN_SCRIPT)' -- "$@"
