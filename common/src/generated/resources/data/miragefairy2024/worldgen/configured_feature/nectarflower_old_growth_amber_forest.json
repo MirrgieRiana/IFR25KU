@@ -37,8 +37,8 @@
         }
       ]
     },
-    "tries": 1,
-    "xz_spread": 0,
-    "y_spread": 0
+    "tries": 12,
+    "xz_spread": 7,
+    "y_spread": 3
   }
 }
