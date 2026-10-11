@@ -168,7 +168,9 @@ class IfrEncyclopediaEntryCard(
                 "Miramera",
                 "",
                 listOf(
-                    "TODO",
+                    "A herbaceous plant that casts a bewitching light over the Fairy Forest.",
+                    "It depends on the high-aura environment near the Fairy Forest, and lacks most of its photosynthetic capacity.",
+                    "It maintains a symbiotic relationship with Mirage fairies, and in exchange for supplying the shine aura that is a byproduct of its metabolism, it obtains from their corpses the cuticle that produces vegetation erg.",
                 ).join(" "),
             ),
             listOf(
