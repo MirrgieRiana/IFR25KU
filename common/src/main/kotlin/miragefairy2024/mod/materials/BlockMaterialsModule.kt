@@ -1003,6 +1003,11 @@ open class BlockMaterialCard(
         }.cutout().sound(SoundType.GRASS).tag(BlockTags.MINEABLE_WITH_AXE, BlockTags.SWORD_EFFICIENT, BlockTags.REPLACEABLE, BlockTags.REPLACEABLE_BY_TREES).init {
             item.registerBlockGeneratedModelGeneration(block)
             block.registerFlammable(60, 100)
+            registerShapelessRecipeGeneration(MaterialCard.PLASTIC_TREE_SAP.item) {
+                repeat(4) {
+                    requires(item())
+                }
+            } on item from item
         }
     }
 
