@@ -15,9 +15,12 @@ API(5)
 {
   /** 名前の合うプロジェクトが無ければ NULL を返して、呼び出し元がそれを伝えるのだ～🌱 */
   projectOf: name ->
-    # ルートプロジェクトは、タスクを 1 個も持たないのだ～🌱
-    # それでも、athanor がどのプロジェクトにも足す tasks は呼べるのだ～🌱
     : name == "" ? :
-      AthanorProject.new()
+      AthanorProject.new()::ALSO ( project =>
+        project.tasks.check = AthanorTask.new()::ALSO ( task =>
+          task.name = "check"
+          task.action = () -> OUT << "CHECK SUCCESSFUL"
+        )
+      )
     : NULL
 }
