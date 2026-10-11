@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "miragefairy2024:mirage_missile",
+  "key": {
+    "F": {
+      "item": "minecraft:flint"
+    },
+    "L": {
+      "item": "miragefairy2024:mirage_leaves"
+    },
+    "S": {
+      "item": "miragefairy2024:mirage_stem"
+    }
+  },
+  "pattern": [
+    "  F",
+    " S ",
+    "L  "
+  ],
+  "result": {
+    "count": 4,
+    "id": "miragefairy2024:mirage_missile"
+  }
+}
