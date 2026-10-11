@@ -11,7 +11,8 @@
 API(5)
 
 # LOCATION はこのファイル自身のパスだから、その親を取れば、呼び出し元の居場所に関わらず video/ が得られるのだ～🌱
-INC::push << LOCATION RESOLVE ".." RESOLVE "src/main/xa1"
+videoBase := LOCATION RESOLVE ".."
+INC::push << videoBase RESOLVE "src/main/xa1", videoBase RESOLVE "src/athanor-plugins/xa1"
 
 @USE("athanor")
 

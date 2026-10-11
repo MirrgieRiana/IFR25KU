@@ -18,14 +18,13 @@ API(5)
 
 common := USE("common")
 timelineModule := USE("timeline")
-framesModule := USE("frames")
 
 dirOf := project -> common.buildBase RESOLVE project.name RESOLVE "movie"
 bgmDir := common.base RESOLVE "projects/common/resources/bgm"
 
 {
   path: project -> dirOf(project) RESOLVE "$(project.name).mp4"
-  generate: project -> (
+  generate: (project; framesPngPattern) -> (
     # BGM は外部取得リソースだから、長い合成に入る前に、置かれていることを確かめるのだ～🌱
     # FILE_NAMES のストリームのままだと、@ が部分文字列で探して、隣の *.md5 のファイル名に当たっちゃうのだ～🌱
     # だから、配列にしてから、要素として探すのだ～🌱
@@ -65,7 +64,7 @@ bgmDir := common.base RESOLVE "projects/common/resources/bgm"
 
       cmd := [
         ffmpeg; "-y"; "-hide_banner"
-        "-framerate"; "30"; "-i"; framesModule.pngPattern(project)
+        "-framerate"; "30"; "-i"; framesPngPattern
         "-i"; timelineModule.wavPath(project)
         "-stream_loop"; "-1"; "-i"; bgmDir RESOLVE "chopin_op10-4.flac"
         "-filter_complex"; fc

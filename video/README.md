@@ -78,7 +78,7 @@ build/frames/<proj>/ + full.wav + projects/common/resources/bgm/*.flac
 | `src/main/xa1/audio.xa1` | VOICEVOX で台詞ごとの音声を合成して、口パク用のモーラ区間も書き出すのだ～🌱 |
 | `src/main/xa1/timeline.xa1` | 台詞 wav を、タイトル、本編（行間の無音）、クレジットの順に結合して、タイムラインを算出するのだ～🌱 |
 | `src/main/xa1/scene.xa1` | 動画プロジェクトの入口を叩いて、テンプレートと構成jsonl を組ませるのだ～🌱 |
-| `src/main/xa1/frames.xa1` | 汎用レンダラーを呼んで、連番のフレーム画像を撮らせるのだ～🌱 |
+| `src/athanor-plugins/xa1/frames-plugin.xa1` | 汎用レンダラーを呼んで、連番のフレーム画像を撮らせるタスクのクラスなのだ～🌱 入出力のパラメータは、タスクへ格納する側が代入するのだ～🌱 |
 | `src/main/xa1/clean.xa1` | 生成物の `build` ディレクトリを、まとめて捨てるのだ～🌱 |
 | `src/main/xa1/common.xa1` | 各段が共有する値と関数（置き場所・外部コマンドの実行・生成の枠組み・丸め・wav の読み出し）なのだ～🌱 |
 | `src/main/xa1/movie.xa1` | 連番フレームとナレーションと BGM を ffmpeg で合成して mp4 にするのだ～🌱 |

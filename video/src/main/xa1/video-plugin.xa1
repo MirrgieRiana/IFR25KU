@@ -11,12 +11,13 @@
 API(5)
 
 @USE("athanor")
+@USE("frames-plugin")
 
+common := USE("common")
 scriptModule := USE("script")
 audioModule := USE("audio")
 timelineModule := USE("timeline")
 sceneModule := USE("scene")
-framesModule := USE("frames")
 movieModule := USE("movie")
 cleanModule := USE("clean")
 
@@ -41,8 +42,15 @@ cleanModule := USE("clean")
     project.tasks.generateAudio = task("audio"; [project.tasks.generateScript]; () -> audioModule.generate(video))
     project.tasks.generateTimeline = task("timeline"; [project.tasks.generateAudio]; () -> timelineModule.generate(video))
     project.tasks.generateScene = task("scene"; [project.tasks.generateTimeline]; () -> sceneModule.generate(video))
-    project.tasks.generateFrames = task("frames"; [project.tasks.generateScene]; () -> framesModule.generate(video))
-    project.tasks.generateMovie = task("movie"; [project.tasks.generateTimeline, project.tasks.generateFrames]; () -> movieModule.generate(video))
+    # frames の段は、athanor のプラグインが持つタスククラスだから、入出力のパラメータをここで代入するのだ～🌱
+    project.tasks.generateFrames = GenerateFramesTask::NEW()::ALSO ( task =>
+      task.name = "frames"
+      task.dependsOn = [project.tasks.generateScene]
+      task.label = "frames ($name)"
+      task.framesJsonlPath = () -> sceneModule.framesJsonlPath(video)
+      task.outputDir = common.buildBase RESOLVE name RESOLVE "frames"
+    )
+    project.tasks.generateMovie = task("movie"; [project.tasks.generateTimeline, project.tasks.generateFrames]; () -> movieModule.generate(video; project.tasks.generateFrames::pngPattern()))
     project.tasks.clean = task("clean"; []; () -> cleanModule.run(video))
     # 主要なものをビルドする入口なのだ～🌱 中身を持たず、動画を作る段へ依存するだけなのだ～🌱
     project.tasks.build = task("build"; [project.tasks.generateMovie]; NULL)
