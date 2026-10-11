@@ -1,0 +1,28 @@
+name: check-video
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-video-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  check:
+    runs-on: ubuntu-latest
+    steps:
+
+      # セットアップ
+      - uses: actions/checkout@v6
+
+      # 検査
+      - name: 検査
+        run: video/athanorw check

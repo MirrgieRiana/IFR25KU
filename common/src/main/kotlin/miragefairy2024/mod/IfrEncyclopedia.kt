@@ -7,6 +7,7 @@ import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.motifRegistry
 import miragefairy2024.mod.materials.BlockMaterialCard
+import miragefairy2024.mod.magicplant.contents.magicplants.VeropedaCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
@@ -48,6 +49,7 @@ import miragefairy2024.util.register
 import miragefairy2024.util.sortedEntrySet
 import miragefairy2024.util.text
 import miragefairy2024.util.toIngredientStack
+import mirrg.kotlin.helium.join
 import net.minecraft.core.RegistryAccess
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -82,6 +84,68 @@ class IfrEncyclopediaEntryCard(
                 "古くは神霊の一種と考えられていたが、近年の研究により、ミラージュ植物の花粉が自律構造を持ったものであると解明された。",
             ),
         )
+        val VEROPEDA = IfrEncyclopediaEntryCard(
+            "veropeda",
+            EnJa("Veropeda", "呪草ヴェロペダ"),
+            { listOf(VeropedaCard.item().createItemStack()) },
+            listOf(
+                "Monocots, order Miragales, family Veropedaceae",
+                "Veropeda",
+                "",
+                listOf(
+                    "This magical plant, created by fusing the carnivorous plant Sarracenia with curse magic, was equated by ancient alchemists with Veropeda, a demon said to sustain itself by devouring fairies.",
+                    "Although the existence of such a demon has not been confirmed, the fibers of this plant do exhibit genuine curse effects.",
+                    "When we at the Institute of Fairy Research analyzed this plant's genes, we found that, remarkably, they were identical to those of the Mirage.",
+                ).join(" "),
+                "",
+                "The Institute of Fairy Research",
+            ),
+            listOf(
+                "単子葉類妖花目ヴェロペダ科",
+                "ヴェロペダ",
+                "",
+                listOf(
+                    "サラセニアという食虫植物と呪いの魔法を合成して作られたこの魔法植物は、いにしえの錬金術師の間で、妖精を喰らって生きる悪魔ヴェロペーダと同一視されてきました。",
+                    "そのような悪魔の実在は確認されていませんが、この植物の繊維には実際に呪いの効果があります。",
+                    "妖精研究所がこの植物の遺伝子を解析したところ、驚くべきことにミラージュの遺伝子と完全に一致しました。",
+                ).join(""),
+                "",
+                "妖精研究所",
+            ),
+        )
+        val FAIRY_RUBBER = IfrEncyclopediaEntryCard(
+            "fairy_rubber",
+            EnJa("Fairy Rubber", "夜のかけら"),
+            { listOf(MaterialCard.FAIRY_RUBBER.item().createItemStack()) },
+            listOf(
+                listOf(
+                    "The night's going awaaay...",
+                    "I was scaaared... and cryiiing...",
+                    "And then... the sky gave me thiiis...",
+                    "This one...",
+                    "It's so waaarm...",
+                    "It's warm and it feels gooood...",
+                    "Always...",
+                    "I hold thiiis... and sleep...",
+                ).join(" "),
+                "",
+                "Nightia the fairy of night",
+            ),
+            listOf(
+                listOf(
+                    "よるがきえちゃうのー………",
+                    "こわくて…ないてたー………",
+                    "そしたらねー…………おそらがくれたのー……",
+                    "これー……",
+                    "とってもあったかいのー………",
+                    "あたたかくてきもちいーのー……",
+                    "いつもー……",
+                    "これもってー…ねてるのー………",
+                ).join(" "),
+                "",
+                "夜精ニグチャ",
+            ),
+        )
 
         val MIRAMERA = IfrEncyclopediaEntryCard(
             "miramera",
@@ -113,7 +177,7 @@ class IfrEncyclopediaEntryCard(
             ),
         )
 
-        val entries = listOf(MIRAGE_FAIRY, MIRAMERA)
+        val entries = listOf(MIRAGE_FAIRY, VEROPEDA, FAIRY_RUBBER, MIRAMERA)
     }
 
     val identifier = MirageFairy2024.identifier(path)
