@@ -5,9 +5,9 @@
 # 使い方なのだ～🌱：
 #   ./athanorw tasks              … ルートプロジェクトのタスクの一覧を出すのだ～🌱
 #   ./athanorw foo:build          … foo というプロジェクトの build を走らせるのだ～🌱
-#   ./athanorw 'foo:build()' 0.3  … 2 個目からの引数は、xarpite の ARGS の 2 個目から並ぶのだ～🌱
+#   ./athanorw clean build        … 並べた順に、ぜんぶ走らせるのだ～🌱
 #
-# タスクの名前は `:` で区切るのだ～🌱 左辺がプロジェクト名で、右辺がタスク名なのだ～🌱
+# 対象の名前は `:` で区切るのだ～🌱 左辺がプロジェクト名で、右辺がタスク名なのだ～🌱
 # `:` が無いときは、ルートプロジェクトのタスクとして扱うのだ～🌱
 # 叩ける右辺は、そのプロジェクトの tasks に並んでいるものなのだ～🌱
 #
@@ -18,10 +18,9 @@ set -eu
 
 # このスクリプトの置き場所なのだ～🌱
 # どのディレクトリから呼んでも、同じ build.athanor.xa1 と xarpite を指すのだ～🌱
-here=$(cd "$(dirname "$0")" && pwd)
+baseDirectory=$(cd "$(dirname "$0")" && pwd)
 
-# `--` が無いと、タスクへ渡す `-` で始まる引数が、xarpite のオプションとして食われるのだ～🌱
-"$here/../xarpite/xarpite" -A 5 -q -f - -- "$@" <<EOF
-INC::push << "$here/athanor"
-USE("athanor").main("$here")
+"$baseDirectory/../xarpite/xarpite" -A 5 -q -f - -- "$@" <<EOF
+INC::push << "$baseDirectory/athanor"
+USE("athanor").main("$baseDirectory")
 EOF
