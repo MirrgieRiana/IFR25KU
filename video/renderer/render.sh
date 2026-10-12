@@ -3,11 +3,6 @@
 # 使い方と環境変数は、README.md に書いてあるのだ～🌱
 set -euo pipefail
 
-if [ "$#" -lt 2 ]; then
-  echo 'usage: bash render.sh <frames.jsonl> <outDir> [--config <config.json>]' >&2
-  exit 1
-fi
-
 # 引数のパスは呼び出し元のカレントディレクトリを基準にするから、ここへは移動せずに場所だけを覚えるのだ～🌱
 RENDERER_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
 
