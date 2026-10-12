@@ -158,7 +158,6 @@ class IfrEncyclopediaEntryCard(
                 "夜精ニグチャ",
             ),
         )
-
         val MIRAMERA = IfrEncyclopediaEntryCard(
             "miramera",
             EnJa("Miramera", "ミラメラ"),
