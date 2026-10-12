@@ -26,7 +26,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 - toc
 {:toc}
 
-## 31.32.0
+## 31.32.1
 
 琥珀色の原生林
 
