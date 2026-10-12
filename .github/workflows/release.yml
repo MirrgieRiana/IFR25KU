@@ -29,11 +29,10 @@ jobs:
 
       # ビルド
       - name: ビルド
-        run: ./gradlew build
+        run: ./gradlew :fabric:build :neoforge:build
 
       - name: ビルドされたファイルの一覧
         run: |
-          ls -l build/libs
           ls -l fabric/build/libs
           ls -l neoforge/build/libs
 
