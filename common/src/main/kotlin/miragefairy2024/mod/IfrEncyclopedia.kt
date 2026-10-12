@@ -69,7 +69,6 @@ class IfrEncyclopediaEntryCard(
             { motifRegistry.sortedEntrySet.map { it.value.createFairyItemStack() } },
             listOf(
                 "Monocots, order Miragales, family Miragaceae",
-                "Mirage",
                 "",
                 listOf(
                     "A palm-sized fairy in the form of a little girl with butterfly-like wings.",
@@ -80,10 +79,11 @@ class IfrEncyclopediaEntryCard(
                 listOf(
                     "Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.",
                 ).join(" "),
+                "",
+                "The Institute of Fairy Research",
             ),
             listOf(
                 "単子葉類妖花目ミラージュ科",
-                "ミラージュ",
                 "",
                 listOf(
                     "蝶のような翅の生えた手のひら大の少女の姿をした妖精。",
@@ -94,6 +94,8 @@ class IfrEncyclopediaEntryCard(
                 listOf(
                     "古くは神霊の一種と考えられていたが、近年の研究により、ミラージュ植物の花粉が自律構造を持ったものであると解明された。",
                 ).join(""),
+                "",
+                "妖精研究所",
             ),
         )
         val VEROPEDA = IfrEncyclopediaEntryCard(
@@ -102,7 +104,6 @@ class IfrEncyclopediaEntryCard(
             { listOf(VeropedaCard.item().createItemStack()) },
             listOf(
                 "Monocots, order Miragales, family Veropedaceae",
-                "Veropeda",
                 "",
                 listOf(
                     "This magical plant, created by fusing the carnivorous plant Sarracenia with curse magic, was equated by ancient alchemists with Veropeda, a demon said to sustain itself by devouring fairies.",
@@ -114,7 +115,6 @@ class IfrEncyclopediaEntryCard(
             ),
             listOf(
                 "単子葉類妖花目ヴェロペダ科",
-                "ヴェロペダ",
                 "",
                 listOf(
                     "サラセニアという食虫植物と呪いの魔法を合成して作られたこの魔法植物は、いにしえの錬金術師の間で、妖精を喰らって生きる悪魔ヴェロペーダと同一視されてきました。",
@@ -164,7 +164,6 @@ class IfrEncyclopediaEntryCard(
             { listOf(BlockMaterialCard.MIRAMERA.item().createItemStack()) },
             listOf(
                 "Monocots, order Miragales, family Mirameraceae",
-                "Miramera",
                 "",
                 listOf(
                     "A herbaceous plant that casts a bewitching light over the Fairy Forest.",
@@ -174,7 +173,6 @@ class IfrEncyclopediaEntryCard(
             ),
             listOf(
                 "単子葉類妖花目ミラメラ科",
-                "ミラメラ",
                 "",
                 listOf(
                     "妖精の森を妖しく照らす草本植物。",
