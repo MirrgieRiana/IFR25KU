@@ -7,6 +7,7 @@ import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.motifRegistry
 import miragefairy2024.mod.magicplant.contents.magicplants.VeropedaCard
+import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
@@ -70,17 +71,29 @@ class IfrEncyclopediaEntryCard(
                 "Monocots, order Miragales, family Miragaceae",
                 "Mirage",
                 "",
-                "A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”",
+                listOf(
+                    "A palm-sized fairy in the form of a little girl with butterfly-like wings.",
+                    "Extremely timid, it rarely shows itself to people.",
+                    "When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”",
+                ).join(" "),
                 "",
-                "Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.",
+                listOf(
+                    "Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.",
+                ).join(" "),
             ),
             listOf(
                 "単子葉類妖花目ミラージュ科",
                 "ミラージュ",
                 "",
-                "蝶のような翅の生えた手のひら大の少女の姿をした妖精。非常に憶病で、滅多に人前に姿を現さない。捕まえようとしても人魂（ウィスプ）のような姿に化けて逃げ、いくら追いかけても捕まえることができないさまから、ミラージュ（蜃気楼）の名で知られている。",
+                listOf(
+                    "蝶のような翅の生えた手のひら大の少女の姿をした妖精。",
+                    "非常に憶病で、滅多に人前に姿を現さない。",
+                    "捕まえようとしても人魂（ウィスプ）のような姿に化けて逃げ、いくら追いかけても捕まえることができないさまから、ミラージュ（蜃気楼）の名で知られている。",
+                ).join(""),
                 "",
-                "古くは神霊の一種と考えられていたが、近年の研究により、ミラージュ植物の花粉が自律構造を持ったものであると解明された。",
+                listOf(
+                    "古くは神霊の一種と考えられていたが、近年の研究により、ミラージュ植物の花粉が自律構造を持ったものであると解明された。",
+                ).join(""),
             ),
         )
         val VEROPEDA = IfrEncyclopediaEntryCard(
@@ -145,8 +158,33 @@ class IfrEncyclopediaEntryCard(
                 "夜精ニグチャ",
             ),
         )
+        val MIRAMERA = IfrEncyclopediaEntryCard(
+            "miramera",
+            EnJa("Miramera", "ミラメラ"),
+            { listOf(BlockMaterialCard.MIRAMERA.item().createItemStack()) },
+            listOf(
+                "Monocots, order Miragales, family Mirameraceae",
+                "Miramera",
+                "",
+                listOf(
+                    "A herbaceous plant that casts a bewitching light over the Fairy Forest.",
+                    "It depends on the high-aura environment near the Fairy Forest, and lacks most of its photosynthetic capacity.",
+                    "It maintains a symbiotic relationship with Mirage fairies, and in exchange for supplying the shine aura that is a byproduct of its metabolism, it obtains from their corpses the cuticle that produces vegetation erg.",
+                ).join(" "),
+            ),
+            listOf(
+                "単子葉類妖花目ミラメラ科",
+                "ミラメラ",
+                "",
+                listOf(
+                    "妖精の森を妖しく照らす草本植物。",
+                    "妖精の森近辺での高オーラ環境に依存しており、光合成能力の大部分を欠いている。",
+                    "ミラージュ妖精とは共生関係を持ち、代謝の副産物である光のオーラを提供する代わりに、その死骸から植生のエルグを生産するキューティクルを獲得している。",
+                ).join(""),
+            ),
+        )
 
-        val entries = listOf(MIRAGE_FAIRY, VEROPEDA, FAIRY_RUBBER)
+        val entries = listOf(MIRAGE_FAIRY, VEROPEDA, FAIRY_RUBBER, MIRAMERA)
     }
 
     val identifier = MirageFairy2024.identifier(path)
