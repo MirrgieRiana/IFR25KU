@@ -66,7 +66,6 @@ fun createSparkleParticleFactory() = { spriteProvider: SpriteSet ->
             init {
                 quadSize *= 0.4F + Math.random().toFloat() * 0.2F
                 lifetime = LIFETIME_TICKS
-                // SpriteSet.get(age, lifetime) は lifetime で割るから、0 を渡すとゼロ除算になるのだ～🌱
                 pickSprite(spriteProvider)
             }
 
