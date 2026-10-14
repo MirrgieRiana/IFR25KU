@@ -5,17 +5,11 @@ import dev.emi.emi.api.widget.FillingArrowWidget
 import dev.emi.emi.api.widget.SlotWidget
 import dev.emi.emi.api.widget.TextureWidget
 import dev.emi.emi.api.widget.TooltipWidget
-import io.wispforest.owo.ui.container.Containers
 import miragefairy2024.ModContext
-import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterContext
-import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterRegistry
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
-import miragefairy2024.client.util.OwoComponent
-import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
-import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.ImageView
@@ -24,7 +18,6 @@ import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.util.Remover
-import miragefairy2024.util.toEmiBounds
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
@@ -108,27 +101,6 @@ fun initEmiViewPlacers() {
         fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
                 context.containerWidget place EmiViewRendererWidget(entry.viewRenderer, view, bounds)
-            }
-        }
-        f(entry)
-    }
-    ViewOwoAdapterRegistry.registry.subscribe { entry ->
-        fun <V : PlaceableView> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
-            EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
-                context.containerWidget place EmiUIAdapter(bounds.toEmiBounds(), Containers::stack).also { adapter ->
-                    //adapter.rootComponent().allowOverflow(true)
-                    val context = object : ViewOwoAdapterContext {
-                        override fun prepare() = adapter.prepare()
-                        override fun wrap(view: PlaceableView, size: IntPoint): OwoComponent = adapter.wrap(run {
-                            val containerWidget = EmiContainerWidget()
-                            val context2 = EmiViewPlacerContext(context.widgets, containerWidget, context.emiRecipe)
-                            EMI_VIEW_PLACER_REGISTRY.place(context2, view, IntPoint.ZERO.sized(size))
-                            containerWidget.widgets.single()
-                        })
-                    }
-                    adapter.rootComponent().child(entry.viewOwoAdapter.createOwoComponent(view, context))
-                    adapter.prepare()
-                }
             }
         }
         f(entry)

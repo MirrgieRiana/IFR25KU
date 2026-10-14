@@ -1,17 +1,10 @@
 package miragefairy2024.client.mod.recipeviewer.rei
 
-import io.wispforest.owo.compat.rei.ReiUIAdapter
-import io.wispforest.owo.ui.container.Containers
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip
-import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
 import me.shedaniel.rei.api.client.gui.widgets.Widgets
 import me.shedaniel.rei.api.common.entry.EntryIngredient
 import miragefairy2024.ModContext
-import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterContext
-import miragefairy2024.client.mod.recipeviewer.ViewOwoAdapterRegistry
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
-import miragefairy2024.client.util.OwoComponent
-import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.mod.recipeviewer.view.offset
@@ -101,26 +94,6 @@ fun initReiViewPlacers() {
         fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
             REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, bounds ->
                 widgets place ReiViewRendererWidget(entry.viewRenderer, view, bounds)
-            }
-        }
-        f(entry)
-    }
-    ViewOwoAdapterRegistry.registry.subscribe { entry ->
-        fun <V : PlaceableView> f(entry: ViewOwoAdapterRegistry.Entry<V>) {
-            REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, bounds ->
-                widgets place ReiUIAdapter(bounds.toReiRectangle(), Containers::stack).also { adapter ->
-                    //adapter.rootComponent().allowOverflow(true)
-                    val context = object : ViewOwoAdapterContext {
-                        override fun prepare() = adapter.prepare()
-                        override fun wrap(view: PlaceableView, size: IntPoint): OwoComponent = adapter.wrap(run {
-                            val containerWidget = ReiContainerWidget()
-                            REI_VIEW_PLACER_REGISTRY.place(containerWidget, view, IntPoint.ZERO.sized(size))
-                            containerWidget.widgets.single() as WidgetWithBounds
-                        })
-                    }
-                    adapter.rootComponent().child(entry.viewOwoAdapter.createOwoComponent(view, context))
-                    adapter.prepare()
-                }
             }
         }
         f(entry)
