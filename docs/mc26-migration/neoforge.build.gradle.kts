@@ -22,7 +22,7 @@ base {
 }
 
 // NeoForge(ModDevGradle)には、Fabric Loomのsplit EnvironmentSourceSets()のような
-// 既製の仕組みが無いので、「Isolated Source Sets」の手順で手動でclientソースセットを作るのだ～🌱
+// 既製の機能が無いので、「Isolated Source Sets」の手順で手動でclientソースセットを作るのだ～🌱
 sourceSets {
     create("client")
 }
