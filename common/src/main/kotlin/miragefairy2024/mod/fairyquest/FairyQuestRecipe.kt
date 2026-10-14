@@ -495,7 +495,7 @@ class FairyQuestCardFeature(codec: Codec<NoneFeatureConfiguration>) : PlacedItem
         }
         val recipeId = table.weightedRandom(context.random()) ?: return null // 有効なレシピが一つもない
 
-        return FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(fairyQuestRecipeRegistry.get(recipeId)!!) }
+        return FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(fairyQuestRecipeRegistry.getValue(recipeId)!!) }
     }
 }
 
@@ -511,7 +511,7 @@ class SetFairyQuestRecipeLootFunction(conditions: List<LootItemCondition>, priva
     override fun getType() = SET_FAIRY_QUEST_RECIPE_LOOT_FUNCTION_TYPE
 
     override fun run(stack: ItemStack, context: LootContext): ItemStack {
-        stack.setFairyQuestRecipe(fairyQuestRecipeRegistry.get(recipeId)!!)
+        stack.setFairyQuestRecipe(fairyQuestRecipeRegistry.getValue(recipeId)!!)
         return stack
     }
 }
