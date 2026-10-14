@@ -12,14 +12,15 @@
         <ul class="visible-links">
           {%- for link in site.data.navigation.main -%}
             {% if link.children %}
+              {%- assign dropdown_id = "masthead-dropdown-" | append: forloop.index -%}
               <li class="masthead__menu-item masthead__menu-item--dropdown">
                 {% comment %}下の項目を開く見出し自身が行き先を持つときは、リンクにして、そこへも飛べるようにするのだ～🌱{% endcomment %}
                 {% if link.url %}
-                  <a class="masthead__menu-item-trigger" href="{{ link.url | relative_url }}">{{ link.title }}</a>
+                  <a class="masthead__menu-item-trigger" href="{{ link.url | relative_url }}" aria-expanded="false" aria-controls="{{ dropdown_id }}">{{ link.title }}</a>
                 {% else %}
-                  <button type="button" class="masthead__menu-item-trigger">{{ link.title }}</button>
+                  <button type="button" class="masthead__menu-item-trigger" aria-expanded="false" aria-controls="{{ dropdown_id }}">{{ link.title }}</button>
                 {% endif %}
-                <ul class="masthead__dropdown">
+                <ul class="masthead__dropdown" id="{{ dropdown_id }}">
                   {% for child in link.children %}
                     <li>
                       <a
