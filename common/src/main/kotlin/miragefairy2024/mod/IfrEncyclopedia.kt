@@ -6,6 +6,8 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.fairy.motifRegistry
+import miragefairy2024.mod.magicplant.contents.magicplants.VeropedaCard
+import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
@@ -47,6 +49,7 @@ import miragefairy2024.util.register
 import miragefairy2024.util.sortedEntrySet
 import miragefairy2024.util.text
 import miragefairy2024.util.toIngredientStack
+import mirrg.kotlin.helium.join
 import net.minecraft.core.RegistryAccess
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -66,23 +69,120 @@ class IfrEncyclopediaEntryCard(
             { motifRegistry.sortedEntrySet.map { it.value.createFairyItemStack() } },
             listOf(
                 "Monocots, order Miragales, family Miragaceae",
-                "Mirage",
                 "",
-                "A palm-sized fairy in the form of a little girl with butterfly-like wings. Extremely timid, it rarely shows itself to people. When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”",
+                listOf(
+                    "A palm-sized fairy in the form of a little girl with butterfly-like wings.",
+                    "Extremely timid, it rarely shows itself to people.",
+                    "When one tries to catch it, it disguises itself as a will-o'-the-wisp and flees; no matter how long you pursue it, you cannot seize it. For this elusive behavior it is known as the “Mirage.”",
+                ).join(" "),
                 "",
-                "Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.",
+                listOf(
+                    "Once regarded as a kind of divine spirit, later research clarified that it is in fact the pollen of Mirage plants, possessing an autonomous structure.",
+                ).join(" "),
+                "",
+                "The Institute of Fairy Research",
             ),
             listOf(
                 "単子葉類妖花目ミラージュ科",
-                "ミラージュ",
                 "",
-                "蝶のような翅の生えた手のひら大の少女の姿をした妖精。非常に憶病で、滅多に人前に姿を現さない。捕まえようとしても人魂（ウィスプ）のような姿に化けて逃げ、いくら追いかけても捕まえることができないさまから、ミラージュ（蜃気楼）の名で知られている。",
+                listOf(
+                    "蝶のような翅の生えた手のひら大の少女の姿をした妖精。",
+                    "非常に憶病で、滅多に人前に姿を現さない。",
+                    "捕まえようとしても人魂（ウィスプ）のような姿に化けて逃げ、いくら追いかけても捕まえることができないさまから、ミラージュ（蜃気楼）の名で知られている。",
+                ).join(""),
                 "",
-                "古くは神霊の一種と考えられていたが、近年の研究により、ミラージュ植物の花粉が自律構造を持ったものであると解明された。",
+                listOf(
+                    "古くは神霊の一種と考えられていたが、近年の研究により、ミラージュ植物の花粉が自律構造を持ったものであると解明された。",
+                ).join(""),
+                "",
+                "妖精研究所",
+            ),
+        )
+        val VEROPEDA = IfrEncyclopediaEntryCard(
+            "veropeda",
+            EnJa("Veropeda", "呪草ヴェロペダ"),
+            { listOf(VeropedaCard.item().createItemStack()) },
+            listOf(
+                "Monocots, order Miragales, family Veropedaceae",
+                "",
+                listOf(
+                    "This magical plant, created by fusing the carnivorous plant Sarracenia with curse magic, was equated by ancient alchemists with Veropeda, a demon said to sustain itself by devouring fairies.",
+                    "Although the existence of such a demon has not been confirmed, the fibers of this plant do exhibit genuine curse effects.",
+                    "When we at the Institute of Fairy Research analyzed this plant's genes, we found that, remarkably, they were identical to those of the Mirage.",
+                ).join(" "),
+                "",
+                "The Institute of Fairy Research",
+            ),
+            listOf(
+                "単子葉類妖花目ヴェロペダ科",
+                "",
+                listOf(
+                    "サラセニアという食虫植物と呪いの魔法を合成して作られたこの魔法植物は、いにしえの錬金術師の間で、妖精を喰らって生きる悪魔ヴェロペーダと同一視されてきました。",
+                    "そのような悪魔の実在は確認されていませんが、この植物の繊維には実際に呪いの効果があります。",
+                    "妖精研究所がこの植物の遺伝子を解析したところ、驚くべきことにミラージュの遺伝子と完全に一致しました。",
+                ).join(""),
+                "",
+                "妖精研究所",
+            ),
+        )
+        val FAIRY_RUBBER = IfrEncyclopediaEntryCard(
+            "fairy_rubber",
+            EnJa("Fairy Rubber", "夜のかけら"),
+            { listOf(MaterialCard.FAIRY_RUBBER.item().createItemStack()) },
+            listOf(
+                listOf(
+                    "The night's going awaaay...",
+                    "I was scaaared... and cryiiing...",
+                    "And then... the sky gave me thiiis...",
+                    "This one...",
+                    "It's so waaarm...",
+                    "It's warm and it feels gooood...",
+                    "Always...",
+                    "I hold thiiis... and sleep...",
+                ).join(" "),
+                "",
+                "Nightia the fairy of night",
+            ),
+            listOf(
+                listOf(
+                    "よるがきえちゃうのー………",
+                    "こわくて…ないてたー………",
+                    "そしたらねー…………おそらがくれたのー……",
+                    "これー……",
+                    "とってもあったかいのー………",
+                    "あたたかくてきもちいーのー……",
+                    "いつもー……",
+                    "これもってー…ねてるのー………",
+                ).join(" "),
+                "",
+                "夜精ニグチャ",
+            ),
+        )
+        val MIRAMERA = IfrEncyclopediaEntryCard(
+            "miramera",
+            EnJa("Miramera", "ミラメラ"),
+            { listOf(BlockMaterialCard.MIRAMERA.item().createItemStack()) },
+            listOf(
+                "Monocots, order Miragales, family Mirameraceae",
+                "",
+                listOf(
+                    "A herbaceous plant that casts a bewitching light over the Fairy Forest.",
+                    "It depends on the high-aura environment near the Fairy Forest, and lacks most of its photosynthetic capacity.",
+                    "It maintains a symbiotic relationship with Mirage fairies, and in exchange for supplying the shine aura that is a byproduct of its metabolism, it obtains from their corpses the cuticle that produces vegetation erg.",
+                ).join(" "),
+            ),
+            listOf(
+                "単子葉類妖花目ミラメラ科",
+                "",
+                listOf(
+                    "妖精の森を妖しく照らす草本植物。",
+                    "妖精の森近辺での高オーラ環境に依存しており、光合成能力の大部分を欠いている。",
+                    "ミラージュ妖精とは共生関係を持ち、代謝の副産物である光のオーラを提供する代わりに、その死骸から植生のエルグを生産するキューティクルを獲得している。",
+                ).join(""),
             ),
         )
 
-        val entries = listOf(MIRAGE_FAIRY)
+        val entries = listOf(MIRAGE_FAIRY, VEROPEDA, FAIRY_RUBBER, MIRAMERA)
     }
 
     val identifier = MirageFairy2024.identifier(path)

@@ -67,3 +67,6 @@ config = "miragefairy2024.mixins.json"
 
 [[mixins]]
 config = "miragefairy2024.client.mixins.json"
+
+[[mixins]]
+config = "miragefairy2024.client.neoforge.mixins.json"

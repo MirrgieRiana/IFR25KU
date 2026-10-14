@@ -3,11 +3,6 @@
 # 使い方と環境変数は、README.md に書いてあるのだ～🌱
 set -euo pipefail
 
-if [ "$#" -ne 2 ]; then
-  echo 'usage: bash render.sh <frames.jsonl> <outDir>' >&2
-  exit 1
-fi
-
 # 引数のパスは呼び出し元のカレントディレクトリを基準にするから、ここへは移動せずに場所だけを覚えるのだ～🌱
 RENDERER_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
 
@@ -26,7 +21,7 @@ fi
 # --- レンダリング ---
 echo "== render frames =="
 if [ -n "${CHROMIUM_LD_PATH:-}" ]; then
-  LD_LIBRARY_PATH="${CHROMIUM_LD_PATH}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" node "$RENDERER_DIR/render.js" "$1" "$2"
+  LD_LIBRARY_PATH="${CHROMIUM_LD_PATH}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" node "$RENDERER_DIR/render.js" "$@"
 else
-  node "$RENDERER_DIR/render.js" "$1" "$2"
+  node "$RENDERER_DIR/render.js" "$@"
 fi

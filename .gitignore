@@ -61,4 +61,5 @@ unpackedSources
 unpackedAssets
 /ai/
 .claude/
+!.claude/skills/
 .wrangler/

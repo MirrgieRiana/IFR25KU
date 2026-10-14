@@ -2,6 +2,7 @@ package miragefairy2024.mod.tree.contents.haimeviska
 
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.mod.tree.setGroundAt
 import mirrg.kotlin.helium.floorToInt
 import net.minecraft.core.BlockPos
 import net.minecraft.util.RandomSource
@@ -41,6 +42,8 @@ object SmallHaimeviskaTrunkPlacer : TrunkPlacer(8, 4, 0) {
         pos: BlockPos,
         config: TreeConfiguration,
     ): List<FoliagePlacer.FoliageAttachment> {
+
+        setGroundAt(level, blockSetter, random, pos.below(), config)
 
         (0..<freeTreeHeight).forEach { y ->
             placeLog(level, blockSetter, random, pos.above(y), config)
