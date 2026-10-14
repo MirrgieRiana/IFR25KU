@@ -8,6 +8,7 @@ import miragefairy2024.mod.common.RenderBlockPosesOutlineListenerItem
 import miragefairy2024.mod.enchantment.BUILDERS_ROD_ITEM_TAG
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.tool.ToolConfiguration
+import miragefairy2024.mod.tool.applyToolMaterialProperties
 import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.util.Translation
 import miragefairy2024.util.blockVisitor
@@ -32,7 +33,6 @@ import net.minecraft.network.chat.Component
 import net.minecraft.stats.Stats
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
-import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.LivingEntity
@@ -40,8 +40,7 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Tier
-import net.minecraft.world.item.TieredItem
+import net.minecraft.world.item.ToolMaterial
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.item.enchantment.Enchantment
@@ -92,7 +91,7 @@ class FairyBuildersRodItem(override val configuration: FairyBuildersRodConfigura
 
 }
 
-open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings: Properties) : TieredItem(toolMaterial, settings), RenderBlockPosesOutlineListenerItem {
+open class BuildersRodItem(toolMaterial: ToolMaterial, private val range: Int, settings: Properties) : Item(settings.applyToolMaterialProperties(toolMaterial)), RenderBlockPosesOutlineListenerItem {
     companion object {
         val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("builders_rod").toLanguageKey()}.description" }, "Place blocks when used", "使用時、ブロックを設置")
         val NO_PLACEABLE_BLOCK_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("builders_rod").toLanguageKey()}.no_placeable_block" }, "No placeable block in the other hand", "逆の手に設置可能なブロックがありません")
@@ -166,12 +165,12 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
         )
     }
 
-    override fun use(level: Level, player: Player, usedHand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, player: Player, usedHand: InteractionHand): InteractionResult {
         val toolItemStack = player.getItemInHand(usedHand)
 
-        fun failByNoPlaceableBlock(): InteractionResultHolder<ItemStack> {
+        fun failByNoPlaceableBlock(): InteractionResult {
             if (level.isServer) player.displayClientMessage(text { NO_PLACEABLE_BLOCK_TRANSLATION() }, true)
-            return InteractionResultHolder.fail(toolItemStack)
+            return InteractionResult.FAIL
         }
 
         val blockItemStack = player.getItemInHand(usedHand.opposite).notEmptyOrNull ?: return failByNoPlaceableBlock() // 逆の手が空
@@ -179,7 +178,7 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
         if (!blockItem.block.isEnabled(level.enabledFeatures())) return failByNoPlaceableBlock() // ブロックが無効化されている
 
         val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
-        if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない
+        if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResult.FAIL // ブロックをタゲっていない
 
         val sequence = getDestinationBlockPoses(level, player, usedHand, toolItemStack, blockItemStack, blockHitResult, null)
 
@@ -209,7 +208,7 @@ open class BuildersRodItem(toolMaterial: Tier, private val range: Int, settings:
             }
         }
 
-        return if (count > 0) InteractionResultHolder.success(toolItemStack) else InteractionResultHolder.fail(toolItemStack)
+        return if (count > 0) InteractionResult.SUCCESS else InteractionResult.FAIL
     }
 
     override fun hurtEnemy(stack: ItemStack, target: LivingEntity, attacker: LivingEntity): Boolean {

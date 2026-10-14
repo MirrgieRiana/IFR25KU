@@ -21,12 +21,11 @@ import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
-import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.ContainerLevelAccess
-import net.minecraft.world.item.ItemNameBlockItem
+import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.context.BlockPlaceContext
@@ -34,7 +33,7 @@ import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 
-class MagicPlantSeedItem(block: Block, settings: Properties) : ItemNameBlockItem(block, settings) {
+class MagicPlantSeedItem(block: Block, settings: Properties) : BlockItem(block, settings.useItemDescriptionPrefix()) {
     override fun getName(stack: ItemStack): Component = if (stack.isRare()) text { super.getName(stack) + " "() + Emoji.MUTATION() } else super.getName(stack)
 
     override fun appendHoverText(stack: ItemStack, context: TooltipContext, tooltipComponents: MutableList<Component>, tooltipFlag: TooltipFlag) {
@@ -152,10 +151,10 @@ class MagicPlantSeedItem(block: Block, settings: Properties) : ItemNameBlockItem
 
     override fun isFoil(stack: ItemStack) = stack.isRare() || super.isFoil(stack)
 
-    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResult {
         if (user.isShiftKeyDown) {
             val itemStack = user.getItemInHand(hand)
-            if (level.isClientSide) return InteractionResultHolder.success(itemStack)
+            if (level.isClientSide) return InteractionResult.SUCCESS
             val traitStacks = itemStack.getTraitStacks() ?: TraitStacks.EMPTY
             user.openMenu(object : ExtendedScreenHandlerFactory<Pair<TraitStacks, BlockPos>> {
                 override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
@@ -166,7 +165,7 @@ class MagicPlantSeedItem(block: Block, settings: Properties) : ItemNameBlockItem
 
                 override fun getScreenOpeningData(player: ServerPlayer) = Pair(traitStacks, player.position().add(0.0, 0.5, 0.0).toBlockPos())
             })
-            return InteractionResultHolder.consume(itemStack)
+            return InteractionResult.CONSUME
         }
         return super.use(level, user, hand)
     }

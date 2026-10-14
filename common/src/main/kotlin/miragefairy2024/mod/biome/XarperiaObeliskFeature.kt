@@ -66,7 +66,7 @@ class XarperiaObeliskFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
         }
 
         val schedules = mutableListOf<() -> Unit>()
-        val maxHeight = random.nextIntBetweenInclusive(BottomPlacer.height + TopPlacer.height, 32) atMost level.maxBuildHeight - originBlockPos.y
+        val maxHeight = random.nextIntBetweenInclusive(BottomPlacer.height + TopPlacer.height, 32) atMost level.maxY - originBlockPos.y
         var currentHeight = 0
 
         fun add(placer: Placer) {

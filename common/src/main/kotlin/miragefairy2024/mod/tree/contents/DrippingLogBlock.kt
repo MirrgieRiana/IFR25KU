@@ -13,7 +13,7 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.InteractionHand
-import net.minecraft.world.ItemInteractionResult
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
@@ -31,8 +31,8 @@ abstract class DrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBl
     protected abstract fun getSapItem(): Item
     protected abstract fun getRosinItem(): Item
 
-    override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
-        if (level.isClientSide) return ItemInteractionResult.SUCCESS
+    override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): InteractionResult {
+        if (level.isClientSide) return InteractionResult.SUCCESS
         val direction = state[FACING]
 
         // 消費
@@ -57,6 +57,6 @@ abstract class DrippingLogBlock(settings: Properties) : SimpleHorizontalFacingBl
         // エフェクト
         level.playSound(null, pos, SoundEvents.SLIME_JUMP, SoundSource.BLOCKS, 0.75F, 1.0F + 0.5F * level.random.nextFloat())
 
-        return ItemInteractionResult.CONSUME
+        return InteractionResult.CONSUME
     }
 }

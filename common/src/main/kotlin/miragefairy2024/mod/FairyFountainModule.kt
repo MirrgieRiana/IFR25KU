@@ -53,7 +53,6 @@ import net.minecraft.sounds.SoundSource
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
-import net.minecraft.world.ItemInteractionResult
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.BlockItem
@@ -155,16 +154,16 @@ class FairyStatueFountainBlock(settings: Properties) : SimpleHorizontalFacingBlo
     @Suppress("OVERRIDE_DEPRECATION")
     override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) = SHAPE
 
-    override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
+    override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): InteractionResult {
 
         // 入力判定
         if (stack isNotIn MaterialCard.JEWEL_100.item()) { // 持っているアイテムが違う
             if (level.isServer) player.displayClientMessage(text { USAGE_TRANSLATION(MaterialCard.JEWEL_100.item().description) }, true)
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION // なぜかFAILにすると後続のイベントがキャンセルされない
+            return InteractionResult.TRY_WITH_EMPTY_HAND // なぜかFAILにすると後続のイベントがキャンセルされない
         }
         if (stack.count < 1) { // 個数が足りない
             if (level.isServer) player.displayClientMessage(text { USAGE_TRANSLATION(MaterialCard.JEWEL_100.item().description) }, true)
-            return ItemInteractionResult.CONSUME // なぜかFAILにすると後続のイベントがキャンセルされない
+            return InteractionResult.CONSUME // なぜかFAILにすると後続のイベントがキャンセルされない
         }
 
         // 成立
@@ -201,7 +200,7 @@ class FairyStatueFountainBlock(settings: Properties) : SimpleHorizontalFacingBlo
             }
         }
 
-        return ItemInteractionResult.SUCCESS
+        return InteractionResult.SUCCESS
     }
 
     @Suppress("OVERRIDE_DEPRECATION")

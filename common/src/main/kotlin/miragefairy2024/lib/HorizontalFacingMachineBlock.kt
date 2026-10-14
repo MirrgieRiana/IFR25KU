@@ -77,7 +77,7 @@ abstract class HorizontalFacingMachineBlock(private val card: MachineCard<*, *, 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun useWithoutItem(state: BlockState, level: Level, pos: BlockPos, player: Player, hitResult: BlockHitResult): InteractionResult {
         openMenu(level, pos, player)
-        return InteractionResult.sidedSuccess(level.isClientSide)
+        return InteractionResult.SUCCESS
     }
 
     protected fun openMenu(level: Level, pos: BlockPos, player: Player) {

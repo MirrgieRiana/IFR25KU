@@ -226,7 +226,7 @@ class AthanorBlock(private val card: AthanorCard) : SimpleMachineBlock(card) {
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
         val pos = context.clickedPos
         val level = context.level
-        if (pos.y + 1 >= level.maxBuildHeight) return null
+        if (pos.y + 1 >= level.maxY) return null
         if (!level.getBlockState(pos.above()).canBeReplaced(context)) return null
         return super.getStateForPlacement(context)
     }
@@ -278,7 +278,7 @@ class AthanorBlock(private val card: AthanorCard) : SimpleMachineBlock(card) {
             DoubleBlockHalf.LOWER -> pos
         }
         openMenu(level, actualPos, player)
-        return InteractionResult.sidedSuccess(level.isClientSide)
+        return InteractionResult.SUCCESS
     }
 
 

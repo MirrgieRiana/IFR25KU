@@ -51,13 +51,13 @@ val <T> Registry<T>.sortedEntrySet: List<Map.Entry<ResourceKey<T>, T>> get() = t
 
 fun <T : Any> Registry<T>.getResourceKeyOrNull(value: T): ResourceKey<T>? = this.getResourceKey(value).orNull
 
-fun <T : Any> Registry<T>.getHolderOrNull(key: ResourceKey<T>): Holder.Reference<T>? = this.getHolder(key).orNull
+fun <T : Any> Registry<T>.getHolderOrNull(key: ResourceKey<T>): Holder.Reference<T>? = this.get(key).orNull
 
 fun <T : Any> Registry<T>.getHolderOfOrNull(value: T) = this.getResourceKeyOrNull(value).or { return null }.let { this.getHolderOrNull(it) }
 
 fun <T : Any> Registry<T>.isIn(value: T, tag: TagKey<T>) = this.getHolderOfOrNull(value).or { return false } isIn tag
 
-operator fun <T> Registry<T>.get(tag: TagKey<T>): Iterable<Holder<T>> = this.getTag(tag).getOrElse { emptyList() }
+operator fun <T> Registry<T>.get(tag: TagKey<T>): Iterable<Holder<T>> = this.getTagOrEmpty(tag)
 
 
 operator fun <T> HolderLookup.Provider.get(registry: ResourceKey<Registry<T>>): HolderLookup.RegistryLookup<T> = this.lookupOrThrow(registry)

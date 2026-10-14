@@ -555,11 +555,11 @@ class ToolCard(
 
     val item = Registration(BuiltInRegistries.ITEM, identifier) {
         configuration.createItem(run {
-            val miningSpeedMultiplier = configuration.miningSpeedMultiplierOverride ?: configuration.toolMaterialCard.toolMaterial.speed
+            val miningSpeedMultiplier = configuration.miningSpeedMultiplierOverride ?: configuration.toolMaterialCard.toolMaterial.speed()
 
             val rules = mutableListOf<Tool.Rule>()
 
-            rules += Tool.Rule.deniesDrops(configuration.toolMaterialCard.toolMaterial.incorrectBlocksForDrops) // ツールレベル不足で掘れない
+            rules += Tool.Rule.deniesDrops(configuration.toolMaterialCard.toolMaterial.incorrectBlocksForDrops()) // ツールレベル不足で掘れない
             if (configuration.superEffectiveBlocks.isNotEmpty()) rules += Tool.Rule.minesAndDrops(configuration.superEffectiveBlocks, miningSpeedMultiplier * 10F) // 剣の蜘蛛の巣特効とか
             if (configuration.effectiveBlocks.isNotEmpty()) rules += Tool.Rule.minesAndDrops(configuration.effectiveBlocks, miningSpeedMultiplier) // 特別に対応してるブロック
             configuration.effectiveBlockTags.forEach { // タグによる適正

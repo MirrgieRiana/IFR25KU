@@ -16,7 +16,7 @@ import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.item.AxeItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Tier
+import net.minecraft.world.item.ToolMaterial
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.ItemEnchantments
@@ -67,7 +67,7 @@ class FairyKnifeItem(override val configuration: FairyKnifeConfiguration, settin
 
 }
 
-open class KnifeItem(material: Tier, attackDamage: Float, attackSpeed: Float, settings: Properties) : AxeItem(material, settings.attributes(createAttributes(material, attackDamage, attackSpeed))) {
+open class KnifeItem(material: ToolMaterial, attackDamage: Float, attackSpeed: Float, settings: Properties) : AxeItem(material, attackDamage, attackSpeed, settings) {
     override fun useOn(context: UseOnContext) = InteractionResult.PASS
     override fun postHurtEnemy(stack: ItemStack, target: LivingEntity, attacker: LivingEntity) {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND)

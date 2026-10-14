@@ -8,6 +8,7 @@ import miragefairy2024.mod.common.RenderBlockPosesOutlineListenerItem
 import miragefairy2024.mod.enchantment.EnchantmentCard
 import miragefairy2024.mod.enchantment.UNCREATION_ROD_ITEM_TAG
 import miragefairy2024.mod.tool.ToolConfiguration
+import miragefairy2024.mod.tool.applyToolMaterialProperties
 import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.util.Translation
 import miragefairy2024.util.blockVisitor
@@ -27,15 +28,14 @@ import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.stats.Stats
 import net.minecraft.world.InteractionHand
-import net.minecraft.world.InteractionResultHolder
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Tier
-import net.minecraft.world.item.TieredItem
+import net.minecraft.world.item.ToolMaterial
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.ItemEnchantments
@@ -85,7 +85,7 @@ class FairyUncreationRodItem(override val configuration: FairyUncreationRodConfi
 
 }
 
-open class UncreationRodItem(toolMaterial: Tier, private val range: Int, settings: Properties) : TieredItem(toolMaterial, settings), RenderBlockPosesOutlineListenerItem {
+open class UncreationRodItem(toolMaterial: ToolMaterial, private val range: Int, settings: Properties) : Item(settings.applyToolMaterialProperties(toolMaterial)), RenderBlockPosesOutlineListenerItem {
     companion object {
         val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("uncreation_rod").toLanguageKey()}.description" }, "Break blocks when used", "使用時、ブロックを破壊")
         val DESCRIPTION_SNEAKING_USE_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("uncreation_rod").toLanguageKey()}.description.sneaking_use" }, "While sneaking: Ignore block states", "スニーク中は状態の違いを無視")
@@ -162,15 +162,15 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
         )
     }
 
-    override fun use(level: Level, player: Player, usedHand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, player: Player, usedHand: InteractionHand): InteractionResult {
         val toolItemStack = player.getItemInHand(usedHand)
 
         val blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE)
-        if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResultHolder.fail(toolItemStack) // ブロックをタゲっていない
+        if (blockHitResult.type != HitResult.Type.BLOCK) return InteractionResult.FAIL // ブロックをタゲっていない
 
         val sequence = getDestinationBlockPoses(level, player, toolItemStack, blockHitResult)
 
-        if (player !is ServerPlayer) return InteractionResultHolder.success(toolItemStack) // 破壊はサーバー側でのみ行う
+        if (player !is ServerPlayer) return InteractionResult.SUCCESS // 破壊はサーバー側でのみ行う
 
         var count = 0
         run finish@{
@@ -190,7 +190,7 @@ open class UncreationRodItem(toolMaterial: Tier, private val range: Int, setting
             }
         }
 
-        return if (count > 0) InteractionResultHolder.success(toolItemStack) else InteractionResultHolder.fail(toolItemStack)
+        return if (count > 0) InteractionResult.SUCCESS else InteractionResult.FAIL
     }
 
     override fun hurtEnemy(stack: ItemStack, target: LivingEntity, attacker: LivingEntity): Boolean {

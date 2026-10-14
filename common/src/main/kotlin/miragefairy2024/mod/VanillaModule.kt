@@ -29,9 +29,11 @@ import net.minecraft.world.level.block.Blocks
 enum class ItemTagCard(identifier: ResourceLocation, val title: EnJa) {
     ECHO_SHARDS(ResourceLocation("c", "echo_shards"), EnJa("Echo Shards", "残響の欠片")),
     PRISMARINE_SHARDS(ResourceLocation("c", "prismarine_shards"), EnJa("Prismarine Shards", "プリズマリンの欠片")),
+    BEDROCKS(ResourceLocation("c", "bedrocks"), EnJa("Bedrocks", "岩盤")),
     PLANT_TOOLS(MirageFairy2024.identifier("plant_tools"), EnJa("Plant Tools", "植物ツール")),
     SPIRITS(MirageFairy2024.identifier("spirits"), EnJa("Spirits", "蒸留酒")),
     SAP(MirageFairy2024.identifier("sap"), EnJa("Sap", "樹液")),
+    MIRAGE_STEMS(MirageFairy2024.identifier("mirage_stems"), EnJa("Mirage Stems", "ミラージュの茎")),
     ;
 
     val tag = identifier.toItemTag()
@@ -57,6 +59,7 @@ fun initVanillaModule() {
     ItemTagCard.ECHO_SHARDS.tag.generator.registerChild { Items.ECHO_SHARD }
     tagOf(Shape.SHARD, Material.AMETHYST).generator.registerChild { Items.AMETHYST_SHARD }
     ItemTagCard.PRISMARINE_SHARDS.tag.generator.registerChild { Items.PRISMARINE_SHARD }
+    ItemTagCard.BEDROCKS.tag.generator.registerChild { Items.BEDROCK }
 
     Shape.GEM.tag.generator.registerChild(tagOf(Shape.GEM, Material.FLINT))
     Shape.SHARD.tag.generator.registerChild(tagOf(Shape.SHARD, Material.AMETHYST))
@@ -111,11 +114,11 @@ fun initVanillaModule() {
 
 
     registerClientDebugItem("dump_biome_tags", Items.STRING.toTextureSource(), 0xFF00FF00.toInt()) { level, player, _, _ ->
-        val tags = level.registryAccess().registryOrThrow(Registries.BIOME).tagNames.toList()
+        val tags = level.registryAccess().lookupOrThrow(Registries.BIOME).listTagIds().toList()
         val sb = StringBuilder()
         tags.sortedBy { it.location() }.forEach { tag ->
             sb.append("${tag.location()}\n")
-            val biomes = level.registryAccess().registryOrThrow(Registries.BIOME)[tag].toList()
+            val biomes = level.registryAccess().lookupOrThrow(Registries.BIOME).getTagOrEmpty(tag).toList()
             biomes.sortedBy { it.unwrapKey().get().location() }.forEach { biome ->
                 sb.append("  ${biome.unwrapKey().get().location().string}\n")
             }

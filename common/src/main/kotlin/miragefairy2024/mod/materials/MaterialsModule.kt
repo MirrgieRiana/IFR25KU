@@ -1,5 +1,7 @@
 package miragefairy2024.mod.materials
 
+import java.math.BigInteger
+import kotlin.math.pow
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
@@ -98,11 +100,11 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.item.alchemy.Potions
+import net.minecraft.world.item.component.Consumable
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect
 import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.storage.loot.BuiltInLootTables
-import java.math.BigInteger
-import kotlin.math.pow
 
 class MaterialCard(
     path: String,
@@ -112,7 +114,7 @@ class MaterialCard(
     val fuelValue: Int? = null,
     val soulStreamContainable: Boolean = false,
     val fireResistant: Boolean = false,
-    val foodComponentCreator: (suspend () -> FoodProperties)? = null,
+    val foodComponentCreator: (suspend () -> FoodComponents)? = null,
     val recipeRemainder: Item? = null,
     val tags: List<TagKey<Item>>? = null,
     val ore: Ore? = null,
@@ -270,6 +272,7 @@ class MaterialCard(
                 requires(MIRAGE_LEAVES.item())
             } on MIRAGE_LEAVES.item
             item.registerComposterInput(0.5F)
+            ItemTagCard.MIRAGE_STEMS.tag.generator.registerChild(item)
             registerShapedRecipeGeneration({ Items.STICK }, 2) {
                 pattern("#")
                 pattern("#")
@@ -333,7 +336,7 @@ class MaterialCard(
             PoemList(4).poem("Beyond the end of the world", "祈りを形に、再生の蜜。"),
             soulStreamContainable = true, ore = Ore(Shape.GEM, Material.PHANTOM_DROP),
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(2)
                     .saturationModifier(0.3F)
                     .effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 30), 1.0F)
@@ -461,7 +464,7 @@ class MaterialCard(
             "veropeda_berries", "Veropeda Berries", "ヴェロペダの実",
             PoemList(1).poem("Has analgesic and stimulant effects", "悪魔の囁きを喰らう。"),
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(1)
                     .saturationModifier(0.1F)
                     .fast()
@@ -550,7 +553,7 @@ class MaterialCard(
             PoemList(3).poem("Guardian flame of lost souls.", "心頭滅却のプロミネンス。"),
             fireResistant = true, fuelValue = 200,
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(1)
                     .saturationModifier(0.1F)
                     .fast()
@@ -586,7 +589,7 @@ class MaterialCard(
             PoemList(3).poem("Gold-plated prominence.", "摂氏100度の金環食。"),
             fireResistant = true, fuelValue = 200,
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(1)
                     .saturationModifier(0.1F)
                     .fast()
@@ -606,7 +609,7 @@ class MaterialCard(
             "merrrria_drop", "Merrrria Drop", "月のしずく",
             PoemList(3).poem("Tales of latex that charm fairies.", "闇夜に響く、月鈴の詩。"),
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(2)
                     .saturationModifier(0.3F)
                     .effect(MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 60 * 5 + 20 * 10), 1.0F)
@@ -631,7 +634,7 @@ class MaterialCard(
             PoemList(1).poem("Hydroxyl groups deplete the free water.", "粘り強い、その甘さ。"),
             fuelValue = 200,
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(1)
                     .saturationModifier(0.1F)
                     .effect(MobEffectInstance(stickyMiningStatusEffect.awaitHolder(), 20 * 60 * 5), 1.0F)
@@ -645,7 +648,7 @@ class MaterialCard(
             PoemList(1).poem("Smooth and mellow on the palate", "口福のアナムネシス。"),
             fuelValue = 200,
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(1)
                     .saturationModifier(0.1F)
                     .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 40), 1.0F)
@@ -1117,7 +1120,7 @@ class MaterialCard(
             null,
             recipeRemainder = Items.GLASS_BOTTLE,
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(6)
                     .saturationModifier(0.1F)
                     .effect(MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 30), 1.0F)
@@ -1166,7 +1169,7 @@ class MaterialCard(
             null,
             fuelValue = 200 * 12, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(6)
                     .saturationModifier(0.1F)
                     .effect(MobEffectInstance(MobEffects.DAMAGE_BOOST, 20 * 60, 1), 1.0F)
@@ -1193,7 +1196,7 @@ class MaterialCard(
             null,
             recipeRemainder = Items.GLASS_BOTTLE,
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(6)
                     .saturationModifier(0.1F)
                     .effect(MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20 * 60), 1.0F)
@@ -1220,7 +1223,7 @@ class MaterialCard(
             null,
             fuelValue = 200 * 12, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(6)
                     .saturationModifier(0.1F)
                     .effect(MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20 * 60, 1), 1.0F)
@@ -1247,7 +1250,7 @@ class MaterialCard(
             PoemList(2).poem("Fairies get high, humans get burned", "妖精はハイになり、人間は火傷する。"),
             fuelValue = 200 * 12, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(6)
                     .saturationModifier(0.1F)
                     .effect(MobEffectInstance(experienceStatusEffect.awaitHolder(), 40 * 8, 1), 1.0F)
@@ -1275,7 +1278,7 @@ class MaterialCard(
             PoemList(2).poem("A dark flavour from the underworld.", "冥界へといざなう、暗黒の味。"),
             fuelValue = 200 * 12, recipeRemainder = Items.GLASS_BOTTLE, tags = listOf(ItemTagCard.SPIRITS.tag),
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(6)
                     .saturationModifier(0.1F)
                     .effect(MobEffectInstance(MobEffects.REGENERATION, 20 * 60), 1.0F)
@@ -1303,7 +1306,7 @@ class MaterialCard(
             null,
             recipeRemainder = Items.GLASS_BOTTLE,
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(1)
                     .saturationModifier(0.1F)
                     .effect(MobEffectInstance(MobEffects.HARM, 1, 9), 1.0F)
@@ -1418,7 +1421,7 @@ class MaterialCard(
             PoemList(2).poem("Caramelized Ethanol", "なぜかこれを食べる妖精が続出した"),
             fuelValue = 200 * 8,
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(4)
                     .saturationModifier(0.8F)
                     .effect(MobEffectInstance(MobEffects.FIRE_RESISTANCE, 20 * 40), 1.0F)
@@ -1468,7 +1471,7 @@ class MaterialCard(
             PoemList(2).poem("Chewing Fuel", "ひとくちサイズの固形燃料"),
             fuelValue = 200,
             foodComponentCreator = {
-                FoodProperties.Builder()
+                FoodComponentsBuilder()
                     .nutrition(1)
                     .saturationModifier(0.1F)
                     .effect(MobEffectInstance(MobEffects.FIRE_RESISTANCE, 20 * 5), 1.0F)
@@ -1485,13 +1488,13 @@ class MaterialCard(
             jaName: String,
             poemList: PoemList?,
             input: () -> Item,
-            effect: suspend (FoodProperties.Builder) -> FoodProperties.Builder,
+            effect: suspend (FoodComponentsBuilder) -> FoodComponentsBuilder,
         ): MaterialCard {
             return !MaterialCard(
                 path, enName, jaName,
                 poemList,
                 foodComponentCreator = {
-                    FoodProperties.Builder()
+                    FoodComponentsBuilder()
                         .nutrition(5)
                         .saturationModifier(0.6F)
                         .let { effect(it) }
@@ -1561,7 +1564,7 @@ class MaterialCard(
     val identifier = MirageFairy2024.identifier(path)
     val item = Registration(BuiltInRegistries.ITEM, identifier) {
         Item.Properties()
-            .let { foodComponentCreator?.let { c -> it.food(c()) } ?: it }
+            .let { foodComponentCreator?.let { c -> c().let { f -> it.food(f.foodProperties, f.consumable) } } ?: it }
             .let { if (recipeRemainder != null) it.craftRemainder(recipeRemainder) else it }
             .let { if (fireResistant) it.fireResistant() else it }
             .let { creator(it) }
@@ -1713,6 +1716,29 @@ fun initMaterialsModule() {
         define('S', tagOf(Shape.ROD, Material.WOOD))
     } on ItemTagCard.SAP.tag modId MirageFairy2024.MOD_ID from ItemTagCard.SAP.tag
 
+}
+
+/** 食べ物のアイテムに乗せる 2 個のコンポーネントなのだ～🌱 */
+class FoodComponents(val foodProperties: FoodProperties, val consumable: Consumable)
+
+/**
+ * 食べ物の満腹度と、食べたときの効果を、まとめて組み立てるのだ～🌱
+ * 効果と食べる速さは [net.minecraft.world.item.component.Consumable] 側が持つから、[net.minecraft.world.food.FoodProperties.Builder] だけでは足りないのだ～🌱
+ */
+class FoodComponentsBuilder {
+    private val foodPropertiesBuilder = FoodProperties.Builder()
+    private val consumableBuilder = Consumable.builder()
+
+    fun nutrition(nutrition: Int) = also { foodPropertiesBuilder.nutrition(nutrition) }
+    fun saturationModifier(saturationModifier: Float) = also { foodPropertiesBuilder.saturationModifier(saturationModifier) }
+    fun alwaysEdible() = also { foodPropertiesBuilder.alwaysEdible() }
+
+    /** バニラの食べ物の既定値が 1.6 秒で、その半分の速さで食べられるのだ～🌱 */
+    fun fast() = also { consumableBuilder.consumeSeconds(0.8F) }
+
+    fun effect(effect: MobEffectInstance, probability: Float) = also { consumableBuilder.onConsume(ApplyStatusEffectsConsumeEffect(effect, probability)) }
+
+    fun build() = FoodComponents(foodPropertiesBuilder.build(), consumableBuilder.build())
 }
 
 data class Ore(val shape: Shape, val material: Material)
