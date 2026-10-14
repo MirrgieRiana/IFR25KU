@@ -83,19 +83,15 @@ API(5)
   }
 
   AthanorProject := {
-    init: this -> (
-      project := this
-      project.tasks = {}
+    init: this -> :
+      this.tasks = {}
 
       # どのプロジェクトにも、並んでいるタスクを見る手段を持たせるのだ～🌱
       # ここで足しておかないと、タスクを 1 個も並べていないプロジェクトでは、athanorw から叩ける名前が 1 個も無くなるのだ～🌱
-      project.tasks.tasks = AthanorTask::NEW()::ALSO ( task =>
+      this.tasks.tasks = AthanorTask::NEW()::ALSO ( task =>
         task.name = "tasks"
-        task.action = () -> project.tasks() | entry => OUT << entry.0
+        task.action = () -> this.tasks() | entry => OUT << entry.0
       )
-
-      NULL
-    )
   }
 
   /**
