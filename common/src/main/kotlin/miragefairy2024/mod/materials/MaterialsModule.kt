@@ -1,7 +1,5 @@
 package miragefairy2024.mod.materials
 
-import java.math.BigInteger
-import kotlin.math.pow
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
@@ -105,6 +103,8 @@ import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect
 import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.storage.loot.BuiltInLootTables
+import java.math.BigInteger
+import kotlin.math.pow
 
 class MaterialCard(
     path: String,
