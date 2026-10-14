@@ -53,14 +53,6 @@ fun verticalScroll(horizontalSizing: Sizing, verticalSizing: Sizing, scrollbarTh
     }
 }
 
-fun horizontalScroll(horizontalSizing: Sizing, verticalSizing: Sizing, scrollbarThiccness: Int, overlapped: Boolean = false): ScrollContainer<FlowLayout> {
-    return Containers.horizontalScroll(horizontalSizing, verticalSizing, Containers.horizontalFlow(Sizing.content(), verticalSizing).apply {
-        if (!overlapped) padding(Insets.of(0, scrollbarThiccness, 0, 0))
-    }).apply {
-        scrollbarThiccness(scrollbarThiccness)
-    }
-}
-
 fun tooltipContainer(horizontalSizing: Sizing, verticalSizing: Sizing): FlowLayout {
     return Containers.verticalFlow(horizontalSizing, verticalSizing).apply {
         surface(Surface.TOOLTIP)
