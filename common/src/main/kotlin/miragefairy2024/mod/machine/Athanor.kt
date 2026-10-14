@@ -254,7 +254,7 @@ class AthanorBlock(private val card: AthanorCard) : SimpleMachineBlock(card) {
                 Blocks.AIR.defaultBlockState()
             }
         }
-        return super.updateShape(state, direction, neighborState, level, pos, neighborPos)
+        return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random)
     }
 
     override fun playerWillDestroy(level: Level, pos: BlockPos, state: BlockState, player: Player): BlockState {
