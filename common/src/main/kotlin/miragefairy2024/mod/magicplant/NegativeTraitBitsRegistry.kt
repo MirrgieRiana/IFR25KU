@@ -60,7 +60,7 @@ fun initNegativeTraitBits() {
                                         val id = context.getArgument("trait", ResourceLocation::class.java)
                                         val trait = traitRegistry.get(id) ?: failure(text { UNKNOWN_TRAIT_TRANSLATION(id.string) })
                                         NegativeTraitBitsRegistry.set(trait, null)
-                                        clientProxy!!.getClientPlayer()!!.sendSystemMessage(text { SUCCESS_TRANSLATION(trait.getName(), "ALL") })
+                                        clientProxy!!.getClientPlayer()!!.displayClientMessage(text { SUCCESS_TRANSLATION(trait.getName(), "ALL") }, false)
                                         success()
                                     }
                                     .then(
@@ -78,7 +78,7 @@ fun initNegativeTraitBits() {
                                                 if (!rawBits.matches("""^[01_]{1,32}$""".toRegex())) failure(text { INVALID_BITS_FORMAT_TRANSLATION("$rawBits") })
                                                 val mask = rawBits.replace("_", "").fold(0) { acc, c -> (acc shl 1) or (c - '0') }
                                                 NegativeTraitBitsRegistry.set(trait, mask)
-                                                clientProxy!!.getClientPlayer()!!.sendSystemMessage(text { SUCCESS_TRANSLATION(trait.getName(), "$rawBits") })
+                                                clientProxy!!.getClientPlayer()!!.displayClientMessage(text { SUCCESS_TRANSLATION(trait.getName(), "$rawBits") }, false)
                                                 success()
                                             }
                                     )
