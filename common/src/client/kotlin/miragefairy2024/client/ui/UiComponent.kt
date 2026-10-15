@@ -15,6 +15,10 @@ abstract class UiComponent {
     var margins = Insets.of(0)
         private set
 
+    /** このコンポーネントを子として持つコンポーネントなのだ～🌱 */
+    var parent: UiComponent? = null
+        internal set
+
     /** [inflate] が確定した横の長さなのだ～🌱 */
     var width = 0
         private set
@@ -30,6 +34,22 @@ abstract class UiComponent {
     /** 親の中身の始点から数えた、このコンポーネントの上端の位置なのだ～🌱 */
     var y = 0
         private set
+
+    /** マージンを含めた横の長さなのだ～🌱 */
+    val fullWidth get() = width + margins.horizontal
+
+    /** マージンを含めた縦の長さなのだ～🌱 */
+    val fullHeight get() = height + margins.vertical
+
+    /**
+     * 画面の左上から数えた、このコンポーネントの左端の位置なのだ～🌱
+     *
+     * [x] は親からの相対のため、描画と当たり判定には、親を遡って足した位置が要るのだ～🌱
+     */
+    val absoluteX: Int get() = x + (parent?.absoluteX ?: 0)
+
+    /** 画面の左上から数えた、このコンポーネントの上端の位置なのだ～🌱 */
+    val absoluteY: Int get() = y + (parent?.absoluteY ?: 0)
 
     fun sizing(horizontalSizing: Sizing, verticalSizing: Sizing) {
         this.horizontalSizing = horizontalSizing
@@ -62,26 +82,6 @@ abstract class UiComponent {
         this.y = y
     }
 
-    /** このコンポーネントを子として持つコンポーネントなのだ～🌱 */
-    var parent: UiComponent? = null
-        internal set
-
-    /**
-     * 画面の左上から数えた、このコンポーネントの左端の位置なのだ～🌱
-     *
-     * [x] は親からの相対のため、描画と当たり判定には、親を遡って足した位置が要るのだ～🌱
-     */
-    val absoluteX: Int get() = x + (parent?.absoluteX ?: 0)
-
-    /** 画面の左上から数えた、このコンポーネントの上端の位置なのだ～🌱 */
-    val absoluteY: Int get() = y + (parent?.absoluteY ?: 0)
-
     /** 画面の左上から数えた座標が、このコンポーネントの中にあるかを判定するのだ～🌱 */
     fun containsPoint(x: Int, y: Int) = x >= absoluteX && x < absoluteX + width && y >= absoluteY && y < absoluteY + height
-
-    /** マージンを含めた横の長さなのだ～🌱 */
-    val fullWidth get() = width + margins.horizontal
-
-    /** マージンを含めた縦の長さなのだ～🌱 */
-    val fullHeight get() = height + margins.vertical
 }
