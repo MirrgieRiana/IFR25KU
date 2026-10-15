@@ -76,6 +76,26 @@ class UiComponentTest {
     }
 
     @Test
+    fun `単体のexpandはfillと同じ寸法になるのだ～🌱`() {
+        val expand = FixedContentComponent(0, 0)
+        expand.sizing(Sizing.expand(), Sizing.expand(50))
+        expand.inflate(Size.of(100, 100))
+        val fill = FixedContentComponent(0, 0)
+        fill.sizing(Sizing.fill(), Sizing.fill(50))
+        fill.inflate(Size.of(100, 100))
+        // 残りの空間を配るのは親の役目で、単体では fill と区別が付かないのだ～🌱
+        assertEquals(fill.width to fill.height, expand.width to expand.height)
+    }
+
+    @Test
+    fun `親を持たないコンポーネントの絶対座標は、自分の位置そのものなのだ～🌱`() {
+        val component = FixedContentComponent(0, 0)
+        component.moveTo(12, 34)
+        assertEquals(12, component.absoluteX)
+        assertEquals(34, component.absoluteY)
+    }
+
+    @Test
     fun `moveToは親の中身の始点から数えた位置を覚えるのだ～🌱`() {
         val component = FixedContentComponent(0, 0)
         assertEquals(0, component.x)
