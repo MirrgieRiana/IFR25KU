@@ -8,11 +8,11 @@ package miragefairy2024.client.ui
  */
 object UiContainers {
     /** 子を縦に並べるコンポーネントを作るのだ～🌱 */
-    fun verticalFlow(horizontalSizing: Sizing, verticalSizing: Sizing) = UiFlowLayout(UiFlowLayout.Direction.VERTICAL).apply { sizing(horizontalSizing, verticalSizing) }
+    fun verticalFlow(horizontalSizing: Sizing, verticalSizing: Sizing) = UiFlowLayout(UiFlowLayout.Direction.VERTICAL).also { it.sizing(horizontalSizing, verticalSizing) }
 
     /** 子を横に並べるコンポーネントを作るのだ～🌱 */
-    fun horizontalFlow(horizontalSizing: Sizing, verticalSizing: Sizing) = UiFlowLayout(UiFlowLayout.Direction.HORIZONTAL).apply { sizing(horizontalSizing, verticalSizing) }
+    fun horizontalFlow(horizontalSizing: Sizing, verticalSizing: Sizing) = UiFlowLayout(UiFlowLayout.Direction.HORIZONTAL).also { it.sizing(horizontalSizing, verticalSizing) }
 
     /** 子を同じ場所へ重ねるコンポーネントを作るのだ～🌱 */
-    fun stack(horizontalSizing: Sizing, verticalSizing: Sizing) = UiStackLayout().apply { sizing(horizontalSizing, verticalSizing) }
+    fun stack(horizontalSizing: Sizing, verticalSizing: Sizing) = UiStackLayout().also { it.sizing(horizontalSizing, verticalSizing) }
 }
