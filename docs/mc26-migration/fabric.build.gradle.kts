@@ -1,3 +1,6 @@
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
@@ -19,6 +22,7 @@ val shadowBundle by configurations.creating {
 val minecraft_version = rootProject.property("minecraft_version") as String
 val fabric_loader_version = rootProject.property("fabric_loader_version") as String
 val fabric_api_version = rootProject.property("fabric_api_version") as String
+val architectury_version = rootProject.property("architectury_version") as String
 
 evaluationDependsOn(":common") // commonのclientソースセットを直接参照するために必要なのだ～🌱
 
@@ -32,6 +36,19 @@ base {
 
 loom {
     splitEnvironmentSourceSets()
+
+    // datagen の run を登録できるかを確かめるのだ～🌱
+    runs {
+        register("datagen") {
+            inherit(runs["server"])
+            // 非推奨のname/vmArg/runDirの代わりに、RunConfigurationのプロパティへ設定するのだ～🌱
+            getDisplayName().set("Data Generation")
+            getJvmArguments().add("-Dfabric-api.datagen")
+            getJvmArguments().add("-Dfabric-api.datagen.output-dir=" + rootProject.file("common/src/generated/resources"))
+            getJvmArguments().add("-Dfabric-api.datagen.modid=mc26experiment")
+            getRunDirectory().set(layout.buildDirectory.dir("datagen"))
+        }
+    }
 
     mods {
         register("mc26experiment") {
@@ -47,6 +64,8 @@ dependencies {
     minecraft("com.mojang:minecraft:$minecraft_version")
     implementation("net.fabricmc:fabric-loader:$fabric_loader_version")
     implementation("net.fabricmc.fabric-api:fabric-api:$fabric_api_version")
+
+    implementation("dev.architectury:architectury-fabric:$architectury_version")
 
     implementation(kotlin("stdlib"))
 
@@ -67,8 +86,31 @@ tasks.named<ShadowJar>("shadowJar") {
     from(sourceSets.getByName("client").output)
     configurations = listOf(shadowBundle)
     archiveClassifier.set("all")
-    relocate("kotlin", "mc26experiment.shadow.kotlin")
-    exclude("kotlin/Metadata.class")
+    relocate("kotlin", "mc26experiment.shadow.kotlin") {
+        // kotlin.Metadataは全バージョンでメンバー構成が同じだから、relocateせずに素のままにしておくのだ～🌱
+        exclude("kotlin.Metadata")
+    }
+    // kotlin-stdlibが引き込むIDE用のアノテーションは、実行時には要らないのだ～🌱
+    exclude("org/jetbrains/annotations/**")
+    exclude("org/intellij/**")
+    exclude("META-INF/maven/**")
+
+    // relocateがリソースのファイル名の中の「kotlin」まで置換してしまうので、.kotlin_moduleの名前を戻すのだ～🌱
+    doLast {
+        val jarFile = archiveFile.get().asFile
+        val tempFile = File(jarFile.parentFile, jarFile.name + ".tmp")
+        ZipFile(jarFile).use { zipFile ->
+            ZipOutputStream(tempFile.outputStream().buffered()).use { zipOutputStream ->
+                zipFile.entries().asSequence().forEach { zipEntry ->
+                    val name = zipEntry.name.replace(".shadow.kotlin_module", ".kotlin_module")
+                    zipOutputStream.putNextEntry(ZipEntry(name))
+                    if (!zipEntry.isDirectory) zipFile.getInputStream(zipEntry).use { it.copyTo(zipOutputStream) }
+                    zipOutputStream.closeEntry()
+                }
+            }
+        }
+        tempFile.renameTo(jarFile)
+    }
 }
 
 java {

@@ -27,6 +27,7 @@
 | Mixin の読み込み | 両方とも通ったのだ～🌱 |
 | 配布用の単一の jar へのまとめ | 両方とも通ったのだ～🌱 |
 | Kotlin のパッケージ名の変換 | 両方とも通ったのだ～🌱 1050 個のクラスが移ったのだ～🌱 |
+| Architectury API の呼び出し | 両方とも通ったのだ～🌱 common と fabric と neoforge の 3 個から呼べるのだ～🌱 |
 
 ## 前提なのだ～🌱
 
@@ -38,8 +39,20 @@
 | ModDevGradle | `net.neoforged.moddev` の `2.0.148` |
 | Shadow | `com.gradleup.shadow` の `9.2.2` |
 | Kotlin | 2.4.21 |
+| Architectury API | 20.1.17 |
 
 マッピングは、26.1 系が難読化を持たないから、1 行も要らないのだ～🌱
+
+## Minecraft が提供するライブラリの版なのだ～🌱
+
+`mirrg.kotlin` のサブプロジェクトが gson と slf4j を使っているから、その版が移行の前後で変わるのだ～🌱
+
+| Minecraft | gson | slf4j-api |
+| --- | --- | --- |
+| 1.21.1 | `2.10.1` | `2.0.9` |
+| 26.1.2 | `2.13.2` | `2.0.17` |
+
+出典は、`https://piston-meta.mojang.com/mc/game/version_manifest_v2.json` から辿った、各版の JSON の `libraries` なのだ～🌱
 
 ## 踏んだ落とし穴なのだ～🌱
 

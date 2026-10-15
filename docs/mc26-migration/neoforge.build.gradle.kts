@@ -1,3 +1,6 @@
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
@@ -16,6 +19,7 @@ val shadowBundle by configurations.creating {
 }
 
 val neoforge_version = rootProject.property("neoforge_version") as String
+val architectury_version = rootProject.property("architectury_version") as String
 
 base {
     archivesName = "mc26experiment-neoforge"
@@ -64,6 +68,8 @@ dependencies {
     implementation(kotlin("stdlib"))
     jarJar(kotlin("stdlib"))
 
+    implementation("dev.architectury:architectury-neoforge:$architectury_version")
+
     implementation(project(":common"))
     "clientImplementation"(sourceSets.main.get().output) // neoforgeモジュール自身のmainソースセットにも依存させるのだ～🌱
     "clientImplementation"(commonClientSourceSetOutput)
@@ -77,8 +83,31 @@ tasks.named<ShadowJar>("shadowJar") {
     from(sourceSets.getByName("client").output)
     configurations = listOf(shadowBundle)
     archiveClassifier.set("all")
-    relocate("kotlin", "mc26experiment.shadow.kotlin")
-    exclude("kotlin/Metadata.class")
+    relocate("kotlin", "mc26experiment.shadow.kotlin") {
+        // kotlin.Metadataは全バージョンでメンバー構成が同じだから、relocateせずに素のままにしておくのだ～🌱
+        exclude("kotlin.Metadata")
+    }
+    // kotlin-stdlibが引き込むIDE用のアノテーションは、実行時には要らないのだ～🌱
+    exclude("org/jetbrains/annotations/**")
+    exclude("org/intellij/**")
+    exclude("META-INF/maven/**")
+
+    // relocateがリソースのファイル名の中の「kotlin」まで置換してしまうので、.kotlin_moduleの名前を戻すのだ～🌱
+    doLast {
+        val jarFile = archiveFile.get().asFile
+        val tempFile = File(jarFile.parentFile, jarFile.name + ".tmp")
+        ZipFile(jarFile).use { zipFile ->
+            ZipOutputStream(tempFile.outputStream().buffered()).use { zipOutputStream ->
+                zipFile.entries().asSequence().forEach { zipEntry ->
+                    val name = zipEntry.name.replace(".shadow.kotlin_module", ".kotlin_module")
+                    zipOutputStream.putNextEntry(ZipEntry(name))
+                    if (!zipEntry.isDirectory) zipFile.getInputStream(zipEntry).use { it.copyTo(zipOutputStream) }
+                    zipOutputStream.closeEntry()
+                }
+            }
+        }
+        tempFile.renameTo(jarFile)
+    }
 }
 
 java {

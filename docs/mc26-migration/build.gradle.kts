@@ -9,5 +9,6 @@ allprojects {
 
     repositories {
         mavenCentral()
+        maven("https://maven.architectury.dev/") { name = "Architectury" }
     }
 }

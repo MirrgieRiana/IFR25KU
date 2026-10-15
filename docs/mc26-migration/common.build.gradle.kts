@@ -8,6 +8,7 @@ plugins {
 
 val minecraft_version = rootProject.property("minecraft_version") as String
 val fabric_loader_version = rootProject.property("fabric_loader_version") as String
+val architectury_version = rootProject.property("architectury_version") as String
 
 // commonは、fabric側のビルドシステム(Fabric Loom)を間借りして、
 // 難読化されていない26.1.2のMinecraftクラスパスだけを得るために使うのだ～🌱
@@ -20,6 +21,9 @@ dependencies {
     // Mixinのアノテーションをコンパイルするためだけに必要なのだ～🌱
     // 実行時のMixin本体は、fabric-loaderとNeoForgeが、それぞれ自分で持ち込むのだ～🌱
     compileOnly("net.fabricmc:fabric-loader:$fabric_loader_version")
+
+    // Architectury APIの共通部分なのだ～🌱 実行時はfabric版かneoforge版が持ち込むのだ～🌱
+    compileOnly("dev.architectury:architectury:$architectury_version")
 }
 
 java {
