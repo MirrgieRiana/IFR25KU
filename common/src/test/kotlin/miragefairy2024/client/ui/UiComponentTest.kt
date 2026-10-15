@@ -84,7 +84,7 @@ class UiComponentTest {
         fill.sizing(Sizing.fill(), Sizing.fill(50))
         fill.inflate(Size.of(100, 100))
         // 残りの空間を配るのは親の役目で、単体では fill と区別が付かないのだ～🌱
-        assertEquals(fill.width to fill.height, expand.width to expand.height)
+        assertEquals(Pair(fill.width, fill.height), Pair(expand.width, expand.height))
     }
 
     @Test

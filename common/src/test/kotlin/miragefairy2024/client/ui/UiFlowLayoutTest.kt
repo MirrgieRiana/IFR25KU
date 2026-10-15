@@ -21,8 +21,8 @@ class UiFlowLayoutTest {
         layout.child(a)
         layout.child(b)
         layout.inflate(Size.of(500, 500))
-        assertEquals(0 to 0, a.x to a.y)
-        assertEquals(0 to 20, b.x to b.y)
+        assertEquals(Pair(0, 0), Pair(a.x, a.y))
+        assertEquals(Pair(0, 20), Pair(b.x, b.y))
         // 横は最も広い子に、縦は子の合計に揃うのだ～🌱
         assertEquals(30, layout.width)
         assertEquals(60, layout.height)
@@ -36,8 +36,8 @@ class UiFlowLayoutTest {
         layout.child(a)
         layout.child(b)
         layout.inflate(Size.of(500, 500))
-        assertEquals(0 to 0, a.x to a.y)
-        assertEquals(10 to 0, b.x to b.y)
+        assertEquals(Pair(0, 0), Pair(a.x, a.y))
+        assertEquals(Pair(10, 0), Pair(b.x, b.y))
         assertEquals(40, layout.width)
         assertEquals(40, layout.height)
     }
@@ -49,7 +49,9 @@ class UiFlowLayoutTest {
         val a = box(10, 20)
         val b = box(10, 20)
         val c = box(10, 20)
-        listOf(a, b, c).forEach { layout.child(it) }
+        listOf(a, b, c).forEach {
+            layout.child(it)
+        }
         layout.inflate(Size.of(500, 500))
         assertEquals(listOf(0, 25, 50), listOf(a.y, b.y, c.y))
         assertEquals(70, layout.height)
@@ -62,7 +64,7 @@ class UiFlowLayoutTest {
         val a = box(10, 20)
         layout.child(a)
         layout.inflate(Size.of(500, 500))
-        assertEquals(7 to 7, a.x to a.y)
+        assertEquals(Pair(7, 7), Pair(a.x, a.y))
         assertEquals(24, layout.width)
         assertEquals(34, layout.height)
     }
@@ -104,7 +106,7 @@ class UiFlowLayoutTest {
         layout.child(a)
         layout.child(b)
         layout.inflate(Size.of(500, 500))
-        assertEquals(3 to 3, a.x to a.y)
+        assertEquals(Pair(3, 3), Pair(a.x, a.y))
         assertEquals(26, b.y)
         assertEquals(46, layout.height)
     }
@@ -145,7 +147,9 @@ class UiFlowLayoutTest {
         val a = box(10, 20)
         val b = box(10, 20)
         val c = box(10, 20)
-        listOf(a, b, c).forEach { layout.child(it) }
+        listOf(a, b, c).forEach {
+            layout.child(it)
+        }
         layout.inflate(Size.of(500, 500))
         assertEquals(listOf(0, 15, 30), listOf(a.x, b.x, c.x))
         assertEquals(40, layout.width)
@@ -188,7 +192,7 @@ class UiFlowLayoutTest {
         val a = box(10, 20)
         layout.child(a)
         layout.inflate(Size.of(500, 500))
-        assertEquals(7 to 7, a.x to a.y)
+        assertEquals(Pair(7, 7), Pair(a.x, a.y))
         assertEquals(24, layout.width)
         assertEquals(34, layout.height)
     }

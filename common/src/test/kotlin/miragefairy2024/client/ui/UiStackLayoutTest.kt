@@ -21,8 +21,8 @@ class UiStackLayoutTest {
         layout.child(a)
         layout.child(b)
         layout.inflate(Size.of(500, 500))
-        assertEquals(0 to 0, a.x to a.y)
-        assertEquals(0 to 0, b.x to b.y)
+        assertEquals(Pair(0, 0), Pair(a.x, a.y))
+        assertEquals(Pair(0, 0), Pair(b.x, b.y))
         // 自分の寸法は、最も大きい子に揃うのだ～🌱
         assertEquals(30, layout.width)
         assertEquals(40, layout.height)
@@ -38,8 +38,8 @@ class UiStackLayoutTest {
         layout.child(a)
         layout.child(b)
         layout.inflate(Size.of(500, 500))
-        assertEquals(45 to 40, a.x to a.y)
-        assertEquals(30 to 20, b.x to b.y)
+        assertEquals(Pair(45, 40), Pair(a.x, a.y))
+        assertEquals(Pair(30, 20), Pair(b.x, b.y))
     }
 
     @Test
@@ -62,7 +62,7 @@ class UiStackLayoutTest {
         val a = box(10, 20)
         layout.child(a)
         layout.inflate(Size.of(500, 500))
-        assertEquals(7 to 7, a.x to a.y)
+        assertEquals(Pair(7, 7), Pair(a.x, a.y))
         assertEquals(24, layout.width)
         assertEquals(34, layout.height)
     }
@@ -74,7 +74,7 @@ class UiStackLayoutTest {
         a.margins(Insets.of(3))
         layout.child(a)
         layout.inflate(Size.of(500, 500))
-        assertEquals(3 to 3, a.x to a.y)
+        assertEquals(Pair(3, 3), Pair(a.x, a.y))
         assertEquals(16, layout.width)
         assertEquals(26, layout.height)
     }

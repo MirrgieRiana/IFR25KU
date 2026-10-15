@@ -15,7 +15,7 @@ class UiContainersTest {
         layout.child(UiSpacer().also { it.sizing(Sizing.fixed(10), Sizing.fixed(10)) })
         layout.inflate(Size.of(500, 500))
         // 縦向きなので、2 個目が下へ来るのだ～🌱
-        assertEquals(0 to 10, layout.children[1].x to layout.children[1].y)
+        assertEquals(Pair(0, 10), Pair(layout.children[1].x, layout.children[1].y))
     }
 
     @Test
@@ -24,7 +24,7 @@ class UiContainersTest {
         layout.child(UiSpacer().also { it.sizing(Sizing.fixed(10), Sizing.fixed(10)) })
         layout.child(UiSpacer().also { it.sizing(Sizing.fixed(10), Sizing.fixed(10)) })
         layout.inflate(Size.of(500, 500))
-        assertEquals(10 to 0, layout.children[1].x to layout.children[1].y)
+        assertEquals(Pair(10, 0), Pair(layout.children[1].x, layout.children[1].y))
         assertEquals(20, layout.width)
     }
 
@@ -34,7 +34,7 @@ class UiContainersTest {
         layout.child(UiSpacer().also { it.sizing(Sizing.fixed(10), Sizing.fixed(10)) })
         layout.child(UiSpacer().also { it.sizing(Sizing.fixed(20), Sizing.fixed(20)) })
         layout.inflate(Size.of(500, 500))
-        assertEquals(0 to 0, layout.children[1].x to layout.children[1].y)
+        assertEquals(Pair(0, 0), Pair(layout.children[1].x, layout.children[1].y))
         assertEquals(20, layout.width)
     }
 }

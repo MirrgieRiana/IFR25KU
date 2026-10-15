@@ -26,7 +26,9 @@ abstract class UiParentComponent : UiComponent() {
     }
 
     fun clearChildren() {
-        mutableChildren.forEach { it.parent = null }
+        mutableChildren.forEach {
+            it.parent = null
+        }
         mutableChildren.clear()
     }
 
@@ -46,16 +48,15 @@ abstract class UiParentComponent : UiComponent() {
     final override fun inflate(space: Size) {
         // 子へ渡す空間を決めるのに自分の寸法が要るため、先に暫定の寸法を出すのだ～🌱
         super.inflate(space)
-        contentSize = layoutChildren(childSpace(space), mutableChildren)
+        val childSpace = Size.of(
+            childSpace(horizontalSizing, width, space.width - margins.horizontal, padding.horizontal),
+            childSpace(verticalSizing, height, space.height - margins.vertical, padding.vertical),
+        )
+        contentSize = layoutChildren(childSpace, mutableChildren)
         // 子を並べ終えた範囲が決まったので、自分の寸法を決め直すのだ～🌱
         super.inflate(space)
         alignChildren(mutableChildren)
     }
-
-    private fun childSpace(space: Size) = Size.of(
-        childSpace(horizontalSizing, width, space.width - margins.horizontal, padding.horizontal),
-        childSpace(verticalSizing, height, space.height - margins.vertical, padding.vertical),
-    )
 
     /**
      * 子の寸法を確定して、親の中身の始点から数えた位置へ置くのだ～🌱
