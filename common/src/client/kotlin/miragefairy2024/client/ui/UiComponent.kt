@@ -6,10 +6,10 @@ package miragefairy2024.client.ui
  * 描画と入力は、この土台を継承する側が、バニラのウィジェットへ繋ぐのだ～🌱
  */
 abstract class UiComponent {
-    var horizontalSizing: Sizing = Sizing.content()
+    var horizontalSizing = Sizing.content()
         private set
 
-    var verticalSizing: Sizing = Sizing.content()
+    var verticalSizing = Sizing.content()
         private set
 
     var margins = Insets.of(0)
