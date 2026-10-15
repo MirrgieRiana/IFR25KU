@@ -17,8 +17,6 @@ class TooltipViewerLayoutTest {
         override fun determineContentHeight() = contentHeight
     }
 
-    private fun verticalSpace(height: Int) = FixedContentComponent(0, height)
-
     /** 画面の寸法なのだ～🌱 */
     private val screen = Size.of(400, 300)
 
