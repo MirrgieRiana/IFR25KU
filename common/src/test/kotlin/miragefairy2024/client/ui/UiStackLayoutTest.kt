@@ -56,6 +56,38 @@ class UiStackLayoutTest {
     }
 
     @Test
+    fun `内側の余白は子の位置と自分の寸法の両方へ効くのだ～🌱`() {
+        val layout = UiStackLayout()
+        layout.padding(Insets.of(7))
+        val a = box(10, 20)
+        layout.child(a)
+        layout.inflate(Size.of(500, 500))
+        assertEquals(7 to 7, a.x to a.y)
+        assertEquals(24, layout.width)
+        assertEquals(34, layout.height)
+    }
+
+    @Test
+    fun `子のマージンは位置と占める寸法の両方へ効くのだ～🌱`() {
+        val layout = UiStackLayout()
+        val a = box(10, 20)
+        a.margins(Insets.of(3))
+        layout.child(a)
+        layout.inflate(Size.of(500, 500))
+        assertEquals(3 to 3, a.x to a.y)
+        assertEquals(16, layout.width)
+        assertEquals(26, layout.height)
+    }
+
+    @Test
+    fun `子が無いときは中身の寸法が0になるのだ～🌱`() {
+        val layout = UiStackLayout()
+        layout.inflate(Size.of(500, 500))
+        assertEquals(0, layout.width)
+        assertEquals(0, layout.height)
+    }
+
+    @Test
     fun `hitTestは後から足した子を先に返すのだ～🌱`() {
         val layout = UiStackLayout()
         val a = box(20, 20)
