@@ -7,7 +7,7 @@ package miragefairy2024.client.ui
  */
 class UiStackLayout : UiParentComponent() {
     override fun layoutChildren(childSpace: Size, children: List<UiComponent>): Size {
-        // どの子も、重なるため、同じ空間を受け取るのだ～🌱
+        // 子は空間を分け合わずに重なるため、どの子も同じ空間を受け取るのだ～🌱
         children.forEach { child ->
             child.inflate(childSpace)
             child.moveTo(padding.left + child.margins.left, padding.top + child.margins.top)
