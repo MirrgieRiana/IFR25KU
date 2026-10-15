@@ -3,7 +3,7 @@ package miragefairy2024.client.ui
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class FlowLayoutCalculationTest {
+class LayoutCalculationTest {
 
     @Test
     fun `flowAlongは子を隙間を空けて順に並べるのだ～🌱`() {
