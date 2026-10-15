@@ -38,10 +38,29 @@ class UiFlowLayout(private val direction: Direction) : UiComponent() {
 
     fun child(child: UiComponent) {
         mutableChildren += child
+        child.parent = this
     }
 
     fun clearChildren() {
+        mutableChildren.forEach { it.parent = null }
         mutableChildren.clear()
+    }
+
+    /**
+     * 画面の左上から数えた座標の下にある、最も手前の子孫を探すのだ～🌱
+     *
+     * 後から足した子ほど手前に描かれるため、逆の順で探すのだ～🌱
+     */
+    fun hitTest(x: Int, y: Int): UiComponent? {
+        mutableChildren.asReversed().forEach { child ->
+            if (!child.containsPoint(x, y)) return@forEach
+            if (child is UiFlowLayout) {
+                val descendant = child.hitTest(x, y)
+                if (descendant != null) return descendant
+            }
+            return child
+        }
+        return null
     }
 
     fun gap(gap: Int) {

@@ -139,6 +139,69 @@ class UiFlowLayoutTest {
     }
 
     @Test
+    fun `絶対座標は親を遡って足した位置なのだ～🌱`() {
+        val outer = UiFlowLayout(UiFlowLayout.Direction.VERTICAL)
+        outer.padding(Insets.of(10))
+        val inner = UiFlowLayout(UiFlowLayout.Direction.VERTICAL)
+        inner.padding(Insets.of(5))
+        val leaf = box(10, 10)
+        inner.child(leaf)
+        outer.child(inner)
+        outer.inflate(Size.of(500, 500))
+        outer.moveTo(100, 200)
+        assertEquals(115, leaf.absoluteX)
+        assertEquals(215, leaf.absoluteY)
+    }
+
+    @Test
+    fun `containsPointはコンポーネントの右端と下端を含まないのだ～🌱`() {
+        val layout = UiFlowLayout(UiFlowLayout.Direction.VERTICAL)
+        val a = box(10, 20)
+        layout.child(a)
+        layout.inflate(Size.of(500, 500))
+        layout.moveTo(100, 200)
+        assertEquals(true, a.containsPoint(100, 200))
+        assertEquals(true, a.containsPoint(109, 219))
+        assertEquals(false, a.containsPoint(110, 200))
+        assertEquals(false, a.containsPoint(100, 220))
+        assertEquals(false, a.containsPoint(99, 200))
+    }
+
+    @Test
+    fun `hitTestは後から足した子を先に返すのだ～🌱`() {
+        val layout = UiFlowLayout(UiFlowLayout.Direction.VERTICAL)
+        val a = box(10, 10)
+        val b = box(10, 10)
+        layout.child(a)
+        layout.child(b)
+        layout.inflate(Size.of(500, 500))
+        assertEquals(a, layout.hitTest(5, 5))
+        assertEquals(b, layout.hitTest(5, 15))
+        assertEquals(null, layout.hitTest(50, 50))
+    }
+
+    @Test
+    fun `hitTestは入れ子の奥の子まで辿るのだ～🌱`() {
+        val outer = UiFlowLayout(UiFlowLayout.Direction.VERTICAL)
+        val inner = UiFlowLayout(UiFlowLayout.Direction.VERTICAL)
+        val leaf = box(10, 10)
+        inner.child(leaf)
+        outer.child(inner)
+        outer.inflate(Size.of(500, 500))
+        assertEquals(leaf, outer.hitTest(5, 5))
+    }
+
+    @Test
+    fun `childは親への参照を繋いで、clearChildrenは外すのだ～🌱`() {
+        val layout = UiFlowLayout(UiFlowLayout.Direction.VERTICAL)
+        val a = box(10, 10)
+        layout.child(a)
+        assertEquals(layout, a.parent)
+        layout.clearChildren()
+        assertEquals(null, a.parent)
+    }
+
+    @Test
     fun `子が無いときは中身の寸法が0になるのだ～🌱`() {
         val layout = UiFlowLayout(UiFlowLayout.Direction.VERTICAL)
         layout.inflate(Size.of(500, 500))

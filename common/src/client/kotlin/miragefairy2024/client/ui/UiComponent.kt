@@ -62,6 +62,23 @@ abstract class UiComponent {
         this.y = y
     }
 
+    /** このコンポーネントを子として持つコンポーネントなのだ～🌱 */
+    var parent: UiComponent? = null
+        internal set
+
+    /**
+     * 画面の左上から数えた、このコンポーネントの左端の位置なのだ～🌱
+     *
+     * [x] は親からの相対のため、描画と当たり判定には、親を遡って足した位置が要るのだ～🌱
+     */
+    val absoluteX: Int get() = x + (parent?.absoluteX ?: 0)
+
+    /** 画面の左上から数えた、このコンポーネントの上端の位置なのだ～🌱 */
+    val absoluteY: Int get() = y + (parent?.absoluteY ?: 0)
+
+    /** 画面の左上から数えた座標が、このコンポーネントの中にあるかを判定するのだ～🌱 */
+    fun containsPoint(x: Int, y: Int) = x >= absoluteX && x < absoluteX + width && y >= absoluteY && y < absoluteY + height
+
     /** マージンを含めた横の長さなのだ～🌱 */
     val fullWidth get() = width + margins.horizontal
 
