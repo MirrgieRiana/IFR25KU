@@ -96,13 +96,6 @@ class SizingTest {
     }
 
     @Test
-    fun `inflateAcrossはすべての子へ同じ空間を渡すのだ～🌱`() {
-        val children = listOf(Sizing.fill(), Sizing.expand(), Sizing.fixed(7))
-        val lengths = inflateAcross(children, 100) { sizing, space -> sizing.inflate(space) { 0 } }
-        assertEquals(listOf(100, 100, 7), lengths)
-    }
-
-    @Test
     fun `childSpaceはcontentの親のときだけ上の親の空間を渡すのだ～🌱`() {
         assertEquals(200, childSpace(Sizing.content(), 50, 200, 0))
         assertEquals(50, childSpace(Sizing.fill(), 50, 200, 0))

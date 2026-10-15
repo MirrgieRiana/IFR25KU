@@ -25,13 +25,6 @@ fun <T> inflateWithExpand(children: List<T>, space: Int, gap: Int, sizingOf: (T)
 }
 
 /**
- * 並べる方向と垂直な方向における子の長さを決めるのだ～🌱
- *
- * こちらの方向では子が空間を分け合わないため、[Sizing.Expand] も [Sizing.Fill] と同じ空間を受け取るのだ～🌱
- */
-fun <T> inflateAcross(children: List<T>, space: Int, inflate: (T, Int) -> Int): List<Int> = children.map { inflate(it, space) }
-
-/**
  * 親が子へ与える空間を決めるのだ～🌱
  *
  * [Sizing.Content] の親の長さは子を並べ終えてから決まるため、その時点の [ownLength] はまだ使えないのだ～🌱
