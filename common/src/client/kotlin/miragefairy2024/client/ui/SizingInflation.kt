@@ -35,4 +35,4 @@ fun <T> inflateWithExpand(children: List<T>, space: Int, gap: Int, sizingOf: (T)
  * @param parentSpace 更に上の親が与えた空間の長さなのだ～🌱
  * @param padding 親の内側の余白の、両端の合計なのだ～🌱
  */
-fun childSpace(sizing: Sizing, ownLength: Int, parentSpace: Int, padding: Int): Int = (if (sizing.isContent) parentSpace else ownLength) - padding
+fun childSpace(sizing: Sizing, ownLength: Int, parentSpace: Int, padding: Int) = (if (sizing.isContent) parentSpace else ownLength) - padding
