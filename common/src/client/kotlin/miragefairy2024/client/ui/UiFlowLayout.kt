@@ -25,7 +25,7 @@ class UiFlowLayout(private val direction: Direction) : UiParentComponent() {
     override fun layoutChildren(childSpace: Size, children: List<UiComponent>): Size {
         val alongSpace = if (vertical) childSpace.height else childSpace.width
         val acrossSpace = if (vertical) childSpace.width else childSpace.height
-        inflateWithExpand(
+        val lengths = inflateWithExpand(
             children,
             alongSpace,
             gap,
@@ -36,7 +36,7 @@ class UiFlowLayout(private val direction: Direction) : UiParentComponent() {
                 if (vertical) child.fullHeight else child.fullWidth
             },
         )
-        val result = flowAlong(children.map { if (vertical) it.fullHeight else it.fullWidth }, gap)
+        val result = flowAlong(lengths, gap)
         children.forEachIndexed { index, child ->
             val along = result.offsets[index]
             if (vertical) {
