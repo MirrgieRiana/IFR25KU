@@ -22,7 +22,7 @@ class UiFlowLayout(private val direction: Direction) : UiParentComponent() {
         this.gap = gap
     }
 
-    override fun layoutChildren(childSpace: Size, children: List<UiComponent>) {
+    override fun layoutChildren(childSpace: Size, children: List<UiComponent>): Size {
         val alongSpace = if (vertical) childSpace.height else childSpace.width
         val acrossSpace = if (vertical) childSpace.width else childSpace.height
         inflateWithExpand(
@@ -45,8 +45,11 @@ class UiFlowLayout(private val direction: Direction) : UiParentComponent() {
                 child.moveTo(padding.left + child.margins.left + along, padding.top + child.margins.top)
             }
         }
-        contentWidth = if (vertical) children.maxOfOrNull { it.fullWidth } ?: 0 else result.length
-        contentHeight = if (vertical) result.length else children.maxOfOrNull { it.fullHeight } ?: 0
+        return if (vertical) {
+            Size.of(children.maxOfOrNull { it.fullWidth } ?: 0, result.length)
+        } else {
+            Size.of(result.length, children.maxOfOrNull { it.fullHeight } ?: 0)
+        }
     }
 
     override fun alignChildren(children: List<UiComponent>) {
@@ -55,7 +58,7 @@ class UiFlowLayout(private val direction: Direction) : UiParentComponent() {
         val alongSpace = if (vertical) height - padding.vertical else width - padding.horizontal
         val acrossSpace = if (vertical) width - padding.horizontal else height - padding.vertical
         // 並べる方向では子がひと続きに繋がっているため、全体を 1 個の塊として寄せるのだ～🌱
-        val alongOffset = alignAlong(alongAlignment, if (vertical) contentHeight else contentWidth, alongSpace)
+        val alongOffset = alignAlong(alongAlignment, if (vertical) contentSize.height else contentSize.width, alongSpace)
         children.forEach { child ->
             val acrossOffset = acrossAlignment.align(if (vertical) child.fullWidth else child.fullHeight, acrossSpace)
             if (vertical) {

@@ -6,14 +6,13 @@ package miragefairy2024.client.ui
  * owo の `StackLayout` のうち、寸法と位置を決める部分に当たるのだ～🌱
  */
 class UiStackLayout : UiParentComponent() {
-    override fun layoutChildren(childSpace: Size, children: List<UiComponent>) {
+    override fun layoutChildren(childSpace: Size, children: List<UiComponent>): Size {
         // どの子も、重なるため、同じ空間を受け取るのだ～🌱
         children.forEach { child ->
             child.inflate(childSpace)
             child.moveTo(padding.left + child.margins.left, padding.top + child.margins.top)
         }
-        contentWidth = children.maxOfOrNull { it.fullWidth } ?: 0
-        contentHeight = children.maxOfOrNull { it.fullHeight } ?: 0
+        return Size.of(children.maxOfOrNull { it.fullWidth } ?: 0, children.maxOfOrNull { it.fullHeight } ?: 0)
     }
 
     override fun alignChildren(children: List<UiComponent>) {

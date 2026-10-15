@@ -16,11 +16,9 @@ abstract class UiParentComponent : UiComponent() {
     var verticalAlignment = Alignment.START
         private set
 
-    /** 子を並べ終えた範囲の横の長さなのだ～🌱 */
-    protected var contentWidth = 0
-
-    /** 子を並べ終えた範囲の縦の長さなのだ～🌱 */
-    protected var contentHeight = 0
+    /** [layoutChildren] が返した、子を並べ終えた範囲の寸法なのだ～🌱 */
+    var contentSize = Size.of(0, 0)
+        private set
 
     fun child(child: UiComponent) {
         mutableChildren += child
@@ -41,14 +39,14 @@ abstract class UiParentComponent : UiComponent() {
         this.verticalAlignment = verticalAlignment
     }
 
-    final override fun determineContentWidth() = contentWidth + padding.horizontal
+    final override fun determineContentWidth() = contentSize.width + padding.horizontal
 
-    final override fun determineContentHeight() = contentHeight + padding.vertical
+    final override fun determineContentHeight() = contentSize.height + padding.vertical
 
     final override fun inflate(space: Size) {
         // 子へ渡す空間を決めるのに自分の寸法が要るため、先に暫定の寸法を出すのだ～🌱
         super.inflate(space)
-        layoutChildren(childSpace(space), mutableChildren)
+        contentSize = layoutChildren(childSpace(space), mutableChildren)
         // 子を並べ終えた範囲が決まったので、自分の寸法を決め直すのだ～🌱
         super.inflate(space)
         alignChildren(mutableChildren)
@@ -59,8 +57,12 @@ abstract class UiParentComponent : UiComponent() {
         childSpace(verticalSizing, height, space.height - margins.vertical, padding.vertical),
     )
 
-    /** 子の寸法を確定して、親の中身の始点から数えた位置へ置き、[contentWidth] と [contentHeight] を決めるのだ～🌱 */
-    protected abstract fun layoutChildren(childSpace: Size, children: List<UiComponent>)
+    /**
+     * 子の寸法を確定して、親の中身の始点から数えた位置へ置くのだ～🌱
+     *
+     * @return 子を並べ終えた範囲の寸法なのだ～🌱
+     */
+    protected abstract fun layoutChildren(childSpace: Size, children: List<UiComponent>): Size
 
     /** 余った空間の分だけ、子の位置を寄せるのだ～🌱 */
     protected abstract fun alignChildren(children: List<UiComponent>)
