@@ -158,7 +158,6 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
     }
 
     tasks.register<UnpackSourcesTask>("unpackSources") {
-        // Gradle 9 の dependsOn は null を受け付けないから、プラットフォームが genSources を持たない場合に備えて、見つかったものだけを渡すのだ～🌱
         val genSourcesTask = tasks.firstOrNull { it.name == "genSources" }
         if (genSourcesTask != null) dependsOn(genSourcesTask)
         outputDirectory = project.layout.projectDirectory.dir("unpackedSources")
