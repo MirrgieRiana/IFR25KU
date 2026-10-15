@@ -77,8 +77,9 @@ class TooltipViewerLayoutTest {
     @Test
     fun `スクロール領域は検索欄と空白を引いた残りを受け取るのだ～🌱`() {
         val (_, inner, scroll) = buildRoot(1000)
-        // 内枠の高さから、検索欄の 20 と、空白の 2 を引くのだ～🌱
-        assertEquals(inner.height - textBoxHeight - 2, scroll.height)
+        // 画面の 300 から、根の余白 8 と外枠の余白 14 と検索欄の 20 と空白の 2 を引くのだ～🌱
+        assertEquals(256, scroll.height)
+        assertEquals(278, inner.height)
     }
 
     @Test
@@ -92,7 +93,7 @@ class TooltipViewerLayoutTest {
     fun `外枠は画面の中央へ寄るのだ～🌱`() {
         val (root, _, _) = buildRoot(1000)
         val outer = root.children.single()
-        // 画面の 400 から、根の余白 7 と外枠の 254 を引いた残りを、半分ずつに割るのだ～🌱
-        assertEquals(4 + (400 - 8 - 254) / 2, outer.x)
+        // 画面の 400 から、根の余白 8 と外枠の 254 を引いた残り 138 の半分に、根の左の余白 4 を足すのだ～🌱
+        assertEquals(73, outer.x)
     }
 }
