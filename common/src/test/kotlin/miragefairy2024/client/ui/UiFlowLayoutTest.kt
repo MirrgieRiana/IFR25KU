@@ -139,6 +139,61 @@ class UiFlowLayoutTest {
     }
 
     @Test
+    fun `横向きでも隙間は子と子の間にだけ入るのだ～🌱`() {
+        val layout = UiFlowLayout(UiFlowLayout.Direction.HORIZONTAL)
+        layout.gap(5)
+        val a = box(10, 20)
+        val b = box(10, 20)
+        val c = box(10, 20)
+        listOf(a, b, c).forEach { layout.child(it) }
+        layout.inflate(Size.of(500, 500))
+        assertEquals(listOf(0, 15, 30), listOf(a.x, b.x, c.x))
+        assertEquals(40, layout.width)
+    }
+
+    @Test
+    fun `横向きでもexpandの子は残りを受け取るのだ～🌱`() {
+        val layout = UiFlowLayout(UiFlowLayout.Direction.HORIZONTAL)
+        layout.sizing(Sizing.fixed(100), Sizing.fixed(100))
+        val a = box(0, 10)
+        a.sizing(Sizing.fixed(30), Sizing.content())
+        val b = box(0, 10)
+        b.sizing(Sizing.expand(), Sizing.content())
+        layout.child(a)
+        layout.child(b)
+        layout.inflate(Size.of(500, 500))
+        assertEquals(30, a.width)
+        assertEquals(70, b.width)
+        assertEquals(30, b.x)
+    }
+
+    @Test
+    fun `横向きでも並べる方向の寄せ方は子の塊ごと動かすのだ～🌱`() {
+        val layout = UiFlowLayout(UiFlowLayout.Direction.HORIZONTAL)
+        layout.sizing(Sizing.fixed(100), Sizing.fixed(100))
+        layout.alignment(Alignment.END, Alignment.START)
+        val a = box(10, 20)
+        val b = box(10, 20)
+        layout.child(a)
+        layout.child(b)
+        layout.inflate(Size.of(500, 500))
+        assertEquals(80, a.x)
+        assertEquals(90, b.x)
+    }
+
+    @Test
+    fun `横向きでも内側の余白は子の位置と自分の寸法の両方へ効くのだ～🌱`() {
+        val layout = UiFlowLayout(UiFlowLayout.Direction.HORIZONTAL)
+        layout.padding(Insets.of(7))
+        val a = box(10, 20)
+        layout.child(a)
+        layout.inflate(Size.of(500, 500))
+        assertEquals(7 to 7, a.x to a.y)
+        assertEquals(24, layout.width)
+        assertEquals(34, layout.height)
+    }
+
+    @Test
     fun `絶対座標は親を遡って足した位置なのだ～🌱`() {
         val outer = UiFlowLayout(UiFlowLayout.Direction.VERTICAL)
         outer.padding(Insets.of(10))
