@@ -39,8 +39,15 @@ abstract class AbstractView : View {
             },
         )
         calculateChildrenActualSize()
+        if (sizingY == Sizing.WRAP) actualSizeCache = IntPoint(actualSizeCache.x, calculateActualSizeY())
     }
 
     protected open fun calculateChildrenActualSize() = Unit
+
+    /**
+     * 子の実測が済んだ後の、縦の実測値なのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.views.MultiLineTextView]のように、[miragefairy2024.mod.recipeviewer.views.AbstractView.contentSize]より実測の方が高くなる子を包んだときに、その分を親へ伝えるのだ～🌱
+     */
+    protected open fun calculateActualSizeY() = contentSize.y
 
 }

@@ -16,6 +16,12 @@ sourceSets {
             srcDir(file("src/generated/resources"))
         }
     }
+    // splitEnvironmentSourceSets()が分けたclientを、testからも参照できるようにするのだ～🌱
+    named("test") {
+        val client = sourceSets.named("client").get()
+        compileClasspath += client.output + client.compileClasspath
+        runtimeClasspath += client.output + client.runtimeClasspath
+    }
 }
 
 // runServer runDatagenでArchitectury Transformerがクライアント用のクラスを変換しようとして落ちる対策のために成果物を分ける
@@ -41,12 +47,6 @@ repositories {
     maven("https://maven.terraformersmc.com/releases") { // EMI
         content {
             includeGroup("dev.emi")
-        }
-    }
-    maven("https://maven.wispforest.io/releases/") { // owo-lib
-        content {
-            includeGroup("io.wispforest")
-            includeGroup("io.wispforest.endec")
         }
     }
     maven("https://maven.minecraftforge.net/") { // com.github.glitchfiend:TerraBlender-fabric
@@ -83,8 +83,6 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${libs.versions.rei.get()}")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${libs.versions.rei.get()}")
     modCompileOnly("me.shedaniel.cloth:basic-math:${libs.versions.clothBasicMath.get()}")
-
-    modImplementation("io.wispforest:owo-lib:${libs.versions.owoLibFabric.get()}")
 
     modApi("me.shedaniel.cloth:cloth-config:${libs.versions.clothConfig.get()}")
 

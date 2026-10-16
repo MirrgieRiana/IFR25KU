@@ -16,6 +16,8 @@ class MarginView(private val xMin: Int, private val xMax: Int, private val yMin:
         childView.calculateActualSize(actualSize.minus(xMin + xMax, yMin + yMax))
     }
 
+    override fun calculateActualSizeY() = super.calculateActualSizeY() + yMin + yMax
+
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         return childView.attachTo(offset.offset(xMin, yMin), viewPlacer)
     }

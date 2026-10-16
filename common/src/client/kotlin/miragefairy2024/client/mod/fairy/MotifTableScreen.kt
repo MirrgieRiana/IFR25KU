@@ -1,33 +1,43 @@
 package miragefairy2024.client.mod.fairy
 
-import io.wispforest.owo.ui.base.BaseOwoHandledScreen
-import io.wispforest.owo.ui.component.Components
-import io.wispforest.owo.ui.component.ItemComponent
-import io.wispforest.owo.ui.container.Containers
-import io.wispforest.owo.ui.container.FlowLayout
-import io.wispforest.owo.ui.container.ScrollContainer
-import io.wispforest.owo.ui.core.Color
-import io.wispforest.owo.ui.core.HorizontalAlignment
-import io.wispforest.owo.ui.core.Insets
-import io.wispforest.owo.ui.core.OwoUIAdapter
-import io.wispforest.owo.ui.core.Sizing
-import io.wispforest.owo.ui.core.Surface
-import io.wispforest.owo.ui.core.VerticalAlignment
 import miragefairy2024.ModContext
-import miragefairy2024.client.util.horizontalSpace
+import miragefairy2024.client.mod.recipeviewer.screen.ViewContainerScreen
 import miragefairy2024.client.util.registerHandledScreen
-import miragefairy2024.client.util.verticalScroll
+import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.fairy.MotifTableScreenHandler
 import miragefairy2024.mod.fairy.motifTableScreenHandlerType
+import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.ColorPair
+import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
+import miragefairy2024.mod.recipeviewer.views.OutputSlotView
+import miragefairy2024.mod.recipeviewer.views.ScrollView
+import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
+import miragefairy2024.mod.recipeviewer.views.StackView
+import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.View
+import miragefairy2024.mod.recipeviewer.views.XListView
+import miragefairy2024.mod.recipeviewer.views.XSpaceView
+import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.margin
+import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
+import miragefairy2024.mod.recipeviewer.views.minContentSizeX
+import miragefairy2024.mod.recipeviewer.views.noBackground
+import miragefairy2024.mod.recipeviewer.views.noMargin
+import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.TooltipFlag
 
 context(ModContext)
 fun initMotifTableClientModule() {
@@ -37,70 +47,84 @@ fun initMotifTableClientModule() {
 
 }
 
-class MotifTableScreen(handler: MotifTableScreenHandler, playerInventory: Inventory, title: Component) : BaseOwoHandledScreen<FlowLayout, MotifTableScreenHandler>(handler, playerInventory, title) {
-    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
-    override fun build(rootComponent: FlowLayout) {
-        rootComponent.apply {
-            surface(Surface.VANILLA_TRANSLUCENT)
-            padding(Insets.of(4))
-            verticalAlignment(VerticalAlignment.CENTER)
-            horizontalAlignment(HorizontalAlignment.CENTER)
+/** 画面の外側の余白なのだ～🌱 */
+private const val ROOT_MARGIN = 4
 
-            // GUIパネル外枠
-            child(Containers.verticalFlow(Sizing.content(), Sizing.fill(100)).apply {
-                surface(Surface.PANEL)
-                padding(Insets.of(7))
+private const val PANEL_MARGIN = 7
 
-                // メインコンテナ
-                child(Containers.verticalFlow(Sizing.content(), Sizing.fill(100)).apply {
+/** バニラのスクロールバーの幅なのだ～🌱 */
+private const val SCROLLBAR_THICKNESS = 18
 
-                    // スクロールパネル
-                    child(verticalScroll(Sizing.content(), Sizing.fill(100), 18).apply {
-                        scrollbar(ScrollContainer.Scrollbar.vanilla())
+/** 中身とスクロールバーの間の余白なのだ～🌱 */
+private const val SCROLL_CONTENT_MARGIN_RIGHT = 3
 
-                        // スロットパネル
-                        child().child(Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
-                            padding(Insets.of(0, 0, 0, 3))
+private const val ITEM_NAME_SPACE = 3
+
+private const val ITEM_NAME_SIZE_X = 150
+
+private const val WEIGHT_SIZE_X = 50
+
+private const val COUNT_SIZE_X = 80
+
+/** 設定に合わせた詳細さで、アイテムのツールチップを取るのだ～🌱 */
+private val ItemStack.itemTooltipLines: List<Component>
+    get() {
+        val tooltipFlag = if (Minecraft.getInstance().options.advancedItemTooltips) TooltipFlag.ADVANCED else TooltipFlag.NORMAL
+        return this.getTooltipLines(Item.TooltipContext.of(Minecraft.getInstance().level), Minecraft.getInstance().player, tooltipFlag)
+    }
+
+class MotifTableScreen(handler: MotifTableScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<MotifTableScreenHandler>(handler, playerInventory, title) {
+
+    override fun createRootView(): View {
+        /** 幅を固定して、その中で文字を寄せるのだ～🌱 */
+        fun fixedTextView(text: Component, sizeX: Int, alignmentX: Alignment): View = View {
+            view += TextView(text).also {
+                it.sizingX = Sizing.FILL
+                it.alignmentX = alignmentX
+                it.color = ColorPair.DARK_GRAY
+                it.shadow = false
+            }.configure { }.minContentSizeX(sizeX).maxContentSizeX(sizeX)
+        }
+
+        return View {
+            view += YListView().configure {
+                view.sizingX = Sizing.FILL
+                view.sizingY = Sizing.FILL
+
+                // 外枠なのだ～🌱 余った空間を全部取ってから、その中で中央へ寄せるのだ～🌱
+                view += StackView().configure {
+                    position.alignmentX = Alignment.CENTER
+                    position.alignmentY = Alignment.CENTER
+                    position.weight = 1.0
+                    view.sizingY = Sizing.FILL
+
+                    view += NinePatchImageView(NinePatchTextureCard.PANEL.texture, 5, 6, 5, 5, 6, 5)
+
+                    // 確率の一覧なのだ～🌱
+                    view += ScrollView(SCROLLBAR_THICKNESS, ScrollbarStyle.Vanilla).configure {
+                        view += YListView().configure {
+                            view.sizingX = Sizing.FILL
 
                             menu.chanceTable.forEach { chance ->
-                                child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                                    verticalAlignment(VerticalAlignment.CENTER)
+                                view += XListView().configure {
+                                    view.sizingX = Sizing.FILL
 
-                                    tooltip(ItemComponent.tooltipFromItem(chance.showingItemStack, Item.TooltipContext.of(Minecraft.getInstance().level), Minecraft.getInstance().player, null))
+                                    view += OutputSlotView(chance.showingItemStack).noBackground().noMargin().configure {
+                                        position.alignmentY = Alignment.CENTER
+                                    }
 
-                                    child(Components.item(chance.showingItemStack))
-                                    child(horizontalSpace(3))
-                                    child(Components.label(chance.showingItemStack.hoverName).apply {
-                                        sizing(Sizing.fixed(150), Sizing.content())
-                                        horizontalTextAlignment(HorizontalAlignment.LEFT)
-                                        verticalTextAlignment(VerticalAlignment.CENTER)
-                                        color(Color.ofRgb(0x404040))
-                                    })
-                                    child(Components.label(text { (chance.item.weight * 100 formatAs "%.4f%%")() }).apply {
-                                        sizing(Sizing.fixed(50), Sizing.content())
-                                        horizontalTextAlignment(HorizontalAlignment.RIGHT)
-                                        verticalTextAlignment(VerticalAlignment.CENTER)
-                                        color(Color.ofRgb(0x404040))
-                                    })
-                                    child(Components.label(text { "x"() + (chance.item.item.count formatAs "%.2f")() }).apply {
-                                        sizing(Sizing.fixed(80), Sizing.content())
-                                        horizontalTextAlignment(HorizontalAlignment.RIGHT)
-                                        verticalTextAlignment(VerticalAlignment.CENTER)
-                                        color(Color.ofRgb(0x404040))
-                                    })
+                                    view += XSpaceView(ITEM_NAME_SPACE)
 
-                                })
+                                    view += fixedTextView(chance.showingItemStack.hoverName, ITEM_NAME_SIZE_X, Alignment.START).configure { position.alignmentY = Alignment.CENTER }
+                                    view += fixedTextView(text { (chance.item.weight * 100 formatAs "%.4f%%")() }, WEIGHT_SIZE_X, Alignment.END).configure { position.alignmentY = Alignment.CENTER }
+                                    view += fixedTextView(text { "x"() + (chance.item.item.count formatAs "%.2f")() }, COUNT_SIZE_X, Alignment.END).configure { position.alignmentY = Alignment.CENTER }
+                                }.tooltip { _, _ -> chance.showingItemStack.itemTooltipLines }
                             }
-                        })
-
-                    })
-
-                })
-
-            })
-
+                        }.margin(0, SCROLL_CONTENT_MARGIN_RIGHT, 0, 0)
+                    }.margin(PANEL_MARGIN)
+                }.margin(ROOT_MARGIN)
+            }
         }
     }
 
-    override fun renderLabels(context: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
 }

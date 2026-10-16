@@ -91,10 +91,10 @@ fun GuiGraphics.drawScrollingString(
     }
     val input0 = Vector3f(minX.toFloat(), y.toFloat(), 0F)
     val output0 = Vector3f()
-    this.matrixStack.last().pose().transformPosition(input0, output0)
+    this.pose().last().pose().transformPosition(input0, output0)
     val input1 = Vector3f(maxX.toFloat(), (y + font.lineHeight).toFloat(), 0F)
     val output1 = Vector3f()
-    this.matrixStack.last().pose().transformPosition(input1, output1)
+    this.pose().last().pose().transformPosition(input1, output1)
     this.enableScissor(output0.x.roundToInt(), output0.y.roundToInt(), output1.x.roundToInt(), output1.y.roundToInt())
     try {
         this.drawString(font, text, x.roundToInt(), y, color, dropShadow)
