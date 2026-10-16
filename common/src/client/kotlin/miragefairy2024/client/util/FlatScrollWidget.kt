@@ -84,7 +84,7 @@ abstract class FlatScrollWidget(x: Int, y: Int, width: Int, height: Int, message
     private fun getFadeProgress(): Float {
         val remainingTime = Mth.clamp(fadeEndTime - System.currentTimeMillis(), 0L, FADE_DURATION)
         val ratio = remainingTime / FADE_DURATION.toDouble()
-        // サインの曲線を 0 から 1 の範囲へ収め直したものなのだ～🌱
+        // サインの曲線を 0 から 1 の範囲へ正規化したものなのだ～🌱
         return (sin(ratio * Math.PI - Math.PI / 2) * 0.5 + 0.5).toFloat()
     }
 }
