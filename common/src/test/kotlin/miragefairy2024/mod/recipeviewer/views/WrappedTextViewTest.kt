@@ -63,15 +63,48 @@ class WrappedTextViewTest {
     }
 
     @Test
-    fun `スクロールとの間に別のViewを挟むと折り返した分の高さが落ちるのだ～🌱`() {
+    fun `スクロールとの間に別のViewを挟んでも折り返した分の高さが伝わるのだ～🌱`() {
         val innerView = YListView().also { it.sizingX = Sizing.FILL }
         innerView += WrappedTextView(text)
         val scrollView = ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt()))
         scrollView += innerView
         scrollView.calculateContentSize(renderingProxy)
         scrollView.calculateActualSize(IntPoint(20, 30))
-        // 間のViewが、折り返す前の高さ0から自分の高さを決めてしまうのだ～🌱
-        assertEquals(0, scrollView.maxScrollAmount)
+        assertEquals(70, scrollView.maxScrollAmount)
+    }
+
+    @Test
+    fun `余白のViewを挟むと折り返した高さに余白の分が加わるのだ～🌱`() {
+        val innerView = YListView().also { it.sizingX = Sizing.FILL }
+        innerView += WrappedTextView(text)
+        val marginView = MarginView(0, 0, 3, 4)
+        marginView += innerView
+        val scrollView = ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt()))
+        scrollView += marginView
+        scrollView.calculateContentSize(renderingProxy)
+        scrollView.calculateActualSize(IntPoint(20, 30))
+        // 幅20で10行ぶんの100に、上下の余白の7を足して、スクロール領域の30を引くのだ～🌱
+        assertEquals(77, scrollView.maxScrollAmount)
+    }
+
+    @Test
+    fun `折り返すViewの後ろに並ぶViewは折り返した分だけ下へ送られるのだ～🌱`() {
+        val innerView = YListView().also { it.sizingX = Sizing.FILL }
+        innerView += WrappedTextView(text)
+        innerView += YSpaceView(13)
+        innerView.calculateContentSize(renderingProxy)
+        innerView.calculateActualSize(IntPoint(20, 0))
+        // 幅20で10行ぶんの100に、後ろに並ぶ13を足すのだ～🌱
+        assertEquals(113, innerView.actualSize.y)
+    }
+
+    @Test
+    fun `縦の上限を掛けたViewは折り返した分が伸びても上限で止まるのだ～🌱`() {
+        val maxContentSizeView = MaxContentSizeView(IntPoint(Int.MAX_VALUE, 45))
+        maxContentSizeView += WrappedTextView(text)
+        maxContentSizeView.calculateContentSize(renderingProxy)
+        maxContentSizeView.calculateActualSize(IntPoint(20, 0))
+        assertEquals(45, maxContentSizeView.actualSize.y)
     }
 
     companion object {
