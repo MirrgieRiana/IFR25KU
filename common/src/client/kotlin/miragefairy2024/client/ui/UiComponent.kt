@@ -19,11 +19,11 @@ abstract class UiComponent {
     var parent: UiComponent? = null
         internal set
 
-    /** [inflate] が確定した横の長さなのだ～🌱 */
+    /** [miragefairy2024.client.ui.UiComponent.inflate] が確定した横の長さなのだ～🌱 */
     var width = 0
         private set
 
-    /** [inflate] が確定した縦の長さなのだ～🌱 */
+    /** [miragefairy2024.client.ui.UiComponent.inflate] が確定した縦の長さなのだ～🌱 */
     var height = 0
         private set
 
@@ -44,7 +44,7 @@ abstract class UiComponent {
     /**
      * 画面の左上から数えた、このコンポーネントの左端の位置なのだ～🌱
      *
-     * [x] は親からの相対のため、描画と当たり判定には、親を遡って足した位置が要るのだ～🌱
+     * [miragefairy2024.client.ui.UiComponent.x] は親からの相対のため、描画と当たり判定には、親を遡って足した位置が要るのだ～🌱
      */
     val absoluteX: Int get() = x + (parent?.absoluteX ?: 0)
 

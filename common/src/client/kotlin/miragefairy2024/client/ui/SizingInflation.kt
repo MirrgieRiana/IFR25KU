@@ -1,14 +1,14 @@
 package miragefairy2024.client.ui
 
 /**
- * 並べる方向における子の長さを、[Sizing.Expand] を後回しにして決めるのだ～🌱
+ * 並べる方向における子の長さを、[miragefairy2024.client.ui.Sizing.Expand] を後回しにして決めるのだ～🌱
  *
- * [Sizing.Expand] は他の兄弟が取った後の残りを要求するため、1 回の走査では決まらないのだ～🌱
+ * [miragefairy2024.client.ui.Sizing.Expand] は他の兄弟が取った後の残りを要求するため、1 回の走査では決まらないのだ～🌱
  *
  * @param children 並べる順に並んだ子なのだ～🌱
  * @param space 親が子へ与える空間の、並べる方向の長さなのだ～🌱
  * @param gap 子と子の間に空ける長さなのだ～🌱
- * @param sizingOf 子の、並べる方向の [Sizing] を返す関数なのだ～🌱
+ * @param sizingOf 子の、並べる方向の [miragefairy2024.client.ui.Sizing] を返す関数なのだ～🌱
  * @param inflate 子を指定の空間で膨らませて、確定した長さをマージンごと返す関数なのだ～🌱
  * @return [children] と同じ順序の、確定した長さなのだ～🌱
  */
@@ -27,10 +27,10 @@ fun <T> inflateWithExpand(children: List<T>, space: Int, gap: Int, sizingOf: (T)
 /**
  * 親が子へ与える空間を決めるのだ～🌱
  *
- * [Sizing.Content] の親の長さは子を並べ終えてから決まるため、その時点の [ownLength] はまだ使えないのだ～🌱
+ * [miragefairy2024.client.ui.Sizing.Content] の親の長さは子を並べ終えてから決まるため、その時点の [ownLength] はまだ使えないのだ～🌱
  * そこで、更に上の親から来た [parentSpace] を渡すのだ～🌱
  *
- * @param sizing 親自身の [Sizing] なのだ～🌱
+ * @param sizing 親自身の [miragefairy2024.client.ui.Sizing] なのだ～🌱
  * @param ownLength 親自身の確定した長さなのだ～🌱
  * @param parentSpace 更に上の親が与えた空間の長さなのだ～🌱
  * @param padding 親の内側の余白の、両端の合計なのだ～🌱

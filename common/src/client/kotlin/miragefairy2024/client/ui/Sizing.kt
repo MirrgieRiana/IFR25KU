@@ -47,7 +47,7 @@ sealed interface Sizing {
     /**
      * 他の兄弟を配置した後の残りの空間の [percent] パーセントにするのだ～🌱
      *
-     * 計算式は [Fill] と同じで、[inflate] へ残りの空間を渡す側が [Expand] を後回しにするのだ～🌱
+     * 計算式は [miragefairy2024.client.ui.Sizing.Fill] と同じで、[miragefairy2024.client.ui.Sizing.inflate] へ残りの空間を渡す側が [miragefairy2024.client.ui.Sizing.Expand] を後回しにするのだ～🌱
      */
     data class Expand(val percent: Int) : Sizing {
         override fun inflate(space: Int, contentLength: () -> Int) = (percent / 100.0 * space).roundToInt()

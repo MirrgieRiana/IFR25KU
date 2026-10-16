@@ -16,7 +16,7 @@ abstract class UiParentComponent : UiComponent() {
     var verticalAlignment = Alignment.START
         private set
 
-    /** [layoutChildren] が返した、子を並べ終えた範囲の寸法なのだ～🌱 */
+    /** [miragefairy2024.client.ui.UiParentComponent.layoutChildren] が返した、子を並べ終えた範囲の寸法なのだ～🌱 */
     var contentSize = Size.of(0, 0)
         private set
 

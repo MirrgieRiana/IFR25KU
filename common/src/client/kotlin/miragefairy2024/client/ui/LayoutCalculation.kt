@@ -15,7 +15,7 @@ enum class Alignment {
 /**
  * 長さ [length] のものを、長さ [space] の中へ寄せたときの、始点の位置を求めるのだ～🌱
  *
- * [Alignment.CENTER] の式は、空間とコンポーネントをそれぞれ半分にしてから引くのだ～🌱
+ * [miragefairy2024.client.ui.Alignment.CENTER] の式は、空間とコンポーネントをそれぞれ半分にしてから引くのだ～🌱
  * 空間とコンポーネントの長さの偶奇が異なる場合に、差を半分にする式とは 1 だけ異なるのだ～🌱
  */
 fun Alignment.align(length: Int, space: Int) = when (this) {
@@ -53,9 +53,9 @@ fun flowAlong(lengths: List<Int>, gap: Int): FlowResult {
  * 並べる方向における、子の位置の揃え方による補正の量を求めるのだ～🌱
  *
  * この方向では子がひと続きに繋がっているため、全体を 1 個の塊として寄せるのだ～🌱
- * [Alignment.CENTER] の式が [align] と異なり、空間と塊の長さの差を半分にするのだ～🌱
+ * [miragefairy2024.client.ui.Alignment.CENTER] の式が [miragefairy2024.client.ui.align] と異なり、空間と塊の長さの差を半分にするのだ～🌱
  *
- * @param contentLength [flowAlong] が返した、子を並べ終えた長さなのだ～🌱
+ * @param contentLength [miragefairy2024.client.ui.flowAlong] が返した、子を並べ終えた長さなのだ～🌱
  * @param space 親の中身を置ける長さなのだ～🌱
  */
 fun alignAlong(alignment: Alignment, contentLength: Int, space: Int) = when (alignment) {
