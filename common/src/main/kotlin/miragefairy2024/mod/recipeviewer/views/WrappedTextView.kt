@@ -1,6 +1,5 @@
 package miragefairy2024.mod.recipeviewer.views
 
-import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
@@ -26,8 +25,6 @@ class WrappedTextView(private val text: Component) : View {
 
     var shadow = true
 
-    var alignmentX = Alignment.START
-
     override val sizingX = Sizing.FILL
 
     override val sizingY = Sizing.WRAP
@@ -52,7 +49,6 @@ class WrappedTextView(private val text: Component) : View {
                 it.sizingX = Sizing.FILL
                 it.color = color
                 it.shadow = shadow
-                it.alignmentX = alignmentX
             }
         }
         textViews.forEach {
