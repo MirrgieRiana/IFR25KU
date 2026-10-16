@@ -32,14 +32,14 @@ class FairyQuestMessageLayoutTest {
     private fun buildRoot(): Layout {
         // カードの中身なのだ～🌱
         val cardContentView = YListView().also { it.sizingX = Sizing.FILL }
-        cardContentView += WrappedTextView(text).also { it.alignmentX = Alignment.CENTER }
+        cardContentView += MultiLineTextView(text).also { it.alignmentX = Alignment.CENTER }
         cardContentView += YSpaceView(CARD_MARGIN)
         val messageBackgroundView = StackView().also { it.sizingX = Sizing.FILL }
         messageBackgroundView += NinePatchImageView(DUMMY_TEXTURE, 0, LINE_HEIGHT, 0, 0, LINE_HEIGHT, 0)
-        messageBackgroundView += Child(Unit, WrappedTextView(text)).margin(0, 0, 0, LINE_BOTTOM_MARGIN)
+        messageBackgroundView += Child(Unit, MultiLineTextView(text)).margin(0, 0, 0, LINE_BOTTOM_MARGIN)
         cardContentView += messageBackgroundView
         cardContentView += YSpaceView(CARD_MARGIN)
-        cardContentView += WrappedTextView(text).also { it.alignmentX = Alignment.END }
+        cardContentView += MultiLineTextView(text).also { it.alignmentX = Alignment.END }
 
         // カードの外枠なのだ～🌱
         val cardView = StackView()

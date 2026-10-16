@@ -11,15 +11,15 @@ import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
-import miragefairy2024.mod.recipeviewer.views.ButtonView
+import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
 import miragefairy2024.mod.recipeviewer.views.StackView
+import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
-import miragefairy2024.mod.recipeviewer.views.WrappedTextView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
@@ -113,7 +113,7 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
                         view += ScrollView(SCROLLBAR_THICKNESS, ScrollbarStyle.Flat(SCROLLBAR_ARGB)).configure {
                             position.weight = 1.0
 
-                            view += WrappedTextView(text { card.textTranslation() }).also {
+                            view += MultiLineTextView(text { card.textTranslation() }).also {
                                 it.color = TEXT_COLOR
                                 it.shadow = false
                             }
@@ -127,7 +127,7 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
                 view += XListView().configure {
                     position.alignmentX = Alignment.CENTER
 
-                    view += ButtonView(BUTTON_SIZE, text { guiBackToGameTranslation() }).also {
+                    view += TextButtonView(BUTTON_SIZE, text { guiBackToGameTranslation() }).also {
                         it.onPress.register {
                             minecraft!!.setScreen(null)
                         }
@@ -135,7 +135,7 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
 
                     view += XSpaceView(BUTTON_SPACE)
 
-                    view += ButtonView(BUTTON_SIZE, CommonComponents.GUI_BACK).also {
+                    view += TextButtonView(BUTTON_SIZE, CommonComponents.GUI_BACK).also {
                         it.onPress.register {
                             onClose()
                         }

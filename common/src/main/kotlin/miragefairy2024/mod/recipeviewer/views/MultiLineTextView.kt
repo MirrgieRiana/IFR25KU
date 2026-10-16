@@ -15,12 +15,12 @@ import net.minecraft.network.chat.Component
 
 /**
  * 親が与えた幅で折り返して、全部の行を縦に並べるViewなのだ～🌱
- * 折り返す幅が決まるのは[miragefairy2024.mod.recipeviewer.views.WrappedTextView.calculateActualSize]のため、高さを[miragefairy2024.mod.recipeviewer.views.WrappedTextView.contentSize]では出せないのだ～🌱
+ * 折り返す幅が決まるのは[miragefairy2024.mod.recipeviewer.views.MultiLineTextView.calculateActualSize]のため、高さを[miragefairy2024.mod.recipeviewer.views.MultiLineTextView.contentSize]では出せないのだ～🌱
  *
  * 伸びた高さを親へ伝える経路は[miragefairy2024.mod.recipeviewer.views.AbstractView.calculateActualSizeY]なのだ～🌱
  * だから、縦が[miragefairy2024.mod.recipeviewer.view.Sizing.FILL]の親に包まれると、その親から上へは伸びた分が伝わらないのだ～🌱
  */
-class WrappedTextView(private val text: Component) : View {
+class MultiLineTextView(private val text: Component) : View {
 
     var color = ColorPair.DEFAULT
 
@@ -28,6 +28,9 @@ class WrappedTextView(private val text: Component) : View {
 
     /** 折り返した行それぞれを、この幅の中のどこへ寄せるかなのだ～🌱 */
     var alignmentX = Alignment.START
+
+    /** 行と行の間に入る空きなのだ～🌱 */
+    var gap = 0
 
     override val sizingX = Sizing.FILL
 
@@ -60,14 +63,14 @@ class WrappedTextView(private val text: Component) : View {
             it.calculateContentSize(renderingProxy)
             it.calculateActualSize(IntPoint(regionSize.x, 0))
         }
-        actualSize = IntPoint(regionSize.x, textViews.sumOf { it.actualSize.y })
+        actualSize = IntPoint(regionSize.x, textViews.sumOf { it.actualSize.y } + gap * (textViews.size - 1).coerceAtLeast(0))
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         var y = 0
         return textViews.map {
             val remover = it.attachTo(offset.offset(0, y), viewPlacer)
-            y += it.actualSize.y
+            y += it.actualSize.y + gap
             remover
         }.flatten()
     }

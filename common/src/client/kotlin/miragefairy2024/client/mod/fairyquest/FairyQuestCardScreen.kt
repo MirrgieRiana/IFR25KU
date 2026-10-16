@@ -15,6 +15,7 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.GhostItemView
+import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.ScrollView
@@ -23,7 +24,6 @@ import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
-import miragefairy2024.mod.recipeviewer.views.WrappedTextView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
@@ -176,7 +176,7 @@ class FairyQuestCardScreen(handler: FairyQuestCardScreenHandler, private val pla
                                     // 四辺を0にして、罫線の繰り返しだけを描かせるのだ～🌱
                                     view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 0, LINE_HEIGHT, 0, 0, LINE_HEIGHT, 0)
 
-                                    view += WrappedTextView(menu.recipe.message).also {
+                                    view += MultiLineTextView(menu.recipe.message).also {
                                         it.color = TEXT_COLOR
                                         it.shadow = false
                                     }.configure().margin(0, 0, 0, LINE_BOTTOM_MARGIN)

@@ -33,7 +33,7 @@ class FairyQuestCardLayoutTest {
         // 依頼文の欄なのだ～🌱
         val lineBackgroundView = StackView().also { it.sizingX = Sizing.FILL }
         lineBackgroundView += NinePatchImageView(DUMMY_TEXTURE, 0, LINE_HEIGHT, 0, 0, LINE_HEIGHT, 0)
-        lineBackgroundView += Child(Unit, WrappedTextView(text)).margin(0, 0, 0, LINE_BOTTOM_MARGIN)
+        lineBackgroundView += Child(Unit, MultiLineTextView(text)).margin(0, 0, 0, LINE_BOTTOM_MARGIN)
 
         val scrollView = ScrollView(SCROLLBAR_THICKNESS, ScrollbarStyle.Flat(0xA0000000.toInt()))
         scrollView += Child(Unit, lineBackgroundView).margin(0, SCROLLBAR_THICKNESS, 0, 0)

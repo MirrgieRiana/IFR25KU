@@ -9,13 +9,13 @@ import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
-import miragefairy2024.mod.recipeviewer.views.ButtonView
+import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
 import miragefairy2024.mod.recipeviewer.views.StackView
+import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.View
-import miragefairy2024.mod.recipeviewer.views.WrappedTextView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
@@ -82,7 +82,7 @@ class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQues
                             view.sizingX = Sizing.FILL
 
                             // 依頼の題名なのだ～🌱
-                            view += WrappedTextView(fairyQuestTitle).also {
+                            view += MultiLineTextView(fairyQuestTitle).also {
                                 it.alignmentX = Alignment.CENTER
                                 it.color = TEXT_COLOR
                                 it.shadow = false
@@ -97,7 +97,7 @@ class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQues
                                 // 四辺を0にして、罫線の繰り返しだけを描かせるのだ～🌱
                                 view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 0, LINE_HEIGHT, 0, 0, LINE_HEIGHT, 0)
 
-                                view += WrappedTextView(fairyQuestMessage).also {
+                                view += MultiLineTextView(fairyQuestMessage).also {
                                     it.color = TEXT_COLOR
                                     it.shadow = false
                                 }.configure().margin(0, 0, 0, LINE_BOTTOM_MARGIN)
@@ -106,7 +106,7 @@ class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQues
                             view += YSpaceView(CARD_MARGIN)
 
                             // 依頼人なのだ～🌱
-                            view += WrappedTextView(fairyQuestClient).also {
+                            view += MultiLineTextView(fairyQuestClient).also {
                                 it.alignmentX = Alignment.END
                                 it.color = TEXT_COLOR
                                 it.shadow = false
@@ -121,7 +121,7 @@ class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQues
                 view += XListView().configure {
                     position.alignmentX = Alignment.CENTER
 
-                    view += ButtonView(BUTTON_SIZE, text { guiBackToGameTranslation() }).also {
+                    view += TextButtonView(BUTTON_SIZE, text { guiBackToGameTranslation() }).also {
                         it.onPress.register {
                             minecraft!!.setScreen(null)
                         }
@@ -129,7 +129,7 @@ class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQues
 
                     view += XSpaceView(BUTTON_SPACE)
 
-                    view += ButtonView(BUTTON_SIZE, CommonComponents.GUI_BACK).also {
+                    view += TextButtonView(BUTTON_SIZE, CommonComponents.GUI_BACK).also {
                         it.onPress.register {
                             onClose()
                         }

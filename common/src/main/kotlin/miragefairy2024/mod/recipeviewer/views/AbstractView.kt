@@ -46,7 +46,7 @@ abstract class AbstractView : View {
 
     /**
      * 子の実測が済んだ後の、縦の実測値なのだ～🌱
-     * [miragefairy2024.mod.recipeviewer.views.WrappedTextView]のように、[miragefairy2024.mod.recipeviewer.views.AbstractView.contentSize]より実測の方が高くなる子を包んだときに、その分を親へ伝えるのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.views.MultiLineTextView]のように、[miragefairy2024.mod.recipeviewer.views.AbstractView.contentSize]より実測の方が高くなる子を包んだときに、その分を親へ伝えるのだ～🌱
      */
     protected open fun calculateActualSizeY() = contentSize.y
 
