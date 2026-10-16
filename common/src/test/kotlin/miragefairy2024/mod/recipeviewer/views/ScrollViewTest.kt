@@ -1,12 +1,16 @@
 package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.util.Remover
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 class ScrollViewTest {
 
@@ -90,6 +94,19 @@ class ScrollViewTest {
         val (scrollView, innerView) = createFillingScrollView(300, IntPoint(120, 50))
         assertEquals(5, scrollView.scrollbarThickness)
         assertEquals(120, innerView.actualSize.x)
+    }
+
+    @Test
+    fun `子を置かず自分自身だけを置くのだ～🌱`() {
+        val scrollView = createScrollView(IntPoint(100, 300), IntPoint(100, 50))
+        val placedList = mutableListOf<Pair<PlaceableView, IntRectangle>>()
+        scrollView.attachTo(IntPoint(7, 11)) { view, bounds ->
+            placedList += Pair(view, bounds)
+            Remover.NONE
+        }
+        assertEquals(1, placedList.size)
+        assertSame(scrollView, placedList.single().first)
+        assertEquals(IntRectangle(7, 11, 100, 50), placedList.single().second)
     }
 
     @Test
