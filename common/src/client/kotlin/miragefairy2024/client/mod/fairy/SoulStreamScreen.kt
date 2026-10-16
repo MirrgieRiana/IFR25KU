@@ -297,6 +297,8 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
                     // 左の欄なのだ～🌱 真ん中の欄を除いた余りを、右の欄と半分ずつ分けるのだ～🌱
                     view += YListView().configure {
+                        // 中身の幅を横の積み上げへ入れないことで、余りだけを分ける形になるのだ～🌱
+                        position.ignoreLayoutX = true
                         position.weight = 1.0
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
@@ -433,6 +435,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
                     // 右の欄なのだ～🌱
                     view += YListView().configure {
+                        position.ignoreLayoutX = true
                         position.weight = 1.0
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
