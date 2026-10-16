@@ -1,0 +1,54 @@
+package miragefairy2024.client.mod.recipeviewer.common
+
+import miragefairy2024.client.mod.recipeviewer.ViewRenderer
+import miragefairy2024.client.util.drawScrollingString
+import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.views.TextView
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphics
+
+object TextViewRenderer : ViewRenderer<TextView> {
+
+    /** 文字が溢れているときに左右へ往復させる速さなのだ～🌱 */
+    private const val SCROLL_SPEED = 30.0
+
+    /** 往復の両端で止まる時間なのだ～🌱 */
+    private const val SCROLL_PAUSE = 7.0
+
+    private val startNanoTime by lazy { System.nanoTime() }
+
+    override fun render(view: TextView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+        val font = Minecraft.getInstance().font
+        val color = view.color.lightModeArgb
+        if (view.scroll && font.width(view.text.value) > view.actualSize.x) {
+            graphics.drawScrollingString(
+                font,
+                view.text.value,
+                bounds.x,
+                bounds.x + view.actualSize.x,
+                bounds.y,
+                startNanoTime,
+                SCROLL_SPEED,
+                SCROLL_PAUSE,
+                color,
+                view.shadow,
+            )
+        } else {
+            val x = when (view.alignmentX) {
+                Alignment.START -> bounds.x
+                Alignment.CENTER -> bounds.x + view.actualSize.x / 2 - font.width(view.text.value) / 2
+                Alignment.END -> bounds.x + view.actualSize.x - font.width(view.text.value)
+            }
+            graphics.drawString(
+                font,
+                view.text.value,
+                x,
+                bounds.y,
+                color,
+                view.shadow,
+            )
+        }
+    }
+
+}
