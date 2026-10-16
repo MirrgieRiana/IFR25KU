@@ -16,9 +16,10 @@ import kotlin.math.sin
 /**
  * [ScrollView]の子を、バニラの画面のスクロール領域として描くのだ～🌱
  * 親クラスが前提にしている枠と内側の余白は、このスクロール領域が持たないため、取り除くのだ～🌱
+ * 親クラスはスクロールバーを自身の右隣へ描くため、スクロールバーの幅だけ狭い幅を渡して、[ScrollView]の右端へ収めるのだ～🌱
  */
-class ScrollViewWidget(private val view: ScrollView, private val viewBounds: IntRectangle) :
-    AbstractScrollWidget(viewBounds.x, viewBounds.y, viewBounds.sizeX, viewBounds.sizeY, Component.empty()) {
+class ScrollViewWidget(private val view: ScrollView, viewBounds: IntRectangle) :
+    AbstractScrollWidget(viewBounds.x, viewBounds.y, viewBounds.sizeX - view.scrollbarThickness, viewBounds.sizeY, Component.empty()) {
 
     companion object {
         /** スクロールバーが完全に透明になるまでにかける時間なのだ～🌱 */
@@ -40,6 +41,8 @@ class ScrollViewWidget(private val view: ScrollView, private val viewBounds: Int
     override fun getInnerHeight() = view.childView.actualSize.y
 
     override fun scrollRate() = SCROLL_RATE
+
+    override fun scrollbarWidth() = view.scrollbarThickness
 
     /** 親クラスの式は内側の余白4pxを前提にしているため、余白を持たない式へ置き換えるのだ～🌱 */
     override fun getMaxScrollAmount() = max(0, innerHeight - height)
@@ -140,9 +143,9 @@ class ScrollViewWidget(private val view: ScrollView, private val viewBounds: Int
         if (alpha <= 0) return
         // 親クラスがスクロールバーの寸法を公開していないため、同じ式で再現しているのだ～🌱
         val scrollbarHeight = Mth.clamp(height * height / innerHeight.toFloat(), 32.0F, height.toFloat()).toInt()
-        val scrollbarX = x + width - view.scrollbarThickness
+        val scrollbarX = x + width
         val scrollbarY = max(y, scrollAmount().toInt() * (height - scrollbarHeight) / max(1, maxScrollAmount) + y)
-        guiGraphics.fill(scrollbarX, scrollbarY, scrollbarX + view.scrollbarThickness, scrollbarY + scrollbarHeight, alpha shl 24 or (argb and 0xFFFFFF))
+        guiGraphics.fill(scrollbarX, scrollbarY, scrollbarX + scrollbarWidth(), scrollbarY + scrollbarHeight, alpha shl 24 or (argb and 0xFFFFFF))
     }
 
 }
