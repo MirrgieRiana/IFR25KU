@@ -20,6 +20,7 @@ import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.util.Remover
 import miragefairy2024.util.emit
+import miragefairy2024.util.plus
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
@@ -43,10 +44,10 @@ fun initScreenViewPlacers() {
         val widget = ScrollViewWidget(view, bounds)
         // 子は、このウィジェットが自分で描くため、画面ではなくこのウィジェットの中へ置くのだ～🌱
         val childContext = ScreenViewPlacerContext(widget.childWidgets)
-        view.childView.attachTo(bounds.offset) { childView, childBounds ->
+        val childRemover = view.childView.attachTo(bounds.offset) { childView, childBounds ->
             SCREEN_VIEW_PLACER_REGISTRY.place(childContext, childView, childBounds)
         }
-        context.add(widget)
+        context.add(widget) + childRemover
     }
 
     // EMIとREIは、これらのViewをレシピビューワーのウィジェットへ置き換えるため、バニラの画面だけがここの描画を使うのだ～🌱
