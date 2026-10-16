@@ -18,7 +18,7 @@ import miragefairy2024.util.Remover
 import net.minecraft.world.inventory.Slot
 
 /** アイテムの絵の一辺の長さなのだ～🌱 */
-const val MENU_SLOT_SIZE = 16
+private const val MENU_SLOT_SIZE = 16
 
 /** アイテムの絵を囲む枠の太さなのだ～🌱 */
 private const val MENU_SLOT_MARGIN = 1
