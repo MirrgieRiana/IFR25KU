@@ -181,33 +181,6 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
             }
         }
 
-        // TODO この定義を読むライブラリへの依存は外したため、生成そのものを止めるべきなのだ～🌱
-        pack.addProvider { output: FabricDataOutput ->
-            object : DataProvider {
-                private val pathResolver = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "nine_patch_textures")
-                override fun getName() = "Nine Patch Textures"
-                override fun run(writer: CachedOutput): CompletableFuture<*> {
-                    val futures = mutableListOf<CompletableFuture<*>>()
-                    DataGenerationEvents.onGenerateNinePatchTexture.fire {
-                        it { identifier, card ->
-                            val data = jsonObject(
-                                "texture" to card.texture.string.jsonElement,
-                                "texture_width" to card.textureWidth.jsonElement,
-                                "texture_height" to card.textureHeight.jsonElement,
-                                "repeat" to card.repeat.jsonElement,
-                                "patch_size" to jsonObject(
-                                    "width" to card.patchWidth.jsonElement,
-                                    "height" to card.patchHeight.jsonElement,
-                                ),
-                            )
-                            futures.add(DataProvider.saveStable(writer, data, pathResolver.json(identifier)))
-                        }
-                    }
-                    return CompletableFuture.allOf(*futures.toTypedArray())
-                }
-            }
-        }
-
         // SE
         pack.addProvider { output: FabricDataOutput ->
             object : DataProvider {
