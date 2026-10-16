@@ -12,6 +12,7 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.views.ButtonView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.ScrollView
@@ -20,9 +21,11 @@ import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.util.Remover
 import miragefairy2024.util.emit
+import miragefairy2024.util.fire
 import miragefairy2024.util.plus
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.network.chat.Component
 
@@ -55,6 +58,13 @@ fun initScreenViewPlacers() {
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: ImageView, bounds -> context.place(ImageViewRenderer, view, bounds) }
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: OutputSlotView, bounds -> context.place(OutputSlotViewRenderer, view, bounds) }
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: TooltipView, bounds -> context.place(TooltipViewRenderer, view, bounds) }
+
+    SCREEN_VIEW_PLACER_REGISTRY.register { context, view: ButtonView, bounds ->
+        val button = Button.builder(view.message) { view.onPress.fire { it() } }
+            .bounds(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY)
+            .build()
+        context.add(button)
+    }
 
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: TextBoxView, bounds ->
         val editBox = EditBox(Minecraft.getInstance().font, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty())
