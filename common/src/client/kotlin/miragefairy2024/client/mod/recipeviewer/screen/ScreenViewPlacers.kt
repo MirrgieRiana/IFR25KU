@@ -8,6 +8,8 @@ import miragefairy2024.client.mod.recipeviewer.common.GhostItemViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.OutputSlotViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
+import miragefairy2024.client.util.LayeredImageButton
+import miragefairy2024.client.util.LayeredImageToggleButton
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
@@ -25,14 +27,18 @@ import miragefairy2024.util.Remover
 import miragefairy2024.util.emit
 import miragefairy2024.util.fire
 import miragefairy2024.util.plus
+import miragefairy2024.util.register
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.network.chat.Component
 
-/** Viewを、バニラの画面の子のウィジェットとして置く先なのだ～🌱 */
-class ScreenViewPlacerContext(val widgets: MutableList<AbstractWidget>)
+/**
+ * Viewを、バニラの画面の子のウィジェットとして置く先なのだ～🌱
+ * [miragefairy2024.client.mod.recipeviewer.screen.ScreenViewPlacerContext.scrollViewWidget]は、スクロールの中へ置く場合のみ、そのスクロールなのだ～🌱
+ */
+class ScreenViewPlacerContext(val widgets: MutableList<AbstractWidget>, val scrollViewWidget: ScrollViewWidget? = null)
 
 val SCREEN_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<ScreenViewPlacerContext>()
 
@@ -48,11 +54,22 @@ fun initScreenViewPlacers() {
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: ScrollView, bounds ->
         val widget = ScrollViewWidget(view, bounds)
         // 子は、このウィジェットが自分で描くため、画面ではなくこのウィジェットの中へ置くのだ～🌱
-        val childContext = ScreenViewPlacerContext(widget.childWidgets)
+        val childContext = ScreenViewPlacerContext(widget.childWidgets, widget)
         val childRemover = view.childView.attachTo(bounds.offset) { childView, childBounds ->
             SCREEN_VIEW_PLACER_REGISTRY.place(childContext, childView, childBounds)
         }
         context.add(widget) + childRemover
+    }
+
+    SCREEN_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
+        val scrollViewWidget = context.scrollViewWidget
+        if (scrollViewWidget == null) {
+            // スクロールの外は位置が動かないため、1度書き込めば足りるのだ～🌱
+            view.apply(bounds.offset, null)
+            Remover.NONE
+        } else {
+            context.add(MenuSlotWidget(view, bounds, scrollViewWidget))
+        }
     }
 
     // EMIとREIは、これらのViewをレシピビューワーのウィジェットへ置き換えるため、バニラの画面だけがここの描画を使うのだ～🌱
@@ -66,6 +83,24 @@ fun initScreenViewPlacers() {
         val button = Button.builder(view.message) { view.onPress.fire { it() } }
             .bounds(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY)
             .build()
+        context.add(button)
+    }
+
+    SCREEN_VIEW_PLACER_REGISTRY.register { context, view: LayeredImageButtonView, bounds ->
+        val button = if (view.toggle) {
+            LayeredImageToggleButton(bounds.sizeX, bounds.sizeY, view.backgroundSprites, view.foregroundSprites).also { toggleButton ->
+                // 状態は、Viewとウィジェットの双方へ伝えるのだ～🌱
+                toggleButton.value.value = view.value.value
+                view.value.register { _, newValue -> toggleButton.value.value = newValue }
+                toggleButton.value.register { _, newValue -> view.value.value = newValue }
+                toggleButton.onClick.register { view.onPress.fire { it() } }
+            }
+        } else {
+            LayeredImageButton(bounds.sizeX, bounds.sizeY, view.backgroundSprites, view.foregroundSprites).also { imageButton ->
+                imageButton.onClick.register { view.onPress.fire { it() } }
+            }
+        }
+        button.setPosition(bounds.x, bounds.y)
         context.add(button)
     }
 

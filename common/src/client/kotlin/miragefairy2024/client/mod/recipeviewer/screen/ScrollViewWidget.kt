@@ -18,7 +18,7 @@ import kotlin.math.sin
  * 親クラスが前提にしている枠と内側の余白は、このスクロール領域が持たないため、取り除くのだ～🌱
  * 親クラスはスクロールバーを自身の右隣へ描くため、スクロールバーの幅だけ狭い幅を渡して、[miragefairy2024.mod.recipeviewer.views.ScrollView]の右端へ収めるのだ～🌱
  */
-class ScrollViewWidget(private val view: ScrollView, viewBounds: IntRectangle) :
+class ScrollViewWidget(val view: ScrollView, viewBounds: IntRectangle) :
     AbstractScrollWidget(viewBounds.x, viewBounds.y, viewBounds.sizeX - view.scrollbarThickness, viewBounds.sizeY, Component.empty()) {
 
     companion object {
@@ -37,6 +37,9 @@ class ScrollViewWidget(private val view: ScrollView, viewBounds: IntRectangle) :
 
     /** 子のViewを置いた結果のウィジェットなのだ～🌱 座標はスクロール量0の状態なのだ～🌱 */
     val childWidgets = mutableListOf<AbstractWidget>()
+
+    /** 中身を見せる範囲なのだ～🌱 親クラスが中身を描くときの切り取りと同じ式なのだ～🌱 */
+    val contentScissorArea get() = IntRectangle(x + 1, y + 1, width - 2, height - 2)
 
     override fun getInnerHeight() = view.childView.actualSize.y
 

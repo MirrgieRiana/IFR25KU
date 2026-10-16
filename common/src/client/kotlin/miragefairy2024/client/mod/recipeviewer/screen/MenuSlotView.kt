@@ -1,12 +1,17 @@
 package miragefairy2024.client.mod.recipeviewer.screen
 
 import miragefairy2024.client.mixins.api.SlotPositionSetter
+import miragefairy2024.client.mixins.api.SlotScissorAreaHolder
 import miragefairy2024.client.util.SlotType
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.mod.recipeviewer.view.sized
+import miragefairy2024.mod.recipeviewer.view.x2
+import miragefairy2024.mod.recipeviewer.view.y2
 import miragefairy2024.mod.recipeviewer.views.AbstractView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.StackView
@@ -14,7 +19,6 @@ import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.plusAssign
-import miragefairy2024.util.Remover
 import net.minecraft.world.inventory.Slot
 
 /** アイテムの絵の一辺の長さなのだ～🌱 */
@@ -30,7 +34,7 @@ const val MENU_SLOT_BACKGROUND_SIZE = MENU_SLOT_MARGIN + MENU_SLOT_SIZE + MENU_S
  * 中身の描画と操作はバニラの画面がやるため、このViewは[net.minecraft.world.inventory.Slot]の座標を書き換えるだけなのだ～🌱
  * 座標は画面の左上からの相対であるため、[miragefairy2024.client.mod.recipeviewer.screen.ViewContainerScreen]が原点を画面の左上へ合わせるのだ～🌱
  */
-class MenuSlotView(private val slot: Slot) : AbstractView() {
+class MenuSlotView(val slot: Slot) : AbstractView(), PlaceableView {
 
     override val sizingX = Sizing.WRAP
 
@@ -38,9 +42,12 @@ class MenuSlotView(private val slot: Slot) : AbstractView() {
 
     override fun calculateContentSize() = IntPoint(MENU_SLOT_SIZE, MENU_SLOT_SIZE)
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(actualSize))
+
+    /** 画面上の位置と、見せる範囲を書き込むのだ～🌱 範囲へnullを渡すと、制限が無くなるのだ～🌱 */
+    fun apply(offset: IntPoint, scissorArea: IntRectangle?) {
         (slot as SlotPositionSetter).`mirageFairy2024$setPosition`(offset.x, offset.y)
-        return Remover.NONE
+        (slot as SlotScissorAreaHolder).`mirageFairy2024$setScissorArea`(if (scissorArea == null) null else intArrayOf(scissorArea.x, scissorArea.y, scissorArea.x2, scissorArea.y2))
     }
 
 }
