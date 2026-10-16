@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 
 /**
  * `TooltipViewerClientModule.kt`の画面の骨組みが、既にあるViewで組めるかを確認するのだ～🌱
- * まだ無い部分は、同じ寸法を占めるSpaceViewで代えているのだ～🌱
+ * 中身の無い部分は、同じ寸法を占めるSpaceViewで代えているのだ～🌱
  */
 class TooltipViewerLayoutTest {
 
@@ -34,8 +34,7 @@ class TooltipViewerLayoutTest {
     /** 実際の画面と同じ入れ子を組むのだ～🌱 */
     private fun buildRoot(scrollContentSizeY: Int): Layout {
         // 検索欄なのだ～🌱
-        val textBoxView = YListView().also { it.sizingX = Sizing.FILL }
-        textBoxView += SpaceView(IntPoint(0, textBoxSizeY))
+        val textBoxView = TextBoxView(textBoxSizeY)
 
         // スクロールの中身なのだ～🌱
         val scrollContentView = YListView().also { it.sizingX = Sizing.FILL }
