@@ -49,7 +49,6 @@ private const val SCROLLBAR_THICKNESS = 5
 
 private const val SCROLLBAR_ARGB = 0xA0FFFFFF.toInt()
 
-/** 特性のアイコンのテクスチャは、32x32なのだ～🌱 */
 private const val TRAIT_ICON_SIZE = 32
 
 /** ボタンの寸法は、バニラのボタンと同じ高さなのだ～🌱 */
