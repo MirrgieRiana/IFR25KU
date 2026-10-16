@@ -3,10 +3,10 @@ package miragefairy2024.client.mod.recipeviewer.screen
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
-import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
-import miragefairy2024.client.mod.recipeviewer.common.ProgressViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.GhostItemViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.OutputSlotViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.ProgressViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
 import miragefairy2024.client.util.LayeredImageButton
@@ -17,10 +17,10 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.ButtonView
-import miragefairy2024.mod.recipeviewer.views.ImageView
-import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.GhostItemView
+import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
+import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.TextBoxView
 import miragefairy2024.mod.recipeviewer.views.TextView
