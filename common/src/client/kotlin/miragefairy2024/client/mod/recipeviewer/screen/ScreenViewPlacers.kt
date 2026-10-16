@@ -4,6 +4,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.GhostItemViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.OutputSlotViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
@@ -14,6 +15,7 @@ import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.ButtonView
 import miragefairy2024.mod.recipeviewer.views.ImageView
+import miragefairy2024.mod.recipeviewer.views.GhostItemView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.TextBoxView
@@ -57,6 +59,7 @@ fun initScreenViewPlacers() {
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds -> context.place(TextViewRenderer, view, bounds) }
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: ImageView, bounds -> context.place(ImageViewRenderer, view, bounds) }
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: OutputSlotView, bounds -> context.place(OutputSlotViewRenderer, view, bounds) }
+    SCREEN_VIEW_PLACER_REGISTRY.register { context, view: GhostItemView, bounds -> context.place(GhostItemViewRenderer, view, bounds) }
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: TooltipView, bounds -> context.place(TooltipViewRenderer, view, bounds) }
 
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: ButtonView, bounds ->
