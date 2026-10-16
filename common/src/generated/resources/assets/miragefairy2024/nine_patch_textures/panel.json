@@ -1,0 +1,10 @@
+{
+  "patch_size": {
+    "height": 5,
+    "width": 5
+  },
+  "repeat": false,
+  "texture": "miragefairy2024:textures/gui/panel.png",
+  "texture_height": 16,
+  "texture_width": 16
+}
