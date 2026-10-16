@@ -238,14 +238,14 @@ fun initSoulStreamClientModule() {
 
         graphics.fill(x, y, x + 16, y + 16, FAIRY_HIGHLIGHT_ARGB)
 
-        graphics.push()
-        graphics.translate(0.0, 0.0, FAIRY_HIGHLIGHT_DEPTH)
+        graphics.pose().pushPose()
+        graphics.pose().translate(0.0, 0.0, FAIRY_HIGHLIGHT_DEPTH)
         RenderSystem.enableBlend()
         graphics.setColor(1f, 1f, 1f, alpha)
         graphics.blit(FILTER_OVERLAY_TEXTURE, x, y, 0F, 0F, 16, 16, 16, 16)
         graphics.setColor(1f, 1f, 1f, 1f)
         RenderSystem.disableBlend()
-        graphics.pop()
+        graphics.pose().popPose()
     }
 
 }
