@@ -81,6 +81,7 @@ class TraitEncyclopediaPageScreen(private val parent: Screen?, private val trait
                         view += TextView(text { trait.getName().style(trait.style) }).configure {
                             view.sizingX = Sizing.FILL
                             view.alignmentX = Alignment.CENTER
+                            view.shadow = false
                         }
 
                         view += YSpaceView(CARD_MARGIN)
@@ -100,7 +101,9 @@ class TraitEncyclopediaPageScreen(private val parent: Screen?, private val trait
                         view += ScrollView(SCROLLBAR_THICKNESS, ScrollbarStyle.Flat(SCROLLBAR_ARGB)).configure {
                             position.weight = 1.0
 
-                            view += WrappedTextView(text { trait.text })
+                            view += WrappedTextView(text { trait.text }).also {
+                                it.shadow = false
+                            }
                         }
                     }.minContentSizeX(CARD_WIDTH).margin(CARD_MARGIN)
                 }.margin(0, 0, ROOT_MARGIN_TOP, ROOT_MARGIN_BOTTOM)

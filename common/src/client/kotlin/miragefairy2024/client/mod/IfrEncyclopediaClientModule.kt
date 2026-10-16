@@ -96,16 +96,16 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
 
                         view += YSpaceView(CARD_MARGIN)
 
-                        // 掲げられたアイテムなのだ～🌱
-                        if (itemStack != null) {
-                            view += YListView().configure {
-                                view.sizingX = Sizing.FILL
+                        // 掲げられたアイテムなのだ～🌱 アイテムが無くても、上下の余白は占めるのだ～🌱
+                        view += YListView().configure {
+                            view.sizingX = Sizing.FILL
 
+                            if (itemStack != null) {
                                 view += OutputSlotView(itemStack).configure {
                                     position.alignmentX = Alignment.CENTER
                                 }
-                            }.margin(0, 0, CARD_MARGIN, CARD_MARGIN)
-                        }
+                            }
+                        }.margin(0, 0, CARD_MARGIN, CARD_MARGIN)
 
                         view += YSpaceView(CARD_MARGIN)
 
