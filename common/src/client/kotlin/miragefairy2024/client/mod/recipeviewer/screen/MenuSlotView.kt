@@ -32,7 +32,7 @@ const val MENU_SLOT_BACKGROUND_SIZE = MENU_SLOT_MARGIN + MENU_SLOT_SIZE + MENU_S
 /**
  * メニューのスロットを置くViewなのだ～🌱
  * 中身の描画と操作はバニラの画面がやるため、このViewは[net.minecraft.world.inventory.Slot]の座標を書き換えるだけなのだ～🌱
- * 座標は画面の左上からの相対であるため、[miragefairy2024.client.mod.recipeviewer.screen.ViewContainerScreen]が原点を画面の左上へ合わせるのだ～🌱
+ * バニラはその座標を[net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.leftPos]からの相対で扱うため、書き込む側がその分を引くのだ～🌱
  */
 class MenuSlotView(val slot: Slot) : AbstractView(), PlaceableView {
 
@@ -44,7 +44,7 @@ class MenuSlotView(val slot: Slot) : AbstractView(), PlaceableView {
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(actualSize))
 
-    /** 画面上の位置と、見せる範囲を書き込むのだ～🌱 範囲へnullを渡すと、制限が無くなるのだ～🌱 */
+    /** スロットの座標の原点からの位置と、見せる範囲を書き込むのだ～🌱 範囲へnullを渡すと、制限が無くなるのだ～🌱 */
     fun apply(offset: IntPoint, scissorArea: IntRectangle?) {
         (slot as SlotPositionSetter).`mirageFairy2024$setPosition`(offset.x, offset.y)
         (slot as SlotScissorAreaHolder).`mirageFairy2024$setScissorArea`(if (scissorArea == null) null else intArrayOf(scissorArea.x, scissorArea.y, scissorArea.x2, scissorArea.y2))

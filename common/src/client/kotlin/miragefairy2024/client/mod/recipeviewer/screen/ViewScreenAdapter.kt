@@ -16,12 +16,15 @@ class ViewScreenAdapter(private val rootView: View) {
     /** [miragefairy2024.client.mod.recipeviewer.screen.ViewScreenAdapter.layout]で置かれたウィジェットなのだ～🌱 画面の子として登録するのだ～🌱 */
     val widgets: List<AbstractWidget> get() = widgetList
 
-    /** [offset]を左上として、[regionSize]の空間へViewのツリーを配置するのだ～🌱 */
-    fun layout(offset: IntPoint, regionSize: IntPoint) {
+    /**
+     * [offset]を左上として、[regionSize]の空間へViewのツリーを配置するのだ～🌱
+     * [slotOrigin]は、バニラがメニューのスロットの座標の原点として使う点なのだ～🌱
+     */
+    fun layout(offset: IntPoint, regionSize: IntPoint, slotOrigin: IntPoint = IntPoint.ZERO) {
         widgetList.clear()
         rootView.calculateContentSize(renderingProxy)
         rootView.calculateActualSize(regionSize)
-        val context = ScreenViewPlacerContext(widgetList)
+        val context = ScreenViewPlacerContext(widgetList, slotOrigin)
         rootView.attachTo(offset) { view, bounds ->
             SCREEN_VIEW_PLACER_REGISTRY.place(context, view, bounds)
         }

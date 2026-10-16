@@ -11,9 +11,11 @@ import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
 import miragefairy2024.client.util.LayeredImageButton
 import miragefairy2024.client.util.LayeredImageToggleButton
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.view.minus
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.ButtonView
@@ -38,9 +40,10 @@ import net.minecraft.network.chat.Component
 
 /**
  * Viewを、バニラの画面の子のウィジェットとして置く先なのだ～🌱
+ * [miragefairy2024.client.mod.recipeviewer.screen.ScreenViewPlacerContext.slotOrigin]は、バニラがメニューのスロットの座標の原点として使う点なのだ～🌱
  * [miragefairy2024.client.mod.recipeviewer.screen.ScreenViewPlacerContext.scrollViewWidget]は、スクロールの中へ置く場合のみ、そのスクロールなのだ～🌱
  */
-class ScreenViewPlacerContext(val widgets: MutableList<AbstractWidget>, val scrollViewWidget: ScrollViewWidget? = null)
+class ScreenViewPlacerContext(val widgets: MutableList<AbstractWidget>, val slotOrigin: IntPoint, val scrollViewWidget: ScrollViewWidget? = null)
 
 val SCREEN_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<ScreenViewPlacerContext>()
 
@@ -56,7 +59,7 @@ fun initScreenViewPlacers() {
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: ScrollView, bounds ->
         val widget = ScrollViewWidget(view, bounds)
         // 子は、このウィジェットが自分で描くため、画面ではなくこのウィジェットの中へ置くのだ～🌱
-        val childContext = ScreenViewPlacerContext(widget.childWidgets, widget)
+        val childContext = ScreenViewPlacerContext(widget.childWidgets, context.slotOrigin, widget)
         val childRemover = view.childView.attachTo(bounds.offset) { childView, childBounds ->
             SCREEN_VIEW_PLACER_REGISTRY.place(childContext, childView, childBounds)
         }
@@ -67,10 +70,10 @@ fun initScreenViewPlacers() {
         val scrollViewWidget = context.scrollViewWidget
         if (scrollViewWidget == null) {
             // スクロールの外は位置が動かないため、1度書き込めば足りるのだ～🌱
-            view.apply(bounds.offset, null)
+            view.apply(bounds.offset - context.slotOrigin, null)
             Remover.NONE
         } else {
-            context.add(MenuSlotWidget(view, bounds, scrollViewWidget))
+            context.add(MenuSlotWidget(view, bounds, context.slotOrigin, scrollViewWidget))
         }
     }
 

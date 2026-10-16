@@ -22,12 +22,10 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
      * 親クラスは、画面の寸法が変わる度に、ウィジェットを捨ててからこれを呼ぶのだ～🌱
      */
     override fun init() {
-        // バニラはスロットの座標と当たり判定をこの原点からの相対で扱うため、Viewが決めた絶対座標をそのまま渡せるようにするのだ～🌱
-        leftPos = 0
-        topPos = 0
-
+        super.init()
         val adapter = ViewScreenAdapter(createRootView())
-        adapter.layout(IntPoint.ZERO, IntPoint(width, height))
+        // バニラはスロットの座標をleftPosとtopPosからの相対で扱うため、その点を原点として渡すのだ～🌱
+        adapter.layout(IntPoint.ZERO, IntPoint(width, height), IntPoint(leftPos, topPos))
         adapter.widgets.forEach {
             addRenderableWidget(it)
         }

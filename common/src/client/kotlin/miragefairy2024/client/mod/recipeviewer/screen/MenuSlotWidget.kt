@@ -2,6 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.screen
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.minus
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarrationElementOutput
@@ -14,11 +15,12 @@ import net.minecraft.network.chat.Component
 class MenuSlotWidget(
     private val view: MenuSlotView,
     private val viewBounds: IntRectangle,
+    private val slotOrigin: IntPoint,
     private val scrollViewWidget: ScrollViewWidget,
 ) : AbstractWidget(viewBounds.x, viewBounds.y, viewBounds.sizeX, viewBounds.sizeY, Component.empty()) {
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        view.apply(IntPoint(viewBounds.x, viewBounds.y - scrollViewWidget.view.scrollAmount), scrollViewWidget.contentScissorArea)
+        view.apply(IntPoint(viewBounds.x, viewBounds.y - scrollViewWidget.view.scrollAmount) - slotOrigin, scrollViewWidget.contentScissorArea - slotOrigin)
     }
 
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
