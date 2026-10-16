@@ -2,6 +2,7 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
@@ -59,6 +60,18 @@ class WrappedTextViewTest {
         scrollView.calculateActualSize(IntPoint(20, 30))
         // 幅20で10行ぶんの100から、スクロール領域の30を引くのだ～🌱
         assertEquals(70, scrollView.maxScrollAmount)
+    }
+
+    @Test
+    fun `スクロールとの間に別のViewを挟むと折り返した分の高さが落ちるのだ～🌱`() {
+        val innerView = YListView().also { it.sizingX = Sizing.FILL }
+        innerView += WrappedTextView(text)
+        val scrollView = ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt()))
+        scrollView += innerView
+        scrollView.calculateContentSize(renderingProxy)
+        scrollView.calculateActualSize(IntPoint(20, 30))
+        // 間のViewが、折り返す前の高さ0から自分の高さを決めてしまうのだ～🌱
+        assertEquals(0, scrollView.maxScrollAmount)
     }
 
     companion object {

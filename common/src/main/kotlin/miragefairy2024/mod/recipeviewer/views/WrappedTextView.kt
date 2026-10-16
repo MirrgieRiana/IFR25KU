@@ -16,7 +16,9 @@ import net.minecraft.network.chat.Component
 /**
  * 親が与えた幅で折り返して、全部の行を縦に並べるViewなのだ～🌱
  * 折り返す幅が決まるのは[miragefairy2024.mod.recipeviewer.views.WrappedTextView.calculateActualSize]のため、高さを[miragefairy2024.mod.recipeviewer.views.WrappedTextView.contentSize]では出せないのだ～🌱
- * だから、親が高さを後から決める[miragefairy2024.mod.recipeviewer.views.ScrollView]の中でだけ使えるのだ～🌱
+ *
+ * だから、[miragefairy2024.mod.recipeviewer.views.ScrollView]の直接の子としてだけ使えるのだ～🌱
+ * 間に別のViewを挟むと、そのViewが[miragefairy2024.mod.recipeviewer.views.WrappedTextView.contentSize]から自分の高さを決めるため、折り返した分の高さが落ちるのだ～🌱
  */
 class WrappedTextView(private val text: Component) : View {
 
