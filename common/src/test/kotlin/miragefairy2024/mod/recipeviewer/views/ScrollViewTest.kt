@@ -19,7 +19,7 @@ class ScrollViewTest {
     }
 
     private fun createScrollView(childSize: IntPoint, regionSize: IntPoint): ScrollView {
-        val scrollView = ScrollView(5)
+        val scrollView = ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt()))
         scrollView += SpaceView(childSize)
         scrollView.calculateContentSize(renderingProxy)
         scrollView.calculateActualSize(regionSize)
@@ -30,7 +30,7 @@ class ScrollViewTest {
     private fun createFillingScrollView(childSizeY: Int, regionSize: IntPoint): Pair<ScrollView, YListView> {
         val innerView = YListView().also { it.sizingX = Sizing.FILL }
         innerView += SpaceView(IntPoint(0, childSizeY))
-        val scrollView = ScrollView(5)
+        val scrollView = ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt()))
         scrollView += innerView
         scrollView.calculateContentSize(renderingProxy)
         scrollView.calculateActualSize(regionSize)
@@ -96,7 +96,7 @@ class ScrollViewTest {
     fun `子を余白で包むとスクロールバーの幅だけ中身が狭まるのだ～🌱`() {
         val innerView = YListView().also { it.sizingX = Sizing.FILL }
         innerView += SpaceView(IntPoint(0, 300))
-        val scrollView = ScrollView(5)
+        val scrollView = ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt()))
         scrollView += Child(Unit, innerView).margin(0, 5, 0, 0)
         scrollView.calculateContentSize(renderingProxy)
         scrollView.calculateActualSize(IntPoint(120, 50))

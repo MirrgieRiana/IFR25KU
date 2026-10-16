@@ -9,13 +9,24 @@ import miragefairy2024.util.Remover
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
 
+/** スクロールバーの見た目なのだ～🌱 */
+sealed interface ScrollbarStyle {
+
+    /** 単色の矩形を塗りつぶして、操作が止まると徐々に透明にしていく見た目なのだ～🌱 */
+    data class Flat(val argb: Int) : ScrollbarStyle
+
+    /** バニラのスクローラーのスプライトを使う見た目なのだ～🌱 */
+    data object Vanilla : ScrollbarStyle
+
+}
+
 /**
  * 縦に溢れる子を、スクロールして見せるViewなのだ～🌱
  * 子には、このViewの幅と、子のコンテンツの高さが渡るのだ～🌱
  * スクロールバーの幅は、[scrollbarThickness]で宣言するだけで、レイアウトからは引かれないのだ～🌱
  * 中身とスクロールバーを重ねたくない場合は、子を[MarginView]で包んで右端に余白を作るのだ～🌱
  */
-class ScrollView(val scrollbarThickness: Int) : WrapperView(), PlaceableView {
+class ScrollView(val scrollbarThickness: Int, val scrollbarStyle: ScrollbarStyle) : WrapperView(), PlaceableView {
 
     override val sizingX get() = childView.sizingX
 
@@ -47,4 +58,4 @@ class ScrollView(val scrollbarThickness: Int) : WrapperView(), PlaceableView {
 
 }
 
-fun <P> Child<P, *>.scroll(scrollbarThickness: Int) = this.wrap(ScrollView(scrollbarThickness))
+fun <P> Child<P, *>.scroll(scrollbarThickness: Int, scrollbarStyle: ScrollbarStyle) = this.wrap(ScrollView(scrollbarThickness, scrollbarStyle))
