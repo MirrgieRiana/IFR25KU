@@ -15,10 +15,15 @@ import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.ScrollView
+import miragefairy2024.mod.recipeviewer.views.TextBoxView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.util.Remover
+import miragefairy2024.util.emit
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.components.EditBox
+import net.minecraft.network.chat.Component
 
 /** Viewを、バニラの画面の子のウィジェットとして置く先なのだ～🌱 */
 class ScreenViewPlacerContext(val widgets: MutableList<AbstractWidget>)
@@ -49,6 +54,18 @@ fun initScreenViewPlacers() {
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: ImageView, bounds -> context.place(ImageViewRenderer, view, bounds) }
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: OutputSlotView, bounds -> context.place(OutputSlotViewRenderer, view, bounds) }
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: TooltipView, bounds -> context.place(TooltipViewRenderer, view, bounds) }
+
+    SCREEN_VIEW_PLACER_REGISTRY.register { context, view: TextBoxView, bounds ->
+        val editBox = EditBox(Minecraft.getInstance().font, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty())
+        val hint = view.hint
+        if (hint != null) editBox.setHint(hint)
+        editBox.value = view.text
+        editBox.setResponder { text ->
+            view.text = text
+            view.onChanged.emit(text)
+        }
+        context.add(editBox)
+    }
 
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> register(entry: ViewRendererRegistry.Entry<V>) {
