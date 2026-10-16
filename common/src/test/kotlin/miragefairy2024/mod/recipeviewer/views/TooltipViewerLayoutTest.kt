@@ -41,7 +41,8 @@ class TooltipViewerLayoutTest {
         scrollContentView += SpaceView(IntPoint(0, scrollContentSizeY))
 
         val scrollView = ScrollView(5, ScrollbarStyle.Flat(0xA0000000.toInt()))
-        scrollView += Child(Unit, scrollContentView).margin(0, 5, 0, 0)
+        // 実際の画面は、スクロールバーの幅より2px広い余白を取るのだ～🌱
+        scrollView += Child(Unit, scrollContentView).margin(0, 7, 0, 0)
 
         // 内枠なのだ～🌱 横幅は、外側のminContentSizeXが240へ固定するのだ～🌱
         val innerView = YListView().also {
@@ -124,10 +125,10 @@ class TooltipViewerLayoutTest {
     }
 
     @Test
-    fun `スクロールの中身はスクロールバーの幅だけ狭まるのだ～🌱`() {
+    fun `スクロールの中身は右の余白だけ狭まるのだ～🌱`() {
         val layout = buildRoot(1000)
-        // 内枠の240から、スクロールバーの5を引くのだ～🌱
-        assertEquals(235, (layout.scrollView.childView as MarginView).childView.actualSize.x)
+        // 内枠の240から、右の余白の7を引くのだ～🌱
+        assertEquals(233, (layout.scrollView.childView as MarginView).childView.actualSize.x)
     }
 
 }

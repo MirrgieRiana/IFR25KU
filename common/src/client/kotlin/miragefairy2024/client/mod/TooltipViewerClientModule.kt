@@ -65,6 +65,9 @@ private const val SCROLLBAR_THICKNESS = 5
 
 private const val SCROLLBAR_ARGB = 0xA0000000.toInt()
 
+/** スクロールの中身の右の余白は、スクロールバーの幅より2px広いのだ～🌱 */
+private const val SCROLL_CONTENT_MARGIN_RIGHT = 7
+
 /** ツールチップの背景の内側の余白は、バニラのツールチップと同じなのだ～🌱 */
 private const val TOOLTIP_MARGIN = 4
 
@@ -160,7 +163,7 @@ class TooltipViewerScreen : ViewScreen(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }
                                         }
                                     }
                                 }
-                            }.margin(0, SCROLLBAR_THICKNESS, 0, 0)
+                            }.margin(0, SCROLL_CONTENT_MARGIN_RIGHT, 0, 0)
                         }
                     }.minContentSizeX(INNER_WIDTH).margin(PANEL_MARGIN)
                 }.margin(ROOT_MARGIN)
