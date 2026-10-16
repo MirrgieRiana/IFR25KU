@@ -1,5 +1,6 @@
 package miragefairy2024.mod.recipeviewer.views
 
+import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
@@ -16,14 +17,17 @@ import net.minecraft.network.chat.Component
  * 親が与えた幅で折り返して、全部の行を縦に並べるViewなのだ～🌱
  * 折り返す幅が決まるのは[miragefairy2024.mod.recipeviewer.views.WrappedTextView.calculateActualSize]のため、高さを[miragefairy2024.mod.recipeviewer.views.WrappedTextView.contentSize]では出せないのだ～🌱
  *
- * だから、[miragefairy2024.mod.recipeviewer.views.ScrollView]の直接の子としてだけ使えるのだ～🌱
- * 間に別のViewを挟むと、そのViewが[miragefairy2024.mod.recipeviewer.views.WrappedTextView.contentSize]から自分の高さを決めるため、折り返した分の高さが落ちるのだ～🌱
+ * 伸びた高さを親へ伝える経路は[miragefairy2024.mod.recipeviewer.views.AbstractView.calculateActualSizeY]なのだ～🌱
+ * だから、縦が[miragefairy2024.mod.recipeviewer.view.Sizing.FILL]の親に包まれると、その親から上へは伸びた分が伝わらないのだ～🌱
  */
 class WrappedTextView(private val text: Component) : View {
 
     var color = ColorPair.DEFAULT
 
     var shadow = true
+
+    /** 折り返した行それぞれを、この幅の中のどこへ寄せるかなのだ～🌱 */
+    var alignmentX = Alignment.START
 
     override val sizingX = Sizing.FILL
 
@@ -49,6 +53,7 @@ class WrappedTextView(private val text: Component) : View {
                 it.sizingX = Sizing.FILL
                 it.color = color
                 it.shadow = shadow
+                it.alignmentX = alignmentX
             }
         }
         textViews.forEach {

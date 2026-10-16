@@ -7,6 +7,7 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.util.Remover
+import mirrg.kotlin.helium.max
 import kotlin.math.roundToInt
 
 abstract class ListView : ContainerView<ListView.Position>() {
@@ -28,6 +29,9 @@ abstract class ListView : ContainerView<ListView.Position>() {
     protected val Child<Position, *>.reservedSizeX get() = if (position.ignoreLayoutX) 0 else view.contentSize.x
     protected val Child<Position, *>.reservedSizeY get() = if (position.ignoreLayoutY) 0 else view.contentSize.y
 
+    /** 子の実測が済んだ後に、この子がレイアウト上で占める縦のサイズなのだ～🌱 */
+    protected val Child<Position, *>.placedSizeY get() = if (position.ignoreLayoutY) 0 else view.actualSize.y max view.contentSize.y
+
 }
 
 class XListView : ListView() {
@@ -38,6 +42,8 @@ class XListView : ListView() {
             children.maxOfOrNull { it.reservedSizeY } ?: 0,
         )
     }
+
+    override fun calculateActualSizeY() = children.maxOfOrNull { it.placedSizeY } ?: 0
 
     override fun calculateChildrenActualSize() {
         val remaining = (actualSize.x - contentSize.x).toDouble()
@@ -88,6 +94,8 @@ class YListView : ListView() {
         )
     }
 
+    override fun calculateActualSizeY() = children.sumOf { it.placedSizeY }
+
     override fun calculateChildrenActualSize() {
         val remaining = (actualSize.y - contentSize.y).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
@@ -103,12 +111,12 @@ class YListView : ListView() {
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val remaining = (actualSize.y - contentSize.y).toDouble()
+        val remaining = (actualSize.y - children.sumOf { it.placedSizeY }).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var y = 0.0
         return children.attachTo(viewPlacer) {
             val old = y
-            val new = old + it.reservedSizeY.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+            val new = old + it.placedSizeY.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             y = new
             val size = new.roundToInt() - old.roundToInt()
 

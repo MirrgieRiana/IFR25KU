@@ -34,6 +34,8 @@ open class WrapperView : ParentView<Unit>() {
         childView.calculateActualSize(actualSize)
     }
 
+    override fun calculateActualSizeY() = childView.actualSize.y
+
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         return childView.attachTo(offset, viewPlacer)
     }
