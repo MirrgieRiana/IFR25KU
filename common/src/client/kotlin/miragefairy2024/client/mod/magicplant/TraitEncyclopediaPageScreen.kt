@@ -1,93 +1,131 @@
 package miragefairy2024.client.mod.magicplant
 
-import io.wispforest.owo.ui.base.BaseOwoScreen
-import io.wispforest.owo.ui.component.Components
-import io.wispforest.owo.ui.container.Containers
-import io.wispforest.owo.ui.container.FlowLayout
-import io.wispforest.owo.ui.container.ScrollContainer
-import io.wispforest.owo.ui.core.Color
-import io.wispforest.owo.ui.core.HorizontalAlignment
-import io.wispforest.owo.ui.core.Insets
-import io.wispforest.owo.ui.core.OwoUIAdapter
-import io.wispforest.owo.ui.core.Sizing
-import io.wispforest.owo.ui.core.Surface
-import io.wispforest.owo.ui.core.VerticalAlignment
-import miragefairy2024.client.mod.surface
-import miragefairy2024.client.util.horizontalSpace
-import miragefairy2024.client.util.verticalScroll
-import miragefairy2024.client.util.verticalSpace
+import miragefairy2024.client.mod.recipeviewer.screen.ViewScreen
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.mod.magicplant.Trait
 import miragefairy2024.mod.magicplant.getName
+import miragefairy2024.mod.magicplant.style
 import miragefairy2024.mod.magicplant.texture
+import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.view.ViewTexture
+import miragefairy2024.mod.recipeviewer.views.ButtonView
+import miragefairy2024.mod.recipeviewer.views.ImageView
+import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
+import miragefairy2024.mod.recipeviewer.views.ScrollView
+import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
+import miragefairy2024.mod.recipeviewer.views.StackView
+import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.View
+import miragefairy2024.mod.recipeviewer.views.WrappedTextView
+import miragefairy2024.mod.recipeviewer.views.XListView
+import miragefairy2024.mod.recipeviewer.views.XSpaceView
+import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.YSpaceView
+import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.margin
+import miragefairy2024.mod.recipeviewer.views.minContentSizeX
+import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.invoke
+import miragefairy2024.util.register
 import miragefairy2024.util.style
 import miragefairy2024.util.text
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.CommonComponents
 
-class TraitEncyclopediaPageScreen(private val parent: Screen?, private val trait: Trait) : BaseOwoScreen<FlowLayout>(trait.getName()) {
-    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
+/** 画面の上下の余白は、カードが縦いっぱいに伸びる分を残すのだ～🌱 */
+private const val ROOT_MARGIN_TOP = 20
+private const val ROOT_MARGIN_BOTTOM = 4
 
-    override fun build(rootComponent: FlowLayout) {
-        rootComponent.apply {
-            surface(Surface.VANILLA_TRANSLUCENT)
-            padding(Insets.of(20, 4, 0, 0))
-            verticalAlignment(VerticalAlignment.CENTER)
-            horizontalAlignment(HorizontalAlignment.CENTER)
+private const val CARD_MARGIN = 5
 
-            child(Containers.verticalFlow(Sizing.fixed(160), Sizing.expand()).apply { // カード外枠
-                surface(NinePatchTextureCard.TRAIT_BACKGROUND.surface)
-                padding(Insets.of(5))
+private const val CARD_WIDTH = 160
 
-                child(Containers.verticalFlow(Sizing.fill(), Sizing.content()).apply {
+private const val SCROLLBAR_THICKNESS = 5
 
-                    // 特性名
-                    child(Components.label(text { trait.getName().style(trait.style) }).apply {
-                        sizing(Sizing.fill(), Sizing.content())
-                        horizontalTextAlignment(HorizontalAlignment.CENTER)
-                    })
+private const val SCROLLBAR_ARGB = 0xA0FFFFFF.toInt()
 
-                    child(verticalSpace(5))
+/** 特性のアイコンのテクスチャは、32x32なのだ～🌱 */
+private const val TRAIT_ICON_SIZE = 32
 
-                    // 特性アイコン
-                    child(Containers.stack(Sizing.fill(), Sizing.content()).apply {
-                        horizontalAlignment(HorizontalAlignment.CENTER)
-                        child(Components.texture(trait.texture, 0, 0, 32, 32, 32, 32))
-                    })
+/** ボタンの寸法は、バニラのボタンと同じ高さなのだ～🌱 */
+private val BUTTON_SIZE = IntPoint(80, 20)
 
-                })
+private const val BUTTON_SPACE = 20
 
-                child(verticalSpace(5))
+class TraitEncyclopediaPageScreen(private val parent: Screen?, private val trait: Trait) : ViewScreen(trait.getName()) {
 
-                // 特性ポエム
-                child(verticalScroll(Sizing.fill(), Sizing.expand(), 5, overlapped = true).apply {
-                    scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
-                    child().child(Components.label(text { trait.text }).apply {
-                        sizing(Sizing.fill(), Sizing.content())
-                        horizontalTextAlignment(HorizontalAlignment.LEFT)
-                    })
-                })
+    override fun createRootView(): View {
+        return View {
+            view += YListView().configure {
+                view.sizingX = Sizing.FILL
+                view.sizingY = Sizing.FILL
 
-            })
+                // カード外枠なのだ～🌱
+                view += StackView().configure {
+                    position.alignmentX = Alignment.CENTER
+                    position.weight = 1.0
+                    view.sizingY = Sizing.FILL
 
-            child(verticalSpace(10))
+                    view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 22, 22, 22, 22, 22, 22)
 
-            child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                child(Components.button(text { guiBackToGameTranslation() }) {
-                    minecraft!!.setScreen(null)
-                }.apply {
-                    horizontalSizing(Sizing.fixed(80))
-                })
-                child(horizontalSpace(20))
-                child(Components.button(CommonComponents.GUI_BACK) {
-                    onClose()
-                }.apply {
-                    horizontalSizing(Sizing.fixed(80))
-                })
-            })
+                    view += YListView().configure {
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
 
+                        // 特性名なのだ～🌱
+                        view += TextView(text { trait.getName().style(trait.style) }).configure {
+                            view.sizingX = Sizing.FILL
+                            view.alignmentX = Alignment.CENTER
+                        }
+
+                        view += YSpaceView(CARD_MARGIN)
+
+                        // 特性アイコンなのだ～🌱
+                        view += YListView().configure {
+                            view.sizingX = Sizing.FILL
+
+                            view += ImageView(ViewTexture(trait.texture, IntPoint(TRAIT_ICON_SIZE, TRAIT_ICON_SIZE), IntRectangle(0, 0, TRAIT_ICON_SIZE, TRAIT_ICON_SIZE))).configure {
+                                position.alignmentX = Alignment.CENTER
+                            }
+                        }
+
+                        view += YSpaceView(CARD_MARGIN)
+
+                        // 特性ポエムなのだ～🌱 スクロールバーは中身へ重ねるのだ～🌱
+                        view += ScrollView(SCROLLBAR_THICKNESS, ScrollbarStyle.Flat(SCROLLBAR_ARGB)).configure {
+                            position.weight = 1.0
+
+                            view += WrappedTextView(text { trait.text })
+                        }
+                    }.minContentSizeX(CARD_WIDTH).margin(CARD_MARGIN)
+                }.margin(0, 0, ROOT_MARGIN_TOP, ROOT_MARGIN_BOTTOM)
+
+                view += YSpaceView(10)
+
+                // ボタン列なのだ～🌱
+                view += XListView().configure {
+                    position.alignmentX = Alignment.CENTER
+
+                    view += ButtonView(BUTTON_SIZE, text { guiBackToGameTranslation() }).also {
+                        it.onPress.register {
+                            minecraft!!.setScreen(null)
+                        }
+                    }
+
+                    view += XSpaceView(BUTTON_SPACE)
+
+                    view += ButtonView(BUTTON_SIZE, CommonComponents.GUI_BACK).also {
+                        it.onPress.register {
+                            onClose()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -109,4 +147,5 @@ class TraitEncyclopediaPageScreen(private val parent: Screen?, private val trait
     override fun onClose() {
         minecraft!!.setScreen(parent)
     }
+
 }
