@@ -15,7 +15,7 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.GhostItemView
-import miragefairy2024.mod.recipeviewer.views.ImageView
+import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
@@ -42,7 +42,6 @@ import miragefairy2024.util.text
 import miragefairy2024.util.toItemStacks
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
-import kotlin.math.roundToInt
 
 private const val PLAYER_INVENTORY_WIDTH = 9
 
@@ -208,17 +207,15 @@ class FairyQuestCardScreen(handler: FairyQuestCardScreenHandler, private val pla
                                 }
                             }
 
-                            // 進捗なのだ～🌱 見える横幅を進捗で変えるのだ～🌱
-                            view += StackView().configure {
-                                view += ImageView(ViewTexture(PROGRESS_BACKGROUND, IntPoint(PROGRESS_SIZE, PROGRESS_SIZE), IntRectangle(0, 0, PROGRESS_SIZE, PROGRESS_SIZE)))
-
-                                view += ImageView(ViewTexture(PROGRESS_OVERLAY, IntPoint(PROGRESS_SIZE, PROGRESS_SIZE), IntRectangle(0, 0, 0, PROGRESS_SIZE))).also { imageView ->
-                                    onScreenUpdate += {
-                                        val progress = menu.progress / menu.recipe.duration.toDouble()
-                                        imageView.texture = ViewTexture(PROGRESS_OVERLAY, IntPoint(PROGRESS_SIZE, PROGRESS_SIZE), IntRectangle(0, 0, (PROGRESS_SIZE * progress).roundToInt(), PROGRESS_SIZE))
-                                    }
+                            // 進捗なのだ～🌱
+                            view += ProgressView(
+                                ViewTexture(PROGRESS_BACKGROUND, IntPoint(PROGRESS_SIZE, PROGRESS_SIZE), IntRectangle(0, 0, PROGRESS_SIZE, PROGRESS_SIZE)),
+                                ViewTexture(PROGRESS_OVERLAY, IntPoint(PROGRESS_SIZE, PROGRESS_SIZE), IntRectangle(0, 0, PROGRESS_SIZE, PROGRESS_SIZE)),
+                            ).also { progressView ->
+                                onScreenUpdate += {
+                                    progressView.progress = menu.progress / menu.recipe.duration.toDouble()
                                 }
-                            }.margin(SLOT_CONTENT_MARGIN)
+                            }.configure { }.margin(SLOT_CONTENT_MARGIN)
 
                             repeat(TRADE_SLOT_COUNT) { i ->
                                 val index = PLAYER_INVENTORY_WIDTH * (PLAYER_INVENTORY_HEIGHT + 1) + TRADE_SLOT_COUNT + i
