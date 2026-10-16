@@ -62,6 +62,9 @@ private const val TRAIT_LIST_SIZE_Y = MENU_SLOT_BACKGROUND_SIZE * 4
 
 private const val CARD_MARGIN = 5
 
+/** ツールチップの背景の内側の余白なのだ～🌱 */
+private const val TOOLTIP_MARGIN = 4
+
 private const val INVENTORY_NAME_SPACE = 3
 
 private const val TRAIT_LIST_SPACE = 4
@@ -97,23 +100,26 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
 
-                    // 特性名なのだ～🌱
+                    // 特性名なのだ～🌱 カードの横幅は外から決まるため、文字の長さを混ぜないのだ～🌱
                     view += TextView(text { traitStack.trait.getName().style(traitStack.trait.style) }).also {
                         it.sizingX = Sizing.FILL
                         it.alignmentX = Alignment.CENTER
                         it.shadow = false
-                    }
+                    }.configure { position.ignoreLayoutX = true }
 
                     view += YSpaceView(CARD_MARGIN)
 
                     // 条件とアイコンと効果なのだ～🌱
                     view += XListView().configure {
+                        position.ignoreLayoutX = true
                         view.sizingX = Sizing.FILL
 
                         // 条件なのだ～🌱
                         view += YListView().configure {
                             position.weight = 1.0
                             position.alignmentY = Alignment.END
+                            // 重みで割り当てた横幅を使うのだ～🌱
+                            view.sizingX = Sizing.FILL
 
                             traitStack.trait.conditions.forEach { condition ->
                                 val factor = condition.getFactor(context)
@@ -130,6 +136,7 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                         view += YListView().configure {
                             position.weight = 1.0
                             position.alignmentY = Alignment.END
+                            view.sizingX = Sizing.FILL
 
                             traitStack.trait.traitEffectKeyEntries.forEach { entry ->
                                 fun <T : Any> traitEffectView(traitEffectKey: TraitEffectKey<T>, traitEffectFactor: Double) {
@@ -176,17 +183,19 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                     view += YListView().configure {
                         view.sizingX = Sizing.FILL
 
+                        // 枠の横幅はスロットの個数で決まるため、文字の長さを混ぜないのだ～🌱
                         view += TextView(text { traitListScreenTranslation() }).also {
                             it.sizingX = Sizing.FILL
                             it.alignmentX = Alignment.CENTER
                             it.color = ColorPair.DARK_GRAY
                             it.shadow = false
-                        }
+                        }.configure { position.ignoreLayoutX = true }
 
                         view += YSpaceView(INVENTORY_NAME_SPACE)
 
                         // 特性カードなのだ～🌱
                         view += StackView().configure {
+                            position.ignoreLayoutX = true
                             view.sizingX = Sizing.FILL
 
                             view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 22, 22, 22, 22, 22, 22)
@@ -199,6 +208,7 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
 
                         // 特性の一覧なのだ～🌱
                         view += StackView().configure {
+                            position.ignoreLayoutX = true
                             view.sizingX = Sizing.FILL
 
                             view += TooltipBackgroundView()
@@ -220,14 +230,14 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                                             texts.join(" "())
                                         }).also {
                                             it.sizingX = Sizing.FILL
-                                        }.configure { }.onClick {
+                                        }.configure { position.ignoreLayoutX = true }.onClick {
                                             selectedTraitStack = traitStack
                                             rebuildWidgets()
                                             true
                                         }
                                     }
                                 }.margin(0, SCROLLBAR_THICKNESS, 0, 0)
-                            }.margin(CARD_MARGIN - 1)
+                            }.margin(TOOLTIP_MARGIN)
                         }.minContentSizeY(TRAIT_LIST_SIZE_Y).maxContentSizeY(TRAIT_LIST_SIZE_Y)
                     }.minContentSizeX(INNER_WIDTH).margin(PANEL_MARGIN)
                 }
