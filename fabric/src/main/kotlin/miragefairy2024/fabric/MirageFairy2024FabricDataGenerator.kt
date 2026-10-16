@@ -181,7 +181,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
             }
         }
 
-        // owoのNine Patch Texture
+        // TODO この定義を読むライブラリへの依存は外したため、生成そのものを止めるべきなのだ～🌱
         pack.addProvider { output: FabricDataOutput ->
             object : DataProvider {
                 private val pathResolver = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "nine_patch_textures")
