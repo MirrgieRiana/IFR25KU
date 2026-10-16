@@ -23,8 +23,8 @@ sealed interface ScrollbarStyle {
 /**
  * 縦に溢れる子を、スクロールして見せるViewなのだ～🌱
  * 子には、このViewの幅と、子のコンテンツの高さが渡るのだ～🌱
- * スクロールバーの幅は、[scrollbarThickness]で宣言するだけで、レイアウトからは引かれないのだ～🌱
- * 中身とスクロールバーを重ねたくない場合は、子を[MarginView]で包んで右端に余白を作るのだ～🌱
+ * スクロールバーの幅は、[miragefairy2024.mod.recipeviewer.views.ScrollView.scrollbarThickness]で宣言するだけで、レイアウトからは引かれないのだ～🌱
+ * 中身とスクロールバーを重ねたくない場合は、子を[miragefairy2024.mod.recipeviewer.views.MarginView]で包んで右端に余白を作るのだ～🌱
  */
 class ScrollView(val scrollbarThickness: Int, val scrollbarStyle: ScrollbarStyle) : WrapperView(), PlaceableView {
 

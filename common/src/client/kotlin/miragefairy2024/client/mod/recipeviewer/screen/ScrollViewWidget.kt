@@ -14,9 +14,9 @@ import kotlin.math.max
 import kotlin.math.sin
 
 /**
- * [ScrollView]の子を、バニラの画面のスクロール領域として描くのだ～🌱
+ * [miragefairy2024.mod.recipeviewer.views.ScrollView]の子を、バニラの画面のスクロール領域として描くのだ～🌱
  * 親クラスが前提にしている枠と内側の余白は、このスクロール領域が持たないため、取り除くのだ～🌱
- * 親クラスはスクロールバーを自身の右隣へ描くため、スクロールバーの幅だけ狭い幅を渡して、[ScrollView]の右端へ収めるのだ～🌱
+ * 親クラスはスクロールバーを自身の右隣へ描くため、スクロールバーの幅だけ狭い幅を渡して、[miragefairy2024.mod.recipeviewer.views.ScrollView]の右端へ収めるのだ～🌱
  */
 class ScrollViewWidget(private val view: ScrollView, viewBounds: IntRectangle) :
     AbstractScrollWidget(viewBounds.x, viewBounds.y, viewBounds.sizeX - view.scrollbarThickness, viewBounds.sizeY, Component.empty()) {
