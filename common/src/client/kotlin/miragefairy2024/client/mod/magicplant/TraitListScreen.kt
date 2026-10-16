@@ -230,6 +230,7 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                                             texts.join(" "())
                                         }).also {
                                             it.sizingX = Sizing.FILL
+                                            it.shadow = false
                                         }.configure { position.ignoreLayoutX = true }.onClick {
                                             selectedTraitStack = traitStack
                                             rebuildWidgets()
