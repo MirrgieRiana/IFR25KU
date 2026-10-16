@@ -100,7 +100,7 @@ class WrappedTextViewTest {
 
     @Test
     fun `縦の上限を掛けたViewは折り返した分が伸びても上限で止まるのだ～🌱`() {
-        val maxContentSizeView = MaxContentSizeView(IntPoint(Int.MAX_VALUE, 45))
+        val maxContentSizeView = MaxContentSizeYView(45)
         maxContentSizeView += WrappedTextView(text)
         maxContentSizeView.calculateContentSize(renderingProxy)
         maxContentSizeView.calculateActualSize(IntPoint(20, 0))
