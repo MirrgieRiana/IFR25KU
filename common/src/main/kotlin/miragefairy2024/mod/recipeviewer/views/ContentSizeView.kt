@@ -1,20 +1,40 @@
 package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
-import miragefairy2024.mod.recipeviewer.view.max
-import miragefairy2024.mod.recipeviewer.view.min
+import mirrg.kotlin.helium.max
+import mirrg.kotlin.helium.min
 
-class MaxContentSizeView(private val size: IntPoint) : WrapperView() {
-    override fun calculateContentSize() = super.calculateContentSize() min size
+class MaxContentSizeXView(private val x: Int) : WrapperView() {
+    override fun calculateContentSize(): IntPoint {
+        val contentSize = super.calculateContentSize()
+        return IntPoint(contentSize.x min x, contentSize.y)
+    }
 }
 
-fun <P> Child<P, *>.maxContentSizeX(x: Int) = this.wrap(MaxContentSizeView(IntPoint(x, 0)))
-fun <P> Child<P, *>.maxContentSizeY(y: Int) = this.wrap(MaxContentSizeView(IntPoint(0, y)))
-
-
-class MinContentSizeView(private val size: IntPoint) : WrapperView() {
-    override fun calculateContentSize() = super.calculateContentSize() max size
+class MaxContentSizeYView(private val y: Int) : WrapperView() {
+    override fun calculateContentSize(): IntPoint {
+        val contentSize = super.calculateContentSize()
+        return IntPoint(contentSize.x, contentSize.y min y)
+    }
 }
 
-fun <P> Child<P, *>.minContentSizeX(x: Int) = this.wrap(MinContentSizeView(IntPoint(x, 0)))
-fun <P> Child<P, *>.minContentSizeY(y: Int) = this.wrap(MinContentSizeView(IntPoint(0, y)))
+fun <P> Child<P, *>.maxContentSizeX(x: Int) = this.wrap(MaxContentSizeXView(x))
+fun <P> Child<P, *>.maxContentSizeY(y: Int) = this.wrap(MaxContentSizeYView(y))
+
+
+class MinContentSizeXView(private val x: Int) : WrapperView() {
+    override fun calculateContentSize(): IntPoint {
+        val contentSize = super.calculateContentSize()
+        return IntPoint(contentSize.x max x, contentSize.y)
+    }
+}
+
+class MinContentSizeYView(private val y: Int) : WrapperView() {
+    override fun calculateContentSize(): IntPoint {
+        val contentSize = super.calculateContentSize()
+        return IntPoint(contentSize.x, contentSize.y max y)
+    }
+}
+
+fun <P> Child<P, *>.minContentSizeX(x: Int) = this.wrap(MinContentSizeXView(x))
+fun <P> Child<P, *>.minContentSizeY(y: Int) = this.wrap(MinContentSizeYView(y))
