@@ -55,7 +55,13 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
      */
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         val focused = focused
-        if (focused != null && isDragging && button == 0 && focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
+        if (focused != null) {
+            if (isDragging) {
+                if (button == 0) {
+                    if (focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
+                }
+            }
+        }
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
     }
 
