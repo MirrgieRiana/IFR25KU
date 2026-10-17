@@ -5,10 +5,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.View
 import net.minecraft.client.gui.components.AbstractWidget
 
-/**
- * Viewのツリーを、バニラの画面の子のウィジェットの列へ変換するのだ～🌱
- * [miragefairy2024.client.mod.recipeviewer.emi.EMI_VIEW_PLACER_REGISTRY]がレシピビューワーの枠へ置くのに対して、これはバニラの画面へ置くのだ～🌱
- */
+/** Viewのツリーを、バニラの画面の子のウィジェットの列へ変換するのだ～🌱 */
 class ViewScreenAdapter(private val rootView: View) {
 
     private val widgetList = mutableListOf<AbstractWidget>()
@@ -20,7 +17,7 @@ class ViewScreenAdapter(private val rootView: View) {
      * [offset]を左上として、[regionSize]の空間へViewのツリーを配置するのだ～🌱
      * [slotOrigin]は、バニラがメニューのスロットの座標の原点として使う点なのだ～🌱
      */
-    fun layout(offset: IntPoint, regionSize: IntPoint, slotOrigin: IntPoint = IntPoint.ZERO) {
+    fun layout(offset: IntPoint, regionSize: IntPoint, slotOrigin: IntPoint) {
         widgetList.clear()
         rootView.calculateContentSize(renderingProxy)
         rootView.calculateActualSize(regionSize)
