@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.EntityDimensions
+import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.item.FallingBlockEntity
 import net.minecraft.world.item.ItemStack
@@ -38,7 +39,8 @@ class EggBlock(settings: Properties) : FallingBlock(settings) {
         if (!level.random.randomBoolean(2, 1)) return
         val count = if (level.random.randomBoolean(32, 1)) 4 else 1
         repeat(count) {
-            val chicken = EntityType.CHICKEN.create(level) ?: return@repeat
+            // バニラの投げた卵から出るニワトリと同じ湧きの理由なのだ～🌱
+            val chicken = EntityType.CHICKEN.create(level, EntitySpawnReason.TRIGGERED) ?: return@repeat
             chicken.setAge(-24000)
             chicken.moveTo(x, y, z, level.random.nextFloat() * 360.0F, 0.0F)
             if (!chicken.fudgePositionAfterSizeChange(ZERO_SIZED_DIMENSIONS)) return@repeat

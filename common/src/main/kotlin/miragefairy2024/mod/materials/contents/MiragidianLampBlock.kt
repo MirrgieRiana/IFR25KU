@@ -14,7 +14,7 @@ import net.minecraft.util.Mth
 import net.minecraft.util.RandomSource
 import net.minecraft.util.StringRepresentable
 import net.minecraft.world.InteractionHand
-import net.minecraft.world.ItemInteractionResult
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
@@ -22,6 +22,8 @@ import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelAccessor
+import net.minecraft.world.level.LevelReader
+import net.minecraft.world.level.ScheduledTickAccess
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.LevelEvent
@@ -83,7 +85,7 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
         val blockPos = context.clickedPos
         val level = context.level
-        if (blockPos.y + 1 >= level.maxBuildHeight) return null
+        if (blockPos.y + 1 >= level.maxY) return null
         if (!level.getBlockState(blockPos.above()).canBeReplaced(context)) return null
         return defaultBlockState().with(PART, Part.FOOT)
     }
@@ -95,7 +97,7 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
 
     // Remove
 
-    override fun updateShape(state: BlockState, direction: Direction, neighborState: BlockState, level: LevelAccessor, pos: BlockPos, neighborPos: BlockPos): BlockState {
+    override fun updateShape(state: BlockState, level: LevelReader, scheduledTickAccess: ScheduledTickAccess, pos: BlockPos, direction: Direction, neighborPos: BlockPos, neighborState: BlockState, random: RandomSource): BlockState {
         val part = state[PART]
         if (direction in part.connections) {
             return if (neighborState isIn this && direction.opposite in neighborState[PART].connections) {
@@ -104,7 +106,7 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
                 Blocks.AIR.defaultBlockState()
             }
         }
-        return super.updateShape(state, direction, neighborState, level, pos, neighborPos)
+        return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random)
     }
 
     override fun playerWillDestroy(level: Level, pos: BlockPos, state: BlockState, player: Player): BlockState {
@@ -122,16 +124,16 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
 
     // Use
 
-    override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult? {
+    override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): InteractionResult? {
         if (stack isNotIn asItem()) return super.useItemOn(stack, state, level, pos, player, hand, hitResult)
 
-        val parts = validate(level, pos) ?: return ItemInteractionResult.sidedSuccess(level.isClientSide)
+        val parts = validate(level, pos) ?: return InteractionResult.SUCCESS
         val newPoleBlockPos = parts.headBlockPos
         val newHeadBlockPos = parts.headBlockPos.above()
-        if (newHeadBlockPos.y >= level.maxBuildHeight) return ItemInteractionResult.sidedSuccess(level.isClientSide)
-        if (!level.getBlockState(newHeadBlockPos).canBeReplaced()) return ItemInteractionResult.sidedSuccess(level.isClientSide)
+        if (newHeadBlockPos.y >= level.maxY) return InteractionResult.SUCCESS
+        if (!level.getBlockState(newHeadBlockPos).canBeReplaced()) return InteractionResult.SUCCESS
 
-        if (level.isClientSide) return ItemInteractionResult.SUCCESS
+        if (level.isClientSide) return InteractionResult.SUCCESS
 
         level.setBlock(newPoleBlockPos, defaultBlockState().with(PART, Part.POLE), 2)
         level.setBlock(newHeadBlockPos, defaultBlockState().with(PART, Part.HEAD), 2)
@@ -144,7 +146,7 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
         val soundType = defaultBlockState().with(PART, Part.HEAD).soundType
         level.playSound(null, newHeadBlockPos, soundType.placeSound, SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F)
 
-        return ItemInteractionResult.CONSUME
+        return InteractionResult.CONSUME
     }
 
     private class Parts(val headBlockPos: BlockPos, val poleBlockPoses: Set<BlockPos>, val footBlockPos: BlockPos)

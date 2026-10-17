@@ -36,7 +36,7 @@ val MOTIF_TABLE_STREAM_CODEC = object : StreamCodec<RegistryFriendlyByteBuf, Lis
             val motifId = `object`.readUtf()
             val rate = `object`.readDouble()
             val count = `object`.readDouble()
-            chanceTable += CondensedMotifChance(showingItemStack, Chance(rate, CondensedItem(count, motifRegistry.get(motifId.toIdentifier())!!)))
+            chanceTable += CondensedMotifChance(showingItemStack, Chance(rate, CondensedItem(count, motifRegistry.getValue(motifId.toIdentifier())!!)))
         }
         return chanceTable
     }

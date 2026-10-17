@@ -65,8 +65,9 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator
 
 // Crafting
 
-fun <T : RecipeBuilder> T.criterion(item: Item) = this.also { it.unlockedBy("has_${item.getIdentifier().path}", RecipeProvider.has(item)) }
-fun <T : RecipeBuilder> T.criterion(tagKey: TagKey<Item>) = this.also { it.unlockedBy("has_${tagKey.location().path}", RecipeProvider.has(tagKey)) }
+// 1.21.3 から has はインスタンスメソッドになったから、その中身と同じものを組み立てるのだ～🌱
+fun <T : RecipeBuilder> T.criterion(item: Item) = this.also { it.unlockedBy("has_${item.getIdentifier().path}", RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, item))) }
+fun <T : RecipeBuilder> T.criterion(tagKey: TagKey<Item>) = this.also { it.unlockedBy("has_${tagKey.location().path}", RecipeProvider.inventoryTrigger(ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, tagKey))) }
 fun <T : RecipeBuilder> T.group(item: Item) = this.also { it.group(recipeGroupRegistry[item] ?: "${item.getIdentifier()}") }
 
 class RecipeGenerationSettings<T> {

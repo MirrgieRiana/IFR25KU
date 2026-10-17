@@ -15,8 +15,11 @@ import miragefairy2024.util.with
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.data.models.model.TextureSlot
+import net.minecraft.util.RandomSource
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.LevelAccessor
+import net.minecraft.world.level.LevelReader
+import net.minecraft.world.level.ScheduledTickAccess
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.PipeBlock
 import net.minecraft.world.level.block.TransparentBlock
@@ -64,7 +67,7 @@ class FairyCrystalGlassBlock(properties: Properties) : TransparentBlock(properti
             .with(BlockStateProperties.DOWN, context.level.getBlockState(context.clickedPos.below()) isIn this)
     }
 
-    override fun updateShape(state: BlockState, direction: Direction, neighborState: BlockState, level: LevelAccessor, pos: BlockPos, neighborPos: BlockPos): BlockState {
+    override fun updateShape(state: BlockState, level: LevelReader, scheduledTickAccess: ScheduledTickAccess, pos: BlockPos, direction: Direction, neighborPos: BlockPos, neighborState: BlockState, random: RandomSource): BlockState {
         return state.with(PipeBlock.PROPERTY_BY_DIRECTION[direction]!!, neighborState isIn this)
     }
 }

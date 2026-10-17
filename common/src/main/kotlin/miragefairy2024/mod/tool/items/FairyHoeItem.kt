@@ -20,7 +20,7 @@ import net.minecraft.world.item.HoeItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import net.minecraft.world.item.Tier
+import net.minecraft.world.item.ToolMaterial
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.ItemEnchantments
@@ -41,15 +41,15 @@ open class FairyHoeConfiguration(
     var tillingRecipe: TillingRecipe? = null
 
     init {
-        this.attackDamage = -toolMaterialCard.toolMaterial.attackDamageBonus
-        this.attackSpeed = -4F + (toolMaterialCard.toolMaterial.attackDamageBonus + 1F) atMost 0F
+        this.attackDamage = -toolMaterialCard.toolMaterial.attackDamageBonus()
+        this.attackSpeed = -4F + (toolMaterialCard.toolMaterial.attackDamageBonus() + 1F) atMost 0F
         this.tags += ItemTags.HOES
         this.effectiveBlockTags += BlockTags.MINEABLE_WITH_HOE
     }
 }
 
 class FairyHoeItem(override val configuration: FairyHoeConfiguration, settings: Properties) :
-    AdvancedHoeItem(configuration.toolMaterialCard.toolMaterial, configuration.tillingRecipe ?: VANILLA_RECIPE, settings.attributes(createAttributes(configuration.toolMaterialCard.toolMaterial, configuration.attackDamage, configuration.attackSpeed))),
+    AdvancedHoeItem(configuration.toolMaterialCard.toolMaterial, configuration.attackDamage, configuration.attackSpeed, configuration.tillingRecipe ?: VANILLA_RECIPE, settings),
     FairyToolItem,
     ModifyItemEnchantmentsHandler {
 
@@ -89,7 +89,7 @@ class MapTillingRecipe(private val map: Map<Block, com.mojang.datafixers.util.Pa
     }
 }
 
-open class AdvancedHoeItem(toolMaterial: Tier, private val tillingRecipe: TillingRecipe, settings: Properties) : HoeItem(toolMaterial, settings) {
+open class AdvancedHoeItem(toolMaterial: ToolMaterial, attackDamage: Float, attackSpeed: Float, private val tillingRecipe: TillingRecipe, settings: Properties) : HoeItem(toolMaterial, attackDamage, attackSpeed, settings) {
     companion object {
         val VANILLA_RECIPE = MapTillingRecipe(TILLABLES)
         val ROUGHEN_RECIPE = MapTillingRecipe(
@@ -118,13 +118,13 @@ open class AdvancedHoeItem(toolMaterial: Tier, private val tillingRecipe: Tillin
 
             override fun useOnEntity(stack: ItemStack, player: Player, interactionTarget: LivingEntity, usedHand: InteractionHand): InteractionResult {
                 val level = interactionTarget.level()
-                if (level.isClientSide()) return InteractionResult.sidedSuccess(level.isClientSide)
+                if (level.isClientSide()) return InteractionResult.SUCCESS
                 val blockPos = interactionTarget.blockPosition()
                 level.setBlock(blockPos, target, 11)
                 level.gameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Context.of(player, target))
                 interactionTarget.discard()
                 level.playSound(null, blockPos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F)
-                return InteractionResult.sidedSuccess(level.isClientSide)
+                return InteractionResult.SUCCESS
             }
         }
     }
@@ -136,10 +136,10 @@ open class AdvancedHoeItem(toolMaterial: Tier, private val tillingRecipe: Tillin
         val blockPos = context.clickedPos
         val result = tillingRecipe.test(context, level.getBlockState(blockPos)) ?: return InteractionResult.PASS
         level.playSound(player, blockPos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F)
-        if (level.isClientSide) return InteractionResult.sidedSuccess(level.isClientSide)
+        if (level.isClientSide) return InteractionResult.SUCCESS
         result.accept(context)
         if (player != null) context.itemInHand.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.hand))
-        return InteractionResult.sidedSuccess(level.isClientSide)
+        return InteractionResult.SUCCESS
     }
 
     override fun interactLivingEntity(stack: ItemStack, player: Player, interactionTarget: LivingEntity, usedHand: InteractionHand): InteractionResult {

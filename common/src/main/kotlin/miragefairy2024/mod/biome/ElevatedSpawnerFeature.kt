@@ -49,7 +49,7 @@ class ElevatedSpawnerFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
         val pillarHeight = random.nextIntBetweenInclusive(4, 10)
         val totalHeight = pillarHeight + 1 + 3 + 1 + 1 + 1
 
-        if (originBlockPos.y + totalHeight - 1 > level.maxBuildHeight - 1) return false
+        if (originBlockPos.y + totalHeight - 1 > level.maxY - 1) return false
 
         // 検証
         if (!level.getBlockState(originBlockPos.below()).isSolidRender(level, originBlockPos.below())) return false

@@ -26,7 +26,7 @@ import net.minecraft.world.item.ItemStack
 
 val fairyQuestCardScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFairy2024.identifier("fairy_quest_card")) {
     ExtendedScreenHandlerType({ syncId, playerInventory, buf ->
-        FairyQuestCardScreenHandler(syncId, playerInventory, fairyQuestRecipeRegistry.get(buf)!!, ContainerLevelAccess.NULL)
+        FairyQuestCardScreenHandler(syncId, playerInventory, fairyQuestRecipeRegistry.getValue(buf)!!, ContainerLevelAccess.NULL)
     }, ResourceLocation.STREAM_CODEC)
 }
 

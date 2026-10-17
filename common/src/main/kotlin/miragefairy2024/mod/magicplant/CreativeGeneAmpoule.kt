@@ -33,7 +33,6 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
-import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -106,16 +105,16 @@ class CreativeGeneAmpouleItem(settings: Properties) : Item(settings) {
         return InteractionResult.CONSUME
     }
 
-    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResult {
         val itemStack = user.getItemInHand(hand)
-        if (level.isClientSide) return InteractionResultHolder.success(itemStack)
+        if (level.isClientSide) return InteractionResult.SUCCESS
         val traitStacks = itemStack.getTraitStacks() ?: TraitStacks.EMPTY
         if (!user.isShiftKeyDown) {
             itemStack.setTraitStacks(TraitStacks.of(traitStacks.traitStackMap.mapValues { (it.value shl 1).let { level -> if (level <= 0) 1 else level } }))
         } else {
             itemStack.setTraitStacks(TraitStacks.of(traitStacks.traitStackMap.mapValues { (it.value shr 1).let { level -> if (level <= 0) 1 else level } }))
         }
-        return InteractionResultHolder.consume(itemStack)
+        return InteractionResult.CONSUME
     }
 }
 

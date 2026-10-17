@@ -45,7 +45,7 @@ class MiragidianLampFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<No
 
         repeat(height) { i ->
             val targetBlockPos = blockPos.above(i)
-            if (targetBlockPos.y >= level.maxBuildHeight) return false
+            if (targetBlockPos.y >= level.maxY) return false
             if (!level.isEmptyBlock(targetBlockPos)) return false
         }
         if (!level.getBlockState(blockPos.below()).isSolidRender(level, blockPos.below())) return false

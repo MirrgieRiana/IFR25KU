@@ -46,7 +46,7 @@ import net.minecraft.sounds.SoundEvents
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.Container
 import net.minecraft.world.InteractionHand
-import net.minecraft.world.InteractionResultHolder
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.SimpleContainer
 import net.minecraft.world.entity.SlotAccess
 import net.minecraft.world.entity.item.ItemEntity
@@ -215,12 +215,12 @@ class BagItem(val card: BagCard, settings: Properties) : Item(settings) {
         return if (count >= card.inventorySize) 0xFF0000 else 0x00FF00
     }
 
-    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResult {
         val itemStack = user.getItemInHand(hand)
-        if (level.isClientSide) return InteractionResultHolder.success(itemStack)
+        if (level.isClientSide) return InteractionResult.SUCCESS
         val slotIndex = if (hand == InteractionHand.MAIN_HAND) {
             val selectedSlot = user.inventory.selected
-            if (!Inventory.isHotbarSlot(selectedSlot)) return InteractionResultHolder.fail(itemStack)
+            if (!Inventory.isHotbarSlot(selectedSlot)) return InteractionResult.FAIL
             selectedSlot
         } else {
             -1
@@ -234,7 +234,7 @@ class BagItem(val card: BagCard, settings: Properties) : Item(settings) {
 
             override fun getScreenOpeningData(player: ServerPlayer) = slotIndex
         })
-        return InteractionResultHolder.consume(itemStack)
+        return InteractionResult.CONSUME
     }
 
     // カバンを持って種子のスロットを右クリックした場合の処理

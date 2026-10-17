@@ -151,7 +151,7 @@ abstract class FairyBuildingBlock(private val card: FairyBuildingCard<*, *, *>) 
     }
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun getLightBlock(state: BlockState, level: BlockGetter, pos: BlockPos) = 6
+    override fun getLightBlock(state: BlockState) = 6
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun hasAnalogOutputSignal(state: BlockState) = true

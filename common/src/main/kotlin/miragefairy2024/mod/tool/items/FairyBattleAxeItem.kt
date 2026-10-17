@@ -3,7 +3,6 @@ package miragefairy2024.mod.tool.items
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.tool.FairyMiningToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
-import miragefairy2024.mod.tool.axeAttackDamageBonus
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.atMost
 import net.minecraft.core.BlockPos
@@ -16,7 +15,7 @@ import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.item.AxeItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Tier
+import net.minecraft.world.item.ToolMaterial
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.ItemEnchantments
 import net.minecraft.world.level.Level
@@ -28,10 +27,10 @@ open class FairyBattleAxeConfiguration(
     override fun createItem(properties: Item.Properties) = FairyBattleAxeItem(this, properties)
 
     init {
-        this.attackDamage = -toolMaterialCard.toolMaterial.attackDamageBonus + 7F + toolMaterialCard.toolMaterial.axeAttackDamageBonus
+        this.attackDamage = -toolMaterialCard.toolMaterial.attackDamageBonus() + 7F + toolMaterialCard.axeAttackDamageBonus
         // 素材の採掘速度が4のとき-3.2、8のとき-3.0で線形補間
         // それ以外は平坦
-        val a = ((toolMaterialCard.toolMaterial.speed atLeast 4F atMost 8F) - 4F) / 4F
+        val a = ((toolMaterialCard.toolMaterial.speed() atLeast 4F atMost 8F) - 4F) / 4F
         this.attackSpeed = -3.2F + 0.2F * a
         this.miningDamage = 2
         this.tags += ItemTags.AXES
@@ -67,7 +66,7 @@ class FairyBattleAxeItem(override val configuration: FairyBattleAxeConfiguration
 
 }
 
-open class BattleAxeItem(toolMaterial: Tier, attackDamage: Float, attackSpeed: Float, settings: Properties) : AxeItem(toolMaterial, settings.attributes(createAttributes(toolMaterial, attackDamage, attackSpeed))) {
+open class BattleAxeItem(toolMaterial: ToolMaterial, attackDamage: Float, attackSpeed: Float, settings: Properties) : AxeItem(toolMaterial, attackDamage, attackSpeed, settings) {
     override fun postHurtEnemy(stack: ItemStack, target: LivingEntity, attacker: LivingEntity) {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND)
     }

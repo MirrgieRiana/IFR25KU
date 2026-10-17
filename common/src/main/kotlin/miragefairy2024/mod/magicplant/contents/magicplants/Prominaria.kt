@@ -35,7 +35,7 @@ import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.util.RandomSource
 import net.minecraft.world.InteractionHand
-import net.minecraft.world.ItemInteractionResult
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
@@ -121,11 +121,11 @@ class ProminariaBlock(settings: Properties) : SimpleMagicPlantBlock(ProminariaCa
 
     override fun getAgeProperty(): IntegerProperty = BlockStateProperties.AGE_3
 
-    override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
+    override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): InteractionResult {
         val blockEntity = level.getBlockEntity(pos)
         if (blockEntity !is MagicPlantBlockEntity) return super.useItemOn(stack, state, level, pos, player, hand, hitResult)
         if (stack isNotIn tagOf(Shape.INGOT, Material.GOLD)) return super.useItemOn(stack, state, level, pos, player, hand, hitResult)
-        if (level.isClientSide) return ItemInteractionResult.SUCCESS
+        if (level.isClientSide) return InteractionResult.SUCCESS
 
         val age = state.getOr(BlockStateProperties.AGE_3) { 0 }
         val traitStacks = blockEntity.getTraitStacks()
@@ -143,6 +143,6 @@ class ProminariaBlock(settings: Properties) : SimpleMagicPlantBlock(ProminariaCa
 
         level.playSound(null, pos, SoundEvents.PUMPKIN_CARVE, SoundSource.BLOCKS, 1.0F, 1.0F) // TODO 音を変更
 
-        return ItemInteractionResult.CONSUME
+        return InteractionResult.CONSUME
     }
 }

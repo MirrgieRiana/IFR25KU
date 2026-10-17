@@ -38,11 +38,11 @@ fun <S : ClientCommandRegistrationEvent.ClientCommandSourceStack, T : ArgumentBu
         runner(context)
     } catch (result: CommandResult) {
         if (result is CommandResult.Failure) {
-            clientProxy!!.getClientPlayer()!!.sendSystemMessage(result.component)
+            clientProxy!!.getClientPlayer()!!.displayClientMessage(result.component, false)
         }
         result.result
     } catch (e: Exception) {
-        clientProxy!!.getClientPlayer()!!.sendSystemMessage(text { "Error: ${e.message}"().red })
+        clientProxy!!.getClientPlayer()!!.displayClientMessage(text { "Error: ${e.message}"().red }, false)
         getLogger(CommandResult::class.java).error("Command Error", e)
         0
     }
