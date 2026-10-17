@@ -12,6 +12,7 @@ class EmiContainerWidget : Widget() {
 
     private val widgetSlots = mutableListOf<WidgetSlot>()
     var widgets = listOf<Widget>()
+        private set
 
     fun add(widget: Widget): Remover {
         val widgetSlot = WidgetSlot(widget)
