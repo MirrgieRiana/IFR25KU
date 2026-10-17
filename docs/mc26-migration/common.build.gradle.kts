@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
+    `java-library`
     kotlin("jvm")
     id("net.fabricmc.fabric-loom") version "1.18.4"
 }
@@ -16,6 +17,9 @@ val architectury_version = rootProject.property("architectury_version") as Strin
 // NeoForge側からもそのまま同じクラス名で解決できるのだ～🌱
 
 dependencies {
+    // mirrgは、Minecraftを1個も使わない純粋なKotlinのサブプロジェクトなのだ～🌱
+    api(project(":mirrg"))
+
     minecraft("com.mojang:minecraft:$minecraft_version")
 
     // Mixinのアノテーションをコンパイルするためだけに必要なのだ～🌱

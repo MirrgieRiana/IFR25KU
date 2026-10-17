@@ -13,7 +13,7 @@ plugins {
     id("com.gradleup.shadow")
 }
 
-val shadowBundle by configurations.creating {
+val shadowBundle = configurations.create("shadowBundle") {
     isCanBeResolved = true
     isCanBeConsumed = false
 }
@@ -26,7 +26,7 @@ base {
 }
 
 // NeoForge(ModDevGradle)には、Fabric Loomのsplit EnvironmentSourceSets()のような
-// 既製の機能が無いので、「Isolated Source Sets」の手順で手動でclientソースセットを作るのだ～🌱
+// 既製の仕組みが無いので、「Isolated Source Sets」の手順で手動でclientソースセットを作るのだ～🌱
 sourceSets {
     create("client")
 }
@@ -75,6 +75,7 @@ dependencies {
     "clientImplementation"(commonClientSourceSetOutput)
 
     shadowBundle(project(":common"))
+    shadowBundle(project(":mirrg"))
     shadowBundle(kotlin("stdlib"))
 }
 
@@ -83,6 +84,9 @@ tasks.named<ShadowJar>("shadowJar") {
     from(sourceSets.getByName("client").output)
     configurations = listOf(shadowBundle)
     archiveClassifier.set("all")
+    // mirrgは他のMODも同梱しうるため、名前を衝突させないように移すのだ～🌱
+    relocate("mirrg", "mc26experiment.shadow.mirrg")
+
     relocate("kotlin", "mc26experiment.shadow.kotlin") {
         // kotlin.Metadataは全バージョンでメンバー構成が同じだから、relocateせずに素のままにしておくのだ～🌱
         exclude("kotlin.Metadata")

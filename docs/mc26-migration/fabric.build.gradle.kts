@@ -14,7 +14,7 @@ plugins {
 }
 
 // 配布するjarへ同梱するものを集める構成なのだ～🌱
-val shadowBundle by configurations.creating {
+val shadowBundle = configurations.create("shadowBundle") {
     isCanBeResolved = true
     isCanBeConsumed = false
 }
@@ -77,6 +77,7 @@ dependencies {
     "clientImplementation"(commonClientSourceSetOutput)
 
     shadowBundle(project(":common"))
+    shadowBundle(project(":mirrg"))
     shadowBundle(kotlin("stdlib"))
 }
 
@@ -86,6 +87,9 @@ tasks.named<ShadowJar>("shadowJar") {
     from(sourceSets.getByName("client").output)
     configurations = listOf(shadowBundle)
     archiveClassifier.set("all")
+    // mirrgは他のMODも同梱しうるため、名前を衝突させないように移すのだ～🌱
+    relocate("mirrg", "mc26experiment.shadow.mirrg")
+
     relocate("kotlin", "mc26experiment.shadow.kotlin") {
         // kotlin.Metadataは全バージョンでメンバー構成が同じだから、relocateせずに素のままにしておくのだ～🌱
         exclude("kotlin.Metadata")

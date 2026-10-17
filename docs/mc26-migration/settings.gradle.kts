@@ -9,6 +9,8 @@ pluginManagement {
 
 rootProject.name = "mc26-experiment"
 
+include("mirrg")
+
 include("common")
 include("fabric")
 include("neoforge")
