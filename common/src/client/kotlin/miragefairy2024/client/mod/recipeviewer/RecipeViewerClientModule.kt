@@ -12,7 +12,7 @@ import miragefairy2024.client.mod.recipeviewer.emi.initEmiViewPlacers
 import miragefairy2024.client.mod.recipeviewer.rei.hasClientRei
 import miragefairy2024.client.mod.recipeviewer.rei.initReiClientSupport
 import miragefairy2024.client.mod.recipeviewer.rei.initReiViewPlacers
-import miragefairy2024.client.mod.recipeviewer.screen.initScreenViewPlacers
+import miragefairy2024.client.mod.recipeviewer.vanilla.initVanillaViewPlacers
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
@@ -29,7 +29,7 @@ fun initRecipeViewerClientModule() {
     if (hasClientRei()) initReiViewPlacers()
     if (hasClientEmi()) initEmiClientSupport()
     if (hasClientEmi()) initEmiViewPlacers()
-    initScreenViewPlacers()
+    initVanillaViewPlacers()
 
     ViewRendererRegistry.register(NinePatchImageView::class.java, NinePatchImageViewRenderer)
     ViewRendererRegistry.register(FilledRectangleView::class.java, FilledRectangleViewRenderer)
