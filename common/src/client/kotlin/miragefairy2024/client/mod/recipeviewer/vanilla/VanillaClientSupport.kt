@@ -4,52 +4,28 @@ import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
-import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
 
-/** Viewを、バニラのGUIの子のウィジェットとして置く先なのだ～🌱 */
-class VanillaViewPlacerContext {
+val VANILLA_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<VanillaContainerWidget>()
 
-    private class WidgetSlot(val widget: AbstractWidget)
-
-    private val widgetSlots = mutableListOf<WidgetSlot>()
-    var widgets = listOf<AbstractWidget>()
-
-    fun add(widget: AbstractWidget): Remover {
-        val widgetSlot = WidgetSlot(widget)
-        widgetSlots += widgetSlot
-        widgets = widgetSlots.map { it.widget }
-        return Remover {
-            widgetSlots -= widgetSlot
-            widgets = widgetSlots.map { it.widget }
-        }
-    }
-
-}
-
-infix fun VanillaViewPlacerContext.place(widget: AbstractWidget) = this.add(widget)
-
-val VANILLA_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<VanillaViewPlacerContext>()
-
-/** Viewのツリーを、バニラのGUIの子のウィジェットの列へ変換するのだ～🌱 */
+/** Viewのツリーを、1個のコンテナのウィジェットの中へ配置するのだ～🌱 */
 class ViewVanillaAdapter(private val rootView: View) {
 
-    private val context = VanillaViewPlacerContext()
-
-    /** [miragefairy2024.client.mod.recipeviewer.vanilla.ViewVanillaAdapter.layout]で置かれたウィジェットなのだ～🌱 GUIの子として登録するのだ～🌱 */
-    val widgets get() = context.widgets
+    /** 画面へ登録するウィジェットなのだ～🌱 Viewのツリーは、全部この中に入るのだ～🌱 */
+    lateinit var widget: VanillaContainerWidget
+        private set
 
     /** [offset]を左上として、[regionSize]の空間へViewのツリーを配置するのだ～🌱 */
     fun layout(offset: IntPoint, regionSize: IntPoint) {
+        widget = VanillaContainerWidget(offset.x, offset.y, regionSize.x, regionSize.y)
         rootView.calculateContentSize(renderingProxy)
         rootView.calculateActualSize(regionSize)
         rootView.attachTo(offset) { view, bounds ->
-            VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds)
+            VANILLA_VIEW_PLACER_REGISTRY.place(widget, view, bounds)
         }
     }
 
@@ -62,16 +38,14 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
     protected abstract fun createRootView(): View
 
     /**
-     * Viewのツリーを再構築して、ウィジェットを登録するのだ～🌱
+     * Viewのツリーを再構築して、コンテナのウィジェットを登録するのだ～🌱
      * 親クラスは、画面の寸法が変わる度に、ウィジェットを捨ててからこれを呼ぶのだ～🌱
      */
     override fun init() {
         super.init()
         val adapter = ViewVanillaAdapter(createRootView())
         adapter.layout(IntPoint.ZERO, IntPoint(width, height))
-        adapter.widgets.forEach {
-            addRenderableWidget(it)
-        }
+        addRenderableWidget(adapter.widget)
     }
 
     /** 枠の絵はViewのツリーが描くのだ～🌱 */
