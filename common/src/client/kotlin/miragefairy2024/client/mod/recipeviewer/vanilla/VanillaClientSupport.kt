@@ -48,6 +48,17 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
         addRenderableWidget(adapter.widget)
     }
 
+    /**
+     * フォーカスされた子へドラッグを中継してから、スロットの操作へ渡すのだ～🌱
+     * [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen] はスロットの操作のためにこれを上書きしていて、
+     * [net.minecraft.client.gui.components.events.ContainerEventHandler] の既定の実装と違って子へ渡さないのだ～🌱
+     */
+    override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
+        val focused = focused
+        if (focused != null && isDragging && button == 0 && focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
+    }
+
     /** 枠の絵はViewのツリーが描くのだ～🌱 */
     final override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) = Unit
 
