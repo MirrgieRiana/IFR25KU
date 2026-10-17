@@ -6,6 +6,7 @@ import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.mod.tool.axeAttackDamageBonus
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.atMost
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.tags.BlockTags
@@ -36,6 +37,9 @@ open class FairyAxeConfiguration(
         val a = ((toolMaterialCard.toolMaterial.speed atLeast 4F atMost 8F) - 4F) / 4F
         this.attackSpeed = -3.2F + 0.2F * a
         this.tags += ItemTags.AXES
+        this.tags += ConventionalItemTags.TOOLS
+        this.tags += ConventionalItemTags.MINING_TOOL_TOOLS
+        this.tags += ConventionalItemTags.ENCHANTABLES
         this.effectiveBlockTags += BlockTags.MINEABLE_WITH_AXE
     }
 }
