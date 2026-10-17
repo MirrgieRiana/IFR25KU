@@ -21,12 +21,14 @@ abstract class AbstractView : View {
     private var regionSizeYProvider: (() -> Int)? = null
 
     /** X成分の決定にY方向の利用可能なサイズが要る場合に、[miragefairy2024.mod.recipeviewer.views.AbstractView.calculateContentSizeX] の中から呼ぶのだ～🌱 */
-    protected fun requireRegionSizeY() = regionSizeYProvider!!()
+    protected fun requireRegionSizeY() = (regionSizeYProvider ?: throw IllegalStateException("The available size of the Y axis is available only while calculating the content size of the X axis: ${javaClass.name}"))()
 
     private var contentSizeXCache: Int? = null
-    final override val contentSizeX get() = contentSizeXCache!!
+    final override val contentSizeX get() = contentSizeXCache ?: throw IllegalStateException("The content size of the X axis is not calculated yet: ${javaClass.name}")
 
     final override fun calculateContentSizeX(regionSizeYProvider: () -> Int) {
+        // 逆側の軸の要求が自分自身へ戻ってくると、ここが入れ子で呼ばれるのだ～🌱 その場合にスタックオーバーフローではなくViewのクラス名を伴う例外を出すのだ～🌱
+        if (this.regionSizeYProvider != null) throw IllegalStateException("Circular reference while calculating the content size of the X axis: ${javaClass.name}")
         this.regionSizeYProvider = regionSizeYProvider
         calculateChildrenContentSizeX(regionSizeYProvider)
         contentSizeXCache = calculateContentSizeX()
@@ -41,12 +43,13 @@ abstract class AbstractView : View {
     private var regionSizeXProvider: (() -> Int)? = null
 
     /** Y成分の決定にX方向の利用可能なサイズが要る場合に、[miragefairy2024.mod.recipeviewer.views.AbstractView.calculateContentSizeY] の中から呼ぶのだ～🌱 */
-    protected fun requireRegionSizeX() = regionSizeXProvider!!()
+    protected fun requireRegionSizeX() = (regionSizeXProvider ?: throw IllegalStateException("The available size of the X axis is available only while calculating the content size of the Y axis: ${javaClass.name}"))()
 
     private var contentSizeYCache: Int? = null
-    final override val contentSizeY get() = contentSizeYCache!!
+    final override val contentSizeY get() = contentSizeYCache ?: throw IllegalStateException("The content size of the Y axis is not calculated yet: ${javaClass.name}")
 
     final override fun calculateContentSizeY(regionSizeXProvider: () -> Int) {
+        if (this.regionSizeXProvider != null) throw IllegalStateException("Circular reference while calculating the content size of the Y axis: ${javaClass.name}")
         this.regionSizeXProvider = regionSizeXProvider
         calculateChildrenContentSizeY(regionSizeXProvider)
         contentSizeYCache = calculateContentSizeY()
