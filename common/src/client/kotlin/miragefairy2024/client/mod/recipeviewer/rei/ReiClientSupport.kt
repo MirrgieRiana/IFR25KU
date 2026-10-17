@@ -23,6 +23,7 @@ import miragefairy2024.mod.recipeviewer.rei.ReiSupport
 import miragefairy2024.mod.recipeviewer.rei.SupportedDisplay
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.view.calculateContentSize
 import miragefairy2024.mod.recipeviewer.view.minus
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
