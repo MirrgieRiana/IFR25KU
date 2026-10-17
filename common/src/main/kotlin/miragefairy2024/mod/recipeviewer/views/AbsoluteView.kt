@@ -5,6 +5,7 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.mod.recipeviewer.view.contentSize
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.plus
 import miragefairy2024.mod.recipeviewer.view.size
@@ -38,7 +39,9 @@ class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Posi
     override var sizingX = Sizing.WRAP
     override var sizingY = Sizing.WRAP
 
-    override fun calculateContentSize() = size
+    override fun calculateContentSizeX() = size.x
+
+    override fun calculateContentSizeY() = size.y
 
     override fun calculateChildrenActualSize() {
         children.calculateActualSize { it.position.getSize(it.view.contentSize, actualSize) }
