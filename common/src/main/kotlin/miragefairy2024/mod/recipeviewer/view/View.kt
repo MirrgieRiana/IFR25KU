@@ -53,9 +53,9 @@ interface View {
     val actualSize: IntPoint
 
     /**
-     * [actualSize]を計算します。
-     * [actualSize]は[regionSize]より大きくてもかまいません。
-     * このメソッドは必ず[calculateContentSizeX]および[calculateContentSizeY]の後に1度だけ呼び出されます。
+     * [miragefairy2024.mod.recipeviewer.view.View.actualSize] を計算するのだ～🌱
+     * この値は [regionSize] より大きくてもかまわないのだ～🌱
+     * 必ず [miragefairy2024.mod.recipeviewer.view.View.calculateContentSizeX] と [miragefairy2024.mod.recipeviewer.view.View.calculateContentSizeY] の後に 1 度だけ呼ばれるのだ～🌱
      */
     fun calculateActualSize(regionSize: IntPoint)
 
