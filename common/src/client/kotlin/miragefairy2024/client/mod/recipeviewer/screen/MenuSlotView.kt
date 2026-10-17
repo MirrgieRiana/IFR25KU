@@ -1,17 +1,13 @@
 package miragefairy2024.client.mod.recipeviewer.screen
 
 import miragefairy2024.client.mixins.api.SlotPositionSetter
-import miragefairy2024.client.mixins.api.SlotScissorAreaHolder
 import miragefairy2024.client.util.SlotType
 import miragefairy2024.mod.recipeviewer.view.IntPoint
-import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.sized
-import miragefairy2024.mod.recipeviewer.view.x2
-import miragefairy2024.mod.recipeviewer.view.y2
 import miragefairy2024.mod.recipeviewer.views.AbstractView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.StackView
@@ -44,10 +40,9 @@ class MenuSlotView(val slot: Slot) : AbstractView(), PlaceableView {
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(actualSize))
 
-    /** スロットの座標の原点からの位置と、見せる範囲を書き込むのだ～🌱 範囲へnullを渡すと、制限が無くなるのだ～🌱 */
-    fun apply(offset: IntPoint, scissorArea: IntRectangle?) {
+    /** スロットの座標の原点からの位置を書き込むのだ～🌱 */
+    fun apply(offset: IntPoint) {
         (slot as SlotPositionSetter).`mirageFairy2024$setPosition`(offset.x, offset.y)
-        (slot as SlotScissorAreaHolder).`mirageFairy2024$setScissorArea`(if (scissorArea == null) null else intArrayOf(scissorArea.x, scissorArea.y, scissorArea.x2, scissorArea.y2))
     }
 
 }

@@ -24,10 +24,6 @@ class ScreenViewRendererWidget<V : PlaceableView>(
         return renderer.mouseClicked(view, viewBounds, mouseX.toInt(), mouseY.toInt(), button)
     }
 
-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        return renderer.keyPressed(view, viewBounds, keyCode, scanCode, modifiers)
-    }
-
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
 
 }

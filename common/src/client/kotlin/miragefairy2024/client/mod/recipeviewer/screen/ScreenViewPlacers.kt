@@ -3,7 +3,6 @@ package miragefairy2024.client.mod.recipeviewer.screen
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
-import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
@@ -12,7 +11,6 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.minus
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
-import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.components.AbstractWidget
@@ -36,13 +34,12 @@ context(ModContext)
 fun initScreenViewPlacers() {
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
         // スクロールの中へ置かないため、位置が動かず、1度書き込めば足りるのだ～🌱
-        view.apply(bounds.offset - context.slotOrigin, null)
+        view.apply(bounds.offset - context.slotOrigin)
         Remover.NONE
     }
 
-    // EMIとREIは、これらのViewをレシピビューワーのウィジェットへ置き換えるため、バニラの画面だけがここの描画を使うのだ～🌱
+    // EMIとREIは、このViewをレシピビューワーのウィジェットへ置き換えるため、バニラの画面だけがここの描画を使うのだ～🌱
     SCREEN_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds -> context.place(TextViewRenderer, view, bounds) }
-    SCREEN_VIEW_PLACER_REGISTRY.register { context, view: ImageView, bounds -> context.place(ImageViewRenderer, view, bounds) }
 
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> register(entry: ViewRendererRegistry.Entry<V>) {

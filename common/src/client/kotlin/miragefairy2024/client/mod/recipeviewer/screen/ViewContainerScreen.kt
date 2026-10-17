@@ -8,10 +8,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
 
-/**
- * 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱
- * メニューを持たない画面は、[miragefairy2024.client.mod.recipeviewer.screen.ViewScreen]を使うのだ～🌱
- */
+/** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
 abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) {
 
     /** 画面の中身のViewのツリーを作るのだ～🌱 */
