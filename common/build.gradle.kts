@@ -16,6 +16,10 @@ sourceSets {
             srcDir(file("src/generated/resources"))
         }
     }
+    test {
+        compileClasspath += sourceSets.main.get().compileClasspath
+        runtimeClasspath += sourceSets.main.get().runtimeClasspath
+    }
 }
 
 // runServer runDatagenでArchitectury Transformerがクライアント用のクラスを変換しようとして落ちる対策のために成果物を分ける
