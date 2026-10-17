@@ -35,7 +35,11 @@ class VanillaContainerWidget(x: Int, y: Int, width: Int, height: Int) : Abstract
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         val widget = widgets.toList().firstOrNull {
-            it.isMouseOver(mouseX, mouseY) && it.mouseClicked(mouseX, mouseY, button)
+            if (it.isMouseOver(mouseX, mouseY)) {
+                it.mouseClicked(mouseX, mouseY, button)
+            } else {
+                false
+            }
         }
         draggedWidget = widget
         return widget != null
@@ -50,13 +54,21 @@ class VanillaContainerWidget(x: Int, y: Int, width: Int, height: Int) : Abstract
         draggedWidget = null
         if (widget != null) return widget.mouseReleased(mouseX, mouseY, button)
         return widgets.toList().any {
-            it.isMouseOver(mouseX, mouseY) && it.mouseReleased(mouseX, mouseY, button)
+            if (it.isMouseOver(mouseX, mouseY)) {
+                it.mouseReleased(mouseX, mouseY, button)
+            } else {
+                false
+            }
         }
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         return widgets.toList().any {
-            it.isMouseOver(mouseX, mouseY) && it.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+            if (it.isMouseOver(mouseX, mouseY)) {
+                it.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+            } else {
+                false
+            }
         }
     }
 
