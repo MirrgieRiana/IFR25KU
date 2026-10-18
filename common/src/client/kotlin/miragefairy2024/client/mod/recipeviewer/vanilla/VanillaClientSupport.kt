@@ -16,7 +16,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 
 class VanillaViewPlacerContext(
     val addRenderableWidget: (AbstractWidget) -> Remover,
-    val addRenderableOnly: (AbstractWidget) -> Remover,
 )
 
 val VANILLA_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<VanillaViewPlacerContext>()
@@ -62,7 +61,6 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
         }
         val context = VanillaViewPlacerContext(
             addRenderableWidget = { widget -> register(widget) { addRenderableWidget(widget) } },
-            addRenderableOnly = { widget -> register(widget) { addRenderableOnly(widget) } },
         )
         viewRemover = ViewVanillaAdapter(createRootView(), context).layout(IntPoint.ZERO, IntPoint(width, height))
     }
