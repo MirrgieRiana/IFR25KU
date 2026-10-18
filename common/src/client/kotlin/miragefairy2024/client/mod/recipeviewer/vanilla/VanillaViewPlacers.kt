@@ -9,7 +9,8 @@ fun initVanillaViewPlacers() {
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
             VANILLA_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
-                context place VanillaViewRendererWidget(entry.viewRenderer, view, bounds)
+                val widget = VanillaViewRendererWidget(entry.viewRenderer, view, bounds)
+                if (entry.viewRenderer.isInteractive) context.addRenderableWidget(widget) else context.addRenderableOnly(widget)
             }
         }
         f(entry)

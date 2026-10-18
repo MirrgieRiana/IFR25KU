@@ -1,31 +1,35 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import dev.architectury.platform.Platform
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
 
-val VANILLA_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<VanillaContainerWidget>()
+class VanillaViewPlacerContext(
+    val addRenderableWidget: (AbstractWidget) -> Remover,
+    val addRenderableOnly: (AbstractWidget) -> Remover,
+)
 
-/** Viewのツリーを、1個のコンテナのウィジェットの中へ配置するのだ～🌱 */
-class ViewVanillaAdapter(private val rootView: View) {
+val VANILLA_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<VanillaViewPlacerContext>()
 
-    /** 画面へ登録するウィジェットなのだ～🌱 Viewのツリーは、全部この中に入るのだ～🌱 */
-    lateinit var widget: VanillaContainerWidget
-        private set
+/** View のツリーを [net.minecraft.client.gui.screens.Screen] へ直接配置するのだ～🌱 */
+class ViewVanillaAdapter(private val rootView: View, private val context: VanillaViewPlacerContext) {
 
-    /** [offset]を左上として、[regionSize]の空間へViewのツリーを配置するのだ～🌱 */
-    fun layout(offset: IntPoint, regionSize: IntPoint) {
-        widget = VanillaContainerWidget(offset.x, offset.y, regionSize.x, regionSize.y)
+    /** [offset] を左上として [regionSize] の空間へ View のツリーを配置し、一括解除用の [miragefairy2024.util.Remover] を返すのだ～🌱 */
+    fun layout(offset: IntPoint, regionSize: IntPoint): Remover {
         rootView.calculateContentSize(renderingProxy)
         rootView.calculateActualSize(regionSize)
-        rootView.attachTo(offset) { view, bounds ->
-            VANILLA_VIEW_PLACER_REGISTRY.place(widget, view, bounds)
+        return rootView.attachTo(offset) { view, bounds ->
+            VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds)
         }
     }
 
@@ -34,31 +38,76 @@ class ViewVanillaAdapter(private val rootView: View) {
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
 abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) {
 
+    private var viewRemover: Remover? = null
+
     /** 画面の中身のViewのツリーを作るのだ～🌱 */
     protected abstract fun createRootView(): View
 
     /**
-     * Viewのツリーを再構築して、コンテナのウィジェットを登録するのだ～🌱
+     * View のツリーを再構築して、各ウィジェットを画面へ直接登録するのだ～🌱
      * 親クラスは、画面の寸法が変わる度に、ウィジェットを捨ててからこれを呼ぶのだ～🌱
      */
     override fun init() {
+        removeView()
         super.init()
-        val adapter = ViewVanillaAdapter(createRootView())
-        adapter.layout(IntPoint.ZERO, IntPoint(width, height))
-        addRenderableWidget(adapter.widget)
+        fun register(widget: AbstractWidget, add: () -> Unit): Remover {
+            add()
+            var registered = true
+            return Remover {
+                if (registered) {
+                    registered = false
+                    removeWidget(widget)
+                }
+            }
+        }
+        val context = VanillaViewPlacerContext(
+            addRenderableWidget = { widget -> register(widget) { addRenderableWidget(widget) } },
+            addRenderableOnly = { widget -> register(widget) { addRenderableOnly(widget) } },
+        )
+        viewRemover = ViewVanillaAdapter(createRootView(), context).layout(IntPoint.ZERO, IntPoint(width, height))
+    }
+
+    private fun removeView() {
+        val remover = viewRemover
+        viewRemover = null
+        if (remover != null) remover.remove()
+    }
+
+    override fun removed() {
+        removeView()
+        super.removed()
+    }
+
+    override fun removeWidget(listener: GuiEventListener) {
+        super.removeWidget(listener)
+        if (focused === listener && children().none { it === listener }) {
+            focused = null
+            isDragging = false
+        }
+    }
+
+    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        val handled = super.mouseClicked(mouseX, mouseY, button)
+        val focused = focused
+        if (focused != null && children().none { it === focused }) {
+            this.focused = null
+            isDragging = false
+        }
+        return handled
     }
 
     /**
-     * フォーカスされた子へドラッグを中継してから、スロットの操作へ渡すのだ～🌱
-     * [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen] はスロットの操作のためにこれを上書きしていて、
-     * [net.minecraft.client.gui.components.events.ContainerEventHandler] の既定の実装と違って子へ渡さないのだ～🌱
+     * Fabric 以外ではフォーカスされた子へドラッグを中継してから、スロットの操作へ渡すのだ～🌱
+     * Fabric では Fabric API が [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.mouseDragged] 内で子へ転送するため、手動では中継しないのだ～🌱
      */
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
-        val focused = focused
-        if (focused != null) {
-            if (isDragging) {
-                if (button == 0) {
-                    if (focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
+        if (!Platform.isFabric()) {
+            val focused = focused
+            if (focused != null) {
+                if (isDragging) {
+                    if (button == 0) {
+                        if (focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
+                    }
                 }
             }
         }

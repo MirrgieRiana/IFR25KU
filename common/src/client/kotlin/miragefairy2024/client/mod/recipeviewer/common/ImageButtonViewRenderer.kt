@@ -13,6 +13,9 @@ import net.minecraft.sounds.SoundEvents
 
 object ImageButtonViewRenderer : ViewRenderer<ImageButtonView> {
 
+    override val isInteractive = true
+    override val isFocusable = true
+
     override fun mouseClicked(view: ImageButtonView, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int): Boolean {
         if (!view.enabled.value) return false
         if (button != 0) return false
