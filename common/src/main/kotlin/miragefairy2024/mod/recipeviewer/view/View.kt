@@ -77,8 +77,9 @@ val View.contentSize get() = IntPoint(contentSizeX, contentSizeY)
  * 親を持たないViewのために、両方の軸のコンテンツの最小サイズを順に計算するのだ～🌱
  * X成分を先に確定させるから、Y成分の計算ではX成分を参照できて、その逆はできないのだ～🌱
  */
-fun View.calculateContentSize(renderingProxy: RenderingProxy) {
+fun View.calculateSize(renderingProxy: RenderingProxy, regionSize: IntPoint) {
     setRenderingProxy(renderingProxy)
     calculateContentSizeX { throw IllegalStateException("The root view cannot refer to the available size of the Y axis.") }
     calculateContentSizeY { contentSizeX }
+    calculateActualSize(regionSize)
 }
