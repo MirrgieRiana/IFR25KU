@@ -5,14 +5,13 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.minus
 import miragefairy2024.mod.recipeviewer.view.offset
-import miragefairy2024.mod.recipeviewer.view.plus
 import miragefairy2024.util.Remover
 
 class MarginView(private val xMin: Int, private val xMax: Int, private val yMin: Int, private val yMax: Int) : WrapperView() {
 
-    override fun calculateContentSizeX() = super.calculateContentSizeX() + (xMin + xMax)
+    override fun calculateContentSizeX() = super.calculateContentSizeX() + xMin + xMax
 
-    override fun calculateContentSizeY() = super.calculateContentSizeY() + (yMin + yMax)
+    override fun calculateContentSizeY() = super.calculateContentSizeY() + yMin + yMax
 
     override fun calculateChildrenActualSize() {
         childView.calculateActualSize(actualSize.minus(xMin + xMax, yMin + yMax))
