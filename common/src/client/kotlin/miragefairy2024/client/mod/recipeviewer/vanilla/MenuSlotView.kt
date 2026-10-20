@@ -1,4 +1,4 @@
-package miragefairy2024.client.mod.recipeviewer.screen
+package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.client.mixins.api.SlotPositionSetter
 import miragefairy2024.client.util.SlotType
@@ -49,7 +49,7 @@ class MenuSlotView(val slot: Slot) : AbstractView(), PlaceableView {
 
 /**
  * スロットの枠を敷いて、中にメニューのスロットを置くのだ～🌱
- * 枠のテクスチャは一辺が[miragefairy2024.client.mod.recipeviewer.screen.MENU_SLOT_BACKGROUND_SIZE]の1枚だけであるため、四辺を0にして中央だけを敷くのだ～🌱
+ * 枠のテクスチャは一辺が[miragefairy2024.client.mod.recipeviewer.vanilla.MENU_SLOT_BACKGROUND_SIZE]の1枚だけであるため、四辺を0にして中央だけを敷くのだ～🌱
  */
 fun menuSlotView(slot: Slot, slotType: SlotType?): View {
     return View {

@@ -2,9 +2,9 @@ package miragefairy2024.client.mod
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.client.mod.recipeviewer.screen.MENU_SLOT_BACKGROUND_SIZE
-import miragefairy2024.client.mod.recipeviewer.screen.ViewContainerScreen
-import miragefairy2024.client.mod.recipeviewer.screen.menuSlotView
+import miragefairy2024.client.mod.recipeviewer.vanilla.MENU_SLOT_BACKGROUND_SIZE
+import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
+import miragefairy2024.client.mod.recipeviewer.vanilla.menuSlotView
 import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.mod.BagCard

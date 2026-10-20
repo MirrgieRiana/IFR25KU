@@ -17,6 +17,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 class VanillaViewPlacerContext(
     val addRenderableWidget: (AbstractWidget) -> Remover,
     val addRenderableOnly: (AbstractWidget) -> Remover,
+    val slotOrigin: IntPoint,
 )
 
 val VANILLA_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<VanillaViewPlacerContext>()
@@ -63,6 +64,8 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
         val context = VanillaViewPlacerContext(
             addRenderableWidget = { widget -> register(widget) { addRenderableWidget(widget) } },
             addRenderableOnly = { widget -> register(widget) { addRenderableOnly(widget) } },
+            // バニラはスロットの座標をleftPosとtopPosからの相対で扱うため、その点を原点として渡すのだ～🌱
+            slotOrigin = IntPoint(leftPos, topPos),
         )
         viewRemover = ViewVanillaAdapter(createRootView(), context).layout(IntPoint.ZERO, IntPoint(width, height))
     }
