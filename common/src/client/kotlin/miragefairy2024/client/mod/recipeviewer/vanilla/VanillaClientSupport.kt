@@ -14,10 +14,10 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
 
+/** @param origin バニラの GUI が座標の原点として使う点の、画面の左上からの絶対座標なのだ～🌱 */
 class VanillaViewPlacerContext(
     val addRenderableWidget: (AbstractWidget) -> Remover,
     val addRenderableOnly: (AbstractWidget) -> Remover,
-    /** バニラの GUI が座標の原点として使う点の、画面の左上からの絶対座標なのだ～🌱 */
     val origin: IntPoint,
 )
 
