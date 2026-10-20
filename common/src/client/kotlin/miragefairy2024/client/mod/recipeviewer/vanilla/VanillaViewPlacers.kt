@@ -11,11 +11,9 @@ import miragefairy2024.util.Remover
 context(ModContext)
 fun initVanillaViewPlacers() {
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
-        // スクロールの中へ置かないため、位置が動かず、1度書き込めば足りるのだ～🌱
-        view.apply(bounds.offset - context.slotOrigin)
-        Remover.NONE
+        view.apply(bounds.offset - context.origin)
+        Remover { throw UnsupportedOperationException("Cannot remove MenuSlotView from the vanilla screen") }
     }
-
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
             VANILLA_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
