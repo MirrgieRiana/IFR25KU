@@ -61,20 +61,33 @@ abstract class AbstractView : View {
     protected abstract fun calculateContentSizeY(): Int
 
 
-    private lateinit var actualSizeCache: IntPoint
-    final override val actualSize get() = actualSizeCache
+    private var actualSizeXCache: Int? = null
+    final override val actualSizeX get() = actualSizeXCache ?: throw IllegalStateException("The actual size of the X axis is not calculated yet: ${javaClass.name}")
+
+    final override fun calculateActualSizeX(regionSizeX: Int) {
+        actualSizeXCache = when (sizingX) {
+            Sizing.FILL -> regionSizeX
+            Sizing.WRAP -> contentSizeX
+        }
+    }
+
+
+    private var actualSizeYCache: Int? = null
+    final override val actualSizeY get() = actualSizeYCache ?: throw IllegalStateException("The actual size of the Y axis is not calculated yet: ${javaClass.name}")
+
+    final override fun calculateActualSizeY(regionSizeY: Int) {
+        actualSizeYCache = when (sizingY) {
+            Sizing.FILL -> regionSizeY
+            Sizing.WRAP -> contentSizeY
+        }
+    }
+
+
+    final override val actualSize get() = IntPoint(actualSizeX, actualSizeY)
 
     final override fun calculateActualSize(regionSize: IntPoint) {
-        actualSizeCache = IntPoint(
-            when (sizingX) {
-                Sizing.FILL -> regionSize.x
-                Sizing.WRAP -> contentSizeX
-            },
-            when (sizingY) {
-                Sizing.FILL -> regionSize.y
-                Sizing.WRAP -> contentSizeY
-            },
-        )
+        calculateActualSizeX(regionSize.x)
+        calculateActualSizeY(regionSize.y)
         calculateChildrenActualSize()
     }
 

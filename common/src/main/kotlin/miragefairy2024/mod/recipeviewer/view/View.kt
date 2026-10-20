@@ -52,6 +52,15 @@ interface View {
      */
     val actualSize: IntPoint
 
+    val actualSizeX: Int
+    val actualSizeY: Int
+
+    /** X 方向の実サイズを [regionSizeX] から計算するのだ～🌱 */
+    fun calculateActualSizeX(regionSizeX: Int)
+
+    /** Y 方向の実サイズを [regionSizeY] から計算するのだ～🌱 */
+    fun calculateActualSizeY(regionSizeY: Int)
+
     /**
      * [miragefairy2024.mod.recipeviewer.view.View.actualSize] を計算するのだ～🌱
      * この値は [regionSize] より大きくてもかまわないのだ～🌱

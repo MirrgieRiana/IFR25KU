@@ -48,7 +48,7 @@ class AxisWiseContentSizeTest {
         val view = XListView()
         view += SpaceView(IntPoint(10, 20))
         view += SpaceView(IntPoint(30, 5))
-        view.calculateContentSize(TEST_RENDERING_PROXY)
+        view.calculateSize(TEST_RENDERING_PROXY, IntPoint(100, 100))
         assertEquals(40, view.contentSizeX)
         assertEquals(20, view.contentSizeY)
     }
@@ -58,7 +58,7 @@ class AxisWiseContentSizeTest {
         val view = YListView()
         view += SpaceView(IntPoint(10, 20))
         view += SpaceView(IntPoint(30, 5))
-        view.calculateContentSize(TEST_RENDERING_PROXY)
+        view.calculateSize(TEST_RENDERING_PROXY, IntPoint(100, 100))
         assertEquals(30, view.contentSizeX)
         assertEquals(25, view.contentSizeY)
     }
@@ -68,7 +68,7 @@ class AxisWiseContentSizeTest {
         val view = StackView()
         view += SpaceView(IntPoint(10, 20))
         view += SpaceView(IntPoint(30, 5))
-        view.calculateContentSize(TEST_RENDERING_PROXY)
+        view.calculateSize(TEST_RENDERING_PROXY, IntPoint(100, 100))
         assertEquals(30, view.contentSizeX)
         assertEquals(20, view.contentSizeY)
     }
@@ -77,7 +77,7 @@ class AxisWiseContentSizeTest {
     fun `余白のViewは、軸ごとに独立して余白を足すのだ`() {
         val view = MarginView(1, 2, 3, 4)
         view += SpaceView(IntPoint(10, 20))
-        view.calculateContentSize(TEST_RENDERING_PROXY)
+        view.calculateSize(TEST_RENDERING_PROXY, IntPoint(100, 100))
         assertEquals(13, view.contentSizeX)
         assertEquals(27, view.contentSizeY)
     }
@@ -86,7 +86,7 @@ class AxisWiseContentSizeTest {
     fun `最小サイズのViewは、指定した軸だけを広げるのだ`() {
         val view = MinContentSizeXView(100)
         view += SpaceView(IntPoint(10, 20))
-        view.calculateContentSize(TEST_RENDERING_PROXY)
+        view.calculateSize(TEST_RENDERING_PROXY, IntPoint(100, 100))
         assertEquals(100, view.contentSizeX)
         assertEquals(20, view.contentSizeY)
     }
@@ -94,7 +94,7 @@ class AxisWiseContentSizeTest {
     @Test
     fun `Y成分の計算では、確定済みのX成分を参照できるのだ`() {
         val view = RequirementView(requiresRegionSizeX = true, requiresRegionSizeY = false)
-        view.calculateContentSize(TEST_RENDERING_PROXY)
+        view.calculateSize(TEST_RENDERING_PROXY, IntPoint(100, 100))
         assertEquals(10, view.observedRegionSizeX)
         assertEquals(20, view.contentSizeY)
     }
@@ -103,7 +103,7 @@ class AxisWiseContentSizeTest {
     fun `X成分の計算でY方向を要求すると、根のViewでは例外が出るのだ`() {
         val view = RequirementView(requiresRegionSizeX = false, requiresRegionSizeY = true)
         val exception = assertThrows(IllegalStateException::class.java) {
-            view.calculateContentSize(TEST_RENDERING_PROXY)
+            view.calculateSize(TEST_RENDERING_PROXY, IntPoint(100, 100))
         }
         assertEquals("The root view cannot refer to the available size of the Y axis.", exception.message)
     }
