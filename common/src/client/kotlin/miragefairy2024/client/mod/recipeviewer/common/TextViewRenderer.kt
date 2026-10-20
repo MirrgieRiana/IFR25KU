@@ -4,6 +4,7 @@ import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.util.drawScrollingString
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.mod.recipeviewer.views.TextView
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -48,6 +49,10 @@ object TextViewRenderer : ViewRenderer<TextView> {
                 color,
                 view.shadow,
             )
+        }
+        if (bounds.contains(mouseX, mouseY)) {
+            val tooltip = view.tooltip
+            if (tooltip != null) graphics.renderComponentTooltip(font, tooltip, mouseX, mouseY)
         }
     }
 

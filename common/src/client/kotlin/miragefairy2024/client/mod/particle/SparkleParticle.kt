@@ -13,14 +13,16 @@ import net.minecraft.core.particles.SimpleParticleType
 import net.minecraft.util.Mth
 import org.joml.Quaternionf
 
+/** パーティクルが消えるまでにかかる tick 数なのだ～🌱 */
 private const val LIFETIME_TICKS = 120
 
+/** パーティクルが上へ昇る、1 tick あたりの加速度なのだ～🌱 */
 private const val RISE_ACCELERATION = 0.00014
 
-/** 寿命のうち、この割合を過ぎるまでに、表示サイズが 0 倍から 1 倍まで大きくなるのだ～🌱 */
+/** 表示サイズの倍率が 0 倍から 1 倍まで増え終わる、寿命に対する割合なのだ～🌱 */
 private const val GROW_END_RATE = 0.05F
 
-/** 寿命のうち、この割合を過ぎてから薄くなり始めるのだ～🌱 */
+/** 不透明度の倍率が 1 倍から減り始める、寿命に対する割合なのだ～🌱 */
 private const val FADE_START_RATE = 0.7F
 
 /** 瞬きが 1 往復するのにかかる tick 数なのだ～🌱 */
@@ -63,7 +65,6 @@ fun createSparkleParticleFactory() = { spriteProvider: SpriteSet ->
             init {
                 quadSize *= 0.4F + Math.random().toFloat() * 0.2F
                 lifetime = LIFETIME_TICKS
-                // SpriteSet.get(age, lifetime) は lifetime で割るから、0 を渡すとゼロ除算になるのだ～🌱
                 pickSprite(spriteProvider)
             }
 
