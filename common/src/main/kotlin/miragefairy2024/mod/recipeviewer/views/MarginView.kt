@@ -3,7 +3,6 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
-import miragefairy2024.mod.recipeviewer.view.minus
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.util.Remover
 
@@ -13,8 +12,14 @@ class MarginView(private val xMin: Int, private val xMax: Int, private val yMin:
 
     override fun calculateContentSizeY() = super.calculateContentSizeY() + yMin + yMax
 
-    override fun calculateChildrenActualSize() {
-        childView.calculateActualSize(actualSize.minus(xMin + xMax, yMin + yMax))
+    override fun calculateChildrenActualSizeX() {
+        childView.calculateContentSizeY { actualSizeX - xMin - xMax }
+        childView.calculateActualSizeX { actualSizeX - xMin - xMax }
+    }
+
+    override fun calculateChildrenActualSizeY() {
+        childView.calculateContentSizeX { actualSizeY - yMin - yMax }
+        childView.calculateActualSizeY { actualSizeY - yMin - yMax }
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {

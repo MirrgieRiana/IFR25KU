@@ -36,12 +36,12 @@ class PagingView : ParentView<Alignment>() {
 
     val pageIndex = ObservableValue(0)
 
-    override fun calculateChildrenActualSize() {
+    override fun finishChildrenSizeCalculation() {
         val children = childrenGenerators.flatMap { it.generateChildren(renderingProxy, actualSize) }
         children.setRenderingProxy()
-        children.calculateContentSizeX { actualSize.y }
-        children.calculateContentSizeY { actualSize.x }
-        children.calculateActualSize { actualSize }
+        children.calculateActualSizeX { actualSizeX }
+        children.calculateActualSizeY { actualSizeY }
+        children.finishSizeCalculation()
 
         val pages = mutableListOf<List<Child<Alignment, *>>>()
         var page = mutableListOf<Child<Alignment, *>>()

@@ -17,8 +17,12 @@ class StackView : ContainerView<Unit>() {
 
     override fun calculateContentSizeY() = children.maxOfOrNull { it.view.contentSizeY } ?: 0
 
-    override fun calculateChildrenActualSize() {
-        children.calculateActualSize { actualSize }
+    override fun calculateChildrenActualSizeX() {
+        children.calculateActualSizeX { actualSizeX }
+    }
+
+    override fun calculateChildrenActualSizeY() {
+        children.calculateActualSizeY { actualSizeY }
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {

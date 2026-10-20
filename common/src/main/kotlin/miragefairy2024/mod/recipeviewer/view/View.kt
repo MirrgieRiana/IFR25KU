@@ -24,7 +24,7 @@ interface View {
     val contentSizeX: Int
 
     /**
-     * [miragefairy2024.mod.recipeviewer.view.View.contentSizeX] を計算するのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.view.View.contentSizeX] を要求時に計算するための取得関数を設定するのだ～🌱
      * この値は、このViewが実際に機能的に占有するサイズより大きくても小さくてもかまわないのだ～🌱
      * [regionSizeYProvider] は、X成分の決定にY方向の利用可能なサイズが要る場合にだけ呼ぶのだ～🌱
      * 必ず [miragefairy2024.mod.recipeviewer.view.View.setRenderingProxy] の後に 1 度だけ呼ばれるのだ～🌱
@@ -39,7 +39,7 @@ interface View {
     val contentSizeY: Int
 
     /**
-     * [miragefairy2024.mod.recipeviewer.view.View.contentSizeY] を計算するのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.view.View.contentSizeY] を要求時に計算するための取得関数を設定するのだ～🌱
      * この値は、このViewが実際に機能的に占有するサイズより大きくても小さくてもかまわないのだ～🌱
      * [regionSizeXProvider] は、Y成分の決定にX方向の利用可能なサイズが要る場合にだけ呼ぶのだ～🌱
      * 必ず [miragefairy2024.mod.recipeviewer.view.View.setRenderingProxy] の後に 1 度だけ呼ばれるのだ～🌱
@@ -52,17 +52,22 @@ interface View {
      */
     val actualSize: IntPoint
 
-    /**
-     * [miragefairy2024.mod.recipeviewer.view.View.actualSize] を計算するのだ～🌱
-     * この値は [regionSize] より大きくてもかまわないのだ～🌱
-     * 必ず [miragefairy2024.mod.recipeviewer.view.View.calculateContentSizeX] と [miragefairy2024.mod.recipeviewer.view.View.calculateContentSizeY] の後に 1 度だけ呼ばれるのだ～🌱
-     */
-    fun calculateActualSize(regionSize: IntPoint)
+    val actualSizeX: Int
+    val actualSizeY: Int
+
+    /** X 方向の利用可能なサイズの取得関数を設定し、子の X 方向の領域配分を準備するのだ～🌱 */
+    fun calculateActualSizeX(regionSizeXProvider: () -> Int)
+
+    /** Y 方向の利用可能なサイズの取得関数を設定し、子の Y 方向の領域配分を準備するのだ～🌱 */
+    fun calculateActualSizeY(regionSizeYProvider: () -> Int)
+
+    /** 両軸の取得関数を設定した後に、子を含めたサイズ計算を完了するのだ～🌱 */
+    fun finishSizeCalculation()
 
 
     /**
      * このViewを指定された位置に配置します。
-     * このメソッドは必ず[calculateActualSize]の後に呼び出されます。
+     * このメソッドは必ず [miragefairy2024.mod.recipeviewer.view.View.finishSizeCalculation] の後に呼び出されるのだ～🌱
      * [Remover.remove]が呼び出されるまでに、同じViewに対してこのメソッドが複数回呼び出されることはありません。
      * [Remover.remove]は、[attachTo]の呼び出しに対して必ずしも対応して呼び出される保証はありません。
      */
@@ -74,12 +79,13 @@ interface View {
 val View.contentSize get() = IntPoint(contentSizeX, contentSizeY)
 
 /**
- * 親を持たないViewのために、両方の軸のコンテンツの最小サイズを順に計算するのだ～🌱
- * X成分を先に確定させるから、Y成分の計算ではX成分を参照できて、その逆はできないのだ～🌱
+ * 親を持たない View の両軸の取得関数を準備し、依存関係に従ってサイズを計算するのだ～🌱
  */
 fun View.calculateSize(renderingProxy: RenderingProxy, regionSize: IntPoint) {
     setRenderingProxy(renderingProxy)
-    calculateContentSizeX { throw IllegalStateException("The root view cannot refer to the available size of the Y axis.") }
-    calculateContentSizeY { contentSizeX }
-    calculateActualSize(regionSize)
+    calculateContentSizeX { regionSize.y }
+    calculateContentSizeY { regionSize.x }
+    calculateActualSizeX { regionSize.x }
+    calculateActualSizeY { regionSize.y }
+    finishSizeCalculation()
 }

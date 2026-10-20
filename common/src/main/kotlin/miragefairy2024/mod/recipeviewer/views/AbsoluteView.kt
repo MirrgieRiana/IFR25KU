@@ -5,31 +5,33 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
-import miragefairy2024.mod.recipeviewer.view.contentSize
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.plus
-import miragefairy2024.mod.recipeviewer.view.size
 import miragefairy2024.util.Remover
 
 class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Position>() {
 
     sealed class Position {
-        abstract fun getSize(contentSize: IntPoint, regionSize: IntPoint): IntPoint
+        abstract fun getSizeX(contentSizeProvider: () -> Int, regionSizeProvider: () -> Int): Int
+        abstract fun getSizeY(contentSizeProvider: () -> Int, regionSizeProvider: () -> Int): Int
         abstract fun getOffset(): IntPoint
     }
 
     data object Fill : Position() {
-        override fun getSize(contentSize: IntPoint, regionSize: IntPoint) = regionSize
+        override fun getSizeX(contentSizeProvider: () -> Int, regionSizeProvider: () -> Int) = regionSizeProvider()
+        override fun getSizeY(contentSizeProvider: () -> Int, regionSizeProvider: () -> Int) = regionSizeProvider()
         override fun getOffset() = IntPoint.Companion.ZERO
     }
 
     data class Offset(@JvmField val offset: IntPoint) : Position() {
-        override fun getSize(contentSize: IntPoint, regionSize: IntPoint) = contentSize
+        override fun getSizeX(contentSizeProvider: () -> Int, regionSizeProvider: () -> Int) = contentSizeProvider()
+        override fun getSizeY(contentSizeProvider: () -> Int, regionSizeProvider: () -> Int) = contentSizeProvider()
         override fun getOffset() = offset
     }
 
     data class Bounds(val bounds: IntRectangle) : Position() {
-        override fun getSize(contentSize: IntPoint, regionSize: IntPoint) = bounds.size
+        override fun getSizeX(contentSizeProvider: () -> Int, regionSizeProvider: () -> Int) = bounds.sizeX
+        override fun getSizeY(contentSizeProvider: () -> Int, regionSizeProvider: () -> Int) = bounds.sizeY
         override fun getOffset() = bounds.offset
     }
 
@@ -43,8 +45,12 @@ class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Posi
 
     override fun calculateContentSizeY() = size.y
 
-    override fun calculateChildrenActualSize() {
-        children.calculateActualSize { it.position.getSize(it.view.contentSize, actualSize) }
+    override fun calculateChildrenActualSizeX() {
+        children.calculateActualSizeX { it.position.getSizeX({ it.view.contentSizeX }, { actualSizeX }) }
+    }
+
+    override fun calculateChildrenActualSizeY() {
+        children.calculateActualSizeY { it.position.getSizeY({ it.view.contentSizeY }, { actualSizeY }) }
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
