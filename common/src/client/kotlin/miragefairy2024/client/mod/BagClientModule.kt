@@ -2,7 +2,6 @@ package miragefairy2024.client.mod
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.client.mod.recipeviewer.vanilla.MENU_SLOT_BACKGROUND_SIZE
 import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
 import miragefairy2024.client.mod.recipeviewer.vanilla.menuSlotView
 import miragefairy2024.client.util.SlotType
@@ -120,7 +119,7 @@ class BagScreen(handler: BagScreenHandler, private val playerInventory: Inventor
 
                         // ホットバーなのだ～🌱
                         view += slotRowView(PLAYER_INVENTORY_WIDTH) { c -> PLAYER_INVENTORY_WIDTH * PLAYER_INVENTORY_HEIGHT + c }
-                    }.minContentSizeX(MENU_SLOT_BACKGROUND_SIZE * (card.inventoryWidth atLeast PLAYER_INVENTORY_WIDTH)).margin(PANEL_MARGIN)
+                    }.minContentSizeX(18 * (card.inventoryWidth atLeast PLAYER_INVENTORY_WIDTH)).margin(PANEL_MARGIN)
                 }
             }
         }

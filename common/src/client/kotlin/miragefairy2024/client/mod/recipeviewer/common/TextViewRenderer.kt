@@ -11,12 +11,6 @@ import net.minecraft.client.gui.GuiGraphics
 
 object TextViewRenderer : ViewRenderer<TextView> {
 
-    /** 文字が溢れているときに左右へ往復させる速さなのだ～🌱 */
-    private const val SCROLL_SPEED = 30.0
-
-    /** 往復の両端で止まる時間なのだ～🌱 */
-    private const val SCROLL_PAUSE = 7.0
-
     private val startNanoTime by lazy { System.nanoTime() }
 
     override fun render(view: TextView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
@@ -30,8 +24,8 @@ object TextViewRenderer : ViewRenderer<TextView> {
                 bounds.x + view.actualSize.x,
                 bounds.y,
                 startNanoTime,
-                SCROLL_SPEED,
-                SCROLL_PAUSE,
+                30.0,
+                7.0,
                 color,
                 view.shadow,
             )

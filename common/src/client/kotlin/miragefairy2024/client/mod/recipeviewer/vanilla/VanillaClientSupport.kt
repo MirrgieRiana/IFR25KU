@@ -14,10 +14,11 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
 
+/** @param origin バニラの GUI が座標の原点として使う点の、画面の左上からの絶対座標なのだ～🌱 */
 class VanillaViewPlacerContext(
     val addRenderableWidget: (AbstractWidget) -> Remover,
     val addRenderableOnly: (AbstractWidget) -> Remover,
-    val slotOrigin: IntPoint,
+    val origin: IntPoint,
 )
 
 val VANILLA_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<VanillaViewPlacerContext>()
@@ -64,8 +65,7 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
         val context = VanillaViewPlacerContext(
             addRenderableWidget = { widget -> register(widget) { addRenderableWidget(widget) } },
             addRenderableOnly = { widget -> register(widget) { addRenderableOnly(widget) } },
-            // バニラはスロットの座標をleftPosとtopPosからの相対で扱うため、その点を原点として渡すのだ～🌱
-            slotOrigin = IntPoint(leftPos, topPos),
+            origin = IntPoint(leftPos, topPos),
         )
         viewRemover = ViewVanillaAdapter(createRootView(), context).layout(IntPoint.ZERO, IntPoint(width, height))
     }
