@@ -10,12 +10,12 @@ abstract class AbstractView : View {
     protected lateinit var renderingProxy: RenderingProxy
         private set
 
-    final override fun setRenderingProxy(renderingProxy: RenderingProxy) {
+    final override fun initSizeCalculation(renderingProxy: RenderingProxy) {
         this.renderingProxy = renderingProxy
-        setChildrenRenderingProxy()
+        initChildrenSizeCalculation()
     }
 
-    protected open fun setChildrenRenderingProxy() = Unit
+    protected open fun initChildrenSizeCalculation() = Unit
 
 
     private var regionSizeYProvider: (() -> Int)? = null

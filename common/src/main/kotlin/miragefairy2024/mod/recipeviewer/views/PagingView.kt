@@ -38,7 +38,7 @@ class PagingView : ParentView<Alignment>() {
 
     override fun calculateChildrenActualSize() {
         val children = childrenGenerators.flatMap { it.generateChildren(renderingProxy, actualSize) }
-        children.setRenderingProxy()
+        children.initSizeCalculation()
         children.calculateContentSizeX { actualSize.y }
         children.calculateContentSizeY { actualSize.x }
         children.calculateActualSize { actualSize }

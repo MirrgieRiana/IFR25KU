@@ -24,8 +24,8 @@ open class WrapperView : ParentView<Unit>() {
     override val sizingX get() = childView.sizingX
     override val sizingY get() = childView.sizingY
 
-    final override fun setChildrenRenderingProxy() {
-        childView.setRenderingProxy(renderingProxy)
+    final override fun initChildrenSizeCalculation() {
+        childView.initSizeCalculation(renderingProxy)
     }
 
     final override fun calculateChildrenContentSizeX(regionSizeYProvider: () -> Int) {

@@ -57,7 +57,7 @@ class AxisWiseActualSizeTest {
     fun `X成分はY成分を計算せず同期的に確定するのだ`() {
         val events = mutableListOf<String>()
         val view = RecordingSizeView(events)
-        view.setRenderingProxy(TEST_RENDERING_PROXY)
+        view.initSizeCalculation(TEST_RENDERING_PROXY)
         view.calculateContentSizeX { throw UnsupportedOperationException() }
         assertEquals(listOf("contentX"), events)
 
@@ -74,7 +74,7 @@ class AxisWiseActualSizeTest {
     fun `Y成分はX成分を計算せず同期的に確定するのだ`() {
         val events = mutableListOf<String>()
         val view = RecordingSizeView(events)
-        view.setRenderingProxy(TEST_RENDERING_PROXY)
+        view.initSizeCalculation(TEST_RENDERING_PROXY)
         view.calculateContentSizeY { throw UnsupportedOperationException() }
         assertEquals(listOf("contentY"), events)
 
@@ -94,7 +94,7 @@ class AxisWiseActualSizeTest {
             val view = RecordingSizeView(events)
             view.sizingX = Sizing.FILL
             view.sizingY = Sizing.FILL
-            view.setRenderingProxy(TEST_RENDERING_PROXY)
+            view.initSizeCalculation(TEST_RENDERING_PROXY)
 
             if (xFirst) {
                 view.calculateActualSizeX(120)
