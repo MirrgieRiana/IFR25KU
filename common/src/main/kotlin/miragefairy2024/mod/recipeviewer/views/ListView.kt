@@ -25,36 +25,38 @@ abstract class ListView : ContainerView<ListView.Position>() {
     override var sizingX = Sizing.WRAP
     override var sizingY = Sizing.WRAP
 
-    protected val Child<Position, *>.reservedSizeX get() = if (position.ignoreLayoutX) 0 else view.contentSize.x
-    protected val Child<Position, *>.reservedSizeY get() = if (position.ignoreLayoutY) 0 else view.contentSize.y
+    protected val Child<Position, *>.reservedSizeX get() = if (position.ignoreLayoutX) 0 else view.contentSizeX
+    protected val Child<Position, *>.reservedSizeY get() = if (position.ignoreLayoutY) 0 else view.contentSizeY
 
 }
 
 class XListView : ListView() {
 
-    override fun calculateContentSize(): IntPoint {
-        return IntPoint(
-            children.sumOf { it.reservedSizeX },
-            children.maxOfOrNull { it.reservedSizeY } ?: 0,
-        )
+    override fun calculateContentSizeX() = children.sumOf { it.reservedSizeX }
+
+    override fun calculateContentSizeY() = children.maxOfOrNull { it.reservedSizeY } ?: 0
+
+    override fun calculateChildrenActualSizeX() {
+        val regionSizeMap by lazy {
+            val remaining = (actualSizeX - contentSizeX).toDouble()
+            val totalWeight = children.sumOf { it.position.weight }
+            var offsetX = 0.0
+            children.associateWith {
+                val old = offsetX
+                val new = old + it.reservedSizeX.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+                offsetX = new
+                new.roundToInt() - old.roundToInt()
+            }
+        }
+        children.calculateActualSizeX { regionSizeMap.getValue(it) }
     }
 
-    override fun calculateChildrenActualSize() {
-        val remaining = (actualSize.x - contentSize.x).toDouble()
-        val totalWeight = children.sumOf { it.position.weight }
-        var x = 0.0
-        children.calculateActualSize {
-            val old = x
-            val new = old + it.reservedSizeX.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
-            x = new
-            val size = new.roundToInt() - old.roundToInt()
-
-            IntPoint(size, actualSize.y)
-        }
+    override fun calculateChildrenActualSizeY() {
+        children.calculateActualSizeY { actualSizeY }
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val remaining = (actualSize.x - contentSize.x).toDouble()
+        val remaining = (actualSize.x - contentSizeX).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var x = 0.0
         return children.attachTo(viewPlacer) {
@@ -81,29 +83,31 @@ class XListView : ListView() {
 
 class YListView : ListView() {
 
-    override fun calculateContentSize(): IntPoint {
-        return IntPoint(
-            children.maxOfOrNull { it.reservedSizeX } ?: 0,
-            children.sumOf { it.reservedSizeY },
-        )
+    override fun calculateContentSizeX() = children.maxOfOrNull { it.reservedSizeX } ?: 0
+
+    override fun calculateContentSizeY() = children.sumOf { it.reservedSizeY }
+
+    override fun calculateChildrenActualSizeX() {
+        children.calculateActualSizeX { actualSizeX }
     }
 
-    override fun calculateChildrenActualSize() {
-        val remaining = (actualSize.y - contentSize.y).toDouble()
-        val totalWeight = children.sumOf { it.position.weight }
-        var y = 0.0
-        children.calculateActualSize {
-            val old = y
-            val new = old + it.reservedSizeY.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
-            y = new
-            val size = new.roundToInt() - old.roundToInt()
-
-            IntPoint(actualSize.x, size)
+    override fun calculateChildrenActualSizeY() {
+        val regionSizeMap by lazy {
+            val remaining = (actualSizeY - contentSizeY).toDouble()
+            val totalWeight = children.sumOf { it.position.weight }
+            var offsetY = 0.0
+            children.associateWith {
+                val old = offsetY
+                val new = old + it.reservedSizeY.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+                offsetY = new
+                new.roundToInt() - old.roundToInt()
+            }
         }
+        children.calculateActualSizeY { regionSizeMap.getValue(it) }
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val remaining = (actualSize.y - contentSize.y).toDouble()
+        val remaining = (actualSize.y - contentSizeY).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var y = 0.0
         return children.attachTo(viewPlacer) {
