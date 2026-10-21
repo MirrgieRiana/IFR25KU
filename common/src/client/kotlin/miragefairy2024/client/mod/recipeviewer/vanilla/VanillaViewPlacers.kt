@@ -1,17 +1,21 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.ModContext
+import miragefairy2024.client.mixins.api.SlotPositionSetter
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.minus
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.util.Remover
 
 context(ModContext)
 fun initVanillaViewPlacers() {
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
-        view.apply(bounds.offset - context.origin)
+        // バニラはSlotの座標へoriginを描画とホバー判定の際に加算するため、絶対座標を書き込むと二重に加算されるのだ～🌱
+        val offset = bounds.offset - context.origin
+        (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(offset.x, offset.y)
         Remover { throw UnsupportedOperationException("Cannot remove MenuSlotView from the vanilla screen") }
     }
     ViewRendererRegistry.registry.subscribe { entry ->
