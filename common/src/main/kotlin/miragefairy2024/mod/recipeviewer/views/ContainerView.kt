@@ -10,8 +10,16 @@ abstract class ContainerView<P> : ParentView<P>() {
         children += child
     }
 
-    final override fun calculateChildrenContentSize() {
-        children.calculateContentSize()
+    final override fun initChildrenSizeCalculation() {
+        children.initSizeCalculation()
+    }
+
+    final override fun calculateChildrenContentSizeX() {
+        children.calculateContentSizeX()
+    }
+
+    final override fun calculateChildrenContentSizeY() {
+        children.calculateContentSizeY()
     }
 
 }

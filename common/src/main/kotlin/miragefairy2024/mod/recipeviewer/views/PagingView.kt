@@ -24,7 +24,9 @@ class PagingView : ParentView<Alignment>() {
 
     override fun createDefaultPosition() = Alignment.START
 
-    override fun calculateContentSize() = IntPoint.ZERO
+    override fun calculateContentSizeXImpl() = 0
+
+    override fun calculateContentSizeYImpl() = 0
 
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
@@ -36,7 +38,9 @@ class PagingView : ParentView<Alignment>() {
 
     override fun calculateChildrenActualSize() {
         val children = childrenGenerators.flatMap { it.generateChildren(renderingProxy, actualSize) }
-        children.calculateContentSize()
+        children.initSizeCalculation()
+        children.calculateContentSizeX()
+        children.calculateContentSizeY()
         children.calculateActualSize { actualSize }
 
         val pages = mutableListOf<List<Child<Alignment, *>>>()

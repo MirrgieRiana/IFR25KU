@@ -10,34 +10,67 @@ abstract class AbstractView : View {
     protected lateinit var renderingProxy: RenderingProxy
         private set
 
-    private lateinit var contentSizeCache: IntPoint
-    final override val contentSize get() = contentSizeCache
-
-    final override fun calculateContentSize(renderingProxy: RenderingProxy) {
+    final override fun initSizeCalculation(renderingProxy: RenderingProxy) {
         this.renderingProxy = renderingProxy
-        calculateChildrenContentSize()
-        contentSizeCache = calculateContentSize()
+        initChildrenSizeCalculation()
     }
 
-    protected open fun calculateChildrenContentSize() = Unit
-
-    protected abstract fun calculateContentSize(): IntPoint
+    protected open fun initChildrenSizeCalculation() = Unit
 
 
-    private lateinit var actualSizeCache: IntPoint
-    final override val actualSize get() = actualSizeCache
+    private var contentSizeXCache: Int? = null
+    final override val contentSizeX get() = contentSizeXCache ?: throw IllegalStateException("The content size of the X axis is not calculated yet: ${javaClass.name}")
+
+    final override fun calculateContentSizeX() {
+        calculateChildrenContentSizeX()
+        contentSizeXCache = calculateContentSizeXImpl()
+    }
+
+    protected open fun calculateChildrenContentSizeX() = Unit
+
+    protected abstract fun calculateContentSizeXImpl(): Int
+
+
+    private var contentSizeYCache: Int? = null
+    final override val contentSizeY get() = contentSizeYCache ?: throw IllegalStateException("The content size of the Y axis is not calculated yet: ${javaClass.name}")
+
+    final override fun calculateContentSizeY() {
+        calculateChildrenContentSizeY()
+        contentSizeYCache = calculateContentSizeYImpl()
+    }
+
+    protected open fun calculateChildrenContentSizeY() = Unit
+
+    protected abstract fun calculateContentSizeYImpl(): Int
+
+
+    private var actualSizeXCache: Int? = null
+    final override val actualSizeX get() = actualSizeXCache ?: throw IllegalStateException("The actual size of the X axis is not calculated yet: ${javaClass.name}")
+
+    final override fun calculateActualSizeX(regionSizeX: Int) {
+        actualSizeXCache = when (sizingX) {
+            Sizing.FILL -> regionSizeX
+            Sizing.WRAP -> contentSizeX
+        }
+    }
+
+
+    private var actualSizeYCache: Int? = null
+    final override val actualSizeY get() = actualSizeYCache ?: throw IllegalStateException("The actual size of the Y axis is not calculated yet: ${javaClass.name}")
+
+    final override fun calculateActualSizeY(regionSizeY: Int) {
+        actualSizeYCache = when (sizingY) {
+            Sizing.FILL -> regionSizeY
+            Sizing.WRAP -> contentSizeY
+        }
+    }
+
+
+    final override val actualSize get() = IntPoint(actualSizeX, actualSizeY)
 
     final override fun calculateActualSize(regionSize: IntPoint) {
-        actualSizeCache = IntPoint(
-            when (sizingX) {
-                Sizing.FILL -> regionSize.x
-                Sizing.WRAP -> contentSize.x
-            },
-            when (sizingY) {
-                Sizing.FILL -> regionSize.y
-                Sizing.WRAP -> contentSize.y
-            },
-        )
+        calculateActualSizeX(regionSize.x)
+        calculateActualSizeY(regionSize.y)
         calculateChildrenActualSize()
     }
 
