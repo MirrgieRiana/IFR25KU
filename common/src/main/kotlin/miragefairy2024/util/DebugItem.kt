@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
-import net.minecraft.world.InteractionResultHolder
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -34,9 +34,9 @@ fun registerDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSo
     val item = Registration(BuiltInRegistries.ITEM, MirageFairy2024.identifier(path)) {
         object : Item(Properties()) {
             override fun getName(stack: ItemStack) = text { path.toUpperCamelCase(afterDelimiter = " ")() }
-            override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+            override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResult {
                 action(level, user, hand, user.getItemInHand(hand))
-                return InteractionResultHolder.sidedSuccess(user.getItemInHand(hand), level.isClientSide)
+                return InteractionResult.SUCCESS
             }
         }
     }

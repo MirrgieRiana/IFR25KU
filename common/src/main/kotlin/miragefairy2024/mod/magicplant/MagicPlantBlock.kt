@@ -307,7 +307,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
             }
         }
         if (!tryPick(level, pos, player, player.mainHandItem, true, true)) return InteractionResult.PASS
-        return InteractionResult.sidedSuccess(level.isClientSide)
+        return InteractionResult.SUCCESS
     }
 
     /** 中央クリックをした際は、この植物の本来の種子を返す。 */

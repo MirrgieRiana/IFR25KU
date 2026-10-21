@@ -44,4 +44,4 @@ fun Iterable<Item>.toIngredientStack(amount: Int = 1) = this.toIngredient().toIn
 @JvmName("toIngredientStackFromItemStacks")
 fun Iterable<ItemStack>.toIngredientStack(amount: Int = 1) = this.toIngredient().toIngredientStack(amount)
 
-fun IngredientStack.toItemStacks(): List<ItemStack> = ingredient.items.map { it.copyWithCount(count) }
+fun IngredientStack.toItemStacks(): List<ItemStack> = ingredient.items().map { it.value().createItemStack(count) }

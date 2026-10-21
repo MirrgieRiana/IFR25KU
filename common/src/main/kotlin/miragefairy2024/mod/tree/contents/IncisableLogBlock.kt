@@ -10,7 +10,7 @@ import net.minecraft.sounds.SoundSource
 import net.minecraft.stats.Stats
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.InteractionHand
-import net.minecraft.world.ItemInteractionResult
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
@@ -26,10 +26,10 @@ import net.minecraft.world.phys.BlockHitResult
 abstract class IncisableLogBlock(settings: Properties) : RotatedPillarBlock(settings) {
     protected abstract fun getIncisedLogBlock(): Block
 
-    override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
+    override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): InteractionResult {
         if (state[AXIS] != Direction.Axis.Y) @Suppress("DEPRECATION") return super.useItemOn(stack, state, level, pos, player, hand, hitResult) // 縦方向でなければスルー
         if (stack isNotIn ItemTags.SWORDS) @Suppress("DEPRECATION") return super.useItemOn(stack, state, level, pos, player, hand, hitResult) // 剣でなければスルー
-        if (level.isClientSide) return ItemInteractionResult.SUCCESS
+        if (level.isClientSide) return InteractionResult.SUCCESS
         val direction = if (hitResult.direction.axis === Direction.Axis.Y) player.direction.opposite else hitResult.direction
 
         // 加工
@@ -41,6 +41,6 @@ abstract class IncisableLogBlock(settings: Properties) : RotatedPillarBlock(sett
         // エフェクト
         level.playSound(null, pos, SoundEvents.PUMPKIN_CARVE, SoundSource.BLOCKS, 1.0F, 1.0F)
 
-        return ItemInteractionResult.CONSUME
+        return InteractionResult.CONSUME
     }
 }

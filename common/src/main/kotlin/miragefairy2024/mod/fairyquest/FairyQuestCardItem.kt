@@ -45,7 +45,7 @@ import net.minecraft.network.codec.StreamCodec
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
-import net.minecraft.world.InteractionResultHolder
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
@@ -128,10 +128,10 @@ class FairyQuestCardItem(settings: Properties) : Item(settings) {
         }
     }
 
-    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResult {
         val itemStack = user.getItemInHand(hand)
-        val recipe = itemStack.getFairyQuestRecipe() ?: return InteractionResultHolder.fail(itemStack)
-        if (level.isClientSide) return InteractionResultHolder.success(itemStack)
+        val recipe = itemStack.getFairyQuestRecipe() ?: return InteractionResult.FAIL
+        if (level.isClientSide) return InteractionResult.SUCCESS
         user.openMenu(object : ExtendedScreenHandlerFactory<ResourceLocation> {
             override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
                 return FairyQuestCardScreenHandler(syncId, playerInventory, recipe, ContainerLevelAccess.create(level, player.blockPosition()))
@@ -141,7 +141,7 @@ class FairyQuestCardItem(settings: Properties) : Item(settings) {
 
             override fun getScreenOpeningData(player: ServerPlayer) = fairyQuestRecipeRegistry.getKey(recipe)!!
         })
-        return InteractionResultHolder.consume(itemStack)
+        return InteractionResult.CONSUME
     }
 }
 

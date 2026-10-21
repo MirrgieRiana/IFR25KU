@@ -56,6 +56,7 @@ import miragefairy2024.util.registerShapedRecipeGeneration
 import miragefairy2024.util.toBlockTag
 import mirrg.kotlin.helium.toUpperCamelCase
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
+import net.minecraft.core.HolderSet
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.resources.ResourceLocation
@@ -65,6 +66,7 @@ import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.component.Tool
 import net.minecraft.world.item.enchantment.Enchantments
+import net.minecraft.world.level.block.Block
 
 val MINEABLE_WITH_NOISE_BLOCK_TAG = MirageFairy2024.identifier("mineable/noise").toBlockTag()
 
@@ -555,15 +557,19 @@ class ToolCard(
 
     val item = Registration(BuiltInRegistries.ITEM, identifier) {
         configuration.createItem(run {
-            val miningSpeedMultiplier = configuration.miningSpeedMultiplierOverride ?: configuration.toolMaterialCard.toolMaterial.speed
+            val miningSpeedMultiplier = configuration.miningSpeedMultiplierOverride ?: configuration.toolMaterialCard.toolMaterial.speed()
 
             val rules = mutableListOf<Tool.Rule>()
 
-            rules += Tool.Rule.deniesDrops(configuration.toolMaterialCard.toolMaterial.incorrectBlocksForDrops) // ツールレベル不足で掘れない
-            if (configuration.superEffectiveBlocks.isNotEmpty()) rules += Tool.Rule.minesAndDrops(configuration.superEffectiveBlocks, miningSpeedMultiplier * 10F) // 剣の蜘蛛の巣特効とか
-            if (configuration.effectiveBlocks.isNotEmpty()) rules += Tool.Rule.minesAndDrops(configuration.effectiveBlocks, miningSpeedMultiplier) // 特別に対応してるブロック
+            // 1.21.3 から、規則が受け取るのはタグやブロックの列ではなく、ホルダーの集合なのだ～🌱
+            fun TagKey<Block>.toHolderSet() = BuiltInRegistries.BLOCK.get(this).orElseThrow()
+            fun List<Block>.toHolderSet() = HolderSet.direct(this.map { it.builtInRegistryHolder() })
+
+            rules += Tool.Rule.deniesDrops(configuration.toolMaterialCard.toolMaterial.incorrectBlocksForDrops().toHolderSet()) // ツールレベル不足で掘れない
+            if (configuration.superEffectiveBlocks.isNotEmpty()) rules += Tool.Rule.minesAndDrops(configuration.superEffectiveBlocks.toHolderSet(), miningSpeedMultiplier * 10F) // 剣の蜘蛛の巣特効とか
+            if (configuration.effectiveBlocks.isNotEmpty()) rules += Tool.Rule.minesAndDrops(configuration.effectiveBlocks.toHolderSet(), miningSpeedMultiplier) // 特別に対応してるブロック
             configuration.effectiveBlockTags.forEach { // タグによる適正
-                rules += Tool.Rule.minesAndDrops(it, miningSpeedMultiplier)
+                rules += Tool.Rule.minesAndDrops(it.toHolderSet(), miningSpeedMultiplier)
             }
 
             FairyToolProperties(Tool(rules, 1F, configuration.miningDamage))

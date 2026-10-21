@@ -31,14 +31,14 @@ import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.util.RandomSource
 import net.minecraft.world.InteractionHand
-import net.minecraft.world.InteractionResultHolder
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
-import net.minecraft.world.item.UseAnim
+import net.minecraft.world.item.ItemUseAnimation
 import net.minecraft.world.level.Level
 import java.math.BigInteger
 import java.math.RoundingMode
@@ -63,19 +63,19 @@ class RandomFairySummoningItem(val appearanceRateBonus: Double, settings: Proper
         tooltipComponents += text { MIRAGE_FLOUR_DESCRIPTION_SNEAKING_USE_TRANSLATION().yellow }
     }
 
-    override fun getUseAnimation(stack: ItemStack) = UseAnim.BOW
+    override fun getUseAnimation(stack: ItemStack) = ItemUseAnimation.BOW
     override fun getUseDuration(stack: ItemStack, entity: LivingEntity) = 72000 // 1時間
 
-    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResult {
         val itemStack = user.getItemInHand(hand)
         if (!user.isShiftKeyDown) {
 
             // 使用開始
             user.startUsingItem(hand)
 
-            return InteractionResultHolder.consume(itemStack)
+            return InteractionResult.CONSUME
         } else {
-            if (level.isClientSide) return InteractionResultHolder.success(itemStack)
+            if (level.isClientSide) return InteractionResult.SUCCESS
 
             val motifSet: Set<Motif> = getCommonMotifSet(user) + user.fairyDreamContainer.getOrCreate().entries
             val chanceTable = motifSet.toChanceTable(appearanceRateBonus)
@@ -88,7 +88,7 @@ class RandomFairySummoningItem(val appearanceRateBonus: Double, settings: Proper
                 override fun getDisplayName() = itemStack.hoverName
                 override fun getScreenOpeningData(player: ServerPlayer) = chanceTable
             })
-            return InteractionResultHolder.consume(itemStack)
+            return InteractionResult.CONSUME
         }
     }
 

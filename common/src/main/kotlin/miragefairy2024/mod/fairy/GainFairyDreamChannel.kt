@@ -20,6 +20,6 @@ object GainFairyDreamChannel : Channel<Motif>(MirageFairy2024.identifier("gain_f
 
     override fun readFromBuf(buf: RegistryFriendlyByteBuf): Motif {
         val motifId = buf.readUtf()
-        return motifRegistry.get(motifId.toIdentifier())!!
+        return motifRegistry.getValue(motifId.toIdentifier())!!
     }
 }

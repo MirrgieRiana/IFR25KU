@@ -8,6 +8,7 @@ import miragefairy2024.mod.enchantment.MAGIC_WEAPON_ITEM_TAG
 import miragefairy2024.mod.entity.AntimatterBoltCard
 import miragefairy2024.mod.entity.AntimatterBoltEntity
 import miragefairy2024.mod.tool.ToolConfiguration
+import miragefairy2024.mod.tool.applyToolMaterialProperties
 import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.util.Model
 import miragefairy2024.util.ModelData
@@ -33,15 +34,14 @@ import net.minecraft.sounds.SoundSource
 import net.minecraft.stats.Stats
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.InteractionHand
-import net.minecraft.world.InteractionResultHolder
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Tier
-import net.minecraft.world.item.TieredItem
+import net.minecraft.world.item.ToolMaterial
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.ItemEnchantments
@@ -91,7 +91,7 @@ class FairyShootingStaffItem(override val configuration: FairyShootingStaffConfi
 
 }
 
-open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, private val baseMaxDistance: Float, settings: Properties) : TieredItem(toolMaterial, settings) {
+open class ShootingStaffItem(toolMaterial: ToolMaterial, private val basePower: Float, private val baseMaxDistance: Float, settings: Properties) : Item(settings.applyToolMaterialProperties(toolMaterial)) {
     companion object {
         val NOT_ENOUGH_EXPERIENCE_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("fairy_tool_item").toLanguageKey()}.not_enough_experience" }, "Not enough experience", "経験値が足りません")
         val DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("shooting_staff").toLanguageKey()}.description" }, "Perform a ranged attack when used", "使用時、射撃攻撃")
@@ -103,9 +103,9 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
         tooltipComponents += text { DESCRIPTION_TRANSLATION().yellow }
     }
 
-    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResult {
         val itemStack = user.getItemInHand(hand)
-        if (level.isClientSide) return InteractionResultHolder.success(itemStack)
+        if (level.isClientSide) return InteractionResult.SUCCESS
 
         val damage = basePower + 0.5F * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_POWER.key].getLevel(itemStack).toFloat()
         val maxDistance = baseMaxDistance + 3F * level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.MAGIC_REACH.key].getLevel(itemStack)
@@ -116,7 +116,7 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
         if (!user.isCreative) {
             if (user.totalExperience < experienceCost) {
                 user.displayClientMessage(text { NOT_ENOUGH_EXPERIENCE_TRANSLATION() }, true)
-                return InteractionResultHolder.consume(itemStack)
+                return InteractionResult.CONSUME
             }
         }
 
@@ -141,7 +141,7 @@ open class ShootingStaffItem(toolMaterial: Tier, private val basePower: Float, p
         // エフェクト
         level.playSound(null, user.x, user.y, user.z, SoundEventCard.MAGIC2.soundEvent, SoundSource.PLAYERS, 0.6F, 0.90F + (level.random.nextFloat() - 0.5F) * 0.3F)
 
-        return InteractionResultHolder.consume(itemStack)
+        return InteractionResult.CONSUME
     }
 
     override fun hurtEnemy(stack: ItemStack, target: LivingEntity, attacker: LivingEntity): Boolean {

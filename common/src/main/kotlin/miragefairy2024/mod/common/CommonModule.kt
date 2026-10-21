@@ -83,7 +83,7 @@ fun initCommonModule() {
 
     registerClientDebugItem("dump_biome_attributes", Blocks.OAK_SAPLING.toTextureSource(), 0xFFFF00FF.toInt()) { level, player, _, _ ->
         val lines = mutableListOf<List<String>>()
-        level.registryAccess()[Registries.BIOME].listElements().forEach { biome ->
+        level.registryAccess().lookupOrThrow(Registries.BIOME).listElements().forEach { biome ->
             lines += listOf(
                 text { translate(biome.key().location().toLanguageKey("biome")) }.string,
                 "${biome.humidityCategory}",
@@ -97,7 +97,7 @@ fun initCommonModule() {
         writeAction(player, "dump_biome_attributes.csv", table.map { line -> line.join(",") + "\n" }.join(""))
     }
     registerServerDebugItem("dump_biome_features", Blocks.SPRUCE_SAPLING.toTextureSource(), 0xFFFF00FF.toInt()) { level, player, _, _ ->
-        fun Level.getBiomes() = this.registryAccess()[Registries.BIOME].listElements().toList()
+        fun Level.getBiomes() = this.registryAccess().lookupOrThrow(Registries.BIOME).listElements().toList()
         fun Holder<*>.getId() = this.unwrapKey().getOrNull()?.location()?.string
         fun Holder<Biome>.getPlacedFeatureSets() = this.value().generationSettings.features()
 

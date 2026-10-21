@@ -21,13 +21,12 @@ fun ItemStack.toEntryIngredient(): EntryIngredient = this.toEntryStack().toEntry
 fun Iterable<EntryStack<*>>.toEntryIngredient(): EntryIngredient = EntryIngredient.of(this)
 
 fun IngredientStack.toEntryIngredient(): EntryIngredient {
-    if (ingredient.isEmpty) return EntryIngredient.empty()
-    val itemStacks = ingredient.items
-    if (itemStacks.size == 0) return EntryIngredient.empty()
-    if (itemStacks.size == 1) return itemStacks.single().copyWithCount(count).toEntryIngredient()
-    return itemStacks
-        .filter { it.isNotEmpty }
-        .mapNotNull { it.copyWithCount(count).toEntryStack() }
+    // 1.21.3 から、材料が持つのはスタックの配列ではなく、アイテムのホルダーのリストなのだ～🌱
+    val itemHolders = ingredient.items()
+    if (itemHolders.isEmpty()) return EntryIngredient.empty()
+    if (itemHolders.size == 1) return itemHolders.single().value().createItemStack(count).toEntryIngredient()
+    return itemHolders
+        .mapNotNull { it.value().createItemStack(count).toEntryStack() }
         .toEntryIngredient()
 }
 
