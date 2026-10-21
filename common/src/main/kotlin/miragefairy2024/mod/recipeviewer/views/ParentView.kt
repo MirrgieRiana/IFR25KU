@@ -15,15 +15,15 @@ abstract class ParentView<P> : AbstractView() {
         }
     }
 
-    protected fun Iterable<Child<P, *>>.calculateContentSizeX(regionSizeYProvider: () -> Int) {
+    protected fun Iterable<Child<P, *>>.calculateContentSizeX() {
         this.forEach {
-            it.view.calculateContentSizeX(regionSizeYProvider)
+            it.view.calculateContentSizeX()
         }
     }
 
-    protected fun Iterable<Child<P, *>>.calculateContentSizeY(regionSizeXProvider: () -> Int) {
+    protected fun Iterable<Child<P, *>>.calculateContentSizeY() {
         this.forEach {
-            it.view.calculateContentSizeY(regionSizeXProvider)
+            it.view.calculateContentSizeY()
         }
     }
 

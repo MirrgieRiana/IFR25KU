@@ -12,6 +12,7 @@ import miragefairy2024.util.Remover
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
@@ -23,25 +24,44 @@ private val TEST_RENDERING_PROXY = object : RenderingProxy {
     override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = throw UnsupportedOperationException()
 }
 
-/** 逆側の軸の利用可能なサイズを、指定した軸の計算の中で要求するViewなのだ～🌱 */
-private class RequirementView(private val requiresRegionSizeX: Boolean, private val requiresRegionSizeY: Boolean) : AbstractView() {
-    var observedRegionSizeX: Int? = null
-    override val sizingX = Sizing.WRAP
-    override val sizingY = Sizing.WRAP
-    override fun calculateContentSizeX(): Int {
-        if (requiresRegionSizeY) requireRegionSizeY()
-        return 10
-    }
-
-    override fun calculateContentSizeY(): Int {
-        if (requiresRegionSizeX) observedRegionSizeX = requireRegionSizeX()
-        return 20
-    }
-
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = Remover {}
-}
-
 class AxisWiseContentSizeTest {
+
+    @Test
+    fun `初期化はコンテナーとラッパーの子へ一度伝播し両軸の計算で再実行されないのだ`() {
+        val events = mutableListOf<String>()
+        val child = object : AbstractView() {
+            override val sizingX = Sizing.WRAP
+            override val sizingY = Sizing.WRAP
+            override fun initChildrenSizeCalculation() {
+                assertSame(TEST_RENDERING_PROXY, renderingProxy)
+                events += "init"
+            }
+
+            override fun calculateContentSizeXImpl(): Int {
+                assertSame(TEST_RENDERING_PROXY, renderingProxy)
+                events += "x"
+                return 10
+            }
+
+            override fun calculateContentSizeYImpl(): Int {
+                assertSame(TEST_RENDERING_PROXY, renderingProxy)
+                events += "y"
+                return 20
+            }
+
+            override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = Remover.NONE
+        }
+        val wrapper = MarginView(1, 2, 3, 4)
+        wrapper += child
+        val view = YListView()
+        view += wrapper
+        view.initSizeCalculation(TEST_RENDERING_PROXY)
+        assertEquals(listOf("init"), events)
+        view.calculateContentSizeY()
+        view.calculateContentSizeX()
+        assertEquals(listOf("init", "y", "x"), events)
+        assertEquals(IntPoint(13, 27), view.contentSize)
+    }
 
     @Test
     fun `横に並べるViewは、X成分を足してY成分の最大を取るのだ`() {
@@ -92,20 +112,29 @@ class AxisWiseContentSizeTest {
     }
 
     @Test
-    fun `Y成分の計算では、確定済みのX成分を参照できるのだ`() {
-        val view = RequirementView(requiresRegionSizeX = true, requiresRegionSizeY = false)
-        view.calculateSize(TEST_RENDERING_PROXY, IntPoint(100, 100))
-        assertEquals(10, view.observedRegionSizeX)
-        assertEquals(20, view.contentSizeY)
+    fun `X成分だけを計算してもラッパーの子のY成分は計算されないのだ`() {
+        val child = SpaceView(IntPoint(10, 20))
+        val view = MarginView(1, 2, 3, 4)
+        view += child
+        view.initSizeCalculation(TEST_RENDERING_PROXY)
+        view.calculateContentSizeX()
+        assertEquals(13, view.contentSizeX)
+        assertEquals(10, child.contentSizeX)
+        assertThrows(IllegalStateException::class.java) { view.contentSizeY }
+        assertThrows(IllegalStateException::class.java) { child.contentSizeY }
     }
 
     @Test
-    fun `X成分の計算でY方向を要求すると、根のViewでは例外が出るのだ`() {
-        val view = RequirementView(requiresRegionSizeX = false, requiresRegionSizeY = true)
-        val exception = assertThrows(IllegalStateException::class.java) {
-            view.calculateSize(TEST_RENDERING_PROXY, IntPoint(100, 100))
-        }
-        assertEquals("The root view cannot refer to the available size of the Y axis.", exception.message)
+    fun `Y成分を先に計算してもコンテナーの子のX成分は計算されないのだ`() {
+        val child = SpaceView(IntPoint(10, 20))
+        val view = YListView()
+        view += child
+        view.initSizeCalculation(TEST_RENDERING_PROXY)
+        view.calculateContentSizeY()
+        assertEquals(20, view.contentSizeY)
+        assertEquals(20, child.contentSizeY)
+        assertThrows(IllegalStateException::class.java) { view.contentSizeX }
+        assertThrows(IllegalStateException::class.java) { child.contentSizeX }
     }
 
     @Test

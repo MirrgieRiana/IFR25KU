@@ -14,12 +14,12 @@ abstract class ContainerView<P> : ParentView<P>() {
         children.initSizeCalculation()
     }
 
-    final override fun calculateChildrenContentSizeX(regionSizeYProvider: () -> Int) {
-        children.calculateContentSizeX(regionSizeYProvider)
+    final override fun calculateChildrenContentSizeX() {
+        children.calculateContentSizeX()
     }
 
-    final override fun calculateChildrenContentSizeY(regionSizeXProvider: () -> Int) {
-        children.calculateContentSizeY(regionSizeXProvider)
+    final override fun calculateChildrenContentSizeY() {
+        children.calculateContentSizeY()
     }
 
 }

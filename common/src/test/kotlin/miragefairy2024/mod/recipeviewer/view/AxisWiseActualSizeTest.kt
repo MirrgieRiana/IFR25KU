@@ -34,12 +34,12 @@ private class RecordingSizeView(private val events: MutableList<String>) : Abstr
             return field
         }
 
-    override fun calculateContentSizeX(): Int {
+    override fun calculateContentSizeXImpl(): Int {
         events += "contentX"
         return 10
     }
 
-    override fun calculateContentSizeY(): Int {
+    override fun calculateContentSizeYImpl(): Int {
         events += "contentY"
         return 20
     }
@@ -58,7 +58,7 @@ class AxisWiseActualSizeTest {
         val events = mutableListOf<String>()
         val view = RecordingSizeView(events)
         view.initSizeCalculation(TEST_RENDERING_PROXY)
-        view.calculateContentSizeX { throw UnsupportedOperationException() }
+        view.calculateContentSizeX()
         assertEquals(listOf("contentX"), events)
 
         view.calculateActualSizeX(100)
@@ -75,7 +75,7 @@ class AxisWiseActualSizeTest {
         val events = mutableListOf<String>()
         val view = RecordingSizeView(events)
         view.initSizeCalculation(TEST_RENDERING_PROXY)
-        view.calculateContentSizeY { throw UnsupportedOperationException() }
+        view.calculateContentSizeY()
         assertEquals(listOf("contentY"), events)
 
         view.calculateActualSizeY(100)
