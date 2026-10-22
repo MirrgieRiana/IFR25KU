@@ -20,20 +20,16 @@ class SpaceViewTest {
     fun `空間のViewの寸法が指定の通りになるのだ`() {
         val view = SpaceView(IntPoint(10, 20))
         view.calculateContentSize(TEST_RENDERING_PROXY)
-        view.calculateActualSizeX(100)
-        view.calculateActualSizeY(100)
-        assertEquals(10, view.actualSizeX)
-        assertEquals(20, view.actualSizeY)
+        view.calculateActualSize(IntPoint(100, 100))
+        assertEquals(IntPoint(10, 20), view.actualSize)
     }
 
     @Test
     fun `空間のViewは親の空間が狭くても縮まないのだ`() {
         val view = SpaceView(IntPoint(10, 20))
         view.calculateContentSize(TEST_RENDERING_PROXY)
-        view.calculateActualSizeX(5)
-        view.calculateActualSizeY(5)
-        assertEquals(10, view.actualSizeX)
-        assertEquals(20, view.actualSizeY)
+        view.calculateActualSize(IntPoint(5, 5))
+        assertEquals(IntPoint(10, 20), view.actualSize)
     }
 
 }
