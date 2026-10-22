@@ -44,14 +44,13 @@ class XListView : ListView() {
         val remaining = (actualSize.x - contentSize.x).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var x = 0.0
-        children.calculateActualSize {
+        children.calculateActualSizeX {
             val old = x
             val new = old + it.reservedSizeX.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             x = new
-            val size = new.roundToInt() - old.roundToInt()
-
-            IntPoint(size, actualSize.y)
+            new.roundToInt() - old.roundToInt()
         }
+        children.calculateActualSizeY { actualSize.y }
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
@@ -93,13 +92,12 @@ class YListView : ListView() {
         val remaining = (actualSize.y - contentSize.y).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var y = 0.0
-        children.calculateActualSize {
+        children.calculateActualSizeX { actualSize.x }
+        children.calculateActualSizeY {
             val old = y
             val new = old + it.reservedSizeY.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             y = new
-            val size = new.roundToInt() - old.roundToInt()
-
-            IntPoint(actualSize.x, size)
+            new.roundToInt() - old.roundToInt()
         }
     }
 

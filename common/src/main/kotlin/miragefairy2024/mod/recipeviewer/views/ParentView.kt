@@ -15,13 +15,6 @@ abstract class ParentView<P> : AbstractView() {
         }
     }
 
-    protected fun Iterable<Child<P, *>>.calculateActualSize(regionSizeFunction: (Child<P, *>) -> IntPoint) {
-        this.forEach {
-            it.view.calculateActualSizeX(regionSizeFunction(it).x)
-            it.view.calculateActualSizeY(regionSizeFunction(it).y)
-        }
-    }
-
     protected fun Iterable<Child<P, *>>.calculateActualSizeX(regionSizeXFunction: (Child<P, *>) -> Int) {
         this.forEach {
             it.view.calculateActualSizeX(regionSizeXFunction(it))
