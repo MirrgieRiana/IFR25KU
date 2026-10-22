@@ -24,12 +24,12 @@ class ReiTextWidget(private val offset: IntPoint, private val view: TextView) : 
 
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         val color = if (REIRuntime.getInstance().isDarkThemeEnabled) view.color.darkModeArgb else view.color.lightModeArgb
-        if (view.scroll && font.width(view.text.value) > view.actualSize.x) {
+        if (view.scroll && font.width(view.text.value) > view.actualSizeX) {
             guiGraphics.drawScrollingString(
                 font,
                 view.text.value,
                 offset.x,
-                offset.x + view.actualSize.x,
+                offset.x + view.actualSizeX,
                 offset.y,
                 startNanoTime,
                 30.0,
@@ -40,8 +40,8 @@ class ReiTextWidget(private val offset: IntPoint, private val view: TextView) : 
         } else {
             val x = when (view.alignmentX) {
                 Alignment.START -> offset.x
-                Alignment.CENTER -> offset.x + view.actualSize.x / 2 - font.width(view.text.value) / 2
-                Alignment.END -> offset.x + view.actualSize.x - font.width(view.text.value)
+                Alignment.CENTER -> offset.x + view.actualSizeX / 2 - font.width(view.text.value) / 2
+                Alignment.END -> offset.x + view.actualSizeX - font.width(view.text.value)
             }
             guiGraphics.drawString(
                 font,

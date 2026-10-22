@@ -4,7 +4,6 @@ import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.util.drawScrollingString
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.view.actualSize
 import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.mod.recipeviewer.views.TextView
 import net.minecraft.client.Minecraft
@@ -17,12 +16,12 @@ object TextViewRenderer : ViewRenderer<TextView> {
     override fun render(view: TextView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         val font = Minecraft.getInstance().font
         val color = view.color.lightModeArgb
-        if (view.scroll && font.width(view.text.value) > view.actualSize.x) {
+        if (view.scroll && font.width(view.text.value) > view.actualSizeX) {
             graphics.drawScrollingString(
                 font,
                 view.text.value,
                 bounds.x,
-                bounds.x + view.actualSize.x,
+                bounds.x + view.actualSizeX,
                 bounds.y,
                 startNanoTime,
                 30.0,
@@ -33,8 +32,8 @@ object TextViewRenderer : ViewRenderer<TextView> {
         } else {
             val x = when (view.alignmentX) {
                 Alignment.START -> bounds.x
-                Alignment.CENTER -> bounds.x + view.actualSize.x / 2 - font.width(view.text.value) / 2
-                Alignment.END -> bounds.x + view.actualSize.x - font.width(view.text.value)
+                Alignment.CENTER -> bounds.x + view.actualSizeX / 2 - font.width(view.text.value) / 2
+                Alignment.END -> bounds.x + view.actualSizeX - font.width(view.text.value)
             }
             graphics.drawString(
                 font,

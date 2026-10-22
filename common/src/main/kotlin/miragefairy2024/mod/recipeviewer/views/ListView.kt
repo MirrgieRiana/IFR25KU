@@ -5,7 +5,6 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
-import miragefairy2024.mod.recipeviewer.view.actualSize
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.util.Remover
 import kotlin.math.roundToInt
@@ -41,7 +40,7 @@ class XListView : ListView() {
     }
 
     override fun calculateChildrenActualSize() {
-        val remaining = (actualSize.x - contentSize.x).toDouble()
+        val remaining = (actualSizeX - contentSize.x).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var x = 0.0
         children.calculateActualSizeX {
@@ -50,11 +49,11 @@ class XListView : ListView() {
             x = new
             new.roundToInt() - old.roundToInt()
         }
-        children.calculateActualSizeY { actualSize.y }
+        children.calculateActualSizeY { actualSizeY }
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val remaining = (actualSize.x - contentSize.x).toDouble()
+        val remaining = (actualSizeX - contentSize.x).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var x = 0.0
         return children.attachTo(viewPlacer) {
@@ -65,13 +64,13 @@ class XListView : ListView() {
 
             val childX = old.roundToInt() + when (it.position.alignmentX) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (size - it.view.actualSize.x) / 2
-                Alignment.END -> size - it.view.actualSize.x
+                Alignment.CENTER -> (size - it.view.actualSizeX) / 2
+                Alignment.END -> size - it.view.actualSizeX
             }
             val childY = when (it.position.alignmentY) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (actualSize.y - it.view.actualSize.y) / 2
-                Alignment.END -> actualSize.y - it.view.actualSize.y
+                Alignment.CENTER -> (actualSizeY - it.view.actualSizeY) / 2
+                Alignment.END -> actualSizeY - it.view.actualSizeY
             }
             offset.offset(childX, childY)
         }
@@ -89,10 +88,10 @@ class YListView : ListView() {
     }
 
     override fun calculateChildrenActualSize() {
-        val remaining = (actualSize.y - contentSize.y).toDouble()
+        val remaining = (actualSizeY - contentSize.y).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var y = 0.0
-        children.calculateActualSizeX { actualSize.x }
+        children.calculateActualSizeX { actualSizeX }
         children.calculateActualSizeY {
             val old = y
             val new = old + it.reservedSizeY.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
@@ -102,7 +101,7 @@ class YListView : ListView() {
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val remaining = (actualSize.y - contentSize.y).toDouble()
+        val remaining = (actualSizeY - contentSize.y).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var y = 0.0
         return children.attachTo(viewPlacer) {
@@ -113,13 +112,13 @@ class YListView : ListView() {
 
             val childY = old.roundToInt() + when (it.position.alignmentY) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (size - it.view.actualSize.y) / 2
-                Alignment.END -> size - it.view.actualSize.y
+                Alignment.CENTER -> (size - it.view.actualSizeY) / 2
+                Alignment.END -> size - it.view.actualSizeY
             }
             val childX = when (it.position.alignmentX) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (actualSize.x - it.view.actualSize.x) / 2
-                Alignment.END -> actualSize.x - it.view.actualSize.x
+                Alignment.CENTER -> (actualSizeX - it.view.actualSizeX) / 2
+                Alignment.END -> actualSizeX - it.view.actualSizeX
             }
             offset.offset(childX, childY)
         }

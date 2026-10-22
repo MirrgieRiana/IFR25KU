@@ -38,21 +38,21 @@ class PagingView : ParentView<Alignment>() {
     override fun calculateChildrenActualSize() {
         val children = childrenGenerators.flatMap { it.generateChildren(renderingProxy, actualSize) }
         children.calculateContentSize()
-        children.calculateActualSizeX { actualSize.x }
-        children.calculateActualSizeY { actualSize.y }
+        children.calculateActualSizeX { actualSizeX }
+        children.calculateActualSizeY { actualSizeY }
 
         val pages = mutableListOf<List<Child<Alignment, *>>>()
         var page = mutableListOf<Child<Alignment, *>>()
         var y = 0
         children.forEach {
-            if (page.isNotEmpty() && y + it.view.actualSize.y > actualSize.y) {
+            if (page.isNotEmpty() && y + it.view.actualSizeY > actualSizeY) {
                 // ページが空でなく、これを追加するとはみ出す場合、新しいページを作る
                 pages += page
                 page = mutableListOf()
                 y = 0
             }
             page += it
-            y += it.view.actualSize.y
+            y += it.view.actualSizeY
         }
         if (page.isNotEmpty()) pages += page
         if (pages.isEmpty()) pages += listOf<Child<Alignment, *>>()
@@ -72,11 +72,11 @@ class PagingView : ParentView<Alignment>() {
             page.forEach {
                 val x = when (it.position) {
                     Alignment.START -> 0
-                    Alignment.CENTER -> (actualSize.x - it.view.actualSize.x) / 2
-                    Alignment.END -> actualSize.x - it.view.actualSize.x
+                    Alignment.CENTER -> (actualSizeX - it.view.actualSizeX) / 2
+                    Alignment.END -> actualSizeX - it.view.actualSizeX
                 }
                 childrenRemover += it.view.attachTo(offset.offset(x, y), viewPlacer)
-                y += it.view.actualSize.y
+                y += it.view.actualSizeY
             }
         }
         removers += childrenRemover

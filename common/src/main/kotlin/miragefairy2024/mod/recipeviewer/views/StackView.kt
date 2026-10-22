@@ -4,7 +4,6 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
-import miragefairy2024.mod.recipeviewer.view.actualSize
 import miragefairy2024.util.Remover
 
 class StackView : ContainerView<Unit>() {
@@ -22,8 +21,8 @@ class StackView : ContainerView<Unit>() {
     }
 
     override fun calculateChildrenActualSize() {
-        children.calculateActualSizeX { actualSize.x }
-        children.calculateActualSizeY { actualSize.y }
+        children.calculateActualSizeX { actualSizeX }
+        children.calculateActualSizeY { actualSizeY }
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
