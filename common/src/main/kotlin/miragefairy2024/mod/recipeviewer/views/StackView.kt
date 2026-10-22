@@ -20,8 +20,11 @@ class StackView : ContainerView<Unit>() {
         )
     }
 
-    override fun calculateChildrenActualSize() {
+    override fun calculateChildrenActualSizeX() {
         children.calculateActualSizeX { actualSizeX }
+    }
+
+    override fun calculateChildrenActualSizeY() {
         children.calculateActualSizeY { actualSizeY }
     }
 

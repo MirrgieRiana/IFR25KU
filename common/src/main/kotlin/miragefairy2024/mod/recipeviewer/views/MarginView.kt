@@ -11,8 +11,11 @@ class MarginView(private val xMin: Int, private val xMax: Int, private val yMin:
 
     override fun calculateContentSize() = super.calculateContentSize().plus(xMin + xMax, yMin + yMax)
 
-    override fun calculateChildrenActualSize() {
+    override fun calculateChildrenActualSizeX() {
         childView.calculateActualSizeX(actualSizeX - xMin - xMax)
+    }
+
+    override fun calculateChildrenActualSizeY() {
         childView.calculateActualSizeY(actualSizeY - yMin - yMax)
     }
 

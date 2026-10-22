@@ -43,8 +43,11 @@ class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Posi
 
     override fun calculateContentSize() = size
 
-    override fun calculateChildrenActualSize() {
+    override fun calculateChildrenActualSizeX() {
         children.calculateActualSizeX { it.position.getSizeX(it.view.contentSize.x, actualSizeX) }
+    }
+
+    override fun calculateChildrenActualSizeY() {
         children.calculateActualSizeY { it.position.getSizeY(it.view.contentSize.y, actualSizeY) }
     }
 

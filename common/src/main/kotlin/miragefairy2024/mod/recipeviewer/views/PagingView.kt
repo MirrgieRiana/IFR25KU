@@ -30,12 +30,11 @@ class PagingView : ParentView<Alignment>() {
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
 
-    private lateinit var pages: List<List<Child<Alignment, *>>>
     val pageCount = ObservableValue(0)
 
     val pageIndex = ObservableValue(0)
 
-    override fun calculateChildrenActualSize() {
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         val children = childrenGenerators.flatMap { it.generateChildren(renderingProxy, actualSize) }
         children.calculateContentSize()
         children.calculateActualSizeX { actualSizeX }
@@ -56,11 +55,8 @@ class PagingView : ParentView<Alignment>() {
         }
         if (page.isNotEmpty()) pages += page
         if (pages.isEmpty()) pages += listOf<Child<Alignment, *>>()
-        this.pages = pages
         pageCount.value = pages.size
-    }
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         val removers = RemoverList()
 
         val childrenRemover = RemoverList()

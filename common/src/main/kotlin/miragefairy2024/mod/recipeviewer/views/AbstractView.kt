@@ -32,8 +32,10 @@ abstract class AbstractView : View {
             Sizing.FILL -> regionSizeX
             Sizing.WRAP -> contentSize.x
         }
-        if (actualSizeYCache != null) calculateChildrenActualSize()
+        calculateChildrenActualSizeX()
     }
+
+    protected open fun calculateChildrenActualSizeX() = Unit
 
 
     private var actualSizeYCache: Int? = null
@@ -44,10 +46,9 @@ abstract class AbstractView : View {
             Sizing.FILL -> regionSizeY
             Sizing.WRAP -> contentSize.y
         }
-        if (actualSizeXCache != null) calculateChildrenActualSize()
+        calculateChildrenActualSizeY()
     }
 
-
-    protected open fun calculateChildrenActualSize() = Unit
+    protected open fun calculateChildrenActualSizeY() = Unit
 
 }

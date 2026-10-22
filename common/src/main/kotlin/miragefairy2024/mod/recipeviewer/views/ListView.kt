@@ -39,7 +39,7 @@ class XListView : ListView() {
         )
     }
 
-    override fun calculateChildrenActualSize() {
+    override fun calculateChildrenActualSizeX() {
         val remaining = (actualSizeX - contentSize.x).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var x = 0.0
@@ -49,6 +49,9 @@ class XListView : ListView() {
             x = new
             new.roundToInt() - old.roundToInt()
         }
+    }
+
+    override fun calculateChildrenActualSizeY() {
         children.calculateActualSizeY { actualSizeY }
     }
 
@@ -87,11 +90,14 @@ class YListView : ListView() {
         )
     }
 
-    override fun calculateChildrenActualSize() {
+    override fun calculateChildrenActualSizeX() {
+        children.calculateActualSizeX { actualSizeX }
+    }
+
+    override fun calculateChildrenActualSizeY() {
         val remaining = (actualSizeY - contentSize.y).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var y = 0.0
-        children.calculateActualSizeX { actualSizeX }
         children.calculateActualSizeY {
             val old = y
             val new = old + it.reservedSizeY.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
