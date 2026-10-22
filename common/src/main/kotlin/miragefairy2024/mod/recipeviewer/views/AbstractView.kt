@@ -10,11 +10,14 @@ abstract class AbstractView : View {
     protected lateinit var renderingProxy: RenderingProxy
         private set
 
+    override fun initSizeCalculation(renderingProxy: RenderingProxy) {
+        this.renderingProxy = renderingProxy
+    }
+
     private lateinit var contentSizeCache: IntPoint
     final override val contentSize get() = contentSizeCache
 
-    final override fun calculateContentSize(renderingProxy: RenderingProxy) {
-        this.renderingProxy = renderingProxy
+    final override fun calculateContentSize2() {
         calculateChildrenContentSize()
         contentSizeCache = calculateContentSize()
     }

@@ -9,9 +9,15 @@ import miragefairy2024.util.flatten
 
 abstract class ParentView<P> : AbstractView() {
 
+    protected fun Iterable<Child<P, *>>.initSizeCalculation() {
+        this.forEach {
+            it.view.initSizeCalculation(renderingProxy)
+        }
+    }
+
     protected fun Iterable<Child<P, *>>.calculateContentSize() {
         this.forEach {
-            it.view.calculateContentSize(renderingProxy)
+            it.view.calculateContentSize2()
         }
     }
 

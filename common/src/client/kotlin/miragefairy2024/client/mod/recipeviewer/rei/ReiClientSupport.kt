@@ -111,7 +111,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
     private fun getSize(recipeEntry: RecipeViewerCategoryCard.RecipeEntry<R>): IntPoint {
         return sizeCache.getOrPut(recipeEntry) {
             val view = card.createView(recipeEntry)
-            view.calculateContentSize(renderingProxy)
+            view.initSizeCalculation(renderingProxy)
+            view.calculateContentSize2()
             view.calculateActualSizeX(MAX_SIZE.x - 5 - 5)
             view.calculateActualSizeY(MAX_SIZE.y - 5 - 5)
             view.actualSize
@@ -127,7 +128,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
             val containerWidget = ReiContainerWidget()
             val view = card.createView(display.recipeEntry)
-            view.calculateContentSize(renderingProxy)
+            view.initSizeCalculation(renderingProxy)
+            view.calculateContentSize2()
             view.calculateActualSizeX(MAX_SIZE.x - 5 - 5)
             view.calculateActualSizeY(MAX_SIZE.y - 5 - 5)
             view.attachTo(IntPoint(bounds.x + 5, bounds.y + 5)) { view2, bounds ->
@@ -158,7 +160,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
                     recipeManager.getAllRecipesFor(bridge.recipeType).forEach {
                         val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(BasicDisplay.registryAccess(), it.id(), it.value(), false)
                         val view = bridge.card.createView(recipeEntry)
-                        view.calculateContentSize(renderingProxy)
+                        view.initSizeCalculation(renderingProxy)
+                        view.calculateContentSize2()
                         view.calculateActualSizeX(MAX_SIZE.x - 5 - 5)
                         view.calculateActualSizeY(MAX_SIZE.y - 5 - 5)
                         heightCache = heightCache max view.actualSizeY

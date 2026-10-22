@@ -2,6 +2,7 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.util.Remover
@@ -24,8 +25,13 @@ open class WrapperView : ParentView<Unit>() {
     override val sizingX get() = childView.sizingX
     override val sizingY get() = childView.sizingY
 
+    final override fun initSizeCalculation(renderingProxy: RenderingProxy) {
+        super.initSizeCalculation(renderingProxy)
+        childView.initSizeCalculation(renderingProxy)
+    }
+
     final override fun calculateChildrenContentSize() {
-        childView.calculateContentSize(renderingProxy)
+        childView.calculateContentSize2()
     }
 
     override fun calculateContentSize() = childView.contentSize

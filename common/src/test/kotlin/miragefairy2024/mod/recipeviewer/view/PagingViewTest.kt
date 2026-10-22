@@ -23,7 +23,16 @@ private val TEST_VIEW_PLACER = ViewPlacer<PlaceableView> { _, _ -> throw Unsuppo
 private class RecordingPagingChildView(size: IntPoint, private val events: MutableList<String>) : FixedView(size) {
     val offsets = mutableListOf<IntPoint>()
 
+    var initializationCount = 0
+        private set
+
+    override fun initSizeCalculation(renderingProxy: RenderingProxy) {
+        super.initSizeCalculation(renderingProxy)
+        initializationCount += 1
+    }
+
     override fun calculateContentSize(): IntPoint {
+        assertSame(TEST_RENDERING_PROXY, renderingProxy)
         events += "content"
         return super.calculateContentSize()
     }
@@ -56,7 +65,8 @@ class PagingViewTest {
                 assertEquals(IntPoint(100, 10), regionSize)
                 listOf(Child(Alignment.START, firstChild), Child(Alignment.END, secondChild))
             })
-            view.calculateContentSize(TEST_RENDERING_PROXY)
+            view.initSizeCalculation(TEST_RENDERING_PROXY)
+            view.calculateContentSize2()
 
             if (xFirst) {
                 view.calculateActualSizeX(100)
@@ -77,6 +87,8 @@ class PagingViewTest {
             assertEquals(listOf(2), pageCounts)
             assertEquals(IntPoint(10, 6), firstChild.actualSize)
             assertEquals(IntPoint(10, 6), secondChild.actualSize)
+            assertEquals(1, firstChild.initializationCount)
+            assertEquals(1, secondChild.initializationCount)
             assertEquals(listOf(IntPoint(7, 11)), firstChild.offsets)
             assertEquals(emptyList<IntPoint>(), secondChild.offsets)
 
@@ -84,6 +96,8 @@ class PagingViewTest {
 
             assertEquals(listOf("generate", "content", "content", "attach", "remove", "attach"), events)
             assertEquals(listOf(IntPoint(97, 11)), secondChild.offsets)
+            assertEquals(1, firstChild.initializationCount)
+            assertEquals(1, secondChild.initializationCount)
 
             remover.remove()
 
@@ -97,7 +111,8 @@ class PagingViewTest {
     @Test
     fun `子がない場合も配置時に空のページを作るのだ`() {
         val view = PagingView()
-        view.calculateContentSize(TEST_RENDERING_PROXY)
+        view.initSizeCalculation(TEST_RENDERING_PROXY)
+        view.calculateContentSize2()
         view.calculateActualSizeX(100)
         view.calculateActualSizeY(10)
         assertEquals(0, view.pageCount.value)
