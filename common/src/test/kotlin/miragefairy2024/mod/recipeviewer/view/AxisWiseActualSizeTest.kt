@@ -31,9 +31,11 @@ private class RecordingActualSizeView : AbstractView() {
         private set
 
     fun getStoredRenderingProxy() = renderingProxy
+    fun getStoredRegionSizeXProvider() = regionSizeXProvider
+    fun getStoredRegionSizeYProvider() = regionSizeYProvider
 
-    override fun initSizeCalculation(renderingProxy: RenderingProxy) {
-        super.initSizeCalculation(renderingProxy)
+    override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
+        super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
         initializationCount += 1
     }
 
@@ -65,18 +67,96 @@ private class RecordingActualSizeView : AbstractView() {
 class AxisWiseActualSizeTest {
 
     @Test
-    fun `サイズ計算の初期化はRenderingProxyを格納するだけなのだ`() {
+    fun `サイズ計算の初期化はRenderingProxyと領域の供給元を格納するだけなのだ`() {
         val view = RecordingActualSizeView()
+        val regionSizeXProvider = { throw UnsupportedOperationException() }
+        val regionSizeYProvider = { throw UnsupportedOperationException() }
 
-        view.initSizeCalculation(TEST_RENDERING_PROXY)
+        view.initSizeCalculation(TEST_RENDERING_PROXY, regionSizeXProvider, regionSizeYProvider)
 
         assertSame(TEST_RENDERING_PROXY, view.getStoredRenderingProxy())
+        assertSame(regionSizeXProvider, view.getStoredRegionSizeXProvider())
+        assertSame(regionSizeYProvider, view.getStoredRegionSizeYProvider())
         assertEquals(1, view.initializationCount)
         assertEquals(emptyList<String>(), view.events)
         assertThrows(IllegalStateException::class.java) { view.contentSizeX }
         assertThrows(IllegalStateException::class.java) { view.contentSizeY }
         assertThrows(IllegalStateException::class.java) { view.actualSizeX }
         assertThrows(IllegalStateException::class.java) { view.actualSizeY }
+    }
+
+    @Test
+    fun `領域の供給元はFILLの実寸計算時だけ呼びWRAPでは呼ばないのだ`() {
+        Sizing.entries.forEach { sizing ->
+            listOf(true, false).forEach { xFirst ->
+                val calls = mutableListOf<String>()
+                val view = RecordingActualSizeView()
+                view.sizingX = sizing
+                view.sizingY = sizing
+                view.initSizeCalculation(TEST_RENDERING_PROXY, {
+                    calls += "regionX"
+                    101
+                }, {
+                    calls += "regionY"
+                    203
+                })
+                assertEquals(emptyList<String>(), calls)
+
+                view.calculateContentSizeX()
+                view.calculateContentSizeY()
+                assertEquals(emptyList<String>(), calls)
+
+                if (xFirst) {
+                    view.calculateActualSizeX()
+                    assertEquals(if (sizing == Sizing.FILL) listOf("regionX") else emptyList<String>(), calls)
+                    view.calculateActualSizeY()
+                } else {
+                    view.calculateActualSizeY()
+                    assertEquals(if (sizing == Sizing.FILL) listOf("regionY") else emptyList<String>(), calls)
+                    view.calculateActualSizeX()
+                }
+
+                assertEquals(if (sizing == Sizing.FILL) IntPoint(101, 203) else IntPoint(10, 20), view.actualSize)
+                assertEquals(if (sizing == Sizing.WRAP) emptyList<String>() else if (xFirst) listOf("regionX", "regionY") else listOf("regionY", "regionX"), calls)
+            }
+        }
+    }
+
+    @Test
+    fun `子の領域の供給元は親の実寸確定前には参照できなくても初期化できるのだ`() {
+        listOf(true, false).forEach { xFirst ->
+            val childView = RecordingActualSizeView()
+            childView.sizingX = Sizing.FILL
+            childView.sizingY = Sizing.FILL
+            val marginView = MarginView(2, 3, 5, 7)
+            marginView.add(Child(Unit, childView))
+            val view = StackView()
+            view.sizingX = Sizing.FILL
+            view.sizingY = Sizing.FILL
+            view.add(Child(Unit, marginView))
+
+            view.initSizeCalculation(TEST_RENDERING_PROXY, { 101 }, { 203 })
+            assertThrows(IllegalStateException::class.java) { childView.getStoredRegionSizeXProvider()() }
+            assertThrows(IllegalStateException::class.java) { childView.getStoredRegionSizeYProvider()() }
+            view.calculateContentSizeX()
+            view.calculateContentSizeY()
+            assertThrows(IllegalStateException::class.java) { childView.getStoredRegionSizeXProvider()() }
+            assertThrows(IllegalStateException::class.java) { childView.getStoredRegionSizeYProvider()() }
+
+            if (xFirst) {
+                view.calculateActualSizeX()
+                assertEquals(96, childView.actualSizeX)
+                assertThrows(IllegalStateException::class.java) { childView.getStoredRegionSizeYProvider()() }
+                view.calculateActualSizeY()
+            } else {
+                view.calculateActualSizeY()
+                assertEquals(191, childView.actualSizeY)
+                assertThrows(IllegalStateException::class.java) { childView.getStoredRegionSizeXProvider()() }
+                view.calculateActualSizeX()
+            }
+
+            assertEquals(IntPoint(96, 191), childView.actualSize)
+        }
     }
 
     @Test
@@ -89,7 +169,7 @@ class AxisWiseActualSizeTest {
         view.add(Child(Unit, wrapperView))
         view.add(Child(Unit, otherChildView))
 
-        view.initSizeCalculation(TEST_RENDERING_PROXY)
+        view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 200 })
 
         listOf(childView, otherChildView).forEach {
             assertSame(TEST_RENDERING_PROXY, it.getStoredRenderingProxy())
@@ -101,8 +181,8 @@ class AxisWiseActualSizeTest {
 
         view.calculateContentSizeX()
         view.calculateContentSizeY()
-        view.calculateActualSizeX(100)
-        view.calculateActualSizeY(200)
+        view.calculateActualSizeX()
+        view.calculateActualSizeY()
 
         listOf(childView, otherChildView).forEach {
             assertEquals(1, it.initializationCount)
@@ -114,11 +194,11 @@ class AxisWiseActualSizeTest {
     @Test
     fun `X成分はY成分を計算せず同期的に確定するのだ`() {
         val view = RecordingActualSizeView()
-        view.initSizeCalculation(TEST_RENDERING_PROXY)
+        view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 100 })
         view.calculateContentSizeX()
         view.calculateContentSizeY()
 
-        view.calculateActualSizeX(100)
+        view.calculateActualSizeX()
         assertEquals(listOf("sizingX", "childrenX:10"), view.events)
         assertEquals(10, view.actualSizeX)
         assertThrows(IllegalStateException::class.java) { view.actualSizeY }
@@ -128,11 +208,11 @@ class AxisWiseActualSizeTest {
     @Test
     fun `Y成分はX成分を計算せず同期的に確定するのだ`() {
         val view = RecordingActualSizeView()
-        view.initSizeCalculation(TEST_RENDERING_PROXY)
+        view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 100 })
         view.calculateContentSizeX()
         view.calculateContentSizeY()
 
-        view.calculateActualSizeY(100)
+        view.calculateActualSizeY()
         assertEquals(listOf("sizingY", "childrenY:20"), view.events)
         assertEquals(20, view.actualSizeY)
         assertThrows(IllegalStateException::class.java) { view.actualSizeX }
@@ -145,19 +225,20 @@ class AxisWiseActualSizeTest {
             val view = RecordingActualSizeView()
             view.sizingX = Sizing.FILL
             view.sizingY = Sizing.FILL
+            view.initSizeCalculation(TEST_RENDERING_PROXY, { 120 }, { 500 })
 
             if (xFirst) {
-                view.calculateActualSizeX(120)
+                view.calculateActualSizeX()
                 assertEquals(listOf("sizingX", "childrenX:120"), view.events)
                 assertEquals(120, view.actualSizeX)
                 assertThrows(IllegalStateException::class.java) { view.actualSizeY }
-                view.calculateActualSizeY(500)
+                view.calculateActualSizeY()
             } else {
-                view.calculateActualSizeY(500)
+                view.calculateActualSizeY()
                 assertEquals(listOf("sizingY", "childrenY:500"), view.events)
                 assertEquals(500, view.actualSizeY)
                 assertThrows(IllegalStateException::class.java) { view.actualSizeX }
-                view.calculateActualSizeX(120)
+                view.calculateActualSizeX()
             }
             val expectedEvents = if (xFirst) listOf("sizingX", "childrenX:120", "sizingY", "childrenY:500") else listOf("sizingY", "childrenY:500", "sizingX", "childrenX:120")
             assertEquals(expectedEvents, view.events)
@@ -175,14 +256,14 @@ class AxisWiseActualSizeTest {
                 val view = RecordingActualSizeView()
                 view.sizingX = sizingX
                 view.sizingY = sizingY
-                view.initSizeCalculation(TEST_RENDERING_PROXY)
+                view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 200 })
                 view.calculateContentSizeX()
                 view.calculateContentSizeY()
                 val expectedX = if (sizingX == Sizing.FILL) 100 else 10
                 val expectedY = if (sizingY == Sizing.FILL) 200 else 20
 
-                view.calculateActualSizeX(100)
-                view.calculateActualSizeY(200)
+                view.calculateActualSizeX()
+                view.calculateActualSizeY()
 
                 assertEquals(listOf("sizingX", "childrenX:$expectedX", "sizingY", "childrenY:$expectedY"), view.events)
                 assertEquals(expectedX, view.actualSizeX)
@@ -205,11 +286,11 @@ class AxisWiseActualSizeTest {
         stackView.add(Child(Unit, marginView))
         val otherChildView = RecordingActualSizeView()
         stackView.add(Child(Unit, otherChildView))
-        stackView.initSizeCalculation(TEST_RENDERING_PROXY)
+        stackView.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 200 })
         stackView.calculateContentSizeX()
         stackView.calculateContentSizeY()
 
-        stackView.calculateActualSizeX(100)
+        stackView.calculateActualSizeX()
         assertEquals(95, childView.actualSizeX)
         assertThrows(IllegalStateException::class.java) { childView.actualSizeY }
         assertEquals(10, otherChildView.actualSizeX)
@@ -217,7 +298,7 @@ class AxisWiseActualSizeTest {
         assertEquals(listOf("sizingX", "sizingX", "childrenX:95"), childView.events)
         assertEquals(listOf("sizingX", "childrenX:10"), otherChildView.events)
 
-        stackView.calculateActualSizeY(200)
+        stackView.calculateActualSizeY()
 
         assertEquals(100, stackView.actualSizeX)
         assertEquals(200, stackView.actualSizeY)
@@ -239,20 +320,20 @@ class AxisWiseActualSizeTest {
             childView.sizingY = Sizing.FILL
             val view = WrapperView()
             view.add(Child(Unit, childView))
-            view.initSizeCalculation(TEST_RENDERING_PROXY)
+            view.initSizeCalculation(TEST_RENDERING_PROXY, { 101 }, { 203 })
             view.calculateContentSizeX()
             view.calculateContentSizeY()
 
             if (xFirst) {
-                view.calculateActualSizeX(101)
+                view.calculateActualSizeX()
                 assertEquals(101, childView.actualSizeX)
                 assertThrows(IllegalStateException::class.java) { childView.actualSizeY }
-                view.calculateActualSizeY(203)
+                view.calculateActualSizeY()
             } else {
-                view.calculateActualSizeY(203)
+                view.calculateActualSizeY()
                 assertEquals(203, childView.actualSizeY)
                 assertThrows(IllegalStateException::class.java) { childView.actualSizeX }
-                view.calculateActualSizeX(101)
+                view.calculateActualSizeX()
             }
             val expectedEvents = if (xFirst) listOf("sizingX", "sizingX", "childrenX:101", "sizingY", "sizingY", "childrenY:203") else listOf("sizingY", "sizingY", "childrenY:203", "sizingX", "sizingX", "childrenX:101")
             assertEquals(expectedEvents, childView.events)
@@ -274,25 +355,25 @@ class AxisWiseActualSizeTest {
                         view.add(Child(ListView.Position().also { position -> position.weight = 1.0 }, childView))
                     }
                 }
-                view.initSizeCalculation(TEST_RENDERING_PROXY)
+                view.initSizeCalculation(TEST_RENDERING_PROXY, { 101 }, { 203 })
                 view.calculateContentSizeX()
                 view.calculateContentSizeY()
                 val expectedSizes = if (horizontal) listOf(IntPoint(51, 203), IntPoint(50, 203)) else listOf(IntPoint(101, 102), IntPoint(101, 101))
 
                 if (xFirst) {
-                    view.calculateActualSizeX(101)
+                    view.calculateActualSizeX()
                     childViews.forEachIndexed { index, childView ->
                         assertEquals(expectedSizes[index].x, childView.actualSizeX)
                         assertThrows(IllegalStateException::class.java) { childView.actualSizeY }
                     }
-                    view.calculateActualSizeY(203)
+                    view.calculateActualSizeY()
                 } else {
-                    view.calculateActualSizeY(203)
+                    view.calculateActualSizeY()
                     childViews.forEachIndexed { index, childView ->
                         assertEquals(expectedSizes[index].y, childView.actualSizeY)
                         assertThrows(IllegalStateException::class.java) { childView.actualSizeX }
                     }
-                    view.calculateActualSizeX(101)
+                    view.calculateActualSizeX()
                 }
                 childViews.forEachIndexed { index, childView ->
                     val expectedSize = expectedSizes[index]
@@ -301,6 +382,103 @@ class AxisWiseActualSizeTest {
                     assertEquals(expectedEvents, childView.events)
                 }
             }
+        }
+    }
+
+    @Test
+    fun `WRAPとFILLが混在するリストも既存の累積丸めと分配順序を維持するのだ`() {
+        listOf(true, false).forEach { horizontal ->
+            listOf(true, false).forEach { xFirst ->
+                val view = if (horizontal) XListView() else YListView()
+                view.sizingX = Sizing.FILL
+                view.sizingY = Sizing.FILL
+                val childViews = List(4) { index ->
+                    val fill = index % 2 == 1
+                    RecordingActualSizeView().also { childView ->
+                        childView.sizingX = if (fill) Sizing.FILL else Sizing.WRAP
+                        childView.sizingY = if (fill) Sizing.FILL else Sizing.WRAP
+                        view.add(Child(ListView.Position().also { it.weight = 1.0 }, childView))
+                    }
+                }
+
+                repeat(2) {
+                    view.initSizeCalculation(TEST_RENDERING_PROXY, { 101 }, { 203 })
+                    view.calculateContentSizeX()
+                    view.calculateContentSizeY()
+                    if (xFirst) {
+                        view.calculateActualSizeX()
+                        view.calculateActualSizeY()
+                    } else {
+                        view.calculateActualSizeY()
+                        view.calculateActualSizeX()
+                    }
+
+                    val expectedSizes = if (horizontal) listOf(IntPoint(10, 20), IntPoint(26, 203), IntPoint(10, 20), IntPoint(25, 203)) else listOf(IntPoint(10, 20), IntPoint(101, 51), IntPoint(10, 20), IntPoint(101, 51))
+                    assertEquals(expectedSizes, childViews.map { it.actualSize })
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `リストの領域の供給元は任意の順序で繰り返し参照しても同じ割り当てを返すのだ`() {
+        listOf(true, false).forEach { horizontal ->
+            val view = if (horizontal) XListView() else YListView()
+            view.sizingX = Sizing.FILL
+            view.sizingY = Sizing.FILL
+            val firstChildView = RecordingActualSizeView()
+            val secondChildView = RecordingActualSizeView()
+            secondChildView.sizingX = Sizing.FILL
+            secondChildView.sizingY = Sizing.FILL
+            listOf(firstChildView, secondChildView).forEach {
+                view.add(Child(ListView.Position().also { position -> position.weight = 1.0 }, it))
+            }
+            view.initSizeCalculation(TEST_RENDERING_PROXY, { 101 }, { 203 })
+            view.calculateContentSizeX()
+            view.calculateContentSizeY()
+            view.calculateActualSizeX()
+            view.calculateActualSizeY()
+
+            val providers = if (horizontal) listOf(firstChildView.getStoredRegionSizeXProvider(), secondChildView.getStoredRegionSizeXProvider()) else listOf(firstChildView.getStoredRegionSizeYProvider(), secondChildView.getStoredRegionSizeYProvider())
+            val expectedRegions = if (horizontal) listOf(50, 51, 50, 51) else listOf(101, 102, 101, 102)
+            assertEquals(expectedRegions, listOf(1, 0, 1, 0).map { providers[it]() })
+            assertEquals(IntPoint(10, 20), firstChildView.actualSize)
+            assertEquals(if (horizontal) IntPoint(50, 203) else IntPoint(101, 101), secondChildView.actualSize)
+        }
+    }
+
+    @Test
+    fun `子を追加して再初期化すると登録位置に対応する領域を再計算するのだ`() {
+        listOf(true, false).forEach { horizontal ->
+            val view = if (horizontal) XListView() else YListView()
+            view.sizingX = Sizing.FILL
+            view.sizingY = Sizing.FILL
+            fun addChild(): RecordingActualSizeView {
+                val childView = RecordingActualSizeView()
+                childView.sizingX = Sizing.FILL
+                childView.sizingY = Sizing.FILL
+                view.add(Child(ListView.Position().also { it.weight = 1.0 }, childView))
+                return childView
+            }
+            fun calculate() {
+                view.initSizeCalculation(TEST_RENDERING_PROXY, { 101 }, { 203 })
+                view.calculateContentSizeX()
+                view.calculateContentSizeY()
+                view.calculateActualSizeX()
+                view.calculateActualSizeY()
+            }
+            val childViews = mutableListOf(addChild(), addChild())
+            calculate()
+            val expectedInitialSizes = if (horizontal) listOf(IntPoint(51, 203), IntPoint(50, 203)) else listOf(IntPoint(101, 102), IntPoint(101, 101))
+            assertEquals(expectedInitialSizes, childViews.map { it.actualSize })
+
+            childViews += addChild()
+            calculate()
+
+            val expectedSizes = if (horizontal) listOf(IntPoint(34, 203), IntPoint(33, 203), IntPoint(34, 203)) else listOf(IntPoint(101, 68), IntPoint(101, 67), IntPoint(101, 68))
+            assertEquals(expectedSizes, childViews.map { it.actualSize })
+            val providers = childViews.map { if (horizontal) it.getStoredRegionSizeXProvider() else it.getStoredRegionSizeYProvider() }
+            assertEquals(expectedSizes.map { if (horizontal) it.x else it.y }, providers.map { it() })
         }
     }
 
@@ -317,24 +495,24 @@ class AxisWiseActualSizeTest {
                 }
             }
             val expectedSizes = listOf(IntPoint(101, 203), IntPoint(10, 20), IntPoint(29, 43))
-            view.initSizeCalculation(TEST_RENDERING_PROXY)
+            view.initSizeCalculation(TEST_RENDERING_PROXY, { 300 }, { 400 })
             view.calculateContentSizeX()
             view.calculateContentSizeY()
 
             if (xFirst) {
-                view.calculateActualSizeX(300)
+                view.calculateActualSizeX()
                 childViews.forEachIndexed { index, childView ->
                     assertEquals(expectedSizes[index].x, childView.actualSizeX)
                     assertThrows(IllegalStateException::class.java) { childView.actualSizeY }
                 }
-                view.calculateActualSizeY(400)
+                view.calculateActualSizeY()
             } else {
-                view.calculateActualSizeY(400)
+                view.calculateActualSizeY()
                 childViews.forEachIndexed { index, childView ->
                     assertEquals(expectedSizes[index].y, childView.actualSizeY)
                     assertThrows(IllegalStateException::class.java) { childView.actualSizeX }
                 }
-                view.calculateActualSizeX(300)
+                view.calculateActualSizeX()
             }
             childViews.forEachIndexed { index, childView ->
                 assertEquals(expectedSizes[index], childView.actualSize)

@@ -40,8 +40,8 @@ class PagingView : ParentView<Alignment>() {
         children.initSizeCalculation()
         children.calculateContentSizeX()
         children.calculateContentSizeY()
-        children.calculateActualSizeX { actualSizeX }
-        children.calculateActualSizeY { actualSizeY }
+        children.calculateActualSizeX()
+        children.calculateActualSizeY()
 
         val pages = mutableListOf<List<Child<Alignment, *>>>()
         var page = mutableListOf<Child<Alignment, *>>()

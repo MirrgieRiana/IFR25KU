@@ -11,11 +11,11 @@ interface View {
     val sizingY: Sizing
 
     /**
-     * サイズ計算に使用する [renderingProxy] を格納するのだ～🌱
+     * サイズ計算に使用する [renderingProxy] と、割り当て領域を取得する [regionSizeXProvider]・[regionSizeYProvider] を格納するのだ～🌱
      * 既に存在する子 View も初期化するのだ～🌱
      * サイズの計算や計算済みの値の破棄は行わないのだ～🌱
      */
-    fun initSizeCalculation(renderingProxy: RenderingProxy)
+    fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int)
 
     /** この View のコンテンツが占有する最小のサイズの X 成分で、親 View がレイアウトの決定に使用するのだ～🌱 */
     val contentSizeX: Int
@@ -46,17 +46,17 @@ interface View {
 
     /**
      * [miragefairy2024.mod.recipeviewer.view.View.actualSizeX] を計算するのだ～🌱
-     * 実際のサイズは [regionSizeX] より大きくてもかまわないのだ～🌱
+     * 実際のサイズは初期化時に登録した X 軸の割り当て領域より大きくてもかまわないのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.calculateContentSizeX] の後に 1 度だけ呼び出すのだ～🌱
      */
-    fun calculateActualSizeX(regionSizeX: Int)
+    fun calculateActualSizeX()
 
     /**
      * [miragefairy2024.mod.recipeviewer.view.View.actualSizeY] を計算するのだ～🌱
-     * 実際のサイズは [regionSizeY] より大きくてもかまわないのだ～🌱
+     * 実際のサイズは初期化時に登録した Y 軸の割り当て領域より大きくてもかまわないのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.calculateContentSizeY] の後に 1 度だけ呼び出すのだ～🌱
      */
-    fun calculateActualSizeY(regionSizeY: Int)
+    fun calculateActualSizeY()
 
 
     /**

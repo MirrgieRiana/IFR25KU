@@ -26,8 +26,8 @@ private class RecordingPagingChildView(size: IntPoint, private val events: Mutab
     var initializationCount = 0
         private set
 
-    override fun initSizeCalculation(renderingProxy: RenderingProxy) {
-        super.initSizeCalculation(renderingProxy)
+    override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
+        super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
         initializationCount += 1
     }
 
@@ -71,16 +71,16 @@ class PagingViewTest {
                 assertEquals(IntPoint(100, 10), regionSize)
                 listOf(Child(Alignment.START, firstChild), Child(Alignment.END, secondChild))
             })
-            view.initSizeCalculation(TEST_RENDERING_PROXY)
+            view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 10 })
             view.calculateContentSizeX()
             view.calculateContentSizeY()
 
             if (xFirst) {
-                view.calculateActualSizeX(100)
-                view.calculateActualSizeY(10)
+                view.calculateActualSizeX()
+                view.calculateActualSizeY()
             } else {
-                view.calculateActualSizeY(10)
-                view.calculateActualSizeX(100)
+                view.calculateActualSizeY()
+                view.calculateActualSizeX()
             }
             assertEquals(IntPoint(100, 10), view.actualSize)
             assertEquals(emptyList<String>(), events)
@@ -118,11 +118,11 @@ class PagingViewTest {
     @Test
     fun `子がない場合も配置時に空のページを作るのだ`() {
         val view = PagingView()
-        view.initSizeCalculation(TEST_RENDERING_PROXY)
+        view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 10 })
         view.calculateContentSizeX()
         view.calculateContentSizeY()
-        view.calculateActualSizeX(100)
-        view.calculateActualSizeY(10)
+        view.calculateActualSizeX()
+        view.calculateActualSizeY()
         assertEquals(0, view.pageCount.value)
 
         val remover = view.attachTo(IntPoint.ZERO, TEST_VIEW_PLACER)

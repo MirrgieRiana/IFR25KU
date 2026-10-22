@@ -11,8 +11,8 @@ abstract class ContainerView<P> : ParentView<P>() {
         children += child
     }
 
-    final override fun initSizeCalculation(renderingProxy: RenderingProxy) {
-        super.initSizeCalculation(renderingProxy)
+    final override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
+        super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
         children.initSizeCalculation()
     }
 

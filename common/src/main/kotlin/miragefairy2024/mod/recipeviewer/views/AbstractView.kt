@@ -9,8 +9,16 @@ abstract class AbstractView : View {
     protected lateinit var renderingProxy: RenderingProxy
         private set
 
-    override fun initSizeCalculation(renderingProxy: RenderingProxy) {
+    protected lateinit var regionSizeXProvider: () -> Int
+        private set
+
+    protected lateinit var regionSizeYProvider: () -> Int
+        private set
+
+    override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
         this.renderingProxy = renderingProxy
+        this.regionSizeXProvider = regionSizeXProvider
+        this.regionSizeYProvider = regionSizeYProvider
     }
 
     private var contentSizeXCache: Int? = null
@@ -42,9 +50,9 @@ abstract class AbstractView : View {
     private var actualSizeXCache: Int? = null
     final override val actualSizeX get() = actualSizeXCache ?: throw IllegalStateException("The actual size of the X axis is not calculated yet: ${javaClass.name}")
 
-    final override fun calculateActualSizeX(regionSizeX: Int) {
+    final override fun calculateActualSizeX() {
         actualSizeXCache = when (sizingX) {
-            Sizing.FILL -> regionSizeX
+            Sizing.FILL -> regionSizeXProvider()
             Sizing.WRAP -> contentSizeX
         }
         calculateChildrenActualSizeX()
@@ -56,9 +64,9 @@ abstract class AbstractView : View {
     private var actualSizeYCache: Int? = null
     final override val actualSizeY get() = actualSizeYCache ?: throw IllegalStateException("The actual size of the Y axis is not calculated yet: ${javaClass.name}")
 
-    final override fun calculateActualSizeY(regionSizeY: Int) {
+    final override fun calculateActualSizeY() {
         actualSizeYCache = when (sizingY) {
-            Sizing.FILL -> regionSizeY
+            Sizing.FILL -> regionSizeYProvider()
             Sizing.WRAP -> contentSizeY
         }
         calculateChildrenActualSizeY()

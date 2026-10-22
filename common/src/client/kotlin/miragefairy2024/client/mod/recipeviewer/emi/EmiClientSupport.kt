@@ -143,11 +143,11 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
 
     private val sizeCache = run {
         val view = support.card.createView(recipeEntry)
-        view.initSizeCalculation(renderingProxy)
+        view.initSizeCalculation(renderingProxy, { EmiClientSupport.MAX_SIZE.x - 5 - 5 }, { EmiClientSupport.MAX_SIZE.y - 5 - 5 })
         view.calculateContentSizeX()
         view.calculateContentSizeY()
-        view.calculateActualSizeX(EmiClientSupport.MAX_SIZE.x - 5 - 5)
-        view.calculateActualSizeY(EmiClientSupport.MAX_SIZE.y - 5 - 5)
+        view.calculateActualSizeX()
+        view.calculateActualSizeY()
         view.actualSize
     }
 
@@ -157,11 +157,11 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
         val widgets2 = mutableListOf<Widget>()
         val containerWidget = EmiContainerWidget()
         val view = support.card.createView(recipeEntry)
-        view.initSizeCalculation(renderingProxy)
+        view.initSizeCalculation(renderingProxy, { EmiClientSupport.MAX_SIZE.x - 5 - 5 }, { EmiClientSupport.MAX_SIZE.y - 5 - 5 })
         view.calculateContentSizeX()
         view.calculateContentSizeY()
-        view.calculateActualSizeX(EmiClientSupport.MAX_SIZE.x - 5 - 5)
-        view.calculateActualSizeY(EmiClientSupport.MAX_SIZE.y - 5 - 5)
+        view.calculateActualSizeX()
+        view.calculateActualSizeY()
         view.attachTo(IntPoint(1, 1)) { view2, bounds ->
             EMI_VIEW_PLACER_REGISTRY.place(EmiViewPlacerContext(widgets2, containerWidget, this), view2, bounds)
         }

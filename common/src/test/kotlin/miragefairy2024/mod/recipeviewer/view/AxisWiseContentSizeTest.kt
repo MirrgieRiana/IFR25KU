@@ -57,7 +57,7 @@ class AxisWiseContentSizeTest {
         listOf(true, false).forEach { xFirst ->
             val events = mutableListOf<String>()
             val view = RecordingContentSizeView(IntPoint(10, 20), events)
-            view.initSizeCalculation(TEST_RENDERING_PROXY)
+            view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 200 })
             assertThrows(IllegalStateException::class.java) { view.contentSizeX }
             assertThrows(IllegalStateException::class.java) { view.contentSizeY }
 
@@ -66,23 +66,23 @@ class AxisWiseContentSizeTest {
                 assertEquals(listOf("contentX"), events)
                 assertEquals(10, view.contentSizeX)
                 assertThrows(IllegalStateException::class.java) { view.contentSizeY }
-                view.calculateActualSizeX(100)
+                view.calculateActualSizeX()
                 assertEquals(10, view.actualSizeX)
                 assertThrows(IllegalStateException::class.java) { view.actualSizeY }
                 assertEquals(listOf("contentX"), events)
                 view.calculateContentSizeY()
-                view.calculateActualSizeY(200)
+                view.calculateActualSizeY()
             } else {
                 view.calculateContentSizeY()
                 assertEquals(listOf("contentY"), events)
                 assertEquals(20, view.contentSizeY)
                 assertThrows(IllegalStateException::class.java) { view.contentSizeX }
-                view.calculateActualSizeY(200)
+                view.calculateActualSizeY()
                 assertEquals(20, view.actualSizeY)
                 assertThrows(IllegalStateException::class.java) { view.actualSizeX }
                 assertEquals(listOf("contentY"), events)
                 view.calculateContentSizeX()
-                view.calculateActualSizeX(100)
+                view.calculateActualSizeX()
             }
 
             assertEquals(IntPoint(10, 20), view.contentSize)
@@ -102,7 +102,7 @@ class AxisWiseContentSizeTest {
                 val otherChildView = RecordingContentSizeView(IntPoint(30, 7), events)
                 view.add(Child(view.createDefaultPosition(), marginView))
                 view.add(Child(view.createDefaultPosition(), otherChildView))
-                view.initSizeCalculation(TEST_RENDERING_PROXY)
+                view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 200 })
 
                 if (xFirst) {
                     view.calculateContentSizeX()
@@ -114,9 +114,9 @@ class AxisWiseContentSizeTest {
                         assertThrows(IllegalStateException::class.java) { it.contentSizeY }
                     }
                     assertEquals(listOf("contentX", "contentX"), events)
-                    view.calculateActualSizeX(100)
+                    view.calculateActualSizeX()
                     view.calculateContentSizeY()
-                    view.calculateActualSizeY(200)
+                    view.calculateActualSizeY()
                 } else {
                     view.calculateContentSizeY()
                     assertEquals(expectedSize.y, view.contentSizeY)
@@ -127,9 +127,9 @@ class AxisWiseContentSizeTest {
                         assertThrows(IllegalStateException::class.java) { it.contentSizeX }
                     }
                     assertEquals(listOf("contentY", "contentY"), events)
-                    view.calculateActualSizeY(200)
+                    view.calculateActualSizeY()
                     view.calculateContentSizeX()
-                    view.calculateActualSizeX(100)
+                    view.calculateActualSizeX()
                 }
 
                 assertEquals(expectedSize, view.contentSize)
@@ -163,7 +163,7 @@ class AxisWiseContentSizeTest {
                 val childView = RecordingContentSizeView(IntPoint(10, 20), events)
                 val view = createView()
                 view.add(Child(Unit, childView))
-                view.initSizeCalculation(TEST_RENDERING_PROXY)
+                view.initSizeCalculation(TEST_RENDERING_PROXY, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
 
                 if (xFirst) {
                     view.calculateContentSizeX()
@@ -196,7 +196,7 @@ class AxisWiseContentSizeTest {
                 val view = if (horizontal) XListView() else YListView()
                 view.add(Child(ListView.Position().also { it.ignoreLayoutX = true }, RecordingContentSizeView(IntPoint(10, 20), events)))
                 view.add(Child(ListView.Position().also { it.ignoreLayoutY = true }, RecordingContentSizeView(IntPoint(30, 7), events)))
-                view.initSizeCalculation(TEST_RENDERING_PROXY)
+                view.initSizeCalculation(TEST_RENDERING_PROXY, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
 
                 if (xFirst) {
                     view.calculateContentSizeX()
@@ -230,7 +230,7 @@ class AxisWiseContentSizeTest {
                 Pair(PagingView(), IntPoint.ZERO),
                 Pair(object : SlotView() {}.also { it.margin = 3 }, IntPoint(22, 22)),
             ).forEach { (view, expectedSize) ->
-                view.initSizeCalculation(TEST_RENDERING_PROXY)
+                view.initSizeCalculation(TEST_RENDERING_PROXY, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
 
                 if (xFirst) {
                     view.calculateContentSizeX()
@@ -266,7 +266,7 @@ class AxisWiseContentSizeTest {
                 override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = throw UnsupportedOperationException()
             }
             val view = TextView()
-            view.initSizeCalculation(renderingProxy)
+            view.initSizeCalculation(renderingProxy, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
             assertEquals(emptyList<String>(), events)
 
             if (xFirst) {

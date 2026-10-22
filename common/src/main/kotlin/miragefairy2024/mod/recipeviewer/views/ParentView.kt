@@ -10,10 +10,15 @@ import miragefairy2024.util.flatten
 abstract class ParentView<P> : AbstractView() {
 
     protected fun Iterable<Child<P, *>>.initSizeCalculation() {
-        this.forEach {
-            it.view.initSizeCalculation(renderingProxy)
+        val regionSizeXFunction by lazy { createChildRegionSizeXFunction() }
+        val regionSizeYFunction by lazy { createChildRegionSizeYFunction() }
+        this.forEachIndexed { index, child ->
+            child.view.initSizeCalculation(renderingProxy, { regionSizeXFunction(index) }, { regionSizeYFunction(index) })
         }
     }
+
+    protected open fun createChildRegionSizeXFunction(): (Int) -> Int = { actualSizeX }
+    protected open fun createChildRegionSizeYFunction(): (Int) -> Int = { actualSizeY }
 
     protected fun Iterable<Child<P, *>>.calculateContentSizeX() {
         this.forEach {
@@ -27,15 +32,15 @@ abstract class ParentView<P> : AbstractView() {
         }
     }
 
-    protected fun Iterable<Child<P, *>>.calculateActualSizeX(regionSizeXFunction: (Child<P, *>) -> Int) {
+    protected fun Iterable<Child<P, *>>.calculateActualSizeX() {
         this.forEach {
-            it.view.calculateActualSizeX(regionSizeXFunction(it))
+            it.view.calculateActualSizeX()
         }
     }
 
-    protected fun Iterable<Child<P, *>>.calculateActualSizeY(regionSizeYFunction: (Child<P, *>) -> Int) {
+    protected fun Iterable<Child<P, *>>.calculateActualSizeY() {
         this.forEach {
-            it.view.calculateActualSizeY(regionSizeYFunction(it))
+            it.view.calculateActualSizeY()
         }
     }
 

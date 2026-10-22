@@ -35,20 +35,25 @@ class XListView : ListView() {
     override fun calculateContentSizeXImpl() = children.sumOf { it.reservedSizeX }
     override fun calculateContentSizeYImpl() = children.maxOfOrNull { it.reservedSizeY } ?: 0
 
-    override fun calculateChildrenActualSizeX() {
+    override fun createChildRegionSizeXFunction(): (Int) -> Int {
         val remaining = (actualSizeX - contentSizeX).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var x = 0.0
-        children.calculateActualSizeX {
+        val regionSizes = children.map {
             val old = x
             val new = old + it.reservedSizeX.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             x = new
             new.roundToInt() - old.roundToInt()
         }
+        return { regionSizes[it] }
+    }
+
+    override fun calculateChildrenActualSizeX() {
+        children.calculateActualSizeX()
     }
 
     override fun calculateChildrenActualSizeY() {
-        children.calculateActualSizeY { actualSizeY }
+        children.calculateActualSizeY()
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
@@ -83,19 +88,24 @@ class YListView : ListView() {
     override fun calculateContentSizeYImpl() = children.sumOf { it.reservedSizeY }
 
     override fun calculateChildrenActualSizeX() {
-        children.calculateActualSizeX { actualSizeX }
+        children.calculateActualSizeX()
     }
 
-    override fun calculateChildrenActualSizeY() {
+    override fun createChildRegionSizeYFunction(): (Int) -> Int {
         val remaining = (actualSizeY - contentSizeY).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var y = 0.0
-        children.calculateActualSizeY {
+        val regionSizes = children.map {
             val old = y
             val new = old + it.reservedSizeY.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             y = new
             new.roundToInt() - old.roundToInt()
         }
+        return { regionSizes[it] }
+    }
+
+    override fun calculateChildrenActualSizeY() {
+        children.calculateActualSizeY()
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
