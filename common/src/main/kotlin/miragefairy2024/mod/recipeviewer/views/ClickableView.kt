@@ -3,6 +3,7 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.mod.recipeviewer.view.actualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover

@@ -5,6 +5,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.mod.recipeviewer.view.actualSize
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.util.Remover
 import kotlin.math.roundToInt

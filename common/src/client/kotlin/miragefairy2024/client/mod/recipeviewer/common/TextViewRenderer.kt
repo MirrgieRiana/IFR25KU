@@ -4,6 +4,7 @@ import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.util.drawScrollingString
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.actualSize
 import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.mod.recipeviewer.views.TextView
 import net.minecraft.client.Minecraft

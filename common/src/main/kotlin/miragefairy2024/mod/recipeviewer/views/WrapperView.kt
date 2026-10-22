@@ -4,6 +4,8 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.mod.recipeviewer.view.actualSize
+import miragefairy2024.mod.recipeviewer.view.calculateActualSize
 import miragefairy2024.util.Remover
 
 open class WrapperView : ParentView<Unit>() {

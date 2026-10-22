@@ -6,6 +6,7 @@ import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
 import miragefairy2024.client.util.drawScrollingString
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.actualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.util.toReiRectangle

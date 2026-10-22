@@ -18,6 +18,8 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBri
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.view.actualSize
+import miragefairy2024.mod.recipeviewer.view.calculateActualSize
 import miragefairy2024.mod.recipeviewer.view.minus
 import miragefairy2024.util.invoke
 import miragefairy2024.util.pathString
