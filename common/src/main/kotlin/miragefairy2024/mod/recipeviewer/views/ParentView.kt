@@ -4,6 +4,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.mod.recipeviewer.view.calculateActualSize
 import miragefairy2024.util.Remover
 import miragefairy2024.util.flatten
 
@@ -18,6 +19,18 @@ abstract class ParentView<P> : AbstractView() {
     protected fun Iterable<Child<P, *>>.calculateActualSize(regionSizeFunction: (Child<P, *>) -> IntPoint) {
         this.forEach {
             it.view.calculateActualSize(regionSizeFunction(it))
+        }
+    }
+
+    protected fun Iterable<Child<P, *>>.calculateActualSizeX(regionSizeXFunction: (Child<P, *>) -> Int) {
+        this.forEach {
+            it.view.calculateActualSizeX(regionSizeXFunction(it))
+        }
+    }
+
+    protected fun Iterable<Child<P, *>>.calculateActualSizeY(regionSizeYFunction: (Child<P, *>) -> Int) {
+        this.forEach {
+            it.view.calculateActualSizeY(regionSizeYFunction(it))
         }
     }
 
