@@ -13,7 +13,7 @@ class StackView : ContainerView<Unit>() {
     override var sizingX = Sizing.WRAP
     override var sizingY = Sizing.WRAP
 
-    override fun calculateContentSize(): IntPoint {
+    override fun calculateContentSizeImpl(): IntPoint {
         return IntPoint(
             children.maxOfOrNull { it.view.contentSize.x } ?: 0,
             children.maxOfOrNull { it.view.contentSize.y } ?: 0,

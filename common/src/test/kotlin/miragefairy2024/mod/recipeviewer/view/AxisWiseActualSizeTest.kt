@@ -48,7 +48,7 @@ private class RecordingActualSizeView : AbstractView() {
             return field
         }
 
-    override fun calculateContentSize() = IntPoint(10, 20)
+    override fun calculateContentSizeImpl() = IntPoint(10, 20)
 
     override fun calculateChildrenActualSizeX() {
         events += "childrenX:$actualSizeX"
@@ -96,7 +96,7 @@ class AxisWiseActualSizeTest {
             assertThrows(UninitializedPropertyAccessException::class.java) { it.contentSize }
         }
 
-        view.calculateContentSize2()
+        view.calculateContentSize()
         view.calculateActualSizeX(100)
         view.calculateActualSizeY(200)
 
@@ -111,7 +111,7 @@ class AxisWiseActualSizeTest {
     fun `X成分はY成分を計算せず同期的に確定するのだ`() {
         val view = RecordingActualSizeView()
         view.initSizeCalculation(TEST_RENDERING_PROXY)
-        view.calculateContentSize2()
+        view.calculateContentSize()
 
         view.calculateActualSizeX(100)
         assertEquals(listOf("sizingX", "childrenX:10"), view.events)
@@ -124,7 +124,7 @@ class AxisWiseActualSizeTest {
     fun `Y成分はX成分を計算せず同期的に確定するのだ`() {
         val view = RecordingActualSizeView()
         view.initSizeCalculation(TEST_RENDERING_PROXY)
-        view.calculateContentSize2()
+        view.calculateContentSize()
 
         view.calculateActualSizeY(100)
         assertEquals(listOf("sizingY", "childrenY:20"), view.events)
@@ -170,7 +170,7 @@ class AxisWiseActualSizeTest {
                 view.sizingX = sizingX
                 view.sizingY = sizingY
                 view.initSizeCalculation(TEST_RENDERING_PROXY)
-                view.calculateContentSize2()
+                view.calculateContentSize()
                 val expectedX = if (sizingX == Sizing.FILL) 100 else 10
                 val expectedY = if (sizingY == Sizing.FILL) 200 else 20
 
@@ -199,7 +199,7 @@ class AxisWiseActualSizeTest {
         val otherChildView = RecordingActualSizeView()
         stackView.add(Child(Unit, otherChildView))
         stackView.initSizeCalculation(TEST_RENDERING_PROXY)
-        stackView.calculateContentSize2()
+        stackView.calculateContentSize()
 
         stackView.calculateActualSizeX(100)
         assertEquals(95, childView.actualSizeX)
@@ -232,7 +232,7 @@ class AxisWiseActualSizeTest {
             val view = WrapperView()
             view.add(Child(Unit, childView))
             view.initSizeCalculation(TEST_RENDERING_PROXY)
-            view.calculateContentSize2()
+            view.calculateContentSize()
 
             if (xFirst) {
                 view.calculateActualSizeX(101)
@@ -266,7 +266,7 @@ class AxisWiseActualSizeTest {
                     }
                 }
                 view.initSizeCalculation(TEST_RENDERING_PROXY)
-                view.calculateContentSize2()
+                view.calculateContentSize()
                 val expectedSizes = if (horizontal) listOf(IntPoint(51, 203), IntPoint(50, 203)) else listOf(IntPoint(101, 102), IntPoint(101, 101))
 
                 if (xFirst) {
@@ -308,7 +308,7 @@ class AxisWiseActualSizeTest {
             }
             val expectedSizes = listOf(IntPoint(101, 203), IntPoint(10, 20), IntPoint(29, 43))
             view.initSizeCalculation(TEST_RENDERING_PROXY)
-            view.calculateContentSize2()
+            view.calculateContentSize()
 
             if (xFirst) {
                 view.calculateActualSizeX(300)

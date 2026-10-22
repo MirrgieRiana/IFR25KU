@@ -17,7 +17,7 @@ abstract class ParentView<P> : AbstractView() {
 
     protected fun Iterable<Child<P, *>>.calculateContentSize() {
         this.forEach {
-            it.view.calculateContentSize2()
+            it.view.calculateContentSize()
         }
     }
 

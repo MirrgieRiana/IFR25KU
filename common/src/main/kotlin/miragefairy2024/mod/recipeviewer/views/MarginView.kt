@@ -9,7 +9,7 @@ import miragefairy2024.util.Remover
 
 class MarginView(private val xMin: Int, private val xMax: Int, private val yMin: Int, private val yMax: Int) : WrapperView() {
 
-    override fun calculateContentSize() = super.calculateContentSize().plus(xMin + xMax, yMin + yMax)
+    override fun calculateContentSizeImpl() = super.calculateContentSizeImpl().plus(xMin + xMax, yMin + yMax)
 
     override fun calculateChildrenActualSizeX() {
         childView.calculateActualSizeX(actualSizeX - xMin - xMax)

@@ -17,14 +17,14 @@ abstract class AbstractView : View {
     private lateinit var contentSizeCache: IntPoint
     final override val contentSize get() = contentSizeCache
 
-    final override fun calculateContentSize2() {
+    final override fun calculateContentSize() {
         calculateChildrenContentSize()
-        contentSizeCache = calculateContentSize()
+        contentSizeCache = calculateContentSizeImpl()
     }
 
     protected open fun calculateChildrenContentSize() = Unit
 
-    protected abstract fun calculateContentSize(): IntPoint
+    protected abstract fun calculateContentSizeImpl(): IntPoint
 
 
     private var actualSizeXCache: Int? = null

@@ -28,7 +28,7 @@ interface View {
      * [contentSize]はこのViewが実際に機能的に占有するサイズより大きくても小さくてもかまいません。
      * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に 1 度だけ呼び出すのだ～🌱
      */
-    fun calculateContentSize2()
+    fun calculateContentSize()
 
 
     /** この View の実際のサイズの X 成分なのだ～🌱 */
@@ -40,14 +40,14 @@ interface View {
     /**
      * [miragefairy2024.mod.recipeviewer.view.View.actualSizeX] を計算するのだ～🌱
      * 実際のサイズは [regionSizeX] より大きくてもかまわないのだ～🌱
-     * [miragefairy2024.mod.recipeviewer.view.View.calculateContentSize2] の後に 1 度だけ呼び出すのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.view.View.calculateContentSize] の後に 1 度だけ呼び出すのだ～🌱
      */
     fun calculateActualSizeX(regionSizeX: Int)
 
     /**
      * [miragefairy2024.mod.recipeviewer.view.View.actualSizeY] を計算するのだ～🌱
      * 実際のサイズは [regionSizeY] より大きくてもかまわないのだ～🌱
-     * [miragefairy2024.mod.recipeviewer.view.View.calculateContentSize2] の後に 1 度だけ呼び出すのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.view.View.calculateContentSize] の後に 1 度だけ呼び出すのだ～🌱
      */
     fun calculateActualSizeY(regionSizeY: Int)
 

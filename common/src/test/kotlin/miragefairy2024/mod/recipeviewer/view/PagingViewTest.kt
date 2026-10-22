@@ -31,10 +31,10 @@ private class RecordingPagingChildView(size: IntPoint, private val events: Mutab
         initializationCount += 1
     }
 
-    override fun calculateContentSize(): IntPoint {
+    override fun calculateContentSizeImpl(): IntPoint {
         assertSame(TEST_RENDERING_PROXY, renderingProxy)
         events += "content"
-        return super.calculateContentSize()
+        return super.calculateContentSizeImpl()
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
@@ -66,7 +66,7 @@ class PagingViewTest {
                 listOf(Child(Alignment.START, firstChild), Child(Alignment.END, secondChild))
             })
             view.initSizeCalculation(TEST_RENDERING_PROXY)
-            view.calculateContentSize2()
+            view.calculateContentSize()
 
             if (xFirst) {
                 view.calculateActualSizeX(100)
@@ -112,7 +112,7 @@ class PagingViewTest {
     fun `子がない場合も配置時に空のページを作るのだ`() {
         val view = PagingView()
         view.initSizeCalculation(TEST_RENDERING_PROXY)
-        view.calculateContentSize2()
+        view.calculateContentSize()
         view.calculateActualSizeX(100)
         view.calculateActualSizeY(10)
         assertEquals(0, view.pageCount.value)

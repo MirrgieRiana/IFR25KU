@@ -19,6 +19,6 @@ class NinePatchImageView(
 ) : AbstractView(), PlaceableView {
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
-    override fun calculateContentSize() = IntPoint.Companion.ZERO
+    override fun calculateContentSizeImpl() = IntPoint.Companion.ZERO
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(actualSize))
 }

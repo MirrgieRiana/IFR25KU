@@ -144,7 +144,7 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     private val sizeCache = run {
         val view = support.card.createView(recipeEntry)
         view.initSizeCalculation(renderingProxy)
-        view.calculateContentSize2()
+        view.calculateContentSize()
         view.calculateActualSizeX(EmiClientSupport.MAX_SIZE.x - 5 - 5)
         view.calculateActualSizeY(EmiClientSupport.MAX_SIZE.y - 5 - 5)
         view.actualSize
@@ -157,7 +157,7 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
         val containerWidget = EmiContainerWidget()
         val view = support.card.createView(recipeEntry)
         view.initSizeCalculation(renderingProxy)
-        view.calculateContentSize2()
+        view.calculateContentSize()
         view.calculateActualSizeX(EmiClientSupport.MAX_SIZE.x - 5 - 5)
         view.calculateActualSizeY(EmiClientSupport.MAX_SIZE.y - 5 - 5)
         view.attachTo(IntPoint(1, 1)) { view2, bounds ->

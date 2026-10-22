@@ -32,7 +32,7 @@ abstract class ListView : ContainerView<ListView.Position>() {
 
 class XListView : ListView() {
 
-    override fun calculateContentSize(): IntPoint {
+    override fun calculateContentSizeImpl(): IntPoint {
         return IntPoint(
             children.sumOf { it.reservedSizeX },
             children.maxOfOrNull { it.reservedSizeY } ?: 0,
@@ -83,7 +83,7 @@ class XListView : ListView() {
 
 class YListView : ListView() {
 
-    override fun calculateContentSize(): IntPoint {
+    override fun calculateContentSizeImpl(): IntPoint {
         return IntPoint(
             children.maxOfOrNull { it.reservedSizeX } ?: 0,
             children.sumOf { it.reservedSizeY },
