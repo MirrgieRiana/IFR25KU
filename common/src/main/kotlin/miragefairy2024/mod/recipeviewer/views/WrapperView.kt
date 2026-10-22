@@ -30,11 +30,16 @@ open class WrapperView : ParentView<Unit>() {
         childView.initSizeCalculation(renderingProxy)
     }
 
-    final override fun calculateChildrenContentSize() {
-        childView.calculateContentSize()
+    final override fun calculateChildrenContentSizeX() {
+        childView.calculateContentSizeX()
     }
 
-    override fun calculateContentSizeImpl() = childView.contentSize
+    final override fun calculateChildrenContentSizeY() {
+        childView.calculateContentSizeY()
+    }
+
+    override fun calculateContentSizeXImpl() = childView.contentSizeX
+    override fun calculateContentSizeYImpl() = childView.contentSizeY
 
     override fun calculateChildrenActualSizeX() {
         childView.calculateActualSizeX(actualSizeX)

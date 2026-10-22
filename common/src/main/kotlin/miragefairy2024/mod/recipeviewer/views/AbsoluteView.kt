@@ -41,14 +41,15 @@ class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Posi
     override var sizingX = Sizing.WRAP
     override var sizingY = Sizing.WRAP
 
-    override fun calculateContentSizeImpl() = size
+    override fun calculateContentSizeXImpl() = size.x
+    override fun calculateContentSizeYImpl() = size.y
 
     override fun calculateChildrenActualSizeX() {
-        children.calculateActualSizeX { it.position.getSizeX(it.view.contentSize.x, actualSizeX) }
+        children.calculateActualSizeX { it.position.getSizeX(it.view.contentSizeX, actualSizeX) }
     }
 
     override fun calculateChildrenActualSizeY() {
-        children.calculateActualSizeY { it.position.getSizeY(it.view.contentSize.y, actualSizeY) }
+        children.calculateActualSizeY { it.position.getSizeY(it.view.contentSizeY, actualSizeY) }
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {

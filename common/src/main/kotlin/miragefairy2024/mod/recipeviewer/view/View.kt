@@ -17,18 +17,25 @@ interface View {
      */
     fun initSizeCalculation(renderingProxy: RenderingProxy)
 
-    /**
-     * このViewのコンテンツの最小サイズ。
-     * 親Viewはレイアウトの決定の際にこのサイズを使用します。
-     */
-    val contentSize: IntPoint
+    /** この View のコンテンツが占有する最小のサイズの X 成分で、親 View がレイアウトの決定に使用するのだ～🌱 */
+    val contentSizeX: Int
+
+    /** この View のコンテンツが占有する最小のサイズの Y 成分で、親 View がレイアウトの決定に使用するのだ～🌱 */
+    val contentSizeY: Int
 
     /**
-     * [contentSize]を計算します。
-     * [contentSize]はこのViewが実際に機能的に占有するサイズより大きくても小さくてもかまいません。
+     * [miragefairy2024.mod.recipeviewer.view.View.contentSizeX] を計算するのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.view.View.contentSizeX] はこの View が実際に機能的に占有するサイズの X 成分より大きくても小さくてもかまわないのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に 1 度だけ呼び出すのだ～🌱
      */
-    fun calculateContentSize()
+    fun calculateContentSizeX()
+
+    /**
+     * [miragefairy2024.mod.recipeviewer.view.View.contentSizeY] を計算するのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.view.View.contentSizeY] はこの View が実際に機能的に占有するサイズの Y 成分より大きくても小さくてもかまわないのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に 1 度だけ呼び出すのだ～🌱
+     */
+    fun calculateContentSizeY()
 
 
     /** この View の実際のサイズの X 成分なのだ～🌱 */
@@ -40,14 +47,14 @@ interface View {
     /**
      * [miragefairy2024.mod.recipeviewer.view.View.actualSizeX] を計算するのだ～🌱
      * 実際のサイズは [regionSizeX] より大きくてもかまわないのだ～🌱
-     * [miragefairy2024.mod.recipeviewer.view.View.calculateContentSize] の後に 1 度だけ呼び出すのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.view.View.calculateContentSizeX] の後に 1 度だけ呼び出すのだ～🌱
      */
     fun calculateActualSizeX(regionSizeX: Int)
 
     /**
      * [miragefairy2024.mod.recipeviewer.view.View.actualSizeY] を計算するのだ～🌱
      * 実際のサイズは [regionSizeY] より大きくてもかまわないのだ～🌱
-     * [miragefairy2024.mod.recipeviewer.view.View.calculateContentSize] の後に 1 度だけ呼び出すのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.view.View.calculateContentSizeY] の後に 1 度だけ呼び出すのだ～🌱
      */
     fun calculateActualSizeY(regionSizeY: Int)
 
@@ -62,4 +69,5 @@ interface View {
 
 }
 
+val View.contentSize get() = IntPoint(contentSizeX, contentSizeY)
 val View.actualSize get() = IntPoint(actualSizeX, actualSizeY)

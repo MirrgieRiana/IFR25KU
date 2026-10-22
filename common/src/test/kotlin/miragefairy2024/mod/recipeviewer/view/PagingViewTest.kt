@@ -31,10 +31,16 @@ private class RecordingPagingChildView(size: IntPoint, private val events: Mutab
         initializationCount += 1
     }
 
-    override fun calculateContentSizeImpl(): IntPoint {
+    override fun calculateContentSizeXImpl(): Int {
         assertSame(TEST_RENDERING_PROXY, renderingProxy)
-        events += "content"
-        return super.calculateContentSizeImpl()
+        events += "contentX"
+        return super.calculateContentSizeXImpl()
+    }
+
+    override fun calculateContentSizeYImpl(): Int {
+        assertSame(TEST_RENDERING_PROXY, renderingProxy)
+        events += "contentY"
+        return super.calculateContentSizeYImpl()
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
@@ -66,7 +72,8 @@ class PagingViewTest {
                 listOf(Child(Alignment.START, firstChild), Child(Alignment.END, secondChild))
             })
             view.initSizeCalculation(TEST_RENDERING_PROXY)
-            view.calculateContentSize()
+            view.calculateContentSizeX()
+            view.calculateContentSizeY()
 
             if (xFirst) {
                 view.calculateActualSizeX(100)
@@ -82,7 +89,7 @@ class PagingViewTest {
 
             val remover = view.attachTo(IntPoint(7, 11), TEST_VIEW_PLACER)
 
-            assertEquals(listOf("generate", "content", "content", "attach"), events)
+            assertEquals(listOf("generate", "contentX", "contentX", "contentY", "contentY", "attach"), events)
             assertEquals(2, view.pageCount.value)
             assertEquals(listOf(2), pageCounts)
             assertEquals(IntPoint(10, 6), firstChild.actualSize)
@@ -94,7 +101,7 @@ class PagingViewTest {
 
             view.pageIndex.value = 1
 
-            assertEquals(listOf("generate", "content", "content", "attach", "remove", "attach"), events)
+            assertEquals(listOf("generate", "contentX", "contentX", "contentY", "contentY", "attach", "remove", "attach"), events)
             assertEquals(listOf(IntPoint(97, 11)), secondChild.offsets)
             assertEquals(1, firstChild.initializationCount)
             assertEquals(1, secondChild.initializationCount)
@@ -102,7 +109,7 @@ class PagingViewTest {
             remover.remove()
 
             val eventsAfterRemoval = events.toList()
-            assertEquals(listOf("generate", "content", "content", "attach", "remove", "attach", "remove"), eventsAfterRemoval)
+            assertEquals(listOf("generate", "contentX", "contentX", "contentY", "contentY", "attach", "remove", "attach", "remove"), eventsAfterRemoval)
             view.pageIndex.value = 0
             assertEquals(eventsAfterRemoval, events)
         }
@@ -112,7 +119,8 @@ class PagingViewTest {
     fun `子がない場合も配置時に空のページを作るのだ`() {
         val view = PagingView()
         view.initSizeCalculation(TEST_RENDERING_PROXY)
-        view.calculateContentSize()
+        view.calculateContentSizeX()
+        view.calculateContentSizeY()
         view.calculateActualSizeX(100)
         view.calculateActualSizeY(10)
         assertEquals(0, view.pageCount.value)

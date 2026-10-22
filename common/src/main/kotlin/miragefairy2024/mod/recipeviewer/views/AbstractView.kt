@@ -1,6 +1,5 @@
 package miragefairy2024.mod.recipeviewer.views
 
-import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
@@ -14,17 +13,30 @@ abstract class AbstractView : View {
         this.renderingProxy = renderingProxy
     }
 
-    private lateinit var contentSizeCache: IntPoint
-    final override val contentSize get() = contentSizeCache
+    private var contentSizeXCache: Int? = null
+    final override val contentSizeX get() = contentSizeXCache ?: throw IllegalStateException("The content size of the X axis is not calculated yet: ${javaClass.name}")
 
-    final override fun calculateContentSize() {
-        calculateChildrenContentSize()
-        contentSizeCache = calculateContentSizeImpl()
+    final override fun calculateContentSizeX() {
+        calculateChildrenContentSizeX()
+        contentSizeXCache = calculateContentSizeXImpl()
     }
 
-    protected open fun calculateChildrenContentSize() = Unit
+    protected open fun calculateChildrenContentSizeX() = Unit
 
-    protected abstract fun calculateContentSizeImpl(): IntPoint
+    protected abstract fun calculateContentSizeXImpl(): Int
+
+
+    private var contentSizeYCache: Int? = null
+    final override val contentSizeY get() = contentSizeYCache ?: throw IllegalStateException("The content size of the Y axis is not calculated yet: ${javaClass.name}")
+
+    final override fun calculateContentSizeY() {
+        calculateChildrenContentSizeY()
+        contentSizeYCache = calculateContentSizeYImpl()
+    }
+
+    protected open fun calculateChildrenContentSizeY() = Unit
+
+    protected abstract fun calculateContentSizeYImpl(): Int
 
 
     private var actualSizeXCache: Int? = null
@@ -33,7 +45,7 @@ abstract class AbstractView : View {
     final override fun calculateActualSizeX(regionSizeX: Int) {
         actualSizeXCache = when (sizingX) {
             Sizing.FILL -> regionSizeX
-            Sizing.WRAP -> contentSize.x
+            Sizing.WRAP -> contentSizeX
         }
         calculateChildrenActualSizeX()
     }
@@ -47,7 +59,7 @@ abstract class AbstractView : View {
     final override fun calculateActualSizeY(regionSizeY: Int) {
         actualSizeYCache = when (sizingY) {
             Sizing.FILL -> regionSizeY
-            Sizing.WRAP -> contentSize.y
+            Sizing.WRAP -> contentSizeY
         }
         calculateChildrenActualSizeY()
     }
