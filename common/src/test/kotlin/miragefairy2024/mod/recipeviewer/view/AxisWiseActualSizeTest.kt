@@ -107,7 +107,8 @@ class AxisWiseActualSizeTest {
                 val expectedX = if (sizingX == Sizing.FILL) 100 else 10
                 val expectedY = if (sizingY == Sizing.FILL) 200 else 20
 
-                view.calculateActualSize(IntPoint(100, 200))
+                view.calculateActualSizeX(100)
+                view.calculateActualSizeY(200)
 
                 assertEquals(listOf("sizingX", "sizingY", "children:${expectedX}x$expectedY"), view.events)
                 assertEquals(expectedX, view.actualSizeX)

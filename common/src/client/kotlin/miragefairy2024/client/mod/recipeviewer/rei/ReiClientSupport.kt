@@ -24,8 +24,6 @@ import miragefairy2024.mod.recipeviewer.rei.SupportedDisplay
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.actualSize
-import miragefairy2024.mod.recipeviewer.view.calculateActualSize
-import miragefairy2024.mod.recipeviewer.view.minus
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
@@ -114,7 +112,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         return sizeCache.getOrPut(recipeEntry) {
             val view = card.createView(recipeEntry)
             view.calculateContentSize(renderingProxy)
-            view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
+            view.calculateActualSizeX(MAX_SIZE.x - 5 - 5)
+            view.calculateActualSizeY(MAX_SIZE.y - 5 - 5)
             view.actualSize
         }
     }
@@ -129,7 +128,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             val containerWidget = ReiContainerWidget()
             val view = card.createView(display.recipeEntry)
             view.calculateContentSize(renderingProxy)
-            view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
+            view.calculateActualSizeX(MAX_SIZE.x - 5 - 5)
+            view.calculateActualSizeY(MAX_SIZE.y - 5 - 5)
             view.attachTo(IntPoint(bounds.x + 5, bounds.y + 5)) { view2, bounds ->
                 REI_VIEW_PLACER_REGISTRY.place(containerWidget, view2, bounds)
             }
@@ -159,7 +159,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
                         val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(BasicDisplay.registryAccess(), it.id(), it.value(), false)
                         val view = bridge.card.createView(recipeEntry)
                         view.calculateContentSize(renderingProxy)
-                        view.calculateActualSize(MAX_SIZE.minus(5 + 5, 5 + 5))
+                        view.calculateActualSizeX(MAX_SIZE.x - 5 - 5)
+                        view.calculateActualSizeY(MAX_SIZE.y - 5 - 5)
                         heightCache = heightCache max view.actualSize.y
                     }
                 }

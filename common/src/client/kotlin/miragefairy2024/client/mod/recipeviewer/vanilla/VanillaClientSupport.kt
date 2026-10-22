@@ -5,7 +5,6 @@ import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
-import miragefairy2024.mod.recipeviewer.view.calculateActualSize
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
@@ -28,7 +27,8 @@ class ViewVanillaAdapter(private val rootView: View, private val context: Vanill
     /** [offset] を左上として [regionSize] の空間へ View のツリーを配置し、一括解除用の [miragefairy2024.util.Remover] を返すのだ～🌱 */
     fun layout(offset: IntPoint, regionSize: IntPoint): Remover {
         rootView.calculateContentSize(renderingProxy)
-        rootView.calculateActualSize(regionSize)
+        rootView.calculateActualSizeX(regionSize.x)
+        rootView.calculateActualSizeY(regionSize.y)
         return rootView.attachTo(offset) { view, bounds ->
             VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds)
         }

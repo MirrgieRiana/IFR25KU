@@ -56,8 +56,3 @@ interface View {
 }
 
 val View.actualSize get() = IntPoint(actualSizeX, actualSizeY)
-
-fun View.calculateActualSize(regionSize: IntPoint) {
-    calculateActualSizeX(regionSize.x)
-    calculateActualSizeY(regionSize.y)
-}
