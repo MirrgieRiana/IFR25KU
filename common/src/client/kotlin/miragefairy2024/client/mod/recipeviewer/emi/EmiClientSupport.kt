@@ -18,7 +18,7 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBri
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
-import miragefairy2024.mod.recipeviewer.view.actualSize
+import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.util.invoke
 import miragefairy2024.util.pathString
 import miragefairy2024.util.plus
@@ -144,7 +144,7 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     private val sizeCache = run {
         val view = support.card.createView(recipeEntry)
         view.initSizeCalculation(renderingProxy, { EmiClientSupport.MAX_SIZE.x - 5 - 5 }, { EmiClientSupport.MAX_SIZE.y - 5 - 5 })
-        view.actualSize
+        view.evaluateActualSize()
     }
 
     override fun getDisplayWidth() = 1 + sizeCache.x + 1

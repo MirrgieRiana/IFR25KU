@@ -23,7 +23,7 @@ import miragefairy2024.mod.recipeviewer.rei.ReiSupport
 import miragefairy2024.mod.recipeviewer.rei.SupportedDisplay
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
-import miragefairy2024.mod.recipeviewer.view.actualSize
+import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.text
@@ -112,7 +112,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         return sizeCache.getOrPut(recipeEntry) {
             val view = card.createView(recipeEntry)
             view.initSizeCalculation(renderingProxy, { MAX_SIZE.x - 5 - 5 }, { MAX_SIZE.y - 5 - 5 })
-            view.actualSize
+            view.evaluateActualSize()
         }
     }
 

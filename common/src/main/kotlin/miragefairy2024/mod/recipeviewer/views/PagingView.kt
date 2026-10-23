@@ -7,7 +7,7 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RemoverList
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
-import miragefairy2024.mod.recipeviewer.view.actualSize
+import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.plusAssign
 import miragefairy2024.util.ObservableValue
@@ -39,7 +39,7 @@ class PagingView : ParentView<Alignment>() {
     val pageIndex = ObservableValue(0)
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val children = childrenGenerators.flatMap { it.generateChildren(renderingProxy, actualSize) }
+        val children = childrenGenerators.flatMap { it.generateChildren(renderingProxy, evaluateActualSize()) }
         children.initSizeCalculation()
 
         val pages = mutableListOf<List<Child<Alignment, *>>>()

@@ -82,7 +82,7 @@ class PagingViewTest {
                 view.evaluateActualSizeY()
                 view.evaluateActualSizeX()
             }
-            assertEquals(IntPoint(100, 10), view.actualSize)
+            assertEquals(IntPoint(100, 10), view.evaluateActualSize())
             assertEquals(emptyList<String>(), events)
             assertEquals(0, view.pageCount.value)
             assertEquals(emptyList<Int>(), pageCounts)

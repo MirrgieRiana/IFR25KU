@@ -60,5 +60,5 @@ interface View {
 
 }
 
-val View.contentSize get() = IntPoint(evaluateContentSizeX(), evaluateContentSizeY())
-val View.actualSize get() = IntPoint(evaluateActualSizeX(), evaluateActualSizeY())
+fun View.evaluateContentSize() = IntPoint(evaluateContentSizeX(), evaluateContentSizeY())
+fun View.evaluateActualSize() = IntPoint(evaluateActualSizeX(), evaluateActualSizeY())

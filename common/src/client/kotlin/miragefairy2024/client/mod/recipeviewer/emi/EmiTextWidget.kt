@@ -4,7 +4,7 @@ import dev.emi.emi.api.widget.Widget
 import miragefairy2024.client.util.drawScrollingString
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
-import miragefairy2024.mod.recipeviewer.view.actualSize
+import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.util.toEmiBounds
@@ -14,7 +14,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 
 class EmiTextWidget(private val offset: IntPoint, private val view: TextView) : Widget() {
 
-    private val emiBounds = offset.sized(view.actualSize).toEmiBounds()
+    private val emiBounds = offset.sized(view.evaluateActualSize()).toEmiBounds()
     override fun getBounds() = emiBounds
 
     private val startNanoTime by lazy { System.nanoTime() }

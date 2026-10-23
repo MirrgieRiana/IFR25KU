@@ -24,7 +24,7 @@ class SpaceViewTest {
         view.evaluateContentSizeY()
         view.evaluateActualSizeX()
         view.evaluateActualSizeY()
-        assertEquals(IntPoint(10, 20), view.actualSize)
+        assertEquals(IntPoint(10, 20), view.evaluateActualSize())
     }
 
     @Test
@@ -35,7 +35,7 @@ class SpaceViewTest {
         view.evaluateContentSizeY()
         view.evaluateActualSizeX()
         view.evaluateActualSizeY()
-        assertEquals(IntPoint(10, 20), view.actualSize)
+        assertEquals(IntPoint(10, 20), view.evaluateActualSize())
     }
 
 }

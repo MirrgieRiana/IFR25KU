@@ -6,7 +6,7 @@ import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
 import miragefairy2024.client.util.drawScrollingString
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
-import miragefairy2024.mod.recipeviewer.view.actualSize
+import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.util.toReiRectangle
@@ -15,7 +15,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener
 
 class ReiTextWidget(private val offset: IntPoint, private val view: TextView) : WidgetWithBounds() {
 
-    private val reiBounds = offset.sized(view.actualSize).toReiRectangle()
+    private val reiBounds = offset.sized(view.evaluateActualSize()).toReiRectangle()
     override fun getBounds() = reiBounds
 
     override fun children() = listOf<GuiEventListener>()

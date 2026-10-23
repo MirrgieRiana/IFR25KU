@@ -79,8 +79,8 @@ class AxisWiseContentSizeTest {
                 view.evaluateActualSizeX()
             }
 
-            assertEquals(IntPoint(10, 20), view.contentSize)
-            assertEquals(IntPoint(10, 20), view.actualSize)
+            assertEquals(IntPoint(10, 20), view.evaluateContentSize())
+            assertEquals(IntPoint(10, 20), view.evaluateActualSize())
             assertEquals(if (xFirst) listOf("contentX", "contentY") else listOf("contentY", "contentX"), events)
         }
     }
@@ -120,10 +120,10 @@ class AxisWiseContentSizeTest {
                     view.evaluateActualSizeX()
                 }
 
-                assertEquals(expectedSize, view.contentSize)
-                assertEquals(IntPoint(15, 32), marginView.contentSize)
-                assertEquals(IntPoint(10, 20), childView.contentSize)
-                assertEquals(IntPoint(30, 7), otherChildView.contentSize)
+                assertEquals(expectedSize, view.evaluateContentSize())
+                assertEquals(IntPoint(15, 32), marginView.evaluateContentSize())
+                assertEquals(IntPoint(10, 20), childView.evaluateContentSize())
+                assertEquals(IntPoint(30, 7), otherChildView.evaluateContentSize())
                 assertEquals(if (xFirst) listOf("contentX", "contentX", "contentY", "contentY") else listOf("contentY", "contentY", "contentX", "contentX"), events)
             }
 
@@ -165,8 +165,8 @@ class AxisWiseContentSizeTest {
                     view.evaluateContentSizeX()
                 }
 
-                assertEquals(expectedSize, view.contentSize)
-                assertEquals(IntPoint(10, 20), childView.contentSize)
+                assertEquals(expectedSize, view.evaluateContentSize())
+                assertEquals(IntPoint(10, 20), childView.evaluateContentSize())
                 assertEquals(if (xFirst) listOf("contentX", "contentY") else listOf("contentY", "contentX"), events)
             }
         }
@@ -194,7 +194,7 @@ class AxisWiseContentSizeTest {
                     view.evaluateContentSizeX()
                 }
 
-                assertEquals(IntPoint(30, 20), view.contentSize)
+                assertEquals(IntPoint(30, 20), view.evaluateContentSize())
                 assertEquals(if (xFirst) listOf("contentX", "contentY") else listOf("contentY", "contentX"), events)
             }
         }
@@ -224,7 +224,7 @@ class AxisWiseContentSizeTest {
                     view.evaluateContentSizeX()
                 }
 
-                assertEquals(expectedSize, view.contentSize)
+                assertEquals(expectedSize, view.evaluateContentSize())
             }
         }
     }
@@ -261,7 +261,7 @@ class AxisWiseContentSizeTest {
                 view.evaluateContentSizeX()
             }
 
-            assertEquals(IntPoint(37, 9), view.contentSize)
+            assertEquals(IntPoint(37, 9), view.evaluateContentSize())
             assertEquals(if (xFirst) listOf("width", "height") else listOf("height", "width"), events)
         }
     }
