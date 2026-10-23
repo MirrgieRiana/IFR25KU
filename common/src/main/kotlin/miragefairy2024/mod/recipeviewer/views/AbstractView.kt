@@ -19,6 +19,10 @@ abstract class AbstractView : View {
         this.renderingProxy = renderingProxy
         this.regionSizeXProvider = regionSizeXProvider
         this.regionSizeYProvider = regionSizeYProvider
+        contentSizeXCache = null
+        contentSizeYCache = null
+        actualSizeXCache = null
+        actualSizeYCache = null
     }
 
     private var contentSizeXCache: Int? = null

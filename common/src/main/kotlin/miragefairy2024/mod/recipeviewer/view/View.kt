@@ -10,42 +10,48 @@ interface View {
 
     /**
      * サイズ計算に使用する [renderingProxy] と、割り当て領域を取得する [regionSizeXProvider]・[regionSizeYProvider] を格納するのだ～🌱
-     * 既に存在する子 View も初期化するのだ～🌱
-     * サイズの計算や計算済みの値の破棄は行わないのだ～🌱
+     * 計算済みのサイズを破棄し、既に存在する子 View も初期化するのだ～🌱
+     * 初期化自体ではサイズを計算しないのだ～🌱
      */
     fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int)
 
     /**
-     * [miragefairy2024.mod.recipeviewer.view.View.getContentSizeX] を計算して内部状態に格納するのだ～🌱
-     * [miragefairy2024.mod.recipeviewer.view.View.getContentSizeX] はこの View が実際に機能的に占有するサイズの X 成分より大きくても小さくてもかまわないのだ～🌱
-     * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後、[miragefairy2024.mod.recipeviewer.view.View.getContentSizeX] が未計算のときに 1 度だけ呼び出すのだ～🌱
+     * この View のコンテンツが占有する最小のサイズの X 成分を返すのだ～🌱
+     * 未計算なら計算して内部状態に格納し、計算済みならその値を返すのだ～🌱
+     * 親 View がこの値をレイアウトの決定に使用するのだ～🌱
+     * この値はこの View が実際に機能的に占有するサイズの X 成分より大きくても小さくてもかまわないのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に呼び出さなければならないのだ～🌱
      */
     fun evaluateContentSizeX(): Int
 
     /**
-     * [miragefairy2024.mod.recipeviewer.view.View.getContentSizeY] を計算して内部状態に格納するのだ～🌱
-     * [miragefairy2024.mod.recipeviewer.view.View.getContentSizeY] はこの View が実際に機能的に占有するサイズの Y 成分より大きくても小さくてもかまわないのだ～🌱
-     * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後、[miragefairy2024.mod.recipeviewer.view.View.getContentSizeY] が未計算のときに 1 度だけ呼び出すのだ～🌱
+     * この View のコンテンツが占有する最小のサイズの Y 成分を返すのだ～🌱
+     * 未計算なら計算して内部状態に格納し、計算済みならその値を返すのだ～🌱
+     * 親 View がこの値をレイアウトの決定に使用するのだ～🌱
+     * この値はこの View が実際に機能的に占有するサイズの Y 成分より大きくても小さくてもかまわないのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に呼び出さなければならないのだ～🌱
      */
     fun evaluateContentSizeY(): Int
 
     /**
-     * [miragefairy2024.mod.recipeviewer.view.View.getActualSizeX] を計算して内部状態に格納するのだ～🌱
+     * この View 自身の実際のサイズの X 成分を返すのだ～🌱
+     * 未計算なら必要な依存先とともに計算して内部状態に格納し、計算済みならその値を返すのだ～🌱
      * 実際のサイズは初期化時に登録した X 軸の割り当て領域より大きくてもかまわないのだ～🌱
-     * [miragefairy2024.mod.recipeviewer.view.View.evaluateContentSizeX] の後、[miragefairy2024.mod.recipeviewer.view.View.getActualSizeX] が未計算のときに 1 度だけ呼び出すのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に呼び出さなければならないのだ～🌱
      */
     fun evaluateActualSizeX(): Int
 
     /**
-     * [miragefairy2024.mod.recipeviewer.view.View.getActualSizeY] を計算して内部状態に格納するのだ～🌱
+     * この View 自身の実際のサイズの Y 成分を返すのだ～🌱
+     * 未計算なら必要な依存先とともに計算して内部状態に格納し、計算済みならその値を返すのだ～🌱
      * 実際のサイズは初期化時に登録した Y 軸の割り当て領域より大きくてもかまわないのだ～🌱
-     * [miragefairy2024.mod.recipeviewer.view.View.evaluateContentSizeY] の後、[miragefairy2024.mod.recipeviewer.view.View.getActualSizeY] が未計算のときに 1 度だけ呼び出すのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に呼び出さなければならないのだ～🌱
      */
     fun evaluateActualSizeY(): Int
 
     /**
      * このViewを指定された位置に配置します。
-     * このメソッドは必ず [miragefairy2024.mod.recipeviewer.view.View.evaluateActualSizeX] と [miragefairy2024.mod.recipeviewer.view.View.evaluateActualSizeY] の両方の後に呼び出すのだ～🌱
+     * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に呼び出さなければならないのだ～🌱
      * [Remover.remove]が呼び出されるまでに、同じViewに対してこのメソッドが複数回呼び出されることはありません。
      * [Remover.remove]は、[attachTo]の呼び出しに対して必ずしも対応して呼び出される保証はありません。
      */
