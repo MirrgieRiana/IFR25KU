@@ -22,13 +22,13 @@ abstract class ParentView<P> : AbstractView() {
 
     protected fun Iterable<Child<P, *>>.calculateContentSizeX() {
         this.forEach {
-            it.view.calculateContentSizeX()
+            it.view.evaluateContentSizeX()
         }
     }
 
     protected fun Iterable<Child<P, *>>.calculateContentSizeY() {
         this.forEach {
-            it.view.calculateContentSizeY()
+            it.view.evaluateContentSizeY()
         }
     }
 

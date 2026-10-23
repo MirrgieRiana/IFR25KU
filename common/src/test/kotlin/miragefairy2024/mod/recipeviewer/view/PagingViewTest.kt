@@ -72,8 +72,8 @@ class PagingViewTest {
                 listOf(Child(Alignment.START, firstChild), Child(Alignment.END, secondChild))
             })
             view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 10 })
-            view.calculateContentSizeX()
-            view.calculateContentSizeY()
+            view.evaluateContentSizeX()
+            view.evaluateContentSizeY()
 
             if (xFirst) {
                 view.calculateActualSizeX()
@@ -119,8 +119,8 @@ class PagingViewTest {
     fun `子がない場合も配置時に空のページを作るのだ`() {
         val view = PagingView()
         view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 10 })
-        view.calculateContentSizeX()
-        view.calculateContentSizeY()
+        view.evaluateContentSizeX()
+        view.evaluateContentSizeY()
         view.calculateActualSizeX()
         view.calculateActualSizeY()
         assertEquals(0, view.pageCount.value)

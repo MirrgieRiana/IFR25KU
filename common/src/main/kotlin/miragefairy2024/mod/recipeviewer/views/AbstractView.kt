@@ -24,7 +24,7 @@ abstract class AbstractView : View {
     private var contentSizeXCache: Int? = null
     final override val contentSizeX get() = contentSizeXCache ?: throw IllegalStateException("The content size of the X axis is not calculated yet: ${javaClass.name}")
 
-    final override fun calculateContentSizeX() {
+    final override fun evaluateContentSizeX() {
         calculateChildrenContentSizeX()
         contentSizeXCache = getOwnContentSizeX()
     }
@@ -37,7 +37,7 @@ abstract class AbstractView : View {
     private var contentSizeYCache: Int? = null
     final override val contentSizeY get() = contentSizeYCache ?: throw IllegalStateException("The content size of the Y axis is not calculated yet: ${javaClass.name}")
 
-    final override fun calculateContentSizeY() {
+    final override fun evaluateContentSizeY() {
         calculateChildrenContentSizeY()
         contentSizeYCache = getOwnContentSizeY()
     }
