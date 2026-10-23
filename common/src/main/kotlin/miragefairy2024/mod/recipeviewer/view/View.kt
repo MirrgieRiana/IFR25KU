@@ -20,28 +20,28 @@ interface View {
      * [miragefairy2024.mod.recipeviewer.view.View.getContentSizeX] はこの View が実際に機能的に占有するサイズの X 成分より大きくても小さくてもかまわないのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後、[miragefairy2024.mod.recipeviewer.view.View.getContentSizeX] が未計算のときに 1 度だけ呼び出すのだ～🌱
      */
-    fun evaluateContentSizeX()
+    fun evaluateContentSizeX(): Int
 
     /**
      * [miragefairy2024.mod.recipeviewer.view.View.getContentSizeY] を計算して内部状態に格納するのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.getContentSizeY] はこの View が実際に機能的に占有するサイズの Y 成分より大きくても小さくてもかまわないのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後、[miragefairy2024.mod.recipeviewer.view.View.getContentSizeY] が未計算のときに 1 度だけ呼び出すのだ～🌱
      */
-    fun evaluateContentSizeY()
+    fun evaluateContentSizeY(): Int
 
     /**
      * [miragefairy2024.mod.recipeviewer.view.View.getActualSizeX] を計算して内部状態に格納するのだ～🌱
      * 実際のサイズは初期化時に登録した X 軸の割り当て領域より大きくてもかまわないのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.evaluateContentSizeX] の後、[miragefairy2024.mod.recipeviewer.view.View.getActualSizeX] が未計算のときに 1 度だけ呼び出すのだ～🌱
      */
-    fun evaluateActualSizeX()
+    fun evaluateActualSizeX(): Int
 
     /**
      * [miragefairy2024.mod.recipeviewer.view.View.getActualSizeY] を計算して内部状態に格納するのだ～🌱
      * 実際のサイズは初期化時に登録した Y 軸の割り当て領域より大きくてもかまわないのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.evaluateContentSizeY] の後、[miragefairy2024.mod.recipeviewer.view.View.getActualSizeY] が未計算のときに 1 度だけ呼び出すのだ～🌱
      */
-    fun evaluateActualSizeY()
+    fun evaluateActualSizeY(): Int
 
     /**
      * このViewを指定された位置に配置します。

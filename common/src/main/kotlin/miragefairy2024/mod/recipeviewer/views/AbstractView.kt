@@ -23,9 +23,15 @@ abstract class AbstractView : View {
 
     private var contentSizeXCache: Int? = null
 
-    final override fun evaluateContentSizeX() {
-        calculateChildrenContentSizeX()
-        contentSizeXCache = getOwnContentSizeX()
+    final override fun evaluateContentSizeX(): Int {
+        val old = contentSizeXCache
+        if (old != null) {
+            return old
+        } else {
+            val new = getOwnContentSizeX()
+            contentSizeXCache = new
+            return new
+        }
     }
 
     protected open fun calculateChildrenContentSizeX() = Unit
@@ -35,9 +41,15 @@ abstract class AbstractView : View {
 
     private var contentSizeYCache: Int? = null
 
-    final override fun evaluateContentSizeY() {
-        calculateChildrenContentSizeY()
-        contentSizeYCache = getOwnContentSizeY()
+    final override fun evaluateContentSizeY(): Int {
+        val old = contentSizeYCache
+        if (old != null) {
+            return old
+        } else {
+            val new = getOwnContentSizeY()
+            contentSizeYCache = new
+            return new
+        }
     }
 
     protected open fun calculateChildrenContentSizeY() = Unit
@@ -47,12 +59,18 @@ abstract class AbstractView : View {
 
     private var actualSizeXCache: Int? = null
 
-    final override fun evaluateActualSizeX() {
-        actualSizeXCache = when (sizingX) {
-            Sizing.FILL -> regionSizeXProvider()
-            Sizing.WRAP -> evaluateContentSizeX()
+    final override fun evaluateActualSizeX(): Int {
+        val old = actualSizeXCache
+        if (old != null) {
+            return old
+        } else {
+            val new = when (sizingX) {
+                Sizing.FILL -> regionSizeXProvider()
+                Sizing.WRAP -> evaluateContentSizeX()
+            }
+            actualSizeXCache = new
+            return new
         }
-        calculateChildrenActualSizeX()
     }
 
     protected open fun calculateChildrenActualSizeX() = Unit
@@ -60,12 +78,18 @@ abstract class AbstractView : View {
 
     private var actualSizeYCache: Int? = null
 
-    final override fun evaluateActualSizeY() {
-        actualSizeYCache = when (sizingY) {
-            Sizing.FILL -> regionSizeYProvider()
-            Sizing.WRAP -> evaluateContentSizeY()
+    final override fun evaluateActualSizeY(): Int {
+        val old = actualSizeYCache
+        if (old != null) {
+            return old
+        } else {
+            val new = when (sizingY) {
+                Sizing.FILL -> regionSizeYProvider()
+                Sizing.WRAP -> evaluateContentSizeY()
+            }
+            actualSizeYCache = new
+            return new
         }
-        calculateChildrenActualSizeY()
     }
 
     protected open fun calculateChildrenActualSizeY() = Unit
