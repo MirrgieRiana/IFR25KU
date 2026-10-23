@@ -20,21 +20,32 @@ abstract class AbstractView : View {
         this.regionSizeXProvider = regionSizeXProvider
         this.regionSizeYProvider = regionSizeYProvider
         contentSizeXCache = null
+        calculatingContentSizeX = false
         contentSizeYCache = null
+        calculatingContentSizeY = false
         actualSizeXCache = null
+        calculatingActualSizeX = false
         actualSizeYCache = null
+        calculatingActualSizeY = false
     }
 
     private var contentSizeXCache: Int? = null
+    private var calculatingContentSizeX = false
 
     final override fun evaluateContentSizeX(): Int {
+        if (calculatingContentSizeX) throw IllegalStateException("Cyclic size dependency: ${javaClass.name}.evaluateContentSizeX")
         val old = contentSizeXCache
         if (old != null) {
             return old
         } else {
-            val new = getOwnContentSizeX()
-            contentSizeXCache = new
-            return new
+            calculatingContentSizeX = true
+            try {
+                val new = getOwnContentSizeX()
+                contentSizeXCache = new
+                return new
+            } finally {
+                calculatingContentSizeX = false
+            }
         }
     }
 
@@ -42,15 +53,22 @@ abstract class AbstractView : View {
 
 
     private var contentSizeYCache: Int? = null
+    private var calculatingContentSizeY = false
 
     final override fun evaluateContentSizeY(): Int {
+        if (calculatingContentSizeY) throw IllegalStateException("Cyclic size dependency: ${javaClass.name}.evaluateContentSizeY")
         val old = contentSizeYCache
         if (old != null) {
             return old
         } else {
-            val new = getOwnContentSizeY()
-            contentSizeYCache = new
-            return new
+            calculatingContentSizeY = true
+            try {
+                val new = getOwnContentSizeY()
+                contentSizeYCache = new
+                return new
+            } finally {
+                calculatingContentSizeY = false
+            }
         }
     }
 
@@ -58,35 +76,49 @@ abstract class AbstractView : View {
 
 
     private var actualSizeXCache: Int? = null
+    private var calculatingActualSizeX = false
 
     final override fun evaluateActualSizeX(): Int {
+        if (calculatingActualSizeX) throw IllegalStateException("Cyclic size dependency: ${javaClass.name}.evaluateActualSizeX")
         val old = actualSizeXCache
         if (old != null) {
             return old
         } else {
-            val new = when (sizingX) {
-                Sizing.FILL -> regionSizeXProvider()
-                Sizing.WRAP -> evaluateContentSizeX()
+            calculatingActualSizeX = true
+            try {
+                val new = when (sizingX) {
+                    Sizing.FILL -> regionSizeXProvider()
+                    Sizing.WRAP -> evaluateContentSizeX()
+                }
+                actualSizeXCache = new
+                return new
+            } finally {
+                calculatingActualSizeX = false
             }
-            actualSizeXCache = new
-            return new
         }
     }
 
 
     private var actualSizeYCache: Int? = null
+    private var calculatingActualSizeY = false
 
     final override fun evaluateActualSizeY(): Int {
+        if (calculatingActualSizeY) throw IllegalStateException("Cyclic size dependency: ${javaClass.name}.evaluateActualSizeY")
         val old = actualSizeYCache
         if (old != null) {
             return old
         } else {
-            val new = when (sizingY) {
-                Sizing.FILL -> regionSizeYProvider()
-                Sizing.WRAP -> evaluateContentSizeY()
+            calculatingActualSizeY = true
+            try {
+                val new = when (sizingY) {
+                    Sizing.FILL -> regionSizeYProvider()
+                    Sizing.WRAP -> evaluateContentSizeY()
+                }
+                actualSizeYCache = new
+                return new
+            } finally {
+                calculatingActualSizeY = false
             }
-            actualSizeYCache = new
-            return new
         }
     }
 
