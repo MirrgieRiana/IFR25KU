@@ -9,22 +9,22 @@ class AbsoluteViewTest {
     @Test
     fun `Fillは各軸の割り当て領域を使用するのだ`() {
         val position = AbsoluteView.Fill
-        assertEquals(101, position.getSizeX(17, 101))
-        assertEquals(203, position.getSizeY(31, 203))
+        assertEquals(101, position.evaluateSizeX({ throw UnsupportedOperationException() }, { 101 }))
+        assertEquals(203, position.evaluateSizeY({ throw UnsupportedOperationException() }, { 203 }))
     }
 
     @Test
     fun `Offsetは各軸のコンテンツサイズを使用するのだ`() {
         val position = AbsoluteView.Offset(IntPoint(3, 5))
-        assertEquals(17, position.getSizeX(17, 101))
-        assertEquals(31, position.getSizeY(31, 203))
+        assertEquals(17, position.evaluateSizeX({ 17 }, { throw UnsupportedOperationException() }))
+        assertEquals(31, position.evaluateSizeY({ 31 }, { throw UnsupportedOperationException() }))
     }
 
     @Test
     fun `Boundsは各軸に指定されたサイズを使用するのだ`() {
         val position = AbsoluteView.Bounds(IntRectangle(3, 5, 29, 43))
-        assertEquals(29, position.getSizeX(17, 101))
-        assertEquals(43, position.getSizeY(31, 203))
+        assertEquals(29, position.evaluateSizeX({ throw UnsupportedOperationException() }, { throw UnsupportedOperationException() }))
+        assertEquals(43, position.evaluateSizeY({ throw UnsupportedOperationException() }, { throw UnsupportedOperationException() }))
     }
 
 }
