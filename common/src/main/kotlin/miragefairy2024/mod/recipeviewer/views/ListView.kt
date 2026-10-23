@@ -3,6 +3,7 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.offset
@@ -32,10 +33,28 @@ abstract class ListView : ContainerView<ListView.Position>() {
 
 class XListView : ListView() {
 
+    private var childRegionSizeXFunction: ((Int) -> Int)? = null
+
+    override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
+        childRegionSizeXFunction = null
+        super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
+    }
+
     override fun getOwnContentSizeX() = children.sumOf { it.evaluateReservedSizeX() }
     override fun getOwnContentSizeY() = children.maxOfOrNull { it.evaluateReservedSizeY() } ?: 0
 
-    override fun createChildRegionSizeXFunction(): (Int) -> Int {
+    override fun evaluateChildRegionSizeX(index: Int): Int {
+        val old = childRegionSizeXFunction
+        if (old != null) {
+            return old(index)
+        } else {
+            val new = createChildRegionSizeXFunction()
+            childRegionSizeXFunction = new
+            return new(index)
+        }
+    }
+
+    private fun createChildRegionSizeXFunction(): (Int) -> Int {
         if (sizingX == Sizing.WRAP) return { children[it].evaluateReservedSizeX() }
         val totalWeight = children.sumOf { it.position.weight }
         if (!(totalWeight > 0.0)) return { children[it].evaluateReservedSizeX() }
@@ -58,7 +77,7 @@ class XListView : ListView() {
         }
     }
 
-    override fun createChildRegionSizeYFunction(): (Int) -> Int = { evaluateActualSizeY() }
+    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
@@ -88,12 +107,30 @@ class XListView : ListView() {
 
 class YListView : ListView() {
 
+    private var childRegionSizeYFunction: ((Int) -> Int)? = null
+
+    override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
+        childRegionSizeYFunction = null
+        super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
+    }
+
     override fun getOwnContentSizeX() = children.maxOfOrNull { it.evaluateReservedSizeX() } ?: 0
     override fun getOwnContentSizeY() = children.sumOf { it.evaluateReservedSizeY() }
 
-    override fun createChildRegionSizeXFunction(): (Int) -> Int = { evaluateActualSizeX() }
+    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
 
-    override fun createChildRegionSizeYFunction(): (Int) -> Int {
+    override fun evaluateChildRegionSizeY(index: Int): Int {
+        val old = childRegionSizeYFunction
+        if (old != null) {
+            return old(index)
+        } else {
+            val new = createChildRegionSizeYFunction()
+            childRegionSizeYFunction = new
+            return new(index)
+        }
+    }
+
+    private fun createChildRegionSizeYFunction(): (Int) -> Int {
         if (sizingY == Sizing.WRAP) return { children[it].evaluateReservedSizeY() }
         val totalWeight = children.sumOf { it.position.weight }
         if (!(totalWeight > 0.0)) return { children[it].evaluateReservedSizeY() }

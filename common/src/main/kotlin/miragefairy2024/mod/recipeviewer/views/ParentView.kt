@@ -10,15 +10,13 @@ import miragefairy2024.util.flatten
 abstract class ParentView<P> : AbstractView() {
 
     protected fun Iterable<Child<P, *>>.initSizeCalculation() {
-        val regionSizeXFunction by lazy { createChildRegionSizeXFunction() }
-        val regionSizeYFunction by lazy { createChildRegionSizeYFunction() }
         this.forEachIndexed { index, child ->
-            child.view.initSizeCalculation(renderingProxy, { regionSizeXFunction(index) }, { regionSizeYFunction(index) })
+            child.view.initSizeCalculation(renderingProxy, { evaluateChildRegionSizeX(index) }, { evaluateChildRegionSizeY(index) })
         }
     }
 
-    protected abstract fun createChildRegionSizeXFunction(): (Int) -> Int
-    protected abstract fun createChildRegionSizeYFunction(): (Int) -> Int
+    protected abstract fun evaluateChildRegionSizeX(index: Int): Int
+    protected abstract fun evaluateChildRegionSizeY(index: Int): Int
 
     protected fun Iterable<Child<P, *>>.attachTo(viewPlacer: ViewPlacer<PlaceableView>, offsetFunction: (Child<P, *>) -> IntPoint): Remover {
         return this.map {

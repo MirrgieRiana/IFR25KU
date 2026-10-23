@@ -27,16 +27,14 @@ open class WrapperView : ParentView<Unit>() {
 
     final override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
         super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
-        val regionSizeXFunction by lazy { createChildRegionSizeXFunction() }
-        val regionSizeYFunction by lazy { createChildRegionSizeYFunction() }
-        childView.initSizeCalculation(renderingProxy, { regionSizeXFunction(0) }, { regionSizeYFunction(0) })
+        childView.initSizeCalculation(renderingProxy, { evaluateChildRegionSizeX(0) }, { evaluateChildRegionSizeY(0) })
     }
 
     override fun getOwnContentSizeX() = childView.evaluateContentSizeX()
     override fun getOwnContentSizeY() = childView.evaluateContentSizeY()
 
-    override fun createChildRegionSizeXFunction(): (Int) -> Int = { evaluateActualSizeX() }
-    override fun createChildRegionSizeYFunction(): (Int) -> Int = { evaluateActualSizeY() }
+    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
+    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         return childView.attachTo(offset, viewPlacer)

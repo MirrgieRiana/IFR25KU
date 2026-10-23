@@ -16,8 +16,8 @@ class StackView : ContainerView<Unit>() {
     override fun getOwnContentSizeX() = children.maxOfOrNull { it.view.evaluateContentSizeX() } ?: 0
     override fun getOwnContentSizeY() = children.maxOfOrNull { it.view.evaluateContentSizeY() } ?: 0
 
-    override fun createChildRegionSizeXFunction(): (Int) -> Int = { evaluateActualSizeX() }
-    override fun createChildRegionSizeYFunction(): (Int) -> Int = { evaluateActualSizeY() }
+    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
+    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         return children.attachTo(viewPlacer) { offset }
