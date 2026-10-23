@@ -13,11 +13,11 @@ class StackView : ContainerView<Unit>() {
     override var sizingX = Sizing.WRAP
     override var sizingY = Sizing.WRAP
 
-    override fun getOwnContentSizeX() = children.maxOfOrNull { it.view.contentSizeX } ?: 0
-    override fun getOwnContentSizeY() = children.maxOfOrNull { it.view.contentSizeY } ?: 0
+    override fun getOwnContentSizeX() = children.maxOfOrNull { it.view.getContentSizeX() } ?: 0
+    override fun getOwnContentSizeY() = children.maxOfOrNull { it.view.getContentSizeY() } ?: 0
 
-    override fun createChildRegionSizeXFunction(): (Int) -> Int = { actualSizeX }
-    override fun createChildRegionSizeYFunction(): (Int) -> Int = { actualSizeY }
+    override fun createChildRegionSizeXFunction(): (Int) -> Int = { getActualSizeX() }
+    override fun createChildRegionSizeYFunction(): (Int) -> Int = { getActualSizeY() }
 
     override fun calculateChildrenActualSizeX() {
         children.calculateActualSizeX()

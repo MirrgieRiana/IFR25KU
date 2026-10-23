@@ -138,7 +138,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
                 REI_VIEW_PLACER_REGISTRY.place(containerWidget, view2, bounds)
             }
             return listOf(
-                Widgets.createRecipeBase(Rectangle(bounds.x, bounds.y, 5 + view.actualSizeX + 5, 5 + view.actualSizeY + 5)),
+                Widgets.createRecipeBase(Rectangle(bounds.x, bounds.y, 5 + view.getActualSizeX() + 5, 5 + view.getActualSizeY() + 5)),
                 containerWidget,
             )
         }
@@ -167,7 +167,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
                         view.evaluateContentSizeY()
                         view.calculateActualSizeX()
                         view.calculateActualSizeY()
-                        heightCache = heightCache max view.actualSizeY
+                        heightCache = heightCache max view.getActualSizeY()
                     }
                 }
                 calculateMaxHeight(bridge)

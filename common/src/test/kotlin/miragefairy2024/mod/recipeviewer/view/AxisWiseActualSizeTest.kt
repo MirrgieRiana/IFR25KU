@@ -54,11 +54,11 @@ private class RecordingActualSizeView : AbstractView() {
     override fun getOwnContentSizeY() = 20
 
     override fun calculateChildrenActualSizeX() {
-        events += "childrenX:$actualSizeX"
+        events += "childrenX:${getActualSizeX()}"
     }
 
     override fun calculateChildrenActualSizeY() {
-        events += "childrenY:$actualSizeY"
+        events += "childrenY:${getActualSizeY()}"
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = Remover.NONE
@@ -79,10 +79,10 @@ class AxisWiseActualSizeTest {
         assertSame(regionSizeYProvider, view.getStoredRegionSizeYProvider())
         assertEquals(1, view.initializationCount)
         assertEquals(emptyList<String>(), view.events)
-        assertThrows(IllegalStateException::class.java) { view.contentSizeX }
-        assertThrows(IllegalStateException::class.java) { view.contentSizeY }
-        assertThrows(IllegalStateException::class.java) { view.actualSizeX }
-        assertThrows(IllegalStateException::class.java) { view.actualSizeY }
+        assertThrows(IllegalStateException::class.java) { view.getContentSizeX() }
+        assertThrows(IllegalStateException::class.java) { view.getContentSizeY() }
+        assertThrows(IllegalStateException::class.java) { view.getActualSizeX() }
+        assertThrows(IllegalStateException::class.java) { view.getActualSizeY() }
     }
 
     @Test
@@ -145,12 +145,12 @@ class AxisWiseActualSizeTest {
 
             if (xFirst) {
                 view.calculateActualSizeX()
-                assertEquals(96, childView.actualSizeX)
+                assertEquals(96, childView.getActualSizeX())
                 assertThrows(IllegalStateException::class.java) { childView.getStoredRegionSizeYProvider()() }
                 view.calculateActualSizeY()
             } else {
                 view.calculateActualSizeY()
-                assertEquals(191, childView.actualSizeY)
+                assertEquals(191, childView.getActualSizeY())
                 assertThrows(IllegalStateException::class.java) { childView.getStoredRegionSizeXProvider()() }
                 view.calculateActualSizeX()
             }
@@ -175,8 +175,8 @@ class AxisWiseActualSizeTest {
             assertSame(TEST_RENDERING_PROXY, it.getStoredRenderingProxy())
             assertEquals(1, it.initializationCount)
             assertEquals(emptyList<String>(), it.events)
-            assertThrows(IllegalStateException::class.java) { it.contentSizeX }
-            assertThrows(IllegalStateException::class.java) { it.contentSizeY }
+            assertThrows(IllegalStateException::class.java) { it.getContentSizeX() }
+            assertThrows(IllegalStateException::class.java) { it.getContentSizeY() }
         }
 
         view.evaluateContentSizeX()
@@ -200,8 +200,8 @@ class AxisWiseActualSizeTest {
 
         view.calculateActualSizeX()
         assertEquals(listOf("sizingX", "childrenX:10"), view.events)
-        assertEquals(10, view.actualSizeX)
-        assertThrows(IllegalStateException::class.java) { view.actualSizeY }
+        assertEquals(10, view.getActualSizeX())
+        assertThrows(IllegalStateException::class.java) { view.getActualSizeY() }
         assertEquals(listOf("sizingX", "childrenX:10"), view.events)
     }
 
@@ -214,8 +214,8 @@ class AxisWiseActualSizeTest {
 
         view.calculateActualSizeY()
         assertEquals(listOf("sizingY", "childrenY:20"), view.events)
-        assertEquals(20, view.actualSizeY)
-        assertThrows(IllegalStateException::class.java) { view.actualSizeX }
+        assertEquals(20, view.getActualSizeY())
+        assertThrows(IllegalStateException::class.java) { view.getActualSizeX() }
         assertEquals(listOf("sizingY", "childrenY:20"), view.events)
     }
 
@@ -230,20 +230,20 @@ class AxisWiseActualSizeTest {
             if (xFirst) {
                 view.calculateActualSizeX()
                 assertEquals(listOf("sizingX", "childrenX:120"), view.events)
-                assertEquals(120, view.actualSizeX)
-                assertThrows(IllegalStateException::class.java) { view.actualSizeY }
+                assertEquals(120, view.getActualSizeX())
+                assertThrows(IllegalStateException::class.java) { view.getActualSizeY() }
                 view.calculateActualSizeY()
             } else {
                 view.calculateActualSizeY()
                 assertEquals(listOf("sizingY", "childrenY:500"), view.events)
-                assertEquals(500, view.actualSizeY)
-                assertThrows(IllegalStateException::class.java) { view.actualSizeX }
+                assertEquals(500, view.getActualSizeY())
+                assertThrows(IllegalStateException::class.java) { view.getActualSizeX() }
                 view.calculateActualSizeX()
             }
             val expectedEvents = if (xFirst) listOf("sizingX", "childrenX:120", "sizingY", "childrenY:500") else listOf("sizingY", "childrenY:500", "sizingX", "childrenX:120")
             assertEquals(expectedEvents, view.events)
-            assertEquals(120, view.actualSizeX)
-            assertEquals(500, view.actualSizeY)
+            assertEquals(120, view.getActualSizeX())
+            assertEquals(500, view.getActualSizeY())
             assertEquals(IntPoint(120, 500), view.actualSize)
             assertEquals(expectedEvents, view.events)
         }
@@ -266,8 +266,8 @@ class AxisWiseActualSizeTest {
                 view.calculateActualSizeY()
 
                 assertEquals(listOf("sizingX", "childrenX:$expectedX", "sizingY", "childrenY:$expectedY"), view.events)
-                assertEquals(expectedX, view.actualSizeX)
-                assertEquals(expectedY, view.actualSizeY)
+                assertEquals(expectedX, view.getActualSizeX())
+                assertEquals(expectedY, view.getActualSizeY())
                 assertEquals(listOf("sizingX", "childrenX:$expectedX", "sizingY", "childrenY:$expectedY"), view.events)
             }
         }
@@ -291,24 +291,24 @@ class AxisWiseActualSizeTest {
         stackView.evaluateContentSizeY()
 
         stackView.calculateActualSizeX()
-        assertEquals(95, childView.actualSizeX)
-        assertThrows(IllegalStateException::class.java) { childView.actualSizeY }
-        assertEquals(10, otherChildView.actualSizeX)
-        assertThrows(IllegalStateException::class.java) { otherChildView.actualSizeY }
+        assertEquals(95, childView.getActualSizeX())
+        assertThrows(IllegalStateException::class.java) { childView.getActualSizeY() }
+        assertEquals(10, otherChildView.getActualSizeX())
+        assertThrows(IllegalStateException::class.java) { otherChildView.getActualSizeY() }
         assertEquals(listOf("sizingX", "sizingX", "childrenX:95"), childView.events)
         assertEquals(listOf("sizingX", "childrenX:10"), otherChildView.events)
 
         stackView.calculateActualSizeY()
 
-        assertEquals(100, stackView.actualSizeX)
-        assertEquals(200, stackView.actualSizeY)
-        assertEquals(100, marginView.actualSizeX)
-        assertEquals(200, marginView.actualSizeY)
-        assertEquals(95, childView.actualSizeX)
-        assertEquals(188, childView.actualSizeY)
+        assertEquals(100, stackView.getActualSizeX())
+        assertEquals(200, stackView.getActualSizeY())
+        assertEquals(100, marginView.getActualSizeX())
+        assertEquals(200, marginView.getActualSizeY())
+        assertEquals(95, childView.getActualSizeX())
+        assertEquals(188, childView.getActualSizeY())
         assertEquals(listOf("sizingX", "sizingX", "childrenX:95", "sizingY", "sizingY", "childrenY:188"), childView.events)
-        assertEquals(10, otherChildView.actualSizeX)
-        assertEquals(20, otherChildView.actualSizeY)
+        assertEquals(10, otherChildView.getActualSizeX())
+        assertEquals(20, otherChildView.getActualSizeY())
         assertEquals(listOf("sizingX", "childrenX:10", "sizingY", "childrenY:20"), otherChildView.events)
     }
 
@@ -326,13 +326,13 @@ class AxisWiseActualSizeTest {
 
             if (xFirst) {
                 view.calculateActualSizeX()
-                assertEquals(101, childView.actualSizeX)
-                assertThrows(IllegalStateException::class.java) { childView.actualSizeY }
+                assertEquals(101, childView.getActualSizeX())
+                assertThrows(IllegalStateException::class.java) { childView.getActualSizeY() }
                 view.calculateActualSizeY()
             } else {
                 view.calculateActualSizeY()
-                assertEquals(203, childView.actualSizeY)
-                assertThrows(IllegalStateException::class.java) { childView.actualSizeX }
+                assertEquals(203, childView.getActualSizeY())
+                assertThrows(IllegalStateException::class.java) { childView.getActualSizeX() }
                 view.calculateActualSizeX()
             }
             val expectedEvents = if (xFirst) listOf("sizingX", "sizingX", "childrenX:101", "sizingY", "sizingY", "childrenY:203") else listOf("sizingY", "sizingY", "childrenY:203", "sizingX", "sizingX", "childrenX:101")
@@ -363,15 +363,15 @@ class AxisWiseActualSizeTest {
                 if (xFirst) {
                     view.calculateActualSizeX()
                     childViews.forEachIndexed { index, childView ->
-                        assertEquals(expectedSizes[index].x, childView.actualSizeX)
-                        assertThrows(IllegalStateException::class.java) { childView.actualSizeY }
+                        assertEquals(expectedSizes[index].x, childView.getActualSizeX())
+                        assertThrows(IllegalStateException::class.java) { childView.getActualSizeY() }
                     }
                     view.calculateActualSizeY()
                 } else {
                     view.calculateActualSizeY()
                     childViews.forEachIndexed { index, childView ->
-                        assertEquals(expectedSizes[index].y, childView.actualSizeY)
-                        assertThrows(IllegalStateException::class.java) { childView.actualSizeX }
+                        assertEquals(expectedSizes[index].y, childView.getActualSizeY())
+                        assertThrows(IllegalStateException::class.java) { childView.getActualSizeX() }
                     }
                     view.calculateActualSizeX()
                 }
@@ -502,15 +502,15 @@ class AxisWiseActualSizeTest {
             if (xFirst) {
                 view.calculateActualSizeX()
                 childViews.forEachIndexed { index, childView ->
-                    assertEquals(expectedSizes[index].x, childView.actualSizeX)
-                    assertThrows(IllegalStateException::class.java) { childView.actualSizeY }
+                    assertEquals(expectedSizes[index].x, childView.getActualSizeX())
+                    assertThrows(IllegalStateException::class.java) { childView.getActualSizeY() }
                 }
                 view.calculateActualSizeY()
             } else {
                 view.calculateActualSizeY()
                 childViews.forEachIndexed { index, childView ->
-                    assertEquals(expectedSizes[index].y, childView.actualSizeY)
-                    assertThrows(IllegalStateException::class.java) { childView.actualSizeX }
+                    assertEquals(expectedSizes[index].y, childView.getActualSizeY())
+                    assertThrows(IllegalStateException::class.java) { childView.getActualSizeX() }
                 }
                 view.calculateActualSizeX()
             }

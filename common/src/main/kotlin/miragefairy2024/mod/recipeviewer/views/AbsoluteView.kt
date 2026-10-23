@@ -44,8 +44,8 @@ class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Posi
     override fun getOwnContentSizeX() = size.x
     override fun getOwnContentSizeY() = size.y
 
-    override fun createChildRegionSizeXFunction(): (Int) -> Int = { children[it].position.getSizeX(children[it].view.contentSizeX, actualSizeX) }
-    override fun createChildRegionSizeYFunction(): (Int) -> Int = { children[it].position.getSizeY(children[it].view.contentSizeY, actualSizeY) }
+    override fun createChildRegionSizeXFunction(): (Int) -> Int = { children[it].position.getSizeX(children[it].view.getContentSizeX(), getActualSizeX()) }
+    override fun createChildRegionSizeYFunction(): (Int) -> Int = { children[it].position.getSizeY(children[it].view.getContentSizeY(), getActualSizeY()) }
 
     override fun calculateChildrenActualSizeX() {
         children.calculateActualSizeX()

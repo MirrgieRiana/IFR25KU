@@ -31,8 +31,8 @@ class PagingView : ParentView<Alignment>() {
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
 
-    override fun createChildRegionSizeXFunction(): (Int) -> Int = { actualSizeX }
-    override fun createChildRegionSizeYFunction(): (Int) -> Int = { actualSizeY }
+    override fun createChildRegionSizeXFunction(): (Int) -> Int = { getActualSizeX() }
+    override fun createChildRegionSizeYFunction(): (Int) -> Int = { getActualSizeY() }
 
     val pageCount = ObservableValue(0)
 
@@ -50,14 +50,14 @@ class PagingView : ParentView<Alignment>() {
         var page = mutableListOf<Child<Alignment, *>>()
         var y = 0
         children.forEach {
-            if (page.isNotEmpty() && y + it.view.actualSizeY > actualSizeY) {
+            if (page.isNotEmpty() && y + it.view.getActualSizeY() > getActualSizeY()) {
                 // ページが空でなく、これを追加するとはみ出す場合、新しいページを作る
                 pages += page
                 page = mutableListOf()
                 y = 0
             }
             page += it
-            y += it.view.actualSizeY
+            y += it.view.getActualSizeY()
         }
         if (page.isNotEmpty()) pages += page
         if (pages.isEmpty()) pages += listOf<Child<Alignment, *>>()
@@ -74,11 +74,11 @@ class PagingView : ParentView<Alignment>() {
             page.forEach {
                 val x = when (it.position) {
                     Alignment.START -> 0
-                    Alignment.CENTER -> (actualSizeX - it.view.actualSizeX) / 2
-                    Alignment.END -> actualSizeX - it.view.actualSizeX
+                    Alignment.CENTER -> (getActualSizeX() - it.view.getActualSizeX()) / 2
+                    Alignment.END -> getActualSizeX() - it.view.getActualSizeX()
                 }
                 childrenRemover += it.view.attachTo(offset.offset(x, y), viewPlacer)
-                y += it.view.actualSizeY
+                y += it.view.getActualSizeY()
             }
         }
         removers += childrenRemover
