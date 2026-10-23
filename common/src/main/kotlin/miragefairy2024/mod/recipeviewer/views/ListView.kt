@@ -25,15 +25,15 @@ abstract class ListView : ContainerView<ListView.Position>() {
     override var sizingX = Sizing.WRAP
     override var sizingY = Sizing.WRAP
 
-    protected val Child<Position, *>.reservedSizeX get() = if (position.ignoreLayoutX) 0 else view.evaluateContentSizeX()
-    protected val Child<Position, *>.reservedSizeY get() = if (position.ignoreLayoutY) 0 else view.evaluateContentSizeY()
+    protected fun Child<Position, *>.evaluateReservedSizeX() = if (position.ignoreLayoutX) 0 else view.evaluateContentSizeX()
+    protected fun Child<Position, *>.evaluateReservedSizeY() = if (position.ignoreLayoutY) 0 else view.evaluateContentSizeY()
 
 }
 
 class XListView : ListView() {
 
-    override fun getOwnContentSizeX() = children.sumOf { it.reservedSizeX }
-    override fun getOwnContentSizeY() = children.maxOfOrNull { it.reservedSizeY } ?: 0
+    override fun getOwnContentSizeX() = children.sumOf { it.evaluateReservedSizeX() }
+    override fun getOwnContentSizeY() = children.maxOfOrNull { it.evaluateReservedSizeY() } ?: 0
 
     override fun createChildRegionSizeXFunction(): (Int) -> Int {
         val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
@@ -41,7 +41,7 @@ class XListView : ListView() {
         var x = 0.0
         val regionSizes = children.map {
             val old = x
-            val new = old + it.reservedSizeX.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+            val new = old + it.evaluateReservedSizeX().toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             x = new
             new.roundToInt() - old.roundToInt()
         }
@@ -56,7 +56,7 @@ class XListView : ListView() {
         var x = 0.0
         return children.attachTo(viewPlacer) {
             val old = x
-            val new = old + it.reservedSizeX.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+            val new = old + it.evaluateReservedSizeX().toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             x = new
             val size = new.roundToInt() - old.roundToInt()
 
@@ -78,8 +78,8 @@ class XListView : ListView() {
 
 class YListView : ListView() {
 
-    override fun getOwnContentSizeX() = children.maxOfOrNull { it.reservedSizeX } ?: 0
-    override fun getOwnContentSizeY() = children.sumOf { it.reservedSizeY }
+    override fun getOwnContentSizeX() = children.maxOfOrNull { it.evaluateReservedSizeX() } ?: 0
+    override fun getOwnContentSizeY() = children.sumOf { it.evaluateReservedSizeY() }
 
     override fun createChildRegionSizeXFunction(): (Int) -> Int = { evaluateActualSizeX() }
 
@@ -89,7 +89,7 @@ class YListView : ListView() {
         var y = 0.0
         val regionSizes = children.map {
             val old = y
-            val new = old + it.reservedSizeY.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+            val new = old + it.evaluateReservedSizeY().toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             y = new
             new.roundToInt() - old.roundToInt()
         }
@@ -102,7 +102,7 @@ class YListView : ListView() {
         var y = 0.0
         return children.attachTo(viewPlacer) {
             val old = y
-            val new = old + it.reservedSizeY.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+            val new = old + it.evaluateReservedSizeY().toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             y = new
             val size = new.roundToInt() - old.roundToInt()
 
