@@ -29,8 +29,8 @@ class ViewVanillaAdapter(private val rootView: View, private val context: Vanill
         rootView.initSizeCalculation(renderingProxy, { regionSize.x }, { regionSize.y })
         rootView.evaluateContentSizeX()
         rootView.evaluateContentSizeY()
-        rootView.calculateActualSizeX()
-        rootView.calculateActualSizeY()
+        rootView.evaluateActualSizeX()
+        rootView.evaluateActualSizeY()
         return rootView.attachTo(offset) { view, bounds ->
             VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds)
         }

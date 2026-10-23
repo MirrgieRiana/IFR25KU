@@ -50,7 +50,7 @@ abstract class AbstractView : View {
     private var actualSizeXCache: Int? = null
     final override fun getActualSizeX() = actualSizeXCache ?: throw IllegalStateException("The actual size of the X axis is not calculated yet: ${javaClass.name}")
 
-    final override fun calculateActualSizeX() {
+    final override fun evaluateActualSizeX() {
         actualSizeXCache = when (sizingX) {
             Sizing.FILL -> regionSizeXProvider()
             Sizing.WRAP -> getContentSizeX()
@@ -64,7 +64,7 @@ abstract class AbstractView : View {
     private var actualSizeYCache: Int? = null
     final override fun getActualSizeY() = actualSizeYCache ?: throw IllegalStateException("The actual size of the Y axis is not calculated yet: ${javaClass.name}")
 
-    final override fun calculateActualSizeY() {
+    final override fun evaluateActualSizeY() {
         actualSizeYCache = when (sizingY) {
             Sizing.FILL -> regionSizeYProvider()
             Sizing.WRAP -> getContentSizeY()

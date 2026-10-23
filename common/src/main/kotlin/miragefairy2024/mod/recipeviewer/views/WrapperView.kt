@@ -47,11 +47,11 @@ open class WrapperView : ParentView<Unit>() {
     override fun createChildRegionSizeYFunction(): (Int) -> Int = { getActualSizeY() }
 
     override fun calculateChildrenActualSizeX() {
-        childView.calculateActualSizeX()
+        childView.evaluateActualSizeX()
     }
 
     override fun calculateChildrenActualSizeY() {
-        childView.calculateActualSizeY()
+        childView.evaluateActualSizeY()
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {

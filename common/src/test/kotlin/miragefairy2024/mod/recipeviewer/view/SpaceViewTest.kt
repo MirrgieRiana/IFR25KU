@@ -22,8 +22,8 @@ class SpaceViewTest {
         view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 100 })
         view.evaluateContentSizeX()
         view.evaluateContentSizeY()
-        view.calculateActualSizeX()
-        view.calculateActualSizeY()
+        view.evaluateActualSizeX()
+        view.evaluateActualSizeY()
         assertEquals(IntPoint(10, 20), view.actualSize)
     }
 
@@ -33,8 +33,8 @@ class SpaceViewTest {
         view.initSizeCalculation(TEST_RENDERING_PROXY, { 5 }, { 5 })
         view.evaluateContentSizeX()
         view.evaluateContentSizeY()
-        view.calculateActualSizeX()
-        view.calculateActualSizeY()
+        view.evaluateActualSizeX()
+        view.evaluateActualSizeY()
         assertEquals(IntPoint(10, 20), view.actualSize)
     }
 

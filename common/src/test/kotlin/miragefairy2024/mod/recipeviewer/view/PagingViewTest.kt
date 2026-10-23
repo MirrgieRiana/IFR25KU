@@ -76,11 +76,11 @@ class PagingViewTest {
             view.evaluateContentSizeY()
 
             if (xFirst) {
-                view.calculateActualSizeX()
-                view.calculateActualSizeY()
+                view.evaluateActualSizeX()
+                view.evaluateActualSizeY()
             } else {
-                view.calculateActualSizeY()
-                view.calculateActualSizeX()
+                view.evaluateActualSizeY()
+                view.evaluateActualSizeX()
             }
             assertEquals(IntPoint(100, 10), view.actualSize)
             assertEquals(emptyList<String>(), events)
@@ -121,8 +121,8 @@ class PagingViewTest {
         view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 10 })
         view.evaluateContentSizeX()
         view.evaluateContentSizeY()
-        view.calculateActualSizeX()
-        view.calculateActualSizeY()
+        view.evaluateActualSizeX()
+        view.evaluateActualSizeY()
         assertEquals(0, view.pageCount.value)
 
         val remover = view.attachTo(IntPoint.ZERO, TEST_VIEW_PLACER)

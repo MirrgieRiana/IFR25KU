@@ -146,8 +146,8 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
         view.initSizeCalculation(renderingProxy, { EmiClientSupport.MAX_SIZE.x - 5 - 5 }, { EmiClientSupport.MAX_SIZE.y - 5 - 5 })
         view.evaluateContentSizeX()
         view.evaluateContentSizeY()
-        view.calculateActualSizeX()
-        view.calculateActualSizeY()
+        view.evaluateActualSizeX()
+        view.evaluateActualSizeY()
         view.actualSize
     }
 
@@ -160,8 +160,8 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
         view.initSizeCalculation(renderingProxy, { EmiClientSupport.MAX_SIZE.x - 5 - 5 }, { EmiClientSupport.MAX_SIZE.y - 5 - 5 })
         view.evaluateContentSizeX()
         view.evaluateContentSizeY()
-        view.calculateActualSizeX()
-        view.calculateActualSizeY()
+        view.evaluateActualSizeX()
+        view.evaluateActualSizeY()
         view.attachTo(IntPoint(1, 1)) { view2, bounds ->
             EMI_VIEW_PLACER_REGISTRY.place(EmiViewPlacerContext(widgets2, containerWidget, this), view2, bounds)
         }

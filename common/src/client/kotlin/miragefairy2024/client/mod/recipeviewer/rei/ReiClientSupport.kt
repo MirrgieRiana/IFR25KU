@@ -114,8 +114,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             view.initSizeCalculation(renderingProxy, { MAX_SIZE.x - 5 - 5 }, { MAX_SIZE.y - 5 - 5 })
             view.evaluateContentSizeX()
             view.evaluateContentSizeY()
-            view.calculateActualSizeX()
-            view.calculateActualSizeY()
+            view.evaluateActualSizeX()
+            view.evaluateActualSizeY()
             view.actualSize
         }
     }
@@ -132,8 +132,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
             view.initSizeCalculation(renderingProxy, { MAX_SIZE.x - 5 - 5 }, { MAX_SIZE.y - 5 - 5 })
             view.evaluateContentSizeX()
             view.evaluateContentSizeY()
-            view.calculateActualSizeX()
-            view.calculateActualSizeY()
+            view.evaluateActualSizeX()
+            view.evaluateActualSizeY()
             view.attachTo(IntPoint(bounds.x + 5, bounds.y + 5)) { view2, bounds ->
                 REI_VIEW_PLACER_REGISTRY.place(containerWidget, view2, bounds)
             }
@@ -165,8 +165,8 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
                         view.initSizeCalculation(renderingProxy, { MAX_SIZE.x - 5 - 5 }, { MAX_SIZE.y - 5 - 5 })
                         view.evaluateContentSizeX()
                         view.evaluateContentSizeY()
-                        view.calculateActualSizeX()
-                        view.calculateActualSizeY()
+                        view.evaluateActualSizeX()
+                        view.evaluateActualSizeY()
                         heightCache = heightCache max view.getActualSizeY()
                     }
                 }
