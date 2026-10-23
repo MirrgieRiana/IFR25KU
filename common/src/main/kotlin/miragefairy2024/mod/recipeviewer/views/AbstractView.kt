@@ -26,12 +26,12 @@ abstract class AbstractView : View {
 
     final override fun calculateContentSizeX() {
         calculateChildrenContentSizeX()
-        contentSizeXCache = calculateContentSizeXImpl()
+        contentSizeXCache = getOwnContentSizeX()
     }
 
     protected open fun calculateChildrenContentSizeX() = Unit
 
-    protected abstract fun calculateContentSizeXImpl(): Int
+    protected abstract fun getOwnContentSizeX(): Int
 
 
     private var contentSizeYCache: Int? = null
@@ -39,12 +39,12 @@ abstract class AbstractView : View {
 
     final override fun calculateContentSizeY() {
         calculateChildrenContentSizeY()
-        contentSizeYCache = calculateContentSizeYImpl()
+        contentSizeYCache = getOwnContentSizeY()
     }
 
     protected open fun calculateChildrenContentSizeY() = Unit
 
-    protected abstract fun calculateContentSizeYImpl(): Int
+    protected abstract fun getOwnContentSizeY(): Int
 
 
     private var actualSizeXCache: Int? = null

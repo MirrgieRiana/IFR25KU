@@ -31,16 +31,16 @@ private class RecordingPagingChildView(size: IntPoint, private val events: Mutab
         initializationCount += 1
     }
 
-    override fun calculateContentSizeXImpl(): Int {
+    override fun getOwnContentSizeX(): Int {
         assertSame(TEST_RENDERING_PROXY, renderingProxy)
         events += "contentX"
-        return super.calculateContentSizeXImpl()
+        return super.getOwnContentSizeX()
     }
 
-    override fun calculateContentSizeYImpl(): Int {
+    override fun getOwnContentSizeY(): Int {
         assertSame(TEST_RENDERING_PROXY, renderingProxy)
         events += "contentY"
-        return super.calculateContentSizeYImpl()
+        return super.getOwnContentSizeY()
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {

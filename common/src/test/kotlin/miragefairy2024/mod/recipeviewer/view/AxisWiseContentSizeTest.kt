@@ -37,12 +37,12 @@ private class RecordingContentSizeView(private val size: IntPoint, private val e
     override val sizingX = Sizing.WRAP
     override val sizingY = Sizing.WRAP
 
-    override fun calculateContentSizeXImpl(): Int {
+    override fun getOwnContentSizeX(): Int {
         events += "contentX"
         return size.x
     }
 
-    override fun calculateContentSizeYImpl(): Int {
+    override fun getOwnContentSizeY(): Int {
         events += "contentY"
         return size.y
     }

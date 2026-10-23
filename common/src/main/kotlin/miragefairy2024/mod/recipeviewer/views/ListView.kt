@@ -32,8 +32,8 @@ abstract class ListView : ContainerView<ListView.Position>() {
 
 class XListView : ListView() {
 
-    override fun calculateContentSizeXImpl() = children.sumOf { it.reservedSizeX }
-    override fun calculateContentSizeYImpl() = children.maxOfOrNull { it.reservedSizeY } ?: 0
+    override fun getOwnContentSizeX() = children.sumOf { it.reservedSizeX }
+    override fun getOwnContentSizeY() = children.maxOfOrNull { it.reservedSizeY } ?: 0
 
     override fun createChildRegionSizeXFunction(): (Int) -> Int {
         val remaining = (actualSizeX - contentSizeX).toDouble()
@@ -86,8 +86,8 @@ class XListView : ListView() {
 
 class YListView : ListView() {
 
-    override fun calculateContentSizeXImpl() = children.maxOfOrNull { it.reservedSizeX } ?: 0
-    override fun calculateContentSizeYImpl() = children.sumOf { it.reservedSizeY }
+    override fun getOwnContentSizeX() = children.maxOfOrNull { it.reservedSizeX } ?: 0
+    override fun getOwnContentSizeY() = children.sumOf { it.reservedSizeY }
 
     override fun createChildRegionSizeXFunction(): (Int) -> Int = { actualSizeX }
 

@@ -40,8 +40,8 @@ open class WrapperView : ParentView<Unit>() {
         childView.calculateContentSizeY()
     }
 
-    override fun calculateContentSizeXImpl() = childView.contentSizeX
-    override fun calculateContentSizeYImpl() = childView.contentSizeY
+    override fun getOwnContentSizeX() = childView.contentSizeX
+    override fun getOwnContentSizeY() = childView.contentSizeY
 
     override fun createChildRegionSizeXFunction(): (Int) -> Int = { actualSizeX }
     override fun createChildRegionSizeYFunction(): (Int) -> Int = { actualSizeY }

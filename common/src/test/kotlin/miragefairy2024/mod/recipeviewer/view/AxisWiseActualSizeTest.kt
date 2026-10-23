@@ -50,8 +50,8 @@ private class RecordingActualSizeView : AbstractView() {
             return field
         }
 
-    override fun calculateContentSizeXImpl() = 10
-    override fun calculateContentSizeYImpl() = 20
+    override fun getOwnContentSizeX() = 10
+    override fun getOwnContentSizeY() = 20
 
     override fun calculateChildrenActualSizeX() {
         events += "childrenX:$actualSizeX"
