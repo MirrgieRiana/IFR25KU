@@ -34,8 +34,6 @@ abstract class AbstractView : View {
         }
     }
 
-    protected open fun calculateChildrenContentSizeX() = Unit
-
     protected abstract fun getOwnContentSizeX(): Int
 
 
@@ -51,8 +49,6 @@ abstract class AbstractView : View {
             return new
         }
     }
-
-    protected open fun calculateChildrenContentSizeY() = Unit
 
     protected abstract fun getOwnContentSizeY(): Int
 
@@ -73,8 +69,6 @@ abstract class AbstractView : View {
         }
     }
 
-    protected open fun calculateChildrenActualSizeX() = Unit
-
 
     private var actualSizeYCache: Int? = null
 
@@ -91,7 +85,5 @@ abstract class AbstractView : View {
             return new
         }
     }
-
-    protected open fun calculateChildrenActualSizeY() = Unit
 
 }

@@ -19,14 +19,6 @@ class StackView : ContainerView<Unit>() {
     override fun createChildRegionSizeXFunction(): (Int) -> Int = { evaluateActualSizeX() }
     override fun createChildRegionSizeYFunction(): (Int) -> Int = { evaluateActualSizeY() }
 
-    override fun calculateChildrenActualSizeX() {
-        children.calculateActualSizeX()
-    }
-
-    override fun calculateChildrenActualSizeY() {
-        children.calculateActualSizeY()
-    }
-
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         return children.attachTo(viewPlacer) { offset }
     }

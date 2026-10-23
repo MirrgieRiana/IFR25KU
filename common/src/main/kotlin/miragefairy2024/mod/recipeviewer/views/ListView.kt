@@ -50,14 +50,6 @@ class XListView : ListView() {
 
     override fun createChildRegionSizeYFunction(): (Int) -> Int = { evaluateActualSizeY() }
 
-    override fun calculateChildrenActualSizeX() {
-        children.calculateActualSizeX()
-    }
-
-    override fun calculateChildrenActualSizeY() {
-        children.calculateActualSizeY()
-    }
-
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
@@ -91,10 +83,6 @@ class YListView : ListView() {
 
     override fun createChildRegionSizeXFunction(): (Int) -> Int = { evaluateActualSizeX() }
 
-    override fun calculateChildrenActualSizeX() {
-        children.calculateActualSizeX()
-    }
-
     override fun createChildRegionSizeYFunction(): (Int) -> Int {
         val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
@@ -106,10 +94,6 @@ class YListView : ListView() {
             new.roundToInt() - old.roundToInt()
         }
         return { regionSizes[it] }
-    }
-
-    override fun calculateChildrenActualSizeY() {
-        children.calculateActualSizeY()
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
