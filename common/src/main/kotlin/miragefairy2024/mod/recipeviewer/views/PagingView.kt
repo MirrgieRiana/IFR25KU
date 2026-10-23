@@ -41,10 +41,6 @@ class PagingView : ParentView<Alignment>() {
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         val children = childrenGenerators.flatMap { it.generateChildren(renderingProxy, actualSize) }
         children.initSizeCalculation()
-        children.calculateContentSizeX()
-        children.calculateContentSizeY()
-        children.calculateActualSizeX()
-        children.calculateActualSizeY()
 
         val pages = mutableListOf<List<Child<Alignment, *>>>()
         var page = mutableListOf<Child<Alignment, *>>()

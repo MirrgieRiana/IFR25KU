@@ -20,30 +20,6 @@ abstract class ParentView<P> : AbstractView() {
     protected abstract fun createChildRegionSizeXFunction(): (Int) -> Int
     protected abstract fun createChildRegionSizeYFunction(): (Int) -> Int
 
-    protected fun Iterable<Child<P, *>>.calculateContentSizeX() {
-        this.forEach {
-            it.view.evaluateContentSizeX()
-        }
-    }
-
-    protected fun Iterable<Child<P, *>>.calculateContentSizeY() {
-        this.forEach {
-            it.view.evaluateContentSizeY()
-        }
-    }
-
-    protected fun Iterable<Child<P, *>>.calculateActualSizeX() {
-        this.forEach {
-            it.view.evaluateActualSizeX()
-        }
-    }
-
-    protected fun Iterable<Child<P, *>>.calculateActualSizeY() {
-        this.forEach {
-            it.view.evaluateActualSizeY()
-        }
-    }
-
     protected fun Iterable<Child<P, *>>.attachTo(viewPlacer: ViewPlacer<PlaceableView>, offsetFunction: (Child<P, *>) -> IntPoint): Remover {
         return this.map {
             it.view.attachTo(offsetFunction(it), viewPlacer)
