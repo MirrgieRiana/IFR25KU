@@ -27,10 +27,6 @@ class ViewVanillaAdapter(private val rootView: View, private val context: Vanill
     /** [offset] を左上として [regionSize] の空間へ View のツリーを配置し、一括解除用の [miragefairy2024.util.Remover] を返すのだ～🌱 */
     fun layout(offset: IntPoint, regionSize: IntPoint): Remover {
         rootView.initSizeCalculation(renderingProxy, { regionSize.x }, { regionSize.y })
-        rootView.evaluateContentSizeX()
-        rootView.evaluateContentSizeY()
-        rootView.evaluateActualSizeX()
-        rootView.evaluateActualSizeY()
         return rootView.attachTo(offset) { view, bounds ->
             VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds)
         }
