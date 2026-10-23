@@ -17,8 +17,8 @@ abstract class ParentView<P> : AbstractView() {
         }
     }
 
-    protected open fun createChildRegionSizeXFunction(): (Int) -> Int = { actualSizeX }
-    protected open fun createChildRegionSizeYFunction(): (Int) -> Int = { actualSizeY }
+    protected abstract fun createChildRegionSizeXFunction(): (Int) -> Int
+    protected abstract fun createChildRegionSizeYFunction(): (Int) -> Int
 
     protected fun Iterable<Child<P, *>>.calculateContentSizeX() {
         this.forEach {

@@ -16,6 +16,9 @@ class StackView : ContainerView<Unit>() {
     override fun calculateContentSizeXImpl() = children.maxOfOrNull { it.view.contentSizeX } ?: 0
     override fun calculateContentSizeYImpl() = children.maxOfOrNull { it.view.contentSizeY } ?: 0
 
+    override fun createChildRegionSizeXFunction(): (Int) -> Int = { actualSizeX }
+    override fun createChildRegionSizeYFunction(): (Int) -> Int = { actualSizeY }
+
     override fun calculateChildrenActualSizeX() {
         children.calculateActualSizeX()
     }

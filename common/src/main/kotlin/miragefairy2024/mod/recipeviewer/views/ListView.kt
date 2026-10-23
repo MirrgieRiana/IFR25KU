@@ -48,6 +48,8 @@ class XListView : ListView() {
         return { regionSizes[it] }
     }
 
+    override fun createChildRegionSizeYFunction(): (Int) -> Int = { actualSizeY }
+
     override fun calculateChildrenActualSizeX() {
         children.calculateActualSizeX()
     }
@@ -86,6 +88,8 @@ class YListView : ListView() {
 
     override fun calculateContentSizeXImpl() = children.maxOfOrNull { it.reservedSizeX } ?: 0
     override fun calculateContentSizeYImpl() = children.sumOf { it.reservedSizeY }
+
+    override fun createChildRegionSizeXFunction(): (Int) -> Int = { actualSizeX }
 
     override fun calculateChildrenActualSizeX() {
         children.calculateActualSizeX()

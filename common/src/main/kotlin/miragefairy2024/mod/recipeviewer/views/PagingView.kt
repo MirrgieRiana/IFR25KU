@@ -31,6 +31,9 @@ class PagingView : ParentView<Alignment>() {
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
 
+    override fun createChildRegionSizeXFunction(): (Int) -> Int = { actualSizeX }
+    override fun createChildRegionSizeYFunction(): (Int) -> Int = { actualSizeY }
+
     val pageCount = ObservableValue(0)
 
     val pageIndex = ObservableValue(0)
