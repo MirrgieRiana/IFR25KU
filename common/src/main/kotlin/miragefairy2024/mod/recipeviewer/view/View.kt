@@ -50,10 +50,11 @@ interface View {
     fun evaluateActualSizeY(): Int
 
     /**
-     * このViewを指定された位置に配置します。
+     * この View を指定された位置に配置するのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に呼び出さなければならないのだ～🌱
-     * [Remover.remove]が呼び出されるまでに、同じViewに対してこのメソッドが複数回呼び出されることはありません。
-     * [Remover.remove]は、[attachTo]の呼び出しに対して必ずしも対応して呼び出される保証はありません。
+     * 同じ View に再び呼び出す前に、前回の戻り値の [miragefairy2024.util.Remover.remove] を呼び出さなければならないのだ～🌱
+     * 前回の配置を解除し、[miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] で再初期化した後は、同じ View を再配置できるのだ～🌱
+     * 戻り値の [miragefairy2024.util.Remover.remove] が必ず呼び出される保証はないのだ～🌱
      */
     fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover
 
