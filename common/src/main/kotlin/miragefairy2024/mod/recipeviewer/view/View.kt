@@ -16,18 +16,6 @@ interface View {
     fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int)
 
     /**
-     * この View のコンテンツが占有する最小のサイズの X 成分で、親 View がレイアウトの決定に使用するのだ～🌱
-     * 参照時に計算は行わず、計算済みの値を返し、未計算なら [kotlin.IllegalStateException] を送出するのだ～🌱
-     */
-    fun getContentSizeX(): Int
-
-    /**
-     * この View のコンテンツが占有する最小のサイズの Y 成分で、親 View がレイアウトの決定に使用するのだ～🌱
-     * 参照時に計算は行わず、計算済みの値を返し、未計算なら [kotlin.IllegalStateException] を送出するのだ～🌱
-     */
-    fun getContentSizeY(): Int
-
-    /**
      * [miragefairy2024.mod.recipeviewer.view.View.getContentSizeX] を計算して内部状態に格納するのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.getContentSizeX] はこの View が実際に機能的に占有するサイズの X 成分より大きくても小さくてもかまわないのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後、[miragefairy2024.mod.recipeviewer.view.View.getContentSizeX] が未計算のときに 1 度だけ呼び出すのだ～🌱
@@ -41,18 +29,6 @@ interface View {
      */
     fun evaluateContentSizeY()
 
-
-    /**
-     * この View の実際のサイズの X 成分なのだ～🌱
-     * 参照時に計算は行わず、計算済みの値を返し、未計算なら [kotlin.IllegalStateException] を送出するのだ～🌱
-     */
-    fun getActualSizeX(): Int
-
-    /**
-     * この View の実際のサイズの Y 成分なのだ～🌱
-     * 参照時に計算は行わず、計算済みの値を返し、未計算なら [kotlin.IllegalStateException] を送出するのだ～🌱
-     */
-    fun getActualSizeY(): Int
 
     /**
      * [miragefairy2024.mod.recipeviewer.view.View.getActualSizeX] を計算して内部状態に格納するのだ～🌱
@@ -79,5 +55,5 @@ interface View {
 
 }
 
-val View.contentSize get() = IntPoint(getContentSizeX(), getContentSizeY())
-val View.actualSize get() = IntPoint(getActualSizeX(), getActualSizeY())
+val View.contentSize get() = IntPoint(evaluateContentSizeX(), evaluateContentSizeY())
+val View.actualSize get() = IntPoint(evaluateActualSizeX(), evaluateActualSizeY())

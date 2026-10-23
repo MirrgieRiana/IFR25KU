@@ -58,28 +58,28 @@ class AxisWiseContentSizeTest {
             val events = mutableListOf<String>()
             val view = RecordingContentSizeView(IntPoint(10, 20), events)
             view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 200 })
-            assertThrows(IllegalStateException::class.java) { view.getContentSizeX() }
-            assertThrows(IllegalStateException::class.java) { view.getContentSizeY() }
+            assertThrows(IllegalStateException::class.java) { view.evaluateContentSizeX() }
+            assertThrows(IllegalStateException::class.java) { view.evaluateContentSizeY() }
 
             if (xFirst) {
                 view.evaluateContentSizeX()
                 assertEquals(listOf("contentX"), events)
-                assertEquals(10, view.getContentSizeX())
-                assertThrows(IllegalStateException::class.java) { view.getContentSizeY() }
+                assertEquals(10, view.evaluateContentSizeX())
+                assertThrows(IllegalStateException::class.java) { view.evaluateContentSizeY() }
                 view.evaluateActualSizeX()
-                assertEquals(10, view.getActualSizeX())
-                assertThrows(IllegalStateException::class.java) { view.getActualSizeY() }
+                assertEquals(10, view.evaluateActualSizeX())
+                assertThrows(IllegalStateException::class.java) { view.evaluateActualSizeY() }
                 assertEquals(listOf("contentX"), events)
                 view.evaluateContentSizeY()
                 view.evaluateActualSizeY()
             } else {
                 view.evaluateContentSizeY()
                 assertEquals(listOf("contentY"), events)
-                assertEquals(20, view.getContentSizeY())
-                assertThrows(IllegalStateException::class.java) { view.getContentSizeX() }
+                assertEquals(20, view.evaluateContentSizeY())
+                assertThrows(IllegalStateException::class.java) { view.evaluateContentSizeX() }
                 view.evaluateActualSizeY()
-                assertEquals(20, view.getActualSizeY())
-                assertThrows(IllegalStateException::class.java) { view.getActualSizeX() }
+                assertEquals(20, view.evaluateActualSizeY())
+                assertThrows(IllegalStateException::class.java) { view.evaluateActualSizeX() }
                 assertEquals(listOf("contentY"), events)
                 view.evaluateContentSizeX()
                 view.evaluateActualSizeX()
@@ -106,12 +106,12 @@ class AxisWiseContentSizeTest {
 
                 if (xFirst) {
                     view.evaluateContentSizeX()
-                    assertEquals(expectedSize.x, view.getContentSizeX())
-                    assertEquals(15, marginView.getContentSizeX())
-                    assertEquals(10, childView.getContentSizeX())
-                    assertEquals(30, otherChildView.getContentSizeX())
+                    assertEquals(expectedSize.x, view.evaluateContentSizeX())
+                    assertEquals(15, marginView.evaluateContentSizeX())
+                    assertEquals(10, childView.evaluateContentSizeX())
+                    assertEquals(30, otherChildView.evaluateContentSizeX())
                     listOf(view, marginView, childView, otherChildView).forEach {
-                        assertThrows(IllegalStateException::class.java) { it.getContentSizeY() }
+                        assertThrows(IllegalStateException::class.java) { it.evaluateContentSizeY() }
                     }
                     assertEquals(listOf("contentX", "contentX"), events)
                     view.evaluateActualSizeX()
@@ -119,12 +119,12 @@ class AxisWiseContentSizeTest {
                     view.evaluateActualSizeY()
                 } else {
                     view.evaluateContentSizeY()
-                    assertEquals(expectedSize.y, view.getContentSizeY())
-                    assertEquals(32, marginView.getContentSizeY())
-                    assertEquals(20, childView.getContentSizeY())
-                    assertEquals(7, otherChildView.getContentSizeY())
+                    assertEquals(expectedSize.y, view.evaluateContentSizeY())
+                    assertEquals(32, marginView.evaluateContentSizeY())
+                    assertEquals(20, childView.evaluateContentSizeY())
+                    assertEquals(7, otherChildView.evaluateContentSizeY())
                     listOf(view, marginView, childView, otherChildView).forEach {
-                        assertThrows(IllegalStateException::class.java) { it.getContentSizeX() }
+                        assertThrows(IllegalStateException::class.java) { it.evaluateContentSizeX() }
                     }
                     assertEquals(listOf("contentY", "contentY"), events)
                     view.evaluateActualSizeY()
@@ -167,16 +167,16 @@ class AxisWiseContentSizeTest {
 
                 if (xFirst) {
                     view.evaluateContentSizeX()
-                    assertEquals(expectedSize.x, view.getContentSizeX())
-                    assertThrows(IllegalStateException::class.java) { view.getContentSizeY() }
-                    assertThrows(IllegalStateException::class.java) { childView.getContentSizeY() }
+                    assertEquals(expectedSize.x, view.evaluateContentSizeX())
+                    assertThrows(IllegalStateException::class.java) { view.evaluateContentSizeY() }
+                    assertThrows(IllegalStateException::class.java) { childView.evaluateContentSizeY() }
                     assertEquals(listOf("contentX"), events)
                     view.evaluateContentSizeY()
                 } else {
                     view.evaluateContentSizeY()
-                    assertEquals(expectedSize.y, view.getContentSizeY())
-                    assertThrows(IllegalStateException::class.java) { view.getContentSizeX() }
-                    assertThrows(IllegalStateException::class.java) { childView.getContentSizeX() }
+                    assertEquals(expectedSize.y, view.evaluateContentSizeY())
+                    assertThrows(IllegalStateException::class.java) { view.evaluateContentSizeX() }
+                    assertThrows(IllegalStateException::class.java) { childView.evaluateContentSizeX() }
                     assertEquals(listOf("contentY"), events)
                     view.evaluateContentSizeX()
                 }
@@ -200,14 +200,14 @@ class AxisWiseContentSizeTest {
 
                 if (xFirst) {
                     view.evaluateContentSizeX()
-                    assertEquals(30, view.getContentSizeX())
-                    assertThrows(IllegalStateException::class.java) { view.getContentSizeY() }
+                    assertEquals(30, view.evaluateContentSizeX())
+                    assertThrows(IllegalStateException::class.java) { view.evaluateContentSizeY() }
                     assertEquals(listOf("contentX", "contentX"), events)
                     view.evaluateContentSizeY()
                 } else {
                     view.evaluateContentSizeY()
-                    assertEquals(20, view.getContentSizeY())
-                    assertThrows(IllegalStateException::class.java) { view.getContentSizeX() }
+                    assertEquals(20, view.evaluateContentSizeY())
+                    assertThrows(IllegalStateException::class.java) { view.evaluateContentSizeX() }
                     assertEquals(listOf("contentY", "contentY"), events)
                     view.evaluateContentSizeX()
                 }
@@ -234,13 +234,13 @@ class AxisWiseContentSizeTest {
 
                 if (xFirst) {
                     view.evaluateContentSizeX()
-                    assertEquals(expectedSize.x, view.getContentSizeX())
-                    assertThrows(IllegalStateException::class.java) { view.getContentSizeY() }
+                    assertEquals(expectedSize.x, view.evaluateContentSizeX())
+                    assertThrows(IllegalStateException::class.java) { view.evaluateContentSizeY() }
                     view.evaluateContentSizeY()
                 } else {
                     view.evaluateContentSizeY()
-                    assertEquals(expectedSize.y, view.getContentSizeY())
-                    assertThrows(IllegalStateException::class.java) { view.getContentSizeX() }
+                    assertEquals(expectedSize.y, view.evaluateContentSizeY())
+                    assertThrows(IllegalStateException::class.java) { view.evaluateContentSizeX() }
                     view.evaluateContentSizeX()
                 }
 
@@ -271,14 +271,14 @@ class AxisWiseContentSizeTest {
 
             if (xFirst) {
                 view.evaluateContentSizeX()
-                assertEquals(37, view.getContentSizeX())
-                assertThrows(IllegalStateException::class.java) { view.getContentSizeY() }
+                assertEquals(37, view.evaluateContentSizeX())
+                assertThrows(IllegalStateException::class.java) { view.evaluateContentSizeY() }
                 assertEquals(listOf("width"), events)
                 view.evaluateContentSizeY()
             } else {
                 view.evaluateContentSizeY()
-                assertEquals(9, view.getContentSizeY())
-                assertThrows(IllegalStateException::class.java) { view.getContentSizeX() }
+                assertEquals(9, view.evaluateContentSizeY())
+                assertThrows(IllegalStateException::class.java) { view.evaluateContentSizeX() }
                 assertEquals(listOf("height"), events)
                 view.evaluateContentSizeX()
             }

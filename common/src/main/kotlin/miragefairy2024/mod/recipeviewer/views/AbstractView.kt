@@ -22,7 +22,6 @@ abstract class AbstractView : View {
     }
 
     private var contentSizeXCache: Int? = null
-    final override fun getContentSizeX() = contentSizeXCache ?: throw IllegalStateException("The content size of the X axis is not calculated yet: ${javaClass.name}")
 
     final override fun evaluateContentSizeX() {
         calculateChildrenContentSizeX()
@@ -35,7 +34,6 @@ abstract class AbstractView : View {
 
 
     private var contentSizeYCache: Int? = null
-    final override fun getContentSizeY() = contentSizeYCache ?: throw IllegalStateException("The content size of the Y axis is not calculated yet: ${javaClass.name}")
 
     final override fun evaluateContentSizeY() {
         calculateChildrenContentSizeY()
@@ -48,12 +46,11 @@ abstract class AbstractView : View {
 
 
     private var actualSizeXCache: Int? = null
-    final override fun getActualSizeX() = actualSizeXCache ?: throw IllegalStateException("The actual size of the X axis is not calculated yet: ${javaClass.name}")
 
     final override fun evaluateActualSizeX() {
         actualSizeXCache = when (sizingX) {
             Sizing.FILL -> regionSizeXProvider()
-            Sizing.WRAP -> getContentSizeX()
+            Sizing.WRAP -> evaluateContentSizeX()
         }
         calculateChildrenActualSizeX()
     }
@@ -62,12 +59,11 @@ abstract class AbstractView : View {
 
 
     private var actualSizeYCache: Int? = null
-    final override fun getActualSizeY() = actualSizeYCache ?: throw IllegalStateException("The actual size of the Y axis is not calculated yet: ${javaClass.name}")
 
     final override fun evaluateActualSizeY() {
         actualSizeYCache = when (sizingY) {
             Sizing.FILL -> regionSizeYProvider()
-            Sizing.WRAP -> getContentSizeY()
+            Sizing.WRAP -> evaluateContentSizeY()
         }
         calculateChildrenActualSizeY()
     }

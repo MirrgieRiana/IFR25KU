@@ -25,8 +25,8 @@ abstract class ListView : ContainerView<ListView.Position>() {
     override var sizingX = Sizing.WRAP
     override var sizingY = Sizing.WRAP
 
-    protected val Child<Position, *>.reservedSizeX get() = if (position.ignoreLayoutX) 0 else view.getContentSizeX()
-    protected val Child<Position, *>.reservedSizeY get() = if (position.ignoreLayoutY) 0 else view.getContentSizeY()
+    protected val Child<Position, *>.reservedSizeX get() = if (position.ignoreLayoutX) 0 else view.evaluateContentSizeX()
+    protected val Child<Position, *>.reservedSizeY get() = if (position.ignoreLayoutY) 0 else view.evaluateContentSizeY()
 
 }
 
@@ -36,7 +36,7 @@ class XListView : ListView() {
     override fun getOwnContentSizeY() = children.maxOfOrNull { it.reservedSizeY } ?: 0
 
     override fun createChildRegionSizeXFunction(): (Int) -> Int {
-        val remaining = (getActualSizeX() - getContentSizeX()).toDouble()
+        val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var x = 0.0
         val regionSizes = children.map {
@@ -48,7 +48,7 @@ class XListView : ListView() {
         return { regionSizes[it] }
     }
 
-    override fun createChildRegionSizeYFunction(): (Int) -> Int = { getActualSizeY() }
+    override fun createChildRegionSizeYFunction(): (Int) -> Int = { evaluateActualSizeY() }
 
     override fun calculateChildrenActualSizeX() {
         children.calculateActualSizeX()
@@ -59,7 +59,7 @@ class XListView : ListView() {
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val remaining = (getActualSizeX() - getContentSizeX()).toDouble()
+        val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var x = 0.0
         return children.attachTo(viewPlacer) {
@@ -70,13 +70,13 @@ class XListView : ListView() {
 
             val childX = old.roundToInt() + when (it.position.alignmentX) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (size - it.view.getActualSizeX()) / 2
-                Alignment.END -> size - it.view.getActualSizeX()
+                Alignment.CENTER -> (size - it.view.evaluateActualSizeX()) / 2
+                Alignment.END -> size - it.view.evaluateActualSizeX()
             }
             val childY = when (it.position.alignmentY) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (getActualSizeY() - it.view.getActualSizeY()) / 2
-                Alignment.END -> getActualSizeY() - it.view.getActualSizeY()
+                Alignment.CENTER -> (evaluateActualSizeY() - it.view.evaluateActualSizeY()) / 2
+                Alignment.END -> evaluateActualSizeY() - it.view.evaluateActualSizeY()
             }
             offset.offset(childX, childY)
         }
@@ -89,14 +89,14 @@ class YListView : ListView() {
     override fun getOwnContentSizeX() = children.maxOfOrNull { it.reservedSizeX } ?: 0
     override fun getOwnContentSizeY() = children.sumOf { it.reservedSizeY }
 
-    override fun createChildRegionSizeXFunction(): (Int) -> Int = { getActualSizeX() }
+    override fun createChildRegionSizeXFunction(): (Int) -> Int = { evaluateActualSizeX() }
 
     override fun calculateChildrenActualSizeX() {
         children.calculateActualSizeX()
     }
 
     override fun createChildRegionSizeYFunction(): (Int) -> Int {
-        val remaining = (getActualSizeY() - getContentSizeY()).toDouble()
+        val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var y = 0.0
         val regionSizes = children.map {
@@ -113,7 +113,7 @@ class YListView : ListView() {
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val remaining = (getActualSizeY() - getContentSizeY()).toDouble()
+        val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var y = 0.0
         return children.attachTo(viewPlacer) {
@@ -124,13 +124,13 @@ class YListView : ListView() {
 
             val childY = old.roundToInt() + when (it.position.alignmentY) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (size - it.view.getActualSizeY()) / 2
-                Alignment.END -> size - it.view.getActualSizeY()
+                Alignment.CENTER -> (size - it.view.evaluateActualSizeY()) / 2
+                Alignment.END -> size - it.view.evaluateActualSizeY()
             }
             val childX = when (it.position.alignmentX) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (getActualSizeX() - it.view.getActualSizeX()) / 2
-                Alignment.END -> getActualSizeX() - it.view.getActualSizeX()
+                Alignment.CENTER -> (evaluateActualSizeX() - it.view.evaluateActualSizeX()) / 2
+                Alignment.END -> evaluateActualSizeX() - it.view.evaluateActualSizeX()
             }
             offset.offset(childX, childY)
         }

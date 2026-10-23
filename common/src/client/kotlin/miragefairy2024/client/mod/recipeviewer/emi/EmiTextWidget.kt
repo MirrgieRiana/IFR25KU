@@ -22,12 +22,12 @@ class EmiTextWidget(private val offset: IntPoint, private val view: TextView) : 
     override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         val font = Minecraft.getInstance().font
         val color = view.color.lightModeArgb
-        if (view.scroll && font.width(view.text.value) > view.getActualSizeX()) {
+        if (view.scroll && font.width(view.text.value) > view.evaluateActualSizeX()) {
             draw.drawScrollingString(
                 font,
                 view.text.value,
                 offset.x,
-                offset.x + view.getActualSizeX(),
+                offset.x + view.evaluateActualSizeX(),
                 offset.y,
                 startNanoTime,
                 30.0,
@@ -38,8 +38,8 @@ class EmiTextWidget(private val offset: IntPoint, private val view: TextView) : 
         } else {
             val x = when (view.alignmentX) {
                 Alignment.START -> offset.x
-                Alignment.CENTER -> offset.x + view.getActualSizeX() / 2 - font.width(view.text.value) / 2
-                Alignment.END -> offset.x + view.getActualSizeX() - font.width(view.text.value)
+                Alignment.CENTER -> offset.x + view.evaluateActualSizeX() / 2 - font.width(view.text.value) / 2
+                Alignment.END -> offset.x + view.evaluateActualSizeX() - font.width(view.text.value)
             }
             draw.drawString(
                 font,
