@@ -77,7 +77,7 @@ class XListView : ListView() {
                 var consumed = 0.0
                 val new = children.map {
                     val oldConsumed = consumed
-                    val newConsumed = oldConsumed + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+                    val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
                     consumed = newConsumed
                     it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
                 }
@@ -92,8 +92,8 @@ class XListView : ListView() {
     override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
+        val totalWeight = totalWeightCache!!
         val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
-        val totalWeight = children.sumOf { it.position.weight }
         var consumed = 0.0
         var x = 0
         return children.attachTo(viewPlacer) {
@@ -159,7 +159,7 @@ class YListView : ListView() {
                 var consumed = 0.0
                 val new = children.map {
                     val oldConsumed = consumed
-                    val newConsumed = oldConsumed + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+                    val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
                     consumed = newConsumed
                     it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
                 }
@@ -172,8 +172,8 @@ class YListView : ListView() {
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
+        val totalWeight = totalWeightCache!!
         val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
-        val totalWeight = children.sumOf { it.position.weight }
         var consumed = 0.0
         var y = 0
         return children.attachTo(viewPlacer) {
