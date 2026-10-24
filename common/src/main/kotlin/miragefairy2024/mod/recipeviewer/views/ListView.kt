@@ -67,39 +67,29 @@ class XListView : ListView() {
     override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
         super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
         totalWeight.reset()
-        childRegionSizesXCache = null
+        childRegionSizesX.reset()
     }
 
     override fun evaluateOwnContentSizeX() = children.sumOf { it.evaluateReservedSizeX() }
     override fun evaluateOwnContentSizeY() = children.maxOfOrNull { it.evaluateReservedSizeY() } ?: 0
 
     private var totalWeight = Cache { children.sumOf { it.position.weight } }
-    private var childRegionSizesXCache: List<Int>? = null
+    private var childRegionSizesX = Cache {
+        val totalWeight = totalWeight.evaluate()
+        val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
+        var consumed = 0.0
+        children.map {
+            val oldConsumed = consumed
+            val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
+            consumed = newConsumed
+            it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
+        }
+    }
 
     override fun evaluateChildRegionSizeX(index: Int): Int {
         if (sizingX == Sizing.WRAP) return children[index].evaluateReservedSizeX() // WRAP の場合は領域を分配しないからレイアウト計算が不要なのだ～🌱
         if (children[index].position.weight == 0.0) return children[index].evaluateReservedSizeX() // 子が分配を要求しないからレイアウト計算が不要なのだ～🌱
-
-        val childRegionSizesX = run {
-            val old = childRegionSizesXCache
-            if (old != null) {
-                old
-            } else {
-                val totalWeight = totalWeight.evaluate()
-                val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
-                var consumed = 0.0
-                val new = children.map {
-                    val oldConsumed = consumed
-                    val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
-                    consumed = newConsumed
-                    it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
-                }
-                childRegionSizesXCache = new
-                new
-            }
-        }
-
-        return childRegionSizesX[index]
+        return childRegionSizesX.evaluate()[index]
     }
 
     override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
@@ -137,7 +127,7 @@ class YListView : ListView() {
     override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
         super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
         totalWeight.reset()
-        childRegionSizesYCache = null
+        childRegionSizesY.reset()
     }
 
     override fun evaluateOwnContentSizeX() = children.maxOfOrNull { it.evaluateReservedSizeX() } ?: 0
@@ -146,32 +136,22 @@ class YListView : ListView() {
     override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
 
     private var totalWeight = Cache { children.sumOf { it.position.weight } }
-    private var childRegionSizesYCache: List<Int>? = null
+    private var childRegionSizesY = Cache {
+        val totalWeight = totalWeight.evaluate()
+        val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
+        var consumed = 0.0
+        children.map {
+            val oldConsumed = consumed
+            val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
+            consumed = newConsumed
+            it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
+        }
+    }
 
     override fun evaluateChildRegionSizeY(index: Int): Int {
         if (sizingY == Sizing.WRAP) return children[index].evaluateReservedSizeY() // WRAP の場合は領域を分配しないからレイアウト計算が不要なのだ～🌱
         if (children[index].position.weight == 0.0) return children[index].evaluateReservedSizeY() // 子が分配を要求しないからレイアウト計算が不要なのだ～🌱
-
-        val childRegionSizesY = run {
-            val old = childRegionSizesYCache
-            if (old != null) {
-                old
-            } else {
-                val totalWeight = totalWeight.evaluate()
-                val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
-                var consumed = 0.0
-                val new = children.map {
-                    val oldConsumed = consumed
-                    val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
-                    consumed = newConsumed
-                    it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
-                }
-                childRegionSizesYCache = new
-                new
-            }
-        }
-
-        return childRegionSizesY[index]
+        return childRegionSizesY.evaluate()[index]
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
