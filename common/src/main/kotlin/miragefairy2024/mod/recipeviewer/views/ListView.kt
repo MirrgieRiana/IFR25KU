@@ -19,7 +19,7 @@ abstract class ListView : ContainerView<ListView.Position>() {
 
         var weight = 0.0
             set(value) {
-                if (value < 0.0) throw IllegalArgumentException("weight must be non-negative")
+                if (!value.isFinite() || value < 0.0) throw IllegalArgumentException("weight must be finite and non-negative")
                 field = value
             }
 
