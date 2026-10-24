@@ -90,7 +90,7 @@ class XListView : ListView() {
             var consumed = 0.0
             children.map {
                 val oldConsumed = consumed
-                val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
+                val newConsumed = oldConsumed
                 consumed = newConsumed
                 it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
             }
@@ -113,7 +113,7 @@ class XListView : ListView() {
             var x = 0
             return children.attachTo(viewPlacer) {
                 val oldConsumed = consumed
-                val newConsumed = oldConsumed + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+                val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
                 consumed = newConsumed
                 val size = it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
 
@@ -136,7 +136,7 @@ class XListView : ListView() {
             var x = 0
             return children.attachTo(viewPlacer) {
                 val oldConsumed = consumed
-                val newConsumed = oldConsumed + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+                val newConsumed = oldConsumed
                 consumed = newConsumed
                 val size = it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
 
@@ -188,7 +188,7 @@ class YListView : ListView() {
             var consumed = 0.0
             children.map {
                 val oldConsumed = consumed
-                val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
+                val newConsumed = oldConsumed
                 consumed = newConsumed
                 it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
             }
@@ -209,7 +209,7 @@ class YListView : ListView() {
             var y = 0
             return children.attachTo(viewPlacer) {
                 val oldConsumed = consumed
-                val newConsumed = oldConsumed + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+                val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
                 consumed = newConsumed
                 val size = it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
 
@@ -232,7 +232,7 @@ class YListView : ListView() {
             var y = 0
             return children.attachTo(viewPlacer) {
                 val oldConsumed = consumed
-                val newConsumed = oldConsumed + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+                val newConsumed = oldConsumed
                 consumed = newConsumed
                 val size = it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
 
