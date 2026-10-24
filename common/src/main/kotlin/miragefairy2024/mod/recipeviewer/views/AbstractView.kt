@@ -3,7 +3,7 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
-import mirrg.kotlin.hydrogen.CachingEvaluator
+import mirrg.kotlin.helium.CachingEvaluator
 
 abstract class AbstractView : View {
 

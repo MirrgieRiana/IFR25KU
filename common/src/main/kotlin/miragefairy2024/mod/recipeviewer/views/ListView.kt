@@ -8,7 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.util.Remover
-import mirrg.kotlin.hydrogen.CachingEvaluator
+import mirrg.kotlin.helium.CachingEvaluator
 import kotlin.math.roundToInt
 
 abstract class ListView : ContainerView<ListView.Position>() {
