@@ -74,11 +74,11 @@ class XListView : ListView() {
                 old
             } else {
                 val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
-                var x = 0.0
+                var consumed = 0.0
                 val new = children.map {
-                    val old = x
+                    val old = consumed
                     val new = old + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
-                    x = new
+                    consumed = new
                     it.evaluateReservedSizeX() + (new.roundToInt() - old.roundToInt())
                 }
                 childRegionSizesXCache = new
@@ -94,11 +94,11 @@ class XListView : ListView() {
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
-        var x = 0.0
+        var consumed = 0.0
         return children.attachTo(viewPlacer) {
-            val old = x
+            val old = consumed
             val new = old + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
-            x = new
+            consumed = new
             val size = it.evaluateReservedSizeX() + (new.roundToInt() - old.roundToInt())
 
             val childX = old.roundToInt() + when (it.position.alignmentX) {
@@ -154,11 +154,11 @@ class YListView : ListView() {
                 old
             } else {
                 val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
-                var y = 0.0
+                var consumed = 0.0
                 val new = children.map {
-                    val old = y
+                    val old = consumed
                     val new = old + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
-                    y = new
+                    consumed = new
                     it.evaluateReservedSizeY() + (new.roundToInt() - old.roundToInt())
                 }
                 childRegionSizesYCache = new
@@ -172,11 +172,11 @@ class YListView : ListView() {
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
-        var y = 0.0
+        var consumed = 0.0
         return children.attachTo(viewPlacer) {
-            val old = y
+            val old = consumed
             val new = old + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
-            y = new
+            consumed = new
             val size = it.evaluateReservedSizeY() + (new.roundToInt() - old.roundToInt())
 
             val childY = old.roundToInt() + when (it.position.alignmentY) {
