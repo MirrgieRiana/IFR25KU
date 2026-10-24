@@ -101,41 +101,21 @@ class XListView : ListView() {
     override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val totalWeight = totalWeight.evaluate()
-        if (totalWeight > 0.0) {
-            var x = 0
-            return children.attachToIndexed(viewPlacer) { index, it ->
-                val size = childRegionSizesX.evaluate()[index]
-                val childX = x + when (it.position.alignmentX) {
-                    Alignment.START -> 0
-                    Alignment.CENTER -> (size - it.view.evaluateActualSizeX()) / 2
-                    Alignment.END -> size - it.view.evaluateActualSizeX()
-                }
-                val childY = when (it.position.alignmentY) {
-                    Alignment.START -> 0
-                    Alignment.CENTER -> (evaluateActualSizeY() - it.view.evaluateActualSizeY()) / 2
-                    Alignment.END -> evaluateActualSizeY() - it.view.evaluateActualSizeY()
-                }
-                x += size
-                offset.offset(childX, childY)
+        var x = 0
+        return children.attachToIndexed(viewPlacer) { index, it ->
+            val size = childRegionSizesX.evaluate()[index]
+            val childX = x + when (it.position.alignmentX) {
+                Alignment.START -> 0
+                Alignment.CENTER -> (size - it.view.evaluateActualSizeX()) / 2
+                Alignment.END -> size - it.view.evaluateActualSizeX()
             }
-        } else {
-            var x = 0
-            return children.attachToIndexed(viewPlacer) { index, it ->
-                val size = childRegionSizesX.evaluate()[index]
-                val childX = x + when (it.position.alignmentX) {
-                    Alignment.START -> 0
-                    Alignment.CENTER -> (size - it.view.evaluateActualSizeX()) / 2
-                    Alignment.END -> size - it.view.evaluateActualSizeX()
-                }
-                val childY = when (it.position.alignmentY) {
-                    Alignment.START -> 0
-                    Alignment.CENTER -> (evaluateActualSizeY() - it.view.evaluateActualSizeY()) / 2
-                    Alignment.END -> evaluateActualSizeY() - it.view.evaluateActualSizeY()
-                }
-                x += size
-                offset.offset(childX, childY)
+            val childY = when (it.position.alignmentY) {
+                Alignment.START -> 0
+                Alignment.CENTER -> (evaluateActualSizeY() - it.view.evaluateActualSizeY()) / 2
+                Alignment.END -> evaluateActualSizeY() - it.view.evaluateActualSizeY()
             }
+            x += size
+            offset.offset(childX, childY)
         }
     }
 
@@ -180,41 +160,21 @@ class YListView : ListView() {
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val totalWeight = totalWeight.evaluate()
-        if (totalWeight > 0.0) {
-            var y = 0
-            return children.attachToIndexed(viewPlacer) { index, it ->
-                val size = childRegionSizesY.evaluate()[index]
-                val childY = y + when (it.position.alignmentY) {
-                    Alignment.START -> 0
-                    Alignment.CENTER -> (size - it.view.evaluateActualSizeY()) / 2
-                    Alignment.END -> size - it.view.evaluateActualSizeY()
-                }
-                val childX = when (it.position.alignmentX) {
-                    Alignment.START -> 0
-                    Alignment.CENTER -> (evaluateActualSizeX() - it.view.evaluateActualSizeX()) / 2
-                    Alignment.END -> evaluateActualSizeX() - it.view.evaluateActualSizeX()
-                }
-                y += size
-                offset.offset(childX, childY)
+        var y = 0
+        return children.attachToIndexed(viewPlacer) { index, it ->
+            val size = childRegionSizesY.evaluate()[index]
+            val childY = y + when (it.position.alignmentY) {
+                Alignment.START -> 0
+                Alignment.CENTER -> (size - it.view.evaluateActualSizeY()) / 2
+                Alignment.END -> size - it.view.evaluateActualSizeY()
             }
-        } else {
-            var y = 0
-            return children.attachToIndexed(viewPlacer) { index, it ->
-                val size = childRegionSizesY.evaluate()[index]
-                val childY = y + when (it.position.alignmentY) {
-                    Alignment.START -> 0
-                    Alignment.CENTER -> (size - it.view.evaluateActualSizeY()) / 2
-                    Alignment.END -> size - it.view.evaluateActualSizeY()
-                }
-                val childX = when (it.position.alignmentX) {
-                    Alignment.START -> 0
-                    Alignment.CENTER -> (evaluateActualSizeX() - it.view.evaluateActualSizeX()) / 2
-                    Alignment.END -> evaluateActualSizeX() - it.view.evaluateActualSizeX()
-                }
-                y += size
-                offset.offset(childX, childY)
+            val childX = when (it.position.alignmentX) {
+                Alignment.START -> 0
+                Alignment.CENTER -> (evaluateActualSizeX() - it.view.evaluateActualSizeX()) / 2
+                Alignment.END -> evaluateActualSizeX() - it.view.evaluateActualSizeX()
             }
+            y += size
+            offset.offset(childX, childY)
         }
     }
 
