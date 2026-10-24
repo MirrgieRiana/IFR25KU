@@ -1,7 +1,7 @@
 package miragefairy2024.mod.recipeviewer.view
 
-import miragefairy2024.mod.recipeviewer.views.AbstractView
 import miragefairy2024.mod.recipeviewer.views.AbsoluteView
+import miragefairy2024.mod.recipeviewer.views.AbstractView
 import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.ContainerView
 import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
@@ -239,10 +239,12 @@ class AxisWiseContentSizeTest {
                     events += "width"
                     return 37
                 }
+
                 override fun getTextHeight(): Int {
                     events += "height"
                     return 9
                 }
+
                 override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = throw UnsupportedOperationException()
             }
             val view = TextView()

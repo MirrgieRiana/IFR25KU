@@ -1,7 +1,7 @@
 package miragefairy2024.mod.recipeviewer.view
 
-import miragefairy2024.mod.recipeviewer.views.AbstractView
 import miragefairy2024.mod.recipeviewer.views.AbsoluteView
+import miragefairy2024.mod.recipeviewer.views.AbstractView
 import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.ListView
 import miragefairy2024.mod.recipeviewer.views.MarginView
@@ -458,6 +458,7 @@ class AxisWiseActualSizeTest {
                 view.add(Child(ListView.Position().also { it.weight = 1.0 }, childView))
                 return childView
             }
+
             fun calculate() {
                 view.initSizeCalculation(TEST_RENDERING_PROXY, { 101 }, { 203 })
                 view.evaluateContentSizeX()
@@ -465,6 +466,7 @@ class AxisWiseActualSizeTest {
                 view.evaluateActualSizeX()
                 view.evaluateActualSizeY()
             }
+
             val childViews = mutableListOf(addChild(), addChild())
             calculate()
             val expectedInitialSizes = if (horizontal) listOf(IntPoint(51, 203), IntPoint(50, 203)) else listOf(IntPoint(101, 102), IntPoint(101, 101))

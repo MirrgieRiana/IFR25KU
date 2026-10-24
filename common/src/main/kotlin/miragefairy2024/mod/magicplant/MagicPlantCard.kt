@@ -19,7 +19,6 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.HumidityCategory
 import miragefairy2024.util.Registration
 import miragefairy2024.util.TemperatureCategory
-import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.register

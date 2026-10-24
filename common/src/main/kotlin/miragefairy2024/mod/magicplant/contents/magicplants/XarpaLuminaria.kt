@@ -33,6 +33,7 @@ object XarpaLuminariaCard : AbstractLuminariaCard<XarpaLuminariaBlock>() {
         { HarvestNotation.Crop(MaterialCard.LUMINITE.item().createItemStack(), TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name) },
         { HarvestNotation.Crop(MaterialCard.CALCULITE.item().createItemStack(), TraitEffectKeyCard.SPECIAL_PRODUCTION.traitEffectKey.name) },
     )
+
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.LUMINITE.item().createItemStack(count))
     override fun getSpecialDrops(count: Int, random: RandomSource) = listOf(MaterialCard.CALCULITE.item().createItemStack(count))
 

@@ -1,7 +1,7 @@
 package miragefairy2024.mod.recipeviewer.view
 
-import miragefairy2024.mod.recipeviewer.views.AbstractView
 import miragefairy2024.mod.recipeviewer.views.AbsoluteView
+import miragefairy2024.mod.recipeviewer.views.AbstractView
 import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.ListView
 import miragefairy2024.mod.recipeviewer.views.MarginView
