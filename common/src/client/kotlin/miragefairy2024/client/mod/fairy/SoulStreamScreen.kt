@@ -21,7 +21,6 @@ import miragefairy2024.client.util.ClickableContainer
 import miragefairy2024.client.util.KeyMappingCard
 import miragefairy2024.client.util.LayeredImageButton
 import miragefairy2024.client.util.LayeredImageToggleButton
-import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.WidgetSprites
 import miragefairy2024.client.util.inventoryNameLabel
 import miragefairy2024.client.util.invoke
@@ -32,6 +31,7 @@ import miragefairy2024.client.util.tooltipContainer
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.AttachmentChangedEvent
+import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.fairy.COLLECTION_DISABLED_TRANSLATION
 import miragefairy2024.mod.fairy.COLLECTION_ENABLED_ATTACHMENT_TYPE
 import miragefairy2024.mod.fairy.COLLECTION_ENABLED_TRANSLATION

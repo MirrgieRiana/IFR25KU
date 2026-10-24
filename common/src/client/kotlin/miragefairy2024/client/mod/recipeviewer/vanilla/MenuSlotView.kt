@@ -1,6 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
-import miragefairy2024.client.util.SlotType
+import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.View

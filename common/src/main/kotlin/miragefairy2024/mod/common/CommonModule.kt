@@ -39,6 +39,7 @@ import mirrg.kotlin.helium.join
 import net.minecraft.commands.Commands
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.biome.Biome
@@ -59,6 +60,11 @@ val rootAdvancement = AdvancementCard(
     criterion = AdvancementCard.hasAnyItem(),
     type = AdvancementCardType.SILENT,
 )
+
+enum class SlotType(val texture: ResourceLocation) {
+    NORMAL(MirageFairy2024.identifier("textures/gui/slot.png")),
+    FAIRY(MirageFairy2024.identifier("textures/gui/fairy_slot.png")),
+}
 
 val guiAlwaysTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.always" }, "Always", "常時")
 val guiFullScreenTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.full_screen" }, "Click to full screen", "クリックで全画面表示")
