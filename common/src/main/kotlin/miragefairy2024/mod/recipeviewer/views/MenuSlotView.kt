@@ -13,10 +13,10 @@ import net.minecraft.world.inventory.Slot
  * 中身の描画と操作はバニラの画面がやるため、このViewは[net.minecraft.world.inventory.Slot]の座標を書き換えるだけなのだ～🌱
  */
 class MenuSlotView(val slot: Slot) : AbstractView(), PlaceableView {
-    var margin = 1
+    var margin = IntPoint(1, 1)
     override val sizingX = Sizing.WRAP
     override val sizingY = Sizing.WRAP
-    override fun evaluateContentSizeXImpl() = margin + 16 + margin
-    override fun evaluateContentSizeYImpl() = margin + 16 + margin
+    override fun evaluateContentSizeXImpl() = margin.x + 16 + margin.x
+    override fun evaluateContentSizeYImpl() = margin.y + 16 + margin.y
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 }
