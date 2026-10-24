@@ -194,7 +194,7 @@ class SizeEvaluationTest {
         view.initSizeCalculation(TEST_RENDERING_PROXY, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
 
         val exception: IllegalStateException = assertThrows(IllegalStateException::class.java) { view.evaluateContentSizeX() }
-        assertTrue(exception.message!!.contains("Cyclic size dependency:"))
+        assertTrue(exception.message!!.contains("Recursive evaluation of CachingEvaluator"))
         assertThrows(IllegalStateException::class.java) { view.evaluateContentSizeY() }
 
         cyclic = false

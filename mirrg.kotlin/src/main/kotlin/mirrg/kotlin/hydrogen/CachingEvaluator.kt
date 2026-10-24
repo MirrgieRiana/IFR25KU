@@ -5,6 +5,7 @@ package mirrg.kotlin.hydrogen
 class CachingEvaluator<T : Any>(private val initializer: () -> T) {
 
     private var cache: T? = null
+    private var evaluating = false
 
     val isEvaluated get() = cache != null
 
@@ -12,14 +13,21 @@ class CachingEvaluator<T : Any>(private val initializer: () -> T) {
 
     fun getOrThrow() = cache ?: throw IllegalStateException("not evaluated")
 
+    /** 同じインスタンスの評価中に再び呼び出すと、[kotlin.IllegalStateException] を投げるのだ～🌱 */
     fun evaluate(): T {
+        if (evaluating) throw IllegalStateException("Recursive evaluation of CachingEvaluator")
         val old = cache
         return if (old != null) {
             old
         } else {
-            val new = initializer()
-            cache = new
-            new
+            evaluating = true
+            try {
+                val new = initializer()
+                cache = new
+                new
+            } finally {
+                evaluating = false
+            }
         }
     }
 
@@ -32,6 +40,7 @@ class CachingEvaluator<T : Any>(private val initializer: () -> T) {
 class SuspendableCachingEvaluator<T : Any>(private val initializer: suspend () -> T) {
 
     private var cache: T? = null
+    private var evaluating = false
 
     val isEvaluated get() = cache != null
 
@@ -39,14 +48,21 @@ class SuspendableCachingEvaluator<T : Any>(private val initializer: suspend () -
 
     fun getOrThrow() = cache ?: throw IllegalStateException("not evaluated")
 
+    /** 同じインスタンスの評価中に再び呼び出すと、[kotlin.IllegalStateException] を投げるのだ～🌱 */
     suspend fun evaluate(): T {
+        if (evaluating) throw IllegalStateException("Recursive evaluation of SuspendableCachingEvaluator")
         val old = cache
         return if (old != null) {
             old
         } else {
-            val new = initializer()
-            cache = new
-            new
+            evaluating = true
+            try {
+                val new = initializer()
+                cache = new
+                new
+            } finally {
+                evaluating = false
+            }
         }
     }
 

@@ -21,86 +21,46 @@ abstract class AbstractView : View {
         this.regionSizeXProvider = regionSizeXProvider
         this.regionSizeYProvider = regionSizeYProvider
         contentSizeXCache.reset()
-        calculatingContentSizeX = false
         contentSizeYCache.reset()
-        calculatingContentSizeY = false
         actualSizeXCache.reset()
-        calculatingActualSizeX = false
         actualSizeYCache.reset()
-        calculatingActualSizeY = false
     }
 
     private val contentSizeXCache = CachingEvaluator {
-        calculatingContentSizeX = true
-        try {
-            evaluateOwnContentSizeX()
-        } finally {
-            calculatingContentSizeX = false
-        }
+        evaluateOwnContentSizeX()
     }
-    private var calculatingContentSizeX = false
 
-    final override fun evaluateContentSizeX(): Int {
-        if (calculatingContentSizeX) throw IllegalStateException("Cyclic size dependency: ${javaClass.name}.evaluateContentSizeX")
-        return contentSizeXCache.evaluate()
-    }
+    final override fun evaluateContentSizeX() = contentSizeXCache.evaluate()
 
     protected abstract fun evaluateOwnContentSizeX(): Int
 
 
     private val contentSizeYCache = CachingEvaluator {
-        calculatingContentSizeY = true
-        try {
-            evaluateOwnContentSizeY()
-        } finally {
-            calculatingContentSizeY = false
-        }
+        evaluateOwnContentSizeY()
     }
-    private var calculatingContentSizeY = false
 
-    final override fun evaluateContentSizeY(): Int {
-        if (calculatingContentSizeY) throw IllegalStateException("Cyclic size dependency: ${javaClass.name}.evaluateContentSizeY")
-        return contentSizeYCache.evaluate()
-    }
+    final override fun evaluateContentSizeY() = contentSizeYCache.evaluate()
 
     protected abstract fun evaluateOwnContentSizeY(): Int
 
 
     private val actualSizeXCache = CachingEvaluator {
-        calculatingActualSizeX = true
-        try {
-            when (sizingX) {
-                Sizing.FILL -> regionSizeXProvider()
-                Sizing.WRAP -> evaluateContentSizeX()
-            }
-        } finally {
-            calculatingActualSizeX = false
+        when (sizingX) {
+            Sizing.FILL -> regionSizeXProvider()
+            Sizing.WRAP -> evaluateContentSizeX()
         }
     }
-    private var calculatingActualSizeX = false
 
-    final override fun evaluateActualSizeX(): Int {
-        if (calculatingActualSizeX) throw IllegalStateException("Cyclic size dependency: ${javaClass.name}.evaluateActualSizeX")
-        return actualSizeXCache.evaluate()
-    }
+    final override fun evaluateActualSizeX() = actualSizeXCache.evaluate()
 
 
     private val actualSizeYCache = CachingEvaluator {
-        calculatingActualSizeY = true
-        try {
-            when (sizingY) {
-                Sizing.FILL -> regionSizeYProvider()
-                Sizing.WRAP -> evaluateContentSizeY()
-            }
-        } finally {
-            calculatingActualSizeY = false
+        when (sizingY) {
+            Sizing.FILL -> regionSizeYProvider()
+            Sizing.WRAP -> evaluateContentSizeY()
         }
     }
-    private var calculatingActualSizeY = false
 
-    final override fun evaluateActualSizeY(): Int {
-        if (calculatingActualSizeY) throw IllegalStateException("Cyclic size dependency: ${javaClass.name}.evaluateActualSizeY")
-        return actualSizeYCache.evaluate()
-    }
+    final override fun evaluateActualSizeY() = actualSizeYCache.evaluate()
 
 }
