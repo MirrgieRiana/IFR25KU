@@ -49,6 +49,7 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
     override fun init() {
         removeView()
         super.init()
+
         fun register(widget: AbstractWidget, add: () -> Unit): Remover {
             add()
             var registered = true
@@ -59,6 +60,7 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
                 }
             }
         }
+
         val context = VanillaViewPlacerContext(
             addRenderableWidget = { widget -> register(widget) { addRenderableWidget(widget) } },
             addRenderableOnly = { widget -> register(widget) { addRenderableOnly(widget) } },
