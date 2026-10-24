@@ -13,6 +13,14 @@ import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
+import net.minecraft.client.gui.components.AbstractWidget
+
+private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewController {
+    val remover = addRenderableWidget(widget)
+    return object : ViewController {
+        override fun remove() = remover.remove()
+    }
+}
 
 context(ModContext)
 fun initVanillaViewPlacers() {
@@ -25,15 +33,15 @@ fun initVanillaViewPlacers() {
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
-        context.addRenderableWidget(VanillaViewRendererWidget(TextViewRenderer, view, bounds))
+        context place VanillaViewRendererWidget(TextViewRenderer, view, bounds)
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: ImageView, bounds ->
-        context.addRenderableWidget(VanillaViewRendererWidget(ImageViewRenderer, view, bounds))
+        context place VanillaViewRendererWidget(ImageViewRenderer, view, bounds)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
             VANILLA_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
-                context.addRenderableWidget(VanillaViewRendererWidget(entry.viewRenderer, view, bounds))
+                context place VanillaViewRendererWidget(entry.viewRenderer, view, bounds)
             }
         }
         f(entry)

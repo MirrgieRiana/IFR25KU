@@ -3,6 +3,7 @@ package miragefairy2024.client.mod.recipeviewer.emi
 import dev.emi.emi.api.widget.Bounds
 import dev.emi.emi.api.widget.Widget
 import miragefairy2024.mod.recipeviewer.view.ViewController
+import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 
@@ -14,15 +15,13 @@ class EmiContainerWidget : Widget() {
     var widgets = listOf<Widget>()
         private set
 
-    fun add(widget: Widget): ViewController {
+    fun add(widget: Widget): Remover {
         val widgetSlot = WidgetSlot(widget)
         widgetSlots += widgetSlot
         widgets = widgetSlots.map { it.widget }
-        return object : ViewController {
-            override fun remove() {
-                widgetSlots -= widgetSlot
-                widgets = widgetSlots.map { it.widget }
-            }
+        return Remover {
+            widgetSlots -= widgetSlot
+            widgets = widgetSlots.map { it.widget }
         }
     }
 
@@ -69,4 +68,9 @@ class EmiContainerWidget : Widget() {
 
 }
 
-infix fun EmiContainerWidget.place(widget: Widget) = this.add(widget)
+infix fun EmiContainerWidget.place(widget: Widget): ViewController {
+    val remover = this.add(widget)
+    return object : ViewController {
+        override fun remove() = remover.remove()
+    }
+}

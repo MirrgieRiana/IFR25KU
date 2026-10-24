@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
@@ -16,8 +17,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 
 /** @param origin バニラの GUI が座標の原点として使う点の、画面の左上からの絶対座標なのだ～🌱 */
 class VanillaViewPlacerContext(
-    val addRenderableWidget: (AbstractWidget) -> ViewController,
-    val addRenderableOnly: (AbstractWidget) -> ViewController,
+    val addRenderableWidget: (AbstractWidget) -> Remover,
+    val addRenderableOnly: (AbstractWidget) -> Remover,
     val origin: IntPoint,
 )
 
@@ -51,15 +52,13 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
     override fun init() {
         removeView()
         super.init()
-        fun register(widget: AbstractWidget, add: () -> Unit): ViewController {
+        fun register(widget: AbstractWidget, add: () -> Unit): Remover {
             add()
             var registered = true
-            return object : ViewController {
-                override fun remove() {
-                    if (registered) {
-                        registered = false
-                        removeWidget(widget)
-                    }
+            return Remover {
+                if (registered) {
+                    registered = false
+                    removeWidget(widget)
                 }
             }
         }
