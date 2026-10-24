@@ -3,6 +3,7 @@ package miragefairy2024.mod.tool.items
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.tool.FairyMiningToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.tags.BlockTags
@@ -27,6 +28,9 @@ open class FairyPickaxeConfiguration(
         this.attackSpeed = -2.8F
         this.tags += ItemTags.PICKAXES
         this.tags += ItemTags.CLUSTER_MAX_HARVESTABLES
+        this.tags += ConventionalItemTags.TOOLS
+        this.tags += ConventionalItemTags.MINING_TOOL_TOOLS
+        this.tags += ConventionalItemTags.ENCHANTABLES
         this.effectiveBlockTags += BlockTags.MINEABLE_WITH_PICKAXE
     }
 }
