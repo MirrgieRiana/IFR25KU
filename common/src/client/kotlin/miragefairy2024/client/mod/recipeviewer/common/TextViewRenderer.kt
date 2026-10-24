@@ -16,12 +16,12 @@ object TextViewRenderer : ViewRenderer<TextView> {
     override fun render(view: TextView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         val font = Minecraft.getInstance().font
         val color = view.color.lightModeArgb
-        if (view.scroll && font.width(view.text.value) > view.actualSize.x) {
+        if (view.scroll && font.width(view.text.value) > view.evaluateActualSizeX()) {
             graphics.drawScrollingString(
                 font,
                 view.text.value,
                 bounds.x,
-                bounds.x + view.actualSize.x,
+                bounds.x + view.evaluateActualSizeX(),
                 bounds.y,
                 startNanoTime,
                 30.0,
@@ -32,8 +32,8 @@ object TextViewRenderer : ViewRenderer<TextView> {
         } else {
             val x = when (view.alignmentX) {
                 Alignment.START -> bounds.x
-                Alignment.CENTER -> bounds.x + view.actualSize.x / 2 - font.width(view.text.value) / 2
-                Alignment.END -> bounds.x + view.actualSize.x - font.width(view.text.value)
+                Alignment.CENTER -> bounds.x + view.evaluateActualSizeX() / 2 - font.width(view.text.value) / 2
+                Alignment.END -> bounds.x + view.evaluateActualSizeX() - font.width(view.text.value)
             }
             graphics.drawString(
                 font,

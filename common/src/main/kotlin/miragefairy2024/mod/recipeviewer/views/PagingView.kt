@@ -7,6 +7,7 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RemoverList
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.plusAssign
 import miragefairy2024.util.ObservableValue
@@ -24,41 +25,40 @@ class PagingView : ParentView<Alignment>() {
 
     override fun createDefaultPosition() = Alignment.START
 
-    override fun calculateContentSize() = IntPoint.ZERO
+    override fun evaluateContentSizeXImpl() = 0
+    override fun evaluateContentSizeYImpl() = 0
 
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
 
-    private lateinit var pages: List<List<Child<Alignment, *>>>
+    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
+    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
+
     val pageCount = ObservableValue(0)
 
     val pageIndex = ObservableValue(0)
 
-    override fun calculateChildrenActualSize() {
-        val children = childrenGenerators.flatMap { it.generateChildren(renderingProxy, actualSize) }
-        children.calculateContentSize()
-        children.calculateActualSize { actualSize }
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
+        val children = childrenGenerators.flatMap { it.generateChildren(renderingProxy, evaluateActualSize()) }
+        children.initSizeCalculation()
 
         val pages = mutableListOf<List<Child<Alignment, *>>>()
         var page = mutableListOf<Child<Alignment, *>>()
         var y = 0
         children.forEach {
-            if (page.isNotEmpty() && y + it.view.actualSize.y > actualSize.y) {
+            if (page.isNotEmpty() && y + it.view.evaluateActualSizeY() > evaluateActualSizeY()) {
                 // ページが空でなく、これを追加するとはみ出す場合、新しいページを作る
                 pages += page
                 page = mutableListOf()
                 y = 0
             }
             page += it
-            y += it.view.actualSize.y
+            y += it.view.evaluateActualSizeY()
         }
         if (page.isNotEmpty()) pages += page
         if (pages.isEmpty()) pages += listOf<Child<Alignment, *>>()
-        this.pages = pages
         pageCount.value = pages.size
-    }
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         val removers = RemoverList()
 
         val childrenRemover = RemoverList()
@@ -70,11 +70,11 @@ class PagingView : ParentView<Alignment>() {
             page.forEach {
                 val x = when (it.position) {
                     Alignment.START -> 0
-                    Alignment.CENTER -> (actualSize.x - it.view.actualSize.x) / 2
-                    Alignment.END -> actualSize.x - it.view.actualSize.x
+                    Alignment.CENTER -> (evaluateActualSizeX() - it.view.evaluateActualSizeX()) / 2
+                    Alignment.END -> evaluateActualSizeX() - it.view.evaluateActualSizeX()
                 }
                 childrenRemover += it.view.attachTo(offset.offset(x, y), viewPlacer)
-                y += it.view.actualSize.y
+                y += it.view.evaluateActualSizeY()
             }
         }
         removers += childrenRemover

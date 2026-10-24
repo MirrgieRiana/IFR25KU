@@ -1,0 +1,269 @@
+package miragefairy2024.mod.recipeviewer.view
+
+import miragefairy2024.mod.recipeviewer.views.AbstractView
+import miragefairy2024.mod.recipeviewer.views.AbsoluteView
+import miragefairy2024.mod.recipeviewer.views.Child
+import miragefairy2024.mod.recipeviewer.views.ContainerView
+import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
+import miragefairy2024.mod.recipeviewer.views.ListView
+import miragefairy2024.mod.recipeviewer.views.MarginView
+import miragefairy2024.mod.recipeviewer.views.MaxContentSizeXView
+import miragefairy2024.mod.recipeviewer.views.MaxContentSizeYView
+import miragefairy2024.mod.recipeviewer.views.MinContentSizeXView
+import miragefairy2024.mod.recipeviewer.views.MinContentSizeYView
+import miragefairy2024.mod.recipeviewer.views.PagingView
+import miragefairy2024.mod.recipeviewer.views.SlotView
+import miragefairy2024.mod.recipeviewer.views.SpaceView
+import miragefairy2024.mod.recipeviewer.views.StackView
+import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.WrapperView
+import miragefairy2024.mod.recipeviewer.views.XListView
+import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.util.Remover
+import net.minecraft.network.chat.FormattedText
+import net.minecraft.util.FormattedCharSequence
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+
+private val TEST_RENDERING_PROXY = object : RenderingProxy {
+    override fun calculateTextWidth(text: FormattedText) = throw UnsupportedOperationException()
+    override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
+    override fun getTextHeight() = throw UnsupportedOperationException()
+    override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = throw UnsupportedOperationException()
+}
+
+private class RecordingContentSizeView(private val size: IntPoint, private val events: MutableList<String>) : AbstractView() {
+    override val sizingX = Sizing.WRAP
+    override val sizingY = Sizing.WRAP
+
+    override fun evaluateContentSizeXImpl(): Int {
+        events += "contentX"
+        return size.x
+    }
+
+    override fun evaluateContentSizeYImpl(): Int {
+        events += "contentY"
+        return size.y
+    }
+
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = Remover.NONE
+}
+
+class AxisWiseContentSizeTest {
+
+    @Test
+    fun `各軸の最小サイズと実寸は逆軸が未計算でも確定するのだ`() {
+        listOf(true, false).forEach { xFirst ->
+            val events = mutableListOf<String>()
+            val view = RecordingContentSizeView(IntPoint(10, 20), events)
+            view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 200 })
+            assertEquals(emptyList<String>(), events)
+
+            if (xFirst) {
+                view.evaluateContentSizeX()
+                assertEquals(listOf("contentX"), events)
+                assertEquals(10, view.evaluateContentSizeX())
+                view.evaluateActualSizeX()
+                assertEquals(10, view.evaluateActualSizeX())
+                assertEquals(listOf("contentX"), events)
+                view.evaluateContentSizeY()
+                view.evaluateActualSizeY()
+            } else {
+                view.evaluateContentSizeY()
+                assertEquals(listOf("contentY"), events)
+                assertEquals(20, view.evaluateContentSizeY())
+                view.evaluateActualSizeY()
+                assertEquals(20, view.evaluateActualSizeY())
+                assertEquals(listOf("contentY"), events)
+                view.evaluateContentSizeX()
+                view.evaluateActualSizeX()
+            }
+
+            assertEquals(IntPoint(10, 20), view.evaluateContentSize())
+            assertEquals(IntPoint(10, 20), view.evaluateActualSize())
+            assertEquals(if (xFirst) listOf("contentX", "contentY") else listOf("contentY", "contentX"), events)
+        }
+    }
+
+    @Test
+    fun `コンテナーとマージンは子の同じ軸だけを計算してから最小サイズを集計するのだ`() {
+        listOf(true, false).forEach { xFirst ->
+            fun <P> check(view: ContainerView<P>, expectedSize: IntPoint) {
+                val events = mutableListOf<String>()
+                val childView = RecordingContentSizeView(IntPoint(10, 20), events)
+                val marginView = MarginView(2, 3, 5, 7)
+                marginView.add(Child(Unit, childView))
+                val otherChildView = RecordingContentSizeView(IntPoint(30, 7), events)
+                view.add(Child(view.createDefaultPosition(), marginView))
+                view.add(Child(view.createDefaultPosition(), otherChildView))
+                view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 200 })
+
+                if (xFirst) {
+                    view.evaluateContentSizeX()
+                    assertEquals(expectedSize.x, view.evaluateContentSizeX())
+                    assertEquals(15, marginView.evaluateContentSizeX())
+                    assertEquals(10, childView.evaluateContentSizeX())
+                    assertEquals(30, otherChildView.evaluateContentSizeX())
+                    assertEquals(listOf("contentX", "contentX"), events)
+                    view.evaluateActualSizeX()
+                    view.evaluateContentSizeY()
+                    view.evaluateActualSizeY()
+                } else {
+                    view.evaluateContentSizeY()
+                    assertEquals(expectedSize.y, view.evaluateContentSizeY())
+                    assertEquals(32, marginView.evaluateContentSizeY())
+                    assertEquals(20, childView.evaluateContentSizeY())
+                    assertEquals(7, otherChildView.evaluateContentSizeY())
+                    assertEquals(listOf("contentY", "contentY"), events)
+                    view.evaluateActualSizeY()
+                    view.evaluateContentSizeX()
+                    view.evaluateActualSizeX()
+                }
+
+                assertEquals(expectedSize, view.evaluateContentSize())
+                assertEquals(IntPoint(15, 32), marginView.evaluateContentSize())
+                assertEquals(IntPoint(10, 20), childView.evaluateContentSize())
+                assertEquals(IntPoint(30, 7), otherChildView.evaluateContentSize())
+                assertEquals(if (xFirst) listOf("contentX", "contentX", "contentY", "contentY") else listOf("contentY", "contentY", "contentX", "contentX"), events)
+            }
+
+            check(StackView(), IntPoint(30, 32))
+            check(XListView(), IntPoint(45, 32))
+            check(YListView(), IntPoint(30, 39))
+            check(AbsoluteView(IntPoint(101, 203)), IntPoint(101, 203))
+        }
+    }
+
+    @Test
+    fun `最小サイズの上限と下限は指定された軸だけに適用するのだ`() {
+        listOf<Pair<() -> WrapperView, IntPoint>>(
+            Pair({ MaxContentSizeXView(6) }, IntPoint(6, 20)),
+            Pair({ MaxContentSizeXView(30) }, IntPoint(10, 20)),
+            Pair({ MaxContentSizeYView(6) }, IntPoint(10, 6)),
+            Pair({ MaxContentSizeYView(30) }, IntPoint(10, 20)),
+            Pair({ MinContentSizeXView(6) }, IntPoint(10, 20)),
+            Pair({ MinContentSizeXView(30) }, IntPoint(30, 20)),
+            Pair({ MinContentSizeYView(6) }, IntPoint(10, 20)),
+            Pair({ MinContentSizeYView(30) }, IntPoint(10, 30)),
+        ).forEach { (createView, expectedSize) ->
+            listOf(true, false).forEach { xFirst ->
+                val events = mutableListOf<String>()
+                val childView = RecordingContentSizeView(IntPoint(10, 20), events)
+                val view = createView()
+                view.add(Child(Unit, childView))
+                view.initSizeCalculation(TEST_RENDERING_PROXY, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
+
+                if (xFirst) {
+                    view.evaluateContentSizeX()
+                    assertEquals(expectedSize.x, view.evaluateContentSizeX())
+                    assertEquals(listOf("contentX"), events)
+                    view.evaluateContentSizeY()
+                } else {
+                    view.evaluateContentSizeY()
+                    assertEquals(expectedSize.y, view.evaluateContentSizeY())
+                    assertEquals(listOf("contentY"), events)
+                    view.evaluateContentSizeX()
+                }
+
+                assertEquals(expectedSize, view.evaluateContentSize())
+                assertEquals(IntPoint(10, 20), childView.evaluateContentSize())
+                assertEquals(if (xFirst) listOf("contentX", "contentY") else listOf("contentY", "contentX"), events)
+            }
+        }
+    }
+
+    @Test
+    fun `リストのレイアウト除外は各軸で独立して最小サイズの集計に適用するのだ`() {
+        listOf(true, false).forEach { horizontal ->
+            listOf(true, false).forEach { xFirst ->
+                val events = mutableListOf<String>()
+                val view = if (horizontal) XListView() else YListView()
+                view.add(Child(ListView.Position().also { it.ignoreLayoutX = true }, RecordingContentSizeView(IntPoint(10, 20), events)))
+                view.add(Child(ListView.Position().also { it.ignoreLayoutY = true }, RecordingContentSizeView(IntPoint(30, 7), events)))
+                view.initSizeCalculation(TEST_RENDERING_PROXY, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
+
+                if (xFirst) {
+                    view.evaluateContentSizeX()
+                    assertEquals(30, view.evaluateContentSizeX())
+                    assertEquals(listOf("contentX"), events)
+                    view.evaluateContentSizeY()
+                } else {
+                    view.evaluateContentSizeY()
+                    assertEquals(20, view.evaluateContentSizeY())
+                    assertEquals(listOf("contentY"), events)
+                    view.evaluateContentSizeX()
+                }
+
+                assertEquals(IntPoint(30, 20), view.evaluateContentSize())
+                assertEquals(if (xFirst) listOf("contentX", "contentY") else listOf("contentY", "contentX"), events)
+            }
+        }
+    }
+
+    @Test
+    fun `空のコンテナーと固定サイズのViewはどちらの軸からでも計算できるのだ`() {
+        listOf(true, false).forEach { xFirst ->
+            listOf(
+                Pair(StackView(), IntPoint.ZERO),
+                Pair(XListView(), IntPoint.ZERO),
+                Pair(YListView(), IntPoint.ZERO),
+                Pair(SpaceView(IntPoint(10, 20)), IntPoint(10, 20)),
+                Pair(FilledRectangleView(), IntPoint.ZERO),
+                Pair(PagingView(), IntPoint.ZERO),
+                Pair(object : SlotView() {}.also { it.margin = 3 }, IntPoint(22, 22)),
+            ).forEach { (view, expectedSize) ->
+                view.initSizeCalculation(TEST_RENDERING_PROXY, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
+
+                if (xFirst) {
+                    view.evaluateContentSizeX()
+                    assertEquals(expectedSize.x, view.evaluateContentSizeX())
+                    view.evaluateContentSizeY()
+                } else {
+                    view.evaluateContentSizeY()
+                    assertEquals(expectedSize.y, view.evaluateContentSizeY())
+                    view.evaluateContentSizeX()
+                }
+
+                assertEquals(expectedSize, view.evaluateContentSize())
+            }
+        }
+    }
+
+    @Test
+    fun `テキストは要求された軸の寸法だけをRenderingProxyから取得するのだ`() {
+        listOf(true, false).forEach { xFirst ->
+            val events = mutableListOf<String>()
+            val renderingProxy = object : RenderingProxy {
+                override fun calculateTextWidth(text: FormattedText) = throw UnsupportedOperationException()
+                override fun calculateTextWidth(text: FormattedCharSequence): Int {
+                    events += "width"
+                    return 37
+                }
+                override fun getTextHeight(): Int {
+                    events += "height"
+                    return 9
+                }
+                override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = throw UnsupportedOperationException()
+            }
+            val view = TextView()
+            view.initSizeCalculation(renderingProxy, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
+            assertEquals(emptyList<String>(), events)
+
+            if (xFirst) {
+                view.evaluateContentSizeX()
+                assertEquals(37, view.evaluateContentSizeX())
+                assertEquals(listOf("width"), events)
+                view.evaluateContentSizeY()
+            } else {
+                view.evaluateContentSizeY()
+                assertEquals(9, view.evaluateContentSizeY())
+                assertEquals(listOf("height"), events)
+                view.evaluateContentSizeX()
+            }
+
+            assertEquals(IntPoint(37, 9), view.evaluateContentSize())
+            assertEquals(if (xFirst) listOf("width", "height") else listOf("height", "width"), events)
+        }
+    }
+
+}
