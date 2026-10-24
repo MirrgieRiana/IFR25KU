@@ -80,13 +80,12 @@ class XListView : ListView() {
         if (sizingX == Sizing.WRAP) return children[index].evaluateReservedSizeX() // WRAP の場合は領域を分配しないからレイアウト計算が不要なのだ～🌱
         if (children[index].position.weight == 0.0) return children[index].evaluateReservedSizeX() // 子が分配を要求しないからレイアウト計算が不要なのだ～🌱
 
-        val totalWeight = totalWeight.evaluate()
-
         val childRegionSizesX = run {
             val old = childRegionSizesXCache
             if (old != null) {
                 old
             } else {
+                val totalWeight = totalWeight.evaluate()
                 val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
                 var consumed = 0.0
                 val new = children.map {
@@ -153,13 +152,12 @@ class YListView : ListView() {
         if (sizingY == Sizing.WRAP) return children[index].evaluateReservedSizeY() // WRAP の場合は領域を分配しないからレイアウト計算が不要なのだ～🌱
         if (children[index].position.weight == 0.0) return children[index].evaluateReservedSizeY() // 子が分配を要求しないからレイアウト計算が不要なのだ～🌱
 
-        val totalWeight = totalWeight.evaluate()
-
         val childRegionSizesY = run {
             val old = childRegionSizesYCache
             if (old != null) {
                 old
             } else {
+                val totalWeight = totalWeight.evaluate()
                 val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
                 var consumed = 0.0
                 val new = children.map {
