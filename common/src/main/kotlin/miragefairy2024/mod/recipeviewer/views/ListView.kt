@@ -103,15 +103,9 @@ class XListView : ListView() {
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         val totalWeight = totalWeight.evaluate()
         if (totalWeight > 0.0) {
-            val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
-            var consumed = 0.0
             var x = 0
-            return children.attachTo(viewPlacer) {
-                val oldConsumed = consumed
-                val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
-                consumed = newConsumed
-                val size = it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
-
+            return children.attachToIndexed(viewPlacer) { index, it ->
+                val size = childRegionSizesX.evaluate()[index]
                 val childX = x + when (it.position.alignmentX) {
                     Alignment.START -> 0
                     Alignment.CENTER -> (size - it.view.evaluateActualSizeX()) / 2
@@ -127,8 +121,8 @@ class XListView : ListView() {
             }
         } else {
             var x = 0
-            return children.attachTo(viewPlacer) {
-                val size = it.evaluateReservedSizeX()
+            return children.attachToIndexed(viewPlacer) { index, it ->
+                val size = childRegionSizesX.evaluate()[index]
                 val childX = x + when (it.position.alignmentX) {
                     Alignment.START -> 0
                     Alignment.CENTER -> (size - it.view.evaluateActualSizeX()) / 2
@@ -188,15 +182,9 @@ class YListView : ListView() {
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
         val totalWeight = totalWeight.evaluate()
         if (totalWeight > 0.0) {
-            val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
-            var consumed = 0.0
             var y = 0
-            return children.attachTo(viewPlacer) {
-                val oldConsumed = consumed
-                val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
-                consumed = newConsumed
-                val size = it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
-
+            return children.attachToIndexed(viewPlacer) { index, it ->
+                val size = childRegionSizesY.evaluate()[index]
                 val childY = y + when (it.position.alignmentY) {
                     Alignment.START -> 0
                     Alignment.CENTER -> (size - it.view.evaluateActualSizeY()) / 2
@@ -212,8 +200,8 @@ class YListView : ListView() {
             }
         } else {
             var y = 0
-            return children.attachTo(viewPlacer) {
-                val size = it.evaluateReservedSizeY()
+            return children.attachToIndexed(viewPlacer) { index, it ->
+                val size = childRegionSizesY.evaluate()[index]
                 val childY = y + when (it.position.alignmentY) {
                     Alignment.START -> 0
                     Alignment.CENTER -> (size - it.view.evaluateActualSizeY()) / 2

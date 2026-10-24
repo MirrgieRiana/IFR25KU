@@ -24,6 +24,12 @@ abstract class ParentView<P> : AbstractView() {
         }.flatten()
     }
 
+    protected fun Iterable<Child<P, *>>.attachToIndexed(viewPlacer: ViewPlacer<PlaceableView>, offsetFunction: (Int, Child<P, *>) -> IntPoint): Remover {
+        return this.mapIndexed { index, it ->
+            it.view.attachTo(offsetFunction(index, it), viewPlacer)
+        }.flatten()
+    }
+
     abstract fun createDefaultPosition(): P
 
 }
