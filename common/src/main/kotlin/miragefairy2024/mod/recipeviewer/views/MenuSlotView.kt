@@ -4,6 +4,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import net.minecraft.world.inventory.Slot
 
@@ -17,8 +18,10 @@ class MenuSlotView(val slot: Slot) : AbstractView(), PlaceableView {
 
     override val sizingY = Sizing.WRAP
 
-    override fun calculateContentSize() = IntPoint(16, 16)
+    override fun evaluateContentSizeXImpl() = 16
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(actualSize))
+    override fun evaluateContentSizeYImpl() = 16
+
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 
 }

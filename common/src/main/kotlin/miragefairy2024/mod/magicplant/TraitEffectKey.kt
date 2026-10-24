@@ -15,14 +15,24 @@ val traitEffectKeyRegistryKey: ResourceKey<Registry<TraitEffectKey<*>>> = Resour
 val traitEffectKeyRegistry: Registry<TraitEffectKey<*>> = FabricRegistryBuilder.createSimple(traitEffectKeyRegistryKey).attribute(RegistryAttribute.SYNCED).buildAndRegister()
 
 abstract class TraitEffectKey<T : Any> {
+
     abstract val emoji: Component
+
     abstract val name: Component
+
     abstract val sortValue: Double
+
     abstract val color: Int
+
     abstract fun getValue(power: Double): T
+
     abstract fun renderValue(value: T): Component
+
+    /** 画面に表示されている数値を合計するための関数なのだ～🌱 */
     abstract fun plus(a: T, b: T): T
+
     abstract fun getDefaultValue(): T
+
 }
 
 
