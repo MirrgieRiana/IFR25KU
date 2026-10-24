@@ -8,7 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.util.Remover
-import mirrg.kotlin.hydrogen.CachingSupplier
+import mirrg.kotlin.hydrogen.CachingEvaluator
 import kotlin.math.roundToInt
 
 abstract class ListView : ContainerView<ListView.Position>() {
@@ -51,8 +51,8 @@ class XListView : ListView() {
     override fun evaluateOwnContentSizeX() = children.sumOf { it.evaluateReservedSizeX() }
     override fun evaluateOwnContentSizeY() = children.maxOfOrNull { it.evaluateReservedSizeY() } ?: 0
 
-    private var totalWeight = CachingSupplier { children.sumOf { it.position.weight } }
-    private var childRegionSizesX = CachingSupplier {
+    private var totalWeight = CachingEvaluator { children.sumOf { it.position.weight } }
+    private var childRegionSizesX = CachingEvaluator {
         val totalWeight = totalWeight.evaluate()
         if (totalWeight <= 0.0) {
             children.map {
@@ -112,8 +112,8 @@ class YListView : ListView() {
 
     override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
 
-    private var totalWeight = CachingSupplier { children.sumOf { it.position.weight } }
-    private var childRegionSizesY = CachingSupplier {
+    private var totalWeight = CachingEvaluator { children.sumOf { it.position.weight } }
+    private var childRegionSizesY = CachingEvaluator {
         val totalWeight = totalWeight.evaluate()
         if (totalWeight <= 0.0) {
             children.map {

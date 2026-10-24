@@ -2,7 +2,7 @@ package mirrg.kotlin.hydrogen
 
 // TODO mirrg
 
-class CachingSupplier<T : Any>(private val initializer: () -> T) {
+class CachingEvaluator<T : Any>(private val initializer: () -> T) {
 
     private var cache: T? = null
 
