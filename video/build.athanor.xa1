@@ -5,22 +5,28 @@
  * 返ってくるのは athanor のプロジェクトで、タスクはその直下から名前で呼べるのだ～🌱
  *
  * 呼び出しの例：
- *   ./athanorw tasks
+ *   ./athanorw 2026-04-12-sarracenia:build
  **/
 
 API(5)
 
+# LOCATION はこのファイル自身のパスだから、その親を取れば、呼び出し元の居場所に関わらず video/ が得られるのだ～🌱
+videoBase := LOCATION RESOLVE ".."
+INC::push << videoBase RESOLVE "src/main/xa1", videoBase RESOLVE "src/athanor-plugins/xa1"
+
 @USE("athanor")
+
+common := USE("common")
 
 {
   /** 名前の合うプロジェクトが無ければ NULL を返して、呼び出し元がそれを伝えるのだ～🌱 */
   projectOf: name ->
     : name == "" ? :
-      AthanorProject.new()::ALSO ( project =>
-        project.tasks.check = AthanorTask.new()::ALSO ( task =>
+      AthanorProject::NEW()::ALSO ( project =>
+        project.tasks.check = AthanorTask::NEW()::ALSO ( task =>
           task.name = "check"
           task.action = () -> OUT << "CHECK SUCCESSFUL"
         )
       )
-    : NULL
+    : common.projectOf(name)
 }

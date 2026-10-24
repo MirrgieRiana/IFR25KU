@@ -1,0 +1,56 @@
+# =============================================================================
+# frames-plugin.xa1 — 汎用レンダラーでフレーム画像を撮るタスクを提供するのだ～🌱（xarpite / API5）
+# -----------------------------------------------------------------------------
+# 使う側は、タスクを 1 個作って、入出力のパラメータを ALSO の中で代入するだけなのだ～🌱
+#
+#   @USE("frames-plugin")
+#
+#   project.tasks.generateFrames = GenerateFramesTask::NEW()::ALSO ( task =>
+#     task.name = "frames"
+#     task.dependsOn = [project.tasks.generateScene]
+#     task.label = "frames (サラセニア)"
+#     task.framesJsonlPath = () -> ...
+#     task.outputDir = ...
+#   )
+#
+# 撮った画像の連番のパターンは、そのタスクへ pngPattern を呼べば取れるのだ～🌱
+# =============================================================================
+
+API(5)
+
+@USE("athanor")
+
+common := USE("common")
+
+# このモジュールの外から呼ぶ必要が無いから、ローカル変数として置くのだ～🌱
+rendererScript := common.base RESOLVE "renderer/render.sh"
+
+{
+  /**
+   * 構成 jsonl から連番のフレーム画像を撮るタスクなのだ～🌱
+   * 走る時点でないと決まらないパスもあるから、[GenerateFramesTask.framesJsonlPath] は値ではなく関数で受け取るのだ～🌱
+   */
+  GenerateFramesTask := AthanorTask {
+    init: this -> (
+      task := this
+      AthanorTask.init(task)
+
+      /** 進捗の表示に出る、この段の呼び名なのだ～🌱 */
+      task.label = NULL
+      /** 読む構成 jsonl のパスを返す関数なのだ～🌱 */
+      task.framesJsonlPath = NULL
+      /** 連番の PNG を書き出す先のディレクトリなのだ～🌱 */
+      task.outputDir = NULL
+
+      task.action = () -> common.generate(task.label; task.outputDir; work -> (
+        # レンダラーは、出力先が空のディレクトリでも存在しないパスでもないと止まるから、中へもう 1 段掘って渡すのだ～🌱
+        common.run("bash", rendererScript, task.framesJsonlPath(), work RESOLVE "png")
+      ))
+
+      NULL
+    )
+
+    /** 撮った画像を ffmpeg へ渡すための、連番のパターンなのだ～🌱 */
+    pngPattern: this -> this.outputDir RESOLVE "png/f_%05d.png"
+  }
+}

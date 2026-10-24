@@ -1,0 +1,15 @@
+# 動画プロジェクトの台本を JSON へ焼く段なのだ～🌱（xarpite / API5）
+# 台本そのものはサブプロジェクトの xa1 の中にあって、JSON はこの段で作り直すのだ～🌱
+
+API(5)
+
+common := USE("common")
+
+dirOf := project -> common.buildBase RESOLVE project.name RESOLVE "script"
+
+{
+  path: project -> dirOf(project) RESOLVE "script.json"
+  generate: project -> common.generate("script ($(project.name))"; dirOf(project); work -> (
+    WRITE(work RESOLVE "script.json"; project.script >> JSON[indent: 1])
+  ))
+}
