@@ -329,7 +329,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                 //child(verticalSpace(3))
 
                 child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                    surface(Surface.tiled(SlotType.FAIRY.texture, 18, 18))
+                    surface(Surface.tiled(SlotType.FAIRY.viewTexture.id, 18, 18))
                     repeat(9) { index ->
                         child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
                     }
@@ -338,7 +338,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                 child(verticalSpace(4))
 
                 child(verticalScroll(Sizing.fill(100), Sizing.expand(), 18).apply {
-                    surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
+                    surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
                     scrollbar(ScrollContainer.Scrollbar.vanilla())
                     scrollStep(18)
                     (9 until menu.soulStream.size).chunked(9).forEach { indices ->
@@ -358,7 +358,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
                 // プレイヤーインベントリ
                 child(Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
-                    surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
+                    surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
                     repeat(3) { r ->
                         child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
                             repeat(9) { c ->
@@ -369,7 +369,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                 })
                 child(verticalSpace(4))
                 child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                    surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
+                    surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
                     repeat(9) { c ->
                         child(slotContainer(slotAsComponent(9 * 3 + c), type = null))
                     }

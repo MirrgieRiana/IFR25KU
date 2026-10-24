@@ -23,7 +23,7 @@ typealias DismountReason = io.wispforest.owo.ui.core.Component.DismountReason
 fun slotContainer(slotComponent: OwoComponent, type: SlotType? = SlotType.NORMAL): FlowLayout {
     return Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
         padding(Insets.of(1))
-        if (type != null) surface(Surface.tiled(type.texture, 18, 18))
+        if (type != null) surface(Surface.tiled(type.viewTexture.id, 18, 18))
         allowOverflow(true)
         child(slotComponent)
     }

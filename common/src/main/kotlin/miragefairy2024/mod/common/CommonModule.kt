@@ -10,6 +10,9 @@ import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.fairy.MotifCard
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.platformProxy
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -61,9 +64,22 @@ val rootAdvancement = AdvancementCard(
     type = AdvancementCardType.SILENT,
 )
 
-enum class SlotType(val texture: ResourceLocation) {
-    NORMAL(MirageFairy2024.identifier("textures/gui/slot.png")),
-    FAIRY(MirageFairy2024.identifier("textures/gui/fairy_slot.png")),
+enum class SlotType(texture: ResourceLocation, size: IntPoint, bounds: IntRectangle, val margin: IntPoint) {
+    NORMAL(
+        MirageFairy2024.identifier("textures/gui/slot.png"),
+        IntPoint(18, 18),
+        IntRectangle(0, 0, 18, 18),
+        IntPoint(1, 1),
+    ),
+    FAIRY(
+        MirageFairy2024.identifier("textures/gui/fairy_slot.png"),
+        IntPoint(18, 18),
+        IntRectangle(0, 0, 18, 18),
+        IntPoint(1, 1),
+    ),
+    ;
+
+    val viewTexture = ViewTexture(texture, size, bounds)
 }
 
 val guiAlwaysTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.always" }, "Always", "常時")
