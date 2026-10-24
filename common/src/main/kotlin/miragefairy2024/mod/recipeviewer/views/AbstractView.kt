@@ -26,6 +26,7 @@ abstract class AbstractView : View {
         actualSizeYCache.reset()
     }
 
+
     private val contentSizeXCache = CachingEvaluator {
         evaluateContentSizeXImpl()
     }

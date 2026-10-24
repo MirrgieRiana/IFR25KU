@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.util.FormattedCharSequence
 
 class TextView : AbstractView(), PlaceableView {
-    val text = ObservableValue(FormattedCharSequence.EMPTY) // TODO サイズ再計算
+    val text = ObservableValue(FormattedCharSequence.EMPTY)
     override var sizingX = Sizing.WRAP
     override val sizingY = Sizing.WRAP
     var color = ColorPair.DEFAULT
