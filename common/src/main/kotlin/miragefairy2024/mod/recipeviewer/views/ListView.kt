@@ -76,10 +76,10 @@ class XListView : ListView() {
                 val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
                 var consumed = 0.0
                 val new = children.map {
-                    val old = consumed
-                    val new = old + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
-                    consumed = new
-                    it.evaluateReservedSizeX() + (new.roundToInt() - old.roundToInt())
+                    val oldConsumed = consumed
+                    val newConsumed = oldConsumed + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+                    consumed = newConsumed
+                    it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
                 }
                 childRegionSizesXCache = new
                 new
@@ -96,12 +96,12 @@ class XListView : ListView() {
         val totalWeight = children.sumOf { it.position.weight }
         var consumed = 0.0
         return children.attachTo(viewPlacer) {
-            val old = consumed
-            val new = old + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
-            consumed = new
-            val size = it.evaluateReservedSizeX() + (new.roundToInt() - old.roundToInt())
+            val oldConsumed = consumed
+            val newConsumed = oldConsumed + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+            consumed = newConsumed
+            val size = it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
 
-            val childX = old.roundToInt() + when (it.position.alignmentX) {
+            val childX = newConsumed.roundToInt() + when (it.position.alignmentX) {
                 Alignment.START -> 0
                 Alignment.CENTER -> (size - it.view.evaluateActualSizeX()) / 2
                 Alignment.END -> size - it.view.evaluateActualSizeX()
@@ -156,10 +156,10 @@ class YListView : ListView() {
                 val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
                 var consumed = 0.0
                 val new = children.map {
-                    val old = consumed
-                    val new = old + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
-                    consumed = new
-                    it.evaluateReservedSizeY() + (new.roundToInt() - old.roundToInt())
+                    val oldConsumed = consumed
+                    val newConsumed = oldConsumed + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+                    consumed = newConsumed
+                    it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
                 }
                 childRegionSizesYCache = new
                 new
@@ -174,12 +174,12 @@ class YListView : ListView() {
         val totalWeight = children.sumOf { it.position.weight }
         var consumed = 0.0
         return children.attachTo(viewPlacer) {
-            val old = consumed
-            val new = old + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
-            consumed = new
-            val size = it.evaluateReservedSizeY() + (new.roundToInt() - old.roundToInt())
+            val oldConsumed = consumed
+            val newConsumed = oldConsumed + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
+            consumed = newConsumed
+            val size = it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
 
-            val childY = old.roundToInt() + when (it.position.alignmentY) {
+            val childY = newConsumed.roundToInt() + when (it.position.alignmentY) {
                 Alignment.START -> 0
                 Alignment.CENTER -> (size - it.view.evaluateActualSizeY()) / 2
                 Alignment.END -> size - it.view.evaluateActualSizeY()
