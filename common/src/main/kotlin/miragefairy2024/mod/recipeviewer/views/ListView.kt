@@ -95,13 +95,14 @@ class XListView : ListView() {
         val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var consumed = 0.0
+        var x = 0
         return children.attachTo(viewPlacer) {
             val oldConsumed = consumed
             val newConsumed = oldConsumed + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             consumed = newConsumed
             val size = it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
 
-            val childX = newConsumed.roundToInt() + when (it.position.alignmentX) {
+            val childX = x + when (it.position.alignmentX) {
                 Alignment.START -> 0
                 Alignment.CENTER -> (size - it.view.evaluateActualSizeX()) / 2
                 Alignment.END -> size - it.view.evaluateActualSizeX()
@@ -111,6 +112,7 @@ class XListView : ListView() {
                 Alignment.CENTER -> (evaluateActualSizeY() - it.view.evaluateActualSizeY()) / 2
                 Alignment.END -> evaluateActualSizeY() - it.view.evaluateActualSizeY()
             }
+            x += size
             offset.offset(childX, childY)
         }
     }
@@ -173,13 +175,14 @@ class YListView : ListView() {
         val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
         val totalWeight = children.sumOf { it.position.weight }
         var consumed = 0.0
+        var y = 0
         return children.attachTo(viewPlacer) {
             val oldConsumed = consumed
             val newConsumed = oldConsumed + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
             consumed = newConsumed
             val size = it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
 
-            val childY = newConsumed.roundToInt() + when (it.position.alignmentY) {
+            val childY = y + when (it.position.alignmentY) {
                 Alignment.START -> 0
                 Alignment.CENTER -> (size - it.view.evaluateActualSizeY()) / 2
                 Alignment.END -> size - it.view.evaluateActualSizeY()
@@ -189,6 +192,7 @@ class YListView : ListView() {
                 Alignment.CENTER -> (evaluateActualSizeX() - it.view.evaluateActualSizeX()) / 2
                 Alignment.END -> evaluateActualSizeX() - it.view.evaluateActualSizeX()
             }
+            y += size
             offset.offset(childX, childY)
         }
     }
