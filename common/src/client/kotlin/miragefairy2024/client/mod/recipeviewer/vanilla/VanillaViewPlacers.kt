@@ -19,7 +19,7 @@ fun initVanillaViewPlacers() {
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
         // バニラはSlotの座標へoriginを描画とホバー判定の際に加算するため、絶対座標を書き込むと二重に加算されるのだ～🌱
         val offset = bounds.offset - context.origin
-        (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(offset.x, offset.y)
+        (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(offset.x + view.margin, offset.y + view.margin)
         Remover { throw UnsupportedOperationException("Cannot remove MenuSlotView from the vanilla screen") }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->

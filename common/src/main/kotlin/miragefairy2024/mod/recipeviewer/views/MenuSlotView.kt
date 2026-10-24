@@ -14,14 +14,15 @@ import net.minecraft.world.inventory.Slot
  */
 class MenuSlotView(val slot: Slot) : AbstractView(), PlaceableView {
 
+    var margin = 1
     override val sizingX = Sizing.WRAP
 
     override val sizingY = Sizing.WRAP
 
-    override fun evaluateContentSizeXImpl() = 16
 
-    override fun evaluateContentSizeYImpl() = 16
 
+    override fun evaluateContentSizeXImpl() = margin + 16 + margin
+    override fun evaluateContentSizeYImpl() = margin + 16 + margin
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 
 }
