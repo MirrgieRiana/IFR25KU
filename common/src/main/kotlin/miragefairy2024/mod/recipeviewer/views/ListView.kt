@@ -76,7 +76,11 @@ class XListView : ListView() {
     private var totalWeight = Cache { children.sumOf { it.position.weight } }
     private var childRegionSizesX = Cache {
         val totalWeight = totalWeight.evaluate()
-        if (totalWeight > 0.0) {
+        if (totalWeight <= 0.0) {
+            children.map {
+                it.evaluateReservedSizeX()
+            }
+        } else {
             val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
             var consumed = 0.0
             children.map {
@@ -84,10 +88,6 @@ class XListView : ListView() {
                 val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
                 consumed = newConsumed
                 it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
-            }
-        } else {
-            children.map {
-                it.evaluateReservedSizeX()
             }
         }
     }
@@ -137,7 +137,11 @@ class YListView : ListView() {
     private var totalWeight = Cache { children.sumOf { it.position.weight } }
     private var childRegionSizesY = Cache {
         val totalWeight = totalWeight.evaluate()
-        if (totalWeight > 0.0) {
+        if (totalWeight <= 0.0) {
+            children.map {
+                it.evaluateReservedSizeY()
+            }
+        } else {
             val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
             var consumed = 0.0
             children.map {
@@ -145,10 +149,6 @@ class YListView : ListView() {
                 val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
                 consumed = newConsumed
                 it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
-            }
-        } else {
-            children.map {
-                it.evaluateReservedSizeY()
             }
         }
     }
