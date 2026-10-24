@@ -40,8 +40,8 @@ class XListView : ListView() {
         super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
     }
 
-    override fun getOwnContentSizeX() = children.sumOf { it.evaluateReservedSizeX() }
-    override fun getOwnContentSizeY() = children.maxOfOrNull { it.evaluateReservedSizeY() } ?: 0
+    override fun evaluateOwnContentSizeX() = children.sumOf { it.evaluateReservedSizeX() }
+    override fun evaluateOwnContentSizeY() = children.maxOfOrNull { it.evaluateReservedSizeY() } ?: 0
 
     override fun evaluateChildRegionSizeX(index: Int): Int {
         val old = childRegionSizeXFunction
@@ -114,8 +114,8 @@ class YListView : ListView() {
         super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
     }
 
-    override fun getOwnContentSizeX() = children.maxOfOrNull { it.evaluateReservedSizeX() } ?: 0
-    override fun getOwnContentSizeY() = children.sumOf { it.evaluateReservedSizeY() }
+    override fun evaluateOwnContentSizeX() = children.maxOfOrNull { it.evaluateReservedSizeX() } ?: 0
+    override fun evaluateOwnContentSizeY() = children.sumOf { it.evaluateReservedSizeY() }
 
     override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
 

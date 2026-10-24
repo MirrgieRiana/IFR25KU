@@ -40,7 +40,7 @@ abstract class AbstractView : View {
         } else {
             calculatingContentSizeX = true
             try {
-                val new = getOwnContentSizeX()
+                val new = evaluateOwnContentSizeX()
                 contentSizeXCache = new
                 return new
             } finally {
@@ -49,7 +49,7 @@ abstract class AbstractView : View {
         }
     }
 
-    protected abstract fun getOwnContentSizeX(): Int
+    protected abstract fun evaluateOwnContentSizeX(): Int
 
 
     private var contentSizeYCache: Int? = null
@@ -63,7 +63,7 @@ abstract class AbstractView : View {
         } else {
             calculatingContentSizeY = true
             try {
-                val new = getOwnContentSizeY()
+                val new = evaluateOwnContentSizeY()
                 contentSizeYCache = new
                 return new
             } finally {
@@ -72,7 +72,7 @@ abstract class AbstractView : View {
         }
     }
 
-    protected abstract fun getOwnContentSizeY(): Int
+    protected abstract fun evaluateOwnContentSizeY(): Int
 
 
     private var actualSizeXCache: Int? = null
