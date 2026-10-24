@@ -86,13 +86,8 @@ class XListView : ListView() {
                 it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
             }
         } else {
-            val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
-            var consumed = 0.0
             children.map {
-                val oldConsumed = consumed
-                val newConsumed = oldConsumed
-                consumed = newConsumed
-                it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
+                it.evaluateReservedSizeX()
             }
         }
     }
@@ -131,15 +126,9 @@ class XListView : ListView() {
                 offset.offset(childX, childY)
             }
         } else {
-            val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
-            var consumed = 0.0
             var x = 0
             return children.attachTo(viewPlacer) {
-                val oldConsumed = consumed
-                val newConsumed = oldConsumed
-                consumed = newConsumed
-                val size = it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
-
+                val size = it.evaluateReservedSizeX()
                 val childX = x + when (it.position.alignmentX) {
                     Alignment.START -> 0
                     Alignment.CENTER -> (size - it.view.evaluateActualSizeX()) / 2
@@ -184,13 +173,8 @@ class YListView : ListView() {
                 it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
             }
         } else {
-            val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
-            var consumed = 0.0
             children.map {
-                val oldConsumed = consumed
-                val newConsumed = oldConsumed
-                consumed = newConsumed
-                it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
+                it.evaluateReservedSizeY()
             }
         }
     }
@@ -227,15 +211,9 @@ class YListView : ListView() {
                 offset.offset(childX, childY)
             }
         } else {
-            val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
-            var consumed = 0.0
             var y = 0
             return children.attachTo(viewPlacer) {
-                val oldConsumed = consumed
-                val newConsumed = oldConsumed
-                consumed = newConsumed
-                val size = it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
-
+                val size = it.evaluateReservedSizeY()
                 val childY = y + when (it.position.alignmentY) {
                     Alignment.START -> 0
                     Alignment.CENTER -> (size - it.view.evaluateActualSizeY()) / 2
