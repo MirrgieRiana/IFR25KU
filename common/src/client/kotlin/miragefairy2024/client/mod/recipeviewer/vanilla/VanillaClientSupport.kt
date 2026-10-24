@@ -4,8 +4,8 @@ import dev.architectury.platform.Platform
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
-import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
@@ -16,8 +16,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 
 /** @param origin バニラの GUI が座標の原点として使う点の、画面の左上からの絶対座標なのだ～🌱 */
 class VanillaViewPlacerContext(
-    val addRenderableWidget: (AbstractWidget) -> Remover,
-    val addRenderableOnly: (AbstractWidget) -> Remover,
+    val addRenderableWidget: (AbstractWidget) -> ViewController,
+    val addRenderableOnly: (AbstractWidget) -> ViewController,
     val origin: IntPoint,
 )
 
@@ -26,8 +26,8 @@ val VANILLA_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<VanillaViewPlacerContext>(
 /** View のツリーを [net.minecraft.client.gui.screens.Screen] へ直接配置するのだ～🌱 */
 class ViewVanillaAdapter(private val rootView: View, private val context: VanillaViewPlacerContext) {
 
-    /** [offset] を左上として [regionSize] の空間へ View のツリーを配置し、一括解除用の [miragefairy2024.util.Remover] を返すのだ～🌱 */
-    fun layout(offset: IntPoint, regionSize: IntPoint): Remover {
+    /** [offset] を左上として [regionSize] の空間へ View のツリーを配置し、一括解除用の [miragefairy2024.mod.recipeviewer.view.ViewController] を返すのだ～🌱 */
+    fun layout(offset: IntPoint, regionSize: IntPoint): ViewController {
         rootView.initSizeCalculation(renderingProxy, { regionSize.x }, { regionSize.y })
         return rootView.attachTo(offset) { view, bounds ->
             VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds)
@@ -39,7 +39,7 @@ class ViewVanillaAdapter(private val rootView: View, private val context: Vanill
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
 abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) {
 
-    private var viewRemover: Remover? = null
+    private var viewController: ViewController? = null
 
     /** 画面の中身のViewのツリーを作るのだ～🌱 */
     protected abstract fun createRootView(): View
@@ -51,13 +51,15 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
     override fun init() {
         removeView()
         super.init()
-        fun register(widget: AbstractWidget, add: () -> Unit): Remover {
+        fun register(widget: AbstractWidget, add: () -> Unit): ViewController {
             add()
             var registered = true
-            return Remover {
-                if (registered) {
-                    registered = false
-                    removeWidget(widget)
+            return object : ViewController {
+                override fun remove() {
+                    if (registered) {
+                        registered = false
+                        removeWidget(widget)
+                    }
                 }
             }
         }
@@ -66,13 +68,13 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
             addRenderableOnly = { widget -> register(widget) { addRenderableOnly(widget) } },
             origin = IntPoint(leftPos, topPos),
         )
-        viewRemover = ViewVanillaAdapter(createRootView(), context).layout(IntPoint.ZERO, IntPoint(width, height))
+        viewController = ViewVanillaAdapter(createRootView(), context).layout(IntPoint.ZERO, IntPoint(width, height))
     }
 
     private fun removeView() {
-        val remover = viewRemover
-        viewRemover = null
-        if (remover != null) remover.remove()
+        val controller = viewController
+        viewController = null
+        if (controller != null) controller.remove()
     }
 
     override fun removed() {

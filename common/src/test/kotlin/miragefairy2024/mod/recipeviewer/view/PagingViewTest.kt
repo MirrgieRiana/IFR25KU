@@ -3,7 +3,6 @@ package miragefairy2024.mod.recipeviewer.view
 import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.FixedView
 import miragefairy2024.mod.recipeviewer.views.PagingView
-import miragefairy2024.util.Remover
 import miragefairy2024.util.register
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
@@ -43,11 +42,13 @@ private class RecordingPagingChildView(size: IntPoint, private val events: Mutab
         return super.evaluateContentSizeYImpl()
     }
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         events += "attach"
         offsets += offset
-        return Remover {
-            events += "remove"
+        return object : ViewController {
+            override fun remove() {
+                events += "remove"
+            }
         }
     }
 }

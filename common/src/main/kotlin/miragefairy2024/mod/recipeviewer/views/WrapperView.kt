@@ -4,8 +4,8 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
-import miragefairy2024.util.Remover
 
 open class WrapperView : ParentView<Unit>() {
 
@@ -36,7 +36,7 @@ open class WrapperView : ParentView<Unit>() {
     override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
     override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         return childView.attachTo(offset, viewPlacer)
     }
 

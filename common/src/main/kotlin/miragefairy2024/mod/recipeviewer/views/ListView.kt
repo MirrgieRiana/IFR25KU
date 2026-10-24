@@ -5,9 +5,9 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.offset
-import miragefairy2024.util.Remover
 import mirrg.kotlin.helium.CachingEvaluator
 import kotlin.math.roundToInt
 
@@ -78,7 +78,7 @@ class XListView : ListView() {
 
     override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         var x = 0
         return children.attachToIndexed(viewPlacer) { index, it ->
             val size = childRegionSizesX.evaluate()[index]
@@ -137,7 +137,7 @@ class YListView : ListView() {
         return childRegionSizesY.evaluate()[index]
     }
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         var y = 0
         return children.attachToIndexed(viewPlacer) { index, it ->
             val size = childRegionSizesY.evaluate()[index]

@@ -1,7 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.rei
 
 import me.shedaniel.rei.api.client.gui.widgets.Widget
-import miragefairy2024.util.Remover
+import miragefairy2024.mod.recipeviewer.view.ViewController
 import net.minecraft.client.gui.GuiGraphics
 
 // me.shedaniel.rei.impl.client.gui.widget.MergedWidget
@@ -13,13 +13,15 @@ class ReiContainerWidget : Widget() {
     var widgets = listOf<Widget>()
         private set
 
-    fun add(widget: Widget): Remover {
+    fun add(widget: Widget): ViewController {
         val widgetSlot = WidgetSlot(widget)
         widgetSlots += widgetSlot
         widgets = widgetSlots.map { it.widget }
-        return Remover {
-            widgetSlots -= widgetSlot
-            widgets = widgetSlots.map { it.widget }
+        return object : ViewController {
+            override fun remove() {
+                widgetSlots -= widgetSlot
+                widgets = widgetSlots.map { it.widget }
+            }
         }
     }
 
