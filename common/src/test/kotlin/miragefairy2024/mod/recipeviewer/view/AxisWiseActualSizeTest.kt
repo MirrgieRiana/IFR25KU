@@ -51,8 +51,8 @@ private class RecordingActualSizeView : AbstractView() {
 
     var ownContentSize = IntPoint(10, 20)
 
-    override fun evaluateOwnContentSizeX() = ownContentSize.x
-    override fun evaluateOwnContentSizeY() = ownContentSize.y
+    override fun evaluateContentSizeXImpl() = ownContentSize.x
+    override fun evaluateContentSizeYImpl() = ownContentSize.y
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = Remover.NONE
 }

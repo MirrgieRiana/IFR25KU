@@ -25,8 +25,8 @@ class PagingView : ParentView<Alignment>() {
 
     override fun createDefaultPosition() = Alignment.START
 
-    override fun evaluateOwnContentSizeX() = 0
-    override fun evaluateOwnContentSizeY() = 0
+    override fun evaluateContentSizeXImpl() = 0
+    override fun evaluateContentSizeYImpl() = 0
 
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL

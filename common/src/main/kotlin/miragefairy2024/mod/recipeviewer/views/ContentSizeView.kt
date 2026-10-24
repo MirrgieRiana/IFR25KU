@@ -4,11 +4,11 @@ import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
 
 class MaxContentSizeXView(private val sizeX: Int) : WrapperView() {
-    override fun evaluateOwnContentSizeX() = super.evaluateOwnContentSizeX() min sizeX
+    override fun evaluateContentSizeXImpl() = super.evaluateContentSizeXImpl() min sizeX
 }
 
 class MaxContentSizeYView(private val sizeY: Int) : WrapperView() {
-    override fun evaluateOwnContentSizeY() = super.evaluateOwnContentSizeY() min sizeY
+    override fun evaluateContentSizeYImpl() = super.evaluateContentSizeYImpl() min sizeY
 }
 
 fun <P> Child<P, *>.maxContentSizeX(x: Int) = this.wrap(MaxContentSizeXView(x))
@@ -16,11 +16,11 @@ fun <P> Child<P, *>.maxContentSizeY(y: Int) = this.wrap(MaxContentSizeYView(y))
 
 
 class MinContentSizeXView(private val sizeX: Int) : WrapperView() {
-    override fun evaluateOwnContentSizeX() = super.evaluateOwnContentSizeX() max sizeX
+    override fun evaluateContentSizeXImpl() = super.evaluateContentSizeXImpl() max sizeX
 }
 
 class MinContentSizeYView(private val sizeY: Int) : WrapperView() {
-    override fun evaluateOwnContentSizeY() = super.evaluateOwnContentSizeY() max sizeY
+    override fun evaluateContentSizeYImpl() = super.evaluateContentSizeYImpl() max sizeY
 }
 
 fun <P> Child<P, *>.minContentSizeX(x: Int) = this.wrap(MinContentSizeXView(x))

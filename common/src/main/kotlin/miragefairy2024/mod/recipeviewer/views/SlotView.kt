@@ -16,8 +16,8 @@ abstract class SlotView : AbstractView(), PlaceableView {
     var additionalTooltip = emptyList<Component>()
     override val sizingX = Sizing.WRAP
     override val sizingY = Sizing.WRAP
-    override fun evaluateOwnContentSizeX() = margin + 16 + margin
-    override fun evaluateOwnContentSizeY() = margin + 16 + margin
+    override fun evaluateContentSizeXImpl() = margin + 16 + margin
+    override fun evaluateContentSizeYImpl() = margin + 16 + margin
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 }
 

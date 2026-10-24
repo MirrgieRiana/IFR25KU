@@ -6,6 +6,6 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 abstract class FixedView(private val size: IntPoint) : AbstractView() {
     override val sizingX = Sizing.WRAP
     override val sizingY = Sizing.WRAP
-    override fun evaluateOwnContentSizeX() = size.x
-    override fun evaluateOwnContentSizeY() = size.y
+    override fun evaluateContentSizeXImpl() = size.x
+    override fun evaluateContentSizeYImpl() = size.y
 }

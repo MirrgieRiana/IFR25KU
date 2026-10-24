@@ -21,8 +21,8 @@ class TextView : AbstractView(), PlaceableView {
     var alignmentX = Alignment.START
     var scroll = false
     var tooltip: List<Component>? = null
-    override fun evaluateOwnContentSizeX() = renderingProxy.calculateTextWidth(text.value)
-    override fun evaluateOwnContentSizeY() = renderingProxy.getTextHeight()
+    override fun evaluateContentSizeXImpl() = renderingProxy.calculateTextWidth(text.value)
+    override fun evaluateContentSizeYImpl() = renderingProxy.getTextHeight()
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 }
 

@@ -27,21 +27,21 @@ abstract class AbstractView : View {
     }
 
     private val contentSizeXCache = CachingEvaluator {
-        evaluateOwnContentSizeX()
+        evaluateContentSizeXImpl()
     }
 
     final override fun evaluateContentSizeX() = contentSizeXCache.evaluate()
 
-    protected abstract fun evaluateOwnContentSizeX(): Int
+    protected abstract fun evaluateContentSizeXImpl(): Int
 
 
     private val contentSizeYCache = CachingEvaluator {
-        evaluateOwnContentSizeY()
+        evaluateContentSizeYImpl()
     }
 
     final override fun evaluateContentSizeY() = contentSizeYCache.evaluate()
 
-    protected abstract fun evaluateOwnContentSizeY(): Int
+    protected abstract fun evaluateContentSizeYImpl(): Int
 
 
     private val actualSizeXCache = CachingEvaluator {

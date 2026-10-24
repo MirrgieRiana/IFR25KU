@@ -39,12 +39,12 @@ private class SizeEvaluationView(
     fun evaluateRegionSizeX() = regionSizeXProvider()
     fun evaluateRegionSizeY() = regionSizeYProvider()
 
-    override fun evaluateOwnContentSizeX(): Int {
+    override fun evaluateContentSizeXImpl(): Int {
         contentSizeXCalculationCount += 1
         return contentSizeXFunction()
     }
 
-    override fun evaluateOwnContentSizeY(): Int {
+    override fun evaluateContentSizeYImpl(): Int {
         contentSizeYCalculationCount += 1
         return contentSizeYFunction()
     }
