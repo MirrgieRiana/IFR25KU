@@ -43,17 +43,6 @@ class XListView : ListView() {
     override fun evaluateOwnContentSizeX() = children.sumOf { it.evaluateReservedSizeX() }
     override fun evaluateOwnContentSizeY() = children.maxOfOrNull { it.evaluateReservedSizeY() } ?: 0
 
-    override fun evaluateChildRegionSizeX(index: Int): Int {
-        val old = childRegionSizeXFunction
-        if (old != null) {
-            return old(index)
-        } else {
-            val new = createChildRegionSizeXFunction()
-            childRegionSizeXFunction = new
-            return new(index)
-        }
-    }
-
     private fun createChildRegionSizeXFunction(): (Int) -> Int {
         if (sizingX == Sizing.WRAP) return { children[it].evaluateReservedSizeX() }
         val totalWeight = children.sumOf { it.position.weight }
@@ -74,6 +63,17 @@ class XListView : ListView() {
             } else {
                 regionSizes[index]
             }
+        }
+    }
+
+    override fun evaluateChildRegionSizeX(index: Int): Int {
+        val old = childRegionSizeXFunction
+        if (old != null) {
+            return old(index)
+        } else {
+            val new = createChildRegionSizeXFunction()
+            childRegionSizeXFunction = new
+            return new(index)
         }
     }
 
@@ -119,17 +119,6 @@ class YListView : ListView() {
 
     override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
 
-    override fun evaluateChildRegionSizeY(index: Int): Int {
-        val old = childRegionSizeYFunction
-        if (old != null) {
-            return old(index)
-        } else {
-            val new = createChildRegionSizeYFunction()
-            childRegionSizeYFunction = new
-            return new(index)
-        }
-    }
-
     private fun createChildRegionSizeYFunction(): (Int) -> Int {
         if (sizingY == Sizing.WRAP) return { children[it].evaluateReservedSizeY() }
         val totalWeight = children.sumOf { it.position.weight }
@@ -150,6 +139,17 @@ class YListView : ListView() {
             } else {
                 regionSizes[index]
             }
+        }
+    }
+
+    override fun evaluateChildRegionSizeY(index: Int): Int {
+        val old = childRegionSizeYFunction
+        if (old != null) {
+            return old(index)
+        } else {
+            val new = createChildRegionSizeYFunction()
+            childRegionSizeYFunction = new
+            return new(index)
         }
     }
 
