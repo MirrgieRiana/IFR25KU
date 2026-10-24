@@ -10,6 +10,29 @@ import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.util.Remover
 import kotlin.math.roundToInt
 
+// TODO mirrg
+
+private class Cache<T : Any>(private val initializer: () -> T) {
+
+    private var cache: T? = null
+
+    fun evaluate(): T {
+        val old = cache
+        return if (old != null) {
+            old
+        } else {
+            val new = initializer()
+            cache = new
+            new
+        }
+    }
+
+    fun reset() {
+        cache = null
+    }
+
+}
+
 abstract class ListView : ContainerView<ListView.Position>() {
 
     class Position {
@@ -43,32 +66,21 @@ class XListView : ListView() {
 
     override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
         super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
-        totalWeightCache = null
+        totalWeight.reset()
         childRegionSizesXCache = null
     }
 
     override fun evaluateOwnContentSizeX() = children.sumOf { it.evaluateReservedSizeX() }
     override fun evaluateOwnContentSizeY() = children.maxOfOrNull { it.evaluateReservedSizeY() } ?: 0
 
-    private var totalWeightCache: Double? = null
+    private var totalWeight = Cache { children.sumOf { it.position.weight } }
     private var childRegionSizesXCache: List<Int>? = null
-
-    private fun evaluateTotalWeight(): Double {
-        val old = totalWeightCache
-        return if (old != null) {
-            old
-        } else {
-            val new = children.sumOf { it.position.weight }
-            totalWeightCache = new
-            new
-        }
-    }
 
     override fun evaluateChildRegionSizeX(index: Int): Int {
         if (sizingX == Sizing.WRAP) return children[index].evaluateReservedSizeX() // WRAP の場合は領域を分配しないからレイアウト計算が不要なのだ～🌱
         if (children[index].position.weight == 0.0) return children[index].evaluateReservedSizeX() // 子が分配を要求しないからレイアウト計算が不要なのだ～🌱
 
-        val totalWeight = evaluateTotalWeight()
+        val totalWeight = totalWeight.evaluate()
 
         val childRegionSizesX = run {
             val old = childRegionSizesXCache
@@ -94,7 +106,7 @@ class XListView : ListView() {
     override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val totalWeight = evaluateTotalWeight()
+        val totalWeight = totalWeight.evaluate()
         val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
         var consumed = 0.0
         var x = 0
@@ -125,7 +137,7 @@ class YListView : ListView() {
 
     override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
         super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
-        totalWeightCache = null
+        totalWeight.reset()
         childRegionSizesYCache = null
     }
 
@@ -134,25 +146,14 @@ class YListView : ListView() {
 
     override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
 
-    private var totalWeightCache: Double? = null
+    private var totalWeight = Cache { children.sumOf { it.position.weight } }
     private var childRegionSizesYCache: List<Int>? = null
-
-    private fun evaluateTotalWeight(): Double {
-        val old = totalWeightCache
-        return if (old != null) {
-            old
-        } else {
-            val new = children.sumOf { it.position.weight }
-            totalWeightCache = new
-            new
-        }
-    }
 
     override fun evaluateChildRegionSizeY(index: Int): Int {
         if (sizingY == Sizing.WRAP) return children[index].evaluateReservedSizeY() // WRAP の場合は領域を分配しないからレイアウト計算が不要なのだ～🌱
         if (children[index].position.weight == 0.0) return children[index].evaluateReservedSizeY() // 子が分配を要求しないからレイアウト計算が不要なのだ～🌱
 
-        val totalWeight = evaluateTotalWeight()
+        val totalWeight = totalWeight.evaluate()
 
         val childRegionSizesY = run {
             val old = childRegionSizesYCache
@@ -176,7 +177,7 @@ class YListView : ListView() {
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val totalWeight = evaluateTotalWeight()
+        val totalWeight = totalWeight.evaluate()
         val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
         var consumed = 0.0
         var y = 0
