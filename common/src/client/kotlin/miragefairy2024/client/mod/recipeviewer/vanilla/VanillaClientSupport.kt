@@ -27,7 +27,7 @@ val VANILLA_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<VanillaViewPlacerContext>(
 /** View のツリーを [net.minecraft.client.gui.screens.Screen] へ直接配置するのだ～🌱 */
 class ViewVanillaAdapter(private val rootView: View, private val context: VanillaViewPlacerContext) {
 
-    /** [offset] を左上として [regionSize] の空間へ View のツリーを配置し、一括解除用の [miragefairy2024.mod.recipeviewer.view.ViewController] を返すのだ～🌱 */
+    /** [offset] を左上として [regionSize] の空間へ View のツリーを配置するのだ～🌱 */
     fun layout(offset: IntPoint, regionSize: IntPoint): ViewController {
         rootView.initSizeCalculation(renderingProxy, { regionSize.x }, { regionSize.y })
         return rootView.attachTo(offset) { view, bounds ->

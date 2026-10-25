@@ -46,6 +46,10 @@ private class RecordingPagingChildView(size: IntPoint, private val events: Mutab
         events += "attach"
         offsets += offset
         return object : ViewController {
+            override fun setOffset(offset: IntPoint) {
+                offsets += offset
+            }
+
             override fun remove() {
                 events += "remove"
             }
@@ -54,6 +58,27 @@ private class RecordingPagingChildView(size: IntPoint, private val events: Mutab
 }
 
 class PagingViewTest {
+
+    @Test
+    fun `移動後のページ切り替えは新しい位置へ配置するのだ`() {
+        val events = mutableListOf<String>()
+        val firstChild = RecordingPagingChildView(IntPoint(10, 6), events)
+        val secondChild = RecordingPagingChildView(IntPoint(10, 6), events)
+        val view = PagingView()
+        view.add(ChildrenGenerator { _, _ -> listOf(Child(Alignment.START, firstChild), Child(Alignment.END, secondChild)) })
+        view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 10 })
+        val controller = view.attachTo(IntPoint(7, 11), TEST_VIEW_PLACER)
+
+        controller.setOffset(IntPoint(20, 30))
+        view.pageIndex.value = 1
+        controller.setOffset(IntPoint(-5, -9))
+
+        assertEquals(listOf(IntPoint(7, 11), IntPoint(20, 30)), firstChild.offsets)
+        assertEquals(listOf(IntPoint(110, 30), IntPoint(85, -9)), secondChild.offsets)
+        assertEquals(1, firstChild.initializationCount)
+        assertEquals(1, secondChild.initializationCount)
+        controller.remove()
+    }
 
     @Test
     fun `子の生成とページ分配は軸の計算順に依存せず配置時だけ実行するのだ`() {

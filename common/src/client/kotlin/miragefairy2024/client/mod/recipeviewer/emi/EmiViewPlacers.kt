@@ -60,6 +60,7 @@ fun initEmiViewPlacers() {
                 }
             }
         object : ViewController {
+            override fun setOffset(offset: IntPoint) = throw UnsupportedOperationException("EMI does not support changing view offsets")
             override fun remove() = throw UnsupportedOperationException("Cannot remove OutputSlotWidget from EMI")
         }
     }

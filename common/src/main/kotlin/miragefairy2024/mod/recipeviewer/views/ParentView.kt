@@ -5,7 +5,6 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
-import miragefairy2024.mod.recipeviewer.view.flatten
 import miragefairy2024.mod.recipeviewer.view.plus
 
 abstract class ParentView<P> : AbstractView() {
@@ -20,15 +19,27 @@ abstract class ParentView<P> : AbstractView() {
     protected abstract fun evaluateChildRegionSizeY(index: Int): Int
 
     protected fun Iterable<Child<P, *>>.attachTo(viewPlacer: ViewPlacer<PlaceableView>, offset: IntPoint, offsetFunction: (Child<P, *>) -> IntPoint): ViewController {
-        return this.map {
-            it.view.attachTo(offset + offsetFunction(it), viewPlacer)
-        }.flatten()
+        return this.attachToIndexed(viewPlacer, offset) { _, child -> offsetFunction(child) }
     }
 
     protected fun Iterable<Child<P, *>>.attachToIndexed(viewPlacer: ViewPlacer<PlaceableView>, offset: IntPoint, offsetFunction: (Int, Child<P, *>) -> IntPoint): ViewController {
-        return this.mapIndexed { index, it ->
-            it.view.attachTo(offset + offsetFunction(index, it), viewPlacer)
-        }.flatten()
+        val placements = this.mapIndexed { index, child ->
+            val relativeOffset = offsetFunction(index, child)
+            Pair(child.view.attachTo(offset + relativeOffset, viewPlacer), relativeOffset)
+        }
+        return object : ViewController {
+            override fun setOffset(offset: IntPoint) {
+                placements.forEach { (controller, relativeOffset) ->
+                    controller.setOffset(offset + relativeOffset)
+                }
+            }
+
+            override fun remove() {
+                placements.forEach { (controller, _) ->
+                    controller.remove()
+                }
+            }
+        }
     }
 
     abstract fun createDefaultPosition(): P

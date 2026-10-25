@@ -58,13 +58,14 @@ class PagingView : ParentView<Alignment>() {
         if (pages.isEmpty()) pages += listOf<Child<Alignment, *>>()
         pageCount.value = pages.size
 
+        var currentOffset = offset
         val childrenControllerList = ViewControllerList()
         fun load() {
             childrenControllerList.remove()
 
             var y = 0
             val page = pages.getOrNull(pageIndex.value) ?: return
-            childrenControllerList += page.attachTo(viewPlacer, offset) {
+            childrenControllerList += page.attachTo(viewPlacer, currentOffset) {
                 val x = when (it.position) {
                     Alignment.START -> 0
                     Alignment.CENTER -> (evaluateActualSizeX() - it.view.evaluateActualSizeX()) / 2
@@ -79,6 +80,11 @@ class PagingView : ParentView<Alignment>() {
         load()
 
         return object : ViewController {
+            override fun setOffset(offset: IntPoint) {
+                currentOffset = offset
+                childrenControllerList.setOffset(offset)
+            }
+
             override fun remove() {
                 childrenControllerList.remove()
                 pageIndexRemover.remove()

@@ -15,7 +15,11 @@ class MarginView(private val xMin: Int, private val xMax: Int, private val yMin:
     override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() - yMin - yMax
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
-        return childView.attachTo(offset.offset(xMin, yMin), viewPlacer)
+        val controller = childView.attachTo(offset.offset(xMin, yMin), viewPlacer)
+        return object : ViewController {
+            override fun setOffset(offset: IntPoint) = controller.setOffset(offset.offset(xMin, yMin))
+            override fun remove() = controller.remove()
+        }
     }
 
 }

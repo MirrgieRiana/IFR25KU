@@ -2,6 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.emi
 
 import dev.emi.emi.api.widget.Bounds
 import dev.emi.emi.api.widget.Widget
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
@@ -71,6 +72,7 @@ class EmiContainerWidget : Widget() {
 infix fun EmiContainerWidget.place(widget: Widget): ViewController {
     val remover = this.add(widget)
     return object : ViewController {
+        override fun setOffset(offset: IntPoint) = throw UnsupportedOperationException("EMI does not support changing view offsets")
         override fun remove() = remover.remove()
     }
 }
