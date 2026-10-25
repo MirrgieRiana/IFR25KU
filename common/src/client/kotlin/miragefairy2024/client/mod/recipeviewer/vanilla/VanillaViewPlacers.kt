@@ -11,8 +11,13 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
+import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.util.register
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.components.EditBox
+import net.minecraft.network.chat.Component
 
 private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewController {
     val remover = addRenderableWidget(widget)
@@ -36,6 +41,27 @@ fun initVanillaViewPlacers() {
             }
 
             override fun detach() = throw UnsupportedOperationException("Cannot detach MenuSlotView from the vanilla screen")
+        }
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextFieldView, bounds ->
+        val editBox = EditBox(Minecraft.getInstance().font, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty())
+        editBox.setMaxLength(Int.MAX_VALUE)
+        // 初期化による変更通知を拾わないよう、初期値は responder の登録前に設定するのだ～🌱
+        editBox.value = view.text.value
+        val hint = view.hint
+        if (hint != null) editBox.setHint(hint)
+        editBox.setResponder {
+            view.text.value = it
+        }
+        val textRemover = view.text.register { _, text ->
+            if (editBox.value != text) editBox.value = text
+        }
+        val controller = context place editBox
+        object : ViewController by controller {
+            override fun dispose() {
+                textRemover.remove()
+                controller.dispose()
+            }
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
