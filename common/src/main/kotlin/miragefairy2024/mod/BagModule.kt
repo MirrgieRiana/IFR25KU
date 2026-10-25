@@ -49,6 +49,7 @@ import miragefairy2024.util.registerChild
 import miragefairy2024.util.registerGeneratedModelGeneration
 import miragefairy2024.util.registerItemGroup
 import miragefairy2024.util.registerShapedRecipeGeneration
+import miragefairy2024.util.registerViewScreen
 import miragefairy2024.util.set
 import miragefairy2024.util.text
 import miragefairy2024.util.times
@@ -161,6 +162,7 @@ fun initBagModule() {
 
 
     BagCard.screenHandlerType.register()
+    BagCard.screenHandlerType.registerViewScreen()
 
     BagCard.DESCRIPTION1_TRANSLATION.enJa()
     BagCard.DESCRIPTION2_TRANSLATION.enJa()
