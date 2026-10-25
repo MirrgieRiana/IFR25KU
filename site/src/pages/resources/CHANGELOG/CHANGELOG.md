@@ -26,6 +26,12 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 - toc
 {:toc}
 
+## 未リリース
+
+魔法植物
+
+- 修正: 魔法植物の気温・湿度・栄養の特性効果が低すぎる問題を修正。
+
 ## 31.32.1
 
 琥珀色の原生林

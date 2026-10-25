@@ -3,11 +3,10 @@ package miragefairy2024.client.mod
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
-import miragefairy2024.client.mod.recipeviewer.vanilla.menuSlotView
-import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.mod.BagCard
 import miragefairy2024.mod.BagScreenHandler
+import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.Sizing
@@ -22,6 +21,7 @@ import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.margin
+import miragefairy2024.mod.recipeviewer.views.menuSlotView
 import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.times

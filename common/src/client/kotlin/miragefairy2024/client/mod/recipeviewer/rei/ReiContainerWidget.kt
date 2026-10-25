@@ -1,6 +1,8 @@
 package miragefairy2024.client.mod.recipeviewer.rei
 
 import me.shedaniel.rei.api.client.gui.widgets.Widget
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 
@@ -106,4 +108,10 @@ class ReiContainerWidget : Widget() {
 
 }
 
-infix fun ReiContainerWidget.place(widget: Widget) = this.add(widget)
+infix fun ReiContainerWidget.place(widget: Widget): ViewController {
+    val remover = this.add(widget)
+    return object : ViewController {
+        override fun setOffset(offset: IntPoint) = throw UnsupportedOperationException("REI does not support changing view offsets")
+        override fun detach() = remover.remove()
+    }
+}

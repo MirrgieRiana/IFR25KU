@@ -52,7 +52,7 @@ vendor/
 /backup
 /**/generated/resources/.cache
 /.kotlin
-/logs/
+logs/
 desktop.ini
 /.architectury-transformer
 /modrinth_token.txt

@@ -18,7 +18,7 @@ import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBri
 import miragefairy2024.mod.recipeviewer.RecipeViewerEvents
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
-import miragefairy2024.mod.recipeviewer.view.minus
+import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.util.invoke
 import miragefairy2024.util.pathString
 import miragefairy2024.util.plus
@@ -143,9 +143,8 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
 
     private val sizeCache = run {
         val view = support.card.createView(recipeEntry)
-        view.calculateContentSize(renderingProxy)
-        view.calculateActualSize(EmiClientSupport.MAX_SIZE.minus(5 + 5, 5 + 5))
-        view.actualSize
+        view.initSizeCalculation(renderingProxy, { EmiClientSupport.MAX_SIZE.x - 5 - 5 }, { EmiClientSupport.MAX_SIZE.y - 5 - 5 })
+        view.evaluateActualSize()
     }
 
     override fun getDisplayWidth() = 1 + sizeCache.x + 1
@@ -154,8 +153,7 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
         val widgets2 = mutableListOf<Widget>()
         val containerWidget = EmiContainerWidget()
         val view = support.card.createView(recipeEntry)
-        view.calculateContentSize(renderingProxy)
-        view.calculateActualSize(EmiClientSupport.MAX_SIZE.minus(5 + 5, 5 + 5))
+        view.initSizeCalculation(renderingProxy, { EmiClientSupport.MAX_SIZE.x - 5 - 5 }, { EmiClientSupport.MAX_SIZE.y - 5 - 5 })
         view.attachTo(IntPoint(1, 1)) { view2, bounds ->
             EMI_VIEW_PLACER_REGISTRY.place(EmiViewPlacerContext(widgets2, containerWidget, this), view2, bounds)
         }
