@@ -42,7 +42,7 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
 
     private var viewController: ViewController? = null
 
-    /** 画面の中身のViewのツリーを作るのだ～🌱 */
+    /** GUI の寸法を決め、画面の中央へ配置する View のツリーを作るのだ～🌱 */
     protected abstract fun createRootView(): View
 
     /**
@@ -51,6 +51,10 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
      */
     override fun init() {
         disposeView()
+        val rootView = createRootView()
+        rootView.initSizeCalculation(renderingProxy, { width }, { height })
+        imageWidth = rootView.evaluateActualSizeX()
+        imageHeight = rootView.evaluateActualSizeY()
         super.init()
 
         fun register(widget: AbstractWidget, add: () -> Unit): Remover {
@@ -69,7 +73,9 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
             addRenderableOnly = { widget -> register(widget) { addRenderableOnly(widget) } },
             origin = IntPoint(leftPos, topPos),
         )
-        viewController = ViewVanillaAdapter(createRootView(), context).layout(IntPoint.ZERO, IntPoint(width, height))
+        viewController = rootView.attachTo(IntPoint(leftPos, topPos)) { view, bounds ->
+            VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds)
+        }
     }
 
     private fun disposeView() {
@@ -81,6 +87,11 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
     override fun removed() {
         disposeView()
         super.removed()
+    }
+
+    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick)
+        renderTooltip(guiGraphics, mouseX, mouseY)
     }
 
     override fun removeWidget(listener: GuiEventListener) {

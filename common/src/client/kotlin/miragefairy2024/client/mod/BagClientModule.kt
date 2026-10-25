@@ -7,14 +7,13 @@ import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.mod.BagCard
 import miragefairy2024.mod.BagScreenHandler
 import miragefairy2024.mod.common.SlotType
-import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
-import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
@@ -58,8 +57,8 @@ class BagScreen(handler: BagScreenHandler, private val playerInventory: Inventor
         val card = menu.card ?: return SpaceView()
 
         /** 持ち物の名前なのだ～🌱 */
-        fun inventoryNameView(name: Component) = TextView(name).also {
-            it.sizingX = Sizing.FILL
+        fun inventoryNameView(name: Component) = MultiLineTextView().also {
+            it.text.value = name
             it.color = ColorPair.DARK_GRAY
             it.shadow = false
         }
@@ -78,49 +77,41 @@ class BagScreen(handler: BagScreenHandler, private val playerInventory: Inventor
         }
 
         return View {
-            view += YListView().configure {
-                view.sizingX = Sizing.FILL
-                view.sizingY = Sizing.FILL
+            // 外枠なのだ～🌱
+            view += StackView().configure {
 
-                // 外枠なのだ～🌱 余った空間を全部取ってから、その中で中央へ寄せるのだ～🌱
-                view += StackView().configure {
-                    position.alignmentX = Alignment.CENTER
-                    position.alignmentY = Alignment.CENTER
-                    position.weight = 1.0
+                view += NinePatchImageView(PANEL_TEXTURE, 5, 6, 5, 5, 6, 5)
 
-                    view += NinePatchImageView(PANEL_TEXTURE, 5, 6, 5, 5, 6, 5)
+                // 内枠なのだ～🌱
+                view += YListView().configure {
+                    view.sizingX = Sizing.FILL
 
-                    // 内枠なのだ～🌱
-                    view += YListView().configure {
-                        view.sizingX = Sizing.FILL
+                    // 枠の横幅はスロットの個数で決まるため、名前の長さを混ぜないのだ～🌱
+                    view += inventoryNameView(title).configure { position.ignoreLayoutX = true }.margin(INVENTORY_NAME_MARGIN_X, 0)
 
-                        // 枠の横幅はスロットの個数で決まるため、名前の長さを混ぜないのだ～🌱
-                        view += inventoryNameView(title).configure { position.ignoreLayoutX = true }.margin(INVENTORY_NAME_MARGIN_X, 0)
+                    view += YSpaceView(INVENTORY_NAME_SPACE)
 
-                        view += YSpaceView(INVENTORY_NAME_SPACE)
+                    // カバンの持ち物なのだ～🌱
+                    repeat(card.inventoryHeight) { r ->
+                        view += slotRowView(card.inventoryWidth) { c -> PLAYER_INVENTORY_WIDTH * (PLAYER_INVENTORY_HEIGHT + 1) + card.inventoryWidth * r + c }
+                    }
 
-                        // カバンの持ち物なのだ～🌱
-                        repeat(card.inventoryHeight) { r ->
-                            view += slotRowView(card.inventoryWidth) { c -> PLAYER_INVENTORY_WIDTH * (PLAYER_INVENTORY_HEIGHT + 1) + card.inventoryWidth * r + c }
-                        }
+                    view += YSpaceView(INVENTORY_NAME_SPACE)
 
-                        view += YSpaceView(INVENTORY_NAME_SPACE)
+                    view += inventoryNameView(playerInventory.name).configure { position.ignoreLayoutX = true }.margin(INVENTORY_NAME_MARGIN_X, 0)
 
-                        view += inventoryNameView(playerInventory.name).configure { position.ignoreLayoutX = true }.margin(INVENTORY_NAME_MARGIN_X, 0)
+                    view += YSpaceView(PLAYER_INVENTORY_NAME_SPACE)
 
-                        view += YSpaceView(PLAYER_INVENTORY_NAME_SPACE)
+                    // プレイヤーの持ち物なのだ～🌱
+                    repeat(PLAYER_INVENTORY_HEIGHT) { r ->
+                        view += slotRowView(PLAYER_INVENTORY_WIDTH) { c -> PLAYER_INVENTORY_WIDTH * r + c }
+                    }
 
-                        // プレイヤーの持ち物なのだ～🌱
-                        repeat(PLAYER_INVENTORY_HEIGHT) { r ->
-                            view += slotRowView(PLAYER_INVENTORY_WIDTH) { c -> PLAYER_INVENTORY_WIDTH * r + c }
-                        }
+                    view += YSpaceView(HOTBAR_SPACE)
 
-                        view += YSpaceView(HOTBAR_SPACE)
-
-                        // ホットバーなのだ～🌱
-                        view += slotRowView(PLAYER_INVENTORY_WIDTH) { c -> PLAYER_INVENTORY_WIDTH * PLAYER_INVENTORY_HEIGHT + c }
-                    }.minContentSizeX(18 * (card.inventoryWidth atLeast PLAYER_INVENTORY_WIDTH)).margin(PANEL_MARGIN)
-                }
+                    // ホットバーなのだ～🌱
+                    view += slotRowView(PLAYER_INVENTORY_WIDTH) { c -> PLAYER_INVENTORY_WIDTH * PLAYER_INVENTORY_HEIGHT + c }
+                }.minContentSizeX(SlotType.NORMAL.viewTexture.bounds.sizeX * (card.inventoryWidth atLeast PLAYER_INVENTORY_WIDTH)).margin(PANEL_MARGIN)
             }
         }
     }
