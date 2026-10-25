@@ -7,6 +7,10 @@ class ViewControllerList : ViewController {
         controllers += controller
     }
 
+    fun clear() {
+        controllers.clear()
+    }
+
     override fun setOffset(offset: IntPoint) {
         controllers.forEach {
             it.setOffset(offset)
@@ -17,14 +21,12 @@ class ViewControllerList : ViewController {
         controllers.forEach {
             it.remove()
         }
-        controllers.clear()
     }
 
     override fun dispose() {
         controllers.forEach {
             it.dispose()
         }
-        controllers.clear()
     }
 }
 

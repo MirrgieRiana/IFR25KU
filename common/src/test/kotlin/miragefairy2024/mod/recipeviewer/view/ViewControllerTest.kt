@@ -36,6 +36,26 @@ private class RecordingPlacement(initialBounds: IntRectangle) {
 
 class ViewControllerTest {
     @Test
+    fun `通知では登録を維持し明示的に消した登録には通知しないのだ`() {
+        val placement = RecordingPlacement(IntRectangle.ZERO)
+        val controllerList = ViewControllerList()
+        controllerList += placement.controller
+
+        controllerList.dispose()
+        controllerList.remove()
+
+        assertEquals(1, placement.disposals)
+        assertEquals(1, placement.removals)
+
+        controllerList.clear()
+        controllerList.dispose()
+        controllerList.remove()
+
+        assertEquals(1, placement.disposals)
+        assertEquals(1, placement.removals)
+    }
+
+    @Test
     fun `画面破棄の後始末は親とマージンと装飾を経由して配置を解除せず伝播するのだ`() {
         val child = TooltipView().also { it += object : FixedWidgetView(IntPoint(10, 20)) { } }
         val view = XListView().also {

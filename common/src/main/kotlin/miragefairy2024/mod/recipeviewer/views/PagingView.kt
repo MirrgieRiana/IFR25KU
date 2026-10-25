@@ -62,6 +62,7 @@ class PagingView : ParentView<Alignment>() {
         val childrenControllerList = ViewControllerList()
         fun load() {
             childrenControllerList.remove()
+            childrenControllerList.clear()
 
             var y = 0
             val page = pages.getOrNull(pageIndex.value) ?: return
