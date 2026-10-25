@@ -39,6 +39,12 @@ abstract class ParentView<P> : AbstractView() {
                     controller.remove()
                 }
             }
+
+            override fun dispose() {
+                placements.forEach { (controller, _) ->
+                    controller.dispose()
+                }
+            }
         }
     }
 

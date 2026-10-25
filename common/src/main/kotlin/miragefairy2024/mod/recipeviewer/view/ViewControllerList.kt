@@ -19,6 +19,13 @@ class ViewControllerList : ViewController {
         }
         controllers.clear()
     }
+
+    override fun dispose() {
+        controllers.forEach {
+            it.dispose()
+        }
+        controllers.clear()
+    }
 }
 
 operator fun ViewControllerList.plusAssign(other: ViewController) = this.add(other)

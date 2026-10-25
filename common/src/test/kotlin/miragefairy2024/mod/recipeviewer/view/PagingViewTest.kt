@@ -53,11 +53,34 @@ private class RecordingPagingChildView(size: IntPoint, private val events: Mutab
             override fun remove() {
                 events += "remove"
             }
+
+            override fun dispose() {
+                events += "dispose"
+            }
         }
     }
 }
 
 class PagingViewTest {
+
+    @Test
+    fun `画面破棄では子の配置を解除せず後始末しページ変更の登録を解除するのだ`() {
+        val events = mutableListOf<String>()
+        val firstChild = RecordingPagingChildView(IntPoint(10, 6), events)
+        val secondChild = RecordingPagingChildView(IntPoint(10, 6), events)
+        val view = PagingView()
+        view.add(ChildrenGenerator { _, _ -> listOf(Child(Alignment.START, firstChild), Child(Alignment.END, secondChild)) })
+        view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 10 })
+        val controller = view.attachTo(IntPoint(7, 11), TEST_VIEW_PLACER)
+
+        controller.dispose()
+
+        val eventsAfterDisposal = events.toList()
+        assertEquals(listOf("dispose"), eventsAfterDisposal.filter { it == "remove" || it == "dispose" })
+        view.pageIndex.value = 1
+        assertEquals(eventsAfterDisposal, events)
+        assertEquals(emptyList<IntPoint>(), secondChild.offsets)
+    }
 
     @Test
     fun `移動後のページ切り替えは新しい位置へ配置するのだ`() {

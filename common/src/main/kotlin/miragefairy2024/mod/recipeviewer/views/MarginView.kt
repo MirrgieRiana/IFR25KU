@@ -19,6 +19,7 @@ class MarginView(private val xMin: Int, private val xMax: Int, private val yMin:
         return object : ViewController {
             override fun setOffset(offset: IntPoint) = controller.setOffset(offset.offset(xMin, yMin))
             override fun remove() = controller.remove()
+            override fun dispose() = controller.dispose()
         }
     }
 

@@ -50,7 +50,7 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
      * 親クラスは、画面の寸法が変わる度に、ウィジェットを捨ててからこれを呼ぶのだ～🌱
      */
     override fun init() {
-        removeView()
+        disposeView()
         super.init()
 
         fun register(widget: AbstractWidget, add: () -> Unit): Remover {
@@ -72,14 +72,14 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
         viewController = ViewVanillaAdapter(createRootView(), context).layout(IntPoint.ZERO, IntPoint(width, height))
     }
 
-    private fun removeView() {
+    private fun disposeView() {
         val controller = viewController
         viewController = null
-        if (controller != null) controller.remove()
+        if (controller != null) controller.dispose()
     }
 
     override fun removed() {
-        removeView()
+        disposeView()
         super.removed()
     }
 

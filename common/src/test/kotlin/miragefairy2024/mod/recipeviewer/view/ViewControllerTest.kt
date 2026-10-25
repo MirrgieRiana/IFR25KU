@@ -20,6 +20,7 @@ private val CONTROLLER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy
 private class RecordingPlacement(initialBounds: IntRectangle) {
     var bounds = initialBounds
     var removals = 0
+    var disposals = 0
     val controller: ViewController = object : ViewController {
         override fun setOffset(offset: IntPoint) {
             bounds = offset.sized(bounds.size)
@@ -27,10 +28,33 @@ private class RecordingPlacement(initialBounds: IntRectangle) {
         override fun remove() {
             removals += 1
         }
+        override fun dispose() {
+            disposals += 1
+        }
     }
 }
 
 class ViewControllerTest {
+    @Test
+    fun `画面破棄の後始末は親とマージンと装飾を経由して配置を解除せず伝播するのだ`() {
+        val child = TooltipView().also { it += object : FixedWidgetView(IntPoint(10, 20)) { } }
+        val view = XListView().also {
+            it += MarginView(2, 3, 4, 5).also { it += child }
+        }
+        view.initSizeCalculation(CONTROLLER_RENDERING_PROXY, { 100 }, { 100 })
+        val placements = mutableListOf<RecordingPlacement>()
+        val controller = view.attachTo(IntPoint(3, 4)) { _, bounds ->
+            val placement = RecordingPlacement(bounds)
+            placements += placement
+            placement.controller
+        }
+
+        controller.dispose()
+
+        assertEquals(listOf(0, 0), placements.map { it.removals })
+        assertEquals(listOf(1, 1), placements.map { it.disposals })
+    }
+
     @Test
     fun `親の移動は子の相対位置と寸法と登録を維持するのだ`() {
         val first: FixedWidgetView = object : FixedWidgetView(IntPoint(10, 20)) { }

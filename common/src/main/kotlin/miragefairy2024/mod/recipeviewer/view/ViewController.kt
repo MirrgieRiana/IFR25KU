@@ -15,8 +15,14 @@ interface ViewController {
      */
     fun setOffset(offset: IntPoint)
 
-    /** この配置を解除するのだ～🌱 */
+    /** この配置を解除し、[miragefairy2024.mod.recipeviewer.view.ViewController.dispose] に相当する後始末も行うのだ～🌱 */
     fun remove()
+
+    /**
+     * 画面側で配置が破棄されることを前提に、イベント登録などの後始末を行うのだ～🌱
+     * 配置自体の解除は行わないのだ～🌱
+     */
+    fun dispose() = Unit
 }
 
 operator fun ViewController.plus(other: ViewController): ViewController {
@@ -29,6 +35,11 @@ operator fun ViewController.plus(other: ViewController): ViewController {
         override fun remove() {
             this@plus.remove()
             other.remove()
+        }
+
+        override fun dispose() {
+            this@plus.dispose()
+            other.dispose()
         }
     }
 }

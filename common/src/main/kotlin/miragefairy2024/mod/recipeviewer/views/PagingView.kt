@@ -89,6 +89,11 @@ class PagingView : ParentView<Alignment>() {
                 childrenControllerList.remove()
                 pageIndexRemover.remove()
             }
+
+            override fun dispose() {
+                childrenControllerList.dispose()
+                pageIndexRemover.remove()
+            }
         }
     }
 
