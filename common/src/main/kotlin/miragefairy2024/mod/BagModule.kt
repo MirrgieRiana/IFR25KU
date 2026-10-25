@@ -457,17 +457,15 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
         }
 
         return View {
-            // 外枠なのだ～🌱
-            view += StackView().configure {
-
+            view += StackView().configure { // 外枠なのだ～🌱
                 view += NinePatchImageView(PANEL_TEXTURE, 16, 16, 5, 5, 5, 5, 5, 5, false)
-
-                // 内枠なのだ～🌱
-                view += YListView().configure {
+                view += YListView().configure { // 内枠なのだ～🌱
                     view.sizingX = Sizing.FILL
 
                     // 枠の横幅はスロットの個数で決まるため、名前の長さを混ぜないのだ～🌱
-                    view += inventoryNameView(title).configure { position.ignoreLayoutX = true }.margin(INVENTORY_NAME_MARGIN_X, 0)
+                    view += inventoryNameView(title).configure {
+                        position.ignoreLayoutX = true
+                    }.margin(INVENTORY_NAME_MARGIN_X, 0)
 
                     view += YSpaceView(INVENTORY_NAME_SPACE)
 
@@ -478,7 +476,9 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
 
                     view += YSpaceView(INVENTORY_NAME_SPACE)
 
-                    view += inventoryNameView(playerInventoryTitle).configure { position.ignoreLayoutX = true }.margin(INVENTORY_NAME_MARGIN_X, 0)
+                    view += inventoryNameView(playerInventoryTitle).configure {
+                        position.ignoreLayoutX = true
+                    }.margin(INVENTORY_NAME_MARGIN_X, 0)
 
                     view += YSpaceView(PLAYER_INVENTORY_NAME_SPACE)
 
@@ -491,6 +491,7 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
 
                     // ホットバーなのだ～🌱
                     view += slotRowView(PLAYER_INVENTORY_WIDTH) { c -> PLAYER_INVENTORY_WIDTH * PLAYER_INVENTORY_HEIGHT + c }
+
                 }.margin(PANEL_MARGIN)
             }
         }
