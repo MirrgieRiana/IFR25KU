@@ -9,7 +9,6 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewControllerList
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
-import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.plusAssign
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.register
@@ -67,14 +66,15 @@ class PagingView : ParentView<Alignment>() {
 
             var y = 0
             val page = pages.getOrNull(pageIndex.value) ?: return
-            page.forEach {
+            childrenControllerList += page.attachTo(viewPlacer, offset) {
                 val x = when (it.position) {
                     Alignment.START -> 0
                     Alignment.CENTER -> (evaluateActualSizeX() - it.view.evaluateActualSizeX()) / 2
                     Alignment.END -> evaluateActualSizeX() - it.view.evaluateActualSizeX()
                 }
-                childrenControllerList += it.view.attachTo(offset.offset(x, y), viewPlacer)
+                val relativeOffset = IntPoint(x, y)
                 y += it.view.evaluateActualSizeY()
+                relativeOffset
             }
         }
         controllerList += childrenControllerList
