@@ -13,6 +13,7 @@ import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.util.register
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
@@ -52,7 +53,16 @@ fun initVanillaViewPlacers() {
         editBox.setResponder {
             view.text.value = it
         }
-        context place editBox
+        val textRemover = view.text.register { _, text ->
+            if (editBox.value != text) editBox.value = text
+        }
+        val controller = context place editBox
+        object : ViewController by controller {
+            override fun dispose() {
+                textRemover.remove()
+                controller.dispose()
+            }
+        }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
         context place VanillaViewRendererWidget(TextViewRenderer, view, bounds)
