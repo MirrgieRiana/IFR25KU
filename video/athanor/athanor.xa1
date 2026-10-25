@@ -7,21 +7,42 @@
  *
  *   @USE("athanor")
  *
- *   project := AthanorProject.new()
- *   project.tasks.generateFoo = AthanorTask.new()::ALSO ( task =>
+ *   project := AthanorProject::NEW()
+ *   project.tasks.generateFoo = AthanorTask::NEW()::ALSO ( task =>
  *     task.name = "foo"
  *     task.action = () -> ...
  *   )
- *   project.tasks.generateBar = AthanorTask.new()::ALSO ( task =>
+ *   project.tasks.generateBar = AthanorTask::NEW()::ALSO ( task =>
  *     task.name = "bar"
  *     task.dependsOn = [project.tasks.generateFoo]
  *     task.action = () -> ...
  *   )
+ *
+ * タスクやプロジェクトを拡張したいときは、継承して init を上書きするのだ～🌱
+ *
+ *   GenerateFooTask := AthanorTask {
+ *     init: this -> :
+ *       AthanorTask.init(this)
+ *       this.name = "foo"
+ *   }
  **/
 
 API(5)
 
 {
+  /**
+   * インスタンスを生成して、その init を呼ぶ拡張関数なのだ～🌱
+   * インスタンスの生成を呼び出し側のクラスに委ねるから、継承したクラスの init から親の init を呼べて、コンストラクタの連鎖が組めるのだ～🌱
+   * OBJECT に対して定義することで、どのオブジェクトからでも呼べるのだ～🌱
+   */
+  `::NEW` := (OBJECT): this -> (
+    arguments := __
+    this{}::ALSO ( instance =>
+      # 第 1 引数はレシーバー自身だから、init へ渡すのはその後ろの分だけなのだ～🌱
+      CALL(instance::init; arguments[1 ~ arguments.$#])
+    )
+  )
+
   /** 原因を伝えて、終了コード 1 で終わるのだ～🌱 */
   fail := message -> (
     ERR << "ERROR: $message"
@@ -34,12 +55,11 @@ API(5)
   doneState := 2
 
   AthanorTask := {
-    new: () -> AthanorTask{
-      name: NULL
-      dependsOn: []
-      action: NULL
-      _state: idleState
-    }
+    init: this -> :
+      this.name = NULL
+      this.dependsOn = []
+      this.action = NULL
+      this._state = idleState
 
     /**
      * 同じタスクが複数のタスクから依存されていても、action は 1 回しか走らないのだ～🌱
@@ -63,19 +83,18 @@ API(5)
   }
 
   AthanorProject := {
-    new: () -> (
-      project := AthanorProject{
-        tasks: {}
-      }
+    init: this -> (
+      project := this
+      project.tasks = {}
 
       # どのプロジェクトにも、並んでいるタスクを見る手段を持たせるのだ～🌱
       # ここで足しておかないと、タスクを 1 個も並べていないプロジェクトでは、athanorw から叩ける名前が 1 個も無くなるのだ～🌱
-      project.tasks.tasks = AthanorTask.new()::ALSO ( task =>
+      project.tasks.tasks = AthanorTask::NEW()::ALSO ( task =>
         task.name = "tasks"
         task.action = () -> project.tasks() | entry => OUT << entry.0
       )
 
-      project
+      NULL
     )
   }
 
