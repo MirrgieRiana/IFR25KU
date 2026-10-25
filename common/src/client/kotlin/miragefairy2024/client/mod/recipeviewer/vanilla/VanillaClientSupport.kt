@@ -24,19 +24,6 @@ class VanillaViewPlacerContext(
 
 val VANILLA_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<VanillaViewPlacerContext>()
 
-/** View のツリーを [net.minecraft.client.gui.screens.Screen] へ直接配置するのだ～🌱 */
-class ViewVanillaAdapter(private val rootView: View, private val context: VanillaViewPlacerContext) {
-
-    /** [offset] を左上として [regionSize] の空間へ View のツリーを配置するのだ～🌱 */
-    fun layout(offset: IntPoint, regionSize: IntPoint): ViewController {
-        rootView.initSizeCalculation(renderingProxy, { regionSize.x }, { regionSize.y })
-        return rootView.attachTo(offset) { view, bounds ->
-            VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds)
-        }
-    }
-
-}
-
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
 abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) {
 
