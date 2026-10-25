@@ -61,6 +61,7 @@ class PagingView : ParentView<Alignment>() {
         var currentOffset = offset
         val childrenControllerList = ViewControllerList()
         fun load() {
+            childrenControllerList.dispose()
             childrenControllerList.detach()
             childrenControllerList.clear()
 
@@ -88,7 +89,6 @@ class PagingView : ParentView<Alignment>() {
 
             override fun detach() {
                 childrenControllerList.detach()
-                pageIndexRemover.remove()
             }
 
             override fun dispose() {

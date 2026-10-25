@@ -15,11 +15,14 @@ interface ViewController {
      */
     fun setOffset(offset: IntPoint)
 
-    /** この配置を解除し、[miragefairy2024.mod.recipeviewer.view.ViewController.dispose] に相当する後始末も行うのだ～🌱 */
+    /**
+     * この配置を解除するのだ～🌱
+     * 呼び出し前に [miragefairy2024.mod.recipeviewer.view.ViewController.dispose] を呼び出さなければならないのだ～🌱
+     */
     fun detach()
 
     /**
-     * 画面側で配置が破棄されることを前提に、イベント登録などの後始末を行うのだ～🌱
+     * イベント登録などの後始末を行うのだ～🌱
      * 配置自体の解除は行わないのだ～🌱
      */
     fun dispose() = Unit

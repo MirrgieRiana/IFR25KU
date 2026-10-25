@@ -100,7 +100,9 @@ class PagingViewTest {
         assertEquals(listOf(IntPoint(110, 30), IntPoint(85, -9)), secondChild.offsets)
         assertEquals(1, firstChild.initializationCount)
         assertEquals(1, secondChild.initializationCount)
+        controller.dispose()
         controller.detach()
+        assertEquals(listOf("dispose", "detach", "dispose", "detach"), events.filter { it == "dispose" || it == "detach" })
     }
 
     @Test
@@ -150,15 +152,16 @@ class PagingViewTest {
 
             view.pageIndex.value = 1
 
-            assertEquals(listOf("generate", "contentY", "contentY", "attach", "detach", "contentX", "attach"), events)
+            assertEquals(listOf("generate", "contentY", "contentY", "attach", "dispose", "detach", "contentX", "attach"), events)
             assertEquals(listOf(IntPoint(97, 11)), secondChild.offsets)
             assertEquals(1, firstChild.initializationCount)
             assertEquals(1, secondChild.initializationCount)
 
+            remover.dispose()
             remover.detach()
 
             val eventsAfterRemoval = events.toList()
-            assertEquals(listOf("generate", "contentY", "contentY", "attach", "detach", "contentX", "attach", "detach"), eventsAfterRemoval)
+            assertEquals(listOf("generate", "contentY", "contentY", "attach", "dispose", "detach", "contentX", "attach", "dispose", "detach"), eventsAfterRemoval)
             view.pageIndex.value = 0
             assertEquals(eventsAfterRemoval, events)
         }
@@ -177,6 +180,7 @@ class PagingViewTest {
         val remover = view.attachTo(IntPoint.ZERO, TEST_VIEW_PLACER)
 
         assertEquals(1, view.pageCount.value)
+        remover.dispose()
         remover.detach()
     }
 

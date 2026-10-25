@@ -26,6 +26,7 @@ private class RecordingPlacement(initialBounds: IntRectangle) {
             bounds = offset.sized(bounds.size)
         }
         override fun detach() {
+            assertEquals(1, disposals)
             removals += 1
         }
         override fun dispose() {
@@ -98,6 +99,7 @@ class ViewControllerTest {
 
         assertEquals(listOf(IntRectangle(-8, -16, 10, 20), IntRectangle(5, -20, 20, 10)), placements.map { it.bounds })
         assertEquals(listOf(0, 0), placements.map { it.removals })
+        controller.dispose()
         controller.detach()
         assertEquals(listOf(1, 1), placements.map { it.removals })
     }
@@ -116,6 +118,7 @@ class ViewControllerTest {
         controller.setOffset(IntPoint(30, 40))
 
         assertEquals(listOf(IntRectangle(30, 40, 10, 20), IntRectangle(30, 40, 10, 20)), placements.map { it.bounds })
+        controller.dispose()
         controller.detach()
         assertEquals(listOf(1, 1), placements.map { it.removals })
     }

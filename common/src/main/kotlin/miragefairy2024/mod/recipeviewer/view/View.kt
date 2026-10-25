@@ -50,7 +50,8 @@ interface View {
     /**
      * この View を指定された位置に配置するのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に呼び出さなければならないのだ～🌱
-     * 同じ View に再び呼び出す前に、前回の配置を戻り値の [miragefairy2024.mod.recipeviewer.view.ViewController.detach] で解除するか、画面側で破棄して [miragefairy2024.mod.recipeviewer.view.ViewController.dispose] を呼び出さなければならないのだ～🌱
+     * 同じ View に再び呼び出す前に、前回の配置に対して [miragefairy2024.mod.recipeviewer.view.ViewController.dispose] を呼び出さなければならないのだ～🌱
+     * 前回の配置は [miragefairy2024.mod.recipeviewer.view.ViewController.detach] で解除するか、画面側で破棄しなければならないのだ～🌱
      * 前回の配置を解除または破棄し、[miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] で再初期化した後は、同じ View を再配置できるのだ～🌱
      * 戻り値の [miragefairy2024.mod.recipeviewer.view.ViewController.detach] や [miragefairy2024.mod.recipeviewer.view.ViewController.dispose] が必ず呼び出される保証はないのだ～🌱
      */
