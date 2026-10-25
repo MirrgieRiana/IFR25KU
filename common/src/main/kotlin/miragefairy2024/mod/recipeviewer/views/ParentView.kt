@@ -34,9 +34,9 @@ abstract class ParentView<P> : AbstractView() {
                 }
             }
 
-            override fun remove() {
+            override fun detach() {
                 placements.forEach { (controller, _) ->
-                    controller.remove()
+                    controller.detach()
                 }
             }
 

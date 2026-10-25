@@ -17,9 +17,9 @@ class ViewControllerList : ViewController {
         }
     }
 
-    override fun remove() {
+    override fun detach() {
         controllers.forEach {
-            it.remove()
+            it.detach()
         }
     }
 

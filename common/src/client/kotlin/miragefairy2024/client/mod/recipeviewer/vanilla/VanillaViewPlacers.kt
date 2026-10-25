@@ -21,7 +21,7 @@ private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewCo
             widget.setPosition(offset.x, offset.y)
         }
 
-        override fun remove() = remover.remove()
+        override fun detach() = remover.remove()
     }
 }
 
@@ -35,7 +35,7 @@ fun initVanillaViewPlacers() {
                 (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(offset.x - context.origin.x + view.margin.x, offset.y - context.origin.y + view.margin.y)
             }
 
-            override fun remove() = throw UnsupportedOperationException("Cannot remove MenuSlotView from the vanilla screen")
+            override fun detach() = throw UnsupportedOperationException("Cannot detach MenuSlotView from the vanilla screen")
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->

@@ -73,6 +73,6 @@ infix fun EmiContainerWidget.place(widget: Widget): ViewController {
     val remover = this.add(widget)
     return object : ViewController {
         override fun setOffset(offset: IntPoint) = throw UnsupportedOperationException("EMI does not support changing view offsets")
-        override fun remove() = remover.remove()
+        override fun detach() = remover.remove()
     }
 }

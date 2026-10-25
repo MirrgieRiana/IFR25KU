@@ -112,6 +112,6 @@ infix fun ReiContainerWidget.place(widget: Widget): ViewController {
     val remover = this.add(widget)
     return object : ViewController {
         override fun setOffset(offset: IntPoint) = throw UnsupportedOperationException("REI does not support changing view offsets")
-        override fun remove() = remover.remove()
+        override fun detach() = remover.remove()
     }
 }
