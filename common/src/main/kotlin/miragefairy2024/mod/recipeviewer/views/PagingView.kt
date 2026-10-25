@@ -4,14 +4,13 @@ import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ChildrenGenerator
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.RemoverList
 import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.ViewController
+import miragefairy2024.mod.recipeviewer.view.ViewControllerList
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
-import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.plusAssign
 import miragefairy2024.util.ObservableValue
-import miragefairy2024.util.Remover
 import miragefairy2024.util.register
 
 class PagingView : ParentView<Alignment>() {
@@ -38,7 +37,7 @@ class PagingView : ParentView<Alignment>() {
 
     val pageIndex = ObservableValue(0)
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         val children = childrenGenerators.flatMap { it.generateChildren(renderingProxy, evaluateActualSize()) }
         children.initSizeCalculation()
 
@@ -59,30 +58,38 @@ class PagingView : ParentView<Alignment>() {
         if (pages.isEmpty()) pages += listOf<Child<Alignment, *>>()
         pageCount.value = pages.size
 
-        val removers = RemoverList()
-
-        val childrenRemover = RemoverList()
+        var currentOffset = offset
+        val childrenControllerList = ViewControllerList()
         fun load() {
-            childrenRemover.remove()
+            childrenControllerList.remove()
 
             var y = 0
             val page = pages.getOrNull(pageIndex.value) ?: return
-            page.forEach {
+            childrenControllerList += page.attachTo(viewPlacer, currentOffset) {
                 val x = when (it.position) {
                     Alignment.START -> 0
                     Alignment.CENTER -> (evaluateActualSizeX() - it.view.evaluateActualSizeX()) / 2
                     Alignment.END -> evaluateActualSizeX() - it.view.evaluateActualSizeX()
                 }
-                childrenRemover += it.view.attachTo(offset.offset(x, y), viewPlacer)
+                val relativeOffset = IntPoint(x, y)
                 y += it.view.evaluateActualSizeY()
+                relativeOffset
             }
         }
-        removers += childrenRemover
-
-        removers += pageIndex.register { _, _ -> load() }
+        val pageIndexRemover = pageIndex.register { _, _ -> load() }
         load()
 
-        return removers
+        return object : ViewController {
+            override fun setOffset(offset: IntPoint) {
+                currentOffset = offset
+                childrenControllerList.setOffset(offset)
+            }
+
+            override fun remove() {
+                childrenControllerList.remove()
+                pageIndexRemover.remove()
+            }
+        }
     }
 
 }

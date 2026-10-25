@@ -8,7 +8,6 @@ import miragefairy2024.mod.recipeviewer.views.MarginView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
-import miragefairy2024.util.Remover
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -49,7 +48,7 @@ private class DependentSizeView(
         return contentSizeYFunction()
     }
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = Remover.NONE
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = ViewController.NONE
 }
 
 private fun createWrappingView(rotated: Boolean): DependentSizeView {

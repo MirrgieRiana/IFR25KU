@@ -1,7 +1,5 @@
 package miragefairy2024.mod.recipeviewer.view
 
-import miragefairy2024.util.Remover
-
 /** ステートフルな UI 要素なのだ～🌱 */
 interface View {
 
@@ -52,11 +50,11 @@ interface View {
     /**
      * この View を指定された位置に配置するのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に呼び出さなければならないのだ～🌱
-     * 同じ View に再び呼び出す前に、前回の戻り値の [miragefairy2024.util.Remover.remove] を呼び出さなければならないのだ～🌱
+     * 同じ View に再び呼び出す前に、前回の戻り値の [miragefairy2024.mod.recipeviewer.view.ViewController.remove] を呼び出さなければならないのだ～🌱
      * 前回の配置を解除し、[miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] で再初期化した後は、同じ View を再配置できるのだ～🌱
-     * 戻り値の [miragefairy2024.util.Remover.remove] が必ず呼び出される保証はないのだ～🌱
+     * 戻り値の [miragefairy2024.mod.recipeviewer.view.ViewController.remove] が必ず呼び出される保証はないのだ～🌱
      */
-    fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover
+    fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController
 
 }
 

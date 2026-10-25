@@ -4,7 +4,6 @@ import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.ListView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.XListView
-import miragefairy2024.util.Remover
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.network.chat.Style
@@ -88,7 +87,7 @@ class MultiLineTextViewTest {
         val bounds = mutableListOf<IntRectangle>()
         parent.attachTo(IntPoint.ZERO) { _, rectangle ->
             bounds += rectangle
-            Remover.NONE
+            ViewController.NONE
         }
 
         assertEquals(listOf(0, 6), bounds.map { it.x })
