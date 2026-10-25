@@ -4,7 +4,7 @@ set -eu
 
 cd -- "$(dirname -- "$0")/.."
 
-script="$0" ./xarpite/xa -q '
+script="$0" ./xarpite/xarpite -q -e '
   getb := url -> EXECB("curl", "-sL", url)
   get := url -> url >> getb >> UTF8D
   mkdirs := file -> EXEC("mkdir", "-p", file)
