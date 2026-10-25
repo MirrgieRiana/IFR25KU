@@ -44,6 +44,7 @@ fun initVanillaViewPlacers() {
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextFieldView, bounds ->
         val editBox = EditBox(Minecraft.getInstance().font, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty())
+        editBox.setMaxLength(Int.MAX_VALUE)
         // 初期化による変更通知を拾わないよう、初期値は responder の登録前に設定するのだ～🌱
         editBox.value = view.text.value
         val hint = view.hint
