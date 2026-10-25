@@ -462,7 +462,7 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
             // 外枠なのだ～🌱
             view += StackView().configure {
 
-                view += NinePatchImageView(PANEL_TEXTURE, 16, 16, 5, 5, 5, 5, 5, 5)
+                view += NinePatchImageView(PANEL_TEXTURE, 16, 16, 5, 5, 5, 5, 5, 5, false)
 
                 // 内枠なのだ～🌱
                 view += YListView().configure {
