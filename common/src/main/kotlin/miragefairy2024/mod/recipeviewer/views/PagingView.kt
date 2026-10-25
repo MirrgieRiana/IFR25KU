@@ -58,8 +58,6 @@ class PagingView : ParentView<Alignment>() {
         if (pages.isEmpty()) pages += listOf<Child<Alignment, *>>()
         pageCount.value = pages.size
 
-        val controllerList = ViewControllerList()
-
         val childrenControllerList = ViewControllerList()
         fun load() {
             childrenControllerList.remove()
@@ -77,17 +75,15 @@ class PagingView : ParentView<Alignment>() {
                 relativeOffset
             }
         }
-        controllerList += childrenControllerList
-
         val pageIndexRemover = pageIndex.register { _, _ -> load() }
-        controllerList += object : ViewController {
+        load()
+
+        return object : ViewController {
             override fun remove() {
+                childrenControllerList.remove()
                 pageIndexRemover.remove()
             }
         }
-        load()
-
-        return controllerList
     }
 
 }
