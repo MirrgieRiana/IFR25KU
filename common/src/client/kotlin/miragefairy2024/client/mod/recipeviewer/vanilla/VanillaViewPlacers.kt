@@ -44,11 +44,13 @@ fun initVanillaViewPlacers() {
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextFieldView, bounds ->
         val editBox = EditBox(Minecraft.getInstance().font, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty())
+        // 初期化による変更通知を拾わないよう、初期値は responder の登録前に設定するのだ～🌱
         editBox.value = view.text.value
         val hint = view.hint
         if (hint != null) editBox.setHint(hint)
-        // 初期値の書き込みより前に登録すると、その書き込みで監視する側へ変更が伝わってしまうのだ～🌱
-        editBox.setResponder { view.text.value = it }
+        editBox.setResponder {
+            view.text.value = it
+        }
         context place editBox
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
