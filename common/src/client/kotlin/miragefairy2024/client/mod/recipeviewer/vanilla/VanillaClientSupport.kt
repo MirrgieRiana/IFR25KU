@@ -117,7 +117,7 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     /** 枠の絵はViewのツリーが描くのだ～🌱 */
     final override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) = Unit
 
-    /** 題名と持ち物の名前もViewのツリーが描くのだ～🌱 */
+    /** 題名とインベントリの名前もViewのツリーが描くのだ～🌱 */
     final override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
 
 }

@@ -438,7 +438,7 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
     override fun createView(title: Component, playerInventoryTitle: Component): View {
         val card = card ?: return SpaceView()
 
-        /** 持ち物の名前なのだ～🌱 */
+        /** インベントリの名前なのだ～🌱 */
         fun inventoryNameView(name: Component) = MultiLineTextView().also {
             it.text.value = name
             it.color = ColorPair.DARK_GRAY
@@ -473,7 +473,7 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
 
                     view += YSpaceView(INVENTORY_NAME_SPACE)
 
-                    // カバンの持ち物なのだ～🌱
+                    // カバンのインベントリなのだ～🌱
                     repeat(card.inventoryHeight) { r ->
                         view += slotRowView(card.inventoryWidth) { c -> PLAYER_INVENTORY_WIDTH * (PLAYER_INVENTORY_HEIGHT + 1) + card.inventoryWidth * r + c }
                     }
@@ -484,7 +484,7 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
 
                     view += YSpaceView(PLAYER_INVENTORY_NAME_SPACE)
 
-                    // プレイヤーの持ち物なのだ～🌱
+                    // プレイヤーのインベントリなのだ～🌱
                     repeat(PLAYER_INVENTORY_HEIGHT) { r ->
                         view += slotRowView(PLAYER_INVENTORY_WIDTH) { c -> PLAYER_INVENTORY_WIDTH * r + c }
                     }
