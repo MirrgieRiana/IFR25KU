@@ -89,7 +89,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
             view.sizingY = Sizing.FILL
 
             // 背景
-            view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22)
+            view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
 
             view += YListView().configure {
                 view.sizingX = Sizing.FILL
