@@ -1,10 +1,18 @@
 package miragefairy2024.client.mod.recipeviewer.common
 
+import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.vertex.BufferBuilder
+import com.mojang.blaze3d.vertex.BufferUploader
+import com.mojang.blaze3d.vertex.DefaultVertexFormat
+import com.mojang.blaze3d.vertex.Tesselator
+import com.mojang.blaze3d.vertex.VertexFormat
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import mirrg.kotlin.helium.atMost
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.renderer.GameRenderer
+import org.joml.Matrix4f
 
 object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView> {
     override fun render(view: NinePatchImageView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
@@ -32,60 +40,96 @@ object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView> {
         val y2 = bounds.y + bounds.sizeY - h3
         // val y3 = bounds.y + bounds.sizeY
 
-        // 角
-        graphics.blit(view.textureId, x0, y0, u0.toFloat(), v0.toFloat(), w1, h1, w0, h0)
-        graphics.blit(view.textureId, x2, y0, u2.toFloat(), v0.toFloat(), w3, h1, w0, h0)
-        graphics.blit(view.textureId, x0, y2, u0.toFloat(), v2.toFloat(), w1, h3, w0, h0)
-        graphics.blit(view.textureId, x2, y2, u2.toFloat(), v2.toFloat(), w3, h3, w0, h0)
+        RenderSystem.setShaderTexture(0, view.textureId)
+        RenderSystem.setShader(GameRenderer::getPositionTexShader)
+        val matrix: Matrix4f = graphics.pose().last().pose()
+        val bufferBuilder: BufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
 
-        // 上下
-        run {
-            var x = x1
-            while (true) {
-                if (x >= x2) break
-                val w = w2 atMost x2 - x
-
-                graphics.blit(view.textureId, x, y0, u1.toFloat(), v0.toFloat(), w, h1, w0, h0)
-                graphics.blit(view.textureId, x, y2, u1.toFloat(), v2.toFloat(), w, h3, w0, h0)
-
-                x += w
-            }
+        fun blit(x: Int, y: Int, width: Int, height: Int, u: Int, v: Int, uWidth: Int, vHeight: Int) {
+            val minU = u.toFloat() / w0
+            val maxU = (u + uWidth).toFloat() / w0
+            val minV = v.toFloat() / h0
+            val maxV = (v + vHeight).toFloat() / h0
+            bufferBuilder.addVertex(matrix, x.toFloat(), y.toFloat(), 0.0F).setUv(minU, minV)
+            bufferBuilder.addVertex(matrix, x.toFloat(), (y + height).toFloat(), 0.0F).setUv(minU, maxV)
+            bufferBuilder.addVertex(matrix, (x + width).toFloat(), (y + height).toFloat(), 0.0F).setUv(maxU, maxV)
+            bufferBuilder.addVertex(matrix, (x + width).toFloat(), y.toFloat(), 0.0F).setUv(maxU, minV)
         }
 
-        // 左右
-        run {
-            var y = y1
-            while (true) {
-                if (y >= y2) break
-                val h = h2 atMost y2 - y
+        // 角は元のサイズで描画するのだ～🌱
+        blit(x0, y0, w1, h1, u0, v0, w1, h1)
+        blit(x2, y0, w3, h1, u2, v0, w3, h1)
+        blit(x0, y2, w1, h3, u0, v2, w1, h3)
+        blit(x2, y2, w3, h3, u2, v2, w3, h3)
 
-                graphics.blit(view.textureId, x0, y, u0.toFloat(), v1.toFloat(), w1, h, w0, h0)
-                graphics.blit(view.textureId, x2, y, u2.toFloat(), v1.toFloat(), w3, h, w0, h0)
+        if (view.repeat) {
 
-                y += h
+            // 上下を反復描画するのだ～🌱
+            run {
+                var x = x1
+                while (true) {
+                    if (x >= x2) break
+                    val w = w2 atMost x2 - x
+
+                    blit(x, y0, w, h1, u1, v0, w, h1)
+                    blit(x, y2, w, h3, u1, v2, w, h3)
+
+                    x += w
+                }
             }
-        }
 
-        // 中央
-        run {
-            var x = x1
-            while (true) {
-                if (x >= x2) break
-                val w = w2 atMost x2 - x
-
+            // 左右を反復描画するのだ～🌱
+            run {
                 var y = y1
                 while (true) {
                     if (y >= y2) break
                     val h = h2 atMost y2 - y
 
-                    graphics.blit(view.textureId, x, y, u1.toFloat(), v1.toFloat(), w, h, w0, h0)
+                    blit(x0, y, w1, h, u0, v1, w1, h)
+                    blit(x2, y, w3, h, u2, v1, w3, h)
 
                     y += h
                 }
-
-                x += w
             }
+
+            // 中央を反復描画するのだ～🌱
+            run {
+                var x = x1
+                while (true) {
+                    if (x >= x2) break
+                    val w = w2 atMost x2 - x
+
+                    var y = y1
+                    while (true) {
+                        if (y >= y2) break
+                        val h = h2 atMost y2 - y
+
+                        blit(x, y, w, h, u1, v1, w, h)
+
+                        y += h
+                    }
+
+                    x += w
+                }
+            }
+        } else {
+
+            // 辺と中央を伸長描画するのだ～🌱
+            if (x2 > x1) {
+                blit(x1, y0, x2 - x1, h1, u1, v0, w2, h1)
+                blit(x1, y2, x2 - x1, h3, u1, v2, w2, h3)
+            }
+            if (y2 > y1) {
+                blit(x0, y1, w1, y2 - y1, u0, v1, w1, h2)
+                blit(x2, y1, w3, y2 - y1, u2, v1, w3, h2)
+            }
+            if (x2 > x1 && y2 > y1) {
+                blit(x1, y1, x2 - x1, y2 - y1, u1, v1, w2, h2)
+            }
+
         }
+
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow())
 
     }
 }
