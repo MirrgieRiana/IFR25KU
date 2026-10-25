@@ -3,9 +3,9 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import dev.architectury.platform.Platform
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.view.IntPoint
-import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.view.ViewProvider
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
@@ -25,12 +25,9 @@ class VanillaViewPlacerContext(
 val VANILLA_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<VanillaViewPlacerContext>()
 
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
-abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) {
+class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProvider {
 
     private var viewController: ViewController? = null
-
-    /** GUI の寸法を決め、画面の中央へ配置する View のツリーを作るのだ～🌱 */
-    protected abstract fun createRootView(): View
 
     /**
      * View のツリーを再構築して、各ウィジェットを画面へ直接登録するのだ～🌱
@@ -38,7 +35,7 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
      */
     override fun init() {
         disposeView()
-        val rootView = createRootView()
+        val rootView = menu.createView(title, playerInventoryTitle)
         rootView.initSizeCalculation(renderingProxy, { width }, { height })
         imageWidth = rootView.evaluateActualSizeX()
         imageHeight = rootView.evaluateActualSizeY()
