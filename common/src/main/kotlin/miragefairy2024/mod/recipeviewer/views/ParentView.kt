@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.flatten
+import miragefairy2024.mod.recipeviewer.view.plus
 
 abstract class ParentView<P> : AbstractView() {
 
@@ -18,15 +19,15 @@ abstract class ParentView<P> : AbstractView() {
     protected abstract fun evaluateChildRegionSizeX(index: Int): Int
     protected abstract fun evaluateChildRegionSizeY(index: Int): Int
 
-    protected fun Iterable<Child<P, *>>.attachTo(viewPlacer: ViewPlacer<PlaceableView>, offsetFunction: (Child<P, *>) -> IntPoint): ViewController {
+    protected fun Iterable<Child<P, *>>.attachTo(viewPlacer: ViewPlacer<PlaceableView>, offset: IntPoint, offsetFunction: (Child<P, *>) -> IntPoint): ViewController {
         return this.map {
-            it.view.attachTo(offsetFunction(it), viewPlacer)
+            it.view.attachTo(offset + offsetFunction(it), viewPlacer)
         }.flatten()
     }
 
-    protected fun Iterable<Child<P, *>>.attachToIndexed(viewPlacer: ViewPlacer<PlaceableView>, offsetFunction: (Int, Child<P, *>) -> IntPoint): ViewController {
+    protected fun Iterable<Child<P, *>>.attachToIndexed(viewPlacer: ViewPlacer<PlaceableView>, offset: IntPoint, offsetFunction: (Int, Child<P, *>) -> IntPoint): ViewController {
         return this.mapIndexed { index, it ->
-            it.view.attachTo(offsetFunction(index, it), viewPlacer)
+            it.view.attachTo(offset + offsetFunction(index, it), viewPlacer)
         }.flatten()
     }
 

@@ -20,7 +20,7 @@ class StackView : ContainerView<Unit>() {
     override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
-        return children.attachTo(viewPlacer) { offset }
+        return children.attachTo(viewPlacer, offset) { IntPoint.ZERO }
     }
 
 }
