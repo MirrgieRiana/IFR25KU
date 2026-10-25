@@ -7,10 +7,10 @@ import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.magicplant.MagicPlantSeedItem
 import miragefairy2024.mod.magicplant.contents.magicplants.MirageFlowerCard
 import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
-import miragefairy2024.mod.recipeviewer.view.ViewProvider
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
@@ -428,7 +428,7 @@ private const val HOTBAR_SPACE = 4
 
 private const val INVENTORY_NAME_MARGIN_X = 1
 
-open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenHandlerType(), syncId), ViewProvider {
+open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenHandlerType(), syncId), ViewProviderMenu {
     override fun stillValid(player: Player) = false
     override fun quickMoveStack(player: Player, slot: Int) = EMPTY_ITEM_STACK
     open val card: BagCard? = null
