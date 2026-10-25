@@ -22,7 +22,6 @@ import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.menuSlotView
-import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -54,7 +53,6 @@ import miragefairy2024.util.set
 import miragefairy2024.util.text
 import miragefairy2024.util.times
 import miragefairy2024.util.toItemTag
-import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.castOrNull
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
@@ -493,7 +491,7 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
 
                     // ホットバーなのだ～🌱
                     view += slotRowView(PLAYER_INVENTORY_WIDTH) { c -> PLAYER_INVENTORY_WIDTH * PLAYER_INVENTORY_HEIGHT + c }
-                }.minContentSizeX(SlotType.NORMAL.viewTexture.bounds.sizeX * (card.inventoryWidth atLeast PLAYER_INVENTORY_WIDTH)).margin(PANEL_MARGIN)
+                }.margin(PANEL_MARGIN)
             }
         }
     }
