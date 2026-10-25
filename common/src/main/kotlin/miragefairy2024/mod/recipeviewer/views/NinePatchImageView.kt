@@ -10,6 +10,8 @@ import net.minecraft.resources.ResourceLocation
 
 class NinePatchImageView(
     val textureId: ResourceLocation,
+    val textureWidth: Int,
+    val textureHeight: Int,
     val xStartSize: Int,
     val xMiddleSize: Int,
     val xEndSize: Int,
