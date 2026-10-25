@@ -1,16 +1,47 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.ModContext
+import miragefairy2024.client.mixins.api.SlotPositionSetter
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
+import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.views.ImageView
+import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
+import miragefairy2024.mod.recipeviewer.views.TextView
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.network.chat.Component
 
+private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewController {
+    val remover = addRenderableWidget(widget)
+    return object : ViewController {
+        override fun setOffset(offset: IntPoint) {
+            widget.setPosition(offset.x, offset.y)
+        }
+
+        override fun detach() = remover.remove()
+    }
+}
+
 context(ModContext)
 fun initVanillaViewPlacers() {
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
+        // バニラはSlotの座標へoriginを描画とホバー判定の際に加算するため、絶対座標を書き込むと二重に加算されるのだ～🌱
+        (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(bounds.x - context.origin.x + view.margin.x, bounds.y - context.origin.y + view.margin.y)
+        object : ViewController {
+            override fun setOffset(offset: IntPoint) {
+                (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(offset.x - context.origin.x + view.margin.x, offset.y - context.origin.y + view.margin.y)
+            }
+
+            override fun detach() = throw UnsupportedOperationException("Cannot detach MenuSlotView from the vanilla screen")
+        }
+    }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextFieldView, bounds ->
         val editBox = EditBox(Minecraft.getInstance().font, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty())
         editBox.value = view.text.value
@@ -18,12 +49,18 @@ fun initVanillaViewPlacers() {
         if (hint != null) editBox.setHint(hint)
         // 初期値の書き込みより前に登録すると、その書き込みで監視する側へ変更が伝わってしまうのだ～🌱
         editBox.setResponder { view.text.value = it }
-        context.addRenderableWidget(editBox)
+        context place editBox
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
+        context place VanillaViewRendererWidget(TextViewRenderer, view, bounds)
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: ImageView, bounds ->
+        context place VanillaViewRendererWidget(ImageViewRenderer, view, bounds)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
             VANILLA_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
-                context.addRenderableWidget(VanillaViewRendererWidget(entry.viewRenderer, view, bounds))
+                context place VanillaViewRendererWidget(entry.viewRenderer, view, bounds)
             }
         }
         f(entry)

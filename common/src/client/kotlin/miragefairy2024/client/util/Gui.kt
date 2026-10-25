@@ -11,7 +11,7 @@ import io.wispforest.owo.ui.core.Insets
 import io.wispforest.owo.ui.core.Size
 import io.wispforest.owo.ui.core.Sizing
 import io.wispforest.owo.ui.core.Surface
-import miragefairy2024.MirageFairy2024
+import miragefairy2024.mod.common.SlotType
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -20,15 +20,10 @@ typealias OwoComponent = io.wispforest.owo.ui.core.Component
 typealias FocusSource = io.wispforest.owo.ui.core.Component.FocusSource
 typealias DismountReason = io.wispforest.owo.ui.core.Component.DismountReason
 
-enum class SlotType(val texture: ResourceLocation) {
-    NORMAL(MirageFairy2024.identifier("textures/gui/slot.png")),
-    FAIRY(MirageFairy2024.identifier("textures/gui/fairy_slot.png")),
-}
-
 fun slotContainer(slotComponent: OwoComponent, type: SlotType? = SlotType.NORMAL): FlowLayout {
     return Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
         padding(Insets.of(1))
-        if (type != null) surface(Surface.tiled(type.texture, 18, 18))
+        if (type != null) surface(Surface.tiled(type.viewTexture.id, 18, 18))
         allowOverflow(true)
         child(slotComponent)
     }

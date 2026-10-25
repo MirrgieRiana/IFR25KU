@@ -2,9 +2,10 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
-import miragefairy2024.util.Remover
 
 open class WrapperView : ParentView<Unit>() {
 
@@ -24,17 +25,18 @@ open class WrapperView : ParentView<Unit>() {
     override val sizingX get() = childView.sizingX
     override val sizingY get() = childView.sizingY
 
-    final override fun calculateChildrenContentSize() {
-        childView.calculateContentSize(renderingProxy)
+    final override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
+        super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
+        childView.initSizeCalculation(renderingProxy, { evaluateChildRegionSizeX(0) }, { evaluateChildRegionSizeY(0) })
     }
 
-    override fun calculateContentSize() = childView.contentSize
+    override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX()
+    override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY()
 
-    override fun calculateChildrenActualSize() {
-        childView.calculateActualSize(actualSize)
-    }
+    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
+    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         return childView.attachTo(offset, viewPlacer)
     }
 

@@ -3,20 +3,29 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
-import miragefairy2024.mod.recipeviewer.view.offset
-import miragefairy2024.util.Remover
+import mirrg.kotlin.helium.CachingEvaluator
 import kotlin.math.roundToInt
 
 abstract class ListView : ContainerView<ListView.Position>() {
 
     class Position {
+
         var alignmentX = Alignment.START
         var alignmentY = Alignment.START
+
         var weight = 0.0
+            set(value) {
+                if (!value.isFinite() || value < 0.0) throw IllegalArgumentException("weight must be finite and non-negative")
+                field = value
+            }
+
         var ignoreLayoutX = false
         var ignoreLayoutY = false
+
     }
 
     override fun createDefaultPosition() = Position()
@@ -25,55 +34,65 @@ abstract class ListView : ContainerView<ListView.Position>() {
     override var sizingX = Sizing.WRAP
     override var sizingY = Sizing.WRAP
 
-    protected val Child<Position, *>.reservedSizeX get() = if (position.ignoreLayoutX) 0 else view.contentSize.x
-    protected val Child<Position, *>.reservedSizeY get() = if (position.ignoreLayoutY) 0 else view.contentSize.y
+    protected fun Child<Position, *>.evaluateReservedSizeX() = if (position.ignoreLayoutX) 0 else view.evaluateContentSizeX()
+    protected fun Child<Position, *>.evaluateReservedSizeY() = if (position.ignoreLayoutY) 0 else view.evaluateContentSizeY()
 
 }
 
 class XListView : ListView() {
 
-    override fun calculateContentSize(): IntPoint {
-        return IntPoint(
-            children.sumOf { it.reservedSizeX },
-            children.maxOfOrNull { it.reservedSizeY } ?: 0,
-        )
+    override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
+        super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
+        totalWeight.reset()
+        childRegionSizesX.reset()
     }
 
-    override fun calculateChildrenActualSize() {
-        val remaining = (actualSize.x - contentSize.x).toDouble()
-        val totalWeight = children.sumOf { it.position.weight }
-        var x = 0.0
-        children.calculateActualSize {
-            val old = x
-            val new = old + it.reservedSizeX.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
-            x = new
-            val size = new.roundToInt() - old.roundToInt()
+    override fun evaluateContentSizeXImpl() = children.sumOf { it.evaluateReservedSizeX() }
+    override fun evaluateContentSizeYImpl() = children.maxOfOrNull { it.evaluateReservedSizeY() } ?: 0
 
-            IntPoint(size, actualSize.y)
+    private var totalWeight = CachingEvaluator { children.sumOf { it.position.weight } }
+    private var childRegionSizesX = CachingEvaluator {
+        val totalWeight = totalWeight.evaluate()
+        if (totalWeight <= 0.0) {
+            children.map {
+                it.evaluateReservedSizeX()
+            }
+        } else {
+            val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
+            var consumed = 0.0
+            children.map {
+                val oldConsumed = consumed
+                val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
+                consumed = newConsumed
+                it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
+            }
         }
     }
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val remaining = (actualSize.x - contentSize.x).toDouble()
-        val totalWeight = children.sumOf { it.position.weight }
-        var x = 0.0
-        return children.attachTo(viewPlacer) {
-            val old = x
-            val new = old + it.reservedSizeX.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
-            x = new
-            val size = new.roundToInt() - old.roundToInt()
+    override fun evaluateChildRegionSizeX(index: Int): Int {
+        if (sizingX == Sizing.WRAP) return children[index].evaluateReservedSizeX() // WRAP の場合は領域を分配しないからレイアウト計算が不要なのだ～🌱
+        if (children[index].position.weight == 0.0) return children[index].evaluateReservedSizeX() // 子が分配を要求しないからレイアウト計算が不要なのだ～🌱
+        return childRegionSizesX.evaluate()[index]
+    }
 
-            val childX = old.roundToInt() + when (it.position.alignmentX) {
+    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
+
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
+        var x = 0
+        return children.attachToIndexed(viewPlacer, offset) { index, it ->
+            val size = childRegionSizesX.evaluate()[index]
+            val childX = x + when (it.position.alignmentX) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (size - it.view.actualSize.x) / 2
-                Alignment.END -> size - it.view.actualSize.x
+                Alignment.CENTER -> (size - it.view.evaluateActualSizeX()) / 2
+                Alignment.END -> size - it.view.evaluateActualSizeX()
             }
             val childY = when (it.position.alignmentY) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (actualSize.y - it.view.actualSize.y) / 2
-                Alignment.END -> actualSize.y - it.view.actualSize.y
+                Alignment.CENTER -> (evaluateActualSizeY() - it.view.evaluateActualSizeY()) / 2
+                Alignment.END -> evaluateActualSizeY() - it.view.evaluateActualSizeY()
             }
-            offset.offset(childX, childY)
+            x += size
+            IntPoint(childX, childY)
         }
     }
 
@@ -81,48 +100,58 @@ class XListView : ListView() {
 
 class YListView : ListView() {
 
-    override fun calculateContentSize(): IntPoint {
-        return IntPoint(
-            children.maxOfOrNull { it.reservedSizeX } ?: 0,
-            children.sumOf { it.reservedSizeY },
-        )
+    override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
+        super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
+        totalWeight.reset()
+        childRegionSizesY.reset()
     }
 
-    override fun calculateChildrenActualSize() {
-        val remaining = (actualSize.y - contentSize.y).toDouble()
-        val totalWeight = children.sumOf { it.position.weight }
-        var y = 0.0
-        children.calculateActualSize {
-            val old = y
-            val new = old + it.reservedSizeY.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
-            y = new
-            val size = new.roundToInt() - old.roundToInt()
+    override fun evaluateContentSizeXImpl() = children.maxOfOrNull { it.evaluateReservedSizeX() } ?: 0
+    override fun evaluateContentSizeYImpl() = children.sumOf { it.evaluateReservedSizeY() }
 
-            IntPoint(actualSize.x, size)
+    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
+
+    private var totalWeight = CachingEvaluator { children.sumOf { it.position.weight } }
+    private var childRegionSizesY = CachingEvaluator {
+        val totalWeight = totalWeight.evaluate()
+        if (totalWeight <= 0.0) {
+            children.map {
+                it.evaluateReservedSizeY()
+            }
+        } else {
+            val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
+            var consumed = 0.0
+            children.map {
+                val oldConsumed = consumed
+                val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
+                consumed = newConsumed
+                it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
+            }
         }
     }
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): Remover {
-        val remaining = (actualSize.y - contentSize.y).toDouble()
-        val totalWeight = children.sumOf { it.position.weight }
-        var y = 0.0
-        return children.attachTo(viewPlacer) {
-            val old = y
-            val new = old + it.reservedSizeY.toDouble() + if (totalWeight > 0.0) remaining * it.position.weight / totalWeight else 0.0
-            y = new
-            val size = new.roundToInt() - old.roundToInt()
+    override fun evaluateChildRegionSizeY(index: Int): Int {
+        if (sizingY == Sizing.WRAP) return children[index].evaluateReservedSizeY() // WRAP の場合は領域を分配しないからレイアウト計算が不要なのだ～🌱
+        if (children[index].position.weight == 0.0) return children[index].evaluateReservedSizeY() // 子が分配を要求しないからレイアウト計算が不要なのだ～🌱
+        return childRegionSizesY.evaluate()[index]
+    }
 
-            val childY = old.roundToInt() + when (it.position.alignmentY) {
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
+        var y = 0
+        return children.attachToIndexed(viewPlacer, offset) { index, it ->
+            val size = childRegionSizesY.evaluate()[index]
+            val childY = y + when (it.position.alignmentY) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (size - it.view.actualSize.y) / 2
-                Alignment.END -> size - it.view.actualSize.y
+                Alignment.CENTER -> (size - it.view.evaluateActualSizeY()) / 2
+                Alignment.END -> size - it.view.evaluateActualSizeY()
             }
             val childX = when (it.position.alignmentX) {
                 Alignment.START -> 0
-                Alignment.CENTER -> (actualSize.x - it.view.actualSize.x) / 2
-                Alignment.END -> actualSize.x - it.view.actualSize.x
+                Alignment.CENTER -> (evaluateActualSizeX() - it.view.evaluateActualSizeX()) / 2
+                Alignment.END -> evaluateActualSizeX() - it.view.evaluateActualSizeX()
             }
-            offset.offset(childX, childY)
+            y += size
+            IntPoint(childX, childY)
         }
     }
 

@@ -1,5 +1,6 @@
 package miragefairy2024.mod.recipeviewer.views
 
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
 
 abstract class ContainerView<P> : ParentView<P>() {
@@ -10,8 +11,9 @@ abstract class ContainerView<P> : ParentView<P>() {
         children += child
     }
 
-    final override fun calculateChildrenContentSize() {
-        children.calculateContentSize()
+    override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
+        super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
+        children.initSizeCalculation()
     }
 
 }
