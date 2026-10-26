@@ -1,10 +1,11 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import dev.architectury.platform.Platform
-import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
+import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
@@ -14,6 +15,9 @@ import org.lwjgl.glfw.GLFW
 
 /** [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter] から画面の機能を呼び出すためのインターフェースなのだ～🌱 */
 interface ViewAdapterHost {
+
+    fun getRenderingProxy(): RenderingProxy
+    fun getViewPlacerRegistry(): ViewPlacerRegistry<VanillaViewPlacerContext>
 
     fun getScreen(): Screen
 
@@ -48,7 +52,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun init() {
         removed()
         val rootView = host.createRootView()
-        rootView.initSizeCalculation(renderingProxy, { host.getScreen().width }, { host.getScreen().height })
+        rootView.initSizeCalculation(host.getRenderingProxy(), { host.getScreen().width }, { host.getScreen().height })
         host.setImageWidth(rootView.evaluateActualSizeX())
         host.setImageHeight(rootView.evaluateActualSizeY())
         host.init()
@@ -71,7 +75,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget) { host.addRenderableOnly(widget) }
         }
         viewController = rootView.attachTo(IntPoint(host.getLeftPos(), host.getTopPos())) { view, bounds ->
-            VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds)
+            host.getViewPlacerRegistry().place(context, view, bounds)
         }
     }
 

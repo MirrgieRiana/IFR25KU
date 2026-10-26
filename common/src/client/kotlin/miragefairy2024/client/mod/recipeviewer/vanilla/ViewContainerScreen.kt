@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import mirrg.kotlin.helium.unit
 import net.minecraft.client.gui.GuiGraphics
@@ -14,6 +15,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
 
     private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
+
+        override fun getRenderingProxy() = renderingProxy
+        override fun getViewPlacerRegistry() = VANILLA_VIEW_PLACER_REGISTRY
 
         override fun getScreen() = this@ViewContainerScreen
 
