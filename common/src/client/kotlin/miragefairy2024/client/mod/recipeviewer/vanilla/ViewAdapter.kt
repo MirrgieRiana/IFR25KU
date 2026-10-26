@@ -106,7 +106,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         return false
     }
 
-     fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+    fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         val focused = host.getFocused()
         if (focused is EditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true

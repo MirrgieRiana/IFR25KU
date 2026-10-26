@@ -14,7 +14,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
 class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
 
-    private val viewAdapter = ViewAdapter(object: ViewAdapterHost {
+    private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
 
         override fun createRootView() = menu.createView(title, playerInventoryTitle)
 
