@@ -98,35 +98,37 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     /** 題名とインベントリの名前もViewのツリーが描くのだ～🌱 */
     override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
 
-    interface ViewAdapterHost {
+}
 
-        fun createRootView(): View
+interface ViewAdapterHost {
 
-        fun getViewController(): ViewController?
-        fun setViewController(viewController: ViewController?)
+    fun createRootView(): View
 
-        fun getWidth(): Int
-        fun getHeight(): Int
-        fun getLeftPos(): Int
-        fun getTopPos(): Int
-        fun setImageWidth(imageWidth: Int)
-        fun setImageHeight(imageHeight: Int)
+    fun getViewController(): ViewController?
+    fun setViewController(viewController: ViewController?)
 
-        fun getChildren(): List<GuiEventListener>
-        fun getFocused(): GuiEventListener?
-        fun setFocused(focused: GuiEventListener?)
-        fun getIsDragging(): Boolean
-        fun setIsDragging(isDragging: Boolean)
+    fun getWidth(): Int
+    fun getHeight(): Int
+    fun getLeftPos(): Int
+    fun getTopPos(): Int
+    fun setImageWidth(imageWidth: Int)
+    fun setImageHeight(imageHeight: Int)
 
-        fun init()
+    fun getChildren(): List<GuiEventListener>
+    fun getFocused(): GuiEventListener?
+    fun setFocused(focused: GuiEventListener?)
+    fun getIsDragging(): Boolean
+    fun setIsDragging(isDragging: Boolean)
 
-        fun addRenderableWidget(widget: AbstractWidget)
-        fun addRenderableOnly(widget: AbstractWidget)
-        fun removeWidget(listener: GuiEventListener)
+    fun init()
 
-    }
+    fun addRenderableWidget(widget: AbstractWidget)
+    fun addRenderableOnly(widget: AbstractWidget)
+    fun removeWidget(listener: GuiEventListener)
 
-    class ViewAdapter(val host: ViewAdapterHost) {
+}
+
+class ViewAdapter(val host: ViewAdapterHost) {
 
     fun init2() {
         removed2()
@@ -201,8 +203,6 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
             if (keyCode != GLFW.GLFW_KEY_ESCAPE && focused.canConsumeInput()) return true
         }
         return false
-    }
-
     }
 
 }
