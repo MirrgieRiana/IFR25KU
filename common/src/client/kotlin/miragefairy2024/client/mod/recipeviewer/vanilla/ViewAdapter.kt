@@ -43,6 +43,7 @@ interface ViewAdapterHost {
  */
 class ViewAdapter(val host: ViewAdapterHost) {
 
+    private var isInitialized = false
     private var viewController: ViewController? = null
 
     /**
@@ -77,10 +78,12 @@ class ViewAdapter(val host: ViewAdapterHost) {
         viewController = rootView.attachTo(IntPoint(host.getLeftPos(), host.getTopPos())) { view, bounds ->
             host.getViewPlacerRegistry().place(context, view, bounds)
         }
+        isInitialized = true
     }
 
     /** 配置状態を無効化してから、イベント登録などの後始末を行うのだ～🌱 */
     fun removed() {
+        isInitialized = false
         val controller = viewController
         viewController = null
         if (controller != null) controller.dispose()
@@ -106,6 +109,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
      * Fabric では Fabric API が [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.mouseDragged] 内で子へ転送するため、手動では中継しないのだ～🌱
      */
     fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
+        if (!isInitialized) return false
         if (!Platform.isFabric()) {
             val focused = host.getScreen().focused
             if (focused != null) {
@@ -120,6 +124,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
     }
 
     fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        if (!isInitialized) return false
         val focused = host.getScreen().focused
         if (focused is EditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
