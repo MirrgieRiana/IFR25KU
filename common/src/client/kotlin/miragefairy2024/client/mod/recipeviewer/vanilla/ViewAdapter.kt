@@ -81,6 +81,12 @@ class ViewAdapter(val host: ViewAdapterHost) {
         isInitialized = true
     }
 
+    /** 子の相対位置・寸法・登録を維持して移動するのだ～🌱 */
+    fun setOffset(offset: IntPoint) {
+        val controller = checkNotNull(viewController) { "ViewAdapter has not been initialized or has been removed" }
+        controller.setOffset(offset)
+    }
+
     /** 配置状態を無効化してから、イベント登録などの後始末を行うのだ～🌱 */
     fun removed() {
         isInitialized = false
