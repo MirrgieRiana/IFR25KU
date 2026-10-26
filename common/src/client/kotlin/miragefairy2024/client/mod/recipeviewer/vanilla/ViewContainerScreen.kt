@@ -4,8 +4,10 @@ import dev.architectury.platform.Platform
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.util.Remover
+import mirrg.kotlin.helium.unit
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
@@ -19,7 +21,33 @@ import org.lwjgl.glfw.GLFW
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
 class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
 
-    private val viewAdapter = ViewAdapter()
+    private val viewAdapter = ViewAdapter(object: ViewAdapterHost {
+
+        override fun createRootView() = menu.createView(title, playerInventoryTitle)
+
+        override fun getViewController() = this@ViewContainerScreen.viewController
+        override fun setViewController(viewController: ViewController?) = run { this@ViewContainerScreen.viewController = viewController }
+
+        override fun getWidth() = this@ViewContainerScreen.width
+        override fun getHeight() = this@ViewContainerScreen.height
+        override fun getLeftPos() = this@ViewContainerScreen.leftPos
+        override fun getTopPos() = this@ViewContainerScreen.topPos
+        override fun setImageWidth(imageWidth: Int) = run { this@ViewContainerScreen.imageWidth = imageWidth }
+        override fun setImageHeight(imageHeight: Int) = run { this@ViewContainerScreen.imageHeight = imageHeight }
+
+        override fun getChildren() = this@ViewContainerScreen.children()
+        override fun getFocused() = this@ViewContainerScreen.focused
+        override fun setFocused(focused: GuiEventListener?) = run { this@ViewContainerScreen.focused = focused }
+        override fun getIsDragging() = this@ViewContainerScreen.isDragging
+        override fun setIsDragging(isDragging: Boolean) = run { this@ViewContainerScreen.isDragging = isDragging }
+
+        override fun init() = super@ViewContainerScreen.init()
+
+        override fun addRenderableWidget(widget: AbstractWidget) = unit { this@ViewContainerScreen.addRenderableWidget(widget) }
+        override fun addRenderableOnly(widget: AbstractWidget) = unit { this@ViewContainerScreen.addRenderableOnly(widget) }
+        override fun removeWidget(listener: GuiEventListener) = this@ViewContainerScreen.removeWidget(listener)
+
+    })
 
     private var viewController: ViewController? = null
 
@@ -70,15 +98,43 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     /** 題名とインベントリの名前もViewのツリーが描くのだ～🌱 */
     override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
 
-    inner class ViewAdapter {
+    interface ViewAdapterHost {
+
+        fun createRootView(): View
+
+        fun getViewController(): ViewController?
+        fun setViewController(viewController: ViewController?)
+
+        fun getWidth(): Int
+        fun getHeight(): Int
+        fun getLeftPos(): Int
+        fun getTopPos(): Int
+        fun setImageWidth(imageWidth: Int)
+        fun setImageHeight(imageHeight: Int)
+
+        fun getChildren(): List<GuiEventListener>
+        fun getFocused(): GuiEventListener?
+        fun setFocused(focused: GuiEventListener?)
+        fun getIsDragging(): Boolean
+        fun setIsDragging(isDragging: Boolean)
+
+        fun init()
+
+        fun addRenderableWidget(widget: AbstractWidget)
+        fun addRenderableOnly(widget: AbstractWidget)
+        fun removeWidget(listener: GuiEventListener)
+
+    }
+
+    class ViewAdapter(val host: ViewAdapterHost) {
 
     fun init2() {
         removed2()
-        val rootView = menu.createView(title, playerInventoryTitle)
-        rootView.initSizeCalculation(renderingProxy, { width }, { height })
-        imageWidth = rootView.evaluateActualSizeX()
-        imageHeight = rootView.evaluateActualSizeY()
-        super@ViewContainerScreen.init()
+        val rootView = host.createRootView()
+        rootView.initSizeCalculation(renderingProxy, { host.getWidth() }, { host.getHeight() })
+        host.setImageWidth(rootView.evaluateActualSizeX())
+        host.setImageHeight(rootView.evaluateActualSizeY())
+        host.init()
 
         fun register(widget: AbstractWidget, add: () -> Unit): Remover {
             add()
@@ -86,48 +142,48 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
             return Remover {
                 if (registered) {
                     registered = false
-                    removeWidget(widget)
+                    host.removeWidget(widget)
                 }
             }
         }
 
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
-            override val origin = IntPoint(leftPos, topPos)
+            override val origin = IntPoint(host.getLeftPos(), host.getTopPos())
 
-            override fun addRenderableWidget(widget: AbstractWidget) = register(widget) { this@ViewContainerScreen.addRenderableWidget(widget) }
-            override fun addRenderableOnly(widget: AbstractWidget) = register(widget) { this@ViewContainerScreen.addRenderableOnly(widget) }
+            override fun addRenderableWidget(widget: AbstractWidget) = register(widget) { host.addRenderableWidget(widget) }
+            override fun addRenderableOnly(widget: AbstractWidget) = register(widget) { host.addRenderableOnly(widget) }
         }
-        viewController = rootView.attachTo(IntPoint(leftPos, topPos)) { view, bounds ->
+        host.setViewController(rootView.attachTo(IntPoint(host.getLeftPos(), host.getTopPos())) { view, bounds ->
             VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds)
-        }
+        })
     }
 
     fun removed2() {
-        val controller = viewController
-        viewController = null
+        val controller = host.getViewController()
+        host.setViewController(null)
         if (controller != null) controller.dispose()
     }
 
     fun removeWidget2(listener: GuiEventListener) {
-        if (focused === listener && children().none { it === listener }) {
-            focused = null
-            isDragging = false
+        if (host.getFocused() === listener && host.getChildren().none { it === listener }) {
+            host.setFocused(null)
+            host.setIsDragging(false)
         }
     }
 
     fun mouseClicked2() {
-        val focused = focused
-        if (focused != null && children().none { it === focused }) {
-            this@ViewContainerScreen.focused = null
-            isDragging = false
+        val focused = host.getFocused()
+        if (focused != null && host.getChildren().none { it === focused }) {
+            host.setFocused(null)
+            host.setIsDragging(false)
         }
     }
 
     fun mouseDragged2(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (!Platform.isFabric()) {
-            val focused = focused
+            val focused = host.getFocused()
             if (focused != null) {
-                if (isDragging) {
+                if (host.getIsDragging()) {
                     if (button == 0) {
                         if (focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
                     }
@@ -138,7 +194,7 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     }
 
      fun keyPressed2(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        val focused = focused
+        val focused = host.getFocused()
         if (focused is EditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
             // 通常の文字入力は charTyped で処理されるため、keyPressed で未処理でもコンテナーのショートカットへ渡さないのだ～🌱
