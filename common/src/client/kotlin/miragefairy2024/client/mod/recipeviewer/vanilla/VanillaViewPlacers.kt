@@ -5,6 +5,7 @@ import miragefairy2024.client.mixins.api.SlotPositionSetter
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewController
@@ -13,6 +14,7 @@ import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.util.register
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
@@ -21,6 +23,17 @@ import net.minecraft.network.chat.Component
 
 private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewController {
     val remover = addRenderableWidget(widget)
+    return object : ViewController {
+        override fun setOffset(offset: IntPoint) {
+            widget.setPosition(offset.x, offset.y)
+        }
+
+        override fun detach() = remover.remove()
+    }
+}
+
+private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidget): ViewController {
+    val remover = addRenderableOnly(widget)
     return object : ViewController {
         override fun setOffset(offset: IntPoint) {
             widget.setPosition(offset.x, offset.y)
@@ -69,6 +82,9 @@ fun initVanillaViewPlacers() {
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: ImageView, bounds ->
         context place VanillaViewRendererWidget(ImageViewRenderer, view, bounds)
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TooltipView, bounds ->
+        context placeRenderable VanillaViewRendererWidget(TooltipViewRenderer, view, bounds)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {

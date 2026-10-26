@@ -63,3 +63,6 @@ unpackedAssets
 .claude/
 !.claude/skills/
 .wrangler/
+
+# GitHub Desktop
+/state/inuse.*.lock

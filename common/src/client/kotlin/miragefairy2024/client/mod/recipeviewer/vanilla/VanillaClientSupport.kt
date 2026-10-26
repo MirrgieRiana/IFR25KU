@@ -9,11 +9,13 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
+import org.lwjgl.glfw.GLFW
 
 /** @param origin バニラの GUI が座標の原点として使う点の、画面の左上からの絶対座標なのだ～🌱 */
 class VanillaViewPlacerContext(
@@ -114,10 +116,20 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
     }
 
-    /** 枠の絵はViewのツリーが描くのだ～🌱 */
-    final override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) = Unit
+    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        val focused = focused
+        if (focused is EditBox) {
+            if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
+            // 通常の文字入力は charTyped で処理されるため、keyPressed で未処理でもコンテナーのショートカットへ渡さないのだ～🌱
+            if (keyCode != GLFW.GLFW_KEY_ESCAPE && focused.canConsumeInput()) return true
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers)
+    }
 
-    /** 題名と持ち物の名前もViewのツリーが描くのだ～🌱 */
-    final override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
+    /** 枠の絵はViewのツリーが描くのだ～🌱 */
+    override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) = Unit
+
+    /** 題名とインベントリの名前もViewのツリーが描くのだ～🌱 */
+    override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
 
 }
