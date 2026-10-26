@@ -45,9 +45,10 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         }
 
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+            override val origin = IntPoint(leftPos, topPos)
+
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget) { this@ViewContainerScreen.addRenderableWidget(widget) }
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget) { this@ViewContainerScreen.addRenderableOnly(widget) }
-            override val origin = IntPoint(leftPos, topPos)
         }
         viewController = rootView.attachTo(IntPoint(leftPos, topPos)) { view, bounds ->
             VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds)
