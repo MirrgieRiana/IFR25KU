@@ -17,12 +17,13 @@ import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
 import org.lwjgl.glfw.GLFW
 
-/** @param origin バニラの GUI が座標の原点として使う点の、画面の左上からの絶対座標なのだ～🌱 */
-class VanillaViewPlacerContext(
-    val addRenderableWidget: (AbstractWidget) -> Remover,
-    val addRenderableOnly: (AbstractWidget) -> Remover,
-    val origin: IntPoint,
-)
+interface VanillaViewPlacerContext {
+    fun addRenderableWidget(widget: AbstractWidget): Remover
+    fun addRenderableOnly(widget: AbstractWidget): Remover
+
+    /** バニラの GUI が座標の原点として使う点の、画面の左上からの絶対座標なのだ～🌱 */
+    val origin: IntPoint
+}
 
 val VANILLA_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<VanillaViewPlacerContext>()
 
@@ -54,11 +55,11 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
             }
         }
 
-        val context = VanillaViewPlacerContext(
-            addRenderableWidget = { widget -> register(widget) { addRenderableWidget(widget) } },
-            addRenderableOnly = { widget -> register(widget) { addRenderableOnly(widget) } },
-            origin = IntPoint(leftPos, topPos),
-        )
+        val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+            override fun addRenderableWidget(widget: AbstractWidget) = register(widget) { this@ViewContainerScreen.addRenderableWidget(widget) }
+            override fun addRenderableOnly(widget: AbstractWidget) = register(widget) { this@ViewContainerScreen.addRenderableOnly(widget) }
+            override val origin = IntPoint(leftPos, topPos)
+        }
         viewController = rootView.attachTo(IntPoint(leftPos, topPos)) { view, bounds ->
             VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds)
         }
