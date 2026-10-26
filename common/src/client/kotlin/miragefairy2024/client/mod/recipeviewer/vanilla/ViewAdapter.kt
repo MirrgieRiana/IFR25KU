@@ -14,20 +14,14 @@ import org.lwjgl.glfw.GLFW
 
 interface ViewAdapterHost {
 
+    fun getScreen(): Screen
+
     fun createRootView(): View
 
-    fun getWidth(): Int
-    fun getHeight(): Int
     fun getLeftPos(): Int
     fun getTopPos(): Int
     fun setImageWidth(imageWidth: Int)
     fun setImageHeight(imageHeight: Int)
-
-    fun getChildren(): List<GuiEventListener>
-    fun getFocused(): GuiEventListener?
-    fun setFocused(focused: GuiEventListener?)
-    fun getIsDragging(): Boolean
-    fun setIsDragging(isDragging: Boolean)
 
     fun init()
 
@@ -37,17 +31,6 @@ interface ViewAdapterHost {
 
 }
 
-abstract class ScreenViewAdapterHost(private val screen: Screen) : ViewAdapterHost {
-    override fun getWidth() = screen.width
-    override fun getHeight() = screen.height
-
-    override fun getChildren(): List<GuiEventListener> = screen.children()
-    override fun getFocused() = screen.focused
-    override fun setFocused(focused: GuiEventListener?) = run { screen.focused = focused }
-    override fun getIsDragging() = screen.isDragging
-    override fun setIsDragging(isDragging: Boolean) = run { screen.isDragging = isDragging }
-}
-
 class ViewAdapter(val host: ViewAdapterHost) {
 
     private var viewController: ViewController? = null
@@ -55,7 +38,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun init() {
         removed()
         val rootView = host.createRootView()
-        rootView.initSizeCalculation(renderingProxy, { host.getWidth() }, { host.getHeight() })
+        rootView.initSizeCalculation(renderingProxy, { host.getScreen().width }, { host.getScreen().height })
         host.setImageWidth(rootView.evaluateActualSizeX())
         host.setImageHeight(rootView.evaluateActualSizeY())
         host.init()
@@ -89,25 +72,25 @@ class ViewAdapter(val host: ViewAdapterHost) {
     }
 
     fun removeWidget(listener: GuiEventListener) {
-        if (host.getFocused() === listener && host.getChildren().none { it === listener }) {
-            host.setFocused(null)
-            host.setIsDragging(false)
+        if (host.getScreen().focused === listener && host.getScreen().children().none { it === listener }) {
+            host.getScreen().focused = null
+            host.getScreen().isDragging = false
         }
     }
 
     fun mouseClicked() {
-        val focused = host.getFocused()
-        if (focused != null && host.getChildren().none { it === focused }) {
-            host.setFocused(null)
-            host.setIsDragging(false)
+        val focused = host.getScreen().focused
+        if (focused != null && host.getScreen().children().none { it === focused }) {
+            host.getScreen().focused = null
+            host.getScreen().isDragging = false
         }
     }
 
     fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (!Platform.isFabric()) {
-            val focused = host.getFocused()
+            val focused = host.getScreen().focused
             if (focused != null) {
-                if (host.getIsDragging()) {
+                if (host.getScreen().isDragging) {
                     if (button == 0) {
                         if (focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
                     }
@@ -118,7 +101,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
     }
 
     fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        val focused = host.getFocused()
+        val focused = host.getScreen().focused
         if (focused is EditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
             // 通常の文字入力は charTyped で処理されるため、keyPressed で未処理でもコンテナーのショートカットへ渡さないのだ～🌱
