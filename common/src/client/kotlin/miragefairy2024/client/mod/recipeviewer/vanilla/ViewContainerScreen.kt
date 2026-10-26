@@ -14,25 +14,17 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
 class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
 
-    private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
+    private val viewAdapter = ViewAdapter(object : ScreenViewAdapterHost(this) {
 
         override fun createRootView() = menu.createView(title, playerInventoryTitle)
 
         override fun getViewController() = this@ViewContainerScreen.viewController
         override fun setViewController(viewController: ViewController?) = run { this@ViewContainerScreen.viewController = viewController }
 
-        override fun getWidth() = this@ViewContainerScreen.width
-        override fun getHeight() = this@ViewContainerScreen.height
         override fun getLeftPos() = this@ViewContainerScreen.leftPos
         override fun getTopPos() = this@ViewContainerScreen.topPos
         override fun setImageWidth(imageWidth: Int) = run { this@ViewContainerScreen.imageWidth = imageWidth }
         override fun setImageHeight(imageHeight: Int) = run { this@ViewContainerScreen.imageHeight = imageHeight }
-
-        override fun getChildren() = this@ViewContainerScreen.children()
-        override fun getFocused() = this@ViewContainerScreen.focused
-        override fun setFocused(focused: GuiEventListener?) = run { this@ViewContainerScreen.focused = focused }
-        override fun getIsDragging() = this@ViewContainerScreen.isDragging
-        override fun setIsDragging(isDragging: Boolean) = run { this@ViewContainerScreen.isDragging = isDragging }
 
         override fun init() = super@ViewContainerScreen.init()
 

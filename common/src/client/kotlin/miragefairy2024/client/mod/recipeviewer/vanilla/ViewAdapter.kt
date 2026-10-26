@@ -9,6 +9,7 @@ import miragefairy2024.util.Remover
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.components.events.GuiEventListener
+import net.minecraft.client.gui.screens.Screen
 import org.lwjgl.glfw.GLFW
 
 interface ViewAdapterHost {
@@ -37,6 +38,17 @@ interface ViewAdapterHost {
     fun addRenderableOnly(widget: AbstractWidget)
     fun removeWidget(listener: GuiEventListener)
 
+}
+
+abstract class ScreenViewAdapterHost(private val screen: Screen) : ViewAdapterHost {
+    override fun getWidth() = screen.width
+    override fun getHeight() = screen.height
+
+    override fun getChildren(): List<GuiEventListener> = screen.children()
+    override fun getFocused() = screen.focused
+    override fun setFocused(focused: GuiEventListener?) = run { screen.focused = focused }
+    override fun getIsDragging() = screen.isDragging
+    override fun setIsDragging(isDragging: Boolean) = run { screen.isDragging = isDragging }
 }
 
 class ViewAdapter(val host: ViewAdapterHost) {
