@@ -19,8 +19,6 @@ sourceSets {
     test {
         compileClasspath += sourceSets.main.get().compileClasspath
         runtimeClasspath += sourceSets.main.get().runtimeClasspath
-        compileClasspath += sourceSets.named("client").get().output + sourceSets.named("client").get().compileClasspath
-        runtimeClasspath += sourceSets.named("client").get().output + sourceSets.named("client").get().runtimeClasspath
     }
 }
 
