@@ -25,8 +25,10 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
      * View のツリーを再構築して、各ウィジェットを画面へ直接登録するのだ～🌱
      * 親クラスは、画面の寸法が変わる度に、ウィジェットを捨ててからこれを呼ぶのだ～🌱
      */
-    override fun init() {
-        disposeView()
+    override fun init() = init2()
+
+    private fun init2() {
+        removed2()
         val rootView = menu.createView(title, playerInventoryTitle)
         rootView.initSizeCalculation(renderingProxy, { width }, { height })
         imageWidth = rootView.evaluateActualSizeX()
@@ -55,14 +57,14 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         }
     }
 
-    private fun disposeView() {
+    private fun removed2() {
         val controller = viewController
         viewController = null
         if (controller != null) controller.dispose()
     }
 
     override fun removed() {
-        disposeView()
+        removed2()
         super.removed()
     }
 
@@ -73,6 +75,10 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
     override fun removeWidget(listener: GuiEventListener) {
         super.removeWidget(listener)
+        removeWidget2(listener)
+    }
+
+    private fun removeWidget2(listener: GuiEventListener) {
         if (focused === listener && children().none { it === listener }) {
             focused = null
             isDragging = false
@@ -81,12 +87,16 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         val handled = super.mouseClicked(mouseX, mouseY, button)
+        mouseClicked2()
+        return handled
+    }
+
+    private fun mouseClicked2() {
         val focused = focused
         if (focused != null && children().none { it === focused }) {
             this.focused = null
             isDragging = false
         }
-        return handled
     }
 
     /**
@@ -94,6 +104,11 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
      * Fabric では Fabric API が [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.mouseDragged] 内で子へ転送するため、手動では中継しないのだ～🌱
      */
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
+        if (mouseDragged2(mouseX, mouseY, button, dragX, dragY)) return true
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
+    }
+
+    private fun mouseDragged2(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (!Platform.isFabric()) {
             val focused = focused
             if (focused != null) {
@@ -104,17 +119,22 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
                 }
             }
         }
-        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
+        return false
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        if (keyPressed2(keyCode, scanCode, modifiers)) return true
+        return super.keyPressed(keyCode, scanCode, modifiers)
+    }
+
+    private fun keyPressed2(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         val focused = focused
         if (focused is EditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
             // 通常の文字入力は charTyped で処理されるため、keyPressed で未処理でもコンテナーのショートカットへ渡さないのだ～🌱
             if (keyCode != GLFW.GLFW_KEY_ESCAPE && focused.canConsumeInput()) return true
         }
-        return super.keyPressed(keyCode, scanCode, modifiers)
+        return false
     }
 
     /** 枠の絵はViewのツリーが描くのだ～🌱 */
