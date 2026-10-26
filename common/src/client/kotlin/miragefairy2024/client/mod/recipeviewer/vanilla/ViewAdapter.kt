@@ -16,9 +16,6 @@ interface ViewAdapterHost {
 
     fun createRootView(): View
 
-    fun getViewController(): ViewController?
-    fun setViewController(viewController: ViewController?)
-
     fun getWidth(): Int
     fun getHeight(): Int
     fun getLeftPos(): Int
@@ -53,6 +50,8 @@ abstract class ScreenViewAdapterHost(private val screen: Screen) : ViewAdapterHo
 
 class ViewAdapter(val host: ViewAdapterHost) {
 
+    private var viewController: ViewController? = null
+
     fun init() {
         removed()
         val rootView = host.createRootView()
@@ -78,14 +77,14 @@ class ViewAdapter(val host: ViewAdapterHost) {
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget) { host.addRenderableWidget(widget) }
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget) { host.addRenderableOnly(widget) }
         }
-        host.setViewController(rootView.attachTo(IntPoint(host.getLeftPos(), host.getTopPos())) { view, bounds ->
+        viewController = rootView.attachTo(IntPoint(host.getLeftPos(), host.getTopPos())) { view, bounds ->
             VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds)
-        })
+        }
     }
 
     fun removed() {
-        val controller = host.getViewController()
-        host.setViewController(null)
+        val controller = viewController
+        viewController = null
         if (controller != null) controller.dispose()
     }
 
