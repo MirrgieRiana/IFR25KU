@@ -27,6 +27,47 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
      */
     override fun init() = init2()
 
+    override fun removed() {
+        removed2()
+        super.removed()
+    }
+
+    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick)
+        renderTooltip(guiGraphics, mouseX, mouseY)
+    }
+
+    override fun removeWidget(listener: GuiEventListener) {
+        super.removeWidget(listener)
+        removeWidget2(listener)
+    }
+
+    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        val handled = super.mouseClicked(mouseX, mouseY, button)
+        mouseClicked2()
+        return handled
+    }
+
+    /**
+     * Fabric 以外ではフォーカスされた子へドラッグを中継してから、スロットの操作へ渡すのだ～🌱
+     * Fabric では Fabric API が [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.mouseDragged] 内で子へ転送するため、手動では中継しないのだ～🌱
+     */
+    override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
+        if (mouseDragged2(mouseX, mouseY, button, dragX, dragY)) return true
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
+    }
+
+    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        if (keyPressed2(keyCode, scanCode, modifiers)) return true
+        return super.keyPressed(keyCode, scanCode, modifiers)
+    }
+
+    /** 枠の絵はViewのツリーが描くのだ～🌱 */
+    override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) = Unit
+
+    /** 題名とインベントリの名前もViewのツリーが描くのだ～🌱 */
+    override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
+
     private fun init2() {
         removed2()
         val rootView = menu.createView(title, playerInventoryTitle)
@@ -63,32 +104,11 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         if (controller != null) controller.dispose()
     }
 
-    override fun removed() {
-        removed2()
-        super.removed()
-    }
-
-    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick)
-        renderTooltip(guiGraphics, mouseX, mouseY)
-    }
-
-    override fun removeWidget(listener: GuiEventListener) {
-        super.removeWidget(listener)
-        removeWidget2(listener)
-    }
-
     private fun removeWidget2(listener: GuiEventListener) {
         if (focused === listener && children().none { it === listener }) {
             focused = null
             isDragging = false
         }
-    }
-
-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        val handled = super.mouseClicked(mouseX, mouseY, button)
-        mouseClicked2()
-        return handled
     }
 
     private fun mouseClicked2() {
@@ -97,15 +117,6 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
             this.focused = null
             isDragging = false
         }
-    }
-
-    /**
-     * Fabric 以外ではフォーカスされた子へドラッグを中継してから、スロットの操作へ渡すのだ～🌱
-     * Fabric では Fabric API が [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.mouseDragged] 内で子へ転送するため、手動では中継しないのだ～🌱
-     */
-    override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
-        if (mouseDragged2(mouseX, mouseY, button, dragX, dragY)) return true
-        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
     }
 
     private fun mouseDragged2(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
@@ -122,11 +133,6 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         return false
     }
 
-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        if (keyPressed2(keyCode, scanCode, modifiers)) return true
-        return super.keyPressed(keyCode, scanCode, modifiers)
-    }
-
     private fun keyPressed2(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         val focused = focused
         if (focused is EditBox) {
@@ -136,11 +142,5 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         }
         return false
     }
-
-    /** 枠の絵はViewのツリーが描くのだ～🌱 */
-    override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) = Unit
-
-    /** 題名とインベントリの名前もViewのツリーが描くのだ～🌱 */
-    override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
 
 }
