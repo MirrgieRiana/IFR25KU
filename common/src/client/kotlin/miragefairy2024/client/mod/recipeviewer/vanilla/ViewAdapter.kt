@@ -12,6 +12,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.screens.Screen
 import org.lwjgl.glfw.GLFW
 
+/** [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter] から画面の機能を呼び出すためのインターフェースなのだ～🌱 */
 interface ViewAdapterHost {
 
     fun getScreen(): Screen
@@ -31,10 +32,19 @@ interface ViewAdapterHost {
 
 }
 
+/**
+ * View のサイズ計算と配置を登録先へ中継し、ホストの入力処理を補正するのだ～🌱
+ * ホストを初期化するときは [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.init] を呼ぶのだ～🌱
+ * ホストを破棄するときは [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.removed] を呼ぶのだ～🌱
+ */
 class ViewAdapter(val host: ViewAdapterHost) {
 
     private var viewController: ViewController? = null
 
+    /**
+     * View のツリーを再構築して、各ウィジェットをホストへ直接登録するのだ～🌱
+     * 画面の再構築時には、[net.minecraft.client.gui.screens.Screen.rebuildWidgets] が既存のウィジェットを破棄してから、[miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen.init] を経由して呼び出すのだ～🌱
+     */
     fun init() {
         removed()
         val rootView = host.createRootView()
@@ -65,6 +75,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         }
     }
 
+    /** 配置状態を無効化してから、イベント登録などの後始末を行うのだ～🌱 */
     fun removed() {
         val controller = viewController
         viewController = null
@@ -86,6 +97,10 @@ class ViewAdapter(val host: ViewAdapterHost) {
         }
     }
 
+    /**
+     * Fabric 以外ではフォーカスされた子へドラッグを中継するのだ～🌱
+     * Fabric では Fabric API が [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.mouseDragged] 内で子へ転送するため、手動では中継しないのだ～🌱
+     */
     fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (!Platform.isFabric()) {
             val focused = host.getScreen().focused

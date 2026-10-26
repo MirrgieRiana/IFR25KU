@@ -32,10 +32,6 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
     })
 
-    /**
-     * View のツリーを再構築して、各ウィジェットを画面へ直接登録するのだ～🌱
-     * 親クラスは、画面の寸法が変わる度に、ウィジェットを捨ててからこれを呼ぶのだ～🌱
-     */
     override fun init() = viewAdapter.init()
 
     override fun removed() {
@@ -59,10 +55,6 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         return handled
     }
 
-    /**
-     * Fabric 以外ではフォーカスされた子へドラッグを中継してから、スロットの操作へ渡すのだ～🌱
-     * Fabric では Fabric API が [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.mouseDragged] 内で子へ転送するため、手動では中継しないのだ～🌱
-     */
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (viewAdapter.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
