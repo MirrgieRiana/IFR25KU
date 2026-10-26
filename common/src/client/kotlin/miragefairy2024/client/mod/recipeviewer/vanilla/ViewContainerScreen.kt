@@ -55,10 +55,10 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
      * View のツリーを再構築して、各ウィジェットを画面へ直接登録するのだ～🌱
      * 親クラスは、画面の寸法が変わる度に、ウィジェットを捨ててからこれを呼ぶのだ～🌱
      */
-    override fun init() = viewAdapter.init2()
+    override fun init() = viewAdapter.init()
 
     override fun removed() {
-        viewAdapter.removed2()
+        viewAdapter.removed()
         super.removed()
     }
 
@@ -69,12 +69,12 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
     override fun removeWidget(listener: GuiEventListener) {
         super.removeWidget(listener)
-        viewAdapter.removeWidget2(listener)
+        viewAdapter.removeWidget(listener)
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         val handled = super.mouseClicked(mouseX, mouseY, button)
-        viewAdapter.mouseClicked2()
+        viewAdapter.mouseClicked()
         return handled
     }
 
@@ -83,12 +83,12 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
      * Fabric では Fabric API が [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.mouseDragged] 内で子へ転送するため、手動では中継しないのだ～🌱
      */
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
-        if (viewAdapter.mouseDragged2(mouseX, mouseY, button, dragX, dragY)) return true
+        if (viewAdapter.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        if (viewAdapter.keyPressed2(keyCode, scanCode, modifiers)) return true
+        if (viewAdapter.keyPressed(keyCode, scanCode, modifiers)) return true
         return super.keyPressed(keyCode, scanCode, modifiers)
     }
 
@@ -130,8 +130,8 @@ interface ViewAdapterHost {
 
 class ViewAdapter(val host: ViewAdapterHost) {
 
-    fun init2() {
-        removed2()
+    fun init() {
+        removed()
         val rootView = host.createRootView()
         rootView.initSizeCalculation(renderingProxy, { host.getWidth() }, { host.getHeight() })
         host.setImageWidth(rootView.evaluateActualSizeX())
@@ -160,20 +160,20 @@ class ViewAdapter(val host: ViewAdapterHost) {
         })
     }
 
-    fun removed2() {
+    fun removed() {
         val controller = host.getViewController()
         host.setViewController(null)
         if (controller != null) controller.dispose()
     }
 
-    fun removeWidget2(listener: GuiEventListener) {
+    fun removeWidget(listener: GuiEventListener) {
         if (host.getFocused() === listener && host.getChildren().none { it === listener }) {
             host.setFocused(null)
             host.setIsDragging(false)
         }
     }
 
-    fun mouseClicked2() {
+    fun mouseClicked() {
         val focused = host.getFocused()
         if (focused != null && host.getChildren().none { it === focused }) {
             host.setFocused(null)
@@ -181,7 +181,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         }
     }
 
-    fun mouseDragged2(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
+    fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (!Platform.isFabric()) {
             val focused = host.getFocused()
             if (focused != null) {
@@ -195,7 +195,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         return false
     }
 
-     fun keyPressed2(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+     fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         val focused = host.getFocused()
         if (focused is EditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
