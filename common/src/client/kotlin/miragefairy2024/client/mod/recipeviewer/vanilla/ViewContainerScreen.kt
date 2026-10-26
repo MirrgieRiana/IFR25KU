@@ -19,16 +19,18 @@ import org.lwjgl.glfw.GLFW
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
 class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
 
+    private val viewAdapter = ViewAdapter()
+
     private var viewController: ViewController? = null
 
     /**
      * View のツリーを再構築して、各ウィジェットを画面へ直接登録するのだ～🌱
      * 親クラスは、画面の寸法が変わる度に、ウィジェットを捨ててからこれを呼ぶのだ～🌱
      */
-    override fun init() = init2()
+    override fun init() = viewAdapter.init2()
 
     override fun removed() {
-        removed2()
+        viewAdapter.removed2()
         super.removed()
     }
 
@@ -39,12 +41,12 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
     override fun removeWidget(listener: GuiEventListener) {
         super.removeWidget(listener)
-        removeWidget2(listener)
+        viewAdapter.removeWidget2(listener)
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         val handled = super.mouseClicked(mouseX, mouseY, button)
-        mouseClicked2()
+        viewAdapter.mouseClicked2()
         return handled
     }
 
@@ -53,12 +55,12 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
      * Fabric では Fabric API が [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.mouseDragged] 内で子へ転送するため、手動では中継しないのだ～🌱
      */
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
-        if (mouseDragged2(mouseX, mouseY, button, dragX, dragY)) return true
+        if (viewAdapter.mouseDragged2(mouseX, mouseY, button, dragX, dragY)) return true
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        if (keyPressed2(keyCode, scanCode, modifiers)) return true
+        if (viewAdapter.keyPressed2(keyCode, scanCode, modifiers)) return true
         return super.keyPressed(keyCode, scanCode, modifiers)
     }
 
@@ -68,13 +70,15 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     /** 題名とインベントリの名前もViewのツリーが描くのだ～🌱 */
     override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
 
-    private fun init2() {
+    inner class ViewAdapter {
+
+    fun init2() {
         removed2()
         val rootView = menu.createView(title, playerInventoryTitle)
         rootView.initSizeCalculation(renderingProxy, { width }, { height })
         imageWidth = rootView.evaluateActualSizeX()
         imageHeight = rootView.evaluateActualSizeY()
-        super.init()
+        super@ViewContainerScreen.init()
 
         fun register(widget: AbstractWidget, add: () -> Unit): Remover {
             add()
@@ -98,28 +102,28 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         }
     }
 
-    private fun removed2() {
+    fun removed2() {
         val controller = viewController
         viewController = null
         if (controller != null) controller.dispose()
     }
 
-    private fun removeWidget2(listener: GuiEventListener) {
+    fun removeWidget2(listener: GuiEventListener) {
         if (focused === listener && children().none { it === listener }) {
             focused = null
             isDragging = false
         }
     }
 
-    private fun mouseClicked2() {
+    fun mouseClicked2() {
         val focused = focused
         if (focused != null && children().none { it === focused }) {
-            this.focused = null
+            this@ViewContainerScreen.focused = null
             isDragging = false
         }
     }
 
-    private fun mouseDragged2(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
+    fun mouseDragged2(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (!Platform.isFabric()) {
             val focused = focused
             if (focused != null) {
@@ -133,7 +137,7 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         return false
     }
 
-    private fun keyPressed2(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+     fun keyPressed2(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         val focused = focused
         if (focused is EditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
@@ -141,6 +145,8 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
             if (keyCode != GLFW.GLFW_KEY_ESCAPE && focused.canConsumeInput()) return true
         }
         return false
+    }
+
     }
 
 }
