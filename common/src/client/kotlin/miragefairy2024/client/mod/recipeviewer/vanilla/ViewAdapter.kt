@@ -19,7 +19,9 @@ interface ViewAdapterHost {
     fun getRenderingProxy(): RenderingProxy
     fun getViewPlacerRegistry(): ViewPlacerRegistry<VanillaViewPlacerContext>
 
-    fun getScreen(): Screen
+    fun getScreen(): Screen?
+    fun getRegionSizeX(): Int
+    fun getRegionSizeY(): Int
 
     fun createRootView(): View
 
@@ -53,7 +55,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun init() {
         removed()
         val rootView = host.createRootView()
-        rootView.initSizeCalculation(host.getRenderingProxy(), { host.getScreen().width }, { host.getScreen().height })
+        rootView.initSizeCalculation(host.getRenderingProxy(), { host.getRegionSizeX() }, { host.getRegionSizeY() })
         host.setImageWidth(rootView.evaluateActualSizeX())
         host.setImageHeight(rootView.evaluateActualSizeY())
         host.init()
@@ -96,17 +98,19 @@ class ViewAdapter(val host: ViewAdapterHost) {
     }
 
     fun removeWidget(listener: GuiEventListener) {
-        if (host.getScreen().focused === listener && host.getScreen().children().none { it === listener }) {
-            host.getScreen().focused = null
-            host.getScreen().isDragging = false
+        val screen = host.getScreen() ?: return
+        if (screen.focused === listener && screen.children().none { it === listener }) {
+            screen.focused = null
+            screen.isDragging = false
         }
     }
 
     fun mouseClicked() {
-        val focused = host.getScreen().focused
-        if (focused != null && host.getScreen().children().none { it === focused }) {
-            host.getScreen().focused = null
-            host.getScreen().isDragging = false
+        val screen = host.getScreen() ?: return
+        val focused = screen.focused
+        if (focused != null && screen.children().none { it === focused }) {
+            screen.focused = null
+            screen.isDragging = false
         }
     }
 
@@ -116,10 +120,11 @@ class ViewAdapter(val host: ViewAdapterHost) {
      */
     fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (!isInitialized) return false
+        val screen = host.getScreen() ?: return false
         if (!Platform.isFabric()) {
-            val focused = host.getScreen().focused
+            val focused = screen.focused
             if (focused != null) {
-                if (host.getScreen().isDragging) {
+                if (screen.isDragging) {
                     if (button == 0) {
                         if (focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
                     }
@@ -131,7 +136,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (!isInitialized) return false
-        val focused = host.getScreen().focused
+        val screen = host.getScreen() ?: return false
+        val focused = screen.focused
         if (focused is EditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
             // 通常の文字入力は charTyped で処理されるため、keyPressed で未処理でもコンテナーのショートカットへ渡さないのだ～🌱

@@ -3,6 +3,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
@@ -69,6 +70,8 @@ private class AdapterFixture(vararg views: TestView) {
     var onDispose: () -> Unit = { }
     val host: ViewAdapterHost = object : ViewAdapterHost {
         override fun getScreen() = this@AdapterFixture.screen
+        override fun getRegionSizeX() = screen.width
+        override fun getRegionSizeY() = screen.height
         override fun getLeftPos() = 30
         override fun getTopPos() = 40
         override fun setImageWidth(imageWidth: Int) {
@@ -139,6 +142,49 @@ private class AdapterFixture(vararg views: TestView) {
 }
 
 class ViewAdapterTest {
+    @Test
+    fun `Screen なしでホストの領域を使って配置と移動を行うのだ`() {
+        val widgets = mutableListOf<RecordingWidget>()
+        var disposals = 0
+        val registry = ViewPlacerRegistry<VanillaViewPlacerContext>().also {
+            it.register(TestView::class.java) { context, view, bounds ->
+                val widget = RecordingWidget(bounds)
+                widgets += widget
+                if (view.interactive) context.addRenderableWidget(widget) else context.addRenderableOnly(widget)
+                object : ViewController {
+                    override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
+                    override fun detach() = throw UnsupportedOperationException()
+                    override fun dispose() {
+                        disposals += 1
+                    }
+                }
+            }
+        }
+        val rootView = XListView().also {
+            it.sizingX = Sizing.FILL
+            it.sizingY = Sizing.FILL
+            it += TestView(true)
+            it += TestView(false)
+        }
+        val host = ViewRenderHost(rootView, IntPoint(300, 80), ADAPTER_RENDERING_PROXY, registry)
+        assertNull(host.getScreen())
+        assertEquals(IntPoint(300, 80), host.size)
+        assertEquals(listOf(0, 10), widgets.map { it.x })
+        assertFalse(host.viewAdapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        assertFalse(host.viewAdapter.mouseDragged(0.0, 0.0, 0, 1.0, 1.0))
+        host.viewAdapter.mouseClicked()
+        host.viewAdapter.removeWidget(widgets[0])
+
+        host.viewAdapter.setOffset(IntPoint(30, 40))
+
+        assertEquals(listOf(30, 40), widgets.map { it.x })
+        assertEquals(listOf(40, 40), widgets.map { it.y })
+        host.viewAdapter.removed()
+        host.viewAdapter.removed()
+        assertEquals(2, disposals)
+        assertThrows(IllegalStateException::class.java) { host.viewAdapter.setOffset(IntPoint.ZERO) }
+    }
+
     @Test
     fun `再初期化では旧配置を破棄してから新しい View を生成するのだ`() {
         val fixture = AdapterFixture(TestView(true))

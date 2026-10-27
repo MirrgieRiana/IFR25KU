@@ -20,6 +20,8 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         override fun getViewPlacerRegistry() = VANILLA_VIEW_PLACER_REGISTRY
 
         override fun getScreen() = this@ViewContainerScreen
+        override fun getRegionSizeX() = this@ViewContainerScreen.width
+        override fun getRegionSizeY() = this@ViewContainerScreen.height
 
         override fun createRootView() = menu.createView(title, playerInventoryTitle)
 
