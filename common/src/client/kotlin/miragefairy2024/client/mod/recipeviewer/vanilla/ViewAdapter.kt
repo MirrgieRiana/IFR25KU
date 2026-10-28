@@ -116,17 +116,11 @@ class ViewAdapter(val host: ViewAdapterHost) {
      */
     fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (!isInitialized) return false
-        if (!Platform.isFabric()) {
-            val focused = host.getScreen().focused
-            if (focused != null) {
-                if (host.getScreen().isDragging) {
-                    if (button == 0) {
-                        if (focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
-                    }
-                }
-            }
-        }
-        return false
+        if (Platform.isFabric()) return false
+        val focused = host.getScreen().focused
+        if (focused == null) return false
+        if (!host.getScreen().isDragging || button != 0) return false
+        return focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)
     }
 
     fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
