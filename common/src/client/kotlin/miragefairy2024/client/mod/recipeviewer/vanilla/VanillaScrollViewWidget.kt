@@ -8,6 +8,7 @@ import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.Remover
 import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.max
 import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
@@ -42,6 +43,13 @@ abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: I
     private val childController = view.childView.attachTo(IntPoint(x, y)) { child, childBounds ->
         registry.place(object : VanillaViewPlacerContext {
             override val origin = context.origin
+
+            override fun getClipBounds(): IntRectangle {
+                val parent = context.getClipBounds() ?: return viewport
+                val x = viewport.x max parent.x
+                val y = viewport.y max parent.y
+                return IntRectangle(x, y, minOf(viewport.x + viewport.sizeX, parent.x + parent.sizeX) - x atLeast 0, minOf(viewport.y + viewport.sizeY, parent.y + parent.sizeY) - y atLeast 0)
+            }
 
             fun register(widget: AbstractWidget, interactive: Boolean): Remover {
                 widgets += widget

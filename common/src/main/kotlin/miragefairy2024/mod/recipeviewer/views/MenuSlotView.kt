@@ -15,7 +15,7 @@ import net.minecraft.world.inventory.Slot
 
 /**
  * メニューのスロットを置くViewなのだ～🌱
- * 中身の描画と操作はバニラの画面がやるため、このViewは[net.minecraft.world.inventory.Slot]の座標を書き換えるだけなのだ～🌱
+ * 中身の描画と操作はバニラの画面に委ね、[net.minecraft.world.inventory.Slot] の座標と表示・入力領域を設定するのだ～🌱
  */
 class MenuSlotView(val slot: Slot) : AbstractView(), PlaceableView {
     var margin = IntPoint(1, 1)

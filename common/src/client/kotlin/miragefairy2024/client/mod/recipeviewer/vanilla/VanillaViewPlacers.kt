@@ -2,6 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
+import miragefairy2024.client.mixins.api.SlotViewClipping
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
@@ -22,6 +23,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.network.chat.Component
+import java.util.function.Supplier
 
 private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewController {
     val remover = addRenderableWidget(widget)
@@ -70,6 +72,13 @@ fun initVanillaViewPlacers() {
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
         // バニラはSlotの座標へoriginを描画とホバー判定の際に加算するため、絶対座標を書き込むと二重に加算されるのだ～🌱
         (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(bounds.x - context.origin.x + view.margin.x, bounds.y - context.origin.y + view.margin.y)
+        val clipping = view.slot as SlotViewClipping
+        val clipped = context.getClipBounds() != null
+        if (clipped) {
+            clipping.`mirageFairy2024$setClipBounds`(Supplier { checkNotNull(context.getClipBounds()) })
+        } else {
+            clipping.`mirageFairy2024$setClipBounds`(null)
+        }
         object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(offset.x - context.origin.x + view.margin.x, offset.y - context.origin.y + view.margin.y)

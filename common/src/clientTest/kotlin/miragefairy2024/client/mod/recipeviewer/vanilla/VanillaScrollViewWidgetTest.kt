@@ -103,6 +103,7 @@ private class ScrollWidgetFixture(horizontal: Boolean) {
         }
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint(10, 20)
+            override fun getClipBounds(): IntRectangle? = null
             override fun addRenderableWidget(widget: AbstractWidget): Remover = throw UnsupportedOperationException()
             override fun addRenderableOnly(widget: AbstractWidget): Remover = throw UnsupportedOperationException()
         }

@@ -2,6 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import dev.architectury.platform.Platform
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
@@ -72,6 +73,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint(host.getLeftPos(), host.getTopPos())
+            override fun getClipBounds(): IntRectangle? = null
 
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget) { host.addRenderableWidget(widget) }
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget) { host.addRenderableOnly(widget) }
