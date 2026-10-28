@@ -27,8 +27,10 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         override fun createRootView() = menu.createView(title, playerInventoryTitle)
 
         override fun getUiOffset() = IntPoint(this@ViewContainerScreen.leftPos, this@ViewContainerScreen.topPos)
-        override fun setImageWidth(imageWidth: Int) = run { this@ViewContainerScreen.imageWidth = imageWidth }
-        override fun setImageHeight(imageHeight: Int) = run { this@ViewContainerScreen.imageHeight = imageHeight }
+        override fun setUiSize(uiSize: IntPoint) {
+            this@ViewContainerScreen.imageWidth = uiSize.x
+            this@ViewContainerScreen.imageHeight = uiSize.y
+        }
 
         override fun init() = super@ViewContainerScreen.init()
 

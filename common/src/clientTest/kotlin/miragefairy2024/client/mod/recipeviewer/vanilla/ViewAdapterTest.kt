@@ -73,11 +73,9 @@ private class AdapterFixture(vararg views: TestView) {
         override fun getRegionSizeX() = screen.width
         override fun getRegionSizeY() = screen.height
         override fun getUiOffset() = IntPoint(30, 40)
-        override fun setImageWidth(imageWidth: Int) {
-            this@AdapterFixture.imageWidth = imageWidth
-        }
-        override fun setImageHeight(imageHeight: Int) {
-            this@AdapterFixture.imageHeight = imageHeight
+        override fun setUiSize(uiSize: IntPoint) {
+            this@AdapterFixture.imageWidth = uiSize.x
+            this@AdapterFixture.imageHeight = uiSize.y
         }
 
         override fun getRenderingProxy() = ADAPTER_RENDERING_PROXY
@@ -175,12 +173,7 @@ class ViewAdapterTest {
             override fun getRegionSizeY() = 80
             override fun createRootView() = rootView
             override fun getUiOffset() = IntPoint.ZERO
-            override fun setImageWidth(imageWidth: Int) {
-                size = IntPoint(imageWidth, size.y)
-            }
-            override fun setImageHeight(imageHeight: Int) {
-                size = IntPoint(size.x, imageHeight)
-            }
+            override fun setUiSize(uiSize: IntPoint) = run { size = uiSize }
             override fun init() {
                 renderableWidgets.clear()
             }

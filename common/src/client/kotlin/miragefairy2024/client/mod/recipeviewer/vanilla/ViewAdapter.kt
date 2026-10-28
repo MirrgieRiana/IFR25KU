@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
@@ -26,8 +27,7 @@ interface ViewAdapterHost {
     fun createRootView(): View
 
     fun getUiOffset(): IntPoint
-    fun setImageWidth(imageWidth: Int)
-    fun setImageHeight(imageHeight: Int)
+    fun setUiSize(uiSize: IntPoint)
 
     fun init()
 
@@ -55,8 +55,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         removed()
         val rootView = host.createRootView()
         rootView.initSizeCalculation(host.getRenderingProxy(), { host.getRegionSizeX() }, { host.getRegionSizeY() })
-        host.setImageWidth(rootView.evaluateActualSizeX())
-        host.setImageHeight(rootView.evaluateActualSizeY())
+        host.setUiSize(rootView.evaluateActualSize())
         host.init()
 
         fun register(widget: AbstractWidget, add: () -> Unit): Remover {
