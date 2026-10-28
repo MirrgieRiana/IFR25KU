@@ -19,7 +19,7 @@ interface ViewAdapterHost {
     fun getRenderingProxy(): RenderingProxy
     fun getViewPlacerRegistry(): ViewPlacerRegistry<VanillaViewPlacerContext>
 
-    fun getScreen(): Screen
+    fun getScreen(): Screen?
     fun getRegionSizeX(): Int
     fun getRegionSizeY(): Int
 
@@ -98,7 +98,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
     }
 
     fun removeWidget(listener: GuiEventListener) {
-        val screen = host.getScreen()
+        val screen = host.getScreen() ?: return
         if (screen.focused === listener && screen.children().none { it === listener }) {
             screen.focused = null
             screen.isDragging = false
@@ -106,7 +106,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
     }
 
     fun mouseClicked() {
-        val screen = host.getScreen()
+        val screen = host.getScreen() ?: return
         val focused = screen.focused
         if (focused != null && screen.children().none { it === focused }) {
             screen.focused = null
@@ -120,7 +120,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
      */
     fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (!isInitialized) return false
-        val screen = host.getScreen()
+        val screen = host.getScreen() ?: return false
         if (!Platform.isFabric()) {
             val focused = screen.focused
             if (focused != null) {
@@ -136,7 +136,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (!isInitialized) return false
-        val screen = host.getScreen()
+        val screen = host.getScreen() ?: return false
         val focused = screen.focused
         if (focused is EditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
