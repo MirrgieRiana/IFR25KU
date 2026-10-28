@@ -64,6 +64,11 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
     }
 
+    override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        if (viewAdapter.mouseReleased(mouseX, mouseY, button)) return true
+        return super.mouseReleased(mouseX, mouseY, button)
+    }
+
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (viewAdapter.keyPressed(keyCode, scanCode, modifiers)) return true
         return super.keyPressed(keyCode, scanCode, modifiers)
