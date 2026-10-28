@@ -29,6 +29,7 @@ abstract class ScrollView : WrapperView(), PlaceableView {
             require(value > 0) { "Scroll step must be positive" }
             field = value
         }
+    var scrollbarColor = 0xA0000000.toInt()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 

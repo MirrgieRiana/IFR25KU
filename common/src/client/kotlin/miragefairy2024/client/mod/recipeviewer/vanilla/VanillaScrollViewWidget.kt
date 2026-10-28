@@ -25,6 +25,8 @@ abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: I
     protected abstract val viewportLength: Int
     private val maxScroll get() = contentLength - viewportLength atLeast 0
     private var scrollOffset = 0.0
+    private val thumbLength get() = if (contentLength <= 0) viewportLength else (viewportLength.toDouble() * viewportLength / contentLength).roundToInt().coerceIn(minOf(view.scrollbarThickness atLeast 1, viewportLength), viewportLength)
+    private val thumbPosition get() = if (maxScroll == 0) 0.0 else scrollOffset * (viewportLength - thumbLength) / maxScroll
     private val pressedButtons = mutableSetOf<Int>()
     private var focused2 = false
 
@@ -79,6 +81,8 @@ abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: I
 
     private fun intersectsViewport(widget: AbstractWidget) = widget.x < viewport.x + viewport.sizeX && widget.x + widget.width > viewport.x && widget.y < viewport.y + viewport.sizeY && widget.y + widget.height > viewport.y
 
+    protected abstract fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int)
+
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         guiGraphics.enableScissor(viewport.x, viewport.y, viewport.x + viewport.sizeX, viewport.y + viewport.sizeY)
         try {
@@ -88,6 +92,10 @@ abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: I
             }
         } finally {
             guiGraphics.disableScissor()
+        }
+        if (maxScroll > 0 && view.scrollbarThickness > 0) {
+            val start = thumbPosition.roundToInt()
+            renderScrollbar(guiGraphics, start, thumbLength)
         }
     }
 
@@ -159,6 +167,10 @@ class VanillaXScrollViewWidget(view: XScrollView, bounds: IntRectangle, context:
 
     override fun getChildOffset(pixels: Int) = IntPoint(x - pixels, y)
 
+    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
+        guiGraphics.fill(x + start, viewport.y + viewport.sizeY, x + start + length, y + height, view.scrollbarColor)
+    }
+
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
 }
@@ -175,6 +187,10 @@ class VanillaYScrollViewWidget(view: YScrollView, bounds: IntRectangle, context:
     override val viewportLength get() = viewport.sizeY
 
     override fun getChildOffset(pixels: Int) = IntPoint(x, y - pixels)
+
+    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
+        guiGraphics.fill(viewport.x + viewport.sizeX, y + start, x + width, y + start + length, view.scrollbarColor)
+    }
 
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
