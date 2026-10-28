@@ -177,6 +177,15 @@ abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: I
         this.focused?.setFocused(focused)
     }
 
+    protected abstract fun getFocusDelta(widget: AbstractWidget): Int
+
+    override fun setFocused(focused: GuiEventListener?) {
+        super.setFocused(focused)
+        if (focused is AbstractWidget) {
+            updateScroll(scrollOffset + getFocusDelta(focused))
+        }
+    }
+
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
 
 }
@@ -202,6 +211,12 @@ class VanillaXScrollViewWidget(view: XScrollView, bounds: IntRectangle, context:
 
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
+    override fun getFocusDelta(widget: AbstractWidget): Int {
+        val start = widget.x - x
+        val length = widget.width
+        return if (start < 0) start else if (start + length > viewportLength) minOf(start, start + length - viewportLength) else 0
+    }
+
 }
 
 class VanillaYScrollViewWidget(view: YScrollView, bounds: IntRectangle, context: VanillaViewPlacerContext, registry: ViewPlacerRegistry<VanillaViewPlacerContext>) : VanillaScrollViewWidget(
@@ -224,5 +239,11 @@ class VanillaYScrollViewWidget(view: YScrollView, bounds: IntRectangle, context:
     override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseY - y
 
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
+
+    override fun getFocusDelta(widget: AbstractWidget): Int {
+        val start = widget.y - y
+        val length = widget.height
+        return if (start < 0) start else if (start + length > viewportLength) minOf(start, start + length - viewportLength) else 0
+    }
 
 }

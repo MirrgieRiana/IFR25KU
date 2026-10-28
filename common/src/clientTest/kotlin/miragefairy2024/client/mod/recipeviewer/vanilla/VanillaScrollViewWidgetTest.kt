@@ -231,6 +231,18 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
+    fun `画面外の子への Tab フォーカスではその子を表示領域へ移動するのだ`() {
+        val fixture = ScrollWidgetFixture(horizontal = false)
+        fixture.widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))!!.applyFocus(true)
+        assertTrue(fixture.widgets[0].isFocused)
+        fixture.widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))!!.applyFocus(true)
+
+        assertTrue(fixture.widgets[1].isFocused)
+        assertEquals(20, fixture.widgets[1].y)
+        fixture.widget.dispose()
+    }
+
+    @Test
     fun `クリック中に削除された子のフォーカスを保持しないのだ`() {
         val fixture = ScrollWidgetFixture(horizontal = false)
         fixture.widgets[0].onClick = { fixture.removers[0].remove() }
