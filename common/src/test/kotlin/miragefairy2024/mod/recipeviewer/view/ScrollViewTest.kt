@@ -98,6 +98,7 @@ class ScrollViewTest {
 
         assertEquals(IntPoint(0, 10), child.evaluateActualSize())
         assertThrows(IllegalArgumentException::class.java) { view.scrollbarThickness = -1 }
+        assertThrows(IllegalArgumentException::class.java) { view.scrollStep = 0 }
     }
 
 }

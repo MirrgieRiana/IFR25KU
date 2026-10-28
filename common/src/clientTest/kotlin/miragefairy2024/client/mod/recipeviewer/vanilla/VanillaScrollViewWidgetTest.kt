@@ -135,11 +135,33 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
-    fun `表示範囲外の子へクリックを渡さないのだ`() {
+    fun `表示範囲外の子へクリックを渡さずスクロール後の位置で操作するのだ`() {
         val fixture = ScrollWidgetFixture(horizontal = false)
         assertFalse(fixture.widget.mouseClicked(50.0, 150.0, 0))
         assertEquals(listOf(0, 0, 0), fixture.widgets.map { it.clicks })
+
+        assertTrue(fixture.widget.mouseScrolled(50.0, 50.0, 0.0, -100.0 / fixture.view.scrollStep))
+        assertTrue(fixture.widget.mouseClicked(50.0, 50.0, 0))
+
+        assertEquals(listOf(0, 1, 0), fixture.widgets.map { it.clicks })
         assertFalse(fixture.widget.mouseClicked(107.0, 50.0, 1))
+        fixture.widget.dispose()
+    }
+
+    @Test
+    fun `ホイールは子が消費しなければスクロールし端では親に渡すのだ`() {
+        val fixture = ScrollWidgetFixture(horizontal = false)
+        fixture.widgets[0].consumeScroll = true
+        assertTrue(fixture.widget.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+        assertEquals(20, fixture.widgets[0].y)
+        fixture.widgets[0].consumeScroll = false
+
+        assertTrue(fixture.widget.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+        assertEquals(5, fixture.widgets[0].y)
+        assertTrue(fixture.widget.mouseScrolled(50.0, 50.0, 0.0, -1000.0))
+        assertEquals(-180, fixture.widgets[0].y)
+        assertFalse(fixture.widget.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+        assertFalse(fixture.widget.mouseScrolled(50.0, 150.0, 0.0, 1.0))
         fixture.widget.dispose()
     }
 
@@ -152,6 +174,23 @@ class VanillaScrollViewWidgetTest {
 
         assertEquals(1, fixture.widgets[0].releases)
         assertFalse(fixture.widget.isDragging)
+        fixture.widget.dispose()
+    }
+
+    @Test
+    fun `横スクロールと移動は同じ子を維持して座標を更新するのだ`() {
+        val fixture = ScrollWidgetFixture(horizontal = true)
+        assertTrue(fixture.widget.mouseScrolled(50.0, 50.0, -1.0, 0.0))
+        assertEquals(-5, fixture.widgets[0].x)
+
+        fixture.widget.setPosition(30, 40)
+
+        assertEquals(IntPoint(15, 40), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+        assertEquals(3, fixture.widgets.size)
+        assertTrue(fixture.widget.mouseScrolled(50.0, 50.0, -100.0, 0.0))
+        assertEquals(-170, fixture.widgets[0].x)
+        assertTrue(fixture.widget.mouseScrolled(50.0, 50.0, 100.0, 0.0))
+        assertEquals(30, fixture.widgets[0].x)
         fixture.widget.dispose()
     }
 

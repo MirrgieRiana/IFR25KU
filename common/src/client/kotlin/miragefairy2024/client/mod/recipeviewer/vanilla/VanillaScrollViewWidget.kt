@@ -123,6 +123,17 @@ abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: I
         return true
     }
 
+    protected abstract fun getScrollAmount(scrollX: Double, scrollY: Double): Double
+
+    override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
+        if (!active || !visible || !isMouseOver(mouseX, mouseY)) return false
+        if (isInViewport(mouseX, mouseY) && interactiveWidgets.toList().any { it.isMouseOver(mouseX, mouseY) && it.mouseScrolled(mouseX, mouseY, scrollX, scrollY) }) return true
+        val old = scrollOffset
+        val amount = getScrollAmount(scrollX, scrollY)
+        updateScroll(old - amount * view.scrollStep)
+        return scrollOffset != old
+    }
+
     override fun isFocused() = focused2
 
     override fun setFocused(focused: Boolean) {
@@ -148,6 +159,8 @@ class VanillaXScrollViewWidget(view: XScrollView, bounds: IntRectangle, context:
 
     override fun getChildOffset(pixels: Int) = IntPoint(x - pixels, y)
 
+    override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
+
 }
 
 class VanillaYScrollViewWidget(view: YScrollView, bounds: IntRectangle, context: VanillaViewPlacerContext, registry: ViewPlacerRegistry<VanillaViewPlacerContext>) : VanillaScrollViewWidget(
@@ -162,5 +175,7 @@ class VanillaYScrollViewWidget(view: YScrollView, bounds: IntRectangle, context:
     override val viewportLength get() = viewport.sizeY
 
     override fun getChildOffset(pixels: Int) = IntPoint(x, y - pixels)
+
+    override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
 }

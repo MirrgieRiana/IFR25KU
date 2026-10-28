@@ -24,6 +24,11 @@ abstract class ScrollView : WrapperView(), PlaceableView {
             require(value >= 0) { "Scrollbar thickness must be non-negative" }
             field = value
         }
+    var scrollStep = 15
+        set(value) {
+            require(value > 0) { "Scroll step must be positive" }
+            field = value
+        }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 
