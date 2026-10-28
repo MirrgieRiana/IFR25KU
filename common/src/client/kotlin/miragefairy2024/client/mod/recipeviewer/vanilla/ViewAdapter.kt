@@ -20,6 +20,8 @@ interface ViewAdapterHost {
     fun getViewPlacerRegistry(): ViewPlacerRegistry<VanillaViewPlacerContext>
 
     fun getScreen(): Screen
+    fun getRegionSizeX(): Int
+    fun getRegionSizeY(): Int
 
     fun createRootView(): View
 
@@ -53,7 +55,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun init() {
         removed()
         val rootView = host.createRootView()
-        rootView.initSizeCalculation(host.getRenderingProxy(), { host.getScreen().width }, { host.getScreen().height })
+        rootView.initSizeCalculation(host.getRenderingProxy(), { host.getRegionSizeX() }, { host.getRegionSizeY() })
         host.setImageWidth(rootView.evaluateActualSizeX())
         host.setImageHeight(rootView.evaluateActualSizeY())
         host.init()

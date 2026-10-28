@@ -69,6 +69,8 @@ private class AdapterFixture(vararg views: TestView) {
     var onDispose: () -> Unit = { }
     val host: ViewAdapterHost = object : ViewAdapterHost {
         override fun getScreen() = this@AdapterFixture.screen
+        override fun getRegionSizeX() = screen.width
+        override fun getRegionSizeY() = screen.height
         override fun getLeftPos() = 30
         override fun getTopPos() = 40
         override fun setImageWidth(imageWidth: Int) {
