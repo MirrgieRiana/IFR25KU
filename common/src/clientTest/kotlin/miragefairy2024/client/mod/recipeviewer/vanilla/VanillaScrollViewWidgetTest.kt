@@ -135,6 +135,27 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
+    fun `同じスクロール領域を再クリックしてもフォーカスとバーのドラッグを維持するのだ`() {
+        val fixture = ScrollWidgetFixture(horizontal = false)
+        val host: AbstractContainerEventHandler = object : AbstractContainerEventHandler() {
+            override fun children() = listOf(fixture.widget)
+        }
+        assertTrue(host.mouseClicked(50.0, 50.0, 0))
+        assertTrue(host.mouseReleased(50.0, 50.0, 0))
+        assertTrue(host.mouseClicked(50.0, 50.0, 0))
+        assertTrue(fixture.widgets[0].isFocused)
+        assertTrue(host.mouseReleased(50.0, 50.0, 0))
+
+        assertTrue(host.mouseClicked(107.0, 25.0, 0))
+        assertTrue(host.mouseDragged(107.0, 300.0, 0, 0.0, 275.0))
+
+        assertEquals(-180, fixture.widgets[0].y)
+        assertTrue(host.mouseReleased(107.0, 300.0, 0))
+        assertFalse(host.mouseDragged(107.0, 25.0, 0, 0.0, -275.0))
+        fixture.widget.dispose()
+    }
+
+    @Test
     fun `表示範囲外の子へクリックを渡さずスクロール後の位置で操作するのだ`() {
         val fixture = ScrollWidgetFixture(horizontal = false)
         assertFalse(fixture.widget.mouseClicked(50.0, 150.0, 0))
@@ -162,6 +183,21 @@ class VanillaScrollViewWidgetTest {
         assertEquals(-180, fixture.widgets[0].y)
         assertFalse(fixture.widget.mouseScrolled(50.0, 50.0, 0.0, -1.0))
         assertFalse(fixture.widget.mouseScrolled(50.0, 150.0, 0.0, 1.0))
+        fixture.widget.dispose()
+    }
+
+    @Test
+    fun `領域外でバーを離したら以降はドラッグを消費しないのだ`() {
+        val fixture = ScrollWidgetFixture(horizontal = false)
+        assertTrue(fixture.widget.mouseClicked(107.0, 25.0, 0))
+        fixture.widget.setFocused(true)
+        assertTrue(fixture.widget.mouseDragged(107.0, 300.0, 0, 0.0, 275.0))
+        assertEquals(-180, fixture.widgets[0].y)
+
+        assertTrue(fixture.widget.mouseReleased(107.0, 300.0, 0))
+
+        assertFalse(fixture.widget.mouseDragged(107.0, 25.0, 0, 0.0, -275.0))
+        assertEquals(-180, fixture.widgets[0].y)
         fixture.widget.dispose()
     }
 

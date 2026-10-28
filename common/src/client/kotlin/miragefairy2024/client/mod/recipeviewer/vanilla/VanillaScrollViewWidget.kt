@@ -27,7 +27,9 @@ abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: I
     private var scrollOffset = 0.0
     private val thumbLength get() = if (contentLength <= 0) viewportLength else (viewportLength.toDouble() * viewportLength / contentLength).roundToInt().coerceIn(minOf(view.scrollbarThickness atLeast 1, viewportLength), viewportLength)
     private val thumbPosition get() = if (maxScroll == 0) 0.0 else scrollOffset * (viewportLength - thumbLength) / maxScroll
+    private var draggingScrollbar = false
     private val pressedButtons = mutableSetOf<Int>()
+    private var dragOffset = 0.0
     private var focused2 = false
 
     private val childController = view.childView.attachTo(IntPoint(x, y)) { child, childBounds ->
@@ -68,6 +70,7 @@ abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: I
     }
 
     fun dispose() {
+        draggingScrollbar = false
         isDragging = false
         pressedButtons.clear()
         childController.dispose()
@@ -103,9 +106,18 @@ abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: I
         if (!active || !visible || !isMouseOver(mouseX, mouseY)) return false
         pressedButtons -= button
         if (button == 0) {
+            draggingScrollbar = false
             isDragging = false
         }
-        if (!isInViewport(mouseX, mouseY)) return false
+        if (!isInViewport(mouseX, mouseY)) {
+            if (button != 0 || maxScroll == 0 || viewportLength <= thumbLength) return false
+            focused = null
+            draggingScrollbar = true
+            val position = getMousePosition(mouseX, mouseY)
+            dragOffset = if (position >= thumbPosition && position < thumbPosition + thumbLength) position - thumbPosition else thumbLength / 2.0
+            dragScrollbar(mouseX, mouseY)
+            return true
+        }
         return interactiveWidgets.toList().any { widget ->
             if (interactiveWidgets.none { it === widget } || !widget.mouseClicked(mouseX, mouseY, button)) false else {
                 pressedButtons += button
@@ -118,13 +130,28 @@ abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: I
         }
     }
 
+    protected abstract fun getMousePosition(mouseX: Double, mouseY: Double): Double
+
+    private fun dragScrollbar(mouseX: Double, mouseY: Double) {
+        val position = getMousePosition(mouseX, mouseY)
+        updateScroll((position - dragOffset) * maxScroll / (viewportLength - thumbLength))
+    }
+
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
+        if (button == 0 && draggingScrollbar) {
+            dragScrollbar(mouseX, mouseY)
+            return true
+        }
         if (button !in pressedButtons) return false
         super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
         return true
     }
 
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        if (button == 0 && draggingScrollbar) {
+            draggingScrollbar = false
+            return true
+        }
         if (!pressedButtons.remove(button)) return false
         if (button == 0) isDragging = false
         focused?.mouseReleased(mouseX, mouseY, button)
@@ -171,6 +198,8 @@ class VanillaXScrollViewWidget(view: XScrollView, bounds: IntRectangle, context:
         guiGraphics.fill(x + start, viewport.y + viewport.sizeY, x + start + length, y + height, view.scrollbarColor)
     }
 
+    override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseX - x
+
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
 }
@@ -191,6 +220,8 @@ class VanillaYScrollViewWidget(view: YScrollView, bounds: IntRectangle, context:
     override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
         guiGraphics.fill(viewport.x + viewport.sizeX, y + start, x + width, y + start + length, view.scrollbarColor)
     }
+
+    override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseY - y
 
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
