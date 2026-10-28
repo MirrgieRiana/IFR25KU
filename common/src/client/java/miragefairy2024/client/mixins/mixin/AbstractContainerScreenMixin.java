@@ -55,7 +55,7 @@ public class AbstractContainerScreenMixin {
 
     @Group(name = "mirageFairy2024$slotHighlight", min = 1)
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;III)V"), require = 0)
-    private void mirageFairy2024$renderSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffset, Operation<Void> original, @Local Slot slot) {
+    private void mirageFairy2024$renderSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffset, Operation<Void> original, @Local(name = "slot") Slot slot) {
         mirageFairy2024$renderWithSlotClip(guiGraphics, slot, () -> original.call(guiGraphics, x, y, blitOffset));
     }
 
