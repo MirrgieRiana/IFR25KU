@@ -72,8 +72,7 @@ private class AdapterFixture(vararg views: TestView) {
         override fun getScreen() = this@AdapterFixture.screen
         override fun getRegionSizeX() = screen.width
         override fun getRegionSizeY() = screen.height
-        override fun getLeftPos() = 30
-        override fun getTopPos() = 40
+        override fun getUiOffset() = IntPoint(30, 40)
         override fun setImageWidth(imageWidth: Int) {
             this@AdapterFixture.imageWidth = imageWidth
         }
@@ -175,8 +174,7 @@ class ViewAdapterTest {
             override fun getRegionSizeX() = 300
             override fun getRegionSizeY() = 80
             override fun createRootView() = rootView
-            override fun getLeftPos() = 0
-            override fun getTopPos() = 0
+            override fun getUiOffset() = IntPoint.ZERO
             override fun setImageWidth(imageWidth: Int) {
                 size = IntPoint(imageWidth, size.y)
             }

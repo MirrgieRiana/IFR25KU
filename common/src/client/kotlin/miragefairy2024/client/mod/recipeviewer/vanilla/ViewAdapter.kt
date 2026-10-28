@@ -25,8 +25,7 @@ interface ViewAdapterHost {
 
     fun createRootView(): View
 
-    fun getLeftPos(): Int
-    fun getTopPos(): Int
+    fun getUiOffset(): IntPoint
     fun setImageWidth(imageWidth: Int)
     fun setImageHeight(imageHeight: Int)
 
@@ -72,12 +71,12 @@ class ViewAdapter(val host: ViewAdapterHost) {
         }
 
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
-            override val origin = IntPoint(host.getLeftPos(), host.getTopPos())
+            override val origin = host.getUiOffset()
 
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget) { host.addRenderableWidget(widget) }
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget) { host.addRenderableOnly(widget) }
         }
-        viewController = rootView.attachTo(IntPoint(host.getLeftPos(), host.getTopPos())) { view, bounds ->
+        viewController = rootView.attachTo(host.getUiOffset()) { view, bounds ->
             host.getViewPlacerRegistry().place(context, view, bounds)
         }
         isInitialized = true

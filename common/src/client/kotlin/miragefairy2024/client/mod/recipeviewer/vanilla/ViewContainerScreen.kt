@@ -2,6 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import mirrg.kotlin.helium.unit
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
@@ -25,8 +26,7 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
         override fun createRootView() = menu.createView(title, playerInventoryTitle)
 
-        override fun getLeftPos() = this@ViewContainerScreen.leftPos
-        override fun getTopPos() = this@ViewContainerScreen.topPos
+        override fun getUiOffset() = IntPoint(this@ViewContainerScreen.leftPos, this@ViewContainerScreen.topPos)
         override fun setImageWidth(imageWidth: Int) = run { this@ViewContainerScreen.imageWidth = imageWidth }
         override fun setImageHeight(imageHeight: Int) = run { this@ViewContainerScreen.imageHeight = imageHeight }
 
