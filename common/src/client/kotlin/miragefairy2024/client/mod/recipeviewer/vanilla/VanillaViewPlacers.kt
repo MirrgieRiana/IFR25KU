@@ -89,6 +89,14 @@ fun initVanillaViewPlacers() {
                 if (!clipped) throw UnsupportedOperationException("Cannot detach MenuSlotView from the vanilla screen")
                 clipping.`mirageFairy2024$setClipBounds`(Supplier { IntRectangle.ZERO })
             }
+
+            override fun dispose() {
+                if (clipped) {
+                    // 領域を維持したまま、親 View を参照するプロバイダーを解放するのだ～🌱
+                    val clipBounds = clipping.`mirageFairy2024$getClipBounds`()!!.get()
+                    clipping.`mirageFairy2024$setClipBounds`(Supplier { clipBounds })
+                }
+            }
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextFieldView, bounds ->

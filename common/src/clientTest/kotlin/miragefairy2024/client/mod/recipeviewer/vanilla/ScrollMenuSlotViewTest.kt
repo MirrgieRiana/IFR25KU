@@ -75,6 +75,29 @@ class ScrollMenuSlotViewTest {
     }
 
     @Test
+    fun `スロットの座標と領域を更新し破棄時は領域を維持して配置解除時に隠すのだ`() {
+        val context = SlotTestContext()
+        val slot = ClippedTestSlot()
+        val view = MenuSlotView(slot)
+        context.clippingBounds = IntRectangle(30, 40, 50, 60)
+        val controller = VANILLA_VIEW_PLACER_REGISTRY.place(context, view, IntRectangle(35, 45, 18, 18))
+        assertEquals(IntPoint(26, 26), slot.position)
+
+        controller.setOffset(IntPoint(45, 65))
+        context.clippingBounds = IntRectangle(40, 50, 20, 30)
+        assertEquals(IntPoint(36, 46), slot.position)
+        assertEquals(context.clippingBounds, slot.`mirageFairy2024$getClipBounds`()!!.get())
+        controller.dispose()
+        context.clippingBounds = IntRectangle.ZERO
+        assertEquals(IntRectangle(40, 50, 20, 30), slot.`mirageFairy2024$getClipBounds`()!!.get())
+
+        controller.detach()
+
+        assertEquals(IntRectangle.ZERO, slot.`mirageFairy2024$getClipBounds`()!!.get())
+        assertFalse(slot.`mirageFairy2024$isInsideClip`(0.0, 0.0))
+    }
+
+    @Test
     fun `部分的に見えるスロットも表示領域の境界で入力を制限するのだ`() {
         val slot = ClippedTestSlot()
         slot.`mirageFairy2024$setClipBounds`(Supplier { IntRectangle(10, 20, 16, 16) })
@@ -85,6 +108,40 @@ class ScrollMenuSlotViewTest {
         assertFalse(slot.`mirageFairy2024$isInsideClip`(26.0, 20.0))
         assertFalse(slot.`mirageFairy2024$isInsideClip`(10.0, 19.9))
         assertFalse(slot.`mirageFairy2024$isInsideClip`(10.0, 36.0))
+    }
+
+    @Test
+    fun `スクロールと移動でスロットを動かし親領域との共通部分を使うのだ`() {
+        val context = SlotTestContext()
+        context.clippingBounds = IntRectangle(20, 30, 50, 60)
+        val slot = ClippedTestSlot()
+        val view = YScrollView()
+        view += MarginView(0, 0, 0, 200).also {
+            it += MenuSlotView(slot)
+        }
+        view.initSizeCalculation(SLOT_RENDERING_PROXY, { 100 }, { 100 })
+        val controller = view.attachTo(IntPoint(10, 20)) { child, bounds ->
+            VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds)
+        }
+        val widget = context.widgets.single()
+        assertEquals(IntPoint(1, 1), slot.position)
+        assertEquals(IntRectangle(20, 30, 50, 60), slot.`mirageFairy2024$getClipBounds`()!!.get())
+        assertFalse(widget.mouseClicked(30.0, 40.0, 0))
+        assertFalse(widget.mouseDragged(30.0, 40.0, 0, 1.0, 1.0))
+        assertFalse(widget.mouseReleased(30.0, 40.0, 0))
+
+        assertTrue(widget.mouseScrolled(30.0, 40.0, 0.0, -50.0 / view.scrollStep))
+        controller.setOffset(IntPoint(30, 40))
+
+        assertEquals(IntPoint(21, -29), slot.position)
+        assertEquals(IntRectangle(30, 40, 40, 50), slot.`mirageFairy2024$getClipBounds`()!!.get())
+        context.clippingBounds = IntRectangle(500, 500, 10, 10)
+        assertEquals(IntRectangle(500, 500, 0, 0), slot.`mirageFairy2024$getClipBounds`()!!.get())
+        assertFalse(slot.`mirageFairy2024$isInsideClip`(500.0, 500.0))
+        controller.dispose()
+        controller.detach()
+        assertTrue(context.widgets.isEmpty())
+        assertFalse(slot.`mirageFairy2024$isInsideClip`(30.0, 40.0))
     }
 
     @Test
