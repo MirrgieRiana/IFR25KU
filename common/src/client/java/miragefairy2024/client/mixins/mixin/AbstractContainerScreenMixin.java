@@ -2,7 +2,6 @@ package miragefairy2024.client.mixins.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
 import miragefairy2024.client.mixins.api.SlotViewClipping;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -12,7 +11,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Group;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -51,18 +49,6 @@ public class AbstractContainerScreenMixin {
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V"))
     private void mirageFairy2024$renderSlot(AbstractContainerScreen<?> screen, GuiGraphics guiGraphics, Slot slot, Operation<Void> original) {
         ((SlotViewClipping) slot).mirageFairy2024$renderWithSlotClip(guiGraphics, () -> original.call(screen, guiGraphics, slot));
-    }
-
-    @Group(name = "mirageFairy2024$slotHighlight", min = 1)
-    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;III)V"), require = 0)
-    private void mirageFairy2024$renderSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffset, Operation<Void> original, @Local(name = "slot") Slot slot) {
-        ((SlotViewClipping) slot).mirageFairy2024$renderWithSlotClip(guiGraphics, () -> original.call(guiGraphics, x, y, blitOffset));
-    }
-
-    @Group(name = "mirageFairy2024$slotHighlight", min = 1)
-    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;IIF)V", remap = false), require = 0)
-    private void mirageFairy2024$renderNeoForgeSlotHighlight(AbstractContainerScreen<?> screen, GuiGraphics guiGraphics, Slot slot, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
-        ((SlotViewClipping) slot).mirageFairy2024$renderWithSlotClip(guiGraphics, () -> original.call(screen, guiGraphics, slot, mouseX, mouseY, partialTick));
     }
 
     @Inject(method = "isHovering(Lnet/minecraft/world/inventory/Slot;DD)Z", at = @At("RETURN"), cancellable = true)

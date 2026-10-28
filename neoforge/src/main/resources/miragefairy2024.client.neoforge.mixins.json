@@ -3,6 +3,7 @@
   "package": "miragefairy2024.client.neoforge.mixins.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "AbstractContainerScreenMixin",
     "ParticleEngineMixin"
   ],
   "injectors": {
