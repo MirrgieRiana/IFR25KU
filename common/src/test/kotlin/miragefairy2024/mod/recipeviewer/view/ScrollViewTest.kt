@@ -4,6 +4,7 @@ import miragefairy2024.mod.recipeviewer.views.AbstractView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import mirrg.kotlin.helium.max
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -76,7 +77,7 @@ class ScrollViewTest {
                 view += child
                 view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 100 })
 
-                val expected = if (horizontal) IntPoint(maxOf(100, length), 95) else IntPoint(95, maxOf(100, length))
+                val expected = if (horizontal) IntPoint(100 max length, 95) else IntPoint(95, 100 max length)
                 assertEquals(expected, child.evaluateActualSize())
             }
         }

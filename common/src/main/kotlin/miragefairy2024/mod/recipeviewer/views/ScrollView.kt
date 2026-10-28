@@ -6,6 +6,8 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
+import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.max
 
 /**
  * 子 View を一方向へスクロールするのだ～🌱
@@ -33,8 +35,8 @@ class XScrollView : ScrollView() {
     override fun evaluateContentSizeXImpl() = 0
     override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY() + scrollbarThickness
 
-    override fun evaluateChildRegionSizeX(index: Int) = maxOf(evaluateActualSizeX(), childView.evaluateContentSizeX())
-    override fun evaluateChildRegionSizeY(index: Int) = (evaluateActualSizeY() - scrollbarThickness).coerceAtLeast(0)
+    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() max childView.evaluateContentSizeX()
+    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() - scrollbarThickness atLeast 0
 
 }
 
@@ -44,7 +46,7 @@ class YScrollView : ScrollView() {
     override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX() + scrollbarThickness
     override fun evaluateContentSizeYImpl() = 0
 
-    override fun evaluateChildRegionSizeX(index: Int) = (evaluateActualSizeX() - scrollbarThickness).coerceAtLeast(0)
-    override fun evaluateChildRegionSizeY(index: Int) = maxOf(evaluateActualSizeY(), childView.evaluateContentSizeY())
+    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() - scrollbarThickness atLeast 0
+    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() max childView.evaluateContentSizeY()
 
 }
