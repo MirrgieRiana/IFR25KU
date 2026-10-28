@@ -3,6 +3,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
@@ -141,6 +142,76 @@ private class AdapterFixture(vararg views: TestView) {
 }
 
 class ViewAdapterTest {
+    @Test
+    fun `Screen なしでホストの領域を使って配置と移動を行うのだ`() {
+        val widgets = mutableListOf<RecordingWidget>()
+        val renderableWidgets = mutableListOf<AbstractWidget>()
+        var size = IntPoint.ZERO
+        var disposals = 0
+        val registry = ViewPlacerRegistry<VanillaViewPlacerContext>().also {
+            it.register(TestView::class.java) { context, view, bounds ->
+                val widget = RecordingWidget(bounds)
+                widgets += widget
+                if (view.interactive) context.addRenderableWidget(widget) else context.addRenderableOnly(widget)
+                object : ViewController {
+                    override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
+                    override fun detach() = throw UnsupportedOperationException()
+                    override fun dispose() {
+                        disposals += 1
+                    }
+                }
+            }
+        }
+        val rootView = XListView().also {
+            it.sizingX = Sizing.FILL
+            it.sizingY = Sizing.FILL
+            it += TestView(true)
+            it += TestView(false)
+        }
+        val adapter = ViewAdapter(object : ViewAdapterHost {
+            override fun getRenderingProxy() = ADAPTER_RENDERING_PROXY
+            override fun getViewPlacerRegistry() = registry
+            override fun getScreen() = null
+            override fun getRegionSizeX() = 300
+            override fun getRegionSizeY() = 80
+            override fun createRootView() = rootView
+            override fun getLeftPos() = 0
+            override fun getTopPos() = 0
+            override fun setImageWidth(imageWidth: Int) {
+                size = IntPoint(imageWidth, size.y)
+            }
+            override fun setImageHeight(imageHeight: Int) {
+                size = IntPoint(size.x, imageHeight)
+            }
+            override fun init() {
+                renderableWidgets.clear()
+            }
+            override fun addRenderableWidget(widget: AbstractWidget) {
+                renderableWidgets += widget
+            }
+            override fun addRenderableOnly(widget: AbstractWidget) = addRenderableWidget(widget)
+            override fun removeWidget(listener: GuiEventListener) {
+                renderableWidgets.remove(listener)
+            }
+        })
+        adapter.init()
+        assertEquals(IntPoint(300, 80), size)
+        assertEquals(listOf(0, 10), widgets.map { it.x })
+        assertFalse(adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        assertFalse(adapter.mouseDragged(0.0, 0.0, 0, 1.0, 1.0))
+        adapter.mouseClicked()
+        adapter.removeWidget(widgets[0])
+
+        adapter.setOffset(IntPoint(30, 40))
+
+        assertEquals(listOf(30, 40), widgets.map { it.x })
+        assertEquals(listOf(40, 40), widgets.map { it.y })
+        adapter.removed()
+        adapter.removed()
+        assertEquals(2, disposals)
+        assertThrows(IllegalStateException::class.java) { adapter.setOffset(IntPoint.ZERO) }
+    }
+
     @Test
     fun `再初期化では旧配置を破棄してから新しい View を生成するのだ`() {
         val fixture = AdapterFixture(TestView(true))
