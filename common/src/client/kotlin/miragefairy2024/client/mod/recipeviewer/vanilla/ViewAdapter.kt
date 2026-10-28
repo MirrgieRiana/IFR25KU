@@ -120,8 +120,10 @@ class ViewAdapter(val host: ViewAdapterHost) {
         if (Platform.isFabric()) return false
         val focused = host.getScreen().focused
         if (focused == null) return false
-        if (!host.getScreen().isDragging || button != 0) return false
-        return focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)
+        if (button == 0 && host.getScreen().isDragging) {
+            return focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)
+        }
+        return false
     }
 
     // Fabric 以外では、子へのドラッグ終了の通知も中継するのだ～🌱
