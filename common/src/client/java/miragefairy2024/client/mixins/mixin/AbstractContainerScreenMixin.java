@@ -11,6 +11,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Group;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractContainerScreen.class)
 public class AbstractContainerScreenMixin {
@@ -45,6 +47,13 @@ public class AbstractContainerScreenMixin {
             render.run();
         } finally {
             guiGraphics.disableScissor();
+        }
+    }
+
+    @Inject(method = "isHovering(Lnet/minecraft/world/inventory/Slot;DD)Z", at = @At("RETURN"), cancellable = true)
+    private void mirageFairy2024$isHovering(Slot slot, double mouseX, double mouseY, CallbackInfoReturnable<Boolean> cir) {
+        if (!((SlotViewClipping) slot).mirageFairy2024$isInsideClip(mouseX, mouseY)) {
+            cir.setReturnValue(false);
         }
     }
 }
