@@ -14,8 +14,10 @@ import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.components.events.GuiEventListener
+import net.minecraft.client.gui.narration.NarratableEntry
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import org.lwjgl.glfw.GLFW
 import kotlin.math.roundToInt
@@ -35,6 +37,7 @@ abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: I
     private val pressedButtons = mutableSetOf<Int>()
     private var dragOffset = 0.0
     private var focused2 = false
+    private var lastNarratable: NarratableEntry? = null
 
     private val childController = view.childView.attachTo(IntPoint(x, y)) { child, childBounds ->
         registry.place(object : VanillaViewPlacerContext {
@@ -219,7 +222,14 @@ abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: I
         return scrollOffset != old
     }
 
-    override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+    override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) {
+        val narratables = interactiveWidgets.filter { it.isActive && intersectsViewport(it) }.sortedBy { it.tabOrderGroup }
+        val result = Screen.findNarratableWidget(narratables, lastNarratable)
+        if (result != null) {
+            if (result.priority.isTerminal) lastNarratable = result.entry
+            result.entry.updateNarration(narrationElementOutput.nest())
+        }
+    }
 
 }
 
