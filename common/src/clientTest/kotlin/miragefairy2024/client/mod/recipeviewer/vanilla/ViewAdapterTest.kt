@@ -14,7 +14,6 @@ import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
-import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
@@ -114,19 +113,22 @@ private class AdapterFixture(vararg views: TestView) {
             screen.isDragging = false
         }
 
-        override fun addRenderableWidget(widget: AbstractWidget) {
+        override fun addRenderableWidget(widget: AbstractWidget): Remover {
             interactiveWidgets += widget
+            return Remover {
+                removals += 1
+                interactiveWidgets.remove(widget)
+                adapter.removeWidget(widget)
+            }
         }
 
-        override fun addRenderableOnly(widget: AbstractWidget) {
+        override fun addRenderableOnly(widget: AbstractWidget): Remover {
             renderableOnlyWidgets += widget
-        }
-
-        override fun removeWidget(listener: GuiEventListener) {
-            removals += 1
-            interactiveWidgets.remove(listener)
-            renderableOnlyWidgets.remove(listener)
-            adapter.removeWidget(listener)
+            return Remover {
+                removals += 1
+                renderableOnlyWidgets.remove(widget)
+                adapter.removeWidget(widget)
+            }
         }
     }
     val adapter = ViewAdapter(host)
@@ -177,13 +179,11 @@ class ViewAdapterTest {
             override fun init() {
                 renderableWidgets.clear()
             }
-            override fun addRenderableWidget(widget: AbstractWidget) {
+            override fun addRenderableWidget(widget: AbstractWidget): Remover {
                 renderableWidgets += widget
+                return Remover { renderableWidgets.remove(widget) }
             }
             override fun addRenderableOnly(widget: AbstractWidget) = addRenderableWidget(widget)
-            override fun removeWidget(listener: GuiEventListener) {
-                renderableWidgets.remove(listener)
-            }
         })
         adapter.init()
         assertEquals(IntPoint(300, 80), size)
@@ -253,6 +253,16 @@ class ViewAdapterTest {
         val fixture = AdapterFixture(TestView(false), TestView(true))
         assertEquals(listOf(fixture.widgets[0]), fixture.renderableOnlyWidgets)
         assertEquals(listOf(fixture.widgets[1]), fixture.interactiveWidgets)
+
+        fixture.removers[0].remove()
+
+        assertTrue(fixture.renderableOnlyWidgets.isEmpty())
+        assertEquals(listOf(fixture.widgets[1]), fixture.interactiveWidgets)
+
+        fixture.removers[1].remove()
+
+        assertTrue(fixture.interactiveWidgets.isEmpty())
+        assertEquals(2, fixture.removals)
         fixture.adapter.removed()
     }
 

@@ -31,9 +31,8 @@ interface ViewAdapterHost {
 
     fun init()
 
-    fun addRenderableWidget(widget: AbstractWidget)
-    fun addRenderableOnly(widget: AbstractWidget)
-    fun removeWidget(listener: GuiEventListener)
+    fun addRenderableWidget(widget: AbstractWidget): Remover
+    fun addRenderableOnly(widget: AbstractWidget): Remover
 
 }
 
@@ -58,13 +57,13 @@ class ViewAdapter(val host: ViewAdapterHost) {
         host.setUiSize(rootView.evaluateActualSize())
         host.init()
 
-        fun register(widget: AbstractWidget, add: () -> Unit): Remover {
-            add()
+        fun register(add: () -> Remover): Remover {
+            val remover = add()
             var registered = true
             return Remover {
                 if (registered) {
                     registered = false
-                    host.removeWidget(widget)
+                    remover.remove()
                 }
             }
         }
@@ -72,8 +71,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = host.getUiOffset()
 
-            override fun addRenderableWidget(widget: AbstractWidget) = register(widget) { host.addRenderableWidget(widget) }
-            override fun addRenderableOnly(widget: AbstractWidget) = register(widget) { host.addRenderableOnly(widget) }
+            override fun addRenderableWidget(widget: AbstractWidget) = register { host.addRenderableWidget(widget) }
+            override fun addRenderableOnly(widget: AbstractWidget) = register { host.addRenderableOnly(widget) }
         }
         viewController = rootView.attachTo(host.getUiOffset()) { view, bounds ->
             host.getViewPlacerRegistry().place(context, view, bounds)

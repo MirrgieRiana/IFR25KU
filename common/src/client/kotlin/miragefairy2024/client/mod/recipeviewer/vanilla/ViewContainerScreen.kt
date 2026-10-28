@@ -3,7 +3,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.IntPoint
-import mirrg.kotlin.helium.unit
+import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
@@ -34,9 +34,15 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
         override fun init() = super@ViewContainerScreen.init()
 
-        override fun addRenderableWidget(widget: AbstractWidget) = unit { this@ViewContainerScreen.addRenderableWidget(widget) }
-        override fun addRenderableOnly(widget: AbstractWidget) = unit { this@ViewContainerScreen.addRenderableOnly(widget) }
-        override fun removeWidget(listener: GuiEventListener) = this@ViewContainerScreen.removeWidget(listener)
+        override fun addRenderableWidget(widget: AbstractWidget): Remover {
+            this@ViewContainerScreen.addRenderableWidget(widget)
+            return Remover { this@ViewContainerScreen.removeWidget(widget) }
+        }
+
+        override fun addRenderableOnly(widget: AbstractWidget): Remover {
+            this@ViewContainerScreen.addRenderableOnly(widget)
+            return Remover { this@ViewContainerScreen.removeWidget(widget) }
+        }
 
     })
 
