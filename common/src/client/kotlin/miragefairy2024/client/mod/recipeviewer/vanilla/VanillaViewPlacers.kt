@@ -8,6 +8,7 @@ import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
@@ -84,7 +85,10 @@ fun initVanillaViewPlacers() {
                 (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(offset.x - context.origin.x + view.margin.x, offset.y - context.origin.y + view.margin.y)
             }
 
-            override fun detach() = throw UnsupportedOperationException("Cannot detach MenuSlotView from the vanilla screen")
+            override fun detach() {
+                if (!clipped) throw UnsupportedOperationException("Cannot detach MenuSlotView from the vanilla screen")
+                clipping.`mirageFairy2024$setClipBounds`(Supplier { IntRectangle.ZERO })
+            }
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextFieldView, bounds ->
