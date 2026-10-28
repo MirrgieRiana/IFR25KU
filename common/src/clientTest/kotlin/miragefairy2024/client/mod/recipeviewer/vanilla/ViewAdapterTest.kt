@@ -267,16 +267,20 @@ class ViewAdapterTest {
     }
 
     @Test
-    fun `登録解除は繰り返しても一度だけ実行するのだ`() {
+    fun `登録解除の呼び出しをホストの解除処理へ中継するのだ`() {
         val fixture = AdapterFixture(TestView(true))
         val remover = fixture.removers.single()
         assertEquals(1, fixture.widgets.size)
         assertEquals(0, fixture.removals)
 
         remover.remove()
-        remover.remove()
 
         assertEquals(1, fixture.removals)
+
+        remover.remove()
+
+        assertEquals(2, fixture.removals)
+        assertTrue(fixture.interactiveWidgets.isEmpty())
         fixture.adapter.removed()
     }
 

@@ -56,23 +56,10 @@ class ViewAdapter(val host: ViewAdapterHost) {
         rootView.initSizeCalculation(host.getRenderingProxy(), { host.getRegionSizeX() }, { host.getRegionSizeY() })
         host.setUiSize(rootView.evaluateActualSize())
         host.init()
-
-        fun register(add: () -> Remover): Remover {
-            val remover = add()
-            var registered = true
-            return Remover {
-                if (registered) {
-                    registered = false
-                    remover.remove()
-                }
-            }
-        }
-
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = host.getUiOffset()
-
-            override fun addRenderableWidget(widget: AbstractWidget) = register { host.addRenderableWidget(widget) }
-            override fun addRenderableOnly(widget: AbstractWidget) = register { host.addRenderableOnly(widget) }
+            override fun addRenderableWidget(widget: AbstractWidget) = host.addRenderableWidget(widget)
+            override fun addRenderableOnly(widget: AbstractWidget) = host.addRenderableOnly(widget)
         }
         viewController = rootView.attachTo(host.getUiOffset()) { view, bounds ->
             host.getViewPlacerRegistry().place(context, view, bounds)
