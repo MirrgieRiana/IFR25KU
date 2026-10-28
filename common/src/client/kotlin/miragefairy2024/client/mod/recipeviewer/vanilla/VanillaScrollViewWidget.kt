@@ -8,12 +8,16 @@ import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.Remover
 import mirrg.kotlin.helium.atLeast
+import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarrationElementOutput
+import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.network.chat.Component
+import org.lwjgl.glfw.GLFW
 import kotlin.math.roundToInt
 
 abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: IntRectangle, viewport: IntRectangle, private val contentLength: Int, context: VanillaViewPlacerContext, registry: ViewPlacerRegistry<VanillaViewPlacerContext>) : AbstractContainerWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty()) {
@@ -186,6 +190,35 @@ abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: I
         }
     }
 
+    override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
+        if (!active || !visible) return null
+        return super.nextFocusPath(event) ?: if (!isFocused && maxScroll > 0) ComponentPath.leaf(this) else null
+    }
+
+    override fun getCurrentFocusPath(): ComponentPath? = super.getCurrentFocusPath() ?: if (isFocused) ComponentPath.leaf(this) else null
+
+    protected abstract val backwardKey: Int
+    protected abstract val forwardKey: Int
+
+    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        if (!active || !visible || !isFocused) return false
+        if (super.keyPressed(keyCode, scanCode, modifiers)) return true
+        val focused = focused
+        if (focused is EditBox && keyCode != GLFW.GLFW_KEY_ESCAPE && focused.canConsumeInput()) return true
+        val old = scrollOffset
+        val next = when (keyCode) {
+            backwardKey -> old - view.scrollStep
+            forwardKey -> old + view.scrollStep
+            GLFW.GLFW_KEY_PAGE_UP -> old - viewportLength * 0.8
+            GLFW.GLFW_KEY_PAGE_DOWN -> old + viewportLength * 0.8
+            GLFW.GLFW_KEY_HOME -> 0.0
+            GLFW.GLFW_KEY_END -> maxScroll.toDouble()
+            else -> return false
+        }
+        updateScroll(next)
+        return scrollOffset != old
+    }
+
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
 
 }
@@ -200,6 +233,9 @@ class VanillaXScrollViewWidget(view: XScrollView, bounds: IntRectangle, context:
 ) {
 
     override val viewportLength get() = viewport.sizeX
+
+    override val backwardKey get() = GLFW.GLFW_KEY_LEFT
+    override val forwardKey get() = GLFW.GLFW_KEY_RIGHT
 
     override fun getChildOffset(pixels: Int) = IntPoint(x - pixels, y)
 
@@ -229,6 +265,9 @@ class VanillaYScrollViewWidget(view: YScrollView, bounds: IntRectangle, context:
 ) {
 
     override val viewportLength get() = viewport.sizeY
+
+    override val backwardKey get() = GLFW.GLFW_KEY_UP
+    override val forwardKey get() = GLFW.GLFW_KEY_DOWN
 
     override fun getChildOffset(pixels: Int) = IntPoint(x, y - pixels)
 

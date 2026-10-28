@@ -254,4 +254,17 @@ class VanillaScrollViewWidgetTest {
         fixture.widget.dispose()
     }
 
+    @Test
+    fun `キーボードのスクロールと子の破棄を行うのだ`() {
+        val fixture = ScrollWidgetFixture(horizontal = false)
+        fixture.widget.setFocused(true)
+        assertTrue(fixture.widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+        assertEquals(-180, fixture.widgets[0].y)
+        assertTrue(fixture.widget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
+        assertEquals(20, fixture.widgets[0].y)
+        fixture.widget.dispose()
+
+        assertEquals(3, fixture.disposals)
+    }
+
 }
