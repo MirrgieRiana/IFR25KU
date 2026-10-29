@@ -123,7 +123,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                     }
 
                     // 特性アイコン
-                    val texture = ViewTexture(recipeEntry.recipe.texture, IntPoint(32, 32), IntRectangle(0, 0, 32, 32))
+                    val texture = ViewTexture(recipeEntry.recipe.texture, IntPoint(32, 32))
                     view += ImageView(texture).configure {
                         position.alignmentY = Alignment.END
                     }
