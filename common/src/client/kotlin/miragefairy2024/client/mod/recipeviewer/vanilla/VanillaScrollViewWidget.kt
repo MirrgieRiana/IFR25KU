@@ -2,27 +2,23 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
-import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
-import miragefairy2024.util.Remover
 import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.Component
 import kotlin.math.roundToInt
 
 abstract class VanillaScrollViewWidget(
-    protected val view: ScrollView,
     bounds: IntRectangle,
     viewport: IntRectangle,
     private val contentLength: Int,
-    context: VanillaViewPlacerContext,
-    registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
-) : AbstractContainerWidget(
+) : AbstractWidget(
     bounds.x,
     bounds.y,
     bounds.sizeX,
@@ -30,119 +26,23 @@ abstract class VanillaScrollViewWidget(
     Component.empty(),
 ) {
 
-    private val widgets = mutableListOf<AbstractWidget>()
-    private val interactiveWidgets = mutableListOf<AbstractWidget>()
-    protected var viewport = viewport
+    internal var viewport = viewport
         private set
     protected abstract val viewportLength: Int
     private val maxScroll get() = contentLength - viewportLength atLeast 0
     private var scrollOffset = 0.0
-    private val pressedButtons = mutableSetOf<Int>()
-    private var focused2 = false
-
-    private val childController = view.childView.attachTo(IntPoint(x, y)) { child, childBounds ->
-        registry.place(object : VanillaViewPlacerContext {
-            override val origin = context.origin
-
-            fun register(widget: AbstractWidget, interactive: Boolean): Remover {
-                widgets += widget
-                if (interactive) interactiveWidgets += widget
-                return Remover {
-                    widgets.removeAll { it === widget }
-                    interactiveWidgets.removeAll { it === widget }
-                    if (focused === widget) {
-                        focused = null
-                        isDragging = false
-                        pressedButtons.clear()
-                    }
-                }
-            }
-
-            override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
-            override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
-        }, child, childBounds)
-    }
 
     protected abstract fun getChildOffset(pixels: Int): IntPoint
 
-    private fun updateScroll(offset: Double) {
-        scrollOffset = if (offset.isNaN()) 0.0 else offset.coerceIn(0.0, maxScroll.toDouble())
-        val pixels = scrollOffset.roundToInt()
-        childController.setOffset(getChildOffset(pixels))
-    }
+    internal fun getChildOffset() = getChildOffset(scrollOffset.roundToInt())
 
     override fun setPosition(x: Int, y: Int) {
         super.setPosition(x, y)
         viewport = IntRectangle(x, y, viewport.sizeX, viewport.sizeY)
-        updateScroll(scrollOffset)
+        scrollOffset = scrollOffset.coerceIn(0.0, maxScroll.toDouble())
     }
 
-    fun dispose() {
-        isDragging = false
-        pressedButtons.clear()
-        childController.dispose()
-    }
-
-    fun detach() = childController.detach()
-
-    override fun children() = interactiveWidgets
-
-    private fun isInViewport(mouseX: Double, mouseY: Double) = mouseX >= viewport.x && mouseX < viewport.x + viewport.sizeX && mouseY >= viewport.y && mouseY < viewport.y + viewport.sizeY
-
-    private fun intersectsViewport(widget: AbstractWidget) = widget.x < viewport.x + viewport.sizeX && widget.x + widget.width > viewport.x && widget.y < viewport.y + viewport.sizeY && widget.y + widget.height > viewport.y
-
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        guiGraphics.enableScissor(viewport.x, viewport.y, viewport.x + viewport.sizeX, viewport.y + viewport.sizeY)
-        try {
-            val inside = isInViewport(mouseX.toDouble(), mouseY.toDouble())
-            widgets.toList().forEach {
-                if (intersectsViewport(it)) it.render(guiGraphics, if (inside) mouseX else Int.MIN_VALUE, if (inside) mouseY else Int.MIN_VALUE, partialTick)
-            }
-        } finally {
-            guiGraphics.disableScissor()
-        }
-    }
-
-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        if (!active || !visible || !isMouseOver(mouseX, mouseY)) return false
-        pressedButtons -= button
-        if (button == 0) {
-            isDragging = false
-        }
-        if (!isInViewport(mouseX, mouseY)) return false
-        return interactiveWidgets.toList().any { widget ->
-            if (interactiveWidgets.none { it === widget } || !widget.mouseClicked(mouseX, mouseY, button)) false else {
-                pressedButtons += button
-                if (interactiveWidgets.any { it === widget }) {
-                    focused = widget
-                    if (button == 0) isDragging = true
-                }
-                true
-            }
-        }
-    }
-
-    override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
-        if (button !in pressedButtons) return false
-        super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
-        return true
-    }
-
-    override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        if (!pressedButtons.remove(button)) return false
-        if (button == 0) isDragging = false
-        focused?.mouseReleased(mouseX, mouseY, button)
-        return true
-    }
-
-    override fun isFocused() = focused2
-
-    override fun setFocused(focused: Boolean) {
-        focused2 = focused
-        // 同じ子への再フォーカスでも false → true と呼ばれるため、子の選択とドラッグ状態は維持するのだ～🌱
-        this.focused?.setFocused(focused)
-    }
-
+    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
 
 }
@@ -150,15 +50,10 @@ abstract class VanillaScrollViewWidget(
 class VanillaXScrollViewWidget(
     view: XScrollView,
     bounds: IntRectangle,
-    context: VanillaViewPlacerContext,
-    registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
 ) : VanillaScrollViewWidget(
-    view,
     bounds,
     IntRectangle(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY - view.scrollbarThickness atLeast 0),
     view.childView.evaluateActualSizeX(),
-    context,
-    registry,
 ) {
 
     override val viewportLength get() = viewport.sizeX
@@ -170,19 +65,38 @@ class VanillaXScrollViewWidget(
 class VanillaYScrollViewWidget(
     view: YScrollView,
     bounds: IntRectangle,
-    context: VanillaViewPlacerContext,
-    registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
 ) : VanillaScrollViewWidget(
-    view,
     bounds,
     IntRectangle(bounds.x, bounds.y, bounds.sizeX - view.scrollbarThickness atLeast 0, bounds.sizeY),
     view.childView.evaluateActualSizeY(),
-    context,
-    registry,
 ) {
 
     override val viewportLength get() = viewport.sizeY
 
     override fun getChildOffset(pixels: Int) = IntPoint(x, y - pixels)
 
+}
+
+internal fun placeScrollView(context: VanillaViewPlacerContext, scrollWidget: VanillaScrollViewWidget, childView: View, registry: ViewPlacerRegistry<VanillaViewPlacerContext>): ViewController {
+    val remover = context.addRenderableOnly(scrollWidget)
+    val childContext: VanillaViewPlacerContext = object : VanillaViewPlacerContext by context {
+        override fun addRenderableWidget(widget: AbstractWidget) = context.addRenderableWidget(VanillaClippedWidget(widget) { scrollWidget.viewport })
+        override fun addRenderableOnly(widget: AbstractWidget) = context.addRenderableOnly(VanillaClippedWidget(widget) { scrollWidget.viewport })
+    }
+    val childController = childView.attachTo(scrollWidget.getChildOffset()) { child, bounds ->
+        registry.place(childContext, child, bounds)
+    }
+    return object : ViewController {
+        override fun setOffset(offset: IntPoint) {
+            scrollWidget.setPosition(offset.x, offset.y)
+            childController.setOffset(scrollWidget.getChildOffset())
+        }
+
+        override fun detach() {
+            childController.detach()
+            remover.remove()
+        }
+
+        override fun dispose() = childController.dispose()
+    }
 }

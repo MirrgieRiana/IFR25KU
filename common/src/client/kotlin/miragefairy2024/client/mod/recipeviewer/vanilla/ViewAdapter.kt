@@ -142,7 +142,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (!isInitialized) return false
-        val focused = host.getScreen().focused
+        var focused = host.getScreen().focused
+        while (focused is VanillaClippedWidget) focused = focused.widget
         if (focused is EditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
             // 通常の文字入力は charTyped で処理されるため、keyPressed で未処理でもコンテナーのショートカットへ渡さないのだ～🌱

@@ -222,15 +222,23 @@ class ViewAdapterTest {
 
     @Test
     fun `クリック中に削除された子への再フォーカスをホストから解除するのだ`() {
-        val fixture = AdapterFixture(TestView(true))
-        fixture.widgets[0].onClick = { fixture.removers[0].remove() }
+        listOf(false, true).forEach { clip ->
+            val fixture = AdapterFixture(TestView(true))
+            if (clip) {
+                val clipped = VanillaClippedWidget(fixture.widgets[0]) { IntRectangle(0, 0, 100, 100) }
+                fixture.interactiveWidgets[0] = clipped
+                fixture.widgets[0].onClick = { fixture.host.removeWidget(clipped) }
+            } else {
+                fixture.widgets[0].onClick = { fixture.removers[0].remove() }
+            }
 
-        assertTrue(fixture.screen.mouseClicked(31.0, 41.0, 0))
-        fixture.adapter.mouseClicked()
+            assertTrue(fixture.screen.mouseClicked(31.0, 41.0, 0))
+            fixture.adapter.mouseClicked()
 
-        assertNull(fixture.screen.focused)
-        assertFalse(fixture.screen.isDragging)
-        fixture.adapter.removed()
+            assertNull(fixture.screen.focused)
+            assertFalse(fixture.screen.isDragging)
+            fixture.adapter.removed()
+        }
     }
 
     @Test
@@ -244,13 +252,18 @@ class ViewAdapterTest {
             override fun isFocused() = focused2
             override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = false
         }
-        fixture.interactiveWidgets += editBox
-        fixture.screen.focused = editBox
-
-        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
-        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
-        editBox.setEditable(false)
-        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        val clipped = VanillaClippedWidget(editBox) { IntRectangle(0, 0, 100, 100) }
+        val nested = VanillaClippedWidget(clipped) { IntRectangle(0, 0, 100, 100) }
+        listOf(editBox, clipped, nested).forEach { widget ->
+            fixture.interactiveWidgets += widget
+            fixture.screen.focused = widget
+            editBox.setEditable(true)
+            assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+            assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+            editBox.setEditable(false)
+            assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+            fixture.interactiveWidgets.remove(widget)
+        }
         fixture.adapter.removed()
     }
 

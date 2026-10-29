@@ -15,9 +15,9 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
-import net.minecraft.client.gui.components.events.AbstractContainerEventHandler
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
@@ -71,6 +71,12 @@ private class ScrollWidgetFixture(horizontal: Boolean) {
     var disposals = 0
     val view = if (horizontal) XScrollView() else YScrollView()
     val widget: VanillaScrollViewWidget
+    val controller: ViewController
+    val interactiveWidgets = mutableListOf<AbstractWidget>()
+    val renderableOnlyWidgets = mutableListOf<AbstractWidget>()
+    val screen: Screen = object : Screen(Component.empty()) {
+        override fun children() = interactiveWidgets
+    }
 
     init {
         if (!horizontal) {
@@ -103,14 +109,22 @@ private class ScrollWidgetFixture(horizontal: Boolean) {
         }
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint(10, 20)
-            override fun addRenderableWidget(widget: AbstractWidget): Remover = throw UnsupportedOperationException()
-            override fun addRenderableOnly(widget: AbstractWidget): Remover = throw UnsupportedOperationException()
+            override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                interactiveWidgets += widget
+                return Remover { interactiveWidgets.remove(widget) }
+            }
+
+            override fun addRenderableOnly(widget: AbstractWidget): Remover {
+                renderableOnlyWidgets += widget
+                return Remover { renderableOnlyWidgets.remove(widget) }
+            }
         }
         widget = when (view) {
-            is XScrollView -> VanillaXScrollViewWidget(view, IntRectangle(10, 20, 100, 100), context, registry)
-            is YScrollView -> VanillaYScrollViewWidget(view, IntRectangle(10, 20, 100, 100), context, registry)
+            is XScrollView -> VanillaXScrollViewWidget(view, IntRectangle(10, 20, 100, 100))
+            is YScrollView -> VanillaYScrollViewWidget(view, IntRectangle(10, 20, 100, 100))
             else -> throw IllegalStateException("Unsupported scroll view")
         }
+        controller = placeScrollView(context, widget, view.childView, registry)
     }
 }
 
@@ -137,34 +151,77 @@ class VanillaScrollViewWidgetTest {
     @Test
     fun `表示範囲外の子へクリックを渡さないのだ`() {
         val fixture = ScrollWidgetFixture(horizontal = false)
-        assertFalse(fixture.widget.mouseClicked(50.0, 150.0, 0))
+        assertFalse(fixture.screen.mouseClicked(50.0, 150.0, 0))
         assertEquals(listOf(0, 0, 0), fixture.widgets.map { it.clicks })
-        assertFalse(fixture.widget.mouseClicked(107.0, 50.0, 1))
-        fixture.widget.dispose()
+        assertFalse(fixture.screen.mouseClicked(107.0, 50.0, 1))
+        fixture.controller.dispose()
     }
 
     @Test
     fun `子のドラッグ終了は表示範囲の外でも届けるのだ`() {
         val fixture = ScrollWidgetFixture(horizontal = false)
-        assertTrue(fixture.widget.mouseClicked(50.0, 50.0, 0))
+        assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
 
-        assertTrue(fixture.widget.mouseReleased(-100.0, -100.0, 0))
+        assertTrue(fixture.screen.mouseReleased(-100.0, -100.0, 0))
 
         assertEquals(1, fixture.widgets[0].releases)
-        assertFalse(fixture.widget.isDragging)
-        fixture.widget.dispose()
+        assertFalse(fixture.screen.isDragging)
+        fixture.controller.dispose()
     }
 
     @Test
-    fun `クリック中に削除された子のフォーカスを保持しないのだ`() {
+    fun `子を画面へ個別登録し配置解除と破棄をコントローラーで行うのだ`() {
         val fixture = ScrollWidgetFixture(horizontal = false)
-        fixture.widgets[0].onClick = { fixture.removers[0].remove() }
+        assertEquals(3, fixture.screen.children().size)
+        assertFalse(fixture.widget in fixture.screen.children())
+        assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
+        assertTrue(fixture.widgets[0].isFocused)
+        fixture.controller.dispose()
+        assertEquals(3, fixture.disposals)
+        fixture.controller.detach()
+        assertTrue(fixture.screen.children().isEmpty())
+        assertTrue(fixture.renderableOnlyWidgets.isEmpty())
+    }
 
-        assertTrue(fixture.widget.mouseClicked(50.0, 50.0, 0))
+    @Test
+    fun `親の移動後も子と表示領域が同じ距離だけ移動するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val fixture = ScrollWidgetFixture(horizontal)
+            fixture.controller.setOffset(IntPoint(30, 40))
+            assertEquals(IntPoint(30, 40), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+            assertTrue(fixture.screen.mouseClicked(50.0, 70.0, 0))
+            assertFalse(fixture.screen.mouseClicked(20.0, 30.0, 0))
+            assertEquals(1, fixture.widgets[0].clicks)
+            fixture.controller.dispose()
+            fixture.controller.detach()
+        }
+    }
 
-        assertNull(fixture.widget.focused)
-        assertFalse(fixture.widget.isDragging)
-        fixture.widget.dispose()
+    @Test
+    fun `Tab のフォーカスは画面上の登録を経由して元の子へ届くのだ`() {
+        val fixture = ScrollWidgetFixture(horizontal = false)
+        fixture.screen.nextFocusPath(FocusNavigationEvent.TabNavigation(true))!!.applyFocus(true)
+        assertTrue(fixture.widgets[0].isFocused)
+        assertTrue(fixture.screen.focused === fixture.interactiveWidgets[0])
+        assertNull(fixture.screen.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
+        fixture.controller.dispose()
+        fixture.controller.detach()
+    }
+
+    @Test
+    fun `入れ子の表示領域の共通部分だけでクリックできるのだ`() {
+        val child = ScrollChildWidget(IntRectangle(0, 0, 100, 100))
+        val inner = VanillaClippedWidget(child) { IntRectangle(10, 10, 80, 80) }
+        val outer = VanillaClippedWidget(inner) { IntRectangle(30, 30, 80, 80) }
+        assertFalse(outer.mouseClicked(20.0, 40.0, 0))
+        assertFalse(outer.mouseClicked(95.0, 40.0, 0))
+        assertTrue(outer.mouseClicked(40.0, 40.0, 0))
+        assertEquals(1, child.clicks)
+
+        val first = VanillaClippedWidget(child) { IntRectangle(10, 10, 20, 20) }
+        val second = VanillaClippedWidget(first) { IntRectangle(60, 60, 20, 20) }
+        assertFalse(second.isActive)
+        assertNull(second.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
     }
 
 }

@@ -48,26 +48,11 @@ private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidge
 context(ModContext)
 fun initVanillaViewPlacers() {
     run {
-        fun placeScrollView(context: VanillaViewPlacerContext, widget: VanillaScrollViewWidget): ViewController {
-            val controller = context place widget
-            return object : ViewController by controller {
-                override fun detach() {
-                    widget.detach()
-                    controller.detach()
-                }
-
-                override fun dispose() {
-                    widget.dispose()
-                    controller.dispose()
-                }
-            }
-        }
-
         VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XScrollView, bounds ->
-            placeScrollView(context, VanillaXScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
+            placeScrollView(context, VanillaXScrollViewWidget(view, bounds), view.childView, VANILLA_VIEW_PLACER_REGISTRY)
         }
         VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollView, bounds ->
-            placeScrollView(context, VanillaYScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
+            placeScrollView(context, VanillaYScrollViewWidget(view, bounds), view.childView, VANILLA_VIEW_PLACER_REGISTRY)
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
