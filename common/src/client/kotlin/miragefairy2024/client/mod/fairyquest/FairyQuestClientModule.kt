@@ -2,11 +2,11 @@ package miragefairy2024.client.mod.fairyquest
 
 import com.mojang.math.Axis
 import miragefairy2024.ModContext
-import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.stack
+import miragefairy2024.clientProxy
 import miragefairy2024.mixin.client.api.RenderItemHandler
 import miragefairy2024.mod.fairyquest.FairyQuestCardCard
-import miragefairy2024.mod.fairyquest.fairyQuestCardScreenHandlerType
+import miragefairy2024.mod.fairyquest.FairyQuestMessageScreen
 import miragefairy2024.mod.fairyquest.getFairyQuestRecipe
 import miragefairy2024.mod.fairyquest.onOpenFairyQuestMessageScreen
 import miragefairy2024.util.ResourceLocation
@@ -53,10 +53,9 @@ fun initFairyQuestClientModule() {
 
         }
     }
-    fairyQuestCardScreenHandlerType.registerHandledScreen { gui, inventory, title -> FairyQuestCardScreen(gui, inventory, title) }
 
     onOpenFairyQuestMessageScreen.register { recipe ->
-        Minecraft.getInstance().setScreen(FairyQuestMessageScreen(Minecraft.getInstance().screen, recipe.title, recipe.message, recipe.client, recipe.title))
+        clientProxy!!.openViewScreen(FairyQuestMessageScreen(recipe.title, recipe.message, recipe.client, recipe.title))
         true
     }
 }
