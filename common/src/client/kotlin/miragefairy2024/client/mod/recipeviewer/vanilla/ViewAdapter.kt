@@ -8,6 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.util.Remover
+import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.components.events.GuiEventListener
@@ -112,6 +113,21 @@ class ViewAdapter(val host: ViewAdapterHost) {
             return focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)
         }
         return false
+    }
+
+    // Fabric 以外では、子へのドラッグ終了の通知も中継するのだ～🌱
+    fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        if (!isInitialized) return false
+        val screen = host.getScreen() ?: return false
+        if (Platform.isFabric()) return false
+        // isDragging は左クリックでのみオンになるのだ～🌱
+        if (button == 0 && screen.isDragging) {
+            screen.isDragging = false
+            val focused = screen.focused
+            if (focused != null) return focused.mouseReleased(mouseX, mouseY, button)
+        }
+        val listener = screen.getChildAt(mouseX, mouseY).orNull ?: return false
+        return listener.mouseReleased(mouseX, mouseY, button)
     }
 
     fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
