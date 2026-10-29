@@ -1,27 +1,35 @@
 package miragefairy2024.client.mod.fairy
 
-import io.wispforest.owo.ui.component.Components
-import io.wispforest.owo.ui.container.Containers
-import io.wispforest.owo.ui.core.Insets
-import io.wispforest.owo.ui.core.Sizing
-import io.wispforest.owo.ui.core.Surface
-import io.wispforest.owo.ui.core.VerticalAlignment
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.client.util.LimitedLabelComponent
-import miragefairy2024.client.util.createOwoToast
-import miragefairy2024.client.util.horizontalSpace
+import miragefairy2024.client.util.ViewToast
 import miragefairy2024.client.util.registerClientPacketReceiver
-import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.fairy.GAIN_FAIRY_DREAM_TRANSLATION
 import miragefairy2024.mod.fairy.GainFairyDreamChannel
 import miragefairy2024.mod.fairy.createFairyItemStack
+import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.ViewTexture
+import miragefairy2024.mod.recipeviewer.views.AbsoluteView
+import miragefairy2024.mod.recipeviewer.views.ImageView
+import miragefairy2024.mod.recipeviewer.views.ItemView
+import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.View
+import miragefairy2024.mod.recipeviewer.views.XListView
+import miragefairy2024.mod.recipeviewer.views.XSpaceView
+import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.YSpaceView
+import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.margin
+import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.black
 import miragefairy2024.util.darkBlue
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import net.minecraft.client.Minecraft
+import net.minecraft.network.chat.Style
+import net.minecraft.util.FormattedCharSequence
 
 context(ModContext)
 fun initFairyClientModule() {
@@ -30,19 +38,46 @@ fun initFairyClientModule() {
     GainFairyDreamChannel.registerClientPacketReceiver { motif ->
         val imageSize = IntPoint(160, 32)
         val itemStack = motif.createFairyItemStack()
-        val component = Containers.horizontalFlow(Sizing.fixed(imageSize.x), Sizing.fixed(imageSize.y)).apply {
-            surface(Surface.tiled(MirageFairy2024.identifier("textures/gui/fairy_dream_toast.png"), imageSize.x, imageSize.y))
-            padding(Insets.of(0, 0, 8, 8))
-            verticalAlignment(VerticalAlignment.CENTER)
-            child(Components.item(itemStack))
-            child(horizontalSpace(6))
-            child(Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
-                child(Components.label(text { GAIN_FAIRY_DREAM_TRANSLATION().black }))
-                child(verticalSpace(2))
-                child(LimitedLabelComponent(itemStack.hoverName.darkBlue).horizontalSizing(Sizing.fixed(imageSize.x - 8 - 16 - 6 - 10 - 8)).margins(Insets.of(0, 0, 4, 0)))
-            })
+        val font = Minecraft.getInstance().font
+        val lines = font.split(itemStack.hoverName.darkBlue, imageSize.x - 8 - 16 - 6 - 10 - 8)
+        val firstLine = lines.firstOrNull() ?: FormattedCharSequence.EMPTY
+        val name = if (lines.size >= 2) {
+            var style: Style? = null
+            lines[1].accept { _, style2, _ ->
+                style = style2
+                false
+            }
+            val ellipsisStyle = style
+            if (ellipsisStyle != null) FormattedCharSequence.composite(firstLine, FormattedCharSequence.forward("...", ellipsisStyle)) else firstLine
+        } else {
+            firstLine
         }
-        Minecraft.getInstance().toasts.addToast(createOwoToast(component))
+        val rootView = View {
+            view += AbsoluteView(imageSize).configure {
+                view += ImageView(ViewTexture(MirageFairy2024.identifier("textures/gui/fairy_dream_toast.png"), imageSize))
+                view += XListView().configure {
+                    view.sizingX = Sizing.FILL
+                    view.sizingY = Sizing.FILL
+
+                    view += ItemView(itemStack).configure {
+                        position.alignmentY = Alignment.CENTER
+                    }
+                    view += XSpaceView(6)
+                    view += YListView().configure {
+                        position.alignmentY = Alignment.CENTER
+
+                        view += TextView(text { GAIN_FAIRY_DREAM_TRANSLATION().black }).configure {
+                            view.shadow = false
+                        }
+                        view += YSpaceView(2)
+                        view += TextView(name).configure {
+                            view.shadow = false
+                        }.margin(4, 0, 0, 0)
+                    }
+                }.margin(8, 8, 0, 0)
+            }
+        }
+        Minecraft.getInstance().toasts.addToast(ViewToast(rootView))
     }
 
     initMotifTableClientModule()
