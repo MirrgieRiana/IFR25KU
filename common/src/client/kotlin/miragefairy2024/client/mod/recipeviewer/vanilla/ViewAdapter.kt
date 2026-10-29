@@ -105,15 +105,11 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (!isInitialized) return false
         val screen = host.getScreen() ?: return false
-        if (!Platform.isFabric()) {
-            val focused = screen.focused
-            if (focused != null) {
-                if (screen.isDragging) {
-                    if (button == 0) {
-                        if (focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
-                    }
-                }
-            }
+        if (Platform.isFabric()) return false
+        val focused = screen.focused
+        if (focused == null) return false
+        if (button == 0 && screen.isDragging) {
+            return focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)
         }
         return false
     }
