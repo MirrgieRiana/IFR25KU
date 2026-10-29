@@ -34,7 +34,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 
 その他
 
-- 表示: トーストの省略単位を文字単位に変更。
+- 表示: トーストの省略単位を文字単位に変更し、省略時の `...` を濃い青固定に変更。
 
 ## 31.32.1
 
