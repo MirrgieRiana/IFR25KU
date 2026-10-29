@@ -32,6 +32,10 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 
 - 修正: 魔法植物の気温・湿度・栄養の特性効果が低すぎる問題を修正。
 
+その他
+
+- 表示: トーストの省略単位を文字単位に変更し、省略時の `...` を濃い青固定に変更。
+
 ## 31.32.1
 
 琥珀色の原生林

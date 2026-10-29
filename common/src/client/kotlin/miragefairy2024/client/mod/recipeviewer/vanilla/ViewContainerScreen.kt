@@ -2,7 +2,8 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
-import mirrg.kotlin.helium.unit
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
@@ -20,19 +21,28 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         override fun getViewPlacerRegistry() = VANILLA_VIEW_PLACER_REGISTRY
 
         override fun getScreen() = this@ViewContainerScreen
+        override fun getRegionSizeX() = this@ViewContainerScreen.width
+        override fun getRegionSizeY() = this@ViewContainerScreen.height
 
         override fun createRootView() = menu.createView(title, playerInventoryTitle)
 
-        override fun getLeftPos() = this@ViewContainerScreen.leftPos
-        override fun getTopPos() = this@ViewContainerScreen.topPos
-        override fun setImageWidth(imageWidth: Int) = run { this@ViewContainerScreen.imageWidth = imageWidth }
-        override fun setImageHeight(imageHeight: Int) = run { this@ViewContainerScreen.imageHeight = imageHeight }
+        override fun getUiOffset() = IntPoint(this@ViewContainerScreen.leftPos, this@ViewContainerScreen.topPos)
+        override fun setUiSize(uiSize: IntPoint) {
+            this@ViewContainerScreen.imageWidth = uiSize.x
+            this@ViewContainerScreen.imageHeight = uiSize.y
+        }
 
         override fun init() = super@ViewContainerScreen.init()
 
-        override fun addRenderableWidget(widget: AbstractWidget) = unit { this@ViewContainerScreen.addRenderableWidget(widget) }
-        override fun addRenderableOnly(widget: AbstractWidget) = unit { this@ViewContainerScreen.addRenderableOnly(widget) }
-        override fun removeWidget(listener: GuiEventListener) = this@ViewContainerScreen.removeWidget(listener)
+        override fun addRenderableWidget(widget: AbstractWidget): Remover {
+            this@ViewContainerScreen.addRenderableWidget(widget)
+            return Remover { this@ViewContainerScreen.removeWidget(widget) }
+        }
+
+        override fun addRenderableOnly(widget: AbstractWidget): Remover {
+            this@ViewContainerScreen.addRenderableOnly(widget)
+            return Remover { this@ViewContainerScreen.removeWidget(widget) }
+        }
 
     })
 

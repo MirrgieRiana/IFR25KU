@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
@@ -19,20 +20,19 @@ interface ViewAdapterHost {
     fun getRenderingProxy(): RenderingProxy
     fun getViewPlacerRegistry(): ViewPlacerRegistry<VanillaViewPlacerContext>
 
-    fun getScreen(): Screen
+    fun getScreen(): Screen?
+    fun getRegionSizeX(): Int
+    fun getRegionSizeY(): Int
 
     fun createRootView(): View
 
-    fun getLeftPos(): Int
-    fun getTopPos(): Int
-    fun setImageWidth(imageWidth: Int)
-    fun setImageHeight(imageHeight: Int)
+    fun getUiOffset(): IntPoint
+    fun setUiSize(uiSize: IntPoint)
 
     fun init()
 
-    fun addRenderableWidget(widget: AbstractWidget)
-    fun addRenderableOnly(widget: AbstractWidget)
-    fun removeWidget(listener: GuiEventListener)
+    fun addRenderableWidget(widget: AbstractWidget): Remover
+    fun addRenderableOnly(widget: AbstractWidget): Remover
 
 }
 
@@ -53,29 +53,15 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun init() {
         removed()
         val rootView = host.createRootView()
-        rootView.initSizeCalculation(host.getRenderingProxy(), { host.getScreen().width }, { host.getScreen().height })
-        host.setImageWidth(rootView.evaluateActualSizeX())
-        host.setImageHeight(rootView.evaluateActualSizeY())
+        rootView.initSizeCalculation(host.getRenderingProxy(), { host.getRegionSizeX() }, { host.getRegionSizeY() })
+        host.setUiSize(rootView.evaluateActualSize())
         host.init()
-
-        fun register(widget: AbstractWidget, add: () -> Unit): Remover {
-            add()
-            var registered = true
-            return Remover {
-                if (registered) {
-                    registered = false
-                    host.removeWidget(widget)
-                }
-            }
-        }
-
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
-            override val origin = IntPoint(host.getLeftPos(), host.getTopPos())
-
-            override fun addRenderableWidget(widget: AbstractWidget) = register(widget) { host.addRenderableWidget(widget) }
-            override fun addRenderableOnly(widget: AbstractWidget) = register(widget) { host.addRenderableOnly(widget) }
+            override val origin = host.getUiOffset()
+            override fun addRenderableWidget(widget: AbstractWidget) = host.addRenderableWidget(widget)
+            override fun addRenderableOnly(widget: AbstractWidget) = host.addRenderableOnly(widget)
         }
-        viewController = rootView.attachTo(IntPoint(host.getLeftPos(), host.getTopPos())) { view, bounds ->
+        viewController = rootView.attachTo(host.getUiOffset()) { view, bounds ->
             host.getViewPlacerRegistry().place(context, view, bounds)
         }
         isInitialized = true
@@ -96,17 +82,19 @@ class ViewAdapter(val host: ViewAdapterHost) {
     }
 
     fun removeWidget(listener: GuiEventListener) {
-        if (host.getScreen().focused === listener && host.getScreen().children().none { it === listener }) {
-            host.getScreen().focused = null
-            host.getScreen().isDragging = false
+        val screen = host.getScreen() ?: return
+        if (screen.focused === listener && screen.children().none { it === listener }) {
+            screen.focused = null
+            screen.isDragging = false
         }
     }
 
     fun mouseClicked() {
-        val focused = host.getScreen().focused
-        if (focused != null && host.getScreen().children().none { it === focused }) {
-            host.getScreen().focused = null
-            host.getScreen().isDragging = false
+        val screen = host.getScreen() ?: return
+        val focused = screen.focused
+        if (focused != null && screen.children().none { it === focused }) {
+            screen.focused = null
+            screen.isDragging = false
         }
     }
 
@@ -116,10 +104,11 @@ class ViewAdapter(val host: ViewAdapterHost) {
      */
     fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (!isInitialized) return false
+        val screen = host.getScreen() ?: return false
         if (!Platform.isFabric()) {
-            val focused = host.getScreen().focused
+            val focused = screen.focused
             if (focused != null) {
-                if (host.getScreen().isDragging) {
+                if (screen.isDragging) {
                     if (button == 0) {
                         if (focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
                     }
@@ -131,7 +120,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (!isInitialized) return false
-        val focused = host.getScreen().focused
+        val screen = host.getScreen() ?: return false
+        val focused = screen.focused
         if (focused is EditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
             // 通常の文字入力は charTyped で処理されるため、keyPressed で未処理でもコンテナーのショートカットへ渡さないのだ～🌱
