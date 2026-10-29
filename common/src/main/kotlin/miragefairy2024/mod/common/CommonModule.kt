@@ -64,16 +64,8 @@ val rootAdvancement = AdvancementCard(
 )
 
 enum class SlotType(texture: ResourceLocation, size: IntPoint, val margin: IntPoint) {
-    NORMAL(
-        MirageFairy2024.identifier("textures/gui/slot.png"),
-        IntPoint(18, 18),
-        IntPoint(1, 1),
-    ),
-    FAIRY(
-        MirageFairy2024.identifier("textures/gui/fairy_slot.png"),
-        IntPoint(18, 18),
-        IntPoint(1, 1),
-    ),
+    NORMAL(MirageFairy2024.identifier("textures/gui/slot.png"), IntPoint(18, 18), IntPoint(1, 1)),
+    FAIRY(MirageFairy2024.identifier("textures/gui/fairy_slot.png"), IntPoint(18, 18), IntPoint(1, 1)),
     ;
 
     val viewTexture = ViewTexture(texture, size)
