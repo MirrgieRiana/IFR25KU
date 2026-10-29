@@ -5,7 +5,9 @@ import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.locale.Language
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.util.Mth
 import org.joml.Vector3f
@@ -21,6 +23,19 @@ inline fun <T> PoseStack.stack(block: () -> T): T {
     } finally {
         this.popPose()
     }
+}
+
+/** 単一行の本文が幅を超える場合、省略記号の実測幅を確保して文字単位で切り詰めるのだ～🌱 */
+fun Font.ellipsize(text: FormattedText, maxWidth: Int, ellipsis: FormattedText): FormattedCharSequence {
+    if (maxWidth <= 0) return FormattedCharSequence.EMPTY
+    if (splitter.componentStyleAtWidth(text, maxWidth) == null) return Language.getInstance().getVisualOrder(text)
+    val ellipsisWidth = width(ellipsis)
+    val result = if (ellipsisWidth > maxWidth) {
+        substrByWidth(ellipsis, maxWidth)
+    } else {
+        FormattedText.composite(substrByWidth(text, maxWidth - ellipsisWidth), ellipsis)
+    }
+    return Language.getInstance().getVisualOrder(result)
 }
 
 fun GuiGraphics.drawRightText(textRenderer: Font, text: String, rightX: Int, y: Int, color: Int, shadow: Boolean) {
