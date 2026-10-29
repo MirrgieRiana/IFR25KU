@@ -12,12 +12,15 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
+import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
+import miragefairy2024.util.fire
 import miragefairy2024.util.register
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.network.chat.Component
 
@@ -55,6 +58,12 @@ fun initVanillaViewPlacers() {
 
             override fun detach() = throw UnsupportedOperationException("Cannot detach MenuSlotView from the vanilla screen")
         }
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextButtonView, bounds ->
+        val button = Button.builder(view.message) {
+            view.onPress.fire()
+        }.bounds(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY).build()
+        context place button
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextFieldView, bounds ->
         val editBox = EditBox(Minecraft.getInstance().font, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty())
