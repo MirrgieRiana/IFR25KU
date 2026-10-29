@@ -47,25 +47,28 @@ private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidge
 
 context(ModContext)
 fun initVanillaViewPlacers() {
-    fun placeScrollView(context: VanillaViewPlacerContext, widget: VanillaScrollViewWidget): ViewController {
-        val controller = context place widget
-        return object : ViewController by controller {
-            override fun detach() {
-                widget.detach()
-                controller.detach()
-            }
+    run {
+        fun placeScrollView(context: VanillaViewPlacerContext, widget: VanillaScrollViewWidget): ViewController {
+            val controller = context place widget
+            return object : ViewController by controller {
+                override fun detach() {
+                    widget.detach()
+                    controller.detach()
+                }
 
-            override fun dispose() {
-                widget.dispose()
-                controller.dispose()
+                override fun dispose() {
+                    widget.dispose()
+                    controller.dispose()
+                }
             }
         }
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XScrollView, bounds ->
-        placeScrollView(context, VanillaXScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollView, bounds ->
-        placeScrollView(context, VanillaYScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
+
+        VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XScrollView, bounds ->
+            placeScrollView(context, VanillaXScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
+        }
+        VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollView, bounds ->
+            placeScrollView(context, VanillaYScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
+        }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
         // バニラはSlotの座標へoriginを描画とホバー判定の際に加算するため、絶対座標を書き込むと二重に加算されるのだ～🌱

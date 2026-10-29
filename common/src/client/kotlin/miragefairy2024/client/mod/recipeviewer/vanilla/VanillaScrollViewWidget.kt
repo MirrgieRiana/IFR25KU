@@ -11,12 +11,24 @@ import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
-import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.Component
 import kotlin.math.roundToInt
 
-abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: IntRectangle, viewport: IntRectangle, private val contentLength: Int, context: VanillaViewPlacerContext, registry: ViewPlacerRegistry<VanillaViewPlacerContext>) : AbstractContainerWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty()) {
+abstract class VanillaScrollViewWidget(
+    protected val view: ScrollView,
+    bounds: IntRectangle,
+    viewport: IntRectangle,
+    private val contentLength: Int,
+    context: VanillaViewPlacerContext,
+    registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
+) : AbstractContainerWidget(
+    bounds.x,
+    bounds.y,
+    bounds.sizeX,
+    bounds.sizeY,
+    Component.empty(),
+) {
 
     private val widgets = mutableListOf<AbstractWidget>()
     private val interactiveWidgets = mutableListOf<AbstractWidget>()
@@ -135,7 +147,12 @@ abstract class VanillaScrollViewWidget(protected val view: ScrollView, bounds: I
 
 }
 
-class VanillaXScrollViewWidget(view: XScrollView, bounds: IntRectangle, context: VanillaViewPlacerContext, registry: ViewPlacerRegistry<VanillaViewPlacerContext>) : VanillaScrollViewWidget(
+class VanillaXScrollViewWidget(
+    view: XScrollView,
+    bounds: IntRectangle,
+    context: VanillaViewPlacerContext,
+    registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
+) : VanillaScrollViewWidget(
     view,
     bounds,
     IntRectangle(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY - view.scrollbarThickness atLeast 0),
@@ -150,7 +167,12 @@ class VanillaXScrollViewWidget(view: XScrollView, bounds: IntRectangle, context:
 
 }
 
-class VanillaYScrollViewWidget(view: YScrollView, bounds: IntRectangle, context: VanillaViewPlacerContext, registry: ViewPlacerRegistry<VanillaViewPlacerContext>) : VanillaScrollViewWidget(
+class VanillaYScrollViewWidget(
+    view: YScrollView,
+    bounds: IntRectangle,
+    context: VanillaViewPlacerContext,
+    registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
+) : VanillaScrollViewWidget(
     view,
     bounds,
     IntRectangle(bounds.x, bounds.y, bounds.sizeX - view.scrollbarThickness atLeast 0, bounds.sizeY),
