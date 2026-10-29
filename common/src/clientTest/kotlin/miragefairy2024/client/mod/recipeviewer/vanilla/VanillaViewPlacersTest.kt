@@ -6,14 +6,17 @@ import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
+import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
+import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
@@ -58,6 +61,38 @@ class VanillaViewPlacersTest {
                 }
             }
         }
+    }
+
+    @Test
+    fun `文字ボタンをバニラへ登録して押下と移動と解除を中継するのだ`() {
+        val widgets = mutableListOf<AbstractWidget>()
+        val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+            override val origin = IntPoint.ZERO
+            override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                widgets += widget
+                return Remover { widgets.remove(widget) }
+            }
+            override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Buttons must accept input")
+        }
+        var presses = 0
+        val view = TextButtonView(IntPoint(80, 20), text { "back"() })
+        view.onPress.register {
+            presses += 1
+        }
+        view.initSizeCalculation(PLACER_RENDERING_PROXY, { 400 }, { 240 })
+        val controller = view.attachTo(IntPoint(10, 30)) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+        val button = widgets.single() as Button
+        Assertions.assertEquals(IntPoint(10, 30), IntPoint(button.x, button.y))
+        Assertions.assertEquals(IntPoint(80, 20), IntPoint(button.width, button.height))
+        Assertions.assertEquals(view.message, button.message)
+
+        button.onPress()
+        Assertions.assertEquals(1, presses)
+        controller.setOffset(IntPoint(40, 50))
+        Assertions.assertEquals(IntPoint(40, 50), IntPoint(button.x, button.y))
+        controller.dispose()
+        controller.detach()
+        Assertions.assertTrue(widgets.isEmpty())
     }
 
     @Test
