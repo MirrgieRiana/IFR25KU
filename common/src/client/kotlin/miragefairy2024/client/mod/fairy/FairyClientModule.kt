@@ -29,7 +29,6 @@ import miragefairy2024.util.darkBlue
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import net.minecraft.client.Minecraft
-import net.minecraft.network.chat.Component
 
 context(ModContext)
 fun initFairyClientModule() {
@@ -41,7 +40,7 @@ fun initFairyClientModule() {
         val font = Minecraft.getInstance().font
         val displayName = itemStack.hoverName.darkBlue
         val maxNameWidth = imageSize.x - 8 - 16 - 6 - 4 - 8
-        val name = font.ellipsize(displayName, maxNameWidth, Component.literal("...").darkBlue)
+        val name = font.ellipsize(displayName, maxNameWidth, text { "..."().darkBlue })
         val rootView = View {
             view += AbsoluteView(imageSize).configure {
                 view += ImageView(ViewTexture(MirageFairy2024.identifier("textures/gui/fairy_dream_toast.png"), imageSize))
