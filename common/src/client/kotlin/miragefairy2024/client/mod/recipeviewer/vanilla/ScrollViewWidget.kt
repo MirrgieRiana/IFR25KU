@@ -38,11 +38,15 @@ class ScrollViewWidget(val view: ScrollView, viewBounds: IntRectangle) :
     private class WidgetSlot(val widget: AbstractWidget)
 
     private val widgetSlots = mutableListOf<WidgetSlot>()
+    private val pressedWidgetSlots = mutableMapOf<Int, WidgetSlot>()
 
     fun addWidget(widget: AbstractWidget): Remover {
         val widgetSlot = WidgetSlot(widget)
         widgetSlots += widgetSlot
-        return Remover { widgetSlots -= widgetSlot }
+        return Remover {
+            widgetSlots -= widgetSlot
+            pressedWidgetSlots.entries.removeAll { it.value === widgetSlot }
+        }
     }
 
     /** 中身のクリッピング範囲なのだ～🌱 枠を描かないため、枠用の余白は設けないのだ～🌱 */
@@ -86,6 +90,8 @@ class ScrollViewWidget(val view: ScrollView, viewBounds: IntRectangle) :
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        pressedWidgetSlots -= button
+        if (!visible) return false
         if (button == 0 && isInScrollbar(mouseX, mouseY)) {
             draggingScrollbar = true
             return super.mouseClicked(mouseX, mouseY, button)
@@ -93,7 +99,10 @@ class ScrollViewWidget(val view: ScrollView, viewBounds: IntRectangle) :
         if (withinContentAreaPoint(mouseX, mouseY)) {
             val contentsMousePosition = toContentsPosition(mouseX, mouseY)
             widgetSlots.forEach {
-                if (it.widget.mouseClicked(contentsMousePosition.x.toDouble(), contentsMousePosition.y.toDouble(), button)) return true
+                if (it.widget.mouseClicked(contentsMousePosition.x.toDouble(), contentsMousePosition.y.toDouble(), button)) {
+                    pressedWidgetSlots[button] = it
+                    return true
+                }
             }
         }
         return false
@@ -110,9 +119,27 @@ class ScrollViewWidget(val view: ScrollView, viewBounds: IntRectangle) :
         return result
     }
 
+    override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
+        val widgetSlot = pressedWidgetSlots[button]
+        if (widgetSlot != null) {
+            val contentsMousePosition = toContentsPosition(mouseX, mouseY)
+            if (widgetSlot.widget.mouseDragged(contentsMousePosition.x.toDouble(), contentsMousePosition.y.toDouble(), button, dragX, dragY)) return true
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
+    }
+
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        val wasDraggingScrollbar = button == 0 && draggingScrollbar
         if (button == 0) draggingScrollbar = false
-        return super.mouseReleased(mouseX, mouseY, button)
+        val widgetSlot = pressedWidgetSlots.remove(button)
+        val handled = if (widgetSlot != null) {
+            val contentsMousePosition = toContentsPosition(mouseX, mouseY)
+            widgetSlot.widget.mouseReleased(contentsMousePosition.x.toDouble(), contentsMousePosition.y.toDouble(), button)
+        } else {
+            false
+        }
+        super.mouseReleased(mouseX, mouseY, button)
+        return handled || wasDraggingScrollbar
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {

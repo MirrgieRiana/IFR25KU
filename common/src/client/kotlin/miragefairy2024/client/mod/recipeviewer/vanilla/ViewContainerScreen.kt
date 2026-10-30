@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
 
-/** 中身を View のツリーで組むメニューの画面の土台なのだ～🌱 */
+/** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
 class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractViewContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
     override fun createRootView() = menu.createView(title, playerInventoryTitle)
 }
@@ -82,15 +82,20 @@ abstract class AbstractViewContainerScreen<T : AbstractContainerMenu>(menu: T, p
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
     }
 
+    override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        if (viewAdapter.mouseReleased(mouseX, mouseY, button)) return true
+        return super.mouseReleased(mouseX, mouseY, button)
+    }
+
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (viewAdapter.keyPressed(keyCode, scanCode, modifiers)) return true
         return super.keyPressed(keyCode, scanCode, modifiers)
     }
 
-    /** 枠の絵は View のツリーが描くのだ～🌱 */
+    /** 枠の絵はViewのツリーが描くのだ～🌱 */
     override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) = Unit
 
-    /** 題名とインベントリの名前も View のツリーが描くのだ～🌱 */
+    /** 題名とインベントリの名前もViewのツリーが描くのだ～🌱 */
     override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
 
 }

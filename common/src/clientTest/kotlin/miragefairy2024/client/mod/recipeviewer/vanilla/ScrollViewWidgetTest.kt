@@ -1,9 +1,11 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.views.ScrollView
+import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
 import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
@@ -39,7 +41,10 @@ class ScrollViewWidgetTest {
         assertFalse(widget.mouseClicked(30.0, 30.0, 0))
         assertFalse(widget.mouseClicked(30.0, 30.0, 1))
         assertFalse(widget.mouseClicked(0.0, 0.0, 0))
+        assertFalse(widget.mouseReleased(30.0, 30.0, 0))
         assertTrue(widget.mouseClicked(107.0, 30.0, 0))
+        assertTrue(widget.mouseReleased(107.0, 30.0, 0))
+        assertFalse(widget.mouseReleased(107.0, 30.0, 0))
     }
 
     @Test
@@ -83,6 +88,27 @@ class ScrollViewWidgetTest {
         remover.remove()
         assertFalse(widget.mouseClicked(12.0, 25.0, 0))
         assertEquals(1, clicks.size)
+    }
+
+    @Test
+    fun `クリックを処理した子へドラッグと領域外での解放を中継するのだ～🌱`() {
+        val widget = createWidget()
+        val view = object : FixedWidgetView(IntPoint(20, 20)) { }
+        val renderer: ViewRenderer<FixedWidgetView> = object : ViewRenderer<FixedWidgetView> {
+            override fun mouseClicked(view: FixedWidgetView, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = true
+        }
+        val child = VanillaViewRendererWidget(renderer, view, IntRectangle(10, 20, 20, 20))
+        val remover = widget.addWidget(child)
+        assertFalse(widget.mouseDragged(12.0, 25.0, 0, 1.0, 1.0))
+        assertTrue(widget.mouseClicked(12.0, 25.0, 0))
+        assertTrue(widget.mouseDragged(200.0, 200.0, 0, 1.0, 1.0))
+        assertFalse(widget.mouseDragged(200.0, 200.0, 1, 1.0, 1.0))
+        assertTrue(widget.mouseReleased(200.0, 200.0, 0))
+        assertFalse(widget.mouseDragged(200.0, 200.0, 0, 1.0, 1.0))
+
+        assertTrue(widget.mouseClicked(12.0, 25.0, 0))
+        remover.remove()
+        assertFalse(widget.mouseDragged(200.0, 200.0, 0, 1.0, 1.0))
     }
 
 }

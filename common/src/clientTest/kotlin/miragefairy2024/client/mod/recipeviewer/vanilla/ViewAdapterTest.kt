@@ -190,6 +190,7 @@ class ViewAdapterTest {
         assertEquals(listOf(0, 10), widgets.map { it.x })
         assertFalse(adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
         assertFalse(adapter.mouseDragged(0.0, 0.0, 0, 1.0, 1.0))
+        assertFalse(adapter.mouseReleased(0.0, 0.0, 0))
         adapter.mouseClicked()
         adapter.removeWidget(widgets[0])
 
@@ -223,6 +224,7 @@ class ViewAdapterTest {
         fixture.onDispose = {
             assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
             assertFalse(fixture.adapter.mouseDragged(10.0, 20.0, 0, 1.0, 2.0))
+            assertFalse(fixture.adapter.mouseReleased(10.0, 20.0, 0))
             assertThrows(IllegalStateException::class.java) { fixture.adapter.setOffset(IntPoint.ZERO) }
             fixture.adapter.removed()
         }

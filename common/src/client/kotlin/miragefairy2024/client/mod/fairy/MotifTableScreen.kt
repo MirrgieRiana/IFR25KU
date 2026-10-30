@@ -42,7 +42,7 @@ import net.minecraft.world.item.TooltipFlag
 context(ModContext)
 fun initMotifTableClientModule() {
 
-    // GUI 登録
+    // GUI登録
     motifTableScreenHandlerType.registerHandledScreen { gui, inventory, title -> MotifTableScreen(gui, inventory, title) }
 
 }

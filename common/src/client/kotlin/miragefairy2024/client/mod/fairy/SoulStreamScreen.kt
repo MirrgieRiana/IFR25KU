@@ -121,7 +121,7 @@ val BUTTON_14_BACKGROUND = WidgetSprites(
 context(ModContext)
 fun initSoulStreamClientModule() {
 
-    // GUI 登録
+    // GUI登録
     soulStreamScreenHandlerType.registerHandledScreen { gui, inventory, title -> SoulStreamScreen(gui, inventory, title) }
 
     // ソウルストリームのキーバインド

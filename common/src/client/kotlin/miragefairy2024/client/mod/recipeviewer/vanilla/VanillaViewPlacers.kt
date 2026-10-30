@@ -62,7 +62,7 @@ fun initVanillaViewPlacers() {
                 override fun detach() = throw UnsupportedOperationException("Cannot detach MenuSlotView from the vanilla screen")
             }
         }
-        // バニラは Slot の座標へ origin を描画とホバー判定の際に加算するため、絶対座標を書き込むと二重に加算されるのだ～🌱
+        // バニラはSlotの座標へoriginを描画とホバー判定の際に加算するため、絶対座標を書き込むと二重に加算されるのだ～🌱
         (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(bounds.x - context.origin.x + view.margin.x, bounds.y - context.origin.y + view.margin.y)
         object : ViewController {
             override fun setOffset(offset: IntPoint) {

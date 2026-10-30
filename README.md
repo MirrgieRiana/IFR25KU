@@ -94,7 +94,7 @@ Derivative works based on [MirageFairy2019](https://github.com/MirageFairy/Mirag
 - `common/src/main/resources/assets/miragefairy2024/textures/item/bottle4.pdn`
 - `common/src/main/resources/assets/miragefairy2024/textures/item/fairy_liqueur.png`
 
-## Codes (Programs, Data Packs)
+## Code (Programs, Data Packs)
 
 ### Copyright
 
