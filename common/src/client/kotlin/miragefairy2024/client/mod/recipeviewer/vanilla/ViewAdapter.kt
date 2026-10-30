@@ -11,6 +11,7 @@ import miragefairy2024.util.Remover
 import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
+import net.minecraft.client.gui.components.MultiLineEditBox
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.screens.Screen
 import org.lwjgl.glfw.GLFW
@@ -134,10 +135,13 @@ class ViewAdapter(val host: ViewAdapterHost) {
         if (!isInitialized) return false
         val screen = host.getScreen() ?: return false
         val focused = screen.focused
-        if (focused is EditBox) {
+        if (focused is EditBox || focused is MultiLineEditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
             // 通常の文字入力は charTyped で処理されるため、keyPressed で未処理でもコンテナーのショートカットへ渡さないのだ～🌱
-            if (keyCode != GLFW.GLFW_KEY_ESCAPE && focused.canConsumeInput()) return true
+            if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
+                if (focused is EditBox && focused.canConsumeInput()) return true
+                if (focused is MultiLineEditBox && focused.isActive && focused.isFocused) return true
+            }
         }
         return false
     }

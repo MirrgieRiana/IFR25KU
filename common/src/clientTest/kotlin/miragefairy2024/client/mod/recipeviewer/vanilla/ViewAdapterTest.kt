@@ -329,8 +329,30 @@ class ViewAdapterTest {
 
         assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
         assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
         editBox.setEditable(false)
         assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        fixture.adapter.removed()
+    }
+
+    @Test
+    fun `入力欄が消費した Escape と Tab を Screen へ渡さないのだ`() {
+        val fixture = AdapterFixture()
+        val keys = mutableListOf<Int>()
+        val editBox: EditBox = object : EditBox(null, 10, 20, Component.empty()) {
+            override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+                keys += keyCode
+                return true
+            }
+        }
+        fixture.interactiveWidgets += editBox
+        fixture.screen.focused = editBox
+
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
+        assertEquals(listOf(GLFW.GLFW_KEY_ESCAPE, GLFW.GLFW_KEY_TAB), keys)
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        assertEquals(listOf(GLFW.GLFW_KEY_ESCAPE, GLFW.GLFW_KEY_TAB, GLFW.GLFW_KEY_E), keys)
         fixture.adapter.removed()
     }
 
