@@ -103,11 +103,14 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     /**
      * Fabric 以外ではフォーカスされた子へドラッグを中継するのだ～🌱
-     * Fabric では Fabric API が [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.mouseDragged] 内で子へ転送するため、手動では中継しないのだ～🌱
+     * [miragefairy2024.client.mod.recipeviewer.vanilla.VanillaMouseCaptureContainer] が保持する押下先へは、プラットフォームによらず中継するのだ～🌱
+     * それ以外の Fabric の中継は、Fabric API が [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.mouseDragged] 内で行うのだ～🌱
      */
     fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (!isInitialized) return false
         val screen = host.getScreen() ?: return false
+        val capture = getMouseCapture(screen, button)
+        if (capture != null) return capture.mouseDragged(mouseX, mouseY, button, dragX, dragY)
         if (Platform.isFabric()) return false
         val focused = screen.focused
         if (focused == null) return false
@@ -117,10 +120,21 @@ class ViewAdapter(val host: ViewAdapterHost) {
         return false
     }
 
-    // Fabric 以外では、子へのドラッグ終了の通知も中継するのだ～🌱
+    private fun getMouseCapture(screen: Screen, button: Int): GuiEventListener? {
+        val focused = screen.focused
+        if (focused is VanillaMouseCaptureContainer && focused.hasMouseCapture(button)) return focused
+        return screen.children().firstOrNull { it is VanillaMouseCaptureContainer && it.hasMouseCapture(button) }
+    }
+
+    // 押下先を保持する子を優先し、それ以外の解放は Fabric API または画面の既存経路へ渡すのだ～🌱
     fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (!isInitialized) return false
         val screen = host.getScreen() ?: return false
+        val capture = getMouseCapture(screen, button)
+        if (capture != null) {
+            if (button == 0) screen.isDragging = false
+            return capture.mouseReleased(mouseX, mouseY, button)
+        }
         if (Platform.isFabric()) return false
         // isDragging は左クリックでのみオンになるのだ～🌱
         if (button == 0 && screen.isDragging) {

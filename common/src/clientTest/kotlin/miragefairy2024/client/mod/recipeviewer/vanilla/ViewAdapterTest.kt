@@ -397,6 +397,37 @@ class ViewAdapterTest {
     }
 
     @Test
+    fun `フォーカスが変わっても右ボタンの押下先へ領域外のドラッグと解放を届けるのだ`() {
+        val fixture = AdapterFixture(TestView(true))
+        var captured = true
+        var drags = 0
+        var releases = 0
+        val widget: AbstractWidget = object : AbstractWidget(0, 0, 10, 10, Component.empty()), VanillaMouseCaptureContainer {
+            override fun hasMouseCapture(button: Int) = captured && button == 1
+            override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+            override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+            override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
+                drags += 1
+                return true
+            }
+
+            override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+                captured = false
+                releases += 1
+                return true
+            }
+        }
+        fixture.interactiveWidgets += widget
+        fixture.screen.focused = fixture.widgets[0]
+        assertTrue(fixture.adapter.mouseDragged(-100.0, -100.0, 1, 1.0, 1.0))
+        assertTrue(fixture.adapter.mouseReleased(-100.0, -100.0, 1))
+        assertEquals(1, drags)
+        assertEquals(1, releases)
+        assertFalse(captured)
+        fixture.adapter.removed()
+    }
+
+    @Test
     fun `破棄は一度だけ購読を解除しメニュースロットと同様に detach を要求しないのだ`() {
         val fixture = AdapterFixture(TestView(true))
         val adapter = fixture.adapter
