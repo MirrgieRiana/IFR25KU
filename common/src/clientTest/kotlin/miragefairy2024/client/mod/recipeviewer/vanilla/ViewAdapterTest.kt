@@ -12,8 +12,10 @@ import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
+import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
@@ -331,6 +333,44 @@ class ViewAdapterTest {
         assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
         assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
         editBox.setEditable(false)
+        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        fixture.adapter.removed()
+    }
+
+    @Test
+    fun `入れ子の入力欄でも未処理の Escape 以外を消費するのだ`() {
+        val fixture = AdapterFixture()
+        var keyPresses = 0
+        var consumeEscape = false
+        val editBox: EditBox = object : EditBox(null, 10, 20, Component.empty()) {
+            override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+                keyPresses += 1
+                return consumeEscape && keyCode == GLFW.GLFW_KEY_ESCAPE
+            }
+        }
+        fun wrap(child: GuiEventListener): AbstractContainerWidget {
+            return object : AbstractContainerWidget(0, 0, 100, 100, Component.empty()) {
+                override fun children() = listOf(child)
+                override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+            }.also {
+                it.focused = child
+            }
+        }
+        val container = wrap(wrap(editBox))
+        fixture.interactiveWidgets += container
+        fixture.screen.focused = container
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        assertEquals(1, keyPresses)
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
+        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+        consumeEscape = true
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+        consumeEscape = false
+        editBox.setEditable(false)
+        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        editBox.setEditable(true)
+        container.active = false
         assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
         fixture.adapter.removed()
     }
