@@ -7,7 +7,9 @@ import dev.emi.emi.api.widget.TextureWidget
 import dev.emi.emi.api.widget.TooltipWidget
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.ArrowView
@@ -17,7 +19,6 @@ import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
-import miragefairy2024.util.Remover
 import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
@@ -52,7 +53,10 @@ fun initEmiViewPlacers() {
                     widget.appendTooltip(it)
                 }
             }
-        Remover { throw UnsupportedOperationException("Cannot remove OutputSlotWidget from EMI") }
+        object : ViewController {
+            override fun setOffset(offset: IntPoint) = throw UnsupportedOperationException("EMI does not support changing view offsets")
+            override fun detach() = throw UnsupportedOperationException("Cannot detach OutputSlotWidget from EMI")
+        }
     }
     EMI_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
         context.containerWidget place EmiTextWidget(bounds.offset, view)

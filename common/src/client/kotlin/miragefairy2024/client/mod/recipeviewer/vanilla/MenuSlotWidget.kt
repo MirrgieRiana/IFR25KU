@@ -1,8 +1,13 @@
-package miragefairy2024.client.mod.recipeviewer.screen
+package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.client.mixins.api.SlotPositionSetter
+import miragefairy2024.client.mixins.api.SlotScissorAreaHolder
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.minus
+import miragefairy2024.mod.recipeviewer.view.x2
+import miragefairy2024.mod.recipeviewer.view.y2
+import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarrationElementOutput
@@ -14,13 +19,15 @@ import net.minecraft.network.chat.Component
  */
 class MenuSlotWidget(
     private val view: MenuSlotView,
-    private val viewBounds: IntRectangle,
+    viewBounds: IntRectangle,
     private val slotOrigin: IntPoint,
     private val scrollViewWidget: ScrollViewWidget,
 ) : AbstractWidget(viewBounds.x, viewBounds.y, viewBounds.sizeX, viewBounds.sizeY, Component.empty()) {
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        view.apply(IntPoint(viewBounds.x, viewBounds.y - scrollViewWidget.view.scrollAmount) - slotOrigin, scrollViewWidget.contentScissorArea - slotOrigin)
+        (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(x - slotOrigin.x + view.margin.x, y - scrollViewWidget.view.scrollAmount - slotOrigin.y + view.margin.y)
+        val scissorArea = scrollViewWidget.contentScissorArea - slotOrigin
+        (view.slot as SlotScissorAreaHolder).`mirageFairy2024$setScissorArea`(intArrayOf(scissorArea.x, scissorArea.y, scissorArea.x2, scissorArea.y2))
     }
 
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit

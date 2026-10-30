@@ -1,7 +1,7 @@
 package miragefairy2024.client.mod
 
 import miragefairy2024.ModContext
-import miragefairy2024.client.mod.recipeviewer.screen.ViewScreen
+import miragefairy2024.client.mod.recipeviewer.vanilla.ViewScreen
 import miragefairy2024.mod.IfrEncyclopediaEntryCard
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
@@ -43,30 +43,13 @@ fun initIfrEncyclopediaClientModule() {
     }
 }
 
-/** 画面の上下の余白は、カードが縦いっぱいに伸びる分を残すのだ～🌱 */
-private const val ROOT_MARGIN_TOP = 20
-private const val ROOT_MARGIN_BOTTOM = 4
-
-private const val CARD_MARGIN_TOP = 10
-private const val CARD_MARGIN = 5
-
-private const val CARD_WIDTH = 200
-
-private const val SCROLLBAR_THICKNESS = 5
-
-private const val SCROLLBAR_ARGB = 0xA0000000.toInt()
-
 /** 背景のテクスチャはダークモードでも替わらないから、暗い側も同じ色にするのだ～🌱 */
 private val TEXT_COLOR = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
-
-/** ボタンの寸法は、バニラのボタンと同じ高さなのだ～🌱 */
-private val BUTTON_SIZE = IntPoint(80, 20)
-
-private const val BUTTON_SPACE = 20
 
 class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: IfrEncyclopediaEntryCard) : ViewScreen(text { card.titleTranslation() }) {
 
     override fun createRootView(): View {
+        val buttonSize = IntPoint(80, 20)
         val itemStack = card.itemStacksGetter().firstOrNull()
 
         return View {
@@ -80,7 +63,7 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
                     position.weight = 1.0
                     view.sizingY = Sizing.FILL
 
-                    view += NinePatchImageView(NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.texture, 22, 22, 22, 22, 22, 22)
+                    view += NinePatchImageView(NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
 
                     view += YListView().configure {
                         view.sizingX = Sizing.FILL
@@ -94,7 +77,7 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
                             view.shadow = false
                         }
 
-                        view += YSpaceView(CARD_MARGIN)
+                        view += YSpaceView(5)
 
                         // 掲げられたアイテムなのだ～🌱 アイテムが無くても、上下の余白は占めるのだ～🌱
                         view += YListView().configure {
@@ -105,21 +88,22 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
                                     position.alignmentX = Alignment.CENTER
                                 }
                             }
-                        }.margin(0, 0, CARD_MARGIN, CARD_MARGIN)
+                        }.margin(0, 0, 5, 5)
 
-                        view += YSpaceView(CARD_MARGIN)
+                        view += YSpaceView(5)
 
                         // 本文なのだ～🌱 スクロールバーは中身へ重ねるのだ～🌱
-                        view += ScrollView(SCROLLBAR_THICKNESS, ScrollbarStyle.Flat(SCROLLBAR_ARGB)).configure {
+                        view += ScrollView(5, ScrollbarStyle.Flat(0xA0000000.toInt())).configure {
                             position.weight = 1.0
 
-                            view += MultiLineTextView(text { card.textTranslation() }).also {
-                                it.color = TEXT_COLOR
-                                it.shadow = false
+                            view += MultiLineTextView().configure {
+                                view.text.value = text { card.textTranslation() }
+                                view.color = TEXT_COLOR
+                                view.shadow = false
                             }
                         }
-                    }.minContentSizeX(CARD_WIDTH).margin(CARD_MARGIN, CARD_MARGIN, CARD_MARGIN_TOP, CARD_MARGIN)
-                }.margin(0, 0, ROOT_MARGIN_TOP, ROOT_MARGIN_BOTTOM)
+                    }.minContentSizeX(200).margin(5, 5, 10, 5)
+                }.margin(0, 0, 20, 4)
 
                 view += YSpaceView(10)
 
@@ -127,16 +111,16 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
                 view += XListView().configure {
                     position.alignmentX = Alignment.CENTER
 
-                    view += TextButtonView(BUTTON_SIZE, text { guiBackToGameTranslation() }).also {
-                        it.onPress.register {
+                    view += TextButtonView(buttonSize, text { guiBackToGameTranslation() }).configure {
+                        view.onPress.register {
                             minecraft!!.setScreen(null)
                         }
                     }
 
-                    view += XSpaceView(BUTTON_SPACE)
+                    view += XSpaceView(20)
 
-                    view += TextButtonView(BUTTON_SIZE, CommonComponents.GUI_BACK).also {
-                        it.onPress.register {
+                    view += TextButtonView(buttonSize, CommonComponents.GUI_BACK).configure {
+                        view.onPress.register {
                             onClose()
                         }
                     }

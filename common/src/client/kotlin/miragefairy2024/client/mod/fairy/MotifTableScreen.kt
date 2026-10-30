@@ -1,7 +1,7 @@
 package miragefairy2024.client.mod.fairy
 
 import miragefairy2024.ModContext
-import miragefairy2024.client.mod.recipeviewer.screen.ViewContainerScreen
+import miragefairy2024.client.mod.recipeviewer.vanilla.AbstractViewContainerScreen
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.fairy.MotifTableScreenHandler
@@ -42,29 +42,10 @@ import net.minecraft.world.item.TooltipFlag
 context(ModContext)
 fun initMotifTableClientModule() {
 
-    // GUI登録
+    // GUI 登録
     motifTableScreenHandlerType.registerHandledScreen { gui, inventory, title -> MotifTableScreen(gui, inventory, title) }
 
 }
-
-/** 画面の外側の余白なのだ～🌱 */
-private const val ROOT_MARGIN = 4
-
-private const val PANEL_MARGIN = 7
-
-/** バニラのスクロールバーの幅なのだ～🌱 */
-private const val SCROLLBAR_THICKNESS = 18
-
-/** 中身とスクロールバーの間の余白なのだ～🌱 */
-private const val SCROLL_CONTENT_MARGIN_RIGHT = 3
-
-private const val ITEM_NAME_SPACE = 3
-
-private const val ITEM_NAME_SIZE_X = 150
-
-private const val WEIGHT_SIZE_X = 50
-
-private const val COUNT_SIZE_X = 80
 
 /** 設定に合わせた詳細さで、アイテムのツールチップを取るのだ～🌱 */
 private val ItemStack.itemTooltipLines: List<Component>
@@ -73,17 +54,17 @@ private val ItemStack.itemTooltipLines: List<Component>
         return this.getTooltipLines(Item.TooltipContext.of(Minecraft.getInstance().level), Minecraft.getInstance().player, tooltipFlag)
     }
 
-class MotifTableScreen(handler: MotifTableScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<MotifTableScreenHandler>(handler, playerInventory, title) {
+class MotifTableScreen(handler: MotifTableScreenHandler, playerInventory: Inventory, title: Component) : AbstractViewContainerScreen<MotifTableScreenHandler>(handler, playerInventory, title) {
 
     override fun createRootView(): View {
         /** 幅を固定して、その中で文字を寄せるのだ～🌱 */
         fun fixedTextView(text: Component, sizeX: Int, alignmentX: Alignment): View = View {
-            view += TextView(text).also {
-                it.sizingX = Sizing.FILL
-                it.alignmentX = alignmentX
-                it.color = ColorPair.DARK_GRAY
-                it.shadow = false
-            }.configure { }.minContentSizeX(sizeX).maxContentSizeX(sizeX)
+            view += TextView(text).configure {
+                view.sizingX = Sizing.FILL
+                view.alignmentX = alignmentX
+                view.color = ColorPair.DARK_GRAY
+                view.shadow = false
+            }.minContentSizeX(sizeX).maxContentSizeX(sizeX)
         }
 
         return View {
@@ -98,10 +79,10 @@ class MotifTableScreen(handler: MotifTableScreenHandler, playerInventory: Invent
                     position.weight = 1.0
                     view.sizingY = Sizing.FILL
 
-                    view += NinePatchImageView(NinePatchTextureCard.PANEL.texture, 5, 6, 5, 5, 6, 5)
+                    view += NinePatchImageView(NinePatchTextureCard.PANEL.texture, 16, 16, 5, 6, 5, 5, 6, 5, true)
 
                     // 確率の一覧なのだ～🌱
-                    view += ScrollView(SCROLLBAR_THICKNESS, ScrollbarStyle.Vanilla).configure {
+                    view += ScrollView(18, ScrollbarStyle.Vanilla).configure {
                         view += YListView().configure {
                             view.sizingX = Sizing.FILL
 
@@ -113,16 +94,16 @@ class MotifTableScreen(handler: MotifTableScreenHandler, playerInventory: Invent
                                         position.alignmentY = Alignment.CENTER
                                     }
 
-                                    view += XSpaceView(ITEM_NAME_SPACE)
+                                    view += XSpaceView(3)
 
-                                    view += fixedTextView(chance.showingItemStack.hoverName, ITEM_NAME_SIZE_X, Alignment.START).configure { position.alignmentY = Alignment.CENTER }
-                                    view += fixedTextView(text { (chance.item.weight * 100 formatAs "%.4f%%")() }, WEIGHT_SIZE_X, Alignment.END).configure { position.alignmentY = Alignment.CENTER }
-                                    view += fixedTextView(text { "x"() + (chance.item.item.count formatAs "%.2f")() }, COUNT_SIZE_X, Alignment.END).configure { position.alignmentY = Alignment.CENTER }
+                                    view += fixedTextView(chance.showingItemStack.hoverName, 150, Alignment.START).configure { position.alignmentY = Alignment.CENTER }
+                                    view += fixedTextView(text { (chance.item.weight * 100 formatAs "%.4f%%")() }, 50, Alignment.END).configure { position.alignmentY = Alignment.CENTER }
+                                    view += fixedTextView(text { "x"() + (chance.item.item.count formatAs "%.2f")() }, 80, Alignment.END).configure { position.alignmentY = Alignment.CENTER }
                                 }.tooltip { _, _ -> chance.showingItemStack.itemTooltipLines }
                             }
-                        }.margin(0, SCROLL_CONTENT_MARGIN_RIGHT, 0, 0)
-                    }.margin(PANEL_MARGIN)
-                }.margin(ROOT_MARGIN)
+                        }.margin(0, 3, 0, 0)
+                    }.margin(7)
+                }.margin(4)
             }
         }
     }

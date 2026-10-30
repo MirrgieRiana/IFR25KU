@@ -2,7 +2,7 @@ package miragefairy2024.client.mod
 
 import com.mojang.blaze3d.platform.InputConstants
 import miragefairy2024.ModContext
-import miragefairy2024.client.mod.recipeviewer.screen.ViewScreen
+import miragefairy2024.client.mod.recipeviewer.vanilla.ViewScreen
 import miragefairy2024.client.util.KeyMappingCard
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.OPEN_TOOLTIP_VIEWER_KEY_TRANSLATION
@@ -16,7 +16,7 @@ import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
 import miragefairy2024.mod.recipeviewer.views.StackView
-import miragefairy2024.mod.recipeviewer.views.TextBoxView
+import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.View
@@ -51,26 +51,6 @@ fun initTooltipViewerClientModule() {
     tooltipViewerKeyMappingCard.init()
 }
 
-private const val ROOT_MARGIN = 4
-
-private const val PANEL_MARGIN = 7
-
-/** 内枠の横幅は、ツールチップが読める幅へ固定するのだ～🌱 */
-private const val INNER_WIDTH = 240
-
-/** 検索欄の高さは、バニラのテキスト入力と同じなのだ～🌱 */
-private const val TEXT_BOX_HEIGHT = 20
-
-private const val SCROLLBAR_THICKNESS = 5
-
-private const val SCROLLBAR_ARGB = 0xA0000000.toInt()
-
-/** スクロールの中身の右の余白は、スクロールバーの幅より2px広いのだ～🌱 */
-private const val SCROLL_CONTENT_MARGIN_RIGHT = 7
-
-/** ツールチップの背景の内側の余白は、バニラのツールチップと同じなのだ～🌱 */
-private const val TOOLTIP_MARGIN = 4
-
 class TooltipViewerScreen : ViewScreen(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }) {
 
     private var filter = ""
@@ -93,7 +73,7 @@ class TooltipViewerScreen : ViewScreen(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }
                     position.weight = 1.0
                     view.sizingY = Sizing.FILL
 
-                    view += NinePatchImageView(NinePatchTextureCard.PANEL.texture, 5, 6, 5, 5, 6, 5)
+                    view += NinePatchImageView(NinePatchTextureCard.PANEL.texture, 16, 16, 5, 6, 5, 5, 6, 5, true)
 
                     // 内枠なのだ～🌱
                     view += YListView().configure {
@@ -101,10 +81,10 @@ class TooltipViewerScreen : ViewScreen(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }
                         view.sizingY = Sizing.FILL
 
                         // 検索欄なのだ～🌱
-                        view += TextBoxView(TEXT_BOX_HEIGHT).also {
-                            it.hint = text { TOOLTIP_VIEWER_EXAMPLE_KEY_TRANSLATION("0,1,2") }
-                            it.text = filter
-                            it.onChanged.register { text ->
+                        view += TextFieldView().configure {
+                            view.hint = text { TOOLTIP_VIEWER_EXAMPLE_KEY_TRANSLATION("0,1,2") }
+                            view.text.value = filter
+                            view.text.register { _, text ->
                                 filter = text
                                 filterChanged = true
                             }
@@ -113,7 +93,7 @@ class TooltipViewerScreen : ViewScreen(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }
                         view += YSpaceView(2)
 
                         // スクロールなのだ～🌱
-                        view += ScrollView(SCROLLBAR_THICKNESS, ScrollbarStyle.Flat(SCROLLBAR_ARGB)).configure {
+                        view += ScrollView(5, ScrollbarStyle.Flat(0xA0000000.toInt())).configure {
                             position.weight = 1.0
 
                             // スクロールの中身なのだ～🌱 スクロールバーと重ならないように、右へ余白を作るのだ～🌱
@@ -159,19 +139,19 @@ class TooltipViewerScreen : ViewScreen(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }
                                                     }
                                                     view += TextView(text)
                                                 }
-                                            }.margin(TOOLTIP_MARGIN)
+                                            }.margin(4)
                                         }
                                     }
                                 }
-                            }.margin(0, SCROLL_CONTENT_MARGIN_RIGHT, 0, 0)
+                            }.margin(0, 7, 0, 0)
                         }
-                    }.minContentSizeX(INNER_WIDTH).margin(PANEL_MARGIN)
-                }.margin(ROOT_MARGIN)
+                    }.minContentSizeX(240).margin(7)
+                }.margin(4)
             }
         }
     }
 
-    override fun render(guiGraphics: GuiGraphics, i: Int, j: Int, f: Float) {
+    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         if (filterChanged) {
             filterChanged = false
             rebuildWidgets()
@@ -182,10 +162,11 @@ class TooltipViewerScreen : ViewScreen(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }
                 editBox.moveCursorToEnd(false)
             }
         }
-        super.render(guiGraphics, i, j, f)
+        super.render(guiGraphics, mouseX, mouseY, partialTick)
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        if (super.keyPressed(keyCode, scanCode, modifiers)) return true
         if (minecraft!!.options.keyInventory.matches(keyCode, scanCode)) {
             onClose()
             return true
@@ -194,7 +175,7 @@ class TooltipViewerScreen : ViewScreen(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }
             onClose()
             return true
         }
-        return super.keyPressed(keyCode, scanCode, modifiers)
+        return false
     }
 
 }

@@ -1,7 +1,6 @@
 package miragefairy2024.client.mod.magicplant
 
-import miragefairy2024.client.mod.recipeviewer.screen.MENU_SLOT_BACKGROUND_SIZE
-import miragefairy2024.client.mod.recipeviewer.screen.ViewContainerScreen
+import miragefairy2024.client.mod.recipeviewer.vanilla.AbstractViewContainerScreen
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.magicplant.TraitConditionContext
 import miragefairy2024.mod.magicplant.TraitEffectKey
@@ -48,34 +47,11 @@ import miragefairy2024.util.style
 import miragefairy2024.util.text
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 
-private const val PANEL_MARGIN = 7
-
-/** 内枠の横幅は、持ち物の横の個数に揃えてあるのだ～🌱 */
-private const val INNER_WIDTH = MENU_SLOT_BACKGROUND_SIZE * 9
-
-private const val CARD_SIZE_Y = MENU_SLOT_BACKGROUND_SIZE * 6
-
-private const val TRAIT_LIST_SIZE_Y = MENU_SLOT_BACKGROUND_SIZE * 4
-
-private const val CARD_MARGIN = 5
-
-/** ツールチップの背景の内側の余白なのだ～🌱 */
-private const val TOOLTIP_MARGIN = 4
-
-private const val INVENTORY_NAME_SPACE = 3
-
-private const val TRAIT_LIST_SPACE = 4
-
-private const val SCROLLBAR_THICKNESS = 5
-
-private const val SCROLLBAR_ARGB = 0xA0FFFFFF.toInt()
-
-private const val TRAIT_ICON_SIZE = 32
-
-class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<TraitListScreenHandler>(handler, playerInventory, title) {
+class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventory, title: Component) : AbstractViewContainerScreen<TraitListScreenHandler>(handler, playerInventory, title) {
 
     /** カードへ出す特性なのだ～🌱 選び直すとウィジェットを作り直すのだ～🌱 */
     private var selectedTraitStack: TraitStack? = menu.traitStacks.traitStackList.firstOrNull()
@@ -101,13 +77,14 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                     view.sizingY = Sizing.FILL
 
                     // 特性名なのだ～🌱 カードの横幅は外から決まるため、文字の長さを混ぜないのだ～🌱
-                    view += TextView(text { traitStack.trait.getName().style(traitStack.trait.style) }).also {
-                        it.sizingX = Sizing.FILL
-                        it.alignmentX = Alignment.CENTER
-                        it.shadow = false
-                    }.configure { position.ignoreLayoutX = true }
+                    view += TextView(text { traitStack.trait.getName().style(traitStack.trait.style) }).configure {
+                        view.sizingX = Sizing.FILL
+                        view.alignmentX = Alignment.CENTER
+                        view.shadow = false
+                        position.ignoreLayoutX = true
+                    }
 
-                    view += YSpaceView(CARD_MARGIN)
+                    view += YSpaceView(5)
 
                     // 条件とアイコンと効果なのだ～🌱
                     view += XListView().configure {
@@ -123,14 +100,14 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
 
                             traitStack.trait.conditions.forEach { condition ->
                                 val factor = condition.getFactor(context)
-                                view += TextView(text { condition.emoji + " "() + (factor * 100.0 formatAs "%.1f%%")() }).also {
-                                    it.shadow = false
-                                }.configure { }.tooltip(condition.name)
+                                view += TextView(text { condition.emoji + " "() + (factor * 100.0 formatAs "%.1f%%")() }).configure {
+                                    view.shadow = false
+                                }.tooltip(condition.name)
                             }
                         }
 
                         // 特性アイコンなのだ～🌱
-                        view += ImageView(ViewTexture(traitStack.trait.texture, IntPoint(TRAIT_ICON_SIZE, TRAIT_ICON_SIZE), IntRectangle(0, 0, TRAIT_ICON_SIZE, TRAIT_ICON_SIZE)))
+                        view += ImageView(ViewTexture(traitStack.trait.texture, IntPoint(32, 32)))
 
                         // 効果なのだ～🌱
                         view += YListView().configure {
@@ -141,25 +118,26 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                             traitStack.trait.traitEffectKeyEntries.forEach { entry ->
                                 fun <T : Any> traitEffectView(traitEffectKey: TraitEffectKey<T>, traitEffectFactor: Double) {
                                     val value = traitEffectKey.getValue(traitEffectFactor * getTraitPower(traitStack.level) * totalConditionFactor)
-                                    view += TextView(text { traitEffectKey.renderValue(value) + " "() + traitEffectKey.emoji.style(traitEffectKey.style) }).also {
-                                        it.sizingX = Sizing.FILL
-                                        it.alignmentX = Alignment.END
-                                        it.shadow = false
-                                    }.configure { }.tooltip(traitEffectKey.name)
+                                    view += TextView(text { traitEffectKey.renderValue(value) + " "() + traitEffectKey.emoji.style(traitEffectKey.style) }).configure {
+                                        view.sizingX = Sizing.FILL
+                                        view.alignmentX = Alignment.END
+                                        view.shadow = false
+                                    }.tooltip(traitEffectKey.name)
                                 }
                                 traitEffectView(entry.traitEffectKey, entry.factor)
                             }
                         }
                     }
 
-                    view += YSpaceView(CARD_MARGIN)
+                    view += YSpaceView(5)
 
                     // 特性ポエムなのだ～🌱 スクロールバーは中身へ重ねるのだ～🌱
-                    view += ScrollView(SCROLLBAR_THICKNESS, ScrollbarStyle.Flat(SCROLLBAR_ARGB)).configure {
+                    view += ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt())).configure {
                         position.weight = 1.0
 
-                        view += MultiLineTextView(text { traitStack.trait.text }).also {
-                            it.shadow = false
+                        view += MultiLineTextView().configure {
+                            view.text.value = text { traitStack.trait.text }
+                            view.shadow = false
                         }
                     }
                 }
@@ -177,34 +155,35 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                     position.alignmentY = Alignment.CENTER
                     position.weight = 1.0
 
-                    view += NinePatchImageView(NinePatchTextureCard.PANEL.texture, 5, 6, 5, 5, 6, 5)
+                    view += NinePatchImageView(NinePatchTextureCard.PANEL.texture, 16, 16, 5, 6, 5, 5, 6, 5, true)
 
                     // 内枠なのだ～🌱
                     view += YListView().configure {
                         view.sizingX = Sizing.FILL
 
                         // 枠の横幅はスロットの個数で決まるため、文字の長さを混ぜないのだ～🌱
-                        view += TextView(text { traitListScreenTranslation() }).also {
-                            it.sizingX = Sizing.FILL
-                            it.alignmentX = Alignment.CENTER
-                            it.color = ColorPair.DARK_GRAY
-                            it.shadow = false
-                        }.configure { position.ignoreLayoutX = true }
+                        view += TextView(text { traitListScreenTranslation() }).configure {
+                            view.sizingX = Sizing.FILL
+                            view.alignmentX = Alignment.CENTER
+                            view.color = ColorPair.DARK_GRAY
+                            view.shadow = false
+                            position.ignoreLayoutX = true
+                        }
 
-                        view += YSpaceView(INVENTORY_NAME_SPACE)
+                        view += YSpaceView(3)
 
                         // 特性カードなのだ～🌱
                         view += StackView().configure {
                             position.ignoreLayoutX = true
                             view.sizingX = Sizing.FILL
 
-                            view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 22, 22, 22, 22, 22, 22)
+                            view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
 
                             val traitStack = selectedTraitStack
-                            if (traitStack != null) view += traitCardContentView(traitStack).configure { }.margin(CARD_MARGIN)
-                        }.minContentSizeY(CARD_SIZE_Y).maxContentSizeY(CARD_SIZE_Y)
+                            if (traitStack != null) view += traitCardContentView(traitStack).configure { }.margin(5)
+                        }.minContentSizeY(18 * 6).maxContentSizeY(18 * 6)
 
-                        view += YSpaceView(TRAIT_LIST_SPACE)
+                        view += YSpaceView(4)
 
                         // 特性の一覧なのだ～🌱
                         view += StackView().configure {
@@ -213,7 +192,7 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
 
                             view += TooltipBackgroundView()
 
-                            view += ScrollView(SCROLLBAR_THICKNESS, ScrollbarStyle.Flat(SCROLLBAR_ARGB)).configure {
+                            view += ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt())).configure {
                                 view += YListView().configure {
                                     view.sizingX = Sizing.FILL
 
@@ -228,22 +207,25 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                                             if (traitStack.trait.conditions.isNotEmpty()) texts += traitStack.trait.conditions.map { it.emoji }.join() + " →"()
                                             if (traitStack.trait.traitEffectKeyEntries.isNotEmpty()) texts += traitStack.trait.traitEffectKeyEntries.map { it.traitEffectKey.emoji.style(it.traitEffectKey.style) }.join()
                                             texts.join(" "())
-                                        }).also {
-                                            it.sizingX = Sizing.FILL
-                                            it.shadow = false
-                                        }.configure { position.ignoreLayoutX = true }.onClick {
+                                        }).configure {
+                                            view.sizingX = Sizing.FILL
+                                            view.shadow = false
+                                            position.ignoreLayoutX = true
+                                        }.onClick {
                                             selectedTraitStack = traitStack
                                             rebuildWidgets()
                                             true
                                         }
                                     }
-                                }.margin(0, SCROLLBAR_THICKNESS, 0, 0)
-                            }.margin(TOOLTIP_MARGIN)
-                        }.minContentSizeY(TRAIT_LIST_SIZE_Y).maxContentSizeY(TRAIT_LIST_SIZE_Y)
-                    }.minContentSizeX(INNER_WIDTH).margin(PANEL_MARGIN)
+                                }.margin(0, 5, 0, 0)
+                            }.margin(4)
+                        }.minContentSizeY(18 * 4).maxContentSizeY(18 * 4)
+                    }.minContentSizeX(18 * 9).margin(7)
                 }
             }
         }
     }
+
+    override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = renderTransparentBackground(guiGraphics)
 
 }

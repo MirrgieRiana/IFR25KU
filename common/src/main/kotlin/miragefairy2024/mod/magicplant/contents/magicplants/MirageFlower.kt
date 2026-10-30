@@ -61,6 +61,7 @@ object MirageFlowerCard : AbstractMirageFlowerCard<MirageFlowerBlock>() {
         { HarvestNotation.Crop(MaterialCard.MIRAGE_LEAVES.item().createItemStack(), TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name) },
         { HarvestNotation.Crop(MaterialCard.FAIRY_CRYSTAL.item().createItemStack(), TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name) },
     )
+
     override fun getFruitDrops(count: Int, random: RandomSource) = getMirageFlour(count, random)
     override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.MIRAGE_LEAVES.item().createItemStack(count))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.FAIRY_CRYSTAL.item().createItemStack(count))

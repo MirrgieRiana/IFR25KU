@@ -13,13 +13,10 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
 
-/** 入れるべきアイテムを薄く見せる色なのだ～🌱 */
-private const val ITEM_OVERLAY_ARGB = 0x808B8B8B.toInt()
-
 object GhostItemViewRenderer : ViewRenderer<GhostItemView> {
     override fun render(view: GhostItemView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         // 左コントロールを押している間は止めて、アイテムを読む時間を取れるようにするのだ～🌱
-        if (!Screen.hasControlDown()) view.time += delta
+        if (!Screen.hasControlDown()) view.time += Minecraft.getInstance().timer.realtimeDeltaTicks
 
         val itemStack = view.itemStack
 
@@ -34,14 +31,14 @@ object GhostItemViewRenderer : ViewRenderer<GhostItemView> {
 
         graphics.pose().pushPose()
         // アイテムより手前へ出すのだ～🌱
-        graphics.pose().translate(0F, 0F, 200F)
-        if (view.showItemStack) graphics.fill(bounds.x1, bounds.y1, bounds.x2, bounds.y2, ITEM_OVERLAY_ARGB)
+        graphics.pose().translate(0.0F, 0.0F, 200.0F)
+        if (view.showItemStack) graphics.fill(bounds.x1, bounds.y1, bounds.x2, bounds.y2, 0x808B8B8B.toInt())
         if (view.showOverlay) graphics.fill(bounds.x1, bounds.y1, bounds.x2, bounds.y2, view.overlayArgb)
         graphics.pose().popPose()
 
-        // 重ねる四角形より後で描かないと、ツールチップが隠れるのだ～🌱
+        // スクロール領域のクリッピングを解除してからツールチップを描画するのだ～🌱
         if (!bounds.contains(mouseX, mouseY)) return
         if (itemStack.isEmpty) return
-        graphics.renderTooltip(Minecraft.getInstance().font, itemStack, mouseX, mouseY)
+        Minecraft.getInstance().screen?.setTooltipForNextRenderPass(Screen.getTooltipFromItem(Minecraft.getInstance(), itemStack).map { it.visualOrderText })
     }
 }

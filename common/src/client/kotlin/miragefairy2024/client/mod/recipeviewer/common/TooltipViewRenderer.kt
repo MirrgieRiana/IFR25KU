@@ -9,9 +9,11 @@ import net.minecraft.client.gui.GuiGraphics
 
 object TooltipViewRenderer : ViewRenderer<TooltipView> {
     override fun render(view: TooltipView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-        if (!bounds.contains(mouseX, mouseY)) return
-        val tooltip = view.tooltipProvider(mouseX, mouseY)
-        if (tooltip.isEmpty()) return
-        graphics.renderComponentTooltip(Minecraft.getInstance().font, tooltip, mouseX, mouseY)
+        if (bounds.contains(mouseX, mouseY)) {
+            val tooltip = view.tooltipProvider(mouseX, mouseY)
+            if (tooltip.isNotEmpty()) {
+                Minecraft.getInstance().screen?.setTooltipForNextRenderPass(tooltip.map { it.visualOrderText })
+            }
+        }
     }
 }

@@ -1,7 +1,7 @@
 package miragefairy2024.client.mod.fairyquest
 
 import miragefairy2024.MirageFairy2024
-import miragefairy2024.client.mod.recipeviewer.screen.ViewScreen
+import miragefairy2024.client.mod.recipeviewer.vanilla.ViewScreen
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.mod.recipeviewer.view.Alignment
@@ -31,106 +31,81 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 
-private const val ROOT_MARGIN_TOP = 10
-private const val ROOT_MARGIN_BOTTOM = 4
-
-/** カードとその左右のスクロールバーの分を合わせた横幅なのだ～🌱 */
-private const val TOTAL_WIDTH = 18 * 15
-
-private const val SCROLLBAR_THICKNESS = 10
-
-/** カードの横幅なのだ～🌱 左右のスクロールバーの分を除くのだ～🌱 */
-private const val CARD_WIDTH = TOTAL_WIDTH - SCROLLBAR_THICKNESS * 2
-
-/** カードの内側の余白なのだ～🌱 */
-private const val CARD_MARGIN = 11
-
-private const val SCROLLBAR_ARGB = 0xA0FFFFFF.toInt()
-
-/** 罫線の繰り返しの周期なのだ～🌱 */
-private const val LINE_HEIGHT = 11
-
-/** 罫線の下に残す余白なのだ～🌱 */
-private const val LINE_BOTTOM_MARGIN = 1
-
 private val TEXT_COLOR = ColorPair(0xFF6B472E.toInt(), 0xFF6B472E.toInt())
-
-/** ボタンの寸法は、バニラのボタンと同じ高さなのだ～🌱 */
-private val BUTTON_SIZE = IntPoint(80, 20)
-
-private const val BUTTON_SPACE = 20
-
-private const val CARD_TO_BUTTON_SPACE = 10
 
 class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQuestTitle: Component, private val fairyQuestMessage: Component, private val fairyQuestClient: Component, title: Component) : ViewScreen(title) {
 
     override fun createRootView(): View {
+        val buttonSize = IntPoint(80, 20)
         return View {
             view += YListView().configure {
                 view.sizingX = Sizing.FILL
                 view.sizingY = Sizing.FILL
 
-                view += ScrollView(SCROLLBAR_THICKNESS, ScrollbarStyle.Flat(SCROLLBAR_ARGB)).configure {
+                view += ScrollView(10, ScrollbarStyle.Flat(0xA0FFFFFF.toInt())).configure {
                     position.alignmentX = Alignment.CENTER
                     position.weight = 1.0
 
                     // カードの外枠なのだ～🌱 スクロールバーと重ならないように、右に同じ幅の余白を置くのだ～🌱
                     view += StackView().configure {
-                        view += NinePatchImageView(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.texture, 22, 22, 22, 22, 22, 22)
+                        view += NinePatchImageView(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
 
                         view += YListView().configure {
                             view.sizingX = Sizing.FILL
 
                             // 依頼の題名なのだ～🌱
-                            view += MultiLineTextView(fairyQuestTitle).also {
-                                it.alignmentX = Alignment.CENTER
-                                it.color = TEXT_COLOR
-                                it.shadow = false
+                            view += MultiLineTextView().configure {
+                                view.text.value = fairyQuestTitle
+                                view.alignmentX = Alignment.CENTER
+                                view.color = TEXT_COLOR
+                                view.shadow = false
                             }
 
-                            view += YSpaceView(CARD_MARGIN)
+                            view += YSpaceView(11)
 
                             // 依頼の本文なのだ～🌱 罫線を背景に重ねるのだ～🌱
                             view += StackView().configure {
                                 view.sizingX = Sizing.FILL
 
-                                // 四辺を0にして、罫線の繰り返しだけを描かせるのだ～🌱
-                                view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 0, LINE_HEIGHT, 0, 0, LINE_HEIGHT, 0)
+                                // 四辺を 0 にして、罫線の繰り返しだけを描かせるのだ～🌱
+                                view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11, 0, 11, 0, 0, 11, 0, true)
 
-                                view += MultiLineTextView(fairyQuestMessage).also {
-                                    it.color = TEXT_COLOR
-                                    it.shadow = false
-                                }.configure().margin(0, 0, 0, LINE_BOTTOM_MARGIN)
+                                view += MultiLineTextView().configure {
+                                    view.text.value = fairyQuestMessage
+                                    view.color = TEXT_COLOR
+                                    view.shadow = false
+                                }.margin(0, 0, 0, 1)
                             }
 
-                            view += YSpaceView(CARD_MARGIN)
+                            view += YSpaceView(11)
 
                             // 依頼人なのだ～🌱
-                            view += MultiLineTextView(fairyQuestClient).also {
-                                it.alignmentX = Alignment.END
-                                it.color = TEXT_COLOR
-                                it.shadow = false
+                            view += MultiLineTextView().configure {
+                                view.text.value = fairyQuestClient
+                                view.alignmentX = Alignment.END
+                                view.color = TEXT_COLOR
+                                view.shadow = false
                             }
-                        }.minContentSizeX(CARD_WIDTH - CARD_MARGIN * 2).margin(CARD_MARGIN)
-                    }.margin(0, SCROLLBAR_THICKNESS, 0, 0)
-                }.margin(SCROLLBAR_THICKNESS, 0, ROOT_MARGIN_TOP, ROOT_MARGIN_BOTTOM)
+                        }.minContentSizeX(((18 * 15) - 10 * 2) - 11 * 2).margin(11)
+                    }.margin(0, 10, 0, 0)
+                }.margin(10, 0, 10, 4)
 
-                view += YSpaceView(CARD_TO_BUTTON_SPACE)
+                view += YSpaceView(10)
 
                 // ボタン列なのだ～🌱
                 view += XListView().configure {
                     position.alignmentX = Alignment.CENTER
 
-                    view += TextButtonView(BUTTON_SIZE, text { guiBackToGameTranslation() }).also {
-                        it.onPress.register {
+                    view += TextButtonView(buttonSize, text { guiBackToGameTranslation() }).configure {
+                        view.onPress.register {
                             minecraft!!.setScreen(null)
                         }
                     }
 
-                    view += XSpaceView(BUTTON_SPACE)
+                    view += XSpaceView(20)
 
-                    view += TextButtonView(BUTTON_SIZE, CommonComponents.GUI_BACK).also {
-                        it.onPress.register {
+                    view += TextButtonView(buttonSize, CommonComponents.GUI_BACK).configure {
+                        view.onPress.register {
                             onClose()
                         }
                     }

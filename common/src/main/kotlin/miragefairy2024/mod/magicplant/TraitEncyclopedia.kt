@@ -89,7 +89,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
             view.sizingY = Sizing.FILL
 
             // 背景
-            view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 22, 22, 22, 22, 22, 22)
+            view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
 
             view += YListView().configure {
                 view.sizingX = Sizing.FILL
@@ -123,7 +123,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                     }
 
                     // 特性アイコン
-                    val texture = ViewTexture(recipeEntry.recipe.texture, IntPoint(32, 32), IntRectangle(0, 0, 32, 32))
+                    val texture = ViewTexture(recipeEntry.recipe.texture, IntPoint(32, 32))
                     view += ImageView(texture).configure {
                         position.alignmentY = Alignment.END
                     }

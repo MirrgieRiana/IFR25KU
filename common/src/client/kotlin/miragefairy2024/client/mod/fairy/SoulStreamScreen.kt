@@ -2,20 +2,19 @@ package miragefairy2024.client.mod.fairy
 
 import com.mojang.blaze3d.platform.InputConstants
 import com.mojang.blaze3d.systems.RenderSystem
+import kotlin.math.sin
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.RenderingEvent
-import miragefairy2024.client.mod.recipeviewer.screen.LayeredImageButtonView
-import miragefairy2024.client.mod.recipeviewer.screen.MENU_SLOT_BACKGROUND_SIZE
-import miragefairy2024.client.mod.recipeviewer.screen.ViewContainerScreen
-import miragefairy2024.client.mod.recipeviewer.screen.menuSlotView
+import miragefairy2024.client.mod.recipeviewer.vanilla.AbstractViewContainerScreen
+import miragefairy2024.client.mod.recipeviewer.vanilla.LayeredImageButtonView
 import miragefairy2024.client.util.KeyMappingCard
-import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.WidgetSprites
 import miragefairy2024.client.util.invoke
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.sendToServer
 import miragefairy2024.mod.AttachmentChangedEvent
+import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.fairy.COLLECTION_DISABLED_TRANSLATION
 import miragefairy2024.mod.fairy.COLLECTION_ENABLED_ATTACHMENT_TYPE
 import miragefairy2024.mod.fairy.COLLECTION_ENABLED_TRANSLATION
@@ -58,6 +57,7 @@ import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
+import miragefairy2024.mod.recipeviewer.views.menuSlotView
 import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
@@ -90,7 +90,6 @@ import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.player.Inventory
 import org.lwjgl.glfw.GLFW
-import kotlin.math.sin
 
 val soulStreamKeyMappingCard = KeyMappingCard(
     OPEN_SOUL_STREAM_KEY_TRANSLATION.keyGetter(),
@@ -115,76 +114,14 @@ val BUTTON_14_BACKGROUND = WidgetSprites(
     MirageFairy2024.identifier("button_14/background_focused"),
 )
 
-private const val SCREEN_MARGIN = 4
-
-/** 3個の欄の間隔なのだ～🌱 */
-private const val PANE_GAP = 4
-
-/** 左右の欄の中の間隔なのだ～🌱 */
-private const val SIDE_PANE_GAP = 2
-
-/** 左右の欄の下に残す、レシピビューワー向けの余白なのだ～🌱 */
-private const val RECIPE_VIEWER_MARGIN = 20
-
-/** 真ん中の欄の横幅は、持ち物の1行と、スクロールバーの分なのだ～🌱 */
-private const val MAIN_WIDTH = MENU_SLOT_BACKGROUND_SIZE * 9 + MENU_SLOT_BACKGROUND_SIZE
-
-private const val MAIN_SCROLLBAR_THICKNESS = MENU_SLOT_BACKGROUND_SIZE
-
-private const val SIDE_SCROLLBAR_THICKNESS = 5
-
-private const val BUTTON_SIZE = 14
-
-private const val TOOLTIP_MARGIN = 4
-
-/** 持ち物の名前の左右の余白なのだ～🌱 */
-private const val INVENTORY_NAME_MARGIN_X = 1
-
-/** 真ん中の欄の、持ち物の上下に空ける間隔なのだ～🌱 */
-private const val INVENTORY_SPACE = 4
-
-/** 真ん中の欄の、題名の上下に空ける間隔なのだ～🌱 */
-private const val TITLE_SPACE = 5
-
-private const val PLAYER_INVENTORY_WIDTH = 9
-
-private const val PLAYER_INVENTORY_HEIGHT = 3
-
-private const val BACKGROUND_ARGB = 0xFFC6C6C6.toInt()
-
-private const val SIDE_SCROLLBAR_ARGB = 0xA0FFFFFF.toInt()
-
-/** 妖精を探し当てたときに重ねる色なのだ～🌱 */
-private const val FAIRY_HIGHLIGHT_ARGB = 0x88FFFF00.toInt()
-
-/** 妖精を探し当てたときの点滅の周期なのだ～🌱 */
-private const val FAIRY_HIGHLIGHT_PERIOD_NANOS = 2_000_000_000L
-
-/** 探し当てたことを示す絵を、アイテムの絵より手前へ出す深さなのだ～🌱 */
-private const val FAIRY_HIGHLIGHT_DEPTH = 200.0
-
-/** 効果欄を作り直す間隔なのだ～🌱 */
-private const val UPDATE_INTERVAL_NANOS = 100_000_000L
-
-/** 持たせた特性の値を、効果の一覧へ並べるときの基準なのだ～🌱 */
-private const val PASSIVE_SKILL_SAMPLE_MANA = 10.0
-
-private const val INVENTORY_BUTTON_SIZE = 20
-
 /**
  * インベントリ画面の中央から、ソウルストリームを開くボタンの右端までの距離なのだ～🌱
  * レシピ本が開いているときは、持ち物の枠が右へ寄るため、その分だけ遠いのだ～🌱
  */
-private const val INVENTORY_BUTTON_OFFSET_X = 146 / 2
-private const val INVENTORY_BUTTON_OFFSET_X_WITH_RECIPE_BOOK = 300 / 2
-
-/** インベントリ画面の中央から、ソウルストリームを開くボタンの上端までの距離なのだ～🌱 */
-private const val INVENTORY_BUTTON_OFFSET_Y = 46 / 2
-
 context(ModContext)
 fun initSoulStreamClientModule() {
 
-    // GUI登録
+    // GUI 登録
     soulStreamScreenHandlerType.registerHandledScreen { gui, inventory, title -> SoulStreamScreen(gui, inventory, title) }
 
     // ソウルストリームのキーバインド
@@ -196,14 +133,14 @@ fun initSoulStreamClientModule() {
 
             // レシピ本の開閉で位置が変わるため、毎フレーム現在の位置を読むのだ～🌱
             val buttonSprites = WidgetSprites(MirageFairy2024.identifier("soul_stream_button"), MirageFairy2024.identifier("soul_stream_button_highlighted"))
-            val button = object : ImageButton(0, 0, INVENTORY_BUTTON_SIZE, INVENTORY_BUTTON_SIZE, buttonSprites, {
+            val button = object : ImageButton(0, 0, 20, 20, buttonSprites, {
                 lastMousePositionInInventory = Pair(Minecraft.getInstance().mouseHandler.xpos(), Minecraft.getInstance().mouseHandler.ypos())
                 screen.onClose()
                 OpenSoulStreamChannel.sendToServer(Unit)
             }) {
                 override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-                    val offsetX = if (screen.recipeBookComponent.isVisible) INVENTORY_BUTTON_OFFSET_X_WITH_RECIPE_BOOK else INVENTORY_BUTTON_OFFSET_X
-                    setPosition(screen.width / 2 + offsetX - INVENTORY_BUTTON_SIZE, screen.height / 2 - INVENTORY_BUTTON_OFFSET_Y)
+                    val offsetX = if (screen.recipeBookComponent.isVisible) (300 / 2) else (146 / 2)
+                    setPosition(screen.width / 2 + offsetX - 20, screen.height / 2 - (46 / 2))
                     super.renderWidget(guiGraphics, mouseX, mouseY, partialTick)
                 }
             }
@@ -224,7 +161,7 @@ fun initSoulStreamClientModule() {
         val matched = motif.passiveSkillSpecifications.any { specification ->
             effectFilters.any { filter ->
                 fun <T : Any> f(filter: PassiveSkillEffectFilter<T>): Boolean {
-                    val value = (if (specification.effect == filter.effect) filter.effect.castOrNull(specification.valueProvider(PASSIVE_SKILL_SAMPLE_MANA)) else null) ?: return false
+                    val value = (if (specification.effect == filter.effect) filter.effect.castOrNull(specification.valueProvider(10.0)) else null) ?: return false
                     return filter.predicate(value)
                 }
                 f(filter)
@@ -233,16 +170,16 @@ fun initSoulStreamClientModule() {
         if (!matched) return@register
 
         val nanos = System.nanoTime()
-        val phase = ((nanos % FAIRY_HIGHLIGHT_PERIOD_NANOS).toDouble() / FAIRY_HIGHLIGHT_PERIOD_NANOS.toDouble()) * (2.0 * Math.PI)
+        val phase = ((nanos % 2_000_000_000L).toDouble() / 2_000_000_000L.toDouble()) * (2.0 * Math.PI)
         val alpha = (0.75 + 0.25 * sin(phase)).toFloat()
 
-        graphics.fill(x, y, x + 16, y + 16, FAIRY_HIGHLIGHT_ARGB)
+        graphics.fill(x, y, x + 16, y + 16, 0x88FFFF00.toInt())
 
         graphics.pose().pushPose()
-        graphics.pose().translate(0.0, 0.0, FAIRY_HIGHLIGHT_DEPTH)
+        graphics.pose().translate(0.0, 0.0, 200.0)
         RenderSystem.enableBlend()
         graphics.setColor(1f, 1f, 1f, alpha)
-        graphics.blit(FILTER_OVERLAY_TEXTURE, x, y, 0F, 0F, 16, 16, 16, 16)
+        graphics.blit(FILTER_OVERLAY_TEXTURE, x, y, 0.0F, 0.0F, 16, 16, 16, 16)
         graphics.setColor(1f, 1f, 1f, 1f)
         RenderSystem.disableBlend()
         graphics.pose().popPose()
@@ -250,7 +187,7 @@ fun initSoulStreamClientModule() {
 
 }
 
-class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
+class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : AbstractViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
 
     // カーソルをインベントリ画面での位置に戻す
     private var isFirst = true
@@ -264,7 +201,19 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         super.render(vanillaContext, mouseX, mouseY, delta)
     }
 
+    private val scrollViewList = mutableListOf<ScrollView>()
+
+    override fun init() {
+        val scrollAmounts = scrollViewList.map { it.scrollAmount }
+        super.init()
+        scrollViewList.zip(scrollAmounts).forEach { (view, amount) ->
+            view.scrollAmount = amount
+        }
+    }
+
     override fun createRootView(): View {
+        onViewRemoved.fire()
+        scrollViewList.clear()
         passiveSkillTexts = collectPassiveSkillTexts()
 
         /** 持ち物の名前なのだ～🌱 */
@@ -275,7 +224,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             it.shadow = false
         }
 
-        /** スロットを横に並べた1行なのだ～🌱 */
+        /** スロットを横に並べた 1 行なのだ～🌱 */
         fun slotRowView(slotType: SlotType, count: Int, slotIndexFunction: (Int) -> Int) = View {
             view += XListView().configure {
                 repeat(count) { c ->
@@ -289,7 +238,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                 view.sizingX = Sizing.FILL
                 view.sizingY = Sizing.FILL
 
-                view += FilledRectangleView().also { it.color.value = BACKGROUND_ARGB }
+                view += FilledRectangleView().also { it.color.value = 0xFFC6C6C6.toInt() }
 
                 view += XListView().configure {
                     view.sizingX = Sizing.FILL
@@ -307,18 +256,18 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                             view.sizingX = Sizing.FILL
 
                             // ハイライトを全部消すボタンなのだ～🌱
-                            view += LayeredImageButtonView(IntPoint(BUTTON_SIZE, BUTTON_SIZE), BUTTON_14_BACKGROUND, WidgetSprites(MirageFairy2024.identifier("button_14/clear_foreground"))).also {
-                                it.onPress.register {
+                            view += LayeredImageButtonView(IntPoint(14, 14), BUTTON_14_BACKGROUND, WidgetSprites(MirageFairy2024.identifier("button_14/clear_foreground"))).configure {
+                                view.onPress.register {
                                     enabledPassiveSkillEffectFilters.value = mapOf()
                                 }
-                            }.configure { }.tooltip(text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() })
+                            }.tooltip(text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() })
 
-                            view += XSpaceView(SIDE_PANE_GAP)
+                            view += XSpaceView(2)
 
                             // 持ち物の外の妖精も探すかを切り替えるボタンなのだ～🌱
-                            view += LayeredImageButtonView(IntPoint(BUTTON_SIZE, BUTTON_SIZE), BUTTON_14_BACKGROUND, WidgetSprites(MirageFairy2024.identifier("button_14/global_search_foreground"))).also { buttonView ->
+                            view += LayeredImageButtonView(IntPoint(14, 14), BUTTON_14_BACKGROUND, WidgetSprites(MirageFairy2024.identifier("button_14/global_search_foreground"))).also { buttonView ->
                                 buttonView.toggle = true
-                                enableGlobalFairyHighlight.observeAndInitialize(onClose) { _, _ ->
+                                enableGlobalFairyHighlight.observeAndInitialize(onViewRemoved) { _, _ ->
                                     buttonView.value.value = enableGlobalFairyHighlight.value
                                 }
                                 buttonView.value.register { _, newValue ->
@@ -327,12 +276,12 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                             }.configure { }.tooltip(text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() })
                         }
 
-                        view += YSpaceView(SIDE_PANE_GAP)
+                        view += YSpaceView(2)
 
                         // 探す条件の一覧なのだ～🌱
                         // TODO 発動条件での絞り込みも並べるべきなのだ～🌱
-                        // でも、満腹度は上下と数値で個別の項目が要って、doubleで持つものは識別子を作りにくいのだ～🌱
-                        // 道具の系統は、該当する妖精が1体しかない条件がずらっと並ぶのだ～🌱
+                        // でも、満腹度は上下と数値で個別の項目が要って、double で持つものは識別子を作りにくいのだ～🌱
+                        // 道具の系統は、該当する妖精が 1 体しかない条件がずらっと並ぶのだ～🌱
                         // だから、折り畳める形にしないと、並べても使いにくいのだ～🌱
                         view += StackView().configure {
                             position.weight = 1.0
@@ -341,28 +290,29 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
                             view += TooltipBackgroundView()
 
-                            view += ScrollView(SIDE_SCROLLBAR_THICKNESS, ScrollbarStyle.Flat(SIDE_SCROLLBAR_ARGB)).configure {
+                            view += ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt())).configure {
+                                scrollViewList += view
                                 view += YListView().configure {
                                     view.sizingX = Sizing.FILL
 
-                                    view += TextView(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).also {
-                                        it.sizingX = Sizing.FILL
-                                        it.alignmentX = Alignment.CENTER
-                                        it.shadow = false
+                                    view += TextView(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).configure {
+                                        view.sizingX = Sizing.FILL
+                                        view.alignmentX = Alignment.CENTER
+                                        view.shadow = false
                                     }
 
                                     passiveSkillEffectRegistry.entrySet().sortedBy { it.key.location() }.forEach { (_, effect) ->
                                         fun <T : Any> f(effect: PassiveSkillEffect<T>) {
                                             val samples = motifRegistry.entrySet()
                                                 .flatMap { it.value.passiveSkillSpecifications }
-                                                .mapNotNull { if (it.effect == effect) effect.castOrNull(it.valueProvider(PASSIVE_SKILL_SAMPLE_MANA)) else null }
+                                                .mapNotNull { if (it.effect == effect) effect.castOrNull(it.valueProvider(10.0)) else null }
                                             effect.getFilters(samples).sortedBy { it.identifier }.forEach { filter ->
                                                 // 探す条件に選ばれている間は、金色で見せるのだ～🌱
                                                 val textView = TextView(filter.text).also {
                                                     it.sizingX = Sizing.FILL
                                                     it.shadow = false
                                                 }
-                                                enabledPassiveSkillEffectFilters.observeAndInitialize(onClose) { _, _ ->
+                                                enabledPassiveSkillEffectFilters.observeAndInitialize(onViewRemoved) { _, _ ->
                                                     textView.text.value = (if (filter.identifier in enabledPassiveSkillEffectFilters.value) filter.text.gold else filter.text).visualOrderText
                                                 }
                                                 view += textView.configure { }.tooltip { _, _ ->
@@ -379,59 +329,61 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                                         }
                                         f(effect)
                                     }
-                                }.margin(0, SIDE_SCROLLBAR_THICKNESS, 0, 0)
-                            }.margin(TOOLTIP_MARGIN)
+                                }.margin(0, 5, 0, 0)
+                            }.margin(4)
                         }
-                    }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN)
+                    }.margin(0, 0, 0, 20)
 
-                    view += XSpaceView(PANE_GAP)
+                    view += XSpaceView(4)
 
                     // 真ん中の欄なのだ～🌱
                     view += YListView().configure {
                         view.sizingY = Sizing.FILL
 
-                        // 妖精の枠のスロットを並べた1行なのだ～🌱
-                        view += slotRowView(SlotType.FAIRY, PLAYER_INVENTORY_WIDTH) { c -> PLAYER_INVENTORY_WIDTH * (PLAYER_INVENTORY_HEIGHT + 1) + c }
+                        // 妖精の枠のスロットを並べた 1 行なのだ～🌱
+                        view += slotRowView(SlotType.FAIRY, 9) { c -> 9 * (3 + 1) + c }
 
-                        view += YSpaceView(INVENTORY_SPACE)
+                        view += YSpaceView(4)
 
                         // 妖精を預ける欄なのだ～🌱
-                        view += ScrollView(MAIN_SCROLLBAR_THICKNESS, ScrollbarStyle.Vanilla).configure {
+                        view += ScrollView(18, ScrollbarStyle.Vanilla).configure {
+                            scrollViewList += view
+                            view.scrollStep = 18.0
                             position.weight = 1.0
 
                             view += YListView().configure {
-                                (PLAYER_INVENTORY_WIDTH until menu.soulStream.size).chunked(PLAYER_INVENTORY_WIDTH).forEach { indices ->
+                                (9 until menu.soulStream.size).chunked(9).forEach { indices ->
                                     view += View {
                                         view += XListView().configure {
                                             indices.forEach { index ->
-                                                view += menuSlotView(menu.slots[PLAYER_INVENTORY_WIDTH * (PLAYER_INVENTORY_HEIGHT + 1) + index], SlotType.NORMAL)
+                                                view += menuSlotView(menu.slots[9 * (3 + 1) + index], SlotType.NORMAL)
                                             }
                                         }
                                     }
                                 }
-                            }.margin(0, MAIN_SCROLLBAR_THICKNESS, 0, 0)
+                            }.margin(0, 18, 0, 0)
                         }
 
-                        view += YSpaceView(INVENTORY_SPACE)
+                        view += YSpaceView(4)
 
                         // プレイヤーの持ち物なのだ～🌱
-                        repeat(PLAYER_INVENTORY_HEIGHT) { r ->
-                            view += slotRowView(SlotType.NORMAL, PLAYER_INVENTORY_WIDTH) { c -> PLAYER_INVENTORY_WIDTH * r + c }
+                        repeat(3) { r ->
+                            view += slotRowView(SlotType.NORMAL, 9) { c -> 9 * r + c }
                         }
 
-                        view += YSpaceView(INVENTORY_SPACE)
+                        view += YSpaceView(4)
 
-                        view += slotRowView(SlotType.NORMAL, PLAYER_INVENTORY_WIDTH) { c -> PLAYER_INVENTORY_WIDTH * PLAYER_INVENTORY_HEIGHT + c }
+                        view += slotRowView(SlotType.NORMAL, 9) { c -> 9 * 3 + c }
 
                         // 題名は、レシピビューワー向けに空けた余白の中へ置くのだ～🌱
-                        view += YSpaceView(TITLE_SPACE)
+                        view += YSpaceView(5)
 
-                        view += inventoryNameView(title).configure { position.ignoreLayoutX = true }.margin(INVENTORY_NAME_MARGIN_X, 0)
+                        view += inventoryNameView(title).configure { position.ignoreLayoutX = true }.margin(1, 0)
 
-                        view += YSpaceView(TITLE_SPACE)
-                    }.minContentSizeX(MAIN_WIDTH).maxContentSizeX(MAIN_WIDTH)
+                        view += YSpaceView(5)
+                    }.minContentSizeX(18 * 9 + 18).maxContentSizeX(18 * 9 + 18)
 
-                    view += XSpaceView(PANE_GAP)
+                    view += XSpaceView(4)
 
                     // 右の欄なのだ～🌱
                     view += YListView().configure {
@@ -445,7 +397,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
                             // 妖精の収集効果を切り替えるボタンなのだ～🌱
                             view += LayeredImageButtonView(
-                                IntPoint(BUTTON_SIZE, BUTTON_SIZE),
+                                IntPoint(14, 14),
                                 BUTTON_14_BACKGROUND,
                                 WidgetSprites(
                                     MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
@@ -460,7 +412,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                                     fun update() {
                                         buttonView.value.value = player.collectionEnabled.getOrDefault()
                                     }
-                                    AttachmentChangedEvent.eventRegistry.observe(onClose) { identifier ->
+                                    AttachmentChangedEvent.eventRegistry.observe(onViewRemoved) { identifier ->
                                         if (identifier == COLLECTION_ENABLED_ATTACHMENT_TYPE.identifier()) {
                                             update()
                                         }
@@ -478,7 +430,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                             }
                         }
 
-                        view += YSpaceView(SIDE_PANE_GAP)
+                        view += YSpaceView(2)
 
                         // 今効いている効果の一覧なのだ～🌱
                         view += StackView().configure {
@@ -489,35 +441,36 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                             view += TooltipBackgroundView()
 
                             // スクロールバーは中身へ重ねるのだ～🌱
-                            view += ScrollView(SIDE_SCROLLBAR_THICKNESS, ScrollbarStyle.Flat(SIDE_SCROLLBAR_ARGB)).configure {
+                            view += ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt())).configure {
+                                scrollViewList += view
                                 view += YListView().configure {
                                     view.sizingX = Sizing.FILL
 
                                     if (passiveSkillTexts.isEmpty()) {
-                                        view += TextView(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }).also {
-                                            it.sizingX = Sizing.FILL
-                                            it.shadow = false
+                                        view += TextView(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }).configure {
+                                            view.sizingX = Sizing.FILL
+                                            view.shadow = false
                                         }
                                     } else {
                                         passiveSkillTexts.forEach { effectText ->
-                                            view += TextView(effectText.gold).also {
-                                                it.sizingX = Sizing.FILL
-                                                it.shadow = false
-                                            }.configure { }.tooltip(effectText.gold)
+                                            view += TextView(effectText.gold).configure {
+                                                view.sizingX = Sizing.FILL
+                                                view.shadow = false
+                                            }.tooltip(effectText.gold)
                                         }
                                     }
-                                }.margin(0, SIDE_SCROLLBAR_THICKNESS, 0, 0)
-                            }.margin(TOOLTIP_MARGIN)
+                                }.margin(0, 5, 0, 0)
+                            }.margin(4)
                         }
-                    }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN)
-                }.margin(SCREEN_MARGIN)
+                    }.margin(0, 0, 0, 20)
+                }.margin(4)
             }
         }
 
         return rootView
     }
 
-    /** 効果欄に並べる文なのだ～🌱 中身が変わったときだけ、Viewのツリーを作り直すのだ～🌱 */
+    /** 効果欄に並べる文なのだ～🌱 中身が変わったときだけ、View のツリーを作り直すのだ～🌱 */
     private var passiveSkillTexts = listOf<Component>()
 
     private fun collectPassiveSkillTexts(): List<Component> {
@@ -538,7 +491,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         super.containerTick()
 
         val now = System.nanoTime()
-        if (now - lastUpdateEventNanoTime >= UPDATE_INTERVAL_NANOS) {
+        if (now - lastUpdateEventNanoTime >= 100_000_000L) {
             lastUpdateEventNanoTime = now
             if (collectPassiveSkillTexts() != passiveSkillTexts) rebuildWidgets()
         }
@@ -553,10 +506,11 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         return super.keyPressed(keyCode, scanCode, modifiers)
     }
 
-    val onClose = EventRegistry<() -> Unit>()
-    override fun onClose() {
-        super.onClose()
-        onClose.fire()
+    private val onViewRemoved = EventRegistry<() -> Unit>()
+
+    override fun removed() {
+        onViewRemoved.fire()
+        super.removed()
     }
 
 }

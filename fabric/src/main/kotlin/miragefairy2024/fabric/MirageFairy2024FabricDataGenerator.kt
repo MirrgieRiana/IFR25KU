@@ -140,7 +140,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
             }
         }
 
-        // Dynamic系
+        // Dynamic 系
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
             object : FabricDynamicRegistryProvider(output, registriesFuture) {
                 override fun getName() = "World Gen"
@@ -152,7 +152,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
             }
         }
 
-        // PlacedFeatureの循環検出
+        // PlacedFeature の循環検出
         pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
             object : DataProvider {
                 override fun getName() = "Feature Order Cycle Validation"
@@ -260,7 +260,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                     return itemListReport.run { filePath, data, _ ->
                         val root = data.decodeToString().toJsonElement().toJsonWrapper()
 
-                        // MODのコンテンツでないものを削除するのだ～🌱
+                        // MOD のコンテンツでないものを削除するのだ～🌱
                         root.asJsonObject().keySet().toList().forEach { key ->
                             if (key.toIdentifier().namespace != MirageFairy2024.MOD_ID) {
                                 root.asJsonObject().remove(key)
@@ -287,14 +287,14 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                     return blockListReport.run { filePath, data, _ ->
                         val root = data.decodeToString().toJsonElement().toJsonWrapper()
 
-                        // MODのコンテンツでないものを削除するのだ～🌱
+                        // MOD のコンテンツでないものを削除するのだ～🌱
                         root.asJsonObject().keySet().toList().forEach { key ->
                             if (key.toIdentifier().namespace != MirageFairy2024.MOD_ID) {
                                 root.asJsonObject().remove(key)
                             }
                         }
 
-                        // BlockStateの数値IDはブロックが1個増減しただけで大量にずれるから、レポートから取り除くのだ～🌱
+                        // BlockState の数値 ID はブロックが 1 個増減しただけで大量にずれるから、レポートから取り除くのだ～🌱
                         root.asJsonObject().entrySet().toList().forEach { (_, block) ->
                             block.toJsonWrapper()["states"].asList().forEach { blockState ->
                                 blockState.asJsonObject().remove("id")
