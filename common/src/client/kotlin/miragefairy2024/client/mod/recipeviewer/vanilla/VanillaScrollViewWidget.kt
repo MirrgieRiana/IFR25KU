@@ -43,6 +43,7 @@ abstract class VanillaScrollViewWidget(
             pressedWidgetRegistrations.entries.forEach {
                 if (it.value == widgetRegistration) it.setValue(null)
             }
+            if (focused !== widget) return@Remover
             // フォーカスを持っていた子が消えた場合は、フォーカスを解除するのだ～🌱
             if (widgetRegistrations.none { it.interactive && it.widget === widget }) {
                 if (focused === widget) focused = null
