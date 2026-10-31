@@ -70,7 +70,15 @@ fun initVanillaViewPlacers() {
             if (editBox.value != text) editBox.value = text
         }
         val controller = context place editBox
-        object : ViewController by controller {
+        object : ViewController {
+            override fun setOffset(offset: IntPoint): Unit {
+                controller.setOffset(offset)
+            }
+
+            override fun detach() {
+                controller.detach()
+            }
+
             override fun dispose() {
                 textRemover.remove()
                 controller.dispose()
