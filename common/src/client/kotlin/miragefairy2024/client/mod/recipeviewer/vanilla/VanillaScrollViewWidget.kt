@@ -28,6 +28,7 @@ import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
+import org.lwjgl.glfw.GLFW
 import java.util.Optional
 import kotlin.math.roundToInt
 
@@ -304,11 +305,25 @@ abstract class VanillaScrollViewWidget(
         }
     }
 
+    protected abstract val backwardKey: Int
+    protected abstract val forwardKey: Int
+
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (!isActive) return false
         if (!isFocused) return false
-        val listener = focused ?: return false
-        return listener.keyPressed(keyCode, scanCode, modifiers)
+        val listener = focused
+        if (listener != null && listener.keyPressed(keyCode, scanCode, modifiers)) return true
+        if (listener != null && (keyCode == backwardKey || keyCode == forwardKey)) return false
+        val offset = when (keyCode) {
+            backwardKey -> scrollOffset - view.scrollStep
+            forwardKey -> scrollOffset + view.scrollStep
+            GLFW.GLFW_KEY_PAGE_UP -> scrollOffset - viewportLength * 0.8
+            GLFW.GLFW_KEY_PAGE_DOWN -> scrollOffset + viewportLength * 0.8
+            GLFW.GLFW_KEY_HOME -> 0.0
+            GLFW.GLFW_KEY_END -> evaluateMaxScroll().toDouble()
+            else -> return false
+        }
+        return updateScroll(offset)
     }
 
     override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
@@ -394,6 +409,9 @@ class VanillaXScrollViewWidget(
 
     // スクロール操作なのだ～🌱
 
+    override val backwardKey get() = GLFW.GLFW_KEY_LEFT
+    override val forwardKey get() = GLFW.GLFW_KEY_RIGHT
+
     override fun getChildOffset(scrollOffset: Int) = IntPoint(x - scrollOffset, y)
     override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseX - x
 
@@ -438,6 +456,9 @@ class VanillaYScrollViewWidget(
 
 
     // スクロール操作なのだ～🌱
+
+    override val backwardKey get() = GLFW.GLFW_KEY_UP
+    override val forwardKey get() = GLFW.GLFW_KEY_DOWN
 
     override fun getChildOffset(scrollOffset: Int) = IntPoint(x, y - scrollOffset)
     override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseY - y
