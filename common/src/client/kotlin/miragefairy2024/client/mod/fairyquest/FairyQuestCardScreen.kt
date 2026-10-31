@@ -1,203 +1,219 @@
 package miragefairy2024.client.mod.fairyquest
 
-import io.wispforest.owo.ui.base.BaseOwoHandledScreen
-import io.wispforest.owo.ui.component.Components
-import io.wispforest.owo.ui.container.Containers
-import io.wispforest.owo.ui.container.FlowLayout
-import io.wispforest.owo.ui.core.Color
-import io.wispforest.owo.ui.core.HorizontalAlignment
-import io.wispforest.owo.ui.core.Insets
-import io.wispforest.owo.ui.core.OwoUIAdapter
-import io.wispforest.owo.ui.core.OwoUIDrawContext
-import io.wispforest.owo.ui.core.Sizing
-import io.wispforest.owo.ui.core.Surface
-import io.wispforest.owo.ui.core.VerticalAlignment
 import miragefairy2024.MirageFairy2024
-import miragefairy2024.client.mod.surface
-import miragefairy2024.client.util.ClickableContainer
-import miragefairy2024.client.util.GhostItemComponent
-import miragefairy2024.client.util.inventoryNameLabel
-import miragefairy2024.client.util.slotContainer
-import miragefairy2024.client.util.verticalScroll
-import miragefairy2024.client.util.verticalSpace
+import miragefairy2024.client.mod.recipeviewer.vanilla.AbstractViewContainerScreen
 import miragefairy2024.mod.NinePatchTextureCard
+import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.fairyquest.FairyQuestCardScreenHandler
+import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.ColorPair
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.view.ViewTexture
+import miragefairy2024.mod.recipeviewer.views.GhostItemView
+import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
+import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
+import miragefairy2024.mod.recipeviewer.views.ProgressView
+import miragefairy2024.mod.recipeviewer.views.ScrollView
+import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
+import miragefairy2024.mod.recipeviewer.views.SpaceView
+import miragefairy2024.mod.recipeviewer.views.StackView
+import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.View
+import miragefairy2024.mod.recipeviewer.views.XListView
+import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.YSpaceView
+import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.margin
+import miragefairy2024.mod.recipeviewer.views.maxContentSizeY
+import miragefairy2024.mod.recipeviewer.views.menuSlotView
+import miragefairy2024.mod.recipeviewer.views.minContentSizeX
+import miragefairy2024.mod.recipeviewer.views.minContentSizeY
+import miragefairy2024.mod.recipeviewer.views.onClick
+import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.orEmpty
-import miragefairy2024.util.register
 import miragefairy2024.util.text
 import miragefairy2024.util.toItemStacks
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.item.ItemStack
 
-class FairyQuestCardScreen(handler: FairyQuestCardScreenHandler, private val playerInventory: Inventory, title: Component) : BaseOwoHandledScreen<FlowLayout, FairyQuestCardScreenHandler>(handler, playerInventory, title) {
-    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
+private val TEXT_COLOR = ColorPair(0xFF6B472E.toInt(), 0xFF6B472E.toInt())
 
-    private val onScreenUpdate = mutableListOf<() -> Unit>()
-    private val onDrawTooltip = mutableListOf<(vanillaContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
+private val PROGRESS_BACKGROUND = MirageFairy2024.identifier("textures/gui/fairy_quest_progress_background.png")
+private val PROGRESS_OVERLAY = MirageFairy2024.identifier("textures/gui/fairy_quest_progress_overlay.png")
 
-    override fun build(rootComponent: FlowLayout) {
-        rootComponent.apply {
-            surface(Surface.VANILLA_TRANSLUCENT)
-            verticalAlignment(VerticalAlignment.CENTER)
-            horizontalAlignment(HorizontalAlignment.CENTER)
+class FairyQuestCardScreen(handler: FairyQuestCardScreenHandler, private val playerInventory: Inventory, title: Component) : AbstractViewContainerScreen<FairyQuestCardScreenHandler>(handler, playerInventory, title) {
 
-            // GUI外枠描画用
-            child(Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
-                surface(Surface.PANEL)
-                padding(Insets.of(7))
+    /** 毎ティック、メニューの状態を View へ反映する処理なのだ～🌱 */
+    private val screenUpdateListenerList = mutableListOf<() -> Unit>()
 
-                // 横幅固定メインコンテナ
-                child(Containers.verticalFlow(Sizing.fixed(18 * 9), Sizing.content()).apply {
+    override fun createRootView(): View {
+        screenUpdateListenerList.clear()
 
-                    child(inventoryNameLabel(menu.recipe.title, HorizontalAlignment.CENTER))
-
-                    child(verticalSpace(3))
-
-                    // 本文
-                    run {
-
-                        // クリックしたらメッセージを全画面で表示する
-                        child(ClickableContainer(Sizing.fill(100), Sizing.fixed(11 * 7 + 5)).apply {
-
-                            onClick.register {
-                                minecraft!!.setScreen(FairyQuestMessageScreen(this@FairyQuestCardScreen, menu.recipe.title, menu.recipe.message, menu.recipe.client, menu.recipe.title))
-                                true
-                            }
-
-                            // 外枠装飾用パネル
-                            child(Containers.verticalFlow(Sizing.fill(100), Sizing.fill(100)).apply {
-                                surface(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.surface)
-                                padding(Insets.of(11, 11, 11, 6))
-
-                                // スクロールコンテナ
-                                // スクロールバーを罫線に重ねると、スクロールする中身の罫線の方が手前の深度で描かれて、スクロールバーが罫線のところで途切れちゃうのだ～🌱
-                                child(verticalScroll(Sizing.fill(100), Sizing.fill(100), 5).apply {
-
-                                    // 罫線装飾用パネル
-                                    child().child(Containers.verticalFlow(Sizing.fill(100), Sizing.content()).apply {
-                                        surface(Surface.tiled(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11))
-                                        padding(Insets.of(0, 1, 0, 0))
-
-                                        // メッセージテキストラベル
-                                        child(Components.label(menu.recipe.message).apply {
-                                            sizing(Sizing.fill(100), Sizing.content())
-                                            color(Color.ofRgb(0x6B472E))
-                                        })
-
-                                    })
-
-                                })
-
-                            })
-
-                        }.apply {
-                            tooltip(text { guiFullScreenTranslation() })
-                        })
-
-                    }
-
-                    child(verticalSpace(3))
-
-                    // 取引欄
-                    child(Containers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {
-
-                        repeat(4) { i ->
-                            child(slotContainer(Containers.stack(Sizing.fixed(16), Sizing.fixed(16)).apply {
-                                allowOverflow(true)
-                                val index = 9 + 9 * 3 + i
-                                child(slotAsComponent(index))
-                                val input = menu.recipe.inputs.getOrNull(i)
-                                val inputItemStacks = input?.invoke()?.toItemStacks() ?: listOf()
-                                child(GhostItemComponent(inputItemStacks).apply {
-                                    onScreenUpdate += { showItemStack = menu.getSlot(index).item.isEmpty }
-                                    overlayColor = 0x20FF0000
-                                    onScreenUpdate += {
-                                        showOverlay = when {
-                                            input == null -> false
-                                            !input().ingredient.test(menu.getSlot(index).item) -> true
-                                            menu.getSlot(index).item.count < input().count -> true
-                                            else -> false
-                                        }
-                                    }
-                                    onDrawTooltip += { vanillaContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float ->
-                                        drawGhostTooltip(OwoUIDrawContext.of(vanillaContext), mouseX, mouseY, delta, Minecraft.getInstance().timer.realtimeDeltaTicks)
-                                    }
-                                })
-                            }))
-                        }
-
-                        child(FairyQuestProgress().apply {
-                            onScreenUpdate += {
-                                setProgress(menu.progress / menu.recipe.duration.toDouble())
-                            }
-                        }.component)
-
-                        repeat(4) { i ->
-                            child(slotContainer(Containers.stack(Sizing.fixed(16), Sizing.fixed(16)).apply {
-                                allowOverflow(true)
-                                val index = 9 + 9 * 3 + 4 + i
-                                child(slotAsComponent(index))
-                                val outputItemStack = menu.recipe.outputs.getOrNull(i)
-                                child(GhostItemComponent(outputItemStack?.invoke()?.let { listOf(it) } ?: listOf()).apply {
-                                    onScreenUpdate += { showItemStack = menu.getSlot(index).item.isEmpty }
-                                    overlayColor = 0x2000FF00
-                                    onScreenUpdate += { showOverlay = outputItemStack?.invoke().orEmpty.isNotEmpty && menu.getSlot(index).item.isEmpty }
-                                    onDrawTooltip += { vanillaContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float ->
-                                        drawGhostTooltip(OwoUIDrawContext.of(vanillaContext), mouseX, mouseY, delta, Minecraft.getInstance().timer.realtimeDeltaTicks)
-                                    }
-                                })
-                            }))
-                        }
-
-                    })
-
-                    child(verticalSpace(3))
-
-                    child(inventoryNameLabel(playerInventory.name))
-
-                    child(verticalSpace(1))
-
-                    // プレイヤーインベントリ
-                    repeat(3) { r ->
-                        child(Containers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {
-                            repeat(9) { c ->
-                                child(slotContainer(slotAsComponent(9 * r + c)))
-                            }
-                        })
-                    }
-                    child(verticalSpace(4))
-                    child(Containers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {
-                        repeat(9) { c ->
-                            child(slotContainer(slotAsComponent(9 * 3 + c)))
-                        }
-                    })
-
-                })
-
-            })
-
+        /** 持ち物の名前なのだ～🌱 */
+        fun inventoryNameView(name: Component, alignmentX: Alignment) = TextView(name).also {
+            it.sizingX = Sizing.FILL
+            it.alignmentX = alignmentX
+            it.color = ColorPair.DARK_GRAY
+            it.shadow = false
         }
-        onScreenUpdate.forEach {
+
+        /** 取引欄の、ゴーストのアイテムを重ねたスロットなのだ～🌱 */
+        fun tradeSlotView(index: Int, itemStacks: List<ItemStack>, overlayArgb: Int, overlayPredicate: () -> Boolean) = View {
+            view += StackView().configure {
+                view += menuSlotView(menu.slots[index], SlotType.NORMAL)
+
+                view += GhostItemView(itemStacks).also { ghostItemView ->
+                    ghostItemView.overlayArgb = overlayArgb
+                    screenUpdateListenerList += {
+                        ghostItemView.showItemStack = menu.getSlot(index).item.isEmpty
+                        ghostItemView.showOverlay = overlayPredicate()
+                    }
+                }.configure { }.margin(1)
+            }
+        }
+
+        /** スロットを横に並べて、中央へ寄せた 1 行なのだ～🌱 */
+        fun slotRowView(count: Int, slotIndexFunction: (Int) -> Int) = View {
+            view += XListView().configure {
+                view.sizingX = Sizing.FILL
+
+                view += SpaceView().configure { position.weight = 1.0 }
+                repeat(count) { c ->
+                    view += menuSlotView(menu.slots[slotIndexFunction(c)], SlotType.NORMAL)
+                }
+                view += SpaceView().configure { position.weight = 1.0 }
+            }
+        }
+
+        val rootView = View {
+            view += YListView().configure {
+                view.sizingX = Sizing.FILL
+                view.sizingY = Sizing.FILL
+
+                // 外枠なのだ～🌱 余った空間を全部取ってから、その中で中央へ寄せるのだ～🌱
+                view += StackView().configure {
+                    position.alignmentX = Alignment.CENTER
+                    position.alignmentY = Alignment.CENTER
+                    position.weight = 1.0
+
+                    view += NinePatchImageView(NinePatchTextureCard.PANEL.texture, 16, 16, 5, 6, 5, 5, 6, 5, true)
+
+                    // 内枠なのだ～🌱
+                    view += YListView().configure {
+                        view.sizingX = Sizing.FILL
+
+                        view += inventoryNameView(menu.recipe.title, Alignment.CENTER).configure { position.ignoreLayoutX = true }.margin(1, 0)
+
+                        view += YSpaceView(3)
+
+                        // 依頼文の欄なのだ～🌱 押すと全画面で開くのだ～🌱
+                        view += StackView().configure {
+                            view.sizingX = Sizing.FILL
+                            // 縦は、外側が固定した高さを受け取るのだ～🌱
+                            view.sizingY = Sizing.FILL
+
+                            view += NinePatchImageView(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
+
+                            // スクロールバーを罫線へ重ねると、中身の罫線の方が手前で描かれて、スクロールバーが途切れるのだ～🌱
+                            view += ScrollView(5, ScrollbarStyle.Flat(0xA0000000.toInt())).configure {
+                                view += StackView().configure {
+                                    view.sizingX = Sizing.FILL
+
+                                    // 四辺を 0 にして、罫線の繰り返しだけを描かせるのだ～🌱
+                                    view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11, 0, 11, 0, 0, 11, 0, true)
+
+                                    view += MultiLineTextView().configure {
+                                        view.text.value = menu.recipe.message
+                                        view.color = TEXT_COLOR
+                                        view.shadow = false
+                                    }.margin(0, 0, 0, 1)
+                                    // 中身をスクロールバーへ重ねないのだ～🌱
+                                }.margin(0, 5, 0, 0)
+                            }.margin(11, 6, 11, 11)
+                        }.minContentSizeY(11 * 7 + 5).maxContentSizeY(11 * 7 + 5).onClick {
+                            minecraft!!.setScreen(FairyQuestMessageScreen(this@FairyQuestCardScreen, menu.recipe.title, menu.recipe.message, menu.recipe.client, menu.recipe.title))
+                            true
+                        }.tooltip(text { guiFullScreenTranslation() })
+
+                        view += YSpaceView(3)
+
+                        // 取引欄なのだ～🌱
+                        view += XListView().configure {
+                            view.sizingX = Sizing.FILL
+
+                            repeat(4) { i ->
+                                val index = 9 * (3 + 1) + i
+                                val input = menu.recipe.inputs.getOrNull(i)
+                                view += tradeSlotView(index, input?.invoke()?.toItemStacks() ?: listOf(), 0x20FF0000) {
+                                    when {
+                                        input == null -> false
+                                        !input().ingredient.test(menu.getSlot(index).item) -> true
+                                        menu.getSlot(index).item.count < input().count -> true
+                                        else -> false
+                                    }
+                                }
+                            }
+
+                            // 進捗なのだ～🌱
+                            view += ProgressView(
+                                ViewTexture(PROGRESS_BACKGROUND, IntPoint(16, 16)),
+                                ViewTexture(PROGRESS_OVERLAY, IntPoint(16, 16)),
+                            ).also { progressView ->
+                                screenUpdateListenerList += {
+                                    progressView.progress = menu.progress / menu.recipe.duration.toDouble()
+                                }
+                            }.configure { }.margin(1)
+
+                            repeat(4) { i ->
+                                val index = 9 * (3 + 1) + 4 + i
+                                val output = menu.recipe.outputs.getOrNull(i)
+                                view += tradeSlotView(index, output?.invoke()?.let { listOf(it) } ?: listOf(), 0x2000FF00) {
+                                    output?.invoke().orEmpty.isNotEmpty && menu.getSlot(index).item.isEmpty
+                                }
+                            }
+                        }
+
+                        view += YSpaceView(3)
+
+                        view += inventoryNameView(playerInventory.name, Alignment.START).configure { position.ignoreLayoutX = true }.margin(1, 0)
+
+                        view += YSpaceView(1)
+
+                        // プレイヤーの持ち物なのだ～🌱
+                        repeat(3) { r ->
+                            view += slotRowView(9) { c -> 9 * r + c }
+                        }
+
+                        view += YSpaceView(4)
+
+                        view += slotRowView(9) { c -> 9 * 3 + c }
+                    }.minContentSizeX(18 * 9).margin(7)
+                }
+            }
+        }
+
+        screenUpdateListenerList.forEach {
             it()
         }
+        return rootView
     }
 
     override fun containerTick() {
         super.containerTick()
-        onScreenUpdate.forEach {
+        screenUpdateListenerList.forEach {
             it()
         }
     }
 
-    override fun render(vanillaContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-        super.render(vanillaContext, mouseX, mouseY, delta)
-        onDrawTooltip.forEach {
-            it(vanillaContext, mouseX, mouseY, delta)
-        }
-    }
+    override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = renderTransparentBackground(guiGraphics)
+
 }

@@ -64,12 +64,6 @@ repositories {
             includeGroup("dev.emi")
         }
     }
-    maven("https://maven.wispforest.io/releases/") { // owo-lib
-        content {
-            includeGroup("io.wispforest")
-            includeGroup("io.wispforest.endec")
-        }
-    }
     maven("https://maven.minecraftforge.net/") { // com.github.glitchfiend:TerraBlender-fabric
         content {
             includeModule("com.github.glitchfiend", "TerraBlender-fabric")
@@ -194,8 +188,6 @@ dependencies {
     modCompileOnly("curse.maven:jade-324717:${libs.versions.jadeCurseForgeFabric.get()}")
     modRuntimeOnly("curse.maven:jade-324717:${libs.versions.jadeCurseForgeFabric.get()}")
 
-    modImplementation("io.wispforest:owo-lib:${libs.versions.owoLibFabric.get()}")
-
     modApi("me.shedaniel.cloth:cloth-config:${libs.versions.clothConfig.get()}")
 
     modImplementation("com.github.glitchfiend:TerraBlender-fabric:${libs.versions.terraBlenderFabric.get()}")
@@ -219,7 +211,6 @@ modrinth {
     dependencies {
         required.project("fabric-api")
         required.project("fabric-language-kotlin")
-        required.project("owo-lib")
         required.project("cloth-config")
         required.project("terrablender")
         required.project("architectury-api")
@@ -249,7 +240,6 @@ curseforge {
             relations {
                 requiredDependency("fabric-api")
                 requiredDependency("fabric-language-kotlin")
-                requiredDependency("owo-lib")
                 requiredDependency("cloth-config")
                 requiredDependency("terrablender-fabric")
                 requiredDependency("architectury-api")

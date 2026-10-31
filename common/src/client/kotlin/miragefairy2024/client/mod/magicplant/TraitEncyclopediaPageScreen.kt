@@ -1,93 +1,116 @@
 package miragefairy2024.client.mod.magicplant
 
-import io.wispforest.owo.ui.base.BaseOwoScreen
-import io.wispforest.owo.ui.component.Components
-import io.wispforest.owo.ui.container.Containers
-import io.wispforest.owo.ui.container.FlowLayout
-import io.wispforest.owo.ui.container.ScrollContainer
-import io.wispforest.owo.ui.core.Color
-import io.wispforest.owo.ui.core.HorizontalAlignment
-import io.wispforest.owo.ui.core.Insets
-import io.wispforest.owo.ui.core.OwoUIAdapter
-import io.wispforest.owo.ui.core.Sizing
-import io.wispforest.owo.ui.core.Surface
-import io.wispforest.owo.ui.core.VerticalAlignment
-import miragefairy2024.client.mod.surface
-import miragefairy2024.client.util.horizontalSpace
-import miragefairy2024.client.util.verticalScroll
-import miragefairy2024.client.util.verticalSpace
+import miragefairy2024.client.mod.recipeviewer.vanilla.ViewScreen
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.mod.magicplant.Trait
 import miragefairy2024.mod.magicplant.getName
+import miragefairy2024.mod.magicplant.style
 import miragefairy2024.mod.magicplant.texture
+import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.view.ViewTexture
+import miragefairy2024.mod.recipeviewer.views.ImageView
+import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
+import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
+import miragefairy2024.mod.recipeviewer.views.ScrollView
+import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
+import miragefairy2024.mod.recipeviewer.views.StackView
+import miragefairy2024.mod.recipeviewer.views.TextButtonView
+import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.View
+import miragefairy2024.mod.recipeviewer.views.XListView
+import miragefairy2024.mod.recipeviewer.views.XSpaceView
+import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.YSpaceView
+import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.margin
+import miragefairy2024.mod.recipeviewer.views.minContentSizeX
+import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.invoke
+import miragefairy2024.util.register
 import miragefairy2024.util.style
 import miragefairy2024.util.text
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.CommonComponents
 
-class TraitEncyclopediaPageScreen(private val parent: Screen?, private val trait: Trait) : BaseOwoScreen<FlowLayout>(trait.getName()) {
-    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
+class TraitEncyclopediaPageScreen(private val parent: Screen?, private val trait: Trait) : ViewScreen(trait.getName()) {
 
-    override fun build(rootComponent: FlowLayout) {
-        rootComponent.apply {
-            surface(Surface.VANILLA_TRANSLUCENT)
-            padding(Insets.of(20, 4, 0, 0))
-            verticalAlignment(VerticalAlignment.CENTER)
-            horizontalAlignment(HorizontalAlignment.CENTER)
+    override fun createRootView(): View {
+        val buttonSize = IntPoint(80, 20)
+        return View {
+            view += YListView().configure {
+                view.sizingX = Sizing.FILL
+                view.sizingY = Sizing.FILL
 
-            child(Containers.verticalFlow(Sizing.fixed(160), Sizing.expand()).apply { // カード外枠
-                surface(NinePatchTextureCard.TRAIT_BACKGROUND.surface)
-                padding(Insets.of(5))
+                // カード外枠なのだ～🌱
+                view += StackView().configure {
+                    position.alignmentX = Alignment.CENTER
+                    position.weight = 1.0
+                    view.sizingY = Sizing.FILL
 
-                child(Containers.verticalFlow(Sizing.fill(), Sizing.content()).apply {
+                    view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
 
-                    // 特性名
-                    child(Components.label(text { trait.getName().style(trait.style) }).apply {
-                        sizing(Sizing.fill(), Sizing.content())
-                        horizontalTextAlignment(HorizontalAlignment.CENTER)
-                    })
+                    view += YListView().configure {
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
 
-                    child(verticalSpace(5))
+                        // 特性名なのだ～🌱
+                        view += TextView(text { trait.getName().style(trait.style) }).configure {
+                            view.sizingX = Sizing.FILL
+                            view.alignmentX = Alignment.CENTER
+                            view.shadow = false
+                        }
 
-                    // 特性アイコン
-                    child(Containers.stack(Sizing.fill(), Sizing.content()).apply {
-                        horizontalAlignment(HorizontalAlignment.CENTER)
-                        child(Components.texture(trait.texture, 0, 0, 32, 32, 32, 32))
-                    })
+                        view += YSpaceView(5)
 
-                })
+                        // 特性アイコンなのだ～🌱
+                        view += YListView().configure {
+                            view.sizingX = Sizing.FILL
 
-                child(verticalSpace(5))
+                            view += ImageView(ViewTexture(trait.texture, IntPoint(32, 32))).configure {
+                                position.alignmentX = Alignment.CENTER
+                            }
+                        }
 
-                // 特性ポエム
-                child(verticalScroll(Sizing.fill(), Sizing.expand(), 5, overlapped = true).apply {
-                    scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
-                    child().child(Components.label(text { trait.text }).apply {
-                        sizing(Sizing.fill(), Sizing.content())
-                        horizontalTextAlignment(HorizontalAlignment.LEFT)
-                    })
-                })
+                        view += YSpaceView(5)
 
-            })
+                        // 特性ポエムなのだ～🌱 スクロールバーは中身へ重ねるのだ～🌱
+                        view += ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt())).configure {
+                            position.weight = 1.0
 
-            child(verticalSpace(10))
+                            view += MultiLineTextView().configure {
+                                view.text.value = text { trait.text }
+                                view.shadow = false
+                            }
+                        }
+                    }.minContentSizeX(160).margin(5)
+                }.margin(0, 0, 20, 4)
 
-            child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                child(Components.button(text { guiBackToGameTranslation() }) {
-                    minecraft!!.setScreen(null)
-                }.apply {
-                    horizontalSizing(Sizing.fixed(80))
-                })
-                child(horizontalSpace(20))
-                child(Components.button(CommonComponents.GUI_BACK) {
-                    onClose()
-                }.apply {
-                    horizontalSizing(Sizing.fixed(80))
-                })
-            })
+                view += YSpaceView(10)
 
+                // ボタン列なのだ～🌱
+                view += XListView().configure {
+                    position.alignmentX = Alignment.CENTER
+
+                    view += TextButtonView(buttonSize, text { guiBackToGameTranslation() }).configure {
+                        view.onPress.register {
+                            minecraft!!.setScreen(null)
+                        }
+                    }
+
+                    view += XSpaceView(20)
+
+                    view += TextButtonView(buttonSize, CommonComponents.GUI_BACK).configure {
+                        view.onPress.register {
+                            onClose()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -109,4 +132,5 @@ class TraitEncyclopediaPageScreen(private val parent: Screen?, private val trait
     override fun onClose() {
         minecraft!!.setScreen(parent)
     }
+
 }

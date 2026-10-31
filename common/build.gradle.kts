@@ -64,12 +64,6 @@ repositories {
             includeGroup("dev.emi")
         }
     }
-    maven("https://maven.wispforest.io/releases/") { // owo-lib
-        content {
-            includeGroup("io.wispforest")
-            includeGroup("io.wispforest.endec")
-        }
-    }
     maven("https://maven.minecraftforge.net/") { // com.github.glitchfiend:TerraBlender-fabric
         content {
             includeModule("com.github.glitchfiend", "TerraBlender-fabric")
@@ -104,8 +98,6 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${libs.versions.rei.get()}")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${libs.versions.rei.get()}")
     modCompileOnly("me.shedaniel.cloth:basic-math:${libs.versions.clothBasicMath.get()}")
-
-    modImplementation("io.wispforest:owo-lib:${libs.versions.owoLibFabric.get()}")
 
     modApi("me.shedaniel.cloth:cloth-config:${libs.versions.clothConfig.get()}")
 

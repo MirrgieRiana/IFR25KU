@@ -1,107 +1,116 @@
 package miragefairy2024.client.mod.fairyquest
 
-import io.wispforest.owo.ui.base.BaseOwoScreen
-import io.wispforest.owo.ui.component.Components
-import io.wispforest.owo.ui.container.Containers
-import io.wispforest.owo.ui.container.FlowLayout
-import io.wispforest.owo.ui.container.ScrollContainer
-import io.wispforest.owo.ui.core.Color
-import io.wispforest.owo.ui.core.HorizontalAlignment
-import io.wispforest.owo.ui.core.Insets
-import io.wispforest.owo.ui.core.OwoUIAdapter
-import io.wispforest.owo.ui.core.Sizing
-import io.wispforest.owo.ui.core.Surface
-import io.wispforest.owo.ui.core.VerticalAlignment
 import miragefairy2024.MirageFairy2024
-import miragefairy2024.client.mod.surface
-import miragefairy2024.client.util.horizontalSpace
-import miragefairy2024.client.util.verticalScroll
-import miragefairy2024.client.util.verticalSpace
+import miragefairy2024.client.mod.recipeviewer.vanilla.ViewScreen
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
+import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.ColorPair
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
+import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
+import miragefairy2024.mod.recipeviewer.views.ScrollView
+import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
+import miragefairy2024.mod.recipeviewer.views.StackView
+import miragefairy2024.mod.recipeviewer.views.TextButtonView
+import miragefairy2024.mod.recipeviewer.views.View
+import miragefairy2024.mod.recipeviewer.views.XListView
+import miragefairy2024.mod.recipeviewer.views.XSpaceView
+import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.YSpaceView
+import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.margin
+import miragefairy2024.mod.recipeviewer.views.minContentSizeX
+import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.invoke
+import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 
-class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQuestTitle: Component, private val fairyQuestMessage: Component, private val fairyQuestClient: Component, title: Component) : BaseOwoScreen<FlowLayout>(title) {
-    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
+private val TEXT_COLOR = ColorPair(0xFF6B472E.toInt(), 0xFF6B472E.toInt())
 
-    override fun build(rootComponent: FlowLayout) {
-        rootComponent.apply {
-            surface(Surface.VANILLA_TRANSLUCENT)
-            padding(Insets.of(10, 4, 0, 0))
-            verticalAlignment(VerticalAlignment.CENTER)
-            horizontalAlignment(HorizontalAlignment.CENTER)
+class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQuestTitle: Component, private val fairyQuestMessage: Component, private val fairyQuestClient: Component, title: Component) : ViewScreen(title) {
 
-            // 反対側のスクロールバー領域確保用パネル
-            child(Containers.verticalFlow(Sizing.fixed(18 * 15), Sizing.expand()).apply {
-                padding(Insets.of(0, 0, 10, 0))
+    override fun createRootView(): View {
+        val buttonSize = IntPoint(80, 20)
+        return View {
+            view += YListView().configure {
+                view.sizingX = Sizing.FILL
+                view.sizingY = Sizing.FILL
 
-                // スクロールコンテナ
-                // スクロールバーをカードに重ねると、スクロールする中身のカードの方が手前の深度で描かれて、スクロールバーが隠れちゃうのだ～🌱
-                child(verticalScroll(Sizing.fill(100), Sizing.fill(100), 10).apply {
-                    scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
+                view += ScrollView(10, ScrollbarStyle.Flat(0xA0FFFFFF.toInt())).configure {
+                    position.alignmentX = Alignment.CENTER
+                    position.weight = 1.0
 
-                    // 外枠装飾用パネル
-                    child().child(Containers.verticalFlow(Sizing.fill(100), Sizing.content()).apply {
-                        surface(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.surface)
-                        padding(Insets.of(11))
+                    // カードの外枠なのだ～🌱 スクロールバーと重ならないように、右に同じ幅の余白を置くのだ～🌱
+                    view += StackView().configure {
+                        view += NinePatchImageView(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
 
-                        // タイトル
-                        child(Components.label(fairyQuestTitle).apply {
-                            sizing(Sizing.fill(100), Sizing.content())
-                            horizontalTextAlignment(HorizontalAlignment.CENTER)
-                            color(Color.ofRgb(0x6B472E))
-                        })
+                        view += YListView().configure {
+                            view.sizingX = Sizing.FILL
 
-                        child(verticalSpace(11))
+                            // 依頼の題名なのだ～🌱
+                            view += MultiLineTextView().configure {
+                                view.text.value = fairyQuestTitle
+                                view.alignmentX = Alignment.CENTER
+                                view.color = TEXT_COLOR
+                                view.shadow = false
+                            }
 
-                        // 罫線装飾用パネル
-                        child(Containers.verticalFlow(Sizing.fill(100), Sizing.content()).apply {
-                            surface(Surface.tiled(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11))
-                            padding(Insets.of(0, 1, 0, 0))
+                            view += YSpaceView(11)
 
-                            // メッセージテキストラベル
-                            child(Components.label(fairyQuestMessage).apply {
-                                sizing(Sizing.fill(100), Sizing.content())
-                                color(Color.ofRgb(0x6B472E))
-                            })
+                            // 依頼の本文なのだ～🌱 罫線を背景に重ねるのだ～🌱
+                            view += StackView().configure {
+                                view.sizingX = Sizing.FILL
 
-                        })
+                                // 四辺を 0 にして、罫線の繰り返しだけを描かせるのだ～🌱
+                                view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11, 0, 11, 0, 0, 11, 0, true)
 
-                        child(verticalSpace(11))
+                                view += MultiLineTextView().configure {
+                                    view.text.value = fairyQuestMessage
+                                    view.color = TEXT_COLOR
+                                    view.shadow = false
+                                }.margin(0, 0, 0, 1)
+                            }
 
-                        // 依頼人
-                        child(Components.label(fairyQuestClient).apply {
-                            sizing(Sizing.fill(100), Sizing.content())
-                            horizontalTextAlignment(HorizontalAlignment.RIGHT)
-                            color(Color.ofRgb(0x6B472E))
-                        })
+                            view += YSpaceView(11)
 
-                    })
+                            // 依頼人なのだ～🌱
+                            view += MultiLineTextView().configure {
+                                view.text.value = fairyQuestClient
+                                view.alignmentX = Alignment.END
+                                view.color = TEXT_COLOR
+                                view.shadow = false
+                            }
+                        }.minContentSizeX(((18 * 15) - 10 * 2) - 11 * 2).margin(11)
+                    }.margin(0, 10, 0, 0)
+                }.margin(10, 0, 10, 4)
 
-                })
+                view += YSpaceView(10)
 
-            })
+                // ボタン列なのだ～🌱
+                view += XListView().configure {
+                    position.alignmentX = Alignment.CENTER
 
-            child(verticalSpace(10))
+                    view += TextButtonView(buttonSize, text { guiBackToGameTranslation() }).configure {
+                        view.onPress.register {
+                            minecraft!!.setScreen(null)
+                        }
+                    }
 
-            child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                child(Components.button(text { guiBackToGameTranslation() }) {
-                    minecraft!!.setScreen(null)
-                }.apply {
-                    horizontalSizing(Sizing.fixed(80))
-                })
-                child(horizontalSpace(20))
-                child(Components.button(CommonComponents.GUI_BACK) {
-                    onClose()
-                }.apply {
-                    horizontalSizing(Sizing.fixed(80))
-                })
-            })
+                    view += XSpaceView(20)
 
+                    view += TextButtonView(buttonSize, CommonComponents.GUI_BACK).configure {
+                        view.onPress.register {
+                            onClose()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -123,4 +132,5 @@ class FairyQuestMessageScreen(private val parent: Screen?, private val fairyQues
     override fun onClose() {
         minecraft!!.setScreen(parent)
     }
+
 }

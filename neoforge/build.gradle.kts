@@ -61,12 +61,6 @@ repositories {
             includeGroup("me.shedaniel")
         }
     }
-    maven("https://maven.wispforest.io/releases/") { // owo-lib
-        content {
-            includeGroup("io.wispforest")
-            includeGroup("io.wispforest.endec")
-        }
-    }
     maven("https://maven.minecraftforge.net/") { // com.github.glitchfiend:TerraBlender-neoforge
         content {
             includeModule("com.github.glitchfiend", "TerraBlender-neoforge")
@@ -139,13 +133,6 @@ dependencies {
 
     //modRuntimeOnly("curse.maven:journeymap-32274:${libs.versions.journeyMapCurseForgeNeoForge.get()}") // なぜか入れるとエラーになる
 
-    modImplementation("io.wispforest:owo-lib-neoforge:${libs.versions.owoLibNeoForge.get()}")// { isTransitive = true }
-    forgeRuntimeLibrary(include(api("io.wispforest:endec:${libs.versions.endec.get()}")!!)!!)
-    forgeRuntimeLibrary(include(api("io.wispforest.endec:netty:${libs.versions.endecNetty.get()}")!!)!!)
-    forgeRuntimeLibrary(include(api("io.wispforest.endec:gson:${libs.versions.endecGson.get()}")!!)!!)
-    forgeRuntimeLibrary(include(api("io.wispforest.endec:jankson:${libs.versions.endecJankson.get()}")!!)!!)
-    forgeRuntimeLibrary(include(api("blue.endless:jankson:${libs.versions.jankson.get()}")!!)!!)
-
     modImplementation("com.github.glitchfiend:TerraBlender-neoforge:${libs.versions.terraBlenderNeoForge.get()}")
 }
 
@@ -163,7 +150,6 @@ modrinth {
     dependencies {
         required.project("forgified-fabric-api")
         required.project("kotlin-for-forge")
-        required.project("owo-lib")
         required.project("cloth-config")
         required.project("terrablender")
         required.project("architectury-api")
@@ -193,7 +179,6 @@ curseforge {
             relations {
                 requiredDependency("forgified-fabric-api")
                 requiredDependency("kotlin-for-forge")
-                requiredDependency("owo-lib")
                 requiredDependency("cloth-config")
                 requiredDependency("terrablender-neoforge")
                 requiredDependency("architectury-api")

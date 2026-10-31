@@ -1,27 +1,33 @@
 package miragefairy2024.client.mod
 
-import io.wispforest.owo.ui.base.BaseOwoScreen
-import io.wispforest.owo.ui.component.Components
-import io.wispforest.owo.ui.container.Containers
-import io.wispforest.owo.ui.container.FlowLayout
-import io.wispforest.owo.ui.container.ScrollContainer
-import io.wispforest.owo.ui.core.Color
-import io.wispforest.owo.ui.core.HorizontalAlignment
-import io.wispforest.owo.ui.core.Insets
-import io.wispforest.owo.ui.core.OwoUIAdapter
-import io.wispforest.owo.ui.core.Sizing
-import io.wispforest.owo.ui.core.Surface
-import io.wispforest.owo.ui.core.VerticalAlignment
 import miragefairy2024.ModContext
-import miragefairy2024.client.util.horizontalSpace
-import miragefairy2024.client.util.slotContainer
-import miragefairy2024.client.util.verticalScroll
-import miragefairy2024.client.util.verticalSpace
+import miragefairy2024.client.mod.recipeviewer.vanilla.ViewScreen
 import miragefairy2024.mod.IfrEncyclopediaEntryCard
 import miragefairy2024.mod.NinePatchTextureCard
-import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.mod.onOpenIfrEncyclopediaPageScreen
+import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.ColorPair
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
+import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
+import miragefairy2024.mod.recipeviewer.views.OutputSlotView
+import miragefairy2024.mod.recipeviewer.views.ScrollView
+import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
+import miragefairy2024.mod.recipeviewer.views.StackView
+import miragefairy2024.mod.recipeviewer.views.TextButtonView
+import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.View
+import miragefairy2024.mod.recipeviewer.views.XListView
+import miragefairy2024.mod.recipeviewer.views.XSpaceView
+import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.YSpaceView
+import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.margin
+import miragefairy2024.mod.recipeviewer.views.minContentSizeX
+import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.invoke
 import miragefairy2024.util.register
 import miragefairy2024.util.text
@@ -37,70 +43,89 @@ fun initIfrEncyclopediaClientModule() {
     }
 }
 
-class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: IfrEncyclopediaEntryCard) : BaseOwoScreen<FlowLayout>(text { card.titleTranslation() }) {
-    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
+/** 背景のテクスチャはダークモードでも替わらないから、暗い側も同じ色にするのだ～🌱 */
+private val TEXT_COLOR = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
 
-    override fun build(rootComponent: FlowLayout) {
-        rootComponent.apply {
-            surface(Surface.VANILLA_TRANSLUCENT)
-            padding(Insets.of(20, 4, 0, 0))
-            verticalAlignment(VerticalAlignment.CENTER)
-            horizontalAlignment(HorizontalAlignment.CENTER)
+class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: IfrEncyclopediaEntryCard) : ViewScreen(text { card.titleTranslation() }) {
 
-            child(Containers.verticalFlow(Sizing.fixed(200), Sizing.expand()).apply { // カード外枠
-                surface(NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.surface)
-                padding(Insets.of(10, 5, 5, 5))
+    override fun createRootView(): View {
+        val buttonSize = IntPoint(80, 20)
+        val itemStack = card.itemStacksGetter().firstOrNull()
 
-                // タイトルなのだ～🌱
-                child(Components.label(text { card.titleTranslation() }).apply {
-                    sizing(Sizing.fill(), Sizing.content())
-                    horizontalTextAlignment(HorizontalAlignment.CENTER)
-                    color(Color.ofRgb(0x493208))
-                })
+        return View {
+            view += YListView().configure {
+                view.sizingX = Sizing.FILL
+                view.sizingY = Sizing.FILL
 
-                child(verticalSpace(5))
+                // カード外枠なのだ～🌱
+                view += StackView().configure {
+                    position.alignmentX = Alignment.CENTER
+                    position.weight = 1.0
+                    view.sizingY = Sizing.FILL
 
-                // 掲げられたアイテム
-                child(Containers.stack(Sizing.fill(), Sizing.content()).apply {
-                    horizontalAlignment(HorizontalAlignment.CENTER)
-                    margins(Insets.vertical(5))
-                    card.itemStacksGetter().firstOrNull()?.let {
-                        child(slotContainer(Components.item(it).apply {
-                            showOverlay(true)
-                        }, SlotType.NORMAL))
+                    view += NinePatchImageView(NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
+
+                    view += YListView().configure {
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
+
+                        // タイトルなのだ～🌱
+                        view += TextView(text { card.titleTranslation() }).configure {
+                            view.sizingX = Sizing.FILL
+                            view.alignmentX = Alignment.CENTER
+                            view.color = TEXT_COLOR
+                            view.shadow = false
+                        }
+
+                        view += YSpaceView(5)
+
+                        // 掲げられたアイテムなのだ～🌱 アイテムが無くても、上下の余白は占めるのだ～🌱
+                        view += YListView().configure {
+                            view.sizingX = Sizing.FILL
+
+                            if (itemStack != null) {
+                                view += OutputSlotView(itemStack).configure {
+                                    position.alignmentX = Alignment.CENTER
+                                }
+                            }
+                        }.margin(0, 0, 5, 5)
+
+                        view += YSpaceView(5)
+
+                        // 本文なのだ～🌱 スクロールバーは中身へ重ねるのだ～🌱
+                        view += ScrollView(5, ScrollbarStyle.Flat(0xA0000000.toInt())).configure {
+                            position.weight = 1.0
+
+                            view += MultiLineTextView().configure {
+                                view.text.value = text { card.textTranslation() }
+                                view.color = TEXT_COLOR
+                                view.shadow = false
+                            }
+                        }
+                    }.minContentSizeX(200).margin(5, 5, 10, 5)
+                }.margin(0, 0, 20, 4)
+
+                view += YSpaceView(10)
+
+                // ボタン列なのだ～🌱
+                view += XListView().configure {
+                    position.alignmentX = Alignment.CENTER
+
+                    view += TextButtonView(buttonSize, text { guiBackToGameTranslation() }).configure {
+                        view.onPress.register {
+                            minecraft!!.setScreen(null)
+                        }
                     }
-                })
 
-                child(verticalSpace(5))
+                    view += XSpaceView(20)
 
-                // 本文
-                child(verticalScroll(Sizing.fill(), Sizing.expand(), 5, overlapped = true).apply {
-                    scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0000000.toInt())))
-                    child().child(Components.label(text { card.textTranslation() }).apply {
-                        sizing(Sizing.fill(), Sizing.content())
-                        horizontalTextAlignment(HorizontalAlignment.LEFT)
-                        color(Color.ofRgb(0x493208))
-                    })
-                })
-
-            })
-
-            child(verticalSpace(10))
-
-            child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                child(Components.button(text { guiBackToGameTranslation() }) {
-                    minecraft!!.setScreen(null)
-                }.apply {
-                    horizontalSizing(Sizing.fixed(80))
-                })
-                child(horizontalSpace(20))
-                child(Components.button(CommonComponents.GUI_BACK) {
-                    onClose()
-                }.apply {
-                    horizontalSizing(Sizing.fixed(80))
-                })
-            })
-
+                    view += TextButtonView(buttonSize, CommonComponents.GUI_BACK).configure {
+                        view.onPress.register {
+                            onClose()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -122,4 +147,5 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
     override fun onClose() {
         minecraft!!.setScreen(parent)
     }
+
 }
