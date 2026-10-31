@@ -30,7 +30,9 @@ object MultiLineTextViewRenderer : ViewRenderer<MultiLineTextView> {
         }
         if (bounds.contains(mouseX, mouseY)) {
             val tooltip = view.tooltip
-            if (tooltip != null) graphics.renderComponentTooltip(font, tooltip, mouseX, mouseY)
+            if (tooltip != null && tooltip.isNotEmpty()) {
+                Minecraft.getInstance().screen?.setTooltipForNextRenderPass(tooltip.map { it.visualOrderText })
+            }
         }
     }
 
