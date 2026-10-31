@@ -233,8 +233,6 @@ abstract class VanillaScrollViewWidget(
 
     override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
         if (!isActive) return null
-        // マウスで外へフォーカスが移った場合も、再入時は移動方向に応じた端から探索するのだ～🌱
-        if (!isFocused) focused = null
         val navigation = if (event is FocusNavigationEvent.InitialFocus) FocusNavigationEvent.TabNavigation(true) else event
         val path = super.nextFocusPath(navigation)
         if (path == null) return null
