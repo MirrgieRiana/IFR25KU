@@ -80,6 +80,7 @@ abstract class VanillaScrollViewWidget(
 
     fun dispose() {
         disposed = true
+        draggingScrollbar = false
         isDragging = false
         pressedWidgetRegistrations.clear()
         focused = null
@@ -133,6 +134,8 @@ abstract class VanillaScrollViewWidget(
     // 描画とマウス入力なのだ～🌱
 
     private val pressedWidgetRegistrations = mutableMapOf<Int, WidgetRegistration?>()
+    private var draggingScrollbar = false
+    private var scrollbarDragOffset = 0.0
 
     private fun containsViewport(mouseX: Double, mouseY: Double): Boolean {
         if (mouseX < x) return false
@@ -167,18 +170,33 @@ abstract class VanillaScrollViewWidget(
         if (evaluateMaxScroll() > 0 && view.scrollbarThickness > 0 && evaluateThumbLength() > 0) renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), evaluateThumbLength())
     }
 
+    protected abstract fun getMousePosition(mouseX: Double, mouseY: Double): Double
+
     /** ホイール入力から、このコンテナのスクロール軸に適用する入力値を返すのだ～🌱 */
     protected abstract fun getScrollAmount(scrollX: Double, scrollY: Double): Double
 
-    override fun hasMouseCapture(button: Int) = !disposed && button in pressedWidgetRegistrations
+    private fun dragScrollbar(mouseX: Double, mouseY: Double) {
+        updateScroll((getMousePosition(mouseX, mouseY) - scrollbarDragOffset) * evaluateMaxScroll() / (viewportLength - evaluateThumbLength()))
+    }
+
+    override fun hasMouseCapture(button: Int) = !disposed && (button == 0 && draggingScrollbar || button in pressedWidgetRegistrations)
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         pressedWidgetRegistrations -= button
         if (button == 0) {
+            draggingScrollbar = false
             isDragging = false
         }
         if (!isActive) return false
-        if (!containsViewport(mouseX, mouseY)) return false
+        if (!containsViewport(mouseX, mouseY)) {
+            if (!super.isMouseOver(mouseX, mouseY)) return false
+            if (button != 0 || evaluateMaxScroll() == 0 || viewportLength <= evaluateThumbLength()) return false
+            draggingScrollbar = true
+            val position = getMousePosition(mouseX, mouseY)
+            scrollbarDragOffset = if (position >= evaluateThumbPosition() && position < evaluateThumbPosition() + evaluateThumbLength()) position - evaluateThumbPosition() else evaluateThumbLength() / 2.0
+            dragScrollbar(mouseX, mouseY)
+            return true
+        }
         return widgetRegistrations.toList().any { widgetRegistration ->
             // 操作可能でない子は除くのだ～🌱
             if (!widgetRegistration.interactive) return@any false
@@ -203,6 +221,10 @@ abstract class VanillaScrollViewWidget(
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
+        if (button == 0 && draggingScrollbar) {
+            dragScrollbar(mouseX, mouseY)
+            return true
+        }
         if (button !in pressedWidgetRegistrations) return false
         pressedWidgetRegistrations[button]?.widget?.mouseDragged(mouseX, mouseY, button, dragX, dragY)
         return true
@@ -210,6 +232,10 @@ abstract class VanillaScrollViewWidget(
 
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (button == 0) isDragging = false
+        if (button == 0 && draggingScrollbar) {
+            draggingScrollbar = false
+            return true
+        }
         if (button !in pressedWidgetRegistrations) return false
         pressedWidgetRegistrations.remove(button)?.widget?.mouseReleased(mouseX, mouseY, button)
         return true
@@ -369,6 +395,7 @@ class VanillaXScrollViewWidget(
     // スクロール操作なのだ～🌱
 
     override fun getChildOffset(scrollOffset: Int) = IntPoint(x - scrollOffset, y)
+    override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseX - x
 
     // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
@@ -413,6 +440,7 @@ class VanillaYScrollViewWidget(
     // スクロール操作なのだ～🌱
 
     override fun getChildOffset(scrollOffset: Int) = IntPoint(x, y - scrollOffset)
+    override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseY - y
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
     override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
