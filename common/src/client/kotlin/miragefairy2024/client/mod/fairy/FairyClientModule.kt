@@ -69,7 +69,6 @@ fun initFairyClientModule() {
         Minecraft.getInstance().toasts.addToast(ViewToast(rootView))
     }
 
-    initMotifTableClientModule()
     initSoulStreamClientModule()
     initCollectionEnabledClientModule()
 
