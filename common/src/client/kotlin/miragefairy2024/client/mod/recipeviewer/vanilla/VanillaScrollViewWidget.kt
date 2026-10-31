@@ -10,6 +10,7 @@ import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.Remover
 import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
@@ -17,6 +18,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.Component
 import java.util.Optional
+import kotlin.math.roundToInt
 
 // TODO 子 Widget の描画・入力・フォーカス・読み上げを中継するスクロール領域なのだ～🌱
 abstract class VanillaScrollViewWidget(
@@ -80,11 +82,25 @@ abstract class VanillaScrollViewWidget(
     protected abstract val viewportLength: Int
     protected abstract fun evaluateContentLength(): Int
 
-    // TODO スクロール上限とつまみの長さを、`evaluateContentLength()` の評価結果から計算するのだ～🌱
+    private var scrollOffset = 0.0
+
+    private fun evaluateMaxScroll() = evaluateContentLength() - viewportLength atLeast 0
+
+    // TODO つまみの長さを、`evaluateContentLength()` の評価結果から計算するのだ～🌱
+
+    protected abstract fun getChildOffset(scrollOffset: Int): IntPoint
+
+    private fun updateScroll(offset: Double): Boolean {
+        val old = scrollOffset
+        scrollOffset = offset.coerceIn(0.0, evaluateMaxScroll().toDouble())
+        if (scrollOffset == old) return false
+        childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
+        return true
+    }
 
     override fun setPosition(x: Int, y: Int) {
         super.setPosition(x, y)
-        childController.setOffset(IntPoint(x, y))
+        childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
     }
 
 
@@ -121,6 +137,9 @@ abstract class VanillaScrollViewWidget(
             guiGraphics.disableScissor()
         }
     }
+
+    /** ホイール入力から、このコンテナのスクロール軸に適用する入力値を返すのだ～🌱 */
+    protected abstract fun getScrollAmount(scrollX: Double, scrollY: Double): Double
 
     override fun hasMouseCapture(button: Int) = !disposed && button in pressedWidgetRegistrations
 
@@ -184,9 +203,11 @@ abstract class VanillaScrollViewWidget(
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
-        if (!isActive) return false
-        if (!containsViewport(mouseX, mouseY)) return false
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+        // スクロールバー上でも判定を受け付けるため、containsViewport ではなく isMouseOver を使うのだ～🌱
+        if (!isMouseOver(mouseX, mouseY)) return false
+        val child = getChildAt(mouseX, mouseY).orNull
+        if (child != null && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true
+        return updateScroll(scrollOffset - getScrollAmount(scrollX, scrollY) * view.scrollStep)
     }
 
 
@@ -240,6 +261,11 @@ class VanillaXScrollViewWidget(
 
     // スクロール操作なのだ～🌱
 
+    override fun getChildOffset(scrollOffset: Int) = IntPoint(x - scrollOffset, y)
+
+    // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
+    override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
+
     // TODO X 軸の残りのスクロール操作を実装するのだ～🌱
 
 }
@@ -266,6 +292,9 @@ class VanillaYScrollViewWidget(
 
 
     // スクロール操作なのだ～🌱
+
+    override fun getChildOffset(scrollOffset: Int) = IntPoint(x, y - scrollOffset)
+    override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
     // TODO Y 軸の残りのスクロール操作を実装するのだ～🌱
 
