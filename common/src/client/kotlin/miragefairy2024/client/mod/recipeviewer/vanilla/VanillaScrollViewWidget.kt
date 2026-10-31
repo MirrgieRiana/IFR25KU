@@ -104,23 +104,33 @@ abstract class VanillaScrollViewWidget(
 
     private var scrollOffset = 0.0
 
-    private fun evaluateMaxScroll() = evaluateContentLength() - viewportLength atLeast 0
+    private fun evaluateMaxScrollOffset() = evaluateContentLength() - viewportLength atLeast 0
 
     private fun evaluateThumbLength(): Int {
         if (viewportLength <= 0) return 0
         val contentLength = evaluateContentLength()
         if (contentLength <= viewportLength) return viewportLength
-        val length = (viewportLength.toDouble() * viewportLength / contentLength).roundToInt()
-        return length.coerceIn(view.scrollbarThickness atLeast 1 min viewportLength, viewportLength)
+        val visibleRatio = viewportLength.toDouble() / contentLength.toDouble()
+        val rawThumbLength = (viewportLength.toDouble() * visibleRatio).roundToInt()
+        val minThumbLength = view.scrollbarThickness.coerceIn(1, viewportLength)
+        return rawThumbLength.coerceIn(minThumbLength, viewportLength)
     }
 
-    private fun evaluateThumbPosition() = if (evaluateMaxScroll() == 0) 0.0 else scrollOffset * (viewportLength - evaluateThumbLength()) / evaluateMaxScroll()
+    private fun evaluateThumbPosition(): Double {
+        return if (evaluateMaxScrollOffset() == 0) {
+            0.0
+        } else {
+            val maxThumbPosition = viewportLength - evaluateThumbLength()
+            val scrollRatio = scrollOffset / evaluateMaxScrollOffset().toDouble()
+            maxThumbPosition.toDouble() * scrollRatio
+        }
+    }
 
     protected abstract fun getChildOffset(scrollOffset: Int): IntPoint
 
     private fun updateScroll(offset: Double): Boolean {
         val old = scrollOffset
-        scrollOffset = offset.coerceIn(0.0, evaluateMaxScroll().toDouble())
+        scrollOffset = offset.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
         if (scrollOffset == old) return false
         childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
         return true
@@ -160,6 +170,8 @@ abstract class VanillaScrollViewWidget(
     protected abstract fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int)
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+
+        // 子要素の描画なのだ～🌱
         guiGraphics.enableScissor(x, y, x + (width - getReservedRight() atLeast 0), y + (height - getReservedBottom() atLeast 0))
         try {
             widgetRegistrations.forEach { widgetRegistration ->
@@ -168,7 +180,12 @@ abstract class VanillaScrollViewWidget(
         } finally {
             guiGraphics.disableScissor()
         }
-        if (evaluateMaxScroll() > 0 && view.scrollbarThickness > 0 && evaluateThumbLength() > 0) renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), evaluateThumbLength())
+
+        // スクロールバーの描画なのだ～🌱
+        if (evaluateMaxScrollOffset() > 0 && view.scrollbarThickness > 0 && evaluateThumbLength() > 0) {
+            renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), evaluateThumbLength())
+        }
+
     }
 
     protected abstract fun getMousePosition(mouseX: Double, mouseY: Double): Double
@@ -177,7 +194,7 @@ abstract class VanillaScrollViewWidget(
     protected abstract fun getScrollAmount(scrollX: Double, scrollY: Double): Double
 
     private fun dragScrollbar(mouseX: Double, mouseY: Double) {
-        updateScroll((getMousePosition(mouseX, mouseY) - scrollbarDragOffset) * evaluateMaxScroll() / (viewportLength - evaluateThumbLength()))
+        updateScroll((getMousePosition(mouseX, mouseY) - scrollbarDragOffset) * evaluateMaxScrollOffset() / (viewportLength - evaluateThumbLength()))
     }
 
     override fun hasMouseCapture(button: Int) = !disposed && (button == 0 && draggingScrollbar || button in pressedWidgetRegistrations)
@@ -191,7 +208,7 @@ abstract class VanillaScrollViewWidget(
         if (!isActive) return false
         if (!containsViewport(mouseX, mouseY)) {
             if (!super.isMouseOver(mouseX, mouseY)) return false
-            if (button != 0 || evaluateMaxScroll() == 0 || viewportLength <= evaluateThumbLength()) return false
+            if (button != 0 || evaluateMaxScrollOffset() == 0 || viewportLength <= evaluateThumbLength()) return false
             draggingScrollbar = true
             val position = getMousePosition(mouseX, mouseY)
             scrollbarDragOffset = if (position >= evaluateThumbPosition() && position < evaluateThumbPosition() + evaluateThumbLength()) position - evaluateThumbPosition() else evaluateThumbLength() / 2.0
@@ -287,7 +304,7 @@ abstract class VanillaScrollViewWidget(
         val navigation = if (event is FocusNavigationEvent.InitialFocus) FocusNavigationEvent.TabNavigation(true) else event
         val path = super.nextFocusPath(navigation)
         if (path == null) {
-            if (isFocused || evaluateMaxScroll() <= 0) return null
+            if (isFocused || evaluateMaxScrollOffset() <= 0) return null
             return object : ComponentPath {
                 override fun component() = this@VanillaScrollViewWidget
 
@@ -334,7 +351,7 @@ abstract class VanillaScrollViewWidget(
             GLFW.GLFW_KEY_PAGE_UP -> scrollOffset - viewportLength * 0.8
             GLFW.GLFW_KEY_PAGE_DOWN -> scrollOffset + viewportLength * 0.8
             GLFW.GLFW_KEY_HOME -> 0.0
-            GLFW.GLFW_KEY_END -> evaluateMaxScroll().toDouble()
+            GLFW.GLFW_KEY_END -> evaluateMaxScrollOffset().toDouble()
             else -> return false
         }
         return updateScroll(offset)
@@ -431,8 +448,15 @@ class VanillaXScrollViewWidget(
     // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
+    // TODO 操作やホバーしていない間はフェードアウト
     override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
-        guiGraphics.fill(x + start, y + height - view.scrollbarThickness atLeast y, x + start + length, y + height, view.scrollbarColor)
+        guiGraphics.fill(
+            x + start,
+            y + height - view.scrollbarThickness atLeast y,
+            x + start + length,
+            y + height,
+            view.scrollbarColor,
+        )
     }
 
     override fun getScrollOffsetDeltaOnFocus(rectangle: ScreenRectangle): Int {
@@ -475,8 +499,15 @@ class VanillaYScrollViewWidget(
     override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseY - y
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
+    // TODO 操作やホバーしていない間はフェードアウト
     override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
-        guiGraphics.fill(x + width - view.scrollbarThickness atLeast x, y + start, x + width, y + start + length, view.scrollbarColor)
+        guiGraphics.fill(
+            x + width - view.scrollbarThickness atLeast x,
+            y + start,
+            x + width,
+            y + start + length,
+            view.scrollbarColor,
+        )
     }
 
     override fun getScrollOffsetDeltaOnFocus(rectangle: ScreenRectangle): Int {
