@@ -5,6 +5,7 @@ import miragefairy2024.mod.tool.FairyMiningToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
 import miragefairy2024.util.with
 import mirrg.kotlin.helium.atMost
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.sounds.SoundEvents
@@ -44,6 +45,9 @@ open class FairyHoeConfiguration(
         this.attackDamage = -toolMaterialCard.toolMaterial.attackDamageBonus
         this.attackSpeed = -4F + (toolMaterialCard.toolMaterial.attackDamageBonus + 1F) atMost 0F
         this.tags += ItemTags.HOES
+        this.tags += ConventionalItemTags.TOOLS
+        this.tags += ConventionalItemTags.MINING_TOOL_TOOLS
+        this.tags += ConventionalItemTags.ENCHANTABLES
         this.effectiveBlockTags += BlockTags.MINEABLE_WITH_HOE
     }
 }

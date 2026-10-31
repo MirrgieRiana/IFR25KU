@@ -1057,6 +1057,8 @@ open class BlockMaterialCard(
         if (ore != null) {
             ore.tag.generator.registerChild(item)
             ore.shape.tag.generator.registerChild(ore.tag)
+            ore.blockTag.generator.registerChild(block)
+            ore.shape.blockTag.generator.registerChild(ore.blockTag)
         }
 
         if (tags != null) {
@@ -1110,6 +1112,13 @@ fun initBlockMaterialsModule() {
 
     BlockMaterialCard.entries.forEach { card ->
         card.init()
+    }
+
+    BlockMaterialCard.entries.mapNotNull { it.ore }.distinct().forEach {
+        it.blockTag.enJa(it.title)
+    }
+    BlockMaterialCard.entries.mapNotNull { it.ore }.distinct().map { it.shape }.distinct().forEach {
+        it.blockTag.enJa(it.title)
     }
 
     // 耐霊石の分解レシピ
