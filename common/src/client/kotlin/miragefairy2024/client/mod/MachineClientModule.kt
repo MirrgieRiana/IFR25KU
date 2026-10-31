@@ -45,7 +45,7 @@ fun initMachineClientModule() {
 
 object FuelViewRenderer : ViewRenderer<FuelView> {
     val TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/fuel.png")
-    override fun render(view: FuelView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(view: FuelView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val fuelMax = 20 * 10
         val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
         val fuelRate = fuel.toDouble() / fuelMax.toDouble()
@@ -77,7 +77,7 @@ object FuelViewRenderer : ViewRenderer<FuelView> {
 
 object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
     val TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/blue_fuel.png")
-    override fun render(view: BlueFuelView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(view: BlueFuelView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val fuelMax = 20 * 10
         val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
         val fuelRate = fuel.toDouble() / fuelMax.toDouble()
@@ -108,7 +108,7 @@ object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
 }
 
 object TexturedArrowViewRenderer : ViewRenderer<TexturedArrowView> {
-    override fun render(view: TexturedArrowView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(view: TexturedArrowView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val rate = view.durationMilliSeconds?.let {
             (System.nanoTime() / 1_000_000 % it.toLong()).toDouble() / it.toDouble()
         } ?: 1.0

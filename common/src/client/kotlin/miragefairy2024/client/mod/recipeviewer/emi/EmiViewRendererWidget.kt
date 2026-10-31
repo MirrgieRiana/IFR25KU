@@ -12,5 +12,5 @@ class EmiViewRendererWidget<V : PlaceableView>(private val renderer: ViewRendere
     override fun getBounds() = boundsCache
     override fun mouseClicked(mouseX: Int, mouseY: Int, button: Int) = renderer.mouseClicked(view, bounds2, mouseX, mouseY, button)
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = renderer.keyPressed(view, bounds2, keyCode, scanCode, modifiers)
-    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, bounds2, draw, mouseX, mouseY, delta)
+    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, bounds2, draw, mouseX, mouseY, bounds.contains(mouseX, mouseY), delta)
 }

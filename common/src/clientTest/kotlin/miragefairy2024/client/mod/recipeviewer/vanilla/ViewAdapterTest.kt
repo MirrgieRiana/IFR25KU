@@ -12,8 +12,10 @@ import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
+import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
@@ -329,8 +331,99 @@ class ViewAdapterTest {
 
         assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
         assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
         editBox.setEditable(false)
         assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        fixture.adapter.removed()
+    }
+
+    @Test
+    fun `入れ子の入力欄でも未処理の Escape 以外を消費するのだ`() {
+        val fixture = AdapterFixture()
+        var keyPresses = 0
+        var consumeEscape = false
+        val editBox: EditBox = object : EditBox(null, 10, 20, Component.empty()) {
+            override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+                keyPresses += 1
+                return consumeEscape && keyCode == GLFW.GLFW_KEY_ESCAPE
+            }
+        }
+        fun wrap(child: GuiEventListener): AbstractContainerWidget {
+            return object : AbstractContainerWidget(0, 0, 100, 100, Component.empty()) {
+                override fun children() = listOf(child)
+                override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+            }.also {
+                it.focused = child
+            }
+        }
+        val container = wrap(wrap(editBox))
+        fixture.interactiveWidgets += container
+        fixture.screen.focused = container
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        assertEquals(1, keyPresses)
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
+        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+        consumeEscape = true
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+        consumeEscape = false
+        editBox.setEditable(false)
+        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        editBox.setEditable(true)
+        container.active = false
+        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        fixture.adapter.removed()
+    }
+
+    @Test
+    fun `入力欄が消費した Escape と Tab を Screen へ渡さないのだ`() {
+        val fixture = AdapterFixture()
+        val keys = mutableListOf<Int>()
+        val editBox: EditBox = object : EditBox(null, 10, 20, Component.empty()) {
+            override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+                keys += keyCode
+                return true
+            }
+        }
+        fixture.interactiveWidgets += editBox
+        fixture.screen.focused = editBox
+
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
+        assertEquals(listOf(GLFW.GLFW_KEY_ESCAPE, GLFW.GLFW_KEY_TAB), keys)
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        assertEquals(listOf(GLFW.GLFW_KEY_ESCAPE, GLFW.GLFW_KEY_TAB, GLFW.GLFW_KEY_E), keys)
+        fixture.adapter.removed()
+    }
+
+    @Test
+    fun `フォーカスが変わっても右ボタンの押下先へ領域外のドラッグと解放を届けるのだ`() {
+        val fixture = AdapterFixture(TestView(true))
+        var captured = true
+        var drags = 0
+        var releases = 0
+        val widget: AbstractWidget = object : AbstractWidget(0, 0, 10, 10, Component.empty()), MouseCaptureContainer {
+            override fun hasMouseCapture(button: Int) = captured && button == 1
+            override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+            override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+            override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
+                drags += 1
+                return true
+            }
+
+            override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+                captured = false
+                releases += 1
+                return true
+            }
+        }
+        fixture.interactiveWidgets += widget
+        fixture.screen.focused = fixture.widgets[0]
+        assertTrue(fixture.adapter.mouseDragged(-100.0, -100.0, 1, 1.0, 1.0))
+        assertTrue(fixture.adapter.mouseReleased(-100.0, -100.0, 1))
+        assertEquals(1, drags)
+        assertEquals(1, releases)
+        assertFalse(captured)
         fixture.adapter.removed()
     }
 

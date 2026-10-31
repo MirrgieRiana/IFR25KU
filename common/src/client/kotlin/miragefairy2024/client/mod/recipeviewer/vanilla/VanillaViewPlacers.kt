@@ -15,6 +15,8 @@ import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
+import miragefairy2024.mod.recipeviewer.views.XScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.register
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
@@ -45,6 +47,30 @@ private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidge
 
 context(ModContext)
 fun initVanillaViewPlacers() {
+    fun placeScrollView(context: VanillaViewPlacerContext, widget: VanillaScrollViewWidget): ViewController {
+        val controller = context place widget
+        return object : ViewController {
+            override fun setOffset(offset: IntPoint) {
+                controller.setOffset(offset)
+            }
+
+            override fun detach() {
+                widget.detach()
+                controller.detach()
+            }
+
+            override fun dispose() {
+                widget.dispose()
+                controller.dispose()
+            }
+        }
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XScrollView, bounds ->
+        placeScrollView(context, VanillaXScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollView, bounds ->
+        placeScrollView(context, VanillaYScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
+    }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
         // バニラはSlotの座標へoriginを描画とホバー判定の際に加算するため、絶対座標を書き込むと二重に加算されるのだ～🌱
         (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(bounds.x - context.origin.x + view.margin.x, bounds.y - context.origin.y + view.margin.y)
@@ -70,7 +96,15 @@ fun initVanillaViewPlacers() {
             if (editBox.value != text) editBox.value = text
         }
         val controller = context place editBox
-        object : ViewController by controller {
+        object : ViewController {
+            override fun setOffset(offset: IntPoint): Unit {
+                controller.setOffset(offset)
+            }
+
+            override fun detach() {
+                controller.detach()
+            }
+
             override fun dispose() {
                 textRemover.remove()
                 controller.dispose()

@@ -2,7 +2,6 @@ package miragefairy2024.client.mod.recipeviewer.common
 
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.mod.recipeviewer.view.x1
 import miragefairy2024.mod.recipeviewer.view.x2
 import miragefairy2024.mod.recipeviewer.view.y1
@@ -28,8 +27,8 @@ object ClickableViewRenderer : ViewRenderer<ClickableView> {
         return false
     }
 
-    override fun render(view: ClickableView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-        if (bounds.contains(mouseX, mouseY)) {
+    override fun render(view: ClickableView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+        if (isHovered) {
             graphics.fill(
                 RenderType.guiOverlay(),
                 bounds.x1,
