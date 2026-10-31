@@ -104,7 +104,15 @@ abstract class VanillaScrollViewWidget(
 
     private fun evaluateMaxScroll() = evaluateContentLength() - viewportLength atLeast 0
 
-    // TODO つまみの長さを、`evaluateContentLength()` の評価結果から計算するのだ～🌱
+    private fun evaluateThumbLength(): Int {
+        if (viewportLength <= 0) return 0
+        val contentLength = evaluateContentLength()
+        if (contentLength <= viewportLength) return viewportLength
+        val length = (viewportLength.toDouble() * viewportLength / contentLength).roundToInt()
+        return length.coerceIn(view.scrollbarThickness atLeast 1 min viewportLength, viewportLength)
+    }
+
+    private fun evaluateThumbPosition() = if (evaluateMaxScroll() == 0) 0.0 else scrollOffset * (viewportLength - evaluateThumbLength()) / evaluateMaxScroll()
 
     protected abstract fun getChildOffset(scrollOffset: Int): IntPoint
 
@@ -145,6 +153,8 @@ abstract class VanillaScrollViewWidget(
         return super.getChildAt(mouseX, mouseY)
     }
 
+    protected abstract fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int)
+
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         guiGraphics.enableScissor(x, y, x + (width - getReservedRight() atLeast 0), y + (height - getReservedBottom() atLeast 0))
         try {
@@ -154,6 +164,7 @@ abstract class VanillaScrollViewWidget(
         } finally {
             guiGraphics.disableScissor()
         }
+        if (evaluateMaxScroll() > 0 && view.scrollbarThickness > 0 && evaluateThumbLength() > 0) renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), evaluateThumbLength())
     }
 
     /** ホイール入力から、このコンテナのスクロール軸に適用する入力値を返すのだ～🌱 */
@@ -362,6 +373,10 @@ class VanillaXScrollViewWidget(
     // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
+    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
+        guiGraphics.fill(x + start, y + height - view.scrollbarThickness atLeast y, x + start + length, y + height, view.scrollbarColor)
+    }
+
     override fun getScrollOffsetDeltaOnFocus(rectangle: ScreenRectangle): Int {
         val viewPortX1 = rectangle.left() - x
         if (viewPortX1 < 0) return viewPortX1
@@ -399,6 +414,10 @@ class VanillaYScrollViewWidget(
 
     override fun getChildOffset(scrollOffset: Int) = IntPoint(x, y - scrollOffset)
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
+
+    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
+        guiGraphics.fill(x + width - view.scrollbarThickness atLeast x, y + start, x + width, y + start + length, view.scrollbarColor)
+    }
 
     override fun getScrollOffsetDeltaOnFocus(rectangle: ScreenRectangle): Int {
         val viewPortY1 = rectangle.top() - y
