@@ -221,7 +221,7 @@ abstract class VanillaScrollViewWidget(
 
     private var focusedSelf = false
 
-    protected abstract fun getFocusDelta(rectangle: ScreenRectangle): Int
+    protected abstract fun getScrollOffsetDeltaOnFocus(rectangle: ScreenRectangle): Int
 
     override fun isFocused() = focusedSelf
 
@@ -242,7 +242,7 @@ abstract class VanillaScrollViewWidget(
             val listener = focused?.findFocusedLeaf { true } ?: return
             val rectangle = listener.rectangle
             if (rectangle.width() <= 0 || rectangle.height() <= 0) return
-            updateScroll(scrollOffset + getFocusDelta(rectangle))
+            updateScroll(scrollOffset + getScrollOffsetDeltaOnFocus(rectangle))
         }
         return object : ComponentPath {
             override fun component() = path.component()
@@ -329,7 +329,7 @@ class VanillaXScrollViewWidget(
     // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
-    override fun getFocusDelta(rectangle: ScreenRectangle): Int {
+    override fun getScrollOffsetDeltaOnFocus(rectangle: ScreenRectangle): Int {
         val start = rectangle.left() - x
         if (start < 0) return start
         val end = start + rectangle.width()
@@ -367,7 +367,7 @@ class VanillaYScrollViewWidget(
     override fun getChildOffset(scrollOffset: Int) = IntPoint(x, y - scrollOffset)
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
-    override fun getFocusDelta(rectangle: ScreenRectangle): Int {
+    override fun getScrollOffsetDeltaOnFocus(rectangle: ScreenRectangle): Int {
         val start = rectangle.top() - y
         if (start < 0) return start
         val end = start + rectangle.height()
