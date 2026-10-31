@@ -11,6 +11,7 @@ import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.Remover
 import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
 import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.client.gui.ComponentPath
@@ -18,9 +19,12 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
+import net.minecraft.client.gui.narration.NarratableEntry
+import net.minecraft.client.gui.narration.NarratedElementType
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenRectangle
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import java.util.Optional
 import kotlin.math.roundToInt
@@ -51,10 +55,11 @@ abstract class VanillaScrollViewWidget(
             pressedWidgetRegistrations.entries.forEach {
                 if (it.value == widgetRegistration) it.setValue(null)
             }
-            if (focused !== widget) return@Remover
+            if (focused !== widget && lastNarratable !== widget) return@Remover
             // フォーカスを持っていた子が消えた場合は、フォーカスを解除するのだ～🌱
             if (widgetRegistrations.none { it.interactive && it.widget === widget }) {
                 if (focused === widget) focused = null
+                if (lastNarratable === widget) lastNarratable = null
             }
         }
     }
@@ -279,8 +284,26 @@ abstract class VanillaScrollViewWidget(
 
     // 読み上げなのだ～🌱
 
+    private var lastNarratable: NarratableEntry? = null
+
+    private fun getNarratables() = children().filter { it.isActive }.sortedBy { it.tabOrderGroup }
+
+    override fun narrationPriority(): NarratableEntry.NarrationPriority {
+        if (!isActive) return NarratableEntry.NarrationPriority.NONE
+        return getNarratables().fold(super.narrationPriority()) { priority, widget -> priority max widget.narrationPriority() }
+    }
+
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) {
-        // TODO 子 Widget の読み上げを中継するのだ～🌱
+        val narratables = getNarratables()
+        val result = Screen.findNarratableWidget(narratables, lastNarratable) ?: return
+        if (result.priority.isTerminal) lastNarratable = result.entry
+        if (narratables.size > 1) {
+            narrationElementOutput.add(NarratedElementType.POSITION, Component.translatable("narrator.position.object_list", result.index + 1, narratables.size))
+            if (result.priority == NarratableEntry.NarrationPriority.FOCUSED) {
+                narrationElementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.component_list.usage"))
+            }
+        }
+        result.entry.updateNarration(narrationElementOutput.nest())
     }
 
 
