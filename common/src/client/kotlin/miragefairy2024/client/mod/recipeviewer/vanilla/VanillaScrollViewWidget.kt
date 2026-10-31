@@ -43,7 +43,7 @@ abstract class VanillaScrollViewWidget(
         }
     }
 
-    override fun children() = widgetRegistrations.filter { it.interactive }.map { it.widget }
+    override fun children() = widgetRegistrations.mapNotNull { if (it.interactive) it.widget else null }
 
 
     // ライフサイクルなのだ～🌱
