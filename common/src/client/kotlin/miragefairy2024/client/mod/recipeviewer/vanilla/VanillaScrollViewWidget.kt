@@ -9,11 +9,14 @@ import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.Remover
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.Component
+import java.util.Optional
 
 // TODO 子 Widget の描画・入力・フォーカス・読み上げを中継するスクロール領域なのだ～🌱
 abstract class VanillaScrollViewWidget(
@@ -80,13 +83,59 @@ abstract class VanillaScrollViewWidget(
 
     // 描画とマウス入力なのだ～🌱
 
-    override fun isActive() = super.isActive() && !disposed
-
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        // TODO 右と下の予約領域を除いた幅と高さを 0 以上に制限し、Widget の座標と合わせて子の描画をクリップするのだ～🌱
+    private fun containsViewport(mouseX: Double, mouseY: Double): Boolean {
+        if (mouseX < x) return false
+        if (mouseY < y) return false
+        if (mouseX >= x + (width - getReservedRight() atLeast 0)) return false
+        if (mouseY >= y + (height - getReservedBottom() atLeast 0)) return false
+        return true
     }
 
-    // TODO 子へのクリック・ホイールの中継と対象探索は、右と下の予約領域を除いた表示領域内に制限するのだ～🌱
+    override fun isActive() = super.isActive() && !disposed
+
+    override fun isMouseOver(mouseX: Double, mouseY: Double) = isActive && super.isMouseOver(mouseX, mouseY)
+
+    // 有効である子のみを返すのだ～🌱
+    override fun getChildAt(mouseX: Double, mouseY: Double): Optional<GuiEventListener> {
+        if (!isActive) return Optional.empty()
+        if (!containsViewport(mouseX, mouseY)) return Optional.empty()
+        return super.getChildAt(mouseX, mouseY)
+    }
+
+    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        guiGraphics.enableScissor(x, y, x + (width - getReservedRight() atLeast 0), y + (height - getReservedBottom() atLeast 0))
+        try {
+            widgetRegistrations.forEach { widgetRegistration ->
+                widgetRegistration.widget.render(guiGraphics, mouseX, mouseY, partialTick)
+            }
+        } finally {
+            guiGraphics.disableScissor()
+        }
+    }
+
+    override fun mouseMoved(mouseX: Double, mouseY: Double) {
+        if (!isActive) return
+        if (!containsViewport(mouseX, mouseY)) {
+            // TODO ボタンごとの押下先の導入後は、領域外でも各押下先へ実座標を中継するのだ～🌱
+            if (isDragging) focused?.mouseMoved(mouseX, mouseY)
+            return
+        }
+        children().forEach {
+            it.mouseMoved(mouseX, mouseY)
+        }
+    }
+
+    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        if (!isActive) return false
+        if (!containsViewport(mouseX, mouseY)) return false
+        return super.mouseClicked(mouseX, mouseY, button)
+    }
+
+    override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
+        if (!isActive) return false
+        if (!containsViewport(mouseX, mouseY)) return false
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+    }
 
 
     // 読み上げなのだ～🌱
