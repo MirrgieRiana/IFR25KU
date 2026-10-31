@@ -256,19 +256,22 @@ abstract class VanillaScrollViewWidget(
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        if (!isActive || !isFocused) return false
+        if (!isActive) return false
+        if (!isFocused) return false
         val listener = focused ?: return false
         return listener.keyPressed(keyCode, scanCode, modifiers)
     }
 
     override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        if (!isActive || !isFocused) return false
+        if (!isActive) return false
+        if (!isFocused) return false
         val listener = focused ?: return false
         return listener.keyReleased(keyCode, scanCode, modifiers)
     }
 
     override fun charTyped(codePoint: Char, modifiers: Int): Boolean {
-        if (!isActive || !isFocused) return false
+        if (!isActive) return false
+        if (!isFocused) return false
         val listener = focused ?: return false
         return listener.charTyped(codePoint, modifiers)
     }
@@ -330,10 +333,10 @@ class VanillaXScrollViewWidget(
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
     override fun getScrollOffsetDeltaOnFocus(rectangle: ScreenRectangle): Int {
-        val start = rectangle.left() - x
-        if (start < 0) return start
-        val end = start + rectangle.width()
-        if (end > viewportLength) return start min (end - viewportLength)
+        val viewPortX1 = rectangle.left() - x
+        if (viewPortX1 < 0) return viewPortX1
+        val viewPortX2 = viewPortX1 + rectangle.width()
+        if (viewPortX2 > viewportLength) return viewPortX2 - viewportLength min viewPortX1
         return 0
     }
 
@@ -368,10 +371,10 @@ class VanillaYScrollViewWidget(
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
     override fun getScrollOffsetDeltaOnFocus(rectangle: ScreenRectangle): Int {
-        val start = rectangle.top() - y
-        if (start < 0) return start
-        val end = start + rectangle.height()
-        if (end > viewportLength) return start min (end - viewportLength)
+        val viewPortY1 = rectangle.top() - y
+        if (viewPortY1 < 0) return viewPortY1
+        val viewPortY2 = viewPortY1 + rectangle.height()
+        if (viewPortY2 > viewportLength) return viewPortY2 - viewportLength min viewPortY1
         return 0
     }
 
