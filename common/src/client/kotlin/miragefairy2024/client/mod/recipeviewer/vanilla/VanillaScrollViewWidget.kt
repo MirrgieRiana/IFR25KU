@@ -10,6 +10,8 @@ import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.Remover
+import miragefairy2024.util.text
+import miragefairy2024.util.translate
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
@@ -50,17 +52,22 @@ abstract class VanillaScrollViewWidget(
         val widgetRegistration = WidgetRegistration(widget, interactive)
         widgetRegistrations += widgetRegistration
         return Remover {
+
             widgetRegistrations -= widgetRegistration
-            // 押下の記録は残し、解除された登録への通知だけを止めるのだ～🌱
+
+            // 押下のフラグだけ残して、解除された子への参照は消すのだ～🌱
             pressedWidgetRegistrations.entries.forEach {
                 if (it.value == widgetRegistration) it.setValue(null)
             }
-            if (focused !== widget && lastNarratable !== widget) return@Remover
-            // フォーカスを持っていた子が消えた場合は、フォーカスを解除するのだ～🌱
-            if (widgetRegistrations.none { it.interactive && it.widget === widget }) {
-                if (focused === widget) focused = null
-                if (lastNarratable === widget) lastNarratable = null
+
+            // 入力登録が残っていない子への参照を解除するのだ～🌱
+            if (focused === widget || lastNarratable === widget) {
+                if (widgetRegistrations.none { it.interactive && it.widget === widget }) {
+                    if (focused === widget) focused = null
+                    if (lastNarratable === widget) lastNarratable = null
+                }
             }
+
         }
     }
 
@@ -298,9 +305,9 @@ abstract class VanillaScrollViewWidget(
         val result = Screen.findNarratableWidget(narratables, lastNarratable) ?: return
         if (result.priority.isTerminal) lastNarratable = result.entry
         if (narratables.size > 1) {
-            narrationElementOutput.add(NarratedElementType.POSITION, Component.translatable("narrator.position.object_list", result.index + 1, narratables.size))
+            narrationElementOutput.add(NarratedElementType.POSITION, text { translate("narrator.position.object_list", result.index + 1, narratables.size) })
             if (result.priority == NarratableEntry.NarrationPriority.FOCUSED) {
-                narrationElementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.component_list.usage"))
+                narrationElementOutput.add(NarratedElementType.USAGE, text { translate("narration.component_list.usage") })
             }
         }
         result.entry.updateNarration(narrationElementOutput.nest())
