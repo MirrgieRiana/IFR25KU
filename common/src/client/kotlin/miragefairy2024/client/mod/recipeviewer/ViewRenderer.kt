@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiGraphics
 interface ViewRenderer<in V : PlaceableView> {
     fun mouseClicked(view: V, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = false
     fun keyPressed(view: V, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int) = false
-    fun render(view: V, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = Unit
+    fun render(view: V, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) = Unit
 }
 
 object ViewRendererRegistry {

@@ -7,7 +7,7 @@ import mirrg.kotlin.helium.atMost
 import net.minecraft.client.gui.GuiGraphics
 
 object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView> {
-    override fun render(view: NinePatchImageView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(view: NinePatchImageView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
 
         val w0 = view.textureWidth
         val w1 = view.xStartSize
