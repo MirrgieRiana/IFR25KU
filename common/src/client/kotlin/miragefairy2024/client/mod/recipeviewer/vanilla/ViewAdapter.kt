@@ -103,7 +103,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     /**
      * Fabric 以外ではフォーカスされた子へドラッグを中継するのだ～🌱
-     * [miragefairy2024.client.mod.recipeviewer.vanilla.VanillaMouseCaptureContainer] が保持する押下先へは、プラットフォームによらず中継するのだ～🌱
+     * [miragefairy2024.client.mod.recipeviewer.vanilla.MouseCaptureContainer] が保持する押下先へは、プラットフォームによらず中継するのだ～🌱
      * それ以外の Fabric の中継は、Fabric API が [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.mouseDragged] 内で行うのだ～🌱
      */
     fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
@@ -122,8 +122,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     private fun getMouseCapture(screen: Screen, button: Int): GuiEventListener? {
         val focused = screen.focused
-        if (focused is VanillaMouseCaptureContainer && focused.hasMouseCapture(button)) return focused
-        return screen.children().firstOrNull { it is VanillaMouseCaptureContainer && it.hasMouseCapture(button) }
+        if (focused is MouseCaptureContainer && focused.hasMouseCapture(button)) return focused
+        return screen.children().firstOrNull { it is MouseCaptureContainer && it.hasMouseCapture(button) }
     }
 
     // 押下先を保持する子を優先し、それ以外の解放は Fabric API または画面の既存経路へ渡すのだ～🌱

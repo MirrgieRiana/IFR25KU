@@ -402,7 +402,7 @@ class ViewAdapterTest {
         var captured = true
         var drags = 0
         var releases = 0
-        val widget: AbstractWidget = object : AbstractWidget(0, 0, 10, 10, Component.empty()), VanillaMouseCaptureContainer {
+        val widget: AbstractWidget = object : AbstractWidget(0, 0, 10, 10, Component.empty()), MouseCaptureContainer {
             override fun hasMouseCapture(button: Int) = captured && button == 1
             override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
             override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
