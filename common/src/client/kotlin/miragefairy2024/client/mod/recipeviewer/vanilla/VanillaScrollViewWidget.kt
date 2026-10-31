@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.client.util.findFocusedLeaf
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewController
@@ -10,12 +11,16 @@ import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.Remover
 import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.min
 import mirrg.kotlin.java.hydrogen.orNull
+import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarrationElementOutput
+import net.minecraft.client.gui.navigation.FocusNavigationEvent
+import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.network.chat.Component
 import java.util.Optional
 import kotlin.math.roundToInt
@@ -66,6 +71,7 @@ abstract class VanillaScrollViewWidget(
         isDragging = false
         pressedWidgetRegistrations.clear()
         focused = null
+        focusedSelf = false
         childController.dispose()
     }
 
@@ -211,6 +217,63 @@ abstract class VanillaScrollViewWidget(
     }
 
 
+    // フォーカスとキーボード入力なのだ～🌱
+
+    private var focusedSelf = false
+
+    protected abstract fun getFocusDelta(rectangle: ScreenRectangle): Int
+
+    override fun isFocused() = focusedSelf
+
+    override fun setFocused(focused: Boolean) {
+        focusedSelf = focused
+        // 同じコンテナへの再フォーカスでも、選択中の子と押下先は維持するのだ～🌱
+        this.focused?.setFocused(focused)
+    }
+
+    override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
+        if (!isActive) return null
+        // マウスで外へフォーカスが移った場合も、再入時は移動方向に応じた端から探索するのだ～🌱
+        if (!isFocused) focused = null
+        val navigation = if (event is FocusNavigationEvent.InitialFocus) FocusNavigationEvent.TabNavigation(true) else event
+        val path = super.nextFocusPath(navigation)
+        if (path == null) return null
+        fun revealFocused() {
+            val listener = focused?.findFocusedLeaf { true } ?: return
+            val rectangle = listener.rectangle
+            if (rectangle.width() <= 0 || rectangle.height() <= 0) return
+            updateScroll(scrollOffset + getFocusDelta(rectangle))
+        }
+        return object : ComponentPath {
+            override fun component() = path.component()
+
+            override fun applyFocus(focused: Boolean) {
+                path.applyFocus(focused)
+                // 内側のフォーカスとスクロールを確定してから、外側の表示位置を調整するのだ～🌱
+                if (focused) revealFocused()
+            }
+        }
+    }
+
+    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        if (!isActive || !isFocused) return false
+        val listener = focused ?: return false
+        return listener.keyPressed(keyCode, scanCode, modifiers)
+    }
+
+    override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        if (!isActive || !isFocused) return false
+        val listener = focused ?: return false
+        return listener.keyReleased(keyCode, scanCode, modifiers)
+    }
+
+    override fun charTyped(codePoint: Char, modifiers: Int): Boolean {
+        if (!isActive || !isFocused) return false
+        val listener = focused ?: return false
+        return listener.charTyped(codePoint, modifiers)
+    }
+
+
     // 読み上げなのだ～🌱
 
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) {
@@ -266,6 +329,14 @@ class VanillaXScrollViewWidget(
     // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
+    override fun getFocusDelta(rectangle: ScreenRectangle): Int {
+        val start = rectangle.left() - x
+        if (start < 0) return start
+        val end = start + rectangle.width()
+        if (end > viewportLength) return start min (end - viewportLength)
+        return 0
+    }
+
     // TODO X 軸の残りのスクロール操作を実装するのだ～🌱
 
 }
@@ -295,6 +366,14 @@ class VanillaYScrollViewWidget(
 
     override fun getChildOffset(scrollOffset: Int) = IntPoint(x, y - scrollOffset)
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
+
+    override fun getFocusDelta(rectangle: ScreenRectangle): Int {
+        val start = rectangle.top() - y
+        if (start < 0) return start
+        val end = start + rectangle.height()
+        if (end > viewportLength) return start min (end - viewportLength)
+        return 0
+    }
 
     // TODO Y 軸の残りのスクロール操作を実装するのだ～🌱
 
