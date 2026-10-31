@@ -234,7 +234,9 @@ abstract class VanillaScrollViewWidget(
     override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
         if (!isActive) return null
         val navigation = if (event is FocusNavigationEvent.InitialFocus) FocusNavigationEvent.TabNavigation(true) else event
+        // TODO 後続の再入テストでは、逆 Tab でも保持していた子へ戻ることを期待するのだ～🌱
         val path = super.nextFocusPath(navigation)
+        // TODO 後続の自己フォーカス経路では、適用時に保持していた子の参照を解除するのだ～🌱
         if (path == null) return null
         fun revealFocused() {
             val listener = focused?.findFocusedLeaf { true } ?: return
