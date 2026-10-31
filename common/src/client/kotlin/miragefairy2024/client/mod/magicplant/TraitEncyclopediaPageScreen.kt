@@ -61,7 +61,7 @@ class TraitEncyclopediaPageScreen(private val parent: Screen?, private val trait
 
                 child(verticalSpace(5))
 
-                // 特性ポエム
+                // 特性の説明文
                 child(verticalScroll(Sizing.fill(), Sizing.expand(), 5, overlapped = true).apply {
                     scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
                     child().child(Components.label(text { trait.text }).apply {
