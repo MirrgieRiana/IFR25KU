@@ -194,7 +194,10 @@ abstract class VanillaScrollViewWidget(
     protected abstract fun getScrollAmount(scrollX: Double, scrollY: Double): Double
 
     private fun dragScrollbar(mouseX: Double, mouseY: Double) {
-        updateScroll((getMousePosition(mouseX, mouseY) - scrollbarDragOffset) * evaluateMaxScrollOffset() / (viewportLength - evaluateThumbLength()))
+        val thumbPosition = getMousePosition(mouseX, mouseY) - scrollbarDragOffset
+        val remainingThumbLength = viewportLength - evaluateThumbLength()
+        val scrollRatio = thumbPosition / remainingThumbLength.toDouble()
+        updateScroll(evaluateMaxScrollOffset() * scrollRatio)
     }
 
     override fun hasMouseCapture(button: Int) = !disposed && (button == 0 && draggingScrollbar || button in pressedWidgetRegistrations)
@@ -206,34 +209,47 @@ abstract class VanillaScrollViewWidget(
             isDragging = false
         }
         if (!isActive) return false
+
         if (!containsViewport(mouseX, mouseY)) {
-            if (!super.isMouseOver(mouseX, mouseY)) return false
-            if (button != 0 || evaluateMaxScrollOffset() == 0 || viewportLength <= evaluateThumbLength()) return false
-            draggingScrollbar = true
-            val position = getMousePosition(mouseX, mouseY)
-            scrollbarDragOffset = if (position >= evaluateThumbPosition() && position < evaluateThumbPosition() + evaluateThumbLength()) position - evaluateThumbPosition() else evaluateThumbLength() / 2.0
-            dragScrollbar(mouseX, mouseY)
-            return true
-        }
-        return widgetRegistrations.toList().any { widgetRegistration ->
-            // 操作可能でない子は除くのだ～🌱
-            if (!widgetRegistration.interactive) return@any false
-            // 途中で除外された子は除くのだ～🌱
-            if (widgetRegistration !in widgetRegistrations) return@any false
-            if (widgetRegistration.widget.mouseClicked(mouseX, mouseY, button)) {
-                // クリック処理中に解除・破棄される場合があるため、処理後の登録状態を確認するのだ～🌱
-                if (!disposed) {
-                    if (widgetRegistration in widgetRegistrations) {
-                        pressedWidgetRegistrations[button] = widgetRegistration
-                        focused = widgetRegistration.widget
-                        if (button == 0) isDragging = true
-                    } else {
-                        pressedWidgetRegistrations[button] = null
-                    }
+            if (super.isMouseOver(mouseX, mouseY)) {
+                // スクロールバーのドラッグ開始なのだ～🌱
+                if (button != 0) return false
+                if (evaluateMaxScrollOffset() == 0) return false
+                if (viewportLength <= evaluateThumbLength()) return false
+                draggingScrollbar = true
+                val mousePosition = getMousePosition(mouseX, mouseY)
+                scrollbarDragOffset = if (mousePosition >= evaluateThumbPosition() && mousePosition < evaluateThumbPosition() + evaluateThumbLength()) {
+                    mousePosition - evaluateThumbPosition()
+                } else {
+                    evaluateThumbLength() / 2.0
                 }
-                true
+                dragScrollbar(mouseX, mouseY)
+                return true
             } else {
-                false
+                return false
+            }
+        } else {
+            // 子要素のクリック処理なのだ～🌱
+            return widgetRegistrations.toList().any { widgetRegistration ->
+                // 操作可能でない子は除くのだ～🌱
+                if (!widgetRegistration.interactive) return@any false
+                // 途中で除外された子は除くのだ～🌱
+                if (widgetRegistration !in widgetRegistrations) return@any false
+                if (widgetRegistration.widget.mouseClicked(mouseX, mouseY, button)) {
+                    // クリック処理中に解除・破棄される場合があるため、処理後の登録状態を確認するのだ～🌱
+                    if (!disposed) {
+                        if (widgetRegistration in widgetRegistrations) {
+                            pressedWidgetRegistrations[button] = widgetRegistration
+                            focused = widgetRegistration.widget
+                            if (button == 0) isDragging = true
+                        } else {
+                            pressedWidgetRegistrations[button] = null
+                        }
+                    }
+                    true
+                } else {
+                    false
+                }
             }
         }
     }
