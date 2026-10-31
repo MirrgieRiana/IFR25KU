@@ -228,7 +228,7 @@ abstract class VanillaScrollViewWidget(
     override fun setFocused(focused: Boolean) {
         focusedSelf = focused
         // 同じコンテナへの再フォーカスでも、選択中の子と押下先は維持するのだ～🌱
-        this.focused?.setFocused(focused)
+        this.focused?.isFocused = focused
     }
 
     override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
