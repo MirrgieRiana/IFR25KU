@@ -293,7 +293,7 @@ abstract class VanillaScrollViewWidget(
 
     private var lastNarratable: NarratableEntry? = null
 
-    private fun getNarratables() = children().filter { it.isActive }.sortedBy { it.tabOrderGroup }
+    private fun getNarratables() = children().filter { it.isActive }
 
     override fun narrationPriority(): NarratableEntry.NarrationPriority {
         if (!isActive) return NarratableEntry.NarrationPriority.NONE
@@ -301,7 +301,7 @@ abstract class VanillaScrollViewWidget(
     }
 
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) {
-        val narratables = getNarratables()
+        val narratables = getNarratables().sortedBy { it.tabOrderGroup }
         val result = Screen.findNarratableWidget(narratables, lastNarratable) ?: return
         if (result.priority.isTerminal) lastNarratable = result.entry
         if (narratables.size > 1) {
