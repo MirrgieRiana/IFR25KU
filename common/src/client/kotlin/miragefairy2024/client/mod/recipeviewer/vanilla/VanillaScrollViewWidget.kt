@@ -32,7 +32,7 @@ abstract class VanillaScrollViewWidget(
 
     private class WidgetRegistration(val widget: AbstractWidget, val interactive: Boolean)
 
-    private val widgetRegistrations = mutableListOf<WidgetRegistration>()
+    private val widgetRegistrations = mutableSetOf<WidgetRegistration>()
 
     private fun register(widget: AbstractWidget, interactive: Boolean): Remover {
         val widgetRegistration = WidgetRegistration(widget, interactive)
