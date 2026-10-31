@@ -32,7 +32,7 @@ import org.lwjgl.glfw.GLFW
 import java.util.Optional
 import kotlin.math.roundToInt
 
-// TODO 子 Widget の描画・入力・フォーカス・読み上げを中継するスクロール領域なのだ～🌱
+/** 子 Widget の描画・入力・フォーカス・読み上げを中継するスクロール領域なのだ～🌱 */
 abstract class VanillaScrollViewWidget(
     protected val view: ScrollView,
     bounds: IntRectangle,
@@ -287,8 +287,17 @@ abstract class VanillaScrollViewWidget(
         val navigation = if (event is FocusNavigationEvent.InitialFocus) FocusNavigationEvent.TabNavigation(true) else event
         // TODO 後続の再入テストでは、逆 Tab でも保持していた子へ戻ることを期待するのだ～🌱
         val path = super.nextFocusPath(navigation)
-        // TODO 後続の自己フォーカス経路では、適用時に保持していた子の参照を解除するのだ～🌱
-        if (path == null) return null
+        if (path == null) {
+            if (isFocused || evaluateMaxScroll() <= 0) return null
+            return object : ComponentPath {
+                override fun component() = this@VanillaScrollViewWidget
+
+                override fun applyFocus(focused: Boolean) {
+                    if (focused) this@VanillaScrollViewWidget.focused = null
+                    this@VanillaScrollViewWidget.isFocused = focused
+                }
+            }
+        }
         return object : ComponentPath {
             override fun component() = path.component()
 
@@ -303,6 +312,12 @@ abstract class VanillaScrollViewWidget(
                 }
             }
         }
+    }
+
+    override fun getCurrentFocusPath(): ComponentPath? {
+        val path = super.getCurrentFocusPath()
+        if (path != null) return path
+        return if (isFocused) ComponentPath.leaf(this) else null
     }
 
     protected abstract val backwardKey: Int
@@ -430,8 +445,6 @@ class VanillaXScrollViewWidget(
         return 0
     }
 
-    // TODO X 軸の残りのスクロール操作を実装するのだ～🌱
-
 }
 
 class VanillaYScrollViewWidget(
@@ -475,7 +488,5 @@ class VanillaYScrollViewWidget(
         if (viewPortY2 > viewportLength) return viewPortY2 - viewportLength min viewPortY1
         return 0
     }
-
-    // TODO Y 軸の残りのスクロール操作を実装するのだ～🌱
 
 }
