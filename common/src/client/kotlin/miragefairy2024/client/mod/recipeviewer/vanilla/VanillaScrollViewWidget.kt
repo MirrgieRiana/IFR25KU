@@ -25,7 +25,7 @@ abstract class VanillaScrollViewWidget(
     context: VanillaViewPlacerContext,
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
 ) :
-    AbstractContainerWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty()) {
+    AbstractContainerWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty()), MouseCaptureContainer {
 
 
     // Widget の登録なのだ～🌱
@@ -41,6 +41,10 @@ abstract class VanillaScrollViewWidget(
             widgetRegistrations -= widgetRegistration
             // フォーカスを持っていた子が消えた場合は、フォーカスを解除するのだ～🌱
             if (widgetRegistrations.none { it.interactive && it.widget === widget }) {
+                // 押下の記録は残し、解除された子への通知だけを止めるのだ～🌱
+                pressedWidgets.entries.forEach {
+                    if (it.value === widget) it.setValue(null)
+                }
                 if (focused === widget) focused = null
             }
         }
@@ -56,6 +60,7 @@ abstract class VanillaScrollViewWidget(
     fun dispose() {
         disposed = true
         isDragging = false
+        pressedWidgets.clear()
         focused = null
         childController.dispose()
     }
@@ -82,6 +87,8 @@ abstract class VanillaScrollViewWidget(
 
 
     // 描画とマウス入力なのだ～🌱
+
+    private val pressedWidgets = mutableMapOf<Int, AbstractWidget?>()
 
     private fun containsViewport(mouseX: Double, mouseY: Double): Boolean {
         if (mouseX < x) return false
@@ -113,11 +120,14 @@ abstract class VanillaScrollViewWidget(
         }
     }
 
+    override fun hasMouseCapture(button: Int) = !disposed && pressedWidgets.containsKey(button)
+
     override fun mouseMoved(mouseX: Double, mouseY: Double) {
         if (!isActive) return
         if (!containsViewport(mouseX, mouseY)) {
-            // TODO ボタンごとの押下先の導入後は、領域外でも各押下先へ実座標を中継するのだ～🌱
-            if (isDragging) focused?.mouseMoved(mouseX, mouseY)
+            children().forEach { widget ->
+                if (pressedWidgets.values.any { it === widget }) widget.mouseMoved(mouseX, mouseY)
+            }
             return
         }
         children().forEach {
@@ -126,9 +136,42 @@ abstract class VanillaScrollViewWidget(
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        if (!isActive) return false
+        pressedWidgets.remove(button)
+        if (button == 0) {
+            isDragging = false
+        }
+        if (!isMouseOver(mouseX, mouseY)) return false
         if (!containsViewport(mouseX, mouseY)) return false
-        return super.mouseClicked(mouseX, mouseY, button)
+        return widgetRegistrations.toList().any { widgetRegistration ->
+            val widget = widgetRegistration.widget
+            if (widgetRegistration.interactive && widgetRegistration in widgetRegistrations && widget.mouseClicked(mouseX, mouseY, button)) {
+                // クリック処理中に解除・破棄される場合があるため、処理後の登録状態を確認するのだ～🌱
+                if (!disposed) {
+                    pressedWidgets[button] = if (widgetRegistration in widgetRegistrations) widget else null
+                    if (widgetRegistration in widgetRegistrations) {
+                        focused = widget
+                        if (button == 0) isDragging = true
+                    }
+                }
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
+        if (disposed) return false
+        if (!pressedWidgets.containsKey(button)) return false
+        pressedWidgets[button]?.mouseDragged(mouseX, mouseY, button, dragX, dragY)
+        return true
+    }
+
+    override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        if (button == 0) isDragging = false
+        if (!pressedWidgets.containsKey(button)) return false
+        pressedWidgets.remove(button)?.mouseReleased(mouseX, mouseY, button)
+        return true
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
