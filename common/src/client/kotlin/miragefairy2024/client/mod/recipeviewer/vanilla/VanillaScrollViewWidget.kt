@@ -62,25 +62,6 @@ abstract class VanillaScrollViewWidget(
     }
 
 
-    // 子 View の配置なのだ～🌱
-
-    private val childController: ViewController
-
-    init {
-        val childContext: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
-            override val origin = context.origin
-            override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
-            override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
-        }
-        childController = view.childView.attachTo(IntPoint(x, y)) { childView, childBounds ->
-            // TODO 後続のテストでは Slot の配置拒否を検証し、初期化失敗時の巻き戻しは要求しないのだ～🌱
-            // TODO スクロール領域内の MenuSlotView の配置に対応するのだ～🌱
-            if (childView is MenuSlotView) throw UnsupportedOperationException("MenuSlotView cannot be placed inside a scroll view")
-            registry.place(childContext, childView, childBounds)
-        }
-    }
-
-
     // サイズと位置なのだ～🌱
 
     protected abstract fun getReservedRight(): Int
@@ -112,6 +93,25 @@ abstract class VanillaScrollViewWidget(
 
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) {
         // TODO 子 Widget の読み上げを中継するのだ～🌱
+    }
+
+
+    // 子 View の配置なのだ～🌱
+
+    private val childController: ViewController
+
+    init {
+        val childContext: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+            override val origin = context.origin
+            override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
+            override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
+        }
+        childController = view.childView.attachTo(IntPoint(x, y)) { childView, childBounds ->
+            // TODO 後続のテストでは Slot の配置拒否を検証し、初期化失敗時の巻き戻しは要求しないのだ～🌱
+            // TODO スクロール領域内の MenuSlotView の配置に対応するのだ～🌱
+            if (childView is MenuSlotView) throw UnsupportedOperationException("MenuSlotView cannot be placed inside a scroll view")
+            registry.place(childContext, childView, childBounds)
+        }
     }
 
 }
