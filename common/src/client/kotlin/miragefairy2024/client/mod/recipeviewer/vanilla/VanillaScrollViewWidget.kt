@@ -297,7 +297,7 @@ abstract class VanillaScrollViewWidget(
 
     override fun narrationPriority(): NarratableEntry.NarrationPriority {
         if (!isActive) return NarratableEntry.NarrationPriority.NONE
-        return getNarratables().fold(super.narrationPriority()) { priority, widget -> priority max widget.narrationPriority() }
+        return getNarratables().fold(NarratableEntry.NarrationPriority.NONE) { priority, widget -> priority max widget.narrationPriority() }
     }
 
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) {
