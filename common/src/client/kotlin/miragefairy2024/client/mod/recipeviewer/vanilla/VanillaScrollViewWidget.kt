@@ -32,6 +32,7 @@ abstract class VanillaScrollViewWidget(
 
     private class WidgetRegistration(val widget: AbstractWidget, val interactive: Boolean)
 
+    // mutableSetOf が返す Set の登録順を、描画順と入力順に利用するのだ～🌱
     private val widgetRegistrations = mutableSetOf<WidgetRegistration>()
 
     private fun register(widget: AbstractWidget, interactive: Boolean): Remover {
