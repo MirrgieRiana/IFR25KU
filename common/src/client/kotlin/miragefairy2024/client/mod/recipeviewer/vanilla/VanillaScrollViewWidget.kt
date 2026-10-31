@@ -39,12 +39,12 @@ abstract class VanillaScrollViewWidget(
         widgetRegistrations += widgetRegistration
         return Remover {
             widgetRegistrations -= widgetRegistration
+            // 押下の記録は残し、解除された登録への通知だけを止めるのだ～🌱
+            pressedWidgetRegistrations.entries.forEach {
+                if (it.value == widgetRegistration) it.setValue(null)
+            }
             // フォーカスを持っていた子が消えた場合は、フォーカスを解除するのだ～🌱
             if (widgetRegistrations.none { it.interactive && it.widget === widget }) {
-                // 押下の記録は残し、解除された子への通知だけを止めるのだ～🌱
-                pressedWidgets.entries.forEach {
-                    if (it.value === widget) it.setValue(null)
-                }
                 if (focused === widget) focused = null
             }
         }
@@ -60,7 +60,7 @@ abstract class VanillaScrollViewWidget(
     fun dispose() {
         disposed = true
         isDragging = false
-        pressedWidgets.clear()
+        pressedWidgetRegistrations.clear()
         focused = null
         childController.dispose()
     }
@@ -88,7 +88,7 @@ abstract class VanillaScrollViewWidget(
 
     // 描画とマウス入力なのだ～🌱
 
-    private val pressedWidgets = mutableMapOf<Int, AbstractWidget?>()
+    private val pressedWidgetRegistrations = mutableMapOf<Int, WidgetRegistration?>()
 
     private fun containsViewport(mouseX: Double, mouseY: Double): Boolean {
         if (mouseX < x) return false
@@ -120,37 +120,29 @@ abstract class VanillaScrollViewWidget(
         }
     }
 
-    override fun hasMouseCapture(button: Int) = !disposed && pressedWidgets.containsKey(button)
-
-    override fun mouseMoved(mouseX: Double, mouseY: Double) {
-        if (!isActive) return
-        if (!containsViewport(mouseX, mouseY)) {
-            children().forEach { widget ->
-                if (pressedWidgets.values.any { it === widget }) widget.mouseMoved(mouseX, mouseY)
-            }
-            return
-        }
-        children().forEach {
-            it.mouseMoved(mouseX, mouseY)
-        }
-    }
+    override fun hasMouseCapture(button: Int) = !disposed && button in pressedWidgetRegistrations
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        pressedWidgets.remove(button)
+        pressedWidgetRegistrations -= button
         if (button == 0) {
             isDragging = false
         }
-        if (!isMouseOver(mouseX, mouseY)) return false
+        if (!isActive) return false
         if (!containsViewport(mouseX, mouseY)) return false
         return widgetRegistrations.toList().any { widgetRegistration ->
-            val widget = widgetRegistration.widget
-            if (widgetRegistration.interactive && widgetRegistration in widgetRegistrations && widget.mouseClicked(mouseX, mouseY, button)) {
+            // 操作可能でない子は除くのだ～🌱
+            if (!widgetRegistration.interactive) return@any false
+            // 途中で除外された子は除くのだ～🌱
+            if (widgetRegistration !in widgetRegistrations) return@any false
+            if (widgetRegistration.widget.mouseClicked(mouseX, mouseY, button)) {
                 // クリック処理中に解除・破棄される場合があるため、処理後の登録状態を確認するのだ～🌱
                 if (!disposed) {
-                    pressedWidgets[button] = if (widgetRegistration in widgetRegistrations) widget else null
                     if (widgetRegistration in widgetRegistrations) {
-                        focused = widget
+                        pressedWidgetRegistrations[button] = widgetRegistration
+                        focused = widgetRegistration.widget
                         if (button == 0) isDragging = true
+                    } else {
+                        pressedWidgetRegistrations[button] = null
                     }
                 }
                 true
@@ -161,17 +153,32 @@ abstract class VanillaScrollViewWidget(
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
-        if (disposed) return false
-        if (!pressedWidgets.containsKey(button)) return false
-        pressedWidgets[button]?.mouseDragged(mouseX, mouseY, button, dragX, dragY)
+        if (button !in pressedWidgetRegistrations) return false
+        pressedWidgetRegistrations[button]?.widget?.mouseDragged(mouseX, mouseY, button, dragX, dragY)
         return true
     }
 
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (button == 0) isDragging = false
-        if (!pressedWidgets.containsKey(button)) return false
-        pressedWidgets.remove(button)?.mouseReleased(mouseX, mouseY, button)
+        if (button !in pressedWidgetRegistrations) return false
+        pressedWidgetRegistrations.remove(button)?.widget?.mouseReleased(mouseX, mouseY, button)
         return true
+    }
+
+    override fun mouseMoved(mouseX: Double, mouseY: Double) {
+        if (!isActive) return
+        if (!containsViewport(mouseX, mouseY)) {
+            // いずれかのボタンでドラッグしている子は、表示領域外でもマウス移動を受け取るのだ～🌱
+            widgetRegistrations.forEach { widgetRegistration ->
+                if (pressedWidgetRegistrations.values.any { it == widgetRegistration }) {
+                    widgetRegistration.widget.mouseMoved(mouseX, mouseY)
+                }
+            }
+            return
+        }
+        children().forEach {
+            it.mouseMoved(mouseX, mouseY)
+        }
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
