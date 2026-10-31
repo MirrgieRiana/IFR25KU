@@ -285,7 +285,6 @@ abstract class VanillaScrollViewWidget(
         if (!isActive) return null
         // バニラの他コンテナの実装では、InitialFocus 時に最初の要素を選択したりしているから、その代わりなのだ～🌱
         val navigation = if (event is FocusNavigationEvent.InitialFocus) FocusNavigationEvent.TabNavigation(true) else event
-        // TODO 後続の再入テストでは、逆 Tab でも保持していた子へ戻ることを期待するのだ～🌱
         val path = super.nextFocusPath(navigation)
         if (path == null) {
             if (isFocused || evaluateMaxScroll() <= 0) return null
@@ -392,7 +391,6 @@ abstract class VanillaScrollViewWidget(
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
         }
         childController = view.childView.attachTo(IntPoint(x, y)) { childView, childBounds ->
-            // TODO 後続のテストでは Slot の配置拒否を検証し、初期化失敗時の巻き戻しは要求しないのだ～🌱
             // TODO スクロール領域内の MenuSlotView の配置に対応するのだ～🌱
             if (childView is MenuSlotView) throw UnsupportedOperationException("MenuSlotView cannot be placed inside a scroll view")
             registry.place(childContext, childView, childBounds)
