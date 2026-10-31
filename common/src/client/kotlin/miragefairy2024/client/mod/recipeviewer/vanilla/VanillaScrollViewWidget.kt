@@ -1,6 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
-import miragefairy2024.client.util.findFocusedLeaf
+import miragefairy2024.client.util.getActualFocused
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewController
@@ -233,24 +233,24 @@ abstract class VanillaScrollViewWidget(
 
     override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
         if (!isActive) return null
+        // バニラの他コンテナの実装では、InitialFocus 時に最初の要素を選択したりしているから、その代わりなのだ～🌱
         val navigation = if (event is FocusNavigationEvent.InitialFocus) FocusNavigationEvent.TabNavigation(true) else event
         // TODO 後続の再入テストでは、逆 Tab でも保持していた子へ戻ることを期待するのだ～🌱
         val path = super.nextFocusPath(navigation)
         // TODO 後続の自己フォーカス経路では、適用時に保持していた子の参照を解除するのだ～🌱
         if (path == null) return null
-        fun revealFocused() {
-            val listener = focused?.findFocusedLeaf { true } ?: return
-            val rectangle = listener.rectangle
-            if (rectangle.width() <= 0 || rectangle.height() <= 0) return
-            updateScroll(scrollOffset + getScrollOffsetDeltaOnFocus(rectangle))
-        }
         return object : ComponentPath {
             override fun component() = path.component()
 
             override fun applyFocus(focused: Boolean) {
                 path.applyFocus(focused)
-                // 内側のフォーカスとスクロールを確定してから、外側の表示位置を調整するのだ～🌱
-                if (focused) revealFocused()
+                // 子のフォーカスが変わったら、適宜それを収めるようにスクロールするのだ～🌱
+                if (focused) {
+                    val actualFocused = this@VanillaScrollViewWidget.focused?.getActualFocused { true } ?: return
+                    val rectangle = actualFocused.rectangle
+                    if (rectangle.width() <= 0 || rectangle.height() <= 0) return
+                    updateScroll(scrollOffset + getScrollOffsetDeltaOnFocus(rectangle))
+                }
             }
         }
     }

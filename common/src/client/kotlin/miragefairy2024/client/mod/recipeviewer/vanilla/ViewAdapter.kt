@@ -1,7 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import dev.architectury.platform.Platform
-import miragefairy2024.client.util.findFocusedLeaf
+import miragefairy2024.client.util.getActualFocused
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
@@ -150,13 +150,13 @@ class ViewAdapter(val host: ViewAdapterHost) {
         if (!isInitialized) return false
         val screen = host.getScreen() ?: return false
         val focused = screen.focused ?: return false
-        val listener = focused.findFocusedLeaf { it !is AbstractWidget || it.isActive } ?: return false
-        if (listener is EditBox || listener is MultiLineEditBox) {
+        val actualFocused = focused.getActualFocused { it !is AbstractWidget || it.isActive } ?: return false
+        if (actualFocused is EditBox || actualFocused is MultiLineEditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
             // 通常の文字入力は charTyped で処理されるため、keyPressed で未処理でもコンテナーのショートカットへ渡さないのだ～🌱
             if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
-                if (listener is EditBox && listener.canConsumeInput()) return true
-                if (listener is MultiLineEditBox && listener.isActive && listener.isFocused) return true
+                if (actualFocused is EditBox && actualFocused.canConsumeInput()) return true
+                if (actualFocused is MultiLineEditBox && actualFocused.isActive && actualFocused.isFocused) return true
             }
         }
         return false
