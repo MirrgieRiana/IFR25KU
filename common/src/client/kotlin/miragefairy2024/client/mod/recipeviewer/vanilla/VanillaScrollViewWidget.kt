@@ -315,21 +315,33 @@ abstract class VanillaScrollViewWidget(
     }
 
     override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
-        if (!isActive) return null
-        // バニラの他コンテナの実装では、InitialFocus 時に最初の要素を選択したりしているから、その代わりなのだ～🌱
-        val navigation = if (event is FocusNavigationEvent.InitialFocus) FocusNavigationEvent.TabNavigation(true) else event
-        val path = super.nextFocusPath(navigation)
-        if (path == null) {
-            if (isFocused || evaluateMaxScrollOffset() <= 0) return null
-            return object : ComponentPath {
-                override fun component() = this@VanillaScrollViewWidget
 
-                override fun applyFocus(focused: Boolean) {
-                    if (focused) this@VanillaScrollViewWidget.focused = null
-                    this@VanillaScrollViewWidget.isFocused = focused
+        // 無効なコンテナなら null を返すのだ～🌱
+        if (!isActive) return null
+
+        // バニラの他コンテナの実装では、InitialFocus 時に最初の要素を選択したりしているから、その代わりなのだ～🌱
+        val actualEvent = if (event is FocusNavigationEvent.InitialFocus) FocusNavigationEvent.TabNavigation(true) else event
+
+        // super.nextFocusPath() に子の探索を任せるのだ～🌱
+        val path = super.nextFocusPath(actualEvent)
+
+        // 子への経路がなければ、スクロール可能で、まだ自身がフォーカスされていない場合に限り、自身を選ぶ経路を返すのだ～🌱
+        if (path == null) {
+            if (evaluateMaxScrollOffset() > 0 && !isFocused) {
+                return object : ComponentPath {
+                    override fun component() = this@VanillaScrollViewWidget
+
+                    override fun applyFocus(focused: Boolean) {
+                        // その経路の適用時に、以前の子の参照を解除するのだ～🌱
+                        if (focused) this@VanillaScrollViewWidget.focused = null
+                        this@VanillaScrollViewWidget.isFocused = focused
+                    }
                 }
             }
+            return null
         }
+
+        // 子への経路があれば、適用時に子へフォーカスを移すのだ～🌱
         return object : ComponentPath {
             override fun component() = path.component()
 
@@ -347,9 +359,13 @@ abstract class VanillaScrollViewWidget(
     }
 
     override fun getCurrentFocusPath(): ComponentPath? {
+        // 子へフォーカスされていれば、super が作る「コンテナ → 子 → …」の経路を返すのだ～🌱
         val path = super.getCurrentFocusPath()
         if (path != null) return path
-        return if (isFocused) ComponentPath.leaf(this) else null
+        // 子への経路がなく、コンテナ自身がフォーカスされていれば、自身だけの経路を返すのだ～🌱
+        if (isFocused) return ComponentPath.leaf(this)
+        // どちらでもなければ null なのだ～🌱
+        return null
     }
 
     protected abstract val backwardKey: Int
@@ -360,6 +376,7 @@ abstract class VanillaScrollViewWidget(
         if (!isFocused) return false
         val listener = focused
         if (listener != null && listener.keyPressed(keyCode, scanCode, modifiers)) return true
+        // 子が選択されている間は、矢印キーをスクロールで消費せず、Screen のフォーカス移動へ渡すのだ～🌱
         if (listener != null && (keyCode == backwardKey || keyCode == forwardKey)) return false
         val offset = when (keyCode) {
             backwardKey -> scrollOffset - view.scrollStep
