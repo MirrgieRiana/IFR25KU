@@ -1,6 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import com.mojang.blaze3d.systems.RenderSystem
+import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
@@ -18,6 +19,7 @@ import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
+import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
@@ -666,19 +668,50 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
-    fun `読み上げ候補がなければ領域自身のフォーカスを優先度へ含めないのだ`() {
+    fun `子にフォーカスしていない領域自身を読み上げるのだ`() {
         val fixture = ScrollFixture()
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+        Assertions.assertEquals(NarratableEntry.NarrationPriority.NONE, root.narrationPriority())
         root.isFocused = true
 
         Assertions.assertTrue(root.isFocused)
-        Assertions.assertEquals(NarratableEntry.NarrationPriority.NONE, root.narrationPriority())
+        Assertions.assertEquals(NarratableEntry.NarrationPriority.FOCUSED, root.narrationPriority())
         val narration = ScreenNarrationCollector()
         narration.update { root.updateNarration(it) }
-        Assertions.assertEquals("", narration.collectNarrationText(true))
+        Assertions.assertEquals(text { SCROLL_AREA_TRANSLATION() }.string, narration.collectNarrationText(true))
+        root.isFocused = false
+        Assertions.assertEquals(NarratableEntry.NarrationPriority.NONE, root.narrationPriority())
+        root.isFocused = true
+        root.active = false
+        Assertions.assertEquals(NarratableEntry.NarrationPriority.NONE, root.narrationPriority())
         controller.dispose()
         controller.detach()
+    }
+
+    @Test
+    fun `描画専用の子だけでもキーボードでフォーカスした領域自身を読み上げるのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val fixture = ScrollFixture()
+            val view = if (horizontal) XScrollView() else YScrollView()
+            view += ScrollTestView(false)
+            val controller = fixture.attach(view, IntPoint(50, 50))
+            val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+            Assertions.assertTrue(root.children().isEmpty())
+            Assertions.assertEquals(NarratableEntry.NarrationPriority.NONE, root.narrationPriority())
+            Assertions.assertTrue(fixture.focusNext(true))
+            Assertions.assertTrue(root.isFocused)
+            Assertions.assertNull(root.focused)
+            Assertions.assertEquals(NarratableEntry.NarrationPriority.FOCUSED, root.narrationPriority())
+
+            val narration = ScreenNarrationCollector()
+            narration.update { root.updateNarration(it) }
+            Assertions.assertEquals(text { SCROLL_AREA_TRANSLATION() }.string, narration.collectNarrationText(true))
+            root.currentFocusPath!!.applyFocus(false)
+            Assertions.assertEquals(NarratableEntry.NarrationPriority.NONE, root.narrationPriority())
+            controller.dispose()
+            controller.detach()
+        }
     }
 
     @Test

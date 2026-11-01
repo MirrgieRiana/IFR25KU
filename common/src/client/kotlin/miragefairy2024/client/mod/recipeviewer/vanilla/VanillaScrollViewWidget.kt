@@ -1,6 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.client.util.getActualFocused
+import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewController
@@ -11,6 +12,7 @@ import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
+import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import miragefairy2024.util.translate
 import mirrg.kotlin.helium.atLeast
@@ -413,10 +415,15 @@ abstract class VanillaScrollViewWidget(
 
     override fun narrationPriority(): NarratableEntry.NarrationPriority {
         if (!isActive) return NarratableEntry.NarrationPriority.NONE
+        if (isFocused && focused == null) return NarratableEntry.NarrationPriority.FOCUSED
         return getNarratables().fold(NarratableEntry.NarrationPriority.NONE) { priority, widget -> priority max widget.narrationPriority() }
     }
 
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) {
+        if (isFocused && focused == null) {
+            narrationElementOutput.add(NarratedElementType.TITLE, text { SCROLL_AREA_TRANSLATION() })
+            return
+        }
         val narratables = getNarratables().sortedBy { it.tabOrderGroup }
         val result = Screen.findNarratableWidget(narratables, lastNarratable) ?: return
         if (result.priority.isTerminal) lastNarratable = result.entry
