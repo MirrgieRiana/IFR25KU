@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import com.mojang.blaze3d.systems.RenderSystem
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
@@ -32,6 +33,7 @@ import net.minecraft.util.FormattedCharSequence
 import net.minecraft.world.inventory.Slot
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.lwjgl.glfw.GLFW
 
 private val SCROLL_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
@@ -53,9 +55,10 @@ private class ScrollTestWidget(bounds: IntRectangle, private val label: String) 
     var consumeKeys = false
     var characters = ""
     var onClick: () -> Unit = { }
+    var onRender: (GuiGraphics, Int, Int, Float) -> Unit = { _, _, _, _ -> }
     var priority = NarratableEntry.NarrationPriority.NONE
 
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = onRender(guiGraphics, mouseX, mouseY, partialTick)
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = narrationElementOutput.add(NarratedElementType.TITLE, label)
     override fun narrationPriority() = if (isFocused) NarratableEntry.NarrationPriority.FOCUSED else priority
 
@@ -181,6 +184,88 @@ private fun createScrollView(horizontal: Boolean): ScrollView {
 }
 
 class VanillaScrollViewWidgetTest {
+
+    @Test
+    fun `描画には実座標を渡し表示領域外のホバーをバニラの scissor で除外するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val fixture = ScrollFixture()
+                val controller = fixture.attach(createScrollView(horizontal), IntPoint(100, 100))
+                try {
+                    val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                    val positions = mutableListOf<IntPoint>()
+                    fixture.widgets.forEach { widget ->
+                        widget.onRender = { _, mouseX, mouseY, _ ->
+                            positions += IntPoint(mouseX, mouseY)
+                            environment.events += "child"
+                        }
+                    }
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertTrue(fixture.widgets[0].isHovered)
+                    Assertions.assertEquals(List(3) { IntPoint(50, 50) }, positions)
+                    Assertions.assertEquals(listOf("child", "child", "child", "fill"), environment.events)
+
+                    positions.clear()
+                    val mouse = if (horizontal) IntPoint(50, 118) else IntPoint(108, 50)
+                    root.render(environment.graphics, mouse.x, mouse.y, 0.0F)
+                    Assertions.assertFalse(fixture.widgets[0].isHovered)
+                    Assertions.assertEquals(List(3) { mouse }, positions)
+                    Assertions.assertTrue(environment.graphics.containsPointInScissor(0, 0))
+                } finally {
+                    controller.dispose()
+                    controller.detach()
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `親の scissor との交差領域を GPU へ渡し描画後に親の領域を復元するのだ`() {
+        GuiTestEnvironment().use { environment ->
+            val fixture = ScrollFixture()
+            val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
+            environment.graphics.enableScissor(30, 40, 70, 80)
+            try {
+                val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                root.render(environment.graphics, 35, 45, 0.0F)
+                Assertions.assertTrue(fixture.widgets[0].isHovered)
+                root.render(environment.graphics, 90, 45, 0.0F)
+                Assertions.assertFalse(fixture.widgets[0].isHovered)
+                environment.renderSystem.verify({ RenderSystem.enableScissor(30, 220, 40, 40) }, Mockito.times(5))
+                environment.renderSystem.verify({ RenderSystem.disableScissor() }, Mockito.never())
+                Assertions.assertFalse(environment.graphics.containsPointInScissor(20, 45))
+                Assertions.assertTrue(environment.graphics.containsPointInScissor(35, 45))
+            } finally {
+                environment.graphics.disableScissor()
+                controller.dispose()
+                controller.detach()
+            }
+            Assertions.assertTrue(environment.graphics.containsPointInScissor(0, 0))
+        }
+    }
+
+    @Test
+    fun `子の描画で例外が発生しても scissor を解除するのだ`() {
+        GuiTestEnvironment().use { environment ->
+            val fixture = ScrollFixture()
+            val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
+            try {
+                val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                val failure = IllegalStateException("Rendering failed")
+                fixture.widgets[0].onRender = { _, _, _, _ -> throw failure }
+                val exception = Assertions.assertThrows(IllegalStateException::class.java) {
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                }
+                Assertions.assertSame(failure, exception)
+                environment.renderSystem.verify { RenderSystem.disableScissor() }
+                Assertions.assertTrue(environment.graphics.containsPointInScissor(0, 0))
+                Assertions.assertTrue(environment.fills.isEmpty())
+            } finally {
+                controller.dispose()
+                controller.detach()
+            }
+        }
+    }
 
     @Test
     fun `子を画面へ個別登録せずスクロール端ではホイールを親へ返すのだ`() {
