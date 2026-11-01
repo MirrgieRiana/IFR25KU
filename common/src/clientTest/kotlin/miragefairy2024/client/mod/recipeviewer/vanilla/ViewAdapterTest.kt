@@ -23,12 +23,14 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.lwjgl.glfw.GLFW
 
 private val ADAPTER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
@@ -60,8 +62,12 @@ private class AdapterFixture(vararg views: TestView) {
     val removers = mutableListOf<Remover>()
     var disposals = 0
     var removals = 0
+    var closes = 0
     val screen: Screen = object : Screen(Component.empty()) {
         override fun children() = interactiveWidgets
+        override fun onClose() {
+            closes += 1
+        }
     }.also {
         it.width = 100
         it.height = 100
@@ -318,7 +324,7 @@ class ViewAdapterTest {
     }
 
     @Test
-    fun `ホストの文字入力中は Escape 以外の未処理キーを消費するのだ`() {
+    fun `ホストの文字入力中は Escape と Tab 以外の未処理キーを消費するのだ`() {
         val fixture = AdapterFixture()
         val editBox: EditBox = object : EditBox(null, 10, 20, Component.empty()) {
             private var focused2 = false
@@ -333,14 +339,14 @@ class ViewAdapterTest {
 
         assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
         assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
-        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
+        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
         editBox.setEditable(false)
         assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
         fixture.adapter.removed()
     }
 
     @Test
-    fun `入れ子の入力欄でも未処理の Escape 以外を消費するのだ`() {
+    fun `入れ子の入力欄でも未処理の Escape と Tab 以外を消費するのだ`() {
         val fixture = AdapterFixture()
         var keyPresses = 0
         var consumeEscape = false
@@ -364,7 +370,7 @@ class ViewAdapterTest {
         fixture.screen.focused = container
         assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
         assertEquals(1, keyPresses)
-        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
+        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
         assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
         consumeEscape = true
         assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
@@ -396,6 +402,41 @@ class ViewAdapterTest {
         assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
         assertEquals(listOf(GLFW.GLFW_KEY_ESCAPE, GLFW.GLFW_KEY_TAB, GLFW.GLFW_KEY_E), keys)
         fixture.adapter.removed()
+    }
+
+    @Test
+    fun `未処理の Tab は Screen で前後へ移動し Escape は閉じるが消費済みなら実行しないのだ`() {
+        Mockito.mockStatic(Screen::class.java).use { screenMock ->
+            val fixture = AdapterFixture()
+            var consumeKeys = true
+            val editBox: EditBox = object : EditBox(null, 10, 20, text { empty() }) {
+                override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = consumeKeys
+            }
+            val nextEditBox = EditBox(null, 10, 50, text { empty() })
+            fixture.interactiveWidgets += editBox
+            fixture.interactiveWidgets += nextEditBox
+            fixture.screen.focused = editBox
+            fun press(keyCode: Int) {
+                if (!fixture.adapter.keyPressed(keyCode, 0, 0)) fixture.screen.keyPressed(keyCode, 0, 0)
+            }
+            try {
+                press(GLFW.GLFW_KEY_TAB)
+                Assertions.assertSame(editBox, fixture.screen.focused)
+                press(GLFW.GLFW_KEY_ESCAPE)
+                Assertions.assertEquals(0, fixture.closes)
+
+                consumeKeys = false
+                press(GLFW.GLFW_KEY_TAB)
+                Assertions.assertSame(nextEditBox, fixture.screen.focused)
+                screenMock.`when`<Boolean> { Screen.hasShiftDown() }.thenReturn(true)
+                press(GLFW.GLFW_KEY_TAB)
+                Assertions.assertSame(editBox, fixture.screen.focused)
+                press(GLFW.GLFW_KEY_ESCAPE)
+                Assertions.assertEquals(1, fixture.closes)
+            } finally {
+                fixture.adapter.removed()
+            }
+        }
     }
 
     @Test

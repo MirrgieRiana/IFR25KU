@@ -154,7 +154,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         if (actualFocused is EditBox || actualFocused is MultiLineEditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
             // 通常の文字入力は charTyped で処理されるため、keyPressed で未処理でもコンテナーのショートカットへ渡さないのだ～🌱
-            if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
+            if (keyCode != GLFW.GLFW_KEY_ESCAPE && keyCode != GLFW.GLFW_KEY_TAB) {
                 if (actualFocused is EditBox && actualFocused.canConsumeInput()) return true
                 if (actualFocused is MultiLineEditBox && actualFocused.isActive && actualFocused.isFocused) return true
             }
