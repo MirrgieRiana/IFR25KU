@@ -17,6 +17,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
+import net.minecraft.client.gui.components.MultiLineEditBox
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.screens.Screen
@@ -151,6 +152,59 @@ private class AdapterFixture(vararg views: TestView) {
 }
 
 class ViewAdapterTest {
+    @Test
+    fun `複数行入力欄のキー消費と有効時の入力保護と無効なコンテナを検証するのだ`() {
+        val fixture = AdapterFixture()
+        val keys = mutableListOf<Int>()
+        var consumeKeys = false
+        val editBox: MultiLineEditBox = object : MultiLineEditBox(null, 0, 0, 100, 40, text { empty() }, text { empty() }) {
+            override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+                keys += keyCode
+                return consumeKeys
+            }
+        }
+        val container: AbstractContainerWidget = object : AbstractContainerWidget(0, 0, 100, 100, text { empty() }) {
+            override fun children() = listOf(editBox)
+            override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+            override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+        }
+        container.focused = editBox
+        fixture.interactiveWidgets += container
+        fixture.screen.focused = container
+        try {
+            Assertions.assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+            Assertions.assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
+            Assertions.assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+            Assertions.assertEquals(listOf(GLFW.GLFW_KEY_E, GLFW.GLFW_KEY_TAB, GLFW.GLFW_KEY_ESCAPE), keys)
+
+            consumeKeys = true
+            Assertions.assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+            Assertions.assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
+            Assertions.assertEquals(listOf(GLFW.GLFW_KEY_ESCAPE, GLFW.GLFW_KEY_TAB), keys.takeLast(2))
+
+            consumeKeys = false
+            editBox.active = false
+            Assertions.assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+            editBox.active = true
+            editBox.visible = false
+            Assertions.assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+            editBox.visible = true
+            editBox.isFocused = false
+            Assertions.assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+            editBox.isFocused = true
+            keys.clear()
+            container.active = false
+            Assertions.assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+            Assertions.assertTrue(keys.isEmpty())
+            container.active = true
+            fixture.screen.focused = null
+            Assertions.assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+            Assertions.assertTrue(keys.isEmpty())
+        } finally {
+            fixture.adapter.removed()
+        }
+    }
+
     @Test
     fun `Screen なしでホストの領域を使って配置と移動を行うのだ`() {
         val widgets = mutableListOf<RecordingWidget>()
