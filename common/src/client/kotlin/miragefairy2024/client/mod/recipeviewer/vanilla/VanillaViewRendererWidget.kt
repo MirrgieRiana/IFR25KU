@@ -18,7 +18,7 @@ class VanillaViewRendererWidget<V : PlaceableView>(private val renderer: ViewRen
         bounds2 = IntRectangle(x, y, width, height)
     }
 
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = renderer.render(view, bounds2, guiGraphics, mouseX, mouseY, partialTick)
+    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = renderer.render(view, bounds2, guiGraphics, mouseX, mouseY, isHovered, partialTick)
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         // 前回の解放が届かなかった場合も、今回の押下で状態を更新するのだ～🌱

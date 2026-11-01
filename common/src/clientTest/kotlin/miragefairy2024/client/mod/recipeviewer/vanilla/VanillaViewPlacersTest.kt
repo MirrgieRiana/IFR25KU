@@ -1,0 +1,99 @@
+package miragefairy2024.client.mod.recipeviewer.vanilla
+
+import miragefairy2024.ModContext
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
+import miragefairy2024.mod.recipeviewer.view.ViewController
+import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
+import miragefairy2024.mod.recipeviewer.views.XScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.util.Remover
+import miragefairy2024.util.empty
+import miragefairy2024.util.text
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.narration.NarrationElementOutput
+import net.minecraft.network.chat.FormattedText
+import net.minecraft.util.FormattedCharSequence
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+
+private class PlacerTestView : FixedWidgetView(IntPoint(100, 100)) {
+    var disposals = 0
+    var detaches = 0
+}
+
+private val PLACER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
+    override fun calculateTextWidth(text: FormattedText) = throw UnsupportedOperationException()
+    override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
+    override fun getTextHeight() = throw UnsupportedOperationException()
+    override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = throw UnsupportedOperationException()
+}
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class VanillaViewPlacersTest {
+    @BeforeAll
+    fun initRegistry() {
+        with(ModContext()) {
+            initVanillaViewPlacers()
+        }
+        VANILLA_VIEW_PLACER_REGISTRY.register { context, view: PlacerTestView, bounds ->
+            val widget: AbstractWidget = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
+                override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+            }
+            val remover = context.addRenderableWidget(widget)
+            object : ViewController {
+                override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
+                override fun detach() {
+                    view.detaches += 1
+                    remover.remove()
+                }
+                override fun dispose() {
+                    view.disposals += 1
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `本番の縦横スクロール登録が子の配置と移動と破棄と解除を中継するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val screenWidgets = mutableListOf<AbstractWidget>()
+            val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+                override val origin = IntPoint(10, 20)
+                override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                    screenWidgets += widget
+                    return Remover { screenWidgets.remove(widget) }
+                }
+                override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scroll containers must accept input")
+            }
+            val leaf = PlacerTestView()
+            val view = if (horizontal) XScrollView() else YScrollView()
+            view += leaf
+            view.initSizeCalculation(PLACER_RENDERING_PROXY, { 50 }, { 50 })
+            val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+            val widget = screenWidgets.single() as VanillaScrollViewWidget
+            Assertions.assertEquals(if (horizontal) VanillaXScrollViewWidget::class.java else VanillaYScrollViewWidget::class.java, widget.javaClass)
+            val child = widget.children().single() as AbstractWidget
+            Assertions.assertEquals(IntPoint(10, 20), IntPoint(child.x, child.y))
+            try {
+                controller.setOffset(IntPoint(40, 60))
+                Assertions.assertEquals(IntPoint(40, 60), IntPoint(widget.x, widget.y))
+                Assertions.assertEquals(IntPoint(40, 60), IntPoint(child.x, child.y))
+            } finally {
+                controller.dispose()
+                controller.detach()
+            }
+            Assertions.assertEquals(1, leaf.disposals)
+            Assertions.assertEquals(1, leaf.detaches)
+            Assertions.assertFalse(widget.isActive)
+            Assertions.assertTrue(widget.children().isEmpty())
+            Assertions.assertTrue(screenWidgets.isEmpty())
+        }
+    }
+}

@@ -32,6 +32,21 @@ jobs:
       - name: ビルド
         run: ./gradlew build -x :site:build
 
+  client-test:
+    runs-on: ubuntu-latest
+    steps:
+
+      # セットアップなのだ～🌱
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'microsoft'
+      - uses: gradle/actions/setup-gradle@v5
+
+      - name: クライアントテスト
+        run: ./gradlew :common:clientTest
+
   build-site:
     runs-on: ubuntu-latest
     steps:
