@@ -481,7 +481,7 @@ class VanillaXScrollViewWidget(
     // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
-    // TODO 操作やホバーしていない間はフェードアウト
+    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
     override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
         guiGraphics.fill(
             x + start,
@@ -532,7 +532,7 @@ class VanillaYScrollViewWidget(
     override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseY - y
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
-    // TODO 操作やホバーしていない間はフェードアウト
+    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
     override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
         guiGraphics.fill(
             x + width - view.scrollbarThickness atLeast x,
