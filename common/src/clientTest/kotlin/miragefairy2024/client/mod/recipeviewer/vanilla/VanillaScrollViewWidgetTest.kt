@@ -9,7 +9,6 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
-import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.MinContentSizeYView
 import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.XListView
@@ -32,7 +31,6 @@ import net.minecraft.client.gui.navigation.ScreenDirection
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
-import net.minecraft.world.inventory.Slot
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -105,7 +103,6 @@ private class ScrollFixture {
     val removers = mutableListOf<Remover>()
     val screenWidgets = mutableListOf<AbstractWidget>()
     var disposals = 0
-    var slotPlacements = 0
     val screen: Screen = object : Screen(text { empty() }) {
         override fun children() = screenWidgets
     }.also {
@@ -156,10 +153,6 @@ private class ScrollFixture {
         }
         registry.register { context, view: YScrollView, bounds ->
             place(context, VanillaYScrollViewWidget(view, bounds, context, registry))
-        }
-        registry.register { _, _: MenuSlotView, _ ->
-            slotPlacements += 1
-            throw AssertionError("MenuSlotView must be rejected before placement")
         }
     }
 
@@ -837,19 +830,6 @@ class VanillaScrollViewWidgetTest {
         controller.detach()
         Assertions.assertTrue(root.children().isEmpty())
         Assertions.assertTrue(fixture.screenWidgets.isEmpty())
-    }
-
-    @Test
-    fun `Slot の配置を例外で拒否するのだ`() {
-        val fixture = ScrollFixture()
-        val view = YScrollView()
-        view += YListView().also {
-            it += ScrollTestView(true)
-            it += MenuSlotView(Slot(null, 0, 0, 0))
-        }
-        val exception = Assertions.assertThrows(UnsupportedOperationException::class.java) { fixture.attach(view, IntPoint(100, 100)) }
-        Assertions.assertEquals("MenuSlotView cannot be placed inside a scroll view", exception.message)
-        Assertions.assertEquals(0, fixture.slotPlacements)
     }
 
     @Test

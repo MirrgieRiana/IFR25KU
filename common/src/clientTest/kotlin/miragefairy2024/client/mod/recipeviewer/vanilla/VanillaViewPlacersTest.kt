@@ -1,13 +1,16 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.ModContext
+import miragefairy2024.client.mixins.api.SlotPositionSetter
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
+import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
+import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
@@ -21,6 +24,7 @@ import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
+import net.minecraft.world.inventory.Slot
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -60,6 +64,82 @@ class VanillaViewPlacersTest {
                 override fun dispose() {
                     view.disposals += 1
                 }
+            }
+        }
+    }
+
+    @Test
+    fun `配置を許可しないコンテキストでは Slot の座標を書き換える前に拒否するのだ`() {
+        val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+            override val origin = IntPoint.ZERO
+            override val canPlaceMenuSlots = false
+            override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
+            override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
+        }
+        val slot = Slot(null, 0, 11, 22)
+        val view = MenuSlotView(slot)
+        view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
+
+        val exception = Assertions.assertThrows(UnsupportedOperationException::class.java) {
+            view.attachTo(IntPoint(30, 40)) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+        }
+
+        Assertions.assertEquals("MenuSlotView cannot be placed in this context", exception.message)
+        Assertions.assertEquals(IntPoint(11, 22), IntPoint(slot.x, slot.y))
+    }
+
+    @Test
+    fun `配置を許可するコンテキストでは Slot の初期配置と移動を中継するのだ`() {
+        val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+            override val origin = IntPoint(5, 10)
+            override val canPlaceMenuSlots = true
+            override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("Slots must not register widgets")
+            override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Slots must not register widgets")
+        }
+        val positions = mutableListOf<IntPoint>()
+        val slot: Slot = object : Slot(null, 0, 0, 0), SlotPositionSetter {
+            override fun `mirageFairy2024$setPosition`(x: Int, y: Int) {
+                positions += IntPoint(x, y)
+            }
+        }
+        val view = MenuSlotView(slot)
+        view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
+        val controller = view.attachTo(IntPoint(20, 30)) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+        controller.setOffset(IntPoint(35, 50))
+
+        Assertions.assertEquals(listOf(IntPoint(16, 21), IntPoint(31, 41)), positions)
+        controller.dispose()
+    }
+
+    @Test
+    fun `親で Slot を配置できても縦横スクロールと入れ子の内側では拒否するのだ`() {
+        val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+            override val origin = IntPoint.ZERO
+            override val canPlaceMenuSlots = true
+            override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
+            override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
+        }
+        listOf(false, true).forEach { horizontal ->
+            listOf(false, true).forEach { nested ->
+                val slot = Slot(null, 0, 11, 22)
+                val view = if (horizontal) XScrollView() else YScrollView()
+                view += YListView().also { list ->
+                    if (nested) {
+                        list += YScrollView().also {
+                            it += MenuSlotView(slot)
+                        }
+                    } else {
+                        list += MenuSlotView(slot)
+                    }
+                }
+                view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
+
+                val exception = Assertions.assertThrows(UnsupportedOperationException::class.java) {
+                    view.attachTo(IntPoint.ZERO) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+                }
+
+                Assertions.assertEquals("MenuSlotView cannot be placed in this context", exception.message)
+                Assertions.assertEquals(IntPoint(11, 22), IntPoint(slot.x, slot.y))
             }
         }
     }
