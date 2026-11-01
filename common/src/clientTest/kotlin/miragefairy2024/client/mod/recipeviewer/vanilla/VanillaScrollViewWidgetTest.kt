@@ -30,11 +30,7 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.world.inventory.Slot
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.lwjgl.glfw.GLFW
 
@@ -192,15 +188,15 @@ class VanillaScrollViewWidgetTest {
             val fixture = ScrollFixture()
             val controller = fixture.attach(createScrollView(horizontal), IntPoint(100, 100))
             val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-            assertEquals(3, root.children().size)
+            Assertions.assertEquals(3, root.children().size)
             fixture.widgets[0].consumeScroll = true
-            assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1.0))
-            assertEquals(IntPoint(10, 20), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+            Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+            Assertions.assertEquals(IntPoint(10, 20), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
             fixture.widgets[0].consumeScroll = false
-            assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1000.0))
+            Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1000.0))
             val expected = if (horizontal) IntPoint(-190, 20) else IntPoint(10, -180)
-            assertEquals(expected, IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
-            assertFalse(root.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+            Assertions.assertEquals(expected, IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+            Assertions.assertFalse(root.mouseScrolled(50.0, 50.0, 0.0, -1.0))
             controller.dispose()
             controller.detach()
         }
@@ -214,11 +210,11 @@ class VanillaScrollViewWidgetTest {
         fixture.widgets[1].setPosition(fixture.widgets[0].x, fixture.widgets[0].y)
         fixture.widgets[1].consumeScroll = true
 
-        assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+        Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1.0))
 
-        assertEquals(1, fixture.widgets[0].scrolls)
-        assertEquals(0, fixture.widgets[1].scrolls)
-        assertEquals(5, fixture.widgets[0].y)
+        Assertions.assertEquals(1, fixture.widgets[0].scrolls)
+        Assertions.assertEquals(0, fixture.widgets[1].scrolls)
+        Assertions.assertEquals(5, fixture.widgets[0].y)
         controller.dispose()
         controller.detach()
     }
@@ -228,13 +224,13 @@ class VanillaScrollViewWidgetTest {
         val fixture = ScrollFixture()
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-        assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1.0))
-        assertEquals(5, fixture.widgets[0].y)
+        Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+        Assertions.assertEquals(5, fixture.widgets[0].y)
 
-        assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
+        Assertions.assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
 
-        assertEquals(5, fixture.widgets[0].y)
-        assertTrue(fixture.widgets[0].isFocused)
+        Assertions.assertEquals(5, fixture.widgets[0].y)
+        Assertions.assertTrue(fixture.widgets[0].isFocused)
         controller.dispose()
         controller.detach()
     }
@@ -244,17 +240,17 @@ class VanillaScrollViewWidgetTest {
         val fixture = ScrollFixture()
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-        assertFalse(root.mouseClicked(50.0, 150.0, 0))
-        assertTrue(root.getChildAt(50.0, 150.0).isEmpty)
-        assertTrue(root.getChildAt(107.0, 50.0).isEmpty)
-        assertTrue(root.getChildAt(50.0, 50.0).isPresent)
-        assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
-        assertTrue(root.mouseDragged(-100.0, -100.0, 0, 1.0, 1.0))
-        assertTrue(root.mouseReleased(-100.0, -100.0, 0))
-        assertEquals(listOf(0), fixture.widgets[0].drags)
-        assertEquals(listOf(0), fixture.widgets[0].releases)
-        assertFalse(root.mouseReleased(-100.0, -100.0, 0))
-        assertFalse(root.mouseDragged(-100.0, -100.0, 0, 1.0, 1.0))
+        Assertions.assertFalse(root.mouseClicked(50.0, 150.0, 0))
+        Assertions.assertTrue(root.getChildAt(50.0, 150.0).isEmpty)
+        Assertions.assertTrue(root.getChildAt(107.0, 50.0).isEmpty)
+        Assertions.assertTrue(root.getChildAt(50.0, 50.0).isPresent)
+        Assertions.assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
+        Assertions.assertTrue(root.mouseDragged(-100.0, -100.0, 0, 1.0, 1.0))
+        Assertions.assertTrue(root.mouseReleased(-100.0, -100.0, 0))
+        Assertions.assertEquals(listOf(0), fixture.widgets[0].drags)
+        Assertions.assertEquals(listOf(0), fixture.widgets[0].releases)
+        Assertions.assertFalse(root.mouseReleased(-100.0, -100.0, 0))
+        Assertions.assertFalse(root.mouseDragged(-100.0, -100.0, 0, 1.0, 1.0))
         controller.dispose()
         controller.detach()
     }
@@ -266,25 +262,25 @@ class VanillaScrollViewWidgetTest {
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
 
         root.mouseMoved(50.0, 150.0)
-        assertTrue(fixture.widgets.all { it.moves.isEmpty() })
+        Assertions.assertTrue(fixture.widgets.all { it.moves.isEmpty() })
         root.mouseMoved(50.0, 50.0)
         fixture.widgets.forEach {
-            assertEquals(listOf(Pair(50.0, 50.0)), it.moves)
+            Assertions.assertEquals(listOf(Pair(50.0, 50.0)), it.moves)
         }
 
-        assertTrue(root.mouseClicked(50.0, 50.0, 0))
-        assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -100.0 / 15))
-        assertTrue(root.mouseClicked(50.0, 50.0, 1))
+        Assertions.assertTrue(root.mouseClicked(50.0, 50.0, 0))
+        Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -100.0 / 15))
+        Assertions.assertTrue(root.mouseClicked(50.0, 50.0, 1))
         root.mouseMoved(-100.0, -100.0)
-        assertEquals(listOf(Pair(50.0, 50.0), Pair(-100.0, -100.0)), fixture.widgets[0].moves)
-        assertEquals(listOf(Pair(50.0, 50.0), Pair(-100.0, -100.0)), fixture.widgets[1].moves)
-        assertEquals(listOf(Pair(50.0, 50.0)), fixture.widgets[2].moves)
+        Assertions.assertEquals(listOf(Pair(50.0, 50.0), Pair(-100.0, -100.0)), fixture.widgets[0].moves)
+        Assertions.assertEquals(listOf(Pair(50.0, 50.0), Pair(-100.0, -100.0)), fixture.widgets[1].moves)
+        Assertions.assertEquals(listOf(Pair(50.0, 50.0)), fixture.widgets[2].moves)
 
-        assertTrue(root.mouseReleased(-100.0, -100.0, 0))
+        Assertions.assertTrue(root.mouseReleased(-100.0, -100.0, 0))
         root.mouseMoved(-200.0, -200.0)
-        assertEquals(Pair(-100.0, -100.0), fixture.widgets[0].moves.last())
-        assertEquals(Pair(-200.0, -200.0), fixture.widgets[1].moves.last())
-        assertEquals(listOf(Pair(50.0, 50.0)), fixture.widgets[2].moves)
+        Assertions.assertEquals(Pair(-100.0, -100.0), fixture.widgets[0].moves.last())
+        Assertions.assertEquals(Pair(-200.0, -200.0), fixture.widgets[1].moves.last())
+        Assertions.assertEquals(listOf(Pair(50.0, 50.0)), fixture.widgets[2].moves)
         controller.dispose()
         controller.detach()
     }
@@ -294,14 +290,14 @@ class VanillaScrollViewWidgetTest {
         val fixture = ScrollFixture()
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-        assertTrue(root.mouseClicked(50.0, 50.0, 0))
+        Assertions.assertTrue(root.mouseClicked(50.0, 50.0, 0))
 
-        assertFalse(root.mouseClicked(200.0, 200.0, 0))
+        Assertions.assertFalse(root.mouseClicked(200.0, 200.0, 0))
 
-        assertFalse(root.hasMouseCapture(0))
-        assertFalse(root.isDragging)
-        assertFalse(root.mouseReleased(200.0, 200.0, 0))
-        assertTrue(fixture.widgets[0].releases.isEmpty())
+        Assertions.assertFalse(root.hasMouseCapture(0))
+        Assertions.assertFalse(root.isDragging)
+        Assertions.assertFalse(root.mouseReleased(200.0, 200.0, 0))
+        Assertions.assertTrue(fixture.widgets[0].releases.isEmpty())
         controller.dispose()
         controller.detach()
     }
@@ -311,15 +307,15 @@ class VanillaScrollViewWidgetTest {
         val fixture = ScrollFixture()
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-        assertTrue(root.mouseClicked(50.0, 50.0, 0))
-        assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -100.0 / 15))
-        assertTrue(root.mouseClicked(50.0, 50.0, 1))
-        assertTrue(root.mouseReleased(-100.0, -100.0, 0))
-        assertTrue(root.mouseDragged(-100.0, -100.0, 1, 1.0, 1.0))
-        assertTrue(root.mouseReleased(-100.0, -100.0, 1))
-        assertEquals(listOf(0), fixture.widgets[0].releases)
-        assertEquals(listOf(1), fixture.widgets[1].releases)
-        assertEquals(listOf(1), fixture.widgets[1].drags)
+        Assertions.assertTrue(root.mouseClicked(50.0, 50.0, 0))
+        Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -100.0 / 15))
+        Assertions.assertTrue(root.mouseClicked(50.0, 50.0, 1))
+        Assertions.assertTrue(root.mouseReleased(-100.0, -100.0, 0))
+        Assertions.assertTrue(root.mouseDragged(-100.0, -100.0, 1, 1.0, 1.0))
+        Assertions.assertTrue(root.mouseReleased(-100.0, -100.0, 1))
+        Assertions.assertEquals(listOf(0), fixture.widgets[0].releases)
+        Assertions.assertEquals(listOf(1), fixture.widgets[1].releases)
+        Assertions.assertEquals(listOf(1), fixture.widgets[1].drags)
         controller.dispose()
         controller.detach()
     }
@@ -332,12 +328,12 @@ class VanillaScrollViewWidgetTest {
             val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
             val mouseX = if (horizontal) 20.0 else 107.0
             val mouseY = if (horizontal) 117.0 else 30.0
-            assertTrue(fixture.screen.mouseClicked(mouseX, mouseY, 0))
-            assertTrue(root.mouseDragged(400.0, 400.0, 0, 300.0, 300.0))
-            assertEquals(if (horizontal) -190 else -180, if (horizontal) fixture.widgets[0].x else fixture.widgets[0].y)
-            assertTrue(root.mouseReleased(400.0, 400.0, 0))
-            assertFalse(root.hasMouseCapture(0))
-            assertFalse(root.mouseDragged(mouseX, mouseY, 0, 1.0, 1.0))
+            Assertions.assertTrue(fixture.screen.mouseClicked(mouseX, mouseY, 0))
+            Assertions.assertTrue(root.mouseDragged(400.0, 400.0, 0, 300.0, 300.0))
+            Assertions.assertEquals(if (horizontal) -190 else -180, if (horizontal) fixture.widgets[0].x else fixture.widgets[0].y)
+            Assertions.assertTrue(root.mouseReleased(400.0, 400.0, 0))
+            Assertions.assertFalse(root.hasMouseCapture(0))
+            Assertions.assertFalse(root.mouseDragged(mouseX, mouseY, 0, 1.0, 1.0))
             controller.dispose()
             controller.detach()
         }
@@ -348,15 +344,15 @@ class VanillaScrollViewWidgetTest {
         val fixture = ScrollFixture()
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-        assertTrue(fixture.focusNext(true))
+        Assertions.assertTrue(fixture.focusNext(true))
 
-        assertTrue(fixture.screen.mouseClicked(107.0, 30.0, 0))
-        assertTrue(root.mouseDragged(107.0, 100.0, 0, 0.0, 70.0))
-        assertTrue(root.mouseReleased(107.0, 100.0, 0))
+        Assertions.assertTrue(fixture.screen.mouseClicked(107.0, 30.0, 0))
+        Assertions.assertTrue(root.mouseDragged(107.0, 100.0, 0, 0.0, 70.0))
+        Assertions.assertTrue(root.mouseReleased(107.0, 100.0, 0))
 
-        assertEquals(fixture.widgets[0], root.focused)
-        assertTrue(fixture.widgets[0].isFocused)
-        assertTrue(fixture.widgets[0].releases.isEmpty())
+        Assertions.assertEquals(fixture.widgets[0], root.focused)
+        Assertions.assertTrue(fixture.widgets[0].isFocused)
+        Assertions.assertTrue(fixture.widgets[0].releases.isEmpty())
         controller.dispose()
         controller.detach()
     }
@@ -365,18 +361,18 @@ class VanillaScrollViewWidgetTest {
     fun `Tab と逆 Tab で画面外の子へ移動して表示するのだ`() {
         val fixture = ScrollFixture()
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
-        assertTrue(fixture.focusNext(true))
-        assertTrue(fixture.widgets[0].isFocused)
-        assertTrue(fixture.focusNext(true))
-        assertTrue(fixture.widgets[1].isFocused)
-        assertEquals(20, fixture.widgets[1].y)
-        assertTrue(fixture.focusNext(true))
-        assertTrue(fixture.widgets[2].isFocused)
-        assertEquals(20, fixture.widgets[2].y)
-        assertFalse(fixture.focusNext(true))
-        assertTrue(fixture.focusNext(false))
-        assertTrue(fixture.widgets[1].isFocused)
-        assertEquals(20, fixture.widgets[1].y)
+        Assertions.assertTrue(fixture.focusNext(true))
+        Assertions.assertTrue(fixture.widgets[0].isFocused)
+        Assertions.assertTrue(fixture.focusNext(true))
+        Assertions.assertTrue(fixture.widgets[1].isFocused)
+        Assertions.assertEquals(20, fixture.widgets[1].y)
+        Assertions.assertTrue(fixture.focusNext(true))
+        Assertions.assertTrue(fixture.widgets[2].isFocused)
+        Assertions.assertEquals(20, fixture.widgets[2].y)
+        Assertions.assertFalse(fixture.focusNext(true))
+        Assertions.assertTrue(fixture.focusNext(false))
+        Assertions.assertTrue(fixture.widgets[1].isFocused)
+        Assertions.assertEquals(20, fixture.widgets[1].y)
         controller.dispose()
         controller.detach()
     }
@@ -387,15 +383,15 @@ class VanillaScrollViewWidgetTest {
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
         val outside = ScrollTestWidget(IntRectangle(200, 20, 50, 50), "outside")
         fixture.screenWidgets += outside
-        assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
-        assertTrue(fixture.widgets[0].isFocused)
-        assertTrue(fixture.screen.mouseClicked(210.0, 30.0, 0))
-        assertFalse(fixture.widgets[0].isFocused)
+        Assertions.assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
+        Assertions.assertTrue(fixture.widgets[0].isFocused)
+        Assertions.assertTrue(fixture.screen.mouseClicked(210.0, 30.0, 0))
+        Assertions.assertFalse(fixture.widgets[0].isFocused)
 
-        assertTrue(fixture.focusNext(false))
+        Assertions.assertTrue(fixture.focusNext(false))
 
-        assertTrue(fixture.widgets[0].isFocused)
-        assertEquals(20, fixture.widgets[0].y)
+        Assertions.assertTrue(fixture.widgets[0].isFocused)
+        Assertions.assertEquals(20, fixture.widgets[0].y)
         controller.dispose()
         controller.detach()
     }
@@ -407,17 +403,17 @@ class VanillaScrollViewWidgetTest {
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
         val outside = ScrollTestWidget(IntRectangle(200, 20, 50, 50), "outside")
         fixture.screenWidgets += outside
-        assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
-        assertTrue(fixture.screen.mouseClicked(210.0, 30.0, 0))
+        Assertions.assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
+        Assertions.assertTrue(fixture.screen.mouseClicked(210.0, 30.0, 0))
         val positions = fixture.widgets.map { IntPoint(it.x, it.y) }
 
         repeat(2) {
-            assertTrue(root.nextFocusPath(FocusNavigationEvent.TabNavigation(false)) != null)
-            assertEquals(fixture.widgets[0], root.focused)
-            assertFalse(root.isFocused)
-            assertTrue(fixture.widgets.none { it.isFocused })
-            assertTrue(outside.isFocused)
-            assertEquals(positions, fixture.widgets.map { IntPoint(it.x, it.y) })
+            Assertions.assertTrue(root.nextFocusPath(FocusNavigationEvent.TabNavigation(false)) != null)
+            Assertions.assertEquals(fixture.widgets[0], root.focused)
+            Assertions.assertFalse(root.isFocused)
+            Assertions.assertTrue(fixture.widgets.none { it.isFocused })
+            Assertions.assertTrue(outside.isFocused)
+            Assertions.assertEquals(positions, fixture.widgets.map { IntPoint(it.x, it.y) })
         }
         controller.dispose()
         controller.detach()
@@ -430,20 +426,20 @@ class VanillaScrollViewWidgetTest {
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
         val outside = ScrollTestWidget(IntRectangle(200, 20, 50, 50), "outside")
         fixture.screenWidgets += outside
-        assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
-        assertTrue(fixture.screen.mouseClicked(210.0, 30.0, 0))
+        Assertions.assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
+        Assertions.assertTrue(fixture.screen.mouseClicked(210.0, 30.0, 0))
         fixture.widgets.forEach {
             it.active = false
         }
 
-        assertTrue(fixture.focusNext(false))
+        Assertions.assertTrue(fixture.focusNext(false))
 
-        assertTrue(root.isFocused)
-        assertNull(root.focused)
-        assertTrue(fixture.widgets.none { it.isFocused })
-        assertEquals(root, root.currentFocusPath?.component())
-        assertTrue(root.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
-        assertEquals(-180, fixture.widgets[0].y)
+        Assertions.assertTrue(root.isFocused)
+        Assertions.assertNull(root.focused)
+        Assertions.assertTrue(fixture.widgets.none { it.isFocused })
+        Assertions.assertEquals(root, root.currentFocusPath?.component())
+        Assertions.assertTrue(root.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+        Assertions.assertEquals(-180, fixture.widgets[0].y)
         controller.dispose()
         controller.detach()
     }
@@ -454,17 +450,17 @@ class VanillaScrollViewWidgetTest {
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
         fixture.focusNext(true)
-        assertFalse(root.keyPressed(GLFW.GLFW_KEY_DOWN, 0, 0))
+        Assertions.assertFalse(root.keyPressed(GLFW.GLFW_KEY_DOWN, 0, 0))
         val path = fixture.screen.nextFocusPath(FocusNavigationEvent.ArrowNavigation(ScreenDirection.DOWN))!!
         fixture.screen.currentFocusPath?.applyFocus(false)
         path.applyFocus(true)
-        assertTrue(fixture.widgets[1].isFocused)
-        assertEquals(20, fixture.widgets[1].y)
+        Assertions.assertTrue(fixture.widgets[1].isFocused)
+        Assertions.assertEquals(20, fixture.widgets[1].y)
         fixture.widgets[1].consumeKeys = true
-        assertTrue(root.keyPressed(GLFW.GLFW_KEY_DOWN, 0, 0))
-        assertTrue(root.keyReleased(GLFW.GLFW_KEY_DOWN, 0, 0))
-        assertTrue(root.charTyped('a', 0))
-        assertEquals("a", fixture.widgets[1].characters)
+        Assertions.assertTrue(root.keyPressed(GLFW.GLFW_KEY_DOWN, 0, 0))
+        Assertions.assertTrue(root.keyReleased(GLFW.GLFW_KEY_DOWN, 0, 0))
+        Assertions.assertTrue(root.charTyped('a', 0))
+        Assertions.assertEquals("a", fixture.widgets[1].characters)
         controller.dispose()
         controller.detach()
     }
@@ -477,11 +473,11 @@ class VanillaScrollViewWidgetTest {
         outer += MinContentSizeYView(200).also { it += inner }
         val controller = fixture.attach(outer, IntPoint(100, 100))
         repeat(3) {
-            assertTrue(fixture.focusNext(true))
+            Assertions.assertTrue(fixture.focusNext(true))
         }
-        assertTrue(fixture.widgets[2].isFocused)
-        assertEquals(20, fixture.widgets[2].y)
-        assertTrue(fixture.widgets[2].y + fixture.widgets[2].height <= 120)
+        Assertions.assertTrue(fixture.widgets[2].isFocused)
+        Assertions.assertEquals(20, fixture.widgets[2].y)
+        Assertions.assertTrue(fixture.widgets[2].y + fixture.widgets[2].height <= 120)
         controller.dispose()
         controller.detach()
     }
@@ -492,12 +488,12 @@ class VanillaScrollViewWidgetTest {
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
         fixture.widgets[0].onClick = { fixture.removers[0].remove() }
-        assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
-        assertNull(root.focused)
-        assertTrue(root.hasMouseCapture(0))
-        assertTrue(root.mouseReleased(50.0, 50.0, 0))
-        assertFalse(root.hasMouseCapture(0))
-        assertTrue(fixture.widgets[0].releases.isEmpty())
+        Assertions.assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
+        Assertions.assertNull(root.focused)
+        Assertions.assertTrue(root.hasMouseCapture(0))
+        Assertions.assertTrue(root.mouseReleased(50.0, 50.0, 0))
+        Assertions.assertFalse(root.hasMouseCapture(0))
+        Assertions.assertTrue(fixture.widgets[0].releases.isEmpty())
         controller.dispose()
         controller.detach()
     }
@@ -508,15 +504,15 @@ class VanillaScrollViewWidgetTest {
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
         val renderRemover = fixture.widgetContexts[0].addRenderableOnly(fixture.widgets[0])
-        assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
+        Assertions.assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
 
         fixture.removers[0].remove()
 
-        assertEquals(fixture.widgets.drop(1), root.children())
-        assertNull(root.focused)
-        assertFalse(root.charTyped('a', 0))
-        assertTrue(root.mouseReleased(50.0, 50.0, 0))
-        assertTrue(fixture.widgets[0].releases.isEmpty())
+        Assertions.assertEquals(fixture.widgets.drop(1), root.children())
+        Assertions.assertNull(root.focused)
+        Assertions.assertFalse(root.charTyped('a', 0))
+        Assertions.assertTrue(root.mouseReleased(50.0, 50.0, 0))
+        Assertions.assertTrue(fixture.widgets[0].releases.isEmpty())
         renderRemover.remove()
         controller.dispose()
         controller.detach()
@@ -530,8 +526,8 @@ class VanillaScrollViewWidgetTest {
             val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
             val widget = fixture.widgets[0]
             val duplicateRemover = fixture.widgetContexts[0].addRenderableWidget(widget)
-            assertEquals(fixture.widgets + widget, root.children())
-            assertTrue(root.mouseClicked(50.0, 50.0, 0))
+            Assertions.assertEquals(fixture.widgets + widget, root.children())
+            Assertions.assertTrue(root.mouseClicked(50.0, 50.0, 0))
 
             if (removePressedRegistration) {
                 fixture.removers[0].remove()
@@ -539,16 +535,16 @@ class VanillaScrollViewWidgetTest {
                 duplicateRemover.remove()
             }
 
-            assertEquals(if (removePressedRegistration) fixture.widgets.drop(1) + widget else fixture.widgets, root.children())
-            assertEquals(widget, root.focused)
-            assertTrue(root.hasMouseCapture(0))
+            Assertions.assertEquals(if (removePressedRegistration) fixture.widgets.drop(1) + widget else fixture.widgets, root.children())
+            Assertions.assertEquals(widget, root.focused)
+            Assertions.assertTrue(root.hasMouseCapture(0))
             root.mouseMoved(-100.0, -100.0)
-            assertTrue(root.mouseDragged(-100.0, -100.0, 0, 1.0, 1.0))
-            assertTrue(root.mouseReleased(-100.0, -100.0, 0))
-            assertFalse(root.hasMouseCapture(0))
-            assertEquals(if (removePressedRegistration) emptyList<Int>() else listOf(0), widget.drags)
-            assertEquals(if (removePressedRegistration) emptyList<Int>() else listOf(0), widget.releases)
-            assertEquals(if (removePressedRegistration) emptyList<Pair<Double, Double>>() else listOf(Pair(-100.0, -100.0)), widget.moves)
+            Assertions.assertTrue(root.mouseDragged(-100.0, -100.0, 0, 1.0, 1.0))
+            Assertions.assertTrue(root.mouseReleased(-100.0, -100.0, 0))
+            Assertions.assertFalse(root.hasMouseCapture(0))
+            Assertions.assertEquals(if (removePressedRegistration) emptyList<Int>() else listOf(0), widget.drags)
+            Assertions.assertEquals(if (removePressedRegistration) emptyList<Int>() else listOf(0), widget.releases)
+            Assertions.assertEquals(if (removePressedRegistration) emptyList<Pair<Double, Double>>() else listOf(Pair(-100.0, -100.0)), widget.moves)
 
             if (removePressedRegistration) {
                 duplicateRemover.remove()
@@ -556,8 +552,8 @@ class VanillaScrollViewWidgetTest {
                 fixture.removers[0].remove()
             }
 
-            assertEquals(fixture.widgets.drop(1), root.children())
-            assertNull(root.focused)
+            Assertions.assertEquals(fixture.widgets.drop(1), root.children())
+            Assertions.assertNull(root.focused)
             controller.dispose()
             controller.detach()
         }
@@ -569,17 +565,17 @@ class VanillaScrollViewWidgetTest {
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
         fixture.widgets[2].priority = NarratableEntry.NarrationPriority.HOVERED
-        assertTrue(fixture.widgets[2].y >= root.y + root.height)
-        assertEquals(NarratableEntry.NarrationPriority.HOVERED, root.narrationPriority())
+        Assertions.assertTrue(fixture.widgets[2].y >= root.y + root.height)
+        Assertions.assertEquals(NarratableEntry.NarrationPriority.HOVERED, root.narrationPriority())
 
         val narration = ScreenNarrationCollector()
         narration.update { root.updateNarration(it) }
         val text = narration.collectNarrationText(true)
 
-        assertTrue(text.contains("child-2"))
-        assertFalse(text.contains("child-0"))
+        Assertions.assertTrue(text.contains("child-2"))
+        Assertions.assertFalse(text.contains("child-0"))
         fixture.widgets[2].active = false
-        assertEquals(NarratableEntry.NarrationPriority.NONE, root.narrationPriority())
+        Assertions.assertEquals(NarratableEntry.NarrationPriority.NONE, root.narrationPriority())
         controller.dispose()
         controller.detach()
     }
@@ -591,11 +587,11 @@ class VanillaScrollViewWidgetTest {
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
         root.isFocused = true
 
-        assertTrue(root.isFocused)
-        assertEquals(NarratableEntry.NarrationPriority.NONE, root.narrationPriority())
+        Assertions.assertTrue(root.isFocused)
+        Assertions.assertEquals(NarratableEntry.NarrationPriority.NONE, root.narrationPriority())
         val narration = ScreenNarrationCollector()
         narration.update { root.updateNarration(it) }
-        assertEquals("", narration.collectNarrationText(true))
+        Assertions.assertEquals("", narration.collectNarrationText(true))
         controller.dispose()
         controller.detach()
     }
@@ -614,8 +610,8 @@ class VanillaScrollViewWidgetTest {
         narration.update { root.updateNarration(it) }
         val text = narration.collectNarrationText(true)
 
-        assertTrue(text.contains("child-2"))
-        assertFalse(text.contains("child-0"))
+        Assertions.assertTrue(text.contains("child-2"))
+        Assertions.assertFalse(text.contains("child-0"))
         controller.dispose()
         controller.detach()
     }
@@ -629,22 +625,22 @@ class VanillaScrollViewWidgetTest {
         widget.priority = NarratableEntry.NarrationPriority.FOCUSED
         val narration = ScreenNarrationCollector()
         narration.update { root.updateNarration(it) }
-        assertTrue(narration.collectNarrationText(true).contains("child-0"))
+        Assertions.assertTrue(narration.collectNarrationText(true).contains("child-0"))
         val duplicateRemover = fixture.widgetContexts[0].addRenderableWidget(widget)
         fixture.widgets[1].priority = NarratableEntry.NarrationPriority.HOVERED
 
         fixture.removers[0].remove()
         narration.update { root.updateNarration(it) }
         val retainedText = narration.collectNarrationText(true)
-        assertTrue(retainedText.contains("child-1"))
-        assertFalse(retainedText.contains("child-0"))
+        Assertions.assertTrue(retainedText.contains("child-1"))
+        Assertions.assertFalse(retainedText.contains("child-0"))
 
         duplicateRemover.remove()
         val newRemover = fixture.widgetContexts[0].addRenderableWidget(widget)
         narration.update { root.updateNarration(it) }
         val newText = narration.collectNarrationText(true)
-        assertTrue(newText.contains("child-0"))
-        assertFalse(newText.contains("child-1"))
+        Assertions.assertTrue(newText.contains("child-0"))
+        Assertions.assertFalse(newText.contains("child-1"))
         newRemover.remove()
         controller.dispose()
         controller.detach()
@@ -657,12 +653,12 @@ class VanillaScrollViewWidgetTest {
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
         fixture.widgets[2].priority = NarratableEntry.NarrationPriority.HOVERED
         fixture.focusNext(true)
-        assertEquals(NarratableEntry.NarrationPriority.FOCUSED, root.narrationPriority())
+        Assertions.assertEquals(NarratableEntry.NarrationPriority.FOCUSED, root.narrationPriority())
         val narration = ScreenNarrationCollector()
         narration.update { root.updateNarration(it) }
         val text = narration.collectNarrationText(true)
-        assertTrue(text.contains("child-0"))
-        assertFalse(text.contains("child-2"))
+        Assertions.assertTrue(text.contains("child-0"))
+        Assertions.assertFalse(text.contains("child-2"))
         controller.dispose()
         controller.detach()
     }
@@ -673,16 +669,16 @@ class VanillaScrollViewWidgetTest {
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
         fixture.focusNext(true)
-        assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1000.0))
-        assertTrue(fixture.widgets[0].isFocused)
-        assertEquals(NarratableEntry.NarrationPriority.FOCUSED, root.narrationPriority())
+        Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1000.0))
+        Assertions.assertTrue(fixture.widgets[0].isFocused)
+        Assertions.assertEquals(NarratableEntry.NarrationPriority.FOCUSED, root.narrationPriority())
 
         val narration = ScreenNarrationCollector()
         narration.update { root.updateNarration(it) }
         val text = narration.collectNarrationText(true)
 
-        assertTrue(text.contains("child-0"))
-        assertFalse(text.contains("child-2"))
+        Assertions.assertTrue(text.contains("child-0"))
+        Assertions.assertFalse(text.contains("child-2"))
         controller.dispose()
         controller.detach()
     }
@@ -694,8 +690,8 @@ class VanillaScrollViewWidgetTest {
         view += ScrollTestView(false)
         val controller = fixture.attach(view, IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-        assertTrue(root.children().isEmpty())
-        assertFalse(root.mouseClicked(50.0, 50.0, 0))
+        Assertions.assertTrue(root.children().isEmpty())
+        Assertions.assertFalse(root.mouseClicked(50.0, 50.0, 0))
         controller.dispose()
         controller.detach()
     }
@@ -707,21 +703,21 @@ class VanillaScrollViewWidgetTest {
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
         root.mouseScrolled(50.0, 50.0, 0.0, -1.0)
         controller.setOffset(IntPoint(30, 40))
-        assertEquals(IntPoint(30, 25), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
-        assertTrue(root.mouseClicked(50.0, 50.0, 0))
-        assertTrue(root.hasMouseCapture(0))
+        Assertions.assertEquals(IntPoint(30, 25), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+        Assertions.assertTrue(root.mouseClicked(50.0, 50.0, 0))
+        Assertions.assertTrue(root.hasMouseCapture(0))
         controller.dispose()
-        assertEquals(3, fixture.disposals)
-        assertFalse(root.isActive)
-        assertFalse(root.hasMouseCapture(0))
-        assertFalse(root.mouseDragged(50.0, 50.0, 0, 1.0, 1.0))
-        assertFalse(root.mouseReleased(50.0, 50.0, 0))
-        assertTrue(fixture.widgets[0].drags.isEmpty())
-        assertTrue(fixture.widgets[0].releases.isEmpty())
-        assertFalse(root.mouseClicked(50.0, 50.0, 0))
+        Assertions.assertEquals(3, fixture.disposals)
+        Assertions.assertFalse(root.isActive)
+        Assertions.assertFalse(root.hasMouseCapture(0))
+        Assertions.assertFalse(root.mouseDragged(50.0, 50.0, 0, 1.0, 1.0))
+        Assertions.assertFalse(root.mouseReleased(50.0, 50.0, 0))
+        Assertions.assertTrue(fixture.widgets[0].drags.isEmpty())
+        Assertions.assertTrue(fixture.widgets[0].releases.isEmpty())
+        Assertions.assertFalse(root.mouseClicked(50.0, 50.0, 0))
         controller.detach()
-        assertTrue(root.children().isEmpty())
-        assertTrue(fixture.screenWidgets.isEmpty())
+        Assertions.assertTrue(root.children().isEmpty())
+        Assertions.assertTrue(fixture.screenWidgets.isEmpty())
     }
 
     @Test
@@ -732,9 +728,9 @@ class VanillaScrollViewWidgetTest {
             it += ScrollTestView(true)
             it += MenuSlotView(Slot(null, 0, 0, 0))
         }
-        val exception = assertThrows(UnsupportedOperationException::class.java) { fixture.attach(view, IntPoint(100, 100)) }
-        assertEquals("MenuSlotView cannot be placed inside a scroll view", exception.message)
-        assertEquals(0, fixture.slotPlacements)
+        val exception = Assertions.assertThrows(UnsupportedOperationException::class.java) { fixture.attach(view, IntPoint(100, 100)) }
+        Assertions.assertEquals("MenuSlotView cannot be placed inside a scroll view", exception.message)
+        Assertions.assertEquals(0, fixture.slotPlacements)
     }
 
     @Test
@@ -744,10 +740,10 @@ class VanillaScrollViewWidgetTest {
         outer += MinContentSizeYView(200).also { it += createScrollView(false) }
         val controller = fixture.attach(outer, IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-        assertFalse(root.mouseClicked(50.0, 150.0, 0))
-        assertFalse(root.mouseScrolled(50.0, 150.0, 0.0, -1.0))
-        assertTrue(root.getChildAt(50.0, 150.0).isEmpty)
-        assertTrue(fixture.widgets.all { it.clicks.isEmpty() && it.scrolls == 0 })
+        Assertions.assertFalse(root.mouseClicked(50.0, 150.0, 0))
+        Assertions.assertFalse(root.mouseScrolled(50.0, 150.0, 0.0, -1.0))
+        Assertions.assertTrue(root.getChildAt(50.0, 150.0).isEmpty)
+        Assertions.assertTrue(fixture.widgets.all { it.clicks.isEmpty() && it.scrolls == 0 })
         controller.dispose()
         controller.detach()
     }
@@ -759,10 +755,10 @@ class VanillaScrollViewWidgetTest {
         outer += createScrollView(false)
         val controller = fixture.attach(outer, IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-        assertTrue(root.mouseScrolled(50.0, 50.0, -1.0, 0.0))
-        assertEquals(IntPoint(5, 20), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
-        assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1.0))
-        assertEquals(IntPoint(5, 5), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+        Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, -1.0, 0.0))
+        Assertions.assertEquals(IntPoint(5, 20), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+        Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+        Assertions.assertEquals(IntPoint(5, 5), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
         controller.dispose()
         controller.detach()
     }
@@ -772,17 +768,17 @@ class VanillaScrollViewWidgetTest {
         val fixture = ScrollFixture()
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-        assertTrue(fixture.focusNext(true))
-        assertTrue(root.keyPressed(GLFW.GLFW_KEY_PAGE_DOWN, 0, 0))
-        assertEquals(-60, fixture.widgets[0].y)
+        Assertions.assertTrue(fixture.focusNext(true))
+        Assertions.assertTrue(root.keyPressed(GLFW.GLFW_KEY_PAGE_DOWN, 0, 0))
+        Assertions.assertEquals(-60, fixture.widgets[0].y)
 
         fixture.widgets[0].consumeKeys = true
-        assertTrue(root.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
-        assertEquals(-60, fixture.widgets[0].y)
+        Assertions.assertTrue(root.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
+        Assertions.assertEquals(-60, fixture.widgets[0].y)
 
         fixture.widgets[0].consumeKeys = false
-        assertTrue(root.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
-        assertEquals(20, fixture.widgets[0].y)
+        Assertions.assertTrue(root.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
+        Assertions.assertEquals(20, fixture.widgets[0].y)
         controller.dispose()
         controller.detach()
     }
@@ -798,12 +794,12 @@ class VanillaScrollViewWidgetTest {
         }
         val controller = fixture.attach(view, IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-        assertTrue(fixture.focusNext(true))
-        assertTrue(root.isFocused)
-        assertTrue(root.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
-        assertEquals(-180, fixture.widgets[0].y)
-        assertTrue(root.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
-        assertEquals(20, fixture.widgets[0].y)
+        Assertions.assertTrue(fixture.focusNext(true))
+        Assertions.assertTrue(root.isFocused)
+        Assertions.assertTrue(root.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+        Assertions.assertEquals(-180, fixture.widgets[0].y)
+        Assertions.assertTrue(root.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
+        Assertions.assertEquals(20, fixture.widgets[0].y)
         controller.dispose()
         controller.detach()
     }
@@ -813,8 +809,8 @@ class VanillaScrollViewWidgetTest {
         val fixture = ScrollFixture()
         val controller = fixture.attach(createScrollView(false), IntPoint(0, 0))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-        assertFalse(root.mouseClicked(10.0, 20.0, 0))
-        assertFalse(root.mouseScrolled(10.0, 20.0, 0.0, -1.0))
+        Assertions.assertFalse(root.mouseClicked(10.0, 20.0, 0))
+        Assertions.assertFalse(root.mouseScrolled(10.0, 20.0, 0.0, -1.0))
         controller.dispose()
         controller.detach()
     }

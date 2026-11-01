@@ -7,8 +7,7 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import mirrg.kotlin.helium.max
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 private val SCROLL_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
@@ -36,10 +35,10 @@ class ScrollViewTest {
 
             if (xFirst) child.evaluateActualSizeX() else child.evaluateActualSizeY()
 
-            assertEquals(IntPoint(25, 10), view.evaluateActualSize())
-            assertEquals(IntPoint(20, 50), child.evaluateActualSize())
-            assertEquals(5, view.evaluateContentSizeX())
-            assertEquals(0, view.evaluateContentSizeY())
+            Assertions.assertEquals(IntPoint(25, 10), view.evaluateActualSize())
+            Assertions.assertEquals(IntPoint(20, 50), child.evaluateActualSize())
+            Assertions.assertEquals(5, view.evaluateContentSizeX())
+            Assertions.assertEquals(0, view.evaluateContentSizeY())
         }
     }
 
@@ -56,10 +55,10 @@ class ScrollViewTest {
         view += child
         view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 10 }, { 25 })
 
-        assertEquals(IntPoint(50, 20), child.evaluateActualSize())
-        assertEquals(IntPoint(10, 25), view.evaluateActualSize())
-        assertEquals(0, view.evaluateContentSizeX())
-        assertEquals(5, view.evaluateContentSizeY())
+        Assertions.assertEquals(IntPoint(50, 20), child.evaluateActualSize())
+        Assertions.assertEquals(IntPoint(10, 25), view.evaluateActualSize())
+        Assertions.assertEquals(0, view.evaluateContentSizeX())
+        Assertions.assertEquals(5, view.evaluateContentSizeY())
     }
 
     @Test
@@ -78,7 +77,7 @@ class ScrollViewTest {
                 view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 100 })
 
                 val expected = if (horizontal) IntPoint(100 max length, 95) else IntPoint(95, 100 max length)
-                assertEquals(expected, child.evaluateActualSize())
+                Assertions.assertEquals(expected, child.evaluateActualSize())
             }
         }
     }
@@ -96,9 +95,9 @@ class ScrollViewTest {
         view += child
         view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 2 }, { 10 })
 
-        assertEquals(IntPoint(0, 10), child.evaluateActualSize())
-        assertThrows(IllegalArgumentException::class.java) { view.scrollbarThickness = -1 }
-        assertThrows(IllegalArgumentException::class.java) { view.scrollStep = 0 }
+        Assertions.assertEquals(IntPoint(0, 10), child.evaluateActualSize())
+        Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollbarThickness = -1 }
+        Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollStep = 0 }
     }
 
 }
