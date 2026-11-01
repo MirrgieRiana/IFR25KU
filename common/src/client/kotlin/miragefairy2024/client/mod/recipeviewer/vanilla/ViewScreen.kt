@@ -20,6 +20,7 @@ abstract class ViewScreen(title: Component) : Screen(title) {
         override fun getViewPlacerRegistry() = VANILLA_VIEW_PLACER_REGISTRY
 
         override fun getScreen() = this@ViewScreen
+        override fun canPlaceMenuSlots() = false
         override fun getRegionSizeX() = this@ViewScreen.width
         override fun getRegionSizeY() = this@ViewScreen.height
 

@@ -69,6 +69,7 @@ class VanillaViewPlacersTest {
         val widgets = mutableListOf<AbstractWidget>()
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
+            override val canPlaceMenuSlots = false
             override fun addRenderableWidget(widget: AbstractWidget): Remover {
                 widgets += widget
                 return Remover { widgets.remove(widget) }
@@ -102,6 +103,7 @@ class VanillaViewPlacersTest {
             val screenWidgets = mutableListOf<AbstractWidget>()
             val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
                 override val origin = IntPoint(10, 20)
+                override val canPlaceMenuSlots = true
                 override fun addRenderableWidget(widget: AbstractWidget): Remover {
                     screenWidgets += widget
                     return Remover { screenWidgets.remove(widget) }

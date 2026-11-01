@@ -24,6 +24,7 @@ interface ViewAdapterHost {
     fun getViewPlacerRegistry(): ViewPlacerRegistry<VanillaViewPlacerContext>
 
     fun getScreen(): Screen?
+    fun canPlaceMenuSlots(): Boolean
     fun getRegionSizeX(): Int
     fun getRegionSizeY(): Int
 
@@ -61,6 +62,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         host.init()
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = host.getUiOffset()
+            override val canPlaceMenuSlots = host.canPlaceMenuSlots()
             override fun addRenderableWidget(widget: AbstractWidget) = host.addRenderableWidget(widget)
             override fun addRenderableOnly(widget: AbstractWidget) = host.addRenderableOnly(widget)
         }

@@ -114,6 +114,7 @@ private class ScrollFixture {
     }
     private val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
         override val origin = IntPoint(10, 20)
+        override val canPlaceMenuSlots = true
 
         override fun addRenderableWidget(widget: AbstractWidget): Remover {
             screenWidgets += widget
