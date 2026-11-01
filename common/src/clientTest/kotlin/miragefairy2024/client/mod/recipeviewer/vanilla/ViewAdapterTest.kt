@@ -11,6 +11,8 @@ import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
+import miragefairy2024.util.empty
+import miragefairy2024.util.text
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
@@ -342,14 +344,14 @@ class ViewAdapterTest {
         val fixture = AdapterFixture()
         var keyPresses = 0
         var consumeEscape = false
-        val editBox: EditBox = object : EditBox(null, 10, 20, Component.empty()) {
+        val editBox: EditBox = object : EditBox(null, 10, 20, text { empty() }) {
             override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
                 keyPresses += 1
                 return consumeEscape && keyCode == GLFW.GLFW_KEY_ESCAPE
             }
         }
         fun wrap(child: GuiEventListener): AbstractContainerWidget {
-            return object : AbstractContainerWidget(0, 0, 100, 100, Component.empty()) {
+            return object : AbstractContainerWidget(0, 0, 100, 100, text { empty() }) {
                 override fun children() = listOf(child)
                 override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
                 override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
@@ -379,7 +381,7 @@ class ViewAdapterTest {
     fun `入力欄が消費した Escape と Tab を Screen へ渡さないのだ`() {
         val fixture = AdapterFixture()
         val keys = mutableListOf<Int>()
-        val editBox: EditBox = object : EditBox(null, 10, 20, Component.empty()) {
+        val editBox: EditBox = object : EditBox(null, 10, 20, text { empty() }) {
             override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
                 keys += keyCode
                 return true
@@ -402,7 +404,7 @@ class ViewAdapterTest {
         var captured = true
         var drags = 0
         var releases = 0
-        val widget: AbstractWidget = object : AbstractWidget(0, 0, 10, 10, Component.empty()), MouseCaptureContainer {
+        val widget: AbstractWidget = object : AbstractWidget(0, 0, 10, 10, text { empty() }), MouseCaptureContainer {
             override fun hasMouseCapture(button: Int) = captured && button == 1
             override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
             override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit

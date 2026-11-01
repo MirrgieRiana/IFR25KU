@@ -10,6 +10,7 @@ import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.Remover
+import miragefairy2024.util.empty
 import miragefairy2024.util.text
 import miragefairy2024.util.translate
 import mirrg.kotlin.helium.atLeast
@@ -27,7 +28,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.client.gui.screens.Screen
-import net.minecraft.network.chat.Component
 import org.lwjgl.glfw.GLFW
 import java.util.Optional
 import kotlin.math.roundToInt
@@ -39,7 +39,7 @@ abstract class VanillaScrollViewWidget(
     context: VanillaViewPlacerContext,
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
 ) :
-    AbstractContainerWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty()), MouseCaptureContainer {
+    AbstractContainerWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }), MouseCaptureContainer {
 
 
     // Widget の登録なのだ～🌱
