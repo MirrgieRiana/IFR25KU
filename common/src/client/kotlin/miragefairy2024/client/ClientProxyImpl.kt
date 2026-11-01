@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.screens.MenuScreens
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.renderer.BiomeColors
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.RenderType
@@ -37,7 +38,7 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 
-class ClientProxyImpl : ClientProxy {
+class ClientProxyImpl : ClientProxy<Screen> {
     override fun registerItemTooltipCallback(block: (stack: ItemStack, context: Item.TooltipContext, lines: MutableList<Component>) -> Unit) {
         ItemTooltipCallback.EVENT.register { stack, context, _, lines ->
             block(stack, context, lines)
@@ -93,6 +94,12 @@ class ClientProxyImpl : ClientProxy {
 
     override fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu {
         MenuScreens.register(menuType, ::ViewContainerScreen)
+    }
+
+    override fun getScreen(): Screen? = Minecraft.getInstance().screen
+
+    override fun setScreen(screen: Screen?) {
+        Minecraft.getInstance().setScreen(screen)
     }
 }
 

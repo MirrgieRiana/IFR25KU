@@ -15,10 +15,10 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 
-var clientProxy: ClientProxy? = null
+var clientProxy: ClientProxy<*>? = null
 
 
-interface ClientProxy {
+interface ClientProxy<S : Any> {
     fun registerItemTooltipCallback(block: (stack: ItemStack, context: Item.TooltipContext, lines: MutableList<Component>) -> Unit)
     fun registerCutoutRenderLayer(block: () -> Block)
     fun registerTranslucentRenderLayer(block: () -> Block)
@@ -31,6 +31,8 @@ interface ClientProxy {
     fun registerItemColorProvider(item: Item, provider: ItemColorProvider)
     fun <T> registerRenderingProxyBlockEntityRendererFactory(blockEntityType: BlockEntityType<T>) where T : BlockEntity, T : RenderingProxyBlockEntity
     fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu
+    fun getScreen(): S?
+    fun setScreen(screen: S?)
 }
 
 fun interface BlockColorProvider {
