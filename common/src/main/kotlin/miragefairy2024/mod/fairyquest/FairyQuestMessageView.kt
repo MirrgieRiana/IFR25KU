@@ -1,6 +1,10 @@
 package miragefairy2024.mod.fairyquest
 
+import miragefairy2024.ClientProxy
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.ModContext
+import miragefairy2024.ModEvents
+import miragefairy2024.clientProxy
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.mod.recipeviewer.view.Alignment
@@ -29,6 +33,33 @@ import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
+
+context(ModContext)
+fun initFairyQuestMessageScreen() {
+    ModEvents.onClientInit {
+        onOpenFairyQuestMessageScreen.register { recipe ->
+            recipe.openMessageScreen()
+            true
+        }
+    }
+}
+
+fun FairyQuestRecipe.openMessageScreen() {
+    fun <S : Any> openScreen(proxy: ClientProxy<S>) {
+        val parent = proxy.getScreen()
+        proxy.setScreen(proxy.createMessageViewScreen(parent, this.title) {
+            FairyQuestMessageView(this.title, this.message, this.client).also { view ->
+                view.onBackToGame.register {
+                    proxy.setScreen(null)
+                }
+                view.onBack.register {
+                    proxy.setScreen(parent)
+                }
+            }
+        })
+    }
+    openScreen(clientProxy!!)
+}
 
 class FairyQuestMessageView(fairyQuestTitle: Component, fairyQuestMessage: Component, fairyQuestClient: Component) : WrapperView() {
 
