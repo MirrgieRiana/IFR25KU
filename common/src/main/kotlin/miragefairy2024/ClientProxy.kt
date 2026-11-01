@@ -32,8 +32,8 @@ interface ClientProxy<S : Any> {
     fun registerItemColorProvider(item: Item, provider: ItemColorProvider)
     fun <T> registerRenderingProxyBlockEntityRendererFactory(blockEntityType: BlockEntityType<T>) where T : BlockEntity, T : RenderingProxyBlockEntity
     fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu
-    fun getScreen(): S?
-    fun setScreen(screen: S?)
+    fun getCurrentScreen(): S?
+    fun setCurrentScreen(screen: S?)
     fun createMessageViewScreen(parent: S?, title: Component, rootViewFactory: () -> View): S
 }
 

@@ -98,9 +98,9 @@ class ClientProxyImpl : ClientProxy<Screen> {
         MenuScreens.register(menuType, ::ViewContainerScreen)
     }
 
-    override fun getScreen(): Screen? = Minecraft.getInstance().screen
+    override fun getCurrentScreen() = Minecraft.getInstance().screen
 
-    override fun setScreen(screen: Screen?) {
+    override fun setCurrentScreen(screen: Screen?) {
         Minecraft.getInstance().setScreen(screen)
     }
 
