@@ -1,6 +1,7 @@
 package miragefairy2024
 
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
+import miragefairy2024.mod.recipeviewer.view.View
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -33,6 +34,7 @@ interface ClientProxy<S : Any> {
     fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu
     fun getScreen(): S?
     fun setScreen(screen: S?)
+    fun createMessageViewScreen(parent: S?, title: Component, rootViewFactory: () -> View): S
 }
 
 fun interface BlockColorProvider {

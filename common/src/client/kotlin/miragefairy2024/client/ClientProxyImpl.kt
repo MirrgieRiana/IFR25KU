@@ -8,9 +8,11 @@ import miragefairy2024.ClientProxy
 import miragefairy2024.ItemColorProvider
 import miragefairy2024.RenderingProxy
 import miragefairy2024.RenderingProxyBlockEntity
+import miragefairy2024.client.mod.recipeviewer.vanilla.MessageViewScreen
 import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
 import miragefairy2024.client.util.stack
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
+import miragefairy2024.mod.recipeviewer.view.View
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.minecraft.client.Minecraft
@@ -100,6 +102,10 @@ class ClientProxyImpl : ClientProxy<Screen> {
 
     override fun setScreen(screen: Screen?) {
         Minecraft.getInstance().setScreen(screen)
+    }
+
+    override fun createMessageViewScreen(parent: Screen?, title: Component, rootViewFactory: () -> View): Screen {
+        return MessageViewScreen(parent, title, rootViewFactory)
     }
 }
 
