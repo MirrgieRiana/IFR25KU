@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
+import org.lwjgl.glfw.GLFW
 
 /** 中身を View のツリーで構築する画面なのだ～🌱 */
 abstract class ViewScreen(title: Component) : Screen(title) {
@@ -72,6 +73,9 @@ abstract class ViewScreen(title: Component) : Screen(title) {
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        when (keyCode) {
+            GLFW.GLFW_KEY_UP, GLFW.GLFW_KEY_DOWN, GLFW.GLFW_KEY_LEFT, GLFW.GLFW_KEY_RIGHT -> return super.keyPressed(keyCode, scanCode, modifiers)
+        }
         if (viewAdapter.keyPressed(keyCode, scanCode, modifiers)) return true
         return super.keyPressed(keyCode, scanCode, modifiers)
     }
