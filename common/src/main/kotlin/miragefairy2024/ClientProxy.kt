@@ -1,6 +1,7 @@
 package miragefairy2024
 
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
+import miragefairy2024.mod.recipeviewer.view.View
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -15,10 +16,10 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 
-var clientProxy: ClientProxy? = null
+var clientProxy: ClientProxy<*>? = null
 
 
-interface ClientProxy {
+interface ClientProxy<S : Any> {
     fun registerItemTooltipCallback(block: (stack: ItemStack, context: Item.TooltipContext, lines: MutableList<Component>) -> Unit)
     fun registerCutoutRenderLayer(block: () -> Block)
     fun registerTranslucentRenderLayer(block: () -> Block)
@@ -31,6 +32,9 @@ interface ClientProxy {
     fun registerItemColorProvider(item: Item, provider: ItemColorProvider)
     fun <T> registerRenderingProxyBlockEntityRendererFactory(blockEntityType: BlockEntityType<T>) where T : BlockEntity, T : RenderingProxyBlockEntity
     fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu
+    fun getCurrentScreen(): S?
+    fun setCurrentScreen(screen: S?)
+    fun createMessageViewScreen(parent: S?, title: Component, rootViewFactory: () -> View): S
 }
 
 fun interface BlockColorProvider {

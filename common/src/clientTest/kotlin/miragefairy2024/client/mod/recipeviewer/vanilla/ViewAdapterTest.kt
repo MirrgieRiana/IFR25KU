@@ -13,6 +13,7 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.text
+import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
@@ -80,6 +81,7 @@ private class AdapterFixture(vararg views: TestView) {
     var onDispose: () -> Unit = { }
     val host: ViewAdapterHost = object : ViewAdapterHost {
         override fun getScreen() = this@AdapterFixture.screen
+        override fun canPlaceMenuSlots() = false
         override fun getRegionSizeX() = screen.width
         override fun getRegionSizeY() = screen.height
         override fun getUiOffset() = IntPoint(30, 40)
@@ -235,6 +237,7 @@ class ViewAdapterTest {
             override fun getRenderingProxy() = ADAPTER_RENDERING_PROXY
             override fun getViewPlacerRegistry() = registry
             override fun getScreen() = null
+            override fun canPlaceMenuSlots() = false
             override fun getRegionSizeX() = 300
             override fun getRegionSizeY() = 80
             override fun createRootView() = rootView
@@ -466,7 +469,7 @@ class ViewAdapterTest {
             val editBox: EditBox = object : EditBox(null, 10, 20, text { empty() }) {
                 override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = consumeKeys
             }
-            val nextEditBox = EditBox(null, 10, 50, text { empty() })
+            val nextEditBox = EditBox(Mockito.mock(Font::class.java), 10, 50, text { empty() })
             fixture.interactiveWidgets += editBox
             fixture.interactiveWidgets += nextEditBox
             fixture.screen.focused = editBox
