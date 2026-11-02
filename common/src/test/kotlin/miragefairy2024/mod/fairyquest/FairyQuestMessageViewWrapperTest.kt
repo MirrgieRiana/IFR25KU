@@ -96,9 +96,11 @@ class FairyQuestMessageViewWrapperTest {
         val events = mutableListOf<String>()
         view.onBackToGame.register {
             events += "game"
+            true
         }
         view.onBack.register {
             events += "parent"
+            true
         }
         view.view.initSizeCalculation(MessageRenderingProxy(), { 400 }, { 240 })
         val buttons = view.place().mapNotNull { it.first as? TextButtonView }

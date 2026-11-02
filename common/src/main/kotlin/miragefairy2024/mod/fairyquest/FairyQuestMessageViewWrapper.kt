@@ -47,9 +47,11 @@ fun FairyQuestRecipe.openMessageScreen() {
             FairyQuestMessageViewWrapper(this.title, this.message, this.client).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
+                    true
                 }
                 view.onBack.register {
                     proxy.setCurrentScreen(parent)
+                    true
                 }
             }.view
         })
@@ -59,8 +61,8 @@ fun FairyQuestRecipe.openMessageScreen() {
 
 class FairyQuestMessageViewWrapper(fairyQuestTitle: Component, fairyQuestMessage: Component, fairyQuestClient: Component) {
 
-    val onBackToGame = EventRegistry<() -> Unit>()
-    val onBack = EventRegistry<() -> Unit>()
+    val onBackToGame = EventRegistry<() -> Boolean>()
+    val onBack = EventRegistry<() -> Boolean>()
 
     val view = View {
         val textColor = ColorPair(0xFF6B472E.toInt(), 0xFF6B472E.toInt())
@@ -120,16 +122,20 @@ class FairyQuestMessageViewWrapper(fairyQuestTitle: Component, fairyQuestMessage
                 view += TextButtonView(IntPoint(80, 20)).configure {
                     view.message = text { guiBackToGameTranslation() }
                     view.onClick.register {
-                        onBackToGame.fire()
-                        true
+                        onBackToGame.fire {
+                            if (it()) return@register true
+                        }
+                        false
                     }
                 }
                 view += XSpaceView(20)
                 view += TextButtonView(IntPoint(80, 20)).configure {
                     view.message = CommonComponents.GUI_BACK
                     view.onClick.register {
-                        onBack.fire()
-                        true
+                        onBack.fire {
+                            if (it()) return@register true
+                        }
+                        false
                     }
                 }
             }
