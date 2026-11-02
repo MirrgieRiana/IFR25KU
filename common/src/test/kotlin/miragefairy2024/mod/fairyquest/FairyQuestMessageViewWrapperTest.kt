@@ -38,26 +38,26 @@ private class MessageRenderingProxy : RenderingProxy {
     }
 }
 
-private fun FairyQuestMessageView.place(): List<Pair<PlaceableView, IntRectangle>> {
+private fun FairyQuestMessageViewWrapper.place(): List<Pair<PlaceableView, IntRectangle>> {
     val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
     fun place(view: PlaceableView, bounds: IntRectangle): ViewController {
         placements += Pair(view, bounds)
         if (view is YScrollView) return view.childView.attachTo(bounds.offset, ::place)
         return ViewController.NONE
     }
-    this.attachTo(IntPoint.ZERO, ::place)
+    this.view.attachTo(IntPoint.ZERO, ::place)
     return placements
 }
 
-class FairyQuestMessageViewTest {
+class FairyQuestMessageViewWrapperTest {
 
     @Test
     fun `長文をカード幅で折り返し本文と題名と依頼人を一緒にスクロールするのだ`() {
         val proxy = MessageRenderingProxy()
-        val view = FairyQuestMessageView(text { "title"() }, text { "message".repeat(200)() }, text { "client"() })
-        view.initSizeCalculation(proxy, { 400 }, { 240 })
+        val view = FairyQuestMessageViewWrapper(text { "title"() }, text { "message".repeat(200)() }, text { "client"() })
+        view.view.initSizeCalculation(proxy, { 400 }, { 240 })
 
-        Assertions.assertEquals(IntPoint(400, 240), view.evaluateActualSize())
+        Assertions.assertEquals(IntPoint(400, 240), view.view.evaluateActualSize())
         val placements = view.place()
         val scroll = placements.single { it.first is YScrollView }
         Assertions.assertEquals(IntRectangle(75, 10, 260, 196), scroll.second)
@@ -79,9 +79,9 @@ class FairyQuestMessageViewTest {
 
     @Test
     fun `再初期化すると画面の寸法に合わせてスクロール領域とボタンを再配置するのだ`() {
-        val view = FairyQuestMessageView(text { "title"() }, text { "message"() }, text { "client"() })
+        val view = FairyQuestMessageViewWrapper(text { "title"() }, text { "message"() }, text { "client"() })
         listOf(IntPoint(400, 240), IntPoint(320, 180)).forEach { size ->
-            view.initSizeCalculation(MessageRenderingProxy(), { size.x }, { size.y })
+            view.view.initSizeCalculation(MessageRenderingProxy(), { size.x }, { size.y })
             val placements = view.place()
             val scroll = placements.single { it.first is YScrollView }.second
             Assertions.assertEquals(IntRectangle((size.x - 270) / 2 + 10, 10, 260, size.y - 44), scroll)
@@ -92,7 +92,7 @@ class FairyQuestMessageViewTest {
 
     @Test
     fun `二つのボタンがゲーム復帰と親画面復帰を別々に通知するのだ`() {
-        val view = FairyQuestMessageView(text { "title"() }, text { "message"() }, text { "client"() })
+        val view = FairyQuestMessageViewWrapper(text { "title"() }, text { "message"() }, text { "client"() })
         val events = mutableListOf<String>()
         view.onBackToGame.register {
             events += "game"
@@ -100,7 +100,7 @@ class FairyQuestMessageViewTest {
         view.onBack.register {
             events += "parent"
         }
-        view.initSizeCalculation(MessageRenderingProxy(), { 400 }, { 240 })
+        view.view.initSizeCalculation(MessageRenderingProxy(), { 400 }, { 240 })
         val buttons = view.place().mapNotNull { it.first as? TextButtonView }
 
         buttons[0].onPress.fire()
