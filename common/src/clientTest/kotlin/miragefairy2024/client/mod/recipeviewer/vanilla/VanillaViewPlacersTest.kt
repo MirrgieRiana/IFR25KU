@@ -157,9 +157,10 @@ class VanillaViewPlacersTest {
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Buttons must accept input")
         }
         var presses = 0
-        val view = TextButtonView(IntPoint(80, 20), text { "back"() })
-        view.onPress.register {
+        val view = TextButtonView(IntPoint(80, 20)).also { it.message = text { "back"() } }
+        view.onClick.register {
             presses += 1
+            true
         }
         view.initSizeCalculation(PLACER_RENDERING_PROXY, { 400 }, { 240 })
         val controller = view.attachTo(IntPoint(10, 30)) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
@@ -213,5 +214,48 @@ class VanillaViewPlacersTest {
             Assertions.assertTrue(widget.children().isEmpty())
             Assertions.assertTrue(screenWidgets.isEmpty())
         }
+    }
+
+    @Test
+    fun `文字ボタンは配置後の文言変更とクリック通知と移動と解除を反映するのだ`() {
+        val widgets = mutableListOf<AbstractWidget>()
+        val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+            override val origin = IntPoint(10, 20)
+            override val canPlaceMenuSlots = false
+            override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                widgets += widget
+                return Remover { widgets.remove(widget) }
+            }
+            override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Buttons must accept input")
+        }
+        val initialMessage = text { "initial"() }
+        val view = TextButtonView(IntPoint(80, 20)).also { it.message = initialMessage }
+        view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
+        val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+        val button = widgets.single() as Button
+        var clicks = 0
+        val remover = view.onClick.register {
+            clicks += 1
+            true
+        }
+        try {
+            Assertions.assertSame(initialMessage, button.message)
+            Assertions.assertEquals(IntPoint(80, 20), IntPoint(button.width, button.height))
+            val newMessage = text { "changed"() }
+            view.message = newMessage
+            Assertions.assertSame(newMessage, button.message)
+            button.onPress()
+            Assertions.assertEquals(1, clicks)
+            remover.remove()
+            button.onPress()
+            Assertions.assertEquals(1, clicks)
+            controller.setOffset(IntPoint(40, 60))
+            Assertions.assertEquals(IntPoint(40, 60), IntPoint(button.x, button.y))
+        } finally {
+            remover.remove()
+            controller.dispose()
+            controller.detach()
+        }
+        Assertions.assertTrue(widgets.isEmpty())
     }
 }

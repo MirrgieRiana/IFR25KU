@@ -87,10 +87,11 @@ fun initVanillaViewPlacers() {
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextButtonView, bounds ->
-        val button = Button.builder(view.message) {
-            view.onPress.fire()
-        }.bounds(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY).build()
-        context place button
+        // TODO onClick の戻り値によるイベントの消費判定と、未消費をバニラの Button の入力処理へ反映する方法は検討が必要なのだ～🌱
+        class TextButtonWidget : Button(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, view.message, { view.onClick.fire { it() } }, DEFAULT_NARRATION) {
+            override fun getMessage() = view.message
+        }
+        context place TextButtonWidget()
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextFieldView, bounds ->
         val editBox = EditBox(Minecraft.getInstance().font, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty())

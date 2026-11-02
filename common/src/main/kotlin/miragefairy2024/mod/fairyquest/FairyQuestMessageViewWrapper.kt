@@ -117,15 +117,19 @@ class FairyQuestMessageViewWrapper(fairyQuestTitle: Component, fairyQuestMessage
             view += XListView().configure {
                 position.alignmentX = Alignment.CENTER
 
-                view += TextButtonView(IntPoint(80, 20), text { guiBackToGameTranslation() }).configure {
-                    view.onPress.register {
+                view += TextButtonView(IntPoint(80, 20)).configure {
+                    view.message = text { guiBackToGameTranslation() }
+                    view.onClick.register {
                         onBackToGame.fire()
+                        true
                     }
                 }
                 view += XSpaceView(20)
-                view += TextButtonView(IntPoint(80, 20), CommonComponents.GUI_BACK).configure {
-                    view.onPress.register {
+                view += TextButtonView(IntPoint(80, 20)).configure {
+                    view.message = CommonComponents.GUI_BACK
+                    view.onClick.register {
                         onBack.fire()
+                        true
                     }
                 }
             }

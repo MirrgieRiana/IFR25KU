@@ -103,9 +103,9 @@ class FairyQuestMessageViewWrapperTest {
         view.view.initSizeCalculation(MessageRenderingProxy(), { 400 }, { 240 })
         val buttons = view.place().mapNotNull { it.first as? TextButtonView }
 
-        buttons[0].onPress.fire()
+        buttons[0].onClick.fire { it() }
         Assertions.assertEquals(listOf("game"), events)
-        buttons[1].onPress.fire()
+        buttons[1].onClick.fire { it() }
         Assertions.assertEquals(listOf("game", "parent"), events)
     }
 
