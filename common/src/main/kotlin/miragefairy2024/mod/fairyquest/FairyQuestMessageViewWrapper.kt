@@ -68,6 +68,7 @@ class FairyQuestMessageViewWrapper(fairyQuestTitle: Component, fairyQuestMessage
             view.sizingX = Sizing.FILL
             view.sizingY = Sizing.FILL
 
+            // メッセージ部分
             view += YScrollView().configure {
                 position.alignmentX = Alignment.CENTER
                 position.weight = 1.0
@@ -108,9 +109,11 @@ class FairyQuestMessageViewWrapper(fairyQuestTitle: Component, fairyQuestMessage
                         }
                     }.minContentSizeX(18 * 15 - 10 * 2 - 11 * 2).margin(11)
                 }
-            }.margin(10, 0, 0, 0)
+            }.margin(10, 0, 0, 0) // アンチスクロールバーマージン
 
             view += YSpaceView(10)
+
+            // ボタン部分
             view += XListView().configure {
                 position.alignmentX = Alignment.CENTER
 
@@ -126,6 +129,7 @@ class FairyQuestMessageViewWrapper(fairyQuestTitle: Component, fairyQuestMessage
                     }
                 }
             }
+
         }.margin(0, 0, 10, 4)
     }
 
