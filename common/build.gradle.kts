@@ -113,6 +113,9 @@ dependencies {
 
     modCompileOnly("dev.emi:emi-fabric:${libs.versions.emi.get()}:api")
 
+    // テスト専用なのだ～🌱
+    "clientTestImplementation"("org.mockito:mockito-core:${libs.versions.mockito.get()}")
+
 }
 configurations.named("architecturyTransformerClasspath") {
     extendsFrom(configurations.named("clientCompileClasspath").get()) // transformProductionFabric でバニラのclient用クラスが見れなくて死ぬ対策

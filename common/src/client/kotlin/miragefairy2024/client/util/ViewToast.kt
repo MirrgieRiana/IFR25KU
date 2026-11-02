@@ -27,6 +27,7 @@ class ViewToast(rootView: View) : Toast {
         override fun getViewPlacerRegistry() = VANILLA_VIEW_PLACER_REGISTRY
 
         override fun getScreen() = null
+        override fun canPlaceMenuSlots() = false
         override fun getRegionSizeX() = 1000
         override fun getRegionSizeY() = 1000
 

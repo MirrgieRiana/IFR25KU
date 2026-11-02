@@ -21,6 +21,7 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         override fun getViewPlacerRegistry() = VANILLA_VIEW_PLACER_REGISTRY
 
         override fun getScreen() = this@ViewContainerScreen
+        override fun canPlaceMenuSlots() = true
         override fun getRegionSizeX() = this@ViewContainerScreen.width
         override fun getRegionSizeY() = this@ViewContainerScreen.height
 
@@ -72,6 +73,11 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (viewAdapter.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
+    }
+
+    override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        if (viewAdapter.mouseReleased(mouseX, mouseY, button)) return true
+        return super.mouseReleased(mouseX, mouseY, button)
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
