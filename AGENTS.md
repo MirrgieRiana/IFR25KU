@@ -320,6 +320,8 @@ Float リテラルは、`1.0F` のように、必ず末尾に大文字の `F` �
 
 `BlockPos` `BlockState` は、これそのものが基底のクラス名です。
 
+Component の生成には、専ら、text DSL を使用してください。
+
 ## generated リソース
 
 generated リソースは、コードの変更とセットです。
