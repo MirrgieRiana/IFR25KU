@@ -8,5 +8,5 @@ import net.minecraft.network.chat.Component
 
 class TextButtonView(size: IntPoint) : FixedWidgetView(size) {
     var message: Component = text { empty() }
-    val onClick = EventRegistry<() -> Unit>()
+    val onClick = EventRegistry<() -> Boolean>()
 }

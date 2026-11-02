@@ -118,7 +118,10 @@ class VanillaViewPlacersTest {
         val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
         val button = widgets.single() as Button
         var clicks = 0
-        val remover = view.onClick.register { clicks += 1 }
+        val remover = view.onClick.register {
+            clicks += 1
+            true
+        }
         try {
             Assertions.assertSame(initialMessage, button.message)
             Assertions.assertEquals(IntPoint(80, 20), IntPoint(button.width, button.height))
