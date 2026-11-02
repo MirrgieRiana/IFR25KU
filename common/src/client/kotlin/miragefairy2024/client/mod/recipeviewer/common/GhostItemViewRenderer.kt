@@ -3,7 +3,6 @@ package miragefairy2024.client.mod.recipeviewer.common
 import com.mojang.blaze3d.platform.Lighting
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.mod.recipeviewer.view.x1
 import miragefairy2024.mod.recipeviewer.view.x2
 import miragefairy2024.mod.recipeviewer.view.y1
@@ -14,7 +13,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
 
 object GhostItemViewRenderer : ViewRenderer<GhostItemView> {
-    override fun render(view: GhostItemView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(view: GhostItemView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         // 左コントロールを押している間は止めて、アイテムを読む時間を取れるようにするのだ～🌱
         if (!Screen.hasControlDown()) view.time += Minecraft.getInstance().timer.realtimeDeltaTicks
 
@@ -37,7 +36,7 @@ object GhostItemViewRenderer : ViewRenderer<GhostItemView> {
         graphics.pose().popPose()
 
         // スクロール領域のクリッピングを解除してからツールチップを描画するのだ～🌱
-        if (!bounds.contains(mouseX, mouseY)) return
+        if (!isHovered) return
         if (itemStack.isEmpty) return
         Minecraft.getInstance().screen?.setTooltipForNextRenderPass(Screen.getTooltipFromItem(Minecraft.getInstance(), itemStack).map { it.visualOrderText })
     }

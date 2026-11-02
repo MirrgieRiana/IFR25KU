@@ -12,7 +12,6 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
-import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
@@ -20,6 +19,7 @@ import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
@@ -82,7 +82,11 @@ class MotifTableScreen(handler: MotifTableScreenHandler, playerInventory: Invent
                     view += NinePatchImageView(NinePatchTextureCard.PANEL.texture, 16, 16, 5, 6, 5, 5, 6, 5, true)
 
                     // 確率の一覧なのだ～🌱
-                    view += ScrollView(18, ScrollbarStyle.Vanilla).configure {
+                    view += YScrollView().configure {
+                        view.sizingX = Sizing.WRAP
+                        view.scrollbarThickness = 18
+                        view.scrollbarStyle = ScrollbarStyle.Vanilla
+                        view.scrollbarOverlapsContent = true
                         view += YListView().configure {
                             view.sizingX = Sizing.FILL
 

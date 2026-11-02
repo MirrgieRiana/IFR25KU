@@ -22,14 +22,13 @@ import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
-import miragefairy2024.mod.recipeviewer.views.ScrollView
-import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.margin
@@ -132,7 +131,10 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                     view += YSpaceView(5)
 
                     // 特性ポエムなのだ～🌱 スクロールバーは中身へ重ねるのだ～🌱
-                    view += ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt())).configure {
+                    view += YScrollView().configure {
+                        view.scrollbarThickness = 5
+                        view.scrollbarColor = 0xA0FFFFFF.toInt()
+                        view.scrollbarOverlapsContent = true
                         position.weight = 1.0
 
                         view += MultiLineTextView().configure {
@@ -192,7 +194,10 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
 
                             view += TooltipBackgroundView()
 
-                            view += ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt())).configure {
+                            view += YScrollView().configure {
+                                view.scrollbarThickness = 5
+                                view.scrollbarColor = 0xA0FFFFFF.toInt()
+                                view.scrollbarOverlapsContent = true
                                 view += YListView().configure {
                                     view.sizingX = Sizing.FILL
 

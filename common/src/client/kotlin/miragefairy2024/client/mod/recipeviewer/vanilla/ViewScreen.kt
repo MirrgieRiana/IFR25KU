@@ -63,6 +63,21 @@ abstract class ViewScreen(title: Component) : Screen(title) {
         return handled
     }
 
+    override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
+        val capture = children().firstOrNull { it is MouseCaptureContainer && it.hasMouseCapture(button) }
+        if (capture != null) return capture.mouseDragged(mouseX, mouseY, button, dragX, dragY)
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY)
+    }
+
+    override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        val capture = children().firstOrNull { it is MouseCaptureContainer && it.hasMouseCapture(button) }
+        if (capture != null) {
+            if (button == 0) isDragging = false
+            return capture.mouseReleased(mouseX, mouseY, button)
+        }
+        return super.mouseReleased(mouseX, mouseY, button)
+    }
+
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (viewAdapter.keyPressed(keyCode, scanCode, modifiers)) return true
         return super.keyPressed(keyCode, scanCode, modifiers)

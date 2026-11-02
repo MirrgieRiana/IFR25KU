@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil
 
 object TooltipBackgroundViewRenderer : ViewRenderer<TooltipBackgroundView> {
-    override fun render(view: TooltipBackgroundView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(view: TooltipBackgroundView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         TooltipRenderUtil.renderTooltipBackground(
             graphics,
             bounds.x + 4,

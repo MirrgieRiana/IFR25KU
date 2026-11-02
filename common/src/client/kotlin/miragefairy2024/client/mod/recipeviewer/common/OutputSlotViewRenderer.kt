@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 
 object OutputSlotViewRenderer : ViewRenderer<OutputSlotView> {
-    override fun render(view: OutputSlotView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(view: OutputSlotView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         if (view.drawBackground) {
             val texture = SlotType.NORMAL.viewTexture
             graphics.blit(texture.id, bounds.x, bounds.y, 0.0F, 0.0F, bounds.sizeX, bounds.sizeY, texture.size.x, texture.size.y)

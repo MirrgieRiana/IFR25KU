@@ -44,7 +44,6 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
-import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
@@ -53,6 +52,7 @@ import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.margin
@@ -178,9 +178,9 @@ fun initSoulStreamClientModule() {
         graphics.pose().pushPose()
         graphics.pose().translate(0.0, 0.0, 200.0)
         RenderSystem.enableBlend()
-        graphics.setColor(1f, 1f, 1f, alpha)
+        graphics.setColor(1.0F, 1.0F, 1.0F, alpha)
         graphics.blit(FILTER_OVERLAY_TEXTURE, x, y, 0.0F, 0.0F, 16, 16, 16, 16)
-        graphics.setColor(1f, 1f, 1f, 1f)
+        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F)
         RenderSystem.disableBlend()
         graphics.pose().popPose()
     }
@@ -201,7 +201,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         super.render(vanillaContext, mouseX, mouseY, delta)
     }
 
-    private val scrollViewList = mutableListOf<ScrollView>()
+    private val scrollViewList = mutableListOf<YScrollView>()
 
     override fun init() {
         val scrollAmounts = scrollViewList.map { it.scrollAmount }
@@ -290,7 +290,10 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
                             view += TooltipBackgroundView()
 
-                            view += ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt())).configure {
+                            view += YScrollView().configure {
+                                view.scrollbarThickness = 5
+                                view.scrollbarColor = 0xA0FFFFFF.toInt()
+                                view.scrollbarOverlapsContent = true
                                 scrollViewList += view
                                 view += YListView().configure {
                                     view.sizingX = Sizing.FILL
@@ -346,9 +349,12 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                         view += YSpaceView(4)
 
                         // 妖精を預ける欄なのだ～🌱
-                        view += ScrollView(18, ScrollbarStyle.Vanilla).configure {
+                        view += YScrollView().configure {
+                            view.scrollbarThickness = 18
+                            view.scrollbarStyle = ScrollbarStyle.Vanilla
+                            view.scrollbarOverlapsContent = true
                             scrollViewList += view
-                            view.scrollStep = 18.0
+                            view.scrollStep = 18
                             position.weight = 1.0
 
                             view += YListView().configure {
@@ -441,7 +447,10 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                             view += TooltipBackgroundView()
 
                             // スクロールバーは中身へ重ねるのだ～🌱
-                            view += ScrollView(5, ScrollbarStyle.Flat(0xA0FFFFFF.toInt())).configure {
+                            view += YScrollView().configure {
+                                view.scrollbarThickness = 5
+                                view.scrollbarColor = 0xA0FFFFFF.toInt()
+                                view.scrollbarOverlapsContent = true
                                 scrollViewList += view
                                 view += YListView().configure {
                                     view.sizingX = Sizing.FILL

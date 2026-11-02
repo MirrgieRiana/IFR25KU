@@ -17,14 +17,13 @@ import miragefairy2024.mod.recipeviewer.views.GhostItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.ProgressView
-import miragefairy2024.mod.recipeviewer.views.ScrollView
-import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
 import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.margin
@@ -124,7 +123,10 @@ class FairyQuestCardScreen(handler: FairyQuestCardScreenHandler, private val pla
                             view += NinePatchImageView(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
 
                             // スクロールバーを罫線へ重ねると、中身の罫線の方が手前で描かれて、スクロールバーが途切れるのだ～🌱
-                            view += ScrollView(5, ScrollbarStyle.Flat(0xA0000000.toInt())).configure {
+                            view += YScrollView().configure {
+                                view.scrollbarThickness = 5
+                                view.scrollbarColor = 0xA0000000.toInt()
+                                view.scrollbarOverlapsContent = true
                                 view += StackView().configure {
                                     view.sizingX = Sizing.FILL
 
