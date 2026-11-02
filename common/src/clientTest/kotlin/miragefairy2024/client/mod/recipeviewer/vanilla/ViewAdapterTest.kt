@@ -13,6 +13,7 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.text
+import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
@@ -468,7 +469,7 @@ class ViewAdapterTest {
             val editBox: EditBox = object : EditBox(null, 10, 20, text { empty() }) {
                 override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = consumeKeys
             }
-            val nextEditBox = EditBox(null, 10, 50, text { empty() })
+            val nextEditBox = EditBox(Mockito.mock(Font::class.java), 10, 50, text { empty() })
             fixture.interactiveWidgets += editBox
             fixture.interactiveWidgets += nextEditBox
             fixture.screen.focused = editBox
