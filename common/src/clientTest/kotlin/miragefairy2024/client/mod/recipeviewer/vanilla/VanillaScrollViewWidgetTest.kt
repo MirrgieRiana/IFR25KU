@@ -21,6 +21,8 @@ import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
+import net.minecraft.Util
+import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarratableEntry
@@ -35,8 +37,8 @@ import net.minecraft.util.FormattedCharSequence
 import net.minecraft.world.inventory.Slot
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.lwjgl.glfw.GLFW
+import org.mockito.Mockito
 
 private val SCROLL_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
     override fun calculateTextWidth(text: FormattedText) = throw UnsupportedOperationException()
@@ -156,9 +158,10 @@ private class ScrollFixture {
         registry.register { context, view: YScrollView, bounds ->
             place(context, VanillaYScrollViewWidget(view, bounds, context, registry))
         }
-        registry.register { _, _: MenuSlotView, _ ->
+        registry.register { context, _: MenuSlotView, _ ->
+            Assertions.assertTrue(context is ScrollViewPlacerContext)
             slotPlacements += 1
-            throw AssertionError("MenuSlotView must be rejected before placement")
+            ViewController.NONE
         }
     }
 
@@ -839,16 +842,17 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
-    fun `Slot の配置を例外で拒否するのだ`() {
+    fun `Slot の配置先へスクロールのクリッピング範囲を渡すのだ～🌱`() {
         val fixture = ScrollFixture()
         val view = YScrollView()
         view += YListView().also {
             it += ScrollTestView(true)
             it += MenuSlotView(Slot(null, 0, 0, 0))
         }
-        val exception = Assertions.assertThrows(UnsupportedOperationException::class.java) { fixture.attach(view, IntPoint(100, 100)) }
-        Assertions.assertEquals("MenuSlotView cannot be placed inside a scroll view", exception.message)
-        Assertions.assertEquals(0, fixture.slotPlacements)
+        val controller = fixture.attach(view, IntPoint(100, 100))
+        Assertions.assertEquals(1, fixture.slotPlacements)
+        controller.dispose()
+        controller.detach()
     }
 
     @Test
@@ -931,6 +935,85 @@ class VanillaScrollViewWidgetTest {
         Assertions.assertFalse(root.mouseScrolled(10.0, 20.0, 0.0, -1.0))
         controller.dispose()
         controller.detach()
+    }
+
+    @Test
+    fun `再配置と描画時のスクロール量を View と同期するのだ～🌱`() {
+        val fixture = ScrollFixture()
+        val view = createScrollView(false)
+        view.scrollAmount = 30.0
+        val controller = fixture.attach(view, IntPoint(100, 100))
+        val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+        Assertions.assertEquals(-10, fixture.widgets[0].y)
+        root.mouseScrolled(50.0, 50.0, 0.0, -1.0)
+        Assertions.assertEquals(45.0, view.scrollAmount)
+        view.scrollAmount = 60.0
+        GuiTestEnvironment().use { environment ->
+            root.render(environment.graphics, 50, 50, 0.0F)
+        }
+        Assertions.assertEquals(-40, fixture.widgets[0].y)
+        controller.dispose()
+        controller.detach()
+    }
+
+    @Test
+    fun `重ねたスクロールバーを子より優先し領域外までドラッグできるのだ～🌱`() {
+        val fixture = ScrollFixture()
+        val view = createScrollView(false)
+        view.scrollbarOverlapsContent = true
+        val controller = fixture.attach(view, IntPoint(100, 100))
+        val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+        Assertions.assertEquals(100, fixture.widgets[0].width)
+        Assertions.assertTrue(root.mouseClicked(108.0, 30.0, 0))
+        Assertions.assertTrue(fixture.widgets.all { it.clicks.isEmpty() })
+        Assertions.assertTrue(root.mouseDragged(200.0, 200.0, 0, 0.0, 170.0))
+        Assertions.assertEquals(200.0, view.scrollAmount)
+        Assertions.assertTrue(root.mouseReleased(200.0, 200.0, 0))
+        controller.dispose()
+        controller.detach()
+    }
+
+    @Test
+    fun `ホイール操作後のスクロールバーを時間経過で透明にするのだ～🌱`() {
+        val fixture = ScrollFixture()
+        val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
+        val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+        val colors = mutableListOf<Int>()
+        val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+        Mockito.doAnswer {
+            colors += it.getArgument<Int>(4)
+            null
+        }.`when`(graphics).fill(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt())
+        Mockito.mockStatic(Util::class.java).use { clock ->
+            var now = 0L
+            clock.`when`<Long> { Util.getMillis() }.thenAnswer { now }
+            root.mouseScrolled(50.0, 50.0, 0.0, -1.0)
+            root.render(graphics, 50, 50, 0.0F)
+            now = 875L
+            root.render(graphics, 50, 50, 0.0F)
+            now = 1250L
+            root.render(graphics, 50, 50, 0.0F)
+        }
+        Assertions.assertEquals(listOf(0xA0000000.toInt(), 0x50000000, 0x00000000), colors)
+        controller.dispose()
+        controller.detach()
+    }
+
+    @Test
+    fun `バニラ方式のバーを縦横とも同じ配色で描くのだ～🌱`() {
+        listOf(false, true).forEach { horizontal ->
+            val fixture = ScrollFixture()
+            val view = createScrollView(horizontal)
+            view.scrollbarStyle = ScrollbarStyle.Vanilla
+            val controller = fixture.attach(view, IntPoint(100, 100))
+            val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+            GuiTestEnvironment().use { environment ->
+                root.render(environment.graphics, 50, 50, 0.0F)
+                Assertions.assertEquals(3, environment.fills.size)
+            }
+            controller.dispose()
+            controller.detach()
+        }
     }
 
 }

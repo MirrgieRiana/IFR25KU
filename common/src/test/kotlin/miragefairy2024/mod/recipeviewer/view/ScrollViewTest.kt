@@ -100,4 +100,23 @@ class ScrollViewTest {
         Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollStep = 0 }
     }
 
+    @Test
+    fun `バーを重ねる場合は縦横とも子の幅と高さから予約領域を引かないのだ～🌱`() {
+        listOf(true, false).forEach { horizontal ->
+            val child = object : AbstractView() {
+                override val sizingX = Sizing.FILL
+                override val sizingY = Sizing.FILL
+                override fun evaluateContentSizeXImpl() = 200
+                override fun evaluateContentSizeYImpl() = 200
+                override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = ViewController.NONE
+            }
+            val view = if (horizontal) XScrollView() else YScrollView()
+            view.scrollbarOverlapsContent = true
+            view += child
+            view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 100 })
+            Assertions.assertEquals(if (horizontal) IntPoint(200, 100) else IntPoint(100, 200), child.evaluateActualSize())
+            Assertions.assertEquals(0, view.reservedScrollbarThickness)
+        }
+    }
+
 }

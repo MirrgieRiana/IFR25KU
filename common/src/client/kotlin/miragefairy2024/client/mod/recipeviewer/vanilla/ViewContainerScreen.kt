@@ -3,6 +3,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
@@ -13,35 +14,42 @@ import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
 
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
-class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
+class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractViewContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
+    override fun createRootView() = menu.createView(title, playerInventoryTitle)
+}
+
+/** View のツリーを画面側で構築するコンテナー画面の基底クラスなのだ～🌱 */
+abstract class AbstractViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) {
+
+    protected abstract fun createRootView(): View
 
     private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
 
         override fun getRenderingProxy() = renderingProxy
         override fun getViewPlacerRegistry() = VANILLA_VIEW_PLACER_REGISTRY
 
-        override fun getScreen() = this@ViewContainerScreen
-        override fun getRegionSizeX() = this@ViewContainerScreen.width
-        override fun getRegionSizeY() = this@ViewContainerScreen.height
+        override fun getScreen() = this@AbstractViewContainerScreen
+        override fun getRegionSizeX() = this@AbstractViewContainerScreen.width
+        override fun getRegionSizeY() = this@AbstractViewContainerScreen.height
 
-        override fun createRootView() = menu.createView(title, playerInventoryTitle)
+        override fun createRootView() = this@AbstractViewContainerScreen.createRootView()
 
-        override fun getUiOffset() = IntPoint(this@ViewContainerScreen.leftPos, this@ViewContainerScreen.topPos)
+        override fun getUiOffset() = IntPoint(this@AbstractViewContainerScreen.leftPos, this@AbstractViewContainerScreen.topPos)
         override fun setUiSize(uiSize: IntPoint) {
-            this@ViewContainerScreen.imageWidth = uiSize.x
-            this@ViewContainerScreen.imageHeight = uiSize.y
+            this@AbstractViewContainerScreen.imageWidth = uiSize.x
+            this@AbstractViewContainerScreen.imageHeight = uiSize.y
         }
 
-        override fun init() = super@ViewContainerScreen.init()
+        override fun init() = super@AbstractViewContainerScreen.init()
 
         override fun addRenderableWidget(widget: AbstractWidget): Remover {
-            this@ViewContainerScreen.addRenderableWidget(widget)
-            return Remover { this@ViewContainerScreen.removeWidget(widget) }
+            this@AbstractViewContainerScreen.addRenderableWidget(widget)
+            return Remover { this@AbstractViewContainerScreen.removeWidget(widget) }
         }
 
         override fun addRenderableOnly(widget: AbstractWidget): Remover {
-            this@ViewContainerScreen.addRenderableOnly(widget)
-            return Remover { this@ViewContainerScreen.removeWidget(widget) }
+            this@AbstractViewContainerScreen.addRenderableOnly(widget)
+            return Remover { this@AbstractViewContainerScreen.removeWidget(widget) }
         }
 
     })

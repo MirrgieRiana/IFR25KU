@@ -1,12 +1,19 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.ModContext
+import miragefairy2024.client.mixins.api.SlotPositionSetter
+import miragefairy2024.client.mixins.api.SlotScissorAreaHolder
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
+import miragefairy2024.mod.recipeviewer.views.MinContentSizeYView
+import miragefairy2024.mod.recipeviewer.views.MenuSlotView
+import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
+import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
@@ -17,6 +24,7 @@ import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
+import net.minecraft.world.inventory.Slot
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -96,4 +104,69 @@ class VanillaViewPlacersTest {
             Assertions.assertTrue(screenWidgets.isEmpty())
         }
     }
+
+    @Test
+    fun `スクロール内のスロットは実座標とクリッピングを更新し未処理クリックをバニラへ渡すのだ～🌱`() {
+        val slot = object : Slot(null, 0, 0, 0), SlotPositionSetter, SlotScissorAreaHolder {
+            var position = IntPoint.ZERO
+            var area: IntArray? = null
+            override fun `mirageFairy2024$setPosition`(x: Int, y: Int) {
+                position = IntPoint(x, y)
+            }
+            override fun `mirageFairy2024$setScissorArea`(scissorArea: IntArray?) {
+                area = scissorArea
+            }
+            override fun `mirageFairy2024$getScissorArea`() = area
+        }
+        val widgets = mutableListOf<AbstractWidget>()
+        val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+            override val origin = IntPoint(10, 20)
+            override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                widgets += widget
+                return Remover { widgets -= widget }
+            }
+            override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scroll container must accept input")
+        }
+        val child = YListView()
+        child += SpaceView(IntPoint(18, 40))
+        child += MenuSlotView(slot)
+        val view = YScrollView()
+        view += child
+        view.initSizeCalculation(PLACER_RENDERING_PROXY, { 50 }, { 30 })
+        val controller = view.attachTo(context.origin) { leaf, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, leaf, bounds) }
+        val widget = widgets.single() as VanillaScrollViewWidget
+        GuiTestEnvironment().use { environment ->
+            widget.render(environment.graphics, 15, 25, 0.0F)
+            Assertions.assertEquals(IntPoint(1, 41), slot.position)
+            Assertions.assertArrayEquals(intArrayOf(0, 0, 45, 30), slot.area)
+            Assertions.assertTrue(widget.children().isEmpty())
+            Assertions.assertFalse(widget.mouseClicked(15.0, 25.0, 0))
+            widget.mouseScrolled(15.0, 25.0, 0.0, -1.0)
+            widget.render(environment.graphics, 15, 25, 0.0F)
+            Assertions.assertEquals(IntPoint(1, 26), slot.position)
+            controller.setOffset(IntPoint(40, 60))
+            widget.render(environment.graphics, 45, 65, 0.0F)
+            Assertions.assertEquals(IntPoint(31, 66), slot.position)
+            Assertions.assertArrayEquals(intArrayOf(30, 40, 75, 70), slot.area)
+        }
+        controller.dispose()
+
+        val outer = YScrollView()
+        val outerChild = YListView()
+        outerChild.sizingX = Sizing.FILL
+        outerChild += SpaceView(IntPoint(0, 20))
+        val inner = YScrollView()
+        inner += MenuSlotView(slot)
+        outerChild += MinContentSizeYView(100).also { it += inner }
+        outer += outerChild
+        widgets.clear()
+        outer.initSizeCalculation(PLACER_RENDERING_PROXY, { 50 }, { 30 })
+        val outerController = outer.attachTo(context.origin) { leaf, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, leaf, bounds) }
+        GuiTestEnvironment().use { environment ->
+            widgets.single().render(environment.graphics, 15, 25, 0.0F)
+            Assertions.assertArrayEquals(intArrayOf(0, 20, 40, 30), slot.area)
+        }
+        outerController.dispose()
+    }
+
 }
