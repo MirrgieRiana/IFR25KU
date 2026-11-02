@@ -13,7 +13,14 @@ object TooltipBackgroundViewRenderer : ViewRenderer<TooltipBackgroundView> {
         graphics.drawManaged {
             RenderSystem.enableBlend()
             RenderSystem.defaultBlendFunc()
-            TooltipRenderUtil.renderTooltipBackground(graphics, bounds.x + 4, bounds.y + 4, bounds.sizeX - 8, bounds.sizeY - 8, 0)
+            TooltipRenderUtil.renderTooltipBackground(
+                graphics,
+                bounds.x + 4,
+                bounds.y + 4,
+                bounds.sizeX - 8,
+                bounds.sizeY - 8,
+                0,
+            )
         }
     }
 }
