@@ -86,10 +86,10 @@ fun initVanillaViewPlacers() {
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextButtonView, bounds ->
-        val button = Button.builder(view.message) {
-            view.onPress.fire()
-        }.bounds(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY).build()
-        context place button
+        class TextButtonWidget : Button(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, view.message, { view.onClick.fire() }, DEFAULT_NARRATION) {
+            override fun getMessage() = view.message
+        }
+        context place TextButtonWidget()
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextFieldView, bounds ->
         val editBox = EditBox(Minecraft.getInstance().font, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty())
