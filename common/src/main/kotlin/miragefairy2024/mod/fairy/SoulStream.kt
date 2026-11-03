@@ -217,6 +217,7 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
     private val onViewUpdate = mutableListOf<() -> Unit>()
     private var lastUpdateEventNanoTime = 0L
 
+
     override fun tickView() {
         onViewUpdate.forEach {
             it()
@@ -244,6 +245,7 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
             view += AbsoluteView(IntPoint(14, 14)).configure {
                 view += ImageButtonView(IntPoint(14, 14)).configure {
                     val buttonView = view
+
                     fun update() {
                         val value = valueProvider()
                         buttonView.texture = ViewTexture(MirageFairy2024.identifier(if (value) "textures/gui/sprites/button_14/background_on.png" else "textures/gui/sprites/button_14/background.png"), IntPoint(14, 14))
@@ -255,6 +257,7 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
                     }
                     onViewUpdate += ::update
                     update()
+
                     view.onClick.register {
                         onClick()
                         tickView()
@@ -321,11 +324,12 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
 
+                    // 検索フィルタなのだ～🌱
                     view += YListView().configure {
-                        view.sizingX = Sizing.FILL
-                        view.sizingY = Sizing.FILL
                         position.weight = 1.0
                         position.ignoreLayoutX = true
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
 
                         view += XListView().configure {
                             view += buttonView(
@@ -334,7 +338,9 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
                                 { text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() } },
                                 { enabledPassiveSkillEffectFilters.value = mapOf() },
                             )
+
                             view += XSpaceView(2)
+
                             view += buttonView(
                                 { MirageFairy2024.identifier("textures/gui/sprites/button_14/global_search_foreground.png") },
                                 { enableGlobalFairyHighlight.value },
@@ -342,12 +348,14 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
                                 { enableGlobalFairyHighlight.value = !enableGlobalFairyHighlight.value },
                             )
                         }
+
                         view += YSpaceView(2)
+
                         view += StackView().configure {
-                            view.sizingX = Sizing.FILL
-                            view.sizingY = Sizing.FILL
                             position.weight = 1.0
                             position.ignoreLayoutY = true
+                            view.sizingX = Sizing.FILL
+                            view.sizingY = Sizing.FILL
 
                             view += TooltipBackgroundView()
                             view += YScrollView().configure {
@@ -403,18 +411,25 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
                             }.margin(4)
                         }
                     }.margin(0, 0, 0, 20)
+
                     view += XSpaceView(4)
+
+                    // インベントリなのだ～🌱
                     view += YListView().configure {
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
 
+                        // 上段スロットなのだ～🌱
                         view += slotRowView(36 until 45, SlotType.FAIRY)
+
                         view += YSpaceView(4)
+
+                        // 格納スロットなのだ～🌱
                         view += StackView().configure {
-                            view.sizingX = Sizing.FILL
-                            view.sizingY = Sizing.FILL
                             position.weight = 1.0
                             position.ignoreLayoutY = true
+                            view.sizingX = Sizing.FILL
+                            view.sizingY = Sizing.FILL
 
                             view += NinePatchImageView(SlotType.NORMAL.viewTexture.id, 18, 18, 0, 18, 0, 0, 18, 0, true)
                             view += YScrollView().configure {
@@ -429,13 +444,22 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
                                 }
                             }
                         }
+
                         view += YSpaceView(4)
+
+                        // プレイヤーのインベントリなのだ～🌱
                         repeat(3) { r ->
                             view += slotRowView(9 * r until 9 * r + 9, SlotType.NORMAL)
                         }
+
                         view += YSpaceView(4)
+
+                        // ホットバーなのだ～🌱
                         view += slotRowView(27 until 36, SlotType.NORMAL)
+
                         view += YSpaceView(5)
+
+                        // タイトルなのだ～🌱
                         view += MultiLineTextView().configure {
                             position.ignoreLayoutX = true
                             view.text.value = title
@@ -443,14 +467,19 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
                             view.color = ColorPair.DARK_GRAY
                             view.shadow = false
                         }.margin(1, 0)
+
                         view += YSpaceView(5)
+
                     }.minContentSizeX(180).maxContentSizeX(180)
+
                     view += XSpaceView(4)
+
+                    // 収集切り替えと効果一覧なのだ～🌱
                     view += YListView().configure {
-                        view.sizingX = Sizing.FILL
-                        view.sizingY = Sizing.FILL
                         position.weight = 1.0
                         position.ignoreLayoutX = true
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
 
                         view += buttonView(
                             { MirageFairy2024.identifier(if (it) "textures/gui/sprites/button_14/collection_enabled_foreground.png" else "textures/gui/sprites/button_14/collection_disabled_foreground.png") },
@@ -458,12 +487,14 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
                             { text { (if (player.collectionEnabled.getOrDefault()) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()) + " ("() + clientProxy!!.getKeyMappingText(TOGGLE_COLLECTION_ENABLED_KEY_TRANSLATION.keyGetter()) + ")"() } },
                             { SetCollectionEnabledChannel.sendToServer(!player.collectionEnabled.getOrDefault()) },
                         )
+
                         view += YSpaceView(2)
+
                         view += StackView().configure {
-                            view.sizingX = Sizing.FILL
-                            view.sizingY = Sizing.FILL
                             position.weight = 1.0
                             position.ignoreLayoutY = true
+                            view.sizingX = Sizing.FILL
+                            view.sizingY = Sizing.FILL
 
                             view += TooltipBackgroundView()
                             view += YScrollView().configure {
@@ -477,7 +508,9 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
                 }.margin(4)
             }
         }
+
         tickView()
         return rootView
     }
+
 }

@@ -214,6 +214,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
 
     private val onViewUpdate = mutableListOf<() -> Unit>()
 
+
     override fun tickView() {
         onViewUpdate.forEach {
             it()
@@ -238,7 +239,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
         }
 
         fun tradeSlotView(index: Int, ghostItemView: GhostItemView) = View {
-            view += StackView().configure {
+            view += StackView().configure { // 取引スロットなのだ～🌱
                 view += menuSlotView(slots[index], SlotType.NORMAL)
                 view += ghostItemView.configure {}.itemTooltip {
                     if (ghostItemView.showItemStack) ghostItemView.itemStack else EMPTY_ITEM_STACK
@@ -247,15 +248,19 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
         }
 
         val rootView = View {
-            view += StackView().configure {
+            view += StackView().configure { // 外枠なのだ～🌱
                 view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/panel.png"), 16, 16, 5, 5, 5, 5, 5, 5, false)
-                view += YListView().configure {
+                view += YListView().configure { // 内枠なのだ～🌱
                     view.sizingX = Sizing.FILL
 
+                    // タイトルなのだ～🌱
                     view += inventoryNameView(recipe.title).configure {
                         view.alignmentX = Alignment.CENTER
                     }.margin(1, 0)
+
                     view += YSpaceView(3)
+
+                    // メッセージ部分なのだ～🌱
                     view += StackView().configure {
                         view.sizingX = Sizing.FILL
 
@@ -276,7 +281,10 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                         recipe.openMessageScreen()
                         true
                     }.tooltip(text { guiFullScreenTranslation() })
+
                     view += YSpaceView(3)
+
+                    // 取引部分なのだ～🌱
                     view += XListView().configure {
                         repeat(4) { i ->
                             val index = 36 + i
@@ -319,18 +327,28 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                             view += tradeSlotView(index, ghostItemView)
                         }
                     }
+
                     view += YSpaceView(3)
+
+                    // プレイヤーのインベントリなのだ～🌱
                     view += inventoryNameView(playerInventoryTitle).configure {}.margin(1, 0)
+
                     view += YSpaceView(1)
+
                     repeat(3) { r ->
                         view += slotRowView { c -> 9 * r + c }
                     }
+
                     view += YSpaceView(4)
+
+                    // ホットバーなのだ～🌱
                     view += slotRowView { c -> 27 + c }
                 }.minContentSizeX(162).maxContentSizeX(162).margin(7)
             }
         }
+
         tickView()
         return rootView
     }
+
 }

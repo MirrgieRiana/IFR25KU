@@ -33,6 +33,7 @@ import miragefairy2024.util.text
 import net.minecraft.network.chat.CommonComponents
 
 class TraitEncyclopediaPageScreen(private val trait: Trait) : ViewProviderScreen {
+
     override val title = trait.getName()
     override val closeOnInventoryKey = true
     override val closeOnUnhandledClick = true
@@ -48,27 +49,34 @@ class TraitEncyclopediaPageScreen(private val trait: Trait) : ViewProviderScreen
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
 
-                    view += StackView().configure {
-                        view.sizingX = Sizing.FILL
-                        view.sizingY = Sizing.FILL
+                    view += StackView().configure { // カードなのだ～🌱
                         position.weight = 1.0
                         position.ignoreLayoutY = true
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
 
                         view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
                         view += YListView().configure {
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
 
+                            // 特性名なのだ～🌱
                             view += MultiLineTextView().configure {
                                 view.text.value = text { trait.getName().style(trait.style) }
                                 view.alignmentX = Alignment.CENTER
                                 view.shadow = false
                             }
+
                             view += YSpaceView(5)
+
+                            // 特性アイコンなのだ～🌱
                             view += ImageView(ViewTexture(trait.texture, IntPoint(32, 32))).configure {
                                 position.alignmentX = Alignment.CENTER
                             }
+
                             view += YSpaceView(5)
+
+                            // 本文なのだ～🌱
                             view += YScrollView().configure {
                                 position.weight = 1.0
                                 view.scrollbarColor = 0xA0FFFFFF.toInt()
@@ -83,6 +91,8 @@ class TraitEncyclopediaPageScreen(private val trait: Trait) : ViewProviderScreen
                     }
 
                     view += YSpaceView(10)
+
+                    // ボタン部分なのだ～🌱
                     view += XListView().configure {
                         position.alignmentX = Alignment.CENTER
 
@@ -93,7 +103,9 @@ class TraitEncyclopediaPageScreen(private val trait: Trait) : ViewProviderScreen
                                 true
                             }
                         }
+
                         view += XSpaceView(20)
+
                         view += TextButtonView(IntPoint(80, 20)).configure {
                             view.message = CommonComponents.GUI_BACK
                             view.onClick.register {
@@ -107,4 +119,5 @@ class TraitEncyclopediaPageScreen(private val trait: Trait) : ViewProviderScreen
             }.margin(0, 0, 20, 4)
         }
     }
+
 }

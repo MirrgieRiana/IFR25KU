@@ -33,6 +33,7 @@ import miragefairy2024.util.text
 import net.minecraft.network.chat.CommonComponents
 
 class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : ViewProviderScreen {
+
     override val title = text { card.titleTranslation() }
     override val closeOnInventoryKey = true
     override val closeOnUnhandledClick = true
@@ -48,24 +49,28 @@ class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : Vi
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
 
-                    view += StackView().configure {
-                        view.sizingX = Sizing.FILL
-                        view.sizingY = Sizing.FILL
+                    view += StackView().configure { // カードなのだ～🌱
                         position.weight = 1.0
                         position.ignoreLayoutY = true
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
 
                         view += NinePatchImageView(NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
                         view += YListView().configure {
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
 
+                            // タイトルなのだ～🌱
                             view += MultiLineTextView().configure {
                                 view.text.value = title
                                 view.alignmentX = Alignment.CENTER
                                 view.color = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
                                 view.shadow = false
                             }
+
                             view += YSpaceView(5)
+
+                            // 掲げられたアイテムなのだ～🌱
                             view += XListView().configure {
                                 view.sizingX = Sizing.FILL
 
@@ -81,7 +86,10 @@ class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : Vi
                                 }
                                 view += SpaceView().configure { position.weight = 1.0 }
                             }.margin(0, 5)
+
                             view += YSpaceView(5)
+
+                            // 本文なのだ～🌱
                             view += YScrollView().configure {
                                 position.weight = 1.0
                                 view.reserveScrollbarSpace = false
@@ -96,6 +104,8 @@ class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : Vi
                     }
 
                     view += YSpaceView(10)
+
+                    // ボタン部分なのだ～🌱
                     view += XListView().configure {
                         position.alignmentX = Alignment.CENTER
 
@@ -106,7 +116,9 @@ class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : Vi
                                 true
                             }
                         }
+
                         view += XSpaceView(20)
+
                         view += TextButtonView(IntPoint(80, 20)).configure {
                             view.message = CommonComponents.GUI_BACK
                             view.onClick.register {
@@ -120,4 +132,5 @@ class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : Vi
             }.margin(0, 0, 20, 4)
         }
     }
+
 }

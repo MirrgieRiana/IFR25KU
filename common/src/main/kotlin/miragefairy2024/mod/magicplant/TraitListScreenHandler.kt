@@ -97,20 +97,25 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                 view.sizingX = Sizing.FILL
                 view.sizingY = Sizing.FILL
 
+                // 特性名なのだ～🌱
                 view += MultiLineTextView().configure {
                     view.text.value = text { traitStack.trait.getName().style(traitStack.trait.style) }
                     view.alignmentX = Alignment.CENTER
                     view.shadow = false
                 }
+
                 view += YSpaceView(5)
+
+                // 特性アイコン行なのだ～🌱
                 view += XListView().configure {
                     view.sizingX = Sizing.FILL
 
+                    // 条件リストなのだ～🌱
                     view += YListView().configure {
-                        view.sizingX = Sizing.FILL
-                        view.sizingY = Sizing.FILL
                         position.weight = 1.0
                         position.ignoreLayoutX = true
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
 
                         view += SpaceView().configure { position.weight = 1.0 }
                         traitStack.trait.conditions.forEach { condition ->
@@ -120,15 +125,21 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                             }.tooltip(condition.name)
                         }
                     }
+
+                    // 特性アイコンなのだ～🌱
                     view += ImageView(ViewTexture(traitStack.trait.texture, IntPoint(32, 32)))
+
+                    // 効果リストなのだ～🌱
                     view += YListView().configure {
-                        view.sizingX = Sizing.FILL
-                        view.sizingY = Sizing.FILL
                         position.weight = 1.0
                         position.ignoreLayoutX = true
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
 
                         view += SpaceView().configure { position.weight = 1.0 }
-                        val totalConditionFactor = traitStack.trait.conditions.map { it.getFactor(context) }.fold(1.0) { a, b -> a * b }
+                        val totalConditionFactor = traitStack.trait.conditions
+                            .map { it.getFactor(context) }
+                            .fold(1.0) { a, b -> a * b }
                         traitStack.trait.traitEffectKeyEntries.forEach { entry ->
                             fun <T : Any> effectView(traitEffectKey: TraitEffectKey<T>, traitEffectFactor: Double) = View {
                                 val value = traitEffectKey.getValue(traitEffectFactor * getTraitPower(traitStack.level) * totalConditionFactor)
@@ -142,7 +153,10 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                         }
                     }
                 }.minContentSizeY(32).maxContentSizeY(32)
+
                 view += YSpaceView(5)
+
+                // 本文なのだ～🌱
                 view += YScrollView().configure {
                     position.weight = 1.0
                     view.scrollbarColor = 0xA0FFFFFF.toInt()
@@ -160,25 +174,32 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
         val cardContent = ObservableValue<View>(if (traitStack == null) SpaceView() else traitCardView(traitStack))
 
         return View {
-            view += StackView().configure {
+            view += StackView().configure { // 外枠なのだ～🌱
                 view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/panel.png"), 16, 16, 5, 5, 5, 5, 5, 5, false)
-                view += YListView().configure {
+                view += YListView().configure { // 内枠なのだ～🌱
                     view.sizingX = Sizing.FILL
 
+                    // タイトルなのだ～🌱
                     view += MultiLineTextView().configure {
                         view.text.value = text { traitListScreenTranslation() }
                         view.alignmentX = Alignment.CENTER
                         view.color = ColorPair.DARK_GRAY
                         view.shadow = false
                     }.margin(1, 0)
+
                     view += YSpaceView(3)
+
+                    // 選択中の特性なのだ～🌱
                     view += StackView().configure {
                         view.sizingX = Sizing.FILL
 
                         view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
                         view += DynamicView(cardContent).configure {}.margin(5)
                     }.minContentSizeY(108).maxContentSizeY(108)
+
                     view += YSpaceView(4)
+
+                    // 特性リストなのだ～🌱
                     view += StackView().configure {
                         view.sizingX = Sizing.FILL
 
@@ -190,7 +211,9 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                                 view.sizingX = Sizing.FILL
 
                                 traitStacks.traitStackList.forEach { traitStack ->
-                                    val totalConditionFactor = traitStack.trait.conditions.map { it.getFactor(context) }.fold(1.0) { a, b -> a * b }
+                                    val totalConditionFactor = traitStack.trait.conditions
+                                        .map { it.getFactor(context) }
+                                        .fold(1.0) { a, b -> a * b }
                                     view += MultiLineTextView().configure {
                                         view.text.value = text {
                                             val texts = mutableListOf<Component>()
@@ -214,4 +237,5 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
             }
         }
     }
+
 }

@@ -34,6 +34,7 @@ import miragefairy2024.util.register
 import miragefairy2024.util.text
 
 class TooltipViewerScreen : ViewProviderScreen {
+
     override val title = text { TOOLTIP_VIEWER_KEY_TRANSLATION() }
     override val closeOnInventoryKey = true
     override val closeKeyMappings = listOf(OPEN_TOOLTIP_VIEWER_KEY_TRANSLATION.keyGetter())
@@ -59,20 +60,24 @@ class TooltipViewerScreen : ViewProviderScreen {
                         } else {
                             view += YSpaceView(2)
                         }
-                        view += XListView().configure {
+                        view += XListView().configure { // アイテムレコードなのだ～🌱
                             view.sizingX = Sizing.FILL
 
+                            // アイテムスロットなのだ～🌱
                             view += StackView().configure {
                                 view += ImageView(SlotType.NORMAL.viewTexture)
                                 view += ItemView(itemStack).configure {
                                     view.showDecorations = true
                                 }.margin(1)
                             }
+
                             view += XSpaceView(2)
+
+                            // ツールチップなのだ～🌱
                             view += StackView().configure {
-                                view.sizingX = Sizing.FILL
                                 position.weight = 1.0
                                 position.ignoreLayoutX = true
+                                view.sizingX = Sizing.FILL
 
                                 view += TooltipBackgroundView()
                                 view += YListView().configure {
@@ -80,7 +85,9 @@ class TooltipViewerScreen : ViewProviderScreen {
 
                                     clientProxy!!.getItemTooltip(itemStack).forEachIndexed { index, text ->
                                         if (isAllowedIndex(index)) {
-                                            if (index >= 1 && isAllowedIndex(index - 1)) view += YSpaceView(if (index == 1) 3 else 1)
+                                            if (index >= 1 && isAllowedIndex(index - 1)) {
+                                                view += YSpaceView(if (index == 1) 3 else 1)
+                                            }
                                             view += MultiLineTextView().configure {
                                                 view.text.value = text
                                                 view.shadow = true
@@ -103,14 +110,15 @@ class TooltipViewerScreen : ViewProviderScreen {
                 view.sizingY = Sizing.FILL
 
                 view += SpaceView().configure { position.weight = 1.0 }
-                view += StackView().configure {
+                view += StackView().configure { // 外枠なのだ～🌱
                     view.sizingY = Sizing.FILL
 
                     view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/panel.png"), 16, 16, 5, 5, 5, 5, 5, 5, false)
-                    view += YListView().configure {
+                    view += YListView().configure { // 内枠なのだ～🌱
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
 
+                        // 検索欄なのだ～🌱
                         view += TextFieldView().configure {
                             view.hint = text { TOOLTIP_VIEWER_EXAMPLE_KEY_TRANSLATION("0,1,2") }
                             view.text.value = filter.value
@@ -119,7 +127,10 @@ class TooltipViewerScreen : ViewProviderScreen {
                                 content.value = tooltipListView()
                             }
                         }
+
                         view += YSpaceView(2)
+
+                        // スクロールなのだ～🌱
                         view += YScrollView().configure {
                             position.weight = 1.0
 
@@ -131,4 +142,5 @@ class TooltipViewerScreen : ViewProviderScreen {
             }.margin(4)
         }
     }
+
 }

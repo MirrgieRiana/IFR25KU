@@ -48,8 +48,11 @@ private val FILTER_OVERLAY_TEXTURE = MirageFairy2024.identifier("textures/gui/sp
 
 context(ModContext)
 fun initSoulStreamClientModule() {
+
+    // キーバインドなのだ～🌱
     soulStreamKeyMappingCard.init()
 
+    // インベントリ画面のボタンなのだ～🌱
     ScreenEvents.AFTER_INIT.register { _, screen, _, _ ->
         if (screen is InventoryScreen) {
             val buttonWidgetSprites = WidgetSprites(MirageFairy2024.identifier("soul_stream_button"), MirageFairy2024.identifier("soul_stream_button_highlighted"))
@@ -60,12 +63,14 @@ fun initSoulStreamClientModule() {
             }.also {
                 it.tooltip = Tooltip.create(text { OPEN_SOUL_STREAM_KEY_TRANSLATION() + "("() + soulStreamKeyMappingCard() + ")"() })
             }
+
             fun updatePosition() {
                 val panelWidth = if (screen.recipeBookComponent.isVisible) 300 else 146
                 button.setPosition((screen.width + panelWidth) / 2 - 20, (screen.height - 46) / 2)
             }
             updatePosition()
             Screens.getButtons(screen).add(button)
+
             ScreenMouseEvents.afterMouseClick(screen).register { _, _, _, _ ->
                 updatePosition()
             }
@@ -74,6 +79,7 @@ fun initSoulStreamClientModule() {
             }
         }
 
+        // カーソル位置の復帰なのだ～🌱
         if (screen is ViewContainerScreen<*> && screen.menu is SoulStreamScreenHandler) {
             val mousePosition = lastMousePositionInInventory
             lastMousePositionInInventory = null
@@ -89,7 +95,7 @@ fun initSoulStreamClientModule() {
         }
     }
 
-    // 妖精検索
+    // 検索結果のハイライトなのだ～🌱
     RenderingEvent.RENDER_ITEM_DECORATIONS.register { graphics, font, stack, x, y, text ->
         val screen = Minecraft.getInstance().screen
         if (!(enableGlobalFairyHighlight.value || screen is ViewContainerScreen<*> && screen.menu is SoulStreamScreenHandler)) return@register

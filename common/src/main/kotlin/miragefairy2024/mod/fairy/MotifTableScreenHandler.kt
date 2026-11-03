@@ -102,10 +102,12 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
                 view.sizingY = Sizing.FILL
 
                 view += SpaceView().configure { position.weight = 1.0 }
-                view += StackView().configure {
+                view += StackView().configure { // 外枠なのだ～🌱
                     view.sizingY = Sizing.FILL
 
                     view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/panel.png"), 16, 16, 5, 5, 5, 5, 5, 5, false)
+
+                    // スクロールパネルなのだ～🌱
                     view += YScrollView().configure {
                         view.scrollbarThickness = 18
                         view.scrollbarStyle = ScrollbarStyle.VANILLA
@@ -116,7 +118,9 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
                                     view += ItemView(chance.showingItemStack).configure {
                                         position.alignmentY = Alignment.CENTER
                                     }
+
                                     view += XSpaceView(3)
+
                                     view += numberView(chance.showingItemStack.hoverName, 150, Alignment.START).configure {
                                         position.alignmentY = Alignment.CENTER
                                     }
@@ -135,4 +139,5 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
             }.margin(4)
         }
     }
+
 }
