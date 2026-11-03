@@ -2,7 +2,6 @@ package miragefairy2024.mod.fairyquest
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.clientProxy
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.common.guiFullScreenTranslation
@@ -274,7 +273,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                             }
                         }.margin(11, 6, 11, 11)
                     }.minContentSizeY(82).maxContentSizeY(82).onClick {
-                        clientProxy!!.openViewScreen(FairyQuestMessageScreen(recipe.title, recipe.message, recipe.client, recipe.title))
+                        recipe.openMessageScreen()
                         true
                     }.tooltip(text { guiFullScreenTranslation() })
                     view += YSpaceView(3)

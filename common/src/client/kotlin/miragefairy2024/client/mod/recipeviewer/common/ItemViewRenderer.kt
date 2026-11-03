@@ -6,7 +6,7 @@ import miragefairy2024.mod.recipeviewer.views.ItemView
 import net.minecraft.client.gui.GuiGraphics
 
 object ItemViewRenderer : ViewRenderer<ItemView> {
-    override fun render(view: ItemView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(view: ItemView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         graphics.renderFakeItem(view.itemStack, bounds.x, bounds.y)
     }
 }

@@ -4,7 +4,6 @@ import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.util.drawScrollingString
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.mod.recipeviewer.views.TextView
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -13,7 +12,7 @@ object TextViewRenderer : ViewRenderer<TextView> {
 
     private val startNanoTime by lazy { System.nanoTime() }
 
-    override fun render(view: TextView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(view: TextView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val font = Minecraft.getInstance().font
         val color = view.color.lightModeArgb
         if (view.scroll && font.width(view.text.value) > view.evaluateActualSizeX()) {
@@ -44,9 +43,11 @@ object TextViewRenderer : ViewRenderer<TextView> {
                 view.shadow,
             )
         }
-        if (bounds.contains(mouseX, mouseY)) {
+        if (isHovered) {
             val tooltip = view.tooltip
-            if (tooltip != null) graphics.renderComponentTooltip(font, tooltip, mouseX, mouseY)
+            if (tooltip != null && tooltip.isNotEmpty()) {
+                Minecraft.getInstance().screen?.setTooltipForNextRenderPass(tooltip.map { it.visualOrderText })
+            }
         }
     }
 

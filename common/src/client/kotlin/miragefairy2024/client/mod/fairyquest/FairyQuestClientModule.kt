@@ -3,16 +3,12 @@ package miragefairy2024.client.mod.fairyquest
 import com.mojang.math.Axis
 import miragefairy2024.ModContext
 import miragefairy2024.client.util.stack
-import miragefairy2024.clientProxy
 import miragefairy2024.mixin.client.api.RenderItemHandler
 import miragefairy2024.mod.fairyquest.FairyQuestCardCard
-import miragefairy2024.mod.fairyquest.FairyQuestMessageScreen
 import miragefairy2024.mod.fairyquest.getFairyQuestRecipe
-import miragefairy2024.mod.fairyquest.onOpenFairyQuestMessageScreen
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.isNotIn
-import miragefairy2024.util.register
 import net.minecraft.client.Minecraft
 import net.minecraft.client.resources.model.ModelResourceLocation
 import net.minecraft.util.Mth
@@ -52,10 +48,5 @@ fun initFairyQuestClientModule() {
             }
 
         }
-    }
-
-    onOpenFairyQuestMessageScreen.register { recipe ->
-        clientProxy!!.openViewScreen(FairyQuestMessageScreen(recipe.title, recipe.message, recipe.client, recipe.title))
-        true
     }
 }
