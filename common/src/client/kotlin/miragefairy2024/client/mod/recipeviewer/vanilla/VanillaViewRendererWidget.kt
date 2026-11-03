@@ -3,9 +3,11 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarrationElementOutput
+import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.network.chat.Component
 
 class VanillaViewRendererWidget<V : PlaceableView>(private val renderer: ViewRenderer<V>, private val view: V, private var bounds2: IntRectangle) :
@@ -39,6 +41,11 @@ class VanillaViewRendererWidget<V : PlaceableView>(private val renderer: ViewRen
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int) = pressedButtons.remove(button)
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = renderer.keyPressed(view, bounds2, keyCode, scanCode, modifiers)
+
+    override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
+        if (!renderer.isFocusable(view)) return null
+        return super.nextFocusPath(event)
+    }
 
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
 
