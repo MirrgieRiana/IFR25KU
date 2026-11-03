@@ -87,7 +87,7 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
     override fun quickMoveStack(player: Player, slot: Int) = EMPTY_ITEM_STACK
 
     override fun createView(title: Component, playerInventoryTitle: Component): View {
-        fun numberView(text: Component, width: Int, alignment: Alignment) = View {
+        fun textView(text: Component, width: Int, alignment: Alignment) = View {
             view += TextView(text).configure {
                 view.sizingX = Sizing.FILL
                 view.alignmentX = alignment
@@ -121,13 +121,13 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
 
                                     view += XSpaceView(3)
 
-                                    view += numberView(chance.showingItemStack.hoverName, 150, Alignment.START).configure {
+                                    view += textView(chance.showingItemStack.hoverName, 150, Alignment.START).configure {
                                         position.alignmentY = Alignment.CENTER
                                     }
-                                    view += numberView(text { (chance.item.weight * 100 formatAs "%.4f%%")() }, 50, Alignment.END).configure {
+                                    view += textView(text { (chance.item.weight * 100 formatAs "%.4f%%")() }, 50, Alignment.END).configure {
                                         position.alignmentY = Alignment.CENTER
                                     }
-                                    view += numberView(text { "x"() + (chance.item.item.count formatAs "%.2f")() }, 80, Alignment.END).configure {
+                                    view += textView(text { "x"() + (chance.item.item.count formatAs "%.2f")() }, 80, Alignment.END).configure {
                                         position.alignmentY = Alignment.CENTER
                                     }
                                 }.itemTooltip { chance.showingItemStack }

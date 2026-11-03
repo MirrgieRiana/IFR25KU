@@ -336,8 +336,9 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
                                 { MirageFairy2024.identifier("textures/gui/sprites/button_14/clear_foreground.png") },
                                 { false },
                                 { text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() } },
-                                { enabledPassiveSkillEffectFilters.value = mapOf() },
-                            )
+                            ) {
+                                enabledPassiveSkillEffectFilters.value = mapOf()
+                            }
 
                             view += XSpaceView(2)
 
@@ -345,8 +346,9 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
                                 { MirageFairy2024.identifier("textures/gui/sprites/button_14/global_search_foreground.png") },
                                 { enableGlobalFairyHighlight.value },
                                 { text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() } },
-                                { enableGlobalFairyHighlight.value = !enableGlobalFairyHighlight.value },
-                            )
+                            ) {
+                                enableGlobalFairyHighlight.value = !enableGlobalFairyHighlight.value
+                            }
                         }
 
                         view += YSpaceView(2)
@@ -391,7 +393,7 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
                                                             labelContent.value = labelView(enabled)
                                                         }
                                                     }
-                                                    view += DynamicView(labelContent).configure {}.onClick {
+                                                    view += DynamicView(labelContent).configure().onClick {
                                                         enabledPassiveSkillEffectFilters.value = if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
                                                             enabledPassiveSkillEffectFilters.value - filter.identifier
                                                         } else {
@@ -485,8 +487,9 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
                             { MirageFairy2024.identifier(if (it) "textures/gui/sprites/button_14/collection_enabled_foreground.png" else "textures/gui/sprites/button_14/collection_disabled_foreground.png") },
                             { player.collectionEnabled.getOrDefault() },
                             { text { (if (player.collectionEnabled.getOrDefault()) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()) + " ("() + clientProxy!!.getKeyMappingText(TOGGLE_COLLECTION_ENABLED_KEY_TRANSLATION.keyGetter()) + ")"() } },
-                            { SetCollectionEnabledChannel.sendToServer(!player.collectionEnabled.getOrDefault()) },
-                        )
+                        ) {
+                            SetCollectionEnabledChannel.sendToServer(!player.collectionEnabled.getOrDefault())
+                        }
 
                         view += YSpaceView(2)
 

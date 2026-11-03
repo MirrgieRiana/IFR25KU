@@ -40,6 +40,8 @@ class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : Vi
 
     override fun createView(): View {
         return View {
+            val textColor = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
+
             view += XListView().configure {
                 view.sizingX = Sizing.FILL
                 view.sizingY = Sizing.FILL
@@ -64,7 +66,7 @@ class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : Vi
                             view += MultiLineTextView().configure {
                                 view.text.value = title
                                 view.alignmentX = Alignment.CENTER
-                                view.color = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
+                                view.color = textColor
                                 view.shadow = false
                             }
 
@@ -96,7 +98,7 @@ class IfrEncyclopediaPageScreen(private val card: IfrEncyclopediaEntryCard) : Vi
 
                                 view += MultiLineTextView().configure {
                                     view.text.value = text { card.textTranslation() }
-                                    view.color = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
+                                    view.color = textColor
                                     view.shadow = false
                                 }
                             }

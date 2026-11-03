@@ -134,7 +134,7 @@ class TooltipViewerScreen : ViewProviderScreen {
                         view += YScrollView().configure {
                             position.weight = 1.0
 
-                            view += DynamicView(content).configure {}.margin(0, 2, 0, 0)
+                            view += DynamicView(content).configure().margin(0, 2, 0, 0)
                         }
                     }.minContentSizeX(240).maxContentSizeX(240).margin(7)
                 }

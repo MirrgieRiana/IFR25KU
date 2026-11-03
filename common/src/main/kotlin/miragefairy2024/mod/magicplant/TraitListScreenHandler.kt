@@ -194,7 +194,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                         view.sizingX = Sizing.FILL
 
                         view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
-                        view += DynamicView(cardContent).configure {}.margin(5)
+                        view += DynamicView(cardContent).configure().margin(5)
                     }.minContentSizeY(108).maxContentSizeY(108)
 
                     view += YSpaceView(4)

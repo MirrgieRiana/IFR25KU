@@ -241,7 +241,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
         fun tradeSlotView(index: Int, ghostItemView: GhostItemView) = View {
             view += StackView().configure { // 取引スロットなのだ～🌱
                 view += menuSlotView(slots[index], SlotType.NORMAL)
-                view += ghostItemView.configure {}.itemTooltip {
+                view += ghostItemView.configure().itemTooltip {
                     if (ghostItemView.showItemStack) ghostItemView.itemStack else EMPTY_ITEM_STACK
                 }.margin(1)
             }
@@ -331,7 +331,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                     view += YSpaceView(3)
 
                     // プレイヤーのインベントリなのだ～🌱
-                    view += inventoryNameView(playerInventoryTitle).configure {}.margin(1, 0)
+                    view += inventoryNameView(playerInventoryTitle).configure().margin(1, 0)
 
                     view += YSpaceView(1)
 
