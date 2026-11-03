@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil
 
 object TooltipBackgroundViewRenderer : ViewRenderer<TooltipBackgroundView> {
     override fun render(view: TooltipBackgroundView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+        if (bounds.sizeX <= 0 || bounds.sizeY <= 0) return
         @Suppress("DEPRECATION")
         graphics.drawManaged {
             RenderSystem.enableBlend()
