@@ -6,10 +6,8 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewController
-import miragefairy2024.mod.recipeviewer.view.ViewControllerList
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
-import miragefairy2024.mod.recipeviewer.view.plusAssign
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.register
 
@@ -59,23 +57,59 @@ class PagingView : ParentView<Alignment>() {
         pageCount.value = pages.size
 
         var currentOffset = offset
-        val childrenControllerList = ViewControllerList()
-        fun load() {
-            childrenControllerList.dispose()
-            childrenControllerList.detach()
-            childrenControllerList.clear()
+        var childController = ViewController.NONE
+        var disposed = false
+        var loading = false
+        var needsLoad: Boolean
 
-            var y = 0
-            val page = pages.getOrNull(pageIndex.value) ?: return
-            childrenControllerList += page.attachTo(viewPlacer, currentOffset) {
-                val x = when (it.position) {
-                    Alignment.START -> 0
-                    Alignment.CENTER -> (evaluateActualSizeX() - it.view.evaluateActualSizeX()) / 2
-                    Alignment.END -> evaluateActualSizeX() - it.view.evaluateActualSizeX()
+        fun load() {
+            // 既に破棄済みの場合は、ロードをしないのだ～🌱
+            if (disposed) return
+            // 既にロード中の場合はフラグだけ立てて、そうでなければフラグを立てつつロードをするのだ～🌱
+            needsLoad = true
+            if (loading) return
+
+            // ロード中フラグの管理なのだ～🌱
+            loading = true
+            try {
+
+                // ロードの必要性が解消されない限り、ロードを繰り返すのだ～🌱
+                while (needsLoad) {
+                    needsLoad = false
+
+                    // 古い子を破棄し、子の破棄中に破棄を食らった場合はロードをせずに終わるのだ～🌱
+                    val oldChildController = childController
+                    childController = ViewController.NONE
+                    oldChildController.dispose()
+                    oldChildController.detach()
+                    if (disposed) break
+
+                    // 子を実際にロードするのだ～🌱
+                    var y = 0
+                    // 指定されたページインデックスが無かった場合は、抜けるのだ～🌱
+                    val page = pages.getOrNull(pageIndex.value) ?: break
+                    val newChildController = page.attachTo(viewPlacer, currentOffset) {
+                        val x = when (it.position) {
+                            Alignment.START -> 0
+                            Alignment.CENTER -> (evaluateActualSizeX() - it.view.evaluateActualSizeX()) / 2
+                            Alignment.END -> evaluateActualSizeX() - it.view.evaluateActualSizeX()
+                        }
+                        val relativeOffset = IntPoint(x, y)
+                        y += it.view.evaluateActualSizeY()
+                        relativeOffset
+                    }
+                    // 子のロード中に破棄された場合は、即子を破棄して抜けるのだ～🌱
+                    if (disposed) {
+                        newChildController.dispose()
+                        newChildController.detach()
+                        break
+                    }
+                    childController = newChildController
+
                 }
-                val relativeOffset = IntPoint(x, y)
-                y += it.view.evaluateActualSizeY()
-                relativeOffset
+
+            } finally {
+                loading = false
             }
         }
 
@@ -85,15 +119,16 @@ class PagingView : ParentView<Alignment>() {
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 currentOffset = offset
-                childrenControllerList.setOffset(offset)
+                childController.setOffset(offset)
             }
 
             override fun detach() {
-                childrenControllerList.detach()
+                childController.detach()
             }
 
             override fun dispose() {
-                childrenControllerList.dispose()
+                disposed = true
+                childController.dispose()
                 pageIndexRemover.remove()
             }
         }
