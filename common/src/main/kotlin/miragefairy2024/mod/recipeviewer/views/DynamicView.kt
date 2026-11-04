@@ -47,11 +47,11 @@ class DynamicView(val content: ObservableValue<View>) : AbstractView() {
                     oldChildController.detach()
                     if (disposed) break
 
-                    // View を実際にロードするのだ～🌱
+                    // 子を実際にロードするのだ～🌱
                     val childView = content.value
                     childView.initSizeCalculation(renderingProxy, { evaluateActualSizeX() }, { evaluateActualSizeY() })
                     val newChildController = childView.attachTo(currentOffset, viewPlacer)
-                    // View のロード中に破棄された場合は、即子を破棄して抜けるのだ～🌱
+                    // 子のロード中に破棄された場合は、即子を破棄して抜けるのだ～🌱
                     if (disposed) {
                         newChildController.dispose()
                         newChildController.detach()
