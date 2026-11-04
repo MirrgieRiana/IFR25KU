@@ -24,6 +24,7 @@ interface ViewAdapterHost {
     fun getViewPlacerRegistry(): ViewPlacerRegistry<VanillaViewPlacerContext>
 
     fun getScreen(): Screen?
+    fun canPlaceMenuSlots(): Boolean
     fun getRegionSizeX(): Int
     fun getRegionSizeY(): Int
 
@@ -51,7 +52,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     /**
      * View のツリーを再構築して、各ウィジェットをホストへ直接登録するのだ～🌱
-     * 画面の再構築時には、[net.minecraft.client.gui.screens.Screen.rebuildWidgets] が既存のウィジェットを破棄してから、[miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen.init] を経由して呼び出すのだ～🌱
+     *
+     * 再初期化時は、既存のウィジェットをホスト側で登録解除した後に呼び出さなければならないのだ～🌱
      */
     fun init() {
         removed()
@@ -61,6 +63,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         host.init()
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = host.getUiOffset()
+            override val canPlaceMenuSlots = host.canPlaceMenuSlots()
             override fun addRenderableWidget(widget: AbstractWidget) = host.addRenderableWidget(widget)
             override fun addRenderableOnly(widget: AbstractWidget) = host.addRenderableOnly(widget)
         }
@@ -110,7 +113,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
     /**
      * Fabric 以外ではフォーカスされた子へドラッグを中継するのだ～🌱
      * [miragefairy2024.client.mod.recipeviewer.vanilla.MouseCaptureContainer] が保持する押下先へは、プラットフォームによらず中継するのだ～🌱
-     * それ以外の Fabric の中継は、Fabric API が [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.mouseDragged] 内で行うのだ～🌱
+     * それ以外の Fabric のドラッグ中継は、ホスト側の既存の入力経路に任せるのだ～🌱
      */
     fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (!isInitialized) return false

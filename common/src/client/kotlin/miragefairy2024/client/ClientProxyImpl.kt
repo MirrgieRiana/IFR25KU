@@ -8,13 +8,16 @@ import miragefairy2024.ClientProxy
 import miragefairy2024.ItemColorProvider
 import miragefairy2024.RenderingProxy
 import miragefairy2024.RenderingProxyBlockEntity
+import miragefairy2024.client.mod.recipeviewer.vanilla.MessageViewScreen
 import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
 import miragefairy2024.client.util.stack
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
+import miragefairy2024.mod.recipeviewer.view.View
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.screens.MenuScreens
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.renderer.BiomeColors
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.RenderType
@@ -37,7 +40,7 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 
-class ClientProxyImpl : ClientProxy {
+class ClientProxyImpl : ClientProxy<Screen> {
     override fun registerItemTooltipCallback(block: (stack: ItemStack, context: Item.TooltipContext, lines: MutableList<Component>) -> Unit) {
         ItemTooltipCallback.EVENT.register { stack, context, _, lines ->
             block(stack, context, lines)
@@ -93,6 +96,16 @@ class ClientProxyImpl : ClientProxy {
 
     override fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu {
         MenuScreens.register(menuType, ::ViewContainerScreen)
+    }
+
+    override fun getCurrentScreen() = Minecraft.getInstance().screen
+
+    override fun setCurrentScreen(screen: Screen?) {
+        Minecraft.getInstance().setScreen(screen)
+    }
+
+    override fun createMessageViewScreen(parent: Screen?, title: Component, rootViewFactory: () -> View): Screen {
+        return MessageViewScreen(parent, title, rootViewFactory)
     }
 }
 

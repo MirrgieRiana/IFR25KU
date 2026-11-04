@@ -6,7 +6,6 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
-import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
@@ -444,12 +443,12 @@ abstract class VanillaScrollViewWidget(
     init {
         val childContext: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = context.origin
+            // TODO スクロール領域内の MenuSlotView の配置に対応するのだ～🌱
+            override val canPlaceMenuSlots = false
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
         }
         childController = view.childView.attachTo(IntPoint(x, y)) { childView, childBounds ->
-            // TODO スクロール領域内の MenuSlotView の配置に対応するのだ～🌱
-            if (childView is MenuSlotView) throw UnsupportedOperationException("MenuSlotView cannot be placed inside a scroll view")
             registry.place(childContext, childView, childBounds)
         }
     }
