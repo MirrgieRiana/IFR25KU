@@ -22,15 +22,37 @@ class DynamicView(val content: ObservableValue<View>) : AbstractView() {
         var currentOffset = offset
         var childController = ViewController.NONE
         var disposed = false
+        var loading = false
+        var needsLoad = false
 
         fun load() {
             if (disposed) return
-            childController.dispose()
-            childController.detach()
+            needsLoad = true
+            if (loading) return
 
-            val childView = content.value
-            childView.initSizeCalculation(renderingProxy, { evaluateActualSizeX() }, { evaluateActualSizeY() })
-            childController = childView.attachTo(currentOffset, viewPlacer)
+            loading = true
+            try {
+                while (needsLoad && !disposed) {
+                    needsLoad = false
+                    val previousController = childController
+                    childController = ViewController.NONE
+                    previousController.dispose()
+                    previousController.detach()
+                    if (disposed) break
+
+                    val childView = content.value
+                    childView.initSizeCalculation(renderingProxy, { evaluateActualSizeX() }, { evaluateActualSizeY() })
+                    val newController = childView.attachTo(currentOffset, viewPlacer)
+                    if (disposed) {
+                        newController.dispose()
+                        newController.detach()
+                        break
+                    }
+                    childController = newController
+                }
+            } finally {
+                loading = false
+            }
         }
 
         val contentRemover = content.register { _, _ -> load() }

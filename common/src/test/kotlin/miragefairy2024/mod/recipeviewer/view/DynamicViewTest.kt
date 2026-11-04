@@ -1,8 +1,10 @@
 package miragefairy2024.mod.recipeviewer.view
 
+import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.FixedView
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
+import miragefairy2024.mod.recipeviewer.views.PagingView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.ObservableValue
@@ -193,6 +195,93 @@ class DynamicViewTest {
         remover.remove()
         notificationRemover.remove()
         controller.detach()
+    }
+
+    @Test
+    fun `PagingView の配置中の変更は直列処理して最新の子だけを残すのだ`() {
+        listOf(true, false).forEach { initiallyPaging ->
+            val first = object : FixedWidgetView(IntPoint(10, 20)) { }
+            val pagingChild = object : FixedWidgetView(IntPoint(30, 40)) { }
+            val intermediate = object : FixedWidgetView(IntPoint(50, 60)) { }
+            val latest = object : FixedWidgetView(IntPoint(70, 80)) { }
+            val pagingView = PagingView().also {
+                it.add(ChildrenGenerator { _, _ -> listOf(Child(Alignment.START, pagingChild)) })
+            }
+            val content = ObservableValue<View>(if (initiallyPaging) pagingView else first)
+            val remover = pagingView.pageCount.register { _, _ ->
+                content.value = intermediate
+                content.value = latest
+            }
+            val view = DynamicView(content)
+            view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
+            val placed = mutableSetOf<PlaceableView>()
+            val attached = mutableListOf<PlaceableView>()
+            val disposed = mutableListOf<PlaceableView>()
+            val controller = view.attachTo(IntPoint(7, 11)) { child, _ ->
+                placed += child
+                attached += child
+                object : ViewController {
+                    override fun setOffset(offset: IntPoint) = Unit
+                    override fun detach() {
+                        placed -= child
+                    }
+                    override fun dispose() {
+                        disposed += child
+                    }
+                }
+            }
+
+            if (!initiallyPaging) content.value = pagingView
+
+            val oldChildren = if (initiallyPaging) listOf(pagingChild) else listOf(first, pagingChild)
+            assertSame(latest, content.value)
+            assertEquals(setOf(latest), placed)
+            assertEquals(oldChildren + latest, attached)
+            assertEquals(oldChildren, disposed)
+
+            controller.dispose()
+            controller.detach()
+            remover.remove()
+
+            assertEquals(emptySet<PlaceableView>(), placed)
+            assertEquals(oldChildren + latest, disposed)
+        }
+    }
+
+    @Test
+    fun `PagingView の配置中に破棄された場合は戻ってきた配置も後始末するのだ`() {
+        val first = object : FixedWidgetView(IntPoint(10, 20)) { }
+        val pagingChild = object : FixedWidgetView(IntPoint(30, 40)) { }
+        val pagingView = PagingView().also {
+            it.add(ChildrenGenerator { _, _ -> listOf(Child(Alignment.START, pagingChild)) })
+        }
+        val content = ObservableValue<View>(first)
+        val view = DynamicView(content)
+        view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
+        val placed = mutableSetOf<PlaceableView>()
+        val disposed = mutableListOf<PlaceableView>()
+        val controller = view.attachTo(IntPoint.ZERO) { child, _ ->
+            placed += child
+            object : ViewController {
+                override fun setOffset(offset: IntPoint) = Unit
+                override fun detach() {
+                    placed -= child
+                }
+                override fun dispose() {
+                    disposed += child
+                }
+            }
+        }
+        val remover = pagingView.pageCount.register { _, _ ->
+            controller.dispose()
+        }
+
+        content.value = pagingView
+
+        assertEquals(emptySet<PlaceableView>(), placed)
+        assertEquals(listOf(first, pagingChild), disposed)
+        controller.detach()
+        remover.remove()
     }
 
 }
