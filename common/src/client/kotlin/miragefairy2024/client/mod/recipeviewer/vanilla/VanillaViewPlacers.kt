@@ -87,7 +87,15 @@ fun initVanillaViewPlacers() {
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextButtonView, bounds ->
         // TODO onClick の戻り値によるイベントの消費判定と、未消費をバニラの Button の入力処理へ反映する方法は検討が必要なのだ～🌱
-        class TextButtonWidget : Button(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, view.message, { view.onClick.fire { it() } }, DEFAULT_NARRATION) {
+        class TextButtonWidget : Button(
+            bounds.x,
+            bounds.y,
+            bounds.sizeX,
+            bounds.sizeY,
+            view.message,
+            { view.onClick.fire { it() } },
+            DEFAULT_NARRATION,
+        ) {
             override fun getMessage() = view.message
         }
         context place TextButtonWidget()
