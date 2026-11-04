@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.ObservableValue
+import miragefairy2024.util.register
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -163,6 +164,35 @@ class DynamicViewTest {
         val eventsAfterDisposal = events.toList()
         content.value = second
         assertEquals(eventsAfterDisposal, events)
+    }
+
+    @Test
+    fun `変更通知の途中で破棄されても残りの通知から子を再配置しないのだ`() {
+        val events = mutableListOf<String>()
+        val first = RecordingDynamicChildView("first", IntPoint(10, 20), events)
+        val second = RecordingDynamicChildView("second", IntPoint(30, 40), events)
+        val content = ObservableValue<View>(first)
+        lateinit var controller: ViewController
+        val remover = content.register { _, _ ->
+            controller.dispose()
+        }
+        val view = DynamicView(content)
+        view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
+        controller = view.attachTo(IntPoint.ZERO, DYNAMIC_VIEW_PLACER)
+        val notifiedValues = mutableListOf<View>()
+        val notificationRemover = content.register { _, new ->
+            notifiedValues += new
+        }
+
+        content.value = second
+
+        assertEquals(listOf("first:init", "first:attach", "first:dispose"), events)
+        assertEquals(emptyList<IntPoint>(), second.offsets)
+        assertSame(second, content.value)
+        assertEquals(listOf(second), notifiedValues)
+        remover.remove()
+        notificationRemover.remove()
+        controller.detach()
     }
 
 }
