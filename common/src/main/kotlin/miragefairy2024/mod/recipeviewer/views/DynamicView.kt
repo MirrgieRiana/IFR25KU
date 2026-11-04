@@ -32,7 +32,7 @@ class DynamicView(val content: ObservableValue<View>) : AbstractView() {
 
             loading = true
             try {
-                while (needsLoad && !disposed) {
+                while (needsLoad) {
                     needsLoad = false
                     val previousController = childController
                     childController = ViewController.NONE
