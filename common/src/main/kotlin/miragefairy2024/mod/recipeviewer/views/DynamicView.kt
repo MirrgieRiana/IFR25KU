@@ -23,7 +23,7 @@ class DynamicView(val content: ObservableValue<View>) : AbstractView() {
         var childController = ViewController.NONE
         var disposed = false
         var loading = false
-        var needsLoad = false
+        var needsLoad: Boolean
 
         fun load() {
             // 既に破棄済みの場合は、ロードをしないのだ～🌱
