@@ -6,13 +6,13 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.mod.recipeviewer.view.x2
 import miragefairy2024.mod.recipeviewer.view.y2
-import miragefairy2024.mod.recipeviewer.views.GhostItemView
+import miragefairy2024.mod.recipeviewer.views.GuideItemView
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
 
-object GhostItemViewRenderer : ViewRenderer<GhostItemView> {
-    override fun render(view: GhostItemView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+object GuideItemViewRenderer : ViewRenderer<GuideItemView> {
+    override fun render(view: GuideItemView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         val minecraft = Minecraft.getInstance()
         if (!Screen.hasControlDown()) view.time += minecraft.timer.realtimeDeltaTicks
 
@@ -30,7 +30,7 @@ object GhostItemViewRenderer : ViewRenderer<GhostItemView> {
     }
 
     /** スロットとオーバーレイに隠れないよう、画面本体の描画後に呼ぶのだ～🌱 */
-    fun renderTooltip(view: GhostItemView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int) {
+    fun renderTooltip(view: GuideItemView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int) {
         if (!bounds.contains(mouseX, mouseY)) return
         val itemStack = view.itemStack
         if (itemStack.isEmpty) return
