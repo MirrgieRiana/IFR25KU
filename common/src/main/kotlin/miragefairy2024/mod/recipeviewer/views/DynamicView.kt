@@ -44,8 +44,8 @@ class DynamicView(val content: ObservableValue<View>) : AbstractView() {
             }
 
             override fun dispose() {
-                contentRemover.remove()
                 childController.dispose()
+                contentRemover.remove()
             }
         }
     }
