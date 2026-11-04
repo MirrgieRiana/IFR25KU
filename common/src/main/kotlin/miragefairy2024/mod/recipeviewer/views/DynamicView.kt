@@ -21,10 +21,7 @@ class DynamicView(val content: ObservableValue<View>) : AbstractView() {
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         var currentOffset = offset
         var childController = ViewController.NONE
-        var disposed = false
-
         fun load() {
-            if (disposed) return
             childController.dispose()
             childController.detach()
 
@@ -47,8 +44,6 @@ class DynamicView(val content: ObservableValue<View>) : AbstractView() {
             }
 
             override fun dispose() {
-                if (disposed) return
-                disposed = true
                 contentRemover.remove()
                 childController.dispose()
             }
