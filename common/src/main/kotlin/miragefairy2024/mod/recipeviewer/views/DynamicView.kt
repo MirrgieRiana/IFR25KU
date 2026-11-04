@@ -10,13 +10,15 @@ import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.register
 
 /** [content] を動的に付け替え可能な View なのだ～🌱 */
-class DynamicView(val content: ObservableValue<View>) : AbstractView() {
+class DynamicView : AbstractView() {
 
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
 
     override fun evaluateContentSizeXImpl() = 0
     override fun evaluateContentSizeYImpl() = 0
+
+    val content: ObservableValue<View?> = ObservableValue(null)
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         var currentOffset = offset
@@ -48,7 +50,7 @@ class DynamicView(val content: ObservableValue<View>) : AbstractView() {
                     if (disposed) break
 
                     // 子を実際にロードするのだ～🌱
-                    val childView = content.value
+                    val childView = content.value ?: break
                     childView.initSizeCalculation(renderingProxy, { evaluateActualSizeX() }, { evaluateActualSizeY() })
                     val newChildController = childView.attachTo(currentOffset, viewPlacer)
                     // 子のロード中に破棄された場合は、即子を破棄して抜けるのだ～🌱
