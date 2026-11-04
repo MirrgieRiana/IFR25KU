@@ -7,11 +7,11 @@ import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.PagingView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
-import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.register
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 
@@ -62,8 +62,9 @@ class DynamicViewTest {
             val events = mutableListOf<String>()
             val first = RecordingDynamicChildView("first", IntPoint(10, 20), events)
             val second = RecordingDynamicChildView("second", IntPoint(30, 40), events)
-            val content = ObservableValue<View>(first)
-            val view = DynamicView(content)
+            val view = DynamicView()
+            val content = view.content
+            content.value = first
             view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
 
             assertEquals(IntPoint.ZERO, view.evaluateContentSize())
@@ -93,8 +94,9 @@ class DynamicViewTest {
         val events = mutableListOf<String>()
         val first = RecordingDynamicChildView("first", IntPoint(10, 20), events)
         val second = RecordingDynamicChildView("second", IntPoint(30, 40), events)
-        val content = ObservableValue<View>(first)
-        val view = DynamicView(content)
+        val view = DynamicView()
+        val content = view.content
+        content.value = first
         view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
         val controller = view.attachTo(IntPoint(7, 11), DYNAMIC_VIEW_PLACER)
 
@@ -122,8 +124,9 @@ class DynamicViewTest {
         }
         val first = contentView(IntPoint(10, 20))
         val second = contentView(IntPoint(30, 40))
-        val content = ObservableValue<View>(first)
-        val view = DynamicView(content)
+        val view = DynamicView()
+        val content = view.content
+        content.value = first
         view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
         val bounds = mutableListOf<IntRectangle>()
         val controller = view.attachTo(IntPoint(7, 11)) { _, rectangle ->
@@ -145,8 +148,9 @@ class DynamicViewTest {
         val events = mutableListOf<String>()
         val first = RecordingDynamicChildView("first", IntPoint(10, 20), events)
         val second = RecordingDynamicChildView("second", IntPoint(30, 40), events)
-        val content = ObservableValue<View>(first)
-        val view = DynamicView(content)
+        val view = DynamicView()
+        val content = view.content
+        content.value = first
         view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
         val firstController = view.attachTo(IntPoint(7, 11), DYNAMIC_VIEW_PLACER)
 
@@ -173,15 +177,16 @@ class DynamicViewTest {
         val events = mutableListOf<String>()
         val first = RecordingDynamicChildView("first", IntPoint(10, 20), events)
         val second = RecordingDynamicChildView("second", IntPoint(30, 40), events)
-        val content = ObservableValue<View>(first)
+        val view = DynamicView()
+        val content = view.content
+        content.value = first
         lateinit var controller: ViewController
         val remover = content.register { _, _ ->
             controller.dispose()
         }
-        val view = DynamicView(content)
         view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
         controller = view.attachTo(IntPoint.ZERO, DYNAMIC_VIEW_PLACER)
-        val notifiedValues = mutableListOf<View>()
+        val notifiedValues = mutableListOf<View?>()
         val notificationRemover = content.register { _, new ->
             notifiedValues += new
         }
@@ -207,12 +212,13 @@ class DynamicViewTest {
             val pagingView = PagingView().also {
                 it.add(ChildrenGenerator { _, _ -> listOf(Child(Alignment.START, pagingChild)) })
             }
-            val content = ObservableValue<View>(if (initiallyPaging) pagingView else first)
+            val view = DynamicView()
+            val content = view.content
+            content.value = if (initiallyPaging) pagingView else first
             val remover = pagingView.pageCount.register { _, _ ->
                 content.value = intermediate
                 content.value = latest
             }
-            val view = DynamicView(content)
             view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
             val placed = mutableSetOf<PlaceableView>()
             val attached = mutableListOf<PlaceableView>()
@@ -255,8 +261,9 @@ class DynamicViewTest {
         val pagingView = PagingView().also {
             it.add(ChildrenGenerator { _, _ -> listOf(Child(Alignment.START, pagingChild)) })
         }
-        val content = ObservableValue<View>(first)
-        val view = DynamicView(content)
+        val view = DynamicView()
+        val content = view.content
+        content.value = first
         view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
         val placed = mutableSetOf<PlaceableView>()
         val disposed = mutableListOf<PlaceableView>()
@@ -282,6 +289,82 @@ class DynamicViewTest {
         assertEquals(listOf(first, pagingChild), disposed)
         controller.detach()
         remover.remove()
+    }
+
+    @Test
+    fun `初期状態は空で内容の設定と解除を繰り返せるのだ`() {
+        val events = mutableListOf<String>()
+        val first = RecordingDynamicChildView("first", IntPoint(10, 20), events)
+        val second = RecordingDynamicChildView("second", IntPoint(30, 40), events)
+        val view = DynamicView()
+        val content = view.content
+        assertNull(content.value)
+        view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
+        val controller = view.attachTo(IntPoint(7, 11), DYNAMIC_VIEW_PLACER)
+
+        assertEquals(emptyList<String>(), events)
+        assertEquals(IntPoint(100, 80), view.evaluateActualSize())
+        controller.setOffset(IntPoint(20, 30))
+        content.value = first
+
+        assertEquals(listOf("first:init", "first:attach"), events)
+        assertEquals(listOf(IntPoint(20, 30)), first.offsets)
+        assertEquals(listOf(IntPoint(100, 80)), first.regions)
+
+        content.value = null
+
+        assertEquals(listOf("first:init", "first:attach", "first:dispose", "first:detach"), events)
+        controller.setOffset(IntPoint(-5, -9))
+        content.value = second
+
+        assertEquals(listOf(IntPoint(-5, -9)), second.offsets)
+        assertEquals(listOf(IntPoint(100, 80)), second.regions)
+        controller.dispose()
+        controller.detach()
+        assertEquals(listOf("first:init", "first:attach", "first:dispose", "first:detach", "second:init", "second:attach", "second:dispose", "second:detach"), events)
+    }
+
+    @Test
+    fun `PagingView の配置中に内容が空になった場合は配置を回収して再設定できるのだ`() {
+        val pagingChild = object : FixedWidgetView(IntPoint(10, 20)) { }
+        val replacement = object : FixedWidgetView(IntPoint(30, 40)) { }
+        val pagingView = PagingView().also {
+            it.add(ChildrenGenerator { _, _ -> listOf(Child(Alignment.START, pagingChild)) })
+        }
+        val view = DynamicView()
+        val content = view.content
+        content.value = pagingView
+        val remover = pagingView.pageCount.register { _, _ ->
+            content.value = null
+        }
+        view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
+        val placed = mutableSetOf<PlaceableView>()
+        val disposed = mutableListOf<PlaceableView>()
+        val controller = view.attachTo(IntPoint.ZERO) { child, _ ->
+            placed += child
+            object : ViewController {
+                override fun setOffset(offset: IntPoint) = Unit
+                override fun detach() {
+                    placed -= child
+                }
+                override fun dispose() {
+                    disposed += child
+                }
+            }
+        }
+
+        assertNull(content.value)
+        assertEquals(emptySet<PlaceableView>(), placed)
+        assertEquals(listOf(pagingChild), disposed)
+
+        content.value = replacement
+
+        assertEquals(setOf(replacement), placed)
+        controller.dispose()
+        controller.detach()
+        remover.remove()
+        assertEquals(emptySet<PlaceableView>(), placed)
+        assertEquals(listOf(pagingChild, replacement), disposed)
     }
 
 }
