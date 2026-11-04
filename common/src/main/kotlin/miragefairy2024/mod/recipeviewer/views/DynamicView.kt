@@ -9,12 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.register
 
-/**
- * [content] の変更に合わせて、割り当て領域内の子 View を差し替えるのだ～🌱
- * コンテンツの最小サイズは縦横とも `0` とし、子のサイズ変更を親のレイアウトへ伝播しないのだ～🌱
- *
- * @param content 表示する子 View と、その変更の通知なのだ～🌱
- */
+/** [content] を動的に付け替え可能な View なのだ～🌱 */
 class DynamicView(val content: ObservableValue<View>) : AbstractView() {
 
     override var sizingX = Sizing.FILL
