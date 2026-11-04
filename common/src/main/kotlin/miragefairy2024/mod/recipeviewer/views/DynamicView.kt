@@ -34,21 +34,21 @@ class DynamicView(val content: ObservableValue<View>) : AbstractView() {
             try {
                 while (needsLoad) {
                     needsLoad = false
-                    val previousController = childController
+                    val oldChildController = childController
                     childController = ViewController.NONE
-                    previousController.dispose()
-                    previousController.detach()
+                    oldChildController.dispose()
+                    oldChildController.detach()
                     if (disposed) break
 
                     val childView = content.value
                     childView.initSizeCalculation(renderingProxy, { evaluateActualSizeX() }, { evaluateActualSizeY() })
-                    val newController = childView.attachTo(currentOffset, viewPlacer)
+                    val newChildController = childView.attachTo(currentOffset, viewPlacer)
                     if (disposed) {
-                        newController.dispose()
-                        newController.detach()
+                        newChildController.dispose()
+                        newChildController.detach()
                         break
                     }
-                    childController = newController
+                    childController = newChildController
                 }
             } finally {
                 loading = false
