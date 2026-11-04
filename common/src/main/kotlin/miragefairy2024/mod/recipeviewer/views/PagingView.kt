@@ -78,6 +78,7 @@ class PagingView : ParentView<Alignment>() {
                 relativeOffset
             }
         }
+
         val pageIndexRemover = pageIndex.register { _, _ -> load() }
         load()
 

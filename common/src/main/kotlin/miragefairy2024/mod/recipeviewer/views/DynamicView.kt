@@ -37,6 +37,7 @@ class DynamicView(val content: ObservableValue<View>) : AbstractView() {
             childView.initSizeCalculation(renderingProxy, { evaluateActualSizeX() }, { evaluateActualSizeY() })
             childController = childView.attachTo(currentOffset, viewPlacer)
         }
+
         val contentRemover = content.register { _, _ -> load() }
         load()
 
