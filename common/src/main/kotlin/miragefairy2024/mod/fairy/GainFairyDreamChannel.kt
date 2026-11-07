@@ -2,7 +2,6 @@ package miragefairy2024.mod.fairy
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.ModEvents
 import miragefairy2024.clientProxy
 import miragefairy2024.util.Channel
 import miragefairy2024.util.registerClientPacketReceiver
@@ -14,10 +13,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 context(ModContext)
 fun initGainFairyDreamChannel() {
     GainFairyDreamChannel.registerServerToClientPayloadType()
-    ModEvents.onClientInit {
-        GainFairyDreamChannel.registerClientPacketReceiver { motif ->
-            clientProxy!!.addToast(FairyDreamToastViewWrapper(motif.createFairyItemStack()).view)
-        }
+    GainFairyDreamChannel.registerClientPacketReceiver { motif ->
+        clientProxy!!.addToast(FairyDreamToastViewWrapper(motif.createFairyItemStack()).view)
     }
 }
 
