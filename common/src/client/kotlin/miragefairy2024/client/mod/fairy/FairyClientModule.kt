@@ -2,9 +2,9 @@ package miragefairy2024.client.mod.fairy
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.client.util.ViewToast
 import miragefairy2024.client.util.ellipsize
 import miragefairy2024.client.util.registerClientPacketReceiver
-import miragefairy2024.clientProxy
 import miragefairy2024.mod.fairy.GAIN_FAIRY_DREAM_TRANSLATION
 import miragefairy2024.mod.fairy.GainFairyDreamChannel
 import miragefairy2024.mod.fairy.createFairyItemStack
@@ -67,7 +67,7 @@ fun initFairyClientModule() {
                 }.margin(8, 8, 0, 0)
             }
         }
-        clientProxy!!.addToast(rootView)
+        Minecraft.getInstance().toasts.addToast(ViewToast(rootView))
     }
 
     initMotifTableClientModule()
