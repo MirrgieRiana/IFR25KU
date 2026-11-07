@@ -6,6 +6,7 @@
       {% if target_page %}
       <a href="{{ target_page.url | relative_url }}" class="recent-posts__card">
         <div class="recent-posts__teaser">
+          {% comment %}カードはこのリンクの中に見出しも持つから、画像の代替テキストに記事のタイトルを入れると、同じ文字列が2回読み上げられちゃうのだぁ…🌧️{% endcomment %}
           {% if target_page.header.teaser %}
           {% image target_page.header.teaser %}
           {% else %}
