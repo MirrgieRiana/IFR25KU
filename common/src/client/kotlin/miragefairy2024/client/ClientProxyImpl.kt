@@ -10,6 +10,7 @@ import miragefairy2024.RenderingProxy
 import miragefairy2024.RenderingProxyBlockEntity
 import miragefairy2024.client.mod.recipeviewer.vanilla.MessageViewScreen
 import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
+import miragefairy2024.client.util.ViewToast
 import miragefairy2024.client.util.stack
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.View
@@ -106,6 +107,10 @@ class ClientProxyImpl : ClientProxy<Screen> {
 
     override fun createMessageViewScreen(parent: Screen?, title: Component, rootViewFactory: () -> View): Screen {
         return MessageViewScreen(parent, title, rootViewFactory)
+    }
+
+    override fun addToast(rootView: View) {
+        Minecraft.getInstance().toasts.addToast(ViewToast(rootView))
     }
 }
 

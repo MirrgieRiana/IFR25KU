@@ -35,6 +35,7 @@ interface ClientProxy<S : Any> {
     fun getCurrentScreen(): S?
     fun setCurrentScreen(screen: S?)
     fun createMessageViewScreen(parent: S?, title: Component, rootViewFactory: () -> View): S
+    fun addToast(rootView: View)
 }
 
 fun interface BlockColorProvider {
