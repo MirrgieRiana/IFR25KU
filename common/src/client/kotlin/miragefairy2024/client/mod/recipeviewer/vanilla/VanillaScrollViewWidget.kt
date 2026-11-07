@@ -1,11 +1,14 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.client.mod.recipeviewer.ScrollbarRendererRegistry
 import miragefairy2024.client.util.getActualFocused
 import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.view.x2
+import miragefairy2024.mod.recipeviewer.view.y2
 import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
@@ -157,6 +160,15 @@ abstract class VanillaScrollViewWidget(
         return true
     }
 
+    private fun isScrollbarVisible() = evaluateMaxScrollOffset() > 0 && view.scrollbarThickness > 0 && evaluateThumbLength() > 0
+
+    private fun containsScrollbar(mouseX: Double, mouseY: Double): Boolean {
+        if (!isScrollbarVisible()) return false
+        if (!super.isMouseOver(mouseX, mouseY)) return false
+        val bounds = getScrollbarBounds(0, viewportLength)
+        return mouseX >= bounds.x && mouseX < bounds.x2 && mouseY >= bounds.y && mouseY < bounds.y2
+    }
+
     override fun isActive() = super.isActive() && !disposed
 
     override fun isMouseOver(mouseX: Double, mouseY: Double) = isActive && super.isMouseOver(mouseX, mouseY)
@@ -165,10 +177,11 @@ abstract class VanillaScrollViewWidget(
     override fun getChildAt(mouseX: Double, mouseY: Double): Optional<GuiEventListener> {
         if (!isActive) return Optional.empty()
         if (!containsViewport(mouseX, mouseY)) return Optional.empty()
+        if (containsScrollbar(mouseX, mouseY)) return Optional.empty()
         return super.getChildAt(mouseX, mouseY)
     }
 
-    protected abstract fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int)
+    protected abstract fun getScrollbarBounds(start: Int, length: Int): IntRectangle
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
@@ -183,8 +196,8 @@ abstract class VanillaScrollViewWidget(
         }
 
         // スクロールバーの描画なのだ～🌱
-        if (evaluateMaxScrollOffset() > 0 && view.scrollbarThickness > 0 && evaluateThumbLength() > 0) {
-            renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), evaluateThumbLength())
+        if (isScrollbarVisible()) {
+            ScrollbarRendererRegistry.get(view.scrollbar).render(guiGraphics, getScrollbarBounds(evaluateThumbPosition().roundToInt(), evaluateThumbLength()), view.scrollbarColor)
         }
 
     }
@@ -211,25 +224,21 @@ abstract class VanillaScrollViewWidget(
         }
         if (!isActive) return false
 
-        if (!containsViewport(mouseX, mouseY)) {
-            if (super.isMouseOver(mouseX, mouseY)) {
-                // スクロールバーのドラッグ開始なのだ～🌱
-                if (button != 0) return false
-                if (evaluateMaxScrollOffset() == 0) return false
-                if (viewportLength <= evaluateThumbLength()) return false
-                draggingScrollbar = true
-                val mousePosition = getMousePosition(mouseX, mouseY)
-                scrollbarDragOffset = if (mousePosition >= evaluateThumbPosition() && mousePosition < evaluateThumbPosition() + evaluateThumbLength()) {
-                    mousePosition - evaluateThumbPosition()
-                } else {
-                    evaluateThumbLength() / 2.0
-                }
-                dragScrollbar(mouseX, mouseY)
-                return true
+        if (containsScrollbar(mouseX, mouseY)) {
+            // スクロールバーのドラッグ開始なのだ～🌱
+            if (button != 0) return false
+            if (viewportLength <= evaluateThumbLength()) return false
+            draggingScrollbar = true
+            val mousePosition = getMousePosition(mouseX, mouseY)
+            scrollbarDragOffset = if (mousePosition >= evaluateThumbPosition() && mousePosition < evaluateThumbPosition() + evaluateThumbLength()) {
+                mousePosition - evaluateThumbPosition()
             } else {
-                return false
+                evaluateThumbLength() / 2.0
             }
+            dragScrollbar(mouseX, mouseY)
+            return true
         } else {
+            if (!containsViewport(mouseX, mouseY)) return false
             // 子要素のクリック処理なのだ～🌱
             return widgetRegistrations.toList().any { widgetRegistration ->
                 // 操作可能でない子は除くのだ～🌱
@@ -278,7 +287,7 @@ abstract class VanillaScrollViewWidget(
 
     override fun mouseMoved(mouseX: Double, mouseY: Double) {
         if (!isActive) return
-        if (!containsViewport(mouseX, mouseY)) {
+        if (!containsViewport(mouseX, mouseY) || containsScrollbar(mouseX, mouseY)) {
             // いずれかのボタンでドラッグしている子は、表示領域外でもマウス移動を受け取るのだ～🌱
             widgetRegistrations.forEach { widgetRegistration ->
                 if (pressedWidgetRegistrations.values.any { it == widgetRegistration }) {
@@ -470,7 +479,7 @@ class VanillaXScrollViewWidget(
     // 領域とサイズなのだ～🌱
 
     override fun getReservedRight() = 0
-    override fun getReservedBottom() = view.scrollbarThickness
+    override fun getReservedBottom() = view.reservedScrollbarThickness
 
     override val viewportLength get() = width
     override fun evaluateContentLength() = view.childView.evaluateActualSizeX()
@@ -487,15 +496,9 @@ class VanillaXScrollViewWidget(
     // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
-    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
-        guiGraphics.fill(
-            x + start,
-            y + height - view.scrollbarThickness atLeast y,
-            x + start + length,
-            y + height,
-            view.scrollbarColor,
-        )
+    override fun getScrollbarBounds(start: Int, length: Int): IntRectangle {
+        val thickness = view.scrollbarThickness min height
+        return IntRectangle(x + start, y + height - thickness, length, thickness)
     }
 
     override fun getScrollOffsetDeltaOnFocus(rectangle: ScreenRectangle): Int {
@@ -522,7 +525,7 @@ class VanillaYScrollViewWidget(
 
     // 領域とサイズなのだ～🌱
 
-    override fun getReservedRight() = view.scrollbarThickness
+    override fun getReservedRight() = view.reservedScrollbarThickness
     override fun getReservedBottom() = 0
 
     override val viewportLength get() = height
@@ -538,15 +541,9 @@ class VanillaYScrollViewWidget(
     override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseY - y
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
-    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
-        guiGraphics.fill(
-            x + width - view.scrollbarThickness atLeast x,
-            y + start,
-            x + width,
-            y + start + length,
-            view.scrollbarColor,
-        )
+    override fun getScrollbarBounds(start: Int, length: Int): IntRectangle {
+        val thickness = view.scrollbarThickness min width
+        return IntRectangle(x + width - thickness, y + start, thickness, length)
     }
 
     override fun getScrollOffsetDeltaOnFocus(rectangle: ScreenRectangle): Int {
