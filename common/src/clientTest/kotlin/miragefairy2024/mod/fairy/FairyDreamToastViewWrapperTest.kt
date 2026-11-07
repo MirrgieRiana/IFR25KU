@@ -55,7 +55,7 @@ class FairyDreamToastViewWrapperTest {
             itemStack.set(DataComponents.CUSTOM_NAME, text { "long name".repeat(30)() })
             val displayName = itemStack.hoverName.darkBlue
             val ellipsis = text { "..."().darkBlue }
-            val name = text { "short..."().darkBlue }.visualOrderText
+            val name: FormattedCharSequence = text { "short..."().darkBlue }.visualOrderText
             Mockito.`when`(proxy.ellipsizeText(displayName, 118, ellipsis)).thenReturn(name)
 
             val view = FairyDreamToastViewWrapper(itemStack).view
@@ -77,7 +77,7 @@ class FairyDreamToastViewWrapperTest {
             val texts = placements.filter { it.first is TextView }
             Assertions.assertEquals(listOf(IntRectangle(30, 6, 100, 9), IntRectangle(34, 17, 100, 9)), texts.map { it.second })
             val title = (texts[0].first as TextView).text.value
-            val expectedTitle = text { GAIN_FAIRY_DREAM_TRANSLATION().black }.visualOrderText
+            val expectedTitle: FormattedCharSequence = text { GAIN_FAIRY_DREAM_TRANSLATION().black }.visualOrderText
             val titleCharacters = mutableListOf<Pair<Int, Int?>>()
             title.accept { _, style, codePoint ->
                 titleCharacters += Pair(codePoint, style.color?.value)
