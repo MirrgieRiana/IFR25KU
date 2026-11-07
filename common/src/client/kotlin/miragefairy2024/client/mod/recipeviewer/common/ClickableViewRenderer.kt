@@ -16,6 +16,8 @@ import net.minecraft.sounds.SoundEvents
 
 object ClickableViewRenderer : ViewRenderer<ClickableView> {
 
+    override fun isFocusable(view: ClickableView) = true
+
     override fun mouseClicked(view: ClickableView, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int): Boolean {
         if (button != 0) return false
         view.onClick.fire {
