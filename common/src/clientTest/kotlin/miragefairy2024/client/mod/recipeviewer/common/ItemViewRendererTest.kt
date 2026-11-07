@@ -26,7 +26,7 @@ class ItemViewRendererTest {
     fun `既定では個数などの表示も描画し無効時にはアイテム本体だけを描画するのだ`() {
         GuiTestEnvironment().use {
             val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
-            val itemStack = ItemStack(Items.STONE, 64)
+            val itemStack: ItemStack = ItemStack(Items.STONE, 64)
             val view = ItemView(itemStack)
             val bounds = IntRectangle(10, 20, 16, 16)
 
