@@ -1,10 +1,12 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import com.mojang.blaze3d.systems.RenderSystem
+import miragefairy2024.client.mod.recipeviewer.ScrollbarRendererRegistry
 import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
+import miragefairy2024.mod.recipeviewer.view.Scrollbar
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.register
@@ -41,6 +43,10 @@ private val SCROLL_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
     override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
     override fun getTextHeight() = throw UnsupportedOperationException()
     override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = throw UnsupportedOperationException()
+}
+
+private object OverlayScrollbar : Scrollbar {
+    override fun getReservedThickness(thickness: Int) = 0
 }
 
 private class ScrollTestView(val interactive: Boolean) : FixedWidgetView(IntPoint(100, 100))
@@ -180,6 +186,80 @@ private fun createScrollView(horizontal: Boolean): ScrollView {
 }
 
 class VanillaScrollViewWidgetTest {
+
+    @Test
+    fun `既定の描画は両軸で指定された太さと色を使い領域からはみ出さないのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            listOf(0, 7, 200).forEach { thickness ->
+                GuiTestEnvironment().use { environment ->
+                    val fixture = ScrollFixture()
+                    val view = createScrollView(horizontal)
+                    view.scrollbarThickness = thickness
+                    view.scrollbarColor = 0xA0FFFFFF.toInt()
+                    val controller = fixture.attach(view, IntPoint(100, 100))
+                    try {
+                        val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                        val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                        root.render(graphics, 50, 50, 0.0F)
+                        if (thickness == 0) {
+                            Mockito.verify(graphics, Mockito.never()).fill(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt())
+                        } else {
+                            val actualThickness = thickness.coerceAtMost(100)
+                            val length = thickness.coerceIn(33, 100)
+                            if (horizontal) {
+                                Mockito.verify(graphics).fill(10, 120 - actualThickness, 10 + length, 120, view.scrollbarColor)
+                            } else {
+                                Mockito.verify(graphics).fill(110 - actualThickness, 20, 110, 20 + length, view.scrollbarColor)
+                            }
+                        }
+                    } finally {
+                        controller.dispose()
+                        controller.detach()
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `占有幅がゼロの種類でも描画を委譲してバーの入力を子から分離するのだ`() {
+        ScrollbarRendererRegistry.register(OverlayScrollbar) { graphics, bounds, color ->
+            graphics.fill(bounds.x, bounds.y, bounds.x + 1, bounds.y + 1, color)
+        }
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val fixture = ScrollFixture()
+                val view = createScrollView(horizontal)
+                view.scrollbar = OverlayScrollbar
+                val controller = fixture.attach(view, IntPoint(100, 100))
+                try {
+                    val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                    Assertions.assertEquals(100, if (horizontal) fixture.widgets[0].height else fixture.widgets[0].width)
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(listOf(if (horizontal) IntRectangle(10, 115, 1, 1) else IntRectangle(105, 20, 1, 1)), environment.fills)
+
+                    val mouse = if (horizontal) IntPoint(15, 118) else IntPoint(108, 25)
+                    Assertions.assertTrue(root.getChildAt(mouse.x.toDouble(), mouse.y.toDouble()).isEmpty)
+                    root.mouseMoved(mouse.x.toDouble(), mouse.y.toDouble())
+                    Assertions.assertTrue(fixture.widgets.all { it.moves.isEmpty() })
+                    fixture.widgets.forEach { it.consumeScroll = true }
+                    Assertions.assertTrue(root.mouseScrolled(mouse.x.toDouble(), mouse.y.toDouble(), 0.0, -1.0))
+                    Assertions.assertTrue(fixture.widgets.all { it.scrolls == 0 })
+                    Assertions.assertTrue(root.mouseClicked(mouse.x.toDouble(), mouse.y.toDouble(), 0))
+                    Assertions.assertTrue(fixture.widgets.all { it.clicks.isEmpty() })
+                    Assertions.assertTrue(root.mouseDragged(500.0, 500.0, 0, 500.0, 500.0))
+                    Assertions.assertEquals(if (horizontal) -190 else -180, if (horizontal) fixture.widgets[0].x else fixture.widgets[0].y)
+                    Assertions.assertTrue(root.mouseReleased(500.0, 500.0, 0))
+                    Assertions.assertTrue(root.getChildAt(50.0, 50.0).isPresent)
+                    Assertions.assertTrue(root.mouseClicked(50.0, 50.0, 0))
+                    Assertions.assertEquals(listOf(0), fixture.widgets[2].clicks)
+                } finally {
+                    controller.dispose()
+                    controller.detach()
+                }
+            }
+        }
+    }
 
     @Test
     fun `描画には実座標を渡し表示領域外のホバーをバニラの scissor で除外するのだ`() {

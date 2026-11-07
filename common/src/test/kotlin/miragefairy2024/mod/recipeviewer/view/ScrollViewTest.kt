@@ -17,7 +17,51 @@ private val SCROLL_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
     override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = throw UnsupportedOperationException()
 }
 
+private object OverlayScrollbar : Scrollbar {
+    override fun getReservedThickness(thickness: Int) = 0
+}
+
+private object HalfReservedScrollbar : Scrollbar {
+    override fun getReservedThickness(thickness: Int) = thickness / 2
+}
+
 class ScrollViewTest {
+
+    @Test
+    fun `既定の種類をシングルトンで共有しても太さと色は View ごとに保持するのだ`() {
+        val xView = XScrollView()
+        val yView = YScrollView()
+        Assertions.assertSame(FlatScrollbar, xView.scrollbar)
+        Assertions.assertSame(xView.scrollbar, yView.scrollbar)
+        xView.scrollbarThickness = 10
+        xView.scrollbarColor = 0xA0FFFFFF.toInt()
+        Assertions.assertEquals(10, xView.reservedScrollbarThickness)
+        Assertions.assertEquals(5, yView.reservedScrollbarThickness)
+        Assertions.assertEquals(0xA0000000.toInt(), yView.scrollbarColor)
+    }
+
+    @Test
+    fun `種類が指定する占有幅を最小サイズと子の割り当てに反映するのだ`() {
+        listOf(FlatScrollbar to 10, HalfReservedScrollbar to 5, OverlayScrollbar to 0).forEach { (scrollbar, reservedThickness) ->
+            listOf(true, false).forEach { horizontal ->
+                val child = object : AbstractView() {
+                    override val sizingX = Sizing.FILL
+                    override val sizingY = Sizing.FILL
+                    override fun evaluateContentSizeXImpl() = 0
+                    override fun evaluateContentSizeYImpl() = 0
+                    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = ViewController.NONE
+                }
+                val view = if (horizontal) XScrollView() else YScrollView()
+                view.scrollbar = scrollbar
+                view.scrollbarThickness = 10
+                view += child
+                view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 100 })
+
+                Assertions.assertEquals(if (horizontal) IntPoint(100, 100 - reservedThickness) else IntPoint(100 - reservedThickness, 100), child.evaluateActualSize())
+                Assertions.assertEquals(if (horizontal) IntPoint(0, reservedThickness) else IntPoint(reservedThickness, 0), IntPoint(view.evaluateContentSizeX(), view.evaluateContentSizeY()))
+            }
+        }
+    }
 
     @Test
     fun `縦スクロールでは割り当て幅に応じて子の高さを評価するのだ`() {
