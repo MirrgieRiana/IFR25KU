@@ -5,16 +5,25 @@ import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
+import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.view.connectScrollbar
 import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
+import miragefairy2024.mod.recipeviewer.views.ListView
+import miragefairy2024.mod.recipeviewer.views.MinContentSizeXView
 import miragefairy2024.mod.recipeviewer.views.MinContentSizeYView
 import miragefairy2024.mod.recipeviewer.views.ScrollView
+import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
+import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
@@ -154,9 +163,23 @@ private class ScrollFixture {
         registry.register { context, view: YScrollView, bounds ->
             place(context, VanillaYScrollViewWidget(view, bounds, context, registry))
         }
+        fun placeScrollbar(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget): ViewController {
+            val remover = context.addRenderableWidget(widget)
+            return object : ViewController {
+                override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
+                override fun dispose() = widget.dispose()
+                override fun detach() = remover.remove()
+            }
+        }
+        registry.register { context, view: XScrollbarView, bounds ->
+            placeScrollbar(context, VanillaXScrollbarViewWidget(view, bounds))
+        }
+        registry.register { context, view: YScrollbarView, bounds ->
+            placeScrollbar(context, VanillaYScrollbarViewWidget(view, bounds))
+        }
     }
 
-    fun attach(view: ScrollView, size: IntPoint): ViewController {
+    fun attach(view: View, size: IntPoint): ViewController {
         view.initSizeCalculation(SCROLL_RENDERING_PROXY, { size.x }, { size.y })
         return view.attachTo(context.origin) { child, bounds -> registry.place(context, child, bounds) }
     }
@@ -182,6 +205,76 @@ private fun createScrollView(horizontal: Boolean): ScrollView {
 class VanillaScrollViewWidgetTest {
 
     @Test
+    fun `List の占有配置と Stack の重ね配置で独立したバーと表示領域を接続するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            listOf(false, true).forEach { overlay ->
+                GuiTestEnvironment().use { environment ->
+                    val fixture = ScrollFixture()
+                    val scroll = createScrollView(horizontal)
+                    val bar = if (horizontal) XScrollbarView() else YScrollbarView()
+                    val connection = connectScrollbar(scroll, bar)
+                    val layout = if (overlay) {
+                        StackView().also {
+                            it.sizingX = Sizing.FILL
+                            it.sizingY = Sizing.FILL
+                            bar.sizingX = Sizing.FILL
+                            bar.sizingY = Sizing.FILL
+                            it += scroll
+                            it += bar
+                        }
+                    } else {
+                        val list = if (horizontal) YListView() else XListView()
+                        list.sizingX = Sizing.FILL
+                        list.sizingY = Sizing.FILL
+                        list.add(Child(ListView.Position().also { it.weight = 1.0 }, scroll))
+                        list += bar
+                        list
+                    }
+                    val controller = fixture.attach(layout, IntPoint(100, 100))
+                    try {
+                        val viewport = fixture.screenWidgets.filterIsInstance<VanillaScrollViewWidget>().single()
+                        val scrollbar = fixture.screenWidgets.filterIsInstance<VanillaScrollbarViewWidget>().single()
+                        val right = if (overlay || horizontal) 110 else 105
+                        val bottom = if (overlay || !horizontal) 120 else 115
+                        val scissorResults = mutableListOf<List<Boolean>>()
+                        fixture.widgets.forEach { widget ->
+                            widget.onRender = { graphics, _, _, _ ->
+                                scissorResults += listOf(graphics.containsPointInScissor(right - 1, bottom - 1), graphics.containsPointInScissor(right, bottom - 1), graphics.containsPointInScissor(right - 1, bottom))
+                            }
+                        }
+                        viewport.render(environment.graphics, 50, 50, 0.0F)
+                        Assertions.assertTrue(environment.fills.isEmpty())
+                        Assertions.assertEquals(List(3) { listOf(true, false, false) }, scissorResults)
+                        scrollbar.render(environment.graphics, 50, 50, 0.0F)
+                        Assertions.assertEquals(listOf(if (horizontal) IntRectangle(10, 115, 33, 5) else IntRectangle(105, 20, 5, 33)), environment.fills)
+                        Assertions.assertTrue(viewport.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+                        Assertions.assertEquals(15.0, bar.scrollState.value)
+                        bar.scrollState.value = 150.0
+                        Assertions.assertEquals(if (horizontal) IntPoint(-140, 20) else IntPoint(10, -130), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+                        val mouseX = if (horizontal) 20.0 else 107.0
+                        val mouseY = if (horizontal) 117.0 else 30.0
+                        if (overlay) {
+                            Assertions.assertTrue(scrollbar.mouseClicked(mouseX, mouseY, 0))
+                        } else {
+                            Assertions.assertTrue(fixture.screen.mouseClicked(mouseX, mouseY, 0))
+                            Assertions.assertSame(scrollbar, fixture.screen.focused)
+                        }
+                        Assertions.assertTrue(scrollbar.mouseDragged(500.0, 500.0, 0, 0.0, 0.0))
+                        Assertions.assertEquals(200.0, scroll.scrollState.value)
+                        Assertions.assertTrue(scrollbar.mouseReleased(500.0, 500.0, 0))
+                    } finally {
+                        connection.remove()
+                        controller.dispose()
+                        controller.detach()
+                    }
+                    Assertions.assertTrue(scroll.scrollState.onChange.listeners.isEmpty())
+                    Assertions.assertTrue(fixture.screenWidgets.isEmpty())
+                }
+            }
+        }
+    }
+
+    @Test
     fun `描画には実座標を渡し表示領域外のホバーをバニラの scissor で除外するのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
@@ -199,10 +292,10 @@ class VanillaScrollViewWidgetTest {
                     root.render(environment.graphics, 50, 50, 0.0F)
                     Assertions.assertTrue(fixture.widgets[0].isHovered)
                     Assertions.assertEquals(List(3) { IntPoint(50, 50) }, positions)
-                    Assertions.assertEquals(listOf("child", "child", "child", "fill"), environment.events)
+                    Assertions.assertEquals(listOf("child", "child", "child"), environment.events)
 
                     positions.clear()
-                    val mouse = if (horizontal) IntPoint(50, 118) else IntPoint(108, 50)
+                    val mouse = if (horizontal) IntPoint(50, 120) else IntPoint(110, 50)
                     root.render(environment.graphics, mouse.x, mouse.y, 0.0F)
                     Assertions.assertFalse(fixture.widgets[0].isHovered)
                     Assertions.assertEquals(List(3) { mouse }, positions)
@@ -323,7 +416,7 @@ class VanillaScrollViewWidgetTest {
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
         Assertions.assertFalse(root.mouseClicked(50.0, 150.0, 0))
         Assertions.assertTrue(root.getChildAt(50.0, 150.0).isEmpty)
-        Assertions.assertTrue(root.getChildAt(107.0, 50.0).isEmpty)
+        Assertions.assertTrue(root.getChildAt(110.0, 50.0).isEmpty)
         Assertions.assertTrue(root.getChildAt(50.0, 50.0).isPresent)
         Assertions.assertTrue(fixture.screen.mouseClicked(50.0, 50.0, 0))
         Assertions.assertTrue(root.mouseDragged(-100.0, -100.0, 0, 1.0, 1.0))
@@ -402,40 +495,22 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
-    fun `縦横のバーをドラッグして領域外で離せるのだ`() {
-        listOf(false, true).forEach { horizontal ->
-            val fixture = ScrollFixture()
-            val controller = fixture.attach(createScrollView(horizontal), IntPoint(100, 100))
-            val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-            val mouseX = if (horizontal) 20.0 else 107.0
-            val mouseY = if (horizontal) 117.0 else 30.0
-            Assertions.assertTrue(fixture.screen.mouseClicked(mouseX, mouseY, 0))
-            Assertions.assertTrue(root.mouseDragged(400.0, 400.0, 0, 300.0, 300.0))
-            Assertions.assertEquals(if (horizontal) -190 else -180, if (horizontal) fixture.widgets[0].x else fixture.widgets[0].y)
-            Assertions.assertTrue(root.mouseReleased(400.0, 400.0, 0))
-            Assertions.assertFalse(root.hasMouseCapture(0))
-            Assertions.assertFalse(root.mouseDragged(mouseX, mouseY, 0, 1.0, 1.0))
+    fun `外部から表示位置を変更しても子のフォーカスを解除しないのだ`() {
+        val fixture = ScrollFixture()
+        val view = createScrollView(false)
+        val controller = fixture.attach(view, IntPoint(100, 100))
+        val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+        try {
+            Assertions.assertTrue(fixture.focusNext(true))
+            view.scrollState.value = 150.0
+            Assertions.assertEquals(-130, fixture.widgets[0].y)
+            Assertions.assertEquals(fixture.widgets[0], root.focused)
+            Assertions.assertTrue(fixture.widgets[0].isFocused)
+            Assertions.assertTrue(fixture.widgets[0].releases.isEmpty())
+        } finally {
             controller.dispose()
             controller.detach()
         }
-    }
-
-    @Test
-    fun `スクロールバーの操作で子のフォーカスを解除しないのだ`() {
-        val fixture = ScrollFixture()
-        val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
-        val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-        Assertions.assertTrue(fixture.focusNext(true))
-
-        Assertions.assertTrue(fixture.screen.mouseClicked(107.0, 30.0, 0))
-        Assertions.assertTrue(root.mouseDragged(107.0, 100.0, 0, 0.0, 70.0))
-        Assertions.assertTrue(root.mouseReleased(107.0, 100.0, 0))
-
-        Assertions.assertEquals(fixture.widgets[0], root.focused)
-        Assertions.assertTrue(fixture.widgets[0].isFocused)
-        Assertions.assertTrue(fixture.widgets[0].releases.isEmpty())
-        controller.dispose()
-        controller.detach()
     }
 
     @Test
@@ -851,7 +926,7 @@ class VanillaScrollViewWidgetTest {
     fun `縦横のスクロールを入れ子にして両軸を独立に移動するのだ`() {
         val fixture = ScrollFixture()
         val outer = XScrollView()
-        outer += createScrollView(false)
+        outer += MinContentSizeXView(105).also { it += createScrollView(false) }
         val controller = fixture.attach(outer, IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
         Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, -1.0, 0.0))
@@ -904,7 +979,7 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
-    fun `表示領域がゼロでもバーの除算やクリックを行わないのだ`() {
+    fun `表示領域がゼロならクリックとホイールを受け付けないのだ`() {
         val fixture = ScrollFixture()
         val controller = fixture.attach(createScrollView(false), IntPoint(0, 0))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
