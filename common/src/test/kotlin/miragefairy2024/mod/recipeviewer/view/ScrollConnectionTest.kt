@@ -59,6 +59,70 @@ class ScrollConnectionTest {
     }
 
     @Test
+    fun `バーの通知中に表示領域の範囲が変わっても最新の状態まで同期するのだ`() {
+        val scroll = XScrollView()
+        val bar = XScrollbarView()
+        scroll.scrollState.setBounds(300, 100)
+        val listener = bar.scrollState.onChange.register {
+            if (scroll.scrollState.contentLength == 300) {
+                scroll.scrollState.setBounds(600, 100)
+                scroll.scrollState.value = 400.0
+            }
+        }
+        val connection = connectScrollbar(scroll, bar)
+        try {
+            Assertions.assertEquals(600, bar.scrollState.contentLength)
+            Assertions.assertEquals(100, bar.scrollState.viewportLength)
+            Assertions.assertEquals(400.0, bar.scrollState.value)
+            scroll.scrollState.setBounds(300, 100)
+            Assertions.assertEquals(600, bar.scrollState.contentLength)
+            Assertions.assertEquals(100, bar.scrollState.viewportLength)
+            Assertions.assertEquals(400.0, bar.scrollState.value)
+        } finally {
+            connection.remove()
+            listener.remove()
+        }
+        Assertions.assertTrue(scroll.scrollState.onChange.listeners.isEmpty())
+        Assertions.assertTrue(bar.scrollState.onChange.listeners.isEmpty())
+    }
+
+    @Test
+    fun `バーの通知で補正された表示位置を再同期するのだ`() {
+        val scroll = XScrollView()
+        val bar = XScrollbarView()
+        scroll.scrollState.setBounds(300, 100)
+        val connection = connectScrollbar(scroll, bar)
+        val listener = bar.scrollState.onChange.register {
+            if (bar.scrollState.value == 15.0) scroll.scrollState.value = 20.0
+        }
+        try {
+            scroll.scrollState.value = 15.0
+            Assertions.assertEquals(20.0, scroll.scrollState.value)
+            Assertions.assertEquals(20.0, bar.scrollState.value)
+        } finally {
+            connection.remove()
+            listener.remove()
+        }
+    }
+
+    @Test
+    fun `初期同期の通知が失敗したら接続の購読を残さないのだ`() {
+        val scroll = XScrollView()
+        val bar = XScrollbarView()
+        scroll.scrollState.setBounds(300, 100)
+        val exception = IllegalStateException("Listener failed")
+        val listener = bar.scrollState.onChange.register { throw exception }
+        try {
+            Assertions.assertSame(exception, Assertions.assertThrows(IllegalStateException::class.java) { connectScrollbar(scroll, bar) })
+            Assertions.assertTrue(scroll.scrollState.onChange.listeners.isEmpty())
+            Assertions.assertEquals(1, bar.scrollState.onChange.listeners.size)
+        } finally {
+            listener.remove()
+        }
+        Assertions.assertTrue(bar.scrollState.onChange.listeners.isEmpty())
+    }
+
+    @Test
     fun `範囲の縮小を値とまとめて通知し非有限値と負の寸法を拒否するのだ`() {
         val state = ScrollState()
         state.setBounds(300, 100)

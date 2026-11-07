@@ -11,17 +11,23 @@ fun connectScrollbar(scrollView: ScrollView, scrollbarView: ScrollbarView): Remo
     val source = scrollView.scrollState
     val target = scrollbarView.scrollState
     var updating = false
+    var pending = false
     fun updateScrollbar() {
-        if (updating) return
+        if (updating) {
+            pending = true
+            return
+        }
         updating = true
         try {
-            target.setBounds(source.contentLength, source.viewportLength)
-            target.value = source.value
+            do {
+                pending = false
+                target.setBounds(source.contentLength, source.viewportLength)
+                target.value = source.value
+            } while (pending)
         } finally {
             updating = false
         }
     }
-    updateScrollbar()
     val sourceRemover = source.onChange.register { updateScrollbar() }
     val targetRemover = target.onChange.register {
         if (!updating) {
@@ -29,5 +35,12 @@ fun connectScrollbar(scrollView: ScrollView, scrollbarView: ScrollbarView): Remo
             updateScrollbar()
         }
     }
-    return sourceRemover + targetRemover
+    val remover = sourceRemover + targetRemover
+    try {
+        updateScrollbar()
+    } catch (e: Throwable) {
+        remover.remove()
+        throw e
+    }
+    return remover
 }
