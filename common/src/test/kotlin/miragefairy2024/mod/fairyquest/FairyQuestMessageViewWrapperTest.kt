@@ -12,6 +12,7 @@ import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.register
@@ -60,12 +61,15 @@ class FairyQuestMessageViewWrapperTest {
         Assertions.assertEquals(IntPoint(400, 240), view.view.evaluateActualSize())
         val placements = view.place()
         val scroll = placements.single { it.first is YScrollView }
-        Assertions.assertEquals(IntRectangle(75, 10, 260, 196), scroll.second)
+        Assertions.assertEquals(IntRectangle(75, 10, 250, 196), scroll.second)
         val scrollView = scroll.first as YScrollView
         Assertions.assertTrue(scrollView.childView.evaluateActualSizeY() > scroll.second.sizeY)
         Assertions.assertEquals(250, scrollView.childView.evaluateActualSizeX())
-        Assertions.assertEquals(10, scrollView.scrollbarThickness)
-        Assertions.assertEquals(0xA0FFFFFF.toInt(), scrollView.scrollbarColor)
+        val scrollbar = placements.single { it.first is YScrollbarView }
+        Assertions.assertEquals(IntRectangle(325, 10, 10, 196), scrollbar.second)
+        val scrollbarView = scrollbar.first as YScrollbarView
+        Assertions.assertEquals(10, scrollbarView.scrollbarThickness)
+        Assertions.assertEquals(0xA0FFFFFF.toInt(), scrollbarView.scrollbarColor)
 
         val texts = placements.mapNotNull { it.first as? MultiLineTextView }
         Assertions.assertEquals(listOf("title", "message".repeat(200), "client"), texts.map { it.text.value.string })
@@ -84,7 +88,7 @@ class FairyQuestMessageViewWrapperTest {
             view.view.initSizeCalculation(MessageRenderingProxy(), { size.x }, { size.y })
             val placements = view.place()
             val scroll = placements.single { it.first is YScrollView }.second
-            Assertions.assertEquals(IntRectangle((size.x - 270) / 2 + 10, 10, 260, size.y - 44), scroll)
+            Assertions.assertEquals(IntRectangle((size.x - 270) / 2 + 10, 10, 250, size.y - 44), scroll)
             val buttons = placements.filter { it.first is TextButtonView }.map { it.second }
             Assertions.assertEquals(listOf(IntRectangle((size.x - 180) / 2, size.y - 24, 80, 20), IntRectangle((size.x - 180) / 2 + 100, size.y - 24, 80, 20)), buttons)
         }
