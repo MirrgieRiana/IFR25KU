@@ -26,45 +26,44 @@ import kotlin.math.roundToInt
 fun initMagicSquareParticle() {
     MagicSquareParticleChannel.registerClientPacketReceiver { packet ->
         val particleManager = Minecraft.getInstance().particleEngine ?: return@registerClientPacketReceiver
-        (0..6).forEach { i ->
-            particleManager.createParticle(
-                MagicSquareParticleEffect(i, packet.targetPosition, 30F * (i.toFloat() / 6F)),
-                packet.position.x,
-                packet.position.y,
-                packet.position.z,
-                0.0,
-                0.0,
-                0.0,
-            )
-        }
+        particleManager.createParticle(
+            MagicSquareParticleEffect(packet.targetPosition),
+            packet.position.x,
+            packet.position.y,
+            packet.position.z,
+            0.0,
+            0.0,
+            0.0,
+        )
     }
 }
 
 fun createMagicSquareParticleFactory() = { spriteProvider: SpriteSet ->
     ParticleProvider<MagicSquareParticleEffect> { parameters, level, x, y, z, _, _, _ ->
-        MagicSquareParticle(level, x, y, z, parameters.layer, parameters.targetPosition, spriteProvider).also {
-            it.alphaTicks[0] = parameters.delay
-            it.alphaTicks[1] = parameters.delay + 20F
-            it.lightTicks[0] = parameters.delay
-            it.lightTicks[1] = parameters.delay + 20F
-        }
+        MagicSquareParticle(level, x, y, z, parameters.targetPosition, spriteProvider)
     }
 }
 
-class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, layer: Int, private val targetPosition: Vec3, spriteProvider: SpriteSet) : TextureSheetParticle(level, x, y, z) {
+class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, private val targetPosition: Vec3, spriteProvider: SpriteSet) : TextureSheetParticle(level, x, y, z) {
 
-    var delay = 0
+    private val sprites = (spriteProvider as FabricSpriteProvider).sprites
+
     var color1 = 0xFFF4D3
     var color2 = 0xFFB82C
     var color3 = 0x341B0E
-    var alphaTicks = arrayOf(0F, 10F, 70F, 80F)
-    var lightTicks = arrayOf(0F, 10F, 70F, 80F)
 
     init {
-        val sprites = (spriteProvider as FabricSpriteProvider).sprites
-        setSprite(sprites[layer.coerceIn(sprites.indices)])
         lifetime = 80
         quadSize = 0.5F
+    }
+
+    /** 層ごとに、現れ始める時刻をずらすのだ～🌱 */
+    private fun getLayerDelay(layer: Int) = 30F * (layer.toFloat() / (LAYER_COUNT - 1).toFloat())
+
+    /** 層ごとの、現れてから消えるまでの 4 個の節目なのだ～🌱 */
+    private fun getLayerTicks(layer: Int): Array<Float> {
+        val delay = getLayerDelay(layer)
+        return arrayOf(delay, delay + 20F, 70F, 80F)
     }
 
     //       0     1         2     3
@@ -102,23 +101,30 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, l
     }
 
     override fun render(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float) {
-        if (delay > 0) return
+        (0 until LAYER_COUNT).forEach { layer ->
+            val ticks = getLayerTicks(layer)
+            val value = getValue(tickDelta, ticks)
+            // まだ現れていない層と、消え切った層は、頂点を 1 個も積まないのだ～🌱
+            if (value <= 0F) return@forEach
 
-        val a = age.toFloat() + tickDelta
-        when {
-            a < alphaTicks[0] -> setColor(color1)
-            a < alphaTicks[1] -> setColor(color1)
-            a < alphaTicks[2] -> setColor(color1, color2, (a - alphaTicks[1]) / (alphaTicks[2] - alphaTicks[1]))
-            a < alphaTicks[3] -> setColor(color2, color3, (a - alphaTicks[2]) / (alphaTicks[3] - alphaTicks[2]))
-            else -> setColor(color3)
+            setSprite(sprites[layer.coerceIn(sprites.indices)])
+
+            val a = age.toFloat() + tickDelta
+            when {
+                a < ticks[1] -> setColor(color1)
+                a < ticks[2] -> setColor(color1, color2, (a - ticks[1]) / (ticks[2] - ticks[1]))
+                a < ticks[3] -> setColor(color2, color3, (a - ticks[2]) / (ticks[3] - ticks[2]))
+                else -> setColor(color3)
+            }
+            alpha = value
+
+            val brightness = getLayerLightColor(tickDelta, ticks)
+            buildGeometry(vertexConsumer, camera, tickDelta, false, brightness)
+            buildGeometry(vertexConsumer, camera, tickDelta, true, brightness)
         }
-
-        alpha = getValue(tickDelta, alphaTicks)
-        buildGeometry(vertexConsumer, camera, tickDelta, false)
-        buildGeometry(vertexConsumer, camera, tickDelta, true)
     }
 
-    private fun buildGeometry(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float, flip: Boolean) {
+    private fun buildGeometry(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float, flip: Boolean, brightness: Int) {
 
         val offsetX = (targetPosition.x - x).toFloat()
         val offsetY = (targetPosition.y - y).toFloat()
@@ -149,8 +155,6 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, l
             vector3f.add(translateX, translateY, translateZ)
         }
 
-        val brightness = getLightColor(tickDelta)
-
         vertex(vertexConsumer, vector3fs[0], u1, v1, brightness)
         vertex(vertexConsumer, vector3fs[1], u1, v0, brightness)
         vertex(vertexConsumer, vector3fs[2], u0, v0, brightness)
@@ -162,11 +166,6 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, l
     }
 
     override fun tick() {
-        if (delay > 0) {
-            delay--
-            return
-        }
-
         age++
         if (age >= lifetime) remove()
 
@@ -178,15 +177,20 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, l
 
     override fun getQuadSize(tickDelta: Float) = quadSize * (1F - 0.2F * Mth.cos((age.toFloat() + tickDelta) / 80F * Mth.TWO_PI))
 
-    override fun getLightColor(tint: Float): Int {
+    private fun getLayerLightColor(tint: Float, ticks: Array<Float>): Int {
         val brightness = super.getLightColor(tint)
         val oldSkyLight = LightTexture.sky(brightness)
         val oldBlockLight = LightTexture.block(brightness)
         val skyLight = oldSkyLight
-        val blockLight = oldBlockLight max (15F * getValue(tint, lightTicks)).roundToInt()
+        val blockLight = oldBlockLight max (15F * getValue(tint, ticks)).roundToInt()
         return LightTexture.pack(blockLight, skyLight)
     }
 
     override fun getRenderType(): ParticleRenderType = ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT
+
+    companion object {
+        /** 重ねる魔法陣の枚数なのだ～🌱 */
+        private const val LAYER_COUNT = 7
+    }
 
 }
