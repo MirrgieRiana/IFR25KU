@@ -23,7 +23,7 @@ class ItemViewRendererTest {
     }
 
     @Test
-    fun `既定ではアイテム本体だけを描画し有効時には個数などの表示も描画するのだ`() {
+    fun `既定では個数などの表示も描画し無効時にはアイテム本体だけを描画するのだ`() {
         GuiTestEnvironment().use {
             val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
             val itemStack = ItemStack(Items.STONE, 64)
@@ -32,13 +32,13 @@ class ItemViewRendererTest {
 
             ItemViewRenderer.render(view, bounds, graphics, 0, 0, false, 0.0F)
             Mockito.verify(graphics).renderFakeItem(itemStack, 10, 20)
+            Mockito.verify(graphics).renderItemDecorations(Mockito.isNull(), Mockito.eq(itemStack), Mockito.eq(10), Mockito.eq(20))
             Mockito.verifyNoMoreInteractions(graphics)
 
             Mockito.clearInvocations(graphics)
-            view.showDecorations = true
+            view.showDecorations = false
             ItemViewRenderer.render(view, bounds, graphics, 0, 0, false, 0.0F)
             Mockito.verify(graphics).renderFakeItem(itemStack, 10, 20)
-            Mockito.verify(graphics).renderItemDecorations(Mockito.isNull(), Mockito.eq(itemStack), Mockito.eq(10), Mockito.eq(20))
             Mockito.verifyNoMoreInteractions(graphics)
         }
     }
