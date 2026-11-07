@@ -65,6 +65,7 @@ abstract class VanillaScrollbarViewWidget(protected val view: ScrollbarView, bou
 
     // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        isHovered = isHovered && isMouseOver(mouseX.toDouble(), mouseY.toDouble())
         if (!isActive) return
         val bounds = getScrollbarBounds(evaluateThumbPosition().roundToInt(), evaluateThumbLength())
         guiGraphics.fill(bounds.x, bounds.y, bounds.x2, bounds.y2, view.scrollbarColor)

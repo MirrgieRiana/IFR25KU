@@ -94,6 +94,32 @@ class VanillaScrollbarViewWidgetTest {
     }
 
     @Test
+    fun `重ね配置のホバーは描画する帯と親の scissor の内側に限定するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val view = if (horizontal) XScrollbarView() else YScrollbarView()
+                view.scrollState.setBounds(300, 100)
+                val bounds = IntRectangle(10, 20, 100, 100)
+                val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YScrollbarView, bounds)
+                widget.render(environment.graphics, 50, 50, 0.0F)
+                Assertions.assertFalse(widget.isHovered)
+                val mouseX = if (horizontal) 20 else 107
+                val mouseY = if (horizontal) 117 else 30
+                widget.render(environment.graphics, mouseX, mouseY, 0.0F)
+                Assertions.assertTrue(widget.isHovered)
+                environment.graphics.enableScissor(10, 20, 100, 110)
+                try {
+                    widget.render(environment.graphics, mouseX, mouseY, 0.0F)
+                    Assertions.assertFalse(widget.isHovered)
+                } finally {
+                    environment.graphics.disableScissor()
+                    widget.dispose()
+                }
+            }
+        }
+    }
+
+    @Test
     fun `スクロール不要または寸法がゼロなら描画と操作を行わないのだ`() {
         GuiTestEnvironment().use { environment ->
             val view = YScrollbarView()
