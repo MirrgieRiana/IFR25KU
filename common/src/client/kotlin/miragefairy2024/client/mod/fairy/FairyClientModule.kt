@@ -4,7 +4,6 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.client.util.ViewToast
 import miragefairy2024.client.util.ellipsize
-import miragefairy2024.client.util.registerClientPacketReceiver
 import miragefairy2024.mod.fairy.GAIN_FAIRY_DREAM_TRANSLATION
 import miragefairy2024.mod.fairy.GainFairyDreamChannel
 import miragefairy2024.mod.fairy.createFairyItemStack
@@ -27,6 +26,7 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.black
 import miragefairy2024.util.darkBlue
 import miragefairy2024.util.invoke
+import miragefairy2024.util.registerClientPacketReceiver
 import miragefairy2024.util.text
 import net.minecraft.client.Minecraft
 

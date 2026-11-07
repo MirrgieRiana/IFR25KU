@@ -1,9 +1,9 @@
 package miragefairy2024.client.mod.particle
 
 import com.mojang.blaze3d.vertex.VertexConsumer
-import miragefairy2024.client.util.registerClientPacketReceiver
 import miragefairy2024.mod.particle.MagicSquareParticleChannel
 import miragefairy2024.mod.particle.MagicSquareParticleEffect
+import miragefairy2024.util.registerClientPacketReceiver
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.hydrogen.blueOfRgb
 import mirrg.kotlin.hydrogen.greenOfRgb
