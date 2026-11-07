@@ -49,6 +49,10 @@ private object OverlayScrollbar : Scrollbar {
     override fun getReservedThickness(thickness: Int) = 0
 }
 
+private object HalfReservedScrollbar : Scrollbar {
+    override fun getReservedThickness(thickness: Int) = thickness / 2
+}
+
 private class ScrollTestView(val interactive: Boolean) : FixedWidgetView(IntPoint(100, 100))
 
 private class ScrollTestWidget(bounds: IntRectangle, private val label: String) : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
@@ -234,8 +238,14 @@ class VanillaScrollViewWidgetTest {
                 val controller = fixture.attach(view, IntPoint(100, 100))
                 try {
                     val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
-                    Assertions.assertEquals(100, if (horizontal) fixture.widgets[0].height else fixture.widgets[0].width)
+                    val scissorResults = mutableListOf<List<Boolean>>()
+                    fixture.widgets.forEach { widget ->
+                        widget.onRender = { graphics, _, _, _ ->
+                            scissorResults += listOf(graphics.containsPointInScissor(109, 119), graphics.containsPointInScissor(110, 119), graphics.containsPointInScissor(109, 120))
+                        }
+                    }
                     root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(List(3) { listOf(true, false, false) }, scissorResults)
                     Assertions.assertEquals(listOf(if (horizontal) IntRectangle(10, 115, 1, 1) else IntRectangle(105, 20, 1, 1)), environment.fills)
 
                     val mouse = if (horizontal) IntPoint(15, 118) else IntPoint(108, 25)
@@ -253,6 +263,35 @@ class VanillaScrollViewWidgetTest {
                     Assertions.assertTrue(root.getChildAt(50.0, 50.0).isPresent)
                     Assertions.assertTrue(root.mouseClicked(50.0, 50.0, 0))
                     Assertions.assertEquals(listOf(0), fixture.widgets[2].clicks)
+                } finally {
+                    controller.dispose()
+                    controller.detach()
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `一部占有の種類では両軸で占有幅を差し引いた境界に scissor を設定するのだ`() {
+        ScrollbarRendererRegistry.register(HalfReservedScrollbar) { _, _, _ -> }
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val fixture = ScrollFixture()
+                val view = createScrollView(horizontal)
+                view.scrollbar = HalfReservedScrollbar
+                val controller = fixture.attach(view, IntPoint(100, 100))
+                try {
+                    val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                    val scissorResults = mutableListOf<List<Boolean>>()
+                    val right = if (horizontal) 110 else 108
+                    val bottom = if (horizontal) 118 else 120
+                    fixture.widgets.forEach { widget ->
+                        widget.onRender = { graphics, _, _, _ ->
+                            scissorResults += listOf(graphics.containsPointInScissor(right - 1, bottom - 1), graphics.containsPointInScissor(right, bottom - 1), graphics.containsPointInScissor(right - 1, bottom))
+                        }
+                    }
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(List(3) { listOf(true, false, false) }, scissorResults)
                 } finally {
                     controller.dispose()
                     controller.detach()
