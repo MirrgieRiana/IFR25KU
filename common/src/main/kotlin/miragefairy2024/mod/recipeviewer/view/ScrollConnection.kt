@@ -6,7 +6,7 @@ import miragefairy2024.util.Remover
 import miragefairy2024.util.plus
 import miragefairy2024.util.register
 
-/** 表示領域の範囲と現在値をバーへ初期同期し、双方向の値同期を解除する [miragefairy2024.util.Remover] を返すのだ～🌱 */
+/** 表示領域の範囲をバーへ同期し、現在値を双方向同期する接続の [miragefairy2024.util.Remover] を返すのだ～🌱 */
 fun connectScrollbar(scrollView: ScrollView, scrollbarView: ScrollbarView): Remover {
     val source = scrollView.scrollState
     val target = scrollbarView.scrollState
