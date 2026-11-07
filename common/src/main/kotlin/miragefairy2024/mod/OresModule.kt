@@ -38,6 +38,8 @@ import miragefairy2024.util.registerPlacedFeature
 import miragefairy2024.util.registerSingletonBlockStateGeneration
 import miragefairy2024.util.string
 import miragefairy2024.util.times
+import miragefairy2024.util.toBlockTag
+import miragefairy2024.util.toItemTag
 import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.uniformOre
 import miragefairy2024.util.with
@@ -69,15 +71,18 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
 import net.minecraft.world.level.material.MapColor
 import java.util.function.Predicate
 
-enum class BaseStoneType(val target: () -> RuleTest, val baseStoneTexture: ResourceLocation, val mineableTag: TagKey<Block>, val needsToolTag: TagKey<Block>?) {
-    STONE({ TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES) }, ResourceLocation("minecraft", "block/stone"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    DEEPSLATE({ TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES) }, ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    SANDSTONE({ BlockMatchTest(Blocks.SANDSTONE) }, ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    DIRT({ BlockMatchTest(Blocks.DIRT) }, ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null),
-    RESIN_CEMENT({ BlockMatchTest(BlockMaterialCard.RESIN_CEMENT.block()) }, MirageFairy2024.identifier("block/resin_cement"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
-    NETHERRACK({ BlockMatchTest(Blocks.NETHERRACK) }, ResourceLocation("minecraft", "block/netherrack"), BlockTags.MINEABLE_WITH_PICKAXE, null),
-    BLACKSTONE({ BlockMatchTest(Blocks.BLACKSTONE) }, ResourceLocation("minecraft", "block/blackstone"), BlockTags.MINEABLE_WITH_PICKAXE, null),
+enum class BaseStoneType(val target: () -> RuleTest, val baseStoneTexture: ResourceLocation, val mineableTag: TagKey<Block>, val needsToolTag: TagKey<Block>?, val oresInGroundTag: TagKey<Block>?) {
+    STONE({ TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES) }, ResourceLocation("minecraft", "block/stone"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL, ConventionalBlockTags.ORES_IN_GROUND_STONE),
+    DEEPSLATE({ TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES) }, ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL, ConventionalBlockTags.ORES_IN_GROUND_DEEPSLATE),
+    SANDSTONE({ BlockMatchTest(Blocks.SANDSTONE) }, ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL, null),
+    DIRT({ BlockMatchTest(Blocks.DIRT) }, ResourceLocation("minecraft", "block/dirt"), BlockTags.MINEABLE_WITH_SHOVEL, null, null),
+    RESIN_CEMENT({ BlockMatchTest(BlockMaterialCard.RESIN_CEMENT.block()) }, MirageFairy2024.identifier("block/resin_cement"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL, null),
+    NETHERRACK({ BlockMatchTest(Blocks.NETHERRACK) }, ResourceLocation("minecraft", "block/netherrack"), BlockTags.MINEABLE_WITH_PICKAXE, null, null),
+    BLACKSTONE({ BlockMatchTest(Blocks.BLACKSTONE) }, ResourceLocation("minecraft", "block/blackstone"), BlockTags.MINEABLE_WITH_PICKAXE, null, null),
 }
+
+val FLUORITE_ORES_BLOCK_TAG = ResourceLocation("c", "ores/fluorite").toBlockTag()
+val FLUORITE_ORES_ITEM_TAG = ResourceLocation("c", "ores/fluorite").toItemTag()
 
 enum class OreCard(
     path: String,
@@ -291,6 +296,7 @@ fun initOresModule() {
 
         card.baseStoneType.mineableTag.generator.registerChild(card.block)
         card.baseStoneType.needsToolTag?.generator?.registerChild(card.block)
+        card.baseStoneType.oresInGroundTag?.generator?.registerChild(card.block)
         ConventionalBlockTags.ORES.generator.registerChild(card.block)
         ConventionalItemTags.ORES.generator.registerChild(card.item)
 
@@ -299,6 +305,13 @@ fun initOresModule() {
         }
 
     }
+
+    FLUORITE_ORES_BLOCK_TAG.enJa(EnJa("Fluorite Ores", "蛍石鉱石"))
+    FLUORITE_ORES_ITEM_TAG.enJa(EnJa("Fluorite Ores", "蛍石鉱石"))
+    FLUORITE_ORES_BLOCK_TAG.generator.registerChild(OreCard.FLUORITE_ORE.block)
+    FLUORITE_ORES_BLOCK_TAG.generator.registerChild(OreCard.DEEPSLATE_FLUORITE_ORE.block)
+    FLUORITE_ORES_ITEM_TAG.generator.registerChild(OreCard.FLUORITE_ORE.item)
+    FLUORITE_ORES_ITEM_TAG.generator.registerChild(OreCard.DEEPSLATE_FLUORITE_ORE.item)
 
     /**
      * @param countPerCube
