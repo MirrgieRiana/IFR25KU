@@ -58,9 +58,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
                             // アイテムスロットなのだ～🌱
                             view += StackView().configure {
                                 view += ImageView(SlotType.NORMAL.viewTexture)
-                                view += ItemView(itemStack).configure {
-                                    view.showDecorations = true
-                                }.margin(1)
+                                view += ItemView(itemStack).configure().margin(1)
                             }
 
                             view += XSpaceView(2)
