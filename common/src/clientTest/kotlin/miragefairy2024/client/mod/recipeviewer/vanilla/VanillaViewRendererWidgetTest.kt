@@ -28,26 +28,34 @@ import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
+import net.minecraft.SharedConstants
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenDirection
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.Bootstrap
 import net.minecraft.world.item.ItemStack
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 
 private class RendererTestView : FixedWidgetView(IntPoint(100, 100))
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class VanillaViewRendererWidgetTest {
+
+    @BeforeAll
+    fun initMinecraft() {
+        SharedConstants.tryDetectVersion()
+        Bootstrap.bootStrap()
+    }
 
     @Test
     fun `描画専用の View は Tab と矢印キーのフォーカス候補にしないのだ`() {
         fun <V : PlaceableView> check(view: V, renderer: ViewRenderer<V>) {
             val widget = VanillaViewRendererWidget(renderer, view, IntRectangle(10, 20, 100, 100))
-            assertNull(widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
-            assertNull(widget.nextFocusPath(FocusNavigationEvent.ArrowNavigation(ScreenDirection.DOWN)))
+            Assertions.assertNull(widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
+            Assertions.assertNull(widget.nextFocusPath(FocusNavigationEvent.ArrowNavigation(ScreenDirection.DOWN)))
         }
         val textureId = ResourceLocation.fromNamespaceAndPath("test", "background")
         val texture = ViewTexture(textureId, IntPoint(16, 16))
@@ -67,20 +75,20 @@ class VanillaViewRendererWidgetTest {
         val bounds = IntRectangle(10, 20, 100, 100)
         val event = FocusNavigationEvent.TabNavigation(true)
         val clickableWidget = VanillaViewRendererWidget(ClickableViewRenderer, ClickableView(), bounds)
-        assertNotNull(clickableWidget.nextFocusPath(event))
+        Assertions.assertNotNull(clickableWidget.nextFocusPath(event))
 
         val view = ImageButtonView(IntPoint(16, 16))
         val buttonWidget = VanillaViewRendererWidget(ImageButtonViewRenderer, view, bounds)
         val path = buttonWidget.nextFocusPath(event)
-        assertNotNull(path)
+        Assertions.assertNotNull(path)
         path!!.applyFocus(true)
-        assertTrue(buttonWidget.isFocused)
-        assertNull(buttonWidget.nextFocusPath(event))
+        Assertions.assertTrue(buttonWidget.isFocused)
+        Assertions.assertNull(buttonWidget.nextFocusPath(event))
         path.applyFocus(false)
         view.enabled.value = false
-        assertNull(buttonWidget.nextFocusPath(event))
+        Assertions.assertNull(buttonWidget.nextFocusPath(event))
         view.enabled.value = true
-        assertNotNull(buttonWidget.nextFocusPath(event))
+        Assertions.assertNotNull(buttonWidget.nextFocusPath(event))
     }
 
     @Test
@@ -90,23 +98,23 @@ class VanillaViewRendererWidgetTest {
             override fun mouseClicked(view: RendererTestView, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = consumeClick
         }
         val widget = VanillaViewRendererWidget(renderer, RendererTestView(), IntRectangle(10, 20, 100, 100))
-        assertFalse(widget.mouseClicked(30.0, 40.0, 0))
-        assertFalse(widget.mouseDragged(30.0, 40.0, 0, 1.0, 1.0))
-        assertFalse(widget.mouseReleased(30.0, 40.0, 0))
+        Assertions.assertFalse(widget.mouseClicked(30.0, 40.0, 0))
+        Assertions.assertFalse(widget.mouseDragged(30.0, 40.0, 0, 1.0, 1.0))
+        Assertions.assertFalse(widget.mouseReleased(30.0, 40.0, 0))
 
         consumeClick = true
-        assertTrue(widget.mouseClicked(30.0, 40.0, 0))
-        assertFalse(widget.mouseDragged(30.0, 40.0, 1, 1.0, 1.0))
-        assertFalse(widget.mouseReleased(30.0, 40.0, 1))
-        assertTrue(widget.mouseDragged(300.0, 400.0, 0, 1.0, 1.0))
-        assertTrue(widget.mouseReleased(300.0, 400.0, 0))
-        assertFalse(widget.mouseReleased(300.0, 400.0, 0))
+        Assertions.assertTrue(widget.mouseClicked(30.0, 40.0, 0))
+        Assertions.assertFalse(widget.mouseDragged(30.0, 40.0, 1, 1.0, 1.0))
+        Assertions.assertFalse(widget.mouseReleased(30.0, 40.0, 1))
+        Assertions.assertTrue(widget.mouseDragged(300.0, 400.0, 0, 1.0, 1.0))
+        Assertions.assertTrue(widget.mouseReleased(300.0, 400.0, 0))
+        Assertions.assertFalse(widget.mouseReleased(300.0, 400.0, 0))
 
-        assertTrue(widget.mouseClicked(30.0, 40.0, 0))
+        Assertions.assertTrue(widget.mouseClicked(30.0, 40.0, 0))
         consumeClick = false
-        assertFalse(widget.mouseClicked(30.0, 40.0, 0))
-        assertFalse(widget.mouseDragged(30.0, 40.0, 0, 1.0, 1.0))
-        assertFalse(widget.mouseReleased(30.0, 40.0, 0))
+        Assertions.assertFalse(widget.mouseClicked(30.0, 40.0, 0))
+        Assertions.assertFalse(widget.mouseDragged(30.0, 40.0, 0, 1.0, 1.0))
+        Assertions.assertFalse(widget.mouseReleased(30.0, 40.0, 0))
     }
 
 }
