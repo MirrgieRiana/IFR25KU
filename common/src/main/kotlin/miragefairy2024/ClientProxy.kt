@@ -4,7 +4,9 @@ import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.View
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.FormattedText
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.util.FormattedCharSequence
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.MenuType
@@ -35,6 +37,8 @@ interface ClientProxy<S : Any> {
     fun getCurrentScreen(): S?
     fun setCurrentScreen(screen: S?)
     fun createMessageViewScreen(parent: S?, title: Component, rootViewFactory: () -> View): S
+    fun addToast(rootView: View)
+    fun ellipsizeText(text: FormattedText, maxWidth: Int, ellipsis: FormattedText): FormattedCharSequence
 }
 
 fun interface BlockColorProvider {
