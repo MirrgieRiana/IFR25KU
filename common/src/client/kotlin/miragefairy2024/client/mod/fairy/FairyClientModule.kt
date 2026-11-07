@@ -50,6 +50,7 @@ fun initFairyClientModule() {
 
                     view += ItemView(itemStack).configure {
                         position.alignmentY = Alignment.CENTER
+                        view.showDecorations = false
                     }
                     view += XSpaceView(6)
                     view += YListView().configure {
