@@ -452,14 +452,14 @@ abstract class VanillaScrollViewWidget(
         childController = view.childView.attachTo(IntPoint(x, y)) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
         }
-        scrollOffsetValueRemover = scrollOffsetValue.register { _, _ ->
-            if (!disposed) {
-                updateScroll(scrollOffsetValue.value)
-                if (!disposed) childController.setOffset(getChildOffset(scrollOffsetValue.value.roundToInt()))
-            }
+        fun updateScrollPosition() {
+            if (disposed) return
+            updateScroll(scrollOffsetValue.value)
+            if (disposed) return
+            childController.setOffset(getChildOffset(scrollOffsetValue.value.roundToInt()))
         }
-        updateScroll(scrollOffsetValue.value)
-        childController.setOffset(getChildOffset(scrollOffsetValue.value.roundToInt()))
+        scrollOffsetValueRemover = scrollOffsetValue.register { _, _ -> updateScrollPosition() }
+        updateScrollPosition()
     }
 
 }
