@@ -44,9 +44,10 @@ object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView> {
             while (true) {
                 if (dx >= dx2) break
                 val dw = if (view.repeatX) sw2 atMost dx2 - dx else dx2 - dx
+                val sw = if (view.repeatX) dw else sw2
 
-                graphics.blit(view.textureId, dx, dy0, dw, sh1, sx1.toFloat(), sy0.toFloat(), if (view.repeatX) dw else sw2, sh1, sw0, sh0)
-                graphics.blit(view.textureId, dx, dy2, dw, sh3, sx1.toFloat(), sy2.toFloat(), if (view.repeatX) dw else sw2, sh3, sw0, sh0)
+                graphics.blit(view.textureId, dx, dy0, dw, sh1, sx1.toFloat(), sy0.toFloat(), sw, sh1, sw0, sh0)
+                graphics.blit(view.textureId, dx, dy2, dw, sh3, sx1.toFloat(), sy2.toFloat(), sw, sh3, sw0, sh0)
 
                 dx += dw
             }
@@ -58,9 +59,10 @@ object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView> {
             while (true) {
                 if (dy >= dy2) break
                 val dh = if (view.repeatY) sh2 atMost dy2 - dy else dy2 - dy
+                val sh = if (view.repeatY) dh else sh2
 
-                graphics.blit(view.textureId, dx0, dy, sw1, dh, sx0.toFloat(), sy1.toFloat(), sw1, if (view.repeatY) dh else sh2, sw0, sh0)
-                graphics.blit(view.textureId, dx2, dy, sw3, dh, sx2.toFloat(), sy1.toFloat(), sw3, if (view.repeatY) dh else sh2, sw0, sh0)
+                graphics.blit(view.textureId, dx0, dy, sw1, dh, sx0.toFloat(), sy1.toFloat(), sw1, sh, sw0, sh0)
+                graphics.blit(view.textureId, dx2, dy, sw3, dh, sx2.toFloat(), sy1.toFloat(), sw3, sh, sw0, sh0)
 
                 dy += dh
             }
@@ -72,13 +74,15 @@ object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView> {
             while (true) {
                 if (dx >= dx2) break
                 val dw = if (view.repeatX) sw2 atMost dx2 - dx else dx2 - dx
+                val sw = if (view.repeatX) dw else sw2
 
                 var dy = dy1
                 while (true) {
                     if (dy >= dy2) break
                     val dh = if (view.repeatY) sh2 atMost dy2 - dy else dy2 - dy
+                    val sh = if (view.repeatY) dh else sh2
 
-                    graphics.blit(view.textureId, dx, dy, dw, dh, sx1.toFloat(), sy1.toFloat(), if (view.repeatX) dw else sw2, if (view.repeatY) dh else sh2, sw0, sh0)
+                    graphics.blit(view.textureId, dx, dy, dw, dh, sx1.toFloat(), sy1.toFloat(), sw, sh, sw0, sh0)
 
                     dy += dh
                 }
