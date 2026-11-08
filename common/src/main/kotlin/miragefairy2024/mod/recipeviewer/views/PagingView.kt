@@ -8,8 +8,10 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
-import miragefairy2024.util.register
+import miragefairy2024.util.fire
+import miragefairy2024.util.observeAndInitialize
 
 class PagingView : ParentView<Alignment>() {
 
@@ -36,6 +38,7 @@ class PagingView : ParentView<Alignment>() {
     val pageIndex = ObservableValue(0)
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
+        val onClosed = EventRegistry<() -> Unit>()
         val children = childrenGenerators.flatMap { it.generateChildren(renderingProxy, evaluateActualSize()) }
         children.initSizeCalculation()
 
@@ -113,8 +116,7 @@ class PagingView : ParentView<Alignment>() {
             }
         }
 
-        val pageIndexRemover = pageIndex.register { _, _ -> load() }
-        load()
+        pageIndex.observeAndInitialize(onClosed) { _, _ -> load() }
 
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
@@ -129,7 +131,7 @@ class PagingView : ParentView<Alignment>() {
             override fun dispose() {
                 disposed = true
                 childController.dispose()
-                pageIndexRemover.remove()
+                onClosed.fire()
             }
         }
     }
