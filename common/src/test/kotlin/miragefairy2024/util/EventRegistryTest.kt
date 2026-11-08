@@ -83,20 +83,24 @@ class EventRegistryTest {
     }
 
     @Test
-    fun `終了イベントに結び付けた Remover は再入しても一度だけ解除するのだ～🌱`() {
+    fun `終了イベントを共有する Remover は再入しても一度ずつ解除するのだ～🌱`() {
         val onClosed = EventRegistry<() -> Unit>()
-        var removals = 0
+        val removals = mutableListOf<Int>()
         Remover {
             removals += 1
-            assertTrue(onClosed.listeners.isEmpty())
+            assertEquals(1, onClosed.listeners.size)
             onClosed.fire()
         }.observe(onClosed)
+        Remover {
+            removals += 2
+            assertTrue(onClosed.listeners.isEmpty())
+        }.observe(onClosed)
 
-        assertEquals(0, removals)
-        assertEquals(1, onClosed.listeners.size)
+        assertTrue(removals.isEmpty())
+        assertEquals(2, onClosed.listeners.size)
         onClosed.fire()
         onClosed.fire()
-        assertEquals(1, removals)
+        assertEquals(listOf(1, 2), removals)
         assertTrue(onClosed.listeners.isEmpty())
     }
 
