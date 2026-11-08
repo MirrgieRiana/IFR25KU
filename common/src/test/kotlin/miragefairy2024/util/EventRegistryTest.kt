@@ -2,6 +2,7 @@ package miragefairy2024.util
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class EventRegistryTest {
@@ -79,6 +80,40 @@ class EventRegistryTest {
         assertEquals(listOf(Pair(2, 2)), notifications)
         assertTrue(value.listeners.isEmpty())
         assertTrue(onClosed.listeners.isEmpty())
+    }
+
+    @Test
+    fun `終了イベントに結び付けた Remover は再入しても一度だけ解除するのだ～🌱`() {
+        val onClosed = EventRegistry<() -> Unit>()
+        var removals = 0
+        Remover {
+            removals += 1
+            assertTrue(onClosed.listeners.isEmpty())
+            onClosed.fire()
+        }.observe(onClosed)
+
+        assertEquals(0, removals)
+        assertEquals(1, onClosed.listeners.size)
+        onClosed.fire()
+        onClosed.fire()
+        assertEquals(1, removals)
+        assertTrue(onClosed.listeners.isEmpty())
+    }
+
+    @Test
+    fun `終了時の解除が例外を送出しても終了イベントの登録は残らないのだ～🌱`() {
+        val onClosed = EventRegistry<() -> Unit>()
+        var removals = 0
+        Remover {
+            removals += 1
+            throw IllegalStateException("Removal failed")
+        }.observe(onClosed)
+
+        val exception = assertFailsWith<IllegalStateException> { onClosed.fire() }
+        assertEquals("Removal failed", exception.message)
+        assertTrue(onClosed.listeners.isEmpty())
+        onClosed.fire()
+        assertEquals(1, removals)
     }
 
 }
