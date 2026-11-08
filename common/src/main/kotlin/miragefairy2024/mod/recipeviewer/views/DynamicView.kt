@@ -6,7 +6,9 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
+import miragefairy2024.util.fire
 import miragefairy2024.util.observeAndInitialize
 
 /** [content] を動的に付け替え可能な View なのだ～🌱 */
@@ -21,6 +23,7 @@ class DynamicView : AbstractView() {
     val content: ObservableValue<View?> = ObservableValue(null)
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
+        val onClosed = EventRegistry<() -> Unit>()
         var currentOffset = offset
         var childController = ViewController.NONE
         var disposed = false
@@ -68,7 +71,7 @@ class DynamicView : AbstractView() {
             }
         }
 
-        val contentRemover = content.observeAndInitialize { _, _ -> load() }
+        content.observeAndInitialize(onClosed) { _, _ -> load() }
 
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
@@ -83,7 +86,7 @@ class DynamicView : AbstractView() {
             override fun dispose() {
                 disposed = true
                 childController.dispose()
-                contentRemover.remove()
+                onClosed.fire()
             }
         }
     }

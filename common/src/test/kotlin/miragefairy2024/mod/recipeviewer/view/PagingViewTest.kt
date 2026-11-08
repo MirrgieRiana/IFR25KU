@@ -99,8 +99,10 @@ class PagingViewTest {
         view.add(ChildrenGenerator { _, _ -> listOf(Child(Alignment.START, firstChild), Child(Alignment.END, secondChild)) })
         view.initSizeCalculation(TEST_RENDERING_PROXY, { 100 }, { 10 })
         val controller = view.attachTo(IntPoint(7, 11), TEST_VIEW_PLACER)
+        assertEquals(1, view.pageIndex.listeners.size)
 
         controller.dispose()
+        assertEquals(0, view.pageIndex.listeners.size)
 
         val eventsAfterDisposal = events.toList()
         assertEquals(listOf("dispose"), eventsAfterDisposal.filter { it == "detach" || it == "dispose" })

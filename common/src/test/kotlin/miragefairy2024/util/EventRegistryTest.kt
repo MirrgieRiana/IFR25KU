@@ -7,12 +7,12 @@ import kotlin.test.assertTrue
 class EventRegistryTest {
 
     @Test
-    fun `購読時の現在値と変更前後の値を通知し解除後は通知しないのだ～🌱`() {
+    fun `登録時の現在値と変更前後の値を通知し手動解除後は通知しないのだ～🌱`() {
         val value = ObservableValue(0)
         value.value = 2
         val notifications = mutableListOf<Pair<Int, Int>>()
 
-        val remover = value.observeAndInitialize { old, new ->
+        val remover = value.registerAndInitialize { old, new ->
             notifications += Pair(old, new)
         }
 
@@ -32,7 +32,7 @@ class EventRegistryTest {
         val value = ObservableValue(2)
         val notifications = mutableListOf<Pair<Int, Int>>()
 
-        val remover = value.observeAndInitialize { old, new ->
+        val remover = value.registerAndInitialize { old, new ->
             notifications += Pair(old, new)
             if (old == new) value.value = 3
         }
