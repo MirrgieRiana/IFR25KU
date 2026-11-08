@@ -174,6 +174,7 @@ class VanillaViewPlacersTest {
         controller.setOffset(IntPoint(40, 50))
         Assertions.assertEquals(IntPoint(40, 50), IntPoint(button.x, button.y))
         controller.dispose()
+        Assertions.assertSame(button, widgets.single())
         controller.detach()
         Assertions.assertTrue(widgets.isEmpty())
     }
