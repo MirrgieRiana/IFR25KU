@@ -53,6 +53,12 @@ class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
         }
 }
 
+fun <T> ObservableValue<T>.registerAndInitialize(listener: (T, T) -> Unit): Remover {
+    val remover = this.register(listener)
+    listener(this.value, this.value)
+    return remover
+}
+
 fun <T> ObservableValue<T>.observeAndInitialize(onClosed: EventRegistry<() -> Unit>, listener: (T, T) -> Unit) {
     this.observe(onClosed, listener)
     listener(this.value, this.value)
