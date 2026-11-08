@@ -449,17 +449,16 @@ abstract class VanillaScrollViewWidget(
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
         }
-        childController = view.childView.attachTo(IntPoint(x, y)) { childView, childBounds ->
+        updateScroll(scrollOffsetValue.value)
+        childController = view.childView.attachTo(getChildOffset(scrollOffsetValue.value.roundToInt())) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
         }
-        fun updateScrollPosition() {
-            if (disposed) return
-            updateScroll(scrollOffsetValue.value)
-            if (disposed) return
-            childController.setOffset(getChildOffset(scrollOffsetValue.value.roundToInt()))
+        scrollOffsetValueRemover = scrollOffsetValue.register { _, _ ->
+            if (!disposed) {
+                updateScroll(scrollOffsetValue.value)
+                if (!disposed) childController.setOffset(getChildOffset(scrollOffsetValue.value.roundToInt()))
+            }
         }
-        scrollOffsetValueRemover = scrollOffsetValue.register { _, _ -> updateScrollPosition() }
-        updateScrollPosition()
     }
 
 }

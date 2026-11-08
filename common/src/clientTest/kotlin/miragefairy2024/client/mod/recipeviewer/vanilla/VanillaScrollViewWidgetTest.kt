@@ -47,6 +47,8 @@ private val SCROLL_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
 private class ScrollTestView(val interactive: Boolean) : FixedWidgetView(IntPoint(100, 100))
 
 private class ScrollTestWidget(bounds: IntRectangle, private val label: String) : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
+    val initialBounds = bounds
+    val offsets = mutableListOf<IntPoint>()
     val clicks = mutableListOf<Int>()
     val moves = mutableListOf<Pair<Double, Double>>()
     val drags = mutableListOf<Int>()
@@ -131,7 +133,11 @@ private class ScrollFixture {
             val remover = if (view.interactive) context.addRenderableWidget(widget) else context.addRenderableOnly(widget)
             removers += remover
             object : ViewController {
-                override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
+                override fun setOffset(offset: IntPoint) {
+                    widget.offsets += offset
+                    widget.setPosition(offset.x, offset.y)
+                }
+
                 override fun detach() = remover.remove()
                 override fun dispose() {
                     disposals += 1
@@ -199,6 +205,8 @@ class VanillaScrollViewWidgetTest {
             val controller = fixture.attach(view, IntPoint(100, 100))
             try {
                 Assertions.assertEquals(45.25, view.scrollOffsetValue.value)
+                Assertions.assertEquals(if (horizontal) IntPoint(-35, 20) else IntPoint(10, -25), IntPoint(fixture.widgets[0].initialBounds.x, fixture.widgets[0].initialBounds.y))
+                Assertions.assertTrue(fixture.widgets.all { it.offsets.isEmpty() })
                 Assertions.assertEquals(if (horizontal) IntPoint(-35, 20) else IntPoint(10, -25), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
 
                 view.scrollOffsetValue.value = 71.75
@@ -226,6 +234,8 @@ class VanillaScrollViewWidgetTest {
                 try {
                     val expectedOffset = if (initialOffset < 0.0) 0.0 else 200.0
                     Assertions.assertEquals(expectedOffset, view.scrollOffsetValue.value)
+                    Assertions.assertEquals(if (horizontal) 10 - expectedOffset.toInt() else 20 - expectedOffset.toInt(), if (horizontal) fixture.widgets[0].initialBounds.x else fixture.widgets[0].initialBounds.y)
+                    Assertions.assertTrue(fixture.widgets.all { it.offsets.isEmpty() })
                     Assertions.assertEquals(if (horizontal) 10 - expectedOffset.toInt() else 20 - expectedOffset.toInt(), if (horizontal) fixture.widgets[0].x else fixture.widgets[0].y)
 
                     view.scrollOffsetValue.value = -1000.0
