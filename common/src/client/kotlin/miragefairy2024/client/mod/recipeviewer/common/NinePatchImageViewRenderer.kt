@@ -38,76 +38,57 @@ object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView> {
         graphics.blit(view.textureId, dx0, dy2, sx0.toFloat(), sy2.toFloat(), sw1, sh3, sw0, sh0)
         graphics.blit(view.textureId, dx2, dy2, sx2.toFloat(), sy2.toFloat(), sw3, sh3, sw0, sh0)
 
-        if (view.repeat) {
+        // 上下
+        run {
+            var dx = dx1
+            while (true) {
+                if (dx >= dx2) break
+                val dw = if (view.repeatX) sw2 atMost dx2 - dx else dx2 - dx
+                val sw = if (view.repeatX) dw else sw2
 
-            // 上下
-            run {
-                var dx = dx1
-                while (true) {
-                    if (dx >= dx2) break
-                    val dw = sw2 atMost dx2 - dx
+                graphics.blit(view.textureId, dx, dy0, dw, sh1, sx1.toFloat(), sy0.toFloat(), sw, sh1, sw0, sh0)
+                graphics.blit(view.textureId, dx, dy2, dw, sh3, sx1.toFloat(), sy2.toFloat(), sw, sh3, sw0, sh0)
 
-                    graphics.blit(view.textureId, dx, dy0, sx1.toFloat(), sy0.toFloat(), dw, sh1, sw0, sh0)
-                    graphics.blit(view.textureId, dx, dy2, sx1.toFloat(), sy2.toFloat(), dw, sh3, sw0, sh0)
-
-                    dx += dw
-                }
+                dx += dw
             }
+        }
 
-            // 左右
-            run {
+        // 左右
+        run {
+            var dy = dy1
+            while (true) {
+                if (dy >= dy2) break
+                val dh = if (view.repeatY) sh2 atMost dy2 - dy else dy2 - dy
+                val sh = if (view.repeatY) dh else sh2
+
+                graphics.blit(view.textureId, dx0, dy, sw1, dh, sx0.toFloat(), sy1.toFloat(), sw1, sh, sw0, sh0)
+                graphics.blit(view.textureId, dx2, dy, sw3, dh, sx2.toFloat(), sy1.toFloat(), sw3, sh, sw0, sh0)
+
+                dy += dh
+            }
+        }
+
+        // 中央
+        run {
+            var dx = dx1
+            while (true) {
+                if (dx >= dx2) break
+                val dw = if (view.repeatX) sw2 atMost dx2 - dx else dx2 - dx
+                val sw = if (view.repeatX) dw else sw2
+
                 var dy = dy1
                 while (true) {
                     if (dy >= dy2) break
-                    val dh = sh2 atMost dy2 - dy
+                    val dh = if (view.repeatY) sh2 atMost dy2 - dy else dy2 - dy
+                    val sh = if (view.repeatY) dh else sh2
 
-                    graphics.blit(view.textureId, dx0, dy, sx0.toFloat(), sy1.toFloat(), sw1, dh, sw0, sh0)
-                    graphics.blit(view.textureId, dx2, dy, sx2.toFloat(), sy1.toFloat(), sw3, dh, sw0, sh0)
+                    graphics.blit(view.textureId, dx, dy, dw, dh, sx1.toFloat(), sy1.toFloat(), sw, sh, sw0, sh0)
 
                     dy += dh
                 }
+
+                dx += dw
             }
-
-            // 中央
-            run {
-                var dx = dx1
-                while (true) {
-                    if (dx >= dx2) break
-                    val dw = sw2 atMost dx2 - dx
-
-                    var dy = dy1
-                    while (true) {
-                        if (dy >= dy2) break
-                        val dh = sh2 atMost dy2 - dy
-
-                        graphics.blit(view.textureId, dx, dy, sx1.toFloat(), sy1.toFloat(), dw, dh, sw0, sh0)
-
-                        dy += dh
-                    }
-
-                    dx += dw
-                }
-            }
-
-        } else {
-
-            // 上下
-            if (dx2 > dx1) {
-                graphics.blit(view.textureId, dx1, dy0, dx2 - dx1, sh1, sx1.toFloat(), sy0.toFloat(), sw2, sh1, sw0, sh0)
-                graphics.blit(view.textureId, dx1, dy2, dx2 - dx1, sh3, sx1.toFloat(), sy2.toFloat(), sw2, sh3, sw0, sh0)
-            }
-
-            // 左右
-            if (dy2 > dy1) {
-                graphics.blit(view.textureId, dx0, dy1, sw1, dy2 - dy1, sx0.toFloat(), sy1.toFloat(), sw1, sh2, sw0, sh0)
-                graphics.blit(view.textureId, dx2, dy1, sw3, dy2 - dy1, sx2.toFloat(), sy1.toFloat(), sw3, sh2, sw0, sh0)
-            }
-
-            // 中央
-            if (dx2 > dx1 && dy2 > dy1) {
-                graphics.blit(view.textureId, dx1, dy1, dx2 - dx1, dy2 - dy1, sx1.toFloat(), sy1.toFloat(), sw2, sh2, sw0, sh0)
-            }
-
         }
 
     }
