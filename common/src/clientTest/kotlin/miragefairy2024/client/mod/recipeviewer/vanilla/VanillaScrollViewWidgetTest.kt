@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.lwjgl.glfw.GLFW
+import kotlin.math.roundToInt
 
 private val SCROLL_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
     override fun calculateTextWidth(text: FormattedText) = throw UnsupportedOperationException()
@@ -105,6 +106,7 @@ private class ScrollFixture {
     val widgetContexts = mutableListOf<VanillaViewPlacerContext>()
     val removers = mutableListOf<Remover>()
     val screenWidgets = mutableListOf<AbstractWidget>()
+    var onChildPlaced: () -> Unit = { }
     var disposals = 0
     val screen: Screen = object : Screen(text { empty() }) {
         override fun children() = screenWidgets
@@ -132,6 +134,7 @@ private class ScrollFixture {
             widgetContexts += context
             val remover = if (view.interactive) context.addRenderableWidget(widget) else context.addRenderableOnly(widget)
             removers += remover
+            onChildPlaced()
             object : ViewController {
                 override fun setOffset(offset: IntPoint) {
                     widget.offsets += offset
@@ -241,13 +244,46 @@ class VanillaScrollViewWidgetTest {
                     view.scrollOffsetValue.value = -1000.0
                     Assertions.assertEquals(0.0, view.scrollOffsetValue.value)
                     Assertions.assertEquals(IntPoint(10, 20), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+                    fixture.widgets.forEach { it.offsets.clear() }
                     view.scrollOffsetValue.value = 1000.0
                     Assertions.assertEquals(200.0, view.scrollOffsetValue.value)
                     Assertions.assertEquals(if (horizontal) IntPoint(-190, 20) else IntPoint(10, -180), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+                    Assertions.assertTrue(fixture.widgets.all { it.offsets.size == 1 })
                 } finally {
                     controller.dispose()
                     controller.detach()
                 }
+            }
+        }
+    }
+
+    @Test
+    fun `子の配置中に変更した位置を補正して購読開始後に反映するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            listOf(Pair(71.75, 71.75), Pair(1000.0, 200.0), Pair(-1000.0, 0.0)).forEach { (requestedOffset, expectedOffset) ->
+                val fixture = ScrollFixture()
+                val view = createScrollView(horizontal)
+                fixture.onChildPlaced = {
+                    if (fixture.widgets.size == 1) {
+                        view.scrollOffsetValue.value = requestedOffset
+                        Assertions.assertEquals(expectedOffset, view.scrollOffsetValue.value)
+                        Assertions.assertTrue(fixture.widgets.all { it.offsets.isEmpty() })
+                    }
+                }
+                val controller = fixture.attach(view, IntPoint(100, 100))
+                try {
+                    Assertions.assertEquals(expectedOffset, view.scrollOffsetValue.value)
+                    Assertions.assertEquals(IntPoint(10, 20), IntPoint(fixture.widgets[0].initialBounds.x, fixture.widgets[0].initialBounds.y))
+                    val expectedPosition = if (horizontal) IntPoint(10 - expectedOffset.roundToInt(), 20) else IntPoint(10, 20 - expectedOffset.roundToInt())
+                    Assertions.assertEquals(expectedPosition, IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+                    val expectedOffsets = if (expectedOffset == 0.0) emptyList() else listOf(expectedPosition)
+                    Assertions.assertEquals(expectedOffsets, fixture.widgets[0].offsets)
+                    Assertions.assertTrue(fixture.widgets.all { it.offsets.size == expectedOffsets.size })
+                } finally {
+                    controller.dispose()
+                    controller.detach()
+                }
+                Assertions.assertTrue(view.scrollOffsetValue.listeners.isEmpty())
             }
         }
     }
