@@ -1,0 +1,84 @@
+package miragefairy2024.util
+
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+
+class EventRegistryTest {
+
+    @Test
+    fun `購読時の現在値と変更前後の値を通知し解除後は通知しないのだ～🌱`() {
+        val value = ObservableValue(0)
+        value.value = 2
+        val notifications = mutableListOf<Pair<Int, Int>>()
+
+        val remover = value.observeAndInitialize { old, new ->
+            notifications += Pair(old, new)
+        }
+
+        assertEquals(listOf(Pair(2, 2)), notifications)
+        value.value = 3
+        value.value = 3
+        assertEquals(listOf(Pair(2, 2), Pair(2, 3)), notifications)
+
+        remover.remove()
+        value.value = 4
+        assertEquals(listOf(Pair(2, 2), Pair(2, 3)), notifications)
+        assertTrue(value.listeners.isEmpty())
+    }
+
+    @Test
+    fun `初期値を反映している間の値変更も通知するのだ～🌱`() {
+        val value = ObservableValue(2)
+        val notifications = mutableListOf<Pair<Int, Int>>()
+
+        val remover = value.observeAndInitialize { old, new ->
+            notifications += Pair(old, new)
+            if (old == new) value.value = 3
+        }
+
+        assertEquals(listOf(Pair(2, 2), Pair(2, 3)), notifications)
+        assertEquals(3, value.value)
+        remover.remove()
+        assertTrue(value.listeners.isEmpty())
+    }
+
+    @Test
+    fun `終了イベントで解除する購読も初期値と変更を通知するのだ～🌱`() {
+        val value = ObservableValue(2)
+        val onClosed = EventRegistry<() -> Unit>()
+        val notifications = mutableListOf<Pair<Int, Int>>()
+
+        value.observeAndInitialize(onClosed) { old, new ->
+            notifications += Pair(old, new)
+        }
+
+        assertEquals(listOf(Pair(2, 2)), notifications)
+        value.value = 3
+        assertEquals(listOf(Pair(2, 2), Pair(2, 3)), notifications)
+
+        onClosed.fire()
+        value.value = 4
+        assertEquals(listOf(Pair(2, 2), Pair(2, 3)), notifications)
+        assertTrue(value.listeners.isEmpty())
+        assertTrue(onClosed.listeners.isEmpty())
+    }
+
+    @Test
+    fun `初期値の反映中に終了しても購読を解除するのだ～🌱`() {
+        val value = ObservableValue(2)
+        val onClosed = EventRegistry<() -> Unit>()
+        val notifications = mutableListOf<Pair<Int, Int>>()
+
+        value.observeAndInitialize(onClosed) { old, new ->
+            notifications += Pair(old, new)
+            onClosed.fire()
+        }
+
+        value.value = 3
+        assertEquals(listOf(Pair(2, 2)), notifications)
+        assertTrue(value.listeners.isEmpty())
+        assertTrue(onClosed.listeners.isEmpty())
+    }
+
+}
