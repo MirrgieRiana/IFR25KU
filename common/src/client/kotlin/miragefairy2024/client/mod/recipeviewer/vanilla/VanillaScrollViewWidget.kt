@@ -9,9 +9,11 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.invoke
+import miragefairy2024.util.register
 import miragefairy2024.util.text
 import miragefairy2024.util.translate
 import mirrg.kotlin.helium.atLeast
@@ -36,6 +38,7 @@ import kotlin.math.roundToInt
 /** 子 Widget の描画・入力・フォーカス・読み上げを中継するスクロール領域なのだ～🌱 */
 abstract class VanillaScrollViewWidget(
     protected val view: ScrollView,
+    private val scrollOffsetValue: ObservableValue<Double>,
     bounds: IntRectangle,
     context: VanillaViewPlacerContext,
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
@@ -87,6 +90,7 @@ abstract class VanillaScrollViewWidget(
         pressedWidgetRegistrations.clear()
         focused = null
         focusedSelf = false
+        scrollRemover.remove()
         childController.dispose()
     }
 
@@ -103,7 +107,7 @@ abstract class VanillaScrollViewWidget(
     protected abstract val viewportLength: Int
     protected abstract fun evaluateContentLength(): Int
 
-    private var scrollOffset = 0.0
+    private val scrollOffset get() = scrollOffsetValue.value
 
     private fun evaluateMaxScrollOffset() = evaluateContentLength() - viewportLength atLeast 0
 
@@ -131,10 +135,8 @@ abstract class VanillaScrollViewWidget(
 
     private fun updateScroll(offset: Double): Boolean {
         val old = scrollOffset
-        scrollOffset = offset.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
-        if (scrollOffset == old) return false
-        childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
-        return true
+        scrollOffsetValue.value = offset.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
+        return scrollOffset != old
     }
 
     override fun setPosition(x: Int, y: Int) {
@@ -439,6 +441,7 @@ abstract class VanillaScrollViewWidget(
     // 子 View の配置なのだ～🌱
 
     private val childController: ViewController
+    private val scrollRemover: Remover
 
     init {
         val childContext: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
@@ -451,6 +454,14 @@ abstract class VanillaScrollViewWidget(
         childController = view.childView.attachTo(IntPoint(x, y)) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
         }
+        scrollRemover = scrollOffsetValue.register { _, _ ->
+            if (!disposed) {
+                updateScroll(scrollOffset)
+                if (!disposed) childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
+            }
+        }
+        updateScroll(scrollOffset)
+        childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
     }
 
 }
@@ -462,6 +473,7 @@ class VanillaXScrollViewWidget(
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
 ) : VanillaScrollViewWidget(
     view,
+    view.scrollOffsetX,
     bounds,
     context,
     registry,
@@ -515,6 +527,7 @@ class VanillaYScrollViewWidget(
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
 ) : VanillaScrollViewWidget(
     view,
+    view.scrollOffsetY,
     bounds,
     context,
     registry,
