@@ -38,76 +38,63 @@ object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView> {
         graphics.blit(view.textureId, x0, y2, u0.toFloat(), v2.toFloat(), w1, h3, w0, h0)
         graphics.blit(view.textureId, x2, y2, u2.toFloat(), v2.toFloat(), w3, h3, w0, h0)
 
-        if (view.repeat) {
+        // 上下
+        if (view.repeatX) {
+            var x = x1
+            while (true) {
+                if (x >= x2) break
+                val w = w2 atMost x2 - x
 
-            // 上下
-            run {
-                var x = x1
-                while (true) {
-                    if (x >= x2) break
-                    val w = w2 atMost x2 - x
+                graphics.blit(view.textureId, x, y0, u1.toFloat(), v0.toFloat(), w, h1, w0, h0)
+                graphics.blit(view.textureId, x, y2, u1.toFloat(), v2.toFloat(), w, h3, w0, h0)
 
-                    graphics.blit(view.textureId, x, y0, u1.toFloat(), v0.toFloat(), w, h1, w0, h0)
-                    graphics.blit(view.textureId, x, y2, u1.toFloat(), v2.toFloat(), w, h3, w0, h0)
-
-                    x += w
-                }
+                x += w
             }
-
-            // 左右
-            run {
-                var y = y1
-                while (true) {
-                    if (y >= y2) break
-                    val h = h2 atMost y2 - y
-
-                    graphics.blit(view.textureId, x0, y, u0.toFloat(), v1.toFloat(), w1, h, w0, h0)
-                    graphics.blit(view.textureId, x2, y, u2.toFloat(), v1.toFloat(), w3, h, w0, h0)
-
-                    y += h
-                }
-            }
-
-            // 中央
-            run {
-                var x = x1
-                while (true) {
-                    if (x >= x2) break
-                    val w = w2 atMost x2 - x
-
-                    var y = y1
-                    while (true) {
-                        if (y >= y2) break
-                        val h = h2 atMost y2 - y
-
-                        graphics.blit(view.textureId, x, y, u1.toFloat(), v1.toFloat(), w, h, w0, h0)
-
-                        y += h
-                    }
-
-                    x += w
-                }
-            }
-
         } else {
-
-            // 上下
             if (x2 > x1) {
                 graphics.blit(view.textureId, x1, y0, x2 - x1, h1, u1.toFloat(), v0.toFloat(), w2, h1, w0, h0)
                 graphics.blit(view.textureId, x1, y2, x2 - x1, h3, u1.toFloat(), v2.toFloat(), w2, h3, w0, h0)
             }
+        }
 
-            // 左右
+        // 左右
+        if (view.repeatY) {
+            var y = y1
+            while (true) {
+                if (y >= y2) break
+                val h = h2 atMost y2 - y
+
+                graphics.blit(view.textureId, x0, y, u0.toFloat(), v1.toFloat(), w1, h, w0, h0)
+                graphics.blit(view.textureId, x2, y, u2.toFloat(), v1.toFloat(), w3, h, w0, h0)
+
+                y += h
+            }
+        } else {
             if (y2 > y1) {
                 graphics.blit(view.textureId, x0, y1, w1, y2 - y1, u0.toFloat(), v1.toFloat(), w1, h2, w0, h0)
                 graphics.blit(view.textureId, x2, y1, w3, y2 - y1, u2.toFloat(), v1.toFloat(), w3, h2, w0, h0)
             }
+        }
 
-            // 中央
-            if (x2 > x1 && y2 > y1) {
-                graphics.blit(view.textureId, x1, y1, x2 - x1, y2 - y1, u1.toFloat(), v1.toFloat(), w2, h2, w0, h0)
+        // 中央
+        run {
+            var x = x1
+            while (true) {
+                if (x >= x2) break
+                val w = if (view.repeatX) w2 atMost x2 - x else x2 - x
+
+                var y = y1
+                while (true) {
+                    if (y >= y2) break
+                    val h = if (view.repeatY) h2 atMost y2 - y else y2 - y
+
+                    graphics.blit(view.textureId, x, y, w, h, u1.toFloat(), v1.toFloat(), if (view.repeatX) w else w2, if (view.repeatY) h else h2, w0, h0)
+
+                    y += h
+                }
+
+                x += w
             }
-
         }
 
     }
