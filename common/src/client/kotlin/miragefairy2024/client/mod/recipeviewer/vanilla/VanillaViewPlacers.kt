@@ -20,8 +20,9 @@ import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
-import miragefairy2024.util.register
+import miragefairy2024.util.observeAndInitialize
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
@@ -121,17 +122,17 @@ fun initVanillaViewPlacers() {
         context place TextButtonWidget()
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextFieldView, bounds ->
+        val onClosed = EventRegistry<() -> Unit>()
         val editBox = EditBox(Minecraft.getInstance().font, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty())
         editBox.setMaxLength(Int.MAX_VALUE)
         // 初期化による変更通知を拾わないよう、初期値は responder の登録前に設定するのだ～🌱
-        editBox.value = view.text.value
+        view.text.observeAndInitialize(onClosed) { _, text ->
+            if (editBox.value != text) editBox.value = text
+        }
         val hint = view.hint
         if (hint != null) editBox.setHint(hint)
         editBox.setResponder {
             view.text.value = it
-        }
-        val textRemover = view.text.register { _, text ->
-            if (editBox.value != text) editBox.value = text
         }
         val controller = context place editBox
         object : ViewController {
@@ -144,7 +145,7 @@ fun initVanillaViewPlacers() {
             }
 
             override fun dispose() {
-                textRemover.remove()
+                onClosed.fire()
                 controller.dispose()
             }
         }
