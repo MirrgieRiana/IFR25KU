@@ -43,6 +43,7 @@ import miragefairy2024.util.enJa
 import miragefairy2024.util.fire
 import miragefairy2024.util.gold
 import miragefairy2024.util.invoke
+import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.plus
 import miragefairy2024.util.register
 import miragefairy2024.util.sortedEntrySet
@@ -209,11 +210,9 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         view.hoveredTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 12, 12, 12))
                         view.disabledTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 24, 12, 12))
 
-                        fun update() {
+                        pageIndex.observeAndInitialize { _, _ ->
                             view.enabled.value = pageIndex.value > 0
                         }
-                        pageIndex.register { _, _ -> update() }
-                        update()
 
                         view.onClick.register {
                             pageIndex.value -= 1
@@ -227,11 +226,9 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         view.sizingX = Sizing.FILL
                         view.alignmentX = Alignment.CENTER
 
-                        fun update() {
+                        pageIndex.observeAndInitialize { _, _ ->
                             view.text.value = text { "${pageIndex.value + 1}"() }.visualOrderText
                         }
-                        pageIndex.register { _, _ -> update() }
-                        update()
                     }.minContentSizeX(32)
 
                     // 右ボタン
@@ -244,9 +241,8 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         fun update() {
                             view.enabled.value = pageIndex.value < pageCount.value - 1
                         }
-                        pageIndex.register { _, _ -> update() }
-                        pageCount.register { _, _ -> update() }
-                        update()
+                        pageIndex.observeAndInitialize { _, _ -> update() }
+                        pageCount.observeAndInitialize { _, _ -> update() }
 
                         view.onClick.register {
                             pageIndex.value += 1

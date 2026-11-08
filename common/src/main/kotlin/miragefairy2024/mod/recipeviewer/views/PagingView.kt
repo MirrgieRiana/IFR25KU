@@ -9,7 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.util.ObservableValue
-import miragefairy2024.util.register
+import miragefairy2024.util.observeAndInitialize
 
 class PagingView : ParentView<Alignment>() {
 
@@ -113,8 +113,7 @@ class PagingView : ParentView<Alignment>() {
             }
         }
 
-        val pageIndexRemover = pageIndex.register { _, _ -> load() }
-        load()
+        val pageIndexRemover = pageIndex.observeAndInitialize { _, _ -> load() }
 
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {

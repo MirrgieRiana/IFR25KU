@@ -7,7 +7,7 @@ import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.util.ObservableValue
-import miragefairy2024.util.register
+import miragefairy2024.util.observeAndInitialize
 
 /** [content] を動的に付け替え可能な View なのだ～🌱 */
 class DynamicView : AbstractView() {
@@ -68,8 +68,7 @@ class DynamicView : AbstractView() {
             }
         }
 
-        val contentRemover = content.register { _, _ -> load() }
-        load()
+        val contentRemover = content.observeAndInitialize { _, _ -> load() }
 
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {

@@ -19,7 +19,7 @@ import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.fire
-import miragefairy2024.util.register
+import miragefairy2024.util.observeAndInitialize
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
@@ -105,14 +105,13 @@ fun initVanillaViewPlacers() {
         val editBox = EditBox(Minecraft.getInstance().font, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty())
         editBox.setMaxLength(Int.MAX_VALUE)
         // 初期化による変更通知を拾わないよう、初期値は responder の登録前に設定するのだ～🌱
-        editBox.value = view.text.value
+        val textRemover = view.text.observeAndInitialize { _, text ->
+            if (editBox.value != text) editBox.value = text
+        }
         val hint = view.hint
         if (hint != null) editBox.setHint(hint)
         editBox.setResponder {
             view.text.value = it
-        }
-        val textRemover = view.text.register { _, text ->
-            if (editBox.value != text) editBox.value = text
         }
         val controller = context place editBox
         object : ViewController {
