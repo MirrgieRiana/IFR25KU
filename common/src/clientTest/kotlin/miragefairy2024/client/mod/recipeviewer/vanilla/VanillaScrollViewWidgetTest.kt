@@ -189,13 +189,6 @@ private fun createScrollView(horizontal: Boolean): ScrollView {
     return view
 }
 
-private val ScrollView.scrollOffsetValue
-    get() = when (this) {
-        is XScrollView -> this.scrollOffsetX
-        is YScrollView -> this.scrollOffsetY
-        else -> throw AssertionError("Unknown scroll axis")
-    }
-
 class VanillaScrollViewWidgetTest {
 
     @Test
@@ -203,22 +196,22 @@ class VanillaScrollViewWidgetTest {
         listOf(false, true).forEach { horizontal ->
             val fixture = ScrollFixture()
             val view = createScrollView(horizontal)
-            Assertions.assertEquals(0.0, view.scrollOffsetValue.value)
-            view.scrollOffsetValue.value = 45.25
+            Assertions.assertEquals(0.0, view.scrollOffset.value)
+            view.scrollOffset.value = 45.25
             val controller = fixture.attach(view, IntPoint(100, 100))
             try {
-                Assertions.assertEquals(45.25, view.scrollOffsetValue.value)
+                Assertions.assertEquals(45.25, view.scrollOffset.value)
                 Assertions.assertEquals(if (horizontal) IntPoint(-35, 20) else IntPoint(10, -25), IntPoint(fixture.widgets[0].initialBounds.x, fixture.widgets[0].initialBounds.y))
                 Assertions.assertTrue(fixture.widgets.all { it.offsets.isEmpty() })
                 Assertions.assertEquals(if (horizontal) IntPoint(-35, 20) else IntPoint(10, -25), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
 
-                view.scrollOffsetValue.value = 71.75
+                view.scrollOffset.value = 71.75
 
-                Assertions.assertEquals(71.75, view.scrollOffsetValue.value)
+                Assertions.assertEquals(71.75, view.scrollOffset.value)
                 Assertions.assertEquals(if (horizontal) IntPoint(-62, 20) else IntPoint(10, -52), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
                 controller.setOffset(IntPoint(30, 40))
                 Assertions.assertEquals(if (horizontal) IntPoint(-42, 40) else IntPoint(30, -32), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
-                Assertions.assertEquals(71.75, view.scrollOffsetValue.value)
+                Assertions.assertEquals(71.75, view.scrollOffset.value)
             } finally {
                 controller.dispose()
                 controller.detach()
@@ -232,21 +225,21 @@ class VanillaScrollViewWidgetTest {
             listOf(-50.0, 1000.0).forEach { initialOffset ->
                 val fixture = ScrollFixture()
                 val view = createScrollView(horizontal)
-                view.scrollOffsetValue.value = initialOffset
+                view.scrollOffset.value = initialOffset
                 val controller = fixture.attach(view, IntPoint(100, 100))
                 try {
                     val expectedOffset = if (initialOffset < 0.0) 0.0 else 200.0
-                    Assertions.assertEquals(expectedOffset, view.scrollOffsetValue.value)
+                    Assertions.assertEquals(expectedOffset, view.scrollOffset.value)
                     Assertions.assertEquals(if (horizontal) 10 - expectedOffset.toInt() else 20 - expectedOffset.toInt(), if (horizontal) fixture.widgets[0].initialBounds.x else fixture.widgets[0].initialBounds.y)
                     Assertions.assertTrue(fixture.widgets.all { it.offsets.isEmpty() })
                     Assertions.assertEquals(if (horizontal) 10 - expectedOffset.toInt() else 20 - expectedOffset.toInt(), if (horizontal) fixture.widgets[0].x else fixture.widgets[0].y)
 
-                    view.scrollOffsetValue.value = -1000.0
-                    Assertions.assertEquals(0.0, view.scrollOffsetValue.value)
+                    view.scrollOffset.value = -1000.0
+                    Assertions.assertEquals(0.0, view.scrollOffset.value)
                     Assertions.assertEquals(IntPoint(10, 20), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
                     fixture.widgets.forEach { it.offsets.clear() }
-                    view.scrollOffsetValue.value = 1000.0
-                    Assertions.assertEquals(200.0, view.scrollOffsetValue.value)
+                    view.scrollOffset.value = 1000.0
+                    Assertions.assertEquals(200.0, view.scrollOffset.value)
                     Assertions.assertEquals(if (horizontal) IntPoint(-190, 20) else IntPoint(10, -180), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
                     Assertions.assertTrue(fixture.widgets.all { it.offsets.size == 1 })
                 } finally {
@@ -265,14 +258,14 @@ class VanillaScrollViewWidgetTest {
                 val view = createScrollView(horizontal)
                 fixture.onChildPlaced = {
                     if (fixture.widgets.size == 1) {
-                        view.scrollOffsetValue.value = requestedOffset
-                        Assertions.assertEquals(expectedOffset, view.scrollOffsetValue.value)
+                        view.scrollOffset.value = requestedOffset
+                        Assertions.assertEquals(expectedOffset, view.scrollOffset.value)
                         Assertions.assertTrue(fixture.widgets.all { it.offsets.isEmpty() })
                     }
                 }
                 val controller = fixture.attach(view, IntPoint(100, 100))
                 try {
-                    Assertions.assertEquals(expectedOffset, view.scrollOffsetValue.value)
+                    Assertions.assertEquals(expectedOffset, view.scrollOffset.value)
                     Assertions.assertEquals(IntPoint(10, 20), IntPoint(fixture.widgets[0].initialBounds.x, fixture.widgets[0].initialBounds.y))
                     val expectedPosition = if (horizontal) IntPoint(10 - expectedOffset.roundToInt(), 20) else IntPoint(10, 20 - expectedOffset.roundToInt())
                     Assertions.assertEquals(expectedPosition, IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
@@ -283,7 +276,7 @@ class VanillaScrollViewWidgetTest {
                     controller.dispose()
                     controller.detach()
                 }
-                Assertions.assertTrue(view.scrollOffsetValue.listeners.isEmpty())
+                Assertions.assertTrue(view.scrollOffset.listeners.isEmpty())
             }
         }
     }
@@ -297,24 +290,24 @@ class VanillaScrollViewWidgetTest {
             try {
                 val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
                 val offsets = mutableListOf<Double>()
-                val remover = view.scrollOffsetValue.register { _, offset ->
+                val remover = view.scrollOffset.register { _, offset ->
                     offsets += offset
                 }
                 try {
                     Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -0.25))
-                    Assertions.assertEquals(3.75, view.scrollOffsetValue.value)
+                    Assertions.assertEquals(3.75, view.scrollOffset.value)
                     Assertions.assertEquals(if (horizontal) IntPoint(6, 20) else IntPoint(10, 16), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
 
                     root.isFocused = true
                     Assertions.assertTrue(root.keyPressed(if (horizontal) GLFW.GLFW_KEY_RIGHT else GLFW.GLFW_KEY_DOWN, 0, 0))
-                    Assertions.assertEquals(18.75, view.scrollOffsetValue.value)
+                    Assertions.assertEquals(18.75, view.scrollOffset.value)
                     Assertions.assertTrue(root.keyPressed(GLFW.GLFW_KEY_PAGE_DOWN, 0, 0))
-                    Assertions.assertEquals(98.75, view.scrollOffsetValue.value)
+                    Assertions.assertEquals(98.75, view.scrollOffset.value)
                     Assertions.assertTrue(root.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
-                    Assertions.assertEquals(200.0, view.scrollOffsetValue.value)
+                    Assertions.assertEquals(200.0, view.scrollOffset.value)
                     Assertions.assertFalse(root.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
                     Assertions.assertTrue(root.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
-                    Assertions.assertEquals(0.0, view.scrollOffsetValue.value)
+                    Assertions.assertEquals(0.0, view.scrollOffset.value)
                     Assertions.assertEquals(listOf(3.75, 18.75, 98.75, 200.0, 0.0), offsets)
                 } finally {
                     remover.remove()
@@ -331,26 +324,26 @@ class VanillaScrollViewWidgetTest {
         listOf(false, true).forEach { horizontal ->
             val fixture = ScrollFixture()
             val view = createScrollView(horizontal)
-            view.scrollOffsetValue.value = 175.25
+            view.scrollOffset.value = 175.25
             val controller = fixture.attach(view, IntPoint(100, 100))
             controller.dispose()
             controller.detach()
-            Assertions.assertEquals(175.25, view.scrollOffsetValue.value)
-            Assertions.assertTrue(view.scrollOffsetValue.listeners.isEmpty())
+            Assertions.assertEquals(175.25, view.scrollOffset.value)
+            Assertions.assertTrue(view.scrollOffset.listeners.isEmpty())
             val previousPositions = fixture.widgets.map { IntPoint(it.x, it.y) }
 
             val newController = fixture.attach(view, IntPoint(200, 200))
             try {
-                Assertions.assertEquals(100.0, view.scrollOffsetValue.value)
+                Assertions.assertEquals(100.0, view.scrollOffset.value)
                 Assertions.assertEquals(if (horizontal) IntPoint(-90, 20) else IntPoint(10, -80), IntPoint(fixture.widgets[3].x, fixture.widgets[3].y))
-                view.scrollOffsetValue.value = 25.75
+                view.scrollOffset.value = 25.75
                 Assertions.assertEquals(if (horizontal) IntPoint(-16, 20) else IntPoint(10, -6), IntPoint(fixture.widgets[3].x, fixture.widgets[3].y))
                 Assertions.assertEquals(previousPositions, fixture.widgets.take(3).map { IntPoint(it.x, it.y) })
             } finally {
                 newController.dispose()
                 newController.detach()
             }
-            Assertions.assertTrue(view.scrollOffsetValue.listeners.isEmpty())
+            Assertions.assertTrue(view.scrollOffset.listeners.isEmpty())
         }
     }
 
@@ -362,15 +355,15 @@ class VanillaScrollViewWidgetTest {
             val controller = fixture.attach(view, IntPoint(100, 100))
             val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
             Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -5.25))
-            val savedOffset = view.scrollOffsetValue.value
+            val savedOffset = view.scrollOffset.value
             controller.dispose()
             controller.detach()
 
             val newView = createScrollView(horizontal)
-            newView.scrollOffsetValue.value = savedOffset
+            newView.scrollOffset.value = savedOffset
             val newController = fixture.attach(newView, IntPoint(100, 100))
             try {
-                Assertions.assertEquals(78.75, newView.scrollOffsetValue.value)
+                Assertions.assertEquals(78.75, newView.scrollOffset.value)
                 Assertions.assertEquals(if (horizontal) IntPoint(-69, 20) else IntPoint(10, -59), IntPoint(fixture.widgets[3].x, fixture.widgets[3].y))
             } finally {
                 newController.dispose()
@@ -379,10 +372,10 @@ class VanillaScrollViewWidgetTest {
 
             val shorterView = if (horizontal) XScrollView() else YScrollView()
             shorterView += ScrollTestView(true)
-            shorterView.scrollOffsetValue.value = newView.scrollOffsetValue.value
+            shorterView.scrollOffset.value = newView.scrollOffset.value
             val shorterController = fixture.attach(shorterView, IntPoint(100, 100))
             try {
-                Assertions.assertEquals(0.0, shorterView.scrollOffsetValue.value)
+                Assertions.assertEquals(0.0, shorterView.scrollOffset.value)
                 Assertions.assertEquals(IntPoint(10, 20), IntPoint(fixture.widgets[6].x, fixture.widgets[6].y))
             } finally {
                 shorterController.dispose()
@@ -396,13 +389,13 @@ class VanillaScrollViewWidgetTest {
         listOf(false, true).forEach { horizontal ->
             val fixture = ScrollFixture()
             val view = createScrollView(horizontal)
-            val remover = view.scrollOffsetValue.register { _, offset ->
-                if (offset > 100.0) view.scrollOffsetValue.value = 33.25
+            val remover = view.scrollOffset.register { _, offset ->
+                if (offset > 100.0) view.scrollOffset.value = 33.25
             }
             val controller = fixture.attach(view, IntPoint(100, 100))
             try {
-                view.scrollOffsetValue.value = 150.0
-                Assertions.assertEquals(33.25, view.scrollOffsetValue.value)
+                view.scrollOffset.value = 150.0
+                Assertions.assertEquals(33.25, view.scrollOffset.value)
                 Assertions.assertEquals(if (horizontal) IntPoint(-23, 20) else IntPoint(10, -13), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
             } finally {
                 controller.dispose()
@@ -644,7 +637,7 @@ class VanillaScrollViewWidgetTest {
             Assertions.assertTrue(fixture.screen.mouseClicked(mouseX, mouseY, 0))
             Assertions.assertTrue(root.mouseDragged(400.0, 400.0, 0, 300.0, 300.0))
             Assertions.assertEquals(if (horizontal) -190 else -180, if (horizontal) fixture.widgets[0].x else fixture.widgets[0].y)
-            Assertions.assertEquals(200.0, view.scrollOffsetValue.value)
+            Assertions.assertEquals(200.0, view.scrollOffset.value)
             Assertions.assertTrue(root.mouseReleased(400.0, 400.0, 0))
             Assertions.assertFalse(root.hasMouseCapture(0))
             Assertions.assertFalse(root.mouseDragged(mouseX, mouseY, 0, 1.0, 1.0))
@@ -681,16 +674,16 @@ class VanillaScrollViewWidgetTest {
         Assertions.assertTrue(fixture.focusNext(true))
         Assertions.assertTrue(fixture.widgets[1].isFocused)
         Assertions.assertEquals(20, fixture.widgets[1].y)
-        Assertions.assertEquals(100.0, view.scrollOffsetValue.value)
+        Assertions.assertEquals(100.0, view.scrollOffset.value)
         Assertions.assertTrue(fixture.focusNext(true))
         Assertions.assertTrue(fixture.widgets[2].isFocused)
         Assertions.assertEquals(20, fixture.widgets[2].y)
-        Assertions.assertEquals(200.0, view.scrollOffsetValue.value)
+        Assertions.assertEquals(200.0, view.scrollOffset.value)
         Assertions.assertFalse(fixture.focusNext(true))
         Assertions.assertTrue(fixture.focusNext(false))
         Assertions.assertTrue(fixture.widgets[1].isFocused)
         Assertions.assertEquals(20, fixture.widgets[1].y)
-        Assertions.assertEquals(100.0, view.scrollOffsetValue.value)
+        Assertions.assertEquals(100.0, view.scrollOffset.value)
         controller.dispose()
         controller.detach()
     }
