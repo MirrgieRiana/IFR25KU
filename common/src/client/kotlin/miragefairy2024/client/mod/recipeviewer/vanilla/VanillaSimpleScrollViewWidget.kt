@@ -96,9 +96,6 @@ abstract class VanillaSimpleScrollViewWidget(
 
     // サイズと位置なのだ～🌱
 
-    protected abstract fun getReservedRight(): Int
-    protected abstract fun getReservedBottom(): Int
-
     protected abstract val viewportLength: Int
     protected abstract fun evaluateContentLength(): Int
 
@@ -129,8 +126,8 @@ abstract class VanillaSimpleScrollViewWidget(
     private fun containsViewport(mouseX: Double, mouseY: Double): Boolean {
         if (mouseX < x) return false
         if (mouseY < y) return false
-        if (mouseX >= x + (width - getReservedRight() atLeast 0)) return false
-        if (mouseY >= y + (height - getReservedBottom() atLeast 0)) return false
+        if (mouseX >= x + (width atLeast 0)) return false
+        if (mouseY >= y + (height atLeast 0)) return false
         return true
     }
 
@@ -148,7 +145,7 @@ abstract class VanillaSimpleScrollViewWidget(
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
         // 子要素の描画なのだ～🌱
-        guiGraphics.enableScissor(x, y, x + (width - getReservedRight() atLeast 0), y + (height - getReservedBottom() atLeast 0))
+        guiGraphics.enableScissor(x, y, x + (width atLeast 0), y + (height atLeast 0))
         try {
             widgetRegistrations.forEach { widgetRegistration ->
                 widgetRegistration.widget.render(guiGraphics, mouseX, mouseY, partialTick)
@@ -225,7 +222,6 @@ abstract class VanillaSimpleScrollViewWidget(
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
-        // スクロールバー上でも判定を受け付けるため、containsViewport ではなく isMouseOver を使うのだ～🌱
         if (!isMouseOver(mouseX, mouseY)) return false
         val child = getChildAt(mouseX, mouseY).orNull
         if (child != null && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true
@@ -401,9 +397,6 @@ class VanillaXSimpleScrollViewWidget(
 
     // 領域とサイズなのだ～🌱
 
-    override fun getReservedRight() = 0
-    override fun getReservedBottom() = view.scrollbarThickness
-
     override val viewportLength get() = width
     override fun evaluateContentLength() = view.childView.evaluateActualSizeX()
 
@@ -441,9 +434,6 @@ class VanillaYSimpleScrollViewWidget(
 ) {
 
     // 領域とサイズなのだ～🌱
-
-    override fun getReservedRight() = view.scrollbarThickness
-    override fun getReservedBottom() = 0
 
     override val viewportLength get() = height
     override fun evaluateContentLength() = view.childView.evaluateActualSizeY()
