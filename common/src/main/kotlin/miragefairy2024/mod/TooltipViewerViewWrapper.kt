@@ -25,7 +25,7 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotEmpty
-import miragefairy2024.util.register
+import miragefairy2024.util.registerAndInitialize
 import miragefairy2024.util.text
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
@@ -93,7 +93,6 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
         }
 
         val contentView = DynamicView()
-        contentView.content.value = scrollView()
 
         view += YListView().configure {
             view.sizingX = Sizing.FILL
@@ -104,7 +103,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
                 position.weight = 1.0
                 view.sizingY = Sizing.FILL
 
-                view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/panel.png"), 16, 16, 5, 5, 5, 5, 5, 5, false)
+                view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/panel.png"), 16, 16, 5, 5, 5, 5, 5, 5, false, false)
                 view += YListView().configure { // 内枠なのだ～🌱
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
@@ -113,7 +112,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
                     view += TextFieldView().configure {
                         view.hint = text { TOOLTIP_VIEWER_EXAMPLE_KEY_TRANSLATION("0,1,2") }
                         view.text.value = filter.value
-                        view.text.register { _, newValue ->
+                        view.text.registerAndInitialize { _, newValue ->
                             filter.value = newValue
                             contentView.content.value = scrollView()
                         }

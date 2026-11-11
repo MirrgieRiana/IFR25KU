@@ -61,7 +61,7 @@ class VanillaViewRendererWidgetTest {
         val texture = ViewTexture(textureId, IntPoint(16, 16))
         check(TooltipBackgroundView(), TooltipBackgroundViewRenderer)
         check(FilledRectangleView(), FilledRectangleViewRenderer)
-        check(NinePatchImageView(textureId, 16, 16, 4, 8, 4, 4, 8, 4, false), NinePatchImageViewRenderer)
+        check(NinePatchImageView(textureId, 16, 16, 4, 8, 4, 4, 8, 4, false, false), NinePatchImageViewRenderer)
         check(ImageView(texture), ImageViewRenderer)
         check(ItemView(ItemStack.EMPTY), ItemViewRenderer)
         check(TextView(), TextViewRenderer)
