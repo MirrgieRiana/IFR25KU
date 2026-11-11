@@ -105,7 +105,6 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, l
     override fun render(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float) {
         val a = age.toFloat() + tickDelta
         when {
-            a < alphaTicks[0] -> setColor(color1)
             a < alphaTicks[1] -> setColor(color1)
             a < alphaTicks[2] -> setColor(color1, color2, (a - alphaTicks[1]) / (alphaTicks[2] - alphaTicks[1]))
             a < alphaTicks[3] -> setColor(color2, color3, (a - alphaTicks[2]) / (alphaTicks[3] - alphaTicks[2]))
