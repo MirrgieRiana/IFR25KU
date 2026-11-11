@@ -21,7 +21,7 @@ fun <L> EventRegistry<L>.remove(listener: L) {
 }
 
 fun <L> EventRegistry<L>.observe(onClosed: EventRegistry<() -> Unit>, listener: L) {
-    this.register(listener).observe(onClosed)
+    this.register(listener).removeOn(onClosed)
 }
 
 inline fun <L> EventRegistry<L>.fire(invoker: (L) -> Unit) {
@@ -69,7 +69,7 @@ fun interface Remover {
     fun remove()
 }
 
-fun Remover.observe(onClosed: EventRegistry<() -> Unit>) {
+fun Remover.removeOn(onClosed: EventRegistry<() -> Unit>) {
     var onClosedListener: (() -> Unit)? = null
     onClosedListener = {
         val listener = onClosedListener

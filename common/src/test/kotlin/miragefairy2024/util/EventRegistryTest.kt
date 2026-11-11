@@ -90,11 +90,11 @@ class EventRegistryTest {
             removals += 1
             assertEquals(1, onClosed.listeners.size)
             onClosed.fire()
-        }.observe(onClosed)
+        }.removeOn(onClosed)
         Remover {
             removals += 2
             assertTrue(onClosed.listeners.isEmpty())
-        }.observe(onClosed)
+        }.removeOn(onClosed)
 
         assertTrue(removals.isEmpty())
         assertEquals(2, onClosed.listeners.size)
@@ -111,7 +111,7 @@ class EventRegistryTest {
         Remover {
             removals += 1
             throw IllegalStateException("Removal failed")
-        }.observe(onClosed)
+        }.removeOn(onClosed)
 
         val exception = assertFailsWith<IllegalStateException> { onClosed.fire() }
         assertEquals("Removal failed", exception.message)

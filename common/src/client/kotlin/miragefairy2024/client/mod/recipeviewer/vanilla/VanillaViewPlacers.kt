@@ -20,8 +20,8 @@ import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
-import miragefairy2024.util.observe
 import miragefairy2024.util.observeAndInitialize
+import miragefairy2024.util.removeOn
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
@@ -30,7 +30,7 @@ import net.minecraft.network.chat.Component
 
 private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewController {
     val onDetached = EventRegistry<() -> Unit>()
-    addRenderableWidget(widget).observe(onDetached)
+    addRenderableWidget(widget).removeOn(onDetached)
     return object : ViewController {
         override fun setOffset(offset: IntPoint) {
             widget.setPosition(offset.x, offset.y)
@@ -42,7 +42,7 @@ private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewCo
 
 private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidget): ViewController {
     val onDetached = EventRegistry<() -> Unit>()
-    addRenderableOnly(widget).observe(onDetached)
+    addRenderableOnly(widget).removeOn(onDetached)
     return object : ViewController {
         override fun setOffset(offset: IntPoint) {
             widget.setPosition(offset.x, offset.y)

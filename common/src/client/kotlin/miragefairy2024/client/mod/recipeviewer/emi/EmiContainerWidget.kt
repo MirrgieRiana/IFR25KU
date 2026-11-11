@@ -7,7 +7,7 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.fire
-import miragefairy2024.util.observe
+import miragefairy2024.util.removeOn
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 
@@ -74,7 +74,7 @@ class EmiContainerWidget : Widget() {
 
 infix fun EmiContainerWidget.place(widget: Widget): ViewController {
     val onDetached = EventRegistry<() -> Unit>()
-    this.add(widget).observe(onDetached)
+    this.add(widget).removeOn(onDetached)
     return object : ViewController {
         override fun setOffset(offset: IntPoint) = throw UnsupportedOperationException("EMI does not support changing view offsets")
         override fun detach() = onDetached.fire()
