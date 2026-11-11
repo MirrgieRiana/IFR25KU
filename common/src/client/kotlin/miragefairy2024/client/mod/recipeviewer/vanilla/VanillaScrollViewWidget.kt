@@ -111,6 +111,8 @@ abstract class VanillaScrollViewWidget(
 
     private fun evaluateMaxScrollOffset() = evaluateContentLength() - viewportLength atLeast 0
 
+    private fun evaluateScrollOffset() = view.scrollOffset.value.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
+
     private fun evaluateThumbLength(): Int {
         if (viewportLength <= 0) return 0
         val contentLength = evaluateContentLength()
@@ -126,7 +128,7 @@ abstract class VanillaScrollViewWidget(
             0.0
         } else {
             val maxThumbPosition = viewportLength - evaluateThumbLength()
-            val scrollRatio = view.scrollOffset.value / evaluateMaxScrollOffset().toDouble()
+            val scrollRatio = evaluateScrollOffset() / evaluateMaxScrollOffset().toDouble()
             maxThumbPosition.toDouble() * scrollRatio
         }
     }
@@ -134,14 +136,14 @@ abstract class VanillaScrollViewWidget(
     protected abstract fun getChildOffset(scrollOffset: Int): IntPoint
 
     private fun updateScroll(offset: Double): Boolean {
-        val old = view.scrollOffset.value
-        view.scrollOffset.value = offset.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
-        return view.scrollOffset.value != old
+        val old = evaluateScrollOffset()
+        view.scrollOffset.value = offset
+        return evaluateScrollOffset() != old
     }
 
     override fun setPosition(x: Int, y: Int) {
         super.setPosition(x, y)
-        childController.setOffset(getChildOffset(view.scrollOffset.value.roundToInt()))
+        childController.setOffset(getChildOffset(evaluateScrollOffset().roundToInt()))
     }
 
 
@@ -299,7 +301,7 @@ abstract class VanillaScrollViewWidget(
         if (!isMouseOver(mouseX, mouseY)) return false
         val child = getChildAt(mouseX, mouseY).orNull
         if (child != null && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true
-        return updateScroll(view.scrollOffset.value - getScrollAmount(scrollX, scrollY) * view.scrollStep)
+        return updateScroll(evaluateScrollOffset() - getScrollAmount(scrollX, scrollY) * view.scrollStep)
     }
 
 
@@ -355,7 +357,7 @@ abstract class VanillaScrollViewWidget(
                     val actualFocused = this@VanillaScrollViewWidget.focused?.getActualFocused { true } ?: return
                     val rectangle = actualFocused.rectangle
                     if (rectangle.width() <= 0 || rectangle.height() <= 0) return
-                    updateScroll(view.scrollOffset.value + getScrollOffsetDeltaOnFocus(rectangle))
+                    updateScroll(evaluateScrollOffset() + getScrollOffsetDeltaOnFocus(rectangle))
                 }
             }
         }
@@ -382,10 +384,10 @@ abstract class VanillaScrollViewWidget(
         // 子が選択されている間は、矢印キーをスクロールで消費せず、Screen のフォーカス移動へ渡すのだ～🌱
         if (listener != null && (keyCode == backwardKey || keyCode == forwardKey)) return false
         val offset = when (keyCode) {
-            backwardKey -> view.scrollOffset.value - view.scrollStep
-            forwardKey -> view.scrollOffset.value + view.scrollStep
-            GLFW.GLFW_KEY_PAGE_UP -> view.scrollOffset.value - viewportLength * 0.8
-            GLFW.GLFW_KEY_PAGE_DOWN -> view.scrollOffset.value + viewportLength * 0.8
+            backwardKey -> evaluateScrollOffset() - view.scrollStep
+            forwardKey -> evaluateScrollOffset() + view.scrollStep
+            GLFW.GLFW_KEY_PAGE_UP -> evaluateScrollOffset() - viewportLength * 0.8
+            GLFW.GLFW_KEY_PAGE_DOWN -> evaluateScrollOffset() + viewportLength * 0.8
             GLFW.GLFW_KEY_HOME -> 0.0
             GLFW.GLFW_KEY_END -> evaluateMaxScrollOffset().toDouble()
             else -> return false
@@ -453,22 +455,17 @@ abstract class VanillaScrollViewWidget(
         val onScrollOffsetChanged = EventRegistry<() -> Unit>()
         view.scrollOffset.observeAndInitialize(onClosed) { _, _ ->
             if (disposed) return@observeAndInitialize
-            val correctedOffset = view.scrollOffset.value.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
-            if (view.scrollOffset.value != correctedOffset) {
-                view.scrollOffset.value = correctedOffset
-                return@observeAndInitialize
-            }
             onScrollOffsetChanged.fire()
         }
-        val initialScrollOffset = view.scrollOffset.value.roundToInt()
+        val initialScrollOffset = evaluateScrollOffset().roundToInt()
         childController = view.childView.attachTo(getChildOffset(initialScrollOffset)) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
         }
         onScrollOffsetChanged.observe(onClosed) {
             if (disposed) return@observe
-            childController.setOffset(getChildOffset(view.scrollOffset.value.roundToInt()))
+            childController.setOffset(getChildOffset(evaluateScrollOffset().roundToInt()))
         }
-        if (view.scrollOffset.value.roundToInt() != initialScrollOffset) onScrollOffsetChanged.fire()
+        if (evaluateScrollOffset().roundToInt() != initialScrollOffset) onScrollOffsetChanged.fire()
     }
 
 }
