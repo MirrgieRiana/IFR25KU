@@ -28,35 +28,33 @@ context(ModContext)
 fun initMagicSquareParticle() {
     MagicSquareParticleChannel.registerClientPacketReceiver { packet ->
         val particleManager = Minecraft.getInstance().particleEngine ?: return@registerClientPacketReceiver
-        (0..6).forEach { i ->
-            particleManager.createParticle(
-                MagicSquareParticleEffect(i, packet.targetPosition),
-                packet.position.x,
-                packet.position.y,
-                packet.position.z,
-                0.0,
-                0.0,
-                0.0,
-            )
-        }
+        particleManager.createParticle(
+            MagicSquareParticleEffect(packet.targetPosition),
+            packet.position.x,
+            packet.position.y,
+            packet.position.z,
+            0.0,
+            0.0,
+            0.0,
+        )
     }
 }
 
 fun createMagicSquareParticleFactory() = { spriteProvider: SpriteSet ->
     ParticleProvider<MagicSquareParticleEffect> { parameters, level, x, y, z, _, _, _ ->
-        MagicSquareParticle(level, x, y, z, parameters.layer, parameters.targetPosition, spriteProvider)
+        MagicSquareParticle(level, x, y, z, parameters.targetPosition, spriteProvider)
     }
 }
 
-class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, private val layer: Int, private val targetPosition: Vec3, spriteProvider: SpriteSet) : TextureSheetParticle(level, x, y, z) {
+class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, private val targetPosition: Vec3, spriteProvider: SpriteSet) : TextureSheetParticle(level, x, y, z) {
+
+    private val sprites = (spriteProvider as FabricSpriteProvider).sprites
 
     var color1 = 0xFFF4D3
     var color2 = 0xFFB82C
     var color3 = 0x341B0E
 
     init {
-        val sprites = (spriteProvider as FabricSpriteProvider).sprites
-        setSprite(sprites[layer.coerceIn(sprites.indices)])
         lifetime = 80
         quadSize = 0.5F
     }
@@ -105,19 +103,23 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, p
     }
 
     override fun render(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float) {
-        val ticks = getLayerTicks(layer)
-        val a = age.toFloat() + tickDelta
-        when {
-            a < ticks[1] -> setColor(color1)
-            a < ticks[2] -> setColor(color1, color2, (a - ticks[1]) / (ticks[2] - ticks[1]))
-            a < ticks[3] -> setColor(color2, color3, (a - ticks[2]) / (ticks[3] - ticks[2]))
-            else -> setColor(color3)
-        }
+        (0 until LAYER_COUNT).forEach { layer ->
+            val ticks = getLayerTicks(layer)
+            setSprite(sprites[layer.coerceIn(sprites.indices)])
 
-        alpha = getValue(tickDelta, ticks)
-        val brightness = getLayerLightColor(tickDelta, ticks)
-        buildGeometry(vertexConsumer, camera, tickDelta, false, brightness)
-        buildGeometry(vertexConsumer, camera, tickDelta, true, brightness)
+            val a = age.toFloat() + tickDelta
+            when {
+                a < ticks[1] -> setColor(color1)
+                a < ticks[2] -> setColor(color1, color2, (a - ticks[1]) / (ticks[2] - ticks[1]))
+                a < ticks[3] -> setColor(color2, color3, (a - ticks[2]) / (ticks[3] - ticks[2]))
+                else -> setColor(color3)
+            }
+            alpha = getValue(tickDelta, ticks)
+
+            val brightness = getLayerLightColor(tickDelta, ticks)
+            buildGeometry(vertexConsumer, camera, tickDelta, false, brightness)
+            buildGeometry(vertexConsumer, camera, tickDelta, true, brightness)
+        }
     }
 
     private fun buildGeometry(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float, flip: Boolean, brightness: Int) {
