@@ -110,6 +110,8 @@ abstract class VanillaScrollViewWidget(
 
     private fun evaluateMaxScrollOffset() = evaluateContentLength() - viewportLength atLeast 0
 
+    private var lastMaxScrollOffset = evaluateMaxScrollOffset()
+
     private fun evaluateScrollOffset() = view.scrollOffset.value.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
 
     private fun evaluateThumbLength(): Int {
@@ -175,7 +177,12 @@ abstract class VanillaScrollViewWidget(
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
-        updateScroll(scrollOffset)
+        val maxScrollOffset = evaluateMaxScrollOffset()
+        if (maxScrollOffset != lastMaxScrollOffset) {
+            if (maxScrollOffset < lastMaxScrollOffset) updateScroll(evaluateScrollOffset())
+            childController.setOffset(getChildOffset(evaluateScrollOffset().roundToInt()))
+            lastMaxScrollOffset = maxScrollOffset
+        }
 
         // 子要素の描画なのだ～🌱
         guiGraphics.enableScissor(x, y, x + (width - getReservedRight() atLeast 0), y + (height - getReservedBottom() atLeast 0))

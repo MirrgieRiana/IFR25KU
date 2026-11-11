@@ -254,6 +254,67 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
+    fun `描画しても範囲外の指定値と小数を保持するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                listOf(-50.0, 71.75, 1000.0).forEach { requestedOffset ->
+                    val fixture = ScrollFixture()
+                    val view = createScrollView(horizontal)
+                    view.scrollOffset.value = requestedOffset
+                    val controller = fixture.attach(view, IntPoint(100, 100))
+                    try {
+                        val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                        root.render(environment.graphics, 50, 50, 0.0F)
+
+                        Assertions.assertEquals(requestedOffset, view.scrollOffset.value)
+                        val expectedOffset = requestedOffset.coerceIn(0.0, 200.0).roundToInt()
+                        Assertions.assertEquals(if (horizontal) IntPoint(10 - expectedOffset, 20) else IntPoint(10, 20 - expectedOffset), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+                    } finally {
+                        controller.dispose()
+                        controller.detach()
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `スクロール可能範囲の拡大では指定値を再適用し縮小では保持値も補正するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val fixture = ScrollFixture()
+                val view = createScrollView(horizontal)
+                view.scrollOffset.value = 175.25
+                val controller = fixture.attach(view, IntPoint(200, 200))
+                try {
+                    val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(175.25, view.scrollOffset.value)
+                    Assertions.assertEquals(if (horizontal) IntPoint(-90, 20) else IntPoint(10, -80), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+
+                    root.setSize(100, 100)
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(175.25, view.scrollOffset.value)
+                    Assertions.assertEquals(if (horizontal) IntPoint(-165, 20) else IntPoint(10, -155), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+
+                    root.setSize(if (horizontal) 250 else 100, if (horizontal) 100 else 250)
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(50.0, view.scrollOffset.value)
+                    Assertions.assertEquals(if (horizontal) IntPoint(-40, 20) else IntPoint(10, -30), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+
+                    root.setSize(100, 100)
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(50.0, view.scrollOffset.value)
+                    Assertions.assertEquals(if (horizontal) IntPoint(-40, 20) else IntPoint(10, -30), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+                } finally {
+                    controller.dispose()
+                    controller.detach()
+                }
+            }
+        }
+    }
+
+    @Test
     fun `子の配置中に変更した指定値を保持し購読開始後の表示位置に反映するのだ`() {
         listOf(false, true).forEach { horizontal ->
             listOf(Pair(71.75, 71.75), Pair(1000.0, 200.0), Pair(-1000.0, 0.0)).forEach { (requestedOffset, expectedOffset) ->
