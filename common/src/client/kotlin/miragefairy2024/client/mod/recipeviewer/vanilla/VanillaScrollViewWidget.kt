@@ -14,7 +14,8 @@ import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
-import miragefairy2024.util.register
+import miragefairy2024.util.observe
+import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.text
 import miragefairy2024.util.translate
 import mirrg.kotlin.helium.atLeast
@@ -81,6 +82,7 @@ abstract class VanillaScrollViewWidget(
 
     // ライフサイクルなのだ～🌱
 
+    private val onClosed = EventRegistry<() -> Unit>()
     private var disposed = false
 
     fun dispose() {
@@ -90,8 +92,7 @@ abstract class VanillaScrollViewWidget(
         pressedWidgetRegistrations.clear()
         focused = null
         focusedSelf = false
-        scrollOffsetRemover.remove()
-        onScrollOffsetChangedRemover.remove()
+        onClosed.fire()
         childController.dispose()
     }
 
@@ -440,8 +441,6 @@ abstract class VanillaScrollViewWidget(
     // 子 View の配置なのだ～🌱
 
     private val childController: ViewController
-    private val scrollOffsetRemover: Remover
-    private val onScrollOffsetChangedRemover: Remover
 
     init {
         val childContext: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
@@ -452,22 +451,21 @@ abstract class VanillaScrollViewWidget(
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
         }
         val onScrollOffsetChanged = EventRegistry<() -> Unit>()
-        scrollOffsetRemover = view.scrollOffset.register { _, _ ->
-            if (disposed) return@register
+        view.scrollOffset.observeAndInitialize(onClosed) { _, _ ->
+            if (disposed) return@observeAndInitialize
             val correctedOffset = view.scrollOffset.value.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
             if (view.scrollOffset.value != correctedOffset) {
                 view.scrollOffset.value = correctedOffset
-                return@register
+                return@observeAndInitialize
             }
             onScrollOffsetChanged.fire()
         }
-        view.scrollOffset.value = view.scrollOffset.value.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
         val initialScrollOffset = view.scrollOffset.value.roundToInt()
         childController = view.childView.attachTo(getChildOffset(initialScrollOffset)) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
         }
-        onScrollOffsetChangedRemover = onScrollOffsetChanged.register {
-            if (disposed) return@register
+        onScrollOffsetChanged.observe(onClosed) {
+            if (disposed) return@observe
             childController.setOffset(getChildOffset(view.scrollOffset.value.roundToInt()))
         }
         if (view.scrollOffset.value.roundToInt() != initialScrollOffset) onScrollOffsetChanged.fire()
