@@ -103,7 +103,8 @@ abstract class VanillaScrollViewWidget(
     protected abstract val viewportLength: Int
     protected abstract fun evaluateContentLength(): Int
 
-    private var scrollOffset = 0.0
+    protected var scrollOffset = 0.0
+        private set
 
     private fun evaluateMaxScrollOffset() = evaluateContentLength() - viewportLength atLeast 0
 
@@ -129,7 +130,9 @@ abstract class VanillaScrollViewWidget(
 
     protected abstract fun getChildOffset(scrollOffset: Int): IntPoint
 
-    private fun updateScroll(offset: Double): Boolean {
+    protected fun updateScroll(offset: Double): Boolean {
+        if (disposed) return false
+        if (offset.isNaN()) throw IllegalArgumentException("Scroll offset must not be NaN")
         val old = scrollOffset
         scrollOffset = offset.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
         if (scrollOffset == old) return false
@@ -478,6 +481,12 @@ class VanillaXScrollViewWidget(
 
     // スクロール操作なのだ～🌱
 
+    var scrollOffsetX
+        get() = scrollOffset
+        set(value) {
+            updateScroll(value)
+        }
+
     override val backwardKey get() = GLFW.GLFW_KEY_LEFT
     override val forwardKey get() = GLFW.GLFW_KEY_RIGHT
 
@@ -530,6 +539,12 @@ class VanillaYScrollViewWidget(
 
 
     // スクロール操作なのだ～🌱
+
+    var scrollOffsetY
+        get() = scrollOffset
+        set(value) {
+            updateScroll(value)
+        }
 
     override val backwardKey get() = GLFW.GLFW_KEY_UP
     override val forwardKey get() = GLFW.GLFW_KEY_DOWN

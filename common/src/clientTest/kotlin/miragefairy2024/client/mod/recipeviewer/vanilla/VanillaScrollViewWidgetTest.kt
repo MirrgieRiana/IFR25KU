@@ -179,7 +179,113 @@ private fun createScrollView(horizontal: Boolean): ScrollView {
     return view
 }
 
+private var VanillaScrollViewWidget.axisScrollOffset: Double
+    get() = when (this) {
+        is VanillaXScrollViewWidget -> this.scrollOffsetX
+        is VanillaYScrollViewWidget -> this.scrollOffsetY
+        else -> error("Unknown scroll widget")
+    }
+    set(value) {
+        when (this) {
+            is VanillaXScrollViewWidget -> this.scrollOffsetX = value
+            is VanillaYScrollViewWidget -> this.scrollOffsetY = value
+            else -> error("Unknown scroll widget")
+        }
+    }
+
 class VanillaScrollViewWidgetTest {
+
+    @Test
+    fun `各軸の公開位置から小数を保持して子を移動し範囲外を補正するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val fixture = ScrollFixture()
+            val controller = fixture.attach(createScrollView(horizontal), IntPoint(100, 100))
+            try {
+                val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                Assertions.assertEquals(0.0, root.axisScrollOffset)
+
+                root.axisScrollOffset = 15.25
+                Assertions.assertEquals(15.25, root.axisScrollOffset)
+                Assertions.assertEquals(if (horizontal) IntPoint(-5, 20) else IntPoint(10, 5), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+                root.setPosition(30, 40)
+                Assertions.assertEquals(if (horizontal) IntPoint(15, 40) else IntPoint(30, 25), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+
+                root.axisScrollOffset = Double.POSITIVE_INFINITY
+                Assertions.assertEquals(200.0, root.axisScrollOffset)
+                Assertions.assertEquals(if (horizontal) IntPoint(-170, 40) else IntPoint(30, -160), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+                root.axisScrollOffset = Double.NEGATIVE_INFINITY
+                Assertions.assertEquals(0.0, root.axisScrollOffset)
+                Assertions.assertEquals(IntPoint(30, 40), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+            } finally {
+                controller.dispose()
+                controller.detach()
+            }
+        }
+    }
+
+    @Test
+    fun `ホイールとキーとバーとフォーカスで動いた位置を各軸の公開値から読めるのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val fixture = ScrollFixture()
+            val controller = fixture.attach(createScrollView(horizontal), IntPoint(100, 100))
+            try {
+                val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+                Assertions.assertEquals(15.0, root.axisScrollOffset)
+                root.isFocused = true
+                Assertions.assertTrue(root.keyPressed(if (horizontal) GLFW.GLFW_KEY_RIGHT else GLFW.GLFW_KEY_DOWN, 0, 0))
+                Assertions.assertEquals(30.0, root.axisScrollOffset)
+                Assertions.assertTrue(root.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
+
+                Assertions.assertTrue(root.mouseClicked(if (horizontal) 20.0 else 107.0, if (horizontal) 117.0 else 30.0, 0))
+                Assertions.assertTrue(root.mouseDragged(400.0, 400.0, 0, 300.0, 300.0))
+                Assertions.assertEquals(200.0, root.axisScrollOffset)
+                Assertions.assertTrue(root.mouseReleased(400.0, 400.0, 0))
+
+                Assertions.assertTrue(fixture.focusNext(true))
+                Assertions.assertEquals(0.0, root.axisScrollOffset)
+                Assertions.assertTrue(fixture.focusNext(true))
+                Assertions.assertEquals(100.0, root.axisScrollOffset)
+            } finally {
+                controller.dispose()
+                controller.detach()
+            }
+        }
+    }
+
+    @Test
+    fun `NaN と破棄後の代入で位置を壊さず同じ View の再配置では初期位置に戻るのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val fixture = ScrollFixture()
+            val view = createScrollView(horizontal)
+            val controller = fixture.attach(view, IntPoint(100, 100))
+            val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+            try {
+                root.axisScrollOffset = 42.5
+                val position = IntPoint(fixture.widgets[0].x, fixture.widgets[0].y)
+                Assertions.assertThrows(IllegalArgumentException::class.java) { root.axisScrollOffset = Double.NaN }
+                Assertions.assertEquals(42.5, root.axisScrollOffset)
+                Assertions.assertEquals(position, IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+
+                controller.dispose()
+                root.axisScrollOffset = 90.0
+                Assertions.assertEquals(42.5, root.axisScrollOffset)
+                Assertions.assertEquals(position, IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+            } finally {
+                controller.detach()
+            }
+
+            val nextController = fixture.attach(view, IntPoint(100, 100))
+            try {
+                val nextRoot = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                Assertions.assertEquals(0.0, nextRoot.axisScrollOffset)
+                Assertions.assertEquals(IntPoint(10, 20), IntPoint(fixture.widgets[3].x, fixture.widgets[3].y))
+            } finally {
+                nextController.dispose()
+                nextController.detach()
+            }
+        }
+    }
 
     @Test
     fun `描画には実座標を渡し表示領域外のホバーをバニラの scissor で除外するのだ`() {
