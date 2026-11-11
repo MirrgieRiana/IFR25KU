@@ -259,7 +259,7 @@ abstract class VanillaScrollViewWidget(
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (button == 0 && draggingScrollbar) {
-            dragScrollbar(mouseX, mouseY)
+            if (viewportLength > evaluateThumbLength()) dragScrollbar(mouseX, mouseY)
             return true
         }
         if (button !in pressedWidgetRegistrations) return false
