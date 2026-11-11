@@ -4,7 +4,7 @@ set -eu
 
 cd -- "$(dirname -- "$0")/.."
 
-script="$0" ./xarpite/xa -q '
+script="$0" ./xarpite/xarpite -q -e '
   getb := url -> EXECB("curl", "-sL", url)
   get := url -> url >> getb >> UTF8D
   mkdirs := file -> EXEC("mkdir", "-p", file)
@@ -25,8 +25,8 @@ script="$0" ./xarpite/xa -q '
   assetsData := versionData | _.assetIndex.url >> get >> JSOND
   assetPaths() | assetPath => :
     assetData := assetsData | _.objects.(assetPath).hash | "https://resources.download.minecraft.net/$(_::take(2))/$_" >> getb
-    outputPath := "./unpackedAssets" RESOLVE assetPath
-    mkdirs << outputPath RESOLVE ".."
+    outputPath := "./unpackedAssets" / assetPath
+    mkdirs << outputPath / ".."
     WRITEB[outputPath] << assetData
     OUTL << "Saved $outputPath"
 ' "$@"

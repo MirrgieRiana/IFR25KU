@@ -16,6 +16,27 @@ sourceSets {
             srcDir(file("src/generated/resources"))
         }
     }
+    test {
+        compileClasspath += sourceSets.main.get().compileClasspath
+        runtimeClasspath += sourceSets.main.get().runtimeClasspath
+    }
+    create("clientTest") {
+        compileClasspath += sourceSets.main.get().output + sourceSets.main.get().compileClasspath + sourceSets.named("client").get().output + sourceSets.named("client").get().compileClasspath
+        runtimeClasspath += sourceSets.main.get().output + sourceSets.main.get().runtimeClasspath + sourceSets.named("client").get().output + sourceSets.named("client").get().runtimeClasspath
+    }
+}
+
+configurations.named("clientTestImplementation") {
+    extendsFrom(configurations.named("testImplementation").get())
+}
+configurations.named("clientTestRuntimeOnly") {
+    extendsFrom(configurations.named("testRuntimeOnly").get())
+}
+
+tasks.register<Test>("clientTest") {
+    testClassesDirs = sourceSets.named("clientTest").get().output.classesDirs
+    classpath = sourceSets.named("clientTest").get().runtimeClasspath
+    useJUnitPlatform()
 }
 
 // runServer runDatagenでArchitectury Transformerがクライアント用のクラスを変換しようとして落ちる対策のために成果物を分ける
@@ -91,6 +112,9 @@ dependencies {
     modImplementation("com.github.glitchfiend:TerraBlender-fabric:${libs.versions.terraBlenderFabric.get()}")
 
     modCompileOnly("dev.emi:emi-fabric:${libs.versions.emi.get()}:api")
+
+    // テスト専用なのだ～🌱
+    "clientTestImplementation"("org.mockito:mockito-core:${libs.versions.mockito.get()}")
 
 }
 configurations.named("architecturyTransformerClasspath") {

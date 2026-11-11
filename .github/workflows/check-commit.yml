@@ -35,7 +35,7 @@ jobs:
           # 大文字小文字を区別せずに比べるために、あらかじめ小文字にしておくのだ～🌱
           patterns := ENV.BLOCKED_COMMIT_EMAIL ?: ""
             >> LINES
-            | _::replace(/^\s+|\s+$/g; "")
+            | _::trim()
             >> GREP[/./]
             >> LC
             >> TO_ARRAY

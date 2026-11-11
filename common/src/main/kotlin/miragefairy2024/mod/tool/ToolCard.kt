@@ -98,7 +98,7 @@ class ToolCard(
     private val poemList: PoemList,
     private val configuration: ToolConfiguration,
     private val advancementCreator: (ToolCard.(ResourceLocation) -> AdvancementCard)? = null,
-    private val initializer: context(ModContext)ToolCard.() -> Unit = {},
+    private val initializer: context(ModContext) ToolCard.() -> Unit = {},
 ) {
     @Suppress("unused", "MemberVisibilityCanBePrivate")
     companion object {
@@ -599,7 +599,7 @@ private fun ToolCard(
     name: EnJa,
     configuration: ToolConfiguration,
     advancementCreator: (ToolCard.(ResourceLocation) -> AdvancementCard)? = null,
-    initializer: context(ModContext)ToolCard.() -> Unit = {},
+    initializer: context(ModContext) ToolCard.() -> Unit = {},
 ) = ToolCard(path, name, PoemList(null), configuration, advancementCreator, initializer)
 
 context(ModContext)

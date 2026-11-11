@@ -13,7 +13,6 @@ import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.merge
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
-import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.mutate
 import miragefairy2024.util.text

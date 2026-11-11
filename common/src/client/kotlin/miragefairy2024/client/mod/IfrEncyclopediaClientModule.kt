@@ -13,13 +13,13 @@ import io.wispforest.owo.ui.core.Sizing
 import io.wispforest.owo.ui.core.Surface
 import io.wispforest.owo.ui.core.VerticalAlignment
 import miragefairy2024.ModContext
-import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.horizontalSpace
 import miragefairy2024.client.util.slotContainer
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.IfrEncyclopediaEntryCard
 import miragefairy2024.mod.NinePatchTextureCard
+import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.mod.onOpenIfrEncyclopediaPageScreen
 import miragefairy2024.util.invoke

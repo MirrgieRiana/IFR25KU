@@ -50,7 +50,6 @@ import miragefairy2024.util.get
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.modId
 import miragefairy2024.util.on
-import miragefairy2024.util.plus
 import miragefairy2024.util.propertiesOf
 import miragefairy2024.util.register
 import miragefairy2024.util.registerBlockFamily
@@ -77,7 +76,6 @@ import miragefairy2024.util.string
 import miragefairy2024.util.times
 import miragefairy2024.util.toIngredient
 import miragefairy2024.util.toItemTag
-import miragefairy2024.util.unaryPlus
 import miragefairy2024.util.with
 import mirrg.kotlin.gson.hydrogen.jsonArray
 import mirrg.kotlin.gson.hydrogen.jsonElement

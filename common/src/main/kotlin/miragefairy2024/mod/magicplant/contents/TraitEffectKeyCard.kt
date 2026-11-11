@@ -15,6 +15,7 @@ import miragefairy2024.util.string
 import miragefairy2024.util.text
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.network.chat.Component
+import kotlin.math.log10
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -27,9 +28,9 @@ enum class TraitEffectKeyCard(
     val color: Int,
     traitEffectKeyFactory: (TraitEffectKeyCard) -> TraitEffectKey<Double>,
 ) {
-    NUTRITION("nutrition", Emoji.NUTRITION, "Nutrition", "栄養値", 1100.0, 0x99DD99, ::WeakLogTraitEffectKey),
-    TEMPERATURE("temperature", Emoji.MEDIUM_TEMPERATURE, "Temperature Environment", "気温環境値", 1200.0, 0xE89D84, ::WeakLogTraitEffectKey),
-    HUMIDITY("humidity", Emoji.MEDIUM_HUMIDITY, "Humidity Environment", "湿度環境値", 1300.0, 0x8ECCCC, ::WeakLogTraitEffectKey),
+    NUTRITION("nutrition", Emoji.NUTRITION, "Nutrition", "栄養値", 1100.0, 0x99DD99, ::LogTraitEffectKey),
+    TEMPERATURE("temperature", Emoji.MEDIUM_TEMPERATURE, "Temperature Environment", "気温環境値", 1200.0, 0xE89D84, ::LogTraitEffectKey),
+    HUMIDITY("humidity", Emoji.MEDIUM_HUMIDITY, "Humidity Environment", "湿度環境値", 1300.0, 0x8ECCCC, ::LogTraitEffectKey),
 
     SEEDS_PRODUCTION("seeds_production", Emoji.SEEDS_PRODUCTION, "Seeds Production", "種子生成", 2100.0, 0xFFC587, ::NormalTraitEffectKey),
     FRUITS_PRODUCTION("fruits_production", Emoji.FRUITS_PRODUCTION, "Fruits Production", "果実生成", 2200.0, 0xFF87BF, ::NormalTraitEffectKey),
@@ -42,9 +43,9 @@ enum class TraitEffectKeyCard(
     PRODUCTION_BOOST("production_boost", Emoji.PRODUCTION_BOOST, "Production Boost", "生産量ブースト", 3200.0, 0xFF4242, ::SqrtTraitEffectKey),
 
     FORTUNE_FACTOR("fortune_factor", Emoji.MANA, "Fortune Factor", "幸運係数", 4100.0, 0xFF4FFF, ::SqrtTraitEffectKey),
-    NATURAL_ABSCISSION("natural_abscission", Emoji.NATURAL_ABSCISSION, "Natural Abscission", "自然落果", 4200.0, 0x5959FF, ::LogTraitEffectKey),
-    CROSSBREEDING("crossbreeding", Emoji.CROSSBREEDING, "Crossbreeding", "交雑", 4300.0, 0xFFA011, ::LogTraitEffectKey),
-    MUTATION("mutation", Emoji.MUTATION, "Mutation", "突然変異", 4400.0, 0xFF668C, ::LogTraitEffectKey),
+    NATURAL_ABSCISSION("natural_abscission", Emoji.NATURAL_ABSCISSION, "Natural Abscission", "自然落果", 4200.0, 0x5959FF, ::SaturatingTraitEffectKey),
+    CROSSBREEDING("crossbreeding", Emoji.CROSSBREEDING, "Crossbreeding", "交雑", 4300.0, 0xFFA011, ::SaturatingTraitEffectKey),
+    MUTATION("mutation", Emoji.MUTATION, "Mutation", "突然変異", 4400.0, 0xFF668C, ::SaturatingTraitEffectKey),
     SEEDS_DILUTION("seeds_dilution", Emoji.SEEDS_PRODUCTION, "Seeds Dilution", "種子希釈", 4500.0, 0xFF8C63, ::NormalTraitEffectKey),
     SPINE_DAMAGE("spine_damage", Emoji.SWORD, "Spine Damage", "棘ダメージ", 4600.0, 0xCC4444, ::NormalTraitEffectKey),
     PREDATION_DAMAGE("predation_damage", Emoji.SWORD, "Predation Damage", "捕食ダメージ", 4700.0, 0xCC4444, ::NormalTraitEffectKey),
@@ -82,7 +83,7 @@ private class NormalTraitEffectKey(card: TraitEffectKeyCard) : BaseTraitEffectKe
 /**
  * パワーが1増えるごとに値が50%ずつ最大値の1に近づきます。
  */
-private class LogTraitEffectKey(card: TraitEffectKeyCard) : BaseTraitEffectKey(card) {
+private class SaturatingTraitEffectKey(card: TraitEffectKeyCard) : BaseTraitEffectKey(card) {
     override fun getValue(power: Double) = 1 - 0.5.pow(power)
     override fun renderValue(value: Double): Component {
         return when {
@@ -96,10 +97,11 @@ private class LogTraitEffectKey(card: TraitEffectKeyCard) : BaseTraitEffectKey(c
 }
 
 /**
- * パワーが1増えるごとに値が10%ずつ最大値の1に近づきます。
+ * パワー 1 で値が 100% になり、パワーが 10 倍になるごとに +100% されていくのだ～🌱♪
+ * 0% を下回る場合は、0% になるのだ～🌱
  */
-private class WeakLogTraitEffectKey(card: TraitEffectKeyCard) : BaseTraitEffectKey(card) {
-    override fun getValue(power: Double) = 1 - 0.9.pow(power)
+private class LogTraitEffectKey(card: TraitEffectKeyCard) : BaseTraitEffectKey(card) {
+    override fun getValue(power: Double) = if (power * 10 > 1) log10(power * 10) else 0.0
     override fun renderValue(value: Double): Component {
         return when {
             value < 0.1 -> text { (value * 100.0 formatAs "%.1f%%")() }
@@ -107,7 +109,7 @@ private class WeakLogTraitEffectKey(card: TraitEffectKeyCard) : BaseTraitEffectK
         }
     }
 
-    override fun plus(a: Double, b: Double) = 1.0 - (1.0 - a) * (1.0 - b)
+    override fun plus(a: Double, b: Double) = a + b
     override fun getDefaultValue() = 0.0
 }
 

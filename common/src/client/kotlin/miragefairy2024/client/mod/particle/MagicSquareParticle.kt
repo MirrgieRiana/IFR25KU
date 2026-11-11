@@ -1,9 +1,10 @@
 package miragefairy2024.client.mod.particle
 
 import com.mojang.blaze3d.vertex.VertexConsumer
-import miragefairy2024.client.util.registerClientPacketReceiver
+import miragefairy2024.ModContext
 import miragefairy2024.mod.particle.MagicSquareParticleChannel
 import miragefairy2024.mod.particle.MagicSquareParticleEffect
+import miragefairy2024.util.registerClientPacketReceiver
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.hydrogen.blueOfRgb
 import mirrg.kotlin.hydrogen.greenOfRgb
@@ -23,6 +24,7 @@ import org.joml.Quaternionf
 import org.joml.Vector3f
 import kotlin.math.roundToInt
 
+context(ModContext)
 fun initMagicSquareParticle() {
     MagicSquareParticleChannel.registerClientPacketReceiver { packet ->
         val particleManager = Minecraft.getInstance().particleEngine ?: return@registerClientPacketReceiver

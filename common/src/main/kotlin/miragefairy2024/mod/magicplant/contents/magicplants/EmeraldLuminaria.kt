@@ -52,6 +52,7 @@ object EmeraldLuminariaCard : AbstractLuminariaCard<EmeraldLuminariaBlock>() {
         { HarvestNotation.Crop(MaterialCard.LUMINITE.item().createItemStack(), TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name) },
         { HarvestNotation.Crop(Items.EMERALD.createItemStack(), TraitEffectKeyCard.SPECIAL_PRODUCTION.traitEffectKey.name) },
     )
+
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.LUMINITE.item().createItemStack(count))
     override fun getSpecialDrops(count: Int, random: RandomSource) = listOf(Items.EMERALD.createItemStack(count))
 

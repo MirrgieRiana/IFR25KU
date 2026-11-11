@@ -7,7 +7,8 @@
     "GuiGraphicsMixin",
     "ItemRendererMixin",
     "MinecraftClientMixin",
-    "MultiPlayerGameModeMixin"
+    "MultiPlayerGameModeMixin",
+    "SlotMixin"
   ],
   "injectors": {
     "defaultRequire": 1

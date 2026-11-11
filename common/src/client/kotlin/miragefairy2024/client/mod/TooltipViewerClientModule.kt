@@ -14,7 +14,6 @@ import io.wispforest.owo.ui.core.VerticalAlignment
 import io.wispforest.owo.util.Observable
 import miragefairy2024.ModContext
 import miragefairy2024.client.util.KeyMappingCard
-import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.horizontalSpace
 import miragefairy2024.client.util.tooltipContainer
 import miragefairy2024.client.util.verticalScroll
@@ -22,6 +21,7 @@ import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.OPEN_TOOLTIP_VIEWER_KEY_TRANSLATION
 import miragefairy2024.mod.TOOLTIP_VIEWER_EXAMPLE_KEY_TRANSLATION
 import miragefairy2024.mod.TOOLTIP_VIEWER_KEY_TRANSLATION
+import miragefairy2024.mod.common.SlotType
 import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotEmpty
@@ -91,7 +91,7 @@ class TooltipViewerScreen() : BaseOwoScreen<FlowLayout>(text { TOOLTIP_VIEWER_KE
 
                                         // アイテムスロット
                                         child(Containers.stack(Sizing.fixed(18), Sizing.fixed(18)).apply {
-                                            surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
+                                            surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
                                             padding(Insets.of(1))
 
                                             child(Components.item(itemStack).apply {

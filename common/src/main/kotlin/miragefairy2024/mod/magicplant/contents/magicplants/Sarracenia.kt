@@ -49,6 +49,7 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
         { HarvestNotation.Crop(MaterialCard.SARRACENIA_LEAF.item().createItemStack(), TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name) },
         { HarvestNotation.Crop(MaterialCard.FAIRY_SCALES.item().createItemStack(), TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name) },
     )
+
     override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.SARRACENIA_LEAF.item().createItemStack(count))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.FAIRY_SCALES.item().createItemStack(count))
 

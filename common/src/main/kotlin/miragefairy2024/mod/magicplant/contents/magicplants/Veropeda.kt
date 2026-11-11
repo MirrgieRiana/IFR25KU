@@ -50,6 +50,7 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
         { HarvestNotation.Crop(MaterialCard.VEROPEDA_BERRIES.item().createItemStack(), TraitEffectKeyCard.FRUITS_PRODUCTION.traitEffectKey.name) },
         { HarvestNotation.Crop(MaterialCard.VEROPEDA_LEAF.item().createItemStack(), TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name) },
     )
+
     override fun getFruitDrops(count: Int, random: RandomSource) = listOf(MaterialCard.VEROPEDA_BERRIES.item().createItemStack(count))
     override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.VEROPEDA_LEAF.item().createItemStack(count))
 

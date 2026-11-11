@@ -1296,8 +1296,8 @@ class ParentMotifs {
 // レシピ
 
 class MotifCardRecipes {
-    val recipes = mutableListOf<context(ModContext)(MotifCard) -> Unit>()
-    fun onInit(recipe: context(ModContext)(MotifCard) -> Unit): MotifCardRecipes {
+    val recipes = mutableListOf<context(ModContext) (MotifCard) -> Unit>()
+    fun onInit(recipe: context(ModContext) (MotifCard) -> Unit): MotifCardRecipes {
         recipes += recipe
         return this
     }

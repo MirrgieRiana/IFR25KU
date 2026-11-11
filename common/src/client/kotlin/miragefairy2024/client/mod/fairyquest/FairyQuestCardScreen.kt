@@ -23,6 +23,7 @@ import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.fairyquest.FairyQuestCardScreenHandler
+import miragefairy2024.mod.fairyquest.openMessageScreen
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.orEmpty
@@ -65,7 +66,7 @@ class FairyQuestCardScreen(handler: FairyQuestCardScreenHandler, private val pla
                         child(ClickableContainer(Sizing.fill(100), Sizing.fixed(11 * 7 + 5)).apply {
 
                             onClick.register {
-                                minecraft!!.setScreen(FairyQuestMessageScreen(this@FairyQuestCardScreen, menu.recipe.title, menu.recipe.message, menu.recipe.client, menu.recipe.title))
+                                menu.recipe.openMessageScreen()
                                 true
                             }
 
