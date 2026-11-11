@@ -216,6 +216,46 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
+    fun `表示領域を拡大したら子とバーを描画前に現在範囲へ戻すのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val fixture = ScrollFixture()
+                val controller = fixture.attach(createScrollView(horizontal), IntPoint(100, 100))
+                try {
+                    val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                    val renderedPositions = mutableListOf<IntPoint>()
+                    fixture.widgets[0].onRender = { _, _, _, _ ->
+                        renderedPositions += IntPoint(fixture.widgets[0].x, fixture.widgets[0].y)
+                    }
+                    Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1000.0))
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(if (horizontal) IntPoint(-190, 20) else IntPoint(10, -180), renderedPositions.last())
+                    Assertions.assertEquals(if (horizontal) IntRectangle(77, 115, 33, 5) else IntRectangle(105, 87, 5, 33), environment.fills.last())
+
+                    root.setSize(if (horizontal) 250 else 100, if (horizontal) 100 else 250)
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(if (horizontal) IntPoint(-40, 20) else IntPoint(10, -30), renderedPositions.last())
+                    Assertions.assertEquals(if (horizontal) IntRectangle(52, 115, 208, 5) else IntRectangle(105, 62, 5, 208), environment.fills.last())
+
+                    root.setSize(if (horizontal) 300 else 100, if (horizontal) 100 else 300)
+                    environment.fills.clear()
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(IntPoint(10, 20), renderedPositions.last())
+                    Assertions.assertTrue(environment.fills.isEmpty())
+
+                    root.setSize(100, 100)
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(IntPoint(10, 20), renderedPositions.last())
+                    Assertions.assertEquals(listOf(if (horizontal) IntRectangle(10, 115, 33, 5) else IntRectangle(105, 20, 5, 33)), environment.fills)
+                } finally {
+                    controller.dispose()
+                    controller.detach()
+                }
+            }
+        }
+    }
+
+    @Test
     fun `親の scissor との交差領域を GPU へ渡し描画後に親の領域を復元するのだ`() {
         GuiTestEnvironment().use { environment ->
             val fixture = ScrollFixture()
