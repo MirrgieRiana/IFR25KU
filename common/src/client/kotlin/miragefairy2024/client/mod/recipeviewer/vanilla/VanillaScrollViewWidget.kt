@@ -455,6 +455,7 @@ abstract class VanillaScrollViewWidget(
         childController = view.childView.attachTo(getChildOffset(initialScrollOffset)) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
         }
+        // 子の生成中はまだ購読しておらず変更通知を受け取れないため、購読直後に現在値から表示位置を再計算するのだ～🌱
         view.scrollOffset.observeAndInitialize(onClosed) { old, new ->
             if (disposed) return@observeAndInitialize
             val scrollOffset = evaluateScrollOffset().roundToInt()
