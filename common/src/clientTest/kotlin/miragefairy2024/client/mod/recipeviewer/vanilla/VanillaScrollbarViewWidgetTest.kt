@@ -110,6 +110,35 @@ class VanillaScrollbarViewWidgetTest {
     }
 
     @Test
+    fun `ドラッグ中に太さを 0 にしても移動を継続しリリースでキャプチャを解除するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val view = if (horizontal) XScrollbarView() else YScrollbarView()
+                view.contentLength = 300
+                val bounds = if (horizontal) IntRectangle(10, 200, 100, 5) else IntRectangle(200, 20, 5, 100)
+                val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YScrollbarView, bounds)
+                Assertions.assertTrue(widget.mouseClicked(if (horizontal) 15.0 else 202.0, if (horizontal) 202.0 else 25.0, 0))
+                view.scrollbarThickness = 0
+                Assertions.assertTrue(widget.mouseDragged(500.0, 500.0, 0, 0.0, 0.0))
+                Assertions.assertTrue(widget.hasMouseCapture(0))
+                view.scrollbarThickness = 5
+                widget.render(environment.graphics, 50, 50, 0.0F)
+                Assertions.assertEquals(if (horizontal) IntRectangle(77, 200, 33, 5) else IntRectangle(200, 87, 5, 33), environment.fills.last())
+                view.scrollbarThickness = 100
+                Assertions.assertTrue(widget.mouseDragged(-100.0, -100.0, 0, 0.0, 0.0))
+                view.scrollbarThickness = 5
+                widget.render(environment.graphics, 50, 50, 0.0F)
+                Assertions.assertEquals(if (horizontal) IntRectangle(77, 200, 33, 5) else IntRectangle(200, 87, 5, 33), environment.fills.last())
+                view.scrollbarThickness = 0
+                Assertions.assertTrue(widget.mouseReleased(500.0, 500.0, 0))
+                Assertions.assertFalse(widget.hasMouseCapture(0))
+                Assertions.assertFalse(widget.mouseDragged(500.0, 500.0, 0, 0.0, 0.0))
+                widget.dispose()
+            }
+        }
+    }
+
+    @Test
     fun `トラックのクリックとホイールとキーを扱い破棄時にキャプチャを解除するのだ`() {
         GuiTestEnvironment().use { environment ->
             val view = YScrollbarView()
