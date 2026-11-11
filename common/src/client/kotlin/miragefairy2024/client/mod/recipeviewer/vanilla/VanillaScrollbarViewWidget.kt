@@ -87,6 +87,8 @@ abstract class VanillaScrollbarViewWidget(
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
+        updateScroll(scrollOffset)
+
         // スクロールバーの描画なのだ～🌱
         if (evaluateMaxScrollOffset() > 0 && view.scrollbarThickness > 0 && evaluateThumbLength() > 0) {
             renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), evaluateThumbLength())
