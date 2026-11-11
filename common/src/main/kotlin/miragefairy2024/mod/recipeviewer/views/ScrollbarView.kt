@@ -6,20 +6,17 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
-import mirrg.kotlin.helium.atLeast
-import mirrg.kotlin.helium.max
 
-/**
- * 子 View を一方向へスクロールするのだ～🌱
- * スクロール方向のコンテンツが占有する最小のサイズは `0` なのだ～🌱
- * スクロールバーの領域は、スクロールの必要がないときも確保するのだ～🌱
- * バニラへの配置では、子孫に [miragefairy2024.mod.recipeviewer.views.MenuSlotView] を含めてはならないのだ～🌱
- */
-abstract class ScrollbarView : WrapperView(), PlaceableView {
+abstract class ScrollbarView : AbstractView(), PlaceableView {
 
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
 
+    var contentLength = 0
+        set(value) {
+            if (value < 0) throw IllegalArgumentException("Content length must be non-negative")
+            field = value
+        }
     var scrollbarThickness = 5
         set(value) {
             if (value < 0) throw IllegalArgumentException("Scrollbar thickness must be non-negative")
@@ -36,24 +33,16 @@ abstract class ScrollbarView : WrapperView(), PlaceableView {
 
 }
 
-/** 子 View を X 軸方向へスクロールするのだ～🌱 */
 class XScrollbarView : ScrollbarView() {
 
     override fun evaluateContentSizeXImpl() = 0
-    override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY() + scrollbarThickness
-
-    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() max childView.evaluateContentSizeX()
-    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() - scrollbarThickness atLeast 0
+    override fun evaluateContentSizeYImpl() = scrollbarThickness
 
 }
 
-/** 子 View を Y 軸方向へスクロールするのだ～🌱 */
 class YScrollbarView : ScrollbarView() {
 
-    override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX() + scrollbarThickness
+    override fun evaluateContentSizeXImpl() = scrollbarThickness
     override fun evaluateContentSizeYImpl() = 0
-
-    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() - scrollbarThickness atLeast 0
-    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() max childView.evaluateContentSizeY()
 
 }
