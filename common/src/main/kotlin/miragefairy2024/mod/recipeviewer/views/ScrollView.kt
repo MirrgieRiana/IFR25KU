@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
+import miragefairy2024.util.ObservableValue
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 
@@ -19,6 +20,8 @@ abstract class ScrollView : WrapperView(), PlaceableView {
 
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
+
+    val scrollOffset = ObservableValue(0.0)
 
     var scrollbarThickness = 5
         set(value) {
