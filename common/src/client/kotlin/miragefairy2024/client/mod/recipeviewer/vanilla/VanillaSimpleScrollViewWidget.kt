@@ -82,7 +82,6 @@ abstract class VanillaSimpleScrollViewWidget(
 
     fun dispose() {
         disposed = true
-        draggingScrollbar = false
         isDragging = false
         pressedWidgetRegistrations.clear()
         focused = null
@@ -146,8 +145,6 @@ abstract class VanillaSimpleScrollViewWidget(
     // 描画とマウス入力なのだ～🌱
 
     private val pressedWidgetRegistrations = mutableMapOf<Int, WidgetRegistration?>()
-    private var draggingScrollbar = false
-    private var scrollbarDragOffset = 0.0
 
     private fun containsViewport(mouseX: Double, mouseY: Double): Boolean {
         if (mouseX < x) return false
@@ -189,77 +186,43 @@ abstract class VanillaSimpleScrollViewWidget(
 
     }
 
-    protected abstract fun getMousePosition(mouseX: Double, mouseY: Double): Double
-
     /** ホイール入力から、このコンテナのスクロール軸に適用する入力値を返すのだ～🌱 */
     protected abstract fun getScrollAmount(scrollX: Double, scrollY: Double): Double
 
-    private fun dragScrollbar(mouseX: Double, mouseY: Double) {
-        val thumbPosition = getMousePosition(mouseX, mouseY) - scrollbarDragOffset
-        val remainingThumbLength = viewportLength - evaluateThumbLength()
-        val scrollRatio = thumbPosition / remainingThumbLength.toDouble()
-        updateScroll(evaluateMaxScrollOffset() * scrollRatio)
-    }
-
-    override fun hasMouseCapture(button: Int) = !disposed && (button == 0 && draggingScrollbar || button in pressedWidgetRegistrations)
+    override fun hasMouseCapture(button: Int) = !disposed && button in pressedWidgetRegistrations
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         pressedWidgetRegistrations -= button
-        if (button == 0) {
-            draggingScrollbar = false
-            isDragging = false
-        }
+        if (button == 0) isDragging = false
         if (!isActive) return false
 
-        if (!containsViewport(mouseX, mouseY)) {
-            if (super.isMouseOver(mouseX, mouseY)) {
-                // スクロールバーのドラッグ開始なのだ～🌱
-                if (button != 0) return false
-                if (evaluateMaxScrollOffset() == 0) return false
-                if (viewportLength <= evaluateThumbLength()) return false
-                draggingScrollbar = true
-                val mousePosition = getMousePosition(mouseX, mouseY)
-                scrollbarDragOffset = if (mousePosition >= evaluateThumbPosition() && mousePosition < evaluateThumbPosition() + evaluateThumbLength()) {
-                    mousePosition - evaluateThumbPosition()
-                } else {
-                    evaluateThumbLength() / 2.0
-                }
-                dragScrollbar(mouseX, mouseY)
-                return true
-            } else {
-                return false
-            }
-        } else {
-            // 子要素のクリック処理なのだ～🌱
-            return widgetRegistrations.toList().any { widgetRegistration ->
-                // 操作可能でない子は除くのだ～🌱
-                if (!widgetRegistration.interactive) return@any false
-                // 途中で除外された子は除くのだ～🌱
-                if (widgetRegistration !in widgetRegistrations) return@any false
-                if (widgetRegistration.widget.mouseClicked(mouseX, mouseY, button)) {
-                    // クリック処理中に解除・破棄される場合があるため、処理後の登録状態を確認するのだ～🌱
-                    if (!disposed) {
-                        if (widgetRegistration in widgetRegistrations) {
-                            pressedWidgetRegistrations[button] = widgetRegistration
-                            focused = widgetRegistration.widget
-                            if (button == 0) isDragging = true
-                        } else {
-                            pressedWidgetRegistrations[button] = null
-                        }
+        if (!containsViewport(mouseX, mouseY)) return false
+
+        // 子要素のクリック処理なのだ～🌱
+        return widgetRegistrations.toList().any { widgetRegistration ->
+            // 操作可能でない子は除くのだ～🌱
+            if (!widgetRegistration.interactive) return@any false
+            // 途中で除外された子は除くのだ～🌱
+            if (widgetRegistration !in widgetRegistrations) return@any false
+            if (widgetRegistration.widget.mouseClicked(mouseX, mouseY, button)) {
+                // クリック処理中に解除・破棄される場合があるため、処理後の登録状態を確認するのだ～🌱
+                if (!disposed) {
+                    if (widgetRegistration in widgetRegistrations) {
+                        pressedWidgetRegistrations[button] = widgetRegistration
+                        focused = widgetRegistration.widget
+                        if (button == 0) isDragging = true
+                    } else {
+                        pressedWidgetRegistrations[button] = null
                     }
-                    true
-                } else {
-                    false
                 }
+                true
+            } else {
+                false
             }
         }
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
-        if (button == 0 && draggingScrollbar) {
-            dragScrollbar(mouseX, mouseY)
-            return true
-        }
         if (button !in pressedWidgetRegistrations) return false
         pressedWidgetRegistrations[button]?.widget?.mouseDragged(mouseX, mouseY, button, dragX, dragY)
         return true
@@ -267,10 +230,6 @@ abstract class VanillaSimpleScrollViewWidget(
 
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (button == 0) isDragging = false
-        if (button == 0 && draggingScrollbar) {
-            draggingScrollbar = false
-            return true
-        }
         if (button !in pressedWidgetRegistrations) return false
         pressedWidgetRegistrations.remove(button)?.widget?.mouseReleased(mouseX, mouseY, button)
         return true
@@ -482,7 +441,6 @@ class VanillaXSimpleScrollViewWidget(
     override val forwardKey get() = GLFW.GLFW_KEY_RIGHT
 
     override fun getChildOffset(scrollOffset: Int) = IntPoint(x - scrollOffset, y)
-    override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseX - x
 
     // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
@@ -535,7 +493,6 @@ class VanillaYSimpleScrollViewWidget(
     override val forwardKey get() = GLFW.GLFW_KEY_DOWN
 
     override fun getChildOffset(scrollOffset: Int) = IntPoint(x, y - scrollOffset)
-    override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseY - y
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
     // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
