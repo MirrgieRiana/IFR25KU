@@ -82,5 +82,36 @@ class VanillaScrollbarViewWidgetTest {
         }
     }
 
+    @Test
+    fun `トラックのクリックとホイールとキーを扱い破棄時にキャプチャを解除するのだ`() {
+        GuiTestEnvironment().use { environment ->
+            val view = YScrollbarView()
+            view.contentLength = 300
+            val widget = VanillaYScrollbarViewWidget(view, IntRectangle(200, 20, 5, 100))
+            Assertions.assertFalse(widget.mouseClicked(50.0, 50.0, 0))
+            Assertions.assertFalse(widget.mouseClicked(202.0, 25.0, 1))
+            Assertions.assertTrue(widget.mouseClicked(202.0, 110.0, 0))
+            widget.render(environment.graphics, 202, 25, 0.0F)
+            Assertions.assertEquals(IntRectangle(200, 87, 5, 33), environment.fills.last())
+            Assertions.assertTrue(widget.mouseReleased(202.0, 110.0, 0))
+            Assertions.assertFalse(widget.mouseScrolled(202.0, 25.0, 0.0, -1.0))
+            widget.isFocused = true
+            Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
+            Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_DOWN, 0, 0))
+            widget.render(environment.graphics, 202, 25, 0.0F)
+            Assertions.assertEquals(IntRectangle(200, 25, 5, 33), environment.fills.last())
+            Assertions.assertTrue(widget.mouseScrolled(202.0, 25.0, 0.0, -1.0))
+            widget.render(environment.graphics, 202, 25, 0.0F)
+            Assertions.assertEquals(IntRectangle(200, 30, 5, 33), environment.fills.last())
+            Assertions.assertTrue(widget.mouseClicked(202.0, 40.0, 0))
+            widget.dispose()
+            Assertions.assertFalse(widget.hasMouseCapture(0))
+            Assertions.assertFalse(widget.mouseDragged(500.0, 500.0, 0, 0.0, 0.0))
+            Assertions.assertFalse(widget.mouseReleased(500.0, 500.0, 0))
+            Assertions.assertFalse(widget.mouseClicked(202.0, 40.0, 0))
+            Assertions.assertNull(widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
+        }
+    }
+
 
 }
