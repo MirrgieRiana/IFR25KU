@@ -57,5 +57,30 @@ class VanillaScrollbarViewWidgetTest {
         }
     }
 
+    @Test
+    fun `単体のバーを指定した長さで描画して両端までドラッグできるのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val view = if (horizontal) XScrollbarView() else YScrollbarView()
+                view.contentLength = 300
+                val bounds = if (horizontal) IntRectangle(10, 200, 200, 5) else IntRectangle(200, 20, 5, 200)
+                val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YScrollbarView, bounds)
+                widget.render(environment.graphics, 50, 50, 0.0F)
+                Assertions.assertEquals(listOf(if (horizontal) IntRectangle(10, 200, 133, 5) else IntRectangle(200, 20, 5, 133)), environment.fills)
+                Assertions.assertTrue(widget.mouseClicked(if (horizontal) 80.0 else 202.0, if (horizontal) 202.0 else 90.0, 0))
+                Assertions.assertTrue(widget.hasMouseCapture(0))
+                Assertions.assertTrue(widget.mouseDragged(500.0, 500.0, 0, 0.0, 0.0))
+                widget.render(environment.graphics, 50, 50, 0.0F)
+                Assertions.assertEquals(if (horizontal) IntRectangle(77, 200, 133, 5) else IntRectangle(200, 87, 5, 133), environment.fills.last())
+                Assertions.assertTrue(widget.mouseDragged(-100.0, -100.0, 0, 0.0, 0.0))
+                widget.render(environment.graphics, 50, 50, 0.0F)
+                Assertions.assertEquals(if (horizontal) IntRectangle(10, 200, 133, 5) else IntRectangle(200, 20, 5, 133), environment.fills.last())
+                Assertions.assertTrue(widget.mouseReleased(-100.0, -100.0, 0))
+                Assertions.assertFalse(widget.hasMouseCapture(0))
+                widget.dispose()
+            }
+        }
+    }
+
 
 }
