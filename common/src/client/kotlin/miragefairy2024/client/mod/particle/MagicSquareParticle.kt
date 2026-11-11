@@ -55,7 +55,6 @@ fun createMagicSquareParticleFactory() = { spriteProvider: SpriteSet ->
 
 class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, layer: Int, private val targetPosition: Vec3, spriteProvider: SpriteSet) : TextureSheetParticle(level, x, y, z) {
 
-    var delay = 0
     var color1 = 0xFFF4D3
     var color2 = 0xFFB82C
     var color3 = 0x341B0E
@@ -104,8 +103,6 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, l
     }
 
     override fun render(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float) {
-        if (delay > 0) return
-
         val a = age.toFloat() + tickDelta
         when {
             a < alphaTicks[0] -> setColor(color1)
@@ -164,11 +161,6 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, l
     }
 
     override fun tick() {
-        if (delay > 0) {
-            delay--
-            return
-        }
-
         age++
         if (age >= lifetime) remove()
 
