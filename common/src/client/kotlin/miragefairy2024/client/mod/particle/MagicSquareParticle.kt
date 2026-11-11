@@ -112,7 +112,7 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, l
         }
 
         alpha = getValue(tickDelta, alphaTicks)
-        val brightness = getLightColor(tickDelta)
+        val brightness = getLayerLightColor(tickDelta, lightTicks)
         buildGeometry(vertexConsumer, camera, tickDelta, false, brightness)
         buildGeometry(vertexConsumer, camera, tickDelta, true, brightness)
     }
@@ -170,12 +170,12 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, l
 
     override fun getQuadSize(tickDelta: Float) = quadSize * (1F - 0.2F * Mth.cos((age.toFloat() + tickDelta) / 80F * Mth.TWO_PI))
 
-    override fun getLightColor(tint: Float): Int {
+    private fun getLayerLightColor(tint: Float, ticks: Array<Float>): Int {
         val brightness = super.getLightColor(tint)
         val oldSkyLight = LightTexture.sky(brightness)
         val oldBlockLight = LightTexture.block(brightness)
         val skyLight = oldSkyLight
-        val blockLight = oldBlockLight max (15F * getValue(tint, lightTicks)).roundToInt()
+        val blockLight = oldBlockLight max (15F * getValue(tint, ticks)).roundToInt()
         return LightTexture.pack(blockLight, skyLight)
     }
 
