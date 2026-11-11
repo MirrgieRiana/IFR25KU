@@ -520,6 +520,46 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
+    fun `表示領域を拡大したら子とバーを描画前に現在範囲へ戻すのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val fixture = ScrollFixture()
+                val controller = fixture.attach(createScrollView(horizontal), IntPoint(100, 100))
+                try {
+                    val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                    val renderedPositions = mutableListOf<IntPoint>()
+                    fixture.widgets[0].onRender = { _, _, _, _ ->
+                        renderedPositions += IntPoint(fixture.widgets[0].x, fixture.widgets[0].y)
+                    }
+                    Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1000.0))
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(if (horizontal) IntPoint(-190, 20) else IntPoint(10, -180), renderedPositions.last())
+                    Assertions.assertEquals(if (horizontal) IntRectangle(77, 115, 33, 5) else IntRectangle(105, 87, 5, 33), environment.fills.last())
+
+                    root.setSize(if (horizontal) 250 else 100, if (horizontal) 100 else 250)
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(if (horizontal) IntPoint(-40, 20) else IntPoint(10, -30), renderedPositions.last())
+                    Assertions.assertEquals(if (horizontal) IntRectangle(52, 115, 208, 5) else IntRectangle(105, 62, 5, 208), environment.fills.last())
+
+                    root.setSize(if (horizontal) 300 else 100, if (horizontal) 100 else 300)
+                    environment.fills.clear()
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(IntPoint(10, 20), renderedPositions.last())
+                    Assertions.assertTrue(environment.fills.isEmpty())
+
+                    root.setSize(100, 100)
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(IntPoint(10, 20), renderedPositions.last())
+                    Assertions.assertEquals(listOf(if (horizontal) IntRectangle(10, 115, 33, 5) else IntRectangle(105, 20, 5, 33)), environment.fills)
+                } finally {
+                    controller.dispose()
+                    controller.detach()
+                }
+            }
+        }
+    }
+
+    @Test
     fun `親の scissor との交差領域を GPU へ渡し描画後に親の領域を復元するのだ`() {
         GuiTestEnvironment().use { environment ->
             val fixture = ScrollFixture()
@@ -723,6 +763,41 @@ class VanillaScrollViewWidgetTest {
             Assertions.assertFalse(root.mouseDragged(mouseX, mouseY, 0, 1.0, 1.0))
             controller.dispose()
             controller.detach()
+        }
+    }
+
+    @Test
+    fun `ドラッグ中に太さが表示領域長以上になっても位置を壊さず解放するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val fixture = ScrollFixture()
+                val view = createScrollView(horizontal)
+                val controller = fixture.attach(view, IntPoint(100, 100))
+                try {
+                    val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                    Assertions.assertTrue(root.mouseClicked(if (horizontal) 20.0 else 107.0, if (horizontal) 117.0 else 30.0, 0))
+                    view.scrollbarThickness = 0
+                    Assertions.assertTrue(root.mouseDragged(400.0, 400.0, 0, 300.0, 300.0))
+                    val expected = if (horizontal) IntPoint(-190, 20) else IntPoint(10, -180)
+                    Assertions.assertEquals(expected, IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+
+                    view.scrollbarThickness = 100
+                    Assertions.assertTrue(root.mouseDragged(-100.0, -100.0, 0, -500.0, -500.0))
+                    Assertions.assertTrue(root.hasMouseCapture(0))
+                    Assertions.assertEquals(expected, IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+
+                    view.scrollbarThickness = 5
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(if (horizontal) IntRectangle(77, 115, 33, 5) else IntRectangle(105, 87, 5, 33), environment.fills.last())
+                    view.scrollbarThickness = 0
+                    Assertions.assertTrue(root.mouseReleased(-100.0, -100.0, 0))
+                    Assertions.assertFalse(root.hasMouseCapture(0))
+                    Assertions.assertFalse(root.mouseDragged(50.0, 50.0, 0, 1.0, 1.0))
+                } finally {
+                    controller.dispose()
+                    controller.detach()
+                }
+            }
         }
     }
 

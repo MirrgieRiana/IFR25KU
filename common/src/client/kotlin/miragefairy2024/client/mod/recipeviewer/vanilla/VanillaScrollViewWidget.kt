@@ -175,6 +175,8 @@ abstract class VanillaScrollViewWidget(
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
+        updateScroll(scrollOffset)
+
         // 子要素の描画なのだ～🌱
         guiGraphics.enableScissor(x, y, x + (width - getReservedRight() atLeast 0), y + (height - getReservedBottom() atLeast 0))
         try {
@@ -260,7 +262,7 @@ abstract class VanillaScrollViewWidget(
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (button == 0 && draggingScrollbar) {
-            dragScrollbar(mouseX, mouseY)
+            if (viewportLength > evaluateThumbLength()) dragScrollbar(mouseX, mouseY)
             return true
         }
         if (button !in pressedWidgetRegistrations) return false
