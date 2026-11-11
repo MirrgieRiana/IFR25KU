@@ -112,11 +112,12 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, l
         }
 
         alpha = getValue(tickDelta, alphaTicks)
-        buildGeometry(vertexConsumer, camera, tickDelta, false)
-        buildGeometry(vertexConsumer, camera, tickDelta, true)
+        val brightness = getLightColor(tickDelta)
+        buildGeometry(vertexConsumer, camera, tickDelta, false, brightness)
+        buildGeometry(vertexConsumer, camera, tickDelta, true, brightness)
     }
 
-    private fun buildGeometry(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float, flip: Boolean) {
+    private fun buildGeometry(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float, flip: Boolean, brightness: Int) {
 
         val offsetX = (targetPosition.x - x).toFloat()
         val offsetY = (targetPosition.y - y).toFloat()
@@ -146,8 +147,6 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, l
             vector3f.mul(size)
             vector3f.add(translateX, translateY, translateZ)
         }
-
-        val brightness = getLightColor(tickDelta)
 
         vertex(vertexConsumer, vector3fs[0], u1, v1, brightness)
         vertex(vertexConsumer, vector3fs[1], u1, v0, brightness)
