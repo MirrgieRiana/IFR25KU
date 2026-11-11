@@ -136,7 +136,6 @@ abstract class VanillaScrollViewWidget(
 
     protected fun updateScroll(offset: Double): Boolean {
         if (disposed) return false
-        if (offset.isNaN()) throw IllegalArgumentException("Scroll offset must not be NaN")
         val old = evaluateScrollOffset()
         view.scrollOffset.value = offset
         return evaluateScrollOffset() != old

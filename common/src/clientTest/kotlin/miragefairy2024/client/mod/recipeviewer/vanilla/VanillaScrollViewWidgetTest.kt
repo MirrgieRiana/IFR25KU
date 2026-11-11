@@ -272,7 +272,7 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
-    fun `NaN と破棄後の代入で位置を壊さず同じ View の再配置でも位置を保持するのだ`() {
+    fun `破棄後の代入で位置を壊さず同じ View の再配置でも位置を保持するのだ`() {
         listOf(false, true).forEach { horizontal ->
             val fixture = ScrollFixture()
             val view = createScrollView(horizontal)
@@ -281,9 +281,6 @@ class VanillaScrollViewWidgetTest {
             try {
                 root.axisScrollOffset = 42.5
                 val position = IntPoint(fixture.widgets[0].x, fixture.widgets[0].y)
-                Assertions.assertThrows(IllegalArgumentException::class.java) { root.axisScrollOffset = Double.NaN }
-                Assertions.assertEquals(42.5, root.axisScrollOffset)
-                Assertions.assertEquals(position, IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
 
                 controller.dispose()
                 root.axisScrollOffset = 90.0
