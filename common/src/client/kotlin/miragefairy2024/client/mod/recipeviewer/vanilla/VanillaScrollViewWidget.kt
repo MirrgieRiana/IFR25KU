@@ -14,7 +14,6 @@ import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
-import miragefairy2024.util.observe
 import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.text
 import miragefairy2024.util.translate
@@ -452,20 +451,15 @@ abstract class VanillaScrollViewWidget(
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
         }
-        val onScrollOffsetChanged = EventRegistry<() -> Unit>()
-        view.scrollOffset.observeAndInitialize(onClosed) { _, _ ->
-            if (disposed) return@observeAndInitialize
-            onScrollOffsetChanged.fire()
-        }
         val initialScrollOffset = evaluateScrollOffset().roundToInt()
         childController = view.childView.attachTo(getChildOffset(initialScrollOffset)) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
         }
-        onScrollOffsetChanged.observe(onClosed) {
-            if (disposed) return@observe
-            childController.setOffset(getChildOffset(evaluateScrollOffset().roundToInt()))
+        view.scrollOffset.observeAndInitialize(onClosed) { old, new ->
+            if (disposed) return@observeAndInitialize
+            val scrollOffset = evaluateScrollOffset().roundToInt()
+            if (old != new || scrollOffset != initialScrollOffset) childController.setOffset(getChildOffset(scrollOffset))
         }
-        if (evaluateScrollOffset().roundToInt() != initialScrollOffset) onScrollOffsetChanged.fire()
     }
 
 }
