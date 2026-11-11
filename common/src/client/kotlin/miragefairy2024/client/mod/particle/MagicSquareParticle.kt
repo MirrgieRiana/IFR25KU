@@ -105,6 +105,10 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, p
     override fun render(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float) {
         (0 until LAYER_COUNT).forEach { layer ->
             val ticks = getLayerTicks(layer)
+            val value = getValue(tickDelta, ticks)
+            // まだ現れていない層と、消え切った層は、頂点を 1 個も積まないのだ～🌱
+            if (value <= 0F) return@forEach
+
             setSprite(sprites[layer.coerceIn(sprites.indices)])
 
             val a = age.toFloat() + tickDelta
@@ -114,7 +118,7 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, p
                 a < ticks[3] -> setColor(color2, color3, (a - ticks[2]) / (ticks[3] - ticks[2]))
                 else -> setColor(color3)
             }
-            alpha = getValue(tickDelta, ticks)
+            alpha = value
 
             val brightness = getLayerLightColor(tickDelta, ticks)
             buildGeometry(vertexConsumer, camera, tickDelta, false, brightness)
