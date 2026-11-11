@@ -59,15 +59,6 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, p
         quadSize = 0.5F
     }
 
-    /** 層ごとに、現れ始める時刻をずらすのだ～🌱 */
-    private fun getLayerDelay(layer: Int) = 30F * (layer.toFloat() / (LAYER_COUNT - 1).toFloat())
-
-    /** 層ごとの、現れてから消えるまでの 4 個の節目なのだ～🌱 */
-    private fun getLayerTicks(layer: Int): Array<Float> {
-        val delay = getLayerDelay(layer)
-        return arrayOf(delay, delay + 20F, 70F, 80F)
-    }
-
     //       0     1         2     3
     // 　　　　　／￣￣￣￣￣＼
     // 　　　　／　　　　　　　＼
@@ -104,7 +95,7 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, p
 
     override fun render(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float) {
         (0 until LAYER_COUNT).forEach { layer ->
-            val ticks = getLayerTicks(layer)
+            val ticks = LAYER_TICKS[layer]
             val value = getValue(tickDelta, ticks)
             // まだ現れていない層と、消え切った層は、頂点を 1 個も積まないのだ～🌱
             if (value <= 0F) return@forEach
@@ -193,5 +184,13 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, p
     companion object {
         /** 重ねる魔法陣の枚数なのだ～🌱 */
         private const val LAYER_COUNT = 7
+
+        /** 層ごとの、現れてから消えるまでの 4 個の節目なのだ～🌱 */
+        private val LAYER_TICKS by lazy {
+            Array(LAYER_COUNT) { layer ->
+                val delay = 30F * (layer.toFloat() / (LAYER_COUNT - 1).toFloat())
+                arrayOf(delay, delay + 20F, 70F, 80F)
+            }
+        }
     }
 }
