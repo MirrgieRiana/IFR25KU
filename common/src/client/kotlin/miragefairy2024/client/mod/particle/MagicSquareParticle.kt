@@ -30,7 +30,7 @@ fun initMagicSquareParticle() {
         val particleManager = Minecraft.getInstance().particleEngine ?: return@registerClientPacketReceiver
         (0..6).forEach { i ->
             particleManager.createParticle(
-                MagicSquareParticleEffect(i, packet.targetPosition, 30F * (i.toFloat() / 6F)),
+                MagicSquareParticleEffect(i, packet.targetPosition),
                 packet.position.x,
                 packet.position.y,
                 packet.position.z,
@@ -44,28 +44,30 @@ fun initMagicSquareParticle() {
 
 fun createMagicSquareParticleFactory() = { spriteProvider: SpriteSet ->
     ParticleProvider<MagicSquareParticleEffect> { parameters, level, x, y, z, _, _, _ ->
-        MagicSquareParticle(level, x, y, z, parameters.layer, parameters.targetPosition, spriteProvider).also {
-            it.alphaTicks[0] = parameters.delay
-            it.alphaTicks[1] = parameters.delay + 20F
-            it.lightTicks[0] = parameters.delay
-            it.lightTicks[1] = parameters.delay + 20F
-        }
+        MagicSquareParticle(level, x, y, z, parameters.layer, parameters.targetPosition, spriteProvider)
     }
 }
 
-class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, layer: Int, private val targetPosition: Vec3, spriteProvider: SpriteSet) : TextureSheetParticle(level, x, y, z) {
+class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, private val layer: Int, private val targetPosition: Vec3, spriteProvider: SpriteSet) : TextureSheetParticle(level, x, y, z) {
 
     var color1 = 0xFFF4D3
     var color2 = 0xFFB82C
     var color3 = 0x341B0E
-    var alphaTicks = arrayOf(0F, 10F, 70F, 80F)
-    var lightTicks = arrayOf(0F, 10F, 70F, 80F)
 
     init {
         val sprites = (spriteProvider as FabricSpriteProvider).sprites
         setSprite(sprites[layer.coerceIn(sprites.indices)])
         lifetime = 80
         quadSize = 0.5F
+    }
+
+    /** 層ごとに、現れ始める時刻をずらすのだ～🌱 */
+    private fun getLayerDelay(layer: Int) = 30F * (layer.toFloat() / (LAYER_COUNT - 1).toFloat())
+
+    /** 層ごとの、現れてから消えるまでの 4 個の節目なのだ～🌱 */
+    private fun getLayerTicks(layer: Int): Array<Float> {
+        val delay = getLayerDelay(layer)
+        return arrayOf(delay, delay + 20F, 70F, 80F)
     }
 
     //       0     1         2     3
@@ -103,16 +105,17 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, l
     }
 
     override fun render(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float) {
+        val ticks = getLayerTicks(layer)
         val a = age.toFloat() + tickDelta
         when {
-            a < alphaTicks[1] -> setColor(color1)
-            a < alphaTicks[2] -> setColor(color1, color2, (a - alphaTicks[1]) / (alphaTicks[2] - alphaTicks[1]))
-            a < alphaTicks[3] -> setColor(color2, color3, (a - alphaTicks[2]) / (alphaTicks[3] - alphaTicks[2]))
+            a < ticks[1] -> setColor(color1)
+            a < ticks[2] -> setColor(color1, color2, (a - ticks[1]) / (ticks[2] - ticks[1]))
+            a < ticks[3] -> setColor(color2, color3, (a - ticks[2]) / (ticks[3] - ticks[2]))
             else -> setColor(color3)
         }
 
-        alpha = getValue(tickDelta, alphaTicks)
-        val brightness = getLayerLightColor(tickDelta, lightTicks)
+        alpha = getValue(tickDelta, ticks)
+        val brightness = getLayerLightColor(tickDelta, ticks)
         buildGeometry(vertexConsumer, camera, tickDelta, false, brightness)
         buildGeometry(vertexConsumer, camera, tickDelta, true, brightness)
     }
@@ -180,5 +183,10 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, l
     }
 
     override fun getRenderType(): ParticleRenderType = ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT
+
+    companion object {
+        /** 重ねる魔法陣の枚数なのだ～🌱 */
+        private const val LAYER_COUNT = 7
+    }
 
 }

@@ -24,7 +24,6 @@ class MagicSquareParticleType(alwaysSpawn: Boolean) : ParticleType<MagicSquarePa
             instance.group(
                 Codec.INT.fieldOf("layer").forGetter(MagicSquareParticleEffect::layer),
                 Vec3.CODEC.fieldOf("targetPosition").forGetter(MagicSquareParticleEffect::targetPosition),
-                Codec.FLOAT.fieldOf("delay").forGetter(MagicSquareParticleEffect::delay),
             ).apply(instance, ::MagicSquareParticleEffect)
         }
         val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, MagicSquareParticleEffect> = StreamCodec.composite(
@@ -32,8 +31,6 @@ class MagicSquareParticleType(alwaysSpawn: Boolean) : ParticleType<MagicSquarePa
             { it.layer },
             VEC3_STREAM_CODEC,
             { it.targetPosition },
-            ByteBufCodecs.FLOAT,
-            { it.delay },
             ::MagicSquareParticleEffect,
         )
     }
@@ -42,7 +39,7 @@ class MagicSquareParticleType(alwaysSpawn: Boolean) : ParticleType<MagicSquarePa
     override fun streamCodec() = STREAM_CODEC
 }
 
-class MagicSquareParticleEffect(val layer: Int, val targetPosition: Vec3, val delay: Float) : ParticleOptions {
+class MagicSquareParticleEffect(val layer: Int, val targetPosition: Vec3) : ParticleOptions {
     override fun getType() = ParticleTypeCard.MAGIC_SQUARE.particleType
 }
 
