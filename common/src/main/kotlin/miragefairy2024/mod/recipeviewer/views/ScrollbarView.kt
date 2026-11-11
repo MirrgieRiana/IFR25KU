@@ -35,12 +35,16 @@ abstract class ScrollbarView : AbstractView(), PlaceableView {
 
 class XScrollbarView : ScrollbarView() {
 
+    override var sizingY = Sizing.WRAP
+
     override fun evaluateContentSizeXImpl() = 0
     override fun evaluateContentSizeYImpl() = scrollbarThickness
 
 }
 
 class YScrollbarView : ScrollbarView() {
+
+    override var sizingX = Sizing.WRAP
 
     override fun evaluateContentSizeXImpl() = scrollbarThickness
     override fun evaluateContentSizeYImpl() = 0
