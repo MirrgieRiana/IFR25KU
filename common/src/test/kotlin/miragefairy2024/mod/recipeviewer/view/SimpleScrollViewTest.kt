@@ -1,7 +1,9 @@
 package miragefairy2024.mod.recipeviewer.view
 
 import miragefairy2024.mod.recipeviewer.views.AbstractView
+import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import mirrg.kotlin.helium.max
@@ -79,6 +81,21 @@ class SimpleScrollViewTest {
                 val expected = if (horizontal) IntPoint(100 max length, 100) else IntPoint(100, 100 max length)
                 Assertions.assertEquals(expected, child.evaluateActualSize())
             }
+        }
+    }
+
+    @Test
+    fun `子を持たないバーは指定された太さをコンテンツ寸法に使うのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val view = if (horizontal) XScrollbarView() else YScrollbarView()
+            view.scrollbarThickness = 7
+            if (horizontal) view.sizingY = Sizing.WRAP else view.sizingX = Sizing.WRAP
+            view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 80 })
+            Assertions.assertEquals(if (horizontal) IntPoint(100, 7) else IntPoint(7, 80), view.evaluateActualSize())
+            Assertions.assertEquals(0, view.contentLength)
+            Assertions.assertThrows(IllegalArgumentException::class.java) { view.contentLength = -1 }
+            Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollbarThickness = -1 }
+            Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollStep = 0 }
         }
     }
 
