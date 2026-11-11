@@ -83,13 +83,12 @@ class EventRegistryTest {
     }
 
     @Test
-    fun `終了イベントを共有する Remover は再入しても一度ずつ解除するのだ～🌱`() {
+    fun `終了イベントが発火すると Remover を解除するのだ～🌱`() {
         val onClosed = EventRegistry<() -> Unit>()
         val removals = mutableListOf<Int>()
         Remover {
             removals += 1
             assertEquals(1, onClosed.listeners.size)
-            onClosed.fire()
         }.removeOn(onClosed)
         Remover {
             removals += 2

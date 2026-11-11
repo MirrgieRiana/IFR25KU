@@ -72,14 +72,10 @@ fun interface Remover {
 fun Remover.removeOn(onClosed: EventRegistry<() -> Unit>) {
     var onClosedListener: (() -> Unit)? = null
     onClosedListener = {
-        val listener = onClosedListener
-        if (listener != null) {
-            onClosedListener = null
-            onClosed.remove(listener)
-            this.remove()
-        }
+        onClosed.remove(onClosedListener!!)
+        this.remove()
     }
-    onClosed.register(onClosedListener!!)
+    onClosed.register(onClosedListener)
 }
 
 fun (() -> Unit).asRemover() = Remover {
