@@ -153,19 +153,23 @@ class DynamicViewTest {
         content.value = first
         view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
         val firstController = view.attachTo(IntPoint(7, 11), DYNAMIC_VIEW_PLACER)
+        assertEquals(1, content.listeners.size)
 
         firstController.dispose()
+        assertEquals(0, content.listeners.size)
         content.value = second
 
         assertEquals(listOf("first:init", "first:attach", "first:dispose"), events)
         view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 200 }, { 160 })
         val secondController = view.attachTo(IntPoint(20, 30), DYNAMIC_VIEW_PLACER)
+        assertEquals(1, content.listeners.size)
         content.value = first
 
         assertEquals(listOf(IntPoint(200, 160)), second.regions)
         assertEquals(listOf(IntPoint(100, 80), IntPoint(200, 160)), first.regions)
         assertEquals(listOf(IntPoint(20, 30)), second.offsets)
         secondController.dispose()
+        assertEquals(0, content.listeners.size)
         secondController.detach()
         val eventsAfterDisposal = events.toList()
         content.value = second
