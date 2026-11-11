@@ -30,7 +30,6 @@ abstract class SimpleScrollView : WrapperView(), PlaceableView {
             if (value <= 0) throw IllegalArgumentException("Scroll step must be positive")
             field = value
         }
-    var scrollbarColor = 0xA0000000.toInt()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 

@@ -106,26 +106,6 @@ abstract class VanillaSimpleScrollViewWidget(
 
     private fun evaluateMaxScrollOffset() = evaluateContentLength() - viewportLength atLeast 0
 
-    private fun evaluateThumbLength(): Int {
-        if (viewportLength <= 0) return 0
-        val contentLength = evaluateContentLength()
-        if (contentLength <= viewportLength) return viewportLength
-        val visibleRatio = viewportLength.toDouble() / contentLength.toDouble()
-        val rawThumbLength = (viewportLength.toDouble() * visibleRatio).roundToInt()
-        val minThumbLength = view.scrollbarThickness.coerceIn(1, viewportLength)
-        return rawThumbLength.coerceIn(minThumbLength, viewportLength)
-    }
-
-    private fun evaluateThumbPosition(): Double {
-        return if (evaluateMaxScrollOffset() == 0) {
-            0.0
-        } else {
-            val maxThumbPosition = viewportLength - evaluateThumbLength()
-            val scrollRatio = scrollOffset / evaluateMaxScrollOffset().toDouble()
-            maxThumbPosition.toDouble() * scrollRatio
-        }
-    }
-
     protected abstract fun getChildOffset(scrollOffset: Int): IntPoint
 
     private fun updateScroll(offset: Double): Boolean {
@@ -165,8 +145,6 @@ abstract class VanillaSimpleScrollViewWidget(
         return super.getChildAt(mouseX, mouseY)
     }
 
-    protected abstract fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int)
-
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
         // 子要素の描画なのだ～🌱
@@ -177,11 +155,6 @@ abstract class VanillaSimpleScrollViewWidget(
             }
         } finally {
             guiGraphics.disableScissor()
-        }
-
-        // スクロールバーの描画なのだ～🌱
-        if (evaluateMaxScrollOffset() > 0 && view.scrollbarThickness > 0 && evaluateThumbLength() > 0) {
-            renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), evaluateThumbLength())
         }
 
     }
@@ -445,17 +418,6 @@ class VanillaXSimpleScrollViewWidget(
     // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
-    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
-        guiGraphics.fill(
-            x + start,
-            y + height - view.scrollbarThickness atLeast y,
-            x + start + length,
-            y + height,
-            view.scrollbarColor,
-        )
-    }
-
     override fun getScrollOffsetDeltaOnFocus(rectangle: ScreenRectangle): Int {
         val viewPortX1 = rectangle.left() - x
         if (viewPortX1 < 0) return viewPortX1
@@ -494,17 +456,6 @@ class VanillaYSimpleScrollViewWidget(
 
     override fun getChildOffset(scrollOffset: Int) = IntPoint(x, y - scrollOffset)
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
-
-    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
-        guiGraphics.fill(
-            x + width - view.scrollbarThickness atLeast x,
-            y + start,
-            x + width,
-            y + start + length,
-            view.scrollbarColor,
-        )
-    }
 
     override fun getScrollOffsetDeltaOnFocus(rectangle: ScreenRectangle): Int {
         val viewPortY1 = rectangle.top() - y
