@@ -194,5 +194,4 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, p
         /** 重ねる魔法陣の枚数なのだ～🌱 */
         private const val LAYER_COUNT = 7
     }
-
 }
