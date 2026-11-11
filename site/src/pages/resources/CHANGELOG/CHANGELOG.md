@@ -30,7 +30,6 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 
 その他
 
-- 修正: スクロール領域のサイズ変更後に表示位置が範囲外に残る問題と、ドラッグ中のスクロールバーの太さ変更で表示位置が不正になる問題を修正。
 - 表示: トーストの省略単位を文字単位に変更し、省略時の `...` を濃い青固定に変更。
 
 ## 31.32.2
