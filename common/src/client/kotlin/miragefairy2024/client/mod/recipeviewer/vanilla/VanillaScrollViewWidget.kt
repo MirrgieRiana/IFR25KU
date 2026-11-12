@@ -10,6 +10,7 @@ import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.EventRegistry
+import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.fire
@@ -39,6 +40,7 @@ import kotlin.math.roundToInt
 /** 子 Widget の描画・入力・フォーカス・読み上げを中継するスクロール領域なのだ～🌱 */
 abstract class VanillaScrollViewWidget(
     protected val view: ScrollView,
+    private val scrollOffsetValue: ObservableValue<Double>,
     bounds: IntRectangle,
     context: VanillaViewPlacerContext,
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
@@ -110,7 +112,7 @@ abstract class VanillaScrollViewWidget(
 
     private fun evaluateMaxScrollOffset() = evaluateContentLength() - viewportLength atLeast 0
 
-    private fun evaluateScrollOffset() = view.scrollOffset.value.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
+    private fun evaluateScrollOffset() = scrollOffsetValue.value.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
 
     private fun evaluateThumbLength(): Int {
         if (viewportLength <= 0) return 0
@@ -136,7 +138,7 @@ abstract class VanillaScrollViewWidget(
 
     private fun updateScroll(offset: Double): Boolean {
         val old = evaluateScrollOffset()
-        view.scrollOffset.value = offset
+        scrollOffsetValue.value = offset
         return evaluateScrollOffset() != old
     }
 
@@ -458,7 +460,7 @@ abstract class VanillaScrollViewWidget(
             registry.place(childContext, childView, childBounds)
         }
         // 子の生成中はまだ購読しておらず変更通知を受け取れないため、購読直後に現在値から表示位置を再計算するのだ～🌱
-        view.scrollOffset.observeAndInitialize(onClosed) { old, new ->
+        scrollOffsetValue.observeAndInitialize(onClosed) { old, new ->
             if (disposed) return@observeAndInitialize
             val scrollOffset = evaluateScrollOffset().roundToInt()
             if (old != new || scrollOffset != initialScrollOffset) childController.setOffset(getChildOffset(scrollOffset))
@@ -474,6 +476,7 @@ class VanillaXScrollViewWidget(
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
 ) : VanillaScrollViewWidget(
     view,
+    view.scrollOffsetX,
     bounds,
     context,
     registry,
@@ -527,6 +530,7 @@ class VanillaYScrollViewWidget(
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
 ) : VanillaScrollViewWidget(
     view,
+    view.scrollOffsetY,
     bounds,
     context,
     registry,
