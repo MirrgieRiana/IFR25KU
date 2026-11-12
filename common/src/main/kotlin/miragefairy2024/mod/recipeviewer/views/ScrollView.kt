@@ -21,8 +21,6 @@ abstract class ScrollView : WrapperView(), PlaceableView {
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
 
-    val scrollOffset = ObservableValue(0.0)
-
     var scrollbarThickness = 5
         set(value) {
             if (value < 0) throw IllegalArgumentException("Scrollbar thickness must be non-negative")
@@ -42,6 +40,8 @@ abstract class ScrollView : WrapperView(), PlaceableView {
 /** 子 View を X 軸方向へスクロールするのだ～🌱 */
 class XScrollView : ScrollView() {
 
+    val scrollOffsetX = ObservableValue(0.0)
+
     override fun evaluateContentSizeXImpl() = 0
     override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY() + scrollbarThickness
 
@@ -52,6 +52,8 @@ class XScrollView : ScrollView() {
 
 /** 子 View を Y 軸方向へスクロールするのだ～🌱 */
 class YScrollView : ScrollView() {
+
+    val scrollOffsetY = ObservableValue(0.0)
 
     override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX() + scrollbarThickness
     override fun evaluateContentSizeYImpl() = 0
