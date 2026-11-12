@@ -36,7 +36,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
         var currentScrollView: YScrollView? = null
         fun scrollView() = View {
             view += YScrollView().configure {
-                view.scrollOffset.value = currentScrollView?.scrollOffset?.value ?: 0.0
+                view.scrollOffsetY.value = currentScrollView?.scrollOffsetY?.value ?: 0.0
                 currentScrollView = view
                 view += YListView().configure {
                     view.sizingX = Sizing.FILL
