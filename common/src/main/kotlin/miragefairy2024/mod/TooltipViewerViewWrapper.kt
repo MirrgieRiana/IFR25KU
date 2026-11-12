@@ -33,8 +33,11 @@ import net.minecraft.world.item.ItemStack
 class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableValue<String>, tooltipProvider: (ItemStack) -> List<Component>) {
 
     val view = View {
+        var currentScrollView: YScrollView? = null
         fun scrollView() = View {
             view += YScrollView().configure {
+                view.scrollOffset.value = currentScrollView?.scrollOffset?.value ?: 0.0
+                currentScrollView = view
                 view += YListView().configure {
                     view.sizingX = Sizing.FILL
 

@@ -84,7 +84,7 @@ class TooltipViewerViewWrapperTest {
     }
 
     @Test
-    fun `フィルタを変更すると入力欄を保持したまま行と間隔を更新するのだ`() {
+    fun `フィルタを変更すると入力欄とスクロール位置を保持したまま行と間隔を更新するのだ`() {
         val filter = ObservableValue("")
         val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE)), filter) {
             listOf("title", "first", "second", "third").map { text { it() } }
@@ -94,6 +94,7 @@ class TooltipViewerViewWrapperTest {
         val controller = view.place(placements)
         try {
             val field = placements.mapNotNull { it.first as? TextFieldView }.single()
+            var scrollView = placements.mapNotNull { it.first as? YScrollView }.single()
             listOf(
                 "0,1,3" to listOf("title", "first", "third"),
                 "1,3" to listOf("first", "third"),
@@ -101,10 +102,14 @@ class TooltipViewerViewWrapperTest {
                 "invalid" to listOf("title", "first", "second", "third"),
                 "" to listOf("title", "first", "second", "third"),
             ).forEach { (value, expected) ->
+                scrollView.scrollOffset.value += 10.5
+                val scrollOffset = scrollView.scrollOffset.value
                 field.text.value = value
                 Assertions.assertEquals(value, filter.value)
                 Assertions.assertSame(field, placements.mapNotNull { it.first as? TextFieldView }.single())
                 Assertions.assertEquals(1, placements.count { it.first is YScrollView })
+                scrollView = placements.mapNotNull { it.first as? YScrollView }.single()
+                Assertions.assertEquals(scrollOffset, scrollView.scrollOffset.value)
                 val lines = placements.filter { it.first is MultiLineTextView }
                 Assertions.assertEquals(expected, lines.map { (it.first as MultiLineTextView).text.value.string })
                 if (value == "0,1,3") {
