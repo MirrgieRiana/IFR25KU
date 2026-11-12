@@ -105,7 +105,7 @@ class SimpleScrollViewTest {
         listOf(false, true).forEach { horizontal ->
             val view = if (horizontal) XScrollbarView() else YScrollbarView()
             view.scrollbarThickness = 7
-            if (horizontal) view.sizingY = Sizing.FILL else view.sizingX = Sizing.FILL
+            if (horizontal) (view as XScrollbarView).sizingY = Sizing.FILL else (view as YScrollbarView).sizingX = Sizing.FILL
             view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 80 })
             Assertions.assertEquals(if (horizontal) IntPoint(0, 7) else IntPoint(7, 0), view.evaluateContentSize())
             Assertions.assertEquals(IntPoint(100, 80), view.evaluateActualSize())
