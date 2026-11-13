@@ -94,7 +94,9 @@ class SimpleScrollViewTest {
             view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 80 })
             Assertions.assertEquals(if (horizontal) IntPoint(100, 7) else IntPoint(7, 80), view.evaluateActualSize())
             Assertions.assertEquals(0, view.contentLength)
+            Assertions.assertEquals(0, view.viewportLength)
             Assertions.assertThrows(IllegalArgumentException::class.java) { view.contentLength = -1 }
+            Assertions.assertThrows(IllegalArgumentException::class.java) { view.viewportLength = -1 }
             Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollbarThickness = -1 }
             Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollStep = 0 }
         }
