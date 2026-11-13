@@ -1,5 +1,6 @@
 package miragefairy2024
 
+import miragefairy2024.mod.common.KeyMappingType
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.View
 import net.minecraft.core.BlockPos
@@ -37,7 +38,7 @@ interface ClientProxy<S : Any> {
     fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu
     fun getCurrentScreen(): S?
     fun setCurrentScreen(screen: S?)
-    fun createMessageViewScreen(parent: S?, title: Component, rootViewFactory: () -> View): S
+    fun createMessageViewScreen(parent: S?, definition: MessageViewScreenDefinition): S
     fun addToast(rootView: View)
     fun ellipsizeText(text: FormattedText, maxWidth: Int, ellipsis: FormattedText): FormattedCharSequence
 }
@@ -66,4 +67,11 @@ interface RenderingProxy {
 
 interface RenderingProxyBlockEntity {
     fun render(renderingProxy: RenderingProxy, tickDelta: Float, light: Int, overlay: Int) = Unit
+}
+
+class MessageViewScreenDefinition(val title: Component, val rootViewFactory: () -> View) {
+    var transparentBackground = true
+    var closeOnInventoryKey = true
+    var additionalCloseKey: KeyMappingType? = null
+    var closeOnOutsideClick = true
 }
