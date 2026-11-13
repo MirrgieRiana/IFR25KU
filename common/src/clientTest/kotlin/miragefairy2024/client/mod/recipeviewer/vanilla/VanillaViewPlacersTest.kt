@@ -4,11 +4,17 @@ import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewController
+import miragefairy2024.mod.recipeviewer.view.connectScrollbar
 import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
+import miragefairy2024.mod.recipeviewer.views.ListView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
+import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
+import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
@@ -335,6 +341,89 @@ class VanillaViewPlacersTest {
             Assertions.assertFalse(widget.isActive)
             Assertions.assertFalse(widget.hasMouseCapture(0))
             Assertions.assertTrue(widgets.isEmpty())
+        }
+    }
+
+    @Test
+    fun `List と Stack に配置した表示領域とバーを本番の登録で接続して再配置するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            listOf(false, true).forEach { overlay ->
+                GuiTestEnvironment().use { environment ->
+                    val widgets = mutableListOf<AbstractWidget>()
+                    val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+                        override val origin = IntPoint(10, 20)
+                        override val canPlaceMenuSlots = false
+                        override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                            widgets += widget
+                            return Remover { widgets.remove(widget) }
+                        }
+                        override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Unexpected render-only widget")
+                    }
+                    val leaf = PlacerTestView()
+                    val scroll = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+                    val bar = if (horizontal) XScrollbarView() else YScrollbarView()
+                    val scrollOffset = if (horizontal) (scroll as XSimpleScrollView).scrollOffsetX else (scroll as YSimpleScrollView).scrollOffsetY
+                    val barOffset = if (horizontal) (bar as XScrollbarView).scrollOffsetX else (bar as YScrollbarView).scrollOffsetY
+                    scrollOffset.value = 25.25
+                    scroll += leaf
+                    val connection = connectScrollbar(scroll, scrollOffset, bar, barOffset)
+                    val root = if (overlay) {
+                        StackView().also {
+                            it.sizingX = Sizing.FILL
+                            it.sizingY = Sizing.FILL
+                            it += scroll
+                            it += bar
+                        }
+                    } else {
+                        val list = if (horizontal) YListView() else XListView()
+                        list.sizingX = Sizing.FILL
+                        list.sizingY = Sizing.FILL
+                        list.add(Child(ListView.Position().also { it.weight = 1.0 }, scroll))
+                        list += bar
+                        list
+                    }
+                    try {
+                        listOf(50, 40).forEach { viewportLength ->
+                            root.initSizeCalculation(PLACER_RENDERING_PROXY, { if (horizontal || overlay) 50 else 55 }, { if (horizontal && !overlay) viewportLength + 5 else viewportLength })
+                            val controller = root.attachTo(context.origin) { view, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds) }
+                            val viewport = widgets.filterIsInstance<VanillaSimpleScrollViewWidget>().single()
+                            val scrollbar = widgets.filterIsInstance<VanillaScrollbarViewWidget>().single()
+                            val child = viewport.children().single() as AbstractWidget
+                            try {
+                                Assertions.assertEquals(100, bar.contentLength)
+                                Assertions.assertEquals(if (horizontal) 50 else viewportLength, bar.viewportLength)
+                                Assertions.assertEquals(scrollOffset.value, barOffset.value)
+                                Assertions.assertEquals(if (horizontal) context.origin.x - scrollOffset.value.coerceIn(0.0, 50.0).toInt() else context.origin.x, child.x)
+                                barOffset.value = 10.0
+                                Assertions.assertEquals(if (horizontal) IntPoint(0, 20) else IntPoint(10, 10), IntPoint(child.x, child.y))
+                                Assertions.assertTrue(viewport.mouseScrolled(25.0, 30.0, 0.0, -1.0))
+                                Assertions.assertEquals(25.0, barOffset.value)
+                                viewport.render(environment.graphics, 25, 30, 0.0F)
+                                scrollbar.render(environment.graphics, 25, 30, 0.0F)
+                                Assertions.assertTrue(environment.fills.isNotEmpty())
+                                Assertions.assertTrue(scrollbar.mouseClicked(scrollbar.x + 1.0, scrollbar.y + 1.0, 0))
+                                Assertions.assertTrue(scrollbar.mouseDragged(500.0, 500.0, 0, 0.0, 0.0))
+                                Assertions.assertEquals(if (horizontal) IntPoint(-40, 20) else IntPoint(10, 20 - (100 - viewportLength)), IntPoint(child.x, child.y))
+                                Assertions.assertTrue(scrollbar.mouseReleased(500.0, 500.0, 0))
+                                controller.setOffset(IntPoint(30, 40))
+                                Assertions.assertEquals(IntPoint(30, 40), IntPoint(viewport.x, viewport.y))
+                            } finally {
+                                controller.dispose()
+                                controller.detach()
+                            }
+                            Assertions.assertTrue(widgets.isEmpty())
+                            Assertions.assertEquals(1, scrollOffset.listeners.size)
+                        }
+                    } finally {
+                        connection.remove()
+                    }
+                    Assertions.assertTrue(scrollOffset.listeners.isEmpty())
+                    Assertions.assertTrue(barOffset.listeners.isEmpty())
+                    Assertions.assertTrue(scroll.onScrollBoundsChanged.listeners.isEmpty())
+                    Assertions.assertEquals(2, leaf.disposals)
+                    Assertions.assertEquals(2, leaf.detaches)
+                }
+            }
         }
     }
 
