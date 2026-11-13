@@ -29,7 +29,6 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.get
 import miragefairy2024.util.invoke
-import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.registerAndInitialize
 import miragefairy2024.util.text
 import net.minecraft.network.chat.Component
@@ -66,7 +65,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
 
                     var firstItemStack = true
                     itemStacks.forEach { itemStack ->
-                        if (!itemStack.isNotEmpty) return@forEach
+                        if (itemStack.isEmpty) return@forEach
 
                         if (firstItemStack) {
                             firstItemStack = false
@@ -81,7 +80,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
                             // アイテムスロットなのだ～🌱
                             view += StackView().configure {
                                 view += ImageView(SlotType.NORMAL.viewTexture)
-                                view += ItemView(itemStack).configure().margin(1)
+                                view += ItemView(itemStack).configure().margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
                             }
 
                             view += XSpaceView(2)
