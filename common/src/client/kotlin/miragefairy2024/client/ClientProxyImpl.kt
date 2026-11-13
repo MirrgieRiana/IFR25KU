@@ -20,7 +20,6 @@ import miragefairy2024.client.util.stack
 import miragefairy2024.mod.common.KeyMappingType
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.View
-import miragefairy2024.util.KeyMapping
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.minecraft.client.Minecraft
@@ -104,14 +103,14 @@ class ClientProxyImpl : ClientProxy<Screen> {
         BlockEntityRenderers.register(blockEntityType, ::RenderingProxyBlockEntityRenderer)
     }
 
-    override fun getKeyMapping(keyMappingType: KeyMappingType): KeyMapping {
+    override fun matchesKeyMapping(keyMappingType: KeyMappingType, keyCode: Int, scanCode: Int): Boolean {
         val keyMapping = when (keyMappingType) {
             KeyMappingType.PLACE_ITEM -> placeItemKeyMappingCard.keyMapping
             KeyMappingType.OPEN_TOOLTIP_VIEWER -> tooltipViewerKeyMappingCard.keyMapping
             KeyMappingType.OPEN_SOUL_STREAM -> soulStreamKeyMappingCard.keyMapping
             KeyMappingType.TOGGLE_COLLECTION_ENABLED -> toggleCollectionEnabledKeyMappingCard.keyMapping
         }
-        return KeyMapping { keyCode, scanCode -> keyMapping.matches(keyCode, scanCode) }
+        return keyMapping.matches(keyCode, scanCode)
     }
 
     override fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu {
