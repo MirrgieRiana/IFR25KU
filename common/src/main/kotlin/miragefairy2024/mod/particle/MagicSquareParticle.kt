@@ -1,6 +1,5 @@
 package miragefairy2024.mod.particle
 
-import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
@@ -9,7 +8,6 @@ import mirrg.kotlin.helium.unit
 import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.core.particles.ParticleType
 import net.minecraft.network.RegistryFriendlyByteBuf
-import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.world.phys.Vec3
 
@@ -22,18 +20,12 @@ class MagicSquareParticleType(alwaysSpawn: Boolean) : ParticleType<MagicSquarePa
 
         val CODEC: MapCodec<MagicSquareParticleEffect> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
-                Codec.INT.fieldOf("layer").forGetter(MagicSquareParticleEffect::layer),
                 Vec3.CODEC.fieldOf("targetPosition").forGetter(MagicSquareParticleEffect::targetPosition),
-                Codec.FLOAT.fieldOf("delay").forGetter(MagicSquareParticleEffect::delay),
             ).apply(instance, ::MagicSquareParticleEffect)
         }
         val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, MagicSquareParticleEffect> = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT,
-            { it.layer },
             VEC3_STREAM_CODEC,
             { it.targetPosition },
-            ByteBufCodecs.FLOAT,
-            { it.delay },
             ::MagicSquareParticleEffect,
         )
     }
@@ -42,7 +34,7 @@ class MagicSquareParticleType(alwaysSpawn: Boolean) : ParticleType<MagicSquarePa
     override fun streamCodec() = STREAM_CODEC
 }
 
-class MagicSquareParticleEffect(val layer: Int, val targetPosition: Vec3, val delay: Float) : ParticleOptions {
+class MagicSquareParticleEffect(val targetPosition: Vec3) : ParticleOptions {
     override fun getType() = ParticleTypeCard.MAGIC_SQUARE.particleType
 }
 

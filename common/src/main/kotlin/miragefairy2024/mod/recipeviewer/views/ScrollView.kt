@@ -2,18 +2,18 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.ScrollState
 import miragefairy2024.mod.recipeviewer.view.Sizing
-import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
+import miragefairy2024.util.ObservableValue
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 
 /**
  * 子 View を一方向へスクロールするのだ～🌱
  * スクロール方向のコンテンツが占有する最小のサイズは `0` なのだ～🌱
+ * スクロールバーの領域は、スクロールの必要がないときも確保するのだ～🌱
  * バニラへの配置では、子孫に [miragefairy2024.mod.recipeviewer.views.MenuSlotView] を含めてはならないのだ～🌱
  */
 abstract class ScrollView : WrapperView(), PlaceableView {
@@ -21,47 +21,44 @@ abstract class ScrollView : WrapperView(), PlaceableView {
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
 
-    val scrollState = ScrollState()
+    var scrollbarThickness = 5
+        set(value) {
+            if (value < 0) throw IllegalArgumentException("Scrollbar thickness must be non-negative")
+            field = value
+        }
     var scrollStep = 15
         set(value) {
             if (value <= 0) throw IllegalArgumentException("Scroll step must be positive")
             field = value
         }
+    var scrollbarColor = 0xA0000000.toInt()
 
-    protected abstract fun evaluateContentLength(): Int
-    protected abstract fun evaluateViewportLength(): Int
-
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
-        scrollState.setBounds(evaluateContentLength().coerceAtLeast(0), evaluateViewportLength().coerceAtLeast(0))
-        return viewPlacer.place(this, offset.sized(evaluateActualSize()))
-    }
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 
 }
 
 /** 子 View を X 軸方向へスクロールするのだ～🌱 */
 class XScrollView : ScrollView() {
 
+    val scrollOffsetX = ObservableValue(0.0)
+
     override fun evaluateContentSizeXImpl() = 0
-    override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY()
+    override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY() + scrollbarThickness
 
     override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() max childView.evaluateContentSizeX()
-    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() atLeast 0
-
-    override fun evaluateContentLength() = childView.evaluateActualSizeX()
-    override fun evaluateViewportLength() = evaluateActualSizeX()
+    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() - scrollbarThickness atLeast 0
 
 }
 
 /** 子 View を Y 軸方向へスクロールするのだ～🌱 */
 class YScrollView : ScrollView() {
 
-    override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX()
+    val scrollOffsetY = ObservableValue(0.0)
+
+    override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX() + scrollbarThickness
     override fun evaluateContentSizeYImpl() = 0
 
-    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() atLeast 0
+    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() - scrollbarThickness atLeast 0
     override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() max childView.evaluateContentSizeY()
-
-    override fun evaluateContentLength() = childView.evaluateActualSizeY()
-    override fun evaluateViewportLength() = evaluateActualSizeY()
 
 }

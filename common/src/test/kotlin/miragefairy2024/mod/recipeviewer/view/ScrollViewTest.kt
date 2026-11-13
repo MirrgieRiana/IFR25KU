@@ -36,8 +36,8 @@ class ScrollViewTest {
             if (xFirst) child.evaluateActualSizeX() else child.evaluateActualSizeY()
 
             Assertions.assertEquals(IntPoint(25, 10), view.evaluateActualSize())
-            Assertions.assertEquals(IntPoint(25, 40), child.evaluateActualSize())
-            Assertions.assertEquals(0, view.evaluateContentSizeX())
+            Assertions.assertEquals(IntPoint(20, 50), child.evaluateActualSize())
+            Assertions.assertEquals(5, view.evaluateContentSizeX())
             Assertions.assertEquals(0, view.evaluateContentSizeY())
         }
     }
@@ -55,10 +55,10 @@ class ScrollViewTest {
         view += child
         view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 10 }, { 25 })
 
-        Assertions.assertEquals(IntPoint(40, 25), child.evaluateActualSize())
+        Assertions.assertEquals(IntPoint(50, 20), child.evaluateActualSize())
         Assertions.assertEquals(IntPoint(10, 25), view.evaluateActualSize())
         Assertions.assertEquals(0, view.evaluateContentSizeX())
-        Assertions.assertEquals(0, view.evaluateContentSizeY())
+        Assertions.assertEquals(5, view.evaluateContentSizeY())
     }
 
     @Test
@@ -76,14 +76,14 @@ class ScrollViewTest {
                 view += child
                 view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 100 })
 
-                val expected = if (horizontal) IntPoint(100 max length, 100) else IntPoint(100, 100 max length)
+                val expected = if (horizontal) IntPoint(100 max length, 95) else IntPoint(95, 100 max length)
                 Assertions.assertEquals(expected, child.evaluateActualSize())
             }
         }
     }
 
     @Test
-    fun `狭い表示領域でも子へ全幅を割り当てスクロール量には正の値を要求するのだ`() {
+    fun `表示領域より太いスクロールバーを指定しても子へ負のサイズを渡さないのだ`() {
         val child = object : AbstractView() {
             override val sizingX = Sizing.FILL
             override val sizingY = Sizing.FILL
@@ -95,7 +95,8 @@ class ScrollViewTest {
         view += child
         view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 2 }, { 10 })
 
-        Assertions.assertEquals(IntPoint(2, 10), child.evaluateActualSize())
+        Assertions.assertEquals(IntPoint(0, 10), child.evaluateActualSize())
+        Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollbarThickness = -1 }
         Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollStep = 0 }
     }
 

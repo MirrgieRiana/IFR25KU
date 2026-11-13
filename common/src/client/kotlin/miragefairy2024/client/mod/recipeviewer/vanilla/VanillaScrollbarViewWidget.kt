@@ -1,14 +1,16 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import kotlin.math.roundToInt
 import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.view.x2
-import miragefairy2024.mod.recipeviewer.view.y2
 import miragefairy2024.mod.recipeviewer.views.ScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.util.ObservableValue
+import miragefairy2024.util.empty
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
@@ -17,144 +19,280 @@ import net.minecraft.client.gui.narration.NarratedElementType
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import org.lwjgl.glfw.GLFW
-import kotlin.math.roundToInt
 
-/** 自身の範囲と現在値だけを使用し、スクロール対象には依存しないバーなのだ～🌱 */
-abstract class VanillaScrollbarViewWidget(protected val view: ScrollbarView, bounds: IntRectangle) : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { SCROLL_AREA_TRANSLATION() }), MouseCaptureContainer {
+abstract class VanillaScrollbarViewWidget(
+    protected val view: ScrollbarView,
+    private val scrollOffsetValue: ObservableValue<Double>,
+    bounds: IntRectangle,
+) :
+    AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }), MouseCaptureContainer {
+
+
+    // ライフサイクルなのだ～🌱
+
     private var disposed = false
-    private var draggingScrollbar = false
-    private var scrollbarDragOffset = 0.0
 
     fun dispose() {
         disposed = true
         draggingScrollbar = false
-        isFocused = false
+        focusedSelf = false
     }
 
-    protected abstract val trackLength: Int
-    protected abstract val crossLength: Int
-    protected abstract fun getMousePosition(mouseX: Double, mouseY: Double): Double
-    protected abstract fun getScrollbarBounds(start: Int, length: Int): IntRectangle
-    protected abstract fun getScrollAmount(scrollX: Double, scrollY: Double): Double
-    protected abstract val backwardKey: Int
-    protected abstract val forwardKey: Int
 
-    protected val thickness get() = view.scrollbarThickness.coerceAtMost(crossLength.coerceAtLeast(0))
+    // サイズと位置なのだ～🌱
+
+    protected abstract val scrollbarLength: Int
+    protected abstract val scrollbarThickness: Int
+    protected abstract fun evaluateContentLength(): Int
+
+    private fun evaluateMaxScrollOffset() = evaluateContentLength() - view.viewportLength atLeast 0
+
+    private fun evaluateScrollOffset() = scrollOffsetValue.value.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
 
     private fun evaluateThumbLength(): Int {
-        if (trackLength <= 0) return 0
-        val state = view.scrollState
-        if (state.contentLength <= state.viewportLength) return trackLength
-        val rawLength = (trackLength.toDouble() * state.viewportLength / state.contentLength).roundToInt()
-        return rawLength.coerceIn(view.scrollbarThickness.coerceIn(1, trackLength), trackLength)
+        if (scrollbarLength <= 0) return 0
+        val contentLength = evaluateContentLength()
+        if (contentLength <= view.viewportLength) return scrollbarLength
+        val visibleRatio = view.viewportLength.toDouble() / contentLength.toDouble()
+        val rawThumbLength = (scrollbarLength.toDouble() * visibleRatio).roundToInt()
+        val minThumbLength = scrollbarThickness.coerceIn(1, scrollbarLength)
+        return rawThumbLength.coerceIn(minThumbLength, scrollbarLength)
     }
 
     private fun evaluateThumbPosition(): Double {
-        val state = view.scrollState
-        if (state.maxValue == 0.0) return 0.0
-        return (trackLength - evaluateThumbLength()) * state.value / state.maxValue
+        return if (evaluateMaxScrollOffset() == 0) {
+            0.0
+        } else {
+            val maxThumbPosition = scrollbarLength - evaluateThumbLength()
+            val scrollRatio = evaluateScrollOffset() / evaluateMaxScrollOffset().toDouble()
+            maxThumbPosition.toDouble() * scrollRatio
+        }
     }
 
-    override fun isActive() = super.isActive() && !disposed && view.scrollState.maxValue > 0.0 && thickness > 0 && trackLength > 0
-
-    override fun isMouseOver(mouseX: Double, mouseY: Double): Boolean {
-        if (!isActive) return false
-        val bounds = getScrollbarBounds(0, trackLength)
-        return mouseX >= bounds.x && mouseX < bounds.x2 && mouseY >= bounds.y && mouseY < bounds.y2
+    private fun updateScroll(offset: Double): Boolean {
+        val old = evaluateScrollOffset()
+        scrollOffsetValue.value = offset
+        return evaluateScrollOffset() != old
     }
 
-    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
+
+    // 描画とマウス入力なのだ～🌱
+
+    private var draggingScrollbar = false
+    private var scrollbarDragOffset = 0.0
+
+    override fun isActive() = super.isActive() && !disposed
+
+    override fun isMouseOver(mouseX: Double, mouseY: Double) = isActive && super.isMouseOver(mouseX, mouseY)
+
+    protected abstract fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int)
+
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        isHovered = isHovered && isMouseOver(mouseX.toDouble(), mouseY.toDouble())
-        if (!isActive) return
-        val bounds = getScrollbarBounds(evaluateThumbPosition().roundToInt(), evaluateThumbLength())
-        guiGraphics.fill(bounds.x, bounds.y, bounds.x2, bounds.y2, view.scrollbarColor)
+
+        // スクロールバーの描画なのだ～🌱
+        if (evaluateMaxScrollOffset() > 0 && scrollbarThickness > 0 && evaluateThumbLength() > 0) {
+            renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), evaluateThumbLength())
+        }
+
     }
+
+    protected abstract fun getMousePosition(mouseX: Double, mouseY: Double): Double
+
+    protected abstract fun getScrollAmount(scrollX: Double, scrollY: Double): Double
 
     private fun dragScrollbar(mouseX: Double, mouseY: Double) {
-        val remainingLength = trackLength - evaluateThumbLength()
-        if (remainingLength <= 0) return
-        val position = getMousePosition(mouseX, mouseY) - scrollbarDragOffset
-        view.scrollState.value = view.scrollState.maxValue * position / remainingLength
+        val thumbPosition = getMousePosition(mouseX, mouseY) - scrollbarDragOffset
+        val remainingThumbLength = scrollbarLength - evaluateThumbLength()
+        val scrollRatio = thumbPosition / remainingThumbLength.toDouble()
+        updateScroll(evaluateMaxScrollOffset() * scrollRatio)
     }
 
     override fun hasMouseCapture(button: Int) = !disposed && button == 0 && draggingScrollbar
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        if (button != 0) return false
-        draggingScrollbar = false
-        if (!isMouseOver(mouseX, mouseY)) return false
-        val length = evaluateThumbLength()
-        if (trackLength <= length) return false
-        val position = getMousePosition(mouseX, mouseY)
-        val start = evaluateThumbPosition()
-        scrollbarDragOffset = if (position >= start && position < start + length) position - start else length / 2.0
-        draggingScrollbar = true
-        dragScrollbar(mouseX, mouseY)
-        return true
+        if (button == 0) draggingScrollbar = false
+        if (!isActive) return false
+
+        if (super.isMouseOver(mouseX, mouseY)) {
+            // スクロールバーのドラッグ開始なのだ～🌱
+            if (button != 0) return false
+            if (evaluateMaxScrollOffset() == 0) return false
+            if (scrollbarLength <= evaluateThumbLength()) return false
+            draggingScrollbar = true
+            val mousePosition = getMousePosition(mouseX, mouseY)
+            scrollbarDragOffset = if (mousePosition >= evaluateThumbPosition() && mousePosition < evaluateThumbPosition() + evaluateThumbLength()) {
+                mousePosition - evaluateThumbPosition()
+            } else {
+                evaluateThumbLength() / 2.0
+            }
+            dragScrollbar(mouseX, mouseY)
+            return true
+        } else {
+            return false
+        }
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
-        if (!hasMouseCapture(button)) return false
-        dragScrollbar(mouseX, mouseY)
-        return true
+        if (button == 0 && draggingScrollbar) {
+            if (scrollbarLength > evaluateThumbLength()) dragScrollbar(mouseX, mouseY)
+            return true
+        }
+        return false
     }
 
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        if (!hasMouseCapture(button)) return false
-        draggingScrollbar = false
-        return true
+        if (button == 0 && draggingScrollbar) {
+            draggingScrollbar = false
+            return true
+        }
+        return false
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (!isMouseOver(mouseX, mouseY)) return false
-        return updateScroll(view.scrollState.value - getScrollAmount(scrollX, scrollY) * view.scrollStep)
+        return updateScroll(evaluateScrollOffset() - getScrollAmount(scrollX, scrollY) * view.scrollStep)
     }
 
-    private fun updateScroll(value: Double): Boolean {
-        val old = view.scrollState.value
-        view.scrollState.value = value
-        return view.scrollState.value != old
+
+    // フォーカスとキーボード入力なのだ～🌱
+
+    private var focusedSelf = false
+
+    override fun isFocused() = focusedSelf
+
+    override fun setFocused(focused: Boolean) {
+        focusedSelf = focused
     }
+
+    override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
+
+        if (!isActive) return null
+
+        if (evaluateMaxScrollOffset() > 0 && !isFocused) {
+            return object : ComponentPath {
+                override fun component() = this@VanillaScrollbarViewWidget
+
+                override fun applyFocus(focused: Boolean) {
+                    this@VanillaScrollbarViewWidget.isFocused = focused
+                }
+            }
+        }
+        return null
+    }
+
+    override fun getCurrentFocusPath(): ComponentPath? {
+        if (isFocused) return ComponentPath.leaf(this)
+        return null
+    }
+
+    protected abstract val backwardKey: Int
+    protected abstract val forwardKey: Int
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        if (!isActive || !isFocused) return false
-        val state = view.scrollState
-        val value = when (keyCode) {
-            backwardKey -> state.value - view.scrollStep
-            forwardKey -> state.value + view.scrollStep
-            GLFW.GLFW_KEY_PAGE_UP -> state.value - state.viewportLength * 0.8
-            GLFW.GLFW_KEY_PAGE_DOWN -> state.value + state.viewportLength * 0.8
+        if (!isActive) return false
+        if (!isFocused) return false
+        val offset = when (keyCode) {
+            backwardKey -> evaluateScrollOffset() - view.scrollStep
+            forwardKey -> evaluateScrollOffset() + view.scrollStep
+            GLFW.GLFW_KEY_PAGE_UP -> evaluateScrollOffset() - view.viewportLength * 0.8
+            GLFW.GLFW_KEY_PAGE_DOWN -> evaluateScrollOffset() + view.viewportLength * 0.8
             GLFW.GLFW_KEY_HOME -> 0.0
-            GLFW.GLFW_KEY_END -> state.maxValue
+            GLFW.GLFW_KEY_END -> evaluateMaxScrollOffset().toDouble()
             else -> return false
         }
-        return updateScroll(value)
+        return updateScroll(offset)
     }
 
-    override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? = if (isActive) super.nextFocusPath(event) else null
 
-    override fun narrationPriority(): NarratableEntry.NarrationPriority = if (isActive) super.narrationPriority() else NarratableEntry.NarrationPriority.NONE
+    // 読み上げなのだ～🌱
 
-    override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = narrationElementOutput.add(NarratedElementType.TITLE, message)
+    override fun narrationPriority(): NarratableEntry.NarrationPriority {
+        if (!isActive) return NarratableEntry.NarrationPriority.NONE
+        if (isFocused) return NarratableEntry.NarrationPriority.FOCUSED
+        return NarratableEntry.NarrationPriority.NONE
+    }
+
+    override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) {
+        if (isFocused) {
+            narrationElementOutput.add(NarratedElementType.TITLE, text { SCROLL_AREA_TRANSLATION() })
+            return
+        }
+    }
+
 }
 
-class VanillaXScrollbarViewWidget(view: XScrollbarView, bounds: IntRectangle) : VanillaScrollbarViewWidget(view, bounds) {
-    override val trackLength get() = width
-    override val crossLength get() = height
+class VanillaXScrollbarViewWidget(
+    view: XScrollbarView,
+    bounds: IntRectangle,
+) : VanillaScrollbarViewWidget(
+    view,
+    view.scrollOffsetX,
+    bounds,
+) {
+
+    // 領域とサイズなのだ～🌱
+
+    override val scrollbarLength get() = width
+    override val scrollbarThickness get() = height
+    override fun evaluateContentLength() = view.contentLength
+
+
+    // スクロール操作なのだ～🌱
+
     override val backwardKey get() = GLFW.GLFW_KEY_LEFT
     override val forwardKey get() = GLFW.GLFW_KEY_RIGHT
+
     override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseX - x
-    override fun getScrollbarBounds(start: Int, length: Int) = IntRectangle(x + start, y + height - thickness, length, thickness)
+
+    // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
+
+    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
+    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
+        guiGraphics.fill(
+            x + start,
+            y,
+            x + start + length,
+            y + height,
+            view.scrollbarColor,
+        )
+    }
+
 }
 
-class VanillaYScrollbarViewWidget(view: YScrollbarView, bounds: IntRectangle) : VanillaScrollbarViewWidget(view, bounds) {
-    override val trackLength get() = height
-    override val crossLength get() = width
+class VanillaYScrollbarViewWidget(
+    view: YScrollbarView,
+    bounds: IntRectangle,
+) : VanillaScrollbarViewWidget(
+    view,
+    view.scrollOffsetY,
+    bounds,
+) {
+
+    // 領域とサイズなのだ～🌱
+
+    override val scrollbarLength get() = height
+    override val scrollbarThickness get() = width
+    override fun evaluateContentLength() = view.contentLength
+
+
+    // スクロール操作なのだ～🌱
+
     override val backwardKey get() = GLFW.GLFW_KEY_UP
     override val forwardKey get() = GLFW.GLFW_KEY_DOWN
+
     override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseY - y
-    override fun getScrollbarBounds(start: Int, length: Int) = IntRectangle(x + width - thickness, y + start, thickness, length)
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
+
+    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
+    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
+        guiGraphics.fill(
+            x,
+            y + start,
+            x + width,
+            y + start + length,
+            view.scrollbarColor,
+        )
+    }
+
 }

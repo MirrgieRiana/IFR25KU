@@ -18,11 +18,14 @@ import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
+import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
 import miragefairy2024.util.observeAndInitialize
+import miragefairy2024.util.removeOn
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
@@ -30,24 +33,26 @@ import net.minecraft.client.gui.components.EditBox
 import net.minecraft.network.chat.Component
 
 private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewController {
-    val remover = addRenderableWidget(widget)
+    val onDetached = EventRegistry<() -> Unit>()
+    addRenderableWidget(widget).removeOn(onDetached)
     return object : ViewController {
         override fun setOffset(offset: IntPoint) {
             widget.setPosition(offset.x, offset.y)
         }
 
-        override fun detach() = remover.remove()
+        override fun detach() = onDetached.fire()
     }
 }
 
 private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidget): ViewController {
-    val remover = addRenderableOnly(widget)
+    val onDetached = EventRegistry<() -> Unit>()
+    addRenderableOnly(widget).removeOn(onDetached)
     return object : ViewController {
         override fun setOffset(offset: IntPoint) {
             widget.setPosition(offset.x, offset.y)
         }
 
-        override fun detach() = remover.remove()
+        override fun detach() = onDetached.fire()
     }
 }
 
@@ -76,6 +81,30 @@ fun initVanillaViewPlacers() {
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollView, bounds ->
         placeScrollView(context, VanillaYScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
+    }
+    fun placeSimpleScrollView(context: VanillaViewPlacerContext, widget: VanillaSimpleScrollViewWidget): ViewController {
+        val controller = context place widget
+        return object : ViewController {
+            override fun setOffset(offset: IntPoint) {
+                controller.setOffset(offset)
+            }
+
+            override fun detach() {
+                widget.detach()
+                controller.detach()
+            }
+
+            override fun dispose() {
+                widget.dispose()
+                controller.dispose()
+            }
+        }
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XSimpleScrollView, bounds ->
+        placeSimpleScrollView(context, VanillaXSimpleScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YSimpleScrollView, bounds ->
+        placeSimpleScrollView(context, VanillaYSimpleScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
     }
     fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget): ViewController {
         val controller = context place widget
