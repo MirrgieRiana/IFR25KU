@@ -51,6 +51,8 @@ class ClientProxyImpl : ClientProxy<Screen> {
         }
     }
 
+    override fun getItemTooltip(itemStack: ItemStack): List<Component> = Screen.getTooltipFromItem(Minecraft.getInstance(), itemStack)
+
     override fun registerCutoutRenderLayer(block: () -> Block) {
         RenderTypeRegistry.register(RenderType.cutout(), block())
     }
