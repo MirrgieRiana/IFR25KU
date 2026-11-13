@@ -89,7 +89,8 @@ class SimpleScrollViewTest {
         listOf(false, true).forEach { horizontal ->
             val view = if (horizontal) XScrollbarView() else YScrollbarView()
             view.scrollbarThickness = 7
-            if (horizontal) view.sizingY = Sizing.WRAP else view.sizingX = Sizing.WRAP
+            Assertions.assertEquals(if (horizontal) Sizing.FILL else Sizing.WRAP, view.sizingX)
+            Assertions.assertEquals(if (horizontal) Sizing.WRAP else Sizing.FILL, view.sizingY)
             view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 80 })
             Assertions.assertEquals(if (horizontal) IntPoint(100, 7) else IntPoint(7, 80), view.evaluateActualSize())
             Assertions.assertEquals(0, view.contentLength)
@@ -98,6 +99,18 @@ class SimpleScrollViewTest {
             Assertions.assertThrows(IllegalArgumentException::class.java) { view.viewportLength = -1 }
             Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollbarThickness = -1 }
             Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollStep = 0 }
+        }
+    }
+
+    @Test
+    fun `バーの短軸を FILL にしてもコンテンツ寸法は設定した太さを維持するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val view = if (horizontal) XScrollbarView() else YScrollbarView()
+            view.scrollbarThickness = 7
+            if (horizontal) (view as XScrollbarView).sizingY = Sizing.FILL else (view as YScrollbarView).sizingX = Sizing.FILL
+            view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 80 })
+            Assertions.assertEquals(if (horizontal) IntPoint(0, 7) else IntPoint(7, 0), view.evaluateContentSize())
+            Assertions.assertEquals(IntPoint(100, 80), view.evaluateActualSize())
         }
     }
 

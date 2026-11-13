@@ -40,6 +40,7 @@ abstract class VanillaScrollbarViewWidget(
     // サイズと位置なのだ～🌱
 
     protected abstract val scrollbarLength: Int
+    protected abstract val scrollbarThickness: Int
     protected abstract fun evaluateContentLength(): Int
 
     private var scrollOffset = 0.0
@@ -52,7 +53,7 @@ abstract class VanillaScrollbarViewWidget(
         if (contentLength <= view.viewportLength) return scrollbarLength
         val visibleRatio = view.viewportLength.toDouble() / contentLength.toDouble()
         val rawThumbLength = (scrollbarLength.toDouble() * visibleRatio).roundToInt()
-        val minThumbLength = view.scrollbarThickness.coerceIn(1, scrollbarLength)
+        val minThumbLength = scrollbarThickness.coerceIn(1, scrollbarLength)
         return rawThumbLength.coerceIn(minThumbLength, scrollbarLength)
     }
 
@@ -90,7 +91,7 @@ abstract class VanillaScrollbarViewWidget(
         updateScroll(scrollOffset)
 
         // スクロールバーの描画なのだ～🌱
-        if (evaluateMaxScrollOffset() > 0 && view.scrollbarThickness > 0 && evaluateThumbLength() > 0) {
+        if (evaluateMaxScrollOffset() > 0 && scrollbarThickness > 0 && evaluateThumbLength() > 0) {
             renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), evaluateThumbLength())
         }
 
@@ -116,7 +117,6 @@ abstract class VanillaScrollbarViewWidget(
         if (super.isMouseOver(mouseX, mouseY)) {
             // スクロールバーのドラッグ開始なのだ～🌱
             if (button != 0) return false
-            if (view.scrollbarThickness == 0) return false
             if (evaluateMaxScrollOffset() == 0) return false
             if (scrollbarLength <= evaluateThumbLength()) return false
             draggingScrollbar = true
@@ -233,6 +233,7 @@ class VanillaXScrollbarViewWidget(
     // 領域とサイズなのだ～🌱
 
     override val scrollbarLength get() = width
+    override val scrollbarThickness get() = height
     override fun evaluateContentLength() = view.contentLength
 
 
@@ -250,7 +251,7 @@ class VanillaXScrollbarViewWidget(
     override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
         guiGraphics.fill(
             x + start,
-            y + height - view.scrollbarThickness atLeast y,
+            y,
             x + start + length,
             y + height,
             view.scrollbarColor,
@@ -270,6 +271,7 @@ class VanillaYScrollbarViewWidget(
     // 領域とサイズなのだ～🌱
 
     override val scrollbarLength get() = height
+    override val scrollbarThickness get() = width
     override fun evaluateContentLength() = view.contentLength
 
 
@@ -284,7 +286,7 @@ class VanillaYScrollbarViewWidget(
     // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
     override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
         guiGraphics.fill(
-            x + width - view.scrollbarThickness atLeast x,
+            x,
             y + start,
             x + width,
             y + start + length,
