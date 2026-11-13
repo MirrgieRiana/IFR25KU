@@ -22,13 +22,6 @@ import net.minecraft.world.level.block.state.BlockState
 var clientProxy: ClientProxy<*>? = null
 
 
-class MessageViewScreenDefinition(val title: Component, val rootViewFactory: () -> View) {
-    var transparentBackground = true
-    var closeOnInventoryKey = true
-    var additionalCloseKey: KeyMappingType? = null
-    var closeOnOutsideClick = true
-}
-
 interface ClientProxy<S : Any> {
     fun registerItemTooltipCallback(block: (stack: ItemStack, context: Item.TooltipContext, lines: MutableList<Component>) -> Unit)
     fun getItemTooltip(itemStack: ItemStack): List<Component>
@@ -74,4 +67,11 @@ interface RenderingProxy {
 
 interface RenderingProxyBlockEntity {
     fun render(renderingProxy: RenderingProxy, tickDelta: Float, light: Int, overlay: Int) = Unit
+}
+
+class MessageViewScreenDefinition(val title: Component, val rootViewFactory: () -> View) {
+    var transparentBackground = true
+    var closeOnInventoryKey = true
+    var additionalCloseKey: KeyMappingType? = null
+    var closeOnOutsideClick = true
 }
