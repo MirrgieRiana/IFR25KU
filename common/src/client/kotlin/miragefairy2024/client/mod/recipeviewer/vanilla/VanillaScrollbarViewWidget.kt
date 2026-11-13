@@ -39,28 +39,28 @@ abstract class VanillaScrollbarViewWidget(
 
     // サイズと位置なのだ～🌱
 
-    protected abstract val viewportLength: Int
+    protected abstract val scrollbarLength: Int
     protected abstract fun evaluateContentLength(): Int
 
     private var scrollOffset = 0.0
 
-    private fun evaluateMaxScrollOffset() = evaluateContentLength() - viewportLength atLeast 0
+    private fun evaluateMaxScrollOffset() = evaluateContentLength() - view.viewportLength atLeast 0
 
     private fun evaluateThumbLength(): Int {
-        if (viewportLength <= 0) return 0
+        if (scrollbarLength <= 0) return 0
         val contentLength = evaluateContentLength()
-        if (contentLength <= viewportLength) return viewportLength
-        val visibleRatio = viewportLength.toDouble() / contentLength.toDouble()
-        val rawThumbLength = (viewportLength.toDouble() * visibleRatio).roundToInt()
-        val minThumbLength = view.scrollbarThickness.coerceIn(1, viewportLength)
-        return rawThumbLength.coerceIn(minThumbLength, viewportLength)
+        if (contentLength <= view.viewportLength) return scrollbarLength
+        val visibleRatio = view.viewportLength.toDouble() / contentLength.toDouble()
+        val rawThumbLength = (scrollbarLength.toDouble() * visibleRatio).roundToInt()
+        val minThumbLength = view.scrollbarThickness.coerceIn(1, scrollbarLength)
+        return rawThumbLength.coerceIn(minThumbLength, scrollbarLength)
     }
 
     private fun evaluateThumbPosition(): Double {
         return if (evaluateMaxScrollOffset() == 0) {
             0.0
         } else {
-            val maxThumbPosition = viewportLength - evaluateThumbLength()
+            val maxThumbPosition = scrollbarLength - evaluateThumbLength()
             val scrollRatio = scrollOffset / evaluateMaxScrollOffset().toDouble()
             maxThumbPosition.toDouble() * scrollRatio
         }
@@ -102,7 +102,7 @@ abstract class VanillaScrollbarViewWidget(
 
     private fun dragScrollbar(mouseX: Double, mouseY: Double) {
         val thumbPosition = getMousePosition(mouseX, mouseY) - scrollbarDragOffset
-        val remainingThumbLength = viewportLength - evaluateThumbLength()
+        val remainingThumbLength = scrollbarLength - evaluateThumbLength()
         val scrollRatio = thumbPosition / remainingThumbLength.toDouble()
         updateScroll(evaluateMaxScrollOffset() * scrollRatio)
     }
@@ -118,7 +118,7 @@ abstract class VanillaScrollbarViewWidget(
             if (button != 0) return false
             if (view.scrollbarThickness == 0) return false
             if (evaluateMaxScrollOffset() == 0) return false
-            if (viewportLength <= evaluateThumbLength()) return false
+            if (scrollbarLength <= evaluateThumbLength()) return false
             draggingScrollbar = true
             val mousePosition = getMousePosition(mouseX, mouseY)
             scrollbarDragOffset = if (mousePosition >= evaluateThumbPosition() && mousePosition < evaluateThumbPosition() + evaluateThumbLength()) {
@@ -135,7 +135,7 @@ abstract class VanillaScrollbarViewWidget(
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (button == 0 && draggingScrollbar) {
-            if (viewportLength > evaluateThumbLength()) dragScrollbar(mouseX, mouseY)
+            if (scrollbarLength > evaluateThumbLength()) dragScrollbar(mouseX, mouseY)
             return true
         }
         return false
@@ -195,8 +195,8 @@ abstract class VanillaScrollbarViewWidget(
         val offset = when (keyCode) {
             backwardKey -> scrollOffset - view.scrollStep
             forwardKey -> scrollOffset + view.scrollStep
-            GLFW.GLFW_KEY_PAGE_UP -> scrollOffset - viewportLength * 0.8
-            GLFW.GLFW_KEY_PAGE_DOWN -> scrollOffset + viewportLength * 0.8
+            GLFW.GLFW_KEY_PAGE_UP -> scrollOffset - view.viewportLength * 0.8
+            GLFW.GLFW_KEY_PAGE_DOWN -> scrollOffset + view.viewportLength * 0.8
             GLFW.GLFW_KEY_HOME -> 0.0
             GLFW.GLFW_KEY_END -> evaluateMaxScrollOffset().toDouble()
             else -> return false
@@ -232,7 +232,7 @@ class VanillaXScrollbarViewWidget(
 
     // 領域とサイズなのだ～🌱
 
-    override val viewportLength get() = width
+    override val scrollbarLength get() = width
     override fun evaluateContentLength() = view.contentLength
 
 
@@ -269,7 +269,7 @@ class VanillaYScrollbarViewWidget(
 
     // 領域とサイズなのだ～🌱
 
-    override val viewportLength get() = height
+    override val scrollbarLength get() = height
     override fun evaluateContentLength() = view.contentLength
 
 
