@@ -8,16 +8,11 @@ import miragefairy2024.ClientProxy
 import miragefairy2024.ItemColorProvider
 import miragefairy2024.RenderingProxy
 import miragefairy2024.RenderingProxyBlockEntity
-import miragefairy2024.client.mod.fairy.soulStreamKeyMappingCard
-import miragefairy2024.client.mod.fairy.toggleCollectionEnabledKeyMappingCard
-import miragefairy2024.client.mod.placeItemKeyMappingCard
 import miragefairy2024.client.mod.recipeviewer.vanilla.MessageViewScreen
 import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
-import miragefairy2024.client.mod.tooltipViewerKeyMappingCard
 import miragefairy2024.client.util.ViewToast
 import miragefairy2024.client.util.ellipsize
 import miragefairy2024.client.util.stack
-import miragefairy2024.mod.common.KeyMappingType
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.View
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
@@ -101,16 +96,6 @@ class ClientProxyImpl : ClientProxy<Screen> {
 
     override fun <T> registerRenderingProxyBlockEntityRendererFactory(blockEntityType: BlockEntityType<T>) where T : BlockEntity, T : RenderingProxyBlockEntity {
         BlockEntityRenderers.register(blockEntityType, ::RenderingProxyBlockEntityRenderer)
-    }
-
-    override fun matchesKeyMapping(keyMappingType: KeyMappingType, keyCode: Int, scanCode: Int): Boolean {
-        val keyMapping = when (keyMappingType) {
-            KeyMappingType.PLACE_ITEM -> placeItemKeyMappingCard.keyMapping
-            KeyMappingType.OPEN_TOOLTIP_VIEWER -> tooltipViewerKeyMappingCard.keyMapping
-            KeyMappingType.OPEN_SOUL_STREAM -> soulStreamKeyMappingCard.keyMapping
-            KeyMappingType.TOGGLE_COLLECTION_ENABLED -> toggleCollectionEnabledKeyMappingCard.keyMapping
-        }
-        return keyMapping.matches(keyCode, scanCode)
     }
 
     override fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu {

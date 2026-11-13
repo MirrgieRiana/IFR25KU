@@ -1,6 +1,5 @@
 package miragefairy2024
 
-import miragefairy2024.mod.common.KeyMappingType
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.View
 import net.minecraft.core.BlockPos
@@ -34,7 +33,6 @@ interface ClientProxy<S : Any> {
     fun getItemColorProvider(item: Item): ItemColorProvider?
     fun registerItemColorProvider(item: Item, provider: ItemColorProvider)
     fun <T> registerRenderingProxyBlockEntityRendererFactory(blockEntityType: BlockEntityType<T>) where T : BlockEntity, T : RenderingProxyBlockEntity
-    fun matchesKeyMapping(keyMappingType: KeyMappingType, keyCode: Int, scanCode: Int): Boolean
     fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu
     fun getCurrentScreen(): S?
     fun setCurrentScreen(screen: S?)
