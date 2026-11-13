@@ -18,7 +18,7 @@ open class SimpleViewScreen(private val parent: Screen?, private val definition:
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (super.keyPressed(keyCode, scanCode, modifiers)) return true
-        if (definition.closeOnInventoryKey && minecraft!!.options.keyInventory.matches(keyCode, scanCode) || definition.closeOnKeyPressed(keyCode, scanCode, modifiers)) {
+        if (definition.closeOnInventoryKey && minecraft!!.options.keyInventory.matches(keyCode, scanCode) || definition.additionalCloseKey?.matches(keyCode, scanCode) == true) {
             onClose()
             return true
         }

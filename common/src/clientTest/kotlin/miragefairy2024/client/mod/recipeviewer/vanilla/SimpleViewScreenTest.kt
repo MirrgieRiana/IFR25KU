@@ -2,6 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.mod.recipeviewer.vanilla.ViewScreenDefinition
 import miragefairy2024.mod.recipeviewer.views.SpaceView
+import miragefairy2024.util.KeyMapping
 import miragefairy2024.util.empty
 import miragefairy2024.util.text
 import net.minecraft.client.GameNarrator
@@ -57,33 +58,41 @@ class SimpleViewScreenTest {
     }
 
     @Test
-    fun `入力欄が消費しなかったキーだけを common の終了条件へ渡すのだ`() {
+    fun `追加終了キーがある場合だけ未消費のキーを照合して閉じるのだ`() {
         Mockito.mockStatic(Screen::class.java).use {
             val minecraft = createMinecraft()
             val parent: Screen = Mockito.mock(Screen::class.java)
-            val keys = mutableListOf<Triple<Int, Int, Int>>()
+            val additionalCloseKey: KeyMapping = Mockito.mock(KeyMapping::class.java)
+            Mockito.`when`(additionalCloseKey.matches(70, 10)).thenReturn(true)
             val definition = ViewScreenDefinition(text { empty() }) { SpaceView() }
             definition.closeOnInventoryKey = false
-            definition.closeOnKeyPressed = { keyCode, scanCode, modifiers ->
-                keys += Triple(keyCode, scanCode, modifiers)
-                keyCode == 70
-            }
             val screen = TestSimpleViewScreen(parent, definition)
             screen.init(minecraft, 200, 200)
-            val editBox: EditBox = object : EditBox(null, 80, 80, 40, 20, text { empty() }) {
-                override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = true
-            }
-            screen.register(editBox)
-            screen.focused = editBox
             try {
+                Assertions.assertFalse(screen.keyPressed(70, 10, 2))
+
+                definition.additionalCloseKey = additionalCloseKey
+                val editBox: EditBox = object : EditBox(null, 80, 80, 40, 20, text { empty() }) {
+                    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = true
+                }
+                screen.register(editBox)
+                screen.focused = editBox
                 Assertions.assertTrue(screen.keyPressed(70, 10, 2))
-                Assertions.assertTrue(keys.isEmpty())
+                Mockito.verifyNoInteractions(additionalCloseKey)
                 Mockito.verify(minecraft, Mockito.never()).setScreen(parent)
 
                 screen.focused = null
                 Assertions.assertFalse(screen.keyPressed(71, 11, 3))
+                Mockito.verify(additionalCloseKey).matches(71, 11)
+
+                definition.additionalCloseKey = null
+                Assertions.assertFalse(screen.keyPressed(70, 10, 2))
+                Mockito.verifyNoMoreInteractions(additionalCloseKey)
+                Mockito.verify(minecraft, Mockito.never()).setScreen(parent)
+
+                definition.additionalCloseKey = additionalCloseKey
                 Assertions.assertTrue(screen.keyPressed(70, 10, 2))
-                Assertions.assertEquals(listOf(Triple(71, 11, 3), Triple(70, 10, 2)), keys)
+                Mockito.verify(additionalCloseKey).matches(70, 10)
                 Mockito.verify(minecraft).setScreen(parent)
             } finally {
                 screen.removed()
