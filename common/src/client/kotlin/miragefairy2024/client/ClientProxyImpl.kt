@@ -6,6 +6,7 @@ import dev.architectury.registry.client.rendering.RenderTypeRegistry
 import miragefairy2024.BlockColorProvider
 import miragefairy2024.ClientProxy
 import miragefairy2024.ItemColorProvider
+import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.RenderingProxy
 import miragefairy2024.RenderingProxyBlockEntity
 import miragefairy2024.client.mod.recipeviewer.vanilla.MessageViewScreen
@@ -110,8 +111,8 @@ class ClientProxyImpl : ClientProxy<Screen> {
         Minecraft.getInstance().setScreen(screen)
     }
 
-    override fun createMessageViewScreen(parent: Screen?, title: Component, rootViewFactory: () -> View): Screen {
-        return MessageViewScreen(parent, title, rootViewFactory)
+    override fun createMessageViewScreen(parent: Screen?, definition: MessageViewScreenDefinition): Screen {
+        return MessageViewScreen(parent, definition)
     }
 
     override fun addToast(rootView: View) {

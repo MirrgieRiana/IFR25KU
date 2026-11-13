@@ -1,6 +1,7 @@
 package miragefairy2024.mod.fairyquest
 
 import miragefairy2024.ClientProxy
+import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
@@ -45,7 +46,7 @@ fun initFairyQuestMessageScreen() {
 fun FairyQuestRecipe.openMessageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
-        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, this.title) {
+        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.title) {
             FairyQuestMessageViewWrapper(this.title, this.message, this.client).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
@@ -56,7 +57,7 @@ fun FairyQuestRecipe.openMessageScreen() {
                     true
                 }
             }.view
-        })
+        }))
     }
     openScreen(clientProxy!!)
 }
