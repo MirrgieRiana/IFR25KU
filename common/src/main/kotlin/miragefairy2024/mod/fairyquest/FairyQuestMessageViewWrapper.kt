@@ -6,6 +6,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
+import miragefairy2024.mod.recipeviewer.vanilla.MessageViewScreenDefinition
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
@@ -43,7 +44,7 @@ fun initFairyQuestMessageScreen() {
 fun FairyQuestRecipe.openMessageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
-        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, this.title) {
+        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.title) {
             FairyQuestMessageViewWrapper(this.title, this.message, this.client).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
@@ -54,7 +55,7 @@ fun FairyQuestRecipe.openMessageScreen() {
                     true
                 }
             }.view
-        })
+        }))
     }
     openScreen(clientProxy!!)
 }
