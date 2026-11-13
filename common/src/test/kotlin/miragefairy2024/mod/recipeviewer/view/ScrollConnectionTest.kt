@@ -3,6 +3,7 @@ package miragefairy2024.mod.recipeviewer.view
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.util.register
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -127,4 +128,27 @@ class ScrollConnectionTest {
             listener.remove()
         }
     }
+
+    @Test
+    fun `同じ軸の View は表示位置を省略した接続でも同期するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val scroll = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+            val bar = if (horizontal) XScrollbarView() else YScrollbarView()
+            val source = if (horizontal) (scroll as XSimpleScrollView).scrollOffsetX else (scroll as YSimpleScrollView).scrollOffsetY
+            val target = if (horizontal) (bar as XScrollbarView).scrollOffsetX else (bar as YScrollbarView).scrollOffsetY
+            scroll.updateScrollBounds(300, 100)
+            source.value = 80.25
+            val connection = if (horizontal) connectScrollbar(scroll as XSimpleScrollView, bar as XScrollbarView) else connectScrollbar(scroll as YSimpleScrollView, bar as YScrollbarView)
+            try {
+                Assertions.assertEquals(300, bar.contentLength)
+                Assertions.assertEquals(100, bar.viewportLength)
+                Assertions.assertEquals(80.25, target.value)
+                target.value = 120.5
+                Assertions.assertEquals(120.5, source.value)
+            } finally {
+                connection.remove()
+            }
+        }
+    }
+
 }
