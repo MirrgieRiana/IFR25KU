@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
-private class TooltipViewerRenderingProxy : RenderingProxy {
+private val TOOLTIP_VIEWER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
     override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
     override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
     override fun getTextHeight() = 9
@@ -63,12 +63,12 @@ class TooltipViewerViewWrapperTest {
 
     @Test
     fun `空のアイテムを除外しスロットとツールチップを同じ順序で配置するのだ`() {
-        val first = ItemStack(Items.STONE, 64)
-        val second = ItemStack(Items.DIRT, 12)
+        val first: ItemStack = ItemStack(Items.STONE, 64)
+        val second: ItemStack = ItemStack(Items.DIRT, 12)
         val view = TooltipViewerViewWrapper(listOf(ItemStack.EMPTY, first, ItemStack.EMPTY, second), ObservableValue("")) {
             listOf(text { it.count.toString()() })
         }
-        view.view.initSizeCalculation(TooltipViewerRenderingProxy(), { 400 }, { 240 })
+        view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
         val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
         val controller = view.place(placements)
         try {
@@ -89,7 +89,7 @@ class TooltipViewerViewWrapperTest {
         val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE)), filter) {
             listOf("title", "first", "second", "third").map { text { it() } }
         }
-        view.view.initSizeCalculation(TooltipViewerRenderingProxy(), { 400 }, { 240 })
+        view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
         val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
         val controller = view.place(placements)
         try {
@@ -134,7 +134,7 @@ class TooltipViewerViewWrapperTest {
             listOf(text { "title"() }, text { "long".repeat(200)() })
         }
         listOf(IntPoint(400, 240), IntPoint(320, 180)).forEach { size ->
-            view.view.initSizeCalculation(TooltipViewerRenderingProxy(), { size.x }, { size.y })
+            view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { size.x }, { size.y })
             val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
             val controller = view.place(placements)
             try {
@@ -159,7 +159,7 @@ class TooltipViewerViewWrapperTest {
     @Test
     fun `アイテムがなくても検索欄と固定幅のパネルを配置するのだ`() {
         val view = TooltipViewerViewWrapper(emptyList(), ObservableValue("")) { throw AssertionError("No item tooltip should be requested") }
-        view.view.initSizeCalculation(TooltipViewerRenderingProxy(), { 400 }, { 240 })
+        view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
         val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
         val controller = view.place(placements)
         try {
