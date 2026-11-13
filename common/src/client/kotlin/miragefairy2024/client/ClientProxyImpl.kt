@@ -6,6 +6,7 @@ import dev.architectury.registry.client.rendering.RenderTypeRegistry
 import miragefairy2024.BlockColorProvider
 import miragefairy2024.ClientProxy
 import miragefairy2024.ItemColorProvider
+import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.RenderingProxy
 import miragefairy2024.RenderingProxyBlockEntity
 import miragefairy2024.client.mod.recipeviewer.vanilla.MessageViewScreen
@@ -13,7 +14,6 @@ import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
 import miragefairy2024.client.util.ViewToast
 import miragefairy2024.client.util.ellipsize
 import miragefairy2024.client.util.stack
-import miragefairy2024.mod.recipeviewer.vanilla.MessageViewScreenDefinition
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.View
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback

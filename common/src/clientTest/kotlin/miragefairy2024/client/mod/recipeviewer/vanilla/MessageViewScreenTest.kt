@@ -1,8 +1,8 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.client.mod.getKeyMapping
 import miragefairy2024.mod.common.KeyMappingType
-import miragefairy2024.mod.recipeviewer.vanilla.MessageViewScreenDefinition
 import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.util.empty
 import miragefairy2024.util.text

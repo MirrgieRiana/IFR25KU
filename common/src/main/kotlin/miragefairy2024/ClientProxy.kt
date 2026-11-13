@@ -1,6 +1,6 @@
 package miragefairy2024
 
-import miragefairy2024.mod.recipeviewer.vanilla.MessageViewScreenDefinition
+import miragefairy2024.mod.common.KeyMappingType
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.View
 import net.minecraft.core.BlockPos
@@ -21,6 +21,13 @@ import net.minecraft.world.level.block.state.BlockState
 
 var clientProxy: ClientProxy<*>? = null
 
+
+class MessageViewScreenDefinition(val title: Component, val rootViewFactory: () -> View) {
+    var transparentBackground = true
+    var closeOnInventoryKey = true
+    var additionalCloseKey: KeyMappingType? = null
+    var closeOnOutsideClick = true
+}
 
 interface ClientProxy<S : Any> {
     fun registerItemTooltipCallback(block: (stack: ItemStack, context: Item.TooltipContext, lines: MutableList<Component>) -> Unit)

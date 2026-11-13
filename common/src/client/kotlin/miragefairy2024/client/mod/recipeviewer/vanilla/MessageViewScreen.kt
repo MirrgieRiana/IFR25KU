@@ -1,7 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.client.mod.getKeyMapping
-import miragefairy2024.mod.recipeviewer.vanilla.MessageViewScreenDefinition
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
 

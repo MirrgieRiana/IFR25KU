@@ -1,12 +1,12 @@
 package miragefairy2024.mod.fairyquest
 
 import miragefairy2024.ClientProxy
+import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
-import miragefairy2024.mod.recipeviewer.vanilla.MessageViewScreenDefinition
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
