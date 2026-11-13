@@ -1,11 +1,13 @@
-package miragefairy2024.client.util
+package miragefairy2024.util
 
 import miragefairy2024.ModContext
-import miragefairy2024.mixin.client.api.inputEventsHandlers
-import miragefairy2024.util.TextScope
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
-import net.minecraft.client.KeyMapping
+import miragefairy2024.ModEvents
+import miragefairy2024.clientProxy
 import net.minecraft.network.chat.Component
+
+fun interface KeyMapping {
+    fun matches(keyCode: Int, scanCode: Int): Boolean
+}
 
 /** @param category この文字列は識別と翻訳キーの両方に使われます。 */
 class KeyMappingCard(
@@ -17,14 +19,8 @@ class KeyMappingCard(
     lateinit var keyMapping: KeyMapping
 
     context(ModContext)
-    fun init() {
-        keyMapping = KeyMapping(nameTranslationKey, defaultKeyCode, category)
-        inputEventsHandlers += {
-            while (keyMapping.consumeClick()) {
-                listener()
-            }
-        }
-        KeyBindingHelper.registerKeyBinding(keyMapping)
+    fun init() = ModEvents.onClientInit {
+        keyMapping = clientProxy!!.registerKeyMapping(nameTranslationKey, defaultKeyCode, category, listener)
     }
 }
 

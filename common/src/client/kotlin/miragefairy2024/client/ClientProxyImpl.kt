@@ -13,10 +13,13 @@ import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
 import miragefairy2024.client.util.ViewToast
 import miragefairy2024.client.util.ellipsize
 import miragefairy2024.client.util.stack
+import miragefairy2024.mixin.client.api.inputEventsHandlers
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.View
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
+import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.screens.MenuScreens
 import net.minecraft.client.gui.screens.Screen
@@ -43,6 +46,7 @@ import net.minecraft.world.level.GrassColor
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
+import miragefairy2024.util.KeyMapping as CommonKeyMapping
 
 class ClientProxyImpl : ClientProxy<Screen> {
     override fun registerItemTooltipCallback(block: (stack: ItemStack, context: Item.TooltipContext, lines: MutableList<Component>) -> Unit) {
@@ -96,6 +100,17 @@ class ClientProxyImpl : ClientProxy<Screen> {
 
     override fun <T> registerRenderingProxyBlockEntityRendererFactory(blockEntityType: BlockEntityType<T>) where T : BlockEntity, T : RenderingProxyBlockEntity {
         BlockEntityRenderers.register(blockEntityType, ::RenderingProxyBlockEntityRenderer)
+    }
+
+    override fun registerKeyMapping(nameTranslationKey: String, defaultKeyCode: Int, category: String, listener: () -> Unit): CommonKeyMapping {
+        val keyMapping: KeyMapping = KeyMapping(nameTranslationKey, defaultKeyCode, category)
+        inputEventsHandlers += {
+            while (keyMapping.consumeClick()) {
+                listener()
+            }
+        }
+        KeyBindingHelper.registerKeyBinding(keyMapping)
+        return CommonKeyMapping { keyCode, scanCode -> keyMapping.matches(keyCode, scanCode) }
     }
 
     override fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu {
