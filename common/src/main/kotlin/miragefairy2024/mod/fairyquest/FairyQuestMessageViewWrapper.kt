@@ -11,7 +11,6 @@ import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
-import miragefairy2024.mod.recipeviewer.view.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.StackView
@@ -20,8 +19,7 @@ import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.margin
@@ -74,54 +72,46 @@ class FairyQuestMessageViewWrapper(fairyQuestTitle: Component, fairyQuestMessage
             view.sizingY = Sizing.FILL
 
             // メッセージ部分
-            view += XListView().configure {
+            view += YScrollView().configure {
                 position.alignmentX = Alignment.CENTER
                 position.weight = 1.0
-                view.sizingY = Sizing.FILL
-                val scrollView = YSimpleScrollView()
-                val scrollbarView = YScrollbarView().also {
-                    it.scrollbarThickness = 10
-                    it.scrollbarColor = 0xA0FFFFFF.toInt()
-                }
-                connectScrollbar(scrollView, scrollbarView)
-                view += scrollView.configure {
-                    view.sizingX = Sizing.WRAP
+                view.sizingX = Sizing.WRAP
+                view.scrollbarThickness = 10
+                view.scrollbarColor = 0xA0FFFFFF.toInt()
 
-                    view += StackView().configure {
+                view += StackView().configure {
+                    view.sizingX = Sizing.FILL
+
+                    view += NinePatchImageView(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
+                    view += YListView().configure {
                         view.sizingX = Sizing.FILL
 
-                        view += NinePatchImageView(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
-                        view += YListView().configure {
+                        view += MultiLineTextView().configure {
+                            view.text.value = fairyQuestTitle
+                            view.alignmentX = Alignment.CENTER
+                            view.color = textColor
+                            view.shadow = false
+                        }
+                        view += YSpaceView(11)
+                        view += StackView().configure {
                             view.sizingX = Sizing.FILL
 
+                            view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11, 0, 11, 0, 0, 11, 0, true, true)
                             view += MultiLineTextView().configure {
-                                view.text.value = fairyQuestTitle
-                                view.alignmentX = Alignment.CENTER
+                                view.text.value = fairyQuestMessage
                                 view.color = textColor
                                 view.shadow = false
-                            }
-                            view += YSpaceView(11)
-                            view += StackView().configure {
-                                view.sizingX = Sizing.FILL
-
-                                view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11, 0, 11, 0, 0, 11, 0, true, true)
-                                view += MultiLineTextView().configure {
-                                    view.text.value = fairyQuestMessage
-                                    view.color = textColor
-                                    view.shadow = false
-                                }.margin(0, 0, 0, 1)
-                            }
-                            view += YSpaceView(11)
-                            view += MultiLineTextView().configure {
-                                view.text.value = fairyQuestClient
-                                view.alignmentX = Alignment.END
-                                view.color = textColor
-                                view.shadow = false
-                            }
-                        }.minContentSizeX(18 * 15 - 10 * 2 - 11 * 2).margin(11)
-                    }
+                            }.margin(0, 0, 0, 1)
+                        }
+                        view += YSpaceView(11)
+                        view += MultiLineTextView().configure {
+                            view.text.value = fairyQuestClient
+                            view.alignmentX = Alignment.END
+                            view.color = textColor
+                            view.shadow = false
+                        }
+                    }.minContentSizeX(18 * 15 - 10 * 2 - 11 * 2).margin(11)
                 }
-                view += scrollbarView
             }.margin(10, 0, 0, 0) // アンチスクロールバーマージン
 
             view += YSpaceView(10)

@@ -1,12 +1,10 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
-import kotlin.math.roundToInt
 import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.ScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.empty
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
@@ -19,10 +17,10 @@ import net.minecraft.client.gui.narration.NarratedElementType
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import org.lwjgl.glfw.GLFW
+import kotlin.math.roundToInt
 
 abstract class VanillaScrollbarViewWidget(
     protected val view: ScrollbarView,
-    private val scrollOffsetValue: ObservableValue<Double>,
     bounds: IntRectangle,
 ) :
     AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }), MouseCaptureContainer {
@@ -45,9 +43,9 @@ abstract class VanillaScrollbarViewWidget(
     protected abstract val scrollbarThickness: Int
     protected abstract fun evaluateContentLength(): Int
 
-    private fun evaluateMaxScrollOffset() = evaluateContentLength() - view.viewportLength atLeast 0
+    private var scrollOffset = 0.0
 
-    private fun evaluateScrollOffset() = scrollOffsetValue.value.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
+    private fun evaluateMaxScrollOffset() = evaluateContentLength() - view.viewportLength atLeast 0
 
     private fun evaluateThumbLength(): Int {
         if (scrollbarLength <= 0) return 0
@@ -64,15 +62,16 @@ abstract class VanillaScrollbarViewWidget(
             0.0
         } else {
             val maxThumbPosition = scrollbarLength - evaluateThumbLength()
-            val scrollRatio = evaluateScrollOffset() / evaluateMaxScrollOffset().toDouble()
+            val scrollRatio = scrollOffset / evaluateMaxScrollOffset().toDouble()
             maxThumbPosition.toDouble() * scrollRatio
         }
     }
 
     private fun updateScroll(offset: Double): Boolean {
-        val old = evaluateScrollOffset()
-        scrollOffsetValue.value = offset
-        return evaluateScrollOffset() != old
+        val old = scrollOffset
+        scrollOffset = offset.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
+        if (scrollOffset == old) return false
+        return true
     }
 
 
@@ -88,6 +87,8 @@ abstract class VanillaScrollbarViewWidget(
     protected abstract fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int)
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+
+        updateScroll(scrollOffset)
 
         // スクロールバーの描画なのだ～🌱
         if (evaluateMaxScrollOffset() > 0 && scrollbarThickness > 0 && evaluateThumbLength() > 0) {
@@ -150,7 +151,7 @@ abstract class VanillaScrollbarViewWidget(
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (!isMouseOver(mouseX, mouseY)) return false
-        return updateScroll(evaluateScrollOffset() - getScrollAmount(scrollX, scrollY) * view.scrollStep)
+        return updateScroll(scrollOffset - getScrollAmount(scrollX, scrollY) * view.scrollStep)
     }
 
 
@@ -192,10 +193,10 @@ abstract class VanillaScrollbarViewWidget(
         if (!isActive) return false
         if (!isFocused) return false
         val offset = when (keyCode) {
-            backwardKey -> evaluateScrollOffset() - view.scrollStep
-            forwardKey -> evaluateScrollOffset() + view.scrollStep
-            GLFW.GLFW_KEY_PAGE_UP -> evaluateScrollOffset() - view.viewportLength * 0.8
-            GLFW.GLFW_KEY_PAGE_DOWN -> evaluateScrollOffset() + view.viewportLength * 0.8
+            backwardKey -> scrollOffset - view.scrollStep
+            forwardKey -> scrollOffset + view.scrollStep
+            GLFW.GLFW_KEY_PAGE_UP -> scrollOffset - view.viewportLength * 0.8
+            GLFW.GLFW_KEY_PAGE_DOWN -> scrollOffset + view.viewportLength * 0.8
             GLFW.GLFW_KEY_HOME -> 0.0
             GLFW.GLFW_KEY_END -> evaluateMaxScrollOffset().toDouble()
             else -> return false
@@ -226,7 +227,6 @@ class VanillaXScrollbarViewWidget(
     bounds: IntRectangle,
 ) : VanillaScrollbarViewWidget(
     view,
-    view.scrollOffsetX,
     bounds,
 ) {
 
@@ -265,7 +265,6 @@ class VanillaYScrollbarViewWidget(
     bounds: IntRectangle,
 ) : VanillaScrollbarViewWidget(
     view,
-    view.scrollOffsetY,
     bounds,
 ) {
 

@@ -17,11 +17,7 @@ import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
-import miragefairy2024.mod.recipeviewer.views.XScrollbarView
-import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
 import miragefairy2024.util.observeAndInitialize
@@ -81,47 +77,6 @@ fun initVanillaViewPlacers() {
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollView, bounds ->
         placeScrollView(context, VanillaYScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
-    }
-    fun placeSimpleScrollView(context: VanillaViewPlacerContext, widget: VanillaSimpleScrollViewWidget): ViewController {
-        val controller = context place widget
-        return object : ViewController {
-            override fun setOffset(offset: IntPoint) {
-                controller.setOffset(offset)
-            }
-
-            override fun detach() {
-                widget.detach()
-                controller.detach()
-            }
-
-            override fun dispose() {
-                widget.dispose()
-                controller.dispose()
-            }
-        }
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XSimpleScrollView, bounds ->
-        placeSimpleScrollView(context, VanillaXSimpleScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YSimpleScrollView, bounds ->
-        placeSimpleScrollView(context, VanillaYSimpleScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
-    }
-    fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget): ViewController {
-        val controller = context place widget
-        return object : ViewController {
-            override fun setOffset(offset: IntPoint) = controller.setOffset(offset)
-            override fun detach() = controller.detach()
-            override fun dispose() {
-                widget.dispose()
-                controller.dispose()
-            }
-        }
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XScrollbarView, bounds ->
-        placeScrollbarView(context, VanillaXScrollbarViewWidget(view, bounds))
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollbarView, bounds ->
-        placeScrollbarView(context, VanillaYScrollbarViewWidget(view, bounds))
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
         if (!context.canPlaceMenuSlots) throw UnsupportedOperationException("MenuSlotView cannot be placed in this context")

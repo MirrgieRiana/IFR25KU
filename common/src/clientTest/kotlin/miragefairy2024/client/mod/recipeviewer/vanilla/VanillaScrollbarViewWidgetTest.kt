@@ -76,7 +76,7 @@ class VanillaScrollbarViewWidgetTest {
     }
 
     @Test
-    fun `コンテンツ長が縮小しても指定値を保持してつまみだけを現在範囲へ収めるのだ`() {
+    fun `コンテンツ長が縮小したら描画前に位置を現在範囲へ補正するのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
                 val view = if (horizontal) XScrollbarView() else YScrollbarView()
@@ -97,8 +97,7 @@ class VanillaScrollbarViewWidgetTest {
                 Assertions.assertTrue(environment.fills.isEmpty())
                 view.contentLength = 300
                 widget.render(environment.graphics, 50, 50, 0.0F)
-                Assertions.assertEquals(listOf(if (horizontal) IntRectangle(77, 200, 33, 5) else IntRectangle(200, 87, 5, 33)), environment.fills)
-                Assertions.assertEquals(200.0, if (horizontal) (view as XScrollbarView).scrollOffsetX.value else (view as YScrollbarView).scrollOffsetY.value)
+                Assertions.assertEquals(listOf(if (horizontal) IntRectangle(10, 200, 33, 5) else IntRectangle(200, 20, 5, 33)), environment.fills)
                 widget.dispose()
             }
         }
