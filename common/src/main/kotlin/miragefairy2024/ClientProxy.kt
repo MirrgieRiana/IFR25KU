@@ -1,6 +1,7 @@
 package miragefairy2024
 
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
+import miragefairy2024.mod.recipeviewer.vanilla.ViewScreenDefinition
 import miragefairy2024.mod.recipeviewer.view.View
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
@@ -36,6 +37,7 @@ interface ClientProxy<S : Any> {
     fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu
     fun getCurrentScreen(): S?
     fun setCurrentScreen(screen: S?)
+    fun createViewScreen(parent: S?, definition: ViewScreenDefinition): S
     fun createMessageViewScreen(parent: S?, title: Component, rootViewFactory: () -> View): S
     fun addToast(rootView: View)
     fun ellipsizeText(text: FormattedText, maxWidth: Int, ellipsis: FormattedText): FormattedCharSequence
