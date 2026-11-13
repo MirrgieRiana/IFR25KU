@@ -286,7 +286,7 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
-    fun `スクロール可能範囲の拡大では指定値を再適用し縮小では保持値も補正するのだ`() {
+    fun `スクロール可能範囲が変わっても描画では指定値と子の位置を変更しないのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
                 val fixture = ScrollFixture()
@@ -302,17 +302,58 @@ class VanillaScrollViewWidgetTest {
                     root.setSize(100, 100)
                     root.render(environment.graphics, 50, 50, 0.0F)
                     Assertions.assertEquals(175.25, view.scrollOffsetValue.value)
-                    Assertions.assertEquals(if (horizontal) IntPoint(-165, 20) else IntPoint(10, -155), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+                    Assertions.assertEquals(if (horizontal) IntPoint(-90, 20) else IntPoint(10, -80), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
 
                     root.setSize(if (horizontal) 250 else 100, if (horizontal) 100 else 250)
                     root.render(environment.graphics, 50, 50, 0.0F)
-                    Assertions.assertEquals(50.0, view.scrollOffsetValue.value)
-                    Assertions.assertEquals(if (horizontal) IntPoint(-40, 20) else IntPoint(10, -30), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+                    Assertions.assertEquals(175.25, view.scrollOffsetValue.value)
+                    Assertions.assertEquals(if (horizontal) IntPoint(-90, 20) else IntPoint(10, -80), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
 
                     root.setSize(100, 100)
                     root.render(environment.graphics, 50, 50, 0.0F)
-                    Assertions.assertEquals(50.0, view.scrollOffsetValue.value)
-                    Assertions.assertEquals(if (horizontal) IntPoint(-40, 20) else IntPoint(10, -30), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+                    Assertions.assertEquals(175.25, view.scrollOffsetValue.value)
+                    Assertions.assertEquals(if (horizontal) IntPoint(-90, 20) else IntPoint(10, -80), IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
+                    Assertions.assertTrue(fixture.widgets.all { it.offsets.isEmpty() })
+                } finally {
+                    controller.dispose()
+                    controller.detach()
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `子が縮小しても描画では位置を変えず残りの領域を余白にするのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val fixture = ScrollFixture()
+                val view = if (horizontal) XScrollView() else YScrollView()
+                val childView: ScrollTestView = Mockito.spy(ScrollTestView(true))
+                Mockito.doReturn(if (horizontal) 300 else 100).`when`(childView).evaluateActualSizeX()
+                Mockito.doReturn(if (horizontal) 100 else 300).`when`(childView).evaluateActualSizeY()
+                view += childView
+                view.scrollOffsetValue.value = 175.25
+                val controller = fixture.attach(view, IntPoint(100, 100))
+                try {
+                    val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                    val childWidget = fixture.widgets.single()
+                    val renderedBounds = mutableListOf<IntRectangle>()
+                    childWidget.onRender = { _, _, _, _ ->
+                        renderedBounds += IntRectangle(childWidget.x, childWidget.y, childWidget.width, childWidget.height)
+                    }
+                    root.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(if (horizontal) IntRectangle(-165, 20, 300, 100) else IntRectangle(10, -155, 100, 300), renderedBounds.last())
+
+                    listOf(200, 50, 300).forEach { contentLength ->
+                        Mockito.doReturn(if (horizontal) contentLength else 100).`when`(childView).evaluateActualSizeX()
+                        Mockito.doReturn(if (horizontal) 100 else contentLength).`when`(childView).evaluateActualSizeY()
+                        childWidget.setSize(if (horizontal) contentLength else 100, if (horizontal) 100 else contentLength)
+                        root.render(environment.graphics, 50, 50, 0.0F)
+
+                        Assertions.assertEquals(175.25, view.scrollOffsetValue.value)
+                        Assertions.assertEquals(if (horizontal) IntRectangle(-165, 20, contentLength, 100) else IntRectangle(10, -155, 100, contentLength), renderedBounds.last())
+                        Assertions.assertTrue(childWidget.offsets.isEmpty())
+                    }
                 } finally {
                     controller.dispose()
                     controller.detach()
@@ -588,7 +629,7 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
-    fun `表示領域を拡大したら子とバーを描画前に現在範囲へ戻すのだ`() {
+    fun `表示領域を拡大しても子を移動せず余白を表示するのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
                 val fixture = ScrollFixture()
@@ -606,19 +647,19 @@ class VanillaScrollViewWidgetTest {
 
                     root.setSize(if (horizontal) 250 else 100, if (horizontal) 100 else 250)
                     root.render(environment.graphics, 50, 50, 0.0F)
-                    Assertions.assertEquals(if (horizontal) IntPoint(-40, 20) else IntPoint(10, -30), renderedPositions.last())
+                    Assertions.assertEquals(if (horizontal) IntPoint(-190, 20) else IntPoint(10, -180), renderedPositions.last())
                     Assertions.assertEquals(if (horizontal) IntRectangle(52, 115, 208, 5) else IntRectangle(105, 62, 5, 208), environment.fills.last())
 
                     root.setSize(if (horizontal) 300 else 100, if (horizontal) 100 else 300)
                     environment.fills.clear()
                     root.render(environment.graphics, 50, 50, 0.0F)
-                    Assertions.assertEquals(IntPoint(10, 20), renderedPositions.last())
+                    Assertions.assertEquals(if (horizontal) IntPoint(-190, 20) else IntPoint(10, -180), renderedPositions.last())
                     Assertions.assertTrue(environment.fills.isEmpty())
 
                     root.setSize(100, 100)
                     root.render(environment.graphics, 50, 50, 0.0F)
-                    Assertions.assertEquals(IntPoint(10, 20), renderedPositions.last())
-                    Assertions.assertEquals(listOf(if (horizontal) IntRectangle(10, 115, 33, 5) else IntRectangle(105, 20, 5, 33)), environment.fills)
+                    Assertions.assertEquals(if (horizontal) IntPoint(-190, 20) else IntPoint(10, -180), renderedPositions.last())
+                    Assertions.assertEquals(listOf(if (horizontal) IntRectangle(77, 115, 33, 5) else IntRectangle(105, 87, 5, 33)), environment.fills)
                 } finally {
                     controller.dispose()
                     controller.detach()
