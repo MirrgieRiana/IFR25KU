@@ -3,10 +3,13 @@ package miragefairy2024.mod.recipeviewer.views
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
+import miragefairy2024.util.fire
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 
@@ -26,7 +29,27 @@ abstract class SimpleScrollView : WrapperView(), PlaceableView {
             field = value
         }
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
+    val onScrollBoundsChanged = EventRegistry<() -> Unit>()
+    var contentLength = 0
+        private set
+    var viewportLength = 0
+        private set
+
+    fun updateScrollBounds(contentLength: Int, viewportLength: Int) {
+        require(contentLength >= 0 && viewportLength >= 0) { "Scroll lengths must be non-negative" }
+        if (this.contentLength == contentLength && this.viewportLength == viewportLength) return
+        this.contentLength = contentLength
+        this.viewportLength = viewportLength
+        onScrollBoundsChanged.fire()
+    }
+
+    protected abstract fun evaluateContentLength(): Int
+    protected abstract fun evaluateViewportLength(): Int
+
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
+        updateScrollBounds(evaluateContentLength().coerceAtLeast(0), evaluateViewportLength().coerceAtLeast(0))
+        return viewPlacer.place(this, offset.sized(evaluateActualSize()))
+    }
 
 }
 
@@ -41,6 +64,9 @@ class XSimpleScrollView : SimpleScrollView() {
     override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() max childView.evaluateContentSizeX()
     override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() atLeast 0
 
+    override fun evaluateContentLength() = childView.evaluateActualSizeX()
+    override fun evaluateViewportLength() = evaluateActualSizeX()
+
 }
 
 /** 子 View を Y 軸方向へスクロールするのだ～🌱 */
@@ -53,5 +79,8 @@ class YSimpleScrollView : SimpleScrollView() {
 
     override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() atLeast 0
     override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() max childView.evaluateContentSizeY()
+
+    override fun evaluateContentLength() = childView.evaluateActualSizeY()
+    override fun evaluateViewportLength() = evaluateActualSizeY()
 
 }

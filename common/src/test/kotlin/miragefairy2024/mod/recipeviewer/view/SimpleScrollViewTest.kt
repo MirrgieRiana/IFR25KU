@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.util.register
 import mirrg.kotlin.helium.max
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
@@ -129,6 +130,42 @@ class SimpleScrollViewTest {
 
         Assertions.assertEquals(IntPoint(2, 10), child.evaluateActualSize())
         Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollStep = 0 }
+    }
+
+    @Test
+    fun `寸法の変更をまとめて通知し負の寸法では状態を変更しないのだ`() {
+        val view = XSimpleScrollView()
+        val lengths = mutableListOf<Pair<Int, Int>>()
+        view.onScrollBoundsChanged.register {
+            lengths += Pair(view.contentLength, view.viewportLength)
+        }
+        view.updateScrollBounds(300, 100)
+        view.updateScrollBounds(300, 100)
+        Assertions.assertThrows(IllegalArgumentException::class.java) { view.updateScrollBounds(-1, 100) }
+        Assertions.assertThrows(IllegalArgumentException::class.java) { view.updateScrollBounds(300, -1) }
+        Assertions.assertEquals(300, view.contentLength)
+        Assertions.assertEquals(100, view.viewportLength)
+        view.updateScrollBounds(120, 100)
+        Assertions.assertEquals(listOf(Pair(300, 100), Pair(120, 100)), lengths)
+    }
+
+    @Test
+    fun `配置時に子の全長と表示領域の長さを通知するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val child: AbstractView = object : AbstractView() {
+                override val sizingX = Sizing.WRAP
+                override val sizingY = Sizing.WRAP
+                override fun evaluateContentSizeXImpl() = 300
+                override fun evaluateContentSizeYImpl() = 300
+                override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = ViewController.NONE
+            }
+            val view = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+            view += child
+            view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 80 })
+            view.attachTo(IntPoint.ZERO) { _, _ -> ViewController.NONE }
+            Assertions.assertEquals(300, view.contentLength)
+            Assertions.assertEquals(if (horizontal) 100 else 80, view.viewportLength)
+        }
     }
 
 }
