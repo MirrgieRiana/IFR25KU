@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
+import miragefairy2024.util.ObservableValue
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 
@@ -32,6 +33,8 @@ abstract class SimpleScrollView : WrapperView(), PlaceableView {
 /** 子 View を X 軸方向へスクロールするのだ～🌱 */
 class XSimpleScrollView : SimpleScrollView() {
 
+    val scrollOffsetX = ObservableValue(0.0)
+
     override fun evaluateContentSizeXImpl() = 0
     override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY()
 
@@ -42,6 +45,8 @@ class XSimpleScrollView : SimpleScrollView() {
 
 /** 子 View を Y 軸方向へスクロールするのだ～🌱 */
 class YSimpleScrollView : SimpleScrollView() {
+
+    val scrollOffsetY = ObservableValue(0.0)
 
     override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX()
     override fun evaluateContentSizeYImpl() = 0
