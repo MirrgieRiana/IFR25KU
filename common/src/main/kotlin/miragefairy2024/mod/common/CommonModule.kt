@@ -71,6 +71,13 @@ enum class SlotType(texture: ResourceLocation, size: IntPoint, val margin: IntPo
     val viewTexture = ViewTexture(texture, size)
 }
 
+enum class KeyMappingType {
+    PLACE_ITEM,
+    OPEN_TOOLTIP_VIEWER,
+    OPEN_SOUL_STREAM,
+    TOGGLE_COLLECTION_ENABLED,
+}
+
 val guiAlwaysTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.always" }, "Always", "常時")
 val guiFullScreenTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.full_screen" }, "Click to full screen", "クリックで全画面表示")
 val guiBackToGameTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.back_to_game" }, "Back to game", "ゲームに戻る")
