@@ -29,6 +29,7 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.get
 import miragefairy2024.util.invoke
+import miragefairy2024.util.register
 import miragefairy2024.util.registerAndInitialize
 import miragefairy2024.util.text
 import net.minecraft.network.chat.Component
@@ -37,10 +38,11 @@ import net.minecraft.world.item.ItemStack
 fun openTooltipViewerScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val filter = ObservableValue("")
+        val scrollOffsetY = ObservableValue(0.0)
         val definition = MessageViewScreenDefinition(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }) {
             val player = proxy.getClientPlayer()
             val itemStacks = if (player != null) (0 until 9).map { player.inventory[it] } else emptyList()
-            TooltipViewerViewWrapper(itemStacks, filter, proxy::getItemTooltip).view
+            TooltipViewerViewWrapper(itemStacks, filter, scrollOffsetY, proxy::getItemTooltip).view
         }
         definition.additionalCloseKey = KeyMappingType.OPEN_TOOLTIP_VIEWER
         definition.closeOnOutsideClick = false
@@ -49,14 +51,15 @@ fun openTooltipViewerScreen() {
     openScreen(clientProxy!!)
 }
 
-class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableValue<String>, tooltipProvider: (ItemStack) -> List<Component>) {
+class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableValue<String>, scrollOffsetY: ObservableValue<Double>, tooltipProvider: (ItemStack) -> List<Component>) {
 
     val view = View {
-        var currentScrollView: YScrollView? = null
         fun scrollView() = View {
             view += YScrollView().configure {
-                view.scrollOffsetY.value = currentScrollView?.scrollOffsetY?.value ?: 0.0
-                currentScrollView = view
+                view.scrollOffsetY.value = scrollOffsetY.value
+                view.scrollOffsetY.register { _, newValue ->
+                    scrollOffsetY.value = newValue
+                }
                 view += YListView().configure {
                     view.sizingX = Sizing.FILL
 

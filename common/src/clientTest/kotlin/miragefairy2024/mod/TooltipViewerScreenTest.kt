@@ -8,6 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
+import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.atLeast
@@ -41,7 +42,7 @@ class TooltipViewerScreenTest {
     }
 
     @Test
-    fun `画面の再初期化ではフィルタを保持し開き直すと空のフィルタで開始するのだ`() {
+    fun `画面の再初期化ではフィルタとスクロール位置を保持し開き直すと初期化するのだ`() {
         val oldProxy = clientProxy
         @Suppress("UNCHECKED_CAST")
         val delegate: ClientProxy<Any> = Mockito.mock(ClientProxy::class.java) as ClientProxy<Any>
@@ -56,16 +57,18 @@ class TooltipViewerScreenTest {
         }
         clientProxy = proxy
         try {
-            fun withField(definition: MessageViewScreenDefinition, block: (TextFieldView) -> Unit) {
+            fun withViews(definition: MessageViewScreenDefinition, size: IntPoint, block: (TextFieldView, YScrollView) -> Unit) {
                 val view = definition.rootViewFactory()
-                view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
+                view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { size.x }, { size.y })
                 val fields = mutableListOf<TextFieldView>()
+                val scrollViews = mutableListOf<YScrollView>()
                 val controller = view.attachTo(IntPoint.ZERO) { child, _ ->
                     if (child is TextFieldView) fields += child
+                    if (child is YScrollView) scrollViews += child
                     ViewController.NONE
                 }
                 try {
-                    block(fields.single())
+                    block(fields.single(), scrollViews.single())
                 } finally {
                     controller.dispose()
                     controller.detach()
@@ -79,17 +82,27 @@ class TooltipViewerScreenTest {
             Assertions.assertTrue(definition.closeOnInventoryKey)
             Assertions.assertEquals(KeyMappingType.OPEN_TOOLTIP_VIEWER, definition.additionalCloseKey)
             Assertions.assertFalse(definition.closeOnOutsideClick)
-            withField(definition) { field ->
+            withViews(definition, IntPoint(400, 240)) { field, scrollView ->
                 Assertions.assertEquals("", field.text.value)
+                Assertions.assertEquals(0.0, scrollView.scrollOffsetY.value)
+                scrollView.scrollOffsetY.value = 125.5
                 field.text.value = "0,2"
             }
-            withField(definition) { field ->
+            withViews(definition, IntPoint(320, 180)) { field, scrollView ->
                 Assertions.assertEquals("0,2", field.text.value)
+                Assertions.assertEquals(125.5, scrollView.scrollOffsetY.value)
+                scrollView.scrollOffsetY.value = 271.25
+                field.text.value = "1,3"
+            }
+            withViews(definition, IntPoint(640, 360)) { field, scrollView ->
+                Assertions.assertEquals("1,3", field.text.value)
+                Assertions.assertEquals(271.25, scrollView.scrollOffsetY.value)
             }
 
             openTooltipViewerScreen()
-            withField(definitions.last()) { field ->
+            withViews(definitions.last(), IntPoint(400, 240)) { field, scrollView ->
                 Assertions.assertEquals("", field.text.value)
+                Assertions.assertEquals(0.0, scrollView.scrollOffsetY.value)
             }
             Mockito.verify(delegate, Mockito.times(2)).setCurrentScreen(screen)
         } finally {

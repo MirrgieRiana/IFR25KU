@@ -65,7 +65,7 @@ class TooltipViewerViewWrapperTest {
     fun `空のアイテムを除外しスロットとツールチップを同じ順序で配置するのだ`() {
         val first: ItemStack = ItemStack(Items.STONE, 64)
         val second: ItemStack = ItemStack(Items.DIRT, 12)
-        val view = TooltipViewerViewWrapper(listOf(ItemStack.EMPTY, first, ItemStack.EMPTY, second), ObservableValue("")) {
+        val view = TooltipViewerViewWrapper(listOf(ItemStack.EMPTY, first, ItemStack.EMPTY, second), ObservableValue(""), ObservableValue(0.0)) {
             listOf(text { it.count.toString()() })
         }
         view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
@@ -86,7 +86,8 @@ class TooltipViewerViewWrapperTest {
     @Test
     fun `フィルタを変更すると入力欄とスクロール位置を保持したまま行と間隔を更新するのだ`() {
         val filter = ObservableValue("")
-        val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE)), filter) {
+        val scrollOffsetY = ObservableValue(0.0)
+        val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE)), filter, scrollOffsetY) {
             listOf("title", "first", "second", "third").map { text { it() } }
         }
         view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
@@ -104,6 +105,7 @@ class TooltipViewerViewWrapperTest {
             ).forEach { (value, expected) ->
                 scrollView.scrollOffsetY.value += 10.5
                 val scrollOffset = scrollView.scrollOffsetY.value
+                Assertions.assertEquals(scrollOffset, scrollOffsetY.value)
                 field.text.value = value
                 Assertions.assertEquals(value, filter.value)
                 Assertions.assertSame(field, placements.mapNotNull { it.first as? TextFieldView }.single())
@@ -130,7 +132,7 @@ class TooltipViewerViewWrapperTest {
     @Test
     fun `長文を背景の内側で折り返し画面の高さを超えた内容をスクロールするのだ`() {
         val filter = ObservableValue("1")
-        val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE)), filter) {
+        val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE)), filter, ObservableValue(0.0)) {
             listOf(text { "title"() }, text { "long".repeat(200)() })
         }
         listOf(IntPoint(400, 240), IntPoint(320, 180)).forEach { size ->
@@ -158,7 +160,7 @@ class TooltipViewerViewWrapperTest {
 
     @Test
     fun `アイテムがなくても検索欄と固定幅のパネルを配置するのだ`() {
-        val view = TooltipViewerViewWrapper(emptyList(), ObservableValue("")) { throw AssertionError("No item tooltip should be requested") }
+        val view = TooltipViewerViewWrapper(emptyList(), ObservableValue(""), ObservableValue(0.0)) { throw AssertionError("No item tooltip should be requested") }
         view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
         val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
         val controller = view.place(placements)
