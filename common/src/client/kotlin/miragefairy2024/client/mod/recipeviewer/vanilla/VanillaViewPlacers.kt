@@ -195,7 +195,7 @@ fun initVanillaViewPlacers() {
         context placeRenderable VanillaViewRendererWidget(TooltipViewRenderer, view, bounds)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
-        fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
+        fun <V : PlaceableView, S> f(entry: ViewRendererRegistry.Entry<V, S>) {
             VANILLA_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
                 context place VanillaViewRendererWidget(entry.viewRenderer, view, bounds)
             }
