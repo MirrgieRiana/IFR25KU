@@ -109,8 +109,14 @@ fun initVanillaViewPlacers() {
     fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget): ViewController {
         val controller = context place widget
         return object : ViewController {
-            override fun setOffset(offset: IntPoint) = controller.setOffset(offset)
-            override fun detach() = controller.detach()
+            override fun setOffset(offset: IntPoint) {
+                controller.setOffset(offset)
+            }
+
+            override fun detach() {
+                controller.detach()
+            }
+
             override fun dispose() {
                 widget.dispose()
                 controller.dispose()
