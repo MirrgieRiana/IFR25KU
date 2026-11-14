@@ -22,9 +22,8 @@ class GuideItemViewTest {
     @Test
     fun `候補が空なら空のアイテムを返すのだ`() {
         val view = GuideItemView(emptyList())
-        assertSame(ItemStack.EMPTY, view.itemStack)
-        view.time = 90.0
-        assertSame(ItemStack.EMPTY, view.itemStack)
+        assertSame(ItemStack.EMPTY, view.getItemStack(0.0))
+        assertSame(ItemStack.EMPTY, view.getItemStack(90.0))
     }
 
     @Test
@@ -33,23 +32,18 @@ class GuideItemViewTest {
         val second = ItemStack(Items.DIRT)
         val third = ItemStack(Items.GLASS)
         val view = GuideItemView(listOf(first, second, third))
-        assertSame(first, view.itemStack)
-        view.time = 29.999
-        assertSame(first, view.itemStack)
-        view.time = 30.0
-        assertSame(second, view.itemStack)
-        view.time = 60.0
-        assertSame(third, view.itemStack)
-        view.time = 90.0
-        assertSame(first, view.itemStack)
+        assertSame(first, view.getItemStack(0.0))
+        assertSame(first, view.getItemStack(29.999))
+        assertSame(second, view.getItemStack(30.0))
+        assertSame(third, view.getItemStack(60.0))
+        assertSame(first, view.getItemStack(90.0))
     }
 
     @Test
     fun `候補が1個なら時間が経っても同じアイテムを返すのだ`() {
         val itemStack = ItemStack(Items.STONE)
         val view = GuideItemView(listOf(itemStack))
-        view.time = 1000.0
-        assertSame(itemStack, view.itemStack)
+        assertSame(itemStack, view.getItemStack(1000.0))
     }
 
     @Test
@@ -58,7 +52,6 @@ class GuideItemViewTest {
         val second = ItemStack(Items.DIRT)
         val view = GuideItemView(listOf(first, second))
         view.showItemStack = false
-        view.time = 30.0
-        assertSame(second, view.itemStack)
+        assertSame(second, view.getItemStack(30.0))
     }
 }

@@ -12,14 +12,14 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.renderer.RenderType
 
-object GuideItemViewRenderer : ViewRenderer<GuideItemView, Unit> {
-    override fun createState(view: GuideItemView) = Unit
+object GuideItemViewRenderer : ViewRenderer<GuideItemView, Double> {
+    override fun createState(view: GuideItemView) = 0.0
 
-    override fun render(view: GuideItemView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: GuideItemView, state: Slot<Double>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val minecraft = Minecraft.getInstance()
-        if (!Screen.hasControlDown()) view.time += minecraft.timer.realtimeDeltaTicks
+        if (!Screen.hasControlDown()) state.value += minecraft.timer.realtimeDeltaTicks
 
-        val itemStack = view.itemStack
+        val itemStack = view.getItemStack(state.value)
         if (view.showOverlay) {
             graphics.fill(bounds.x, bounds.y, bounds.x2, bounds.y2, view.overlayArgb)
         }
@@ -30,10 +30,10 @@ object GuideItemViewRenderer : ViewRenderer<GuideItemView, Unit> {
         }
     }
 
-    /** スロットとオーバーレイに隠れないよう、画面本体の描画後に呼ぶのだ～🌱 */
-    fun renderTooltip(view: GuideItemView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int) {
+    /** 描画時と同じ [state] を渡し、スロットとオーバーレイに隠れないよう画面本体の描画後に呼ぶのだ～🌱 */
+    fun renderTooltip(view: GuideItemView, state: Slot<Double>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int) {
         if (!bounds.contains(mouseX, mouseY)) return
-        val itemStack = view.itemStack
+        val itemStack = view.getItemStack(state.value)
         if (itemStack.isEmpty) return
         graphics.renderTooltip(Minecraft.getInstance().font, itemStack, mouseX, mouseY)
     }
