@@ -23,13 +23,13 @@ class VanillaViewRendererWidget<V : PlaceableView, S>(private val renderer: View
         bounds2 = IntRectangle(x, y, width, height)
     }
 
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = renderer.render(view, bounds2, guiGraphics, mouseX, mouseY, isHovered, partialTick)
+    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = renderer.render(view, state, bounds2, guiGraphics, mouseX, mouseY, isHovered, partialTick)
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         // 前回の解放が届かなかった場合も、今回の押下で状態を更新するのだ～🌱
         pressedButtons -= button
         if (!isMouseOver(mouseX, mouseY)) return false
-        if (renderer.mouseClicked(view, bounds2, mouseX.toInt(), mouseY.toInt(), button)) {
+        if (renderer.mouseClicked(view, state, bounds2, mouseX.toInt(), mouseY.toInt(), button)) {
             // 実際にクリックを消費した場合のみ、押下中にするのだ～🌱
             pressedButtons += button
             return true
@@ -43,10 +43,10 @@ class VanillaViewRendererWidget<V : PlaceableView, S>(private val renderer: View
     // クリックを消費しているときは、離すイベントも消費するのだ～🌱
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int) = pressedButtons.remove(button)
 
-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = renderer.keyPressed(view, bounds2, keyCode, scanCode, modifiers)
+    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = renderer.keyPressed(view, state, bounds2, keyCode, scanCode, modifiers)
 
     override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
-        if (!renderer.isFocusable(view)) return null
+        if (!renderer.isFocusable(view, state)) return null
         return super.nextFocusPath(event)
     }
 

@@ -4,13 +4,14 @@ import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
+import mirrg.kotlin.helium.Slot
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 
 object MultiLineTextViewRenderer : ViewRenderer<MultiLineTextView, Unit> {
     override fun createState(view: MultiLineTextView) = Unit
 
-    override fun render(view: MultiLineTextView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: MultiLineTextView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val font = Minecraft.getInstance().font
         val color = view.color.lightModeArgb
         view.lines.evaluate().forEachIndexed { index, line ->

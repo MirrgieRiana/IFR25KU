@@ -8,6 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.y1
 import miragefairy2024.mod.recipeviewer.view.y2
 import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.util.fire
+import mirrg.kotlin.helium.Slot
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderType
@@ -17,9 +18,9 @@ import net.minecraft.sounds.SoundEvents
 object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
     override fun createState(view: ClickableView) = Unit
 
-    override fun isFocusable(view: ClickableView) = true
+    override fun isFocusable(view: ClickableView, state: Slot<Unit>) = true
 
-    override fun mouseClicked(view: ClickableView, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int): Boolean {
+    override fun mouseClicked(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int): Boolean {
         if (button != 0) return false
         view.onClick.fire {
             if (it()) {
@@ -30,7 +31,7 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
         return false
     }
 
-    override fun render(view: ClickableView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         if (isHovered) {
             graphics.fill(
                 RenderType.guiOverlay(),

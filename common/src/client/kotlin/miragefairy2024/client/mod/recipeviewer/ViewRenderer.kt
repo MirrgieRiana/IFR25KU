@@ -4,14 +4,15 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.util.SubscribableBuffer
 import miragefairy2024.util.plusAssign
+import mirrg.kotlin.helium.Slot
 import net.minecraft.client.gui.GuiGraphics
 
 interface ViewRenderer<in V : PlaceableView, S> {
     fun createState(view: V): S
-    fun isFocusable(view: V) = false
-    fun mouseClicked(view: V, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = false
-    fun keyPressed(view: V, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int) = false
-    fun render(view: V, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) = Unit
+    fun isFocusable(view: V, state: Slot<S>) = false
+    fun mouseClicked(view: V, state: Slot<S>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = false
+    fun keyPressed(view: V, state: Slot<S>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int) = false
+    fun render(view: V, state: Slot<S>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) = Unit
 }
 
 object ViewRendererRegistry {

@@ -28,6 +28,7 @@ import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
+import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenDirection
@@ -96,7 +97,7 @@ class VanillaViewRendererWidgetTest {
         var consumeClick = false
         val renderer: ViewRenderer<RendererTestView, Unit> = object : ViewRenderer<RendererTestView, Unit> {
             override fun createState(view: RendererTestView) = Unit
-            override fun mouseClicked(view: RendererTestView, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = consumeClick
+            override fun mouseClicked(view: RendererTestView, state: Slot<Unit>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = consumeClick
         }
         val widget = VanillaViewRendererWidget(renderer, RendererTestView(), IntRectangle(10, 20, 100, 100))
         Assertions.assertFalse(widget.mouseClicked(30.0, 40.0, 0))
