@@ -6,7 +6,7 @@ import miragefairy2024.util.SubscribableBuffer
 import miragefairy2024.util.plusAssign
 import net.minecraft.client.gui.GuiGraphics
 
-interface ViewRenderer<in V : PlaceableView> {
+interface ViewRenderer<in V : PlaceableView, S> {
     fun isFocusable(view: V) = false
     fun mouseClicked(view: V, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = false
     fun keyPressed(view: V, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int) = false
@@ -14,11 +14,11 @@ interface ViewRenderer<in V : PlaceableView> {
 }
 
 object ViewRendererRegistry {
-    val registry = SubscribableBuffer<Entry<*>>()
+    val registry = SubscribableBuffer<Entry<*, *>>()
 
-    fun <V : PlaceableView> register(viewClass: Class<V>, viewRenderer: ViewRenderer<V>) {
+    fun <V : PlaceableView, S> register(viewClass: Class<V>, viewRenderer: ViewRenderer<V, S>) {
         registry += Entry(viewClass, viewRenderer)
     }
 
-    class Entry<V : PlaceableView>(val viewClass: Class<V>, val viewRenderer: ViewRenderer<V>)
+    class Entry<V : PlaceableView, S>(val viewClass: Class<V>, val viewRenderer: ViewRenderer<V, S>)
 }

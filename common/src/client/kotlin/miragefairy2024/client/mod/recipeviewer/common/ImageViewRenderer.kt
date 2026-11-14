@@ -5,7 +5,7 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import net.minecraft.client.gui.GuiGraphics
 
-object ImageViewRenderer : ViewRenderer<ImageView> {
+object ImageViewRenderer : ViewRenderer<ImageView, Unit> {
     override fun render(view: ImageView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         graphics.blit(
             view.texture.id,

@@ -52,7 +52,7 @@ class VanillaViewRendererWidgetTest {
 
     @Test
     fun `描画専用の View は Tab と矢印キーのフォーカス候補にしないのだ`() {
-        fun <V : PlaceableView> check(view: V, renderer: ViewRenderer<V>) {
+        fun <V : PlaceableView> check(view: V, renderer: ViewRenderer<V, Unit>) {
             val widget = VanillaViewRendererWidget(renderer, view, IntRectangle(10, 20, 100, 100))
             Assertions.assertNull(widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
             Assertions.assertNull(widget.nextFocusPath(FocusNavigationEvent.ArrowNavigation(ScreenDirection.DOWN)))
@@ -94,7 +94,7 @@ class VanillaViewRendererWidgetTest {
     @Test
     fun `処理したクリックに対応するドラッグと解放だけを消費するのだ`() {
         var consumeClick = false
-        val renderer: ViewRenderer<RendererTestView> = object : ViewRenderer<RendererTestView> {
+        val renderer: ViewRenderer<RendererTestView, Unit> = object : ViewRenderer<RendererTestView, Unit> {
             override fun mouseClicked(view: RendererTestView, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = consumeClick
         }
         val widget = VanillaViewRendererWidget(renderer, RendererTestView(), IntRectangle(10, 20, 100, 100))

@@ -10,7 +10,7 @@ import miragefairy2024.mod.recipeviewer.views.ProgressView
 import mirrg.kotlin.helium.atMost
 import net.minecraft.client.gui.GuiGraphics
 
-object ProgressViewRenderer : ViewRenderer<ProgressView> {
+object ProgressViewRenderer : ViewRenderer<ProgressView, Unit> {
     override fun render(view: ProgressView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         fun blit(texture: ViewTexture, x: Int, y: Int, source: IntRectangle) {
             graphics.blit(

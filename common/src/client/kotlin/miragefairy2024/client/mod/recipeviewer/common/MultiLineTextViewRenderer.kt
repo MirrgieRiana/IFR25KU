@@ -7,7 +7,7 @@ import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 
-object MultiLineTextViewRenderer : ViewRenderer<MultiLineTextView> {
+object MultiLineTextViewRenderer : ViewRenderer<MultiLineTextView, Unit> {
 
     override fun render(view: MultiLineTextView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val font = Minecraft.getInstance().font

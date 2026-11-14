@@ -6,7 +6,7 @@ import miragefairy2024.mod.recipeviewer.views.TooltipView
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 
-object TooltipViewRenderer : ViewRenderer<TooltipView> {
+object TooltipViewRenderer : ViewRenderer<TooltipView, Unit> {
     override fun render(view: TooltipView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         if (isHovered) {
             val tooltip = view.tooltipProvider(mouseX, mouseY)

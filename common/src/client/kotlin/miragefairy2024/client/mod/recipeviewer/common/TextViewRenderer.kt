@@ -8,7 +8,7 @@ import miragefairy2024.mod.recipeviewer.views.TextView
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 
-object TextViewRenderer : ViewRenderer<TextView> {
+object TextViewRenderer : ViewRenderer<TextView, Unit> {
 
     private val startNanoTime by lazy { System.nanoTime() }
 

@@ -7,7 +7,7 @@ import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil
 
-object TooltipBackgroundViewRenderer : ViewRenderer<TooltipBackgroundView> {
+object TooltipBackgroundViewRenderer : ViewRenderer<TooltipBackgroundView, Unit> {
     override fun render(view: TooltipBackgroundView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         // 左右・上下の枠線が重ならずに収まる最小寸法は 4 × 4 GUI 単位なのだ～🌱
         if (bounds.sizeX < 4 || bounds.sizeY < 4) return

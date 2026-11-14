@@ -6,7 +6,7 @@ import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import mirrg.kotlin.helium.atMost
 import net.minecraft.client.gui.GuiGraphics
 
-object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView> {
+object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView, Unit> {
     override fun render(view: NinePatchImageView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
 
         val sw0 = view.textureWidth

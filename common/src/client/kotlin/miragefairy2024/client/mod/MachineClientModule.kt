@@ -43,7 +43,7 @@ fun initMachineClientModule() {
     ViewRendererRegistry.register(TexturedArrowView::class.java, TexturedArrowViewRenderer)
 }
 
-object FuelViewRenderer : ViewRenderer<FuelView> {
+object FuelViewRenderer : ViewRenderer<FuelView, Unit> {
     val TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/fuel.png")
     override fun render(view: FuelView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val fuelMax = 20 * 10
@@ -75,7 +75,7 @@ object FuelViewRenderer : ViewRenderer<FuelView> {
     }
 }
 
-object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
+object BlueFuelViewRenderer : ViewRenderer<BlueFuelView, Unit> {
     val TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/blue_fuel.png")
     override fun render(view: BlueFuelView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val fuelMax = 20 * 10
@@ -107,7 +107,7 @@ object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
     }
 }
 
-object TexturedArrowViewRenderer : ViewRenderer<TexturedArrowView> {
+object TexturedArrowViewRenderer : ViewRenderer<TexturedArrowView, Unit> {
     override fun render(view: TexturedArrowView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val rate = view.durationMilliSeconds?.let {
             (System.nanoTime() / 1_000_000 % it.toLong()).toDouble() / it.toDouble()

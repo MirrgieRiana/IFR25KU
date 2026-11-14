@@ -10,7 +10,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.sounds.SoundEvents
 
-object ImageButtonViewRenderer : ViewRenderer<ImageButtonView> {
+object ImageButtonViewRenderer : ViewRenderer<ImageButtonView, Unit> {
 
     override fun isFocusable(view: ImageButtonView) = view.enabled.value
 
