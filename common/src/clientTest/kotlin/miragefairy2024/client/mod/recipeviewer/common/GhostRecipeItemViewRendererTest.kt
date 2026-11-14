@@ -1,0 +1,228 @@
+package miragefairy2024.client.mod.recipeviewer.common
+
+import miragefairy2024.client.mod.recipeviewer.vanilla.GuiTestEnvironment
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
+import miragefairy2024.util.invoke
+import miragefairy2024.util.text
+import mirrg.kotlin.helium.Slot
+import net.minecraft.SharedConstants
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.screens.Screen
+import net.minecraft.client.renderer.RenderType
+import net.minecraft.network.chat.Component
+import net.minecraft.server.Bootstrap
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.mockito.InOrder
+import org.mockito.Mockito
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class GhostRecipeItemViewRendererTest {
+
+    @BeforeAll
+    fun initMinecraft() {
+        SharedConstants.tryDetectVersion()
+        Bootstrap.bootStrap()
+    }
+
+    private fun checkItemStack(view: GhostRecipeItemView, time: Double, expected: ItemStack) {
+        GuiTestEnvironment().use {
+            Mockito.mockStatic(Screen::class.java).use { screen ->
+                screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
+                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                GhostRecipeItemViewRenderer.render(view, Slot(time), IntRectangle(10, 20, 16, 16), graphics, 0, 0, false, 0.0F)
+                Mockito.verify(graphics).renderFakeItem(Mockito.same(expected), Mockito.eq(10), Mockito.eq(20))
+            }
+        }
+    }
+
+    @Test
+    fun `背景とゴースト本体と白い重ね描きと個数を順に描画するのだ`() {
+        GuiTestEnvironment().use {
+            Mockito.mockStatic(Screen::class.java).use { screen ->
+                screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
+                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                val itemStack: ItemStack = ItemStack(Items.STONE, 64)
+                val view = GhostRecipeItemView(listOf(itemStack)).also {
+                    it.showOverlay = true
+                    it.overlayArgb = 0x20FF0000
+                }
+                val bounds = IntRectangle(10, 20, 16, 16)
+                val state = Slot(GhostRecipeItemViewRenderer.createState(view))
+
+                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F)
+
+                val inOrder: InOrder = Mockito.inOrder(graphics)
+                inOrder.verify(graphics).fill(10, 20, 26, 36, 0x20FF0000)
+                inOrder.verify(graphics).renderFakeItem(itemStack, 10, 20)
+                inOrder.verify(graphics).fill(RenderType.guiGhostRecipeOverlay(), 10, 20, 26, 36, 0x60FFFFFF)
+                inOrder.verify(graphics).renderItemDecorations(Mockito.isNull(), Mockito.eq(itemStack), Mockito.eq(10), Mockito.eq(20))
+                Mockito.verifyNoMoreInteractions(graphics)
+
+                Mockito.clearInvocations(graphics)
+                view.showOverlay = false
+                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F)
+                inOrder.verify(graphics).renderFakeItem(itemStack, 10, 20)
+                inOrder.verify(graphics).fill(RenderType.guiGhostRecipeOverlay(), 10, 20, 26, 36, 0x60FFFFFF)
+                inOrder.verify(graphics).renderItemDecorations(Mockito.isNull(), Mockito.eq(itemStack), Mockito.eq(10), Mockito.eq(20))
+                Mockito.verifyNoMoreInteractions(graphics)
+            }
+        }
+    }
+
+    @Test
+    fun `本体を隠したときも背景を表示でき両方を隠すと描画しないのだ`() {
+        GuiTestEnvironment().use {
+            Mockito.mockStatic(Screen::class.java).use { screen ->
+                screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
+                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                val view = GhostRecipeItemView(listOf()).also {
+                    it.showItemStack = false
+                    it.showOverlay = true
+                    it.overlayArgb = 0x2000FF00
+                }
+                val bounds = IntRectangle(10, 20, 16, 16)
+                val state = Slot(GhostRecipeItemViewRenderer.createState(view))
+
+                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F)
+                Mockito.verify(graphics).fill(10, 20, 26, 36, 0x2000FF00)
+                Mockito.verifyNoMoreInteractions(graphics)
+
+                Mockito.clearInvocations(graphics)
+                view.showOverlay = false
+                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F)
+                Mockito.verifyNoInteractions(graphics)
+            }
+        }
+    }
+
+    @Test
+    fun `候補が空なら空のアイテムを描画に渡すのだ`() {
+        val view = GhostRecipeItemView(emptyList())
+        checkItemStack(view, 0.0, ItemStack.EMPTY)
+        checkItemStack(view, 90.0, ItemStack.EMPTY)
+    }
+
+    @Test
+    fun `候補は30ティックごとに切り替わって先頭へ戻るのだ`() {
+        val first: ItemStack = ItemStack(Items.STONE)
+        val second: ItemStack = ItemStack(Items.DIRT)
+        val third: ItemStack = ItemStack(Items.GLASS)
+        val view = GhostRecipeItemView(listOf(first, second, third))
+        checkItemStack(view, 0.0, first)
+        checkItemStack(view, 29.999, first)
+        checkItemStack(view, 30.0, second)
+        checkItemStack(view, 60.0, third)
+        checkItemStack(view, 90.0, first)
+    }
+
+    @Test
+    fun `候補が1個なら時間が経っても同じアイテムを描画するのだ`() {
+        val itemStack: ItemStack = ItemStack(Items.STONE)
+        val view = GhostRecipeItemView(listOf(itemStack))
+        checkItemStack(view, 1000.0, itemStack)
+    }
+
+    @Test
+    fun `同じViewでも配置ごとの候補を描画しCtrl中は時間を進めないのだ`() {
+        GuiTestEnvironment().use {
+            Mockito.mockStatic(Screen::class.java).use { screen ->
+                screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
+                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                val first: ItemStack = ItemStack(Items.STONE)
+                val second: ItemStack = ItemStack(Items.DIRT)
+                val view = GhostRecipeItemView(listOf(first, second))
+                val bounds = IntRectangle(10, 20, 16, 16)
+                val firstState = Slot(GhostRecipeItemViewRenderer.createState(view))
+                val secondState = Slot(GhostRecipeItemViewRenderer.createState(view))
+                Assertions.assertEquals(0.0, firstState.value)
+                Assertions.assertEquals(0.0, secondState.value)
+                secondState.value = 30.0
+
+                GhostRecipeItemViewRenderer.render(view, firstState, bounds, graphics, 0, 0, false, 0.0F)
+                GhostRecipeItemViewRenderer.render(view, secondState, bounds, graphics, 0, 0, false, 0.0F)
+                GhostRecipeItemViewRenderer.render(view, firstState, bounds, graphics, 0, 0, false, 0.0F)
+
+                val inOrder: InOrder = Mockito.inOrder(graphics)
+                inOrder.verify(graphics).renderFakeItem(first, 10, 20)
+                inOrder.verify(graphics).renderFakeItem(second, 10, 20)
+                inOrder.verify(graphics).renderFakeItem(first, 10, 20)
+                Assertions.assertEquals(0.0, firstState.value)
+                Assertions.assertEquals(30.0, secondState.value)
+            }
+        }
+    }
+
+    @Test
+    fun `描画と同じ候補のツールチップをクリップ解除と画面描画の後に表示するのだ`() {
+        GuiTestEnvironment().use { environment ->
+            Mockito.mockStatic(Screen::class.java).use { screen ->
+                screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
+                val first: ItemStack = ItemStack(Items.STONE)
+                val second: ItemStack = ItemStack(Items.DIRT)
+                val tooltip = text { "tooltip"() }
+                screen.`when`<List<Component>> { Screen.getTooltipFromItem(Mockito.any(Minecraft::class.java), Mockito.same(second)) }.thenReturn(listOf(tooltip))
+                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                val view = GhostRecipeItemView(listOf(first, second))
+                val state = Slot(30.0)
+                val bounds = IntRectangle(10, 20, 16, 16)
+                environment.render = { outerGraphics, mouseX, mouseY, partialTick ->
+                    outerGraphics.enableScissor(10, 20, 50, 60)
+                    try {
+                        GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, mouseX, mouseY, true, partialTick)
+                        Assertions.assertTrue(environment.tooltips.isEmpty())
+                    } finally {
+                        outerGraphics.disableScissor()
+                    }
+                    environment.events += "scissor-end"
+                }
+
+                environment.screen.renderWithTooltip(environment.graphics, 15, 25, 0.0F)
+                Mockito.verify(graphics).renderFakeItem(second, 10, 20)
+                Assertions.assertEquals(listOf(listOf(tooltip.visualOrderText)), environment.tooltips)
+                Assertions.assertEquals(listOf("scissor-end", "screen-end", "tooltip"), environment.events.takeLast(3))
+                Assertions.assertEquals(30.0, state.value)
+
+                environment.events.clear()
+                environment.tooltips.clear()
+                Mockito.clearInvocations(graphics)
+                view.showItemStack = false
+                environment.screen.renderWithTooltip(environment.graphics, 15, 25, 0.0F)
+                Mockito.verifyNoInteractions(graphics)
+                Assertions.assertEquals(listOf(listOf(tooltip.visualOrderText)), environment.tooltips)
+                Assertions.assertEquals(listOf("scissor-end", "screen-end", "tooltip"), environment.events.takeLast(3))
+                Assertions.assertEquals(30.0, state.value)
+            }
+        }
+    }
+
+    @Test
+    fun `非ホバーと空候補ではツールチップを予約しないのだ`() {
+        fun check(view: GhostRecipeItemView, isHovered: Boolean) {
+            GuiTestEnvironment().use { environment ->
+                Mockito.mockStatic(Screen::class.java).use { screen ->
+                    screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
+                    val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                    val state = Slot(GhostRecipeItemViewRenderer.createState(view))
+                    environment.render = { _, mouseX, mouseY, partialTick ->
+                        GhostRecipeItemViewRenderer.render(view, state, IntRectangle(10, 20, 16, 16), graphics, mouseX, mouseY, isHovered, partialTick)
+                    }
+
+                    environment.screen.renderWithTooltip(environment.graphics, 15, 25, 0.0F)
+
+                    Assertions.assertTrue(environment.tooltips.isEmpty())
+                    screen.verify({ Screen.getTooltipFromItem(Mockito.any(Minecraft::class.java), Mockito.any(ItemStack::class.java)) }, Mockito.never())
+                }
+            }
+        }
+        check(GhostRecipeItemView(listOf(ItemStack(Items.STONE))), false)
+        check(GhostRecipeItemView(emptyList()), true)
+    }
+
+}
