@@ -1,6 +1,5 @@
 package miragefairy2024.client.util
 
-import com.mojang.blaze3d.platform.Lighting
 import io.wispforest.owo.ui.base.BaseComponent
 import io.wispforest.owo.ui.core.OwoUIDrawContext
 import io.wispforest.owo.ui.core.Sizing
@@ -9,6 +8,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
+import net.minecraft.client.renderer.RenderType
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
@@ -26,23 +26,14 @@ class GhostItemComponent(var itemStacks: List<ItemStack> = listOf()) : BaseCompo
 
         val itemStack = if (itemStacks.isNotEmpty()) itemStacks[(time / 30.0).toInt() % itemStacks.size] else EMPTY_ITEM_STACK
 
-        val notSideLit = !Minecraft.getInstance().itemRenderer.getModel(itemStack, null, null, 0).usesBlockLight()
+        // 背景
+        if (showOverlay) context.fill(x, y, x + width, y + height, overlayColor)
 
-
-        // アイテム本体
+        // アイテム本体と個数
         if (showItemStack) {
-            if (notSideLit) Lighting.setupForFlatItems()
-            context.renderItem(itemStack, x, y)
-            if (notSideLit) Lighting.setupFor3DItems()
-        }
-
-        // 個数
-        if (showItemStack) context.renderItemDecorations(Minecraft.getInstance().font, itemStack, x, y)
-
-        context.pose().stack {
-            context.pose().translate(0F, 0F, 200F)
-            if (showItemStack) context.drawGradientRect(x, y, width, height, 0x808B8B8B.toInt(), 0x808B8B8B.toInt(), 0x808B8B8B.toInt(), 0x808B8B8B.toInt()) // アイテムを半透明にするやつ
-            if (showOverlay) context.drawGradientRect(x, y, width, height, overlayColor, overlayColor, overlayColor, overlayColor) // オーバーレイ
+            context.renderFakeItem(itemStack, x, y)
+            context.fill(RenderType.guiGhostRecipeOverlay(), x, y, x + width, y + height, 0x30FFFFFF)
+            context.renderItemDecorations(Minecraft.getInstance().font, itemStack, x, y)
         }
 
     }
