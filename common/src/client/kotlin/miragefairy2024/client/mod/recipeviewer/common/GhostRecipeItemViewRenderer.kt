@@ -17,7 +17,7 @@ object GhostRecipeItemViewRenderer : ViewRenderer<GhostRecipeItemView, Double> {
     override fun createState(view: GhostRecipeItemView) = 0.0
 
     override fun render(view: GhostRecipeItemView, state: Slot<Double>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
-        val minecraft = Minecraft.getInstance()
+        val minecraft: Minecraft = Minecraft.getInstance()
         if (!Screen.hasControlDown()) state.value += minecraft.timer.realtimeDeltaTicks
 
         val itemStack = if (view.itemStacks.isEmpty()) ItemStack.EMPTY else view.itemStacks[(state.value / 30.0).toInt() % view.itemStacks.size]
