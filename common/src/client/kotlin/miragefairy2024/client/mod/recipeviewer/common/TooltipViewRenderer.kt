@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 
 object TooltipViewRenderer : ViewRenderer<TooltipView, Unit> {
+    override fun createState(view: TooltipView) = Unit
     override fun render(view: TooltipView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         if (isHovered) {
             val tooltip = view.tooltipProvider(mouseX, mouseY)

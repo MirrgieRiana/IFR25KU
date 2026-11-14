@@ -7,6 +7,7 @@ import miragefairy2024.util.plusAssign
 import net.minecraft.client.gui.GuiGraphics
 
 interface ViewRenderer<in V : PlaceableView, S> {
+    fun createState(view: V): S
     fun isFocusable(view: V) = false
     fun mouseClicked(view: V, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = false
     fun keyPressed(view: V, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int) = false

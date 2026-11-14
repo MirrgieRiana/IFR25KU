@@ -15,6 +15,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.sounds.SoundEvents
 
 object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
+    override fun createState(view: ClickableView) = Unit
 
     override fun isFocusable(view: ClickableView) = true
 

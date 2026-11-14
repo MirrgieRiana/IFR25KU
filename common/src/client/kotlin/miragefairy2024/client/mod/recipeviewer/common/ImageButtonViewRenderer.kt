@@ -11,6 +11,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.sounds.SoundEvents
 
 object ImageButtonViewRenderer : ViewRenderer<ImageButtonView, Unit> {
+    override fun createState(view: ImageButtonView) = Unit
 
     override fun isFocusable(view: ImageButtonView) = view.enabled.value
 

@@ -10,6 +10,7 @@ import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
 import net.minecraft.client.gui.GuiGraphics
 
 object FilledRectangleViewRenderer : ViewRenderer<FilledRectangleView, Unit> {
+    override fun createState(view: FilledRectangleView) = Unit
     override fun render(view: FilledRectangleView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         graphics.fill(bounds.x1, bounds.y1, bounds.x2, bounds.y2, view.color.value)
     }

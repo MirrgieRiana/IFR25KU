@@ -95,6 +95,7 @@ class VanillaViewRendererWidgetTest {
     fun `処理したクリックに対応するドラッグと解放だけを消費するのだ`() {
         var consumeClick = false
         val renderer: ViewRenderer<RendererTestView, Unit> = object : ViewRenderer<RendererTestView, Unit> {
+            override fun createState(view: RendererTestView) = Unit
             override fun mouseClicked(view: RendererTestView, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = consumeClick
         }
         val widget = VanillaViewRendererWidget(renderer, RendererTestView(), IntRectangle(10, 20, 100, 100))

@@ -12,6 +12,8 @@ object TextViewRenderer : ViewRenderer<TextView, Unit> {
 
     private val startNanoTime by lazy { System.nanoTime() }
 
+    override fun createState(view: TextView) = Unit
+
     override fun render(view: TextView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val font = Minecraft.getInstance().font
         val color = view.color.lightModeArgb
