@@ -2,13 +2,13 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.ScrollBounds
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
-import miragefairy2024.util.EventRegistry
-import miragefairy2024.util.fire
+import miragefairy2024.util.ObservableValue
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 
@@ -28,25 +28,13 @@ abstract class SimpleScrollView : WrapperView(), PlaceableView {
             field = value
         }
 
-    val onScrollBoundsChanged = EventRegistry<() -> Unit>()
-    var contentLength = 0
-        private set
-    var viewportLength = 0
-        private set
-
-    fun updateScrollBounds(contentLength: Int, viewportLength: Int) {
-        require(contentLength >= 0 && viewportLength >= 0) { "Scroll lengths must be non-negative" }
-        if (this.contentLength == contentLength && this.viewportLength == viewportLength) return
-        this.contentLength = contentLength
-        this.viewportLength = viewportLength
-        onScrollBoundsChanged.fire()
-    }
+    val scrollBounds = ObservableValue(ScrollBounds(0, 0))
 
     protected abstract fun evaluateContentLength(): Int
     protected abstract fun evaluateViewportLength(): Int
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
-        updateScrollBounds(evaluateContentLength() atLeast 0, evaluateViewportLength() atLeast 0)
+        scrollBounds.value = ScrollBounds(evaluateContentLength() atLeast 0, evaluateViewportLength() atLeast 0)
         return viewPlacer.place(this, offset.sized(evaluateActualSize()))
     }
 

@@ -135,18 +135,18 @@ class SimpleScrollViewTest {
     @Test
     fun `寸法の変更をまとめて通知し負の寸法では状態を変更しないのだ`() {
         val view = XSimpleScrollView()
-        val lengths = mutableListOf<Pair<Int, Int>>()
-        view.onScrollBoundsChanged.register {
-            lengths += Pair(view.contentLength, view.viewportLength)
+        val changes = mutableListOf<Pair<ScrollBounds, ScrollBounds>>()
+        view.scrollBounds.register { old, new ->
+            changes += Pair(old, new)
         }
-        view.updateScrollBounds(300, 100)
-        view.updateScrollBounds(300, 100)
-        Assertions.assertThrows(IllegalArgumentException::class.java) { view.updateScrollBounds(-1, 100) }
-        Assertions.assertThrows(IllegalArgumentException::class.java) { view.updateScrollBounds(300, -1) }
-        Assertions.assertEquals(300, view.contentLength)
-        Assertions.assertEquals(100, view.viewportLength)
-        view.updateScrollBounds(120, 100)
-        Assertions.assertEquals(listOf(Pair(300, 100), Pair(120, 100)), lengths)
+        Assertions.assertEquals(ScrollBounds(0, 0), view.scrollBounds.value)
+        view.scrollBounds.value = ScrollBounds(300, 100)
+        view.scrollBounds.value = ScrollBounds(300, 100)
+        Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollBounds.value = ScrollBounds(-1, 100) }
+        Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollBounds.value = ScrollBounds(300, -1) }
+        Assertions.assertEquals(ScrollBounds(300, 100), view.scrollBounds.value)
+        view.scrollBounds.value = ScrollBounds(120, 80)
+        Assertions.assertEquals(listOf(Pair(ScrollBounds(0, 0), ScrollBounds(300, 100)), Pair(ScrollBounds(300, 100), ScrollBounds(120, 80))), changes)
     }
 
     @Test
@@ -163,8 +163,7 @@ class SimpleScrollViewTest {
             view += child
             view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 80 })
             view.attachTo(IntPoint.ZERO) { _, _ -> ViewController.NONE }
-            Assertions.assertEquals(300, view.contentLength)
-            Assertions.assertEquals(if (horizontal) 100 else 80, view.viewportLength)
+            Assertions.assertEquals(ScrollBounds(300, if (horizontal) 100 else 80), view.scrollBounds.value)
         }
     }
 

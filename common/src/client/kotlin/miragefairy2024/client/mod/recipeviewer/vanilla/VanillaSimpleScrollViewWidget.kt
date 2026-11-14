@@ -4,6 +4,7 @@ import miragefairy2024.client.util.getActualFocused
 import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.ScrollBounds
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.views.SimpleScrollView
@@ -114,7 +115,7 @@ abstract class VanillaSimpleScrollViewWidget(
     }
 
     private fun updateScrollBounds() {
-        if (!disposed) view.updateScrollBounds(evaluateContentLength() atLeast 0, viewportLength atLeast 0)
+        if (!disposed) view.scrollBounds.value = ScrollBounds(evaluateContentLength() atLeast 0, viewportLength atLeast 0)
     }
 
     override fun setWidth(width: Int) {
