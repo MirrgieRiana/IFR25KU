@@ -11,6 +11,7 @@
     {% for post in shown_posts limit:post_limit %}
     <a href="{{ post.url | relative_url }}" class="recent-posts__card">
       <div class="recent-posts__teaser">
+        {% comment %}カードはこのリンクの中に見出しも持つから、画像の代替テキストに記事のタイトルを入れると、同じ文字列が2回読み上げられちゃうのだぁ…🌧️{% endcomment %}
         {% if post.header.teaser %}
         {% image post.header.teaser %}
         {% else %}
