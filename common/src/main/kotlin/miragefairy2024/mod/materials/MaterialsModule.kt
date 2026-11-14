@@ -84,9 +84,11 @@ import miragefairy2024.util.registerShapelessRecipeGeneration
 import miragefairy2024.util.registerSinglePoolChestLoot
 import miragefairy2024.util.registerSmeltingRecipeGeneration
 import miragefairy2024.util.registerSpecialRecipe
+import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.toIngredient
 import miragefairy2024.util.toItemTag
 import miragefairy2024.util.using
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
@@ -470,6 +472,7 @@ class MaterialCard(
                     .build()
             },
             creator = { FoodItem(it) },
+            tags = listOf(ConventionalItemTags.BERRY_FOODS),
         ) {
             item.registerComposterInput(0.3F)
         }
@@ -559,6 +562,7 @@ class MaterialCard(
                     .build()
             },
             creator = { FoodItem(it) },
+            tags = listOf(ConventionalItemTags.BERRY_FOODS),
         ) {
             AuraReflectorFurnaceRecipe.registerFuel(item.key, 20 * 5)
             item.registerComposterInput(0.3F)
@@ -595,7 +599,7 @@ class MaterialCard(
                     .build()
             },
             creator = { FoodItem(it) },
-            tags = listOf(ItemTags.PIGLIN_LOVED),
+            tags = listOf(ItemTags.PIGLIN_LOVED, ConventionalItemTags.BERRY_FOODS),
         ) {
             AuraReflectorFurnaceRecipe.registerFuel(item.key, 20 * 5)
             registerSmeltingRecipeGeneration(item, { Items.GOLD_NUGGET }, 0.1) on item modId MirageFairy2024.MOD_ID from item
@@ -1147,6 +1151,7 @@ class MaterialCard(
             null,
             recipeRemainder = Items.BUCKET,
             creator = { Item(it.stacksTo(1)) },
+            tags = listOf(ConventionalItemTags.BUCKETS),
         ) {
             registerSimpleMachineRecipeGeneration(
                 FermentationBarrelRecipeCard,
@@ -1593,6 +1598,7 @@ fun initMaterialsModule() {
                 tag.generator.registerChild(card.item)
             }
         }
+        if (card.foodComponentCreator != null) ConventionalItemTags.FOODS.generator.registerChild(card.item)
         if (card.ore != null) {
             card.ore.tag.generator.registerChild(card.item)
             card.ore.shape.tag.generator.registerChild(card.ore.tag)
@@ -1719,6 +1725,7 @@ data class Ore(val shape: Shape, val material: Material)
 
 val Ore.title get() = EnJa("${this.material.prefix.en} ${this.shape.title.en}", "${this.material.prefix.ja}の${this.shape.title.ja}")
 val Ore.tag get() = ResourceLocation("c", "${this.shape.path}/${this.material.path}").toItemTag()
+val Ore.blockTag get() = ResourceLocation("c", "${this.shape.path}/${this.material.path}").toBlockTag()
 val Ore.ingredient get() = this.tag.toIngredient()
 fun tagOf(shape: Shape, material: Material) = Ore(shape, material).tag
 fun ingredientOf(shape: Shape, material: Material) = Ore(shape, material).ingredient
@@ -1742,6 +1749,7 @@ enum class Shape(val path: String, val title: EnJa) {
 }
 
 val Shape.tag get() = ResourceLocation("c", this.path).toItemTag()
+val Shape.blockTag get() = ResourceLocation("c", this.path).toBlockTag()
 
 enum class Material(val path: String, val prefix: EnJa) {
     WOOD("wooden", EnJa("Wooden", "木")),
