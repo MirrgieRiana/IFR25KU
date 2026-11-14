@@ -2,7 +2,6 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.view.ScrollBounds
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
@@ -11,6 +10,12 @@ import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.ObservableValue
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
+
+data class ScrollBounds(val contentLength: Int, val viewportLength: Int) {
+    init {
+        require(contentLength >= 0 && viewportLength >= 0) { "Scroll lengths must be non-negative" }
+    }
+}
 
 /**
  * 子 View を一方向へスクロールするのだ～🌱
