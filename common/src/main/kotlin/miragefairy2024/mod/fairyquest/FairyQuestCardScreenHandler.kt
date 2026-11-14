@@ -2,16 +2,19 @@ package miragefairy2024.mod.fairyquest
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.util.OutputSlot
 import miragefairy2024.util.Registration
 import miragefairy2024.util.get
 import miragefairy2024.util.mergeTo
 import miragefairy2024.util.quickMove
 import miragefairy2024.util.register
+import miragefairy2024.util.registerViewScreen
 import miragefairy2024.util.set
 import miragefairy2024.util.size
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
@@ -33,9 +36,10 @@ val fairyQuestCardScreenHandlerType = Registration(BuiltInRegistries.MENU, Mirag
 context(ModContext)
 fun initFairyQuestCardScreenHandler() {
     fairyQuestCardScreenHandlerType.register()
+    fairyQuestCardScreenHandlerType.registerViewScreen()
 }
 
-class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, val recipe: FairyQuestRecipe, val context: ContainerLevelAccess) : AbstractContainerMenu(fairyQuestCardScreenHandlerType(), syncId) {
+class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, val recipe: FairyQuestRecipe, val context: ContainerLevelAccess) : AbstractContainerMenu(fairyQuestCardScreenHandlerType(), syncId), ViewProviderMenu {
     private val inputInventory = SimpleContainer(4)
     private var processingInventory = SimpleContainer(0)
     private var resultInventory = SimpleContainer(0)
@@ -77,6 +81,16 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
             addSlot(OutputSlot(outputInventory, i, 0, 0))
         }
         addDataSlots(propertyDelegate)
+    }
+
+    private var cardView: FairyQuestCardView? = null
+
+    override fun createView(title: Component, playerInventoryTitle: Component) = FairyQuestCardView(recipe, slots, title, playerInventoryTitle).also {
+        cardView = it
+    }.view
+
+    override fun updateViewBeforeRender() {
+        cardView?.update(progress)
     }
 
     override fun stillValid(player: Player) = true

@@ -7,4 +7,7 @@ import net.minecraft.network.chat.Component
 interface ViewProviderMenu {
     /** GUI の寸法を決め、画面の中央へ配置する View のツリーを作るのだ～🌱 */
     fun createView(title: Component, playerInventoryTitle: Component): View
+
+    /** 同じフレームで描画する View へメニューの最新状態を反映するのだ～🌱 */
+    fun updateViewBeforeRender() = Unit
 }
