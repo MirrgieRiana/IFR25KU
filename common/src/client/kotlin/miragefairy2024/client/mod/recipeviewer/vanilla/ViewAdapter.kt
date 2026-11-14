@@ -95,6 +95,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         }
     }
 
+    // クリック処理後に、登録解除済みの対象や欄外クリックで残った対象のフォーカスを外し、ドラッグ状態も解除するのだ～🌱
     fun mouseClicked(mouseX: Double, mouseY: Double, handled: Boolean, previousFocused: GuiEventListener?) {
         val screen = host.getScreen() ?: return
         val focused = screen.focused ?: return
