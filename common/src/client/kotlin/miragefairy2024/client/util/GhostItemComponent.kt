@@ -32,7 +32,7 @@ class GhostItemComponent(var itemStacks: List<ItemStack> = listOf()) : BaseCompo
         // アイテム本体と個数
         if (showItemStack) {
             context.renderFakeItem(itemStack, x, y)
-            context.fill(RenderType.guiGhostRecipeOverlay(), x, y, x + width, y + height, 0x30FFFFFF)
+            context.fill(RenderType.guiGhostRecipeOverlay(), x, y, x + width, y + height, 0x60FFFFFF)
             context.renderItemDecorations(Minecraft.getInstance().font, itemStack, x, y)
         }
 

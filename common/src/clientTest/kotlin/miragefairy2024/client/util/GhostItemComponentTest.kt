@@ -43,7 +43,7 @@ class GhostItemComponentTest {
                 val inOrder: InOrder = Mockito.inOrder(context)
                 inOrder.verify(context).fill(10, 20, 26, 36, 0x20FF0000)
                 inOrder.verify(context).renderFakeItem(itemStack, 10, 20)
-                inOrder.verify(context).fill(RenderType.guiGhostRecipeOverlay(), 10, 20, 26, 36, 0x30FFFFFF)
+                inOrder.verify(context).fill(RenderType.guiGhostRecipeOverlay(), 10, 20, 26, 36, 0x60FFFFFF)
                 inOrder.verify(context).renderItemDecorations(Mockito.isNull(), Mockito.eq(itemStack), Mockito.eq(10), Mockito.eq(20))
                 Mockito.verifyNoMoreInteractions(context)
 
@@ -51,7 +51,7 @@ class GhostItemComponentTest {
                 component.showOverlay = false
                 component.draw(context, 0, 0, 0.0F, 0.0F)
                 inOrder.verify(context).renderFakeItem(itemStack, 10, 20)
-                inOrder.verify(context).fill(RenderType.guiGhostRecipeOverlay(), 10, 20, 26, 36, 0x30FFFFFF)
+                inOrder.verify(context).fill(RenderType.guiGhostRecipeOverlay(), 10, 20, 26, 36, 0x60FFFFFF)
                 inOrder.verify(context).renderItemDecorations(Mockito.isNull(), Mockito.eq(itemStack), Mockito.eq(10), Mockito.eq(20))
                 Mockito.verifyNoMoreInteractions(context)
             }
