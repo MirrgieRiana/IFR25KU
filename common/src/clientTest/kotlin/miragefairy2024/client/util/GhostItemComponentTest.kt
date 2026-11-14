@@ -59,11 +59,12 @@ class GhostItemComponentTest {
     }
 
     @Test
-    fun `本体を隠したときも背景を表示でき両方を隠すと描画しないのだ`() {
+    fun `本体を隠すと候補のツールチップは表示せず背景は表示できるのだ`() {
         GuiTestEnvironment().use {
             Mockito.mockStatic(Screen::class.java).use {
                 val context: OwoUIDrawContext = Mockito.mock(OwoUIDrawContext::class.java)
-                val component = GhostItemComponent(listOf()).also {
+                val itemStack: ItemStack = ItemStack(Items.STONE)
+                val component = GhostItemComponent(listOf(itemStack)).also {
                     it.updateX(10)
                     it.updateY(20)
                     it.inflate(Size.of(16, 16))
@@ -73,6 +74,7 @@ class GhostItemComponentTest {
                 }
 
                 component.draw(context, 0, 0, 0.0F, 0.0F)
+                component.drawGhostTooltip(context, 15, 25, 0.0F, 0.0F)
                 Mockito.verify(context).fill(10, 20, 26, 36, 0x2000FF00)
                 Mockito.verifyNoMoreInteractions(context)
 

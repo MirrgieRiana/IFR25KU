@@ -195,8 +195,9 @@ class GhostRecipeItemViewRendererTest {
                 view.showItemStack = false
                 environment.screen.renderWithTooltip(environment.graphics, 15, 25, 0.0F)
                 Mockito.verifyNoInteractions(graphics)
-                Assertions.assertEquals(listOf(listOf(tooltip.visualOrderText)), environment.tooltips)
-                Assertions.assertEquals(listOf("scissor-end", "screen-end", "tooltip"), environment.events.takeLast(3))
+                Assertions.assertTrue(environment.tooltips.isEmpty())
+                Assertions.assertEquals(listOf("scissor-end", "screen-end"), environment.events)
+                screen.verify({ Screen.getTooltipFromItem(Mockito.any(Minecraft::class.java), Mockito.same(second)) }, Mockito.times(1))
                 Assertions.assertEquals(30.0, state.value)
             }
         }
