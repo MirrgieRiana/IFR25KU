@@ -99,14 +99,14 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun mouseClicked(mouseX: Double, mouseY: Double, handled: Boolean, previousFocused: GuiEventListener?) {
         val screen = host.getScreen() ?: return
         val focused = screen.focused ?: return
-        val actualFocused = focused.getActualFocused { container ->
-            if (container is AbstractWidget && !container.isMouseOver(mouseX, mouseY)) return@getActualFocused false
-            container.getChildAt(mouseX, mouseY).isPresent
-        }
         // 子がクリックを消費すると、その処理中に登録が解除されていてもバニラがその子にフォーカスを設定するのだ～🌱
         if (screen.children().any { it === focused }) {
             // メニュー画面は子が未消費でも true を返すため、以前のフォーカス先が残る場合は欄外を調べるのだ～🌱
             if (handled && focused !== previousFocused) return
+            val actualFocused = focused.getActualFocused { container ->
+                if (container is AbstractWidget && !container.isMouseOver(mouseX, mouseY)) return@getActualFocused false
+                container.getChildAt(mouseX, mouseY).isPresent
+            }
             if (actualFocused != null && actualFocused.isMouseOver(mouseX, mouseY)) return
         }
         screen.focused = null
