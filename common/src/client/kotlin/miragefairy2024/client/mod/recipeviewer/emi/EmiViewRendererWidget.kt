@@ -10,7 +10,6 @@ import net.minecraft.client.gui.GuiGraphics
 
 class EmiViewRendererWidget<V : PlaceableView, S>(private val renderer: ViewRenderer<V, S>, private val view: V, private val bounds2: IntRectangle) : Widget() {
     private val state = Slot(renderer.createState(view))
-
     private val boundsCache = bounds2.toEmiBounds()
     override fun getBounds() = boundsCache
     override fun mouseClicked(mouseX: Int, mouseY: Int, button: Int) = renderer.mouseClicked(view, state, bounds2, mouseX, mouseY, button)
