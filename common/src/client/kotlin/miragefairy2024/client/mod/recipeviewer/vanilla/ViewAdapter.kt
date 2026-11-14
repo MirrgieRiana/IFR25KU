@@ -1,6 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import dev.architectury.platform.Platform
+import miragefairy2024.client.util.getActualFocused
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
@@ -8,8 +9,10 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.util.Remover
+import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
+import net.minecraft.client.gui.components.MultiLineEditBox
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.screens.Screen
 import org.lwjgl.glfw.GLFW
@@ -21,6 +24,7 @@ interface ViewAdapterHost {
     fun getViewPlacerRegistry(): ViewPlacerRegistry<VanillaViewPlacerContext>
 
     fun getScreen(): Screen?
+    fun canPlaceMenuSlots(): Boolean
     fun getRegionSizeX(): Int
     fun getRegionSizeY(): Int
 
@@ -48,7 +52,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     /**
      * View のツリーを再構築して、各ウィジェットをホストへ直接登録するのだ～🌱
-     * 画面の再構築時には、[net.minecraft.client.gui.screens.Screen.rebuildWidgets] が既存のウィジェットを破棄してから、[miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen.init] を経由して呼び出すのだ～🌱
+     *
+     * 再初期化時は、既存のウィジェットをホスト側で登録解除した後に呼び出さなければならないのだ～🌱
      */
     fun init() {
         removed()
@@ -58,6 +63,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         host.init()
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = host.getUiOffset()
+            override val canPlaceMenuSlots = host.canPlaceMenuSlots()
             override fun addRenderableWidget(widget: AbstractWidget) = host.addRenderableWidget(widget)
             override fun addRenderableOnly(widget: AbstractWidget) = host.addRenderableOnly(widget)
         }
@@ -98,34 +104,63 @@ class ViewAdapter(val host: ViewAdapterHost) {
         }
     }
 
+    private fun getMouseCapture(screen: Screen, button: Int): GuiEventListener? {
+        val focused = screen.focused
+        if (focused is MouseCaptureContainer && focused.hasMouseCapture(button)) return focused
+        return screen.children().firstOrNull { it is MouseCaptureContainer && it.hasMouseCapture(button) }
+    }
+
     /**
      * Fabric 以外ではフォーカスされた子へドラッグを中継するのだ～🌱
-     * Fabric では Fabric API が [net.minecraft.client.gui.screens.inventory.AbstractContainerScreen.mouseDragged] 内で子へ転送するため、手動では中継しないのだ～🌱
+     * [miragefairy2024.client.mod.recipeviewer.vanilla.MouseCaptureContainer] が保持する押下先へは、プラットフォームによらず中継するのだ～🌱
+     * それ以外の Fabric のドラッグ中継は、ホスト側の既存の入力経路に任せるのだ～🌱
      */
     fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (!isInitialized) return false
         val screen = host.getScreen() ?: return false
-        if (!Platform.isFabric()) {
-            val focused = screen.focused
-            if (focused != null) {
-                if (screen.isDragging) {
-                    if (button == 0) {
-                        if (focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true
-                    }
-                }
-            }
+        val capture = getMouseCapture(screen, button)
+        if (capture != null) return capture.mouseDragged(mouseX, mouseY, button, dragX, dragY)
+        if (Platform.isFabric()) return false
+        val focused = screen.focused
+        if (focused == null) return false
+        if (button == 0 && screen.isDragging) {
+            return focused.mouseDragged(mouseX, mouseY, button, dragX, dragY)
         }
         return false
+    }
+
+    // 押下先を保持する子を優先し、それ以外の解放は Fabric API または画面の既存経路へ渡すのだ～🌱
+    fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        if (!isInitialized) return false
+        val screen = host.getScreen() ?: return false
+        val capture = getMouseCapture(screen, button)
+        if (capture != null) {
+            if (button == 0) screen.isDragging = false
+            return capture.mouseReleased(mouseX, mouseY, button)
+        }
+        if (Platform.isFabric()) return false
+        // isDragging は左クリックでのみオンになるのだ～🌱
+        if (button == 0 && screen.isDragging) {
+            screen.isDragging = false
+            val focused = screen.focused
+            if (focused != null) return focused.mouseReleased(mouseX, mouseY, button)
+        }
+        val listener = screen.getChildAt(mouseX, mouseY).orNull ?: return false
+        return listener.mouseReleased(mouseX, mouseY, button)
     }
 
     fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (!isInitialized) return false
         val screen = host.getScreen() ?: return false
-        val focused = screen.focused
-        if (focused is EditBox) {
+        val focused = screen.focused ?: return false
+        val actualFocused = focused.getActualFocused { it !is AbstractWidget || it.isActive } ?: return false
+        if (actualFocused is EditBox || actualFocused is MultiLineEditBox) {
             if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
             // 通常の文字入力は charTyped で処理されるため、keyPressed で未処理でもコンテナーのショートカットへ渡さないのだ～🌱
-            if (keyCode != GLFW.GLFW_KEY_ESCAPE && focused.canConsumeInput()) return true
+            if (keyCode != GLFW.GLFW_KEY_ESCAPE && keyCode != GLFW.GLFW_KEY_TAB) {
+                if (actualFocused is EditBox && actualFocused.canConsumeInput()) return true
+                if (actualFocused is MultiLineEditBox && actualFocused.isActive && actualFocused.isFocused) return true
+            }
         }
         return false
     }

@@ -1,9 +1,13 @@
 package miragefairy2024
 
+import miragefairy2024.mod.common.KeyMappingType
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
+import miragefairy2024.mod.recipeviewer.view.View
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.FormattedText
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.util.FormattedCharSequence
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.MenuType
@@ -15,11 +19,12 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 
-var clientProxy: ClientProxy? = null
+var clientProxy: ClientProxy<*>? = null
 
 
-interface ClientProxy {
+interface ClientProxy<S : Any> {
     fun registerItemTooltipCallback(block: (stack: ItemStack, context: Item.TooltipContext, lines: MutableList<Component>) -> Unit)
+    fun getItemTooltip(itemStack: ItemStack): List<Component>
     fun registerCutoutRenderLayer(block: () -> Block)
     fun registerTranslucentRenderLayer(block: () -> Block)
     fun getClientPlayer(): Player?
@@ -31,6 +36,11 @@ interface ClientProxy {
     fun registerItemColorProvider(item: Item, provider: ItemColorProvider)
     fun <T> registerRenderingProxyBlockEntityRendererFactory(blockEntityType: BlockEntityType<T>) where T : BlockEntity, T : RenderingProxyBlockEntity
     fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu
+    fun getCurrentScreen(): S?
+    fun setCurrentScreen(screen: S?)
+    fun createMessageViewScreen(parent: S?, definition: MessageViewScreenDefinition): S
+    fun addToast(rootView: View)
+    fun ellipsizeText(text: FormattedText, maxWidth: Int, ellipsis: FormattedText): FormattedCharSequence
 }
 
 fun interface BlockColorProvider {
@@ -57,4 +67,11 @@ interface RenderingProxy {
 
 interface RenderingProxyBlockEntity {
     fun render(renderingProxy: RenderingProxy, tickDelta: Float, light: Int, overlay: Int) = Unit
+}
+
+class MessageViewScreenDefinition(val title: Component, val rootViewFactory: () -> View) {
+    var transparentBackground = true
+    var closeOnInventoryKey = true
+    var additionalCloseKey: KeyMappingType? = null
+    var closeOnOutsideClick = true
 }

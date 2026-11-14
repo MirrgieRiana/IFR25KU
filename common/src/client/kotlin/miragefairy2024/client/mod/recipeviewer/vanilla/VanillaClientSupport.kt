@@ -9,6 +9,8 @@ interface VanillaViewPlacerContext {
     /** バニラの GUI が座標の原点として使う点の、画面の左上からの絶対座標なのだ～🌱 */
     val origin: IntPoint
 
+    val canPlaceMenuSlots: Boolean
+
     fun addRenderableWidget(widget: AbstractWidget): Remover
     fun addRenderableOnly(widget: AbstractWidget): Remover
 }

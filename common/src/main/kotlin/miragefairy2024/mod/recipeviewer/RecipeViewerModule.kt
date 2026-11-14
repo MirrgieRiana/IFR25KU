@@ -35,6 +35,7 @@ class RecipeViewerCategoryCardRecipeManagerBridge<I : RecipeInput, R : Recipe<I>
 
 val SECONDS_TRANSLATION = Translation({ MirageFairy2024.identifier("recipe_viewer").toLanguageKey("gui", "seconds").toString() }, EnJa("%s sec", "%s 秒"))
 val CONSUMPTION_CHANCE_TRANSLATION = Translation({ MirageFairy2024.identifier("recipe_viewer").toLanguageKey("gui", "consumption_chance").toString() }, EnJa("consumption chance", "消費確率"))
+val SCROLL_AREA_TRANSLATION = Translation({ MirageFairy2024.identifier("recipe_viewer").toLanguageKey("gui", "scroll_area").toString() }, EnJa("Scroll area", "スクロール領域"))
 
 fun Int.toSecondsTextAsTicks() = text { SECONDS_TRANSLATION((this@toSecondsTextAsTicks.toDouble() / 20.0 formatAs "%.2f").stripTrailingZeros()) }
 
@@ -44,6 +45,7 @@ fun initRecipeViewerModule() {
 
     SECONDS_TRANSLATION.enJa()
     CONSUMPTION_CHANCE_TRANSLATION.enJa()
+    SCROLL_AREA_TRANSLATION.enJa()
 }
 
 context(ModContext)

@@ -21,13 +21,7 @@ fun <L> EventRegistry<L>.remove(listener: L) {
 }
 
 fun <L> EventRegistry<L>.observe(onClosed: EventRegistry<() -> Unit>, listener: L) {
-    var onClosedListener: (() -> Unit)? = null
-    onClosedListener = {
-        onClosed.remove(onClosedListener!!)
-        this.remove(listener)
-    }
-    this.register(listener)
-    onClosed.register(onClosedListener)
+    this.register(listener).removeOn(onClosed)
 }
 
 inline fun <L> EventRegistry<L>.fire(invoker: (L) -> Unit) {
@@ -53,6 +47,12 @@ class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
         }
 }
 
+fun <T> ObservableValue<T>.registerAndInitialize(listener: (T, T) -> Unit): Remover {
+    val remover = this.register(listener)
+    listener(this.value, this.value)
+    return remover
+}
+
 fun <T> ObservableValue<T>.observeAndInitialize(onClosed: EventRegistry<() -> Unit>, listener: (T, T) -> Unit) {
     this.observe(onClosed, listener)
     listener(this.value, this.value)
@@ -67,6 +67,15 @@ fun interface Remover {
     }
 
     fun remove()
+}
+
+fun Remover.removeOn(onClosed: EventRegistry<() -> Unit>) {
+    var onClosedListener: (() -> Unit)? = null
+    onClosedListener = {
+        onClosed.remove(onClosedListener!!)
+        this.remove()
+    }
+    onClosed.register(onClosedListener)
 }
 
 fun (() -> Unit).asRemover() = Remover {

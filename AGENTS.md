@@ -320,6 +320,10 @@ Float リテラルは、`1.0F` のように、必ず末尾に大文字の `F` �
 
 `BlockPos` `BlockState` は、これそのものが基底のクラス名です。
 
+Component の生成には、専ら、text DSL を使用してください。
+
+初期化コードにおいて、イベント登録の中に更にイベント登録がある場合、実際のフローを考えて、その構造が必要か、確認しなければなりません。
+
 ## generated リソース
 
 generated リソースは、コードの変更とセットです。
@@ -329,7 +333,7 @@ generated リソースに差分が生じたら、仕上げにそれをコミッ�
 
 ## 更新履歴
 
-MOD のプレイ中にプレイヤーが観測可能な部分に変更を加えた際は、必ず .claude/skills/changelog/SKILL.md を参照してください。
+MOD のプレイ中にプレイヤーが観測可能な部分に変更を加える PR は、必ず、[changelog](.claude/skills/changelog/SKILL.md) を厳守しなければなりません。
 
 ## git / GitHub
 
