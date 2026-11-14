@@ -2,7 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.common
 
 import miragefairy2024.client.mod.recipeviewer.vanilla.GuiTestEnvironment
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.views.GuideItemView
+import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.Slot
@@ -23,7 +23,7 @@ import org.mockito.InOrder
 import org.mockito.Mockito
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class GuideItemViewRendererTest {
+class GhostRecipeItemViewRendererTest {
 
     @BeforeAll
     fun initMinecraft() {
@@ -31,12 +31,12 @@ class GuideItemViewRendererTest {
         Bootstrap.bootStrap()
     }
 
-    private fun checkItemStack(view: GuideItemView, time: Double, expected: ItemStack) {
+    private fun checkItemStack(view: GhostRecipeItemView, time: Double, expected: ItemStack) {
         GuiTestEnvironment().use {
             Mockito.mockStatic(Screen::class.java).use { screen ->
                 screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
                 val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
-                GuideItemViewRenderer.render(view, Slot(time), IntRectangle(10, 20, 16, 16), graphics, 0, 0, false, 0.0F)
+                GhostRecipeItemViewRenderer.render(view, Slot(time), IntRectangle(10, 20, 16, 16), graphics, 0, 0, false, 0.0F)
                 Mockito.verify(graphics).renderFakeItem(Mockito.same(expected), Mockito.eq(10), Mockito.eq(20))
             }
         }
@@ -49,14 +49,14 @@ class GuideItemViewRendererTest {
                 screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
                 val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
                 val itemStack: ItemStack = ItemStack(Items.STONE, 64)
-                val view = GuideItemView(listOf(itemStack)).also {
+                val view = GhostRecipeItemView(listOf(itemStack)).also {
                     it.showOverlay = true
                     it.overlayArgb = 0x20FF0000
                 }
                 val bounds = IntRectangle(10, 20, 16, 16)
-                val state = Slot(GuideItemViewRenderer.createState(view))
+                val state = Slot(GhostRecipeItemViewRenderer.createState(view))
 
-                GuideItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F)
+                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F)
 
                 val inOrder: InOrder = Mockito.inOrder(graphics)
                 inOrder.verify(graphics).fill(10, 20, 26, 36, 0x20FF0000)
@@ -67,7 +67,7 @@ class GuideItemViewRendererTest {
 
                 Mockito.clearInvocations(graphics)
                 view.showOverlay = false
-                GuideItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F)
+                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F)
                 inOrder.verify(graphics).renderFakeItem(itemStack, 10, 20)
                 inOrder.verify(graphics).fill(RenderType.guiGhostRecipeOverlay(), 10, 20, 26, 36, 0x60FFFFFF)
                 inOrder.verify(graphics).renderItemDecorations(Mockito.isNull(), Mockito.eq(itemStack), Mockito.eq(10), Mockito.eq(20))
@@ -82,21 +82,21 @@ class GuideItemViewRendererTest {
             Mockito.mockStatic(Screen::class.java).use { screen ->
                 screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
                 val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
-                val view = GuideItemView(listOf()).also {
+                val view = GhostRecipeItemView(listOf()).also {
                     it.showItemStack = false
                     it.showOverlay = true
                     it.overlayArgb = 0x2000FF00
                 }
                 val bounds = IntRectangle(10, 20, 16, 16)
-                val state = Slot(GuideItemViewRenderer.createState(view))
+                val state = Slot(GhostRecipeItemViewRenderer.createState(view))
 
-                GuideItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F)
+                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F)
                 Mockito.verify(graphics).fill(10, 20, 26, 36, 0x2000FF00)
                 Mockito.verifyNoMoreInteractions(graphics)
 
                 Mockito.clearInvocations(graphics)
                 view.showOverlay = false
-                GuideItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F)
+                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F)
                 Mockito.verifyNoInteractions(graphics)
             }
         }
@@ -104,7 +104,7 @@ class GuideItemViewRendererTest {
 
     @Test
     fun `候補が空なら空のアイテムを描画に渡すのだ`() {
-        val view = GuideItemView(emptyList())
+        val view = GhostRecipeItemView(emptyList())
         checkItemStack(view, 0.0, ItemStack.EMPTY)
         checkItemStack(view, 90.0, ItemStack.EMPTY)
     }
@@ -114,7 +114,7 @@ class GuideItemViewRendererTest {
         val first: ItemStack = ItemStack(Items.STONE)
         val second: ItemStack = ItemStack(Items.DIRT)
         val third: ItemStack = ItemStack(Items.GLASS)
-        val view = GuideItemView(listOf(first, second, third))
+        val view = GhostRecipeItemView(listOf(first, second, third))
         checkItemStack(view, 0.0, first)
         checkItemStack(view, 29.999, first)
         checkItemStack(view, 30.0, second)
@@ -125,7 +125,7 @@ class GuideItemViewRendererTest {
     @Test
     fun `候補が1個なら時間が経っても同じアイテムを描画するのだ`() {
         val itemStack: ItemStack = ItemStack(Items.STONE)
-        val view = GuideItemView(listOf(itemStack))
+        val view = GhostRecipeItemView(listOf(itemStack))
         checkItemStack(view, 1000.0, itemStack)
     }
 
@@ -137,17 +137,17 @@ class GuideItemViewRendererTest {
                 val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
                 val first: ItemStack = ItemStack(Items.STONE)
                 val second: ItemStack = ItemStack(Items.DIRT)
-                val view = GuideItemView(listOf(first, second))
+                val view = GhostRecipeItemView(listOf(first, second))
                 val bounds = IntRectangle(10, 20, 16, 16)
-                val firstState = Slot(GuideItemViewRenderer.createState(view))
-                val secondState = Slot(GuideItemViewRenderer.createState(view))
+                val firstState = Slot(GhostRecipeItemViewRenderer.createState(view))
+                val secondState = Slot(GhostRecipeItemViewRenderer.createState(view))
                 Assertions.assertEquals(0.0, firstState.value)
                 Assertions.assertEquals(0.0, secondState.value)
                 secondState.value = 30.0
 
-                GuideItemViewRenderer.render(view, firstState, bounds, graphics, 0, 0, false, 0.0F)
-                GuideItemViewRenderer.render(view, secondState, bounds, graphics, 0, 0, false, 0.0F)
-                GuideItemViewRenderer.render(view, firstState, bounds, graphics, 0, 0, false, 0.0F)
+                GhostRecipeItemViewRenderer.render(view, firstState, bounds, graphics, 0, 0, false, 0.0F)
+                GhostRecipeItemViewRenderer.render(view, secondState, bounds, graphics, 0, 0, false, 0.0F)
+                GhostRecipeItemViewRenderer.render(view, firstState, bounds, graphics, 0, 0, false, 0.0F)
 
                 val inOrder: InOrder = Mockito.inOrder(graphics)
                 inOrder.verify(graphics).renderFakeItem(first, 10, 20)
@@ -169,13 +169,13 @@ class GuideItemViewRendererTest {
                 val tooltip = text { "tooltip"() }
                 screen.`when`<List<Component>> { Screen.getTooltipFromItem(Mockito.any(Minecraft::class.java), Mockito.same(second)) }.thenReturn(listOf(tooltip))
                 val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
-                val view = GuideItemView(listOf(first, second))
+                val view = GhostRecipeItemView(listOf(first, second))
                 val state = Slot(30.0)
                 val bounds = IntRectangle(10, 20, 16, 16)
                 environment.render = { outerGraphics, mouseX, mouseY, partialTick ->
                     outerGraphics.enableScissor(10, 20, 50, 60)
                     try {
-                        GuideItemViewRenderer.render(view, state, bounds, graphics, mouseX, mouseY, true, partialTick)
+                        GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, mouseX, mouseY, true, partialTick)
                         Assertions.assertTrue(environment.tooltips.isEmpty())
                     } finally {
                         outerGraphics.disableScissor()
@@ -204,14 +204,14 @@ class GuideItemViewRendererTest {
 
     @Test
     fun `非ホバーと空候補ではツールチップを予約しないのだ`() {
-        fun check(view: GuideItemView, isHovered: Boolean) {
+        fun check(view: GhostRecipeItemView, isHovered: Boolean) {
             GuiTestEnvironment().use { environment ->
                 Mockito.mockStatic(Screen::class.java).use { screen ->
                     screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
                     val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
-                    val state = Slot(GuideItemViewRenderer.createState(view))
+                    val state = Slot(GhostRecipeItemViewRenderer.createState(view))
                     environment.render = { _, mouseX, mouseY, partialTick ->
-                        GuideItemViewRenderer.render(view, state, IntRectangle(10, 20, 16, 16), graphics, mouseX, mouseY, isHovered, partialTick)
+                        GhostRecipeItemViewRenderer.render(view, state, IntRectangle(10, 20, 16, 16), graphics, mouseX, mouseY, isHovered, partialTick)
                     }
 
                     environment.screen.renderWithTooltip(environment.graphics, 15, 25, 0.0F)
@@ -221,8 +221,8 @@ class GuideItemViewRendererTest {
                 }
             }
         }
-        check(GuideItemView(listOf(ItemStack(Items.STONE))), false)
-        check(GuideItemView(emptyList()), true)
+        check(GhostRecipeItemView(listOf(ItemStack(Items.STONE))), false)
+        check(GhostRecipeItemView(emptyList()), true)
     }
 
 }

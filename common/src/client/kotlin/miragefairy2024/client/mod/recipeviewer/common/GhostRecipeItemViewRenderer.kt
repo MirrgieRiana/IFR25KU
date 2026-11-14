@@ -4,7 +4,7 @@ import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.x2
 import miragefairy2024.mod.recipeviewer.view.y2
-import miragefairy2024.mod.recipeviewer.views.GuideItemView
+import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
 import mirrg.kotlin.helium.Slot
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -12,10 +12,10 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.world.item.ItemStack
 
-object GuideItemViewRenderer : ViewRenderer<GuideItemView, Double> {
-    override fun createState(view: GuideItemView) = 0.0
+object GhostRecipeItemViewRenderer : ViewRenderer<GhostRecipeItemView, Double> {
+    override fun createState(view: GhostRecipeItemView) = 0.0
 
-    override fun render(view: GuideItemView, state: Slot<Double>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: GhostRecipeItemView, state: Slot<Double>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val minecraft = Minecraft.getInstance()
         if (!Screen.hasControlDown()) state.value += minecraft.timer.realtimeDeltaTicks
 
