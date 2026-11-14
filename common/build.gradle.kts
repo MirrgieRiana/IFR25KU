@@ -22,7 +22,7 @@ sourceSets {
     }
     create("clientTest") {
         compileClasspath += sourceSets.main.get().output + sourceSets.main.get().compileClasspath + sourceSets.named("client").get().output + sourceSets.named("client").get().compileClasspath
-        runtimeClasspath += sourceSets.main.get().output + sourceSets.main.get().runtimeClasspath + sourceSets.named("client").get().output + sourceSets.named("client").get().runtimeClasspath
+        runtimeClasspath += sourceSets.main.get().output + sourceSets.main.get().runtimeClasspath + sourceSets.named("client").get().output + sourceSets.named("client").get().runtimeClasspath + sourceSets.named("client").get().compileClasspath
     }
 }
 
