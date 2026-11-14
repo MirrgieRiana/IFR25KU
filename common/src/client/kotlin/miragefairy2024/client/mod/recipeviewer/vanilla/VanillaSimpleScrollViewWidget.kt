@@ -144,6 +144,8 @@ abstract class VanillaSimpleScrollViewWidget(
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
+        if (!disposed) view.updateScrollBounds(evaluateContentLength().coerceAtLeast(0), viewportLength.coerceAtLeast(0))
+
         // 子要素の描画なのだ～🌱
         guiGraphics.enableScissor(x, y, x + (width atLeast 0), y + (height atLeast 0))
         try {
@@ -376,6 +378,7 @@ abstract class VanillaSimpleScrollViewWidget(
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
         }
+        view.updateScrollBounds(evaluateContentLength().coerceAtLeast(0), viewportLength.coerceAtLeast(0))
         childController = view.childView.attachTo(IntPoint(x, y)) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
         }
