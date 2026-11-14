@@ -1,0 +1,69 @@
+/*
+ * frames-plugin.xa1 — 汎用レンダラーでフレーム画像を撮るタスクを提供するのだ～🌱（xarpite / API5）
+ *
+ * このプラグインは、GenerateFramesTask という athanor のタスクの作り方を提供するのだ～🌱
+ * そのタスクは、1 行に 1 フレームぶんの構成を並べた jsonl を読んで、renderer へ渡して、連番の PNG を撮らせるのだ～🌱
+ *
+ * 使う側は、タスクを 1 個作って、入出力のパラメータを ALSO の中で代入するだけなのだ～🌱
+ *
+ *   @USE("frames-plugin")
+ *
+ *   project.tasks.generateFrames = GenerateFramesTask.new(common)::ALSO ( task =>
+ *     task.name = "frames"
+ *     task.dependsOn = [project.tasks.generateScene]
+ *     task.label = "frames (サラセニア)"
+ *     task.framesJsonlPath = () -> ...
+ *     task.outputDir = ...
+ *   )
+ *
+ * 撮った画像は、outputDir の下の png/ へ、f_00000.png から始まる連番で並ぶのだ～🌱
+ * その連番のパターンは、そのタスクへ pngPattern を呼べば取れて、そのまま ffmpeg の入力に渡せるのだ～🌱
+ *
+ *   movieModule.generate(video; project.tasks.generateFrames.pngPattern())
+ *
+ * 1 回撮った分は、outputDir が残っている限り撮り直さないのだ～🌱
+ * 撮り直させたいときは、そのディレクトリを消すのだ～🌱
+ *
+ * @USE("frames-plugin") で読めるようにするには、INC へ src/athanor-plugins/xa1 を足しておくのだ～🌱
+ *
+ * 構成 jsonl の形式と、テンプレートが満たすべき要件は、renderer の README.md にあるのだ～🌱
+ **/
+
+API(5)
+
+@USE("athanor")
+
+{
+  GenerateFramesTask := {
+    /**
+     * 構成 jsonl から連番のフレーム画像を撮るタスクを作るのだ～🌱
+     * 走る時点でないと決まらないパスもあるから、framesJsonlPath は値ではなく関数で受け取るのだ～🌱
+     * [common] は、video/ の絶対パスの base と、生成物を管理する generate と、外部コマンドを走らせる run を持つモジュールなのだ～🌱
+     */
+    new: common -> AthanorTask.new()::ALSO ( task =>
+      /**
+       * 進捗の表示に出る、この段の呼び名なのだ～🌱
+       * 複数の動画を同じビルドで扱うときに、どの動画の段が走っているかを見分ける手がかりになるのだ～🌱
+       */
+      task.label = NULL
+      /**
+       * 読む構成 jsonl のパスを返す関数なのだ～🌱
+       * タスクが走る時点で呼ばれるから、前の段が作るパスも渡せるのだ～🌱
+       */
+      task.framesJsonlPath = NULL
+      /**
+       * 連番の PNG を書き出す先のディレクトリなのだ～🌱
+       * これが既にあれば、このタスクは撮り直さずに済ませるのだ～🌱
+       */
+      task.outputDir = NULL
+
+      /** 撮った画像を ffmpeg へ渡すための、連番のパターンなのだ～🌱 */
+      task.pngPattern = () -> task.outputDir RESOLVE "png/f_%05d.png"
+
+      task.action = () -> common.generate(task.label; task.outputDir; work -> (
+        # レンダラーは、出力先が空のディレクトリでも存在しないパスでもないと止まるから、中へもう 1 段掘って渡すのだ～🌱
+        common.run("bash", common.base RESOLVE "renderer/render.sh", task.framesJsonlPath(), work RESOLVE "png")
+      ))
+    )
+  }
+}
