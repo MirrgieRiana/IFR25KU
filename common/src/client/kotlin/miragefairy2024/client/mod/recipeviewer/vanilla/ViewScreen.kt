@@ -72,6 +72,8 @@ abstract class ViewScreen(title: Component) : Screen(title) {
         return super.mouseReleased(mouseX, mouseY, button)
     }
 
+    override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double) = viewAdapter.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         when (keyCode) {
             GLFW.GLFW_KEY_UP, GLFW.GLFW_KEY_DOWN, GLFW.GLFW_KEY_LEFT, GLFW.GLFW_KEY_RIGHT -> return super.keyPressed(keyCode, scanCode, modifiers)
