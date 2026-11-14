@@ -27,6 +27,17 @@ class GuideItemViewRendererTest {
         Bootstrap.bootStrap()
     }
 
+    private fun checkItemStack(view: GuideItemView, time: Double, expected: ItemStack) {
+        GuiTestEnvironment().use {
+            Mockito.mockStatic(Screen::class.java).use { screen ->
+                screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
+                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                GuideItemViewRenderer.render(view, Slot(time), IntRectangle(10, 20, 16, 16), graphics, 0, 0, false, 0.0F)
+                Mockito.verify(graphics).renderFakeItem(Mockito.same(expected), Mockito.eq(10), Mockito.eq(20))
+            }
+        }
+    }
+
     @Test
     fun `背景とゴースト本体と白い重ね描きと個数を順に描画するのだ`() {
         GuiTestEnvironment().use {
@@ -88,6 +99,33 @@ class GuideItemViewRendererTest {
     }
 
     @Test
+    fun `候補が空なら空のアイテムを描画に渡すのだ`() {
+        val view = GuideItemView(emptyList())
+        checkItemStack(view, 0.0, ItemStack.EMPTY)
+        checkItemStack(view, 90.0, ItemStack.EMPTY)
+    }
+
+    @Test
+    fun `候補は30ティックごとに切り替わって先頭へ戻るのだ`() {
+        val first: ItemStack = ItemStack(Items.STONE)
+        val second: ItemStack = ItemStack(Items.DIRT)
+        val third: ItemStack = ItemStack(Items.GLASS)
+        val view = GuideItemView(listOf(first, second, third))
+        checkItemStack(view, 0.0, first)
+        checkItemStack(view, 29.999, first)
+        checkItemStack(view, 30.0, second)
+        checkItemStack(view, 60.0, third)
+        checkItemStack(view, 90.0, first)
+    }
+
+    @Test
+    fun `候補が1個なら時間が経っても同じアイテムを描画するのだ`() {
+        val itemStack: ItemStack = ItemStack(Items.STONE)
+        val view = GuideItemView(listOf(itemStack))
+        checkItemStack(view, 1000.0, itemStack)
+    }
+
+    @Test
     fun `同じViewでも配置ごとの候補を描画しCtrl中は時間を進めないのだ`() {
         GuiTestEnvironment().use {
             Mockito.mockStatic(Screen::class.java).use { screen ->
@@ -115,50 +153,6 @@ class GuideItemViewRendererTest {
                 Assertions.assertEquals(30.0, secondState.value)
             }
         }
-    }
-
-    @Test
-    fun `ツールチップは描画と同じステートの候補を使い本体を隠しても表示するのだ`() {
-        GuiTestEnvironment().use {
-            Mockito.mockStatic(Screen::class.java).use { screen ->
-                screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
-                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
-                val first: ItemStack = ItemStack(Items.STONE)
-                val second: ItemStack = ItemStack(Items.DIRT)
-                val view = GuideItemView(listOf(first, second))
-                val bounds = IntRectangle(10, 20, 16, 16)
-                val state = Slot(30.0)
-
-                GuideItemViewRenderer.render(view, state, bounds, graphics, 15, 25, true, 0.0F)
-                Mockito.verify(graphics).renderFakeItem(second, 10, 20)
-                GuideItemViewRenderer.renderTooltip(view, state, bounds, graphics, 15, 25)
-                Mockito.verify(graphics).renderTooltip(Mockito.isNull(), Mockito.eq(second), Mockito.eq(15), Mockito.eq(25))
-                Assertions.assertEquals(30.0, state.value)
-
-                Mockito.clearInvocations(graphics)
-                view.showItemStack = false
-                GuideItemViewRenderer.render(view, state, bounds, graphics, 15, 25, true, 0.0F)
-                GuideItemViewRenderer.renderTooltip(view, state, bounds, graphics, 15, 25)
-                Mockito.verify(graphics).renderTooltip(Mockito.isNull(), Mockito.eq(second), Mockito.eq(15), Mockito.eq(25))
-                Mockito.verifyNoMoreInteractions(graphics)
-                Assertions.assertEquals(30.0, state.value)
-            }
-        }
-    }
-
-    @Test
-    fun `範囲外と空の候補にはツールチップを描画しないのだ`() {
-        val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
-        val view = GuideItemView(listOf(ItemStack(Items.STONE)))
-        val emptyView = GuideItemView(emptyList())
-        val bounds = IntRectangle(10, 20, 16, 16)
-        val state = Slot(30.0)
-
-        GuideItemViewRenderer.renderTooltip(view, state, bounds, graphics, 26, 25)
-        GuideItemViewRenderer.renderTooltip(emptyView, state, bounds, graphics, 15, 25)
-
-        Mockito.verifyNoInteractions(graphics)
-        Assertions.assertEquals(30.0, state.value)
     }
 
 }

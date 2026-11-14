@@ -7,6 +7,4 @@ class GuideItemView(val itemStacks: List<ItemStack>) : FixedWidgetView(IntPoint(
     var showItemStack = true
     var overlayArgb = 0x00000000
     var showOverlay = false
-
-    fun getItemStack(time: Double): ItemStack = if (itemStacks.isEmpty()) ItemStack.EMPTY else itemStacks[(time / 30.0).toInt() % itemStacks.size]
 }
