@@ -98,11 +98,17 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun mouseClicked(mouseX: Double, mouseY: Double, handled: Boolean, previousFocused: GuiEventListener?) {
         val screen = host.getScreen() ?: return
         val focused = screen.focused ?: return
-        val actualFocused = focused.getActualFocused { (it !is AbstractWidget || it.isMouseOver(mouseX, mouseY)) && it.getChildAt(mouseX, mouseY).isPresent }
-        if (screen.children().none { it === focused } || (!handled || focused === previousFocused) && (actualFocused == null || !actualFocused.isMouseOver(mouseX, mouseY))) {
-            screen.focused = null
-            screen.isDragging = false
+        val actualFocused = focused.getActualFocused { container ->
+            if (container is AbstractWidget && !container.isMouseOver(mouseX, mouseY)) return@getActualFocused false
+            container.getChildAt(mouseX, mouseY).isPresent
         }
+        if (screen.children().any { it === focused }) {
+            // メニュー画面は子が未消費でも true を返すため、以前のフォーカス先が残る場合は欄外を調べるのだ～🌱
+            if (handled && focused !== previousFocused) return
+            if (actualFocused != null && actualFocused.isMouseOver(mouseX, mouseY)) return
+        }
+        screen.focused = null
+        screen.isDragging = false
     }
 
     private fun getMouseCapture(screen: Screen, button: Int): GuiEventListener? {
