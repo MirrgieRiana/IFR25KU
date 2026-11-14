@@ -99,18 +99,29 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun mouseClicked(mouseX: Double, mouseY: Double, handled: Boolean, previousFocused: GuiEventListener?) {
         val screen = host.getScreen() ?: return
         val focused = screen.focused ?: return
-        // 子がクリックを消費すると、その処理中に登録が解除されていてもバニラがその子にフォーカスを設定するのだ～🌱
-        if (screen.children().any { it === focused }) {
-            // メニュー画面は子が未消費でも true を返すため、以前のフォーカス先が残る場合は欄外を調べるのだ～🌱
+
+        // 欄外クリックでのフォーカス解除を免除する判定なのだ～🌱
+        run {
+
+            // 子がクリックを消費したと同時に自滅するとフォーカスが残留するので、その場合は免除が無効になるのだ～🌱
+            if (screen.children().none { it === focused }) return@run
+
+            // そのクリックで別の要素にフォーカスが移ったから、フォーカスの解除は免除なのだ～🌱
             if (handled && focused !== previousFocused) return
+
+            // フォーカス中の要素自体をクリックしたから、フォーカスの解除は免除なのだ～🌱
             val actualFocused = focused.getActualFocused { container ->
                 if (container is AbstractWidget && !container.isMouseOver(mouseX, mouseY)) return@getActualFocused false
                 container.getChildAt(mouseX, mouseY).isPresent
             }
             if (actualFocused != null && actualFocused.isMouseOver(mouseX, mouseY)) return
+
         }
+
+        // フォーカスを解除するのだ～🌱
         screen.focused = null
         screen.isDragging = false
+
     }
 
     private fun getMouseCapture(screen: Screen, button: Int): GuiEventListener? {
