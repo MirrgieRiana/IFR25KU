@@ -4,9 +4,11 @@ import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.util.empty
 import miragefairy2024.util.text
 import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.EditBox
+import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.screens.Screen
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -28,6 +30,42 @@ private class KeyboardViewScreen : ViewScreen(text { empty() }) {
 }
 
 class ViewScreenTest {
+
+    @Test
+    fun `入力欄の内側の右クリックは維持し欄外のクリックでフォーカスを解除するのだ`() {
+        Mockito.mockStatic(Screen::class.java).use {
+            val screen = KeyboardViewScreen()
+            val editBox: EditBox = EditBox(null, 20, 20, 40, 20, text { empty() })
+            val button: AbstractWidget = object : AbstractWidget(80, 20, 40, 20, text { empty() }) {
+                override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+                override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int) = isMouseOver(mouseX, mouseY)
+            }
+            screen.initialize()
+            screen.register(editBox)
+            screen.register(button)
+            try {
+                screen.focused = editBox
+                Assertions.assertFalse(screen.mouseClicked(25.0, 25.0, 1))
+                Assertions.assertSame(editBox, screen.focused)
+                Assertions.assertTrue(editBox.isFocused)
+
+                screen.isDragging = true
+                Assertions.assertFalse(screen.mouseClicked(10.0, 10.0, 0))
+                Assertions.assertNull(screen.focused)
+                Assertions.assertFalse(editBox.isFocused)
+                Assertions.assertFalse(screen.isDragging)
+
+                screen.focused = editBox
+                screen.mouseClicked(85.0, 25.0, 0)
+                Assertions.assertSame(button, screen.focused)
+                Assertions.assertFalse(editBox.isFocused)
+                Assertions.assertTrue(button.isFocused)
+            } finally {
+                screen.removed()
+            }
+        }
+    }
 
     @Test
     fun `入力欄の上下はフォーカスを移動し左右はカーソルを移動するのだ`() {

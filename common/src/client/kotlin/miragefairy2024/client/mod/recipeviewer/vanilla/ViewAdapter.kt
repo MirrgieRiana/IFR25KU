@@ -95,10 +95,11 @@ class ViewAdapter(val host: ViewAdapterHost) {
         }
     }
 
-    fun mouseClicked() {
+    fun mouseClicked(mouseX: Double, mouseY: Double, handled: Boolean, previousFocused: GuiEventListener?) {
         val screen = host.getScreen() ?: return
-        val focused = screen.focused
-        if (focused != null && screen.children().none { it === focused }) {
+        val focused = screen.focused ?: return
+        val actualFocused = focused.getActualFocused { (it !is AbstractWidget || it.isMouseOver(mouseX, mouseY)) && it.getChildAt(mouseX, mouseY).isPresent }
+        if (screen.children().none { it === focused } || (!handled || focused === previousFocused) && (actualFocused == null || !actualFocused.isMouseOver(mouseX, mouseY))) {
             screen.focused = null
             screen.isDragging = false
         }
