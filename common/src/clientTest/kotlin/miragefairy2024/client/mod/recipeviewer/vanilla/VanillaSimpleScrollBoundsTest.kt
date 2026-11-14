@@ -17,22 +17,36 @@ import org.mockito.Mockito
 
 private class BoundsTestView : FixedWidgetView(IntPoint(300, 300))
 
+private class BoundsTestFixture(private val horizontal: Boolean, layoutLength: Int) {
+    val view = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+    private val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
+    private val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+
+    init {
+        view += BoundsTestView()
+        view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { layoutLength }, { layoutLength })
+        Mockito.`when`(context.origin).thenReturn(IntPoint.ZERO)
+        registry.register { _, _: BoundsTestView, _ -> ViewController.NONE }
+    }
+
+    fun createWidget(length: Int): VanillaSimpleScrollViewWidget {
+        val bounds = if (horizontal) IntRectangle(10, 20, length, 100) else IntRectangle(10, 20, 100, length)
+        return if (horizontal) VanillaXSimpleScrollViewWidget(view as XSimpleScrollView, bounds, context, registry) else VanillaYSimpleScrollViewWidget(view as YSimpleScrollView, bounds, context, registry)
+    }
+}
+
 class VanillaSimpleScrollBoundsTest {
     @Test
     fun `バニラの実際の寸法を生成時と非表示中のサイズ変更時に通知するのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use {
-                val view = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
-                view += BoundsTestView()
-                view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { 50 }, { 50 })
-                val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
-                Mockito.`when`(context.origin).thenReturn(IntPoint.ZERO)
-                val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
-                registry.register { _, _: BoundsTestView, _ -> ViewController.NONE }
+                val fixture = BoundsTestFixture(horizontal, 50)
+                val view = fixture.view
                 var changes = 0
-                view.onScrollBoundsChanged.register { changes++ }
-                val bounds = IntRectangle(10, 20, 100, 100)
-                val widget = if (horizontal) VanillaXSimpleScrollViewWidget(view as XSimpleScrollView, bounds, context, registry) else VanillaYSimpleScrollViewWidget(view as YSimpleScrollView, bounds, context, registry)
+                view.onScrollBoundsChanged.register {
+                    changes++
+                }
+                val widget = fixture.createWidget(100)
                 try {
                     Assertions.assertEquals(300, view.contentLength)
                     Assertions.assertEquals(100, view.viewportLength)
@@ -59,23 +73,14 @@ class VanillaSimpleScrollBoundsTest {
     }
 
     @Test
-    fun `破棄済み Widget のサイズ変更と描画では再配置後の寸法通知を上書きしないのだ`() {
+    fun `破棄済み Widget のサイズ変更と描画では再配置後の寸法を上書きしないのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
-                val view = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
-                view += BoundsTestView()
-                view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { 300 }, { 300 })
-                val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
-                Mockito.`when`(context.origin).thenReturn(IntPoint.ZERO)
-                val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
-                registry.register { _, _: BoundsTestView, _ -> ViewController.NONE }
-                fun createWidget(length: Int): VanillaSimpleScrollViewWidget {
-                    val bounds = if (horizontal) IntRectangle(10, 20, length, 100) else IntRectangle(10, 20, 100, length)
-                    return if (horizontal) VanillaXSimpleScrollViewWidget(view as XSimpleScrollView, bounds, context, registry) else VanillaYSimpleScrollViewWidget(view as YSimpleScrollView, bounds, context, registry)
-                }
-                val old = createWidget(100)
+                val fixture = BoundsTestFixture(horizontal, 300)
+                val view = fixture.view
+                val old = fixture.createWidget(100)
                 old.dispose()
-                val current = createWidget(200)
+                val current = fixture.createWidget(200)
                 try {
                     Assertions.assertEquals(200, view.viewportLength)
                     old.setWidth(300)
