@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.lwjgl.glfw.GLFW
+import java.util.Optional
 
 private val ADAPTER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
     override fun calculateTextWidth(text: FormattedText) = throw UnsupportedOperationException()
@@ -155,6 +156,57 @@ private class AdapterFixture(vararg views: TestView) {
 
 class ViewAdapterTest {
     @Test
+    fun `メニューで消費されても欄外なら以前の入力欄のフォーカスを解除するのだ`() {
+        val fixture = AdapterFixture()
+        val editBox: EditBox = EditBox(null, 20, 20, 40, 20, text { empty() })
+        fixture.interactiveWidgets += editBox
+        fixture.screen.focused = editBox
+        try {
+            fixture.adapter.mouseClicked(10.0, 10.0, true, editBox)
+            Assertions.assertNull(fixture.screen.focused)
+            Assertions.assertFalse(editBox.isFocused)
+        } finally {
+            fixture.adapter.removed()
+        }
+    }
+
+    @Test
+    fun `入れ子の入力欄の外をクリックすると画面から末端までフォーカスを解除するのだ`() {
+        val fixture = AdapterFixture()
+        val editBox: EditBox = EditBox(null, 0, 0, 100, 100, text { empty() })
+        val container: AbstractContainerWidget = object : AbstractContainerWidget(20, 20, 40, 40, text { empty() }) {
+            override fun children() = listOf(editBox)
+            override fun getChildAt(mouseX: Double, mouseY: Double): Optional<GuiEventListener> {
+                if (mouseX >= x + width - 5) return Optional.empty()
+                return super.getChildAt(mouseX, mouseY)
+            }
+            override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+            override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+            override fun setFocused(focused: Boolean) {
+                super.setFocused(focused)
+                this.focused?.isFocused = focused
+            }
+        }
+        fixture.interactiveWidgets += container
+        container.focused = editBox
+        fixture.screen.focused = container
+        try {
+            fixture.adapter.mouseClicked(25.0, 25.0, false, container)
+            Assertions.assertSame(container, fixture.screen.focused)
+            Assertions.assertTrue(editBox.isFocused)
+            fixture.adapter.mouseClicked(10.0, 10.0, false, container)
+            Assertions.assertNull(fixture.screen.focused)
+            Assertions.assertFalse(editBox.isFocused)
+            fixture.screen.focused = container
+            fixture.adapter.mouseClicked(58.0, 25.0, false, container)
+            Assertions.assertNull(fixture.screen.focused)
+            Assertions.assertFalse(editBox.isFocused)
+        } finally {
+            fixture.adapter.removed()
+        }
+    }
+
+    @Test
     fun `複数行入力欄のキー消費と有効時の入力保護と無効なコンテナを検証するのだ`() {
         val fixture = AdapterFixture()
         val keys = mutableListOf<Int>()
@@ -258,7 +310,7 @@ class ViewAdapterTest {
         assertFalse(adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
         assertFalse(adapter.mouseDragged(0.0, 0.0, 0, 1.0, 1.0))
         assertFalse(adapter.mouseReleased(0.0, 0.0, 0))
-        adapter.mouseClicked()
+        adapter.mouseClicked(0.0, 0.0, false, null)
         adapter.removeWidget(widgets[0])
 
         adapter.setOffset(IntPoint(30, 40))
@@ -373,7 +425,7 @@ class ViewAdapterTest {
         fixture.widgets[0].onClick = { fixture.removers[0].remove() }
 
         assertTrue(fixture.screen.mouseClicked(31.0, 41.0, 0))
-        fixture.adapter.mouseClicked()
+        fixture.adapter.mouseClicked(31.0, 41.0, true, null)
 
         assertNull(fixture.screen.focused)
         assertFalse(fixture.screen.isDragging)

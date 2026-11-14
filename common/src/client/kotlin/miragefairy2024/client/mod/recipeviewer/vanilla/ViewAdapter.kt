@@ -95,13 +95,33 @@ class ViewAdapter(val host: ViewAdapterHost) {
         }
     }
 
-    fun mouseClicked() {
+    // クリック処理後に、登録解除済みの対象や欄外クリックで残った対象のフォーカスを外し、ドラッグ状態も解除するのだ～🌱
+    fun mouseClicked(mouseX: Double, mouseY: Double, handled: Boolean, previousFocused: GuiEventListener?) {
         val screen = host.getScreen() ?: return
-        val focused = screen.focused
-        if (focused != null && screen.children().none { it === focused }) {
-            screen.focused = null
-            screen.isDragging = false
+        val focused = screen.focused ?: return
+
+        // 欄外クリックでのフォーカス解除を免除する判定なのだ～🌱
+        run {
+
+            // クリック処理中に消えた子にフォーカスが付く場合があるので、その場合はフォーカスを解除するのだ～🌱
+            if (screen.children().none { it === focused }) return@run
+
+            // そのクリックで別の要素にフォーカスが移ったから、フォーカスの解除は免除なのだ～🌱
+            if (handled && focused !== previousFocused) return
+
+            // フォーカス中の要素自体をクリックしたから、フォーカスの解除は免除なのだ～🌱
+            val actualFocused = focused.getActualFocused { container ->
+                if (container is AbstractWidget && !container.isMouseOver(mouseX, mouseY)) return@getActualFocused false
+                container.getChildAt(mouseX, mouseY).isPresent
+            }
+            if (actualFocused != null && actualFocused.isMouseOver(mouseX, mouseY)) return
+
         }
+
+        // フォーカスを解除するのだ～🌱
+        screen.focused = null
+        screen.isDragging = false
+
     }
 
     private fun getMouseCapture(screen: Screen, button: Int): GuiEventListener? {

@@ -57,8 +57,9 @@ abstract class ViewScreen(title: Component) : Screen(title) {
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        val previousFocused: GuiEventListener? = focused
         val handled = super.mouseClicked(mouseX, mouseY, button)
-        viewAdapter.mouseClicked()
+        viewAdapter.mouseClicked(mouseX, mouseY, handled, previousFocused)
         return handled
     }
 
