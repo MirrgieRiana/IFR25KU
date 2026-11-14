@@ -28,6 +28,9 @@ object GuideItemViewRenderer : ViewRenderer<GuideItemView, Double> {
             graphics.fill(RenderType.guiGhostRecipeOverlay(), bounds.x, bounds.y, bounds.x2, bounds.y2, 0x60FFFFFF)
             graphics.renderItemDecorations(minecraft.font, itemStack, bounds.x, bounds.y)
         }
+        if (isHovered && !itemStack.isEmpty) {
+            minecraft.screen?.setTooltipForNextRenderPass(Screen.getTooltipFromItem(minecraft, itemStack).map { it.visualOrderText })
+        }
     }
 
 }

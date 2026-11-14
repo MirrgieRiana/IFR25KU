@@ -3,11 +3,15 @@ package miragefairy2024.client.mod.recipeviewer.common
 import miragefairy2024.client.mod.recipeviewer.vanilla.GuiTestEnvironment
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.GuideItemView
+import miragefairy2024.util.invoke
+import miragefairy2024.util.text
 import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.renderer.RenderType
+import net.minecraft.network.chat.Component
 import net.minecraft.server.Bootstrap
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -153,6 +157,72 @@ class GuideItemViewRendererTest {
                 Assertions.assertEquals(30.0, secondState.value)
             }
         }
+    }
+
+    @Test
+    fun `描画と同じ候補のツールチップをクリップ解除と画面描画の後に表示するのだ`() {
+        GuiTestEnvironment().use { environment ->
+            Mockito.mockStatic(Screen::class.java).use { screen ->
+                screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
+                val first: ItemStack = ItemStack(Items.STONE)
+                val second: ItemStack = ItemStack(Items.DIRT)
+                val tooltip = text { "tooltip"() }
+                screen.`when`<List<Component>> { Screen.getTooltipFromItem(Mockito.any(Minecraft::class.java), Mockito.same(second)) }.thenReturn(listOf(tooltip))
+                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                val view = GuideItemView(listOf(first, second))
+                val state = Slot(30.0)
+                val bounds = IntRectangle(10, 20, 16, 16)
+                environment.render = { outerGraphics, mouseX, mouseY, partialTick ->
+                    outerGraphics.enableScissor(10, 20, 50, 60)
+                    try {
+                        GuideItemViewRenderer.render(view, state, bounds, graphics, mouseX, mouseY, true, partialTick)
+                        Assertions.assertTrue(environment.tooltips.isEmpty())
+                    } finally {
+                        outerGraphics.disableScissor()
+                    }
+                    environment.events += "scissor-end"
+                }
+
+                environment.screen.renderWithTooltip(environment.graphics, 15, 25, 0.0F)
+                Mockito.verify(graphics).renderFakeItem(second, 10, 20)
+                Assertions.assertEquals(listOf(listOf(tooltip.visualOrderText)), environment.tooltips)
+                Assertions.assertEquals(listOf("scissor-end", "screen-end", "tooltip"), environment.events.takeLast(3))
+                Assertions.assertEquals(30.0, state.value)
+
+                environment.events.clear()
+                environment.tooltips.clear()
+                Mockito.clearInvocations(graphics)
+                view.showItemStack = false
+                environment.screen.renderWithTooltip(environment.graphics, 15, 25, 0.0F)
+                Mockito.verifyNoInteractions(graphics)
+                Assertions.assertEquals(listOf(listOf(tooltip.visualOrderText)), environment.tooltips)
+                Assertions.assertEquals(listOf("scissor-end", "screen-end", "tooltip"), environment.events.takeLast(3))
+                Assertions.assertEquals(30.0, state.value)
+            }
+        }
+    }
+
+    @Test
+    fun `非ホバーと空候補ではツールチップを予約しないのだ`() {
+        fun check(view: GuideItemView, isHovered: Boolean) {
+            GuiTestEnvironment().use { environment ->
+                Mockito.mockStatic(Screen::class.java).use { screen ->
+                    screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
+                    val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                    val state = Slot(GuideItemViewRenderer.createState(view))
+                    environment.render = { _, mouseX, mouseY, partialTick ->
+                        GuideItemViewRenderer.render(view, state, IntRectangle(10, 20, 16, 16), graphics, mouseX, mouseY, isHovered, partialTick)
+                    }
+
+                    environment.screen.renderWithTooltip(environment.graphics, 15, 25, 0.0F)
+
+                    Assertions.assertTrue(environment.tooltips.isEmpty())
+                    screen.verify({ Screen.getTooltipFromItem(Mockito.any(Minecraft::class.java), Mockito.any(ItemStack::class.java)) }, Mockito.never())
+                }
+            }
+        }
+        check(GuideItemView(listOf(ItemStack(Items.STONE))), false)
+        check(GuideItemView(emptyList()), true)
     }
 
 }
