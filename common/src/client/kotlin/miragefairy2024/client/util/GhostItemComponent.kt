@@ -27,7 +27,9 @@ class GhostItemComponent(var itemStacks: List<ItemStack> = listOf()) : BaseCompo
         val itemStack = if (itemStacks.isNotEmpty()) itemStacks[(time / 30.0).toInt() % itemStacks.size] else EMPTY_ITEM_STACK
 
         // 背景
-        if (showOverlay) context.fill(x, y, x + width, y + height, overlayColor)
+        if (showOverlay) {
+            context.fill(x, y, x + width, y + height, overlayColor)
+        }
 
         // アイテム本体と個数
         if (showItemStack) {
