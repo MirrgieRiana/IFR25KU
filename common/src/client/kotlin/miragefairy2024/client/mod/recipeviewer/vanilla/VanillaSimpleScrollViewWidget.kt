@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.views.ScrollBounds
 import miragefairy2024.mod.recipeviewer.views.SimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
@@ -111,6 +112,25 @@ abstract class VanillaSimpleScrollViewWidget(
         if (scrollOffset == old) return false
         childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
         return true
+    }
+
+    private fun updateScrollBounds() {
+        if (!disposed) view.scrollBounds.value = ScrollBounds(evaluateContentLength() atLeast 0, viewportLength atLeast 0)
+    }
+
+    override fun setWidth(width: Int) {
+        super.setWidth(width)
+        updateScrollBounds()
+    }
+
+    override fun setHeight(height: Int) {
+        super.setHeight(height)
+        updateScrollBounds()
+    }
+
+    override fun setSize(width: Int, height: Int) {
+        super.setSize(width, height)
+        updateScrollBounds()
     }
 
     override fun setPosition(x: Int, y: Int) {
@@ -376,6 +396,7 @@ abstract class VanillaSimpleScrollViewWidget(
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
         }
+        updateScrollBounds()
         childController = view.childView.attachTo(IntPoint(x, y)) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
         }
