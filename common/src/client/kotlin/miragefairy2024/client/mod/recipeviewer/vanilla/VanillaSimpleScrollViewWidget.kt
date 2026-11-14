@@ -114,7 +114,7 @@ abstract class VanillaSimpleScrollViewWidget(
     }
 
     private fun updateScrollBounds() {
-        if (!disposed) view.updateScrollBounds(evaluateContentLength().coerceAtLeast(0), viewportLength.coerceAtLeast(0))
+        if (!disposed) view.updateScrollBounds(evaluateContentLength() atLeast 0, viewportLength atLeast 0)
     }
 
     override fun setWidth(width: Int) {

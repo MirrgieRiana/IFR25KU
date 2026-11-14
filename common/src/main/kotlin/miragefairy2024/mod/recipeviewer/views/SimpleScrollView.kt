@@ -46,7 +46,7 @@ abstract class SimpleScrollView : WrapperView(), PlaceableView {
     protected abstract fun evaluateViewportLength(): Int
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
-        updateScrollBounds(evaluateContentLength().coerceAtLeast(0), evaluateViewportLength().coerceAtLeast(0))
+        updateScrollBounds(evaluateContentLength() atLeast 0, evaluateViewportLength() atLeast 0)
         return viewPlacer.place(this, offset.sized(evaluateActualSize()))
     }
 
