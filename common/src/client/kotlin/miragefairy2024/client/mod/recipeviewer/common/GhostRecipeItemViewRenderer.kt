@@ -5,6 +5,7 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.x2
 import miragefairy2024.mod.recipeviewer.view.y2
 import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
+import miragefairy2024.util.isNotEmpty
 import mirrg.kotlin.helium.Slot
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -28,7 +29,7 @@ object GhostRecipeItemViewRenderer : ViewRenderer<GhostRecipeItemView, Double> {
             graphics.fill(RenderType.guiGhostRecipeOverlay(), bounds.x, bounds.y, bounds.x2, bounds.y2, 0x60FFFFFF)
             graphics.renderItemDecorations(minecraft.font, itemStack, bounds.x, bounds.y)
         }
-        if (isHovered && !itemStack.isEmpty) {
+        if (isHovered && itemStack.isNotEmpty) {
             minecraft.screen?.setTooltipForNextRenderPass(Screen.getTooltipFromItem(minecraft, itemStack).map { it.visualOrderText })
         }
     }
