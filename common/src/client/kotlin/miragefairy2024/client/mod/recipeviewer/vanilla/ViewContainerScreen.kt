@@ -80,6 +80,10 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         return super.mouseReleased(mouseX, mouseY, button)
     }
 
+    override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
+        return viewAdapter.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+    }
+
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (viewAdapter.keyPressed(keyCode, scanCode, modifiers)) return true
         return super.keyPressed(keyCode, scanCode, modifiers)

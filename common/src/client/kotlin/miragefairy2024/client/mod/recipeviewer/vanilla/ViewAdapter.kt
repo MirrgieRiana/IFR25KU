@@ -110,6 +110,12 @@ class ViewAdapter(val host: ViewAdapterHost) {
         return screen.children().firstOrNull { it is MouseCaptureContainer && it.hasMouseCapture(button) }
     }
 
+    fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
+        if (!isInitialized) return false
+        val screen = host.getScreen() ?: return false
+        return screen.mouseScrolledChildren(mouseX, mouseY, scrollX, scrollY)
+    }
+
     /**
      * Fabric 以外ではフォーカスされた子へドラッグを中継するのだ～🌱
      * [miragefairy2024.client.mod.recipeviewer.vanilla.MouseCaptureContainer] が保持する押下先へは、プラットフォームによらず中継するのだ～🌱

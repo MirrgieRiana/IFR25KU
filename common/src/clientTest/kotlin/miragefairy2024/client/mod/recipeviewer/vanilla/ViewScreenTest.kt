@@ -30,6 +30,28 @@ private class KeyboardViewScreen : ViewScreen(text { empty() }) {
 class ViewScreenTest {
 
     @Test
+    fun `画面のホイールを重なる子へ一度ずつ渡すのだ`() {
+        Mockito.mockStatic(Screen::class.java).use {
+            val screen = KeyboardViewScreen()
+            val background: AbstractWidget = Mockito.mock(AbstractWidget::class.java)
+            val child: AbstractWidget = Mockito.mock(AbstractWidget::class.java)
+            Mockito.`when`(background.isMouseOver(10.0, 20.0)).thenReturn(true)
+            Mockito.`when`(child.isMouseOver(10.0, 20.0)).thenReturn(true)
+            Mockito.`when`(child.mouseScrolled(10.0, 20.0, 0.0, -1.0)).thenReturn(true)
+            screen.initialize()
+            screen.register(background)
+            screen.register(child)
+            try {
+                Assertions.assertTrue(screen.mouseScrolled(10.0, 20.0, 0.0, -1.0))
+                Mockito.verify(background).mouseScrolled(10.0, 20.0, 0.0, -1.0)
+                Mockito.verify(child).mouseScrolled(10.0, 20.0, 0.0, -1.0)
+            } finally {
+                screen.removed()
+            }
+        }
+    }
+
+    @Test
     fun `入力欄の上下はフォーカスを移動し左右はカーソルを移動するのだ`() {
         Mockito.mockStatic(Screen::class.java).use {
             val font: Font = Mockito.mock(Font::class.java)
