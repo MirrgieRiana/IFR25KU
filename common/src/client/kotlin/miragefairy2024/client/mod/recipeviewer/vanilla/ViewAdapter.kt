@@ -10,9 +10,11 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.util.Remover
 import mirrg.kotlin.java.hydrogen.orNull
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.components.MultiLineEditBox
+import net.minecraft.client.gui.components.events.ContainerEventHandler
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.screens.Screen
 import org.lwjgl.glfw.GLFW
@@ -49,6 +51,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     private var isInitialized = false
     private var viewController: ViewController? = null
+    private var textCursor: Long? = null
+    private var isTextCursor = false
 
     /**
      * View のツリーを再構築して、各ウィジェットをホストへ直接登録するのだ～🌱
@@ -82,9 +86,34 @@ class ViewAdapter(val host: ViewAdapterHost) {
     /** 配置状態を無効化してから、イベント登録などの後始末を行うのだ～🌱 */
     fun removed() {
         isInitialized = false
+        val cursor = textCursor
+        textCursor = null
+        isTextCursor = false
+        if (cursor != null) GLFW.glfwDestroyCursor(cursor)
         val controller = viewController
         viewController = null
         if (controller != null) controller.dispose()
+    }
+
+    fun updateCursor() {
+        if (!isInitialized) return
+        val screen = host.getScreen() ?: return
+        fun isTextHovered(listener: GuiEventListener): Boolean {
+            if (listener is AbstractWidget && !listener.isActive) return false
+            if (listener is EditBox || listener is MultiLineEditBox) return (listener as AbstractWidget).isHovered
+            return listener is ContainerEventHandler && listener.children().any { isTextHovered(it) }
+        }
+        val hovered = screen.children().any { isTextHovered(it) }
+        if (hovered == isTextCursor) return
+        val minecraft: Minecraft = Minecraft.getInstance()
+        if (minecraft.screen !== screen) return
+        val cursor = if (hovered) {
+            textCursor ?: GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR).also { textCursor = it }
+        } else {
+            0L
+        }
+        GLFW.glfwSetCursor(minecraft.window.window, cursor)
+        isTextCursor = hovered
     }
 
     fun removeWidget(listener: GuiEventListener) {

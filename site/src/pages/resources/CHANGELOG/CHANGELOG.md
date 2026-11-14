@@ -30,6 +30,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 
 その他
 
+- 追加: 入力欄にマウスを重ねると、マウスカーソルがテキスト選択用の形状に変わる機能を追加。
 - 表示: トーストの省略単位を文字単位に変更し、省略時の `...` を濃い青固定に変更。
 
 ## 31.32.2

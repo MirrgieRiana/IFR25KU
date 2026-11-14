@@ -13,6 +13,7 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.text
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
@@ -154,6 +155,77 @@ private class AdapterFixture(vararg views: TestView) {
 }
 
 class ViewAdapterTest {
+    @Test
+    fun `入力欄の移動でカーソルを再利用し非表示と画面終了で解除するのだ`() {
+        GuiTestEnvironment().use {
+            Mockito.mockStatic(GLFW::class.java).use { glfw ->
+                glfw.`when`<Long> { GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR) }.thenReturn(42L)
+                val fixture = AdapterFixture()
+                Minecraft.getInstance().screen = fixture.screen
+                val first: EditBox = Mockito.mock(EditBox::class.java)
+                val second: EditBox = Mockito.mock(EditBox::class.java)
+                Mockito.`when`(first.isActive).thenReturn(true)
+                Mockito.`when`(second.isActive).thenReturn(true)
+                val container: AbstractContainerWidget = object : AbstractContainerWidget(0, 0, 100, 100, text { empty() }) {
+                    override fun children() = listOf(second)
+                    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                    override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+                }
+                fixture.interactiveWidgets += first
+                fixture.interactiveWidgets += container
+                fixture.adapter.updateCursor()
+                glfw.verifyNoInteractions()
+
+                Mockito.`when`(first.isHovered).thenReturn(true)
+                fixture.adapter.updateCursor()
+                fixture.adapter.updateCursor()
+                Mockito.`when`(first.isHovered).thenReturn(false)
+                Mockito.`when`(second.isHovered).thenReturn(true)
+                fixture.adapter.updateCursor()
+                glfw.verify { GLFW.glfwSetCursor(0L, 42L) }
+
+                container.visible = false
+                fixture.adapter.updateCursor()
+                glfw.verify { GLFW.glfwSetCursor(0L, 0L) }
+                container.visible = true
+                fixture.adapter.updateCursor()
+                glfw.verify({ GLFW.glfwSetCursor(0L, 42L) }, Mockito.times(2))
+                fixture.adapter.removed()
+                fixture.adapter.removed()
+                glfw.verify { GLFW.glfwDestroyCursor(42L) }
+                glfw.verify { GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR) }
+            }
+        }
+    }
+
+    @Test
+    fun `クリッピングされた入力欄ではテキストカーソルを表示しないのだ`() {
+        GuiTestEnvironment().use { environment ->
+            Mockito.mockStatic(GLFW::class.java).use { glfw ->
+                glfw.`when`<Long> { GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR) }.thenReturn(42L)
+                val fixture = AdapterFixture()
+                Minecraft.getInstance().screen = fixture.screen
+                val editBox: EditBox = object : EditBox(null, 20, 20, 40, 20, text { empty() }) {
+                    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                }
+                fixture.interactiveWidgets += editBox
+                environment.graphics.enableScissor(0, 0, 10, 10)
+                editBox.render(environment.graphics, 25, 25, 0.0F)
+                fixture.adapter.updateCursor()
+                glfw.verifyNoInteractions()
+                environment.graphics.disableScissor()
+
+                editBox.render(environment.graphics, 25, 25, 0.0F)
+                fixture.adapter.updateCursor()
+                glfw.verify { GLFW.glfwSetCursor(0L, 42L) }
+                editBox.render(environment.graphics, 0, 0, 0.0F)
+                fixture.adapter.updateCursor()
+                glfw.verify { GLFW.glfwSetCursor(0L, 0L) }
+                fixture.adapter.removed()
+            }
+        }
+    }
+
     @Test
     fun `複数行入力欄のキー消費と有効時の入力保護と無効なコンテナを検証するのだ`() {
         val fixture = AdapterFixture()

@@ -57,6 +57,7 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         super.render(guiGraphics, mouseX, mouseY, partialTick)
         renderTooltip(guiGraphics, mouseX, mouseY)
+        viewAdapter.updateCursor()
     }
 
     override fun removeWidget(listener: GuiEventListener) {
