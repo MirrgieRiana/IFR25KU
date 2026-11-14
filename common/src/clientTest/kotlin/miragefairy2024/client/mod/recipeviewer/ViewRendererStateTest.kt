@@ -10,6 +10,7 @@ import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.server.Bootstrap
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
@@ -122,6 +123,34 @@ class ViewRendererStateTest {
                 { widget.mouseClicked(30, 40, 0) },
                 { widget.keyPressed(32, 0, 0) },
             )
+        }
+    }
+
+    @Test
+    fun `バニラの位置変更で状態を維持しフォーカス判定にも渡すのだ`() {
+        GuiTestEnvironment().use { environment ->
+            val observedStates = mutableListOf<Slot<Int>>()
+            val renderer: ViewRenderer<StateTestView, Int> = object : ViewRenderer<StateTestView, Int> {
+                override fun createState(view: StateTestView) = view.initialValue
+
+                override fun render(view: StateTestView, state: Slot<Int>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+                    observedStates += state
+                    Assertions.assertEquals(IntRectangle(20, 30, 100, 100), bounds)
+                    state.value = 42
+                }
+
+                override fun isFocusable(view: StateTestView, state: Slot<Int>): Boolean {
+                    observedStates += state
+                    Assertions.assertEquals(42, state.value)
+                    return true
+                }
+            }
+            val widget = VanillaViewRendererWidget(renderer, StateTestView(10), IntRectangle(10, 20, 100, 100))
+            widget.setPosition(20, 30)
+            widget.render(environment.graphics, 30, 40, 0.0F)
+            Assertions.assertNotNull(widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
+            Assertions.assertEquals(2, observedStates.size)
+            Assertions.assertSame(observedStates[0], observedStates[1])
         }
     }
 
