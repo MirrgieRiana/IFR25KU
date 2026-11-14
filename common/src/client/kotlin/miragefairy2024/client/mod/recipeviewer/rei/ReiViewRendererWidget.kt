@@ -5,10 +5,13 @@ import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.util.toReiRectangle
+import mirrg.kotlin.helium.Slot
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.events.GuiEventListener
 
 class ReiViewRendererWidget<V : PlaceableView, S>(private val renderer: ViewRenderer<V, S>, private val view: V, private val bounds2: IntRectangle) : WidgetWithBounds() {
+    private val state = Slot(renderer.createState(view))
+
     private val boundsCache = bounds2.toReiRectangle()
     override fun getBounds() = boundsCache
     override fun children() = listOf<GuiEventListener>()
