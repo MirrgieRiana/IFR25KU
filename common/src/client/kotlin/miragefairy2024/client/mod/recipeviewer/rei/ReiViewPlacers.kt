@@ -91,7 +91,7 @@ fun initReiViewPlacers() {
         }
     }
     ViewRendererRegistry.registry.subscribe { entry ->
-        fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
+        fun <V : PlaceableView, S> f(entry: ViewRendererRegistry.Entry<V, S>) {
             REI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { widgets, view, bounds ->
                 widgets place ReiViewRendererWidget(entry.viewRenderer, view, bounds)
             }

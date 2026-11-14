@@ -21,6 +21,7 @@ import miragefairy2024.mod.machine.TexturedArrowView
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
+import mirrg.kotlin.helium.Slot
 import mirrg.kotlin.helium.atMost
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.Rect2i
@@ -43,9 +44,10 @@ fun initMachineClientModule() {
     ViewRendererRegistry.register(TexturedArrowView::class.java, TexturedArrowViewRenderer)
 }
 
-object FuelViewRenderer : ViewRenderer<FuelView> {
+object FuelViewRenderer : ViewRenderer<FuelView, Unit> {
     val TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/fuel.png")
-    override fun render(view: FuelView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun createState(view: FuelView) = Unit
+    override fun render(view: FuelView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val fuelMax = 20 * 10
         val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
         val fuelRate = fuel.toDouble() / fuelMax.toDouble()
@@ -75,9 +77,10 @@ object FuelViewRenderer : ViewRenderer<FuelView> {
     }
 }
 
-object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
+object BlueFuelViewRenderer : ViewRenderer<BlueFuelView, Unit> {
     val TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/blue_fuel.png")
-    override fun render(view: BlueFuelView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun createState(view: BlueFuelView) = Unit
+    override fun render(view: BlueFuelView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val fuelMax = 20 * 10
         val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
         val fuelRate = fuel.toDouble() / fuelMax.toDouble()
@@ -107,8 +110,9 @@ object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
     }
 }
 
-object TexturedArrowViewRenderer : ViewRenderer<TexturedArrowView> {
-    override fun render(view: TexturedArrowView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+object TexturedArrowViewRenderer : ViewRenderer<TexturedArrowView, Unit> {
+    override fun createState(view: TexturedArrowView) = Unit
+    override fun render(view: TexturedArrowView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val rate = view.durationMilliSeconds?.let {
             (System.nanoTime() / 1_000_000 % it.toLong()).toDouble() / it.toDouble()
         } ?: 1.0

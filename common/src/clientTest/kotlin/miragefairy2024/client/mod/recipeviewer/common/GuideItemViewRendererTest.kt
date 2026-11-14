@@ -3,6 +3,7 @@ package miragefairy2024.client.mod.recipeviewer.common
 import miragefairy2024.client.mod.recipeviewer.vanilla.GuiTestEnvironment
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.GuideItemView
+import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
@@ -38,7 +39,7 @@ class GuideItemViewRendererTest {
                 }
                 val bounds = IntRectangle(10, 20, 16, 16)
 
-                GuideItemViewRenderer.render(view, bounds, graphics, 0, 0, false, 0.0F)
+                GuideItemViewRenderer.render(view, Slot(Unit), bounds, graphics, 0, 0, false, 0.0F)
 
                 val inOrder: InOrder = Mockito.inOrder(graphics)
                 inOrder.verify(graphics).fill(10, 20, 26, 36, 0x20FF0000)
@@ -49,7 +50,7 @@ class GuideItemViewRendererTest {
 
                 Mockito.clearInvocations(graphics)
                 view.showOverlay = false
-                GuideItemViewRenderer.render(view, bounds, graphics, 0, 0, false, 0.0F)
+                GuideItemViewRenderer.render(view, Slot(Unit), bounds, graphics, 0, 0, false, 0.0F)
                 inOrder.verify(graphics).renderFakeItem(itemStack, 10, 20)
                 inOrder.verify(graphics).fill(RenderType.guiGhostRecipeOverlay(), 10, 20, 26, 36, 0x60FFFFFF)
                 inOrder.verify(graphics).renderItemDecorations(Mockito.isNull(), Mockito.eq(itemStack), Mockito.eq(10), Mockito.eq(20))
@@ -71,13 +72,13 @@ class GuideItemViewRendererTest {
                 }
                 val bounds = IntRectangle(10, 20, 16, 16)
 
-                GuideItemViewRenderer.render(view, bounds, graphics, 0, 0, false, 0.0F)
+                GuideItemViewRenderer.render(view, Slot(Unit), bounds, graphics, 0, 0, false, 0.0F)
                 Mockito.verify(graphics).fill(10, 20, 26, 36, 0x2000FF00)
                 Mockito.verifyNoMoreInteractions(graphics)
 
                 Mockito.clearInvocations(graphics)
                 view.showOverlay = false
-                GuideItemViewRenderer.render(view, bounds, graphics, 0, 0, false, 0.0F)
+                GuideItemViewRenderer.render(view, Slot(Unit), bounds, graphics, 0, 0, false, 0.0F)
                 Mockito.verifyNoInteractions(graphics)
             }
         }

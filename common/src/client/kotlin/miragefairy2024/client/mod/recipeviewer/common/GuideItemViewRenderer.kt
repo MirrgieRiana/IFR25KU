@@ -6,13 +6,16 @@ import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.mod.recipeviewer.view.x2
 import miragefairy2024.mod.recipeviewer.view.y2
 import miragefairy2024.mod.recipeviewer.views.GuideItemView
+import mirrg.kotlin.helium.Slot
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.renderer.RenderType
 
-object GuideItemViewRenderer : ViewRenderer<GuideItemView> {
-    override fun render(view: GuideItemView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+object GuideItemViewRenderer : ViewRenderer<GuideItemView, Unit> {
+    override fun createState(view: GuideItemView) = Unit
+
+    override fun render(view: GuideItemView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val minecraft = Minecraft.getInstance()
         if (!Screen.hasControlDown()) view.time += minecraft.timer.realtimeDeltaTicks
 
