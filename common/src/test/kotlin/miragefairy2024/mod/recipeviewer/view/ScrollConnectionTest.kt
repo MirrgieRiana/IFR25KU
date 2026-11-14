@@ -4,6 +4,7 @@ import miragefairy2024.mod.recipeviewer.views.ScrollBounds
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.register
 import org.junit.jupiter.api.Assertions
