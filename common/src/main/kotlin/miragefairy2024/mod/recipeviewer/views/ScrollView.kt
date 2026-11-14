@@ -10,6 +10,7 @@ import miragefairy2024.util.ObservableValue
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 
+// TODO このクラスは削除予定なので、実装・レビューではその予定を加味するのだ～🌱
 /**
  * 子 View を一方向へスクロールするのだ～🌱
  * スクロール方向のコンテンツが占有する最小のサイズは `0` なのだ～🌱
