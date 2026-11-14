@@ -103,6 +103,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
             if (container is AbstractWidget && !container.isMouseOver(mouseX, mouseY)) return@getActualFocused false
             container.getChildAt(mouseX, mouseY).isPresent
         }
+        // 子がクリックを消費すると、その処理中に登録が解除されていてもバニラがその子にフォーカスを設定するのだ～🌱
         if (screen.children().any { it === focused }) {
             // メニュー画面は子が未消費でも true を返すため、以前のフォーカス先が残る場合は欄外を調べるのだ～🌱
             if (handled && focused !== previousFocused) return
