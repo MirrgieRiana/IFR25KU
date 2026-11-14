@@ -16,7 +16,7 @@ dependencies {
 
 tasks.withType<KotlinCompile>().all {
     compilerOptions {
-        freeCompilerArgs.set(listOf("-Xcontext-receivers"))
+        freeCompilerArgs.set(listOf("-Xcontext-parameters"))
     }
 }
 
