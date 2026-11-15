@@ -19,28 +19,28 @@ class DynamicView(initialContent: View) : View {
     override val sizingX get() = content.value.sizingX
     override val sizingY get() = content.value.sizingY
 
-    private lateinit var initializeContentSizeCalculation: (View) -> Unit
-    private var initializedContent: View? = null
+    private lateinit var initSizeCalculationDelegate: (View) -> Unit
+    private var initializedContentView: View? = null
 
     override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
-        initializeContentSizeCalculation = { it.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider) }
-        initializedContent = null
-        getInitializedContent()
+        initSizeCalculationDelegate = { it.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider) }
+        initializedContentView = null
+        evaluateInitializedContent()
     }
 
-    private fun getInitializedContent(): View {
-        val childView = content.value
-        if (initializedContent !== childView) {
-            initializeContentSizeCalculation(childView)
-            initializedContent = childView
+    private fun evaluateInitializedContent(): View {
+        val contentView = content.value
+        if (initializedContentView !== contentView) {
+            initSizeCalculationDelegate(contentView)
+            initializedContentView = contentView
         }
-        return childView
+        return contentView
     }
 
-    override fun evaluateContentSizeX() = getInitializedContent().evaluateContentSizeX()
-    override fun evaluateContentSizeY() = getInitializedContent().evaluateContentSizeY()
-    override fun evaluateActualSizeX() = getInitializedContent().evaluateActualSizeX()
-    override fun evaluateActualSizeY() = getInitializedContent().evaluateActualSizeY()
+    override fun evaluateContentSizeX() = evaluateInitializedContent().evaluateContentSizeX()
+    override fun evaluateContentSizeY() = evaluateInitializedContent().evaluateContentSizeY()
+    override fun evaluateActualSizeX() = evaluateInitializedContent().evaluateActualSizeX()
+    override fun evaluateActualSizeY() = evaluateInitializedContent().evaluateActualSizeY()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         val onClosed = EventRegistry<() -> Unit>()
@@ -73,7 +73,7 @@ class DynamicView(initialContent: View) : View {
                     if (disposed) break
 
                     // 子を実際にロードするのだ～🌱
-                    val newChildController = getInitializedContent().attachTo(currentOffset, viewPlacer)
+                    val newChildController = evaluateInitializedContent().attachTo(currentOffset, viewPlacer)
                     // 子のロード中に破棄された場合は、即子を破棄して抜けるのだ～🌱
                     if (disposed) {
                         newChildController.dispose()
