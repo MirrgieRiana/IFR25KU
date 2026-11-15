@@ -294,7 +294,7 @@ class ViewAdapterTest {
         assertFalse(adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
         assertFalse(adapter.mouseDragged(0.0, 0.0, 0, 1.0, 1.0))
         assertFalse(adapter.mouseReleased(0.0, 0.0, 0))
-        adapter.mouseClicked()
+        adapter.mouseClicked(0.0, 0.0)
         adapter.removeWidget(widgets[0])
 
         adapter.setOffset(IntPoint(30, 40))
@@ -409,7 +409,7 @@ class ViewAdapterTest {
         fixture.widgets[0].onClick = { fixture.removers[0].remove() }
 
         assertTrue(fixture.screen.mouseClicked(31.0, 41.0, 0))
-        fixture.adapter.mouseClicked()
+        fixture.adapter.mouseClicked(31.0, 41.0)
 
         assertNull(fixture.screen.focused)
         assertFalse(fixture.screen.isDragging)
