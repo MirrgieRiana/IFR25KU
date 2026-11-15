@@ -2,10 +2,13 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewController
+import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.views.FixedView
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
@@ -17,6 +20,7 @@ import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.lwjgl.glfw.GLFW
 import org.mockito.Mockito
 
 private class SimpleScrollTestView : FixedWidgetView(IntPoint(300, 300))
@@ -68,6 +72,46 @@ class VanillaSimpleScrollViewWidgetTest {
                 widget.dispose()
                 Assertions.assertTrue(disposed)
                 Assertions.assertFalse(widget.mouseClicked(109.0, 119.0, 0))
+            }
+        }
+    }
+
+    @Test
+    fun `表示領域が広がったあとは範囲外の位置から少しずつ戻れるのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val offsets = mutableListOf<IntPoint>()
+            val view = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+            view += object : FixedView(IntPoint(300, 300)) {
+                override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
+                    return object : ViewController {
+                        override fun setOffset(offset: IntPoint) {
+                            offsets += offset
+                        }
+                        override fun detach() = Unit
+                        override fun dispose() = Unit
+                    }
+                }
+            }
+            view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { 100 }, { 100 })
+            val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
+            val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+            val bounds = IntRectangle(10, 20, 100, 100)
+            val widget = if (horizontal) VanillaXSimpleScrollViewWidget(view as XSimpleScrollView, bounds, context, registry) else VanillaYSimpleScrollViewWidget(view as YSimpleScrollView, bounds, context, registry)
+            try {
+                widget.isFocused = true
+                Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+                widget.setSize(300, 300)
+                Assertions.assertEquals(listOf(if (horizontal) IntPoint(-190, 20) else IntPoint(10, -180)), offsets)
+                Assertions.assertFalse(widget.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+                Assertions.assertEquals(1, offsets.size)
+                Assertions.assertTrue(widget.mouseScrolled(50.0, 50.0, 0.0, 1.0))
+                Assertions.assertEquals(if (horizontal) IntPoint(-175, 20) else IntPoint(10, -165), offsets.last())
+                val backwardKey = if (horizontal) GLFW.GLFW_KEY_LEFT else GLFW.GLFW_KEY_UP
+                Assertions.assertTrue(widget.keyPressed(backwardKey, 0, 0))
+                Assertions.assertEquals(if (horizontal) IntPoint(-160, 20) else IntPoint(10, -150), offsets.last())
+            } finally {
+                widget.dispose()
+                widget.detach()
             }
         }
     }
