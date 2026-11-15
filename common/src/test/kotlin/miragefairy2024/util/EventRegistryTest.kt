@@ -1,8 +1,10 @@
 package miragefairy2024.util
 
+import java.awt.geom.Point2D
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class EventRegistryTest {
@@ -25,7 +27,6 @@ class EventRegistryTest {
         remover.remove()
         value.value = 4
         assertEquals(listOf(Pair(2, 2), Pair(2, 3)), notifications)
-        assertTrue(value.listeners.isEmpty())
     }
 
     @Test
@@ -45,7 +46,6 @@ class EventRegistryTest {
         assertEquals(listOf(Pair(2, 2), Pair(2, 3)), notifications)
         assertEquals(3, value.value)
         remover.remove()
-        assertTrue(value.listeners.isEmpty())
     }
 
     @Test
@@ -65,7 +65,6 @@ class EventRegistryTest {
         onClosed.fire()
         value.value = 4
         assertEquals(listOf(Pair(2, 2), Pair(2, 3)), notifications)
-        assertTrue(value.listeners.isEmpty())
         assertTrue(onClosed.listeners.isEmpty())
     }
 
@@ -82,7 +81,6 @@ class EventRegistryTest {
 
         value.value = 3
         assertEquals(listOf(Pair(2, 2)), notifications)
-        assertTrue(value.listeners.isEmpty())
         assertTrue(onClosed.listeners.isEmpty())
     }
 
@@ -139,19 +137,74 @@ class EventRegistryTest {
         val listener: (Int, Int) -> Unit = { old, new ->
             notifications += Pair(old, new)
         }
+        lateinit var oldRemover: Remover
         value.register { _, new ->
             if (new == 20) {
-                value.remove(listener)
+                oldRemover.remove()
                 value.register(listener)
             }
         }
-        val oldRemover = value.register(listener)
+        oldRemover = value.register(listener)
 
         value.value = 20
         assertTrue(notifications.isEmpty())
         oldRemover.remove()
         value.value = 30
         assertEquals(listOf(Pair(20, 30)), notifications)
+    }
+
+    @Test
+    fun `同値の別インスタンスを代入しても保持した値と通知は変わらないのだ～🌱`() {
+        val original = Pair(1, 2)
+        val value = ObservableValue(original)
+        val notifications = mutableListOf<Pair<Int, Int>>()
+        value.register { _, new -> notifications += new }
+
+        value.value = Pair(1, 2)
+
+        assertSame(original, value.value)
+        assertTrue(notifications.isEmpty())
+    }
+
+    @Test
+    fun `自分自身と非等価な値でも同一インスタンスへの代入と再配送は省略するのだ～🌱`() {
+        val original = Point2D.Double(Double.NaN, 1.0)
+        val value = ObservableValue(original)
+        val replacement = Point2D.Double(1.0, 1.0)
+        val notifications = mutableListOf<Point2D.Double>()
+        value.register { _, new ->
+            if (new === replacement) value.value = original
+        }
+        value.register { _, new -> notifications += new }
+
+        value.value = original
+        value.value = replacement
+
+        assertSame(original, value.value)
+        assertTrue(notifications.isEmpty())
+    }
+
+    @Test
+    fun `同じリスナーを複数回登録すると購読ごとに解除できるのだ～🌱`() {
+        val value = ObservableValue(0)
+        val notifications = mutableListOf<Pair<Int, Int>>()
+        val listener = object : (Int, Int) -> Unit {
+            override fun equals(other: Any?): Boolean = error("Listener equality must not be used")
+            override fun hashCode(): Int = error("Listener hash code must not be used")
+            override fun invoke(old: Int, new: Int) {
+                notifications += Pair(old, new)
+            }
+        }
+        val first = value.register(listener)
+        val second = value.registerAndInitialize(listener)
+
+        value.value = 1
+        first.remove()
+        value.value = 2
+        second.remove()
+        value.value = 3
+
+        assertEquals(listOf(Pair(0, 0), Pair(0, 1), Pair(0, 1), Pair(1, 2)), notifications)
     }
 
     @Test

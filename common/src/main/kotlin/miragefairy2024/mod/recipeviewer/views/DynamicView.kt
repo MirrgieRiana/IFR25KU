@@ -9,7 +9,6 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.fire
-import miragefairy2024.util.observeAndInitialize
 
 /** [content] を動的に付け替え可能な View なのだ～🌱 */
 class DynamicView : AbstractView() {

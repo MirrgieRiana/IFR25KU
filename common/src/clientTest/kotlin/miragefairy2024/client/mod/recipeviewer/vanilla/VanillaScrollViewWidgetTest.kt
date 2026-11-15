@@ -387,7 +387,6 @@ class VanillaScrollViewWidgetTest {
                     controller.dispose()
                     controller.detach()
                 }
-                Assertions.assertTrue(view.scrollOffsetValue.listeners.isEmpty())
             }
         }
     }
@@ -482,7 +481,6 @@ class VanillaScrollViewWidgetTest {
             controller.dispose()
             controller.detach()
             Assertions.assertEquals(175.25, view.scrollOffsetValue.value)
-            Assertions.assertTrue(view.scrollOffsetValue.listeners.isEmpty())
             val previousPositions = fixture.widgets.map { IntPoint(it.x, it.y) }
 
             val newController = fixture.attach(view, IntPoint(200, 200))
@@ -494,7 +492,6 @@ class VanillaScrollViewWidgetTest {
                 newController.dispose()
                 newController.detach()
             }
-            Assertions.assertTrue(view.scrollOffsetValue.listeners.isEmpty())
 
             val restoredController = fixture.attach(view, IntPoint(100, 100))
             try {
@@ -507,7 +504,9 @@ class VanillaScrollViewWidgetTest {
                 restoredController.dispose()
                 restoredController.detach()
             }
-            Assertions.assertTrue(view.scrollOffsetValue.listeners.isEmpty())
+            val offsetsAfterDisposal = fixture.widgets.map { it.offsets.toList() }
+            view.scrollOffsetValue.value = 50.0
+            Assertions.assertEquals(offsetsAfterDisposal, fixture.widgets.map { it.offsets.toList() })
         }
     }
 

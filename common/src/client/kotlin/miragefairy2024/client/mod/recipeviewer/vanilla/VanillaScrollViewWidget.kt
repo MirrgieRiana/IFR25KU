@@ -15,7 +15,6 @@ import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
-import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.text
 import miragefairy2024.util.translate
 import mirrg.kotlin.helium.atLeast

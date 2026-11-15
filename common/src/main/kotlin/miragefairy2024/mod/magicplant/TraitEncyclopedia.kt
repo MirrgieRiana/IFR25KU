@@ -45,7 +45,6 @@ import miragefairy2024.util.gold
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.register
-import miragefairy2024.util.registerAndInitialize
 import miragefairy2024.util.sortedEntrySet
 import miragefairy2024.util.style
 import miragefairy2024.util.text

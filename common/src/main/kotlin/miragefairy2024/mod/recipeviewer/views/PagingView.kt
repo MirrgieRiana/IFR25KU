@@ -11,7 +11,6 @@ import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.fire
-import miragefairy2024.util.observeAndInitialize
 
 class PagingView : ParentView<Alignment>() {
 

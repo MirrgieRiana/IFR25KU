@@ -38,81 +38,79 @@ fun EventRegistry<() -> Unit>.fire() = this.fire { it() }
 
 /** リスナーごとに最後に通知した値を記録し、通知中の値変更は現在の通知が戻ってから登録順に配り直すのだ～🌱 */
 class ObservableValue<T>(defaultValue: T) {
-    private class Subscription<T>(val listener: (T, T) -> Unit, var oldValue: T)
+    private inner class Subscription(val listener: (T, T) -> Unit, var oldValue: T) : Remover {
+        override fun remove() {
+            subscriptions -= this
+        }
 
-    private val subscriptions = linkedMapOf<(T, T) -> Unit, Subscription<T>>()
-    val listeners: Set<(T, T) -> Unit> get() = subscriptions.keys.toSet()
+        fun notifyInitial() {
+            val current = oldValue
+            listener(current, current)
+        }
+    }
 
+    private val subscriptions = mutableSetOf<Subscription>()
     private var notifying = false
-    private var pending = false
+    private var dirty = false
 
     var value: T = defaultValue
         set(new) {
-            val old = field
+            if (new === field || new == field) return
             field = new
-            if (new == old) return
-            pending = true
-            if (!notifying) notifyListeners()
+            dirty = true
+            if (!notifying) notifyListeners(null)
         }
 
-    fun register(listener: (T, T) -> Unit): Remover {
-        val subscription = subscriptions.getOrPut(listener) { Subscription(listener, value) }
-        return Remover {
-            if (subscriptions[listener] === subscription) remove(listener)
-        }
+    /** 呼び出しごとに購読を追加し、その購読だけを解除する [miragefairy2024.util.Remover] を返すのだ～🌱 */
+    fun register(listener: (T, T) -> Unit): Remover = addSubscription(listener)
+
+    fun registerAndInitialize(listener: (T, T) -> Unit): Remover {
+        val subscription = addSubscription(listener)
+        initialize(subscription)
+        return subscription
     }
 
-    fun remove(listener: (T, T) -> Unit) {
-        subscriptions.remove(listener)
+    fun observeAndInitialize(onClosed: EventRegistry<() -> Unit>, listener: (T, T) -> Unit) {
+        val subscription = addSubscription(listener)
+        subscription.removeOn(onClosed)
+        initialize(subscription)
     }
 
-    internal fun initialize(listener: (T, T) -> Unit) {
-        val current = value
-        subscriptions[listener]?.oldValue = current
+    private fun addSubscription(listener: (T, T) -> Unit): Subscription {
+        val subscription = Subscription(listener, value)
+        subscriptions += subscription
+        return subscription
+    }
+
+    private fun initialize(subscription: Subscription) {
         if (notifying) {
-            listener(current, current)
+            subscription.notifyInitial()
         } else {
-            notifyListeners(listener)
+            notifyListeners(subscription)
         }
     }
 
-    private fun notifyListeners(initialListener: ((T, T) -> Unit)? = null) {
+    private fun notifyListeners(initialSubscription: Subscription?) {
         notifying = true
         try {
-            val current = value
-            initialListener?.invoke(current, current)
-            while (pending) {
-                pending = false
+            initialSubscription?.notifyInitial()
+            while (dirty) {
+                dirty = false
                 val new = value
-                for (subscription in subscriptions.values.toList()) {
-                    if (subscriptions[subscription.listener] !== subscription) continue
+                for (subscription in subscriptions.toList()) {
+                    if (subscription !in subscriptions) continue
                     val old = subscription.oldValue
-                    if (old == new) continue
+                    if (new === old || new == old) continue
                     subscription.oldValue = new
                     subscription.listener(old, new)
-                    if (pending) break
+                    if (dirty) break
                 }
             }
         } finally {
-            pending = false
+            dirty = false
             notifying = false
         }
     }
-}
-
-fun <T> ObservableValue<T>.observe(onClosed: EventRegistry<() -> Unit>, listener: (T, T) -> Unit) {
-    this.register(listener).removeOn(onClosed)
-}
-
-fun <T> ObservableValue<T>.registerAndInitialize(listener: (T, T) -> Unit): Remover {
-    val remover = this.register(listener)
-    this.initialize(listener)
-    return remover
-}
-
-fun <T> ObservableValue<T>.observeAndInitialize(onClosed: EventRegistry<() -> Unit>, listener: (T, T) -> Unit) {
-    this.observe(onClosed, listener)
-    this.initialize(listener)
 }
 
 

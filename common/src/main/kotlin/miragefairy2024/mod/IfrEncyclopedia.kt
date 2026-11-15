@@ -46,7 +46,6 @@ import miragefairy2024.util.enJa
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.register
-import miragefairy2024.util.registerAndInitialize
 import miragefairy2024.util.sortedEntrySet
 import miragefairy2024.util.text
 import miragefairy2024.util.toIngredientStack

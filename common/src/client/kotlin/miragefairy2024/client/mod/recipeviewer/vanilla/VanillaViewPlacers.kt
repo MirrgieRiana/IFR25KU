@@ -24,7 +24,6 @@ import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
-import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.removeOn
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
