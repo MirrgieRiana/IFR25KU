@@ -2,6 +2,7 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
@@ -21,6 +22,23 @@ class DynamicView : AbstractView() {
     override fun evaluateContentSizeYImpl() = 0
 
     val content: ObservableValue<View?> = ObservableValue(null)
+
+    private var initializedContent: View? = null
+
+    override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
+        super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
+        initializedContent = null
+        getInitializedContent()
+    }
+
+    private fun getInitializedContent(): View? {
+        val childView = content.value
+        if (initializedContent !== childView) {
+            if (childView != null) childView.initSizeCalculation(renderingProxy, { evaluateActualSizeX() }, { evaluateActualSizeY() })
+            initializedContent = childView
+        }
+        return childView
+    }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         val onClosed = EventRegistry<() -> Unit>()
@@ -53,8 +71,7 @@ class DynamicView : AbstractView() {
                     if (disposed) break
 
                     // 子を実際にロードするのだ～🌱
-                    val childView = content.value ?: break
-                    childView.initSizeCalculation(renderingProxy, { evaluateActualSizeX() }, { evaluateActualSizeY() })
+                    val childView = getInitializedContent() ?: break
                     val newChildController = childView.attachTo(currentOffset, viewPlacer)
                     // 子のロード中に破棄された場合は、即子を破棄して抜けるのだ～🌱
                     if (disposed) {

@@ -57,7 +57,7 @@ private class RecordingDynamicChildView(private val name: String, size: IntPoint
 class DynamicViewTest {
 
     @Test
-    fun `サイズ計算では子を配置せず配置時点の内容を割り当て領域へ配置するのだ`() {
+    fun `サイズ計算の初期化で子を初期化し配置時点の子を配置するのだ`() {
         listOf(true, false).forEach { xFirst ->
             val events = mutableListOf<String>()
             val first = RecordingDynamicChildView("first", IntPoint(10, 20), events)
@@ -77,11 +77,11 @@ class DynamicViewTest {
             }
             assertEquals(IntPoint(100, 80), view.evaluateActualSize())
             content.value = second
-            assertEquals(emptyList<String>(), events)
+            assertEquals(listOf("first:init"), events)
 
             val controller = view.attachTo(IntPoint(7, 11), DYNAMIC_VIEW_PLACER)
 
-            assertEquals(listOf("second:init", "second:attach"), events)
+            assertEquals(listOf("first:init", "second:init", "second:attach"), events)
             assertEquals(listOf(IntPoint(100, 80)), second.regions)
             assertEquals(listOf(IntPoint(7, 11)), second.offsets)
             controller.dispose()
