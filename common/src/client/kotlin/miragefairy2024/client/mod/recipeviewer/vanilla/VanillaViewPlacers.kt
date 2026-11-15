@@ -26,6 +26,7 @@ import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
 import miragefairy2024.util.observeAndInitialize
+import miragefairy2024.util.register
 import miragefairy2024.util.removeOn
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
@@ -143,7 +144,7 @@ fun initVanillaViewPlacers() {
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: BeforeRenderView, _ ->
-        val remover = context.beforeRenderEvent.register(view.listener)
+        val remover = context.beforeRenderEvent.register { view.listener() }
         object : ViewController {
             override fun setOffset(offset: IntPoint) = Unit
             override fun detach() = remover.remove()

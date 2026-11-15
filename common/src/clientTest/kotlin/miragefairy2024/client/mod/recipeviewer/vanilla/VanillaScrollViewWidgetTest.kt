@@ -3,7 +3,6 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import com.mojang.blaze3d.systems.RenderSystem
 import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntPoint
-import miragefairy2024.mod.recipeviewer.view.ViewBeforeRenderEvent
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewController
@@ -17,6 +16,7 @@ import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.invoke
@@ -118,7 +118,7 @@ private class ScrollFixture {
     private val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
         override val origin = IntPoint(10, 20)
         override val canPlaceMenuSlots = true
-        override val beforeRenderEvent = ViewBeforeRenderEvent()
+        override val beforeRenderEvent = EventRegistry<() -> Unit>()
 
         override fun addRenderableWidget(widget: AbstractWidget): Remover {
             screenWidgets += widget

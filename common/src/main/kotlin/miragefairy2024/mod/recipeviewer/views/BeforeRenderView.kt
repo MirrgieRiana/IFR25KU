@@ -8,7 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.plus
 import miragefairy2024.mod.recipeviewer.view.sized
 
-/** Vanilla の View で、子の配置を保ったまま描画ルートの描画前通知に処理を登録するのだ～🌱 */
+/** Vanilla の View の描画に使う値を、描画直前に更新する処理を登録するのだ～🌱 */
 class BeforeRenderView(val listener: () -> Unit) : WrapperView(), PlaceableView {
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         return viewPlacer.place(this, offset.sized(evaluateActualSize())) + super.attachTo(offset, viewPlacer)
