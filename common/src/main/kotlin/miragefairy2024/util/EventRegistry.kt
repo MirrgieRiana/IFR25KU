@@ -37,12 +37,41 @@ fun EventRegistry<() -> Unit>.fire() = this.fire { it() }
 // ObservableValue
 
 class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
+    private var updating = false
+    private var dirty = false
     var value: T = defaultValue
         set(new) {
             val old = field
             field = new
-            if (new != old) {
-                fire { it(old, new) }
+            if (new !== old && new != old) {
+                if (updating) {
+                    dirty = true
+                } else {
+                    updating = true
+                    try {
+                        data class Entry(val listener: (T, T) -> Unit, var old: T)
+
+                        val entries = listeners.map { Entry(it, old) }
+                        run finish@{
+                            while (true) {
+                                dirty = false
+                                run next@{
+                                    entries.forEach {
+                                        val new2 = field
+                                        if (it.old !== new2 && it.old != new2) {
+                                            it.listener(it.old, new2)
+                                            it.old = new2
+                                            if (dirty) return@next
+                                        }
+                                    }
+                                    return@finish
+                                }
+                            }
+                        }
+                    } finally {
+                        updating = false
+                    }
+                }
             }
         }
 }
