@@ -39,38 +39,48 @@ fun EventRegistry<() -> Unit>.fire() = this.fire { it() }
 class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
     private var updating = false
     private var dirty = false
+    private val oldTable = mutableMapOf<(T, T) -> Unit, Single<T>>()
     var value: T = defaultValue
         set(new) {
             val old = field
             field = new
-            if (new !== old && new != old) {
-                if (updating) {
-                    dirty = true
-                } else {
-                    updating = true
-                    try {
-                        data class Entry(val listener: (T, T) -> Unit, var old: T)
-
-                        val entries = toList().map { Entry(it, old) }
-                        run finish@{
-                            while (true) {
-                                dirty = false
-                                run next@{
-                                    entries.forEach {
-                                        val new2 = field
-                                        if (it.old !== new2 && it.old != new2) {
-                                            it.listener(it.old, new2)
-                                            it.old = new2
-                                            if (dirty) return@next
-                                        }
+            if (new === old || new == old) return
+            if (updating) {
+                dirty = true
+                listeners.forEach {
+                    if (it !in oldTable) {
+                        oldTable[it] = Single(old)
+                    }
+                }
+            } else {
+                updating = true
+                try {
+                    listeners.forEach {
+                        oldTable[it] = Single(old)
+                    }
+                    run finish@{
+                        while (true) {
+                            dirty = false
+                            run next@{
+                                listeners.toList().forEach { listener ->
+                                    if (listener !in listeners) {
+                                        oldTable -= listener
+                                        return@forEach
                                     }
-                                    return@finish
+                                    val old2 = oldTable[listener]!!.first
+                                    val new2 = field
+                                    if (old2 === new2 || old2 == new2) return@forEach
+                                    listener(old2, new2)
+                                    oldTable[listener] = Single(new2)
+                                    if (dirty) return@next
                                 }
+                                return@finish
                             }
                         }
-                    } finally {
-                        updating = false
                     }
+                } finally {
+                    updating = false
+                    oldTable.clear()
                 }
             }
         }
