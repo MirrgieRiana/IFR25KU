@@ -4,11 +4,13 @@ import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
+import miragefairy2024.mod.recipeviewer.view.ViewBeforeRenderEvent
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
+import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
@@ -16,6 +18,8 @@ import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.beforeRender
+import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
@@ -73,10 +77,38 @@ class VanillaViewPlacersTest {
     }
 
     @Test
+    fun `スクロール領域内の View もルートの描画前通知を受けて配置解除で登録を外すのだ`() {
+        val calls = mutableListOf<String>()
+        val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+            override val origin = IntPoint.ZERO
+            override val canPlaceMenuSlots = false
+            override val beforeRenderEvent = ViewBeforeRenderEvent()
+            override fun addRenderableWidget(widget: AbstractWidget) = Remover.NONE
+            override fun addRenderableOnly(widget: AbstractWidget) = Remover.NONE
+        }
+        val view = View {
+            view += YSimpleScrollView().configure {
+                view += PlacerTestView().configure().beforeRender { calls += "child" }
+            }.beforeRender { calls += "root" }
+        }
+        view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
+        val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+
+        context.beforeRenderEvent.fire()
+        controller.dispose()
+        context.beforeRenderEvent.fire()
+        controller.detach()
+        context.beforeRenderEvent.fire()
+
+        Assertions.assertEquals(listOf("root", "child", "root", "child"), calls)
+    }
+
+    @Test
     fun `配置を許可しないコンテキストでは Slot の座標を書き換える前に拒否するのだ`() {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
             override val canPlaceMenuSlots = false
+            override val beforeRenderEvent = ViewBeforeRenderEvent()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
         }
@@ -97,6 +129,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint(5, 10)
             override val canPlaceMenuSlots = true
+            override val beforeRenderEvent = ViewBeforeRenderEvent()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("Slots must not register widgets")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Slots must not register widgets")
         }
@@ -120,6 +153,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
             override val canPlaceMenuSlots = true
+            override val beforeRenderEvent = ViewBeforeRenderEvent()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
         }
@@ -154,6 +188,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
             override val canPlaceMenuSlots = false
+            override val beforeRenderEvent = ViewBeforeRenderEvent()
             override fun addRenderableWidget(widget: AbstractWidget): Remover {
                 widgets += widget
                 return Remover { widgets.remove(widget) }
@@ -190,6 +225,7 @@ class VanillaViewPlacersTest {
             val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
                 override val origin = IntPoint(10, 20)
                 override val canPlaceMenuSlots = true
+                override val beforeRenderEvent = ViewBeforeRenderEvent()
                 override fun addRenderableWidget(widget: AbstractWidget): Remover {
                     screenWidgets += widget
                     return Remover { screenWidgets.remove(widget) }
@@ -227,6 +263,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint(10, 20)
             override val canPlaceMenuSlots = false
+            override val beforeRenderEvent = ViewBeforeRenderEvent()
             override fun addRenderableWidget(widget: AbstractWidget): Remover {
                 widgets += widget
                 return Remover { widgets.remove(widget) }
@@ -271,6 +308,7 @@ class VanillaViewPlacersTest {
             val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
                 override val origin = IntPoint(10, 20)
                 override val canPlaceMenuSlots = true
+                override val beforeRenderEvent = ViewBeforeRenderEvent()
                 override fun addRenderableWidget(widget: AbstractWidget): Remover {
                     screenWidgets += widget
                     return Remover { screenWidgets.remove(widget) }
@@ -309,6 +347,7 @@ class VanillaViewPlacersTest {
             val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
                 override val origin = IntPoint(10, 20)
                 override val canPlaceMenuSlots = false
+                override val beforeRenderEvent = ViewBeforeRenderEvent()
                 override fun addRenderableWidget(widget: AbstractWidget): Remover {
                     widgets += widget
                     return Remover { widgets.remove(widget) }

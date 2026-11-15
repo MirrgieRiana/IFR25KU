@@ -158,6 +158,7 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
             EMI_VIEW_PLACER_REGISTRY.place(EmiViewPlacerContext(widgets2, containerWidget, this), view2, bounds)
         }
 
+        // コンテナー内の描画前通知を、直接登録したウィジェットの描画より先に発火させるのだ～🌱
         widgets.add(containerWidget)
         widgets2.forEach {
             widgets.add(it)

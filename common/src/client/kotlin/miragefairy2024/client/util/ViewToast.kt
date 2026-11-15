@@ -58,6 +58,7 @@ class ViewToast(rootView: View) : Toast {
     override fun height() = size.y
 
     override fun render(guiGraphics: GuiGraphics, toastComponent: ToastComponent, timeSinceLastVisible: Long): Toast.Visibility {
+        viewAdapter.beforeRender()
         val partialTick = Minecraft.getInstance().timer.getGameTimeDeltaPartialTick(true)
         widgetSlots.forEach {
             it.widget.render(guiGraphics, -1000, -1000, partialTick)

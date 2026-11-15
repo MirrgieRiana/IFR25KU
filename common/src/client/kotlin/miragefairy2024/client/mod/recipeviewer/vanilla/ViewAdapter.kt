@@ -5,6 +5,7 @@ import miragefairy2024.client.util.getActualFocused
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.view.ViewBeforeRenderEvent
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
@@ -52,6 +53,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     private var isInitialized = false
     private var viewController: ViewController? = null
+    // トーストの非表示アニメーションでは removed 後もウィジェットを描画するのだ～🌱
+    private var beforeRenderEvent: ViewBeforeRenderEvent? = null
 
     private class MouseClickSentinel : GuiEventListener, NarratableEntry {
 
@@ -85,16 +88,24 @@ class ViewAdapter(val host: ViewAdapterHost) {
         rootView.initSizeCalculation(host.getRenderingProxy(), { host.getRegionSizeX() }, { host.getRegionSizeY() })
         host.setUiSize(rootView.evaluateActualSize())
         host.init()
+        val renderEvent = ViewBeforeRenderEvent()
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = host.getUiOffset()
             override val canPlaceMenuSlots = host.canPlaceMenuSlots()
+            override val beforeRenderEvent = renderEvent
             override fun addRenderableWidget(widget: AbstractWidget) = host.addRenderableWidget(widget)
             override fun addRenderableOnly(widget: AbstractWidget) = host.addRenderableOnly(widget)
         }
         viewController = rootView.attachTo(host.getUiOffset()) { view, bounds ->
             host.getViewPlacerRegistry().place(context, view, bounds)
         }
+        beforeRenderEvent = renderEvent
         isInitialized = true
+    }
+
+    /** このルートのウィジェットを描き始める前に呼ぶのだ～🌱 */
+    fun beforeRender() {
+        beforeRenderEvent?.fire()
     }
 
     /** 子の相対位置・寸法・登録を維持して移動するのだ～🌱 */

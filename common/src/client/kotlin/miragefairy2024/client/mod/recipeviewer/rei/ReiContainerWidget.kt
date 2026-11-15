@@ -2,6 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.rei
 
 import me.shedaniel.rei.api.client.gui.widgets.Widget
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.ViewBeforeRenderEvent
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
@@ -11,6 +12,8 @@ import net.minecraft.client.gui.GuiGraphics
 
 // me.shedaniel.rei.impl.client.gui.widget.MergedWidget
 class ReiContainerWidget : Widget() {
+
+    val beforeRenderEvent = ViewBeforeRenderEvent()
 
     private class WidgetSlot(val widget: Widget)
 
@@ -98,6 +101,7 @@ class ReiContainerWidget : Widget() {
 
 
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        beforeRenderEvent.fire()
         widgets.forEach {
             it.render(guiGraphics, mouseX, mouseY, partialTick)
         }

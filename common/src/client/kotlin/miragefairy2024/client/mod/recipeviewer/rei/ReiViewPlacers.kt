@@ -18,12 +18,14 @@ import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
+import miragefairy2024.mod.recipeviewer.views.registerBeforeRender
 import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toReiPoint
 import miragefairy2024.util.toReiRectangle
 
 context(ModContext)
 fun initReiViewPlacers() {
+    REI_VIEW_PLACER_REGISTRY.registerBeforeRender { it.beforeRenderEvent }
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: InputSlotView, bounds ->
         val entryIngredient = view.ingredientStack.toEntryIngredient()
             .let {

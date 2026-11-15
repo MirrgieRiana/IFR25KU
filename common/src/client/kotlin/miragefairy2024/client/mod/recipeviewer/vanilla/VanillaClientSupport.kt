@@ -1,6 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.ViewBeforeRenderEvent
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.components.AbstractWidget
@@ -10,6 +11,7 @@ interface VanillaViewPlacerContext {
     val origin: IntPoint
 
     val canPlaceMenuSlots: Boolean
+    val beforeRenderEvent: ViewBeforeRenderEvent
 
     fun addRenderableWidget(widget: AbstractWidget): Remover
     fun addRenderableOnly(widget: AbstractWidget): Remover
