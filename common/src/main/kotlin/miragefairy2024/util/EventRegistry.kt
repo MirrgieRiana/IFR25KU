@@ -1,5 +1,7 @@
 package miragefairy2024.util
 
+import mirrg.kotlin.helium.Single
+
 
 // TODO mirrg
 
@@ -37,12 +39,55 @@ fun EventRegistry<() -> Unit>.fire() = this.fire { it() }
 // ObservableValue
 
 class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
+    private var updating = false
+    private var dirty = false
+    private val oldTable = mutableMapOf<(T, T) -> Unit, Single<T>>()
+
+    override fun add(listener: (T, T) -> Unit): Boolean {
+        val added = super.add(listener)
+        if (added && updating) oldTable[listener] = Single(value)
+        return added
+    }
+
+    override fun remove(listener: (T, T) -> Unit): Boolean {
+        val removed = super.remove(listener)
+        if (removed && updating) oldTable -= listener
+        return removed
+    }
+
     var value: T = defaultValue
         set(new) {
             val old = field
             field = new
-            if (new != old) {
-                fire { it(old, new) }
+            if (new === old || new == old) return
+            if (updating) {
+                dirty = true
+            } else {
+                updating = true
+                try {
+                    toList().forEach {
+                        oldTable[it] = Single(old)
+                    }
+                    run finish@{
+                        while (true) {
+                            dirty = false
+                            run next@{
+                                toList().forEach { listener ->
+                                    val old2 = (oldTable[listener] ?: return@forEach).first
+                                    val new2 = field
+                                    if (old2 === new2 || old2 == new2) return@forEach
+                                    oldTable[listener] = Single(new2)
+                                    listener(old2, new2)
+                                    if (dirty) return@next
+                                }
+                                return@finish
+                            }
+                        }
+                    }
+                } finally {
+                    updating = false
+                    oldTable.clear()
+                }
             }
         }
 }
