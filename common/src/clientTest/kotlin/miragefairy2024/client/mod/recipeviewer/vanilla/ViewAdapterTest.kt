@@ -154,6 +154,7 @@ private class AdapterFixture(vararg views: TestView) {
 }
 
 class ViewAdapterTest {
+
     @Test
     fun `ホイールを未消費の背景から次の子へ渡し消費後は止めるのだ`() {
         val fixture = AdapterFixture()
