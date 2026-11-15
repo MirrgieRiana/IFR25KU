@@ -59,14 +59,6 @@ private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidge
 
 context(ModContext)
 fun initVanillaViewPlacers() {
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: BeforeRenderView, _ ->
-        val remover = context.beforeRenderEvent.register(view.listener)
-        object : ViewController {
-            override fun setOffset(offset: IntPoint) = Unit
-            override fun detach() = remover.remove()
-        }
-    }
-
     fun placeScrollView(context: VanillaViewPlacerContext, widget: VanillaScrollViewWidget): ViewController {
         val controller = context place widget
         return object : ViewController {
@@ -148,6 +140,13 @@ fun initVanillaViewPlacers() {
             }
 
             override fun detach() = throw UnsupportedOperationException("Cannot detach MenuSlotView from the vanilla screen")
+        }
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: BeforeRenderView, _ ->
+        val remover = context.beforeRenderEvent.register(view.listener)
+        object : ViewController {
+            override fun setOffset(offset: IntPoint) = Unit
+            override fun detach() = remover.remove()
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextButtonView, bounds ->
