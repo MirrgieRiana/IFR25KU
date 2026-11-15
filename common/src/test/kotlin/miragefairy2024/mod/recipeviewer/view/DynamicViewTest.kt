@@ -6,9 +6,11 @@ import miragefairy2024.mod.recipeviewer.views.FixedView
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.PagingView
 import miragefairy2024.mod.recipeviewer.views.StackView
+import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.register
 import net.minecraft.network.chat.FormattedText
+import net.minecraft.network.chat.Style
 import net.minecraft.util.FormattedCharSequence
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -78,6 +80,59 @@ class DynamicViewTest {
         assertEquals(listOf("first:init", "second:init", "second:attach"), events)
         assertEquals(listOf(IntPoint(100, 80)), second.regions)
         assertEquals(listOf(IntPoint(7, 11)), second.offsets)
+        controller.dispose()
+        controller.detach()
+    }
+
+    @Test
+    fun `表示するテキストを切り替えるたびに現在の子の Sizing と寸法を返すのだ`() {
+        val renderingProxy: RenderingProxy = object : RenderingProxy {
+            override fun calculateTextWidth(text: FormattedText) = throw UnsupportedOperationException()
+            override fun calculateTextWidth(text: FormattedCharSequence): Int {
+                var width = 0
+                text.accept { _, _, _ ->
+                    width += 5
+                    true
+                }
+                return width
+            }
+
+            override fun getTextHeight() = 9
+            override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = throw UnsupportedOperationException()
+        }
+        val firstText: FormattedCharSequence = FormattedCharSequence.forward("a", Style.EMPTY)
+        val secondText: FormattedCharSequence = FormattedCharSequence.forward("bb", Style.EMPTY)
+        val thirdText: FormattedCharSequence = FormattedCharSequence.forward("ccc", Style.EMPTY)
+        val first = TextView(firstText)
+        val second = TextView(secondText).also { it.sizingX = Sizing.FILL }
+        val third = TextView(thirdText)
+        val view = DynamicView()
+        view.content.value = first
+        view.initSizeCalculation(renderingProxy, { 100 }, { 80 })
+        val bounds = mutableListOf<IntRectangle>()
+        val controller = view.attachTo(IntPoint(7, 11)) { _, rectangle ->
+            bounds += rectangle
+            ViewController.NONE
+        }
+
+        assertEquals(Sizing.WRAP, view.sizingX)
+        assertEquals(Sizing.WRAP, view.sizingY)
+        assertEquals(IntPoint(5, 9), view.evaluateContentSize())
+        assertEquals(IntPoint(5, 9), view.evaluateActualSize())
+
+        view.content.value = second
+        assertEquals(Sizing.FILL, view.sizingX)
+        assertEquals(Sizing.WRAP, view.sizingY)
+        assertEquals(IntPoint(10, 9), view.evaluateContentSize())
+        assertEquals(IntPoint(100, 9), view.evaluateActualSize())
+
+        view.content.value = third
+        assertEquals(Sizing.WRAP, view.sizingX)
+        assertEquals(Sizing.WRAP, view.sizingY)
+        assertEquals(IntPoint(15, 9), view.evaluateContentSize())
+        assertEquals(IntPoint(15, 9), view.evaluateActualSize())
+        assertEquals(listOf(IntRectangle(7, 11, 5, 9), IntRectangle(7, 11, 100, 9), IntRectangle(7, 11, 15, 9)), bounds)
+
         controller.dispose()
         controller.detach()
     }
