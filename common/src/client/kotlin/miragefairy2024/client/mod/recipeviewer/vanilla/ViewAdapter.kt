@@ -159,7 +159,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
                 if (container is AbstractWidget && !container.isMouseOver(mouseX, mouseY)) return@getActualFocused false
                 // フォーカスされているのが親要素自身なのだ～🌱
                 if (container.focused == null) return@getActualFocused true
-                // クリックされた位置が親要素によってトリムされた範囲外なのだ～🌱
+                // クリックされた位置が親要素によってトリムされた範囲外なら、弾くのだ～🌱
                 if (!container.getChildAt(mouseX, mouseY).isPresent) return@getActualFocused false
                 true
             }
