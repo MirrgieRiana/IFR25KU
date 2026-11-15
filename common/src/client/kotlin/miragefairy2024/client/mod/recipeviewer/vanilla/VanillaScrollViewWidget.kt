@@ -139,10 +139,34 @@ abstract class VanillaScrollViewWidget(
 
     private fun updateScroll(offset: Double): Boolean {
         val old = evaluateScrollOffset()
-        val new = coerceScrollOffset(offset)
-        if (new == old) return false
-        scrollOffsetValue.value = new
+        scrollOffsetValue.value = coerceScrollOffset(offset)
         return evaluateScrollOffset() != old
+    }
+
+    private fun updateScrollOnResize(previousViewportLength: Int) {
+        if (disposed || previousViewportLength == viewportLength) return
+        // 以前の範囲で表示していた位置を、新しい範囲に収めるのだ～🌱
+        val largerViewportLength = previousViewportLength max viewportLength
+        val maxScrollOffset = evaluateContentLength() - largerViewportLength atLeast 0
+        scrollOffsetValue.value = scrollOffsetValue.value.coerceIn(0.0, maxScrollOffset.toDouble())
+    }
+
+    override fun setWidth(width: Int) {
+        val previousViewportLength = viewportLength
+        super.setWidth(width)
+        updateScrollOnResize(previousViewportLength)
+    }
+
+    override fun setHeight(height: Int) {
+        val previousViewportLength = viewportLength
+        super.setHeight(height)
+        updateScrollOnResize(previousViewportLength)
+    }
+
+    override fun setSize(width: Int, height: Int) {
+        val previousViewportLength = viewportLength
+        super.setSize(width, height)
+        updateScrollOnResize(previousViewportLength)
     }
 
     override fun setPosition(x: Int, y: Int) {
@@ -467,7 +491,8 @@ abstract class VanillaScrollViewWidget(
         childController = view.childView.attachTo(getChildOffset(initialScrollOffset)) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
         }
-        // 子の生成中はまだ購読しておらず変更通知を受け取れないため、購読直後に現在値から表示位置を再計算するのだ～🌱
+        // 子の生成中に変わった指定値も範囲内に収めてから購読し、現在値で子の位置を合わせるのだ～🌱
+        scrollOffsetValue.value = evaluateScrollOffset()
         scrollOffsetValue.observeAndInitialize(onClosed) { old, new ->
             if (disposed) return@observeAndInitialize
             val scrollOffset = evaluateScrollOffset().roundToInt()
