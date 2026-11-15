@@ -142,23 +142,28 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun mouseClicked(mouseX: Double, mouseY: Double) {
         val screen = host.getScreen() ?: return
         val focused = screen.focused ?: return
+
+        // フォーカスされた子が除去済みの場合は、フォーカスを解除するのだ～🌱
         if (screen.children().none { it === focused }) {
             screen.focused = null
             screen.isDragging = false
             return
         }
-        if (!mouseClickSentinel.clicked) return
 
-        val actualFocused = focused.getActualFocused { true }
-        if (actualFocused !is EditBox && actualFocused !is MultiLineEditBox) return
-        val hoveredFocused = focused.getActualFocused { container ->
-            if (container is AbstractWidget && !container.isMouseOver(mouseX, mouseY)) return@getActualFocused false
-            container.getChildAt(mouseX, mouseY).isPresent
+        // 何かがフォーカスされていて、かつ番兵がクリックを受けた場合は、フォーカスを解除するのだ～🌱
+        if (mouseClickSentinel.clicked) {
+
+            // クリックが発生した位置が実際にフォーカスされている要素の領域内だった場合はフォーカス解除を免除するのだ～🌱
+            val hoveredActualFocused = focused.getActualFocused { container ->
+                if (container is AbstractWidget && !container.isMouseOver(mouseX, mouseY)) return@getActualFocused false
+                container.getChildAt(mouseX, mouseY).isPresent
+            }
+            if (hoveredActualFocused != null && hoveredActualFocused.isMouseOver(mouseX, mouseY)) return
+
+            screen.clearFocus()
+            screen.isDragging = false
         }
-        if (hoveredFocused != null && hoveredFocused.isMouseOver(mouseX, mouseY)) return
 
-        screen.clearFocus()
-        screen.isDragging = false
     }
 
     private fun getMouseCapture(screen: Screen, button: Int): GuiEventListener? {
