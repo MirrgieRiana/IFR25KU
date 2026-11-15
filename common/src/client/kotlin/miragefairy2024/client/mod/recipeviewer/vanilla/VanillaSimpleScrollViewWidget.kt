@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.views.ScrollBounds
 import miragefairy2024.mod.recipeviewer.views.SimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
@@ -17,7 +18,6 @@ import miragefairy2024.util.translate
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
-import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
@@ -111,6 +111,25 @@ abstract class VanillaSimpleScrollViewWidget(
         if (scrollOffset == old) return false
         childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
         return true
+    }
+
+    private fun updateScrollBounds() {
+        if (!disposed) view.scrollBounds.value = ScrollBounds(evaluateContentLength() atLeast 0, viewportLength atLeast 0)
+    }
+
+    override fun setWidth(width: Int) {
+        super.setWidth(width)
+        updateScrollBounds()
+    }
+
+    override fun setHeight(height: Int) {
+        super.setHeight(height)
+        updateScrollBounds()
+    }
+
+    override fun setSize(width: Int, height: Int) {
+        super.setSize(width, height)
+        updateScrollBounds()
     }
 
     override fun setPosition(x: Int, y: Int) {
@@ -223,8 +242,15 @@ abstract class VanillaSimpleScrollViewWidget(
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (!isMouseOver(mouseX, mouseY)) return false
-        val child = getChildAt(mouseX, mouseY).orNull
-        if (child != null && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true
+        if (containsViewport(mouseX, mouseY)) {
+            val handled = widgetRegistrations.toList().any { widgetRegistration ->
+                if (!widgetRegistration.interactive) return@any false
+                if (widgetRegistration !in widgetRegistrations) return@any false
+                val widget = widgetRegistration.widget
+                widget.isMouseOver(mouseX, mouseY) && widget.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+            }
+            if (handled) return true
+        }
         return updateScroll(scrollOffset - getScrollAmount(scrollX, scrollY) * view.scrollStep)
     }
 
@@ -376,6 +402,7 @@ abstract class VanillaSimpleScrollViewWidget(
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
         }
+        updateScrollBounds()
         childController = view.childView.attachTo(IntPoint(x, y)) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
         }

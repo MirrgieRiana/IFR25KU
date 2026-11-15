@@ -14,6 +14,8 @@ import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.components.MultiLineEditBox
 import net.minecraft.client.gui.components.events.GuiEventListener
+import net.minecraft.client.gui.narration.NarratableEntry
+import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.screens.Screen
 import org.lwjgl.glfw.GLFW
 
@@ -35,6 +37,7 @@ interface ViewAdapterHost {
 
     fun init()
 
+    fun <T> addWidget(widget: T): Remover? where T : GuiEventListener, T : NarratableEntry = null
     fun addRenderableWidget(widget: AbstractWidget): Remover
     fun addRenderableOnly(widget: AbstractWidget): Remover
 
@@ -49,6 +52,27 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     private var isInitialized = false
     private var viewController: ViewController? = null
+
+    private class MouseClickSentinel : GuiEventListener, NarratableEntry {
+
+        var clicked = false
+
+        override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+            clicked = true
+            // true にすると、番兵がフォーカスを受け取っちゃう上に、スロット処理も飛ばされちゃうのだ～🌱
+            return false
+        }
+
+        override fun isFocused() = false
+        override fun setFocused(focused: Boolean) = Unit
+        override fun isActive() = false
+        override fun narrationPriority(): NarratableEntry.NarrationPriority = NarratableEntry.NarrationPriority.NONE
+        override fun updateNarration(narrationElementOutput: NarrationElementOutput) = Unit
+
+    }
+
+    private val mouseClickSentinel = MouseClickSentinel()
+    private var mouseClickSentinelRemover: Remover? = null
 
     /**
      * View のツリーを再構築して、各ウィジェットをホストへ直接登録するのだ～🌱
@@ -82,6 +106,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
     /** 配置状態を無効化してから、イベント登録などの後始末を行うのだ～🌱 */
     fun removed() {
         isInitialized = false
+        removeMouseClickSentinel()
         val controller = viewController
         viewController = null
         if (controller != null) controller.dispose()
@@ -95,19 +120,70 @@ class ViewAdapter(val host: ViewAdapterHost) {
         }
     }
 
-    fun mouseClicked() {
+    private fun removeMouseClickSentinel() {
+        val remover = mouseClickSentinelRemover ?: return
+        mouseClickSentinelRemover = null
+        remover.remove()
+    }
+
+    fun beforeMouseClicked() {
         val screen = host.getScreen() ?: return
-        val focused = screen.focused
-        if (focused != null && screen.children().none { it === focused }) {
+        mouseClickSentinel.clicked = false
+        if (mouseClickSentinelRemover == null) {
+            mouseClickSentinelRemover = host.addWidget(mouseClickSentinel)
+        } else {
+            if (screen.children().lastOrNull() !== mouseClickSentinel) {
+                removeMouseClickSentinel()
+                mouseClickSentinelRemover = host.addWidget(mouseClickSentinel)
+            }
+        }
+    }
+
+    fun mouseClicked(mouseX: Double, mouseY: Double) {
+        val screen = host.getScreen() ?: return
+        val focused = screen.focused ?: return
+
+        // フォーカスされた子が除去済みの場合は、フォーカスを解除するのだ～🌱
+        if (screen.children().none { it === focused }) {
             screen.focused = null
             screen.isDragging = false
+            return
         }
+
+        // 何かがフォーカスされていて、かつ番兵がクリックを受けた場合は、フォーカスを解除するのだ～🌱
+        if (mouseClickSentinel.clicked) {
+
+            // クリックが発生した位置が実際にフォーカスされている要素の領域内だった場合はフォーカス解除を免除するのだ～🌱
+            val hoveredActualFocused = focused.getActualFocused { container ->
+                // クリックされた位置が親要素の範囲外なのだ～🌱
+                if (container is AbstractWidget && !container.isMouseOver(mouseX, mouseY)) return@getActualFocused false
+                // フォーカスされているのが親要素自身なのだ～🌱
+                if (container.focused == null) return@getActualFocused true
+                // クリックされた位置が親要素によってトリムされた範囲外なら、弾くのだ～🌱
+                if (!container.getChildAt(mouseX, mouseY).isPresent) return@getActualFocused false
+                true
+            }
+            if (hoveredActualFocused != null && hoveredActualFocused.isMouseOver(mouseX, mouseY)) return
+
+            screen.clearFocus()
+            screen.isDragging = false
+        }
+
     }
 
     private fun getMouseCapture(screen: Screen, button: Int): GuiEventListener? {
         val focused = screen.focused
         if (focused is MouseCaptureContainer && focused.hasMouseCapture(button)) return focused
         return screen.children().firstOrNull { it is MouseCaptureContainer && it.hasMouseCapture(button) }
+    }
+
+    fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
+        if (!isInitialized) return false
+        val screen = host.getScreen() ?: return false
+        return screen.children().toList().any { child ->
+            if (screen.children().none { it === child }) return@any false
+            child.isMouseOver(mouseX, mouseY) && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+        }
     }
 
     /**

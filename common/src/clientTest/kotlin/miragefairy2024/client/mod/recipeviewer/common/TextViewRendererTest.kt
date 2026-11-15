@@ -26,7 +26,7 @@ class TextViewRendererTest {
     @Test
     fun `単一行と複数行のツールチップはクリップ解除と画面描画の後に描画するのだ`() {
         val tooltip = text { "tooltip"() }
-        fun <V : PlaceableView> check(view: V, renderer: ViewRenderer<V>) {
+        fun <V : PlaceableView> check(view: V, renderer: ViewRenderer<V, Unit>) {
             GuiTestEnvironment().use { environment ->
                 view.initSizeCalculation(TEXT_RENDERING_PROXY, { 100 }, { 100 })
                 val widget = VanillaViewRendererWidget(renderer, view, IntRectangle(10, 20, 100, 100))

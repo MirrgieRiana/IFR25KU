@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
+import net.minecraft.client.gui.narration.NarratableEntry
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import org.lwjgl.glfw.GLFW
@@ -32,6 +33,11 @@ abstract class ViewScreen(title: Component) : Screen(title) {
 
         override fun init() = super@ViewScreen.init()
 
+        override fun <T> addWidget(widget: T): Remover where T : GuiEventListener, T : NarratableEntry {
+            this@ViewScreen.addWidget(widget)
+            return Remover { this@ViewScreen.removeWidget(widget) }
+        }
+
         override fun addRenderableWidget(widget: AbstractWidget): Remover {
             this@ViewScreen.addRenderableWidget(widget)
             return Remover { this@ViewScreen.removeWidget(widget) }
@@ -57,8 +63,9 @@ abstract class ViewScreen(title: Component) : Screen(title) {
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        viewAdapter.beforeMouseClicked()
         val handled = super.mouseClicked(mouseX, mouseY, button)
-        viewAdapter.mouseClicked()
+        viewAdapter.mouseClicked(mouseX, mouseY)
         return handled
     }
 
@@ -70,6 +77,10 @@ abstract class ViewScreen(title: Component) : Screen(title) {
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (viewAdapter.mouseReleased(mouseX, mouseY, button)) return true
         return super.mouseReleased(mouseX, mouseY, button)
+    }
+
+    override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
+        return viewAdapter.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {

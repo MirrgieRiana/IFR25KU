@@ -1,11 +1,13 @@
 package miragefairy2024.mod.recipeviewer.view
 
 import miragefairy2024.mod.recipeviewer.views.AbstractView
+import miragefairy2024.mod.recipeviewer.views.ScrollBounds
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.util.register
 import mirrg.kotlin.helium.max
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
@@ -129,6 +131,41 @@ class SimpleScrollViewTest {
 
         Assertions.assertEquals(IntPoint(2, 10), child.evaluateActualSize())
         Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollStep = 0 }
+    }
+
+    @Test
+    fun `寸法の変更をまとめて通知し負の寸法では状態を変更しないのだ`() {
+        val view = XSimpleScrollView()
+        val changes = mutableListOf<Pair<ScrollBounds, ScrollBounds>>()
+        view.scrollBounds.register { old, new ->
+            changes += Pair(old, new)
+        }
+        Assertions.assertEquals(ScrollBounds(0, 0), view.scrollBounds.value)
+        view.scrollBounds.value = ScrollBounds(300, 100)
+        view.scrollBounds.value = ScrollBounds(300, 100)
+        Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollBounds.value = ScrollBounds(-1, 100) }
+        Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollBounds.value = ScrollBounds(300, -1) }
+        Assertions.assertEquals(ScrollBounds(300, 100), view.scrollBounds.value)
+        view.scrollBounds.value = ScrollBounds(120, 80)
+        Assertions.assertEquals(listOf(Pair(ScrollBounds(0, 0), ScrollBounds(300, 100)), Pair(ScrollBounds(300, 100), ScrollBounds(120, 80))), changes)
+    }
+
+    @Test
+    fun `配置時に子の全長と表示領域の長さを通知するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val child: AbstractView = object : AbstractView() {
+                override val sizingX = Sizing.WRAP
+                override val sizingY = Sizing.WRAP
+                override fun evaluateContentSizeXImpl() = 300
+                override fun evaluateContentSizeYImpl() = 300
+                override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = ViewController.NONE
+            }
+            val view = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+            view += child
+            view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 80 })
+            view.attachTo(IntPoint.ZERO) { _, _ -> ViewController.NONE }
+            Assertions.assertEquals(ScrollBounds(300, if (horizontal) 100 else 80), view.scrollBounds.value)
+        }
     }
 
 }

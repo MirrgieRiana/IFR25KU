@@ -3,6 +3,7 @@ package miragefairy2024.client.mod.recipeviewer.common
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
+import mirrg.kotlin.helium.Slot
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.resources.ResourceLocation
 import org.junit.jupiter.api.Assertions
@@ -23,7 +24,7 @@ class NinePatchImageViewRendererTest {
         val bounds = IntRectangle(10, 20, expectedX.size, expectedY.size)
         val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
 
-        NinePatchImageViewRenderer.render(view, bounds, graphics, 0, 0, false, 0.0F)
+        NinePatchImageViewRenderer.render(view, Slot(Unit), bounds, graphics, 0, 0, false, 0.0F)
 
         val pixels = Array(bounds.sizeY) { arrayOfNulls<IntPoint>(bounds.sizeX) }
         Mockito.mockingDetails(graphics).invocations.forEach { invocation ->

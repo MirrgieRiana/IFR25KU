@@ -39,6 +39,7 @@ class FairyQuestCardScreen(handler: FairyQuestCardScreenHandler, private val pla
     override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
 
     private val onScreenUpdate = mutableListOf<() -> Unit>()
+    private val onBeforeRender = mutableListOf<() -> Unit>()
     private val onDrawTooltip = mutableListOf<(vanillaContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) -> Unit>()
 
     override fun build(rootComponent: FlowLayout) {
@@ -115,7 +116,7 @@ class FairyQuestCardScreen(handler: FairyQuestCardScreenHandler, private val pla
                                 val input = menu.recipe.inputs.getOrNull(i)
                                 val inputItemStacks = input?.invoke()?.toItemStacks() ?: listOf()
                                 child(GhostItemComponent(inputItemStacks).apply {
-                                    onScreenUpdate += { showItemStack = menu.getSlot(index).item.isEmpty }
+                                    onBeforeRender += { showItemStack = menu.getSlot(index).item.isEmpty }
                                     overlayColor = 0x20FF0000
                                     onScreenUpdate += {
                                         showOverlay = when {
@@ -145,7 +146,7 @@ class FairyQuestCardScreen(handler: FairyQuestCardScreenHandler, private val pla
                                 child(slotAsComponent(index))
                                 val outputItemStack = menu.recipe.outputs.getOrNull(i)
                                 child(GhostItemComponent(outputItemStack?.invoke()?.let { listOf(it) } ?: listOf()).apply {
-                                    onScreenUpdate += { showItemStack = menu.getSlot(index).item.isEmpty }
+                                    onBeforeRender += { showItemStack = menu.getSlot(index).item.isEmpty }
                                     overlayColor = 0x2000FF00
                                     onScreenUpdate += { showOverlay = outputItemStack?.invoke().orEmpty.isNotEmpty && menu.getSlot(index).item.isEmpty }
                                     onDrawTooltip += { vanillaContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float ->
@@ -196,6 +197,9 @@ class FairyQuestCardScreen(handler: FairyQuestCardScreenHandler, private val pla
     }
 
     override fun render(vanillaContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+        onBeforeRender.forEach {
+            it()
+        }
         super.render(vanillaContext, mouseX, mouseY, delta)
         onDrawTooltip.forEach {
             it(vanillaContext, mouseX, mouseY, delta)

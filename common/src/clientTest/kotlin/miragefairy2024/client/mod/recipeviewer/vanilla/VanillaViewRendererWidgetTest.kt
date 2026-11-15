@@ -28,6 +28,7 @@ import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
+import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenDirection
@@ -52,7 +53,7 @@ class VanillaViewRendererWidgetTest {
 
     @Test
     fun `描画専用の View は Tab と矢印キーのフォーカス候補にしないのだ`() {
-        fun <V : PlaceableView> check(view: V, renderer: ViewRenderer<V>) {
+        fun <V : PlaceableView> check(view: V, renderer: ViewRenderer<V, Unit>) {
             val widget = VanillaViewRendererWidget(renderer, view, IntRectangle(10, 20, 100, 100))
             Assertions.assertNull(widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
             Assertions.assertNull(widget.nextFocusPath(FocusNavigationEvent.ArrowNavigation(ScreenDirection.DOWN)))
@@ -94,8 +95,9 @@ class VanillaViewRendererWidgetTest {
     @Test
     fun `処理したクリックに対応するドラッグと解放だけを消費するのだ`() {
         var consumeClick = false
-        val renderer: ViewRenderer<RendererTestView> = object : ViewRenderer<RendererTestView> {
-            override fun mouseClicked(view: RendererTestView, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = consumeClick
+        val renderer: ViewRenderer<RendererTestView, Unit> = object : ViewRenderer<RendererTestView, Unit> {
+            override fun createState(view: RendererTestView) = Unit
+            override fun mouseClicked(view: RendererTestView, state: Slot<Unit>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = consumeClick
         }
         val widget = VanillaViewRendererWidget(renderer, RendererTestView(), IntRectangle(10, 20, 100, 100))
         Assertions.assertFalse(widget.mouseClicked(30.0, 40.0, 0))

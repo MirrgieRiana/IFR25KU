@@ -2,6 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.common
 
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
+import mirrg.kotlin.helium.Slot
 import net.minecraft.client.gui.GuiGraphics
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -13,7 +14,7 @@ class TooltipBackgroundViewRendererTest {
         val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
         val view = TooltipBackgroundView()
         listOf(IntRectangle(10, 20, 0, 0), IntRectangle(10, 20, 0, 100), IntRectangle(10, 20, 100, 0), IntRectangle(10, 20, 3, 100), IntRectangle(10, 20, 100, 3)).forEach { bounds ->
-            TooltipBackgroundViewRenderer.render(view, bounds, graphics, 30, 40, false, 0.0F)
+            TooltipBackgroundViewRenderer.render(view, Slot(Unit), bounds, graphics, 30, 40, false, 0.0F)
         }
         Mockito.verifyNoInteractions(graphics)
     }
@@ -23,7 +24,7 @@ class TooltipBackgroundViewRendererTest {
         val view = TooltipBackgroundView()
         listOf(IntRectangle(10, 20, 4, 4), IntRectangle(10, 20, 100, 100)).forEach { bounds ->
             val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
-            TooltipBackgroundViewRenderer.render(view, bounds, graphics, 30, 40, false, 0.0F)
+            TooltipBackgroundViewRenderer.render(view, Slot(Unit), bounds, graphics, 30, 40, false, 0.0F)
             @Suppress("DEPRECATION")
             Mockito.verify(graphics).drawManaged(Mockito.any(Runnable::class.java))
         }
