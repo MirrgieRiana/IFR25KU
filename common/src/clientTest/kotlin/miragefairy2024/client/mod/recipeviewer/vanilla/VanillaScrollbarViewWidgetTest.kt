@@ -76,7 +76,7 @@ class VanillaScrollbarViewWidgetTest {
     }
 
     @Test
-    fun `コンテンツ長が縮小したら描画前に位置を現在範囲へ補正するのだ`() {
+    fun `コンテンツ長が縮小しても現在位置を含む範囲で描画と操作を行うのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
                 val view = if (horizontal) XScrollbarView() else YScrollbarView()
@@ -90,8 +90,15 @@ class VanillaScrollbarViewWidgetTest {
                 Assertions.assertEquals(if (horizontal) IntRectangle(77, 200, 33, 5) else IntRectangle(200, 87, 5, 33), environment.fills.last())
                 view.contentLength = 150
                 widget.render(environment.graphics, 50, 50, 0.0F)
-                Assertions.assertEquals(if (horizontal) IntRectangle(43, 200, 67, 5) else IntRectangle(200, 53, 5, 67), environment.fills.last())
+                Assertions.assertEquals(if (horizontal) IntRectangle(77, 200, 33, 5) else IntRectangle(200, 87, 5, 33), environment.fills.last())
                 view.contentLength = 100
+                widget.render(environment.graphics, 50, 50, 0.0F)
+                Assertions.assertEquals(if (horizontal) IntRectangle(77, 200, 33, 5) else IntRectangle(200, 87, 5, 33), environment.fills.last())
+                Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_PAGE_DOWN, 0, 0))
+                Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_PAGE_UP, 0, 0))
+                widget.render(environment.graphics, 50, 50, 0.0F)
+                Assertions.assertEquals(if (horizontal) IntRectangle(65, 200, 45, 5) else IntRectangle(200, 75, 5, 45), environment.fills.last())
+                Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
                 environment.fills.clear()
                 widget.render(environment.graphics, 50, 50, 0.0F)
                 Assertions.assertTrue(environment.fills.isEmpty())
