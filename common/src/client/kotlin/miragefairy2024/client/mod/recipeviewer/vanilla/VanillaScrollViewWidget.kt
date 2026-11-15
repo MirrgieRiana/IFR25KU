@@ -201,7 +201,7 @@ abstract class VanillaScrollViewWidget(
     private fun dragScrollbar(mouseX: Double, mouseY: Double) {
         val thumbPosition = getMousePosition(mouseX, mouseY) - scrollbarDragOffset
         val remainingThumbLength = viewportLength - evaluateThumbLength()
-        val scrollRatio = thumbPosition / remainingThumbLength.toDouble()
+        val scrollRatio = (thumbPosition / remainingThumbLength.toDouble()).coerceIn(0.0, 1.0)
         updateScroll(evaluateMaxScrollOffset() * scrollRatio)
     }
 

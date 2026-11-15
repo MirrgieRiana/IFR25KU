@@ -891,7 +891,7 @@ class VanillaScrollViewWidgetTest {
             Assertions.assertTrue(fixture.screen.mouseClicked(mouseX, mouseY, 0))
             Assertions.assertTrue(root.mouseDragged(400.0, 400.0, 0, 300.0, 300.0))
             Assertions.assertEquals(if (horizontal) -190 else -180, if (horizontal) fixture.widgets[0].x else fixture.widgets[0].y)
-            Assertions.assertTrue(view.scrollOffsetValue.value > 200.0)
+            Assertions.assertEquals(200.0, view.scrollOffsetValue.value)
             Assertions.assertTrue(root.mouseReleased(400.0, 400.0, 0))
             Assertions.assertFalse(root.hasMouseCapture(0))
             Assertions.assertFalse(root.mouseDragged(mouseX, mouseY, 0, 1.0, 1.0))
