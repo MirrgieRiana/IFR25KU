@@ -1,5 +1,7 @@
 package miragefairy2024.util
 
+import mirrg.kotlin.helium.Single
+
 
 // TODO mirrg
 
@@ -40,6 +42,19 @@ class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
     private var updating = false
     private var dirty = false
     private val oldTable = mutableMapOf<(T, T) -> Unit, Single<T>>()
+
+    override fun add(listener: (T, T) -> Unit): Boolean {
+        val added = super.add(listener)
+        if (added && updating) oldTable[listener] = Single(value)
+        return added
+    }
+
+    override fun remove(listener: (T, T) -> Unit): Boolean {
+        val removed = super.remove(listener)
+        if (removed && updating) oldTable.remove(listener)
+        return removed
+    }
+
     var value: T = defaultValue
         set(new) {
             val old = field
@@ -47,31 +62,22 @@ class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
             if (new === old || new == old) return
             if (updating) {
                 dirty = true
-                listeners.forEach {
-                    if (it !in oldTable) {
-                        oldTable[it] = Single(old)
-                    }
-                }
             } else {
                 updating = true
                 try {
-                    listeners.forEach {
+                    toList().forEach {
                         oldTable[it] = Single(old)
                     }
                     run finish@{
                         while (true) {
                             dirty = false
                             run next@{
-                                listeners.toList().forEach { listener ->
-                                    if (listener !in listeners) {
-                                        oldTable -= listener
-                                        return@forEach
-                                    }
-                                    val old2 = oldTable[listener]!!.first
+                                toList().forEach { listener ->
+                                    val old2 = (oldTable[listener] ?: return@forEach).first
                                     val new2 = field
                                     if (old2 === new2 || old2 == new2) return@forEach
-                                    listener(old2, new2)
                                     oldTable[listener] = Single(new2)
+                                    listener(old2, new2)
                                     if (dirty) return@next
                                 }
                                 return@finish

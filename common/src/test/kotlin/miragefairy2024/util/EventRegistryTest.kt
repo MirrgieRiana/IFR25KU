@@ -124,6 +124,75 @@ class EventRegistryTest {
     }
 
     @Test
+    fun `通知中に登録したリスナーには登録時の値から再配送するのだ～🌱`() {
+        val value = ObservableValue(10)
+        val notifications = mutableListOf<Pair<Int, Int>>()
+        value.register { _, new ->
+            if (new == 20) {
+                value.registerAndInitialize { old, latest -> notifications += Pair(old, latest) }
+                value.value = 30
+            }
+        }
+
+        value.value = 20
+
+        assertEquals(listOf(Pair(20, 20), Pair(20, 30)), notifications)
+    }
+
+    @Test
+    fun `通知中に解除した後続のリスナーを同じ周回で呼ばないのだ～🌱`() {
+        val value = ObservableValue(10)
+        val notifications = mutableListOf<Pair<Int, Int>>()
+        lateinit var remover: Remover
+        value.register { _, _ -> remover.remove() }
+        remover = value.register { old, new -> notifications += Pair(old, new) }
+
+        value.value = 20
+
+        assertTrue(notifications.isEmpty())
+    }
+
+    @Test
+    fun `通知中に自身を解除したリスナーを再配送で呼ばないのだ～🌱`() {
+        val value = ObservableValue(10)
+        val notifications = mutableListOf<Pair<Int, Int>>()
+        lateinit var remover: Remover
+        remover = value.register { old, new ->
+            notifications += Pair(old, new)
+            if (new == 20) {
+                remover.remove()
+                value.value = 30
+            }
+        }
+
+        value.value = 20
+
+        assertEquals(listOf(Pair(10, 20)), notifications)
+    }
+
+    @Test
+    fun `通知中に再登録したリスナーには再登録時の値から通知するのだ～🌱`() {
+        val value = ObservableValue(10)
+        val notifications = mutableListOf<Pair<Int, Int>>()
+        lateinit var remover: Remover
+        lateinit var listener: (Int, Int) -> Unit
+        listener = { old, new ->
+            notifications += Pair(old, new)
+            if (new == 20) {
+                remover.remove()
+                value.value = 30
+                remover = value.registerAndInitialize(listener)
+            }
+        }
+        remover = value.register(listener)
+
+        value.value = 20
+        value.value = 40
+
+        assertEquals(listOf(Pair(10, 20), Pair(30, 30), Pair(30, 40)), notifications)
+    }
+
+    @Test
     fun `通知中に値を変えて例外を送出しても次の代入を通知するのだ～🌱`() {
         val value = ObservableValue(10)
         val remover = value.register { _, _ ->
