@@ -17,6 +17,7 @@ import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.invoke
@@ -118,6 +119,7 @@ private class ScrollFixture {
     private val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
         override val origin = IntPoint(10, 20)
         override val canPlaceMenuSlots = true
+        override val onBeforeRender = EventRegistry<() -> Unit>()
 
         override fun addRenderableWidget(widget: AbstractWidget): Remover {
             screenWidgets += widget
