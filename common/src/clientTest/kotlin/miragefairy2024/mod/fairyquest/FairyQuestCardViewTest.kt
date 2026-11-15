@@ -1,5 +1,6 @@
 package miragefairy2024.mod.fairyquest
 
+import kotlinx.coroutines.runBlocking
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
@@ -19,18 +20,21 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import miragefairy2024.util.toIngredientStack
 import net.minecraft.SharedConstants
+import net.minecraft.core.Holder
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.network.chat.Style
 import net.minecraft.server.Bootstrap
 import net.minecraft.util.FormattedCharSequence
-import net.minecraft.world.SimpleContainer
-import net.minecraft.world.inventory.Slot
+import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.ContainerLevelAccess
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.mockito.Mockito
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class FairyQuestCardViewTest {
@@ -39,12 +43,12 @@ class FairyQuestCardViewTest {
     fun initMinecraft() {
         SharedConstants.tryDetectVersion()
         Bootstrap.bootStrap()
+        val menuType = runBlocking { fairyQuestCardScreenHandlerType.creator() }
+        fairyQuestCardScreenHandlerType.complete(menuType, Holder.direct(menuType))
     }
 
     @Test
     fun `本文だけをスクロール領域に入れて取引欄のゴーストと実スロットを重ねるのだ`() {
-        val inventory = SimpleContainer(44)
-        val slots = List(44) { Slot(inventory, it, 0, 0) }
         val cardTitle = text { "title"() }
         val recipe = object : FairyQuestRecipe {
             override val color = 0
@@ -56,8 +60,10 @@ class FairyQuestCardViewTest {
             override val inputs = listOf({ Items.DIRT.toIngredientStack(8) })
             override val outputs = listOf(icon)
         }
-        var currentProgress = 0
-        val rootView = fairyQuestCardView(recipe, slots, cardTitle, text { "inventory"() }) { currentProgress }
+        val inventory = Inventory(Mockito.mock(Player::class.java))
+        val menu = FairyQuestCardScreenHandler(0, inventory, recipe, ContainerLevelAccess.NULL)
+        val slots = menu.slots
+        val rootView = menu.createView(cardTitle, text { "inventory"() })
         val proxy: RenderingProxy = object : RenderingProxy {
             override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
             override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
@@ -105,21 +111,22 @@ class FairyQuestCardViewTest {
         Assertions.assertTrue(output.showItemStack && output.showOverlay)
         Assertions.assertEquals(8, input.itemStacks.single().count)
 
-        inventory.setItem(36, ItemStack(Items.DIRT))
-        inventory.setItem(40, ItemStack(Items.WHITE_BED))
-        currentProgress = 5
+        slots[36].set(ItemStack(Items.DIRT))
+        slots[40].set(ItemStack(Items.WHITE_BED))
+        menu.progress = 5
         beforeRender.onBeforeRender.fire()
         Assertions.assertFalse(input.showItemStack)
         Assertions.assertTrue(input.showOverlay)
         Assertions.assertFalse(output.showItemStack || output.showOverlay)
         Assertions.assertEquals(0.5, progress.progress)
 
-        inventory.setItem(36, ItemStack(Items.DIRT, 8))
+        slots[36].set(ItemStack(Items.DIRT, 8))
         beforeRender.onBeforeRender.fire()
         Assertions.assertFalse(input.showItemStack || input.showOverlay)
 
-        inventory.clearContent()
-        currentProgress = 0
+        slots[36].set(ItemStack.EMPTY)
+        slots[40].set(ItemStack.EMPTY)
+        menu.progress = 0
         beforeRender.onBeforeRender.fire()
         Assertions.assertTrue(input.showItemStack && input.showOverlay)
         Assertions.assertTrue(output.showItemStack && output.showOverlay)
