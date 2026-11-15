@@ -144,7 +144,7 @@ fun initVanillaViewPlacers() {
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: BeforeRenderView, _ ->
-        val remover = context.beforeRenderEvent.register { view.listener() }
+        val remover = context.onBeforeRender.register { view.listener() }
         object : ViewController {
             override fun setOffset(offset: IntPoint) = Unit
             override fun detach() = remover.remove()

@@ -83,7 +83,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
             override val canPlaceMenuSlots = false
-            override val beforeRenderEvent = EventRegistry<() -> Unit>()
+            override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = Remover.NONE
             override fun addRenderableOnly(widget: AbstractWidget) = Remover.NONE
         }
@@ -95,11 +95,11 @@ class VanillaViewPlacersTest {
         view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
         val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
 
-        context.beforeRenderEvent.fire()
+        context.onBeforeRender.fire()
         controller.dispose()
-        context.beforeRenderEvent.fire()
+        context.onBeforeRender.fire()
         controller.detach()
-        context.beforeRenderEvent.fire()
+        context.onBeforeRender.fire()
 
         Assertions.assertEquals(listOf("root", "child", "root", "child"), calls)
     }
@@ -109,7 +109,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
             override val canPlaceMenuSlots = false
-            override val beforeRenderEvent = EventRegistry<() -> Unit>()
+            override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
         }
@@ -130,7 +130,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint(5, 10)
             override val canPlaceMenuSlots = true
-            override val beforeRenderEvent = EventRegistry<() -> Unit>()
+            override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("Slots must not register widgets")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Slots must not register widgets")
         }
@@ -154,7 +154,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
             override val canPlaceMenuSlots = true
-            override val beforeRenderEvent = EventRegistry<() -> Unit>()
+            override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
         }
@@ -189,7 +189,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
             override val canPlaceMenuSlots = false
-            override val beforeRenderEvent = EventRegistry<() -> Unit>()
+            override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget): Remover {
                 widgets += widget
                 return Remover { widgets.remove(widget) }
@@ -226,7 +226,7 @@ class VanillaViewPlacersTest {
             val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
                 override val origin = IntPoint(10, 20)
                 override val canPlaceMenuSlots = true
-                override val beforeRenderEvent = EventRegistry<() -> Unit>()
+                override val onBeforeRender = EventRegistry<() -> Unit>()
                 override fun addRenderableWidget(widget: AbstractWidget): Remover {
                     screenWidgets += widget
                     return Remover { screenWidgets.remove(widget) }
@@ -264,7 +264,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint(10, 20)
             override val canPlaceMenuSlots = false
-            override val beforeRenderEvent = EventRegistry<() -> Unit>()
+            override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget): Remover {
                 widgets += widget
                 return Remover { widgets.remove(widget) }
@@ -309,7 +309,7 @@ class VanillaViewPlacersTest {
             val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
                 override val origin = IntPoint(10, 20)
                 override val canPlaceMenuSlots = true
-                override val beforeRenderEvent = EventRegistry<() -> Unit>()
+                override val onBeforeRender = EventRegistry<() -> Unit>()
                 override fun addRenderableWidget(widget: AbstractWidget): Remover {
                     screenWidgets += widget
                     return Remover { screenWidgets.remove(widget) }
@@ -348,7 +348,7 @@ class VanillaViewPlacersTest {
             val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
                 override val origin = IntPoint(10, 20)
                 override val canPlaceMenuSlots = false
-                override val beforeRenderEvent = EventRegistry<() -> Unit>()
+                override val onBeforeRender = EventRegistry<() -> Unit>()
                 override fun addRenderableWidget(widget: AbstractWidget): Remover {
                     widgets += widget
                     return Remover { widgets.remove(widget) }

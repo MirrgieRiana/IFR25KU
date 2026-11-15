@@ -55,7 +55,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
     private var isInitialized = false
     private var viewController: ViewController? = null
     // トーストの非表示アニメーションでは removed 後もウィジェットを描画するのだ～🌱
-    private var beforeRenderEvent: EventRegistry<() -> Unit>? = null
+    private var onBeforeRender: EventRegistry<() -> Unit>? = null
 
     private class MouseClickSentinel : GuiEventListener, NarratableEntry {
 
@@ -92,20 +92,20 @@ class ViewAdapter(val host: ViewAdapterHost) {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = host.getUiOffset()
             override val canPlaceMenuSlots = host.canPlaceMenuSlots()
-            override val beforeRenderEvent = EventRegistry<() -> Unit>()
+            override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = host.addRenderableWidget(widget)
             override fun addRenderableOnly(widget: AbstractWidget) = host.addRenderableOnly(widget)
         }
         viewController = rootView.attachTo(host.getUiOffset()) { view, bounds ->
             host.getViewPlacerRegistry().place(context, view, bounds)
         }
-        beforeRenderEvent = context.beforeRenderEvent
+        onBeforeRender = context.onBeforeRender
         isInitialized = true
     }
 
     /** このルートのウィジェットを描き始める前に呼ぶのだ～🌱 */
     fun beforeRender() {
-        beforeRenderEvent?.fire()
+        onBeforeRender?.fire()
     }
 
     /** 子の相対位置・寸法・登録を維持して移動するのだ～🌱 */

@@ -11,7 +11,7 @@ interface VanillaViewPlacerContext {
     val origin: IntPoint
 
     val canPlaceMenuSlots: Boolean
-    val beforeRenderEvent: EventRegistry<() -> Unit>
+    val onBeforeRender: EventRegistry<() -> Unit>
 
     fun addRenderableWidget(widget: AbstractWidget): Remover
     fun addRenderableOnly(widget: AbstractWidget): Remover
