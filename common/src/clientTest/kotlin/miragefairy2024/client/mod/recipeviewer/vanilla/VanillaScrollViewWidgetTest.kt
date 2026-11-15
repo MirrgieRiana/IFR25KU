@@ -11,6 +11,7 @@ import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.MinContentSizeYView
 import miragefairy2024.mod.recipeviewer.views.ScrollView
+import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YListView
@@ -197,6 +198,30 @@ private val ScrollView.scrollOffsetValue
     }
 
 class VanillaScrollViewWidgetTest {
+
+    @Test
+    fun `重なる子へホイールを順に渡しバー上では子へ渡さないのだ`() {
+        val fixture = ScrollFixture()
+        val view = YScrollView()
+        view += StackView().also {
+            it += ScrollTestView(true)
+            it += ScrollTestView(true)
+        }
+        val controller = fixture.attach(view, IntPoint(100, 40))
+        val widget = fixture.screenWidgets.single() as VanillaScrollViewWidget
+        fixture.widgets[1].consumeScroll = true
+        try {
+            Assertions.assertTrue(widget.mouseScrolled(15.0, 25.0, 0.0, -1.0))
+            Assertions.assertEquals(listOf(1, 1), fixture.widgets.map { it.scrolls })
+            Assertions.assertEquals(0.0, view.scrollOffsetY.value)
+            Assertions.assertTrue(widget.mouseScrolled(109.0, 25.0, 0.0, -1.0))
+            Assertions.assertEquals(listOf(1, 1), fixture.widgets.map { it.scrolls })
+            Assertions.assertTrue(view.scrollOffsetY.value > 0.0)
+        } finally {
+            controller.dispose()
+            controller.detach()
+        }
+    }
 
     @Test
     fun `View の初期位置と配置後の位置変更を小数のまま保持して子の配置へ反映するのだ`() {
@@ -737,7 +762,7 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
-    fun `重なった子へのホイールは Screen と同じく最初の子だけへ届けるのだ`() {
+    fun `重なった子がホイールを消費したら親自身はスクロールしないのだ`() {
         val fixture = ScrollFixture()
         val controller = fixture.attach(createScrollView(false), IntPoint(100, 100))
         val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
@@ -747,8 +772,8 @@ class VanillaScrollViewWidgetTest {
         Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -1.0))
 
         Assertions.assertEquals(1, fixture.widgets[0].scrolls)
-        Assertions.assertEquals(0, fixture.widgets[1].scrolls)
-        Assertions.assertEquals(5, fixture.widgets[0].y)
+        Assertions.assertEquals(1, fixture.widgets[1].scrolls)
+        Assertions.assertEquals(20, fixture.widgets[0].y)
         controller.dispose()
         controller.detach()
     }
