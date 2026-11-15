@@ -10,13 +10,13 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
-import miragefairy2024.mod.recipeviewer.views.registerBeforeRender
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
@@ -59,7 +59,13 @@ private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidge
 
 context(ModContext)
 fun initVanillaViewPlacers() {
-    VANILLA_VIEW_PLACER_REGISTRY.registerBeforeRender { it.beforeRenderEvent }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: BeforeRenderView, _ ->
+        val remover = context.beforeRenderEvent.register(view.listener)
+        object : ViewController {
+            override fun setOffset(offset: IntPoint) = Unit
+            override fun detach() = remover.remove()
+        }
+    }
 
     fun placeScrollView(context: VanillaViewPlacerContext, widget: VanillaScrollViewWidget): ViewController {
         val controller = context place widget

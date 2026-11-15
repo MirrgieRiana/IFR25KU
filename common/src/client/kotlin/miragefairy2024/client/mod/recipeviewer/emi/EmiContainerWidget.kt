@@ -3,7 +3,6 @@ package miragefairy2024.client.mod.recipeviewer.emi
 import dev.emi.emi.api.widget.Bounds
 import dev.emi.emi.api.widget.Widget
 import miragefairy2024.mod.recipeviewer.view.IntPoint
-import miragefairy2024.mod.recipeviewer.view.ViewBeforeRenderEvent
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
@@ -13,8 +12,6 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 
 class EmiContainerWidget : Widget() {
-
-    val beforeRenderEvent = ViewBeforeRenderEvent()
 
     private class WidgetSlot(val widget: Widget)
 
@@ -42,7 +39,6 @@ class EmiContainerWidget : Widget() {
     }
 
     override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-        beforeRenderEvent.fire()
         widgets.forEach {
             it.render(draw, mouseX, mouseY, delta)
         }
