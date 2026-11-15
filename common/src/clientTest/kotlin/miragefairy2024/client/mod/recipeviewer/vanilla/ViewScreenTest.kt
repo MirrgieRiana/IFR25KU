@@ -30,6 +30,35 @@ private class KeyboardViewScreen : ViewScreen(text { empty() }) {
 class ViewScreenTest {
 
     @Test
+    fun `未消費の欄外クリックだけで入力欄のフォーカスを外すのだ`() {
+        Mockito.mockStatic(Screen::class.java).use {
+            val screen = KeyboardViewScreen()
+            val editBox: EditBox = EditBox(null, 80, 80, 40, 20, text { empty() })
+            val consumingWidget: EditBox = object : EditBox(null, 140, 80, 40, 20, text { empty() }) {
+                override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int) = mouseX == 130.0 && mouseY == 90.0 && button == GLFW.GLFW_MOUSE_BUTTON_LEFT
+            }
+            screen.initialize()
+            screen.register(editBox)
+            screen.register(consumingWidget)
+            try {
+                screen.focused = editBox
+                Assertions.assertFalse(screen.mouseClicked(90.0, 90.0, GLFW.GLFW_MOUSE_BUTTON_RIGHT))
+                Assertions.assertSame(editBox, screen.focused)
+                Assertions.assertFalse(screen.mouseClicked(20.0, 20.0, GLFW.GLFW_MOUSE_BUTTON_LEFT))
+                Assertions.assertNull(screen.focused)
+                Assertions.assertFalse(editBox.isFocused)
+
+                screen.focused = consumingWidget
+                Assertions.assertTrue(screen.mouseClicked(130.0, 90.0, GLFW.GLFW_MOUSE_BUTTON_LEFT))
+                Assertions.assertSame(consumingWidget, screen.focused)
+            } finally {
+                screen.removed()
+            }
+            Assertions.assertEquals(listOf(editBox, consumingWidget), screen.children())
+        }
+    }
+
+    @Test
     fun `入力欄の上下はフォーカスを移動し左右はカーソルを移動するのだ`() {
         Mockito.mockStatic(Screen::class.java).use {
             val font: Font = Mockito.mock(Font::class.java)
