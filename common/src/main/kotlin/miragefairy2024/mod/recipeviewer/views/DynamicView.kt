@@ -12,21 +12,22 @@ import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.fire
 import miragefairy2024.util.observeAndInitialize
 
-/** [content] を動的に付け替え可能な View なのだ～🌱 */
-class DynamicView : AbstractView() {
-
-    override var sizingX = Sizing.FILL
-    override var sizingY = Sizing.FILL
-
-    override fun evaluateContentSizeXImpl() = 0
-    override fun evaluateContentSizeYImpl() = 0
+/**
+ * [content] を動的に付け替え可能な View なのだ～🌱
+ * [content] が空なら、両軸とも [Sizing.WRAP] で寸法は 0 なのだ～🌱
+ */
+class DynamicView : View {
 
     val content: ObservableValue<View?> = ObservableValue(null)
 
+    override val sizingX get() = content.value?.sizingX ?: Sizing.WRAP
+    override val sizingY get() = content.value?.sizingY ?: Sizing.WRAP
+
+    private lateinit var initializeContentSizeCalculation: (View) -> Unit
     private var initializedContent: View? = null
 
     override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
-        super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
+        initializeContentSizeCalculation = { it.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider) }
         initializedContent = null
         getInitializedContent()
     }
@@ -34,11 +35,16 @@ class DynamicView : AbstractView() {
     private fun getInitializedContent(): View? {
         val childView = content.value
         if (initializedContent !== childView) {
-            if (childView != null) childView.initSizeCalculation(renderingProxy, { evaluateActualSizeX() }, { evaluateActualSizeY() })
+            if (childView != null) initializeContentSizeCalculation(childView)
             initializedContent = childView
         }
         return childView
     }
+
+    override fun evaluateContentSizeX() = getInitializedContent()?.evaluateContentSizeX() ?: 0
+    override fun evaluateContentSizeY() = getInitializedContent()?.evaluateContentSizeY() ?: 0
+    override fun evaluateActualSizeX() = getInitializedContent()?.evaluateActualSizeX() ?: 0
+    override fun evaluateActualSizeY() = getInitializedContent()?.evaluateActualSizeY() ?: 0
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         val onClosed = EventRegistry<() -> Unit>()

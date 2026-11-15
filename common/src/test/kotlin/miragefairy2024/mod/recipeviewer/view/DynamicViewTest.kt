@@ -57,36 +57,29 @@ private class RecordingDynamicChildView(private val name: String, size: IntPoint
 class DynamicViewTest {
 
     @Test
-    fun `サイズ計算の初期化で子を初期化し配置時点の子を配置するのだ`() {
-        listOf(true, false).forEach { xFirst ->
-            val events = mutableListOf<String>()
-            val first = RecordingDynamicChildView("first", IntPoint(10, 20), events)
-            val second = RecordingDynamicChildView("second", IntPoint(30, 40), events)
-            val view = DynamicView()
-            val content = view.content
-            content.value = first
-            view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
+    fun `配置前でも現在の子のサイズを取得できるのだ`() {
+        val events = mutableListOf<String>()
+        val first = RecordingDynamicChildView("first", IntPoint(10, 20), events)
+        val second = RecordingDynamicChildView("second", IntPoint(30, 40), events)
+        val view = DynamicView()
+        val content = view.content
+        content.value = first
+        view.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
 
-            assertEquals(IntPoint.ZERO, view.evaluateContentSize())
-            if (xFirst) {
-                view.evaluateActualSizeX()
-                view.evaluateActualSizeY()
-            } else {
-                view.evaluateActualSizeY()
-                view.evaluateActualSizeX()
-            }
-            assertEquals(IntPoint(100, 80), view.evaluateActualSize())
-            content.value = second
-            assertEquals(listOf("first:init"), events)
+        assertEquals(IntPoint(10, 20), view.evaluateContentSize())
+        assertEquals(IntPoint(10, 20), view.evaluateActualSize())
+        content.value = second
+        assertEquals(IntPoint(30, 40), view.evaluateContentSize())
+        assertEquals(IntPoint(30, 40), view.evaluateActualSize())
+        assertEquals(listOf("first:init", "second:init"), events)
 
-            val controller = view.attachTo(IntPoint(7, 11), DYNAMIC_VIEW_PLACER)
+        val controller = view.attachTo(IntPoint(7, 11), DYNAMIC_VIEW_PLACER)
 
-            assertEquals(listOf("first:init", "second:init", "second:attach"), events)
-            assertEquals(listOf(IntPoint(100, 80)), second.regions)
-            assertEquals(listOf(IntPoint(7, 11)), second.offsets)
-            controller.dispose()
-            controller.detach()
-        }
+        assertEquals(listOf("first:init", "second:init", "second:attach"), events)
+        assertEquals(listOf(IntPoint(100, 80)), second.regions)
+        assertEquals(listOf(IntPoint(7, 11)), second.offsets)
+        controller.dispose()
+        controller.detach()
     }
 
     @Test
@@ -110,7 +103,7 @@ class DynamicViewTest {
         assertEquals(listOf(IntPoint(20, 30), IntPoint(-5, -9)), second.offsets)
         assertEquals(listOf(IntPoint(100, 80), IntPoint(100, 80)), first.regions)
         assertEquals(listOf(IntPoint(100, 80)), second.regions)
-        assertEquals(IntPoint(100, 80), view.evaluateActualSize())
+        assertEquals(IntPoint(10, 20), view.evaluateActualSize())
         controller.dispose()
         controller.detach()
     }
@@ -307,7 +300,10 @@ class DynamicViewTest {
         val controller = view.attachTo(IntPoint(7, 11), DYNAMIC_VIEW_PLACER)
 
         assertEquals(emptyList<String>(), events)
-        assertEquals(IntPoint(100, 80), view.evaluateActualSize())
+        assertEquals(Sizing.WRAP, view.sizingX)
+        assertEquals(Sizing.WRAP, view.sizingY)
+        assertEquals(IntPoint.ZERO, view.evaluateContentSize())
+        assertEquals(IntPoint.ZERO, view.evaluateActualSize())
         controller.setOffset(IntPoint(20, 30))
         content.value = first
 
@@ -318,6 +314,7 @@ class DynamicViewTest {
         content.value = null
 
         assertEquals(listOf("first:init", "first:attach", "first:dispose", "first:detach"), events)
+        assertEquals(IntPoint.ZERO, view.evaluateActualSize())
         controller.setOffset(IntPoint(-5, -9))
         content.value = second
 
