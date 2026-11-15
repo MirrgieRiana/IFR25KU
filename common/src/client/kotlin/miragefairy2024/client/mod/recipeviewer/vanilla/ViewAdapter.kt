@@ -118,7 +118,9 @@ class ViewAdapter(val host: ViewAdapterHost) {
         removeMouseClickSentinel()
         val controller = viewController
         viewController = null
-        onBeforeRender.toList().forEach { onBeforeRender.remove(it) }
+        onBeforeRender.toList().forEach {
+            onBeforeRender.remove(it)
+        }
         if (controller != null) controller.dispose()
     }
 
