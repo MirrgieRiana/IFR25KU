@@ -300,9 +300,11 @@ abstract class VanillaScrollViewWidget(
         // スクロールバー上でも判定を受け付けるため、containsViewport ではなく isMouseOver を使うのだ～🌱
         if (!isMouseOver(mouseX, mouseY)) return false
         if (containsViewport(mouseX, mouseY)) {
-            val handled = children().toList().any { child ->
-                if (children().none { it === child }) return@any false
-                child.isMouseOver(mouseX, mouseY) && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+            val handled = widgetRegistrations.toList().any { widgetRegistration ->
+                if (!widgetRegistration.interactive) return@any false
+                if (widgetRegistration !in widgetRegistrations) return@any false
+                val widget = widgetRegistration.widget
+                widget.isMouseOver(mouseX, mouseY) && widget.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
             }
             if (handled) return true
         }
