@@ -111,8 +111,6 @@ abstract class VanillaScrollViewWidget(
 
     private fun evaluateMaxScrollOffset() = evaluateContentLength() - viewportLength atLeast 0
 
-    private fun evaluateScrollOffset() = scrollOffsetValue.value.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
-
     private fun evaluateThumbLength(): Int {
         if (viewportLength <= 0) return 0
         val contentLength = evaluateContentLength()
@@ -124,11 +122,12 @@ abstract class VanillaScrollViewWidget(
     }
 
     private fun evaluateThumbPosition(): Double {
-        return if (evaluateMaxScrollOffset() == 0) {
+        val maxScrollOffset = evaluateMaxScrollOffset().toDouble()
+        return if (maxScrollOffset == 0.0) {
             0.0
         } else {
             val maxThumbPosition = viewportLength - evaluateThumbLength()
-            val scrollRatio = evaluateScrollOffset() / evaluateMaxScrollOffset().toDouble()
+            val scrollRatio = scrollOffsetValue.value.coerceIn(0.0, maxScrollOffset) / maxScrollOffset
             maxThumbPosition.toDouble() * scrollRatio
         }
     }
@@ -136,14 +135,27 @@ abstract class VanillaScrollViewWidget(
     protected abstract fun getChildOffset(scrollOffset: Int): IntPoint
 
     private fun updateScroll(offset: Double): Boolean {
-        val old = evaluateScrollOffset()
+        val old = scrollOffsetValue.value
         scrollOffsetValue.value = offset
-        return evaluateScrollOffset() != old
+        return scrollOffsetValue.value != old
+    }
+
+    private fun scrollTo(offset: Double) = updateScroll(offset.coerceIn(0.0, evaluateMaxScrollOffset().toDouble()))
+
+    private fun scrollBy(delta: Double): Boolean {
+        val offset = scrollOffsetValue.value
+        val maxScrollOffset = evaluateMaxScrollOffset().toDouble()
+        // 範囲外から戻る途中も、入力の移動量で少しずつ戻れるようにするのだ～🌱
+        return when {
+            delta < 0.0 && offset > 0.0 -> updateScroll((offset + delta).coerceAtLeast(0.0))
+            delta > 0.0 && offset < maxScrollOffset -> updateScroll((offset + delta).coerceAtMost(maxScrollOffset))
+            else -> false
+        }
     }
 
     override fun setPosition(x: Int, y: Int) {
         super.setPosition(x, y)
-        childController.setOffset(getChildOffset(evaluateScrollOffset().roundToInt()))
+        childController.setOffset(getChildOffset(scrollOffsetValue.value.roundToInt()))
     }
 
 
@@ -308,7 +320,7 @@ abstract class VanillaScrollViewWidget(
             }
             if (handled) return true
         }
-        return updateScroll(evaluateScrollOffset() - getScrollAmount(scrollX, scrollY) * view.scrollStep)
+        return scrollBy(-getScrollAmount(scrollX, scrollY) * view.scrollStep)
     }
 
 
@@ -339,7 +351,7 @@ abstract class VanillaScrollViewWidget(
 
         // 子への経路がなければ、スクロール可能で、まだ自身がフォーカスされていない場合に限り、自身を選ぶ経路を返すのだ～🌱
         if (path == null) {
-            if (evaluateMaxScrollOffset() > 0 && !isFocused) {
+            if ((evaluateMaxScrollOffset() > 0 || scrollOffsetValue.value != 0.0) && !isFocused) {
                 return object : ComponentPath {
                     override fun component() = this@VanillaScrollViewWidget
 
@@ -364,7 +376,7 @@ abstract class VanillaScrollViewWidget(
                     val actualFocused = this@VanillaScrollViewWidget.focused?.getActualFocused { true } ?: return
                     val rectangle = actualFocused.rectangle
                     if (rectangle.width() <= 0 || rectangle.height() <= 0) return
-                    updateScroll(evaluateScrollOffset() + getScrollOffsetDeltaOnFocus(rectangle))
+                    scrollTo(scrollOffsetValue.value + getScrollOffsetDeltaOnFocus(rectangle))
                 }
             }
         }
@@ -390,16 +402,15 @@ abstract class VanillaScrollViewWidget(
         if (listener != null && listener.keyPressed(keyCode, scanCode, modifiers)) return true
         // 子が選択されている間は、矢印キーをスクロールで消費せず、Screen のフォーカス移動へ渡すのだ～🌱
         if (listener != null && (keyCode == backwardKey || keyCode == forwardKey)) return false
-        val offset = when (keyCode) {
-            backwardKey -> evaluateScrollOffset() - view.scrollStep
-            forwardKey -> evaluateScrollOffset() + view.scrollStep
-            GLFW.GLFW_KEY_PAGE_UP -> evaluateScrollOffset() - viewportLength * 0.8
-            GLFW.GLFW_KEY_PAGE_DOWN -> evaluateScrollOffset() + viewportLength * 0.8
-            GLFW.GLFW_KEY_HOME -> 0.0
-            GLFW.GLFW_KEY_END -> evaluateMaxScrollOffset().toDouble()
-            else -> return false
+        return when (keyCode) {
+            backwardKey -> scrollBy(-view.scrollStep.toDouble())
+            forwardKey -> scrollBy(view.scrollStep.toDouble())
+            GLFW.GLFW_KEY_PAGE_UP -> scrollBy(-viewportLength * 0.8)
+            GLFW.GLFW_KEY_PAGE_DOWN -> scrollBy(viewportLength * 0.8)
+            GLFW.GLFW_KEY_HOME -> updateScroll(0.0)
+            GLFW.GLFW_KEY_END -> updateScroll(evaluateMaxScrollOffset().toDouble())
+            else -> false
         }
-        return updateScroll(offset)
     }
 
     override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
@@ -459,14 +470,14 @@ abstract class VanillaScrollViewWidget(
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
         }
-        val initialScrollOffset = evaluateScrollOffset().roundToInt()
+        val initialScrollOffset = scrollOffsetValue.value.roundToInt()
         childController = view.childView.attachTo(getChildOffset(initialScrollOffset)) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
         }
         // 子の生成中はまだ購読しておらず変更通知を受け取れないため、購読直後に現在値から表示位置を再計算するのだ～🌱
         scrollOffsetValue.observeAndInitialize(onClosed) { old, new ->
             if (disposed) return@observeAndInitialize
-            val scrollOffset = evaluateScrollOffset().roundToInt()
+            val scrollOffset = scrollOffsetValue.value.roundToInt()
             if (old != new || scrollOffset != initialScrollOffset) childController.setOffset(getChildOffset(scrollOffset))
         }
     }
