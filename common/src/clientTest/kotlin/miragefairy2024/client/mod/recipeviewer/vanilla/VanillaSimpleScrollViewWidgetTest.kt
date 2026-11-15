@@ -8,8 +8,11 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.connectScrollbarBounds
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.empty
 import miragefairy2024.util.text
 import net.minecraft.client.gui.GuiGraphics
@@ -22,6 +25,63 @@ import org.mockito.Mockito
 private class SimpleScrollTestView : FixedWidgetView(IntPoint(300, 300))
 
 class VanillaSimpleScrollViewWidgetTest {
+    @Test
+    fun `領域のホイールとつまみのドラッグで同じ指定位置を更新するのだ`() {
+        GuiTestEnvironment().use { environment ->
+            val scrollOffset = ObservableValue(80.25)
+            val view = YSimpleScrollView(scrollOffset)
+            view += SimpleScrollTestView()
+            view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { 100 }, { 100 })
+            val bar = YScrollbarView(scrollOffset)
+            val connection = connectScrollbarBounds(view, bar)
+            val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
+            Mockito.`when`(context.origin).thenReturn(IntPoint.ZERO)
+            val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+            var childOffset = IntPoint.ZERO
+            registry.register { _, _: SimpleScrollTestView, bounds ->
+                childOffset = IntPoint(bounds.x, bounds.y)
+                object : ViewController {
+                    override fun setOffset(offset: IntPoint) {
+                        childOffset = offset
+                    }
+
+                    override fun detach() = Unit
+                }
+            }
+            val widget = VanillaYSimpleScrollViewWidget(view, IntRectangle(0, 0, 100, 100), context, registry)
+            val barWidget = VanillaYScrollbarViewWidget(bar, IntRectangle(100, 0, 5, 120))
+            try {
+                Assertions.assertEquals(IntPoint(0, -80), childOffset)
+
+                Assertions.assertTrue(widget.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+                Assertions.assertEquals(IntPoint(0, -95), childOffset)
+                barWidget.render(environment.graphics, 102, 40, 0.0F)
+                Assertions.assertEquals(IntRectangle(100, 38, 5, 40), environment.fills.last())
+                Assertions.assertEquals(95.25, scrollOffset.value)
+
+                Assertions.assertTrue(barWidget.mouseClicked(102.0, 40.0, 0))
+                Assertions.assertTrue(barWidget.mouseDragged(102.0, 60.0, 0, 0.0, 20.0))
+                Assertions.assertTrue(barWidget.mouseReleased(102.0, 60.0, 0))
+                Assertions.assertEquals(145.25, scrollOffset.value, 1e-9)
+                Assertions.assertEquals(IntPoint(0, -145), childOffset)
+
+                scrollOffset.value = 999.75
+                Assertions.assertEquals(IntPoint(0, -200), childOffset)
+                widget.setHeight(250)
+                Assertions.assertEquals(IntPoint(0, -50), childOffset)
+                barWidget.render(environment.graphics, 102, 40, 0.0F)
+                Assertions.assertEquals(IntRectangle(100, 20, 5, 100), environment.fills.last())
+                Assertions.assertEquals(999.75, scrollOffset.value)
+            } finally {
+                widget.dispose()
+                widget.detach()
+                barWidget.dispose()
+                connection.remove()
+            }
+            Assertions.assertTrue(scrollOffset.toList().isEmpty())
+        }
+    }
+
     @Test
     fun `バーを削除した領域でも子のクリックとスクロールと破棄を中継するのだ`() {
         listOf(false, true).forEach { horizontal ->

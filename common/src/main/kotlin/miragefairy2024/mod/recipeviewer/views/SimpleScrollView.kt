@@ -9,8 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
-import miragefairy2024.util.plus
-import miragefairy2024.util.register
+import miragefairy2024.util.registerAndInitialize
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 
@@ -25,7 +24,7 @@ data class ScrollBounds(val contentLength: Int, val viewportLength: Int) {
  * スクロール方向のコンテンツが占有する最小のサイズは `0` なのだ～🌱
  * バニラへの配置では、子孫に [miragefairy2024.mod.recipeviewer.views.MenuSlotView] を含めてはならないのだ～🌱
  */
-abstract class SimpleScrollView : WrapperView(), PlaceableView {
+abstract class SimpleScrollView(val scrollOffset: ObservableValue<Double> = ObservableValue(0.0)) : WrapperView(), PlaceableView {
 
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
@@ -49,7 +48,7 @@ abstract class SimpleScrollView : WrapperView(), PlaceableView {
 }
 
 /** 子 View を X 軸方向へスクロールするのだ～🌱 */
-class XSimpleScrollView : SimpleScrollView() {
+class XSimpleScrollView(scrollOffset: ObservableValue<Double> = ObservableValue(0.0)) : SimpleScrollView(scrollOffset) {
 
     override fun evaluateContentSizeXImpl() = 0
     override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY()
@@ -63,7 +62,7 @@ class XSimpleScrollView : SimpleScrollView() {
 }
 
 /** 子 View を Y 軸方向へスクロールするのだ～🌱 */
-class YSimpleScrollView : SimpleScrollView() {
+class YSimpleScrollView(scrollOffset: ObservableValue<Double> = ObservableValue(0.0)) : SimpleScrollView(scrollOffset) {
 
     override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX()
     override fun evaluateContentSizeYImpl() = 0
@@ -76,58 +75,8 @@ class YSimpleScrollView : SimpleScrollView() {
 
 }
 
-/** スクロール領域の表示範囲とスクロールバーの設定値を接続するのだ～🌱 */
-fun connectScrollbar(
-    scrollView: SimpleScrollView,
-    scrollOffset: ObservableValue<Double>,
-    scrollbarView: ScrollbarView,
-    scrollbarOffset: ObservableValue<Double>,
-): Remover {
-
-    var updating = false
-
-    fun updateScrollbarView() {
-        val bounds = scrollView.scrollBounds.value
-        scrollbarView.contentLength = bounds.contentLength
-        scrollbarView.viewportLength = bounds.viewportLength
-
-        val wasUpdating = updating
-        updating = true
-        try {
-            scrollbarOffset.value = scrollOffset.value
-        } finally {
-            updating = wasUpdating
-        }
-    }
-
-    fun updateScrollView() {
-        if (updating) return
-
-        scrollOffset.value = scrollbarOffset.value
-        updateScrollbarView()
-    }
-
-    // スクロール領域の寸法
-    val scrollBoundsRemover = scrollView.scrollBounds.register { _, _ ->
-        updateScrollbarView()
-    }
-
-    // 表示領域の表示範囲
-    val scrollOffsetRemover = scrollOffset.register { _, _ ->
-        updateScrollbarView()
-    }
-
-    // スクロールバーの設定値
-    val scrollbarOffsetRemover = scrollbarOffset.register { _, _ ->
-        updateScrollView()
-    }
-
-    val remover = scrollBoundsRemover + scrollOffsetRemover + scrollbarOffsetRemover
-    try {
-        updateScrollbarView()
-    } catch (e: Throwable) {
-        remover.remove()
-        throw e
-    }
-    return remover
+/** スクロール領域のコンテンツ長と表示領域の長さをバーへ同期するのだ～🌱 */
+fun connectScrollbarBounds(scrollView: SimpleScrollView, scrollbarView: ScrollbarView): Remover = scrollView.scrollBounds.registerAndInitialize { _, bounds ->
+    scrollbarView.contentLength = bounds.contentLength
+    scrollbarView.viewportLength = bounds.viewportLength
 }
