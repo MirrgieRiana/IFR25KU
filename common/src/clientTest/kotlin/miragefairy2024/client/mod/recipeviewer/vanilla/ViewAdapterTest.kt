@@ -12,6 +12,7 @@ import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
+import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
@@ -42,7 +43,7 @@ private val ADAPTER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
     override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = throw UnsupportedOperationException()
 }
 
-private class TestView(val interactive: Boolean) : FixedWidgetView(IntPoint(10, 20))
+private class TestView(val interactive: Boolean, val beforeRender: (() -> Unit)? = null) : FixedWidgetView(IntPoint(10, 20))
 
 private class RecordingWidget(bounds: IntRectangle) : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty()) {
     var onClick: () -> Unit = { }
@@ -97,6 +98,7 @@ private class AdapterFixture(vararg views: TestView) {
                 widgets += widget
                 val remover = if (view.interactive) context.addRenderableWidget(widget) else context.addRenderableOnly(widget)
                 removers += remover
+                view.beforeRender?.let { listener -> context.onBeforeRender.register { listener() } }
                 object : ViewController {
                     override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
                     override fun detach() = throw UnsupportedOperationException()
@@ -154,6 +156,43 @@ private class AdapterFixture(vararg views: TestView) {
 }
 
 class ViewAdapterTest {
+
+    @Test
+    fun `ホイールを未消費の背景から次の子へ渡し消費後は止めるのだ`() {
+        val fixture = AdapterFixture()
+        val calls = mutableListOf<String>()
+        var consume = true
+        fun widget(label: String, x: Int, handles: () -> Boolean): AbstractWidget {
+            return object : AbstractWidget(x, 40, 20, 20, text { empty() }) {
+                override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+                override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
+                    Assertions.assertEquals(listOf(35.0, 45.0, 2.0, -3.0), listOf(mouseX, mouseY, scrollX, scrollY))
+                    calls += label
+                    return handles()
+                }
+            }
+        }
+        fixture.interactiveWidgets += widget("outside", 100) { true }
+        fixture.interactiveWidgets += widget("background", 30) { false }
+        fixture.interactiveWidgets += widget("scroll", 30) { consume }
+        fixture.interactiveWidgets += widget("behind", 30) { false }
+        try {
+            Assertions.assertTrue(fixture.adapter.mouseScrolled(35.0, 45.0, 2.0, -3.0))
+            Assertions.assertEquals(listOf("background", "scroll"), calls)
+            calls.clear()
+            consume = false
+            Assertions.assertFalse(fixture.adapter.mouseScrolled(35.0, 45.0, 2.0, -3.0))
+            Assertions.assertEquals(listOf("background", "scroll", "behind"), calls)
+            calls.clear()
+            fixture.adapter.removed()
+            Assertions.assertFalse(fixture.adapter.mouseScrolled(35.0, 45.0, 2.0, -3.0))
+            Assertions.assertTrue(calls.isEmpty())
+        } finally {
+            fixture.adapter.removed()
+        }
+    }
+
     @Test
     fun `複数行入力欄のキー消費と有効時の入力保護と無効なコンテナを検証するのだ`() {
         val fixture = AdapterFixture()
@@ -283,6 +322,24 @@ class ViewAdapterTest {
         assertEquals(listOf(fixture.widgets[1]), fixture.interactiveWidgets)
         assertEquals(IntPoint(30, 40), IntPoint(fixture.widgets[1].x, fixture.widgets[1].y))
         fixture.adapter.removed()
+    }
+
+    @Test
+    fun `再初期化と破棄で前の配置の描画前登録を解除するのだ`() {
+        var calls = 0
+        val fixture = AdapterFixture(TestView(true) { calls += 1 })
+        val adapter = fixture.adapter
+
+        adapter.beforeRender()
+        assertEquals(1, calls)
+
+        fixture.init()
+        adapter.beforeRender()
+        assertEquals(2, calls)
+
+        adapter.removed()
+        adapter.beforeRender()
+        assertEquals(2, calls)
     }
 
     @Test

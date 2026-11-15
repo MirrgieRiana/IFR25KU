@@ -13,7 +13,7 @@ import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.toasts.Toast
 import net.minecraft.client.gui.components.toasts.ToastComponent
 
-/** View を Screen なしで表示し、非表示への切り替え時にイベント購読を解除するトーストなのだ～🌱 */
+/** View を Screen なしで表示するトーストなのだ～🌱 */
 class ViewToast(rootView: View) : Toast {
 
     private class WidgetSlot(val widget: AbstractWidget)
@@ -63,12 +63,7 @@ class ViewToast(rootView: View) : Toast {
         widgetSlots.forEach {
             it.widget.render(guiGraphics, -1000, -1000, partialTick)
         }
-        if (timeSinceLastVisible >= 5000.0 * toastComponent.notificationDisplayTimeMultiplier) {
-            // 非表示アニメーション中にも描画されるため、購読を解除しても描画要素は保持するのだ～🌱
-            viewAdapter.removed()
-            return Toast.Visibility.HIDE
-        }
-        return Toast.Visibility.SHOW
+        return if (timeSinceLastVisible >= 5000.0 * toastComponent.notificationDisplayTimeMultiplier) Toast.Visibility.HIDE else Toast.Visibility.SHOW
     }
 
 }

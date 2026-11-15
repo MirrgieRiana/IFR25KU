@@ -48,14 +48,13 @@ interface ViewAdapterHost {
 /**
  * View のサイズ計算と配置を登録先へ中継し、ホストの入力処理を補正するのだ～🌱
  * ホストを初期化するときは [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.init] を呼ぶのだ～🌱
- * ホストを破棄するときは [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.removed] を呼ぶのだ～🌱
+ * ホストが表示終了を通知できる場合は、最後の描画を終えてから [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.removed] を呼ぶのだ～🌱
  */
 class ViewAdapter(val host: ViewAdapterHost) {
 
     private var isInitialized = false
     private var viewController: ViewController? = null
-    // トーストの非表示アニメーションでは removed 後もウィジェットを描画するのだ～🌱
-    private var onBeforeRender: EventRegistry<() -> Unit>? = null
+    private val onBeforeRender = EventRegistry<() -> Unit>()
 
     private class MouseClickSentinel : GuiEventListener, NarratableEntry {
 
@@ -92,20 +91,19 @@ class ViewAdapter(val host: ViewAdapterHost) {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = host.getUiOffset()
             override val canPlaceMenuSlots = host.canPlaceMenuSlots()
-            override val onBeforeRender = EventRegistry<() -> Unit>()
+            override val onBeforeRender = this@ViewAdapter.onBeforeRender
             override fun addRenderableWidget(widget: AbstractWidget) = host.addRenderableWidget(widget)
             override fun addRenderableOnly(widget: AbstractWidget) = host.addRenderableOnly(widget)
         }
         viewController = rootView.attachTo(host.getUiOffset()) { view, bounds ->
             host.getViewPlacerRegistry().place(context, view, bounds)
         }
-        onBeforeRender = context.onBeforeRender
         isInitialized = true
     }
 
     /** このルートのウィジェットを描き始める前に呼ぶのだ～🌱 */
     fun beforeRender() {
-        onBeforeRender?.fire()
+        onBeforeRender.fire()
     }
 
     /** 子の相対位置・寸法・登録を維持して移動するのだ～🌱 */
@@ -120,6 +118,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         removeMouseClickSentinel()
         val controller = viewController
         viewController = null
+        onBeforeRender.listeners.clear()
         if (controller != null) controller.dispose()
     }
 
@@ -186,6 +185,15 @@ class ViewAdapter(val host: ViewAdapterHost) {
         val focused = screen.focused
         if (focused is MouseCaptureContainer && focused.hasMouseCapture(button)) return focused
         return screen.children().firstOrNull { it is MouseCaptureContainer && it.hasMouseCapture(button) }
+    }
+
+    fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
+        if (!isInitialized) return false
+        val screen = host.getScreen() ?: return false
+        return screen.children().toList().any { child ->
+            if (screen.children().none { it === child }) return@any false
+            child.isMouseOver(mouseX, mouseY) && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+        }
     }
 
     /**
