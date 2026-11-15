@@ -105,8 +105,16 @@ class FairyQuestCardViewTest {
         val input = ghosts[0].first
         val output = ghosts[4].first
         val progress = placements.single { it.first is ProgressView }.first as ProgressView
-        val beforeRender = placements.single { it.first is BeforeRenderView }.first as BeforeRenderView
-        beforeRender.onBeforeRender.fire()
+        val beforeRenderViews = placements.mapNotNull { (view, _) -> view as? BeforeRenderView }
+        Assertions.assertEquals(9, beforeRenderViews.size)
+
+        fun beforeRender() {
+            beforeRenderViews.forEach {
+                it.onBeforeRender.fire()
+            }
+        }
+
+        beforeRender()
         Assertions.assertTrue(input.showItemStack && input.showOverlay)
         Assertions.assertTrue(output.showItemStack && output.showOverlay)
         Assertions.assertEquals(8, input.itemStacks.single().count)
@@ -114,20 +122,20 @@ class FairyQuestCardViewTest {
         slots[36].set(ItemStack(Items.DIRT))
         slots[40].set(ItemStack(Items.WHITE_BED))
         menu.progress = 5
-        beforeRender.onBeforeRender.fire()
+        beforeRender()
         Assertions.assertFalse(input.showItemStack)
         Assertions.assertTrue(input.showOverlay)
         Assertions.assertFalse(output.showItemStack || output.showOverlay)
         Assertions.assertEquals(0.5, progress.progress)
 
         slots[36].set(ItemStack(Items.DIRT, 8))
-        beforeRender.onBeforeRender.fire()
+        beforeRender()
         Assertions.assertFalse(input.showItemStack || input.showOverlay)
 
         slots[36].set(ItemStack.EMPTY)
         slots[40].set(ItemStack.EMPTY)
         menu.progress = 0
-        beforeRender.onBeforeRender.fire()
+        beforeRender()
         Assertions.assertTrue(input.showItemStack && input.showOverlay)
         Assertions.assertTrue(output.showItemStack && output.showOverlay)
         Assertions.assertEquals(0.0, progress.progress)
