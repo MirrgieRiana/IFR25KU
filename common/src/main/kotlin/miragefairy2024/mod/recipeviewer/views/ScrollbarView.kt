@@ -6,9 +6,8 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
-import miragefairy2024.util.ObservableValue
 
-abstract class ScrollbarView(val scrollOffset: ObservableValue<Double> = ObservableValue(0.0)) : AbstractView(), PlaceableView {
+abstract class ScrollbarView : AbstractView(), PlaceableView {
 
     var contentLength = 0
         set(value) {
@@ -36,7 +35,7 @@ abstract class ScrollbarView(val scrollOffset: ObservableValue<Double> = Observa
 
 }
 
-class XScrollbarView(scrollOffset: ObservableValue<Double> = ObservableValue(0.0)) : ScrollbarView(scrollOffset) {
+class XScrollbarView : ScrollbarView() {
 
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.WRAP
@@ -46,7 +45,7 @@ class XScrollbarView(scrollOffset: ObservableValue<Double> = ObservableValue(0.0
 
 }
 
-class YScrollbarView(scrollOffset: ObservableValue<Double> = ObservableValue(0.0)) : ScrollbarView(scrollOffset) {
+class YScrollbarView : ScrollbarView() {
 
     override var sizingX = Sizing.WRAP
     override var sizingY = Sizing.FILL
