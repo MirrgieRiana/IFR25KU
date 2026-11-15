@@ -457,7 +457,7 @@ class VanillaScrollViewWidgetTest {
     }
 
     @Test
-    fun `範囲外の指定でもホイールとキーは表示位置から移動し端の入力を消費しないのだ`() {
+    fun `ホイールとキーは表示位置から移動し端で動かない場合は指定値を保持するのだ`() {
         listOf(false, true).forEach { horizontal ->
             listOf(-1000.0, 1000.0).forEach { initialOffset ->
                 val fixture = ScrollFixture()
@@ -467,11 +467,10 @@ class VanillaScrollViewWidgetTest {
                 try {
                     val root = fixture.screenWidgets.single() as VanillaScrollViewWidget
                     val outwardScroll = if (initialOffset < 0.0) 1.0 else -1.0
-                    val expectedOutwardOffset = if (initialOffset < 0.0) -15.0 else 215.0
                     val expectedInwardOffset = if (initialOffset < 0.0) 15.0 else 185.0
                     val initialPosition = IntPoint(fixture.widgets[0].x, fixture.widgets[0].y)
                     Assertions.assertFalse(root.mouseScrolled(50.0, 50.0, 0.0, outwardScroll))
-                    Assertions.assertEquals(expectedOutwardOffset, view.scrollOffsetValue.value)
+                    Assertions.assertEquals(initialOffset, view.scrollOffsetValue.value)
                     Assertions.assertEquals(initialPosition, IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
                     Assertions.assertTrue(root.mouseScrolled(50.0, 50.0, 0.0, -outwardScroll))
                     Assertions.assertEquals(expectedInwardOffset, view.scrollOffsetValue.value)
@@ -482,7 +481,7 @@ class VanillaScrollViewWidgetTest {
                     val backwardKey = if (horizontal) GLFW.GLFW_KEY_LEFT else GLFW.GLFW_KEY_UP
                     val forwardKey = if (horizontal) GLFW.GLFW_KEY_RIGHT else GLFW.GLFW_KEY_DOWN
                     Assertions.assertFalse(root.keyPressed(if (initialOffset < 0.0) backwardKey else forwardKey, 0, 0))
-                    Assertions.assertEquals(expectedOutwardOffset, view.scrollOffsetValue.value)
+                    Assertions.assertEquals(initialOffset, view.scrollOffsetValue.value)
                     Assertions.assertEquals(initialPosition, IntPoint(fixture.widgets[0].x, fixture.widgets[0].y))
                     Assertions.assertTrue(root.keyPressed(if (initialOffset < 0.0) forwardKey else backwardKey, 0, 0))
                     Assertions.assertEquals(expectedInwardOffset, view.scrollOffsetValue.value)
@@ -567,6 +566,9 @@ class VanillaScrollViewWidgetTest {
             try {
                 Assertions.assertEquals(78.75, shorterView.scrollOffsetValue.value)
                 Assertions.assertEquals(IntPoint(10, 20), IntPoint(fixture.widgets[6].x, fixture.widgets[6].y))
+                val shorterWidget = fixture.screenWidgets.single() as VanillaScrollViewWidget
+                Assertions.assertFalse(shorterWidget.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+                Assertions.assertEquals(78.75, shorterView.scrollOffsetValue.value)
             } finally {
                 shorterController.dispose()
                 shorterController.detach()
@@ -891,7 +893,7 @@ class VanillaScrollViewWidgetTest {
             Assertions.assertTrue(fixture.screen.mouseClicked(mouseX, mouseY, 0))
             Assertions.assertTrue(root.mouseDragged(400.0, 400.0, 0, 300.0, 300.0))
             Assertions.assertEquals(if (horizontal) -190 else -180, if (horizontal) fixture.widgets[0].x else fixture.widgets[0].y)
-            Assertions.assertTrue(view.scrollOffsetValue.value > 200.0)
+            Assertions.assertEquals(200.0, view.scrollOffsetValue.value)
             Assertions.assertTrue(root.mouseReleased(400.0, 400.0, 0))
             Assertions.assertFalse(root.hasMouseCapture(0))
             Assertions.assertFalse(root.mouseDragged(mouseX, mouseY, 0, 1.0, 1.0))

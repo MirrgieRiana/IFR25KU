@@ -111,7 +111,9 @@ abstract class VanillaScrollViewWidget(
 
     private fun evaluateMaxScrollOffset() = evaluateContentLength() - viewportLength atLeast 0
 
-    private fun evaluateScrollOffset() = scrollOffsetValue.value.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
+    private fun coerceScrollOffset(offset: Double) = offset.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
+
+    private fun evaluateScrollOffset() = coerceScrollOffset(scrollOffsetValue.value)
 
     private fun evaluateThumbLength(): Int {
         if (viewportLength <= 0) return 0
@@ -137,7 +139,9 @@ abstract class VanillaScrollViewWidget(
 
     private fun updateScroll(offset: Double): Boolean {
         val old = evaluateScrollOffset()
-        scrollOffsetValue.value = offset
+        val new = coerceScrollOffset(offset)
+        if (new == old) return false
+        scrollOffsetValue.value = new
         return evaluateScrollOffset() != old
     }
 
