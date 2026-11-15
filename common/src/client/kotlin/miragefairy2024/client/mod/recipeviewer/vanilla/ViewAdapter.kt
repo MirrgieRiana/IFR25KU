@@ -113,7 +113,10 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (!isInitialized) return false
         val screen = host.getScreen() ?: return false
-        return screen.mouseScrolledChildren(mouseX, mouseY, scrollX, scrollY)
+        return screen.children().toList().any { child ->
+            if (screen.children().none { it === child }) return@any false
+            child.isMouseOver(mouseX, mouseY) && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+        }
     }
 
     /**

@@ -222,7 +222,13 @@ abstract class VanillaSimpleScrollViewWidget(
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (!isMouseOver(mouseX, mouseY)) return false
-        if (containsViewport(mouseX, mouseY) && mouseScrolledChildren(mouseX, mouseY, scrollX, scrollY)) return true
+        if (containsViewport(mouseX, mouseY)) {
+            val handled = children().toList().any { child ->
+                if (children().none { it === child }) return@any false
+                child.isMouseOver(mouseX, mouseY) && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+            }
+            if (handled) return true
+        }
         return updateScroll(scrollOffset - getScrollAmount(scrollX, scrollY) * view.scrollStep)
     }
 

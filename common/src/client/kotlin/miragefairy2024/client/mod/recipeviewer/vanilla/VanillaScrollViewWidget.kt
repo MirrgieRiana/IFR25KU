@@ -299,7 +299,13 @@ abstract class VanillaScrollViewWidget(
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         // スクロールバー上でも判定を受け付けるため、containsViewport ではなく isMouseOver を使うのだ～🌱
         if (!isMouseOver(mouseX, mouseY)) return false
-        if (containsViewport(mouseX, mouseY) && mouseScrolledChildren(mouseX, mouseY, scrollX, scrollY)) return true
+        if (containsViewport(mouseX, mouseY)) {
+            val handled = children().toList().any { child ->
+                if (children().none { it === child }) return@any false
+                child.isMouseOver(mouseX, mouseY) && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+            }
+            if (handled) return true
+        }
         return updateScroll(evaluateScrollOffset() - getScrollAmount(scrollX, scrollY) * view.scrollStep)
     }
 
