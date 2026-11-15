@@ -85,21 +85,10 @@ class ViewAdapter(val host: ViewAdapterHost) {
         rootView.initSizeCalculation(host.getRenderingProxy(), { host.getRegionSizeX() }, { host.getRegionSizeY() })
         host.setUiSize(rootView.evaluateActualSize())
         host.init()
-        mouseClickSentinelRemover = host.addWidget(mouseClickSentinel)
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = host.getUiOffset()
             override val canPlaceMenuSlots = host.canPlaceMenuSlots()
-
-            override fun addRenderableWidget(widget: AbstractWidget): Remover {
-                if (mouseClickSentinelRemover == null) return host.addRenderableWidget(widget)
-                removeMouseClickSentinelListener()
-                try {
-                    return host.addRenderableWidget(widget)
-                } finally {
-                    mouseClickSentinelRemover = host.addWidget(mouseClickSentinel)
-                }
-            }
-
+            override fun addRenderableWidget(widget: AbstractWidget) = host.addRenderableWidget(widget)
             override fun addRenderableOnly(widget: AbstractWidget) = host.addRenderableOnly(widget)
         }
         viewController = rootView.attachTo(host.getUiOffset()) { view, bounds ->
@@ -117,7 +106,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
     /** 配置状態を無効化してから、イベント登録などの後始末を行うのだ～🌱 */
     fun removed() {
         isInitialized = false
-        removeMouseClickSentinelListener()
+        removeMouseClickSentinel()
         val controller = viewController
         viewController = null
         if (controller != null) controller.dispose()
@@ -131,19 +120,22 @@ class ViewAdapter(val host: ViewAdapterHost) {
         }
     }
 
-    private fun removeMouseClickSentinelListener() {
+    private fun removeMouseClickSentinel() {
         val remover = mouseClickSentinelRemover ?: return
         mouseClickSentinelRemover = null
         remover.remove()
     }
 
     fun beforeMouseClicked() {
-        mouseClickSentinel.clicked = false
         val screen = host.getScreen() ?: return
-        // ViewAdapter を経由せず画面に直接追加された子にも先にクリックを渡すのだ～🌱
-        if (mouseClickSentinelRemover != null && screen.children().lastOrNull() !== mouseClickSentinel) {
-            removeMouseClickSentinelListener()
+        mouseClickSentinel.clicked = false
+        if (mouseClickSentinelRemover == null) {
             mouseClickSentinelRemover = host.addWidget(mouseClickSentinel)
+        } else {
+            if (screen.children().lastOrNull() !== mouseClickSentinel) {
+                removeMouseClickSentinel()
+                mouseClickSentinelRemover = host.addWidget(mouseClickSentinel)
+            }
         }
     }
 
