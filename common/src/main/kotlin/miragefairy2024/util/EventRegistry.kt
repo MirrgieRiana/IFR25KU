@@ -52,18 +52,20 @@ class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
                         data class Entry(val listener: (T, T) -> Unit, var old: T)
 
                         val entries = listeners.map { Entry(it, old) }
-                        while (true) {
-                            dirty = false
-                            run next@{
-                                entries.forEach {
-                                    val new2 = field
-                                    if (it.old !== new2 && it.old != new2) {
-                                        it.listener(it.old, new2)
-                                        it.old = new2
-                                        if (dirty) return@next
+                        run finish@{
+                            while (true) {
+                                dirty = false
+                                run next@{
+                                    entries.forEach {
+                                        val new2 = field
+                                        if (it.old !== new2 && it.old != new2) {
+                                            it.listener(it.old, new2)
+                                            it.old = new2
+                                            if (dirty) return@next
+                                        }
                                     }
+                                    return@finish
                                 }
-                                return
                             }
                         }
                     } finally {
