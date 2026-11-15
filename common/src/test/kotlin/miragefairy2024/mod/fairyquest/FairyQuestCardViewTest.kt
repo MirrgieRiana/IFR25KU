@@ -10,12 +10,13 @@ import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
+import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.util.fire
-import miragefairy2024.util.text
 import miragefairy2024.util.invoke
+import miragefairy2024.util.text
 import miragefairy2024.util.toIngredientStack
 import net.minecraft.SharedConstants
 import net.minecraft.network.chat.FormattedText
@@ -56,30 +57,39 @@ class FairyQuestCardViewTest {
             override val outputs = listOf(icon)
         }
         var currentProgress = 0
-        val card = FairyQuestCardView(recipe, slots, cardTitle, text { "inventory"() }) { currentProgress }
+        val rootView = fairyQuestCardView(recipe, slots, cardTitle, text { "inventory"() }) { currentProgress }
         val proxy: RenderingProxy = object : RenderingProxy {
             override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
             override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
             override fun getTextHeight() = 9
             override fun wrapText(text: FormattedText, maxWidth: Int) = text.string.chunked((maxWidth / 6).coerceAtLeast(1)).map { FormattedCharSequence.forward(it, Style.EMPTY) }
         }
-        card.view.initSizeCalculation(proxy, { 400 }, { 240 })
-        Assertions.assertEquals(IntPoint(176, 218), card.view.evaluateActualSize())
+        rootView.initSizeCalculation(proxy, { 400 }, { 240 })
+        Assertions.assertEquals(IntPoint(176, 218), rootView.evaluateActualSize())
 
         val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
-        card.view.attachTo(IntPoint.ZERO) { view, bounds ->
+        rootView.attachTo(IntPoint.ZERO) { view, bounds ->
             placements += Pair(view, bounds)
             ViewController.NONE
         }
         Assertions.assertEquals(IntRectangle(18, 30, 145, 60), placements.single { it.first is YScrollView }.second)
         val scroll = placements.single { it.first is YScrollView }.first as YScrollView
         Assertions.assertTrue(scroll.childView.evaluateActualSizeY() > 60)
+        val messageTextBounds = mutableListOf<IntRectangle>()
+        scroll.childView.attachTo(IntPoint.ZERO) { view, bounds ->
+            if (view is MultiLineTextView) messageTextBounds += bounds
+            ViewController.NONE
+        }
+        Assertions.assertEquals(140, messageTextBounds.single().sizeX)
         Assertions.assertEquals(IntRectangle(7, 19, 162, 82), placements.single { it.first is ClickableView }.second)
         Assertions.assertEquals(IntRectangle(7, 19, 162, 82), placements.single { it.first is TooltipView }.second)
+        Assertions.assertEquals(listOf(IntRectangle(8, 7, 160, 9), IntRectangle(8, 125, 160, 9)), placements.filter { it.first is MultiLineTextView }.map { it.second })
 
         val placedSlots = placements.mapNotNull { (view, bounds) -> if (view is MenuSlotView) Pair(view.slot, bounds) else null }.toMap()
         val ghosts = placements.mapNotNull { (view, bounds) -> if (view is GhostRecipeItemView) Pair(view, bounds) else null }
         Assertions.assertEquals(slots.toSet(), placedSlots.keys)
+        Assertions.assertEquals(IntRectangle(7, 135, 18, 18), placedSlots.getValue(slots[0]))
+        Assertions.assertEquals(IntRectangle(7, 193, 18, 18), placedSlots.getValue(slots[27]))
         Assertions.assertEquals(8, ghosts.size)
         ghosts.forEachIndexed { i, (_, bounds) ->
             val slotBounds = placedSlots.getValue(slots[36 + i])
