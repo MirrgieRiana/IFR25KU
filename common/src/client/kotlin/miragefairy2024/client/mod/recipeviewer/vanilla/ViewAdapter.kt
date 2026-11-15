@@ -50,7 +50,7 @@ interface ViewAdapterHost {
  */
 class ViewAdapter(val host: ViewAdapterHost) {
 
-    private class UnhandledClickListener : GuiEventListener, NarratableEntry {
+    private class MouseClickSentinel : GuiEventListener, NarratableEntry {
 
         var clicked = false
 
@@ -70,8 +70,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     private var isInitialized = false
     private var viewController: ViewController? = null
-    private val unhandledClickListener = UnhandledClickListener()
-    private var unhandledClickRemover: Remover? = null
+    private val mouseClickSentinel = MouseClickSentinel()
+    private var mouseClickSentinelRemover: Remover? = null
 
     /**
      * View のツリーを再構築して、各ウィジェットをホストへ直接登録するのだ～🌱
@@ -84,18 +84,18 @@ class ViewAdapter(val host: ViewAdapterHost) {
         rootView.initSizeCalculation(host.getRenderingProxy(), { host.getRegionSizeX() }, { host.getRegionSizeY() })
         host.setUiSize(rootView.evaluateActualSize())
         host.init()
-        unhandledClickRemover = host.addWidget(unhandledClickListener)
+        mouseClickSentinelRemover = host.addWidget(mouseClickSentinel)
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = host.getUiOffset()
             override val canPlaceMenuSlots = host.canPlaceMenuSlots()
 
             override fun addRenderableWidget(widget: AbstractWidget): Remover {
-                if (unhandledClickRemover == null) return host.addRenderableWidget(widget)
-                removeUnhandledClickListener()
+                if (mouseClickSentinelRemover == null) return host.addRenderableWidget(widget)
+                removeMouseClickSentinelListener()
                 try {
                     return host.addRenderableWidget(widget)
                 } finally {
-                    unhandledClickRemover = host.addWidget(unhandledClickListener)
+                    mouseClickSentinelRemover = host.addWidget(mouseClickSentinel)
                 }
             }
 
@@ -116,7 +116,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
     /** 配置状態を無効化してから、イベント登録などの後始末を行うのだ～🌱 */
     fun removed() {
         isInitialized = false
-        removeUnhandledClickListener()
+        removeMouseClickSentinelListener()
         val controller = viewController
         viewController = null
         if (controller != null) controller.dispose()
@@ -130,19 +130,19 @@ class ViewAdapter(val host: ViewAdapterHost) {
         }
     }
 
-    private fun removeUnhandledClickListener() {
-        val remover = unhandledClickRemover ?: return
-        unhandledClickRemover = null
+    private fun removeMouseClickSentinelListener() {
+        val remover = mouseClickSentinelRemover ?: return
+        mouseClickSentinelRemover = null
         remover.remove()
     }
 
     fun beforeMouseClicked() {
-        unhandledClickListener.clicked = false
+        mouseClickSentinel.clicked = false
         val screen = host.getScreen() ?: return
         // ViewAdapter を経由せず画面に直接追加された子にも先にクリックを渡すのだ～🌱
-        if (unhandledClickRemover != null && screen.children().lastOrNull() !== unhandledClickListener) {
-            removeUnhandledClickListener()
-            unhandledClickRemover = host.addWidget(unhandledClickListener)
+        if (mouseClickSentinelRemover != null && screen.children().lastOrNull() !== mouseClickSentinel) {
+            removeMouseClickSentinelListener()
+            mouseClickSentinelRemover = host.addWidget(mouseClickSentinel)
         }
     }
 
@@ -154,7 +154,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
             screen.isDragging = false
             return
         }
-        if (!unhandledClickListener.clicked) return
+        if (!mouseClickSentinel.clicked) return
 
         val actualFocused = focused.getActualFocused { true }
         if (actualFocused !is EditBox && actualFocused !is MultiLineEditBox) return
