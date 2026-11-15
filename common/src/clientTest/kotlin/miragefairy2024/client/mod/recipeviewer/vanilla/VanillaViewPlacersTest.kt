@@ -7,10 +7,11 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.views.AbsoluteView
+import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
-import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
@@ -18,8 +19,6 @@ import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
-import miragefairy2024.mod.recipeviewer.views.beforeRender
-import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
@@ -96,12 +95,14 @@ class VanillaViewPlacersTest {
             override fun addRenderableWidget(widget: AbstractWidget) = Remover.NONE
             override fun addRenderableOnly(widget: AbstractWidget) = Remover.NONE
         }
-        val view = View {
-            view += YSimpleScrollView().configure {
-                view += PlacerTestView().configure().beforeRender { calls += "child" }
-            }.beforeRender { calls += "root" }
-        }
+        val scrollContent = YListView()
+        scrollContent += PlacerTestView()
+        scrollContent += BeforeRenderView { calls += "child" }
+        val view = AbsoluteView(IntPoint(100, 100))
+        view += BeforeRenderView { calls += "root" }
+        view += YSimpleScrollView().also { it += scrollContent }
         view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
+        Assertions.assertEquals(100, scrollContent.evaluateContentSizeY())
         val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
 
         context.onBeforeRender.fire()
