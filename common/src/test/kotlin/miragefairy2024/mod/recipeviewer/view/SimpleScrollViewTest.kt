@@ -7,7 +7,6 @@ import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
-import miragefairy2024.util.register
 import mirrg.kotlin.helium.max
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence

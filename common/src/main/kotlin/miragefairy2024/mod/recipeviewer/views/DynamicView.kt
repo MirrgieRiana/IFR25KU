@@ -27,51 +27,25 @@ class DynamicView : AbstractView() {
         var currentOffset = offset
         var childController = ViewController.NONE
         var disposed = false
-        var loading = false
-        var needsLoad: Boolean
 
-        fun load() {
-            // 既に破棄済みの場合は、ロードをしないのだ～🌱
-            if (disposed) return
-            // 既にロード中の場合はフラグだけ立てて、そうでなければフラグを立てつつロードをするのだ～🌱
-            needsLoad = true
-            if (loading) return
+        content.observeAndInitialize(onClosed) { _, childView ->
+            if (disposed) return@observeAndInitialize
 
-            // ロード中フラグの管理なのだ～🌱
-            loading = true
-            try {
+            val oldChildController = childController
+            childController = ViewController.NONE
+            oldChildController.dispose()
+            oldChildController.detach()
 
-                // ロードの必要性が解消されない限り、ロードを繰り返すのだ～🌱
-                while (needsLoad) {
-                    needsLoad = false
-
-                    // 古い子を破棄し、子の破棄中に破棄を食らった場合はロードをせずに終わるのだ～🌱
-                    val oldChildController = childController
-                    childController = ViewController.NONE
-                    oldChildController.dispose()
-                    oldChildController.detach()
-                    if (disposed) break
-
-                    // 子を実際にロードするのだ～🌱
-                    val childView = content.value ?: break
-                    childView.initSizeCalculation(renderingProxy, { evaluateActualSizeX() }, { evaluateActualSizeY() })
-                    val newChildController = childView.attachTo(currentOffset, viewPlacer)
-                    // 子のロード中に破棄された場合は、即子を破棄して抜けるのだ～🌱
-                    if (disposed) {
-                        newChildController.dispose()
-                        newChildController.detach()
-                        break
-                    }
-                    childController = newChildController
-
-                }
-
-            } finally {
-                loading = false
+            if (disposed || childView == null) return@observeAndInitialize
+            childView.initSizeCalculation(renderingProxy, { evaluateActualSizeX() }, { evaluateActualSizeY() })
+            val newChildController = childView.attachTo(currentOffset, viewPlacer)
+            if (disposed) {
+                newChildController.dispose()
+                newChildController.detach()
+                return@observeAndInitialize
             }
+            childController = newChildController
         }
-
-        content.observeAndInitialize(onClosed) { _, _ -> load() }
 
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {

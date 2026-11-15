@@ -35,7 +35,11 @@ class EventRegistryTest {
 
         val remover = value.registerAndInitialize { old, new ->
             notifications += Pair(old, new)
-            if (old == new) value.value = 3
+            if (old == new) {
+                value.value = 3
+                assertEquals(3, value.value)
+                assertEquals(listOf(Pair(2, 2)), notifications)
+            }
         }
 
         assertEquals(listOf(Pair(2, 2), Pair(2, 3)), notifications)
@@ -80,6 +84,74 @@ class EventRegistryTest {
         assertEquals(listOf(Pair(2, 2)), notifications)
         assertTrue(value.listeners.isEmpty())
         assertTrue(onClosed.listeners.isEmpty())
+    }
+
+    @Test
+    fun `通知中に値が変わると最後に受け取った値から最新値へ登録順に通知するのだ～🌱`() {
+        val value = ObservableValue(10)
+        val notifications = mutableListOf<Triple<Int, Int, Int>>()
+        (1..3).forEach { index ->
+            value.register { old, new ->
+                notifications += Triple(index, old, new)
+                if (index == 2 && new == 20) {
+                    value.value = 25
+                    value.value = 30
+                    assertEquals(30, value.value)
+                    assertEquals(listOf(Triple(1, 10, 20), Triple(2, 10, 20)), notifications)
+                }
+            }
+        }
+
+        value.value = 20
+
+        assertEquals(
+            listOf(Triple(1, 10, 20), Triple(2, 10, 20), Triple(1, 20, 30), Triple(2, 20, 30), Triple(3, 10, 30)),
+            notifications,
+        )
+    }
+
+    @Test
+    fun `通知中に追加したリスナーは登録時の値を起点に通知するのだ～🌱`() {
+        val value = ObservableValue(10)
+        val notifications = mutableListOf<Triple<Int, Int, Int>>()
+        value.register { _, new ->
+            if (new == 20) {
+                value.register { old, current ->
+                    notifications += Triple(1, old, current)
+                }
+                value.value = 30
+                value.register { old, current ->
+                    notifications += Triple(2, old, current)
+                }
+            }
+        }
+
+        value.value = 20
+        assertEquals(listOf(Triple(1, 20, 30)), notifications)
+        value.value = 40
+        assertEquals(listOf(Triple(1, 20, 30), Triple(1, 30, 40), Triple(2, 30, 40)), notifications)
+    }
+
+    @Test
+    fun `通知前に解除したリスナーを再登録しても古い登録では呼ばないのだ～🌱`() {
+        val value = ObservableValue(10)
+        val notifications = mutableListOf<Pair<Int, Int>>()
+        val listener: (Int, Int) -> Unit = { old, new ->
+            notifications += Pair(old, new)
+        }
+        value.register { _, new ->
+            if (new == 20) {
+                value.remove(listener)
+                value.register(listener)
+            }
+        }
+        val oldRemover = value.register(listener)
+
+        value.value = 20
+        assertTrue(notifications.isEmpty())
+        oldRemover.remove()
+        value.value = 30
+        assertEquals(listOf(Pair(20, 30)), notifications)
     }
 
     @Test

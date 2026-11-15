@@ -166,8 +166,11 @@ fun initVanillaViewPlacers() {
         }
         val hint = view.hint
         if (hint != null) editBox.setHint(hint)
-        editBox.setResponder {
-            view.text.value = it
+        editBox.setResponder { input ->
+            view.text.value = input
+            // 入力欄に通知される前に正規化で値が戻っても、確定値を表示に反映するのだ～🌱
+            val text = view.text.value
+            if (editBox.value != text) editBox.value = text
         }
         val controller = context place editBox
         object : ViewController {

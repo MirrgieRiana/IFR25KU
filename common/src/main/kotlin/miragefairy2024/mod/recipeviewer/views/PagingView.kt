@@ -62,61 +62,35 @@ class PagingView : ParentView<Alignment>() {
         var currentOffset = offset
         var childController = ViewController.NONE
         var disposed = false
-        var loading = false
-        var needsLoad: Boolean
 
-        fun load() {
-            // 既に破棄済みの場合は、ロードをしないのだ～🌱
-            if (disposed) return
-            // 既にロード中の場合はフラグだけ立てて、そうでなければフラグを立てつつロードをするのだ～🌱
-            needsLoad = true
-            if (loading) return
+        pageIndex.observeAndInitialize(onClosed) { _, index ->
+            if (disposed) return@observeAndInitialize
 
-            // ロード中フラグの管理なのだ～🌱
-            loading = true
-            try {
+            val oldChildController = childController
+            childController = ViewController.NONE
+            oldChildController.dispose()
+            oldChildController.detach()
 
-                // ロードの必要性が解消されない限り、ロードを繰り返すのだ～🌱
-                while (needsLoad) {
-                    needsLoad = false
-
-                    // 古い子を破棄し、子の破棄中に破棄を食らった場合はロードをせずに終わるのだ～🌱
-                    val oldChildController = childController
-                    childController = ViewController.NONE
-                    oldChildController.dispose()
-                    oldChildController.detach()
-                    if (disposed) break
-
-                    // 子を実際にロードするのだ～🌱
-                    var y = 0
-                    // 指定されたページインデックスが無かった場合は、抜けるのだ～🌱
-                    val page = pages.getOrNull(pageIndex.value) ?: break
-                    val newChildController = page.attachTo(viewPlacer, currentOffset) {
-                        val x = when (it.position) {
-                            Alignment.START -> 0
-                            Alignment.CENTER -> (evaluateActualSizeX() - it.view.evaluateActualSizeX()) / 2
-                            Alignment.END -> evaluateActualSizeX() - it.view.evaluateActualSizeX()
-                        }
-                        val relativeOffset = IntPoint(x, y)
-                        y += it.view.evaluateActualSizeY()
-                        relativeOffset
-                    }
-                    // 子のロード中に破棄された場合は、即子を破棄して抜けるのだ～🌱
-                    if (disposed) {
-                        newChildController.dispose()
-                        newChildController.detach()
-                        break
-                    }
-                    childController = newChildController
-
+            if (disposed) return@observeAndInitialize
+            val page = pages.getOrNull(index) ?: return@observeAndInitialize
+            var y = 0
+            val newChildController = page.attachTo(viewPlacer, currentOffset) {
+                val x = when (it.position) {
+                    Alignment.START -> 0
+                    Alignment.CENTER -> (evaluateActualSizeX() - it.view.evaluateActualSizeX()) / 2
+                    Alignment.END -> evaluateActualSizeX() - it.view.evaluateActualSizeX()
                 }
-
-            } finally {
-                loading = false
+                val relativeOffset = IntPoint(x, y)
+                y += it.view.evaluateActualSizeY()
+                relativeOffset
             }
+            if (disposed) {
+                newChildController.dispose()
+                newChildController.detach()
+                return@observeAndInitialize
+            }
+            childController = newChildController
         }
-
-        pageIndex.observeAndInitialize(onClosed) { _, _ -> load() }
 
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {

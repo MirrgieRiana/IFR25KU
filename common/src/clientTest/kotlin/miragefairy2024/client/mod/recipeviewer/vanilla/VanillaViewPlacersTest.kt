@@ -9,6 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
+import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
@@ -25,6 +26,7 @@ import miragefairy2024.util.text
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
+import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
@@ -262,6 +264,42 @@ class VanillaViewPlacersTest {
             controller.detach()
         }
         Assertions.assertTrue(widgets.isEmpty())
+    }
+
+    @Test
+    fun `入力が直前の値に正規化されても入力欄に確定値を反映するのだ`() {
+        GuiTestEnvironment().use {
+            val widgets = mutableListOf<AbstractWidget>()
+            val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+                override val origin = IntPoint.ZERO
+                override val canPlaceMenuSlots = false
+                override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                    widgets += widget
+                    return Remover { widgets.remove(widget) }
+                }
+                override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Text fields must accept input")
+            }
+            val view = TextFieldView()
+            view.text.value = "text"
+            val remover = view.text.register { _, input ->
+                view.text.value = input.trim()
+            }
+            view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
+            val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+            try {
+                val editBox = widgets.single() as EditBox
+                editBox.insertText(" ")
+                Assertions.assertEquals("text", view.text.value)
+                Assertions.assertEquals("text", editBox.value)
+                editBox.insertText(" more ")
+                Assertions.assertEquals("text more", view.text.value)
+                Assertions.assertEquals("text more", editBox.value)
+            } finally {
+                remover.remove()
+                controller.dispose()
+                controller.detach()
+            }
+        }
     }
 
     @Test
