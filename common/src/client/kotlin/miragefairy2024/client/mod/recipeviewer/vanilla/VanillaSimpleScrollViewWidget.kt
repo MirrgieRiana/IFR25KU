@@ -18,7 +18,6 @@ import miragefairy2024.util.translate
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
-import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
@@ -243,8 +242,15 @@ abstract class VanillaSimpleScrollViewWidget(
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (!isMouseOver(mouseX, mouseY)) return false
-        val child = getChildAt(mouseX, mouseY).orNull
-        if (child != null && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true
+        if (containsViewport(mouseX, mouseY)) {
+            val handled = widgetRegistrations.toList().any { widgetRegistration ->
+                if (!widgetRegistration.interactive) return@any false
+                if (widgetRegistration !in widgetRegistrations) return@any false
+                val widget = widgetRegistration.widget
+                widget.isMouseOver(mouseX, mouseY) && widget.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+            }
+            if (handled) return true
+        }
         return updateScroll(scrollOffset - getScrollAmount(scrollX, scrollY) * view.scrollStep)
     }
 
@@ -391,6 +397,7 @@ abstract class VanillaSimpleScrollViewWidget(
     init {
         val childContext: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = context.origin
+            override val onBeforeRender = context.onBeforeRender
             // TODO スクロール領域内の MenuSlotView の配置に対応するのだ～🌱
             override val canPlaceMenuSlots = false
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)

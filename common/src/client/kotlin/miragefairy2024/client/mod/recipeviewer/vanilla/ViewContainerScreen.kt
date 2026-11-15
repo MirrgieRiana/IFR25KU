@@ -7,6 +7,7 @@ import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
+import net.minecraft.client.gui.narration.NarratableEntry
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
@@ -35,6 +36,11 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
         override fun init() = super@ViewContainerScreen.init()
 
+        override fun <T> addWidget(widget: T): Remover where T : GuiEventListener, T : NarratableEntry {
+            this@ViewContainerScreen.addWidget(widget)
+            return Remover { this@ViewContainerScreen.removeWidget(widget) }
+        }
+
         override fun addRenderableWidget(widget: AbstractWidget): Remover {
             this@ViewContainerScreen.addRenderableWidget(widget)
             return Remover { this@ViewContainerScreen.removeWidget(widget) }
@@ -55,7 +61,7 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     }
 
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        menu.updateViewBeforeRender()
+        viewAdapter.beforeRender()
         super.render(guiGraphics, mouseX, mouseY, partialTick)
         renderTooltip(guiGraphics, mouseX, mouseY)
     }
@@ -66,8 +72,9 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        viewAdapter.beforeMouseClicked()
         val handled = super.mouseClicked(mouseX, mouseY, button)
-        viewAdapter.mouseClicked()
+        viewAdapter.mouseClicked(mouseX, mouseY)
         return handled
     }
 
@@ -79,6 +86,10 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (viewAdapter.mouseReleased(mouseX, mouseY, button)) return true
         return super.mouseReleased(mouseX, mouseY, button)
+    }
+
+    override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
+        return viewAdapter.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {

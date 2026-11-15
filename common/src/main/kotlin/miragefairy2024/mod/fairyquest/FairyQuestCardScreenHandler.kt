@@ -83,15 +83,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
         addDataSlots(propertyDelegate)
     }
 
-    private var cardView: FairyQuestCardView? = null
-
-    override fun createView(title: Component, playerInventoryTitle: Component) = FairyQuestCardView(recipe, slots, title, playerInventoryTitle).also {
-        cardView = it
-    }.view
-
-    override fun updateViewBeforeRender() {
-        cardView?.update(progress)
-    }
+    override fun createView(title: Component, playerInventoryTitle: Component) = FairyQuestCardView(recipe, slots, title, playerInventoryTitle) { progress }.view
 
     override fun stillValid(player: Player) = true
 

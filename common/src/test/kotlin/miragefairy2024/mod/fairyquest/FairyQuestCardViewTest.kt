@@ -6,12 +6,14 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
+import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.util.fire
 import miragefairy2024.util.text
 import miragefairy2024.util.invoke
 import miragefairy2024.util.toIngredientStack
@@ -53,7 +55,8 @@ class FairyQuestCardViewTest {
             override val inputs = listOf({ Items.DIRT.toIngredientStack(8) })
             override val outputs = listOf(icon)
         }
-        val card = FairyQuestCardView(recipe, slots, cardTitle, text { "inventory"() })
+        var currentProgress = 0
+        val card = FairyQuestCardView(recipe, slots, cardTitle, text { "inventory"() }) { currentProgress }
         val proxy: RenderingProxy = object : RenderingProxy {
             override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
             override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
@@ -86,27 +89,31 @@ class FairyQuestCardViewTest {
         val input = ghosts[0].first
         val output = ghosts[4].first
         val progress = placements.single { it.first is ProgressView }.first as ProgressView
-        card.update(0)
+        val beforeRender = placements.single { it.first is BeforeRenderView }.first as BeforeRenderView
+        beforeRender.onBeforeRender.fire()
         Assertions.assertTrue(input.showItemStack && input.showOverlay)
         Assertions.assertTrue(output.showItemStack && output.showOverlay)
         Assertions.assertEquals(8, input.itemStacks.single().count)
 
         inventory.setItem(36, ItemStack(Items.DIRT))
         inventory.setItem(40, ItemStack(Items.WHITE_BED))
-        card.update(5)
+        currentProgress = 5
+        beforeRender.onBeforeRender.fire()
         Assertions.assertFalse(input.showItemStack)
         Assertions.assertTrue(input.showOverlay)
         Assertions.assertFalse(output.showItemStack || output.showOverlay)
         Assertions.assertEquals(0.5, progress.progress)
 
         inventory.setItem(36, ItemStack(Items.DIRT, 8))
-        card.update(5)
+        beforeRender.onBeforeRender.fire()
         Assertions.assertFalse(input.showItemStack || input.showOverlay)
 
         inventory.clearContent()
-        card.update(0)
+        currentProgress = 0
+        beforeRender.onBeforeRender.fire()
         Assertions.assertTrue(input.showItemStack && input.showOverlay)
         Assertions.assertTrue(output.showItemStack && output.showOverlay)
+        Assertions.assertEquals(0.0, progress.progress)
     }
 
 }

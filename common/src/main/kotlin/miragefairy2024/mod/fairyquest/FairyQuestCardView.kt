@@ -9,6 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
+import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
@@ -34,7 +35,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.inventory.Slot
 import net.minecraft.world.item.ItemStack
 
-internal class FairyQuestCardView(private val recipe: FairyQuestRecipe, private val slots: List<Slot>, title: Component, playerInventoryTitle: Component) {
+internal class FairyQuestCardView(private val recipe: FairyQuestRecipe, private val slots: List<Slot>, title: Component, playerInventoryTitle: Component, getProgress: () -> Int) {
 
     private val inputs = List(4) { recipe.inputs.getOrNull(it)?.invoke() }
     private val inputViews = inputs.map { input ->
@@ -101,10 +102,11 @@ internal class FairyQuestCardView(private val recipe: FairyQuestRecipe, private 
                 view += YSpaceView(4)
                 view += slotRowView(27)
             }.margin(7)
+            view += BeforeRenderView { update(getProgress()) }
         }
     }
 
-    fun update(progress: Int) {
+    private fun update(progress: Int) {
         inputViews.forEachIndexed { i, ghost ->
             val stack: ItemStack = slots[36 + i].item
             val input = inputs[i]
