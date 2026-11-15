@@ -51,7 +51,7 @@ class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
 
     override fun remove(listener: (T, T) -> Unit): Boolean {
         val removed = super.remove(listener)
-        if (removed && updating) oldTable.remove(listener)
+        if (removed && updating) oldTable -= listener
         return removed
     }
 
