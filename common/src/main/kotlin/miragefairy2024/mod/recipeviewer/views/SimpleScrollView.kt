@@ -76,11 +76,22 @@ class YSimpleScrollView : SimpleScrollView() {
 
 }
 
-/** 表示領域の範囲をバーへ同期し、指定値を丸めず双方向同期する接続の [miragefairy2024.util.Remover] を返すのだ～🌱 */
-fun connectScrollbar(scrollView: SimpleScrollView, scrollOffsetValue: ObservableValue<Double>, scrollbarView: ScrollbarView, scrollbarOffsetValue: ObservableValue<Double>): Remover {
+/** スクロール領域の表示範囲とスクロールバーの設定値を接続するのだ～🌱 */
+fun connectScrollbar(
+    scrollView: SimpleScrollView,
+    scrollOffset: ObservableValue<Double>,
+    scrollbarView: ScrollbarView,
+    scrollbarOffset: ObservableValue<Double>,
+): Remover {
+
     var updating = false
     var pending = false
-    fun updateScrollbar() {
+
+    fun updateScrollView() {
+        if (updating) return
+
+        scrollOffset.value = scrollbarOffset.value
+
         if (updating) {
             pending = true
             return
@@ -92,27 +103,51 @@ fun connectScrollbar(scrollView: SimpleScrollView, scrollOffsetValue: Observable
                 val bounds = scrollView.scrollBounds.value
                 scrollbarView.contentLength = bounds.contentLength
                 scrollbarView.viewportLength = bounds.viewportLength
-                scrollbarOffsetValue.value = scrollOffsetValue.value
+                scrollbarOffset.value = scrollOffset.value
             } while (pending)
         } finally {
             updating = false
         }
     }
-    val boundsRemover = scrollView.scrollBounds.register { _, _ ->
-        updateScrollbar()
-    }
-    val sourceRemover = scrollOffsetValue.register { _, _ ->
-        updateScrollbar()
-    }
-    val targetRemover = scrollbarOffsetValue.register { _, _ ->
-        if (!updating) {
-            scrollOffsetValue.value = scrollbarOffsetValue.value
-            updateScrollbar()
+
+    fun updateScrollbarView() {
+        if (updating) {
+            pending = true
+            return
+        }
+        updating = true
+
+        try {
+            do {
+                pending = false
+                val bounds = scrollView.scrollBounds.value
+                scrollbarView.contentLength = bounds.contentLength
+                scrollbarView.viewportLength = bounds.viewportLength
+                scrollbarOffset.value = scrollOffset.value
+            } while (pending)
+        } finally {
+            updating = false
         }
     }
-    val remover = boundsRemover + sourceRemover + targetRemover
+
+    // スクロール領域の寸法
+    val scrollBoundsRemover = scrollView.scrollBounds.register { _, _ ->
+        updateScrollbarView()
+    }
+
+    // 表示領域の表示範囲
+    val scrollOffsetRemover = scrollOffset.register { _, _ ->
+        updateScrollbarView()
+    }
+
+    // スクロールバーの設定値
+    val scrollbarOffsetRemover = scrollbarOffset.register { _, _ ->
+        updateScrollView()
+    }
+
+    val remover = scrollBoundsRemover + scrollOffsetRemover + scrollbarOffsetRemover
     try {
-        updateScrollbar()
+        updateScrollbarView()
     } catch (e: Throwable) {
         remover.remove()
         throw e
