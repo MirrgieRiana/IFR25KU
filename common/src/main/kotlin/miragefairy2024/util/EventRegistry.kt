@@ -6,18 +6,18 @@ package miragefairy2024.util
 // EventRegistry
 
 open class EventRegistry<L> {
-    val listeners = mutableSetOf<L>()
+    private val listeners = mutableSetOf<L>()
+
+    open fun add(listener: L): Boolean = listeners.add(listener)
+    open fun remove(listener: L): Boolean = listeners.remove(listener)
+    fun toList(): List<L> = listeners.toList()
 }
 
 fun <L> EventRegistry<L>.register(listener: L): Remover {
-    this.listeners += listener
+    this.add(listener)
     return Remover {
-        this.listeners -= listener
+        this.remove(listener)
     }
-}
-
-fun <L> EventRegistry<L>.remove(listener: L) {
-    this.listeners -= listener
 }
 
 fun <L> EventRegistry<L>.observe(onClosed: EventRegistry<() -> Unit>, listener: L) {
@@ -25,7 +25,7 @@ fun <L> EventRegistry<L>.observe(onClosed: EventRegistry<() -> Unit>, listener: 
 }
 
 inline fun <L> EventRegistry<L>.fire(invoker: (L) -> Unit) {
-    listeners.toList().forEach {
+    toList().forEach {
         invoker(it)
     }
 }
@@ -51,7 +51,7 @@ class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
                     try {
                         data class Entry(val listener: (T, T) -> Unit, var old: T)
 
-                        val entries = listeners.map { Entry(it, old) }
+                        val entries = toList().map { Entry(it, old) }
                         run finish@{
                             while (true) {
                                 dirty = false
