@@ -7,6 +7,7 @@ import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.PagingView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.register
 import net.minecraft.network.chat.FormattedText
@@ -135,6 +136,31 @@ class DynamicViewTest {
 
         controller.dispose()
         controller.detach()
+    }
+
+    @Test
+    fun `縦スクロール内では現在の子が必要とする高さを維持するのだ`() {
+        fun contentView(height: Int) = StackView().also {
+            it.sizingY = Sizing.FILL
+            it += object : FixedWidgetView(IntPoint(10, height)) { }
+        }
+
+        val dynamicView = DynamicView()
+        dynamicView.content.value = contentView(120)
+        val scrollView = YScrollView()
+        scrollView += dynamicView
+        scrollView.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
+
+        assertEquals(Sizing.FILL, dynamicView.sizingY)
+        assertEquals(80, scrollView.evaluateActualSizeY())
+        assertEquals(120, dynamicView.evaluateActualSizeY())
+
+        dynamicView.content.value = contentView(200)
+        assertEquals(200, dynamicView.evaluateActualSizeY())
+
+        dynamicView.content.value = contentView(20)
+        assertEquals(20, dynamicView.evaluateContentSizeY())
+        assertEquals(80, dynamicView.evaluateActualSizeY())
     }
 
     @Test
