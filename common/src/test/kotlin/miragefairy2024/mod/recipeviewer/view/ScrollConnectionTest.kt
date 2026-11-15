@@ -39,9 +39,9 @@ class ScrollConnectionTest {
         Assertions.assertEquals(-25.5, barOffset.value)
         barOffset.value = 10.0
         Assertions.assertEquals(0.0, scrollOffset.value)
-        Assertions.assertTrue(scroll.scrollBounds.listeners.isEmpty())
-        Assertions.assertTrue(scrollOffset.listeners.isEmpty())
-        Assertions.assertTrue(barOffset.listeners.isEmpty())
+        Assertions.assertTrue(scroll.scrollBounds.toList().isEmpty())
+        Assertions.assertTrue(scrollOffset.toList().isEmpty())
+        Assertions.assertTrue(barOffset.toList().isEmpty())
     }
 
     @Test
@@ -94,9 +94,9 @@ class ScrollConnectionTest {
             connection.remove()
             listener.remove()
         }
-        Assertions.assertTrue(scroll.scrollBounds.listeners.isEmpty())
-        Assertions.assertTrue(scrollOffset.listeners.isEmpty())
-        Assertions.assertTrue(barOffset.listeners.isEmpty())
+        Assertions.assertTrue(scroll.scrollBounds.toList().isEmpty())
+        Assertions.assertTrue(scrollOffset.toList().isEmpty())
+        Assertions.assertTrue(barOffset.toList().isEmpty())
     }
 
     @Test
@@ -133,9 +133,9 @@ class ScrollConnectionTest {
         }
         try {
             Assertions.assertSame(exception, Assertions.assertThrows(IllegalStateException::class.java) { connectScrollbar(scroll, scrollOffset, bar, barOffset) })
-            Assertions.assertTrue(scroll.scrollBounds.listeners.isEmpty())
-            Assertions.assertTrue(scrollOffset.listeners.isEmpty())
-            Assertions.assertEquals(1, barOffset.listeners.size)
+            Assertions.assertTrue(scroll.scrollBounds.toList().isEmpty())
+            Assertions.assertTrue(scrollOffset.toList().isEmpty())
+            Assertions.assertEquals(1, barOffset.toList().size)
         } finally {
             listener.remove()
         }

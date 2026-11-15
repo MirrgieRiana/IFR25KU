@@ -154,6 +154,43 @@ private class AdapterFixture(vararg views: TestView) {
 }
 
 class ViewAdapterTest {
+
+    @Test
+    fun `ホイールを未消費の背景から次の子へ渡し消費後は止めるのだ`() {
+        val fixture = AdapterFixture()
+        val calls = mutableListOf<String>()
+        var consume = true
+        fun widget(label: String, x: Int, handles: () -> Boolean): AbstractWidget {
+            return object : AbstractWidget(x, 40, 20, 20, text { empty() }) {
+                override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+                override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
+                    Assertions.assertEquals(listOf(35.0, 45.0, 2.0, -3.0), listOf(mouseX, mouseY, scrollX, scrollY))
+                    calls += label
+                    return handles()
+                }
+            }
+        }
+        fixture.interactiveWidgets += widget("outside", 100) { true }
+        fixture.interactiveWidgets += widget("background", 30) { false }
+        fixture.interactiveWidgets += widget("scroll", 30) { consume }
+        fixture.interactiveWidgets += widget("behind", 30) { false }
+        try {
+            Assertions.assertTrue(fixture.adapter.mouseScrolled(35.0, 45.0, 2.0, -3.0))
+            Assertions.assertEquals(listOf("background", "scroll"), calls)
+            calls.clear()
+            consume = false
+            Assertions.assertFalse(fixture.adapter.mouseScrolled(35.0, 45.0, 2.0, -3.0))
+            Assertions.assertEquals(listOf("background", "scroll", "behind"), calls)
+            calls.clear()
+            fixture.adapter.removed()
+            Assertions.assertFalse(fixture.adapter.mouseScrolled(35.0, 45.0, 2.0, -3.0))
+            Assertions.assertTrue(calls.isEmpty())
+        } finally {
+            fixture.adapter.removed()
+        }
+    }
+
     @Test
     fun `複数行入力欄のキー消費と有効時の入力保護と無効なコンテナを検証するのだ`() {
         val fixture = AdapterFixture()
@@ -258,7 +295,7 @@ class ViewAdapterTest {
         assertFalse(adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
         assertFalse(adapter.mouseDragged(0.0, 0.0, 0, 1.0, 1.0))
         assertFalse(adapter.mouseReleased(0.0, 0.0, 0))
-        adapter.mouseClicked()
+        adapter.mouseClicked(0.0, 0.0)
         adapter.removeWidget(widgets[0])
 
         adapter.setOffset(IntPoint(30, 40))
@@ -373,7 +410,7 @@ class ViewAdapterTest {
         fixture.widgets[0].onClick = { fixture.removers[0].remove() }
 
         assertTrue(fixture.screen.mouseClicked(31.0, 41.0, 0))
-        fixture.adapter.mouseClicked()
+        fixture.adapter.mouseClicked(31.0, 41.0)
 
         assertNull(fixture.screen.focused)
         assertFalse(fixture.screen.isDragging)
