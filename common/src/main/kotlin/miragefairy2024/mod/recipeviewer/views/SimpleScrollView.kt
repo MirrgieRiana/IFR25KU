@@ -85,49 +85,26 @@ fun connectScrollbar(
 ): Remover {
 
     var updating = false
-    var pending = false
+
+    fun updateScrollbarView() {
+        val bounds = scrollView.scrollBounds.value
+        scrollbarView.contentLength = bounds.contentLength
+        scrollbarView.viewportLength = bounds.viewportLength
+
+        val wasUpdating = updating
+        updating = true
+        try {
+            scrollbarOffset.value = scrollOffset.value
+        } finally {
+            updating = wasUpdating
+        }
+    }
 
     fun updateScrollView() {
         if (updating) return
 
         scrollOffset.value = scrollbarOffset.value
-
-        if (updating) {
-            pending = true
-            return
-        }
-        updating = true
-        try {
-            do {
-                pending = false
-                val bounds = scrollView.scrollBounds.value
-                scrollbarView.contentLength = bounds.contentLength
-                scrollbarView.viewportLength = bounds.viewportLength
-                scrollbarOffset.value = scrollOffset.value
-            } while (pending)
-        } finally {
-            updating = false
-        }
-    }
-
-    fun updateScrollbarView() {
-        if (updating) {
-            pending = true
-            return
-        }
-        updating = true
-
-        try {
-            do {
-                pending = false
-                val bounds = scrollView.scrollBounds.value
-                scrollbarView.contentLength = bounds.contentLength
-                scrollbarView.viewportLength = bounds.viewportLength
-                scrollbarOffset.value = scrollOffset.value
-            } while (pending)
-        } finally {
-            updating = false
-        }
+        updateScrollbarView()
     }
 
     // スクロール領域の寸法
