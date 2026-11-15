@@ -50,6 +50,9 @@ interface ViewAdapterHost {
  */
 class ViewAdapter(val host: ViewAdapterHost) {
 
+    private var isInitialized = false
+    private var viewController: ViewController? = null
+
     private class MouseClickSentinel : GuiEventListener, NarratableEntry {
 
         var clicked = false
@@ -68,8 +71,6 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     }
 
-    private var isInitialized = false
-    private var viewController: ViewController? = null
     private val mouseClickSentinel = MouseClickSentinel()
     private var mouseClickSentinelRemover: Remover? = null
 
