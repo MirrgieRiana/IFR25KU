@@ -56,6 +56,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
         override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
             clicked = true
+            // true にすると、番兵がフォーカスを受け取っちゃう上に、スロット処理も飛ばされちゃうのだ～🌱
             return false
         }
 
