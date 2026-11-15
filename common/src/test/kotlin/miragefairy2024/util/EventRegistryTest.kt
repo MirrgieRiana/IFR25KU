@@ -3,6 +3,7 @@ package miragefairy2024.util
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class EventRegistryTest {
@@ -80,6 +81,81 @@ class EventRegistryTest {
         assertEquals(listOf(Pair(2, 2)), notifications)
         assertTrue(value.listeners.isEmpty())
         assertTrue(onClosed.listeners.isEmpty())
+    }
+
+    @Test
+    fun `通知中に変わった値はリスナーごとの前回値から最新値へ通知するのだ～🌱`() {
+        val value = ObservableValue(10)
+        val notifications = mutableListOf<Triple<Int, Int, Int>>()
+        value.register { old, new ->
+            notifications += Triple(1, old, new)
+            if (new == 20) {
+                value.value = 25
+                value.value = 30
+                assertEquals(listOf(Triple(1, 10, 20)), notifications)
+            }
+        }
+        value.register { old, new ->
+            notifications += Triple(2, old, new)
+        }
+
+        value.value = 20
+
+        assertEquals(listOf(Triple(1, 10, 20), Triple(1, 20, 30), Triple(2, 10, 30)), notifications)
+    }
+
+    @Test
+    fun `通知中に元の値に戻ったら中間値を受け取ったリスナーだけに通知するのだ～🌱`() {
+        val value = ObservableValue(10)
+        val first = mutableListOf<Pair<Int, Int>>()
+        val second = mutableListOf<Pair<Int, Int>>()
+        value.register { old, new ->
+            first += Pair(old, new)
+            if (new == 20) value.value = 10
+        }
+        value.register { old, new ->
+            second += Pair(old, new)
+        }
+
+        value.value = 20
+
+        assertEquals(listOf(Pair(10, 20), Pair(20, 10)), first)
+        assertTrue(second.isEmpty())
+    }
+
+    @Test
+    fun `通知中に値を変えて例外を送出しても次の代入を通知するのだ～🌱`() {
+        val value = ObservableValue(10)
+        val remover = value.register { _, _ ->
+            value.value = 30
+            throw IllegalStateException("Listener failed")
+        }
+        val notifications = mutableListOf<Pair<Int, Int>>()
+        value.register { old, new ->
+            notifications += Pair(old, new)
+        }
+
+        assertFailsWith<IllegalStateException> { value.value = 20 }
+        assertTrue(notifications.isEmpty())
+        remover.remove()
+        value.value = 40
+
+        assertEquals(listOf(Pair(30, 40)), notifications)
+    }
+
+    @Test
+    fun `同値の別インスタンスは格納して通知を省くのだ～🌱`() {
+        val value = ObservableValue(Pair(1, 2))
+        val notifications = mutableListOf<Pair<Int, Int>>()
+        value.register { _, new ->
+            notifications += new
+        }
+
+        val replacement = Pair(1, 2)
+        value.value = replacement
+
+        assertSame(replacement, value.value)
+        assertTrue(notifications.isEmpty())
     }
 
     @Test
