@@ -25,7 +25,7 @@ class EventRegistryTest {
         remover.remove()
         value.value = 4
         assertEquals(listOf(Pair(2, 2), Pair(2, 3)), notifications)
-        assertTrue(value.listeners.isEmpty())
+        assertTrue(value.toList().isEmpty())
     }
 
     @Test
@@ -41,7 +41,7 @@ class EventRegistryTest {
         assertEquals(listOf(Pair(2, 2), Pair(2, 3)), notifications)
         assertEquals(3, value.value)
         remover.remove()
-        assertTrue(value.listeners.isEmpty())
+        assertTrue(value.toList().isEmpty())
     }
 
     @Test
@@ -61,8 +61,8 @@ class EventRegistryTest {
         onClosed.fire()
         value.value = 4
         assertEquals(listOf(Pair(2, 2), Pair(2, 3)), notifications)
-        assertTrue(value.listeners.isEmpty())
-        assertTrue(onClosed.listeners.isEmpty())
+        assertTrue(value.toList().isEmpty())
+        assertTrue(onClosed.toList().isEmpty())
     }
 
     @Test
@@ -78,8 +78,8 @@ class EventRegistryTest {
 
         value.value = 3
         assertEquals(listOf(Pair(2, 2)), notifications)
-        assertTrue(value.listeners.isEmpty())
-        assertTrue(onClosed.listeners.isEmpty())
+        assertTrue(value.toList().isEmpty())
+        assertTrue(onClosed.toList().isEmpty())
     }
 
     @Test
@@ -88,19 +88,19 @@ class EventRegistryTest {
         val removals = mutableListOf<Int>()
         Remover {
             removals += 1
-            assertEquals(1, onClosed.listeners.size)
+            assertEquals(1, onClosed.toList().size)
         }.removeOn(onClosed)
         Remover {
             removals += 2
-            assertTrue(onClosed.listeners.isEmpty())
+            assertTrue(onClosed.toList().isEmpty())
         }.removeOn(onClosed)
 
         assertTrue(removals.isEmpty())
-        assertEquals(2, onClosed.listeners.size)
+        assertEquals(2, onClosed.toList().size)
         onClosed.fire()
         onClosed.fire()
         assertEquals(listOf(1, 2), removals)
-        assertTrue(onClosed.listeners.isEmpty())
+        assertTrue(onClosed.toList().isEmpty())
     }
 
     @Test
@@ -114,7 +114,7 @@ class EventRegistryTest {
 
         val exception = assertFailsWith<IllegalStateException> { onClosed.fire() }
         assertEquals("Removal failed", exception.message)
-        assertTrue(onClosed.listeners.isEmpty())
+        assertTrue(onClosed.toList().isEmpty())
         onClosed.fire()
         assertEquals(1, removals)
     }
