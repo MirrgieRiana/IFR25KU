@@ -155,8 +155,13 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
             // クリックが発生した位置が実際にフォーカスされている要素の領域内だった場合はフォーカス解除を免除するのだ～🌱
             val hoveredActualFocused = focused.getActualFocused { container ->
+                // クリックされた位置が親要素の範囲外なのだ～🌱
                 if (container is AbstractWidget && !container.isMouseOver(mouseX, mouseY)) return@getActualFocused false
-                container.getChildAt(mouseX, mouseY).isPresent
+                // フォーカスされているのが親要素自身なのだ～🌱
+                if (container.focused == null) return@getActualFocused true
+                // クリックされた位置が親要素によってトリムされた範囲外なのだ～🌱
+                if (!container.getChildAt(mouseX, mouseY).isPresent) return@getActualFocused false
+                true
             }
             if (hoveredActualFocused != null && hoveredActualFocused.isMouseOver(mouseX, mouseY)) return
 
