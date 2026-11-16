@@ -18,6 +18,6 @@ class TooltipView : WrapperView(), PlaceableView {
 
 fun <P> Child<P, *>.wrapTooltip(block: Child<P, TooltipView>.() -> Unit) = this.wrap(TooltipView()).also { block(it) }
 
-fun <P> Child<P, *>.tooltip(provider: (Int, Int) -> List<Component>) = this.wrap(TooltipView().also { it.tooltipProvider = provider })
+fun <P> Child<P, *>.tooltip(provider: (Int, Int) -> List<Component>) = this.wrapTooltip { view.tooltipProvider = provider }
 fun <P> Child<P, *>.tooltip(tooltip: List<Component>) = this.tooltip { _, _ -> tooltip }
 fun <P> Child<P, *>.tooltip(text: Component) = this.tooltip(listOf(text))
