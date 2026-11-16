@@ -165,6 +165,8 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                     }.minContentSizeY(11 * 7 + 5).onClick {
                         recipe.openMessageScreen()
                         true
+                    }.also {
+                        it.view.hoverOverlayColor = 0x00000000
                     }.tooltip(text { guiFullScreenTranslation() })
 
                     view += YSpaceView(sectionSpace)
