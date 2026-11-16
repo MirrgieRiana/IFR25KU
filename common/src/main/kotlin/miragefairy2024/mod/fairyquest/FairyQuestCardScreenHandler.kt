@@ -71,25 +71,6 @@ fun initFairyQuestCardScreenHandler() {
     fairyQuestCardScreenHandlerType.registerViewScreen()
 }
 
-private const val PLAYER_INVENTORY_WIDTH = 9
-
-private const val PLAYER_INVENTORY_HEIGHT = 3
-
-private const val TRADE_SLOT_COUNT = 4
-
-private const val HOTBAR_SLOT_OFFSET = PLAYER_INVENTORY_WIDTH * PLAYER_INVENTORY_HEIGHT
-private const val INPUT_SLOT_OFFSET = HOTBAR_SLOT_OFFSET + PLAYER_INVENTORY_WIDTH
-private const val OUTPUT_SLOT_OFFSET = INPUT_SLOT_OFFSET + TRADE_SLOT_COUNT
-
-private val PANEL_TEXTURE = "textures/gui/" * MirageFairy2024.identifier("panel") * ".png"
-
-private const val PANEL_MARGIN = 7
-
-private const val SECTION_SPACE = 3
-private const val PLAYER_INVENTORY_NAME_SPACE = 1
-private const val HOTBAR_SPACE = 4
-private const val INVENTORY_NAME_MARGIN_X = 1
-
 class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, val recipe: FairyQuestRecipe, val context: ContainerLevelAccess) : AbstractContainerMenu(fairyQuestCardScreenHandlerType(), syncId), ViewProviderMenu {
     private val inputInventory = SimpleContainer(4)
     private var processingInventory = SimpleContainer(0)
@@ -135,9 +116,23 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
     }
 
     override fun createView(title: Component, playerInventoryTitle: Component): View {
+        val playerInventoryWidth = 9
+        val playerInventoryHeight = 3
+        val tradeSlotCount = 4
+        val hotbarSlotOffset = playerInventoryWidth * playerInventoryHeight
+        val inputSlotOffset = hotbarSlotOffset + playerInventoryWidth
+        val outputSlotOffset = inputSlotOffset + tradeSlotCount
+
+        val panelTexture = "textures/gui/" * MirageFairy2024.identifier("panel") * ".png"
+        val panelMargin = 7
+        val sectionSpace = 3
+        val playerInventoryNameSpace = 1
+        val hotbarSpace = 4
+        val inventoryNameMarginX = 1
+
         return View {
             view += StackView().configure { // 外枠なのだ～🌱
-                view += NinePatchImageView(PANEL_TEXTURE, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                view += NinePatchImageView(panelTexture, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
                 view += YListView().configure { // 内枠なのだ～🌱
 
                     view += MultiLineTextView().configure {
@@ -145,9 +140,9 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                         view.alignmentX = Alignment.CENTER
                         view.color = ColorPair.DARK_GRAY
                         view.shadow = false
-                    }.margin(INVENTORY_NAME_MARGIN_X, 0)
+                    }.margin(inventoryNameMarginX, 0)
 
-                    view += YSpaceView(SECTION_SPACE)
+                    view += YSpaceView(sectionSpace)
 
                     // 依頼本文なのだ～🌱
                     view += StackView().configure {
@@ -172,13 +167,13 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                         true
                     }.tooltip(text { guiFullScreenTranslation() })
 
-                    view += YSpaceView(SECTION_SPACE)
+                    view += YSpaceView(sectionSpace)
 
                     // 取引欄なのだ～🌱
                     view += XListView().configure {
-                        repeat(TRADE_SLOT_COUNT) { i ->
+                        repeat(tradeSlotCount) { i ->
                             view += StackView().configure {
-                                val slot = slots[INPUT_SLOT_OFFSET + i]
+                                val slot = slots[inputSlotOffset + i]
                                 val input = recipe.inputs.getOrNull(i)?.invoke()
                                 val ghost = GhostRecipeItemView(input?.toItemStacks().orEmpty())
 
@@ -203,9 +198,9 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                             progressView.progress = progress / recipe.duration.toDouble()
                         }
 
-                        repeat(TRADE_SLOT_COUNT) { i ->
+                        repeat(tradeSlotCount) { i ->
                             view += StackView().configure {
-                                val slot = slots[OUTPUT_SLOT_OFFSET + i]
+                                val slot = slots[outputSlotOffset + i]
                                 val output = recipe.outputs.getOrNull(i)?.invoke()
                                 val ghost = GhostRecipeItemView(listOfNotNull(output))
 
@@ -222,35 +217,35 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                         }
                     }
 
-                    view += YSpaceView(SECTION_SPACE)
+                    view += YSpaceView(sectionSpace)
 
                     view += MultiLineTextView().configure {
                         view.text.value = playerInventoryTitle
                         view.color = ColorPair.DARK_GRAY
                         view.shadow = false
-                    }.margin(INVENTORY_NAME_MARGIN_X, 0)
+                    }.margin(inventoryNameMarginX, 0)
 
-                    view += YSpaceView(PLAYER_INVENTORY_NAME_SPACE)
+                    view += YSpaceView(playerInventoryNameSpace)
 
                     // プレイヤーのインベントリなのだ～🌱
-                    repeat(PLAYER_INVENTORY_HEIGHT) { r ->
+                    repeat(playerInventoryHeight) { r ->
                         view += XListView().configure {
-                            repeat(PLAYER_INVENTORY_WIDTH) { c ->
-                                view += menuSlotView(slots[PLAYER_INVENTORY_WIDTH * r + c], SlotType.NORMAL)
+                            repeat(playerInventoryWidth) { c ->
+                                view += menuSlotView(slots[playerInventoryWidth * r + c], SlotType.NORMAL)
                             }
                         }
                     }
 
-                    view += YSpaceView(HOTBAR_SPACE)
+                    view += YSpaceView(hotbarSpace)
 
                     // ホットバーなのだ～🌱
                     view += XListView().configure {
-                        repeat(PLAYER_INVENTORY_WIDTH) { c ->
-                            view += menuSlotView(slots[HOTBAR_SLOT_OFFSET + c], SlotType.NORMAL)
+                        repeat(playerInventoryWidth) { c ->
+                            view += menuSlotView(slots[hotbarSlotOffset + c], SlotType.NORMAL)
                         }
                     }
 
-                }.margin(PANEL_MARGIN)
+                }.margin(panelMargin)
             }
         }
     }
