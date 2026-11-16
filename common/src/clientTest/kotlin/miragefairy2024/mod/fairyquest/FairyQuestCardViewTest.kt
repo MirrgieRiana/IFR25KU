@@ -105,14 +105,9 @@ class FairyQuestCardViewTest {
         val input = ghosts[0].first
         val output = ghosts[4].first
         val progress = placements.single { it.first is ProgressView }.first as ProgressView
-        val beforeRenderViews = placements.mapNotNull { (view, _) -> view as? BeforeRenderView }
-        Assertions.assertEquals(9, beforeRenderViews.size)
+        val beforeRenderView = placements.single { it.first is BeforeRenderView }.first as BeforeRenderView
 
-        fun beforeRender() {
-            beforeRenderViews.forEach {
-                it.onBeforeRender.fire()
-            }
-        }
+        fun beforeRender() = beforeRenderView.onBeforeRender.fire()
 
         beforeRender()
         Assertions.assertTrue(input.showItemStack && input.showOverlay)
