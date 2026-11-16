@@ -161,6 +161,26 @@ class ScrollConnectionTest {
     }
 
     @Test
+    fun `バーの位置が元の値に戻った場合も表示領域にその値を反映するのだ`() {
+        val scroll = XSimpleScrollView()
+        val bar = XScrollbarView()
+        val scrollOffset = ObservableValue(0.0)
+        val barOffset = ObservableValue(0.0)
+        val listener = barOffset.register { _, new ->
+            if (new == 15.0) barOffset.value = 0.0
+        }
+        val connection = connectScrollbar(scroll, scrollOffset, bar, barOffset)
+        try {
+            scrollOffset.value = 15.0
+            Assertions.assertEquals(0.0, scrollOffset.value)
+            Assertions.assertEquals(0.0, barOffset.value)
+        } finally {
+            connection.remove()
+            listener.remove()
+        }
+    }
+
+    @Test
     fun `初期同期の通知が失敗したら接続の購読を残さないのだ`() {
         val scroll = XSimpleScrollView()
         val bar = XScrollbarView()

@@ -11,6 +11,7 @@ import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
 import miragefairy2024.util.plus
 import miragefairy2024.util.register
+import miragefairy2024.util.registerAndInitialize
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 
@@ -76,7 +77,7 @@ class YSimpleScrollView : SimpleScrollView() {
 
 }
 
-/** スクロール領域の表示範囲とスクロールバーの設定値を接続するのだ～🌱 */
+/** スクロール領域の寸法をバーへ同期し、両側の指定位置を共通の位置に同期するのだ～🌱 */
 fun connectScrollbar(
     scrollView: SimpleScrollView,
     scrollOffset: ObservableValue<Double>,
@@ -84,47 +85,48 @@ fun connectScrollbar(
     scrollbarOffset: ObservableValue<Double>,
 ): Remover {
 
-    var updating = false
+    val sharedOffset = ObservableValue(scrollOffset.value)
 
-    fun updateScrollbarView() {
-        val bounds = scrollView.scrollBounds.value
+    fun connectOffset(offset: ObservableValue<Double>): Remover {
+        var publishing = false
+
+        fun publishOffset() {
+            val requested = sharedOffset.value
+            val wasPublishing = publishing
+            publishing = true
+            try {
+                offset.value = requested
+            } finally {
+                publishing = wasPublishing
+            }
+            // 同じ共有値の反映中に補正された位置を、共有値に反映するのだ～🌱
+            if (sharedOffset.value.equals(requested) && !offset.value.equals(requested)) sharedOffset.value = offset.value
+        }
+
+        val sharedRemover = sharedOffset.register { _, _ -> publishOffset() }
+        val offsetRemover = offset.register { _, position ->
+            if (publishing) return@register
+            sharedOffset.value = position
+            // 共有値が元の値に戻って通知を省いた場合も、その値を反映するのだ～🌱
+            if (offset.value.equals(position) && !sharedOffset.value.equals(position)) publishOffset()
+        }
+        val remover = sharedRemover + offsetRemover
+        try {
+            publishOffset()
+        } catch (e: Throwable) {
+            remover.remove()
+            throw e
+        }
+        return remover
+    }
+
+    var remover = scrollView.scrollBounds.registerAndInitialize { _, bounds ->
         scrollbarView.contentLength = bounds.contentLength
         scrollbarView.viewportLength = bounds.viewportLength
-
-        val wasUpdating = updating
-        updating = true
-        try {
-            scrollbarOffset.value = scrollOffset.value
-        } finally {
-            updating = wasUpdating
-        }
     }
-
-    fun updateScrollView() {
-        if (updating) return
-
-        scrollOffset.value = scrollbarOffset.value
-        updateScrollbarView()
-    }
-
-    // スクロール領域の寸法
-    val scrollBoundsRemover = scrollView.scrollBounds.register { _, _ ->
-        updateScrollbarView()
-    }
-
-    // 表示領域の表示範囲
-    val scrollOffsetRemover = scrollOffset.register { _, _ ->
-        updateScrollbarView()
-    }
-
-    // スクロールバーの設定値
-    val scrollbarOffsetRemover = scrollbarOffset.register { _, _ ->
-        updateScrollView()
-    }
-
-    val remover = scrollBoundsRemover + scrollOffsetRemover + scrollbarOffsetRemover
     try {
-        updateScrollbarView()
+        remover += connectOffset(scrollOffset)
+        remover += connectOffset(scrollbarOffset)
     } catch (e: Throwable) {
         remover.remove()
         throw e
