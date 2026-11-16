@@ -19,6 +19,7 @@ import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.text
 import miragefairy2024.util.translate
 import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
 import net.minecraft.client.gui.ComponentPath
@@ -147,8 +148,8 @@ abstract class VanillaScrollViewWidget(
         val maxScrollOffset = evaluateMaxScrollOffset().toDouble()
         // 範囲外から戻る途中も、入力の移動量で少しずつ戻れるようにするのだ～🌱
         return when {
-            delta < 0.0 && offset > 0.0 -> updateScroll((offset + delta).coerceAtLeast(0.0))
-            delta > 0.0 && offset < maxScrollOffset -> updateScroll((offset + delta).coerceAtMost(maxScrollOffset))
+            delta < 0.0 && offset > 0.0 -> updateScroll(offset + delta atLeast 0.0)
+            delta > 0.0 && offset < maxScrollOffset -> updateScroll(offset + delta atMost maxScrollOffset)
             else -> false
         }
     }
