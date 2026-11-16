@@ -278,12 +278,12 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                     position.weight = 1.0
                     recipeEntry.recipe.getParagraphs().forEachIndexed { index, paragraph ->
                         if (index > 0) view += PARAGRAPH_SPACE_CHILDREN_GENERATOR
-                        val childrenGenerator = MultiLineTextChildrenGenerator(paragraph) { Alignment.START }
-                        childrenGenerator.onTextViewCreated.register {
-                            it.color = TEXT_COLOR
-                            it.shadow = false
+                        view += MultiLineTextChildrenGenerator(paragraph) { Alignment.START }.also { childrenGenerator ->
+                            childrenGenerator.onTextViewCreated.register {
+                                it.color = TEXT_COLOR
+                                it.shadow = false
+                            }
                         }
-                        view += childrenGenerator
                     }
 
                     view.pageCount.register { _, it ->
