@@ -197,7 +197,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                                 view += GhostRecipeItemView(input?.toItemStacks().orEmpty()).configure {
                                     view.overlayArgb = 0x20FF0000
                                     onBeforeRender.register {
-                                        val itemStack = slot.item
+                                        val itemStack: ItemStack = slot.item
                                         view.showItemStack = itemStack.isEmpty
                                         view.showOverlay = input != null && (!input.ingredient.test(itemStack) || itemStack.count < input.count)
                                     }
@@ -223,7 +223,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                                 view += GhostRecipeItemView(listOfNotNull(output)).configure {
                                     view.overlayArgb = 0x2000FF00
                                     onBeforeRender.register {
-                                        val itemStack = slot.item
+                                        val itemStack: ItemStack = slot.item
                                         view.showItemStack = itemStack.isEmpty
                                         view.showOverlay = itemStack.isEmpty && output != null && output.isNotEmpty
                                     }
