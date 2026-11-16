@@ -27,11 +27,13 @@ import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.menuSlotView
 import miragefairy2024.mod.recipeviewer.views.minContentSizeY
-import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
+import miragefairy2024.mod.recipeviewer.views.wrapClickable
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.OutputSlot
 import miragefairy2024.util.Registration
+import miragefairy2024.util.fire
 import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotEmpty
@@ -119,9 +121,9 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
         val playerInventoryWidth = 9
         val playerInventoryHeight = 3
         val tradeSlotCount = 4
-        val hotbarSlotOffset = playerInventoryWidth * playerInventoryHeight
-        val inputSlotOffset = hotbarSlotOffset + playerInventoryWidth
-        val outputSlotOffset = inputSlotOffset + tradeSlotCount
+        val hotbarSlotIndexOffset = playerInventoryWidth * playerInventoryHeight
+        val inputSlotIndexOffset = hotbarSlotIndexOffset + playerInventoryWidth
+        val outputSlotIndexOffset = inputSlotIndexOffset + tradeSlotCount
 
         val panelTexture = "textures/gui/" * MirageFairy2024.identifier("panel") * ".png"
         val panelMargin = 7
@@ -129,6 +131,8 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
         val playerInventoryNameSpace = 1
         val hotbarSpace = 4
         val inventoryNameMarginX = 1
+
+        val onBeforeRender = EventRegistry<() -> Unit>()
 
         return View {
             view += StackView().configure { // 外枠なのだ～🌱
@@ -149,74 +153,84 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
 
+                        // 外枠装飾用パネルなのだ～🌱
                         view += NinePatchImageView(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
+
+                        // スクロールコンテナなのだ～🌱
                         view += YScrollView().configure {
                             view += StackView().configure {
                                 view.sizingX = Sizing.FILL
 
+                                // 罫線装飾用パネルなのだ～🌱
                                 view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11, 0, 11, 0, 0, 11, 0, true, true)
+
+                                // メッセージテキストラベルなのだ～🌱
                                 view += MultiLineTextView().configure {
                                     view.text.value = recipe.message
                                     view.color = ColorPair(0xFF6B472E.toInt(), 0xFF6B472E.toInt())
                                     view.shadow = false
                                 }.margin(0, 0, 0, 1)
+
                             }
                         }.margin(11, 6, 11, 11)
-                    }.minContentSizeY(11 * 7 + 5).onClick {
-                        recipe.openMessageScreen()
-                        true
-                    }.also {
-                        it.view.hoverOverlayColor = 0x00000000
+
+                    }.minContentSizeY(11 * 7 + 5).wrapClickable {
+                        view.hoverOverlayColor = 0x00000000
+                        // クリックしたらメッセージを全画面で表示するのだ～🌱
+                        view.onClick.register {
+                            recipe.openMessageScreen()
+                            true
+                        }
                     }.tooltip(text { guiFullScreenTranslation() })
 
                     view += YSpaceView(sectionSpace)
 
                     // 取引欄なのだ～🌱
                     view += XListView().configure {
+
                         repeat(tradeSlotCount) { i ->
                             view += StackView().configure {
-                                val slot = slots[inputSlotOffset + i]
+                                val slot = slots[inputSlotIndexOffset + i]
                                 val input = recipe.inputs.getOrNull(i)?.invoke()
-                                val ghost = GhostRecipeItemView(input?.toItemStacks().orEmpty())
 
                                 view += menuSlotView(slot, SlotType.NORMAL)
-                                view += ghost.configure {
+                                view += GhostRecipeItemView(input?.toItemStacks().orEmpty()).configure {
                                     view.overlayArgb = 0x20FF0000
+                                    onBeforeRender.register {
+                                        val itemStack = slot.item
+                                        view.showItemStack = itemStack.isEmpty
+                                        view.showOverlay = input != null && (!input.ingredient.test(itemStack) || itemStack.count < input.count)
+                                    }
                                 }.margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
-                                view += BeforeRenderView {
-                                    val stack = slot.item
-                                    ghost.showItemStack = stack.isEmpty
-                                    ghost.showOverlay = input != null && (!input.ingredient.test(stack) || stack.count < input.count)
-                                }
                             }
                         }
 
-                        val progressView = ProgressView(
+                        view += ProgressView(
                             ViewTexture(MirageFairy2024.identifier("textures/gui/fairy_quest_progress_background.png"), IntPoint(16, 16)),
                             ViewTexture(MirageFairy2024.identifier("textures/gui/fairy_quest_progress_overlay.png"), IntPoint(16, 16)),
-                        )
-                        view += progressView.configure().margin(1)
-                        view += BeforeRenderView {
-                            progressView.progress = progress / recipe.duration.toDouble()
-                        }
+                        ).configure {
+                            onBeforeRender.register {
+                                view.progress = progress / recipe.duration.toDouble()
+                            }
+                        }.margin(1)
 
                         repeat(tradeSlotCount) { i ->
                             view += StackView().configure {
-                                val slot = slots[outputSlotOffset + i]
+                                val slot = slots[outputSlotIndexOffset + i]
                                 val output = recipe.outputs.getOrNull(i)?.invoke()
-                                val ghost = GhostRecipeItemView(listOfNotNull(output))
 
                                 view += menuSlotView(slot, SlotType.NORMAL)
-                                view += ghost.configure {
+                                view += GhostRecipeItemView(listOfNotNull(output)).configure {
                                     view.overlayArgb = 0x2000FF00
+                                    onBeforeRender.register {
+                                        val itemStack = slot.item
+                                        view.showItemStack = itemStack.isEmpty
+                                        view.showOverlay = itemStack.isEmpty && output != null && output.isNotEmpty
+                                    }
                                 }.margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
-                                view += BeforeRenderView {
-                                    val empty = slot.item.isEmpty
-                                    ghost.showItemStack = empty
-                                    ghost.showOverlay = empty && ghost.itemStacks.any { it.isNotEmpty }
-                                }
                             }
                         }
+
                     }
 
                     view += YSpaceView(sectionSpace)
@@ -237,17 +251,18 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                             }
                         }
                     }
-
                     view += YSpaceView(hotbarSpace)
-
-                    // ホットバーなのだ～🌱
                     view += XListView().configure {
                         repeat(playerInventoryWidth) { c ->
-                            view += menuSlotView(slots[hotbarSlotOffset + c], SlotType.NORMAL)
+                            view += menuSlotView(slots[hotbarSlotIndexOffset + c], SlotType.NORMAL)
                         }
                     }
 
                 }.margin(panelMargin)
+
+                view += BeforeRenderView {
+                    onBeforeRender.fire()
+                }
             }
         }
     }
