@@ -9,6 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.y2
 import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.util.fire
 import mirrg.kotlin.helium.Slot
+import mirrg.kotlin.hydrogen.alphaOfArgb
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderType
@@ -32,14 +33,15 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
     }
 
     override fun render(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
-        if (isHovered) {
+        val color = view.hoverOverlayColor
+        if (isHovered && color.alphaOfArgb != 0) {
             graphics.fill(
                 RenderType.guiOverlay(),
                 bounds.x1,
                 bounds.y1,
                 bounds.x2,
                 bounds.y2,
-                0x80FFFFFF.toInt(),
+                color,
             )
         }
     }
