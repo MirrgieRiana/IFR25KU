@@ -5,7 +5,7 @@ import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.util.ItemLootPoolEntry
 import miragefairy2024.util.LootPool
-import miragefairy2024.util.configure
+import miragefairy2024.util.apply2
 import miragefairy2024.util.get
 import miragefairy2024.util.registerComposterInput
 import miragefairy2024.util.registerCutoutRenderLayer
@@ -46,7 +46,7 @@ abstract class AbstractTreeLeavesBlockCard(configuration: TreeBlockConfiguration
 
         // レシピ
         block.registerLootTableGeneration { it, registries ->
-            it.createLeavesDrops(block(), sapling().block(), 0.05F / 4F, 0.0625F / 4F, 0.083333336F / 4F, 0.1F / 4F).configure {
+            it.createLeavesDrops(block(), sapling().block(), 0.05F / 4F, 0.0625F / 4F, 0.083333336F / 4F, 0.1F / 4F).apply2 {
                 if (extraDrop != null) {
                     withPool(LootPool(it.applyExplosionDecay(block(), ItemLootPoolEntry(extraDrop()) {
                         apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
