@@ -19,4 +19,6 @@ class ClickableView : WrapperView(), PlaceableView {
     }
 }
 
+fun <P> Child<P, *>.wrapClickable(block: Child<P, ClickableView>.() -> Unit) = this.wrap(ClickableView()).also { block(it) }
+
 fun <P> Child<P, *>.onClick(listener: () -> Boolean) = this.wrap(ClickableView().also { it.onClick.register(listener) })
