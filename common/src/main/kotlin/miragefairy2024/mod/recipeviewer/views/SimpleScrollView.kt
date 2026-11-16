@@ -9,7 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
-import miragefairy2024.util.flatten
+import miragefairy2024.util.plus
 import miragefairy2024.util.register
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
@@ -77,18 +77,19 @@ class YSimpleScrollView : SimpleScrollView() {
 }
 
 /**
- * 領域とバーの指定位置を [sharedOffset] と同期し、領域の寸法をバーへ反映するのだ～🌱
- * 初期同期では [sharedOffset] の指定位置を使い、戻り値で位置と寸法の購読を解除するのだ～🌱
+ * 領域のコンテンツ全長と表示領域長をバーへ反映し、別々の指定位置を双方向に同期するのだ～🌱
+ * 両方の位置引数に同じ `ObservableValue` を渡した場合は、寸法だけを購読するのだ～🌱
+ * 戻り値で接続の購読を解除するのだ～🌱
+ *
+ * @param scrollOffset 領域の指定位置で、初回はこの値をバーへ反映するのだ～🌱
+ * @param scrollbarOffset バーの指定位置なのだ～🌱
  */
 fun connectScrollbar(
     scrollView: SimpleScrollView,
     scrollOffset: ObservableValue<Double>,
     scrollbarView: ScrollbarView,
     scrollbarOffset: ObservableValue<Double>,
-    sharedOffset: ObservableValue<Double> = ObservableValue(scrollOffset.value),
 ): Remover {
-
-    val offsets = listOf(scrollOffset, scrollbarOffset).distinct().filter { it !== sharedOffset }
 
     fun updateBounds() {
         val bounds = scrollView.scrollBounds.value
@@ -96,31 +97,35 @@ fun connectScrollbar(
         scrollbarView.viewportLength = bounds.viewportLength
     }
 
-    fun publishOffset(offset: ObservableValue<Double>) {
-        val requested = sharedOffset.value
-        offset.value = requested
-        // 購読先が前回通知された値へ戻ると通知が省かれるので、代入後の値も確認するのだ～🌱
-        if (sharedOffset.value.equals(requested)) sharedOffset.value = offset.value
-    }
-
-    val scrollBoundsRemover = scrollView.scrollBounds.register { _, _ ->
-        updateBounds()
-    }
-    val sharedRemover = sharedOffset.register { _, _ ->
-        offsets.forEach { publishOffset(it) }
-    }
-    val offsetRemovers = offsets.map { offset ->
-        offset.register { _, position ->
-            sharedOffset.value = position
-            // 共通位置が元に戻って再通知されなかった場合も、入力元まで同期するのだ～🌱
-            if (offset.value.equals(position) && !sharedOffset.value.equals(position)) publishOffset(offset)
+    var updatingOffset = false
+    fun updateOffset(source: ObservableValue<Double>, target: ObservableValue<Double>) {
+        if (updatingOffset) return
+        updatingOffset = true
+        try {
+            while (!source.value.equals(target.value)) {
+                val position = source.value
+                target.value = position
+                // 通知中に反映元が更新された場合は、次の反映で新しい値を使うのだ～🌱
+                if (source.value.equals(position)) source.value = target.value
+            }
+        } finally {
+            updatingOffset = false
         }
     }
 
-    val remover = (offsetRemovers + scrollBoundsRemover + sharedRemover).flatten()
+    val boundsRemover = scrollView.scrollBounds.register { _, _ -> updateBounds() }
+    val sharesOffset = scrollOffset === scrollbarOffset
+    val remover = if (sharesOffset) {
+        boundsRemover
+    } else {
+        val scrollOffsetRemover = scrollOffset.register { _, _ -> updateOffset(scrollOffset, scrollbarOffset) }
+        val scrollbarOffsetRemover = scrollbarOffset.register { _, _ -> updateOffset(scrollbarOffset, scrollOffset) }
+        boundsRemover + scrollOffsetRemover + scrollbarOffsetRemover
+    }
+
     try {
         updateBounds()
-        offsets.forEach { publishOffset(it) }
+        if (!sharesOffset) updateOffset(scrollOffset, scrollbarOffset)
     } catch (e: Throwable) {
         remover.remove()
         throw e

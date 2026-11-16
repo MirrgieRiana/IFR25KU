@@ -12,58 +12,46 @@ import org.junit.jupiter.api.Test
 
 class ScrollConnectionTest {
     @Test
-    fun `組み合わせる側の共通位置と両側の指定位置を同期して解除できるのだ`() {
+    fun `指定位置を共有すると寸法だけを同期して解除できるのだ`() {
         val scroll = XSimpleScrollView()
         val bar = XScrollbarView()
-        val scrollOffset = ObservableValue(10.0)
-        val barOffset = ObservableValue(20.0)
         val sharedOffset = ObservableValue(120.5)
         scroll.scrollBounds.value = ScrollBounds(100, 50)
 
-        val connection = connectScrollbar(scroll, scrollOffset, bar, barOffset, sharedOffset)
+        val connection = connectScrollbar(scroll, sharedOffset, bar, sharedOffset)
         try {
-            Assertions.assertEquals(120.5, scrollOffset.value)
-            Assertions.assertEquals(120.5, barOffset.value)
-            scrollOffset.value = 30.25
-            Assertions.assertEquals(30.25, sharedOffset.value)
-            Assertions.assertEquals(30.25, barOffset.value)
-            barOffset.value = 40.75
-            Assertions.assertEquals(40.75, sharedOffset.value)
-            Assertions.assertEquals(40.75, scrollOffset.value)
+            Assertions.assertEquals(100, bar.contentLength)
+            Assertions.assertEquals(50, bar.viewportLength)
+            Assertions.assertEquals(120.5, sharedOffset.value)
+            Assertions.assertTrue(sharedOffset.toList().isEmpty())
             sharedOffset.value = -5.5
-            Assertions.assertEquals(-5.5, scrollOffset.value)
-            Assertions.assertEquals(-5.5, barOffset.value)
+            scroll.scrollBounds.value = ScrollBounds(200, 75)
+            Assertions.assertEquals(200, bar.contentLength)
+            Assertions.assertEquals(75, bar.viewportLength)
+            Assertions.assertEquals(-5.5, sharedOffset.value)
         } finally {
             connection.remove()
         }
 
-        scrollOffset.value = 5.0
-        Assertions.assertEquals(-5.5, barOffset.value)
+        scroll.scrollBounds.value = ScrollBounds(300, 100)
+        Assertions.assertEquals(200, bar.contentLength)
+        Assertions.assertEquals(75, bar.viewportLength)
         Assertions.assertEquals(-5.5, sharedOffset.value)
-        barOffset.value = 25.0
-        sharedOffset.value = 35.0
-        scroll.scrollBounds.value = ScrollBounds(200, 75)
-        Assertions.assertEquals(5.0, scrollOffset.value)
-        Assertions.assertEquals(25.0, barOffset.value)
-        Assertions.assertEquals(100, bar.contentLength)
-        Assertions.assertEquals(50, bar.viewportLength)
-        Assertions.assertTrue(sharedOffset.toList().isEmpty())
+        Assertions.assertTrue(scroll.scrollBounds.toList().isEmpty())
     }
 
     @Test
-    fun `バーの通知中に補正された指定位置を共通位置と領域へ反映するのだ`() {
+    fun `バーの通知中に補正された指定位置を領域へ反映するのだ`() {
         val scroll = XSimpleScrollView()
         val bar = XScrollbarView()
         val scrollOffset = ObservableValue(0.0)
         val barOffset = ObservableValue(0.0)
-        val sharedOffset = ObservableValue(0.0)
         val listener = barOffset.register { _, new ->
             if (new == 15.0) barOffset.value = 20.0
         }
-        val connection = connectScrollbar(scroll, scrollOffset, bar, barOffset, sharedOffset)
+        val connection = connectScrollbar(scroll, scrollOffset, bar, barOffset)
         try {
             scrollOffset.value = 15.0
-            Assertions.assertEquals(20.0, sharedOffset.value)
             Assertions.assertEquals(20.0, scrollOffset.value)
             Assertions.assertEquals(20.0, barOffset.value)
         } finally {
