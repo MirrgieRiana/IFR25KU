@@ -21,41 +21,44 @@ class ViewToast(rootView: View) : Toast {
     private val widgetSlots = mutableListOf<WidgetSlot>()
     private var size = IntPoint.ZERO
 
+    private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
+
+        override fun getRenderingProxy() = renderingProxy
+        override fun getViewPlacerRegistry() = VANILLA_VIEW_PLACER_REGISTRY
+
+        override fun getScreen() = null
+        override fun canPlaceMenuSlots() = false
+        override fun getRegionSizeX() = 1000
+        override fun getRegionSizeY() = 1000
+
+        override fun createRootView() = rootView
+
+        override fun getUiOffset() = IntPoint.ZERO
+        override fun setUiSize(uiSize: IntPoint) = run { size = uiSize }
+
+        override fun init() {
+            widgetSlots.clear()
+        }
+
+        override fun addRenderableWidget(widget: AbstractWidget): Remover {
+            val widgetSlot = WidgetSlot(widget)
+            widgetSlots += widgetSlot
+            return Remover { widgetSlots -= widgetSlot }
+        }
+
+        override fun addRenderableOnly(widget: AbstractWidget) = addRenderableWidget(widget)
+
+    })
+
     init {
-        ViewAdapter(object : ViewAdapterHost {
-
-            override fun getRenderingProxy() = renderingProxy
-            override fun getViewPlacerRegistry() = VANILLA_VIEW_PLACER_REGISTRY
-
-            override fun getScreen() = null
-            override fun canPlaceMenuSlots() = false
-            override fun getRegionSizeX() = 1000
-            override fun getRegionSizeY() = 1000
-
-            override fun createRootView() = rootView
-
-            override fun getUiOffset() = IntPoint.ZERO
-            override fun setUiSize(uiSize: IntPoint) = run { size = uiSize }
-
-            override fun init() {
-                widgetSlots.clear()
-            }
-
-            override fun addRenderableWidget(widget: AbstractWidget): Remover {
-                val widgetSlot = WidgetSlot(widget)
-                widgetSlots += widgetSlot
-                return Remover { widgetSlots -= widgetSlot }
-            }
-
-            override fun addRenderableOnly(widget: AbstractWidget) = addRenderableWidget(widget)
-
-        }).init()
+        viewAdapter.init()
     }
 
     override fun width() = size.x
     override fun height() = size.y
 
     override fun render(guiGraphics: GuiGraphics, toastComponent: ToastComponent, timeSinceLastVisible: Long): Toast.Visibility {
+        viewAdapter.beforeRender()
         val partialTick = Minecraft.getInstance().timer.getGameTimeDeltaPartialTick(true)
         widgetSlots.forEach {
             it.widget.render(guiGraphics, -1000, -1000, partialTick)
