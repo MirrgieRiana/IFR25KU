@@ -120,11 +120,13 @@ class VanillaSimpleScrollViewWidgetTest {
     }
 
     @Test
-    fun `範囲外で表示領域内の子に Tab で移っても現在位置を保つのだ`() {
+    fun `範囲外から逆 Tab で子に移ると子が収まる分だけスクロールするのだ`() {
         GuiTestEnvironment().use {
             val view = YSimpleScrollView()
             view += YListView().also {
-                it += YSpaceView(250)
+                it += YSpaceView(220)
+                it += SimpleScrollTestView(IntPoint(20, 20))
+                it += YSpaceView(10)
                 it += SimpleScrollTestView(IntPoint(20, 20))
                 it += YSpaceView(30)
             }
@@ -132,12 +134,13 @@ class VanillaSimpleScrollViewWidgetTest {
             val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
             Mockito.`when`(context.origin).thenReturn(IntPoint.ZERO)
             val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
-            lateinit var child: AbstractWidget
+            val children = mutableListOf<AbstractWidget>()
             registry.register { childContext, _: SimpleScrollTestView, bounds ->
-                child = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
+                val child: AbstractWidget = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
                     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
                     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
                 }
+                children += child
                 val remover = childContext.addRenderableWidget(child)
                 object : ViewController {
                     override fun setOffset(offset: IntPoint) = child.setPosition(offset.x, offset.y)
@@ -150,15 +153,22 @@ class VanillaSimpleScrollViewWidgetTest {
                 widget.isFocused = true
                 Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
                 widget.setHeight(100)
-                Assertions.assertEquals(40, child.y)
+                Assertions.assertEquals(listOf(10, 40), children.map { it.y })
 
-                val path = widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))
-                Assertions.assertNotNull(path)
-                widget.currentFocusPath?.applyFocus(false)
-                path!!.applyFocus(true)
+                fun focusPrevious() {
+                    val path = widget.nextFocusPath(FocusNavigationEvent.TabNavigation(false))
+                    Assertions.assertNotNull(path)
+                    widget.currentFocusPath?.applyFocus(false)
+                    path!!.applyFocus(true)
+                }
 
-                Assertions.assertTrue(child.isFocused)
-                Assertions.assertEquals(40, child.y)
+                focusPrevious()
+                Assertions.assertTrue(children[1].isFocused)
+                Assertions.assertEquals(listOf(10, 40), children.map { it.y })
+
+                focusPrevious()
+                Assertions.assertTrue(children[0].isFocused)
+                Assertions.assertEquals(listOf(20, 50), children.map { it.y })
             } finally {
                 widget.dispose()
                 widget.detach()
