@@ -458,7 +458,7 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
 
         return View {
             view += StackView().configure { // 外枠なのだ～🌱
-                view += NinePatchImageView(PANEL_TEXTURE, 16, 16, 5, 5, 5, 5, 5, 5, false)
+                view += NinePatchImageView(PANEL_TEXTURE, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
                 view += YListView().configure { // 内枠なのだ～🌱
                     view.sizingX = Sizing.FILL
 

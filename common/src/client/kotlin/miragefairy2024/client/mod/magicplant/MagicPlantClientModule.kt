@@ -3,14 +3,11 @@ package miragefairy2024.client.mod.magicplant
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.RenderingEvent
 import miragefairy2024.client.util.stack
-import miragefairy2024.clientProxy
 import miragefairy2024.mod.magicplant.CreativeGeneAmpouleItem
 import miragefairy2024.mod.magicplant.MagicPlantSeedItem
-import miragefairy2024.mod.magicplant.TraitEncyclopediaPageScreen
 import miragefairy2024.mod.magicplant.getTraitStacks
 import miragefairy2024.mod.magicplant.minus
 import miragefairy2024.mod.magicplant.negativeBitCount
-import miragefairy2024.mod.magicplant.onOpenTraitEncyclopediaPageScreen
 import miragefairy2024.mod.magicplant.positiveBitCount
 import miragefairy2024.mod.magicplant.texture
 import miragefairy2024.util.register
@@ -52,10 +49,5 @@ fun initMagicPlantClientModule() {
             if (plusBitCount > 0) graphics.drawString(font, "$plusBitCount", x, y, ChatFormatting.GREEN.color!!, false)
             if (minusBitCount > 0) graphics.drawString(font, "$minusBitCount", x + 19 - 2 - font.width("$minusBitCount"), y, ChatFormatting.DARK_RED.color!!, false)
         }
-    }
-
-    onOpenTraitEncyclopediaPageScreen.register {
-        clientProxy!!.openViewScreen(TraitEncyclopediaPageScreen(it))
-        true
     }
 }

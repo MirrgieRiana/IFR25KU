@@ -33,7 +33,6 @@ import miragefairy2024.mod.recipeviewer.views.minContentSizeY
 import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
-import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Registration
 import miragefairy2024.util.Translation
 import miragefairy2024.util.darkGray
@@ -57,6 +56,7 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.ContainerLevelAccess
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.Level
 
 val traitListScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFairy2024.identifier("trait_list")) {
     ExtendedScreenHandlerType({ syncId, playerInventory, buf ->
@@ -88,9 +88,9 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
     override fun quickMoveStack(player: Player, slot: Int): ItemStack = slots[slot].item
 
     override fun createView(title: Component, playerInventoryTitle: Component): View {
-        val level = playerInventory.player.level()
+        val level: Level = playerInventory.player.level()
         val blockEntity = level.getMagicPlantBlockEntity(blockPos)
-        val context = TraitConditionContext(level, blockPos, blockEntity)
+        val traitConditionContext = TraitConditionContext(level, blockPos, blockEntity)
 
         fun traitCardView(traitStack: TraitStack) = View {
             view += YListView().configure {
@@ -119,7 +119,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
 
                         view += SpaceView().configure { position.weight = 1.0 }
                         traitStack.trait.conditions.forEach { condition ->
-                            val factor = condition.getFactor(context)
+                            val factor = condition.getFactor(traitConditionContext)
                             view += TextView(text { condition.emoji + " "() + (factor * 100.0 formatAs "%.1f%%")() }).configure {
                                 view.shadow = false
                             }.tooltip(condition.name)
@@ -138,7 +138,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
 
                         view += SpaceView().configure { position.weight = 1.0 }
                         val totalConditionFactor = traitStack.trait.conditions
-                            .map { it.getFactor(context) }
+                            .map { it.getFactor(traitConditionContext) }
                             .fold(1.0) { a, b -> a * b }
                         traitStack.trait.traitEffectKeyEntries.forEach { entry ->
                             fun <T : Any> effectView(traitEffectKey: TraitEffectKey<T>, traitEffectFactor: Double) = View {
@@ -160,7 +160,6 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                 view += YScrollView().configure {
                     position.weight = 1.0
                     view.scrollbarColor = 0xA0FFFFFF.toInt()
-                    view.reserveScrollbarSpace = false
 
                     view += MultiLineTextView().configure {
                         view.text.value = text { traitStack.trait.text }
@@ -171,11 +170,11 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
         }
 
         val traitStack = traitStacks.traitStackList.firstOrNull()
-        val cardContent = ObservableValue<View>(if (traitStack == null) SpaceView() else traitCardView(traitStack))
+        val cardContent = DynamicView(if (traitStack == null) SpaceView() else traitCardView(traitStack))
 
         return View {
             view += StackView().configure { // 外枠なのだ～🌱
-                view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/panel.png"), 16, 16, 5, 5, 5, 5, 5, 5, false)
+                view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/panel.png"), 16, 16, 5, 5, 5, 5, 5, 5, false, false)
                 view += YListView().configure { // 内枠なのだ～🌱
                     view.sizingX = Sizing.FILL
 
@@ -193,8 +192,8 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                     view += StackView().configure {
                         view.sizingX = Sizing.FILL
 
-                        view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
-                        view += DynamicView(cardContent).configure().margin(5)
+                        view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
+                        view += cardContent.configure().margin(5)
                     }.minContentSizeY(108).maxContentSizeY(108)
 
                     view += YSpaceView(4)
@@ -212,7 +211,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
 
                                 traitStacks.traitStackList.forEach { traitStack ->
                                     val totalConditionFactor = traitStack.trait.conditions
-                                        .map { it.getFactor(context) }
+                                        .map { it.getFactor(traitConditionContext) }
                                         .fold(1.0) { a, b -> a * b }
                                     view += MultiLineTextView().configure {
                                         view.text.value = text {
@@ -226,7 +225,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                                         }
                                         view.shadow = false
                                     }.onClick {
-                                        cardContent.value = traitCardView(traitStack)
+                                        cardContent.content.value = traitCardView(traitStack)
                                         true
                                     }
                                 }

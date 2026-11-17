@@ -2,25 +2,38 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
+import miragefairy2024.client.util.ViewToast
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.views.AbsoluteView
+import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
+import miragefairy2024.mod.recipeviewer.views.XScrollbarView
+import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
+import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.register
 import miragefairy2024.util.text
+import net.minecraft.client.DeltaTracker
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
+import net.minecraft.client.gui.components.toasts.Toast
+import net.minecraft.client.gui.components.toasts.ToastComponent
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
@@ -29,8 +42,10 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.mockito.Mockito
 
 private class PlacerTestView : FixedWidgetView(IntPoint(100, 100)) {
+    var renders = 0
     var disposals = 0
     var detaches = 0
 }
@@ -51,7 +66,9 @@ class VanillaViewPlacersTest {
         }
         VANILLA_VIEW_PLACER_REGISTRY.register { context, view: PlacerTestView, bounds ->
             val widget: AbstractWidget = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
-                override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+                    view.renders += 1
+                }
                 override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
             }
             val remover = context.addRenderableWidget(widget)
@@ -69,10 +86,39 @@ class VanillaViewPlacersTest {
     }
 
     @Test
+    fun `スクロール領域内の View もルートの描画前通知を受けて配置解除で登録を外すのだ`() {
+        val calls = mutableListOf<String>()
+        val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+            override val origin = IntPoint.ZERO
+            override val canPlaceMenuSlots = false
+            override val onBeforeRender = EventRegistry<() -> Unit>()
+            override fun addRenderableWidget(widget: AbstractWidget) = Remover.NONE
+            override fun addRenderableOnly(widget: AbstractWidget) = Remover.NONE
+        }
+        val scrollContent = YListView()
+        scrollContent += PlacerTestView()
+        scrollContent += BeforeRenderView { calls += "child" }
+        val view = AbsoluteView(IntPoint(100, 100))
+        view += BeforeRenderView { calls += "root" }
+        view += YSimpleScrollView().also { it += scrollContent }
+        view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
+        Assertions.assertEquals(100, scrollContent.evaluateContentSizeY())
+        val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+
+        context.onBeforeRender.fire()
+        controller.dispose()
+        controller.detach()
+        context.onBeforeRender.fire()
+
+        Assertions.assertEquals(listOf("root", "child"), calls)
+    }
+
+    @Test
     fun `配置を許可しないコンテキストでは Slot の座標を書き換える前に拒否するのだ`() {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
             override val canPlaceMenuSlots = false
+            override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
         }
@@ -93,6 +139,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint(5, 10)
             override val canPlaceMenuSlots = true
+            override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("Slots must not register widgets")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Slots must not register widgets")
         }
@@ -116,6 +163,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
             override val canPlaceMenuSlots = true
+            override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
         }
@@ -150,6 +198,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
             override val canPlaceMenuSlots = false
+            override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget): Remover {
                 widgets += widget
                 return Remover { widgets.remove(widget) }
@@ -174,6 +223,7 @@ class VanillaViewPlacersTest {
         controller.setOffset(IntPoint(40, 50))
         Assertions.assertEquals(IntPoint(40, 50), IntPoint(button.x, button.y))
         controller.dispose()
+        Assertions.assertSame(button, widgets.single())
         controller.detach()
         Assertions.assertTrue(widgets.isEmpty())
     }
@@ -185,6 +235,7 @@ class VanillaViewPlacersTest {
             val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
                 override val origin = IntPoint(10, 20)
                 override val canPlaceMenuSlots = true
+                override val onBeforeRender = EventRegistry<() -> Unit>()
                 override fun addRenderableWidget(widget: AbstractWidget): Remover {
                     screenWidgets += widget
                     return Remover { screenWidgets.remove(widget) }
@@ -222,6 +273,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint(10, 20)
             override val canPlaceMenuSlots = false
+            override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget): Remover {
                 widgets += widget
                 return Remover { widgets.remove(widget) }
@@ -258,4 +310,103 @@ class VanillaViewPlacersTest {
         }
         Assertions.assertTrue(widgets.isEmpty())
     }
+
+    @Test
+    fun `本番の縦横シンプルスクロール登録が子の配置と移動と破棄と解除を中継するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val screenWidgets = mutableListOf<AbstractWidget>()
+            val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+                override val origin = IntPoint(10, 20)
+                override val canPlaceMenuSlots = true
+                override val onBeforeRender = EventRegistry<() -> Unit>()
+                override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                    screenWidgets += widget
+                    return Remover { screenWidgets.remove(widget) }
+                }
+                override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scroll containers must accept input")
+            }
+            val leaf = PlacerTestView()
+            val view = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+            view += leaf
+            view.initSizeCalculation(PLACER_RENDERING_PROXY, { 50 }, { 50 })
+            val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+            val widget = screenWidgets.single() as VanillaSimpleScrollViewWidget
+            Assertions.assertEquals(if (horizontal) VanillaXSimpleScrollViewWidget::class.java else VanillaYSimpleScrollViewWidget::class.java, widget.javaClass)
+            val child = widget.children().single() as AbstractWidget
+            Assertions.assertEquals(IntPoint(10, 20), IntPoint(child.x, child.y))
+            try {
+                controller.setOffset(IntPoint(40, 60))
+                Assertions.assertEquals(IntPoint(40, 60), IntPoint(widget.x, widget.y))
+                Assertions.assertEquals(IntPoint(40, 60), IntPoint(child.x, child.y))
+            } finally {
+                controller.dispose()
+                controller.detach()
+            }
+            Assertions.assertEquals(1, leaf.disposals)
+            Assertions.assertEquals(1, leaf.detaches)
+            Assertions.assertFalse(widget.isActive)
+            Assertions.assertTrue(widget.children().isEmpty())
+            Assertions.assertTrue(screenWidgets.isEmpty())
+        }
+    }
+
+    @Test
+    fun `本番のバー登録が単体の配置と移動と破棄と解除を中継するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val widgets = mutableListOf<AbstractWidget>()
+            val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+                override val origin = IntPoint(10, 20)
+                override val canPlaceMenuSlots = false
+                override val onBeforeRender = EventRegistry<() -> Unit>()
+                override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                    widgets += widget
+                    return Remover { widgets.remove(widget) }
+                }
+                override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scrollbars must accept input")
+            }
+            val view = if (horizontal) XScrollbarView() else YScrollbarView()
+            view.contentLength = 300
+            view.viewportLength = 100
+            view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
+            val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+            val widget = widgets.single() as VanillaScrollbarViewWidget
+            try {
+                Assertions.assertEquals(if (horizontal) VanillaXScrollbarViewWidget::class.java else VanillaYScrollbarViewWidget::class.java, widget.javaClass)
+                Assertions.assertEquals(if (horizontal) IntPoint(100, 5) else IntPoint(5, 100), IntPoint(widget.width, widget.height))
+                controller.setOffset(IntPoint(40, 60))
+                Assertions.assertEquals(IntPoint(40, 60), IntPoint(widget.x, widget.y))
+                Assertions.assertTrue(widget.mouseClicked(42.0, 62.0, 0))
+                Assertions.assertTrue(widget.hasMouseCapture(0))
+            } finally {
+                controller.dispose()
+                controller.detach()
+            }
+            Assertions.assertFalse(widget.isActive)
+            Assertions.assertFalse(widget.hasMouseCapture(0))
+            Assertions.assertTrue(widgets.isEmpty())
+        }
+    }
+
+    @Test
+    fun `トーストは非表示アニメーション中も View を描画し破棄しないのだ`() {
+        val minecraft = Mockito.mock(Minecraft::class.java)
+        Mockito.`when`(minecraft.timer).thenReturn(DeltaTracker.ZERO)
+        val toastComponent = Mockito.mock(ToastComponent::class.java)
+        Mockito.`when`(toastComponent.notificationDisplayTimeMultiplier).thenReturn(1.0)
+        val graphics = Mockito.mock(GuiGraphics::class.java)
+        val view = PlacerTestView()
+
+        Mockito.mockStatic(Minecraft::class.java).use { mock ->
+            mock.`when`<Minecraft> { Minecraft.getInstance() }.thenReturn(minecraft)
+            val toast = ViewToast(view)
+
+            Assertions.assertEquals(Toast.Visibility.SHOW, toast.render(graphics, toastComponent, 4999L))
+            Assertions.assertEquals(Toast.Visibility.HIDE, toast.render(graphics, toastComponent, 5000L))
+            Assertions.assertEquals(Toast.Visibility.HIDE, toast.render(graphics, toastComponent, 5001L))
+        }
+
+        Assertions.assertEquals(3, view.renders)
+        Assertions.assertEquals(0, view.disposals)
+    }
+
 }

@@ -2,6 +2,7 @@ package miragefairy2024.mod.fairy
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.clientProxy
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
@@ -9,7 +10,6 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
-import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
 import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
@@ -19,11 +19,11 @@ import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.configure
-import miragefairy2024.mod.recipeviewer.views.itemTooltip
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
 import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.Chance
 import miragefairy2024.util.CondensedItem
 import miragefairy2024.util.EMPTY_ITEM_STACK
@@ -105,13 +105,10 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
                 view += StackView().configure { // 外枠なのだ～🌱
                     view.sizingY = Sizing.FILL
 
-                    view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/panel.png"), 16, 16, 5, 5, 5, 5, 5, 5, false)
+                    view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/panel.png"), 16, 16, 5, 5, 5, 5, 5, 5, false, false)
 
                     // スクロールパネルなのだ～🌱
                     view += YScrollView().configure {
-                        view.scrollbarThickness = 18
-                        view.scrollbarStyle = ScrollbarStyle.VANILLA
-
                         view += YListView().configure {
                             chanceTable.forEach { chance ->
                                 view += XListView().configure {
@@ -130,7 +127,7 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
                                     view += textView(text { "x"() + (chance.item.item.count formatAs "%.2f")() }, 80, Alignment.END).configure {
                                         position.alignmentY = Alignment.CENTER
                                     }
-                                }.itemTooltip { chance.showingItemStack }
+                                }.tooltip { _, _ -> clientProxy!!.getItemTooltip(chance.showingItemStack) }
                             }
                         }.margin(0, 3, 0, 0)
                     }.margin(7)

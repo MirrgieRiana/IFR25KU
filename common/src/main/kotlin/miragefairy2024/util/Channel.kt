@@ -2,6 +2,8 @@ package miragefairy2024.util
 
 import dev.architectury.networking.NetworkManager
 import dev.architectury.platform.Platform
+import miragefairy2024.ModContext
+import miragefairy2024.ModEvents
 import net.fabricmc.api.EnvType
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
@@ -44,6 +46,13 @@ fun <P> Channel<P>.sendToAround(level: ServerLevel, pos: Vec3, distance: Double,
         .filter { it.level().dimension() == level.dimension() }
         .filter { pos.distanceToSqr(it.position()) <= distance * distance }
     NetworkManager.sendToPlayers(players, Channel.Payload(this, packet))
+}
+
+context(ModContext)
+fun <P> Channel<P>.registerClientPacketReceiver(handler: (P) -> Unit) = ModEvents.onClientInit {
+    NetworkManager.registerReceiver(NetworkManager.Side.S2C, this.type, this.streamCodec) { buf, context ->
+        handler(buf.data)
+    }
 }
 
 fun <P> Channel<P>.registerServerPacketReceiver(handler: (ServerPlayer, P) -> Unit) {

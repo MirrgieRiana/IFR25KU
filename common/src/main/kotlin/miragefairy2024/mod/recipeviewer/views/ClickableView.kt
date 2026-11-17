@@ -12,9 +12,13 @@ import miragefairy2024.util.register
 
 class ClickableView : WrapperView(), PlaceableView {
     val onClick = EventRegistry<() -> Boolean>()
+    var hoverOverlayColor = 0x80FFFFFF.toInt()
+
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         return super.attachTo(offset, viewPlacer) + viewPlacer.place(this, offset.sized(evaluateActualSize()))
     }
 }
 
-fun <P> Child<P, *>.onClick(listener: () -> Boolean) = this.wrap(ClickableView().also { it.onClick.register(listener) })
+fun <P> Child<P, *>.wrapClickable(block: Child<P, ClickableView>.() -> Unit) = this.wrap(ClickableView()).also { block(it) }
+
+fun <P> Child<P, *>.onClick(listener: () -> Boolean) = this.wrapClickable { view.onClick.register(listener) }

@@ -9,15 +9,19 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.views.ScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.util.EventRegistry
+import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
+import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
+import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.text
 import miragefairy2024.util.translate
 import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
-import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
@@ -36,6 +40,7 @@ import kotlin.math.roundToInt
 /** 子 Widget の描画・入力・フォーカス・読み上げを中継するスクロール領域なのだ～🌱 */
 abstract class VanillaScrollViewWidget(
     protected val view: ScrollView,
+    private val scrollOffsetValue: ObservableValue<Double>,
     bounds: IntRectangle,
     context: VanillaViewPlacerContext,
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
@@ -78,6 +83,7 @@ abstract class VanillaScrollViewWidget(
 
     // ライフサイクルなのだ～🌱
 
+    private val onClosed = EventRegistry<() -> Unit>()
     private var disposed = false
 
     fun dispose() {
@@ -87,6 +93,7 @@ abstract class VanillaScrollViewWidget(
         pressedWidgetRegistrations.clear()
         focused = null
         focusedSelf = false
+        onClosed.fire()
         childController.dispose()
     }
 
@@ -103,8 +110,6 @@ abstract class VanillaScrollViewWidget(
     protected abstract val viewportLength: Int
     protected abstract fun evaluateContentLength(): Int
 
-    private var scrollOffset = 0.0
-
     private fun evaluateMaxScrollOffset() = evaluateContentLength() - viewportLength atLeast 0
 
     private fun evaluateThumbLength(): Int {
@@ -118,11 +123,12 @@ abstract class VanillaScrollViewWidget(
     }
 
     private fun evaluateThumbPosition(): Double {
-        return if (evaluateMaxScrollOffset() == 0) {
+        val maxScrollOffset = evaluateMaxScrollOffset().toDouble()
+        return if (maxScrollOffset == 0.0) {
             0.0
         } else {
             val maxThumbPosition = viewportLength - evaluateThumbLength()
-            val scrollRatio = scrollOffset / evaluateMaxScrollOffset().toDouble()
+            val scrollRatio = scrollOffsetValue.value.coerceIn(0.0, maxScrollOffset) / maxScrollOffset
             maxThumbPosition.toDouble() * scrollRatio
         }
     }
@@ -130,16 +136,25 @@ abstract class VanillaScrollViewWidget(
     protected abstract fun getChildOffset(scrollOffset: Int): IntPoint
 
     private fun updateScroll(offset: Double): Boolean {
-        val old = scrollOffset
-        scrollOffset = offset.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
-        if (scrollOffset == old) return false
-        childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
-        return true
+        val old = scrollOffsetValue.value
+        scrollOffsetValue.value = offset
+        return scrollOffsetValue.value != old
+    }
+
+    private fun scrollBy(delta: Double): Boolean {
+        val offset = scrollOffsetValue.value
+        val maxScrollOffset = evaluateMaxScrollOffset().toDouble()
+        // 範囲外から戻る途中も、入力の移動量で少しずつ戻れるようにするのだ～🌱
+        return when {
+            delta < 0.0 && offset > 0.0 -> updateScroll(offset + delta atLeast 0.0)
+            delta > 0.0 && offset < maxScrollOffset -> updateScroll(offset + delta atMost maxScrollOffset)
+            else -> false
+        }
     }
 
     override fun setPosition(x: Int, y: Int) {
         super.setPosition(x, y)
-        childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
+        childController.setOffset(getChildOffset(scrollOffsetValue.value.roundToInt()))
     }
 
 
@@ -197,7 +212,7 @@ abstract class VanillaScrollViewWidget(
     private fun dragScrollbar(mouseX: Double, mouseY: Double) {
         val thumbPosition = getMousePosition(mouseX, mouseY) - scrollbarDragOffset
         val remainingThumbLength = viewportLength - evaluateThumbLength()
-        val scrollRatio = thumbPosition / remainingThumbLength.toDouble()
+        val scrollRatio = (thumbPosition / remainingThumbLength.toDouble()).coerceIn(0.0, 1.0)
         updateScroll(evaluateMaxScrollOffset() * scrollRatio)
     }
 
@@ -257,7 +272,7 @@ abstract class VanillaScrollViewWidget(
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
         if (button == 0 && draggingScrollbar) {
-            dragScrollbar(mouseX, mouseY)
+            if (viewportLength > evaluateThumbLength()) dragScrollbar(mouseX, mouseY)
             return true
         }
         if (button !in pressedWidgetRegistrations) return false
@@ -295,9 +310,16 @@ abstract class VanillaScrollViewWidget(
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         // スクロールバー上でも判定を受け付けるため、containsViewport ではなく isMouseOver を使うのだ～🌱
         if (!isMouseOver(mouseX, mouseY)) return false
-        val child = getChildAt(mouseX, mouseY).orNull
-        if (child != null && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true
-        return updateScroll(scrollOffset - getScrollAmount(scrollX, scrollY) * view.scrollStep)
+        if (containsViewport(mouseX, mouseY)) {
+            val handled = widgetRegistrations.toList().any { widgetRegistration ->
+                if (!widgetRegistration.interactive) return@any false
+                if (widgetRegistration !in widgetRegistrations) return@any false
+                val widget = widgetRegistration.widget
+                widget.isMouseOver(mouseX, mouseY) && widget.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+            }
+            if (handled) return true
+        }
+        return scrollBy(-getScrollAmount(scrollX, scrollY) * view.scrollStep)
     }
 
 
@@ -328,7 +350,7 @@ abstract class VanillaScrollViewWidget(
 
         // 子への経路がなければ、スクロール可能で、まだ自身がフォーカスされていない場合に限り、自身を選ぶ経路を返すのだ～🌱
         if (path == null) {
-            if (evaluateMaxScrollOffset() > 0 && !isFocused) {
+            if ((evaluateMaxScrollOffset() > 0 || scrollOffsetValue.value != 0.0) && !isFocused) {
                 return object : ComponentPath {
                     override fun component() = this@VanillaScrollViewWidget
 
@@ -353,7 +375,7 @@ abstract class VanillaScrollViewWidget(
                     val actualFocused = this@VanillaScrollViewWidget.focused?.getActualFocused { true } ?: return
                     val rectangle = actualFocused.rectangle
                     if (rectangle.width() <= 0 || rectangle.height() <= 0) return
-                    updateScroll(scrollOffset + getScrollOffsetDeltaOnFocus(rectangle))
+                    updateScroll(scrollOffsetValue.value + getScrollOffsetDeltaOnFocus(rectangle))
                 }
             }
         }
@@ -379,16 +401,15 @@ abstract class VanillaScrollViewWidget(
         if (listener != null && listener.keyPressed(keyCode, scanCode, modifiers)) return true
         // 子が選択されている間は、矢印キーをスクロールで消費せず、Screen のフォーカス移動へ渡すのだ～🌱
         if (listener != null && (keyCode == backwardKey || keyCode == forwardKey)) return false
-        val offset = when (keyCode) {
-            backwardKey -> scrollOffset - view.scrollStep
-            forwardKey -> scrollOffset + view.scrollStep
-            GLFW.GLFW_KEY_PAGE_UP -> scrollOffset - viewportLength * 0.8
-            GLFW.GLFW_KEY_PAGE_DOWN -> scrollOffset + viewportLength * 0.8
-            GLFW.GLFW_KEY_HOME -> 0.0
-            GLFW.GLFW_KEY_END -> evaluateMaxScrollOffset().toDouble()
-            else -> return false
+        return when (keyCode) {
+            backwardKey -> scrollBy(-view.scrollStep.toDouble())
+            forwardKey -> scrollBy(view.scrollStep.toDouble())
+            GLFW.GLFW_KEY_PAGE_UP -> scrollBy(-viewportLength * 0.8)
+            GLFW.GLFW_KEY_PAGE_DOWN -> scrollBy(viewportLength * 0.8)
+            GLFW.GLFW_KEY_HOME -> updateScroll(0.0)
+            GLFW.GLFW_KEY_END -> updateScroll(evaluateMaxScrollOffset().toDouble())
+            else -> false
         }
-        return updateScroll(offset)
     }
 
     override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
@@ -443,13 +464,22 @@ abstract class VanillaScrollViewWidget(
     init {
         val childContext: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = context.origin
+            override val onBeforeRender = context.onBeforeRender
+
             // TODO スクロール領域内の MenuSlotView の配置に対応するのだ～🌱
             override val canPlaceMenuSlots = false
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
         }
-        childController = view.childView.attachTo(IntPoint(x, y)) { childView, childBounds ->
+        val initialScrollOffset = scrollOffsetValue.value.roundToInt()
+        childController = view.childView.attachTo(getChildOffset(initialScrollOffset)) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
+        }
+        // 子の生成中はまだ購読しておらず変更通知を受け取れないため、購読直後に現在値から表示位置を再計算するのだ～🌱
+        scrollOffsetValue.observeAndInitialize(onClosed) { old, new ->
+            if (disposed) return@observeAndInitialize
+            val scrollOffset = scrollOffsetValue.value.roundToInt()
+            if (old != new || scrollOffset != initialScrollOffset) childController.setOffset(getChildOffset(scrollOffset))
         }
     }
 
@@ -462,6 +492,7 @@ class VanillaXScrollViewWidget(
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
 ) : VanillaScrollViewWidget(
     view,
+    view.scrollOffsetX,
     bounds,
     context,
     registry,
@@ -515,6 +546,7 @@ class VanillaYScrollViewWidget(
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
 ) : VanillaScrollViewWidget(
     view,
+    view.scrollOffsetY,
     bounds,
     context,
     registry,
