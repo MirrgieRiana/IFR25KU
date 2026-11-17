@@ -55,60 +55,62 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
 
     val view = View {
         fun createContentView(): View {
-            return YListView().configure {
-                view.sizingX = Sizing.FILL
+            return View {
+                view += YListView().configure {
+                    view.sizingX = Sizing.FILL
 
-                val allowIndices = filter.value.split(",").mapNotNull { it.toIntOrNull() }.toSet().ifEmpty { null }
-                fun isAllowedIndex(index: Int) = allowIndices == null || index in allowIndices
+                    val allowIndices = filter.value.split(",").mapNotNull { it.toIntOrNull() }.toSet().ifEmpty { null }
+                    fun isAllowedIndex(index: Int) = allowIndices == null || index in allowIndices
 
-                var firstItemStack = true
-                itemStacks.forEach { itemStack ->
-                    if (itemStack.isEmpty) return@forEach
+                    var firstItemStack = true
+                    itemStacks.forEach { itemStack ->
+                        if (itemStack.isEmpty) return@forEach
 
-                    if (firstItemStack) {
-                        firstItemStack = false
-                    } else {
-                        view += YSpaceView(2)
-                    }
-
-                    // アイテムレコードなのだ～🌱
-                    view += XListView().configure {
-                        view.sizingX = Sizing.FILL
-
-                        // アイテムスロットなのだ～🌱
-                        view += StackView().configure {
-                            view += ImageView(SlotType.NORMAL.viewTexture)
-                            view += ItemView(itemStack).configure().margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
+                        if (firstItemStack) {
+                            firstItemStack = false
+                        } else {
+                            view += YSpaceView(2)
                         }
 
-                        view += XSpaceView(2)
-
-                        // ツールチップなのだ～🌱
-                        view += StackView().configure {
-                            position.weight = 1.0
-                            position.ignoreLayoutX = true
+                        // アイテムレコードなのだ～🌱
+                        view += XListView().configure {
                             view.sizingX = Sizing.FILL
 
-                            view += TooltipBackgroundView()
-                            view += YListView().configure {
+                            // アイテムスロットなのだ～🌱
+                            view += StackView().configure {
+                                view += ImageView(SlotType.NORMAL.viewTexture)
+                                view += ItemView(itemStack).configure().margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
+                            }
+
+                            view += XSpaceView(2)
+
+                            // ツールチップなのだ～🌱
+                            view += StackView().configure {
+                                position.weight = 1.0
+                                position.ignoreLayoutX = true
                                 view.sizingX = Sizing.FILL
 
-                                tooltipProvider(itemStack).forEachIndexed { index, text ->
-                                    if (!isAllowedIndex(index)) return@forEachIndexed
+                                view += TooltipBackgroundView()
+                                view += YListView().configure {
+                                    view.sizingX = Sizing.FILL
 
-                                    if (index >= 1 && isAllowedIndex(index - 1)) {
-                                        view += YSpaceView(if (index == 1) 3 else 1)
+                                    tooltipProvider(itemStack).forEachIndexed { index, text ->
+                                        if (!isAllowedIndex(index)) return@forEachIndexed
+
+                                        if (index >= 1 && isAllowedIndex(index - 1)) {
+                                            view += YSpaceView(if (index == 1) 3 else 1)
+                                        }
+                                        view += MultiLineTextView().configure {
+                                            view.text.value = text
+                                            view.shadow = true
+                                        }
                                     }
-                                    view += MultiLineTextView().configure {
-                                        view.text.value = text
-                                        view.shadow = true
-                                    }
-                                }
-                            }.margin(4)
+                                }.margin(4)
+                            }
                         }
                     }
-                }
-            }.margin(0, 2, 0, 0)
+                }.margin(0, 2, 0, 0)
+            }
         }
 
         val contentView = DynamicView(createContentView())
