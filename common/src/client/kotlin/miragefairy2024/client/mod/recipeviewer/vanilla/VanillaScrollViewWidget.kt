@@ -141,8 +141,6 @@ abstract class VanillaScrollViewWidget(
         return scrollOffsetValue.value != old
     }
 
-    private fun scrollTo(offset: Double) = updateScroll(offset.coerceIn(0.0, evaluateMaxScrollOffset().toDouble()))
-
     private fun scrollBy(delta: Double): Boolean {
         val offset = scrollOffsetValue.value
         val maxScrollOffset = evaluateMaxScrollOffset().toDouble()
@@ -377,7 +375,7 @@ abstract class VanillaScrollViewWidget(
                     val actualFocused = this@VanillaScrollViewWidget.focused?.getActualFocused { true } ?: return
                     val rectangle = actualFocused.rectangle
                     if (rectangle.width() <= 0 || rectangle.height() <= 0) return
-                    scrollTo(scrollOffsetValue.value + getScrollOffsetDeltaOnFocus(rectangle))
+                    updateScroll(scrollOffsetValue.value + getScrollOffsetDeltaOnFocus(rectangle))
                 }
             }
         }
