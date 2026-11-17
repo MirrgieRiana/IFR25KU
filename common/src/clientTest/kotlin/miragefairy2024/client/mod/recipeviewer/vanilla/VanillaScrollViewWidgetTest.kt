@@ -8,6 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.MinContentSizeYView
 import miragefairy2024.mod.recipeviewer.views.ScrollView
@@ -580,6 +581,43 @@ class VanillaScrollViewWidgetTest {
                 shorterController.dispose()
                 shorterController.detach()
             }
+        }
+    }
+
+    @Test
+    fun `DynamicView を短い子に差し替えたあとも現在位置から戻れるのだ`() {
+        val fixture = ScrollFixture()
+        val dynamicView = DynamicView(YListView().also { list ->
+            repeat(3) {
+                list += ScrollTestView(true)
+            }
+        })
+        val view = YScrollView()
+        view += dynamicView
+        val controller = fixture.attach(view, IntPoint(100, 100))
+        try {
+            val widget = fixture.screenWidgets.single() as VanillaScrollViewWidget
+            widget.isFocused = true
+            Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+            Assertions.assertEquals(200.0, view.scrollOffsetY.value)
+
+            dynamicView.content.value = ScrollTestView(true)
+            val child = fixture.widgets.last()
+            Assertions.assertEquals(100, dynamicView.evaluateActualSizeY())
+            Assertions.assertEquals(200.0, view.scrollOffsetY.value)
+            Assertions.assertEquals(-180, child.y)
+
+            Assertions.assertFalse(widget.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+            Assertions.assertEquals(200.0, view.scrollOffsetY.value)
+            Assertions.assertTrue(widget.mouseScrolled(50.0, 50.0, 0.0, 1.0))
+            Assertions.assertEquals(185.0, view.scrollOffsetY.value)
+            Assertions.assertEquals(-165, child.y)
+            Assertions.assertTrue(widget.mouseScrolled(50.0, 50.0, 0.0, 20.0))
+            Assertions.assertEquals(0.0, view.scrollOffsetY.value)
+            Assertions.assertEquals(20, child.y)
+        } finally {
+            controller.dispose()
+            controller.detach()
         }
     }
 
