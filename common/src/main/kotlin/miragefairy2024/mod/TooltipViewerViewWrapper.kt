@@ -8,6 +8,7 @@ import miragefairy2024.mod.common.KeyMappingType
 import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.ItemView
