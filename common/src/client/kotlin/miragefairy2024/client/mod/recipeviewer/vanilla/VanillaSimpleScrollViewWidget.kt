@@ -16,6 +16,7 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import miragefairy2024.util.translate
 import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
 import net.minecraft.client.gui.ComponentPath
@@ -106,11 +107,20 @@ abstract class VanillaSimpleScrollViewWidget(
     protected abstract fun getChildOffset(scrollOffset: Int): IntPoint
 
     private fun updateScroll(offset: Double): Boolean {
-        val old = scrollOffset
-        scrollOffset = offset.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
-        if (scrollOffset == old) return false
+        if (offset == scrollOffset) return false
+        scrollOffset = offset
         childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
         return true
+    }
+
+    private fun scrollBy(delta: Double): Boolean {
+        val maxScrollOffset = evaluateMaxScrollOffset().toDouble()
+        // 範囲外から戻る途中も、入力の移動量で少しずつ戻れるようにするのだ～🌱
+        return when {
+            delta < 0.0 && scrollOffset > 0.0 -> updateScroll(scrollOffset + delta atLeast 0.0)
+            delta > 0.0 && scrollOffset < maxScrollOffset -> updateScroll(scrollOffset + delta atMost maxScrollOffset)
+            else -> false
+        }
     }
 
     private fun updateScrollBounds() {
@@ -251,7 +261,7 @@ abstract class VanillaSimpleScrollViewWidget(
             }
             if (handled) return true
         }
-        return updateScroll(scrollOffset - getScrollAmount(scrollX, scrollY) * view.scrollStep)
+        return scrollBy(-getScrollAmount(scrollX, scrollY) * view.scrollStep)
     }
 
 
@@ -280,34 +290,36 @@ abstract class VanillaSimpleScrollViewWidget(
         // super.nextFocusPath() に子の探索を任せるのだ～🌱
         val path = super.nextFocusPath(actualEvent)
 
-        // 子への経路がなければ、スクロール可能で、まだ自身がフォーカスされていない場合に限り、自身を選ぶ経路を返すのだ～🌱
-        if (path == null) {
-            if (evaluateMaxScrollOffset() > 0 && !isFocused) {
-                return object : ComponentPath {
-                    override fun component() = this@VanillaSimpleScrollViewWidget
+        // 子への経路があればそれを、なければ自身をフォーカス先にするのだ～🌱
+        if (path != null) {
+            // 子を次のフォーカス先にするのだ～🌱
+            return object : ComponentPath {
+                override fun component() = path.component()
 
-                    override fun applyFocus(focused: Boolean) {
-                        // その経路の適用時に、以前の子の参照を解除するのだ～🌱
-                        if (focused) this@VanillaSimpleScrollViewWidget.focused = null
-                        this@VanillaSimpleScrollViewWidget.isFocused = focused
+                override fun applyFocus(focused: Boolean) {
+                    path.applyFocus(focused)
+                    // 子のフォーカスが変わったら、適宜それを収めるようにスクロールするのだ～🌱
+                    if (focused) {
+                        val actualFocused = this@VanillaSimpleScrollViewWidget.focused?.getActualFocused { true } ?: return
+                        val rectangle = actualFocused.rectangle
+                        if (rectangle.width() <= 0 || rectangle.height() <= 0) return
+                        updateScroll(scrollOffset + getScrollOffsetDeltaOnFocus(rectangle))
                     }
                 }
             }
-            return null
-        }
+        } else {
+            // スクロールの余地がなく、かつ現在位置が初期位置の場合は、移動の操作が不可能なので、自身をフォーカスしないのだ～🌱
+            if (evaluateMaxScrollOffset() <= 0 && scrollOffset == 0.0) return null
+            // 既にフォーカスされている場合は、次のフォーカス先に選ばないのだ～🌱
+            if (isFocused) return null
+            // 自身を次のフォーカス先にするのだ～🌱
+            return object : ComponentPath {
+                override fun component() = this@VanillaSimpleScrollViewWidget
 
-        // 子への経路があれば、適用時に子へフォーカスを移すのだ～🌱
-        return object : ComponentPath {
-            override fun component() = path.component()
-
-            override fun applyFocus(focused: Boolean) {
-                path.applyFocus(focused)
-                // 子のフォーカスが変わったら、適宜それを収めるようにスクロールするのだ～🌱
-                if (focused) {
-                    val actualFocused = this@VanillaSimpleScrollViewWidget.focused?.getActualFocused { true } ?: return
-                    val rectangle = actualFocused.rectangle
-                    if (rectangle.width() <= 0 || rectangle.height() <= 0) return
-                    updateScroll(scrollOffset + getScrollOffsetDeltaOnFocus(rectangle))
+                override fun applyFocus(focused: Boolean) {
+                    // その経路の適用時に、以前の子の参照を解除するのだ～🌱
+                    if (focused) this@VanillaSimpleScrollViewWidget.focused = null
+                    this@VanillaSimpleScrollViewWidget.isFocused = focused
                 }
             }
         }
@@ -333,16 +345,15 @@ abstract class VanillaSimpleScrollViewWidget(
         if (listener != null && listener.keyPressed(keyCode, scanCode, modifiers)) return true
         // 子が選択されている間は、矢印キーをスクロールで消費せず、Screen のフォーカス移動へ渡すのだ～🌱
         if (listener != null && (keyCode == backwardKey || keyCode == forwardKey)) return false
-        val offset = when (keyCode) {
-            backwardKey -> scrollOffset - view.scrollStep
-            forwardKey -> scrollOffset + view.scrollStep
-            GLFW.GLFW_KEY_PAGE_UP -> scrollOffset - viewportLength * 0.8
-            GLFW.GLFW_KEY_PAGE_DOWN -> scrollOffset + viewportLength * 0.8
-            GLFW.GLFW_KEY_HOME -> 0.0
-            GLFW.GLFW_KEY_END -> evaluateMaxScrollOffset().toDouble()
-            else -> return false
+        return when (keyCode) {
+            backwardKey -> scrollBy(-view.scrollStep.toDouble())
+            forwardKey -> scrollBy(view.scrollStep.toDouble())
+            GLFW.GLFW_KEY_PAGE_UP -> scrollBy(-viewportLength * 0.8)
+            GLFW.GLFW_KEY_PAGE_DOWN -> scrollBy(viewportLength * 0.8)
+            GLFW.GLFW_KEY_HOME -> updateScroll(0.0)
+            GLFW.GLFW_KEY_END -> updateScroll(evaluateMaxScrollOffset().toDouble())
+            else -> false
         }
-        return updateScroll(offset)
     }
 
     override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
@@ -397,6 +408,8 @@ abstract class VanillaSimpleScrollViewWidget(
     init {
         val childContext: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = context.origin
+            override val onBeforeRender = context.onBeforeRender
+
             // TODO スクロール領域内の MenuSlotView の配置に対応するのだ～🌱
             override val canPlaceMenuSlots = false
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)

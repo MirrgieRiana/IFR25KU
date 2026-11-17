@@ -10,6 +10,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
@@ -25,6 +26,7 @@ import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
 import miragefairy2024.util.observeAndInitialize
+import miragefairy2024.util.register
 import miragefairy2024.util.removeOn
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
@@ -139,6 +141,13 @@ fun initVanillaViewPlacers() {
             }
 
             override fun detach() = throw UnsupportedOperationException("Cannot detach MenuSlotView from the vanilla screen")
+        }
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: BeforeRenderView, _ ->
+        val remover = context.onBeforeRender.register { view.onBeforeRender.fire() }
+        object : ViewController {
+            override fun setOffset(offset: IntPoint) = Unit
+            override fun detach() = remover.remove()
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextButtonView, bounds ->
