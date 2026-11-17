@@ -28,15 +28,16 @@ fun connectScrollbar(scrollView: SimpleScrollView, scrollOffsetValue: Observable
         try {
             do {
                 pending = false
-                scrollbarView.contentLength = scrollView.contentLength
-                scrollbarView.viewportLength = scrollView.viewportLength
+                val bounds = scrollView.scrollBounds.value
+                scrollbarView.contentLength = bounds.contentLength
+                scrollbarView.viewportLength = bounds.viewportLength
                 scrollbarOffsetValue.value = scrollOffsetValue.value
             } while (pending)
         } finally {
             updating = false
         }
     }
-    val boundsRemover = scrollView.onScrollBoundsChanged.register { updateScrollbar() }
+    val boundsRemover = scrollView.scrollBounds.register { _, _ -> updateScrollbar() }
     val sourceRemover = scrollOffsetValue.register { _, _ -> updateScrollbar() }
     val targetRemover = scrollbarOffsetValue.register { _, _ ->
         if (!updating) {

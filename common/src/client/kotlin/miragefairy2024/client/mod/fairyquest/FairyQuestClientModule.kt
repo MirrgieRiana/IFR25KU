@@ -2,11 +2,9 @@ package miragefairy2024.client.mod.fairyquest
 
 import com.mojang.math.Axis
 import miragefairy2024.ModContext
-import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.stack
 import miragefairy2024.mixin.client.api.RenderItemHandler
 import miragefairy2024.mod.fairyquest.FairyQuestCardCard
-import miragefairy2024.mod.fairyquest.fairyQuestCardScreenHandlerType
 import miragefairy2024.mod.fairyquest.getFairyQuestRecipe
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.createItemStack
@@ -51,5 +49,4 @@ fun initFairyQuestClientModule() {
 
         }
     }
-    fairyQuestCardScreenHandlerType.registerHandledScreen { gui, inventory, title -> FairyQuestCardScreen(gui, inventory, title) }
 }

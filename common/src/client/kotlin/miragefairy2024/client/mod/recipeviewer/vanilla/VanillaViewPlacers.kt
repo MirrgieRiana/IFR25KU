@@ -10,6 +10,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
@@ -25,6 +26,7 @@ import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
 import miragefairy2024.util.observeAndInitialize
+import miragefairy2024.util.register
 import miragefairy2024.util.removeOn
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
@@ -84,17 +86,21 @@ fun initVanillaViewPlacers() {
     }
     fun placeSimpleScrollView(context: VanillaViewPlacerContext, widget: VanillaSimpleScrollViewWidget): ViewController {
         val controller = context place widget
+        // 子の差し替えだけで全長が変わった場合も、描画前に寸法を通知するのだ～🌱
+        val boundsRemover = context.onBeforeRender.register(widget::updateScrollBounds)
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
             }
 
             override fun detach() {
+                boundsRemover.remove()
                 widget.detach()
                 controller.detach()
             }
 
             override fun dispose() {
+                boundsRemover.remove()
                 widget.dispose()
                 controller.dispose()
             }
@@ -109,8 +115,14 @@ fun initVanillaViewPlacers() {
     fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget): ViewController {
         val controller = context place widget
         return object : ViewController {
-            override fun setOffset(offset: IntPoint) = controller.setOffset(offset)
-            override fun detach() = controller.detach()
+            override fun setOffset(offset: IntPoint) {
+                controller.setOffset(offset)
+            }
+
+            override fun detach() {
+                controller.detach()
+            }
+
             override fun dispose() {
                 widget.dispose()
                 controller.dispose()
@@ -133,6 +145,13 @@ fun initVanillaViewPlacers() {
             }
 
             override fun detach() = throw UnsupportedOperationException("Cannot detach MenuSlotView from the vanilla screen")
+        }
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: BeforeRenderView, _ ->
+        val remover = context.onBeforeRender.register { view.onBeforeRender.fire() }
+        object : ViewController {
+            override fun setOffset(offset: IntPoint) = Unit
+            override fun detach() = remover.remove()
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextButtonView, bounds ->
@@ -189,7 +208,7 @@ fun initVanillaViewPlacers() {
         context placeRenderable VanillaViewRendererWidget(TooltipViewRenderer, view, bounds)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
-        fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
+        fun <V : PlaceableView, S> f(entry: ViewRendererRegistry.Entry<V, S>) {
             VANILLA_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
                 context place VanillaViewRendererWidget(entry.viewRenderer, view, bounds)
             }

@@ -49,7 +49,7 @@ class VanillaScrollOffsetBindingTest {
                 try {
                     Mockito.verify(child).setPosition(if (horizontal) -165 else 10, if (horizontal) 20 else -155)
                     offset.value = 999.75
-                    Mockito.verify(child).setPosition(if (horizontal) -190 else 10, if (horizontal) 20 else -180)
+                    Mockito.verify(child).setPosition(if (horizontal) -990 else 10, if (horizontal) 20 else -980)
                     first.render(environment.graphics, 50, 50, 0.0F)
                     Assertions.assertEquals(999.75, offset.value)
                 } finally {
@@ -59,7 +59,7 @@ class VanillaScrollOffsetBindingTest {
                 Mockito.clearInvocations(child)
                 offset.value = 40.25
                 Mockito.verifyNoInteractions(child)
-                Assertions.assertTrue(offset.listeners.isEmpty())
+                Assertions.assertTrue(offset.toList().isEmpty())
                 val second = createWidget()
                 try {
                     Mockito.verify(child).setPosition(if (horizontal) -30 else 10, if (horizontal) 20 else -20)
@@ -76,10 +76,10 @@ class VanillaScrollOffsetBindingTest {
                 val scrollbar = if (horizontal) VanillaXScrollbarViewWidget(bar as XScrollbarView, IntRectangle(10, 200, 100, 5)) else VanillaYScrollbarViewWidget(bar as YScrollbarView, IntRectangle(200, 20, 5, 100))
                 try {
                     scrollbar.render(environment.graphics, 50, 50, 0.0F)
-                    Assertions.assertEquals(if (horizontal) IntRectangle(77, 200, 33, 5) else IntRectangle(200, 87, 5, 33), environment.fills.last())
+                    Assertions.assertEquals(if (horizontal) IntRectangle(101, 200, 9, 5) else IntRectangle(200, 111, 5, 9), environment.fills.last())
                     Assertions.assertEquals(999.75, barOffset.value)
                     Assertions.assertTrue(scrollbar.mouseScrolled(scrollbar.x + 1.0, scrollbar.y + 1.0, 0.0, 1.0))
-                    Assertions.assertEquals(185.0, barOffset.value)
+                    Assertions.assertEquals(984.75, barOffset.value)
                 } finally {
                     scrollbar.dispose()
                 }
