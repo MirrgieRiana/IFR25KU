@@ -305,7 +305,8 @@ abstract class VanillaSimpleScrollViewWidget(
                         val actualFocused = this@VanillaSimpleScrollViewWidget.focused?.getActualFocused { true } ?: return
                         val rectangle = actualFocused.rectangle
                         if (rectangle.width() <= 0 || rectangle.height() <= 0) return
-                        scrollTo(scrollOffset + getScrollOffsetDeltaOnFocus(rectangle))
+                        val delta = getScrollOffsetDeltaOnFocus(rectangle)
+                        if (delta != 0) scrollTo(scrollOffset + delta)
                     }
                 }
             }
