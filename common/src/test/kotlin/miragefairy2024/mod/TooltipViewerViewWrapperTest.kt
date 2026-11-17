@@ -32,6 +32,7 @@ private val TOOLTIP_VIEWER_RENDERING_PROXY: RenderingProxy = object : RenderingP
     override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
     override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
     override fun getTextHeight() = 9
+
     override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> {
         return text.string.chunked(maxWidth / 6 atLeast 1).map { FormattedCharSequence.forward(it, Style.EMPTY) }
     }
@@ -144,9 +145,10 @@ class TooltipViewerViewWrapperTest {
                 val field = placements.single { it.first is TextFieldView }
                 Assertions.assertEquals("1", (field.first as TextFieldView).text.value)
                 val scroll = placements.single { it.first is YScrollView }
+                val scrollView = scroll.first as YScrollView
                 Assertions.assertEquals(IntRectangle((size.x - 240) / 2, 33, 240, size.y - 44), scroll.second)
-                Assertions.assertEquals(5, (scroll.first as YScrollView).scrollbarThickness)
-                Assertions.assertTrue((scroll.first as YScrollView).childView.evaluateActualSizeY() > scroll.second.sizeY)
+                Assertions.assertEquals(5, scrollView.scrollbarThickness)
+                Assertions.assertTrue(scrollView.childView.evaluateActualSizeY() > scroll.second.sizeY)
                 val line = placements.single { it.first is MultiLineTextView }
                 Assertions.assertEquals(205, line.second.sizeX)
                 Assertions.assertTrue(line.second.sizeY > scroll.second.sizeY)

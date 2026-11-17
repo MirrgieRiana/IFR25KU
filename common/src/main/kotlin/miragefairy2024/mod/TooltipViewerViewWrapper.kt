@@ -30,8 +30,10 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.get
 import miragefairy2024.util.invoke
+import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.register
 import miragefairy2024.util.text
+import miragefairy2024.util.times
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
@@ -43,9 +45,10 @@ fun openTooltipViewerScreen() {
             val player = proxy.getClientPlayer()
             val itemStacks = if (player != null) (0 until 9).map { player.inventory[it] } else emptyList()
             TooltipViewerViewWrapper(itemStacks, filter, scrollOffsetY, proxy::getItemTooltip).view
+        }.also {
+            it.additionalCloseKey = KeyMappingType.OPEN_TOOLTIP_VIEWER
+            it.closeOnOutsideClick = false
         }
-        definition.additionalCloseKey = KeyMappingType.OPEN_TOOLTIP_VIEWER
-        definition.closeOnOutsideClick = false
         proxy.setCurrentScreen(proxy.createMessageViewScreen(null, definition))
     }
     openScreen(clientProxy!!)
@@ -54,23 +57,19 @@ fun openTooltipViewerScreen() {
 class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableValue<String>, scrollOffsetY: ObservableValue<Double>, tooltipProvider: (ItemStack) -> List<Component>) {
 
     val view = View {
+        val panelTexture = "textures/gui/" * MirageFairy2024.identifier("panel") * ".png"
+        val panelMargin = 7
+
         fun createContentView(): View {
+            val allowIndices = filter.value.split(",").mapNotNull { it.toIntOrNull() }.toSet().ifEmpty { null }
+            fun isAllowedIndex(index: Int) = allowIndices == null || index in allowIndices
+
             return View {
                 view += YListView().configure {
                     view.sizingX = Sizing.FILL
 
-                    val allowIndices = filter.value.split(",").mapNotNull { it.toIntOrNull() }.toSet().ifEmpty { null }
-                    fun isAllowedIndex(index: Int) = allowIndices == null || index in allowIndices
-
-                    var firstItemStack = true
-                    itemStacks.forEach { itemStack ->
-                        if (itemStack.isEmpty) return@forEach
-
-                        if (firstItemStack) {
-                            firstItemStack = false
-                        } else {
-                            view += YSpaceView(2)
-                        }
+                    itemStacks.asSequence().filter { it.isNotEmpty }.forEachIndexed { index, itemStack ->
+                        if (index > 0) view += YSpaceView(2)
 
                         // アイテムレコードなのだ～🌱
                         view += XListView().configure {
@@ -94,15 +93,14 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
                                 view += YListView().configure {
                                     view.sizingX = Sizing.FILL
 
-                                    tooltipProvider(itemStack).forEachIndexed { index, text ->
-                                        if (!isAllowedIndex(index)) return@forEachIndexed
+                                    tooltipProvider(itemStack).forEachIndexed { lineIndex, text ->
+                                        if (!isAllowedIndex(lineIndex)) return@forEachIndexed
 
-                                        if (index >= 1 && isAllowedIndex(index - 1)) {
-                                            view += YSpaceView(if (index == 1) 3 else 1)
+                                        if (lineIndex > 0 && isAllowedIndex(lineIndex - 1)) {
+                                            view += YSpaceView(if (lineIndex == 1) 3 else 1)
                                         }
                                         view += MultiLineTextView().configure {
                                             view.text.value = text
-                                            view.shadow = true
                                         }
                                     }
                                 }.margin(4)
@@ -124,7 +122,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
                 position.weight = 1.0
                 view.sizingY = Sizing.FILL
 
-                view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/panel.png"), 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                view += NinePatchImageView(panelTexture, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
                 view += YListView().configure { // 内枠なのだ～🌱
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
@@ -141,7 +139,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
 
                     view += YSpaceView(2)
 
-                    // スクロールなのだ～🌱
+                    // スクロールコンテナなのだ～🌱
                     view += YScrollView().configure {
                         position.weight = 1.0
                         view.scrollOffsetY.value = scrollOffsetY.value
@@ -150,7 +148,8 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
                         }
                         view += contentView
                     }
-                }.minContentSizeX(240).margin(7)
+
+                }.minContentSizeX(240).margin(panelMargin)
             }
         }.margin(4)
     }

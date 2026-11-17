@@ -27,6 +27,7 @@ private val TOOLTIP_VIEWER_RENDERING_PROXY: RenderingProxy = object : RenderingP
     override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
     override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
     override fun getTextHeight() = 9
+
     override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> {
         return text.string.chunked(maxWidth / 6 atLeast 1).map { FormattedCharSequence.forward(it, Style.EMPTY) }
     }
@@ -43,6 +44,24 @@ class TooltipViewerScreenTest {
 
     @Test
     fun `画面の再初期化ではフィルタとスクロール位置を保持し開き直すと初期化するのだ`() {
+        fun withViews(definition: MessageViewScreenDefinition, size: IntPoint, block: (TextFieldView, YScrollView) -> Unit) {
+            val view = definition.rootViewFactory()
+            view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { size.x }, { size.y })
+            val textFields = mutableListOf<TextFieldView>()
+            val scrollViews = mutableListOf<YScrollView>()
+            val controller = view.attachTo(IntPoint.ZERO) { child, _ ->
+                if (child is TextFieldView) textFields += child
+                if (child is YScrollView) scrollViews += child
+                ViewController.NONE
+            }
+            try {
+                block(textFields.single(), scrollViews.single())
+            } finally {
+                controller.dispose()
+                controller.detach()
+            }
+        }
+
         val oldProxy = clientProxy
         @Suppress("UNCHECKED_CAST")
         val delegate: ClientProxy<Any> = Mockito.mock(ClientProxy::class.java) as ClientProxy<Any>
@@ -57,24 +76,6 @@ class TooltipViewerScreenTest {
         }
         clientProxy = proxy
         try {
-            fun withViews(definition: MessageViewScreenDefinition, size: IntPoint, block: (TextFieldView, YScrollView) -> Unit) {
-                val view = definition.rootViewFactory()
-                view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { size.x }, { size.y })
-                val fields = mutableListOf<TextFieldView>()
-                val scrollViews = mutableListOf<YScrollView>()
-                val controller = view.attachTo(IntPoint.ZERO) { child, _ ->
-                    if (child is TextFieldView) fields += child
-                    if (child is YScrollView) scrollViews += child
-                    ViewController.NONE
-                }
-                try {
-                    block(fields.single(), scrollViews.single())
-                } finally {
-                    controller.dispose()
-                    controller.detach()
-                }
-            }
-
             openTooltipViewerScreen()
             val definition = definitions.single()
             Assertions.assertEquals(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }, definition.title)
