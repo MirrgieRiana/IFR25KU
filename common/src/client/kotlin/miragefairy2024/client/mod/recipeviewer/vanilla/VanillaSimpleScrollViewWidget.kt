@@ -113,8 +113,6 @@ abstract class VanillaSimpleScrollViewWidget(
         return true
     }
 
-    private fun scrollTo(offset: Double) = updateScroll(offset.coerceIn(0.0, evaluateMaxScrollOffset().toDouble()))
-
     private fun scrollBy(delta: Double): Boolean {
         val maxScrollOffset = evaluateMaxScrollOffset().toDouble()
         // 範囲外から戻る途中も、入力の移動量で少しずつ戻れるようにするのだ～🌱
@@ -305,8 +303,7 @@ abstract class VanillaSimpleScrollViewWidget(
                         val actualFocused = this@VanillaSimpleScrollViewWidget.focused?.getActualFocused { true } ?: return
                         val rectangle = actualFocused.rectangle
                         if (rectangle.width() <= 0 || rectangle.height() <= 0) return
-                        val delta = getScrollOffsetDeltaOnFocus(rectangle)
-                        if (delta != 0) scrollTo(scrollOffset + delta)
+                        updateScroll(scrollOffset + getScrollOffsetDeltaOnFocus(rectangle))
                     }
                 }
             }
