@@ -109,7 +109,8 @@ abstract class VanillaScrollbarViewWidget(
         val thumbPosition = getMousePosition(mouseX, mouseY) - scrollbarDragOffset
         val remainingThumbLength = scrollbarLength - evaluateThumbLength()
         val scrollRatio = thumbPosition / remainingThumbLength.toDouble()
-        updateScroll(evaluateScrollRange().endInclusive * scrollRatio)
+        val range = evaluateScrollRange()
+        updateScroll(range.start + (range.endInclusive - range.start) * scrollRatio)
     }
 
     override fun hasMouseCapture(button: Int) = !disposed && button == 0 && draggingScrollbar
@@ -203,7 +204,7 @@ abstract class VanillaScrollbarViewWidget(
             forwardKey -> scrollOffset + view.scrollStep
             GLFW.GLFW_KEY_PAGE_UP -> scrollOffset - view.viewportLength * 0.8
             GLFW.GLFW_KEY_PAGE_DOWN -> scrollOffset + view.viewportLength * 0.8
-            GLFW.GLFW_KEY_HOME -> 0.0
+            GLFW.GLFW_KEY_HOME -> evaluateScrollRange().start
             GLFW.GLFW_KEY_END -> evaluateScrollRange().endInclusive
             else -> return false
         }
