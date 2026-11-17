@@ -291,7 +291,7 @@ fun (() -> Item).registerGrassDrop(
     fortuneMultiplier: Int = 2,
     biome: (() -> ResourceKey<Biome>)? = null,
 ) = this.registerLootTableModification({ Blocks.SHORT_GRASS.lootTable }) { tableBuilder, registries ->
-    tableBuilder.configure {
+    tableBuilder.apply2 {
         withPool(LootPool(AlternativeLootPoolEntry {
             otherwise(EmptyLootPoolEntry {
                 `when`(MatchTool.toolMatches(ItemPredicate.Builder.item().of(Items.SHEARS)))
@@ -312,7 +312,7 @@ fun (() -> Item).registerExtraOreDrop(
     chance: Float = 1.0F,
     fortuneMultiplier: Int = 0,
 ) = this.registerLootTableModification({ oreBlock.lootTable }) { tableBuilder, registries ->
-    tableBuilder.configure {
+    tableBuilder.apply2 {
         withPool(LootPool(AlternativeLootPoolEntry {
             otherwise(EmptyLootPoolEntry {
                 `when`(MatchTool.toolMatches(ItemPredicate.Builder.item().withSubPredicate(ItemSubPredicates.ENCHANTMENTS, ItemEnchantmentsPredicate.enchantments(listOf(EnchantmentPredicate(registries[Registries.ENCHANTMENT, Enchantments.SILK_TOUCH], MinMaxBounds.Ints.atLeast(1)))))))
@@ -334,7 +334,7 @@ fun (() -> Item).registerMobDrop(
     amount: NumberProvider? = null,
     fortuneFactor: NumberProvider? = null,
 ) = this.registerLootTableModification({ entityType.defaultLootTable }) { tableBuilder, registries ->
-    tableBuilder.configure {
+    tableBuilder.apply2 {
         withPool(LootPool(ItemLootPoolEntry(this@registerMobDrop()) {
             if (amount != null) apply(SetItemCountFunction.setCount(amount, false))
             if (fortuneFactor != null) apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, fortuneFactor))
@@ -353,7 +353,7 @@ fun (() -> Item).registerSinglePoolChestLoot(
     block: LootPoolSingletonContainer.Builder<*>.() -> Unit = {},
 ) = this.registerLootTableModification(lootTableIdGetter) { tableBuilder, registries ->
     tableBuilder.modifyPools { lootPool ->
-        lootPool.configure {
+        lootPool.apply2 {
             add(ItemLootPoolEntry(this@registerSinglePoolChestLoot()) {
                 setWeight(weight)
                 if (count != null) apply(SetItemCountFunction.setCount(UniformGenerator.between(count.first.toFloat(), count.last.toFloat())))
@@ -370,7 +370,7 @@ fun (() -> Item).registerChestLoot(
     count: IntRange? = null,
     block: LootPoolSingletonContainer.Builder<*>.() -> Unit = {},
 ) = this.registerLootTableModification(lootTableIdGetter) { tableBuilder, registries ->
-    tableBuilder.configure {
+    tableBuilder.apply2 {
         withPool(LootPool {
             add(ItemLootPoolEntry(this@registerChestLoot()) {
                 `when`(LootItemRandomChanceCondition.randomChance(chance))

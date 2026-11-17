@@ -4,6 +4,7 @@ import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.Remover
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarratableEntry
@@ -51,6 +52,11 @@ abstract class ViewScreen(title: Component) : Screen(title) {
     })
 
     override fun init() = viewAdapter.init()
+
+    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        viewAdapter.beforeRender()
+        super.render(guiGraphics, mouseX, mouseY, partialTick)
+    }
 
     override fun removed() {
         viewAdapter.removed()

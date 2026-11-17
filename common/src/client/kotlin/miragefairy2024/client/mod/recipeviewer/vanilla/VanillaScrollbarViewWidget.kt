@@ -45,31 +45,38 @@ abstract class VanillaScrollbarViewWidget(
 
     private var scrollOffset = 0.0
 
-    private fun evaluateMaxScrollOffset() = evaluateContentLength() - view.viewportLength atLeast 0
+    // 範囲が狭まっても、現在の位置から操作できるようにするのだ～🌱
+    private fun evaluateScrollRange(): ClosedFloatingPointRange<Double> {
+        val normalMaxScrollOffset = (evaluateContentLength() - view.viewportLength atLeast 0).toDouble()
+        return minOf(0.0, scrollOffset)..maxOf(normalMaxScrollOffset, scrollOffset)
+    }
 
     private fun evaluateThumbLength(): Int {
         if (scrollbarLength <= 0) return 0
-        val contentLength = evaluateContentLength()
-        if (contentLength <= view.viewportLength) return scrollbarLength
-        val visibleRatio = view.viewportLength.toDouble() / contentLength.toDouble()
+        val range = evaluateScrollRange()
+        val scrollLength = range.endInclusive - range.start
+        if (scrollLength == 0.0) return scrollbarLength
+        val visibleRatio = view.viewportLength / (view.viewportLength + scrollLength)
         val rawThumbLength = (scrollbarLength.toDouble() * visibleRatio).roundToInt()
         val minThumbLength = scrollbarThickness.coerceIn(1, scrollbarLength)
         return rawThumbLength.coerceIn(minThumbLength, scrollbarLength)
     }
 
     private fun evaluateThumbPosition(): Double {
-        return if (evaluateMaxScrollOffset() == 0) {
+        val range = evaluateScrollRange()
+        return if (range.start == range.endInclusive) {
             0.0
         } else {
             val maxThumbPosition = scrollbarLength - evaluateThumbLength()
-            val scrollRatio = scrollOffset / evaluateMaxScrollOffset().toDouble()
+            val scrollRatio = (scrollOffset - range.start) / (range.endInclusive - range.start)
             maxThumbPosition.toDouble() * scrollRatio
         }
     }
 
     private fun updateScroll(offset: Double): Boolean {
         val old = scrollOffset
-        scrollOffset = offset.coerceIn(0.0, evaluateMaxScrollOffset().toDouble())
+        val range = evaluateScrollRange()
+        scrollOffset = offset.coerceIn(range.start, range.endInclusive)
         if (scrollOffset == old) return false
         return true
     }
@@ -88,10 +95,9 @@ abstract class VanillaScrollbarViewWidget(
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
-        updateScroll(scrollOffset)
-
         // スクロールバーの描画なのだ～🌱
-        if (evaluateMaxScrollOffset() > 0 && scrollbarThickness > 0 && evaluateThumbLength() > 0) {
+        val range = evaluateScrollRange()
+        if (range.start < range.endInclusive && scrollbarThickness > 0 && evaluateThumbLength() > 0) {
             renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), evaluateThumbLength())
         }
 
@@ -104,8 +110,9 @@ abstract class VanillaScrollbarViewWidget(
     private fun dragScrollbar(mouseX: Double, mouseY: Double) {
         val thumbPosition = getMousePosition(mouseX, mouseY) - scrollbarDragOffset
         val remainingThumbLength = scrollbarLength - evaluateThumbLength()
-        val scrollRatio = thumbPosition / remainingThumbLength.toDouble()
-        updateScroll(evaluateMaxScrollOffset() * scrollRatio)
+        val scrollRatio = (thumbPosition / remainingThumbLength.toDouble()).coerceIn(0.0, 1.0)
+        val range = evaluateScrollRange()
+        updateScroll(range.start + (range.endInclusive - range.start) * scrollRatio)
     }
 
     override fun hasMouseCapture(button: Int) = !disposed && button == 0 && draggingScrollbar
@@ -117,7 +124,8 @@ abstract class VanillaScrollbarViewWidget(
         if (super.isMouseOver(mouseX, mouseY)) {
             // スクロールバーのドラッグ開始なのだ～🌱
             if (button != 0) return false
-            if (evaluateMaxScrollOffset() == 0) return false
+            val range = evaluateScrollRange()
+            if (range.start == range.endInclusive) return false
             if (scrollbarLength <= evaluateThumbLength()) return false
             draggingScrollbar = true
             val mousePosition = getMousePosition(mouseX, mouseY)
@@ -169,7 +177,8 @@ abstract class VanillaScrollbarViewWidget(
 
         if (!isActive) return null
 
-        if (evaluateMaxScrollOffset() > 0 && !isFocused) {
+        val range = evaluateScrollRange()
+        if (range.start < range.endInclusive && !isFocused) {
             return object : ComponentPath {
                 override fun component() = this@VanillaScrollbarViewWidget
 
@@ -197,8 +206,8 @@ abstract class VanillaScrollbarViewWidget(
             forwardKey -> scrollOffset + view.scrollStep
             GLFW.GLFW_KEY_PAGE_UP -> scrollOffset - view.viewportLength * 0.8
             GLFW.GLFW_KEY_PAGE_DOWN -> scrollOffset + view.viewportLength * 0.8
-            GLFW.GLFW_KEY_HOME -> 0.0
-            GLFW.GLFW_KEY_END -> evaluateMaxScrollOffset().toDouble()
+            GLFW.GLFW_KEY_HOME -> evaluateScrollRange().start
+            GLFW.GLFW_KEY_END -> evaluateScrollRange().endInclusive
             else -> return false
         }
         return updateScroll(offset)

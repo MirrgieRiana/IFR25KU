@@ -95,7 +95,7 @@ class TooltipViewerViewWrapperTest {
         val controller = view.place(placements)
         try {
             val field = placements.mapNotNull { it.first as? TextFieldView }.single()
-            var scrollView = placements.mapNotNull { it.first as? YScrollView }.single()
+            val scrollView = placements.mapNotNull { it.first as? YScrollView }.single()
             listOf(
                 "0,1,3" to listOf("title", "first", "third"),
                 "1,3" to listOf("first", "third"),
@@ -109,8 +109,7 @@ class TooltipViewerViewWrapperTest {
                 field.text.value = value
                 Assertions.assertEquals(value, filter.value)
                 Assertions.assertSame(field, placements.mapNotNull { it.first as? TextFieldView }.single())
-                Assertions.assertEquals(1, placements.count { it.first is YScrollView })
-                scrollView = placements.mapNotNull { it.first as? YScrollView }.single()
+                Assertions.assertSame(scrollView, placements.mapNotNull { it.first as? YScrollView }.single())
                 Assertions.assertEquals(scrollOffset, scrollView.scrollOffsetY.value)
                 val lines = placements.filter { it.first is MultiLineTextView }
                 Assertions.assertEquals(expected, lines.map { (it.first as MultiLineTextView).text.value.string })

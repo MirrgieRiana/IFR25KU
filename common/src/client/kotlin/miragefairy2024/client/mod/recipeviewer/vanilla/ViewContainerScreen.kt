@@ -61,6 +61,7 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     }
 
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        viewAdapter.beforeRender()
         super.render(guiGraphics, mouseX, mouseY, partialTick)
         renderTooltip(guiGraphics, mouseX, mouseY)
     }

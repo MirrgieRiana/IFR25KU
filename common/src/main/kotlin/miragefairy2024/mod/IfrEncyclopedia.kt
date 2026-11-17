@@ -40,7 +40,6 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Translation
-import miragefairy2024.util.configure
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.fire
@@ -279,8 +278,8 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                     position.weight = 1.0
                     recipeEntry.recipe.getParagraphs().forEachIndexed { index, paragraph ->
                         if (index > 0) view += PARAGRAPH_SPACE_CHILDREN_GENERATOR
-                        view += MultiLineTextChildrenGenerator(paragraph) { Alignment.START }.configure {
-                            onTextViewCreated.register {
+                        view += MultiLineTextChildrenGenerator(paragraph) { Alignment.START }.also { childrenGenerator ->
+                            childrenGenerator.onTextViewCreated.register {
                                 it.color = TEXT_COLOR
                                 it.shadow = false
                             }

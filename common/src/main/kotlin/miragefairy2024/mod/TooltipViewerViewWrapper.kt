@@ -30,7 +30,6 @@ import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.register
-import miragefairy2024.util.registerAndInitialize
 import miragefairy2024.util.text
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
@@ -54,70 +53,64 @@ fun openTooltipViewerScreen() {
 class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableValue<String>, scrollOffsetY: ObservableValue<Double>, tooltipProvider: (ItemStack) -> List<Component>) {
 
     val view = View {
-        fun scrollView() = View {
-            view += YScrollView().configure {
-                view.scrollOffsetY.value = scrollOffsetY.value
-                view.scrollOffsetY.register { _, newValue ->
-                    scrollOffsetY.value = newValue
-                }
-                view += YListView().configure {
-                    view.sizingX = Sizing.FILL
+        fun createContentView(): View {
+            return YListView().configure {
+                view.sizingX = Sizing.FILL
 
-                    val allowIndices = filter.value.split(",").mapNotNull { it.toIntOrNull() }.toSet().ifEmpty { null }
-                    fun isAllowedIndex(index: Int) = allowIndices == null || index in allowIndices
+                val allowIndices = filter.value.split(",").mapNotNull { it.toIntOrNull() }.toSet().ifEmpty { null }
+                fun isAllowedIndex(index: Int) = allowIndices == null || index in allowIndices
 
-                    var firstItemStack = true
-                    itemStacks.forEach { itemStack ->
-                        if (itemStack.isEmpty) return@forEach
+                var firstItemStack = true
+                itemStacks.forEach { itemStack ->
+                    if (itemStack.isEmpty) return@forEach
 
-                        if (firstItemStack) {
-                            firstItemStack = false
-                        } else {
-                            view += YSpaceView(2)
+                    if (firstItemStack) {
+                        firstItemStack = false
+                    } else {
+                        view += YSpaceView(2)
+                    }
+
+                    // アイテムレコードなのだ～🌱
+                    view += XListView().configure {
+                        view.sizingX = Sizing.FILL
+
+                        // アイテムスロットなのだ～🌱
+                        view += StackView().configure {
+                            view += ImageView(SlotType.NORMAL.viewTexture)
+                            view += ItemView(itemStack).configure().margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
                         }
 
-                        // アイテムレコードなのだ～🌱
-                        view += XListView().configure {
+                        view += XSpaceView(2)
+
+                        // ツールチップなのだ～🌱
+                        view += StackView().configure {
+                            position.weight = 1.0
+                            position.ignoreLayoutX = true
                             view.sizingX = Sizing.FILL
 
-                            // アイテムスロットなのだ～🌱
-                            view += StackView().configure {
-                                view += ImageView(SlotType.NORMAL.viewTexture)
-                                view += ItemView(itemStack).configure().margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
-                            }
-
-                            view += XSpaceView(2)
-
-                            // ツールチップなのだ～🌱
-                            view += StackView().configure {
-                                position.weight = 1.0
-                                position.ignoreLayoutX = true
+                            view += TooltipBackgroundView()
+                            view += YListView().configure {
                                 view.sizingX = Sizing.FILL
 
-                                view += TooltipBackgroundView()
-                                view += YListView().configure {
-                                    view.sizingX = Sizing.FILL
+                                tooltipProvider(itemStack).forEachIndexed { index, text ->
+                                    if (!isAllowedIndex(index)) return@forEachIndexed
 
-                                    tooltipProvider(itemStack).forEachIndexed { index, text ->
-                                        if (!isAllowedIndex(index)) return@forEachIndexed
-
-                                        if (index >= 1 && isAllowedIndex(index - 1)) {
-                                            view += YSpaceView(if (index == 1) 3 else 1)
-                                        }
-                                        view += MultiLineTextView().configure {
-                                            view.text.value = text
-                                            view.shadow = true
-                                        }
+                                    if (index >= 1 && isAllowedIndex(index - 1)) {
+                                        view += YSpaceView(if (index == 1) 3 else 1)
                                     }
-                                }.margin(4)
-                            }
+                                    view += MultiLineTextView().configure {
+                                        view.text.value = text
+                                        view.shadow = true
+                                    }
+                                }
+                            }.margin(4)
                         }
                     }
-                }.margin(0, 2, 0, 0)
-            }
+                }
+            }.margin(0, 2, 0, 0)
         }
 
-        val contentView = DynamicView()
+        val contentView = DynamicView(createContentView())
 
         view += YListView().configure {
             view.sizingX = Sizing.FILL
@@ -137,17 +130,22 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
                     view += TextFieldView().configure {
                         view.hint = text { TOOLTIP_VIEWER_EXAMPLE_KEY_TRANSLATION("0,1,2") }
                         view.text.value = filter.value
-                        view.text.registerAndInitialize { _, newValue ->
+                        view.text.register { _, newValue ->
                             filter.value = newValue
-                            contentView.content.value = scrollView()
+                            contentView.content.value = createContentView()
                         }
                     }
 
                     view += YSpaceView(2)
 
                     // スクロールなのだ～🌱
-                    view += contentView.configure {
+                    view += YScrollView().configure {
                         position.weight = 1.0
+                        view.scrollOffsetY.value = scrollOffsetY.value
+                        view.scrollOffsetY.register { _, newValue ->
+                            scrollOffsetY.value = newValue
+                        }
+                        view += contentView
                     }
                 }.minContentSizeX(240).margin(7)
             }
