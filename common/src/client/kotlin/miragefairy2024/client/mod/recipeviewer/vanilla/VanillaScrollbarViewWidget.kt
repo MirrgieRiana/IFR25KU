@@ -45,7 +45,11 @@ abstract class VanillaScrollbarViewWidget(
 
     private var scrollOffset = 0.0
 
-    private fun evaluateScrollRange() = 0.0..(evaluateContentLength() - view.viewportLength atLeast 0).toDouble()
+    // 範囲が狭まっても、現在の位置から操作できるようにするのだ～🌱
+    private fun evaluateScrollRange(): ClosedFloatingPointRange<Double> {
+        val normalMaxScrollOffset = (evaluateContentLength() - view.viewportLength atLeast 0).toDouble()
+        return minOf(0.0, scrollOffset)..maxOf(normalMaxScrollOffset, scrollOffset)
+    }
 
     private fun evaluateThumbLength(): Int {
         if (scrollbarLength <= 0) return 0
@@ -91,8 +95,6 @@ abstract class VanillaScrollbarViewWidget(
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
-        updateScroll(scrollOffset)
-
         // スクロールバーの描画なのだ～🌱
         val range = evaluateScrollRange()
         if (range.start < range.endInclusive && scrollbarThickness > 0 && evaluateThumbLength() > 0) {
@@ -108,7 +110,7 @@ abstract class VanillaScrollbarViewWidget(
     private fun dragScrollbar(mouseX: Double, mouseY: Double) {
         val thumbPosition = getMousePosition(mouseX, mouseY) - scrollbarDragOffset
         val remainingThumbLength = scrollbarLength - evaluateThumbLength()
-        val scrollRatio = thumbPosition / remainingThumbLength.toDouble()
+        val scrollRatio = (thumbPosition / remainingThumbLength.toDouble()).coerceIn(0.0, 1.0)
         val range = evaluateScrollRange()
         updateScroll(range.start + (range.endInclusive - range.start) * scrollRatio)
     }
