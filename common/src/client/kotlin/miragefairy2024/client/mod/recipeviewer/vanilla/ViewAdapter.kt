@@ -8,7 +8,9 @@ import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
+import miragefairy2024.util.fire
 import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
@@ -46,12 +48,13 @@ interface ViewAdapterHost {
 /**
  * View のサイズ計算と配置を登録先へ中継し、ホストの入力処理を補正するのだ～🌱
  * ホストを初期化するときは [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.init] を呼ぶのだ～🌱
- * ホストを破棄するときは [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.removed] を呼ぶのだ～🌱
+ * ホストが表示終了を通知できる場合は、最後の描画を終えてから [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.removed] を呼ぶのだ～🌱
  */
 class ViewAdapter(val host: ViewAdapterHost) {
 
     private var isInitialized = false
     private var viewController: ViewController? = null
+    private val onBeforeRender = EventRegistry<() -> Unit>()
 
     private class MouseClickSentinel : GuiEventListener, NarratableEntry {
 
@@ -88,6 +91,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = host.getUiOffset()
             override val canPlaceMenuSlots = host.canPlaceMenuSlots()
+            override val onBeforeRender = this@ViewAdapter.onBeforeRender
             override fun addRenderableWidget(widget: AbstractWidget) = host.addRenderableWidget(widget)
             override fun addRenderableOnly(widget: AbstractWidget) = host.addRenderableOnly(widget)
         }
@@ -95,6 +99,11 @@ class ViewAdapter(val host: ViewAdapterHost) {
             host.getViewPlacerRegistry().place(context, view, bounds)
         }
         isInitialized = true
+    }
+
+    /** このルートのウィジェットを描き始める前に呼ぶのだ～🌱 */
+    fun beforeRender() {
+        onBeforeRender.fire()
     }
 
     /** 子の相対位置・寸法・登録を維持して移動するのだ～🌱 */
@@ -109,6 +118,9 @@ class ViewAdapter(val host: ViewAdapterHost) {
         removeMouseClickSentinel()
         val controller = viewController
         viewController = null
+        onBeforeRender.toList().forEach {
+            onBeforeRender.remove(it)
+        }
         if (controller != null) controller.dispose()
     }
 
