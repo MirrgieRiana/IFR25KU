@@ -113,6 +113,8 @@ abstract class VanillaSimpleScrollViewWidget(
         return true
     }
 
+    private fun scrollBy(delta: Double) = updateScroll(scrollOffset + delta)
+
     private fun updateScrollBounds() {
         if (!disposed) view.scrollBounds.value = ScrollBounds(evaluateContentLength() atLeast 0, viewportLength atLeast 0)
     }
@@ -251,7 +253,7 @@ abstract class VanillaSimpleScrollViewWidget(
             }
             if (handled) return true
         }
-        return updateScroll(scrollOffset - getScrollAmount(scrollX, scrollY) * view.scrollStep)
+        return scrollBy(-getScrollAmount(scrollX, scrollY) * view.scrollStep)
     }
 
 
@@ -333,16 +335,15 @@ abstract class VanillaSimpleScrollViewWidget(
         if (listener != null && listener.keyPressed(keyCode, scanCode, modifiers)) return true
         // 子が選択されている間は、矢印キーをスクロールで消費せず、Screen のフォーカス移動へ渡すのだ～🌱
         if (listener != null && (keyCode == backwardKey || keyCode == forwardKey)) return false
-        val offset = when (keyCode) {
-            backwardKey -> scrollOffset - view.scrollStep
-            forwardKey -> scrollOffset + view.scrollStep
-            GLFW.GLFW_KEY_PAGE_UP -> scrollOffset - viewportLength * 0.8
-            GLFW.GLFW_KEY_PAGE_DOWN -> scrollOffset + viewportLength * 0.8
-            GLFW.GLFW_KEY_HOME -> 0.0
-            GLFW.GLFW_KEY_END -> evaluateMaxScrollOffset().toDouble()
-            else -> return false
+        return when (keyCode) {
+            backwardKey -> scrollBy(-view.scrollStep.toDouble())
+            forwardKey -> scrollBy(view.scrollStep.toDouble())
+            GLFW.GLFW_KEY_PAGE_UP -> scrollBy(-viewportLength * 0.8)
+            GLFW.GLFW_KEY_PAGE_DOWN -> scrollBy(viewportLength * 0.8)
+            GLFW.GLFW_KEY_HOME -> updateScroll(0.0)
+            GLFW.GLFW_KEY_END -> updateScroll(evaluateMaxScrollOffset().toDouble())
+            else -> false
         }
-        return updateScroll(offset)
     }
 
     override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
