@@ -45,10 +45,11 @@ abstract class VanillaScrollbarViewWidget(
 
     private var scrollOffset = 0.0
 
-    private fun evaluateMaxScrollOffset() = evaluateContentLength() - view.viewportLength atLeast 0
-
     // 範囲が狭まっても、現在の位置から操作できるようにするのだ～🌱
-    private fun evaluateScrollRange() = minOf(0.0, scrollOffset)..maxOf(evaluateMaxScrollOffset().toDouble(), scrollOffset)
+    private fun evaluateScrollRange(): ClosedFloatingPointRange<Double> {
+        val normalMaxScrollOffset = (evaluateContentLength() - view.viewportLength atLeast 0).toDouble()
+        return minOf(0.0, scrollOffset)..maxOf(normalMaxScrollOffset, scrollOffset)
+    }
 
     private fun evaluateThumbLength(): Int {
         if (scrollbarLength <= 0) return 0
@@ -74,7 +75,8 @@ abstract class VanillaScrollbarViewWidget(
 
     private fun updateScroll(offset: Double): Boolean {
         val old = scrollOffset
-        scrollOffset = offset.coerceIn(evaluateScrollRange())
+        val range = evaluateScrollRange()
+        scrollOffset = offset.coerceIn(range.start, range.endInclusive)
         if (scrollOffset == old) return false
         return true
     }
@@ -122,6 +124,8 @@ abstract class VanillaScrollbarViewWidget(
         if (super.isMouseOver(mouseX, mouseY)) {
             // スクロールバーのドラッグ開始なのだ～🌱
             if (button != 0) return false
+            val range = evaluateScrollRange()
+            if (range.start == range.endInclusive) return false
             if (scrollbarLength <= evaluateThumbLength()) return false
             draggingScrollbar = true
             val mousePosition = getMousePosition(mouseX, mouseY)
