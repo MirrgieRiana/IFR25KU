@@ -38,6 +38,17 @@ abstract class SimpleScrollView : WrapperView(), PlaceableView {
 
     val scrollBounds = ObservableValue(ScrollBounds(0, 0))
 
+    val connectedScrollOffset = ObservableValue<ObservableValue<Double>?>(null)
+
+    private val standaloneScrollOffsetReaders = mutableSetOf<() -> Double>()
+
+    internal fun readScrollOffset() = connectedScrollOffset.value?.value ?: standaloneScrollOffsetReaders.lastOrNull()?.invoke() ?: 0.0
+
+    fun registerStandaloneScrollOffset(reader: () -> Double): Remover {
+        standaloneScrollOffsetReaders += reader
+        return Remover { standaloneScrollOffsetReaders -= reader }
+    }
+
     protected abstract fun evaluateContentLength(): Int
     protected abstract fun evaluateViewportLength(): Int
 
@@ -77,57 +88,40 @@ class YSimpleScrollView : SimpleScrollView() {
 }
 
 /**
- * 領域のコンテンツ全長と表示領域長をバーへ反映し、別々の指定位置を双方向に同期するのだ～🌱
- * 両方の位置引数に同じ `ObservableValue` を渡した場合は、寸法だけを購読するのだ～🌱
- * 戻り値で接続の購読を解除するのだ～🌱
- *
- * @param scrollOffset 領域の指定位置で、初回はこの値をバーへ反映するのだ～🌱
- * @param scrollbarOffset バーの指定位置なのだ～🌱
+ * 領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
+ * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
-fun connectScrollbar(
-    scrollView: SimpleScrollView,
-    scrollOffset: ObservableValue<Double>,
-    scrollbarView: ScrollbarView,
-    scrollbarOffset: ObservableValue<Double>,
-): Remover {
+fun connectScrollbar(scrollView: SimpleScrollView, scrollbarView: ScrollbarView): Remover {
+    check(scrollView.connectedScrollOffset.value == null) { "The scroll view is already connected" }
+    check(scrollbarView.connectedScrollOffset.value == null) { "The scrollbar is already connected" }
 
-    fun updateBounds() {
-        val bounds = scrollView.scrollBounds.value
+    val sharedOffset = ObservableValue(scrollView.readScrollOffset())
+
+    fun updateBounds(bounds: ScrollBounds) {
         scrollbarView.contentLength = bounds.contentLength
         scrollbarView.viewportLength = bounds.viewportLength
     }
 
-    var updatingOffset = false
-    fun updateOffset(source: ObservableValue<Double>, target: ObservableValue<Double>) {
-        if (updatingOffset) return
-        updatingOffset = true
+    val boundsRemover = scrollView.scrollBounds.register { _, bounds -> updateBounds(bounds) }
+    val remover = Remover {
+        boundsRemover.remove()
         try {
-            while (!source.value.equals(target.value)) {
-                val position = source.value
-                target.value = position
-                // 通知中に反映元が更新された場合は、次の反映で新しい値を使うのだ～🌱
-                if (source.value.equals(position)) source.value = target.value
-            }
+            if (scrollView.connectedScrollOffset.value === sharedOffset) scrollView.connectedScrollOffset.value = null
         } finally {
-            updatingOffset = false
+            if (scrollbarView.connectedScrollOffset.value === sharedOffset) scrollbarView.connectedScrollOffset.value = null
         }
     }
 
-    val boundsRemover = scrollView.scrollBounds.register { _, _ -> updateBounds() }
-    val sharesOffset = scrollOffset === scrollbarOffset
-    val remover = if (sharesOffset) {
-        boundsRemover
-    } else {
-        val scrollOffsetRemover = scrollOffset.register { _, _ -> updateOffset(scrollOffset, scrollbarOffset) }
-        val scrollbarOffsetRemover = scrollbarOffset.register { _, _ -> updateOffset(scrollbarOffset, scrollOffset) }
-        boundsRemover + scrollOffsetRemover + scrollbarOffsetRemover
-    }
-
     try {
-        updateBounds()
-        if (!sharesOffset) updateOffset(scrollOffset, scrollbarOffset)
+        updateBounds(scrollView.scrollBounds.value)
+        scrollView.connectedScrollOffset.value = sharedOffset
+        scrollbarView.connectedScrollOffset.value = sharedOffset
     } catch (e: Throwable) {
-        remover.remove()
+        try {
+            remover.remove()
+        } catch (cleanupFailure: Throwable) {
+            if (cleanupFailure !== e) e.addSuppressed(cleanupFailure)
+        }
         throw e
     }
     return remover

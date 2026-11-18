@@ -3,228 +3,57 @@ package miragefairy2024.mod.recipeviewer.view
 import miragefairy2024.mod.recipeviewer.views.ScrollBounds
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
-import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.register
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class ScrollConnectionTest {
     @Test
-    fun `指定位置を共有すると寸法だけを同期して解除できるのだ`() {
+    fun `両側で指定位置を共有し寸法を反映するのだ`() {
         val scroll = XSimpleScrollView()
         val bar = XScrollbarView()
-        val sharedOffset = ObservableValue(120.5)
         scroll.scrollBounds.value = ScrollBounds(100, 50)
 
-        val connection = connectScrollbar(scroll, sharedOffset, bar, sharedOffset)
+        val connection = connectScrollbar(scroll, bar)
         try {
+            val sharedOffset = checkNotNull(scroll.connectedScrollOffset.value)
+            Assertions.assertSame(sharedOffset, bar.connectedScrollOffset.value)
+            Assertions.assertEquals(0.0, sharedOffset.value)
             Assertions.assertEquals(100, bar.contentLength)
             Assertions.assertEquals(50, bar.viewportLength)
+
+            checkNotNull(bar.connectedScrollOffset.value).value = 120.5
+            scroll.scrollBounds.value = ScrollBounds(200, 100)
             Assertions.assertEquals(120.5, sharedOffset.value)
-            Assertions.assertTrue(sharedOffset.toList().isEmpty())
-            sharedOffset.value = -5.5
-            scroll.scrollBounds.value = ScrollBounds(200, 75)
             Assertions.assertEquals(200, bar.contentLength)
-            Assertions.assertEquals(75, bar.viewportLength)
-            Assertions.assertEquals(-5.5, sharedOffset.value)
-        } finally {
-            connection.remove()
-        }
-
-        scroll.scrollBounds.value = ScrollBounds(300, 100)
-        Assertions.assertEquals(200, bar.contentLength)
-        Assertions.assertEquals(75, bar.viewportLength)
-        Assertions.assertEquals(-5.5, sharedOffset.value)
-        Assertions.assertTrue(scroll.scrollBounds.toList().isEmpty())
-    }
-
-    @Test
-    fun `バーの通知中に補正された指定位置を領域へ反映するのだ`() {
-        val scroll = XSimpleScrollView()
-        val bar = XScrollbarView()
-        val scrollOffset = ObservableValue(0.0)
-        val barOffset = ObservableValue(0.0)
-        val listener = barOffset.register { _, new ->
-            if (new == 15.0) barOffset.value = 20.0
-        }
-        val connection = connectScrollbar(scroll, scrollOffset, bar, barOffset)
-        try {
-            scrollOffset.value = 15.0
-            Assertions.assertEquals(20.0, scrollOffset.value)
-            Assertions.assertEquals(20.0, barOffset.value)
-        } finally {
-            connection.remove()
-            listener.remove()
-        }
-    }
-
-    @Test
-    fun `接続時の指定値を丸めず双方向に同期して解除できるのだ`() {
-        val scroll = XSimpleScrollView()
-        val bar = XScrollbarView()
-        val scrollOffset = ObservableValue(80.25)
-        val barOffset = ObservableValue(400.0)
-        scroll.scrollBounds.value = ScrollBounds(300, 100)
-        bar.contentLength = 1000
-        bar.viewportLength = 10
-        val connection = connectScrollbar(scroll, scrollOffset, bar, barOffset)
-        Assertions.assertEquals(300, bar.contentLength)
-        Assertions.assertEquals(100, bar.viewportLength)
-        Assertions.assertEquals(80.25, barOffset.value)
-        barOffset.value = 150.5
-        Assertions.assertEquals(150.5, scrollOffset.value)
-        scrollOffset.value = 999.75
-        Assertions.assertEquals(999.75, barOffset.value)
-        scroll.scrollBounds.value = ScrollBounds(120, 100)
-        Assertions.assertEquals(120, bar.contentLength)
-        Assertions.assertEquals(999.75, barOffset.value)
-        scrollOffset.value = -25.5
-        Assertions.assertEquals(-25.5, barOffset.value)
-        connection.remove()
-        connection.remove()
-        scrollOffset.value = 0.0
-        Assertions.assertEquals(-25.5, barOffset.value)
-        barOffset.value = 10.0
-        Assertions.assertEquals(0.0, scrollOffset.value)
-        Assertions.assertTrue(scroll.scrollBounds.toList().isEmpty())
-        Assertions.assertTrue(scrollOffset.toList().isEmpty())
-        Assertions.assertTrue(barOffset.toList().isEmpty())
-    }
-
-    @Test
-    fun `異なる軸を含む複数のバーへ範囲と指定値を同期するのだ`() {
-        val scroll = XSimpleScrollView()
-        val scrollOffset = ObservableValue(0.0)
-        val first = XScrollbarView()
-        val firstOffset = ObservableValue(0.0)
-        val second = YScrollbarView()
-        val secondOffset = ObservableValue(0.0)
-        val firstConnection = connectScrollbar(scroll, scrollOffset, first, firstOffset)
-        val secondConnection = connectScrollbar(scroll, scrollOffset, second, secondOffset)
-        try {
-            scroll.scrollBounds.value = ScrollBounds(300, 100)
-            firstOffset.value = 160.0
-            Assertions.assertEquals(160.0, secondOffset.value)
-            scroll.scrollBounds.value = ScrollBounds(50, 100)
-            Assertions.assertEquals(160.0, firstOffset.value)
-            Assertions.assertEquals(50, second.contentLength)
-            Assertions.assertEquals(100, second.viewportLength)
-        } finally {
-            firstConnection.remove()
-            secondConnection.remove()
-        }
-    }
-
-    @Test
-    fun `バーの通知中に表示領域の範囲が変わっても最新の状態まで同期するのだ`() {
-        val scroll = XSimpleScrollView()
-        val bar = XScrollbarView()
-        val scrollOffset = ObservableValue(80.0)
-        val barOffset = ObservableValue(0.0)
-        scroll.scrollBounds.value = ScrollBounds(300, 100)
-        val listener = barOffset.register { _, _ ->
-            if (scroll.scrollBounds.value.contentLength == 300) {
-                scroll.scrollBounds.value = ScrollBounds(600, 100)
-                scrollOffset.value = 400.0
-            }
-        }
-        val connection = connectScrollbar(scroll, scrollOffset, bar, barOffset)
-        try {
-            Assertions.assertEquals(600, bar.contentLength)
             Assertions.assertEquals(100, bar.viewportLength)
-            Assertions.assertEquals(400.0, barOffset.value)
-            scrollOffset.value = 80.0
-            scroll.scrollBounds.value = ScrollBounds(300, 100)
-            Assertions.assertEquals(300, bar.contentLength)
-            Assertions.assertEquals(80.0, barOffset.value)
         } finally {
             connection.remove()
-            listener.remove()
         }
+
+        connection.remove()
+        scroll.scrollBounds.value = ScrollBounds(300, 200)
+        Assertions.assertEquals(200, bar.contentLength)
+        Assertions.assertEquals(100, bar.viewportLength)
+        Assertions.assertNull(scroll.connectedScrollOffset.value)
+        Assertions.assertNull(bar.connectedScrollOffset.value)
         Assertions.assertTrue(scroll.scrollBounds.toList().isEmpty())
-        Assertions.assertTrue(scrollOffset.toList().isEmpty())
-        Assertions.assertTrue(barOffset.toList().isEmpty())
     }
 
     @Test
-    fun `バーの通知で変更された表示位置を再同期するのだ`() {
+    fun `接続の通知が失敗したら位置の参照と寸法の購読を解除するのだ`() {
         val scroll = XSimpleScrollView()
         val bar = XScrollbarView()
-        val scrollOffset = ObservableValue(0.0)
-        val barOffset = ObservableValue(0.0)
-        scroll.scrollBounds.value = ScrollBounds(300, 100)
-        val connection = connectScrollbar(scroll, scrollOffset, bar, barOffset)
-        val listener = barOffset.register { _, new ->
-            if (new == 15.0) scrollOffset.value = 20.0
-        }
-        try {
-            scrollOffset.value = 15.0
-            Assertions.assertEquals(20.0, scrollOffset.value)
-            Assertions.assertEquals(20.0, barOffset.value)
-        } finally {
-            connection.remove()
-            listener.remove()
-        }
-    }
-
-    @Test
-    fun `バーへ同期した値で通知中の新しい表示位置を上書きしないのだ`() {
-        val scroll = XSimpleScrollView()
-        val bar = XScrollbarView()
-        val scrollOffset = ObservableValue(0.0)
-        val barOffset = ObservableValue(0.0)
-        val listener = barOffset.register { _, new ->
-            if (new == 15.0) scrollOffset.value = 20.0
-        }
-        val connection = connectScrollbar(scroll, scrollOffset, bar, barOffset)
-        try {
-            scrollOffset.value = 15.0
-            Assertions.assertEquals(20.0, scrollOffset.value)
-            Assertions.assertEquals(20.0, barOffset.value)
-        } finally {
-            connection.remove()
-            listener.remove()
-        }
-    }
-
-    @Test
-    fun `表示位置が元の値に戻った場合もバーにその値を反映するのだ`() {
-        val scroll = XSimpleScrollView()
-        val bar = XScrollbarView()
-        val scrollOffset = ObservableValue(0.0)
-        val barOffset = ObservableValue(0.0)
-        val listener = scrollOffset.register { _, new ->
-            if (new == 15.0) scrollOffset.value = 0.0
-        }
-        val connection = connectScrollbar(scroll, scrollOffset, bar, barOffset)
-        try {
-            barOffset.value = 15.0
-            Assertions.assertEquals(0.0, scrollOffset.value)
-            Assertions.assertEquals(0.0, barOffset.value)
-        } finally {
-            connection.remove()
-            listener.remove()
-        }
-    }
-
-    @Test
-    fun `初期同期の通知が失敗したら接続の購読を残さないのだ`() {
-        val scroll = XSimpleScrollView()
-        val bar = XScrollbarView()
-        val scrollOffset = ObservableValue(80.0)
-        val barOffset = ObservableValue(0.0)
-        scroll.scrollBounds.value = ScrollBounds(300, 100)
         val exception = IllegalStateException("Listener failed")
-        val listener = barOffset.register { _, _ ->
-            throw exception
+        val listener = bar.connectedScrollOffset.register { _, offset ->
+            if (offset != null) throw exception
         }
         try {
-            Assertions.assertSame(exception, Assertions.assertThrows(IllegalStateException::class.java) { connectScrollbar(scroll, scrollOffset, bar, barOffset) })
+            Assertions.assertSame(exception, Assertions.assertThrows(IllegalStateException::class.java) { connectScrollbar(scroll, bar) })
+            Assertions.assertNull(scroll.connectedScrollOffset.value)
+            Assertions.assertNull(bar.connectedScrollOffset.value)
             Assertions.assertTrue(scroll.scrollBounds.toList().isEmpty())
-            Assertions.assertTrue(scrollOffset.toList().isEmpty())
-            Assertions.assertEquals(1, barOffset.toList().size)
         } finally {
             listener.remove()
         }

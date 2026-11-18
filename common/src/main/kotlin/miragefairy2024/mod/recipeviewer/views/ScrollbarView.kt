@@ -6,8 +6,11 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
+import miragefairy2024.util.ObservableValue
 
 abstract class ScrollbarView : AbstractView(), PlaceableView {
+
+    val connectedScrollOffset = ObservableValue<ObservableValue<Double>?>(null)
 
     var contentLength = 0
         set(value) {

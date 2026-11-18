@@ -7,6 +7,7 @@ import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.util.empty
 import miragefairy2024.util.invoke
+import miragefairy2024.util.register
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.gui.ComponentPath
@@ -34,6 +35,7 @@ abstract class VanillaScrollbarViewWidget(
         disposed = true
         draggingScrollbar = false
         focusedSelf = false
+        scrollOffsetRemover.remove()
     }
 
 
@@ -43,7 +45,21 @@ abstract class VanillaScrollbarViewWidget(
     protected abstract val scrollbarThickness: Int
     protected abstract fun evaluateContentLength(): Int
 
-    private var scrollOffset = 0.0
+    private var standaloneScrollOffset = 0.0
+    private var scrollOffset: Double
+        get() = view.connectedScrollOffset.value?.value ?: standaloneScrollOffset
+        set(value) {
+            val sharedOffset = view.connectedScrollOffset.value
+            if (sharedOffset == null) {
+                standaloneScrollOffset = value
+            } else {
+                sharedOffset.value = value
+            }
+        }
+
+    private val scrollOffsetRemover = view.connectedScrollOffset.register { previous, current ->
+        if (previous != null && current == null) standaloneScrollOffset = previous.value
+    }
 
     // 範囲が狭まっても、現在の位置から操作できるようにするのだ～🌱
     private fun evaluateScrollRange(): ClosedFloatingPointRange<Double> {

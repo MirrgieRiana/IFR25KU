@@ -10,9 +10,11 @@ import miragefairy2024.mod.recipeviewer.views.ScrollBounds
 import miragefairy2024.mod.recipeviewer.views.SimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
+import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.invoke
+import miragefairy2024.util.register
 import miragefairy2024.util.text
 import miragefairy2024.util.translate
 import mirrg.kotlin.helium.atLeast
@@ -87,6 +89,7 @@ abstract class VanillaSimpleScrollViewWidget(
         pressedWidgetRegistrations.clear()
         focused = null
         focusedSelf = false
+        scrollOffsetRemover.remove()
         childController.dispose()
     }
 
@@ -100,7 +103,8 @@ abstract class VanillaSimpleScrollViewWidget(
     protected abstract val viewportLength: Int
     protected abstract fun evaluateContentLength(): Int
 
-    private var scrollOffset = 0.0
+    private var standaloneScrollOffset = 0.0
+    private val scrollOffset get() = view.connectedScrollOffset.value?.value ?: standaloneScrollOffset
 
     private fun evaluateMaxScrollOffset() = evaluateContentLength() - viewportLength atLeast 0
 
@@ -108,9 +112,18 @@ abstract class VanillaSimpleScrollViewWidget(
 
     private fun updateScroll(offset: Double): Boolean {
         if (offset == scrollOffset) return false
-        scrollOffset = offset
-        childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
+        val sharedOffset = view.connectedScrollOffset.value
+        if (sharedOffset == null) {
+            standaloneScrollOffset = offset
+            updateChildOffset()
+        } else {
+            sharedOffset.value = offset
+        }
         return true
+    }
+
+    private fun updateChildOffset() {
+        childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
     }
 
     private fun scrollBy(delta: Double): Boolean {
@@ -144,7 +157,7 @@ abstract class VanillaSimpleScrollViewWidget(
 
     override fun setPosition(x: Int, y: Int) {
         super.setPosition(x, y)
-        childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
+        updateChildOffset()
     }
 
 
@@ -404,6 +417,7 @@ abstract class VanillaSimpleScrollViewWidget(
     // 子 View の配置なのだ～🌱
 
     private val childController: ViewController
+    private val scrollOffsetRemover: Remover
 
     init {
         val childContext: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
@@ -416,8 +430,26 @@ abstract class VanillaSimpleScrollViewWidget(
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
         }
         updateScrollBounds()
-        childController = view.childView.attachTo(IntPoint(x, y)) { childView, childBounds ->
+        childController = view.childView.attachTo(getChildOffset(scrollOffset.roundToInt())) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
+        }
+        fun observeSharedOffset(offset: ObservableValue<Double>?) = if (offset == null) {
+            Remover.NONE
+        } else {
+            offset.register { _, _ -> updateChildOffset() }
+        }
+        val standaloneRemover = view.registerStandaloneScrollOffset { standaloneScrollOffset }
+        var sharedRemover = observeSharedOffset(view.connectedScrollOffset.value)
+        val connectionRemover = view.connectedScrollOffset.register { previous, current ->
+            sharedRemover.remove()
+            if (previous != null && current == null) standaloneScrollOffset = previous.value
+            sharedRemover = observeSharedOffset(current)
+            updateChildOffset()
+        }
+        scrollOffsetRemover = Remover {
+            connectionRemover.remove()
+            sharedRemover.remove()
+            standaloneRemover.remove()
         }
     }
 
