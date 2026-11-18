@@ -5,8 +5,12 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.ScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.util.EventRegistry
+import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.empty
+import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
+import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.gui.ComponentPath
@@ -21,6 +25,7 @@ import kotlin.math.roundToInt
 
 abstract class VanillaScrollbarViewWidget(
     protected val view: ScrollbarView,
+    private val scrollOffsetValue: ObservableValue<Double>,
     bounds: IntRectangle,
 ) :
     AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }), MouseCaptureContainer {
@@ -29,11 +34,13 @@ abstract class VanillaScrollbarViewWidget(
     // ライフサイクルなのだ～🌱
 
     private var disposed = false
+    private val onClosed = EventRegistry<() -> Unit>()
 
     fun dispose() {
         disposed = true
         draggingScrollbar = false
         focusedSelf = false
+        onClosed.fire()
     }
 
 
@@ -44,6 +51,12 @@ abstract class VanillaScrollbarViewWidget(
     protected abstract fun evaluateContentLength(): Int
 
     private var scrollOffset = 0.0
+
+    init {
+        scrollOffsetValue.observeAndInitialize(onClosed) { _, new ->
+            scrollOffset = new
+        }
+    }
 
     // 範囲が狭まっても、現在の位置から操作できるようにするのだ～🌱
     private fun evaluateScrollRange(): ClosedFloatingPointRange<Double> {
@@ -74,11 +87,10 @@ abstract class VanillaScrollbarViewWidget(
     }
 
     private fun updateScroll(offset: Double): Boolean {
-        val old = scrollOffset
+        val old = scrollOffsetValue.value
         val range = evaluateScrollRange()
-        scrollOffset = offset.coerceIn(range.start, range.endInclusive)
-        if (scrollOffset == old) return false
-        return true
+        scrollOffsetValue.value = offset.coerceIn(range.start, range.endInclusive)
+        return scrollOffsetValue.value != old
     }
 
 
@@ -235,6 +247,7 @@ class VanillaXScrollbarViewWidget(
     bounds: IntRectangle,
 ) : VanillaScrollbarViewWidget(
     view,
+    view.scrollOffsetX,
     bounds,
 ) {
 
@@ -274,6 +287,7 @@ class VanillaYScrollbarViewWidget(
     bounds: IntRectangle,
 ) : VanillaScrollbarViewWidget(
     view,
+    view.scrollOffsetY,
     bounds,
 ) {
 
