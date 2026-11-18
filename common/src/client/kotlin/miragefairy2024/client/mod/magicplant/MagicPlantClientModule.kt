@@ -9,7 +9,6 @@ import miragefairy2024.mod.magicplant.MagicPlantSeedItem
 import miragefairy2024.mod.magicplant.getTraitStacks
 import miragefairy2024.mod.magicplant.minus
 import miragefairy2024.mod.magicplant.negativeBitCount
-import miragefairy2024.mod.magicplant.onOpenTraitEncyclopediaPageScreen
 import miragefairy2024.mod.magicplant.positiveBitCount
 import miragefairy2024.mod.magicplant.texture
 import miragefairy2024.mod.magicplant.traitListScreenHandlerType
@@ -54,10 +53,5 @@ fun initMagicPlantClientModule() {
             if (plusBitCount > 0) graphics.drawString(font, "$plusBitCount", x, y, ChatFormatting.GREEN.color!!, false)
             if (minusBitCount > 0) graphics.drawString(font, "$minusBitCount", x + 19 - 2 - font.width("$minusBitCount"), y, ChatFormatting.DARK_RED.color!!, false)
         }
-    }
-
-    onOpenTraitEncyclopediaPageScreen.register {
-        Minecraft.getInstance().setScreen(TraitEncyclopediaPageScreen(Minecraft.getInstance().screen, it))
-        true
     }
 }

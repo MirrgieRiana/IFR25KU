@@ -61,6 +61,10 @@ private val RANDOM_TRAIT_TRANSLATION = Translation({ identifier.toLanguageKey("g
 context(ModContext)
 fun initTraitEncyclopedia() {
     TraitEncyclopediaRecipeViewerCategoryCard.init()
+    onOpenTraitEncyclopediaPageScreen.register { trait ->
+        trait.openTraitEncyclopediaPageScreen()
+        true
+    }
 
     DEFAULT_TRAIT_TRANSLATION.enJa()
     RANDOM_TRAIT_TRANSLATION.enJa()
