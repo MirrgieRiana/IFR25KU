@@ -22,8 +22,8 @@ import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
-import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
@@ -78,13 +78,7 @@ class FairyQuestMessageViewWrapper(fairyQuestTitle: Component, fairyQuestMessage
                 position.alignmentX = Alignment.CENTER
                 position.weight = 1.0
                 view.sizingY = Sizing.FILL
-                val scrollView = YSimpleScrollView()
-                val scrollbarView = YScrollbarView().also {
-                    it.scrollbarThickness = 10
-                    it.scrollbarColor = 0xA0FFFFFF.toInt()
-                }
-                connectScrollbar(scrollView, scrollbarView)
-                view += scrollView.configure {
+                val scrollView = YSimpleScrollView().configure {
                     view.sizingX = Sizing.WRAP
 
                     view += StackView().configure {
@@ -121,7 +115,13 @@ class FairyQuestMessageViewWrapper(fairyQuestTitle: Component, fairyQuestMessage
                         }.minContentSizeX(18 * 15 - 10 * 2 - 11 * 2).margin(11)
                     }
                 }
+                view += scrollView
+                val scrollbarView = YScrollbarView().configure {
+                    view.scrollbarThickness = 10
+                    view.scrollbarColor = 0xA0FFFFFF.toInt()
+                }
                 view += scrollbarView
+                connectScrollbar(scrollView.view, scrollbarView.view)
             }.margin(10, 0, 0, 0) // アンチスクロールバーマージン
 
             view += YSpaceView(10)
