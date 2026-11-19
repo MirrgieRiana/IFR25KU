@@ -35,6 +35,7 @@ fun EventRegistry<() -> Unit>.fire() = this.fire { it() }
 
 // ObservableValue
 
+/** 互いに矛盾するようなバリデータが相互に値を修正し合うパターンは、想定しないのだ～🌱 */
 class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
     private class ListenerState<T>(val value: T, val revision: Long)
 
@@ -65,22 +66,33 @@ class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
 
             updating = true
             try {
+                // リスナーのステートの初期化
                 toList().forEach {
                     listenerStateTable[it] = ListenerState(old, oldRevision)
                 }
-                while (true) {
-                    val currentRevision = revision
-                    run pass@{
-                        toList().forEach { listener ->
-                            val previous = listenerStateTable[listener] ?: return@forEach
-                            if (previous.revision == currentRevision) return@forEach
-                            val current = field
-                            listenerStateTable[listener] = ListenerState(current, currentRevision)
-                            listener(previous.value, current)
-                            if (revision != currentRevision) return@pass
+
+                run finish@{
+                    while (true) {
+                        run next@{
+                            val currentRevision = revision
+
+                            // 各リスナーにイベントを配る
+                            toList().forEach { listener ->
+                                val previous = listenerStateTable[listener] ?: return@forEach // このリスナーは登録解除済み
+                                if (previous.revision == currentRevision) return@forEach // このリスナーには既に通知済み
+
+                                // 通知
+                                val current = field
+                                listenerStateTable[listener] = ListenerState(current, currentRevision)
+                                listener(previous.value, current)
+
+                                if (revision != currentRevision) return@next // 通知中に値が代入されたため、イベントの配布を
+                            }
+
+                            // リビジョンが更新されなかったので無事通知完了
+                            return@finish
                         }
                     }
-                    if (revision == currentRevision) break
                 }
             } finally {
                 updating = false
