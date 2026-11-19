@@ -428,7 +428,9 @@ abstract class VanillaSimpleScrollViewWidget(
         scrollOffsetValue.observeAndInitialize(onClosed) { old, new ->
             if (disposed) return@observeAndInitialize
             val scrollOffset = scrollOffsetValue.value.roundToInt()
-            if (old != new || scrollOffset != initialScrollOffset) childController.setOffset(getChildOffset(scrollOffset))
+            // attachTo 内で scrollOffsetValue が書き替えられた場合にも発火するのだ～🌱
+            if (scrollOffset == initialScrollOffset && old == new) return@observeAndInitialize
+            childController.setOffset(getChildOffset(scrollOffset))
         }
     }
 
