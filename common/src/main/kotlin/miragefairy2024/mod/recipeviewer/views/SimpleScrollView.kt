@@ -115,23 +115,14 @@ private fun connectScrollbarImpl(
     var remover = scrollView.scrollBounds.register { _, bounds -> updateBounds(bounds) }
 
     fun connectOffset(offset: ObservableValue<Double>) {
-        var publishing = false
-
         fun publishOffset() {
             val requested = sharedOffset.value
-            val wasPublishing = publishing
-            publishing = true
-            try {
-                offset.value = requested
-            } finally {
-                publishing = wasPublishing
-            }
+            offset.value = requested
             if (sharedOffset.value.equals(requested) && !offset.value.equals(requested)) sharedOffset.value = offset.value
         }
 
         remover += sharedOffset.register { _, _ -> publishOffset() }
         remover += offset.register { _, position ->
-            if (publishing) return@register
             sharedOffset.value = position
             if (offset.value.equals(position) && !sharedOffset.value.equals(position)) publishOffset()
         }
