@@ -30,6 +30,76 @@ private class SimpleScrollTestView(size: IntPoint) : FixedWidgetView(size)
 
 class VanillaSimpleScrollViewWidgetTest {
     @Test
+    fun `View の指定位置と操作結果を共有し購読を解除してから再配置するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val view = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+            val scrollOffsetValue = if (horizontal) (view as XSimpleScrollView).scrollOffsetX else (view as YSimpleScrollView).scrollOffsetY
+            val placements = mutableListOf<MutableList<IntPoint>>()
+            view += object : FixedView(IntPoint(300, 300)) {
+                override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
+                    val offsets = mutableListOf(offset)
+                    placements += offsets
+                    return object : ViewController {
+                        override fun setOffset(offset: IntPoint) {
+                            offsets += offset
+                        }
+                        override fun detach() = Unit
+                        override fun dispose() = Unit
+                    }
+                }
+            }
+            val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
+            val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+
+            fun attach(viewportLength: Int): VanillaSimpleScrollViewWidget {
+                view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { viewportLength }, { viewportLength })
+                val bounds = IntRectangle(10, 20, viewportLength, viewportLength)
+                return if (horizontal) VanillaXSimpleScrollViewWidget(view as XSimpleScrollView, bounds, context, registry) else VanillaYSimpleScrollViewWidget(view as YSimpleScrollView, bounds, context, registry)
+            }
+
+            scrollOffsetValue.value = 175.25
+            val firstWidget = attach(100)
+            try {
+                Assertions.assertEquals(if (horizontal) IntPoint(-165, 20) else IntPoint(10, -155), placements[0].last())
+                Assertions.assertEquals(1, scrollOffsetValue.toList().size)
+                scrollOffsetValue.value = -30.25
+                Assertions.assertEquals(-30.25, scrollOffsetValue.value)
+                Assertions.assertEquals(if (horizontal) IntPoint(40, 20) else IntPoint(10, 50), placements[0].last())
+                scrollOffsetValue.value = 230.75
+                Assertions.assertEquals(230.75, scrollOffsetValue.value)
+                Assertions.assertEquals(if (horizontal) IntPoint(-221, 20) else IntPoint(10, -211), placements[0].last())
+                Assertions.assertTrue(firstWidget.mouseScrolled(50.0, 50.0, 0.0, 1.0))
+                Assertions.assertEquals(215.75, scrollOffsetValue.value)
+                firstWidget.isFocused = true
+                Assertions.assertTrue(firstWidget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
+                Assertions.assertEquals(0.0, scrollOffsetValue.value)
+                Assertions.assertTrue(firstWidget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+                Assertions.assertEquals(200.0, scrollOffsetValue.value)
+            } finally {
+                firstWidget.dispose()
+                firstWidget.detach()
+            }
+            Assertions.assertTrue(scrollOffsetValue.toList().isEmpty())
+            val previousOffsets = placements[0].toList()
+
+            val secondWidget = attach(200)
+            try {
+                Assertions.assertEquals(200.0, scrollOffsetValue.value)
+                Assertions.assertEquals(if (horizontal) IntPoint(-190, 20) else IntPoint(10, -180), placements[1].last())
+                Assertions.assertEquals(1, scrollOffsetValue.toList().size)
+                scrollOffsetValue.value = 25.75
+                Assertions.assertEquals(if (horizontal) IntPoint(-16, 20) else IntPoint(10, -6), placements[1].last())
+                Assertions.assertEquals(previousOffsets, placements[0])
+            } finally {
+                secondWidget.dispose()
+                secondWidget.detach()
+            }
+            Assertions.assertEquals(25.75, scrollOffsetValue.value)
+            Assertions.assertTrue(scrollOffsetValue.toList().isEmpty())
+        }
+    }
+
+    @Test
     fun `バーを削除した領域でも子のクリックとスクロールと破棄を中継するのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->

@@ -86,17 +86,21 @@ fun initVanillaViewPlacers() {
     }
     fun placeSimpleScrollView(context: VanillaViewPlacerContext, widget: VanillaSimpleScrollViewWidget): ViewController {
         val controller = context place widget
+        // 子の差し替えだけで全長が変わった場合も、描画前に寸法を通知するのだ～🌱
+        val boundsRemover = context.onBeforeRender.register(widget::updateScrollBounds)
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
             }
 
             override fun detach() {
+                boundsRemover.remove()
                 widget.detach()
                 controller.detach()
             }
 
             override fun dispose() {
+                boundsRemover.remove()
                 widget.dispose()
                 controller.dispose()
             }
