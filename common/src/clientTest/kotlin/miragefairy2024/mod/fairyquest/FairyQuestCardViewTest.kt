@@ -14,7 +14,8 @@ import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
-import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
@@ -78,9 +79,15 @@ class FairyQuestCardViewTest {
             placements += Pair(view, bounds)
             ViewController.NONE
         }
-        Assertions.assertEquals(IntRectangle(18, 30, 145, 60), placements.single { it.first is YScrollView }.second)
-        val scroll = placements.single { it.first is YScrollView }.first as YScrollView
+        val (scrollView, scrollBounds) = placements.single { it.first is YSimpleScrollView }
+        val (scrollbarView, scrollbarBounds) = placements.single { it.first is YScrollbarView }
+        val scroll = scrollView as YSimpleScrollView
+        val scrollbar = scrollbarView as YScrollbarView
+        Assertions.assertEquals(IntRectangle(18, 30, 140, 60), scrollBounds)
+        Assertions.assertEquals(IntRectangle(158, 30, 5, 60), scrollbarBounds)
         Assertions.assertTrue(scroll.childView.evaluateActualSizeY() > 60)
+        Assertions.assertEquals(scrollBounds.sizeY, scrollbar.viewportLength)
+        Assertions.assertEquals(scroll.childView.evaluateActualSizeY(), scrollbar.contentLength)
         val messageTextBounds = mutableListOf<IntRectangle>()
         scroll.childView.attachTo(IntPoint.ZERO) { view, bounds ->
             if (view is MultiLineTextView) messageTextBounds += bounds

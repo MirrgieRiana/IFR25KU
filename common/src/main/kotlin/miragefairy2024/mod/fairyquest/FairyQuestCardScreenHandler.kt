@@ -21,9 +21,11 @@ import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
-import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.menuSlotView
 import miragefairy2024.mod.recipeviewer.views.minContentSizeY
@@ -160,7 +162,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                         view += XListView().configure {
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
-                            view += YScrollView().configure {
+                            val scrollView = YSimpleScrollView().configure {
                                 position.weight = 1.0
                                 view += StackView().configure {
                                     view.sizingX = Sizing.FILL
@@ -177,6 +179,10 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
 
                                 }
                             }
+                            view += scrollView
+                            val scrollbarView = YScrollbarView()
+                            view += scrollbarView
+                            connectScrollbar(scrollView.view, scrollbarView)
                         }.margin(11, 6, 11, 11)
 
                     }.minContentSizeY(11 * 7 + 5).wrapClickable {
