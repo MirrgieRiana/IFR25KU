@@ -21,9 +21,11 @@ import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
-import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.menuSlotView
 import miragefairy2024.mod.recipeviewer.views.minContentSizeY
@@ -157,21 +159,30 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                         view += NinePatchImageView(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
 
                         // スクロールコンテナなのだ～🌱
-                        view += YScrollView().configure {
-                            view += StackView().configure {
-                                view.sizingX = Sizing.FILL
+                        view += XListView().configure {
+                            view.sizingX = Sizing.FILL
+                            view.sizingY = Sizing.FILL
+                            val scrollView = YSimpleScrollView().configure {
+                                position.weight = 1.0
+                                view += StackView().configure {
+                                    view.sizingX = Sizing.FILL
 
-                                // 罫線装飾用パネルなのだ～🌱
-                                view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11, 0, 11, 0, 0, 11, 0, true, true)
+                                    // 罫線装飾用パネルなのだ～🌱
+                                    view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11, 0, 11, 0, 0, 11, 0, true, true)
 
-                                // メッセージテキストラベルなのだ～🌱
-                                view += MultiLineTextView().configure {
-                                    view.text.value = recipe.message
-                                    view.color = ColorPair(0xFF6B472E.toInt(), 0xFF6B472E.toInt())
-                                    view.shadow = false
-                                }.margin(0, 0, 0, 1)
+                                    // メッセージテキストラベルなのだ～🌱
+                                    view += MultiLineTextView().configure {
+                                        view.text.value = recipe.message
+                                        view.color = ColorPair(0xFF6B472E.toInt(), 0xFF6B472E.toInt())
+                                        view.shadow = false
+                                    }.margin(0, 0, 0, 1)
 
+                                }
                             }
+                            view += scrollView
+                            val scrollbarView = YScrollbarView()
+                            view += scrollbarView
+                            connectScrollbar(scrollView.view, scrollbarView)
                         }.margin(11, 6, 11, 11)
 
                     }.minContentSizeY(11 * 7 + 5).wrapClickable {
