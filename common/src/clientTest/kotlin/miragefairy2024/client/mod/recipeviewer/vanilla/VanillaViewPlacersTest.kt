@@ -412,7 +412,7 @@ class VanillaViewPlacersTest {
             val widget = widgets.single() as VanillaVanillaScrollbarViewWidget
             try {
                 Assertions.assertEquals(if (horizontal) VanillaXVanillaScrollbarViewWidget::class.java else VanillaYVanillaScrollbarViewWidget::class.java, widget.javaClass)
-                Assertions.assertEquals(if (horizontal) IntPoint(100, 6) else IntPoint(6, 100), IntPoint(widget.width, widget.height))
+                Assertions.assertEquals(if (horizontal) IntPoint(100, 18) else IntPoint(18, 100), IntPoint(widget.width, widget.height))
                 controller.setOffset(IntPoint(40, 60))
                 Assertions.assertEquals(IntPoint(40, 60), IntPoint(widget.x, widget.y))
                 Assertions.assertTrue(widget.mouseClicked(42.0, 62.0, 0))

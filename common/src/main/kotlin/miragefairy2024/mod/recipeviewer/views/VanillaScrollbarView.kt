@@ -21,7 +21,7 @@ abstract class VanillaScrollbarView : AbstractView(), PlaceableView {
             if (value < 0) throw IllegalArgumentException("Viewport length must be non-negative")
             field = value
         }
-    var scrollbarThickness = 6
+    var scrollbarThickness = 18
         set(value) {
             if (value < 0) throw IllegalArgumentException("Scrollbar thickness must be non-negative")
             field = value
