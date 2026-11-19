@@ -62,40 +62,40 @@ class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
             if (new === old || new == old) return
             val oldRevision = revision
             revision++
-            if (updating) return
+            if (!updating) {
+                updating = true
+                try {
+                    // リスナーのステートの初期化
+                    toList().forEach {
+                        listenerStateTable[it] = ListenerState(old, oldRevision)
+                    }
 
-            updating = true
-            try {
-                // リスナーのステートの初期化
-                toList().forEach {
-                    listenerStateTable[it] = ListenerState(old, oldRevision)
-                }
+                    run finish@{
+                        while (true) {
+                            run next@{
+                                // 各リスナーにイベントを配る
+                                val currentRevision = revision
+                                toList().forEach { listener ->
+                                    val previous = listenerStateTable[listener] ?: return@forEach // このリスナーは登録解除済み
+                                    if (previous.revision == currentRevision) return@forEach // このリスナーには既に通知済み
 
-                run finish@{
-                    while (true) {
-                        run next@{
-                            // 各リスナーにイベントを配る
-                            val currentRevision = revision
-                            toList().forEach { listener ->
-                                val previous = listenerStateTable[listener] ?: return@forEach // このリスナーは登録解除済み
-                                if (previous.revision == currentRevision) return@forEach // このリスナーには既に通知済み
+                                    // 通知
+                                    val current = field
+                                    listenerStateTable[listener] = ListenerState(current, currentRevision)
+                                    listener(previous.value, current)
 
-                                // 通知
-                                val current = field
-                                listenerStateTable[listener] = ListenerState(current, currentRevision)
-                                listener(previous.value, current)
+                                    if (revision != currentRevision) return@next // 通知中に値が代入されたため、イベントの配布を
+                                }
 
-                                if (revision != currentRevision) return@next // 通知中に値が代入されたため、イベントの配布を
+                                // リビジョンが更新されなかったので無事通知完了
+                                return@finish
                             }
-
-                            // リビジョンが更新されなかったので無事通知完了
-                            return@finish
                         }
                     }
+                } finally {
+                    updating = false
+                    listenerStateTable.clear()
                 }
-            } finally {
-                updating = false
-                listenerStateTable.clear()
             }
         }
 }
