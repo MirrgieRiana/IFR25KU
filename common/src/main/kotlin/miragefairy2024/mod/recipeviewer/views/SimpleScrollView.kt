@@ -8,6 +8,9 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.ObservableValue
+import miragefairy2024.util.Remover
+import miragefairy2024.util.plus
+import miragefairy2024.util.register
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 
@@ -20,6 +23,7 @@ data class ScrollBounds(val contentLength: Int, val viewportLength: Int) {
 /**
  * 子 View を一方向へスクロールするのだ～🌱
  * スクロール方向のコンテンツが占有する最小のサイズは `0` なのだ～🌱
+ * スクロール位置はコンテンツ座標で保持し、再配置時にも引き継ぐのだ～🌱
  * バニラへの配置では、子孫に [miragefairy2024.mod.recipeviewer.views.MenuSlotView] を含めてはならないのだ～🌱
  */
 abstract class SimpleScrollView : WrapperView(), PlaceableView {
@@ -75,4 +79,73 @@ class YSimpleScrollView : SimpleScrollView() {
     override fun evaluateContentLength() = childView.evaluateActualSizeY()
     override fun evaluateViewportLength() = evaluateActualSizeY()
 
+}
+
+/**
+ * X 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
+ * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
+ */
+fun connectScrollbar(scrollView: XSimpleScrollView, scrollbarView: XScrollbarView): Remover {
+    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetX, scrollbarView.scrollOffsetX)
+}
+
+/**
+ * Y 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
+ * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
+ */
+fun connectScrollbar(scrollView: YSimpleScrollView, scrollbarView: YScrollbarView): Remover {
+    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetY, scrollbarView.scrollOffsetY)
+}
+
+private fun connectScrollbarImpl(
+    scrollView: SimpleScrollView,
+    scrollbarView: ScrollbarView,
+    scrollViewOffset: ObservableValue<Double>,
+    scrollbarViewOffset: ObservableValue<Double>,
+): Remover {
+    val initialScrollViewOffset = scrollViewOffset.value
+    val initialScrollbarViewOffset = scrollbarViewOffset.value
+    var remover = Remover.NONE
+    val sharedOffset = ObservableValue(initialScrollViewOffset)
+
+    // 領域の寸法→スクロールバーのパラメータ
+    remover += scrollView.scrollBounds.register { _, bounds ->
+        scrollbarView.contentLength = bounds.contentLength
+        scrollbarView.viewportLength = bounds.viewportLength
+    }
+
+    fun connectOffset(offset: ObservableValue<Double>) {
+        // 共有値→View固有値
+        remover += sharedOffset.register { _, _ ->
+            offset.value = sharedOffset.value
+        }
+        // View固有値→共有値
+        remover += offset.register { _, position ->
+            sharedOffset.value = position
+        }
+    }
+    connectOffset(scrollViewOffset)
+    connectOffset(scrollbarViewOffset)
+
+    try {
+        scrollbarView.contentLength = scrollView.scrollBounds.value.contentLength
+        scrollbarView.viewportLength = scrollView.scrollBounds.value.viewportLength
+        scrollViewOffset.value = sharedOffset.value
+        scrollbarViewOffset.value = sharedOffset.value
+    } catch (e: Throwable) {
+        remover.remove()
+
+        fun restoreOffset(offset: ObservableValue<Double>, position: Double) {
+            try {
+                offset.value = position
+            } catch (e2: Throwable) {
+                if (e2 !== e) e.addSuppressed(e2)
+            }
+        }
+
+        restoreOffset(scrollViewOffset, initialScrollViewOffset)
+        restoreOffset(scrollbarViewOffset, initialScrollbarViewOffset)
+        throw e
+    }
+    return remover
 }

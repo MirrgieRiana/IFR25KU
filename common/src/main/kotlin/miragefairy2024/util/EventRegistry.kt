@@ -1,8 +1,5 @@
 package miragefairy2024.util
 
-import mirrg.kotlin.helium.Single
-
-
 // TODO mirrg
 
 // EventRegistry
@@ -38,20 +35,23 @@ fun EventRegistry<() -> Unit>.fire() = this.fire { it() }
 
 // ObservableValue
 
+/** 互いに矛盾するようなバリデータが相互に値を修正し合うパターンは、想定しないのだ～🌱 */
 class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
+    private class ListenerState<T>(val value: T, val revision: Long)
+
     private var updating = false
-    private var dirty = false
-    private val oldTable = mutableMapOf<(T, T) -> Unit, Single<T>>()
+    private var revision = 0L
+    private val listenerStateTable = mutableMapOf<(T, T) -> Unit, ListenerState<T>>()
 
     override fun add(listener: (T, T) -> Unit): Boolean {
         val added = super.add(listener)
-        if (added && updating) oldTable[listener] = Single(value)
+        if (added && updating) listenerStateTable[listener] = ListenerState(value, revision)
         return added
     }
 
     override fun remove(listener: (T, T) -> Unit): Boolean {
         val removed = super.remove(listener)
-        if (removed && updating) oldTable -= listener
+        if (removed && updating) listenerStateTable -= listener
         return removed
     }
 
@@ -60,33 +60,41 @@ class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
             val old = field
             field = new
             if (new === old || new == old) return
-            if (updating) {
-                dirty = true
-            } else {
+            val oldRevision = revision
+            revision++
+            if (!updating) {
                 updating = true
                 try {
+                    // リスナーのステートの初期化
                     toList().forEach {
-                        oldTable[it] = Single(old)
+                        listenerStateTable[it] = ListenerState(old, oldRevision)
                     }
+
                     run finish@{
                         while (true) {
-                            dirty = false
                             run next@{
+                                // 各リスナーにイベントを配る
+                                val oldRevision2 = revision
                                 toList().forEach { listener ->
-                                    val old2 = (oldTable[listener] ?: return@forEach).first
-                                    val new2 = field
-                                    if (old2 === new2 || old2 == new2) return@forEach
-                                    oldTable[listener] = Single(new2)
-                                    listener(old2, new2)
-                                    if (dirty) return@next
+                                    val listenerState = listenerStateTable[listener] ?: return@forEach // このリスナーは登録解除済み
+                                    if (listenerState.revision == oldRevision2) return@forEach // このリスナーには既に通知済み
+
+                                    // 通知
+                                    val old2 = field
+                                    listenerStateTable[listener] = ListenerState(old2, oldRevision2)
+                                    listener(listenerState.value, old2)
+
+                                    if (revision != oldRevision2) return@next // 通知中に値が代入されたためイベントの配布をやり直す
                                 }
+
+                                // リビジョンが更新されなかったので無事通知完了
                                 return@finish
                             }
                         }
                     }
                 } finally {
                     updating = false
-                    oldTable.clear()
+                    listenerStateTable.clear()
                 }
             }
         }

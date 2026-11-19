@@ -84,8 +84,8 @@ abstract class VanillaSimpleScrollViewWidget(
 
     // ライフサイクルなのだ～🌱
 
-    private val onClosed = EventRegistry<() -> Unit>()
     private var disposed = false
+    private val onClosed = EventRegistry<() -> Unit>()
 
     fun dispose() {
         disposed = true
@@ -107,8 +107,6 @@ abstract class VanillaSimpleScrollViewWidget(
     protected abstract val viewportLength: Int
     protected abstract fun evaluateContentLength(): Int
 
-    private val scrollOffset get() = scrollOffsetValue.value
-
     private fun evaluateMaxScrollOffset() = evaluateContentLength() - viewportLength atLeast 0
 
     protected abstract fun getChildOffset(scrollOffset: Int): IntPoint
@@ -120,6 +118,7 @@ abstract class VanillaSimpleScrollViewWidget(
     }
 
     private fun scrollBy(delta: Double): Boolean {
+        val scrollOffset = scrollOffsetValue.value
         val maxScrollOffset = evaluateMaxScrollOffset().toDouble()
         // 範囲外から戻る途中も、入力の移動量で少しずつ戻れるようにするのだ～🌱
         return when {
@@ -150,7 +149,7 @@ abstract class VanillaSimpleScrollViewWidget(
 
     override fun setPosition(x: Int, y: Int) {
         super.setPosition(x, y)
-        childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
+        childController.setOffset(getChildOffset(scrollOffsetValue.value.roundToInt()))
     }
 
 
@@ -309,13 +308,13 @@ abstract class VanillaSimpleScrollViewWidget(
                         val actualFocused = this@VanillaSimpleScrollViewWidget.focused?.getActualFocused { true } ?: return
                         val rectangle = actualFocused.rectangle
                         if (rectangle.width() <= 0 || rectangle.height() <= 0) return
-                        updateScroll(scrollOffset + getScrollOffsetDeltaOnFocus(rectangle))
+                        updateScroll(scrollOffsetValue.value + getScrollOffsetDeltaOnFocus(rectangle))
                     }
                 }
             }
         } else {
             // スクロールの余地がなく、かつ現在位置が初期位置の場合は、移動の操作が不可能なので、自身をフォーカスしないのだ～🌱
-            if (evaluateMaxScrollOffset() <= 0 && scrollOffset == 0.0) return null
+            if (evaluateMaxScrollOffset() <= 0 && scrollOffsetValue.value == 0.0) return null
             // 既にフォーカスされている場合は、次のフォーカス先に選ばないのだ～🌱
             if (isFocused) return null
             // 自身を次のフォーカス先にするのだ～🌱
@@ -428,8 +427,10 @@ abstract class VanillaSimpleScrollViewWidget(
         }
         scrollOffsetValue.observeAndInitialize(onClosed) { old, new ->
             if (disposed) return@observeAndInitialize
-            val actualScrollOffset = scrollOffsetValue.value.roundToInt()
-            if (old != new || actualScrollOffset != initialScrollOffset) childController.setOffset(getChildOffset(actualScrollOffset))
+            val scrollOffset = scrollOffsetValue.value.roundToInt()
+            // attachTo 内で scrollOffsetValue が書き替えられた場合にも発火するのだ～🌱
+            if (scrollOffset == initialScrollOffset && old == new) return@observeAndInitialize
+            childController.setOffset(getChildOffset(scrollOffset))
         }
     }
 

@@ -7,7 +7,6 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewController
-import miragefairy2024.mod.recipeviewer.view.connectScrollbar
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.AbsoluteView
 import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
@@ -27,6 +26,7 @@ import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
@@ -419,7 +419,7 @@ class VanillaViewPlacersTest {
                     val barOffset = if (horizontal) (bar as XScrollbarView).scrollOffsetX else (bar as YScrollbarView).scrollOffsetY
                     scrollOffset.value = 25.25
                     scroll += leaf
-                    val connection = connectScrollbar(scroll, scrollOffset, bar, barOffset)
+                    val connection = if (horizontal) connectScrollbar(scroll as XSimpleScrollView, bar as XScrollbarView) else connectScrollbar(scroll as YSimpleScrollView, bar as YScrollbarView)
                     val root = if (overlay) {
                         StackView().also {
                             it.sizingX = Sizing.FILL
@@ -454,8 +454,10 @@ class VanillaViewPlacersTest {
                                 viewport.render(environment.graphics, 25, 30, 0.0F)
                                 scrollbar.render(environment.graphics, 25, 30, 0.0F)
                                 Assertions.assertTrue(environment.fills.isNotEmpty())
-                                Assertions.assertTrue(scrollbar.mouseClicked(scrollbar.x + 1.0, scrollbar.y + 1.0, 0))
-                                Assertions.assertTrue(scrollbar.mouseDragged(500.0, 500.0, 0, 0.0, 0.0))
+                                val mouseX = scrollbar.x + 1.0
+                                val mouseY = scrollbar.y + 1.0
+                                Assertions.assertTrue(scrollbar.mouseClicked(mouseX, mouseY, 0))
+                                Assertions.assertTrue(scrollbar.mouseDragged(500.0, 500.0, 0, 500.0 - mouseX, 500.0 - mouseY))
                                 Assertions.assertEquals(if (horizontal) IntPoint(-40, 20) else IntPoint(10, 20 - (100 - viewportLength)), IntPoint(child.x, child.y))
                                 Assertions.assertTrue(scrollbar.mouseReleased(500.0, 500.0, 0))
                                 controller.setOffset(IntPoint(30, 40))
@@ -504,7 +506,7 @@ class VanillaViewPlacersTest {
                 val barOffset = if (horizontal) (bar as XScrollbarView).scrollOffsetX else (bar as YScrollbarView).scrollOffsetY
                 scroll += content
                 scrollOffset.value = 75.25
-                val connection = connectScrollbar(scroll, scrollOffset, bar, barOffset)
+                val connection = if (horizontal) connectScrollbar(scroll as XSimpleScrollView, bar as XScrollbarView) else connectScrollbar(scroll as YSimpleScrollView, bar as YScrollbarView)
                 scroll.initSizeCalculation(PLACER_RENDERING_PROXY, { 50 }, { 50 })
                 val controller = scroll.attachTo(context.origin) { view, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds) }
                 val widget = widgets.single() as VanillaSimpleScrollViewWidget
