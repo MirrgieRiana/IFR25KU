@@ -20,6 +20,7 @@ data class ScrollBounds(val contentLength: Int, val viewportLength: Int) {
 /**
  * 子 View を一方向へスクロールするのだ～🌱
  * スクロール方向のコンテンツが占有する最小のサイズは `0` なのだ～🌱
+ * スクロール位置はコンテンツ座標で保持し、再配置時にも引き継ぐのだ～🌱
  * バニラへの配置では、子孫に [miragefairy2024.mod.recipeviewer.views.MenuSlotView] を含めてはならないのだ～🌱
  */
 abstract class SimpleScrollView : WrapperView(), PlaceableView {
@@ -48,6 +49,8 @@ abstract class SimpleScrollView : WrapperView(), PlaceableView {
 /** 子 View を X 軸方向へスクロールするのだ～🌱 */
 class XSimpleScrollView : SimpleScrollView() {
 
+    val scrollOffsetX = ObservableValue(0.0)
+
     override fun evaluateContentSizeXImpl() = 0
     override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY()
 
@@ -61,6 +64,8 @@ class XSimpleScrollView : SimpleScrollView() {
 
 /** 子 View を Y 軸方向へスクロールするのだ～🌱 */
 class YSimpleScrollView : SimpleScrollView() {
+
+    val scrollOffsetY = ObservableValue(0.0)
 
     override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX()
     override fun evaluateContentSizeYImpl() = 0
