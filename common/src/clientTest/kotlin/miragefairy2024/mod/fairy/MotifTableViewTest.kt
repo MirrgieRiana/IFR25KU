@@ -10,6 +10,7 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewController
+import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
@@ -67,15 +68,18 @@ class MotifTableViewTest {
             CondensedMotifChance(first, Chance(0.125, CondensedItem(2.5, motif))),
             CondensedMotifChance(second, Chance(0.875, CondensedItem(1.0, motif))),
         ))
+        val size = IntPoint(400, 240)
         val view = menu.createView(text { "title"() }, text { "inventory"() })
-        view.initSizeCalculation(MOTIF_TABLE_RENDERING_PROXY, { 400 }, { 240 })
+        view.initSizeCalculation(MOTIF_TABLE_RENDERING_PROXY, { size.x }, { size.y })
+        val uiSize = view.evaluateActualSize()
+        Assertions.assertEquals(IntPoint(334, size.y), uiSize)
         val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
         fun place(view: PlaceableView, bounds: IntRectangle): ViewController {
             placements += Pair(view, bounds)
             if (view is YScrollContainerView) return view.childView.attachTo(bounds.offset, ::place)
             return ViewController.NONE
         }
-        val controller = view.attachTo(IntPoint.ZERO, ::place)
+        val controller = view.attachTo(IntPoint((size.x - uiSize.x) / 2, 0), ::place)
         try {
             Assertions.assertEquals(IntRectangle(33, 4, 334, 232), placements.single { it.first is NinePatchImageView }.second)
             val scroll = placements.single { it.first is YScrollContainerView }
@@ -111,22 +115,24 @@ class MotifTableViewTest {
     }
 
     @Test
-    fun `長い名前を列の幅で折り返しリサイズ後も一覧をスクロールできるのだ`() {
+    fun `画面寸法ごとに一覧を配置し名前の折り返し幅とバーの同期を確認するのだ`() {
         val itemStack: ItemStack = ItemStack(Items.STONE).also {
             it.set(DataComponents.CUSTOM_NAME, text { "long".repeat(20)() })
         }
         val motif: Motif = Mockito.mock(Motif::class.java)
         val menu = MotifTableScreenHandler(0, List(20) { CondensedMotifChance(itemStack, Chance(0.05, CondensedItem(1.0, motif))) })
-        val view = menu.createView(text { "title"() }, text { "inventory"() })
         listOf(IntPoint(400, 240), IntPoint(640, 360)).forEach { size ->
+            val view = menu.createView(text { "title"() }, text { "inventory"() })
             view.initSizeCalculation(MOTIF_TABLE_RENDERING_PROXY, { size.x }, { size.y })
+            val uiSize = view.evaluateActualSize()
+            Assertions.assertEquals(IntPoint(334, size.y), uiSize)
             val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
             fun place(view: PlaceableView, bounds: IntRectangle): ViewController {
                 placements += Pair(view, bounds)
                 if (view is YScrollContainerView) return view.childView.attachTo(bounds.offset, ::place)
                 return ViewController.NONE
             }
-            val controller = view.attachTo(IntPoint.ZERO, ::place)
+            val controller = view.attachTo(IntPoint((size.x - uiSize.x) / 2, 0), ::place)
             try {
                 val scroll = placements.single { it.first is YScrollContainerView }.first as YScrollContainerView
                 val scrollbar = placements.single { it.first is YScrollbarView }.first as YScrollbarView

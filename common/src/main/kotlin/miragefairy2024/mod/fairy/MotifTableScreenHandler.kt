@@ -100,51 +100,44 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
         }
 
         return View {
-            view += YListView().configure {
-                view.sizingX = Sizing.FILL
+            view += StackView().configure { // 外枠なのだ～🌱
                 view.sizingY = Sizing.FILL
 
-                view += StackView().configure { // 外枠なのだ～🌱
-                    position.alignmentX = Alignment.CENTER
-                    position.weight = 1.0
+                view += NinePatchImageView(panelTexture, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                view += XListView().configure {
                     view.sizingY = Sizing.FILL
+                    val scrollView = YScrollContainerView().configure {
+                        view.sizingX = Sizing.WRAP
 
-                    view += NinePatchImageView(panelTexture, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
-                    view += XListView().configure {
-                        view.sizingY = Sizing.FILL
-                        val scrollView = YScrollContainerView().configure {
-                            view.sizingX = Sizing.WRAP
-
-                            view += YListView().configure {
-                                chanceTable.forEach { chance ->
-                                    view += XListView().configure {
-                                        view += ItemView(chance.showingItemStack).configure {
-                                            position.alignmentY = Alignment.CENTER
-                                            view.showDecorations = false
-                                        }
-                                        view += XSpaceView(3)
-                                        view += textView(chance.showingItemStack.hoverName, 150, Alignment.START).configure {
-                                            position.alignmentY = Alignment.CENTER
-                                        }
-                                        view += textView(text { (chance.item.weight * 100 formatAs "%.4f%%")() }, 50, Alignment.END).configure {
-                                            position.alignmentY = Alignment.CENTER
-                                        }
-                                        view += textView(text { "x"() + (chance.item.item.count formatAs "%.2f")() }, 80, Alignment.END).configure {
-                                            position.alignmentY = Alignment.CENTER
-                                        }
-                                    }.tooltip { _, _ -> clientProxy!!.getItemTooltip(chance.showingItemStack) }
-                                }
-                            }.margin(0, 3, 0, 0)
-                        }
-                        view += scrollView
-                        val scrollbarView = YScrollbarView().configure {
-                            view.scrollbarThickness = 18
-                        }
-                        view += scrollbarView
-                        connectScrollbar(scrollView.view, scrollbarView.view)
-                    }.margin(panelMargin)
-                }
-            }.margin(4)
+                        view += YListView().configure {
+                            chanceTable.forEach { chance ->
+                                view += XListView().configure {
+                                    view += ItemView(chance.showingItemStack).configure {
+                                        position.alignmentY = Alignment.CENTER
+                                        view.showDecorations = false
+                                    }
+                                    view += XSpaceView(3)
+                                    view += textView(chance.showingItemStack.hoverName, 150, Alignment.START).configure {
+                                        position.alignmentY = Alignment.CENTER
+                                    }
+                                    view += textView(text { (chance.item.weight * 100 formatAs "%.4f%%")() }, 50, Alignment.END).configure {
+                                        position.alignmentY = Alignment.CENTER
+                                    }
+                                    view += textView(text { "x"() + (chance.item.item.count formatAs "%.2f")() }, 80, Alignment.END).configure {
+                                        position.alignmentY = Alignment.CENTER
+                                    }
+                                }.tooltip { _, _ -> clientProxy!!.getItemTooltip(chance.showingItemStack) }
+                            }
+                        }.margin(0, 3, 0, 0)
+                    }
+                    view += scrollView
+                    val scrollbarView = YScrollbarView().configure {
+                        view.scrollbarThickness = 18
+                    }
+                    view += scrollbarView
+                    connectScrollbar(scrollView.view, scrollbarView.view)
+                }.margin(panelMargin)
+            }.margin(0, 4)
         }
     }
 
