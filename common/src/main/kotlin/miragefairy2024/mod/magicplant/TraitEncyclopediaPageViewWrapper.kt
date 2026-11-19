@@ -2,6 +2,7 @@ package miragefairy2024.mod.magicplant
 
 import miragefairy2024.ClientProxy
 import miragefairy2024.MessageViewScreenDefinition
+import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
@@ -37,7 +38,15 @@ import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 
-fun Trait.openTraitEncyclopediaPageScreen() {
+context(ModContext)
+fun initTraitEncyclopediaPageScreen() {
+    onOpenTraitEncyclopediaPageScreen.register { trait ->
+        trait.openTraitEncyclopediaPageScreen()
+        true
+    }
+}
+
+private fun Trait.openTraitEncyclopediaPageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
         proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.getName()) {
@@ -66,10 +75,9 @@ class TraitEncyclopediaPageViewWrapper(traitName: Component, traitTexture: Resou
             view.sizingX = Sizing.FILL
             view.sizingY = Sizing.FILL
 
-            // カード部分
+            // カード部分なのだ～🌱
             view += XListView().configure {
                 position.weight = 1.0
-                position.ignoreLayoutY = true
                 position.alignmentX = Alignment.CENTER
                 view.sizingY = Sizing.FILL
 
@@ -82,7 +90,7 @@ class TraitEncyclopediaPageViewWrapper(traitName: Component, traitTexture: Resou
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
 
-                        // 特性名
+                        // 特性名なのだ～🌱
                         view += MultiLineTextView().configure {
                             view.text.value = traitName
                             view.alignmentX = Alignment.CENTER
@@ -91,14 +99,14 @@ class TraitEncyclopediaPageViewWrapper(traitName: Component, traitTexture: Resou
 
                         view += YSpaceView(5)
 
-                        // 特性アイコン
+                        // 特性アイコンなのだ～🌱
                         view += ImageView(ViewTexture(traitTexture, IntPoint(32, 32))).configure {
                             position.alignmentX = Alignment.CENTER
                         }
 
                         view += YSpaceView(5)
 
-                        // 特性ポエム
+                        // 特性ポエムなのだ～🌱
                         view += XListView().configure {
                             position.weight = 1.0
                             view.sizingX = Sizing.FILL
@@ -124,7 +132,7 @@ class TraitEncyclopediaPageViewWrapper(traitName: Component, traitTexture: Resou
 
             view += YSpaceView(10)
 
-            // ボタン部分
+            // ボタン部分なのだ～🌱
             view += XListView().configure {
                 position.alignmentX = Alignment.CENTER
 
