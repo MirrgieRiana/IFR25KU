@@ -18,9 +18,11 @@ import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
-import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
 import miragefairy2024.mod.recipeviewer.views.minContentSizeX
@@ -97,14 +99,24 @@ class TraitEncyclopediaPageViewWrapper(traitName: Component, traitTexture: Resou
                         view += YSpaceView(5)
 
                         // 特性ポエム
-                        view += YScrollView().configure {
+                        view += XListView().configure {
                             position.weight = 1.0
-                            view.scrollbarColor = 0xA0FFFFFF.toInt()
+                            view.sizingX = Sizing.FILL
+                            view.sizingY = Sizing.FILL
+                            val scrollView = YSimpleScrollView().configure {
+                                position.weight = 1.0
 
-                            view += MultiLineTextView().configure {
-                                view.text.value = traitText
-                                view.shadow = false
+                                view += MultiLineTextView().configure {
+                                    view.text.value = traitText
+                                    view.shadow = false
+                                }
                             }
+                            view += scrollView
+                            val scrollbarView = YScrollbarView().configure {
+                                view.scrollbarColor = 0xA0FFFFFF.toInt()
+                            }
+                            view += scrollbarView
+                            connectScrollbar(scrollView.view, scrollbarView.view)
                         }
                     }.margin(5)
                 }.minContentSizeX(160).maxContentSizeX(160)
