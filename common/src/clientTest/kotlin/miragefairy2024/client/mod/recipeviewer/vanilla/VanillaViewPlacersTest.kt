@@ -15,10 +15,12 @@ import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.XVanillaScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.YVanillaScrollbarView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
@@ -372,6 +374,43 @@ class VanillaViewPlacersTest {
             val widget = widgets.single() as VanillaScrollbarViewWidget
             try {
                 Assertions.assertEquals(if (horizontal) VanillaXScrollbarViewWidget::class.java else VanillaYScrollbarViewWidget::class.java, widget.javaClass)
+                Assertions.assertEquals(if (horizontal) IntPoint(100, 5) else IntPoint(5, 100), IntPoint(widget.width, widget.height))
+                controller.setOffset(IntPoint(40, 60))
+                Assertions.assertEquals(IntPoint(40, 60), IntPoint(widget.x, widget.y))
+                Assertions.assertTrue(widget.mouseClicked(42.0, 62.0, 0))
+                Assertions.assertTrue(widget.hasMouseCapture(0))
+            } finally {
+                controller.dispose()
+                controller.detach()
+            }
+            Assertions.assertFalse(widget.isActive)
+            Assertions.assertFalse(widget.hasMouseCapture(0))
+            Assertions.assertTrue(widgets.isEmpty())
+        }
+    }
+
+    @Test
+    fun `本番のバニラスクロールバー登録が単体の配置と移動と破棄と解除を中継するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val widgets = mutableListOf<AbstractWidget>()
+            val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+                override val origin = IntPoint(10, 20)
+                override val canPlaceMenuSlots = false
+                override val onBeforeRender = EventRegistry<() -> Unit>()
+                override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                    widgets += widget
+                    return Remover { widgets.remove(widget) }
+                }
+                override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scrollbars must accept input")
+            }
+            val view = if (horizontal) XVanillaScrollbarView() else YVanillaScrollbarView()
+            view.contentLength = 300
+            view.viewportLength = 100
+            view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
+            val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+            val widget = widgets.single() as VanillaVanillaScrollbarViewWidget
+            try {
+                Assertions.assertEquals(if (horizontal) VanillaXVanillaScrollbarViewWidget::class.java else VanillaYVanillaScrollbarViewWidget::class.java, widget.javaClass)
                 Assertions.assertEquals(if (horizontal) IntPoint(100, 5) else IntPoint(5, 100), IntPoint(widget.width, widget.height))
                 controller.setOffset(IntPoint(40, 60))
                 Assertions.assertEquals(IntPoint(40, 60), IntPoint(widget.x, widget.y))
