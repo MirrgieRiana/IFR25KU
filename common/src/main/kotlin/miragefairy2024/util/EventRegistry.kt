@@ -74,9 +74,8 @@ class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
                 run finish@{
                     while (true) {
                         run next@{
-                            val currentRevision = revision
-
                             // 各リスナーにイベントを配る
+                            val currentRevision = revision
                             toList().forEach { listener ->
                                 val previous = listenerStateTable[listener] ?: return@forEach // このリスナーは登録解除済み
                                 if (previous.revision == currentRevision) return@forEach // このリスナーには既に通知済み
