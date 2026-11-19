@@ -82,20 +82,27 @@ class YSimpleScrollView : SimpleScrollView() {
 }
 
 /**
- * 領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
+ * X 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
-fun connectScrollbar(scrollView: SimpleScrollView, scrollbarView: ScrollbarView): Remover {
-    val scrollViewOffset = when (scrollView) {
-        is XSimpleScrollView -> scrollView.scrollOffsetX
-        is YSimpleScrollView -> scrollView.scrollOffsetY
-        else -> throw IllegalArgumentException("Unsupported view: $scrollView")
-    }
-    val scrollbarViewOffset = when (scrollbarView) {
-        is XScrollbarView -> scrollbarView.scrollOffsetX
-        is YScrollbarView -> scrollbarView.scrollOffsetY
-        else -> throw IllegalArgumentException("Unsupported view: $scrollbarView")
-    }
+fun connectScrollbar(scrollView: XSimpleScrollView, scrollbarView: XScrollbarView): Remover {
+    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetX, scrollbarView.scrollOffsetX)
+}
+
+/**
+ * Y 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
+ * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
+ */
+fun connectScrollbar(scrollView: YSimpleScrollView, scrollbarView: YScrollbarView): Remover {
+    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetY, scrollbarView.scrollOffsetY)
+}
+
+private fun connectScrollbarImpl(
+    scrollView: SimpleScrollView,
+    scrollbarView: ScrollbarView,
+    scrollViewOffset: ObservableValue<Double>,
+    scrollbarViewOffset: ObservableValue<Double>,
+): Remover {
     val initialScrollViewOffset = scrollViewOffset.value
     val initialScrollbarViewOffset = scrollbarViewOffset.value
     val sharedOffset = ObservableValue(initialScrollViewOffset)
