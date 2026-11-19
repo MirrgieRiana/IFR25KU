@@ -107,10 +107,17 @@ private fun connectScrollbarImpl(
     val initialScrollbarViewOffset = scrollbarViewOffset.value
     val sharedOffset = ObservableValue(initialScrollViewOffset)
 
-    class OffsetBinding(private val offset: ObservableValue<Double>) : (Double, Double) -> Unit {
-        private var publishing = false
+    fun updateBounds(bounds: ScrollBounds) {
+        scrollbarView.contentLength = bounds.contentLength
+        scrollbarView.viewportLength = bounds.viewportLength
+    }
 
-        fun publish() {
+    var remover = scrollView.scrollBounds.register { _, bounds -> updateBounds(bounds) }
+
+    fun connectOffset(offset: ObservableValue<Double>) {
+        var publishing = false
+
+        fun publishOffset() {
             val requested = sharedOffset.value
             val wasPublishing = publishing
             publishing = true
@@ -122,32 +129,19 @@ private fun connectScrollbarImpl(
             if (sharedOffset.value.equals(requested) && !offset.value.equals(requested)) sharedOffset.value = offset.value
         }
 
-        override fun invoke(old: Double, position: Double) {
-            if (publishing) return
+        remover += sharedOffset.register { _, _ -> publishOffset() }
+        remover += offset.register { _, position ->
+            if (publishing) return@register
             sharedOffset.value = position
-            if (offset.value.equals(position) && !sharedOffset.value.equals(position)) publish()
+            if (offset.value.equals(position) && !sharedOffset.value.equals(position)) publishOffset()
         }
-
-        fun register(): Remover {
-            return sharedOffset.register { _, _ -> publish() } + offset.register(this)
-        }
+        publishOffset()
     }
 
-    check(scrollViewOffset.toList().none { it is OffsetBinding }) { "The scroll view is already connected" }
-    check(scrollbarViewOffset.toList().none { it is OffsetBinding }) { "The scrollbar is already connected" }
-
-    fun updateBounds(bounds: ScrollBounds) {
-        scrollbarView.contentLength = bounds.contentLength
-        scrollbarView.viewportLength = bounds.viewportLength
-    }
-
-    val scrollBinding = OffsetBinding(scrollViewOffset)
-    val barBinding = OffsetBinding(scrollbarViewOffset)
-    val boundsRemover = scrollView.scrollBounds.register { _, bounds -> updateBounds(bounds) }
-    val remover = boundsRemover + scrollBinding.register() + barBinding.register()
     try {
         updateBounds(scrollView.scrollBounds.value)
-        barBinding.publish()
+        connectOffset(scrollViewOffset)
+        connectOffset(scrollbarViewOffset)
     } catch (e: Throwable) {
         remover.remove()
 

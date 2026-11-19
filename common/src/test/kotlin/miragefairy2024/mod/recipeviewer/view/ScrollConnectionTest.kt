@@ -19,8 +19,6 @@ class ScrollConnectionTest {
         val connection = connectScrollbar(scroll, bar)
         try {
             Assertions.assertEquals(15.25, bar.scrollOffsetX.value)
-            Assertions.assertThrows(IllegalStateException::class.java) { connectScrollbar(scroll, XScrollbarView()) }
-            Assertions.assertThrows(IllegalStateException::class.java) { connectScrollbar(XSimpleScrollView(), bar) }
             Assertions.assertEquals(100, bar.contentLength)
             Assertions.assertEquals(50, bar.viewportLength)
 
@@ -47,6 +45,107 @@ class ScrollConnectionTest {
         connectScrollbar(scroll, bar).remove()
         scroll.scrollOffsetX.value = 80.0
         Assertions.assertEquals(120.5, bar.scrollOffsetX.value)
+    }
+
+    @Test
+    fun `一つの領域に二本のバーを接続して個別に解除するのだ`() {
+        val scroll = XSimpleScrollView()
+        val firstBar = XScrollbarView()
+        val secondBar = XScrollbarView()
+        scroll.scrollOffsetX.value = 10.25
+        scroll.scrollBounds.value = ScrollBounds(300, 100)
+
+        val firstConnection = connectScrollbar(scroll, firstBar)
+        try {
+            val secondConnection = connectScrollbar(scroll, secondBar)
+            try {
+                Assertions.assertEquals(10.25, firstBar.scrollOffsetX.value)
+                Assertions.assertEquals(10.25, secondBar.scrollOffsetX.value)
+
+                firstBar.scrollOffsetX.value = 60.5
+                Assertions.assertEquals(60.5, scroll.scrollOffsetX.value)
+                Assertions.assertEquals(60.5, secondBar.scrollOffsetX.value)
+
+                secondBar.scrollOffsetX.value = 120.75
+                Assertions.assertEquals(120.75, scroll.scrollOffsetX.value)
+                Assertions.assertEquals(120.75, firstBar.scrollOffsetX.value)
+
+                scroll.scrollBounds.value = ScrollBounds(400, 150)
+                listOf(firstBar, secondBar).forEach { bar ->
+                    Assertions.assertEquals(400, bar.contentLength)
+                    Assertions.assertEquals(150, bar.viewportLength)
+                }
+
+                firstConnection.remove()
+                firstBar.scrollOffsetX.value = -15.25
+                Assertions.assertEquals(120.75, scroll.scrollOffsetX.value)
+                Assertions.assertEquals(120.75, secondBar.scrollOffsetX.value)
+
+                secondBar.scrollOffsetX.value = 50.25
+                scroll.scrollBounds.value = ScrollBounds(500, 200)
+                Assertions.assertEquals(50.25, scroll.scrollOffsetX.value)
+                Assertions.assertEquals(-15.25, firstBar.scrollOffsetX.value)
+                Assertions.assertEquals(400, firstBar.contentLength)
+                Assertions.assertEquals(150, firstBar.viewportLength)
+                Assertions.assertEquals(500, secondBar.contentLength)
+                Assertions.assertEquals(200, secondBar.viewportLength)
+            } finally {
+                secondConnection.remove()
+            }
+        } finally {
+            firstConnection.remove()
+        }
+    }
+
+    @Test
+    fun `一つのバーに二つの領域を接続して個別に解除するのだ`() {
+        val bar = XScrollbarView()
+        val firstScroll = XSimpleScrollView()
+        val secondScroll = XSimpleScrollView()
+        firstScroll.scrollOffsetX.value = 10.25
+        secondScroll.scrollOffsetX.value = 20.5
+        firstScroll.scrollBounds.value = ScrollBounds(300, 100)
+        secondScroll.scrollBounds.value = ScrollBounds(400, 150)
+
+        val firstConnection = connectScrollbar(firstScroll, bar)
+        try {
+            val secondConnection = connectScrollbar(secondScroll, bar)
+            try {
+                Assertions.assertEquals(20.5, bar.scrollOffsetX.value)
+                Assertions.assertEquals(20.5, firstScroll.scrollOffsetX.value)
+                Assertions.assertEquals(400, bar.contentLength)
+                Assertions.assertEquals(150, bar.viewportLength)
+
+                firstScroll.scrollOffsetX.value = 30.75
+                Assertions.assertEquals(30.75, bar.scrollOffsetX.value)
+                Assertions.assertEquals(30.75, secondScroll.scrollOffsetX.value)
+
+                bar.scrollOffsetX.value = 60.0
+                Assertions.assertEquals(60.0, firstScroll.scrollOffsetX.value)
+                Assertions.assertEquals(60.0, secondScroll.scrollOffsetX.value)
+
+                firstScroll.scrollBounds.value = ScrollBounds(500, 200)
+                Assertions.assertEquals(500, bar.contentLength)
+                Assertions.assertEquals(200, bar.viewportLength)
+
+                firstConnection.remove()
+                firstScroll.scrollOffsetX.value = -15.25
+                firstScroll.scrollBounds.value = ScrollBounds(600, 250)
+                Assertions.assertEquals(60.0, bar.scrollOffsetX.value)
+                Assertions.assertEquals(500, bar.contentLength)
+
+                secondScroll.scrollOffsetX.value = 55.25
+                secondScroll.scrollBounds.value = ScrollBounds(450, 125)
+                Assertions.assertEquals(55.25, bar.scrollOffsetX.value)
+                Assertions.assertEquals(-15.25, firstScroll.scrollOffsetX.value)
+                Assertions.assertEquals(450, bar.contentLength)
+                Assertions.assertEquals(125, bar.viewportLength)
+            } finally {
+                secondConnection.remove()
+            }
+        } finally {
+            firstConnection.remove()
+        }
     }
 
     @Test
