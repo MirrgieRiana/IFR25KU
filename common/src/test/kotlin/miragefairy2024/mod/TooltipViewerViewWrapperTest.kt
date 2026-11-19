@@ -11,8 +11,8 @@ import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
@@ -43,7 +43,7 @@ private fun TooltipViewerViewWrapper.place(placements: MutableList<Pair<Placeabl
     fun place(view: PlaceableView, bounds: IntRectangle): ViewController {
         val placement = Pair(view, bounds)
         placements += placement
-        val controller = if (view is YSimpleScrollView) view.childView.attachTo(bounds.offset, ::place) else ViewController.NONE
+        val controller = if (view is YScrollContainerView) view.childView.attachTo(bounds.offset, ::place) else ViewController.NONE
         return object : ViewController by controller {
             override fun detach() {
                 controller.detach()
@@ -97,7 +97,7 @@ class TooltipViewerViewWrapperTest {
         val controller = view.place(placements)
         try {
             val field = placements.mapNotNull { it.first as? TextFieldView }.single()
-            val scrollView = placements.mapNotNull { it.first as? YSimpleScrollView }.single()
+            val scrollView = placements.mapNotNull { it.first as? YScrollContainerView }.single()
             val scrollbarView = placements.mapNotNull { it.first as? YScrollbarView }.single()
             listOf(
                 "0,1,3" to listOf("title", "first", "third"),
@@ -113,7 +113,7 @@ class TooltipViewerViewWrapperTest {
                 field.text.value = value
                 Assertions.assertEquals(value, filter.value)
                 Assertions.assertSame(field, placements.mapNotNull { it.first as? TextFieldView }.single())
-                Assertions.assertSame(scrollView, placements.mapNotNull { it.first as? YSimpleScrollView }.single())
+                Assertions.assertSame(scrollView, placements.mapNotNull { it.first as? YScrollContainerView }.single())
                 Assertions.assertEquals(scrollOffset, scrollView.scrollOffsetY.value)
                 scrollbarView.scrollOffsetY.value += 0.25
                 Assertions.assertEquals(scrollbarView.scrollOffsetY.value, scrollView.scrollOffsetY.value)
@@ -150,8 +150,8 @@ class TooltipViewerViewWrapperTest {
                 Assertions.assertEquals(IntRectangle((size.x - 254) / 2, 4, 254, size.y - 8), panel.second)
                 val field = placements.single { it.first is TextFieldView }
                 Assertions.assertEquals("1", (field.first as TextFieldView).text.value)
-                val scroll = placements.single { it.first is YSimpleScrollView }
-                val scrollView = scroll.first as YSimpleScrollView
+                val scroll = placements.single { it.first is YScrollContainerView }
+                val scrollView = scroll.first as YScrollContainerView
                 Assertions.assertEquals(IntRectangle((size.x - 240) / 2, 33, 235, size.y - 44), scroll.second)
                 val scrollbar = placements.single { it.first is YScrollbarView }
                 Assertions.assertEquals(IntRectangle((size.x - 240) / 2 + 235, 33, 5, size.y - 44), scrollbar.second)

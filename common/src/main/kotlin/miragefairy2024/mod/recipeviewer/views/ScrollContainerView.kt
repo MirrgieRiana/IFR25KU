@@ -26,7 +26,7 @@ data class ScrollBounds(val contentLength: Int, val viewportLength: Int) {
  * スクロール位置はコンテンツ座標で保持し、再配置時にも引き継ぐのだ～🌱
  * バニラへの配置では、子孫に [miragefairy2024.mod.recipeviewer.views.MenuSlotView] を含めてはならないのだ～🌱
  */
-abstract class SimpleScrollView : WrapperView(), PlaceableView {
+abstract class ScrollContainerView : WrapperView(), PlaceableView {
 
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
@@ -50,7 +50,7 @@ abstract class SimpleScrollView : WrapperView(), PlaceableView {
 }
 
 /** 子 View を X 軸方向へスクロールするのだ～🌱 */
-class XSimpleScrollView : SimpleScrollView() {
+class XScrollContainerView : ScrollContainerView() {
 
     val scrollOffsetX = ObservableValue(0.0)
 
@@ -66,7 +66,7 @@ class XSimpleScrollView : SimpleScrollView() {
 }
 
 /** 子 View を Y 軸方向へスクロールするのだ～🌱 */
-class YSimpleScrollView : SimpleScrollView() {
+class YScrollContainerView : ScrollContainerView() {
 
     val scrollOffsetY = ObservableValue(0.0)
 
@@ -85,7 +85,7 @@ class YSimpleScrollView : SimpleScrollView() {
  * X 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
-fun connectScrollbar(scrollView: XSimpleScrollView, scrollbarView: XScrollbarView): Remover {
+fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: XScrollbarView): Remover {
     return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetX, scrollbarView.scrollOffsetX)
 }
 
@@ -93,12 +93,12 @@ fun connectScrollbar(scrollView: XSimpleScrollView, scrollbarView: XScrollbarVie
  * Y 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
-fun connectScrollbar(scrollView: YSimpleScrollView, scrollbarView: YScrollbarView): Remover {
+fun connectScrollbar(scrollView: YScrollContainerView, scrollbarView: YScrollbarView): Remover {
     return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetY, scrollbarView.scrollOffsetY)
 }
 
 private fun connectScrollbarImpl(
-    scrollView: SimpleScrollView,
+    scrollView: ScrollContainerView,
     scrollbarView: ScrollbarView,
     scrollViewOffset: ObservableValue<Double>,
     scrollbarViewOffset: ObservableValue<Double>,

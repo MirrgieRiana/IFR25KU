@@ -8,7 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.atLeast
@@ -44,14 +44,14 @@ class TooltipViewerScreenTest {
 
     @Test
     fun `画面の再初期化ではフィルタとスクロール位置を保持し開き直すと初期化するのだ`() {
-        fun withViews(definition: MessageViewScreenDefinition, size: IntPoint, block: (TextFieldView, YSimpleScrollView) -> Unit) {
+        fun withViews(definition: MessageViewScreenDefinition, size: IntPoint, block: (TextFieldView, YScrollContainerView) -> Unit) {
             val view = definition.rootViewFactory()
             view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { size.x }, { size.y })
             val textFields = mutableListOf<TextFieldView>()
-            val scrollViews = mutableListOf<YSimpleScrollView>()
+            val scrollViews = mutableListOf<YScrollContainerView>()
             val controller = view.attachTo(IntPoint.ZERO) { child, _ ->
                 if (child is TextFieldView) textFields += child
-                if (child is YSimpleScrollView) scrollViews += child
+                if (child is YScrollContainerView) scrollViews += child
                 ViewController.NONE
             }
             try {

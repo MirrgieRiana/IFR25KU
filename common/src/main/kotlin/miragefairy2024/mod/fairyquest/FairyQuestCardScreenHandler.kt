@@ -21,8 +21,8 @@ import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
@@ -162,7 +162,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                         view += XListView().configure {
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
-                            val scrollView = YSimpleScrollView().configure {
+                            val scrollView = YScrollContainerView().configure {
                                 position.weight = 1.0
                                 view += StackView().configure {
                                     view.sizingX = Sizing.FILL
