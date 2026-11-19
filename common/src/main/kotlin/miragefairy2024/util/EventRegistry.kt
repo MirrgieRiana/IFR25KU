@@ -74,17 +74,17 @@ class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
                         while (true) {
                             run next@{
                                 // 各リスナーにイベントを配る
-                                val currentRevision = revision
+                                val oldRevision2 = revision
                                 toList().forEach { listener ->
-                                    val previous = listenerStateTable[listener] ?: return@forEach // このリスナーは登録解除済み
-                                    if (previous.revision == currentRevision) return@forEach // このリスナーには既に通知済み
+                                    val listenerState = listenerStateTable[listener] ?: return@forEach // このリスナーは登録解除済み
+                                    if (listenerState.revision == oldRevision2) return@forEach // このリスナーには既に通知済み
 
                                     // 通知
-                                    val current = field
-                                    listenerStateTable[listener] = ListenerState(current, currentRevision)
-                                    listener(previous.value, current)
+                                    val old2 = field
+                                    listenerStateTable[listener] = ListenerState(old2, oldRevision2)
+                                    listener(listenerState.value, old2)
 
-                                    if (revision != currentRevision) return@next // 通知中に値が代入されたため、イベントの配布を
+                                    if (revision != oldRevision2) return@next // 通知中に値が代入されたため、イベントの配布を
                                 }
 
                                 // リビジョンが更新されなかったので無事通知完了
