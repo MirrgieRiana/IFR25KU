@@ -2,10 +2,10 @@ package miragefairy2024.mod.recipeviewer.view
 
 import miragefairy2024.mod.recipeviewer.views.AbstractView
 import miragefairy2024.mod.recipeviewer.views.ScrollBounds
+import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
-import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.register
 import mirrg.kotlin.helium.max
@@ -21,7 +21,7 @@ private val SCROLL_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
     override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = throw UnsupportedOperationException()
 }
 
-class SimpleScrollViewTest {
+class ScrollContainerViewTest {
 
     @Test
     fun `縦スクロールでは割り当て幅に応じて子の高さを評価するのだ`() {
@@ -33,7 +33,7 @@ class SimpleScrollViewTest {
                 override fun evaluateContentSizeYImpl() = 1000 / regionSizeXProvider()
                 override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = ViewController.NONE
             }
-            val view = YSimpleScrollView()
+            val view = YScrollContainerView()
             view += child
             view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 25 }, { 10 })
 
@@ -55,7 +55,7 @@ class SimpleScrollViewTest {
             override fun evaluateContentSizeYImpl() = 0
             override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = ViewController.NONE
         }
-        val view = XSimpleScrollView()
+        val view = XScrollContainerView()
         view += child
         view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 10 }, { 25 })
 
@@ -76,7 +76,7 @@ class SimpleScrollViewTest {
                     override fun evaluateContentSizeYImpl() = length
                     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = ViewController.NONE
                 }
-                val view = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+                val view = if (horizontal) XScrollContainerView() else YScrollContainerView()
                 view += child
                 view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 100 })
 
@@ -125,7 +125,7 @@ class SimpleScrollViewTest {
             override fun evaluateContentSizeYImpl() = 0
             override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = ViewController.NONE
         }
-        val view = YSimpleScrollView()
+        val view = YScrollContainerView()
         view += child
         view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 2 }, { 10 })
 
@@ -135,7 +135,7 @@ class SimpleScrollViewTest {
 
     @Test
     fun `寸法の変更をまとめて通知し負の寸法では状態を変更しないのだ`() {
-        val view = XSimpleScrollView()
+        val view = XScrollContainerView()
         val changes = mutableListOf<Pair<ScrollBounds, ScrollBounds>>()
         view.scrollBounds.register { old, new ->
             changes += Pair(old, new)
@@ -160,7 +160,7 @@ class SimpleScrollViewTest {
                 override fun evaluateContentSizeYImpl() = 300
                 override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = ViewController.NONE
             }
-            val view = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+            val view = if (horizontal) XScrollContainerView() else YScrollContainerView()
             view += child
             view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 80 })
             view.attachTo(IntPoint.ZERO) { _, _ -> ViewController.NONE }

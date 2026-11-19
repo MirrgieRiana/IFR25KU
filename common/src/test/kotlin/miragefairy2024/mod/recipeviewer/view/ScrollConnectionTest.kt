@@ -1,10 +1,10 @@
 package miragefairy2024.mod.recipeviewer.view
 
 import miragefairy2024.mod.recipeviewer.views.ScrollBounds
+import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
-import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.util.register
 import org.junit.jupiter.api.Assertions
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 class ScrollConnectionTest {
     @Test
     fun `両側で指定位置を共有し寸法を反映するのだ`() {
-        val scroll = XSimpleScrollView()
+        val scroll = XScrollContainerView()
         val bar = XScrollbarView()
         scroll.scrollOffsetX.value = 15.25
         scroll.scrollBounds.value = ScrollBounds(100, 50)
@@ -51,7 +51,7 @@ class ScrollConnectionTest {
 
     @Test
     fun `一つの領域に二本のバーを接続して個別に解除するのだ`() {
-        val scroll = XSimpleScrollView()
+        val scroll = XScrollContainerView()
         val firstBar = XScrollbarView()
         val secondBar = XScrollbarView()
         scroll.scrollOffsetX.value = 10.25
@@ -102,8 +102,8 @@ class ScrollConnectionTest {
     @Test
     fun `一つのバーに二つの領域を接続して個別に解除するのだ`() {
         val bar = XScrollbarView()
-        val firstScroll = XSimpleScrollView()
-        val secondScroll = XSimpleScrollView()
+        val firstScroll = XScrollContainerView()
+        val secondScroll = XScrollContainerView()
         firstScroll.scrollOffsetX.value = 10.25
         secondScroll.scrollOffsetX.value = 20.5
         firstScroll.scrollBounds.value = ScrollBounds(300, 100)
@@ -152,7 +152,7 @@ class ScrollConnectionTest {
 
     @Test
     fun `バーの通知中に更新された領域の位置を反映するのだ`() {
-        val scroll = XSimpleScrollView()
+        val scroll = XScrollContainerView()
         val bar = XScrollbarView()
         val listener = bar.scrollOffsetX.register { _, position ->
             if (position == 15.0) scroll.scrollOffsetX.value = 20.0
@@ -170,7 +170,7 @@ class ScrollConnectionTest {
 
     @Test
     fun `共有位置が元の値に戻った場合も操作元へ反映するのだ`() {
-        val scroll = XSimpleScrollView()
+        val scroll = XScrollContainerView()
         val bar = XScrollbarView()
         val listener = scroll.scrollOffsetX.register { _, position ->
             if (position == 15.0) scroll.scrollOffsetX.value = 0.0
@@ -190,7 +190,7 @@ class ScrollConnectionTest {
     fun `バー自身の補正をリスナーの登録順によらず両側へ反映するのだ`() {
         listOf(false, true).forEach { registerBeforeConnection ->
             listOf(0.0, 20.0).forEach { correctedOffset ->
-                val scroll = XSimpleScrollView()
+                val scroll = XScrollContainerView()
                 val bar = XScrollbarView()
                 val listener: (Double, Double) -> Unit = { _, position ->
                     if (position == 15.0) bar.scrollOffsetX.value = correctedOffset
@@ -213,7 +213,7 @@ class ScrollConnectionTest {
     @Test
     fun `初期同期でバーが補正した位置を領域へ反映するのだ`() {
         listOf(0.0, 20.0).forEach { correctedOffset ->
-            val scroll = XSimpleScrollView()
+            val scroll = XScrollContainerView()
             val bar = XScrollbarView()
             scroll.scrollOffsetX.value = 15.0
             val listener = bar.scrollOffsetX.register { _, position ->
@@ -232,7 +232,7 @@ class ScrollConnectionTest {
 
     @Test
     fun `バーの通知中に表示領域の範囲が変わっても最新の状態まで同期するのだ`() {
-        val scroll = XSimpleScrollView()
+        val scroll = XScrollContainerView()
         val bar = XScrollbarView()
         scroll.scrollBounds.value = ScrollBounds(300, 100)
         scroll.scrollOffsetX.value = 80.0
@@ -263,13 +263,13 @@ class ScrollConnectionTest {
     @Test
     fun `縦横の View を接続して寸法と指定位置を同期するのだ`() {
         listOf(false, true).forEach { horizontal ->
-            val scroll = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+            val scroll = if (horizontal) XScrollContainerView() else YScrollContainerView()
             val bar = if (horizontal) XScrollbarView() else YScrollbarView()
-            val source = if (horizontal) (scroll as XSimpleScrollView).scrollOffsetX else (scroll as YSimpleScrollView).scrollOffsetY
+            val source = if (horizontal) (scroll as XScrollContainerView).scrollOffsetX else (scroll as YScrollContainerView).scrollOffsetY
             val target = if (horizontal) (bar as XScrollbarView).scrollOffsetX else (bar as YScrollbarView).scrollOffsetY
             scroll.scrollBounds.value = ScrollBounds(300, 100)
             source.value = 80.25
-            val connection = if (horizontal) connectScrollbar(scroll as XSimpleScrollView, bar as XScrollbarView) else connectScrollbar(scroll as YSimpleScrollView, bar as YScrollbarView)
+            val connection = if (horizontal) connectScrollbar(scroll as XScrollContainerView, bar as XScrollbarView) else connectScrollbar(scroll as YScrollContainerView, bar as YScrollbarView)
             try {
                 Assertions.assertEquals(300, bar.contentLength)
                 Assertions.assertEquals(100, bar.viewportLength)
@@ -284,7 +284,7 @@ class ScrollConnectionTest {
 
     @Test
     fun `初期同期の通知が失敗したら位置と寸法の購読を解除するのだ`() {
-        val scroll = XSimpleScrollView()
+        val scroll = XScrollContainerView()
         val bar = XScrollbarView()
         scroll.scrollOffsetX.value = 80.0
         bar.scrollOffsetX.value = 20.0
