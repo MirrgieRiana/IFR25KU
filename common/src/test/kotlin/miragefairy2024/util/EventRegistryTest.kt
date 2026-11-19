@@ -105,7 +105,7 @@ class EventRegistryTest {
     }
 
     @Test
-    fun `通知中に元の値に戻ったら中間値を受け取ったリスナーだけに通知するのだ～🌱`() {
+    fun `通知中に元の値に戻ったら中間値を受け取っていないリスナーにも通知するのだ～🌱`() {
         val value = ObservableValue(10)
         val first = mutableListOf<Pair<Int, Int>>()
         val second = mutableListOf<Pair<Int, Int>>()
@@ -120,7 +120,7 @@ class EventRegistryTest {
         value.value = 20
 
         assertEquals(listOf(Pair(10, 20), Pair(20, 10)), first)
-        assertTrue(second.isEmpty())
+        assertEquals(listOf(Pair(10, 10)), second)
     }
 
     @Test
