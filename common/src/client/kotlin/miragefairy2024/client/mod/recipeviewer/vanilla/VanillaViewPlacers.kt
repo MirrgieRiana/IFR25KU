@@ -110,7 +110,7 @@ fun initVanillaViewPlacers() {
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YSimpleScrollView, bounds ->
         placeSimpleScrollView(context, VanillaYSimpleScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
     }
-    fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget): ViewController {
+    fun placeScrollbarView(context: VanillaViewPlacerContext, widget: AbstractVanillaScrollbarViewWidget): ViewController {
         val controller = context place widget
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
@@ -133,28 +133,11 @@ fun initVanillaViewPlacers() {
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollbarView, bounds ->
         placeScrollbarView(context, VanillaYScrollbarViewWidget(view, bounds))
     }
-    fun placeVanillaScrollbarView(context: VanillaViewPlacerContext, widget: VanillaVanillaScrollbarViewWidget): ViewController {
-        val controller = context place widget
-        return object : ViewController {
-            override fun setOffset(offset: IntPoint) {
-                controller.setOffset(offset)
-            }
-
-            override fun detach() {
-                controller.detach()
-            }
-
-            override fun dispose() {
-                widget.dispose()
-                controller.dispose()
-            }
-        }
-    }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XVanillaScrollbarView, bounds ->
-        placeVanillaScrollbarView(context, VanillaXVanillaScrollbarViewWidget(view, bounds))
+        placeScrollbarView(context, VanillaXVanillaScrollbarViewWidget(view, bounds))
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YVanillaScrollbarView, bounds ->
-        placeVanillaScrollbarView(context, VanillaYVanillaScrollbarViewWidget(view, bounds))
+        placeScrollbarView(context, VanillaYVanillaScrollbarViewWidget(view, bounds))
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
         if (!context.canPlaceMenuSlots) throw UnsupportedOperationException("MenuSlotView cannot be placed in this context")
