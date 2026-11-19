@@ -157,20 +157,25 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                         view += NinePatchImageView(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
 
                         // スクロールコンテナなのだ～🌱
-                        view += YScrollView().configure {
-                            view += StackView().configure {
-                                view.sizingX = Sizing.FILL
+                        view += XListView().configure {
+                            view.sizingX = Sizing.FILL
+                            view.sizingY = Sizing.FILL
+                            view += YScrollView().configure {
+                                position.weight = 1.0
+                                view += StackView().configure {
+                                    view.sizingX = Sizing.FILL
 
-                                // 罫線装飾用パネルなのだ～🌱
-                                view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11, 0, 11, 0, 0, 11, 0, true, true)
+                                    // 罫線装飾用パネルなのだ～🌱
+                                    view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11, 0, 11, 0, 0, 11, 0, true, true)
 
-                                // メッセージテキストラベルなのだ～🌱
-                                view += MultiLineTextView().configure {
-                                    view.text.value = recipe.message
-                                    view.color = ColorPair(0xFF6B472E.toInt(), 0xFF6B472E.toInt())
-                                    view.shadow = false
-                                }.margin(0, 0, 0, 1)
+                                    // メッセージテキストラベルなのだ～🌱
+                                    view += MultiLineTextView().configure {
+                                        view.text.value = recipe.message
+                                        view.color = ColorPair(0xFF6B472E.toInt(), 0xFF6B472E.toInt())
+                                        view.shadow = false
+                                    }.margin(0, 0, 0, 1)
 
+                                }
                             }
                         }.margin(11, 6, 11, 11)
 
