@@ -105,39 +105,41 @@ private fun connectScrollbarImpl(
 ): Remover {
     val initialScrollViewOffset = scrollViewOffset.value
     val initialScrollbarViewOffset = scrollbarViewOffset.value
+    var remover = Remover.NONE
     val sharedOffset = ObservableValue(initialScrollViewOffset)
 
-    fun updateBounds(bounds: ScrollBounds) {
+    // 領域の寸法→スクロールバーのパラメータ
+    remover += scrollView.scrollBounds.register { _, bounds ->
         scrollbarView.contentLength = bounds.contentLength
         scrollbarView.viewportLength = bounds.viewportLength
     }
 
-    var remover = scrollView.scrollBounds.register { _, bounds -> updateBounds(bounds) }
-
     fun connectOffset(offset: ObservableValue<Double>) {
-        fun publishOffset() {
+        // 共有値→View固有値
+        remover += sharedOffset.register { _, _ ->
             offset.value = sharedOffset.value
         }
-
-        remover += sharedOffset.register { _, _ -> publishOffset() }
+        // View固有値→共有値
         remover += offset.register { _, position ->
             sharedOffset.value = position
         }
-        publishOffset()
     }
+    connectOffset(scrollViewOffset)
+    connectOffset(scrollbarViewOffset)
 
     try {
-        updateBounds(scrollView.scrollBounds.value)
-        connectOffset(scrollViewOffset)
-        connectOffset(scrollbarViewOffset)
+        scrollbarView.contentLength = scrollView.scrollBounds.value.contentLength
+        scrollbarView.viewportLength = scrollView.scrollBounds.value.viewportLength
+        scrollViewOffset.value = sharedOffset.value
+        scrollbarViewOffset.value = sharedOffset.value
     } catch (e: Throwable) {
         remover.remove()
 
         fun restoreOffset(offset: ObservableValue<Double>, position: Double) {
             try {
                 offset.value = position
-            } catch (cleanupFailure: Throwable) {
-                if (cleanupFailure !== e) e.addSuppressed(cleanupFailure)
+            } catch (e2: Throwable) {
+                if (e2 !== e) e.addSuppressed(e2)
             }
         }
 
