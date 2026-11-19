@@ -8,8 +8,8 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.views.FixedView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import org.junit.jupiter.api.Assertions
@@ -20,7 +20,7 @@ class VanillaScrollConnectionTest {
     @Test
     fun `配置済みの両側が範囲外の指定位置を共有し解除後は個別に操作できるのだ`() {
         GuiTestEnvironment().use { environment ->
-            val scrollView = YSimpleScrollView()
+            val scrollView = YScrollContainerView()
             var childOffset = IntPoint.ZERO
             scrollView += object : FixedView(IntPoint(300, 300)) {
                 override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
@@ -37,7 +37,7 @@ class VanillaScrollConnectionTest {
             scrollView.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { 100 }, { 100 })
             val context = Mockito.mock(VanillaViewPlacerContext::class.java)
             val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
-            val scroll = VanillaYSimpleScrollViewWidget(scrollView, IntRectangle(10, 20, 100, 100), context, registry)
+            val scroll = VanillaYScrollContainerViewWidget(scrollView, IntRectangle(10, 20, 100, 100), context, registry)
             val barView = YScrollbarView()
             val bar = VanillaYScrollbarViewWidget(barView, IntRectangle(250, 20, 5, 100))
             try {

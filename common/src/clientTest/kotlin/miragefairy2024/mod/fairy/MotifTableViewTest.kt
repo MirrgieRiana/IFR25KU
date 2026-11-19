@@ -15,8 +15,8 @@ import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.util.Chance
 import miragefairy2024.util.CondensedItem
 import miragefairy2024.util.invoke
@@ -72,13 +72,13 @@ class MotifTableViewTest {
         val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
         fun place(view: PlaceableView, bounds: IntRectangle): ViewController {
             placements += Pair(view, bounds)
-            if (view is YSimpleScrollView) return view.childView.attachTo(bounds.offset, ::place)
+            if (view is YScrollContainerView) return view.childView.attachTo(bounds.offset, ::place)
             return ViewController.NONE
         }
         val controller = view.attachTo(IntPoint.ZERO, ::place)
         try {
             Assertions.assertEquals(IntRectangle(33, 4, 334, 232), placements.single { it.first is NinePatchImageView }.second)
-            val scroll = placements.single { it.first is YSimpleScrollView }
+            val scroll = placements.single { it.first is YScrollContainerView }
             Assertions.assertEquals(IntRectangle(40, 11, 302, 218), scroll.second)
             val scrollbar = placements.single { it.first is YScrollbarView }
             Assertions.assertEquals(IntRectangle(342, 11, 18, 218), scrollbar.second)
@@ -123,12 +123,12 @@ class MotifTableViewTest {
             val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
             fun place(view: PlaceableView, bounds: IntRectangle): ViewController {
                 placements += Pair(view, bounds)
-                if (view is YSimpleScrollView) return view.childView.attachTo(bounds.offset, ::place)
+                if (view is YScrollContainerView) return view.childView.attachTo(bounds.offset, ::place)
                 return ViewController.NONE
             }
             val controller = view.attachTo(IntPoint.ZERO, ::place)
             try {
-                val scroll = placements.single { it.first is YSimpleScrollView }.first as YSimpleScrollView
+                val scroll = placements.single { it.first is YScrollContainerView }.first as YScrollContainerView
                 val scrollbar = placements.single { it.first is YScrollbarView }.first as YScrollbarView
                 Assertions.assertEquals(840, scroll.childView.evaluateActualSizeY())
                 Assertions.assertEquals(840, scrollbar.contentLength)

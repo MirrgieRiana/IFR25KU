@@ -16,8 +16,8 @@ import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.margin
@@ -112,7 +112,7 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
                     view += NinePatchImageView(panelTexture, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
                     view += XListView().configure {
                         view.sizingY = Sizing.FILL
-                        val scrollView = YSimpleScrollView().configure {
+                        val scrollView = YScrollContainerView().configure {
                             view.sizingX = Sizing.WRAP
 
                             view += YListView().configure {
