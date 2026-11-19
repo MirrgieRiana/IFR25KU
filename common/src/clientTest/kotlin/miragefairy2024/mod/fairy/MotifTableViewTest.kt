@@ -15,7 +15,8 @@ import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
-import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.util.Chance
 import miragefairy2024.util.CondensedItem
 import miragefairy2024.util.invoke
@@ -71,15 +72,17 @@ class MotifTableViewTest {
         val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
         fun place(view: PlaceableView, bounds: IntRectangle): ViewController {
             placements += Pair(view, bounds)
-            if (view is YScrollView) return view.childView.attachTo(bounds.offset, ::place)
+            if (view is YSimpleScrollView) return view.childView.attachTo(bounds.offset, ::place)
             return ViewController.NONE
         }
         val controller = view.attachTo(IntPoint.ZERO, ::place)
         try {
             Assertions.assertEquals(IntRectangle(33, 4, 334, 232), placements.single { it.first is NinePatchImageView }.second)
-            val scroll = placements.single { it.first is YScrollView }
-            Assertions.assertEquals(IntRectangle(40, 11, 320, 218), scroll.second)
-            Assertions.assertEquals(18, (scroll.first as YScrollView).scrollbarThickness)
+            val scroll = placements.single { it.first is YSimpleScrollView }
+            Assertions.assertEquals(IntRectangle(40, 11, 302, 218), scroll.second)
+            val scrollbar = placements.single { it.first is YScrollbarView }
+            Assertions.assertEquals(IntRectangle(342, 11, 18, 218), scrollbar.second)
+            Assertions.assertEquals(18, (scrollbar.first as YScrollbarView).scrollbarThickness)
             val items = placements.mapNotNull { it.first as? ItemView }
             Assertions.assertEquals(listOf(first, second), items.map { it.itemStack })
             Assertions.assertTrue(items.all { !it.showDecorations })
@@ -120,13 +123,20 @@ class MotifTableViewTest {
             val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
             fun place(view: PlaceableView, bounds: IntRectangle): ViewController {
                 placements += Pair(view, bounds)
-                if (view is YScrollView) return view.childView.attachTo(bounds.offset, ::place)
+                if (view is YSimpleScrollView) return view.childView.attachTo(bounds.offset, ::place)
                 return ViewController.NONE
             }
             val controller = view.attachTo(IntPoint.ZERO, ::place)
             try {
-                val scroll = placements.single { it.first is YScrollView }.first as YScrollView
+                val scroll = placements.single { it.first is YSimpleScrollView }.first as YSimpleScrollView
+                val scrollbar = placements.single { it.first is YScrollbarView }.first as YScrollbarView
                 Assertions.assertEquals(840, scroll.childView.evaluateActualSizeY())
+                Assertions.assertEquals(840, scrollbar.contentLength)
+                Assertions.assertEquals(size.y - 22, scrollbar.viewportLength)
+                scrollbar.scrollOffsetY.value = 125.5
+                Assertions.assertEquals(125.5, scroll.scrollOffsetY.value)
+                scroll.scrollOffsetY.value = 250.25
+                Assertions.assertEquals(250.25, scrollbar.scrollOffsetY.value)
                 val names = placements.filter { (it.first as? MultiLineTextView)?.text?.value == itemStack.hoverName }
                 Assertions.assertEquals(20, names.size)
                 Assertions.assertTrue(names.all { it.second.sizeX == 150 && it.second.sizeY == 42 })
