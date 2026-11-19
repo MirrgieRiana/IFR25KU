@@ -185,6 +185,50 @@ class ScrollConnectionTest {
     }
 
     @Test
+    fun `バー自身の補正をリスナーの登録順によらず両側へ反映するのだ`() {
+        listOf(false, true).forEach { registerBeforeConnection ->
+            listOf(0.0, 20.0).forEach { correctedOffset ->
+                val scroll = XSimpleScrollView()
+                val bar = XScrollbarView()
+                val listener: (Double, Double) -> Unit = { _, position ->
+                    if (position == 15.0) bar.scrollOffsetX.value = correctedOffset
+                }
+                if (registerBeforeConnection) bar.scrollOffsetX.add(listener)
+                val connection = connectScrollbar(scroll, bar)
+                if (!registerBeforeConnection) bar.scrollOffsetX.add(listener)
+                try {
+                    scroll.scrollOffsetX.value = 15.0
+                    Assertions.assertEquals(correctedOffset, scroll.scrollOffsetX.value)
+                    Assertions.assertEquals(correctedOffset, bar.scrollOffsetX.value)
+                } finally {
+                    connection.remove()
+                    bar.scrollOffsetX.remove(listener)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `初期同期でバーが補正した位置を領域へ反映するのだ`() {
+        listOf(0.0, 20.0).forEach { correctedOffset ->
+            val scroll = XSimpleScrollView()
+            val bar = XScrollbarView()
+            scroll.scrollOffsetX.value = 15.0
+            val listener = bar.scrollOffsetX.register { _, position ->
+                if (position == 15.0) bar.scrollOffsetX.value = correctedOffset
+            }
+            val connection = connectScrollbar(scroll, bar)
+            try {
+                Assertions.assertEquals(correctedOffset, scroll.scrollOffsetX.value)
+                Assertions.assertEquals(correctedOffset, bar.scrollOffsetX.value)
+            } finally {
+                connection.remove()
+                listener.remove()
+            }
+        }
+    }
+
+    @Test
     fun `初期同期の通知が失敗したら位置と寸法の購読を解除するのだ`() {
         val scroll = XSimpleScrollView()
         val bar = XScrollbarView()

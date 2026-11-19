@@ -116,15 +116,12 @@ private fun connectScrollbarImpl(
 
     fun connectOffset(offset: ObservableValue<Double>) {
         fun publishOffset() {
-            val requested = sharedOffset.value
-            offset.value = requested
-            if (sharedOffset.value.equals(requested) && !offset.value.equals(requested)) sharedOffset.value = offset.value
+            offset.value = sharedOffset.value
         }
 
         remover += sharedOffset.register { _, _ -> publishOffset() }
         remover += offset.register { _, position ->
             sharedOffset.value = position
-            if (offset.value.equals(position) && !sharedOffset.value.equals(position)) publishOffset()
         }
         publishOffset()
     }
