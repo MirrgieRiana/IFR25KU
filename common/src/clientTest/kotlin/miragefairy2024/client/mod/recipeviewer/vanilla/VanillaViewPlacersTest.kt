@@ -19,11 +19,9 @@ import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.XListView
-import miragefairy2024.mod.recipeviewer.views.XScrollView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YListView
-import miragefairy2024.mod.recipeviewer.views.YScrollView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
@@ -179,10 +177,10 @@ class VanillaViewPlacersTest {
         listOf(false, true).forEach { horizontal ->
             listOf(false, true).forEach { nested ->
                 val slot = Slot(null, 0, 11, 22)
-                val view = if (horizontal) XScrollView() else YScrollView()
+                val view = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
                 view += YListView().also { list ->
                     if (nested) {
-                        list += YScrollView().also {
+                        list += YSimpleScrollView().also {
                             it += MenuSlotView(slot)
                         }
                     } else {
@@ -235,45 +233,6 @@ class VanillaViewPlacersTest {
         Assertions.assertSame(button, widgets.single())
         controller.detach()
         Assertions.assertTrue(widgets.isEmpty())
-    }
-
-    @Test
-    fun `本番の縦横スクロール登録が子の配置と移動と破棄と解除を中継するのだ`() {
-        listOf(false, true).forEach { horizontal ->
-            val screenWidgets = mutableListOf<AbstractWidget>()
-            val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
-                override val origin = IntPoint(10, 20)
-                override val canPlaceMenuSlots = true
-                override val onBeforeRender = EventRegistry<() -> Unit>()
-                override fun addRenderableWidget(widget: AbstractWidget): Remover {
-                    screenWidgets += widget
-                    return Remover { screenWidgets.remove(widget) }
-                }
-                override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scroll containers must accept input")
-            }
-            val leaf = PlacerTestView()
-            val view = if (horizontal) XScrollView() else YScrollView()
-            view += leaf
-            view.initSizeCalculation(PLACER_RENDERING_PROXY, { 50 }, { 50 })
-            val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
-            val widget = screenWidgets.single() as VanillaScrollViewWidget
-            Assertions.assertEquals(if (horizontal) VanillaXScrollViewWidget::class.java else VanillaYScrollViewWidget::class.java, widget.javaClass)
-            val child = widget.children().single() as AbstractWidget
-            Assertions.assertEquals(IntPoint(10, 20), IntPoint(child.x, child.y))
-            try {
-                controller.setOffset(IntPoint(40, 60))
-                Assertions.assertEquals(IntPoint(40, 60), IntPoint(widget.x, widget.y))
-                Assertions.assertEquals(IntPoint(40, 60), IntPoint(child.x, child.y))
-            } finally {
-                controller.dispose()
-                controller.detach()
-            }
-            Assertions.assertEquals(1, leaf.disposals)
-            Assertions.assertEquals(1, leaf.detaches)
-            Assertions.assertFalse(widget.isActive)
-            Assertions.assertTrue(widget.children().isEmpty())
-            Assertions.assertTrue(screenWidgets.isEmpty())
-        }
     }
 
     @Test
