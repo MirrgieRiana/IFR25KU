@@ -86,14 +86,14 @@ class TooltipViewerScreenTest {
             withViews(definition, IntPoint(400, 240)) { field, scrollView ->
                 Assertions.assertEquals("", field.text.value)
                 Assertions.assertEquals(0.0, scrollView.scrollOffsetY.value)
-                scrollView.scrollOffsetY.value = 125.5
                 field.text.value = "0,2"
+                scrollView.scrollOffsetY.value = 125.5
             }
             withViews(definition, IntPoint(320, 180)) { field, scrollView ->
                 Assertions.assertEquals("0,2", field.text.value)
                 Assertions.assertEquals(125.5, scrollView.scrollOffsetY.value)
-                scrollView.scrollOffsetY.value = 271.25
                 field.text.value = "1,3"
+                scrollView.scrollOffsetY.value = 271.25
             }
             withViews(definition, IntPoint(640, 360)) { field, scrollView ->
                 Assertions.assertEquals("1,3", field.text.value)

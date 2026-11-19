@@ -10,6 +10,7 @@ import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
+import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
@@ -31,7 +32,14 @@ import org.junit.jupiter.api.TestInstance
 
 private val TOOLTIP_VIEWER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
     override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
-    override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
+    override fun calculateTextWidth(text: FormattedCharSequence): Int {
+        var width = 0
+        text.accept { _, _, _ ->
+            width += 6
+            true
+        }
+        return width
+    }
     override fun getTextHeight() = 9
 
     override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> {
@@ -86,7 +94,7 @@ class TooltipViewerViewWrapperTest {
     }
 
     @Test
-    fun `フィルタを変更すると入力欄とスクロール位置を保持したまま行と間隔を更新するのだ`() {
+    fun `フィルタを変更すると入力欄を維持しながら行と間隔を更新するのだ`() {
         val filter = ObservableValue("")
         val scrollOffsetY = ObservableValue(0.0)
         val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE)), filter, scrollOffsetY) {
@@ -114,7 +122,7 @@ class TooltipViewerViewWrapperTest {
                 Assertions.assertEquals(value, filter.value)
                 Assertions.assertSame(field, placements.mapNotNull { it.first as? TextFieldView }.single())
                 Assertions.assertSame(scrollView, placements.mapNotNull { it.first as? YScrollContainerView }.single())
-                Assertions.assertEquals(scrollOffset, scrollView.scrollOffsetY.value)
+                Assertions.assertEquals(0.0, scrollView.scrollOffsetY.value)
                 scrollbarView.scrollOffsetY.value += 0.25
                 Assertions.assertEquals(scrollbarView.scrollOffsetY.value, scrollView.scrollOffsetY.value)
                 Assertions.assertEquals(scrollbarView.scrollOffsetY.value, scrollOffsetY.value)
@@ -133,6 +141,56 @@ class TooltipViewerViewWrapperTest {
             controller.detach()
         }
         Assertions.assertTrue(placements.isEmpty())
+    }
+
+    @Test
+    fun `絞り込み後に範囲内の位置を保ち短くなった一覧を表示領域に戻すのだ`() {
+        val scrollOffsetY = ObservableValue(0.0)
+        val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE)), ObservableValue(""), scrollOffsetY) {
+            listOf(text { "title"() }, text { "long".repeat(500)() }, text { "mid".repeat(300)() })
+        }
+        view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
+        val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
+        val controller = view.place(placements)
+        try {
+            val field = placements.mapNotNull { it.first as? TextFieldView }.single()
+            val scroll = placements.mapNotNull { it.first as? YScrollContainerView }.single()
+            val scrollbar = placements.mapNotNull { it.first as? YScrollbarView }.single()
+            scroll.scrollOffsetY.value = 300.0
+            field.text.value = "1"
+            Assertions.assertEquals(300.0, scroll.scrollOffsetY.value)
+            Assertions.assertEquals(300.0, scrollbar.scrollOffsetY.value)
+            field.text.value = "2"
+            Assertions.assertEquals(107.0, scroll.scrollOffsetY.value)
+            Assertions.assertEquals(107.0, scrollbar.scrollOffsetY.value)
+            field.text.value = "0"
+            Assertions.assertEquals(0.0, scroll.scrollOffsetY.value)
+            Assertions.assertEquals(0.0, scrollbar.scrollOffsetY.value)
+            Assertions.assertEquals(0.0, scrollOffsetY.value)
+        } finally {
+            controller.dispose()
+            controller.detach()
+        }
+    }
+
+    @Test
+    fun `ゼロ文字の行にも通常の文字行と同じ高さを割り当てるのだ`() {
+        val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE)), ObservableValue(""), ObservableValue(0.0)) {
+            listOf(text { "title"() }, text { empty() }, text { "tail"() })
+        }
+        view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
+        val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
+        val controller = view.place(placements)
+        try {
+            val lines = placements.filter { it.first is MultiLineTextView }
+            val emptyLine = placements.single { it.first is TextView }.second
+            Assertions.assertEquals(lines[0].second.sizeY, emptyLine.sizeY)
+            Assertions.assertEquals(12, emptyLine.y - lines[0].second.y)
+            Assertions.assertEquals(10, lines[1].second.y - emptyLine.y)
+        } finally {
+            controller.dispose()
+            controller.detach()
+        }
     }
 
     @Test

@@ -16,6 +16,7 @@ import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
+import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
@@ -36,6 +37,8 @@ import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.register
 import miragefairy2024.util.text
 import miragefairy2024.util.times
+import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.atMost
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
@@ -101,8 +104,12 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
                                         if (lineIndex > 0 && isAllowedIndex(lineIndex - 1)) {
                                             view += YSpaceView(if (lineIndex == 1) 3 else 1)
                                         }
-                                        view += MultiLineTextView().configure {
-                                            view.text.value = text
+                                        if (text.string.isEmpty()) {
+                                            view += TextView()
+                                        } else {
+                                            view += MultiLineTextView().configure {
+                                                view.text.value = text
+                                            }
                                         }
                                     }
                                 }.margin(4)
@@ -130,14 +137,11 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
                     view.sizingY = Sizing.FILL
 
                     // 検索欄なのだ～🌱
-                    view += TextFieldView().configure {
+                    val filterField = TextFieldView().configure {
                         view.hint = text { TOOLTIP_VIEWER_EXAMPLE_KEY_TRANSLATION("0,1,2") }
                         view.text.value = filter.value
-                        view.text.register { _, newValue ->
-                            filter.value = newValue
-                            contentView.content.value = createContentView()
-                        }
                     }
+                    view += filterField
 
                     view += YSpaceView(2)
 
@@ -155,9 +159,16 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
                             view += contentView
                         }
                         view += scrollView
-                        val scrollbarView = YScrollbarView().configure()
+                        val scrollbarView = YScrollbarView()
                         view += scrollbarView
-                        connectScrollbar(scrollView.view, scrollbarView.view)
+                        connectScrollbar(scrollView.view, scrollbarView)
+
+                        filterField.view.text.register { _, newValue ->
+                            filter.value = newValue
+                            contentView.content.value = createContentView()
+                            val maxScrollOffset = (contentView.evaluateActualSizeY() - scrollView.view.evaluateActualSizeY()) atLeast 0
+                            scrollView.view.scrollOffsetY.value = scrollView.view.scrollOffsetY.value atMost maxScrollOffset.toDouble()
+                        }
                     }
 
                 }.minContentSizeX(240).margin(panelMargin)
