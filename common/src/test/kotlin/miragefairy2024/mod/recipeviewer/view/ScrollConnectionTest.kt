@@ -18,15 +18,17 @@ class ScrollConnectionTest {
 
         val connection = connectScrollbar(scroll, bar)
         try {
-            val sharedOffset = checkNotNull(scroll.connectedScrollOffset.value)
-            Assertions.assertSame(sharedOffset, bar.connectedScrollOffset.value)
-            Assertions.assertEquals(15.25, sharedOffset.value)
+            Assertions.assertEquals(15.25, bar.scrollOffsetX.value)
+            Assertions.assertThrows(IllegalStateException::class.java) { connectScrollbar(scroll, XScrollbarView()) }
+            Assertions.assertThrows(IllegalStateException::class.java) { connectScrollbar(XSimpleScrollView(), bar) }
             Assertions.assertEquals(100, bar.contentLength)
             Assertions.assertEquals(50, bar.viewportLength)
 
-            checkNotNull(bar.connectedScrollOffset.value).value = 120.5
+            scroll.scrollOffsetX.value = -30.25
+            Assertions.assertEquals(-30.25, bar.scrollOffsetX.value)
+            bar.scrollOffsetX.value = 120.5
             scroll.scrollBounds.value = ScrollBounds(200, 100)
-            Assertions.assertEquals(120.5, sharedOffset.value)
+            Assertions.assertEquals(120.5, scroll.scrollOffsetX.value)
             Assertions.assertEquals(200, bar.contentLength)
             Assertions.assertEquals(100, bar.viewportLength)
         } finally {
@@ -39,25 +41,66 @@ class ScrollConnectionTest {
         Assertions.assertEquals(120.5, bar.scrollOffsetX.value)
         Assertions.assertEquals(200, bar.contentLength)
         Assertions.assertEquals(100, bar.viewportLength)
-        Assertions.assertNull(scroll.connectedScrollOffset.value)
-        Assertions.assertNull(bar.connectedScrollOffset.value)
         Assertions.assertTrue(scroll.scrollBounds.toList().isEmpty())
+        Assertions.assertTrue(scroll.scrollOffsetX.toList().isEmpty())
+        Assertions.assertTrue(bar.scrollOffsetX.toList().isEmpty())
+        connectScrollbar(scroll, bar).remove()
+        scroll.scrollOffsetX.value = 80.0
+        Assertions.assertEquals(120.5, bar.scrollOffsetX.value)
     }
 
     @Test
-    fun `接続の通知が失敗したら位置の参照と寸法の購読を解除するのだ`() {
+    fun `バーの通知中に更新された領域の位置を反映するのだ`() {
         val scroll = XSimpleScrollView()
         val bar = XScrollbarView()
+        val listener = bar.scrollOffsetX.register { _, position ->
+            if (position == 15.0) scroll.scrollOffsetX.value = 20.0
+        }
+        val connection = connectScrollbar(scroll, bar)
+        try {
+            scroll.scrollOffsetX.value = 15.0
+            Assertions.assertEquals(20.0, scroll.scrollOffsetX.value)
+            Assertions.assertEquals(20.0, bar.scrollOffsetX.value)
+        } finally {
+            connection.remove()
+            listener.remove()
+        }
+    }
+
+    @Test
+    fun `共有位置が元の値に戻った場合も操作元へ反映するのだ`() {
+        val scroll = XSimpleScrollView()
+        val bar = XScrollbarView()
+        val listener = scroll.scrollOffsetX.register { _, position ->
+            if (position == 15.0) scroll.scrollOffsetX.value = 0.0
+        }
+        val connection = connectScrollbar(scroll, bar)
+        try {
+            bar.scrollOffsetX.value = 15.0
+            Assertions.assertEquals(0.0, scroll.scrollOffsetX.value)
+            Assertions.assertEquals(0.0, bar.scrollOffsetX.value)
+        } finally {
+            connection.remove()
+            listener.remove()
+        }
+    }
+
+    @Test
+    fun `初期同期の通知が失敗したら位置と寸法の購読を解除するのだ`() {
+        val scroll = XSimpleScrollView()
+        val bar = XScrollbarView()
+        scroll.scrollOffsetX.value = 80.0
         bar.scrollOffsetX.value = 20.0
         val exception = IllegalStateException("Listener failed")
-        val listener = bar.connectedScrollOffset.register { _, offset ->
-            if (offset != null) throw exception
+        val listener = bar.scrollOffsetX.register { _, offset ->
+            if (offset == 80.0) throw exception
         }
         try {
             Assertions.assertSame(exception, Assertions.assertThrows(IllegalStateException::class.java) { connectScrollbar(scroll, bar) })
-            Assertions.assertNull(scroll.connectedScrollOffset.value)
-            Assertions.assertNull(bar.connectedScrollOffset.value)
             Assertions.assertTrue(scroll.scrollBounds.toList().isEmpty())
+            Assertions.assertTrue(scroll.scrollOffsetX.toList().isEmpty())
+            Assertions.assertEquals(1, bar.scrollOffsetX.toList().size)
+            Assertions.assertEquals(80.0, scroll.scrollOffsetX.value)
             Assertions.assertEquals(20.0, bar.scrollOffsetX.value)
         } finally {
             listener.remove()

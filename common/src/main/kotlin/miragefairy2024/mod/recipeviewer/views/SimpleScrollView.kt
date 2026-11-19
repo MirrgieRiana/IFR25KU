@@ -9,6 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
+import miragefairy2024.util.plus
 import miragefairy2024.util.register
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
@@ -37,8 +38,6 @@ abstract class SimpleScrollView : WrapperView(), PlaceableView {
         }
 
     val scrollBounds = ObservableValue(ScrollBounds(0, 0))
-
-    val connectedScrollOffset = ObservableValue<ObservableValue<Double>?>(null)
 
     protected abstract fun evaluateContentLength(): Int
     protected abstract fun evaluateViewportLength(): Int
@@ -87,9 +86,6 @@ class YSimpleScrollView : SimpleScrollView() {
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
 fun connectScrollbar(scrollView: SimpleScrollView, scrollbarView: ScrollbarView): Remover {
-    check(scrollView.connectedScrollOffset.value == null) { "The scroll view is already connected" }
-    check(scrollbarView.connectedScrollOffset.value == null) { "The scrollbar is already connected" }
-
     val scrollViewOffset = when (scrollView) {
         is XSimpleScrollView -> scrollView.scrollOffsetX
         is YSimpleScrollView -> scrollView.scrollOffsetY
@@ -100,45 +96,65 @@ fun connectScrollbar(scrollView: SimpleScrollView, scrollbarView: ScrollbarView)
         is YScrollbarView -> scrollbarView.scrollOffsetY
         else -> throw IllegalArgumentException("Unsupported view: $scrollbarView")
     }
-    val sharedOffset = ObservableValue(scrollViewOffset.value)
+    val initialScrollViewOffset = scrollViewOffset.value
+    val initialScrollbarViewOffset = scrollbarViewOffset.value
+    val sharedOffset = ObservableValue(initialScrollViewOffset)
+
+    class OffsetBinding(private val offset: ObservableValue<Double>) : (Double, Double) -> Unit {
+        private var publishing = false
+
+        fun publish() {
+            val requested = sharedOffset.value
+            val wasPublishing = publishing
+            publishing = true
+            try {
+                offset.value = requested
+            } finally {
+                publishing = wasPublishing
+            }
+            if (sharedOffset.value.equals(requested) && !offset.value.equals(requested)) sharedOffset.value = offset.value
+        }
+
+        override fun invoke(old: Double, position: Double) {
+            if (publishing) return
+            sharedOffset.value = position
+            if (offset.value.equals(position) && !sharedOffset.value.equals(position)) publish()
+        }
+
+        fun register(): Remover {
+            return sharedOffset.register { _, _ -> publish() } + offset.register(this)
+        }
+    }
+
+    check(scrollViewOffset.toList().none { it is OffsetBinding }) { "The scroll view is already connected" }
+    check(scrollbarViewOffset.toList().none { it is OffsetBinding }) { "The scrollbar is already connected" }
 
     fun updateBounds(bounds: ScrollBounds) {
         scrollbarView.contentLength = bounds.contentLength
         scrollbarView.viewportLength = bounds.viewportLength
     }
 
+    val scrollBinding = OffsetBinding(scrollViewOffset)
+    val barBinding = OffsetBinding(scrollbarViewOffset)
     val boundsRemover = scrollView.scrollBounds.register { _, bounds -> updateBounds(bounds) }
+    val remover = boundsRemover + scrollBinding.register() + barBinding.register()
+    try {
+        updateBounds(scrollView.scrollBounds.value)
+        barBinding.publish()
+    } catch (e: Throwable) {
+        remover.remove()
 
-    fun disconnect(position: Double?) {
-        boundsRemover.remove()
-
-        fun releaseOffset(connection: ObservableValue<ObservableValue<Double>?>, standaloneOffset: ObservableValue<Double>) {
-            if (connection.value !== sharedOffset) return
+        fun restoreOffset(offset: ObservableValue<Double>, position: Double) {
             try {
-                if (position != null) standaloneOffset.value = position
-            } finally {
-                if (connection.value === sharedOffset) connection.value = null
+                offset.value = position
+            } catch (cleanupFailure: Throwable) {
+                if (cleanupFailure !== e) e.addSuppressed(cleanupFailure)
             }
         }
 
-        try {
-            releaseOffset(scrollView.connectedScrollOffset, scrollViewOffset)
-        } finally {
-            releaseOffset(scrollbarView.connectedScrollOffset, scrollbarViewOffset)
-        }
-    }
-
-    try {
-        updateBounds(scrollView.scrollBounds.value)
-        scrollView.connectedScrollOffset.value = sharedOffset
-        scrollbarView.connectedScrollOffset.value = sharedOffset
-    } catch (e: Throwable) {
-        try {
-            disconnect(null)
-        } catch (cleanupFailure: Throwable) {
-            if (cleanupFailure !== e) e.addSuppressed(cleanupFailure)
-        }
+        restoreOffset(scrollViewOffset, initialScrollViewOffset)
+        restoreOffset(scrollbarViewOffset, initialScrollbarViewOffset)
         throw e
     }
-    return Remover { disconnect(sharedOffset.value) }
+    return remover
 }

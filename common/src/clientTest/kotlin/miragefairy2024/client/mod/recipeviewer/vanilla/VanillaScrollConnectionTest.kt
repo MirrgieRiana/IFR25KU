@@ -44,38 +44,37 @@ class VanillaScrollConnectionTest {
                 Assertions.assertTrue(scroll.mouseScrolled(50.0, 50.0, 0.0, -1.0))
                 val connection = connectScrollbar(scrollView, barView)
                 try {
-                    val shared = checkNotNull(scrollView.connectedScrollOffset.value)
-                    Assertions.assertSame(shared, barView.connectedScrollOffset.value)
-                    Assertions.assertEquals(15.0, shared.value)
+                    Assertions.assertEquals(15.0, barView.scrollOffsetY.value)
 
-                    shared.value = 120.5
+                    barView.scrollOffsetY.value = 120.5
                     scroll.setSize(100, 200)
                     Assertions.assertEquals(IntPoint(10, -101), childOffset)
                     Assertions.assertFalse(scroll.mouseScrolled(50.0, 50.0, 0.0, -1.0))
-                    Assertions.assertEquals(120.5, shared.value)
+                    Assertions.assertEquals(120.5, scrollView.scrollOffsetY.value)
                     Assertions.assertTrue(scroll.mouseScrolled(50.0, 50.0, 0.0, 1.0))
-                    Assertions.assertEquals(105.5, shared.value)
+                    Assertions.assertEquals(105.5, scrollView.scrollOffsetY.value)
                     Assertions.assertEquals(IntPoint(10, -86), childOffset)
                     bar.render(environment.graphics, 0, 0, 0.0F)
                     Assertions.assertEquals(IntRectangle(250, 55, 5, 65), environment.fills.last())
 
                     Assertions.assertTrue(bar.mouseClicked(252.0, 60.0, 0))
-                    Assertions.assertEquals(105.5, shared.value)
+                    Assertions.assertEquals(105.5, scrollView.scrollOffsetY.value)
                     Assertions.assertTrue(bar.mouseDragged(252.0, 25.0, 0, 0.0, -35.0))
                     Assertions.assertTrue(bar.mouseReleased(252.0, 25.0, 0))
-                    Assertions.assertEquals(0.0, shared.value)
+                    Assertions.assertEquals(0.0, scrollView.scrollOffsetY.value)
                     Assertions.assertEquals(IntPoint(10, 20), childOffset)
 
-                    shared.value = 55.25
+                    scrollView.scrollOffsetY.value = 55.25
                     connection.remove()
-                    Assertions.assertNull(scrollView.connectedScrollOffset.value)
-                    Assertions.assertNull(barView.connectedScrollOffset.value)
+                    Assertions.assertEquals(55.25, scrollView.scrollOffsetY.value)
+                    Assertions.assertEquals(55.25, barView.scrollOffsetY.value)
                     Assertions.assertTrue(scroll.mouseScrolled(50.0, 50.0, 0.0, -1.0))
                     Assertions.assertTrue(bar.mouseScrolled(252.0, 50.0, 0.0, 1.0))
                     Assertions.assertEquals(IntPoint(10, -50), childOffset)
                     bar.render(environment.graphics, 0, 0, 0.0F)
                     Assertions.assertEquals(IntRectangle(250, 33, 5, 67), environment.fills.last())
-                    Assertions.assertEquals(55.25, shared.value)
+                    Assertions.assertEquals(70.25, scrollView.scrollOffsetY.value)
+                    Assertions.assertEquals(40.25, barView.scrollOffsetY.value)
                 } finally {
                     connection.remove()
                 }

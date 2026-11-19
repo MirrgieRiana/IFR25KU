@@ -22,7 +22,7 @@ import kotlin.math.roundToInt
 
 abstract class VanillaScrollbarViewWidget(
     protected val view: ScrollbarView,
-    private val standaloneScrollOffset: ObservableValue<Double>,
+    private val scrollOffsetValue: ObservableValue<Double>,
     bounds: IntRectangle,
 ) :
     AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }), MouseCaptureContainer {
@@ -40,8 +40,6 @@ abstract class VanillaScrollbarViewWidget(
 
 
     // サイズと位置なのだ～🌱
-
-    private val scrollOffsetValue get() = view.connectedScrollOffset.value ?: standaloneScrollOffset
 
     protected abstract val scrollbarLength: Int
     protected abstract val scrollbarThickness: Int

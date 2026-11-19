@@ -11,8 +11,6 @@ import miragefairy2024.util.ObservableValue
 /** スクロール位置をコンテンツ座標で保持し、再配置時にも引き継ぐバーなのだ～🌱 */
 abstract class ScrollbarView : AbstractView(), PlaceableView {
 
-    val connectedScrollOffset = ObservableValue<ObservableValue<Double>?>(null)
-
     var contentLength = 0
         set(value) {
             if (value < 0) throw IllegalArgumentException("Content length must be non-negative")

@@ -17,8 +17,6 @@ import miragefairy2024.util.empty
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.observeAndInitialize
-import miragefairy2024.util.register
-import miragefairy2024.util.removeOn
 import miragefairy2024.util.text
 import miragefairy2024.util.translate
 import mirrg.kotlin.helium.atLeast
@@ -43,7 +41,7 @@ import kotlin.math.roundToInt
 /** 子 Widget の描画・入力・フォーカス・読み上げを中継するスクロール領域なのだ～🌱 */
 abstract class VanillaSimpleScrollViewWidget(
     protected val view: SimpleScrollView,
-    private val standaloneScrollOffset: ObservableValue<Double>,
+    private val scrollOffsetValue: ObservableValue<Double>,
     bounds: IntRectangle,
     context: VanillaViewPlacerContext,
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
@@ -105,8 +103,6 @@ abstract class VanillaSimpleScrollViewWidget(
 
 
     // サイズと位置なのだ～🌱
-
-    private val scrollOffsetValue get() = view.connectedScrollOffset.value ?: standaloneScrollOffset
 
     protected abstract val viewportLength: Int
     protected abstract fun evaluateContentLength(): Int
@@ -429,14 +425,8 @@ abstract class VanillaSimpleScrollViewWidget(
         childController = view.childView.attachTo(getChildOffset(initialScrollOffset)) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
         }
-        var offsetRemover = Remover.NONE
-        Remover { offsetRemover.remove() }.removeOn(onClosed)
-        view.connectedScrollOffset.observeAndInitialize(onClosed) { old, new ->
+        scrollOffsetValue.observeAndInitialize(onClosed) { old, new ->
             if (disposed) return@observeAndInitialize
-            offsetRemover.remove()
-            offsetRemover = scrollOffsetValue.register { _, _ ->
-                if (!disposed) childController.setOffset(getChildOffset(scrollOffsetValue.value.roundToInt()))
-            }
             val scrollOffset = scrollOffsetValue.value.roundToInt()
             // attachTo 内で scrollOffsetValue が書き替えられた場合にも発火するのだ～🌱
             if (scrollOffset == initialScrollOffset && old == new) return@observeAndInitialize
