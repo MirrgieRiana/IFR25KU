@@ -12,7 +12,7 @@ import org.lwjgl.glfw.GLFW
 
 class VanillaScrollbarViewWidgetTest {
     @Test
-    fun `View の指定位置を購読し操作結果と再配置後の位置を保持するのだ`() {
+    fun `View の指定位置を直接読み操作結果と再配置後の位置を保持するのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
                 val view = if (horizontal) XScrollbarView() else YScrollbarView()
@@ -26,7 +26,7 @@ class VanillaScrollbarViewWidgetTest {
                 scrollOffsetValue.value = 50.25
                 val firstWidget = attach()
                 try {
-                    Assertions.assertEquals(1, scrollOffsetValue.toList().size)
+                    Assertions.assertTrue(scrollOffsetValue.toList().isEmpty())
                     firstWidget.render(environment.graphics, 50, 50, 0.0F)
                     Assertions.assertEquals(if (horizontal) IntRectangle(27, 200, 33, 5) else IntRectangle(200, 37, 5, 33), environment.fills.last())
                     scrollOffsetValue.value = 150.75
@@ -48,7 +48,7 @@ class VanillaScrollbarViewWidgetTest {
                 val secondWidget = attach()
                 try {
                     Assertions.assertEquals(200.0, scrollOffsetValue.value)
-                    Assertions.assertEquals(1, scrollOffsetValue.toList().size)
+                    Assertions.assertTrue(scrollOffsetValue.toList().isEmpty())
                     secondWidget.render(environment.graphics, 50, 50, 0.0F)
                     Assertions.assertEquals(if (horizontal) IntRectangle(77, 200, 33, 5) else IntRectangle(200, 87, 5, 33), environment.fills.last())
                     scrollOffsetValue.value = -25.75
