@@ -26,6 +26,6 @@ class ClickableContainer(horizontalSizing: Sizing, verticalSizing: Sizing) : Wra
     val onClick = EventRegistry<() -> Boolean>()
     override fun onMouseDown(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (super.onMouseDown(mouseX, mouseY, button)) return true
-        return onClick.listeners.any { it() }
+        return onClick.toList().any { it() }
     }
 }

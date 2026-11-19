@@ -6,13 +6,15 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
+import miragefairy2024.util.ObservableValue
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 
 /**
  * 子 View を一方向へスクロールするのだ～🌱
- * スクロール方向のコンテンツが占有する最小のサイズは 0 なのだ～🌱
+ * スクロール方向のコンテンツが占有する最小のサイズは `0` なのだ～🌱
  * スクロールバーの領域は、スクロールの必要がないときも確保するのだ～🌱
+ * バニラへの配置では、子孫に [miragefairy2024.mod.recipeviewer.views.MenuSlotView] を含めてはならないのだ～🌱
  */
 abstract class ScrollView : WrapperView(), PlaceableView {
 
@@ -21,9 +23,15 @@ abstract class ScrollView : WrapperView(), PlaceableView {
 
     var scrollbarThickness = 5
         set(value) {
-            require(value >= 0) { "Scrollbar thickness must be non-negative" }
+            if (value < 0) throw IllegalArgumentException("Scrollbar thickness must be non-negative")
             field = value
         }
+    var scrollStep = 15
+        set(value) {
+            if (value <= 0) throw IllegalArgumentException("Scroll step must be positive")
+            field = value
+        }
+    var scrollbarColor = 0xA0000000.toInt()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 
@@ -31,6 +39,8 @@ abstract class ScrollView : WrapperView(), PlaceableView {
 
 /** 子 View を X 軸方向へスクロールするのだ～🌱 */
 class XScrollView : ScrollView() {
+
+    val scrollOffsetX = ObservableValue(0.0)
 
     override fun evaluateContentSizeXImpl() = 0
     override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY() + scrollbarThickness
@@ -42,6 +52,8 @@ class XScrollView : ScrollView() {
 
 /** 子 View を Y 軸方向へスクロールするのだ～🌱 */
 class YScrollView : ScrollView() {
+
+    val scrollOffsetY = ObservableValue(0.0)
 
     override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX() + scrollbarThickness
     override fun evaluateContentSizeYImpl() = 0

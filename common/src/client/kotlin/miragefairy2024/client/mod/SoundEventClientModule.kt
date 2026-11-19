@@ -1,8 +1,8 @@
 package miragefairy2024.client.mod
 
 import miragefairy2024.ModContext
-import miragefairy2024.client.util.registerClientPacketReceiver
 import miragefairy2024.mod.SoundEventChannel
+import miragefairy2024.util.registerClientPacketReceiver
 import net.minecraft.client.Minecraft
 
 context(ModContext)

@@ -3,11 +3,15 @@ package miragefairy2024.client.mod
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
 import miragefairy2024.ModContext
+import miragefairy2024.client.mod.fairy.soulStreamKeyMappingCard
+import miragefairy2024.client.mod.fairy.toggleCollectionEnabledKeyMappingCard
 import miragefairy2024.mod.common.CommonRenderingEvents
+import miragefairy2024.mod.common.KeyMappingType
 import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
 import miragefairy2024.util.isValid
 import mirrg.kotlin.helium.max
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
+import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.LevelRenderer
 import net.minecraft.client.renderer.LightTexture
@@ -88,6 +92,15 @@ fun initCommonClientModule() {
                     .setNormal(relativeX1 - relativeX0, relativeY1 - relativeY0, relativeZ1 - relativeZ0)
             }
         }
+    }
+}
+
+fun getKeyMapping(keyMappingType: KeyMappingType): KeyMapping {
+    return when (keyMappingType) {
+        KeyMappingType.PLACE_ITEM -> placeItemKeyMappingCard.keyMapping
+        KeyMappingType.OPEN_TOOLTIP_VIEWER -> tooltipViewerKeyMappingCard.keyMapping
+        KeyMappingType.OPEN_SOUL_STREAM -> soulStreamKeyMappingCard.keyMapping
+        KeyMappingType.TOGGLE_COLLECTION_ENABLED -> toggleCollectionEnabledKeyMappingCard.keyMapping
     }
 }
 

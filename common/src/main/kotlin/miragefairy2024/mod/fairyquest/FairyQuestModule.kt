@@ -7,4 +7,5 @@ fun initFairyQuestModule() {
     initFairyQuestCardScreenHandler()
     initFairyQuestCardItem()
     initFairyQuestRecipe()
+    initFairyQuestMessageScreen()
 }
