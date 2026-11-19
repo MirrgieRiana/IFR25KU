@@ -14,8 +14,8 @@ import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.register
@@ -46,7 +46,7 @@ private fun TraitEncyclopediaPageViewWrapper.place(): List<Pair<PlaceableView, I
     val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
     fun place(view: PlaceableView, bounds: IntRectangle): ViewController {
         placements += Pair(view, bounds)
-        if (view is YSimpleScrollView) return view.childView.attachTo(bounds.offset, ::place)
+        if (view is YScrollContainerView) return view.childView.attachTo(bounds.offset, ::place)
         return ViewController.NONE
     }
     this.view.attachTo(IntPoint.ZERO, ::place)
@@ -72,9 +72,9 @@ class TraitEncyclopediaPageViewWrapperTest {
         val icon = placements.single { it.first is ImageView }
         Assertions.assertEquals(IntRectangle(184, 39, 32, 32), icon.second)
         Assertions.assertEquals(texture, (icon.first as ImageView).texture.id)
-        val scroll = placements.single { it.first is YSimpleScrollView }
+        val scroll = placements.single { it.first is YScrollContainerView }
         Assertions.assertEquals(IntRectangle(125, 76, 145, 125), scroll.second)
-        val scrollView = scroll.first as YSimpleScrollView
+        val scrollView = scroll.first as YScrollContainerView
         Assertions.assertEquals(145, scrollView.childView.evaluateActualSizeX())
         Assertions.assertTrue(scrollView.childView.evaluateActualSizeY() > scroll.second.sizeY)
         val scrollbar = placements.single { it.first is YScrollbarView }
@@ -100,7 +100,7 @@ class TraitEncyclopediaPageViewWrapperTest {
             view.view.initSizeCalculation(TraitEncyclopediaRenderingProxy(), { size.x }, { size.y })
             val placements = view.place()
             Assertions.assertEquals(IntRectangle((size.x - 160) / 2, 20, 160, size.y - 54), placements.single { it.first is NinePatchImageView }.second)
-            Assertions.assertEquals(IntRectangle((size.x - 150) / 2, 76, 145, size.y - 115), placements.single { it.first is YSimpleScrollView }.second)
+            Assertions.assertEquals(IntRectangle((size.x - 150) / 2, 76, 145, size.y - 115), placements.single { it.first is YScrollContainerView }.second)
             Assertions.assertEquals(IntRectangle((size.x - 150) / 2 + 145, 76, 5, size.y - 115), placements.single { it.first is YScrollbarView }.second)
             val buttons = placements.filter { it.first is TextButtonView }.map { it.second }
             Assertions.assertEquals(listOf(IntRectangle((size.x - 180) / 2, size.y - 24, 80, 20), IntRectangle((size.x - 180) / 2 + 100, size.y - 24, 80, 20)), buttons)
