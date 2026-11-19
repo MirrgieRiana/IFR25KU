@@ -13,13 +13,14 @@ class ScrollConnectionTest {
     fun `両側で指定位置を共有し寸法を反映するのだ`() {
         val scroll = XSimpleScrollView()
         val bar = XScrollbarView()
+        scroll.scrollOffsetX.value = 15.25
         scroll.scrollBounds.value = ScrollBounds(100, 50)
 
         val connection = connectScrollbar(scroll, bar)
         try {
             val sharedOffset = checkNotNull(scroll.connectedScrollOffset.value)
             Assertions.assertSame(sharedOffset, bar.connectedScrollOffset.value)
-            Assertions.assertEquals(0.0, sharedOffset.value)
+            Assertions.assertEquals(15.25, sharedOffset.value)
             Assertions.assertEquals(100, bar.contentLength)
             Assertions.assertEquals(50, bar.viewportLength)
 
@@ -34,6 +35,8 @@ class ScrollConnectionTest {
 
         connection.remove()
         scroll.scrollBounds.value = ScrollBounds(300, 200)
+        Assertions.assertEquals(120.5, scroll.scrollOffsetX.value)
+        Assertions.assertEquals(120.5, bar.scrollOffsetX.value)
         Assertions.assertEquals(200, bar.contentLength)
         Assertions.assertEquals(100, bar.viewportLength)
         Assertions.assertNull(scroll.connectedScrollOffset.value)
@@ -45,6 +48,7 @@ class ScrollConnectionTest {
     fun `接続の通知が失敗したら位置の参照と寸法の購読を解除するのだ`() {
         val scroll = XSimpleScrollView()
         val bar = XScrollbarView()
+        bar.scrollOffsetX.value = 20.0
         val exception = IllegalStateException("Listener failed")
         val listener = bar.connectedScrollOffset.register { _, offset ->
             if (offset != null) throw exception
@@ -54,6 +58,7 @@ class ScrollConnectionTest {
             Assertions.assertNull(scroll.connectedScrollOffset.value)
             Assertions.assertNull(bar.connectedScrollOffset.value)
             Assertions.assertTrue(scroll.scrollBounds.toList().isEmpty())
+            Assertions.assertEquals(20.0, bar.scrollOffsetX.value)
         } finally {
             listener.remove()
         }

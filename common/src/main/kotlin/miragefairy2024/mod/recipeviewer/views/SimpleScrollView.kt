@@ -9,7 +9,6 @@ import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
-import miragefairy2024.util.plus
 import miragefairy2024.util.register
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
@@ -23,6 +22,7 @@ data class ScrollBounds(val contentLength: Int, val viewportLength: Int) {
 /**
  * 子 View を一方向へスクロールするのだ～🌱
  * スクロール方向のコンテンツが占有する最小のサイズは `0` なのだ～🌱
+ * スクロール位置はコンテンツ座標で保持し、再配置時にも引き継ぐのだ～🌱
  * バニラへの配置では、子孫に [miragefairy2024.mod.recipeviewer.views.MenuSlotView] を含めてはならないのだ～🌱
  */
 abstract class SimpleScrollView : WrapperView(), PlaceableView {
@@ -38,16 +38,8 @@ abstract class SimpleScrollView : WrapperView(), PlaceableView {
 
     val scrollBounds = ObservableValue(ScrollBounds(0, 0))
 
+    internal val standaloneScrollOffset = ObservableValue(0.0)
     val connectedScrollOffset = ObservableValue<ObservableValue<Double>?>(null)
-
-    private val standaloneScrollOffsetReaders = mutableSetOf<() -> Double>()
-
-    internal fun readScrollOffset() = connectedScrollOffset.value?.value ?: standaloneScrollOffsetReaders.lastOrNull()?.invoke() ?: 0.0
-
-    fun registerStandaloneScrollOffset(reader: () -> Double): Remover {
-        standaloneScrollOffsetReaders += reader
-        return Remover { standaloneScrollOffsetReaders -= reader }
-    }
 
     protected abstract fun evaluateContentLength(): Int
     protected abstract fun evaluateViewportLength(): Int
@@ -62,6 +54,8 @@ abstract class SimpleScrollView : WrapperView(), PlaceableView {
 /** 子 View を X 軸方向へスクロールするのだ～🌱 */
 class XSimpleScrollView : SimpleScrollView() {
 
+    val scrollOffsetX = standaloneScrollOffset
+
     override fun evaluateContentSizeXImpl() = 0
     override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY()
 
@@ -75,6 +69,8 @@ class XSimpleScrollView : SimpleScrollView() {
 
 /** 子 View を Y 軸方向へスクロールするのだ～🌱 */
 class YSimpleScrollView : SimpleScrollView() {
+
+    val scrollOffsetY = standaloneScrollOffset
 
     override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX()
     override fun evaluateContentSizeYImpl() = 0
@@ -95,7 +91,7 @@ fun connectScrollbar(scrollView: SimpleScrollView, scrollbarView: ScrollbarView)
     check(scrollView.connectedScrollOffset.value == null) { "The scroll view is already connected" }
     check(scrollbarView.connectedScrollOffset.value == null) { "The scrollbar is already connected" }
 
-    val sharedOffset = ObservableValue(scrollView.readScrollOffset())
+    val sharedOffset = ObservableValue(scrollView.standaloneScrollOffset.value)
 
     fun updateBounds(bounds: ScrollBounds) {
         scrollbarView.contentLength = bounds.contentLength
@@ -103,12 +99,23 @@ fun connectScrollbar(scrollView: SimpleScrollView, scrollbarView: ScrollbarView)
     }
 
     val boundsRemover = scrollView.scrollBounds.register { _, bounds -> updateBounds(bounds) }
-    val remover = Remover {
+
+    fun disconnect(position: Double?) {
         boundsRemover.remove()
+
+        fun releaseOffset(connection: ObservableValue<ObservableValue<Double>?>, standaloneOffset: ObservableValue<Double>) {
+            if (connection.value !== sharedOffset) return
+            try {
+                if (position != null) standaloneOffset.value = position
+            } finally {
+                if (connection.value === sharedOffset) connection.value = null
+            }
+        }
+
         try {
-            if (scrollView.connectedScrollOffset.value === sharedOffset) scrollView.connectedScrollOffset.value = null
+            releaseOffset(scrollView.connectedScrollOffset, scrollView.standaloneScrollOffset)
         } finally {
-            if (scrollbarView.connectedScrollOffset.value === sharedOffset) scrollbarView.connectedScrollOffset.value = null
+            releaseOffset(scrollbarView.connectedScrollOffset, scrollbarView.standaloneScrollOffset)
         }
     }
 
@@ -118,11 +125,11 @@ fun connectScrollbar(scrollView: SimpleScrollView, scrollbarView: ScrollbarView)
         scrollbarView.connectedScrollOffset.value = sharedOffset
     } catch (e: Throwable) {
         try {
-            remover.remove()
+            disconnect(null)
         } catch (cleanupFailure: Throwable) {
             if (cleanupFailure !== e) e.addSuppressed(cleanupFailure)
         }
         throw e
     }
-    return remover
+    return Remover { disconnect(sharedOffset.value) }
 }
