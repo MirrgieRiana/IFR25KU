@@ -11,7 +11,8 @@ import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
-import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
@@ -42,7 +43,7 @@ private fun TooltipViewerViewWrapper.place(placements: MutableList<Pair<Placeabl
     fun place(view: PlaceableView, bounds: IntRectangle): ViewController {
         val placement = Pair(view, bounds)
         placements += placement
-        val controller = if (view is YScrollView) view.childView.attachTo(bounds.offset, ::place) else ViewController.NONE
+        val controller = if (view is YSimpleScrollView) view.childView.attachTo(bounds.offset, ::place) else ViewController.NONE
         return object : ViewController by controller {
             override fun detach() {
                 controller.detach()
@@ -96,7 +97,8 @@ class TooltipViewerViewWrapperTest {
         val controller = view.place(placements)
         try {
             val field = placements.mapNotNull { it.first as? TextFieldView }.single()
-            val scrollView = placements.mapNotNull { it.first as? YScrollView }.single()
+            val scrollView = placements.mapNotNull { it.first as? YSimpleScrollView }.single()
+            val scrollbarView = placements.mapNotNull { it.first as? YScrollbarView }.single()
             listOf(
                 "0,1,3" to listOf("title", "first", "third"),
                 "1,3" to listOf("first", "third"),
@@ -107,11 +109,15 @@ class TooltipViewerViewWrapperTest {
                 scrollView.scrollOffsetY.value += 10.5
                 val scrollOffset = scrollView.scrollOffsetY.value
                 Assertions.assertEquals(scrollOffset, scrollOffsetY.value)
+                Assertions.assertEquals(scrollOffset, scrollbarView.scrollOffsetY.value)
                 field.text.value = value
                 Assertions.assertEquals(value, filter.value)
                 Assertions.assertSame(field, placements.mapNotNull { it.first as? TextFieldView }.single())
-                Assertions.assertSame(scrollView, placements.mapNotNull { it.first as? YScrollView }.single())
+                Assertions.assertSame(scrollView, placements.mapNotNull { it.first as? YSimpleScrollView }.single())
                 Assertions.assertEquals(scrollOffset, scrollView.scrollOffsetY.value)
+                scrollbarView.scrollOffsetY.value += 0.25
+                Assertions.assertEquals(scrollbarView.scrollOffsetY.value, scrollView.scrollOffsetY.value)
+                Assertions.assertEquals(scrollbarView.scrollOffsetY.value, scrollOffsetY.value)
                 val lines = placements.filter { it.first is MultiLineTextView }
                 Assertions.assertEquals(expected, lines.map { (it.first as MultiLineTextView).text.value.string })
                 if (value == "0,1,3") {
@@ -144,10 +150,12 @@ class TooltipViewerViewWrapperTest {
                 Assertions.assertEquals(IntRectangle((size.x - 254) / 2, 4, 254, size.y - 8), panel.second)
                 val field = placements.single { it.first is TextFieldView }
                 Assertions.assertEquals("1", (field.first as TextFieldView).text.value)
-                val scroll = placements.single { it.first is YScrollView }
-                val scrollView = scroll.first as YScrollView
-                Assertions.assertEquals(IntRectangle((size.x - 240) / 2, 33, 240, size.y - 44), scroll.second)
-                Assertions.assertEquals(5, scrollView.scrollbarThickness)
+                val scroll = placements.single { it.first is YSimpleScrollView }
+                val scrollView = scroll.first as YSimpleScrollView
+                Assertions.assertEquals(IntRectangle((size.x - 240) / 2, 33, 235, size.y - 44), scroll.second)
+                val scrollbar = placements.single { it.first is YScrollbarView }
+                Assertions.assertEquals(IntRectangle((size.x - 240) / 2 + 235, 33, 5, size.y - 44), scrollbar.second)
+                Assertions.assertEquals(5, (scrollbar.first as YScrollbarView).scrollbarThickness)
                 Assertions.assertTrue(scrollView.childView.evaluateActualSizeY() > scroll.second.sizeY)
                 val line = placements.single { it.first is MultiLineTextView }
                 Assertions.assertEquals(205, line.second.sizeX)

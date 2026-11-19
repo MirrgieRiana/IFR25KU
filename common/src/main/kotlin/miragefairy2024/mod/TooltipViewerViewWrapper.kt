@@ -21,9 +21,11 @@ import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
-import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
@@ -140,13 +142,22 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, filter: ObservableVa
                     view += YSpaceView(2)
 
                     // スクロールコンテナなのだ～🌱
-                    view += YScrollView().configure {
+                    view += XListView().configure {
                         position.weight = 1.0
-                        view.scrollOffsetY.value = scrollOffsetY.value
-                        view.scrollOffsetY.register { _, newValue ->
-                            scrollOffsetY.value = newValue
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
+                        val scrollView = YSimpleScrollView().configure {
+                            position.weight = 1.0
+                            view.scrollOffsetY.value = scrollOffsetY.value
+                            view.scrollOffsetY.register { _, newValue ->
+                                scrollOffsetY.value = newValue
+                            }
+                            view += contentView
                         }
-                        view += contentView
+                        view += scrollView
+                        val scrollbarView = YScrollbarView().configure()
+                        view += scrollbarView
+                        connectScrollbar(scrollView.view, scrollbarView.view)
                     }
 
                 }.minContentSizeX(240).margin(panelMargin)
