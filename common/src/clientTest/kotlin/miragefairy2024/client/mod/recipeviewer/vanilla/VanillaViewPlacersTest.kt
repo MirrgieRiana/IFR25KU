@@ -19,11 +19,11 @@ import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.XListView
+import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
-import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EventRegistry
@@ -107,7 +107,7 @@ class VanillaViewPlacersTest {
         scrollContent += BeforeRenderView { calls += "child" }
         val view = AbsoluteView(IntPoint(100, 100))
         view += BeforeRenderView { calls += "root" }
-        view += YSimpleScrollView().also { it += scrollContent }
+        view += YScrollContainerView().also { it += scrollContent }
         view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
         Assertions.assertEquals(100, scrollContent.evaluateContentSizeY())
         val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
@@ -177,10 +177,10 @@ class VanillaViewPlacersTest {
         listOf(false, true).forEach { horizontal ->
             listOf(false, true).forEach { nested ->
                 val slot = Slot(null, 0, 11, 22)
-                val view = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+                val view = if (horizontal) XScrollContainerView() else YScrollContainerView()
                 view += YListView().also { list ->
                     if (nested) {
-                        list += YSimpleScrollView().also {
+                        list += YScrollContainerView().also {
                             it += MenuSlotView(slot)
                         }
                     } else {
@@ -280,7 +280,7 @@ class VanillaViewPlacersTest {
     }
 
     @Test
-    fun `本番の縦横シンプルスクロール登録が子の配置と移動と破棄と解除を中継するのだ`() {
+    fun `本番の縦横スクロールコンテナ登録が子の配置と移動と破棄と解除を中継するのだ`() {
         listOf(false, true).forEach { horizontal ->
             val screenWidgets = mutableListOf<AbstractWidget>()
             val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
@@ -294,12 +294,12 @@ class VanillaViewPlacersTest {
                 override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scroll containers must accept input")
             }
             val leaf = PlacerTestView()
-            val view = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+            val view = if (horizontal) XScrollContainerView() else YScrollContainerView()
             view += leaf
             view.initSizeCalculation(PLACER_RENDERING_PROXY, { 50 }, { 50 })
             val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
-            val widget = screenWidgets.single() as VanillaSimpleScrollViewWidget
-            Assertions.assertEquals(if (horizontal) VanillaXSimpleScrollViewWidget::class.java else VanillaYSimpleScrollViewWidget::class.java, widget.javaClass)
+            val widget = screenWidgets.single() as VanillaScrollContainerViewWidget
+            Assertions.assertEquals(if (horizontal) VanillaXScrollContainerViewWidget::class.java else VanillaYScrollContainerViewWidget::class.java, widget.javaClass)
             val child = widget.children().single() as AbstractWidget
             Assertions.assertEquals(IntPoint(10, 20), IntPoint(child.x, child.y))
             try {
@@ -372,13 +372,13 @@ class VanillaViewPlacersTest {
                         override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Unexpected render-only widget")
                     }
                     val leaf = PlacerTestView()
-                    val scroll = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+                    val scroll = if (horizontal) XScrollContainerView() else YScrollContainerView()
                     val bar = if (horizontal) XScrollbarView() else YScrollbarView()
-                    val scrollOffset = if (horizontal) (scroll as XSimpleScrollView).scrollOffsetX else (scroll as YSimpleScrollView).scrollOffsetY
+                    val scrollOffset = if (horizontal) (scroll as XScrollContainerView).scrollOffsetX else (scroll as YScrollContainerView).scrollOffsetY
                     val barOffset = if (horizontal) (bar as XScrollbarView).scrollOffsetX else (bar as YScrollbarView).scrollOffsetY
                     scrollOffset.value = 25.25
                     scroll += leaf
-                    val connection = if (horizontal) connectScrollbar(scroll as XSimpleScrollView, bar as XScrollbarView) else connectScrollbar(scroll as YSimpleScrollView, bar as YScrollbarView)
+                    val connection = if (horizontal) connectScrollbar(scroll as XScrollContainerView, bar as XScrollbarView) else connectScrollbar(scroll as YScrollContainerView, bar as YScrollbarView)
                     val root = if (overlay) {
                         StackView().also {
                             it.sizingX = Sizing.FILL
@@ -398,7 +398,7 @@ class VanillaViewPlacersTest {
                         listOf(50, 40).forEach { viewportLength ->
                             root.initSizeCalculation(PLACER_RENDERING_PROXY, { if (horizontal || overlay) 50 else 55 }, { if (horizontal && !overlay) viewportLength + 5 else viewportLength })
                             val controller = root.attachTo(context.origin) { view, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds) }
-                            val viewport = widgets.filterIsInstance<VanillaSimpleScrollViewWidget>().single()
+                            val viewport = widgets.filterIsInstance<VanillaScrollContainerViewWidget>().single()
                             val scrollbar = widgets.filterIsInstance<VanillaScrollbarViewWidget>().single()
                             val child = viewport.children().single() as AbstractWidget
                             try {
@@ -459,16 +459,16 @@ class VanillaViewPlacersTest {
                 }
                 val leaf = PlacerTestView()
                 val content = DynamicView(leaf)
-                val scroll = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+                val scroll = if (horizontal) XScrollContainerView() else YScrollContainerView()
                 val bar = if (horizontal) XScrollbarView() else YScrollbarView()
-                val scrollOffset = if (horizontal) (scroll as XSimpleScrollView).scrollOffsetX else (scroll as YSimpleScrollView).scrollOffsetY
+                val scrollOffset = if (horizontal) (scroll as XScrollContainerView).scrollOffsetX else (scroll as YScrollContainerView).scrollOffsetY
                 val barOffset = if (horizontal) (bar as XScrollbarView).scrollOffsetX else (bar as YScrollbarView).scrollOffsetY
                 scroll += content
                 scrollOffset.value = 75.25
-                val connection = if (horizontal) connectScrollbar(scroll as XSimpleScrollView, bar as XScrollbarView) else connectScrollbar(scroll as YSimpleScrollView, bar as YScrollbarView)
+                val connection = if (horizontal) connectScrollbar(scroll as XScrollContainerView, bar as XScrollbarView) else connectScrollbar(scroll as YScrollContainerView, bar as YScrollbarView)
                 scroll.initSizeCalculation(PLACER_RENDERING_PROXY, { 50 }, { 50 })
                 val controller = scroll.attachTo(context.origin) { view, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds) }
-                val widget = widgets.single() as VanillaSimpleScrollViewWidget
+                val widget = widgets.single() as VanillaScrollContainerViewWidget
                 try {
                     Assertions.assertEquals(100, bar.contentLength)
                     content.content.value = SpaceView(IntPoint(25, 25))
