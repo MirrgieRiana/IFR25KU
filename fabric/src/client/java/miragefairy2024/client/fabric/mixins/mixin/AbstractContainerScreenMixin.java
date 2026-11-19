@@ -16,7 +16,7 @@ public class AbstractContainerScreenMixin implements SlotHighlightRenderer {
         method = "render",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;III)V")
     )
-    private void renderSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffset, Operation<Void> original, @Local(name = "slot") Slot slot) {
+    private void renderSlotHighlight(GuiGraphics guiGraphics, int x, int y, int blitOffset, Operation<Void> original, @Local Slot slot) {
         mirageFairy2024$renderSlotHighlight(guiGraphics, slot, () -> original.call(guiGraphics, x, y, blitOffset));
     }
 }
