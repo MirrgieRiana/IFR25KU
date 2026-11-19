@@ -128,7 +128,7 @@ abstract class VanillaSimpleScrollViewWidget(
         }
     }
 
-    private fun updateScrollBounds() {
+    fun updateScrollBounds() {
         if (!disposed) view.scrollBounds.value = ScrollBounds(evaluateContentLength() atLeast 0, viewportLength atLeast 0)
     }
 

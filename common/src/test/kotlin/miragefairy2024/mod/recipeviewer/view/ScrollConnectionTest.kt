@@ -3,6 +3,8 @@ package miragefairy2024.mod.recipeviewer.view
 import miragefairy2024.mod.recipeviewer.views.ScrollBounds
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.util.register
 import org.junit.jupiter.api.Assertions
@@ -224,6 +226,58 @@ class ScrollConnectionTest {
             } finally {
                 connection.remove()
                 listener.remove()
+            }
+        }
+    }
+
+    @Test
+    fun `バーの通知中に表示領域の範囲が変わっても最新の状態まで同期するのだ`() {
+        val scroll = XSimpleScrollView()
+        val bar = XScrollbarView()
+        scroll.scrollBounds.value = ScrollBounds(300, 100)
+        scroll.scrollOffsetX.value = 80.0
+        val listener = bar.scrollOffsetX.register { _, _ ->
+            if (scroll.scrollBounds.value.contentLength == 300) {
+                scroll.scrollBounds.value = ScrollBounds(600, 100)
+                scroll.scrollOffsetX.value = 400.0
+            }
+        }
+        val connection = connectScrollbar(scroll, bar)
+        try {
+            Assertions.assertEquals(600, bar.contentLength)
+            Assertions.assertEquals(100, bar.viewportLength)
+            Assertions.assertEquals(400.0, bar.scrollOffsetX.value)
+            scroll.scrollOffsetX.value = 80.0
+            scroll.scrollBounds.value = ScrollBounds(300, 100)
+            Assertions.assertEquals(300, bar.contentLength)
+            Assertions.assertEquals(80.0, bar.scrollOffsetX.value)
+        } finally {
+            connection.remove()
+            listener.remove()
+        }
+        Assertions.assertTrue(scroll.scrollBounds.toList().isEmpty())
+        Assertions.assertTrue(scroll.scrollOffsetX.toList().isEmpty())
+        Assertions.assertTrue(bar.scrollOffsetX.toList().isEmpty())
+    }
+
+    @Test
+    fun `縦横の View を接続して寸法と指定位置を同期するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val scroll = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+            val bar = if (horizontal) XScrollbarView() else YScrollbarView()
+            val source = if (horizontal) (scroll as XSimpleScrollView).scrollOffsetX else (scroll as YSimpleScrollView).scrollOffsetY
+            val target = if (horizontal) (bar as XScrollbarView).scrollOffsetX else (bar as YScrollbarView).scrollOffsetY
+            scroll.scrollBounds.value = ScrollBounds(300, 100)
+            source.value = 80.25
+            val connection = if (horizontal) connectScrollbar(scroll as XSimpleScrollView, bar as XScrollbarView) else connectScrollbar(scroll as YSimpleScrollView, bar as YScrollbarView)
+            try {
+                Assertions.assertEquals(300, bar.contentLength)
+                Assertions.assertEquals(100, bar.viewportLength)
+                Assertions.assertEquals(80.25, target.value)
+                target.value = 120.5
+                Assertions.assertEquals(120.5, source.value)
+            } finally {
+                connection.remove()
             }
         }
     }
