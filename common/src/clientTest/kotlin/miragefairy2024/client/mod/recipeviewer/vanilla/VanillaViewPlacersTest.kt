@@ -44,6 +44,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.lwjgl.glfw.GLFW
 import org.mockito.Mockito
 
 private class PlacerTestView : FixedWidgetView(IntPoint(100, 100)) {
@@ -390,7 +391,7 @@ class VanillaViewPlacersTest {
     }
 
     @Test
-    fun `本番のバニラスクロールバー登録が単体の配置と移動と破棄と解除を中継するのだ`() {
+    fun `本番のバニラスクロールバー登録が配置と解除を中継し再配置で位置を保持するのだ`() {
         listOf(false, true).forEach { horizontal ->
             val widgets = mutableListOf<AbstractWidget>()
             val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
@@ -411,11 +412,13 @@ class VanillaViewPlacersTest {
             val widget = widgets.single() as VanillaVanillaScrollbarViewWidget
             try {
                 Assertions.assertEquals(if (horizontal) VanillaXVanillaScrollbarViewWidget::class.java else VanillaYVanillaScrollbarViewWidget::class.java, widget.javaClass)
-                Assertions.assertEquals(if (horizontal) IntPoint(100, 5) else IntPoint(5, 100), IntPoint(widget.width, widget.height))
+                Assertions.assertEquals(if (horizontal) IntPoint(100, 6) else IntPoint(6, 100), IntPoint(widget.width, widget.height))
                 controller.setOffset(IntPoint(40, 60))
                 Assertions.assertEquals(IntPoint(40, 60), IntPoint(widget.x, widget.y))
                 Assertions.assertTrue(widget.mouseClicked(42.0, 62.0, 0))
                 Assertions.assertTrue(widget.hasMouseCapture(0))
+                widget.isFocused = true
+                Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
             } finally {
                 controller.dispose()
                 controller.detach()
@@ -423,6 +426,18 @@ class VanillaViewPlacersTest {
             Assertions.assertFalse(widget.isActive)
             Assertions.assertFalse(widget.hasMouseCapture(0))
             Assertions.assertTrue(widgets.isEmpty())
+
+            view.initSizeCalculation(PLACER_RENDERING_PROXY, { 120 }, { 120 })
+            val newController = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+            val newWidget = widgets.single() as VanillaVanillaScrollbarViewWidget
+            try {
+                newWidget.isFocused = true
+                Assertions.assertFalse(newWidget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+                Assertions.assertTrue(newWidget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
+            } finally {
+                newController.dispose()
+                newController.detach()
+            }
         }
     }
 

@@ -1,10 +1,15 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.math.Axis
+import miragefairy2024.client.util.stack
 import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.VanillaScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XVanillaScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YVanillaScrollbarView
+import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.empty
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
@@ -16,11 +21,16 @@ import net.minecraft.client.gui.narration.NarratableEntry
 import net.minecraft.client.gui.narration.NarratedElementType
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
+import net.minecraft.resources.ResourceLocation
 import org.lwjgl.glfw.GLFW
 import kotlin.math.roundToInt
 
+private val SCROLLER_BACKGROUND_SPRITE: ResourceLocation = ResourceLocation.withDefaultNamespace("widget/scroller_background")
+private val SCROLLER_SPRITE: ResourceLocation = ResourceLocation.withDefaultNamespace("widget/scroller")
+
 abstract class VanillaVanillaScrollbarViewWidget(
     protected val view: VanillaScrollbarView,
+    private val scrollOffsetValue: ObservableValue<Double>,
     bounds: IntRectangle,
 ) :
     AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }), MouseCaptureContainer {
@@ -43,12 +53,10 @@ abstract class VanillaVanillaScrollbarViewWidget(
     protected abstract val scrollbarThickness: Int
     protected abstract fun evaluateContentLength(): Int
 
-    private var scrollOffset = 0.0
-
     // 範囲が狭まっても、現在の位置から操作できるようにするのだ～🌱
     private fun evaluateScrollRange(): ClosedFloatingPointRange<Double> {
         val normalMaxScrollOffset = (evaluateContentLength() - view.viewportLength atLeast 0).toDouble()
-        return minOf(0.0, scrollOffset)..maxOf(normalMaxScrollOffset, scrollOffset)
+        return minOf(0.0, scrollOffsetValue.value)..maxOf(normalMaxScrollOffset, scrollOffsetValue.value)
     }
 
     private fun evaluateThumbLength(): Int {
@@ -68,17 +76,16 @@ abstract class VanillaVanillaScrollbarViewWidget(
             0.0
         } else {
             val maxThumbPosition = scrollbarLength - evaluateThumbLength()
-            val scrollRatio = (scrollOffset - range.start) / (range.endInclusive - range.start)
+            val scrollRatio = (scrollOffsetValue.value - range.start) / (range.endInclusive - range.start)
             maxThumbPosition.toDouble() * scrollRatio
         }
     }
 
     private fun updateScroll(offset: Double): Boolean {
-        val old = scrollOffset
+        val old = scrollOffsetValue.value
         val range = evaluateScrollRange()
-        scrollOffset = offset.coerceIn(range.start, range.endInclusive)
-        if (scrollOffset == old) return false
-        return true
+        scrollOffsetValue.value = offset.coerceIn(range.start, range.endInclusive)
+        return scrollOffsetValue.value != old
     }
 
 
@@ -92,14 +99,22 @@ abstract class VanillaVanillaScrollbarViewWidget(
 
     protected abstract fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int)
 
+    protected fun renderVerticalScrollbar(guiGraphics: GuiGraphics, x: Int, y: Int, start: Int, length: Int) {
+        guiGraphics.blitSprite(SCROLLER_BACKGROUND_SPRITE, x, y, scrollbarThickness, scrollbarLength)
+        guiGraphics.blitSprite(SCROLLER_SPRITE, x, y + start, scrollbarThickness, length)
+    }
+
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-
-        // スクロールバーの描画なのだ～🌱
         val range = evaluateScrollRange()
-        if (range.start < range.endInclusive && scrollbarThickness > 0 && evaluateThumbLength() > 0) {
-            renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), evaluateThumbLength())
+        if (range.start == range.endInclusive || scrollbarThickness <= 0) return
+        val thumbLength = evaluateThumbLength()
+        if (thumbLength == 0) return
+        RenderSystem.enableBlend()
+        try {
+            renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), thumbLength)
+        } finally {
+            RenderSystem.disableBlend()
         }
-
     }
 
     protected abstract fun getMousePosition(mouseX: Double, mouseY: Double): Double
@@ -141,7 +156,7 @@ abstract class VanillaVanillaScrollbarViewWidget(
             if (remainingThumbLength > 0) {
                 val range = evaluateScrollRange()
                 val scrollDelta = getDragAmount(dragX, dragY) * (range.endInclusive - range.start) / remainingThumbLength
-                updateScroll(scrollOffset + scrollDelta)
+                updateScroll(scrollOffsetValue.value + scrollDelta)
             }
             return true
         }
@@ -158,7 +173,7 @@ abstract class VanillaVanillaScrollbarViewWidget(
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (!isMouseOver(mouseX, mouseY)) return false
-        return updateScroll(scrollOffset - getScrollAmount(scrollX, scrollY) * view.scrollStep)
+        return updateScroll(scrollOffsetValue.value - getScrollAmount(scrollX, scrollY) * view.scrollStep)
     }
 
 
@@ -201,10 +216,10 @@ abstract class VanillaVanillaScrollbarViewWidget(
         if (!isActive) return false
         if (!isFocused) return false
         val offset = when (keyCode) {
-            backwardKey -> scrollOffset - view.scrollStep
-            forwardKey -> scrollOffset + view.scrollStep
-            GLFW.GLFW_KEY_PAGE_UP -> scrollOffset - view.viewportLength * 0.8
-            GLFW.GLFW_KEY_PAGE_DOWN -> scrollOffset + view.viewportLength * 0.8
+            backwardKey -> scrollOffsetValue.value - view.scrollStep
+            forwardKey -> scrollOffsetValue.value + view.scrollStep
+            GLFW.GLFW_KEY_PAGE_UP -> scrollOffsetValue.value - view.viewportLength * 0.8
+            GLFW.GLFW_KEY_PAGE_DOWN -> scrollOffsetValue.value + view.viewportLength * 0.8
             GLFW.GLFW_KEY_HOME -> evaluateScrollRange().start
             GLFW.GLFW_KEY_END -> evaluateScrollRange().endInclusive
             else -> return false
@@ -235,6 +250,7 @@ class VanillaXVanillaScrollbarViewWidget(
     bounds: IntRectangle,
 ) : VanillaVanillaScrollbarViewWidget(
     view,
+    view.scrollOffsetX,
     bounds,
 ) {
 
@@ -258,13 +274,12 @@ class VanillaXVanillaScrollbarViewWidget(
 
     // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
     override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
-        guiGraphics.fill(
-            x + start,
-            y,
-            x + start + length,
-            y + height,
-            view.scrollbarColor,
-        )
+        val pose: PoseStack = guiGraphics.pose()
+        pose.stack {
+            pose.translate(x.toFloat(), (y + height).toFloat(), 0F)
+            pose.mulPose(Axis.ZN.rotationDegrees(90F))
+            renderVerticalScrollbar(guiGraphics, 0, 0, start, length)
+        }
     }
 
 }
@@ -274,6 +289,7 @@ class VanillaYVanillaScrollbarViewWidget(
     bounds: IntRectangle,
 ) : VanillaVanillaScrollbarViewWidget(
     view,
+    view.scrollOffsetY,
     bounds,
 ) {
 
@@ -295,13 +311,7 @@ class VanillaYVanillaScrollbarViewWidget(
 
     // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
     override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
-        guiGraphics.fill(
-            x,
-            y + start,
-            x + width,
-            y + start + length,
-            view.scrollbarColor,
-        )
+        renderVerticalScrollbar(guiGraphics, x, y, start, length)
     }
 
 }
