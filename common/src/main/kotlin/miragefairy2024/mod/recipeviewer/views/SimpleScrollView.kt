@@ -38,7 +38,6 @@ abstract class SimpleScrollView : WrapperView(), PlaceableView {
 
     val scrollBounds = ObservableValue(ScrollBounds(0, 0))
 
-    internal val standaloneScrollOffset = ObservableValue(0.0)
     val connectedScrollOffset = ObservableValue<ObservableValue<Double>?>(null)
 
     protected abstract fun evaluateContentLength(): Int
@@ -54,7 +53,7 @@ abstract class SimpleScrollView : WrapperView(), PlaceableView {
 /** 子 View を X 軸方向へスクロールするのだ～🌱 */
 class XSimpleScrollView : SimpleScrollView() {
 
-    val scrollOffsetX = standaloneScrollOffset
+    val scrollOffsetX = ObservableValue(0.0)
 
     override fun evaluateContentSizeXImpl() = 0
     override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY()
@@ -70,7 +69,7 @@ class XSimpleScrollView : SimpleScrollView() {
 /** 子 View を Y 軸方向へスクロールするのだ～🌱 */
 class YSimpleScrollView : SimpleScrollView() {
 
-    val scrollOffsetY = standaloneScrollOffset
+    val scrollOffsetY = ObservableValue(0.0)
 
     override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX()
     override fun evaluateContentSizeYImpl() = 0
@@ -91,7 +90,17 @@ fun connectScrollbar(scrollView: SimpleScrollView, scrollbarView: ScrollbarView)
     check(scrollView.connectedScrollOffset.value == null) { "The scroll view is already connected" }
     check(scrollbarView.connectedScrollOffset.value == null) { "The scrollbar is already connected" }
 
-    val sharedOffset = ObservableValue(scrollView.standaloneScrollOffset.value)
+    val scrollViewOffset = when (scrollView) {
+        is XSimpleScrollView -> scrollView.scrollOffsetX
+        is YSimpleScrollView -> scrollView.scrollOffsetY
+        else -> throw IllegalArgumentException("Unsupported view: $scrollView")
+    }
+    val scrollbarViewOffset = when (scrollbarView) {
+        is XScrollbarView -> scrollbarView.scrollOffsetX
+        is YScrollbarView -> scrollbarView.scrollOffsetY
+        else -> throw IllegalArgumentException("Unsupported view: $scrollbarView")
+    }
+    val sharedOffset = ObservableValue(scrollViewOffset.value)
 
     fun updateBounds(bounds: ScrollBounds) {
         scrollbarView.contentLength = bounds.contentLength
@@ -113,9 +122,9 @@ fun connectScrollbar(scrollView: SimpleScrollView, scrollbarView: ScrollbarView)
         }
 
         try {
-            releaseOffset(scrollView.connectedScrollOffset, scrollView.standaloneScrollOffset)
+            releaseOffset(scrollView.connectedScrollOffset, scrollViewOffset)
         } finally {
-            releaseOffset(scrollbarView.connectedScrollOffset, scrollbarView.standaloneScrollOffset)
+            releaseOffset(scrollbarView.connectedScrollOffset, scrollbarViewOffset)
         }
     }
 
