@@ -84,7 +84,7 @@ class ObservableValue<T>(defaultValue: T) : EventRegistry<(T, T) -> Unit>() {
                                     listenerStateTable[listener] = ListenerState(old2, oldRevision2)
                                     listener(listenerState.value, old2)
 
-                                    if (revision != oldRevision2) return@next // 通知中に値が代入されたため、イベントの配布を
+                                    if (revision != oldRevision2) return@next // 通知中に値が代入されたためイベントの配布をやり直す
                                 }
 
                                 // リビジョンが更新されなかったので無事通知完了
