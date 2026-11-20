@@ -16,7 +16,7 @@ class VanillaScrollbarViewWidgetTest {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
                 val view = if (horizontal) XScrollbarView() else YScrollbarView()
-                val scrollOffsetValue = if (horizontal) (view as XScrollbarView).scrollOffsetX else (view as YScrollbarView).scrollOffsetY
+                val scrollOffsetValue = view.scrollOffset
                 view.contentLength = 300
                 view.viewportLength = 100
                 val bounds = if (horizontal) IntRectangle(10, 200, 100, 5) else IntRectangle(200, 20, 5, 100)
@@ -271,7 +271,7 @@ class VanillaScrollbarViewWidgetTest {
             Assertions.assertFalse(widget.mouseClicked(50.0, 50.0, 0))
             Assertions.assertFalse(widget.mouseClicked(202.0, 25.0, 1))
             Assertions.assertTrue(widget.mouseClicked(202.0, 110.0, 0))
-            Assertions.assertEquals(200.0, view.scrollOffsetY.value)
+            Assertions.assertEquals(200.0, view.scrollOffset.value)
             widget.render(environment.graphics, 202, 25, 0.0F)
             Assertions.assertEquals(IntRectangle(200, 87, 5, 33), environment.fills.last())
             Assertions.assertTrue(widget.mouseReleased(202.0, 110.0, 0))
@@ -279,11 +279,11 @@ class VanillaScrollbarViewWidgetTest {
             widget.isFocused = true
             Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
             Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_DOWN, 0, 0))
-            Assertions.assertEquals(15.0, view.scrollOffsetY.value)
+            Assertions.assertEquals(15.0, view.scrollOffset.value)
             widget.render(environment.graphics, 202, 25, 0.0F)
             Assertions.assertEquals(IntRectangle(200, 25, 5, 33), environment.fills.last())
             Assertions.assertTrue(widget.mouseScrolled(202.0, 25.0, 0.0, -1.0))
-            Assertions.assertEquals(30.0, view.scrollOffsetY.value)
+            Assertions.assertEquals(30.0, view.scrollOffset.value)
             widget.render(environment.graphics, 202, 25, 0.0F)
             Assertions.assertEquals(IntRectangle(200, 30, 5, 33), environment.fills.last())
             Assertions.assertTrue(widget.mouseClicked(202.0, 40.0, 0))
