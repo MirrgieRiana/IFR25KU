@@ -116,10 +116,10 @@ class TraitEncyclopediaPageViewWrapperTest {
         val scrollbarView = scrollbar.first as YScrollbarView
         Assertions.assertEquals(5, scrollbarView.scrollbarThickness)
         Assertions.assertEquals(0xA0FFFFFF.toInt(), scrollbarView.scrollbarColor)
-        scrollbarView.scrollOffsetY.value = 125.5
+        scrollbarView.scrollOffset.value = 125.5
         Assertions.assertEquals(125.5, scrollView.scrollOffsetY.value)
         scrollView.scrollOffsetY.value = 250.25
-        Assertions.assertEquals(250.25, scrollbarView.scrollOffsetY.value)
+        Assertions.assertEquals(250.25, scrollbarView.scrollOffset.value)
         val texts = placements.filter { it.first is MultiLineTextView }
         Assertions.assertEquals(listOf(trait.getName().style(trait.style), trait.text), texts.map { (it.first as MultiLineTextView).text.value })
         Assertions.assertEquals(listOf(Alignment.CENTER, Alignment.START), texts.map { (it.first as MultiLineTextView).alignmentX })

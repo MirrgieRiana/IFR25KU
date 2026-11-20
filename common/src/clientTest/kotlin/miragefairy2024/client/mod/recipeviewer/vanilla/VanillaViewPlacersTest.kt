@@ -375,7 +375,7 @@ class VanillaViewPlacersTest {
                     val scroll = if (horizontal) XScrollContainerView() else YScrollContainerView()
                     val bar = if (horizontal) XScrollbarView() else YScrollbarView()
                     val scrollOffset = if (horizontal) (scroll as XScrollContainerView).scrollOffsetX else (scroll as YScrollContainerView).scrollOffsetY
-                    val barOffset = if (horizontal) (bar as XScrollbarView).scrollOffsetX else (bar as YScrollbarView).scrollOffsetY
+                    val barOffset = bar.scrollOffset
                     scrollOffset.value = 25.25
                     scroll += leaf
                     val connection = if (horizontal) connectScrollbar(scroll as XScrollContainerView, bar as XScrollbarView) else connectScrollbar(scroll as YScrollContainerView, bar as YScrollbarView)
@@ -462,7 +462,7 @@ class VanillaViewPlacersTest {
                 val scroll = if (horizontal) XScrollContainerView() else YScrollContainerView()
                 val bar = if (horizontal) XScrollbarView() else YScrollbarView()
                 val scrollOffset = if (horizontal) (scroll as XScrollContainerView).scrollOffsetX else (scroll as YScrollContainerView).scrollOffsetY
-                val barOffset = if (horizontal) (bar as XScrollbarView).scrollOffsetX else (bar as YScrollbarView).scrollOffsetY
+                val barOffset = bar.scrollOffset
                 scroll += content
                 scrollOffset.value = 75.25
                 val connection = if (horizontal) connectScrollbar(scroll as XScrollContainerView, bar as XScrollbarView) else connectScrollbar(scroll as YScrollContainerView, bar as YScrollbarView)

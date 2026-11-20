@@ -15,6 +15,8 @@ abstract class AbstractScrollbarView(initialScrollbarThickness: Int) : AbstractV
         require(initialScrollbarThickness >= 0) { "Scrollbar thickness must be non-negative" }
     }
 
+    val scrollOffset = ObservableValue(0.0)
+
     var contentLength = 0
         set(value) {
             if (value < 0) throw IllegalArgumentException("Content length must be non-negative")
@@ -49,8 +51,6 @@ class XScrollbarView : ScrollbarView() {
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.WRAP
 
-    val scrollOffsetX = ObservableValue(0.0)
-
     override fun evaluateContentSizeXImpl() = 0
     override fun evaluateContentSizeYImpl() = scrollbarThickness
 
@@ -60,8 +60,6 @@ class YScrollbarView : ScrollbarView() {
 
     override var sizingX = Sizing.WRAP
     override var sizingY = Sizing.FILL
-
-    val scrollOffsetY = ObservableValue(0.0)
 
     override fun evaluateContentSizeXImpl() = scrollbarThickness
     override fun evaluateContentSizeYImpl() = 0
