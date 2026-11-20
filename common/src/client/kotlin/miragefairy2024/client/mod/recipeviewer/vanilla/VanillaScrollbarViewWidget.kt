@@ -233,7 +233,7 @@ class VanillaXScrollbarViewWidget(
     bounds: IntRectangle,
 ) : VanillaScrollbarViewWidget(
     view,
-    view.scrollOffsetX,
+    view.scrollOffset,
     bounds,
 ) {
 
@@ -272,7 +272,7 @@ class VanillaYScrollbarViewWidget(
     bounds: IntRectangle,
 ) : VanillaScrollbarViewWidget(
     view,
-    view.scrollOffsetY,
+    view.scrollOffset,
     bounds,
 ) {
 

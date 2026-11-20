@@ -86,7 +86,7 @@ class YScrollContainerView : ScrollContainerView() {
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
 fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: XScrollbarView): Remover {
-    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetX, scrollbarView.scrollOffsetX)
+    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetX, scrollbarView.scrollOffset)
 }
 
 /**
@@ -94,7 +94,7 @@ fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: XScrollbar
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
 fun connectScrollbar(scrollView: YScrollContainerView, scrollbarView: YScrollbarView): Remover {
-    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetY, scrollbarView.scrollOffsetY)
+    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetY, scrollbarView.scrollOffset)
 }
 
 private fun connectScrollbarImpl(
