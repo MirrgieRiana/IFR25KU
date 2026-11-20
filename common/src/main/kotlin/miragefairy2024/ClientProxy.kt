@@ -77,8 +77,15 @@ interface RenderingProxyBlockEntity {
 }
 
 class MessageViewScreenDefinition(val title: Component, val rootViewFactory: () -> View) {
+
+    /** false にすると、設定画面の背景になるのだ～🌱 */
     var transparentBackground = true
+
     var closeOnInventoryKey = true
+
     var additionalCloseKey: KeyMappingType? = null
+
+    /** 実際には GUI 枠の中でも、クリックが消化されなければ閉じられるのだ～🌱 */
     var closeOnOutsideClick = true
+
 }
