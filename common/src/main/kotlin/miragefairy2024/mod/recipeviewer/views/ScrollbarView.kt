@@ -9,7 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.ObservableValue
 
 /** スクロール位置をコンテンツ座標で保持し、再配置時にも引き継ぐバーなのだ～🌱 */
-abstract class ScrollbarView : AbstractView(), PlaceableView {
+abstract class AbstractScrollbarView : AbstractView(), PlaceableView {
 
     var contentLength = 0
         set(value) {
@@ -36,6 +36,8 @@ abstract class ScrollbarView : AbstractView(), PlaceableView {
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 
 }
+
+abstract class ScrollbarView : AbstractScrollbarView()
 
 class XScrollbarView : ScrollbarView() {
 
