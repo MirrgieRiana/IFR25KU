@@ -6,6 +6,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.common.KeyMappingType
 import miragefairy2024.mod.common.SlotType
+import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.views.AlignView
@@ -119,6 +120,8 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, tooltipProvider: (It
         val contentView = DynamicView(createContentView(""))
 
         view += AlignView().configure {
+            view.alignmentX = Alignment.CENTER
+
             // 外枠
             view += StackView().configure {
                 view.sizingY = Sizing.FILL
@@ -153,7 +156,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, tooltipProvider: (It
 
                         textField.view.text.register { _, newValue ->
                             contentView.content.value = createContentView(newValue)
-                            scrollView.clampScrollOffset()
+                            scrollView.view.clampScrollOffset()
                         }
                     }
 
