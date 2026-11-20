@@ -1,5 +1,6 @@
 package miragefairy2024.mod.recipeviewer.view
 
+import miragefairy2024.mod.recipeviewer.views.AbstractScrollbarView
 import miragefairy2024.mod.recipeviewer.views.AbstractView
 import miragefairy2024.mod.recipeviewer.views.ScrollBounds
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
@@ -102,6 +103,19 @@ class ScrollContainerViewTest {
             Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollbarThickness = -1 }
             Assertions.assertThrows(IllegalArgumentException::class.java) { view.scrollStep = 0 }
         }
+    }
+
+    @Test
+    fun `バーの初期の太さは 0 以上を要求するのだ`() {
+        fun createScrollbar(thickness: Int) = object : AbstractScrollbarView(thickness) {
+            override val sizingX = Sizing.FILL
+            override val sizingY = Sizing.WRAP
+            override fun evaluateContentSizeXImpl() = 0
+            override fun evaluateContentSizeYImpl() = scrollbarThickness
+        }
+
+        Assertions.assertThrows(IllegalArgumentException::class.java) { createScrollbar(-1) }
+        Assertions.assertEquals(0, createScrollbar(0).scrollbarThickness)
     }
 
     @Test
