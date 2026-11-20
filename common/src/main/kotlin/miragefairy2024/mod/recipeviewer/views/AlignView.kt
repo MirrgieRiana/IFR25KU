@@ -21,7 +21,7 @@ class AlignView : WrapperView() {
             Alignment.CENTER -> (evaluateActualSizeX() - childView.evaluateActualSizeX()) / 2
             Alignment.END -> evaluateActualSizeX() - childView.evaluateActualSizeX()
         }
-        val relativeOffsetY when (alignmentY) {
+        val relativeOffsetY = when (alignmentY) {
             Alignment.START -> 0
             Alignment.CENTER -> (evaluateActualSizeY() - childView.evaluateActualSizeY()) / 2
             Alignment.END -> evaluateActualSizeY() - childView.evaluateActualSizeY()
