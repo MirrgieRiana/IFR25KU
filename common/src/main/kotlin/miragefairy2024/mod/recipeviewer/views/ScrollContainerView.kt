@@ -86,7 +86,7 @@ class YScrollContainerView : ScrollContainerView() {
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
 fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: XScrollbarView): Remover {
-    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetX, scrollbarView.scrollOffset)
+    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetX)
 }
 
 /**
@@ -94,17 +94,16 @@ fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: XScrollbar
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
 fun connectScrollbar(scrollView: YScrollContainerView, scrollbarView: YScrollbarView): Remover {
-    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetY, scrollbarView.scrollOffset)
+    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetY)
 }
 
 private fun connectScrollbarImpl(
     scrollView: ScrollContainerView,
     scrollbarView: ScrollbarView,
     scrollViewOffset: ObservableValue<Double>,
-    scrollbarViewOffset: ObservableValue<Double>,
 ): Remover {
     val initialScrollViewOffset = scrollViewOffset.value
-    val initialScrollbarViewOffset = scrollbarViewOffset.value
+    val initialScrollbarViewOffset = scrollbarView.scrollOffset.value
     var remover = Remover.NONE
     val sharedOffset = ObservableValue(initialScrollViewOffset)
 
@@ -125,13 +124,13 @@ private fun connectScrollbarImpl(
         }
     }
     connectOffset(scrollViewOffset)
-    connectOffset(scrollbarViewOffset)
+    connectOffset(scrollbarView.scrollOffset)
 
     try {
         scrollbarView.contentLength = scrollView.scrollBounds.value.contentLength
         scrollbarView.viewportLength = scrollView.scrollBounds.value.viewportLength
         scrollViewOffset.value = sharedOffset.value
-        scrollbarViewOffset.value = sharedOffset.value
+        scrollbarView.scrollOffset.value = sharedOffset.value
     } catch (e: Throwable) {
         remover.remove()
 
@@ -144,7 +143,7 @@ private fun connectScrollbarImpl(
         }
 
         restoreOffset(scrollViewOffset, initialScrollViewOffset)
-        restoreOffset(scrollbarViewOffset, initialScrollbarViewOffset)
+        restoreOffset(scrollbarView.scrollOffset, initialScrollbarViewOffset)
         throw e
     }
     return remover
