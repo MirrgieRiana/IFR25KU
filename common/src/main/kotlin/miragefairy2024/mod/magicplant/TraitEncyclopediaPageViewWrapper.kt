@@ -35,8 +35,6 @@ import miragefairy2024.util.register
 import miragefairy2024.util.style
 import miragefairy2024.util.text
 import net.minecraft.network.chat.CommonComponents
-import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
 
 context(ModContext)
 fun initTraitEncyclopediaPageScreen() {
