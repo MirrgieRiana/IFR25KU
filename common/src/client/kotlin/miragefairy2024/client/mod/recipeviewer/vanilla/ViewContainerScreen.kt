@@ -3,6 +3,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
@@ -12,9 +13,12 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
+import net.minecraft.world.inventory.Slot
 
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
 class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
+
+    private val menuSlotPlacementRegistry = MenuSlotPlacementRegistry()
 
     private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
 
@@ -34,7 +38,10 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
             this@ViewContainerScreen.imageHeight = uiSize.y
         }
 
-        override fun init() = super@ViewContainerScreen.init()
+        override fun init() {
+            menuSlotPlacementRegistry.clear()
+            super@ViewContainerScreen.init()
+        }
 
         override fun <T> addWidget(widget: T): Remover where T : GuiEventListener, T : NarratableEntry {
             this@ViewContainerScreen.addWidget(widget)
@@ -51,12 +58,15 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
             return Remover { this@ViewContainerScreen.removeWidget(widget) }
         }
 
+        override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = menuSlotPlacementRegistry.register(slot, clipBounds)
+
     })
 
     override fun init() = viewAdapter.init()
 
     override fun removed() {
         viewAdapter.removed()
+        menuSlotPlacementRegistry.clear()
         super.removed()
     }
 

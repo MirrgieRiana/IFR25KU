@@ -26,6 +26,7 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
+import net.minecraft.world.inventory.Slot
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -308,6 +309,38 @@ class ViewAdapterTest {
         adapter.removed()
         assertEquals(2, disposals)
         assertThrows(IllegalStateException::class.java) { adapter.setOffset(IntPoint.ZERO) }
+    }
+
+    @Test
+    fun `配置コンテキストからホストへ Slot と矩形取得関数をそのまま渡すのだ`() {
+        val contexts = mutableListOf<VanillaViewPlacerContext>()
+        val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+        registry.register(TestView::class.java) { context, _, _ ->
+            contexts += context
+            object : ViewController {
+                override fun setOffset(offset: IntPoint) = Unit
+                override fun detach() = Unit
+            }
+        }
+        val host: ViewAdapterHost = Mockito.mock(ViewAdapterHost::class.java)
+        Mockito.`when`(host.getRenderingProxy()).thenReturn(ADAPTER_RENDERING_PROXY)
+        Mockito.`when`(host.getViewPlacerRegistry()).thenReturn(registry)
+        Mockito.`when`(host.createRootView()).thenReturn(TestView(false))
+        Mockito.`when`(host.getUiOffset()).thenReturn(IntPoint.ZERO)
+        Mockito.`when`(host.canPlaceMenuSlots()).thenReturn(true)
+        val slot: Slot = Slot(null, 0, 0, 0)
+        val clipBounds = { IntRectangle(10, 20, 30, 40) }
+        val remover = Remover { }
+        Mockito.`when`(host.registerMenuSlot(slot, clipBounds)).thenReturn(remover)
+        val adapter = ViewAdapter(host)
+        adapter.init()
+        try {
+            Assertions.assertTrue(contexts.single().canPlaceMenuSlots)
+            Assertions.assertSame(remover, contexts.single().registerMenuSlot(slot, clipBounds))
+            Mockito.verify(host).registerMenuSlot(slot, clipBounds)
+        } finally {
+            adapter.removed()
+        }
     }
 
     @Test
