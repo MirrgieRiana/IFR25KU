@@ -19,10 +19,8 @@ import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
-import miragefairy2024.mod.recipeviewer.views.XVanillaScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YVanillaScrollbarView
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
 import miragefairy2024.util.observeAndInitialize
@@ -88,7 +86,7 @@ fun initVanillaViewPlacers() {
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollContainerView, bounds ->
         placeScrollContainerView(context, VanillaYScrollContainerViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
     }
-    fun placeScrollbarView(context: VanillaViewPlacerContext, widget: AbstractVanillaScrollbarViewWidget): ViewController {
+    fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget): ViewController {
         val controller = context place widget
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
@@ -110,12 +108,6 @@ fun initVanillaViewPlacers() {
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollbarView, bounds ->
         placeScrollbarView(context, VanillaYScrollbarViewWidget(view, bounds))
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XVanillaScrollbarView, bounds ->
-        placeScrollbarView(context, VanillaXVanillaScrollbarViewWidget(view, bounds))
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YVanillaScrollbarView, bounds ->
-        placeScrollbarView(context, VanillaYVanillaScrollbarViewWidget(view, bounds))
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
         if (!context.canPlaceMenuSlots) throw UnsupportedOperationException("MenuSlotView cannot be placed in this context")
