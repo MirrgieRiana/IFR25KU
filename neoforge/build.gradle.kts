@@ -53,9 +53,11 @@ repositories {
             includeGroup("org.sinytra.forgified-fabric-api")
         }
     }
-    //maven("https://thedarkcolour.github.io/KotlinForForge/") { // kotlin-for-forge
-
-    //}
+    maven("https://thedarkcolour.github.io/KotlinForForge/") { // kotlin-for-forge
+        content {
+            includeGroup("thedarkcolour")
+        }
+    }
     maven("https://maven.shedaniel.me") { // RoughlyEnoughItems
         content {
             includeGroup("me.shedaniel")
@@ -106,10 +108,8 @@ dependencies {
 
     // Platform
     modImplementation("org.sinytra.forgified-fabric-api:forgified-fabric-api:${libs.versions.forgifiedFabricApi.get()}") // Forgified Fabric API
-    //modImplementation("thedarkcolour:kotlinforforge:${libs.versions.kotlinForForge.get()}") // Kotlin
+    modImplementation("thedarkcolour:kotlinforforge-neoforge:${libs.versions.kotlinForForge.get()}") // Kotlin
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}") // Kotlin Coroutines
-    //forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}") // Kotlin Coroutines
-    "developmentForgeLike"("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}") { isTransitive = false } // Kotlin Coroutines
     modImplementation("dev.architectury:architectury-neoforge:${libs.versions.architecturyApi.get()}") // Architectury API
 
     // Module
