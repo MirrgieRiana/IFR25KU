@@ -9,7 +9,10 @@ import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.ObservableValue
 
 /** スクロール位置をコンテンツ座標で保持し、再配置時にも引き継ぐバーなのだ～🌱 */
-abstract class ScrollbarView : AbstractView(), PlaceableView {
+abstract class ScrollbarView(private val horizontal: Boolean) : AbstractView(), PlaceableView {
+
+    override var sizingX = if (horizontal) Sizing.FILL else Sizing.WRAP
+    override var sizingY = if (horizontal) Sizing.WRAP else Sizing.FILL
 
     protected val scrollOffset = ObservableValue(0.0)
 
@@ -35,30 +38,21 @@ abstract class ScrollbarView : AbstractView(), PlaceableView {
         }
     var scrollbarColor = 0xA0000000.toInt()
 
+    override fun evaluateContentSizeXImpl() = if (horizontal) 0 else scrollbarThickness
+    override fun evaluateContentSizeYImpl() = if (horizontal) scrollbarThickness else 0
+
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 
 }
 
-class XScrollbarView : ScrollbarView() {
-
-    override var sizingX = Sizing.FILL
-    override var sizingY = Sizing.WRAP
+class XScrollbarView : ScrollbarView(horizontal = true) {
 
     val scrollOffsetX get() = scrollOffset
 
-    override fun evaluateContentSizeXImpl() = 0
-    override fun evaluateContentSizeYImpl() = scrollbarThickness
-
 }
 
-class YScrollbarView : ScrollbarView() {
-
-    override var sizingX = Sizing.WRAP
-    override var sizingY = Sizing.FILL
+class YScrollbarView : ScrollbarView(horizontal = false) {
 
     val scrollOffsetY get() = scrollOffset
-
-    override fun evaluateContentSizeXImpl() = scrollbarThickness
-    override fun evaluateContentSizeYImpl() = 0
 
 }
