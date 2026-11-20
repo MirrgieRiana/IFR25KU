@@ -75,12 +75,13 @@ class TraitEncyclopediaPageViewWrapper(traitName: Component, traitTexture: Resou
             view.sizingX = Sizing.FILL
             view.sizingY = Sizing.FILL
 
-            // カード部分なのだ～🌱
+            // カード部分
             view += XListView().configure {
                 position.weight = 1.0
                 position.alignmentX = Alignment.CENTER
                 view.sizingY = Sizing.FILL
 
+                // カード外枠
                 view += StackView().configure {
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
@@ -90,7 +91,7 @@ class TraitEncyclopediaPageViewWrapper(traitName: Component, traitTexture: Resou
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
 
-                        // 特性名なのだ～🌱
+                        // 特性名
                         view += MultiLineTextView().configure {
                             view.text.value = traitName
                             view.alignmentX = Alignment.CENTER
@@ -99,14 +100,14 @@ class TraitEncyclopediaPageViewWrapper(traitName: Component, traitTexture: Resou
 
                         view += YSpaceView(5)
 
-                        // 特性アイコンなのだ～🌱
+                        // 特性アイコン
                         view += ImageView(ViewTexture(traitTexture, IntPoint(32, 32))).configure {
                             position.alignmentX = Alignment.CENTER
                         }
 
                         view += YSpaceView(5)
 
-                        // 特性ポエムなのだ～🌱
+                        // 特性ポエム
                         view += XListView().configure {
                             position.weight = 1.0
                             view.sizingX = Sizing.FILL
@@ -132,7 +133,7 @@ class TraitEncyclopediaPageViewWrapper(traitName: Component, traitTexture: Resou
 
             view += YSpaceView(10)
 
-            // ボタン部分なのだ～🌱
+            // 下部ボタン
             view += XListView().configure {
                 position.alignmentX = Alignment.CENTER
 
