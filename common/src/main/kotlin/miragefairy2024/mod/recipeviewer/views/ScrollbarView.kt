@@ -31,13 +31,14 @@ abstract class AbstractScrollbarView(initialScrollbarThickness: Int) : AbstractV
             if (value <= 0) throw IllegalArgumentException("Scroll step must be positive")
             field = value
         }
-    var scrollbarColor = 0xA0000000.toInt()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 
 }
 
-abstract class ScrollbarView : AbstractScrollbarView(5)
+abstract class ScrollbarView : AbstractScrollbarView(5) {
+    var scrollbarColor = 0xA0000000.toInt()
+}
 
 class XScrollbarView : ScrollbarView() {
 
