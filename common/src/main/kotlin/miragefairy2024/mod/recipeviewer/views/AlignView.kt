@@ -16,18 +16,17 @@ class AlignView : WrapperView() {
     var alignmentY = Alignment.START
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
-        fun evaluateAlignmentOffset(alignment: Alignment, remaining: Int): Int {
-            return when (alignment) {
-                Alignment.START -> 0
-                Alignment.CENTER -> remaining / 2
-                Alignment.END -> remaining
-            }
+        val relativeOffsetX = when (alignmentX) {
+            Alignment.START -> 0
+            Alignment.CENTER -> (evaluateActualSizeX() - childView.evaluateActualSizeX()) / 2
+            Alignment.END -> evaluateActualSizeX() - childView.evaluateActualSizeX()
         }
-
-        val relativeOffset = IntPoint(
-            evaluateAlignmentOffset(alignmentX, evaluateActualSizeX() - childView.evaluateActualSizeX()),
-            evaluateAlignmentOffset(alignmentY, evaluateActualSizeY() - childView.evaluateActualSizeY()),
-        )
+        val relativeOffsetY when (alignmentY) {
+            Alignment.START -> 0
+            Alignment.CENTER -> (evaluateActualSizeY() - childView.evaluateActualSizeY()) / 2
+            Alignment.END -> evaluateActualSizeY() - childView.evaluateActualSizeY()
+        }
+        val relativeOffset = IntPoint(relativeOffsetX, relativeOffsetY)
         val controller = super.attachTo(offset + relativeOffset, viewPlacer)
         return object : ViewController {
             override fun setOffset(offset: IntPoint) = controller.setOffset(offset + relativeOffset)
