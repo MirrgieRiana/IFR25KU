@@ -7,9 +7,9 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.views.ScrollBounds
-import miragefairy2024.mod.recipeviewer.views.SimpleScrollView
-import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.ScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
@@ -39,8 +39,8 @@ import java.util.Optional
 import kotlin.math.roundToInt
 
 /** 子 Widget の描画・入力・フォーカス・読み上げを中継するスクロール領域なのだ～🌱 */
-abstract class VanillaSimpleScrollViewWidget(
-    protected val view: SimpleScrollView,
+abstract class VanillaScrollContainerViewWidget(
+    protected val view: ScrollContainerView,
     private val scrollOffsetValue: ObservableValue<Double>,
     bounds: IntRectangle,
     context: VanillaViewPlacerContext,
@@ -128,7 +128,7 @@ abstract class VanillaSimpleScrollViewWidget(
         }
     }
 
-    private fun updateScrollBounds() {
+    fun updateScrollBounds() {
         if (!disposed) view.scrollBounds.value = ScrollBounds(evaluateContentLength() atLeast 0, viewportLength atLeast 0)
     }
 
@@ -305,7 +305,7 @@ abstract class VanillaSimpleScrollViewWidget(
                     path.applyFocus(focused)
                     // 子のフォーカスが変わったら、適宜それを収めるようにスクロールするのだ～🌱
                     if (focused) {
-                        val actualFocused = this@VanillaSimpleScrollViewWidget.focused?.getActualFocused { true } ?: return
+                        val actualFocused = this@VanillaScrollContainerViewWidget.focused?.getActualFocused { true } ?: return
                         val rectangle = actualFocused.rectangle
                         if (rectangle.width() <= 0 || rectangle.height() <= 0) return
                         updateScroll(scrollOffsetValue.value + getScrollOffsetDeltaOnFocus(rectangle))
@@ -319,12 +319,12 @@ abstract class VanillaSimpleScrollViewWidget(
             if (isFocused) return null
             // 自身を次のフォーカス先にするのだ～🌱
             return object : ComponentPath {
-                override fun component() = this@VanillaSimpleScrollViewWidget
+                override fun component() = this@VanillaScrollContainerViewWidget
 
                 override fun applyFocus(focused: Boolean) {
                     // その経路の適用時に、以前の子の参照を解除するのだ～🌱
-                    if (focused) this@VanillaSimpleScrollViewWidget.focused = null
-                    this@VanillaSimpleScrollViewWidget.isFocused = focused
+                    if (focused) this@VanillaScrollContainerViewWidget.focused = null
+                    this@VanillaScrollContainerViewWidget.isFocused = focused
                 }
             }
         }
@@ -436,12 +436,12 @@ abstract class VanillaSimpleScrollViewWidget(
 
 }
 
-class VanillaXSimpleScrollViewWidget(
-    view: XSimpleScrollView,
+class VanillaXScrollContainerViewWidget(
+    view: XScrollContainerView,
     bounds: IntRectangle,
     context: VanillaViewPlacerContext,
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
-) : VanillaSimpleScrollViewWidget(
+) : VanillaScrollContainerViewWidget(
     view,
     view.scrollOffsetX,
     bounds,
@@ -475,12 +475,12 @@ class VanillaXSimpleScrollViewWidget(
 
 }
 
-class VanillaYSimpleScrollViewWidget(
-    view: YSimpleScrollView,
+class VanillaYScrollContainerViewWidget(
+    view: YScrollContainerView,
     bounds: IntRectangle,
     context: VanillaViewPlacerContext,
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
-) : VanillaSimpleScrollViewWidget(
+) : VanillaScrollContainerViewWidget(
     view,
     view.scrollOffsetY,
     bounds,

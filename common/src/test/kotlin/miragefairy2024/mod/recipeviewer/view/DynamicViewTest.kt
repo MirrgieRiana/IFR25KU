@@ -8,7 +8,7 @@ import miragefairy2024.mod.recipeviewer.views.PagingView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
-import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.register
 import net.minecraft.network.chat.FormattedText
@@ -144,7 +144,7 @@ class DynamicViewTest {
         }
 
         val dynamicView = DynamicView(contentView(120))
-        val scrollView = YScrollView()
+        val scrollView = YScrollContainerView()
         scrollView += dynamicView
         scrollView.initSizeCalculation(DYNAMIC_RENDERING_PROXY, { 100 }, { 80 })
 
