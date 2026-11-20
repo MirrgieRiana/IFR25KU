@@ -15,6 +15,7 @@ import kotlin.math.roundToInt
 
 private const val TRACK_TEXTURE = "minecraft:textures/gui/container/creative_inventory/tab_items.png"
 private const val THUMB_TEXTURE = "minecraft:textures/gui/sprites/container/creative_inventory/scroller.png"
+private const val DISABLED_THUMB_TEXTURE = "minecraft:textures/gui/sprites/container/creative_inventory/scroller_disabled.png"
 
 private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
     val blits = mutableListOf<Pair<String, IntRectangle>>()
@@ -91,6 +92,37 @@ class VanillaVanillaScrollbarViewWidgetTest {
 
                 scrollOffset.value = 100.0
                 assertScrollbar(34)
+                widget.dispose()
+            }
+        }
+    }
+
+    @Test
+    fun `両軸で空内容では無効なつまみを描き軸長ゼロでは描画しないのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use {
+                val view = if (horizontal) XVanillaScrollbarView() else YVanillaScrollbarView()
+                val bounds = if (horizontal) IntRectangle(10, 20, 100, 18) else IntRectangle(10, 20, 18, 100)
+                val widget = if (horizontal) VanillaXVanillaScrollbarViewWidget(view as XVanillaScrollbarView, bounds) else VanillaYVanillaScrollbarViewWidget(view as YVanillaScrollbarView, bounds)
+                val graphics = ScrollbarGraphics()
+                view.viewportLength = 100
+                widget.render(graphics, 12, 22, 0F)
+                val disabledThumb = if (horizontal) IntRectangle(11, 21, 98, 16) else IntRectangle(11, 21, 16, 98)
+                graphics.assertTrackAndThumb(bounds, disabledThumb, DISABLED_THUMB_TEXTURE)
+                Assertions.assertFalse(widget.mouseClicked(12.0, 22.0, 0))
+
+                graphics.blits.clear()
+                view.contentLength = 300
+                widget.setSize(if (horizontal) 0 else 18, if (horizontal) 18 else 0)
+                widget.render(graphics, 12, 22, 0F)
+                Assertions.assertTrue(graphics.blits.isEmpty())
+                Assertions.assertFalse(widget.mouseClicked(12.0, 22.0, 0))
+
+                widget.setSize(6, 6)
+                widget.render(graphics, 12, 22, 0F)
+                graphics.assertTrackAndThumb(IntRectangle(10, 20, 6, 6), IntRectangle(11, 21, 4, 4), THUMB_TEXTURE)
+                Assertions.assertFalse(widget.mouseClicked(12.0, 22.0, 0))
+                Assertions.assertFalse(widget.hasMouseCapture(0))
                 widget.dispose()
             }
         }
