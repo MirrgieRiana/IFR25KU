@@ -44,10 +44,11 @@ abstract class VanillaScrollbarViewWidget(
 
     protected val scrollbarLength get() = if (horizontal) width else height
     protected val scrollbarThickness get() = if (horizontal) height else width
+    protected abstract fun evaluateContentLength(): Int
 
     // 範囲が狭まっても、現在の位置から操作できるようにするのだ～🌱
     private fun evaluateScrollRange(): ClosedFloatingPointRange<Double> {
-        val normalMaxScrollOffset = (view.contentLength - view.viewportLength atLeast 0).toDouble()
+        val normalMaxScrollOffset = (evaluateContentLength() - view.viewportLength atLeast 0).toDouble()
         return minOf(0.0, scrollOffsetValue.value)..maxOf(normalMaxScrollOffset, scrollOffsetValue.value)
     }
 
@@ -240,9 +241,13 @@ abstract class VanillaScrollbarViewWidget(
 class VanillaXScrollbarViewWidget(
     view: XScrollbarView,
     bounds: IntRectangle,
-) : VanillaScrollbarViewWidget(view, view.scrollOffsetX, bounds, horizontal = true)
+) : VanillaScrollbarViewWidget(view, view.scrollOffsetX, bounds, horizontal = true) {
+    override fun evaluateContentLength() = view.contentLength
+}
 
 class VanillaYScrollbarViewWidget(
     view: YScrollbarView,
     bounds: IntRectangle,
-) : VanillaScrollbarViewWidget(view, view.scrollOffsetY, bounds, horizontal = false)
+) : VanillaScrollbarViewWidget(view, view.scrollOffsetY, bounds, horizontal = false) {
+    override fun evaluateContentLength() = view.contentLength
+}
