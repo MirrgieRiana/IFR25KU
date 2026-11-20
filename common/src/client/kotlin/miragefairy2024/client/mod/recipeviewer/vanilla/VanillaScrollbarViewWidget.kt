@@ -89,7 +89,14 @@ abstract class VanillaScrollbarViewWidget(
 
     override fun isMouseOver(mouseX: Double, mouseY: Double) = isActive && super.isMouseOver(mouseX, mouseY)
 
-    protected abstract fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int)
+    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
+    protected fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
+        if (horizontal) {
+            guiGraphics.fill(x + start, y, x + start + length, y + height, view.scrollbarColor)
+        } else {
+            guiGraphics.fill(x, y + start, x + width, y + start + length, view.scrollbarColor)
+        }
+    }
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
@@ -233,35 +240,9 @@ abstract class VanillaScrollbarViewWidget(
 class VanillaXScrollbarViewWidget(
     view: XScrollbarView,
     bounds: IntRectangle,
-) : VanillaScrollbarViewWidget(view, view.scrollOffsetX, bounds, horizontal = true) {
-
-    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
-        guiGraphics.fill(
-            x + start,
-            y,
-            x + start + length,
-            y + height,
-            view.scrollbarColor,
-        )
-    }
-
-}
+) : VanillaScrollbarViewWidget(view, view.scrollOffsetX, bounds, horizontal = true)
 
 class VanillaYScrollbarViewWidget(
     view: YScrollbarView,
     bounds: IntRectangle,
-) : VanillaScrollbarViewWidget(view, view.scrollOffsetY, bounds, horizontal = false) {
-
-    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
-        guiGraphics.fill(
-            x,
-            y + start,
-            x + width,
-            y + start + length,
-            view.scrollbarColor,
-        )
-    }
-
-}
+) : VanillaScrollbarViewWidget(view, view.scrollOffsetY, bounds, horizontal = false)
