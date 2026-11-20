@@ -1,4 +1,4 @@
-package miragefairy2024.client.mixins.api;
+package miragefairy2024.client.fabric.mixins.api;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.inventory.Slot;

@@ -3,7 +3,7 @@ package miragefairy2024.client.fabric.mixins.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import miragefairy2024.client.mixins.api.SlotHighlightRenderer;
+import miragefairy2024.client.fabric.mixins.api.SlotHighlightRenderer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
