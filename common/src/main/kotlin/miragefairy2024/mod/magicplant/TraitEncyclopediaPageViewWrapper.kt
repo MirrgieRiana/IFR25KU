@@ -50,7 +50,7 @@ private fun Trait.openTraitEncyclopediaPageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
         proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.getName()) {
-            TraitEncyclopediaPageViewWrapper(this.getName().style(this.style), this.texture, this.text).also { view ->
+            TraitEncyclopediaPageViewWrapper(this).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
                     true
@@ -65,7 +65,7 @@ private fun Trait.openTraitEncyclopediaPageScreen() {
     openScreen(clientProxy!!)
 }
 
-class TraitEncyclopediaPageViewWrapper(traitName: Component, traitTexture: ResourceLocation, traitText: Component) {
+class TraitEncyclopediaPageViewWrapper(trait: Trait) {
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
@@ -93,7 +93,7 @@ class TraitEncyclopediaPageViewWrapper(traitName: Component, traitTexture: Resou
 
                         // 特性名
                         view += MultiLineTextView().configure {
-                            view.text.value = traitName
+                            view.text.value = trait.getName().style(trait.style)
                             view.alignmentX = Alignment.CENTER
                             view.shadow = false
                         }
@@ -101,7 +101,7 @@ class TraitEncyclopediaPageViewWrapper(traitName: Component, traitTexture: Resou
                         view += YSpaceView(5)
 
                         // 特性アイコン
-                        view += ImageView(ViewTexture(traitTexture, IntPoint(32, 32))).configure {
+                        view += ImageView(ViewTexture(trait.texture, IntPoint(32, 32))).configure {
                             position.alignmentX = Alignment.CENTER
                         }
 
@@ -116,7 +116,7 @@ class TraitEncyclopediaPageViewWrapper(traitName: Component, traitTexture: Resou
                                 position.weight = 1.0
 
                                 view += MultiLineTextView().configure {
-                                    view.text.value = traitText
+                                    view.text.value = trait.text
                                     view.shadow = false
                                 }
                             }
