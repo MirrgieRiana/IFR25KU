@@ -146,7 +146,7 @@ private class AdapterFixture(vararg views: TestView) {
                 adapter.removeWidget(widget)
             }
         }
-        override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
+        override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
     }
     val adapter = ViewAdapter(host)
 
@@ -292,7 +292,7 @@ class ViewAdapterTest {
                 return Remover { renderableWidgets.remove(widget) }
             }
             override fun addRenderableOnly(widget: AbstractWidget) = addRenderableWidget(widget)
-            override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
+            override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
         })
         adapter.init()
         assertEquals(IntPoint(300, 80), size)
@@ -333,13 +333,13 @@ class ViewAdapterTest {
         val slot: Slot = Slot(null, 0, 0, 0)
         val clipBounds = { IntRectangle(10, 20, 30, 40) }
         val remover = Remover { }
-        Mockito.`when`(host.registerMenuSlot(slot, clipBounds)).thenReturn(remover)
+        Mockito.`when`(host.registerMenuSlotPlacement(slot, clipBounds)).thenReturn(remover)
         val adapter = ViewAdapter(host)
         adapter.init()
         try {
             Assertions.assertTrue(contexts.single().canPlaceMenuSlots)
-            Assertions.assertSame(remover, contexts.single().registerMenuSlot(slot, clipBounds))
-            Mockito.verify(host).registerMenuSlot(slot, clipBounds)
+            Assertions.assertSame(remover, contexts.single().registerMenuSlotPlacement(slot, clipBounds))
+            Mockito.verify(host).registerMenuSlotPlacement(slot, clipBounds)
         } finally {
             adapter.removed()
         }

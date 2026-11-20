@@ -102,7 +102,7 @@ class VanillaViewPlacersTest {
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = Remover.NONE
             override fun addRenderableOnly(widget: AbstractWidget) = Remover.NONE
-            override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+            override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
         val scrollContent = YListView()
         scrollContent += PlacerTestView()
@@ -130,7 +130,7 @@ class VanillaViewPlacersTest {
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
-            override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+            override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
         val slot = Slot(null, 0, 11, 22)
         val view = MenuSlotView(slot)
@@ -152,7 +152,7 @@ class VanillaViewPlacersTest {
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("Slots must not register widgets")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Slots must not register widgets")
-            override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+            override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
         val positions = mutableListOf<IntPoint>()
         val slot: Slot = object : Slot(null, 0, 0, 0), SlotPositionSetter {
@@ -177,7 +177,7 @@ class VanillaViewPlacersTest {
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
-            override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+            override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
         listOf(false, true).forEach { horizontal ->
             listOf(false, true).forEach { nested ->
@@ -216,7 +216,7 @@ class VanillaViewPlacersTest {
                 return Remover { widgets.remove(widget) }
             }
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Buttons must accept input")
-            override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+            override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
         var presses = 0
         val view = TextButtonView(IntPoint(80, 20)).also { it.message = text { "back"() } }
@@ -253,7 +253,7 @@ class VanillaViewPlacersTest {
                 return Remover { widgets.remove(widget) }
             }
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Buttons must accept input")
-            override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+            override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
         val initialMessage = text { "initial"() }
         val view = TextButtonView(IntPoint(80, 20)).also { it.message = initialMessage }
@@ -299,7 +299,7 @@ class VanillaViewPlacersTest {
                     return Remover { screenWidgets.remove(widget) }
                 }
                 override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scroll containers must accept input")
-                override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+                override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
             }
             val leaf = PlacerTestView()
             val view = if (horizontal) XScrollContainerView() else YScrollContainerView()
@@ -339,7 +339,7 @@ class VanillaViewPlacersTest {
                     return Remover { widgets.remove(widget) }
                 }
                 override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scrollbars must accept input")
-                override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+                override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
             }
             val view = if (horizontal) XScrollbarView() else YScrollbarView()
             view.contentLength = 300
@@ -379,7 +379,7 @@ class VanillaViewPlacersTest {
                             return Remover { widgets.remove(widget) }
                         }
                         override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Unexpected render-only widget")
-                        override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+                        override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
                     }
                     val leaf = PlacerTestView()
                     val scroll = if (horizontal) XScrollContainerView() else YScrollContainerView()
@@ -466,7 +466,7 @@ class VanillaViewPlacersTest {
                         return Remover { widgets.remove(widget) }
                     }
                     override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Unexpected render-only widget")
-                    override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+                    override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
                 }
                 val leaf = PlacerTestView()
                 val content = DynamicView(leaf)

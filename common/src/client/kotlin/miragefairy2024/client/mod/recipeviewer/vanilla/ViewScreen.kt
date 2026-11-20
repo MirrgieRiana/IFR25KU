@@ -51,7 +51,7 @@ abstract class ViewScreen(title: Component) : Screen(title) {
             return Remover { this@ViewScreen.removeWidget(widget) }
         }
 
-        override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
+        override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
 
     })
 

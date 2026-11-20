@@ -58,7 +58,7 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
             return Remover { this@ViewContainerScreen.removeWidget(widget) }
         }
 
-        override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = menuSlotPlacementRegistry.register(slot, clipBounds)
+        override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = menuSlotPlacementRegistry.register(slot, clipBounds)
 
     })
 

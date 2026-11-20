@@ -44,7 +44,7 @@ interface ViewAdapterHost {
     fun <T> addWidget(widget: T): Remover? where T : GuiEventListener, T : NarratableEntry = null
     fun addRenderableWidget(widget: AbstractWidget): Remover
     fun addRenderableOnly(widget: AbstractWidget): Remover
-    fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?): Remover
+    fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?): Remover
 
 }
 
@@ -97,7 +97,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
             override val onBeforeRender = this@ViewAdapter.onBeforeRender
             override fun addRenderableWidget(widget: AbstractWidget) = host.addRenderableWidget(widget)
             override fun addRenderableOnly(widget: AbstractWidget) = host.addRenderableOnly(widget)
-            override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = host.registerMenuSlot(slot, clipBounds)
+            override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = host.registerMenuSlotPlacement(slot, clipBounds)
         }
         viewController = rootView.attachTo(host.getUiOffset()) { view, bounds ->
             host.getViewPlacerRegistry().place(context, view, bounds)

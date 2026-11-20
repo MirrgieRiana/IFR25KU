@@ -50,7 +50,7 @@ class ViewToast(rootView: View) : Toast {
 
         override fun addRenderableOnly(widget: AbstractWidget) = addRenderableWidget(widget)
 
-        override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
+        override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
 
     })
 

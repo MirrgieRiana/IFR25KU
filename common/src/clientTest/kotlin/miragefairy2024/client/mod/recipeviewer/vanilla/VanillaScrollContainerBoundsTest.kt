@@ -56,12 +56,12 @@ class VanillaScrollContainerBoundsTest {
             val slot: Slot = Slot(null, 0, 0, 0)
             val clipBounds = { IntRectangle(10, 20, 30, 40) }
             val remover = Remover { }
-            Mockito.`when`(context.registerMenuSlot(slot, clipBounds)).thenReturn(remover)
+            Mockito.`when`(context.registerMenuSlotPlacement(slot, clipBounds)).thenReturn(remover)
             val widget = VanillaYScrollContainerViewWidget(view, IntRectangle(0, 0, 100, 100), context, registry)
             try {
                 Assertions.assertFalse(contexts.single().canPlaceMenuSlots)
-                Assertions.assertSame(remover, contexts.single().registerMenuSlot(slot, clipBounds))
-                Mockito.verify(context).registerMenuSlot(slot, clipBounds)
+                Assertions.assertSame(remover, contexts.single().registerMenuSlotPlacement(slot, clipBounds))
+                Mockito.verify(context).registerMenuSlotPlacement(slot, clipBounds)
             } finally {
                 widget.dispose()
                 widget.detach()
