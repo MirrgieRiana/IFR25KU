@@ -24,7 +24,6 @@ abstract class VanillaScrollbarViewWidget(
     protected val view: ScrollbarView,
     private val scrollOffsetValue: ObservableValue<Double>,
     bounds: IntRectangle,
-    protected val horizontal: Boolean,
 ) :
     AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }), MouseCaptureContainer {
 
@@ -42,13 +41,12 @@ abstract class VanillaScrollbarViewWidget(
 
     // サイズと位置なのだ～🌱
 
-    protected val scrollbarLength get() = if (horizontal) width else height
-    protected val scrollbarThickness get() = if (horizontal) height else width
-    protected abstract fun evaluateContentLength(): Int
+    protected abstract val scrollbarLength: Int
+    protected abstract val scrollbarThickness: Int
 
     // 範囲が狭まっても、現在の位置から操作できるようにするのだ～🌱
     private fun evaluateScrollRange(): ClosedFloatingPointRange<Double> {
-        val normalMaxScrollOffset = (evaluateContentLength() - view.viewportLength atLeast 0).toDouble()
+        val normalMaxScrollOffset = (view.contentLength - view.viewportLength atLeast 0).toDouble()
         return minOf(0.0, scrollOffsetValue.value)..maxOf(normalMaxScrollOffset, scrollOffsetValue.value)
     }
 
@@ -90,14 +88,7 @@ abstract class VanillaScrollbarViewWidget(
 
     override fun isMouseOver(mouseX: Double, mouseY: Double) = isActive && super.isMouseOver(mouseX, mouseY)
 
-    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    protected fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
-        if (horizontal) {
-            guiGraphics.fill(x + start, y, x + start + length, y + height, view.scrollbarColor)
-        } else {
-            guiGraphics.fill(x, y + start, x + width, y + start + length, view.scrollbarColor)
-        }
-    }
+    protected abstract fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int)
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
@@ -109,12 +100,11 @@ abstract class VanillaScrollbarViewWidget(
 
     }
 
-    private fun getMousePosition(mouseX: Double, mouseY: Double) = if (horizontal) mouseX - x else mouseY - y
+    protected abstract fun getMousePosition(mouseX: Double, mouseY: Double): Double
 
-    private fun getDragAmount(dragX: Double, dragY: Double) = if (horizontal) dragX else dragY
+    protected abstract fun getDragAmount(dragX: Double, dragY: Double): Double
 
-    // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
-    private fun getScrollAmount(scrollX: Double, scrollY: Double) = if (horizontal && scrollX != 0.0) scrollX else scrollY
+    protected abstract fun getScrollAmount(scrollX: Double, scrollY: Double): Double
 
     override fun hasMouseCapture(button: Int) = !disposed && button == 0 && draggingScrollbar
 
@@ -202,8 +192,8 @@ abstract class VanillaScrollbarViewWidget(
         return null
     }
 
-    private val backwardKey get() = if (horizontal) GLFW.GLFW_KEY_LEFT else GLFW.GLFW_KEY_UP
-    private val forwardKey get() = if (horizontal) GLFW.GLFW_KEY_RIGHT else GLFW.GLFW_KEY_DOWN
+    protected abstract val backwardKey: Int
+    protected abstract val forwardKey: Int
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (!isActive) return false
@@ -241,13 +231,75 @@ abstract class VanillaScrollbarViewWidget(
 class VanillaXScrollbarViewWidget(
     view: XScrollbarView,
     bounds: IntRectangle,
-) : VanillaScrollbarViewWidget(view, view.scrollOffsetX, bounds, horizontal = true) {
-    override fun evaluateContentLength() = view.contentLength
+) : VanillaScrollbarViewWidget(
+    view,
+    view.scrollOffsetX,
+    bounds,
+) {
+
+    // 領域とサイズなのだ～🌱
+
+    override val scrollbarLength get() = width
+    override val scrollbarThickness get() = height
+
+
+    // スクロール操作なのだ～🌱
+
+    override val backwardKey get() = GLFW.GLFW_KEY_LEFT
+    override val forwardKey get() = GLFW.GLFW_KEY_RIGHT
+
+    override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseX - x
+    override fun getDragAmount(dragX: Double, dragY: Double) = dragX
+
+    // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
+    override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
+
+    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
+    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
+        guiGraphics.fill(
+            x + start,
+            y,
+            x + start + length,
+            y + height,
+            view.scrollbarColor,
+        )
+    }
+
 }
 
 class VanillaYScrollbarViewWidget(
     view: YScrollbarView,
     bounds: IntRectangle,
-) : VanillaScrollbarViewWidget(view, view.scrollOffsetY, bounds, horizontal = false) {
-    override fun evaluateContentLength() = view.contentLength
+) : VanillaScrollbarViewWidget(
+    view,
+    view.scrollOffsetY,
+    bounds,
+) {
+
+    // 領域とサイズなのだ～🌱
+
+    override val scrollbarLength get() = height
+    override val scrollbarThickness get() = width
+
+
+    // スクロール操作なのだ～🌱
+
+    override val backwardKey get() = GLFW.GLFW_KEY_UP
+    override val forwardKey get() = GLFW.GLFW_KEY_DOWN
+
+    override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseY - y
+    override fun getDragAmount(dragX: Double, dragY: Double) = dragY
+    override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
+
+    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
+    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
+        guiGraphics.fill(
+            x,
+            y + start,
+            x + width,
+            y + start + length,
+            view.scrollbarColor,
+        )
+    }
+
 }
