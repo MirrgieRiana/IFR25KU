@@ -13,17 +13,17 @@ private class MarkdownScope(val type: MarkdownType) {
 
 private fun MarkdownScope.fork() = MarkdownScope(this.type)
 
-context(MarkdownScope)
+context(markdownScope: MarkdownScope)
 private val (MarkdownScope.() -> Unit).strings
     get(): List<String> {
-        val scope = this@MarkdownScope.fork()
+        val scope = markdownScope.fork()
         this(scope)
         return scope.strings
     }
 
-context(MarkdownScope)
+context(markdownScope: MarkdownScope)
 private operator fun String.not() {
-    this@MarkdownScope.strings += this
+    markdownScope.strings += this
 }
 
 fun <T> Iterable<T>.sandwich(vararg separator: T) = this.flatMapIndexed { i, it -> if (i != 0) listOf(*separator, it) else listOf(it) }
@@ -39,27 +39,27 @@ fun String.escapeHtml() = this
     .replace(">", "&gt;")
 
 private fun markdown(type: MarkdownType, block: MarkdownScope.() -> Unit) = MarkdownScope(type).run { block.strings.sandwich("").multiLine() + "\n" }
-context(MarkdownScope) private fun h1(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("# $string", *block.strings.toTypedArray()).sandwich("").multiLine()
-context(MarkdownScope) private fun h2(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("## $string", *block.strings.toTypedArray()).sandwich("").multiLine()
-context(MarkdownScope) private fun h3(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("### $string", *block.strings.toTypedArray()).sandwich("").multiLine()
-context(MarkdownScope) private val br get() = "br"()
-context(MarkdownScope) private fun br(count: Int) = (1..count).map { br }.multiLine()
-context(MarkdownScope) private operator fun Int.not() = !"div" { !br(this@not) }
-context(MarkdownScope) private val hr get() = "---"
-context(MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.map { "- $it" }.multiLine()
-context(MarkdownScope) private fun singleLine(block: MarkdownScope.() -> Unit = {}) = block.strings.join("")
-context(MarkdownScope) private fun multiLine(block: MarkdownScope.() -> Unit = {}) = block.strings.multiLine()
-context(MarkdownScope) private fun String.p() = "p" { !this@p }
-context(MarkdownScope) private fun String.align(align: String) = "div"(if (this@MarkdownScope.type == MarkdownType.MODRINTH) "align" to align else style("text-align" to align)) { !this@align }
-context(MarkdownScope) private fun String.left() = this.align("left")
-context(MarkdownScope) private fun String.center() = this.align("center")
-context(MarkdownScope) private fun String.serif() = if (this@MarkdownScope.type == MarkdownType.MODRINTH) "font"("face" to "serif") { !this@serif } else "span"(style("font-family" to "serif")) { !this@serif }
+context(markdownScope: MarkdownScope) private fun h1(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("# $string", *block.strings.toTypedArray()).sandwich("").multiLine()
+context(markdownScope: MarkdownScope) private fun h2(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("## $string", *block.strings.toTypedArray()).sandwich("").multiLine()
+context(markdownScope: MarkdownScope) private fun h3(string: String, block: MarkdownScope.() -> Unit = {}) = listOf("### $string", *block.strings.toTypedArray()).sandwich("").multiLine()
+context(markdownScope: MarkdownScope) private val br get() = "br"()
+context(markdownScope: MarkdownScope) private fun br(count: Int) = (1..count).map { br }.multiLine()
+context(markdownScope: MarkdownScope) private operator fun Int.not() = !"div" { !br(this@not) }
+context(markdownScope: MarkdownScope) private val hr get() = "---"
+context(markdownScope: MarkdownScope) private fun li(block: MarkdownScope.() -> Unit) = block.strings.map { "- $it" }.multiLine()
+context(markdownScope: MarkdownScope) private fun singleLine(block: MarkdownScope.() -> Unit = {}) = block.strings.join("")
+context(markdownScope: MarkdownScope) private fun multiLine(block: MarkdownScope.() -> Unit = {}) = block.strings.multiLine()
+context(markdownScope: MarkdownScope) private fun String.p() = "p" { !this@p }
+context(markdownScope: MarkdownScope) private fun String.align(align: String) = "div"(if (markdownScope.type == MarkdownType.MODRINTH) "align" to align else style("text-align" to align)) { !this@align }
+context(markdownScope: MarkdownScope) private fun String.left() = this.align("left")
+context(markdownScope: MarkdownScope) private fun String.center() = this.align("center")
+context(markdownScope: MarkdownScope) private fun String.serif() = if (markdownScope.type == MarkdownType.MODRINTH) "font"("face" to "serif") { !this@serif } else "span"(style("font-family" to "serif")) { !this@serif }
 private val sizeTable = listOf("xx-small", "small", "medium", "large", "x-large", "xx-large", "xxx-large")
-context(MarkdownScope) private fun String.size(size: Int) = if (this@MarkdownScope.type == MarkdownType.MODRINTH) "font"("size" to String.format("%+d", size)) { !this@size } else "span"(style("font-size" to sizeTable[(size + 2)])) { !this@size }
-context(MarkdownScope) private fun String.b() = "b" { !this@b }
-context(MarkdownScope) private fun String.i() = "i" { !this@i }
+context(markdownScope: MarkdownScope) private fun String.size(size: Int) = if (markdownScope.type == MarkdownType.MODRINTH) "font"("size" to String.format("%+d", size)) { !this@size } else "span"(style("font-size" to sizeTable[(size + 2)])) { !this@size }
+context(markdownScope: MarkdownScope) private fun String.b() = "b" { !this@b }
+context(markdownScope: MarkdownScope) private fun String.i() = "i" { !this@i }
 
-context(MarkdownScope)
+context(markdownScope: MarkdownScope)
 private operator fun String.invoke(vararg attributes: Pair<String, String>?, block: (MarkdownScope.() -> Unit)? = null): String {
     return if (block != null) {
         val content = block.strings.multiLine()
@@ -73,16 +73,16 @@ private operator fun String.invoke(vararg attributes: Pair<String, String>?, blo
     }
 }
 
-context(MarkdownScope)
-private fun String.codeBlock() = if (this@MarkdownScope.type == MarkdownType.MODRINTH) "```text\n$this\n```" else "<div>\n${this.replace(" ", "&nbsp;").split("\n").join("<br>\n")}\n</div>"
+context(markdownScope: MarkdownScope)
+private fun String.codeBlock() = if (markdownScope.type == MarkdownType.MODRINTH) "```text\n$this\n```" else "<div>\n${this.replace(" ", "&nbsp;").split("\n").join("<br>\n")}\n</div>"
 
-context(MarkdownScope)
+context(markdownScope: MarkdownScope)
 private fun style(vararg entries: Pair<String, String>?): Pair<String, String>? {
     val nonnullEntries = entries.filterNotNull()
     return if (nonnullEntries.isNotEmpty()) "style" to nonnullEntries.join(" ") { "${it.first}: ${it.second};" } else null
 }
 
-context(MarkdownScope)
+context(markdownScope: MarkdownScope)
 private fun img(alt: String, src: String, width: Int? = null, float: String? = null, pixelated: Boolean = false): String {
     return "img"(
         "alt" to alt,
@@ -95,22 +95,22 @@ private fun img(alt: String, src: String, width: Int? = null, float: String? = n
     )
 }
 
-context(MarkdownScope)
-private fun table(block: (MarkdownScope.() -> Unit)? = null) = "table"(if (this@MarkdownScope.type == MarkdownType.CURSEFORGE) style("display" to "inline-table") else null, block = block)
+context(markdownScope: MarkdownScope)
+private fun table(block: (MarkdownScope.() -> Unit)? = null) = "table"(if (markdownScope.type == MarkdownType.CURSEFORGE) style("display" to "inline-table") else null, block = block)
 
-context(MarkdownScope)
+context(markdownScope: MarkdownScope)
 private fun td(width: Int? = null, block: (MarkdownScope.() -> Unit)? = null): String {
-    return if (this@MarkdownScope.type == MarkdownType.MODRINTH) {
+    return if (markdownScope.type == MarkdownType.MODRINTH) {
         "td"(if (width != null) "width" to "$width" else null, block = block)
     } else {
         "td"(style(if (width != null) "width" to "${width}px" else null, "text-align" to "left"), block = block)
     }
 }
 
-context(MarkdownScope)
+context(markdownScope: MarkdownScope)
 private fun catchPhrase(string: String) = string.size(3).serif().center()
 
-context(MarkdownScope)
+context(markdownScope: MarkdownScope)
 private fun poem(name: String, indent: Int, width: Int, src: String, poem1: String, poem2: String): String {
     return multiLine {
         !img("Horizontal Spacer", "https://raw.githubusercontent.com/MirrgieRiana/wiki_data/refs/heads/main/assets/d4e90f750011606c078ec608f87019f9ad960f6a_0.webp", width = abs(indent), float = if (indent < 0) "right" else "left")
