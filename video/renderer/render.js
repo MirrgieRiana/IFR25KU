@@ -57,7 +57,7 @@ try {
       return frame;
     });
 } catch (e) {
-  console.error(`error: cannot read frames: ${framesPath}: ${e.message}`);
+  console.error(`error: cannot read or parse frames: ${framesPath}: ${e.message}`);
   process.exit(1);
 }
 

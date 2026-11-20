@@ -162,7 +162,7 @@ class TraitListScreen(handler: TraitListScreenHandler, playerInventory: Inventor
                     })
                 })
             })
-            child2(verticalScroll(Sizing.fill(100), Sizing.fill(100), 5, overlapped = true).apply { // 特性ポエム
+            child2(verticalScroll(Sizing.fill(100), Sizing.fill(100), 5, overlapped = true).apply { // 特性の説明文
                 scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
 
                 child().child(Components.label(text { traitStack.trait.text }).apply {
