@@ -2,6 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
@@ -10,6 +11,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarratableEntry
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
+import net.minecraft.world.inventory.Slot
 import org.lwjgl.glfw.GLFW
 
 /** 中身を View のツリーで構築する画面なのだ～🌱 */
@@ -48,6 +50,8 @@ abstract class ViewScreen(title: Component) : Screen(title) {
             this@ViewScreen.addRenderableOnly(widget)
             return Remover { this@ViewScreen.removeWidget(widget) }
         }
+
+        override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
 
     })
 

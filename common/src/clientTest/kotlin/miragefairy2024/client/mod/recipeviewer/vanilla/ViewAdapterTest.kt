@@ -146,6 +146,7 @@ private class AdapterFixture(vararg views: TestView) {
                 adapter.removeWidget(widget)
             }
         }
+        override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
     }
     val adapter = ViewAdapter(host)
 
@@ -291,6 +292,7 @@ class ViewAdapterTest {
                 return Remover { renderableWidgets.remove(widget) }
             }
             override fun addRenderableOnly(widget: AbstractWidget) = addRenderableWidget(widget)
+            override fun registerMenuSlot(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
         })
         adapter.init()
         assertEquals(IntPoint(300, 80), size)
