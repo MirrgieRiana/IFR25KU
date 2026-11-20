@@ -36,8 +36,6 @@ configurations {
     getByName("compileClasspath").extendsFrom(common)
     getByName("runtimeClasspath").extendsFrom(common)
     getByName("developmentNeoForge").extendsFrom(common)
-    // KotlinForForge と重複しないよう、Kotlin ライブラリを開発時の変換対象から除くのだ～🌱
-    getByName("developmentNeoForge").exclude(group = "org.jetbrains.kotlin")
 
     // Files in this configuration will be bundled into your mod using the Shadow plugin.
     // Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
@@ -55,11 +53,9 @@ repositories {
             includeGroup("org.sinytra.forgified-fabric-api")
         }
     }
-    maven("https://thedarkcolour.github.io/KotlinForForge/") { // kotlin-for-forge
-        content {
-            includeGroup("thedarkcolour")
-        }
-    }
+    //maven("https://thedarkcolour.github.io/KotlinForForge/") { // kotlin-for-forge
+
+    //}
     maven("https://maven.shedaniel.me") { // RoughlyEnoughItems
         content {
             includeGroup("me.shedaniel")
@@ -110,8 +106,10 @@ dependencies {
 
     // Platform
     modImplementation("org.sinytra.forgified-fabric-api:forgified-fabric-api:${libs.versions.forgifiedFabricApi.get()}") // Forgified Fabric API
-    implementation("thedarkcolour:kotlinforforge-neoforge:${libs.versions.kotlinForForge.get()}") // Kotlin
+    //modImplementation("thedarkcolour:kotlinforforge:${libs.versions.kotlinForForge.get()}") // Kotlin
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}") // Kotlin Coroutines
+    //forgeRuntimeLibrary("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}") // Kotlin Coroutines
+    "developmentForgeLike"("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinCoroutines.get()}") { isTransitive = false } // Kotlin Coroutines
     modImplementation("dev.architectury:architectury-neoforge:${libs.versions.architecturyApi.get()}") // Architectury API
 
     // Module
