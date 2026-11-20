@@ -14,8 +14,10 @@ abstract class VanillaScrollbarViewWidget(
     horizontal: Boolean,
 ) : AbstractVanillaScrollbarViewWidget(view, scrollOffsetValue, bounds, horizontal) {
 
+    override fun shouldRenderScrollbar(scrollable: Boolean) = scrollable && scrollbarThickness > 0 && scrollbarLength > 0
+
     // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
+    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int, scrollable: Boolean) {
         if (horizontal) {
             guiGraphics.fill(x + start, y, x + start + length, y + height, view.scrollbarColor)
         } else {
