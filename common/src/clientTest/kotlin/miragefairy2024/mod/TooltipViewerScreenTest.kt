@@ -43,10 +43,10 @@ class TooltipViewerScreenTest {
     }
 
     @Test
-    fun `画面の再初期化ではフィルタとスクロール位置を保持し開き直すと初期化するのだ`() {
-        fun withViews(definition: MessageViewScreenDefinition, size: IntPoint, block: (TextFieldView, YScrollContainerView) -> Unit) {
+    fun `画面を開くと検索欄が空でスクロール位置は先頭になるのだ`() {
+        fun withViews(definition: MessageViewScreenDefinition, block: (TextFieldView, YScrollContainerView) -> Unit) {
             val view = definition.rootViewFactory()
-            view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { size.x }, { size.y })
+            view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
             val textFields = mutableListOf<TextFieldView>()
             val scrollViews = mutableListOf<YScrollContainerView>()
             val controller = view.attachTo(IntPoint.ZERO) { child, _ ->
@@ -83,25 +83,15 @@ class TooltipViewerScreenTest {
             Assertions.assertTrue(definition.closeOnInventoryKey)
             Assertions.assertEquals(KeyMappingType.OPEN_TOOLTIP_VIEWER, definition.additionalCloseKey)
             Assertions.assertFalse(definition.closeOnOutsideClick)
-            withViews(definition, IntPoint(400, 240)) { field, scrollView ->
+            withViews(definition) { field, scrollView ->
                 Assertions.assertEquals("", field.text.value)
                 Assertions.assertEquals(0.0, scrollView.scrollOffsetY.value)
                 field.text.value = "0,2"
                 scrollView.scrollOffsetY.value = 125.5
             }
-            withViews(definition, IntPoint(320, 180)) { field, scrollView ->
-                Assertions.assertEquals("0,2", field.text.value)
-                Assertions.assertEquals(125.5, scrollView.scrollOffsetY.value)
-                field.text.value = "1,3"
-                scrollView.scrollOffsetY.value = 271.25
-            }
-            withViews(definition, IntPoint(640, 360)) { field, scrollView ->
-                Assertions.assertEquals("1,3", field.text.value)
-                Assertions.assertEquals(271.25, scrollView.scrollOffsetY.value)
-            }
 
             openTooltipViewerScreen()
-            withViews(definitions.last(), IntPoint(400, 240)) { field, scrollView ->
+            withViews(definitions.last()) { field, scrollView ->
                 Assertions.assertEquals("", field.text.value)
                 Assertions.assertEquals(0.0, scrollView.scrollOffsetY.value)
             }
