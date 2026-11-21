@@ -48,7 +48,7 @@ val motifTableScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFai
     }, MOTIF_TABLE_STREAM_CODEC)
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initMotifTableScreenHandler() {
     motifTableScreenHandlerType.register()
 }

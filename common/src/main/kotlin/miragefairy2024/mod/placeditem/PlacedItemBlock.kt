@@ -59,7 +59,7 @@ object PlacedItemCard {
     val blockEntityType = Registration(BuiltInRegistries.BLOCK_ENTITY_TYPE, identifier) { BlockEntityType(::PlacedItemBlockEntity, setOf(block.await())) }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initPlacedItemBlock() {
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("placed_item")) { PlacedItemBlock.CODEC }.register()
 

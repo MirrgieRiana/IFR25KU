@@ -1,6 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
-import miragefairy2024.mod.recipeviewer.views.SpaceView
+import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.util.empty
 import miragefairy2024.util.text
 import net.minecraft.client.gui.Font
@@ -14,7 +14,7 @@ import org.lwjgl.glfw.GLFW
 import org.mockito.Mockito
 
 private class KeyboardViewScreen : ViewScreen(text { empty() }) {
-    override fun createRootView() = SpaceView()
+    override fun createRootView() = EmptyView()
 
     fun initialize() {
         width = 200

@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 
-context(ModContext)
+context(_: ModContext)
 fun <E : Entity> (() -> EntityType<E>).registerEntityRenderer(entityRendererFactory: EntityRendererProvider<E>) {
     ModEvents.onClientInit {
         EntityRendererRegistry.register(this(), entityRendererFactory)

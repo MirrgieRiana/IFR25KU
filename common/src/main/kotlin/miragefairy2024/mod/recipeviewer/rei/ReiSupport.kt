@@ -37,7 +37,7 @@ fun hasRei(): Boolean {
     return true
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initReiSupport() {
     RecipeViewerEvents.recipeViewerCategoryCards.subscribe { card ->
         ReiEvents.onRegisterDisplaySerializer { registry ->

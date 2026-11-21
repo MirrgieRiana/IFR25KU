@@ -121,7 +121,7 @@ val fairiesItemGroupCard = ItemGroupCard(
     MirageFairy2024.identifier("fairies"), "Fairies", "妖精",
 ) { motifRegistry.entrySet().random().value.createFairyItemStack() }
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyItem() {
     FairyCard.let { card ->
         card.item.register()

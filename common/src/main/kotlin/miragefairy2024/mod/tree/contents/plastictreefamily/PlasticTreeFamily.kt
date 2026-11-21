@@ -6,7 +6,7 @@ import miragefairy2024.util.Registration
 import miragefairy2024.util.register
 import net.minecraft.core.registries.BuiltInRegistries
 
-context(ModContext)
+context(_: ModContext)
 fun initPlasticTreeFamily() {
 
     // BlockType

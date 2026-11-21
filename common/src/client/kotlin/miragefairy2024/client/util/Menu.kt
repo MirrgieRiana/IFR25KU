@@ -9,7 +9,7 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.MenuType
 
-context(ModContext)
+context(_: ModContext)
 fun <M : AbstractContainerMenu, U> (() -> MenuType<M>).registerHandledScreen(screenConstructor: ScreenConstructor<M, U>) where U : Screen, U : MenuAccess<M> {
     ModEvents.onClientInit {
         MenuScreens.register(this(), screenConstructor)

@@ -30,7 +30,7 @@ val passiveSkillEffectRegistry: Registry<PassiveSkillEffect<*>> = FabricRegistry
 
 val PER_SECOND_TRANSLATION = Translation({ "${MirageFairy2024.MOD_ID}.passive_skill.per_second" }, "%s/s", "%s/秒")
 
-context(ModContext)
+context(_: ModContext)
 fun initPassiveSkillModule() {
 
     // Condition

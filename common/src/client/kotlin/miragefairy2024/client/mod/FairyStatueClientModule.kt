@@ -9,7 +9,7 @@ import miragefairy2024.mod.fairy.getFairyMotif
 import net.minecraft.client.Minecraft
 import net.minecraft.world.item.ItemDisplayContext
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyStatueClientModule() {
     RenderItemHandler.listeners += RenderItemHandler { stack, renderMode, leftHanded, matrices, vertexConsumers, light, overlay, model ->
         if (stack.item !is FairyStatueBlockItem) return@RenderItemHandler

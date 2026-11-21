@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyToolItem() {
     ScytheItem.DESCRIPTION_TRANSLATION.enJa()
     ShootingStaffItem.NOT_ENOUGH_EXPERIENCE_TRANSLATION.enJa()

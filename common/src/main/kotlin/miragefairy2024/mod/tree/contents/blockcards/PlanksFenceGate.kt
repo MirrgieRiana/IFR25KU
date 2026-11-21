@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 class TreePlanksFenceGateBlockCard(configuration: TreeBlockConfiguration, private val parent: () -> Block) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createPlankSettings(sound = false).forceSolidOn()
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

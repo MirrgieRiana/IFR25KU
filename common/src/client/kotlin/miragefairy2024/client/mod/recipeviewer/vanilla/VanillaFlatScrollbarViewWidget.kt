@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import net.minecraft.client.gui.GuiGraphics
 import org.lwjgl.glfw.GLFW
+import kotlin.math.roundToInt
 
 abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: IntRectangle) : VanillaScrollbarViewWidget<FlatScrollbarView>(view, bounds)
 
@@ -35,14 +36,19 @@ class VanillaXFlatScrollbarViewWidget(
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
     // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
-        guiGraphics.fill(
-            x + start,
-            y,
-            x + start + length,
-            y + height,
-            view.scrollbarColor,
-        )
+    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        val range = evaluateScrollRange()
+        if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
+            val start = evaluateThumbPosition().roundToInt()
+            val length = evaluateThumbLength()
+            guiGraphics.fill(
+                x + start,
+                y,
+                x + start + length,
+                y + height,
+                view.scrollbarColor,
+            )
+        }
     }
 
 }
@@ -71,14 +77,19 @@ class VanillaYFlatScrollbarViewWidget(
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
     // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
-        guiGraphics.fill(
-            x,
-            y + start,
-            x + width,
-            y + start + length,
-            view.scrollbarColor,
-        )
+    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        val range = evaluateScrollRange()
+        if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
+            val start = evaluateThumbPosition().roundToInt()
+            val length = evaluateThumbLength()
+            guiGraphics.fill(
+                x,
+                y + start,
+                x + width,
+                y + start + length,
+                view.scrollbarColor,
+            )
+        }
     }
 
 }

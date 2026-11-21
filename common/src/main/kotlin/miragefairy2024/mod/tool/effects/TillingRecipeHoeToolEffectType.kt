@@ -18,7 +18,7 @@ fun <T : FairyHoeConfiguration> T.tillingRecipe(tillingRecipe: TillingRecipe) = 
 object TillingRecipeHoeToolEffectType : ToolEffectType<FairyHoeConfiguration, TillingRecipe> {
     private val TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("fairy_hoe").toLanguageKey()}.tilling_recipe" }, "Special tilling effects", "特殊な耕作効果")
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         TRANSLATION.enJa()
     }

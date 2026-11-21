@@ -58,7 +58,7 @@ abstract class SimpleMagicPlantCard<B : SimpleMagicPlantBlock> : MagicPlantCard<
 
     val iconItem = Registration(BuiltInRegistries.ITEM, blockIdentifier * "_icon") { Item(Item.Properties()) }
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

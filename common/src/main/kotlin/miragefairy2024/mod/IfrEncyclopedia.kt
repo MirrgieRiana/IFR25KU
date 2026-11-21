@@ -209,7 +209,7 @@ private val PARAGRAPH_SPACE_CHILDREN_GENERATOR = ChildrenGenerator { _, _ ->
     listOf(Child(Alignment.START, YSpaceView(4)))
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initIfrEncyclopedia() {
     IfrEncyclopediaEntryCard.entries.forEach { card ->
         card.titleTranslation.enJa()
@@ -261,8 +261,7 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                     view.color = TEXT_COLOR
                     view.shadow = false
                     view.scroll = true
-                    view.tooltip = listOf(text { recipeEntry.recipe.titleTranslation() })
-                }
+                }.tooltip(text { recipeEntry.recipe.titleTranslation() })
 
                 view += YSpaceView(5)
 

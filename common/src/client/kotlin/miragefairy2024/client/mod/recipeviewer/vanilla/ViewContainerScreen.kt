@@ -29,12 +29,6 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
      */
     private val slotPlacementMap = mutableMapOf<Int, SlotPlacement?>()
 
-    private fun getSlotClipBounds(slot: Slot): IntRectangle? {
-        if (slot.index !in slotPlacementMap) return null
-        val placement = slotPlacementMap[slot.index] ?: return IntRectangle.ZERO
-        return placement.clipBounds()
-    }
-
     private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
 
         override fun getRenderingProxy() = renderingProxy
@@ -92,10 +86,42 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         super.removed()
     }
 
+    private var slotScissorEnabled = false
+
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         viewAdapter.beforeRender()
-        super.render(guiGraphics, mouseX, mouseY, partialTick)
+        try {
+            super.render(guiGraphics, mouseX, mouseY, partialTick)
+        } finally {
+            // 通常は通らないのだ～🌱
+            disableSlotScissor(guiGraphics)
+        }
         renderTooltip(guiGraphics, mouseX, mouseY)
+    }
+
+    private fun getSlotClipBounds(slot: Slot): IntRectangle? {
+        if (slot.index !in slotPlacementMap) return null
+        val placement = slotPlacementMap[slot.index] ?: return IntRectangle.ZERO
+        return placement.clipBounds()
+    }
+
+    override fun renderSlot(guiGraphics: GuiGraphics, slot: Slot) {
+        // 前のスロットの描画の終了処理なのだ～🌱
+        disableSlotScissor(guiGraphics)
+        val clipBounds = getSlotClipBounds(slot)
+        if (clipBounds != null) {
+            val (x, y, sizeX, sizeY) = clipBounds
+            guiGraphics.enableScissor(x, y, x + sizeX, y + sizeY)
+            slotScissorEnabled = true
+        }
+        // 親クラスが直後に描くハイライトにもこのスロットのクリップを適用するために、クリップの着脱を変なタイミングにしているのだ～🌱
+        super.renderSlot(guiGraphics, slot)
+    }
+
+    private fun disableSlotScissor(guiGraphics: GuiGraphics) {
+        if (!slotScissorEnabled) return
+        slotScissorEnabled = false
+        guiGraphics.disableScissor()
     }
 
     override fun removeWidget(listener: GuiEventListener) {
@@ -152,6 +178,9 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) = Unit
 
     /** 題名とインベントリの名前もViewのツリーが描くのだ～🌱 */
-    override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
+    override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) {
+        // 最後のスロットのレンダリングの終了処理はここで受けるのだ～🌱
+        disableSlotScissor(guiGraphics)
+    }
 
 }

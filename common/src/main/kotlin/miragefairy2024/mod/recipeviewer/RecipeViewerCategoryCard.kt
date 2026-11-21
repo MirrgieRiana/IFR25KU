@@ -55,7 +55,7 @@ abstract class RecipeViewerCategoryCard<R> {
 
     abstract fun createView(recipeEntry: RecipeEntry<R>): View
 
-    context(ModContext)
+    context(_: ModContext)
     open fun init() {
         RecipeViewerEvents.recipeViewerCategoryCards += this
         translation.enJa()

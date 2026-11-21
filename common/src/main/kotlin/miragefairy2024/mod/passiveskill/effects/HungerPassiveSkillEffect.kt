@@ -22,7 +22,7 @@ object HungerPassiveSkillEffect : AbstractDoublePassiveSkillEffect("hunger") {
 
     override fun getFilters(samples: List<Double>): List<PassiveSkillEffectFilter<Double>> = listOf(PassiveSkillEffectFilter(this, identifier, text { translation() }) { true })
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         translation.enJa()

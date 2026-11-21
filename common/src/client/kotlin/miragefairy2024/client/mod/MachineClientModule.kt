@@ -29,7 +29,7 @@ import net.minecraft.resources.ResourceLocation
 import java.util.Optional
 import kotlin.math.roundToInt
 
-context(ModContext)
+context(_: ModContext)
 fun initMachineClientModule() {
     FermentationBarrelCard.screenHandlerType.registerHandledScreen { gui, inventory, title -> FermentationBarrelScreen(FermentationBarrelCard, MachineScreen.Arguments(gui, inventory, title)) }
     AuraReflectorFurnaceCard.screenHandlerType.registerHandledScreen { gui, inventory, title -> AuraReflectorFurnaceScreen(AuraReflectorFurnaceCard, MachineScreen.Arguments(gui, inventory, title)) }

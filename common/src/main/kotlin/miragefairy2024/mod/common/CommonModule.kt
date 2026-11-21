@@ -86,7 +86,7 @@ val guiRareDropTranslation = Translation({ "gui.${MirageFairy2024.identifier("co
 
 val deadPlayerCommandExceptionType = DynamicCommandExceptionType { text { guiDeadPlayerTranslation(it) } }
 
-context(ModContext)
+context(_: ModContext)
 fun initCommonModule() {
     mirageFairy2024ItemGroupCard.init()
 
