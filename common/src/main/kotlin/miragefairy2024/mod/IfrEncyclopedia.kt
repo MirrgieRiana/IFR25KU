@@ -261,8 +261,7 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                     view.color = TEXT_COLOR
                     view.shadow = false
                     view.scroll = true
-                    view.tooltip = listOf(text { recipeEntry.recipe.titleTranslation() })
-                }
+                }.tooltip(text { recipeEntry.recipe.titleTranslation() })
 
                 view += YSpaceView(5)
 

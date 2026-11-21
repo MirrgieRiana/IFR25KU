@@ -1,8 +1,8 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.views.XScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import org.junit.jupiter.api.Assertions
@@ -10,18 +10,18 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.lwjgl.glfw.GLFW
 
-class VanillaScrollbarViewWidgetTest {
+class VanillaFlatScrollbarViewWidgetTest {
     @Test
     fun `View の指定位置を直接読み操作結果と再配置後の位置を保持するのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
-                val view = if (horizontal) XScrollbarView() else YScrollbarView()
+                val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
                 val scrollOffsetValue = view.scrollOffset
                 view.contentLength = 300
                 view.viewportLength = 100
                 val bounds = if (horizontal) IntRectangle(10, 200, 100, 5) else IntRectangle(200, 20, 5, 100)
 
-                fun attach() = if (horizontal) VanillaXScrollbarViewWidget(view as XScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YScrollbarView, bounds)
+                fun attach() = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
 
                 scrollOffsetValue.value = 50.25
                 val firstWidget = attach()
@@ -69,13 +69,13 @@ class VanillaScrollbarViewWidgetTest {
         listOf(false, true).forEach { horizontal ->
             listOf(0, 5, 200).forEach { thickness ->
                 GuiTestEnvironment().use {
-                    val view = if (horizontal) XScrollbarView() else YScrollbarView()
+                    val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
                     view.scrollbarThickness = thickness
                     view.scrollbarColor = 0xA0FFFFFF.toInt()
                     view.contentLength = 300
                     view.viewportLength = 100
                     val bounds = if (horizontal) IntRectangle(10, 20, 100, 7) else IntRectangle(10, 20, 7, 100)
-                    val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YScrollbarView, bounds)
+                    val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                     val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
                     widget.render(graphics, 50, 50, 0.0F)
                     if (horizontal) {
@@ -111,11 +111,11 @@ class VanillaScrollbarViewWidgetTest {
     fun `実際の太さが 0 なら描画とクリックをせずキー操作は継続するのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
-                val view = if (horizontal) XScrollbarView() else YScrollbarView()
+                val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
                 view.contentLength = 300
                 view.viewportLength = 100
                 val bounds = if (horizontal) IntRectangle(10, 20, 100, 0) else IntRectangle(10, 20, 0, 100)
-                val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YScrollbarView, bounds)
+                val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                 widget.render(environment.graphics, 10, 20, 0.0F)
                 Assertions.assertTrue(environment.fills.isEmpty())
                 Assertions.assertFalse(widget.mouseClicked(10.0, 20.0, 0))
@@ -132,11 +132,11 @@ class VanillaScrollbarViewWidgetTest {
     fun `コンテンツ長が縮小しても現在位置を含む範囲で描画と操作を行うのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
-                val view = if (horizontal) XScrollbarView() else YScrollbarView()
+                val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
                 view.contentLength = 300
                 view.viewportLength = 100
                 val bounds = if (horizontal) IntRectangle(10, 200, 100, 5) else IntRectangle(200, 20, 5, 100)
-                val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YScrollbarView, bounds)
+                val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                 widget.isFocused = true
                 Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
                 widget.render(environment.graphics, 50, 50, 0.0F)
@@ -167,11 +167,11 @@ class VanillaScrollbarViewWidgetTest {
     fun `範囲外からドラッグして切り返してもつまみが逆方向に動かないのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
-                val view = if (horizontal) XScrollbarView() else YScrollbarView()
+                val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
                 view.contentLength = 200
                 view.viewportLength = 100
                 val bounds = if (horizontal) IntRectangle(10, 200, 100, 5) else IntRectangle(200, 20, 5, 100)
-                val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YScrollbarView, bounds)
+                val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                 widget.isFocused = true
                 Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
                 view.contentLength = 150
@@ -198,11 +198,11 @@ class VanillaScrollbarViewWidgetTest {
     fun `表示領域と異なる長さのバーでページ移動と両端へのドラッグを扱うのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
-                val view = if (horizontal) XScrollbarView() else YScrollbarView()
+                val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
                 view.contentLength = 300
                 view.viewportLength = 100
                 val bounds = if (horizontal) IntRectangle(10, 200, 200, 5) else IntRectangle(200, 20, 5, 200)
-                val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YScrollbarView, bounds)
+                val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                 widget.render(environment.graphics, 50, 50, 0.0F)
                 Assertions.assertEquals(listOf(if (horizontal) IntRectangle(10, 200, 67, 5) else IntRectangle(200, 20, 5, 67)), environment.fills)
                 widget.isFocused = true
@@ -233,11 +233,11 @@ class VanillaScrollbarViewWidgetTest {
     fun `ドラッグ中に実際の太さを 0 にしても移動を継続しリリースでキャプチャを解除するのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
-                val view = if (horizontal) XScrollbarView() else YScrollbarView()
+                val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
                 view.contentLength = 300
                 view.viewportLength = 100
                 val bounds = if (horizontal) IntRectangle(10, 200, 100, 5) else IntRectangle(200, 20, 5, 100)
-                val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YScrollbarView, bounds)
+                val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                 val mouseX = if (horizontal) 15.0 else 202.0
                 val mouseY = if (horizontal) 202.0 else 25.0
                 Assertions.assertTrue(widget.mouseClicked(mouseX, mouseY, 0))
@@ -264,10 +264,10 @@ class VanillaScrollbarViewWidgetTest {
     @Test
     fun `トラックのクリックとホイールとキーを扱い破棄時にキャプチャを解除するのだ`() {
         GuiTestEnvironment().use { environment ->
-            val view = YScrollbarView()
+            val view = YFlatScrollbarView()
             view.contentLength = 300
             view.viewportLength = 100
-            val widget = VanillaYScrollbarViewWidget(view, IntRectangle(200, 20, 5, 100))
+            val widget = VanillaYFlatScrollbarViewWidget(view, IntRectangle(200, 20, 5, 100))
             Assertions.assertFalse(widget.mouseClicked(50.0, 50.0, 0))
             Assertions.assertFalse(widget.mouseClicked(202.0, 25.0, 1))
             Assertions.assertTrue(widget.mouseClicked(202.0, 110.0, 0))

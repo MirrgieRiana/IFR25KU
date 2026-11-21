@@ -71,14 +71,14 @@ operator fun <T> ResourceKey<Registry<T>>.get(key: TagKey<T>): HolderSet.Named<T
 }
 
 context(ModContext)
-fun <T : Any> registerDynamicGeneration(registryKey: ResourceKey<out Registry<T>>, identifier: ResourceLocation, creator: context(BootstrapContext<T>) () -> T): ResourceKey<T> {
+fun <T : Any> registerDynamicGeneration(registryKey: ResourceKey<out Registry<T>>, identifier: ResourceLocation, creator: BootstrapContext<T>.() -> T): ResourceKey<T> {
     val key = registryKey with identifier
     registerDynamicGeneration(key, creator)
     return key
 }
 
 context(ModContext)
-fun <T : Any> registerDynamicGeneration(key: ResourceKey<T>, creator: context(BootstrapContext<T>) () -> T) {
+fun <T : Any> registerDynamicGeneration(key: ResourceKey<T>, creator: BootstrapContext<T>.() -> T) {
     val registryKey = ResourceKey.createRegistryKey<T>(key.registry())
     DataGenerationEvents.onBuildRegistry {
         it.add<T>(registryKey) { context ->

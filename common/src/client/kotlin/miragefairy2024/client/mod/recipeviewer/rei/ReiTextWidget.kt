@@ -1,7 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.rei
 
 import me.shedaniel.rei.api.client.REIRuntime
-import me.shedaniel.rei.api.client.gui.widgets.Tooltip
 import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
 import miragefairy2024.client.util.drawScrollingString
 import miragefairy2024.mod.recipeviewer.view.Alignment
@@ -51,10 +50,6 @@ class ReiTextWidget(private val offset: IntPoint, private val view: TextView) : 
                 color,
                 view.shadow,
             )
-        }
-        if (reiBounds.contains(mouseX, mouseY)) {
-            val tooltip = view.tooltip
-            if (tooltip != null) Tooltip.create(tooltip).queue()
         }
     }
 

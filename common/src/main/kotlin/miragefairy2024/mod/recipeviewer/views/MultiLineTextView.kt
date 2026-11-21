@@ -24,7 +24,6 @@ class MultiLineTextView : AbstractView(), PlaceableView {
     var shadow = true
     var alignmentX = Alignment.START
     var lineSpacing = 2
-    var tooltip: List<Component>? = null
 
     override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
         super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)
