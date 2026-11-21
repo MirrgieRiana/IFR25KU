@@ -19,7 +19,7 @@ import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import org.lwjgl.glfw.GLFW
 import kotlin.math.roundToInt
 
-abstract class VanillaScrollbarViewWidget(
+abstract class AbstractVanillaScrollbarViewWidget(
     protected val view: ScrollbarView,
     bounds: IntRectangle,
 ) :
@@ -225,6 +225,8 @@ abstract class VanillaScrollbarViewWidget(
     }
 
 }
+
+abstract class VanillaScrollbarViewWidget(view: ScrollbarView, bounds: IntRectangle) : AbstractVanillaScrollbarViewWidget(view, bounds)
 
 class VanillaXScrollbarViewWidget(
     view: XScrollbarView,
