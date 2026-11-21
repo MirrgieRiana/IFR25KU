@@ -70,13 +70,7 @@ abstract class VanillaInventoryScrollbarViewWidget(view: InventoryScrollbarView,
 
 }
 
-class VanillaXInventoryScrollbarViewWidget(
-    view: XInventoryScrollbarView,
-    bounds: IntRectangle,
-) : VanillaInventoryScrollbarViewWidget(
-    view,
-    bounds,
-) {
+class VanillaXInventoryScrollbarViewWidget(view: XInventoryScrollbarView, bounds: IntRectangle) : VanillaInventoryScrollbarViewWidget(view, bounds) {
 
     // 領域とサイズなのだ～🌱
 
@@ -107,13 +101,7 @@ class VanillaXInventoryScrollbarViewWidget(
 
 }
 
-class VanillaYInventoryScrollbarViewWidget(
-    view: YInventoryScrollbarView,
-    bounds: IntRectangle,
-) : VanillaInventoryScrollbarViewWidget(
-    view,
-    bounds,
-) {
+class VanillaYInventoryScrollbarViewWidget(view: YInventoryScrollbarView, bounds: IntRectangle) : VanillaInventoryScrollbarViewWidget(view, bounds) {
 
     // 領域とサイズなのだ～🌱
 

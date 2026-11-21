@@ -10,13 +10,7 @@ import kotlin.math.roundToInt
 
 abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: IntRectangle) : VanillaScrollbarViewWidget<FlatScrollbarView>(view, bounds)
 
-class VanillaXFlatScrollbarViewWidget(
-    view: XFlatScrollbarView,
-    bounds: IntRectangle,
-) : VanillaFlatScrollbarViewWidget(
-    view,
-    bounds,
-) {
+class VanillaXFlatScrollbarViewWidget(view: XFlatScrollbarView, bounds: IntRectangle) : VanillaFlatScrollbarViewWidget(view, bounds) {
 
     // 領域とサイズなのだ～🌱
 
@@ -53,13 +47,7 @@ class VanillaXFlatScrollbarViewWidget(
 
 }
 
-class VanillaYFlatScrollbarViewWidget(
-    view: YFlatScrollbarView,
-    bounds: IntRectangle,
-) : VanillaFlatScrollbarViewWidget(
-    view,
-    bounds,
-) {
+class VanillaYFlatScrollbarViewWidget(view: YFlatScrollbarView, bounds: IntRectangle) : VanillaFlatScrollbarViewWidget(view, bounds) {
 
     // 領域とサイズなのだ～🌱
 
