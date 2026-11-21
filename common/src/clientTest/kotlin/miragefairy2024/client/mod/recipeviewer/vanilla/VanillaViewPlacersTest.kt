@@ -13,6 +13,7 @@ import miragefairy2024.mod.recipeviewer.views.AbsoluteView
 import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.DynamicView
+import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.ListView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
@@ -177,7 +178,7 @@ class VanillaViewPlacersTest {
             Assertions.assertEquals(setOf(7), placements)
             Assertions.assertEquals(listOf(IntPoint(16, 21), IntPoint(31, 41)), positions)
 
-            view.content.value = SpaceView()
+            view.content.value = EmptyView()
             Assertions.assertTrue(placements.isEmpty())
 
             view.content.value = menuSlotView
