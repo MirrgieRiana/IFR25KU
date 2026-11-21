@@ -6,6 +6,8 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.view.x2
+import miragefairy2024.mod.recipeviewer.view.y2
 import miragefairy2024.mod.recipeviewer.views.ScrollBounds
 import miragefairy2024.mod.recipeviewer.views.ScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
@@ -419,7 +421,21 @@ abstract class VanillaScrollContainerViewWidget(
             override val canPlaceMenuSlots = false
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
-            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = context.registerMenuSlotPlacement(slotId, clipBounds)
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
+                return context.registerMenuSlotPlacement(slotId) {
+                    val viewportBounds = IntRectangle(x, y, width atLeast 0, height atLeast 0)
+                    val childClipBounds = clipBounds()
+                    if (childClipBounds == null) {
+                        viewportBounds
+                    } else {
+                        val x1 = viewportBounds.x max childClipBounds.x
+                        val y1 = viewportBounds.y max childClipBounds.y
+                        val x2 = viewportBounds.x2 min childClipBounds.x2
+                        val y2 = viewportBounds.y2 min childClipBounds.y2
+                        IntRectangle(x1, y1, x2 - x1 atLeast 0, y2 - y1 atLeast 0)
+                    }
+                }
+            }
         }
         updateScrollBounds()
         val initialScrollOffset = scrollOffsetValue.value.roundToInt()
