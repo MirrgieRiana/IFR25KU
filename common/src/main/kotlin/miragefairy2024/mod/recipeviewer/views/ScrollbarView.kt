@@ -8,7 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.ObservableValue
 
 /** スクロール位置をコンテンツ座標で保持し、再配置時にも引き継ぐバーなのだ～🌱 */
-abstract class AbstractScrollbarView(initialScrollbarThickness: Int) : AbstractView(), PlaceableView {
+abstract class ScrollbarView(initialScrollbarThickness: Int) : AbstractView(), PlaceableView {
 
     init {
         require(initialScrollbarThickness >= 0) { "Scrollbar thickness must be non-negative" }

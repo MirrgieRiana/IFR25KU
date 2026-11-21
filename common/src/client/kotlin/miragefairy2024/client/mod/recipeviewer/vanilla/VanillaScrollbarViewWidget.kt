@@ -2,7 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.views.AbstractScrollbarView
+import miragefairy2024.mod.recipeviewer.views.ScrollbarView
 import miragefairy2024.util.empty
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
@@ -17,7 +17,7 @@ import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import org.lwjgl.glfw.GLFW
 import kotlin.math.roundToInt
 
-abstract class AbstractVanillaScrollbarViewWidget<V : AbstractScrollbarView>(
+abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
     protected val view: V,
     bounds: IntRectangle,
 ) :
@@ -173,10 +173,10 @@ abstract class AbstractVanillaScrollbarViewWidget<V : AbstractScrollbarView>(
         val range = evaluateScrollRange()
         if (range.start < range.endInclusive && !isFocused) {
             return object : ComponentPath {
-                override fun component() = this@AbstractVanillaScrollbarViewWidget
+                override fun component() = this@VanillaScrollbarViewWidget
 
                 override fun applyFocus(focused: Boolean) {
-                    this@AbstractVanillaScrollbarViewWidget.isFocused = focused
+                    this@VanillaScrollbarViewWidget.isFocused = focused
                 }
             }
         }
