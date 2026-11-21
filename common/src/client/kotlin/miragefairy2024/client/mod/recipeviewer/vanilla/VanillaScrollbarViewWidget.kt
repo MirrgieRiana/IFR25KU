@@ -7,14 +7,7 @@ import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import net.minecraft.client.gui.GuiGraphics
 import org.lwjgl.glfw.GLFW
 
-abstract class VanillaScrollbarViewWidget(
-    view: FlatScrollbarView,
-    bounds: IntRectangle,
-) : AbstractVanillaScrollbarViewWidget<FlatScrollbarView>(view, bounds) {
-
-    override fun shouldRenderScrollbar(scrollable: Boolean) = scrollable && scrollbarThickness > 0 && scrollbarLength > 0
-
-}
+abstract class VanillaScrollbarViewWidget(view: FlatScrollbarView, bounds: IntRectangle) : AbstractVanillaScrollbarViewWidget<FlatScrollbarView>(view, bounds)
 
 class VanillaXScrollbarViewWidget(
     view: XFlatScrollbarView,
@@ -42,7 +35,7 @@ class VanillaXScrollbarViewWidget(
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
     // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int, scrollable: Boolean) {
+    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
         guiGraphics.fill(
             x + start,
             y,
@@ -78,7 +71,7 @@ class VanillaYScrollbarViewWidget(
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
     // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int, scrollable: Boolean) {
+    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
         guiGraphics.fill(
             x,
             y + start,
