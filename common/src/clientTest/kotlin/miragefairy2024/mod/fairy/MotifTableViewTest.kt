@@ -139,10 +139,10 @@ class MotifTableViewTest {
                 Assertions.assertEquals(840, scroll.childView.evaluateActualSizeY())
                 Assertions.assertEquals(840, scrollbar.contentLength)
                 Assertions.assertEquals(size.y - 22, scrollbar.viewportLength)
-                scrollbar.scrollOffsetY.value = 125.5
+                scrollbar.scrollOffset.value = 125.5
                 Assertions.assertEquals(125.5, scroll.scrollOffsetY.value)
                 scroll.scrollOffsetY.value = 250.25
-                Assertions.assertEquals(250.25, scrollbar.scrollOffsetY.value)
+                Assertions.assertEquals(250.25, scrollbar.scrollOffset.value)
                 val names = placements.filter { (it.first as? MultiLineTextView)?.text?.value == itemStack.hoverName }
                 Assertions.assertEquals(20, names.size)
                 Assertions.assertTrue(names.all { it.second.sizeX == 150 && it.second.sizeY == 42 })
