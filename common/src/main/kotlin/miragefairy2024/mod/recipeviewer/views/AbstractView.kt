@@ -19,8 +19,8 @@ abstract class AbstractView : View {
 
     override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
         this.renderingProxy = renderingProxy
-        this.regionSizeXProvider = { regionSizeXProvider() atLeast 0 }
-        this.regionSizeYProvider = { regionSizeYProvider() atLeast 0 }
+        this.regionSizeXProvider = regionSizeXProvider
+        this.regionSizeYProvider = regionSizeYProvider
         contentSizeXCache.reset()
         contentSizeYCache.reset()
         actualSizeXCache.reset()
@@ -49,8 +49,8 @@ abstract class AbstractView : View {
     private val actualSizeXCache = CachingEvaluator {
         when (sizingX) {
             Sizing.FILL -> regionSizeXProvider()
-            Sizing.WRAP -> evaluateContentSizeX() atLeast 0
-        }
+            Sizing.WRAP -> evaluateContentSizeX()
+        } atLeast 0
     }
 
     final override fun evaluateActualSizeX() = actualSizeXCache.evaluate()
@@ -59,8 +59,8 @@ abstract class AbstractView : View {
     private val actualSizeYCache = CachingEvaluator {
         when (sizingY) {
             Sizing.FILL -> regionSizeYProvider()
-            Sizing.WRAP -> evaluateContentSizeY() atLeast 0
-        }
+            Sizing.WRAP -> evaluateContentSizeY()
+        } atLeast 0
     }
 
     final override fun evaluateActualSizeY() = actualSizeYCache.evaluate()

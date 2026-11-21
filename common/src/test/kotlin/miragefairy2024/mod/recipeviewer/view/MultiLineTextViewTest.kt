@@ -129,14 +129,14 @@ class MultiLineTextViewTest {
     }
 
     @Test
-    fun `空のテキストと幅ゼロでも評価できるのだ`() {
+    fun `空のテキストも負の割り当て幅も幅ゼロで評価できるのだ`() {
         val proxy = MultiLineRenderingProxy()
         val view = MultiLineTextView()
         view.initSizeCalculation(proxy, { 0 }, { throw UnsupportedOperationException() })
         assertEquals(IntPoint.ZERO, view.evaluateActualSize())
 
         view.text.value = Component.literal("ab")
-        view.initSizeCalculation(proxy, { 0 }, { throw UnsupportedOperationException() })
+        view.initSizeCalculation(proxy, { -1 }, { throw UnsupportedOperationException() })
         assertEquals(IntPoint(0, 20), view.evaluateActualSize())
         assertEquals(listOf(0, 0), proxy.widths)
     }

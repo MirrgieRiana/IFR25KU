@@ -31,7 +31,7 @@ class MultiLineTextView : AbstractView(), PlaceableView {
     }
 
     val lines = CachingEvaluator {
-        renderingProxy.wrapText(text.value, regionSizeXProvider())
+        renderingProxy.wrapText(text.value, evaluateActualSizeX())
     }
 
     override fun evaluateContentSizeXImpl() = 0

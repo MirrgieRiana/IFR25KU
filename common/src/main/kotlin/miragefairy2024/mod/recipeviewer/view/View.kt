@@ -8,7 +8,6 @@ interface View {
 
     /**
      * サイズ計算に使用する [renderingProxy] と、割り当て領域を取得する [regionSizeXProvider]・[regionSizeYProvider] を格納するのだ～🌱
-     * 負の割り当て領域は 0 として扱うのだ～🌱
      * 計算済みのサイズを破棄し、既に存在する子 View も初期化するのだ～🌱
      * 初期化自体ではサイズを計算しないのだ～🌱
      */
