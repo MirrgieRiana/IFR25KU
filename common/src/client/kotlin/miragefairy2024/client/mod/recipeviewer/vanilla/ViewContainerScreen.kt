@@ -1,10 +1,13 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.client.mixins.api.SlotHovering
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.util.Remover
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
@@ -16,11 +19,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.Slot
 
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
-class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
+class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title), SlotHovering where T : AbstractContainerMenu, T : ViewProviderMenu {
 
     private class SlotPlacement(val clipBounds: () -> IntRectangle?)
 
-    /** 配置解除後も Slot はメニューに残るため、未登録と解除済みを区別して保持するのだ～🌱 */
+    /**
+     * 配置解除後も Slot はメニューに残るため、未登録と解除済みを区別して保持するのだ～🌱
+     * キーが存在して値が `null` の場合、そのスロットは配置解除済みなのだ～🌱
+     */
     private val slotPlacementMap = mutableMapOf<Int, SlotPlacement?>()
 
     private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
@@ -125,6 +131,7 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         viewAdapter.beforeMouseClicked()
+        clearInvalidHoveredSlot(mouseX, mouseY)
         val handled = super.mouseClicked(mouseX, mouseY, button)
         viewAdapter.mouseClicked(mouseX, mouseY)
         return handled
@@ -146,7 +153,25 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (viewAdapter.keyPressed(keyCode, scanCode, modifiers)) return true
+        val minecraft = Minecraft.getInstance()
+        val window = minecraft.window
+        val mouseX = minecraft.mouseHandler.xpos() * window.guiScaledWidth / window.screenWidth
+        val mouseY = minecraft.mouseHandler.ypos() * window.guiScaledHeight / window.screenHeight
+        clearInvalidHoveredSlot(mouseX, mouseY)
         return super.keyPressed(keyCode, scanCode, modifiers)
+    }
+
+    override fun `mirageFairy2024$isHovering`(slot: Slot, mouseX: Double, mouseY: Double, hovering: Boolean): Boolean {
+        if (!hovering) return false
+        val clipBounds = getSlotClipBounds(slot) ?: return true
+        return clipBounds.contains(mouseX, mouseY)
+    }
+
+    private fun clearInvalidHoveredSlot(mouseX: Double, mouseY: Double) {
+        val slot = hoveredSlot ?: return
+        val clipBounds = getSlotClipBounds(slot) ?: return
+        // ショートカットは描画時の hoveredSlot を参照するため、スクロール後の位置で再判定するのだ～🌱
+        if (!slot.isActive || !isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY) || !clipBounds.contains(mouseX, mouseY)) hoveredSlot = null
     }
 
     /** 枠の絵はViewのツリーが描くのだ～🌱 */
