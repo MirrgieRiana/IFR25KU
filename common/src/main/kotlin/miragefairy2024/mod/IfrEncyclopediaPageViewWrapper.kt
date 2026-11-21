@@ -108,7 +108,7 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                             val itemStack = card.itemStacksGetter().firstOrNull()
                             if (itemStack != null) {
                                 view += ImageView(SlotType.NORMAL.viewTexture)
-                                view += ItemView(itemStack).configure().margin(1)
+                                view += ItemView(itemStack).configure().margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
                             }
                         }.margin(0, 5)
 
@@ -152,9 +152,7 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                         false
                     }
                 }
-
                 view += XSpaceView(20)
-
                 view += TextButtonView(IntPoint(80, 20)).configure {
                     view.message = CommonComponents.GUI_BACK
                     view.onClick.register {
