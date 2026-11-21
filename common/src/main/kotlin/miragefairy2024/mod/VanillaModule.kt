@@ -44,7 +44,7 @@ enum class BlockTagCard(identifier: ResourceLocation, val title: EnJa) {
     val tag = identifier.toBlockTag()
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initVanillaModule() {
     ItemTagCard.entries.forEach { card ->
         card.tag.enJa(card.title)

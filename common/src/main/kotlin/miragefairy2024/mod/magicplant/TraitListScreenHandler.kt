@@ -70,7 +70,7 @@ val traitListScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFair
 
 val traitListScreenTranslation = Translation({ "gui.${MirageFairy2024.identifier("trait_list").toLanguageKey()}" }, "Traits", "特性")
 
-context(ModContext)
+context(_: ModContext)
 fun initTraitListScreenHandler() {
     traitListScreenHandlerType.register()
     traitListScreenHandlerType.registerViewScreen()

@@ -43,7 +43,7 @@ class CommonMotifRecipe(val motif: Motif, val biomeCondition: BiomeCondition) {
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initCommonMotifRecipe() {
     CommonMotifRecipeRecipeViewerCategoryCard.init()
 }

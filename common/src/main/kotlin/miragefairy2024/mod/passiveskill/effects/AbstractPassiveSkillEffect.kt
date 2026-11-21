@@ -15,7 +15,7 @@ import net.minecraft.network.codec.StreamCodec
 abstract class AbstractPassiveSkillEffect<T : Any>(path: String) : PassiveSkillEffect<T> {
     val identifier = MirageFairy2024.identifier(path)
 
-    context(ModContext)
+    context(_: ModContext)
     open fun init() {
         Registration(passiveSkillEffectRegistry, identifier) { this }.register()
     }

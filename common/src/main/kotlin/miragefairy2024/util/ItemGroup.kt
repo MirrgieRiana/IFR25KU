@@ -11,14 +11,14 @@ import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerItemGroup(itemGroup: ResourceKey<CreativeModeTab>) {
     ItemGroupEvents.modifyEntriesEvent(itemGroup).register {
         it.accept(this())
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 @Suppress("UnusedReceiverParameter")
 fun (() -> Item).registerItemGroup(itemGroup: ResourceKey<CreativeModeTab>, supplier: () -> List<ItemStack>) {
     ItemGroupEvents.modifyEntriesEvent(itemGroup).register {
@@ -42,7 +42,7 @@ class ItemGroupCard(
         .title(text { translation() })
         .build()
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         Registration(BuiltInRegistries.CREATIVE_MODE_TAB, identifier) { itemGroup }.register()
         translation.enJa()

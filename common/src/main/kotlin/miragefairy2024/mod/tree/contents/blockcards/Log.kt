@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createBaseWoodSetting().strength(2.0F)
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 
@@ -31,12 +31,12 @@ abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) :
 
     }
 
-    context(ModContext)
+    context(_: ModContext)
     protected fun registerModelGeneration(parent: () -> Block, initializer: (WoodProvider) -> WoodProvider) = DataGenerationEvents.onGenerateBlockModel {
         initializer(it.woodProvider(parent()))
     }
 
-    context(ModContext)
+    context(_: ModContext)
     protected fun initWood(input: () -> Item) {
         registerShapedRecipeGeneration(item, 3) {
             pattern("##")
@@ -45,7 +45,7 @@ abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) :
         } on input
     }
 
-    context(ModContext)
+    context(_: ModContext)
     protected fun initStripped(input: () -> Block) {
         ModEvents.onInitialize {
             StrippableBlockRegistry.register(input(), block())
@@ -56,7 +56,7 @@ abstract class AbstractTreeLogBlockCard(configuration: TreeBlockConfiguration) :
 class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration, private val log: () -> TreeBlockCard) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getPlankMapColor() }
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         registerModelGeneration(block) { it.logWithHorizontal(block()) }
@@ -67,7 +67,7 @@ class TreeStrippedLogBlockCard(configuration: TreeBlockConfiguration, private va
 class TreeWoodBlockCard(configuration: TreeBlockConfiguration, private val log: () -> TreeBlockCard) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getWoodMapColor() }
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         registerModelGeneration({ log().block() }) { it.wood(block()) }
@@ -78,7 +78,7 @@ class TreeWoodBlockCard(configuration: TreeBlockConfiguration, private val log: 
 class TreeStrippedWoodBlockCard(configuration: TreeBlockConfiguration, private val strippedLog: () -> TreeBlockCard, private val wood: () -> TreeBlockCard) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { configuration.tree.getPlankMapColor() }
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         registerModelGeneration({ strippedLog().block() }) { it.wood(block()) }

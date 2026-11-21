@@ -48,7 +48,7 @@ enum class SimplePassiveSkillConditionCard(path: String, enName: String, jaName:
     override fun test(context: PassiveSkillContext, level: Double, mana: Double) = function(context)
     override val text = text { translation() }
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         translation.enJa()
     }

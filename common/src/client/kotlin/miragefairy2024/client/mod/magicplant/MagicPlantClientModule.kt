@@ -15,7 +15,7 @@ import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.RenderType
 
-context(ModContext)
+context(_: ModContext)
 fun initMagicPlantClientModule() {
     RenderingEvent.RENDER_ITEM_DECORATIONS.register { graphics, font, stack, x, y, text ->
         if (stack.item !is CreativeGeneAmpouleItem) return@register

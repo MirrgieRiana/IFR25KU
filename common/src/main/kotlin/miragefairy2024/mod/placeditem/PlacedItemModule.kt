@@ -21,7 +21,7 @@ import net.minecraft.world.phys.HitResult
 
 val PLACE_ITEM_KEY_TRANSLATION = Translation({ "key.${MirageFairy2024.MOD_ID}.place_item" }, "Place Item", "アイテムを置く")
 
-context(ModContext)
+context(_: ModContext)
 fun initPlacedItemModule() {
 
     PLACE_ITEM_KEY_TRANSLATION.enJa()

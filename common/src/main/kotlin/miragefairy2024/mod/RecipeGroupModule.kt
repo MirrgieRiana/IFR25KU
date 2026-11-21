@@ -7,7 +7,7 @@ import net.minecraft.world.item.Items
 
 val recipeGroupRegistry = mutableMapOf<Item, String>()
 
-context(ModContext)
+context(_: ModContext)
 fun initRecipeGroupModule() = ModEvents.onInitialize {
     recipeGroupRegistry[Items.STICK] = "sticks"
 }

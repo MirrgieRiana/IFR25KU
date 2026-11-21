@@ -38,7 +38,7 @@ val FAIRY_DECONDENSATION_RECIPE_DESCRIPTION_TRANSLATION = Translation(
     ).join("\n"),
 )
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyCondensationRecipe() {
     registerSpecialRecipe("fairy_condensation", minSlots = 2) { inventory ->
         val itemStacks = inventory.items()

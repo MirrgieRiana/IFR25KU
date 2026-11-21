@@ -100,7 +100,7 @@ object FairyCollectorCard : FairyFactoryCard<FairyCollectorBlock, FairyCollector
         type = AdvancementCardType.NORMAL,
     )
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("fairy_collector")) { FairyCollectorBlock.CODEC }.register()

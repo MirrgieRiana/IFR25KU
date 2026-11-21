@@ -121,7 +121,7 @@ object AthanorCard : SimpleMachineCard<AthanorBlock, AthanorBlockEntity, Athanor
         type = AdvancementCardType.NORMAL,
     )
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 
@@ -148,7 +148,7 @@ object AthanorCard : SimpleMachineCard<AthanorBlock, AthanorBlockEntity, Athanor
         } on MaterialCard.FAIRY_POT.item
     }
 
-    context(ModContext)
+    context(_: ModContext)
     override fun registerBlockStateGeneration() {
         block.registerVariantsBlockStateGeneration {
             normal("block/" * block().getIdentifier())
@@ -158,7 +158,7 @@ object AthanorCard : SimpleMachineCard<AthanorBlock, AthanorBlockEntity, Athanor
         }
     }
 
-    context(ModContext)
+    context(_: ModContext)
     override fun registerBlockLootTableGeneration() {
         block.registerLootTableGeneration { provider, _ ->
             provider.createSinglePropConditionTable(block(), AthanorBlock.HALF, DoubleBlockHalf.LOWER)

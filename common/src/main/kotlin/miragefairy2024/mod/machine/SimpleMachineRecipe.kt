@@ -60,7 +60,7 @@ abstract class SimpleMachineRecipeCard<R : SimpleMachineRecipe> {
 
     abstract fun createRecipe(group: String, inputs: List<SimpleMachineRecipe.Input>, outputs: List<ItemStack>, duration: Int): R
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         Registration(BuiltInRegistries.RECIPE_TYPE, identifier) { type }.register()
         Registration(BuiltInRegistries.RECIPE_SERIALIZER, identifier) { serializer }.register()
@@ -229,7 +229,7 @@ open class SimpleMachineRecipe(
 
 }
 
-context(ModContext)
+context(_: ModContext)
 fun <R : SimpleMachineRecipe> registerSimpleMachineRecipeGeneration(
     card: SimpleMachineRecipeCard<R>,
     inputs: List<() -> SimpleMachineRecipe.Input>,
