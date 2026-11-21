@@ -38,7 +38,7 @@ val OVERWORLD_BIOME_OVERRIDES = mutableMapOf<ResourceKey<Biome>, ResourceKey<Bio
 
 context(ModContext, BiomeCard)
 fun registerOverworldBiomeOverride(biome: ResourceKey<Biome>) {
-    OVERWORLD_BIOME_OVERRIDES[biome] = key
+    OVERWORLD_BIOME_OVERRIDES[biome] = this@BiomeCard.key
 }
 
 val OVERWORLD_SURFACE_RULES_CREATORS = mutableListOf<() -> SurfaceRules.RuleSource>()

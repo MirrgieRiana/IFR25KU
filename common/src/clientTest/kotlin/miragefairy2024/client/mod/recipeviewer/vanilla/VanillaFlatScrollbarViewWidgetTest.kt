@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.lwjgl.glfw.GLFW
 
-class VanillaScrollbarViewWidgetTest {
+class VanillaFlatScrollbarViewWidgetTest {
     @Test
     fun `View の指定位置を直接読み操作結果と再配置後の位置を保持するのだ`() {
         listOf(false, true).forEach { horizontal ->
@@ -21,7 +21,7 @@ class VanillaScrollbarViewWidgetTest {
                 view.viewportLength = 100
                 val bounds = if (horizontal) IntRectangle(10, 200, 100, 5) else IntRectangle(200, 20, 5, 100)
 
-                fun attach() = if (horizontal) VanillaXScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YFlatScrollbarView, bounds)
+                fun attach() = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
 
                 scrollOffsetValue.value = 50.25
                 val firstWidget = attach()
@@ -75,7 +75,7 @@ class VanillaScrollbarViewWidgetTest {
                     view.contentLength = 300
                     view.viewportLength = 100
                     val bounds = if (horizontal) IntRectangle(10, 20, 100, 7) else IntRectangle(10, 20, 7, 100)
-                    val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YFlatScrollbarView, bounds)
+                    val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                     val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
                     widget.render(graphics, 50, 50, 0.0F)
                     if (horizontal) {
@@ -115,7 +115,7 @@ class VanillaScrollbarViewWidgetTest {
                 view.contentLength = 300
                 view.viewportLength = 100
                 val bounds = if (horizontal) IntRectangle(10, 20, 100, 0) else IntRectangle(10, 20, 0, 100)
-                val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YFlatScrollbarView, bounds)
+                val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                 widget.render(environment.graphics, 10, 20, 0.0F)
                 Assertions.assertTrue(environment.fills.isEmpty())
                 Assertions.assertFalse(widget.mouseClicked(10.0, 20.0, 0))
@@ -136,7 +136,7 @@ class VanillaScrollbarViewWidgetTest {
                 view.contentLength = 300
                 view.viewportLength = 100
                 val bounds = if (horizontal) IntRectangle(10, 200, 100, 5) else IntRectangle(200, 20, 5, 100)
-                val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YFlatScrollbarView, bounds)
+                val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                 widget.isFocused = true
                 Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
                 widget.render(environment.graphics, 50, 50, 0.0F)
@@ -171,7 +171,7 @@ class VanillaScrollbarViewWidgetTest {
                 view.contentLength = 200
                 view.viewportLength = 100
                 val bounds = if (horizontal) IntRectangle(10, 200, 100, 5) else IntRectangle(200, 20, 5, 100)
-                val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YFlatScrollbarView, bounds)
+                val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                 widget.isFocused = true
                 Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
                 view.contentLength = 150
@@ -202,7 +202,7 @@ class VanillaScrollbarViewWidgetTest {
                 view.contentLength = 300
                 view.viewportLength = 100
                 val bounds = if (horizontal) IntRectangle(10, 200, 200, 5) else IntRectangle(200, 20, 5, 200)
-                val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YFlatScrollbarView, bounds)
+                val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                 widget.render(environment.graphics, 50, 50, 0.0F)
                 Assertions.assertEquals(listOf(if (horizontal) IntRectangle(10, 200, 67, 5) else IntRectangle(200, 20, 5, 67)), environment.fills)
                 widget.isFocused = true
@@ -237,7 +237,7 @@ class VanillaScrollbarViewWidgetTest {
                 view.contentLength = 300
                 view.viewportLength = 100
                 val bounds = if (horizontal) IntRectangle(10, 200, 100, 5) else IntRectangle(200, 20, 5, 100)
-                val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YFlatScrollbarView, bounds)
+                val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                 val mouseX = if (horizontal) 15.0 else 202.0
                 val mouseY = if (horizontal) 202.0 else 25.0
                 Assertions.assertTrue(widget.mouseClicked(mouseX, mouseY, 0))
@@ -267,7 +267,7 @@ class VanillaScrollbarViewWidgetTest {
             val view = YFlatScrollbarView()
             view.contentLength = 300
             view.viewportLength = 100
-            val widget = VanillaYScrollbarViewWidget(view, IntRectangle(200, 20, 5, 100))
+            val widget = VanillaYFlatScrollbarViewWidget(view, IntRectangle(200, 20, 5, 100))
             Assertions.assertFalse(widget.mouseClicked(50.0, 50.0, 0))
             Assertions.assertFalse(widget.mouseClicked(202.0, 25.0, 1))
             Assertions.assertTrue(widget.mouseClicked(202.0, 110.0, 0))

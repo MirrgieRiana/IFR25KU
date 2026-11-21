@@ -39,7 +39,7 @@ class VanillaScrollConnectionTest {
             val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
             val scroll = VanillaYScrollContainerViewWidget(scrollView, IntRectangle(10, 20, 100, 100), context, registry)
             val barView = YFlatScrollbarView()
-            val bar = VanillaYScrollbarViewWidget(barView, IntRectangle(250, 20, 5, 100))
+            val bar = VanillaYFlatScrollbarViewWidget(barView, IntRectangle(250, 20, 5, 100))
             try {
                 Assertions.assertTrue(scroll.mouseScrolled(50.0, 50.0, 0.0, -1.0))
                 val connection = connectScrollbar(scrollView, barView)

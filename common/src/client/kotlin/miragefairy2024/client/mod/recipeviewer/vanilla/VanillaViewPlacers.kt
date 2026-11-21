@@ -87,7 +87,7 @@ fun initVanillaViewPlacers() {
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollContainerView, bounds ->
         placeScrollContainerView(context, VanillaYScrollContainerViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
     }
-    fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget): ViewController {
+    fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaFlatScrollbarViewWidget): ViewController {
         val controller = context place widget
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
@@ -105,10 +105,10 @@ fun initVanillaViewPlacers() {
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XFlatScrollbarView, bounds ->
-        placeScrollbarView(context, VanillaXScrollbarViewWidget(view, bounds))
+        placeScrollbarView(context, VanillaXFlatScrollbarViewWidget(view, bounds))
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YFlatScrollbarView, bounds ->
-        placeScrollbarView(context, VanillaYScrollbarViewWidget(view, bounds))
+        placeScrollbarView(context, VanillaYFlatScrollbarViewWidget(view, bounds))
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
         if (!context.canPlaceMenuSlots) throw UnsupportedOperationException("MenuSlotView cannot be placed in this context")

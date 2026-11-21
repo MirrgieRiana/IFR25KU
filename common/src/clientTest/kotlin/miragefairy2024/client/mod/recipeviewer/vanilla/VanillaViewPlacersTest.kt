@@ -367,9 +367,9 @@ class VanillaViewPlacersTest {
             view.viewportLength = 100
             view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
             val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
-            val widget = widgets.single() as VanillaScrollbarViewWidget
+            val widget = widgets.single() as VanillaFlatScrollbarViewWidget
             try {
-                Assertions.assertEquals(if (horizontal) VanillaXScrollbarViewWidget::class.java else VanillaYScrollbarViewWidget::class.java, widget.javaClass)
+                Assertions.assertEquals(if (horizontal) VanillaXFlatScrollbarViewWidget::class.java else VanillaYFlatScrollbarViewWidget::class.java, widget.javaClass)
                 Assertions.assertEquals(if (horizontal) IntPoint(100, 5) else IntPoint(5, 100), IntPoint(widget.width, widget.height))
                 controller.setOffset(IntPoint(40, 60))
                 Assertions.assertEquals(IntPoint(40, 60), IntPoint(widget.x, widget.y))
@@ -430,7 +430,7 @@ class VanillaViewPlacersTest {
                             root.initSizeCalculation(PLACER_RENDERING_PROXY, { if (horizontal || overlay) 50 else 55 }, { if (horizontal && !overlay) viewportLength + 5 else viewportLength })
                             val controller = root.attachTo(context.origin) { view, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds) }
                             val viewport = widgets.filterIsInstance<VanillaScrollContainerViewWidget>().single()
-                            val scrollbar = widgets.filterIsInstance<VanillaScrollbarViewWidget>().single()
+                            val scrollbar = widgets.filterIsInstance<VanillaFlatScrollbarViewWidget>().single()
                             val child = viewport.children().single() as AbstractWidget
                             try {
                                 Assertions.assertEquals(100, bar.contentLength)
