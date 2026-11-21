@@ -19,7 +19,7 @@ fun <T : ToolConfiguration> T.selfMending(speed: Int) = this.merge(SelfMendingTo
 object SelfMendingToolEffectType : IntAddToolEffectType<ToolConfiguration>() {
     private val TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("fairy_mining_tool").toLanguageKey()}.self_mending" }, "Durability regenerates while held", "手に持っている間、耐久値自然回復")
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         TRANSLATION.enJa()
     }

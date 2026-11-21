@@ -34,7 +34,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
 object FairyJewelsLootTableHelper {
     val cache = mutableMapOf<Int, ResourceKey<LootTable>>()
 
-    context(ModContext)
+    context(_: ModContext)
     fun getOrInit(fairyJewels: Int): ResourceKey<LootTable> {
         return cache.getOrPut(fairyJewels) {
             val lootTableId = Registries.LOOT_TABLE with MirageFairy2024.identifier("jewels_$fairyJewels")
@@ -161,7 +161,7 @@ class AdvancementCard(
     private val deferred = CompletableDeferred<AdvancementHolder>()
     suspend fun await() = deferred.await()
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         check(nameTranslation.en.length <= 30) { "Advancement name is too long: $identifier = ${nameTranslation.en}" }
         check(nameTranslation.ja.length <= 18) { "Advancement name is too long: $identifier = ${nameTranslation.ja}" }

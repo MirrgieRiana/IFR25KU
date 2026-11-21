@@ -20,9 +20,9 @@ import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
@@ -69,7 +69,7 @@ val fairyQuestCardScreenHandlerType = Registration(BuiltInRegistries.MENU, Mirag
     }, ResourceLocation.STREAM_CODEC)
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyQuestCardScreenHandler() {
     fairyQuestCardScreenHandlerType.register()
     fairyQuestCardScreenHandlerType.registerViewScreen()
@@ -180,7 +180,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                                 }
                             }
                             view += scrollView
-                            val scrollbarView = YScrollbarView()
+                            val scrollbarView = YFlatScrollbarView()
                             view += scrollbarView
                             connectScrollbar(scrollView.view, scrollbarView)
                         }.margin(11, 6, 11, 11)

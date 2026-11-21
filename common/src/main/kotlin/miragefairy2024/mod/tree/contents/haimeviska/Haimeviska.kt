@@ -81,7 +81,7 @@ val haimeviskaAdvancement = AdvancementCard(
     type = AdvancementCardType.TOAST_AND_JEWELS,
 )
 
-context(ModContext)
+context(_: ModContext)
 fun initHaimeviska() {
 
     // BlockType

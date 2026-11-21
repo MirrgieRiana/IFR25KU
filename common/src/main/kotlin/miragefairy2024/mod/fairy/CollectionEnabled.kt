@@ -40,7 +40,7 @@ object SetCollectionEnabledChannel : Channel<Boolean>(MirageFairy2024.identifier
 
 val TOGGLE_COLLECTION_ENABLED_KEY_TRANSLATION = Translation({ "key.${MirageFairy2024.MOD_ID}.toggle_collection_enabled" }, "Toggle Collection", "収集のオンオフ")
 
-context(ModContext)
+context(_: ModContext)
 fun initCollectionEnabled() {
 
     COLLECTION_ENABLED_TRANSLATION.enJa()

@@ -15,9 +15,9 @@ import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.margin
@@ -78,7 +78,7 @@ val motifTableScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFai
     }, MOTIF_TABLE_STREAM_CODEC)
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initMotifTableScreenHandler() {
     motifTableScreenHandlerType.register()
     motifTableScreenHandlerType.registerViewScreen()
@@ -131,7 +131,7 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
                         }.margin(0, 3, 0, 0)
                     }
                     view += scrollView
-                    val scrollbarView = YScrollbarView().configure {
+                    val scrollbarView = YFlatScrollbarView().configure {
                         view.scrollbarThickness = 18
                     }
                     view += scrollbarView

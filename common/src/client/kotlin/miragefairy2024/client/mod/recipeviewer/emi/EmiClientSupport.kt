@@ -52,7 +52,7 @@ fun hasClientEmi(): Boolean {
     return true
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initEmiClientSupport() {
     EmiClientEvents.onRegister { register ->
         EmiClientEvents.onRegisterDefaultComparison.fire { it(register) } // 先に登録しないとEmiIngredientで妖精の種類がマージされてしまう

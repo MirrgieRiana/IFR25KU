@@ -18,7 +18,7 @@ fun Iterable<Item>.toIngredient(): Ingredient = Ingredient.of(*this.toList().toT
 @JvmName("toIngredientFromItemStacks")
 fun Iterable<ItemStack>.toIngredient(): Ingredient = Ingredient.of(*this.toList().toTypedArray())
 
-context(ModContext)
+context(_: ModContext)
 fun CustomIngredientSerializer<*>.register() {
     ModEvents.onInitialize {
         CustomIngredientSerializer.register(this)

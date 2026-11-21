@@ -48,7 +48,7 @@ fun <P> Channel<P>.sendToAround(level: ServerLevel, pos: Vec3, distance: Double,
     NetworkManager.sendToPlayers(players, Channel.Payload(this, packet))
 }
 
-context(ModContext)
+context(_: ModContext)
 fun <P> Channel<P>.registerClientPacketReceiver(handler: (P) -> Unit) = ModEvents.onClientInit {
     NetworkManager.registerReceiver(NetworkManager.Side.S2C, this.type, this.streamCodec) { buf, context ->
         handler(buf.data)

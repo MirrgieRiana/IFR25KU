@@ -19,7 +19,7 @@ import miragefairy2024.util.with
 import net.minecraft.world.item.Item
 
 class TreeChargeableLeavesBlockCard(configuration: TreeBlockConfiguration, sapling: () -> TreeBlockCard, extraDrop: (() -> Item)?) : AbstractTreeLeavesBlockCard(configuration, sapling, extraDrop) {
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         block.registerFoliageColorProvider()

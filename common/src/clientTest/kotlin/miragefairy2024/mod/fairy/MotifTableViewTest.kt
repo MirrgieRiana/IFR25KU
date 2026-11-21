@@ -16,8 +16,8 @@ import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.util.Chance
 import miragefairy2024.util.CondensedItem
 import miragefairy2024.util.invoke
@@ -84,9 +84,9 @@ class MotifTableViewTest {
             Assertions.assertEquals(IntRectangle(33, 4, 334, 232), placements.single { it.first is NinePatchImageView }.second)
             val scroll = placements.single { it.first is YScrollContainerView }
             Assertions.assertEquals(IntRectangle(40, 11, 302, 218), scroll.second)
-            val scrollbar = placements.single { it.first is YScrollbarView }
+            val scrollbar = placements.single { it.first is YFlatScrollbarView }
             Assertions.assertEquals(IntRectangle(342, 11, 18, 218), scrollbar.second)
-            Assertions.assertEquals(18, (scrollbar.first as YScrollbarView).scrollbarThickness)
+            Assertions.assertEquals(18, (scrollbar.first as YFlatScrollbarView).scrollbarThickness)
             val items = placements.mapNotNull { it.first as? ItemView }
             Assertions.assertEquals(listOf(first, second), items.map { it.itemStack })
             Assertions.assertTrue(items.all { !it.showDecorations })
@@ -135,7 +135,7 @@ class MotifTableViewTest {
             val controller = view.attachTo(IntPoint((size.x - uiSize.x) / 2, 0), ::place)
             try {
                 val scroll = placements.single { it.first is YScrollContainerView }.first as YScrollContainerView
-                val scrollbar = placements.single { it.first is YScrollbarView }.first as YScrollbarView
+                val scrollbar = placements.single { it.first is YFlatScrollbarView }.first as YFlatScrollbarView
                 Assertions.assertEquals(840, scroll.childView.evaluateActualSizeY())
                 Assertions.assertEquals(840, scrollbar.contentLength)
                 Assertions.assertEquals(size.y - 22, scrollbar.viewportLength)

@@ -118,7 +118,7 @@ object MirageFlowerCard : AbstractMirageFlowerCard<MirageFlowerBlock>() {
         type = AdvancementCardType.NORMAL,
     )
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         Registration(BuiltInRegistries.FEATURE, MirageFairy2024.identifier("fairy_ring")) { FAIRY_RING_FEATURE }.register() // Fairy Ring

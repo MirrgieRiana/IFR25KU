@@ -16,6 +16,7 @@ import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.BiomeCondition
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.get
@@ -42,7 +43,7 @@ class CommonMotifRecipe(val motif: Motif, val biomeCondition: BiomeCondition) {
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initCommonMotifRecipe() {
     CommonMotifRecipeRecipeViewerCategoryCard.init()
 }
@@ -73,26 +74,26 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
     override fun createView(recipeEntry: RecipeEntry<CommonMotifRecipe>) = View {
         view += XListView().configure {
             view.sizingX = Sizing.FILL
-            val recipeText = recipeEntry.recipe.biomeCondition.getDisplayName()
-            view += TextView(recipeText).configure {
+            val condition = recipeEntry.recipe.biomeCondition
+            val label = TextView(condition.getDisplayName()).configure {
                 position.alignmentY = Alignment.CENTER
                 position.weight = 1.0
                 view.sizingX = Sizing.FILL
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
                 view.scroll = true
-                when (val condition = recipeEntry.recipe.biomeCondition) {
-                    is BiomeCondition.Always -> Unit
-                    is BiomeCondition.BiomeKey -> view.tooltip = listOf(text { translate(condition.biomeKey.location().toLanguageKey("biome")) })
-                    is BiomeCondition.BiomeTag -> {
-                        val biomes = recipeEntry.registryAccess.registryOrThrow(Registries.BIOME)[condition.biomeTag].toList()
-                        val lines = mutableListOf<Component>()
-                        lines += biomes.sortedBy { it.unwrapKey().get().location() }.take(10).map {
-                            text { translate(it.unwrapKey().get().location().toLanguageKey("biome")) }
-                        }
-                        if (biomes.size > 10) lines += text { "..."() } // TODO 完全なリストGUI
-                        view.tooltip = lines
+            }
+            view += when (condition) {
+                is BiomeCondition.Always -> label
+                is BiomeCondition.BiomeKey -> label.tooltip(text { translate(condition.biomeKey.location().toLanguageKey("biome")) })
+                is BiomeCondition.BiomeTag -> {
+                    val biomes = recipeEntry.registryAccess.registryOrThrow(Registries.BIOME)[condition.biomeTag].toList()
+                    val lines = mutableListOf<Component>()
+                    lines += biomes.sortedBy { it.unwrapKey().get().location() }.take(10).map {
+                        text { translate(it.unwrapKey().get().location().toLanguageKey("biome")) }
                     }
+                    if (biomes.size > 10) lines += text { "..."() } // TODO 完全なリストGUI
+                    label.tooltip(lines)
                 }
             }
             view += XSpaceView(2)

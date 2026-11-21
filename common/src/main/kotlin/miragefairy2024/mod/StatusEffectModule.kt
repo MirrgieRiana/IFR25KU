@@ -19,7 +19,7 @@ val experienceStatusEffect = Registration(BuiltInRegistries.MOB_EFFECT, MirageFa
 
 val stickyMiningStatusEffect = Registration(BuiltInRegistries.MOB_EFFECT, MirageFairy2024.identifier("sticky_mining")) { StickyMiningStatusEffect() }
 
-context(ModContext)
+context(_: ModContext)
 fun initStatusEffectModule() {
     experienceStatusEffect.register()
     en { experienceStatusEffect().descriptionId to "Experience" }

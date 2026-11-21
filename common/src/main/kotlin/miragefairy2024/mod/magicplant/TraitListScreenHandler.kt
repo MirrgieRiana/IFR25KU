@@ -13,18 +13,18 @@ import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.AlignView
 import miragefairy2024.mod.recipeviewer.views.DynamicView
+import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
-import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
@@ -70,7 +70,7 @@ val traitListScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFair
 
 val traitListScreenTranslation = Translation({ "gui.${MirageFairy2024.identifier("trait_list").toLanguageKey()}" }, "Traits", "特性")
 
-context(ModContext)
+context(_: ModContext)
 fun initTraitListScreenHandler() {
     traitListScreenHandlerType.register()
     traitListScreenHandlerType.registerViewScreen()
@@ -93,21 +93,19 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
 
     override fun createView(title: Component, playerInventoryTitle: Component): View {
         val level: Level = playerInventory.player.level()
-        val panelTexture = "textures/gui/" * MirageFairy2024.identifier("panel") * ".png"
-        val scrollbarColor = 0xA0FFFFFF.toInt()
 
         fun createTraitCardView(traitStack: TraitStack): View {
-            val trait = traitStack.trait
-            val context = TraitConditionContext(level, blockPos, level.getMagicPlantBlockEntity(blockPos))
-            val conditionFactors = trait.conditions.map { it.getFactor(context) }
-            val totalConditionFactor = conditionFactors.fold(1.0) { a, b -> a * b }
-
             return View {
                 view += YListView().configure {
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
 
-                    // 特性名なのだ～🌱
+                    val trait = traitStack.trait
+                    val context = TraitConditionContext(level, blockPos, level.getMagicPlantBlockEntity(blockPos))
+                    val conditionFactors = trait.conditions.map { it.getFactor(context) }
+                    val totalConditionFactor = conditionFactors.fold(1.0) { a, b -> a * b }
+
+                    // 特性名
                     view += MultiLineTextView().configure {
                         view.text.value = trait.getName().style(trait.style)
                         view.alignmentX = Alignment.CENTER
@@ -116,11 +114,12 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
 
                     view += YSpaceView(5)
 
-                    // 特性アイコンと条件・効果なのだ～🌱
+                    // 特性アイコン欄
                     view += XListView().configure {
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
 
+                        // 条件
                         view += YListView().configure {
                             position.alignmentY = Alignment.END
                             position.weight = 1.0
@@ -134,8 +133,10 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                             }
                         }
 
+                        // 特性アイコン
                         view += ImageView(ViewTexture(trait.texture, IntPoint(32, 32)))
 
+                        // 効果
                         view += YListView().configure {
                             position.alignmentY = Alignment.END
                             position.weight = 1.0
@@ -154,10 +155,12 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                                 }.tooltip(entry.traitEffectKey.name)
                             }
                         }
+
                     }.minContentSizeY(32).maxContentSizeY(32)
 
                     view += YSpaceView(5)
 
+                    // 特性ポエム
                     // バーを本文に重ね、従来の折り返し幅を維持するのだ～🌱
                     view += StackView().configure {
                         position.weight = 1.0
@@ -171,29 +174,33 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                             }
                         }
                         view += scrollView
-                        val scrollbarView = YScrollbarView()
-                        scrollbarView.scrollbarColor = scrollbarColor
+                        val scrollbarView = YFlatScrollbarView().configure {
+                            view.scrollbarColor = 0xA0FFFFFF.toInt()
+                        }
                         view += AlignView().configure {
                             view.alignmentX = Alignment.END
                             view += scrollbarView
                         }
-                        connectScrollbar(scrollView.view, scrollbarView)
+                        connectScrollbar(scrollView.view, scrollbarView.view)
                     }
+
                 }
             }
         }
 
-        val traitStackList = traitStacks.traitStackList
-        val firstTraitStack = traitStackList.firstOrNull()
-        val cardContent = DynamicView(if (firstTraitStack != null) createTraitCardView(firstTraitStack) else SpaceView())
-        val traitListContext = TraitConditionContext(level, blockPos, level.getMagicPlantBlockEntity(blockPos))
-
         return View {
-            view += StackView().configure { // 外枠なのだ～🌱
-                view += NinePatchImageView(panelTexture, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
-                view += YListView().configure { // 内枠なのだ～🌱
+            // 外枠
+            view += StackView().configure {
+                view += NinePatchImageView("textures/gui/" * MirageFairy2024.identifier("panel") * ".png", 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                // 内枠
+                view += YListView().configure {
                     view.sizingX = Sizing.FILL
 
+                    val traitStackList = traitStacks.traitStackList
+
+                    val cardContent = DynamicView(if (traitStackList.isNotEmpty()) createTraitCardView(traitStackList.first()) else EmptyView())
+
+                    // GUI名
                     view += MultiLineTextView().configure {
                         view.text.value = title
                         view.alignmentX = Alignment.CENTER
@@ -203,7 +210,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
 
                     view += YSpaceView(3)
 
-                    // 選択中の特性なのだ～🌱
+                    // 選択中の特性
                     view += StackView().configure {
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
@@ -214,7 +221,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
 
                     view += YSpaceView(4)
 
-                    // 特性リストなのだ～🌱
+                    // 特性リスト
                     view += StackView().configure {
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
@@ -230,10 +237,14 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                                 view += YListView().configure {
                                     view.sizingX = Sizing.FILL
 
+                                    val context = TraitConditionContext(level, blockPos, level.getMagicPlantBlockEntity(blockPos))
+
                                     traitStackList.forEach { traitStack ->
                                         val trait = traitStack.trait
-                                        val totalConditionFactor = trait.conditions.fold(1.0) { factor, condition -> factor * condition.getFactor(traitListContext) }
+                                        val conditionFactors = trait.conditions.map { it.getFactor(context) }
+                                        val totalConditionFactor = conditionFactors.fold(1.0) { a, b -> a * b }
 
+                                        // 特性
                                         view += MultiLineTextView().configure {
                                             view.text.value = text {
                                                 val texts = mutableListOf<Component>()
@@ -249,17 +260,19 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                                             cardContent.content.value = createTraitCardView(traitStack)
                                             true
                                         }
+
                                     }
                                 }
                             }
                             view += scrollView
-                            val scrollbarView = YScrollbarView().configure {
-                                view.scrollbarColor = scrollbarColor
+                            val scrollbarView = YFlatScrollbarView().configure {
+                                view.scrollbarColor = 0xA0FFFFFF.toInt()
                             }
                             view += scrollbarView
                             connectScrollbar(scrollView.view, scrollbarView.view)
                         }.margin(4)
                     }.minContentSizeY(18 * 4).maxContentSizeY(18 * 4)
+
                 }.minContentSizeX(18 * 9).maxContentSizeX(18 * 9).margin(7)
             }
         }

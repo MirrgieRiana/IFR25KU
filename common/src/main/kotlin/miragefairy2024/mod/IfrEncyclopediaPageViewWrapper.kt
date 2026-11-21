@@ -19,9 +19,9 @@ import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
@@ -37,7 +37,7 @@ import miragefairy2024.util.text
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 
-context(ModContext)
+context(_: ModContext)
 fun initIfrEncyclopediaPageScreen() {
     onOpenIfrEncyclopediaPageScreen.register { card ->
         card.openIfrEncyclopediaPageScreen()
@@ -129,7 +129,7 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                                 }
                             }
                             view += scrollView
-                            val scrollbarView = YScrollbarView()
+                            val scrollbarView = YFlatScrollbarView()
                             view += scrollbarView
                             connectScrollbar(scrollView.view, scrollbarView)
                         }
