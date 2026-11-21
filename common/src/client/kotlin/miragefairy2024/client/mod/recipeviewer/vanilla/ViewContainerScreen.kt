@@ -103,6 +103,7 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         viewAdapter.beforeMouseClicked()
+        clearInvalidHoveredSlot(mouseX, mouseY)
         val handled = super.mouseClicked(mouseX, mouseY, button)
         viewAdapter.mouseClicked(mouseX, mouseY)
         return handled
@@ -139,6 +140,13 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         val slotBounds = IntRectangle(leftPos + slot.x, topPos + slot.y, 16, 16)
         val visibleBounds = slotBounds.intersect(clipBounds)
         return visibleBounds.sizeX > 0 && visibleBounds.sizeY > 0
+    }
+
+    private fun clearInvalidHoveredSlot(mouseX: Double, mouseY: Double) {
+        val slot = hoveredSlot ?: return
+        val clipBounds = getSlotClipBounds(slot) ?: return
+        // ショートカットは描画時の hoveredSlot を参照するため、スクロール後の位置で再判定するのだ～🌱
+        if (!slot.isActive || !isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY) || !isSlotVisibleAt(slot, clipBounds, mouseX, mouseY)) hoveredSlot = null
     }
 
     /** 枠の絵はViewのツリーが描くのだ～🌱 */
