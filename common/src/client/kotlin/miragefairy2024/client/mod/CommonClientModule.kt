@@ -41,7 +41,7 @@ private val LINES_NO_DEPTH by lazy {
     )
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initCommonClientModule() {
     CommonRenderingEvents.onRenderBlockPosesOutline.subscribe { listener ->
         WorldRenderEvents.LAST.register { context ->

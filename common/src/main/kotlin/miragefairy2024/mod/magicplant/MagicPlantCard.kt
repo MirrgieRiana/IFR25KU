@@ -74,7 +74,7 @@ abstract class MagicPlantCard<B : MagicPlantBlock> {
     open fun createAdvancement(identifier: ResourceLocation): AdvancementCard? = null
     val advancement = createAdvancement(blockIdentifier)
 
-    context(ModContext)
+    context(_: ModContext)
     open fun init() {
 
         // 登録

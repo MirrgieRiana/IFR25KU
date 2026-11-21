@@ -15,7 +15,7 @@ val tooltipViewerKeyMappingCard = KeyMappingCard(
     openTooltipViewerScreen()
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initTooltipViewerClientModule() {
     tooltipViewerKeyMappingCard.init()
 }

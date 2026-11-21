@@ -119,7 +119,7 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
         )
     }
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         SPINE_DAMAGE_TYPE_TAG.enJa(EnJa("Spine", "棘"))

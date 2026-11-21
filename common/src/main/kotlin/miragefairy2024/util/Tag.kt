@@ -79,28 +79,28 @@ class TagGenerator<T>(
 }
 
 
-context(ModContext)
+context(_: ModContext)
 fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(elementGetter: () -> T) {
     this.second.eventRegistry {
         it(this.first).add(elementGetter())
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(resourceLocation: ResourceLocation) {
     this.second.eventRegistry {
         it(this.first).add(resourceLocation)
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(resourceKey: ResourceKey<T>) {
     this.second.eventRegistry {
         it(this.first).add(resourceKey)
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(tag: TagKey<T>) {
     this.second.eventRegistry {
         it(this.first).addOptionalTag(tag)

@@ -29,7 +29,7 @@ val FAIRY_BUILDING_BLOCK_TAG = MirageFairy2024.identifier("fairy_building").toBl
 
 val FOLIA_CONDUCTORS_BLOCK_TAG = MirageFairy2024.identifier("folia_conductors").toBlockTag()
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyBuildingModule() {
     fairyBuildingCards.forEach { card ->
         card.init()

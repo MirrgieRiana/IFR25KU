@@ -52,7 +52,7 @@ fun hasClientRei(): Boolean {
     return true
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initReiClientSupport() {
     RecipeViewerEvents.informationEntries.subscribe { informationEntry ->
         ReiClientEvents.onRegisterDisplays { _ ->

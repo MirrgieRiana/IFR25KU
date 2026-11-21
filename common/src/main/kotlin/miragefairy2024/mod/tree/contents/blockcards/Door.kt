@@ -21,7 +21,7 @@ class TreeDoorBlockCard(configuration: TreeBlockConfiguration, private val paren
 
     override suspend fun createItem(block: Block, properties: Item.Properties) = DoubleHighBlockItem(block, properties)
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

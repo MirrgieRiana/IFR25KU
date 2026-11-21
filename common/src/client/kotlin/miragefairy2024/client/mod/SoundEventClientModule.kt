@@ -5,7 +5,7 @@ import miragefairy2024.mod.SoundEventChannel
 import miragefairy2024.util.registerClientPacketReceiver
 import net.minecraft.client.Minecraft
 
-context(ModContext)
+context(_: ModContext)
 fun initSoundEventClientModule() {
     SoundEventChannel.registerClientPacketReceiver { packet ->
         val client = Minecraft.getInstance() ?: return@registerClientPacketReceiver

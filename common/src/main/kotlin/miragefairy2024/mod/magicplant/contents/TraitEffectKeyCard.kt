@@ -145,7 +145,7 @@ private class SqrtTraitEffectKey(card: TraitEffectKeyCard) : BaseTraitEffectKey(
     override fun getDefaultValue() = 0.0
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initTraitEffectKeyCard() {
     TraitEffectKeyCard.entries.forEach { card ->
         Registration(traitEffectKeyRegistry, card.identifier) { card.traitEffectKey }.register()

@@ -21,7 +21,7 @@ import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition
 
 class TreeDrippingLogBlockCard(configuration: TreeBlockConfiguration, log: () -> TreeBlockCard, private val sap: () -> Item, private val rosin: () -> Item) : TreeHorizontalFacingLogBlockCard(configuration, log) {
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

@@ -82,7 +82,7 @@ val buildersRodAdvancement = AdvancementCard(
     type = AdvancementCardType.NORMAL,
 )
 
-context(ModContext)
+context(_: ModContext)
 fun initToolCard() {
     MINEABLE_WITH_NOISE_BLOCK_TAG.enJa(EnJa("Mineable with noise", "ノイズで採掘可能"))
     toolsItemGroupCard.init()
@@ -602,7 +602,7 @@ private fun ToolCard(
     initializer: context(ModContext) ToolCard.() -> Unit = {},
 ) = ToolCard(path, name, PoemList(null), configuration, advancementCreator, initializer)
 
-context(ModContext)
+context(_: ModContext)
 private fun registerPickaxeRecipeGeneration(item: () -> Item, input: TagKey<Item>) = registerShapedRecipeGeneration(item) {
     pattern("###")
     pattern(" R ")
@@ -611,7 +611,7 @@ private fun registerPickaxeRecipeGeneration(item: () -> Item, input: TagKey<Item
     define('R', tagOf(Shape.ROD, Material.WOOD))
 } on input
 
-context(ModContext)
+context(_: ModContext)
 private fun registerAxeRecipeGeneration(item: () -> Item, input: TagKey<Item>) = registerShapedRecipeGeneration(item) {
     pattern("##")
     pattern("#R")
@@ -620,7 +620,7 @@ private fun registerAxeRecipeGeneration(item: () -> Item, input: TagKey<Item>) =
     define('R', tagOf(Shape.ROD, Material.WOOD))
 } on input
 
-context(ModContext)
+context(_: ModContext)
 private fun registerShovelRecipeGeneration(item: () -> Item, input: TagKey<Item>) = registerShapedRecipeGeneration(item) {
     pattern("#")
     pattern("R")
@@ -629,7 +629,7 @@ private fun registerShovelRecipeGeneration(item: () -> Item, input: TagKey<Item>
     define('R', tagOf(Shape.ROD, Material.WOOD))
 } on input
 
-context(ModContext)
+context(_: ModContext)
 private fun registerHoeRecipeGeneration(item: () -> Item, input: TagKey<Item>) = registerShapedRecipeGeneration(item) {
     pattern("##")
     pattern(" R")
@@ -638,7 +638,7 @@ private fun registerHoeRecipeGeneration(item: () -> Item, input: TagKey<Item>) =
     define('R', tagOf(Shape.ROD, Material.WOOD))
 } on input
 
-context(ModContext)
+context(_: ModContext)
 private fun registerKnifeRecipeGeneration(item: () -> Item, input: TagKey<Item>) = registerShapedRecipeGeneration(item) {
     pattern("#")
     pattern("R")
@@ -646,7 +646,7 @@ private fun registerKnifeRecipeGeneration(item: () -> Item, input: TagKey<Item>)
     define('R', tagOf(Shape.ROD, Material.WOOD))
 } on input
 
-context(ModContext)
+context(_: ModContext)
 private fun registerScytheRecipeGeneration(item: () -> Item, input: TagKey<Item>) = registerShapedRecipeGeneration(item) {
     pattern(" ##")
     pattern("# R")
@@ -655,7 +655,7 @@ private fun registerScytheRecipeGeneration(item: () -> Item, input: TagKey<Item>
     define('R', tagOf(Shape.ROD, Material.WOOD))
 } on input
 
-context(ModContext)
+context(_: ModContext)
 private fun registerSwordRecipeGeneration(item: () -> Item, input: TagKey<Item>) = registerShapedRecipeGeneration(item) {
     pattern("#")
     pattern("#")
@@ -664,7 +664,7 @@ private fun registerSwordRecipeGeneration(item: () -> Item, input: TagKey<Item>)
     define('R', tagOf(Shape.ROD, Material.WOOD))
 } on input
 
-context(ModContext)
+context(_: ModContext)
 private fun registerBattleAxeRecipeGeneration(item: () -> Item, input: TagKey<Item>) = registerShapedRecipeGeneration(item) {
     pattern("###")
     pattern("#R#")

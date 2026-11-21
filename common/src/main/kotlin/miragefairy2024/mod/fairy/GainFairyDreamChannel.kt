@@ -10,7 +10,7 @@ import miragefairy2024.util.string
 import miragefairy2024.util.toIdentifier
 import net.minecraft.network.RegistryFriendlyByteBuf
 
-context(ModContext)
+context(_: ModContext)
 fun initGainFairyDreamChannel() {
     GainFairyDreamChannel.registerServerToClientPayloadType()
     GainFairyDreamChannel.registerClientPacketReceiver { motif ->

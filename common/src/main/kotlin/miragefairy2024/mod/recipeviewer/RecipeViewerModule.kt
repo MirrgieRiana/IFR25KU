@@ -39,7 +39,7 @@ val SCROLL_AREA_TRANSLATION = Translation({ MirageFairy2024.identifier("recipe_v
 
 fun Int.toSecondsTextAsTicks() = text { SECONDS_TRANSLATION((this@toSecondsTextAsTicks.toDouble() / 20.0 formatAs "%.2f").stripTrailingZeros()) }
 
-context(ModContext)
+context(_: ModContext)
 fun initRecipeViewerModule() {
     if (hasRei()) initReiSupport()
 
@@ -48,7 +48,7 @@ fun initRecipeViewerModule() {
     SCROLL_AREA_TRANSLATION.enJa()
 }
 
-context(ModContext)
+context(_: ModContext)
 @JvmName("registerItemIdentificationDataComponentTypes")
 fun (() -> Item).registerIdentificationDataComponentTypes(components: () -> List<DataComponentType<*>>) {
     RecipeViewerEvents.itemIdentificationDataComponentTypesList += Pair(this, components)

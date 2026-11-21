@@ -26,7 +26,7 @@ object AttachmentChangedEvent {
 
 fun ServerPlayer.sendAttachmentChangedEvent(attachmentType: AttachmentType<*>) = AttachmentChangedEventChannel.sendToClient(this, attachmentType.identifier())
 
-context(ModContext)
+context(_: ModContext)
 fun initAttachmentChangedEventModule() {
     AttachmentChangedEventChannel.registerServerToClientPayloadType()
 }

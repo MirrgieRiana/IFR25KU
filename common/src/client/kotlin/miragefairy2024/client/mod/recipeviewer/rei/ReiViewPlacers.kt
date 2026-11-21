@@ -22,7 +22,7 @@ import miragefairy2024.util.toEntryIngredient
 import miragefairy2024.util.toReiPoint
 import miragefairy2024.util.toReiRectangle
 
-context(ModContext)
+context(_: ModContext)
 fun initReiViewPlacers() {
     REI_VIEW_PLACER_REGISTRY.register { widgets, view: InputSlotView, bounds ->
         val entryIngredient = view.ingredientStack.toEntryIngredient()

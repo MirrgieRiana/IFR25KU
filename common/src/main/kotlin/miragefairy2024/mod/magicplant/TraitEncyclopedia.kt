@@ -58,7 +58,7 @@ private val identifier = MirageFairy2024.identifier("trait_encyclopedia")
 private val DEFAULT_TRAIT_TRANSLATION = Translation({ identifier.toLanguageKey("gui", "default_trait") }, EnJa("Default Trait", "初期状態で発現"))
 private val RANDOM_TRAIT_TRANSLATION = Translation({ identifier.toLanguageKey("gui", "random_trait") }, EnJa("Random Trait", "ランダムで発現"))
 
-context(ModContext)
+context(_: ModContext)
 fun initTraitEncyclopedia() {
     TraitEncyclopediaRecipeViewerCategoryCard.init()
 

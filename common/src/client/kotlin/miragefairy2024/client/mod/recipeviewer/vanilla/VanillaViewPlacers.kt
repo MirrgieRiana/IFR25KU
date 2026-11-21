@@ -57,7 +57,7 @@ private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidge
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initVanillaViewPlacers() {
     fun placeScrollContainerView(context: VanillaViewPlacerContext, widget: VanillaScrollContainerViewWidget): ViewController {
         val controller = context place widget

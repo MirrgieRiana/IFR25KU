@@ -5,7 +5,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 
-context(ModContext)
+context(_: ModContext)
 fun initMachineModule() {
     FermentationBarrelCard.init()
     FermentationBarrelRecipeCard.init()

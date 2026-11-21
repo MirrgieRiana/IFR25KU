@@ -16,7 +16,7 @@ class TreePlanksButtonBlockCard(configuration: TreeBlockConfiguration, private v
         .strength(0.5F)
         .pushReaction(PushReaction.DESTROY)
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

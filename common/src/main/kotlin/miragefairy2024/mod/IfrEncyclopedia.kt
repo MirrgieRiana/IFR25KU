@@ -209,7 +209,7 @@ private val PARAGRAPH_SPACE_CHILDREN_GENERATOR = ChildrenGenerator { _, _ ->
     listOf(Child(Alignment.START, YSpaceView(4)))
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initIfrEncyclopedia() {
     IfrEncyclopediaEntryCard.entries.forEach { card ->
         card.titleTranslation.enJa()

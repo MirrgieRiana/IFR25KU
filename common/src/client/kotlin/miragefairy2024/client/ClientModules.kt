@@ -19,7 +19,7 @@ import miragefairy2024.client.mod.magicplant.initMagicPlantClientModule
 import miragefairy2024.client.mod.particle.initParticleClientModule
 import miragefairy2024.client.mod.recipeviewer.initRecipeViewerClientModule
 
-context(ModContext)
+context(_: ModContext)
 fun initClientModules() {
     initCommonClientModule()
     initFairyQuestClientModule()

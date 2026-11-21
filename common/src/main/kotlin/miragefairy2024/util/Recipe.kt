@@ -112,7 +112,7 @@ infix fun <T> RecipeGenerationSettings<T>.path(string: String) = this.apply {
     this.idModifiers += { string * ("/" * it) }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun <T : RecipeBuilder> registerRecipeGeneration(
     creator: (RecipeCategory, Item, Int) -> T,
     item: () -> Item,
@@ -133,21 +133,21 @@ fun <T : RecipeBuilder> registerRecipeGeneration(
     return settings
 }
 
-context(ModContext)
+context(_: ModContext)
 fun registerShapedRecipeGeneration(
     item: () -> Item,
     count: Int = 1,
     block: ShapedRecipeBuilder.() -> Unit = {},
 ): RecipeGenerationSettings<ShapedRecipeBuilder> = registerRecipeGeneration(ShapedRecipeBuilder::shaped, item, count, block)
 
-context(ModContext)
+context(_: ModContext)
 fun registerShapelessRecipeGeneration(
     item: () -> Item,
     count: Int = 1,
     block: ShapelessRecipeBuilder.() -> Unit = {},
 ): RecipeGenerationSettings<ShapelessRecipeBuilder> = registerRecipeGeneration(ShapelessRecipeBuilder::shapeless, item, count, block)
 
-context(ModContext)
+context(_: ModContext)
 fun registerSmeltingRecipeGeneration(
     input: () -> Item,
     output: () -> Item,
@@ -169,7 +169,7 @@ fun registerSmeltingRecipeGeneration(
     return settings
 }
 
-context(ModContext)
+context(_: ModContext)
 fun registerBlastingRecipeGeneration(
     input: () -> Item,
     output: () -> Item,
@@ -194,7 +194,7 @@ fun registerBlastingRecipeGeneration(
 
 // Special Recipe
 
-context(ModContext)
+context(_: ModContext)
 fun registerSpecialRecipe(
     path: String,
     @Suppress("unused") vararg dummy: Void,
@@ -254,7 +254,7 @@ fun MutableList<ItemStack>.pull(predicate: (ItemStack) -> Boolean): ItemStack? {
 
 // Others
 
-context(ModContext)
+context(_: ModContext)
 fun registerCompressionRecipeGeneration(
     lowerItem: () -> Item,
     lowerIngredient: () -> Ingredient,
@@ -273,7 +273,7 @@ fun registerCompressionRecipeGeneration(
     }.noGroup(noGroup) on higherItem from higherItem
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerLootTableModification(lootTableIdGetter: () -> ResourceKey<LootTable>, block: (LootTable.Builder, HolderLookup.Provider) -> Unit) = ModEvents.onInitialize {
     val lootTableId = lootTableIdGetter()
     LootTableEvents.MODIFY.register { id, tableBuilder, source, registries ->
@@ -285,7 +285,7 @@ fun (() -> Item).registerLootTableModification(lootTableIdGetter: () -> Resource
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerGrassDrop(
     amount: Float = 1.0F,
     fortuneMultiplier: Int = 2,
@@ -306,7 +306,7 @@ fun (() -> Item).registerGrassDrop(
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerExtraOreDrop(
     oreBlock: Block,
     chance: Float = 1.0F,
@@ -326,7 +326,7 @@ fun (() -> Item).registerExtraOreDrop(
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerMobDrop(
     entityType: EntityType<*>,
     onlyKilledByPlayer: Boolean = false,
@@ -345,7 +345,7 @@ fun (() -> Item).registerMobDrop(
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerSinglePoolChestLoot(
     lootTableIdGetter: () -> ResourceKey<LootTable>,
     weight: Int,
@@ -363,7 +363,7 @@ fun (() -> Item).registerSinglePoolChestLoot(
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerChestLoot(
     lootTableIdGetter: () -> ResourceKey<LootTable>,
     chance: Float,
@@ -381,7 +381,7 @@ fun (() -> Item).registerChestLoot(
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerComposterInput(chance: Float) {
     ModEvents.onInitialize {
         platformProxy!!.registerComposterInput(this(), chance)
@@ -399,12 +399,12 @@ fun (() -> Item).registerComposterInput(chance: Float) {
 }
 
 /** @param ticks coal is `200 * 8 = 1600` */
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerFuel(ticks: Int) = ModEvents.onInitialize {
     FuelRegistry.INSTANCE.add(this(), ticks)
 }
 
-context(ModContext)
+context(_: ModContext)
 fun registerStonecutterRecipeGeneration(input: () -> Item, output: () -> Item, count: Int = 1, category: RecipeCategory = RecipeCategory.BUILDING_BLOCKS) = DataGenerationEvents.onGenerateRecipe {
     RecipeProvider.stonecutterResultFromBase(it, category, output(), input(), count)
 }

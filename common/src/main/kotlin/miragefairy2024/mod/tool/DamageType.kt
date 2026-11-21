@@ -22,7 +22,7 @@ val C_IS_MAGIC_DAMAGE_TYPE_TAG = ResourceLocation("c", "is_magic").toDamageTypeT
 val NEOFORGE_IS_MAGIC_DAMAGE_TYPE_TAG = ResourceLocation("neoforge", "is_magic").toDamageTypeTag()
 val IS_MAGIC_DAMAGE_TYPE_TAG = MirageFairy2024.identifier("is_magic").toDamageTypeTag()
 
-context(ModContext)
+context(_: ModContext)
 fun initDamageType() {
     MagicDamageTypeCard.init()
     PhysicalMagicDamageTypeCard.init()
@@ -66,7 +66,7 @@ abstract class DamageTypeCard {
     abstract fun getPlayerKillMessage(): EnJa
     abstract fun getTags(): List<TagKey<DamageType>>
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         registerDynamicGeneration(registryKey) {
             damageType

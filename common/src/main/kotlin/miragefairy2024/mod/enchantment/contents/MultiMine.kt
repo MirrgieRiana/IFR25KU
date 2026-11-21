@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.HitResult
 
-context(ModContext)
+context(_: ModContext)
 fun initMultiMine() {
 
     // 採掘範囲オーバーレイ

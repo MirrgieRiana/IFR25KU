@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 class TreeIncisableLogBlockCard(configuration: TreeBlockConfiguration) : AbstractTreeLogBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings().mapColor { if (it[RotatedPillarBlock.AXIS] === Direction.Axis.Y) configuration.tree.getPlankMapColor() else configuration.tree.getWoodMapColor() }
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         registerModelGeneration(block) { it.logWithHorizontal(block()) }

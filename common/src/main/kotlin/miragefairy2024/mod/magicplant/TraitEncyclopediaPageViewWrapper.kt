@@ -36,7 +36,7 @@ import miragefairy2024.util.style
 import miragefairy2024.util.text
 import net.minecraft.network.chat.CommonComponents
 
-context(ModContext)
+context(_: ModContext)
 fun initTraitEncyclopediaPageScreen() {
     onOpenTraitEncyclopediaPageScreen.register { trait ->
         trait.openTraitEncyclopediaPageScreen()

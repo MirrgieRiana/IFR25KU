@@ -25,7 +25,7 @@ import net.minecraft.world.item.ItemStack
 import java.time.Instant
 import java.util.Optional
 
-context(ModContext)
+context(_: ModContext)
 fun initLastFoodModule() {
     LAST_FOOD_ATTACHMENT_TYPE.register()
     EatFoodCallback.EVENT.register { entity, level, stack, foodProperties ->
