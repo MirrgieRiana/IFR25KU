@@ -8,7 +8,6 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.gui.ComponentPath
-import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarratableEntry
 import net.minecraft.client.gui.narration.NarratedElementType
@@ -41,12 +40,12 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
     protected abstract val scrollbarThickness: Int
 
     // 範囲が狭まっても、現在の位置から操作できるようにするのだ～🌱
-    private fun evaluateScrollRange(): ClosedFloatingPointRange<Double> {
+    protected fun evaluateScrollRange(): ClosedFloatingPointRange<Double> {
         val normalMaxScrollOffset = (view.contentLength - view.viewportLength atLeast 0).toDouble()
         return minOf(0.0, view.scrollOffset.value)..maxOf(normalMaxScrollOffset, view.scrollOffset.value)
     }
 
-    private fun evaluateThumbLength(): Int {
+    protected fun evaluateThumbLength(): Int {
         if (scrollbarLength <= 0) return 0
         val range = evaluateScrollRange()
         val scrollLength = range.endInclusive - range.start
@@ -57,7 +56,7 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
         return rawThumbLength.coerceIn(minThumbLength, scrollbarLength)
     }
 
-    private fun evaluateThumbPosition(): Double {
+    protected fun evaluateThumbPosition(): Double {
         val range = evaluateScrollRange()
         return if (range.start == range.endInclusive) {
             0.0
@@ -76,25 +75,13 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
     }
 
 
-    // 描画とマウス入力なのだ～🌱
+    // マウス入力なのだ～🌱
 
     private var draggingScrollbar = false
 
     override fun isActive() = super.isActive() && !disposed
 
     override fun isMouseOver(mouseX: Double, mouseY: Double) = isActive && super.isMouseOver(mouseX, mouseY)
-
-    protected abstract fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int)
-
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-
-        // スクロールバーの描画なのだ～🌱
-        val range = evaluateScrollRange()
-        if (range.start < range.endInclusive && scrollbarThickness > 0 && evaluateThumbLength() > 0) {
-            renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), evaluateThumbLength())
-        }
-
-    }
 
     protected abstract fun getMousePosition(mouseX: Double, mouseY: Double): Double
 
