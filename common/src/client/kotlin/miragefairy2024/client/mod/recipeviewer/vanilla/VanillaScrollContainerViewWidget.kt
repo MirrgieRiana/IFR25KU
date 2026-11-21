@@ -419,6 +419,7 @@ abstract class VanillaScrollContainerViewWidget(
             override val canPlaceMenuSlots = false
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = context.registerMenuSlotPlacement(slotId, clipBounds)
         }
         updateScrollBounds()
         val initialScrollOffset = scrollOffsetValue.value.roundToInt()

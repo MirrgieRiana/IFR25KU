@@ -50,8 +50,12 @@ abstract class ScrollContainerView : WrapperView(), PlaceableView {
         return scrollOffset.coerceIn(0.0, maxScrollOffset)
     }
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
+    fun updateScrollBounds() {
         scrollBounds.value = ScrollBounds(evaluateContentLength() atLeast 0, evaluateViewportLength() atLeast 0)
+    }
+
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
+        updateScrollBounds()
         return viewPlacer.place(this, offset.sized(evaluateActualSize()))
     }
 

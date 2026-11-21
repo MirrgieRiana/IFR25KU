@@ -11,6 +11,7 @@ import miragefairy2024.mod.recipeviewer.views.ScrollBounds
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.util.Remover
 import miragefairy2024.util.register
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -37,6 +38,36 @@ private class BoundsTestFixture(private val horizontal: Boolean, layoutLength: I
 }
 
 class VanillaScrollContainerBoundsTest {
+    @Test
+    fun `子のコンテキストから親へスロット番号と矩形取得関数を中継するのだ`() {
+        GuiTestEnvironment().use {
+            val contexts = mutableListOf<VanillaViewPlacerContext>()
+            val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+            registry.register { context, _: BoundsTestView, _ ->
+                contexts += context
+                ViewController.NONE
+            }
+            val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
+            Mockito.`when`(context.origin).thenReturn(IntPoint.ZERO)
+            val view = YScrollContainerView()
+            view += BoundsTestView()
+            view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { 100 }, { 100 })
+            val slotId = 3
+            val clipBounds = { IntRectangle(10, 20, 30, 40) }
+            val remover = Remover { }
+            Mockito.`when`(context.registerMenuSlotPlacement(slotId, clipBounds)).thenReturn(remover)
+            val widget = VanillaYScrollContainerViewWidget(view, IntRectangle(0, 0, 100, 100), context, registry)
+            try {
+                Assertions.assertFalse(contexts.single().canPlaceMenuSlots)
+                Assertions.assertSame(remover, contexts.single().registerMenuSlotPlacement(slotId, clipBounds))
+                Mockito.verify(context).registerMenuSlotPlacement(slotId, clipBounds)
+            } finally {
+                widget.dispose()
+                widget.detach()
+            }
+        }
+    }
+
     @Test
     fun `バニラの実際の寸法を生成時と非表示中のサイズ変更時に通知するのだ`() {
         listOf(false, true).forEach { horizontal ->
