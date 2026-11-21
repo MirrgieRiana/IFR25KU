@@ -114,13 +114,13 @@ class TooltipViewerViewWrapperTest {
             ).forEach { (value, expected) ->
                 scrollView.scrollOffsetY.value += 10.5
                 val scrollOffset = scrollView.scrollOffsetY.value
-                Assertions.assertEquals(scrollOffset, scrollbarView.scrollOffsetY.value)
+                Assertions.assertEquals(scrollOffset, scrollbarView.scrollOffset.value)
                 field.text.value = value
                 Assertions.assertSame(field, placements.mapNotNull { it.first as? TextFieldView }.single())
                 Assertions.assertSame(scrollView, placements.mapNotNull { it.first as? YScrollContainerView }.single())
                 Assertions.assertEquals(0.0, scrollView.scrollOffsetY.value)
-                scrollbarView.scrollOffsetY.value += 0.25
-                Assertions.assertEquals(scrollbarView.scrollOffsetY.value, scrollView.scrollOffsetY.value)
+                scrollbarView.scrollOffset.value += 0.25
+                Assertions.assertEquals(scrollbarView.scrollOffset.value, scrollView.scrollOffsetY.value)
                 val lines = placements.filter { it.first is MultiLineTextView }
                 Assertions.assertEquals(expected, lines.map { (it.first as MultiLineTextView).text.value.string })
                 if (value == "0,1,3") {
@@ -153,13 +153,13 @@ class TooltipViewerViewWrapperTest {
             scroll.scrollOffsetY.value = 300.0
             field.text.value = "1"
             Assertions.assertEquals(300.0, scroll.scrollOffsetY.value)
-            Assertions.assertEquals(300.0, scrollbar.scrollOffsetY.value)
+            Assertions.assertEquals(300.0, scrollbar.scrollOffset.value)
             field.text.value = "2"
             Assertions.assertEquals(107.0, scroll.scrollOffsetY.value)
-            Assertions.assertEquals(107.0, scrollbar.scrollOffsetY.value)
+            Assertions.assertEquals(107.0, scrollbar.scrollOffset.value)
             field.text.value = "0"
             Assertions.assertEquals(0.0, scroll.scrollOffsetY.value)
-            Assertions.assertEquals(0.0, scrollbar.scrollOffsetY.value)
+            Assertions.assertEquals(0.0, scrollbar.scrollOffset.value)
         } finally {
             controller.dispose()
             controller.detach()

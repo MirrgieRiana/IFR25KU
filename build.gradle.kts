@@ -1,4 +1,5 @@
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
@@ -11,9 +12,9 @@ import tools.generateResizedImagesOfAllProjects
 import tools.getAllPngFilesInAllProjects
 
 plugins {
-    id("dev.architectury.loom") version "1.7-SNAPSHOT" apply false
+    id("dev.architectury.loom") version "1.9.436" apply false
     //id("maven-publish")
-    kotlin("jvm") version "2.0.0" apply false
+    kotlin("jvm") version "2.2.21" apply false
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     id("com.modrinth.minotaur") version "2.+"
@@ -29,6 +30,12 @@ architectury {
 allprojects {
     group = rootProject.properties["maven_group"] as String
     version = rootProject.properties["mod_version"] as String
+
+    tasks.withType<KotlinJvmCompile>().configureEach {
+        compilerOptions {
+            jvmDefault.set(JvmDefaultMode.DISABLE)
+        }
+    }
 }
 
 fun Iterable<Project>.f(block: Project.() -> Unit) = forEach { it.block() }
