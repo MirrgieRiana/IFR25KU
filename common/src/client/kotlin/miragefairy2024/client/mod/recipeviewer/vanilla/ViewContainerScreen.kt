@@ -1,9 +1,13 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.client.mixins.api.SlotHovering
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.intersect
+import miragefairy2024.mod.recipeviewer.view.x2
+import miragefairy2024.mod.recipeviewer.view.y2
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
@@ -13,14 +17,21 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
+import net.minecraft.world.inventory.Slot
 
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
-class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
+class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title), SlotHovering where T : AbstractContainerMenu, T : ViewProviderMenu {
 
     private class SlotPlacement(val clipBounds: () -> IntRectangle?)
 
     /** 配置解除後も Slot はメニューに残るため、未登録と解除済みを区別して保持するのだ～🌱 */
     private val slotPlacementMap = mutableMapOf<Int, SlotPlacement?>()
+
+    private fun getSlotClipBounds(slot: Slot): IntRectangle? {
+        if (slot.index !in slotPlacementMap) return null
+        val placement = slotPlacementMap[slot.index] ?: return IntRectangle.ZERO
+        return placement.clipBounds()
+    }
 
     private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
 
@@ -114,6 +125,20 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (viewAdapter.keyPressed(keyCode, scanCode, modifiers)) return true
         return super.keyPressed(keyCode, scanCode, modifiers)
+    }
+
+    override fun `mirageFairy2024$isHovering`(slot: Slot, mouseX: Double, mouseY: Double, hovering: Boolean): Boolean {
+        if (!hovering) return false
+        val clipBounds = getSlotClipBounds(slot) ?: return true
+        return isSlotVisibleAt(slot, clipBounds, mouseX, mouseY)
+    }
+
+    private fun isSlotVisibleAt(slot: Slot, clipBounds: IntRectangle, mouseX: Double, mouseY: Double): Boolean {
+        if (mouseX < clipBounds.x || mouseX >= clipBounds.x2 || mouseY < clipBounds.y || mouseY >= clipBounds.y2) return false
+        // バニラの当たり判定の余白がクリップに触れていても、描画が全く見えないスロットは対象にしないのだ～🌱
+        val slotBounds = IntRectangle(leftPos + slot.x, topPos + slot.y, 16, 16)
+        val visibleBounds = slotBounds.intersect(clipBounds)
+        return visibleBounds.sizeX > 0 && visibleBounds.sizeY > 0
     }
 
     /** 枠の絵はViewのツリーが描くのだ～🌱 */
