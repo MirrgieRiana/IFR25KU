@@ -11,8 +11,10 @@ import miragefairy2024.mod.recipeviewer.views.ScrollBounds
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.register
+import net.minecraft.client.gui.components.AbstractWidget
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -39,7 +41,7 @@ private class BoundsTestFixture(private val horizontal: Boolean, layoutLength: I
 
 class VanillaScrollContainerBoundsTest {
     @Test
-    fun `子のコンテキストから親へスロット番号と矩形取得関数を中継するのだ`() {
+    fun `入れ子のスクロール領域でスロットのクリップ矩形を交差させるのだ`() {
         GuiTestEnvironment().use {
             val contexts = mutableListOf<VanillaViewPlacerContext>()
             val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
@@ -47,23 +49,49 @@ class VanillaScrollContainerBoundsTest {
                 contexts += context
                 ViewController.NONE
             }
-            val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
-            Mockito.`when`(context.origin).thenReturn(IntPoint.ZERO)
-            val view = YScrollContainerView()
-            view += BoundsTestView()
-            view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { 100 }, { 100 })
-            val slotId = 3
-            val clipBounds = { IntRectangle(10, 20, 30, 40) }
+            val placements = mutableMapOf<Int, () -> IntRectangle?>()
             val remover = Remover { }
-            Mockito.`when`(context.registerMenuSlotPlacement(slotId, clipBounds)).thenReturn(remover)
-            val widget = VanillaYScrollContainerViewWidget(view, IntRectangle(0, 0, 100, 100), context, registry)
+            val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+                override val origin = IntPoint(5, 10)
+                override val canPlaceMenuSlots = true
+                override val onBeforeRender = EventRegistry<() -> Unit>()
+                override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
+                override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
+                override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
+                    placements[slotId] = clipBounds
+                    return remover
+                }
+            }
+            fun createWidget(bounds: IntRectangle, context: VanillaViewPlacerContext): VanillaYScrollContainerViewWidget {
+                val view = YScrollContainerView()
+                view += BoundsTestView()
+                view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { bounds.sizeX }, { bounds.sizeY })
+                return VanillaYScrollContainerViewWidget(view, bounds, context, registry)
+            }
+            val outer = createWidget(IntRectangle(10, 20, 80, 60), context)
+            val inner = createWidget(IntRectangle(40, 5, 100, 80), contexts.single())
             try {
-                Assertions.assertFalse(contexts.single().canPlaceMenuSlots)
-                Assertions.assertSame(remover, contexts.single().registerMenuSlotPlacement(slotId, clipBounds))
-                Mockito.verify(context).registerMenuSlotPlacement(slotId, clipBounds)
+                val childContext = contexts.last()
+                val slotId = 3
+                var childClipBounds: IntRectangle? = null
+                Assertions.assertFalse(childContext.canPlaceMenuSlots)
+                Assertions.assertSame(remover, childContext.registerMenuSlotPlacement(slotId) { childClipBounds })
+                val clipBounds = placements.getValue(slotId)
+                Assertions.assertEquals(IntRectangle(40, 20, 50, 60), clipBounds())
+
+                childClipBounds = IntRectangle(45, 30, 10, 10)
+                Assertions.assertEquals(IntRectangle(45, 30, 10, 10), clipBounds())
+
+                outer.setSize(40, 15)
+                Assertions.assertEquals(IntRectangle(45, 30, 5, 5), clipBounds())
+
+                inner.setPosition(60, 5)
+                Assertions.assertEquals(IntRectangle(60, 30, 0, 5), clipBounds())
             } finally {
-                widget.dispose()
-                widget.detach()
+                inner.dispose()
+                inner.detach()
+                outer.dispose()
+                outer.detach()
             }
         }
     }
