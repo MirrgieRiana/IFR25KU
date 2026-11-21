@@ -3,6 +3,7 @@ package miragefairy2024.mod.tool.items
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.tool.FairyMiningToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.tags.BlockTags
@@ -26,6 +27,9 @@ open class FairyShovelConfiguration(
         this.attackDamage = 1.5F
         this.attackSpeed = -3.0F
         this.tags += ItemTags.SHOVELS
+        this.tags += ConventionalItemTags.TOOLS
+        this.tags += ConventionalItemTags.MINING_TOOL_TOOLS
+        this.tags += ConventionalItemTags.ENCHANTABLES
         this.effectiveBlockTags += BlockTags.MINEABLE_WITH_SHOVEL
     }
 }

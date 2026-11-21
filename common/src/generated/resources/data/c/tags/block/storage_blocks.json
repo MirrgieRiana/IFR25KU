@@ -1,0 +1,56 @@
+{
+  "values": [
+    {
+      "id": "#c:storage_blocks/chaos_stone",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/copal",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/fairy_crystal",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/fluorite",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/luminite",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/magnetite",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/miragidian",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/miranagite",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/nephrite",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/noise",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/retinite",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/sulfur",
+      "required": false
+    },
+    {
+      "id": "#c:storage_blocks/xarpite",
+      "required": false
+    }
+  ]
+}
