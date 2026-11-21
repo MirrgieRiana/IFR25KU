@@ -173,10 +173,10 @@ abstract class AbstractVanillaScrollbarViewWidget(
         val range = evaluateScrollRange()
         if (range.start < range.endInclusive && !isFocused) {
             return object : ComponentPath {
-                override fun component() = this@VanillaScrollbarViewWidget
+                override fun component() = this@AbstractVanillaScrollbarViewWidget
 
                 override fun applyFocus(focused: Boolean) {
-                    this@VanillaScrollbarViewWidget.isFocused = focused
+                    this@AbstractVanillaScrollbarViewWidget.isFocused = focused
                 }
             }
         }
