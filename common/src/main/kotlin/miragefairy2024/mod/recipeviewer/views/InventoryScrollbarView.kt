@@ -2,11 +2,9 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.Sizing
 
-abstract class ScrollbarView : AbstractScrollbarView(5) {
-    var scrollbarColor = 0xA0000000.toInt()
-}
+abstract class InventoryScrollbarView : AbstractScrollbarView(18)
 
-class XScrollbarView : ScrollbarView() {
+class XInventoryScrollbarView : InventoryScrollbarView() {
 
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.WRAP
@@ -16,7 +14,7 @@ class XScrollbarView : ScrollbarView() {
 
 }
 
-class YScrollbarView : ScrollbarView() {
+class YInventoryScrollbarView : InventoryScrollbarView() {
 
     override var sizingX = Sizing.WRAP
     override var sizingY = Sizing.FILL

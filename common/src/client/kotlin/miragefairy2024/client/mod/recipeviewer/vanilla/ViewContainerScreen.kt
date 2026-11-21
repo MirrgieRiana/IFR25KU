@@ -3,6 +3,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
@@ -15,6 +16,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
 class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
+
+    private class SlotPlacement(val clipBounds: () -> IntRectangle?)
+
+    /** 配置解除後も Slot はメニューに残るため、未登録と解除済みを区別して保持するのだ～🌱 */
+    private val slotPlacementMap = mutableMapOf<Int, SlotPlacement?>()
 
     private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
 
@@ -34,7 +40,10 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
             this@ViewContainerScreen.imageHeight = uiSize.y
         }
 
-        override fun init() = super@ViewContainerScreen.init()
+        override fun init() {
+            slotPlacementMap.clear()
+            super@ViewContainerScreen.init()
+        }
 
         override fun <T> addWidget(widget: T): Remover where T : GuiEventListener, T : NarratableEntry {
             this@ViewContainerScreen.addWidget(widget)
@@ -51,12 +60,22 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
             return Remover { this@ViewContainerScreen.removeWidget(widget) }
         }
 
+        /** [clipBounds] は取得時点の画面座標で返し、クリップしない場合は null を返すのだ～🌱 */
+        override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
+            val slotPlacement = SlotPlacement(clipBounds)
+            slotPlacementMap[slotId] = slotPlacement
+            return Remover {
+                if (slotPlacementMap[slotId] === slotPlacement) slotPlacementMap[slotId] = null
+            }
+        }
+
     })
 
     override fun init() = viewAdapter.init()
 
     override fun removed() {
         viewAdapter.removed()
+        slotPlacementMap.clear()
         super.removed()
     }
 
