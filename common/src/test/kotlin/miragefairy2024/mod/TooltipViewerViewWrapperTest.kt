@@ -150,6 +150,7 @@ class TooltipViewerViewWrapperTest {
             val field = placements.mapNotNull { it.first as? TextFieldView }.single()
             val scroll = placements.mapNotNull { it.first as? YScrollContainerView }.single()
             val scrollbar = placements.mapNotNull { it.first as? YScrollbarView }.single()
+            Assertions.assertTrue(scrollbar.contentLength > scrollbar.viewportLength)
             scroll.scrollOffsetY.value = 300.0
             field.text.value = "1"
             Assertions.assertEquals(300.0, scroll.scrollOffsetY.value)
@@ -158,6 +159,7 @@ class TooltipViewerViewWrapperTest {
             Assertions.assertEquals(107.0, scroll.scrollOffsetY.value)
             Assertions.assertEquals(107.0, scrollbar.scrollOffset.value)
             field.text.value = "0"
+            Assertions.assertTrue(scrollbar.contentLength <= scrollbar.viewportLength)
             Assertions.assertEquals(0.0, scroll.scrollOffsetY.value)
             Assertions.assertEquals(0.0, scrollbar.scrollOffset.value)
         } finally {

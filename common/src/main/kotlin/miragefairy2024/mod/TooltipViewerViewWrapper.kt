@@ -157,6 +157,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, tooltipProvider: (It
 
                         textField.view.text.register { _, newValue ->
                             contentView.content.value = createContentView(newValue)
+                            scrollView.view.updateScrollBounds()
                             scrollView.view.clampScrollOffset()
                         }
                     }
