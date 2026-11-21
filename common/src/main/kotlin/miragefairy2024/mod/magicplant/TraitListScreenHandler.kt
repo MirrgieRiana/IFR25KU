@@ -122,12 +122,10 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                         view.sizingY = Sizing.FILL
 
                         view += YListView().configure {
+                            position.alignmentY = Alignment.END
                             position.weight = 1.0
                             position.ignoreLayoutX = true
                             view.sizingX = Sizing.FILL
-                            view.sizingY = Sizing.FILL
-
-                            view += SpaceView().configure { position.weight = 1.0 }
                             trait.conditions.forEachIndexed { index, condition ->
                                 view += TextView(text { condition.emoji + " "() + (conditionFactors[index] * 100.0 formatAs "%.1f%%")() }).configure {
                                     view.shadow = false
@@ -138,12 +136,10 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                         view += ImageView(ViewTexture(trait.texture, IntPoint(32, 32)))
 
                         view += YListView().configure {
+                            position.alignmentY = Alignment.END
                             position.weight = 1.0
                             position.ignoreLayoutX = true
                             view.sizingX = Sizing.FILL
-                            view.sizingY = Sizing.FILL
-
-                            view += SpaceView().configure { position.weight = 1.0 }
                             trait.traitEffectKeyEntries.forEach { entry ->
                                 fun <T : Any> createEffectText(key: TraitEffectKey<T>): Component {
                                     val value = key.getValue(entry.factor * getTraitPower(traitStack.level) * totalConditionFactor)
