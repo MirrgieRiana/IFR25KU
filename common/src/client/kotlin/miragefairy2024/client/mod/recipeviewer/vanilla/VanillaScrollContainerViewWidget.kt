@@ -34,7 +34,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.client.gui.screens.Screen
-import net.minecraft.world.inventory.Slot
 import org.lwjgl.glfw.GLFW
 import java.util.Optional
 import kotlin.math.roundToInt
@@ -420,7 +419,7 @@ abstract class VanillaScrollContainerViewWidget(
             override val canPlaceMenuSlots = false
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
-            override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = context.registerMenuSlotPlacement(slot, clipBounds)
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = context.registerMenuSlotPlacement(slotId, clipBounds)
         }
         updateScrollBounds()
         val initialScrollOffset = scrollOffsetValue.value.roundToInt()

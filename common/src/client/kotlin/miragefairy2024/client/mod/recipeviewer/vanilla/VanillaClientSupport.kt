@@ -6,7 +6,6 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.components.AbstractWidget
-import net.minecraft.world.inventory.Slot
 
 interface VanillaViewPlacerContext {
     /** バニラの GUI が座標の原点として使う点の、画面の左上からの絶対座標なのだ～🌱 */
@@ -17,7 +16,7 @@ interface VanillaViewPlacerContext {
 
     fun addRenderableWidget(widget: AbstractWidget): Remover
     fun addRenderableOnly(widget: AbstractWidget): Remover
-    fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?): Remover
+    fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover
 }
 
 val VANILLA_VIEW_PLACER_REGISTRY = ViewPlacerRegistry<VanillaViewPlacerContext>()

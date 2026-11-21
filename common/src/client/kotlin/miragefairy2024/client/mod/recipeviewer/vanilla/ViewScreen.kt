@@ -11,7 +11,6 @@ import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarratableEntry
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
-import net.minecraft.world.inventory.Slot
 import org.lwjgl.glfw.GLFW
 
 /** 中身を View のツリーで構築する画面なのだ～🌱 */
@@ -51,7 +50,7 @@ abstract class ViewScreen(title: Component) : Screen(title) {
             return Remover { this@ViewScreen.removeWidget(widget) }
         }
 
-        override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
+        override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
 
     })
 

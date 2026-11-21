@@ -26,7 +26,6 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
-import net.minecraft.world.inventory.Slot
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -146,7 +145,7 @@ private class AdapterFixture(vararg views: TestView) {
                 adapter.removeWidget(widget)
             }
         }
-        override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
+        override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
     }
     val adapter = ViewAdapter(host)
 
@@ -292,7 +291,7 @@ class ViewAdapterTest {
                 return Remover { renderableWidgets.remove(widget) }
             }
             override fun addRenderableOnly(widget: AbstractWidget) = addRenderableWidget(widget)
-            override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
         })
         adapter.init()
         assertEquals(IntPoint(300, 80), size)
@@ -314,7 +313,7 @@ class ViewAdapterTest {
     }
 
     @Test
-    fun `配置コンテキストからホストへ Slot と矩形取得関数をそのまま渡すのだ`() {
+    fun `配置コンテキストからホストへスロット番号と矩形取得関数を中継するのだ`() {
         val contexts = mutableListOf<VanillaViewPlacerContext>()
         val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
         registry.register(TestView::class.java) { context, _, _ ->
@@ -330,16 +329,16 @@ class ViewAdapterTest {
         Mockito.`when`(host.createRootView()).thenReturn(TestView(false))
         Mockito.`when`(host.getUiOffset()).thenReturn(IntPoint.ZERO)
         Mockito.`when`(host.canPlaceMenuSlots()).thenReturn(true)
-        val slot: Slot = Slot(null, 0, 0, 0)
+        val slotId = 3
         val clipBounds = { IntRectangle(10, 20, 30, 40) }
         val remover = Remover { }
-        Mockito.`when`(host.registerMenuSlotPlacement(slot, clipBounds)).thenReturn(remover)
+        Mockito.`when`(host.registerMenuSlotPlacement(slotId, clipBounds)).thenReturn(remover)
         val adapter = ViewAdapter(host)
         adapter.init()
         try {
             Assertions.assertTrue(contexts.single().canPlaceMenuSlots)
-            Assertions.assertSame(remover, contexts.single().registerMenuSlotPlacement(slot, clipBounds))
-            Mockito.verify(host).registerMenuSlotPlacement(slot, clipBounds)
+            Assertions.assertSame(remover, contexts.single().registerMenuSlotPlacement(slotId, clipBounds))
+            Mockito.verify(host).registerMenuSlotPlacement(slotId, clipBounds)
         } finally {
             adapter.removed()
         }

@@ -13,7 +13,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
-import net.minecraft.world.inventory.Slot
 
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
 class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
@@ -21,7 +20,7 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     private class SlotPlacement(val clipBounds: () -> IntRectangle?)
 
     /** 配置解除後も Slot はメニューに残るため、未登録と解除済みを区別して保持するのだ～🌱 */
-    private val slotPlacementMap = mutableMapOf<Slot, SlotPlacement?>()
+    private val slotPlacementMap = mutableMapOf<Int, SlotPlacement?>()
 
     private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
 
@@ -62,11 +61,11 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         }
 
         /** [clipBounds] は取得時点の画面座標で返し、クリップしない場合は null を返すのだ～🌱 */
-        override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?): Remover {
+        override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
             val slotPlacement = SlotPlacement(clipBounds)
-            slotPlacementMap[slot] = slotPlacement
+            slotPlacementMap[slotId] = slotPlacement
             return Remover {
-                if (slotPlacementMap[slot] === slotPlacement) slotPlacementMap[slot] = null
+                if (slotPlacementMap[slotId] === slotPlacement) slotPlacementMap[slotId] = null
             }
         }
 

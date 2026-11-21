@@ -13,7 +13,6 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.toasts.Toast
 import net.minecraft.client.gui.components.toasts.ToastComponent
-import net.minecraft.world.inventory.Slot
 
 /** View を Screen なしで表示するトーストなのだ～🌱 */
 class ViewToast(rootView: View) : Toast {
@@ -50,7 +49,7 @@ class ViewToast(rootView: View) : Toast {
 
         override fun addRenderableOnly(widget: AbstractWidget) = addRenderableWidget(widget)
 
-        override fun registerMenuSlotPlacement(slot: Slot, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
+        override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
 
     })
 
