@@ -4,6 +4,7 @@ import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import mirrg.kotlin.helium.Slot
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
@@ -17,6 +18,10 @@ class VanillaViewRendererWidget<V : PlaceableView, S>(private val renderer: View
     private val state = Slot(renderer.createState(view))
 
     private val pressedButtons = mutableSetOf<Int>()
+
+    override fun setWidth(width: Int) = super.setWidth(width atLeast 0)
+    override fun setHeight(height: Int) = super.setHeight(height atLeast 0)
+    override fun setSize(width: Int, height: Int) = super.setSize(width atLeast 0, height atLeast 0)
 
     override fun setPosition(x: Int, y: Int) {
         super.setPosition(x, y)

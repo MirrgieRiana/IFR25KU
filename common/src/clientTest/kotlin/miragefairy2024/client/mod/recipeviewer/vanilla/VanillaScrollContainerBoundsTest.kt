@@ -123,6 +123,18 @@ class VanillaScrollContainerBoundsTest {
                     widget.setHeight(250)
                     widget.setSize(250, 250)
                     Assertions.assertEquals(3, changes)
+
+                    widget.setWidth(-1)
+                    Assertions.assertEquals(0, widget.width)
+                    Assertions.assertEquals(if (horizontal) 0 else 250, view.scrollBounds.value.viewportLength)
+                    widget.setHeight(-1)
+                    Assertions.assertEquals(0, widget.height)
+                    Assertions.assertEquals(0, view.scrollBounds.value.viewportLength)
+                    widget.setSize(250, 250)
+                    widget.setSize(-1, -1)
+                    Assertions.assertEquals(0, widget.width)
+                    Assertions.assertEquals(0, widget.height)
+                    Assertions.assertEquals(0, view.scrollBounds.value.viewportLength)
                 } finally {
                     widget.dispose()
                     widget.detach()

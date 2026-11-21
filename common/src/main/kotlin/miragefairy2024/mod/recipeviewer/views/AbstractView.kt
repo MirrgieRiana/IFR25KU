@@ -4,6 +4,7 @@ import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import mirrg.kotlin.helium.CachingEvaluator
+import mirrg.kotlin.helium.atLeast
 
 abstract class AbstractView : View {
 
@@ -49,7 +50,7 @@ abstract class AbstractView : View {
         when (sizingX) {
             Sizing.FILL -> regionSizeXProvider()
             Sizing.WRAP -> evaluateContentSizeX()
-        }
+        } atLeast 0
     }
 
     final override fun evaluateActualSizeX() = actualSizeXCache.evaluate()
@@ -59,7 +60,7 @@ abstract class AbstractView : View {
         when (sizingY) {
             Sizing.FILL -> regionSizeYProvider()
             Sizing.WRAP -> evaluateContentSizeY()
-        }
+        } atLeast 0
     }
 
     final override fun evaluateActualSizeY() = actualSizeYCache.evaluate()

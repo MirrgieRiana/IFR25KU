@@ -3,10 +3,13 @@ package miragefairy2024.mod.recipeviewer.view
 import miragefairy2024.mod.recipeviewer.views.AbsoluteView
 import miragefairy2024.mod.recipeviewer.views.AbstractView
 import miragefairy2024.mod.recipeviewer.views.Child
+import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
 import miragefairy2024.mod.recipeviewer.views.ListView
+import miragefairy2024.mod.recipeviewer.views.MarginView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.plusAssign
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -64,7 +67,7 @@ class SizeEvaluationTest {
     }
 
     @Test
-    fun `ゼロと負数を含む計算結果を再利用し再初期化で破棄するのだ`() {
+    fun `負のコンテンツ寸法を再利用しながら実寸法をゼロに収めるのだ`() {
         listOf(IntPoint.ZERO, IntPoint(-1, -2)).forEach { size ->
             val view = SizeEvaluationView({ size.x }, { size.y })
             view.initSizeCalculation(TEST_RENDERING_PROXY, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
@@ -73,16 +76,31 @@ class SizeEvaluationTest {
 
             repeat(2) {
                 assertEquals(size, view.evaluateContentSize())
-                assertEquals(size, view.evaluateActualSize())
+                assertEquals(IntPoint.ZERO, view.evaluateActualSize())
             }
             assertEquals(1, view.contentSizeXCalculationCount)
             assertEquals(1, view.contentSizeYCalculationCount)
 
             view.initSizeCalculation(TEST_RENDERING_PROXY, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
-            assertEquals(size, view.evaluateActualSize())
+            assertEquals(IntPoint.ZERO, view.evaluateActualSize())
             assertEquals(2, view.contentSizeXCalculationCount)
             assertEquals(2, view.contentSizeYCalculationCount)
         }
+    }
+
+    @Test
+    fun `余白に収まらない領域でも子の矩形を寸法ゼロで配置するのだ`() {
+        val view = MarginView(8, 8, 6, 6)
+        view += FilledRectangleView()
+        view.initSizeCalculation(TEST_RENDERING_PROXY, { 10 }, { 4 })
+
+        val rectangles = mutableListOf<IntRectangle>()
+        view.attachTo(IntPoint.ZERO) { _, bounds ->
+            rectangles += bounds
+            ViewController.NONE
+        }
+
+        assertEquals(listOf(IntRectangle(8, 6, 0, 0)), rectangles)
     }
 
     @Test
