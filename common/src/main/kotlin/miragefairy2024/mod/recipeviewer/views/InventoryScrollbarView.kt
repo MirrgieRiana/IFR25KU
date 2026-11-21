@@ -2,7 +2,7 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.Sizing
 
-abstract class InventoryScrollbarView : AbstractScrollbarView(18)
+abstract class InventoryScrollbarView : ScrollbarView(18)
 
 class XInventoryScrollbarView : InventoryScrollbarView() {
 

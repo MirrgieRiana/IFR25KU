@@ -2,7 +2,7 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.Sizing
 
-abstract class FlatScrollbarView : AbstractScrollbarView(5) {
+abstract class FlatScrollbarView : ScrollbarView(5) {
     var scrollbarColor = 0xA0000000.toInt()
 }
 
