@@ -137,7 +137,7 @@ enum class ToolMaterialCard(val toolMaterial: Tier, path: String, val title: EnJ
     val tag = identifier.toItemTag()
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initToolMaterial() {
 
     ToolMaterialCard.entries.forEach { card ->

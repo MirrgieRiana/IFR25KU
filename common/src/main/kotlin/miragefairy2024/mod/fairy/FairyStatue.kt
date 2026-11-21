@@ -147,7 +147,7 @@ class FairyStatueCard(
 }
 
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyStatue() {
 
     FairyStatue.itemGroupCard.init()

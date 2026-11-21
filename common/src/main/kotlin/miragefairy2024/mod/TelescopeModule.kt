@@ -111,7 +111,7 @@ object TelescopeCard {
 }
 
 
-context(ModContext)
+context(_: ModContext)
 fun initTelescopeModule() {
 
     TELESCOPE_MISSION_ATTACHMENT_TYPE.register()

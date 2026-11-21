@@ -15,7 +15,7 @@ import net.minecraft.util.Mth
 import net.minecraft.world.item.ItemDisplayContext
 import net.minecraft.world.item.Items
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyQuestClientModule() {
     RenderItemHandler.listeners += RenderItemHandler { stack, renderMode, leftHanded, matrices, vertexConsumers, light, overlay, model ->
         if (stack isNotIn FairyQuestCardCard.item()) return@RenderItemHandler

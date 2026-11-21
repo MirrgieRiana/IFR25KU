@@ -14,7 +14,7 @@ private class MiningAreaResult(val miningArea: MultiMine.MiningArea?)
 
 private var expectedMiningAreaResult: MiningAreaResult? = null
 
-context(ModContext)
+context(_: ModContext)
 fun initEnchantmentClientModule() {
 
     // 採掘範囲が変わったら採掘をキャンセル

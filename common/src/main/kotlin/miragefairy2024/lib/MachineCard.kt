@@ -125,7 +125,7 @@ abstract class MachineCard<B : Block, E : MachineBlockEntity<E>, H : MachineScre
     val advancement = createAdvancement()
 
 
-    context(ModContext)
+    context(_: ModContext)
     open fun init() {
 
         block.register()

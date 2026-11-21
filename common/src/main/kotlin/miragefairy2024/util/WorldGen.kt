@@ -70,14 +70,14 @@ operator fun <T> ResourceKey<Registry<T>>.get(key: TagKey<T>): HolderSet.Named<T
     return this@BootstrapContext.lookup(this).getOrThrow(key)
 }
 
-context(ModContext)
+context(_: ModContext)
 fun <T : Any> registerDynamicGeneration(registryKey: ResourceKey<out Registry<T>>, identifier: ResourceLocation, creator: BootstrapContext<T>.() -> T): ResourceKey<T> {
     val key = registryKey with identifier
     registerDynamicGeneration(key, creator)
     return key
 }
 
-context(ModContext)
+context(_: ModContext)
 fun <T : Any> registerDynamicGeneration(key: ResourceKey<T>, creator: BootstrapContext<T>.() -> T) {
     val registryKey = ResourceKey.createRegistryKey<T>(key.registry())
     DataGenerationEvents.onBuildRegistry {
@@ -93,7 +93,7 @@ fun <T : Any> registerDynamicGeneration(key: ResourceKey<T>, creator: BootstrapC
 class FeatureGenerationScope<C : FeatureConfiguration>(val feature: Feature<C>, val identifier: ResourceLocation)
 class ConfiguredFeatureGenerationScope<C : FeatureConfiguration>(val configuredFeatureKey: ResourceKey<ConfiguredFeature<*, *>>, val identifier: ResourceLocation)
 
-context(ModContext)
+context(_: ModContext)
 fun <C : FeatureConfiguration> Feature<C>.generator(identifier: ResourceLocation, block: FeatureGenerationScope<C>.() -> Unit) {
     block(FeatureGenerationScope(this, identifier))
 }
@@ -137,15 +137,15 @@ fun <C : FeatureConfiguration> registerPlacedFeature(placedFeatureKey: ResourceK
     return placedFeatureKey
 }
 
-context(ModContext) fun ResourceKey<PlacedFeature>.placeWhenUndergroundOres(biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>) = this.registerFeature(GenerationStep.Decoration.UNDERGROUND_ORES) { biomePredicate() }
-context(ModContext) fun ResourceKey<PlacedFeature>.placeWhenVegetalDecoration(biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>) = this.registerFeature(GenerationStep.Decoration.VEGETAL_DECORATION) { biomePredicate() }
+context(_: ModContext) fun ResourceKey<PlacedFeature>.placeWhenUndergroundOres(biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>) = this.registerFeature(GenerationStep.Decoration.UNDERGROUND_ORES) { biomePredicate() }
+context(_: ModContext) fun ResourceKey<PlacedFeature>.placeWhenVegetalDecoration(biomePredicate: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>) = this.registerFeature(GenerationStep.Decoration.VEGETAL_DECORATION) { biomePredicate() }
 
-context(ModContext)
+context(_: ModContext)
 fun ResourceKey<PlacedFeature>.registerFeature(step: GenerationStep.Decoration, biomeSelectorCreator: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>) = ModEvents.onInitialize {
     BiomeModifications.addFeature(biomeSelectorCreator(BiomeSelectorScope), step, this)
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> EntityType<*>).registerSpawn(spawnGroup: MobCategory, weight: Int, minGroupSize: Int, maxGroupSize: Int, biomeSelectorCreator: BiomeSelectorScope.() -> Predicate<BiomeSelectionContext>) = ModEvents.onInitialize {
     BiomeModifications.addSpawn(biomeSelectorCreator(BiomeSelectorScope), spawnGroup, this(), weight, minGroupSize, maxGroupSize)
 }
@@ -155,24 +155,24 @@ fun (() -> EntityType<*>).registerSpawn(spawnGroup: MobCategory, weight: Int, mi
 
 object BiomeSelectorScope
 
-context(BiomeSelectorScope) val all: Predicate<BiomeSelectionContext> get() = BiomeSelectors.all()
-context(BiomeSelectorScope) val overworld: Predicate<BiomeSelectionContext> get() = +BiomeTags.IS_OVERWORLD // BiomeSelectors.foundInOverworld() はTerraBlenderの追加バイオームを無視する
-context(BiomeSelectorScope) val nether: Predicate<BiomeSelectionContext> get() = +BiomeTags.IS_NETHER // 上と同じ
-context(BiomeSelectorScope) val end: Predicate<BiomeSelectionContext> get() = +BiomeTags.IS_END // 上と同じ
-context(BiomeSelectorScope) operator fun ResourceKey<Biome>.unaryPlus(): Predicate<BiomeSelectionContext> = BiomeSelectors.includeByKey(this)
-context(BiomeSelectorScope) operator fun TagKey<Biome>.unaryPlus(): Predicate<BiomeSelectionContext> = BiomeSelectors.tag(this)
-context(BiomeSelectorScope) operator fun BiomeCondition.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { this.test(it.biomeRegistryEntry) }
-context(BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.not(): Predicate<BiomeSelectionContext> = this.negate()
-context(BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.times(other: Predicate<BiomeSelectionContext>): Predicate<BiomeSelectionContext> = this.and(other)
-context(BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.plus(other: Predicate<BiomeSelectionContext>): Predicate<BiomeSelectionContext> = this.or(other)
-context(BiomeSelectorScope) operator fun TemperatureCategory.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { it.biomeRegistryEntry.temperatureCategory == this }
-context(BiomeSelectorScope) operator fun HumidityCategory.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { it.biomeRegistryEntry.humidityCategory == this }
-context(BiomeSelectorScope) val cold get() = +TemperatureCategory.LOW
-context(BiomeSelectorScope) val warm get() = +TemperatureCategory.MEDIUM
-context(BiomeSelectorScope) val hot get() = +TemperatureCategory.HIGH
-context(BiomeSelectorScope) val arid get() = +HumidityCategory.LOW
-context(BiomeSelectorScope) val mesic get() = +HumidityCategory.MEDIUM
-context(BiomeSelectorScope) val humid get() = +HumidityCategory.HIGH
+context(_: BiomeSelectorScope) val all: Predicate<BiomeSelectionContext> get() = BiomeSelectors.all()
+context(_: BiomeSelectorScope) val overworld: Predicate<BiomeSelectionContext> get() = +BiomeTags.IS_OVERWORLD // BiomeSelectors.foundInOverworld() はTerraBlenderの追加バイオームを無視する
+context(_: BiomeSelectorScope) val nether: Predicate<BiomeSelectionContext> get() = +BiomeTags.IS_NETHER // 上と同じ
+context(_: BiomeSelectorScope) val end: Predicate<BiomeSelectionContext> get() = +BiomeTags.IS_END // 上と同じ
+context(_: BiomeSelectorScope) operator fun ResourceKey<Biome>.unaryPlus(): Predicate<BiomeSelectionContext> = BiomeSelectors.includeByKey(this)
+context(_: BiomeSelectorScope) operator fun TagKey<Biome>.unaryPlus(): Predicate<BiomeSelectionContext> = BiomeSelectors.tag(this)
+context(_: BiomeSelectorScope) operator fun BiomeCondition.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { this.test(it.biomeRegistryEntry) }
+context(_: BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.not(): Predicate<BiomeSelectionContext> = this.negate()
+context(_: BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.times(other: Predicate<BiomeSelectionContext>): Predicate<BiomeSelectionContext> = this.and(other)
+context(_: BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.plus(other: Predicate<BiomeSelectionContext>): Predicate<BiomeSelectionContext> = this.or(other)
+context(_: BiomeSelectorScope) operator fun TemperatureCategory.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { it.biomeRegistryEntry.temperatureCategory == this }
+context(_: BiomeSelectorScope) operator fun HumidityCategory.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { it.biomeRegistryEntry.humidityCategory == this }
+context(_: BiomeSelectorScope) val cold get() = +TemperatureCategory.LOW
+context(_: BiomeSelectorScope) val warm get() = +TemperatureCategory.MEDIUM
+context(_: BiomeSelectorScope) val hot get() = +TemperatureCategory.HIGH
+context(_: BiomeSelectorScope) val arid get() = +HumidityCategory.LOW
+context(_: BiomeSelectorScope) val mesic get() = +HumidityCategory.MEDIUM
+context(_: BiomeSelectorScope) val humid get() = +HumidityCategory.HIGH
 context(MagicPlantCard<*>, BiomeSelectorScope) val defaultTraits get(): Predicate<BiomeSelectionContext> = Predicate { this@MagicPlantCard.hasEnvironmentAdaptation(false, it.biomeRegistryEntry.temperatureCategory, it.biomeRegistryEntry.humidityCategory) }
 
 
@@ -182,7 +182,7 @@ object PlacementModifiersScope
 
 fun placementModifiers(block: PlacementModifiersScope.() -> List<PlacementModifier>) = block(PlacementModifiersScope)
 
-context(PlacementModifiersScope)
+context(_: PlacementModifiersScope)
 fun randomIntCount(count: Double): List<PlacementModifier> {
     val min = count.floorToInt()
     val rate = ((count - min.toDouble()) * 100).roundToInt()
@@ -196,13 +196,13 @@ fun randomIntCount(count: Double): List<PlacementModifier> {
     return listOf(CountPlacement.of(intProvider))
 }
 
-context(PlacementModifiersScope)
+context(_: PlacementModifiersScope)
 fun count(count: Int): List<PlacementModifier> = listOf(CountPlacement.of(count))
 
-context(PlacementModifiersScope)
+context(_: PlacementModifiersScope)
 fun per(chance: Int): List<PlacementModifier> = listOf(RarityFilter.onAverageOnceEvery(chance))
 
-context(PlacementModifiersScope)
+context(_: PlacementModifiersScope)
 fun tree(saplingBlock: Block): List<PlacementModifier> = listOf(
     InSquarePlacement.spread(),
     SurfaceWaterDepthFilter.forMaxDepth(0),
@@ -211,7 +211,7 @@ fun tree(saplingBlock: Block): List<PlacementModifier> = listOf(
     PlacementUtils.filteredByBlockSurvival(saplingBlock),
 )
 
-context(PlacementModifiersScope)
+context(_: PlacementModifiersScope)
 fun uniformOre(minOffset: Int, maxOffset: Int): List<PlacementModifier> = listOf(
     InSquarePlacement.spread(),
     HeightRangePlacement.uniform(VerticalAnchor.absolute(minOffset), VerticalAnchor.absolute(maxOffset)),
@@ -223,17 +223,17 @@ fun interface HorizontalPlacementType {
 }
 
 /** 半径8未満のFeatureまで可能。 */
-context(PlacementModifiersScope)
+context(_: PlacementModifiersScope)
 val none
     get() = HorizontalPlacementType { listOf() }
 
 /** 半径8未満のFeatureまで可能。 */
-context(PlacementModifiersScope)
+context(_: PlacementModifiersScope)
 val square
     get() = HorizontalPlacementType { listOf(InSquarePlacement.spread()) }
 
 /** 半径16未満のFeatureまで可能。 */
-context(PlacementModifiersScope)
+context(_: PlacementModifiersScope)
 val center
     get() = HorizontalPlacementType { listOf(RandomOffsetPlacement.horizontal(ConstantInt.of(8))) }
 
@@ -241,11 +241,11 @@ fun interface VerticalPlacementType {
     fun getPlacementModifiers(): List<PlacementModifier>
 }
 
-context(PlacementModifiersScope)
+context(_: PlacementModifiersScope)
 val surface
     get() = VerticalPlacementType { listOf(PlacementUtils.HEIGHTMAP) }
 
-context(PlacementModifiersScope)
+context(_: PlacementModifiersScope)
 val nether
     get() = VerticalPlacementType {
         listOf(
@@ -255,7 +255,7 @@ val nether
         )
     }
 
-context(PlacementModifiersScope)
+context(_: PlacementModifiersScope)
 val underground
     get() = VerticalPlacementType {
         listOf(
@@ -266,7 +266,7 @@ val underground
     }
 
 /** 溶岩の水面の直上なのだ～🌱 */
-context(PlacementModifiersScope)
+context(_: PlacementModifiersScope)
 val aboveLava
     get() = VerticalPlacementType {
         listOf(
@@ -276,7 +276,7 @@ val aboveLava
         )
     }
 
-context(PlacementModifiersScope)
+context(_: PlacementModifiersScope)
 fun rangedNether(minY: Int, maxY: Int) = VerticalPlacementType {
     listOf(
         HeightRangePlacement.uniform(VerticalAnchor.absolute(minY), VerticalAnchor.absolute(maxY)),
@@ -285,7 +285,7 @@ fun rangedNether(minY: Int, maxY: Int) = VerticalPlacementType {
     )
 }
 
-context(PlacementModifiersScope)
+context(_: PlacementModifiersScope)
 fun flower(horizontal: HorizontalPlacementType, vertical: VerticalPlacementType): List<PlacementModifier> {
     return listOf(
         *horizontal.getPlacementModifiers().toTypedArray(),
@@ -297,22 +297,22 @@ fun flower(horizontal: HorizontalPlacementType, vertical: VerticalPlacementType)
 
 // Structure
 
-context(BootstrapContext<*>)
+context(_: BootstrapContext<*>)
 fun RuleStructureProcessor(vararg rules: ProcessorRule): RuleProcessor {
     return RuleProcessor(rules.toList())
 }
 
-context(BootstrapContext<*>)
+context(_: BootstrapContext<*>)
 fun StructureProcessorList(vararg processors: StructureProcessor): StructureProcessorList {
     return StructureProcessorList(processors.toList())
 }
 
-context(BootstrapContext<*>)
+context(_: BootstrapContext<*>)
 fun SinglePoolElement(location: ResourceLocation, processorsKey: ResourceKey<StructureProcessorList>, projection: StructureTemplatePool.Projection): StructurePoolElement {
     return StructurePoolElement.single(location.string, Registries.PROCESSOR_LIST[processorsKey]).apply(projection)
 }
 
-context(BootstrapContext<*>)
+context(_: BootstrapContext<*>)
 fun StructurePool(fallbackKey: ResourceKey<StructureTemplatePool>, vararg elements: Pair<StructurePoolElement, Int>): StructureTemplatePool {
     return StructureTemplatePool(Registries.TEMPLATE_POOL[fallbackKey], elements.map { com.mojang.datafixers.util.Pair.of(it.first, it.second) })
 }

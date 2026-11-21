@@ -22,7 +22,7 @@ import net.minecraft.client.gui.GuiGraphics
 import java.util.Optional
 import kotlin.math.roundToInt
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyBuildingClientModule() {
     ModelLoadingPlugin.register {
         FairyBuildingModelCard.entries.forEach { card ->

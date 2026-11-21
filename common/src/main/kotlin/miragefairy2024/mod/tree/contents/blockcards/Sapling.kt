@@ -28,7 +28,7 @@ class TreeSaplingBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCar
         .sound(SoundType.GRASS)
         .pushReaction(PushReaction.DESTROY)
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

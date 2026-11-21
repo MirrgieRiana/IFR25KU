@@ -50,7 +50,7 @@ val SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION = Translation({ "gui.${Mira
 
 val SOUL_STREAM_CONTAINABLE_TAG = MirageFairy2024.identifier("soul_stream_containable").toItemTag()
 
-context(ModContext)
+context(_: ModContext)
 fun initSoulStream() {
 
     // プレイヤー追加データ

@@ -16,7 +16,7 @@ val REMOVE_ALL_SUCCESS_TRANSLATION = Translation({ identifier.toLanguageKey("com
 val REMOVE_ONE_SUCCESS_TRANSLATION = Translation({ identifier.toLanguageKey("commands", "remove.one.success") }, "Removed %s dream", "%s の夢を削除しました")
 val DO_NOT_HAVE_DREAM_TRANSLATION = Translation({ identifier.toLanguageKey("commands", "do_not_have_dream") }, "You don't have %s dream", "あなたは %s の夢を持っていません")
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyDream() {
     initGainFairyDreamChannel()
     initFairyDreamContainer()

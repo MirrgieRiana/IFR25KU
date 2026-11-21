@@ -8,7 +8,7 @@ private var initialized = false
 
 var currentServer: MinecraftServer? = null
 
-context(ModContext)
+context(_: ModContext)
 fun initFabricModule() {
     if (initialized) return
     initialized = true

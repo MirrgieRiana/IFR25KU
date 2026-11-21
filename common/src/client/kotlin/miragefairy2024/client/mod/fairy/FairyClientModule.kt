@@ -2,7 +2,7 @@ package miragefairy2024.client.mod.fairy
 
 import miragefairy2024.ModContext
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyClientModule() {
     initMotifTableClientModule()
     initSoulStreamClientModule()

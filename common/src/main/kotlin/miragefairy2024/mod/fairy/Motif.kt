@@ -1335,7 +1335,7 @@ private operator fun MotifCardRecipes.plus(tag: TagKey<EntityType<*>>) = this.on
 // Initializer
 
 fun interface Initializer {
-    context(ModContext)
+    context(_: ModContext)
     fun init(motif: MotifCard)
 }
 

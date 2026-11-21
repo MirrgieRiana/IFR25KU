@@ -38,7 +38,7 @@ import miragefairy2024.mod.structure.initStructureModule
 import miragefairy2024.mod.tool.initToolModule
 import miragefairy2024.mod.tree.initTreeModule
 
-context(ModContext)
+context(_: ModContext)
 fun initModules() {
     initCommonModule()
     initVanillaModule()
